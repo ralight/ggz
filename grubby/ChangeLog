@@ -1,4 +1,156 @@
-2004-01-31 11:49  Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 19:53   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/src/net.c: - prevent grubby from crashing: use chat event
+	  data instead of old char   pointer (duh, this is old)
+
+2004-07-17 05:57   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.am: - fix libtool.m4 inclusion
+
+2004-07-17 02:40   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/src/main.c: - grubby can now comment on games, this
+	  justifies a new version for him also
+
+2004-07-16 21:05   Josef Spillner <josef@ggzgamingzone.org>
+
+	* AUTHORS, NEWS, README, README.GGZ, configure.ac: - 0.0.9 updates
+	  propagation
+
+2004-07-13 16:55   Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/libtool.m4: - remove libtool macros
+
+2004-07-10 19:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/libtool.m4: Update libtool.m4.
+
+2004-07-09 13:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/guru-chess/: TROUBLE.ai, ai.c, ai.h, main.c, test.c: - fix
+	  chess AI to always use the maximum calculated points in each
+	  level - add some AI explanations
+
+2004-06-28 16:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/guru-chess/ai.c: - minor fix: do not allow switching sides
+	  (due to the 64 byte representation   of the 8x8 board)
+
+2004-06-27 21:32   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/guru-chess/: DESIGN.ai, ai.c, ai.h, main.c, test.c: - some
+	  smaller AI fixes - design document about alpha-beta and
+	  minimax/negamax implementation
+
+2004-03-22 18:00   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/guru-chess/Makefile.am, games/guru-chess/ai.c,
+	  games/guru-chess/ai.h, games/guru-chess/main.c,
+	  games/guru-chess/module.dsc.in, games/guru-chess/test.c,
+	  games/guru-ttt/module.dsc.in, grubby/data/Makefile.am,
+	  grubby/data/de.po, grubby/data/dict.pl, grubby/data/fr.po,
+	  grubby/data/guru.pot, grubby/data/pt_BR.po, grubby/doc/INTERFACE,
+	  grubby/doc/Migration, grubby/doc/Tutorial,
+	  grubby/modules/Makefile.am, grubby/modules/badword.c,
+	  grubby/modules/extra.c, grubby/modules/game.c,
+	  grubby/modules/game.h, grubby/modules/learning.c,
+	  grubby/modules/people.c, grubby/modules/player.c,
+	  grubby/modules/programming.c, grubby/modules/self.c,
+	  grubby/modules/simplereturn.c, grubby/po/de.po,
+	  grubby/po/grubby.pot, grubby/src/gurumod.h, grubby/src/i18n.c,
+	  grubby/src/i18n.h, grubby/src/main.c, grubby/src/module.c,
+	  grubby/src/module.h, grubby/src/net.c: The big grubby update:
+
+	  - add AI for chess, to be used in the chess server as well   (not
+	  fully alpha-beta-nullmove yet, but close) - add
+	  brazilian-portuguese translation for grubby chat texts - add game
+	  communication protocol so grubby can comment on game events -
+	  much improved i18n handler: differentiate between grubby and guru
+	  message   catalogs, and only extract the relevant strings (using
+	  __(x) and _(x)) - update documentation to match current
+	  implementation - better handling for direct messages using
+	  GURU_DIRECT (in addition to	GURU_CHAT and GURU_PRIVMSG) -
+	  timer-based GURU_TICK events, independent of messages
+
+2004-03-08 17:38   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, games/Makefile.am, games/guru-chess/.cvsignore,
+	  games/guru-chess/Makefile.am, games/guru-chess/main.c,
+	  games/guru-chess/module.dsc.in, games/guru-chess/proto.h,
+	  games/guru-ttt/Makefile.am, games/guru-ttt/main.c,
+	  games/lib/.cvsignore, games/lib/Makefile.am,
+	  games/lib/ggzpassive.c, games/lib/ggzpassive.h, grubby/src/net.c:
+	  - add chess game skeleton module (not implemented yet) - add
+	  little static library ggzpassive.a which contains grubby game
+	  handling code   (can be reused for any non-interactive game
+	  frontends)
+
+	  The chess module should get a little AI (alpha-beta algorithm
+	  with null-move optimizations) which should then also be used for
+	  the server and optionally the clients.  Thus it will probably
+	  become libcgc-compatible.
+
+2004-02-28 02:57   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/libtool.m4: Add libtool.m4 to CVS.
+
+2004-02-21 09:50   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the libggz copy
+	  to be the master copy.  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with
+	  a   reference to CVS.  - Propogate the changes back into all
+	  modules.
+
+2004-02-09 10:19   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/guru-ttt/main.c, grubby/src/net.c: - leave table correctly
+	  after game is over - in the game itself, exit after gameover
+	  message arrives
+
+	  Now playing many consecutive games work.  However there's a race
+	  condition when leaving the game, which results in a broken pipe
+	  which makes grubby crash.  This will have to be fixed.
+
+2004-02-09 09:53   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/modules/extra.c: - make grubby shut up if he's told so
+
+2004-02-07 10:44   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/src/main.c: - grubby gets a new version too
+
+2004-02-06 21:42   Josef Spillner <josef@ggzgamingzone.org>
+
+	* grubby/po/Makefile.am: - uninstall po files
+
+2004-02-06 21:14   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac, games/guru-ttt/Makefile.am: - handle module.dsc
+	  file correctly
+
+2004-02-06 11:12   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - fix display of python check result
+
+2004-02-05 13:07   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/de/: grubby-config.1, grubby.6: - forgot German manpages
+
+2004-02-05 12:46   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/: grubby-config.1, grubby.6: - man pages updates:   * new dev
+	  list	 * grubby can play games   * version bump
+
+2004-02-05 11:41   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog, NEWS, README, README.GGZ, configure.ac: - synchronized
+	  NEWS, README.GGZ and QuickStart.GGZ from docs - updated README
+	  * new URLs for developers, bugs, website   * no more per-package
+	  maintainer mention (it was never valid anyway) - updated
+	  configure.ac to indicate final version 0.0.8 - ChangeLog updates
+
+2004-01-31 11:49   Josef Spillner <josef@ggzgamingzone.org>
 
 	* m4/ggz.m4, autogen.sh: - sync common files
 

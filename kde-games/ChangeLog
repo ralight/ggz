@@ -1,8 +1,111 @@
-2004-02-03 11:04  Josef Spillner <josef@ggzgamingzone.org>
+2004-07-18 02:21   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ktictactux/ktictactuxproto.cpp: - forgot to commit additional
+	  parameter
+
+2004-07-17 05:58   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.am: - fix libtool.m4 inclusion
+
+2004-07-17 04:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ktictactux/module.dsc.in: - TTT protocol version bump
+
+2004-07-16 21:07   Josef Spillner <josef@ggzgamingzone.org>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ, configure.ac:
+	  - 0.0.9 updates propagation
+
+2004-07-16 19:53   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ktictactux/: Makefile.am, ktictactux.cpp, ktictactux.h,
+	  ktictactuxproto.cpp, ktictactuxwin.cpp, ktictactuxwin.h: -
+	  deprecate statistics embedded into the protocol - use ggzmod
+	  stats instead - linker fix: use GGZ ldpaths first, all others
+	  later
+
+2004-07-13 19:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* KReversi/main.cpp, KReversi/module.dsc.in, fyrdman/main.cpp,
+	  fyrdman/module.dsc.in, kdots/module.dsc.in,
+	  keepalive/module.dsc.in, keepalive/src/main.cpp, koenig/main.cc,
+	  koenig/module.dsc.in, krosswater/dlg_about.cpp,
+	  krosswater/main.cpp, krosswater/module.dsc.in,
+	  ktictactux/main.cpp, ktictactux/module.dsc.in,
+	  muehle/module.dsc.in, muehle/src/main.cpp: - homepage updates
+
+2004-07-13 19:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/: KReversi/de.po, KReversi/kreversi.pot, kdots/de.po,
+	  kdots/kdots.pot, koenig/de.po, koenig/koenig.pot,
+	  krosswater/de.po, krosswater/krosswater.pot, ktictactux/de.po,
+	  ktictactux/ktictactux.pot, muehle/de.po, muehle/muehle.pot: -
+	  catalog update - German translation update
+
+2004-07-13 16:56   Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/libtool.m4: - remove libtool macros
+
+2004-04-24 19:35   Josef Spillner <josef@ggzgamingzone.org>
+
+	* kdots/Makefile.am, kdots/kdots.cpp, kdots/kdots.h,
+	  kdots/kdots_replay.cpp, kdots/kdots_replay.h,
+	  kdots/kdots_win.cpp, kdots/kdots_win.h, kdots/main.cpp,
+	  kdots/Dot/dots.cpp, kdots/Dot/dots.h, kdots/Dot/qdots.cpp,
+	  kdots/Dot/test.cpp, kdots/Dot/vdots.cpp, kdots/Dot/vdots.h,
+	  keepalive/src/canvas.cpp: - add game replay to kdots
+
+2004-03-12 23:20   Josef Spillner <josef@ggzgamingzone.org>
+
+	* muehle/src/ggzwrap/Makefile.am: - do not prefix INCLUDES with the
+	  application name, apparently the headers   are not always used in
+	  those cases
+
+2004-03-08 19:37   Josef Spillner <josef@ggzgamingzone.org>
+
+	* koenig/: chess.h, game.h: - remove chess.h as it wasn't needed
+	  anyway
+
+2004-02-28 02:58   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/libtool.m4: Add libtool.m4 to CVS.
+
+2004-02-21 09:51   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the libggz copy
+	  to be the master copy.  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with
+	  a   reference to CVS.  - Propogate the changes back into all
+	  modules.
+
+2004-02-10 09:53   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde-games.spec: - tenth round of removals of distribution
+	  files
+
+2004-02-07 09:40   Josef Spillner <josef@ggzgamingzone.org>
+
+	* muehle/doc/Makefile.am: - add uninstall-local rule
+
+2004-02-05 12:54   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/: ggzwrap.1, muehle-ai.pl.6: - the usual: version and dev
+	  list updates
+
+2004-02-05 11:44   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog, NEWS, QuickStart.GGZ, README, README.GGZ,
+	  configure.ac: - synchronized NEWS, README.GGZ and QuickStart.GGZ
+	  from docs - updated README   * new URLs for developers, bugs,
+	  website   * no more per-package maintainer mention (it was never
+	  valid anyway) - updated configure.ac to indicate final version
+	  0.0.8 - ChangeLog updates
+
+2004-02-03 11:04   Josef Spillner <josef@ggzgamingzone.org>
 
 	* kcc/: kcc.cpp, kcc.h, kccproto.cpp, kccproto.h: - fix multiplayer
-	mode - delay opponent moves in singleplayer mode - animate moves
-	(show traces)
+	  mode - delay opponent moves in singleplayer mode - animate moves
+	  (show traces)
 
 2004-02-01 15:10  Josef Spillner <josef@ggzgamingzone.org>
 

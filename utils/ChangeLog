@@ -1,4 +1,88 @@
-2004-01-31 11:54  Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 05:59   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.am: - fix libtool.m4 inclusion
+
+2004-07-17 02:39   Josef Spillner <josef@ggzgamingzone.org>
+
+	* metaserv/metaserv/metaserv.c: - version update for the metaserver
+
+2004-07-16 21:08   Josef Spillner <josef@ggzgamingzone.org>
+
+	* AUTHORS, NEWS, README, README.GGZ, configure.ac: - 0.0.9 updates
+	  propagation
+
+2004-07-13 16:56   Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/libtool.m4: - remove libtool macros
+
+2004-07-10 19:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/libtool.m4: Update libtool.m4.
+
+2004-06-10 16:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* metaserv/metaserv/metaserv.c: - emergency fix for NULL attributes
+
+	  I don't know yet what is causing these, but with a bit of luck it
+	  seems to be the only source of the segfaults. At least it runs
+	  stable now for more than 1500 operations.
+
+	  Oh and the CVS server is now patched too :)
+
+2004-05-17 16:31   Josef Spillner <josef@ggzgamingzone.org>
+
+	* metaserv/metaserv/metaserv.c: - pthread fix: if thread cannot be
+	  created, close connection, don't hang
+
+	  There's still one other grave bug in the source :(
+
+2004-05-17 16:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* metaserv/gui-perl/ggzserver-register.pl: - add script to register
+	  GGZ server with the metaserver
+
+2004-02-28 02:58   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/libtool.m4: Add libtool.m4 to CVS.
+
+2004-02-21 09:51   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the libggz copy
+	  to be the master copy.  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with
+	  a   reference to CVS.  - Propogate the changes back into all
+	  modules.
+
+2004-02-07 10:40   Josef Spillner <josef@ggzgamingzone.org>
+
+	* metaserv/metaserv/metaserv.c: - version bump: 0.2 -> 0.3
+
+2004-02-05 23:12   Josef Spillner <josef@ggzgamingzone.org>
+
+	* metaserv/metaserv/helper.c: - include header file to prototype
+	  functions
+
+	  Does this fix it? Otherwise I don't know.
+
+2004-02-05 13:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* metaserv/metaserv/metaservconf.xml: - changed metaserver target
+	  URIs
+
+2004-02-05 12:53   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/: ggz-cmd.1, ggzcommgen.1, metaserv.1, telggz.1: - version
+	  updates - mention Nagios in ggz-cmd manpage
+
+2004-02-05 11:45   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog, NEWS, README, README.GGZ, configure.ac: - synchronized
+	  NEWS, README.GGZ and QuickStart.GGZ from docs - updated README
+	  * new URLs for developers, bugs, website   * no more per-package
+	  maintainer mention (it was never valid anyway) - updated
+	  configure.ac to indicate final version 0.0.8 - ChangeLog updates
+
+2004-01-31 11:54   Josef Spillner <josef@ggzgamingzone.org>
 
 	* m4/ggz.m4, autogen.sh: - sync common files
 

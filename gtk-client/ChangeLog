@@ -1,4 +1,184 @@
-2004-01-31 11:51  Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 06:03   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/Makefile.am: - look for *.mo files in builddir, not in srcdir
+
+2004-07-16 21:08   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: playerinfo.c, playerlist.c: Update gtk-client for
+	  integer highscores.
+
+2004-07-16 21:05   Josef Spillner <josef@ggzgamingzone.org>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ, configure.ac:
+	  - 0.0.9 updates propagation
+
+2004-07-13 19:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/: de.po, es_AR.po, ggz-gtk.pot, pt_BR.po: - message catalog
+	  regeneration - German translation update
+
+2004-07-12 18:50   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-gtk/: game.c, pick_module.c, pick_module.h: - bugfix: if some
+	  modules are not among the offered ones,   map the selected module
+	  index to the one of ggzcore
+
+	  This showed up when selecting Gtk+ (index 0) but in reality
+	  module 0 was guru.
+
+2004-03-22 18:08   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-gtk/: game.c, ggzclient.c: - support for game module
+	  environments - bugfix: do not update room if not in a room
+
+2004-03-12 22:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - remove $enable_gtk line since Gtk+ 2.x is
+	  required
+
+2004-02-28 06:05   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, ggz-gtk/Makefile.am, ggz-gtk/chat.c,
+	  ggz-gtk/chat.h, ggz-gtk/client.c, ggz-gtk/license.c,
+	  ggz-gtk/login.c, ggz-gtk/motd.c, ggz-gtk/msgbox.c,
+	  ggz-gtk/msgbox.h, ggz-gtk/playerlist.c, ggz-gtk/props.c,
+	  ggz-gtk/tablelist.c, ggz-gtk/types.c, ggz-gtk/xtext-gtk2.c,
+	  ggz-gtk/xtext-gtk2.h, ggz-gtk/xtext.c, ggz-gtk/xtext.h: Compile
+	  ggz-gtk with gtk2 only.
+
+2004-02-21 20:15   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/about.c: Fix bug in about dialog.
+
+2004-02-21 09:50   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the libggz copy
+	  to be the master copy.  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with
+	  a   reference to CVS.  - Propogate the changes back into all
+	  modules.
+
+2004-02-21 06:46   Jason Short <jdorje@ggzgamingzone.org>
+
+	* po/.cvsignore: Add files to .cvsignore.
+
+2004-02-16 07:50   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: ggzclient.c, login.c, login.h: Handle different login
+	  errors.
+
+2004-02-13 08:31   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/playerinfo.c: Move GGZPlayerType into ggz_common.[ch] in
+	  libggz.
+
+2004-02-11 15:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-gtk/chat.c: - don't crash if clicking on the output widget
+	  when no text is selected
+
+2004-02-11 14:53   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-gtk/playerlist.c: - fix crash: reset pixmap paths in each
+	  iteration
+
+	  Another crash is still present, maybe caused by the new xchat
+	  widget: Clicking on an empty chat line results in a SIGSEGV in
+	  strlen().
+
+2004-02-11 02:56   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: client.c, ggzclient.c: Show the number of players in
+	  each room.
+
+2004-02-10 19:04   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/Makefile.am: - convert po files during 'make', not 'make
+	  install'
+
+	  This is a bit complex, but might well be converted to a
+	  rule-based translation (%.mo: %.po).	Nevertheless this works so
+	  far.
+
+2004-02-10 10:21   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: client.c, playerlist.c, tablelist.c: Don't handle all
+	  CList events like button press events.
+
+2004-02-10 09:59   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: client.c, playerlist.c: Use
+	  gtk_clist_get_selection_info correctly.
+
+2004-02-10 09:49   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-gtk-client.spec: - eighth round of removals of distribution
+	  files
+
+2004-02-10 07:54   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/ggzclient.c: Fix a rediculous, rediculous bug:
+	  GGZ_TABLE_LEFT was invoked as a server event.
+
+	  Also reorder the server event hooks to match the ggzcore order.
+
+2004-02-10 02:58   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/ggzclient.c: - Correctly handle the E_NO_TABLE error in
+	  the GGZ_CHAT_FAIL event.  - For unknown errors use the string
+	  ggzcore provides.
+
+2004-02-10 02:48   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: chat.c, client.c, props.c, xtext-gtk2.c, xtext-gtk2.h:
+	  Update xtext-gtk2 from Xchat 2.0.7.
+
+	  Fix code that uses xtext to work cleanly.
+
+2004-02-09 23:11   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/: chat.c, chat.h, ggzclient.c: Handle the GGZ_ROOM_ENTER
+	  and GGZ_ROOM_LEAVE events better (with a better message).
+
+2004-02-09 09:35   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/game.h: Remove the (unused) global "game" variable.'
+
+2004-02-09 09:28   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/game.c: Cleanups and fixes for leaving a game.    -
+	  GGZ_GAME_OVER, GGZ_GAME_IO_ERROR, and GGZ_GAME_PROTO_ERROR
+	  GGZCore game	    events are removed.  The first is quite
+	  worthless and the latter two	    are unused.  GGZCore now
+	  handles these events internally.    - When the game client exits,
+	  ggzcore frees the game structure.  Later	if a table join
+	  succeeds and there's no game structure present, we	  know we
+	  don't actually have a game running so we tell ggzd we've left
+	  the table.
+
+2004-02-08 23:19   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/launch.c: Don't crash if the player tries to launch a
+	  game in an invalid room via ctrl-l.
+
+2004-02-08 00:18   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-gtk/game.c: Unbreak compilation on less flexible compilers.
+
+2004-02-05 12:51   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/ggz-gtk.6: - new version - mention Gtk+ 2.x
+
+2004-02-05 11:42   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog, NEWS, QuickStart.GGZ, README, README.GGZ,
+	  configure.ac: - synchronized NEWS, README.GGZ and QuickStart.GGZ
+	  from docs - updated README   * new URLs for developers, bugs,
+	  website   * no more per-package maintainer mention (it was never
+	  valid anyway) - updated configure.ac to indicate final version
+	  0.0.8 - ChangeLog updates
+
+2004-01-31 11:51   Josef Spillner <josef@ggzgamingzone.org>
 
 	* autogen.sh: - sync common files
 

@@ -1,7 +1,32 @@
-2004-02-01 15:21  Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 04:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ttt3d/module.dsc.in: - TTT protocol bump
+
+2004-07-16 21:07   Josef Spillner <josef@ggzgamingzone.org>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ, configure.ac:
+	  - 0.0.9 updates propagation
+
+2004-02-07 22:40   Jason Short <jdorje@ggzgamingzone.org>
+
+	* geekgame/: main.c, wwwget.c: Fix some mostly harmless compiler
+	  warnings:   - Some functions should be static.    - One header
+	  #include was missing.    - One unused variable because of some
+	  #ifdefs.
+
+2004-02-05 11:44   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog, NEWS, QuickStart.GGZ, README, README.GGZ,
+	  configure.ac: - synchronized NEWS, README.GGZ and QuickStart.GGZ
+	  from docs - updated README   * new URLs for developers, bugs,
+	  website   * no more per-package maintainer mention (it was never
+	  valid anyway) - updated configure.ac to indicate final version
+	  0.0.8 - ChangeLog updates
+
+2004-02-01 15:21   Josef Spillner <josef@ggzgamingzone.org>
 
 	* geekgame/: main.c, module.dsc.in: - bump protocol version - bump
-	game client version
+	  game client version
 
 2004-01-31 11:53  Josef Spillner <josef@ggzgamingzone.org>
 

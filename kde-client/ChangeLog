@@ -1,4 +1,190 @@
-2004-02-04 16:52  Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 19:35   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/ggzcore++/src/: GGZCorePlayer.cpp, GGZCorePlayer.h: -
+	  highscore is now int, not long
+
+2004-07-17 05:58   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.am: - fix libtool.m4 inclusion
+
+2004-07-16 21:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* NEWS, QuickStart.GGZ, README, README.GGZ, AUTHORS, configure.ac:
+	  - 0.0.9 updates propagation
+
+2004-07-16 17:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/src/widgets/KGGZUsers.cpp: - display
+	  ratings/ranking/highscore only if present
+
+2004-07-13 16:54   Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/libtool.m4: - remove libtool macros
+
+2004-07-12 18:51   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/src/: KGGZ.cpp, widgets/KGGZSelector.cpp,
+	  widgets/KGGZSelector.h: - module number mapping like in the Gtk+
+	  client
+
+	  Here we use a QMap since QComboBox doesn't know ids yet :(
+
+2004-07-11 19:18   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/: data/browser/help.html, data/browser/index.html,
+	  data/splash/title-ggz-mask.png, data/splash/title-ggz.png,
+	  data/splash/title-kggz-mask.png, data/splash/title-kggz.png,
+	  data/splash/title-version-mask.png,
+	  data/splash/title-version.png, src/KGGZ.cpp, src/KGGZ.h,
+	  src/Makefile.am: - change splash to display 0.0.9 (it was still
+	  at 0.0.7!) - modify HTML files in internal help browser - Qt
+	  hack: always ensure connection dialog is in front if active
+
+2004-07-10 19:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/libtool.m4: Update libtool.m4.
+
+2004-06-21 16:14   Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcm_ggz/modules/: Makefile.am, game.png, game_x11.png,
+	  kcm_ggz_games.cpp: - x11 game frontend icon (CGoBan is a pure X11
+	  client)
+
+2004-06-19 18:11   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/: ggzcore++/src/GGZCoreRoom.h, src/KGGZ.cpp, src/KGGZ.h,
+	  src/widgets/KGGZBase.cpp, src/widgets/KGGZBase.h: -
+	  implementation of player count and stats change events - game
+	  icons and number of players in rooms menu
+
+2004-06-19 18:08   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/data/icons/games/: CChess.png, Escape.png, Makefile.am: -
+	  two more missing game icons: cchess, escape
+
+2004-06-17 18:02   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/data/icons/games/: Makefile.am, TEG.png: - icon for TEG
+
+	  Ideally, each game would install its own icon along the
+	  module.dsc file, and the clients and web interfaces can read it
+	  from there.  But for the time being, adding it here and in db2web
+	  should be sufficient.
+
+2004-05-27 03:59   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/src/: KGGZ.cpp, KGGZ.h, widgets/KGGZBase.cpp,
+	  widgets/KGGZBase.h: - implement detail messages for player leaves
+	  and joins
+
+2004-05-24 14:53   Josef Spillner <josef@ggzgamingzone.org>
+
+	* kcm_ggz/modules/: Makefile.am, game_console.png, game_grubby.png,
+	  game_sdl.png, kcm_ggz_games.cpp, kcm_ggz_metaserver.cpp: - honour
+	  new frontends with icons: sdl, guru, console
+
+2004-04-24 19:41   Josef Spillner <josef@ggzgamingzone.org>
+
+	* keepalivecontrol/src/: app.cpp, app.h, connection.cpp: - work
+	  correctly on PPC (big endian systems)
+
+2004-03-22 18:10   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/: ggzcore++/src/GGZCoreModule.cpp,
+	  ggzcore++/src/GGZCoreModule.h, src/KGGZ.cpp: - implement support
+	  for game module environments
+
+	  I can think of one improvement: If the game has console support
+	  only, then kggz could launch konsole -e ...  or xterm -e ...	But
+	  for now, no such game exists anyway.
+
+2004-02-28 02:57   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/libtool.m4: Add libtool.m4 to CVS.
+
+2004-02-21 09:51   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the libggz copy
+	  to be the master copy.  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with
+	  a   reference to CVS.  - Propogate the changes back into all
+	  modules.
+
+2004-02-15 15:40   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/src/KGGZ.cpp: - adapt to new GGZRoomChangeEventData stuff
+
+2004-02-15 15:01   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/ggzcore++/src/Makefile.am: - don't install headers
+
+2004-02-13 08:31   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-kde/: ggzcore++/src/GGZCorePlayer.h, src/KGGZ.cpp: Move
+	  GGZPlayerType into ggz_common.[ch] in libggz.
+
+2004-02-11 14:50   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/: ggzcore++/src/GGZCorePlayer.h, src/KGGZ.cpp,
+	  src/widgets/KGGZUsers.cpp: - display bot icon if player is known
+	  to be a bot - fix for kwallet: save entry as user@hostname
+	  instead of hostname only
+
+2004-02-10 20:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/src/: KGGZ.cpp, KGGZ.h, widgets/KGGZBase.cpp,
+	  widgets/KGGZBase.h: - panel watcher: use bright highlighting for
+	  chat events, and dark highlighting   for all others - session
+	  management: include panel watcher so it gets restarted
+	  automatically
+
+2004-02-10 19:10   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/data/icons/: Makefile.am, watcher_room.png: - another
+	  panel watcher picture
+
+2004-02-10 18:28   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/src/KGGZ.cpp, ggzap/ggzap_handler.cpp: - remove
+	  GGZCoreGame::over and such from kggz and ggzap
+
+2004-02-10 18:22   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde/ggzcore++/src/: GGZCore.h, GGZCoreGame.h,
+	  GGZCorePlayer.h, GGZCoreRoom.cpp, GGZCoreRoom.h, GGZCoreServer.h:
+	  - fix all ggzcore++ constants to be initialized with their C
+	  counterparts - remove the 3 game events
+
+	  Note that at some point the spec MUST be extended to have
+	  explicit integer values for all of these events, so that
+	  independent implementations can be built safely.
+
+2004-02-10 09:51   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-kde-client.spec: - nineth round of removals of distribution
+	  files
+
+2004-02-05 12:48   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/: ggzap.6, ggzmodsniff.6, kggz.6, shadowbridge.6: - version
+	  bumps and new dev lists
+
+2004-02-05 12:34   Josef Spillner <josef@ggzgamingzone.org>
+
+	* compcal/src/compcalrc: - use
+	  http://rankings.ggzgamingzone.org/calendar/ from now on
+
+2004-02-05 11:43   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog, NEWS, QuickStart.GGZ, README, README.GGZ,
+	  configure.ac, ggz-kde/po/es.po, ggz-kde/po/fr.po,
+	  ggz-kde/po/pt_BR.po: - synchronized NEWS, README.GGZ and
+	  QuickStart.GGZ from docs - updated README   * new URLs for
+	  developers, bugs, website   * no more per-package maintainer
+	  mention (it was never valid anyway) - updated configure.ac to
+	  indicate final version 0.0.8 - ChangeLog updates
+
+2004-02-04 16:52   Josef Spillner <josef@ggzgamingzone.org>
 
 	* ggz-kde/po/: de.po, kggz.pot: - updated German translation
 

@@ -1,4 +1,48 @@
-2004-01-31 11:48  Josef Spillner <josef@ggzgamingzone.org>
+2004-07-16 21:05   Josef Spillner <josef@ggzgamingzone.org>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ, configure.ac:
+	  - 0.0.9 updates propagation
+
+2004-02-21 09:50   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the libggz copy
+	  to be the master copy.  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with
+	  a   reference to CVS.  - Propogate the changes back into all
+	  modules.
+
+2004-02-09 09:28   Jason Short <jdorje@ggzgamingzone.org>
+
+	* src/game.c: Cleanups and fixes for leaving a game.	-
+	  GGZ_GAME_OVER, GGZ_GAME_IO_ERROR, and GGZ_GAME_PROTO_ERROR
+	  GGZCore game	    events are removed.  The first is quite
+	  worthless and the latter two	    are unused.  GGZCore now
+	  handles these events internally.    - When the game client exits,
+	  ggzcore frees the game structure.  Later	if a table join
+	  succeeds and there's no game structure present, we	  know we
+	  don't actually have a game running so we tell ggzd we've left
+	  the table.
+
+2004-02-07 22:46   Jason Short <jdorje@ggzgamingzone.org>
+
+	* motd-editor/callbacks.c: Fix a harmless compiler warning.
+
+2004-02-07 10:09   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.am, configure.ac, src/Makefile.am: - link against ggzmod
+	  - don't distribute mkinstalldirs because it's not available
+	  anymore
+
+2004-02-05 11:45   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog, NEWS, QuickStart.GGZ, README, README.GGZ,
+	  configure.ac: - synchronized NEWS, README.GGZ and QuickStart.GGZ
+	  from docs - updated README   * new URLs for developers, bugs,
+	  website   * no more per-package maintainer mention (it was never
+	  valid anyway) - updated configure.ac to indicate final version
+	  0.0.8 - ChangeLog updates
+
+2004-01-31 11:48   Josef Spillner <josef@ggzgamingzone.org>
 
 	* m4/ggz.m4, autogen.sh: - sync common files
 

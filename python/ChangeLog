@@ -1,16 +1,269 @@
-2004-01-27 21:49  Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 16:17   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile: - a crude 'make dist' target
+
+2004-07-17 04:32   Josef Spillner <josef@ggzgamingzone.org>
+
+	* xadrez-chines/: xadrez-chines, xadrez-chines-server.dsc.in: - use
+	  relative data path
+
+2004-07-13 19:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* vibora/vibora: - use python's unicode() object to display the
+	  name correctly
+
+2004-07-13 16:41   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzcore/src/pyggzcoresimple_init.c: - use select() to determine
+	  whether game data is available
+
+2004-07-13 16:41   Josef Spillner <josef@ggzgamingzone.org>
+
+	* vibora/vibora: - restore fullscreen mode - mark bots as.. well,
+	  bots :)
+
+	  Some window managers like icewm don't handle fullscreen apps
+	  launching windowed games very vell. But this is a minor issue for
+	  now.
+
+2004-07-12 23:45   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzcore/src/pyggzcoresimple_init.c: - trying to fix game
+	  launching (without succeeding)
+
+2004-07-12 16:57   Josef Spillner <josef@ggzgamingzone.org>
+
+	* vibora/vibora: - lots of fixes and some enhancements
+
+	  Chatting and viewing tables and players does now work.  Playing
+	  is implemented, but still broken.  Username/password is read from
+	  vibora.rc.
+
+2004-07-12 16:56   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzcore/src/pyggzcoresimple_init.c: - support for joining
+	  tables (does not work yet) - more automatics functionality:
+	  table, player and gametype listings
+
+2004-07-11 19:20   Josef Spillner <josef@ggzgamingzone.org>
+
+	* AUTHORS, INSTALL, QuickStart.GGZ: - more common files, which so
+	  far were missing from ggz-python - custom installation
+	  instructions
+
+2004-07-11 19:19   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile, NEWS, README.GGZ, configure.ac, pyggzcore/setup.py.in,
+	  pyggzdmod/setup.py, pyggzdmod/setup.py.in, pyggzmod/setup.py,
+	  pyggzmod/setup.py.in: - fix installation into a prefix -
+	  preliminary common files updates
+
+2004-07-10 22:01   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile, README, configure.ac, pyggzcore/.cvsignore,
+	  pyggzcore/README.pyggzcore, pyggzcore/README.pyggzcoresimple,
+	  pyggzcore/setup.py, pyggzcore/setup.py.in, pyggzcore/doc/doc.txt,
+	  pyggzcore/src/pyggzcore_init.c,
+	  pyggzcore/src/pyggzcoresimple_init.c, pyggzcore/src/test.py,
+	  vibora/vibora: - rename pyggzcore to pyggzcoresimple to allow a
+	  later 1:1 wrapper carry   the name pyggzcore - support for
+	  installation in a different prefix   (which would require the
+	  user to set PYTHONPATH accordingly)
+
+2004-06-26 17:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* xadrez-chines/.cvsignore: - more files to be ignored
+
+2004-06-26 17:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* xadrez-chines/: xadrez-chines, xadrez-chines-server,
+	  xadrezlib.py: - fix 'move not ok' to 'move invalid' in order to
+	  work with the client - network transmission fixes (little/big
+	  endian issue)
+
+2004-06-26 17:05   Josef Spillner <josef@ggzgamingzone.org>
+
+	* vibora/: background.png, vibora: - prerendered background image
+	  (if not installed, background is still rendered   in real time) -
+	  implementation of real room changes - parameter <hostname>
+	  accepted (e.g. localhost), while default is live.g.o, while
+	  default is live.g.o
+
+2004-06-25 15:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* go/goserver: - passive analyzer for the Go Modem Protocol
+
+2004-06-21 16:10   Josef Spillner <josef@ggzgamingzone.org>
+
+	* go/: .cvsignore, Makefile, goclient, goclient.helper, goserver,
+	  goserver.dsc.in, goserver.room, module.dsc.in: - new external
+	  game support: GNU Go (server), CGoBan (client)
+
+2004-06-14 22:51   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzdmod/src/pyggzdmod_init.c: - do not pass GGZSeat* object as
+	  pointer, but rather all its components   individually
+
+	  Unfortunately, python doesn't allow arbitrary pointers to be
+	  wrapped as objects.  In the PLAYER_DATA hook, we still get the
+	  player number though and not the GGZSeat*, this seems to be an
+	  inconsistency.
+
+2004-06-14 22:49   Josef Spillner <josef@ggzgamingzone.org>
+
+	* xadrez-chines/: xadrez-chines, xadrez-chines-server,
+	  xadrezlib.py: - completion of single player mode - ai
+	  improvement: detect blocked moves (such as knights or cannons) -
+	  implemented basic client-server interaction
+
+2004-06-13 19:18   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - create xadrez-chines-server config file
+
+2004-06-13 19:18   Josef Spillner <josef@ggzgamingzone.org>
+
+	* xadrez-chines/: Makefile, xadrez-chines, xadrez-chines-server,
+	  xadrez-chines-server.dsc, xadrez-chines-server.dsc.in,
+	  xadrez-chines-server.room, xadrez-protocol.txt: - implement basic
+	  GGZ handling - installation into /usr/local supported
+
+	  Unfortunately pyggzdmod is not up-to-date and will have to be
+	  improved
+
+2004-06-11 19:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* xadrez-chines/: xadrez-chines, xadrez-chines-server,
+	  xadrez-chines-server.dsc, xadrez-chines-server.room,
+	  xadrez-protocol.txt, xadrezlib.py: - prepare server support for
+	  chinese chess - includes protocol handling using normal text
+	  messages and regexps - to not require yet another dependency, the
+	  server will stay in ggz-python   for the time being, and share a
+	  common library script with the client
+
+2004-05-27 23:28   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzcore/src/: pyggzcore_init.c, test.py: - support for player
+	  listings - (currently empty) start game function
+
+2004-05-10 16:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile, vibora/logo.png, vibora/vibora: - new (simple) core
+	  client: vibora, using pyggzcore
+
+	  This can only be used for chatting atm
+
+2004-05-10 16:05   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzcore/doc/doc.txt: - pyggzcore docs
+
+2004-05-10 16:00   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzcore/src/: pyggzcore_init.c, test.py: - implementation of
+	  room object and simple chat
+
+2004-04-26 16:08   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzcore/src/: pyggzcore_init.c, test.py: - completion of the
+	  server wrapper - start of the room wrapper
+
+2004-04-24 19:42   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - create Chinese Chess module.dsc file
+
+2004-04-24 19:37   Josef Spillner <josef@ggzgamingzone.org>
+
+	* xadrez-chines/: .cvsignore, Makefile, bishop.png, bodyguard.png,
+	  cannon.png, king.png, knight.png, module.dsc.in, pawn.png,
+	  rock.png, xadrez-chines: - here comes the Chinese Chess game
+
+	  No multiplayer mode yet.
+
+2004-04-24 19:36   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzcore/src/: pyggzcore_init.c, test.py: - completion of all
+	  GGZServer functionality
+
+	  This uses some undocumented python wrapper functionality, I hope
+	  it will work for the next versions too.
+
+2004-03-29 18:44   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzcore/src/: pyggzcore_init.c, test.py: - further pyggzcore
+	  implementation
+
+	  In theory it should now be possible to execute the test program.
+	  But some python internals prevent that. The object initialization
+	  for the GGZServer* wrapper might have to be changed.
+
+2004-03-22 18:23   Josef Spillner <josef@ggzgamingzone.org>
+
+	* pyggzcore/: .cvsignore, README.pyggzcore, setup.py,
+	  src/pyggzcore_init.c, src/test.py: - skeleton for python wrapper
+	  around ggzcore
+
+	  This is intended to become a really simplyfying wrapper.  It will
+	  hide many details like ggzcore_init() etc.
+
+	  The configuration include path is currently hardcoded.  This must
+	  be changed to use the configure defaults, likewise for pyggzmod
+	  and pyggzdmod.
+
+2004-02-09 15:46   Josef Spillner <josef@ggzgamingzone.org>
+
+	* escape-sdl/: escape-sdl, module.dsc.in: - lots of fixes for the
+	  Escape/SDL game   * in singleplayer mode, if a move ends on a
+	  non-empty point, let move again   * in singleplayer mode, get
+	  user's name from the operating system   * in multiplayer mode,
+	  get user's and opponent's name from the protocol     (I think we
+	  need to rework all protocols to use ggzmod here)   * at the end
+	  of the game, display winner correctly
+
+2004-02-09 10:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* escape-sdl/escape-sdl: - display 'you' as a generic name
+
+	  To really fix this, pyggzmod should support the
+	  ggzmod_get_player() function.  In single player mode, the
+	  username should be used.
+
+2004-02-08 19:41   Josef Spillner <josef@ggzgamingzone.org>
+
+	* COPYING: - clarify license
+
+2004-02-05 11:46   Josef Spillner <josef@ggzgamingzone.org>
+
+	* README, configure.ac, ChangeLog, NEWS, README.GGZ: - synchronized
+	  NEWS, README.GGZ and QuickStart.GGZ from docs - updated README
+	  * new URLs for developers, bugs, website   * no more per-package
+	  maintainer mention (it was never valid anyway) - updated
+	  configure.ac to indicate final version 0.0.8 - ChangeLog updates
+
+2004-01-27 21:49   Josef Spillner <josef@ggzgamingzone.org>
 
 	* Makefile, .cvsignore, README, aclocal.m4, configure.ac,
-	escape-sdl/Makefile, dresden/README.dresden, dresden/dresden.py,
-	dresden/saggse.png, dresden/stone.png, escape-sdl/.cvsignore,
-	escape-sdl/escape-sdl, escape-sdl/module.dsc.in,
-	pyggzdmod/.cvsignore, pyggzdmod/README.pyggzdmod,
-	pyggzdmod/setup.py, pyggzdmod/src/pyggzdmod_init.c,
-	pyggzdmod/src/test.py, pyggzmod/.cvsignore,
-	pyggzmod/README.pyggzmod, pyggzmod/setup.py,
-	pyggzmod/src/pyggzmod_init.c, pyggzmod/src/test.py: - new GGZ
-	module: ggz-python for all python-related stuff - doesn't contain
-	README.GGZ etc. yet
+	  escape-sdl/Makefile, dresden/README.dresden, dresden/dresden.py,
+	  dresden/saggse.png, dresden/stone.png, escape-sdl/.cvsignore,
+	  escape-sdl/escape-sdl, escape-sdl/module.dsc.in,
+	  pyggzdmod/.cvsignore, pyggzdmod/README.pyggzdmod,
+	  pyggzdmod/setup.py, pyggzdmod/src/pyggzdmod_init.c,
+	  pyggzdmod/src/test.py, pyggzmod/.cvsignore,
+	  pyggzmod/README.pyggzmod, pyggzmod/setup.py,
+	  pyggzmod/src/pyggzmod_init.c, pyggzmod/src/test.py: - new GGZ
+	  module: ggz-python for all python-related stuff - doesn't contain
+	  README.GGZ etc. yet
+
+2004-01-27 21:49   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile, .cvsignore, README, aclocal.m4, configure.ac,
+	  escape-sdl/Makefile, dresden/README.dresden, dresden/dresden.py,
+	  dresden/saggse.png, dresden/stone.png, escape-sdl/.cvsignore,
+	  escape-sdl/escape-sdl, escape-sdl/module.dsc.in,
+	  pyggzdmod/.cvsignore, pyggzdmod/README.pyggzdmod,
+	  pyggzdmod/setup.py, pyggzdmod/src/pyggzdmod_init.c,
+	  pyggzdmod/src/test.py, pyggzmod/.cvsignore,
+	  pyggzmod/README.pyggzmod, pyggzmod/setup.py,
+	  pyggzmod/src/pyggzmod_init.c, pyggzmod/src/test.py: Initial
+	  revision
 
 2004-01-27 21:49  Josef Spillner <josef@ggzgamingzone.org>
 

@@ -1,4 +1,118 @@
-2004-01-31 11:51  Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 04:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* tictactoe/module.dsc.in: - TTT protocol version bump
+
+2004-07-16 21:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ, configure.ac:
+	  - 0.0.9 updates propagation
+
+2004-07-13 19:03   Josef Spillner <josef@ggzgamingzone.org>
+
+	* chess/main.c, chess/module.dsc.in, chinese-checkers/main.c,
+	  chinese-checkers/module.dsc.in,
+	  chinese-checkers/glade/dlg_about.glade, combat/game.c,
+	  combat/module.dsc.in, dots/main.c, dots/module.dsc.in,
+	  ggzcards/main.c, ggzcards/module.dsc.in, hastings/main.c,
+	  hastings/module.dsc.in, lapocha/ggzcards.diff, lapocha/main.c,
+	  lapocha/module.dsc.in, reversi/main.c, reversi/module.dsc.in,
+	  tictactoe/main.c, tictactoe/module.dsc.in: - homepage updates
+	  (ggz.sf.net -> www.g.o)
+
+2004-07-13 19:03   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/: Makefile.am, chess/chess.pot, chess/de.po,
+	  chinese-checkers/chinese-checkers.pot, chinese-checkers/de.po,
+	  combat/combat.pot, combat/de.po, common/common.pot, common/de.po,
+	  dots/de.po, dots/dots.pot, ggzcards/de.po, ggzcards/es_AR.po,
+	  ggzcards/ggzcards.pot, hastings/de.po, hastings/es_AR.po,
+	  hastings/hastings.pot, hastings/pt_BR.po, lapocha/de.po,
+	  lapocha/lapocha.pot, reversi/de.po, reversi/reversi.pot,
+	  spades/de.po, spades/spades.pot, tictactoe/de.po,
+	  tictactoe/es_AR.po, tictactoe/pt_BR.po, tictactoe/tictactoe.pot:
+	  - introduction of 'common' messages as a separate catalog (not
+	  installed) - catalog updates, using the common messages - German
+	  translation updates
+
+2004-03-14 01:29   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcards/: animation.c, game.h, preferences.c: Run animations
+	  based on time rather than frame count.  This makes animation
+	  speed consistent across different computers and allows better
+	  performance on faster computers.  Remove the "faster animation"
+	  and "smoother animation" options.
+
+2004-02-21 20:26   Jason Short <jdorje@ggzgamingzone.org>
+
+	* tictactoe/main_win.c: Fix crash when resizing TTT window.
+
+2004-02-21 10:00   Jason Short <jdorje@ggzgamingzone.org>
+
+	* tictactoe/: main.c, main_win.c: Add chat support to TTT.
+
+2004-02-21 09:51   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the libggz copy
+	  to be the master copy.  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with
+	  a   reference to CVS.  - Propogate the changes back into all
+	  modules.
+
+2004-02-21 09:32   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcards/: dlg_main.c, drawcard.c, main.c: Add a table chat
+	  widget to ggzcards.  This makes the table too tall, so the cards
+	  are squeezed together a bit more.  It may still be too big.
+	  Perhaps a smaller deck would help.
+
+2004-02-21 09:17   Jason Short <jdorje@ggzgamingzone.org>
+
+	* common/: dlg_chat.c, dlg_chat.h, menus.c, menus.h: Make chat area
+	  toggleable.
+
+2004-02-21 09:03   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Use AC_HELP_STRING.
+
+2004-02-21 07:43   Jason Short <jdorje@ggzgamingzone.org>
+
+	* common/dlg_chat.c: Implement the chat widget for gtk1.2.
+
+2004-02-21 07:03   Jason Short <jdorje@ggzgamingzone.org>
+
+	* common/: Makefile.am, dlg_chat.c, dlg_chat.h: Preliminary dialog
+	  for chat messages.
+
+2004-02-21 06:27   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Fix the version definition if --with-game=<xxx> is
+	  specified.
+
+2004-02-08 00:50   Jason Short <jdorje@ggzgamingzone.org>
+
+	* common/Makefile.am: - include $(LIBGGZ_INCLUDES)
+
+2004-02-08 00:33   Josef Spillner <josef@ggzgamingzone.org>
+
+	* common/Makefile.am: - include $(GGZMOD_INCLUDES)
+
+2004-02-06 21:31   Josef Spillner <josef@ggzgamingzone.org>
+
+	* configure.ac: - don't display enable_gettext anymore since NLS
+	  macros are used
+
+	  This is in line with the gtk+ client.
+
+2004-02-05 11:42   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog, NEWS, QuickStart.GGZ, README, README.GGZ,
+	  configure.ac: - synchronized NEWS, README.GGZ and QuickStart.GGZ
+	  from docs - updated README   * new URLs for developers, bugs,
+	  website   * no more per-package maintainer mention (it was never
+	  valid anyway) - updated configure.ac to indicate final version
+	  0.0.8 - ChangeLog updates
+
+2004-01-31 11:51   Josef Spillner <josef@ggzgamingzone.org>
 
 	* m4/ggz.m4, autogen.sh: - sync common files
 
@@ -3769,7 +3883,7 @@
 	* ggzcards/: cb_bid.c, cb_bid.h, cb_main.c, cb_main.h, dlg_about.c,
 	dlg_about.h, dlg_bid.c, dlg_bid.h, dlg_main.c, dlg_main.h, game.c,
 	game.h, hand.c, hand.h, layout.c, layout.h, main.c, main.h,
-	protocol.h, table.c, table.h: Added $Id: ChangeLog 5790 2004-02-05 10:46:53Z josef $ headers to all (well,
+	protocol.h, table.c, table.h: Added $Id: ChangeLog 6153 2004-07-18 00:37:08Z josef $ headers to all (well,
 	almost all) files.
 	
 	Note that the commit will in itself will make the last-modified
@@ -3778,7 +3892,7 @@
 2001-07-22 18:41  Jason Short <jdorje@users.sourceforge.net>
 
 	* ggzcards/: common.c, common.h: Test of CVS (RCS) keyword
-	substitution for $Id: ChangeLog 5790 2004-02-05 10:46:53Z josef $.
+	substitution for $Id: ChangeLog 6153 2004-07-18 00:37:08Z josef $.
 
 2001-07-22 18:38  Jason Short <jdorje@users.sourceforge.net>
 

@@ -1,4 +1,273 @@
-2004-01-31 11:47  Josef Spillner <josef@ggzgamingzone.org>
+2004-07-18 00:45   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzmod/: ggzmod-ggz.h, ggzmod.c, ggzmod.h, mod.h: - don't let
+	  ggzmod lose the statistics
+
+	  Their transmission from ggzcore to ggzmod is still missing.  But
+	  this will probably not be done for 0.0.9 anyway, as it is only
+	  used by ktictactux.
+
+2004-07-17 22:42   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c: - forgot one long value
+
+2004-07-17 22:41   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzmod/: ggzmod.c, ggzmod.h: - more long -> int conversion for
+	  highscores
+
+2004-07-17 18:20   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzcore/protocol.h: - bump ggz protocol version number
+
+	  This is especially important since the room changes affect every
+	  user.
+
+2004-07-17 17:57   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-config/Makefile.am: - ggz-config, like all core clients,
+	  needs to link in ggzmod now
+
+2004-07-17 05:59   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.am: - fix libtool.m4 inclusion
+
+2004-07-17 03:51   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/ggz-config.6.in, man/ggz.modules.5.in, man/ggzcore_h.3.in,
+	  man/ggzmod_h.3.in, ggzmod/Doxyfile, ggzcore/Doxyfile: - manpage
+	  updates
+
+2004-07-17 02:43   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzcore/Makefile.am, ggzcore/ggzcore.h, ggzmod/Makefile.am,
+	  ggzmod/ggzmod.h: - new library interface version
+
+2004-07-16 21:07   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: ggzcore.h, player.c, player.h: Add ggzcore support for
+	  high scores.
+
+2004-07-16 21:03   Josef Spillner <josef@ggzgamingzone.org>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ, configure.ac:
+	  - 0.0.9 updates propagation
+
+2004-07-16 19:31   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/: ggzmod-ggz.h, ggzmod.c, io.c, io.h, mod.h, protocol.h:
+	  Add limited ggzmod support for stats.  Stats may be sent by
+	  ggzcore to the game client, but ggzmod loses them midway.  The
+	  network protocol is updated to support stats, however.
+
+2004-07-15 20:06   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/: ggzmod.c, ggzmod.h: Add the API functions for ggzmod
+	  support for spectator stats.
+
+2004-07-15 18:42   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/: ggzmod.c, ggzmod.h: Add the API functions for ggzmod
+	  support for stats.
+
+2004-07-13 16:54   Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/libtool.m4: - remove libtool macros
+
+2004-07-10 19:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, m4/libtool.m4: Update libtool.m4.
+
+2004-06-13 19:20   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-config/ggz-config.c: - do not write environment if it is Null
+	  (default)
+
+2004-03-22 18:05   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-config/ggz-config.c, ggzcore/game.c, ggzcore/ggzcore.h,
+	  ggzcore/module.c, ggzcore/module.h, ggzcore/net.h,
+	  ggzcore/netxml.c, ggzcore/server.h: - implement game module
+	  environment information:   X11/fullscreen, X11/window,
+	  framebuffer, console, no input/output (passive) - deprecate
+	  GGZNet* from public API
+
+	  GGZModuleEnvironment ggz_module_get_environment(GGZModule*) is
+	  new.
+
+	  The only function which changed is ggzcore_module_add().  This
+	  function should probably become non-public as well.
+
+2004-02-28 02:57   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/libtool.m4: Add libtool.m4 to CVS.
+
+2004-02-21 09:50   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the libggz copy
+	  to be the master copy.  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with
+	  a   reference to CVS.  - Propogate the changes back into all
+	  modules.
+
+2004-02-21 06:42   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/game.c, ggzcore/game.h, ggzcore/room.c,
+	  ggzmod/ggzmod-ggz.h, ggzmod/ggzmod.c, ggzmod/ggzmod.h,
+	  ggzmod/io.c, ggzmod/io.h, ggzmod/mod.h, ggzmod/protocol.h:
+	  Exchange table chats with the game client.  This allows the game
+	  client to show table chats internally.
+
+2004-02-21 06:07   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.c: Remove the idiotic duplicate fork call of a
+	  previous commit.
+
+2004-02-16 23:39   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-config/ggz-config.c: Two hacks to compile ggz-config for
+	  win32.
+
+2004-02-16 23:19   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, ggzcore/netxml.c, ggzmod/ggzmod.c, ggzmod/mod.h: If
+	  fork, kill, and wait are not present, use the corresponding
+	  Windows functions instead.
+
+2004-02-16 18:31   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-config/Makefile.am: Fix INCLUDES.
+
+2004-02-16 18:20   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, configure.ac, ggz-config/.cvsignore,
+	  ggz-config/Makefile.am, ggz-config/ggz-config.c,
+	  ggzcore/.cvsignore, ggzcore/Makefile.am, ggzcore/ggz-config.c:
+	  ggz-config gets its own directory.
+
+2004-02-16 18:07   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, ggzcore/game.c, ggzcore/ggzcore.h, ggzcore/hook.c,
+	  ggzcore/netxml.c, ggzcore/server.c: - Check for close and
+	  hstrerror functions.	- Don't use poll.h.  - Don't use poll (use
+	  select instead).  - use fopen and fwrite instead of open and
+	  write.  - #include <winsock.h> if it's available.  - Use
+	  closesocket if close isn't available.  - Don't use hstrerror if
+	  it's not available.
+
+2004-02-16 08:57   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac: Fork and select checks may fail under mingw.
+
+2004-02-16 07:40   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/server.c: Handle E_TOO_LONG error for login.
+
+2004-02-15 03:55   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: netxml.c, room.c, room.h: Add some const labels to
+	  strings.
+
+2004-02-13 08:30   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: ggzcore.h, netxml.c: Move GGZPlayerType into
+	  ggz_common.[ch] in libggz.
+
+2004-02-11 14:54   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzcore/: ggzcore.h, netxml.c: - assign GGZ_PLAYER_BOT if player
+	  is a bot
+
+	  This should not be confused with GGZ_SEAT_BOT.
+
+2004-02-11 02:48   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: ggzcore.h, netxml.c, room.c, room.h, server.c: - Handle
+	  room player count protocol additions.  We now track the number
+	  of players in all rooms (though it's only accurate for the
+	  current   room).  - Add a new room event GGZ_PLAYER_COUNT.  Call
+	  this event to tell the   client when the number of players in a
+	  room changes (or we think it	 does).
+
+2004-02-10 08:59   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-client-libs.spec: - third round of removals of distribution
+	  files
+
+2004-02-10 03:04   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/netxml.c: Provide a default error message for the
+	  E_NO_TABLE error in failed chats.
+
+	  See Bug#9.
+
+2004-02-09 23:10   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: ggzcore.h, netxml.c, room.c, room.h: Handle the
+	  FROMROOM and TOROOM labels.	 - Read them from the network.	  -
+	  Pass extra data (GGZRoomChangeEventData) to the GGZ_ROOM_ENTER
+	  and	   GGZ_ROOM_LEAVE events.
+
+2004-02-09 09:28   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzcore/: game.c, ggzcore.h, room.c: Cleanups and fixes for
+	  leaving a game.    - GGZ_GAME_OVER, GGZ_GAME_IO_ERROR, and
+	  GGZ_GAME_PROTO_ERROR GGZCore game	 events are removed.  The
+	  first is quite worthless and the latter two	   are unused.
+	  GGZCore now handles these events internally.	  - When the game
+	  client exits, ggzcore frees the game structure.  Later      if a
+	  table join succeeds and there's no game structure present, we
+	  know we don't actually have a game running so we tell ggzd we've
+	  left	    the table.
+
+2004-02-09 05:58   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, ggzcore/game.c, ggzmod/ggzmod.c: Add checks for
+	  sys/socket.h, sys/select.h, and winsock.h before #including them.
+
+2004-02-09 03:03   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, ggzcore/game.c, ggzmod/ggzmod.c: Don't include
+	  sys/wait.h if it's not present.
+
+2004-02-09 02:54   Jason Short <jdorje@ggzgamingzone.org>
+
+	* configure.ac, ggzcore/server.c: Don't include netdb.h if it's not
+	  present.
+
+2004-02-07 14:40   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/: ggzcore_h.3.in, ggzmod_h.3.in: - doxygen'd manpage updates
+
+2004-02-07 10:55   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzmod/ggzmod.h: - version goes up to 0.0.8 - interface version
+	  doesn't change
+
+2004-02-07 10:52   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzcore/: Makefile.am, ggzcore.h: - bump version to 0.0.8,
+	  interface to 4:0:1
+
+2004-02-05 12:56   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/: ggz-config.6.in, ggz.modules.5.in: - version updates - add
+	  authors field to ggz.modules
+
+2004-02-05 12:38   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzcore/Doxyfile, ggzmod/Doxyfile: - doxy version bump
+
+2004-02-05 11:39   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog, NEWS, QuickStart.GGZ, README, README.GGZ,
+	  configure.ac, ggzcore/ggz-config.c: - synchronized NEWS,
+	  README.GGZ and QuickStart.GGZ from docs - updated README   * new
+	  URLs for developers, bugs, website   * no more per-package
+	  maintainer mention (it was never valid anyway) - updated
+	  configure.ac to indicate final version 0.0.8 - ChangeLog updates
+
+2004-01-31 11:47   Josef Spillner <josef@ggzgamingzone.org>
 
 	* autogen.sh: - sync common files
 

@@ -1,7 +1,376 @@
-2004-02-01 15:53  Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 18:20   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/protocols.h: - bump ggz protocol number
+
+2004-07-17 06:02   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/err_func.c: - compile fix for recent interface changes
+
+2004-07-17 05:57   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.am: - fix libtool.m4 inclusion
+
+2004-07-17 04:30   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/tictactoe/tictactoe.dsc: - TTT protocol version bump
+	  - chess version update
+
+2004-07-17 03:45   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/ggzd.6, man/ggzdmod.h.3, man/ggzduedit.6, ggzdmod/Doxyfile: -
+	  manpage updates
+
+2004-07-17 02:44   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzdmod/: Makefile.am, ggzdmod.h: - new library interface version
+
+2004-07-16 21:06   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: datatypes.h, net.c, parse_opt.c, players.c, players.h,
+	  room.c, stats.c: Add ggzd support for high scores.
+
+2004-07-16 21:04   Josef Spillner <josef@ggzgamingzone.org>
+
+	* AUTHORS, NEWS, README.GGZ, configure.ac: - 0.0.9 updates
+	  propagation
+
+2004-07-16 19:44   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzdmod/: ggzdmod-ggz.h, ggzdmod.c, io.c, io.h, mod.h: Add
+	  ggzdmod support for highscores.  The scores are sent from game
+	  server to ggz server and reported to ggzd in the game report
+	  event.
+
+2004-07-16 17:22   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/tictactoe/: game.c, game.h: - explicitely explain
+	  that this game is intended to be studied by beginners - now there
+	  are 4 (permanent) #defines for features:   * statistics   * ai
+	  players   * leave/rejoin   * spectators
+
+	  Unfortunately, the 'do you want to play another game' handling is
+	  still...  not what it could be.
+
+2004-07-15 20:58   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/chess/game.c, game_servers/chinese-checkers/game.c,
+	  game_servers/connectx/game.c, game_servers/dots/game.c,
+	  game_servers/escape/game.c, game_servers/ggzcards/common.c,
+	  game_servers/reversi/game.c, game_servers/tictactoe/game.c,
+	  ggzdmod/ggzdmod.c, ggzdmod/ggzdmod.h: Add the API interface to
+	  support highscores in game stats.
+
+2004-07-13 16:55   Josef Spillner <josef@ggzgamingzone.org>
+
+	* m4/libtool.m4: - remove libtool macros
+
+2004-07-11 06:44   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzdmod/: Makefile.am, elo.c, elo.h, ggz_stats.c, ggz_stats.h:
+	  Remove the old-style ggz_stats means of tracking stats.  The
+	  identical behavior is now available more easily directly via
+	  ggzdmod_report_game().
+
+2004-07-11 06:43   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/connectx/game.c: Remove old ggz_stats code from
+	  connectx, and add new-style GGZ game result reporting.  Stats
+	  should now be visible in GGZ but not within the game client.
+
+2004-07-11 06:40   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/escape/game.c: Remove ggz_stats code from escape,
+	  and add GGZ score reporting to the endgame.  Results are now
+	  reported to GGZ but can't be displayed by the client.
+
+2004-07-11 06:30   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/tictactoe/game.c: Remove the use of ggz_stats in
+	  TTT.	This means the player stats are no longer shown in the
+	  client.
+
+2004-07-11 06:28   Jason Short <jdorje@ggzgamingzone.org>
+
+	* game_servers/ggzcards/: common.c, common.h, main.c, message.c:
+	  Remove the use of ggz_stats in ggzcards.  This means the player
+	  stats are no longer shown in the client.
+
+2004-07-10 19:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/libtool.m4: Update libtool.m4.
+
+2004-07-09 15:14   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/database/: ggzdb_db2.c, ggzdb_db3.c, ggzdb_db4.c,
+	  ggzdb_mysql.c: - fix parse error (odd semicolon)
+
+2004-07-09 15:14   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzdmod/Makefile.am: - install ggz_stats.h
+
+2004-07-09 13:19   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/chess/: ai.c, ai.h, game.c: - synchronize chess AI
+
+	  Note that some rules are not implemented yet. Those fall into 2
+	  categories: - moves which are legal but not exploited yet   They
+	  are silently accepted even if the internal verifyer says they're
+	   illegal, because they're libcgc-checked already - illegal moves
+	  which are not known to be illegal   They must be fixed soon, as
+	  e.g. the AI will move a king next to the   other one, yielding a
+	  libcgc-error and thus fubaring any game
+
+2004-06-27 21:34   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/chess/: Makefile.am, ai.c, ai.h, chess.dsc, game.c:
+	  - basic AI support for the chess game server
+
+	  This is very rough, it has not been tested with AI being the host
+	  (would that work?) or clock options vs. long-thinking AI.  Also,
+	  the AI itself is still buggy, because the algorithm is still the
+	  same, because I don't know if Bryan works on it :)
+
+2004-05-27 04:08   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/datatypes.h: - do not use bool for 'foreground' option, use
+	  int instead
+
+	  This is because libpopt requires all variables for options which
+	  don't take arguments to be of type integer.
+
+2004-05-17 16:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/stats.c, ggzd/database/ggzdb.c, ggzd/database/ggzdb.h,
+	  ggzd/database/ggzdb_db2.c, ggzd/database/ggzdb_db3.c,
+	  ggzd/database/ggzdb_db4.c, ggzd/database/ggzdb_mysql.c,
+	  ggzd/database/ggzdb_pgsql.c, ggzd/database/ggzdb_proto.h,
+	  ggzdmod/ggz_stats.h: - fix pgsql database initialization code -
+	  fix generic initialization code: don't try to access files if a
+	  SQL db is used - add match statistics support to the interface
+	  and implement it for pgsql,	the other databases just do nothing
+	  atm - bump db version to 0.6, requiring an upgrade!
+
+	  Update scripts should be provided externally to keep the source
+	  clean.
+
+2004-02-28 04:57   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/database/ggzdb_pgsql.c: Mark some strings as const.
+
+2004-02-28 02:57   Jason Short <jdorje@ggzgamingzone.org>
+
+	* Makefile.am, m4/libtool.m4: Add libtool.m4 to CVS.
+
+2004-02-21 09:50   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the libggz copy
+	  to be the master copy.  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with
+	  a   reference to CVS.  - Propogate the changes back into all
+	  modules.
+
+2004-02-16 07:32   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/net.c: More int=>bool conversions.
+
+2004-02-16 06:40   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/login.c: If a player tries to use a too-long username, give
+	  them an E_TOO_LONG login error (previously the username was just
+	  truncated).
+
+2004-02-16 01:21   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/transit.c, ggzdmod/ggzdmod.c: Close a game channel on the
+	  ggz side immediately after we send it to the game server.  Don't
+	  try to close it again later.
+
+2004-02-15 03:42   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: chat.c, chat.h, daemon.c, datatypes.h, event.c, event.h,
+	  hash.c, hash.h, login.c, login.h, motd.c, net.c, net.h,
+	  players.c, players.h, table.c, table.h, transit.c, transit.h,
+	  database/ggzdb.h, database/ggzdb_db2.c, database/ggzdb_db3.c,
+	  database/ggzdb_db4.c, database/ggzdb_mysql.c,
+	  database/ggzdb_pgsql.c, database/ggzdb_proto.h: A number of minor
+	  cleanups, possibly including a bugfix or two.
+
+2004-02-15 03:29   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/players.c: Fix typo: 0 is false, not true.
+
+2004-02-14 23:14   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: ggzd.h, net.c, players.c, seats.c, table.c, table.h,
+	  transit.c: Remove UNLIMITED_SPECTATORS and UNLIMITED_SEATS
+	  defines.  Now there is no hard-coded limit on the number of seats
+	  or spectators at a table.
+
+2004-02-14 22:12   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: datatypes.h, ggzd.h, login.c, motd.c, motd.h, net.c,
+	  net.h, perms.c, perms.h, players.c, players.h, table.c,
+	  transit.c: Use 'bool' as a type, along with 'true' and 'false'.
+	  This cleans up the logic in a few pieces of code.
+
+2004-02-14 20:32   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: perms.h, players.c, room.c, database/ggzdb.h: - Add a new
+	  admin permission PERMS_EDIT_TABLES.  - Rename PERMS_HAVE_STATS to
+	  PERMS_NO_STATS (thus it defaults to 0).  - Change the database
+	  version to 0.5.
+
+	  This makes the database format compatible with ggzd 0.0.8.  It is
+	  easy to change the fields in the future; it just requires upping
+	  the version.
+
+2004-02-14 19:38   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/database/ggzdb.h: Make sure the ggzdb version string is
+	  fewer than 7 characters.  Comment this limitation (though it
+	  should really be fixed).
+
+2004-02-13 18:21   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: perms.h, room.c, database/ggzdb.c, database/ggzdb.h: - Add
+	  a new permission PERMS_HAVE_STATS.  - Bump the DB version to make
+	  compatability safe.  - Change the error when the DB version
+	  doesn't match.
+
+2004-02-13 17:54   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: control.c, datatypes.h: Don't initialize the game info
+	  lock for all games.  It's already done for each game when it's
+	  loaded.
+
+2004-02-13 08:31   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: ggzd.h, net.c: Move GGZPlayerType into ggz_common.[ch] in
+	  libggz.
+
+2004-02-11 16:54   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/client.c: Break immediately when a client's session is over.
+
+2004-02-11 14:16   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzd/: ggzd.h, net.c, perms.c, perms.h, players.c: - new player
+	  permission GGZ_CHAT_BOT (bitmask 0x20)
+
+	  This should be used for grubby, and for other potential trusted
+	  bots.  It helps people distinguishing them from real players.
+
+	  While grubby fits perfectly into the lounge, it might make sense
+	  to have game-related bots in some rooms. For instance, a
+	  keepalive progress reporter.	Just an example.
+
+2004-02-11 04:27   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: err_func.h, hash.h, perms.h, room.h: Remove "extern" from
+	  function declarations in .h files.
+
+2004-02-11 04:22   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/stats.c: Remove one more extern declaration.
+
+2004-02-11 04:19   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: chat.c, client.c, daemon.c, datatypes.h, event.c, login.c,
+	  motd.c, parse_opt.c, players.c, room.c, seats.c, table.c,
+	  transit.c: Remove extern declarations from .c files.	Put global
+	  veriable declarations into datatypes.h.
+
+2004-02-11 02:25   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: client.c, datatypes.h, login.c, net.c, net.h, parse_opt.c,
+	  players.c, players.h, protocols.h, room.c, room.h, util.h: - In
+	  the room list, send the number of players in each room.  - Send
+	  room updates at intervals.  The only update needed updates the
+	  number of players in the room.  - Add a new option
+	  RoomUpdateFrequency controlling the interval of room	 updating.
+	  - Fix the client select loop so it waits the correct amount of
+	  time inside	the select call, to within 1 second.  The previous
+	  method was only   accurate to opt.ping_freq seconds.
+
+2004-02-10 08:51   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz_server.spec: - first round of removals of distribution files
+
+2004-02-09 22:34   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/: net.c, net.h, players.c, room.c, room.h, stats.c: When a
+	  player joins or leaves a room, send the information on which room
+	  the came from/are going to in the <UPDATE> tag.
+
+	  E.g.,
+
+	    <UPDATE TYPE='player' ACTION='add' ROOM='1' FROMROOM='0'>
+	    <UPDATE TYPE='player' ACTION='delete' ROOM='0' TOROOM='1'>
+
+2004-02-08 22:45   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/err_func.c: Don't let ggzd compile if libggz doesn't have
+	  syslog support.
+
+2004-02-07 14:37   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/ggzdmod.h.3: - doxygen'd manpage update
+
+2004-02-07 11:02   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzdmod/Makefile.am: - sync with header definition of library
+	  interface version
+
+2004-02-07 10:57   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzdmod/ggzdmod.h: - version goes up to 0.0.8 - implementation
+	  part of interface version goes up to 1
+
+	  This is not strictly necessary, but since the email address
+	  output in the error function changed, this indicates that 2:1:0
+	  is preferred over 2:0:0
+
+2004-02-06 18:37   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggzd/client.c: Add a nice FIXME comment explaining the problem
+	  with using one select call for each player.
+
+2004-02-06 12:20   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/tuxman/: map.cpp, tuxmanserv.cpp: - include
+	  <unistd.h> for close() - don't include C++ <ios> as it's
+	  relatively new
+
+2004-02-06 11:52   Josef Spillner <josef@ggzgamingzone.org>
+
+	* game_servers/tuxman/Makefile.am: - include proto.h to fix make
+	  distcheck
+
+2004-02-05 13:11   Josef Spillner <josef@ggzgamingzone.org>
+
+	* HACKING, INSTALL, doc/admin-guide.txt, ggzdmod/ggzdmod.c: - more
+	  mailing list updates
+
+2004-02-05 12:58   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/: ggzd.6, ggzduedit.6: - version and dev list updates
+
+2004-02-05 12:37   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggzdmod/Doxyfile: - doxy version bump
+
+2004-02-05 11:40   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog, NEWS, README, README.GGZ, configure.ac: - synchronized
+	  NEWS, README.GGZ and QuickStart.GGZ from docs - updated README
+	  * new URLs for developers, bugs, website   * no more per-package
+	  maintainer mention (it was never valid anyway) - updated
+	  configure.ac to indicate final version 0.0.8 - ChangeLog updates
+
+2004-02-01 15:53   Josef Spillner <josef@ggzgamingzone.org>
 
 	* game_servers/krosswater/: krosswater.dsc, krosswater_server.cpp:
-	- bumping version number, keeping same protocol number
+	  - bumping version number, keeping same protocol number
 
 2004-02-01 15:23  Josef Spillner <josef@ggzgamingzone.org>
 

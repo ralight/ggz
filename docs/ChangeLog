@@ -1,7 +1,88 @@
-2004-02-04 10:17  Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 04:28   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/game-development/games.html: - game version matrix update
+
+2004-07-17 02:41   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-project/Versioning: - new release versioning information
+
+	  In particular, - grubby and metaserv were improved - libggz was
+	  modified without interface changes - ggzmod had some additions -
+	  ggzdmod and ggzcore had additions, changes and removals
+
+2004-07-16 21:03   Josef Spillner <josef@ggzgamingzone.org>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README.GGZ, configure.ac: - 0.0.9
+	  updates propagation
+
+2004-07-13 16:46   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/game-development/features.html: - game feature matrix
+	  update
+
+2004-06-21 16:18   Josef Spillner <josef@ggzgamingzone.org>
+
+	* games/game-development/: games.html,
+	  ggz-game-development-guide.texi: - more doc updates - includes
+	  xadrez-chines in games list
+
+2004-06-21 16:17   Josef Spillner <josef@ggzgamingzone.org>
+
+	* server/hosting/ggz-hosting-guide.texi: - further doc updates
+
+2004-05-17 16:33   Josef Spillner <josef@ggzgamingzone.org>
+
+	* coreclients/: Makefile.am, ggz-txt-handbook.html: - add manual
+	  for ggz-txt
+
+	  The whole documentation module is a big mess.  There are lots of
+	  old files from 2001 etc. which need updates.	Ideally, manuals
+	  would be produced from SGML pages, which also would be the source
+	  for man pages then.
+
+2004-02-16 07:29   Jason Short <jdorje@ggzgamingzone.org>
+
+	* spec/appendix.sgml: Improve documentation on the RESULT tag.
+
+2004-02-11 18:11   Josef Spillner <josef@ggzgamingzone.org>
+
+	* server/hosting/ggz-hosting-guide.texi: - update to hosting guide:
+	  more detailed description of ggzduedit - in the SQL setup, take
+	  care of the tables 'stats' and 'control' as well - some minor
+	  bits like URL changes and game server additions
+
+2004-02-11 14:19   Josef Spillner <josef@ggzgamingzone.org>
+
+	* spec/appendix.sgml: - add type 'bot' to the player types
+
+2004-02-11 02:27   Jason Short <jdorje@ggzgamingzone.org>
+
+	* spec/appendix.sgml: Document additions to the protocol:   -
+	  PLAYERS attribute to ROOM tag.    - Room UPDATEs.
+
+	  Also improve the explanation of the UPDATE tag.
+
+2004-02-09 22:35   Jason Short <jdorje@ggzgamingzone.org>
+
+	* spec/appendix.sgml: Document the addition of the FROMROOM and
+	  TOROOM labels.
+
+2004-02-07 10:58   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-project/Versioning: - updated versioning information
+
+2004-02-05 11:38   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog: - synchronized NEWS, README.GGZ and QuickStart.GGZ
+	  from docs - updated README   * new URLs for developers, bugs,
+	  website   * no more per-package maintainer mention (it was never
+	  valid anyway) - updated configure.ac to indicate final version
+	  0.0.8 - ChangeLog updates
+
+2004-02-04 10:17   Josef Spillner <josef@ggzgamingzone.org>
 
 	* NEWS, QuickStart.GGZ, README, README.GGZ, configure.ac: - upgrade
-	everything to 0.0.8 - includes prototype for global release files
+	  everything to 0.0.8 - includes prototype for global release files
 
 2004-02-04 10:15  Josef Spillner <josef@ggzgamingzone.org>
 

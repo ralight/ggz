@@ -1,4 +1,84 @@
-2004-01-31 11:54  Josef Spillner <josef@ggzgamingzone.org>
+2004-07-17 16:10   Josef Spillner <josef@ggzgamingzone.org>
+
+	* po/Makefile.am: - implement same mechanism like in gtk-client
+	  (that is, the mo file is built   during make now as opposed to
+	  make install)
+
+2004-07-17 04:29   Josef Spillner <josef@ggzgamingzone.org>
+
+	* tttxt/module.dsc.in: - TTT protocol bump
+
+2004-07-16 21:08   Josef Spillner <josef@ggzgamingzone.org>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README.GGZ, configure.ac: - 0.0.9
+	  updates propagation
+
+2004-06-25 15:32   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-txt/: input.c, output.c, server.c: - implementation of
+	  timestamps, which are currently always enabled - fix bug in
+	  command synchronization: remove pending events on error - fix
+	  bugs in command inputs: do not allow chat or list before logged
+	  in
+
+2004-05-17 16:21   Josef Spillner <josef@ggzgamingzone.org>
+
+	* Makefile.am, configure.ac: - build tttxt and check for ggz-config
+
+2004-05-17 16:21   Josef Spillner <josef@ggzgamingzone.org>
+
+	* tttxt/: .cvsignore, Makefile.am, main.c, module.dsc.in: - add
+	  TTTXT, a tictactoe client for the console
+
+2004-05-17 16:20   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-txt/: input.c, input.h, loop.c, main.c, output.c, output.h,
+	  server.c, server.h: - add ability to turn off all output, used
+	  for console games - implement synchronized ggzcore operations -
+	  add startup script support, which requires synchronized
+	  operations - fix loop code (loop_remove_fd is somewhat strange
+	  still), needed to   temporarily turn off all input, needed for
+	  console games as well
+
+2004-03-22 18:06   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-txt/input.c: - unify game launch and join events to save code
+	  - implement support for game module environments:   only console,
+	  plus x11 if $DISPLAY is defined
+
+2004-02-21 09:51   Jason Short <jdorje@ggzgamingzone.org>
+
+	* m4/ggz.m4: - Copy ggz.m4 into libggz.  - Declare the libggz copy
+	  to be the master copy.  - Use AC_HELP_STRING inside AC_ARG_WITH.
+	  - Replace the history section (which was getting really big) with
+	  a   reference to CVS.  - Propogate the changes back into all
+	  modules.
+
+2004-02-13 08:27   Jason Short <jdorje@ggzgamingzone.org>
+
+	* ggz-txt/game.c: Remove game_over function.
+
+2004-02-11 17:14   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ggz-txt/: game.c, output.c: - when displaying player list,
+	  mention their roles (admin, bot, guest) - disable game over event
+	  for now, this will have to be fixed properly later   (Together
+	  with general launch/join/spectate fixes)
+
+2004-02-05 12:49   Josef Spillner <josef@ggzgamingzone.org>
+
+	* man/ggz-txt.6: - new version
+
+2004-02-05 11:45   Josef Spillner <josef@ggzgamingzone.org>
+
+	* ChangeLog, NEWS, QuickStart.GGZ, README, README.GGZ,
+	  configure.ac: - synchronized NEWS, README.GGZ and QuickStart.GGZ
+	  from docs - updated README   * new URLs for developers, bugs,
+	  website   * no more per-package maintainer mention (it was never
+	  valid anyway) - updated configure.ac to indicate final version
+	  0.0.8 - ChangeLog updates
+
+2004-01-31 11:54   Josef Spillner <josef@ggzgamingzone.org>
 
 	* autogen.sh: - sync common files
 
