@@ -531,7 +531,7 @@ void KGGZConnect::slotWrite()
 {
 	QString s;
 
-	s = "query://ggz/connection/0.0.5pre\n";
+	s = QString("query://ggz/connection/%1\n").arg(KGGZVERSION);
 	m_sock->writeBlock(s.latin1(), s.length());
 	m_sock->flush();
 }

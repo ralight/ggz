@@ -210,14 +210,7 @@ void KGGZ::slotConnectedStart()
 
 	kggzserver->setHost(m_save_host, m_save_port, m_save_encryption);
 	result = kggzserver->connect();
-	/*if(m_killserver)
-	{
-		detachServerCallbacks();
-		delete kggzserver;
-		kggzserver = NULL;
-		m_killserver = 0;
-	}*/
-	if(result == -1)
+	/*if(result == -1)
 	{
 		if(kggzserver)
 		{
@@ -228,7 +221,7 @@ void KGGZ::slotConnectedStart()
 			menuConnect();
 		}
 		return;
-	}
+	}*/
 }
 
 void KGGZ::menuDisconnect()
@@ -347,10 +340,15 @@ void KGGZ::timerEvent(QTimerEvent *e)
 
 	if(m_killserver)
 	{
+		eventLeaveGame(0);
+		eventLeaveRoom();
 		if(kggzserver)
 		{
+			kggzserver->disconnect();
 			detachServerCallbacks();
+			KGGZDEBUG("delete kggzserver;\n");
 			delete kggzserver;
+			KGGZDEBUG("kggzserver = NULL;\n");
 			kggzserver = NULL;
 		}
 		m_killserver = 0;
@@ -668,7 +666,6 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::tableleft:
 			KGGZDEBUG("tableleft\n");
-			KGGZDEBUG("SHALL I QUIT THE GAME HERE???\n");
 			eventLeaveGame(0);
 			m_workspace->widgetChat()->receive(NULL, i18n("Left table"), KGGZChat::RECEIVE_ADMIN);
 			emit signalMenu(MENUSIG_GAMEOVER);
@@ -704,20 +701,16 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			result = kggzserver->login();
 			if(result == -1)
 			{
-				detachServerCallbacks();
-				delete kggzserver;
-				kggzserver = NULL;
 				KMessageBox::error(this, i18n("Attempt to login refused!"), i18n("Error!"));
+				m_killserver = 1;
 				menuConnect();
 				return;
 			}
 			break;
 		case GGZCoreServer::connectfail:
 			KGGZDEBUG("connectfail\n");
-			detachServerCallbacks();
-			delete kggzserver;
-			kggzserver = NULL;
 			KMessageBox::error(this, i18n("Couldn't connect to server!"), i18n("Error!"));
+			m_killserver = 1;
 			menuConnect();
 			break;
 		case GGZCoreServer::negotiated:
@@ -725,13 +718,9 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::negotiatefail:
 			KGGZDEBUG("negotiatefail\n");
-			m_killserver = 1;
 			KMessageBox::error(this, i18n("Could not connect, maybe the server version is incompatible."), i18n("Error!"));
+			m_killserver = 1;
 			menuConnect();
-			// quick hack!
-			KGGZDEBUG("Free ggzcore server object\n");
-//			kggzserver->rescue();
-			KGGZDEBUG("freed\n");
 			break;
 		case GGZCoreServer::loggedin:
 			KGGZDEBUG("loggedin\n");
@@ -760,10 +749,6 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::loginfail:
 			KGGZDEBUG("loginfail\n");
 			KMessageBox::error(this, i18n("Login refused!"), i18n("Error!"));
-			//detachServerCallbacks();
-			//delete kggzserver;
-			//kggzserver = NULL;
-			kggzserver->disconnect();
 			m_killserver = 1;
 			menuConnect();
 			break;
@@ -803,7 +788,6 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::loggedout:
 			KGGZDEBUG("loggedout\n");
 			m_workspace->widgetChat()->receive(NULL, i18n("Logged out"), KGGZChat::RECEIVE_ADMIN);
-			kggzserver->disconnect();
 			m_killserver = 1;
 			KGGZDEBUG("Disconnection successful.\n");
 			emit signalMenu(MENUSIG_DISCONNECT);
@@ -820,10 +804,8 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::protoerror:
 			KGGZDEBUG("protoerror\n");
 			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Protocol error detected!"), KGGZChat::RECEIVE_ADMIN);
-			detachServerCallbacks();
-			delete kggzserver;
-			kggzserver = NULL;
-			KMessageBox::error(this, i18n("A protocol error occured!"), i18n("Error!"));
+			KMessageBox::error(this, i18n("A protocol error (GGZCoreServer::protoerror) occured!"), i18n("Error!"));
+			m_killserver = 1;
 			menuConnect();
 			break;
 		case GGZCoreServer::chatfail:
@@ -1526,7 +1508,6 @@ void KGGZ::eventLeaveGame(int force)
 	else
 	{
 		detachGameCallbacks();
-		// FIXME: Don't delete kggzgame here! It will terminate KGGZ!!!!!
 		delete kggzgame;
 		kggzgame = NULL;
 		m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);

@@ -119,7 +119,7 @@ void KGGZMeta::slotConnected()
 {
 	QString s;
 
-	s = "<?xml version=\"1.0\"><query class=\"ggz\" type=\"connection\">0.0.5pre</query>\n";
+	s = QString("<?xml version=\"1.0\"><query class=\"ggz\" type=\"connection\">%1</query>\n").arg(KGGZVERSION);
 	m_sock->writeBlock(s.latin1(), s.length());
 	m_sock->flush();
 }

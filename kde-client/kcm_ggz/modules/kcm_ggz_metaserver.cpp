@@ -13,6 +13,8 @@
 #include <qsocket.h>
 #include <qdom.h>
 
+#include "config.h"
+
 KCMGGZMetaserver::KCMGGZMetaserver(QWidget *parent, const char *name)
 : KCMGGZPane(parent, name)
 {
@@ -134,7 +136,7 @@ void KCMGGZMetaserver::slotAutoConnected()
 	QString s;
 
 	if(m_query == query) s = "<?xml version=\"1.0\"><query class=\"ggz\" type=\"meta\">0.1</query>\n";
-	else s = "<?xml version=\"1.0\"><query class=\"ggz\" type=\"connection\">0.0.5pre</query>\n";
+	else s = QString("<?xml version=\"1.0\"><query class=\"ggz\" type=\"connection\">%1</query>\n").arg(VERSION);
 	sock->writeBlock(s.latin1(), s.length());
     sock->flush();
 }
