@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 5901 2004-02-11 03:19:44Z jdorje $
+ * $Id: client.c 5912 2004-02-11 15:54:18Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -279,8 +279,11 @@ static void client_loop(GGZClient* client)
 		/* Check for message from client */
 		if (status > 0 && FD_ISSET(fd, &read_fd_set)) {
 			pthread_sigmask(SIG_BLOCK, &set, NULL);
-			if (net_read_data(client->net) == GGZ_REQ_DISCONNECT)
+			if (net_read_data(client->net) == GGZ_REQ_DISCONNECT
+			    || client->session_over) {
+				/* Break with the signals still blocked. */
 				break;
+			}
 			pthread_sigmask(SIG_UNBLOCK, &set, NULL);
 		}
 
