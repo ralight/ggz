@@ -37,15 +37,19 @@ struct lp_game_t game;
 /* Private functions */
 static int game_send_seat(int seat);
 static int game_send_players(void);
-static int game_send_play(int num, int card);
+static int game_send_bid(char bid);
+static int game_send_play(char card);
 static int game_send_sync(int num);
 static int game_send_gameover(char winner);
-static int game_play(void);
-static int game_req_play(int num);
+static void game_play(void);
+static int game_req_bid(void);
+static int game_req_play(void);
+static int game_handle_bid(int num, char *bid);
 static int game_handle_play(int num, char *card);
 static int game_update(int event, void *data);
-static int game_generate_new_hand(void);
+static int game_generate_next_hand(void);
 static int game_send_hand(int);
+static int game_send_trump(int);
 
 
 /* Setup game state and board */
@@ -109,12 +113,10 @@ int game_handle_player(int num)
 		return -1;
 
 	switch(op) {
-/*
 		case LP_SND_BID:
 			if((status = game_handle_bid(num, &bid)) == 0)
 				game_update(LP_EVENT_BID, &bid);
 			break;
-*/
 		case LP_SND_PLAY:
 			if((status = game_handle_play(num, &card)) == 0)
 				game_update(LP_EVENT_PLAY, &card);
@@ -172,8 +174,8 @@ static int game_send_players(void)
 }
 
 
-/* Send out play for player 'num' */
-static int game_send_play(int num, int card)
+/* Send out bid for player */
+static int game_send_bid(char bid)
 {
 	int i;
 	int fd;
@@ -181,12 +183,35 @@ static int game_send_play(int num, int card)
 	for(i=0; i<4; i++) {
 		fd = ggz_seats[i].fd;
 		/* If self or a computer, don't need to send */
-		if(i == num || fd == -1)
+		if(i == game.bid_now || fd == -1)
+			continue;
+		ggz_debug("Sending player %d's bid to player %d",
+			   game.bid_now, i);
+		if(es_write_int(fd, LP_MSG_BID) < 0
+		   || es_write_char(fd, game.bid_now) < 0
+		   || es_write_char(fd, bid) < 0)
+			return -1;
+	}
+	
+	return 0;
+}
+
+
+/* Send out play for player */
+static int game_send_play(char card)
+{
+	int i;
+	int fd;
+
+	for(i=0; i<4; i++) {
+		fd = ggz_seats[i].fd;
+		/* If self or a computer, don't need to send */
+		if(i == game.turn || fd == -1)
 			continue;
 		ggz_debug("Sending player %d's play to player %d",
-			   num, i);
+			   game.turn, i);
 		if(es_write_int(fd, LP_MSG_PLAY) < 0
-		   || es_write_char(fd, num) < 0
+		   || es_write_char(fd, game.turn) < 0
 	/* TODO: Send card value, not number */
 		   || es_write_char(fd, card) < 0)
 			return -1;
@@ -237,38 +262,96 @@ static int game_send_gameover(char winner)
 
 
 /* Do the next play */
-static int game_play(void)
+static void game_play(void)
 {
-	int num = game.turn;
 	int card;
 
-	if(game.state == LP_STATE_NEW_HAND) {
-		if(game_generate_new_hand() < 0)
-			return 0;
-		game.state = LP_STATE_PLAYING;
+	switch(game.state) {
+		case LP_STATE_NEW_HAND:
+			if(game_generate_next_hand() < 0)
+				return;
+			game.state = LP_STATE_BIDDING;
+			game.bid_now = (game.dealer + 1) % 4;
+			game.bid_count = 0;
+			game_req_bid();
+			break;
+		case LP_STATE_BIDDING:
+			if(game.bid_count < 4)
+				game_req_bid();
+			else {
+				game.turn = (game.dealer + 1) % 4;
+				game.state = LP_STATE_PLAYING;
+				game_req_play();
+			}
+			break;
 	}
 
-/*
-	if(ggz_seats[num].assign == GGZ_SEAT_BOT) {
-		card = ai_play_card();
-		game_update(LP_EVENT_PLAY, &card);
-	} else
-*/
-		game_req_play(num);
+/* THIS STUFF WILL MOVE TO game_req_* functions
+ *
+ *	if(ggz_seats[num].assign == GGZ_SEAT_BOT) {
+ *		card = ai_play_card();
+ *		game_update(LP_EVENT_PLAY, &card);
+ *	} else
+ */
+
+	return;
+}
+
+
+/* Request bid from current bidder */
+static int game_req_bid(void)
+{
+	int fd = ggz_seats[game.bid_now].fd;
+
+	if(es_write_int(fd, LP_REQ_BID) < 0)
+		return -1;
 
 	return 0;
 }
 
 
 /* Request play from current player */
-static int game_req_play(int num)
+static int game_req_play()
 {
-	int fd = ggz_seats[num].fd;
+	int fd = ggz_seats[game.turn].fd;
 
 	if(es_write_int(fd, LP_REQ_PLAY) < 0)
 		return -1;
 
 	return 0;
+}
+
+
+/* Handle incoming bid from player */
+static int game_handle_bid(int num, char *bid)
+{
+	int fd = ggz_seats[num].fd;
+	char status = 0;
+	int total_bid;
+
+	ggz_debug("Handling bid from player %d", num);
+	if(es_read_char(fd, bid) < 0)
+		return -1;
+
+	/* First of all, is it their turn to bid? */
+	if(game.bid_now != num || game.state != LP_STATE_BIDDING)
+		status = LP_ERR_TURN;
+	/* Sane bid? */
+	else if(*bid > game.hand[0].hand_size || *bid < 0)
+		status = LP_ERR_INVALID;
+	/* Finally, special restriction for dealer bid */
+	else if(game.bid_now == game.dealer) {
+		/* Dealer cannot make total bid = number of tricks */
+		if(game.bid_total + *bid == game.hand[0].hand_size)
+			status = LP_ERR_INVALID;
+	}
+
+	/* Send status to bidder */
+	if(es_write_int(fd, LP_RSP_BID) < 0
+	   || es_write_char(fd, status) < 0)
+		return -1;
+
+	return (int)status;
 }
 
 
@@ -292,7 +375,7 @@ static int game_handle_play(int num, char *card)
 
 	/* If move simply invalid, ask for resubmit */
 	if((status == LP_ERR_INVALID)
-	     && game_req_play(num) < 0)
+	     && game_req_play() < 0)
 		return -1;
 
 	if(status < 0)
@@ -309,6 +392,7 @@ static int game_update(int event, void *data)
 {
 	int seat;
 	char card;
+	char bid;
 	
 	switch(event) {
 		case LP_EVENT_LAUNCH:
@@ -345,18 +429,24 @@ static int game_update(int event, void *data)
 				game.state = LP_STATE_WAIT;
 			break;
 		case LP_EVENT_PLAY:
-			if(game.state != LP_STATE_PLAYING)
-				return -1;
-		
 			card = *(char*)data;
-
-			game_send_play(game.turn, card);
+			game_send_play(card);
 		
 			/* TODO: End of hand?  End of game? */
 
 			/* Request next move */
 			game_play();
+			break;
+		case LP_EVENT_BID:
+			bid = *(char*)data;
+			game_send_bid(bid);
+			if(++game.bid_count < 4) {
+				game.bid_total += bid;
+				game.bid_now = (game.bid_now + 1) % 4;
+			}
 
+			/* Request next move */
+			game_play();
 			break;
 	}
 	
@@ -364,14 +454,22 @@ static int game_update(int event, void *data)
 }
 
 
+/* This seemed easier than writing an algorithm to compute the */
+/* number of cards dealt for each hand */
+static int card_count[] = { 1, 1, 1, 1,
+			    2, 3, 4, 5, 6, 7, 8, 9,
+			    10, 10, 10, 10,
+			    9, 8, 7, 6, 5, 4, 3, 2,
+			    1, 1, 1, 1 };
+
 /* Generate and send out a new hand */
-static int game_generate_new_hand(void)
+static int game_generate_next_hand(void)
 {
 	int p, result=0;
 
 	/* First, shuffle and deal a hand */
 	cards_shuffle_deck(GGZ_DECK_LAPOCHA);
-	cards_deal_hands(4, 10, game.hand);
+	cards_deal_hands(4, card_count[game.hand_num-1], game.hand);
 
 	/* Now send the resulting hands to each player */
 	for(p=0; p<4; p++) {
@@ -380,6 +478,15 @@ static int game_generate_new_hand(void)
 		if(game_send_hand(p) < 0)
 			result = -1;
 	}
+
+	/* Select our trump, use a card cut if hand size != 10 */
+	if(card_count[game.hand_num-1] != 10) {
+		game.trump = cards_cut_for_trump();
+		for(p=0; p<4; p++) {
+			if(game_send_trump(p) < 0)
+				result = -1;
+		}
+	} /* else LP_REQ_TRUMP */
 
 	return result;
 }
@@ -390,6 +497,10 @@ static int game_send_hand(int seat)
 {
 	int fd = ggz_seats[seat].fd;
 	int i;
+
+	/* Don't send to a bot */
+	if(fd == -1)
+		return 0;
 
 	ggz_debug("Sending player %d their hand", seat);
 
@@ -402,4 +513,21 @@ static int game_send_hand(int seat)
 			return -1;
 
 	return 0;
+}
+
+
+/* Send trump to all players */
+static int game_send_trump(int seat)
+{
+	int fd = ggz_seats[seat].fd;
+
+	/* Don't send to a bot */
+	if(fd == -1)
+		return 0;
+
+	ggz_debug("Sending trump suit to player %d", seat);
+
+	if(es_write_int(fd, LP_MSG_TRUMP) < 0
+	   || es_write_char(fd, game.trump) < 0)
+		return -1;
 }

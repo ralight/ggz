@@ -14,6 +14,7 @@ struct hand_t {
 /* Exported functions */
 extern void cards_shuffle_deck(char);
 extern void cards_deal_hands(int, int, struct hand_t *);
+extern char cards_cut_for_trump(void);
 
 #define GGZ_CARDS_INCLUDED
 #endif /*GGZ_CARDS_INCLUDED*/

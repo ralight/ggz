@@ -96,7 +96,7 @@ int main(void)
 			fd = ggz_seats[i].fd;
 			if (fd != -1 && FD_ISSET(fd, &read_fd_set)) {
 				status = game_handle_player(i);
-				if (status < 0)
+				if (status == -1)
 					FD_CLR(fd, &active_fd_set);
 			}
 		}

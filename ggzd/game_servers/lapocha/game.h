@@ -39,24 +39,28 @@
 #define LP_RSP_PLAY     8
 #define LP_MSG_PLAY	9
 #define LP_SND_SYNC     10
+#define LP_MSG_TRUMP	11
+#define LP_REQ_TRUMP	12
 
 /* Play errors */
-#define LP_ERR_STATE   -1
-#define LP_ERR_TURN    -2
-#define LP_ERR_INVALID -3
+#define LP_ERR_STATE   -2
+#define LP_ERR_TURN    -3
+#define LP_ERR_INVALID -4
 
 /* Messages from client */
 #define LP_SND_PLAY     0
 #define LP_SND_BID      1
 #define LP_REQ_SYNC     2
 #define LP_REQ_NEWGAME  3
+#define LP_SET_TRUMP	4
 
 /* La Pocha game states */
 #define LP_STATE_INIT        0
 #define LP_STATE_WAIT        1
 #define LP_STATE_NEW_HAND    2
-#define LP_STATE_PLAYING     3
-#define LP_STATE_DONE        4
+#define LP_STATE_BIDDING     3
+#define LP_STATE_PLAYING     4
+#define LP_STATE_DONE        5
 
 /* La Pocha game events */
 #define LP_EVENT_LAUNCH      0
@@ -68,11 +72,16 @@
 /* Data structure for La Pocha game */
 struct lp_game_t {
 	char state;
-	char turn;
-	char dealer;
-	char hand_num;
+	int turn;
+	int dealer;
+	int hand_num;
 	int score[4];
 	struct hand_t hand[4];
+	int bid_now;
+	int bid_count;
+	int bid_total;
+	int bid[4];
+	char trump;
 };
 
 extern struct lp_game_t game;

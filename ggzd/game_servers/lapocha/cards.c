@@ -2,8 +2,9 @@
 
 #include "cards.h"
 
-char deck[GGZ_MAX_DECKSIZE];
-int deck_size;
+static char deck[GGZ_MAX_DECKSIZE];
+static int deck_size;
+static int card_ptr=0;
 
 
 /* cards_shuffle_deck()
@@ -87,6 +88,7 @@ void cards_deal_hands(int num_players, int hand_size, struct hand_t *hand)
 	for(i=0; i<hand_size; i++)
 		for(player=0; player<num_players; player++)
 			hand[player].card[i] = deck[card++];
+	card_ptr = card;
 
 	/* Store the handsize and sort cards */
 	for(player=0; player<num_players; player++) {
@@ -108,4 +110,19 @@ void cards_deal_hands(int num_players, int hand_size, struct hand_t *hand)
 				}
 			}
 	}
+}
+
+
+/* cards_cut_for_trump
+ *   This cuts the remaining cards and returns a suit for trump
+ */
+char cards_cut_for_trump(void)
+{
+	int card;
+	char trump;
+
+	card = (random() % (deck_size - card_ptr)) + card_ptr;
+	trump = deck[card] / 13;
+
+	return trump;
 }
