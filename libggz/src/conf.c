@@ -231,6 +231,7 @@ int ggz_conf_read_list(int handle, const char *section, const char *key,
 	} else {
 		rc = -1;
 		*argcp = 0;
+		*argvp = ggz_malloc(sizeof(char *));
 	}
 
 	return rc;
