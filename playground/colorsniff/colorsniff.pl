@@ -9,11 +9,17 @@ if($ARGV[0] eq "--noping"){
 	$noping = 1;
 }
 
-$color1 = color("green");
-$color2 = color("cyan");
-
 # QUIT, PIPE, INT, TERM, huh???
 $SIG{'INT'}='aurevoir';
+
+sub bienvenue{
+	$color1 = color("green");
+	$color2 = color("cyan");
+
+	print color("red");
+	print "GGZ protocol sniffer ready.\n";
+	print color("reset");
+}
 
 sub aurevoir{
 	print color("red");
@@ -21,6 +27,8 @@ sub aurevoir{
 	print color("reset");
 	exit;
 }
+
+bienvenue;
 
 #open(F, "sniff.log");
 while(<STDIN>){
@@ -42,8 +50,8 @@ while(<STDIN>){
 			$color = $color2;
 		}
 	}else{
-		s/\>../\>/g;
-		s/\>./\>/g;
+		s/\>\.\./\>/g;
+		s/\>\./\>/g;
 		next if(($noping) && ((/\<PING\/\>/) || (/\<PONG\/\>/)));
 		print $color;
 		print "$_\n";
@@ -51,5 +59,5 @@ while(<STDIN>){
 }
 #close(F);
 
-print color("reset");
+aurevoir;
 
