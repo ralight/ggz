@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3072 2002-01-12 02:18:47Z jdorje $
+ * $Id: parse_opt.c 3073 2002-01-12 02:23:45Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -39,6 +39,7 @@
 #include <err_func.h>
 #include <motd.h>
 #include <room.h>
+#include <parse_opt.h>
 #include <perms.h>
 
 /* Stuff from control.c we need access to */
@@ -152,6 +153,8 @@ void parse_args(int argc, const char *argv[])
 }
 
 
+#define DEFAULT_GGZD_PORT 5688
+
 /* Parse options from conf file, but don't overwrite existing options*/
 void parse_conf_file(void)
 {
@@ -220,9 +223,9 @@ void parse_conf_file(void)
 	}
 
 
-	/* If no main_port, default it to 5688 */
+	/* If no main_port, default it to 5688 (or whatever) */
 	if(!opt.main_port)
-		opt.main_port = 5688;
+		opt.main_port = DEFAULT_GGZD_PORT;
 
 	/* Set admin stuff to ADMIN_ERR if not specified */
 	if(!opt.admin_name) {
@@ -250,7 +253,8 @@ static void get_config_options(int ch)
 
 	/* [General] */
 	if(opt.main_port == 0)
-		opt.main_port = ggz_conf_read_int(ch, "General", "Port", 5688);
+		opt.main_port = ggz_conf_read_int(ch, "General", "Port",
+						  DEFAULT_GGZD_PORT);
 	opt.admin_name = ggz_conf_read_string(ch, "General", "AdminName",
 					  "<unconfigured>");
 	opt.admin_email = ggz_conf_read_string(ch, "General", "AdminEmail",
