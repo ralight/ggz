@@ -757,7 +757,7 @@ static void parse_game(char *name)
 				continue;
 			}
 			intval = atoi(varvalue);
-			if(intval != 0 || intval != 1) {
+			if(intval != 0 && intval != 1) {
 				PARSE_ERR("AllowLeave value invalid");
 				continue;
 			}
@@ -772,6 +772,7 @@ static void parse_game(char *name)
 	game_types.info[game_types.count] = *game_info;
 	game_types.count++;
 
+	fclose(gamefile);
 	free(game_info);
 	free(fname);
 }
@@ -977,6 +978,7 @@ static void parse_room(char *name)
 	if(chat_room[num].player_index == NULL)
 		err_sys_exit("calloc failed in parse_room()");
 
+	fclose(roomfile);
 	free(fname);
 }
 
