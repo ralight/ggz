@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 4333 2002-08-02 04:53:24Z jdorje $
+ * $Id: game.c 4356 2002-08-10 19:03:07Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -33,7 +33,8 @@
 
 #include "game.h"
 
-#define GGZSTATISTICS 1
+#define GGZSTATISTICS
+/*#define GGZSPECTATORS*/
 
 #ifdef GGZSTATISTICS
 # include "ggz_stats.h"
@@ -85,6 +86,12 @@ static void game_handle_ggz_join(GGZdMod *ggz,
                                  GGZdModEvent event, void *data);
 static void game_handle_ggz_leave(GGZdMod *ggz,
                                   GGZdModEvent event, void *data);
+#ifdef GGZSPECTATORS
+static void game_handle_ggz_spectator_join(GGZdMod *ggz,
+                                 GGZdModEvent event, void *data);
+static void game_handle_ggz_spectator_leave(GGZdMod *ggz,
+                                  GGZdModEvent event, void *data);
+#endif
 static void game_handle_ggz_player(GGZdMod *ggz,
                                    GGZdModEvent event, void *data);
 
@@ -131,7 +138,12 @@ void game_init(GGZdMod *ggzdmod)
 	                    &game_handle_ggz_leave);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA,
 	                    &game_handle_ggz_player);
-	
+#ifdef GGZSPECTATORS
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN,
+	                    &game_handle_ggz_spectator_join);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE,
+	                    &game_handle_ggz_spectator_leave);
+#endif
 }
 
 
@@ -158,6 +170,39 @@ static int seats_full(void)
 		+ ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_RESERVED) == 0;
 }
 
+#ifdef GGZSPECTATORS
+static void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, void *data)
+{
+	int i;
+	GGZSeat seat;
+	GGZSpectator spectator;
+	
+	spectator = ggzdmod_get_spectator(ggz, *(int*)data);
+
+	if (ggz_write_int(spectator.fd, TTT_MSG_PLAYERS) < 0)
+		return;
+	for (i = 0; i < 2; i++) {
+		seat = ggzdmod_get_seat(ttt_game.ggz, i);
+		if (ggz_write_int(spectator.fd, seat.type) < 0)
+			return;
+		if (seat.type != GGZ_SEAT_OPEN
+		    && ggz_write_string(spectator.fd, seat.name) < 0)
+			return;
+	}
+
+	if (ggz_write_int(spectator.fd, TTT_SND_SYNC) < 0
+	|| ggz_write_char(spectator.fd, ttt_game.turn) < 0)
+		return;
+	
+	for (i = 0; i < 9; i++)
+		if (ggz_write_char(spectator.fd, ttt_game.board[i]) < 0)
+			return;
+}
+
+static void game_handle_ggz_spectator_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
+{
+}
+#endif
 
 /* Callback for GGZDMOD_EVENT_JOIN */
 static void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
@@ -288,6 +333,7 @@ static int game_send_move(int num, int move)
 			    opponent);
 
 		if (ggz_write_int(seat.fd, TTT_MSG_MOVE) < 0
+			|| ggz_write_int(seat.fd, num) < 0
 		    || ggz_write_int(seat.fd, move) < 0)
 			return -1;
 	}
@@ -346,6 +392,9 @@ static int game_send_gameover(char winner)
 {
 	int i;
 	GGZSeat seat;
+#ifdef GGZSPECTATORS
+	GGZSpectator spectator;
+#endif
 
 #ifdef GGZSTATISTICS
 	GGZStats *stats;
@@ -373,6 +422,15 @@ static int game_send_gameover(char winner)
 				return -1;
 		}
 	}
+
+#ifdef GGZSPECTATORS
+	for (i = 0; i < ggzdmod_count_spectators(ttt_game.ggz); i++)
+	{
+		spectator = ggzdmod_get_spectator(ttt_game.ggz, i);
+		ggz_write_int(spectator.fd, TTT_MSG_GAMEOVER);
+		ggz_write_char(spectator.fd, winner);
+	}
+#endif
 
 	return 0;
 }
@@ -444,6 +502,9 @@ static int game_req_move(int num)
 static int game_do_move(int move)
 {
 	char victor;
+#ifdef GGZSPECTATORS
+	int i, fd;
+#endif
 	
 	if (ggzdmod_get_state(ttt_game.ggz) != GGZDMOD_STATE_PLAYING)
 		return -1;
@@ -452,6 +513,17 @@ static int game_do_move(int move)
 	ttt_game.board[move] = ttt_game.turn;
 	ttt_game.move_count++;
 	game_send_move(ttt_game.turn, move);
+
+#ifdef GGZSPECTATORS
+	for(i = 0; i < ggzdmod_count_spectators(ttt_game.ggz); i++)
+	{
+		fd = (ggzdmod_get_spectator(ttt_game.ggz, i)).fd;
+		if (ggz_write_int(fd, TTT_MSG_MOVE) < 0
+		|| ggz_write_int(fd, ttt_game.turn) < 0
+		|| ggz_write_int(fd, move) < 0)
+			return -1;
+	}
+#endif
 	
 	if ( (victor = game_check_win()) < 0) {
 		ttt_game.turn = (ttt_game.turn + 1) % 2;
