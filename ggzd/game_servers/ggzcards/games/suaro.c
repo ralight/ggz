@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 2276 2001-08-27 10:29:46Z jdorje $
+ * $Id: suaro.c 2292 2001-08-28 03:49:43Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -256,7 +256,7 @@ static void suaro_start_playing(void)
 	game.play_total = game.num_players;
 	/* declarer is set in game_handle_bid */
 	set_global_message("", "%s has the contract at %s%d %s%s.",
-		game.seats[ game.players[SUARO.declarer].seat ].name,
+		ggzd_get_player_name(SUARO.declarer),
 		SUARO.kitty ? "kitty " : "",
 		SUARO.contract, long_suaro_suit_names[(int)SUARO.contract_suit],
 		SUARO.bonus == 1 ? "" : SUARO.bonus == 2 ? ", doubled" : ", redoubled");

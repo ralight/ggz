@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2286 2001-08-27 20:03:43Z jdorje $
+ * $Id: common.c 2292 2001-08-28 03:49:43Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -910,13 +910,14 @@ void handle_join_event(ggzd_event_t event, void *data)
  */
 void handle_leave_event(ggzd_event_t event, void *data)
 {
-	player_t player = *(int *) data;
-	player_t p;
+	player_t player = *(int *) data, p;
 	seat_t seat = game.players[player].seat;
+	char *name = "Empty Seat";
 
 	ggzd_debug("Handling a leave event.");
 
 	/* seat name */
+	ggzd_set_player_name(player, name);
 	game.seats[seat].name = "Empty Seat";
 
 	/* send new seat data */
@@ -1180,9 +1181,10 @@ void init_game()
 	for (p = 0; p < game.num_players; p++)
 		if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT) {
 			int s = game.players[p].seat;
-			game.seats[s].name = ai_get_name(p);
-			ggzd_debug("Setting AI name to %s.",
-				   game.seats[s].name);
+			char *name = ai_get_name(p);
+			game.seats[s].name = name;
+			ggzd_set_player_name(game.seats[s].player, name);
+			ggzd_debug("Setting AI name to %s.", name);
 		}
 
 	game.initted = 1;
