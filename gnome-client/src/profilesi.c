@@ -230,7 +230,7 @@ create_winProfiles (void)
                       GTK_OBJECT (winProfiles));
   gtk_signal_connect (GTK_OBJECT (btnNew), "clicked",
                       GTK_SIGNAL_FUNC (on_btnNew_clicked),
-                      NULL);
+                      GTK_OBJECT (winProfiles));
   gtk_signal_connect (GTK_OBJECT (btnApply), "clicked",
                       GTK_SIGNAL_FUNC (on_btnApply_clicked),
                       NULL);

@@ -61,7 +61,70 @@ void
 on_btnNew_clicked                      (GtkButton       *button,
                                         gpointer         user_data)
 {
+	GSList *slProfileNames, *slProfileUsernames, *slProfileServers, *slProfilePWDs;
+	gint intProfiles, x;
+	GtkTreeModel *stoProfiles;
+	GtkTreeIter iter;
+	GSList *slProfiles = NULL;
+	gint curItem;
+	GtkWidget *tmp;
+	GtkWidget *winProfile = GTK_WIDGET(user_data);
 
+	/*Get current information*/
+	slProfileNames = gconf_client_get_list (config, "/schemas/apps/ggz-gnome/profiles/profiles", GCONF_VALUE_STRING, NULL);
+	slProfileUsernames = gconf_client_get_list (config, "/schemas/apps/ggz-gnome/profiles/usernames", GCONF_VALUE_STRING, NULL);
+	slProfileServers = gconf_client_get_list (config, "/schemas/apps/ggz-gnome/profiles/servers", GCONF_VALUE_STRING, NULL);
+	slProfilePWDs = gconf_client_get_list (config, "/schemas/apps/ggz-gnome/profiles/passwords", GCONF_VALUE_STRING, NULL);
+	intProfiles = gconf_client_get_int (config, "/schemas/apps/ggz-gnome/profiles/total", NULL);
+
+	/*Update the lists*/
+	tmp = lookup_widget (winProfile, "entProfileName");
+	slProfileNames = g_slist_append (slProfileNames,
+		(char*)gtk_entry_get_text (GTK_ENTRY(tmp)));
+	tmp = lookup_widget (winProfile, "entUsername");
+	slProfileUsernames = g_slist_append (slProfileUsernames,
+		(char*)gtk_entry_get_text (GTK_ENTRY(tmp)));
+	tmp = lookup_widget (winProfile, "entServer");
+	slProfileServers = g_slist_append (slProfileServers,
+		(char*)gtk_entry_get_text (GTK_ENTRY(tmp)));
+	tmp = lookup_widget (winProfile, "entPassword");
+	slProfilePWDs = g_slist_append (slProfilePWDs,
+		(char*)gtk_entry_get_text (GTK_ENTRY(tmp)));
+	intProfiles++;
+
+	/*Store the information back*/
+	gconf_client_set_list (config, "/schemas/apps/ggz-gnome/profiles/profiles", GCONF_VALUE_STRING, slProfileNames, NULL);
+	gconf_client_set_list (config, "/schemas/apps/ggz-gnome/profiles/usernames", GCONF_VALUE_STRING, slProfileUsernames, NULL);
+	gconf_client_set_list (config, "/schemas/apps/ggz-gnome/profiles/servers", GCONF_VALUE_STRING, slProfileServers, NULL);
+	gconf_client_set_list (config, "/schemas/apps/ggz-gnome/profiles/passwords", GCONF_VALUE_STRING, slProfilePWDs, NULL);
+	gconf_client_set_int (config, "/schemas/apps/ggz-gnome/profiles/total", intProfiles, NULL);
+
+
+	/*Clear and re-fill the profile list*/
+	tmp = lookup_widget(winProfile, "treProfiles");
+	stoProfiles = gtk_tree_view_get_model (GTK_TREE_VIEW (tmp));
+	gtk_list_store_clear (GTK_LIST_STORE (stoProfiles));
+	
+	intProfiles = gconf_client_get_int (config, "/schemas/apps/ggz-gnome/profiles/total", NULL);
+	slProfiles = gconf_client_get_list (config, "/schemas/apps/ggz-gnome/profiles/profiles",  GCONF_VALUE_STRING, NULL);
+	if (g_slist_length (slProfiles) != intProfiles)
+	{
+		/* Something is wrong */
+		g_print(_("There has been a problem loading your profiles.\n"));
+		gconf_client_set_int (config, "/schemas/apps/ggz-gnome/profiles/total", 0, NULL);
+		gconf_client_set_list (config, "/schemas/apps/ggz-gnome/profiles/profiles",  GCONF_VALUE_STRING, NULL, NULL);
+		
+	} else {
+		for (x = 0; x < intProfiles; x++)
+		{
+			gtk_list_store_append (GTK_LIST_STORE(stoProfiles),
+					       &iter);
+			gtk_list_store_set (GTK_LIST_STORE(stoProfiles),
+					    &iter, 0,
+					    g_slist_nth_data (slProfiles, x), 
+					    -1);
+		}
+	}
 }
 
 
