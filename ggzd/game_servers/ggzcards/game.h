@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 3486 2002-02-27 07:18:23Z jdorje $
+ * $Id: game.h 3487 2002-02-27 07:29:13Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -241,13 +241,11 @@ void game_handle_play(card_t c);
  *  hands.  By default, it sets game.hand_size to be the maximum possible,
  *  and deals that many cards into everyone's hand.
  *
- *  @return The return value should always be 0.
- *  @todo What the hell is the return value supposed to be for, anyway?
  *  @see cards_deal_hand
  *  @see lapocha_deal_hand
  *  @see spades_deal_hand
  */
-int game_deal_hand(void);
+void game_deal_hand(void);
 
 /** @brief Specialty handling for the end of a trick.
  *

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3485 2002-02-27 07:15:45Z jdorje $
+ * $Id: common.c 3487 2002-02-27 07:29:13Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -344,8 +344,7 @@ void next_play(void)
 			       game.max_bid_rounds * sizeof(bid_t));
 
 		ggzdmod_log(game.ggz, "Dealing hand %d.", game.hand_num);
-		if (game.funcs->deal_hand() < 0)
-			return;
+		game.funcs->deal_hand();
 		ggzdmod_log(game.ggz, "Dealt hand successfully.");
 
 		/* Now send the resulting hands to each player */

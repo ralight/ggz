@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: spades.c 3487 2002-02-27 07:29:13Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -68,7 +68,7 @@ static void spades_handle_bid(player_t p, bid_t bid);
 static void spades_next_bid(void);
 static int spades_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static void spades_set_player_message(player_t p);
-static int spades_deal_hand(void);
+static void spades_deal_hand(void);
 static void spades_end_trick(void);
 static void spades_end_hand(void);
 static void spades_start_game(void);
@@ -332,7 +332,7 @@ static void spades_set_player_message(player_t p)
 	add_player_action_message(p);
 }
 
-static int spades_deal_hand(void)
+static void spades_deal_hand(void)
 {
 	int shown = GSPADES.double_nil_value == 0;
 	seat_t s;
@@ -344,7 +344,7 @@ static int spades_deal_hand(void)
 	for (s = 0; s < game.num_seats; s++)
 		GSPADES.show_hand[s] = shown;
 
-	return game_deal_hand();
+	game_deal_hand();
 }
 
 static void spades_end_trick(void)

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: games.h 3487 2002-02-27 07:29:13Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -34,12 +34,12 @@
 
 struct game_function_pointers {
 	/* initializing */
-	int (*is_valid_game) ();	/* is the game valid under the
+	int (*is_valid_game) (void);	/* is the game valid under the
 					   current conditions? */
-	void (*init_game) ();	/* initialize the game data */
+	void (*init_game) (void);	/* initialize the game data */
 
 	/* options */
-	void (*get_options) ();	/* determine/request options from given
+	void (*get_options) (void);	/* determine/request options from given
 				   player fd */
 	int (*handle_option) (char *, int);	/* handle an option => 0 on
 						   success, -1 on failure */
@@ -57,29 +57,29 @@ struct game_function_pointers {
 	int (*get_bid_text) (char *, size_t, bid_t);	/* determines the
 							   textual string for 
 							   the bid */
-	void (*start_bidding) ();	/* updates data for the first bid */
-	int (*get_bid) ();	/* gets a bid from next player */
+	void (*start_bidding) (void);	/* updates data for the first bid */
+	int (*get_bid) (void);	/* gets a bid from next player */
 	void (*handle_bid) (player_t, bid_t);	/* handles a bid from the
 						   given bidder */
-	void (*next_bid) ();	/* updates data for the next bid */
+	void (*next_bid) (void);	/* updates data for the next bid */
 
 	/* playing */
-	void (*start_playing) ();	/* updates data after the last
+	void (*start_playing) (void);	/* updates data after the last
 					   bid/before the playing starts */
 	char *(*verify_play) (player_t, card_t); /* verifies the play is legal */
-	void (*next_play) ();	/* sets up for next play */
-	void (*get_play) ();	/* retreives a play */
+	void (*next_play) (void);	/* sets up for next play */
+	void (*get_play) (player_t);	/* retreives a play */
 	void (*handle_play) (card_t);	/* handle a play */
 
 	/* each hand */
-	int (*deal_hand) ();	/* deal next hand */
-	void (*end_trick) ();	/* end-of-trick calculations */
-	void (*end_hand) ();	/* end-of-hand calculations */
+	void (*deal_hand) (void);	/* deal next hand */
+	void (*end_trick) (void);	/* end-of-trick calculations */
+	void (*end_hand) (void);	/* end-of-hand calculations */
 
 	/* starting/ending games */
-	void (*start_game) ();	/* start a game */
-	int (*test_for_gameover) ();	/* returns TRUE iff gameover */
-	int (*handle_gameover) ();	/* handle a gameover */
+	void (*start_game) (void);	/* start a game */
+	int (*test_for_gameover) (void);	/* returns TRUE iff gameover */
+	int (*handle_gameover) (void);	/* handle a gameover */
 
 	/* miscellaneous */
 	  card_t(*map_card) (card_t);

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 3486 2002-02-27 07:18:23Z jdorje $
+ * $Id: game.c 3487 2002-02-27 07:29:13Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -324,7 +324,7 @@ void game_handle_play(card_t c)
 
 
 /* Deal a new hand. */
-int game_deal_hand(void)
+void game_deal_hand(void)
 {
 	seat_t s;
 
@@ -333,7 +333,6 @@ int game_deal_hand(void)
 	for (s = 0; s < game.num_seats; s++)
 		cards_deal_hand(game.deck, game.hand_size,
 				&game.seats[s].hand);
-	return 0;
 }
 
 
