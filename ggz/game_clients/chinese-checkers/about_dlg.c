@@ -34,6 +34,8 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "ggzintl.h"
+
 #include "about_dlg.h"
 #include "support.h"
 
@@ -49,7 +51,7 @@ create_dlg_about (void)
   dlg_about = gtk_dialog_new ();
   gtk_widget_set_name (dlg_about, "dlg_about");
   gtk_object_set_data (GTK_OBJECT (dlg_about), "dlg_about", dlg_about);
-  gtk_window_set_title (GTK_WINDOW (dlg_about), "About Chinese Checkers for GGZ");
+  gtk_window_set_title (GTK_WINDOW (dlg_about), _("About Chinese Checkers for GGZ"));
   gtk_window_set_policy (GTK_WINDOW (dlg_about), FALSE, FALSE, FALSE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_about)->vbox;
@@ -57,7 +59,10 @@ create_dlg_about (void)
   gtk_object_set_data (GTK_OBJECT (dlg_about), "dialog_vbox1", dialog_vbox1);
   gtk_widget_show (dialog_vbox1);
 
-  label1 = gtk_label_new ("\nChinese Checkers for GGZ, version 0.0.1\nis part of the GGZ Gaming Zone project.\nVisit us at http://ggz.sourceforge.net/\n\n Copyright (C) 2000, 2001 Richard Gade and Brent Hendricks \n");
+  label1 = gtk_label_new (_("\nChinese Checkers for GGZ, version 0.0.1\n"
+                            "is part of the GGZ Gaming Zone project.\n"
+                            "Visit us at http://ggz.sourceforge.net/\n\n"
+                            " Copyright (C) 2000, 2001 Richard Gade and Brent Hendricks \n"));
   gtk_widget_set_name (label1, "label1");
   gtk_widget_ref (label1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "label1", label1,
@@ -71,7 +76,7 @@ create_dlg_about (void)
   gtk_widget_show (dialog_action_area1);
   gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 10);
 
-  ok_button = gtk_button_new_with_label ("OK");
+  ok_button = gtk_button_new_with_label (_("OK"));
   gtk_widget_set_name (ok_button, "ok_button");
   gtk_widget_ref (ok_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "ok_button", ok_button,

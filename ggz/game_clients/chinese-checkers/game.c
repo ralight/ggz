@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.c 3396 2002-02-17 09:59:47Z jdorje $
+ * $Id: game.c 3687 2002-03-26 06:45:02Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -38,6 +38,8 @@
 
 #include <ggz.h>
 #include <ggzmod.h>
+
+#include "ggzintl.h"
 
 #include "game.h"
 #include "display.h"
@@ -191,7 +193,7 @@ void game_init_board(void)
 	display_set_label_colors();
 	display_refresh_board();
 
-	msg = g_strdup_printf("You are playing the %s marbles",
+	msg = g_strdup_printf(_("You are playing the %s marbles"),
 			      color[game.me]);
 	display_statusbar(msg);
 	g_free(msg);
@@ -205,7 +207,7 @@ void game_handle_click_event(int r, int c)
 	/* Is it my turn ? */
 	if(!game.my_turn) {
 		gdk_beep();
-		display_statusbar("Wait for your turn...");
+		display_statusbar(_("Wait for your turn..."));
 		return;
 	}
 
@@ -215,7 +217,7 @@ void game_handle_click_event(int r, int c)
 			ro = r;
 			co = c;
 			click_state++;
-			display_statusbar("Click where you want to move the marble.");
+			display_statusbar(_("Click where you want to move the marble."));
 			return;
 		}
 		else {
@@ -228,14 +230,14 @@ void game_handle_click_event(int r, int c)
 	if(game.board[r][c] == 0) {
 		if(game_make_move(ro, co, r, c)) {
 			click_state = 0;
-			display_statusbar("Sending move to GGZ server...");
+			display_statusbar(_("Sending move to GGZ server..."));
 			return;
 		}
 	}
 
 	/* Bad dest */
 	gdk_beep();
-	display_statusbar("Bad move, click a marble to move.");
+	display_statusbar(_("Bad move! Click a marble to move."));
 	click_state = 0;
 	return;
 }
@@ -478,7 +480,7 @@ void game_notify_our_turn(void)
 {
 	game.my_turn = 1;
 
-	display_statusbar("Your move, click a marble to move");
+	display_statusbar(_("Your move. Click a marble to move"));
 
 	if(game.beep)
 		gdk_beep();

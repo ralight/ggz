@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Main loop and supporting logic
- * $Id: main.c 3396 2002-02-17 09:59:47Z jdorje $
+ * $Id: main.c 3687 2002-03-26 06:45:02Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -35,6 +35,8 @@
 #include <ggz.h>
 #include <ggzmod.h>
 
+#include "ggzintl.h"
+
 #include "main.h"
 #include "game.h"
 #include "protocol.h"
@@ -54,6 +56,7 @@ static int get_sync_data(void);
 int main(int argc, char *argv[])
 {
 	initialize_debugging();
+	ggz_intl_init("chinese-checkers");
 
 	gtk_init(&argc, &argv);
 
@@ -180,17 +183,17 @@ static int get_players(void)
 				return -1;
 			display_set_name(i, game.names[i]);
 			if(old == GGZ_SEAT_OPEN && !firsttime) {
-				tmp = g_strdup_printf("%s joined the table",
+				tmp = g_strdup_printf(_("%s joined the table"),
 						      game.names[i]);
 				display_statusbar(tmp);
 				g_free(tmp);
 			}
 		} else if(old != GGZ_SEAT_OPEN && !firsttime) {
-			tmp = g_strdup_printf("%s left the table",
+			tmp = g_strdup_printf(_("%s left the table"),
 					      game.names[i]);
 			display_statusbar(tmp);	
 			g_free(tmp);
-			display_set_name(i, "empty");
+			display_set_name(i, _("empty"));
 		}
 	}
 
@@ -228,10 +231,10 @@ static int get_move_response(void)
 
 	switch(status) {
 		case 0:
-			display_statusbar("Move accepted, waiting for opponents");
+			display_statusbar(_("Move accepted. Waiting for opponents"));
 			break;
 		case CC_ERR_STATE:
-			display_statusbar("Cannot accept move until table is full");
+			display_statusbar(_("Cannot accept move until table is full"));
 			ggz_write_int(game.fd, CC_REQ_SYNC);
 			game.my_turn = 0;
 			break;
@@ -254,9 +257,9 @@ static int get_gameover_msg(void)
 		return -1;
 
 	if(winner == game.me)
-		msg = "Game over!  You won!";
+		msg = _("Game over!  You won!");
 	else
-		msg = g_strdup_printf("Game over!  %s won!",
+		msg = g_strdup_printf(_("Game over!  %s won!"),
 				      game.names[(int)winner]);
 	display_statusbar(msg);
 	if(winner != game.me)
