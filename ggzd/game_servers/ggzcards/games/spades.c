@@ -255,5 +255,6 @@ static void spades_end_hand()
 			game.players[p].score += score;
 			game.players[(p+2)%4].score += score;
 		}
+		set_player_message(p);
 	}
 }

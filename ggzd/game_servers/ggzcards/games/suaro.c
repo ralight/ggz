@@ -364,6 +364,7 @@ static void suaro_end_hand()
 	SUARO.declarer = -1;
 	SUARO.kitty_revealed = 0;
 	SUARO.contract = 0;
+	set_player_message( winner );
 }
 
 static void suaro_set_player_message(player_t p)
