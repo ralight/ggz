@@ -79,7 +79,10 @@ create_dlg_options (void)
 	GtkObject *unit_spin_adj[12];
 	GtkWidget *unit_label_box;
 	GtkWidget *unit_spin_box;
-	GtkWidget *unit_dummy_box;
+	GtkWidget *unit_stats_box;
+  GtkWidget *army_total;
+  GtkWidget *army_player_1;
+  GtkWidget *army_player_2;
 	int i;
 
   dlg_options = gtk_dialog_new ();
@@ -435,12 +438,10 @@ create_dlg_options (void)
 	gtk_widget_show (unit_label_box);
 	unit_spin_box = gtk_vbox_new (TRUE, 0);
 	gtk_widget_show (unit_spin_box);
-	unit_dummy_box = gtk_vbox_new (TRUE, 0);
-  //gtk_container_add (GTK_CONTAINER (army_hbox), unit_label_box);
-	//gtk_container_add (GTK_CONTAINER (army_hbox), unit_spin_box);
+	unit_stats_box = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (army_hbox), unit_label_box, FALSE, FALSE, 10);
 	gtk_box_pack_start (GTK_BOX (army_hbox), unit_spin_box, TRUE, TRUE, 10);
-	gtk_box_pack_start (GTK_BOX (army_hbox), unit_dummy_box, TRUE, TRUE, 20);
+	gtk_box_pack_start (GTK_BOX (army_hbox), unit_stats_box, TRUE, TRUE, 20);
 	for (i = 0; i < 12; i++) {
 		unit_label[i] = gtk_label_new (unitname[i]);
   	gtk_widget_show (unit_label[i]);
@@ -456,6 +457,25 @@ create_dlg_options (void)
 		gtk_signal_connect_object(GTK_OBJECT (unit_spin[i]), "changed",
 											 GTK_SIGNAL_FUNC (dlg_options_update), GTK_OBJECT (dlg_options));
 	}
+  // Add the stats
+  army_total = gtk_label_new("Total:");
+  army_player_1 = gtk_label_new("Player 1:");
+  army_player_2 = gtk_label_new("Player 2:");
+  gtk_widget_set_name(army_total, "army_total");
+  gtk_widget_set_name(army_total, "army_player_1");
+  gtk_widget_set_name(army_total, "army_player_2");
+  gtk_widget_ref(army_total);
+  gtk_widget_ref(army_player_1);
+  gtk_widget_ref(army_player_2);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "army_total", army_total,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "army_player_1", army_player_1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "army_player_2", army_player_2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_box_pack_start(GTK_BOX(unit_stats_box), army_total, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(unit_stats_box), army_player_1, FALSE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(unit_stats_box), army_player_2, FALSE, FALSE, 0);
 
 	gtk_signal_connect(GTK_OBJECT (mini_board), "expose_event",
 										 GTK_SIGNAL_FUNC (mini_board_expose), dlg_options);
@@ -719,6 +739,101 @@ void dlg_options_update(GtkWidget *dlg_options) {
 	// Sets data
 	gtk_object_set_data(GTK_OBJECT(dlg_options), "options", options);
 
+  if (options->map)
+    update_counters(dlg_options);
+
+}
+
+void update_counters(GtkWidget *dlg_options) {
+  combat_game *options;
+  GtkWidget *open_label, *black_label, *lake_label, *player_1_label, *player_2_label;
+  GtkWidget *army_total, *army_player_1, *army_player_2;
+  int a, n[5] = {0, 0, 0, 0, 0};
+  int units = 0;
+  char label[48];
+
+  /* Map data counters */
+  // Get options
+  options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
+
+  // Get widgets
+  open_label = GTK_BIN( lookup_widget(dlg_options, "open") )->child;
+  black_label = GTK_BIN( lookup_widget(dlg_options, "black") )->child;
+  lake_label = GTK_BIN( lookup_widget(dlg_options, "lake") )->child;
+  player_1_label = GTK_BIN( lookup_widget(dlg_options, "player_1") )->child;
+  player_2_label = GTK_BIN( lookup_widget(dlg_options, "player_2") )->child;
+
+  // Count each type
+  for (a = 0; a < options->width * options->height; a++) {
+    if (options->map[a].type == OPEN)
+      n[0]++;
+    if (options->map[a].type == BLACK)
+      n[1]++;
+    if (options->map[a].type == LAKE)
+      n[2]++;
+    if (options->map[a].type == PLAYER_1)
+      n[3]++;
+    if (options->map[a].type == PLAYER_2)
+      n[4]++;
+  }
+
+  /* Update the labels */
+  // Open
+  if (n[0] > 0) {
+    sprintf(label, "Open (%d)", n[0]);
+    gtk_label_set_text(GTK_LABEL(open_label), label);
+  } else {
+    gtk_label_set_text(GTK_LABEL(open_label), "Open");
+  }
+  // Black
+  if (n[1] > 0) {
+    sprintf(label, "Black (%d)", n[1]);
+    gtk_label_set_text(GTK_LABEL(black_label), label);
+  } else {
+    gtk_label_set_text(GTK_LABEL(black_label), "Black");
+  }
+  // Open
+  if (n[2] > 0) {
+    sprintf(label, "Lake (%d)", n[2]);
+    gtk_label_set_text(GTK_LABEL(lake_label), label);
+  } else {
+    gtk_label_set_text(GTK_LABEL(lake_label), "Lake");
+  }
+  // Open
+  if (n[3] > 0) {
+    sprintf(label, "Player 1 (%d)", n[3]);
+    gtk_label_set_text(GTK_LABEL(player_1_label), label);
+  } else {
+    gtk_label_set_text(GTK_LABEL(player_1_label), "Player 1");
+  }
+  // Open
+  if (n[4] > 0) {
+    sprintf(label, "Player 2 (%d)", n[4]);
+    gtk_label_set_text(GTK_LABEL(player_2_label), label);
+  } else {
+    gtk_label_set_text(GTK_LABEL(player_2_label), "Player 2");
+  }
+
+  /* Army data counters */
+
+  // Get widgets
+  army_total = lookup_widget(dlg_options, "army_total");
+  army_player_1 = lookup_widget(dlg_options, "army_player_1");
+  army_player_2 = lookup_widget(dlg_options, "army_player_2");
+
+  // Count units
+  for (a = 0; a < 12; a++)
+    units+=options->army[0][a];
+
+  // Set widgets
+  sprintf(label, "Total: %d", units);
+  gtk_label_set_text(GTK_LABEL(army_total), label);
+  
+  sprintf(label, "Player 1: %d", n[3]);
+  gtk_label_set_text(GTK_LABEL(army_player_1), label);
+
+  sprintf(label, "Player 2: %d", n[4]);
+  gtk_label_set_text(GTK_LABEL(army_player_2), label);
 }
 
 void dlg_options_list_maps(GtkWidget *dlg) {
@@ -896,6 +1011,7 @@ void draw_mini_board(GtkWidget *dlg_options) {
 
 	gtk_widget_draw(widget, NULL);
 
+  update_counters(dlg_options);
 
 }
 	

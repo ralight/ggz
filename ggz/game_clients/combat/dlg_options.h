@@ -15,6 +15,8 @@ void delete_map(GtkButton *button, gpointer dialog);
 
 void load_map(char *filename, GtkWidget *dialog);
 
+void update_counters(GtkWidget *);
+
 combat_game *quick_load_map_on_struct(char *filename);
 
 void maps_list_selected (GtkCList *clist, gint row, gint column,

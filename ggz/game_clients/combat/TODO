@@ -1,12 +1,12 @@
 What *must* be done before next version of GGZ:
 
-- Add some counters to the map editor (how many of each type of terrain, how
-  many units in the total)
-- Make possible to return to a running game
+- Preview of map on the map editor
+- Make possible to return to/join a running game
 
 What should be done before next version of GGZ:
 
 - Add some map options
+- Improve the interface of the counters
 - Make the client check if the current map options are valid before sending
   them
 - Make the name of the map be sent to the other player, so that he can have an
