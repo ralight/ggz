@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ text Client
- * $Id: motd.c 4835 2002-10-10 01:30:13Z jdorje $
+ * $Id: motd.c 4851 2002-10-10 17:42:40Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -78,7 +78,7 @@ void motd_print_line(const char *line)
 		if (out[oindex - 1] == '\n') {
 			/* Remove the \n as we add one in output_text */
 			out[oindex - 1] = '\0';
-			output_text(out);
+			output_text("%s", out);
 			oindex = 0;
 		}
 	}
@@ -87,6 +87,6 @@ void motd_print_line(const char *line)
 		/* Append any trailing characters that aren't
 		   part of a line. */
 		out[oindex] = '\0';
-		output_text(out);
+		output_text("%s", out);
 	}
 }

@@ -269,7 +269,7 @@ static void input_handle_desc(char* line)
 	if (line) {
 		room = atoi(line);
 		desc = ggzcore_room_get_desc(ggzcore_server_get_nth_room(server, room));
-		output_text(desc);
+		output_text("%s", desc);
 	} else {
 		output_text("Describe which room?");
 	}
