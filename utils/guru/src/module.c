@@ -121,10 +121,11 @@ Guru *guru_module_work(Guru *message, int priority)
 	modulefunc func;
 	Guru *ret;
 	char *savemsg;
+	Guru extrasave;
 
 	if(!modulelist) return NULL;
 	savemsg = message->message;
-	for(j = 10; j >= 0; j--)
+	for(j = 10; j >= 0; j-=11)
 	{
 		i = 0;
 		while(modulelist[i])
@@ -132,7 +133,9 @@ Guru *guru_module_work(Guru *message, int priority)
 			message->message = strdup(savemsg);
 			if(j == 10) printf("Trying module no. %i with '%s'\n", i, message->message);
 			func = functionlist[i];
-			ret = (func)(message);
+			extrasave = *message;
+			extrasave.message = strdup(savemsg);
+			ret = (func)(&extrasave);
 			if(ret->message)
 			{
 				printf("Debug: got %s\n", ret->message);
