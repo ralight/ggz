@@ -259,10 +259,12 @@
 #define CHESS_REQ_DRAW 13
 
 /* Clock types */
-#define CHESS_CLOCK_NOCLOCK 0
-#define CHESS_CLOCK_CLIENT 1
-#define CHESS_CLOCK_SERVERLAG 2
-#define CHESS_CLOCK_SERVER 3
+enum Chess_Clock_Type {
+  CHESS_CLOCK_NOCLOCK,
+  CHESS_CLOCK_CLIENT,
+  CHESS_CLOCK_SERVERLAG,
+  CHESS_CLOCK_SERVER
+};
 
 /* Game over types */
 #define CHESS_GAMEOVER_DRAW_AGREEMENT 1
@@ -282,20 +284,22 @@
 struct chess_info {
   /* GGZ data object */
   GGZdMod *ggz;
-  /* Clock type 
-   * 0 -> No clock
-   * 1 -> Client
-   * 2 -> Server + Lag
-   * 3 -> Server*/
-  char clock_type;
+
+  /* Clock type.  See the enumeration. */
+  enum Chess_Clock_Type clock_type;
+
   /* Number of seconds for each player */
   int seconds[2];
+
   /* Current state */
   char state;
+
   /* Host player */
   char host;
+
   /* Current turn */
   int turn;
+
   /* For keeping care of draws */
   char movecount;
   char posrep;
