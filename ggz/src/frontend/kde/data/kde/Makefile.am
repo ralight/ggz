@@ -7,7 +7,7 @@ appsdir = $(kde_appsdir)/Games/ggz
 
 install-data-local:
 	@$(NORMAL_INSTALL)
-	-cp dist.directory $(kde_appsdir)/Games/ggz/.directory
-	$(mkinstalldirs) $(kde_appsdir)/Games/ggz/games
-	-cp games.directory $(kde_appsdir)/Games/ggz/games/.directory
+	-cp dist.directory $(DESTDIR)$(kde_appsdir)/Games/ggz/.directory
+	$(mkinstalldirs) $(DESTDIR)$(kde_appsdir)/Games/ggz/games
+	-cp games.directory $(DESTDIR)$(kde_appsdir)/Games/ggz/games/.directory
 
