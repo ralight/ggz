@@ -1,10 +1,10 @@
-/* $Id: game.h 2380 2001-09-06 02:26:21Z jdorje $ */
 /* 
  * File: game.h
  * Author: Rich Gade
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
+ * $Id: game.h 2383 2001-09-07 08:25:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -40,10 +40,6 @@ void game_handle_table_click(char);
 
 /* GGZ define */
 #define GGZ_SEAT_OPEN		-1
-
-/* substitutes for snprintf. Returns the number of characters put into the
-   buffer. */
-int ggz_snprintf(char *, int, char *, ...);
 
 /* preliminary internationalization macros */
 #define _(String) (String)

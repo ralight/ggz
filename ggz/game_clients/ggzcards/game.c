@@ -1,10 +1,10 @@
-/* $Id: game.c 2080 2001-07-23 13:01:31Z jdorje $ */
-/*
+/* 
  * File: game.c
  * Author: Rich Gade
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
+ * $Id: game.c 2383 2001-09-07 08:25:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -37,14 +37,13 @@
 #include "easysock.h"
 
 
-/* game_send_bid
- *   the "bid" is the index into the list of choices sent to us by server
- */
+/* game_send_bid the "bid" is the index into the list of choices sent to us
+   by server */
 void game_send_bid(int bid)
 {
 	int status = client_send_bid(bid);
 
-	statusbar_message( _("Sending bid to server") );
+	statusbar_message(_("Sending bid to server"));
 
 	assert(status == 0);
 }
@@ -56,30 +55,7 @@ void game_play_card(card_t card)
 
 	status = client_send_play(card);
 
-	statusbar_message( _("Sending play to server") );
+	statusbar_message(_("Sending play to server"));
 
 	assert(status == 0);
-}
-
-
-int ggz_snprintf(char* buf, int buf_sz, char *fmt, ...)
-{
-	int result;
-	va_list ap;
-
-	assert( buf );
-	assert( buf_sz > 0 );
-	assert( fmt );
-
-	va_start(ap, fmt);
-	result = vsnprintf(buf, buf_sz, fmt, ap);
-	va_end(ap);
-
-	if (result == -1 || result >= buf_sz) {
-		/* on failure, snprintf will return either -1 or the number of
-		 * butes that would have been written */
-		client_debug("Buffer overrun in snprintf.  String is %s.", buf);
-		return buf_sz-1;
-	}
-	return result;
 }
