@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5050 2002-10-26 05:46:25Z jdorje $
+ * $Id: net.c 5051 2002-10-26 07:43:26Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -448,7 +448,7 @@ GGZReturn net_send_player_list_count(GGZNetIO *net, int count)
 GGZReturn net_send_player(GGZNetIO *net, GGZPlayer *p2)
 {
 	GGZPlayerType type;
-	char *type_desc;
+	char *type_desc = "**none**";
 	
 	type = player_get_type(p2);
 
@@ -462,8 +462,7 @@ GGZReturn net_send_player(GGZNetIO *net, GGZPlayer *p2)
 	case GGZ_PLAYER_ADMIN:
 		type_desc = "admin";
 		break;
-	default:
-		type_desc = "**none**";
+	case GGZ_PLAYER_NONE:
 		break;
 	}
 

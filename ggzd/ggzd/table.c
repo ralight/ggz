@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5009 2002-10-23 18:10:38Z jdorje $
+ * $Id: table.c 5051 2002-10-26 07:43:26Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -802,10 +802,8 @@ void table_game_spectator_leave(GGZTable *table, char *name, int num)
 static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
 {
 	GGZTable* table = ggzdmod_get_gamedata(mod);
-	GGZdModState cur, prev;
-
-	prev = *(GGZdModState*)data;
-	cur = ggzdmod_get_state(mod);
+	/* GGZdModState prev = *(GGZdModState*)data; */
+	GGZdModState cur = ggzdmod_get_state(mod);
 
 	switch (cur) {
 	case GGZDMOD_STATE_WAITING:
@@ -825,7 +823,7 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
 	
 		/* Trigger a table update in this room */
 		table_event_enqueue(table, GGZ_TABLE_UPDATE_ADD);
-		break;
+		return;
 		
 	case GGZDMOD_STATE_PLAYING:
 		pthread_rwlock_wrlock(&table->lock);
@@ -835,7 +833,7 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
 		table_event_enqueue(table, GGZ_TABLE_UPDATE_STATE);
 		dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now full/playing",
 			table->index, table->room);
-		break;
+		return;
 
 	case GGZDMOD_STATE_DONE:
 		dbg_msg(GGZ_DBG_TABLE,
@@ -847,11 +845,15 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
 		table->state = GGZ_TABLE_DONE;
 		pthread_rwlock_unlock(&table->lock);
 		table_event_enqueue(table, GGZ_TABLE_UPDATE_STATE);
-		break;
-	default:
-		/* FIXME: some kind of error handling here */
+		return;
+
+	case GGZDMOD_STATE_CREATED:
 		break;
 	}
+
+	/* It's an error if we reach here. */
+	err_msg("Table %d in room %d changed to invalid state %d.",
+		table->index, table->room, cur);
 }
 
 
