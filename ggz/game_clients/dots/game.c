@@ -229,6 +229,9 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 		g_free(tstr);
 		game.move = game.opponent;
 		game.state = DOTS_STATE_OPPONENT;
+	} else {
+		statusbar_message("Waiting for server response");
+		game.state = DOTS_STATE_WAIT;
 	}
 }
 

@@ -86,12 +86,12 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			break;
 		case DOTS_REQ_MOVE:
 			/* We ignore this unless we've seen an opponents move */
-			if(game.state != DOTS_STATE_OPPONENT) {
+			/*if(game.state != DOTS_STATE_OPPONENT) {*/
 				game.state = DOTS_STATE_MOVE;
 				statusbar_message("Your turn to move");
 				game.move = game.me;
 				break;
-			}
+			/*}*/
 		case DOTS_MSG_MOVE_H:
 			status = board_opponent_move(1);
 			break;
