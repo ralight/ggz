@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 5491 2003-04-28 06:52:33Z dr_maux $
+ * $Id: input.c 5973 2004-03-22 17:06:58Z josef $
  *
  * Functions for inputing commands from the user
  *
@@ -386,39 +386,69 @@ static void input_handle_wall(char* line)
 }
 
 
-static void input_handle_launch(char *line)
+static GGZModule *input_get_module(void)
 {
 	const char * name;
 	const char * engine;
 	const char * version;
 	GGZRoom *room;
 	GGZGameType *type;
-	GGZModule *module;
+	GGZModule *module, *tmp;
+	int i, num;
+	GGZModuleEnvironment env;
 
 	room = ggzcore_server_get_cur_room(server);
 	if (!room) {
 		output_text(_("You must be in a room to launch a game."));
-		return;
+		return NULL;
 	}
 
 	type = ggzcore_room_get_gametype(room);
 	if (!type) {
 		output_text(_("No game types defined for this room. "
 			    "Maybe try 'list types'?"));
-		return;
+		return NULL;
 	}
 	
 	name = ggzcore_gametype_get_name(type);
 	engine = ggzcore_gametype_get_prot_engine(type);
 	version = ggzcore_gametype_get_prot_version(type);
 	output_text(_("Launching game of %s, (%s-%s)"), name, engine, version);
-	module = ggzcore_module_get_nth_by_type(name, engine, version, 0);
-	if (!module) {
-		output_text(_("No game modules defined for that game"));
-		output_text(_("Download one from %s"),
-			    ggzcore_gametype_get_url(type));
-		return;
+
+	module = NULL;
+	num = ggzcore_module_get_num_by_type(name, engine, version);
+	for (i = 0; i < num; i++) {
+		tmp = ggzcore_module_get_nth_by_type(name, engine, version, i);
+		env = ggzcore_module_get_environment(tmp);
+		if (env == GGZ_ENVIRONMENT_CONSOLE) module = tmp;
+		if ((getenv("DISPLAY")) && ((env == GGZ_ENVIRONMENT_XWINDOW) ||
+			(env == GGZ_ENVIRONMENT_XFULLSCREEN))) module = tmp;
 	}
+			
+	if (!module) {
+		output_text(_("No suitable game modules (out of %i) defined for that game."), num);
+		output_text(_("Download one from %s."),
+			    ggzcore_gametype_get_url(type));
+		return NULL;
+	}
+
+	output_text(_("Found %i game modules, using frontend '%s'."),
+		num, ggzcore_module_get_frontend(module));
+
+	return module;
+}
+
+static void input_handle_launch(char *line)
+{
+	GGZRoom *room;
+	GGZGameType *type;
+	GGZModule *module;
+
+	module = input_get_module();
+	if(!module) return;
+
+	room = ggzcore_server_get_cur_room(server);
+	type = ggzcore_room_get_gametype(room);
 
 	game_init(module, type, -1);
 }
@@ -426,9 +456,6 @@ static void input_handle_launch(char *line)
 
 static void input_handle_join_table(char *line)
 {
-	const char * name;
-	const char * engine;
-	const char * version;
 	GGZRoom *room;
 	GGZGameType *type;
 	GGZModule *module;
@@ -439,30 +466,11 @@ static void input_handle_join_table(char *line)
 		return;
 	}
 
-	room = ggzcore_server_get_cur_room(server);
-	if (!room) {
-		output_text(_("You must be in a room to launch a game."));
-		return;
-	}
+	module = input_get_module();
+	if(!module) return;
 
+	room = ggzcore_server_get_cur_room(server);
 	type = ggzcore_room_get_gametype(room);
-	if (!type) {
-		output_text(_("No game types defined for this room. "
-			    "Maybe try 'list types'?"));
-		return;
-	}
-	
-	name = ggzcore_gametype_get_name(type);
-	engine = ggzcore_gametype_get_prot_engine(type);
-	version = ggzcore_gametype_get_prot_version(type);
-	output_text(_("Launching game of %s, (%s-%s)"), name, engine, version);
-	module = ggzcore_module_get_nth_by_type(name, engine, version, 0);
-	if (!module) {
-		output_text(_("No game modules defined for that game"));
-		output_text(_("Download one from %s"),
-			    ggzcore_gametype_get_url(type));
-		return;
-	}
 
 	table_index = atoi(line);
 	if (!ggzcore_room_get_table_by_id(room, table_index)) {
