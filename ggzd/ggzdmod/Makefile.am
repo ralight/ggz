@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4178 2002-05-07 08:06:48Z jdorje $
+# $Id: Makefile.am 4744 2002-09-26 21:52:23Z jdorje $
 
 SUBDIRS = .
 
@@ -7,12 +7,12 @@ EXTRA_DIST = Doxyfile
 
 # We prevent parallel execution since libggzdmod.a and libggzdmod.la will
 # interfere with each other (they use some of the same files, and make gets
-# confused)  --JDS
-.NOTPARALLEL:
+# confused).  This is only necessary if both libs are being compiled.  --JDS
+#.NOTPARALLEL:
 
 # This compiles for installation as a shared lib for external servers
 lib_LTLIBRARIES = libggzdmod.la
-libggzdmod_la_LIBADD = @LDADD@
+libggzdmod_la_LIBADD = @LDADD@ $(LIB_GGZ)
 libggzdmod_la_SOURCES = ggzdmod.h ggzdmod.c \
 			io.c io.h \
 			protocol.h mod.h \
@@ -20,12 +20,12 @@ libggzdmod_la_SOURCES = ggzdmod.h ggzdmod.c \
 			elo.h elo.c \
 			ggz_stats.h ggz_stats.c
 
-# This compiles for static linking with ggzd's game servers
-# NOTE: The game servers cannot use the shared library, because it
-# won't work with "make test".  Until you find a way around this, don't
-# remove the static lib compilation.  --JDS
-noinst_LIBRARIES = libggzdmod.a
-libggzdmod_a_SOURCES = $(libggzdmod_la_SOURCES)
+# This compiles for static linking with ggzd's game servers.  On some systems
+# the game servers cannot use the shared library, because it won't work with
+# "make test".  We're ignoring this problem for now until we find a
+# better workaround.  --JDS
+#noinst_LIBRARIES = libggzdmod.a
+#libggzdmod_a_SOURCES = $(libggzdmod_la_SOURCES)
 
 include_HEADERS = ggzdmod.h
 
