@@ -2,6 +2,6 @@
 files
 dirs
 tmp
-substvars
+*.substvars
 ggz-txt-client
 
