@@ -719,8 +719,8 @@ int handle_player(player_t p)
 
 	fd = ggz_seats[p].fd;
 	
-	if(es_read_int(fd, &op) < 0) {
-		ggz_debug("ERROR: handle_player: can't read op.");
+	if(fd == -1 || es_read_int(fd, &op) < 0) {
+		ggz_debug("ERROR: handle_player: can't read op from player %d, fd %d.", p, fd);
 		return -1;
 	}
 
@@ -791,7 +791,7 @@ int handle_player(player_t p)
 	}
 
 	if (status != 0)
-		ggz_debug("ERROR: handle_player: status is %d.", status);
+		ggz_debug("ERROR: handle_player: status is %d on message from player %d.", status, p);
 	return status;
 }
 
