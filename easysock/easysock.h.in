@@ -67,12 +67,21 @@ typedef enum {
 	ES_FD
 } EsDataType;
 
+
+/****************************************************************************
+ * Error function
+ *
+ * Any easysock function that generates an error will call this
+ * function, if defined.  
+ * 
+ * Upon removal, the old error function is returned.
+ *
+ ***************************************************************************/
 typedef void (*es_err_func) (const char *, const EsOpType, 
 			     const EsDataType);
 
 int es_err_func_set(es_err_func func);
 es_err_func es_err_func_rem(void);
-
 
 
 /****************************************************************************
@@ -89,6 +98,18 @@ typedef void (*es_exit_func) (int);
 
 int es_exit_func_set(es_exit_func func);
 es_exit_func es_exit_func_rem(void);
+
+
+/****************************************************************************
+ * Getting/Setting the limit on memory allocation
+ * 
+ * limit    : limit (in bytes) to allow on es_read_XXX_alloc() calls
+ * 
+ * Upon setting the limit, the old value is returned
+ *
+ ***************************************************************************/
+unsigned int es_alloc_limit_get(void);
+unsigned int es_alloc_limit_set(const unsigned int limit);
 
 
 /****************************************************************************
