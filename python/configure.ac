@@ -27,6 +27,36 @@ AC_GGZ_GGZMOD("true", ignore)
 AC_GGZ_GGZDMOD("true", ignore)
 AC_GGZ_GGZCORE("true", ignore)
 AC_GGZ_CONFIG
+AC_GGZ_INTL
+
+dnl Other checks
+dnl ============
+
+pygame_found=yes
+result=`python -c "import pygame" 2>/dev/null || echo no`
+if test "x$result" = "xno"; then
+	pygame_found=no
+fi
+echo "checking for: pygame installation... $python_found"
+
+if test "$enable_rsvgsdl" = "yes"; then
+	AC_CHECK_LIB(
+		[rsvg-2],
+		[rsvg_pixbuf_from_file_at_size],
+		[rsvg_found=yes],
+		[rsvg_found=no]
+	)
+	if test "$rsvg_found" = "yes"; then
+		AC_CHECK_HEADER(
+			[librsvg-2/librsvg/librsvg-features.h],
+			[rsvg_found=yes],
+			[rsvg_found=no]
+		)
+	fi
+	if test "$rsvg_found" = "no"; then
+		AC_MSG_ERROR("RSVG is not or incompletely installed.")
+	fi
+fi
 
 dnl Create files
 dnl ============
@@ -67,4 +97,10 @@ echo "Build ggzcore wrapper: $enable_ggzcore"
 echo "Chess wrapper for Python: $enable_ggzchess"
 echo "RSVG wrapper for SDL: $enable_rsvgsdl"
 echo ""
+if test "$pygame_found" = "no"; then
+	echo "WARNING:"
+	echo "Pygame has not been found."
+	echo "The wrappers will be compiled, but no game can be run."
+	echo ""
+fi
 
