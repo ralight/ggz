@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2563 2001-10-14 09:21:40Z jdorje $
+# $Id: Makefile.am 2605 2001-10-24 04:23:28Z jdorje $
 
 SUBDIRS = .
 
@@ -17,3 +17,5 @@ lib_LTLIBRARIES = libggzdmod.la
 libggzdmod_la_SOURCES = ggzdhod.h ggzdmod.c
 
 include_HEADERS = ggzdmod.h
+
+test: # nothing to be done
