@@ -7,13 +7,12 @@ The GGZ Gaming Zone client is built from three separate packages
 (these may be available as an integrated package in the future), upon
 which any number of game clients may be installed.  It is important
 that each package be built and installed in the proper sequence in
-order that all library dependencies are properly resolved.  In other
-words, build and install the libggz package before building the
-ggz-client-libs.  The reason things are packaged this way is that
-libggz, and the ggz-client-libs will change very rarely once they
-have stabilized; so we will be able to release a new version of a
-client or game module without requiring every subsystem to be replaced
-anew.
+order that all library dependencies are properly resolved.  For
+example, you must build and install the libggz package before building
+ggz-client-libs.  The reason things are packaged this way is that our
+libraries will change only rarely once they have stabilized, so we
+will be able to release a new version of a client or game module
+without requiring every subsystem to be replaced anew.
 
 If you are missing a package, they are freely downloadable in source
 format (as well as precompiled packages for RedHat-based systems and
@@ -25,7 +24,7 @@ The packages have been tested on a variety of systems, including
 Linux, FreeBSD and Solaris.  It should work on pretty much any type of
 UNIX system that supports X Windows and sockets, though it may require
 some changes in order to work.  We will be glad to assist anyone who
-wishes to port the software to other UNIX platforms.
+wishes to port the software to other platforms.
 
 The remainder of this document assumes that you are installing from
 source code.  If you are installing pre-compiled packages, please keep
@@ -58,19 +57,18 @@ For most packages, the installation is as simple as:
 make
 make install (as root)
 
-For the libggz, ggz-client-libs and kde-client you may need to update
-the shared library cache, eg:
+You may also need to update the shared library cache, eg:
 
 ldconfig /usr/local/lib  (as root, and assuming --prefix was not specified)
 
 Note that the installation defaults to the /usr/local hierarchy. If
-you prefer to install it under the /usr, add
+you prefer to install it under /usr, add
 
 --prefix=/usr --sysconfdir=/etc
 
-to all of the configure scripts below.
-The source packages are relocatable, which means you can also install them
-inside your home directory, in case you don't have system-wide permission.
+to all of the configure scripts below.  The source packages are
+relocatable, so you can also install them inside your home directory,
+if you don't have system-wide permission.
 
 Step by step instructions follow.  For more detailed installation
 instructions, please read the INSTALL file that accompanies each of
@@ -96,10 +94,11 @@ need to run ldconfig (as root) on some systems.
 Installing ggz-client-libs
 --------------------------
 
-Before installing ggz-client-libs, you must have the popt library
-installed.  You may obtain it from
+Before installing ggz-client-libs, you must have the popt and expat
+libraries installed.  You may obtain them from
 
 ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x
+http://prdownloads.sourceforge.net/expat/
 
 Unpack the ggz-client-libs sources.  They should extract into a
 directory named ggz-client-libs-X.X.X.  Enter that directory and run
@@ -117,8 +116,9 @@ Gtk Client Installation
 -----------------------
 
 The Gtk+ client requires that the Gtk+ libraries 1.2.X be installed.
-These can be downloaded from http://www.gtk.org.
-We recommend the latest stable version, 1.2.10.
+These can be downloaded from http://www.gtk.org. We recommend the
+latest stable version, 1.2.10.  The 2.0.X series is not currently
+supported. 
 
 Unpack the ggz-gtk-client sources.  They should extract into a
 directory named ggz-gtk-client-X.X.X.  Enter that directory and run
@@ -135,9 +135,9 @@ KDE Client Installation
 -----------------------
 
 The KDE client requires that the KDE libraries 2.X be installed.
-These can be downloaded from http://www.kde.org.
-We recommend the latest stable version, 2.2.2.
-As KDE depends on Qt, you will need Qt version >= 2.2 (2.3.1 is recommended).
+These can be downloaded from http://www.kde.org.  We recommend the
+latest stable version, 2.2.2.  As KDE depends on Qt, you will need Qt
+version >= 2.2 (2.3.1 is recommended).
 
 Unpack the ggz-kde-client sources.  They should extract into a
 directory named ggz-kde-client-X.X.X.  Enter that directory and run
@@ -159,10 +159,10 @@ Remember that all game modules can be used with any client.  Just
 because you're using one frontend for your client doesn't mean you
 can't use the games for the other frontend.
 
-Whether you are installing a single game, or the full gtk-games or kde-games
-package, the instructions are the same.  The ggz-config program must be on the
-path, and it will automatically set all the proper installation directory
-options for you.
+Whether you are installing a single game, or the full gtk-games or
+kde-games package, the instructions are the same.  The ggz-config
+program must be on the path, and it will automatically set all the
+proper installation directory options for you.
 
 Typical Installation:
 ./configure
@@ -174,15 +174,14 @@ Troubleshooting/Tips
 --------------------
 
 1) Remember, if you are going to be altering the locations of files in
-   ggz-client-libs, you should uninstall all client and game packages first.
-   If you are changing ONLY the GGZCONFDIR, then it is possible to simply
-   move the ggz.modules file to the new location after reinstalling
-   ggz-client-libs - this will save you from recompiling all of the clients
-   and games.
+   ggz-client-libs, you should uninstall all client and game packages
+   first.  If you are changing ONLY the GGZCONFDIR, then it is
+   possible to simply move the ggz.modules file to the new location
+   after reinstalling ggz-client-libs - this will save you from
+   recompiling all of the clients and games.
 
 2) Both libggz and ggz-client-libs require you to run ldconfig after
-   installing!
-   The same applies to the kde-client package.
+   installing!  The same applies to the kde-client package.
 
 3) Always use the 'make (un)install' script to add or remove a game client.
    This insures that the ggz-config program will update ggz.modules to note
@@ -211,13 +210,12 @@ Troubleshooting/Tips
    FAQ on our webpage (http://ggz.sourceforge.net) for any other permanent
    servers that may get setup.
 
-8) If you are getting weird errors during the compilations, make sure you have
-   the correct version of each build tool.
-   The following are known to cause problems:
-		libtool < 1.4
-		autoconf 2.53
-		automake 1.5d or 1.6
+8) If you are compiling from CVS and are getting weird errors during
+   the compilations, make sure you have the correct version of each
+   build tool. The following are known to cause problems:
+	libtool < 1.4
+	autoconf 2.53
+	automake 1.5d or 1.6
    The recommended compiler is gcc 2.95, although later versions (including
    3.0.x) should work as well.
    On non-GNU systems, use gmake rather than make.
-
