@@ -11,7 +11,7 @@ import os, pwd
 import re
 
 import ggzdmod
-import module_hnefatafl
+from module_hnefatafl import *
 from ggzboard_net import *
 
 class Server(NetworkBase):
@@ -24,9 +24,10 @@ class Server(NetworkBase):
 		self.MSG_MOVE = 2
 		self.MSG_GAMEOVER = 3
 		self.REQ_MOVE = 4
-		self.MSG_SYNC = 6
-		self.REQ_SYNC = 7
-		self.REQ_AGAIN = 8
+
+#		self.MSG_SYNC = 6
+#		self.REQ_SYNC = 7
+#		self.REQ_AGAIN = 8
 
 		self.SRV_ERROR = -1
 		self.SRV_OK = 0
@@ -90,8 +91,39 @@ def hook_data (num, type, name, fd):
 	print "READ(4bytes)", op
 	if op == net.REQ_MOVE:
 		print "- move"
-		move = net.getbyte()
-		print " + ", move
+		fromposval = net.getbyte()
+		toposval = net.getbyte()
+		print " + ", fromposval, toposval
+		# TODO: move validity check
+		# TODO: send to all players
+		frompos = (fromposval % 9, fromposval / 9)
+		topos = (toposval % 9, toposval / 9)
+		if ggzboardgame.validatemove("w", frompos, topos):
+			ggzboardgame.domove(frompos, topos)
+			net.sendbyte(net.MSG_MOVE)
+			net.sendbyte(fromposval)
+			net.sendbyte(toposval)
+
+			(ret, frompos, topos) = ggzboardgame.aimove()
+			print "AI:", ret, frompos, topos
+			if ret:
+				(x, y) = frompos
+				(x2, y2) = topos
+				fromposval = y * 9 + x
+				toposval = y2 * 9 + x2
+				ggzboardgame.domove(frompos, topos)
+				net.sendbyte(net.MSG_MOVE)
+				net.sendbyte(fromposval)
+				net.sendbyte(toposval)
+
+		if ggzboardgame.over():
+			winner = 0 # FIXME!
+			net.sendbyte(net.MSG_GAMEOVER)
+			net.sendbyte(winner)
+
+	if net.error():
+		print "** network error! **"
+		sys.exit(-1)
 
 def hook_error (arg):
 	print "* error:", arg
@@ -107,6 +139,7 @@ def initggz():
 
 def main():
 	global net
+	global ggzboardgame
 #	global xadrez
 
 	print "### launched"
