@@ -80,10 +80,15 @@ extern GGZGame *game;
 
 void server_init(char *host, int port, GGZLoginType type, char* login, char* password)
 {
+	char *sessiondump;
+
 	server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, host, port);
 	ggzcore_server_set_logininfo(server, type, login, password);
 	server_register(server);
+	sessiondump = ggzcore_conf_read_string("Debug", "SessionLog", NULL);
+	ggzcore_server_log_session(server, sessiondump);
+
 	ggzcore_server_connect(server);
 }
 
