@@ -1,4 +1,4 @@
-<? include_once("site/header.php"); ?>
+<?php include_once("site/header.php"); ?>
 
 <table class="content" width="100%">
 <tr>
@@ -40,9 +40,9 @@ The GGZ Gaming Zone 0.0.8 has been released on Feb 07 2004.<br>
 </table>
 
 <b>News</b><br>
-<i>07.04.2004: Server move</i> (by josef)<br>
-The GGZ project has switched hosting of its main server from User-Mode-Linux
-(UML) to Linux-VServer. Sorry for the downtime during the last days.
+<i>24.04.2004: Server move</i> (by josef)<br>
+The GGZ project has switched hosting of its main server, running on
+User-Mode-Linux (UML), to another provider. Sorry for the downtime during the last days.
 <br><br>
 
 <i>07.02.2004: GGZ 0.0.8</i> (by josef)<br>
@@ -61,5 +61,5 @@ and translation/content negotiation.
 </tr>
 </table>
 
-<? include_once("site/footer.php"); ?>
+<?php include_once("site/footer.php"); ?>
 
