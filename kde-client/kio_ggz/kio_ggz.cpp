@@ -186,7 +186,7 @@ void GGZProtocol::init(const KURL& url)
 	debug(QString("Set host: %1").arg(url.host()));
 
 	m_core = new GGZCore();
-	m_core->init(GGZCore::parser | GGZCore::modules, NULL, 0);
+	m_core->init(GGZCore::parser | GGZCore::modules);
 
 	m_server = new GGZCoreServer();
 	m_server->addHook(GGZCoreServer::connected, hook_server_connect);
