@@ -1,4 +1,4 @@
-/*	$Id: ggz_server.h 2187 2001-08-23 06:43:28Z jdorje $	*/
+/*	$Id: ggz_server.h 2188 2001-08-23 07:13:00Z jdorje $	*/
 /*
  * File: ggz.h
  * Author: Brent Hendricks
@@ -106,14 +106,19 @@ int ggzdmod_player_leave(int* seat, int *fd);
  */
 
 enum {
-	GGZ_EVENT_LAUNCH	= 0,
-	GGZ_EVENT_JOIN		= 1,
-	GGZ_EVENT_LEAVE		= 2,
-	GGZ_EVENT_QUIT		= 3,
-	GGZ_EVENT_PLAYER	= 4
+	GGZ_EVENT_DEFAULT	= -1, /**< any event */
+	GGZ_EVENT_LAUNCH	= 0,  /**< a game launch event from ggzd */
+	GGZ_EVENT_JOIN		= 1,  /**< a player join event from ggzd */
+	GGZ_EVENT_LEAVE		= 2,  /**< a player leave event from ggzd */
+	GGZ_EVENT_QUIT		= 3,  /**< a game over event from ggzd */
+	GGZ_EVENT_PLAYER	= 4   /**< a message from a client/player */
 };
 
-/* Set a handler for a specific event */
+/* Set a handler for a specific event.
+ * passing GGZ_EVENT_DEFAULT sets the handler for all unhandled events */
+/* NOTE that when the handler is called the ggzdmod event will
+ * already have been handled from the GGZ end; you *don't* have to
+ * call a ggzdmod event function from above */
 typedef void (*GGZHandler)(int event_id, void *handler_data);
 void ggzdmod_set_handler(int event_id, const GGZHandler handler);
 

@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 2187 2001-08-23 06:43:28Z jdorje $	*/
+/*	$Id: ggz.c 2188 2001-08-23 07:13:00Z jdorje $	*/
 /*
  * File: ggz.c
  * Author: Brent Hendricks
@@ -291,10 +291,22 @@ int ggzdmod_fd_max(void)
  */
 
 /* IO: Hold the handlers here */
-static GGZHandler handlers[5];
+/* this is all hard-coded in conjunction with the
+ * GGZ_EVENT_*** definitions.  Not good, but it'll do.  --JDS */
+static GGZHandler handlers[5] = {NULL, NULL, NULL, NULL, NULL};
 
 void ggzdmod_set_handler(int event_id, const GGZHandler handler)
 {
+	/* singularity: this function handles all unhandled events */
+	if (event_id == GGZ_EVENT_DEFAULT) {
+		for (event_id = 0;
+		     event_id < sizeof(handlers)/sizeof(handlers[0]);
+		     event_id++)
+			if (handlers[event_id] == NULL)
+				handlers[event_id] = handler;
+	}
+
+	/* regular case */
 	if (event_id >= sizeof(handlers)/sizeof(handlers[0])
 	    || event_id < 0)
 		return;
@@ -332,6 +344,9 @@ int ggzdmod_main(char* game_name)
 			else
 				return -2;
 		}
+
+		/* TODO: errors should be handled within this loop; we should
+		 * do a graceful exit on an error. --JDS */
 
 		/* Check for message from GGZ server */
 		if (FD_ISSET(ggz_sock, &read_fd_set)) {
