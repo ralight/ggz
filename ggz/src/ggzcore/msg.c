@@ -168,7 +168,7 @@ void _ggzcore_debug_init(GGZDebugLevel levels, const char* file)
 {
 	debug_levels = levels;
 
-	if (strcmp(file, "stderr") != 0)
+	if ((file) && (strcmp(file, "stderr") != 0))
 		if ( (debug_file = fopen(file, "a")) == NULL)
 			ggzcore_error_sys_exit("fopen() to open %s", file);
 }

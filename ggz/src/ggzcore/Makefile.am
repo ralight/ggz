@@ -14,7 +14,7 @@ include_HEADERS = ggzcore.h
 
 libggzcore_la_LIBADD = @LDADD@
 
-libggzcore_la_LDFLAGS = -version-info 0:0:0
+libggzcore_la_LDFLAGS = -version-info 1:0:0
 
 libggzcore_la_SOURCES =	conf.c \
 			conf.h \
