@@ -892,12 +892,16 @@ void parse_room_files(void)
 	strcpy(dir, opt.conf_dir);
 	strcat(dir, "/rooms/");
 
+	parse_room("entry", dir);
+
 	if(add_all_rooms == 'F') {
 		/* Go through all rooms explicitly included in the add list */
 		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding rooms in add list");
 		room = add_ignore_rooms;
 		while(room) {
-			parse_room(room->name, dir);
+			/* Don't readd the entry room */
+			if(strcmp(room->name, "entry"))
+				parse_room(room->name, dir);
 			room = room->next;
 		}
 	} else {
@@ -910,6 +914,9 @@ void parse_room_files(void)
 			       err_sys_exit("malloc error in parse_game_files");
 			strcpy(name, namelist[i]->d_name);
 			name[strlen(name)-5] = '\0';
+			/* Don't readd the entry room */
+			if(!strcmp(name, "entry"))
+				continue;
 			/* Check to see if this game is on the ignore list */
 			room = add_ignore_rooms;
 			addit = 1;
@@ -975,7 +982,8 @@ static void parse_room(char *name, char *dir)
 	else
 		room_create_additional();
 	num = room_info.num_rooms - 1;
-	rooms[num].game_type = -1;
+	rooms[num].game_type = -2;
+	rooms[num].max_tables = -1;
 
 	while(fgets(line, 256, roomfile)) {
 		linenum++;
@@ -1030,7 +1038,7 @@ static void parse_room(char *name, char *dir)
 				continue;
 			}
 			intval = atoi(varvalue);
-			if(intval < 1) {
+			if(intval < 0) {
 				PARSE_ERR("MaxTables value invalid");
 				continue;
 			}
@@ -1048,6 +1056,8 @@ static void parse_room(char *name, char *dir)
 					break;
 			if(i != state.types)
 				rooms[num].game_type = i;
+			else if(!strcasecmp(varvalue, "none"))
+				rooms[num].game_type = -1;
 			else
 				PARSE_ERR("Invalid game type specified");
 		}
@@ -1071,13 +1081,13 @@ static void parse_room(char *name, char *dir)
 		err_msg("No MaxPlayers given for room %s", name);
 		rooms[num].max_players = DEFAULT_MAX_ROOM_USERS;
 	}
-	if(rooms[num].max_tables == 0) {
+	if(rooms[num].max_tables < 0) {
 		err_msg("No MaxTables given for room %s", name);
 		rooms[num].max_tables = DEFAULT_MAX_ROOM_TABLES;
 	}
-	if(rooms[num].game_type == -1) {
+	if(rooms[num].game_type == -2) {
 		err_msg("No GameType given for room %s", name);
-		rooms[num].game_type = 0;
+		rooms[num].game_type = -1;
 	}
 
 	rooms[num].players = calloc(rooms[num].max_players, sizeof(GGZPlayer*));

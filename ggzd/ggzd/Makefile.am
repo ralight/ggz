@@ -5,9 +5,11 @@ SUBDIRS = .
 DB_SOURCES = ggzdb_@database@.c
 DB_OBJECTS = ggzdb_@database@.o
 
-EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd $(DB_SOURCES)
+EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd entry.room $(DB_SOURCES)
 
 bin_PROGRAMS = ggzd
+
+ggzdroom_DATA = entry.room
 
 ggzd_SOURCES =	chat.c\
 		chat.h\
@@ -49,4 +51,4 @@ ggzdconf_DATA = ggzd.conf ggzd.motd
 
 test:
 	-cp -f ggzd.motd $(top_builddir)/test
-
+	-cp -f $(ggzdroom_DATA) $(top_builddir)/test/rooms
