@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 4181 2002-05-07 16:50:45Z jdorje $
+ * $Id: hearts.c 4240 2002-06-09 18:59:16Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -60,6 +60,7 @@ static void hearts_get_options(void);
 static int hearts_handle_option(char *option, int value);
 static char *hearts_get_option_text(char *buf, int bufsz, char *option,
 				    int value);
+static bool hearts_test_for_gameover(void);
 static void hearts_handle_gameover(void);
 static void hearts_start_bidding(void);
 static void hearts_start_playing(void);
@@ -92,7 +93,7 @@ game_data_t hearts_data = {
 	hearts_end_trick,
 	hearts_end_hand,
 	game_start_game,
-	game_test_for_gameover,
+	hearts_test_for_gameover,
 	hearts_handle_gameover,
 	game_map_card,
 	game_compare_cards,
@@ -137,7 +138,7 @@ static void hearts_get_options(void)
 	           "How many points until the game is over?",
 	           5,
 	           2,
-	           "Game to 10", "Game to 50",
+	           "Game to 20", "Game to 50",
 		   "Game to 100", "Game to 1000",
 	           "Unending game");
 	game_get_options();
@@ -219,27 +220,53 @@ static char *hearts_get_option_text(char *buf, int bufsz, char *option,
 	return buf;
 }
 
-static void hearts_handle_gameover(void)
+static bool hearts_test_for_gameover(void)
 {
 	player_t p;
-	player_t winners[game.num_players];
-	int winner_cnt = 0;
+	int num_winners = 0, low_score = -1;
 
-
-	/* in hearts, the low score wins */
-	int lo_score = 100;
+	/* We play until the highest-scoring person reaches the target score,
+	   but we can never end in a tie. */
+	if (!game_test_for_gameover())
+		return FALSE;
 	for (p = 0; p < game.num_players; p++) {
-		if (game.players[p].score < lo_score) {
-			winner_cnt = 1;
+		int score = game.players[p].score;
+		if (low_score < 0 || score < low_score) {
+			low_score = score;
+			num_winners = 1;
+		} else if (score == low_score) {
+			num_winners++;
+		}
+	}
+
+	return (num_winners == 1);
+}
+
+static void hearts_handle_gameover(void)
+{
+	player_t p, winners[game.num_players];
+	int num_winners = 0, low_score = -1;
+	int max_score = 0;
+
+	/* In hearts, the low score wins.  Note that the low score
+	   can be higher than the "target score", since we can never
+	   end in a tie (we just play another hand). */
+	for (p = 0; p < game.num_players; p++) {
+		int score = game.players[p].score;
+		max_score = MAX(score, max_score);
+		if (low_score < 0 || score < low_score) {
+			num_winners = 1;
 			winners[0] = p;
-			lo_score = game.players[p].score;
-		} else if (game.players[p].score == lo_score) {
-			winners[winner_cnt] = p;
-			winner_cnt++;
+			low_score = game.players[p].score;
+		} else if (score == low_score) {
+			winners[num_winners] = p;
+			num_winners++;
 		}
 	}
 	
-	handle_gameover_event(winner_cnt, winners);
+	assert(num_winners == 1);
+	assert(max_score >= game.target_score);
+	handle_gameover_event(num_winners, winners);
 }
 
 static void hearts_start_bidding(void)
