@@ -119,7 +119,8 @@ int ggzcore_game_add_event_hook(GGZGame *game,
 				const GGZGameEvent event, 
 				const GGZHookFunc func)
 {
-	if (game && _ggzcore_game_event_is_valid(event))
+	if (game && _ggzcore_game_event_is_valid(event)
+	    && game->event_hooks[event])
 		return _ggzcore_game_add_event_hook_full(game, event, func, NULL);
 	else
 		return -1;
@@ -131,7 +132,8 @@ int ggzcore_game_add_event_hook_full(GGZGame *game,
 				     const GGZHookFunc func,
 				     void *data)
 {
-	if (game && _ggzcore_game_event_is_valid(event))
+	if (game && _ggzcore_game_event_is_valid(event)
+	    && game->event_hooks[event])
 		return _ggzcore_game_add_event_hook_full(game, event, func, data);
 	else
 		return -1;
@@ -143,7 +145,8 @@ int ggzcore_game_remove_event_hook(GGZGame *game,
 				   const GGZGameEvent event, 
 				   const GGZHookFunc func)
 {
-	if (game && _ggzcore_game_event_is_valid(event))
+	if (game && _ggzcore_game_event_is_valid(event)
+	    && game->event_hooks[event])
 		return _ggzcore_game_remove_event_hook(game, event, func);
 	else 
 		return -1;
@@ -154,7 +157,8 @@ int ggzcore_game_remove_event_hook_id(GGZGame *game,
 				      const GGZGameEvent event, 
 				      const unsigned int hook_id)
 {
-	if (game && _ggzcore_game_event_is_valid(event))
+	if (game && _ggzcore_game_event_is_valid(event)
+	    && game->event_hooks[event])
 		return _ggzcore_game_remove_event_hook_id(game, event, hook_id);
 	else
 		return -1;
