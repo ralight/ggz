@@ -17,6 +17,8 @@
 #include <unistd.h>
 #include <getopt.h>
 
+#define GRUBBY_VERSION "0.5"
+
 /* Execute administrative commands */
 /* FIXME: Log admin commands */
 static int admin(Guru *guru, Gurucore *core)
@@ -127,7 +129,7 @@ int main(int argc, char *argv[])
 				optname = optarg;
 				break;
 			case 'v':
-				printf(_("Grubby version 0.4\n"));
+				printf(_("Grubby version %s\n"), GRUBBY_VERSION);
 				exit(0);
 				break;
 			case 'd':
