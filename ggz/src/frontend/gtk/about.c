@@ -721,7 +721,6 @@ static gint about_update(gpointer data)
 {
 	GtkDrawingArea *background;
 	int status;
-	gchar *ver;
 
 	background = gtk_object_get_data(GTK_OBJECT(about_dialog), "background");
 	gdk_draw_pixmap (pixmap, GTK_WIDGET(background)->style->fg_gc[GTK_WIDGET_STATE(background)], bg_img, 0, 0, 0, 0,
