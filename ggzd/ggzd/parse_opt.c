@@ -289,6 +289,7 @@ static void parse_file(FILE *configfile)
 			continue;
 		 }
 
+#if 0
 		/*** TmpDir = DIR ***/
 		if(!strcmp(varname, "tmpdir")) {
 			if(varvalue == NULL) {
@@ -301,6 +302,7 @@ static void parse_file(FILE *configfile)
 			opt.tmp_dir = strval;
 			continue;
 		 }
+#endif
 
 		/*** AddAllGames ***/
 		if(!strcmp(varname, "addallgames")) {
