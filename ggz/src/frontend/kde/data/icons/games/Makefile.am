@@ -1,4 +1,4 @@
 SUBDIRS = .
 
-pix_DATA = ccheckers.png Chess.png Combat.png Dots.png Hastings.png LaPocha.png Reversi.png NetSpades.png TicTacToe.png
+pix_DATA = ccheckers.png Chess.png Combat.png Dots.png Hastings.png LaPocha.png Reversi.png NetSpades.png TicTacToe.png Krosswater.png
 pixdir = $(kde_datadir)/kggz/images/icons/games
