@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers AI module
  * Date: 01/01/2001
  * Desc: Artificial Intelligence for Chinese Checkers
- * $Id: ai.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: ai.c 4481 2002-09-09 04:01:39Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "ai.h"
 #include "game.h"
 
 
