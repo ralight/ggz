@@ -42,7 +42,7 @@ int convert = 0;
 GGZMod *mod = NULL;
 
 /* Execute a program with the given argument vector */
-void simpleexec(const char *argvec)
+static void simpleexec(const char *argvec)
 {
 	char *tok;
 	char **l;
@@ -71,7 +71,7 @@ void simpleexec(const char *argvec)
 }
 
 /* Launch a child program and reassign some fd's */
-int startup(int fdin, int fdout, const char *exec, int convert)
+static int startup(int fdin, int fdout, const char *exec, int convert)
 {
 	int fd[2];
 	int res;
@@ -158,7 +158,7 @@ int startup(int fdin, int fdout, const char *exec, int convert)
 }
 
 /* Signal handler */
-void sighandler(int foo)
+static void sighandler(int foo)
 {
 	int status;
 
@@ -167,7 +167,7 @@ void sighandler(int foo)
 }
 
 /* GGZ handler */
-void callback(GGZMod *mod, GGZModEvent e, void *data)
+static void callback(GGZMod *mod, GGZModEvent e, void *data)
 {
 	fdgame = *(int*)data;
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
