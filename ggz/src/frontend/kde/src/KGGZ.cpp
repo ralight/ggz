@@ -763,6 +763,12 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			KGGZDEBUG("loggedout\n");
 			m_workspace->widgetChat()->receive(NULL, i18n("Logged out"), KGGZChat::RECEIVE_ADMIN);
 			m_lock = 1;
+			if(kggzgame)
+			{
+				detachGameCallbacks();
+				delete kggzgame;
+				kggzgame = NULL;
+			}
 			if(kggzroom)
 			{
 				detachRoomCallbacks();
