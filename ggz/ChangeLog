@@ -1,0 +1,514 @@
+2000-01-21 04:57:17  Brent Hendricks  <brentmh@ece.rice.edu>
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/players.c:
+	- Wrote table_list() to handle REQ_TABLE_LIST
+	- Renamed game_types() to list_types() due to name clash
+	- Renamed opcodes to correct values
+	- es_write_str() -> es_write_string()
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/datatypes.h:
+	- Added #defines for NG_TYPE_ALL/RES/OPEN
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/README.Design:
+	- Pass total number of seats and open seats with RSP_TABLE_LIST
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/README.Design:
+	- REQ_TABLE_LIST followed by int, not chr.
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/protocols.h, /home/brentmh/pub/sp.cvsroot/NetGames/README.Design:
+	- Rename some of the opcodes to include TABLE
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/datatypes.h:
+	- Added author, homepage, and version member to GameInfo struct
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/players.c:
+	- Wrote user_list() and game_types() to handle REQ_USER_LIST and
+	  REQ_GAMES_TYPES respectively
+
+2000-01-20 23:50:52  Brent Hendricks  <brentmh@ece.rice.edu>
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/table.c, /home/brentmh/pub/sp.cvsroot/NetGames/server/datatypes.h, /home/brentmh/pub/sp.cvsroot/NetGames/server/players.c:
+	- Replaced occurances of 'slot' with 'seat'
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/TODO, /home/brentmh/pub/sp.cvsroot/NetGames/README.Design:
+	- Better description of table<->control communication
+	- Cleanup data structure description
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/callbacks.h, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/interface.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/interface.h:
+	- Make connection detail dialog rather than part of connection window
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/client_func.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_connect.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_connect.h, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_dlg_options.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/callbacks.c:
+	- Make detail window rather than part of connect dialog
+	- Don't disconnect when done playing
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/engine_func.c, /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/engine.h, /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/engine_main.c:
+	- Handle passing of opcodes REQ/RSP_GAME_LAUNCH, and MSG_GAME_OVER
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/table.c:
+	- #include <sys/signals> for kill()
+	- #include <protocols.h> since we handle comm. between table and
+	  control
+	- New function do_table() to handle creation of table process
+	- New function game_over() to handle MSG_GAME_OVER from table
+	- io_loop() doens't need to return anything, since either way we
+	  are going to destroy the table
+	- Added some functions descriptions
+	- Prepend REQ_GAME_LAUNCH to info sent to table
+	- Wait for RSP_GANE_LAUNCH when done
+	- Expanded handle_game() to handle requests from table
+	- close fd's when not in use
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/protocols.h:
+	- Added new opcodes REQ/RSP_CHAT
+	- Added new enum types for data between table and control
+	- Added opcodes for REQ/RSP_GAME_LAUNCH and MSG_GAME_OVER
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/players.c:
+	- Call remove_player() from new_player(), not io_handler()
+	- Use es_writen() rather than write() when relaying data
+	  between player and game.  Can't use es_readn() because we don't
+	  know how much data there is.
+	- Close fds and clean up and game is over
+	- Initialize table.num_humans when launching a table
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/datatypes.h:
+	- Add new member to table info struct: num_humans
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/control.c:
+	- Really don't call es_err_func_set() (not MT safe)
+
+	* /home/brentmh/pub/sp.cvsroot/easysock/easysock.h, /home/brentmh/pub/sp.cvsroot/easysock/easysock.c, /home/brentmh/pub/sp.cvsroot/easysock/TODO:
+	- Renamed readn() to es_readn()
+	- Added prorotypes for es_readn() and es_writen() to easysock.h
+
+	* /home/brentmh/pub/sp.cvsroot/easysock/easysock.c:
+	- Added Stevens' readn() function from Unix network programming
+
+2000-01-19 19:55:42  Brent Hendricks  <brentmh@ece.rice.edu>
+
+	* /home/brentmh/pub/sp.cvsroot/easysock/easysock.c:
+	- Added es_writen from Stevens book.
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/Makefile.am:
+	- Link libeasysock from ($top_builddir)/easysock no ($top_srcdir)/easysock
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/listen.c, /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/Makefile.am:
+	- Added options.h to sources list
+	- Removed listen.c
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/NEWS:
+	- Update with info about sketch
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/Makefile.am:
+	- DOH!  Forgot to add all-cards.xpm to sources list
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/Makefile.am, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/protocols.h:
+	- Hopefully fixed protocols.h problem
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/protocols.h:
+	- Added protocols.h
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/configure.in, /home/brentmh/pub/sp.cvsroot/NetGames/server_arch.fig:
+	- Require gtk1.2
+	- Don't try to create slclient/Makefile
+	- Added sketch of server arch
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/control.c, /home/brentmh/pub/sp.cvsroot/NetGames/server/netgamed.conf:
+	- Don't hardcode my homedir into path from game server (still
+	  need to read path from file though)
+	- Added empty netgamed.conf
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/Makefile.am:
+	- Removed taunt.h from sources list
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/taunt.h, /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/taunt.c:
+	- Removed taunt.*
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/Makefile.am, /home/brentmh/pub/sp.cvsroot/NetGames/README, /home/brentmh/pub/sp.cvsroot/NetGames/README.Design:
+	- More docs.
+	- Removed taunt.* from spades server sources list
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/NEWS, /home/brentmh/pub/sp.cvsroot/NetGames/README.Design, /home/brentmh/pub/sp.cvsroot/NetGames/TODO:
+	- Wrote some documentation prior to initial release
+
+2000-01-18 23:00:36  Brent Hendricks  <brentmh@ece.rice.edu>
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/ChangeLog:
+	*** empty log message ***
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/engine_func.c:
+	- Fixed so human players don't have to be consecutive
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_menu.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/options.h, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/callbacks.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/client_func.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_dlg_options.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_dlg_options.h, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_io.c:
+	- (sigh) More hacks so that options are not hardcoded.  One of these
+	  days I need to write a real client.
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/players.c, /home/brentmh/pub/sp.cvsroot/NetGames/server/table.c, /home/brentmh/pub/sp.cvsroot/NetGames/server/control.c:
+	- Cosmetic changes to debug messages
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/.cvsignore:
+	- Added .libs
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/table.h, /home/brentmh/pub/sp.cvsroot/NetGames/server/table.c:
+	- Remove temporary hardcoded spades hack.  Game specific stuff (path
+	  and options) now obtained from GameInfo struct.
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/players.h, /home/brentmh/pub/sp.cvsroot/NetGames/server/players.c:
+	- Detect when game-table is over and stop trying to be mediator
+	- Handle operation REQ_JOIN_GAME
+	- New function join_table() joins a previously existing game table
+	- New function num_comp_play() to count computer players from mask
+	- When launching a new game, initialize slot mutex and cond. variable
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/err_func.c:
+	- Print [pid]: before messages
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/datatypes.h:
+	- #define MAX_PATH_LEN 256 for games that are exec()'d.
+	- New #define's for allowable number of players and computer players.
+	  These get OR'd together
+	- New member path for GamInfo struct
+	- New member count for GameTypes struct
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/control.c:
+	- Initialize player's uid to NG_UID_NONE, not their fd
+	- Temporary hack to put in spades GameInfo.  This should be read from
+	  a config file somewhere.
+	- Don't bother initializing table pid and slot mutex, as these get
+	  overwritten anyway.
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/.cvsignore:
+	- Added .libs to .cvsignore
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/.cvsignore, /home/brentmh/pub/sp.cvsroot/NetGames/games/.cvsignore:
+	- Added .cvsignore
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/engine_func.c, /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/engine.h:
+	- Small hacks in options passing to talk to NetGames server
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_io.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/callbacks.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/client_func.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_connect.c:
+	- Hacks to get client to play multiplayer game with server
+
+2000-01-18 19:14:08  Brent Hendricks  <brentmh@ece.rice.edu>
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/engine_func.c:
+	- Fixed so human players don't have to be consecutive
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_menu.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/options.h, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/callbacks.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/client_func.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_dlg_options.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_dlg_options.h, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_io.c:
+	- (sigh) More hacks so that options are not hardcoded.  One of these
+	  days I need to write a real client.
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/players.c, /home/brentmh/pub/sp.cvsroot/NetGames/server/table.c, /home/brentmh/pub/sp.cvsroot/NetGames/server/control.c:
+	- Cosmetic changes to debug messages
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/.cvsignore:
+	- Added .libs
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/table.h, /home/brentmh/pub/sp.cvsroot/NetGames/server/table.c:
+	- Remove temporary hardcoded spades hack.  Game specific stuff (path
+	  and options) now obtained from GameInfo struct.
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/players.h, /home/brentmh/pub/sp.cvsroot/NetGames/server/players.c:
+	- Detect when game-table is over and stop trying to be mediator
+	- Handle operation REQ_JOIN_GAME
+	- New function join_table() joins a previously existing game table
+	- New function num_comp_play() to count computer players from mask
+	- When launching a new game, initialize slot mutex and cond. variable
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/err_func.c:
+	- Print [pid]: before messages
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/datatypes.h:
+	- #define MAX_PATH_LEN 256 for games that are exec()'d.
+	- New #define's for allowable number of players and computer players.
+	  These get OR'd together
+	- New member path for GamInfo struct
+	- New member count for GameTypes struct
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/server/control.c:
+	- Initialize player's uid to NG_UID_NONE, not their fd
+	- Temporary hack to put in spades GameInfo.  This should be read from
+	  a config file somewhere.
+	- Don't bother initializing table pid and slot mutex, as these get
+	  overwritten anyway.
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/.cvsignore:
+	- Added .libs to .cvsignore
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/.cvsignore, /home/brentmh/pub/sp.cvsroot/NetGames/games/.cvsignore:
+	- Added .cvsignore
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/engine_func.c, /home/brentmh/pub/sp.cvsroot/NetGames/games/spades/engine.h:
+	- Small hacks in options passing to talk to NetGames server
+
+	* /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_io.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/callbacks.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/client_func.c, /home/brentmh/pub/sp.cvsroot/NetGames/gtkclient/gtk_connect.c:
+	- Hacks to get client to play multiplayer game with server
+
+2000-01-14 04:06:01  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/NetGames/README.Design:
+	- Added MSG_SERVER_FULL to description of C/S interactions
+
+	* /usr/local/cvsroot/brentmh/NetGames/games/spades/Makefile.am, /usr/local/cvsroot/brentmh/NetGames/games/spades/engine.h, /usr/local/cvsroot/brentmh/NetGames/games/spades/engine_func.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/engine_main.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/listen.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/taunt.c:
+	- Lots of hacks so we can use as a Netgames server.  This will get
+	  mostly rewritten when the time comes, I just need *something* now.
+
+	* /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_io.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_io.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_play.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_play.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_taunt.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/interface.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/interface.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/main.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/callbacks.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/client.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/client_func.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/client_main.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/display.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_connect.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_connect.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_exit.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_options.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_options.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_stat.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_stat.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/callbacks.c:
+	- <sigh>  Lots of dirty hacks to get the spades client to work with
+	  the new Netgames protocol.  This will all go away when I *really*
+	  start writing a client in earnest.  Now I just need something to
+	  test the server
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/.cvsignore:
+	- Added .libs
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/control.c, /usr/local/cvsroot/brentmh/NetGames/server/datatypes.h, /usr/local/cvsroot/brentmh/NetGames/server/parse_opt.c, /usr/local/cvsroot/brentmh/NetGames/server/players.c, /usr/local/cvsroot/brentmh/NetGames/server/table.c:
+	- Removed rest of references to taunt port
+	- Added condition variable and accompanying mutex for number of open
+	  slots in each game (we wait until 0 open slots to fork table process)
+	- Add num_reserves element to table struct
+	- Add 1 to fd_max before using select (DOH!)
+	- A few temporary hacks so we can play spades :)
+	- New function pass_options() for liason thread to pass options to game
+
+2000-01-12 07:21:13  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/players.c, /usr/local/cvsroot/brentmh/NetGames/server/players.h:
+	- Set thread ID for all player-handling threads
+	- Use select() in io_handler() since we now handle fd from the table
+	  (In fact the thread acts as a go between for player and table)
+	- Don't pass p_index as referemce to handle_player(), we can get
+	  t_index from user structure
+	- Use mutexes when updating player data upon login
+	- Count computer players when calculating open slots
+	- Create socketpait so the game tabel can communicate with the player
+	- If new game launches successfully, put t_index in user structure
+	- Some function renaming
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/control.c:
+	- First go at in init_data() routine
+	- Call basic daemon_init() to background self, close fd's, etc
+	- Don't set es_err_func (not MT safe)
+	- Remove references to taunt server/socket (handled by main sock now)
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/protocols.h:
+	- New exchanmge REQ/RSP_USER_LIST to send list of logged in users
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/table.c, /usr/local/cvsroot/brentmh/NetGames/server/table.h:
+	- Major work done:
+	- launch_table() created the new thread to manage the table
+	- new_table() is the thread init function, updating structures,
+	  then forking off game table child process.
+	- Parent calls io_loop() to talk to child through socketpair
+	- Child calls run_game() which dup's fds onto 0 and 1 and then
+	  exec's the game
+	- remove_table() deletes structure from list when game is over
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/datatypes.h:
+	- Added member to table type for player fds
+	- Added thread_t member to user struct
+	- Incorporated mutexes into data structures
+	- Renamed datatypes
+
+2000-01-11 13:42:20  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/NetGames/gtkclient/.cvsignore:
+	- Added .cvsignore
+
+	* /usr/local/cvsroot/brentmh/NetGames/gtkclient/callbacks.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/callbacks.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/client_main.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_io.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/interface.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/interface.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/main.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/support.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/support.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/Makefile.am:
+	- Added in glade-generated files for new interface
+
+2000-01-10 19:34:35  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/NetGames/games/spades/card.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/card.h, /usr/local/cvsroot/brentmh/NetGames/games/spades/engine.h, /usr/local/cvsroot/brentmh/NetGames/games/spades/engine_func.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/engine_main.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/listen.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/options.h, /usr/local/cvsroot/brentmh/NetGames/games/spades/socketfunc.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/socketfunc.h, /usr/local/cvsroot/brentmh/NetGames/games/spades/taunt.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/taunt.h, /usr/local/cvsroot/brentmh/NetGames/games/spades/Makefile.am, /usr/local/cvsroot/brentmh/NetGames/games/spades/ai.c:
+	- Brought over spadesd src for temporary game hack
+
+	* /usr/local/cvsroot/brentmh/NetGames/games/Makefile.am:
+	- New dir to house game modules
+
+	* /usr/local/cvsroot/brentmh/NetGames/Makefile.am, /usr/local/cvsroot/brentmh/NetGames/acconfig.h, /usr/local/cvsroot/brentmh/NetGames/configure.in:
+	- Uncommented client and gtk-client references in configure.in
+	- Added check for pthread lib in configure.in
+	- Added #define _XOPEN_SOURCE 500 to for read-write locks
+	- Added #define _REENTRANT for thread-dafe code
+
+	* /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtkspinbutton.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtkspinbutton.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/main.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/options.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/socketfunc.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/socketfunc.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_connect.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_connect.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_about.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_about.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_disconnect.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_disconnect.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_error.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_error.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_exit.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_exit.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_options.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_options.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_stat.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_stat.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_io.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_io.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_menu.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_menu.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_play.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_play.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_taunt.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_taunt.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/card.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/card.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/client.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/client_func.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/client_main.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/display.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/Makefile.am, /usr/local/cvsroot/brentmh/NetGames/gtkclient/all-cards.xpm:
+	- Brought over client src from NetSpades for temporary client-hack
+	  (Will be rewritten from scratch later)
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/table.c, /usr/local/cvsroot/brentmh/NetGames/server/table.h:
+	- New files for setting up handling io with game tables
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/control.c, /usr/local/cvsroot/brentmh/NetGames/server/datatypes.h, /usr/local/cvsroot/brentmh/NetGames/server/players.c, /usr/local/cvsroot/brentmh/NetGames/server/players.h, /usr/local/cvsroot/brentmh/NetGames/server/protocols.h:
+	- Reworked for threads
+	- Rewrote get_game_launch()
+	- Filled in login_anon()
+	- Generalize handler so that thread can handle game io
+	- Some temporary #define's
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/Makefile.am:
+	- Added files table.h, table.c
+
+2000-01-10 19:34:35  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/NetGames/games/spades/card.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/card.h, /usr/local/cvsroot/brentmh/NetGames/games/spades/engine.h, /usr/local/cvsroot/brentmh/NetGames/games/spades/engine_func.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/engine_main.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/listen.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/options.h, /usr/local/cvsroot/brentmh/NetGames/games/spades/socketfunc.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/socketfunc.h, /usr/local/cvsroot/brentmh/NetGames/games/spades/taunt.c, /usr/local/cvsroot/brentmh/NetGames/games/spades/taunt.h, /usr/local/cvsroot/brentmh/NetGames/games/spades/Makefile.am, /usr/local/cvsroot/brentmh/NetGames/games/spades/ai.c:
+	- Brought over spadesd src for temporary game hack
+
+	* /usr/local/cvsroot/brentmh/NetGames/games/Makefile.am:
+	- New dir to house game modules
+
+	* /usr/local/cvsroot/brentmh/NetGames/Makefile.am, /usr/local/cvsroot/brentmh/NetGames/acconfig.h, /usr/local/cvsroot/brentmh/NetGames/configure.in:
+	- Uncommented client and gtk-client references in configure.in
+	- Added check for pthread lib in configure.in
+	- Added #define _XOPEN_SOURCE 500 to for read-write locks
+	- Added #define _REENTRANT for thread-dafe code
+
+	* /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtkspinbutton.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtkspinbutton.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/main.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/options.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/socketfunc.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/socketfunc.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_connect.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_connect.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_about.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_about.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_disconnect.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_disconnect.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_error.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_error.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_exit.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_exit.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_options.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_options.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_stat.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_dlg_stat.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_io.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_io.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_menu.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_menu.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_play.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_play.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_taunt.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/gtk_taunt.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/card.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/card.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/client.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/client_func.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/client_main.c, /usr/local/cvsroot/brentmh/NetGames/gtkclient/display.h, /usr/local/cvsroot/brentmh/NetGames/gtkclient/Makefile.am, /usr/local/cvsroot/brentmh/NetGames/gtkclient/all-cards.xpm:
+	- Brought over client src from NetSpades for temporary client-hack
+	  (Will be rewritten from scratch later)
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/table.c, /usr/local/cvsroot/brentmh/NetGames/server/table.h:
+	- New files for setting up handling io with game tables
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/control.c, /usr/local/cvsroot/brentmh/NetGames/server/datatypes.h, /usr/local/cvsroot/brentmh/NetGames/server/players.c, /usr/local/cvsroot/brentmh/NetGames/server/players.h, /usr/local/cvsroot/brentmh/NetGames/server/protocols.h:
+	- Reworked for threads
+	- Rewrote get_game_launch()
+	- Filled in login_anon()
+	- Generalize handler so that thread can handle game io
+	- Some temporary #define's
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/Makefile.am:
+	- Added files table.h, table.c
+
+2000-01-07 18:37:06  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/Makefile.am:
+	- Temporary hack to link with -lpthread
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/control.c, /usr/local/cvsroot/brentmh/NetGames/server/players.c, /usr/local/cvsroot/brentmh/NetGames/server/players.h:
+	- Don't use select() since we;re relying on shared mem rather than
+	  communication via pipes
+	- Get rid of fd_set stuff
+	- Rename game_prop to game_types and games to game_tables
+	- Include "daemonize" stuff unless DEBUG is defined
+	- Use for() instead of while() for main loop
+	- Ignore EINTR on call to accept()
+	- Call launch_handler() to start new process/thread to handle incoming
+	  connection
+	- New function launch_handler() creates new thread for incoming conn.
+	- Add some basic functions for communication with users (needs work)
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/err_func.h, /usr/local/cvsroot/brentmh/NetGames/server/err_func.c:
+	- Update to new easysock naming scheme
+
+2000-01-07 18:35:47  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/easysock/easysock.c:
+	- Set SO_REUSEADDR option when creating server socket
+
+2000-01-06 05:21:54  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/NetGames/README.Design:
+	- Added header
+
+1999-12-10 07:21:46  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/easysock/easysock.c, /usr/local/cvsroot/brentmh/easysock/easysock.h:
+
+	- Cleaned up header file to better document interface
+	- Rename enum types to remove undescores and capitalize words
+	- Preface enum values with ES to avoid namespace problems
+	- Internal function _debug() outputs debug string if DEBUG_SOCKET defined
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/control.c:
+	- Pass NULL as seconf two arguments of accept()
+
+1999-10-30 18:53:36  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/easysock/easysock.c:
+	- Small cleanup
+
+	* /usr/local/cvsroot/brentmh/NetGames/.cvsignore:
+	- Modified .cvsignores
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/.cvsignore:
+	- Added .cvsignore
+
+	* /usr/local/cvsroot/brentmh/NetGames/gtkclient/Makefile.am, /usr/local/cvsroot/brentmh/NetGames/gtkclient/main.c:
+	- Added empty files
+
+	* /usr/local/cvsroot/brentmh/NetGames/man/Makefile.am:
+	- Initial file
+
+	* /usr/local/cvsroot/brentmh/easysock/ChangeLog:
+	*** empty log message ***
+
+	* /usr/local/cvsroot/brentmh/NetGames/.cvsignore, /usr/local/cvsroot/brentmh/NetGames/Makefile.am, /usr/local/cvsroot/brentmh/NetGames/acconfig.h, /usr/local/cvsroot/brentmh/NetGames/configure.in:
+	- Fixed some compilation issues
+	- Added SYSCONFDIR to acconfig.h
+	- Added test for libpopt
+
+	* /usr/local/cvsroot/brentmh/easysock/easysock.c, /usr/local/cvsroot/brentmh/easysock/easysock.h:
+	- Added variable argument es_va_write_string()
+	- Made es_xxx_func_rem() return the old function
+	- Added make_socket_or_die()
+	- Call err_func with strerror(errno)
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/players.c, /usr/local/cvsroot/brentmh/NetGames/server/players.h, /usr/local/cvsroot/brentmh/NetGames/server/protocols.h, /usr/local/cvsroot/brentmh/NetGames/server/Makefile.am, /usr/local/cvsroot/brentmh/NetGames/server/control.c, /usr/local/cvsroot/brentmh/NetGames/server/datatypes.h, /usr/local/cvsroot/brentmh/NetGames/server/err_func.c, /usr/local/cvsroot/brentmh/NetGames/server/err_func.h, /usr/local/cvsroot/brentmh/NetGames/server/parse_opt.c, /usr/local/cvsroot/brentmh/NetGames/server/parse_opt.h:
+	- Added headers for datatypes/enums of protocols
+	- Added code for main select() loop in control
+	- Added cmd-line parser and stub for conf-file parser
+	- Added error functions a la Stevens APUE
+	- Added basic player handler
+	- Added stub handlers for login/logout
+	- Added handler for new logins
+	- Fixed a couple compilation issues
+
+	* /usr/local/cvsroot/brentmh/NetGames/README.Design:
+	- Several strucutral modifications
+	- Focus solely on server/protocol design
+	- Filled in a few sections
+
+1999-10-12 04:54:05  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/NetGames/.cvsignore:
+	- Added .cvsignore
+
+	* /usr/local/cvsroot/brentmh/NetGames/server/Makefile.am, /usr/local/cvsroot/brentmh/NetGames/server/control.c, /usr/local/cvsroot/brentmh/NetGames/AUTHORS, /usr/local/cvsroot/brentmh/NetGames/BUGS, /usr/local/cvsroot/brentmh/NetGames/COPYING, /usr/local/cvsroot/brentmh/NetGames/ChangeLog, /usr/local/cvsroot/brentmh/NetGames/INSTALL, /usr/local/cvsroot/brentmh/NetGames/Makefile.am, /usr/local/cvsroot/brentmh/NetGames/NEWS, /usr/local/cvsroot/brentmh/NetGames/README, /usr/local/cvsroot/brentmh/NetGames/README.Design, /usr/local/cvsroot/brentmh/NetGames/acconfig.h, /usr/local/cvsroot/brentmh/NetGames/autogen.sh, /usr/local/cvsroot/brentmh/NetGames/configure.in:
+	- Added files (mostly stubs)
+
+1999-09-19 05:22:51  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/easysock/configure.in, /usr/local/cvsroot/brentmh/easysock/easysock.c, /usr/local/cvsroot/brentmh/easysock/easysock.h:
+	- Fleshed out stub functions
+	- Added calls to (*_err_func) and (*_exit_func)
+
+1999-09-18 04:37:44  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/easysock/easysock.c, /usr/local/cvsroot/brentmh/easysock/easysock.h, /usr/local/cvsroot/brentmh/easysock/ChangeLog:
+	*** empty log message ***
+
+	* /usr/local/cvsroot/brentmh/easysock/easysock.c:
+	- Fixed referencees to write_int and read_int
+
+	* /usr/local/cvsroot/brentmh/easysock/easysock.c, /usr/local/cvsroot/brentmh/easysock/easysock.h:
+	*** empty log message ***
+
+	* /usr/local/cvsroot/brentmh/easysock/easysock.c:
+	- Prepended all functions with es_ to avoid namespace pollution
+	- Added *_or_die function stubs
+	- Added function stubs for handling exit and error functions
+
+1999-09-12 03:18:30  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/easysock/ChangeLog, /usr/local/cvsroot/brentmh/easysock/Makefile.am, /usr/local/cvsroot/brentmh/easysock/easysock.c, /usr/local/cvsroot/brentmh/easysock/easysock.h:
+	- Fixed up automake stuff
+	- Changed occurances of int8_t to char since other platforms
+	  don't all have int8_t defined
+	- Renamed x_byte to x_char
+
+1999-09-11 06:05:53  Brent M. Hendricks  <brentmh@ece.rice.edu>
+
+	* /usr/local/cvsroot/brentmh/easysock/BUGS, /usr/local/cvsroot/brentmh/easysock/TODO, /usr/local/cvsroot/brentmh/easysock/.cvsignore, /usr/local/cvsroot/brentmh/easysock/AUTHORS, /usr/local/cvsroot/brentmh/easysock/ChangeLog, /usr/local/cvsroot/brentmh/easysock/Makefile.am, /usr/local/cvsroot/brentmh/easysock/NEWS, /usr/local/cvsroot/brentmh/easysock/README, /usr/local/cvsroot/brentmh/easysock/acconfig.h, /usr/local/cvsroot/brentmh/easysock/autogen.sh, /usr/local/cvsroot/brentmh/easysock/configure.in, /usr/local/cvsroot/brentmh/easysock/easysock.c, /usr/local/cvsroot/brentmh/easysock/easysock.h:
+	- Added files to repository
+
