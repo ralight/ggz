@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 4024 2002-04-20 08:30:54Z jdorje $
+ * $Id: ai.c 4065 2002-04-23 21:36:39Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -43,6 +43,7 @@
 
 #include "ai.h"
 #include "common.h"
+#include "message.h"
 #include "net.h"
 
 static char* path = NULL;
@@ -72,6 +73,8 @@ void start_ai(player_t p, const char* ai_type)
 	
 	if (ai_type == NULL)
 		ai_type = "random";
+		
+	ggzdmod_log(game.ggz, "Starting AI for player %d as %s.", p, ai_type);
 		
 	assert(get_player_status(p) == GGZ_SEAT_BOT);
 	assert(game.players[p].fd == -1);
@@ -138,6 +141,8 @@ void stop_ai(player_t p)
 {
 	pid_t pid;
 	
+	ggzdmod_log(game.ggz, "Stopping AI for player %d.", p);
+	
 	/* Check to see if the AI has been spawned yet.  It's much easier to
 	   check here than elsewhere. */
 	if (game.players[p].pid < 0) {
@@ -174,6 +179,14 @@ void stop_ai(player_t p)
 void restart_ai(player_t p)
 {
 	stop_ai(p);
+#ifdef DEBUG
+	set_global_message("", "AI player %d has stopped responding.", p);
+	/* After we return here, the bot should just be ignored.  However,
+	   it will never respond.  So the game will be frozen, but the
+	   table can still function appropriately. */
+	return;
+#endif
+	ggzdmod_log(game.ggz, "Restarting AI for player %d.", p);
 	start_ai(p, "random");
 	send_sync(p);
 }

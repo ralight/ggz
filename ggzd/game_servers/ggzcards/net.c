@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 4046 2002-04-22 00:04:41Z jdorje $
+ * $Id: net.c 4065 2002-04-23 21:36:39Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -375,6 +375,10 @@ void net_send_global_text_message(player_t p, const char *mark,
                              const char *message)
 {
 	int fd = get_player_socket(p);
+	
+	/* Special case - don't send to dead bots */
+	if (fd < 0)
+		return;
 	
 	assert(mark);
 	
