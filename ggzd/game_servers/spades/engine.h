@@ -28,6 +28,8 @@
 #ifndef _ENGINE_H
 #define _ENGINE_H
 
+#include <config.h>
+
 #include <card.h>
 #include <options.h>
 
@@ -118,7 +120,7 @@ void SendNewGame(int);
 
 void SendGameOver(void);
 
-void termination_handler( int );
+RETSIGTYPE termination_handler( int );
 
 void Quit( int );
 

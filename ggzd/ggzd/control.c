@@ -25,8 +25,8 @@
 
 #include <config.h>		/* Site specific config */
 
-#include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <sys/stat.h>
 #include <netinet/in.h>
 #include <unistd.h>
@@ -65,7 +65,7 @@ struct GGZState state;
 sig_atomic_t term_signal;
 
 /* Termination handler */
-void term_handle(int signum)
+RETSIGTYPE term_handle(int signum)
 {
 	term_signal = 1;
 }
