@@ -70,20 +70,23 @@ void World::addPlayer(const char *name, int fd)
 
 	m_playerlist.push_back(*p);
 
-	std::cout << "Ready with transmitting" << endl;
+	std::cout << "Ready with transmitting" << std::endl;
 }
 
 // Suspend a player's operation until he joins again
 void World::removePlayer(const char *name)
 {
+	std::cout << "Remove player " << name << std::endl;
 	Player *p = getPlayer(name);
 	if(p)
 	{
+		std::cout << "Got him" << std::endl;
 		for(list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 			if(&(*it) == p)
 			{
+				std::cout << "Erase him" << std::endl;
 				m_playerlist.erase(it);
-				//delete p;
+				delete p;
 				return;
 			}
 	}
@@ -92,6 +95,7 @@ void World::removePlayer(const char *name)
 // Return a player from the list
 Player *World::getPlayer(const char *name)
 {
+	if(!name) return NULL;
 	for(list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 		if(!strcmp((*it).name(), name)) return &(*it);
 	return NULL;
@@ -123,11 +127,12 @@ void World::receive(const char *name, void *data)
 	if(!p) return;
 	es_read_char(p->fd(), &c);
 
-	std::cout << "Got data from client: " << (int)c << endl;
+	std::cout << "Got data from client: " << (int)c << std::endl;
 
 	switch(c)
 	{
 		case op_login:
+			std::cout << "op_login" << std::endl;
 			es_read_string(p->fd(), username, 32);
 			es_read_string(p->fd(), password, 32);
 			pname = p->morph(username, password);
@@ -142,6 +147,7 @@ void World::receive(const char *name, void *data)
 			}
 			break;
 		case op_move:
+			std::cout << "op_move" << std::endl;
 			es_read_int(p->fd(), &x);
 			es_read_int(p->fd(), &y);
 			p->move(x, y);

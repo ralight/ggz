@@ -26,6 +26,7 @@
 #include <string>
 #include "config.h"
 #include <sys/stat.h>
+#include <iostream>
 
 // Constructor
 Player::Player(const char *name, int fd)
@@ -60,6 +61,8 @@ char *Player::morph(const char *username, const char *password)
 {
 	fstream f;
 	string user, pass;
+
+	std::cout << "Morph: " << username << ", " << password << std::endl;
 
 	string graveyard = string(DATADIR) + "/keepalive/";
 	string grave = graveyard + username;
@@ -98,9 +101,13 @@ void Player::die()
 {
 	fstream f;
 
+	std::cout << "Die: " << m_username << ", " << m_password << std::endl;
+
 	string graveyard = string(DATADIR) + "/keepalive/";
+	std::cout << "mkdir " << graveyard << std::endl;
 	if(mkdir(graveyard.c_str(), S_IRWXU))
 	{
+		std::cout << "mkdir failed" << std::endl;
 		return;
 	}
 	string grave = graveyard + m_username;
