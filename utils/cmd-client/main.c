@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 5278 2002-12-09 13:09:17Z dr_maux $
+ * $Id: main.c 5288 2002-12-15 12:04:23Z dr_maux $
  *
  * Main program code for ggz-cmd program.
  *
@@ -48,10 +48,12 @@
 
 #define GGZ_CMD_ANNOUNCE_CMD "announce"
 #define GGZ_CMD_CHECKONLINE_CMD "checkonline"
+#define GGZ_CMD_BATCH_CMD "batch"
 
 typedef enum {
 	GGZ_CMD_ANNOUNCE,
-	GGZ_CMD_CHECKONLINE
+	GGZ_CMD_CHECKONLINE,
+	GGZ_CMD_BATCH
 } CommandType;
 
 typedef struct {
@@ -71,10 +73,12 @@ GGZServer *server = NULL;
 int server_fd = -1;
 int in_room = 0;
 
+static void exec_command(GGZCommand * cmd);
+
 static void print_help(char *exec_name)
 {
 	fprintf(stderr,
-		"Usage: %s <host>[:<port>] <login> <passwd> <command> "
+		"Usage: %s [<host>[:<port>] <login> <passwd>] <command> "
 		"[<command opts> ...]\n",
 		exec_name);
 	fprintf(stderr,
@@ -82,7 +86,9 @@ static void print_help(char *exec_name)
 		"    " GGZ_CMD_ANNOUNCE_CMD
 		" <message> - announce message from room 0.\n"
 		"    " GGZ_CMD_CHECKONLINE_CMD
-		" - check server status.\n");
+		" - check server status.\n"
+		"    " GGZ_CMD_BATCH_CMD
+		" <batchfile> - execute commands from batchfile\n");
 	fprintf(stderr,
 		"  Bugs and issues:\n"
 		"    - Only two commands are currently supported.\n");
@@ -94,8 +100,55 @@ static void print_help(char *exec_name)
 static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 {
 	char *cmd_name, *port_num;
+	int ret, myret;
+	int myargc, i;
+	char **myargv;
+	FILE *f;
+	char *token;
+	char line[1024];
 
 	if (argc < 5) {
+		if((argc == 3) && (!strcmp(argv[1], GGZ_CMD_BATCH_CMD))) {
+			ret = -3;
+			f = fopen(argv[2], "r");
+			if(f)
+			{
+				ret = 0;
+				while(fgets(line, sizeof(line), f) != NULL)
+				{
+					myargc = 1;
+					myargv = (char**)malloc(2 * sizeof(char*));
+					myargv[0] = strdup(argv[0]);
+					myargv[1] = NULL;
+					line[strlen(line) - 1] = 0;
+					token = strtok(line, " ");
+					if(!token) break;
+					while(token)
+					{
+						myargv = (char**)realloc(myargv, (myargc + 2) * sizeof(char*));
+						myargv[myargc] = strdup(token);
+						myargv[myargc + 1] = NULL;
+						myargc++;
+						token = strtok(NULL, " ");
+					}
+
+					/*printf("* Command: ");
+					for(i = 0; i < myargc; i++)
+						printf(" %s", myargv[i]);
+					printf("\n");*/
+
+					myret = parse_arguments(myargc, myargv, cmd);
+					if(myret == 0) exec_command(cmd);
+					ret += myret;
+					for(i = 0; i < myargc; i++)
+						free(myargv[i]);
+					free(myargv);
+				}
+				fclose(f);
+			}
+			cmd->command = GGZ_CMD_BATCH;
+			return ret;
+		}
 		print_help(argv[0]);
 		return -1;
 	}
@@ -284,6 +337,6 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
-	exec_command(&command);
+	if(command.command != GGZ_CMD_BATCH) exec_command(&command);
 	return 0;
 }
