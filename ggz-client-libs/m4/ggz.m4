@@ -192,10 +192,9 @@ ac_libggz_includes="$libggz_incdir"
 libggz_libdirs="$ac_libggz_libraries $ac_ggz_stdlib"
 AC_GGZ_REMOVEDUPS($libggz_libdirs, libggz_libdirs)
 
-test=NONE
-libggz_libdir=NONE
+libggz_libdir=NO
 for dir in $libggz_libdirs; do
-  try="ls -1 $dir/libggz.la"
+  try="ls -1 $dir/libggz.la $dir/libggz.so"
   if test -n "`$try 2> /dev/null`"; then libggz_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
 done
 
@@ -292,10 +291,9 @@ ac_ggzcore_includes="$ggzcore_incdir"
 ggzcore_libdirs="$ac_ggzcore_libraries $ac_ggz_stdlib"
 AC_GGZ_REMOVEDUPS($ggzcore_libdirs, ggzcore_libdirs)
 
-test=NONE
-ggzcore_libdir=NONE
+ggzcore_libdir=NO
 for dir in $ggzcore_libdirs; do
-  try="ls -1 $dir/libggzcore.la"
+  try="ls -1 $dir/libggzcore.la $dir/libggzcore.so"
   if test -n "`$try 2> /dev/null`"; then ggzcore_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
 done
 
@@ -471,10 +469,9 @@ ac_ggzmod_includes="$ggzmod_incdir"
 ggzmod_libdirs="$ac_ggzmod_libraries $ac_ggz_stdlib"
 AC_GGZ_REMOVEDUPS($ggzmod_libdirs, ggzmod_libdirs)
 
-test=NONE
-ggzmod_libdir=NONE
+ggzmod_libdir=NO
 for dir in $ggzmod_libdirs; do
-  try="ls -1 $dir/libggzmod.la"
+  try="ls -1 $dir/libggzmod.la $dir/libggzmod.so"
   if test -n "`$try 2> /dev/null`"; then ggzmod_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
 done
 
@@ -571,10 +568,9 @@ ac_ggzdmod_includes="$ggzdmod_incdir"
 ggzdmod_libdirs="$ac_ggzdmod_libraries $ac_ggz_stdlib"
 AC_GGZ_REMOVEDUPS($ggzdmod_libdirs, ggzdmod_libdirs)
 
-test=NONE
-ggzdmod_libdir=NONE
+ggzdmod_libdir=NO
 for dir in $ggzdmod_libdirs; do
-  try="ls -1 $dir/libggzdmod.la"
+  try="ls -1 $dir/libggzdmod.la $dir/libggzdmod.so"
   if test -n "`$try 2> /dev/null`"; then ggzdmod_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
 done
 
