@@ -1,4 +1,4 @@
-.TH "ggzdmod.h" 3 "12 Apr 2002" "GGZDMOD" \" -*- nroff -*-
+.TH "ggzdmod.h" 3 "7 Aug 2002" "GGZDMOD" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -22,11 +22,11 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 
 .in +1c
 .ti -1c
-.RI "typedef struct GGZdMod \fBGGZdMod\fP"
+.RI "typedef GGZdMod \fBGGZdMod\fP"
 .br
 .RI "\fIA GGZdmod object, used for tracking a ggzd<->table connection.\fP"
 .ti -1c
-.RI "typedef void (* \fBGGZdModHandler\fP )(\fBGGZdMod\fP *mod, \fBGGZdModEvent\fP e, void *data)"
+.RI "typedef void(* \fBGGZdModHandler\fP )(\fBGGZdMod\fP *mod, \fBGGZdModEvent\fP e, void *data)"
 .br
 .RI "\fIEvent handler prototype.\fP"
 .in -1c
@@ -50,7 +50,7 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 
 .in +1c
 .ti -1c
-.RI "\fBGGZdMod\fP* \fBggzdmod_new\fP (\fBGGZdModType\fP type)"
+.RI "\fBGGZdMod\fP * \fBggzdmod_new\fP (\fBGGZdModType\fP type)"
 .br
 .RI "\fICreate a new ggzdmod object.\fP"
 .ti -1c
@@ -78,7 +78,7 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .br
 .RI "\fIGet all data for the specified seat.\fP"
 .ti -1c
-.RI "void* \fBggzdmod_get_gamedata\fP (\fBGGZdMod\fP *ggzdmod)"
+.RI "void * \fBggzdmod_get_gamedata\fP (\fBGGZdMod\fP *ggzdmod)"
 .br
 .RI "\fIReturn gamedata pointer.\fP"
 .ti -1c
@@ -94,9 +94,9 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .br
 .RI "\fISet a handler for the given event.\fP"
 .ti -1c
-.RI "void \fBggzdmod_set_module\fP (\fBGGZdMod\fP *ggzdmod, char **args)"
+.RI "void \fBggzdmod_set_module\fP (\fBGGZdMod\fP *ggzdmod, const char *pwd, char **args)"
 .br
-.RI "\fISet the module executable and it's arguments.\fP"
+.RI "\fISet the module executable, pwd, and arguments.\fP"
 .ti -1c
 .RI "int \fBggzdmod_set_seat\fP (\fBGGZdMod\fP *ggzdmod, \fBGGZSeat\fP *seat)"
 .br
@@ -126,7 +126,7 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .br
 .RI "\fIDisconnect from ggz.\fP"
 .ti -1c
-.RI "int \fBggzdmod_log\fP (\fBGGZdMod\fP *ggzdmod, char *fmt,...) ggz__attribute((format(printf, 2, 3)))"
+.RI "int \fBggzdmod_log\fP (\fBGGZdMod\fP *ggzdmod, char *fmt,...) ggz__attribute((format(printf"
 .br
 .RI "\fILog data.\fP"
 .ti -1c
@@ -232,8 +232,8 @@ Here is a fairly complete example. In this game we register a handler for each o
 
      void handle_player_join(GGZdMod* ggz, GGZdModEvent event, void* data)
      {
-         int player = *(int*)data;
-         GGZSeat seat = ggzdmod_get_seat(ggz, player);
+         GGZSeat *old_seat = (GGZSeat*)data;
+         GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
 
          // ... do other player initializations ...
 
@@ -246,7 +246,8 @@ Here is a fairly complete example. In this game we register a handler for each o
 
      void handle_player_leave(GGZdMod* ggz, GGZdModEvent event, void* data)
      {
-         int player = *(int*)data;
+         GGZSeat *old_seat = (GGZSeat*)data;
+         GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
 
          // ... do other player un-initializations ...
 
@@ -278,13 +279,13 @@ For more information, see the documentation at http://ggz.sf.net/.
 A GGZdmod object, used for tracking a ggzd<->table connection.
 .PP
 A game server should track a pointer to a GGZdMod object; it contains all the state information for communicating with GGZ. The GGZ server will track one such object for every game table that is running. 
-.SS "typedef void(* GGZdModHandler)(\fBGGZdMod\fP *mod, \fBGGZdModEvent\fP e, void *data)"
+.SS "typedef void(* GGZdModHandler)(\fBGGZdMod\fP * mod, \fBGGZdModEvent\fP e, void *data)"
 .PP
 Event handler prototype.
 .PP
 A function of this type will be called to handle a ggzdmod event. 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fImod\fP\fP
@@ -298,11 +299,11 @@ Pointer to additional data for the event. The additional data will be of the fol
 .TP
 GGZDMOD_EVENT_STATE: The old state (GGZdModState*)
 .TP
-GGZDMOD_EVENT_JOIN: The player number (int*)
+GGZDMOD_EVENT_JOIN: The old seat (\fBGGZSeat\fP*)
 .TP
-GGZDMOD_EVENT_LEAVE: The player number (int*)
+GGZDMOD_EVENT_LEAVE: The old seat (\fBGGZSeat\fP*)
 .TP
-GGZDMOD_EVENT_SEAT: The player number (int*)
+GGZDMOD_EVENT_SEAT: The old seat (\fBGGZSeat\fP*)
 .TP
 GGZDMOD_EVENT_LOG: The message string (char*)
 .TP
@@ -325,45 +326,41 @@ Each of these is a possible GGZdmod event. For each event, the table may registe
 \fBEnumeration values:\fP
 .in +1c
 .TP
-\fB\fIGGZDMOD_EVENT_STATE\fP \fP
+\fB\fI\fIGGZDMOD_EVENT_STATE\fP \fP\fP
 Module status changed This event occurs when the game's status changes. The old state (a GGZdModState*) is passed as the event's data.
 .PP
 \fBSee also: \fP
 .in +1c
 \fBGGZdModState\fP 
 .TP
-\fB\fIGGZDMOD_EVENT_JOIN\fP \fP
-Player joined This event occurs when a player joins the table. The player number (an int*) is passed as the event's data. The seat information will be updated before the event is invoked.
+\fB\fI\fIGGZDMOD_EVENT_JOIN\fP \fP\fP
+Player joined This event occurs when a player joins the table. The old seat (a \fBGGZSeat\fP*) is passed as the event's data. The seat information will be updated before the event is invoked.
 .PP
 \fBNote: \fP
 .in +1c
 This may be dropped in favor of the SEAT event. 
 .TP
-\fB\fIGGZDMOD_EVENT_LEAVE\fP \fP
-Player left This event occurs when a player leaves the table. The player number (an int*) is passed as the event's data. The seat information will be updated before the event is invoked.
+\fB\fI\fIGGZDMOD_EVENT_LEAVE\fP \fP\fP
+Player left This event occurs when a player leaves the table. The old seat (a \fBGGZSeat\fP*) is passed as the event's data. The seat information will be updated before the event is invoked.
 .PP
 \fBNote: \fP
 .in +1c
 This may be dropped in favor of the SEAT event 
 .TP
-\fB\fIGGZDMOD_EVENT_SEAT\fP \fP
-General seat change This event occurs when a seat change other than a player leave/join happens (which is currently impossible). The player number (an int*) is passed as the event's data. The seat information will be updated before the event is invoked.
+\fB\fI\fIGGZDMOD_EVENT_SEAT\fP \fP\fP
+General seat change This event occurs when a seat change other than a player leave/join happens (which is currently impossible). The old seat (a \fBGGZSeat\fP*) is passed as the event's data. The seat information will be updated before the event is invoked.
 .PP
 \fBNote: \fP
 .in +1c
 This is currently unused, but may eventually replace JOIN and LEAVE. 
-.PP
-\fB\fBTodo: \fP\fP
-.in +1c
- It is impossible to see the old seat data during the event. 
 .TP
-\fB\fIGGZDMOD_EVENT_LOG\fP \fP
+\fB\fI\fIGGZDMOD_EVENT_LOG\fP \fP\fP
 Module log request This event occurs when a log request happens. This will only be used by the GGZ server; the game server should use ggzdmod_log to generate the log.
 .TP
-\fB\fIGGZDMOD_EVENT_PLAYER_DATA\fP \fP
+\fB\fI\fIGGZDMOD_EVENT_PLAYER_DATA\fP \fP\fP
 Data available from player This event occurs when there is data ready to be read from one of the player sockets. The player number (an int*) is passed as the event's data.
 .TP
-\fB\fIGGZDMOD_EVENT_ERROR\fP \fP
+\fB\fI\fIGGZDMOD_EVENT_ERROR\fP \fP\fP
 An error has occurred This event occurs when a GGZdMod error has occurred. An error message (a char*) will be passed as the event's data. GGZdMod may attempt to recover from the error, but it is not guaranteed that the GGZ connection will continue to work after an error has happened.
 .SS "enum GGZdModState"
 .PP
@@ -378,16 +375,16 @@ Each time the game state changes, a GGZDMOD_EVENT_STATE event will be propogated
 \fBEnumeration values:\fP
 .in +1c
 .TP
-\fB\fIGGZDMOD_STATE_CREATED\fP \fP
+\fB\fI\fIGGZDMOD_STATE_CREATED\fP \fP\fP
 Pre-launch; waiting for ggzdmod 
 .TP
-\fB\fIGGZDMOD_STATE_WAITING\fP \fP
+\fB\fI\fIGGZDMOD_STATE_WAITING\fP \fP\fP
 Ready and waiting to play. 
 .TP
-\fB\fIGGZDMOD_STATE_PLAYING\fP \fP
+\fB\fI\fIGGZDMOD_STATE_PLAYING\fP \fP\fP
 Currently playing a game. 
 .TP
-\fB\fIGGZDMOD_STATE_DONE\fP \fP
+\fB\fI\fIGGZDMOD_STATE_DONE\fP \fP\fP
 Table halted, prepping to exit. 
 .SS "enum GGZdModType"
 .PP
@@ -398,10 +395,10 @@ The 'flavor' of GGZdmod object this is. Affects what operations are allowed.
 \fBEnumeration values:\fP
 .in +1c
 .TP
-\fB\fIGGZDMOD_GGZ\fP \fP
+\fB\fI\fIGGZDMOD_GGZ\fP \fP\fP
 Used by the ggz server ('ggzd'). 
 .TP
-\fB\fIGGZDMOD_GAME\fP \fP
+\fB\fI\fIGGZDMOD_GAME\fP \fP\fP
 Used by the game server ('table'). 
 .SH "FUNCTION DOCUMENTATION"
 .PP 
@@ -411,7 +408,7 @@ Log all information about the ggzdmod.
 .PP
 This is a debugging function that will log all available information about the GGZdMod object. It uses ggzdmod_log for logging.
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -430,7 +427,7 @@ When called by the game server, this function makes the physical connection to g
 .TP
 When called by ggzd, it will launch a table and connect to it. 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -439,14 +436,13 @@ The ggzdmod object.
 \fBReturns: \fP
 .in +1c
 0 on success, -1 on failure. 
-.PP
 .SS "int ggzdmod_count_seats (\fBGGZdMod\fP * ggzdmod, GGZSeatType seat_type)"
 .PP
 Count seats of the given type.
 .PP
 This is a convenience function that counts how many seats there are that have the given type. For instance, giving seat_type==GGZ_SEAT_OPEN will count the number of open seats. 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fImod\fP\fP
@@ -471,7 +467,7 @@ When called by the game server, this function stops the connection to GGZ. It sh
 .TP
 When called by the GGZ server, this function will kill and clean up after the table. 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -480,7 +476,6 @@ The ggzdmod object.
 \fBReturns: \fP
 .in +1c
 0 on success, -1 on failure. 
-.PP
 .SS "int ggzdmod_dispatch (\fBGGZdMod\fP * ggzdmod)"
 .PP
 Check for and handle input.
@@ -495,7 +490,7 @@ It will monitor input from player sockets only if a handler is registered for th
 .TP
 It will call an event handler as necessary. 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -504,14 +499,13 @@ The ggzdmod object.
 \fBReturns: \fP
 .in +1c
 -1 on error, the number of events handled (0-1) on success. 
-.PP
 .SS "void ggzdmod_free (\fBGGZdMod\fP * ggzdmod)"
 .PP
 Destroy a finished ggzdmod object.
 .PP
 After the connection is through, the object may be freed. 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -520,7 +514,7 @@ The GGZdMod object.
 .PP
 Get the file descriptor for the GGZdMod socket.
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -533,13 +527,13 @@ GGZdMod's main ggzd <-> table socket FD.
 \fBNote: \fP
 .in +1c
 Don't use this; use ggzdmod_loop and friends instead. 
-.SS "void * ggzdmod_get_gamedata (\fBGGZdMod\fP * ggzdmod)"
+.SS "void* ggzdmod_get_gamedata (\fBGGZdMod\fP * ggzdmod)"
 .PP
 Return gamedata pointer.
 .PP
 Each GGZdMod object can be given a 'gamedata' pointer that is returned by this function. This is useful for when a single process serves multiple GGZdmod's. 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -570,7 +564,7 @@ While in GGZDMOD_STATE_CREATED, we don't know the number of seats.
 .PP
 Get all data for the specified seat.
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -586,7 +580,7 @@ A valid \fBGGZSeat\fP structure, if seat is a valid seat.
 .PP
 Get the current state of the table.
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -599,7 +593,7 @@ The state of the table.
 .PP
 Get the type of the ggzdmod object.
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -614,7 +608,7 @@ Log data.
 .PP
 This function sends the specified string (printf-style) to the GGZ server to be logged. 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -632,7 +626,7 @@ Loop while handling input.
 .PP
 This function repeatedly handles input from all sockets. It will only stop once the game state has been changed to DONE (or if there has been an error). 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -645,13 +639,13 @@ The ggzdmod object.
 \fBSee also: \fP
 .in +1c
 \fBggzdmod_dispatch\fP , \fBggzdmod_set_state\fP 
-.SS "\fBGGZdMod\fP * ggzdmod_new (\fBGGZdModType\fP type)"
+.SS "\fBGGZdMod\fP* ggzdmod_new (\fBGGZdModType\fP type)"
 .PP
 Create a new ggzdmod object.
 .PP
 Before connecting through ggzdmod, a new ggzdmod object is needed. 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fItype\fP\fP
@@ -664,7 +658,7 @@ The type of ggzdmod. Should be GGZDMOD_GAME for game servers.
 .PP
 Set gamedata pointer.
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -682,7 +676,7 @@ Set a handler for the given event.
 .PP
 As described above, GGZdmod uses an event-driven structure. Each time an event is called, the event handler (there can be only one) for that event will be called. This function registers such an event handler. 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fImod\fP\fP
@@ -697,9 +691,9 @@ The handler function being registered.
 \fBSee also: \fP
 .in +1c
 \fBggzdmod_get_gamedata\fP 
-.SS "void ggzdmod_set_module (\fBGGZdMod\fP * ggzdmod, char ** args)"
+.SS "void ggzdmod_set_module (\fBGGZdMod\fP * ggzdmod, const char * pwd, char ** args)"
 .PP
-Set the module executable and it's arguments.
+Set the module executable, pwd, and arguments.
 .PP
 GGZdmod must execute and launch the game to start a table; this function allows ggzd to specify how this should be done. 
 .PP
@@ -707,19 +701,26 @@ GGZdmod must execute and launch the game to start a table; this function allows 
 .in +1c
 This should not be called by the table, only ggzd. 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
-\fB\fImod\fP\fP
+\fB\fIggzdmod\fP\fP
 The GGZdmod object. 
+.TP
+\fB\fIpwd\fP\fP
+The working directory for the game, or NULL. 
 .TP
 \fB\fIargs\fP\fP
 The arguments for the program, as needed by exec. 
+.PP
+\fBNote: \fP
+.in +1c
+The pwd directory must already exist. 
 .SS "void ggzdmod_set_num_seats (\fBGGZdMod\fP * ggzdmod, int num_seats)"
 .PP
 Set the number of seats for the table.
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
@@ -745,7 +746,7 @@ The name (only if the seat is a bot).
 .TP
 The socket FD (only if the FD is -1). 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIseat\fP\fP
@@ -760,14 +761,13 @@ The new seat structure (which includes seat number).
 The game should be able to toggle between BOT and OPEN seats. 
 .PP
  The game should be able to kick a player out of the table.  
-.PP
 .SS "int ggzdmod_set_state (\fBGGZdMod\fP * ggzdmod, \fBGGZdModState\fP state)"
 .PP
 Change the table's state.
 .PP
 This function should be called to change the state of a table. A game can use this function to change state between WAITING and PLAYING, or to set it to DONE. 
 .PP
-\fBParameters: \fP
+Parameters: \fP
 .in +1c
 .TP
 \fB\fIggzdmod\fP\fP
