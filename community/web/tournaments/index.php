@@ -1,6 +1,5 @@
 <?php $global_rightbar = "disabled"; ?>
 <?php include("top.inc"); ?>
-<?php include("database.php"); ?>
 
 <div id="main">
 	<h1>

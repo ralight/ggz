@@ -15,7 +15,7 @@ echo "Organized by: <a href=\"/db/players/?lookup=$organizer\">$organizer</a><br
 echo "Starting: $datestr<br><br>\n";
 
 echo "Participants:<br><br>\n";
-$res = $database->exec($conn, "SELECT * FROM tournamentplayers WHERE id = $tid");
+$res = $database->exec("SELECT * FROM tournamentplayers WHERE id = $tid");
 $num = 0;
 for($i = 0; $i < $database->numrows($res); $i++)
 {

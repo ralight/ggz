@@ -1,4 +1,6 @@
 <?php
+if(!$page) $page = "menu";
+
 if ($page == "menu") :
 	$caption = "Tournament planning";
 elseif ($page == "new") :
@@ -14,8 +16,6 @@ elseif ($page == "show2") :
 else :
 	$page = "";
 endif;
-
-if(!$page) $page = "menu";
 ?>
 	<h1>
 		<span class="itemleader">:: </span>
