@@ -7,6 +7,7 @@ Homepage = http://www.ece.rice.edu/~brentmh/spades
 # PlayersAllowed and BotsAllowed should be repeated as many times as
 # necessary to specify the valid distinct options which can appear
 PlayersAllowed = 4
+BotsAllowed = 0
 BotsAllowed = 1
 BotsAllowed = 2
 BotsAllowed = 3

@@ -7,6 +7,7 @@ Homepage = http://ggz.sourceforge.net
 # PlayersAllowed and BotsAllowed should be repeated as many times as
 # necessary to specify the valid distinct options which can appear
 PlayersAllowed = 2
+BotsAllowed = 0
 BotsAllowed = 1
 # Set AllowLeave to 1 if game supports players leaving during gameplay
 AllowLeave = 1
