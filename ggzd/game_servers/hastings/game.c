@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 5247 2002-11-16 22:16:00Z dr_maux $
+ * $Id: game.c 5480 2003-03-29 10:40:34Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -797,7 +797,7 @@ void game_bot_move(int me)
 	{
 		for(j = 0; j < 19; j++)
 		{
-			if(hastings_maps[mymap].board[i][j] == me) moved = game_bot_set(me, i, j, -8);
+			if(hastings_maps[mymap].board[i][j] == me) moved = game_bot_set(me, i, j, HASTINGS_ERR_ENEMY);
 			if(moved) break;
 		}
 		if(moved) break;
