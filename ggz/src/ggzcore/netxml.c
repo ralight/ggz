@@ -863,6 +863,9 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 			case E_BAD_OPTIONS:
 				_ggzcore_server_event(net->server, GGZ_CHAT_FAIL, "Bad options");
 				break;
+			case E_NO_PERMISSION:
+				_ggzcore_server_event(net->server, GGZ_CHAT_FAIL, "Prohibited");
+				break;
 			}
 		}
 	}

@@ -50,5 +50,6 @@
 #define E_NOT_IN_ROOM   -13
 #define E_AT_TABLE     -14
 #define E_IN_TRANSIT   -15
+#define E_NO_PERMISSION -16
 
 #endif /*__PROTOCOL_H__*/
