@@ -115,8 +115,13 @@ if test "$GGZ_CONFIG" = "no"; then
    AC_MSG_ERROR(*** Couldn't find ggz-config)
 fi
 
+AC_CHECK_LIB(easysock, es_make_socket,
+    AC_CHECK_HEADER(easysock.h, LDADD="$LDADD -leasysock",
+        AC_MSG_ERROR(*** Cannot find easysock.h header)),
+AC_MSG_ERROR(*** Cannot find easysock library ))
+
 AC_CHECK_LIB(ggzcore, ggzcore_server_new,
-    AC_CHECK_HEADER(ggzcore.h, LDADD="$LDADD -lggzcore -leasysock",
+    AC_CHECK_HEADER(ggzcore.h, LDADD="$LDADD -lggzcore",
         AC_MSG_ERROR(*** Cannot find ggzcore.h header)),
 AC_MSG_ERROR(*** Cannot find ggzcore library ), -leasysock)
 
