@@ -6,7 +6,7 @@ GMSGFMT = msgfmt
 
 PACKAGE = koenig
 POTFILE = koenig.pot
-POFILES = de.po
+POFILES = de.po es.po
 LOCATIONS = $(top_srcdir)/koenig/*.cc
 
 # don't do this! maintainer only (will mess up non-latin1 messages)
