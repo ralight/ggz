@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2000 Dan Papasian.  All rights reserved.
+ * Copyright (c) 2000, 2001 Dan Papasian.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: games.c 1068 2001-02-08 20:34:20Z perdig $
+ *  $Id: games.c 1106 2001-02-17 16:28:41Z bugg $
  */
 
 #include <stdlib.h>
@@ -37,14 +37,13 @@ struct game *gamelist = NULL;
 
 static void remove_game(struct game *delgame);
 
-struct _stat stats;
-
 int
 cgc_handle_move(struct game *curgame, char *move)
 {
 	struct posnode *posn = NULL;
 	int fs, fd;
 	int rs, rd;
+	int promote = 0;
 	int status = 0;
 	int retval;
 	piece_t ekf, ekr; /* Enemy king file and rank */
@@ -53,10 +52,27 @@ cgc_handle_move(struct game *curgame, char *move)
 	if(curgame == NULL)
 		return E_NOGAME;
 
+	if(!strcmp("O-O",move)) {
+		if(curgame->onmove == WHITE)
+			strcpy(move,"E1G1");
+		if(curgame->onmove == BLACK)
+			strcpy(move,"E8G8");
+	} else if(!strcmp("O-O-O",move)) {
+		if(curgame->onmove == WHITE)
+			strcpy(move, "E1C1");
+		if(curgame->onmove == BLACK)
+			strcpy(move, "E8C8");
+	}
+ 
 	fs = move[0] - 'A';
 	rs = move[1] - '0' - 1;
 	fd = move[2] - 'A';
 	rd = move[3] - '0' - 1;
+
+	if(move[4] == 'Q') promote = QUEEN;
+	if(move[4] == 'N') promote = KNIGHT;
+	if(move[4] == 'B') promote = BISHOP;
+	if(move[4] == 'R') promote = ROOK;
 
 	status = OK;
 
@@ -71,15 +87,15 @@ cgc_handle_move(struct game *curgame, char *move)
 	 * which will perform the actual move operation.
 	 */
 
-	if((retval = cgc_valid_move(curgame, fs, rs, fd, rd)) != VALID)
+	if((retval = cgc_valid_move(curgame, fs, rs, fd, rd, promote)) != VALID)
 		return retval;
 
 		
 	/* Make the move */
 
-	cgc_register_move(curgame, fs, rs, fd, rd);
+	cgc_register_move(curgame, fs, rs, fd, rd, promote);
 	strcpy(curgame->lastmove, move);
-	cgc_do_move(curgame, fs, rs, fd, rd);
+	cgc_do_move(curgame, fs, rs, fd, rd, promote);
 	++curgame->hmcount;
 
 	switch(cgc_check_state(curgame, ekf, ekr)) {
@@ -90,8 +106,11 @@ cgc_handle_move(struct game *curgame, char *move)
 		status = CHECK;
 		break;
 	default:
-		if(cgc_is_stable(curgame, ekf, ekr))
+		if(cgc_is_stale(curgame, ekf, ekr))
 			status = DRAW_STALE;
+		if(!cgc_has_sufficient(curgame, WHITE) &&
+		   !cgc_has_sufficient(curgame, BLACK))
+			status = DRAW_INSUFFICIENT;
 		break;
 	}
 	
@@ -144,8 +163,6 @@ cgc_join_table(struct game *joined, int color)
 		break;
 	}
 
-	stats.cur_games++;
-	stats.total_games++;
 	return OK;
 }
 
@@ -249,8 +266,6 @@ cgc_game_over(struct game *curgame)
 {
         
         remove_game(curgame);
-        stats.cur_games--;
-
         return 0;
 }
 

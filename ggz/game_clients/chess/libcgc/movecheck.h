@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2000 Dan Papasian.  All rights reserved.
+ * Copyright (c) 2000, 2001 Dan Papasian.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: movecheck.h 1068 2001-02-08 20:34:20Z perdig $
+ *  $Id: movecheck.h 1106 2001-02-17 16:28:41Z bugg $
  */
 
 #ifndef _CGC_MOVECHECK_H
@@ -47,6 +47,7 @@ struct move {
 	int fd;
 	int rs;
 	int rd;
+	int promote;
 	struct game *curgame;
 	piece_t captured;
 	struct move *next;
@@ -54,10 +55,10 @@ struct move {
 };
 
 /* movecheck.c */
-int cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd);
-int cgc_do_move(struct game *curgame, int fs, int rs, int fd, int rd);
-int cgc_register_move(struct game *curgame, int fs, int rs, int fd, int rd);
+int cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd, int promote);
+int cgc_do_move(struct game *curgame, int fs, int rs, int fd, int rd, int promote);
+int cgc_register_move(struct game *curgame, int fs, int rs, int fd, int rd, int promote);
 int cgc_check_state(struct game *curgame, int kf, int kr);
-int cgc_is_stable(struct game *curgame, int kf, int kr);
+int cgc_is_stale(struct game *curgame, int kf, int kr);
 
 #endif

@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2000 Dan Papasian.  All rights reserved.
+ * Copyright (c) 2000, 2001 Dan Papasian.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: movecheck.c 1068 2001-02-08 20:34:20Z perdig $
+ *  $Id: movecheck.c 1106 2001-02-17 16:28:41Z bugg $
  */
 
 #include <stdlib.h>
@@ -33,11 +33,11 @@
 
 #include "cgc.h"
 
-static int valid_knight(struct game *curgame, int fs, int rs, int fd, int rd);
-static int valid_bishop(struct game *curgame, int fs, int rs, int fd, int rd);
-static int valid_rook(struct game *curgame, int fs, int rs, int fd, int rd);
-static int valid_queen(struct game *curgame, int fs, int rs, int fd, int rd);
-static int valid_king(struct game *curgame, int fs, int rs, int fd, int rd);
+static int valid_knight(struct game *curgame, int fs, int rs, int fd, int rd, int promote);
+static int valid_bishop(struct game *curgame, int fs, int rs, int fd, int rd, int promote);
+static int valid_rook(struct game *curgame, int fs, int rs, int fd, int rd, int promote);
+static int valid_queen(struct game *curgame, int fs, int rs, int fd, int rd, int promote);
+static int valid_king(struct game *curgame, int fs, int rs, int fd, int rd, int promote);
 static int check_castle(struct game *curgame, int fs, int rs, int fd, int rd);
 static int can_be_occupied(struct game *curgame, int f, int r, int pcol);
 static int check_attackers(struct game *curgame, int f, int r, int *af, int *ar, int pcol, int check_occupied);
@@ -45,17 +45,17 @@ static int safe_square(struct game *curgame, int f, int r);
 static int safe_from_color(struct game *curgame, int f, int r, int col);
 static int find_attacker(struct game *curgame, int f, int r, int *af, int *ar);
 static int check_knight_attackers(struct game *curgame, int f, int r, int *af, int *ar, int pcol);
-static int valid_pawn(struct game *curgame, int fs, int rs, int fd, int rd);
-static int check_promote(struct game *curgame, int fs, int rs, int fd, int wanted);
+static int valid_pawn(struct game *curgame, int fs, int rs, int fd, int rd, int promote);
 static int king_has_move(struct game *curgame, int kf, int kr);
 static int check_rook_moves(piece_t **board, int f, int r);
 static int check_bishop_moves(piece_t **board, int f, int r);
 static int check_knight_moves(piece_t **board, int f, int r);
 static int can_move(struct game *curgame, int f, int r, int kf, int kr);
 static int onboard(int f, int r);
+static int bishop_type(int f, int r);
 
 int
-cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd)
+cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd, int promote)
 {
 	piece_t actpiece;
 	piece_t tmp;
@@ -64,7 +64,7 @@ cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd)
 
 	struct pinfo {
 		int name;
-		int (*cgc_valid_move)(struct game *, int, int, int, int);
+		int (*cgc_valid_move)(struct game *, int, int, int, int, int);
 	} piece[] = {
 		{ KNIGHT, valid_knight },
 		{ BISHOP, valid_bishop },
@@ -98,13 +98,11 @@ cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd)
 
 	actpiece = cgc_piece_type(curgame->board[fs][rs]);
 
-	if(actpiece != PAWN) {
-		if(fd == fs && rd == rs)
-			return E_BADMOVE;
+	if(fd == fs && rd == rs)
+		return E_BADMOVE;
 
-		if(color(curgame->board[fd][rd]) == color(curgame->board[fs][rs]))
-			 return E_BADMOVE;
-	}
+	if(color(curgame->board[fd][rd]) == color(curgame->board[fs][rs]))
+		 return E_BADMOVE;
 
 	for(cptr = piece; cptr->name; cptr++)
 		if(cptr->name == actpiece)
@@ -112,7 +110,7 @@ cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd)
 
 	assert(cptr->name);
 
-	if(!cptr->cgc_valid_move(curgame, fs, rs, fd, rd))
+	if(!cptr->cgc_valid_move(curgame, fs, rs, fd, rd, promote))
 		return E_BADMOVE;
 
 
@@ -144,17 +142,11 @@ cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd)
 }
 
 int
-cgc_do_move(struct game *curgame, int fs, int rs, int fd, int rd)
+cgc_do_move(struct game *curgame, int fs, int rs, int fd, int rd, int promote)
 {
 	piece_t kf, kr;
 	int epossible;
 	int kcastle, qcastle;
-	int promote = EMPTY;
-
-	if(rd == 0) promote = QUEEN;
-	if(rd == 1) promote = ROOK;
-	if(rd == 2) promote = BISHOP;
-	if(rd == 3) promote = KNIGHT;
 
 	epossible = -1; /* If we aren't replaced, then chance is lost for ep */
 
@@ -175,11 +167,11 @@ cgc_do_move(struct game *curgame, int fs, int rs, int fd, int rd)
 	/* Castling */
 	if(cgc_piece_type(curgame->board[fs][rs]) == KING && abs(fd-fs) > 1) {
 		if(fd == 2) {
-			curgame->board[fd+1][rd] = (ROOK | curgame->onmove);
+			curgame->board[3][rd] = (ROOK | curgame->onmove);
 			curgame->board[0][rd] = EMPTY;
 		}
 		if(fd == 6) {
-			curgame->board[fd-1][rd] = (ROOK | curgame->onmove);
+			curgame->board[5][rd] = (ROOK | curgame->onmove);
 			curgame->board[7][rd] = EMPTY;
 		}
 		kcastle = qcastle = 0;
@@ -242,7 +234,7 @@ cgc_do_move(struct game *curgame, int fs, int rs, int fd, int rd)
 }
 
 static int
-valid_knight(struct game *curgame, int fs, int rs, int fd, int rd)
+valid_knight(struct game *curgame, int fs, int rs, int fd, int rd, int promote)
 {
 	switch(abs(rs-rd)) {
 	case 2:
@@ -257,7 +249,7 @@ valid_knight(struct game *curgame, int fs, int rs, int fd, int rd)
 }
 
 static int
-valid_bishop(struct game *curgame, int fs, int rs, int fd, int rd)
+valid_bishop(struct game *curgame, int fs, int rs, int fd, int rd, int promote)
 {
 	int cf, cr;
 	int diag = 0;
@@ -302,7 +294,7 @@ valid_bishop(struct game *curgame, int fs, int rs, int fd, int rd)
 }
 
 static int
-valid_rook(struct game *curgame, int fs, int rs, int fd, int rd)
+valid_rook(struct game *curgame, int fs, int rs, int fd, int rd, int promote)
 {
 	int cf, cr;
 	int diag = 0;
@@ -349,15 +341,15 @@ valid_rook(struct game *curgame, int fs, int rs, int fd, int rd)
 }
 
 static int
-valid_queen(struct game *curgame, int fs, int rs, int fd, int rd)
+valid_queen(struct game *curgame, int fs, int rs, int fd, int rd, int promote)
 {
-	if(valid_rook(curgame, fs, rs, fd, rd)) return VALID;
-	if(valid_bishop(curgame, fs, rs, fd, rd)) return VALID; 
+	if(valid_rook(curgame, fs, rs, fd, rd, promote)) return VALID;
+	if(valid_bishop(curgame, fs, rs, fd, rd, promote)) return VALID; 
 	return INVALID;
 }
 
 static int
-valid_king(struct game *curgame, int fs, int rs, int fd, int rd)
+valid_king(struct game *curgame, int fs, int rs, int fd, int rd, int promote)
 {
 
 	int enemy;
@@ -370,7 +362,7 @@ valid_king(struct game *curgame, int fs, int rs, int fd, int rd)
 	if(abs(rs-rd) <= 1 && abs(fs-fd) <= 1)
 		return VALID;
 
-	if(abs(rs-rd) == 0 && abs(fs-fd) == 2)
+	if(abs(rs-rd) == 0 && (abs(fs-fd) == 2 || abs(fs-fd) == 3))
 		return check_castle(curgame, fs, rs, fd, rd);
 
 	return INVALID;
@@ -391,18 +383,19 @@ check_castle(struct game *curgame, int fs, int rs, int fd, int rd)
 	if(!safe_from_color(curgame, (fd+fs)/2, rd, enemy)) return INVALID;
 	if(!safe_from_color(curgame, fs, rs, enemy)) return INVALID;
 
-	if(fd == 2 && curgame->onmove == WHITE) {
-		if(curgame->wqcastle) return VALID;
-	} else {
-		if(curgame->bqcastle) return VALID;
+	switch(fd) {
+	case 2:
+		if(curgame->onmove == WHITE && curgame->wqcastle)
+			return VALID;
+		if(curgame->onmove == BLACK && curgame->bqcastle)
+			return VALID;
+	case 6:
+		if(curgame->onmove == WHITE && curgame->wkcastle)
+			return VALID;
+		if(curgame->onmove == BLACK && curgame->bkcastle)
+			return VALID;
 	}
-
-	if(fd == 6 && curgame->onmove == WHITE) {
-		if(curgame->wkcastle) return VALID;
-	} else {
-		if(curgame->bkcastle) return VALID;
-	}
-
+	
 	return INVALID;
 }
 
@@ -486,7 +479,7 @@ check_attackers(struct game *curgame, int f, int r, int *af, int *ar, int pcol,
 					if(curgame->board[f][r] == EMPTY)
 						curgame->board[f][r] = 60;
 
-				if(valid_pawn(curgame, cf, cr, f, r)) {
+				if(valid_pawn(curgame, cf, cr, f, r, 0)) {
 					curgame->board[f][r] = tmp;
 					return VALID;
 				}
@@ -497,7 +490,7 @@ check_attackers(struct game *curgame, int f, int r, int *af, int *ar, int pcol,
 					if(curgame->board[f][r] == EMPTY)
 						curgame->board[f][r] = 50;
 
-				if(valid_pawn(curgame, cf, cr, f, r)) {
+				if(valid_pawn(curgame, cf, cr, f, r, 0)) {
 					curgame->board[f][r] = tmp;
 					return VALID;
 				}
@@ -578,6 +571,8 @@ check_knight_attackers(struct game *curgame, int f, int r, int *af,
 	piece_t enemy;
 	int line;
 
+	enemy = KNIGHT | pcol;
+
 	for(line = 0; line < 8 ; ++line) {
 		cf = f;
 		cr = r;	
@@ -619,8 +614,6 @@ check_knight_attackers(struct game *curgame, int f, int r, int *af,
 		if(!onboard(cf, cr))
 			continue;
 
-		enemy = KNIGHT | pcol;
-
 		if(curgame->board[cf][cr] == enemy) {
 			if(af != NULL && ar != NULL) {
 				*af = cf;
@@ -634,14 +627,10 @@ check_knight_attackers(struct game *curgame, int f, int r, int *af,
 }
 
 static int
-valid_pawn(struct game *curgame, int fs, int rs, int fd, int rd)
+valid_pawn(struct game *curgame, int fs, int rs, int fd, int rd, int promote)
 {
 	switch(curgame->board[fs][rs]) {
 	case W_PAWN:
-
-		/* Promotion is checked in check_promote */
-		if(rs == 6) return check_promote(curgame, fs, rs, fd, rd);
-
 		/* Basic sanity checks */
 
 		/* We must be going forward */
@@ -679,15 +668,11 @@ valid_pawn(struct game *curgame, int fs, int rs, int fd, int rd)
 		if(abs(rd - rs) != 1)
 			return INVALID;
  
-		if(rd == 6 && fd == curgame->epossible) return VALID; /*ep*/
+		if(rd == 5 && fd == curgame->epossible) return VALID; /*ep*/
 		if(curgame->board[fd][rd] != EMPTY) return VALID; /* attack */
 
 		break;
 	case B_PAWN:
-
-		/* Promotion is checked in check_promote */
-		if(rs == 1) return check_promote(curgame, fs, rs, fd, rd);
-
 		/* Basic sanity checks */
 
 		/* Must be going forward */
@@ -721,7 +706,7 @@ valid_pawn(struct game *curgame, int fs, int rs, int fd, int rd)
 		/* No diagonal move goes moves more than one rank */
 		if(abs(rd - rs) != 1) return INVALID;
  
-		if(rd == 3 && fd == curgame->epossible) return VALID; /*ep*/
+		if(rd == 2 && fd == curgame->epossible) return VALID; /*ep*/
 		if(curgame->board[fd][rd] != EMPTY) return VALID; /* attack */
 
 		break;
@@ -732,42 +717,8 @@ valid_pawn(struct game *curgame, int fs, int rs, int fd, int rd)
 
 }
 
-static int
-check_promote(struct game *curgame, int fs, int rs, int fd, int wanted)
-{
-
-	int rd;
-
-	if(wanted > 3)
-		return INVALID; /* You can't have that! */
-
-	if(color(curgame->board[fs][rs]) == WHITE)
-		rd = 7;
-	else
-		rd = 0;
-
-	switch(abs(fd-fs)) {
-	case 0:
-		if(curgame->board[fd][rd] != EMPTY) /* walking into piece */
-			return INVALID;
-		else
-			return VALID; /* Strolling forward */
-		break;
-	case 1:
-		if(curgame->board[fd][rd] != EMPTY) /* capture */
-			return VALID; 
-		break;
-	default:
-		return INVALID; /* Too far of a leap */
-		break;
-	}
-
-
-	return INVALID;
-}
-
 int
-cgc_register_move(struct game *curgame, int fs, int rs, int fd, int rd)
+cgc_register_move(struct game *curgame, int fs, int rs, int fd, int rd, int promote)
 {
 	struct move *latest;
 	struct move *walker;
@@ -779,6 +730,7 @@ cgc_register_move(struct game *curgame, int fs, int rs, int fd, int rd)
 	latest->fd = fd;
 	latest->rs = rs;
 	latest->rd = rd;
+	latest->promote = promote;
 
 	/* All captures are irreversable */
 	if(curgame->board[fd][rd] != EMPTY)
@@ -835,10 +787,6 @@ cgc_check_state(struct game *curgame, int kf, int kr)
 	if(king_has_move(curgame, kf, kr))
 		return CHECK;
 
-	if(abs(af - kf) <= 1 && abs(ar - kr) <= 1) /* contact */
-		return MATE;
-	
-
 	/*
 	 * Now we see if we have only one attacker.  If
 	 * we have two, then we are in checkmate because
@@ -871,10 +819,16 @@ cgc_check_state(struct game *curgame, int kf, int kr)
 	 * capture it, we have to continue on to see
  	 * if there can be an interposition.
 	 */
-	
-	if(!safe_square(curgame, af, ar)) /* we can capture */
+
+	tmp = board[kf][kr];
+	board[kf][kr] = EMPTY;
+
+	if(!safe_square(curgame, af, ar)) { /* we can capture */
+		board[kf][kr] = tmp;
 		return CHECK;
-	
+	}
+
+	board[kf][kr] = tmp;
 
 
 	/*
@@ -1026,7 +980,7 @@ king_has_move(struct game *curgame, int kf, int kr)
 }
 
 int
-cgc_is_stable(struct game *curgame, int kf, int kr)
+cgc_is_stale(struct game *curgame, int kf, int kr)
 {
 	int cf, cr;
 	piece_t **board;
@@ -1122,6 +1076,9 @@ check_rook_moves(piece_t **board, int f, int r)
 			break;
 		}
 
+		if(!onboard(cf,cr))
+			break;
+ 
 		if(color(board[cf][cr]) == color(board[f][r]))
 			break;
 	
@@ -1173,7 +1130,61 @@ check_bishop_moves(piece_t **board, int f, int r)
 	return INVALID;
 }
 
+int
+cgc_has_sufficient(game_t *curgame, int ocolor)
+{
+	int f, r;
+	int o_knight = 0;
+	int e_dbishop, e_lbishop;
+	int o_dbishop, o_lbishop;
 
+	o_dbishop = o_lbishop = e_dbishop = e_lbishop = 0;
+	
+	for(f = 0 ; f < 8 ; ++f) {
+		for(r = 0 ; r < 8 ; ++r) {
+			if(curgame->board[f][r] == EMPTY)
+				continue;
+			if(color(curgame->board[f][r]) != ocolor &&
+			    cgc_piece_type(curgame->board[f][r]) != BISHOP)
+				continue;
+			
+			switch(cgc_piece_type(curgame->board[f][r])) {
+			case PAWN:
+			case QUEEN:
+			case ROOK:
+				return 1;
+				break;
+			case BISHOP:
+				if(color(curgame->board[f][r]) != ocolor) {
+					if(bishop_type(f,r) == 1)
+						++e_dbishop;
+					else
+						++e_lbishop;
+				} else {
+					if(bishop_type(f,r) == 1)
+						++o_dbishop;
+					else
+						++o_lbishop;
+				}
+				break;
+			case KNIGHT:
+				++o_knight;
+				if(o_knight + o_lbishop + o_dbishop >= 2)
+					return 1;
+				break;
+			}
+		}
+	}
+
+	o_lbishop -= e_lbishop;
+	o_dbishop -= e_dbishop;
+
+	if(o_lbishop == 1 || o_dbishop == 1)
+		return 1;
+
+	return 0;
+}
+	
 static int
 check_knight_moves(piece_t **board, int f, int r)
 {
@@ -1265,3 +1276,26 @@ onboard(int f, int r)
 		return VALID;
 	/* NOTREACHED */
 }
+
+/* returns 1 for dark bishop, 0 for light */
+
+static int
+bishop_type(int f, int r)
+{
+	if((f % 2) == 0) {
+		if((r % 2) == 0)
+			return 1;
+		else
+			return 0;
+	}
+	if((f % 2) == 1) {
+		if((r % 2) == 0)
+			return 0;
+		else
+			return 1;
+	}
+	
+	return -1;
+	
+}
+

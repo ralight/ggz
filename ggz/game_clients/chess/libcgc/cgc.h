@@ -45,12 +45,14 @@ typedef struct move move_t;
 #define DRAW_STALE 2
 #define DRAW_MOVECOUNT 3
 #define DRAW_POSREP 4
-#define CHECK 5
-#define MATE 6
+#define DRAW_INSUFFICIENT 5
+#define CHECK 6 
+#define MATE 7
 
 game_t *cgc_create_game(void);
 int cgc_join_game(game_t *game, int color);
 int cgc_make_move(game_t *game, char *move);
+int cgc_has_sufficient(game_t *game, int color);
 void cgc_free_game(game_t *game);
 
 #endif
