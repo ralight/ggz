@@ -93,7 +93,6 @@ typedef struct {
 	int pid;
 	int seats[MAX_TABLE_SIZE];
 	int reserve[MAX_TABLE_SIZE];
-	int player_fd[MAX_TABLE_SIZE];
 	void *options;
 	char desc[MAX_GAME_DESC_LEN + 1];
 } TableInfo;

@@ -682,7 +682,6 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	int i, t_index = -1;
 	unsigned int size;
 	int status = 0;
-	int fds[2];
 	int seats;
 	void *options = NULL;
 	char name[MAX_USER_NAME_LEN + 1];
@@ -727,17 +726,13 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 		return GGZ_REQ_DISCONNECT;
 	}
 
-	/* Create socketpair for communication */
-	socketpair(PF_UNIX, SOCK_STREAM, 0, fds);
-	*t_fd = fds[1];
-
 	/* Fill remaining parameters */
 	table.state = GGZ_TABLE_CREATED;
 	table.transit_flag = GGZ_TRANSIT_CLR;
 	table.pid = -1;
 	table.fd_to_game = -1;
-	table.player_fd[0] = fds[0];
-	table.seats[0] = p_index;
+	/* FIXME:  When we implement reserves, should reserve seat */
+	table.seats[0] = GGZ_SEAT_OPEN;  
 	for (i = seats; i < MAX_TABLE_SIZE; i++)
 		table.seats[i] = GGZ_SEAT_NONE;
 	table.options = options;
@@ -756,6 +751,18 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	else
 		dbg_msg(GGZ_DBG_TABLE, "Player %d's table launch successful", 
 			p_index);
+	
+	/* Join newly created table */
+	status = table_join(p_index, t_index, t_fd);
+
+	if (status != 0) 
+		dbg_msg(GGZ_DBG_TABLE, 
+			"Player %d's table join failed with err %d", p_index, 
+			status);
+	else
+		dbg_msg(GGZ_DBG_TABLE, "Player %d's table join successful", 
+			p_index);
+
 
 	/* Return status to client */
 	if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0

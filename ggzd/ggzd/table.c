@@ -93,8 +93,7 @@ static int table_check(int p_index, TableInfo table)
 			break;
 		default:
 			dbg_msg(GGZ_DBG_TABLE,
-				"Seat[%d]: player %d, fd of %d", i,
-				table.seats[i], table.player_fd[i]);
+				"Seat[%d]: player %d", i, table.seats[i]);
 		}
 
 	return 0;
@@ -166,7 +165,7 @@ static void table_fork(int t_index)
 	char path[MAX_PATH_LEN];
 	char game[MAX_GAME_NAME_LEN + 1];
 	char fd_name[MAX_GAME_NAME_LEN + 12];
-	int type_index, i, sock, fd;
+	int type_index, sock, fd;
 	
 	/* Get path for game server */
 	type_index = tables.info[t_index].type_index;
@@ -200,13 +199,6 @@ static void table_fork(int t_index)
 		tables.info[t_index].fd_to_game = fd;
 		pthread_rwlock_unlock(&tables.lock);
 		
-		/* Close the remote ends of the socket pairs */
-		pthread_rwlock_rdlock(&tables.lock);
-		for (i = 0; i < seats_num(tables.info[t_index]); i++)
-			if (tables.info[t_index].seats[i] >= 0)
-				close(tables.info[t_index].player_fd[i]);
-		pthread_rwlock_unlock(&tables.lock);
-
 		if (table_send_opt(t_index) == 0)
 			table_loop(t_index);
 		
@@ -237,7 +229,7 @@ static void table_run_game(int t_index, char *path)
  */
 static int table_send_opt(int t_index)
 {
-	int i, fd, size, type, uid, index;
+	int i, fd, size, type, uid;
 	char status = 0;
 	char name[MAX_USER_NAME_LEN];
 
@@ -272,15 +264,8 @@ static int table_send_opt(int t_index)
 			if (es_write_string(fd, name) < 0)
 				return (-1);
 			break;
-		default: /* must be a player index */
-			index = tables.info[t_index].seats[i];
-			pthread_rwlock_rdlock(&players.lock);
-			strcpy(name, players.info[index].name);
-			pthread_rwlock_unlock(&players.lock);
-			if (es_write_string(fd, name) < 0
-			    || es_write_int(fd, tables.info[t_index].player_fd[i]) < 0)
-				return (-1);
-			
+		default: 
+			break;
 		}
 	}
 
