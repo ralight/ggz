@@ -221,13 +221,13 @@ void KrosswaterServer::slotZoneAI()
 		fromx = rand() % map_x;
 		fromy = rand() % map_y;
 	}
-	while(map[fromx][fromy] == 1);
+	while(map[fromx][fromy] != 1);
 	do
 	{
 		tox = rand() % map_x;
 		toy = rand() % map_y;
 	}
-	while(map[tox][toy] == 0);
+	while(map[tox][toy] != 0);
 
 	ZONEDEBUG("AI moved from: %i/%i to: %i/%i\n", fromx, fromy, tox, toy);
 	ret = doMove(fromx, fromy, tox, toy);
