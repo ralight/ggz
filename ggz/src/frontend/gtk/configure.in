@@ -54,7 +54,6 @@ AC_HEADER_TIME
 
 dnl Check for library functions
 dnl ===========================
-AC_CHECK_FUNC(poll)
 
 dnl Check for libs
 dnl ==============
@@ -65,11 +64,6 @@ AC_MSG_ERROR(*** Cannot find ggzcore library ))
 
 AM_PATH_GTK(1.2.0,, AC_MSG_ERROR(*** Can't build GTK frontend: GTK not found))
 	 	       
-
-
-dnl What to compile
-dnl ===============
-
 
 dnl Use -Wall if we have gcc.
 dnl =========================
