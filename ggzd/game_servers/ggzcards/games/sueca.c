@@ -23,6 +23,7 @@
  */
 
 #include <easysock.h>
+#include <stdlib.h>
 
 #include "../games.h"
 #include "../game.h"
@@ -116,6 +117,7 @@ static void sueca_start_playing() {
 
 static card_t sueca_map_card(card_t c)
 {
+  char n_face = c.face;
   /* This will make the sueca cards behave differently, so that we can
    * make game_end_trick work
    * We will make the following mappings:
@@ -124,15 +126,17 @@ static card_t sueca_map_card(card_t c)
    * Queen -> 10 */
   switch (c.face) {
     case 7:
-      c.face = KING;
-      break;
-    case QUEEN:
-      c.face = 10;
+      n_face = KING;
       break;
     case KING:
-      c.face = QUEEN;
+      n_face = QUEEN;
+      break;
+    case QUEEN:
+      n_face = 10;
       break;
   }
+
+  c.face = n_face;
 
   return c;
 
@@ -205,7 +209,7 @@ static int sueca_deal_hand()
   game.hand_size = 10;
   for (s = 0; s < game.num_seats; s++)
     cards_deal_hand(game.hand_size, &game.seats[s].hand);
-  game.trump = game.seats[ game.dealer ].hand.cards[9].suit;
+  game.trump = game.seats[ game.dealer ].hand.cards[ random()%10 ].suit;
   set_global_message("Trump", "%s", suit_names[(int)game.trump]);
   return 0;
 }
