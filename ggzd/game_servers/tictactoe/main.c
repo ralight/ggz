@@ -39,9 +39,9 @@ int main(void)
 {
 	/* ggzdmod initializations */
 	GGZdMod *ggzdmod = ggzdmod_new(GGZDMOD_GAME);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE, &game_handle_ggz);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_JOIN, &game_handle_ggz);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, &game_handle_ggz);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE, &game_handle_state_event);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_JOIN, &game_handle_join_event);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, &game_handle_leave_event);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
 	
 	game_init(ggzdmod);
@@ -56,6 +56,7 @@ int main(void)
 	(void)ggzdmod_log(ggzdmod, "Starting game of Tic-Tac-Toe");
 	(void)ggzdmod_loop(ggzdmod);
 	
+	(void)ggzdmod_log(ggzdmod, "Ending game of Tic-Tac-Toe");
 	(void)ggzdmod_disconnect(ggzdmod);
 	ggzdmod_free(ggzdmod);
 	

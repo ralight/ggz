@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 2794 2001-12-06 22:58:17Z jdorje $
+ * $Id: game.c 2839 2001-12-09 23:55:02Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -43,7 +43,6 @@ void game_init(GGZdMod *ggzdmod)
 	
 	ttt_game.turn = -1;
 	ttt_game.move_count = 0;
-	ttt_game.state = TTT_STATE_INIT;
 	for (i = 0; i < 9; i++)
 		ttt_game.board[i] = -1;
 		
@@ -51,31 +50,58 @@ void game_init(GGZdMod *ggzdmod)
 }
 
 
-/* Handle message from GGZ server */
-void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data)
+/* Callback for GGZDMOD_EVENT_STATE */
+void game_handle_state_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	GGZdModState old_state;
-	int player;
-	
-	switch (event) {
-	case GGZDMOD_EVENT_STATE:
-		/* If we are moving out of the CREATED state, it's
-		   a launch event (data points to the old state). */
-		old_state = *(GGZdModState*)data;
-		if (old_state == GGZDMOD_STATE_CREATED)
-			game_update(TTT_EVENT_LAUNCH, NULL);
-		break;
-	case GGZDMOD_EVENT_JOIN:
-		player = *(int*)data;
-		game_update(TTT_EVENT_JOIN, &player);
-		break;
-	case GGZDMOD_EVENT_LEAVE:
-		player = *(int*)data;
-		game_update(TTT_EVENT_LEAVE, &player);
-		break;
+
+	switch(ggzdmod_get_state(ggz)) {
+	case GGZDMOD_STATE_PLAYING:
+		/* If we're just starting, set for first players turn*/
+		if (ttt_game.turn == -1)
+			ttt_game.turn = 0;
+		
+		game_next_move();
 	default:
-		ggzdmod_log(ggz, "Unexpected GGZ event %d.", event);
 		break;
+	}
+}
+
+
+/* Callback for GGZDMOD_EVENT_JOIN */
+void game_handle_join_event(GGZdMod *ggz, GGZdModEvent event, void *data)
+{
+	int seat;
+
+	seat = *(int*)data;
+
+	/* Send the info to our players */
+	game_send_seat(seat);
+	game_send_players();
+	
+	/* We start playing only when there are no open seats. */
+	if (!ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_OPEN)) {
+
+		/* If we're continuing a game, send sync to new player */
+		if (ttt_game.turn != -1)
+			game_send_sync(seat);
+		
+		ggzdmod_set_state(ttt_game.ggz, GGZDMOD_STATE_PLAYING);
+	}
+}
+
+
+/* Callback for GGZDMOD_EVENT_LEAVE */
+void game_handle_leave_event(GGZdMod *ggz, GGZdModEvent event, void *data)
+{
+	if (ggzdmod_get_state(ggz) == GGZDMOD_STATE_PLAYING) {
+		ggzdmod_set_state(ggz, GGZDMOD_STATE_WAITING);
+		game_send_players();
+	}
+
+	/* If there are no players left, we'll end the game */
+        if (ggzdmod_count_seats(ggz, GGZ_SEAT_PLAYER) == 0) {
+		ggzdmod_log(ggz, "No players left: ending game");
+		ggzdmod_set_state(ggz, GGZDMOD_STATE_DONE);
 	}
 }
 
@@ -97,7 +123,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 	case TTT_SND_MOVE:
 		if (game_handle_move(num, &move) == 0)
-			game_update(TTT_EVENT_MOVE, &move);
+			game_do_move(move);
 		break;
 	case TTT_REQ_SYNC:
 		game_send_sync(num);
@@ -216,14 +242,14 @@ int game_send_gameover(char winner)
 
 
 /* Do the next move*/
-int game_move(void)
+int game_next_move(void)
 {
 	int move, num = ttt_game.turn;
 	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
 	
 	if (seat.type == GGZ_SEAT_BOT) {
 		move = game_bot_move(num);
-		game_update(TTT_EVENT_MOVE, &move);
+		game_do_move(move);
 	}
 	else
 		game_req_move(num);
@@ -276,6 +302,33 @@ int game_handle_move(int num, int* move)
 	
 	return 0;
 }
+
+
+int game_do_move(int move)
+{
+	char victor;
+	
+	if (ggzdmod_get_state(ttt_game.ggz) != GGZDMOD_STATE_PLAYING)
+		return -1;
+		
+	ggzdmod_log(ttt_game.ggz, "Player %d in square %d", ttt_game.turn, move);
+	ttt_game.board[move] = ttt_game.turn;
+	ttt_game.move_count++;
+	game_send_move(ttt_game.turn, move);
+	
+	if ( (victor = game_check_win()) < 0) {
+		ttt_game.turn = (ttt_game.turn + 1) % 2;
+		game_next_move();
+	}
+	else {
+		game_send_gameover(victor);
+		/* Notify GGZ server of game over */
+		ggzdmod_set_state(ttt_game.ggz, GGZDMOD_STATE_DONE);
+	}
+	
+	return 0;
+}
+
 
 
 /* Do bot moves */
@@ -447,20 +500,20 @@ int game_bot_move(int me)
 char game_check_move(int num, int move)
 {
 	/* Check for correct state */
-	if (ttt_game.state != TTT_STATE_PLAYING)
-		return -1;
+	if (ggzdmod_get_state(ttt_game.ggz) != GGZDMOD_STATE_PLAYING)
+		return TTT_ERR_STATE;
 
 	/* Check for correct turn */
 	if (num != ttt_game.turn)
-		return -2;
+		return TTT_ERR_TURN;
 	
 	/* Check for out of bounds move */
 	if (move < 0 || move > 8)
-		return -3;
+		return TTT_ERR_BOUND;
 
 	/* Check for duplicated move */
 	if (ttt_game.board[move] != -1)
-		return -4;
+		return TTT_ERR_FULL;
 
 	return 0;
 }
@@ -517,76 +570,6 @@ char game_check_win(void)
 		return 2;  /* Cat's game */
 
 	return -1;
-}
-
-
-/* Update game state */
-int game_update(int event, void* data)
-{
-	int seat, move;
-	char victor;
-	
-	switch(event) {
-
-	case TTT_EVENT_LAUNCH:
-		if (ttt_game.state != TTT_STATE_INIT)
-			return -1;
-		ttt_game.state = TTT_STATE_WAIT;
-		break;
-
-	case TTT_EVENT_JOIN:
-		if (ttt_game.state != TTT_STATE_WAIT)
-			return -1;
-		
-		seat = *(int*)data;
-		game_send_seat(seat);
-		game_send_players();
-
-		/* We start playing only when there are no open seats. */
-		if (!ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_OPEN)) {
-			if (ttt_game.turn == -1)
-				ttt_game.turn = 0;
-			else
-				game_send_sync(seat);
-			
-			ttt_game.state = TTT_STATE_PLAYING;
-			game_move();
-		}
-		break;
-
-	case TTT_EVENT_LEAVE:
-		if (ttt_game.state == TTT_STATE_PLAYING) {
-			ttt_game.state = TTT_STATE_WAIT;
-			game_send_players();
-		}
-		break;
-
-	case TTT_EVENT_MOVE:
-		if (ttt_game.state != TTT_STATE_PLAYING)
-			return -1;
-		
-		move = *(int*)data;
-
-		ggzdmod_log(ttt_game.ggz, "Player %d in square %d", ttt_game.turn, move);
-		ttt_game.board[move] = ttt_game.turn;
-		ttt_game.move_count++;
-		game_send_move(ttt_game.turn, move);
-		
-		if ( (victor = game_check_win()) < 0) {
-			ttt_game.turn = (ttt_game.turn + 1) % 2;
-			game_move();
-		}
-		else {
-			ttt_game.state = TTT_STATE_DONE;
-			game_send_gameover(victor);
-			/* Notify GGZ server of game over */
-			ggzdmod_set_state(ttt_game.ggz, GGZDMOD_STATE_DONE);
-			return 1;
-		}
-		break;
-	}
-	
-	return 0;
 }
 
 

@@ -46,18 +46,6 @@
 #define TTT_SND_MOVE     0
 #define TTT_REQ_SYNC     1
 
-/* Tic-Tac-Toe game states */
-#define TTT_STATE_INIT        0
-#define TTT_STATE_WAIT        1
-#define TTT_STATE_PLAYING     2
-#define TTT_STATE_DONE        3
-
-/* Tic-Tac-Toe game events */
-#define TTT_EVENT_LAUNCH      0
-#define TTT_EVENT_JOIN        1
-#define TTT_EVENT_LEAVE       2
-#define TTT_EVENT_MOVE        3
-
 
 /* Data structure for Tac-Toe-Game */
 struct ttt_game_t {
@@ -69,7 +57,9 @@ struct ttt_game_t {
 };
 
 void game_init(GGZdMod *ggzdmod);
-void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_state_event(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_join_event(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_leave_event(GGZdMod *ggz, GGZdModEvent event, void *data);
 void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data);
 
 int game_send_seat(int seat);
@@ -78,14 +68,15 @@ int game_send_move(int num, int move);
 int game_send_sync(int num);
 int game_send_gameover(char winner);
 
-int game_move(void);
+int game_next_move(void);
 int game_req_move(int num);
 int game_handle_move(int num, int* move);
 int game_bot_move(int num);
+int game_do_move(int move);
 
 char game_check_move(int num, int move);
 char game_check_win(void);
 
-int game_update(int event, void* data);
+
 
 
