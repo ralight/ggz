@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: net.c 4978 2002-10-22 02:11:32Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1152,7 +1152,7 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 		/* Grab update data from tag */
 		type = ggz_xmlelement_get_attr(update, "TYPE");
 
-		if (strcasecmp(type, "player") == 0) {
+		if (type && strcasecmp(type, "player") == 0) {
 			if (!(player = ggz_xmlelement_get_data(update))) {
 				_net_send_result(net, "protocol", E_BAD_OPTIONS);
 				return;
@@ -1160,7 +1160,7 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 
 			/* FIXME: update password and other data */
 		}
-		else if (strcasecmp(type, "table") == 0) {
+		else if (type && strcasecmp(type, "table") == 0) {
 			if (!(table = ggz_xmlelement_get_data(update))) {
 				_net_send_result(net, "protocol", E_BAD_OPTIONS);
 				return;
