@@ -33,6 +33,34 @@ void tls_error(const char *error, const char *file, int line)
 	_state = 0;
 }
 
+char *tls_exterror(int ret)
+{
+	switch(SSL_get_error(_tls, ret))
+	{
+		case SSL_ERROR_NONE:
+			return "SSL_ERROR_NONE";
+			break;
+		case SSL_ERROR_ZERO_RETURN:
+			return "SSL_ERROR_ZERO_RETURN";
+			break;
+		case SSL_ERROR_WANT_READ:
+			return "SSL_ERROR_WANT_READ";
+			break;
+		case SSL_ERROR_WANT_WRITE:
+			return "SSL_ERROR_WANT_WRITE";
+			break;
+		case SSL_ERROR_WANT_X509_LOOKUP:
+			return "SSL_ERROR_WANT_X509_LOOKUP";
+			break;
+		case SSL_ERROR_SYSCALL:
+			return "SSL_ERROR_SYSCALL";
+			break;
+		case SSL_ERROR_SSL:
+			return "SSL_ERROR_SSL";
+			break;
+	}
+}
+
 void tls_prepare(const char *cert, const char *key, pem_password_cb *callback)
 {
 	_callback = callback;
@@ -40,9 +68,17 @@ void tls_prepare(const char *cert, const char *key, pem_password_cb *callback)
 	_key = (char*)key;
 }
 
-void tls_start(int fd, int mode)
+int tls_verify(int preverify_ok, X509_STORE_CTX *ctx)
+{
+	return preverify_ok;
+}
+
+void tls_start(int fd, int mode, int verify)
 {
 	int ret;
+	STACK_OF(SSL_CIPHER) *stack;
+	SSL_CIPHER *cipher;
+	int bits;
 	
 	_state = 1;
 	SSL_load_error_strings();
@@ -59,10 +95,21 @@ void tls_start(int fd, int mode)
 	if(!_tlsctx) TLSERROR("Couldn't create TLS object.\n");
 	else
 	{
-		SSL_CTX_set_verify(_tlsctx, SSL_VERIFY_NONE, NULL);
+		if(verify == TLS_VERIFY) SSL_CTX_set_verify(_tlsctx, SSL_VERIFY_PEER, tls_verify);
+		else SSL_CTX_set_verify(_tlsctx, SSL_VERIFY_NONE, NULL);
 		_tls = SSL_new(_tlsctx);
 		if(_tls)
 		{
+			printf("Available ciphers: %s\n", SSL_get_cipher_list(_tls, 0));
+			stack = SSL_get_ciphers(_tls);
+			while(cipher = (SSL_CIPHER*)sk_pop(stack))
+			{
+				printf("* Cipher: %s\n", SSL_CIPHER_get_name(cipher));
+				printf("  Bits: %i\n", SSL_CIPHER_get_bits(cipher, &bits));
+				printf("  Used bits: %i\n", bits);
+				printf("  Version: %s\n", SSL_CIPHER_get_version(cipher));
+				printf("  Description: %s\n", SSL_CIPHER_description(cipher, NULL, 0));
+			}
 			ret = SSL_set_fd(_tls, fd);
 			if(!ret) TLSERROR("Assignment to connection failed.");
 			else
@@ -82,8 +129,29 @@ void tls_start(int fd, int mode)
 					SSL_set_connect_state(_tls);
 					ret = SSL_connect(_tls);
 				}
-				if((ret != 1) || (!_state)) TLSERROR("Handshake failed.");
-				else _tls_active = 1;
+				if((ret != 1) || (!_state))
+				{
+					TLSERROR("Handshake failed.");
+					printf("Ret: %i, State: %i\n", ret, _state);
+					printf("EXT: %s\n%s\n%s\n%s\n%s\n", tls_exterror(ret), ERR_error_string(ret, NULL),
+						ERR_lib_error_string(ret), ERR_func_error_string(ret), ERR_reason_error_string(ret));
+				}
+				else
+				{
+					if((mode == TLS_SERVER) || (verify == TLS_NOVERIFY)) _tls_active = 1;
+					else
+					{
+						if(SSL_get_peer_certificate(_tls))
+						{
+							if(SSL_get_verify_result(_tls) == X509_V_OK)
+							{
+								_tls_active = 1;
+							}
+							else TLSERROR("Invalid vertificate.");
+						}
+						else TLSERROR("Couldn't get certificate.");
+					}
+				}
 			}
 		}
 	}

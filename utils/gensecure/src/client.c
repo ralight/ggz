@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	if(tls_req)
 	{
 		printf("> Securing connection...\n");
-		tls_start(socket_fd(), TLS_CLIENT);
+		tls_start(socket_fd(), TLS_CLIENT, /*TLS_NOVERIFY*/ TLS_VERIFY);
 	}
 
 	printf("> Client in working state.\n");

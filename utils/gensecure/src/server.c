@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 		{
 			printf("> Securing connection...\n");
 			tls_prepare(GENSECURE_CERTIFICATE, GENSECURE_KEY, passwordcallback);
-			tls_start(socket_fd(), TLS_SERVER);
+			tls_start(socket_fd(), TLS_SERVER, TLS_NOVERIFY);
 		}
 
 		printf("> Server in working state.\n");
