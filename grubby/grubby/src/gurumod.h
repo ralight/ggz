@@ -31,5 +31,7 @@ struct guru_t
 
 typedef struct guru_t Guru;
 
-#endif
+Guru *gurumod_exec(Guru *message);
+void gurumod_init(const char *datadir);
 
+#endif

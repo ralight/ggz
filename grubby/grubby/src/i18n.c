@@ -40,7 +40,7 @@ void guru_i18n_setlanguage(const char *language)
 }
 
 /* Saves the language dependend on the player's origin */
-void setlanguage(char *player, char *language)
+static void setlanguage(char *player, char *language)
 {
 	Player *p;
 

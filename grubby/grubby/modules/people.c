@@ -21,8 +21,9 @@ grubby have you seen someone
 #include <time.h>
 
 /* Dummy init function */
-void gurumod_init()
+void gurumod_init(const char *datadir)
 {
+
 }
 
 /* Handle all requests related to known people */

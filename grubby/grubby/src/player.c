@@ -31,7 +31,7 @@ void guru_player_init(const char *datadir)
 }
 
 /* Clone a player structure */
-Player *duplicate(Player *p)
+static Player *duplicate(Player *p)
 {
 	Player *q;
 
@@ -57,7 +57,7 @@ Player *duplicate(Player *p)
 }
 
 /* Erase a player structure again */
-void cleanup(Player *p)
+static void cleanup(Player *p)
 {
 	if(!p) return;
 	if(!p->origin) return;
@@ -77,7 +77,7 @@ void guru_player_policy(int duplication)
 }
 
 /* Create a new dummy player structure */
-Player *guru_player_new()
+Player *guru_player_new(void)
 {
 	Player *p;
 	p = (Player*)malloc(sizeof(Player));

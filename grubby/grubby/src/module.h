@@ -15,8 +15,8 @@
 /* Net function handlers */
 typedef void (*netconnectfunc)(const char *host, int port, const char *name, const char *guestname);
 typedef void (*netjoinfunc)(int room);
-typedef int (*netstatusfunc)();
-typedef Guru* (*netinputfunc)();
+typedef int (*netstatusfunc)(void);
+typedef Guru* (*netinputfunc)(void);
 typedef void (*netoutputfunc)(Guru *output);
 typedef void (*netlogfunc)(const char *logfile);
 
@@ -24,7 +24,7 @@ typedef void (*netlogfunc)(const char *logfile);
 typedef void (*playerinitfunc)(const char *datadir);
 
 /* I18n function handlers */
-typedef void (*i18ninitfunc)();
+typedef void (*i18ninitfunc)(const char *lang);
 typedef char* (*i18ntransfunc)(char *player, char *messageset);
 typedef char* (*i18ncheckfunc)(char *player, char *message, int language);
 

@@ -20,7 +20,7 @@
 char **badwordlist;
 
 /* Load all bad words from the configuration */
-void gurumod_init()
+void gurumod_init(const char *datadir)
 {
 	char *path, *home;
 	int handle;

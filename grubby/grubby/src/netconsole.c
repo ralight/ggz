@@ -46,7 +46,8 @@ void net_logfile(const char *logfile)
 
 /* Add a message to the incoming queue */
 /* FIXME: Provide real queue */
-void net_internal_queueadd(const char *player, const char *message, int type)
+static void net_internal_queueadd(const char *player,
+				  const char *message, int type)
 {
 	Guru *guru;
 	char *listtoken;

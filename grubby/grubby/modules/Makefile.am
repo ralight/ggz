@@ -38,5 +38,4 @@ INCLUDES = -I$(top_srcdir)/grubby/src $(GGZCORE_INCLUDES) $(ruby_includes)
 
 libgurumod_learning_la_SOURCES = learning.c
 
-noinst_HEADERS = exec.h
-
+# noinst_HEADERS = 

@@ -23,7 +23,7 @@
 char *database;
 
 /* Learn a word and its meaning */
-void learn(char **wordlist)
+static void learn(char **wordlist)
 {
 	FILE *f;
 	int i;
@@ -42,7 +42,7 @@ void learn(char **wordlist)
 }
 
 /* Teach a learned word to a player if known */
-char *teach(const char *word)
+static char *teach(const char *word)
 {
 	FILE *f;
 	static char *ret = NULL;

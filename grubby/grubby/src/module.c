@@ -247,7 +247,7 @@ int guru_module_remove(const char *modulealias)
 }
 
 /* List all plugins currently loaded */
-char *guru_modules_list()
+static char *guru_modules_list(void)
 {
 	static char *list = NULL;
 	char *prepend, *none;
@@ -280,7 +280,7 @@ char *guru_modules_list()
 }
 
 /* Evaluate administrativia (admins only) */
-Guru *guru_module_internal(Guru *message)
+static Guru *guru_module_internal(Guru *message)
 {
 	char *token;
 	int i;

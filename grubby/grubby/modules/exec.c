@@ -16,7 +16,8 @@
 #include <ggz.h>
 #include <fcntl.h>
 #include <time.h>
-#include "exec.h"
+
+#include "gurumod.h"
 
 /* Configuration with list of external programs */
 #define EXECCONF "/grubby/modexec.rc"
@@ -30,7 +31,7 @@ char **aliaslist = NULL;
 char **programlist = NULL;
 
 /* Build up an option list for the simpleexec function */
-char *const *optlist(char *cmdline, char *options)
+static char *const *optlist(char *cmdline, char *options)
 {
 	static char **list = NULL;
 	int i;
@@ -70,7 +71,7 @@ char *const *optlist(char *cmdline, char *options)
 }
 
 /* Just execute a program without any checking */
-void simpleexec(const char *cmdline, const char *player)
+static void simpleexec(const char *cmdline, const char *player)
 {
 	char *const *opts = optlist((char*)cmdline, (char*)player);
 
@@ -79,7 +80,7 @@ void simpleexec(const char *cmdline, const char *player)
 
 /* Try given program with given message */
 /* FIXME: Check further for errors and interrupts */
-char *process(const char *program, Guru *message)
+static char *process(const char *program, Guru *message)
 {
 	int fd[2];
 	int result;
