@@ -4,6 +4,10 @@
 // GGZ includes
 #include "ggzgameserver.h"
 
+// Definitions
+#define ARRAY_WIDTH 20
+#define ARRAY_HEIGHT 10
+
 // Geekgame server object
 class Geekgame : public GGZGameServer
 {
@@ -24,8 +28,12 @@ class Geekgame : public GGZGameServer
 		void game_stop();
 		void game_end();
 
+		int map_check(int x, int y);
+
 		int m_players;
 		int m_valid[2];
+		int m_array[ARRAY_WIDTH][ARRAY_HEIGHT];
+		int m_mode;
 };
 
 #endif

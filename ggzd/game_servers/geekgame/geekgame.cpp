@@ -9,6 +9,7 @@
 
 // System includes
 #include <iostream>
+#include <cstdlib>
 
 // Constructor: inherit from ggzgameserver
 Geekgame::Geekgame()
@@ -70,6 +71,7 @@ void Geekgame::dataEvent(int player)
 {
 	char opcode;
 	char playername[256], playerpic[256];
+	int x, y;
 
 	std::cout << "Geekgame: dataEvent" << std::endl;
 
@@ -95,6 +97,13 @@ void Geekgame::dataEvent(int player)
 			// If ready, announce game start
 			if(0 == 0) game_start();
 			break;
+		case op_client_ruleset:
+			break;
+		case op_client_move:
+			ggz_read_int(channel, &x);
+			ggz_read_int(channel, &y);
+			// check_map(x, y);
+			break;
 		default:
 			// Discard
 			break;
@@ -114,6 +123,9 @@ void Geekgame::game_start()
 		int bfd = fd(i);
 		ggz_write_char(bfd, op_server_gamestart);
 	}
+	for(int j = 0; j < ARRAY_HEIGHT; j++)
+		for(int i = 0; i < ARRAY_WIDTH; i++)
+			m_array[i][j] = rand() % 2;
 }
 
 void Geekgame::game_stop()
@@ -133,5 +145,75 @@ void Geekgame::game_end()
 		ggz_write_char(bfd, op_server_gameend);
 		//ggz_write_int(bfd, winner);
 	}
+}
+
+int Geekgame::map_check(int x, int y)
+{
+	int sum, sum2, makescore;
+	int i, j;
+
+	makescore = 0;
+
+	switch(m_mode)
+	{
+		case op_mode_easy:
+			sum = 0;
+			i = x / 32;
+			for(j = 0; j < ARRAY_HEIGHT; j++)
+				sum += m_array[i][j];
+			if(!sum) makescore = 1;
+
+			sum = 0;
+			j = y / 32;
+			for(i = 0; i < ARRAY_WIDTH; i++)
+				sum += m_array[i][j];
+			if(!sum) makescore = 1;
+			break;
+		case op_mode_matrix:
+			sum = 0;
+			i = x / 32;
+			for(j = 0; j < ARRAY_HEIGHT; j++)
+				sum += m_array[i][j];
+
+			j = y / 32;
+			for(i = 0; i < ARRAY_WIDTH; i++)
+				sum += m_array[i][j];
+
+			if(sum * 2 == 42) makescore = 1;
+			break;
+		case op_mode_havoc:
+			sum = 0;
+			for(j = y / 32 - 3; j <= y / 32 + 3; j++)
+				for(i = x / 32 - 3; i <= x / 32 + 3; i++)
+				{
+					if((i < 0) || (i >= ARRAY_WIDTH)) continue;
+					if((j < 0) || (j >= ARRAY_HEIGHT)) continue;
+					if((i == x / 32) || (j == y / 32))
+					{
+						sum += m_array[i][j];
+					}
+				}
+			if(sum == (sum & ~0x03)) makescore = 1;
+			break;
+		case op_mode_haxor:
+			sum = 0;
+			sum2 = 0;
+			for(j = y / 32 - 3; j <= y / 32 + 3; j++)
+			{
+				if((j < 0) || (j >= ARRAY_HEIGHT)) continue;
+				sum += m_array[x / 32][j];
+			}
+			for(i = x / 32 - 3; i <= x / 32 + 3; i++)
+			{
+				if((i < 0) || (i >= ARRAY_WIDTH)) continue;
+				sum2 += m_array[i][y / 32];
+			}
+			if(sum == sum2) makescore = 1;
+			break;
+		default:
+			makescore = 0;
+	}
+
+	return makescore;
 }
 
