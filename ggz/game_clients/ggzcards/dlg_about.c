@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.c 2901 2001-12-17 00:59:09Z jdorje $
+ * $Id: dlg_about.c 2908 2001-12-17 01:50:36Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -32,97 +32,108 @@
 
 GtkWidget *create_dlg_about(void)
 {
-	GtkWidget *dlg_about;
-	GtkWidget *dialog_vbox1;
-	GtkWidget *vbox1;
-	GtkWidget *label3;
-	GtkWidget *label4;
-	GtkWidget *dialog_action_area1;
+	GtkWidget *dialog;
+	GtkWidget *vbox;
+	GtkWidget *title_label;
+	GtkWidget *body_label;
+	GtkWidget *action_area;
 	GtkWidget *close_button;
 
 	/*
 	 * Create outer window.
 	 */
-	dlg_about = gtk_dialog_new();
-	gtk_object_set_data(GTK_OBJECT(dlg_about), "dlg_about", dlg_about);
-	gtk_window_set_title(GTK_WINDOW(dlg_about), _("About GGZCards"));
-	GTK_WINDOW(dlg_about)->type = GTK_WINDOW_DIALOG;
-	gtk_window_set_policy(GTK_WINDOW(dlg_about), TRUE, TRUE, FALSE);
+	dialog = gtk_dialog_new();
+	gtk_object_set_data(GTK_OBJECT(dialog), "dlg_about", dialog);
+	gtk_window_set_title(GTK_WINDOW(dialog), _("About GGZCards"));
+	GTK_WINDOW(dialog)->type = GTK_WINDOW_DIALOG;
+	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
 
 	/*
-	 * Create vertical box packing widget.
+	 * Get vertical box packing widget.
 	 */
-	dialog_vbox1 = GTK_DIALOG(dlg_about)->vbox;
-	gtk_object_set_data(GTK_OBJECT(dlg_about), "dialog_vbox1",
-			    dialog_vbox1);
-	gtk_widget_show(dialog_vbox1);
+	vbox = GTK_DIALOG(dialog)->vbox;
+	gtk_object_set_data(GTK_OBJECT(dialog), "vbox", vbox);
+	gtk_widget_show(vbox);
 
-	vbox1 = gtk_vbox_new(FALSE, 0);
-	gtk_widget_ref(vbox1);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_about), "vbox1", vbox1,
+	/*
+	 * Make title label
+	 */
+	title_label =
+		gtk_label_new(_
+			      ("GGZ Gaming Zone\n"
+			       "GGZ Cards Version 0.0.5pre"));
+	gtk_widget_ref(title_label);
+	gtk_object_set_data_full(GTK_OBJECT(dialog), "title_label",
+				 title_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(vbox1);
-	gtk_box_pack_start(GTK_BOX(dialog_vbox1), vbox1, TRUE, TRUE, 0);
+	gtk_widget_show(title_label);
+	gtk_box_pack_start(GTK_BOX(vbox), title_label, FALSE, FALSE, 0);
 
-	label3 = gtk_label_new(_
-			       ("GGZ Gaming Zone\n"
-				"GGZ Cards Version 0.0.5pre"));
-	gtk_widget_ref(label3);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_about), "label3", label3,
+	/*
+	 * Make body label
+	 */
+	body_label = gtk_label_new(_("Authors:\n"
+				     "        Gtk+ Client:\n"
+				     "            Rich Gade        <rgade@users.sourceforge.net>\n"
+				     "            Jason Short      <jdorje@users.sourceforge.net>\n"
+				     "\n"
+				     "        Game Server:\n"
+				     "            Jason Short      <jdorje@users.sourceforge.net>\n"
+				     "            Rich Gade        <rgade@users.sourceforge.net>\n"
+				     "\n"
+				     "        Game Modules:\n"
+				     "            Jason Short      <jdorje@users.sourceforge.net>\n"
+				     "            Rich Gade        <rgade@users.sourceforge.net>\n"
+				     "            Ismael Orenstein <perdig@users.sourceforge.net>\n"
+				     "\n"
+				     "        AI Modules:\n"
+				     "            Jason Short      <jdorje@users.sourceforge.net>\n"
+				     "            Brent Hendricks  <bmh@users.sourceforge.net>\n"
+				     "\n"
+				     "Website:\n"
+				     "        http://ggz.sourceforge.net/"));
+	gtk_widget_ref(body_label);
+	gtk_object_set_data_full(GTK_OBJECT(dialog), "body_label", body_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(label3);
-	gtk_box_pack_start(GTK_BOX(vbox1), label3, FALSE, FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(dialog), 10);
+	gtk_widget_show(body_label);
+	gtk_box_pack_start(GTK_BOX(vbox), body_label, FALSE, FALSE, 0);
+	gtk_label_set_justify(GTK_LABEL(body_label), GTK_JUSTIFY_LEFT);
 
-	label4 = gtk_label_new(_("Authors:\n"
-				 "        Gtk+ Client:\n"
-				 "            Rich Gade        <rgade@users.sourceforge.net>\n"
-				 "            Jason Short      <jdorje@users.sourceforge.net>\n"
-				 "\n"
-				 "        Game Server:\n"
-				 "            Jason Short      <jdorje@users.sourceforge.net>\n"
-				 "            Rich Gade        <rgade@users.sourceforge.net>\n"
-				 "\n"
-				 "        Game Modules:\n"
-				 "            Jason Short      <jdorje@users.sourceforge.net>\n"
-				 "            Rich Gade        <rgade@users.sourceforge.net>\n"
-				 "            Ismael Orenstein <perdig@users.sourceforge.net>\n"
-				 "\n"
-				 "        AI Modules:\n"
-				 "            Jason Short      <jdorje@users.sourceforge.net>\n"
-				 "            Brent Hendricks  <bmh@users.sourceforge.net>\n"
-				 "\n"
-				 "Website:\n"
-				 "        http://ggz.sourceforge.net/"));
-	gtk_widget_ref(label4);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_about), "label4", label4,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(label4);
-	gtk_box_pack_start(GTK_BOX(vbox1), label4, FALSE, FALSE, 0);
-	gtk_label_set_justify(GTK_LABEL(label4), GTK_JUSTIFY_LEFT);
+	/*
+	 * Get "action area"
+	 */
+	action_area = GTK_DIALOG(dialog)->action_area;
+	gtk_object_set_data(GTK_OBJECT(dialog), "dialog_action_area1",
+			    action_area);
+	gtk_container_set_border_width(GTK_CONTAINER(action_area), 10);
+	gtk_widget_show(action_area);
 
-	dialog_action_area1 = GTK_DIALOG(dlg_about)->action_area;
-	gtk_object_set_data(GTK_OBJECT(dlg_about), "dialog_action_area1",
-			    dialog_action_area1);
-	gtk_widget_show(dialog_action_area1);
-	gtk_container_set_border_width(GTK_CONTAINER(dialog_action_area1),
-				       10);
-
+	/*
+	 * Make "close" button
+	 */
 	close_button = gtk_button_new_with_label(_("Close"));
 	gtk_widget_ref(close_button);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_about), "close_button",
+	gtk_object_set_data_full(GTK_OBJECT(dialog), "close_button",
 				 close_button,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(close_button);
-	gtk_box_pack_start(GTK_BOX(dialog_action_area1), close_button, FALSE,
-			   FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE, FALSE,
+			   0);
 	gtk_widget_set_usize(close_button, 64, -2);
 
-	gtk_signal_connect_object(GTK_OBJECT(dlg_about), "delete_event",
+	/*
+	 * Set up callbacks
+	 */
+	gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				  GTK_OBJECT(dlg_about));
+				  GTK_OBJECT(dialog));
 	gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				  GTK_OBJECT(dlg_about));
+				  GTK_OBJECT(dialog));
 
-	return dlg_about;
+	/*
+	 * Done!
+	 */
+	return dialog;
 }
