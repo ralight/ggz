@@ -29,7 +29,7 @@
     <title>Server Architecture</title>
     <mediaobject>
       <imageobject>
-	<imagedata fileref="images/server_arch.eps" format="eps">
+	<imagedata fileref="server_arch.eps" format="eps">
       </imageobject>
       <imageobject>
 	<imagedata fileref="server_arch.jpg" format="jpeg" scale="50">
