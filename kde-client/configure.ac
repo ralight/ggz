@@ -191,6 +191,7 @@ AC_CONFIG_FILES([Makefile
 	ggz-kde/data/splash/Makefile
 	ggz-kde/po/Makefile
 	ggz-kde/doc/Makefile
+	ggz-kde/doc/de/Makefile
 	po/Makefile
 	po/ggzap/Makefile
 	po/shadowbridge/Makefile

@@ -1,0 +1,382 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN"
+"dtd/kdex.dtd" [
+  <!ENTITY kggz "<application>KGGZ</application>">
+  <!ENTITY ggz "GGZ Gaming Zone">
+  <!ENTITY kappname "&kggz;">
+  <!ENTITY package "ggz-kde-client">
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % English "INCLUDE"> 
+]>
+
+<book lang="&language;">
+
+<bookinfo>
+<title>Das &kggz;-Handbuch</title>
+
+<authorgroup>
+<author>
+<firstname>Josef</firstname>
+<surname>Spillner</surname>
+<affiliation>
+<address><email>josef@ggzgamingzone.org</email></address>
+</affiliation>
+</author>
+
+<!-- TRANS:ROLES_OF_TRANSLATORS -->
+
+</authorgroup>
+
+<copyright>
+<year>2002-2005</year>
+<holder>Josef Spillner</holder>
+</copyright>
+
+<legalnotice>&FDLNotice;</legalnotice>
+
+<date>2005-03-11</date>
+<releaseinfo>0.20.00</releaseinfo>
+
+<abstract>
+<para>
+&kggz; ist der Core-Client für die &ggz; für &kde;.
+Dieses Handbuch beschreibt, wie man es verwendet, um den Spieltrieb von jedermann auszureizen.
+</para>
+</abstract>
+
+<keywordset>
+<keyword>GGZ</keyword>
+<keyword>&ggz;</keyword>
+<keyword>ggz-kde-client</keyword>
+<keyword>kggz</keyword>
+</keywordset>
+</bookinfo>
+
+<chapter id="introduction">
+<title>Einführung</title>
+
+<para>
+&kggz; ist der Core-Client für die &ggz; für &kde;.
+Es ist ein zentraler Platz, an welchem sich die Spieler treffen können, um zu spielen,
+chatten und viel Spaß zu haben.
+</para>
+
+<sect1 id="intro-overview">
+<title>&ggz; für Nutzer von &kde;</title>
+
+<para>
+Es gibt mehrere GGZ-Anwendungen für diejenigen Spieler, die den &kde;-Desktop
+verwenden. Neben &kggz;, welches die Hauptanwendung zum Chatten und Spielen ist,
+gibt es auch noch den Spiele-Schnellstarter <application>GGZap</application>,
+den Tournamentkalender <application>Competition Calendar</application>,
+den graphischen Konfigurationsdialogs für Chatbots <application>kgrubby</application>,
+ein Konfigurationsmodul für das Kontrollzentrum, und vieles mehr. Wirf einen
+Blick auf die jeweiligen Handbücher, um mehr über die Anwendungen zu erfahren.
+</para>
+
+</sect1>
+
+<sect1 id="intro-starting">
+<title>&kggz; starten</title>
+
+<para>
+Im Menü von &kde; findet man den Eintrag
+<guimenuitem>Spiele/GGZ Gaming Zone/Internet-Spielezentrum (KGGZ)</guimenuitem>.
+Dieser startet &kggz; und öffnet einen Verbindungsdialog, mit dessen Hilfe man
+sich in einen GGZ-Server einloggen kann.
+Alternativ dazu kann das Programm mit einer Verbindungs-URI wie
+<replaceable>ggz://nutzername@live.ggzgamingzone.org</replaceable> als Argument
+auf der Kommandozeile gestartet werden.
+</para>
+
+</sect1>
+
+</chapter>
+
+<chapter id="connecting">
+<title>Verbindung zu einem Server</title>
+
+<sect1 id="connecting-dialog">
+<title>Der Verbindungsdialog</title>
+
+<para>
+Um eine Verbindung zu einem GGZ-Server herzustellen, wird der Verbindungsdialog
+aufgerufen und bietet etliche Verbindungsoptionen sowie Serverprofile an.
+</para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="connection.png"/></imageobject>
+<textobject>
+<phrase>Der Verbindungsdialog mit einem ausgewählten Profil</phrase>
+</textobject>
+</mediaobject>
+
+<para>
+Die Verbindungsoptionen beinhalten die Verschlüsselung der Verbindung
+(sofern vom Server unterstützt), und die Möglichkeit, einen Server
+lokal mit zu starten.
+Andererseits gibt es die Profile, welche den Rechnernamen des GGZ-Servers
+beinhalten, und desweiteren den Nutzernamen, das Passwort (je nach
+Logintyp), und der Logintyp, entweder anonym oder registriert oder
+erstmaliger Nutzer. Anonyme Nutzer können sich ohne Passwort einloggen,
+bekommen aber keinerlei Spielstände oder Statistiken aufgezeichnet.
+Erstmalige Nutzer bekommen nach einem erfolgreichen Login ihr Passwort
+zugesendet.
+</para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="profiles.png"/></imageobject>
+<textobject>
+<phrase>Verbindungsprofile</phrase>
+</textobject>
+</mediaobject>
+
+<para>
+Ein paar Profile sind bereits vorkonfiguriert, wobei stets mehr hinzugefügt
+werden können. Die Nutzung des <guimenuitem>GGZ Metaserver</guimenuitem> bedeutet,
+dass der Rechnername, zu dem sich verbunden wird, automatisch und zufällig
+aus einer vom Metaserver angegebenen Liste ausgewählt wird.
+Er kann auch verwendet werden, um diese Liste zu betrachten und sich manuell
+zu einem der Server zu verbinden.
+Das zweite Profil, <guimenuitem>Voreingestellter Server</guimenuitem>,
+zeigt auf live.ggzgamingzone.org und sollte stets funktionieren.
+Das dritte Standardprofil, <guimenuitem>Spiel im LAN</guimenuitem>,
+kann verwendet werden, um automatisch einen GGZ-Server zu erkennen, welcher
+im lokalen Netz gestartet wurde.
+</para>
+
+</sect1>
+
+<sect1 id="connection-login">
+<title>Login</title>
+
+<para>
+Wenn die Verbindung steht (also wenn die Protokollversionen von GGZ-Client und
+-Server zueinander passen), wird der Login durchgeführt. Wenn dieser auch erfolgreich
+ist, wird automatisch der erste Raum betreten, welcher fast immer die Lounge ist,
+die kein verknüpftes Spiel hat und von daher ein reiner Chatraum ist.
+Von dort aus kann man sich einen Spieleraum aus der Liste der Räume aussuchen.
+In den meisten Fällen wird der GGZ-Server auch eine Nachricht des Tages
+(MOTD) senden, die vorher angezeigt wird.
+</para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="motd.png"/></imageobject>
+<textobject>
+<phrase>Nachricht des Tages</phrase>
+</textobject>
+</mediaobject>
+
+<para>
+Das KGGZ-Fenster für Räume besteht aus einer Chat-Anzeige, einer
+Liste von Spielern links daneben und eine Liste von aktiven Tischen
+darüber. Das Symbol in der linken oberen Ecke ist spezifisch für den
+Spieletyp, der mit jedem Raum assoziiert ist.
+</para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="chatview.png"/></imageobject>
+<textobject>
+<phrase>Chatfenster, Spielerliste und Tischliste</phrase>
+</textobject>
+</mediaobject>
+
+</sect1>
+
+</chapter>
+
+<chapter id="chat">
+<title>Chat</title>
+
+<sect1 id="chat-chat">
+<title>Chatten</title>
+
+<para>
+Gib einfach ein wenig Text in das Eingabefeld ein und drücke Enter, um es über
+den Kanal zu senden. Für private Nachrichten gibt man
+<replaceable>/msg (spielername) (text)</replaceable> ein.
+Eine Liste von allen Chatbefehlen kann man erhalten, indem man
+<replaceable>/help</replaceable> eintippt.
+</para>
+
+<para>
+Jeder Spieler in der Spielerliste wird mit einer Lag-Anzeige dargestellt,
+über die man Informationen über seine Verbinungsqualität herausfinden kann, sowie
+ein Symbol, welches verrät, ob der Spielertyp ein regulärer Spieler, ein Gast,
+ein Administrator oder ein Chatbot ist. Zusätzlich können die Nutzer von
+&kggz; jeden Spieler als Freund oder Feind markieren, und Chatnachrichten von
+den Feinden ignorieren.
+</para>
+</sect1>
+
+<sect1 id="chat-bot">
+<title>Chatbots</title>
+
+<para>
+Es gibt auf den meisten GGZ-Servern Chatbots, welche oft Grubby genannt werden.
+Man kann mit ihnen über eine weitere Menge von Kommandos sprechen, welche auch
+von dem Bot selbst abgefragt werden kann über: <replaceable>(botname) help</replaceable>.
+Die meisten Kommandos funktionieren nur in privater Konversation. Um es leichter
+zu machen, mit dem Bot zu kommunizieren, gibt es dafür eine visuelle Oberfläche.
+</para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="grubby.png"/></imageobject>
+<textobject>
+<phrase>Der visuelle Grubby-Dialog</phrase>
+</textobject>
+</mediaobject>
+
+</sect1>
+
+</chapter>
+
+<chapter id="games">
+<title>GGZ-Spiele</title>
+
+<sect1 id="games-playing">
+<title>Spiele spielen</title>
+
+<para>
+Wenn man sich in einem Spieleraum befindet, kann das damit verknüpfte Spiel
+gestartet werden. Klicke <guimenuitem>Spiel starten</guimenuitem> im
+Spielemenü, um einen neuen Tisch zu starten. Alternativ dazu kann man an einem
+bereits existierenden Tisch teilnehmen, falls er noch einen freien Platz
+hat und dies erlaubt. Einige Spiele unterstützen auch Spielzuschauer,
+so dass man die anderen Spieler beobachten kann, während sie spielen.
+</para>
+
+<para>
+Wenn man ein neues Spiel startet, öffnet sich ein Dialog, der verwendet
+werden kann, um die maximale Anzahl an Spielern und Bots einzustellen.
+Sitzplatzreservierungen für befreundete Spieler oder auch
+Tournaments können ebenfalls gemeistert werden, indem man mit der rechten
+Maustaste auf einen beliebigen Sitzplatz klickt.
+</para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="launch.png"/></imageobject>
+<textobject>
+<phrase>Tischkonfiguration während des Spielstarts</phrase>
+</textobject>
+</mediaobject>
+
+<para>
+Wenn mehrere Spieleoberflächen verfügbar sind, kann eine davon ausgewählt werden,
+bevor das Spiel startet. Da sie alle dasselbe Protokoll sprechen, spielt es nicht
+wirklich eine Rolle, welche Oberfläche ausgewählt wird.
+</para>
+
+<para>
+Manchmal stürzen Spiel ab oder werden auf irgendeine Art und Weise verrückt.
+Solch ein Spiel kann abgebrochen werden, indem man auf den entsprechenden
+Menüeintrag klickt. Einige Spieler unterstützen eine Abwesenheit zwischendurch,
+andere werden dadurch beendet, falls ein Spieler vor dem Spielende es verlässt.
+</para>
+
+</sect1>
+</chapter>
+
+<chapter id="tipstricks">
+<title>Tipps und Tricks</title>
+
+<sect1 id="tipstricks-watcher">
+<title>Panel-Kontrollmenü</title>
+
+<para>
+Wenn gerade wenig Spieler online sind, kann &kggz; minimiert werden
+und ein kleines Symbol im Panel informiert darüber, ob neue Spieler hinzugekommen
+sind ober ob sich Aktivität im Chat regt. Mit einem einfachen Klick auf das Symbol
+kann das Chatfenster wieder hervorgeholt werden.
+</para>
+
+<mediaobject>
+<imageobject><imagedata format="PNG" fileref="panel.png"/></imageobject>
+<textobject>
+<phrase>Panel-Kontrollmenü</phrase>
+</textobject>
+</mediaobject>
+
+</sect1>
+</chapter>
+
+<chapter id="credits">
+
+<title>Credits und Lizenz</title>
+
+<para>
+&kggz;
+</para>
+
+<para>
+Programm-Copyright:
+</para>
+
+<itemizedlist>
+<title>Entwickler</title>
+<listitem>
+<para>Josef Spillner <email>josef@ggzgamingzone.org</email></para>
+</listitem>
+
+</itemizedlist>
+
+<para>
+Dokumentation Copyright 2002-2005 Josef Spillner
+<email>josef@ggzgamingzone.org</email>
+</para>
+<!-- TRANS:CREDIT_FOR_TRANSLATORS -->
+
+&underFDL;               <!-- FDL: do not remove -->
+&underGPL;               <!-- GPL License -->
+
+</chapter>
+
+<appendix id="installation">
+<title>Installation</title>
+
+<sect1 id="getting-kggz">
+<title>Wie erhält man &kggz;</title>
+
+&install.intro.documentation;
+
+</sect1>
+
+<sect1 id="requirements">
+<title>Voraussetzungen</title>
+
+<para>
+Um &kggz; erfolgreich nutzen zu können, benötigt man &kde; 3.3 oder 3.4
+installiert. Zusätzlich muss die &ggz;-Bibliothek <quote>libggzcore</quote>
+installiert sein, inklusive ihrer Abhängigkeiten <quote>libggzmod</quote>
+und <quote>libggz</quote>.
+</para>
+
+<para>
+Für die Erkennung von Servern im LAN muss auch die Bibliothek
+<quote>howl</quote> verfügbar sein.
+</para>
+
+</sect1>
+
+<sect1 id="compilation">
+<title>Kompilierung und Installation</title>
+
+&install.compile.documentation;
+
+</sect1>
+
+</appendix>
+
+&documentation.index;
+
+</book>
+
+<!--
+chatview.png
+connection.png
+grubby.png
+launch.png
+motd.png
+panel.png
+profiles.png
+-->
