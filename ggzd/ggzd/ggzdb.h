@@ -53,3 +53,4 @@ extern int ggzdb_player_add(ggzdbPlayerEntry *);
 extern int ggzdb_player_update(ggzdbPlayerEntry *);
 extern int ggzdb_player_get(ggzdbPlayerEntry *);
 extern int ggzdb_player_delete(char *handle);
+

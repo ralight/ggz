@@ -1,11 +1,11 @@
 /*
- * File: login.h
+ * File: nets.h
  * Author: Brent Hendricks
  * Project: GGZ Server
- * Date: 6/22/00
- * Desc: Functions for handling player logins
+ * Date: 8/27/01
+ * Desc: Functions for handling network IO
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 1999-2001 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,24 +23,18 @@
  */
 
 
-#ifndef _GGZ_LOGIN_H
-#define _GGZ_LOGIN_H
+#ifndef _GGZ_NET_H
+#define _GGZ_NET_H
 
 #include <config.h>
 #include <players.h>
+#include <login.h>
 
-typedef enum {
-	GGZ_LOGIN,
-	GGZ_LOGIN_GUEST,
-	GGZ_LOGIN_NEW
-} GGZLoginType;
+/* Read data from socket for a particu;ar player */
+int net_read_data(GGZPlayer* player, int fd);
 
+int net_send_login(GGZLoginType type, GGZPlayer *player, char status, char *password);
+int net_send_motd(GGZPlayer *player);
+int net_send_logout(GGZPlayer *player, char status);
 
-int  login_player(GGZLoginType type, GGZPlayer* player, char *name, char *password);
-int  login_player_anon(GGZPlayer* player, char *name);
-int  login_player_new(GGZPlayer* player, char *name);
-int  login_player_normal(GGZPlayer* player, char *name, char *password);
-int  logout_player(GGZPlayer* player, int fd);
-
-
-#endif /* _GGZ_LOGIN_H */
+#endif /* _GGZ_NET_H */

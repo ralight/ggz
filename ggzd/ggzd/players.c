@@ -54,8 +54,8 @@
 #include <room.h>
 #include <chat.h>
 #include <hash.h>
-#include <login.h>
 #include <transit.h>
+#include <net.h>
 
 
 /* Timeout for server resync */
@@ -72,22 +72,12 @@ extern Options opt;
 /* Local functions for handling players */
 static void* player_new(void * sock_ptr);
 static void  player_loop(GGZPlayer* player, int p_fd);
-static int   player_handle(GGZPlayer* player, int p_fd);
 static void  player_remove(GGZPlayer* player);
 static int   player_updates(GGZPlayer* player);
 static int   player_msg_to_sized(GGZPlayer* player);
-static int   player_msg_from_sized(GGZPlayer* player);
-static int   player_chat(GGZPlayer* player, int p_fd);
-static int   player_table_launch(GGZPlayer* player, int p_fd);
-static int   player_table_join(GGZPlayer* player, int p_fd);
-static int   player_table_leave(GGZPlayer* player, int p_fd);
 static int   player_transit(GGZPlayer* player, char opcode, int index);
-static int   player_list_players(GGZPlayer* player, int fd);
-static int   player_list_types(GGZPlayer* player, int fd);
-static int   player_list_tables(GGZPlayer* player, int fd);
 static int   player_send_tables(int fd, int count, GGZTable* my_tables);
-static int   player_send_error(GGZPlayer* player, int fd);
-static int   player_motd(GGZPlayer* player, int fd);
+
 
 
 /* Utility functions: Should either get renamed or moved */
@@ -261,7 +251,7 @@ static void player_loop(GGZPlayer* player, int p_fd)
 
 		/* Check for message from player */
 		if (FD_ISSET(p_fd, &read_fd_set)) {
-			if ( (status = player_handle(player, p_fd)) < 0)
+			if ( (status = net_read_data(player, p_fd)) < 0)
 				break;
 		}
 		
@@ -284,97 +274,6 @@ static void player_loop(GGZPlayer* player, int p_fd)
 		player_transit(player, GGZ_TRANSIT_LEAVE, player->table);
 		close(player->game_fd);
 	}
-}
-
-
-/*
- * player_handle() dispatches the correct function to read in the data
- * from the client and handle the request.
- *
- * Receives:
- * int request : request opcode from client
- * GGZPlayer* player : pointer to player structure 
- * int p_fd : player's fd
- *
- * Returns: 
- * int : one of
- *  GGZ_REQ_TABLE_JOIN   : player is now in a game.  fd of the game 
- *                         is now pointed to by t_fd.
- *  GGZ_REQ_TABLE_LEAVE  : player has completed game
- *  GGZ_REQ_DISCONNECT   : player is being logged out (possbily due to error)
- *  GGZ_REQ_FAIL         : request failed
- *  GGZ_REQ_OK           : nothing special 
- */
-static int player_handle(GGZPlayer* player, int p_fd)
-{
-	int status;
-	UserToControl op;
-
-	if (es_read_int(p_fd, (int *)&op) < 0)
-		return GGZ_REQ_DISCONNECT;
-	
-	switch (op) {
-
-	case REQ_LOGIN_NEW:
-	case REQ_LOGIN:
-	case REQ_LOGIN_ANON:
-	case REQ_LOGOUT:
-		status = login_handle_request(op, player, p_fd);
-		break;
-
-	case REQ_TABLE_LAUNCH:
-		status = player_table_launch(player, p_fd);
-		break;
-
-	case REQ_TABLE_JOIN:
-		status = player_table_join(player, p_fd);
-		break;
-
-	case REQ_TABLE_LEAVE:
-		status = player_table_leave(player, p_fd);
-		break;
-
-	case REQ_LIST_PLAYERS:
-		status = player_list_players(player, p_fd);
-		break;
-
-	case REQ_LIST_TYPES:
-		status = player_list_types(player, p_fd);
-		break;
-
-	case REQ_LIST_TABLES:
-		status = player_list_tables(player, p_fd);
-		break;
-
-	case REQ_LIST_ROOMS:
-	case REQ_ROOM_JOIN:
-		status = room_handle_request((int)op, player, p_fd);
-		break;
-
-	case REQ_GAME:
-		status = player_msg_from_sized(player); 
-		break;
-			
-	case REQ_CHAT:
-		status = player_chat(player, p_fd);
-		break;
-
-	case REQ_MOTD:
-		status = player_motd(player, p_fd);
-		break;
-	  
-	case REQ_PREF_CHANGE:
-	case REQ_REMOVE_USER:
-	case REQ_TABLE_OPTIONS:
-	case REQ_USER_STAT:
-	default:
-		dbg_msg(GGZ_DBG_PROTOCOL, "%s requested unimplemented op %d", 
-			player->name, op);
-		
-		status = player_send_error(player, p_fd);
-	}
-
-	return status;
 }
 
 
@@ -484,7 +383,7 @@ static int player_updates(GGZPlayer* player)
  *  GGZ_REQ_FAIL         : request failed
  *  GGZ_REQ_OK           : request succeeded.  t_fd points to new fd 
  */
-static int player_table_launch(GGZPlayer* player, int p_fd)
+int player_table_launch(GGZPlayer* player, int p_fd)
 {
 	char desc[MAX_GAME_DESC_LEN + 1];
 	char names[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
@@ -627,7 +526,7 @@ int player_launch_callback(void* target, int size, void* data)
  *  GGZ_REQ_FAIL         : request failed
  *  GGZ_REQ_OK           : request succeeded. 
  */
-static int player_table_join(GGZPlayer* player, int p_fd)
+int player_table_join(GGZPlayer* player, int p_fd)
 {
 	int index, status;
 
@@ -672,7 +571,7 @@ static int player_table_join(GGZPlayer* player, int p_fd)
  *  GGZ_REQ_FAIL         : request failed
  *  GGZ_REQ_OK           : request succeeded.  
  */
-static int player_table_leave(GGZPlayer* player, int p_fd)
+int player_table_leave(GGZPlayer* player, int p_fd)
 {
 	int status;
 
@@ -725,7 +624,7 @@ static int player_transit(GGZPlayer* player, char opcode, int index)
 }
 
 
-static int player_list_players(GGZPlayer* player, int fd)
+int player_list_players(GGZPlayer* player, int fd)
 {
 	int i, count, room;
 	GGZPlayer* p;
@@ -783,7 +682,7 @@ static int player_list_players(GGZPlayer* player, int fd)
 }
 
 
-static int player_list_types(GGZPlayer* player, int fd)
+int player_list_types(GGZPlayer* player, int fd)
 {
 	char verbose;
 	int i, max, count = 0;
@@ -842,7 +741,7 @@ static int player_list_types(GGZPlayer* player, int fd)
 }
 
 
-static int player_list_tables(GGZPlayer* player, int fd)
+int player_list_tables(GGZPlayer* player, int fd)
 {
 	GGZTable *my_tables;
 	int count, type, status;
@@ -962,7 +861,7 @@ static int player_msg_to_sized(GGZPlayer* p)
 }
 
 
-static int player_msg_from_sized(GGZPlayer* p) 
+int player_msg_from_sized(GGZPlayer* p) 
 {
 	char buf[4096];
 	int size;
@@ -993,7 +892,7 @@ static int player_msg_from_sized(GGZPlayer* p)
 }
 
 
-static int player_chat(GGZPlayer* player, int p_fd) 
+int player_chat(GGZPlayer* player, int p_fd) 
 {
 	unsigned char subop;
 	char *msg = NULL;
@@ -1062,12 +961,6 @@ static int player_chat(GGZPlayer* player, int p_fd)
 	
 	/* Don't return the chat error code */
 	return 0;
-}
-
-
-static int player_send_error(GGZPlayer* player, int fd)
-{
-	return (es_write_int(fd, MSG_ERROR));
 }
 
 

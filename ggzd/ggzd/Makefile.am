@@ -33,6 +33,8 @@ ggzd_SOURCES =	chat.c\
 		table.h \
 		motd.c \
 		motd.h \
+		net.c \
+		net.h \
 		room.c \
 		room.h \
 		transit.c \
