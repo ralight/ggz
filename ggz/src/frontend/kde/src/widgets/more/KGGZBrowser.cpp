@@ -52,7 +52,7 @@ KGGZBrowser::KGGZBrowser(QWidget *parent, const char *name)
 	//KHTMLView *view;
 	QPushButton *home;
 
-	//setBackgroundColor(QColor(255.0, 0.0, 255.0));
+	//setBackgroundColor(QColor(255, 0, 255));
 
 	m_part = new KHTMLPart(this);
 	//m_part->view()->resize(500, 400);

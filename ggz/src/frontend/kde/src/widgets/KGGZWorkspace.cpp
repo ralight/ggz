@@ -47,7 +47,7 @@ KGGZWorkspace::KGGZWorkspace(QWidget *parent, const char *name)
 
 	m_firstresize = 4;
 
-	setBackgroundColor(QColor(255.0, 255.0, 0.0));
+	setBackgroundColor(QColor(255, 255, 0));
 
 	m_vsbox = new QSplitter(this);
 	m_vsbox->setOrientation(QSplitter::Vertical);
@@ -59,7 +59,7 @@ KGGZWorkspace::KGGZWorkspace(QWidget *parent, const char *name)
 
 	m_logo = new KGGZLogo(m_widget);
 	m_logo->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-	m_logo->setBackgroundColor(QColor(255.0, 0.0, 0.0));
+	m_logo->setBackgroundColor(QColor(255, 0, 0));
 	m_logo->setMinimumSize(64, 64);
 	//m_logo->setFixedSize(64, 64);
 

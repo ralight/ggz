@@ -48,7 +48,7 @@
 KGGZSplashScreen::KGGZSplashScreen(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
-	setBackgroundColor(QColor(0.0, 0.0, 255.0));
+	setBackgroundColor(QColor(0, 0, 255));
 	setBackgroundPixmap(QPixmap(KGGZ_DIRECTORY "/images/startup.png"));
 	setMaximumSize(500, 400);
 }

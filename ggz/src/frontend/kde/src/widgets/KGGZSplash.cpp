@@ -42,7 +42,7 @@ KGGZSplash::KGGZSplash(QWidget *parent, const char *name)
 {
 	QVBoxLayout *vbox;
 
-	setBackgroundColor(QColor(255.0, 255.0, 255.0));
+	setBackgroundColor(QColor(255, 255, 255));
 
 	m_splash = new KGGZSplashScreen(this);
 

@@ -50,7 +50,7 @@ KGGZAbout::KGGZAbout(QWidget *parent, const char *name)
 
 	m_frame = new QFrame(this);
 	m_frame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-	m_frame->setBackgroundColor(QColor(100.0, 0.0, 0.0));
+	m_frame->setBackgroundColor(QColor(100, 0, 0));
 
 	ok = new QPushButton("OK", this);
 
@@ -87,9 +87,9 @@ void KGGZAbout::paintEvent(QPaintEvent *e)
 	font.setStyleHint(QFont::Serif);
 
 	p.begin(m_frame);
-	p.fillRect(0, 110, 350, 70, QBrush(QColor(100.0, 0.0, 0.0)));
+	p.fillRect(0, 110, 350, 70, QBrush(QColor(100, 0, 0)));
 	p.setFont(font);
-	p.setPen(QColor(255.0, 255.0, 255.0));
+	p.setPen(QColor(255, 255, 255));
 	p.drawText(10, 25, "The GGZ Gaming Zone");
 	p.drawLine(10, 30, 330, 30);
 	p.drawLine(10, 32, 330, 32);
@@ -104,12 +104,12 @@ void KGGZAbout::paintEvent(QPaintEvent *e)
 	font.setPointSize(50);
 	font.setWeight(QFont::Black);
 	p.setFont(font);
-	p.setPen(QColor(130.0, 0.0, 0.0));
+	p.setPen(QColor(130, 0, 0));
 	p.drawText(x, 160, "GGZ Gaming Zone " KGGZVERSION);
 	font.setPointSize(10);
 	font.setWeight(QFont::Normal);
 	p.setFont(font);
-	p.setPen(QColor(210.0, 50.0, 50.0));
+	p.setPen(QColor(210, 50, 50));
 	p.drawText(x2, 160, "Brian Cox - Brent Hendricks - Doug Hudson - Rich Gade - Ismael Orenstein - Dan Papasian - "
 		"Ricardo Quesada - Josef Spillner - Justin Zaun - and many supporters...");
 	p.end();

@@ -86,7 +86,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	m_motd = NULL;
 	m_grubby = NULL;
 
-	setBackgroundColor(QColor(0.0, 0.0, 0.0));
+	setBackgroundColor(QColor(0, 0, 0));
 
 	m_splash = new KGGZSplash(this, "splash");
 
@@ -1057,16 +1057,34 @@ void KGGZ::slotLaunchGame(GGZCoreGametype *gametype)
 
 	attachGameCallbacks(); // don't forget detaching!
 
+	delete module;
+
 	ret = kggzgame->launch();
 	if(ret < 0)
 	{
+		KGGZDEBUG("Red Alert! Game launching failed immedeately!\n");
+		detachGameCallbacks();
+		if(!kggzgame) KGGZDEBUG("Hrmpf, it delete kggzgame...\n");
+		else KGGZDEBUG("Ah, still here :)\n");
+		// FIXME: Don't delete kggzgame here! It will terminate KGGZ!!!!!
+		//delete kggzgame;
+		kggzgame = NULL;
+		KGGZDEBUG("Leave table?\n");
+		if(kggzserver->state() == GGZ_STATE_AT_TABLE)
+		{
+			KGGZDEBUG("**** Still at table (alert) -> leaving now!\n");
+			kggzroom->leaveTable();
+		}
+		listPlayers();
+		listTables();
 		KMessageBox::information(this, i18n("Couldn't launch game!"), "Error!");
+		KGGZDEBUG("Phew.. the crisis is over, let's continue with normal work.\n");
 		return;
 	}
 
 	slotLoadLogo();
 
-	delete module;
+	//delete module;
 }
 
 void KGGZ::slotLaunch()
