@@ -13,6 +13,6 @@ Engine = Chess
 Version = 1
 
 [TableOptions]
-AllowLeave = 1
+AllowLeave = 0
 BotsAllowed = 0
 PlayersAllowed = 2
