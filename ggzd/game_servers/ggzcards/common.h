@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4103 2002-04-29 03:11:31Z jdorje $
+ * $Id: common.h 4105 2002-04-29 03:31:43Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -177,7 +177,7 @@ void handle_client_sync(player_t p);
 void init_ggzcards(GGZdMod * ggz, game_data_t *game_data);
 bool try_to_start_game(void);
 void init_game(void);
-void next_play(void);		/* make the next move */
+void next_move(void);		/* make the next move, if all seats are full */
 void send_sync(player_t p);
 void broadcast_sync(void);
 void send_hand(const player_t p, const seat_t s, int reveal);

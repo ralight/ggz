@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4104 2002-04-29 03:21:50Z jdorje $
+ * $Id: common.c 4105 2002-04-29 03:31:43Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -189,24 +189,22 @@ static void newgame(void)
 
 	ggzdmod_log(game.ggz, "Game start completed successfully.");
 
-	next_play();
+	next_move();
 }
 
-/* Do the next play */
-void next_play(void)
+/* Do the next play, only if all seats are full. */
+void next_move(void)
 {
 	player_t p;
 	seat_t s;
 	/* TODO: split this up into functions */
 	/* TODO: use looping instead of recursion */
+		
+	if (!seats_full())
+		return;
 
 	ggzdmod_log(game.ggz, "Next play called while state is %s.",
 		    get_state_name(game.state));
-		
-	if (!seats_full()) {
-		assert(FALSE);
-		return;
-	}
 
 	switch (game.state) {
 	case STATE_NOTPLAYING:
@@ -221,7 +219,7 @@ void next_play(void)
 		if (game.data->test_for_gameover()) {
 			game.data->handle_gameover();
 			set_game_state(STATE_NOTPLAYING);
-			next_play();	/* start a new game */
+			next_move();	/* start a new game */
 			return;
 		}
 		
@@ -251,7 +249,7 @@ void next_play(void)
 		set_game_state(STATE_FIRST_BID);
 		ggzdmod_log(game.ggz,
 			    "Done generating the next hand; entering bidding phase.");
-		next_play();	/* recursion */
+		next_move();	/* recursion */
 		break;
 	case STATE_FIRST_BID:
 		ggzdmod_log(game.ggz, "Next play: starting the bidding.");
@@ -265,7 +263,7 @@ void next_play(void)
 		game.bid_count = 0;
 
 		game.data->start_bidding();
-		next_play();	/* recursion */
+		next_move();	/* recursion */
 		break;
 	case STATE_NEXT_BID:
 		ggzdmod_log(game.ggz, "Next play: bid %d/%d - player %d/%s.",
@@ -295,7 +293,7 @@ void next_play(void)
 		game.trump_broken = 0;
 		game.next_play = game.leader;
 		game.play_count = game.trick_count = 0;
-		next_play();
+		next_move();	/* recursion */
 		break;
 	case STATE_NEXT_TRICK:
 		ggzdmod_log(game.ggz,
@@ -305,7 +303,7 @@ void next_play(void)
 		game.play_count = 0;
 		game.next_play = game.leader;
 		set_game_state(STATE_NEXT_PLAY);
-		next_play();	/* minor recursion */
+		next_move();	/* recursion */
 		break;
 	case STATE_PRELAUNCH:
 	case STATE_WAIT_FOR_BID:
@@ -463,7 +461,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 		    && game.state != STATE_WAIT_FOR_PLAY)
 			/* if we're in one of these two states, we have to
 			   wait for a response anyway */
-			next_play();
+			next_move();
 	}
 	
 	ggzdmod_log(game.ggz, "Player join successful.");
@@ -626,7 +624,7 @@ void handle_play_event(player_t p, card_t card)
 	}
 
 	/* do next move */
-	next_play();
+	next_move();
 }
 
 void handle_badplay_event(player_t p, char *msg)
@@ -699,9 +697,8 @@ void handle_bid_event(player_t p, bid_t bid)
 
 	game.prev_bid = p;
 
-	if (seats_full())
-		/* do next move */
-		next_play();
+	/* do next move */
+	next_move();
 }
 
 void handle_trick_event(player_t winner)

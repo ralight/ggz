@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 4081 2002-04-25 21:23:26Z jdorje $
+ * $Id: options.c 4105 2002-04-29 03:31:43Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -183,8 +183,7 @@ void handle_client_options(player_t p, int num_options, int *options)
 		init_game();
 		broadcast_sync();
 
-		if (seats_full())
-			next_play();
+		next_move();
 	} else {
 		if (num_options != pending_option_count)
 			return;
