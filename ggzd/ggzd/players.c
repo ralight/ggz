@@ -34,6 +34,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <errno.h>
+#include <time.h>
 
 #include <easysock.h>
 #include <datatypes.h>
@@ -59,7 +60,7 @@ static void* player_new(void * sock_ptr);
 static void  player_loop(int p_index, int p_fd);
 static int   player_handle(int op, int p_index, int p_fd, int * t_fd);
 static void  player_remove(int p_index);
-static int   player_updates(int p_index);
+static int   player_updates(int p_index, int p_fd, time_t*, time_t*, time_t*);
 static int   player_msg_to_sized(int fd_in, int fd_out);
 static int   player_msg_from_sized(int fd_in, int fd_out);
 static int   player_send_chat(int p_index, char* name, char* chat);
@@ -158,21 +159,27 @@ static void* player_new(void *sock_ptr)
  */
 static void player_loop(int p_index, int p_fd)
 {
-
 	int op, status, fd_max, t_fd = -1;
 	char game_over = 0;
 	fd_set active_fd_set, read_fd_set;
 	struct timeval timer;
+	/* Update timestamps */
+	time_t player_ts;
+	time_t table_ts;
+	time_t type_ts;
 
 	/* Start off listening only to player */
 	p_fd = players.info[p_index].fd;
 	FD_ZERO(&active_fd_set);
 	FD_SET(p_fd, &active_fd_set);
 
-	for (;;) {
+	/* Initialize timestamps */
+	player_ts = table_ts = type_ts = time(NULL);
 
+	for (;;) {
 		/* Send updated info if need be */
-		if (FAIL(player_updates(p_index)))
+		if (FAIL(player_updates(p_index, p_fd, &player_ts, &table_ts, 
+					&type_ts)))
 			break;
 		
 		read_fd_set = active_fd_set;
@@ -351,6 +358,7 @@ static void player_remove(int p_index)
 	fd = players.info[p_index].fd;
 	players.info[p_index].fd = -1;
 	players.count--;
+	players.timestamp = time(NULL);
 	pthread_rwlock_unlock(&players.lock);
 
 	/* FIXME: mark all my chats as read */
@@ -362,15 +370,48 @@ static void player_remove(int p_index)
  * player_updates checks any updates (player/table/type) lists
  * or chats which need to be sent to the player, and sends them
  */
-static int player_updates(int p) {
+static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts, 
+			  time_t* type_ts) {
 
 	int i, count;
 	char player[MAX_USER_NAME_LEN + 1];
 	char chat[MAX_CHAT_LEN + 1];
+	char user_update = 0;
+	char table_update = 0;
+	char type_update = 0;
 
-	/*FIXME: Add user_list updates */
-	/*FIXME: Add game_type updates */
-	/*FIXME: Add game_table updates */
+	/* Check for player list updates */
+	pthread_rwlock_rdlock(&players.lock);
+	if (difftime(players.timestamp, *player_ts) != 0 ) {
+		*player_ts = players.timestamp;
+		user_update = 1;
+		dbg_msg("Player list updated");
+	}
+	pthread_rwlock_unlock(&players.lock);
+
+	/* Check for table list updates*/
+	pthread_rwlock_rdlock(&game_tables.lock);
+	if (difftime(game_tables.timestamp, *table_ts) != 0 ) {
+		*table_ts = game_tables.timestamp;
+		table_update = 1;
+		dbg_msg("Table list updated");
+	}
+	pthread_rwlock_unlock(&game_tables.lock);
+
+	/* Check for game type list updates*/
+	pthread_rwlock_rdlock(&game_types.lock);
+	if (difftime(game_types.timestamp, *type_ts) != 0 ) {
+		*type_ts = game_types.timestamp;
+		type_update = 1;
+		dbg_msg("Type list updated");
+	}
+	pthread_rwlock_unlock(&game_types.lock);
+
+	/* Send out proper update messages */
+	if ( (user_update && FAIL(es_write_int(fd, MSG_USERS_UPDATE)))
+	     || (type_update && FAIL(es_write_int(fd, MSG_TYPES_UPDATE)))
+	     || (table_update && FAIL(es_write_int(fd, MSG_TABLES_UPDATE))))
+		return(-1);
 	
 	/* Send any unread chats */
 	count = chat_check_num_unread(p);
@@ -444,6 +485,7 @@ static int anon_login(int p)
 	pthread_rwlock_wrlock(&players.lock);
 	players.info[p].uid = NG_UID_ANON;
 	strncpy(players.info[p].name, name, MAX_USER_NAME_LEN + 1);
+	players.timestamp = time(NULL);
 	pthread_rwlock_unlock(&players.lock);
 
 	if (FAIL(es_write_int(players.info[p].fd, RSP_ANON_LOGIN)) ||
@@ -577,6 +619,7 @@ static int read_table_info(int p_index, int p_fd, int *t_fd)
 				}
 			t_index = i;
 			game_tables.count++;
+			game_tables.timestamp = time(NULL);
 			pthread_rwlock_unlock(&game_tables.lock);
 		}
 	}
@@ -623,12 +666,11 @@ static int join_table(int p_index, int p_fd, int *t_fd)
 	int status = 0;
 
 	dbg_msg("Handling table join for player %d", p_index);
-	
 	if (FAIL(es_read_int(p_fd, &(t_index))))
 		return -1;
-
-	dbg_msg("Player %d attempting to join table %d", p_index, t_index);
 	
+	dbg_msg("Player %d attempting to join table %d", p_index, t_index);
+
 	pthread_rwlock_wrlock(&game_tables.lock);
 	if (game_tables.info[t_index].type_index == -1) {
 		pthread_rwlock_unlock(&game_tables.lock);

@@ -27,6 +27,7 @@
 #define _NG_TYPES
 
 #include <pthread.h>
+#include <time.h>
 
 /* Server limits */
 #define MAX_USER_NAME_LEN 8
@@ -117,6 +118,7 @@ struct GameTypes {
 	GameInfo info[MAX_GAME_TYPES];
 	int count;
 	pthread_rwlock_t lock;
+	time_t timestamp;
 };
 
 
@@ -145,6 +147,7 @@ struct GameTables {
 	TableInfo info[MAX_TABLES];
 	int count;
 	pthread_rwlock_t lock;
+	time_t timestamp;
 };
 
 
@@ -164,6 +167,7 @@ struct Users {
 	UserInfo info[MAX_USERS];
 	int count;
 	pthread_rwlock_t lock;
+	time_t timestamp;
 };
 
 

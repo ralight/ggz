@@ -34,7 +34,7 @@ extern Options opt;
 
 static const struct poptOption args[] = {
 	
-	    {"file", 'f', POPT_ARG_STRING, &opt.local_conf, 0,
+	{"file", 'f', POPT_ARG_STRING, &opt.local_conf, 0, 
 	 "Configuration file", "FILE"},
 	{"log", 'l', POPT_ARG_INT, &opt.log_level, 0,
 	 "Verbosity of logging", "LEVEL"},

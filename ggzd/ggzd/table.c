@@ -91,7 +91,7 @@ int table_handler_launch(int t_index)
 	pthread_t thread;
 	int *index_ptr;
 	int status;
-
+	
 	/* Temporary storage to pass fd */
 	if (FAIL(index_ptr = malloc(sizeof(int))))
 		err_sys_exit("malloc error");
@@ -311,6 +311,7 @@ static void table_remove(int t_index)
 	free(game_tables.info[t_index].options);
 	game_tables.info[t_index].options = NULL;
 	game_tables.count--;
+	game_tables.timestamp = time(NULL);
 	pthread_rwlock_unlock(&game_tables.lock);
 
 	close(game_tables.info[t_index].fd_to_game);
