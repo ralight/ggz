@@ -102,12 +102,12 @@ int GGZCoreTable::countSeats()
 
 int GGZCoreTable::countBots()
 {
-	return ggzcore_table_get_num_bots(m_table);
+	return ggzcore_table_get_seat_count(m_table, GGZ_SEAT_BOT);
 }
 
 int GGZCoreTable::countOpen()
 {
-	return ggzcore_table_get_num_open(m_table);
+	return ggzcore_table_get_seat_count(m_table, GGZ_SEAT_OPEN);
 }
 
 char* GGZCoreTable::playerName(const unsigned int number)
