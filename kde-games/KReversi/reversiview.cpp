@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <config.h>
+#include <ksimpleconfig.h>
 #include "reversiview.h"
 
 /* Reversi Disc */
@@ -33,10 +34,10 @@ void ReversiDisc::advance( int stage ) {
     return;
   if (a == 0)
     dir = 1;
-  if (a == 19)
+  if (a == frameCount()-1)
     dir = -1;
   setFrame(a+dir);
-  if (a+dir == 0 || a+dir == 19)
+  if (a+dir == 0 || a+dir == frameCount()-1)
     setAnimated(false);
 }
 
@@ -54,10 +55,10 @@ ReversiView::ReversiView(QString theme, QWidget * parent, const char * name, WFl
 
   /* Add the initial four discs */
   discs.append( new ReversiDisc(disc_img, canvas) );
-  discs.last()->move( 3*50, 3*50, 19 );
+  discs.last()->move( 3*50, 3*50, discs.last()->frameCount()-1 );
   discs.last()->show();
   discs.append( new ReversiDisc(disc_img, canvas) );
-  discs.last()->move( 4*50, 4*50, 19 );
+  discs.last()->move( 4*50, 4*50, discs.last()->frameCount()-1 );
   discs.last()->show();
   discs.append( new ReversiDisc(disc_img, canvas) );
   discs.last()->move( 3*50, 4*50, 0 );
@@ -66,19 +67,30 @@ ReversiView::ReversiView(QString theme, QWidget * parent, const char * name, WFl
   discs.last()->move( 4*50, 3*50, 0 );
   discs.last()->show();
 
-  canvas->setAdvancePeriod( 50 );
-
-
 }
 
 void ReversiView::loadTheme( QString theme, bool keep ) {
   ReversiDisc *d;
   int board[8][8];
+  KSimpleConfig conf(GGZDATADIR "/kreversi/pixmaps/" + theme + "/themerc", true);
   int x, y;
+  int frames, speed;
+
+  /* Animation settings */
+  conf.setGroup("Animation");
+  frames = conf.readNumEntry("Frames", 20);
+  speed = conf.readNumEntry("Speed", 50);
   
   /* Load images */
-  QPixmap tile_img(GGZDATADIR "/kreversi/pixmaps/" + theme + "/tiles.png");
-  disc_img = new QCanvasPixmapArray( GGZDATADIR "/kreversi/pixmaps/" + theme + "/disc%1.png", 20 );
+  conf.setGroup("Filenames");
+  QPixmap tile_img(GGZDATADIR "/kreversi/pixmaps/" + theme + "/" + conf.readEntry("Tiles", "tiles.png"));
+  disc_img = new QCanvasPixmapArray( GGZDATADIR "/kreversi/pixmaps/" + theme + "/" + conf.readEntry("Disc", "disc%1.png") , frames);
+
+  /* Names */
+  conf.setGroup("Theme");
+  colorNames.clear();
+  colorNames.append( conf.readEntry("Player1", "blue" ) );
+  colorNames.append( conf.readEntry("Player2", "red" ) );
 
   /* Load tiles */
   
@@ -100,10 +112,15 @@ void ReversiView::loadTheme( QString theme, bool keep ) {
     }
   }
 
-  for (d = discs.first(); d; d = discs.next())
+  for (d = discs.first(); d; d = discs.next()) {
+    x = d->frame();
+    d->setFrame( 0 );
     d->setSequence( disc_img );
+    d->setFrame( x==0?0:frames-1 );
+  }
 
   canvas->update();
+  canvas->setAdvancePeriod(speed);
 
 }
 
@@ -140,7 +157,7 @@ void ReversiView::updateBoard(char board[8][8]) {
         case VIEW_LAST_WHITE:
           canvas->setTile(x, y, 1);
         case VIEW_WHITE:
-          a->move(x*50, y*50, 19);
+          a->move(x*50, y*50, a->frameCount()-1);
           a->show();
           break;
         case VIEW_LAST_BLACK:
@@ -155,7 +172,7 @@ void ReversiView::updateBoard(char board[8][8]) {
           a->setAnimated(true);
           break;
         case VIEW_MOVE_BLACK:
-          a->move(x*50, y*50, 19);
+          a->move(x*50, y*50, a->frameCount()-1);
           a->show();
           a->setAnimated(true);
           break;

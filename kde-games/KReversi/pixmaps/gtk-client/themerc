@@ -1,0 +1,11 @@
+[Theme]
+Player1=black
+Player2=white
+
+[Filenames]
+Tiles=tiles.png
+Disc=disc%1.png
+
+[Animation]
+Frames=2
+Speed=1

@@ -1,13 +1,13 @@
 *** KReversi Theme Howto ***
 
+*** THE EASY WAY ***
+
 To add a theme to KReversi is very easy. You need to:
 
 1) Create a directory with your theme name in the pixmaps/ subdirectory
 
 2) Edit pixmaps/Makefile.am and change the part that reads:
 	---------------------------------------
-	| EXTRA_DIST = default/*.png blend/*.png
-  |
 	| SUBDIRS = .
   |
 	| data = default blend
@@ -15,13 +15,11 @@ To add a theme to KReversi is very easy. You need to:
 	To
 
 	---------------------------------------
-	| EXTRA_DIST = default/*.png blend/*.png YOURTHEME/*.png
-  |
 	| SUBDIRS = .
   |
 	| data = default blend YOURTHEME
 
-	In short: Add yourtheme/*.png to EXTRA_DIST and YOURTHEME to data
+	In short: Add YOURTHEME to data
 
 3) Add your theme files to the pixmaps/YOURTHEME directory. They should be named the following way:
 
@@ -37,4 +35,31 @@ To add a theme to KReversi is very easy. You need to:
 
 5) Your theme should now be available in the "Select theme" menu.
 
-For more information, take a look at the default theme.
+*** THE NOT SO EASY WAY ***
+
+You can configure more about the way your theme works by adding a themerc file to your theme directory. It is a standard configuration files, with the following fields:
+
+	---------------------------------------------------
+	| [Theme]
+	| Player1=black
+	| Player2=white
+
+	| [Filenames]
+	| Tiles=tiles.png
+	| Disc=disc%1.png
+
+	| [Animation]
+	| Frames=2
+	| Speed=1
+
+	This one was taken from the gtk-client theme. It works the following way:
+	Player1 -> color of the player1 disc (ex: black, blue)
+	Player2 -> color of the player2 disc (ex: white, red)
+	The name you use here will be displayed in the status bar 
+		like: | Your turn | Perdig(black): 10 | bot(white): 21 |
+
+	Tiles -> name of the tiles image (with the 3 background tiles)
+	Disc -> pattern for the disc animations (the %1 is replaced with the frame numbers. Remember that if you have less than 1000 frames, it is padded with 0... like: disc0123.png)
+
+	Frames -> number of frames your animation will have (***NOTE***: If there isn't enough disc files for the entire animation, your client will crash!!! So don't put 50 frames if you only disc0000.png and disc0001.png)
+	Speed -> Time (in miliseconds) between animation advances. Lower numbers means faster animation

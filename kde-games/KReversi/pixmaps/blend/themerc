@@ -1,0 +1,11 @@
+[Theme]
+Player1=blue
+Player2=red
+
+[Filenames]
+Tiles=tiles.png
+Disc=disc%1.png
+
+[Animation]
+Frames=20
+Speed=50

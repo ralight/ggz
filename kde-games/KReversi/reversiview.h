@@ -19,6 +19,7 @@
 #define REVERSIVIEW_H
 
 #include <qcanvas.h>
+#include <qstringlist.h>
 
 #define WHITE +1
 #define BLACK -1
@@ -61,6 +62,7 @@ signals:
   void playerMove(int x, int y);
 public:
   void updateBoard(char board[8][8]);
+  QString getPlayer(int n) { return (n==0?colorNames.first():colorNames.last()); };
 private: // Private attributes
   /** Should be used by a QCanvasView to display the game */
   QCanvas *canvas;
@@ -71,6 +73,8 @@ protected: // Protected methods
   QList<ReversiDisc> discs;
   /** discs image */
   QCanvasPixmapArray *disc_img;
+  /** color names */
+  QStringList colorNames;
 };
 
 #endif

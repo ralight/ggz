@@ -48,11 +48,6 @@ KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name
   // Now lets search for themes !
 
 
-  // Create the status bar
-  statusBar()->insertItem(i18n("Wait..."), 1, 1);
-  statusBar()->insertItem(i18n("Blue: 2"), 2, 2);
-  statusBar()->insertItem(i18n("Red: 2"), 3, 2);
-
   // Create the game
   initGame();
 
@@ -65,6 +60,11 @@ KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name
   }
   maskBoard(turn, mboard);
   view->updateBoard(mboard);
+
+  // Create the status bar
+  statusBar()->insertItem(i18n("Wait..."), 1, 1);
+  statusBar()->insertItem(view->getPlayer(0) + ": 2", 2, 2);
+  statusBar()->insertItem(view->getPlayer(1) + ": 2", 3, 2);
 
   // Create the protocol
   protocol = new ReversiProtocol();
@@ -97,7 +97,7 @@ void KReversi::scanThemeDir() {
   QString default_theme;
   int i;
 
-  QString theme_dir(GGZDATADIR "/kreversi/pixmaps");
+  QString theme_dir(GGZDATADIR "/kreversi/pixmaps/");
   /* Set the config group for the desired theme */
   kapp->config()->setGroup("Themes");
   default_theme = kapp->config()->readEntry("Default", "default");
@@ -122,6 +122,7 @@ void KReversi::changeTheme() {
       kapp->config()->setGroup("Themes");
       kapp->config()->writeEntry("Default", theme_act->name());
       kapp->config()->sync();
+      updateScore();
     }
   }
 }
@@ -201,9 +202,9 @@ void KReversi::updateScore(){
         score[1]++;
     }
   }
-  msg = i18n("%1 (blue): %2").arg(p_name[0]).arg(score[0]);
+  msg = i18n("%1 (%2): %3").arg(p_name[0]).arg(view->getPlayer(0)).arg(score[0]);
   statusBar()->changeItem(msg, 2);
-  msg = i18n("%1 (red): %2").arg(p_name[1]).arg(score[1]);
+  msg = i18n("%1 (%2): %3").arg(p_name[1]).arg(view->getPlayer(1)).arg(score[1]);
   statusBar()->changeItem(msg, 3);
 }
 
