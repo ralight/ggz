@@ -44,7 +44,7 @@ void game_send_bid(int bid)
 	ggz_debug("Sending bid to server: index %i.", bid);
 	es_write_int(game.fd, WH_RSP_BID);
 	es_write_int(game.fd, bid);
-	game.state = WH_STATE_WAIT; /* return to waiting */
+	set_game_state( WH_STATE_WAIT ); /* return to waiting */
 
 	statusbar_message( _("Sending bid to server") );
 }
@@ -58,7 +58,7 @@ void game_send_options(int options_cnt, int* options)
 	es_write_int(game.fd, WH_RSP_OPTIONS);
 	for (i=0; i<options_cnt; i++)
 		es_write_int(game.fd, options[i]);
-	game.state = WH_STATE_WAIT; /* return to waiting */
+	set_game_state( WH_STATE_WAIT ); /* return to waiting */
 
 	statusbar_message( _("Sending options to server") );
 }
@@ -71,6 +71,18 @@ void game_play_card(card_t card)
 	es_write_card(game.fd, card);
 
 	statusbar_message( _("Sending play to server") );
+}
+
+static char* game_states[] = {"INIT", "WAIT", "PLAY", "BID", "ANIM", "DONE", "OPTIONS"};
+
+void set_game_state(char state)
+{
+	if (state == game.state)
+		ggz_debug("Staying in state %d.", game.state);
+	else {
+		ggz_debug("Changing state from %s to %s.", game_states[(int)game.state], game_states[(int)state]);
+		game.state = state;
+	}
 }
 
 

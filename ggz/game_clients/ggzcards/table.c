@@ -446,6 +446,8 @@ void table_handle_click_event(GdkEventButton *event)
 	float xdiff, ydiff;
 	int card_width, card_height;
 
+	ggz_debug("table_handle_click_event: click at %d %d.  State is %d.", event->x, event->y, game.state);
+
 	/* Real quick, see if we even care */
 	if (game.state != WH_STATE_PLAY) return;
 
@@ -476,7 +478,7 @@ void table_handle_click_event(GdkEventButton *event)
 			which = target;
 	}
 	if (which == -1) return;
-
+	
 	table_card_clicked(which);
 }
 
@@ -488,6 +490,9 @@ void table_handle_click_event(GdkEventButton *event)
 static void table_card_clicked(int card)
 {
 	int p = game.play_hand;
+
+	ggz_debug("table_card_clicked: Card %d clicked.", card);
+
 	if(card == game.players[p].hand.selected_card) {
 		game.players[p].hand.selected_card = -1;
 
@@ -601,7 +606,7 @@ static void table_card_play(int p, int card)
 	/* Setup and trigger the card animation */
 	table_animation_trigger(game.players[p].hand.card[card], x, y, 199, 242);
 #else
-	game.state = WH_STATE_WAIT;	
+	set_game_state( WH_STATE_WAIT );	
 #endif /* ANIMATION */
 }
 
@@ -631,7 +636,7 @@ void table_animation_trigger(card_t card, int x1, int y1, int x2, int y2)
 	anim.cb_tag = gtk_timeout_add(DURATION / FRAMES,
 				      table_animation_callback, NULL);
 
-	game.state = WH_STATE_ANIM;
+	set_game_state( WH_STATE_ANIM );
 }
 
 
@@ -679,7 +684,7 @@ gint table_animation_callback(gpointer ignored)
 
 	/* If we are there, stop the animation process */
 	if(new_x == anim.dest_x && new_y == anim.dest_y) {
-		game.state = WH_STATE_WAIT;
+		set_game_state( WH_STATE_WAIT );
 		return FALSE;
 	}
 
@@ -696,7 +701,7 @@ void table_animation_abort(void)
 	/* First, kill off the animation callback */
 	if(game.state == WH_STATE_ANIM) {
 		gtk_timeout_remove(anim.cb_tag);
-		game.state = WH_STATE_WAIT;
+		set_game_state( WH_STATE_WAIT );
 	}
 
 	/* The caller is assumed to have restored the card to the hand */
@@ -714,7 +719,7 @@ void table_animation_zip(gboolean restore)
 	/* First, kill off the animation callback */
 	if(game.state == WH_STATE_ANIM) {
 		gtk_timeout_remove(anim.cb_tag);
-		game.state = WH_STATE_WAIT;
+		set_game_state( WH_STATE_WAIT );
 	}
 
 	/* And move the card to it's final resting place */

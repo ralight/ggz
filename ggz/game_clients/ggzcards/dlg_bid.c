@@ -217,7 +217,7 @@ int handle_bid_request(void)
 	if (game.state == WH_STATE_BID)
 		/* TODO: the new bid request should override the old one */
 		return -1;
-	game.state = WH_STATE_BID;
+	set_game_state( WH_STATE_BID );
 
 	if (es_read_int(game.fd, &possible_bids) < 0)
 		return -1;
@@ -251,13 +251,6 @@ int handle_option_request(void)
 	int i, j;
 	char*** option_choices; /* ugly! */
 	int* option_sizes;
-	
-	if (game.state == WH_STATE_OPTIONS) {
-		/* TODO: the new option request should override the old one */
-		ggz_debug("SERVER/CLIENT BUG: Received duplicate option requests.");
-		return -1;
-	}
-	game.state = WH_STATE_OPTIONS;
 
 	if (es_read_int(game.fd, &option_cnt) < 0)
 		return -1;
@@ -276,7 +269,12 @@ int handle_option_request(void)
 		}
 	}
 
-	dlg_option_display(option_cnt, option_sizes, option_choices);
+	if (game.state == WH_STATE_OPTIONS) {
+		ggz_debug("Received second option request.  Ignoring it.");
+	} else {
+		set_game_state( WH_STATE_OPTIONS );
+		dlg_option_display(option_cnt, option_sizes, option_choices);
+	}
 
 	for(i = 0; i < option_cnt; i++) {
 		for(j = 0; j < option_sizes[i]; j++)

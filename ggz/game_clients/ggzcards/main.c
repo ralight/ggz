@@ -152,7 +152,7 @@ static int handle_req_play()
 		table_animation_zip(TRUE);
 #endif /* ANIMATION */
 
-	game.state = WH_STATE_PLAY;
+	set_game_state( WH_STATE_PLAY );
 	if (game.play_hand == 0)
 		statusbar_message( _("Your turn to play a card") );
 	else {
@@ -264,9 +264,12 @@ static int get_players(void)
 	/* TODO: support for changing the number of players */
 
 	/* we may need to allocate memory for the players */
-	if (!game.num_players)
-  	game.players = (struct seat_t *)g_malloc(numplayers * sizeof(struct seat_t));
-	bzero(game.players, numplayers * sizeof(struct seat_t));
+	if (!game.num_players) {
+		/* TODO: free if necessary */
+		ggz_debug("get_players: (re)allocating game.players.");
+  		game.players = (struct seat_t *)g_malloc(numplayers * sizeof(struct seat_t));
+		bzero(game.players, numplayers * sizeof(struct seat_t));
+	}
 
 	for(i = 0; i < numplayers; i++) {
 		if (es_read_int(game.fd, &game.players[i].seat) < 0)
@@ -290,7 +293,7 @@ static int get_players(void)
 		/* TODO: cancel bid (I think????) */
 	}
 	if(left)
-		game.state = WH_STATE_WAIT;
+		set_game_state( WH_STATE_WAIT );
 
 	return 0;
 }
@@ -320,7 +323,7 @@ static int get_gameover_status(void)
 	}
 	
 	statusbar_message(msg);
-	game.state = WH_STATE_DONE;
+	set_game_state( WH_STATE_DONE );
 
 	return 0;
 }
@@ -357,7 +360,7 @@ static void handle_badplay(void)
 	/* redraw cards */
 	table_display_hand(p);
 
-	game.state = WH_STATE_PLAY;
+	set_game_state( WH_STATE_PLAY );
 	
 	statusbar_message(err_msg);
 	sleep(1); /* just a delay? */
@@ -396,7 +399,11 @@ static int handle_play(void)
 		break;
 	}
 	if (tc == -1) {
-		ggz_debug("SERVER/CLIENT BUG: unknown card played.");
+		ggz_debug("SERVER/CLIENT BUG: unknown card played.  Hand is:");
+		for (tc = 0; tc < hand->hand_size; tc++) {
+			card_t hcard = hand->card[tc];
+			ggz_debug("     Card %d is (%d %d %d).", tc, hcard.face, hcard.suit, hcard.deck);
+		}
 		return -1;
 	}
 

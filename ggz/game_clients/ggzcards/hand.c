@@ -66,7 +66,7 @@ int hand_read_hand(void)
 		return -1;
 	}
 
-	ggz_debug("     Read hand_size as %d.", hand->hand_size);
+	ggz_debug("     Read hand_size as %d.", game.players[p].hand.hand_size);
 
 	/* Read in all the card values */
 	for(i=0; i<hand->hand_size; i++)

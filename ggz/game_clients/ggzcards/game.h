@@ -52,6 +52,7 @@ extern void game_send_bid(int);
 extern void game_send_options(int option_cnt, int* options);
 extern void game_play_card(card_t card);
 extern void game_handle_table_click(char);
+extern void set_game_state(char);
 
 /* NOTE: the following protocol information is copied from server code */
 /* GGZCards protocol */
