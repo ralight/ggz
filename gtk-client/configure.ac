@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5704 2003-12-05 01:01:11Z jdorje $
+dnl $Id: configure.ac 5707 2003-12-06 02:41:47Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -33,6 +33,23 @@ AC_GGZ_INTL(ignore)
 dnl Check for header files
 dnl ======================
 AC_HEADER_STDC
+AC_CHECK_HEADERS([arpa/inet.h libintl.h locale.h netinet/in.h sys/socket.h \
+                  sys/time.h sys/wait.h], [],
+                 [AC_MSG_ERROR([cannot find required header file])])
+AC_HEADER_SYS_WAIT
+AC_HEADER_TIME
+
+
+# Check for library functions
+# ===========================
+AC_CHECK_FUNCS([memset setlocale strcasecmp strchr strncasecmp strrchr \
+                fork malloc realloc stat], [],
+               [AC_MSG_ERROR([cannot find required function])])
+AC_FUNC_FORK
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_FUNC_STAT
+
 
 dnl Check for NLS
 dnl ============================================================
@@ -46,8 +63,9 @@ AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR], ["${prefix}/share/locale"],
 dnl Check for typedefs, structures, and compiler characteristics
 dnl ============================================================
 AC_C_CONST
+AC_C_INLINE
+AC_PATH_X
 AC_TYPE_SIZE_T
-AC_HEADER_TIME
 
 
 dnl Check for library functions
