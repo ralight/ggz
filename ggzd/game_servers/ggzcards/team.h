@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/27/2002
  * Desc: Functions and data for tracking teams
- * $Id: team.h 3495 2002-02-27 13:02:23Z jdorje $
+ * $Id: team.h 3571 2002-03-16 14:52:46Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -28,10 +28,34 @@
 
 #include "types.h"
 
+/** A player with this as their "team" is not on a team. */
+#define NO_TEAM -1
+
+/** @brief Set the number of teams in the game.
+ *
+ *  If called by the game's init_game() function (or later, potentially),
+ *  this will set the number of teams in the game.  If it is called, then
+ *  assign_team must be called to assign each team, although a single
+ *  player may still be teamless (this is untested, though).  If it is
+ *  not called, then game.num_teams will remain 0 and every player's team
+ *  will stay at NO_TEAM.
+ *  @param num_teams The number of teams; 0 <= num_teams <= game.num_players
+ */
 void set_num_teams(int num_teams);
 
+/** @brief Put player p on team t.
+ *  @param t The ID number of the team; 0 <= t < game.num_teams
+ *  @param p The player to assign
+ */
 void assign_team(team_t t, player_t p);
 
+/** @brief Call the given function for every player on the team.
+ *
+ *  This is just a convenience function.  For every player on the
+ *  given team, the given function is called.
+ *  @param t The ID number of the team; 0 <= t < game.num_teams
+ *  @param func The function to call for all players on that team.
+ */
 void map_func_to_team(team_t t, void (func)(player_t));
 
 #endif /* __TEAM_H__ */
