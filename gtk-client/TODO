@@ -1,0 +1,65 @@
+-    Needs Done
+*    Done
+
+Current
+-------
+
+	GUI
+	---
+	* Padding around the room label
+	* Left align the room label
+	* More padding around the edges of client_hbox
+	* About
+	* Game Types
+	* Launch
+	* Licence
+	* MOTD
+	* Preferances
+		- Click or double-click to enter room
+
+	Interaction
+	-----------
+	* Double-Click to enter room
+
+	Implimentation
+	--------------
+	* provide access to the ggzcore internal file 
+	  descriptors so we can just add them to the
+	  gtk/KDE event loop directly
+	* rename callbacks to filename_ rather than on_
+	* statically declare callbacks and local function in .c files
+	* sensitivity within ggzcore event callbacks
+
+To Add
+------
+
+	GUI
+	---
+	- Player Stats
+		- Session time
+		- Total online time
+		- Account name
+		- Acount activation
+		- Total games played
+		- Total games by game
+		- Wins by game
+		- Loses by game
+		- Total time by game
+		- Non-compleated games (quiting before game is done)
+	- Server Stats
+		- Total Players
+		- Online Players
+		- Uptime
+		- Version
+		- Hostname
+		- Port
+	- User Info (display is optional by player)
+		- name
+		- email
+		- location
+		- comment
+		
+	Implimentation
+	--------------
+	- sensitivity within ggzcore event callbacks
+
