@@ -59,7 +59,9 @@ struct ai_function_pointers spades_ai_funcs = {
 
 static char* get_name(player_t p)
 {
-	return NULL;
+	char buf[17];
+	snprintf(buf, sizeof(buf), "Spades Bot %d", p);
+	return strdup(buf);
 }
 
 

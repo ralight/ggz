@@ -29,7 +29,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../ai.h"
 #include "../common.h"
@@ -54,7 +56,9 @@ struct ai_function_pointers random_ai_funcs = {
 
 static char* get_name(player_t p)
 {
-	return NULL;
+	char buf[17];
+	snprintf(buf, sizeof(buf), "Random Bot %d", p);
+	return strdup(buf);
 }
 
 /* this inits AI static data at the start of a hand */
