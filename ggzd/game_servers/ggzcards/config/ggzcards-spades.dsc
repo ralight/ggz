@@ -1,8 +1,8 @@
-# $Id: ggzcards-spades.dsc 3469 2002-02-25 14:42:22Z jdorje $
+# $Id: ggzcards-spades.dsc 3578 2002-03-16 16:22:43Z jdorje $
 [GameInfo]
 Author = Jason Short, Brent Hendricks
 Description = GGZ game module for trick-taking card games
-Homepage = http://ggz.sourceforge.net
+Homepage = http://ggz.sourceforge.net/games/ggzcards
 Name = GGZCards-Spades
 Version = 0.0.4
 
