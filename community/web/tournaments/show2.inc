@@ -168,7 +168,7 @@ if ($already_approved) :
 	echo "This result has been approved.\n";
 else:
 	if (Auth::username() == $organizer) :
-		echo "<a href='show2.php?id=$tid&approved=1'>Approve this result!</a>\n";
+		echo "<a href='index.php?page=show2&tid=$tid&approved=1'>Approve this result!</a>\n";
 	else :
 		echo "$Waiting for approval by tournament organizer.\n";
 	endif;

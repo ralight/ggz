@@ -109,11 +109,15 @@ class Player
 		echo "Can edit tables: $edit_tables<br>\n";
 	}
 
-	function items()
+	function items($fullview = false)
 	{
 		global $database;
 
 		$ggzuser = $this->handle;
+
+		if ($fullview) :
+			echo "<div class='text'>\n";
+		endif;
 
 		$res = $database->exec("SELECT teams.teamname, teams.fullname " .
 			"FROM teammembers, teams " .
@@ -133,6 +137,11 @@ class Player
 			}
 		endif;
 
+		if ($fullview) :
+			echo "</div>\n";
+			echo "<div class='text'>\n";
+		endif;
+
 		$res = $database->exec("SELECT * FROM tournaments WHERE organizer = '$ggzuser'");
 		if (($res) && ($database->numrows($res) > 0)) :
 			echo "<h2>Tournaments</h2>\n";
@@ -146,12 +155,17 @@ class Player
 			}
 		endif;
 
+		if ($fullview) :
+			echo "</div>\n";
+			echo "<div class='text'>\n";
+		endif;
+
 		include("hotstuff/.htconf");
 
 		$hotstuff = new Database("postgresql");
 		$hotstuff->connect($conf_host, $conf_name, $conf_user, $conf_pass);
 
-		$res = $hotstuff->exec("SELECT * FROM directory WHERE author = '$this->realname'");
+		$res = $hotstuff->exec("SELECT * FROM directory WHERE author = '$this->realname' OR author = '$ggzuser'");
 		if (($res) && ($hotstuff->numrows($res) > 0)) :
 			echo "<h2>Game data</h2>\n";
 			for ($i = 0; $i < $hotstuff->numrows($res); $i++)
@@ -161,6 +175,10 @@ class Player
 				echo "<a href='/hotstuff/'>$name</a>\n";
 				echo "<br>\n";
 			}
+		endif;
+
+		if ($fullview) :
+			echo "</div>\n";
 		endif;
 	}
 

@@ -33,12 +33,10 @@ $player->display();
 ?>
 
 	</div>
-	<div class="text">
-	Tournaments I have organized:
-	</div>
-	<div class="text">
-	...
-	</div>
+<?php
+$player->items(true);
+?>
+
 </div>
 
 <?php include("bottom.inc"); ?>

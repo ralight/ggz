@@ -257,9 +257,12 @@ global $database;
 function stats_tournament($lookup)
 {
 global $database;
+global $date;
 	if (!$lookup) return;
 
-	echo "not yet!";
+	$tid = $lookup;
+
+	include("../../tournaments/show2.inc");
 }
 
 ?>
