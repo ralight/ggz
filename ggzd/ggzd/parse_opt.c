@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3074 2002-01-12 03:08:57Z jdorje $
+ * $Id: parse_opt.c 3076 2002-01-12 06:02:51Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -442,11 +442,11 @@ static void parse_game(char *name, char *dir)
 	pthread_rwlock_init(&game_info->lock, NULL);	
 
 	/* [GameInfo] */
-	strval = ggz_conf_read_string(ch, "GameInfo", "Name", NULL);
-	if(strval) {
-		strncpy(game_info->name, strval, MAX_GAME_NAME_LEN);
-		free(strval);
-	}
+	/* FIXME: this data is never free'd.  This isn't really a problem,
+	   but... */
+	game_info->name = ggz_conf_read_string(ch, "GameInfo",
+					      "Name", "<Unnamed Game>");
+
 	strval = ggz_conf_read_string(ch, "GameInfo", "Version", NULL);
 	if(strval) {
 		strncpy(game_info->version, strval, MAX_GAME_VER_LEN);

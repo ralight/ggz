@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3071 2002-01-12 02:00:40Z jdorje $
+ * $Id: table.c 3076 2002-01-12 06:02:51Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -615,65 +615,29 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
 static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
-	int type, len;
-	char name[MAX_GAME_NAME_LEN];
-	char *prescan = data, *msg, *p, *m;
-	char *buf;
-	int  pcts=0;
-
-	/* If the message has any %'s in it they must be escaped. */
-	/* We could eliminate them, but this would prevent games  */
-	/* from putting the percent sign into messages at all. :( */
-	for(p=prescan; *p!='\0'; p++)
-		if(*p == '%') {
-			p++;
-			if(*p == '%')
-				p++;
-			else
-				pcts++;
-		}
-	if(pcts > 0) {
-		if((msg = malloc(strlen(prescan) + pcts + 1)) == NULL)
-			err_sys_exit("malloc failed");
-		for(p=prescan,m=msg; *p!='\0'; p++,m++) {
-			if(*p == '%') {
-				*m++ = '%';
-				if(*++p != '%')
-					*m++ = '%';
-			}
-			*m = *p;
-		}
-		*m = *p;
-	} else
-		msg = prescan;
+	int type;
+	char *game_name, *msg = data;
 
 	if (log_info.options & GGZ_LOGOPT_INC_GAMETYPE) {
 		pthread_rwlock_rdlock(&table->lock);
 		type = table->type;
 		pthread_rwlock_unlock(&table->lock);
-		
+
+		/* Why is a lock needed for this access?  This data
+		   isn't changed after startup.  --JDS */		
 		pthread_rwlock_rdlock(&game_types[type].lock);
-		strcpy(name, game_types[type].name);
+		game_name = ggz_strdup(game_types[type].name);
 		pthread_rwlock_unlock(&game_types[type].lock);
 		
-		len = strlen(msg) + strlen(name) + 5;
+		dbg_msg(GGZ_DBG_TABLE, "(%s) %s", game_name, msg);
 		
-		if ( (buf = malloc(len)) == NULL)
-			err_sys_exit("malloc failed");
-
-		memset(buf, 0, len);
-		snprintf(buf, (len - 1), "(%s) ", name);
-		
-		strncat(buf, msg, (len - 1));
-		if(msg != prescan)
-			free(msg);
-		msg = buf;
+		ggz_free(game_name);
+	} else {
+		/* It's important that we use the %s so that we can
+		   safely log messages containing % and other printf
+		   meta-characters. */
+		dbg_msg(GGZ_DBG_TABLE, "%s", msg);
 	}
-	
-	dbg_msg(GGZ_DBG_TABLE, msg);
-
-	if(msg != prescan)
-		free(msg);
 }
 
 
