@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 7067 2005-03-28 19:30:35Z josef $
+ * $Id: ggzdb_pgsql.c 7072 2005-04-02 11:54:40Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -35,7 +35,11 @@
 #include <unistd.h>
 
 #include <ggz.h>
+#ifdef PGSQL_IN_PGSQLDIR
+#include <pgsql/libpq-fe.h>
+#else
 #include <postgresql/libpq-fe.h>
+#endif
 
 #include "err_func.h"
 #include "ggzd.h"

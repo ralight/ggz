@@ -287,9 +287,17 @@ AC_DEFUN([AC_GGZ_DATABASE_PGSQL],
 			LIB_DATABASE="-lpq"
 		],
 		[
-			if test "$database" = pgsql; then
-				AC_MSG_ERROR([cannot configure pgsql (pgsql-dev headers needed)])
-			fi
+			AC_CHECK_HEADER([pgsql/libpq-fe.h],
+			[
+				database=pgsql
+				LIB_DATABASE="-lpq"
+				AC_DEFINE([PGSQL_IN_PGSQLDIR], 1, [Define if the pgsql headers are under pgsql/])
+			],
+			[
+				if test "$database" = pgsql; then
+					AC_MSG_ERROR([cannot configure pgsql (pgsql-dev headers needed)])
+				fi
+			])
 		])
 	],
 	[
