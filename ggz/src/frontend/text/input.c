@@ -155,16 +155,21 @@ static void input_handle_connect(char* line)
 
 static void input_handle_list(char* line)
 {
+	GGZRoom *room;
+
 	/* What are we listing? */
 	if (strcmp(line, "types") == 0)
 		ggzcore_event_enqueue(GGZ_USER_LIST_TYPES, NULL, NULL);
 	else if (strcmp(line, "tables") == 0)
 		ggzcore_event_enqueue(GGZ_USER_LIST_TABLES, NULL, NULL);
 	else if (strcmp(line, "players") == 0) {
-		if (ggzcore_player_get_num() >= 1)
+		room = ggzcore_server_get_cur_room(server);
+		if (ggzcore_room_get_num_players(room) >= 1) {
 			output_players();
-		else 
-			ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
+		}
+		else {
+			ggzcore_room_list_players(room);
+		}
 	}
 	else if (strcmp(line, "rooms") == 0) {
 		if (ggzcore_server_get_num_rooms(server) >= 1)

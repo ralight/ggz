@@ -54,10 +54,9 @@ static GGZHookReturn room_chat_msg(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_chat_prvmsg(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_chat_beep(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_chat_announce(GGZRoomEvent id, void*, void*);
-
-static GGZHookReturn server_room_enter(GGZEventID id, void*, void*);
-static GGZHookReturn server_room_leave(GGZEventID id, void*, void*);
-static GGZHookReturn server_list_players(GGZEventID id, void*, void*);
+static GGZHookReturn room_list_players(GGZRoomEvent id, void*, void*);
+static GGZHookReturn room_enter(GGZRoomEvent id, void*, void*);
+static GGZHookReturn room_leave(GGZRoomEvent id, void*, void*);
 
 GGZServer *server;
 static int fd;
@@ -124,10 +123,9 @@ static void room_register(GGZRoom *room)
 	ggzcore_room_add_event_hook(room, GGZ_ANNOUNCE, room_chat_announce);
 	ggzcore_room_add_event_hook(room, GGZ_PRVMSG, room_chat_prvmsg);
 	ggzcore_room_add_event_hook(room, GGZ_BEEP, room_chat_beep);
-
-	ggzcore_room_add_event_hook(room, GGZ_PLAYER_LIST, server_list_players);
-	ggzcore_event_add_hook(GGZ_SERVER_ROOM_ENTER, server_room_enter);
-	ggzcore_event_add_hook(GGZ_SERVER_ROOM_LEAVE, server_room_leave);
+	ggzcore_room_add_event_hook(room, GGZ_PLAYER_LIST, room_list_players);
+	ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, room_enter);
+	ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, room_leave);
 }
 
 
@@ -198,7 +196,6 @@ static GGZHookReturn server_enter_ok(GGZServerEvent id, void* event_data,
 #if 0
 	ggzcore_event_enqueue(GGZ_USER_LIST_ROOMS, NULL, NULL);
 #endif
-	room_register(room);
 
 	return GGZ_HOOK_OK;
 }
@@ -278,28 +275,38 @@ static GGZHookReturn room_chat_beep(GGZRoomEvent id, void* event_data, void* use
 	return GGZ_HOOK_OK;
 }
 
-static GGZHookReturn server_room_enter(GGZEventID id, void* event_data, void* user_data)
+
+static GGZHookReturn room_list_players(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	output_players();
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn room_enter(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	output_text("--> %s entered the room.", event_data);
 	return GGZ_HOOK_OK;
 }
 
-static GGZHookReturn server_room_leave(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn room_leave(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	output_text("<-- %s left the room.", event_data);
 	return GGZ_HOOK_OK;
 }
 
 
-static GGZHookReturn server_list_rooms(GGZEventID id, void* event_data, void* user_data)
+static GGZHookReturn server_list_rooms(GGZServerEvent id, void* event_data, void* user_data)
 {
+	int i, num;
+	
 	output_rooms();
+	
+	/* Register callbacks for all rooms */
+	num = ggzcore_server_get_num_rooms(server);
+	for (i = 0; i < num; i++)
+		room_register(ggzcore_server_get_room(server, i));
+
 	return GGZ_HOOK_OK;
 }
 
-static GGZHookReturn server_list_players(GGZEventID id, void* event_data, void* user_data)
-{
-	output_players();
-	return GGZ_HOOK_OK;
-}
 

@@ -158,10 +158,14 @@ void output_players(void)
 {
 	int i;
 	char** names;
+	GGZRoom *room;
 
-	if (!(names = ggzcore_player_get_names())) 
+	room = ggzcore_server_get_cur_room(server);
+
+	if (!(names = ggzcore_room_get_player_names(room)))
 		return;  
 
+	output_text("Players in current room");
 	for (i = 0; names[i]; i++)
 		output_text("-- %s", names[i]);
 
