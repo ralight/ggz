@@ -60,8 +60,6 @@
 
 // System includes
 #include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
 
 #ifdef WITH_HOWL
 #include <sys/types.h>
@@ -251,13 +249,11 @@ void KGGZConnect::slotLoadProfile(int profile)
 	GGZCoreConfio *config;
 	char **list = NULL;
 	int i;
-	char *host = NULL;
-	char *port = NULL;
-	char *username = NULL;
-	char *password = NULL;
 	int type;
 	const char *listentry = NULL;
 	bool usetls;
+	QString server, defaultserver;
+	QString host, port, username, password;
 
 	if((profile != -1) && (!m_nosafe))
 		slotSaveProfile();
@@ -270,24 +266,25 @@ void KGGZConnect::slotLoadProfile(int profile)
 	{
 		profile_select->clear();
 		listentry = config->read("Session", "Defaultserver", (char*)NULL);
-		if(listentry)
+		defaultserver = listentry;
+		if(!defaultserver.isNull())
 		{
-			if((strcmp(listentry, i18n("GGZ Meta Server").latin1()))
-			&& (strcmp(listentry, i18n("LAN Game").latin1())))
+			if((defaultserver != i18n("GGZ Meta Server"))
+			&& ((defaultserver != i18n("LAN Game"))))
 			{
-				profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), listentry);
+				profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), defaultserver);
 				profile_select->setCurrentItem(0);
 			}
 		}
 		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/metaserver.png"), i18n("GGZ Meta Server"));
-		if((listentry) && (!strcmp(listentry, i18n("GGZ Meta Server").latin1())))
+		if(defaultserver == i18n("GGZ Meta Server"))
 			profile_select->setCurrentItem(0);
 #ifdef WITH_HOWL
 		profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/langame.png"), i18n("LAN Game"));
-		if((listentry) && (!strcmp(listentry, i18n("LAN Game").latin1())))
+		if(defaultserver == i18n("LAN Game"))
 			profile_select->setCurrentItem(1);
 #endif
-		if(!listentry)
+		if(defaultserver.isNull())
 		{
 			modifyServerList(i18n("Default Stable Server"), 1);
 		}
@@ -295,8 +292,9 @@ void KGGZConnect::slotLoadProfile(int profile)
 		config->read("Servers", "Servers", &i, &list);
 		for(int j = 0; j < i; j++)
 		{
-			if((!listentry) || (strcmp(list[j], listentry)))
-				profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), list[j]);
+			server = list[j];
+			if(server != defaultserver)
+				profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), server);
 			GGZCoreConfio::free(list[j]);
 		}
 		if(list) GGZCoreConfio::free(list);
@@ -306,8 +304,8 @@ void KGGZConnect::slotLoadProfile(int profile)
 	// read values for selected server
 	if(profile_select->currentText() == i18n("GGZ Meta Server"))
 	{
-		host = strdup(i18n("Automatic"));
-		port = strdup("5688");
+		host = i18n("Automatic");
+		port = "5688";
 		input_host->setEnabled(false);
 		input_port->setEnabled(false);
 		button_select->setEnabled(false);
@@ -315,8 +313,8 @@ void KGGZConnect::slotLoadProfile(int profile)
 	}
 	else if(profile_select->currentText() == i18n("LAN Game"))
 	{
-		host = strdup(i18n("Autodetect"));
-		port = strdup("5688");
+		host = i18n("Autodetect");
+		port = "5688";
 		input_host->setEnabled(false);
 		input_port->setEnabled(false);
 		button_select->setEnabled(false);
@@ -348,12 +346,6 @@ void KGGZConnect::slotLoadProfile(int profile)
 #endif
 	slotModes(type);
 
-	// free allocated memory
-	if(host) GGZCoreConfio::free(host);
-	if(port) GGZCoreConfio::free(port);
-	if(username) GGZCoreConfio::free(username);
-	if(password) GGZCoreConfio::free(password);
-
 	// get rid of the configuration object
 	delete config;
 
@@ -384,8 +376,8 @@ void KGGZConnect::slotAccept()
 	else
 	{
 		close();
-		emit signalConnect(input_host->text().latin1(), atoi(input_port->text().latin1()),
-			input_name->text().latin1(), input_password->text().latin1(), m_loginmode);
+		emit signalConnect(input_host->text(), input_port->text().toInt(),
+			input_name->text(), input_password->text(), m_loginmode);
 	}
 }
 
@@ -419,7 +411,8 @@ void KGGZConnect::slotProfileNew()
 	}
 
 	// show input box and connect signal to slot
-	if(!m_input) m_input = new KGGZInput(NULL, "KGGZInput", i18n("Profile identifier"), i18n("Chose a name for the new profile."));
+	if(!m_input) m_input = new KGGZInput(NULL, "KGGZInput",
+		i18n("Profile identifier"), i18n("Chose a name for the new profile."));
 
 	m_input->show();
 	connect(m_input, SIGNAL(signalText(QString)), SLOT(slotProfileProcess(QString)));
@@ -479,9 +472,11 @@ void KGGZConnect::modifyServerList(QString server, int mode)
 {
 	GGZCoreConfio *config;
 	char **list = NULL;
-	char **list2 = NULL;
 	int i;
-	int number;
+	QStringList servers;
+	QString oldserver;
+
+	server = server.replace(" ", "\\ ");
 
 	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(),
 		GGZCoreConfio::readwrite | GGZCoreConfio::create);
@@ -489,31 +484,19 @@ void KGGZConnect::modifyServerList(QString server, int mode)
 	// Update the list of available servers
 	config->read("Servers", "Servers", &i, &list);
 
-	list2 = (char**)malloc((i + 2) * sizeof(char*));
-	for(int j = 0; j < i + 2; j++)
-		list2[j] = NULL;
-
-	number = 0;
 	for(int j = 0; j < i; j++)
 	{
-		if((server == list[j]) || (mode == 1))
-		{
-			list2[number] = (char*)malloc(strlen(list[j]) + 1);
-			strcpy(list2[number], list[j]);
-			number++;
-		}
+		oldserver = QString(list[j]).replace(" ", "\\ ");
+		if((server != oldserver) || (mode == 1))
+			servers << oldserver;
 	}
-	if(mode == 1)
-	{
-		list2[number] = (char*)malloc(server.length() + 1);
-		strcpy(list2[number], server.latin1());
-		number++;
-	}
-	config->write("Servers", "Servers", number, list2);
+	if(mode == 1) servers << server;
+
+	config->write("Servers", "Servers", servers.join(" ").latin1());
 	if(mode == 2)
 	{
 		config->removeSection(server.latin1());
-		if(number == 0) config->removeKey("Servers", "Servers");
+		if(i < 2) config->removeKey("Servers", "Servers");
 	}
 
 	config->commit();
@@ -521,10 +504,7 @@ void KGGZConnect::modifyServerList(QString server, int mode)
 
 	for(int j = 0; j < i; j++)
 		GGZCoreConfio::free(list[j]);
-	for(int j = 0; j < number; j++)
-		free(list2[j]);
 	if(list) GGZCoreConfio::free(list);
-	if(list2) free(list2);
 }
 
 void KGGZConnect::slotPane()
@@ -575,7 +555,7 @@ void KGGZConnect::slotRead()
 			host = host.right(host.length() - 2);
 			port = *(list.at(2));
 			close();
-			emit signalConnect(host, atoi(port.latin1()), input_name->text().latin1(), input_password->text().latin1(), m_loginmode);
+			emit signalConnect(host, port.toInt(), input_name->text(), input_password->text(), m_loginmode);
 		}
 	}
 }
@@ -660,7 +640,7 @@ void KGGZConnect::zeroconfQuery()
 
 	close();
 	KMessageBox::information(this, i18n("A GGZ server was found on %1.").arg(connectstr), i18n("Zeroconf success"));
-	emit signalConnect(url.host(), url.port(), input_name->text().latin1(), input_password->text().latin1(), m_loginmode);
+	emit signalConnect(url.host(), url.port(), input_name->text(), input_password->text(), m_loginmode);
 #endif
 }
 
