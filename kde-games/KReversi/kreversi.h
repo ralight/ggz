@@ -22,7 +22,7 @@
 #include "config.h"
 #endif
 
-#include <kapp.h>
+#include <kapplication.h>
 #include <kmainwindow.h>
 #include <qcanvas.h>
 #include <kstatusbar.h>

@@ -24,7 +24,7 @@ QMemArray<int> *m_shadow;
 QMemArray<int> *m_shadowlines;
 int m_arywidth, m_aryheight;
 
-QDots::QDots(QWidget* parent = 0, char* name = 0)
+QDots::QDots(QWidget* parent, const char* name)
 : QWidget(parent, name), VDots()
 {
 	bgpix = NULL;

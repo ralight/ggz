@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include "config.h"
 #include <ksimpleconfig.h>
-#include <kapp.h>
+#include <kapplication.h>
 #include <kmessagebox.h>
 #include <klocale.h>
 #include "reversiview.h"

@@ -21,7 +21,7 @@ class QDots : public QWidget, public VDots
 {
 	Q_OBJECT
 	public:
-		QDots(QWidget* parent = 0, char* name = 0);
+		QDots(QWidget* parent = NULL, const char* name = NULL);
 		~QDots();
 		void refreshBoard();
 	signals:
