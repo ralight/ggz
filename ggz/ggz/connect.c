@@ -47,6 +47,7 @@
 extern struct ConnectInfo connection;
 extern struct Game game;
 extern struct Users users;
+extern struct GameTypes game_types;
 extern GtkWidget *detail_window;
 extern GtkWidget *main_win;
 extern int selected_table;
@@ -56,7 +57,6 @@ GtkWidget *detail_window = NULL;
 
 /* Various local handles */
 static guint sock_handle;
-static struct GameTypes game_types;
 static void server_sync();
 static void connect_msg(const char *, ...);
 static void add_user_list(gchar * name, gint table);

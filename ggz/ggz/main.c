@@ -38,8 +38,10 @@
 struct ConnectInfo connection;
 struct Game game;
 struct Users users;
+struct GameTypes game_types;
 GtkWidget *main_win;
 GtkWidget *dlg_login;
+GtkWidget *dlg_launch;
 int selected_table;
 
 /* Aray of GdkColors currently used for chat */

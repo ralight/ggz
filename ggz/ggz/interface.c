@@ -975,9 +975,9 @@ create_dlgLaunch (void)
   GtkWidget *togglebutton9;
   GtkWidget *hbox3;
   GtkWidget *btnLaunch;
-  GtkWidget *btnCancle;
+  GtkWidget *btnCancel;
 
-  dlgLaunch = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  dlgLaunch = gtk_window_new (GTK_WINDOW_DIALOG); 
   gtk_object_set_data (GTK_OBJECT (dlgLaunch), "dlgLaunch", dlgLaunch);
   gtk_window_set_title (GTK_WINDOW (dlgLaunch), "Launch Game");
   gtk_window_set_policy (GTK_WINDOW (dlgLaunch), FALSE, FALSE, FALSE);
@@ -1322,7 +1322,7 @@ create_dlgLaunch (void)
   gtk_widget_show (combo_entry10);
   gtk_entry_set_text (GTK_ENTRY (combo_entry10), "Closed");
                             
-  lblUser = gtk_label_new ("Users Name");
+  lblUser = gtk_label_new ("User Name");
   gtk_widget_ref (lblUser);
   gtk_object_set_data_full (GTK_OBJECT (dlgLaunch), "lblUser", lblUser,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1426,13 +1426,20 @@ create_dlgLaunch (void)
   gtk_widget_show (btnLaunch);
   gtk_box_pack_start (GTK_BOX (hbox3), btnLaunch, FALSE, TRUE, 10);
                     
-  btnCancle = gtk_button_new_with_label ("Cancle Game");
-  gtk_widget_ref (btnCancle);
-  gtk_object_set_data_full (GTK_OBJECT (dlgLaunch), "btnCancle", btnCancle,
+  btnCancel = gtk_button_new_with_label ("Cancel Game");
+  gtk_widget_ref (btnCancel);
+  gtk_object_set_data_full (GTK_OBJECT (dlgLaunch), "btnCancel", btnCancel,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (btnCancle);
-  gtk_box_pack_start (GTK_BOX (hbox3), btnCancle, FALSE, TRUE, 10);
+  gtk_widget_show (btnCancel);
+  gtk_box_pack_start (GTK_BOX (hbox3), btnCancel, FALSE, TRUE, 10);
 
+  gtk_signal_connect_object (GTK_OBJECT (btnCancel), "clicked",
+                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                             GTK_OBJECT (dlgLaunch));
+  gtk_signal_connect(GTK_OBJECT(GTK_COMBO(combo1)->entry), "activate",
+                     GTK_SIGNAL_FUNC (launch_change_type), NULL);
+  gtk_signal_connect(GTK_OBJECT(GTK_BUTTON(btnLaunch)), "clicked",
+                     GTK_SIGNAL_FUNC (launch_start_game), NULL);
   return dlgLaunch;
 }
 

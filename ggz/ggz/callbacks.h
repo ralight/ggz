@@ -42,6 +42,10 @@ void join_game(GtkButton * button, gpointer user_data);
 
 void get_game_options(GtkButton * button, gpointer user_data);
 
+void launch_change_type(GtkCombo *type_combo, gpointer user_data);
+
+void launch_start_game(GtkWidget *btn_launch, gpointer user_data);
+
 void cancel_details(GtkButton * button, gpointer user_data);
 
 void logout(GtkMenuItem * menuitem, gpointer user_data);

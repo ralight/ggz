@@ -46,8 +46,15 @@
 /* Global data */
 extern GtkWidget *detail_window;
 extern GtkWidget *main_win;
+extern GtkWidget *dlg_launch;
 extern struct ConnectInfo connection;
 extern int selected_table;
+extern struct GameTypes game_types;
+
+
+/*				*
+ *	Login dialog		*
+ *				*/
 
 void anon_toggled(GtkWidget* button, gpointer window) 
 {
@@ -151,6 +158,10 @@ void show_details(GtkButton * button, gpointer user_data)
 }
 
 
+/*				*
+ *	Details dialog		*
+ *				*/
+
 void cancel_details(GtkButton * button, gpointer user_data)
 {
 	gtk_widget_destroy(detail_window);
@@ -158,25 +169,81 @@ void cancel_details(GtkButton * button, gpointer user_data)
 }
 
 
-void join_game(GtkButton * button, gpointer user_data)
-{
-	dbg_msg("joining game");
-	es_write_int(connection.sock, REQ_TABLE_JOIN);
-	es_write_int(connection.sock, selected_table);
-}
-
+/*				*
+ *	Launch Game dialog	*
+ *				*/
 
 void get_game_options(GtkButton * button, gpointer user_data)
 {
-	int type = 0;		/* FIXME: Input type of game to launch */
+
+	GtkWidget *temp_widget;
+	GList *combo_items = NULL;
+	int count;
+
+	if (!connection.connected)
+		warn_dlg("Not connected!");
+	else {
+		dlg_launch = create_dlgLaunch();
+	        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "lblUser");
+		gtk_label_set_text (GTK_LABEL (temp_widget), connection.username);
+		for (count=0; count<game_types.count; count++){
+			combo_items = g_list_append (combo_items, game_types.info[count].name);
+		}
+	        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "combo1");
+		gtk_combo_set_popdown_strings (GTK_COMBO (temp_widget), combo_items);
+		g_list_free (combo_items);
+
+		gtk_widget_show(dlg_launch);
+	}
+
+}
+
+void launch_change_type(GtkCombo *type_combo, gpointer user_data)
+{
+	/* FIXME: Disable/Enable the player dropdowns
+		based on the total number of players
+		aloud in the game.
+	*/
+
+	/* FIXME: If the game HAS to have a total of n players
+		remove the "Closed" option from the drop down.
+	*/
+}
+
+void launch_start_game(GtkWidget *btn_launch, gpointer user_data)
+{
+	/*
+		BIG FIXME: Currently this just launches like
+			it has in the past, but the dialog is
+			in place. Things that will happen here are
+			1) Get the right game type
+			2) Get player settings
+			3) Launch the game with right options
+	*/
+
+	int type = 0;
+
+	gtk_widget_destroy(dlg_launch);
+	dlg_launch = NULL;
 
 	if (!connection.connected)
 		warn_dlg("Not connected!");
 	else {
 		launch_game(type, 1);
 	}
+
 }
 
+/*				*
+ *	Main GGZ client window	*
+ *				*/
+
+void join_game(GtkButton * button, gpointer user_data)
+{
+	dbg_msg("joining game");
+	es_write_int(connection.sock, REQ_TABLE_JOIN);
+	es_write_int(connection.sock, selected_table);
+}
 
 void logout(GtkMenuItem * menuitem, gpointer user_data)
 {
