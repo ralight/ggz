@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
+ * $Id: client_main.c 4891 2002-10-12 20:52:43Z jdorje $
  *
  * This file contains the client function which is responsible for
  * handling the particulars of playing spades on the client side.  I
@@ -36,6 +37,8 @@
 #include <stdio.h>
 
 #include <ggz.h>	/* libggz */
+
+#include "dlg_about.h"
 #include "ggzintl.h"
 
 #include <card.h>
@@ -53,6 +56,7 @@ gameState_t gameState;
 
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
+static void initialize_about_dialog(void);
 
 int main(int argc, char *argv[])
 {
@@ -72,6 +76,8 @@ int main(int argc, char *argv[])
 		return -1;
 	
 	gtk_init(&argc, &argv);
+	initialize_about_dialog();
+
 
 	/* 
 	 * Display option window if this is a new table,
@@ -146,4 +152,11 @@ static void cleanup_debugging(void)
 #endif
 }
 
-
+static void initialize_about_dialog(void)
+{
+  char *header;
+  header = g_strdup_printf(_("GtkSpades Client Version %s\n"), VERSION);
+  init_dlg_about(_("About GtkSpades"), header,
+		 _("Copyright 1999: Brent Hendricks"));
+  g_free(header);
+}

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4722 2002-09-26 11:13:59Z dr_maux $
+#  $Id: Makefile.am 4891 2002-10-12 20:52:43Z jdorje $
 
 SUBDIRS = .
 
@@ -24,7 +24,6 @@ ggz_spades_SOURCES = \
 		client.h				\
 		display.h				\
 		gtk_connect.c		gtk_connect.h	\
-		gtk_dlg_about.c		gtk_dlg_about.h	\
 		gtk_dlg_disconnect.c	gtk_dlg_disconnect.h \
 		gtk_dlg_error.c		gtk_dlg_error.h	\
 		gtk_dlg_options.c	gtk_dlg_options.h \

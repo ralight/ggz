@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/23/99
- * $Id: gtk_menu.c 3991 2002-04-15 08:51:54Z jdorje $
+ * $Id: gtk_menu.c 4891 2002-10-12 20:52:43Z jdorje $
  *
  * This file contains functions for creating and handling menus
  *
@@ -30,13 +30,13 @@
 
 #include <gtk/gtk.h>
 
+#include "dlg_about.h"
 #include "dlg_exit.h"
 
 #include <gtk_connect.h>
 #include <gtk_io.h>
 #include <gtk_play.h>
 #include <gtk_menu.h>
-#include <gtk_dlg_about.h>
 #include <gtk_dlg_options.h>
 #include <gtk_dlg_disconnect.h>
 #include <gtk_dlg_stat.h>
@@ -48,6 +48,11 @@
 
 /* Global widget structure */
 extern playArea_t *playArea;
+
+static void AboutDialog(GtkWidget *widget, gpointer data)
+{
+	create_or_raise_dlg_about();
+}
 
 /* FIXME: these are marked to be translated with N_(), but
    the text is never actually translated. */
