@@ -133,6 +133,8 @@ class KCCProto
 		KCC *gameobject;
 		// Self object
 		static KCCProto *self;
+		// Last opponent move
+		int m_ox1, m_oy1, m_ox2, m_oy2;
 
 		// Callback for control channel
 		static void handle_server(GGZMod *mod, GGZModEvent e, void *data);

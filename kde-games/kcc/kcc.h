@@ -52,6 +52,8 @@ class KCC : public QWidget
 		void slotNetwork();
 		// Evaluate network control input
 		void slotDispatch();
+		// Delayed opponent moves
+		void slotOpponentMove();
 
 	signals:
 		// Emit the game status
@@ -115,7 +117,7 @@ class KCC : public QWidget
 		QString m_t1, m_t2;
 
 		// Move source and destination
-		int m_fx, m_fy, m_tx, m_ty;
+		int m_fx, m_fy, m_tx, m_ty, m_ax, m_ay;
 		// Move steps
 		QValueList<QPoint> m_waypoints;
 };

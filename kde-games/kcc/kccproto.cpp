@@ -104,6 +104,7 @@ int KCCProto::getSeat()
 	ggz_read_int(fd, &max);
 	ggz_read_int(fd, &num);
 	init();
+	return num;
 }
 
 // Receive the player names
@@ -139,6 +140,7 @@ int KCCProto::getOpponentMove()
 	int seat;
 	char x1, x2, y1, y2;
 	int ret = 0;
+	int tmp;
 
 	ret |= ggz_read_int(fd, &seat);
 	ret |= ggz_read_char(fd, &y1);
@@ -146,11 +148,19 @@ int KCCProto::getOpponentMove()
 	ret |= ggz_read_char(fd, &y2);
 	ret |= ggz_read_char(fd, &x2);
 
-	x1 = ((x1 - 2) - (y1 % 2)) / 2;
-	x2 = ((x2 - 2) - (y2 % 2)) / 2;
+	x1 = ((x1 + 2) - (y1 % 2)) / 2;
+	x2 = ((x2 + 2) - (y2 % 2)) / 2;
+	y1 = 16 - y1;
+	y2 = 16 - y2;
 
-	board[(int)x1][(int)y1] = 1;
-	board[(int)x2][(int)y2] = seat + 1;
+	m_ox1 = x1;
+	m_ox2 = x2;
+	m_oy1 = y1;
+	m_oy2 = y2;
+
+	//tmp = board[(int)x1][(int)y1];
+	//board[(int)x2][(int)y2] = tmp;
+	//board[(int)x1][(int)y1] = 1;
 
 	return ret;
 }
@@ -191,6 +201,8 @@ int KCCProto::sendMyMove(int x, int y, int x2, int y2)
 {
 	int ret = 0;
 
+	y = 16 - y;
+	y2 = 16 - y2;
 	x = (x * 2) + (y % 2) - 2;
 	x2 = (x2 * 2) + (y2 % 2) - 2;
 

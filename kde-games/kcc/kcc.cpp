@@ -20,6 +20,7 @@
 #include <qbitmap.h>
 #include <qsocketnotifier.h>
 #include <qpainter.h>
+#include <qtimer.h>
 
 // System includes
 #include <stdio.h>
@@ -68,9 +69,6 @@ void KCC::opponentTurn()
 	QPoint p;
 	int tmp;
 
-	emit signalStatus(i18n("Opponent's turn"));
-	proto->state = KCCProto::statewait;
-
 	if(m_opponent == PLAYER_AI)
 	{
 		kdDebug() << "check ai player " << m_turn << endl;
@@ -85,10 +83,13 @@ void KCC::opponentTurn()
 					if(result)
 					{
 						kdDebug() << "ai moved from " << i << "/" << j <<
-							" to " << m_fx << "/" << m_fy << endl;
-						tmp = proto->board[m_fx][m_fy];
+							" to " << m_ax << "/" << m_ay << endl;
+						/*tmp = proto->board[m_fx][m_fy];
 						proto->board[m_fx][m_fy] = m_turn + 2;
-						proto->board[i][j] = tmp;
+						proto->board[i][j] = tmp;*/
+						tmp = proto->board[i][j];
+						proto->board[m_ax][m_ay] = tmp;
+						proto->board[i][j] = 1;
 						break;
 					}
 				}
@@ -125,9 +126,21 @@ void KCC::getNextTurn()
 		m_turn = (++m_turn) % proto->max;
 
 	if(m_turn == proto->num) yourTurn();
-	else opponentTurn();
+	else
+	{
+		emit signalStatus(i18n("Opponent's turn"));
+		proto->state = KCCProto::statewait;
+
+		QTimer::singleShot(2000, this, SLOT(slotOpponentMove()));
+	}
 
 	drawBoard();
+}
+
+// Delayed opponent move
+void KCC::slotOpponentMove()
+{
+	opponentTurn();
 }
 
 // Check for game over, and show dialogs
@@ -229,7 +242,7 @@ void KCC::init()
 	}
 	else if(m_opponent == PLAYER_AI)
 	{
-		proto->max = 6;
+		if(!proto->max) proto->max = 6;
 		proto->num = 0;
 		m_turn = proto->num;
 		yourTurn();
@@ -321,16 +334,23 @@ void KCC::slotNetwork()
 
 			if(proto->status == KCCProto::errnone)
 			{
+				findTarget(QPoint(m_fx, m_fy), QPoint(m_tx, m_ty), false);
 				tmp = proto->board[m_fx][m_fy];
 				proto->board[m_fx][m_fy] = 1;
 				proto->board[m_tx][m_ty] = tmp;
-				drawBoard();
+				//drawBoard();
 			}
+			m_fx = -1;
 			break;
 		case proto->cc_msg_move:
 			kdDebug() << "*proto* msg_move" << endl;
 			proto->getOpponentMove();
 			//if(proto->num < 0) emit signalStatus(i18n("Watching the game"));
+			findTarget(QPoint(proto->m_ox1, proto->m_oy1),
+				QPoint(proto->m_ox2, proto->m_oy2), false);
+			tmp = proto->board[proto->m_ox1][proto->m_oy1];
+			proto->board[proto->m_ox1][proto->m_oy1] = 1;
+			proto->board[proto->m_ox2][proto->m_oy2] = tmp;
 			break;
 		case proto->cc_msg_sync:
 			proto->getSync();
@@ -350,6 +370,7 @@ void KCC::slotNetwork()
 void KCC::drawBoard()
 {
 	QPainter p;
+	QPoint p1, p2;
 
 	QPixmap b(QString("%1/kcc/bg.png").arg(GGZDATADIR));
 	//setMask(QBitmap(QString("%1/kcc/mask.png").arg(GGZDATADIR)));
@@ -364,6 +385,30 @@ void KCC::drawBoard()
 						QPixmap(QString("%1/kcc/point%2.png").arg(
 							GGZDATADIR).arg(proto->board[i][j] - 1)));
 			}
+
+	QValueList<QPoint>::iterator it;
+	if(m_waypoints.count() > 0)
+	{
+		it = m_waypoints.begin();
+		p1 = (*it);
+		it++;
+		p.setPen(QPen(Qt::yellow, 2));
+		for(; it != m_waypoints.end(); it++)
+		{
+			p2 = (*it);
+/*kdDebug() << "<line> "
+	<< p2.x() * 22 + 40 + (p2.y() % 2) * 11 + 10 << " "
+	<< p2.y() * 19 + 44 + 10 << " "
+	<< p1.x() * 22 + 40 + (p1.y() % 2) * 11 + 10 << " "
+	<< p1.y() * 19 + 44 + 10
+	<< endl;*/
+			p.drawLine(p2.x() * 22 + 40 + (p2.y() % 2) * 11 + 5,
+				p2.y() * 19 + 44 + 5,
+				p1.x() * 22 + 40 + (p1.y() % 2) * 11 + 5,
+				p1.y() * 19 + 44 + 5);
+			p1 = (*it);
+		}
+	}
 
 	p.end();
 	setErasePixmap(b);
@@ -412,7 +457,7 @@ QPoint KCC::newPoint(const QPoint& current, int direction)
 
 bool KCC::findTarget(const QPoint& current, const QPoint& target, bool jumps)
 {
-	QPoint p;
+	QPoint p, safepoint;
 	bool found = false;
 	//int self = 2; // XXX todo!
 
@@ -424,12 +469,17 @@ bool KCC::findTarget(const QPoint& current, const QPoint& target, bool jumps)
 	if(!jumps) m_waypoints.clear();
 	if(m_waypoints.count() > 0)
 		if(proto->board[current.x()][current.y()] != 1) return false;
-	if(current == target) return true;
+	if(current == target)
+	{
+		m_waypoints.append(current);
+		//kdDebug() << "pre-INSERT " << current.x() << "/" << current.y() << endl;
+		return true;
+	}
 
 	m_waypoints.append(current);
 
-/*kdDebug() << "INSERT " << current.x() << "/" << current.y() << endl;
-QValueList<QPoint>::iterator it;
+//kdDebug() << "INSERT " << current.x() << "/" << current.y() << endl;
+/*QValueList<QPoint>::iterator it;
 for (it = m_waypoints.begin(); it != m_waypoints.end(); ++it)
 kdDebug() << " " << (*it).x() << "/" << (*it).y() << endl;*/
 
@@ -438,6 +488,8 @@ kdDebug() << " " << (*it).x() << "/" << (*it).y() << endl;*/
 		p = newPoint(current, i);
 		if((!jumps) && (p == target))
 		{
+			//kdDebug() << "nonjump-INSERT " << target.x() << "/" << target.y() << endl;
+			m_waypoints.append(target);
 			found = true;
 			break;
 		}
@@ -452,18 +504,37 @@ kdDebug() << " " << (*it).x() << "/" << (*it).y() << endl;*/
 		}
 		if(target.isNull())
 		{
-			if(proto->board[p.x()][p.y()] == 1)
+			if(!jumps)
 			{
-				m_fx = p.x();
-				m_fy = p.y();
-				found = 1; // auto-ai
+				if(proto->board[p.x()][p.y()] == 1)
+					safepoint = p;
+			}
+			else
+			{
+				if(proto->board[current.x()][current.y()] == 1)
+					safepoint = current;
 			}
 		}
 		if(found) break;
 	}
+	if(!found)
+	{
+		if(!safepoint.isNull())
+		{
+			m_ax = safepoint.x();
+			m_ay = safepoint.y();
+			//kdDebug() << "safepoint-INSERT " << m_ax << "/" << m_ay << endl;
+			m_waypoints.append(QPoint(m_ax, m_ay));
+			found = true; // auto-ai
+		}
+	}
 
-	if(found) kdDebug() << ":: found" << endl;
-	else kdDebug() << ":: not found" << endl;
+	//if(found) kdDebug() << ":: found" << endl;
+	if(!found)
+	{
+		m_waypoints.remove(m_waypoints.last());
+		//kdDebug() << ":: not found" << endl;
+	}
 	return found;
 }
 
@@ -493,13 +564,17 @@ void KCC::mousePressEvent(QMouseEvent *e)
 			m_tx = x;
 			m_ty = y;
 
-			kdDebug() << m_fy << "/" << (m_fx * 2) + (m_fy % 2) - 2 <<
-				" - " << y << "/" << (x * 2) + (y % 2) - 2 << endl;
+			//kdDebug() << "send " << m_fy << "/" << (m_fx * 2) + (m_fy % 2) - 2
+			//	<< " - " << y << "/" << (x * 2) + (y % 2) - 2 << endl;
+			/*m_ty = 16 - m_ty;
+			m_fy = 16 - m_fy;
+			y = 16 - y;*/
+			kdDebug() << "send " << m_fy << "/" << m_fx
+				<< " - " << y << "/" << x << endl;
 			proto->sendMyMove(m_fx, m_fy, x, y);
 		}
 		else
 		{
-			kdDebug() << "internal ai" << endl;
 			error = 0;
 			if((m_fx < 0) || (m_fx >= 17)) error = 1;
 			if((m_fy < 0) || (m_fy >= 17)) error = 1;
@@ -527,6 +602,7 @@ void KCC::mousePressEvent(QMouseEvent *e)
 				proto->board[x][y] = tmp;
 				drawBoard();
 
+				kdDebug() << "internal ai" << endl;
 				getNextTurn();
 			}
 			else
@@ -539,7 +615,10 @@ void KCC::mousePressEvent(QMouseEvent *e)
 				}
 			}
 		}
-		m_fx = -1;
+		if(m_opponent == PLAYER_NETWORK)
+			m_turn = -1;
+		else
+			m_fx = -1;
 	}
 }
 
