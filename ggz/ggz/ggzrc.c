@@ -38,12 +38,70 @@ static FILE *ggzrc_open_rc(void);
 static void ggzrc_load_rc(FILE *);
 static void ggzrc_parse_line(char *);
 static gboolean ggzrc_free_keyval(gpointer, gpointer, gpointer);
+static gint ggzrc_strcmp(gconstpointer, gconstpointer);
 
 /* Local use only variables */
 static char *varname;
 static char *varvalue;
-static GHashTable *rc_hash;
+static GHashTable *rc_hash=NULL;
 static GSList *rc_list=NULL;
+
+
+/* Write a string variable to the hash table */
+void ggzrc_write_string(const char *section, const char *key, const char *value)
+{
+	char *hashkey;
+	gpointer old_key, old_value;
+
+	hashkey = g_strdup_printf("[%s]%s", section, key);
+	if(g_hash_table_lookup_extended(rc_hash, hashkey, &old_key, &old_value)
+	   == TRUE) {
+		/* If it existed, let's use the same old key */
+		g_free(old_value);
+		g_free(hashkey);
+		hashkey = old_key;
+	} else {
+		/* If it didn't exist, put it into the rc_list */
+		rc_list = g_slist_insert_sorted(rc_list, hashkey, ggzrc_strcmp);
+	}
+	g_hash_table_insert(rc_hash, hashkey, g_strdup(value));
+}
+
+
+/* Read a string variable out of the hash table */
+char *ggzrc_read_string(const char *section, const char *key, const char *def)
+{
+	char *hashkey, *data;
+
+	hashkey = g_strdup_printf("[%s]%s", section, key);
+	data = g_hash_table_lookup(rc_hash, hashkey);
+	if(data == NULL) {
+		ggzrc_write_string(section, key, def);
+		return g_strdup(def);
+	}
+	return g_strdup(data);
+}
+
+
+/* Wrap the string write function for integers */
+void ggzrc_write_int(const char *section, const char *key, const int value)
+{
+	char *tmp = g_strdup_printf("%d", value);
+	ggzrc_write_string(section, key, tmp);
+	g_free(tmp);
+}
+
+
+/* Wrap the string read function for integers */
+int ggzrc_read_int(const char *section, const char *key, const int def)
+{
+	char *tmp = g_strdup_printf("%d", def);
+	char *tmp2 = ggzrc_read_string(section, key, tmp);
+	int retval = atoi(tmp2);
+	g_free(tmp);
+	g_free(tmp2);
+	return retval;
+}
 
 
 /* Initialize and read in the configuration file */
@@ -93,7 +151,7 @@ static FILE *ggzrc_open_rc(void)
 static void ggzrc_load_rc(FILE *rc_file)
 {
 	char line[256];		/* Lines longer than 256 are trunced */
-	char *hashname;
+	char *hashkey;
 	char *section;
 	int linenum = 0;
 
@@ -120,13 +178,13 @@ static void ggzrc_load_rc(FILE *rc_file)
 
 		/* We have a valid varname/varvalue, add them to hash table */
 		dbg_msg("ggzrc: found '%s %s = %s'", section,varname,varvalue);
-		hashname = g_strconcat(section, varname, NULL);
-		g_hash_table_insert(rc_hash, hashname, g_strdup(varvalue));
-		rc_list = g_slist_prepend(rc_list, hashname);
+		hashkey = g_strconcat(section, varname, NULL);
+		g_hash_table_insert(rc_hash, hashkey, g_strdup(varvalue));
+		rc_list = g_slist_prepend(rc_list, hashkey);
 	}
 
 	/* Do time intensive stuff now that we are out of the loop */
-	rc_list = g_slist_sort(rc_list, strcmp);
+	rc_list = g_slist_sort(rc_list, ggzrc_strcmp);
 	g_hash_table_thaw(rc_hash);
 
 	g_free(section);
@@ -204,6 +262,13 @@ static gboolean ggzrc_free_keyval(gpointer key, gpointer value, gpointer data)
 	g_free(key);
 	g_free(value);
 	return TRUE;
+}
+
+
+/* This wraps strcmp to eliminate a compile warning */
+gint ggzrc_strcmp(gconstpointer a, gconstpointer b)
+{
+	return strcmp(a, b);
 }
 
 

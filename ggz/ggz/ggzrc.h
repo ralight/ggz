@@ -26,3 +26,7 @@
 extern int ggzrc_initialize(void);
 extern int ggzrc_commit_changes(void);
 extern void ggzrc_cleanup(void);
+extern void ggzrc_write_string(const char *, const char *, const char *);
+extern char *ggzrc_read_string(const char *, const char *, const char *);
+extern void ggzrc_write_int(const char *, const char *, const int);
+extern int ggzrc_read_int(const char *, const char *, const int);
