@@ -52,20 +52,24 @@ static void _ggzcore_user_logout(GGZEventID, void*, void*);
  */
 void _ggzcore_user_register(void)
 {
-	ggzcore_event_connect(GGZ_USER_LOGIN, _ggzcore_user_login);
-	ggzcore_event_connect(GGZ_USER_LIST_ROOMS, _ggzcore_user_list_rooms);
-	ggzcore_event_connect(GGZ_USER_JOIN_ROOM, _ggzcore_user_join_room);
-	ggzcore_event_connect(GGZ_USER_LIST_PLAYERS, _ggzcore_user_list_players);
-	ggzcore_event_connect(GGZ_USER_MOTD, _ggzcore_user_motd);
+	ggzcore_event_add_callback(GGZ_USER_LOGIN, _ggzcore_user_login);
+	ggzcore_event_add_callback(GGZ_USER_LIST_ROOMS, 
+				   _ggzcore_user_list_rooms);
+	ggzcore_event_add_callback(GGZ_USER_JOIN_ROOM, 
+				   _ggzcore_user_join_room);
+	ggzcore_event_add_callback(GGZ_USER_LIST_PLAYERS, 
+				   _ggzcore_user_list_players);
+	ggzcore_event_add_callback(GGZ_USER_MOTD, _ggzcore_user_motd);
 
-	ggzcore_event_connect_full(GGZ_USER_CHAT, _ggzcore_user_chat, 
-				   (void*)GGZ_CHAT_NORMAL, NULL);
-	ggzcore_event_connect_full(GGZ_USER_CHAT_PRVMSG, _ggzcore_user_chat,
-				   (void*)GGZ_CHAT_PERSONAL, NULL);
-	ggzcore_event_connect_full(GGZ_USER_CHAT_BEEP, _ggzcore_user_chat,
-				   (void*)GGZ_CHAT_BEEP, NULL);
+	ggzcore_event_add_callback_full(GGZ_USER_CHAT, _ggzcore_user_chat, 
+					(void*)GGZ_CHAT_NORMAL, NULL);
+	ggzcore_event_add_callback_full(GGZ_USER_CHAT_PRVMSG, 
+					_ggzcore_user_chat,
+					(void*)GGZ_CHAT_PERSONAL, NULL);
+	ggzcore_event_add_callback_full(GGZ_USER_CHAT_BEEP, _ggzcore_user_chat,
+					(void*)GGZ_CHAT_BEEP, NULL);
 
-	ggzcore_event_connect(GGZ_USER_LOGOUT, _ggzcore_user_logout);
+	ggzcore_event_add_callback(GGZ_USER_LOGOUT, _ggzcore_user_logout);
 }
 
 
@@ -83,30 +87,49 @@ static void _ggzcore_user_login(GGZEventID id, void* event_data, void* user_data
 {
 	GGZProfile* profile = (GGZProfile*)event_data;
 
-	if (!(_ggzcore_state_event_isvalid(id)))
-		return;
-	
 	ggzcore_debug(GGZ_DBG_USER, "Executing user_login");
-	ggzcore_debug(GGZ_DBG_USER, "Profile name %s", profile->name);
-	ggzcore_debug(GGZ_DBG_USER, "Profile host %s", profile->host);
-	ggzcore_debug(GGZ_DBG_USER, "Profile port %d", profile->port);
-	ggzcore_debug(GGZ_DBG_USER, "Profile type %d", profile->type);
-	ggzcore_debug(GGZ_DBG_USER, "Profile login %s", profile->login);
-	ggzcore_debug(GGZ_DBG_USER, "Profile password %s", profile->password);
-	
-	/* FIXME: if name is set, look up info in list */
-	if (profile->name)
-		_ggzcore_state.profile.name = strdup(profile->name);
-	_ggzcore_state.profile.host = strdup(profile->host);
-	_ggzcore_state.profile.port = profile->port;
-	_ggzcore_state.profile.type = profile->type;
-	_ggzcore_state.profile.login = strdup(profile->login);
-	if (profile->password)
-		_ggzcore_state.profile.password = strdup(profile->password);
-	
-	_ggzcore_net_connect(profile->host, profile->port);
 
-	_ggzcore_state_set(GGZ_STATE_CONNECTING);
+	/* Parse profile data if present */
+	if (profile) {
+		ggzcore_debug(GGZ_DBG_USER, "User provided profile data:");
+		ggzcore_debug(GGZ_DBG_USER, "Profile name %s", profile->name);
+		ggzcore_debug(GGZ_DBG_USER, "Profile host %s", profile->host);
+		ggzcore_debug(GGZ_DBG_USER, "Profile port %d", profile->port);
+		ggzcore_debug(GGZ_DBG_USER, "Profile type %d", profile->type);
+		ggzcore_debug(GGZ_DBG_USER, "Profile login %s", profile->login);
+		ggzcore_debug(GGZ_DBG_USER, "Profile password %s", profile->password);
+
+		/* Always use provided profile name, type, login and password*/
+		if (profile->name)
+			/* FIXME: look up info in profile list (?) */
+			_ggzcore_state.profile.name = strdup(profile->name);
+		else
+			_ggzcore_state.profile.name = NULL;
+		
+		_ggzcore_state.profile.type = profile->type;
+		_ggzcore_state.profile.login = strdup(profile->login);
+		if (profile->password)
+			_ggzcore_state.profile.password = strdup(profile->password);
+	}
+
+	/* If we're not online yet, put us there */
+	if (ggzcore_state_get_id() == GGZ_STATE_OFFLINE) {
+		ggzcore_debug(GGZ_DBG_USER, "Not online yet: connecting");
+
+		/* Only copy these if we're going online now,
+		   otherwise you can't change them! */
+		_ggzcore_state.profile.host = strdup(profile->host);
+		_ggzcore_state.profile.port = profile->port;
+
+		_ggzcore_net_connect(profile->host, profile->port);
+	}
+	else {
+		ggzcore_debug(GGZ_DBG_USER, "Online now: sending info");
+		/* We're already online, so send login info */
+		_ggzcore_net_send_login(_ggzcore_state.profile.type, 
+					_ggzcore_state.profile.login, 
+					_ggzcore_state.profile.password);
+	}
 }
 
 
@@ -142,13 +165,9 @@ static void _ggzcore_user_join_room(GGZEventID id, void* event_data, void* user_
 {
 	int room = (int)event_data;
 
-	if (!(_ggzcore_state_event_isvalid(id)))
-		return;
-
 	ggzcore_debug(GGZ_DBG_USER, "Executing user_join_room");	
 	_ggzcore_net_send_join_room(room);
 	
-	_ggzcore_state_set(GGZ_STATE_ENTERING_ROOM);
 	_ggzcore_state.trans_room = room;
 }
 
@@ -185,8 +204,6 @@ static void _ggzcore_user_chat(GGZEventID id, void* event_data, void* user_data)
 	GGZUpdateOp opcode = (int)user_data;
 	char *player = NULL, *msg = NULL;
 	
-	if (!(_ggzcore_state_event_isvalid(id)))
-		return;
 	
 	ggzcore_debug(GGZ_DBG_USER, "Executing user_chat");
 
@@ -225,9 +242,6 @@ static void _ggzcore_user_chat(GGZEventID id, void* event_data, void* user_data)
  */
 static void _ggzcore_user_motd(GGZEventID id, void* event_data, void* user_data)
 {
-	if (!(_ggzcore_state_event_isvalid(id)))
-		return;
-
 	ggzcore_debug(GGZ_DBG_USER, "Executing user_motd");	
 	_ggzcore_net_send_motd();
 }
@@ -244,10 +258,6 @@ static void _ggzcore_user_motd(GGZEventID id, void* event_data, void* user_data)
  */
 static void _ggzcore_user_logout(GGZEventID id, void* event_data, void* user_data)
 {
-	if (!(_ggzcore_state_event_isvalid(id)))
-		return;
-
 	ggzcore_debug(GGZ_DBG_USER, "Executing user_logout");	
 	_ggzcore_net_send_logout();
-	_ggzcore_state_set(GGZ_STATE_LOGGING_OUT);
 }

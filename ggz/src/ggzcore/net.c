@@ -28,7 +28,6 @@
 #include <ggzcore.h>
 #include <net.h>
 #include <protocol.h>
-#include <state.h>
 #include <easysock.h>
 #include <player.h>
 #include <room.h>
@@ -124,7 +123,7 @@ void _ggzcore_net_init(void)
 	es_err_func_set(_ggzcore_net_err_func);
 
 	/* Register callback for network error event */
-	ggzcore_event_connect(GGZ_NET_ERROR, _ggzcore_net_handle_error);
+	ggzcore_event_add_callback(GGZ_NET_ERROR, _ggzcore_net_handle_error);
 }
 
 
@@ -152,7 +151,6 @@ void _ggzcore_net_disconnect(void)
 	ggzcore_debug(GGZ_DBG_NET, "Disconnecting");
 	close(ggz_server_sock);
 	ggz_server_sock = -1;
-	_ggzcore_state_set(GGZ_STATE_OFFLINE);
 }
 
 
@@ -205,7 +203,7 @@ int _ggzcore_net_process(void)
 		
 	if (opcode < 0 || opcode >= num_messages) {
 		ggzcore_debug(GGZ_DBG_NET, "Bad opcode from server %d/%d", opcode, num_messages);
-		ggzcore_event_trigger(GGZ_SERVER_ERROR, NULL, NULL);
+		ggzcore_event_enqueue(GGZ_SERVER_ERROR, NULL, NULL);
 		return -1;
 	}
 	
@@ -306,12 +304,12 @@ static void _ggzcore_net_err_func(const char * msg, const EsOpType op,
 {
 	switch(op) {
 	case ES_CREATE:
-		ggzcore_event_trigger(GGZ_SERVER_CONNECT_FAIL, (void*)msg, 
+		ggzcore_event_enqueue(GGZ_SERVER_CONNECT_FAIL, (void*)msg, 
 				      NULL);
 		break;
 	case ES_WRITE:
 	case ES_READ:
-		ggzcore_event_trigger(GGZ_NET_ERROR, (void*)msg, NULL);
+		ggzcore_event_enqueue(GGZ_NET_ERROR, (void*)msg, NULL);
 		ggz_server_sock = -1;
 		break;
 	default:
@@ -346,9 +344,9 @@ static void _ggzcore_net_handle_server_id(void)
 			      version, size);
 
 		if (version == GGZ_CS_PROTO_VERSION)
-			ggzcore_event_trigger(GGZ_SERVER_CONNECT, NULL, NULL);
+			ggzcore_event_enqueue(GGZ_SERVER_CONNECT, NULL, NULL);
 		else
-			ggzcore_event_trigger(GGZ_SERVER_CONNECT_FAIL, 
+			ggzcore_event_enqueue(GGZ_SERVER_CONNECT_FAIL, 
 					      "Protocol mismatch", NULL);
 	}
 }
@@ -370,14 +368,14 @@ static void _ggzcore_net_handle_login_anon(void)
 	
 	switch (status) {
 	case 0:
-		ggzcore_event_trigger(GGZ_SERVER_LOGIN, NULL, NULL);
+		ggzcore_event_enqueue(GGZ_SERVER_LOGIN, NULL, NULL);
 		break;
 	case E_ALREADY_LOGGED_IN:
-		ggzcore_event_trigger(GGZ_SERVER_LOGIN_FAIL, 
+		ggzcore_event_enqueue(GGZ_SERVER_LOGIN_FAIL, 
 				      "Already logged in", NULL);
 		break;
 	case E_USR_LOOKUP:
-		ggzcore_event_trigger(GGZ_SERVER_LOGIN_FAIL, 
+		ggzcore_event_enqueue(GGZ_SERVER_LOGIN_FAIL, 
 				      "Name taken", NULL);
 		break;
 	}
@@ -403,7 +401,7 @@ static void _ggzcore_net_handle_motd(void)
 	ggzcore_debug(GGZ_DBG_NET, "MSG_MOTD from server : %d lines", lines);
 
 	/* FIXME: use argv free function */
-	ggzcore_event_trigger(GGZ_SERVER_MOTD, motd, NULL);
+	ggzcore_event_enqueue(GGZ_SERVER_MOTD, motd, NULL);
 }
 
 
@@ -418,7 +416,7 @@ static void _ggzcore_net_handle_logout(void)
 		return;
 
 	ggzcore_debug(GGZ_DBG_NET, "RSP_LOGOUT from server : %d", *status);
-	ggzcore_event_trigger(GGZ_SERVER_LOGOUT, status, free);
+	ggzcore_event_enqueue(GGZ_SERVER_LOGOUT, status, free);
 }
 
 
@@ -444,7 +442,7 @@ static void _ggzcore_net_handle_list_rooms(void)
 	}
 	
 	/* FIXME: read in information and actually pass back to client */
-	ggzcore_event_trigger(GGZ_SERVER_LIST_ROOMS, NULL, NULL);
+	ggzcore_event_enqueue(GGZ_SERVER_LIST_ROOMS, NULL, NULL);
 }
 
 
@@ -460,22 +458,22 @@ static void _ggzcore_net_handle_room_join(void)
 
 	switch (status) {
 	case 0:
-		ggzcore_event_trigger(GGZ_SERVER_ROOM_JOIN, NULL, NULL);
+		ggzcore_event_enqueue(GGZ_SERVER_ROOM_JOIN, NULL, NULL);
 		break;
 	case E_AT_TABLE:
-		ggzcore_event_trigger(GGZ_SERVER_ROOM_JOIN_FAIL, 
+		ggzcore_event_enqueue(GGZ_SERVER_ROOM_JOIN_FAIL, 
 				      "Can't change rooms while at a table", 
 				      NULL);
 		break;
 		
 	case E_IN_TRANSIT:
-		ggzcore_event_trigger(GGZ_SERVER_ROOM_JOIN_FAIL, 
+		ggzcore_event_enqueue(GGZ_SERVER_ROOM_JOIN_FAIL, 
 				      "Can't change rooms while joining/leaving a table", 
 				      NULL);
 		break;
 		
 	case E_BAD_OPTIONS:
-		ggzcore_event_trigger(GGZ_SERVER_ROOM_JOIN_FAIL, 
+		ggzcore_event_enqueue(GGZ_SERVER_ROOM_JOIN_FAIL, 
 				      "Bad room number", NULL);
 		break;
 	}
@@ -502,7 +500,7 @@ static void _ggzcore_net_handle_list_players(void)
 	}
 	
 	/* FIXME: read in information and actually pass back to client */
-	ggzcore_event_trigger(GGZ_SERVER_LIST_PLAYERS, NULL, NULL);
+	ggzcore_event_enqueue(GGZ_SERVER_LIST_PLAYERS, NULL, NULL);
 }
 
 
@@ -518,16 +516,16 @@ static void _ggzcore_net_handle_rsp_chat(void)
 	
 	switch (status) {
 	case 0:
-		ggzcore_event_trigger(GGZ_SERVER_CHAT, NULL, NULL);
+		ggzcore_event_enqueue(GGZ_SERVER_CHAT, NULL, NULL);
 		break;
 
 	case E_NOT_IN_ROOM:
-		ggzcore_event_trigger(GGZ_SERVER_CHAT_FAIL, "Not in a room",
+		ggzcore_event_enqueue(GGZ_SERVER_CHAT_FAIL, "Not in a room",
 				      NULL);
 		break;
 
 	case E_BAD_OPTIONS:
-		ggzcore_event_trigger(GGZ_SERVER_CHAT_FAIL, "Bad options",
+		ggzcore_event_enqueue(GGZ_SERVER_CHAT_FAIL, "Bad options",
 				      NULL);
 		break;
 	}
@@ -552,16 +550,16 @@ static void _ggzcore_net_handle_chat(void)
 
 	switch((GGZChatOp)subop) {
 	case GGZ_CHAT_NORMAL:
-		ggzcore_event_trigger(GGZ_SERVER_CHAT_MSG, data, NULL);
+		ggzcore_event_enqueue(GGZ_SERVER_CHAT_MSG, data, NULL);
 		break;
 	case GGZ_CHAT_ANNOUNCE:
-		ggzcore_event_trigger(GGZ_SERVER_CHAT_ANNOUNCE, data, NULL);
+		ggzcore_event_enqueue(GGZ_SERVER_CHAT_ANNOUNCE, data, NULL);
 		break;
 	case GGZ_CHAT_PERSONAL:
-		ggzcore_event_trigger(GGZ_SERVER_CHAT_PRVMSG, data, NULL);
+		ggzcore_event_enqueue(GGZ_SERVER_CHAT_PRVMSG, data, NULL);
 		break;
 	case GGZ_CHAT_BEEP:
-		ggzcore_event_trigger(GGZ_SERVER_CHAT_BEEP, data, NULL);
+		ggzcore_event_enqueue(GGZ_SERVER_CHAT_BEEP, data, NULL);
 		break;
 	}
 
@@ -581,13 +579,13 @@ static void _ggzcore_net_handle_update_players(void)
 	switch ((GGZUpdateOp)subop) {
 	case GGZ_UPDATE_DELETE:
 		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s left", name);
-		ggzcore_event_trigger(GGZ_SERVER_ROOM_LEAVE, name, free);
+		ggzcore_event_enqueue(GGZ_SERVER_ROOM_LEAVE, name, free);
 		_ggzcore_player_list_remove(name);
 		break;
 
 	case GGZ_UPDATE_ADD:
 		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s enter", name);
-		ggzcore_event_trigger(GGZ_SERVER_ROOM_ENTER, name, free);
+		ggzcore_event_enqueue(GGZ_SERVER_ROOM_ENTER, name, free);
 		_ggzcore_player_list_add(name, -1);
 		break;
 	default:

@@ -80,7 +80,6 @@ int ggzcore_init(GGZOptions options);
 void ggzcore_destroy(void);
 
 
-
 /* IDs for all GGZ events */
 typedef enum {
 	GGZ_SERVER_CONNECT,
@@ -118,7 +117,9 @@ typedef enum {
 
 
 /* Event-callback function type */
-typedef void (*GGZEventFunc)(GGZEventID id, void* event_data, void* user_data);
+typedef void (*GGZCallback)(unsigned int id, 
+			    void* callback_data, 
+			    void* user_data);
 typedef void (*GGZDestroyFunc)(void* data);
 
 
@@ -161,48 +162,38 @@ typedef struct _GGZProfile {
 
 
 
-/* ggzcore_event_connect() - Register callback for specific GGZ-event
+/* ggzcore_event_add_callback() - Register callback for specific GGZ-event
  *
  * Receives:
  * GGZEventID id         : ID code of event
- * GGZEventFunc callback : Callback function
+ * GGZCallback callback : Callback function
  *
  * Returns:
  * int : id for this callback 
  */
-int ggzcore_event_connect(const GGZEventID id, const GGZEventFunc callback);
+int ggzcore_event_add_callback(const GGZEventID id, const GGZCallback func);
 			  
 
-/* ggzcore_event_connect_full() - Register callback for specific GGZ-event
- *                                specifying all parameters
+/* ggzcore_event_add_callback_full() - Register callback for specific GGZ-event
+ *                                     specifying all parameters
  * 
  * Receives:
  * GGZEventID id         : ID code of event
- * GGZEventFunc callback : Callback function
+ * GGZCallback callback : Callback function
  * void* user_data       : "User" data to pass to callback
  * GGZDestroyFunc func   : function to call to free user data
  *
  * Returns:
  * int : id for this callback 
  */
-int ggzcore_event_connect_full(const GGZEventID id, 
-			       const GGZEventFunc callback, 
-			       void* user_data,
-			       GGZDestroyFunc destroy);
+int ggzcore_event_add_callback_full(const GGZEventID id, 
+				    const GGZCallback func, 
+				    void* user_data,
+				    GGZDestroyFunc destroy);
 
 
-/* ggzcore_event_remove_all() - Remove all callbacks from an event
- *
- * Receives:
- * GGZEventID id     : ID code of event
- *
- * Returns:
- * int : 0 if successful, -1 on error
- */
-int ggzcore_event_remove_all(const GGZEventID id);
-
-
-/* ggzcore_event_remove() - Remove specific callback from an event
+/* ggzcore_event_remove_callback() - Remove specific callback from an event
+ * ggzcore_event_remove_callback_id() - Remove specific callback from an event
  *
  * Receives:
  * GGZEventID id            : ID code of event
@@ -211,7 +202,10 @@ int ggzcore_event_remove_all(const GGZEventID id);
  * Returns:
  * int : 0 if successful, -1 on error
  */
-int ggzcore_event_remove(const GGZEventID id, const unsigned int callback_id);
+int ggzcore_event_remove_callback(const GGZEventID id, const GGZCallback func);
+int ggzcore_event_remove_callback_id(const GGZEventID id, 
+				     const unsigned int callback_id);
+
 
 
 /* ggzcore_event_get_fd() - Get a copy of the event pipe fd
@@ -259,11 +253,11 @@ int ggzcore_event_poll(struct pollfd *ufds, unsigned int nfds, int timeout);
 int ggzcore_event_process_all(void);
 
 
-/* ggzcore_event_trigger() - Trigger (place in the queue) a specific event
+/* ggzcore_event_enqueue() - Queue up an event for processing
  *
  * Receives:
  * GGZEventID id       : ID code of event
- * void* event_data    : Data specific to this occurance of the event
+ * void* data          : Data specific to this occurance of the event
  * GGZDestroyFunc func : function to free event data
  *
  * Returns:
@@ -272,13 +266,12 @@ int ggzcore_event_process_all(void);
  * Note that event_data should *not* point to local variables, as they
  * will not be in scope when the event is processed
  */
-int ggzcore_event_trigger(const GGZEventID id, 
-			  void* event_data,
-			  GGZDestroyFunc func);
-
+int ggzcore_event_enqueue(const GGZEventID id, void *data, 
+			  const GGZDestroyFunc func);
 
 
 typedef enum {
+	GGZ_STATE_NONE, 
 	GGZ_STATE_OFFLINE,
 	GGZ_STATE_CONNECTING,
 	GGZ_STATE_ONLINE,
@@ -286,6 +279,7 @@ typedef enum {
 	GGZ_STATE_LOGGED_IN,
 	GGZ_STATE_ENTERING_ROOM,
 	GGZ_STATE_IN_ROOM,
+	GGZ_STATE_BETWEEN_ROOMS,
 	GGZ_STATE_JOINING_TABLE,
 	GGZ_STATE_AT_TABLE,
 	GGZ_STATE_LEAVING_TABLE,

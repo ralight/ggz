@@ -26,6 +26,7 @@
 #include <config.h>
 #include <ggzcore.h>
 #include <event.h>
+#include <hook.h>
 #include <state.h>
 #include <net.h>
 
@@ -35,81 +36,432 @@
 #include <unistd.h>
 
 
-/* _GGZCallback : data type for representing single event callback in a list */
-struct _GGZCallback {
-
-	/* Callback ID (unique withing this event) */
-	unsigned int id;
+/* Structure to represent state transition pairs */
+struct _GGZTransition {
 	
-	/* Actual callback function */
-	GGZEventFunc func;
-	
-	/* Pointer to user data */
-	void* user_data;
-	
-	/* Function to free user data */
-	GGZDestroyFunc destroy;
+	/* Current state */
+	GGZStateID cur;
 
-	/* Pointer to next GGZCallback */
-	struct _GGZCallback* next;
-
+	/* Next state */
+	GGZStateID next;
 };
 
 
-/* GGZEvent : data type for representing an event */
+/* Structure for a particular event type */
 struct _GGZEvent {
 
-	/* Unique event number */
+	/* Unique id number */
 	GGZEventID id;
 	
 	/* Descriptive string (mainly for debugging purposes) */
-	const char* name;
+	const char *name;
 
-	/* Sequence number for callbacks */
-	int seq_id;
+	/* Array of valid state transitions */
+	struct _GGZTransition *states;
 
-	/* Linked list of callbacks */
-	struct _GGZCallback* callbacks;
+	/* List of callback functions */
+	GGZHookList *hooks;
+};
 
-	/* Pointer to event-specific data */
-	/* FIXME: do we really need to store this? */
-	void* event_data;
+
+/* Giant list of state transitions for each event */
+static struct _GGZTransition _server_connect_transitions[] = {
+	{GGZ_STATE_CONNECTING,    GGZ_STATE_ONLINE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _server_connect_fail_transitions[] = {
+	{GGZ_STATE_CONNECTING,    GGZ_STATE_OFFLINE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _server_motd_transitions[] = {
+	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
+	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _server_login_ok_transitions[] = {
+	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_LOGGED_IN},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _server_login_fail_transitions[] = {
+	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_ONLINE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _server_list_rooms_transitions[] = {
+	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
+	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _server_room_join_transitions[] = {
+	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_IN_ROOM},
+	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_IN_ROOM},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _server_room_join_fail_transitions[] = {
+	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_ONLINE},
+	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_IN_ROOM},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _server_list_players_transitions[] = {
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _server_chat_transitions[] = {
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _server_chat_fail_transitions[] = {
+	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _server_chat_msg_transitions[] = {
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _server_chat_announce_transitions[] = {
+	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
+	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _server_chat_prvmsg_transitions[] = {
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                
+
+static struct _GGZTransition _server_chat_beep_transitions[] = {
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                  
+
+static struct _GGZTransition _server_logout_transitions[] = {
+	{GGZ_STATE_LOGGING_OUT,   GGZ_STATE_OFFLINE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                     
+
+/* FIXME: is this right? */
+static struct _GGZTransition _server_error_transitions[] = {
+	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
+	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGING_OUT,   GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                      
+
+static struct _GGZTransition _server_room_enter_transitions[] = {
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                        
+
+static struct _GGZTransition _server_room_leave_transitions[] = {
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                        
+
+/* FIXME: this will be going away with error callbacks */
+static struct _GGZTransition _net_error_transitions[] = {
+	{GGZ_STATE_CONNECTING,    GGZ_STATE_OFFLINE},
+	{GGZ_STATE_ONLINE,        GGZ_STATE_OFFLINE},
+	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_OFFLINE},
+	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_OFFLINE},
+	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_OFFLINE},
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_OFFLINE},
+	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_OFFLINE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_OFFLINE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_OFFLINE},
+	{GGZ_STATE_LOGGING_OUT,   GGZ_STATE_OFFLINE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                         
+
+static struct _GGZTransition _user_login_transitions[] = {
+	{GGZ_STATE_OFFLINE,       GGZ_STATE_CONNECTING},
+	{GGZ_STATE_ONLINE,        GGZ_STATE_LOGGING_IN},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                        
+
+static struct _GGZTransition _user_list_rooms_transitions[] = {
+	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
+	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                   
+
+static struct _GGZTransition _user_list_types_transitions[] = {
+	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
+	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                   
+
+static struct _GGZTransition _user_join_room_transitions[] = {
+	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_ENTERING_ROOM},
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_BETWEEN_ROOMS},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};
+
+static struct _GGZTransition _user_list_tables_transitions[] = {
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                  
+
+static struct _GGZTransition _user_list_players_transitions[] = {
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                 
+
+static struct _GGZTransition _user_chat_transitions[] = {
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                         
+
+static struct _GGZTransition _user_chat_prvmsg_transitions[] = {
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                  
+
+static struct _GGZTransition _user_chat_beep_transitions[] = {
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                    
+
+static struct _GGZTransition _user_motd_transitions[] = {
+	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
+	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
+	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
+	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
+	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
+	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
+	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
+};                        
+
+static struct _GGZTransition _user_logout_transitions[] = {
+	{GGZ_STATE_ONLINE,        GGZ_STATE_LOGGING_OUT},
+	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_LOGGING_OUT},
+	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_LOGGING_OUT},
+	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_LOGGING_OUT},
+	{GGZ_STATE_IN_ROOM,       GGZ_STATE_LOGGING_OUT},
+	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_LOGGING_OUT},
+	{GGZ_STATE_NONE,          GGZ_STATE_LOGGING_OUT}
 };
 
 
 /* Array of all GGZ events */
 static struct _GGZEvent ggz_events[] = {
-	{GGZ_SERVER_CONNECT,        "server_connect",        1},
-	{GGZ_SERVER_CONNECT_FAIL,   "server_connect_fail",   1},
-	{GGZ_SERVER_MOTD        ,   "server_motd",           1},
-	{GGZ_SERVER_LOGIN,          "server_login_ok",       1},
-	{GGZ_SERVER_LOGIN_FAIL,     "server_login_fail",     1},
-	{GGZ_SERVER_LIST_ROOMS,     "server_list_rooms",     1},
-	{GGZ_SERVER_ROOM_JOIN,      "server_room_join",      1},
-	{GGZ_SERVER_ROOM_JOIN_FAIL, "server_room_join_fail", 1},
-	{GGZ_SERVER_LIST_PLAYERS,   "server_list_players",   1},
-	{GGZ_SERVER_CHAT,           "server_chat",           1},
-	{GGZ_SERVER_CHAT_FAIL,      "server_chat_fail",      1},
-	{GGZ_SERVER_CHAT_MSG,       "server_chat_msg",       1},
-	{GGZ_SERVER_CHAT_ANNOUNCE,  "server_chat_announce",  1},
-	{GGZ_SERVER_CHAT_PRVMSG,    "server_chat_prvmsg",    1},
-	{GGZ_SERVER_CHAT_BEEP,      "server_chat_beep",      1},
-	{GGZ_SERVER_LOGOUT,         "server_logout",         1},
-	{GGZ_SERVER_ERROR,          "server_error",          1},
-	{GGZ_SERVER_ROOM_LEAVE,     "room_leave",            1},
-	{GGZ_SERVER_ROOM_ENTER,     "room_enter",            1},
-	{GGZ_NET_ERROR,             "net_error",             1},
-	{GGZ_USER_LOGIN,            "user_login",            1},
-	{GGZ_USER_LIST_ROOMS,       "user_list_rooms",       1},
-	{GGZ_USER_LIST_TYPES,       "user_list_types",       1},
-	{GGZ_USER_JOIN_ROOM,        "user_join_room",        1},
-	{GGZ_USER_LIST_TABLES,      "user_list_tables",      1},
-	{GGZ_USER_LIST_PLAYERS,     "user_list_players",     1},
-	{GGZ_USER_CHAT,             "user_chat",             1},
-	{GGZ_USER_CHAT_PRVMSG,      "user_chat_prvmsg",      1},
-	{GGZ_USER_CHAT_BEEP,        "user_chat_beep",        1},
-	{GGZ_USER_MOTD,             "user_motd",             1},
-	{GGZ_USER_LOGOUT,           "user_logout",           1}
+
+	{GGZ_SERVER_CONNECT, 
+	 "server_connect", 
+	 _server_connect_transitions},
+	
+	{GGZ_SERVER_CONNECT_FAIL, 
+	 "server_connect_fail", 
+	 _server_connect_fail_transitions},
+	
+	{GGZ_SERVER_MOTD, 
+	 "server_motd",
+	 _server_motd_transitions},
+	
+	{GGZ_SERVER_LOGIN,          
+	 "server_login_ok",
+	 _server_login_ok_transitions},
+	
+	{GGZ_SERVER_LOGIN_FAIL,
+	 "server_login_fail",
+	 _server_login_fail_transitions},
+
+	{GGZ_SERVER_LIST_ROOMS,     
+	 "server_list_rooms",
+	 _server_list_rooms_transitions},
+	
+	{GGZ_SERVER_ROOM_JOIN,      
+	 "server_room_join",
+	 _server_room_join_transitions},
+
+	{GGZ_SERVER_ROOM_JOIN_FAIL, 
+	 "server_room_join_fail",             
+	 _server_room_join_fail_transitions},
+
+	{GGZ_SERVER_LIST_PLAYERS,   
+	 "server_list_players",               
+	 _server_list_players_transitions},
+
+	{GGZ_SERVER_CHAT,           
+	 "server_chat",                       
+	 _server_chat_transitions},
+
+	{GGZ_SERVER_CHAT_FAIL,      
+	 "server_chat_fail",                  
+	 _server_chat_fail_transitions},
+
+	{GGZ_SERVER_CHAT_MSG,       
+	 "server_chat_msg",                   
+	 _server_chat_msg_transitions},
+
+	{GGZ_SERVER_CHAT_ANNOUNCE,  
+	 "server_chat_announce",              
+	 _server_chat_announce_transitions},
+
+	{GGZ_SERVER_CHAT_PRVMSG,    
+	 "server_chat_prvmsg",                
+	 _server_chat_prvmsg_transitions},
+
+	{GGZ_SERVER_CHAT_BEEP,      
+	 "server_chat_beep",                  
+	 _server_chat_beep_transitions},
+
+	{GGZ_SERVER_LOGOUT,         
+	 "server_logout",                     
+	 _server_logout_transitions},
+
+	{GGZ_SERVER_ERROR,          
+	 "server_error",                      
+	 _server_error_transitions},
+	
+	{GGZ_SERVER_ROOM_ENTER,     
+	 "server_room_enter",                        
+	 _server_room_enter_transitions},
+	
+	{GGZ_SERVER_ROOM_LEAVE,     
+	 "server_room_leave",                        
+	 _server_room_leave_transitions},
+
+	{GGZ_NET_ERROR,             
+	 "net_error",                         
+	 _net_error_transitions},
+
+	{GGZ_USER_LOGIN,            
+	 "user_login",                        
+	 _user_login_transitions},
+
+	{GGZ_USER_LIST_ROOMS,       
+	 "user_list_rooms",                   
+	 _user_list_rooms_transitions},
+
+	{GGZ_USER_LIST_TYPES,       
+	 "user_list_types",                   
+	 _user_list_types_transitions},
+
+	{GGZ_USER_JOIN_ROOM,        
+	 "user_join_room",                    
+	 _user_join_room_transitions},
+
+	{GGZ_USER_LIST_TABLES,      
+	 "user_list_tables",                  
+	 _user_list_tables_transitions},
+
+	{GGZ_USER_LIST_PLAYERS,     
+	 "user_list_players",                 
+	 _user_list_players_transitions},
+
+	{GGZ_USER_CHAT,             
+	 "user_chat",                         
+	 _user_chat_transitions},
+
+	{GGZ_USER_CHAT_PRVMSG,      
+	 "user_chat_prvmsg",                  
+	 _user_chat_prvmsg_transitions},
+
+	{GGZ_USER_CHAT_BEEP,        
+	 "user_chat_beep",                    
+	 _user_chat_beep_transitions},
+
+	{GGZ_USER_MOTD,             
+	 "user_motd",                         
+	 _user_motd_transitions},
+
+	{GGZ_USER_LOGOUT,           
+	 "user_logout",
+	 _user_logout_transitions}
+
 };
 
 /* Number of events */
@@ -119,9 +471,15 @@ static unsigned int num_events;
 static int event_pipe[2];
 
 /* Private functions */
-static void _ggzcore_event_process(GGZEventID id);
+static void _ggzcore_event_process(GGZEventID id, void *data, 
+				   GGZDestroyFunc func);
+
+static GGZStateID _ggzcore_event_next_state(GGZEventID id);
+
 static void _ggzcore_event_dump_callbacks(GGZEventID id);
 
+static int _ggzcore_event_dequeue(GGZEventID *id, void **data, 
+				  GGZDestroyFunc *func);
 
 /* _ggzcore_event_init() - Initialize event system
  *
@@ -136,13 +494,16 @@ void _ggzcore_event_init(void)
 	/* Setup events */
 	num_events = sizeof(ggz_events)/sizeof(struct _GGZEvent);
 	for (i = 0; i < num_events; i++) {
-		ggzcore_debug(GGZ_DBG_EVENT, "Setting up %s event with id %d", 
-			      ggz_events[i].name, ggz_events[i].id);
 		if (ggz_events[i].id != i)
 			ggzcore_debug(GGZ_DBG_EVENT, "ID mismatch: %d != %d",
 				      ggz_events[i].id, i);
+		else {
+			ggz_events[i].hooks = _ggzcore_hook_list_init(i);
+			ggzcore_debug(GGZ_DBG_EVENT, 
+				      "Setting up event %s with id %d", 
+				      ggz_events[i].name, ggz_events[i].id);
+		}
 	}
-  
 
 	/* Create fd */
 	/* FIXME: should we make it non-blocking? */
@@ -151,95 +512,76 @@ void _ggzcore_event_init(void)
 }
 
 
-/* ggzcore_event_connect() - Register callback for specific GGZ-event
+/* ggzcore_event_add_callback() - Register callback for specific GGZ-event
  *
  * Receives:
  * GGZEventID id         : ID code of event
- * GGZEventFunc callback : Callback function
+ * GGZCallback callback : Callback function
  *
  * Returns:
  * int : id for this callback 
  */
-int ggzcore_event_connect(const GGZEventID id, const GGZEventFunc callback)
+int ggzcore_event_add_callback(const GGZEventID id, const GGZCallback func)
 {
-	return ggzcore_event_connect_full(id, callback, NULL, NULL);
+	return ggzcore_event_add_callback_full(id, func, NULL, NULL);
 }
 
 
-/* ggzcore_event_connect_full() - Register callback for specific GGZ-event
- *                                specifying all parameters
+/* ggzcore_event_add_callback_full() - Register callback for specific GGZ-event
+ *                                     specifying all parameters
  * 
  * Receives:
- * GGZEventID id         : ID code of event
- * GGZEventFunc callback : Callback function
- * void* user_data       : "User" data to pass to callback
- * GGZDestroyFunc func   : function to call to free user data
+ * GGZEventID id          : ID code of event
+ * GGZCallback func       : Callback function
+ * void* data             : pointer to pass to callback
+ * GGZDestroyFunc destroy : function to call to free user data
  *
  * Returns:
  * int : id for this callback 
  */
-int ggzcore_event_connect_full(const GGZEventID id, const GGZEventFunc cb_func,
-			       void* user_data, GGZDestroyFunc destroy)
+int ggzcore_event_add_callback_full(const GGZEventID id, 
+				    const GGZCallback func,
+				    void* data, GGZDestroyFunc destroy)
 {
-	struct _GGZCallback *callback, *cur, *next;
-	
-	/* This should never happen, but....*/
-	if (id < 0 || id >= num_events)
-		return -1;
-	
-	if ( (callback = calloc(1, sizeof(struct _GGZCallback))) == NULL)
-		ggzcore_error_sys_exit("calloc() failed in ggzcore_event_connect");
-	
-	/* Assign unique ID */
-	callback->id = ggz_events[id].seq_id++;
-	callback->func = cb_func;
-	callback->user_data = user_data;
-	callback->destroy = destroy;
+	int status = _ggzcore_hook_add_full(ggz_events[id].hooks, func, data, 
+					    destroy);
 
-	/* Append onto list of callbacks */
-	if ( (next = ggz_events[id].callbacks) == NULL)
-		ggz_events[id].callbacks = callback;
-	else {
-		while (next) {
-			cur = next;
-			next = cur->next;
-		}
-		cur->next = callback;
-	}
-	
 	_ggzcore_event_dump_callbacks(id);
-
-	return callback->id;
+	
+	return status;
 }
 
 
-/* ggzcore_event_remove_all() - Remove all callbacks from an event
+/* ggzcore_event_remove_callback() - Remove specific callback from an event
  *
  * Receives:
  * GGZEventID id     : ID code of event
+ * GGZCallback func  : pointer to callback function to remove
  *
  * Returns:
  * int : 0 if successful, -1 on error
  */
-int ggzcore_event_remove_all(const GGZEventID id)
+int ggzcore_event_remove_callback(const GGZEventID id, const GGZCallback func)
 {
-	struct _GGZCallback *cur, *next;
+	int status;
 
-	ggzcore_debug(GGZ_DBG_EVENT, "Removing all callbacks from event %s", 
-		      ggz_events[id].name);
-	next = ggz_events[id].callbacks;
-	while (next) {
-		cur = next;
-		next = cur->next;
-		free(cur);
-	}
-	ggz_events[id].callbacks = NULL;
+	status = _ggzcore_hook_remove(ggz_events[id].hooks, func);
 	
-	return 0;
+	if (status == 0)
+		ggzcore_debug(GGZ_DBG_EVENT, 
+			      "Removing callback from event %s", 
+			      ggz_events[id].name);
+	else
+		ggzcore_debug(GGZ_DBG_EVENT, 
+			      "Can't find callback to remove from event %s",
+			      ggz_events[id].name);
+	
+	return status; 
 }
 
 
-/* ggzcore_event_remove() - Remove specific callback from an event
+/* ggzcore_event_remove_callback_id() - Remove callback (specified by id) 
+ *                                      from an event
  *
  * Receives:
  * GGZEventID id            : ID code of event
@@ -248,84 +590,40 @@ int ggzcore_event_remove_all(const GGZEventID id)
  * Returns:
  * int : 0 if successful, -1 on error
  */
-int ggzcore_event_remove(const GGZEventID id, const unsigned int callback_id)
+int ggzcore_event_remove_callback_id(const GGZEventID id, 
+				     const unsigned int callback_id)
 {
-	struct _GGZCallback *cur, *prev = NULL;
+	int status;
 
-	cur = ggz_events[id].callbacks;
-	while (cur && cur->id != callback_id) {
-		prev = cur;
-		cur = cur->next;
-	}
-
-	/* Couldn't find it! */
-	if (!cur) {
-		ggzcore_debug(GGZ_DBG_EVENT, 
-			      "Can't find callback %d to remove from event %s",
-			      callback_id, ggz_events[id].name);
-		return -1;
-	}
-	else {
+	status = _ggzcore_hook_remove_id(ggz_events[id].hooks, callback_id);
+	
+	if (status == 0)
 		ggzcore_debug(GGZ_DBG_EVENT, 
 			      "Removing callback %d from event %s", 
 			      callback_id, ggz_events[id].name);
-		
-		/* Special case if it was first in the list */
-		if (!prev)
-			ggz_events[id].callbacks = cur->next;
-		else
-			prev->next = cur->next;
-
-		free(cur);
-		return 0;
-	}
+	else
+		ggzcore_debug(GGZ_DBG_EVENT, 
+			      "Can't find callback %d to remove from event %s",
+			      callback_id, ggz_events[id].name);
+	
+	return status; 
 }
 
 
-/* ggzcore_event_remove_func() - Remove specific callback from an event
+/* _ggzcore_event_remove_all_callbacks() - Remove all callbacks from an event
  *
  * Receives:
- * GGZEventID id            : ID code of event
- * GGZEventFunc cb_func     : pointer to callback function 
+ * GGZEventID id     : ID code of event
  *
  * Returns:
  * int : 0 if successful, -1 on error
  */
-int ggzcore_event_remove_func(const GGZEventID id, const GGZEventFunc cb_func)
+int _ggzcore_event_remove_all_callbacks(const GGZEventID id)
 {
-	struct _GGZCallback *cur, *prev = NULL;
-
-	cur = ggz_events[id].callbacks;
-	while (cur && cur->func != cb_func) {
-		prev = cur;
-		cur = cur->next;
-	}
-
-	/* Couldn't find it! */
-	if (!cur) {
-		ggzcore_debug(GGZ_DBG_EVENT, 
-			      "Can't find callback %d to remove from event %s",
-			      id, ggz_events[id].name);
-		return -1;
-	}
-	else {
-		ggzcore_debug(GGZ_DBG_EVENT, 
-			      "Removing callback %d from event %s", id, 
-			      ggz_events[id].name);
-
-		/* Free callback specific data */
-		if (cur->user_data && cur->destroy)
-			(*cur->destroy)(cur->user_data);
-		
-		/* Special case if it was first in the list */
-		if (!prev)
-			ggz_events[id].callbacks = cur->next;
-		else
-			prev->next = cur->next;
-
-		free(cur);
-		return 0;
-	}
+	ggzcore_debug(GGZ_DBG_EVENT, "Removing all callbacks from event %s", 
+		      ggz_events[id].name);
+	
+	return _ggzcore_hook_remove_all(ggz_events[id].hooks);
 }
 
 
@@ -455,57 +753,95 @@ int ggzcore_event_poll(struct pollfd *ufds, unsigned int nfds, int timeout)
 int ggzcore_event_process_all(void)
 {
 	GGZEventID id;
+	void* data;
+	GGZDestroyFunc destroy;
 	
 	while (ggzcore_event_ispending()) {
 		ggzcore_debug(GGZ_DBG_EVENT, "Procesing events");
-		read(event_pipe[0], &id, sizeof(GGZEventID));
-		/* FIXME: do validity checking */
-		_ggzcore_event_process(id);
+		_ggzcore_event_dequeue(&id, &data, &destroy);
+		/* FIXME: do validity checking on id */
+		_ggzcore_event_process(id, data, destroy);
 	}
 	
 	return 0;
 }
 
 
-/* event_process() - Process an event (invoking callbacks)
+/* _ggzcore_event_process() - Process an event (invoking callbacks)
  *
  * Receives:
+ * GGZEventID id          : ID of event to process
+ * void *data             : Pointer to common data for this event
+ * GGZDestroyFunc destroy : Destroy function for common data
  *
  * Returns:
  * int : 0 if successful, -1 otherwise
  */
-static void _ggzcore_event_process(GGZEventID id)
+static void _ggzcore_event_process(GGZEventID id, void* data, 
+				   GGZDestroyFunc destroy)
 {
-	void* data;
-	GGZDestroyFunc destroy;
-	struct _GGZEvent event = ggz_events[id];
-	struct _GGZCallback *cur;
-			
-	read(event_pipe[0], &data, sizeof(void*));
-	read(event_pipe[0], &destroy, sizeof(GGZDestroyFunc));
-	
-	ggzcore_debug(GGZ_DBG_EVENT, "Received %s event : invoking callbacks",
-		      event.name);
-	
-	for (cur = event.callbacks; cur != NULL; cur = cur->next) {
-		(*cur->func)(id, data, cur->user_data);
-		
-		/* Free callback specific data */
-		if (cur->user_data && cur->destroy)
-			(*cur->destroy)(cur->user_data);
-	}
+	int next_state;
 
+	ggzcore_debug(GGZ_DBG_EVENT, "Processing %s event/invoking callbacks",
+		      ggz_events[id].name);
+
+	if ( (next_state = _ggzcore_event_next_state(id)) < 0) {
+		ggzcore_debug(GGZ_DBG_EVENT, "NOTE: Skipping invalid %s event",
+			      ggz_events[id].name);
+	}
+	
+	else {
+		_ggzcore_hook_list_invoke(ggz_events[id].hooks, data);
+
+		if (next_state != GGZ_STATE_NONE)
+			_ggzcore_state_set(next_state);
+	}
+	
 	/* Free event specific data */
 	if (data && destroy)
-		destroy(data);
+		(*destroy)(data);
 }
 
 
-/* ggzcore_event_trigger() - Trigger (place in the queue) a specific event
+/* _ggzcore_event_next_state() - Calculate next state based on event
+ *                               and current state  
+ *
+ * Receives:
+ * GGZEventID id          : ID of event to process
+ *
+ * Returns:
+ * GGZStateID : ID of next state or -1 if the event is not valid in
+ *              the current state
+ */
+static GGZStateID _ggzcore_event_next_state(GGZEventID id)
+{
+	int i = 0;
+	struct _GGZTransition *states;
+	GGZStateID cur, next = -1;
+
+	states = ggz_events[id].states;
+	cur = ggzcore_state_get_id();
+
+	/* Look through valid transitions to see if current state is one */
+	while (states[i].cur != cur && states[i].cur != GGZ_STATE_NONE)
+		++i;
+	
+	/* If event is valid, look up next state*/
+	if (states[i].cur == cur)
+		next = states[i].next;
+
+	ggzcore_debug(GGZ_DBG_EVENT, "Event %s next state: %d",
+		      ggz_events[id].name, next);
+	
+	return next;
+}
+
+
+/* ggzcore_event_enqueue() - Queue up an event for processing
  *
  * Receives:
  * GGZEventID id       : ID code of event
- * void* event_data    : Data specific to this occurance of the event
+ * void* data          : Data specific to this occurance of the event
  * GGZDestroyFunc func : function to free event data
  *
  * Returns:
@@ -514,17 +850,40 @@ static void _ggzcore_event_process(GGZEventID id)
  * Note that event_data should *not* point to local variables, as they
  * will not be in scope when the event is processed
  */
-int ggzcore_event_trigger(const GGZEventID id, void* data, GGZDestroyFunc func)
+int ggzcore_event_enqueue(const GGZEventID id, void* data, GGZDestroyFunc func)
 {
-	ggzcore_debug(GGZ_DBG_EVENT, "Triggered %s", ggz_events[id].name);
+	ggzcore_debug(GGZ_DBG_EVENT, "Queued event %s", ggz_events[id].name);
 	
 	/* Queue-up event in pipe */
 	write(event_pipe[1], &id, sizeof(GGZEventID));
 	write(event_pipe[1], &data, sizeof(void*));
 	write(event_pipe[1], &func, sizeof(GGZDestroyFunc));
 
-	/* FIXME: Can we alternatively do sync. events just by storing
-	   event data and calling event_process(id); ? */
+	return 0;
+}
+
+
+/* _ggzcore_event_dequeue() - Take next event from queue
+ *
+ * Receives:
+ * GGZEventID *id       : Address to store ID of event
+ * void** data          : Address to store pointer to event date
+ * GGZDestroyFunc *func : Address to store pointer to destroy function
+ *
+ * Returns:
+ * int : 0 if successful, -1 otherwise 
+ *
+ * Returns by reference the ID, event data, and destroy function for
+ * the event
+ */
+static int _ggzcore_event_dequeue(GGZEventID *id, void **data, 
+				  GGZDestroyFunc *func)
+{
+	read(event_pipe[0], id, sizeof(GGZEventID));
+	read(event_pipe[0], data, sizeof(void*));
+	read(event_pipe[0], func, sizeof(GGZDestroyFunc));
+
+	ggzcore_debug(GGZ_DBG_EVENT, "Dequeued event %s", ggz_events[*id].name);
 
 	return 0;
 }
@@ -533,10 +892,10 @@ int ggzcore_event_trigger(const GGZEventID id, void* data, GGZDestroyFunc func)
 /* Debugging function to examine state of callback list */
 static void _ggzcore_event_dump_callbacks(GGZEventID id)
 {
-	struct _GGZCallback *cur;
+	struct _GGZHook *cur;
 
 	ggzcore_debug(GGZ_DBG_EVENT, "-- Event: %s", ggz_events[id].name);
-	for (cur = ggz_events[id].callbacks; cur != NULL; cur = cur->next)
+	for (cur = ggz_events[id].hooks->hooks; cur != NULL; cur = cur->next)
 		ggzcore_debug(GGZ_DBG_EVENT, "  Callback id %d", cur->id);
 	ggzcore_debug(GGZ_DBG_EVENT, "-- End of event");
 }
@@ -556,8 +915,7 @@ void _ggzcore_event_destroy(void)
 	for (i = 0; i < num_events; i++) {
 		ggzcore_debug(GGZ_DBG_EVENT, "Cleaning up %s event", 
 			      ggz_events[i].name);
-		ggzcore_event_remove_all(ggz_events[i].id);
+		_ggzcore_hook_list_destroy(ggz_events[i].hooks);
+		ggz_events[i].hooks = NULL;
 	}
 }
-
-

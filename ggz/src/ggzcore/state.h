@@ -55,8 +55,6 @@ extern struct _GGZState _ggzcore_state;
 
 void _ggzcore_state_init(void);
 
-unsigned char _ggzcore_state_event_isvalid(GGZEventID id);
-
 void _ggzcore_state_set(GGZStateID id);
 
 

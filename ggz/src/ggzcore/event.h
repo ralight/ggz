@@ -45,6 +45,17 @@ void _ggzcore_event_init(void);
 int _ggzcore_event_ispending_actual(void);
 
 
+/* _ggzcore_event_remove_all_callbacks() - Remove all callbacks from an event
+ *
+ * Receives:
+ * GGZEventID id     : ID code of event
+ *
+ * Returns:
+ * int : 0 if successful, -1 on error
+ */
+int _ggzcore_event_remove_all_callbacks(const GGZEventID id);
+
+
 /* ggzcore_event_destroy() - Cleanup event system
  *
  * Receives:

@@ -27,9 +27,9 @@
 #include <config.h>
 #include <ggzcore.h>
 #include <server.h>
-#include <state.h>
 #include <net.h>
 #include <player.h>
+#include <state.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -53,18 +53,20 @@ static void _ggzcore_server_logout(GGZEventID, void*, void*);
  */
 void _ggzcore_server_register(void)
 {
-	ggzcore_event_connect(GGZ_SERVER_CONNECT, _ggzcore_server_connect);
-	ggzcore_event_connect(GGZ_SERVER_CONNECT_FAIL, 
-			      _ggzcore_server_connect_fail);
-	ggzcore_event_connect(GGZ_SERVER_LOGIN, _ggzcore_server_login);
-	ggzcore_event_connect(GGZ_SERVER_LOGIN_FAIL, 
-			      _ggzcore_server_login_fail);
-	ggzcore_event_connect(GGZ_SERVER_LIST_ROOMS, 
-			      _ggzcore_server_list_rooms);
-	ggzcore_event_connect(GGZ_SERVER_ROOM_JOIN, _ggzcore_server_room_join);
-	ggzcore_event_connect(GGZ_SERVER_ROOM_JOIN_FAIL, 
-			      _ggzcore_server_room_join_fail);
-	ggzcore_event_connect(GGZ_SERVER_LOGOUT, _ggzcore_server_logout);
+	ggzcore_event_add_callback(GGZ_SERVER_CONNECT, 
+				   _ggzcore_server_connect);
+	ggzcore_event_add_callback(GGZ_SERVER_CONNECT_FAIL, 
+				   _ggzcore_server_connect_fail);
+	ggzcore_event_add_callback(GGZ_SERVER_LOGIN, _ggzcore_server_login);
+	ggzcore_event_add_callback(GGZ_SERVER_LOGIN_FAIL, 
+				   _ggzcore_server_login_fail);
+	ggzcore_event_add_callback(GGZ_SERVER_LIST_ROOMS, 
+				   _ggzcore_server_list_rooms);
+	ggzcore_event_add_callback(GGZ_SERVER_ROOM_JOIN, 
+				   _ggzcore_server_room_join);
+	ggzcore_event_add_callback(GGZ_SERVER_ROOM_JOIN_FAIL, 
+				   _ggzcore_server_room_join_fail);
+	ggzcore_event_add_callback(GGZ_SERVER_LOGOUT, _ggzcore_server_logout);
 }
 
 
@@ -81,12 +83,8 @@ static void _ggzcore_server_connect(GGZEventID id, void* event_data,
 				    void* user_data)
 {
 	ggzcore_debug(GGZ_DBG_SERVER, "Executing server_connect");
-	
-	_ggzcore_state_set(GGZ_STATE_ONLINE);
-	_ggzcore_net_send_login(_ggzcore_state.profile.type, 
-				_ggzcore_state.profile.login, 
-				_ggzcore_state.profile.password);
-	_ggzcore_state_set(GGZ_STATE_LOGGING_IN);
+	/* Re-trigger user login event */
+	ggzcore_event_enqueue(GGZ_USER_LOGIN, NULL, NULL);
 }
 
 
@@ -103,7 +101,6 @@ static void _ggzcore_server_connect_fail(GGZEventID id, void* event_data,
 					 void* user_data)
 {
 	ggzcore_debug(GGZ_DBG_SERVER, "Executing server_connect_fail");
-	_ggzcore_state_set(GGZ_STATE_OFFLINE);
 }
 
 
@@ -120,7 +117,6 @@ static void _ggzcore_server_login(GGZEventID id, void* event_data,
 				    void* user_data)
 {
 	ggzcore_debug(GGZ_DBG_SERVER, "Executing server_login");
-	_ggzcore_state_set(GGZ_STATE_LOGGED_IN);
 }
 
 
@@ -137,7 +133,6 @@ static void _ggzcore_server_login_fail(GGZEventID id, void* event_data,
 				       void* user_data)
 {
 	ggzcore_debug(GGZ_DBG_SERVER, "Executing server_login_fail");
-	_ggzcore_state_set(GGZ_STATE_ONLINE);
 }
 
 
@@ -171,6 +166,7 @@ static void _ggzcore_server_list_rooms(GGZEventID id, void* event_data,
 				   void* user_data)
 {
 	ggzcore_debug(GGZ_DBG_SERVER, "Executing server_list_rooms");
+	
 
 }
 
@@ -188,7 +184,6 @@ static void _ggzcore_server_room_join(GGZEventID id, void* event_data,
 				      void* user_data)
 {
 	ggzcore_debug(GGZ_DBG_SERVER, "Executing room_join");
-	_ggzcore_state_set(GGZ_STATE_IN_ROOM);
 	_ggzcore_state.room = _ggzcore_state.trans_room;
 	_ggzcore_player_list_clear();
 }
@@ -208,11 +203,6 @@ static void _ggzcore_server_room_join_fail(GGZEventID id, void* event_data,
 {
 	ggzcore_debug(GGZ_DBG_SERVER, "Executing room_join_fail");
 	_ggzcore_state.trans_room = _ggzcore_state.room;
-
-	if (_ggzcore_state.room == -1)
-		_ggzcore_state_set(GGZ_STATE_LOGGED_IN);
-	else 
-		_ggzcore_state_set(GGZ_STATE_IN_ROOM);
 }
 
 

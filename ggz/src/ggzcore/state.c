@@ -100,42 +100,6 @@ int ggzcore_state_get_room(void)
 }
 
 
-
-
-/* FIXME: need better way of checking validity */
-unsigned char _ggzcore_state_event_isvalid(GGZEventID id)
-{
-	unsigned char valid = 0;
-
-	switch (_ggzcore_state.id) {
-	case GGZ_STATE_OFFLINE:
-		valid = (id == GGZ_USER_LOGIN);
-		break;
-
-	case GGZ_STATE_ONLINE:
-		valid = (id == GGZ_USER_LOGIN || id == GGZ_USER_LOGOUT
-			 || id == GGZ_USER_MOTD);
-		break;
-
-	case GGZ_STATE_LOGGED_IN:
-		valid = (id == GGZ_USER_LOGOUT || id == GGZ_USER_JOIN_ROOM
-			 || id == GGZ_USER_MOTD);
-		break;
-
-	case GGZ_STATE_IN_ROOM:
-		valid = (id == GGZ_USER_LOGOUT || id == GGZ_USER_JOIN_ROOM
-			 || id == GGZ_USER_CHAT || id == GGZ_USER_CHAT_PRVMSG
-			 || id == GGZ_USER_CHAT_BEEP || id == GGZ_USER_MOTD);
-		break;
-		
-	default:
-		valid = 0;
-	}
-
-	return valid;
-}
-
-
 void _ggzcore_state_set(GGZStateID id)
 {
 	ggzcore_debug(GGZ_DBG_STATE, "State transition %d -> %d", 
