@@ -5,35 +5,28 @@
 
 	<div class="menubar">
 		<h1>Spiele/Tournaments</h1>
-		<div class="menu">
-			<a href="/db/matches/" class="menuitem" title="Schach">Schach #23</a>
-		</div>
-		<div class="menu">
-			<a href="/db/matches/" class="menuitem" title="TicTacToe">TicTacToe #12 (Tournament)</a>
-		</div>
+<?php
+include_once("latest.php");
+latest_matches();
+latest_tournaments();
+?>
 	</div>
 
 	<hr class="leather">
 
 	<div class="menubar">
 		<h1>Spielerblogs</h1>
-		<div class="menu">
-			<a href="/blogs/user-a/" class="menuitem" title="Player A's blog">What a won..</a>
-		</div>
-		<div class="menu">
-			<a href="/blogs/user-b/" class="menuitem" title="Player B's blog">Yuck! Blah</a>
-		</div>
+<?php
+latest_blogs();
+?>
 	</div>
 
 	<hr class="leather">
 
 	<div class="menubar">
 		<h1>Foreneinträge</h1>
-		<div class="menu">
-			<a href="/forum/x-2/" class="menuitem" title="Forum: General">Take this</a>
-		</div>
-		<div class="menu">
-			<a href="/forum/x-1/" class="menuitem" title="Forum: Foo">Haha</a>
-		</div>
+<?php
+latest_forumposts();
+?>
 	</div>
 </div>

@@ -1,0 +1,6 @@
+<?php
+$conf_host = "localhost";
+$conf_name = "phpbb2";
+$conf_user = "xxx";
+$conf_pass = "xxx";
+?>
