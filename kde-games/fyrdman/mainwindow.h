@@ -1,7 +1,10 @@
 #ifndef FYRDMAN_MAINWINDOW_H
 #define FYRDMAN_MAINWINDOW_H
 
+#include "fyrdman.h"
+
 #include <kmainwindow.h>
+
 #include <qptrlist.h>
 
 class KPopupMenu;
@@ -10,7 +13,7 @@ class Network;
 class QSocketNotifier;
 class Level;
 
-class MainWindow : public KMainWindow
+class MainWindow : public KMainWindow, public FyrdmanDcop
 {
 	Q_OBJECT
 	public:
@@ -19,6 +22,9 @@ class MainWindow : public KMainWindow
 
 		void enableNetwork();
 
+	k_dcop:
+		ASYNC newLevel(QString level);
+
 	public slots:
 		void slotMenu(int id);
 		void slotData();
@@ -26,6 +32,8 @@ class MainWindow : public KMainWindow
 
 	private:
 		void levelSelector();
+		void scanLevels(QString basedir);
+		void scanNewLevels();
 		void levelInformation();
 		void unitInformation(int num);
 

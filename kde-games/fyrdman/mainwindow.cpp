@@ -14,11 +14,14 @@
 #include <kmessagebox.h>
 #include <kdebug.h>
 #include <kiconloader.h>
+#include <kprocess.h>
+#include <kstandarddirs.h>
 
 #include <qsocketnotifier.h>
 #include <qdir.h>
 
 #include <stdlib.h> // abs
+#include <unistd.h> // getpid
 
 #include "config.h"
 
@@ -27,7 +30,7 @@
 #endif
 
 MainWindow::MainWindow()
-: KMainWindow()
+: DCOPObject("fyrdman"), KMainWindow()
 {
 	network = NULL;
 	sn = NULL;
@@ -98,6 +101,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::slotMenu(int id)
 {
+	QDir d;
+
 	switch(id)
 	{
 		case game_new:
@@ -111,7 +116,11 @@ void MainWindow::slotMenu(int id)
 			break;
 #ifdef HAVE_KNEWSTUFF
 		case game_newlevels:
-			KNS::DownloadDialog::open("ggz/fyrdman/level");
+			d.mkdir(QDir::home().path() + "/.ggz");
+			d.mkdir(QDir::home().path() + "/.ggz/games");
+			d.mkdir(QDir::home().path() + "/.ggz/games/fyrdman");
+			KNS::DownloadDialog::open("fyrdman/level");
+			scanNewLevels();
 			break;
 #endif
 		case game_quit:
@@ -161,6 +170,50 @@ void MainWindow::unitInformation(int num)
 	u.exec();
 }
 
+ASYNC MainWindow::newLevel(QString level)
+{
+	KProcess proc;
+	proc << "tar";
+	proc << "-C" << QString(QDir::home().path() + "%1").arg("/.ggz/games/fyrdman").latin1();
+	proc << "-xvzf" << level.latin1();
+	proc.start(KProcess::Block);
+}
+
+void MainWindow::scanLevels(QString basedir)
+{
+	QDir dir(basedir + "/fyrdman");
+	QStringList s = dir.entryList();
+	for(QStringList::iterator it = s.begin(); it != s.end(); it++)
+	{
+		if(((*it) == ".") || ((*it) == "..")) continue;
+		QString filename = QString("%1/fyrdman/%2").arg(basedir).arg((*it));
+		bool ret = true;
+		for(Level *l = m_levels.first(); l; l = m_levels.next())
+			if(QString(l->location()) == filename) ret = false;
+		if(ret)
+		{
+			Level *level = new Level();
+			ret = level->loadFromFile(filename);
+			if(ret) m_levels.append(level);
+			else delete level;
+		}
+	}
+}
+
+void MainWindow::scanNewLevels()
+{
+	KStandardDirs d;
+	QString basedir = d.findResource("data", "fyrdman/");
+	QDir dir(basedir);
+	QStringList s = dir.entryList();
+	for(QStringList::iterator it = s.begin(); it != s.end(); it++)
+	{
+		if(((*it) == ".") || ((*it) == "..")) continue;
+		newLevel(basedir + "/" + (*it));
+	}
+	scanLevels(dir.home().path() + "/.ggz/games");
+}
+
 void MainWindow::levelSelector()
 {
 	int ret;
@@ -176,30 +229,18 @@ void MainWindow::levelSelector()
 			level = new Level();
 			level->loadFromNetwork(network->fd());
 			m_levels.append(level);
-			l.addLevel(level);
 		}
 	}
 	else
 	{
-		QDir dir(GGZDATADIR "/fyrdman");
-		QStringList s = dir.entryList();
-		for(QStringList::iterator it = s.begin(); it != s.end(); it++)
-		{
-			Level *level = new Level();
-			bool ret = level->loadFromFile(QString("%1/fyrdman/%2").arg(GGZDATADIR).arg((*it)));
-			if(ret)
-			{
-				m_levels.append(level);
-				l.addLevel(level);
-			}
-			else delete level;
-		}
-
-		/*Level *level = new Level();
-		level->loadFromFile(GGZDATADIR "/fyrdman/battle_of_hastings");
-		m_levels.append(level);
-		l.addLevel(level);*/
+		QDir d;
+		scanLevels(GGZDATADIR);
+		scanLevels(d.home().path() + "/.ggz/games");
 	}
+
+	for(Level *level = m_levels.first(); level; level = m_levels.next())
+		l.addLevel(level);
+
 	ret = l.exec();
 	if(ret == QDialog::Accepted)
 	{

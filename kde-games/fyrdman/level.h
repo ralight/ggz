@@ -13,6 +13,7 @@ class Level
 		const char *title();
 		const char *version();
 		const char *author();
+		const char *graphics();
 		int width();
 		int height();
 		int players();
@@ -22,12 +23,15 @@ class Level
 
 		void setCell(int i, int j, int value);
 
+		const char *location();
+
 	private:
-		char *m_title, *m_version, *m_author;
+		char *m_title, *m_version, *m_author, *m_graphics;
 		int m_width, m_height, m_players;
 		char **m_cell;
 		char **m_cellboard;
 		char **m_cellown;
+		char *m_location;
 };
 
 #endif

@@ -11,12 +11,14 @@ Level::Level()
 	m_title = NULL;
 	m_author = NULL;
 	m_version = NULL;
+	m_graphics = NULL;
 	m_width = 0;
 	m_height = 0;
 	m_players = 0;
 	m_cell = NULL;
 	m_cellboard = NULL;
 	m_cellown = NULL;
+	m_location = NULL;
 }
 
 Level::~Level()
@@ -24,6 +26,7 @@ Level::~Level()
 	if(m_title) ggz_free(m_title);
 	if(m_author) ggz_free(m_author);
 	if(m_version) ggz_free(m_version);
+	if(m_graphics) ggz_free(m_graphics);
 	for(int i = 0; i < m_height; i++)
 	{
 		ggz_free(m_cell[i]);
@@ -33,6 +36,7 @@ Level::~Level()
 	ggz_free(m_cellboard);
 	ggz_free(m_cell);
 	ggz_free(m_cellown);
+	if(m_location) ggz_free(m_location);
 }
 
 void Level::loadFromNetwork(int fd)
@@ -40,6 +44,7 @@ void Level::loadFromNetwork(int fd)
 	ggz_read_string_alloc(fd, &m_title);
 	ggz_read_string_alloc(fd, &m_author);
 	ggz_read_string_alloc(fd, &m_version);
+	ggz_read_string_alloc(fd, &m_graphics);
 	ggz_read_int(fd, &m_width);
 	ggz_read_int(fd, &m_height);
 
@@ -65,7 +70,7 @@ bool Level::loadFromFile(const char *filename)
 {
 	FILE *f;
 	char buf[128];
-	enum states {state_title, state_author, state_version, state_anywhere, state_knights, state_nowhere, state_map};
+	enum states {state_title, state_author, state_version, state_graphics, state_anywhere, state_knights, state_nowhere, state_map};
 	enum qualities {quality_ok, quality_bad, quality_error};
 	int state, quality, i, j;
 	int x, y, mapx, mapy;
@@ -118,6 +123,10 @@ bool Level::loadFromFile(const char *filename)
 					break;
 				case state_version:
 					m_version = ggz_strdup(buf + 1);
+					state = state_graphics;
+					break;
+				case state_graphics:
+					m_graphics = ggz_strdup(buf + 1);
 					state = state_anywhere;
 					break;
 				case state_knights:
@@ -169,7 +178,7 @@ bool Level::loadFromFile(const char *filename)
 	}
 	if(verbose)
 	{
-		printf("Try map: [%s] [%s] [%s]\n", m_title, m_author, m_version);
+		printf("Try map: [%s] [%s] [%s] <%s>\n", m_title, m_author, m_version, m_graphics);
 		printf("State is %i, sizes are %i/%i, %i/%i\n", state, x, y, mapx, mapy);
 		printf("Detected %i different players\n", m_players);
 	}
@@ -177,6 +186,7 @@ bool Level::loadFromFile(const char *filename)
 	/* More sanity checks */
 	if(state != state_map) quality = quality_error;
 	if((x != mapx) || (y != mapy)) quality = quality_error;
+	if(!ggz_strcmp(m_version, "0.0.9")) quality = quality_bad;
 	m_height = y;
 	m_width = x;
 
@@ -184,6 +194,7 @@ bool Level::loadFromFile(const char *filename)
 	if((quality == quality_ok) || (quality == quality_bad))
 	{
 		if(verbose) printf("Accepted map: [%s] [%s] [%s] (%i)\n", m_title, m_author, m_version, quality);
+		m_location = ggz_strdup(filename);
 		return true;
 	}
 	return false;
@@ -247,5 +258,15 @@ void Level::setCell(int i, int j, int value)
 		m_cell[i][j] = value;
 		if(value >= 0) m_cellown[i][j] = value;
 	}
+}
+
+const char *Level::location()
+{
+	return m_location;
+}
+
+const char *Level::graphics()
+{
+	return m_graphics;
 }
 

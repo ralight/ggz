@@ -9,7 +9,8 @@ fyrdman_SOURCES = \
 	levelselector.cpp \
 	network.cpp \
 	level.cpp \
-	unitinfo.cpp
+	unitinfo.cpp \
+	fyrdman.skel
 
 noinst_HEADERS = \
 	mainwindow.h \

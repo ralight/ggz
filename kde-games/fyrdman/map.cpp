@@ -6,6 +6,7 @@
 #include <qpixmap.h>
 #include <qpainter.h>
 #include <qimage.h>
+#include <qdir.h>
 
 #include <stdlib.h>
 
@@ -23,7 +24,7 @@ Map::Map(QWidget *parent, const char *name)
 
 	m_picked = false;
 
-	setBackground("bayeux");
+	setBackground("bayeux.png");
 }
 
 Map::~Map()
@@ -104,7 +105,21 @@ void Map::setupMap(Level *level)
 	const QPixmap *pix;
 	QPixmap pix2, pix3;
 
-	setBackgroundPixmap(QPixmap(QString("%1/fyrdman/%2.png").arg(GGZDATADIR).arg(m_background)));
+	QString filename;
+	if((level) && (level->graphics()))
+	{
+		QDir d;
+		filename = d.filePath(level->location());
+		m_background = filename.section("/", 0, -2) + "/" + level->graphics();
+	}
+	if(m_background.startsWith("/"))
+		filename = m_background;
+	else
+		filename = QString("%1/fyrdman/%2").arg(GGZDATADIR).arg(m_background);
+	if(QFile::exists(filename))
+		setBackgroundPixmap(QPixmap(filename));
+	else
+		level = NULL;
 
 	m_level = level;
 	if(!level)
