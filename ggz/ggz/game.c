@@ -69,8 +69,12 @@ void launch_game(gint type, gchar launch)
 	gchar* path;
 	GdkInputFunction callback;
 
-	/* FIXME: Don't hardcode spades */
-	path = g_strdup("../game_clients/spades/gspades");
+	/* FIXME: Don't hardcode paths */
+	if (type == 0) 
+		path = g_strdup("../game_clients/spades/gspades");
+	else
+		path = g_strdup("../game_clients/tictactoe/ttt");
+		
 	game_name = g_strdup(game_types.info[type].name);
 	
 	if (launch)

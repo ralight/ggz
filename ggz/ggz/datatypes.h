@@ -122,6 +122,7 @@ struct GameTypes {
 
 /* Info about a particular game-table */
 typedef struct {
+	gint room;
 	gint table_index;
 	gint type_index;
 	guchar playing;

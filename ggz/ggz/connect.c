@@ -551,17 +551,6 @@ gint anon_login(void)
 }
 
 
-/* Complete sync with server */ 
-static void server_sync()
-{
-	es_write_int(connection.sock, REQ_LIST_PLAYERS);
-	es_write_int(connection.sock, REQ_LIST_TYPES);
-	es_write_char(connection.sock, 1);
-	es_write_int(connection.sock, REQ_LIST_TABLES);
-	es_write_int(connection.sock, -1);
-} 
-
-
 void display_chat(gchar *name, gchar *msg)
 {
 	gchar *buf;			/* incomeing text */
@@ -688,6 +677,7 @@ void handle_list_tables(gint op, gint fd)
 	es_read_int(fd, &count);
 	connect_msg("[%s] Table List Count %d\n", opcode_str[op], count);
 	for (i = 0; i < count; i++) {
+		es_read_int(fd, &tables.info[i].room);
 		es_read_int(fd, &tables.info[i].table_index);
 		es_read_int(fd, &tables.info[i].type_index);
 		es_read_string(fd, tables.info[i].desc,
@@ -706,7 +696,7 @@ void handle_list_tables(gint op, gint fd)
 		for (j = num; j < MAX_TABLE_SIZE; j++)
 			tables.info[i].seats[j] = GGZ_SEAT_NONE;
 		
-
+		connect_msg("[%s] Room: %d\n", opcode_str[op],tables.info[i].room);
 		connect_msg("[%s] Type: %d\n", opcode_str[op],tables.info[i].type_index);
 		connect_msg("[%s] Playing: %d\n",opcode_str[op], tables.info[i].playing);
 		connect_msg("[%s] Seats: %d\n", opcode_str[op], num);
