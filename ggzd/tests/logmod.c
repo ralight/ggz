@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <easysock.h>
+#include <ggz.h>
 #include <ggz_common.h>
 
 int fd = 3;
@@ -35,11 +35,11 @@ int handle_game_launch()
 	char name[1024];
 	GGZSeatType type;
 	
-	es_read_int(fd, &num);
+	ggz_read_int(fd, &num);
 	printf("Receiving %d seats\n", num);
 	
 	for (i = 0; i < num; i++) {
-		if (es_read_int(fd, &type) < 0)
+		if (ggz_read_int(fd, &type) < 0)
 			return -1;
 
 		switch (type) {
@@ -61,14 +61,14 @@ int handle_game_launch()
 
 		}	
 		if (type == GGZ_SEAT_RESERVED
-		    && es_read_string(fd, name, 1024) < 0) {
+		    && ggz_read_string(fd, name, 1024) < 0) {
 			printf("Error reading reserved player name\n");
 			return -1;
 		}
 	}
 
-	es_write_int(fd, REQ_GAME_STATE);
-	es_write_char(fd, GGZ_STATE_WAITING);
+	ggz_write_int(fd, REQ_GAME_STATE);
+	ggz_write_char(fd, GGZ_STATE_WAITING);
 
 	return 0;
 }
@@ -79,9 +79,9 @@ int handle_game_join(void)
 	int num, pfd;
 	char *name;
 
-	if (es_read_int(fd, &num) < 0
-	    || es_read_string_alloc(fd, &name) < 0
-	    || es_read_fd(fd, &pfd) < 0) {
+	if (ggz_read_int(fd, &num) < 0
+	    || ggz_read_string_alloc(fd, &name) < 0
+	    || ggz_read_fd(fd, &pfd) < 0) {
 		printf("Error reading from GGZ\n");
 		return -1;
 	}
@@ -89,8 +89,8 @@ int handle_game_join(void)
 	printf("Received %s on %d in seat %d\n", name, pfd, num);
 	free(name);
 	
-	if (es_write_int(fd, RSP_GAME_JOIN) < 0
-	    || es_write_char(fd, 0)) {
+	if (ggz_write_int(fd, RSP_GAME_JOIN) < 0
+	    || ggz_write_char(fd, 0)) {
 		printf("Error sending data to GGZ\n");
 		return -1;
 	}
@@ -103,15 +103,15 @@ int handle_game_leave(void)
 {
 	char *name;
 
-	if (es_read_string_alloc(fd, &name) < 0) {
+	if (ggz_read_string_alloc(fd, &name) < 0) {
 		printf("Error reading from GGZ\n");
 		return -1;
 	}
 	
 	printf("Removing %s\n", name);
 
-	if (es_write_int(fd, RSP_GAME_LEAVE) < 0 
-	    || es_write_char(fd, 0) < 0) {
+	if (ggz_write_int(fd, RSP_GAME_LEAVE) < 0 
+	    || ggz_write_char(fd, 0) < 0) {
 		printf("Error sending data to GGZ\n");
 		return -1;
 	}
@@ -162,7 +162,7 @@ int main(void)
 	char done = 0;
 	
 	while(!done) {
-		if (es_read_int(fd, &opcode) < 0)
+		if (ggz_read_int(fd, &opcode) < 0)
 			done = 1;
 		else {
 			done = handle_opcode(opcode);
