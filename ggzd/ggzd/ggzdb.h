@@ -45,9 +45,12 @@ typedef struct ggzdbPlayerEntry {
 
 
 /* Error codes */
-#define GGZDB_ERR_INIT		1	/* Engine not initialized */
-#define GGZDB_ERR_DUPKEY	2	/* Tried to overwrite on add */
-#define GGZDB_ERR_NOTFOUND	3	/* Couldn't find a record */
+typedef enum {
+	GGZDB_NO_ERROR,		/* All's well */
+	GGZDB_ERR_INIT,		/* Engine not initialized */
+	GGZDB_ERR_DUPKEY,	/* Tried to overwrite on add */
+	GGZDB_ERR_NOTFOUND	/* Couldn't find a record */
+} GGZDBResult;
 
 
 /* Exported functions */
