@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 2730 2001-11-13 06:29:00Z jdorje $
+ * $Id: game.c 2739 2001-11-13 21:39:00Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -250,7 +250,7 @@ char *game_verify_play(card_t card)
 	card = game.funcs->map_card(card);
 
 	/* the leader has his own restrictions */
-	if (game.next_play == game.leader) {
+	if (game.play_count == 0) {
 		/* if must_break_trump is set, you can't lead trump until
 		   it's been broken.  This is the case in spades, for
 		   instance. */

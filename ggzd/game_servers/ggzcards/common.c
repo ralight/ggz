@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2734 2001-11-13 10:09:16Z jdorje $
+ * $Id: common.c 2739 2001-11-13 21:39:00Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -656,6 +656,8 @@ int handle_bid_event(player_t p, bid_t bid)
 	game.players[p].bid_count++;
 	game.funcs->handle_bid(p, bid);
 
+	set_player_message(p);
+
 	/* add the bid to the "bid list" */
 	/* FIXME: this needs work!!! */
 	if (p <= game.prev_bid)
@@ -689,9 +691,6 @@ int handle_bid_event(player_t p, bid_t bid)
 		else
 			set_game_state(STATE_NEXT_BID);
 	}
-
-	/* this is the player that just finished bidding */
-	set_player_message(p);
 
 	game.prev_bid = p;
 

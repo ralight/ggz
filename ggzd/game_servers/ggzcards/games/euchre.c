@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2738 2001-11-13 21:12:44Z jdorje $
+ * $Id: euchre.c 2739 2001-11-13 21:39:00Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -117,6 +117,7 @@ static void euchre_start_bidding(void)
 	game.bid_total = 8;	/* twice around, at most */
 	game.next_bid = (game.dealer + 1) % game.num_players;
 	EUCHRE.req_alone_bid = 0;
+	memset(EUCHRE.going_alone, 0, sizeof(*EUCHRE.going_alone) * 4);
 }
 
 static int euchre_get_bid(void)
@@ -181,7 +182,7 @@ static void euchre_handle_bid(player_t p, bid_t bid)
 		EUCHRE.going_alone[p] = 1;
 		break;
 	case EUCHRE_GO_TEAM:
-		EUCHRE.going_alone[p] = 0;
+		EUCHRE.going_alone[p] = 0;	/* redundant */
 		break;
 	}
 }
@@ -266,6 +267,10 @@ static int euchre_deal_hand(void)
 	set_global_message("", "The up-card is the %s of %s.",
 			   face_names[(int) EUCHRE.up_card.face],
 			   suit_names[(int) EUCHRE.up_card.suit]);
+	/* FIXME: this message should be cardlist-style instead. */
+	set_global_message("Up-Card", "%s of %s",
+			   face_names[(int) EUCHRE.up_card.face],
+			   suit_names[(int) EUCHRE.up_card.suit]);
 	game.hand_size = 5;
 
 	/* in a regular deal, we just deal out hand_size cards to everyone */
@@ -304,6 +309,7 @@ static void euchre_set_player_message(player_t p)
 			add_player_message(s, "dealer\n");
 	} else if (p == EUCHRE.maker)
 		add_player_message(s, "maker\n");
+	add_player_bid_message(p);
 	if (game.state == STATE_WAIT_FOR_PLAY
 	    || game.state == STATE_NEXT_TRICK
 	    || game.state == STATE_NEXT_PLAY) {
@@ -348,7 +354,7 @@ static void euchre_end_hand(void)
 		value = 2;
 		if (tricks == 5 && EUCHRE.super_euchre)
 			value = 4;
-		msg = "The bid was Euchred!  The defenders took %d tricks earn %d points.";
+		msg = "The bid was Euchred!  The defenders took %d tricks and earn %d points.";
 	}
 
 	if (maker_made && maker_alone && tricks == 5) {
