@@ -1,4 +1,4 @@
-/*	$Id: ggz_server.h 2185 2001-08-23 05:37:18Z jdorje $	*/
+/*	$Id: ggz_server.h 2187 2001-08-23 06:43:28Z jdorje $	*/
 /*
  * File: ggz.h
  * Author: Brent Hendricks
@@ -85,10 +85,10 @@ int ggzdmod_fd_max(void);
  */
 
 /* Setup functions */
-int ggzdmod_init(char* game_name);
 int ggzdmod_connect(void);
-int ggzdmod_done(void);
-void ggzdmod_quit(void);
+int ggzdmod_disconnect(void);
+/* No extra functions are needed at this time.
+ * Later a stat-reporting function will be added. */
 
 /* Event functions */
 int ggzdmod_game_launch(void);

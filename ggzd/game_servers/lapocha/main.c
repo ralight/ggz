@@ -39,10 +39,6 @@ int main(void)
 	int i, fd, ggz_sock, fd_max, status;
 	fd_set active_fd_set, read_fd_set;
 	
-	/* Initialize ggz */
-	if (ggzdmod_init("LaPocha") < 0)
-		return -1;
-	
 	if ( (ggz_sock = ggzdmod_connect()) < 0)
 		return -1;
 
@@ -103,6 +99,6 @@ int main(void)
 		}
 	}
 
-	ggzdmod_quit();
+	(void)ggzdmod_disconnect();
 	return 0;
 }

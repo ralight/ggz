@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 2185 2001-08-23 05:37:18Z jdorje $	*/
+/*	$Id: ggz.c 2187 2001-08-23 06:43:28Z jdorje $	*/
 /*
  * File: ggz.c
  * Author: Brent Hendricks
@@ -60,21 +60,52 @@ int ggzfd = -1;
 static int seats;
 
 
-/* Initialize data structures*/
-int ggzdmod_init(char* game_name)
+/* Connect to GGZ server (ggzd) */
+/* It should be safe to keep just this one connect function.
+ * No extra manditory data should ever be required to connect, so
+ * a lazy server can get started with GGZ quickly.  --JDS */
+int ggzdmod_connect(void)
 {
-	return 0;
+	/* TODO: check that the socket is real -
+	 * send dummy message, perhaps? */
+	ggzfd = GGZ_SOCKET_FD;
+	ggzdmod_debug("GGZDMOD: Connected to GGZ server.");
+	return ggzfd;
 }
 
 
-/* Connect to Unix domain socket */
-int ggzdmod_connect(void)
+int ggzdmod_disconnect(void)
 {
-	/* TODO: check that the socket is real */
+	int response;
 
-	ggzfd = GGZ_SOCKET_FD;
-	ggzdmod_debug("Game started");
-	return ggzfd;
+	/* first send a gameover message (request) */
+	if (es_write_int(ggzfd, REQ_GAME_OVER) < 0)
+		return -1;
+
+	/* now send the game's statistics */
+	/* FIXME: Should send actual statistics */
+	if (es_write_int(ggzfd, 0) < 0)
+		return -1;
+
+	/* The server will send a message in response; we should wait for it. */
+	if (es_read_int(ggzfd, &response) < 0)
+		return -1;
+	if (response != RSP_GAME_OVER) {
+		/* what else can we do? */
+		ggzdmod_debug("GGZDMOD: ERROR: "
+			      "Got %d response while waiting for RSP_GAME_OVER.",
+			      response);
+	}
+
+	ggzdmod_debug("GGZDMOD: Disconnected from GGZ server.");
+
+	/* close the socket */
+	close(ggzfd);
+	ggzfd = -1;
+
+	if(ggz_seats) free(ggz_seats);
+	
+	return 0;
 }
 
 
@@ -255,23 +286,6 @@ int ggzdmod_fd_max(void)
 	return max;
 }
 
-
-int ggzdmod_done(void)
-{
-	/* FIXME: Should send actual statistics */
-	if (es_write_int(ggzfd, REQ_GAME_OVER) < 0
-	    || es_write_int(ggzfd, 0) < 0)
-		return -1;
-	       
-	return 0;
-}
-
-
-void ggzdmod_quit(void)
-{
-	if(ggz_seats) free(ggz_seats);
-}
-
 /*
  * these implement "chess's way", the event-driven interface
  */
@@ -281,19 +295,23 @@ static GGZHandler handlers[5];
 
 void ggzdmod_set_handler(int event_id, const GGZHandler handler)
 {
-	if (event_id > 4)
+	if (event_id >= sizeof(handlers)/sizeof(handlers[0])
+	    || event_id < 0)
 		return;
 	handlers[event_id] = handler;
 }
 
+/* return values as of now (not finalized):
+ * 0 => success
+ * -1 => can't connect
+ * -2 => error during game
+ * -3 => error during disconnect
+ */
 int ggzdmod_main(char* game_name)
 {
 	char game_over = 0;
 	int i, fd, status, ggz_sock, fd_max, op, seat;
 	fd_set active_fd_set, read_fd_set;
-
-	if (ggzdmod_init(game_name) < 0)
-		return -1;
 
 	if ((ggz_sock = ggzdmod_connect()) < 0)
 		return -1;
@@ -312,13 +330,13 @@ int ggzdmod_main(char* game_name)
 			if (errno == EINTR)
 				continue;
 			else
-				return -1;
+				return -2;
 		}
 
 		/* Check for message from GGZ server */
 		if (FD_ISSET(ggz_sock, &read_fd_set)) {
 			if (es_read_int(ggz_sock, &op) < 0)
-				return -1;
+				return -2;
 			switch (op) {
 
 			case REQ_GAME_LAUNCH:
@@ -366,6 +384,8 @@ int ggzdmod_main(char* game_name)
 
 	}
 
-	ggzdmod_quit();
+	if (ggzdmod_disconnect() < 0)
+		return -3;
+
 	return 0;
 }

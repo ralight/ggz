@@ -140,12 +140,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-	/* Initialize ggz */
-	if (ggzdmod_init("GGZCards") < 0) {
-		ggzdmod_debug("Failed ggz_init.");
-		return -1;
-	}
-
+	/* Connect to GGZ server */
 	if ((ggz_sock = ggzdmod_connect()) < 0) {
 		ggzdmod_debug("Failed ggz_sock test.");
 		return -1;
@@ -209,6 +204,9 @@ int main(int argc, char **argv)
 		}
 	}
 
-	ggzdmod_quit();
+	if (ggzdmod_disconnect() < 0)
+		/* what else can we do??? */
+		fprintf(stderr, "GGZCards: ggzdmod: failed disconnect\n");
+
 	return 0;
 }
