@@ -127,10 +127,6 @@ static void* player_new(void *sock_ptr)
 	    FAIL(es_va_write_string(sock, "GGZ-%s", VERSION)))
 		pthread_exit(NULL);
 
-	/* Send off the Message Of The Day */
-	if(!motd_send_motd(sock))
-		pthread_exit(NULL);
-
 	pthread_rwlock_wrlock(&players.lock);
 	if (players.count == MAX_USERS) {
 		pthread_rwlock_unlock(&players.lock);
@@ -153,6 +149,10 @@ static void* player_new(void *sock_ptr)
 	players.count++;
 	pthread_rwlock_unlock(&players.lock);
 	
+	/* Send off the Message Of The Day */
+	if(motd_send_motd(sock))
+		pthread_exit(NULL);
+
 	dbg_msg("New player %d connected", i);
 	player_loop(i, sock);
 	

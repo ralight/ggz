@@ -88,11 +88,11 @@ int motd_send_motd(int sock)
 
 	if(FAIL(es_write_int(sock, MSG_MOTD)) ||
 	   FAIL(es_write_int(sock, motd_info.motd_lines)))
-		return 0;
+		return 1;
 	
 	for(i=0; i<motd_info.motd_lines; i++)
 		if(FAIL(es_write_string(sock, motd_info.motd_text[i])))
-			return 0;
+			return 1;
 
-	return 1;
+	return 0;
 }
