@@ -84,7 +84,9 @@ AC_OUTPUT(Makefile
 	po/muehle/Makefile
 	po/koenig/Makefile
 	fyrdman/Makefile
+	fyrdman/module.dsc
 	fyrdman/data/Makefile
+	fyrdman/data/fyrdman.desktop
 	lib/Makefile
 	lib/test/Makefile)
 
