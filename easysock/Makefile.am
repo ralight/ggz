@@ -1,4 +1,4 @@
-EXTRA_DIST = TODO BUGS 
+EXTRA_DIST = TODO BUGS README.GGZ QuickStart.GGZ
 
 lib_LTLIBRARIES = libeasysock.la
 

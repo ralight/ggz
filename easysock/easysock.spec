@@ -2,11 +2,11 @@
 
 Summary: easysock socket library
 Name: easysock
-Version: 0.2.0
+Version: 0.3.0
 Release: 1
 Copyright: GPL
 Group: Development/Libraries
-Source: http://download.sourceforge.net/GGZ/easysock-0.2.0.tar.gz
+Source: http://download.sourceforge.net/ggz/easysock-0.3.0.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: Rich Gade <rgade@users.sourceforge.net>
@@ -39,16 +39,20 @@ PATH="$PATH:/sbin" ldconfig
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS COPYING ChangeLog INSTALL NEWS README TODO
+%doc AUTHORS COPYING ChangeLog INSTALL NEWS README README.GGZ QuickStart.GGZ TODO
 
 /usr/lib/libeasysock.a
 /usr/lib/libeasysock.la
 /usr/lib/libeasysock.so
 /usr/lib/libeasysock.so.0
-/usr/lib/libeasysock.so.0.2.0
+/usr/lib/libeasysock.so.0.3.0
 /usr/include/easysock.h
 
 %changelog
+* Mon Jun 11 2001 Brent Hendricks <bmh@users.sourceforge.net>
+- Added extra README.GGZ and QuickStatr.GGZ files
+- Bumped version to 0.3.0
+
 * Wed Mar 28 2001 Rich Gade <rgade@users.sourceforge.net>
 - Corrected spec file to properly install libeasysock as shared
 
