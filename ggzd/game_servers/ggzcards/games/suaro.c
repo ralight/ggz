@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 3490 2002-02-27 08:57:33Z jdorje $
+ * $Id: suaro.c 3576 2002-03-16 16:12:19Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -296,8 +296,7 @@ static void suaro_next_bid(void)
 		/* done bidding */
 		if (SUARO.contract == 0) {
 			ggzdmod_log(game.ggz, "Two passes; redealing hand.");
-			set_global_message("", "%s",
-					   "Everyone passed; redealing.");
+			set_global_message("", "Everyone passed; redealing.");
 			set_game_state(STATE_NEXT_HAND);	/* redeal
 								   hand */
 		} else {

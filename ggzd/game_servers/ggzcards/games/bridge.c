@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 3570 2002-03-16 06:36:32Z jdorje $
+ * $Id: bridge.c 3576 2002-03-16 16:12:19Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -223,8 +223,7 @@ static void bridge_next_bid(void)
 		/* done bidding */
 		if (BRIDGE.contract == 0) {
 			ggzdmod_log(game.ggz, "Four passes; redealing hand.");
-			set_global_message("", "%s",
-					   "Everyone passed; redealing.");
+			set_global_message("", "Everyone passed; redealing.");
 			set_game_state(STATE_NEXT_HAND);	/* redeal
 								   hand */
 		} else {
