@@ -53,7 +53,7 @@ char* game_states[] = {"WH_STATE_NOTPLAYING", "WH_STATE_WAITFORPLAYERS", "WH_STA
 			"WH_STATE_FIRST_TRICK", "WH_STATE_NEXT_TRICK", "WH_STATE_NEXT_PLAY",
 			"WH_STATE_WAIT_FOR_PLAY"};
 
-void set_game_state(int state)
+void set_game_state(server_state_t state)
 {
 	/* sometimes an event can happen that changes the state while we're waiting for players,
 	 * for instance a player finishing their bid even though someone's left the game.  In this
@@ -947,7 +947,7 @@ void next_play(void)
 }
 
 /* Update game state */
-int update(int event, void *data)
+int update(server_event_t event, void *data)
 {
 	bid_t bid;
 	int bid_index;

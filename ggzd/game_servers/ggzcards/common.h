@@ -30,25 +30,29 @@
 #define __COMMON_H__
 
 /* GGZCards server game states */
-#define WH_STATE_PRELAUNCH	-1	/* before the launch happens */
-#define WH_STATE_NOTPLAYING	0	/* no game started */
-#define WH_STATE_WAITFORPLAYERS	1	/* waiting for players */
-#define WH_STATE_NEXT_HAND	2	/* creating a new hand */
-#define WH_STATE_FIRST_BID	3	/* about to have the first bid */
-#define WH_STATE_NEXT_BID	4	/* asking for new bid */
-#define WH_STATE_WAIT_FOR_BID	5	/* waiting for a bid */
-#define WH_STATE_FIRST_TRICK	6	/* about to have the first trick of a hand */
-#define WH_STATE_NEXT_TRICK	7	/* time for the next trick */
-#define WH_STATE_NEXT_PLAY	8	/* asking for a new play */
-#define WH_STATE_WAIT_FOR_PLAY	9	/* waiting for a play */
+typedef enum {
+	WH_STATE_PRELAUNCH,		/* before the launch happens */
+	WH_STATE_NOTPLAYING,		/* no game started */
+	WH_STATE_WAITFORPLAYERS,	/* waiting for players */
+	WH_STATE_NEXT_HAND,		/* creating a new hand */
+	WH_STATE_FIRST_BID,		/* about to have the first bid */
+	WH_STATE_NEXT_BID,		/* asking for new bid */
+	WH_STATE_WAIT_FOR_BID,		/* waiting for a bid */
+	WH_STATE_FIRST_TRICK,		/* about to have the first trick of a hand */
+	WH_STATE_NEXT_TRICK,		/* time for the next trick */
+	WH_STATE_NEXT_PLAY,		/* asking for a new play */
+	WH_STATE_WAIT_FOR_PLAY		/* waiting for a play */
+} server_state_t;
 
 /* GGZCards game events */
-#define WH_EVENT_LAUNCH		0
-#define WH_EVENT_NEWGAME	1
-#define WH_EVENT_JOIN		2
-#define WH_EVENT_LEAVE		3
-#define WH_EVENT_BID		4
-#define WH_EVENT_PLAY		5
+typedef enum {
+	WH_EVENT_LAUNCH,		
+	WH_EVENT_NEWGAME,	
+	WH_EVENT_JOIN,		
+	WH_EVENT_LEAVE,		
+	WH_EVENT_BID,		
+	WH_EVENT_PLAY		
+} server_event_t;
 
 
 /* in different games, bids may have different meanings.
@@ -99,8 +103,8 @@ struct wh_game_t {
 	int options_initted;	/* have the options been initialized? */
 	player_t host;		/* the host of the table; cannot be an AI */ /* TODO: currently it's always player 0 */
 
-	int state;		/* the current state of the game (see WH_STATE, above) */
-	int saved_state;	/* any time while waiting, the state we _would_ be in if we weren't waiting */
+	server_state_t state;		/* the current state of the game (see WH_STATE, above) */
+	server_state_t saved_state;	/* any time while waiting, the state we _would_ be in if we weren't waiting */
 
 	/* these next few are general game-specific options that are used by the game-independent code */
 	int must_overtrump;	/* if this is set, then a player must trump/overtrump if possible (i.e. La Pocha) */
@@ -162,7 +166,7 @@ struct wh_game_t {
 
 
 /* Game-independent functions */
-extern void set_game_state(int state);
+extern void set_game_state(server_state_t state);
 extern void save_game_state();
 extern void restore_game_state();
 extern void send_player_message(seat_t, player_t);
@@ -191,8 +195,8 @@ extern int send_newgame();
 
 extern int rec_options(int, int*);
 
-extern void next_play(void);			/* make the next move */
-extern int update(int event, void *data);	/* receive a player move */
+extern void next_play(void);				/* make the next move */
+extern int update(server_event_t event, void *data);	/* receive a player move */
 
 extern void init_game(int which); /* pass in the name of the game */
 extern int handle_ggz(int, int *);
