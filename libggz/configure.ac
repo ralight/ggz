@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5850 2004-02-08 21:30:50Z jdorje $
+dnl $Id: configure.ac 5852 2004-02-08 22:10:26Z jdorje $
 
 AC_INIT([GGZ common libraries], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -35,11 +35,10 @@ AC_ARG_ENABLE([threading],
 
 # Check for header files
 # ======================
-AC_CHECK_HEADERS([fcntl.h sys/param.h sys/wait.h], [],
+AC_CHECK_HEADERS([fcntl.h sys/param.h], [],
                  [AC_MSG_ERROR([cannot find required header file])])
 AC_CHECK_HEADERS([arpa/inet.h netdb.h netinet/in.h sys/socket.h \
                   sys/uio.h sys/un.h sys/wait.h winsock.h])
-AC_HEADER_SYS_WAIT
 
 
 # Check for typedefs, structures, and compiler characteristics
