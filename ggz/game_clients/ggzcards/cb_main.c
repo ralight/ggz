@@ -1,4 +1,4 @@
-/* $Id: cb_main.c 2841 2001-12-10 00:16:21Z jdorje $ */
+/* $Id: cb_main.c 2860 2001-12-10 17:17:29Z jdorje $ */
 /* 
  * File: cb_main.c
  * Author: Rich Gade
@@ -109,5 +109,5 @@ void
 on_fixed1_style_set(GtkWidget * widget,
 		    GtkStyle * previous_style, gpointer user_data)
 {
-	table_style_change();
+	table_redraw();
 }

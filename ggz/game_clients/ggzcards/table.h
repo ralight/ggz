@@ -1,4 +1,4 @@
-/* $Id: table.h 2695 2001-11-08 09:41:54Z jdorje $ */
+/* $Id: table.h 2860 2001-12-10 17:17:29Z jdorje $ */
 /* 
  * File: table.h
  * Author: Rich Gade
@@ -47,7 +47,7 @@ void table_animation(int, card_t);
 #endif /* ANIMATION */
 void table_clear_table(void);
 void table_show_cards();
-void table_style_change(void);
+void table_redraw(void);
 
 void table_play_card(int, card_t);
 

@@ -1,4 +1,4 @@
-/* $Id: layout.h 2545 2001-10-08 23:09:23Z jdorje $ */
+/* $Id: layout.h 2860 2001-12-10 17:17:29Z jdorje $ */
 /* 
  * File: layout.h
  * Author: Jason Short, Rich Gade
@@ -31,7 +31,7 @@
 #define CARDHEIGHT	96
 
 /* an interesting check of the code is to make this really big */
-#define XWIDTH		5
+#define XWIDTH		10
 
 /* #define WINDOW_WIDTH 469 */
 /* more cards will fit if you just change table_max_hand_size */

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 2854 2001-12-10 05:46:45Z jdorje $
+ * $Id: dlg_bid.c 2860 2001-12-10 17:17:29Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -35,8 +35,9 @@
 #include "common.h"
 
 #include "dlg_bid.h"
-#include "main.h"
 #include "game.h"
+#include "main.h"
+#include "table.h"
 
 static GtkWidget *window = NULL;
 
@@ -119,5 +120,10 @@ static void dlg_bid_display(int possible_bids, char **bid_choices)
 void table_get_bid(int possible_bids, char **bid_choices)
 {
 	dlg_bid_display(possible_bids, bid_choices);
+
+	/* This is a hack since sometimes the table would get overdrawn at
+	   this point. */
+	table_redraw();
+
 	statusbar_message(_("Your turn to bid"));
 }

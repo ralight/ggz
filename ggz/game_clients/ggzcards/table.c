@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2859 2001-12-10 17:03:06Z jdorje $
+ * $Id: table.c 2860 2001-12-10 17:17:29Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -256,7 +256,7 @@ void table_setup(void)
 		gtk_widget_set_usize(label[p], TEXT_BOX_WIDTH - 6, -1);
 		gtk_label_set_justify(GTK_LABEL(label[p]), GTK_JUSTIFY_LEFT);
 		gtk_widget_show(label[p]);
-		
+
 		if (game.players[p].hand.hand_size > 0)
 			table_display_hand(p);
 	}
@@ -368,8 +368,9 @@ void table_set_global_cardlist_message(const char *mark, int *lengths,
 #endif
 }
 
-/* Handle a redraw of necessary items when a Gtk style change is signaled. */
-void table_style_change(void)
+/* Handle a redraw of necessary items, for instance when a Gtk style change
+   is signaled. */
+void table_redraw(void)
 {
 	if (!table_initialized)
 		return;
