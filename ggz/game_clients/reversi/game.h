@@ -26,7 +26,7 @@
 #define WHITE +1
 #define EMPTY  0
 
-/* REVERSI PROTOCOL VERSION 0.0.4
+/* REVERSI PROTOCOL VERSION 0.0.5
  *
  * The server handles everything, from the AI to the validity of moves
  *
@@ -123,6 +123,9 @@
  * RVR_REQ_SYNC
  * - Ask for sync
  *
+ * RVR_REQ_AGAIN
+ * - Ask for playing again
+ *
  * Luckily that's all, this protocol is perfect and it shouldn't be modified anymore. Or so I hope. :) */
 
 // Reversi protocol
@@ -131,6 +134,7 @@
 #define RVR_MSG_PLAYERS 1
 #define RVR_MSG_SYNC 6
 #define RVR_REQ_SYNC 7
+#define RVR_REQ_AGAIN 8
 #define RVR_MSG_START 5
 #define RVR_MSG_MOVE 2
 #define RVR_MSG_GAMEOVER 3

@@ -40,6 +40,7 @@
 #include <black.xpm>
 #include <dot.xpm>
 #include <white.xpm>
+#include <easysock.h>
 
 
 /* Pixmaps */
@@ -65,8 +66,8 @@ void game_status( const char* format, ... )
 	message = g_strdup_vprintf(format, ap);
 	va_end(ap);
 	
-	printf(message);
-	printf("\n");
+	//printf(message);
+	//printf("\n");
 	
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
 	
@@ -78,6 +79,21 @@ void game_status( const char* format, ... )
 	
 	g_free( message );
 	
+}
+
+void play_again(GtkButton *button, gpointer user_data) {
+	// Check if game is over
+	if (game.state != RVR_STATE_DONE) {
+		game_status("Game is not over yet");
+		return;
+	}
+	// Send to server
+	es_write_int(game.fd, RVR_REQ_AGAIN);
+
+	// Wait for time to start
+	game_init();
+
+	return;
 }
 
 void display_board(void)
@@ -210,8 +226,8 @@ gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event,
 		gdk_pixmap_unref(rvr_buf);
 	else {
 		rvr_buf = gdk_pixmap_new( widget->window,
-					  widget->allocation.width,
-					  widget->allocation.height,
+					  PIXSIZE*8,
+					  PIXSIZE*8,
 					  -1);
 	}
 	draw_bg(widget);
@@ -225,19 +241,19 @@ void draw_bg(GtkWidget *widget) {
 					widget->style->mid_gc[3],
 					TRUE,
 					0, 0,
-					widget->allocation.width,
-					widget->allocation.height);
+					PIXSIZE*8,
+					PIXSIZE*8);
 
 	for (i = 1; i < 8; i++) {
 		gdk_draw_line(rvr_buf, 
 					widget->style->black_gc,
 					i*PIXSIZE, 0,
-					i*PIXSIZE, widget->allocation.height);
+					i*PIXSIZE, PIXSIZE*8);
 
 		gdk_draw_line(rvr_buf, 
 					widget->style->black_gc,
 					0, i*PIXSIZE,
-					widget->allocation.width, i*PIXSIZE);
+					PIXSIZE*8, i*PIXSIZE);
 	}
 	
 	return;
@@ -247,13 +263,14 @@ void draw_bg(GtkWidget *widget) {
 gboolean expose_handle(GtkWidget *widget, GdkEventExpose  *event, 
 		       gpointer user_data)
 {
+
 	gdk_draw_pixmap( widget->window,
 			 widget->style->fg_gc[GTK_WIDGET_STATE (widget)],
 			 rvr_buf,
 			 event->area.x, event->area.y,
 			 event->area.x, event->area.y,
 			 event->area.width, event->area.height);
-	
+
 	return FALSE;
 }
 
@@ -323,6 +340,7 @@ create_main_win (void)
 	GtkWidget *white_label;
 	GtkWidget *white_label_frame;
 	GtkWidget *label_box;
+	GtkWidget *again_button;
   guint tmp_key;
   GtkWidget *game_menuhead;
   GtkWidget *game_menu;
@@ -453,6 +471,16 @@ create_main_win (void)
 	gtk_container_add( GTK_CONTAINER(black_label_frame), black_label);
 	gtk_widget_show(white_label);
 	gtk_widget_show(black_label);
+	
+	// Play again button
+	again_button = gtk_button_new_with_label("Play again");
+	gtk_widget_ref(again_button);
+	gtk_object_set_data_full(GTK_OBJECT(main_win), "again_button", again_button, 
+													 (GtkDestroyNotify)gtk_widget_unref);
+	gtk_widget_show(again_button);
+	//gtk_container_add(GTK_CONTAINER(main_win), again_button);
+	//gtk_widget_set_usize(again_button, 50, 50);
+
 
 	// Label box
 	label_box = gtk_hbox_new(TRUE, 5);
@@ -462,10 +490,12 @@ create_main_win (void)
 
 	gtk_widget_set_usize(label_box, PIXSIZE*8, 20);
 	gtk_box_pack_start( GTK_BOX(label_box), black_label_frame, FALSE, TRUE, 0 );
-	gtk_box_pack_start( GTK_BOX(label_box), white_label_frame, FALSE, TRUE, 0 );
+	gtk_box_pack_start( GTK_BOX(label_box), again_button, TRUE, TRUE, 0 );
+	gtk_box_pack_end( GTK_BOX(label_box), white_label_frame, FALSE, TRUE, 0 );
 	gtk_widget_show(label_box);
 	gtk_box_pack_start( GTK_BOX(main_box), label_box, FALSE, TRUE, 0);
 
+	// Drawing area
   drawingarea = gtk_drawing_area_new ();
   gtk_widget_ref (drawingarea);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "drawingarea", drawingarea,
@@ -475,6 +505,7 @@ create_main_win (void)
   gtk_widget_set_usize (drawingarea, PIXSIZE*8, PIXSIZE*8);
   gtk_widget_set_events (drawingarea, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK);
 
+	// Status bar
   statusbar = gtk_statusbar_new ();
   gtk_widget_ref (statusbar);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "statusbar", statusbar,
@@ -506,6 +537,9 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (drawingarea), "button_press_event",
                       GTK_SIGNAL_FUNC (handle_move),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (again_button), "clicked",
+				  	  GTK_SIGNAL_FUNC (play_again),
+					  NULL);
 
   gtk_window_add_accel_group (GTK_WINDOW (main_win), accel_group);
 
@@ -529,3 +563,29 @@ int game_check_move(int player, int move) {
 	return status;
 
 }
+
+int get_gameover() {
+	int winner;
+	GtkWidget *button;
+	GtkWidget *box;
+
+	if (es_read_int(game.fd, &winner) < 0)
+		return -1;
+
+	// Check if it's ok
+	if ((winner == BLACK && game.black <= game.white) || (winner == WHITE && game.white <= game.black) || (winner == EMPTY && game.black != game.white))
+		game_status("Hey! Internal incompatibility! This game was cheated!\n");
+
+	if (winner == game.num)
+		game_status("Congratulations! You win!");
+	else if (winner == -game.num)
+		game_status("That's too bad... you lost!");
+	else
+		game_status("That's a draw! Not bad!");
+
+	return 1;
+
+}
+
+
+

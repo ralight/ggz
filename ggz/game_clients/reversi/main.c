@@ -48,6 +48,9 @@ int main(int argc, char *argv[]) {
 
 	game_init();
 
+	strcpy(game.names[0], "empty");
+	strcpy(game.names[1], "empty");
+
 	display_board();
 
 	ggz_connect();
@@ -82,6 +85,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 			break;
 		case RVR_MSG_START:
 			game.state = RVR_STATE_PLAYING;
+			printf("Game has started\n");
 			display_board();
 			break;
 		case RVR_MSG_MOVE:
@@ -98,25 +102,6 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 	}
 }
 
-int get_gameover() {
-	int winner;
-	if (es_read_int(game.fd, &winner) < 0)
-		return -1;
-
-	// Check if it's ok
-	if ((winner == BLACK && game.black <= game.white) || (winner == WHITE && game.white <= game.black) || (winner == EMPTY && game.black != game.white))
-		game_status("Hey! Internal incompatibility! This game was cheated!\n");
-
-	if (winner == game.num)
-		game_status("Congratulations! You win!");
-	else if (winner == -game.num)
-		game_status("That's too bad... you lost!");
-	else
-		game_status("That's a draw! Not bad!");
-
-	return 1;
-
-}
 		
 
 
@@ -138,8 +123,6 @@ void game_init() {
 	game.state = RVR_STATE_INIT;
 	game.last_move = -1;
 
-	strcpy(game.names[0], "empty");
-	strcpy(game.names[1], "empty");
 
 }
 
