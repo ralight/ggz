@@ -14,7 +14,7 @@
   <output_support_files>False</output_support_files>
   <output_build_files>False</output_build_files>
   <backup_source_files>False</backup_source_files>
-  <main_source_file>propi.c</main_source_file>
+  <main_source_file>props.c</main_source_file>
   <main_header_file>props.h</main_header_file>
 </project>
 

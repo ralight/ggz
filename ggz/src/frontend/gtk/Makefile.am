@@ -14,12 +14,16 @@ ggz_gtk_SOURCES =	main.c \
 			client.h \
 			ggz.c \
 			ggz.h \
+			launch.c \
+			launch.h \
 			license.c \
 			license.h \
 			login.c \
 			login.h \
 			motd.c \
 			motd.h \
+			props.c \
+			props.h \
 			support.c \
 			support.h \
 			xtext.c \
