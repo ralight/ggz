@@ -42,6 +42,7 @@
 
 // KDE includes
 #include <klocale.h>
+#include <kmessagebox.h>
 
 // Qt includes
 #include <qpixmap.h>
@@ -73,8 +74,12 @@ KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
 	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/banned.png")), i18n("Banned"), assignbanned);
 	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/bot.png")), i18n("Bot"), assignbot);
 
+	m_menu_info = new QPopupMenu(NULL);
+	m_menu_info->insertItem(i18n("Record"), inforecord);
+
 	connect(this, SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)), SLOT(slotClicked(QListViewItem*, const QPoint&, int)));
 	connect(m_menu_assign, SIGNAL(activated(int)), SLOT(slotAssigned(int)));
+	connect(m_menu_info, SIGNAL(activated(int)), SLOT(slotInformation(int)));
 
 	startTimer(1000);
 }
@@ -241,12 +246,17 @@ QListViewItem *KGGZUsers::player(const char *player)
 void KGGZUsers::slotClicked(QListViewItem *item, const QPoint& point, int column)
 {
 	if(!item) return;
-	if(item->text(0) == m_self) return;
+	if(!item->parent()) return;
 
 	if(m_menu) delete m_menu;
 	m_menu = new QPopupMenu(this);
-	m_menu->insertItem(i18n("Send private message"), -1);
-	m_menu->insertItem(i18n("Assign a role"), m_menu_assign);
+
+	if(item->text(0) != m_self)
+	{
+		m_menu->insertItem(i18n("Send private message"), -1);
+		m_menu->insertItem(i18n("Assign a role"), m_menu_assign);
+	}
+	m_menu->insertItem(i18n("Player information"), m_menu_info);
 	//connect(m_menu, SIGNAL(activated(int)), SLOT(slotAssigned(int)));
 
 	m_menu->popup(point);
@@ -329,5 +339,20 @@ void KGGZUsers::setLag(const char *playername, int lagvalue)
 void KGGZUsers::assignRole(const char *playername, int role)
 {
 	assign(player(playername), role);
+}
+
+void KGGZUsers::slotInformation(int id)
+{
+	QListViewItem *tmp;
+	int wins, losses, ties, forfeits;
+
+	tmp = selectedItem();
+	if(!tmp) return;
+
+	ggzcore_player_get_record(NULL, &wins, &losses, &ties, &forfeits);
+
+	KMessageBox::information(this,
+		i18n("Wins: %1\nLosses:%2\nTies:%3\nForfeits:%4").arg(wins).arg(losses).arg(ties).arg(forfeits),
+		i18n("Player information"));
 }
 

@@ -74,11 +74,18 @@ class KGGZUsers : public KListView
 			assignadmin
 		};
 
+		enum Information
+		{
+			inforecord
+		};
+
 	public slots:
 		// Click on a player
 		void slotClicked(QListViewItem *item, const QPoint& point, int column);
 		// Assign role to player
 		void slotAssigned(int id);
+		// Get player information
+		void slotInformation(int id);
 
 	private:
 		// Returns the item which represents the requested table
@@ -95,7 +102,7 @@ class KGGZUsers : public KListView
 		// Context menu for players
 		QPopupMenu *m_menu;
 		// Menu for assignments
-		QPopupMenu *m_menu_assign;
+		QPopupMenu *m_menu_assign, *m_menu_info;
 		// Name of the player
 		QString m_self;
 };

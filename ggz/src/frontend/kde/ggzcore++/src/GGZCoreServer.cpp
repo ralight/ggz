@@ -275,7 +275,7 @@ int GGZCoreServer::dataRead()
 
 int GGZCoreServer::dataWrite()
 {
-	return ggzcore_server_write_data(m_server);
+	return /*ggzcore_server_write_data(m_server)*/-1;
 }
 
 GGZCoreServer* GGZCoreServer::instance()
