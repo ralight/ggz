@@ -1,0 +1,305 @@
+dnl ======================================
+dnl GGZ Gaming Zone - Configuration Macros
+dnl ======================================
+dnl
+dnl Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+dnl This file has heavily been inspired by KDE's acinclude :)
+dnl It is published under the conditions of the GNU General Public License.
+dnl
+
+dnl ------------------------------------------------------------------------
+dnl Content of this file:
+dnl ------------------------------------------------------------------------
+dnl AC_FIND_FILE - macro for convenience (from acinclude.kde)
+dnl AC_GGZ_EASYSOCK - find the easysock headers and libraries (new: with version numbers)
+dnl AC_GGZ_GGZCORE - find the ggzcore headers and libraries
+dnl AC_GGZ_GGZCOREPP - find any GGZCore++ installation (TODO)
+dnl AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
+dnl
+
+dnl ------------------------------------------------------------------------
+dnl Find a file (or one of more files in a list of dirs) - borrowed from kde
+dnl ------------------------------------------------------------------------
+dnl
+AC_DEFUN(AC_FIND_FILE,
+[
+$3=NO
+for i in $2;
+do
+for j in $1;
+do
+echo "configure: __oline__: $i/$j" >&AC_FD_CC
+if test -r "$i/$j"; then
+echo "taking that" >&AC_FD_CC
+$3=$i
+break 2
+fi
+done
+done
+])
+
+dnl ------------------------------------------------------------------------
+dnl Try to find the easysock headers and libraries.
+dnl $(EASYSOCK_LDFLAGS) will be -L ... (if needed)
+dnl and $(EASYSOCK_INCLUDES) will be -I ... (if needed)
+dnl ------------------------------------------------------------------------
+dnl
+AC_DEFUN(AC_GGZ_EASYSOCK,
+[
+AC_MSG_CHECKING([for GGZ library: easysock])
+
+ac_easysock_includes=NO ac_easysock_libraries=NO
+easysock_libraries=""
+easysock_includes=""
+
+AC_ARG_WITH(easysock-dir,
+    [  --with-easysock-dir=DIR       Easysock installation prefix ],
+    [  ac_easysock_includes="$withval"/include
+       ac_easysock_libraries="$withval"/lib
+    ])
+AC_ARG_WITH(easysock-includes,
+    [  --with-easysock-includes=DIR  where the easysock includes are. ],
+    [  ac_easysock_includes="$withval"
+    ])
+AC_ARG_WITH(easysock-libraries,
+    [  --with-easysock-libraries=DIR where the easysock libs are. ],
+    [  ac_easysock_libraries="$withval"
+    ])
+
+AC_CACHE_VAL(ac_cv_have_easysock,
+[
+easysock_incdirs="$ac_easysock_includes /usr/local/include /usr/include"
+easysock_header=easysock.h
+
+AC_FIND_FILE($easysock_header, $easysock_incdirs, easysock_incdir)
+ac_easysock_includes="$easysock_incdir"
+
+easysock_libdirs="$ac_easysock_libraries /usr/local/lib /usr/lib"
+
+test=NONE
+easysock_libdir=NONE
+for dir in $easysock_libdirs; do
+  try="ls -1 $dir/libeasysock.*"
+  if test -n "`$try 2> /dev/null`"; then easysock_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
+done
+
+ac_easysock_libraries="$easysock_libdir"
+
+if test "$ac_easysock_includes" = NO || test "$ac_easysock_libraries" = NO; then
+  ac_cv_have_easysock="have_easysock=no"
+  ac_easysock_notfound=""
+
+  AC_MSG_ERROR([Easysock not found. Please check your installation! ]);
+else
+
+  major=`grep "EASYSOCK_VERSION" $easysock_incdir/easysock.h | cut -d " " -f 3 | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
+  minor=`grep "EASYSOCK_VERSION" $easysock_incdir/easysock.h | cut -d " " -f 3 | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
+  micro=`grep "EASYSOCK_VERSION" $easysock_incdir/easysock.h | cut -d " " -f 3 | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+  mineasysockversion=ifelse([$1], , 0.3.0, $1)
+  wmajor=`echo $mineasysockversion | cut -d "." -f 1`
+  wminor=`echo $mineasysockversion | cut -d "." -f 2`
+  wmicro=`echo $mineasysockversion | cut -d "." -f 3`
+
+  if test "$wmicro" = ""; then
+    wmicro=0
+  fi
+
+  have_easysock="no"
+  if let "$major > $wmajor"; then
+    have_easysock="yes"
+  else
+    if let "$major == $wmajor && $minor > $wminor"; then
+      have_easysock="yes"
+    else
+      if let "$major == $wmajor && $minor == $wminor && $micro >= $wmicro"; then
+        have_easysock="yes"
+      fi
+    fi
+  fi
+
+  if test "$have_easysock" = "no"; then
+    ac_cv_have_easysock="have_easysock=no"
+    ac_easysock_notfound=""
+    AC_MSG_ERROR([Wrong easysock version - $major.$minor.$micro found, $wmajor.$wminor.$wmicro needed.]);
+  fi
+
+fi
+
+])
+
+eval "$ac_cv_have_easysock"
+
+if test "$have_easysock" != yes; then
+  AC_MSG_RESULT([$have_easysock]);
+else
+  ac_cv_have_easysock="have_easysock=yes \
+    ac_easysock_includes=$ac_easysock_includes ac_easysock_libraries=$ac_easysock_libraries"
+  AC_MSG_RESULT([libraries $ac_easysock_libraries, headers $ac_easysock_includes ($major.$minor.$micro)])
+
+  easysock_libraries="$ac_easysock_libraries"
+  easysock_includes="$ac_easysock_includes"
+fi
+
+AC_SUBST(easysock_libraries)
+AC_SUBST(easysock_includes)
+
+EASYSOCK_INCLUDES="-I$easysock_includes"
+EASYSOCK_LDFLAGS="-L$easysock_libraries"
+
+AC_SUBST(EASYSOCK_INCLUDES)
+AC_SUBST(EASYSOCK_LDFLAGS)
+
+LIB_EASYSOCK='-leasysock'
+AC_SUBST(LIB_EASYSOCK)
+
+])
+
+dnl ------------------------------------------------------------------------
+dnl Try to find the ggzcore headers and libraries.
+dnl $(GGZCORE_LDFLAGS) will be -L ... (if needed)
+dnl and $(GGZCORE_INCLUDES) will be -I ... (if needed)
+dnl ------------------------------------------------------------------------
+dnl
+AC_DEFUN(AC_GGZ_GGZCORE,
+[
+AC_MSG_CHECKING([for GGZ library: ggzcore])
+
+ac_ggzcore_includes=NO ac_ggzcore_libraries=NO
+ggzcore_libraries=""
+ggzcore_includes=""
+
+AC_ARG_WITH(ggzcore-dir,
+    [  --with-ggzcore-dir=DIR       ggzcore installation prefix ],
+    [  ac_ggzcore_includes="$withval"/include
+       ac_ggzcore_libraries="$withval"/lib
+    ])
+AC_ARG_WITH(ggzcore-includes,
+    [  --with-ggzcore-includes=DIR  where the ggzcore includes are. ],
+    [  ac_ggzcore_includes="$withval"
+    ])
+AC_ARG_WITH(ggzcore-libraries,
+    [  --with-ggzcore-libraries=DIR where the ggzcore libs are. ],
+    [  ac_ggzcore_libraries="$withval"
+    ])
+
+AC_CACHE_VAL(ac_cv_have_ggzcore,
+[
+ggzcore_incdirs="$ac_ggzcore_includes /usr/local/include /usr/include"
+ggzcore_header=ggzcore.h
+
+AC_FIND_FILE($ggzcore_header, $ggzcore_incdirs, ggzcore_incdir)
+ac_ggzcore_includes="$ggzcore_incdir"
+
+ggzcore_libdirs="$ac_ggzcore_libraries /usr/local/lib /usr/lib"
+
+test=NONE
+ggzcore_libdir=NONE
+for dir in $ggzcore_libdirs; do
+  try="ls -1 $dir/libggzcore.*"
+  if test -n "`$try 2> /dev/null`"; then ggzcore_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
+done
+
+ac_ggzcore_libraries="$ggzcore_libdir"
+
+if test "$ac_ggzcore_includes" = NO || test "$ac_ggzcore_libraries" = NO; then
+  ac_cv_have_ggzcore="have_ggzcore=no"
+  ac_ggzcore_notfound=""
+
+  AC_MSG_ERROR([ggzcore not found. Please check your installation! ]);
+else
+  have_ggzcore="yes"
+fi
+])
+
+eval "$ac_cv_have_ggzcore"
+
+if test "$have_ggzcore" != yes; then
+  AC_MSG_RESULT([$have_ggzcore]);
+else
+  ac_cv_have_ggzcore="have_ggzcore=yes \
+    ac_ggzcore_includes=$ac_ggzcore_includes ac_ggzcore_libraries=$ac_ggzcore_libraries"
+  AC_MSG_RESULT([libraries $ac_ggzcore_libraries, headers $ac_ggzcore_includes])
+
+  ggzcore_libraries="$ac_ggzcore_libraries"
+  ggzcore_includes="$ac_ggzcore_includes"
+fi
+
+AC_SUBST(ggzcore_libraries)
+AC_SUBST(ggzcore_includes)
+
+GGZCORE_INCLUDES="-I$ggzcore_includes"
+GGZCORE_LDFLAGS="-L$ggzcore_libraries"
+
+AC_SUBST(GGZCORE_INCLUDES)
+AC_SUBST(GGZCORE_LDFLAGS)
+
+LIB_GGZCORE='-lggzcore'
+AC_SUBST(LIB_GGZCORE)
+
+])
+
+dnl ------------------------------------------------------------------------
+dnl Try to find the ggz-config binary.
+dnl Sets GGZ_CONFIG to the path/name of the program.
+dnl Sets also: ggz_gamedir, ggz_datadir etc.
+dnl ------------------------------------------------------------------------
+dnl
+AC_DEFUN(AC_GGZ_CONFIG,
+[
+AC_MSG_CHECKING([for GGZ configuration tool: ggz-config])
+
+ac_ggz_config=NO
+ggz_config=""
+
+AC_ARG_WITH(ggzconfig,
+    [  --with-ggzconfig=DIR          path to ggz-config ],
+    [  ac_ggz_config="$withval"
+    ])
+
+AC_CACHE_VAL(ac_cv_have_ggzconfig,
+[
+ggz_config_dirs="$ac_ggz_config /usr/local/bin /usr/bin"
+
+AC_FIND_FILE(ggz-config, $ggz_config_dirs, ggz_config_dir)
+ac_ggz_config="$ggz_config_dir"
+
+if test "$ac_ggz_config" = NO; then
+  ac_cv_have_ggzcore="have_ggz_config=no"
+  ac_ggz_config_notfound=""
+
+  AC_MSG_ERROR([ggz-config not found. Please check your installation! ]);
+else
+  have_ggz_config="yes"
+fi
+])
+
+eval "$ac_cv_have_ggz_config"
+
+if test "$have_ggz_config" != yes; then
+  AC_MSG_RESULT([$have_ggz_config]);
+else
+  ac_cv_have_ggz_config="have_ggz_config=yes \
+    ac_ggz_config=$ac_ggz_config"
+  AC_MSG_RESULT([$ac_ggz_config])
+
+  ggz_config="$ac_ggz_config"
+fi
+
+AC_SUBST(ggz_config)
+
+GGZ_CONFIG="${ggz_config}/ggz-config"
+
+AC_SUBST(GGZ_CONFIG)
+
+ggzexecmoddir=`$GGZ_CONFIG --gamedir`
+AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
+ggzdatadir=`$GGZ_CONFIG --datadir`
+AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should look for their data files])
+packagesrcdir=`cd $srcdir && pwd`
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
+
+AC_SUBST(ggzexecmoddir)
+AC_SUBST(ggzdatadir)
+AC_SUBST(packagesrcdir)
+
+])

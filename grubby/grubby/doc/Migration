@@ -1,0 +1,34 @@
+Important when upgrading: Save your grubby.rc!
+
+What has happened to the old grubby functionality?
+Is it still present in its reincarnation as "guru"?
+
+Yes of course :)
+But now all extended functionality has gone into separate modules, or is
+planned to go there.
+
+modmessage: (view meeting.rb maybe)
+-----------
+grubby tell (G)knight where are you now?
+grubby do i have any messages
+grubby alert add someone
+
+modpeople:
+----------
+grubby my name is Igor
+grubby have you seen Vladimir
+
+modbadword: (DONE)
+------------
+grubby you suck!
+
+modself: (DONE, skeleton)
+--------
+grubby help
+grubby about
+
+modadmin:
+---------
+grubby goto 0
+grubby log off
+

@@ -1,0 +1,48 @@
+The Guru Scoring System
+-----------------------
+
+In order to let guru appear like a real user,
+several concepts have to be proved.
+I present a few of them here.
+
+1. Delay
+Every answer guru gives is given to a special function
+before the actual output. This function calculates an
+artifical delay according to the string length.
+
+2. Scoring
+All listed modules are equal. However, in case a special
+expression is detected, one of them might want to have precedence.
+Also if one already answered, the others will have to shut up.
+This is done via 'score-rotation' from 10 to 0. In the case of 0,
+all modules should answer unconditionally so there's at least one
+answer available. The "talkyness" factor of Guru is what decides how
+many messages per minute are allowed from him.
+
+3. Control
+Guru has exactly one owner. But it can have multiple admins, as the
+owner is not always logged in. Admins will have to /msg him a password
+in order to identify as admins. They can then receive debug messages sent
+from guru, and runtime-configure it a bit. But they're not allowed to shut
+him down, for example, or load/unload modules. This is the owner's task, who
+is hard-coded in the configuration file.
+
+4. Language
+The long-time goal is to provide i18n on both the input and the output
+side.
+
+5. Backend database
+To act more dynamic, it'll have to remember who was already there, from where
+the people are (they could tell him), from which time zone, and what they're
+favorite games are. Guru could then act as a dispatcher in case someone has
+some questions. Contact like email or pager should also be his domain, but care
+has to be taken that not everybody can get this information.
+
+6. Examples
+/msg guru bill is my friend			-> bill can get my contact information
+/msg guru i am from germany			-> language set to german, but still
+										recognizes english commands
+/msg guru admin 87HgZx2				-> request admin status
+guru sucks.							-> Publicly annoy guru
+
+

@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+
+$GURU = "$ENV{HOME}/.ggz";
+
+mkdir $GURU, 0700 || die "Cannot start setup! Your system is severely broken.";
+$GURU = "$GURU/grubby";
+mkdir $GURU, 0700;
+
+open(FILE, ">$GURU/modexec.rc");
+print FILE "[programs]\n";
+print FILE "programs = $GURUDIR/data/meeting.rb\n";
+close(FILE);
+

@@ -1,0 +1,3 @@
+#undef GRUBBYDIR
+#undef PREFIX
+

@@ -1,0 +1,8 @@
+2001-09-01, josef:
+------------------
+Grubby does now live in his own module. All "guru"-named stuff is now hidden
+behind the curtains.
+As soon as all missing functionality is implemented, the old grubby directory
+is removed. This means, both GGZ/utils/grubby and GGZ/utils/guru are history
+now.
+
