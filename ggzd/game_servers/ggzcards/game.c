@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 3484 2002-02-27 05:40:53Z jdorje $
+ * $Id: game.c 3486 2002-02-27 07:18:23Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -58,6 +58,7 @@ static void bad_game(char *func)
    conditions (i.e. number of players); false otherwise */
 int game_is_valid_game(void)
 {
+	bad_game("is_valid_game");
 	return 0;
 }
 
@@ -144,6 +145,7 @@ void game_set_player_message(player_t p)
 /* Places text for the bid into the buffer.  Returns the length of the text. */
 int game_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 {
+	bad_game("get_bid_text");
 	return snprintf(buf, buf_len, "%s", "");
 }
 
@@ -199,10 +201,9 @@ void game_handle_bid(player_t p, bid_t bid)
    game.next_bid may not be accurate! */
 void game_next_bid(void)
 {
-	if (game.bid_count == 0)
-		game.next_bid = (game.dealer + 1) % game.num_players;
-	else
-		game.next_bid = (game.next_bid + 1) % game.num_players;
+	assert(game.bid_count > 0);
+	
+	game.next_bid = (game.next_bid + 1) % game.num_players;
 }
 
 
@@ -392,15 +393,15 @@ void game_start_game(void)
 
 /* Called at the beginning of a new hand to determine if the game is over.
    Return 1 for gameover, 0 otherwise. */
-int game_test_for_gameover(void)
+bool game_test_for_gameover(void)
 {
 	player_t p;
 
 	/* in the default case, it's just a race toward a target score */
 	for (p = 0; p < game.num_players; p++)
 		if (game.players[p].score >= game.target_score)
-			return 1;
-	return 0;
+			return TRUE;
+	return FALSE;
 }
 
 /* Causes one card to behave as another in just about all situations of the
