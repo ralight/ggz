@@ -304,14 +304,17 @@ void GetGameInfo( void ) {
 
 int ReadOptions(void)
 {
-  	int assign, i, seats, status = -1;
+  	int size, assign, i, seats, status = -1;
 	
 	open_seats = 4;
   
 	dbg_msg("Reading options from server");
 
-	if ( (status = read(gameInfo.ggz_sock, &gameInfo.opt, 12)) < 0) 
-		err_sys_exit( "Error reading options" );
+	if (es_read_int(gameInfo.ggz_sock, &size) < 0)
+		err_msg_exit("Error reading option size");
+
+	if (es_readn(gameInfo.ggz_sock, &gameInfo.opt, size) < size)
+		err_msg_exit("Error reading options");
 
 	if (es_read_int(gameInfo.ggz_sock, &seats) < 0) 
 		err_msg_exit( "Error reading number of slots" );
