@@ -2,7 +2,7 @@
 
 SUBDIRS = .
 
-EXTRA_DIST = ggzd.conf
+EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd
 
 INCLUDES = -I$(top_srcdir)/easysock 
 
@@ -33,6 +33,8 @@ ggzd_SOURCES =	control.c \
 ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(top_builddir)/easysock/libeasysock.la 
 ggzd_LDFLAGS = -static
 
-ggzdconf_DATA = ggzd.conf
+ggzdconf_DATA = ggzd.conf ggzd.motd
 
 test:
+	-cp -f ggzd.motd $(top_builddir)/test
+

@@ -1,6 +1,7 @@
 # GGZ conf file for testing in builddir.  Do *not* use this file as a
 # system-wide configuration for ggz.  Use ggzd.conf instead 
 
+motd = ggzd.motd
 LogFile = @packagesrcdir@/ggzd.log
 LogTypes = Notices, Connections
 DebugFile = @packagesrcdir@/ggzd.debug

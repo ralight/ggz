@@ -193,10 +193,10 @@ static void table_fork(int t_index)
 		/* FIXME: need to check validity of fd */
 		
 		if (listen(sock, 1) < 0) 
-			err_sys_exit("listen falied");
+			err_sys_exit("listen failed");
 
 		if ( (fd = accept(sock, NULL, NULL)) < 0)
-			err_sys_exit("accpet failed");
+			err_sys_exit("accept failed");
 		
 		pthread_rwlock_wrlock(&tables.lock);
 		tables.info[t_index].pid = pid;
@@ -218,7 +218,7 @@ static void table_run_game(int t_index, char *path)
 {
 	dbg_msg(GGZ_DBG_PROCESS, "Process forked.  Game running on table %d", 
 		t_index);
-
+	
 	/* FIXME: Close all other fd's and kill threads? */
 	execv(path, NULL);
 }
