@@ -1,0 +1,152 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2002-03-24 17:06+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../ktictactux/ktictactux.cpp:371
+msgid "*bounds*"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:374
+msgid "*occupied*"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:365
+msgid "*server*"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:368
+msgid "*turn*"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:114
+msgid "AI's turn"
+msgstr ""
+
+#: ../../ktictactux/ktictactuxwin.cpp:31
+msgid "Game"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:174 ../../ktictactux/ktictactux.cpp:191
+msgid "Game Over!"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:209
+msgid "Game over"
+msgstr ""
+
+#: ../../ktictactux/ktictactuxwin.cpp:36
+msgid "Game with the AI"
+msgstr ""
+
+#: ../../ktictactux/ktictactuxwin.cpp:33
+msgid "Help"
+msgstr ""
+
+#: ../../ktictactux/main.cpp:40
+msgid "Inventor"
+msgstr ""
+
+#: ../../ktictactux/ktictactuxwin.cpp:27
+msgid "KDE/Gnome"
+msgstr ""
+
+#: ../../ktictactux/main.cpp:32
+msgid "KTicTacTux"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:377
+msgid "Move OK"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:328
+msgid "Network game"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:354
+#, c-format
+msgid "Network game with %1"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:115
+msgid "Opponent's turn"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:209
+msgid "Play another game?"
+msgstr ""
+
+#: ../../ktictactux/ktictactuxwin.cpp:24
+msgid "Quit"
+msgstr ""
+
+#: ../../ktictactux/main.cpp:21
+msgid "Request GGZ game explicitely"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:207
+msgid "Score: you %1, opponent %2"
+msgstr ""
+
+#: ../../ktictactux/ktictactuxwin.cpp:35
+msgid "Status"
+msgstr ""
+
+#: ../../ktictactux/ktictactuxwin.cpp:29
+msgid "Symbols"
+msgstr ""
+
+#: ../../ktictactux/ktictactuxwin.cpp:23
+msgid "Synchronize"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:192
+msgid "The game is over. There is no winner."
+msgstr ""
+
+#: ../../ktictactux/ktictactuxwin.cpp:32
+msgid "Theme"
+msgstr ""
+
+#: ../../ktictactux/main.cpp:37
+msgid "This game is part of the GGZ Gaming Zone."
+msgstr ""
+
+#: ../../ktictactux/main.cpp:34
+msgid "This is a TicTacToe game for KDE."
+msgstr ""
+
+#: ../../ktictactux/ktictactuxwin.cpp:28
+msgid "Tux/Kandalf (classic)"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:329
+msgid "Waiting for opponent!"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:183
+msgid "You are the winner!"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:178
+msgid "You lost the game."
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:359
+msgid "Your move"
+msgstr ""
+
+#: ../../ktictactux/ktictactux.cpp:107
+msgid "Your turn"
+msgstr ""
