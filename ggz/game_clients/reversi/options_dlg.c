@@ -35,7 +35,6 @@ create_options_dialog (GdkColor *_back_color, GdkColor *_last_color)
   GtkWidget *back_button;
   GtkWidget *hbox7;
   GtkWidget *pixmap_label;
-  GtkWidget *pixmap_button;
   GtkWidget *hbox6;
   GtkWidget *last_label;
   GtkWidget *last_button;
@@ -141,15 +140,6 @@ create_options_dialog (GdkColor *_back_color, GdkColor *_last_color)
   gtk_widget_set_sensitive(pixmap_label, FALSE);
   gtk_box_pack_start (GTK_BOX (hbox7), pixmap_label, FALSE, FALSE, 5);
 
-  pixmap_button = create_pixmap (dialog1, "bg.xpm");
-  gtk_widget_set_name (pixmap_button, "pixmap_button");
-  gtk_widget_ref (pixmap_button);
-  gtk_object_set_data_full (GTK_OBJECT (dialog1), "pixmap_button", pixmap_button,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pixmap_button);
-  gtk_widget_set_sensitive(pixmap_button, FALSE);
-  gtk_box_pack_start (GTK_BOX (hbox7), pixmap_button, TRUE, FALSE, 0);
-
   hbox6 = gtk_hbox_new (FALSE, 0);
   gtk_widget_set_name (hbox6, "hbox6");
   gtk_widget_ref (hbox6);
@@ -201,9 +191,6 @@ create_options_dialog (GdkColor *_back_color, GdkColor *_last_color)
 
   gtk_signal_connect (GTK_OBJECT (back_button), "clicked",
                       GTK_SIGNAL_FUNC (on_back_button_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (pixmap_button), "button_press_event",
-                      GTK_SIGNAL_FUNC (on_pixmap_button_button_press_event),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (last_button), "clicked",
                       GTK_SIGNAL_FUNC (on_last_button_clicked),
@@ -299,16 +286,6 @@ void update_data(GtkWidget *widget, GdkColor *color) {
     style->base[a] = *color;
   }
   gtk_widget_set_style(widget, style);
-}
-
-
-gboolean
-on_pixmap_button_button_press_event    (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data)
-{
-
-  return FALSE;
 }
 
 

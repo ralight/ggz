@@ -12,11 +12,6 @@ on_back_button_clicked                 (GtkButton       *button,
 void update_data(GtkWidget *, GdkColor *);
 void prepare_data(GtkButton *button, gchar *data);
 
-gboolean
-on_pixmap_button_button_press_event    (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
-
 void
 on_last_button_clicked                 (GtkButton       *button,
                                         gpointer         user_data);
