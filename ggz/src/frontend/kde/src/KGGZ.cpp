@@ -773,7 +773,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetChat()->receive(NULL, i18n("Please join a room to start!"), KGGZChat::RECEIVE_ADMIN);
 			if((m_save_loginmode == GGZCoreServer::firsttime) && (m_motd)) m_motd->raise();
-			kggzserver->listRooms(-1, 0);
+			kggzserver->listRooms(-1, 1);
 			if(kggzserver->listGames(1) != 0) // NEVER use 0 here, it will hang the client !!!
 			{
 				KGGZDEBUG("HUH? Don't give me game type list?!\n");
