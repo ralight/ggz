@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5741 2004-01-17 18:57:02Z dr_maux $
+dnl $Id: configure.ac 5763 2004-01-30 10:03:03Z josef $
 
 AC_INIT([GGZ server], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -193,31 +193,38 @@ fi
 if test "$database" = db4 || test "$database" = yes; then
   db4lib=""
   db4inc=""
-  AC_CHECK_LIB(db-4.1, db_env_create_4001,
+  AC_CHECK_LIB(db-4.2, db_env_create_4002,
     [
-      db4lib="-ldb-4.1"
+      db4lib="-ldb-4.2"
       database=db4
     ],
     [
-      AC_CHECK_LIB(db, db_env_create_4000,
+      AC_CHECK_LIB(db-4.1, db_env_create_4001,
         [
-          db4lib="-ldb"
+          db4lib="-ldb-4.1"
           database=db4
         ],
         [
-          AC_CHECK_LIB(db-4.0, db_env_create_4000,
+          AC_CHECK_LIB(db, db_env_create_4000,
             [
-              db4lib="-ldb-4.0"
+              db4lib="-ldb"
               database=db4
             ],
             [
-              if test "$database" = db4; then
-                AC_MSG_ERROR([cannot configure db4 (libdb4 needed)])
-              fi
+              AC_CHECK_LIB(db-4.0, db_env_create_4000,
+                [
+                  db4lib="-ldb-4.0"
+                  database=db4
+                ],
+                [
+                  if test "$database" = db4; then
+                    AC_MSG_ERROR([cannot configure db4 (libdb4 needed)])
+                  fi
+                ])
             ])
         ])
     ])
-  if test "x$db4lib" != "x-ldb-4.1"; then
+  if test "x$db4lib" != "x-ldb-4.1" && test "x$db4lib" != "x-ldb-4.2"; then
     AC_CHECK_HEADER(db4/db.h,
       [
         db4inc="db4/db.h"
