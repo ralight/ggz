@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 5055 2002-10-26 22:48:07Z jdorje $
+ * $Id: transit.c 5057 2002-10-27 01:04:35Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -113,6 +113,7 @@ GGZReturn transit_player_event(char* name, GGZTransitType opcode,
 	data->opcode = opcode;
 	data->status = status;
 	data->table_index = index;
+	data->reason = reason;
 	
 	return event_player_enqueue(name, transit_player_event_callback, 
 				    sizeof(*data), data, NULL);

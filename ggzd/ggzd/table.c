@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5055 2002-10-26 22:48:07Z jdorje $
+ * $Id: table.c 5057 2002-10-27 01:04:35Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -493,7 +493,7 @@ static void table_loop(GGZTable* table)
 	sigemptyset(&set);
 	sigaddset(&set, TABLE_EVENT_SIGNAL);
 
-	while (table->state != GGZ_TABLE_DONE) {
+	while (table->state != GGZ_TABLE_DONE && !table->error) {
 		read_fd_set = active_fd_set;
 		status = select((fd + 1), &read_fd_set, NULL, NULL, NULL);
 		if (status <= 0) {
@@ -903,9 +903,10 @@ static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 	if (ggzdmod_get_state(ggzdmod) == GGZDMOD_STATE_CREATED)
 		table_launch_event(table->owner, E_LAUNCH_FAIL, 0);
 
+	table->error = 1;
 
-	/* FIXME: instead, we should set state to done, once this is supported*/
-	(void)ggzdmod_disconnect(ggzdmod);
+	/* Perhaps we should just set the state to done? */
+	(void) ggzdmod_disconnect(ggzdmod);
 }
 
 
@@ -913,6 +914,7 @@ static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 static void table_remove(GGZTable* table)
 {
 	int room, count, index, i;
+	GGZLeaveType reason;
 
 	/* Disconnect from the game server */
 	(void)ggzdmod_disconnect(table->ggzdmod);
@@ -931,6 +933,11 @@ static void table_remove(GGZTable* table)
 
 	dbg_msg(GGZ_DBG_ROOM, "Room %d table count now = %d", room, count);
 
+	if (table->error)
+		reason = GGZ_LEAVE_GAMEERROR;
+	else
+		reason = GGZ_LEAVE_GAMEOVER;
+
 	/* Send out table-leave messages for remaining players */
 	for (i = 0; i < seats_num(table); i++) {
 		if (seats_type(table, i) == GGZ_SEAT_PLAYER) {
@@ -939,7 +946,7 @@ static void table_remove(GGZTable* table)
 						   table->seat_names[i], i);
 			transit_player_event(table->seat_names[i],
 					     GGZ_TRANSIT_LEAVE, E_OK,
-					     GGZ_LEAVE_GAMEOVER, index);
+					     reason, index);
 		}
 	}
 
@@ -951,7 +958,7 @@ static void table_remove(GGZTable* table)
 				table->spectators[i], i);
 			transit_player_event(table->spectators[i],
 					     GGZ_TRANSIT_LEAVE_SPECTATOR,
-					     E_OK, GGZ_LEAVE_GAMEOVER, index);
+					     E_OK, reason, index);
 		}
 	}
 

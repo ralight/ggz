@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 5055 2002-10-26 22:48:07Z jdorje $
+ * $Id: table.h 5057 2002-10-27 01:04:35Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -62,6 +62,9 @@ struct GGZTable {
 
 	/* State of game: One of GGZ_TABLE_XXXX */
 	GGZTableState state;
+
+	/* Set to true if there's a table error */
+	int error;
 
 	/* Data for communicating with game server module */
 	GGZdMod *ggzdmod;
