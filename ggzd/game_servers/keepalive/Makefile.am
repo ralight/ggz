@@ -1,12 +1,12 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3109 2002-01-14 02:37:59Z jdorje $
+# $Id: Makefile.am 4599 2002-09-17 03:28:35Z jdorje $
 
 SUBDIRS = src
 
 ggzdgame_DATA = keepalive.dsc
 ggzdroom_DATA = keepalive.room
 
-EXTRA_DIST = README.keepalive
+EXTRA_DIST = README.keepalive $(ggzdgame_DATA) $(ggzdroom_DATA)
 
 test: test-recursive
 	-cp -f $(ggzdgame_DATA) $(top_builddir)/test/games
