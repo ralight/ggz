@@ -37,6 +37,16 @@ extern char *Username;
 extern char *Server;
 extern char *Room;
 
+void output_display_help(void)
+{
+	output_chat(2, "---", "GNU Gaming Zone -- Help");
+	output_chat(2, "---", "-----------------------");
+	output_chat(2, "---", " ");
+	output_chat(2, "---", "/connect <server>    Connect to a GGZ server");
+	output_chat(2, "---", "/disconnect          Disconnect from server");
+	output_chat(2, "---", "/join <room>         Join room number <room>");
+}
+
 void output_banner(void)
 {
 	fflush(NULL);
@@ -53,9 +63,9 @@ void output_prompt(int status)
 	output_status();
 	printf("\e[%d;0f\e[2K",window.ws_row);
 	if (status == 1)
-		printf("\e[%d;0f\e[2K\e[1mGGZ\e[30m>\e[0m ",window.ws_row-1);
+		printf("\e[%d;0f\e[2K\e[1m\e[37mGGZ\e[30m>\e[0m\e[36m ",window.ws_row-1);
 	else
-		printf("\e[%d;0f\e[1mGGZ\e[30m>\e[0m ",window.ws_row-1);
+		printf("\e[%d;0f\e[1m\e[37mGGZ\e[30m>\e[0m\e[36m ",window.ws_row-1);
 	fflush(NULL);
 }
 
@@ -65,11 +75,11 @@ void output_chat(int type, char* player, char* message)
 	printf("\e7");
 	if(type == 0)
 	{
-		printf("\e[%d;0f\eD<%s> %s",window.ws_row-4, player, message);
+		printf("\e[%d;0f\eD\e[0m\e[37m<%s> %s",window.ws_row-4, player, message);
 	} else if (type == 1) {
-		printf("\e[%d;0f\eD[%s] %s",window.ws_row-4, player, message);
+		printf("\e[%d;0f\eD\e[0m\e[37m[%s] %s",window.ws_row-4, player, message);
 	} else if (type == 2) {
-		printf("\e[%d;0f\eD%s  %s",window.ws_row-4, player, message);
+		printf("\e[%d;0f\eD\e[0m\e[37m%s  %s",window.ws_row-4, player, message);
 	}
 	printf("\e8");
 	fflush(NULL);
@@ -86,19 +96,17 @@ void output_status()
 	fflush(NULL);
 	printf("\e7");
 	if(Username)
-		printf("\e[%d;0f\e[1mU\e[0msername:\e[K \e[36m%s\e[0m", window.ws_row-3, Username);
+		printf("\e[%d;0f\e[1m\e[37mU\e[32msername:\e[K \e[36m%s", window.ws_row-3, Username);
 	else
-		printf("\e[%d;0f\e[1mU\e[0msername:\e[K ", window.ws_row-3);
-
-	if(Room)
-		printf("\e[%d;0f\e[1mR\e[0moom:\e[K \e[36m%s\e[0m", window.ws_row-2, Room);
-	else
-		printf("\e[%d;0f\e[1mR\e[0moom:\e[K ", window.ws_row-2);
-
+		printf("\e[%d;0f\e[1m\e[37mU\e[32msername:\e[K ", window.ws_row-3);
 	if(Server)
-		printf("\e[%d;%df\e[1mS\e[0merver:\e[K \e[36m%s\e[0m", window.ws_row-3, num, Server);
+		printf("\e[%d;%df\e[1m\e[37mS\e[32merver:\e[K \e[36m%s", window.ws_row-3, num, Server);
 	else
-		printf("\e[%d;%df\e[1mS\e[0merver:\e[K ", window.ws_row-3, num);
+		printf("\e[%d;%df\e[1m\e[37mS\e[32merver:\e[K ", window.ws_row-3, num);
+	if(Room)
+		printf("\e[%d;0f\e[1m\e[37mR\e[32moom:\e[K \e[36m%s", window.ws_row-2, Room);
+	else
+		printf("\e[%d;0f\e[1m\e[37mR\e[32moom:\e[K ", window.ws_row-2);
 
 	printf("\e8");
 	fflush(NULL);
@@ -117,6 +125,7 @@ void output_shutdown(void)
 {
 	fflush(NULL);
 	printf("\e[0;%dr",window.ws_row);
-	printf("\e[2J");
+	printf("\ec\e[2J");
 	fflush(NULL);
 }
+

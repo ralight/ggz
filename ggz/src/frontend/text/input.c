@@ -76,6 +76,9 @@ int input_command(short events)
 			else if (strcmp(command, "join") == 0) {
 				input_handle_join((char*)line);
 			}
+			else if (strcmp(command, "help") == 0) {
+				output_display_help();;
+			}
 		} else {
 			/* Its a chat */
 			input_handle_chat(line);
@@ -116,7 +119,6 @@ static void input_handle_connect(char* line)
 
 	/* FIXME: provide a destroy function that frees the appropriate mem */
 	ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);
-	output_status();
 }
 
 
