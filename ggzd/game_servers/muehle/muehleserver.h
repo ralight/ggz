@@ -35,6 +35,7 @@ class MuehleServer : public GGZGameServer {
 		void leaveEvent ( int player );
 		void spectatorJoinEvent( int spectator );
 		void spectatorLeaveEvent ( int spectator );
+		void spectatorDataEvent ( int spectator );
 		void dataEvent ( int player );
 		void errorEvent ();
 	private:

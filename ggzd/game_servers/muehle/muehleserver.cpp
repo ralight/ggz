@@ -88,6 +88,10 @@ void MuehleServer::spectatorLeaveEvent ( int spectator ) {
 	std::cout << "Muehle: spectatorLeaveEvent" << std::endl;
 }
 
+// Spectator data event (ignored)
+void MuehleServer::spectatorDataEvent ( int spectator ) {
+}
+
 // Game data event
 void MuehleServer::dataEvent ( int player ) {
 	char data[1024];
