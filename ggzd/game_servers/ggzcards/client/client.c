@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 4085 2002-04-26 07:26:10Z jdorje $
+ * $Id: client.c 4087 2002-04-26 19:38:14Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -115,8 +115,6 @@ int client_get_fd(void)
 {
 	return game_internal.fd;
 }
-
-bool collapse_hand = TRUE;
 
 
 static const char *get_state_name(client_state_t state)
@@ -449,6 +447,10 @@ static void increase_max_hand_size(int max_hand_size)
 			ggz_realloc(ggzcards.players[p].hand.cards,
 				    game_internal.max_hand_size *
 				    sizeof(*ggzcards.players[p].hand.cards));
+		ggzcards.players[p].u_hand =
+			ggz_realloc(ggzcards.players[p].u_hand,
+			            game_internal.max_hand_size
+			            * sizeof(*ggzcards.players[p].u_hand));
 	}
 }
 
@@ -477,10 +479,16 @@ static int handle_msg_hand(void)
 	   increase_max_hand_size won't have inconsistent data. */
 	hand = &ggzcards.players[player].hand;
 	hand->hand_size = hand_size;
+	ggzcards.players[player].u_hand_size = hand_size;
 	for (i = 0; i < hand->hand_size; i++) {
-		if (read_card(game_internal.fd, &hand->cards[i]) < 0)
+		card_t card;
+		if (read_card(game_internal.fd, &card) < 0)
 			return -1;
-		hand->cards[i].meta = TRUE;	
+			
+		hand->cards[i] = card;
+			
+		ggzcards.players[player].u_hand[i].card = card;
+		ggzcards.players[player].u_hand[i].is_valid = TRUE;
 	}
 
 	ggz_debug("core", "Received hand message for player %d; %d cards.",
@@ -618,9 +626,6 @@ static int match_card(card_t card, hand_t * hand)
 		/* TODO: look for a stronger match */
 		card_t hcard = hand->cards[tc];
 		int tc_matches = 0;
-		
-		if (!hcard.meta)
-			continue;
 
 		if ((hcard.deck != -1 && hcard.deck != card.deck) ||
 		    (hcard.suit != -1 && hcard.suit != card.suit) ||
@@ -700,19 +705,22 @@ static int handle_msg_play(void)
 		return 0;
 	}
 
-	if (collapse_hand) {
-		/* Remove the card.  This is a bit inefficient. It's also
-		   tricky, so be careful not to go off-by-one and overrun
-		   the buffer! */
-		hand->hand_size--;
-		for (c = tc; c < hand->hand_size; c++)
-			hand->cards[c] = hand->cards[c + 1];
-		hand->cards[hand->hand_size] = UNKNOWN_CARD;
-	} else {
-		/* Remove the card just by marking its meta category to FALSE.
-		   Note that we don't decrease hand_size in this case! */
-		hand->cards[tc].meta = FALSE;	
+	/* Remove the card.  This is a bit inefficient. It's also
+	   tricky, so be careful not to go off-by-one and overrun
+	   the buffer! */
+	hand->hand_size--;
+	for (c = tc; c < hand->hand_size; c++)
+		hand->cards[c] = hand->cards[c + 1];
+	hand->cards[hand->hand_size] = UNKNOWN_CARD;
+	
+	/* Remove the card just by marking its meta category to FALSE.
+	   Note that we don't decrease hand_size in this case! */
+	for (c = 0; tc >= 0; c++) {
+		if (!ggzcards.players[p].u_hand[c].is_valid)
+			continue;
+		tc--;
 	}
+	ggzcards.players[p].u_hand[c - 1].is_valid = FALSE;
 
 	/* Update the graphics */
 	game_alert_play(p, card, tc);

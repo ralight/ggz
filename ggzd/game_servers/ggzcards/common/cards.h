@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.h 4084 2002-04-26 06:23:13Z jdorje $
+ * $Id: cards.h 4087 2002-04-26 19:38:14Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.
@@ -105,8 +105,6 @@ typedef struct card_t {
 	/** The deck number of the card.
 	 *  @see card_deck_enum */
 	char deck;
-	/** Can be used to store any transitory meta-data. */
-	char meta;
 } card_t;
 
 const char *get_suit_name(char suit);

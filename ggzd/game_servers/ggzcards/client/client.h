@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 4084 2002-04-26 06:23:13Z jdorje $
+ * $Id: client.h 4087 2002-04-26 19:38:14Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -57,6 +57,24 @@ typedef struct seat_t {
 	card_t table_card;
 	
 	hand_t hand;		/**< player's hand */
+	
+	/** @brief The size of the uncompressed hand.
+	 *
+	 *  The player's "hand" is stored in the hand structure, above.
+	 *  But for the convenience of certain GUI clients, separate
+	 *  hand data is also tracked.  Here the u_hand_size is the
+	 *  total number of entries in the u_hand array.  Each entry
+	 *  in the u_hand array is marked as either valid or invalid.
+	 *  Valid ones correspond to cards in the hand, invalid ones
+	 *  are cards that have already been played.  (The "u" stands
+	 *  for "uncollapsed", I suppose.) */
+	int u_hand_size;
+	
+	/** @see u_hand_size */
+	struct {
+		bool is_valid;
+		card_t card;		
+	} *u_hand;
 } seat_t;
 
 /** @} end of Player group */
@@ -123,13 +141,6 @@ void client_quit(void);
  *  with the server.
  */
 int client_get_fd(void);
-
-/** If true, when a card is played from a hand the hand will be collapsed.
- *  If false, an empty spot will be left in the hand, indicated by a card
- *  with its meta field set FALSE.
- *  TRUE by default.
- */
-extern bool collapse_hand;
 
 /** @} end of Setup */
 
