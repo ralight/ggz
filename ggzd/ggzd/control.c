@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 5064 2002-10-27 12:48:02Z jdorje $
+ * $Id: control.c 5261 2002-11-24 04:37:55Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -168,7 +168,9 @@ static void cleanup_data(void)
 	}
 
 	data_free(log_info.log_fname);
+#ifdef DEBUG
 	data_free(log_info.dbg_fname);
+#endif
 
 	ggz_conf_cleanup();
 	ggz_debug_cleanup(GGZ_CHECK_MEM);
