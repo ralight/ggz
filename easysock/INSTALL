@@ -1,3 +1,32 @@
+Installing easysock
+===================
+
+easysock should compile and install easily on most Unix and Unix-like
+systems.  By default, the compilation process will build both static
+and shared versions of the easysock library.  This behavior may be
+altered by passing either --disable-shared or --disable-static to the
+configure script.  We recommend installing easysock as a shared
+library when possible, as it is heavily used by the other GGZ
+packages.
+
+easysock uses the standard GNU configuration tools (autoconf, automake,
+etc) for configuring and compiling.  For generic instructions on how
+to use the configure script to customize your build and installation,
+see the following section.  Most users, will simply use the following
+commands:
+
+./configure
+make
+make install (as root)
+
+If you install easysock as a shared library, remember to also run
+'ldconfig' as root BEFORE attempting to link anything against it.  If
+this is not performed, software will link to the static version of
+easysock, which is probably not what you intended.  Make sure that
+the library directory where you install easysock (usually
+/usr/local/lib ) is listed in ld.so.conf before you run ldconfig.
+
+
 Basic Installation
 ==================
 

@@ -2,25 +2,32 @@
 The GGZ Gaming Zone - Easysock Library
 ======================================
 
-The GGZ Gaming Zone easysock library provides the low-level communications
-between GGZ client modules and the GGZ servers.  It is shared by other
-modules in order to ease coding and promote compatibility and stability.
+The GGZ Gaming Zone easysock library provides a simple low-level API
+for synchronous communication over TCP and Unix domain sockets.  The
+GGZ Project uses easysock extensively for both client/server and game
+module communication.  This version of the easysock library (0.3.0)
+should provide compatibility with version 0.0.4 clients and version
+0.0.3-0.0.4 servers.  
 
-This version of the easysock library (0.2.0) should provide compatibility
-with version 0.0.4 clients and version 0.0.3-4 servers.
+For more information on GGZ, and to download easysock source and
+packages, see http://ggz.sourceforge.net.  For instructions on
+installing and compiling the easysock library, see the INSTALL file
+included with the easysock sources.
 
-The easysock library is only one part of the GGZ Gaming Zone client
-setup.  The following additional modules are required:
-  - ggz-client-libs - provides common procedures and utilites required
-    to run the GGZ client and games
-  - gtk-client/kde-client - one or more of the GGZ clients will be
-    required in order to login to a server, chat and launch games
-  - gtk-games/kde-games - one or more games or game packs are required
-    in order to launch and play games
+To create a socket with easysock, simply call es_make_socket() or
+es_make_unix_socket() for TCP or Unix domain sockets respectively.
+Once a connection has been established, there are four function groups
+for reading and writing four types of data : single-byte characters,
+integers, strings, and file descriptors (note that file descriptors
+can only be passed over Unix domain sockets).  These functions are all
+of the form 
 
-The order in which these components are compiled and installed is very
-important.  See the README.GGZ file for complete information on compiling
-the GGZ client system.
+es_<operation>_<datatype>()
+
+where <operation> is either read or write, and <datatype> is one of
+char, int, string, or fd.  There are other function variants as well.
+These are all documented in the header file easysock.h
+
 
 If you encounter any bugs or have difficulty compiling, please report bugs
 via the bug tracker on our SourceForge project page, or send an email to the

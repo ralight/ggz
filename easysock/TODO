@@ -5,3 +5,12 @@
 - Add IPv6 support:
   Need to incorporate Riq's patch
 
+- Rename es_make_socket() to es_make_tcp_socket()
+
+- UDP Support?
+
+- Non-blocking support?
+
+- Document error and exit functions
+
+- Document alloc functions
