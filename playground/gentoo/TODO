@@ -1,0 +1,16 @@
+* Add missing packages:
+	- ggz-server
+	- grubby
+	- kde-games
+	- python
+	- utils
+	- docs (which category?)
+
+* See about adding appropriate menu items for KDE/Gnome
+
+* Check all cvs headers are empty when submitted to gentoo
+
+* Check URLs are correct
+
+* Improve package descriptions
+
