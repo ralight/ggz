@@ -131,14 +131,15 @@ static int handle_message_global()
 
 static int handle_message_player()
 {
-	int player;
+	int p;
 	char message[100];
-	if (es_read_int(game.fd, &player) < 0)
+	if (es_read_int(game.fd, &p) < 0)
 		return -1;
+	assert(p >= 0 && p < game.num_players);
 	if (es_read_string(game.fd, message, sizeof(message)) < 0)
 		return -1;
 
-	table_set_player_message(player, message);
+	table_set_player_message(p, message);
 
 	return 0;
 }
@@ -147,6 +148,8 @@ static int handle_req_play()
 {
 	if (es_read_int(game.fd, &game.play_hand) < 0)
 		return -1;
+
+	assert(game.play_hand >= 0 && game.play_hand < game.num_players);
 
 #ifdef ANIMATION
 	if(game.state == WH_STATE_ANIM)
@@ -317,14 +320,16 @@ static int get_gameover_status(void)
 
 	if (es_read_int(game.fd, &num_winners) < 0)
 		return -1;
+	assert(num_winners >= 0 && num_winners <= game.num_players);
 
 	/* handle different cases */	
 	if (num_winners == 0)
 		ggz_snprintf(msg, sizeof(msg), _("There was no winner") );
 	else {
-   	for(; num_winners; num_winners--) {
+		for(; num_winners; num_winners--) {
 			if (es_read_int(game.fd, &winner) < 0)
 				return -1;
+			assert(winner >= 0 && winner < game.num_players);
 			/* TODO: better grammar */
 			mlen += ggz_snprintf(msg+mlen, 100-mlen, "%s ", game.players[winner].name);		
 		}
@@ -387,6 +392,7 @@ static int handle_play(void)
 	if(es_read_int(game.fd, &p) < 0
 	   || es_read_card(game.fd, &card) < 0)
 		return -1;
+	assert(p >= 0 && p < game.num_players);
 
 	ggz_debug("     Received play from player %d: %i %i %i.", p, card.face, card.suit, card.deck);
 
@@ -396,7 +402,9 @@ static int handle_play(void)
 #endif /* ANIMATION */
 
 	/* remove the card from the hand */
+	assert(game.players);
 	hand = &game.players[p].hand;
+	assert(game.players[p].hand.card);
 
 	/* first, find a matching card to remove.
 	 * Anything "unknown" will match, as will the card itself*/
@@ -434,6 +442,7 @@ static int handle_msg_table(void)
 {
 	int p, status=0;
 
+	assert(game.players);
 	for (p=0; p<game.num_players; p++)
 		if (es_read_card(game.fd, &game.players[p].table_card) < 0)
 			status = -1;
@@ -450,7 +459,7 @@ static int handle_msg_table(void)
  */
 static int get_trick_winner(void)
 {
-	int p_num;
+	int p;
 	char *t_str;
 
 #ifdef ANIMATION
@@ -458,10 +467,11 @@ static int get_trick_winner(void)
 		table_animation_zip(TRUE);
 #endif /* ANIMATION */
 
-	if(es_read_int(game.fd, &p_num) < 0)
+	if(es_read_int(game.fd, &p) < 0)
 		return -1;
+	assert(p >= 0 && p < game.num_players);
 
-	t_str = g_strdup_printf(_("%s won the trick"), game.players[(int)p_num].name);
+	t_str = g_strdup_printf(_("%s won the trick"), game.players[p].name);
 	statusbar_message(t_str);
 	g_free(t_str);
 

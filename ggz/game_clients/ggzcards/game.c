@@ -26,7 +26,6 @@
 #  include <config.h>
 #endif
 
-#include <assert.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
 
@@ -42,36 +41,48 @@ struct game_t game = {0};
  */
 void game_send_bid(int bid)
 {
+	int status = 0;
 	ggz_debug("Sending bid to server: index %i.", bid);
-	es_write_int(game.fd, WH_RSP_BID);
-	es_write_int(game.fd, bid);
+	if (es_write_int(game.fd, WH_RSP_BID) < 0 ||
+	    es_write_int(game.fd, bid) < 0)
+		status = -1;
 	set_game_state( WH_STATE_WAIT ); /* return to waiting */
 
 	statusbar_message( _("Sending bid to server") );
+
+	assert(status == 0);
 }
 
 
 void game_send_options(int options_cnt, int* options)
 {
-	int i;
+	int i, status = 0;
 	ggz_debug("Sending options to server.");
 
 	es_write_int(game.fd, WH_RSP_OPTIONS);
 	for (i=0; i<options_cnt; i++)
-		es_write_int(game.fd, options[i]);
+		if (es_write_int(game.fd, options[i]) < 0)
+			status = -1;
 	set_game_state( WH_STATE_WAIT ); /* return to waiting */
 
 	statusbar_message( _("Sending options to server") );
+
+	assert(status == 0);
 }
 
 
 void game_play_card(card_t card)
 {
+	int status = 0;
+
 	ggz_debug("Sending play to server: %i %i %i.", card.face, card.suit, card.deck);
-	es_write_int(game.fd, WH_RSP_PLAY);
-	es_write_card(game.fd, card);
+	if (es_write_int(game.fd, WH_RSP_PLAY) < 0 ||
+	    es_write_card(game.fd, card) < 0)
+		status = -1;
 
 	statusbar_message( _("Sending play to server") );
+
+	assert(status == 0);
 }
 
 static char* game_states[] = {"INIT", "WAIT", "PLAY", "BID", "ANIM", "DONE", "OPTIONS"};

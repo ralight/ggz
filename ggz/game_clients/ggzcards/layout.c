@@ -24,7 +24,6 @@
 
 #include <stdlib.h>
 
-#include "assert.h"
 #include "game.h"
 #include "hand.h"
 #include "layout.h"
