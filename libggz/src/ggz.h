@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 3712 2002-03-28 20:19:48Z jdorje $
+ * $Id: ggz.h 3713 2002-03-28 20:33:43Z jdorje $
  * 
  * Header file for ggz componenets lib
  *
@@ -674,17 +674,8 @@ char * ggz_xml_escape(char *str);
  */
 char * ggz_xml_unescape(char *str);
 
-/**
- * Structure used internally by ggz_read_line()
+/** @brief Structure used internally by ggz_read_line()
  */
-struct _GGZFile {
-	int fdes;	/* File descriptor */
-	char *buf;	/* Data buffer */
-	char *p;	/* Current position in buffer */
-	char *e;	/* Points one char past end of valid data in buffer */
-	int bufsize;	/* Current buffer size */
-};
-
 typedef struct _GGZFile GGZFile;
 
 /**

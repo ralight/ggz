@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <ggz.h>
 
+#include "misc.h" /* We cheat. */
+
 #define TESTFILE "/tmp/libggz_test.read_line"
 
 void build_testfile(void);

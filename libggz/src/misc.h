@@ -1,12 +1,12 @@
 /*
- * File: msg.h
+ * File: misc.h
  * Author: Brent Hendricks
  * Project: GGZ Common components library
  * Date: 2001-10-12
  *
- * Header file for ggz componenets lib
+ * Internal header file for ggz components lib
  *
- * Copyright (C) 2001 Brent Hendricks.
+ * Copyright (C) 2001-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,3 +29,11 @@ void _ggz_debug(const char *type, const char *fmt, ...);
 
 /* Libggz internal message output function */
 void _ggz_msg(const char *fmt, ...);
+
+struct _GGZFile {
+	int fdes;	/* File descriptor */
+	char *buf;	/* Data buffer */
+	char *p;	/* Current position in buffer */
+	char *e;	/* Points one char past end of valid data in buffer */
+	int bufsize;	/* Current buffer size */
+};

@@ -32,6 +32,8 @@
 
 #include "ggz.h"
 
+#include "misc.h"
+
 static char * _fill_buffer(char *low_byte, GGZFile *file);
 
 char * ggz_xml_unescape(char *str)
