@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.c 4131 2002-05-02 04:29:21Z jdorje $
+ * $Id: ggz_stats.c 4147 2002-05-03 18:49:11Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -34,10 +34,7 @@
 #include "ggzdmod.h"
 #include "ggz_stats.h"
 
-extern int num_seats;
-extern struct ggzd_seat_t *seat_data;
-
-/* FIXME: using static values is no good with GGZdmod's object-orient system. 
+/* FIXME: using static values is no good with GGZdmod's object-orient system.
  */
 static int *ratings = NULL;
 static int teams = 0;
