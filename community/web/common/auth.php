@@ -52,6 +52,31 @@ class Auth
 			$database->exec("DELETE FROM auth WHERE handle = '$username'");
 			$database->exec("INSERT INTO auth (handle, cookie) VALUES ('$username', '$cookie')");
 			setcookie(Auth::cookiename(), $cookie, 0, "/");
+			return true;
+		endif;
+		return false;
+	}
+
+	function checklogin()
+	{
+		if ($_GET['login'] == "failed") :
+			echo "<font color='#ff0000'>Error:</font>\n";
+			echo "Login failed!";
+		elseif ($_GET['login'] == "done"):
+			$cookie = $_COOKIE[Auth::cookiename()];
+			if (!$cookie) :
+				echo "<font color='#ff0000'>Error:</font>\n";
+				echo "Need to allow cookies!";
+			endif;
+		elseif ($_GET['resend'] == "done"):
+			echo "<font color='#00ff00'>Notice:</font>\n";
+			echo "Resent authentication credentials.";
+		elseif ($_GET['register'] == "failed") :
+			echo "<font color='#ff0000'>Error:</font>\n";
+			echo "Registration failed!";
+		elseif ($_GET['register'] == "done"):
+			echo "<font color='#00ff00'>Notice:</font>\n";
+			echo "You have been registered.";
 		endif;
 	}
 
@@ -72,13 +97,14 @@ class Auth
 
 		$res = $database->exec("SELECT * FROM users WHERE handle = '$username'");
 		if (($res) && ($database->numrows($res) > 0)) :
-			return;
+			return false;
 		endif;
 
 		$cryptpass = Auth::hash($password);
 
 		$res = $database->exec("INSERT INTO users (handle, password, permissions, name, email) " .
 			"VALUES ('$username', '$cryptpass', 7, '', '$email')");
+		return true;
 	}
 
 	function resend($email, $encryption)

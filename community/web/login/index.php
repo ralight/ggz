@@ -21,18 +21,25 @@ $input_realname = $_POST["input_realname"];
 $input_email = $_POST["input_email"];
 $input_encryption = $_POST["input_encryption"];
 
+$param = "";
+
 if (($input_user) && ($input_pass)) :
 	if ($input_email) :
-		Auth::register($input_user, $input_pass, $input_email);
+		$ret = Auth::register($input_user, $input_pass, $input_email);
+		if ($ret) $param = "?register=done";
+		else $param = "?register=failed";
 	else :
-		Auth::login($input_user, $input_pass);
+		$ret = Auth::login($input_user, $input_pass);
+		if (!$ret) $param = "?login=failed";
+		else $param = "?login=done";
 	endif;
 elseif ($input_email) :
 	Auth::resend($input_email, $input_encryption);
+	$param = "?resend=done";
 else :
 	Auth::logout();
 endif;
 
-header("Location: /");
+header("Location: /$param");
 
 ?>
