@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2451 2001-09-11 08:35:40Z jdorje $
+ * $Id: common.h 2453 2001-09-11 19:20:55Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -42,6 +42,7 @@
 #include "game.h"
 #include "games.h"
 #include "message.h"
+#include "net.h"
 #include "options.h"
 #include "protocol.h"
 #include "types.h"
@@ -164,18 +165,6 @@ void set_game_state(server_state_t state);
 void save_game_state();
 void restore_game_state();
 
-int send_player_list(player_t);
-int send_play(card_t card, seat_t);
-int send_table(player_t);
-int send_sync(player_t);
-int send_sync_all();
-int send_gameover(int winner_cnt, player_t * winners);
-int req_play(player_t, seat_t);
-int rec_play(player_t);
-int send_badplay(player_t, char *);
-int send_hand(player_t, seat_t, int);
-int req_newgame(player_t);
-int send_newgame();
 void init_game();
 
 
