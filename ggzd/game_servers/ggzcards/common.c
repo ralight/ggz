@@ -45,6 +45,10 @@ char* game_states[] = {"WH_STATE_PRELAUNCH", "WH_STATE_NOTPLAYING", "WH_STATE_WA
 			"WH_STATE_FIRST_TRICK", "WH_STATE_NEXT_TRICK", "WH_STATE_NEXT_PLAY",
 			"WH_STATE_WAIT_FOR_PLAY"};
 
+
+static int try_to_start_game();
+static int newgame();
+
 void set_game_state(server_state_t state)
 {
 	/* sometimes an event can happen that changes the state while we're waiting for players,
@@ -672,7 +676,7 @@ int handle_player(player_t p)
 					ggz_debug("Entering game_handle_options.");
 					game.funcs->handle_options(options);
 					if (game.options_initted)
-						next_play();
+						try_to_start_game();
 					else
 						/* eventually we may be able to do multiple rounds of options. */
 						ggz_debug("SERVER BUG: handle_player: options not initted after game_handle_options called.");
@@ -717,8 +721,31 @@ void init_ggzcards(int which)
 	ggz_debug("Game initialized as game %d.", game.which_game);
 }
 
+/* try_to_start_game
+ *   tries to start a game, requesting information from players where necessary.
+ *   returns 1 on successful start.
+ */
+static int try_to_start_game()
+{
+	player_t p;
+	int ready = 1;
+
+	for (p=0; p<game.num_players; p++)
+		if (!game.players[p].ready && ggz_seats[p].assign != GGZ_SEAT_BOT) {
+			/* TODO: should another WH_REQ_NEWGAME be sent, just as a reminder?
+			 * if we do, then the client may not be able to determine that it's a duplicate... */
+			ggz_debug("Player %d/%s is not ready.", p, ggz_seats[p].name);
+			ready = 0;
+		}
+	if (ready && game.options_initted) {
+		newgame();
+		return 1;
+	}else
+		return 0;
+}
+
 /* start a new game! */
-int newgame()
+static int newgame()
 {
 	player_t p;
 
@@ -919,28 +946,17 @@ int handle_join_event(player_t player)
  */
 int handle_newgame_event(player_t player)
 {
-	int ready = 0;
 	int fd;
-	player_t p;
 
 	ggz_debug("Handling a newgame event for player %d/%s.", player, ggz_seats[player].name);
 	game.players[player].ready = 1;
-	ready = 1;
-	ggz_debug("Determining options.");
 	if (player == game.host && !game.options_initted &&
 	    (fd = ggz_seats[game.host].fd) != 0 &&
 	    game.funcs->get_options(fd) < 0) {
 		ggz_debug("Error in game_get_options.  Using defaults.");
 		game.options_initted = 1;
 	}
-	for (p=0; p<game.num_players; p++)
-		if (!game.players[p].ready && ggz_seats[p].assign != GGZ_SEAT_BOT) {
-			/* TODO: should another WH_REQ_NEWGAME be sent, just as a reminder?
-			 * if we do, then the client may not be able to determine that it's a duplicate... */
-			ggz_debug("Player %d/%s is not ready.", p, ggz_seats[p].name);
-			ready = 0;
-		}
-	if (ready && game.options_initted) newgame();
+	try_to_start_game();
 	return 0;
 }
 
