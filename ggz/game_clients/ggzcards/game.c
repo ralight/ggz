@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2961 2001-12-19 23:54:36Z jdorje $
+ * $Id: game.c 2964 2001-12-20 02:59:13Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -302,7 +302,6 @@ void game_alert_badplay(char *err_msg)
 	table_display_hand(ggzcards.play_hand);
 
 	statusbar_message(err_msg);
-	sleep(1);		/* just a delay? */
 }
 
 void game_alert_play(int player, card_t card, int pos)
