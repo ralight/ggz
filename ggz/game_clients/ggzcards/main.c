@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2890 2001-12-13 14:26:54Z jdorje $
+ * $Id: main.c 2891 2001-12-13 14:39:48Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -146,11 +146,15 @@ void table_alert_player(int player, GGZSeatType status, const char *name)
 	char *temp = NULL;
 	switch (status) {
 	case GGZ_SEAT_PLAYER:
-		temp = g_strdup_printf(_("%s joined the table"), name);
+		/* This assumes we can't have a smooth transition from one
+		   human player to another.  Could be a problem... */
+		if (ggzcards.players[player].status != GGZ_SEAT_PLAYER)
+			temp = g_strdup_printf(_("%s joined the table"),
+					       name);
 		break;
 	case GGZ_SEAT_OPEN:
 		name = _("Empty Seat");
-		if (ggzcards.players[player].name)
+		if (ggzcards.players[player].status == GGZ_SEAT_PLAYER)
 			temp = g_strdup_printf(_("%s left the table"),
 					       ggzcards.players[player].name);
 		break;
