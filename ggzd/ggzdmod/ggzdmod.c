@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2666 2001-11-05 00:19:07Z jdorje $
+ * $Id: ggzdmod.c 2667 2001-11-05 00:28:34Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -157,12 +157,9 @@ void ggzdmod_free(GGZdMod * mod)
 	
 	if (ggzdmod->fd != -1)
 		(void)ggzdmod_disconnect(ggzdmod);
-	
-	/* Free any fields the object contains */
-	ggzdmod->type = -1;
-	if (ggzdmod->seats)
-		ggz_free(ggzdmod->seats);
 
+	ggzdmod->type = -1;
+	
 	if (ggzdmod->argv) {
 		for (i = 0; ggzdmod->argv[i]; i++)
 			if (ggzdmod->argv[i])
@@ -891,10 +888,16 @@ int ggzdmod_disconnect(GGZdMod * mod)
 	   checking with the other threads.  --JDS */
 			
 	/* close all file descriptors */
-	for (p = 0; p < ggzdmod->num_seats; p++)
+	for (p = 0; p < ggzdmod->num_seats; p++) {
 		if (ggzdmod->seats[p].fd != -1) {
 			close(ggzdmod->seats[p].fd);
+			ggzdmod->seats[p].fd = -1;
 		}
+		if (ggzdmod->seats[p].name) {
+			ggz_free(ggzdmod->seats[p].name);
+			ggzdmod->seats[p].name = NULL;
+		}
+	}
 	free(ggzdmod->seats);
 	ggzdmod->seats = NULL;
 		
