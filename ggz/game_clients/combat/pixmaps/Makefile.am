@@ -1,3 +1,5 @@
+EXTRA_DIST = default/*.xpm
+
 SUBDIRS = .
 
 data = default
