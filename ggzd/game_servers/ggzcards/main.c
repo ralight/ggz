@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 3603 2002-03-20 05:14:13Z jdorje $
+ * $Id: main.c 3745 2002-04-05 06:20:48Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -214,18 +214,20 @@ static void main_loop(GGZdMod * ggz)
 		 */
 		for (p = 0; p < game.num_players; p++) {
 			int fd = get_player_socket(p);
-			if (fd < 0)
-				continue;
-			if (fd > max_fd)
-				max_fd = fd;
-			FD_SET(fd, &fd_set);
+			if (fd >= 0) {
+				if (fd > max_fd)
+					max_fd = fd;
+				FD_SET(fd, &fd_set);
+			}
 
 #ifdef DEBUG
 			if (get_player_status(p) == GGZ_SEAT_BOT) {
 				fd = game.players[p].err_fd;
-				if (fd > max_fd)
-					max_fd = fd;
-				FD_SET(fd, &fd_set);
+				if (fd >= 0) {
+					if (fd > max_fd)
+						max_fd = fd;
+					FD_SET(fd, &fd_set);
+				}
 			}
 #endif /* DEBUG */
 		}
@@ -258,7 +260,7 @@ static void main_loop(GGZdMod * ggz)
 			   us and translated as debugging output. */
 			if (get_player_status(p) == GGZ_SEAT_BOT) {
 				fd = game.players[p].err_fd;
-				if (FD_ISSET(fd, &fd_set))
+				if (fd >= 0 && FD_ISSET(fd, &fd_set))
 					handle_ai_stderr(p);
 			}
 #endif /* DEBUG */
