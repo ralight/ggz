@@ -27,8 +27,11 @@ int CWPathitem::available(int column, int mode)
 {
 	if((column < 0) || (column >= m_width)) return -1;
 
+	// Select a random field
 	for(int j = 0; j < m_height; j++)
-		if(m_field[column][j] == 1) return j;
+		if((m_field[column][j] == 1) && (!(rand() % 4))) return j;
+	for(int j = 0; j < m_height; j++)
+		if((m_field[column][j] == 1) && (!(rand() % 4))) return j;
 
 	// Set up field if none found
 	if(mode == force)
