@@ -31,8 +31,6 @@
 
 #include <easysock.h>
 #include <main_win.h>
-#include <x.xpm>
-#include <o.xpm>
 
 /* Tic-Tac-Toe protocol */
 /* Messages from server */
@@ -58,8 +56,6 @@
 #define GGZ_SEAT_OPEN   -1
 
 
-GdkPixmap* x_pix;
-GdkPixmap* o_pix;
 extern GdkPixmap* ttt_buf;
 GtkWidget *main_win;
 char board[3][3];
@@ -74,7 +70,6 @@ char gameover;
 void ggz_connect(void);
 void game_handle_io(gpointer data, gint fd, GdkInputCondition cond);
 void init_board(void);
-void display_board(void);
 int get_seat(int* num);
 int get_players(void);
 int get_my_move(void);
@@ -88,23 +83,22 @@ int get_gameover(void);
 int main(int argc, char* argv[])
 {
 	gtk_init (&argc, &argv);
-		
+
+	main_win = create_main_win();
+	gtk_widget_show(main_win);
+
+	init_board();
+	display_board();
+	
 	ggz_connect();
 	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
 	
 	/* Assume a second argument is the -o */
 	if (argc > 1) {
-		fprintf(stderr, "Sending NULL options\n");
+		game_status("Sending NULL options");
 		es_write_int(fd, 0);
 	}
 	
-	
-	main_win = create_main_win ();
-	gtk_widget_show (main_win);
-
-	init_board();
-	display_board();
-
 	gtk_main();
 	
 	return 0;
@@ -132,7 +126,6 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 		
 	case TTT_REQ_MOVE:
 		get_my_move();
-		/*send_my_move(fd, move);*/
 		break;
 		
 	case TTT_RSP_MOVE:
@@ -161,7 +154,7 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 
 int get_seat(int* num)
 {
-	fprintf(stderr, "Getting seat number\n");
+	game_status("Getting seat number");
 
 	if (es_read_int(fd, num) < 0)
 		return -1;
@@ -174,16 +167,15 @@ int get_players(void)
 {
 	int i;
 
-	fprintf(stderr, "Getting player names\n");
+	game_status("Getting player names");
 	for (i = 0; i < 2; i++) {
 		if (es_read_int(fd, &seat[i]) < 0)
 			return -1;
-		/*fprintf(stderr, "Player %d is %d\n", i, seat[i]);*/
 		
 		if (seat[i] != GGZ_SEAT_OPEN) {
 			if (es_read_string(fd, name[i], 9) < 0)
 				return -1;
-			fprintf(stderr, "Player %d named: %s\n", i, name[i]);
+			game_status("Player %d named: %s", i, name[i]);
 		}
 	}
 
@@ -204,7 +196,7 @@ int get_my_move(void)
 int get_opponent_move(void)
 {
 	
-	fprintf(stderr, "Getting opponent's move\n");
+	game_status("Getting opponent's move");
 	
 	if (es_read_int(fd, &move) < 0)
 		return -1;
@@ -221,21 +213,23 @@ int get_sync(void)
 	char turn;
 	char space;
 	
-	fprintf(stderr, "Getting re-sync\n");
+	game_status("Getting re-sync");
 	
 	if (es_read_char(fd, &turn) < 0)
 		return -1;
 
-	fprintf(stderr, "Player %d's turn\n", turn);
-
+	game_status("Player %d's turn", turn);
+	
         for (i = 0; i < 3; i++)
 		for (j = 0; j < 3; j++) {
 			if (es_read_char(fd, &space) < 0)
 				return -1;
+			game_status("Read a %d ", space);
 			if (space >= 0)
 				board[i][j] = (space == 0 ? 'x' : 'o');
 		}
-
+	
+	game_status("Sync completed");
 	return 0;
 }
 
@@ -244,7 +238,7 @@ int get_gameover(void)
 {
 	char winner;
 	
-	fprintf(stderr, "Game over\n");
+	game_status("Game over");
 	
 	if (es_read_char(fd, &winner) < 0)
 		return -1;
@@ -252,10 +246,10 @@ int get_gameover(void)
 	switch (winner) {
 	case 0:
 	case 1:
-		fprintf(stderr, "Player %d won\n", winner);
+		game_status("Player %d won", winner);
 		break;
 	case 2:
-		fprintf(stderr, "Tie game!\n");
+		game_status("Tie game!");
 		break;
 	}
 
@@ -263,78 +257,13 @@ int get_gameover(void)
 }
 
 
-void display_board(void)
-{
-	int i, j;
-	int x_co;
-	int y_co;
-	
-	GtkWidget* tmp;
-
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
-	
-	printf("  %d | %d | %d  \n", board[0][0], board[0][1], board[0][2]);
-	printf("-------------\n");
-	printf("  %d | %d | %d  \n", board[1][0], board[1][1], board[1][2]);
-	printf("-------------\n");
-	printf("  %d | %d | %d  \n", board[2][0], board[2][1], board[2][2]);
-	printf("\n");
-	
-	for (i = 0; i < 3; i++)
-		for (j = 0; j < 3; j++) {
-			x_co = j*60 + 10 + 20;
-			y_co = i*60 + 10 + 20;
-			switch (board[i][j]) {
-				
-			case 120:
-				g_print("Drawing x at (%d, %d)\n", x_co, y_co);
-				gdk_draw_pixmap( ttt_buf,
-						 tmp->style->fg_gc[GTK_WIDGET_STATE(tmp)],
-						 x_pix,
-						 0, 0,
-						 x_co, y_co,
-						 18, 20);
-				break;
-				
-			case 111:
-				g_print("Drawing o at (%d, %d)\n", x_co, y_co);
-				gdk_draw_pixmap( ttt_buf,
-						 tmp->style->fg_gc[GTK_WIDGET_STATE(tmp)],
-						 o_pix,
-						 0, 0,
-						 x_co, y_co,
-						 18, 20);
-				break;
-			}
-		}
-	
-	gtk_widget_draw(tmp, NULL);
-}
-
-
 void init_board(void)
 {
 	int i,j;
-	GtkStyle* style;
-	GdkBitmap* mask;
   
-
 	for (i = 0; i < 3; i++)
 		for (j = 0; j < 3; j++)
 			board[i][j] = ' ';
-
-	
-	/* now for the pixmap from gdk */
-	style = gtk_widget_get_style(main_win);
-	
-	x_pix = gdk_pixmap_create_from_xpm_d( main_win->window, &mask,
-					      &style->bg[GTK_STATE_NORMAL], 
-					      (gchar**)x );
-	
-	o_pix = gdk_pixmap_create_from_xpm_d( main_win->window, &mask,
-					      &style->bg[GTK_STATE_NORMAL], 
-					      (gchar**)o );
-	
 }
 
 
@@ -357,19 +286,19 @@ int make_my_move(int move)
 
 	switch(status) {
 	case TTT_ERR_STATE:
-		fprintf(stderr, "Server not ready!!\n");
+		game_status("Server not ready!!");
 		break;
 	case TTT_ERR_TURN:
-		fprintf(stderr, "Not my turn !!\n");
+		game_status("Not my turn !!");
 		break;
 	case TTT_ERR_BOUND:
-		fprintf(stderr, "Move out of bounds\n");
+		game_status("Move out of bounds");
 		break;
 	case TTT_ERR_FULL:
-		fprintf(stderr, "Space already occupied\n");
+		game_status("Space already occupied");
 		break;
 	case 0:
-		fprintf(stderr, "Move OK\n");
+		game_status("Move OK");
 		board[(move / 3)][(move % 3)] = (num == 0 ? 'x' : 'o');
 		break;
 	}

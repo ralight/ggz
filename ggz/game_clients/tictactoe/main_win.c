@@ -17,12 +17,20 @@
 
 #include <main_win.h>
 #include <support.h>
+#include <x.xpm>
+#include <o.xpm>
+
+
+/* Pixmaps */
+GdkPixmap* x_pix;
+GdkPixmap* o_pix;
+GdkPixmap* ttt_buf;
 
 GtkWidget *main_win;
-GdkPixmap* ttt_buf;
 
 extern int send_my_move(int move);
 extern int move;
+extern char board[3][3];
 
 void game_status( const char* format, ... ) 
 {
@@ -46,6 +54,69 @@ void game_status( const char* format, ... )
 	
 }
 
+
+void display_board(void)
+{
+	int i, j, x, y;
+	
+	GtkWidget* tmp;
+	GdkPixmap* piece;
+	GtkStyle* style;
+
+	g_print("  %c | %c | %c  \n", board[0][0], board[0][1], board[0][2]);
+	g_print("-------------\n");
+	g_print("  %c | %c | %c  \n", board[1][0], board[1][1], board[1][2]);
+	g_print("-------------\n");
+	g_print("  %c | %c | %c  \n", board[2][0], board[2][1], board[2][2]);
+	g_print("\n");
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
+	style = gtk_widget_get_style(main_win);
+
+	for (i = 0; i < 3; i++)
+		for (j = 0; j < 3; j++) {
+			if (board[i][j] == 'x') {
+				piece = x_pix;
+			}
+			else if (board[i][j] == 'o') {
+				piece = o_pix;
+			} else 
+				continue;
+
+			x = j*60 + 10 + 20;
+			y = i*60 + 10 + 20;
+			
+			g_print("Drawing %c at (%d, %d)\n", board[i][j], x, y);
+
+			gdk_draw_pixmap( ttt_buf,
+					 style->fg_gc[GTK_WIDGET_STATE(tmp)],
+					 piece,
+					 0, 0,
+					 x, y,
+					 18, 20);
+		}
+	
+	gtk_widget_draw(tmp, NULL);
+}
+
+
+void on_main_win_realize(GtkWidget* widget, gpointer user_data)
+{
+	GtkStyle* style;
+	GdkBitmap* mask;
+	
+	/* now for the pixmap from gdk */
+	style = gtk_widget_get_style(main_win);
+	
+	x_pix = gdk_pixmap_create_from_xpm_d( main_win->window, &mask,
+					      &style->bg[GTK_STATE_NORMAL], 
+					      (gchar**)x );
+	
+	o_pix = gdk_pixmap_create_from_xpm_d( main_win->window, &mask,
+					      &style->bg[GTK_STATE_NORMAL], 
+					      (gchar**)o );
+	
+}
 
 gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
@@ -216,6 +287,7 @@ gboolean get_move(GtkWidget *widget, GdkEventButton  *event,
 GtkWidget*
 create_main_win (void)
 {
+  GtkWidget *main_win;
   GtkWidget *main_box;
   GtkWidget *menubar;
   guint tmp_key;
@@ -323,13 +395,13 @@ create_main_win (void)
   gtk_container_add (GTK_CONTAINER (help_menu), about);
 
   drawingarea = gtk_drawing_area_new ();
-  gtk_drawing_area_size(GTK_DRAWING_AREA(drawingarea), 200, 200);
-
   gtk_widget_ref (drawingarea);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "drawingarea", drawingarea,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (drawingarea);
   gtk_box_pack_start (GTK_BOX (main_box), drawingarea, TRUE, TRUE, 0);
+  gtk_widget_set_usize (drawingarea, 200, 200);
+  gtk_widget_set_events (drawingarea, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK);
 
   statusbar = gtk_statusbar_new ();
   gtk_widget_ref (statusbar);
@@ -340,6 +412,9 @@ create_main_win (void)
 
   gtk_signal_connect (GTK_OBJECT (main_win), "delete_event",
                       GTK_SIGNAL_FUNC (main_exit),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (main_win), "realize",
+                      GTK_SIGNAL_FUNC (on_main_win_realize),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (resync), "activate",
                       GTK_SIGNAL_FUNC (game_resync),
@@ -356,12 +431,10 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (drawingarea), "expose_event",
                       GTK_SIGNAL_FUNC (expose_handle),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (drawingarea), "button_press_event",
+                      GTK_SIGNAL_FUNC (get_move),
+                      NULL);
 
-  gtk_signal_connect (GTK_OBJECT(drawingarea), "button_press_event",
-		      GTK_SIGNAL_FUNC(get_move), 
-		      NULL );
-
-  gtk_widget_set_events(drawingarea, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK );  
   gtk_window_add_accel_group (GTK_WINDOW (main_win), accel_group);
 
   return main_win;
