@@ -45,6 +45,7 @@
 
 void chat_allocate_colors(void);
 void chat_send_msg(GGZServer *server, gchar *message);
+void chat_send_wall(GGZServer *server, gchar *message);
 void chat_send_prvmsg(GGZServer *server, gchar *message);
 void chat_send_beep(GGZServer *server, gchar *message);
 void chat_save_lists(void);
@@ -271,6 +272,8 @@ void chat_send(gchar *message)
 			chat_list_friend();
 		else if(strncasecmp(message, "/ignore", 7) == 0)
 			chat_list_ignore();
+		else if(strncasecmp(message, "/wall", 5) == 0)
+			chat_send_wall(server, message);
 		else 
 			chat_send_msg(server, message);
 	}
@@ -328,6 +331,26 @@ void chat_send_prvmsg(GGZServer *server, gchar *message)
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("    Sends a private message to a user on the network."));
 }
 
+
+
+/* chat_send_wall() - Sends a message to all rooms
+ *
+ * Recieves:
+ *	GGZServer *server	: Currently connected server
+ *	gchar *message		: The text to send as a beep message
+ *
+ * Returns:
+ */
+
+void chat_send_wall(GGZServer *server, gchar *message)
+{
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	char *msg;
+
+	msg = g_strstrip(strdup(message+5));
+	g_print("WALL: %s\n", msg);
+	ggzcore_room_chat(room, GGZ_CHAT_ANNOUNCE, NULL, msg);
+}
 
 
 /* chat_send_beep() - Sends a beep to a user
@@ -404,11 +427,12 @@ void chat_help(void)
 {
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Chat Commands"));
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("-------------"));
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/me <action>"));
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/msg <username> <message>"));
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/beep <username>"));
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/friends"));
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/ignore"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/me <action> .............. Send an action"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/msg <username> <message> . Private message a player"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/beep <username> .......... Beep a player"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/friends .................. List your friends"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/ignore ................... List people your ignoring"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/wall <message> ........... Admin command"));
 }
 
 
