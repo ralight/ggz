@@ -65,7 +65,6 @@ class GGZapTray : public KSystemTray
 
 		QPopupMenu *m_menu;
 		GGZapGame *m_game;
-		GGZapConfig *m_config;
 		int m_state;
 };
 

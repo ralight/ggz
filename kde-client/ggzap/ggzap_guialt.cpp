@@ -31,7 +31,7 @@
 #include "config.h"
 
 GGZapGuiAlt::GGZapGuiAlt(QWidget *parent, const char *name)
-: QWidget(parent, name, WStyle_Customize | WRepaintNoErase)
+: GGZapSkin(parent, name, WStyle_Customize | WRepaintNoErase)
 {
 	QPixmap pix = QPixmap(KGGZ_DIRECTORY "/ggzap/redgear.png");
 	setErasePixmap(pix);

@@ -24,7 +24,7 @@
 
 // Forward declarations
 class GGZapHandler;
-class GGZapGui;
+class GGZapSkin;
 class QLabel;
 
 // The main window for GGZap
@@ -55,7 +55,7 @@ class GGZap : public QObject
 
 	private:
 		GGZapHandler *m_handler;
-		GGZapGui *m_gui;
+		GGZapSkin *m_gui;
 		int m_autolaunch;
 };
 

@@ -20,6 +20,8 @@
 
 // KDE includes
 #include <klocale.h>
+#include <kapplication.h>
+#include <kconfig.h>
 
 // Qt includes
 #include <qlayout.h>
@@ -33,36 +35,42 @@
 #include <stdlib.h>
 
 GGZapConfig::GGZapConfig(QWidget *parent, const char *name)
-: QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
+: KDialogBase(parent, name, true, QString::null, KDialogBase::Ok | KDialogBase::Cancel)
 {
 	QVBoxLayout *vbox;
-	QLabel *labelserver, *labelname;
-	QPushButton *ok;
+	QLabel *labelserver, *labelname, *labelgui;
+	QFrame *root;
 
-	labelserver = new QLabel(i18n("GGZap Reservation server"), this);
-	labelname = new QLabel(i18n("Player name (12 chars maximum)"), this);
+	root = makeMainWidget();
 
-	ok = new QPushButton(i18n("OK"), this);
+	labelserver = new QLabel(i18n("GGZap Reservation server"), root);
+	labelname = new QLabel(i18n("Player name (12 chars maximum)"), root);
+	labelgui = new QLabel(i18n("GUI to use"), root);
 
-	m_server = new QLineEdit(this);
-	m_username = new QLineEdit(this);
+	m_server = new QLineEdit(root);
+	m_username = new QLineEdit(root);
 
-	vbox = new QVBoxLayout(this, 5);
+	m_gui = new QComboBox(root);
+	m_gui->insertItem(i18n("Blue rectangle"));
+	m_gui->insertItem(i18n("Red gear"));
+
+	vbox = new QVBoxLayout(root, 5);
 	vbox->add(labelserver);
 	vbox->add(m_server);
 	vbox->add(labelname);
 	vbox->add(m_username);
-	vbox->add(ok);
+	vbox->add(labelgui);
+	vbox->add(m_gui);
 
-	connect(ok, SIGNAL(clicked()), SLOT(slotAccept()));
+	connect(this, SIGNAL(okClicked()), SLOT(slotAccept()));
 
 	configfile = new QString(getenv("HOME"));
 	configfile->append("/.ggz/ggzap.rc");
 	configLoad();
 
-	setFixedSize(200, 150);
+	//setFixedSize(200, 150);
 	setCaption(i18n("GGZap Configuration"));
-	show();
+	//show();
 }
 
 GGZapConfig::~GGZapConfig()
@@ -79,16 +87,27 @@ void GGZapConfig::slotAccept()
 void GGZapConfig::configLoad()
 {
 	GGZCoreConfio *conf;
+	KConfig *config;
+	QString type;
 
 	conf = new GGZCoreConfio(configfile->latin1(), GGZCoreConfio::readonly);
 	m_server->setText(conf->read("Global", "Server", "ggz.snafu.de"));
 	m_username->setText(conf->read("Global", "Username", getenv("USER")));
 	delete conf;
+
+	config = kapp->config();
+	config->setGroup("GUI");
+	type = config->readEntry("Type");
+
+	if(type == "bluebox") m_gui->setCurrentItem(0);
+	else if(type == "redgear") m_gui->setCurrentItem(1);
 }
 
 void GGZapConfig::configSave()
 {
 	GGZCoreConfio *conf;
+	KConfig *config;
+	QString type;
 
 	if(m_username->text().length() > 12) m_username->setText(m_username->text().left(12));
 	conf = new GGZCoreConfio(configfile->latin1(), GGZCoreConfio::readwrite | GGZCoreConfio::create);
@@ -96,5 +115,14 @@ void GGZapConfig::configSave()
 	conf->write("Global", "Username", m_username->text().latin1());
 	conf->commit();
 	delete conf;
+
+
+	type = "bluerectangle";
+	if(m_gui->currentItem() == 1) type = "redgear";
+
+	config = kapp->config();
+	config->setGroup("GUI");
+	config->writeEntry("Type", type);
+	config->sync();
 }
 

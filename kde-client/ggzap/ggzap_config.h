@@ -19,11 +19,12 @@
 #define GGZAP_CONFIG_H
 
 // Qt includes
-#include <qwidget.h>
+#include <kdialogbase.h>
 #include <qlineedit.h>
+#include <qcombobox.h>
 
 // Configuration dialog class for GGZap
-class GGZapConfig : public QWidget
+class GGZapConfig : public KDialogBase
 {
 	Q_OBJECT
 	public:
@@ -39,6 +40,7 @@ class GGZapConfig : public QWidget
 	
 		QLineEdit *m_server, *m_username;
 		QString *configfile;
+		QComboBox *m_gui;
 };
 
 #endif

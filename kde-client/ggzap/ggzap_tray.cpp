@@ -38,8 +38,6 @@
 GGZapTray::GGZapTray(QWidget *parent, const char *name)
 : KSystemTray(parent, name)
 {
-	m_config = NULL;
-
 	m_game = new GGZapGame();
 
 	m_menu = new QPopupMenu(this);
@@ -65,7 +63,6 @@ GGZapTray::~GGZapTray()
 {
 	delete m_menu;
 	delete m_game;
-	if(m_config) delete m_config;
 }
 
 void GGZapTray::contextMenuAboutToShow(KPopupMenu *menu)
@@ -87,6 +84,8 @@ void GGZapTray::slotLaunch(int gameid)
 
 void GGZapTray::slotMenu(int id)
 {
+	GGZapConfig configuration(this, "GGZapConfig");
+
 	switch(id)
 	{
 		case menulaunch:
@@ -109,8 +108,7 @@ void GGZapTray::slotMenu(int id)
 			m_state = stateidle;
 			break;
 		case menuconfigure:
-			if(!m_config) m_config = new GGZapConfig(NULL, "GGZapConfig");
-			m_config->show();
+			configuration.exec();
 			break;
 		case menuabout:
 			const KAboutData *aboutdata = kapp->aboutData();

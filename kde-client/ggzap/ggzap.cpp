@@ -20,11 +20,13 @@
 #include "ggzap_tray.h"
 #include "ggzap_handler.h"
 #include "ggzap_gui.h"
+#include "ggzap_guialt.h"
 
 // KDE includes
 #include <kapplication.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kconfig.h>
 
 // Configuration includes
 #include "config.h"
@@ -33,8 +35,15 @@ GGZap::GGZap(QWidget *parent, const char *name)
 : QObject()
 {
 	GGZapTray *tray;
+	KConfig *conf;
+	QString gui;
 
-	m_gui = new GGZapGui();
+	conf = kapp->config();
+	conf->setGroup("GUI");
+	gui = conf->readEntry("Type");
+
+	if(gui == "redgear") m_gui = new GGZapGuiAlt();
+	else m_gui = new GGZapGui();
 
 	tray = new GGZapTray(m_gui, "GGZapTray");
 	m_autolaunch = 0;
@@ -46,8 +55,6 @@ GGZap::GGZap(QWidget *parent, const char *name)
 	connect(tray, SIGNAL(signalCancel()), SLOT(slotCancel()));
 	connect(this, SIGNAL(signalMenu(int)), tray, SLOT(slotMenu(int)));
 
-/*	startTimer(200);*/
-
 	m_gui->move(kapp->desktop()->width() / 2 - 125, kapp->desktop()->height() / 2 - 50);
 }
 
@@ -55,11 +62,6 @@ GGZap::~GGZap()
 {
 	delete m_handler;
 }
-
-/*void GGZap::timerEvent(QTimerEvent *e)
-{
-	m_handler->process();
-}*/
 
 void GGZap::setModule(const char *modulename)
 {

@@ -18,12 +18,15 @@
 #ifndef GGZAP_GUIALT_H
 #define GGZAP_GUIALT_H
 
+// GGZap includes
+#include "ggzap_skin.h"
+
 // Qt includes
 #include <qwidget.h>
 #include <qevent.h>
 
 // Next generation GUI for GGZap
-class GGZapGuiAlt : public QWidget
+class GGZapGuiAlt : public GGZapSkin
 {
 	public:
 		GGZapGuiAlt(QWidget *parent = NULL, const char *name = NULL);

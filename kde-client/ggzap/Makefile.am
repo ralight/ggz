@@ -13,7 +13,8 @@ ggzap_SOURCES = \
 	ggzap_handler.cpp \
 	ggzap_game.cpp \
 	ggzap_gui.cpp \
-	ggzap_guialt.cpp
+	ggzap_guialt.cpp \
+	ggzap_skin.cpp
 
 noinst_HEADERS = \
 	ggzap.h \
@@ -22,7 +23,8 @@ noinst_HEADERS = \
 	ggzap_handler.h \
 	ggzap_game.h \
 	ggzap_gui.h \
-	ggzap_guialt.h
+	ggzap_guialt.h \
+	ggzap_skin.h
 
 AM_CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES) -ggdb3
 

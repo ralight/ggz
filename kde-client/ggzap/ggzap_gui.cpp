@@ -31,7 +31,7 @@
 #include "config.h"
 
 GGZapGui::GGZapGui(QWidget *parent, const char *name)
-: QWidget(parent, name, WStyle_Customize | WRepaintNoErase)
+: GGZapSkin(parent, name, WStyle_Customize | WRepaintNoErase)
 {
 	setPaletteBackgroundColor(QColor(30, 20, 140));
 	setFixedSize(300, 200);
