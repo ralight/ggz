@@ -316,7 +316,7 @@ for ($i = 0; $i < pg_numrows($res); $i++)
 	$teamname = pg_result($res, $i, "teamname");
 	$role = pg_result($res, $i, "role");
 
-	$color = "silver_";
+	$color = "silver";
 	$number = 1;
 	$attribute = "";
 	$title = "";
@@ -327,29 +327,46 @@ for ($i = 0; $i < pg_numrows($res); $i++)
 	endif;
 	if (strstr($role, "leader")) :
 		$title .= "Leader & ";
-		$color = "gold_";
-		$attribute = "d";
+		$color = "gold";
+		if ($attribute != "s") :
+			$attribute = "d";
+		endif;
 	endif;
 	if (strstr($role, "vice")) :
 		$title .= "Vice Leader & ";
-		$color = "gold_";
+		$color = "gold";
 	endif;
 
 	$title = substr($title, 0, strlen($title) - 2);
 
 	echo "$teamname\n";
-	echo "<img src='ggzicons/rankings/rank_$color$number$attribute.gif.png' title='$title'><br>\n";
+	for ($i = 0; $i < $number; $i++)
+	{
+		echo "<img src='ggzicons/rankings/$color$attribute.png' title='$title'>\n";
+	}
+	echo "<br>\n";
 }
 
 
 echo "Bla\n";
-echo "<img src='ggzicons/rankings/rank_gold_3s.gif.png' title='Multiple Winner & Leader & Founder'><br>\n";
+echo "<img src='ggzicons/rankings/golds.png' title='Multiple Winner & Leader & Founder'>\n";
+echo "<img src='ggzicons/rankings/golds.png' title='Multiple Winner & Leader & Founder'>\n";
+echo "<img src='ggzicons/rankings/golds.png' title='Multiple Winner & Leader & Founder'>\n";
+echo "<br>\n";
 echo "Kuh\n";
-echo "<img src='ggzicons/rankings/rank_gold_2.gif.png' title='Winner & Vice Leader'><br>\n";
+echo "<img src='ggzicons/rankings/gold.png' title='Winner & Vice Leader'>\n";
+echo "<img src='ggzicons/rankings/gold.png' title='Winner & Vice Leader'>\n";
+echo "<br>\n";
 echo "Narf\n";
-echo "<img src='ggzicons/rankings/rank_silver_2.gif.png' title='Winner'><br>\n";
+echo "<img src='ggzicons/rankings/silver.png' title='Winner'>\n";
+echo "<img src='ggzicons/rankings/silver.png' title='Winner'>\n";
+echo "<br>\n";
 echo "Ruffle\n";
-echo "<img src='ggzicons/rankings/rank_silver_1.gif.png' title='Member'><br>\n";
+echo "<img src='ggzicons/rankings/silver.png' title='Member'>\n";
+echo "<br>\n";
+echo "TheKing\n";
+echo "<img src='ggzicons/rankings/rubin.png' title='Site Admin'>\n";
+echo "<br>\n";
 
 $res = pg_exec($id, "SELECT * FROM teammembers WHERE handle = '$ggzuser' AND role NOT LIKE '%member%'");
 
@@ -469,13 +486,24 @@ echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='
 echo "<b>Rankings</b><br>\n";
 
 echo "Global:\n";
-echo "<img src='ggzicons/rankings/rank_silver_4.gif.png' title='Rank 8'><br>\n";
+echo "<img src='ggzicons/rankings/cupgolda.png' title='Rank 1'>\n";
+echo "<img src='ggzicons/rankings/cupsilvera.png' title='Rank 2'>\n";
+echo "<img src='ggzicons/rankings/cupbronzea.png' title='Rank 3'>\n";
+echo "<br>\n";
 echo "TicTacToe:\n";
-echo "<img src='ggzicons/rankings/rank_gold_3.gif.png' title='Rank 1'><br>\n";
-echo "Tournament Foo of class Bar:\n";
-echo "<img src='ggzicons/rankings/rank_silver_2.gif.png' title='5th place'><br>\n";
+echo "<img src='ggzicons/rankings/cupgoldg.png' title='Rank 1'>\n";
+echo "<img src='ggzicons/rankings/cupsilverg.png' title='Rank 2'>\n";
+echo "<img src='ggzicons/rankings/cupbronzeg.png' title='Rank 3'>\n";
+echo "<br>\n";
 echo "Tournament class Bar:\n";
-echo "<img src='ggzicons/rankings/rank_silver_3s.gif.png' title='Rank 1'><br>\n";
+echo "<img src='ggzicons/rankings/cupsilvert.png' title='Rank 2'>\n";
+echo "<br>\n";
+echo "Tournament Foo of class Bar:\n";
+echo "<img src='ggzicons/rankings/cupgold.png' title='1st place'>\n";
+echo "<br>\n";
+echo "Game of gametype TicTacToe:\n";
+echo "<img src='ggzicons/rankings/coingold.png' title='winner'>\n";
+echo "<br>\n";
 
 echo "</td></tr></table>\n";
 echo "</td></tr></table>\n";
