@@ -30,6 +30,7 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "string.h"
+#include <ggz.h>
 
 unsigned char *combat_options_string_write(combat_game *_game, int for_hash) {
 	unsigned char *ptr;
@@ -46,7 +47,7 @@ unsigned char *combat_options_string_write(combat_game *_game, int for_hash) {
   // O_BIN2
   if (_game->options & (255<<8))
     len += 1 + 1 + 1;
-	optstr = (char *)malloc(sizeof(char) * (len+1));
+	optstr = (char *)ggz_malloc(sizeof(char) * (len+1));
   strcpy(optstr, "");
 	ptr = optstr;
   /* Width * Height */
@@ -98,7 +99,7 @@ int combat_options_string_read(unsigned char *optstr, combat_game *_game) {
 	_game->height = optstr[1];
   /* Terrain data */
 	optstr+=2;
-	_game->map = malloc(_game->width*_game->height * sizeof(tile));
+	_game->map = ggz_malloc(_game->width*_game->height * sizeof(tile));
 	for (a = 0; a < _game->width*_game->height; a++) {
 			_game->map[a].type = optstr[a];
 			_game->map[a].unit = U_EMPTY;
@@ -119,7 +120,7 @@ int combat_options_string_read(unsigned char *optstr, combat_game *_game) {
       case O_NAME:
         optstr++;
         // optstr now points to the name of the map
-        _game->name = (char *)malloc(strlen(optstr) + 1);
+        _game->name = (char *)ggz_malloc(strlen(optstr) + 1);
         if (_game->name)
           strcpy(_game->name, optstr);
         // Go until the last character in the string
@@ -323,7 +324,7 @@ char *combat_options_describe(combat_game *_game, int short_desc) {
   char *retstr;
   char temp[32];
   int a, tot = 0;
-  retstr = (char *)malloc(sizeof(char) * 1024);
+  retstr = (char *)ggz_malloc(sizeof(char) * 1024);
   strcpy(retstr, "");
   if (!short_desc) {
     if (_game->name) {

@@ -12,6 +12,8 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include <ggz.h>
+
 #include "combat.h"
 #include "support.h"
 #include "dlg_options.h"
@@ -934,10 +936,10 @@ void init_map_data(GtkWidget *dlg_options) {
   if (!options)
     dlg_options_update(dlg_options);
   if (options->map) {
-    free(options->map);
+    ggz_free(options->map);
     options->map = NULL;
   }
-	options->map = (tile *)malloc(sizeof(tile) * options->width * options->height + 1);
+	options->map = (tile *)ggz_malloc(sizeof(tile) * options->width * options->height + 1);
 	for (a = 0; a < options->width * options->height; a++)
 	  options->map[a].type = OPEN;
 
@@ -961,7 +963,7 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
   int tot = 0, other = 0, a, pos = 0;
   gtk_object_set_data(GTK_OBJECT(clist), "row", GINT_TO_POINTER(row));
   filenames = gtk_object_get_data(GTK_OBJECT(clist), "maps");
-  preview_game = (combat_game *)malloc(sizeof(combat_game));
+  preview_game = (combat_game *)ggz_malloc(sizeof(combat_game));
   preview_game->number = GPOINTER_TO_INT(
                         gtk_object_get_data(GTK_OBJECT(user_data), "number"));
   preview_game->army = (char **)calloc(preview_game->number+1, sizeof(char *));
@@ -1000,7 +1002,7 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
   if (preview_game->options)
     preview_options_string = combat_options_describe(preview_game, 1);
   else {
-    preview_options_string = (char *)malloc(sizeof(char) * 11);
+    preview_options_string = (char *)ggz_malloc(sizeof(char) * 11);
     sprintf(preview_options_string, "No options");
   }
   gtk_editable_insert_text(GTK_EDITABLE(preview_options), preview_options_string, strlen(preview_options_string), &pos);
@@ -1077,7 +1079,7 @@ void save_map(GtkButton *button, GtkWidget *dialog) {
   GtkWidget *map_name = lookup_widget(dialog, "map_name");
   char *name = gtk_entry_get_text(GTK_ENTRY(map_name));
   combat_game *game = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
-  game->name = (char *)malloc(strlen(name) + 1);
+  game->name = (char *)ggz_malloc(strlen(name) + 1);
   strcpy(game->name, name);
   map_save(game);
   dlg_options_list_maps(gtk_object_get_data(GTK_OBJECT(dlg_options), "maps_list"));
@@ -1090,7 +1092,7 @@ void load_map(char *filename, GtkWidget *dialog) {
   GtkWidget *options_widget;
   char options_name[14];
   int a;
-  combat_game *map = (combat_game *)malloc(sizeof(combat_game));
+  combat_game *map = (combat_game *)ggz_malloc(sizeof(combat_game));
   map->number = GPOINTER_TO_INT(
                   gtk_object_get_data(GTK_OBJECT(dialog), "number"));
   map->army = (char **)calloc(map->number+1, sizeof(char *));
@@ -1227,7 +1229,7 @@ void dlg_options_update(GtkWidget *dlg_options) {
   // Gets old value or allocs it
   options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
   if (!options) {
-    options = (combat_game *)malloc(sizeof(combat_game));
+    options = (combat_game *)ggz_malloc(sizeof(combat_game));
     options->number = GPOINTER_TO_INT(
                       gtk_object_get_data(GTK_OBJECT(dlg_options), "number"));
     options->army = (char **)calloc(options->number+1, sizeof(char *));
@@ -1265,7 +1267,7 @@ void dlg_options_update(GtkWidget *dlg_options) {
 
   // Map was changed! It doesn't have a name now!
   if (options->name) {
-    free(options->name);
+    ggz_free(options->name);
     options->name = NULL;
   }
 	
@@ -1378,7 +1380,7 @@ int dlg_options_list_maps(GtkWidget *dlg) {
   names = map_list();
   current = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(dlg), "row"));
   clist_name = (char **)calloc(1, sizeof(char *));
-  clist_name[0] = (char *)malloc(64 * sizeof(char));
+  clist_name[0] = (char *)ggz_malloc(64 * sizeof(char));
   gtk_clist_clear(GTK_CLIST(dlg));
   gtk_object_set_data(GTK_OBJECT(dlg), "maps", names);
   for (a = 0; names[a]; a++) {
@@ -1449,7 +1451,7 @@ gboolean mini_board_click         (GtkWidget       *widget, GdkEventButton  *eve
 
   // Map was changed! It doesn't have a name now!
   if (options->name) {
-    free(options->name);
+    ggz_free(options->name);
     options->name = NULL;
   }
 

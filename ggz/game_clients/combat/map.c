@@ -96,7 +96,7 @@ int map_save(combat_game *map) {
   for (a = 0; a < 12; a++)
     ggz_conf_write_int(handle, "army", file_unit_name[a], map->army[map->number][a]);
   // Map data
-  map_data = (char *)malloc(map->width * map->height + 1);
+  map_data = (char *)ggz_malloc(map->width * map->height + 1);
   for (a = 0; a < map->width*map->height; a++) {
     if (GET_OWNER(map->map[a].type) >= 0) {
       // Intial position!
@@ -173,7 +173,7 @@ void map_load(combat_game *_game, char *filename, int *changed) {
   }
   // Terrain data
   terrain_data = ggz_conf_read_string(handle, "map", "data", NULL);
-  _game->map = (tile *)malloc(_game->width * _game->height * sizeof(tile));
+  _game->map = (tile *)ggz_malloc(_game->width * _game->height * sizeof(tile));
   if (terrain_data) {
     a = strlen(terrain_data);
     while (--a>=0) {
@@ -209,7 +209,7 @@ void map_load(combat_game *_game, char *filename, int *changed) {
   b = a + 1;
   while (b < strlen(filename) && filename[b]!='.')
     b++;
-  _game->name = (char *)malloc( b - a );
+  _game->name = (char *)ggz_malloc( b - a );
   strncpy(_game->name, filename+a+1, b - a - 1 );
   _game->name[b - a - 1] = 0;
 
@@ -220,7 +220,7 @@ void map_load(combat_game *_game, char *filename, int *changed) {
     // Hash don't match!!
     ggz_error_msg("Filename for map %s should be %s.%u, and not %s", _game->name, _game->name, hash, filename);
     // Let's rename it!
-    new_filename = (char *)malloc(strlen(filename) + strlen(hash_str) + 14);
+    new_filename = (char *)ggz_malloc(strlen(filename) + strlen(hash_str) + 14);
     for (a = strlen(filename); a >= 0; a--) {
       if (filename[a] == '.')
         break;
@@ -254,7 +254,7 @@ char **map_list() {
   names[map_number] = 0;
   for (a = 0; a < 2; a++) {
     while (n[a]-- > 0) {
-      names[b] = (char *)malloc(strlen(dir[a]) + strlen(namelist[a][n[a]]->d_name) + 3);
+      names[b] = (char *)ggz_malloc(strlen(dir[a]) + strlen(namelist[a][n[a]]->d_name) + 3);
       sprintf(names[b], "%s/%s", dir[a], namelist[a][n[a]]->d_name);
       b++;
     }

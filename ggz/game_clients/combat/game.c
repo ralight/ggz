@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 4007 2002-04-17 21:09:48Z perdig $
+ * $Id: game.c 4009 2002-04-17 21:22:19Z perdig $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -194,7 +194,7 @@ int game_get_seat() {
   cbt_info.names = (char **)calloc(cbt_game.number, sizeof(char *));
 
   // Create the seats
-  cbt_info.seats = (int *)malloc(cbt_game.number * sizeof(int));
+  cbt_info.seats = (int *)ggz_malloc(cbt_game.number * sizeof(int));
 
   return 0;
 }
@@ -246,10 +246,10 @@ int game_get_options() {
   }
 
   if (cbt_game.name) {
-    title = malloc(strlen("Combat - ") + strlen(cbt_game.name) + 1);
+    title = ggz_malloc(strlen("Combat - ") + strlen(cbt_game.name) + 1);
     sprintf(title, "Combat - %s", cbt_game.name);
     gtk_window_set_title(GTK_WINDOW(main_win), title);
-    free(title);
+    ggz_free(title);
   }
 
   if (cbt_game.options & OPT_OPEN_MAP || cbt_game.options & OPT_SHOW_ENEMY_UNITS) {
@@ -505,8 +505,8 @@ void game_add_player_info(int number) {
   char **info;
 
   info = (char **)calloc(3, sizeof(char *));
-  info[1] = (char *)malloc(1 * sizeof(char));
-  info[2] = (char *)malloc(5 * sizeof(char));
+  info[1] = (char *)ggz_malloc(1 * sizeof(char));
+  info[2] = (char *)ggz_malloc(5 * sizeof(char));
 
   // Allocs memory
   player_list = (GtkWidget **)calloc(number, sizeof(GtkWidget *));
@@ -809,7 +809,7 @@ void game_send_setup() {
   }
 
   // Alloc memory
-  setup = (char *)malloc((len+1) * sizeof(char));
+  setup = (char *)ggz_malloc((len+1) * sizeof(char));
 
   // Puts setup together
   // Adds one to everyone, so it can be sent without problems
@@ -827,7 +827,7 @@ void game_send_setup() {
     game_status("Couldn't send the setup!");
 
   // Free memory
-  free(setup);
+  ggz_free(setup);
 
   // Hide the button
   callback_widget_set_enabled("send_setup", FALSE);
@@ -965,7 +965,7 @@ void game_ask_save_map() {
 void game_confirm_save_map(GtkButton *button, gpointer user_data) {
   GtkWidget *map_name = lookup_widget(user_data, "map_name");
   char *name = gtk_entry_get_text(GTK_ENTRY(map_name));
-  cbt_game.name = (char *)malloc(strlen(name) + 1);
+  cbt_game.name = (char *)ggz_malloc(strlen(name) + 1);
   strcpy(cbt_game.name, name);
   map_save(&cbt_game);
 }
