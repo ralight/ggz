@@ -16,10 +16,15 @@ class Board : public QWidget
 	public:
 		Board(QWidget *parent = NULL, const char *name = NULL);
 		~Board();
+		void init();
+		void remis();
+		void loose();
+
 	protected:
 		void paintEvent(QPaintEvent *e);
 		void resizeEvent(QResizeEvent *e);
 		void mousePressEvent(QMouseEvent *e);
+
 	private:
 		void paintStone(QPixmap *tmp, QPainter *p, int x, int y, int owner);
 

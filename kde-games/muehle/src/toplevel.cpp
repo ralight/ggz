@@ -6,8 +6,7 @@
 Toplevel::Toplevel()
 : KMainWindow()
 {
-	Board *board;
-	KPopupMenu *menu_game, *menu_theme;
+	KPopupMenu *menu_game, *menu_theme, *menu_player;
 
 	menu_game = new KPopupMenu(this);
 	menu_game->insertItem("New", menugamenew);
@@ -19,7 +18,12 @@ Toplevel::Toplevel()
 	menu_theme->insertItem("Theme 2", menutheme2);
 	menu_theme->insertItem("Theme 3", menutheme3);
 
+	menu_player = new KPopupMenu(this);
+	menu_player->insertItem("Offer remis", menuplayerremis);
+	menu_player->insertItem("Give up", menuplayerloose);
+
 	menuBar()->insertItem("Game", menu_game);
+	menuBar()->insertItem("Player", menu_player);
 	menuBar()->insertItem("Theme", menu_theme);
 	menuBar()->insertItem("Help", helpMenu());
 
@@ -32,6 +36,7 @@ Toplevel::Toplevel()
 	show();
 
 	connect(menu_game, SIGNAL(activated(int)), SLOT(slotMenu(int)));
+	connect(menu_player, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 
 	resize(600, 600);
 
@@ -47,6 +52,7 @@ void Toplevel::slotMenu(int id)
 	switch(id)
 	{
 		case menugamenew:
+			board->init();
 			break;
 		case menugamequit:
 			close();
@@ -56,6 +62,12 @@ void Toplevel::slotMenu(int id)
 		case menutheme2:
 			break;
 		case menutheme3:
+			break;
+		case menuplayerremis:
+			board->remis();
+			break;
+		case menuplayerloose:
+			board->loose();
 			break;
 	}
 }

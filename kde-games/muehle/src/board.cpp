@@ -55,6 +55,8 @@ Board::Board(QWidget *parent, const char *name)
 	web->addPeer(QPoint(50, 20), QPoint(50, 30));
 	web->addPeer(QPoint(50, 70), QPoint(50, 80));
 	web->addPeer(QPoint(50, 80), QPoint(50, 90));
+
+	stonelist.setAutoDelete(true);
 }
 
 Board::~Board()
@@ -62,6 +64,12 @@ Board::~Board()
 	delete web;
 	delete bg;
 	delete net;
+}
+
+void Board::init()
+{
+	stonelist.clear();
+	repaint();
 }
 
 void Board::paintStone(QPixmap *tmp, QPainter *p, int x, int y, int owner)
@@ -207,12 +215,15 @@ void Board::mousePressEvent(QMouseEvent *e)
 				stone->assign(Stone::white);
 				stonelist.append(stone);
 
-				net->output(QString("[%1,%2].").arg(x).arg(y));
-
 				if(astone)
 				{
+					net->output(QString("[%1,%2,%3,%4].").arg(astone->x()).arg(astone->y()).arg(x).arg(y));
 					stonelist.remove(astone);
-					delete astone;
+					//delete astone;
+				}
+				else
+				{
+					net->output(QString("[%1,%2].").arg(x).arg(y));
 				}
 			}
 		}
@@ -262,5 +273,15 @@ void Board::mousePressEvent(QMouseEvent *e)
 
 		repaint();
 	}
+}
+
+void Board::remis()
+{
+	net->output("remis.");
+}
+
+void Board::loose()
+{
+	net->output("loose.");
 }
 

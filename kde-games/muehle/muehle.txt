@@ -1,0 +1,23 @@
+How to play Muehle
+------------------
+
+There are different possibilities.
+I found a very interesting GPL'd project, a Muehle server implemented in
+Tcl/Tk. This is for demonstrational purpose (therefore the GUI), and has been a
+task for students who had to write the game clients in Prolog...
+
+The server is a single file and says:
+muehle.tcl Copyright (C) 2001 Jochen Hoenicke.
+
+The GGZ Muehle game will be compatible to the network protocol issued by this
+server. There is a perl test script as well.
+However, a new server implementation written in C++ will be provided too to
+show how easy it is to code something up using the appropriate classes (in this
+case, the freshly created QWeb and friends).
+
+I don't know of any AI yet, but I'm much in favor of having this as an external
+process spawned by the server or ggzd or a helper script.
+Maybe we should invent something like AICommandLine :)
+
+Josef
+

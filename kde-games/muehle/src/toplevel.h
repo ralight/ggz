@@ -3,6 +3,8 @@
 
 #include <kmainwindow.h>
 
+class Board;
+
 class Toplevel : public KMainWindow
 {
 	Q_OBJECT
@@ -13,12 +15,18 @@ class Toplevel : public KMainWindow
 		{
 			menugamenew,
 			menugamequit,
+			menuplayerremis,
+			menuplayerloose,
 			menutheme1,
 			menutheme2,
 			menutheme3
 		};
+
 	public slots:
 		void slotMenu(int id);
+
+	private:
+		Board *board;
 };
 
 #endif
