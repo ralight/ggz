@@ -101,7 +101,7 @@ int main(const int argc, const char *argv[])
 	struct timeval timeout;
 	poptContext context;
 	int rc;
-	char *tmp, *home;
+	char tmp[1024], *home;
 	char file[1024];
 	FILE *grub_file;
 
@@ -150,15 +150,65 @@ int main(const int argc, const char *argv[])
 	strcpy(file, home);
 	strcat(file,"/.agrub");
 
-	grub_file = fopen(file, "w");
+	grub_file = fopen(file, "r");
 	if (grub_file == NULL)
 	{
-		printf("Error Loading known information\n\n");
-		return;
+		printf("Error loading known information\n\n");
 	} else {
+		printf("Loading known information\n");
 		/* Load up known information */
+		fgets(tmp, 1024, grub_file);
+		printf(">>> Version: %s\n",tmp);
+		fgets(tmp, 1024, grub_file);
+		num_known = atoi(tmp);
+		printf(">>> Entries: %d\n",num_known);
+		for(j=0;j<num_known;j++)
+		{
+			fgets(tmp, 1024, grub_file);
+			tmp[strlen(tmp)-1] = '\0';
+			known[j].name = malloc(strlen(tmp));
+			strcpy(known[j].name, tmp);
+			if(!strcmp(known[j].name,"NULL"))
+				known[j].name = NULL;
+			printf(">>> %s ",known[j].name);
 
+			fgets(tmp, 1024, grub_file);
+			tmp[strlen(tmp)-1] = '\0';
+			known[j].aka = malloc(strlen(tmp));
+			strcpy(known[j].aka, tmp);
+			if(!strcmp(known[j].aka,"NULL"))
+				known[j].aka = NULL;
+			printf("- %s",known[j].aka);
 
+			fgets(tmp, 1024, grub_file);
+			known[j].last_seen = atoi (tmp);
+			printf("- %d ",known[j].last_seen);
+
+			fgets(tmp, 1024, grub_file);
+			tmp[strlen(tmp)-1] = '\0';
+			known[j].last_room = malloc(strlen(tmp));
+			strcpy(known[j].last_room, tmp);
+			if(!strcmp(known[j].last_room,"NULL"))
+				known[j].last_room = NULL;
+			printf("- %s",known[j].last_room);
+
+			fgets(tmp, 1024, grub_file);
+			tmp[strlen(tmp)-1] = '\0';
+			known[j].msg_from = malloc(strlen(tmp));
+			strcpy(known[j].msg_from, tmp);
+			if(!strcmp(known[j].msg_from,"NULL"))
+				known[j].msg_from = NULL;
+			printf("- %s",known[j].msg_from);
+
+			fgets(tmp, 1024, grub_file);
+			tmp[strlen(tmp)-1] = '\0';
+			known[j].msg = malloc(strlen(tmp));
+			strcpy(known[j].msg, tmp);
+			if(!strcmp(known[j].msg,"NULL"))
+				known[j].msg = NULL;
+			printf("- %s\n",known[j].msg);
+		}
+		fclose(grub_file);
 	}
 
 	/* Connect up to GGZ server */
