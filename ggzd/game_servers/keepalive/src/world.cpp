@@ -35,6 +35,8 @@
 // Configuration
 #include "config.h"
 
+#define KEEPALIVE_CHAT_LENGTH 1024
+
 // Constructor
 World::World()
 {
@@ -302,7 +304,8 @@ std::cout << "Transmit: " << (*it).name() << " - " << (*it).type() << " - " << (
 		case op_chat:
 			if(s) return;
 			std::cout << "op_chat" << std::endl;
-			ggz_read_string_alloc(fd, &message);
+			message = (char*)ggz_malloc(KEEPALIVE_CHAT_LENGTH + 5);
+			ggz_read_string(fd, message, KEEPALIVE_CHAT_LENGTH);
 
 			// Chat with all players alive
 			for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
@@ -313,7 +316,7 @@ std::cout << "Transmit: " << (*it).name() << " - " << (*it).type() << " - " << (
 				ggz_write_string((*it).fd(), name);
 				ggz_write_string((*it).fd(), message);
 			}
-			free(message);
+			ggz_free(message);
 			break;
 		default:
 			std::cerr << "Unknown opcode: " << (int)c << std::endl;
