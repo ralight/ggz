@@ -34,7 +34,6 @@
 #include <gtk_play.h>
 #include <client.h>
 #include <display.h>
-#include <gtkspinbutton.h>
 
 #include "ggzintl.h"
 

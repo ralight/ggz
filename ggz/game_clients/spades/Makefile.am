@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4891 2002-10-12 20:52:43Z jdorje $
+#  $Id: Makefile.am 5114 2002-10-30 08:47:37Z jdorje $
 
 SUBDIRS = .
 
@@ -32,7 +32,6 @@ ggz_spades_SOURCES = \
 		gtk_menu.c		gtk_menu.h	\
 		gtk_play.c		gtk_play.h	\
 		gtk_taunt.c		gtk_taunt.h	\
-		gtkspinbutton.c		gtkspinbutton.h	\
 		options.h				\
 		socketfunc.c	socketfunc.h		\
 		all-cards.xpm
