@@ -14,13 +14,15 @@ CREATE TABLE "teams" (
 	"fullname" character varying(256),
 	"icon" character varying(256),
 	"foundingdate" integer,
+	"founder" character varying(256),
 	"homepage" character varying(256)
 );
 
 CREATE TABLE "teammembers" (
 	"teamname" character varying(256),
 	"handle" character varying(256),
-    role character varying(256)
+    "role" character varying(256),
+	"entrydate" integer
 );
 
 CREATE TABLE "placements" (
