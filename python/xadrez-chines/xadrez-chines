@@ -14,6 +14,7 @@ import os, pwd
 import re
 
 import ggzmod
+import sdlnewstuff
 from xadrezlib import *
 
 path = sys.argv[0]
@@ -26,7 +27,7 @@ elif path.startswith("/usr"):
 else:
 	DATAPATH = "./"
 
-DATAPATH = str("/").join(path.split("/")[:-2]) + "/share/ggz/xadrez-chines/"
+#DATAPATH = str("/").join(path.split("/")[:-2]) + "/share/ggz/xadrez-chines/"
 print "Xadrez Chines: Using data path", DATAPATH
 
 def networkprocess(line):
@@ -334,6 +335,8 @@ def main(ggzmode):
 
 		if keyinput[K_ESCAPE] or pygame.event.peek(QUIT):
 			break
+		if keyinput[K_n]:
+			sdlnewstuff.gethotnewstuff("xadrez-chines")
 
 		(b1, b2, b3) = pygame.mouse.get_pressed()
 		if b1 and not pressed and not madeturn:
