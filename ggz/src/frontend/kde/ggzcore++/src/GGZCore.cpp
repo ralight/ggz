@@ -37,3 +37,8 @@ int GGZCore::init(int options)
 	return ret;
 }
 
+void GGZCore::reload()
+{
+	ggzcore_reload();
+}
+

@@ -1446,6 +1446,8 @@ void KGGZ::slotGameFrontend()
 
 	gametype = kggzroom->gametype();
 
+	m_core->reload();
+
 	KGGZDEBUG("Create module...\n");
 	m_module = new GGZCoreModule();
 	m_module->init(gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
@@ -1661,6 +1663,8 @@ void KGGZ::slotLoadLogo()
 		return;
 	}
 	KGGZDEBUG("__ more loading: %s %s %s\n", gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());
+
+	m_core->reload();
 
 	module = new GGZCoreModule();
 	module->init(gametype->name(), gametype->protocolVersion(), gametype->protocolEngine());

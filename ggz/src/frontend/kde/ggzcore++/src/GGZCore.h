@@ -47,6 +47,10 @@ class GGZCore
 		 * Initialize ggzcore. */
 		int init(int options);
 
+		/**
+		 * Reload the game module database. */
+		void reload();
+
 	private:
 		int m_initialized;
 };
