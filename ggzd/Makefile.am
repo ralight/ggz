@@ -34,11 +34,6 @@ test-recursive:
 test-am:
 	@echo; echo "You may now run $(top_builddir)/ggzd/ggzd -F -f $(top_builddir)/ggzd/ggzd.test to test server"; echo
 
-clean-local:
-	-rm -f config.status
-	-rm -f config.cache
-
-
 #install-data-local:
 #	@$(NORMAL_INSTALL)
 #	if test -d $(srcdir)/pixmaps; then \
