@@ -1,4 +1,4 @@
-/* $Id: table.h 2860 2001-12-10 17:17:29Z jdorje $ */
+/* $Id: table.h 2871 2001-12-11 00:05:03Z jdorje $ */
 /* 
  * File: table.h
  * Author: Rich Gade
@@ -55,6 +55,6 @@ void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image);
 
 void table_set_name(int player, const char *name);
 void table_set_player_message(int player, const char *name);
-void table_set_global_text_message(const char *mark, const char *message);
-void table_set_global_cardlist_message(const char *mark, int *lengths,
-				       card_t ** cardlist);
+void table_set_text_message(const char *mark, const char *message);
+void table_set_cardlist_message(const char *mark, int *lengths,
+				card_t ** cardlist);

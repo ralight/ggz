@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2870 2001-12-10 23:34:01Z jdorje $
+ * $Id: table.c 2871 2001-12-11 00:05:03Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -289,7 +289,7 @@ void table_set_player_message(int player, const char *message)
 }
 
 /* Displays a global message (any global message). */
-void table_set_global_text_message(const char *mark, const char *message)
+void table_set_text_message(const char *mark, const char *message)
 {
 	ggz_debug("table", "Received message '%s'/'%s'.", mark, message);
 	if (!table_initialized)
@@ -312,8 +312,8 @@ void table_set_global_text_message(const char *mark, const char *message)
 	ggz_debug("table", "Handled message.");
 }
 
-void table_set_global_cardlist_message(const char *mark, int *lengths,
-				       card_t ** cardlist)
+void table_set_cardlist_message(const char *mark, int *lengths,
+				card_t ** cardlist)
 {
 #if 0
 	int p, i;
@@ -367,7 +367,7 @@ void table_set_global_cardlist_message(const char *mark, int *lengths,
 		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), "\n");
 	}
 
-	table_set_global_text_message(mark, buf);
+	table_set_text_message(mark, buf);
 #else
 	menubar_cardlist_message(mark, lengths, cardlist);
 #endif

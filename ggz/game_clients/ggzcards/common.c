@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2868 2001-12-10 23:03:45Z jdorje $
+ * $Id: common.c 2871 2001-12-11 00:05:03Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -128,7 +128,7 @@ static int handle_text_message(void)
 	if (es_read_string_alloc(ggzfd, &mark) < 0 ||
 	    es_read_string_alloc(ggzfd, &message) < 0)
 		return -1;
-	table_set_global_text_message(mark, message);
+	table_set_text_message(mark, message);
 	free(message);		/* allocated by easysock */
 	free(mark);		/* allocated by easysock */
 	return 0;
@@ -158,7 +158,7 @@ static int handle_cardlist_message(void)
 	}
 
 	if (status == 0)
-		table_set_global_cardlist_message(mark, lengths, cardlist);
+		table_set_cardlist_message(mark, lengths, cardlist);
 
 	for (p = 0; p < ggzcards.num_players; p++)
 		ggz_free(cardlist[p]);

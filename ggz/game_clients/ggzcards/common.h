@@ -1,4 +1,4 @@
-/* $Id: common.h 2868 2001-12-10 23:03:45Z jdorje $ */
+/* $Id: common.h 2871 2001-12-11 00:05:03Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -198,7 +198,7 @@ extern void table_get_options(int option_cnt, int *choice_cnt, int *defaults,
  *  significance.
  *  @param mark The "mark" ID tag string of the message.
  *  @param msg The message itself. */
-extern void table_set_global_text_message(const char *mark, const char *msg);
+extern void table_set_text_message(const char *mark, const char *msg);
 
 /** A gui-dependent function called to set a global CARDLIST message.
  *  This should be defined by the frontend code and is accessed by a
@@ -207,10 +207,10 @@ extern void table_set_global_text_message(const char *mark, const char *msg);
  *  @param mark The "mark" ID tag string of the message.
  *  @param length The number of cards in the list per player.
  *  @param cardlist The list of cards; cards are sorted by player.
- *  @see table_set_global_text_message
+ *  @see table_set_text_message
  */
-extern void table_set_global_cardlist_message(const char *mark, int *lengths,
-					      card_t ** cardlist);
+extern void table_set_cardlist_message(const char *mark, int *lengths,
+				       card_t ** cardlist);
 
 /** A gui-dependent function called to set a player message.
  *  This should be defined by the frontend code and is accessed by a
