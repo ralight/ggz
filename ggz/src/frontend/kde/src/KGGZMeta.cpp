@@ -144,8 +144,8 @@ void KGGZMeta::slotRead()
 		element = node.toElement();
 		if(!element.firstChild().isNull())
 		{
-			element = element.firstChild().toElement();
 			pref = element.attribute("preference", "20");
+			element = element.firstChild().toElement();
 			item = new QListViewItem(m_view, element.text(), pref);
 			item->setPixmap(0, QPixmap(KGGZ_DIRECTORY "/images/icons/serverred.png"));
 		}
