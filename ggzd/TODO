@@ -1,23 +1,23 @@
 For 0.0.2
 =========
+- Add BYTE debug level
+- Add [module] to debug/log messages from game modules?
+- Redo REQ_LAUNCH_GAME to require sending all seats (including self)
+- Stop assuming self on seat 0.
 - Plot out mutex nesting and make sure deadlock is impossible
-- redo table launch so that game server is forked immediately and then
-  players join later (pass fd's using sendmsg() )
-- implement REQ_LEAVE_TABLE (depends on above item)
 - rename some of the #define's (and do we need COMP_ALLOW?)
 - s/comp/bot
-- better handing of end-of-game
+- better handling of end-of-game
 - if everyone leaves a table, remove it
 - handle SIGCHLD for when game_servrs die
 - implement player database (at least API)
 - implement tic-tac-toe as simple game example
 - Do we really need player.info[].playing?  Nothing uses it!
 - rewrite of chat functions (per ggz-dev)
-- implement REQ_MOTD, RSP_MOTD
 
 For 0.0.3
 =========
-- chat rooms
+- implement rooms
 - table chat
 - private messages (game type options, server admin option
 
@@ -25,7 +25,6 @@ For 0.0.3
 Medium run
 ==========
 - multiple implementations of user database (SQL/libdb)
-- implement rooms
 - reservations
 
 Long run
