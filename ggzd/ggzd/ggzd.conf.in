@@ -58,6 +58,10 @@
 #EncryptionKey = /usr/local/ssl/certs/openssl-example.pem
 #EncryptionCert = /usr/local/ssl/certs/openssl-example.pem
 
+# Announcements
+#AnnounceLAN = 1
+#AnnounceMetaserver = 0
+
 ############################################################################
 # Logging Options
 ############################################################################

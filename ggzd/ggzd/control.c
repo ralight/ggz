@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 5919 2004-02-13 16:54:27Z jdorje $
+ * $Id: control.c 6259 2004-11-04 23:23:22Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -39,6 +39,10 @@
 #include <unistd.h>
 
 #include <ggz.h>
+
+#ifdef WITH_HOWL
+#include <howl.h>
+#endif
 
 #include "client.h"
 #include "chat.h"
@@ -179,6 +183,35 @@ static void cleanup_data(void)
 #undef data_free
 }
 
+static int zeroconf_publish(const char *name, const char *protocol, int port)
+{
+#ifdef WITH_HOWL
+	sw_discovery session;
+	sw_discovery_oid oid;
+	int ret;
+
+	ret = sw_discovery_init(&session);
+	if(ret != SW_OKAY)
+	{
+		fprintf(stderr, "Zeroconf: Error: could not initialize\n");
+		return -1;
+	}
+
+	ret = sw_discovery_publish(session, 0, name, protocol, NULL, NULL, port, NULL, 0, NULL, NULL, &oid);
+	if(ret != SW_OKAY)
+	{
+		fprintf(stderr, "Zeroconf: Error: could not publish\n");
+		return -1;
+	}
+
+	return 0;
+#else
+	fprintf(stderr, "Zeroconf: Error: server does not support zeroconf\n");
+	return -1;
+#endif
+}
+
+
 int main(int argc, const char *argv[])
 {
 	int main_sock, new_sock, status, flags;
@@ -187,7 +220,7 @@ int main(int argc, const char *argv[])
 	fd_set active_fd_set, read_fd_set;
 	struct timeval tv;
 
-       	/* Parse options */
+	/* Parse options */
 	parse_args(argc, argv);
 	parse_conf_file();
 	motd_read_file(opt.motd_file);
@@ -220,6 +253,10 @@ int main(int argc, const char *argv[])
 
 	/* Setup TLS */
 	ggz_tls_init(opt.tls_cert, opt.tls_key, opt.tls_password);
+
+	/* Announce server if requested */
+	if(opt.announce_lan)
+		zeroconf_publish("GGZ Gaming Zone", "_ggz._tcp.", opt.main_port);
 
 	/* Create SERVER socket on main_port */
 	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, opt.interface);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 6115 2004-07-16 19:06:49Z jdorje $
+ * $Id: parse_opt.c 6259 2004-11-04 23:23:22Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -266,6 +266,9 @@ static void get_config_options(int ch)
 	opt.dbusername = ggz_conf_read_string(ch, "General", "DatabaseUsername", NULL);
 	opt.dbpassword = ggz_conf_read_string(ch, "General", "DatabasePassword", NULL);
 	opt.dbhashing = ggz_conf_read_string(ch, "General", "DatabaseHashing", NULL);
+
+	/* Announcements in [General] */
+	opt.announce_lan = ggz_conf_read_int(ch, "General", "AnnounceLAN", 0);
 
 	/* [Games] */
 	ggz_conf_read_list(ch, "Games", "GameList", &g_count, &g_list);

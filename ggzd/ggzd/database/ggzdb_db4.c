@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db4 sytle database
- * $Id: ggzdb_db4.c 6069 2004-07-09 13:14:36Z josef $
+ * $Id: ggzdb_db4.c 6259 2004-11-04 23:23:22Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -70,7 +70,7 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 #endif
 		return GGZ_ERROR;
 	} else if (db_e->open(db_e, connection.datadir, flags , 0600) != 0) {
-		err_sys("db_e->open() failed in _ggzdb_init()");
+		err_sys("db_e->open() failed in _ggzdb_init(%s)", connection.datadir);
 		return GGZ_ERROR;
 	}
 
