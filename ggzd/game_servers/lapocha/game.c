@@ -26,11 +26,11 @@
 #include <unistd.h>
 
 #include <easysock.h>
+#include "../libggzmod/ggz_server.h"
+#include "../libggzmod/ggz_protocols.h"
 
-#include "ggz.h"
 #include "cards.h"
 #include "game.h"
-#include "protocols.h"
 
 /* Global game variables */
 struct lp_game_t game;

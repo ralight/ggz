@@ -29,7 +29,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "ggz.h"
+#include "../libggzmod/ggz_server.h"
+
 #include "game.h"
 
 int main(void)
@@ -39,10 +40,10 @@ int main(void)
 	fd_set active_fd_set, read_fd_set;
 	
 	/* Initialize ggz */
-	if (ggz_init("LaPocha") < 0)
+	if (ggz_server_init("LaPocha") < 0)
 		return -1;
 	
-	if ( (ggz_sock = ggz_connect()) < 0)
+	if ( (ggz_sock = ggz_server_connect()) < 0)
 		return -1;
 
 	/* Seed the random number generator */
@@ -102,6 +103,6 @@ int main(void)
 		}
 	}
 
-	ggz_quit();
+	ggz_server_quit();
 	return 0;
 }

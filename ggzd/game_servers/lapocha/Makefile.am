@@ -2,20 +2,21 @@
 
 EXTRA_DIST = lapocha.dsc lapocha.room
 
-SUBDIRS = .
+# FIXME: libggzmod included because of dependency
+SUBDIRS = ../libggzmod .
 
 ggzdexecmod_PROGRAMS = ggzd.lapocha
 ggzdgame_DATA = lapocha.dsc
 ggzdroom_DATA = lapocha.room
 
-ggzd_lapocha_SOURCES = ggz.c ggz.h \
-		       main.c \
+ggzd_lapocha_SOURCES = main.c \
 		       game.c game.h \
-		       cards.c cards.h \
-		       protocols.h
+		       cards.c cards.h
 
 
-ggzd_lapocha_LDADD = $(LDADD)
+ggzd_lapocha_DEPENDENCIES = ../libggzmod/libggzdmod.a
+
+ggzd_lapocha_LDADD = $(LDADD) ../libggzmod/libggzdmod.a
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
