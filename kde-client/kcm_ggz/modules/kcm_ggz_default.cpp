@@ -65,8 +65,6 @@ KCMGGZDefault::KCMGGZDefault(QWidget *parent, const char *name)
 	connect(m_username, SIGNAL(textChanged(const QString &)), SIGNAL(signalChanged()));
 
 	setBackgroundColor(QColor(255, 200, 0));
-
-	load();
 }
 
 KCMGGZDefault::~KCMGGZDefault()

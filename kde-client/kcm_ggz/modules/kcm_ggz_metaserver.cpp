@@ -73,8 +73,6 @@ KCMGGZMetaserver::KCMGGZMetaserver(QWidget *parent, const char *name)
 	connect(add_servers, SIGNAL(clicked()), SLOT(slotAddServer()));
 	connect(autoconfig, SIGNAL(clicked()), SLOT(slotAuto()));
 	connect(autoconfig_servers, SIGNAL(clicked()), SLOT(slotAutoServer()));
-
-	load();
 }
 
 KCMGGZMetaserver::~KCMGGZMetaserver()

@@ -66,7 +66,7 @@ KCMGGZGgzd::KCMGGZGgzd(QWidget *parent, const char *name)
 	add("Miscellaneous", "HostnameLookup", "1");
 
 	label = new QLabel(i18n("Location of the ggzd configuration file"), this);
-	locator = new QLineEdit(PREFIX "/etc/ggzd/ggzd.conf", this);
+	locator = new QLineEdit("", this);
 	button = new QPushButton(i18n("Update"), this);
 
 	vbox = new QVBoxLayout(this, 5);
@@ -78,8 +78,6 @@ KCMGGZGgzd::KCMGGZGgzd(QWidget *parent, const char *name)
 
 	connect(button, SIGNAL(clicked()), SLOT(reload()));
 
-	load();
-
 	reload();
 }
 
@@ -89,10 +87,19 @@ KCMGGZGgzd::~KCMGGZGgzd()
 
 void KCMGGZGgzd::load()
 {
+	KSimpleConfig conf("kcmggz_ggzd");
+	conf.setGroup("[General]");
+	locator->setText(conf.readEntry("Configuration"));
+
+	if(locator->text().isEmpty())
+		locator->setText(PREFIX "/etc/ggzd/ggzd.conf");
 }
 
 void KCMGGZGgzd::save()
 {
+	KSimpleConfig conf("kcmggz_ggzd");
+	conf.setGroup("[General]");
+	conf.writeEntry("Configuration", locator->text());
 }
 
 QString KCMGGZGgzd::caption()
@@ -158,6 +165,8 @@ void KCMGGZGgzd::reload()
 					i18n("Write error"));
 				break;
 		}
+
+		emit signalChanged();
 	}
 
 	for(QListViewItem *i = view->firstChild(); i; i = i->nextSibling())

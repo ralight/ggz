@@ -39,8 +39,6 @@ KCMGGZGames::KCMGGZGames(QWidget *parent, const char *name)
 
 	connect(view, SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)), SLOT(slotSelected(QListViewItem*, const QPoint&, int)));
 	connect(look, SIGNAL(clicked()), SLOT(slotUpdate()));
-
-	load();
 }
 
 KCMGGZGames::~KCMGGZGames()
