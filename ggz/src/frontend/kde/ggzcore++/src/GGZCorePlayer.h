@@ -67,7 +67,7 @@ class GGZCorePlayer
 		 * More player statistics */
 		int rating();
 		int ranking();
-		long highscore();
+		int highscore();
 
 	private:
 		GGZPlayer *m_player;

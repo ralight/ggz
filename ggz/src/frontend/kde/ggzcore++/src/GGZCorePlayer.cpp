@@ -99,9 +99,9 @@ int GGZCorePlayer::ranking()
 	return 0;
 }
 
-long GGZCorePlayer::highscore()
+int GGZCorePlayer::highscore()
 {
-	long highscore;
+	int highscore;
 	int ret;
 
 	ret = ggzcore_player_get_highscore(m_player, &highscore);
