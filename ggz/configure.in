@@ -122,8 +122,8 @@ dnl ==========================
 
 dnl Check for msghdr member msg_control
 dnl ===================================
-    AC_EGREP_HEADER([size_t msg_controllen], sys/socket.h, 
-		       AC_DEFINE(HAVE_MSGHDR_MSG_CONTROL))
+    AC_EGREP_HEADER(msg_controllen, sys/socket.h, AC_DEFINE(HAVE_MSGHDR_MSG_CONTROL))
+				      
 
 
     AC_CHECK_FUNC(socket, ,
