@@ -27,16 +27,22 @@
 KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 : KMainWindow(parent, name)
 {
+	KStandardDirs d;
+
 	m_tux = new KTicTacTux(this);
 	setCentralWidget(m_tux);
 
 	m_networked = false;
 
+	QString pixexit = d.findResource("icon", "hicolor/16x16/actions/exit.png");
+	QString pixsync = d.findResource("icon", "hicolor/16x16/actions/reload.png");
+	QString pixscore = d.findResource("icon", "hicolor/16x16/actions/history.png");
+
 	mgame = new KPopupMenu(this);
-	mgame->insertItem(i18n("Synchronize"), menusync);
-	mgame->insertItem(i18n("View score"), menuscore);
+	mgame->insertItem(QIconSet(QPixmap(pixsync)), i18n("Synchronize"), menusync);
+	mgame->insertItem(QIconSet(QPixmap(pixscore)), i18n("View score"), menuscore);
 	mgame->insertSeparator();
-	mgame->insertItem(i18n("Quit"), menuquit);
+	mgame->insertItem(QIconSet(QPixmap(pixexit)), i18n("Quit"), menuquit);
 
 	mtheme = new KPopupMenu(this);
 	//mtheme->insertItem(i18n("KDE/Gnome"), menuthemenew);
@@ -226,6 +232,7 @@ void KTicTacTuxWin::loadThemes()
 		QStringList entries = dir.entryList(QDir::Files);
 		for(QStringList::iterator it2 = entries.begin(); it2 != entries.end(); it2++)
 		{
+			if((*it2).right(4) == ".png") continue;
 			file = (*it) + (*it2);
 			kdDebug() << "Check file: " << file << endl;
 			KSimpleConfig conf(file);
@@ -240,7 +247,9 @@ void KTicTacTuxWin::loadThemes()
 				m_themes[name] = file;
 				m_player1[file] = (*it) + player1;
 				m_player2[file] = (*it) + player2;
-				mtheme->insertItem(name, index++);
+
+				QString pixtheme = d.findResource("icon", "hicolor/16x16/actions/imagegallery.png");
+				mtheme->insertItem(QIconSet(QPixmap(pixtheme)), name, index++);
 			}
 		}
 	}
