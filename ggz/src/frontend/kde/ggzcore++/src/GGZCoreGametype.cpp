@@ -31,37 +31,37 @@ GGZCoreGametype::~GGZCoreGametype()
 {
 }
 
-char* GGZCoreGametype::name()
+const char* GGZCoreGametype::name()
 {
 	return ggzcore_gametype_get_name(m_gametype);
 }
 
-char* GGZCoreGametype::protocolVersion()
+const char* GGZCoreGametype::protocolVersion()
 {
 	return ggzcore_gametype_get_prot_version(m_gametype);
 }
 
-char *GGZCoreGametype::protocolEngine()
+const char *GGZCoreGametype::protocolEngine()
 {
 	return ggzcore_gametype_get_prot_engine(m_gametype);
 }
 
-char* GGZCoreGametype::version()
+const char* GGZCoreGametype::version()
 {
 	return ggzcore_gametype_get_version(m_gametype);
 }
 
-char* GGZCoreGametype::author()
+const char* GGZCoreGametype::author()
 {
 	return ggzcore_gametype_get_author(m_gametype);
 }
 
-char* GGZCoreGametype::url()
+const char* GGZCoreGametype::url()
 {
 	return ggzcore_gametype_get_url(m_gametype);
 }
 
-char* GGZCoreGametype::description()
+const char* GGZCoreGametype::description()
 {
 	return ggzcore_gametype_get_desc(m_gametype);
 }
@@ -110,7 +110,7 @@ GGZGameType *GGZCoreGametype::gametype()
 	return m_gametype;
 }
 
-char* GGZCoreGametype::category()
+const char* GGZCoreGametype::category()
 {
 #ifdef KGGZ_PATCH_C_AND_R
 	return ggzcore_gametype_get_category(m_gametype);
@@ -119,7 +119,7 @@ char* GGZCoreGametype::category()
 #endif
 }
 
-char* GGZCoreGametype::rating()
+const char* GGZCoreGametype::rating()
 {
 #ifdef KGGZ_PATCH_C_AND_R
 	return ggzcore_gametype_get_rating(m_gametype);

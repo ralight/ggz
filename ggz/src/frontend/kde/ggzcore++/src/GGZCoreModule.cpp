@@ -60,37 +60,37 @@ int GGZCoreModule::launch()
 	return ggzcore_module_launch(m_module);
 }
 
-char* GGZCoreModule::game()
+const char* GGZCoreModule::game()
 {
 	return ggzcore_module_get_name(m_module);
 }
 
-char* GGZCoreModule::version()
+const char* GGZCoreModule::version()
 {
 	return ggzcore_module_get_version(m_module);
 }
 
-char* GGZCoreModule::protocolVersion()
+const char* GGZCoreModule::protocolVersion()
 {
 	return ggzcore_module_get_prot_version(m_module);
 }
 
-char *GGZCoreModule::protocolEngine()
+const char *GGZCoreModule::protocolEngine()
 {
 	return ggzcore_module_get_prot_engine(m_module);
 }
 
-char* GGZCoreModule::author()
+const char* GGZCoreModule::author()
 {
 	return ggzcore_module_get_author(m_module);
 }
 
-char* GGZCoreModule::frontend()
+const char* GGZCoreModule::frontend()
 {
 	return ggzcore_module_get_frontend(m_module);
 }
 
-char* GGZCoreModule::url()
+const char* GGZCoreModule::url()
 {
 	return ggzcore_module_get_url(m_module);
 }
@@ -100,12 +100,12 @@ char** GGZCoreModule::argv()
 	return ggzcore_module_get_argv(m_module);
 }
 
-char* GGZCoreModule::pathIcon()
+const char* GGZCoreModule::pathIcon()
 {
 	return ggzcore_module_get_icon_path(m_module);
 }
 
-char* GGZCoreModule::pathHelp()
+const char* GGZCoreModule::pathHelp()
 {
 	return ggzcore_module_get_help_path(m_module);
 }

@@ -67,7 +67,7 @@ class GGZCoreTable
 		GGZCoreGametype* type();
 		/**
 		 * Return the description for this table. */
-		char* description();
+		const char* description();
 		/**
 		 * Return the current table state. */
 		char state();
@@ -84,7 +84,7 @@ class GGZCoreTable
 
 		/**
 		 * Return the name of a player. */
-		char* playerName(const unsigned int number);
+		const char* playerName(const unsigned int number);
 		/**
 		 * Return the type of a player. */
 		GGZSeatType playerType(const unsigned int number);

@@ -53,34 +53,34 @@ class GGZCoreModule
 
 		/**
 		 * Return the name of this game module. */
-		char* game();
+		const char* game();
 		/**
 		 * Return the version of this game module. */
-		char* version();
+		const char* version();
 		/**
 		 * Return the protocol version of this game module. */
-		char* protocolVersion();
+		const char* protocolVersion();
 		/**
 		 * Return the associated protocol engine. */
-		char *protocolEngine();
+		const char *protocolEngine();
 		/**
 		 * Return the author of this game module. */
-		char* author();
+		const char* author();
 		/**
 		 * Return the frontend type of this game module. */
-		char* frontend();
+		const char* frontend();
 		/**
 		 * Return the homepage of this game module. */
-		char* url();
+		const char* url();
 		/**
 		 * Return the execution path of this game module, including command line options. */
 		char** argv();
 		/**
 		 * Return the icon path of this game module. */
-		char* pathIcon();
+		const char* pathIcon();
 		/**
 		 * Return the help path of this game module. */
-		char* pathHelp();
+		const char* pathHelp();
 
 		/**
 		 * Initialize this module to find out compatible ones. */

@@ -85,7 +85,7 @@ GGZCoreGametype* GGZCoreTable::type()
 	return m_coregametype;
 }
 
-char* GGZCoreTable::description()
+const char* GGZCoreTable::description()
 {
 	return ggzcore_table_get_desc(m_table);
 }
@@ -110,7 +110,7 @@ int GGZCoreTable::countOpen()
 	return ggzcore_table_get_seat_count(m_table, GGZ_SEAT_OPEN);
 }
 
-char* GGZCoreTable::playerName(const unsigned int number)
+const char* GGZCoreTable::playerName(const unsigned int number)
 {
 	return ggzcore_table_get_nth_player_name(m_table, number);
 }

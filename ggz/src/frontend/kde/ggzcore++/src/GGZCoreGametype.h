@@ -36,31 +36,31 @@ class GGZCoreGametype
 
 		/**
 		 * The unique name of this game type. */
-		char* name();
+		const char* name();
 		/**
 		 * Protocol version */
-		char* protocolVersion();
+		const char* protocolVersion();
 		/**
 		 * Protocol engine */
-		char *protocolEngine();
+		const char *protocolEngine();
 		/**
 		 * Game version */
-		char* version();
+		const char* version();
 		/**
 		 * Author of this game. */
-		char* author();
+		const char* author();
 		/**
 		 * Url to the game homepage*/
-		char* url();
+		const char* url();
 		/**
 		 * Short description on the game. */
-		char* description();
+		const char* description();
 		/**
 		 * Game category */
-		char* category();
+		const char* category();
 		/**
 		 * Game rating */
-		char* rating();
+		const char* rating();
 
 		/**
 		 * Return the maximum number of players. */

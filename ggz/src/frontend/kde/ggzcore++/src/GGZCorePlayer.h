@@ -55,6 +55,19 @@ class GGZCorePlayer
 		 * Lag measurement */
 		int lag();
 
+		/**
+		 * Player statistics */
+		int recordWins();
+		int recordLosses();
+		int recordTies();
+		int recordForfeits();
+
+		/**
+		 * More player statistics */
+		int rating();
+		int ranking();
+		long highscore();
+
 	private:
 		GGZPlayer *m_player;
 };
