@@ -17,12 +17,14 @@ $user_country = $_POST["user_country"];
 $user_password = $_POST["user_password"];
 $user_pubkey = $_POST["user_pubkey"];
 $user_blogfeed = $_POST["user_blogfeed"];
+$user_longitude = $_POST["user_longitude"];
+$user_latitude = $_POST["user_latitude"];
 
 $res = $database->exec("SELECT * FROM userinfo WHERE handle = '$ggzuser'");
 if (($res) && ($database->numrows($res) == 0)) :
 	$res = $database->exec("INSERT INTO userinfo " .
-		"(handle, photo, gender, country) VALUES " .
-		"('$ggzuser', '', '', '')");
+		"(handle, photo, gender, country, longitude, latitude) VALUES " .
+		"('$ggzuser', '', '', '', 0.0, 0.0)");
 endif;
 
 if ($password) :
@@ -35,6 +37,9 @@ endif;
 if ($settings) :
 	$res = $database->exec("UPDATE userinfo SET ".
 		"photo = '$user_photo', gender = '$user_gender', country = '$user_country', blogfeed = '$user_blogfeed' " .
+		"WHERE handle = '$ggzuser'");
+	$res = $database->exec("UPDATE userinfo SET ".
+		"longitude = $user_longitude, latitude = $user_latitude " .
 		"WHERE handle = '$ggzuser'");
 	$res = $database->exec("UPDATE users SET ".
 		"name = '$user_realname', email = '$user_email' " .

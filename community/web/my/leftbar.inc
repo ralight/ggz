@@ -10,7 +10,8 @@
 
 	<form class="leather" action="/login/" method="get">
 		<h1>Personal page</h1>
-		Visit <a href="/my/">My Community</a>.
+		Visit <a href="/my/">My Community</a>.<br>
+		Visit my <a href="/db/players/?lookup=<?php echo Auth::username(); ?>">public page</a>.
 	</form>
 
 	<hr class="leather">

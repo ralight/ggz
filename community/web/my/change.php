@@ -10,6 +10,8 @@
 	</h1>
 	<div class="text">
 	Your personal settings can be done here.
+	To find out your coordinates (decimal longitude and latitude), you can check out
+	<a href="http://www.getty.edu/research/conducting_research/vocabularies/tgn/index.html">TGN</a>.
 	</div>
 	<div class="text">
 
@@ -30,6 +32,8 @@ if (($res) && ($database->numrows($res) == 1)) :
 	$country = $database->result($res, 0, "country");
 	$pubkey = $database->result($res, 0, "pubkey");
 	$blogfeed = $database->result($res, 0, "blogfeed");
+	$longitude = $database->result($res, 0, "longitude");
+	$latitude = $database->result($res, 0, "latitude");
 endif;
 
 ?>
@@ -62,6 +66,8 @@ $c->listall();
 ?>
 	</select>
 </td></tr>
+<tr><td>Longitude:</td><td><input type='text' name='user_longitude' value='<?php echo $longitude; ?>'></td></tr>
+<tr><td>Latitude:</td><td><input type='text' name='user_latitude' value='<?php echo $latitude; ?>'></td></tr>
 <tr><td></td><td><input type='submit' value='Change'></td></tr>
 </table>
 </form>
@@ -89,7 +95,7 @@ $c->listall();
 
 <form action='settings.php?pubkey=1' method='POST'>
 <table>
-<tr><td>Public key:</td><td><textarea name='user_pubkey' cols='40'><?php echo $pubkey; ?></textarea></td></tr>
+<tr><td>Public key:</td><td><textarea name='user_pubkey' cols='40' rows='5'><?php echo $pubkey; ?></textarea></td></tr>
 <tr><td></td><td><input type='submit' value='Change'></td></tr>
 </table>
 </form>
