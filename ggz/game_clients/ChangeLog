@@ -1,3 +1,825 @@
+2003-05-17 09:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/tictactoe/: de.po, tictactoe.pot: - fix German translation, so
+	TTT doesn't crash on startup
+
+2003-05-16 20:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply autogen.sh changes from libggz
+
+2003-05-11 17:48  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/Makefile.am: - fix srcdir != builddir installation
+
+2003-05-11 01:51  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - set the package version number (via configure.ac)
+	to 0.0.7
+
+2003-05-11 01:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: - README update
+
+2003-05-11 01:19  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, QuickStart.GGZ, README.GGZ, autogen.sh,
+	chess/module.dsc.in, chinese-checkers/module.dsc.in,
+	combat/module.dsc.in, dots/module.dsc.in, ggzcards/module.dsc.in,
+	hastings/module.dsc.in, lapocha/module.dsc.in,
+	reversi/module.dsc.in, spades/module.dsc.in,
+	tictactoe/module.dsc.in: - update common files for 0.0.7 in
+	gtk-games - bump game client version numbers where it's necessary
+
+2003-05-10 16:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync autogen.sh
+
+2003-05-10 13:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* common/cardsets/Makefile.am: - make sure card sets get
+	distributed as well
+
+2003-05-05 15:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - add -fsigned-char
+
+2003-03-29 11:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply improverished autogen globally
+
+2003-03-29 11:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - update GGZ macro file
+
+2003-02-16 14:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen.sh
+
+2003-02-04 18:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Fix a typo bug in the earlier changes to
+	configure.ac.
+
+2003-02-04 10:25  Jason Short <jdorje@users.sourceforge.net>
+
+	* combat/pixmaps/default/.cvsignore: Added .cvsignore.
+
+2003-02-04 10:10  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.ac: Various updates for autoconf2.5x usage.
+
+2003-02-04 03:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* reversi/options_dlg.c: Add #include <stdlib.h>.
+
+2003-02-04 02:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* autogen.sh, configure.ac, configure.in: Step 1 of
+	autoconf2.5x-only support: rename configure.in as configure.ac.
+
+2003-01-12 13:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* hastings/selector.c: [powerpc]
+	
+	- include <stdlib.h>
+
+2003-01-12 13:21  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* spades/socketfunc.c: [powerpc]
+	
+	- include <stdlib.h>, dunno why this was necessary
+
+2003-01-12 12:54  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: [powerpc]
+	
+	- create makefile for chess' bitmaps directory
+
+2003-01-12 12:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* chess/Makefile.am: [powerpc]
+	
+	- of course, now bitmaps is a subdir
+
+2003-01-12 12:51  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* chess/: bitmaps/.cvsignore, bitmaps/Makefile.am, Makefile.am:
+	[powerpc]
+	
+	- have own makefile for bitmaps so automake 1.4 doesn't get
+	confused
+
+2003-01-12 12:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* combat/pixmaps/Makefile.am, configure.in: [powerpc]
+	
+	- create makefile in combat's default theme dir
+
+2003-01-12 12:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* combat/pixmaps/default/Makefile.am: [powerpc]
+	
+	- create own makefile for default pixmap theme, so automake 1.4
+	doesn't get   confused
+
+2002-12-15 11:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/Makefile.am, chinese-checkers/Makefile.am,
+	combat/Makefile.am, dots/Makefile.am, ggzcards/Makefile.am,
+	hastings/Makefile.am, lapocha/Makefile.am, reversi/Makefile.am,
+	spades/Makefile.am, tictactoe/Makefile.am: Put @GTK_CFLAGS@ into
+	INCLUDES, not CFLAGS.  This allows 'make CFLAGS="..."' to work.
+
+2002-12-15 11:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Auto-detect GTK or GTK2.0 linkage.
+
+2002-12-15 09:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, acinclude.ggz, autogen.sh, m4/ggz.m4, m4/gtk-2.0.m4,
+	m4/gtk.m4: Move aclocal files into the m4/ directory.  Use the
+	contents of this directory in building acinclude.m4.  Add GTK and
+	GTK+-2.0 m4 files to this directory.
+
+2002-12-09 14:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - mkdir --verbose instead of -v
+
+2002-12-08 09:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/animation.c: Miniscule cleanup to animation code.
+
+2002-12-03 22:02  Jason Short <jdorje@users.sourceforge.net>
+
+	* hastings/: selector.c, selector.h: GTK2 fixes for selector code.
+
+2002-12-02 01:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* hastings/: game.h, main.c, selector.c, selector.h: Fix some
+	compiler warnings in hastings.
+
+2002-11-17 17:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* hastings/main_win.c: - set white border colour of hexagons
+	explicitely to avoid drawing errors
+
+2002-11-06 23:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* hastings/: game.h, main.c, main_win.c, selector.c, selector.h: -
+	preliminary support for external maps
+
+2002-11-06 00:56  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* hastings/: Makefile.am, bayeux.xpm, haroldsreturn.xpm,
+	selector.c, selector.h: Start adding map selection feature for
+	Hastings: - Gtk+ selection widget - two new map images	 (those are
+	really huge as XPM...)
+
+2002-11-04 10:02  Jason Short <jdorje@users.sourceforge.net>
+
+	* lapocha/table.c: When compiling with GTK2, use GdkPixbuf to load
+	and render the card images.  This means we don't have to worry
+	about masking (it just works, which it didn't before) and also the
+	images may eventually be stored in PNG format (which is *much*
+	smaller and faster).
+
+2002-11-04 09:52  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/: gtk_io.c, gtk_play.h: When compiling with GTK2, use
+	GdkPixbuf to load and render the card images.  This means we don't
+	have to worry about masking (it just works, which it didn't before)
+	and also the images may eventually be stored in PNG format (which
+	is *much* smaller and faster).
+
+2002-11-04 09:44  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/drawcard.c: When compiling with GTK2, use GdkPixbuf to
+	load and render the card images.  This means we don't have to worry
+	about masking (it just works, which it didn't before) and also the
+	images may be stored in PNG format (which is *much* smaller and
+	faster).
+
+2002-11-04 08:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in, chinese-checkers/display.c, common/Makefile.am,
+	common/cardsets/.cvsignore, common/cardsets/Makefile.am,
+	common/cardsets/cards-1.xpm, common/cardsets/cards-2.xpm,
+	common/cardsets/cards-3.xpm, common/cardsets/cards-4.xpm,
+	common/cardsets/cards-b1.xpm, common/cardsets/cards-b2.xpm,
+	common/cardsets/cards-b3.xpm, common/cardsets/cards-b4.xpm,
+	ggzcards/Makefile.am, ggzcards/cards-1.xpm, ggzcards/cards-2.xpm,
+	ggzcards/cards-3.xpm, ggzcards/cards-4.xpm, ggzcards/cards-b1.xpm,
+	ggzcards/cards-b2.xpm, ggzcards/cards-b3.xpm,
+	ggzcards/cards-b4.xpm, lapocha/table.c, spades/gtk_io.c: - Move XPM
+	files into a common location.  - XPM files are (still) installed
+	into GGZDATADIR/pixmaps/ - Spades and La Pocha dynamically load the
+	cardsets.  - Note, although you can build gtk-games with only some
+	game modules,	the XPM files will be installed regardless.  This
+	is a good tradeoff   for only having to install them once.
+
+2002-11-04 08:19  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: Makefile.am, drawcard.c: Install the pixmaps with the
+	game, and load them from the GGZDATADIR/pixmaps/ directory.
+
+2002-11-04 08:10  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: cards-1.xpm, cards-2.xpm, cards-3.xpm, cards-4.xpm,
+	cards-b1.xpm, cards-b2.xpm, cards-b3.xpm, cards-b4.xpm: Label XPMs
+	as such, with a /* XPM */ at the top.
+
+2002-11-04 06:57  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/: Makefile.am, all-cards.xpm, gtk_io.c, gtk_play.h: Remove
+	all-cards.xpm from the repository/distribution; just use
+	../ggzcards/cards-1.xpm instead.
+	
+	Ideally these pixmaps will be loaded at runtime and converted into
+	PNG files.
+
+2002-11-04 03:47  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/: game.c, popup.c: Set the game options dialog and the game
+	popup dialog as transient children of the main window.
+
+2002-11-04 03:42  Jason Short <jdorje@users.sourceforge.net>
+
+	* dots/: dlg_new.c, dlg_opt.c: Make the 'game options' and 'new
+	game' windows transient children of the main window.
+
+2002-11-04 03:36  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/gtk_dlg_options.c: Make the options dialog the transient
+	child of the main game window.
+
+2002-11-03 23:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/dlg_players.c: Update player dialog to match ggzmod's new
+	'const' qualifiers on some variables.
+
+2002-11-03 11:11  Jason Short <jdorje@users.sourceforge.net>
+
+	* chinese-checkers/display.c: Fix the drawing of path lines under
+	GTK2.  This was another color problem...
+
+2002-11-03 10:38  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/dlg_exit.c: When compiling with GTK2, use an appropriate
+	stock icon for the exit  dialog.
+
+2002-11-03 09:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/: dlg_about.c, dlg_exit.c, dlg_players.c: When compiling
+	for GTK2, use stock items for the dialog buttons.
+	
+	Since this is not compatible with GTK1.2 compilation, it's a bit of
+	a waste to do too much of it at this point.  But it _is_ much
+	prettier.
+
+2002-11-03 08:54  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/callbacks.c, chinese-checkers/display.c,
+	chinese-checkers/display.h, chinese-checkers/main_cb.c,
+	combat/callbacks.c, dots/cb_main.c, ggzcards/cb_main.c,
+	hastings/main_win.c, lapocha/cb_main.c, reversi/main_win.c,
+	spades/callbacks.c, spades/gtk_play.h: Pass the main dialog window
+	to the exit dialog function.
+
+2002-11-03 08:31  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/: dlg_exit.c, dlg_exit.h: The exit dialog should also have
+	the main window as its transient parent.
+	
+	This means the game will have to pass us the main window.
+
+2002-11-03 08:06  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/game.h: Fix a typo bug (that only affects GTK1.2
+	compilation).
+
+2002-11-03 07:31  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: dlg_bid.c, game.c, game.h, preferences.c: Disable the
+	bid_on_table option in GTK2.
+
+2002-11-03 07:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/dlg_bid.c: Set the main window as the transient parent
+	for the bid window.  This causes the bid window to be properly
+	centered on the parent window, and to stay above it.  It mostly
+	invalidates the need for the bid_on_table option (which is a good
+	thing, because that option doesn't work in GTK2).
+
+2002-11-03 04:24  Jason Short <jdorje@users.sourceforge.net>
+
+	* lapocha/dlg_main.c: Under GTK2, give the fixed widget its own
+	window.
+
+2002-11-03 04:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/dlg_main.c: Under GTK2, gived the fixed widget its own
+	window.
+
+2002-11-03 04:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: cb_main.c, table.c, table.h: When handling a button
+	press event on the table, return TRUE if we actually handle the
+	event.
+
+2002-11-03 03:06  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/dlg_main.c: Mark the main window as non-resizable.
+
+2002-11-02 23:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/main.c: The font name shouldn't be a const char *
+	because it generates a compiler warning.
+
+2002-10-31 01:21  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/dlg_players.c: - Handle only a button_press_event on the
+	player list.  - Change the prototype of player_clist_event
+	accordingly.  - Return TRUE if the event is handled.
+
+2002-10-31 00:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/main.c: Provide a separate fixed font string for GTK2.
+
+2002-10-30 23:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* combat/game.c: Use explicit color names with GTK2 since RGB
+	values don't work (for some reason).
+
+2002-10-30 23:12  Jason Short <jdorje@users.sourceforge.net>
+
+	* combat/: callbacks.c, callbacks.h, game.c, game.h, interface.c: -
+	Use GtkItemFactory to create menus.  - Use "standardized" gtk-games
+	menus.
+
+2002-10-30 22:24  Jason Short <jdorje@users.sourceforge.net>
+
+	* combat/: dlg_options.c, gtk_player_info.c: - Use (or try to) a
+	GtkTextView instead of a GtkText when compiling with   GTK2.  -
+	Make a char* into a const char* to work cleanly with GTK2.  - Use
+	ggz_strdup instead if ggz_malloc + strcpy.
+
+2002-10-30 22:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* combat/game.c: - Make a char* into a const char* to work cleanly
+	with GTK2.  - Use ggz_strdup instead if ggz_malloc + strcpy.
+
+2002-10-30 21:55  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/gtk_play.c: A small fix to the usage of the spin button
+	for GTK2.
+	
+	Now 'nil' will not always work, but other bids will.
+
+2002-10-30 21:24  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/: Makefile.am, gtk_play.c, gtkspinbutton.c,
+	gtkspinbutton.h: - Added gtkspinbutton files back in.  These _are_
+	needed when compiling	with gtk1.2.  I added a comment explaining
+	why (the other comment	 referred to the README which was not
+	brought over from NetSpades 4.2).  - #ifndef GTK2...#endif around
+	gtkspinbutton code.  - The GTK2.0 spin buttons do not work the way
+	Spades expects them to.  I'm   not sure why they don't, but the
+	fact is bidding 'nil' may not work   properly.
+
+2002-10-30 19:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/gtk_play.c: Don't set normal values in SpinInput() and
+	SpinOutput(), just return FALSE and let GTK do that.  Only set
+	values when nil is involved.
+
+2002-10-30 10:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/: gtk_play.c, gtk_taunt.c: Some GTK2-specific code,
+	surrounded by "#ifdef GTK2" blocks:   - Use GtkTextView instead of
+	GtkText.    - Use gtk_style_set_font instead of directly accessing
+	the font field.
+
+2002-10-30 10:03  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/gtk_dlg_options.c:
+	s/GTK_WINDOW_DIALOG/GTK_WINDOW_TOPLEVEL/ to be compatible with
+	GTK2.0.
+
+2002-10-30 09:47  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/: Makefile.am, gtk_play.c, gtkspinbutton.c,
+	gtkspinbutton.h: Remove gtkspinbutton - this has been a part of GTK
+	for a while!
+
+2002-10-30 09:43  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/: client.h, client_func.c: Change a parameter from char*
+	to const char* to work with GTK2.
+
+2002-10-30 08:57  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/main_win.c: In GTK2 mode, make the moves text view
+	non-editable, and hide the cursor.
+
+2002-10-28 23:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: animation.c, game.h, preferences.c: Add the
+	no_clearing_delay option, when compiling with DEBUG only.
+
+2002-10-26 06:54  Jason Short <jdorje@users.sourceforge.net>
+
+	* chinese-checkers/: main_cb.c, main_cb.h, main_dlg.c: Use the
+	common menu code to create the menus.
+
+2002-10-26 06:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* reversi/main_win.c: Use the common menu code to create the menus.
+
+2002-10-26 06:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* tictactoe/main_win.c: Use the common menu functions to create and
+	access the menu bar.
+
+2002-10-26 06:43  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: dlg_main.c, dlg_main.h, game.c, main.c: Use the common
+	menu functions to create/access the menus.
+
+2002-10-26 06:43  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/: Makefile.am, menus.c, menus.h: More common menu code:
+	functions to create the menu bar and access menu items.
+
+2002-10-26 06:00  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: cb_main.c, cb_main.h, dlg_main.c, game.c, game.h: Use
+	the common menu macros.
+
+2002-10-26 05:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* tictactoe/main_win.c: Make game_about() and game_exit()
+	non-static.
+
+2002-10-26 05:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/menus.h: When help->about is selected, create/raise the
+	'about' dialog directly.
+
+2002-10-26 05:49  Jason Short <jdorje@users.sourceforge.net>
+
+	* tictactoe/main_win.c: Use the menu macros from the common code.
+
+2002-10-26 05:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/: Makefile.am, menus.h: Added some menu macros to help in
+	unifying gtk-games' menus.
+
+2002-10-26 05:42  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/dlg_players.c: Avoid a segfault in dlg_players by
+	preventing the user from selecting a nonexistent (out-of-range)
+	row.
+
+2002-10-24 00:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/dlg_main.c: Disable the "start game" menu item when the
+	client first starts.
+
+2002-10-23 23:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* tictactoe/main_win.c, ggzcards/dlg_main.c: Provide "sit" and
+	"stand" menu items.
+
+2002-10-23 23:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/: dlg_players.c, dlg_players.h: Provide games with
+	callback functions do_sit() and do_stand() to let a player sit
+	down/stand up.
+
+2002-10-22 22:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/dlg_players.c: - Enable the SIT, STAND, and BOOT choices
+	of the player menus.  (SIT and	 STAND aren't implemented yet,
+	but...).  - Add a MOVE choice to move to another seat when you're
+	already sitting.
+
+2002-10-22 10:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/client/: client.c, client.h: Resync client library
+	between server and client.
+
+2002-10-22 10:24  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: cb_main.c, module.dsc.in, table.c, table.h,
+	client/client.c, client/client.h: - Update client to read the GGZ
+	seat number of all players.  - The protocol version is bumped up. 
+	- When the user right-clicks on a player, the GGZ player menu for
+	that   player pops up.
+
+2002-10-22 06:22  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/dlg_players.c: Fix stupid error with bit arithmetic.
+
+2002-10-21 06:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/dlg_players.c: When DEBUG is defined, enable the menu
+	selections on the player list that request transactions.  Selecting
+	these menu items will thus request the transaction from ggzmod
+	(although it will currently be dropped by ggzcore).
+
+2002-10-20 07:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/: dlg_players.c, dlg_players.h: Extend the popup menus
+	associated with the player list, and make them available outside of
+	the player list.  Note that they're still not actually of any use.
+
+2002-10-20 01:09  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/dlg_players.c: Preliminary code to allow the player dialog
+	to "do more".
+	
+	Eventually, when controlling seats is possible, the GGZ clients
+	need to allow you to do it directly.  But it also needs to be
+	possible through the game client, so I'll start from there.
+
+2002-10-18 05:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/dlg_players.c: Add spectators to the player list (if GGZ
+	tells us about them).
+
+2002-10-16 02:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Improvement (hopefully :-) to acinclude.ggz.  Now
+	each GGZ check takes two optional parameters.  For instance:
+	
+	  AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
+	
+	'action-if-found' will be evaluated if the specified module was
+	found.	'action-if-not-found' will be evaluated if the module is
+	not found.  This is consistent with other autoconf macros.  If
+	'action-is-not-found' is empty, then an error will be emitted if
+	the module isn't found.  If 'action-if-not-found' is "ignore", then
+	the module will simply be ignored if it's not found.
+	
+	This is not entirely backwards-compatible, since "ignore" used to
+	be the first parameter to the macro.  But this way is more
+	consistent, in my opinion.
+
+2002-10-15 01:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/: client_func.c, gtk_menu.c: - Restructured NetSpades's
+	menus.	- Make use of the player list dialog.  - Remove
+	AboutDialog; just call create_or_raise_dlg_about   directly.
+
+2002-10-15 01:22  Jason Short <jdorje@users.sourceforge.net>
+
+	* lapocha/: cb_main.c, cb_main.h, dlg_main.c, main.c: -
+	Restructured La Pocha's menus.	- Make use of the player list
+	dialog.  - Remove on_mnu_about_activate; just call
+	create_or_raise_dlg_about   directly.
+
+2002-10-15 01:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* hastings/: main.c, main_win.c: - Restructured Hastings' menus.  -
+	Make use of the player list dialog.
+
+2002-10-15 01:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* dots/: cb_main.c, cb_main.h, dlg_main.c, main.c: - Restructured
+	Dots' menus.  - Make use of the player list dialog.  - Remove
+	on_mnu_about_activate; just call create_or_raise_dlg_about  
+	directly.
+
+2002-10-15 01:08  Jason Short <jdorje@users.sourceforge.net>
+
+	* chinese-checkers/: game.c, main_dlg.c: - Restructured Chinese
+	Checkers's menus.  - Make use of the player list dialog.
+
+2002-10-15 01:01  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/: main.c, main_win.c: - Restructured Chess's menus.  - Make
+	use of the player list dialog.
+
+2002-10-15 00:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* reversi/: main.c, main_win.c: - Restructured Reversi's menus.  -
+	Make use of the player list dialog.
+
+2002-10-15 00:35  Jason Short <jdorje@users.sourceforge.net>
+
+	* tictactoe/: main.c, main_win.c: - Restructured TTT's menus.  -
+	Make use of the player list dialog.
+
+2002-10-15 00:27  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/Makefile.am, common/dlg_players.c, common/dlg_players.h,
+	ggzcards/Makefile.am, ggzcards/cb_main.c, ggzcards/cb_main.h,
+	ggzcards/dlg_main.c, ggzcards/dlg_players.c,
+	ggzcards/dlg_players.h, ggzcards/game.c, ggzcards/main.c,
+	ggzcards/table.c, ggzcards/table.h, ggzcards/client/client.c,
+	ggzcards/client/client.h: Move the player dialog that GGZCards used
+	into the gtk-games common code.  Other games can now have a player
+	dialog window quite easily.
+
+2002-10-13 10:06  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: dlg_main.c, dlg_main.h, game.c, main.c: Use
+	GtkItemFactory to create ggzcards' menus.  Restructure the menus in
+	what could be a more logical way.
+
+2002-10-13 07:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* lapocha/: cb_main.c, dlg_main.c: Use GtkItemFactory to create la
+	pocha's menus.
+
+2002-10-13 06:22  Jason Short <jdorje@users.sourceforge.net>
+
+	* hastings/: dlg_yesno.c, main_win.c: Use GtkItemFactory to create
+	hastings' menus.
+
+2002-10-13 06:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* reversi/main_win.c: Use GtkItemFactory to create reversi's menus.
+
+2002-10-13 06:08  Jason Short <jdorje@users.sourceforge.net>
+
+	* dots/: dlg_main.c, dlg_new.c, dlg_opt.c, dlg_pref.c: - Use
+	GtkItemFactory to create dots' menus.  - Remove GTK_WINDOW_DIALOG
+	references to make dots GTK2-compatible.
+
+2002-10-13 05:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* chinese-checkers/main_dlg.c: Use GtkItemFactory to create
+	chinese-checkers' menus.
+
+2002-10-13 01:06  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/: main.c, main_win.c, main_win.h: - Change chess to use
+	GtkItemFactory to create its menus.  - Chess now has mnemonics and
+	keyboard shortcuts (accelerators) for	its menus.  - Chess now has
+	a primitive 'about' dialog.  - The menu tooltips no longer work,
+	unfortunately.	I put in a FIXME   comment about this.
+
+2002-10-13 00:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* tictactoe/main_win.c: Change TTT to use GtkItemFactory to create
+	its menus.  It now has both mnemonics and keyboard shortcuts
+	(accelerators), and will work under both GTK1.2 and GTK2.
+	
+	Yay.
+
+2002-10-12 23:54  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/gtk_menu.c: Use gtk_window_add_accel_group() instead of
+	gtk_accel_group_attach().  With this change, the menu code should
+	work unchanged under either GTK1.2 or GTK2.
+
+2002-10-12 23:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* tictactoe/: main.c, main_win.c: Added an 'about' dialog for TTT.
+
+2002-10-12 22:55  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/gtk_menu.c: Move the GtkItemFactoryEntry array into the
+	function where it is used so that _() can be used to translate the
+	text.
+
+2002-10-12 22:52  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/: Makefile.am, client_main.c, gtk_dlg_about.c,
+	gtk_dlg_about.h, gtk_menu.c: Have NetSpades use the gtk-games'
+	common dlg_about code.
+	
+	This has the side effect of fixing a bug whereby you could pop the
+	dialog up multiple times.
+
+2002-10-12 22:42  Jason Short <jdorje@users.sourceforge.net>
+
+	* reversi/: Makefile.am, about_dlg.c, about_dlg.h, main.c,
+	main_win.c: Have Reversi use the gtk-games' common dlg_about code.
+	
+	This has the side effect of fixing a bug whereby you could pop the
+	dialog up multiple times.  Also, use the current version # instead
+	of hard-coding it.
+
+2002-10-12 22:34  Jason Short <jdorje@users.sourceforge.net>
+
+	* chinese-checkers/: Makefile.am, about_dlg.c, about_dlg.h, main.c,
+	main_cb.c: Have Chinese Checkers use the gtk-games' common
+	dlg_about code.
+	
+	Also, change the dialog text so it conforms with the format the
+	about dialog expects.
+
+2002-10-12 22:20  Jason Short <jdorje@users.sourceforge.net>
+
+	* lapocha/: Makefile.am, cb_main.c, dlg_about.c, dlg_about.h,
+	main.c: Have La Pocha use the gtk-games' common dlg_about code.
+	
+	Also, change the dialog text so the current version is used instead
+	of hard-coding 0.0.1.
+
+2002-10-12 22:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* hastings/: Makefile.am, dlg_about.c, dlg_about.h, main.c,
+	main_win.c: Have Hstings use the gtk-games' common dlg_about code.
+	
+	Also, change the dialog text so the current version is used instead
+	of hard-coding 0.0.6.
+
+2002-10-12 22:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* dots/: Makefile.am, cb_main.c, dlg_about.c, dlg_about.h, main.c:
+	Have Dots use the gtk-games' common dlg_about code.
+	
+	Also, change the dialog text so the current version is used instead
+	of hard-coding 0.0.3.
+
+2002-10-12 21:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* combat/: Makefile.am, callbacks.c, dlg_about.c, dlg_about.h,
+	main.c: Have Combat use the gtk-games' common dlg_about code.
+	
+	This has the side effect of fixing a bug: you could pop the dialog
+	up more than once.
+
+2002-10-12 21:51  Jason Short <jdorje@users.sourceforge.net>
+
+	* combat/game.c: Add #include <config.h> to game.c.
+
+2002-10-12 21:40  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/dlg_about.c: strdup() on the about dialog strings so that
+	if the caller deallocates them we'll still have a copy.
+
+2002-10-12 21:36  Jason Short <jdorje@users.sourceforge.net>
+
+	* common/Makefile.am, common/dlg_about.c, common/dlg_about.h,
+	ggzcards/Makefile.am, ggzcards/cb_main.c, ggzcards/dlg_about.c,
+	ggzcards/dlg_about.h, ggzcards/main.c: Moved dlg_about
+	functionality into common/.  Every game uses the exact same system,
+	so this code might as well be shared (even though it's not _much_
+	code).
+
+2002-10-12 21:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Bumped gtk-games version up to 0.0.7pre.
+
+2002-10-12 20:09  Jason Short <jdorje@users.sourceforge.net>
+
+	* chinese-checkers/: display.c, main_dlg.c: Update chinese-checkers
+	for GTK2, while retaining GTK1.2 compatability.
+	
+	The only downside is that the menu accelerators had to be removed.
+
+2002-10-12 19:20  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/main.c: Fix a compiler warning in ggzcards.
+
+2002-10-12 09:39  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/: board.c, main_win.c: Port Chess to GTK2.  It will
+	continue to work with GTK1.2 as well.
+	
+	Known bugs:   - (GTK2) The text area in which moves are shown can
+	be hand-edited.    - (GTK2) gdk_color_parse doesn't work the way it
+	claims, so I've chosen	    named colors for the backgrounds.	 -
+	(GTK2) Selecting a piece to move seems to take a double-click	  
+	instead of just a drag-and-drop.    - All menu accelerators (which
+	didn't work anyway AFAICT) were dropped.
+	
+	The GTK2 port does not seem to have the graphical glitches that the
+	GTK1.2 version did.  Also I fixed a bug in the GTK1.2 port which
+	caused extra (garbage) characters to be appended to the move list.
+
+2002-10-12 03:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Doh!  Fix idiotic mess-up in last-moment changes
+	for last commit.
+
+2002-10-12 02:47  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.in: Add --with-gtk2 option for gtk-games'
+	configure script.
+	
+	If selected, gtk-games will be linked against GTK2.0 instead of
+	GTK1.2, and GTK2 will be #defined.  Of course, this doesn't yield
+	very good results at this point.
+
+2002-10-12 01:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: dlg_about.c, dlg_bid.c, dlg_main.c, dlg_options.c,
+	dlg_players.c, dlg_prefs.c, main.c, table.c, table.h: Clean up
+	ggzcards GUI code - make it more compatible with GTK2.
+
+2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+
+2002-10-07 23:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog for 0.0.6
+
 2002-10-03 05:02  Jason Short <jdorje@users.sourceforge.net>
 
 	* ggzcards/: ai.h, main.c, main.h: s/int/bool/ in several places.
@@ -2876,7 +3698,7 @@
 	* ggzcards/: cb_bid.c, cb_bid.h, cb_main.c, cb_main.h, dlg_about.c,
 	dlg_about.h, dlg_bid.c, dlg_bid.h, dlg_main.c, dlg_main.h, game.c,
 	game.h, hand.c, hand.h, layout.c, layout.h, main.c, main.h,
-	protocol.h, table.c, table.h: Added $Id: ChangeLog 4794 2002-10-07 21:16:10Z dr_maux $ headers to all (well,
+	protocol.h, table.c, table.h: Added $Id: ChangeLog 5588 2003-05-17 08:10:42Z dr_maux $ headers to all (well,
 	almost all) files.
 	
 	Note that the commit will in itself will make the last-modified
@@ -2885,7 +3707,7 @@
 2001-07-22 18:41  Jason Short <jdorje@users.sourceforge.net>
 
 	* ggzcards/: common.c, common.h: Test of CVS (RCS) keyword
-	substitution for $Id: ChangeLog 4794 2002-10-07 21:16:10Z dr_maux $.
+	substitution for $Id: ChangeLog 5588 2003-05-17 08:10:42Z dr_maux $.
 
 2001-07-22 18:38  Jason Short <jdorje@users.sourceforge.net>
 

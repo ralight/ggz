@@ -1,3 +1,387 @@
+2003-05-17 08:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/kde.m4: - include new qt3 dir in search
+
+2003-05-16 20:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply autogen.sh changes from libggz
+
+2003-05-11 11:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* krosswater/zoneclient/Makefile.am: - don't install libzoneclient
+	anymore
+
+2003-05-11 01:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - set the package version number (via configure.ac)
+	to 0.0.7
+
+2003-05-11 01:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: - update README file
+
+2003-05-11 01:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, QuickStart.GGZ, README.GGZ, KReversi/module.dsc.in,
+	fyrdman/module.dsc.in, kdots/module.dsc.in, koenig/module.dsc.in,
+	ktictactux/module.dsc.in, muehle/module.dsc.in: - update common
+	files for 0.0.7 in kde-games - bump game client version numbers
+	where it's necessary
+
+2003-05-10 17:43  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* koenig/: board.cc, game.cc, toplevel.cc, toplevel.h: - implement
+	toggling of separate message boxes for warnings - move only when
+	network command to do so came - when there's a protocol mismatch,
+	display both versions
+	
+	There's still a race condition somewhere, sometimes the games
+	doesn't startup properly.
+
+2003-05-10 17:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - another update :(
+	
+	The comparison algorithm was dumb.  This modification must later be
+	synced with all other modules.
+
+2003-05-10 16:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync autogen.sh
+
+2003-05-10 14:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/themes/.cvsignore: - add .xvpics to cvsignore
+
+2003-05-10 14:21  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, keepalive/src/win.cpp: - include library directory
+	into the distribution
+
+2003-05-10 00:21  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* koenig/toplevel.cc: - don't crash if draw is requested but game
+	is not running yet
+
+2003-05-07 22:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* fyrdman/: Makefile.am, levelselector.cpp, levelselector.h,
+	mainwindow.cpp, mainwindow.h, map.cpp, map.h, unitinfo.cpp,
+	unitinfo.h: - force a redraw during AI movements - display own unit
+	at the beginning of the game to make it easier to find it -
+	implement the level information menu entry - depend AI movements on
+	success of own move in single player mode
+
+2003-05-05 15:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - add -fsigned-char
+
+2003-03-29 22:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/: ktictactux.cpp, qwhiteframe.cpp, themes/circle.png,
+	themes/gnome.png, themes/kde.png: - fix pixmaps for KTicTacTux
+	
+	I always thought the overlapped pixmaps are a Qt bug, but watching
+	the ASCII-fied version of them (using a vim macro) revealed that it
+	was the gimp which doesn't show some parts of the pixmaps even
+	though they are stored in there.
+
+2003-03-29 11:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* fyrdman/: level.cpp, level.h, mainwindow.cpp, mainwindow.h: -
+	more or less finish single player mode for fyrdman
+	
+	It still needs some graphics improvements, but that's not so urgent
+
+2003-03-29 11:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply improverished autogen globally
+
+2003-03-29 11:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - update GGZ macro file
+
+2003-03-15 10:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* fyrdman/: level.cpp, level.h, main.cpp, mainwindow.cpp,
+	mainwindow.h, map.cpp, map.h: - read list of possible maps for
+	selection, don't hardcode levels - new menu option: select
+	background image - evaluate a player's move when playing locally -
+	emphasize selected character graphically
+
+2003-03-02 12:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/: ktictactux.cpp, ktictactuxwin.cpp: - use
+	setPaletteBackgroundPixmap, not setErasePixmap (the Qt docs are not
+	clear about this)
+
+2003-02-22 19:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - forgot -Wall
+
+2003-02-22 19:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* fyrdman/: level.cpp, map.cpp: - more trivial fixes
+
+2003-02-22 19:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/src/: canvas.cpp, intro.cpp: - ensure clean compilation
+	here too
+
+2003-02-22 19:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* muehle/src/: board.cpp, toplevel.cpp: - comment out unused
+	variables - fix uninitialized variable (which will never occur in
+	practice but gcc   doesn't know about that)
+
+2003-02-22 19:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* koenig/ggz.cc: - another small signedness fix
+
+2003-02-22 19:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/: ktictactuxproto.cpp, ktictactuxwin.cpp: - fix return
+	values
+
+2003-02-22 19:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kdots/Dot/: qdots.cpp, qdots.h: - fix return value of grayscale()
+	
+	I wonder if this could also be named greyscale()?
+
+2003-02-22 19:19  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* KReversi/reversiprotocol.cpp: - suppress compiler warning
+
+2003-02-22 19:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acconfig.h, autogen.sh, configure.ac: - update autoconf stuff
+
+2003-02-22 19:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* muehle/doc/index.docbook: - docbook 4.1.2
+
+2003-02-16 16:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/ktictactuxwin.cpp, muehle/src/toplevel.cpp: - don't
+	hardcode KDE 'hicolor' theme, rather use 'crystalsvg' if KDE >= 3.1
+
+2003-02-16 14:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen.sh
+
+2003-02-04 18:08  Jason Short <jdorje@users.sourceforge.net>
+
+	* KReversi/pixmaps/: blend/.cvsignore, default/.cvsignore,
+	gtk-client/.cvsignore: Add .cvsignore files.
+
+2003-02-04 09:36  Jason Short <jdorje@users.sourceforge.net>
+
+	* autogen.sh, configure.ac, configure.in: Step 1 of
+	autoconf2.5x-only support: rename configure.in as configure.ac.
+
+2003-01-23 18:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - create makefiles for reversi's theme dirs
+
+2003-01-23 18:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* KReversi/pixmaps/Makefile.am: - use separate makefiles for each
+	theme dir
+
+2003-01-23 18:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* KReversi/pixmaps/: blend/Makefile.am, default/Makefile.am,
+	gtk-client/Makefile.am: - use separate makefiles for each theme
+	directory, for old automakes' sake
+
+2003-01-15 19:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - forgotten commit: use mkdir --verbose instead of
+	-v here too
+
+2003-01-12 12:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* muehle/src/ggzwrap/ggzwrap.c: [powerpc]
+	
+	- getopt returns int, not char
+
+2002-12-20 05:55  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, acinclude.ggz, acinclude.kde, autogen.sh, m4/ggz.m4,
+	m4/kde.m4: Move acinclude.* to m4/*.m4.
+
+2002-12-09 14:12  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* muehle/src/ggzwrap/ggzwrap.c: - more compat fixes
+
+2002-11-23 21:51  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* koenig/pics/Makefile.am: - Fix up another mess.
+	
+	It's xpm_DATA, not XPM_data :)
+
+2002-11-23 19:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - ergo, don't create makefile for 'test' directory
+
+2002-11-23 19:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* lib/Makefile.am: - don't declare 'test' to be subdirectory,
+	because it's local only
+
+2002-11-23 19:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/.cvsignore: - update cvsignore
+
+2002-11-17 18:55  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* fyrdman/: .cvsignore, level.cpp, level.h, mainwindow.cpp,
+	mainwindow.h, map.cpp, map.h, data/.cvsignore: - UI improvements:
+	smaller board, and more distinguishable colours for knights -
+	improve possession logics so that it actually works now (one could
+	later add   a team rating which is determined by the amount of
+	untouched soil...) - make the game actually work, by moving the
+	knights :-)
+
+2002-11-17 17:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - create desktop file
+
+2002-11-17 17:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* fyrdman/: .cvsignore, Makefile.am, level.cpp, mainwindow.cpp,
+	data/Makefile.am, data/fyrdman.desktop.in: - add desktop file (so
+	it'll show up in the KDE game menu as singleplayer game) - bugfix:
+	read to cell[j], not to &cell[j] - argh! - use ggz_strdup when
+	reading from file, so we can free memory in a consistent   manner
+
+2002-11-16 23:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* fyrdman/: Makefile.am, level.cpp, level.h, levelselector.cpp,
+	levelselector.h, mainwindow.cpp, mainwindow.h, map.cpp, map.h,
+	data/Makefile.am, data/battle_of_hastings: - add level loading
+	facility, including local levels (code mostly from server)
+
+2002-11-16 20:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* fyrdman/: levelselector.cpp, levelselector.h, mainwindow.cpp,
+	mainwindow.h, map.cpp, map.h: - implement most of the networking
+	stuff - still missing: support for real levels (both local and from
+	ggz)
+
+2002-11-16 18:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* fyrdman/: .cvsignore, Makefile.am, levelselector.cpp,
+	levelselector.h, mainwindow.cpp, mainwindow.h, map.cpp,
+	module.dsc.in, network.cpp, network.h, data/Makefile.am: - add
+	first ggz-related code (i.e. game startup works now) - colours for
+	player and team shown as little bars below the units
+
+2002-11-16 17:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* fyrdman/: Makefile.am, levelselector.cpp, levelselector.h,
+	main.cpp, mainwindow.cpp, mainwindow.h, map.cpp, map.h,
+	network.cpp, network.h: - implement toggling on/off map display
+	options - add level selection widget - add ggz networking stub
+
+2002-11-15 23:05  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - create makefile for fyrdman
+
+2002-11-15 23:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - build fyrdman
+
+2002-11-15 23:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* fyrdman/data/map.png: - forgot map
+
+2002-11-15 23:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* fyrdman/: .cvsignore, Makefile.am, main.cpp, mainwindow.cpp,
+	mainwindow.h, map.cpp, map.h, data/.cvsignore, data/Makefile.am,
+	data/bayeux.png, data/fyrdman.png, data/haroldsreturn.png,
+	data/hi32-app-fyrdman.png, data/knight1.png, data/knight2.png: -
+	add first code for Fyrdman (This is going to be the KDE client for
+	Hastings, and refers to the old English fyrd present at that
+	time...)
+
+2002-11-04 14:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - create ktictactux.desktop from template
+
+2002-11-04 14:43  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/: ktictactux.desktop, ktictactux.desktop.in: - make
+	sure KTicTacTux's path gets included into desktop file (since it
+	doesn't   necessary live in the same prefix as KDE does) - follow
+	freedesktop.org standard
+
+2002-11-02 12:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* lib/.cvsignore: - update cvsignore
+
+2002-11-02 12:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* lib/: Makefile.am, kgamehelp.cpp, kgamehelp.h: - add common class
+	for a game help viewer
+
+2002-11-01 21:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* lib/: .cvsignore, Makefile.am, kpfgallery.cpp, kpfgallery.h,
+	kplayerface.cpp, kplayerface.h: - kde-games library - currently
+	only contains the unfinished player face widget set
+
+2002-11-01 21:54  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - include lib for compilation
+
+2002-10-16 15:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/themes/classic: - for whatever reason, the kandalf
+	picture is named merlin.png
+	
+	I can't believe we released all that shit! Damn.  Damn.  Damn. 
+	Damn.  Damn.
+	
+	I'm going to create a set of necessary patches so 0.0.6 packagers
+	won't have to find everything out by themselves.
+
+2002-10-16 02:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Improvement (hopefully :-) to acinclude.ggz.  Now
+	each GGZ check takes two optional parameters.  For instance:
+	
+	  AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
+	
+	'action-if-found' will be evaluated if the specified module was
+	found.	'action-if-not-found' will be evaluated if the module is
+	not found.  This is consistent with other autoconf macros.  If
+	'action-is-not-found' is empty, then an error will be emitted if
+	the module isn't found.  If 'action-if-not-found' is "ignore", then
+	the module will simply be ignored if it's not found.
+	
+	This is not entirely backwards-compatible, since "ignore" used to
+	be the first parameter to the macro.  But this way is more
+	consistent, in my opinion.
+
+2002-10-14 21:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kdots/Makefile.am: - fixup data mess
+	
+	Jason, automake/conf/whatever doesn't line comments which are not
+	on their own (in an own line).	As a result, KDots in 0.0.6 didn't
+	work :( I'll check the other games soon.
+
+2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+
+2002-10-07 23:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog for 0.0.6
+
 2002-10-01 20:53  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* configure.in: - use configure.in for AC_INIT

@@ -1,14 +1,557 @@
-2002-09-13  gettextize  <bug-gnu-gettext@gnu.org>
+2003-05-16 20:33  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* Makefile.am (EXTRA_DIST): Add config.rpath mkinstalldirs.
-	* configure.in (AC_OUTPUT): Add po/Makefile.in.
+	* autogen.sh: - apply autogen.sh changes from libggz
 
-2002-06-03  gettextize  <bug-gnu-gettext@gnu.org>
+2003-05-11 17:36  Josef Spillner <dr_maux@users.sourceforge.net>
 
+	* po/Makefile.am: - fix translation installation, so we can use
+	srcdir != builddir
 
-2002-06-03  gettextize  <bug-gnu-gettext@gnu.org>
+2003-05-11 01:51  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* Makefile.am (SUBDIRS): Add m4.
-	(ACLOCAL_AMFLAGS): New variable.
-	* configure.in (AC_OUTPUT): Add m4/Makefile.
+	* configure.ac: - set the package version number (via configure.ac)
+	to 0.0.7
+
+2003-05-11 01:41  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: - add a README file for the GNOME client
+
+2003-05-11 01:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, QuickStart.GGZ, README.GGZ, autogen.sh: - update common
+	files for 0.0.7 in gnome-client
+
+2003-05-10 16:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync autogen.sh
+
+2003-05-05 16:41  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/: de.po, ggz-gnome-client.pot: - some more translated words
+
+2003-05-05 16:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/msgboxi.c: - if an error message is not found, display the
+	raw message instead of an empty   box.
+	
+	The tricky part here is that the strings should better not be used
+	for comparison at all because they might contain locale-specific
+	reasons (like: host not found: <reason>).  But for now this
+	workaround should do it.
+
+2003-05-05 15:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - add -fsigned-char
+
+2003-03-29 11:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply improverished autogen globally
+
+2003-03-29 11:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - update GGZ macro file
+
+2003-02-28 19:41  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - use GGZ_CONFIG test rather than handwritten
+	invocation of probably wrong version of ggz-config
+
+2003-02-16 14:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen.sh
+
+2003-02-16 13:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* AUTHORS: - add authors file
+
+2003-02-04 21:18  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/.cvsignore, po/Makefile.am, po/de.po, po/ggz-gnome-client.pot,
+	Makefile.am, configure.ac: - add i18n support to gnome-client
+
+2003-02-04 18:38  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.ac: Various updates for autoconf2.5x usage.
+
+2003-02-04 18:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/login.c: Disable TLS in the call to
+	ggzcore_server_set_hostinfo.
+
+2003-02-04 03:10  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/.cvsignore: - Remove all files from .deps.  - Add .deps to
+	.cvsignore.
+
+2003-02-04 02:49  Jason Short <jdorje@users.sourceforge.net>
+
+	* autogen.sh, configure.ac, configure.in: Step 1 of
+	autoconf2.5x-only support: rename configure.in as configure.ac.
+
+2002-12-17 09:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, pixmaps/Makefile.am, src/Makefile.am: Update the
+	build process so "make dist" works.
+
+2002-12-17 09:38  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Change top of configure.in to set module name:
+	ggz-gnome-client and version: 0.0.7pre.
+
+2002-12-17 08:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/callbacks.c: Convert some char* to const char *.
+
+2002-12-17 06:25  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, acinclude.ggz, autogen.sh, m4/ggz.m4: Move
+	acinclude.ggz to m4/ggz.m4.
+
+2002-11-03 01:55  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/interface.c: Fix buggy typo.
+
+2002-10-30 00:24  jzaun
+
+	* src/: callbacks.c, interface.h: 
+	- Tooltips hack for the player list works now, no stats are shown
+	yet
+
+2002-10-29 01:59  jzaun
+
+	* src/: callbacks.c, callbacks.h, ggzclient.c, interface.c,
+	interface.h: 
+	- The framework to a tooltip system for the player list
+
+2002-10-26 00:11  jzaun
+
+	* src/: ggzclient.c, interface.c: 
+	- Working on /beep
+
+2002-10-23 17:23  jzaun
+
+	* src/: callbacks.c, game.c, game.h, interface.c: 
+	- Watching games works now.
+
+2002-10-23 02:59  jzaun
+
+	* src/: game.c, game.h: 
+	- add #include "game.h" to game.c and fix a declaration in game.h
+
+2002-10-23 02:51  jzaun
+
+	* src/: Makefile.am, callbacks.c, game.c, game.h, ggzclient.c,
+	interface.c, msgboxi.c: 
+	- Joining a game works, though not much is checked yet so make sure
+	you have a table selected! - Sensitivity of the Change Room and
+	Tables buttons - Added a msgbox for when the server disconnects the
+	client
+
+2002-10-21 03:44  jzaun
+
+	* src/ggzclient.c: 
+	- made to compile again with ggzcore changes.
+
+2002-10-20 00:02  jzaun
+
+	* src/: callbacks.c, ggzclient.c, interface.c, main.c, msgboxi.c,
+	profilesc.c, xtext.c, xtext.h: 
+	- Commiting a patch by Jason and several cleanup of myown
+
+2002-10-19 23:03  jzaun
+
+	* src/: callbacks.c, ggzclient.c, xtext.c, xtext.h: 
+	- Updated to 1.9.3 xtext widget.
+
+2002-10-16 22:02  jzaun
+
+	* src/callbacks.c: 
+	- Started work on joining tables. Things don't work yet.
+
+2002-10-16 19:47  jzaun
+
+	* src/: callbacks.c, callbacks.h, interface.c, profilesc.c,
+	profilesi.c: 
+	- advanced profile editor works   * modifying existing profiles   *
+	deleteing existing profiles   * adding new profiles   * button
+	sensitivity
+	
+	- Added the join and watch buttons to the table view
+
+2002-10-16 02:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Improvement (hopefully :-) to acinclude.ggz.  Now
+	each GGZ check takes two optional parameters.  For instance:
+	
+	  AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
+	
+	'action-if-found' will be evaluated if the specified module was
+	found.	'action-if-not-found' will be evaluated if the module is
+	not found.  This is consistent with other autoconf macros.  If
+	'action-is-not-found' is empty, then an error will be emitted if
+	the module isn't found.  If 'action-if-not-found' is "ignore", then
+	the module will simply be ignored if it's not found.
+	
+	This is not entirely backwards-compatible, since "ignore" used to
+	be the first parameter to the macro.  But this way is more
+	consistent, in my opinion.
+
+2002-10-14 22:34  jzaun
+
+	* src/: profilesc.c, profilesi.c: 
+	- You can now add new profiles manualy for existing accounts
+
+2002-10-14 22:17  jzaun
+
+	* src/: ggzclient.c, profilesc.c, profilesc.h, profilesi.c: 
+	- Some more work on the Advanced Profile editor
+
+2002-10-14 20:08  jzaun
+
+	* src/profilesi.c: 
+	- removed some unneeded code
+
+2002-10-14 20:06  jzaun
+
+	* src/: Makefile.am, callbacks.c, callbacks.h, interface.c,
+	profilesc.c, profilesc.h, profilesi.c, profilesi.h: 
+	- Added and advanced button to the profiles screen - Created the
+	advanced profile editor window	 not much is hooked up yet.
+
+2002-10-14 14:13  jzaun
+
+	* src/: callbacks.c, interface.c: 
+	- Password is disabled for guest login type - Guest and Registered
+	spaced better - Renamed NEW to PROFILES
+
+2002-10-14 13:49  jzaun
+
+	* src/: callbacks.c, ggzclient.c, interface.c, msgboxi.c: 
+	- Don't allow login button to be enabled while registered and no
+	password - Error message for XML error
+
+2002-10-14 01:42  jzaun
+
+	* src/: callbacks.c, ggzclient.c: 
+	- Fixed login sensitvity problem
+
+2002-10-14 01:16  jzaun
+
+	* src/: ggzclient.c, interface.c: 
+	- First steps of the table list are done much more to come
+
+2002-10-13 22:09  jzaun
+
+	* src/: ggzclient.c, interface.c, login.c, msgboxi.c: 
+	- Errors connecting to the server are explained in a message box
+	now.
+
+2002-10-10 20:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/ggzclient.c: - fix gnome client
+
+2002-10-03 17:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/ggzclient.c: Some more typecasting to avoid compiler
+	warnings.
+
+2002-10-03 17:24  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/callbacks.c: Avoid some compiler warnings:   - Use a specific
+	typecast on a GTK variable.    - Remove a spurious semicolon. 
+	Also, avoid comparing boolean values to TRUE.  Just check to see if
+	they're true!
+
+2002-10-03 17:22  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/interface.c: Use a specific typecast to avoid a compiler
+	warning.
+
+2002-10-01 20:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - use configure.in for AC_INIT
+
+2002-09-29 17:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - put acinclude.m4 into cvsignore
+
+2002-09-27 10:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen
+
+2002-09-26 13:54  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ABOUT-NLS, ChangeLog, Makefile.am, acconfig.h, acinclude.m4,
+	autogen.sh: - even more cleanups
+
+2002-09-26 13:51  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ChangeLog, m4/Makefile, m4/Makefile.am, m4/Makefile.in,
+	m4/codeset.m4, m4/gettext.m4, m4/glibc21.m4, m4/iconv.m4,
+	m4/isc-posix.m4, m4/lcmessage.m4, m4/lib-ld.m4, m4/lib-link.m4,
+	m4/lib-prefix.m4, m4/progtest.m4, po/ChangeLog, po/Makefile,
+	po/POTFILES, po/POTFILES.in: - more gnome-client cleanups
+
+2002-09-26 13:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/Makefile.am, .cvsignore, acinclude.ggz, configure.in: - fix
+	gnome client
+
+2002-09-24 00:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Update acinclude.ggz in the txt-client, and label
+	acinclude.ggz as being included in txt-client.
+
+2002-09-19 18:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Include gnome-client on the list of modules that
+	use acinclude.ggz.
+
+2002-07-15 22:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* pixmaps/.cvsignore, src/.cvsignore, src/.cvsignore, .cvsignore,
+	ABOUT-NLS, aclocal.m4, ltmain.sh, stamp-h, stamp-h.in: - some more
+	cleanups
+
+2002-07-15 22:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/Makefile, m4/Makefile.in, po/ChangeLog, po/Makefile,
+	src/.xvpics/Login.xpm, src/.xvpics/chatbackground.xpm,
+	src/.xvpics/star1.xpm, src/.xvpics/star2.xpm,
+	src/.xvpics/star3.xpm, src/.xvpics/star4.xpm,
+	src/.xvpics/star5.xpm: - clean up ggz-gnome build system a bit
+
+2002-06-19 23:20  jzaun
+
+	* src/callbacks.c: - Fixed the login button sensitivity to the two
+	types of loggins
+
+2002-06-19 23:10  jzaun
+
+	* src/: callbacks.c, callbacks.h, interface.c, main.c: 
+	- Changed the login and create button checks from a timeout to a
+	callback
+
+2002-06-13 17:10  jzaun
+
+	* src/: callbacks.c, callbacks.h, main.c,
+	.thumbnails/Login.xpm.png, .thumbnails/New.xpm.png,
+	.thumbnails/chat.xpm.png, .thumbnails/chatbackground.xpm.png,
+	.thumbnails/msg.xpm.png, .thumbnails/star3.xpm.png,
+	.thumbnails/star4.xpm.png, .thumbnails/star5.xpm.png: - Removed a
+	bunch of files that should not have been commited to CVS - Added a
+	general timeout callback that currently checks the   sensitivity of
+	the login and create buttons
+
+2002-06-10 01:29  jzaun
+
+	* src/.xvpics/star1.xpm, src/.xvpics/star2.xpm,
+	src/.xvpics/star3.xpm, src/.xvpics/star4.xpm,
+	src/.xvpics/star5.xpm, src/.xvpics/chatbackground.xpm,
+	src/.xvpics/Login.xpm, src/.thumbnails/chatbackground.xpm.png,
+	src/.thumbnails/chat.xpm.png, src/.thumbnails/Login.xpm.png,
+	src/.thumbnails/msg.xpm.png, src/.thumbnails/New.xpm.png,
+	src/.thumbnails/star3.xpm.png, src/.thumbnails/star4.xpm.png,
+	po/ChangeLog, src/.thumbnails/star5.xpm.png, po/Makefile,
+	po/POTFILES, po/POTFILES.in, m4/Makefile.in, m4/codeset.m4,
+	m4/gettext.m4, m4/glibc21.m4, m4/iconv.m4, m4/isc-posix.m4,
+	m4/lcmessage.m4, m4/lib-ld.m4, m4/lib-link.m4, m4/Makefile.am,
+	m4/lib-prefix.m4, m4/progtest.m4, m4/ChangeLog, m4/Makefile: First
+	import of the GNOME2 client. There might be some files imported
+	that shouldn't be, I tryied to clean it up as much as possible.
+	
+	What it does ------------ - login as guest or registered - create
+	new accounts - chat in rooms - change rooms - client is themeable
+	(just the default right now, and the theme is a compile time option
+	right now)
+	
+	What it can't do ---------------- - list tables - join/play games -
+	management of profiles (more than createing new ones)
+	
+	What is needed -------------- - GTK+2.0 - GNOME2
+	
+	Interesting tidbits ------------------- - gconf is used to store
+	prefs, not the ggzcore_conf_* functions
+	
+	Whats being currently worked on ------------------------------- -
+	profile managment   - a means to remove/rename profiles   - a means
+	to deal with corrupt gconf data - fix msgboxi.x to work with
+	GTK+2/GNOME2 (much of it is commented out still)
+
+2002-06-10 01:29  jzaun
+
+	* src/.xvpics/star1.xpm, src/.xvpics/star2.xpm,
+	src/.xvpics/star3.xpm, src/.xvpics/star4.xpm,
+	src/.xvpics/star5.xpm, src/.xvpics/chatbackground.xpm,
+	src/.xvpics/Login.xpm, src/.thumbnails/chatbackground.xpm.png,
+	src/.thumbnails/chat.xpm.png, src/.thumbnails/Login.xpm.png,
+	src/.thumbnails/msg.xpm.png, src/.thumbnails/New.xpm.png,
+	src/.thumbnails/star3.xpm.png, src/.thumbnails/star4.xpm.png,
+	po/ChangeLog, src/.thumbnails/star5.xpm.png, po/Makefile,
+	po/POTFILES, po/POTFILES.in, m4/Makefile.in, m4/codeset.m4,
+	m4/gettext.m4, m4/glibc21.m4, m4/iconv.m4, m4/isc-posix.m4,
+	m4/lcmessage.m4, m4/lib-ld.m4, m4/lib-link.m4, m4/Makefile.am,
+	m4/lib-prefix.m4, m4/progtest.m4, m4/ChangeLog, m4/Makefile:
+	Initial revision
+
+2002-06-10 01:24  jzaun
+
+	* pixmaps/Default/New.xpm, pixmaps/Default/star1.xpm,
+	pixmaps/Default/star2.xpm, pixmaps/Default/star3.xpm,
+	pixmaps/Default/star4.xpm, pixmaps/Default/star5.xpm,
+	src/Makefile.am, src/support.c, src/support.h, src/main.c,
+	src/msgboxi.c, src/msgboxi.h, src/callbacks.c, src/callbacks.h,
+	src/msgboxc.c, src/msgboxc.h, src/interface.c, src/ggzclient.c,
+	src/login.c, src/login.h, src/xtext.c, src/ggzclient.h,
+	src/xtext.h, src/chat.c, src/chat.h, src/interface.h: First import
+	of the GNOME2 client. There might be some files imported that
+	shouldn't be, I tryied to clean it up as much as possible.
+	
+	What it does ------------ - login as guest or registered - create
+	new accounts - chat in rooms - change rooms - client is themeable
+	(just the default right now, and the theme is a compile time option
+	right now)
+	
+	What it can't do ---------------- - list tables - join/play games -
+	management of profiles (more than createing new ones)
+	
+	What is needed -------------- - GTK+2.0 - GNOME2
+	
+	Interesting tidbits ------------------- - gconf is used to store
+	prefs, not the ggzcore_conf_* functions
+	
+	Whats being currently worked on ------------------------------- -
+	profile managment   - a means to remove/rename profiles   - a means
+	to deal with corrupt gconf data - fix msgboxi.x to work with
+	GTK+2/GNOME2 (much of it is commented out still)
+
+2002-06-10 01:24  jzaun
+
+	* pixmaps/Default/New.xpm, pixmaps/Default/star1.xpm,
+	pixmaps/Default/star2.xpm, pixmaps/Default/star3.xpm,
+	pixmaps/Default/star4.xpm, pixmaps/Default/star5.xpm,
+	src/Makefile.am, src/support.c, src/support.h, src/main.c,
+	src/msgboxi.c, src/msgboxi.h, src/callbacks.c, src/callbacks.h,
+	src/msgboxc.c, src/msgboxc.h, src/interface.c, src/ggzclient.c,
+	src/login.c, src/login.h, src/xtext.c, src/ggzclient.h,
+	src/xtext.h, src/chat.c, src/chat.h, src/interface.h: Initial
+	revision
+
+2002-06-10 01:17  jzaun
+
+	* pixmaps/Default/: Login.xpm, msg.xpm: First import of the GNOME2
+	client. There might be some files imported that shouldn't be, I
+	tryied to clean it up as much as possible.
+	
+	What it does ------------ - login as guest or registered - create
+	new accounts - chat in rooms - change rooms - client is themeable
+	(just the default right now, and the theme is a compile time option
+	right now)
+	
+	What it can't do ---------------- - list tables - join/play games -
+	management of profiles (more than createing new ones)
+	
+	What is needed -------------- - GTK+2.0 - GNOME2
+	
+	Interesting tidbits ------------------- - gconf is used to store
+	prefs, not the ggzcore_conf_* functions
+	
+	Whats being currently worked on ------------------------------- -
+	profile managment   - a means to remove/rename profiles   - a means
+	to deal with corrupt gconf data - fix msgboxi.x to work with
+	GTK+2/GNOME2 (much of it is commented out still)
+
+2002-06-10 01:17  jzaun
+
+	* pixmaps/Default/: Login.xpm, msg.xpm: Initial revision
+
+2002-06-10 01:08  jzaun
+
+	* pixmaps/Default/chat.xpm: First import of the GNOME2 client.
+	There might be some files imported that shouldn't be, I tryied to
+	clean it up as much as possible.
+	
+	What it does ------------ - login as guest or registered - create
+	new accounts - chat in rooms - change rooms - client is themeable
+	(just the default right now, and the theme is a compile time option
+	right now)
+	
+	What it can't do ---------------- - list tables - join/play games -
+	management of profiles (more than createing new ones)
+	
+	What is needed -------------- - GTK+2.0 - GNOME2
+	
+	Interesting tidbits ------------------- - gconf is used to store
+	prefs, not the ggzcore_conf_* functions
+	
+	Whats being currently worked on ------------------------------- -
+	profile managment   - a means to remove/rename profiles   - a means
+	to deal with corrupt gconf data - fix msgboxi.x to work with
+	GTK+2/GNOME2 (much of it is commented out still)
+
+2002-06-10 01:08  jzaun
+
+	* pixmaps/Default/chat.xpm: Initial revision
+
+2002-06-10 01:01  jzaun
+
+	* pixmaps/Default/chatbackground.xpm: First import of the GNOME2
+	client. There might be some files imported that shouldn't be, I
+	tryied to clean it up as much as possible.
+	
+	What it does ------------ - login as guest or registered - create
+	new accounts - chat in rooms - change rooms - client is themeable
+	(just the default right now, and the theme is a compile time option
+	right now)
+	
+	What it can't do ---------------- - list tables - join/play games -
+	management of profiles (more than createing new ones)
+	
+	What is needed -------------- - GTK+2.0 - GNOME2
+	
+	Interesting tidbits ------------------- - gconf is used to store
+	prefs, not the ggzcore_conf_* functions
+	
+	Whats being currently worked on ------------------------------- -
+	profile managment   - a means to remove/rename profiles   - a means
+	to deal with corrupt gconf data - fix msgboxi.x to work with
+	GTK+2/GNOME2 (much of it is commented out still)
+
+2002-06-10 01:01  jzaun
+
+	* pixmaps/Default/chatbackground.xpm: Initial revision
+
+2002-06-10 00:53  jzaun
+
+	* autogen.sh, configure.in, ABOUT-NLS, AUTHORS, ChangeLog, NEWS,
+	README, acconfig.h, stamp-h.in, Makefile.am, aclocal.m4, stamp-h,
+	acinclude.ggz, acinclude.m4, ggz-gnome.desktop, ggz-gnome.schemas,
+	ltmain.sh, pixmaps/Makefile.am: First import of the GNOME2 client.
+	There might be some files imported that shouldn't be, I tryied to
+	clean it up as much as possible.
+	
+	What it does ------------ - login as guest or registered - create
+	new accounts - chat in rooms - change rooms - client is themeable
+	(just the default right now, and the theme is a compile time option
+	right now)
+	
+	What it can't do ---------------- - list tables - join/play games -
+	management of profiles (more than createing new ones)
+	
+	What is needed -------------- - GTK+2.0 - GNOME2
+	
+	Interesting tidbits ------------------- - gconf is used to store
+	prefs, not the ggzcore_conf_* functions
+	
+	Whats being currently worked on ------------------------------- -
+	profile managment   - a means to remove/rename profiles   - a means
+	to deal with corrupt gconf data - fix msgboxi.x to work with
+	GTK+2/GNOME2 (much of it is commented out still)
+
+2002-06-10 00:53  jzaun
+
+	* autogen.sh, configure.in, ABOUT-NLS, AUTHORS, ChangeLog, NEWS,
+	README, acconfig.h, stamp-h.in, Makefile.am, aclocal.m4, stamp-h,
+	acinclude.ggz, acinclude.m4, ggz-gnome.desktop, ggz-gnome.schemas,
+	ltmain.sh, pixmaps/Makefile.am: Initial revision
 

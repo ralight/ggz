@@ -1,3 +1,281 @@
+2003-05-13 22:06  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - fix sed incompatibility: a-zA-z becomes A-Za-z now
+	- also, if a program is not found, return immediately
+	
+	This has been tested on:  * Debian GNU/Linux "sid", sed 4.0.7  *
+	Debian GNU/Linux 3.0 "woody", sed 3.0.2  * Debian GNU/Linux 2.2
+	"potato", sed 3.0.2  * RedHat 7.3 "valhalla", sed 3.0.2  * RedHat
+	7.2 "enigma", sed 3.0.2  * Darwin 6.5, sed 4.0.5
+	
+	So it should work :) Note that libtool still isn't found on Darwin,
+	but there's no --version either, so people who want to use it as
+	their primary development platform must fix this.  Also, the 3rd
+	part makes trouble on Solaris, but then again the current setup
+	will not very likely build there anyway.
+
+2003-05-11 11:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Doxyfile, man/ggz.h.3, src/Makefile.am, src/ggz.h,
+	src/security/hashfunc.h: - complete ggz.h documentation
+	(security-related functions) - new man page generated from the
+	header file
+
+2003-05-11 01:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - set the package version number (via configure.ac)
+	to 0.0.7
+
+2003-05-11 01:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, QuickStart.GGZ, README.GGZ, autogen.sh: - update common
+	files for 0.0.7 in libggz
+
+2003-05-10 16:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - another small update to autogen.sh. Fix autoconf
+	2.5 -> autoconf 2.50   (otherwise it would think 2.13 is enough). 
+	- lower the restrictions for libtool and gettext, to be more
+	friendly to   existing distributions.
+
+2003-05-10 16:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/easysock.c: - debugging values of type ssize_t requires %zX
+	as argument, not just %X
+
+2003-05-10 01:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/security/hashfunc.c: - signedness comparison fix
+
+2003-05-05 15:05  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - detect -fsigned-char for CFLAGS in libggz
+
+2003-03-29 21:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/: easysock.c, ggz.h: - distinguish between host lookup
+	failures and connection failures in   ggz_make_socket() - the
+	former error returns -2 now!
+
+2003-02-26 14:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: Some improvements to autogen.sh: - cut away appended
+	revision letters from version numbers (such as libtool	 1.4.2a) -
+	run libtoolize if AM_PROG_LIBTOOL is found somewhere in
+	configure.ac with   either none or a bit of whitespace in front of
+	it - shut up libtoolize debug messages
+	
+	Should work even better now.
+
+2003-02-16 19:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/security/base64.c: - fix base64 encoding
+	
+	This didn't seem to bother ggzd (since it used encoding only), but
+	the web frontend decodes as well, and there it shows...
+
+2003-02-16 15:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - include memory debugging in configuration status
+	output
+
+2003-02-16 13:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen.sh
+
+2003-02-04 21:57  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Fix typo in previous commit.
+
+2003-02-04 21:49  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, configure.ac, m4/ggz-debug.m4: Move debug checking
+	into ggz-debug.m4, and also clean up some other parts of
+	configure.ac.
+
+2003-02-04 10:31  Jason Short <jdorje@users.sourceforge.net>
+
+	* tests/tls.c: Mark local functions as static.
+
+2003-02-04 10:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/security/base64.c: Add some missing #includes.
+
+2003-02-04 02:38  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.ac, m4/tls.m4: Make sure all AC_DEFINE and
+	AC_DEFINE_UNQUOTED macro calls have three parameters.  Remove
+	acconfig.h, which is no longer needed.
+
+2003-02-04 02:15  Jason Short <jdorje@users.sourceforge.net>
+
+	* m4/tls.m4: Give AC_DEFINE and AC_DEFINE_UNQUOTED three arguments.
+	 Add quotes to some macro parameters.
+
+2003-02-04 01:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, autogen.sh, configure.ac, configure.in,
+	src/Makefile.am, src/conf.c, src/easysock.c, src/ggz_common.c,
+	src/list.c, src/memory.c, src/misc.c, src/msg.c, src/numberlist.c,
+	src/stack.c, src/support.c, src/support.h, src/xmlelement.c: Make
+	some bootstrap changes for autoconf2.5x:
+	
+	- Rename configure.in as configure.ac.	- Move some information out
+	of acconfig.h (since this file will eventually	 go away).  These
+	defines go into support.h.  - Remove support.c since it is
+	unneeded; move its contents into support.h.  - Make sure support.h
+	and config.h are included from all .c files.
+
+2003-01-23 18:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/ggz.h: - add versioning information to the header file for
+	libggz
+
+2003-01-22 14:49  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* tests/.cvsignore, tests/tls.c, .cvsignore, Makefile.am,
+	acconfig.h, autogen.sh, configure.in: - Add Transport Layer
+	Security support
+
+2003-01-22 14:48  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/tls.m4, src/ggz.h, src/security/DESIGN,
+	src/security/Makefile.am, src/security/ggz_tls_gnutls.c,
+	src/security/ggz_tls_none.c, src/security/ggz_tls_openssl.c,
+	tests/Makefile.am: - add Transport Layer Security support
+
+2003-01-16 23:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, acconfig.h, autogen.sh, configure.in: - try to find
+	libgcrypt (but only if --with-gcrypt has been specified)
+
+2003-01-16 23:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/: Makefile.am, ggz.h: - export 4 security functions to libggz
+	interface
+
+2003-01-16 23:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/security/: .cvsignore, Makefile.am, base64.c, base64.h,
+	hashfunc.c, hashfunc.h: - add directory with security-related
+	source code
+
+2002-12-07 06:50  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: ggz_common.c, ggz_common.h: Add new error type
+	E_NO_CHANNEL, "no channel", that occurrs when you try to join a
+	table without first forming a channel (direct connection).
+
+2002-11-25 13:19  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* tests/cfgtest.c: - change ggz_conf test: when being root, allow
+	write access to read-only file
+
+2002-11-03 20:48  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/ggz.h: - ggz_make_socket() returns fd on success, not zero
+
+2002-10-30 02:02  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/ggz_common.c: Remove a spurious _.
+
+2002-10-29 12:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: ggz_common.c, ggz_common.h: Added functions
+	ggz_error_to_string() and ggz_string_to_error() to convert between
+	a GGZClientReqError and an XML-compatible string.
+	
+	In converting from a string to an error, if no string is given
+	(NULL) we assume E_OK.	If a string is given but it could not be
+	matched, we return E_UNKNOWN (an unknown error).
+
+2002-10-29 11:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: ggz.h, misc.c, xmlelement.c: - Add ggz_strcasecmp.  - Use
+	in ggz_xmlelement_get_attr, look for the attribute with  
+	case-insensitivity.
+
+2002-10-28 04:50  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/msg.c: Make GGZ debug types case-insensitive.
+
+2002-10-27 00:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: ggz_common.c, ggz_common.h: - Added E_NO_STATUS as a
+	placeholder for an event that has no client   status.  - Added
+	GGZLeaveType enumeration, and functions to convert it to   and from
+	a string.
+
+2002-10-20 00:19  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: ggz_common.c, ggz_common.h: Rename GGZ_CHAT_NONE as
+	GGZ_CHAT_UNKNOWN, and give a better explanation of what it is (and
+	why it exists).
+
+2002-10-17 23:14  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: Makefile.am, strsep.c, support.c: - Get strsep() support
+	function to work on systems that don't have it.    * Compile the
+	support file always.	* Encase the function in #ifndef
+	HAVE_STRSEP.  - Rename the support file as support.c instead of
+	strsep.c.  Perhaps   other support code will be needed in future.
+
+2002-10-17 23:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* tests/misc.c: Double-check sizeof(char) in tests.
+
+2002-10-17 23:01  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/memory.c: Do pointer arithmetic with char*, not void*.
+
+2002-10-10 22:54  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: ggz_common.c, ggz_common.h: Add the GGZ_CHAT_TABLE chat
+	type to the GGZChatType enumeration.
+
+2002-10-10 19:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* Doxyfile, configure.in: libggz changed -> bump version number to
+	0.0.7pre.
+
+2002-10-10 14:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/: conf.c, ggz.h: - new libggz function: ggz_conf_close(int
+	handle)
+
+2002-10-09 01:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: ggz_common.c, ggz_common.h: - Move GGZChatType enum into
+	ggz_common.  - Add ggz_chattype_to_string() and
+	ggz_string_to_chattype functions to   ggz_common.  - Change
+	existing code to use the above two instead of their own custom	
+	code.  - Don't accept invalid and dangerous chat messages (sent
+	across the   network).	But do accept invalid and non-dangerous
+	chat messages: to   improve backward-compatability if new chat
+	types are added.
+
+2002-10-08 05:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* Doxyfile: Change the PROJECT_NUMBER to 0.0.6.
+
+2002-10-08 02:11  Jason Short <jdorje@users.sourceforge.net>
+
+	* libggz.spec: Put doc files in alphabetical order.
+
+2002-10-08 02:08  Jason Short <jdorje@users.sourceforge.net>
+
+	* libggz.spec: Update .spec file for libggz.
+	
+	This is hard to test, since nobody uses an RPM-based distro...
+
+2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+
+2002-10-07 23:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog for 0.0.6
+
 2002-10-01 17:55  Jason Short <jdorje@users.sourceforge.net>
 
 	* Makefile.am, configure.in, man/.cvsignore, man/Makefile.am,

@@ -1,3 +1,1236 @@
+2003-05-16 20:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply autogen.sh changes from libggz
+
+2003-05-11 13:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/geekgame/protocol.h: - use smaller protocol numbers
+	
+	Doh! Actually a good thing detected by gcc 2.96, which gcc 3.x
+	doesn't find.
+
+2003-05-11 13:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/ggzcards/ai/Makefile.am: - add -DAI_CLIENT to avoid
+	making it a GUI client
+	
+	Otherwise, it would depend on ggzmod (huh?)
+
+2003-05-11 11:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/krosswater/zoneserver/Makefile.am, ggzdmod/Doxyfile,
+	ggzdmod/Makefile.am, ggzdmod/ggzdmod.h, man/ggzdmod.h.3: - man page
+	updated from header file with doxygen - don't install libzoneserver
+	anymore - update library interface version
+
+2003-05-11 01:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - set the package version number (via configure.ac)
+	to 0.0.7
+
+2003-05-11 01:47  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/: ggzd.6, ggzduedit.6: - man page version updates
+
+2003-05-11 01:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, README.GGZ, autogen.sh, game_servers/chess/chess.dsc,
+	game_servers/chinese-checkers/ccheckers.dsc,
+	game_servers/connectx/connectx.dsc, game_servers/dots/dots.dsc,
+	game_servers/escape/escape.dsc,
+	game_servers/ggzcards/config/ggzcards-bridge.dsc,
+	game_servers/ggzcards/config/ggzcards-fortytwo.dsc,
+	game_servers/ggzcards/config/ggzcards-hearts.dsc,
+	game_servers/ggzcards/config/ggzcards-lapocha.dsc,
+	game_servers/ggzcards/config/ggzcards-spades.dsc,
+	game_servers/ggzcards/config/ggzcards-suaro.dsc,
+	game_servers/ggzcards/config/ggzcards-sueca.dsc,
+	game_servers/ggzcards/config/ggzcards-whist.dsc,
+	game_servers/ggzcards/config/ggzcards.dsc,
+	game_servers/hastings/hastings.dsc, game_servers/muehle/muehle.dsc,
+	game_servers/reversi/reversi.dsc, game_servers/spades/spades.dsc,
+	game_servers/tictactoe/tictactoe.dsc: - update common files for
+	0.0.7 in ggzd - bump engine and/or game server versions where it's
+	necessary
+
+2003-05-10 16:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync autogen.sh
+
+2003-05-10 12:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/hastings/maps/Makefile.am: - prefix data with dist_
+
+2003-05-10 01:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/spades/engine_func.c: - rename log to logflag, since
+	there's an ambiguity to the logarithm: log()
+
+2003-05-10 00:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/hastings/game.c: - signedness comparison fixes
+
+2003-05-05 15:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - add -fsigned-char to C(XX)FLAGS by default where
+	it's due
+
+2003-03-29 11:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/hastings/game.c: - use ERR_ENEMY constant instead of
+	hardcoded -8
+
+2003-03-29 11:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply improverished autogen globally
+
+2003-03-29 11:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - update GGZ macro file
+
+2003-02-28 03:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/datatypes.h: - libpopt expects int arguments for
+	POPT_ARG_NONE, not char
+	
+	Before, calling ggzd with -F on ppc/sparc/... didn't prevent ggzd
+	from forking.  Other variables might be affected, and other GGZ
+	apps using popt as well, so we might want to do an audit...
+
+2003-02-26 14:56  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/err_func.c: - add %Y to timestamp log so we can see the year
+
+2003-02-26 14:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/chinese-checkers/Makefile.am: - blindly add -lm to
+	libraries being linked in, because some weirdos decided to  
+	exclude that from the libc-supplied functions on several
+	architectures somehow
+
+2003-02-26 14:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/ggzcards/main.c: - rename fd_set variable to fdset
+	because fd_set is already the type name, and   some macro voodoo
+	magic would let this result in a failure for some libc's
+
+2003-02-19 20:19  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/geekgame/: geekgame.cpp, geekgame.dsc, geekgame.h,
+	main.cpp, protocol.h: - add some more checks and opcodes, mostly to
+	comply with client - add copyright to files, using nifty new
+	ggzgamingzone.org mail address
+
+2003-02-19 19:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/muehle/ggz/: ggzgameserver.cpp, ggzgameserver.h: -
+	add method open() which returns the number of open seats
+
+2003-02-16 17:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/database/ggzdb_pgsql.c: - update pgsql backend: consider
+	inserting statistics values if update doesn't	hit any tuple
+	
+	Performance-wise, this should be the optimum. The other
+	possibilities being:  * delete tuple blindly and insert again (bad
+	performance)  * select first, and decide whether to insert or
+	update (not much better)
+
+2003-02-16 15:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/krosswater/zoneserver/: ZoneGGZModServer.cpp,
+	ZoneGGZModServer.h: - shut up compiler warnings:  * make destructor
+	virtual  * handle (but discard) unsupported ggzdmod events
+
+2003-02-16 15:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/muehle/qtserv/qlist.h: - shut up compiler warnings
+
+2003-02-16 15:29  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/keepalive/src/world.cpp: - shut up compiler warning
+
+2003-02-16 13:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen.sh
+
+2003-02-15 04:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/dots/: dots.dsc, game.c: Stats support for dots
+	(untested).
+
+2003-02-15 04:39  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/chinese-checkers/: ccheckers.dsc, game.c: Stats
+	support for chinese-checkers (untested).
+
+2003-02-15 04:34  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/chess/: chess.dsc, game.c: Stats support for chess.
+
+2003-02-15 04:25  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/reversi/: game.c, reversi.dsc: Stats support for
+	reversi.
+
+2003-02-15 02:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/table.c: Preliminary ggzd support for resizing tables. 
+	Without ggzcore support, this is still useless.
+
+2003-02-15 02:35  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/table.c: Remove two unused event data packaging structures.
+
+2003-02-12 05:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/: ggzdmod.c, ggzdmod.h, io.c, io.h, mod.h, protocol.h:
+	Preliminary ggzdmod support for changing the number of seats at a
+	table.	Without ggzd support, this is currently useless.
+
+2003-02-10 00:44  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: General cleanups to configure.ac: use
+	AC_HELP_STRING, add quotes for arguments, remove unnecessary exit
+	calls.
+
+2003-02-09 23:57  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, configure.ac, m4/ggz-debug.m4: Use the ggz-debug
+	macro file in ggzd.
+
+2003-02-09 23:50  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Add strsep support (prototype) back into config.h. 
+	Note this only works for ggzd; any of the game modules who try to
+	use this function will see the prototype but won't be able to link
+	against the function.
+
+2003-02-04 18:55  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.ac: Various updates for autoconf2.5x usage.
+	 Also fix a typo bug where DB4_IN_DIR was defined instead of
+	DB3_IN_DIR.
+
+2003-02-04 18:09  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/ggzduedit.c: Mark a local function as static.
+
+2003-02-04 17:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/geekgame/: geekgame.cpp, geekgame.h, protocol.h: -
+	server-side check for game mode conditions - new opcodes, but
+	they're not used yet
+
+2003-02-04 02:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* autogen.sh, configure.ac, configure.in: Step 1 of
+	autoconf2.5x-only support: rename configure.in as configure.ac.
+
+2003-02-03 04:17  Jason Short <jdorje@users.sourceforge.net>
+
+	* autogen.sh: Copy ggzd's autogen.sh from libggz's.  Among other
+	things this means it is compatible with autoheader2.5x instead of
+	autoheader2.13.
+	
+	In general, we should keep these autogen.sh's identical.
+
+2003-01-23 18:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod.h: - add versioning information for ggzdmod
+
+2003-01-22 14:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/: client.c, control.c, datatypes.h, ggzd.conf.in, net.c,
+	net.h, parse_opt.c: - Add Transport Layer Security support
+
+2003-01-16 23:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/: control.c, datatypes.h, ggzd.conf.in, ggzduedit.c,
+	login.c, parse_opt.c: - new option for ggzd: DatabaseHashing =
+	plain | md5 - ggzduedit updates:    * getopt interface	  * ability
+	to use SQL databases (command line options similar to MySQL and    
+	 PostgreSQL clients)	* when asking for a password, don't echo
+	the input
+	
+	Hashing is not yet implemented in ggzduedit (changing passwords
+	will create chaos), but some larger rewrite would be in order for
+	this.  Currently, low-level db functions are used, which don't know
+	anything about hashing.
+
+2003-01-16 23:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/database/: ggzdb.c, ggzdb.h, ggzdb_pgsql.c: - new database
+	version:    * can store hashed passwords    * password size
+	enlarged to 32, while 16 is still the effective limit - do database
+	version check in pgsql backend too
+
+2003-01-12 15:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/database/: ggzdb.c, ggzdb.h, ggzdb_db2.c, ggzdb_db3.c,
+	ggzdb_db4.c, ggzdb_pgsql.c, ggzdb_proto.h: - add ability to handle
+	statistics database to pgsql backend - change interface to use
+	ggzdbConnection instead of char* in ggzdb_init_stats   (even though
+	no backend needs this, all assume that ggzdb_init has previously  
+	been called)
+
+2003-01-12 13:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/database/ggzdb_pgsql.c: [powerpc]
+	
+	- add dummy functions for stats for pgsql backend
+	
+	To write the functions, another interface change is needed, which
+	will be done later on.
+
+2003-01-12 13:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/keepalive/src/keepalive.cpp: [powerpc]
+	
+	- fix ggzdmod include directive
+
+2003-01-12 12:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/: muehle/main.cpp, keepalive/src/main.cpp: [powerpc]
+	
+	- getopt returns int, not char
+
+2003-01-12 12:29  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: [powerpc]
+	
+	- enable -Wall not only for C servers but also for C++ ones
+
+2003-01-12 12:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/geekgame/main.cpp: [powerpc]
+	
+	- getopt returns int, not char
+
+2003-01-06 21:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - fix typo: s/Pqconnectdb/PQconnectdb/
+
+2003-01-03 10:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/: ggzdmod.c, ggzdmod.h: Fix a bug in ggzdmod_dispatch
+	causing it to return an error if there is nothing to dispatch.
+
+2002-12-20 11:10  Roger Light <oojah@users.sourceforge.net>
+
+	* game_servers/connectx/: connectx.dsc, game.c, game.h, main.c:
+	Added game over checking.
+	
+	This means that the game server is largely complete other than with
+	regards to AI.
+
+2002-12-19 15:28  Roger Light <oojah@users.sourceforge.net>
+
+	* game_servers/Makefile.am: Added connectx to subdirs
+
+2002-12-18 18:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - build makefile for ConnectX (even though it's not
+	in SUBDIRS yet)
+
+2002-12-18 18:41  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/connectx/.cvsignore: - add cvsignore file
+
+2002-12-18 18:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/connectx/Makefile.am: - fix ConnectX makefile
+
+2002-12-18 12:49  Roger Light <oojah@users.sourceforge.net>
+
+	* game_servers/connectx/: Makefile.am, connectx.dsc, connectx.room,
+	game.c, game.h, main.c: Initial commit of ConnectX game server.
+	
+	Still to be done:
+	
+	- Synchronisation support - Non-random AI - Game over detection
+
+2002-12-18 12:46  Roger Light <oojah@users.sourceforge.net>
+
+	* game_servers/escape/: escape.dsc, game.c, game.h, main.c: Now
+	initialises random seed on starting a game....
+
+2002-12-16 11:38  Roger Light <oojah@users.sourceforge.net>
+
+	* game_servers/escape/: escape.dsc, game.c, game.h, main.c:
+	Complete rewrite of the game server using the TTT server as a
+	reference.
+	
+	Hence supports as much of spectators and stats as TTT does,
+	although the client has support for neither.
+	
+	Synchronising hasn't been tested.
+	
+	A rudimentry AI has been implemented. It either moves in the
+	direction in which it should be escaping or else takes a random
+	move.  It is very easy to beat :)
+
+2002-12-16 05:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* autogen.sh: Revert autogen to use -l option instead of -I for
+	autoheader and autoconf.  -I is only supported for 2.5x versions.
+
+2002-12-16 05:22  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, acinclude.ggz, autogen.sh, m4/ggz.m4: Move
+	acinclude.ggz to m4/ggz.m4.
+
+2002-12-15 13:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/database/Makefile.am: Don't link the db library to any
+	libraries.  This is technically wrong (?), but this doesn't matter
+	since it gets linked later in compilation.
+
+2002-12-15 12:34  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Auto-detect a supported database.  Current order
+	for checking: db3, db4, db2, pgsql, mysql.
+
+2002-12-09 14:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/database/ggzdb_db2.c: - copy ggzd_stats functions to the db2
+	interface - compatibility: only accept the 4th parameter to
+	cursor() if we are >= db   2.6.4 (according to the sleepycat docs)
+
+2002-12-07 07:33  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/Makefile.am: Remove $(DBSOURCES) from ggzduedit_SOURCES;
+	this is now handled by the build in the database/ directory.
+
+2002-12-07 07:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/players.c: Send an E_NO_CHANNEL error if a player tries to
+	<LAUNCH> or <JOIN> a table without having already established a
+	channel (direct connection).
+
+2002-11-25 20:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzd/Makefile.am, ggzd/ggzdb.c, ggzd/ggzdb.h, ggzd/ggzdb_db2.c,
+	ggzd/ggzdb_db3.c, ggzd/ggzdb_mysql.c, ggzd/ggzdb_pgsql.c,
+	ggzd/ggzdb_proto.h, ggzd/protocols.h, ggzd/table.c,
+	ggzd/database/.cvsignore, ggzd/database/Makefile.am,
+	ggzd/database/ggzdb.c, ggzd/database/ggzdb.h,
+	ggzd/database/ggzdb_db2.c, ggzd/database/ggzdb_db3.c,
+	ggzd/database/ggzdb_db4.c, ggzd/database/ggzdb_mysql.c,
+	ggzd/database/ggzdb_pgsql.c, ggzd/database/ggzdb_proto.h,
+	acconfig.h, autogen.sh, configure.in: - move database files into
+	subdirectory 'database' - enable db4, and create dummy db4 support
+	based on db3 - add enumeration value for GGZ_UPDATE_TABLE_RESIZE
+	(huh?)
+	
+	I'm not a libdb expert, so this should be checked, but it works for
+	me.  If the API is rather stable, using ggzdb_db3.c and selectively
+	#defining some parts of the source might be more efficient.
+
+2002-11-24 05:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/control.c: Add #ifdef DEBUG...#endif around DEBUG-only code.
+
+2002-11-16 23:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/hastings/game.c: - another bugfix: s/y/mapy/ for the
+	map itself
+
+2002-11-16 22:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/hastings/game.c: - small bugfix: pre-initialize
+	number of players to zero  (otherwise we end up having some
+	millions of them...)
+
+2002-11-07 07:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/hastings/game.c: Label some local functions as
+	static.
+
+2002-11-06 23:12  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/hastings/: game.c, game.h: - new state for map
+	selection
+
+2002-11-06 23:12  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/hastings/maps/: Makefile.am, yorkshire: - new game
+	state for map selection - add map for battle of Yorkshire
+
+2002-11-06 10:07  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - generate makefile for Hastings' map dir
+
+2002-11-06 10:07  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/hastings/: Makefile.am, game.c, game.h: - load list
+	of maps upon startup
+
+2002-11-06 10:07  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/hastings/maps/: .cvsignore, Makefile.am,
+	battle_of_hastings: - add first external map to Hastings - load
+	list of maps upon startup
+
+2002-11-06 08:06  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/net.c: - If we receive a <PING> tag, respond immediately
+	with a <PONG>.	- If the <PING> has an ID attribute, use the same
+	attribute in the <PONG>.
+
+2002-11-04 16:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/ggzcards/client/Makefile.am: - use AM_CFLAGS, not
+	CFLAGS
+
+2002-11-02 14:55  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/geekgame/protocol.h: - enumerate protocol opcodes
+
+2002-11-02 07:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/table.c: Handle the BOOT, BOT, and OPEN events when
+	requested by the client.
+
+2002-11-02 07:40  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/: ggzdmod.c, ggzdmod.h, io.c, io.h, mod.h, protocol.h:
+	Provide three new functions to the game server:
+	ggzdmod_request_boot, ggzdmod_request_bot, and
+	ggzdmod_request_open.  These allow the game server to have all the
+	control that the table owner is (currently) granted.
+
+2002-11-01 22:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/net.c: Avoid malformed XML when sending a new login
+	status/password.
+	
+	Bugs like this are annoying - a single extra character breaks
+	everything.  But at least with an XML connection, the error is
+	easily spotted by scanning the text that was sent.
+
+2002-10-29 12:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/net.c: Send out error codes in the RESULT tag in text form,
+	not numerical.
+	
+	Note that this will significantly break backwards-compatibility.
+
+2002-10-29 10:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/net.c: Remove the 'joinspectator' and 'leavespectator'
+	ACTIONs of the <UPDATE> tag.
+	
+	GGZCore from the last several weeks should be compatible with this.
+	 Earlier versions will probably do very bizarre things (although
+	they probably would anyway...).
+
+2002-10-28 08:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/: ggzdmod-ggz.h, ggzdmod.c, io.c, io.h, mod.h: - When
+	reporting a game, pass the seat type of the players along as well. 
+	- For AI players, just pass their name - and let GGZ take care of  
+	differentiating them from humans.
+
+2002-10-28 08:27  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: room.c, stats.c: - Don't track stats on games with guest
+	players at them.  This needs to   be the default behavior, although
+	some games may eventually want to   allow it.  - Don't send out
+	stats for guest players at all.  Again, some games may	 want to
+	allow guests to have (temporary) stats.  - Track the stats for AI
+	players on a per-seat basis, and make sure to	differentiate them
+	from human players.
+
+2002-10-28 05:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/ggzcards/config/: ggzcards-bridge.dsc,
+	ggzcards-fortytwo.dsc, ggzcards-hearts.dsc, ggzcards-lapocha.dsc,
+	ggzcards-spades.dsc, ggzcards-suaro.dsc, ggzcards-sueca.dsc,
+	ggzcards-whist.dsc, ggzcards.dsc: Track ratings for all GGZCards
+	games.
+
+2002-10-28 05:56  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: Makefile.am, elo.c, elo.h, err_func.h, parse_opt.c,
+	room.c, stats.c: Add ELO rating support to ggzd.
+
+2002-10-28 05:55  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/ggzd.test.in: Enable all debugging types in the "make test"
+	build/run.
+
+2002-10-28 05:10  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod.h: Added two new game result types: FORFEIT and
+	NONE, along with documentation on how these might be useful.
+
+2002-10-28 03:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: players.c, players.h: Fix a severe bug.
+	
+	Until yesterday, when sending a <PLAYER> over the network
+	(generally to a different player), the player structure was not
+	locked correctly.  There is a hash_player_lookup in net.c, but then
+	the lock is released before the data is sent.  However
+	player_get_type re-locked the structure before determining the
+	player type.
+	
+	This sounds, good, but it is dangerous: once the lock is released,
+	the player could even log out and the player structure could be
+	destroyed.  So we could end up deadlocking or segfaulting when we
+	try to access the data later.
+	
+	Yesterday, I changed this code so it makes a copy of the player
+	structure while it still has the lock.	This is the correct way to
+	do things, AFAICT (some FIXME comments in the code suggest it was
+	the original intention, and just wasn't completed).  But this lead
+	to a deadlock when get_player_type tried to access an invalid
+	(copied) lock.
+	
+	So the correct fix now is just to have get_player_type *not*
+	acquire a lock, and document this in the function's prototype. 
+	Nobody else calls it, so this won't break anything else.
+
+2002-10-28 03:02  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: net.c, players.c: - Acquire a read lock on the player
+	stats when assembling a <LIST> of   players to send out.  - Don't
+	hold on to a readlock on the player/player stats over the course  
+	of a write().  Just copy the player, drop the lock, and use the
+	copy.
+
+2002-10-28 02:50  Jason Short <jdorje@users.sourceforge.net>
+
+	* tests/: basic.c, ggzdtest.c: #include "ggzdmod-ggz.h".
+
+2002-10-28 01:09  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: datatypes.h, ggzdb.c, ggzdb.h, net.c, parse_opt.c,
+	players.h, room.c, stats.c, stats.h: - Fixed a potential segfault
+	from accessing an out-of-bounds game type.  - Preliminary support
+	for player ratings.  - New function stats_lookup() to move
+	stats-specific code out of the	 database code.  - Add forfeits to
+	the stats database; rating becomes a floating-point   value; high
+	scores becomes a long.	Hopefully this can be a final	form for
+	the database.  This makes it incompatible with the previous  
+	version, but bumping up the DB version number is _not_ the answer -
+	that   will invalidate the player database as well!
+
+2002-10-28 00:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/stats.c: Restructure stats code to break off the individual
+	stats calculations.
+
+2002-10-28 00:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: Makefile.am, stats.c, stats.h, table.c: Moved statistics
+	calculating code into stats.[ch].
+
+2002-10-27 22:25  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/tictactoe/: game.c, tictactoe.dsc: Support player
+	records for TTT.
+
+2002-10-27 14:06  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod-ggz.h: Doh!  That's quite a long time to have
+	forgotten to add this file to the repository...
+
+2002-10-27 13:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/ggzcards/config/: ggzcards-bridge.dsc,
+	ggzcards-fortytwo.dsc, ggzcards-hearts.dsc, ggzcards-lapocha.dsc,
+	ggzcards-spades.dsc, ggzcards-suaro.dsc, ggzcards-sueca.dsc,
+	ggzcards-whist.dsc, ggzcards.dsc: Enable records in all GGZCards
+	rooms.
+
+2002-10-27 13:49  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/ggzcards/common.c: Report game results to GGZ.
+
+2002-10-27 13:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: control.c, datatypes.h, ggzd.h, ggzdb.c, ggzdb.h,
+	ggzdb_db3.c, ggzdb_proto.h, net.c, parse_opt.c, players.c,
+	players.h, protocols.h, room.c, room.h, table.c, transit.c: GGZd
+	support for player win-loss records, and some preliminary code for
+	other types of stats.
+
+2002-10-27 13:44  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/: ggzdmod.c, ggzdmod.h, io.c, io.h, mod.h, protocol.h:
+	GGZdMod support for reporting game results to GGZ.
+
+2002-10-27 07:26  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/: Makefile.am, ggzdmod.c, ggzdmod.h: Created new file
+	ggzdmod-ggz.h, and moved GGZ-specific parts of the GGZ API into it.
+	
+	In time, this file will hold quite a bit more.
+
+2002-10-27 06:15  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: control.c, ggzdb.c, ggzdb.h, ggzdb_db2.c, ggzdb_db3.c,
+	ggzdb_mysql.c, ggzdb_pgsql.c, ggzdb_proto.h: A moderate cleanup to
+	the *interface* to the database code.  From this a rather
+	full-fledged cleanup fell out:
+	
+	- The return value of most DB functions was "int".  This was not  
+	particularly descriptive.  I changed it to GGZDBResult for most  
+	functions.  - Most backend database functions, when given a DB
+	error (which shouldn't	 happen, normally) would just return the
+	value the DB function gave them.    This is less than good, since
+	it could be interpreted arbitrarily by	  the calling code. 
+	Therefore I added a new GGZDBResult enumerated value,	
+	GGZDB_DB_ERR.  This is returned by functions when database access  
+	 fails.  It has limited handling by the callers (but, at least it
+	won't	 be interpreted as some other error - and really, what
+	possible handling    is there?).  - I added some documentation to
+	the backend DB functions (in   ggzdb_proto.h), as best I understand
+	them.  I suspect that pgsql and   mysql will not behave correctly
+	in some situations; I've added some   comments there but not much
+	else.
+
+2002-10-27 02:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: players.c, table.c, transit.c, transit.h: In a player
+	transit, pass the caller through as well - since this may not be
+	the same as the player involved in the transit.
+	
+	Thus players who are booted will know who booted them.
+
+2002-10-27 02:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: table.c, table.h, transit.c: - In a transit player event,
+	make sure we pass on the reason (for the   leave).  Otherwise it
+	just stays at 0...  - If the table is shut down because of an
+	error, track that and alert the   players leaving accordingly.
+
+2002-10-27 00:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: net.c, net.h, players.c, protocols.h, table.c, table.h,
+	transit.c, transit.h: When a player joins/leaves a table, send a
+	<JOIN>/<LEAVE> tag instead of or in addition to the associated
+	<RESULT> tag.
+	
+	The desired functional behavior is:   - Join:	  * When a player
+	is automatically joined after a launch, we should send	     <JOIN
+	TABLE='x'/>	* When a player sends us a join that succeeds, we
+	should send	  <RESULT ACTION='JOIN' CODE='0'/> <JOIN
+	TABLE='x'/>	* When a player sends us a join that fails, we
+	should send	  <RESULT ACTION='JOIN' CODE='x'/>   - Leave:	  *
+	When a game server crashes or is killed, we should send      
+	<LEAVE REASON='gameerror'/>	* When a game server exits normal
+	(GGZDMOD_STATE_DONE), we should send	   <LEAVE
+	REASON='gameover'/>	* When a player is booted from a table, we
+	should send	  <LEAVE REASON='boot' PLAYER='xxxxx'/>     * When
+	a player sends a leave that succeeds, we should send	   <RESULT
+	ACTION='leave' CODE='0'/> <LEAVE REASON='normal'/>     * When a
+	player sends a leave that fails, we should send       <RESULT
+	ACTION='leave' CODE='x'/>
+	
+	Unfortunately, this behavior has not *quite* been reached.  But it
+	is close.  Another problem with the current implementation is that
+	it is quite ugly - the transit code is being overloaded to send
+	transit-specific data, something that it was not originally
+	intended to do.  In time this will have to be cleaned up one way or
+	another...
+
+2002-10-26 09:43  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: client.c, net.c, table.c: Removed some 'default' cases so
+	it's easier to make sure the list is full.
+
+2002-10-26 07:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/net.c: If no TYPE is specified for a <LOGIN>, assume a
+	'guest' login.
+
+2002-10-26 07:26  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/net.c: If no TYPE is specified for a <CHAT>, assume
+	'normal'.
+
+2002-10-26 01:56  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/chinese-checkers/: game.c, game.h, main.c: Update
+	chinese-checkers so it supports GGZDMOD_SEAT_EVENT.
+
+2002-10-26 00:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/reversi/: game.c, game.h, main.c: Update reversi so
+	it supports GGZDMOD_EVENT_SEAT.
+
+2002-10-25 22:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod.c: When we're launching the game, we fork() and
+	then exec().  After the fork, if there are any errors we should
+	*not* call ggz_debug or any of its friends (including
+	ggz_error_sys_exit()).	These may pass on their output to a handler
+	function, which may not work properly since we've forked() off of
+	the main program.
+	
+	Instead, when this happens we send a ggzdmod log message.  This
+	cannot be done (easily) with ggzdmod_log, since the ggzdmod object
+	we have is a GGZ-side one and we're now on the game side.  Instead
+	we access the IO functions directly to send first a log message and
+	then to change the state to DONE.
+	
+	This could end up being a useful debugging tool at some point,
+	since if the exec fails (for instance, because the command was not
+	set correctly) we will not get a useful ggzd.debug line about it. 
+	But it would be more useful if the game could send *error* messages
+	to ggzd, independently of the "debug" messages it currently sends.
+
+2002-10-25 19:33  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod.h: Add a note to the documentation on
+	ggzdmod_connect.
+
+2002-10-25 19:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* tests/ggzdtest.c: We can't just exec "logmod", we need the full
+	path of the game module executable.  Use getenv("PWD") to obtain
+	this (may not work on all systems?).  See the @note under
+	ggzdmod_set_module().
+
+2002-10-25 19:12  Jason Short <jdorje@users.sourceforge.net>
+
+	* tests/basic.c: An invalid ggzdmod object may return either 0 or
+	-1 seats.
+
+2002-10-25 19:10  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod.h: Added a @note on ggzdmod_set_module().
+
+2002-10-25 18:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod.c: ggzdmod_get_num_seats() shouldn't return -1
+	just because there's no connection.  It _espectially_ shouldn't do
+	this on the GGZ side.
+
+2002-10-25 10:31  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/tictactoe/game.c: Since the table is no longer
+	killed when there are still spectators at it, we have to make sure
+	we check to see if it's empty when a spectator leaves.
+
+2002-10-24 07:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod.c: - Fixed two typos where old_seat was being
+	looked at instead of new_seat.	- Changed error return values so
+	each different error gets a different	value.	This is marginally
+	helpful in debugging.
+
+2002-10-24 07:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/event.c: Removed spurious debug output.
+
+2002-10-24 02:56  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/ggzcards/ai/game.c: If there are no human players at
+	the table, then sleep() for two seconds in between each trick. 
+	This will prevent a runaway AI table from hogging resources,
+	leaving any spectators behind, and becoming unresponsive.
+	
+	It is done at the *client* end so that the server can remain
+	responsive (for instance, to players joining or leaving).
+
+2002-10-24 00:19  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/ggzcards/: common.c, common.h, game.c: Make it an
+	option to hide hands from spectators (disabled by default).
+	
+	This option has huge cheating ramifications, but for now it should
+	be fine as it is...
+
+2002-10-24 00:02  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/tictactoe/game.c: Use a more elegant form of
+	seats_full() and seats_empty().
+	
+	Also the table will no longer terminate if there are still
+	spectators.
+
+2002-10-24 00:01  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/ggzcards/common.c: Use a more elegant form of
+	seats_full() and seats_empty().
+
+2002-10-23 23:06  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod.c: Remove obsolete functions seat_find_player()
+	and spectator_find_player().
+
+2002-10-23 22:26  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod.c: Avoid declaring a variable in the middle of a
+	block.	gcc3.2 lets me do this for some reason...
+
+2002-10-23 20:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/ggzcards/common.c: Avoid having an assertion fail
+	when we 'sit' at a table.
+
+2002-10-23 20:10  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: net.c, net.h, players.c, players.h, protocols.h, table.c,
+	table.h, transit.c, transit.h: Added handling for the RESEAT tag.
+	
+	Doing this right entailed significant changes to the transit code,
+	including the unification of SPECTATOR and SEAT change transit
+	events.  However this is offset by the lack of elegence of the new
+	code (which may be improved over time).
+	
+	There is currently no 'reseat' UPDATE.	When a reseat happens, the
+	update sent consists of a 'leave' followed by a 'join'.  This will
+	inevitably cause problems for some clients.
+
+2002-10-23 19:50  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/: ggzdmod.c, ggzdmod.h, io.c, io.h, mod.h, protocol.h:
+	Added function ggzdmod_reseat() so that ggzd can tell the game
+	servers when a player reseats themselves.
+
+2002-10-23 01:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/net.c: Thorough cleanup to ggzd net code - many unlikely
+	bugs fixed.
+
+2002-10-22 22:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: net.c, players.c, players.h, table.c, table.h: Add support
+	for table booting, and improve the code for desc and seat updates.
+	
+	This code is currently very dangerous.	Locking is not done
+	properly, so if the table in question goes away while we're working
+	on it we could get some really nasty results.  There is a similar
+	problem when dealing with the player we're booting.  Fixing this
+	will take some significant code (or structural changes).
+	
+	Booting a player is currently done just by starting them on a
+	GGZ_TRANSIT_LEAVE.  Unfortunately, the code doesn't know the
+	difference between a boot and a player <LEAVE>, and will send the
+	player a <RESULT> tag when the leave completes.  This is probably
+	harmless for now.
+
+2002-10-22 19:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/geekgame/: geekgame.cpp, geekgame.h, protocol.h: -
+	first basic code:  * let all players join, try to get their names
+	and player pics  * when enough have joined, announce game start  *
+	whenever one leaves, the game is interrupted  * prepare game_end()
+
+2002-10-22 19:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/muehle/ggz/: ggzgameserver.cpp, ggzgameserver.h: -
+	players() as a wrapper for ggzdmod_get_num_seats()
+
+2002-10-22 19:29  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - create geekgame makefile
+
+2002-10-22 19:29  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/Makefile.am: - add geekgame to subdirs
+
+2002-10-22 19:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* game_servers/geekgame/: .cvsignore, Makefile.am, geekgame.cpp,
+	geekgame.dsc, geekgame.h, geekgame.room, main.cpp, protocol.h: -
+	add some more or less empty source files which will eventually turn
+	into the   geekgame server
+
+2002-10-22 11:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/ggzcards/common.c: - If a BOT leaves a seat, do most
+	of the same 'leave' updates as when a	player leaves.	- Start and
+	stop the AI process when a bot joins and leaves the table.    Note
+	that introducing a bot mid-hand will probably not lead to very	 
+	effective play.
+
+2002-10-22 10:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/ggzcards/client/: client.c, client.h: Resync client
+	library between server and client.
+
+2002-10-22 10:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/ggzcards/: common.c, net.c, client/client.c,
+	client/client.h, config/ggzcards-bridge.dsc,
+	config/ggzcards-fortytwo.dsc, config/ggzcards-hearts.dsc,
+	config/ggzcards-lapocha.dsc, config/ggzcards-spades.dsc,
+	config/ggzcards-suaro.dsc, config/ggzcards-sueca.dsc,
+	config/ggzcards-whist.dsc, config/ggzcards.dsc: - Tell the client
+	the GGZ seat number of each player (or -1 if they have	 none).  -
+	The (AI) client must read this information, of course.	- The
+	protocol becomes incompatible.
+
+2002-10-22 07:33  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/tictactoe/game.c: Unify the JOIN, LEAVE, and SEAT
+	handler functions.
+
+2002-10-22 07:14  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/tictactoe/game.c: Add a handler for the ggzdmod SEAT
+	event, so that switching between bots and open seats will work
+	smoothly.
+
+2002-10-22 07:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod.c: - When a seat change turns a seat into a bot,
+	name it "AI" just like when   we're given a bot on launch.  -
+	Remove a spurious strdup.
+
+2002-10-22 06:34  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: players.c, seats.c, table.c, table.h, transit.c: Fix
+	things so that table seat updates sent from the client will be
+	handled.  Note that right now anyone can make such an update - the
+	correct authorization policy is a little complicated (we shouldn't
+	just allow the table owner to make updates).
+
+2002-10-22 06:27  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod.c: Enable the SEAT and SPECTATOR_SEAT ggzdmod
+	events.
+
+2002-10-22 04:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/net.c: When sending error results for the <UPDATE> tag, the
+	action type is 'update', not 'protocol'.  The error is not fatal.
+
+2002-10-22 04:11  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/net.c: Avoid a segfault if an invalid UPDATE tag is sent.
+
+2002-10-22 02:11  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: client.c, control.c, event.c, ggzd.h, players.c,
+	players.h, table.c, table.h: Use pthread_kill() and signals to
+	alert a player/table thread when an event is pending waiting to be
+	handled.  This drastically reduces the internal latency when
+	handling events (compared to polling every half-second for them,
+	which was the old system).
+
+2002-10-21 23:27  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: client.c, ggzd.h, players.c, table.c: #define
+	GGZ_RESYNC_SEC and GGZ_RESYNC_USEC in only one place: ggzd.h.
+	
+	This means players and tables must now have the same sync time -
+	this is probably a good thing anyway.
+
+2002-10-20 11:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: chat.c, client.c, client.h, control.c, daemon.c,
+	datatypes.h, err_func.c, err_func.h, event.c, event.h, ggzdb.c,
+	ggzdb.h, ggzdb_db2.c, ggzdb_db3.c, ggzdb_mysql.c, ggzdb_pgsql.c,
+	ggzduedit.c, hash.c, hash.h, login.c, login.h, net.c, net.h,
+	parse_opt.c, perms.c, players.c, players.h, protocols.h, room.c,
+	room.h, seats.c, seats.h, table.c, table.h, transit.c: Reformat the
+	#includes for all of ggzd:   - Make sure #include <config.h> is at
+	the top of every .c file; for	  consistency remove it from all .h
+	files.	  - Change <...> to "..." for locally included files -
+	hopefully this will	 make Josef happy; there were enough
+	inconsistencies it was time to	    fix them all.    - Reorder
+	#includes: first standard system-wide includes, then library	 
+	includes (mysql, expat, libggz), then local includes.
+
+2002-10-20 10:24  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: net.c, net.h, protocols.h, room.c, table.c: - Split
+	GGZUpdateOpcode into GGZPlayerUpdateType and GGZTableUpdateType.  -
+	Lots of renaming and a few cleanups follow this.  - Things should
+	be much clearer now.
+
+2002-10-20 10:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: hash.c, hash.h, net.c, net.h: - Change the prototype of
+	net_send_player_update: "unsigned char" becomes   "GGZUpdateOpcode"
+	and "char *" becomes "const char *".  - Make minimal changes
+	elsewhere to avoid getting warnings with this:	 * Some parameters
+	for hash functions become const char *.    * Some extra cases
+	within net_send_player_update.
+
+2002-10-20 09:50  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: protocols.h, table.c: Cleanups to the table update system.
+	   - table_spectator_event and table_seat_event go away; they
+	weren't      used anyway.    - The GGZ_UPDATE_SEAT update is
+	handled by table_update_event_enqueue.	  - The
+	GGZ_UPDATE_SPECTATOR update goes away - the only types of     
+	spectator updates are GGZ_UPDATE_SPECTATOR_JOIN and	
+	GGZ_UPDATE_SPECTATOR_LEAVE.    - To test this out, code is added to
+	remove duplicate seat reservations	when a player joins a
+	table.	This code is currently disabled.    - The GGZ_UPDATE_***
+	enumeration values are reordered, their explicit      values are
+	removed, and they're commented.    - GGZTableEventData::opcode is a
+	GGZUpdateOpcode.    - The switch in table_event_callback is missing
+	the GGZ_UPDATE_LAG case.
+
+2002-10-20 00:36  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/players.c: Adjust for the GGZ_CHAT_NONE -> GGZ_CHAT_UNKNOWN
+	change.
+
+2002-10-19 21:03  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/: ggzdmod.c, ggzdmod.h: ggzdmod_set_num_seats returns an
+	int value to alert of the error status.
+
+2002-10-19 08:34  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod.c: In _ggzdmod_set_num_seats, if the number of
+	seats has been reduced delete the extra entries.
+
+2002-10-19 02:42  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/table.c: #if 0...#endif around unused code.
+
+2002-10-19 02:34  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/spades/engine_func.c, ggzdmod/ggzdmod.c,
+	ggzdmod/ggzdmod.h, ggzdmod/io.c, ggzdmod/io.h, ggzdmod/mod.h,
+	ggzdmod/protocol.h: Significant simplifications to ggzdmod
+	internals: now all seat and spectator seat changes are sent in the
+	same way, with a MSG_GAME_SEAT or MSG_GAME_SPECTATOR_SEAT packet. 
+	It is up to the game server to determine which event (JOIN, LEAVE,
+	SEAT, SPECTATOR_JOIN, SPECTATOR_LEAVE, SPECTATOR_SEAT) to invoke
+	when it happens.
+
+2002-10-19 02:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/tictactoe/game.c: In a GGZDMOD_EVENT_SPECTATOR_JOIN,
+	the event data is a pointer to the old spectator seat, not a
+	pointer to the spectator seat number (although the two are
+	compatible).
+
+2002-10-19 00:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/spades/engine_func.c, ggzdmod/ggzdmod.c,
+	ggzdmod/io.c, ggzdmod/io.h, ggzdmod/mod.h, ggzdmod/protocol.h: When
+	GGZ informes the game server of a seat join/leave/change or a
+	spectator join/leave, a response is no longer needed.
+
+2002-10-18 22:49  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: table.c, table.h, transit.c: Change GGZd so it no longer
+	uses the "transit" waiting period when making a seat change at a
+	table.	Now all seat changes are made directly by GGZd's table
+	thread, who informs (rather than asks) the game server about it.
+	
+	Since a single process is now in charge of authorizing and making
+	changes, it becomes possible for more complex transactions to be
+	done without changing the entire infrastructure.  See the ggz-dev
+	posts on "ggzd <-> ggzdmod <-> game server question".
+	
+	Note that ggzdmod is left unchanged right now, although in the long
+	run this change will allow it to be substantially simplified.
+
+2002-10-18 04:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/net.c: Enable ggzd sending the list of spectators at a table
+	out to the clients of the players in the room.
+
+2002-10-17 03:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* game_servers/spades/engine_func.c: Get spades to work with
+	reserved seats.  Also have it do stricter error checking on the
+	values GGZd sends it.  If there are mistakes, the game server
+	should exit rather than lock up.
+
+2002-10-16 02:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Improvement (hopefully :-) to acinclude.ggz.  Now
+	each GGZ check takes two optional parameters.  For instance:
+	
+	  AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
+	
+	'action-if-found' will be evaluated if the specified module was
+	found.	'action-if-not-found' will be evaluated if the module is
+	not found.  This is consistent with other autoconf macros.  If
+	'action-is-not-found' is empty, then an error will be emitted if
+	the module isn't found.  If 'action-if-not-found' is "ignore", then
+	the module will simply be ignored if it's not found.
+	
+	This is not entirely backwards-compatible, since "ignore" used to
+	be the first parameter to the macro.  But this way is more
+	consistent, in my opinion.
+
+2002-10-15 04:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzdmod/ggzdmod.c: Replace strings_differ() with ggz_strcmp().
+
+2002-10-10 23:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: chat.c, chat.h, net.c, players.c: Add handling for a table
+	chat (GGZ_CHAT_TABLE) at the server end.
+	
+	Because of the shortcomings of the event system, this is not quite
+	as trivial as it might otherwise be.  We must first enqueue a table
+	event, then in the callback function for that event loop over all
+	players and spectators at the table and enqueue a player event to
+	send them the chat.  This is commented on in the code (along with a
+	possiblity for a better way).
+
+2002-10-10 19:24  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Bump ggzd version to 0.0.7pre.
+
+2002-10-10 19:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/motd.c: Grow the MOTD buffer geometrically instead of
+	arithmetically (linearly).
+	
+	This makes the ammortized cost of growth O(1).
+
+2002-10-09 08:19  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: chat.c, net.c, net.h: Make the GGZChatEventData fields
+	into const char * instead of char *.
+
+2002-10-09 08:17  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/: chat.c, chat.h, net.c, players.c, players.h: s/unsigned
+	char/GGZChatType/ in many places.
+
+2002-10-09 01:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/net.c, ggzd/net.h, ggzd/protocols.h, ggzdmod/ggzdmod.c: -
+	Move GGZChatType enum into ggz_common.	- Add
+	ggz_chattype_to_string() and ggz_string_to_chattype functions to  
+	ggz_common.  - Change existing code to use the above two instead of
+	their own custom   code.  - Don't accept invalid and dangerous chat
+	messages (sent across the   network).  But do accept invalid and
+	non-dangerous chat messages: to   improve backward-compatability if
+	new chat types are added.
+
+2002-10-08 02:24  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz_server.spec: Update .spec file for libggz.
+	
+	This is hard to test, since nobody uses an RPM-based distro...
+
+2002-10-08 00:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/client.c: Disable the ggzd.protocol net XML dump file by
+	default.
+
+2002-10-07 23:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzd/control.c: Don't receive a HUP more than once.
+
+2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+
+2002-10-07 23:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog for 0.0.6
+
 2002-10-01 20:49  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* Makefile.am, configure.in: - use configure.in for AC_INIT, not

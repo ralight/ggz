@@ -1,3 +1,460 @@
+2003-05-16 20:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply autogen.sh changes from libggz
+
+2003-05-11 17:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/Makefile.am: - fix for srcdir != builddir
+
+2003-05-11 11:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/ggz-gtk.6: - man page update
+
+2003-05-11 01:51  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - set the package version number (via configure.ac)
+	to 0.0.7
+
+2003-05-11 01:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: - version update
+
+2003-05-11 01:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, QuickStart.GGZ, README.GGZ, autogen.sh: - update common
+	files for 0.0.7 in gtk-client
+
+2003-05-10 16:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync autogen.sh
+
+2003-05-10 01:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, xtext-gtk2.c: - more signedness comparison
+	cleanups
+	
+	This includes the change of the inet_addr() return value from -1 to
+	INADDR_NONE.
+
+2003-05-05 15:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - add -fsigned-char
+
+2003-03-29 21:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c, po/de.po, po/es_AR.po, po/ggz-gtk.pot,
+	po/pt_BR.po: - mark some more strings for translation - update
+	German translation
+
+2003-03-29 11:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply improverished autogen globally
+
+2003-03-29 11:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - update GGZ macro file
+
+2003-03-08 06:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/client.c: - When autocompletion is done, set the cursor
+	to the end of the   autocompletion.  - Add a FIXME to label how
+	autocompletion is broken/incomplete.
+	
+	It really doesn't make sense that we do all the work for
+	autocompletion.  Surely there are library functions for this
+	(although I don't know them).
+
+2003-02-16 14:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen.sh
+
+2003-02-04 18:11  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/login.c: Disable TLS in the call to
+	ggzcore_server_set_hostinfo.
+
+2003-02-04 09:56  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Update more autoconf code for autoconf2.5x.
+
+2003-02-04 09:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.ac: Remove acconfig.h; make sure AC_DEFINE
+	and AC_DEFINE_UNQUOTED macro calls all have three parameters.
+
+2003-02-04 03:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/Makefile.am: Don't set CFLAGS manually; instead set
+	ggz_gtk_CFLAGS.
+
+2003-02-04 02:51  Jason Short <jdorje@users.sourceforge.net>
+
+	* autogen.sh, configure.ac, configure.in: Step 1 of
+	autoconf2.5x-only support: rename configure.in as configure.ac.
+
+2003-01-12 13:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/main.c: [powerpc]
+	
+	- include <locale.h> before <libintl.h> so that LC_ALL is defined
+
+2002-12-15 11:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Auto-detect GTK1.2 or GTK2.0 linkage.
+
+2002-12-15 09:33  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, acinclude.ggz, autogen.sh, m4/ggz.m4, m4/gtk-2.0.m4,
+	m4/gtk.m4: Move aclocal files into the m4/ directory.  Use the
+	contents of this directory in building acinclude.m4.  Add GTK and
+	GTK+-2.0 m4 files to this directory.
+
+2002-11-05 11:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: game.c, pick_module.c: Some more 'char *' become 'const
+	char *'.
+
+2002-11-05 10:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: Makefile.am, game.c, launch.c, pick_module.c,
+	pick_module.h: Add a dialog window to allow a user to pick the game
+	module to use if more than one is present.
+	
+	Note: this will allow you to save your choice, but if you do so
+	there is no (graphical) way to undo it.  The properties/preferences
+	window should provide an editor for this.
+
+2002-11-04 06:38  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/server.c: Use ggz_debug instead of g_print to print
+	debugging output.
+
+2002-11-04 05:56  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, license.c, login.c, motd.c, msgbox.c,
+	msgbox.h, props.c: Added some stock buttons/icons.
+
+2002-11-04 05:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c: Use gtk_object_get() instead of
+	gtk_object_getv() to retrieve object data (the height of the table
+	pane).	The latter function does not exist in GTK 2.0.
+
+2002-11-04 02:47  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: Makefile.am, client.c, client.h, ggzclient.c,
+	ggzclient.h, playerlist.c, playerlist.h, tablelist.c, tablelist.h:
+	Split off code for managing player and table clists into separate
+	files.
+
+2002-11-04 01:31  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: about.c, chat.c, chat.h, client.c, client.h, first.c,
+	game.c, game.h, ggzclient.c, launch.c, login.c, login.h, main.c,
+	motd.c, msgbox.c, playerinfo.c, props.c, roominfo.c, server.c,
+	server.h, types.c: Remove 'extern' definitions from .c files.  They
+	really don't belong there!
+
+2002-11-04 01:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: Makefile.am, msg_help.xpm, msg_info.xpm, msg_stop.xpm,
+	msgbox.c: Move message box XPMs into their own files.
+
+2002-11-04 01:00  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/login.c: Set the connection dialog as the transient child
+	of the main window.
+
+2002-11-04 00:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/msgbox.c: Set all message windows as the transient child
+	of the main window.
+
+2002-11-04 00:50  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: license.c, motd.c: When compiling with GTK2, make the
+	MOTD and license texts non-editable, and hide the cursor.
+
+2002-11-04 00:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: Makefile.am, about.c, about_bg.xpm: - Move the XPM for
+	the about dialog background into its own file.	- Slight cleanups
+	to about.c.
+
+2002-11-03 23:22  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/client.c: Removed duplicate colors[] declaration.
+
+2002-11-03 22:50  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: Makefile.am, chat.c, chat.h, client.c, game.c, props.c,
+	xtext-gtk2.c, xtext-gtk2.h, xtext.c, xtext.h: Further hacks to get
+	ggz-gtk to compile with a GTK2-compatible version of xtext (taken
+	from ggz-gnome).
+
+2002-11-03 22:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/client.c: Hack: disable accel groups when compiling for
+	GTK2.
+
+2002-11-03 21:38  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/server.c: Add cast to avoid compiler warning.
+
+2002-11-03 21:33  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/props.c: GTK2 fixes for properties dialog code.
+
+2002-11-03 21:25  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/motd.c: GTK2 updates for the MOTD code.
+
+2002-11-03 21:09  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: login.c, server.c, server.h: More char *'s marked as
+	const.
+
+2002-11-03 20:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/license.c: Use a GtkTextView instead of GtkText when
+	compiling with GTK2.
+
+2002-11-03 20:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, game.c, roominfo.c: Yet more const char *
+	additions - to satisfy ggzcore.
+
+2002-11-03 20:43  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, launch.c: Some more const char * additions -
+	to satisfy GTK2 and ggzcore.
+
+2002-11-03 20:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/client.c: Unify client_chat_entry_activate() and
+	client_send_button_clicked() so that they call a common helper
+	function.
+
+2002-11-03 20:17  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, chat.h: Label a lot of strings as const char
+	*'s.
+
+2002-11-03 00:47  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/playerinfo.c: You can send a private message to a player
+	through the player info dialog.
+
+2002-11-01 08:01  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c: Handle GGZ_CHAT_FAIL error with a useful
+	error message.
+
+2002-10-29 07:12  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/playerinfo.c: Remove inadvertent reference to dlg_info
+	(how did this even compile?).
+
+2002-10-29 01:25  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/playerinfo.c: Don't immediately show the stats widgets,
+	so that the info window can grow as needed.
+
+2002-10-29 01:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/client.c: Don't blindly select a clist entry.
+
+2002-10-29 01:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: Makefile.am, client.c, playerinfo.c, playerinfo.h: Add
+	a crude player "info" dialog.
+
+2002-10-29 00:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/roominfo.c: - Try to avoid having the labels overflow.  -
+	When a room has no game, give sensible default information.
+
+2002-10-29 00:26  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: Makefile.am, client.c, info.c, info.h, roominfo.c,
+	roominfo.h: Renamed info.[ch] as roominfo.[ch], and made some
+	slight improvements to the code therein.
+
+2002-10-28 23:10  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, client.h: Remove popup_row madness; fix a bug
+	that had player lookups into the clist returning NULL instead of
+	the correct player name.
+
+2002-10-28 22:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/client.c: Replace the "Send private message" menu item
+	with an "info" one, along with a comment about what it should do. 
+	But it's not implemented either.
+
+2002-10-28 22:21  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/client.c: Set the "send private message" menu item
+	insensitive, since its behavior is not implemented.
+
+2002-10-28 07:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/client.c: Add sucky support for ratings, rankings, and
+	highscores.
+	
+	There is just one field in which the most "applicable" of these
+	stats is shown.  The order is rankings, highscore, rating, record.
+	
+	Thus (with the current server configuration) in TTT you will see a
+	player's record, whereas in GGZCards you will see their ELO rating.
+
+2002-10-27 22:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/props.c: - when creating profiles, predefine port to be
+	5688
+	
+	Newbies won't find out by themselves...
+
+2002-10-27 13:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, ggzclient.c: GTK-client support for player
+	win-loss records.
+
+2002-10-27 01:35  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: game.c, ggzclient.c: Display a more appropriate message
+	when joining or leaving a table.
+
+2002-10-26 07:42  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/chat.c: Avoid a segfault when sent an unknown, empty
+	message.
+
+2002-10-20 00:57  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/chat.c: Adjust for  the GGZ_CHAT_NONE -> GGZ_CHAT_UNKNOWN
+	change, and improve handling of this chat type.
+
+2002-10-18 03:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, chat.h, client.c: In autocompletion, when a
+	multiple match is found and some autocompletion is possible, do the
+	autocompletion.  E.g. if 'j<tab>' is typed while "jdorje1" and
+	"jdorje2" are in the room, it will be autocompleted to 'jdorje'.
+
+2002-10-16 07:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/launch.c: Avoid crashing when we try to launch a table of
+	an invalid game type.
+
+2002-10-16 02:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Improvement (hopefully :-) to acinclude.ggz.  Now
+	each GGZ check takes two optional parameters.  For instance:
+	
+	  AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
+	
+	'action-if-found' will be evaluated if the specified module was
+	found.	'action-if-not-found' will be evaluated if the module is
+	not found.  This is consistent with other autoconf macros.  If
+	'action-is-not-found' is empty, then an error will be emitted if
+	the module isn't found.  If 'action-if-not-found' is "ignore", then
+	the module will simply be ignored if it's not found.
+	
+	This is not entirely backwards-compatible, since "ignore" used to
+	be the first parameter to the macro.  But this way is more
+	consistent, in my opinion.
+
+2002-10-15 00:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/game.c: Pass the server variable to ggzcore_game_init().
+
+2002-10-12 07:49  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: launch.c, types.c: Two more tiny fixes to gtk-client.
+
+2002-10-12 07:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/info.c: Tiny cleanup to gtk-client.
+
+2002-10-12 07:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/msgbox.c: Here's the *actual* correct fix for msgbox.c.
+
+2002-10-12 04:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c: Localized some gtk1.2-specific code.
+
+2002-10-12 04:14  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: about.c, msgbox.c: Tiny cleanup to gtk-client.
+
+2002-10-12 03:14  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.in: Add --with-gtk2 option for gtk-client's
+	configure script.
+	
+	If selected, gtk-client will be linked against GTK2.0 instead of
+	GTK1.2, and GTK2 will be #defined.  Of course, this doesn't yield
+	very good results at this point.
+
+2002-10-10 22:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/chat.c: Add handling for both sending and receiving table
+	chats:	 - Currently a table chat is sent via "/table <msg>".  See
+	/help.	  - Currently a table chat is displayed with the sender
+	enclosed in |	   (instead of <> or ><), e.g. |jdorje| instead of
+	<jdorje>.
+	
+	Later a more sophisticated UI needs to be developed.  Although some
+	players may want the interface to work this way, most will want the
+	room and table chats to be differentiated - perhaps in separate
+	tabs.
+
+2002-10-10 19:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Bump gtk-client version to 0.0.7pre.
+
+2002-10-10 01:12  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, chat.h, client.c, game.c, ggzclient.c, props.c:
+	Changed gtk-client to deal with the new ggzcore protocol.
+	
+	This involved getting rid of the exiting CHATTypes enumeration. 
+	Server chats and local chats are now handled by different functions
+	- chat_display_server() versus chat_display_local().  The code that
+	translated between the ggzcore room event and the CHATTypes is
+	therefore removed.  In summary, it's much cleaner now.
+
+2002-10-10 01:01  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: xtext.c, xtext.h: Change our copy of xtext a little
+	more: change some function parameters from (char *) to (const char
+	*).
+
+2002-10-09 03:14  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, chat.h: Make the list of chat commands more
+	dynamically editable - an array of possible commands associated
+	with functions to call and help texts.
+
+2002-10-09 03:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/chat.c: Fix a grammar error, and make two strings
+	translatable.
+
+2002-10-09 00:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/chat.c: Fix a grammar error in the help text.
+
+2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+
+2002-10-07 23:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog for 0.0.6
+
 2002-10-01 20:50  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* configure.in: - use configure.in for AC_INIT

@@ -1,3 +1,250 @@
+2003-05-16 20:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply autogen.sh changes from libggz
+
+2003-05-11 17:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/po/Makefile.am: - fix installation of translation
+
+2003-05-11 01:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - set the package version number (via configure.ac)
+	to 0.0.7
+
+2003-05-11 01:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: - version update
+
+2003-05-11 01:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/: grubby-config.1, grubby.6, de/grubby-config.1, de/grubby.6:
+	- grubby manpage version update
+
+2003-05-11 01:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, README.GGZ, autogen.sh: - update common files for 0.0.7 in
+	grubby
+
+2003-05-10 16:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync autogen.sh
+
+2003-05-10 12:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/po/Makefile.am: - fix 'make distcheck'
+
+2003-05-10 11:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/Makefile.am: - add po/ directory to SUBDIRS
+
+2003-05-10 08:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/src/main.c: - grubby application version bump
+
+2003-05-05 15:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - add -fsigned-char
+
+2003-04-28 08:55  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac, man/Makefile.am, man/grubby.6, man/de/.cvsignore,
+	man/de/Makefile.am, man/de/grubby-config.1, man/de/grubby.6: - more
+	i18n: add German man pages for grubby and grubby-config
+
+2003-04-28 08:54  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: po/.cvsignore, po/Makefile.am, po/de.po, po/grubby.pot,
+	src/main.c, src/module.c, src/net.c: - i18n'ize grubby
+
+2003-03-30 20:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/modules/embed.c: - finish embedding for python and perl
+
+2003-03-29 11:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply improverished autogen globally
+
+2003-03-29 11:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - update GGZ macro file
+
+2003-02-16 14:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen.sh
+
+2003-02-04 20:12  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.ac: Various updates for autoconf2.5x usage.
+
+2003-02-04 20:11  Jason Short <jdorje@users.sourceforge.net>
+
+	* grubby/src/net.c: Disable TLS in the call to
+	ggzcore_server_set_hostinfo.
+
+2003-02-04 09:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* grubby/: modules/embed.c, src/net.c: Mark one function as static,
+	and comment out an unused static function.
+
+2003-02-04 09:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* autogen.sh, configure.ac, configure.in: Step 1 of
+	autoconf2.5x-only support: rename configure.in as configure.ac.
+
+2003-01-12 22:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: [powerpc]
+	
+	- add 'powerpc' as additional architecture for ruby
+	
+	The problem is that there's not automatic way to determine the
+	architecture.  Uname -m/-p gives either 'ppc' or '750FX', both are
+	not really of use to us.
+
+2003-01-12 12:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/src/: main.c, module.h: [powerpc]
+	
+	- getopt returns int, not char - function pointer for joining rooms
+	takes char* as argument (needed for IRC),   only the GGZ net plugin
+	does an atoi() on it
+
+2003-01-06 21:29  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - fix typo: s/text/test/
+	
+	We should compare all of our m4 files before the release to find
+	differences, it wouldn't make much sense to synchronize them right
+	now (more changes will come).
+
+2002-12-20 05:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, acinclude.ggz, autogen.sh, m4/ggz.m4: Move
+	acinclude.ggz to m4/ggz.m4.
+
+2002-11-25 16:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* TODO: - update TODO for grubby
+
+2002-11-25 15:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh, configure.in: - autoconf, autoheader: replace -I with
+	-l - better ruby check: find both 1.6 and 1.7 on i{3,4,5,6}86
+	
+	We can obviously not include all combinations, but at least the
+	mainstream systems should be supported without --look-there and
+	--look-there-too.  For all others such strings should be added
+	though.
+
+2002-11-04 20:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: modules/extra.c, src/netirc.c: - More or less finished
+	IRC plugin  * understand private messages (both via dedicated
+	channel and via directing    message at grubby's name)	*
+	understand channel enter and leave actions
+
+2002-11-03 21:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: modules/badword.c, src/Makefile.am, src/main.c,
+	src/module.c, src/module.h, src/net.c, src/net.h, src/netconsole.c,
+	src/netirc.c: - add IRC net plugin for grubby - change API so that
+	room can be non-numeric (such as #ggz) - fix some potential
+	segfaults: never assume that messages are from non-NULL   players
+	(though they always should be)
+
+2002-11-03 20:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acconfig.h, configure.in: - check for python 2.2
+	
+	Support for 2.1 could be added but this is rather obsolete now.
+
+2002-11-03 20:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/modules/: Makefile.am, embed.c: - add MIME parser which
+	recognizes python, ruby, perl scripts - add skeleton python support
+	
+	Python seems to be difficult - it should be flexible enough to
+	allow parameters (Py_Main() is too simple), but not as complex as
+	the code used in GGZSH.
+
+2002-11-01 23:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/modules/Makefile.am, grubby/modules/embed.c, acconfig.h,
+	configure.in: - start with perl support
+
+2002-10-16 02:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Improvement (hopefully :-) to acinclude.ggz.  Now
+	each GGZ check takes two optional parameters.  For instance:
+	
+	  AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
+	
+	'action-if-found' will be evaluated if the specified module was
+	found.	'action-if-not-found' will be evaluated if the module is
+	not found.  This is consistent with other autoconf macros.  If
+	'action-is-not-found' is empty, then an error will be emitted if
+	the module isn't found.  If 'action-if-not-found' is "ignore", then
+	the module will simply be ignored if it's not found.
+	
+	This is not entirely backwards-compatible, since "ignore" used to
+	be the first parameter to the macro.  But this way is more
+	consistent, in my opinion.
+
+2002-10-10 02:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* grubby/src/net.c: Update grubby to use the new ggzcore interface.
+
+2002-10-09 22:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* grubby/: modules/Makefile.am, modules/badword.c, modules/exec.c,
+	modules/exec.h, modules/learning.c, modules/people.c,
+	src/gurumod.h, src/i18n.c, src/module.c, src/module.h,
+	src/netconsole.c, src/player.c, src/player.h: Fix compiler warnings
+	for grubby:   - Mark some functions as static.	  - Give some
+	function prototypes parameter lists.  (If you just say	    "void
+	foo();" that's not a parameter list - it can match any function.   
+	  It needs "void foo(void);".)	  - Add prototypes for
+	gurumod_exec() and gurumod_init() to gurumod.h.    - Remove exec.h
+	(contents are effectively moved into gurumod.h).
+
+2002-10-09 21:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* grubby/src/net.c: Don't segfault if we can't connect to the
+	server.  Just exit gracefully.
+
+2002-10-08 02:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: - s/0.0.5/0.0.6/
+
+2002-10-08 01:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* grubby/modules/embed.c: Undo an earlier (foolish) commit, so that
+	the embed module will actually work.
+
+2002-10-08 01:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/modules/embed.c: - don't comment out status variable;
+	rather, move it into ruby-specific part
+
+2002-10-08 00:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* grubby/: modules/embed.c, src/main.c, src/net.c, src/net.h: Fixed
+	some trivial compiler warnings:   - Marked some functions as
+	static.    - Gave specific prototypes to some functions.
+
+2002-10-08 00:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/src/net.c: - shut up debug messages for player leave/join
+	events
+
+2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+
+2002-10-07 23:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog for 0.0.6
+
 2002-09-29 14:17  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* grubby/src/main.c, man/grubby-config.1, man/grubby.6,

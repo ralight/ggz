@@ -1,8 +1,527 @@
-2002-10-04 05:32  Jason Short <jdorje@users.sourceforge.net>
+2003-05-16 20:33  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* ggzcore/ggzcore.h: Remove the flag-based values for the GGZChatOp
-	enumeration; these values were undocumented and newly depricated
-	anyway.  Just let the enum be an enum.
+	* autogen.sh: - apply autogen.sh changes from libggz
+
+2003-05-11 11:21  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/Doxyfile, ggzcore/Makefile.am, ggzcore/ggzcore.h,
+	ggzmod/Doxyfile, ggzmod/Makefile.am, ggzmod/ggzmod.h,
+	man/ggz-config.6.in, man/ggz.modules.5.in, man/ggzcore_h.3.in,
+	man/ggzmod_h.3.in: - updated apidox - updated library interface
+	version numbers
+
+2003-05-11 01:54  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - set the package version number (via configure.ac)
+	to 0.0.7
+
+2003-05-11 01:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: - version update
+
+2003-05-11 01:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, QuickStart.GGZ, README.GGZ, autogen.sh: - update common
+	files for 0.0.7 in ggz-client-libs
+
+2003-05-10 16:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync autogen.sh
+
+2003-05-10 08:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/netxml.c: - suppress false error when sending a chat
+	line; this seems to be a leftover   from the previous code
+
+2003-05-05 15:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - add -fsigned-char to C(XX)FLAGS by default where
+	it's due
+
+2003-04-28 13:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/ggz-config.c: - Fixes to ggz-config:	* when removing
+	invalid sections, remove them completely, so we don't get an   
+	error about an unexisting section when running with --check the
+	next time  * don't crash if section key is NULL (which it is after
+	we deleted it)	* when validating CommandLine entries, disregard
+	all options, check only for    the correct filename
+
+2003-03-29 21:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/: netxml.c, server.c: - use h_errno value and herrstr()
+	when host lookup failures occur
+	
+	When connecting to unknown hosts, instead of 'Success' one should
+	now see 'Unknown host'
+
+2003-03-29 11:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply improverished autogen globally
+
+2003-03-29 11:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - update GGZ macro file
+
+2003-02-22 07:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/room.c: Don't segfault if the chat message is NULL.
+
+2003-02-22 07:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/room.c: Send each line of a chat separately, breaking the
+	message up around '\n' and sending a new <CHAT> tag for each line
+	of the message.
+	
+	This means multi-line chats will generally work very well
+	(consistent with IRC behavior, AFAICT).  A single line still can't
+	be longer than the server's maximum length (which is enforced by
+	the network code, via truncation).  And \r or \r\n line terminators
+	will not be (properly) recognized.
+
+2003-02-22 07:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: Truncate a chat message if it is longer than
+	the server allows.
+
+2003-02-22 06:40  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: Read the max chat length from the server more
+	properly: including freeing the pointer when we're done with it,
+	and using a better default value.
+
+2003-02-16 13:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen.sh
+
+2003-02-04 10:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.ac: Various updates for autoconf2.5x usage.
+
+2003-02-04 02:55  Jason Short <jdorje@users.sourceforge.net>
+
+	* autogen.sh, configure.ac, configure.in: Step 1 of
+	autoconf2.5x-only support: rename configure.in as configure.ac.
+
+2003-01-23 18:12  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/ggzcore.h: - add versioning information for ggzcore
+
+2003-01-23 18:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzmod/ggzmod.h: - add versioning information for ggzmod
+
+2003-01-22 15:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/netxml.c: - send the language right before the login tag
+	
+	This is of course sub-optimal, but it's a start and we can later
+	decide where to move it. Into an own function, accessible from the
+	frontends, probably...
+
+2003-01-22 14:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/: ggzcore.h, net.h, netxml.c, server.c, server.h: - Add
+	Transport Layer Security support
+
+2002-12-17 22:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, acinclude.ggz, autogen.sh, m4/ggz.m4: Move
+	acinclude.ggz to m4/ggz.m4.
+
+2002-11-06 08:10  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: If a <PING> tag has an ID attribute on it, put
+	the same attribute onto the <PONG>.
+
+2002-11-05 11:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: ggzcore.h, module.c, module.h: Some more 'char *'
+	become 'const char *'.
+
+2002-11-03 20:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: gametype.c, gametype.h, ggzcore.h, netxml.c, room.c,
+	room.h, table.c, table.h: Replaced a *lot* of "char *" with "const
+	char *".
+
+2002-11-03 20:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzmod/: ggzmod.h, io.c: - Mark some char * strings as const char
+	*.  - Pass a real pointer-to-integer to ggz_read_int; don't fake
+	it.
+
+2002-11-01 08:02  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: Add default error messages for the E_USR_LOOKUP
+	and E_AT_TABLE chat error codes.
+
+2002-11-01 06:35  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: ggzcore.h, server.c: Remove deprecated and unused
+	function ggzcore_server_write_data().
+
+2002-11-01 06:15  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: ggzcore.h, netxml.c, room.c, server.c: Change the error
+	events (GGZ_LOGIN_FAIL, GGZ_ENTER_FAIL, GGZ_CHAT_FAIL,
+	GGZ_TABLE_LAUNCH_FAIL) to pass a pointer to a GGZErrorEventData
+	structure instead of just a pointer to a string.  This allows the
+	frontend code to better handle the error.  Backwards-compatability
+	is preserved by making the same string be the first field of the
+	structure.
+
+2002-10-31 03:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: Have _ggzcore_net_send_line return 0 (rather
+	than the return value of write()) on success.  Some of the callers
+	check directly against 0.
+
+2002-10-30 07:51  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: ggzcore.h, net.h, netxml.c, server.c: Fix 'const char
+	*' problems. (Apparently my config.h #defined 'const' away, so none
+	of the problems were apparent before now.)
+
+2002-10-30 04:33  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: Many micro-changes to the net code:   - Avoid
+	bad things if the server sends us bad tags.    - Avoid memory leaks
+	in several places when the server sends us	GOOD tags.    - A
+	couple of comments on things that look wrong, but aren't.    - Make
+	code more readible by removing excessive nested if's.
+
+2002-10-29 12:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: - Read the <RESULT> code as a string, not a
+	value.	- Also, handle _all_ error conditions for a CHAT result,
+	not just   the few we suspect can happen.
+
+2002-10-29 10:42  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: Remove 'joinspectator' and 'leavespectator'
+	ACTIONs of the <UPDATE> tag.
+	
+	Connecting to an older ggzd should give the relative harmless side
+	effect that spectators are invisible to you.
+
+2002-10-29 07:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/ggzcore.h: Added documentation comments to all elements
+	of ggzcore.
+	
+	Many of these are of the form:	 /** @brief Return the name of the
+	player. */   char* ggzcore_player_get_name(GGZPlayer *player);
+	
+	but this is at least a start toward more complete documentation. 
+	And since Doxygen may refuse to include any "undocumented" elements
+	in its documentation at all, this may be a good thing even by
+	itself.
+
+2002-10-28 21:52  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/ggzcore.h: Some more documentation for ggzcore.
+
+2002-10-28 07:03  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: ggzcore.h, netxml.c, player.c, player.h, room.c,
+	room.h: - Add forfeits to the record.  - Change the stats retreival
+	function: it returns a boolean indicating   whether there are any
+	stats of that type.  - Add support for ratings, rankings, and
+	highscores.  - Fix a bug whereby stats weren't updated when a
+	player was added to a	room.
+
+2002-10-28 06:08  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: "#define ATTR ggz_xmlelement_get_attr" makes
+	this file a lot shorter and more readible.
+
+2002-10-27 13:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: ggzcore.h, netxml.c, player.c, player.h, room.c,
+	room.h: GGZCore support for player win-loss records, along with
+	some unrelated net code cleanups.
+
+2002-10-27 00:35  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: ggzcore.h, netxml.c, room.c, room.h: Added client
+	support for the <JOIN> and <LEAVE> tags sent by the server.
+	
+	  <JOIN TABLE='5'/>
+	  <LEAVE REASON='boot' PLAYER='jdorje'/>
+	
+	Now the client will no longer treat the <RESULT> tags (actions
+	'join' and 'leave') as indications that the player has joined/left
+	the table.  It will wait to see the appropriate <JOIN> or <LEAVE>
+	tag.
+	
+	Core clients will only be slightly affected: there is now some
+	useful event data for the GGZ_TABLE_JOIN and GGZ_TABLE_LEFT room
+	events.
+	
+	The information sent by ggzd is not currently checked - we just
+	change the GGZServer appropriately and then send it to the core
+	client.  There's not much we could do anyway...
+	
+	Note that this change will break network compatabiliy.	Don't try
+	to play a game on an older server!
+
+2002-10-26 22:19  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: server.c, server.h: Trivial cleanups to server.[ch],
+	including replacing some 'int' and '0' with 'GGZClientReqError' and
+	'E_OK'.
+
+2002-10-25 10:11  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzmod/ggzmod.c: After kill()ing the game client, wait() for it
+	to die.  Thus we can avoid creating arbitrary defunct processees.
+
+2002-10-24 11:56  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/ggzcore.h: More comments/documentation for ggzcore.
+
+2002-10-24 09:17  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/ggzcore.h: Better documentation of the ggzcore server
+	events.
+
+2002-10-23 20:01  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: Correctly send the seat number for a SIT/MOVE
+	to seat 0.
+
+2002-10-22 22:17  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: game.c, net.h, netxml.c, protocol.h: Add handling for
+	the SIT, STAND, and BOOT seat transactions.
+
+2002-10-22 18:40  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: Add ggz__attribute to _ggzcore_net_send_line().
+
+2002-10-22 06:25  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/game.c: Add handlers for all of the different ggzmod
+	transactions.  Only the OPEN and BOT transaction is currently
+	actually handled.
+
+2002-10-22 06:24  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: When sending a table seat update, we need to
+	include the number of seats at the table.
+
+2002-10-22 03:03  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: ggzcore.h, room.c: Added function
+	ggzcore_room_get_table_by_id().  Note that
+	_ggzcore_room_get_table_by_id() already existed and is used
+	extensively.
+
+2002-10-22 02:39  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/room.c: More parameter checking in
+	_ggzcore_room_join_table:   - Make sure we're joining a table in
+	the current room.    - Make sure we know about the table we're
+	trying to join.
+
+2002-10-21 06:35  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/game.c: #include "ggzmod-ggz.h" where necessary.
+
+2002-10-21 06:26  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzmod/: Makefile.am, ggzmod-ggz.h, ggzmod.c, ggzmod.h, io.c,
+	io.h, mod.h, protocol.h: - Created new file ggzmod-ggz.h, where all
+	interface that is GGZ-specific	 goes.	This way the library can be
+	the same, but game developers won't   have to look at the (growing
+	amount of) GGZ-specific portions.  - Moved ggzmod_set_module,
+	ggzmod_set_player, ggzmod_set_seat,   ggzmod_set_spectator_seat
+	into ggzmod-ggz.h.  - Added functions ggzmod_request_stand,
+	ggzmod_request_sit,   ggzmod_request_boot, ggzmod_request_bot,
+	ggzmod_request_open to	 ggzmod.h.  - Implemented the backend code
+	so that if a transaction request function   is called by the game,
+	the GGZ side of ggzmod will be told about it.  - Added the
+	GGZModTransaction type, and a GGZdModTransactionHandler   function
+	type for GGZ to use.  This allows the handling of transaction  
+	requests to be kept separate from the code game developers need to
+	see.  - When each transaction is requested by the game client, the
+	appropriate   transaction handler will be called by the GGZ side of
+	ggzmod.  Thus	ggzcore will be able to forward the requests to
+	ggzd.
+
+2002-10-21 03:21  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: If we receive a 'join' or 'leave' event from
+	the server, handle any spectators that are received along with that
+	event.	This is more intuitive than the 'joinspectator' and
+	'leavespectator' events, and IMO should eventually replace them
+	(however, changing this at the server will almost certainly break
+	old clients).  So for now I've just enabled the client to handle
+	it.
+
+2002-10-20 00:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: netxml.c, room.c: Adjust for  the GGZ_CHAT_NONE ->
+	GGZ_CHAT_UNKNOWN change, and improve handling of this chat type.
+
+2002-10-18 08:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: game.c, game.h, ggzcore.h, netxml.c, table.c, table.h:
+	Extensive changes so that spectator seats should now completely
+	work at the client end: - When the server sends a <SPECTATOR> tag,
+	track the list of spectators   separately from the list of seats. 
+	Doing otherwise will only invite   trouble.  - When we change a
+	spectator seat for the table (GGZTable), change it for	 the game
+	(GGZGame) as well if appropriate.  - When we set the table
+	associated with a game, send the current spectator   list to the
+	game client.
+
+2002-10-18 01:56  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: conf.c, game.c, game.h, gametype.c, ggz-config.c,
+	ggzcore.h, hook.c, hook.h, init.c, module.c, net.h, netxml.c,
+	player.c, player.h, room.c, room.h, server.c, server.h, state.c,
+	table.c: Cleaned up #includes in ggzcore:   - Make sure #include
+	<config.h> is in every .c file.  (Note that	the autoconf manual
+	says <config.h> should be used insteead of     "config.h".)   - Do
+	#include "ggzcore.h" instead of #include <ggzcore.h>.	 -
+	Miscellaneous reordering of #includes.
+
+2002-10-17 23:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: #include <fcntl.h> instead of <sys/fcntl.h>,
+	since that's where open() is.
+
+2002-10-17 01:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/game.c: To find the table with a given ID#, call
+	_ggzcore_room_get_table_by_id, not ggzcore_room_get_nth_table. 
+	This fixes a guaranteed segfault when the tables are unordered (but
+	other errors may still be possible).
+
+2002-10-16 02:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Improvement (hopefully :-) to acinclude.ggz.  Now
+	each GGZ check takes two optional parameters.  For instance:
+	
+	  AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
+	
+	'action-if-found' will be evaluated if the specified module was
+	found.	'action-if-not-found' will be evaluated if the module is
+	not found.  This is consistent with other autoconf macros.  If
+	'action-is-not-found' is empty, then an error will be emitted if
+	the module isn't found.  If 'action-if-not-found' is "ignore", then
+	the module will simply be ignored if it's not found.
+	
+	This is not entirely backwards-compatible, since "ignore" used to
+	be the first parameter to the macro.  But this way is more
+	consistent, in my opinion.
+
+2002-10-15 03:57  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzmod/: ggzmod.c, io.c: Fixes to seat, spectator seat, and
+	player naming (string handling) in ggzmod.
+
+2002-10-15 03:39  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzmod/: ggzmod.c, io.c, io.h, mod.h: Cleanup to ggzmod's launch
+	code.
+
+2002-10-15 00:08  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: game.c, game.h, ggzcore.h, room.c, server.c, server.h,
+	table.c: Changes to ggzcore to send GGZ data to the game client
+	through ggzmod.
+	
+	One protocol change was required: the ggzcore_game_init() function
+	now takes as an additional parameter the GGZServer* server
+	variable.  I also removed the obsolete function ggzcore_game_join.
+	
+	However, the way ggzcore is structured is not ideal for having the
+	GGZ information be communicated to the game table.  Currently when
+	the game launch is done, the player's name is known and we know if
+	they are spectating.  But we will not generally know the player's
+	seat number (which is assigned by ggzd and sent back to us later)
+	or what the other seats at the table are (we may know if we join a
+	table, but not if we launch one).  In fact if the client calls the
+	functions ggzcore_room_join_table and ggzcore_game_launch out of
+	order, we might not even know this bit of information at the time
+	the game client is launched.
+	
+	The solution to these problems may involve cleaning up ggzcore and
+	changing the API some more.
+
+2002-10-14 23:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzmod/: ggzmod.c, ggzmod.h, io.c, io.h, mod.h: Improvements to
+	the API after realizing I'd forgotten something:   - The player's
+	name is included with the player (our player) data.    - Renamed
+	ggzmod_[get|set]_my_seat as ggzmod_[get|set]_player.
+
+2002-10-14 22:22  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzmod/: ggzmod.c, ggzmod.h, io.c, io.h, mod.h, protocol.h:
+	Extensive additions to ggzmod to allow game clients to access
+	information about the current player and the table.
+	
+	Additions: - New seat events:	- GGZMOD_EVENT_PLAYER: when we get
+	information about us (current player)	- GGZMOD_EVENT_SEAT: when a
+	seat changes   - GGZMOD_EVENT_SPECTATOR_SEAT: when a spectator seat
+	changes - New structures GGZSeat and GGZSpectatorSeat; similar to
+	what ggzdmod   uses.  - New functions for game:
+	ggzmod_get_num_seats, ggzmod_get_seat,	
+	ggzmod_get_num_spectator_seats, ggzmod_get_spectator_seat,  
+	ggzmod_get_my_seat.  - New functions for GGZ: ggzmod_set_my_seat,
+	ggzmod_set_seat,   ggzmod_set_spectator_seat.  Conspicuously absent
+	are ggzmod_set_num_seats   and ggzmod_set_num_spectator_seats. 
+	Yay.
+
+2002-10-10 22:55  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: Correctly handle a table chat (GGZ_CHAT_TABLE)
+	if we receive it from the server.
+
+2002-10-10 19:08  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in, ggzcore/Doxyfile: Bumped version numbers to
+	0.0.7pre.
+
+2002-10-10 14:41  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/conf.c: - allow for consecutive calls of
+	ggzcore_conf_initialize - this overrides previous calls, and thus
+	enables on-the-fly configuration   changes
+
+2002-10-10 00:56  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: ggzcore.h, room.c: Remove the GGZ_CHAT, GGZ_ANNOUNCE,
+	GGZ_PRVMSG, and GGZ_BEEP ggzcore room events.  These are all merged
+	into GGZ_CHAT_EVENT.  The associated event data is now a
+	GGZChatEventData*.
+	
+	This will reduce the amount of code necessary to handle chat
+	messages in virtually all modules, and make adding new chat types
+	significantly easier.
+
+2002-10-09 01:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: ggzcore.h, net.h, netxml.c, room.c, room.h: - Move
+	GGZChatType enum into ggz_common.  - Add ggz_chattype_to_string()
+	and ggz_string_to_chattype functions to   ggz_common.  - Change
+	existing code to use the above two instead of their own custom	
+	code.  - Don't accept invalid and dangerous chat messages (sent
+	across the   network).	But do accept invalid and non-dangerous
+	chat messages: to   improve backward-compatability if new chat
+	types are added.
+
+2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+
+2002-10-07 23:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog for 0.0.6
 
 2002-10-04 05:27  Jason Short <jdorje@users.sourceforge.net>
 

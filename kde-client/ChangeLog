@@ -1,3 +1,469 @@
+2003-05-17 08:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/kde.m4: - look into /usr/include/qt3 as well
+
+2003-05-16 20:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply autogen.sh changes from libggz
+
+2003-05-16 20:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/widgets/KGGZUsers.cpp: - yuck! The tables in the user
+	list were translated when being inserted,   but not when being
+	compared. This led to missing tables on the display.
+
+2003-05-11 11:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/: ggzap.6, ggzmodsniff.6, kggz.6, shadowbridge.6: - man pages
+	update
+
+2003-05-11 01:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - set the package version number (via configure.ac)
+	to 0.0.7
+
+2003-05-11 01:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: - version update
+
+2003-05-11 01:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, QuickStart.GGZ, README.GGZ, autogen.sh: - update common
+	files for 0.0.7 in kde-client
+
+2003-05-10 16:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync autogen.sh
+
+2003-05-10 10:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/Makefile.am: - don't install libggzcore++
+	anymore, it's only used inside ggz-kde-client	anyway
+
+2003-05-10 10:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/po/: de.po, es.po, fr.po, kggz.pot, pt_BR.po: -
+	translation update
+
+2003-05-10 10:05  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/main.cpp: - about box update
+
+2003-05-10 08:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalivecontrol/src/: app.cpp, app.h, connection.cpp,
+	connection.h, create.cpp, create.h, main.cpp, toplevel.cpp,
+	toplevel.h: - display dialogs as real QDialogs - don't crash when
+	attempting to create world but no connection has been	established
+	yet - update year + email address
+
+2003-05-09 23:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/ggzap/: de.po, ggzap.pot: - German translation update for
+	GGZap
+
+2003-05-09 23:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzap/main.cpp: - email address and year update
+
+2003-05-09 23:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - create makefile for compcal translations
+
+2003-05-09 23:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/: Makefile.am, compcal/.cvsignore, compcal/Makefile.am,
+	compcal/compcal.pot, compcal/de.po: - add German translation for
+	compcal
+
+2003-05-09 23:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* compcal/src/compcalrc: - initial resource configuration
+
+2003-05-09 23:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* compcal/src/: Makefile.am, app.cpp, app.h, conf.cpp, conf.h,
+	display.cpp, display.h, main.cpp, parser.cpp, parser.h,
+	toplevel.cpp, toplevel.h, lib/event.cpp, lib/event.h,
+	lib/eventgroup.cpp, lib/eventgroup.h, lib/participant.cpp,
+	lib/participant.h, lib/series.cpp, lib/series.h: - don't use
+	horizontal box layout, because QSplitter already includes layouting
+	- don't hardcode mindx.dyndns.org resource, rather provide a
+	configurable   multi-resource capability - handle parse errors
+	correctly
+
+2003-05-05 15:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - add -fsigned-char
+
+2003-03-29 11:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kcm_ggz/modules/kcm_ggz_games.cpp: - little usability tweak:
+	don't popup menu on top level items
+
+2003-03-29 11:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply improverished autogen globally
+
+2003-03-29 11:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - update GGZ macro file
+
+2003-03-15 10:43  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kio_ggz/kio_ggz.h: - use local include file
+
+2003-03-15 10:41  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/Makefile.am: - split includes from cxxflags
+
+2003-03-15 10:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/: GGZCoreGame.cpp, GGZCoreGame.h: - comment
+	out deprecated joinSpectator() method
+
+2003-02-28 10:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* modsniff/: kmodsniff.cpp, main.cpp, modsniff.c: - fix ggz.modules
+	search path: start with GGZMODULECONFDIR - minor i18n and aboutdata
+	fixes
+
+2003-02-28 04:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kio_ggz/Makefile.am: - add GGZCORE_INCLUDES to include list
+
+2003-02-23 01:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzap/: ggzap_skin.cpp, ggzap_skin.h: - here we actually have
+	those files
+
+2003-02-23 01:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzap/: Makefile.am, ggzap.cpp, ggzap.h, ggzap_config.cpp,
+	ggzap_config.h, ggzap_gui.cpp, ggzap_gui.h, ggzap_guialt.cpp,
+	ggzap_guialt.h, ggzap_tray.cpp, ggzap_tray.h: - port configuration
+	dialog from qwidget to kdialogbase - invent common skin class from
+	which the 'bluerect' and the 'redgear' GUIs   inherit, and make GUI
+	configurable
+	
+	Yay for more skinnable GGZ applications :-)
+
+2003-02-23 00:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/kcm_ggz/: Makefile.am, de.po, kcm_ggz.pot: - translated
+	kcm_ggz (the instance name is kcmggz) into some teuton language
+
+2003-02-23 00:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kcm_ggz/: kcm_ggz.cpp, kcm_ggz.h, main.cpp: - provide aboutdata
+	and an instance to the KDE control center so the   translation
+	files can be located
+
+2003-02-22 23:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kcm_ggz/modules/: kcm_ggz_metaserver.cpp, kcm_ggz_metaserver.h,
+	metaserver_add.cpp, metaserver_add.h, metaserver_add_server.cpp,
+	metaserver_add_server.h: - convert server addition dialogs from
+	QWidget to KDialogBase - prepare inclusion of server location and
+	speed - add missing i18n() methods - only add default
+	servers/metaservers if none have been saved yet
+
+2003-02-22 18:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kcm_ggz/modules/kcm_ggz_ggzd.cpp, kcm_ggz/kcm_ggz.cpp,
+	compcal/src/app.cpp, compcal/src/parser.cpp: - fix some minor bugs
+	found due to compiler warnings
+
+2003-02-22 18:54  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kio_ggz/kioslave/index.docbook,
+	kio_ggzmeta/kioslave/index.docbook: - use docbook 4.1.2 to be
+	compatible with KDE 3.1
+	
+	This will probably break KDE 3.0 and KDE 3.2cvs but that's life...
+
+2003-02-22 18:48  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzap/ggzap_gui.cpp, shadowbridge/main.cpp,
+	shadowbridge/shadownet.cpp: - fix some minor bugs found due to
+	compiler warnings
+
+2003-02-22 18:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: widgets/KGGZChat.cpp, widgets/KGGZSplash.h,
+	widgets/KGGZUsers.cpp, KGGZ.cpp, KGGZCommon.cpp: - fix some minor
+	bugs found due to compiler warnings
+
+2003-02-22 18:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acconfig.h, autogen.sh, configure.ac: - remove deprecated
+	acconfig.h - convert configure.ac correctly - use (supposedly
+	fixed) autogen.sh, although my research about sed changes is   not
+	yet finished :)
+
+2003-02-16 16:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* compcal/src/app.cpp: - use 'crystalsvg' icon theme is available
+
+2003-02-16 14:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen.sh
+
+2003-02-04 12:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/KGGZ.cpp: - remove another line break from the
+	message box (since KDE 3.x does this   automatically)
+
+2003-02-04 09:42  Jason Short <jdorje@users.sourceforge.net>
+
+	* autogen.sh, configure.ac, configure.in: Step 1 of
+	autoconf2.5x-only support: rename configure.in as configure.ac.
+
+2003-01-15 19:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: widgets/KGGZAbout.cpp, KGGZLaunch.cpp: - forgotten
+	commit: minor Qt things
+
+2002-12-20 05:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, acinclude.ggz, acinclude.kde, autogen.sh, m4/ggz.m4,
+	m4/kde.m4: Move acinclude.* to m4/*.m4.
+
+2002-12-04 23:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/data/icons/games/: Kamikaze.png, Makefile.am: - add room
+	icon for Kamikaze
+
+2002-11-25 17:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/GGZCorePlayer.cpp,
+	ggz-kde/ggzcore++/src/GGZCorePlayer.h,
+	ggz-kde/ggzcore++/src/GGZCoreRoom.cpp,
+	ggz-kde/ggzcore++/src/GGZCoreRoom.h, ggz-kde/src/KGGZ.cpp,
+	ggz-kde/src/widgets/KGGZTables.cpp,
+	ggz-kde/src/widgets/KGGZTables.h,
+	ggz-kde/src/widgets/KGGZUsers.cpp, ggz-kde/src/widgets/KGGZUsers.h,
+	ggzap/ggzap_handler.cpp, autogen.sh: - player stats, now for real
+	via context menu - use KListViewItem instead of QListViewItem (it's
+	nicer) - ggzcore++ API change: let room->table() return the wrapped
+	player object, not   the ggzcore structure, so we can use it
+	directly
+
+2002-11-25 16:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/: GGZCoreGametype.cpp, GGZCoreGametype.h,
+	GGZCoreModule.cpp, GGZCoreModule.h, GGZCorePlayer.cpp,
+	GGZCorePlayer.h, GGZCoreTable.cpp, GGZCoreTable.h: - adapt char* ->
+	const char* conversions - add player stats wrappers
+
+2002-11-23 19:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kcm_ggz/.cvsignore: - update cvsignore
+
+2002-11-23 19:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: KGGZ.cpp, KGGZLaunch.cpp, KGGZLaunch.h: - allow
+	bots for seats correctly depending on how many are there already -
+	update lag on event, not every 20 timer events
+
+2002-11-09 01:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/KGGZ.cpp: - read time stamps configuration at startup
+	and upon configuration changes
+
+2002-11-09 01:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/widgets/: KGGZChat.cpp, KGGZChat.h, KGGZPrefEnv.cpp,
+	KGGZPrefEnv.h: - make it possible to show time stamps beside chat
+	messages
+
+2002-11-04 16:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/Makefile.am, ggz-kde/src/Makefile.am,
+	ggz-kde/src/abstract/Makefile.am, ggz-kde/src/widgets/Makefile.am,
+	ggz-kde/src/widgets/more/Makefile.am, ggzap/Makefile.am,
+	ggzap/ggzap_gui.cpp, ggzap/ggzap_gui.h, ggzap/ggzap_guialt.cpp,
+	ggzap/ggzap_guialt.h, kcm_ggz/Makefile.am,
+	kcm_ggz/modules/Makefile.am, kio_ggz/Makefile.am,
+	kio_ggzmeta/Makefile.am, modsniff/Makefile.am,
+	shadowbridge/Makefile.am: - add alternative GUI for GGZap (not
+	ready yet)   (this is built-in, but skin plugins would be possible
+	too) - update makefile stuff so automake 1.7 doesn't hiccup
+
+2002-11-04 15:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzap/: ggzap.cpp, ggzap_handler.cpp, ggzap_handler.h,
+	ggzap_tray.cpp, ggzap_tray.h: - add icons to game list - make about
+	dialog accessible from context menu, which is reordered now -
+	enforce player name configuration first (otherwise we end up having
+	many   "/zap"s on our servers
+
+2002-11-04 14:41  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/data/kde/games.directory,
+	ggz-kde/data/kde/ggzmodsniff.desktop,
+	ggz-kde/data/kde/kggz.desktop,
+	keepalivecontrol/data/keepalivecontrol.desktop: Follow new
+	freedesktop.org menu standards: - update translations - provide
+	both Comment and GenericName After the next release we can drop
+	'Comment', but as long as KDE 3.0 is in wide use we cannot do that.
+
+2002-11-02 14:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: data/icons/games/Geekgame.png,
+	data/icons/games/Makefile.am, po/de.po: - fix 2 typos in the German
+	translation - add icon for geekgame
+
+2002-11-02 13:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: widgets/KGGZUsers.cpp, KGGZ.cpp: - when entering a
+	room, display its description in the chat
+
+2002-11-02 11:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: KGGZ.cpp, KGGZ.h: - show host name in window
+	caption, not IP address
+
+2002-11-02 09:54  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/widgets/: KGGZPrefEnv.cpp, KGGZPrefEnv.h: - add
+	player information to the preferences dialog - includes selection
+	of country with flag
+
+2002-11-02 00:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: ggzcore++/src/GGZCoreServer.cpp,
+	src/widgets/KGGZUsers.cpp, src/widgets/KGGZUsers.h: - add dummy
+	player stats
+	
+	The problem is how to get the player object from the list of names.
+	 There could be pairs of each of them, or a lookup method, or a
+	ggzcore method.  Will think about it when I'm not so tired...
+
+2002-10-31 10:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/: GGZCoreServer.cpp, GGZCoreServer.h:
+	[comtec]
+	
+	- adapt to new ggzcore API
+	
+	Thanks to XSebbi :)
+
+2002-10-31 10:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzap/ggzap_handler.cpp: [comtec]
+	
+	- adapt to new ggzcore++ API
+
+2002-10-27 23:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: ggzcore++/src/GGZCoreGame.cpp,
+	ggzcore++/src/GGZCoreGame.h, ggzcore++/src/GGZCoreRoom.h,
+	src/KGGZ.cpp, src/widgets/KGGZChat.cpp, src/widgets/KGGZChat.h: -
+	add basic table chat handling	 -> bright blue - another chat
+	option: INFO (replaces some ADMIN messages such as help texts)	 
+	-> dark red
+
+2002-10-16 02:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Improvement (hopefully :-) to acinclude.ggz.  Now
+	each GGZ check takes two optional parameters.  For instance:
+	
+	  AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
+	
+	'action-if-found' will be evaluated if the specified module was
+	found.	'action-if-not-found' will be evaluated if the module is
+	not found.  This is consistent with other autoconf macros.  If
+	'action-is-not-found' is empty, then an error will be emitted if
+	the module isn't found.  If 'action-if-not-found' is "ignore", then
+	the module will simply be ignored if it's not found.
+	
+	This is not entirely backwards-compatible, since "ignore" used to
+	be the first parameter to the macro.  But this way is more
+	consistent, in my opinion.
+
+2002-10-11 03:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/GGZCoreRoom.h: Added chattable
+	(GGZ_CHAT_TABLE) and chatunknown (GGZ_CHAT_NONE) to the appropriate
+	enum in the GGZCoreRoom class.
+
+2002-10-10 19:34  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Bumped kde-client version to 0.0.7pre.
+
+2002-10-10 15:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kcm_ggz/modules/: kcm_ggz_default.cpp, kcm_ggz_default.h: -
+	Addition to KDE Control Center module:	* allow specification of a
+	picture of the player  * this is saved not only into ggzap.rc, but
+	also into ~/.ggz/personalization    as follows:
+	
+	   [Personalization]
+	   picture=/home/josef/josef.png
+	
+	   From there, the games must read it.
+	   We should make sure that both local and remote pictures work:
+	   - local? Either the game transmits them, or KCMGGZ must upload
+	them
+	     somewhere
+	   - remote? KCMGGZ stores remote path but keeps local copy for
+	purpose of
+	     displaying it
+
+2002-10-10 14:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzap/ggzap_handler.cpp: - no chat handling for ggzap cause it
+	doesn't support chat at all
+
+2002-10-10 14:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: ggzcore++/src/GGZCoreRoom.h, src/KGGZ.cpp, src/KGGZ.h,
+	src/widgets/KGGZPrefEnv.cpp, src/widgets/KGGZPrefEnv.h: - adapt API
+	changes - new: reread configuration when user changes settings
+	(e.g. change chat   logging on the fly is now possible)
+
+2002-10-10 02:31  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/GGZCoreRoom.h: Change the ggzcore++ room
+	event list to match the new ggzcore one.
+	
+	This will break the rest of ggz-kde compilation.  But that's better
+	than having it compile and break later.
+
+2002-10-09 23:47  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/GGZCoreRoom.h: Give specific initializer
+	values to the GGZCoreRoomEvent enumerations - since they MUST match
+	up with the ggzcore values (this seems like a bad way to do it!).
+	
+	Also, removed the tabledata event, and added playerlag in its
+	place.	This will break compilation, but, well, that's probably a
+	good thing.
+
+2002-10-09 01:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/: GGZCoreRoom.cpp, GGZCoreRoom.h: - Move
+	GGZChatType enum into ggz_common.  - Add ggz_chattype_to_string()
+	and ggz_string_to_chattype functions to   ggz_common.  - Change
+	existing code to use the above two instead of their own custom	
+	code.  - Don't accept invalid and dangerous chat messages (sent
+	across the   network).	But do accept invalid and non-dangerous
+	chat messages: to   improve backward-compatability if new chat
+	types are added.
+
+2002-10-08 02:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: s/0.0.5/0.0.6/
+
+2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+
+2002-10-07 23:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog for 0.0.6
+
 2002-10-01 21:00  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* configure.in: - use configure.in

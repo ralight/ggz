@@ -1,3 +1,238 @@
+2003-05-16 20:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply autogen.sh changes from libggz
+
+2003-05-11 11:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/metaservconf.xml: - update the metaserver
+	configuration to reflect the new server versions
+
+2003-05-11 01:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - set the package version number (via configure.ac)
+	to 0.0.7
+
+2003-05-11 01:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: - version update
+
+2003-05-11 01:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/: ggz-cmd.1, metaserv.1, telggz.1: - (slight) manpage updates
+	
+	Some are a bit out of date, this should be fixed for 0.0.8.
+
+2003-05-11 01:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, README.GGZ, autogen.sh: - update common files for 0.0.7 in
+	utils
+
+2003-05-10 16:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync autogen.sh
+
+2003-05-10 13:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/: Makefile.am, metaserv/Makefile.am: - fix 'make
+	distcheck' - also, exclude gui-* from the distribution again
+
+2003-05-10 09:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/: chat.c, main.c, net.c: - setup room handlers only once -
+	announce if line is buffered - version bump
+
+2003-05-10 08:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/metaserv.c: - remove odd square bracket
+
+2003-05-10 07:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/: helper.c, helper.h, metaserv.c: - compiler
+	warning fixes
+
+2003-05-05 15:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - add -fsigned-char
+
+2003-03-30 17:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/minidom/minidom.c: - strip leading and trailing
+	whitespace in values, so input -> output chains   should now be
+	idempotent
+
+2003-03-30 17:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/: metaserv/Makefile.am, metaserv/helper.c,
+	metaserv/metaserv.c, minidom/minidom.c, minidom/minidom.h: - more
+	flexible dump function for minidom so the DOM tree can now be
+	dumped to   a file, too - add daemon mode (-d) to the metaserver -
+	add cache file support (-C) to the metaserver
+	
+	Running as follows:  metaserv -c /etc/metaservconf.xml -C
+	/var/cache/metaserv/cache.xml -d will now allow for permanent
+	updates of the configuration.  This is the first step towards
+	real-time updates, with a few bugs removed it should already be
+	possible to export server stats etc. to it.
+	
+	There will eventually be two main modes: - as daemon with XML cache
+	file - as non-daemon (via xinetd and friends) with a database
+	backend
+
+2003-03-29 11:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/: Makefile.am, gui-qt/Makefile.gui-qt,
+	gui-qt/qmetagui.cpp: - update metaserver stuff - include various
+	GUIs in distribution tarballs
+
+2003-03-29 11:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply improverished autogen globally
+
+2003-03-29 11:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - update GGZ macro file
+
+2003-02-19 23:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/: Makefile.am, README.metaserv, helper.c,
+	helper.h, metaserv.c, metaservconf.xml: - add --configuration
+	option to specify an alternative configuration file - more clever
+	balancing of entries according to their priority (so entries with  
+	low priority appear seldomly, but do not starve) - in a result,
+	return all attributes found, possibly including server location  
+	and speed - new class: help to get some basic help in plain text
+	format	  help:// (in URI notation)    <help/> (in XML notation) -
+	update examples
+
+2003-02-18 22:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/: chat.c, chat.h, main.c, meta.c, meta.h, net.c, net.h: -
+	don't crash if user enters number larger than number of entries in
+	the server   list - don't hardcode port number, use retrieved value
+	instead - show MOTD upon login - use location and speed parameters,
+	once the metaserver transmits them - obvious bugfix: use
+	ggzcore_server_get_fd() instead of _channel() - print correct error
+	messages, not just their numbers
+
+2003-02-18 22:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/minidom/minidom.c: - fix for successive MD_query calls:
+	reset result list
+	
+	This is more like a dirty workaround, hopefully nothing will break.
+
+2003-02-16 16:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* cmd-client/main.c, telggz/net.c: - don't use TLS for now
+
+2003-02-16 16:12  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acconfig.h, configure.ac: - remove obsolete acconfig.h, modify
+	configure.ac accordingly - check for ggzcore if only telggz is
+	selected - remove check for popt because it was only used by grubby
+	once upon a time
+	
+	There is a problem left: If only GNOME 2.x is installed, the macro
+	INSIDE_GNOME_COMMON is not defined, which will always abort the
+	configuration (no matter whether motd-editor is included).  My
+	guess is that motd-editor should be ported to GNOME 2.x so we can
+	drop 1.x support entirely, and have less problems.
+
+2003-02-16 14:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen.sh
+
+2003-02-04 20:06  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.ac: Run autoupdate over configure.ac.
+
+2003-02-04 20:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* m4/gnome.m4: I couldn't find an autoconf2.5x-compatible gnome
+	macro file (!), so I just made a quick change to the existing one.
+
+2003-02-04 03:02  Jason Short <jdorje@users.sourceforge.net>
+
+	* autogen.sh, configure.ac, configure.in: Step 1 of
+	autoconf2.5x-only support: rename configure.in as configure.ac.
+
+2003-01-18 01:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/: main.c, meta.c: - terminate strings read from the
+	network correctly - for queries, use GGZ version number, not TelGGZ
+	version
+
+2003-01-12 12:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/metaserv.c, ggzcomm/main.c: [powerpc]
+	
+	- getopt returns int, not char
+
+2002-12-20 05:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, acinclude.ggz, acinclude.gnome, autogen.sh,
+	m4/ggz.m4, m4/gnome.m4: Move acinclude.* to m4/*.m4.
+
+2002-12-15 13:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* cmd-client/main.c: - add batch processing feature, mostly to
+	avoid sniffing passwords, but also to	allow for saving common
+	broadcast texts etc.
+
+2002-12-09 14:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* cmd-client/main.c: - include sys/time.h for old libc
+	compatibility
+
+2002-11-23 19:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - update cvsignore
+
+2002-11-20 23:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* cmd-client/main.c: - add 'checkonline' command to ggz-cmd
+
+2002-10-16 02:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Improvement (hopefully :-) to acinclude.ggz.  Now
+	each GGZ check takes two optional parameters.  For instance:
+	
+	  AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
+	
+	'action-if-found' will be evaluated if the specified module was
+	found.	'action-if-not-found' will be evaluated if the module is
+	not found.  This is consistent with other autoconf macros.  If
+	'action-is-not-found' is empty, then an error will be emitted if
+	the module isn't found.  If 'action-if-not-found' is "ignore", then
+	the module will simply be ignored if it's not found.
+	
+	This is not entirely backwards-compatible, since "ignore" used to
+	be the first parameter to the macro.  But this way is more
+	consistent, in my opinion.
+
+2002-10-10 01:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* telggz/net.c: Modify telggz to use the new ggzcore interface. 
+	This is rather straightforward and likely to work, but it has not
+	been tested since telggz doesn't work right now.
+
+2002-10-08 02:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: - s/0.0.5/0.0.6
+
+2002-10-08 00:06  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* cmd-client/Makefile.am, telggz/Makefile.am: - fix makefiles:
+	include $(GGZCORE_LDFLAGS)
+
+2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+
+2002-10-07 23:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog for 0.0.6
+
 2002-10-01 23:28  Jason Short <jdorje@users.sourceforge.net>
 
 	* motd-editor/callbacks.c: #if 0...#endif to disable an unused

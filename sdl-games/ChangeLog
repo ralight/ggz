@@ -1,0 +1,238 @@
+2003-05-16 20:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply autogen.sh changes from libggz
+
+2003-05-11 13:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/proto.h: - use smaller protocol numbers so they fit into
+	a char value
+
+2003-05-11 01:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - set the package version number (via configure.ac)
+	to 0.0.7
+
+2003-05-11 01:19  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, QuickStart.GGZ, README.GGZ, autogen.sh,
+	ttt3d/module.dsc.in: - update common files for 0.0.7 in sdl-games -
+	bump TTT3D's version number
+
+2003-05-10 16:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync autogen.sh
+
+2003-05-10 12:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, geekgame/Makefile.am, ttt3d/Makefile.am: - fix 'make
+	distcheck'
+	
+	We still have this hack for our game packages using DESTDIR, it'd
+	probably be better to modify ggz-config a bit more.
+
+2003-05-05 15:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - add -fsigned-char
+
+2003-03-29 11:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac, geekgame/Makefile.am, geekgame/main.c: - add
+	XCursor support to Geekgame (requires XFree86 >= 4.3.0, it's
+	disabled   otherwise) - don't require SDL_mixer anymore, make audio
+	optional as well - implement dumb but working AI for geekgame, so
+	single player mode should be   ready now (at least for 0.0.7)
+
+2003-03-29 11:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply improverished autogen globally
+
+2003-03-29 11:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - update GGZ macro file
+
+2003-02-28 03:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: main.c, wwwget.c: - to make tempfiles more
+	bulletproof, unlink() them before writing to them - fix one of the
+	previous fixes: for the 1st player, Uncle Sam replaces the   green
+	grubby image
+
+2003-02-19 20:21  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: main.c, proto.h, wwwget.c, wwwget.h: - handle sounds
+	and music as well: look in local directory first, fall back to	
+	global (installation) directory. Look for ogg, mp3 and wav files. 
+	- better player handling for GGZ mode: indicate whether players are
+	still	missing, or the game can start already - send moves, rule
+	selection etc. to the server - add copyright to the source files
+
+2003-02-16 14:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen.sh
+
+2003-02-14 20:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: Makefile.am, main.c: - use correct library, using
+	*_LDFLAGS - save and load configuration for soundpath, musicpath
+	and fontpath   This is stored in ~/.ggz/games/geekgame/config.
+
+2003-02-14 19:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: 1979rg__.ttf, Makefile.am, dark2.ttf, main.c: - add
+	full-screen toggling (using the F key), and a --fullscreen command
+	line   argument - better path management using local_data() and
+	global_data() functions - remove font files   This is an issue in
+	itself. No game I know ships with own TTF files, yet it   would be
+	handy to have some (and there's pfaedit to build some).    For the
+	time being, geekgame simply scans common font directories until it 
+	  finds a random font.	  That might be improved by using a font
+	selection screen and/or configuration	 file options.	  Same will
+	apply for the sound and music files.
+
+2003-02-14 19:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - use -Wall
+
+2003-02-04 17:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: main.c, proto.h: - implemented the two remaining game
+	modes
+
+2003-02-04 09:42  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, acinclude.ggz, autogen.sh, configure.ac,
+	configure.in, m4/ggz.m4: Step 1 of autoconf2.5x-only support:
+	rename configure.in as configure.ac.
+	
+	Also move acinclude.ggz to m4/ggz.m4.
+
+2003-01-29 23:48  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: main.c, wwwget.c: - fix handling of command line
+	options - handle local URIs via cp (wget doesn't understand
+	/home/...) - add level descriptions to the main menu
+
+2002-11-19 00:06  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: Makefile.am, default.png, main.c: - prevent segfault
+	when no player photo can be loaded - default image is now a
+	somewhat modified Mr. Sam (hopefully politically   correct) - mix
+	down sound effects to 50% (an internal options menu should later be
+	  added)
+
+2002-11-03 23:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: Makefile.am, icon.png, main.c: - add support for sound
+	effects - load sound and music from global data directory - add
+	game icon
+
+2002-11-03 23:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - check for SDL_mixer
+
+2002-11-03 23:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: Makefile.am, main.c: - add background music support to
+	geekgame
+	
+	Currently, this is hardcoded, since we don't have any project
+	music.	This will eventually be configurable.  But for the time
+	being, the OpenBSD release song seems to be a reasonable choice for
+	a 'geek game' :)
+
+2002-11-02 23:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: main.c, proto.h: - add game over screen - split game
+	and intro screen out of main loop so if the game ends the menu is  
+	called again - implement some game modes already
+
+2002-11-02 19:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: main.c, proto.h, protocol-description: - update
+	protocol description, and explain game modes - intro menu to select
+	game mode
+
+2002-11-02 18:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/proto.h: - network opcodes
+
+2002-11-02 18:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/main.c: - calculate all rows and columns, not just the
+	first column - draw player scores (levels) as green bars - better
+	selection tool which will allow for more complex math (when
+	launching   a 'havoc' or 'hax0r' game mode), including binary
+	calculation
+
+2002-11-02 14:56  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: .cvsignore, Makefile.am, main.c, module.dsc.in: -
+	perform game start via GGZ correctly - and use player images as
+	sent by the server - compare server greeting and version to see if
+	it matches (might add ruleset	definitions later)
+
+2002-11-02 14:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/Makefile.am, geekgame/module.dsc.in, configure.in: - add
+	module description file for geekgame
+
+2002-10-26 02:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: Makefile.am, main.c: - add ggzmod support
+
+2002-10-26 02:12  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/: Makefile.am, main.c: - use correct prefixes for both
+	installed and local data files - read personalization file, don't
+	use picture of my face for all players :) - accept --ggz (although
+	nothing is done upon that)
+
+2002-10-11 00:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ttt3d/: Makefile.am, module.dsc.in: - s/bin/ggzexecmod/
+
+2002-10-10 23:36  Jason Short <jdorje@users.sourceforge.net>
+
+	* ttt3d/main.c: Label game_handle_io() as static.
+
+2002-10-10 23:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ttt3d/module.dsc.in: - protocol version is 3, not 2
+
+2002-10-10 20:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* geekgame/Makefile.am, ttt3d/Makefile.am, configure.in: - add
+	basic SDL and OpenGL checks - use SDL cflags and ldflags
+
+2002-10-10 13:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ttt3d/.cvsignore: - shut up cvs a bit more
+
+2002-10-08 21:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, README, Makefile.am, acinclude.ggz, autogen.sh,
+	configure.in, .cvsignore, AUTHORS, ChangeLog, INSTALL,
+	QuickStart.GGZ, README.GGZ, ttt3d/Makefile.am, ttt3d/cursor.bmp,
+	ttt3d/display.c, ttt3d/display.h, ttt3d/main.c,
+	ttt3d/module.dsc.in, ttt3d/.cvsignore, ttt3d/HOWTOPLAY,
+	ttt3d/figure.bmp, ttt3d/lines.bmp, geekgame/dark2.ttf,
+	ttt3d/board.bmp, geekgame/1979rg__.ttf, geekgame/Makefile.am,
+	geekgame/tmp.png, geekgame/.cvsignore, geekgame/bot.png,
+	geekgame/main.c, geekgame/one.png, geekgame/protocol-description,
+	geekgame/wwwget.c, geekgame/wwwget.h, geekgame/zero.png: -
+	foundation for SDL games package
+
+2002-10-08 21:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, README, Makefile.am, acinclude.ggz, autogen.sh,
+	configure.in, .cvsignore, AUTHORS, ChangeLog, INSTALL,
+	QuickStart.GGZ, README.GGZ, ttt3d/Makefile.am, ttt3d/cursor.bmp,
+	ttt3d/display.c, ttt3d/display.h, ttt3d/main.c,
+	ttt3d/module.dsc.in, ttt3d/.cvsignore, ttt3d/HOWTOPLAY,
+	ttt3d/figure.bmp, ttt3d/lines.bmp, geekgame/dark2.ttf,
+	ttt3d/board.bmp, geekgame/1979rg__.ttf, geekgame/Makefile.am,
+	geekgame/tmp.png, geekgame/.cvsignore, geekgame/bot.png,
+	geekgame/main.c, geekgame/one.png, geekgame/protocol-description,
+	geekgame/wwwget.c, geekgame/wwwget.h, geekgame/zero.png: Initial
+	revision
+

@@ -1,3 +1,253 @@
+2003-05-16 20:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply autogen.sh changes from libggz
+
+2003-05-11 17:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/Makefile.am: - fix installation of translated files
+
+2003-05-11 17:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/de.po: - don't translate command opcodes (yet)
+
+2003-05-11 01:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac: - set the package version number (via configure.ac)
+	to 0.0.7
+
+2003-05-11 01:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/ggz-txt.6: - man page version update for txt-client
+
+2003-05-11 01:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, QuickStart.GGZ, README.GGZ, autogen.sh: - update common
+	files for 0.0.7 in txt-client
+
+2003-05-10 16:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync autogen.sh
+
+2003-05-10 13:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/Makefile.am: - fix 'make distcheck'
+
+2003-05-05 15:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - add -fsigned-char
+
+2003-05-05 14:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - add po/ directory to SUBDIRS
+
+2003-04-28 08:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.ac, po/.cvsignore, po/Makefile.am, po/de.po,
+	po/ggz-txt.pot: - i18n'ize ggz-txt
+
+2003-04-28 08:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-txt/: input.c, loop.c, main.c, output.c: - i18n'ize ggz-txt -
+	fix segfault: don't crash if /table doesn't get an argument
+
+2003-03-29 21:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-txt/main.c: - use optind, and not our own optindex, when
+	determining which argument is the   first non-option one
+	
+	POSIX 1003.2 stuff...
+
+2003-03-29 11:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - apply improverished autogen globally
+
+2003-03-29 11:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* m4/ggz.m4: - update GGZ macro file
+
+2003-02-16 14:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen.sh
+
+2003-02-04 20:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-txt/: input.c, main.c: - Reset the terminal before quitting
+	the application
+
+2003-02-04 13:48  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-txt/Makefile.am, ggz-txt/input.c, ggz-txt/input.h,
+	ggz-txt/main.c, ggz-txt/output.c, ggz-txt/server.c, configure.ac: -
+	add asynchronous readline/history support for the ggz-txt command
+	line - bugfix: strip ggz:// from URIs when recognized - fix
+	ggzcore_set_hostinfo call: add parameter zero (no TLS right now) -
+	some minor cleanups
+	
+	There is one issue left: When ggz-txt shuts down with the readline
+	interface enabled, the console goes fubar.
+
+2003-02-04 10:24  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.ac: Various updates for autoconf2.5x usage.
+
+2003-02-04 03:01  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, acinclude.ggz, autogen.sh, configure.ac,
+	configure.in, m4/ggz.m4: Step 1 of autoconf2.5x-only support:
+	rename configure.in as configure.ac.
+	
+	Also move acinclude.ggz to m4/ggz.m4.
+
+2003-01-18 01:48  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/ggz-txt.6: - update manpage
+
+2003-01-18 01:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-txt/: input.c, input.h, main.c: - accept /quit as an alias
+	for /exit - autoconnect if URI is given on the commandline:
+	
+	ggz-txt hostname ggz-txt hostname:port ggz-txt
+	username@hostname:port
+
+2003-01-12 12:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-txt/main.c: [powerpc]
+	
+	- getopt returns int, not char
+
+2002-11-03 23:09  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/input.c: Add 'const' qualifiers to some char* pointers to
+	match what ggzcore has.
+
+2002-10-31 00:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/output.c: s/char */const char */ to comply with
+	ggzcore_server_get_host()'s return value.
+
+2002-10-22 03:19  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/game.c: Don't let a player join/launch a table if they're
+	already playing a game.
+
+2002-10-22 03:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/input.c: Give slightly more helpful error messages.
+
+2002-10-22 03:09  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/input.c: Make sure a table exists before we try to join
+	it.  Otherwise bad behavior can result.
+
+2002-10-20 01:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/output.c: Adjust for the GGZ_CHAT_NONE ->
+	GGZ_CHAT_UNKNOWN change.
+
+2002-10-17 08:26  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/game.c: Change ggz-txt to match the ggzcore change.
+
+2002-10-16 02:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Improvement (hopefully :-) to acinclude.ggz.  Now
+	each GGZ check takes two optional parameters.  For instance:
+	
+	  AC_GGZ_LIBGGZ(action-if-found, action-if-not-found)
+	
+	'action-if-found' will be evaluated if the specified module was
+	found.	'action-if-not-found' will be evaluated if the module is
+	not found.  This is consistent with other autoconf macros.  If
+	'action-is-not-found' is empty, then an error will be emitted if
+	the module isn't found.  If 'action-if-not-found' is "ignore", then
+	the module will simply be ignored if it's not found.
+	
+	This is not entirely backwards-compatible, since "ignore" used to
+	be the first parameter to the macro.  But this way is more
+	consistent, in my opinion.
+
+2002-10-11 21:35  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/: game.c, input.c, loop.c, main.c, output.c, server.c,
+	server.h, state.c: Clean up ggz-txt's memory handling: avoid
+	freeing NULL pointers, and free data when the program quits.
+
+2002-10-11 21:09  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/server.c: Fix output_text parameters when compiling with
+	DEBUG.
+
+2002-10-11 20:03  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/main.c: Enable init_debug() when DEBUG is defined,
+	instead of never.
+
+2002-10-11 19:02  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Enable debugging by default in txt-client.
+
+2002-10-11 18:57  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/: input.c, output.c: Change txt-client to use entirely
+	libggz memory management routines.
+
+2002-10-10 23:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/: input.c, output.c: Add handling for sending and
+	receiving of table chats.
+
+2002-10-10 20:09  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/motd.c: Change the MOTD code even more.  It's now shorter
+	and more clearly correct (IMO).
+	
+	One problem remains: it will crash if a MOTD *line* is longer than
+	1024 characters.
+
+2002-10-10 19:42  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/: input.c, motd.c: Avoid passing random string pointers
+	to output_text, since they could point to a string that is not
+	printf-safe.  Instead pass "%s" to output_text, with the string
+	variable as a variadic parameter.
+
+2002-10-10 19:36  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Bumped txt-client version to 0.0.7pre.
+
+2002-10-10 03:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/: output.h, server.c: Add a ggz__attribute so gcc knows
+	output_text takes printf-style parameters.
+	
+	Fix the callers who give warnings - even though the warnings are
+	spurious (passing a void* instead of a char*).
+
+2002-10-10 03:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/: motd.c, motd.h: A massive restructuring of
+	motd_print_line():   - Make the color sequences an array of
+	strings.    - Output the text after every line.
+
+2002-10-10 02:55  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/output.c: Change vsprintf to vsnprintf to prevent any
+	possible buffer overflows in output_text().
+
+2002-10-10 02:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/: output.c, output.h, server.c: Convert txt-client to use
+	the new ggzcore interface.
+
+2002-10-07 23:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* NEWS: Rewrote NEWS for 0.0.6, and propogated it to all modules.
+
+2002-10-07 23:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ChangeLog: - update changelog for 0.0.6
+
 2002-10-01 21:05  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* configure.in: - use configure.in for AC_INIT
