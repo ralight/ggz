@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define PROTOCOL_VERSION 1
+#define PROTOCOL_VERSION 2
 /* Chess module design
  *
  * We should have 4 game states:
@@ -147,17 +147,18 @@
  *
  * Tells the players that the game has started
  *
- * CHESS_REQ_MOVE (str)MOVE [(int)TIME]
+ * CHESS_REQ_MOVE (char)FROM (char)TO [(int)TIME]
  *
- * Requests a move. The MOVE string is composed in the cgc format.
+ * Requests a move. The FROM char is the index from where the move originated,
+ * and the TO is to where the piece is going (all of them go through 0-63).
  * If we are using the client clock, TIME is the number of seconds that it 
  * took to make that move.
  *
- * CHESS_MSG_MOVE (str)MOVE [(int)TIME]
+ * CHESS_MSG_MOVE (char)FROM [(char)TO [(int)TIME]]
  *
- * Sends a move. The MOVE string is composed in the cgc format or is NULL, 
- * in the case of an invalid move. If we are using some type of clock, TIME is
- * the number of seconds that it took to make that move
+ * Sends a move. The FROM and TO are just like in CHESS_REQ_MOVE. If the move
+ * is invalid, we send only a -1 in the FROM part. If we are using some type of
+ * clock, TIME is the number of seconds that it took to make that move
  *
  * CHESS_MSG_GAMEOVER (char)WINNER
  *

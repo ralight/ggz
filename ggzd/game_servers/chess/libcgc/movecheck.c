@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: movecheck.c 977 2001-01-04 22:59:13Z perdig $
+ *  $Id: movecheck.c 994 2001-01-06 17:39:53Z perdig $
  */
 
 #include <stdlib.h>
@@ -82,7 +82,7 @@ cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd)
 	if(!onboard(fs, rs) || !onboard(fd, rd))
 		return E_BADMOVE;
 
-	if(curgame->player1 == NULL || curgame->player2 == NULL)
+	if(curgame->player1 == EMPTY || curgame->player2 == EMPTY)
 		return E_PLAYERALONE;
 
 	if(color(curgame->board[fs][rs]) != curgame->onmove)

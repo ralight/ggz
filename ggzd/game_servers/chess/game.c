@@ -69,7 +69,7 @@ void game_update(int event_id, void *data) {
         break;
       ggz_debug("New player!");
       /* Add to cgc */
-      if (cgc_join_game(game, *(int*)data, 
+      if (cgc_join_game(game, *(int*)data+5, 
           *(int*)data == 0 ? WHITE : BLACK) < 0)
         /* Boy, that's bad... */
         return;
@@ -130,8 +130,10 @@ void game_update(int event_id, void *data) {
       /* Check for state */
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
+      ggz_debug("Move: %s", (char *)data);
       /* Try to make the move via cgc */
       if ( !data || (st = cgc_make_move(game, (char *)data)) < 0) {
+        ggz_debug("CGC status: %d", st);
         game_send_move(NULL, 0);
         break;
       }
@@ -162,6 +164,7 @@ void game_update(int event_id, void *data) {
       break;
     case CHESS_EVENT_GAMEOVER:
       game_info.state = CHESS_STATE_DONE;
+      ggz_debug("Game over!");
       /* TODO: Send gameover message */
       break;
     default:
@@ -180,6 +183,7 @@ void game_update(int event_id, void *data) {
 void game_handle_player(int id, int *seat) {
   int fd, time;
   char op;
+  char move[2];
   void *data;
   struct timeval now;
 
@@ -202,6 +206,9 @@ void game_handle_player(int id, int *seat) {
       ggz_debug("Player sent a RSP_TIME");
       if (es_read_int(fd, &time) < 0)
         return;
+      /* Check if this player is the host */
+      if (*seat != game_info.host)
+        return;
       ggz_debug("Player sent the following time: %d", time);
       /* Is it a valid time ? */
       if ((time >> 24) > 3) {
@@ -216,13 +223,24 @@ void game_handle_player(int id, int *seat) {
       game_update(CHESS_EVENT_TIME, &time);
       break;
     case CHESS_REQ_MOVE:
+      ggz_debug("Player sent a REQ_MOVE");
       if (game_info.clock_type == CHESS_CLOCK_NOCLOCK) {
         /* We don't use clocks! */
         data = malloc(sizeof(char) * 5);
-        es_read_string(fd, (char *)data, 5);
+        es_read_char(fd, &move[0]);
+        es_read_char(fd, &move[1]);
+        *(char *)data = (move[0]%8) + 65;
+        *(char *)(data+1) = 56 - (move[0]/8);
+        *(char *)(data+2) = (move[1]%8) + 65;
+        *(char *)(data+3) = 56 - (move[1]/8);
       } else {
         data = malloc(sizeof(int) * (2 + (5/sizeof(int))));
-        es_read_string(fd, (char *)data, 5);
+        es_read_char(fd, &move[0]);
+        es_read_char(fd, &move[1]);
+        *(char *)data = (move[0]%8) + 65;
+        *(char *)(data+1) = 56 - (move[0]/8);
+        *(char *)(data+2) = (move[1]%8) + 65;
+        *(char *)(data+3) = 56 - (move[1]/8);
         if (game_info.clock_type == CHESS_CLOCK_CLIENT) {
           /* Get the time */
           es_read_int(fd, &time);
@@ -325,7 +343,12 @@ void game_send_move(char *move, int time) {
     es_write_char(fd, CHESS_MSG_MOVE);
 
     /* Send MOVE */
-    es_write_string(fd, move);
+    if (move) {
+      es_write_char(fd, move[0]-'A'+(8*(56-move[1])));
+      es_write_char(fd, move[2]-'A'+(8*(56-move[3])));
+    }
+    else
+      es_write_char(fd, -1);
     
     /* Send time */
     if (time)
