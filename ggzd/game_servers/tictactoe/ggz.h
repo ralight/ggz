@@ -23,7 +23,7 @@
  */
 
 
-#define MAX_USER_NAME_LEN 8
+#define MAX_USER_NAME_LEN 16
 
 /* Seat assignment values */
 #define GGZ_SEAT_OPEN   -1
