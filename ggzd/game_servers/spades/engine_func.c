@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/30/97
+ * $Id: engine_func.c 2206 2001-08-23 21:32:06Z jdorje $
  *
  * This file contains the support functions for the spades engines.
  *
@@ -196,23 +197,10 @@ void GetGameInfo( void ) {
 	int i, j, op, status = 0;
 	int seat;
 	char ret;
-	char fd_name[256];
 	char* name;
-	struct sockaddr_un addr;
 	
-	/* Connect to Unix domain socket */
-	snprintf(fd_name, sizeof(fd_name), "/%s/NetSpades.%d", TMPDIR, getpid());
-
-	if ( (gameInfo.ggz_sock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
-		err_sys_exit("socket failed");
-	
-	bzero(&addr, sizeof(addr));
-	addr.sun_family = AF_LOCAL;
-	strcpy(addr.sun_path, fd_name);
-
-	if (connect(gameInfo.ggz_sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-		err_sys_exit("connect failed");
-	
+	/* FIXME: manual connection to GGZ */
+	gameInfo.ggz_sock = 3;
 
 	ReadIntOrDie(gameInfo.ggz_sock, &op);
 	if (op != REQ_GAME_LAUNCH) {
