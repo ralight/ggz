@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2438 2001-09-10 07:00:12Z jdorje $
+ * $Id: spades.c 2439 2001-09-10 08:15:35Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -91,14 +91,14 @@ static struct play {
 	int trick;		/* likelyhood card will take this trick */
 	int future;		/* likelyhood card will take future trick */
 } play[13];
-static int plays, high, agg, lastTrick;
+static int plays, high, lastTrick;
 
-static void Calculate(player_t num, struct play *);
+static void Calculate(player_t num, struct play *play, int agg);
 static int SuitMap(seat_t, player_t, char);
-static int PlayNil(int);
-static int CoverNil(int);
-static int SetNil(int);
-static int PlayNormal(int);
+static int PlayNil(player_t p);
+static int CoverNil(player_t p, int agg);
+static int SetNil(player_t p, int agg);
+static int PlayNormal(player_t p, int agg);
 static int card_comp(card_t c1, card_t c2);
 
 static void start_hand()
@@ -564,6 +564,7 @@ static card_t get_play(player_t p, seat_t s)
 {
 	int i, chosen = -1;
 	int myNeed, oppNeed, totTricks;
+	int agg;
 	int num = p;
 	player_t pard = (num + 2) % 4;
 	card_t lead, hi_card;
@@ -667,7 +668,7 @@ static card_t get_play(player_t p, seat_t s)
 	for (i = 0; i < hand->hand_size; i++) {
 		if (game.funcs->verify_play(hand->cards[i]) == NULL) {
 			play[plays].card = hand->cards[i];
-			Calculate(num, &play[plays]);
+			Calculate(num, &play[plays], agg);
 			plays++;
 		}
 	}
@@ -687,11 +688,11 @@ static card_t get_play(player_t p, seat_t s)
 		chosen = PlayNil(num);
 	if (chosen < 0 && game.players[pard].bid.sbid.spec == SPADES_NIL
 	    && (agg <= 50 || game.players[pard].tricks == 0))
-		chosen = CoverNil(num);
+		chosen = CoverNil(num, agg);
 	if (chosen < 0 && agg < 100)
-		chosen = SetNil(num);
+		chosen = SetNil(num, agg);
 	if (chosen < 0)
-		chosen = PlayNormal(num);
+		chosen = PlayNormal(num, agg);
 
 	ai_debug("Chosen play is %d", chosen);
 
@@ -706,7 +707,7 @@ static card_t get_play(player_t p, seat_t s)
 
 /* This function has a bug: it does not count the chance that our partner
    will win a trick if we don't. */
-static void Calculate(int num, struct play *play)
+static void Calculate(int num, struct play *play, int agg)
 {
 
 	int mask, map, count, danger, trump, n, cover, sCount;
@@ -943,7 +944,7 @@ static int PlayNil(player_t p)
 }
 
 
-static int CoverNil(player_t p)
+static int CoverNil(player_t p, int agg)
 {
 	int i, chosen = -1, mask, r, danger = 0, sluff = 0;
 	int map[4];
@@ -1147,7 +1148,7 @@ static int CoverNil(player_t p)
 }
 
 
-static int SetNil(int p)
+static int SetNil(player_t p, int agg)
 {
 
 	int i, pp, chosen = -1, r, mask, s, map, count;
@@ -1286,7 +1287,7 @@ static int SetNil(int p)
 }
 
 
-static int PlayNormal(int p)
+static int PlayNormal(player_t p, int agg)
 {
 
 	int i, chosen = -1, n, r, s /* , tmp */ ;
@@ -1301,7 +1302,7 @@ static int PlayNormal(int p)
 	 */
 	if (high == pard) {
 		pCard.card = game.seats[pard].table;
-		Calculate(p, &pCard);
+		Calculate(p, &pCard, agg);
 		ai_debug("Pard is winning with %d of %s; chance of winning trick is %d.", pCard.card.face, suit_names[(int) pCard.card.suit], pCard.trick);
 	} else
 		pCard.trick = pCard.future = -1;
