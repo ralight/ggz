@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 4975 2002-10-22 01:09:31Z jdorje $
+ * $Id: input.c 4976 2002-10-22 01:16:14Z jdorje $
  *
  * Functions for inputing commands from the user
  *
@@ -359,13 +359,14 @@ static void input_handle_launch(char *line)
 
 	room = ggzcore_server_get_cur_room(server);
 	if (!room) {
-		output_text("You must be in a room to launch a game");
+		output_text("You must be in a room to launch a game.");
 		return;
 	}
 
 	type = ggzcore_room_get_gametype(room);
 	if (!type) {
-		output_text("No game types defined for this server");
+		output_text("No game types defined for this room. "
+			    "Maybe try 'list types'?");
 		return;
 	}
 	
@@ -402,13 +403,14 @@ static void input_handle_join_table(char *line)
 
 	room = ggzcore_server_get_cur_room(server);
 	if (!room) {
-		output_text("You must be in a room to launch a game");
+		output_text("You must be in a room to launch a game.");
 		return;
 	}
 
 	type = ggzcore_room_get_gametype(room);
 	if (!type) {
-		output_text("No game types defined for this server");
+		output_text("No game types defined for this room. "
+			    "Maybe try 'list types'?");
 		return;
 	}
 	
