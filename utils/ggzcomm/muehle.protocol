@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<ggzcomm engine="Muehle" version="2" opcodes="no">
+	<client>
+		<event name="send_name">
+			<data name="appname" type="string"/>
+		</event>
+		<event name="send_move">
+			<data name="move" type="string"/>
+		</event>
+		<event name="req_remis">
+			<data name="remis" type="string"/>
+		</event>
+		<event name="send_loose">
+			<data name="loose" type="string"/>
+		</event>
+	</client>
+	<server>
+		<event name="send_color">
+			<data name="color" type="string"/>
+		</event>
+		<event name="rsp_remis"/>
+			<data name="answer" type="string"/>
+		</event>
+	</server>
+	<protocol>
+		<link client="send_name" server="send_color"/>
+		<link server="send_color" client="send_move"/>
+		<link client="req_remis" server="rsp_remis"/>
+	</protocol>
+</ggzcomm>
+

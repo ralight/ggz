@@ -272,7 +272,7 @@ void ggzcommgen_source(DOM *dom, const char *task, const char *format)
 					if(k)
 					{
 						ggzcommgen_push(&fileimpl2, bufimpl2);
-						ggzcommgen_push(&fileimpl2, ") < 0)\n\t\t\t{\n\t\t\t\t");
+						ggzcommgen_push(&fileimpl2, ") < 0))\n\t\t\t{\n\t\t\t\t");
 						if(!strcmp(format, "c"))
 						{
 							ggzcommgen_push(&fileimpl2, "ggzcomm_");
