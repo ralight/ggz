@@ -297,6 +297,7 @@ static void player_loop(int p_index, int p_fd)
 			players.info[p_index].table_index = -1;
 			players.timestamp = time(NULL);
 			pthread_rwlock_unlock(&players.lock);
+			/* FIXME: update time stamp in room */
 			game_over = 0;
 		}
 

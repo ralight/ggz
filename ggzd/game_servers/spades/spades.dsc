@@ -14,6 +14,6 @@ BotsAllowed = 3
 AllowLeave = 0
 OptionsSize = 12
 # ExecutablePath is figured relative to GameDir unless starting with /
-ExecutablePath = spades/spades
+ExecutablePath = spades
 # GameDisabled is a quick way to turn off the game if necessary
 #GameDisabled

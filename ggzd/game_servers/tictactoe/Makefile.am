@@ -4,7 +4,9 @@ SUBDIRS = .
 
 INCLUDES = -I$(top_srcdir)/easysock 
 
-bin_PROGRAMS = tictactoe
+ggzdmod_PROGRAMS = tictactoe
+ggzdgame_DATA = tictactoe.dsc
+ggzdroom_DATA = tictactoe.room
 
 tictactoe_SOURCES = ggz.c \
 		    ggz.h \

@@ -19,16 +19,12 @@
 #undef HAVE_LIBHISTORY
 #undef WAIT_ANY
 #undef DEBUG
-#undef DEBUG_SCREEN
 #undef DEBUG_SOCKET
-#undef DEBUG_TAUNT
 #undef DEBUG_MEM
-#undef DEBUG_BID
-#undef DEBUG_PLAY
-#undef PACKAGE_LOCALE_DIR
-#undef PACKAGE_DATA_DIR
+#undef GGZDCONFDIR
+#undef GAMEDIR
+#undef TMPDIR
 #undef PACKAGE_SOURCE_DIR
-#undef SYSCONFDIR
 #undef _XOPEN_SOURCE
     
 

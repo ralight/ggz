@@ -4,7 +4,9 @@ SUBDIRS = .
 
 INCLUDES = -I$(top_srcdir)/easysock 
 
-bin_PROGRAMS = spades
+ggzdmod_PROGRAMS = spades
+ggzdgame_DATA = spades.dsc
+ggzdroom_DATA = spades.room
 
 spades_SOURCES = card.c \
 		 card.h \

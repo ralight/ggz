@@ -1,9 +1,9 @@
 # This is the short name for the room
-Name = NetSpades - Competitive
+Name = TicTacToe
 # This is the long descriptive name for the room
-Description = This is the place for a serious and challenging game of NetSpades.
+Description = Example TicTacToe Room
 # The gametype should match up to the Name of an added game
-GameType = NetSpades
+GameType = TacTacToe
 # These set maximum values for this room
 MaxPlayers = 150
 MaxTables = 45

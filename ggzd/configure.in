@@ -8,20 +8,13 @@ AM_MAINTAINER_MODE
 
 dnl Compiling Options
 dnl =====================
-dnl AC_ARG_WITH(slang,    [  --without-slang         Don't build slang client], sl_client=$withval, sl_client=yes)
-dnl AC_ARG_WITH(gtk,      [  --without-gtk           Don't build GTK+ client], gtk_client=$withval, gtk_client=yes)
-dnl AC_ARG_WITH(history,  [  --without-history       Disable use of Taunt history through libhistory], hist=$withval, hist=yes)
-dnl AC_ARG_ENABLE(server, [  --disable-server        Don't build ggzd server], server=$enableval, server=yes)
-AC_ARG_ENABLE(server, [  --disable-games         Don't build ggzd games], games=$enableval, games=yes)
-dnl AC_ARG_ENABLE(client, [  --disable-client        Don't build ggz clients], client=$enableval, client=yes)
-AC_ARG_ENABLE(debug,  [  --enable-debug          enable debugging ],, enable_debug=no)
+AC_ARG_ENABLE(server, [  --disable-server        Don't build ggzd server],, enable_server=yes)
+AC_ARG_ENABLE(games,  [  --disable-games         Don't build ggzd games],, enable_games=yes)
+AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by default)],, enable_debug=yes)
 AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
 AC_ARG_ENABLE(debug-mem,    [  --enable-debug-mem      enable mem debugging ],,enable_debug_mem=no)
-AC_ARG_ENABLE(debug-taunt,  [  --enable-debug-taunt    enable taunt debugging ],, enable_debug_taunt=no)
 AC_ARG_ENABLE(debug-socket, [  --enable-debug-socket   enable socket debugging ],, enable_debug_socket=no)
-dnl AC_ARG_ENABLE(debug-screen, [  --enable-debug-screen   enable screen debugging ],, enable_debug_screen=no)
-dnl AC_ARG_ENABLE(debug-bid,    [  --enable-debug-bid      enable bid AI debugging ],, enable_debug_bid=no)
-dnl AC_ARG_ENABLE(debug-play,   [  --enable-debug-play     enable play AI debugging ],, enable_debug_play=no)
+AC_ARG_WITH(tmpdir,         [  --with-tempdir=PATH     directory to put pid and temporary socket files], tmpdir=$withval, tmpdir=/tmp/ggzd)
 
 dnl Check for standard build environment
 dnl ====================================
@@ -70,20 +63,20 @@ AC_CHECK_FUNC(inet_ntoa, ,
 	AC_MSG_ERROR(*** Cannot find nsl library ); exit ))
 
 AC_CHECK_LIB(popt, poptGetNextOpt,
-    AC_CHECK_HEADER(popt.h, LDADD="$LDADD -lpopt",
+    AC_CHECK_HEADER(popt.h, ggzd_LIBS="$ggzd_LIBS -lpopt",
         AC_MSG_ERROR(*** Cannot find popt.h header); exit),
     AC_MSG_ERROR(*** Cannot find popt library ); exit)
     
 AC_CHECK_LIB(pthread, pthread_create,
-    AC_CHECK_HEADER(pthread.h, LDADD="$LDADD -lpthread" 
+    AC_CHECK_HEADER(pthread.h, ggzd_LIBS="$ggzd_LIBS -lpthread" 
          CFLAGS="$CFLAGS -D_REENTRANT"
          AC_DEFINE(_XOPEN_SOURCE, 500),
          AC_MSG_ERROR(*** Cannot find pthread.h header); exit),
     AC_MSG_ERROR(*** Cannot find pthread library ); exit)
 
-LIBS=$tmp_LIBS
 
 dnl Use -Wall if we have gcc.
+dnl ========================
 changequote(,)dnl
 if test "x$GCC" = "xyes"; then
   case " $CFLAGS " in
@@ -93,6 +86,7 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
+
 dnl Debug modes
 dnl ===========
 if test "$enable_debug" = yes; then
@@ -100,29 +94,9 @@ if test "$enable_debug" = yes; then
     DFLAGS="DEBUG"
 fi
 
-if test "$enable_debug_screen" = yes; then
-    AC_DEFINE(DEBUG_SCREEN)
-    DFLAGS="$DFLAGS DEBUG_SCREEN"
-fi
-
 if test "$enable_debug_socket" = yes; then
     AC_DEFINE(DEBUG_SOCKET)
     DFLAGS="$DFLAGS DEBUG_SOCKET"
-fi
-
-if test "$enable_debug_taunt" = yes; then
-    AC_DEFINE(DEBUG_TAUNT)
-    DFLAGS="$DFLAGS DEBUG_TAUNT"
-fi
-
-if test "$enable_debug_bid" = yes; then
-    AC_DEFINE(DEBUG_BID)
-    DFLAGS="$DFLAGS DEBUG_BID"
-fi
-
-if test "$enable_debug_play" = yes; then
-    AC_DEFINE(DEBUG_PLAY)
-    DFLAGS="$DFLAGS DEBUG_PLAY"
 fi
 
 if test "$enable_debug_mem" = yes; then
@@ -141,45 +115,64 @@ dnl ============
 
 if test "x${sysconfdir}" = 'x${prefix}/etc'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(SYSCONFDIR, "${ac_default_prefix}/etc")
+    ggzdconfdir="${ac_default_prefix}/etc/ggzd"
   else
-    AC_DEFINE_UNQUOTED(SYSCONFDIR, "${prefix}/etc")
+    ggzdconfdir="${prefix}/etc/ggzd"
   fi
 else
-  AC_DEFINE_UNQUOTED(SYSCONFDIR, "${sysconfdir}")
+  ggzdconfdir="${sysconfdir}/ggzd"
 fi
+AC_DEFINE_UNQUOTED(GGZDCONFDIR, "${ggzdconfdir}")
+ggzdroomdir="${ggzdconfdir}/rooms"
+ggzdgamedir="${ggzdconfdir}/games"
 
-if test "x${datadir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+
+if test "x${libdir}" = 'x${exec_prefix}/lib'; then
+  if test "x${exec_prefix}" = "xNONE"; then
+    if test "x${prefix}" = "xNONE"; then
+      ggzdmoddir="${ac_default_prefix}/lib/ggzd"
+    else
+      ggzdmoddir="${prefix}/lib/ggzd"
+    fi
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+    ggzdmoddir="${exec_prefix}/lib/ggzd"
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
+  ggzdmoddir="${libdir}/ggzd"
 fi
+AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzdmoddir}")
+
+AC_DEFINE_UNQUOTED(TMPDIR, "${tmpdir}")
 
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
 
-
 dnl Which progs to compile
 dnl ======================
 
-SUBDIRS="easysock ggzd"
+SUBDIRS="easysock"
 
-if test "$games" = yes; then
+if test "$enable_server" = yes; then
+    SUBDIRS="$SUBDIRS ggzd"
+fi
+
+if test "$enable_games" = yes; then
     SUBDIRS="$SUBDIRS game_servers"
 fi
 
 
-AC_SUBST(PROGS)
 AC_SUBST(LDADD)
+AC_SUBST(ggzd_LIBS)
 AC_SUBST(SUBDIRS)
+AC_SUBST(ggzdconfdir)
+AC_SUBST(ggzdroomdir)
+AC_SUBST(ggzdgamedir)
+AC_SUBST(ggzdmoddir)
 
 AC_OUTPUT([Makefile 
            ggzd/Makefile 
+	   ggzd/ggzd.conf
 	   doc/Makefile
 	   game_servers/Makefile
 	   game_servers/spades/Makefile
@@ -190,8 +183,7 @@ AC_OUTPUT([Makefile
 dnl Status Output
 dnl =============
 echo ""
-echo "*** The following programs will be built: $PROGS"
-echo "*** with the following debugging flags: $DFLAGS"
+echo "*** Programs will be built with the following debugging flags: $DFLAGS"
 echo ""
 echo "WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!"
 echo ""

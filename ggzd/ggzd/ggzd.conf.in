@@ -124,7 +124,7 @@ DebugTypes = All
 
 # Game Servers directory
 #   This is where the server can find the game server description files
-GameDir = ../game_servers/
+GameDir = @ggzdmoddir@
 
 # MOTD File
 #   If the file doesn't exist, no message of the day will be sent
@@ -140,8 +140,8 @@ GameDir = ../game_servers/
 #   One AddGame line should be present for each game server present in the
 #   GameDir.  Default if no AddGame lines exist is to AddAllGames
 #addgame = tictactoe
-#AddAllGames
-AddGame = spades
+#AddGame = spades
+AddAllGames
 
 # List of Ignored Games
 #   Only valid if AddAllGames is in effect.  One IgnoreGame line should be

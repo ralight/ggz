@@ -30,10 +30,7 @@ ggzd_SOURCES =	control.c \
 		transit.h
 
 
-confdir = $(sysconfdir)
-conf_DATA = ggzd.conf
-
-ggzd_LDADD = $(LDADD) $(top_builddir)/easysock/libeasysock.la 
+ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(top_builddir)/easysock/libeasysock.la 
 ggzd_LDFLAGS = -static
 
-
+ggzdconf_DATA = ggzd.conf

@@ -158,10 +158,10 @@ void parse_conf_file(void)
 		} else
 			err_msg("WARNING:  Local conf file not found!");
 	} else {
-		if((tempstr=malloc(strlen(SYSCONFDIR)+11)) == NULL)
+		if((tempstr=malloc(strlen(GGZDCONFDIR)+11)) == NULL)
 			err_sys_exit("malloc error in parse_conf_file()");
 
-		strcpy(tempstr, SYSCONFDIR);   /* If this changes be sure to */
+		strcpy(tempstr, GGZDCONFDIR);   /* If this changes be sure to */
 		strcat(tempstr, "/ggzd.conf"); /* change the malloc() above! */
 
 		if((configfile=fopen(tempstr,"r"))) {
@@ -176,11 +176,11 @@ void parse_conf_file(void)
 
 	/* Add any defaults which were not config'ed */
 
-	/* If no game_dir, default it to SYSCONFDIR */
+	/* If no game_dir, default it to GGZDCONFDIR */
 	if(!opt.game_dir) {
-		if((tempstr=malloc(strlen(SYSCONFDIR)+1)) == NULL)
+		if((tempstr=malloc(strlen(GGZDCONFDIR)+1)) == NULL)
 			err_sys_exit("malloc error in parse_conf_file()");
-		strcpy(tempstr, SYSCONFDIR);
+		strcpy(tempstr, GGZDCONFDIR);
 		opt.game_dir = tempstr;
 	}
 

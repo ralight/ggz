@@ -1,10 +1,13 @@
 For 0.0.2
 =========
-- Fix ttt to detect tie game
-- Change timestamps to use simple counters
+- Finalize layout
+- Put Unix domain sockets in /var/run according to FHS
+- Wait for existence of socket before running game module
+
 
 For 0.0.3
 =========
+- Improve updates system
 - List error codes and add to protocol
 - table chat
 - private messages (game type options, server admin option)
