@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 3381 2002-02-17 08:02:54Z jdorje $
+ * $Id: main.c 3383 2002-02-17 08:20:13Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -105,7 +105,11 @@ static void cleanup_debugging(void)
 	/* ggz_cleanup_debug writes the data out to the file and does a
 	   memory check at the same time. */
 	ggz_debug("main", "Shutting down Reversi client.");
+#ifdef DEBUG
 	ggz_debug_cleanup(GGZ_CHECK_MEM);
+#else
+	ggz_debug_cleanup(GGZ_CHECK_NONE);
+#endif
 }
 
 void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
