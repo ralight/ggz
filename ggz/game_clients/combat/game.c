@@ -977,6 +977,7 @@ void game_message( const char *format, ... ) {
 
    gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox),
                       label);
+   gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
    gtk_widget_show_all (dialog);
 
 }
@@ -1023,15 +1024,33 @@ void game_request_sync() {
 int game_send_options(GtkWidget *options_dialog) {
   combat_game *_game;
   char *game_str = NULL;
-
-
-  //dlg_options_update(options_dialog);
+  int a;
 
   _game = gtk_object_get_data(GTK_OBJECT(options_dialog), "options");
 
-  printf("Map name: %s\n", _game->name);
+  if (!_game)
+    return -1;
 
   game_str = combat_options_string_write(_game, 0);
+
+  // Sanity check!
+  _game->number = cbt_game.number;
+  combat_options_string_read(game_str, _game);
+
+  if ((a = combat_options_check(_game)) != 0) {
+    switch (a) {
+      case CBT_ERROR_OPTIONS_FLAGS:
+        game_message("Your map must have at least one moving unit");
+        break;
+      case CBT_ERROR_OPTIONS_MOVING:
+        game_message("Your map must have at least one moving unit");
+        break;
+      case CBT_ERROR_OPTIONS_SIZE:
+        game_message("Your map doesn't allow all the players to place their starting units on their starting positions");
+        break;
+    }
+    return -1;
+  }
 
   if (es_write_int(cbt_info.fd, CBT_MSG_OPTIONS) < 0 || es_write_string(cbt_info.fd, game_str) < 0)
     return -1;

@@ -782,11 +782,11 @@ void dlg_options_update(GtkWidget *dlg_options) {
   options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
   if (!options) {
     options = (combat_game *)malloc(sizeof(combat_game));
-    options->army = (char **)calloc(1, sizeof(char *));
-    options->army[0] = (char *)calloc(12, sizeof(char));
+    options->number = 0;
+    options->army = (char **)calloc(options->number+1, sizeof(char *));
+    options->army[options->number] = (char *)calloc(12, sizeof(char));
     options->map = NULL;
     options->name = NULL;
-    options->number = 0;
   }
   gtk_object_set_data(GTK_OBJECT(dlg_options), "options", options);
 
@@ -799,7 +799,7 @@ void dlg_options_update(GtkWidget *dlg_options) {
 	// Gets army data
 	for (a = 0; a < 12; a++) {
 		unit_spin = gtk_object_get_data(GTK_OBJECT(dlg_options), spin_name[a]);
-		options->army[0][a] = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(unit_spin));
+		options->army[options->number][a] = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(unit_spin));
 	}
 
   // Map was changed! It doesn't have a name now!
@@ -895,7 +895,7 @@ void update_counters(GtkWidget *dlg_options) {
 
   // Count units
   for (a = 0; a < 12; a++)
-    units+=options->army[0][a];
+    units+=options->army[options->number][a];
 
   // Set widgets
   sprintf(label, "Total: %d", units);
@@ -1024,14 +1024,16 @@ gboolean draw_preview (GtkWidget *dlg_options) {
   int width, height;
   int t_width, t_height;
   int x, y;
-  GdkGC *solid_gc = gdk_gc_new(widget->window);
+  GdkGC *solid_gc;
   preview = gtk_object_get_data(GTK_OBJECT(dlg_options), "preview");
   if (!preview)
     return FALSE;
-
+  if (!widget)
+    return FALSE;
   if (!preview_buf)
     return FALSE;
 
+  solid_gc = gdk_gc_new(widget->window);
   gdk_window_get_size(widget->window, &width, &height);
 
   // Draw background

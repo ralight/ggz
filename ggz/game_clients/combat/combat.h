@@ -358,6 +358,11 @@
 #define CBT_ERROR_MOVE_BIGMOVE -10
 #define CBT_ERROR_MOVE_SCOUT -11
 
+// Invalid options
+#define CBT_ERROR_OPTIONS_FLAGS -12
+#define CBT_ERROR_OPTIONS_MOVING -13
+#define CBT_ERROR_OPTIONS_SIZE -14
+
 // Ok messages
 #define CBT_CHECK_MOVE 1
 #define CBT_CHECK_ATTACK 2
@@ -387,3 +392,4 @@ typedef struct combat_game_struct {
 char *combat_options_string_write(combat_game *, int);
 int combat_options_string_read(char *, combat_game *);
 int combat_check_move(combat_game *, int, int);
+int combat_options_check(combat_game *);
