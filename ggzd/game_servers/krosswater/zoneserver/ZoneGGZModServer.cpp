@@ -344,6 +344,23 @@ void ZoneGGZModServer::hook_event(GGZdMod *ggzdmod, GGZdModEvent event, void* da
 		case GGZDMOD_EVENT_LEAVE:
 			self->game_update(ZoneGGZ::leave, data);
 			break;
+		case GGZDMOD_EVENT_SEAT:
+		case GGZDMOD_EVENT_SPECTATOR_JOIN:
+		case GGZDMOD_EVENT_SPECTATOR_LEAVE:
+		case GGZDMOD_EVENT_SPECTATOR_SEAT:
+		case GGZDMOD_EVENT_SPECTATOR_DATA:
+		case GGZDMOD_EVENT_LOG:
+		case GGZDMOD_EVENT_GAMEREPORT:
+		case GGZDMOD_EVENT_REQ_BOOT:
+		case GGZDMOD_EVENT_REQ_BOT:
+		case GGZDMOD_EVENT_REQ_OPEN:
+		case GGZDMOD_EVENT_REQ_NUM_SEATS:
+		case GGZDMOD_EVENT_ERROR:
+			// not supported
+			break;
+		case GGZDMOD_EVENT_PLAYER_DATA:
+			// handled separately
+			break;
 	}
 }
 

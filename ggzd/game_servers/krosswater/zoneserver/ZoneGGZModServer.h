@@ -25,7 +25,7 @@ class ZoneGGZModServer
 {
 	public:
 		ZoneGGZModServer();
-		~ZoneGGZModServer();
+		virtual ~ZoneGGZModServer();
 		virtual int slotZoneInput(int fd, int i);
 		virtual void slotZoneAI();
 		int zoneMainLoop();
