@@ -67,6 +67,9 @@ void init_data(void)
 	for (i = 0; i < MAX_TABLES; i++)
 		tables.info[i].type_index = -1;
 	
+	for (i = 0; i < MAX_GAME_TYPES; i++)
+		game_types.info[i].enabled = 0;
+
 	
 	/* FIXME: Temporary hack.  This info should be loaded from a file
 	 * or something

@@ -764,17 +764,17 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 
 static int player_list_players(int p_index, int fd)
 {
-	int i, count;
+	int i, count = 0;
 	UserInfo info[MAX_USERS];
 
 	dbg_msg("Handling player list request for player %d", p_index);
 
 	pthread_rwlock_rdlock(&players.lock);
-	count = players.count;
-	for (i = 0; i < count; i++)
-		info[i] = players.info[i];
+	for (i = 0; (i < MAX_USERS && count < players.count); i++)
+		if (players.info[i].fd != -1)
+			info[count++] = players.info[i];
 	pthread_rwlock_unlock(&players.lock);
-
+	
 	if (FAIL(es_write_int(fd, RSP_LIST_PLAYERS)) 
 	    || FAIL(es_write_int(fd, count))) 
 		return (-1);
@@ -792,7 +792,7 @@ static int player_list_players(int p_index, int fd)
 static int player_list_types(int p_index, int fd)
 {
 	char verbose;
-	int i, count;
+	int i, count = 0;
 
 	GameInfo info[MAX_GAME_TYPES];
 
@@ -800,9 +800,9 @@ static int player_list_types(int p_index, int fd)
 		return (-1);
 
 	pthread_rwlock_rdlock(&game_types.lock);
-	count = game_types.count;
-	for (i = 0; i < count; i++)
-		info[i] = game_types.info[i];
+	for (i = 0; (i < MAX_GAME_TYPES && count < game_types.count); i++)
+		if (game_types.info[i].enabled)
+			info[count++] = game_types.info[i];
 	pthread_rwlock_unlock(&game_types.lock);
 
 	if (FAIL(es_write_int(fd, RSP_LIST_TYPES)) 
@@ -841,7 +841,7 @@ static int player_list_tables(int p_index, int fd)
 
 	/* Copy tables of interest to local list */
 	pthread_rwlock_rdlock(&tables.lock);
-	for (i = 0; i < MAX_TABLES; i++) {
+	for (i = 0; (i < MAX_TABLES && count < tables.count); i++) {
 		if (tables.info[i].type_index != -1 
 		    && type_match_table(type, i)) {
 			my_tables[count] = tables.info[i];
