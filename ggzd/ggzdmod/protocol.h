@@ -1,4 +1,4 @@
-/*	$Id: protocol.h 2638 2001-11-03 19:47:04Z bmh $	*/
+/*	$Id: protocol.h 2676 2001-11-05 21:11:37Z jdorje $	*/
 /*
  * File: protocols.h
  * Author: Brent Hendricks
@@ -38,8 +38,8 @@ typedef enum {
 	RSP_GAME_LEAVE,		/**< sent in response to a player leave */
 	MSG_LOG,		/**< a message to log */
 	REQ_GAME_OVER,		/**< sent to tell of a game-over */
-	REQ_SEAT_CHANGE,	/**< sent to request a seat type change */
 /* the following are not implemented */
+	/* REQ_SEAT_CHANGE, */	/**< sent to request a seat type change */
 	/* MSG_STATS, */		/**< sent to tell of players winning/losing */
 } TableToControl;
 

@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 8/28/01
  * Desc: GGZD game module functions
- * $Id: ggzdmod.c 2644 2001-11-04 01:45:17Z jdorje $
+ * $Id: ggzdmod.c 2676 2001-11-05 21:11:37Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -118,7 +118,8 @@ int ggzdmod_handle_log(GGZdmod * ggzdmod)
 	return status;
 }
 
-int ggzdmod_handle_seat_change(GGZdmod * ggzdmod)
+#if 0
+static int ggzdmod_handle_seat_change(GGZdmod * ggzdmod)
 {
 	int seat, status;
 
@@ -134,6 +135,7 @@ int ggzdmod_handle_seat_change(GGZdmod * ggzdmod)
 
 	return 0;
 }
+#endif
 
 int ggzdmod_dispatch(GGZdmod * ggzdmod)
 {
@@ -175,12 +177,7 @@ int ggzdmod_dispatch(GGZdmod * ggzdmod)
 	case MSG_LOG:
 		status = ggzdmod_handle_log(ggzdmod);
 		break;
-
-	case REQ_SEAT_CHANGE:
-		status = ggzdmod_handle_seat_change(ggzdmod);
-		break;
-
-		/* case MSG_STATS: */
+		
 	default:
 		dbg_msg(GGZ_DBG_PROTOCOL, "Table sent unimplemented op %d",
 			op);

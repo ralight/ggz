@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2667 2001-11-05 00:28:34Z jdorje $
+ * $Id: ggzdmod.c 2676 2001-11-05 21:11:37Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -617,8 +617,6 @@ static int handle_ggzdmod_data(GGZdMod * mod)
 			ggz_req_gameover(ggzdmod);
 		case MSG_LOG:
 			ggz_log(ggzdmod);
-		case REQ_SEAT_CHANGE:
-			/* case MSG_STATS: */
 		default:
 			break;
 		}
