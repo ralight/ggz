@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 2918 2001-12-17 10:11:39Z jdorje $
+ * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include <easysock.h>
+#include <ggz.h>
 #include <ggzmod.h>
 
 #include <game.h>
@@ -77,7 +77,7 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
 	int op;
 
-	if (es_read_int(game.fd, &op) < 0) {
+	if (ggz_read_int(game.fd, &op) < 0) {
 		/* FIXME: do something here...*/
 		return;
 	}
@@ -126,7 +126,7 @@ int get_seat(void)
 {
 	game_status(_("Getting seat number"));
 
-	if (es_read_int(game.fd, &game.num) < 0)
+	if (ggz_read_int(game.fd, &game.num) < 0)
 		return -1;
 	
 	return 0;
@@ -139,11 +139,11 @@ int get_players(void)
 
 	game_status(_("Getting player names"));
 	for (i = 0; i < 2; i++) {
-		if (es_read_int(game.fd, &game.seats[i]) < 0)
+		if (ggz_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
 		
 		if (game.seats[i] != GGZ_SEAT_OPEN) {
-			if (es_read_string(game.fd, (char*)&game.names[i], 17) < 0)
+			if (ggz_read_string(game.fd, (char*)&game.names[i], 17) < 0)
 				return -1;
 			game_status("Player %d named: %s", i, game.names[i]);
 		}
@@ -159,7 +159,7 @@ int get_opponent_move(void)
 
 	game_status(_("Getting opponent's move"));
 	
-	if (es_read_int(game.fd, &move) < 0)
+	if (ggz_read_int(game.fd, &move) < 0)
 		return -1;
 
 	game.board[move] = (game.num == 0 ? 'o' : 'x');	
@@ -176,13 +176,13 @@ int get_sync(void)
 	
 	game_status(_("Getting re-sync"));
 	
-	if (es_read_char(game.fd, &turn) < 0)
+	if (ggz_read_char(game.fd, &turn) < 0)
 		return -1;
 
 	game_status(_("Player %d's turn"), turn);
 	
         for (i = 0; i < 9; i++) {
-		if (es_read_char(game.fd, &space) < 0)
+		if (ggz_read_char(game.fd, &space) < 0)
 			return -1;
 		game_status(_("Read a %d "), space);
 		if (space >= 0)
@@ -200,7 +200,7 @@ int get_gameover(void)
 	
 	game_status(_("Game over"));
 
-	if (es_read_char(game.fd, &winner) < 0)
+	if (ggz_read_char(game.fd, &winner) < 0)
 		return -1;
 	
 	switch (winner) {
@@ -231,8 +231,8 @@ void game_init(void)
 int send_my_move(void)
 {
 	game_status(_("Sending my move: %d"), game.move);
-	if (es_write_int(game.fd, TTT_SND_MOVE) < 0
-	    || es_write_int(game.fd, game.move) < 0)
+	if (ggz_write_int(game.fd, TTT_SND_MOVE) < 0
+	    || ggz_write_int(game.fd, game.move) < 0)
 		return -1;
 
 	game.state = STATE_WAIT;
@@ -243,7 +243,7 @@ int send_my_move(void)
 int send_options(void) 
 {
 	game_status(_("Sending NULL options"));
-	return (es_write_int(game.fd, 0));
+	return (ggz_write_int(game.fd, 0));
 }
 
 
@@ -251,7 +251,7 @@ int get_move_status(void)
 {
 	char status;
 	
-	if (es_read_char(game.fd, &status) < 0)
+	if (ggz_read_char(game.fd, &status) < 0)
 		return -1;
 
 	switch(status) {

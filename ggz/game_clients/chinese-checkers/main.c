@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Main loop and supporting logic
- * $Id: main.c 2918 2001-12-17 10:11:39Z jdorje $
+ * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -32,11 +32,11 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#include <ggz.h>
 #include <ggzmod.h>
 
 #include "main.h"
 #include "game.h"
-#include "easysock.h"
 #include "protocol.h"
 #include "display.h"
 
@@ -69,7 +69,7 @@ void main_io_handler(gpointer data, gint source, GdkInputCondition cond)
 {
 	int op, status;
 
-	if(es_read_int(game.fd, &op) < 0) {
+	if(ggz_read_int(game.fd, &op) < 0) {
 		/* FIXME: do something here... */
 		return;
 	}
@@ -113,8 +113,8 @@ void main_io_handler(gpointer data, gint source, GdkInputCondition cond)
 
 static int get_seat(void)
 {
-	if(es_read_int(game.fd, &game.players) < 0
-	   || es_read_int(game.fd, &game.me) < 0)
+	if(ggz_read_int(game.fd, &game.players) < 0
+	   || ggz_read_int(game.fd, &game.me) < 0)
 		return -1;
 
 	game_init_board();
@@ -129,14 +129,14 @@ static int get_players(void)
 	static int firsttime=1;
 	char *tmp;
 
-	if(es_read_int(game.fd, &game.players) < 0)
+	if(ggz_read_int(game.fd, &game.players) < 0)
 		return -1;
 	for(i=0; i<game.players; i++) {
 		old = game.seats[i];
-		if(es_read_int(game.fd, &game.seats[i]) < 0)
+		if(ggz_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
 		if(game.seats[i] != GGZ_SEAT_OPEN) {
-			if(es_read_string(game.fd, (char*)&game.names[i], 17)<0)
+			if(ggz_read_string(game.fd, (char*)&game.names[i], 17)<0)
 				return -1;
 			display_set_name(i, game.names[i]);
 			if(old == GGZ_SEAT_OPEN && !firsttime) {
@@ -166,11 +166,11 @@ static int get_opponent_move(void)
 	int	seat;
 	char	ro, co, rd, cd;
 
-	if(es_read_int(game.fd, &seat) < 0
-	   || es_read_char(game.fd, &ro) < 0
-	   || es_read_char(game.fd, &co) < 0
-	   || es_read_char(game.fd, &rd) < 0
-	   || es_read_char(game.fd, &cd) < 0)
+	if(ggz_read_int(game.fd, &seat) < 0
+	   || ggz_read_char(game.fd, &ro) < 0
+	   || ggz_read_char(game.fd, &co) < 0
+	   || ggz_read_char(game.fd, &rd) < 0
+	   || ggz_read_char(game.fd, &cd) < 0)
 		return -1;
 
 	game_opponent_move(seat, ro, co, rd, cd);
@@ -183,7 +183,7 @@ static int get_move_response(void)
 {
 	char	status;
 
-	if(es_read_char(game.fd, &status) < 0)
+	if(ggz_read_char(game.fd, &status) < 0)
 		return -1;
 
 	switch(status) {
@@ -192,7 +192,7 @@ static int get_move_response(void)
 			break;
 		case CC_ERR_STATE:
 			display_statusbar("Cannot accept move until table is full");
-			es_write_int(game.fd, CC_REQ_SYNC);
+			ggz_write_int(game.fd, CC_REQ_SYNC);
 			game.my_turn = 0;
 			break;
 		default:
@@ -210,7 +210,7 @@ static int get_gameover_msg(void)
 	char winner;
 	char *msg;
 
-	if(es_read_char(game.fd, &winner) < 0)
+	if(ggz_read_char(game.fd, &winner) < 0)
 		return -1;
 
 	if(winner == game.me)
@@ -232,7 +232,7 @@ static int get_sync_data(void)
 
 	for(i=0; i<17; i++)
 		for(j=0; j<25; j++)
-			if(es_read_char(game.fd, &game.board[i][j]) < 0)
+			if(ggz_read_char(game.fd, &game.board[i][j]) < 0)
 				return -1;
 
 	display_refresh_board();

@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 3029 2002-01-09 12:38:32Z dr_maux $
+ * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -36,10 +36,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include <easysock.h>
+#include <ggz.h>
 #include <ggzmod.h>
 
-#include "ggz.h"
 #include "dlg_main.h"
 #include "dlg_opt.h"
 #include "dlg_new.h"
@@ -100,7 +99,7 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
 	int op, status;
 
-	if(es_read_int(game.fd, &op) < 0) {
+	if(ggz_read_int(game.fd, &op) < 0) {
 		/* FIXME: do something here... */
 		return;
 	}
@@ -197,9 +196,9 @@ void game_init(void)
 
 int send_options(void)
 {
-	if(es_write_int(game.fd, DOTS_SND_OPTIONS) < 0
-	   || es_write_char(game.fd, board_width) < 0
-	   || es_write_char(game.fd, board_height) < 0)
+	if(ggz_write_int(game.fd, DOTS_SND_OPTIONS) < 0
+	   || ggz_write_char(game.fd, board_width) < 0
+	   || ggz_write_char(game.fd, board_height) < 0)
 		return -1;
 	return 0;
 }
@@ -207,8 +206,8 @@ int send_options(void)
 
 static int get_options(void)
 {
-	if(es_read_char(game.fd, &board_width) < 0
-	   || es_read_char(game.fd, &board_height) < 0)
+	if(ggz_read_char(game.fd, &board_width) < 0
+	   || ggz_read_char(game.fd, &board_height) < 0)
 		return -1;
 	return 0;
 }
@@ -216,7 +215,7 @@ static int get_options(void)
 
 static int get_seat(void)
 {
-	if(es_read_int(game.fd, &game.me) < 0)
+	if(ggz_read_int(game.fd, &game.me) < 0)
 		return -1;
 	game.opponent = (game.me+1)%2;
 	return 0;
@@ -233,10 +232,10 @@ static int get_players(void)
 	frame[1] = gtk_object_get_data(GTK_OBJECT(main_win), "frame_right");
 
 	for(i=0; i<2; i++) {
-		if(es_read_int(game.fd, &game.seats[i]) < 0)
+		if(ggz_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
 		if(game.seats[i] != GGZ_SEAT_OPEN) {
-			if(es_read_string(game.fd, (char*)&game.names[i], 17)<0)
+			if(ggz_read_string(game.fd, (char*)&game.names[i], 17)<0)
 				return -1;
 			temp = g_strdup_printf("   %s   ", game.names[i]);
 			gtk_frame_set_label(GTK_FRAME(frame[i]), game.names[i]);
@@ -271,12 +270,12 @@ static int get_move_status(void)
 	int i;
 	char t_x, t_y;
 
-	if(es_read_char(game.fd, &status) < 0
-	   || es_read_char(game.fd, &t_s) < 0)
+	if(ggz_read_char(game.fd, &status) < 0
+	   || ggz_read_char(game.fd, &t_s) < 0)
 		return -1;
 	for(i=0; i<t_s; i++) {
-		if(es_read_char(game.fd, &t_x) < 0
-		   || es_read_char(game.fd, &t_y) < 0)
+		if(ggz_read_char(game.fd, &t_x) < 0
+		   || ggz_read_char(game.fd, &t_y) < 0)
 			return -1;
 	}
 
@@ -293,21 +292,21 @@ static int get_sync_info(void)
 	gchar *text;
 	GtkWidget *l1, *l2;
 
-	if(es_read_char(game.fd, &game.move) < 0
-	   || es_read_int(game.fd, &game.score[0]) < 0
-	   || es_read_int(game.fd, &game.score[1]) < 0)
+	if(ggz_read_char(game.fd, &game.move) < 0
+	   || ggz_read_int(game.fd, &game.score[0]) < 0
+	   || ggz_read_int(game.fd, &game.score[1]) < 0)
 		return -1;
 	for(i=0; i<board_width; i++)
 		for(j=0; j<board_height-1; j++)
-			if(es_read_char(game.fd, &vert_board[i][j]) < 0)
+			if(ggz_read_char(game.fd, &vert_board[i][j]) < 0)
 				return -1;
 	for(i=0; i<board_width-1; i++)
 		for(j=0; j<board_height; j++)
-			if(es_read_char(game.fd, &horz_board[i][j]) < 0)
+			if(ggz_read_char(game.fd, &horz_board[i][j]) < 0)
 				return -1;
 	for(i=0; i<board_width-1; i++)
 		for(j=0; j<board_height-1; j++)
-			if(es_read_char(game.fd, &owners_board[i][j]) < 0)
+			if(ggz_read_char(game.fd, &owners_board[i][j]) < 0)
 				return -1;
 
 	board_redraw();
@@ -334,7 +333,7 @@ static int get_gameover_status(void)
 	gchar *tstr;
 	GtkWidget *lbl_winner, *lbl_score;
 
-	if(es_read_char(game.fd, &status) < 0)
+	if(ggz_read_char(game.fd, &status) < 0)
 		return -1;
 
 	/* Create the New Game dialog */
@@ -384,5 +383,5 @@ void handle_req_newgame(void)
 	game.got_players = 1;
 
 	/* Send a game request to the server */
-	es_write_int(game.fd, DOTS_REQ_NEWGAME);
+	ggz_write_int(game.fd, DOTS_REQ_NEWGAME);
 }

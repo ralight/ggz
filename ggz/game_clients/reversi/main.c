@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 2918 2001-12-17 10:11:39Z jdorje $
+ * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -31,7 +31,7 @@
 #include <sys/un.h>
 #include <gtk/gtk.h>
 
-#include <easysock.h>
+#include <ggz.h>
 #include <ggzmod.h>
 
 #include "game.h"
@@ -75,7 +75,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 	int op = -1;
 
 	// Read the fd
-	if (es_read_int(game.fd, &op) < 0) {
+	if (ggz_read_int(game.fd, &op) < 0) {
 		printf("Couldn't read the game fd\n");
 		return;
 	}
@@ -137,7 +137,7 @@ void game_init() {
 
 int get_seat() {
 
-	if (es_read_int(game.fd, &game.num) < 0) 
+	if (ggz_read_int(game.fd, &game.num) < 0)
 		return -1;
 
 	game.num = SEAT2PLAYER(game.num);
@@ -151,12 +151,12 @@ int get_players() {
   int i;
 	 
 	for (i = 0; i < 2; i++) {
-		if (es_read_int(game.fd, &game.seats[i]) < 0)
+		if (ggz_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
 
 #define GGZ_SEAT_OPEN -1 /* FIXME */	
 		if (game.seats[i] != GGZ_SEAT_OPEN) {
-			if (es_read_string(game.fd, (char*)&game.names[i], 17) < 0)
+			if (ggz_read_string(game.fd, (char*)&game.names[i], 17) < 0)
 				return -1;
 			game_status("Player %d named: %s", i, game.names[i]);
 		}
@@ -170,7 +170,7 @@ int get_players() {
 int get_move() {
 	int move;
 
-	if (es_read_int(game.fd, &move) < 0)
+	if (ggz_read_int(game.fd, &move) < 0)
 		return -1;
 
 	if (move == RVR_ERROR_CANTMOVE) {
@@ -242,7 +242,7 @@ int game_check_direction(int player, int vx, int vy, int x, int y) {
 }
 
 void send_my_move(int move) {
-	if (es_write_int(game.fd, RVR_REQ_MOVE) < 0 || es_write_int(game.fd, move) < 0) {
+	if (ggz_write_int(game.fd, RVR_REQ_MOVE) < 0 || ggz_write_int(game.fd, move) < 0) {
 		game_status("Can't send move!");
 		return;
 	}
@@ -250,7 +250,7 @@ void send_my_move(int move) {
 }
 
 int request_sync() {
-	if (es_write_int(game.fd, RVR_REQ_SYNC) < 0) {
+	if (ggz_write_int(game.fd, RVR_REQ_SYNC) < 0) {
 		// Not that someone would check this return value, but...
 		return -1;
 	} else {
@@ -263,10 +263,10 @@ int get_sync() {
 	char fboard[64];
 	char fturn;
 	int i;
-	if (es_read_char(game.fd, &fturn) < 0)
+	if (ggz_read_char(game.fd, &fturn) < 0)
 		return -1;
 	for (i = 0; i < 64; i++) {
-		if (es_read_char(game.fd, &fboard[i]) < 0)
+		if (ggz_read_char(game.fd, &fboard[i]) < 0)
 			return -1;
 	}
 	// Ok, everything worked well!

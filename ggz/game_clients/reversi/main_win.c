@@ -4,6 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
+ * $Id: main_win.c 3174 2002-01-21 08:09:42Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -36,15 +37,14 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
-
 #include <ggz.h>
+
 #include <game.h>
 #include <support.h>
 #include <options_dlg.h>
 #include <black.xpm>
 #include <dot.xpm>
 #include <white.xpm>
-#include <easysock.h>
 
 #include "about_dlg.h"
 
@@ -101,7 +101,7 @@ void play_again(GtkButton *button, gpointer user_data) {
 		return;
 	}
 	// Send to server
-	es_write_int(game.fd, RVR_REQ_AGAIN);
+	ggz_write_int(game.fd, RVR_REQ_AGAIN);
 
 	// Wait for time to start
 	game_init();
@@ -686,7 +686,7 @@ int get_gameover() {
 	int winner;
 	GtkWidget *button;
 
-	if (es_read_int(game.fd, &winner) < 0)
+	if (ggz_read_int(game.fd, &winner) < 0)
 		return -1;
 
 	// Check if it's ok

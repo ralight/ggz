@@ -4,6 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
+ * $Id: game.c 3174 2002-01-21 08:09:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -28,17 +29,18 @@
 
 #include <gtk/gtk.h>
 
+#include <ggz.h>
+
 #include "main.h"
 #include "game.h"
-#include "easysock.h"
 
 struct game_t game;
 
 
 void game_send_bid(int bid)
 {
-	es_write_int(game.fd, LP_SND_BID);
-	es_write_char(game.fd, bid);
+	ggz_write_int(game.fd, LP_SND_BID);
+	ggz_write_char(game.fd, bid);
 
 	game.bid[game.me] = bid;
 
@@ -48,8 +50,8 @@ void game_send_bid(int bid)
 
 void game_play_card(int card)
 {
-	es_write_int(game.fd, LP_SND_PLAY);
-	es_write_char(game.fd, (char)card);
+	ggz_write_int(game.fd, LP_SND_PLAY);
+	ggz_write_char(game.fd, (char)card);
 
 	statusbar_message("Sending play to server");
 }
@@ -71,8 +73,8 @@ void game_handle_table_click(char card)
 		trump = 3;
 
 	/* Send out our choice of trump */
-	es_write_int(game.fd, LP_SND_TRUMP);
-	es_write_char(game.fd, trump);
+	ggz_write_int(game.fd, LP_SND_TRUMP);
+	ggz_write_char(game.fd, trump);
 
 	statusbar_message("Sending trump selection to server");
 }

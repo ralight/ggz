@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.c 3033 2002-01-09 12:47:10Z dr_maux $
+ * $Id: game.c 3174 2002-01-21 08:09:42Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -36,10 +36,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include <easysock.h>
+#include <ggz.h>
 #include <ggzmod.h>
 
-#include "ggz.h"
 #include "game.h"
 #include "display.h"
 #include "main.h"
@@ -253,11 +252,11 @@ static int game_make_move(int ro, int co, int rd, int cd)
 	game.board[ro][co] = 0;
 	game.board[rd][cd] = game.me+1;
 
-	if(es_write_int(game.fd, CC_SND_MOVE) < 0
-	   || es_write_char(game.fd, ro) < 0
-	   || es_write_char(game.fd, co) < 0
-	   || es_write_char(game.fd, rd) < 0
-	   || es_write_char(game.fd, cd) < 0)
+	if(ggz_write_int(game.fd, CC_SND_MOVE) < 0
+	   || ggz_write_char(game.fd, ro) < 0
+	   || ggz_write_char(game.fd, co) < 0
+	   || ggz_write_char(game.fd, rd) < 0
+	   || ggz_write_char(game.fd, cd) < 0)
 		/* FIXME: Ugly way to die */
 		exit(1);
 

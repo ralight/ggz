@@ -4,6 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Functions to get cards from server
+ * $Id: hand.c 3174 2002-01-21 08:09:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -28,7 +29,7 @@
 
 #include <gtk/gtk.h>
 
-#include <easysock.h>
+#include <ggz.h>
 
 #include "game.h"
 #include "table.h"
@@ -49,12 +50,12 @@ int hand_read_hand(void)
 	hand.selected_card = -1;
 
 	/* First find out how many cards in this hand */
-	if(es_read_char(game.fd, &hand.hand_size) < 0)
+	if(ggz_read_char(game.fd, &hand.hand_size) < 0)
 		return -1;
 
 	/* Read in all the card values */
 	for(i=0; i<hand.hand_size; i++)
-		if(es_read_char(game.fd, &hand.card[i]) < 0)
+		if(ggz_read_char(game.fd, &hand.card[i]) < 0)
 			return -1;
 
 	/* Everyone got dealt this many cards */

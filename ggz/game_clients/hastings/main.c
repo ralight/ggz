@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 3063 2002-01-11 17:11:15Z dr_maux $
+ * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -33,7 +33,7 @@
 #include <unistd.h>
 
 /* GGZ includes */
-#include <easysock.h>
+#include <ggz.h>
 #include <ggzmod.h>
 
 /* Hastings includes */
@@ -75,7 +75,7 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
 	int op;
 
-	if (es_read_int(game.fd, &op) < 0)
+	if (ggz_read_int(game.fd, &op) < 0)
 	{
 		/* FIXME: do something here...*/
 		return;
@@ -120,7 +120,7 @@ int get_seat(void)
 {
 	game_status(_("Getting seat number"));
 
-	if (es_read_int(game.fd, &game.num) < 0) return -1;
+	if (ggz_read_int(game.fd, &game.num) < 0) return -1;
 
 	game_status(_("Received seat number: %i"), game.num);
 
@@ -138,17 +138,17 @@ int get_players(void)
 	game_status(_("Getting player names"));
 
 	/* Number unknown; this will change now: */
-	if (es_read_int(game.fd, &game.playernum) < 0) return -1;
+	if (ggz_read_int(game.fd, &game.playernum) < 0) return -1;
 	printf("Detected %i players!!\n", game.playernum);
 
 	/* Receive 8 players as a maximum, or less */
 	for (i = 0; i < game.playernum; i++)
 	{
-		if (es_read_int(game.fd, &game.seats[i]) < 0) return -1;
+		if (ggz_read_int(game.fd, &game.seats[i]) < 0) return -1;
 
 		if(game.seats[i] != GGZ_SEAT_OPEN)
 		{
-			if (es_read_string(game.fd, (char*)&game.knightnames[i], 17) < 0) return -1;
+			if (ggz_read_string(game.fd, (char*)&game.knightnames[i], 17) < 0) return -1;
 			game_status(_("Player %d named: %s"), i, game.knightnames[i]);
 		}
 	}
@@ -164,11 +164,11 @@ int get_opponent_move(void)
 {
 	game_status(_("Getting opponent's move"));
 
-	if ((es_read_int(game.fd, &game.num) < 0)
-	|| (es_read_int(game.fd, &game.move_src_x) < 0)
-	|| (es_read_int(game.fd, &game.move_src_y) < 0)
-	|| (es_read_int(game.fd, &game.move_dst_x) < 0)
-	|| (es_read_int(game.fd, &game.move_dst_y) < 0))
+	if ((ggz_read_int(game.fd, &game.num) < 0)
+	|| (ggz_read_int(game.fd, &game.move_src_x) < 0)
+	|| (ggz_read_int(game.fd, &game.move_src_y) < 0)
+	|| (ggz_read_int(game.fd, &game.move_dst_x) < 0)
+	|| (ggz_read_int(game.fd, &game.move_dst_y) < 0))
 		return -1;
 
 	/* Apply move: Clear old position, move to new one */
@@ -186,7 +186,7 @@ int request_sync(void)
 {
 	game_status(_("Requesting synchronization"));
 
-	es_write_int(game.fd, HASTINGS_REQ_SYNC);
+	ggz_write_int(game.fd, HASTINGS_REQ_SYNC);
 
 	return 0;
 }
@@ -199,21 +199,21 @@ int get_sync(void)
 
 	game_status(_("Getting re-sync"));
 
-	if (es_read_int(game.fd, &game.num) < 0) return -1;
+	if (ggz_read_int(game.fd, &game.num) < 0) return -1;
 
 	game_status(_("Player %d's turn"), game.num);
 
 	for (i = 0; i < 6; i++)
 		for (j = 0; j < 19; j++)
 		{
-			if (es_read_char(game.fd, &space) < 0) return -1;
+			if (ggz_read_char(game.fd, &space) < 0) return -1;
 			game.board[i][j] = space;
 		}
 
 	for (i = 0; i < 6; i++)
 		for (j = 0; j < 19; j++)
 		{
-			if (es_read_char(game.fd, &space) < 0) return -1;
+			if (ggz_read_char(game.fd, &space) < 0) return -1;
 			game.boardmap[i][j] = space;
 		}
 
@@ -229,7 +229,7 @@ int get_gameover(void)
 
 	game_status(_("Game over"));
 
-	if (es_read_char(game.fd, &winner) < 0) return -1;
+	if (ggz_read_char(game.fd, &winner) < 0) return -1;
 
 	switch (winner)
 	{
@@ -249,7 +249,7 @@ void game_init(void)
 
 	game_status(_("Requesting game initialization"));
 
-	es_write_int(game.fd, HASTINGS_REQ_INIT);
+	ggz_write_int(game.fd, HASTINGS_REQ_INIT);
 }
 
 /* Forwarding my move to the Hastings server */
@@ -258,11 +258,11 @@ int send_my_move(void)
 	game_status(_("Sending my move: %d/%d to %d/%d"),
 		game.move_src_x, game.move_src_y, game.move_dst_x, game.move_dst_y);
 
-	if ((es_write_int(game.fd, HASTINGS_SND_MOVE) < 0)
-	    || (es_write_int(game.fd, game.move_src_x) < 0)
-	    || (es_write_int(game.fd, game.move_src_y) < 0)
-	    || (es_write_int(game.fd, game.move_dst_x) < 0)
-	    || (es_write_int(game.fd, game.move_dst_y) < 0))
+	if ((ggz_write_int(game.fd, HASTINGS_SND_MOVE) < 0)
+	    || (ggz_write_int(game.fd, game.move_src_x) < 0)
+	    || (ggz_write_int(game.fd, game.move_src_y) < 0)
+	    || (ggz_write_int(game.fd, game.move_dst_x) < 0)
+	    || (ggz_write_int(game.fd, game.move_dst_y) < 0))
 		return -1;
 
 	game.state = STATE_WAIT;
@@ -274,7 +274,7 @@ int send_my_move(void)
 int send_options(void)
 {
 	game_status("Sending NULL options");
-	return (es_write_int(game.fd, 0));
+	return (ggz_write_int(game.fd, 0));
 }
 
 /* Important: Know how the server has responded to move request. */
@@ -283,7 +283,7 @@ int get_move_status(void)
 {
 	char status;
 
-	if (es_read_char(game.fd, &status) < 0) return -1;
+	if (ggz_read_char(game.fd, &status) < 0) return -1;
 
 	switch(status)
 	{

@@ -4,6 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Routines to manipulate the CtD board
+ * $Id: game.c 3174 2002-01-21 08:09:42Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -30,10 +31,10 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
-#include "ggz.h"
+#include <ggz.h>
+
 #include "dlg_main.h"
 #include "support.h"
-#include "easysock.h"
 #include "main.h"
 #include "game.h"
 
@@ -246,9 +247,9 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 		update_rect.y = y1;
 		update_rect.width = 1;
 		update_rect.height = dot_height+1;
-		if(es_write_int(game.fd, DOTS_SND_MOVE_V) < 0
-		   || es_write_char(game.fd, line_x) < 0
-		   || es_write_char(game.fd, top) < 0) {
+		if(ggz_write_int(game.fd, DOTS_SND_MOVE_V) < 0
+		   || ggz_write_char(game.fd, line_x) < 0
+		   || ggz_write_char(game.fd, top) < 0) {
 			fprintf(stderr, "Lost server connection\n");
 			exit(1);
 		}
@@ -273,9 +274,9 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 		update_rect.y = y1;
 		update_rect.width = dot_width+1;
 		update_rect.height = 1;
-		if(es_write_int(game.fd, DOTS_SND_MOVE_H) < 0
-		   || es_write_char(game.fd, left) < 0
-		   || es_write_char(game.fd, line_y) < 0) {
+		if(ggz_write_int(game.fd, DOTS_SND_MOVE_H) < 0
+		   || ggz_write_char(game.fd, left) < 0
+		   || ggz_write_char(game.fd, line_y) < 0) {
 			fprintf(stderr, "Lost server connection\n");
 			exit(1);
 		}
@@ -381,13 +382,13 @@ gint8 board_opponent_move(guint8 dir)
 	char t_s, t_x, t_y;
 	int i;
 
-	if(es_read_char(game.fd, &x) < 0
-	   || es_read_char(game.fd, &y) < 0
-	   || es_read_char(game.fd, &t_s) < 0)
+	if(ggz_read_char(game.fd, &x) < 0
+	   || ggz_read_char(game.fd, &y) < 0
+	   || ggz_read_char(game.fd, &t_s) < 0)
 		return -1;
 	for(i=0; i<t_s; i++) {
-		if(es_read_char(game.fd, &t_x) < 0
-		   || es_read_char(game.fd, &t_y) < 0)
+		if(ggz_read_char(game.fd, &t_x) < 0
+		   || ggz_read_char(game.fd, &t_y) < 0)
 			return -1;
 	}
 

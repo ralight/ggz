@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2918 2001-12-17 10:11:39Z jdorje $
+ * $Id: main.c 3174 2002-01-21 08:09:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -36,7 +36,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include <easysock.h>
+#include <ggz.h>
 #include <ggzmod.h>
 
 #include "support.h"
@@ -106,7 +106,7 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 	int op, status;
 	int i;
 
-	if(es_read_int(game.fd, &op) < 0) {
+	if(ggz_read_int(game.fd, &op) < 0) {
 		/* FIXME: do something here... */
 		return;
 	}
@@ -204,7 +204,7 @@ static void game_init(void)
 
 static int get_seat(void)
 {
-	if(es_read_int(game.fd, &game.me) < 0)
+	if(ggz_read_int(game.fd, &game.me) < 0)
 		return -1;
 	return 0;
 }
@@ -217,10 +217,10 @@ static int get_players(void)
 	char t_name[17];
 
 	for(i=0; i<4; i++) {
-		if(es_read_int(game.fd, &game.seats[i]) < 0)
+		if(ggz_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
 		if(game.seats[i] != GGZ_SEAT_OPEN) {
-			if(es_read_string(game.fd, (char *)&t_name, 17) < 0)
+			if(ggz_read_string(game.fd, (char *)&t_name, 17) < 0)
 				return -1;
 			if(i != game.me && game.got_players
 			   &&  strcmp(t_name, game.names[i])) {
@@ -264,12 +264,12 @@ static int get_sync_info(void)
 	char cur_table[4];
 
 	/* Receive game turn */
-	if(es_read_char(game.fd, &tosschar) < 0)
+	if(ggz_read_char(game.fd, &tosschar) < 0)
 		return -1;
 
 	/* Receive scores from the server */
 	for(i=0; i<4; i++) {
-		if(es_read_int(game.fd, &game.score[i]) < 0)
+		if(ggz_read_int(game.fd, &game.score[i]) < 0)
 			return -1;
 		table_set_score(i, game.score[i]);
 	}
@@ -279,7 +279,7 @@ static int get_sync_info(void)
 		return -1;
 
 	/* Get the server's game state */
-	if(es_read_char(game.fd, &state) < 0)
+	if(ggz_read_char(game.fd, &state) < 0)
 		return -1;
 
 	/* Get info based on state */
@@ -294,47 +294,47 @@ static int get_sync_info(void)
 			/* Can't occur */
 			break;
 		case LP_SERVER_GET_TRUMP:
-			if(es_read_char(game.fd, &game.dealer) < 0)
+			if(ggz_read_char(game.fd, &game.dealer) < 0)
 				return -1;
 
 			break;
 		case LP_SERVER_BIDDING:
-			if(es_read_char(game.fd, &game.dealer) < 0
-			   || es_read_char(game.fd, &game.trump_suit) < 0)
+			if(ggz_read_char(game.fd, &game.dealer) < 0
+			   || ggz_read_char(game.fd, &game.trump_suit) < 0)
 				return -1;
 
 			table_set_trump();
 
 			/* Get all four bids */
 			for(i=0; i<4; i++) {
-				if(es_read_int(game.fd, &game.bid[i]) < 0)
+				if(ggz_read_int(game.fd, &game.bid[i]) < 0)
 					return -1;
 				table_set_bid(i, game.bid[i]);
 			}
 
 			break;
 		case LP_SERVER_PLAYING:
-			if(es_read_char(game.fd, &game.dealer) < 0
-			   || es_read_char(game.fd, &tosschar) < 0
-			   || es_read_char(game.fd, &game.trump_suit) < 0
-			   || es_read_char(game.fd, &game.lead) < 0)
+			if(ggz_read_char(game.fd, &game.dealer) < 0
+			   || ggz_read_char(game.fd, &tosschar) < 0
+			   || ggz_read_char(game.fd, &game.trump_suit) < 0
+			   || ggz_read_char(game.fd, &game.lead) < 0)
 				return -1;
 
 			table_set_trump();
 
 			/* Get all four bids, trick counts and cards on table */
 			for(i=0; i<4; i++) {
-				if(es_read_int(game.fd, &game.bid[i]) < 0)
+				if(ggz_read_int(game.fd, &game.bid[i]) < 0)
 					return -1;
 				table_set_bid(i, game.bid[i]);
 			}
 			for(i=0; i<4; i++) {
-				if(es_read_int(game.fd, &game.tricks[i]) < 0)
+				if(ggz_read_int(game.fd, &game.tricks[i]) < 0)
 					return -1;
 				table_set_tricks(i, game.tricks[i]);
 			}
 			for(i=0; i<4; i++)
-				if(es_read_char(game.fd, &cur_table[i]) < 0)
+				if(ggz_read_char(game.fd, &cur_table[i]) < 0)
 					return -1;
 
 			/* Display the cards on the table */
@@ -356,7 +356,7 @@ static int get_gameover_status(void)
 	char winner;
 	char *t_str;
 
-	if(es_read_char(game.fd, &winner) < 0)
+	if(ggz_read_char(game.fd, &winner) < 0)
 		return -1;
 
 	t_str = g_strdup_printf("%s won the game", game.names[(int)winner]);
@@ -374,7 +374,7 @@ static void handle_req_newgame(void)
 	game_init();
 
 	/* Send a game request to the server */
-	es_write_int(game.fd, LP_REQ_NEWGAME);
+	ggz_write_int(game.fd, LP_REQ_NEWGAME);
 }
 
 
@@ -397,7 +397,7 @@ static int get_bid_status(void)
 {
 	char status;
 
-	if(es_read_char(game.fd, &status) < 0)
+	if(ggz_read_char(game.fd, &status) < 0)
 		return -1;
 
 	if(status == 0) {
@@ -418,7 +418,7 @@ static int get_trump_status(void)
 {
 	char status;
 
-	if(es_read_char(game.fd, &status) < 0)
+	if(ggz_read_char(game.fd, &status) < 0)
 		return -1;
 
 	if(status == 0) {
@@ -439,8 +439,8 @@ static int get_player_bid(void)
 	char bid;
 	char *t_str;
 
-	if(es_read_char(game.fd, &cnum) < 0
-	   || es_read_char(game.fd, &bid) < 0)
+	if(ggz_read_char(game.fd, &cnum) < 0
+	   || ggz_read_char(game.fd, &bid) < 0)
 		return -1;
 	num = cnum;
 
@@ -459,7 +459,7 @@ static int get_player_bid(void)
 
 static int get_trump_suit(void)
 {
-	if(es_read_char(game.fd, &game.trump_suit) < 0)
+	if(ggz_read_char(game.fd, &game.trump_suit) < 0)
 		return -1;
 
 	table_set_trump();
@@ -473,7 +473,7 @@ static int get_play_status(void)
 	char *msg;
 	int card;
 
-	if(es_read_char(game.fd, &status) < 0)
+	if(ggz_read_char(game.fd, &status) < 0)
 		return -1;
 
 	if(status == 0) {
@@ -520,8 +520,8 @@ static int get_opponent_play(void)
 {
 	char p_num, card;
 
-	if(es_read_char(game.fd, &p_num) < 0
-	   || es_read_char(game.fd, &card) < 0)
+	if(ggz_read_char(game.fd, &p_num) < 0
+	   || ggz_read_char(game.fd, &card) < 0)
 		return -1;
 
 	if(game.state == LP_STATE_ANIM)
@@ -543,7 +543,7 @@ static int get_trick_winner(void)
 	if(game.state == LP_STATE_ANIM)
 		table_animation_zip(TRUE);
 
-	if(es_read_char(game.fd, &p_num) < 0)
+	if(ggz_read_char(game.fd, &p_num) < 0)
 		return -1;
 
 	table_set_tricks(p_num, ++game.tricks[(int)p_num]);
@@ -569,7 +569,7 @@ static int get_current_scores(void)
 	int i;
 
 	for(i=0; i<4; i++) {
-		if(es_read_int(game.fd, &game.score[i]) < 0)
+		if(ggz_read_int(game.fd, &game.score[i]) < 0)
 			return -1;
 		table_set_score(i, game.score[i]);
 	}
@@ -580,7 +580,7 @@ static int get_current_scores(void)
 
 static int get_dealer(void)
 {
-	if(es_read_char(game.fd, &game.dealer) < 0)
+	if(ggz_read_char(game.fd, &game.dealer) < 0)
 		return -1;
 
 	table_set_dealer();

@@ -4,6 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
+ * $Id: game.c 3174 2002-01-21 08:09:42Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -22,8 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <easysock.h>
-#include <ggzcore.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
@@ -34,6 +34,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
+
+#include <ggz.h>
+#include <ggzcore.h>
+
 #include "combat.h"
 #include "game.h"
 #include "map.h"
@@ -85,7 +89,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
   int op = -1;
 
   // Read the fd
-  if (es_read_int(fd, &op) < 0) {
+  if (ggz_read_int(fd, &op) < 0) {
     printf("Couldn't read the game fd\n");
     return;
   }
@@ -169,13 +173,13 @@ void game_start() {
 
 int game_get_seat() {
 
-  if (es_read_int(cbt_info.fd, &cbt_info.seat) < 0)
+  if (ggz_read_int(cbt_info.fd, &cbt_info.seat) < 0)
     return -1;
 
-  if (es_read_int(cbt_info.fd, &cbt_game.number) < 0)
+  if (ggz_read_int(cbt_info.fd, &cbt_game.number) < 0)
     return -1;
 
-  if (es_read_int(cbt_info.fd, &cbt_info.version) < 0)
+  if (ggz_read_int(cbt_info.fd, &cbt_info.version) < 0)
     return -1;
 
   // TODO: Compare the client and the server version
@@ -215,7 +219,8 @@ int game_get_options() {
   char *title;
   GtkWidget *widget = lookup_widget(main_win, "mainarea");
 
-  if (es_read_string_alloc(cbt_info.fd, &optstr) < 0)
+  /* FIXME: when do we ggz_free this string?  --JDS */
+  if (ggz_read_string_alloc(cbt_info.fd, &optstr) < 0)
     return -1;
 
   a = combat_options_string_read(optstr, &cbt_game);
@@ -581,11 +586,12 @@ int game_get_players() {
 
     for (i = 0; i < cbt_game.number; i++) {
 
-      if (es_read_int(cbt_info.fd, &cbt_info.seats[i]) < 0)
+      if (ggz_read_int(cbt_info.fd, &cbt_info.seats[i]) < 0)
         return -1;
 
       if (cbt_info.seats[i] != GGZ_SEAT_OPEN) {
-        if (es_read_string_alloc(cbt_info.fd, &cbt_info.names[i]) < 0)
+        /* FIXME: when do we ggz_free this string?  --JDS */
+        if (ggz_read_string_alloc(cbt_info.fd, &cbt_info.names[i]) < 0)
           return -1;
         game_status("Player %d named: %s", i, cbt_info.names[i]);
       }
@@ -687,9 +693,9 @@ void game_handle_move(int p) {
       printf("Move error: %d\n", a);
     }
     else {
-      if (es_write_int(cbt_info.fd, CBT_REQ_MOVE) < 0 ||
-          es_write_int(cbt_info.fd, last_current) < 0 ||
-          es_write_int(cbt_info.fd, p) < 0) {
+      if (ggz_write_int(cbt_info.fd, CBT_REQ_MOVE) < 0 ||
+          ggz_write_int(cbt_info.fd, last_current) < 0 ||
+          ggz_write_int(cbt_info.fd, p) < 0) {
         game_status("Can't send message to server!");
         return;
       }
@@ -813,7 +819,7 @@ void game_send_setup() {
   setup[b] = 0;
 
   // Sends the message
-  if (es_write_int(cbt_info.fd, CBT_MSG_SETUP) < 0 || es_write_string(cbt_info.fd, setup) < 0)
+  if (ggz_write_int(cbt_info.fd, CBT_MSG_SETUP) < 0 || ggz_write_string(cbt_info.fd, setup) < 0)
     game_status("Couldn't send the setup!");
 
   // Free memory
@@ -829,8 +835,8 @@ void game_send_setup() {
 void game_get_move() {
   int from, to;
 
-  if (es_read_int(cbt_info.fd, &from) < 0 ||
-      es_read_int(cbt_info.fd, &to) < 0) {
+  if (ggz_read_int(cbt_info.fd, &from) < 0 ||
+      ggz_read_int(cbt_info.fd, &to) < 0) {
     game_status("Can't get move!");
     return;
   }
@@ -856,10 +862,10 @@ void game_get_move() {
 void game_get_attack() {
   int from, to, f_u, t_u, seat2;
 
-  if (es_read_int(cbt_info.fd, &from) < 0 ||
-      es_read_int(cbt_info.fd, &f_u) < 0 ||
-      es_read_int(cbt_info.fd, &to) < 0 ||
-      es_read_int(cbt_info.fd, &t_u) < 0) {
+  if (ggz_read_int(cbt_info.fd, &from) < 0 ||
+      ggz_read_int(cbt_info.fd, &f_u) < 0 ||
+      ggz_read_int(cbt_info.fd, &to) < 0 ||
+      ggz_read_int(cbt_info.fd, &t_u) < 0) {
     game_status("Can't get attack data!");
     return;
   }
@@ -928,7 +934,7 @@ void game_get_attack() {
 void game_get_gameover() {
   int winner;
 
-  if (es_read_int(cbt_info.fd, &winner) < 0) {
+  if (ggz_read_int(cbt_info.fd, &winner) < 0) {
     game_status("Can't get gameover!");
     return;
   }
@@ -1006,7 +1012,8 @@ void game_get_sync() {
   char *syncstr;
   int a, len;
 
-  if (es_read_string_alloc(cbt_info.fd, &syncstr) < 0)
+  /* FIXME: when do we ggz_free this string?  --JDS */
+  if (ggz_read_string_alloc(cbt_info.fd, &syncstr) < 0)
     return;
 
   len = strlen(syncstr);
@@ -1035,7 +1042,7 @@ void game_get_sync() {
 }
   
 void game_request_sync() {
-  if (es_write_int(cbt_info.fd, CBT_REQ_SYNC) < 0)
+  if (ggz_write_int(cbt_info.fd, CBT_REQ_SYNC) < 0)
     return;
 
   return;
@@ -1070,7 +1077,7 @@ int game_send_options(GtkWidget *options_dialog) {
     return -1;
   }
 
-  if (es_write_int(cbt_info.fd, CBT_MSG_OPTIONS) < 0 || es_write_string(cbt_info.fd, game_str) < 0)
+  if (ggz_write_int(cbt_info.fd, CBT_MSG_OPTIONS) < 0 || ggz_write_string(cbt_info.fd, game_str) < 0)
     return -1;
 
 
@@ -1085,8 +1092,8 @@ game_refuse_options                     (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data) {
 
-  es_write_int(cbt_info.fd, CBT_MSG_OPTIONS);
-  es_write_string(cbt_info.fd, "\0");
+  ggz_write_int(cbt_info.fd, CBT_MSG_OPTIONS);
+  ggz_write_string(cbt_info.fd, "\0");
   return FALSE;
 
 }
