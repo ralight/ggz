@@ -37,3 +37,11 @@
    If you're adding to this file, keep in mind:
    The entries are in sort -df order: alphabetical, case insensitive,
    ignoring punctuation (such as underscores).  */
+
+@BOTTOM@
+/* keep these at the end of the generated config.h */
+
+#ifndef HAVE_STRSEP
+char* strsep(char **stringp, const char *delim);
+#endif
+
