@@ -21,6 +21,7 @@
 #undef GGZDATADIR
 #undef GGZCONFDIR
 #undef GAMEDIR
+#undef NDEBUG
 #undef PACKAGE_SOURCE_DIR
 #undef PF_LOCAL
 #undef WAIT_ANY
