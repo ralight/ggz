@@ -62,6 +62,21 @@ void guru_player_policy(int duplication)
 	dup = duplication;
 }
 
+Player *guru_player_new()
+{
+	Player *p;
+	p = (Player*)malloc(sizeof(Player));
+	p->name = NULL;
+	p->realname = NULL;
+	p->language = NULL;
+	p->origin = NULL;
+	p->firstseen = 0;
+	p->lastseen = 0;
+	p->lastactive = 0;
+	p->status = STATUS_GUEST;
+	return p;
+}
+
 Player *guru_player_lookup(const char *name)
 {
 	int i;
@@ -83,10 +98,11 @@ Player *guru_player_lookup(const char *name)
 	if(handle == -1)
 	{
 		strcpy(path, getenv("HOME"));
-		strcat(path, "/.ggz/grubby.rc");
-		handle = ggzcore_confio_parse(path, GGZ_CONFIO_RDONLY);
+		strcat(path, "/.ggz/guru/playerdb");
+		handle = ggzcore_confio_parse(path, GGZ_CONFIO_CREATE | GGZ_CONFIO_RDWR);
 		if(handle < 0) return NULL;
 	}
+
 	exist = ggzcore_confio_read_int(handle, name, "SEEN", 0);
 	if(!exist) return NULL;
 
@@ -116,14 +132,23 @@ Player *guru_player_lookup(const char *name)
 void guru_player_save(Player *p)
 {
 	if(!p) return;
-	if(!p->origin) return;
 
-	/* Save changes in cache */
-	cleanup(p->origin);
-	*(p->origin) = *(duplicate(p));
+	if(p->origin)
+	{
+		/* Save changes in cache */
+		cleanup(p->origin);
+		*(p->origin) = *(duplicate(p));
+	}
 
 	/* Save changes on disk */
-	/* TODO!!! */
+	ggzcore_confio_write_int(handle, p->name, "SEEN", p->firstseen);
+	ggzcore_confio_write_int(handle, p->name, "LASTSEEN", p->lastseen);
+	ggzcore_confio_write_int(handle, p->name, "LASTACTIVE", p->lastactive);
+	ggzcore_confio_write_int(handle, p->name, "STATUS", p->status);
+	if(p->realname) ggzcore_confio_write_string(handle, p->name, "REALNAME", p->realname);
+	if(p->language) ggzcore_confio_write_string(handle, p->name, "LANGUAGE", p->language);
+	if(p->publicinfo) ggzcore_confio_write_string(handle, p->name, "PUBLICINFO", p->publicinfo);
+	ggzcore_confio_commit(handle);
 }
 
 void guru_player_free(Player *p)

@@ -26,6 +26,7 @@ void guru_player_policy(int duplication);
 Player *guru_player_lookup(const char *name);
 void guru_player_save(Player *p);
 void guru_player_free(Player *p);
+Player *guru_player_new();
 
 #endif
 
