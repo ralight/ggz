@@ -24,8 +24,29 @@ def handle_ggz(source, condition):
   text.insert_defaults(s)
 
 def ggz_send(self):
-  data = atoi(self.get_text())
-  len = sock.send(chr(data))
+  text_area = win.get_data("text")
+  text = self.get_text()
+  int32 = 0
+  if (text[-1] == "i"):
+    int32 = 1
+    text = text[:-1]
+  data = eval(text)
+  if (data > 255):
+    int32 = 1
+  if (int32):
+    data = socket.htonl(data)
+  for i in range(4):
+    sock.send(chr(data % 256))
+    if (data%256 > 32 and data%256 < 126):
+      char = chr(data%256)
+    else:
+      char = " "
+    s = "%5d %5x %5s\n" % (data%256, data%256, char)
+    text_area.insert(text_area.get_style().font, text_area.get_colormap().alloc("red"),
+    text_area.get_style().white, s)
+    data = data / 256
+    if (not int32):
+      break
   self.set_text("")
 
 # Create main window
