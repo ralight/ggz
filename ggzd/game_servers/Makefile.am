@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 SUBDIRS = libggzmod spades tictactoe dots lapocha reversi combat hastings \
-	  chinese-checkers chess krosswater ggzcards escape
+	  chinese-checkers chess krosswater ggzcards
 
 
 
