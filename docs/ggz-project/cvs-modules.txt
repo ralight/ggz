@@ -20,12 +20,12 @@ be included.
 If you add README files, it is very convenient to name them README.<project>,
 like README.telggz.
 In addition, each package must come with contact information, at least the GGZ
-development mailinglist <ggz-dev@lists.sourceforge.net> should be mentioned
+development mailinglist <ggz-dev@mail.ggzgamingzone.org> should be mentioned
 prominently, but also the individual authors (for bug reporting purtpose) and
 on the server side maybe the ggz-servers mailing list.
 
 Some parts of the documentation also belongs online. For example, you find the
-API docs under http://ggz.sourceforge.net/api.
+API docs under http://www.ggzgamingzone.org/docs/api/.
 
 Sources and configuration
 -------------------------
