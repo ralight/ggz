@@ -142,6 +142,7 @@ static void launch_fill_defaults(GtkWidget *widget, gpointer data)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 	}
 
+#if 1
 	/* Disable the reserved option for now */
 	for (x = 1; x <= maxplayers; x++) {
 		text = g_strdup_printf("seat%d_resv", x);
@@ -149,6 +150,7 @@ static void launch_fill_defaults(GtkWidget *widget, gpointer data)
 		g_free(text);
 		gtk_widget_set_sensitive(tmp, FALSE);
 	}
+#endif
 }
 
 
