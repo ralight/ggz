@@ -20,8 +20,7 @@
 
 // GGZ includes
 #include <ggz.h>
-
-#include <iostream>
+#include <ggz_common.h>
 
 KDotsProto::KDotsProto()
 {
@@ -87,21 +86,13 @@ void KDotsProto::getPlayers()
 	for(int i = 0; i < 2; i++)
 	{
 		ggz_read_int(fd, &seattmp);
-		if(seattmp != -1) ggz_read_string(fd, (char*)&players[i], 17);
+		if((seattmp == GGZ_SEAT_PLAYER) || (seattmp == GGZ_SEAT_BOT))
+			ggz_read_string(fd, (char*)&players[i], 17);
 	}
 }
 
 void KDotsProto::connect()
 {
-	/*char fd_name[64];
-	struct sockaddr_un addr;
- 
-	sprintf(fd_name, "/tmp/Dots.%d", getpid());
-	if((fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) exit(-1);
-	bzero(&addr, sizeof(addr));
-	addr.sun_family = AF_LOCAL;
-	strcpy(addr.sun_path, fd_name);
-	if(::connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) exit(-1);*/
 	fd = 3;
 }
 

@@ -39,7 +39,7 @@ KDotsAbout::KDotsAbout(QWidget *parent, const char *name)
 
 	m_bg = new QPixmap(GGZDATADIR "/kdots/snowdragon.png");
 	setBackgroundPixmap(*m_bg);
-	setCaption("About KDots");
+	setCaption(i18n("About KDots"));
 	setFixedSize(400, 305);
 }
 

@@ -1,7 +1,7 @@
 # KDots description file
 [ModuleInfo]
 Author = Josef Spillner
-CommandLine = @ggzexecmoddir@/kdots_client --ggz
+CommandLine = @ggzexecmoddir@/kdots_client --ggz --icon @prefix@/share/icons/hicolor/32x32/apps/kdots.png
 Frontend = kde
 Homepage = http://mindx.sourceforge.net/
 Name = Dots

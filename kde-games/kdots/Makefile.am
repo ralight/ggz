@@ -21,20 +21,14 @@ noinst_HEADERS = \
 
 INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) -I Dot
 
-# A note on LDADD: on my machine, the -l is prepended automatically to
-# everything listed in the LDADD section.  This means putting
-# "-L Dot -ldot" didn't have good results.  I've changed this to just
-# "Dot/libdot.a", which works fine for me (and should for everyone else
-# too).  --JDS
-
-#UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
-#kdots_client_LDFLAGS = -rpath
 kdots_client_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS)
 kdots_client_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_GGZ) Dot/libdot.a
 
 METASOURCES = AUTO
 
 EXTRA_DIST = module.dsc.in
+
+KDE_ICON = kdots
 
 install-data-local:
 	@$(NORMAL_INSTALL)

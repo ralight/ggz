@@ -16,6 +16,8 @@
 #include <qevent.h>
 
 class KDotsProto;
+class KDotsOptions;
+class QDots;
 
 class KDots : public QWidget
 {
@@ -38,6 +40,8 @@ class KDots : public QWidget
 		int m_cols;
 		int *m_field;
 		KDotsProto *proto;
+		KDotsOptions *kdots_options;
+		QDots *dots;
 };
 
 #endif

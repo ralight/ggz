@@ -23,11 +23,7 @@
 #include <qsocketnotifier.h>
 
 #include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
-
-KDotsOptions *kdots_options;
-QDots *dots;
+//#include <stdlib.h>
 
 KDots::KDots(QWidget *parent, const char *name)
 : QWidget(parent, name)
@@ -44,6 +40,7 @@ KDots::KDots(QWidget *parent, const char *name)
 
 	connect(dots, SIGNAL(signalTurn(int, int, int)), SLOT(slotTurn(int, int, int)));
 
+	setBackgroundColor(QColor(100, 100, 100));
 	setCaption("KDE Dots");
 	//dots->setFixedSize(400, 400);
 	setFixedSize(400, 400);
@@ -124,7 +121,7 @@ void KDots::slotSync()
 {
 	if(proto->turn == -1)
 	{
-		KMessageBox::information(this, i18n("No game running yet!"), i18n("Error"));
+		KMessageBox::sorry(this, i18n("No game running yet!"), i18n("Error"));
 		return;
 	}
 	proto->sync();
@@ -218,7 +215,9 @@ void KDots::slotInput()
 			slotOptions();
 			break;
 		default:
-			printf("##### unknown opcode -> %i\n", op);
+			/*printf("##### unknown opcode -> %i\n", op);*/
+			KMessageBox::error(this, i18n("A protocol error has been detected. Aborting the game."), i18n("Protocol error"));
+			close();
 	}
 }
 
