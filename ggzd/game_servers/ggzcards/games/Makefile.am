@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2189 2001-08-23 07:59:17Z jdorje $
+# $Id: Makefile.am 2223 2001-08-25 03:34:14Z jdorje $
 
 SUBDIRS = .
 
@@ -18,3 +18,5 @@ libgames_a_SOURCES = suaro.c suaro.h \
 			lapocha.c lapocha.h \
 			euchre.c euchre.h \
 			sueca.c sueca.h
+
+test: # nothing to be done
