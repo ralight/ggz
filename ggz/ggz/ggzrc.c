@@ -34,7 +34,6 @@
 
 
 /* Local use only functions */
-static FILE *ggzrc_open_rc(void);
 static void ggzrc_load_rc(FILE *);
 static void ggzrc_parse_line(char *);
 static gboolean ggzrc_free_keyval(gpointer, gpointer, gpointer);
@@ -104,49 +103,42 @@ int ggzrc_read_int(const char *section, const char *key, const int def)
 }
 
 
-/* Initialize and read in the configuration file */
+/* Initialize and read in the configuration file(s) */
 int ggzrc_initialize(void)
 {
+	char *tempstr;
+	char *home;
 	FILE *rc_file;
+	int status = -1;
 
-	/* This must be done */
 	rc_hash = g_hash_table_new(g_str_hash, g_str_equal);
 
-	/* Open our rc file */
-	if((rc_file = ggzrc_open_rc()) == NULL) {
-		dbg_msg("ggzrc: Unable to locate ggz.rc or .ggzrc");
+	/* Open and parse the main ggz.rc file */
+	tempstr = g_strconcat(SYSCONFDIR, "/ggz.rc", NULL);
+	if((rc_file = fopen(tempstr, "r"))) {
+		dbg_msg("ggzrc: Reading %s", tempstr);
+		ggzrc_load_rc(rc_file);
+		status = 0;
+	} else {
+		dbg_msg("ggzrc: Unable to open %s/ggz.rc", SYSCONFDIR);
 		return -1;
 	}
-
-	/* Parse all the lines in the rc file */
-	ggzrc_load_rc(rc_file);
-	return 0;
-}
-
-
-/* Locate the rc file to use */
-static FILE *ggzrc_open_rc(void)
-{
-	FILE *rc_file;
-	char *home;
-	char *tempstr=NULL;
-
-	/* Look for a user level rc file first */
-	if((home = getenv("HOME")) != NULL)
-		tempstr = g_strconcat(home, "/.ggzrc", NULL);
-	if(tempstr && (rc_file=fopen(tempstr, "r")))
-		dbg_msg("ggzrc: Using %s/.ggzrc", home);
-	else {
-		/* Look for an admin level rc file */
-		if(tempstr)
-			g_free(tempstr);
-		tempstr = g_strconcat(SYSCONFDIR, "/ggz.rc", NULL);
-		if((rc_file=fopen(tempstr, "r")))
-			dbg_msg("ggzrc: Using %s", tempstr);
-	}
-
 	g_free(tempstr);
-	return rc_file;
+
+	/* Open and parse the ~/.ggzrc file */
+	if((home = getenv("HOME")) != NULL) {
+		tempstr = g_strconcat(home, "/.ggzrc", NULL);
+		if((rc_file = fopen(tempstr, "r"))) {
+			dbg_msg("ggzrc: Reading %s/.ggzrc", home);
+			ggzrc_load_rc(rc_file);
+			status = 0;
+		} else
+			dbg_msg("ggzrc: Unable to open %s/.ggzrc", home);
+		g_free(tempstr);
+	} else
+		dbg_msg("ggzrc: $HOME environment variable not set");
+
+	return status;
 }
 
 
