@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3302 2002-02-10 11:29:38Z jdorje $
+ * $Id: common.c 3324 2002-02-11 08:53:23Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -768,9 +768,11 @@ void set_num_seats(int num_seats)
 	game.seats = ggz_malloc(game.num_seats * sizeof(*game.seats));
 	for (s = 0; s < game.num_seats; s++) {
 		game.seats[s].player = -1;
+		game.seats[s].table = UNKNOWN_CARD;
 		game.seats[s].name = "Unclaimed Seat";	/* TODO: reserved
 							   seats */
 		game.seats[s].pmessage = NULL;
+		game.seats[s].hand.cards = NULL;
 	}
 }
 
