@@ -1,7 +1,0 @@
-libggz for Debian
------------------
-
-This debian package contains the GGZ base library libggz, which has
-been created from the CVS module with the same name.
-
- -- Josef Spillner <dr_maux@users.sourceforge.net>, Sat,  6 Apr 2002 20:02:31 +0200
