@@ -7,7 +7,7 @@ if test -r $srcdir/package; then
 fi
 
 DEFAULT_PACKAGE="ggz-gtk-games"
-DEFAULT_VERSION="0.0.4pre"
+DEFAULT_VERSION="0.0.4"
 DEFAULT_SUBDIRS="spades tictactoe dots lapocha reversi combat hastings chinese-checkers chess"
 
 dnl If an override is present, use it
