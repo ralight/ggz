@@ -185,25 +185,26 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 	  count=ibyte;
 	  connect_msg("[RSP_TABLE_LIST] Table List Count %d\n", count);
 	  for (i=1;i<=count;i++){
-		  CheckReadInt( source, &ibyte );
+		  es_read_int(source, &ibyte);
+		  es_read_int(source, &ibyte);
 		  Table.type_index = ibyte;
-		  read(source, &byte, 1);
+		  es_read_char(source, &byte);
 		  Table.playing = byte;
-		  CheckReadInt( source, &ibyte );
+		  es_read_int(source, &ibyte);
 		  Table.num_seats = ibyte;
-		  CheckReadInt( source, &ibyte );
+		  es_read_int(source, &ibyte);
 		  Table.open_seats = ibyte;
-		  CheckReadInt( source, &ibyte );
+		  es_read_int(source, &ibyte);
 		  Table.num_humans = ibyte;
 
 		  connect_msg("[RSP_TABLE_LIST] Type %d\n", Table.type_index);
 		  connect_msg("[RSP_TABLE_LIST] Playing %d\n", Table.playing);
 		  connect_msg("[RSP_TABLE_LIST] Seats %d\n", Table.num_seats);
 		  connect_msg("[RSP_TABLE_LIST] Open %d\n", Table.open_seats);
-		  connect_msg("[RSP_TABLE_LIST] Names Count %d\n", Table.num_humans);
 		  for (j=1;j<=Table.num_humans;j++){
-			  CheckReadString( source, &message );
+			  es_read_string(source, &name);
 		  }
+		  connect_msg("[RSP_TABLE_LIST] Names Count %d\n", Table.num_humans);
 		  add_table_list(i, Table);
 	  }
 	  break;
