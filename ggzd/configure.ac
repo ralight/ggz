@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5563 2003-05-10 23:54:28Z dr_maux $
+dnl $Id: configure.ac 5610 2003-06-07 05:29:36Z dr_maux $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -131,7 +131,6 @@ esac
 if test "$database" = db3 || test "$database" = yes; then
   AC_CHECK_LIB(db, db_env_create,
     [
-      db3_style=0
       AC_CHECK_HEADER(db.h,
         [
           database=db3
@@ -169,50 +168,66 @@ fi
 
 # Check for db4 database
 if test "$database" = db4 || test "$database" = yes; then
-  AC_CHECK_LIB(db, db_env_create_4000,
+  db4lib=""
+  db4inc=""
+  AC_CHECK_LIB(db-4.1, db_env_create_4001,
     [
-      db4_style=0
-      AC_CHECK_HEADER(db.h,
-        [
-          database=db4
-          ggzd_LIBS="$ggzd_LIBS -ldb"
-        ],
-        [
-          if test "$database" = db4; then
-            AC_MSG_ERROR([*** Cannot configure db4 (db4-dev needed)])
-          fi
-        ])
+      db4lib="-ldb-4.1"
+      database=db4
     ],
     [
-      AC_CHECK_LIB(db-4.0, db_env_create_4000,
+      AC_CHECK_LIB(db, db_env_create_4000,
         [
-          AC_CHECK_HEADER(db.h,
+          db4lib="-ldb"
+          database=db4
+        ],
+        [
+          AC_CHECK_LIB(db-4.0, db_env_create_4000,
             [
+              db4lib="-ldb-4.0"
               database=db4
-              ggzd_LIBS="$ggzd_LIBS -ldb-4.0"
-              AC_DEFINE([DB4_IN_DIR], 1,
-			[Define if the db4 libs and headers are under db4/])
             ],
             [
               if test "$database" = db4; then
-                AC_MSG_ERROR([*** Cannot configure db4 (db4-dev needed)])
+                AC_MSG_ERROR([*** Cannot configure db4 (libdb4 needed)])
               fi
             ])
-        ],
-        [
-          if test "$database" = db4; then
-            AC_MSG_ERROR([*** Cannot configure db4 (libdb4 needed)])
-          fi
         ])
     ])
-fi
+  if test "x$db4lib" != "x-ldb-4.1"; then
+    AC_CHECK_HEADER(db4/db.h,
+      [
+        db4inc="db4/db.h"
+        database=db4
+        AC_DEFINE([DB4_IN_DIR], 1,
+        [Define if the db4 libs and headers are under db4/])
+      ],
+      [
+        if test "$database" = db4; then
+          AC_MSG_ERROR([*** Cannot configure db4 (db4-dev needed)])
+        fi
+      ])
+  fi
+  AC_CHECK_HEADER(db.h,
+    [
+      db4inc="db.h"
+      database=db4
+    ],
+    [
+      if test "$database" = db4; then
+        AC_MSG_ERROR([*** Cannot configure db4 (db4-dev needed)])
+      fi
+    ])
 
+  if test "x$db4inc" != "x"; then
+    ggzd_LIBS="$ggzd_LIBS $db4lib"
+  fi
+fi
 
 # Check for db2 database
 if test "$database" = db2 || test "$database" = yes; then
   AC_CHECK_LIB(db, db_appinit,
     [
-      db2_style=0
       AC_CHECK_HEADER(db.h,
         [
           database=db2

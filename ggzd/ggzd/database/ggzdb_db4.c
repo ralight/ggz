@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db3 sytle database
- * $Id: ggzdb_db4.c 5327 2003-01-12 14:44:15Z dr_maux $
+ * $Id: ggzdb_db4.c 5610 2003-06-07 05:29:36Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -61,8 +61,13 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		standalone = 1;
 	} else
 		flags = DB_CREATE | DB_INIT_MPOOL | DB_INIT_LOCK | DB_THREAD;
+#if DB_VERSION_MINOR == 1
+	if (db_env_create_4001(&db_e, 0) != 0) {
+		err_sys("db_env_create_4001() failed in _ggzdb_init()");
+#else
 	if (db_env_create_4000(&db_e, 0) != 0) {
 		err_sys("db_env_create_4000() failed in _ggzdb_init()");
+#endif
 		return GGZ_ERROR;
 	} else if (db_e->open(db_e, connection.datadir, flags , 0600) != 0) {
 		err_sys("db_e->open() failed in _ggzdb_init()");
@@ -115,7 +120,12 @@ GGZDBResult _ggzdb_init_player(char *datadir)
 	/* Open the database file */
 	if(db_create(&db_p, db_e, 0) != 0)
 		err_sys_exit("db_create() failed in _ggzdb_init_player()");
+#if DB_VERSION_MINOR == 1
+	flags |= DB_AUTO_COMMIT;
+	if (db_p->open(db_p, NULL, "player.db", NULL, DB_BTREE, flags, 0600) != 0)
+#else
 	if (db_p->open(db_p, "player.db", NULL, DB_BTREE, flags, 0600) != 0)
+#endif
 		err_sys_exit("db_p->open() failed in _ggzdb_init_player()");
 
 	/* Add a marker entry for our next UID */
@@ -326,7 +336,12 @@ GGZDBResult _ggzdb_init_stats(ggzdbConnection connection)
 	/* Open the database file */
 	if (db_create(&db_s, db_e, 0) != 0)
 		err_sys_exit("db_create() failed in _ggzdb_init_stats()");
+#if DB_VERSION_MINOR == 1
+	flags |= DB_AUTO_COMMIT;
+	if (db_p->open(db_s, NULL, "stats.db", NULL, DB_BTREE, flags, 0600) != 0)
+#else
 	if (db_p->open(db_s, "stats.db", NULL, DB_BTREE, flags, 0600) != 0)
+#endif
 		err_sys_exit("db_p->open() failed in _ggzdb_init_stats()");
 
 	return GGZDB_NO_ERROR;
