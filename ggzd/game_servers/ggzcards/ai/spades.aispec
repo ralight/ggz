@@ -1,0 +1,4 @@
+[AI]
+name = Spades
+game = spades
+path = ggzd.ggzcards.ai-spades

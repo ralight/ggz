@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 4338 2002-08-05 16:08:38Z jdorje $
+ * $Id: main.c 4398 2002-09-03 04:55:19Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -147,9 +147,6 @@ int main(int argc, char **argv)
 			    &handle_player_event);
 #endif
 
-	/* Find our current path - which is the same path as our client AI's */
-	init_path(argv[0]);
-
 	/* set up easysock functions to be called on error/exit */
 	ggz_set_io_error_func(es_error);
 	ggz_set_io_exit_func(es_exit);
@@ -193,6 +190,9 @@ int main(int argc, char **argv)
 	if (ggzdmod_connect(ggz) < 0)
 		return -1;
 	ggz_debug(DBG_MISC, "Starting table.");
+
+	/* Scan in the available AI modules. */
+	read_ai_modules(argv[0]);
 
 #if 0
 	(void) ggzdmod_loop(ggz);

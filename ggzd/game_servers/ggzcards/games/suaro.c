@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 4177 2002-05-07 02:34:50Z jdorje $
+ * $Id: suaro.c 4398 2002-09-03 04:55:19Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -137,8 +137,6 @@ static void suaro_init_game(void)
 	game.deck_type = GGZ_DECK_SUARO;
 	game.max_hand_length = 9;
 	game.target_score = 50;
-	
-	game.ai_type = "suaro";
 
 	SUARO.shotgun = 1;	/* shotgun suaro */
 	SUARO.declarer = -1;

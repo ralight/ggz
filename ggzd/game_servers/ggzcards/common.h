@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4396 2002-09-02 02:34:56Z jdorje $
+ * $Id: common.h 4398 2002-09-03 04:55:19Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -39,6 +39,7 @@
 #include "ggzdmod.h"
 #include "ggz_stats.h"
 
+#include "ai.h"
 #include "deck.h"
 #include "games.h"
 #include "protocol.h"
@@ -75,8 +76,7 @@ typedef struct {
 
 	/* Game meta-data */
 	game_data_t *data;	/**< Game-specific data */
-	
-	char* ai_type;	/**< the type of AI we're using */
+	ai_module_t *ai_module;	/**< the type of AI we're using */
 
 	deck_type_t deck_type;	/**< the type of deck used */
 	deck_t *deck;		/**< the deck being used */

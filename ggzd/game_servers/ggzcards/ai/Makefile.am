@@ -1,7 +1,12 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3880 2002-04-10 13:53:51Z dr_maux $
+# $Id: Makefile.am 4398 2002-09-03 04:55:19Z jdorje $
 
 SUBDIRS = .
+
+aimoduledir = $(ggzddatadir)/ggzcards
+aimodule_DATA = spades.aispec suaro.aispec
+
+EXTRA_DIST = $(aimodule_DATA)
 
 # Each of these programs shares a whole set of common code
 # in this directory, plus depends on the common and client

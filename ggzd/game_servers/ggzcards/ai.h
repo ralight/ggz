@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.h 4092 2002-04-27 21:18:12Z jdorje $
+ * $Id: ai.h 4398 2002-09-03 04:55:19Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -30,11 +30,17 @@
 #ifndef __AI_H__
 #define __AI_H__
 
-#include "common.h"
 #include "types.h"
 
+typedef struct ai_module_t {
+	char *name;
+	char *game;
+	char *path;
+	struct ai_module_t *next;
+} ai_module_t;
+
 /* Launches an external AI program. */
-void start_ai(player_t p, const char* ai_type);
+void start_ai(player_t p, const ai_module_t *module);
 
 /* Kills and collects a spawned AI player; should be called
    when the server is ready to exit. */
@@ -48,7 +54,13 @@ void restart_ai(player_t p);
 /* Handle incoming data from the AI's stderr. */
 void handle_ai_stderr(player_t ai);
 #endif
-			
-void init_path(const char *exec_cmd);
+
+/* Reads in the *.aispec AI module files. */
+void read_ai_modules(const char *exec_cmd);
+
+/* Once the game has been chosen, picks the most appropriate AI
+   module for the game.  (Eventually the user will be able to
+   choose between multiple modules.) */
+ai_module_t *choose_ai_module(void);
 
 #endif /* __AI_H__ */

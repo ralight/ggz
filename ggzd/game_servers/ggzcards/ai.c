@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 4146 2002-05-03 08:07:37Z jdorje $
+ * $Id: ai.c 4398 2002-09-03 04:55:19Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -31,6 +31,7 @@
 #  include <config.h>			/* Site-specific config */
 #endif
 
+#include <glob.h>
 #include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -46,9 +47,23 @@
 #include "message.h"
 #include "net.h"
 
-static char* path = NULL;
+static ai_module_t *modules = NULL;
+static char *path = NULL;
 
-void start_ai(player_t p, const char* ai_type)
+/* The "Random" module is handled separately; it doesn't require
+   a specfile.  There are two reasons for this.  (1) It really is
+   a separate entity, capable of functioning for all games (whereas
+   other AI modules will only function for one game).  (2) The
+   AI specfiles can't be read when GGZD is running under "make test";
+   but if the random AI is hard-coded it can still run. */
+static ai_module_t random_ai = {
+	name: "Random",
+	game: NULL, /* all games */
+	path: "ggzd.ggzcards.ai-random", /* path added later */
+	next: NULL /* not used */
+};
+
+void start_ai(player_t p, const ai_module_t *module)
 {
 	/* It would be really cool if we could use the ggzmod library
 	   to do this part... */
@@ -57,13 +72,9 @@ void start_ai(player_t p, const char* ai_type)
 	int err_fd_pair[2];
 #endif /* DEBUG */
 	int pid;
-	char cmd[1024];
-	char *argv[] = {cmd, NULL};
-	
-	if (ai_type == NULL)
-		ai_type = "random";
+	char *argv[] = {module->path, NULL};
 		
-	ggz_debug(DBG_AI, "Starting AI for player %d as %s.", p, ai_type);
+	ggz_debug(DBG_AI, "Starting AI for player %d as %s.", p, module->name);
 		
 	assert(get_player_status(p) == GGZ_SEAT_BOT);
 	assert(game.players[p].fd == -1);
@@ -71,9 +82,6 @@ void start_ai(player_t p, const char* ai_type)
 #ifdef DEBUG
 	assert(game.players[p].err_fd == -1);
 #endif
-	
-	snprintf(cmd, sizeof(cmd),
-	         "%s/ggzd.ggzcards.ai-%s", path, ai_type);
 	
 	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0
 #ifdef DEBUG
@@ -176,7 +184,7 @@ void restart_ai(player_t p)
 	return;
 #endif
 	ggz_debug(DBG_AI, "Restarting AI for player %d.", p);
-	start_ai(p, "random");
+	start_ai(p, &random_ai);
 	send_sync(p);
 }
 
@@ -214,13 +222,110 @@ void handle_ai_stderr(player_t ai)
 		ggz_debug(DBG_AI, "AI %d: %s", ai, this);
 }
 #endif
-			
-void init_path(const char *exec_cmd)
+
+static void read_ai_module(char *aispec)
+{
+	int file;
+	ai_module_t *module = ggz_malloc(sizeof(*module));
+
+	ggz_debug(DBG_AI, "Reading AI module %s.", aispec);
+
+	file = ggz_conf_parse(aispec, GGZ_CONF_RDONLY);
+	if (file < 0)
+		goto error;
+
+	module->name = ggz_conf_read_string(file,
+					    "AI", "name",
+					    NULL);
+	module->game = ggz_conf_read_string(file,
+					    "AI", "game",
+					    NULL);
+	module->path = ggz_conf_read_string(file,
+					    "AI", "path",
+					    NULL);
+
+	if (!module->name || !module->game || !module->path) {
+		ggz_error_msg("Invalid AI module %s.",
+			      aispec);
+		goto error;
+	}
+
+	if (module->path[0] != '/') {
+		char *cmd = module->path;
+		int len = strlen(path) + strlen(cmd) + 2;
+		module->path = ggz_malloc(len);
+		snprintf(module->path, len, "%s/%s", path, cmd);
+		ggz_free(cmd);
+	}
+
+	ggz_debug(DBG_AI, "Read AI module %s for %s as %s.",
+		  module->name, module->game, module->path);
+
+	module->next = modules;
+	modules = module;
+	
+	return;
+
+error:
+	ggz_free(module->name);
+	ggz_free(module->game);
+	ggz_free(module->path);
+	ggz_free(module);
+}
+
+/* Record the path of the ggzcards executable; the AI modules must
+   be in the same location. */
+static void set_path(const char *exec_cmd)
 {
 	int i;
-	
+
 	path = ggz_strdup(exec_cmd);
-	
 	for (i = strlen(exec_cmd); path[i] != '/' && i >= 0; i--)
-		path[i] = '\0';
+		path[i] = '\0';	
+}
+
+/* Initialize fallback "random" module */
+static void init_random_ai(void)
+{
+	int len = strlen(path) + strlen(random_ai.path) + 2;
+	char *rand = ggz_malloc(len);
+	snprintf(rand, len, "%s/%s", path, random_ai.path);
+	random_ai.path = rand;
+}
+
+void read_ai_modules(const char *exec_cmd)
+{
+	const char *pattern = GGZDDATADIR "/ggzcards/*.aispec";
+	glob_t pglob;
+	int i;
+
+	set_path(exec_cmd);
+
+	init_random_ai();
+
+	ggz_debug(DBG_AI, "Looking for files %s.", pattern);
+	glob(pattern, GLOB_ERR | GLOB_MARK, NULL, &pglob);
+
+	for (i = 0; i < pglob.gl_pathc; i++)
+		read_ai_module(pglob.gl_pathv[i]);
+
+	globfree(&pglob);
+}
+
+ai_module_t *choose_ai_module(void)
+{
+	ai_module_t *best = &random_ai;
+	ai_module_t *module;
+
+	for (module = modules; module; module = module->next) {
+		if (!strcmp(module->game, game.data->name)) {
+			/* FIXME - give the user a choice if there's more
+			   than one available module. */
+			best = module;
+		}
+	}
+
+	/* NULL can be returned; this means we have no module (and use
+	   the fallback random AI) */
+	return best;
 }

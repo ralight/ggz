@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4339 2002-08-06 01:32:22Z jdorje $
+ * $Id: common.c 4398 2002-09-03 04:55:19Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -743,13 +743,13 @@ void init_game()
 	game.bid_history = TRUE;
 
 	/* now we do all the game-specific initialization... */
-	assert(game.ai_type == NULL);
+	game.ai_module = choose_ai_module();
 	game.data->init_game();
 	game.data->get_options();
 	
 	for (p = 0; p < game.num_players; p++)
 		if (get_player_status(p) == GGZ_SEAT_BOT)
-			start_ai(p, game.ai_type);
+			start_ai(p, game.ai_module);
 
 	game.deck = create_deck(game.deck_type);
 	if (game.max_hand_length == 0)
