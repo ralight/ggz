@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 3337 2002-02-12 01:40:29Z jdorje $
+ * $Id: suaro.c 3338 2002-02-12 02:19:01Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -53,6 +53,64 @@ struct ai_function_pointers suaro_ai_funcs = {
 	get_bid,
 	get_play
 };
+
+/* 
+ *
+ *  This is a simple expert system.  It follows the following algorithm:
+ *
+ * BIDDING
+ *
+ * We basically count the number of "points" we have, where 100 points 
+ * equals one trick.
+ *
+ * - Find longest, strongest [1] suit.  Let this be trump.
+ * - Assign yourself 20 points for a 3-card trump, 50 points for a 4+ card 
+ *   trump.
+ * - For each suit, count the estimated number of points:
+ *   - Figure that the opponent has a 60% chance of having any card
+ *     we don't, and that they'll have 60% of the missing cards in the
+ *     suit.  [This is conservative - experimenting with values in the
+ *     50-60% range could be productive.]
+ *   - Assign ourselves 100 points for any sure winners, and take off
+ *     one of our opponent's cards.
+ *   - For any cards we don't have, consider that the opponent has a
+ *     60% chance of having that card.  Thus any cards we have below
+ *     it have their values reduced by 60 points.  We also take off
+ *     .6 opponents cards for such a play.  Of course, if the opponent
+ *     is out of potential cards this won't take effect.
+ *   - Examples: A-Q     => 1.4 tricks (60% chance opponent has K)
+ *               K-Q     => 1.4 tricks (60% chance opponent has A)
+ *               A-K-Q-8 => 4 tricks
+ *               A-K-8   => 2.6 tricks (expext opponent to have 2.4 cards)
+ * - Total up the number of points, and divide by 100 rounding down.
+ * - This is our bid: suit and count.  If we can't make this bid (opponent 
+ *   already bid too high), just pass.
+ *
+ * Problems: it doesn't take into account opponents bidding.  There's no 
+ * chance of it bidding on the kitty.  It is too conservative, and always 
+ * makes its bid (but doesn't bid often enough).
+ *
+ *
+ * PLAYING
+ *
+ * - If we're leading:
+ *   * If we're the declarer and have more than one trump, lead trump.
+ *   * Otherwise pick our longest, strongest [1] suit.
+ *   * Lead the highest card in this suit.
+ * - If we're not leading:
+ *   * If we can't follow suit:
+ *     - If we have any trump, play our lowest one.
+ *     - Otherwise, play our lowest [2] card.
+ *   * If we can follow suit:
+ *     - Play our lowest card higher than the card lead, if possible.
+ *     - Otherwise play our lowest card.
+ *
+ * Problems: it never throws.  It never considers splits, and will lead from 
+ * a K-J rather than a Q-J.  It never tries to put the opponent in the lead, 
+ * but always leads the highest card available.
+ *
+ */
+
 
 static char *get_name(player_t p)
 {
@@ -105,7 +163,7 @@ static int count_suit_strength(seat_t seat, char suit, int lo)
 	}
 
 	/* Scale depending on how many cards are left. */
-	strength /= remaining;
+	strength = (strength * 7) / remaining;
 
 	return strength;
 }
@@ -158,7 +216,7 @@ static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count)
 	/* Count expected tricks in each suit.  For any card that we don't
 	   have, we figure the opponent has (at a conservative estimate) a
 	   60% chance of holding the card.  Therefore if we have A-Q in a
-	   suit, we'll expect to get 1.5 tricks.  Of course tricks shouldn't
+	   suit, we'll expect to get 1.4 tricks.  Of course tricks shouldn't
 	   really be _added_ in this way - a better way would be to calculate
 	   probabilities - but it's a good start. */
 	c.deck = 0;
