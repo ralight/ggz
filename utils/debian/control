@@ -1,0 +1,15 @@
+Source: ggz-utils
+Section: games
+Priority: optional
+Maintainer: Josef Spillner <dr_maux@users.sourceforge.net>
+Standards-Version: 3.0.1
+Build-Depends: debhelper
+
+Package: ggz-utils
+Architecture: any
+Depends: ${shlibs:Depends}
+Suggests: ggz-core-client
+Description: GGZ Gaming Zone Utilies
+ This package contains the GGZ chat bot (Grubby),
+ a server load tester (AGRUE) and a generic python
+ client (using Gtk+ bindings).
