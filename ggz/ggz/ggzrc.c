@@ -163,6 +163,7 @@ static void ggzrc_load_rc(FILE *rc_file)
 	char *hashkey;
 	char *section;
 	int linenum = 0;
+	gpointer old_key, old_value;
 
 	/* Prepare the hash table for mass updates */
 	g_hash_table_freeze(rc_hash);
@@ -187,8 +188,18 @@ static void ggzrc_load_rc(FILE *rc_file)
 		/* We have a valid varname/varvalue, add them to hash table */
 		dbg_msg("ggzrc: found '%s %s = %s'", section,varname,varvalue);
 		hashkey = g_strconcat(section, varname, NULL);
+		if(g_hash_table_lookup_extended(rc_hash, hashkey,
+						&old_key, &old_value)
+	   	   == TRUE) {
+			/* If it existed, let's use the same old key */
+			g_free(old_value);
+			g_free(hashkey);
+			hashkey = old_key;
+		} else {
+			/* If it didn't exist, put it into the rc_list */
+			rc_list = g_slist_prepend(rc_list, hashkey);
+		}
 		g_hash_table_insert(rc_hash, hashkey, g_strdup(varvalue));
-		rc_list = g_slist_prepend(rc_list, hashkey);
 	}
 
 	/* Do time intensive stuff now that we are out of the loop */
