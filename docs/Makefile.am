@@ -1,1 +1,1 @@
-SUBDIRS = games spec ggz-project coreclients grubby overview
+SUBDIRS = games spec ggz-project coreclients grubby overview server

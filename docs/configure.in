@@ -23,7 +23,9 @@ AC_OUTPUT(Makefile
 	coreclients/Makefile
 	grubby/Makefile
 	spec/Makefile
-	overview/Makefile)
+	overview/Makefile
+	server/Makefile
+	server/hosting/Makefile)
 
 dnl Report success
 dnl ==============
