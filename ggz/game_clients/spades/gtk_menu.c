@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/23/99
- * $Id: gtk_menu.c 4891 2002-10-12 20:52:43Z jdorje $
+ * $Id: gtk_menu.c 4892 2002-10-12 20:55:46Z jdorje $
  *
  * This file contains functions for creating and handling menus
  *
@@ -32,6 +32,7 @@
 
 #include "dlg_about.h"
 #include "dlg_exit.h"
+#include "ggzintl.h"
 
 #include <gtk_connect.h>
 #include <gtk_io.h>
@@ -43,8 +44,6 @@
 #include <client.h>
 #include <display.h>
 
-#include "ggzintl.h"
-
 
 /* Global widget structure */
 extern playArea_t *playArea;
@@ -54,26 +53,26 @@ static void AboutDialog(GtkWidget *widget, gpointer data)
 	create_or_raise_dlg_about();
 }
 
-/* FIXME: these are marked to be translated with N_(), but
-   the text is never actually translated. */
-static GtkItemFactoryEntry menuItems[] = {
-	{N_("/_Game"), NULL, NULL, 0, "<Branch>"},
-	{N_("/Game/_New"), NULL, OptionsDialog, 0, NULL},
-	{N_("/Game/_End"), NULL, DisconnectDialog, 0, NULL},
-	{N_("/Game/_Statistics"), NULL, StatDialog, 0, NULL},
-	{N_("/Game/sep1"), NULL, NULL, 0, "<Separator>"},
-	{N_("/Game/_Quit"), "<alt>F4", ExitDialog, 0, NULL},
-	{N_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
-/*  {N_("/Help/_GamePlay"),            NULL,       HelpDialog, 0, NULL},*/
-	{N_("/Help/_About"), "<ctrl>A", AboutDialog, 0, NULL},
-};
-
-
 GtkWidget *CreateMenus(GtkWidget * window)
 {
 
 	GtkAccelGroup *accelGroup;
 	GtkWidget *menuBar, *menuItem;
+	GtkItemFactoryEntry menuItems[] = {
+	  {_("/_Game"), NULL, NULL, 0, "<Branch>"},
+	  {_("/Game/_New"), NULL, OptionsDialog, 0, NULL},
+	  {_("/Game/_End"), NULL, DisconnectDialog, 0, NULL},
+	  {_("/Game/_Statistics"), NULL, StatDialog, 0, NULL},
+	  {_("/Game/sep1"), NULL, NULL, 0, "<Separator>"},
+	  {_("/Game/_Quit"), "<alt>F4", ExitDialog, 0, NULL},
+	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
+#if 0
+	  {_("/Help/_GamePlay"), NULL, HelpDialog, 0, NULL},
+#endif
+	  {_("/Help/_About"), "<ctrl>A", AboutDialog, 0, NULL},
+	};
+
+
 
 	int nItems = sizeof(menuItems) / sizeof(menuItems[0]);
 
