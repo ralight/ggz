@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <iostream>
 
+#include <stdio.h>
+
 Dots::Dots()
 {
 	m_field = NULL;
@@ -28,19 +30,22 @@ Dots::~Dots()
 void Dots::resizeBoard(int cols, int rows)
 {
 	cleanup();
+
 	m_rows = rows + 1;
 	m_cols = cols + 1;
+
 	m_field = (dot_t**)malloc(sizeof(dot_t) * m_cols);
 	for(int i = 0; i < m_cols; i++)
 	{
 		m_field[i] = (dot_t*)malloc(sizeof(dot_t) * m_rows);
 		for(int j = 0; j < m_rows; j++)
 		{
-   			m_field[i][j] = (dot_t)malloc(sizeof(dot_t) * 4);
+   			m_field[i][j] = (dot_t)malloc(sizeof(dot_t) * 5);
 			m_field[i][j][right] = -1;
 			m_field[i][j][left] = -1;
 			m_field[i][j][up] = -1;
 			m_field[i][j][down] = -1;
+			m_field[i][j][fieldrightbelow] = -1;
 		}
 	}
 }
@@ -51,11 +56,20 @@ void Dots::assignBorder(int x, int y, int direction, int side)
 	if((x < 0) || (y < 0) || (x >= m_cols) || (y >= m_rows)) return;
 
 	m_field[x][y][direction] = side;
+
+	// check if field is now enclosed
+	if((borders(x, y, -1) == 0) && (m_field[x][y][fieldrightbelow] == -1))
+		m_field[x][y][fieldrightbelow] = side;
+	if((x > 0) && (borders(x - 1, y, -1) == 0) && (m_field[x - 1][y][fieldrightbelow] == -1))
+		m_field[x - 1][y][fieldrightbelow] = side;
+	if((y > 0) && (borders(x, y - 1, -1) == 0) && (m_field[x][y - 1][fieldrightbelow] == -1))
+		m_field[x][y - 1][fieldrightbelow] = side;
+	if((x > 0) && (y > 0) && (borders(x - 1, y - 1, -1) == 0) && (m_field[x - 1][y - 1][fieldrightbelow] == -1))
+		m_field[x - 1][y - 1][fieldrightbelow] = side;
 }
 
-int Dots::setBorderValue(int x, int y, int direction, int side)
+int Dots::setBorderValue(int x, int y, int direction, int side, int action)
 {
-	cout << "SetBorderValue at : " << x << ", " << y << endl;
 	if(!m_field) return 0;
 	if((x < 0) || (y < 0) || (x >= m_cols) || (y >= m_rows)) return 0;
 	if((direction < 0) || (direction > 3)) return 0;
@@ -63,8 +77,8 @@ int Dots::setBorderValue(int x, int y, int direction, int side)
 	if((y == 0) && (direction == up)) return 0;
 	if((x == m_cols - 1) && (direction == right)) return 0;
 	if((y == m_rows - 1) && (direction == down)) return 0;
-	cout << "-> SetBorderValue at : " << x << ", " << y << endl;
 	if(m_field[x][y][direction] >= 0) return 0;
+	if(!action) return 1;
 
 	assignBorder(x, y, direction, side);
 	switch(direction)
@@ -81,6 +95,8 @@ int Dots::setBorderValue(int x, int y, int direction, int side)
 		case down:
 			assignBorder(x, y + 1, up, side);
 			break;
+		default:
+			cout << "CRITICAL DOT ERROR!" << endl;
 	}
 	return 1;
 }
@@ -94,9 +110,9 @@ int Dots::count(int side)
 	ret = 0;
 	for(int j = 0; j < m_rows - 1; j++)
 		for(int i = 0; i < m_cols - 1; i++)
-			if(borders(i, j, side) == 4) ret++;
-	return ret;
+			if(content(i, j) == side) ret++;
 
+	return ret;
 }
 
 void Dots::cleanup()
@@ -121,7 +137,7 @@ int Dots::borders(int x, int y, int side)
 	int ret;
 
 	if(!m_field) return -1;
-	if((x < 0) || (y < 0) || (x >= m_cols) || (y >= m_rows)) return -1;
+	if((x < 0) || (y < 0) || (x >= m_cols - 1) || (y >= m_rows - 1)) return -1;
 
 	ret = 0;
 	if(m_field[x][y][right] == side) ret++;
@@ -138,3 +154,12 @@ int Dots::border(int x, int y, int direction)
 
 	return m_field[x][y][direction];
 }
+
+int Dots::content(int x, int y)
+{
+	if(!m_field) return -1;
+	if((x < 0) || (y < 0) || (x >= m_cols - 1) || (y >= m_rows - 1)) return -1;
+
+	return m_field[x][y][fieldrightbelow];
+}
+

@@ -15,6 +15,7 @@
 #include "vdots.h"
 #include <qwidget.h>
 #include <qevent.h>
+#include <qpixmap.h>
 
 class QDots : public QWidget, public VDots
 {
@@ -30,6 +31,8 @@ class QDots : public QWidget, public VDots
 		void paintEvent(QPaintEvent *e);
 		void mousePressEvent(QMouseEvent *e);
 	private:
+		QPixmap *grayscale(QPixmap *pix);
+
 		int m_xoffset, m_yoffset;
 };
 

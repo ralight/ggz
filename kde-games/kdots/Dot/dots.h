@@ -20,18 +20,20 @@ class Dots
 		Dots();
 		~Dots();
 		void resizeBoard(int cols, int rows);
-		int setBorderValue(int x, int y, int direction, int side);
+		int setBorderValue(int x, int y, int direction, int side, int action);
 		int count(int side);
 		enum Directions
 		{
 			left = 0,
 			right = 1,
 			up = 2,
-			down = 3
+			down = 3,
+			fieldrightbelow = 4
 		};
 	protected:
 		int borders(int x, int y, int side);
 		int border(int x, int y, int direction);
+		int content(int x, int y);
 
 		int m_cols, m_rows;
 	private:
