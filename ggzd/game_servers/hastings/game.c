@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 4647 2002-09-21 16:46:58Z dr_maux $
+ * $Id: game.c 5231 2002-11-06 09:07:32Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -36,23 +36,134 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <dirent.h>
 
 /* Easysock includes */
 #include <ggz.h>
 
 /* Global game variables */
-struct hastings_game_t hastings_game;
+static struct hastings_game_t hastings_game;
+static struct hastings_map_t *hastings_maps;
+static int mapcount;
 
-/* Setup game state and board */
-void game_init(GGZdMod *ggz)
+void game_loadmap(const char *file)
 {
-	int i, j;
+	FILE *f;
+	char buf[128];
+	enum states {state_title, state_author, state_version, state_anywhere, state_knights, state_nowhere, state_map};
+	enum qualities {quality_ok, quality_bad, quality_error};
+	int state, quality, i, j;
+	int x, y, mapx, mapy;
+	struct hastings_map_t map;
+	const int verbose = 1;
 
-	/* Nobody's move yet */
-	hastings_game.turn = -1;
+	if(verbose) printf("Load map: %s\n", file);
+	f = fopen(file, "r");
+	if(!f) return;
 
-	/* Initialization state */
-	/*hastings_game.state = HASTINGS_STATE_WAIT;*/
+	state = state_title;
+	quality = quality_ok;
+	i = 0;
+	x = 0;
+	y = 0;
+	mapx = 0;
+	mapy = 0;
+
+	while(fgets(buf, sizeof(buf), f))
+	{
+		i++;
+		if(i > 100)
+		{
+			quality = quality_bad;
+			return;
+		}
+
+		if((buf[0] != '\"') && (state == state_knights)) state = state_nowhere;
+		if((buf[0] == '\"') && (state == state_nowhere)) state = state_map;
+		if((buf[0] == '\"') && (state == state_anywhere)) state = state_knights;
+
+		if((strlen(buf) > 3) && (buf[0] == '\"'))
+		{
+			buf[strlen(buf) - 2] = 0;
+			switch(state)
+			{
+				case state_title:
+					map.title = strdup(buf + 1);
+					state = state_author;
+					break;
+				case state_author:
+					map.author = strdup(buf + 1);
+					state = state_version;
+					break;
+				case state_version:
+					map.version = strdup(buf + 1);
+					state = state_anywhere;
+					break;
+				case state_knights:
+					if(y < 10)
+					{
+						bzero(map.board[y], 30);
+						if(strlen(buf + 1) > 30)
+						{
+							buf[31] = 0;
+							quality = quality_bad;
+						}
+						memcpy(map.board[y], buf + 1, strlen(buf + 1));
+						if(strlen(buf + 1) > x) x = strlen(buf + 1);
+						y++;
+					}
+					else quality = quality_bad;
+					break;
+				case state_map:
+					if(y < 10)
+					{
+						bzero(map.boardmap[y], 30);
+						if(strlen(buf + 1) > 30)
+						{
+							buf[31] = 0;
+							quality = quality_bad;
+						}
+						memcpy(map.boardmap[y], buf + 1, strlen(buf + 1));
+						if(strlen(buf + 1) > mapx) mapx = strlen(buf + 1);
+						mapy++;
+					}
+					else quality = quality_bad;
+					break;
+			}
+		}
+	}
+	if(verbose)
+	{
+		printf("Try map: [%s] [%s] [%s]\n", map.title, map.author, map.version);
+		printf("State is %i, sizes are %i/%i, %i/%i\n", state, x, y, mapx, mapy);
+	}
+
+	/* More sanity checks */
+	if(state != state_map) quality = quality_error;
+	if((x != mapx) || (y != mapy)) quality = quality_error;
+	map.height = y;
+	map.width = x;
+
+	/* Consider map if quality is bad at maximum */
+	if((quality == quality_ok) || (quality == quality_bad))
+	{
+		hastings_maps = realloc(hastings_maps, (mapcount + 1) * sizeof(struct hastings_map_t));
+		/*hastings_maps[mapcount] = malloc(sizeof(struct hastings_map_t));*/
+		hastings_maps[mapcount].title = map.title;
+		hastings_maps[mapcount].author = map.author;
+		hastings_maps[mapcount].version = map.version;
+		hastings_maps[mapcount].height = map.height;
+		hastings_maps[mapcount].width = map.width;
+		for(i = 0; i < map.height; i++)
+		{
+			memcpy(hastings_maps[mapcount].board[i], map.board[i], map.width);
+			memcpy(hastings_maps[mapcount].boardmap[i], map.boardmap[i], map.width);
+		}
+		mapcount++;
+		if(verbose) printf("Accepted map: [%s] [%s] [%s]\n", map.title, map.author, map.version);
+	}
+
+	/* FIXME!*/
 
 	/* set up some knights*/
 	memmove(hastings_game.board[0], "11            444  ", 19);
@@ -62,18 +173,6 @@ void game_init(GGZdMod *ggz)
 	memmove(hastings_game.board[4], "77   5   0002222   ", 19);
 	memmove(hastings_game.board[5], " 7   5   0 0 2     ", 19);
 
-	/* Humancode-to-computercode conversion */
-	for (i = 0; i < 6; i++)
-	{
-	 	for (j = 0; j < 19; j++)
-		{
-			if(hastings_game.board[i][j] == 32) hastings_game.board[i][j] = -1;
-			else hastings_game.board[i][j] -= 48;
-			/*if(hastings_game.board[i][j] > hastings_game.playernum - 1) hastings_game.board[i][j] = -1;*/
-			/*if(hastings_game.board[i][j] > ggzdmod_get_num_seats(ggz) - 1) hastings_game.board[i][j] = -1;*/
-		}
-	}
-
 	/* hexagon fields: this is difficult to understand */
 	/* but it works (one line is two columns, and flip it two times to fit) */
 	memmove(hastings_game.boardmap[0], "xxxxxxxxxxxx xxxx  ", 19);
@@ -82,7 +181,52 @@ void game_init(GGZdMod *ggz)
 	memmove(hastings_game.boardmap[3], "xx  xxxxxxxxxxxx   ", 19);
 	memmove(hastings_game.boardmap[4], "xx   xxxxxxxxxxx   ", 19);
 	memmove(hastings_game.boardmap[5], " x   x x x x x     ", 19);
-	
+
+	/* Humancode-to-computercode conversion */
+	for (i = 0; i < 6; i++)
+	{
+	 	for (j = 0; j < 19; j++)
+		{
+			if(hastings_game.board[i][j] == 32) hastings_game.board[i][j] = -1;
+			else hastings_game.board[i][j] -= 48;
+		}
+	}
+}
+
+/* Setup game state and board */
+void game_init(GGZdMod *ggz)
+{
+	int i, j;
+	DIR *dp;
+	struct dirent *ep;
+	char filename[1024];
+
+	/* Reset map list */
+	hastings_maps = NULL;
+	mapcount = 0;
+
+	/* Load maps */
+printf("Loading maps...\n");
+	dp = opendir(GGZDDATADIR "/hastings1066");
+	if(dp)
+	{
+		while((ep = readdir(dp)))
+		{
+			if(!strcmp(ep->d_name, ".")) continue;
+			if(!strcmp(ep->d_name, "..")) continue;
+			snprintf(filename, sizeof(filename), "%s/hastings1066/%s", GGZDDATADIR, ep->d_name);
+
+			/* Go load a map */
+			game_loadmap(filename);
+		}
+	}
+
+	/* Nobody's move yet */
+	hastings_game.turn = -1;
+
+	/* Initialization state */
+	/*hastings_game.state = HASTINGS_STATE_WAIT;*/
+
 	hastings_game.ggz = ggz;
 }
 

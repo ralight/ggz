@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4741 2002-09-26 20:56:08Z dr_maux $
+# $Id: Makefile.am 5231 2002-11-06 09:07:32Z dr_maux $
 
 EXTRA_DIST = hastings.dsc hastings.room
 
-SUBDIRS = .
+SUBDIRS = maps
 
 ggzdexecmod_PROGRAMS = ggzd.hastings
 ggzdgame_DATA = hastings.dsc

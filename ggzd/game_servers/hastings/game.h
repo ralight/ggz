@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.h 4647 2002-09-21 16:46:58Z dr_maux $
+ * $Id: game.h 5231 2002-11-06 09:07:32Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -82,6 +82,15 @@ struct hastings_game_t {
 	int parties[8]; /* e.g. countries */
 	int teams[8]; /* 1 or 0, north or south, ... */
 	char teamnames[8]; /* to be named */
+};
+
+struct hastings_map_t {
+	char board[10][30];
+	char boardmap[10][30];
+	char *author;
+	char *version;
+	char *title;
+	int height, width;
 };
 
 void game_init(GGZdMod *ggz);
