@@ -59,14 +59,14 @@ eps-files: $(FIG_FILES)
 	done
 
 
-DIST-hook: html-docs
-	mkdir $(distdir)/html
-	-cp $(srcdir)/html/* $(distdir)/html
-	-cp $(srcdir)/txt $(distdir)
+#dist-hook: html-docs
+#	mkdir $(distdir)/html
+#	-cp $(srcdir)/html/* $(distdir)/html
+#	-cp $(srcdir)/txt $(distdir)
 #	mkdir $(distdir)/images
 #	-cp $(srcdir)/images/*.gif $(srcdir)/images/*.jpg $(distdir)/images
 
-install-data-local: 
+#install-data-local: 
 #	$(mkinstalldirs) $(DESTDIR)$(gnumeric_helpdir)/images
 #	-for file in $(srcdir)/gnumeric/*.html $(srcdir)/gnumeric/*.css; do \
 #	basefile=`basename $$file`; \

@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 66 $</revnumber>
-	<date>$Date: 2000-02-19 19:34:12 -0800 (Sat, 19 Feb 2000) $</date>
+	<revnumber>$Revision: 93 $</revnumber>
+	<date>$Date: 2000-02-29 07:18:47 -0800 (Tue, 29 Feb 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -112,22 +112,16 @@
     </itemizedlist>
   </chapter>
 
-  <chapter id="comm"><title>Client-Server Communications</title>
+  <chapter id="client-server-comm"><title>Client-Server Communications</title>
     <para>
       The client and GGZ server will communicate via the protocol
       described here.  Individual games will of course communicate via
-      their own protocol.  These messages must be embedded in the GGZ
-      message type REQ_GAME or RSP_GAME.  It is recommended that game
-      developers use a message passing scheme similar to the one
+      their own protocol.  These messages must be embedded within the
+      GGZ message type REQ_GAME or RSP_GAME.  It is recommended that
+      game developers use a message passing scheme similar to the one
       described here for consistency.
     </para>
 
-    <para>
-      The server will provide a chat facility independent of the type
-      of game being played.  This facility is provided via the
-      REQ_CHAT/MSG_CHAT message types.
-    </para>
-    
     <section id="opcodes"><title>Interactions</title>
       <para>
 	Three types of data are exchanged between the client and the server:
@@ -141,143 +135,181 @@
 	  <listitem>
 	    <para>
 	      str: a multibyte null-terminated string preceeded by
-	      integer length.
+	      its length (including null-termination) as an integer.
 	    </para>
 	  </listitem>
 	</itemizedlist>
       </para>
 
       <para>
-	Interactions take one of three forms: messages, requests, and
-	responses.  Each interaction will be prefaced by a header
-	indentifying it (some interactions consist solely of the
-	header).  The header (stored as an enumerated value) is sent
-	as an int.
+	Interactions take one of three forms: server messages, client
+	requests, and server responses.  Each interaction is prefaced
+	by a header indentifying it (some interactions consist solely
+	of the header).  The header (stored as an enumerated value) is
+	sent as an int.
       </para>
       
-      <para>
-	The following is a complete list of interactions between the
-	client and the server prior to launching a game (interactions
-	for specific game modules will be described elsewhere).
-	Rather than list all of the client originated messages, and
-	then all of the server originated messages, I have chosen to
-	intersperse client requests with the corresponding server
-	responses.
-      </para>
-    
+      <section id="server-messages"><title>Server Messages</title>
+
+	<para>
+	  These messages are received from the server withouy being
+	  directly requested by the client.  They are used by the
+	  server to pass necessary information to the client.
+	</para>
       <programlisting role="psuedocode">
-        MSG_SERVER_ID
-          str: server identification (plus relevant server options)
+	  MSG_SERVER_ID
+	    str: server identification (plus relevant server options)
 
-        MSG_SERVER_FULL
+	  MSG_SERVER_FULL
 
-        MSG_MOTD
-          str: message of the day (useful or otherwise information from server)
+	  MSG_MOTD
+	    str: message of the day (useful or otherwise information from server)
 
-        REQ_NEW_LOGIN
-          str: login name
-        RSP_NEW_LOGIN
-          chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
-          str: initial password (if success)
-          int: game type checksum (if success)
+	  MSG_CHAT
+            str: name of user who sent chat
+            str: chat string
 
-        REQ_LOGIN
-          str: login name
-          str: password
-        RSP_LOGIN
-          chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
-          int: game type checksum (if success)
-          chr: reservation flag 
+	  MSG_USERS_UPDATE
 
-        REQ_ANON_LOGIN
-          str: name
-        RSP_ANON_LOGIN
-          chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
-          int: game type checksum (if success)
+	  MSG_TYPES_UPDATE
 
-        REQ_LOGOUT
-        RSP_LOGOUT
-          chr: success flag (0 for success, -1 error)
+	  MSG_TABLES_UPDATE
+	</programlisting>
+      </section>
 
-        REQ_PREF_CHANGE
-          chr: preference flag (indicates pref to change)
-          (str): new data value
-        RSP_PREF_CHANGE
-          chr: success flag (0 for success, -1 error)
-
-        REQ_REMOVE_USER
-          str: login name
-          str: password
-        RSP_REMOVE_USER
-          chr: success flag (0 for success, -1 error)
-
-        REQ_USER_LIST
-        RSP_USER_LIST
-          int: number of users (-1 for error)
-          sequence of
-            str: user name
-            int: game table index (-1 if user not at a table)
-
-        REQ_GAME_TYPES
-          chr: verbose flag (0 for short list, 1 for long descriptions)
-        RSP_GAME_TYPES
-          int: number of game types (-1 for error)
-          sequence of
-            int: game type index
-            str: game name
-            str: version 
-            str: description (only if long)
-            str: author (only if long)
-            str: homepage (only if long)
-
-        REQ_TABLE_LIST
-          int: game type index (-1 for all type, -2 for reserved, -3 for open games)
-        RSP_TABLE_LIST
-          int: number of games (-1 for error)
-          sequence of
-            int: table index
-            int: game type index
-            chr: play/wait flag (0 if waiting for players, 1 if playing)
-	    int: number of seats at table
-	    int: number of open seats at table
-	    int: number of human players at table
-            sequence of
-              str: name of human player at table
+      <section id="player-management"><title>Player Management</title>
+	<para>
+	  These are client requests and the corresponding server
+	  responses related to managing player sessions and data.
+	</para>
+	
+	<programlisting role="psuedocode">
       
-        REQ_TABLE_OPTIONS
-          int: game index
-        RSP_TABLE_OPTIONS
-          int: size of options struct (-1 for error)
-          struct: game options
-  
-        REQ_LAUNCH_GAME
-          int: game type index
-          int: number of players
-          chr: computer player bitmask
-          int: number of reservations (possibly 0)
-          sequence of
-            str: login name for reservation
-          int: size of options struct
-          struct: game options
-        RSP_LAUNCH_GAME
-          chr: success flag (0 for success, negative values for various failures)
-  
-        REQ_JOIN_GAME
-          int: game index
-        RSP_JOIN_GAME
-          chr: success flag (0 for success, -1 for failure)
-  
-        REQ_USER_STAT
-          str: login name (NULL for all users)
-          int: game type index (-1 for all types)
-        RSP_USER_STAT
-          int: number of game types (-1 for error)
-          sequence of
+	  REQ_NEW_LOGIN
+            str: login name
+	  RSP_NEW_LOGIN
+            chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
+            str: initial password (if success)
+            int: game type checksum (if success)
+
+	  REQ_LOGIN
+            str: login name
+            str: password
+	  RSP_LOGIN
+            chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
+            int: game type checksum (if success)
+            chr: reservation flag 
+
+	  REQ_ANON_LOGIN
+            str: name
+	  RSP_ANON_LOGIN
+            chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
+            int: game type checksum (if success)
+
+	  REQ_LOGOUT
+	  RSP_LOGOUT
+            chr: success flag (0 for success, -1 error)
+
+	  REQ_PREF_CHANGE
+            chr: preference flag (indicates pref to change)
+            (str): new data value
+	  RSP_PREF_CHANGE
+            chr: success flag (0 for success, -1 error)
+
+	  REQ_REMOVE_USER
+            str: login name
+            str: password
+	  RSP_REMOVE_USER
+            chr: success flag (0 for success, -1 error)
+
+	</programlisting>
+      </section>
+
+      <section id="info-request"><title>Information request</title>
+	<para>
+	  These are client requests for information and the
+	  corresponding server responses.
+	</para>
+	
+	<programlisting role="psuedocode">
+      
+	  REQ_USER_LIST
+	  RSP_USER_LIST
+            int: number of users (-1 for error)
+            sequence of
+              str: user name
+              int: game table index (-1 if user not at a table)
+
+	  REQ_GAME_TYPES
+            chr: verbose flag (0 for short list, 1 for long descriptions)
+	  RSP_GAME_TYPES
+            int: number of game types (-1 for error)
+            sequence of
+              int: game type index
+              str: game name
+              str: version 
+              str: description (only if long)
+              str: author (only if long)
+              str: homepage (only if long)
+
+	  REQ_TABLE_LIST
+            int: game type index (-1 for all type, -2 for reserved, -3 for open games)
+	  RSP_TABLE_LIST
+            int: number of games (-1 for error)
+            sequence of
+              int: table index
+              int: game type index
+              chr: play/wait flag (0 if waiting for players, 1 if playing)
+   	      int: number of seats at table
+  	      int: number of open seats at table
+	      int: number of human players at table
+              sequence of
+                str: name of human player at table
+      
+          REQ_TABLE_OPTIONS
+            int: game index
+          RSP_TABLE_OPTIONS
+            int: size of options struct (-1 for error)
+            struct: game options
+
+	  REQ_USER_STAT
+            str: login name (NULL for all users)
+            int: game type index (-1 for all types)
+	  RSP_USER_STAT
+            int: number of game types (-1 for error)
+            sequence of
+              int: game type index
+              int: number of users 
+              sequence of 
+                int: number of games played 
+                int: number of games won
+	</programlisting>
+      </section>
+      
+      <section id="table-management"><title>Table Management</title>
+	<para>
+	  These are client requests related to game tables and the
+	  corresponding server responses.
+	</para>
+	
+	<programlisting role="psuedocode">
+	  REQ_LAUNCH_GAME
             int: game type index
-            int: number of users 
-            sequence of 
-              int: number of games played 
-              int: number of games won
+            int: number of players
+            chr: computer player bitmask
+            int: number of reservations (possibly 0)
+            sequence of
+              str: login name for reservation
+            int: size of options struct
+            struct: game options
+          RSP_LAUNCH_GAME
+            chr: success flag (0 for success, negative values for various failures)
+  
+	  REQ_JOIN_GAME
+            int: game index
+	  RSP_JOIN_GAME
+            chr: success flag (0 for success, -1 for failure)
+
       </programlisting>
     </section>
 
@@ -285,8 +317,9 @@
       <para>
 	Similar to the "Taunt" feature provided with NetSpades, the
 	GGZ server will provide the ability to send messages to other
-	players.  Here are the interactions necessary for the chat
-	functionality.
+	players via the server.   The following interaction describes
+	how the client sends a chat message to the server.  Chats are
+	sent to the client with the MSG_CHAT opcode described above.
       </para>
 
       <programlisting role="psuedocode">
@@ -295,37 +328,35 @@
         RSP_CHAT
           chr: success flag (0 for success, -1 error)
   
-        MSG_CHAT
-          str: name of user who sent chat
-          str: chat string
-      </programlisting>
-    </section>
-
-    <section id="gamemsg"><title>Game Interactions</title>
-      <para>
-	In order to allow the GGZ server to identify chat and other
-	control messages during the course of a game, it is necessary
-	that interactions with a game being played have an
-	identifiable header.  This header will be stripped
-	off before the rest of the data is sent to the game itself.
-	Similarly, any messages from the game to the client will have
-	a header prepended.
-
-	Messages from the client take the following form:
-
-	<programlisting role="pseudocode">
-	  REQ_GAME
-	    int: size of data in bytes
-	    data
 	</programlisting>
+      </section>
 
-	Similarly, messages from the server appear as:
-	<programlisting role="pseudocode">
-	  RSP_GAME
-	    int: size of data in bytes
-	    data
-	</programlisting>
-      </para>
+      <section id="game-messages"><title>Game Interactions</title>
+	<para>
+	  In order to allow the GGZ server to identify chat and other
+	  control messages during the course of a game, it is
+	  necessary that interactions with a game being played have an
+	  identifiable header.  This header will be stripped off
+	  before the rest of the data is sent to the game itself.
+	  Similarly, any messages from the game to the client will
+	  have a header prepended.
+	  
+	  Messages from the client take the following form:
+
+	  <programlisting role="pseudocode">
+	    REQ_GAME
+	      int: size of data in bytes
+	      (data)
+	  </programlisting>
+
+	  Similarly, messages from the server appear as:
+	  <programlisting role="pseudocode">
+	    RSP_GAME
+	      int: size of data in bytes
+	      (data)
+	  </programlisting>
+	</para>
+      </section>
     </section>
   </chapter>
 
