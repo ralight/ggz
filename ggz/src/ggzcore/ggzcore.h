@@ -115,10 +115,20 @@ typedef GGZHookReturn (*GGZHookFunc)(unsigned int id,
 typedef void (*GGZDestroyFunc)(void* data);
 
 
-
+/**
+ * This controls the type of login a user chooses.  A different
+ * value will require different information to be sent to
+ * the server.
+ */
 typedef enum {
+	/** Standard login; uname and correct passwd needed. */
 	GGZ_LOGIN,
+	
+	/** Guest login; only a uname is required. */	
 	GGZ_LOGIN_GUEST,
+	
+	/** New user login; only a uname is required.  Password will be
+	 *  assigned by the server. */
 	GGZ_LOGIN_NEW
 } GGZLoginType;
 
@@ -143,22 +153,54 @@ typedef enum {
 } GGZSeatType;
 #endif /* GGZ_SEAT_TYPE_INCLUDED */
 
-
+/**
+ * A GGZServerEvent is an event triggered by a communication from the
+ * server.  Each time an event occurs, the associated event handler
+ * will be called.
+ * @see ggzcore_server_add_event_hook
+ */
 typedef enum {
+	/** We have just made a connection to the server.
+	 *  @note This just means we've established a connection socket.
+	 *  @see ggzcore_server_connect */
 	GGZ_CONNECTED,
+	
+	/** Error: we have failed to connect to the server. */
 	GGZ_CONNECT_FAIL,
+	
+	/** We have negotiated a connection to the server.
+	 *  @note This just means we've determined ggzd is at the other end.
+	 *  @see ggzcore_server_connect  */
 	GGZ_NEGOTIATED,
+	
+	/** Error: negotiation failure.  Could be the wrong version... */
 	GGZ_NEGOTIATE_FAIL,
+	
+	/** We have successfully logged in.  We can now start doing stuff.
+	 *  @see ggzcore_server_login */
 	GGZ_LOGGED_IN,
+	
+	/** Error: login failure */
 	GGZ_LOGIN_FAIL,
+	
 	GGZ_MOTD_LOADED,
 	GGZ_ROOM_LIST,
 	GGZ_TYPE_LIST,
+	
+	/** We have successfully entered a room.
+	 *  @see ggzcore_server_join_room */
 	GGZ_ENTERED,
+	
+	/** Error: we have tried to enter a room and failed. */
 	GGZ_ENTER_FAIL,
 	GGZ_LOGOUT,
+	
+	/** Error: a network error occurred. */
 	GGZ_NET_ERROR,
+	
+	/** Error: a communication protocol error occured. */
 	GGZ_PROTOCOL_ERROR,
+	
 	GGZ_CHAT_FAIL,
 	GGZ_STATE_CHANGE
 } GGZServerEvent;
@@ -213,11 +255,26 @@ typedef enum {
 	GGZ_STATE_LOGGING_OUT,
 } GGZStateID;
 
-/** Chat subops */					/* PMCCCCCC */
+/** @brief Chat subops.
+ *
+ *  Each time we send a chat to the server, it will have one of these
+ *  types associated with it.
+ *  @see ggzcore_room_chat
+ */					/* PMCCCCCC */
 typedef enum {
+	/** A normal chat, just a message sent to the current room. */
 	GGZ_CHAT_NORMAL = 	0x40,	/* 01000000 */
+	
+	/** An announcement, usually triggered with /wall.  Only
+	 *  admins can do this, and it is announced in all rooms. */
 	GGZ_CHAT_ANNOUNCE =	0x60,	/* 01100000 */
+	
+	/** A beep.  We beep a player, and their client will run
+	 *  the beep. */
 	GGZ_CHAT_BEEP = 	0x80,	/* 10000000 */
+	
+	/** A personal message to another player.  It consists of both
+	 *  a message and a target player. */
 	GGZ_CHAT_PERSONAL =	0xC0,	/* 11000000 */
 } GGZChatOp;
 
@@ -232,16 +289,47 @@ typedef struct _GGZGameType GGZGameType;
 typedef struct _GGZModule   GGZModule;
 typedef struct _GGZGame     GGZGame;
 
-/** Function for allocating and initializing new GGZServer object */
+/** @brief Create a new server object.
+ *
+ *  Call this function to create a server object.  This object holds
+ *  all state data for communicating with a ggz server.  It is
+ *  necessary for any kind of connection.
+ */
 GGZServer* ggzcore_server_new(void);
 
+/** @brief Reset the server object.
+ *
+ *  After you've disconnected, call this function to discard all state
+ *  data and reset the state of the server object.  You can then connect
+ *  again.
+ *  @note You should disconnect before resetting.
+ */
 int ggzcore_server_reset(GGZServer *server);
 
-/* Functions for attaching hooks to GGZServer events */
+/*
+ * Functions for attaching hooks to GGZServer events
+ */
+
+/** @brief Register a callback handler for a server event.
+ *
+ *  Call this function to register the given GGZHookFunc as a
+ *  handler for the given event.  Then any time that event
+ *  happens the handler function will be called.
+ *  @param server The GGZ server object.
+ *  @param event The server event to be handled.
+ *  @param func The handler function to be called when the event occurs.
+ *  @return A hook ID value to identify this handler.
+ *  @note Equivalent to ggzcore_server_add_event_hook_full with data==NULL.
+ *  @note More than one handler can be registered for each event.
+ */
 int ggzcore_server_add_event_hook(GGZServer *server,
 				  const GGZServerEvent event, 
 				  const GGZHookFunc func);
 
+/** @brief Register a callback handler for a server event.
+ *  @see ggzcore_server_add_event_hook
+ *  @param data An arbitrary pointer that will be passed to the hook function.
+ */					
 int ggzcore_server_add_event_hook_full(GGZServer *server,
 				       const GGZServerEvent event, 
 				       const GGZHookFunc func,
@@ -277,8 +365,15 @@ char*        ggzcore_server_get_password(GGZServer *server);
 int          ggzcore_server_get_fd(GGZServer *server);
 GGZStateID   ggzcore_server_get_state(GGZServer *server);
 
+/** @brief Return the number of rooms on the server, or -1 on error.
+ *  @note Until we retrieve the list of rooms, this will return 0.
+ */
 int          ggzcore_server_get_num_rooms(GGZServer *server);
+
+/** @brief Return the current room, or NULL if there is none. */
 GGZRoom*     ggzcore_server_get_cur_room(GGZServer *server);
+
+/** @brief Return the nth room on the server, or NULL on error. */
 GGZRoom*     ggzcore_server_get_nth_room(GGZServer *server, 
 					 const unsigned int num);
 
