@@ -178,7 +178,7 @@ static void spades_set_player_message(player_t p)
 	char* message = game.seats[s].message;
 	int len = 0;
 
-	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d (%d)\n", game.players[p].score, GSPADES.bags[p%2]);
+	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d\n", game.players[p].score);
 	if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
 		/* we show both the individual and team contract */
 		char bid_text[game.max_bid_length];
@@ -190,7 +190,7 @@ static void spades_set_player_message(player_t p)
 		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d (%d)\n",
 			game.players[p].tricks, game.players[p].tricks + game.players[(p+2)%4].tricks);
 	}
-	if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
+	if ( (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) && game.players[p].bid_count > 0) {
 			char bid_text[game.max_bid_length];
 			game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
 			if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text);
