@@ -2,6 +2,8 @@
 
 SUBDIRS = .
 
+INCLUDES = -I$(top_srcdir)/easysock 
+
 bin_PROGRAMS = spades
 
 spades_SOURCES = card.c \
@@ -16,4 +18,6 @@ spades_SOURCES = card.c \
 		 protocols.h \
 		 socketfunc.c \
 		 socketfunc.h
-		  
+
+spades_LDADD = $(LDADD) $(top_builddir)/easysock/libeasysock.la 
+spades_LDFLAGS = -static

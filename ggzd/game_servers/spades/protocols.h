@@ -1,7 +1,7 @@
 /*
  * File: protocols.h
  * Author: Brent Hendricks
- * Project: NetGames
+ * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
  *
@@ -23,59 +23,80 @@
  */
 
 
-typedef enum { 
-      REQ_NEW_LOGIN,
-      REQ_LOGIN,
-      REQ_ANON_LOGIN,
-      REQ_MOTD,
-      REQ_LOGOUT,
-      REQ_USER_LIST,
-      REQ_PREF_CHANGE,
-      REQ_REMOVE_USER,
-      REQ_GAME_TYPES,
-      REQ_TABLE_LIST,
-      REQ_TABLE_OPTIONS,
-      REQ_LAUNCH_GAME,
-      REQ_JOIN_GAME,
-      REQ_USER_STAT,
-      REQ_CHAT
+typedef enum {
+	REQ_LOGIN_NEW,
+	REQ_LOGIN,
+	REQ_LOGIN_ANON,
+	REQ_LOGOUT,
+	REQ_PREF_CHANGE,
+	REQ_REMOVE_USER,
+
+	REQ_LIST_PLAYERS,
+	REQ_LIST_TYPES,
+	REQ_LIST_TABLES,
+	REQ_TABLE_OPTIONS,
+	REQ_USER_STAT,
+
+	REQ_TABLE_LAUNCH,
+	REQ_TABLE_JOIN,
+	REQ_TABLE_LEAVE,
+
+	REQ_GAME,
+	REQ_CHAT
 } UserToControl;
 
 
-typedef enum { 
-      MSG_SERVER_ID,
-      MSG_SERVER_FULL,
-      RSP_NEW_LOGIN,
-      RSP_LOGIN,
-      RSP_ANON_LOGIN,
-      RSP_MOTD,
-      RSP_LOGOUT,
-      RSP_USER_LIST,
-      RSP_PREF_CHANGE,
-      RSP_REMOVE_USER,
-      RSP_GAME_TYPES,
-      RSP_TABLE_LIST,
-      RSP_TABLE_OPTIONS,
-      RSP_LAUNCH_GAME,
-      RSP_JOIN_GAME,
-      RSP_USER_STAT,
-      RSP_CHAT,
-      RSP_ERROR
+typedef enum {
+	MSG_SERVER_ID,
+	MSG_SERVER_FULL,
+	MSG_MOTD,
+	MSG_CHAT,
+	MSG_UPDATE_PLAYERS,
+	MSG_UPDATE_TYPES,
+	MSG_UPDATE_TABLES,
+	MSG_ERROR,
+
+	RSP_LOGIN_NEW,
+	RSP_LOGIN,
+	RSP_LOGIN_ANON,
+	RSP_LOGOUT,
+	RSP_PREF_CHANGE,
+	RSP_REMOVE_USER,
+
+	RSP_LIST_PLAYERS,
+	RSP_LIST_TYPES,
+	RSP_LIST_TABLES,
+	RSP_TABLE_OPTIONS,
+	RSP_USER_STAT,
+
+	RSP_TABLE_LAUNCH,
+	RSP_TABLE_JOIN,
+	RSP_TABLE_LEAVE,
+
+	RSP_GAME,
+	RSP_CHAT
 } ControlToUser;
 
 
-typedef enum { 
-  RSP_GAME_LAUNCH,
-  MSG_GAME_OVER
+typedef enum {
+	RSP_GAME_LAUNCH,
+	RSP_GAME_JOIN,
+	RSP_GAME_LEAVE,
+	MSG_GAME_OVER
 } TableToControl;
 
-typedef enum { 
-  REQ_GAME_LAUNCH
+typedef enum {
+	REQ_GAME_LAUNCH,
+	REQ_GAME_JOIN,
+	REQ_GAME_LEAVE
 } ControlToTable;
 
 
-#define E_USR_LOOKUP  -1
-#define E_BAD_OPTIONS -2
-#define E_SERVER_FULL -3
-#define E_LAUNCH_FAIL -4
-#define E_RESPOND_FAIL -5
+
+#define E_USR_LOOKUP   -1
+#define E_BAD_OPTIONS  -2
+#define E_ROOM_FULL    -3
+#define E_TABLE_FULL   -4
+#define E_TABLE_EMPTY  -5
+#define E_LAUNCH_FAIL  -6
+#define E_JOIN_FAIL  -7

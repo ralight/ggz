@@ -43,6 +43,14 @@
 #include <socketfunc.h>
 #include <protocols.h>
 #include <err_func.h>
+#include <easysock.h>
+
+#define GGZ_SEAT_OPEN   -1
+#define GGZ_SEAT_COMP   -2
+#define GGZ_SEAT_RESV   -3
+#define GGZ_SEAT_NONE   -4
+
+static int open_seats;
 
 /* Global game information variable */
 gameInfo_t gameInfo;
@@ -186,6 +194,7 @@ void SortHands( Card hands[4][13] ) {
 void GetGameInfo( void ) {
   
 	int i, j, op, status = 0;
+	int seat;
 	char ret;
 	char fd_name[21];
 	struct sockaddr_un addr;
@@ -222,6 +231,21 @@ void GetGameInfo( void ) {
 	gameInfo.gameNum = 0;
 	gameInfo.gamePid = getpid();
   
+	/* Wait for player joins */
+	while (open_seats > 0) {
+		ReadIntOrDie(gameInfo.ggz_sock, &op);
+		ReadIntOrDie(gameInfo.ggz_sock, &seat);
+		readstring(gameInfo.ggz_sock, &gameInfo.players[seat]);
+		es_read_fd(gameInfo.ggz_sock, &gameInfo.playerSock[seat]);
+
+		dbg_msg("%s on %d in seat %d\n", gameInfo.players[seat], 
+			gameInfo.playerSock[seat], seat);
+
+		WriteIntOrDie(gameInfo.ggz_sock, RSP_GAME_JOIN);
+		status = 0;
+		write(gameInfo.ggz_sock, &status, 1);
+		open_seats--;
+	}
 
 	for (i=0; i<4; i++) {
 		if( gameInfo.playerSock[i] == SOCK_COMP ) {
@@ -260,28 +284,39 @@ void GetGameInfo( void ) {
 int ReadOptions( void ) {
   
 	int assign, i, seats, status = -1;
+	
+	open_seats = 4;
   
 	dbg_msg("[%d]: Reading options from server\n", getpid());
 
 	if ( (status = read(gameInfo.ggz_sock, &gameInfo.opt, 12)) < 0) 
 		dbg_msg( "[%d]: Error reading options\n", getpid() );
 	else if (readint(gameInfo.ggz_sock, &seats) < 0) 
-		dbg_msg( "[%d]: Error reading number of slots", getpid() );
+		dbg_msg( "[%d]: Error reading number of slots\n", getpid() );
 	else {
 		for(i=0; i<4; i++) {
 			readint( gameInfo.ggz_sock, &assign);
-			if (assign == -2) {
+			switch (assign) {
+			case GGZ_SEAT_COMP: 
+				open_seats--;
 				gameInfo.playerSock[i] = SOCK_COMP;
 				gameInfo.players[i] = "AI";
-			} else {
+				dbg_msg( "[%d]: Seat %d is bot\n", getpid(), i);
+				break;
+			case GGZ_SEAT_OPEN: 
+				gameInfo.playerSock[i] = SOCK_INVALID;
+				dbg_msg( "[%d]: Seat %d is open\n", getpid(), i);
+				break;
+			default:
+				open_seats--;
 				readstring(gameInfo.ggz_sock, &gameInfo.players[i]);
 				ReadIntOrDie(gameInfo.ggz_sock,
 					     &gameInfo.playerSock[i] );
-
+				dbg_msg( "[%d]: Seat %d is %s on %d\n",
+					 getpid(), i, gameInfo.players[i], 
+					 gameInfo.playerSock[i]);
+				break;
 			}
-			dbg_msg( "[%d]: Player %d has fd %d and name %s\n",
-				 getpid(), i, gameInfo.playerSock[i],
-				 gameInfo.players[i]);
 
 			gameInfo.clientPids[i] = 0;
 		}
