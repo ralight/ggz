@@ -25,6 +25,7 @@
 Map::Map()
 {
 	field = NULL;
+	directions = NULL;
 	m_width = 0;
 	m_height = 0;
 	m_pacmans = 0;
@@ -36,6 +37,9 @@ Map::~Map()
 	for(int j = 0; j < m_height; j++)
 		delete field[j];
 	delete field;
+	for(int j = 0; j < m_height; j++)
+		delete directions[j];
+	delete directions;
 }
 
 bool Map::load(const char *file)
@@ -58,8 +62,12 @@ bool Map::load(const char *file)
 				hy++;
 				m_height++;
 				field[hy] = new int[1024];
+				directions[hy] = new int[1024];
 				for(int i = 0; i < 1024; i++)
+				{
 					field[hy][i] = tile_none;
+					directions[hy][i] = dir_unknown;
+				}
 			}
 			if(c == '#') field[hy][hx] = tile_wall;
 			else if(c == 'O')
@@ -95,6 +103,16 @@ void Map::setTile(int x, int y, int type)
 int Map::tile(int x, int y)
 {
 	return field[x][y];
+}
+
+void Map::setDirection(int x, int y, int dir)
+{
+	directions[x][y] = dir;
+}
+
+int Map::direction(int x, int y)
+{
+	return directions[x][y];
 }
 
 int Map::width()

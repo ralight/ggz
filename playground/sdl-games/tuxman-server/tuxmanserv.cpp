@@ -58,7 +58,8 @@ void TuxmanServer::joinEvent(int player)
 	join_lock = true;
 	*net << Net::channel << fd(player);
 	*net << map_list;
-	*net << "default";
+	*net << 1;
+	*net << "dummy.level";
 }
 
 // Player leave event
@@ -89,6 +90,7 @@ void TuxmanServer::dataEvent(int player)
 	{
 		case map_selected:
 			*net >> &map;
+			std::cout << "got map" << std::endl;
 			startGame(TUXMANDATA "/level9.pac");
 			//startGame(map); // discard map choice for now :)
 			ggz_free(map);
@@ -129,7 +131,19 @@ void TuxmanServer::dataEvent(int player)
 
 void TuxmanServer::idleEvent()
 {
-	std::cout << "(idle)" << std::endl;
+	long diff;
+
+return;
+	//std::cout << "(idle)" << std::endl;
+	gettimeofday(&newtime, NULL);
+
+	diff = newtime.tv_sec - oldtime.tv_sec;
+	diff = diff * 1000 * 1000 + (newtime.tv_usec - oldtime.tv_usec);
+	if(diff > 500 * 1000)
+	{
+		gettimeofday(&oldtime, NULL);
+		moveMonsters();
+	}
 }
 
 // Error handling event
@@ -149,6 +163,7 @@ void TuxmanServer::startGame(const char *mapfile)
 		std::cout << "loading map " << mapfile << " ok" << std::endl;
 		map.dump();
 		*net << map_event << event_start;
+		gettimeofday(&oldtime, NULL);
 	}
 	else
 	{
@@ -156,5 +171,47 @@ void TuxmanServer::startGame(const char *mapfile)
 		*net << map_event << event_error << error_map;
 		//close(fd(player));
 	}
+}
+
+void TuxmanServer::moveMonsters()
+{
+	int pos;
+	bool runok;
+	int x, y;
+
+	for(int j = 0; j < map->height(); j++)
+		for(int i = 0; i < map->width(); i++)
+		{
+			if(map->tile(i, j) == Map::tile_monster)
+			{
+				runok = false;
+				while(!runok)
+				{
+					if(map->direction(i, j) == Map::dir_unknown) pos = rand() % 4 + 1;
+					else pos = rand() % 10;
+					if(pos == Map::dir_left) map->setDirection(i, j, Map::dir_left);
+					else if(pos == Map::dir_right) map->setDirection(i, j, Map::dir_right);
+					else if(pos == Map::dir_up) map->setDirection(i, j, Map::dir_up);
+					else if(pos == Map::dir_down) map->setDirection(i, j, Map::dir_down);
+
+					x = i;
+					y = j;
+					if(map->direction(i, j) == Map::dir_left) x--;
+					else if(map->direction(i, j) == Map::dir_right) x++;
+					else if(map->direction(i, j) == Map::dir_up) y--;
+					else if(map->direction(i, j) == Map::dir_down) y++;
+
+					if((y >= 0) && (y < map->height()) && (x >= 0) && (x < map->width()))
+					{
+						if(map->tile(x, y) != Map::tile_wall)
+						{
+							runok = true;
+							*net << map_monster << i << j << map->direction(i, j);
+						}
+						else map->setDirection(i, j, Map::dir_unknown);
+					}
+				}
+			}
+		}
 }
 

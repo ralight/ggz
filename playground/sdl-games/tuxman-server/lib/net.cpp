@@ -79,7 +79,7 @@ Net &Net::operator<<(int value)
 	}
 	else
 	{
-		//std::cout << "[net] write int: " << value << std::endl;
+		std::cout << "[net] write int: " << value << std::endl;
 		if(m_fd >= 0)
 		{
 			if(buffered)
@@ -96,7 +96,7 @@ Net &Net::operator<<(int value)
 
 Net &Net::operator<<(const char* value)
 {
-	//std::cout << "[net] write string: " << value << std::endl;
+	std::cout << "[net] write string: " << value << std::endl;
 	if(m_fd >= 0)
 	{
 		if(buffered)

@@ -24,6 +24,9 @@
 // GGZ includes
 #include "ggzgameserver.h"
 
+#include <sys/time.h>
+#include <time.h>
+
 // Forward declaration
 class Net;
 class Pacman;
@@ -43,11 +46,13 @@ class TuxmanServer : public GGZGameServer
 
 	private:
 		void startGame(const char *mapfile);
+		void moveMonsters();
 
 		Net *net;
 		Pacman *pac;
 		Map *map;
 		bool join_lock;
+		struct timeval oldtime, newtime;
 };
 
 #endif

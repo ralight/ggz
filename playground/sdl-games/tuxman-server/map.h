@@ -29,6 +29,8 @@ class Map
 
 		void setTile(int x, int y, int type);
 		int tile(int x, int y);
+		void setDirection(int x, int y, int dir);
+		int direction(int x, int y);
 
 		int width();
 		int height();
@@ -51,10 +53,20 @@ class Map
 			tile_pacman
 		};
 
+		enum Directions
+		{
+			dir_unknown,
+			dir_up,
+			dir_left,
+			dir_down,
+			dir_right
+		};
+
 	private:
 		int m_width, m_height;
 		int m_monsters, m_pacmans;
 		int **field;
+		int **directions;
 };
 
 #endif
