@@ -57,7 +57,7 @@ class Network(NetworkBase, NetworkInfo):
 			for i in range(2):
 				seat = self.getbyte()
 				print " + seat", seat
-				if seat != 1: #ggzmod.SEAT_OPEN:
+				if seat != ggzmod.SEAT_OPEN:
 					player = self.getstring()
 					print " + player", player
 		elif op == self.MSG_MOVE:

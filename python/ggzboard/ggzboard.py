@@ -15,6 +15,7 @@ import re
 
 import rsvgsdl
 import sdlnewstuff
+import playertable
 
 class Conf:
 	def __init__(self):
@@ -322,6 +323,8 @@ class GGZBoard:
 				#	updatescreen = 1
 				if key == K_u:
 					sdlnewstuff.gethotnewstuff(game.name())
+				if key == K_p:
+					playertable.show()
 
 			if event.type == MOUSEMOTION:
 				(posx, posy) = event.pos

@@ -72,10 +72,10 @@ class Network(NetworkBase, NetworkInfo):
 		elif op == self.MSG_PLAYERS:
 			print "- players"
 			type1 = self.getchar()
-			if type1 != 1: #ggzmod.SEAT_OPEN:
+			if type1 != ggzmod.SEAT_OPEN:
 				name1 = self.getstring()
 			type2 = self.getchar()
-			if type2 != 1: #ggzmod.SEAT_OPEN:
+			if type2 != ggzmod.SEAT_OPEN:
 				name2 = self.getstring()
 			print " + player1", type1, name1
 			print " + player2", type2, name2
