@@ -56,6 +56,8 @@ if test "$enable_ruby" = yes; then
 
 	if test "x$ruby_includes" = "xNO" || test "x$ruby_libraries" = "xNO"; then
 		AC_MSG_RESULT(no.)
+		ruby_includes=""
+		ruby_libraries=""
 	else
 		ruby_includes="-I $ruby_includes"
 		ruby_libraries="-L $ruby_libraries -lruby"
