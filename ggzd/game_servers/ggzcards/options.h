@@ -22,6 +22,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-130
  */
 
+#include <string.h>
+
 extern int options_set();
 extern int rec_options(int, int*);
 
