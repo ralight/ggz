@@ -40,51 +40,8 @@ static int game_handle_newgame(int);
 /* Setup game state and board */
 void game_init(void)
 {
-	int p, q, d;
-	
 	escape_game.turn = -1;
 	escape_game.state = ESCAPE_STATE_INIT;
-	
-	for(p = 0;p<escape_game.wallwidth * 2 + escape_game.goalwidth;p++){
-		for(q = 0;q<=escape_game.boardheight;q++){
-			for(d = 0;d<10;d++){
-				escape_game.board[p][q][d] = dtEmpty;
-            	}
-		}
-	}
-    
-    	for(p = 0;p<escape_game.wallwidth * 2 + escape_game.goalwidth;p++){
-	      	escape_game.board[p][0][4] = dtBlocked;
-	        	escape_game.board[p][0][7] = dtBlocked;
-	        	escape_game.board[p][0][8] = dtBlocked;
-	        	escape_game.board[p][0][9] = dtBlocked;
-	        	escape_game.board[p][0][6] = dtBlocked;
-	        
-	        	escape_game.board[p][(int)escape_game.boardheight][4] = dtBlocked;
-	        	escape_game.board[p][(int)escape_game.boardheight][1] = dtBlocked;
-	        	escape_game.board[p][(int)escape_game.boardheight][2] = dtBlocked;
-	        	escape_game.board[p][(int)escape_game.boardheight][3] = dtBlocked;
-	        	escape_game.board[p][(int)escape_game.boardheight][6] = dtBlocked;
-	}
-    
-	for(q = 0;q<escape_game.boardheight;q++){
-	        	escape_game.board[0][q][1] = dtBlocked;
-	        	escape_game.board[0][q][4] = dtBlocked;
-	        	escape_game.board[0][q][7] = dtBlocked;
-	        	escape_game.board[0][q][8] = dtBlocked;
-	        	escape_game.board[0][q][2] = dtBlocked;
-	        
-	        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][8] = dtBlocked;
-	        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][9] = dtBlocked;
-	        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][6] = dtBlocked;
-	        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][3] = dtBlocked;
-	        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][2] = dtBlocked;
-	}
-    
-	escape_game.board[1][1][7] = dtBlocked;
-    	escape_game.board[1][escape_game.boardheight - 1][1] = dtBlocked;
-    	escape_game.board[escape_game.goalwidth + 2 * escape_game.wallwidth - 1][1][9] = dtBlocked;
-    	escape_game.board[escape_game.goalwidth + 2 * escape_game.wallwidth - 1][escape_game.boardheight - 1][3] = dtBlocked;
 }
 
 /* Handle message from GGZ server */
@@ -163,11 +120,53 @@ int game_handle_player(int num)
 static int game_get_options(int seat)
 {
 	int fd = ggz_seats[seat].fd;
-
+	int p, q, d;
+	
 	if(es_read_char(fd, &escape_game.boardheight) < 0
 	   || es_read_char(fd, &escape_game.wallwidth) < 0
 	   || es_read_char(fd, &escape_game.goalwidth) < 0)
 		return -1;
+
+	for(p = 0;p<escape_game.wallwidth * 2 + escape_game.goalwidth;p++){
+		for(q = 0;q<=escape_game.boardheight;q++){
+			for(d = 0;d<10;d++){
+				escape_game.board[p][q][d] = dtEmpty;
+            	}
+		}
+	}
+    
+    	for(p = 0;p<escape_game.wallwidth * 2 + escape_game.goalwidth;p++){
+	      	escape_game.board[p][0][4] = dtBlocked;
+	        	escape_game.board[p][0][7] = dtBlocked;
+	        	escape_game.board[p][0][8] = dtBlocked;
+	        	escape_game.board[p][0][9] = dtBlocked;
+	        	escape_game.board[p][0][6] = dtBlocked;
+	        
+	        	escape_game.board[p][(int)escape_game.boardheight][4] = dtBlocked;
+	        	escape_game.board[p][(int)escape_game.boardheight][1] = dtBlocked;
+	        	escape_game.board[p][(int)escape_game.boardheight][2] = dtBlocked;
+	        	escape_game.board[p][(int)escape_game.boardheight][3] = dtBlocked;
+	        	escape_game.board[p][(int)escape_game.boardheight][6] = dtBlocked;
+	}
+    
+	for(q = 0;q<escape_game.boardheight;q++){
+	        	escape_game.board[0][q][1] = dtBlocked;
+	        	escape_game.board[0][q][4] = dtBlocked;
+	        	escape_game.board[0][q][7] = dtBlocked;
+	        	escape_game.board[0][q][8] = dtBlocked;
+	        	escape_game.board[0][q][2] = dtBlocked;
+	        
+	        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][8] = dtBlocked;
+	        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][9] = dtBlocked;
+	        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][6] = dtBlocked;
+	        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][3] = dtBlocked;
+	        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][2] = dtBlocked;
+	}
+    
+	escape_game.board[1][1][7] = dtBlocked;
+    	escape_game.board[1][escape_game.boardheight - 1][1] = dtBlocked;
+    	escape_game.board[escape_game.goalwidth + 2 * escape_game.wallwidth - 1][1][9] = dtBlocked;
+    	escape_game.board[escape_game.goalwidth + 2 * escape_game.wallwidth - 1][escape_game.boardheight - 1][3] = dtBlocked;
 
 	return game_update(ESCAPE_EVENT_OPTIONS, NULL);
 }
