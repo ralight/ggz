@@ -22,6 +22,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include "ggzdmod.h"
+
 #define PROTOCOL_VERSION 6
 /* Chess module design
  *
@@ -278,6 +280,8 @@
 
 /* Game info structure */
 struct chess_info {
+  /* GGZ data object */
+  GGZdMod *ggz;
   /* Clock type 
    * 0 -> No clock
    * 1 -> Client

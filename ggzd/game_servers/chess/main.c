@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Main loop
- * $Id: main.c 2649 2001-11-04 17:33:57Z jdorje $
+ * $Id: main.c 2810 2001-12-09 00:39:33Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -23,8 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
-#include "../../ggzdmod/ggz_server.h"
+#include <stdio.h>
 
 #include "chess.h"
 #include "game.h"
@@ -34,8 +33,15 @@ extern struct chess_info game_info;
 
 int main(void)
 {
+  /* Initialize GGZ. */
+  GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
+  ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &game_handle_ggz_state);
+  ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz_join);
+  ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz_leave);
+  ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player_data);
 
   /* Init the game info */
+  game_info.ggz = ggz;
   game_info.clock_type = -1;
   game_info.seconds[0] = -1;
   game_info.seconds[1] = -1;
@@ -47,14 +53,15 @@ int main(void)
   /* White player starts ! */
   game_info.turn = 0;
 
-  /* Set the handlers */
-  ggzd_set_handler(GGZ_EVENT_LAUNCH, &ggz_update);
-  ggzd_set_handler(GGZ_EVENT_JOIN, &ggz_update);
-  ggzd_set_handler(GGZ_EVENT_LEAVE, &ggz_update);
-  ggzd_set_handler(GGZ_EVENT_QUIT, &ggz_update);
-  ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
+  /* Play! */
+  if (ggzdmod_connect(ggz) < 0) {
+    fprintf(stderr, "Couldn't connect to GGZ.\n");
+    return -1;
+  }
+  (void)ggzdmod_loop(ggz);
+  (void)ggzdmod_disconnect(ggz);
+  ggzdmod_free(ggz);
 
-  (void)ggzd_main_loop();
   return 0;
 }
 
