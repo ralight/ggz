@@ -109,3 +109,29 @@ int _ggzcore_free(const void *ptr, char *tag, int line)
 
 	return 0;
 }
+
+
+int _ggzcore_memory_check(void)
+{
+	struct _memptr *memptr;
+
+	ggzcore_debug(GGZ_DBG_MEMORY, "*** Memory Leak Check ***");
+	if(!alloc) {
+		memptr = alloc;
+		while(memptr != NULL) {
+			ggzcore_debug(GGZ_DBG_MEMORY,
+		      		"%d bytes left allocated at %p by %s/%d\n",
+		      		memptr->size, memptr->ptr,
+				memptr->tag, memptr->line);
+			memptr = memptr->next;
+		}
+		ggzcore_debug(GGZ_DBG_MEMORY, "*** End Memory Leak Check ***");
+
+		return -1;
+	}
+
+	ggzcore_debug(GGZ_DBG_MEMORY, "All clean!");
+	ggzcore_debug(GGZ_DBG_MEMORY, "*** End Memory Leak Check ***");
+
+	return 0;
+}
