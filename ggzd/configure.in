@@ -240,7 +240,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 dnl Which progs to compile
 dnl ======================
 
-SUBDIRS="man"
+SUBDIRS="man ggzdmod"
 
 if test "$enable_server" = yes; then
     SUBDIRS="$SUBDIRS ggzd"
@@ -262,7 +262,8 @@ AC_SUBST(ggzdstatedir)
 AC_SUBST(packagesrcdir)
 AC_SUBST(database)
 
-AC_OUTPUT([Makefile 
+AC_OUTPUT([Makefile
+	   ggzdmod/Makefile
            ggzd/Makefile 
 	   ggzd/ggzd.conf
 	   ggzd/ggzd.test

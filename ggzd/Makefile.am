@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-DIST_SUBDIRS = ggzd game_servers doc man
+DIST_SUBDIRS = ggzdmod ggzd game_servers doc man
 CLEAN_FILES = ggzd.debug ggzd.log
 SUBDIRS = @SUBDIRS@
 

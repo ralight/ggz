@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2562 2001-10-14 09:05:00Z jdorje $
+ * $Id: ggzdmod.h 2563 2001-10-14 09:21:40Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -57,12 +57,14 @@ typedef enum {
 	GGZMOD_GAME
 } GGZdModType;
 
+/* We'll just pass this around as a void* */
+typedef void GGZdMod;
 
 /* GGZdMod event handler prototype */
 typedef void (*GGZdModHandler) (GGZdMod *, GGZdModEvent e, void *data);
 
 
-typdef struct _GGZSeat {
+typedef struct _GGZSeat {
 
 	/* Seat index */
 	int num;
