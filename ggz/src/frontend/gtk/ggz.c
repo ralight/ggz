@@ -126,13 +126,18 @@ static GGZHookReturn ggz_connected(GGZServerEvent id, void* event_data, void* us
 static GGZHookReturn ggz_connect_fail(GGZServerEvent id, void* event_data, void* user_data)
 {
 	GtkWidget *tmp;
+	gchar* msg;
+
+	msg = g_strdup_printf("Error connecting to server: %s", (char*)event_data);
+	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	g_free(msg);
 
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
 	gtk_widget_set_sensitive(tmp, TRUE);
-
-	msgbox("Error connecting to server.", "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	
 	return GGZ_HOOK_OK;
 }
+
 
 static GGZHookReturn ggz_negotiated(GGZServerEvent id, void* event_data, void* user_data)
 {
@@ -589,7 +594,11 @@ static GGZHookReturn ggz_table_launched(GGZRoomEvent id, void* event_data, void*
 
 static GGZHookReturn ggz_table_launch_fail(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	/*output_text("-- Table launch failed: %s", event_data);*/
+	gchar* msg;
+
+	msg = g_strdup_printf("Error launching table: %s", (char*)event_data);
+	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	g_free(msg);
 
 	game_quit();
 
@@ -606,7 +615,11 @@ static GGZHookReturn ggz_table_joined(GGZRoomEvent id, void* event_data, void* u
 
 static GGZHookReturn ggz_table_join_fail(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	/*output_text("-- Table join failed: %s", event_data);*/
+	gchar* msg;
+
+	msg = g_strdup_printf("Error joining table: %s", (char*)event_data);
+	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	g_free(msg);
 
 	game_quit();
 
@@ -626,7 +639,12 @@ static GGZHookReturn ggz_table_left(GGZRoomEvent id, void* event_data, void* use
 
 static GGZHookReturn ggz_table_leave_fail(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	/*output_text("-- Table leave failed");*/
+	gchar* msg;
+
+	msg = g_strdup_printf("Error leaving table: %s", (char*)event_data);
+	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	g_free(msg);
+
 	return GGZ_HOOK_OK;
 }
 	
