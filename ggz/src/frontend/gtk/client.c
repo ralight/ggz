@@ -31,6 +31,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <ggzcore.h>
+#include <stdlib.h>
 
 #include "about.h"
 #include "client.h"
@@ -104,6 +105,7 @@ gboolean client_chat_entry_key_press_event(GtkWidget *widget,
 					   GdkEventKey *event, gpointer data);
 static void client_send_button_clicked(GtkButton *button, gpointer data);
 static void client_info_activate(GtkMenuItem *menuitem, gpointer data);
+static int client_get_table_index(guint row);
 				 
 
 
@@ -186,7 +188,7 @@ client_joinm_activate		(GtkMenuItem	*menuitem,
         	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
         	game_init(module);
  
-        	table_index = tablerow;
+        	table_index = client_get_table_index(tablerow);
         	ggzcore_room_join_table(room, table_index);
 		tablerow = -1;
 	}
@@ -528,7 +530,7 @@ client_join_button_clicked		(GtkButton	*button,
         	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
         	game_init(module);
  
-        	table_index = tablerow;
+        	table_index = client_get_table_index(tablerow);
         	ggzcore_room_join_table(room, table_index);
 		tablerow = -1;
 	}
@@ -668,7 +670,7 @@ client_table_event			(GtkWidget	*widget,
 	        	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
         		game_init(module);
  
-	        	table_index = tablerow;
+			table_index = client_get_table_index(tablerow);
         		ggzcore_room_join_table(room, table_index);
 			tablerow = -1;
 		}
@@ -683,6 +685,20 @@ client_room_clist_select_row		(GtkCList       *clist,
                                          GdkEvent       *event,
                                          gpointer        data)
 {
+}
+
+
+static int client_get_table_index(guint row)
+{
+	GtkWidget *tmp;
+	char *text;
+	int index;
+
+	tmp = lookup_widget(win_main, "table_clist");
+	gtk_clist_get_text(GTK_CLIST(tmp), row, 0, &text);
+	index = atoi(text);
+	
+	return index;
 }
 
 
