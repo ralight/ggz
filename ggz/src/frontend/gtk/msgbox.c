@@ -2,7 +2,7 @@
  * File: msgbox.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: msgbox.c 4378 2002-08-20 21:19:06Z jdorje $
+ * $Id: msgbox.c 4874 2002-10-12 02:17:02Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -916,7 +916,7 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	GtkWidget *btnyes;
 	GtkWidget *btnno;
 
-	dialogwindow = gtk_window_new (GTK_WINDOW_DIALOG);
+	dialogwindow = gtk_dialog_new();
 	gtk_window_set_title (GTK_WINDOW(dialogwindow), title);
 	gtk_container_set_border_width (GTK_CONTAINER (dialogwindow), 10);
 	gtk_window_set_position (GTK_WINDOW(dialogwindow), GTK_WIN_POS_CENTER);

@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 4505 2002-09-11 03:17:07Z jdorje $
+ * $Id: about.c 4874 2002-10-12 02:17:02Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -103,7 +103,6 @@ create_dlg_about (void)
   dlg_about = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_about), "dlg_about", dlg_about);
   gtk_window_set_title (GTK_WINDOW (dlg_about), _("About"));
-  GTK_WINDOW (dlg_about)->type = GTK_WINDOW_DIALOG;
   gtk_window_set_policy (GTK_WINDOW (dlg_about), FALSE, FALSE, FALSE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_about)->vbox;
