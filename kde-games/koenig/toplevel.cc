@@ -11,15 +11,16 @@
 
 #include "board.h"
 #include "options.h"
+#include "game.h"
 
 TopLevel::TopLevel(const char *name)
 	: KMainWindow(0, name)
 {
-	chessBoard = 0;
+	chessBoard = NULL;
+	game = NULL;
+
 	KAction *a;
 	KTabCtl *ctl;
-	QMultiLineEdit *tab1;
-	KListBox *tab2;
 
 	KStdAction::openNew(this, SLOT(newGame()), actionCollection());
 	KStdAction::close(this, SLOT(closeGame()), actionCollection());
@@ -30,7 +31,8 @@ TopLevel::TopLevel(const char *name)
 
 	createGUI();
 
-	newGame();
+	//newGame();
+	initGameSocket();
 
 	ctl = new KTabCtl(this);
 	tab1 = new QMultiLineEdit(ctl);
@@ -47,36 +49,54 @@ TopLevel::~TopLevel(void)
 {
 	if (chessBoard)
 		delete chessBoard;
+	chessBoard = NULL;
 
-	chessBoard = 0;
+	if (game)
+		delete game;
+	game = NULL;
 }
 
 void TopLevel::newGame(void)
 {
 	initGameData();
+	//initGameSocket();
 }
 
 void TopLevel::initGameData(void)
 {
-	chessBoard = new ChessBoard(0, "ChessBoard");
+	chessBoard = new ChessBoard(NULL, "ChessBoard");
 	chessBoard->show();
 	options = new Options(NULL, "Options");
 	options->show();
+	connect(options, SIGNAL(signalTime(int)), SLOT(slotTime(int)));
 }
 
 void TopLevel::initGameSocket(void)
 {
+	game = new Game();
+	connect(game, SIGNAL(signalNewGame()), SLOT(newGame()));
+	connect(game, SIGNAL(signalMessage(QString)), SLOT(slotMessage(QString)));
 }
 
 void TopLevel::closeGame(void)
 {
 	if (chessBoard)
 		delete chessBoard;
-
-	chessBoard = 0;
+	chessBoard = NULL;
 }
 
-void TopLevel::handleNetInput(void)
+//void TopLevel::handleNetInput(void)
+//{
+//}
+
+void TopLevel::slotTime(int time)
 {
+	game->setTime(time);
+}
+
+void TopLevel::slotMessage(QString msg)
+{
+	tab2->insertItem(msg);
+	options->hide();
 }
 

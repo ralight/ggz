@@ -1,6 +1,8 @@
 //#include <kiconloader.h>
 #include "config.h"
 
+#include <kdebug.h>
+
 #include <qdragobject.h>
 #include <qimage.h>
 #include <qpainter.h>
@@ -14,6 +16,8 @@
 ChessBoard::ChessBoard(QWidget *parent, const char *name)
 	: QWidget(parent, name)
 {
+	kdDebug(12101) << "ChessBoard::ChessBoard()" << endl;
+
 	setMinimumSize(240, 240);
 
 	setAcceptDrops(true);

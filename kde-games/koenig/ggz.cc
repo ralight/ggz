@@ -5,15 +5,10 @@
 #include "ggz.moc"
 
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <kdebug.h>
-#include <iostream>
 
 GGZ::GGZ(void)
 {
-	socket = new QSocket;
+	socket = new QSocket();
 }
 
 GGZ::~GGZ(void)
@@ -21,44 +16,34 @@ GGZ::~GGZ(void)
 	if (socket)
 		delete socket;
 	
-	socket = 0;
+	socket = NULL;
 }
 
-void GGZ::connect(QString& name)
+void GGZ::connect(const QString& name)
 {
 	int fd;
-//	struct sockaddr_un addr;
-			 
-	name.sprintf("/tmp/%s.%d", name.latin1(), getpid());
-		 
-//	if ((fd = ::socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) {
-//		kdDebug << "can't create domain socket" << endl;
-//		exit(-1);
-//	}
-	
-//	bzero(&addr, sizeof(addr));
-//	addr.sun_family = AF_LOCAL;
-//	strcpy(addr.sun_path, name.latin1());
-					 
-//	if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-//		kdDebug << "can't connect to domain socket" << endl;
-//		exit(-2);
-//	}
+
+	fd = 3; // ggz_connect();
 
 	socket->setSocket(fd);
-}    
+	QObject::connect(socket, SIGNAL(readyRead()), SLOT(recvRawData()));
+	net = new QDataStream(socket);
+}
 
-QString GGZ::getString(void)
+void GGZ::recvRawData()
 {
-	QString msg;
-	int size;
+	while(socket->size())
+	{
+		emit recvData();
+	}
+}
 
-	socket->readBlock((char*)size, 4);
-	
-	for (int i = 0; i < size; i++)
-		msg.append(socket->getch());
+char *GGZ::getString(void)
+{
+	char *s;
 
-	return msg;
+	*net >> s;
+	return s;
 }
 
 QString GGZ::getString(int maxsize)

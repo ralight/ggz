@@ -58,11 +58,18 @@ Options::Options(QWidget *parent, const char *name)
 	vbox->addSpacing(10);
 	vbox->add(ok);
 
+	connect(ok, SIGNAL(clicked()), SLOT(slotTime()));
+
 	setCaption("Option");
 	show();
 }
 
 Options::~Options()
 {
+}
+
+void Options::slotTime()
+{
+	emit signalTime(0); // FIXME!!!!
 }
 

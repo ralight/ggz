@@ -30,11 +30,19 @@ class Game : public QObject
 public:
 	Game(void);
 	~Game(void);
+	//void handleGameUpdate();
+	void setTime(int time);
+
+public slots:
 	void handleNetInput(void);
+
+signals:
+	void signalNewGame();
+	void signalMessage(QString msg);
 
 private:
 	GGZ *ggz;
-	ChessBoard *board;
+	//ChessBoard *board;
 	GameInfo chessInfo;
 	game_t *chessGame;
 	struct chess_info chess;
