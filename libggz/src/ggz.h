@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 6125 2004-07-17 00:58:43Z josef $
+ * $Id: ggz.h 6732 2005-01-18 23:58:25Z oojah $
  * 
  * Header file for ggz components lib
  *
@@ -1200,7 +1200,7 @@ typedef void (*ggzIOError) (const char * msg,
                             const GGZIOType type,
                             const int fd,
 			    const GGZDataType data);
-			      
+
 /** @brief Set the ggz/easysock error handling function.
  *
  *  Any time an error occurs in a GGZ socket function, the registered error
@@ -1273,6 +1273,18 @@ unsigned int ggz_get_io_alloc_limit(void);
  */
 unsigned int ggz_set_io_alloc_limit(const unsigned int limit);
 
+
+/** @brief Initialize the network.
+ *
+ *  This function will do anything necessary to initialize the network to
+ *  use sockets (this is needed on some platforms).  It should be called at
+ *  least once before any sockets are put to use.  Calling it more than once
+ *  is harmless.  It will be called automatically at the start of all GGZ
+ *  socket creation functions.
+ *
+ *  @return 0 on success; negative on failure */
+int ggz_init_network(void);
+			      
 
 /****************************************************************************
  * Creating a socket.

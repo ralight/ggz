@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 6657 2005-01-14 02:29:52Z jdorje $
+ * $Id: easysock.c 6732 2005-01-18 23:58:25Z oojah $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -119,6 +119,37 @@ unsigned int ggz_set_io_alloc_limit(const unsigned int limit)
 }
 
 
+static void ggz_network_shutdown(void)
+{
+#ifdef HAVE_WINSOCK_H
+	WSACleanup();
+#endif
+}
+
+
+/* Do network initialization. */
+int ggz_init_network(void)
+{
+	static int initialized = 0;
+
+	if (!initialized) {
+
+#ifdef HAVE_WINSOCK_H
+		WSADATA wsa;
+		if (WSAStartup(MAKEWORD(1, 1), &wsa) !=0 ){
+			return -1;
+		}
+#endif
+
+		initialized = 1;
+
+		atexit(ggz_network_shutdown);
+	}
+
+	return 0;
+}
+
+
 int ggz_make_socket(const GGZSockType type, const unsigned short port, 
 		   const char *server)
 {
@@ -126,6 +157,10 @@ int ggz_make_socket(const GGZSockType type, const unsigned short port,
 	const int on = 1;
 	struct sockaddr_in name;
 	struct hostent *hp;
+
+	if (ggz_init_network() < 0){ /* Just in case. */
+		return -1;
+	}
 
 	if ( (sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
 		if (_err_func)
@@ -196,6 +231,8 @@ int ggz_make_unix_socket(const GGZSockType type, const char* name)
 #if GGZ_HAVE_PF_LOCAL
 	int sock;
 	struct sockaddr_un addr;
+
+	ggz_init_network(); /* Just in case. */
 	
 	if ( (sock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) {
 		if (_err_func)
