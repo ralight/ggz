@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 4381 2002-08-20 22:15:09Z jdorje $
+ * $Id: main_win.c 4450 2002-09-07 22:33:14Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -228,7 +228,10 @@ static gboolean get_move(GtkWidget *widget, GdkEventButton *event, gpointer user
 	int row = (y - 10) / 60;
 
 	if (game.state != STATE_MOVE) {
-		game_status("Not my move yet");
+		if (game.num >= 0)
+			game_status(_("It's not your move yet."));
+		else
+			game_status(_("You're just watching."));
 		return TRUE;
 	}
 	

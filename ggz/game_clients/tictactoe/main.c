@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 4441 2002-09-07 18:34:27Z jdorje $
+ * $Id: main.c 4450 2002-09-07 22:33:14Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,19 +27,20 @@
 #  include <config.h>			/* Site-specific config */
 #endif
 
+#include <assert.h>
+#include <gtk/gtk.h>
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <gtk/gtk.h>
-#include <stdio.h>
 #include <unistd.h>
 
 #include <ggz.h>
 #include <ggz_common.h>
 #include <ggzmod.h>
 
-#include <game.h>
-#include <main_win.h>
+#include "game.h"
+#include "main_win.h"
 
 #include "ggzintl.h"
 
@@ -70,7 +71,7 @@ int main(int argc, char* argv[])
 	ggzmod_connect(game.ggzmod);
 	gdk_input_add(ggzmod_get_fd(game.ggzmod), GDK_INPUT_READ, handle_ggz, NULL);
 
-	game_status(_("Watching the game"));
+	game_status(_("Watching the game..."));
 
 	gtk_main();
 
@@ -81,6 +82,11 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
+static char get_player_symbol(int player)
+{
+	assert(player >= 0 && player < 2);
+	return player ? 'O' : 'X';
+}
 
 static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
 {
@@ -121,7 +127,7 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 		
 	case TTT_REQ_MOVE:
 		game.state = STATE_MOVE;
-		game_status(_("Your move"));
+		game_status(_("It's your move."));
 		break;
 		
 	case TTT_RSP_MOVE:
@@ -150,7 +156,7 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 
 int receive_seat(void)
 {
-	game_status(_("Getting seat number"));
+	game_status(_("Receiving your seat number..."));
 
 	if (ggz_read_int(game.fd, &game.num) < 0)
 		return -1;
@@ -163,7 +169,7 @@ int receive_players(void)
 {
 	int i;
 
-	game_status(_("Getting player names"));
+	game_status(_("Getting player names..."));
 	for (i = 0; i < 2; i++) {
 		if (ggz_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
@@ -171,7 +177,8 @@ int receive_players(void)
 		if (game.seats[i] != GGZ_SEAT_OPEN) {
 			if (ggz_read_string(game.fd, (char*)&game.names[i], 17) < 0)
 				return -1;
-			game_status("Player %d named: %s", i, game.names[i]);
+			game_status(_("%s is %c."),
+				    game.names[i], get_player_symbol(i));
 		}
 	}
 
@@ -185,11 +192,6 @@ int receive_move(void)
 {
 	int move, nummove;
 
-	if(game.num < 0)
-		game_status(_("Received a move"));
-	else
-		game_status(_("Getting opponent's move"));
-
 	/* nummove is the player who made the move (0 or 1). */
 	if (ggz_read_int(game.fd, &nummove) < 0)
 		return -1;
@@ -197,6 +199,12 @@ int receive_move(void)
 	/* move is the move (0..8) */
 	if (ggz_read_int(game.fd, &move) < 0)
 		return -1;
+
+	if (game.num < 0)
+		game_status(_("%s (%c) has moved."),
+			    game.names[nummove], get_player_symbol(nummove));
+	else
+		game_status(_("Your opponent has moved."));
 
 	game.board[move] = (nummove == 1 ? 'o' : 'x');	
 
@@ -210,22 +218,22 @@ int receive_sync(void)
 	char turn;
 	char space;
 	
-	game_status(_("Getting re-sync"));
+	game_status(_("Syncing with server..."));
 	
 	if (ggz_read_char(game.fd, &turn) < 0)
 		return -1;
 
-	game_status(_("Player %d's turn"), turn);
+	game_status(_("It's %s (%c)'s turn."),
+		    game.names[(int)turn], get_player_symbol(turn));
 	
         for (i = 0; i < 9; i++) {
 		if (ggz_read_char(game.fd, &space) < 0)
 			return -1;
-		game_status(_("Read a %d "), space);
 		if (space >= 0)
 			game.board[i] = (space == 0 ? 'x' : 'o');
 	}
 	
-	game_status(_("Sync completed"));
+	game_status(_("Sync completed."));
 	return 0;
 }
 
@@ -233,8 +241,8 @@ int receive_sync(void)
 int receive_gameover(void)
 {
 	char winner;
-	
-	game_status(_("Game over"));
+
+	game_status(_("Game over."));
 
 	if (ggz_read_char(game.fd, &winner) < 0)
 		return -1;
@@ -242,10 +250,15 @@ int receive_gameover(void)
 	switch (winner) {
 	case 0:
 	case 1:
-		game_status(_("Player %d won"), winner);
+		game_status(_("%s (%c) won"),
+			    game.names[(int)winner],
+			    get_player_symbol(winner));
 		break;
 	case 2:
 		game_status(_("Tie game!"));
+		break;
+	default:
+		assert(0);
 		break;
 	}
 
@@ -272,7 +285,7 @@ void game_init(void)
 int send_my_move(void)
 {
 	if(game.num < 0) return -1;
-	game_status(_("Sending my move: %d"), game.move);
+	game_status(_("Sending move."));
 	if (ggz_write_int(game.fd, TTT_SND_MOVE) < 0
 	    || ggz_write_int(game.fd, game.move) < 0)
 		return -1;
@@ -284,7 +297,7 @@ int send_my_move(void)
 
 int send_options(void) 
 {
-	game_status(_("Sending NULL options"));
+	game_status(_("Sending options."));
 	return (ggz_write_int(game.fd, 0));
 }
 
@@ -301,16 +314,16 @@ int receive_move_status(void)
 		game_status(_("Server not ready!!"));
 		break;
 	case TTT_ERR_TURN:
-		game_status(_("Not my turn !!"));
+		game_status(_("Not your turn!"));
 		break;
 	case TTT_ERR_BOUND:
-		game_status(_("Move out of bounds"));
+		game_status(_("Move out of bounds!"));
 		break;
 	case TTT_ERR_FULL:
-		game_status(_("Space already occupied"));
+		game_status(_("Space already occupied!"));
 		break;
 	case 0:
-		game_status(_("Move OK"));
+		game_status(_("Move accepted."));
 		game.board[game.move] = (game.num == 0 ? 'x' : 'o');
 		break;
 	}
