@@ -16,6 +16,7 @@
 #define GURU_ADMIN 3
 #define GURU_ENTER 4
 #define GURU_LEAVE 5
+#define GURU_GAME 6
 
 /* Message structure to be passes around to the plugins */
 struct guru_t

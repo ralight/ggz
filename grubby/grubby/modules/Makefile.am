@@ -10,7 +10,8 @@ grubby_LTLIBRARIES = \
 	libgurumod_people.la \
 	libgurumod_learning.la \
 	libgurumod_extra.la \
-	libgurumod_embed.la
+	libgurumod_embed.la \
+	libgurumod_game.la
 
 libgurumod_simplereturn_la_SOURCES = simplereturn.c
 
@@ -37,5 +38,7 @@ libgurumod_people_la_LDFLAGS = $(GGZCORE_LDFLAGS)
 INCLUDES = -I$(top_srcdir)/grubby/src $(GGZCORE_INCLUDES) $(ruby_includes) $(perl_includes) $(python_includes)
 
 libgurumod_learning_la_SOURCES = learning.c
+
+libgurumod_game_la_SOURCES = game.c
 
 # noinst_HEADERS = 

@@ -1,0 +1,11 @@
+[ModuleInfo]
+Game = TicTacToe
+Author = Josef Spillner
+CommandLine = @ggzexecmoddir@/guru-ttt
+Frontend = guru
+Homepage = http://ggz.sourceforge.net/games/tictactoe/
+Name = Guru TicTacToe
+ProtocolEngine = TicTacToe
+ProtocolVersion = 3
+Version = 0.0.1
+

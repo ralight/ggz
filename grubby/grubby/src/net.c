@@ -21,11 +21,15 @@
 int status = NET_NOOP;
 GGZServer *server = NULL;
 GGZRoom *room = NULL;
+GGZGame *game = NULL;
 Guru **queue = NULL;
 int queuelen = 1;
 char *guruname = NULL;
 char *guruguestname = NULL;
 FILE *logstream = NULL;
+int tableid = -1;
+int gamefd = -1;
+int channelfd = -1;
 
 /* Prototypes */
 GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data);
@@ -37,10 +41,22 @@ GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_d
 GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_chatfail(unsigned int id, void *event_data, void *user_data);
+GGZHookReturn net_hook_typelist(unsigned int id, void *event_data, void *user_data);
 
-#if 0
+GGZHookReturn net_hook_table(unsigned int id, void *event_data, void *user_data);
+GGZHookReturn net_hook_launched(unsigned int id, void *event_data, void *user_data);
+GGZHookReturn net_hook_negotiated(unsigned int id, void *event_data, void *user_data);
+GGZHookReturn net_hook_playing(unsigned int id, void *event_data, void *user_data);
+GGZHookReturn net_hook_over(unsigned int id, void *event_data, void *user_data);
+
+GGZHookReturn net_hook_channel(unsigned int id, void *event_data, void *user_data);
+GGZHookReturn net_hook_ready(unsigned int id, void *event_data, void *user_data);
+
+void net_internal_game(GGZPlayer *player);
+void net_internal_gameprepare(const char *playername);
+
 /* Initialize the net functions */
-static void net_internal_init(const char *logfile)
+static void net_internal_init()
 {
 	GGZOptions opt;
 	int ret;
@@ -48,7 +64,6 @@ static void net_internal_init(const char *logfile)
 	opt.flags = GGZ_OPT_MODULES | GGZ_OPT_PARSER;
 	ret = ggzcore_init(opt);
 }
-#endif
 
 /* Set up the logfile or close it again */
 void net_logfile(const char *logfile)
@@ -126,6 +141,8 @@ void net_connect(const char *host, int port, const char *name, const char *guest
 	guruname = (char*)name;
 	guruguestname = (char*)guestname;
 
+	net_internal_init();
+
 	server = ggzcore_server_new();
 
 	ggzcore_server_add_event_hook(server, GGZ_CONNECTED, net_hook_connect);
@@ -139,6 +156,10 @@ void net_connect(const char *host, int port, const char *name, const char *guest
 	ggzcore_server_add_event_hook(server, GGZ_ENTERED, net_hook_enter);
 	ggzcore_server_add_event_hook(server, GGZ_LOGGED_IN, net_hook_login);
 	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST, net_hook_roomlist);
+	ggzcore_server_add_event_hook(server, GGZ_TYPE_LIST, net_hook_typelist);
+
+	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_CONNECTED, net_hook_channel);
+	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_READY, net_hook_ready);
 
 	ggzcore_server_set_hostinfo(server, host, port, 0);
 	ggzcore_server_connect(server);
@@ -157,22 +178,48 @@ int net_status(void)
 	int ret;
 	int fd;
 	fd_set set;
+	struct timeval to;
+	struct timeval *top;
+
+	to.tv_sec = 0;
+	to.tv_usec = 0;
+	top = &to;
+	if((channelfd == -1) && (gamefd == -1)) top = NULL;
 
 	/*if(ggzcore_server_data_is_pending(server))
 		ggzcore_server_read_data(server, ggzcore_server_get_fd(server));*/
 
-	fd = ggzcore_server_get_fd(server);
+	if(channelfd == -1)
+	{
+		fd = ggzcore_server_get_fd(server);
 
-	if (fd < 0) {
-		fprintf(stderr, "Could not connect to server.\n");
-		exit(EXIT_FAILURE);
+		if (fd < 0) {
+			fprintf(stderr, "Could not connect to server.\n");
+			exit(EXIT_FAILURE);
+		}
+
+		FD_ZERO(&set);
+		FD_SET(fd, &set);
+
+		ret = select(fd + 1, &set, NULL, NULL, top);
+		if(ret == 1) ggzcore_server_read_data(server, fd);
 	}
 
-	FD_ZERO(&set);
-	FD_SET(fd, &set);
+	if(gamefd != -1)
+	{
+		FD_ZERO(&set);
+		FD_SET(gamefd, &set);
+		ret = select(gamefd + 1, &set, NULL, NULL, top);
+		if(ret == 1) ggzcore_game_read_data(game);
+	}
 
-	ret = select(fd + 1, &set, NULL, NULL, NULL);
-	if(ret == 1) ggzcore_server_read_data(server, fd);
+	if(channelfd != -1)
+	{
+		FD_ZERO(&set);
+		FD_SET(channelfd, &set);
+		ret = select(channelfd + 1, &set, NULL, NULL, top);
+		if(ret == 1) ggzcore_server_read_data(server, channelfd);
+	}
 
 	ret = status;
 	if(status == NET_GOTREADY) status = NET_NOOP;
@@ -218,6 +265,10 @@ printf("DEBUG: net_output(%s)\n", output->message);*/
 			case GURU_ADMIN:
 				ggzcore_room_chat(room, GGZ_CHAT_ANNOUNCE, NULL, token);
 				break;
+			case GURU_GAME:
+				ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, token);
+				net_internal_gameprepare(output->player);
+				break;
 		}
 		token = strtok(NULL, "\n");
 	}
@@ -243,6 +294,7 @@ GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_dat
 GGZHookReturn net_hook_login(unsigned int id, void *event_data, void *user_data)
 {
 	ggzcore_server_list_rooms(server, -1, 0);
+	ggzcore_server_list_gametypes(server, 1);
 	return GGZ_HOOK_OK;
 }
 
@@ -253,14 +305,25 @@ GGZHookReturn net_hook_roomlist(unsigned int id, void *event_data, void *user_da
 	return GGZ_HOOK_OK;
 }
 
+/* Callback for type list */
+GGZHookReturn net_hook_typelist(unsigned int id, void *event_data, void *user_data)
+{
+	return GGZ_HOOK_OK;
+}
+
 /* Callback for joining a room */
 GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
 {
 	room = ggzcore_server_get_cur_room(server);
 
+	/*ggzcore_room_add_event_hook(room, GGZ_PLAYER_LIST, net_hook_playerlist);*/
+	ggzcore_room_list_players(room);
+	ggzcore_room_list_tables(room, 0, 0);
+
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, net_hook_roomenter);
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, net_hook_roomleave);
 	ggzcore_room_add_event_hook(room, GGZ_CHAT_EVENT, net_hook_chat);
+	ggzcore_room_add_event_hook(room, GGZ_TABLE_JOINED, net_hook_table);
 
 	status = NET_GOTREADY;
 	return GGZ_HOOK_OK;
@@ -296,6 +359,89 @@ GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_d
 	net_internal_queueadd(player, NULL, GURU_LEAVE);
 	status = NET_INPUT;
 	return GGZ_HOOK_OK;
+}
+
+/* Let grubby launch a game */
+void net_internal_game(GGZPlayer *player)
+{
+	GGZTable *table;
+	GGZModule *module;
+	GGZGameType *gametype;
+	const char *name, *engine, *version;
+	int j;
+
+	table = ggzcore_player_get_table(player);
+	if(table)
+	{
+		tableid = ggzcore_table_get_id(table);
+		printf("at table id %i\n", tableid);
+		//ggzcore_room_join_table(room, tableid, 0);
+
+		/*printf("modules: %i\n", ggzcore_module_get_num());
+		printf("# modules: %i\n", ggzcore_module_get_num_by_type("TicTacToe", "TicTacToe", "3"));*/
+
+		gametype = ggzcore_room_get_gametype(room);
+		if(!gametype)
+		{
+			printf("No type found.\n");
+		}
+		else
+		{
+			name = ggzcore_gametype_get_name(gametype);
+			engine = ggzcore_gametype_get_prot_engine(gametype);
+			version = ggzcore_gametype_get_prot_version(gametype);
+
+			module = NULL;
+			for(j = 0; j < ggzcore_module_get_num_by_type(name, engine, version); j++)
+			{
+				module = ggzcore_module_get_nth_by_type(name, engine, version, j);
+				if(!strcmp(ggzcore_module_get_frontend(module), "guru")) break;
+				module = NULL;
+			}
+			if(module)
+			{
+				printf("module: %p\n", module);
+
+				game = ggzcore_game_new();
+				ggzcore_game_init(game, server, module);
+
+				ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCHED, net_hook_launched);
+				ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED, net_hook_negotiated);
+				ggzcore_game_add_event_hook(game, GGZ_GAME_PLAYING, net_hook_playing);
+				ggzcore_game_add_event_hook(game, GGZ_GAME_OVER, net_hook_over);
+
+				ggzcore_game_launch(game);
+			}
+			else
+			{
+				printf("No module found with frontend guru\n");
+			}
+		}
+	}
+	else
+	{
+		printf("Not at table\n");
+	}
+}
+
+void net_internal_gameprepare(const char *playername)
+{
+	char *playertmp;
+	GGZPlayer *player;
+	int i;
+
+	printf("game: check %i players\n", ggzcore_room_get_num_players(room));
+	for(i = 0; i < ggzcore_room_get_num_players(room); i++)
+	{
+		player = ggzcore_room_get_nth_player(room, i);
+		playertmp = ggzcore_player_get_name(player);
+		printf("got %s (%s)\n", playername, playertmp);
+		if(!strcmp(playername, playertmp))
+		{
+			net_internal_game(player);
+			break;
+		}
+	}
 }
 
 /* Chat callback which passes message to grubby */
@@ -336,6 +482,75 @@ GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 GGZHookReturn net_hook_chatfail(unsigned int id, void *event_data, void *user_data)
 {
 	printf("Chat failed!\n");
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_table(unsigned int id, void *event_data, void *user_data)
+{
+	printf("-- joined table\n");
+
+	//ggzcore_game_launch(game);
+
+	//ggzcore_module_launch(module);
+
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_launched(unsigned int id, void *event_data, void *user_data)
+{
+	printf("-- launched; create gamefd\n");
+
+	gamefd = ggzcore_game_get_control_fd(game);
+
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_negotiated(unsigned int id, void *event_data, void *user_data)
+{
+	printf("-- negotiated\n");
+
+	ggzcore_server_create_channel(server);
+
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_playing(unsigned int id, void *event_data, void *user_data)
+{
+	printf("-- playing\n");
+
+	ggzcore_room_join_table(room, tableid, 0);
+
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_over(unsigned int id, void *event_data, void *user_data)
+{
+	printf("-- over; kill gamefd\n");
+
+	ggzcore_room_leave_table(room, tableid);
+
+	game = NULL;
+	gamefd = -1;
+
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_channel(unsigned int id, void *event_data, void *user_data)
+{
+	printf("-- channelconnected; create channelfd\n");
+
+	channelfd = ggzcore_server_get_channel(server);
+
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_ready(unsigned int id, void *event_data, void *user_data)
+{
+	printf("-- channelready; pass channelfd\n");
+
+	ggzcore_game_set_server_fd(game, channelfd);
+	channelfd = -1;
+
 	return GGZ_HOOK_OK;
 }
 

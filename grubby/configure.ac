@@ -27,6 +27,18 @@ AC_GGZ_INIT(defaults)
 AC_GGZ_INTL
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZCORE
+AC_GGZ_GGZMOD("true", ignore)
+AC_GGZ_CONFIG
+
+SUBDIRS="grubby man"
+
+if test "x$ggzmod_includes" != "x"; then
+	AC_DEFINE([GAMES], 1, [Compile internal game engines])
+	SUBDIRS="$SUBDIRS games"
+	enable_games="yes"
+else
+	enable_games="no"
+fi
 
 dnl Use -Wall if we have gcc.
 dnl ========================
@@ -145,6 +157,7 @@ AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [The installation prefix])
 
 AC_SUBST(grubbymoddir)
 AC_SUBST(grubbydir)
+AC_SUBST(SUBDIRS)
 
 AC_CONFIG_FILES([Makefile
 		grubby/Makefile
@@ -153,6 +166,8 @@ AC_CONFIG_FILES([Makefile
 		grubby/data/Makefile
 		grubby/data/grubby-config
 		grubby/po/Makefile
+		games/Makefile
+		games/guru-ttt/Makefile
 		man/Makefile
 		man/de/Makefile])
 AC_OUTPUT
@@ -166,5 +181,6 @@ echo ""
 echo "Python support: $enable_python"
 echo "Ruby support: $enable_ruby"
 echo "Perl support: $enable_perl"
+echo "Game engines: $enable_games"
 echo ""
 

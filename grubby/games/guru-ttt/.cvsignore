@@ -1,0 +1,8 @@
+guru-ttt
+*.o
+Makefile
+Makefile.in
+.deps
+.libs
+module.dsc
+
