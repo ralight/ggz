@@ -51,7 +51,7 @@ else
 fi
 echo "checking for GGZ patch 'Categories and Ratings' (C_and_R): $patch_c_and_r"
 
-func=ggzcore_server_get_encryption
+func=ggzcore_server_get_tls
 tmp=`grep $func $ggzcore_includes/ggzcore.h`
 if test "$tmp" = ""; then
 	patch_encryption=0;
