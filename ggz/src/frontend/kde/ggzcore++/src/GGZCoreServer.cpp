@@ -69,7 +69,7 @@ int GGZCoreServer::setLogin(const int type, const char* username, const char* pa
 	return ggzcore_server_set_logininfo(m_server, (GGZLoginType)type, username, password);
 }
 
-char* GGZCoreServer::host()
+const char* GGZCoreServer::host()
 {
 	return ggzcore_server_get_host(m_server);
 }

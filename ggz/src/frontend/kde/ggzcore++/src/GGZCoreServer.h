@@ -91,7 +91,7 @@ class GGZCoreServer
 
 		/**
 		 * Return the hostname of this server. */
-		char* host();
+		const char* host();
 		/**
 		 * Return the port number. */
 		int port();
