@@ -70,28 +70,35 @@ int KTicTacTuxProto::getOp()
 // Get one's own seat number
 int KTicTacTuxProto::getSeat()
 {
-	ggz_read_int(fd, &num);
+	return ggz_read_int(fd, &num);
 }
 
 // Receive the player names
 int KTicTacTuxProto::getPlayers()
 {
+	int ret = 0;
+
 	for(int i = 0; i < 2; i++)
 	{
-		ggz_read_int(fd, &seats[i]);
+		ret |= ggz_read_int(fd, &seats[i]);
 		if((seats[i] == GGZ_SEAT_PLAYER) || (seats[i] == GGZ_SEAT_BOT))
-			ggz_read_string(fd, (char*)&names[i], 17);
+			ret |= ggz_read_string(fd, (char*)&names[i], 17);
 	}
+
+	return ret;
 }
 
 // Ask whether move was ok
 int KTicTacTuxProto::getMoveStatus()
 {
 	char status;
+	int ret;
 
-	ggz_read_char(fd, &status);
+	ret = ggz_read_char(fd, &status);
 
 	if(status == 0) board[move % 3][move / 3] = player;
+
+	return ret;
 }
 
 // Get opponent's move
@@ -99,9 +106,10 @@ int KTicTacTuxProto::getOpponentMove()
 {
 	int move;
 	int nummove;
+	int ret = 0;
 
-	ggz_read_int(fd, &nummove);
-	ggz_read_int(fd, &move);
+	ret |= ggz_read_int(fd, &nummove);
+	ret |= ggz_read_int(fd, &move);
 
 	if(num < 0)
 	{
@@ -109,27 +117,32 @@ int KTicTacTuxProto::getOpponentMove()
 		else board[move % 3][move / 3] = player;
 	}
 	else board[move % 3][move / 3] = opponent;
+
+	return ret;
 }
 
 // Oooops... volunteers :-)
 int KTicTacTuxProto::getSync()
 {
 	char space;
+	int ret = 0;
 
-	ggz_read_char(fd, &turn);
+	ret |= ggz_read_char(fd, &turn);
 	for(int i = 0; i < 9; i++)
 	{
-		ggz_read_char(fd, &space);
+		ret |= ggz_read_char(fd, &space);
 		if(space == 0) board[i % 3][i / 3] = opponent;
 		else if(space == 1) board[i % 3][i / 3] = player;
 		else board[i % 3][i / 3] = none;
 	}
+
+	return ret;
 }
 
 // Read the winner over the network
 int KTicTacTuxProto::getGameOver()
 {
-	ggz_read_char(fd, &winner);
+	return ggz_read_char(fd, &winner);
 }
 
 // Read statistics
@@ -142,14 +155,18 @@ void KTicTacTuxProto::getStatistics()
 // Send the options
 int KTicTacTuxProto::sendOptions()
 {
-	ggz_write_int(fd, 0);
+	return ggz_write_int(fd, 0);
 }
 
 // Send the own move, to be approved
 int KTicTacTuxProto::sendMyMove()
 {
-	ggz_write_int(fd, sndmove);
-	ggz_write_int(fd, move);
+	int ret = 0;
+
+	ret |= ggz_write_int(fd, sndmove);
+	ret |= ggz_write_int(fd, move);
+
+	return ret;
 }
 
 // Synchronize game

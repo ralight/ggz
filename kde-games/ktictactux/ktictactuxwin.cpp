@@ -121,7 +121,7 @@ void KTicTacTuxWin::changeTheme(QString theme)
 	}
 
 	// try to enable the corresponding menu item
-	for(int i = 0; i < mtheme->count(); i++)
+	for(unsigned int i = 0; i < mtheme->count(); i++)
 	{
 		id = mtheme->idAt(i);
 		if(m_themes[mtheme->text(id)] == theme) mtheme->setItemChecked(id, true);
