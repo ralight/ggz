@@ -40,8 +40,10 @@
 /* Server options */
 extern Options opt;
 
+static GGZReturn lock_fd(int fd);
 
-static int lock_fd(int fd)
+
+static GGZReturn lock_fd(int fd)
 {
 	struct flock lock;
 
@@ -50,7 +52,11 @@ static int lock_fd(int fd)
 	lock.l_start = 0;
 	lock.l_len = 0;
 
-	return fcntl(fd, F_SETLK, &lock);
+	if (fcntl(fd, F_SETLK, &lock) < 0) {
+		err_sys("failed fcntl call");
+		return GGZ_ERROR;
+	} else
+		return GGZ_OK;
 }
 
 
@@ -97,7 +103,7 @@ void daemon_init(void)
 
 		pid = -1;
 		if ((fscanf(fp, "%d", &pid) != 1) || (pid == getpid())
-		    || (lock_fd(fileno(fp)) == 0)) {
+		    || (lock_fd(fileno(fp)) == GGZ_OK)) {
 				
 			log_msg(GGZ_LOG_NOTICE, "Removing stale lockfile for pid %d", pid);
 			if (unlink(pid_file) == -1)
@@ -115,7 +121,7 @@ void daemon_init(void)
 			err_sys_exit("Cannot open %s the second time round", pid_file);
 	}
 
-	if (lock_fd(fd) == -1)
+	if (lock_fd(fd) == GGZ_ERROR)
 		err_sys_exit("Cannot lock %s", pid_file);
 	
 	if ( (fp = fdopen(fd, "w")) == NULL)
