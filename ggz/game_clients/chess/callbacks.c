@@ -73,13 +73,15 @@ on_board_button_press_event            (GtkWidget       *widget,
                                         gpointer         user_data)
 {
   int x, y;
+	char output[80];
+	cgc_getboard(output, game->board);
   x = event->x / PIXSIZE;
   y = event->y / PIXSIZE;
   /* Set the last pressed data */
   gtk_object_set_data(GTK_OBJECT(widget), "from_x", GINT_TO_POINTER(x));
   gtk_object_set_data(GTK_OBJECT(widget), "from_y", GINT_TO_POINTER(y));
 
-  if (game->board[x][y] == EMPTY || (game_info.seat == 1 && game->board[x][y] & WHITE) || (game_info.seat == 0 && !(game->board[x][y] & WHITE)))
+  if (output[x+(y*9)] == '-' || (game_info.seat == 1 && output[x+(y*9)] < 'Z' ) || (game_info.seat == 0 && !(output[x+(y*9)] < 'Z')))
     gtk_drag_source_unset(widget);
   else
     gtk_drag_source_set(widget, GDK_BUTTON1_MASK, target, 1, GDK_ACTION_MOVE);
@@ -113,7 +115,7 @@ on_board_drag_motion                   (GtkWidget       *widget,
   f_y = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_y"));
   t_x = x / PIXSIZE;
   t_y = y / PIXSIZE;
-  retval = cgc_valid_move(game, f_x, f_y, t_x, t_y, 0);
+  retval = cgc_valid_move(game, f_x, 7-f_y, t_x, 7-t_y, 0);
   if (retval == VALID) {
     game_info.dest_x = t_x;
     game_info.dest_y = t_y;
@@ -137,7 +139,9 @@ on_board_drag_drop                     (GtkWidget       *widget,
 {
   int arg[4];
   char move[6];
+	char output[80];
   int promote = 0;
+	cgc_getboard(output, game->board);
 
   arg[0] = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_x"));
   arg[1] = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_y"));
@@ -148,22 +152,22 @@ on_board_drag_drop                     (GtkWidget       *widget,
   /* Should we promote ? */
   if (game_info.seat == 0) {
     /* We are white ! So we must go from 6 to 7 */
-    if (arg[1] == 6 && arg[3] == 7 && game->board[arg[0]][arg[1]] == W_PAWN)
+    if (arg[1] == 6 && arg[3] == 7 && output[arg[0]+(arg[1]*10)] == 'P')
       promote = 1;
   } else {
     /* We are black ! So we must go from 1 to 0 */
-    if (arg[1] == 1 && arg[3] == 0 && game->board[arg[0]][arg[1]] == B_PAWN)
+    if (arg[1] == 1 && arg[3] == 0 && output[arg[0]*(arg[1]*10)] == 'p')
       promote = 1;
   }
 
   move[0] = 65 + arg[0];
-  move[1] = 49 + arg[1];
+  move[1] = 49 + (7-arg[1]);
   move[2] = 65 + arg[2];
-  move[3] = 49 + arg[3];
+  move[3] = 49 + (7-arg[3]);
   move[4] = promote;
   move[5] = 0;
 
-  if (!promote && cgc_valid_move(game, arg[0], arg[1], arg[2], arg[3], 0) == VALID) {
+  if (!promote && cgc_valid_move(game, arg[0], 7-arg[1], arg[2], 7-arg[3], 0) == VALID) {
     game_update(CHESS_EVENT_MOVE_END, move);
   } else if (promote) {
     gtk_object_set_data(GTK_OBJECT(main_win), "promote", g_strdup(move));

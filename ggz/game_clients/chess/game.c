@@ -214,6 +214,7 @@ void game_update(int event, void *arg) {
     case CHESS_EVENT_MOVE_END:
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
+			printf("Sending move... %s\n", (char *)arg);
 			if (game_info.clock_type != CHESS_CLOCK_CLIENT)
 				net_send_move(arg, -1);
 			else {

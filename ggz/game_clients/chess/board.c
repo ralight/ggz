@@ -221,6 +221,8 @@ void board_draw() {
 
 void board_draw_highlights() {
   int x, y;
+	char output[80];
+	cgc_getboard(output, game->board);
   if (game_info.src_x >= 0 && game_info.src_y >= 0)
     board_draw_outline(game_info.src_x, game_info.src_y, gtk_widget_get_style(main_win)->white_gc);
   if (game_info.dest_x >= 0 && game_info.dest_y >= 0)
@@ -229,7 +231,7 @@ void board_draw_highlights() {
     /* Find the king ! */
     for (x = 0; x < 8; x++) {
       for (y = 0; y < 8; y++) {
-        if ((game_info.seat == 0 && game->board[x][y] == W_KING) || (game_info.seat == 1 && game->board[x][y] == B_KING))
+        if ((game_info.seat == 0 && output[x+(y*9)] == 'K') || (game_info.seat == 1 && output[x+(y*9)] == 'k'))
           board_draw_outline(x, y, red_gc);
       }
     }
@@ -291,13 +293,16 @@ void board_draw_bg() {
 
 void board_draw_pieces() {
   int x, y;
+	char output[80];
 
   if (!game)
     game_update(CHESS_EVENT_INIT, NULL);
 
+	cgc_getboard(output, game->board);
+
   for (x = 0; x < 8; x++) {
     for (y = 0; y < 8; y++) {
-      board_draw_piece(board_translate(game->board[x][y]), x, y);
+      board_draw_piece(board_translate(output[x+(y*9)]), x, y);
     }
   }
 
@@ -305,29 +310,29 @@ void board_draw_pieces() {
 
 int board_translate(int cgc_val) {
   switch(cgc_val) {
-    case W_PAWN:
+    case 'P':
       return PAWN_W;
-    case W_ROOK:
+    case 'R':
       return ROOK_W;
-    case W_KNIGHT:
+    case 'N':
       return KNIGHT_W;
-    case W_BISHOP:
+    case 'B':
       return BISHOP_W;
-    case W_QUEEN:
+    case 'Q':
       return QUEEN_W;
-    case W_KING:
+    case 'K':
       return KING_W;
-     case B_PAWN:
+	  case 'p':
       return PAWN_B;
-    case B_ROOK:
+    case 'r':
       return ROOK_B;
-    case B_KNIGHT:
+    case 'n':
       return KNIGHT_B;
-    case B_BISHOP:
+    case 'b':
       return BISHOP_B;
-    case B_KING:
+    case 'k':
       return KING_B;
-    case B_QUEEN:
+    case 'q':
       return QUEEN_B;
   }
   return -1;
@@ -348,7 +353,10 @@ void board_draw_piece(int piece, int x, int y) {
 }
 
 void board_dnd_highlight( int x, int y, GdkDragContext *drag_context) {
-  int piece = board_translate(game->board[x][y]);
+	char output[80];
+  int piece;	
+	cgc_getboard(output, game->board);
+	piece = board_translate(output[x+(y*9)]);
   gtk_drag_set_icon_pixmap(drag_context, gtk_widget_get_colormap(main_win),
       pieces[piece], pieces_mask[piece], 5, 5);
   game_info.src_x = x;
