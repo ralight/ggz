@@ -6,7 +6,7 @@ EXTRA_DIST = $(GAME_DSC)
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ 
+INCLUDES = @GTK_CFLAGS@ 
 
 ggzexecmod_PROGRAMS = ggz.ttt
 
@@ -20,12 +20,12 @@ ggz_ttt_SOURCES = game.h \
 	      o.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_ttt_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@
+ggz_ttt_LDADD = @GTK_LIBS@ $(LDADD)
 
 install-data-local:
 	@$(NORMAL_INSTALL)
-	$(top_srcdir)/src/ggzcore/ggz-config -D --install --fromfile=$(GAME_DSC) --force
+	$(GGZ_CONFIG) -D --install --fromfile=$(GAME_DSC) --force
 
 uninstall:
 	@$(NORMAL_UNINSTALL)
-	-ggz-config --remove --fromfile=$(GAME_DSC)
+	-$(GGZ_CONFIG) --remove --fromfile=$(GAME_DSC)

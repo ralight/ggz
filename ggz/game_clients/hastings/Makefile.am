@@ -1,10 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = hastings.dsc
+EXTRA_DIST = module.dsc
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@
+INCLUDES = @GTK_CFLAGS@
 
 ggzexecmod_PROGRAMS = ggz.hastings
 
@@ -28,5 +28,12 @@ ggz_hastings_SOURCES = game.h \
 	      newmanred.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_hastings_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@
-ggz_hastings_LDFLAGS = -static
+ggz_hastings_LDADD = @GTK_LIBS@ $(LDADD) 
+
+install-data-local:
+	@$(NORMAL_INSTALL)
+	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
+
+uninstall:
+	@$(NORMAL_UNINSTALL)
+	-$(GGZ_CONFIG) --remove --fromfile=module.dsc

@@ -51,9 +51,9 @@ ggz_spades_LDADD = @GTK_LIBS@ $(LDADD)
 
 install-data-local:
 	@$(NORMAL_INSTALL)
-	$(top_srcdir)/src/ggzcore/ggz-config -D --install --fromfile=spades.dsc --force
+	$(GGZ_CONFIG) -D --install --fromfile=spades.dsc --force
 
 
 uninstall:
 	@$(NORMAL_UNINSTALL)
-	-ggz-config --remove --fromfile=spades.dsc
+	-$(GGZ_CONFIG) --remove --fromfile=spades.dsc

@@ -4,15 +4,15 @@ EXTRA_DIST = module.dsc
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ -I$(top_srcdir)/src/ggzcore
+INCLUDES = @GTK_CFLAGS@
 
 install-data-local:
 	@$(NORMAL_INSTALL)
-	$(top_srcdir)/src/ggzcore/ggz-config -D --install --fromfile=module.dsc --force
+	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
 
 uninstall:
 	@$(NORMAL_UNINSTALL)
-	-ggz-config --remove --fromfile=module.dsc
+	-$(GGZ_CONFIG) --remove --fromfile=module.dsc
 
 ggzexecmod_PROGRAMS = ggz.dots
 
@@ -31,5 +31,5 @@ ggz_dots_SOURCES = \
 	cb_pref.c cb_pref.h
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_dots_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ $(top_builddir)/src/ggzcore/libggzcore.la
+ggz_dots_LDADD = @GTK_LIBS@ $(LDADD)
 
