@@ -6,18 +6,18 @@
 from distutils.core import setup, Extension
 
 setup(
-    name = "GGZCore",
-    version = "0.1",
+    name = "GGZMod",
+    version = "0.2",
     author = "Josef Spillner",
     author_email = "josef@ggzgamingzone.org",
     url = "http://www.ggzgamingzone.org",
 
     ext_modules = [
-        Extension('ggzcoresimple',
-        ['src/pyggzcoresimple_init.c'],
-        library_dirs = ["@ggzcore_libraries@"],
-        libraries = ['ggzcore', 'ggzmod', 'ggz'],
-        include_dirs = ["@ggzcore_includes@"])
+        Extension('ggzmod',
+        ['src/pyggzmod_init.c'],
+        library_dirs = ["@ggzmod_libraries@"],
+        libraries = ['ggzmod', 'ggz'],
+        include_dirs = ["@ggzmod_includes@"])
     ]
 )
 

@@ -5,7 +5,7 @@ all:
 	cd pyggzmod && python setup.py build
 	@echo Building library PyGGZdMod
 	cd pyggzdmod && python setup.py build
-	@echo Building library PyGGZCore
+	@echo Building library PyGGZCoreSimple
 	cd pyggzcore && python setup.py build
 
 install:
@@ -13,7 +13,7 @@ install:
 	cd pyggzmod && python setup.py install --prefix=$(DESTDIR)$(prefix)
 	@echo Installing library PyGGZdMod
 	cd pyggzdmod && python setup.py install --prefix=$(DESTDIR)$(prefix)
-	@echo Installing library PyGGZCore
+	@echo Installing library PyGGZCoreSimple
 	cd pyggzcore && python setup.py install --prefix=$(DESTDIR)$(prefix)
 
 	@echo Installing game Dresden
@@ -36,6 +36,13 @@ install:
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/
 	cp xadrez-chines/*.png $(DESTDIR)$(prefix)/share/ggz/xadrez-chines
 	ggz-config --install --force --modfile=xadrez-chines/module.dsc
+
+	@echo Installing external game GNU Go support files
+	mkdir -p $(DESTDIR)$(prefix)/bin/
+	cp go/goclient $(DESTDIR)$(prefix)/bin
+	cp go/goserver $(DESTDIR)$(prefix)/bin
+	cp go/goclient.helper $(DESTDIR)$(prefix)/bin
+	ggz-config --install --force --modfile=go/module.dsc
 
 	@echo Installing core client Vibora
 	mkdir -p $(DESTDIR)$(prefix)/bin/

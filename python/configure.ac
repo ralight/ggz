@@ -37,6 +37,8 @@ AC_CONFIG_FILES([
 	xadrez-chines/xadrez-chines-server.dsc
 	go/module.dsc
 	go/goserver.dsc
+	pyggzmod/setup.py
+	pyggzdmod/setup.py
 	pyggzcore/setup.py
 ])
 AC_OUTPUT
