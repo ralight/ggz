@@ -300,11 +300,27 @@ static void input_handle_launch(char *line)
 	GGZTable *table;
 
 	room = ggzcore_server_get_cur_room(server);
+	if (!room) {
+		output_text("You must be in a room to launch a game");
+		return;
+	}
+
 	type = ggzcore_room_get_gametype(room);
+	if (!type) {
+		output_text("No game types defined for this server");
+		return;
+	}
+	
 	name = ggzcore_gametype_get_name(type);
 	protocol = ggzcore_gametype_get_protocol(type);
 	output_text("Launching game of %s, v%s", name, protocol);
 	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
+	if (!module) {
+		output_text("No game modules defined for that game");
+		output_text("Download one from %s", 
+			    ggzcore_gametype_get_url(type));
+		return;
+	}
 	output_text("Launching %s", ggzcore_module_get_path(module));
 	game_init(module);
 
@@ -327,11 +343,28 @@ static void input_handle_join_table(char *line)
 	int table_index;
 
 	room = ggzcore_server_get_cur_room(server);
+	if (!room) {
+		output_text("You must be in a room to launch a game");
+		return;
+	}
+
 	type = ggzcore_room_get_gametype(room);
+	if (!type) {
+		output_text("No game types defined for this server");
+		return;
+	}
+	
 	name = ggzcore_gametype_get_name(type);
 	protocol = ggzcore_gametype_get_protocol(type);
 	output_text("Launching game of %s, v%s", name, protocol);
 	module = ggzcore_module_get_nth_by_type(name, protocol, 1);
+	if (!module) {
+		output_text("No game modules defined for that game");
+		output_text("Download one from %s", 
+			    ggzcore_gametype_get_url(type));
+		return;
+	}
+
 	output_text("Launching %s", ggzcore_module_get_path(module));
 	game_init(module);
 
