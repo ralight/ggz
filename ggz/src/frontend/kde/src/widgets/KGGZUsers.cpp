@@ -378,10 +378,15 @@ void KGGZUsers::slotInformation(int id)
 	ranking = player->ranking();
 	rating = player->rating();
 
-		text = i18n("Information about %1:\n").arg(playername);
-		text = text + i18n("Wins: %1\nLosses: %2\n").arg(wins).arg(losses);
-		text = text + i18n("Ties: %1\nForfeits: %2\n").arg(ties).arg(forfeits);
-		text = text + i18n("Rating: %1\nRanking: %2\nHighscore: %3\n").arg(rating).arg(ranking).arg(highscore);
+	text = i18n("Information about %1:\n").arg(playername);
+	text = text + i18n("Wins: %1\nLosses: %2\n").arg(wins).arg(losses);
+	text = text + i18n("Ties: %1\nForfeits: %2\n").arg(ties).arg(forfeits);
+	if(rating)
+		text = text + i18n("Rating: %1\n").arg(rating);
+	if(ranking)
+		text = text + i18n("Ranking: %1\n").arg(ranking);
+	if(highscore)
+		text = text + i18n("Highscore: %1\n").arg(highscore);
 
 	KMessageBox::information(this, text, i18n("Player information"));
 }
