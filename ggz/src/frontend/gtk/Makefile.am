@@ -14,6 +14,8 @@ ggz_gtk_SOURCES =	main.c \
 			client.h \
 			ggz.c \
 			ggz.h \
+			info.c \
+			info.h \
 			launch.c \
 			launch.h \
 			license.c \

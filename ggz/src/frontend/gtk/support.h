@@ -69,3 +69,5 @@ void        add_pixmap_directory       (const gchar     *directory);
 GtkWidget*  create_pixmap              (GtkWidget       *widget,
                                         const gchar     *filename);
 
+
+

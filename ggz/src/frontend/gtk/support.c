@@ -48,14 +48,130 @@ lookup_widget                          (GtkWidget       *widget,
   return found_widget;
 }
 
-/* This is a dummy pixmap we use when a pixmap can't be found. */
-static char *dummy_pixmap_xpm[] = {
-/* columns rows colors chars-per-pixel */
-"1 1 1 1",
-"  c None",
-/* pixels */
-" "
-};
+/* XPM  --  From GNOME */
+static char * unknown_xpm[] = {
+"48 48 73 1",
+" 	c None",
+".	c #000000",
+"+	c #A27F3B",
+"@	c #B89243",
+"#	c #D8AB4E",
+"$	c #9D7D3A",
+"%	c #A6823C",
+"&	c #7C622D",
+"*	c #F7D899",
+"=	c #F7E2B8",
+"-	c #D8BA7B",
+";	c #BE9B53",
+">	c #F7C35A",
+",	c #F7DFAF",
+"'	c #F7E5C0",
+")	c #F7D48C",
+"!	c #F7CF7E",
+"~	c #D8B15F",
+"{	c #6E5526",
+"]	c #F7DCA5",
+"^	c #A8843D",
+"/	c #937435",
+"(	c #AA863E",
+"_	c #D8B66E",
+":	c #BEA363",
+"<	c #947536",
+"[	c #927335",
+"}	c #F7C96D",
+"|	c #80632D",
+"1	c #C39F57",
+"2	c #A38E55",
+"3	c #A48B5A",
+"4	c #D2A64D",
+"5	c #82662F",
+"6	c #654F24",
+"7	c #DCB463",
+"8	c #BE9544",
+"9	c #C3A466",
+"0	c #8C6D31",
+"a	c #D2B06C",
+"b	c #D8BE86",
+"c	c #715929",
+"d	c #B99344",
+"e	c #B38D40",
+"f	c #D8B56E",
+"g	c #D8AC58",
+"h	c #997A3B",
+"i	c #6B5527",
+"j	c #C39F55",
+"k	c #DCC494",
+"l	c #DAB872",
+"m	c #C9AC73",
+"n	c #BFA16A",
+"o	c #19150D",
+"p	c #876A31",
+"q	c #C9A45B",
+"r	c #C6A76A",
+"s	c #7F6941",
+"t	c #977737",
+"u	c #D8B165",
+"v	c #D8AC5B",
+"w	c #BEA272",
+"x	c #C09745",
+"y	c #D8B163",
+"z	c #927C52",
+"A	c #735F3B",
+"B	c #A68748",
+"C	c #1A1A1A",
+"D	c #393939",
+"E	c #221C12",
+"F	c #DDBC74",
+"G	c #D2A64C",
+"H	c #705627",
+"                                                ",
+"                                                ",
+"                                                ",
+"                                                ",
+"                                                ",
+"                                                ",
+"                                                ",
+"                                                ",
+"                   ........                     ",
+"                 ...+@#$%&...                   ",
+"                ..#**=*---;%.                   ",
+"               ..>,'*)>>>!-~%{..                ",
+"               .>,]>^//(>>!_~%..                ",
+"              .:*=><....[>>}~~|..               ",
+"              .}'!<..   .1>!#~%..               ",
+"             .2),#..    .3>}~#%..               ",
+"             .4!>%..    .3}}_#5..               ",
+"             .>!>%..    .3>__#6..               ",
+"             .7~85..    .9}-#%...               ",
+"             .......    0ab~#c..                ",
+"              .....    .d)b#8...                ",
+"                      .e}b##...                 ",
+"                     ..>)fgh..                  ",
+"                     ijklmno.                   ",
+"                    .pafqrs.                    ",
+"                    .t-uvw..                    ",
+"                    .x-yvz.                     ",
+"                    .#b~#A.                     ",
+"                    .;-#8..                     ",
+"                    .BB%|..                     ",
+"                    .CD...                      ",
+"                     ....                       ",
+"                                                ",
+"                     E....                      ",
+"                    .F!)8..                     ",
+"                    .!**#..                     ",
+"                    .))~8..                     ",
+"                    .)_#8..                     ",
+"                    .G~8H..                     ",
+"                     ......                     ",
+"                      ....                      ",
+"                                                ",
+"                                                ",
+"                                                ",
+"                                                ",
+"                                                ",
+"                                                ",
+"                                                "};
 
 /* This is an internally used function to create pixmaps. */
 static GtkWidget*
@@ -68,7 +184,7 @@ create_dummy_pixmap                    (GtkWidget       *widget)
 
   colormap = gtk_widget_get_colormap (widget);
   gdkpixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, &mask,
-                                                     NULL, dummy_pixmap_xpm);
+                                                     NULL, unknown_xpm);
   if (gdkpixmap == NULL)
     g_error ("Couldn't create replacement pixmap.");
   pixmap = gtk_pixmap_new (gdkpixmap, mask);
@@ -98,6 +214,12 @@ create_pixmap                          (GtkWidget       *widget,
   GdkBitmap *mask;
   GtkWidget *pixmap;
   GList *elem;
+
+  /* Check for a NULL */
+  if (filename == NULL)
+  {
+      return create_dummy_pixmap (widget);
+  }
 
   /* We first try any pixmaps directories set by the application. */
   elem = pixmaps_directories;
@@ -193,3 +315,5 @@ void goto_url(gchar *url)
 	} 
 	g_free(path);
 }
+
+

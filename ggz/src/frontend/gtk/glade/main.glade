@@ -1035,4 +1035,33 @@
   </widget>
 </widget>
 
+<widget>
+  <class>GtkMenu</class>
+  <name>mnu_room</name>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>info</name>
+    <signal>
+      <name>activate</name>
+      <handler>client_info_activate</handler>
+      <last_modification_time>Wed, 15 Nov 2000 01:37:44 GMT</last_modification_time>
+    </signal>
+    <label>Info</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>join</name>
+    <signal>
+      <name>activate</name>
+      <handler>client_join_activate</handler>
+      <last_modification_time>Wed, 15 Nov 2000 01:37:38 GMT</last_modification_time>
+    </signal>
+    <label>Join</label>
+    <right_justify>False</right_justify>
+  </widget>
+</widget>
+
 </GTK-Interface>
