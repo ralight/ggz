@@ -35,12 +35,16 @@ class Canvas : public QCanvas
 		~Canvas();
 		void move(int x, int y);
 		void login(QString username, QString password);
+		void chat(QString message);
 
 	signals:
 		void signalLoggedin(QString name);
 
 	public slots:
 		void slotInput();
+
+	protected slots:
+		void keyPressEvent(QKeyEvent *e);
 
 	private:
 		void init();

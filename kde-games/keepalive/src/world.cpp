@@ -18,15 +18,25 @@
 // Header file
 #include "world.h"
 
+// System includes
+#include <iostream>
+
 // Constructor
 World::World(QCanvas *canvas, QWidget *parent, const char *name)
 : QCanvasView(canvas, parent, name)
 {
+	setFocusPolicy(StrongFocus);
+
 	show();
 }
 
 // Destructor
 World::~World()
 {
+}
+
+void World::keyPressEvent(QKeyEvent *e)
+{
+	std::cout << "world key press" << std::endl;
 }
 

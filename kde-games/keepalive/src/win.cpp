@@ -22,12 +22,15 @@
 #include "login.h"
 #include "world.h"
 #include "canvas.h"
+#include "chatbox.h"
 
 // Qt includes
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
+
+#include <iostream>
 
 // Constructor
 Win::Win(QWidget *parent, const char *name)
@@ -39,6 +42,7 @@ Win::Win(QWidget *parent, const char *name)
 	m_world = new World(m_canvas, this);
 	m_world->hide();
 	m_login = new Login(this);
+	chatbox = NULL;
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(m_world);
@@ -49,6 +53,8 @@ Win::Win(QWidget *parent, const char *name)
 	connect(m_canvas, SIGNAL(signalLoggedin(QString)),
 		SLOT(slotLoggedin(QString)));
 
+	setFocusPolicy(StrongFocus);
+
 	//setFixedSize(400, 300);
 	resize(500, 400);
 	setCaption("Keepalive: Login");
@@ -58,6 +64,11 @@ Win::Win(QWidget *parent, const char *name)
 // Destructor
 Win::~Win()
 {
+}
+
+void Win::slotChat(QString message)
+{
+	m_canvas->chat(message);
 }
 
 // Try to log into the server
@@ -86,5 +97,17 @@ void Win::keyPressEvent(QKeyEvent *e)
 	if(e->key() == Key_Up) y = -1;
 	if(e->key() == Key_Down) y = 1;
 	m_canvas->move(x, y);
+
+	if((e->key() == Key_Return) || (e->key() == Key_Enter))
+	{
+		if(!chatbox)
+		{
+			chatbox = new Chatbox(this);
+			connect(chatbox, SIGNAL(signalChat(QString)), SLOT(slotChat(QString)));
+		}
+		chatbox->show();
+	}
+
+	std::cout << "KEYCODE: " << e->key() << std::endl;
 }
 

@@ -28,6 +28,9 @@ class World : public QCanvasView
 	public:
 		World(QCanvas *canvas = NULL, QWidget *parent = NULL, const char *name = NULL);
 		~World();
+
+	protected:
+		void keyPressEvent(QKeyEvent *e);
 };
 
 #endif

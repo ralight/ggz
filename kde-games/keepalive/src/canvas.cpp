@@ -71,7 +71,7 @@ void Canvas::slotInput()
 	int width, height;
 	int x, y;
 	int count;
-	char *name;
+	char *name, *message;
 	QCanvasSprite *sprite;
 
 	*m_net >> c;
@@ -119,7 +119,14 @@ void Canvas::slotInput()
 			free(name);
 			break;
 		case op_loginfailed:
+			*m_net >> name;
+			*m_net >> message;
 			QMessageBox::information(NULL, "Notice", "Login failed");
+			free(name);
+			free(message);
+			break;
+		case op_chat:
+			QMessageBox::information(NULL, "Chat", QString("Chat from %1:\n%2").arg(name).arg(message));
 			break;
 		default:
 			//QMessageBox::information(NULL, "Notice", QString("Unknown opcode: %1").arg((int)c));
@@ -157,5 +164,15 @@ void Canvas::login(QString username, QString password)
 	if(!m_net) init();
 
 	*m_net << (Q_INT8)op_login << username.latin1() << password.latin1();
+}
+
+void Canvas::keyPressEvent(QKeyEvent *e)
+{
+	std::cout << "extra key press event!" << std::endl;
+}
+
+void Canvas::chat(QString message)
+{
+	*m_net << (Q_INT8)op_chat << message.latin1();
 }
 

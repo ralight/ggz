@@ -25,6 +25,7 @@
 class Login;
 class World;
 class Canvas;
+class Chatbox;
 
 // The top level window
 class Win : public QWidget
@@ -37,6 +38,7 @@ class Win : public QWidget
 	public slots:
 		void slotLogin(QString username, QString password);
 		void slotLoggedin(QString name);
+		void slotChat(QString message);
 
 	protected:
 		void keyPressEvent(QKeyEvent *e);
@@ -45,6 +47,7 @@ class Win : public QWidget
 		Login *m_login;
 		World *m_world;
 		Canvas *m_canvas;
+		Chatbox *chatbox;
 };
 
 #endif

@@ -28,7 +28,9 @@ enum KeepaliveOpcodes
 	op_loginfailed = 104,
 	op_moved = 105,
 	op_login = 106,
-	op_move = 107
+	op_move = 107,
+	op_chat = 108,
+	op_chatted = 109
 };
 
 // op_map: map size and contents
@@ -42,11 +44,15 @@ enum KeepaliveOpcodes
 // op_loginfailed: Wrong password when trying to login
 // op_moved: a player has moved
 // $name, x, y
+// op_chatted: got a chat message
+// $name, $message
 //
 // op_login: Attempt to get ones own character back
 // $username, $password
 // op_move: Move of a player
 // x, y
+// op_chat: Send a chat message
+// $message
 
 #endif
 

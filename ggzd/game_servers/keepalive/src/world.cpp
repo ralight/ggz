@@ -119,7 +119,7 @@ void World::receive(const char *name, void *data)
 	char c;
 	int x, y;
 	char username[32], password[32];
-	char *pname;
+	char *pname, *message;
 	int seat;
 	Player *p;
 
@@ -160,6 +160,20 @@ void World::receive(const char *name, void *data)
 				ggz_write_int((*it).fd(), y);
 			}
 			break;
+		case op_chat:
+			std::cout << "op_chat" << std::endl;
+			ggz_read_string_alloc(p->fd(), &message);
+			for(list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
+			{
+				if(&(*it) == p) continue;
+				ggz_write_char((*it).fd(), op_chatted);
+				ggz_write_string((*it).fd(), name);
+				ggz_write_string((*it).fd(), message);
+			}
+			free(message);
+			break;
+		default:
+			std::cerr << "Unknown opcode: " << (int)c << std::endl;
 	}
 }
 
