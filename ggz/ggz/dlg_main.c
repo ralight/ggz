@@ -15,11 +15,15 @@
 #include "dlg_main.h"
 #include "easysock.h"
 #include "err_func.h"
+#include "mnu_tables.h"
+#include "mnu_players.h"
 #include "protocols.h"
 
 
 /* Globals neaded by this dialog */
 extern GtkWidget *dlg_launch;
+extern GtkWidget *mnu_players;
+extern GtkWidget *mnu_tables;
 extern int selected_table;
 extern int selected_type;
 extern struct ConnectInfo connection;
@@ -35,7 +39,8 @@ void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data);
 void ggz_table_select_row_callback(GtkWidget *widget, gint row, gint column,
 				   GdkEventButton *event, gpointer data);
 void ggz_get_game_options(GtkButton * button, gpointer user_data);
-
+int ggz_event_tables( GtkWidget *widget, GdkEvent *event );
+int ggz_event_players( GtkWidget *widget, GdkEvent *event );
 
 GtkWidget*
 create_main_win (void)
@@ -733,6 +738,10 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (msg_button), "clicked",
                       GTK_SIGNAL_FUNC (ggz_input_chat_msg),
                       msg_entry);
+  gtk_signal_connect_object (GTK_OBJECT (player_list), "event",
+  		             GTK_SIGNAL_FUNC (ggz_event_players), GTK_OBJECT (mnu_players));
+  gtk_signal_connect_object (GTK_OBJECT (table_tree), "event", GTK_SIGNAL_FUNC (ggz_event_tables),
+  			     GTK_OBJECT (mnu_tables));
 
   gtk_window_add_accel_group (GTK_WINDOW (main_win), accel_group);
 
@@ -822,3 +831,31 @@ void ggz_get_game_options(GtkButton * button, gpointer user_data)
         }
 }
 
+int ggz_event_tables( GtkWidget *widget, GdkEvent *event )
+{
+	if (event->type == GDK_BUTTON_PRESS && event->button.button == 3)
+	{
+		GdkEventButton *bevent = (GdkEventButton *) event;
+		gtk_menu_popup (GTK_MENU (mnu_tables), NULL, NULL, NULL, NULL,
+			bevent->button, bevent->time);
+        }
+	if (event->type == GDK_2BUTTON_PRESS)
+	{
+        	es_write_int(connection.sock, REQ_TABLE_JOIN);
+	        es_write_int(connection.sock, selected_table);
+	}
+
+	return 0;
+}
+
+int ggz_event_players( GtkWidget *widget, GdkEvent *event )
+{
+	if (event->type == GDK_BUTTON_PRESS && event->button.button == 3)
+	{
+		GdkEventButton *bevent = (GdkEventButton *) event;
+		gtk_menu_popup (GTK_MENU (mnu_players), NULL, NULL, NULL, NULL,
+			bevent->button, bevent->time);
+        }
+
+	return 0;
+}

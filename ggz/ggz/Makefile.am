@@ -30,6 +30,10 @@ ggz_SOURCES = 	main.c \
 		err_func.h \
 		game.c \
 		game.h \
+		mnu_players.c\
+		mnu_players.h\
+		mnu_tables.c\
+		mnu_tables.h\
 		parse_opt.c \
 		parse_opt.h \
 		protocols.h \

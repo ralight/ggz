@@ -35,6 +35,8 @@
 
 #include "dlg_main.h"
 #include "dlg_login.h"
+#include "mnu_tables.h"
+#include "mnu_players.h"
 
 /* Main global data structures */
 struct ConnectInfo connection;
@@ -43,6 +45,8 @@ struct Users users;
 struct GameTypes game_types;
 extern GtkWidget *main_win;
 extern GtkWidget *dlg_login;
+GtkWidget *mnu_tables;
+GtkWidget *mnu_players;
 GtkWidget *dlg_launch;
 int selected_table;
 int selected_type;
@@ -69,6 +73,11 @@ int main(int argc, char *argv[])
 	gtk_init(&argc, &argv);
 	es_err_func_set(err_sock);
 	
+	/* Popup Menus */
+	mnu_tables = create_mnu_tables();
+	mnu_players = create_mnu_players();
+
+	/* Windows/Dialogs */
 	main_win = create_main_win();
 	gtk_widget_show(main_win);
 	dlg_login = create_dlg_login();

@@ -2487,4 +2487,80 @@
   </widget>
 </widget>
 
+<widget>
+  <class>GtkMenu</class>
+  <name>mnu_tables</name>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>launch</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_launch1_activate</handler>
+      <last_modification_time>Sun, 19 Mar 2000 01:27:49 GMT</last_modification_time>
+    </signal>
+    <label>Launch</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>separator5</name>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>options1</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_options1_activate</handler>
+      <last_modification_time>Sat, 18 Mar 2000 19:30:59 GMT</last_modification_time>
+    </signal>
+    <label>Options</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>players1</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_players1_activate</handler>
+      <last_modification_time>Sat, 18 Mar 2000 19:31:14 GMT</last_modification_time>
+    </signal>
+    <label>Players</label>
+    <right_justify>False</right_justify>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkMenu</class>
+  <name>mnu_players</name>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>info1</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_info1_activate</handler>
+      <last_modification_time>Sat, 18 Mar 2000 19:32:04 GMT</last_modification_time>
+    </signal>
+    <label>Info</label>
+    <right_justify>False</right_justify>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>stats1</name>
+    <signal>
+      <name>activate</name>
+      <handler>on_stats1_activate</handler>
+      <last_modification_time>Sat, 18 Mar 2000 19:32:22 GMT</last_modification_time>
+    </signal>
+    <label>Stats</label>
+    <right_justify>False</right_justify>
+  </widget>
+</widget>
+
 </GTK-Interface>
