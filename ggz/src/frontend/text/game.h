@@ -31,3 +31,6 @@ void game_init(GGZModule *module, GGZGameType *type, int index);
 void game_quit(void);
 
 void game_destroy(void);
+
+void game_channel(int fd);
+

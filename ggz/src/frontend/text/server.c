@@ -54,6 +54,8 @@ static GGZHookReturn server_loggedout(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_state_change(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_motd_loaded(GGZServerEvent id, void*, void*);
 
+static GGZHookReturn server_channel_ready(GGZServerEvent id, void*, void*);
+
 static GGZHookReturn server_net_error(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_protocol_error(GGZServerEvent id, void*, void*);
 
@@ -71,7 +73,6 @@ static GGZHookReturn room_table_joined(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_table_join_fail(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_table_left(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_table_leave_fail(GGZRoomEvent id, void*, void*);
-/*static GGZHookReturn room_table_data(GGZRoomEvent id, void*, void*);*/
 
 
 GGZServer *server = NULL;
@@ -159,8 +160,10 @@ static void server_register(GGZServer *server)
 				      server_protocol_error);
 	ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE, 
 				      server_state_change);
-        ggzcore_server_add_event_hook(server, GGZ_MOTD_LOADED,
+    ggzcore_server_add_event_hook(server, GGZ_MOTD_LOADED,
 				      server_motd_loaded);
+	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_READY,
+					  server_channel_ready);
 }
 
 
@@ -180,7 +183,6 @@ static void room_register(GGZRoom *room)
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_JOIN_FAIL, room_table_join_fail);
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_LEFT, room_table_left);
 	ggzcore_room_add_event_hook(room, GGZ_TABLE_LEAVE_FAIL, room_table_leave_fail);
-	/*ggzcore_room_add_event_hook(room, GGZ_TABLE_DATA, room_table_data);*/
 }
 
 
@@ -288,6 +290,14 @@ static GGZHookReturn server_loggedout(GGZServerEvent id, void* event_data, void*
 #endif
 	loop_remove_fd(fd);
 
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn server_channel_ready(GGZServerEvent id, void* event_data, void* user_data)
+{
+	output_text("--- Channel ready");
+	game_channel(ggzcore_server_get_channel(server));
 	return GGZ_HOOK_OK;
 }
 
@@ -443,14 +453,6 @@ static GGZHookReturn room_table_leave_fail(GGZRoomEvent id, void* event_data, vo
 	return GGZ_HOOK_OK;
 }
 	
-
-/*static GGZHookReturn room_table_data(GGZRoomEvent id, void* event_data, void* user_data)
-{
-	output_text("--- Data from server");
-	ggzcore_game_send_data(game, event_data);
-	return GGZ_HOOK_OK;
-}*/
-
 
 static GGZHookReturn server_list_rooms(GGZServerEvent id, void* event_data, void* user_data)
 {
