@@ -1,4 +1,4 @@
-SUBDIRS =
+SUBDIRS = .
 
 noinst_LIBRARIES = libdot.a
 
