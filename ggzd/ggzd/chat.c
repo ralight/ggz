@@ -38,6 +38,7 @@
 #include <hash.h>
 #include <net.h>
 #include <players.h>
+#include <perms.h>
 
 /* Server wide data structures */
 extern Options opt;
@@ -55,12 +56,22 @@ int chat_room_enqueue(int room, unsigned char opcode, GGZPlayer* sender,
 		      char *msg)
 {
 	void* data = NULL;
-	int size, status;
+	int size, status=0;
+	int i, rooms;
+
+	/* A message to room -1 announces to all rooms */
+	if(room == -1) {
+		if(perms_check(sender, PERMS_CHAT_ANNOUNCE) != PERMS_ALLOW)
+			return E_NO_PERMISSION;
+		rooms = room_get_num_rooms();
+		for(i=0; i<rooms; i++)
+			status = chat_room_enqueue(i, opcode, sender, msg);
+		return status;
+	}
 
 	/* Pack up chat message */
 	size = chat_pack(&data, opcode, sender->name, msg);
 
-	/* Queue chat event for whole room */
 	status = event_room_enqueue(room, chat_event_callback, size, data);
 	
 	return status;

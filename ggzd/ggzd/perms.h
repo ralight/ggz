@@ -33,8 +33,9 @@
 #define PERMS_LAUNCH_TABLE	0x00000002	/* Can launch a new table */
 #define PERMS_ROOMS_LOGIN	0x00000004	/* Can enter login-only rooms */
 #define PERMS_ROOMS_ADMIN	0x00000008	/* Can enter admin-only rooms */
+#define PERMS_CHAT_ANNOUNCE	0x00000010	/* Can make announcements */
 
-#define PERMS_ADMIN_MASK	0x00000008	/* Set all admin type bits */
+#define PERMS_ADMIN_MASK	0x00000018	/* Set all admin type bits */
 
 #define PERMS_DEFAULT_ANON ( PERMS_JOIN_TABLE   |  \
 			     PERMS_LAUNCH_TABLE )
@@ -53,7 +54,7 @@ char perms_str_table[32][21] = {
 	"PERMS_LAUNCH_TABLE  ",
 	"PERMS_ROOMS_LOGIN   ",
 	"PERMS_ROOMS_ADMIN   ",
-	"undefined 0x00000010",		/* 00000010 */
+	"PERMS_CHAT_ANNOUNCE ",		/* 00000010 */
 	"undefined 0x00000020",
 	"undefined 0x00000040",
 	"undefined 0x00000080",

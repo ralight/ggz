@@ -390,3 +390,10 @@ static int show_server_info(GGZPlayer *player)
 
 	return status;
 }
+
+
+int room_get_num_rooms(void)
+{
+	/* FIXME: Lock this one day when we have dynamic rooms */
+	return room_info.num_rooms;
+}

@@ -840,6 +840,8 @@ int player_msg_from_sized(GGZPlayer* p, int size, char *buf)
 
 int player_chat(GGZPlayer* player, unsigned char subop, char *target, char *msg)
 {
+	int target_room=-1;	/* FIXME - this should come from net.c if we */
+				/* are going to support per-room announce... */
 	int status;
 
 	dbg_msg(GGZ_DBG_CHAT, "Handling chat for %s", player->name);
@@ -862,6 +864,10 @@ int player_chat(GGZPlayer* player, unsigned char subop, char *target, char *msg)
 	case GGZ_CHAT_BEEP:
 	case GGZ_CHAT_PERSONAL:
 		status = chat_player_enqueue(target, subop, player, msg);
+		break;
+	case GGZ_CHAT_ANNOUNCE:
+		dbg_msg(GGZ_DBG_CHAT, "%s announces %s", player->name, msg);
+		status = chat_room_enqueue(target_room, subop, player, msg);
 		break;
 	default:
 		dbg_msg(GGZ_DBG_PROTOCOL, "%s sent invalid chat subop %d", 
