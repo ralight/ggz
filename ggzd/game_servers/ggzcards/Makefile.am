@@ -1,7 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-# FIXME: ../libggzmod is listed because of the dependency
-SUBDIRS = config games ai ../libggzmod .
+SUBDIRS = config games ai .
 
 EXTRA_DIST =
 

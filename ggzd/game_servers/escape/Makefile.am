@@ -2,8 +2,7 @@
 
 EXTRA_DIST = escape.dsc escape.room
 
-# FIXME: libggzmod included because of dependency
-SUBDIRS = ../libggzmod .
+SUBDIRS = .
 
 ggzdexecmod_PROGRAMS = ggzd.escape
 ggzdgame_DATA = escape.dsc

@@ -2,8 +2,7 @@
 
 EXTRA_DIST = lapocha.dsc lapocha.room
 
-# FIXME: libggzmod included because of dependency
-SUBDIRS = ../libggzmod .
+SUBDIRS = .
 
 ggzdexecmod_PROGRAMS = ggzd.lapocha
 ggzdgame_DATA = lapocha.dsc
