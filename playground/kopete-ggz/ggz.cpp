@@ -1,9 +1,9 @@
 #include <kdebug.h>
 #include <kgenericfactory.h>
-//#include <kstandarddirs.h>
 #include <kaction.h>
 #include <kmainwindow.h>
 #include <kmenubar.h>
+#include <kprocess.h>
 
 #include <qpopupmenu.h>
 
@@ -14,23 +14,49 @@
 
 #include "ggz.h"
 
-//#include <qcolor.h>
+K_EXPORT_COMPONENT_FACTORY(kopete_ggz, KGenericFactory<GGZPlugin>("kopete_ggz"))
 
-K_EXPORT_COMPONENT_FACTORY( kopete_ggz, KGenericFactory<GGZPlugin>( "kopete_ggz" )  )
-
-GGZPlugin::GGZPlugin( QObject *parent, const char *name, const QStringList &/*args*/ )
-: Kopete::Plugin( KGlobal::instance(), parent, name )
+GGZPlugin::GGZPlugin(QObject *parent, const char *name, const QStringList &/*args*/)
+: Kopete::Plugin(KGlobal::instance(), parent, name)
 {
 	connect(Kopete::ChatSessionManager::self(),
 		SIGNAL(chatSessionCreated(Kopete::ChatSession*)),
 		this,
 		SLOT(slotNewKMM(Kopete::ChatSession*)));
+	connect(Kopete::ChatSessionManager::self(),
+		SIGNAL(aboutToDisplay(Kopete::Message&)),
+		this,
+		SLOT(slotProcessDisplay(Kopete::Message&)));
 
 	kdDebug() << "GGZ PLUGIN INITIALIZED" << endl;
 }
 
 GGZPlugin::~GGZPlugin()
 {
+}
+
+void GGZPlugin::slotNewKMM(Kopete::ChatSession *KMM)
+{
+	m_self = KMM->myself()->contactId();
+
+	new GGZPluginGui(KMM);
+}
+
+void GGZPlugin::slotProcessDisplay(Kopete::Message& msg)
+{
+	kdDebug() << "RECEIVED MESSAGE FROM: " << msg.from()->contactId() << endl;
+	kdDebug() << "* I AM RECEIVER: " << m_self << endl;
+	kdDebug() << "* RECEIVED SUBJECT: " << msg.subject() << endl;
+	kdDebug() << "* RECEIVED BODY: " << msg.plainBody() << endl;
+
+	if(msg.from()->contactId() != m_self)
+	{
+		if(msg.plainBody() == "jeu")
+		{
+			GGZPluginLauncher *l = new GGZPluginLauncher(this);
+			l->launch("ggz-kop-peer", msg.from()->contactId());
+		}
+	}
 }
 
 GGZPluginGui::GGZPluginGui(Kopete::ChatSession *parent, const char *name)
@@ -40,54 +66,44 @@ GGZPluginGui::GGZPluginGui(Kopete::ChatSession *parent, const char *name)
 	setXMLFile("ggzchatui.rc");
 	kdDebug() << "GGZ PLUGIN ACTIVATED IN MESSAGE WINDOW" << endl;
 
-	Kopete::ContactPtrList players = parent->members();
-	for(Kopete::Contact *c = players.first(); c; c = players.next())
-	{
-		kdDebug() << "PLAY WITH" << c->contactId() << endl;
-	}
+	session = parent;
 }
 
 void GGZPluginGui::slotGGZ()
 {
 	kdDebug() << "PLAY GGZ GAME" << endl;
+
+	Kopete::ContactPtrList players = session->members();
+	for(Kopete::Contact *c = players.first(); c; c = players.next())
+	{
+		kdDebug() << "PLAY WITH " << c->contactId() << endl;
+	}
+
+	Kopete::Message msg(session->myself(), session->members(), "jeu", Kopete::Message::Outbound);
+	//msg.setBody("jeu");
+	session->sendMessage(msg);
+
+	GGZPluginLauncher *l = new GGZPluginLauncher(this);
+	l->launch(session->myself()->contactId(), QString::null);
 }
 
-void GGZPlugin::slotNewKMM( Kopete::ChatSession *KMM )
+GGZPluginLauncher::GGZPluginLauncher(QObject *parent)
+: m_parent(parent)
 {
-	new GGZPluginGui(KMM);
 }
 
-bool
-GGZPlugin::serialize(Kopete::MetaContact *metaContact, QStringList &strList) const
+void GGZPluginLauncher::launch(QString player1, QString player2)
 {
-Q_UNUSED(metaContact);
-Q_UNUSED(strList);
-	return true;
-}
+	kdDebug() << "LAUNCHER " << player1 << " " << player2 << endl;
 
-void
-GGZPlugin::deserialize( Kopete::MetaContact *metaContact, const QStringList& data )
-{
-Q_UNUSED(metaContact);
-Q_UNUSED(data);
-}
-
-void
-GGZPlugin::slotProcessDisplay( Kopete::Message& msg )
-{
-Q_UNUSED(msg);
-}
-
-void
-GGZPlugin::slotProcessSend( Kopete::Message& msg )
-{
-Q_UNUSED(msg);
-}
-
-void
-GGZPlugin::changeMessage( Kopete::Message& msg )
-{
-Q_UNUSED(msg);
+	KProcess *proc = new KProcess(m_parent);
+	*proc << "ggz-wrapper";
+	*proc << "-s" << "live.ggzgamingzone.org";
+	*proc << "-g" << "TicTacToe";
+	*proc << "-u" << player1;
+	if(!player2.isNull())
+		*proc << "-d" << player2;
+	proc->start(KProcess::DontCare);
 }
 
 #include "ggz.moc"
