@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 2918 2001-12-17 10:11:39Z jdorje $
+dnl $Id: configure.in 3089 2002-01-12 10:18:48Z jdorje $
 
 dnl AC_INIT(configure.in)
 AC_INIT(acinclude.m4)
@@ -102,6 +102,7 @@ AM_PATH_GTK(1.2.0,, AC_MSG_ERROR(*** Can't build GTK games: GTK not found))
 dnl Check for GGZ requirements
 dnl ==========================
 
+AC_GGZ_LIBGGZ
 AC_GGZ_EASYSOCK(0.3)
 AC_GGZ_GGZMOD
 AC_GGZ_CONFIG
