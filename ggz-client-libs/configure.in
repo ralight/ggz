@@ -59,7 +59,7 @@ dnl ==================
 
 AC_CHECK_LIB(easysock, es_make_socket, 
     [AC_CHECK_HEADER(easysock.h, 
-        [AC_EGREP_CPP([[0-9]\.2.[0-9]], [#include <easysock.h>
+        [AC_EGREP_CPP([[0-9]\.[2-9].[0-9]], [#include <easysock.h>
 			   EASYSOCK_VERSION ], LDADD="$LDADD -leasysock",
             AC_MSG_ERROR(*** Need easysock 0.2.X later))],
 	    AC_MSG_ERROR(*** Cannot find easysock.h))],
