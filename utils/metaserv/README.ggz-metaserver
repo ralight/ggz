@@ -1,0 +1,22 @@
+The GGZ Gaming Zone Meta Server Project
+---------------------------------------
+
+The meta server will be available for the 0.0.5 release.
+However, other projects are free to use it. It consists of 'meta-server',
+'minidom' and some GUI's for testing purposes (or as reference implementations).
+It has no dependencies on any GGZ library, although it will be going to be
+integrated into ggzd (and be available as a separate package in parallel).
+
+The GUI's will have to be compiled separately, they're not part of the autoconf
+process yet and will probably never be.
+
+The server itself should be installed on port 15689.
+
+/etc/services:
+ggzm       15689/tcp            # GGZ Gaming Zone meta server
+/etc/inetd.conf:
+ggzm stream tcp nowait josef /usr/local/bin/metaserv
+
+Josef Spillner
+2001-08-12
+
