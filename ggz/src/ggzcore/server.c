@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 6304 2004-11-08 23:03:21Z jdorje $
+ * $Id: server.c 6446 2004-12-11 20:45:05Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -118,6 +118,12 @@ struct _GGZServer {
        	/* Server events */
 	GGZHookList *event_hooks[sizeof(_ggzcore_server_events)/sizeof(char*)];
 
+	/* This struct is used when queueing events.  Events that may happen
+	 * many times during a single network read may instead be queued and
+	 * later popped off the queue when we leave the network code. */
+	struct {
+		int players_changed;
+	} queued_events;
 };
 
 static void _ggzcore_server_main_negotiate_status(GGZServer *server,
@@ -330,6 +336,15 @@ GGZStateID ggzcore_server_get_state(GGZServer *server)
 }
 
 
+int ggzcore_server_get_num_players(GGZServer *server)
+{
+	if (server)
+		return _ggzcore_server_get_num_players(server);
+	else
+		return 0;
+}
+
+
 GGZRoom* ggzcore_server_get_cur_room(GGZServer *server)
 {
 	if (server)
@@ -528,10 +543,11 @@ int ggzcore_server_disconnect(GGZServer *server)
 int ggzcore_server_data_is_pending(GGZServer *server)
 {
 	int pending = 0;
-	
-	if (server && server->net && server->state != GGZ_STATE_OFFLINE)
+
+	if (server && server->net && server->state != GGZ_STATE_OFFLINE) {
 		pending = _ggzcore_net_data_is_pending(server->net);
-	
+	}
+
 	return pending;
 }
 
@@ -544,11 +560,21 @@ int ggzcore_server_read_data(GGZServer *server, int fd)
 		return -1;
 
 	if (server->net && fd == _ggzcore_net_get_fd(server->net)) {
-		if (server->state != GGZ_STATE_OFFLINE)
+		if (server->state != GGZ_STATE_OFFLINE) {
 			status = _ggzcore_net_read_data(server->net);
-	}
-	else if (server->channel && fd == _ggzcore_net_get_fd(server->channel))
+
+			/* See comment in
+			 * ggzcore_server_queue_players_changed. */
+			if (server->queued_events.players_changed) {
+				_ggzcore_server_event(server,
+					GGZ_SERVER_PLAYERS_CHANGED, NULL);
+				server->queued_events.players_changed = 0;
+			}
+		}
+	} else if (server->channel
+		   && fd == _ggzcore_net_get_fd(server->channel)) {
 		status = _ggzcore_net_read_data(server->channel);
+	}
 
 	return 0;
 }
@@ -605,6 +631,23 @@ int _ggzcore_server_get_tls(struct _GGZServer *server)
 	if (server && server->net)
 		tls = _ggzcore_net_get_tls(server->net);
 	return tls;
+}
+
+
+int _ggzcore_server_get_num_players(GGZServer *server)
+{
+	int rooms = ggzcore_server_get_num_rooms(server), i, total = 0;
+
+	for (i = 0; i < rooms; i++) {
+		GGZRoom *room = ggzcore_server_get_nth_room(server, i);
+
+		/* Each room should track an approximate number of players
+		 * inside it (or 0 which is just as good).  We just total
+		 * those up. */
+		total += ggzcore_room_get_num_players(room);
+	}
+
+	return total;
 }
 
 
@@ -1228,6 +1271,16 @@ GGZHookReturn _ggzcore_server_event(GGZServer *server,
 					   void *data)
 {
 	return _ggzcore_hook_list_invoke(server->event_hooks[id], data);
+}
+
+
+void _ggzcore_server_queue_players_changed(GGZServer *server)
+{
+	/* This queues a GGZ_SERVER_PLAYERS_CHANGED event.  The event is
+	 * activated when the network code is exited so that it's not
+	 * needlessly activated multiple times, which would also cause the
+	 * number to be inaccurate (but only for a short time). */
+	server->queued_events.players_changed = 1;
 }
 
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6444 2004-12-11 19:06:32Z jdorje $
+ * $Id: ggzcore.h 6446 2004-12-11 20:45:05Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -246,6 +246,12 @@ typedef enum {
 	 *  these functions will be useless!
 	 *  @param data NULL */
 	GGZ_TYPE_LIST,
+
+	/** The number of players on the server has changed.  This event is
+	 *  issued rather frequently every time players enter or leave.
+	 *  @param data NULL
+	 *  @see ggzcore_server_get_num_players */
+	GGZ_SERVER_PLAYERS_CHANGED,
 	
 	/** We have successfully entered a room.  This will be issued to
 	 *  tell us a room join has succeeded, after it has been requested.
@@ -733,10 +739,16 @@ GGZStateID   ggzcore_server_get_state(GGZServer *server);
 
 /** @brief Get the current TLS status of this server
  *
- * @param server The GGZ server object
- * @return Whether TLS is active or not
+ *  @param server The GGZ server object
+ *  @return Whether TLS is active or not
  */
 int          ggzcore_server_get_tls(GGZServer *server);
+
+/** @brief Get the total number of players on the server.
+ *
+ * @param server The GGZ server object
+ * return An approximate number of players in all rooms of the server. */
+int ggzcore_server_get_num_players(GGZServer *server);
 
 /** @brief Return the number of rooms on the server, or -1 on error.
  *  @note Until we retrieve the list of rooms, this will return 0.

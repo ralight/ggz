@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 6444 2004-12-11 19:06:32Z jdorje $
+ * $Id: room.c 6446 2004-12-11 20:45:05Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -451,6 +451,8 @@ void _ggzcore_room_set_player_list(struct _GGZRoom *room,
 				   unsigned int count,
 				   GGZList *list)
 {
+	int count_changed = (count != room->num_players);
+
 	/* Get rid of old list */
 	ggz_list_free(room->players);
 
@@ -459,18 +461,29 @@ void _ggzcore_room_set_player_list(struct _GGZRoom *room,
 	room->players = list;
 
 	_ggzcore_room_event(room, GGZ_PLAYER_LIST, &room->id);
+	if (count_changed) {
+		GGZServer *server = _ggzcore_room_get_server(room);
+
+		_ggzcore_server_queue_players_changed(server);
+	}
 }
 
 
 void _ggzcore_room_set_players(struct _GGZRoom *room,
 			       int players)
 {
+	GGZServer *server = _ggzcore_room_get_server(room);
+
+	if (room->player_count == players) {
+		return;
+	}
 	room->player_count = players;
 	if (room->player_count < 0) {
 		/* Sanity check. */
 		room->player_count = 0;
 	}
 	_ggzcore_room_event(room, GGZ_PLAYER_COUNT, &room->id);
+	_ggzcore_server_queue_players_changed(server);
 }
 
 
@@ -519,6 +532,7 @@ void _ggzcore_room_add_player(struct _GGZRoom *room, GGZPlayer *pdata,
 {
 	struct _GGZPlayer *player;
 	GGZRoomChangeEventData data;
+	GGZServer *server = _ggzcore_room_get_server(room);
 
 	ggz_debug(GGZCORE_DBG_ROOM, "Adding player %s", pdata->name);
 
@@ -553,6 +567,7 @@ void _ggzcore_room_add_player(struct _GGZRoom *room, GGZPlayer *pdata,
 	if ((room = _ggzcore_server_get_room_by_id(room->server, from_room))) {
 		_ggzcore_room_set_players(room, room->player_count - 1);
 	}
+	_ggzcore_server_queue_players_changed(server);
 }
 			      
 

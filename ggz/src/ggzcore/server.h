@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 5972 2004-03-22 17:05:09Z josef $
+ * $Id: server.h 6446 2004-12-11 20:45:05Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -41,6 +41,8 @@ char*           _ggzcore_server_get_handle(GGZServer *server);
 char*           _ggzcore_server_get_password(GGZServer *server);
 GGZStateID      _ggzcore_server_get_state(GGZServer *server);
 int             _ggzcore_server_get_tls(struct _GGZServer *server);
+
+int _ggzcore_server_get_num_players(GGZServer *server);
 
 int             _ggzcore_server_get_num_rooms(GGZServer *server);
 GGZRoom*        _ggzcore_server_get_cur_room(GGZServer *server);
@@ -126,5 +128,6 @@ void _ggzcore_server_add_type(GGZServer *server,
 int _ggzcore_server_event_is_valid(GGZServerEvent event);
 void _ggzcore_server_change_state(GGZServer *server, GGZTransID trans);
 GGZHookReturn _ggzcore_server_event(GGZServer*, GGZServerEvent, void*);
+void _ggzcore_server_queue_players_changed(GGZServer *server);
 
 #endif /* __SERVER_H__ */
