@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2281 2001-08-27 18:59:15Z jdorje $
+ * $Id: ggz_server.h 2283 2001-08-27 19:32:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -165,7 +165,6 @@ typedef enum {
  *
  *  @param event_id The type of event that has just happened.
  *  @param handler_data Specific data; varies by event.
- *  @return A negative return value indicates unrecoverable failure; a positive indicates game over.
  *
  *  Here is an example function showing the most generic use:
  *  @code
@@ -195,11 +194,10 @@ typedef enum {
  *              // Real-time games may use the tick event.
  *              break;
  *          }
- *          return 0;
  *      }
  *  @endcode
  */
-typedef int (*GGZDHandler)(ggzd_event_t event_id, void *handler_data);
+typedef void (*GGZDHandler)(ggzd_event_t event_id, void *handler_data);
 
 /** @brief Sets a handler for the specified event.
  *

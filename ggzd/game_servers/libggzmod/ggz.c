@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2281 2001-08-27 18:59:15Z jdorje $
+ * $Id: ggz.c 2283 2001-08-27 19:32:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -406,7 +406,6 @@ void ggzd_set_handler(ggzd_event_t event_id, const GGZDHandler handler)
 int ggzd_dispatch(void)
 {
         int op, seat, fd, gameover = 0;
-	int status = 0;
 
 	if (es_read_int(ggzfd, &op) < 0)
 		return -1;
@@ -415,36 +414,34 @@ int ggzd_dispatch(void)
 		case REQ_GAME_LAUNCH:
 			if (ggzdmod_game_launch() == 0
 			    && handlers[GGZ_EVENT_LAUNCH] != NULL)
-				status = (*handlers[GGZ_EVENT_LAUNCH])
-						(GGZ_EVENT_LAUNCH, NULL);
+				(*handlers[GGZ_EVENT_LAUNCH])
+					(GGZ_EVENT_LAUNCH, NULL);
 			break;
 		case REQ_GAME_JOIN:
 			if (ggzdmod_player_join(&seat, &fd) == 0) {
 				if (handlers[GGZ_EVENT_JOIN] != NULL)
-					status = (*handlers[GGZ_EVENT_JOIN])
-							(GGZ_EVENT_JOIN,
-						 	&seat);
+					(*handlers[GGZ_EVENT_JOIN])
+						(GGZ_EVENT_JOIN,
+						 &seat);
 			}
 			break;
 		case REQ_GAME_LEAVE:
 			if (ggzdmod_player_leave(&seat, &fd) == 0) {
 				if (handlers[GGZ_EVENT_LEAVE] != NULL)
-					status = (*handlers[GGZ_EVENT_LEAVE])
-							(GGZ_EVENT_LEAVE,
-						 	&seat);
+					(*handlers[GGZ_EVENT_LEAVE])
+						(GGZ_EVENT_LEAVE,
+						 &seat);
 			}
 			break;
 		case RSP_GAME_OVER:
 			gameover = 1;
 			if (handlers[GGZ_EVENT_QUIT] != NULL)
-				status = (*handlers[GGZ_EVENT_QUIT])
-						(GGZ_EVENT_QUIT, NULL);
+				(*handlers[GGZ_EVENT_QUIT])
+					(GGZ_EVENT_QUIT, NULL);
 			break;
 	}
 
-	if (status < 0) return -1; /* error */
-	if (status > 0 || gameover) return 1; /* gameover */
-	return 0;
+	return gameover;
 }
 
 /* return value:
@@ -455,7 +452,7 @@ int ggzd_dispatch(void)
 int ggzd_read_data(void)
 {
 	fd_set read_fd_set;
-	int i, fd, status, result;
+	int i, fd, status;
 	int gameover = 0;
 
 	read_fd_set = active_fd_set;
@@ -479,9 +476,8 @@ int ggzd_read_data(void)
 
 	/* Check for message from GGZ server */
 	if (FD_ISSET(ggzfd, &read_fd_set)) {
-		result = ggzd_dispatch();
-		if (result < 0) status = -1;
-		else if (result > 0) gameover = 1;
+		status = ggzd_dispatch();
+		if (status > 0) gameover = 1;
 	}
 
 	/* Check for message from player */
@@ -490,23 +486,18 @@ int ggzd_read_data(void)
 		if (fd != -1
 		    && FD_ISSET(fd, &read_fd_set)
 		    && handlers[GGZ_EVENT_PLAYER] != NULL) {
-			result = (*handlers[GGZ_EVENT_PLAYER])
-					(GGZ_EVENT_PLAYER, &i);
-			if (result > 0) gameover = 1;
-			else if (result < 0) status = -1;
+			(*handlers[GGZ_EVENT_PLAYER])
+				(GGZ_EVENT_PLAYER, &i);
 		}
 	}
 
 	/* A "tick" event is sent once each time through the loop */
 	if (handlers[GGZ_EVENT_TICK] != NULL) {
-		result = (*handlers[GGZ_EVENT_TICK])(GGZ_EVENT_TICK, NULL);
-		if (result > 0) gameover = 1;
-		else if (result < 0) status = -1;
+		(*handlers[GGZ_EVENT_TICK])(GGZ_EVENT_TICK, NULL);
 	}
 
-	if (status < 0) return -1;
-	if (gameover) return 1;
-	return 0;
+	/* we don't return errors right now */
+	return gameover;
 }
 
 /* return values as of now (not finalized):
