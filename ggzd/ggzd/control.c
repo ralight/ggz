@@ -51,6 +51,7 @@
 #include <ggzdb.h>
 #include <table.h>
 #include <daemon.h>
+#include <hash.h>
 
 
 /* Server options */
@@ -139,6 +140,8 @@ void init_data(void)
 
 	if (ggzdb_init() < 0)
 		err_msg_exit("*** Database initialization failed");
+
+	hash_initialize();
 
 	/* Initialize random numbers for password generation */
 	srandom((unsigned)time(NULL));

@@ -26,6 +26,7 @@
 #include <players.h>
 
 /* Exported functions */
+extern void hash_initialize(void);
 extern int hash_player_add(char *name, GGZPlayer* player);
 
 /* Return a pointer to the player with name "name".  Note: Returns
@@ -39,10 +40,3 @@ extern void hash_player_delete(char *name);
 /* How often to print hash debugging stats */
 /* Requires DEBUG and GGZ_DBG_LISTS */
 #define HASH_DEBUG_FREQ	1
-
-
-
-
-
-
-

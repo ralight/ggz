@@ -57,6 +57,20 @@ static pthread_rwlock_t hash_use_count_lock;
 #endif
 
 
+/* Initialize the hash table lock structures */
+void hash_initialize(void)
+{
+	int i;
+
+	for(i=0; i<HASH_NUM_LISTS; i++)
+		pthread_rwlock_init(&hash_list_lock[i], NULL);
+
+#ifdef DEBUG
+	pthread_rwlock_init(&hash_use_count_lock, NULL);
+#endif
+}
+
+
 /* Adds a player name to the appropriate hash list */
 int hash_player_add(char *name, GGZPlayer* player)
 {
