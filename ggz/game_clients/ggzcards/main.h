@@ -1,4 +1,4 @@
-/* $Id: main.h 2070 2001-07-23 00:03:11Z jdorje $ */
+/* $Id: main.h 2072 2001-07-23 00:38:33Z jdorje $ */
 /*
  * File: main.h
  * Author: Rich Gade
@@ -26,5 +26,5 @@
 extern GtkWidget *dlg_main;
 
 extern void statusbar_message(char *msg);
-extern void messagebar_message(char *msg);
-extern void menubar_message(char *mark, char *msg);
+extern void messagebar_message(const char *msg);
+extern void menubar_message(const char *mark, const char *msg);

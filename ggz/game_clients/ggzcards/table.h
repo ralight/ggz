@@ -1,4 +1,4 @@
-/* $Id: table.h 2070 2001-07-23 00:03:11Z jdorje $ */
+/* $Id: table.h 2072 2001-07-23 00:38:33Z jdorje $ */
 /*
  * File: table.h
  * Author: Rich Gade
@@ -52,5 +52,5 @@ extern void table_style_change(void);
 
 extern void table_play_card(int, card_t);
 
-extern void table_set_player_message(int, char*);
-extern void table_set_message(char*, char*);
+extern void table_set_global_message(const char*, const char*);
+extern void table_set_player_message(int, const char*);

@@ -1,4 +1,4 @@
-/* $Id: common.h 2069 2001-07-22 23:41:11Z jdorje $ */
+/* $Id: common.h 2072 2001-07-23 00:38:33Z jdorje $ */
 /*
  * File: common.h
  * Author: Jason Short
@@ -31,16 +31,51 @@
 extern int ggzfd;
 
 
+/** @defgroup Setup
+ *  Setup functions to be called by the frontend
+ *  @{ */
+
 /** This function should be called when the client first launches.  It
   * initializes all internal data and makes the connection to the GGZ
   * client. */
-void client_initialize(void);
+void client_initialize();
 
 /** This function should be called just before the client exits. */
-void client_quit(void);
+void client_quit();
+
+/** @} end of Setup */
 
 
 /** Handles the debug message appropriately.
  *  @param fmt a printf-style format string.
  *  @param ... printf-style arguments. */
 void client_debug(const char *fmt, ...);
+
+
+/** @defgroup Messaging
+ * Functions used for the messaging system.
+ * @{ */
+
+/** Should be called when a WH_MESSAGE_GLOBAL is received.
+ *  @return 0 on success, -1 on failure */
+int handle_message_global();
+
+/** Should be called when a WH_MESSAGE_PLAYER is received.
+ *  @return 0 on success, -1 on failure */
+int handle_message_player();
+
+/** A gui-dependent function called to set the global message.
+ *  This should be defined by the frontend code and is accessed by a
+ *  callback from handle_message_global.
+ *  @param mark The "mark" ID tag string of the message.
+ *  @param msg The message itself. */
+extern void table_set_global_message(const char *mark, const char *msg);
+
+/** A gui-dependent function called to set a player message.
+ *  This should be defined by the frontend code and is accessed by a
+ *  callback from handle_message_player.
+ *  @param player The player number for which the message is intended.
+ *  @param msg The message itself. */
+extern void table_set_player_message(int player, const char *msg);
+
+/** @} end of Messaging */

@@ -1,4 +1,4 @@
-/* $Id: main.c 2070 2001-07-23 00:03:11Z jdorje $ */
+/* $Id: main.c 2072 2001-07-23 00:38:33Z jdorje $ */
 /*
  * File: main.c
  * Author: Rich Gade
@@ -83,45 +83,6 @@ int main(int argc, char *argv[])
 	gtk_main();
 
 	client_quit();
-
-	return 0;
-}
-
-static int handle_message_global()
-{
- 	char *mark;
-	char *message;
-
-	if (es_read_string_alloc(ggzfd, &mark) < 0)
-		return -1;
-	if (es_read_string_alloc(ggzfd, &message) < 0)
-		return -1;
-	assert( message );
-
-	client_debug("     Global message received, marked as '%s':%s", mark, message);
-	/* TODO: show in interface */
-
-	table_set_message(mark, message);
-
-	g_free( message );
-	g_free( mark );
-
-	return 0;
-}
-
-static int handle_message_player()
-{
-	int p;
-	char *message;
-	if (es_read_int(ggzfd, &p) < 0)
-		return -1;
-	assert(p >= 0 && p < game.num_players);
-	if (es_read_string_alloc(ggzfd, &message) < 0)
-		return -1;
-
-	table_set_player_message(p, message);
-
-	g_free( message );
 
 	return 0;
 }
@@ -342,7 +303,7 @@ void statusbar_message(char *msg)
 	client_debug("     Put up statusbar message: '%s'", msg);
 }
 
-void messagebar_message(char *msg)
+void messagebar_message(const char *msg)
 {
 	static GtkWidget *sb=NULL;
 	static guint sb_context;
@@ -376,7 +337,7 @@ on_mnu_messages_activate            (GtkMenuItem     *menuitem,
 	gdk_window_raise(dlg->window);
 }
 
-void menubar_message(char *mark, char *msg)
+void menubar_message(const char *mark, const char *msg)
 {
 	GtkWidget *menu_item, *dlg, *label, *vbox, *ok_button;
 

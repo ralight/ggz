@@ -1,4 +1,4 @@
-/* $Id: common.c 2069 2001-07-22 23:41:11Z jdorje $ */
+/* $Id: common.c 2072 2001-07-23 00:38:33Z jdorje $ */
 /*
  * File: common.c
  * Author: Jason Short
@@ -23,9 +23,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <assert.h>
 #include <stdlib.h>
 
-#include "ggz_client.h"
+#include <easysock.h>
+#include <ggz_client.h>
+
+#include "common.h"
 
 int ggzfd;
 
@@ -58,4 +62,46 @@ void client_debug(const char *fmt, ...)
 	fprintf(stderr, "DEBUG: %s\n", buf);
 	va_end(ap);
 #endif /* DEBUG */
+}
+
+
+int handle_message_global()
+{
+	char *mark;
+	char *message;
+
+	if (es_read_string_alloc(ggzfd, &mark) < 0 ||
+	    es_read_string_alloc(ggzfd, &message) < 0)
+		return -1;
+	assert(message);
+
+	client_debug("     Global message received, marked as '%s':%s", mark,
+		     message);
+
+	table_set_global_message(mark, message);
+
+	free(message);
+	free(mark);
+
+	return 0;
+}
+
+
+int handle_message_player()
+{
+	int p;
+	char *message;
+	if (es_read_int(ggzfd, &p) < 0 ||
+	    es_read_string_alloc(ggzfd, &message) < 0)
+		return -1;
+	assert(p >= 0);
+	/* assert(p < game.num_players); */
+
+	client_debug("    Player message recived:%s", message);
+
+	table_set_player_message(p, message);
+
+	free(message);
+
+	return 0;
 }

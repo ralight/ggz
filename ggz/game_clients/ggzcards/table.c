@@ -1,4 +1,4 @@
-/* $Id: table.c 2070 2001-07-23 00:03:11Z jdorje $ */
+/* $Id: table.c 2072 2001-07-23 00:38:33Z jdorje $ */
 /*
  * File: table.c
  * Author: Rich Gade, Jason Short
@@ -244,13 +244,13 @@ void table_setup()
 		table_show_table(0, 0, get_table_width(), get_table_height());
 }
 
-void table_set_player_message(int p, char* message)
+void table_set_player_message(int p, const char* message)
 {
 	if (label[p] != NULL)
 		gtk_label_set_text(GTK_LABEL(label[p]), message);
 }
 
-void table_set_message(char* mark, char* message)
+void table_set_global_message(const char* mark, const char* message)
 {
 	assert(table_initialized);
 	if (!*mark)
