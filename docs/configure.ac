@@ -26,6 +26,11 @@ ggzgamedevelopmentguide="ggz-game-development-guide.txt"
 ggzhostingguide="ggz-hosting-guide.txt"
 
 if test "$enable_guides" = yes; then
+	AC_PATH_PROG([DVIPS], [dvips])
+	if test "x$DVIPS" = "x"; then
+		AC_MSG_ERROR([The tools necessary to build the guides have not been found.])
+	fi
+
 	ggzgamedevelopmentguide="ggz-game-development-guide.ps ggz-game-development-guide_toc.html"
 	ggzhostingguide="ggz-hosting-guide.ps ggz-hosting-guide_toc.html"
 fi
@@ -33,16 +38,17 @@ AC_SUBST(ggzgamedevelopmentguide)
 AC_SUBST(ggzhostingguide)
 
 if test "$enable_spec" = yes; then
-  AC_PATH_PROG([SGML2HTML], ["sgml2html tool"], [docbook-2-html])
-  AC_SUBST(SGML2HTML)
+	AC_PATH_PROG([SGML2HTML], [docbook-2-html])
+	if test "x$SGML2HTML" = "x"; then
+		AC_PATH_PROG([SGML2HTML], [docbook2html])
+	fi
+	AC_PATH_PROG([JADE], [jade])
+	AC_PATH_PROG([LYNX], [lynx])
+	if test "x$SGML2HTML" = "x" || test "x$JADE" = "x" || test "x$LYNX" = "x"; then
+		AC_MSG_ERROR([The tools necessary to build the specification have not been found.])
+	fi
 
-  AC_PATH_PROG([JADE], ["jade tool"], [jade])
-  AC_SUBST(JADE)
-
-  AC_PATH_PROG([LYNX], ["lynx web browser"], [lynx])
-  AC_SUBST(LYNX)
-
-  EXTRA_SUBDIRS="$EXTRA_SUBDIRS spec"
+	EXTRA_SUBDIRS="$EXTRA_SUBDIRS spec"
 fi
 
 AC_SUBST(EXTRA_SUBDIRS)
