@@ -208,6 +208,7 @@ void board_dnd_init() {
 
   gtk_drag_dest_set(board, GTK_DEST_DEFAULT_DROP | GTK_DEST_DEFAULT_MOTION, target, 1, GDK_ACTION_MOVE);
 
+
 }
 
 void board_draw() {
@@ -348,8 +349,6 @@ void board_draw_piece(int piece, int x, int y) {
 
 void board_dnd_highlight( int x, int y, GdkDragContext *drag_context) {
   int piece = board_translate(game->board[x][y]);
-  gdk_pixmap_ref(pieces[piece]);
-  gdk_bitmap_ref(pieces_mask[piece]);
   gtk_drag_set_icon_pixmap(drag_context, gtk_widget_get_colormap(main_win),
       pieces[piece], pieces_mask[piece], 5, 5);
   game_info.src_x = x;

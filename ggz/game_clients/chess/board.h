@@ -37,7 +37,10 @@
 #define ROOK_W 11
 #define PIXSIZE 64
 
-#define LOAD_BITMAP(bitmap, data) ( pieces[bitmap] = gdk_pixmap_create_from_xpm_d(main_win->window, &pieces_mask[bitmap], NULL, data) )
+#define LOAD_BITMAP(bitmap, data) do {  \
+	pieces[bitmap] = gdk_pixmap_create_from_xpm_d(main_win->window, &pieces_mask[bitmap], NULL, data); \
+	gdk_pixmap_ref(pieces[bitmap]); \
+	gdk_bitmap_ref(pieces_mask[bitmap]); } while (0)
 
 /* Load the bitmaps */
 void board_init();
