@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 3397 2002-02-17 11:21:59Z jdorje $
+ * $Id: ggzclient.c 3408 2002-02-18 06:05:24Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -92,6 +92,9 @@ static GGZHookReturn ggz_table_data(GGZRoomEvent id, void*, void*);
 /* One Time Functions */
 static GGZHookReturn ggz_auto_join(GGZServerEvent id, void*, void*);
 
+/* Helper functions */
+static void server_disconnect(void);
+
 
 GdkInputFunction ggz_check_fd(gpointer server, gint fd, GdkInputCondition cond);
 
@@ -119,6 +122,8 @@ void ggz_event_init(GGZServer *Server)
 static GGZHookReturn ggz_connected(GGZServerEvent id, void* event_data, void* user_data)
 {
 	int fd;
+	
+	ggz_debug("connection", "We're connected.");
 
 	/* Add the fd to the ggtk main loop */
 	fd = ggzcore_server_get_fd(server);
@@ -314,9 +319,9 @@ static GGZHookReturn ggz_entered_fail(GGZServerEvent id, void* event_data, void*
 
 static GGZHookReturn ggz_logout(GGZServerEvent id, void* event_data, void* user_data)
 {
-	gdk_input_remove(server_handle);
-	server_handle = -1;
-	chat_display_message(CHAT_LOCAL_HIGH, NULL, _("Disconnected from Server."));
+	ggz_debug("connection", "Logged out.");
+	
+	server_disconnect();
 
 	/* set title */
 	gtk_window_set_title (GTK_WINDOW (win_main), "GGZ Gaming Zone");
@@ -760,6 +765,12 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void* user_data)
 {
 	gchar* msg;
+	
+	ggz_debug("connection", "Server error.");
+	
+	server_disconnect();
+	
+	/* SHould we clear the list of rooms/players/tables? */
 
 	msg = g_strdup_printf("Server error: %s", (char*)event_data);
 	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
@@ -771,11 +782,10 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void*
 static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* user_data)
 {
 	GtkWidget *tmp;
+	
+	ggz_debug("connection", "Net error.");
 
-	gdk_input_remove(server_handle);
-	server_handle = -1;
-	/*ggzcore_server_free(server);*/
-	chat_display_message(CHAT_LOCAL_HIGH, NULL, _("Disconnected from Server."));
+	server_disconnect();
 
         /* Clear current list of rooms */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
@@ -1068,7 +1078,14 @@ static GGZHookReturn ggz_auto_join(GGZServerEvent id, void* event_data, void* us
 
 int ggz_connection_query(void)
 {
-	if(server_handle == -1)
+	if(server_handle < 0)
 		return 0;
 	return 1;
+}
+
+static void server_disconnect(void)
+{
+	gdk_input_remove(server_handle);
+	server_handle = -1;
+	chat_display_message(CHAT_LOCAL_HIGH, NULL, _("Disconnected from server."));
 }

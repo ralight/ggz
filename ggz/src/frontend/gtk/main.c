@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 3407 2002-02-18 05:41:40Z jdorje $
+ * $Id: main.c 3408 2002-02-18 06:05:24Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -56,6 +56,12 @@ int main (int argc, char *argv[])
 {
 	GGZOptions opt;
 	char *global_conf, *user_conf, *debugfile, *init_version;
+	
+#ifdef DEBUG
+	char* debug_types[] = {"connection", NULL};
+#else /* DEBUG */
+	char* debug_types[] = NULL;
+#endif /* DEBUG */
 
 #ifdef ENABLE_NLS
 	bindtextdomain("ggz-gtk", NULL);
@@ -79,7 +85,7 @@ int main (int argc, char *argv[])
 
 	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_POLL & ~GGZ_DBG_MEMDETAIL);
 	ggzcore_init(opt);
-	ggz_debug_init(NULL, "/tmp/gtk-client-debug");
+	ggz_debug_init(debug_types, "/tmp/gtk-client-debug");
 	ggz_free(opt.debug_file);
 	server_profiles_load();
 	
