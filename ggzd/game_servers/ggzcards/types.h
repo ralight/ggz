@@ -74,4 +74,12 @@ struct game_player_t
 };
 typedef int player_t;		/* just to make things clearer */
 
+typedef struct global_message_list_t
+{
+	char *mark;
+	char *message;
+	struct global_message_list_t *next;
+}
+global_message_list_t;
+
 #endif /* __TYPES_H__ */

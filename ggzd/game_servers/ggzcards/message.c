@@ -50,6 +50,11 @@ void init_messages()
 	/* nothing yet */
 }
 
+
+/*
+ * PLAYER MESSAGES
+ */
+
 /* send_player_message()
  *   sends seat s's message to player p
  *   fails silently...
@@ -145,105 +150,124 @@ void set_all_player_messages()
 		set_player_message(p);
 }
 
+
+/*
+ * GLOBAL MESSAGES
+ */
+
+static void dosend_global_message(char *mark, char *message, player_t p)
+{
+	int fd = ggz_seats[p].fd;
+	if (ggz_seats[p].assign == GGZ_SEAT_BOT)
+		return;
+	if (mark == NULL) {
+		ggz_debug("ERROR: SERVER BUG: "
+			  "dosend_global_message: NULL mark.");
+		return;
+	}
+	if (message == NULL)
+		message = "";	/* this happens sometimes */
+	ggz_debug("Sending global message '%s' to player %d/%s: %s", mark, p,
+		  ggz_seats[p].name, message);
+	if (es_write_int(fd, WH_MESSAGE_GLOBAL) < 0
+	    || es_write_string(fd, mark) < 0
+	    || es_write_string(fd, message) < 0)
+		ggz_debug("ERROR: " "dosend_global_message: es error.");
+
+}
+
 /* send_global_message
- *   sends the truly global message to player p
+ *   sends a global message to player p
  *   fails silently...
  */
 void send_global_message(char *mark, player_t p)
 {
-	/* the "mark" is a tag on the message that the client uses to identify it */
-	int fd = ggz_seats[p].fd;
-	char *message = get_global_message(mark);
-	if (mark == NULL) {
-		ggz_debug("ERROR: SERVER BUG: "
-			  "send_global_message: NULL mark.");
-		return;
-	}
-	if (fd == -1)
-		return;
-	if (message == NULL)
-		message = "";	/* this happens sometimes */
-	ggz_debug("Sending global message to player %d/%s: %s", p,
-		  ggz_seats[p].name, message);
-	es_write_int(fd, WH_MESSAGE_GLOBAL);
-	es_write_string(fd, mark);
-	es_write_string(fd, message);
+	dosend_global_message(mark, get_global_message(mark), p);
 }
 
 /* send_global_message_toall
  *   sends the truly global message to all players
- *   fails silently...
  */
 void send_global_message_toall(char *mark)
 {
 	player_t p;
+	char *message = get_global_message(mark);
 	for (p = 0; p < game.num_players; p++)
-		send_global_message(mark, p);
+		dosend_global_message(mark, message, p);
 }
 
 void send_all_global_messages(player_t p)
 {
-	/* TODO: this isn't game-independent;
-	 * I _really_ need to make the messaging system
-	 * more powerful server-side */
-	send_global_message("", p);
-	send_global_message("game", p);
-	send_global_message("Rules", p);
-	send_global_message("Options", p);
-	if (game.last_trick)
-		send_global_message("Last Trick", p);
-	if (game.last_hand)
-		send_global_message("Previous Hand", p);
-	if (game.cumulative_scores)
-		send_global_message("Scores", p);
-	if (game.bid_history)
-		send_global_message("Bid History", p);
+	global_message_list_t *gml;
+
+	for (gml = game.message_head; gml != NULL; gml = gml->next)
+		dosend_global_message(gml->mark, gml->message, p);
+}
+
+char *get_global_message(char *mark)
+{
+	global_message_list_t *gml;
+
+	for (gml = game.message_head; gml != NULL; gml = gml->next)
+		if (!strcmp(mark, gml->mark))
+			return gml->message;
+	return "";
+}
+
+static void put_global_message(char *mark, char *msg)
+{
+	/* TODO: we just use the first character of the mark
+	 * as an index into an array.  In the long term, we'll need some
+	 * sort of hash instead.  Is there a standard hash library? */
+	global_message_list_t *gml;
+	ggz_debug("Setting global message for '%s'.  Length is %d.", mark,
+		  strlen(msg));
+
+	if (!mark || !msg)
+		ggz_debug("ERROR: SERVER BUG: "
+			  "put_global_message called on NULL string.");
+
+	for (gml = game.message_head; gml != NULL; gml = gml->next) {
+		if (!strcmp(mark, gml->mark)) {
+			free(gml->message);
+			gml->message = strdup(msg);
+			if (gml->message == NULL) {
+				ggz_debug("ERROR: " "bad strdup.");
+				exit(-1);
+			}
+		}
+	}
+
+	gml = (global_message_list_t *) alloc(sizeof(global_message_list_t));
+	/* TODO: xstrdup */
+	gml->mark = strdup(mark);
+	gml->message = strdup(msg);
+	if (game.message_tail)
+		game.message_tail->next = gml;
+	game.message_tail = gml;
+	if (!game.message_head)
+		game.message_head = gml;
 }
 
 /* set_global_message
  */
 void set_global_message(char *mark, char *message, ...)
 {
-	/* TODO: we just use the first character of the mark
-	 * as an index into an array.  In the long term, we'll need some
-	 * sort of hash instead.  Is there a standard hash library? */
-	int hash = *mark;
 	char buf[4096];
-	int different = 1;
 
 	va_list ap;
 	va_start(ap, message);
 	vsnprintf(buf, sizeof(buf), message, ap);
 	va_end(ap);
 
-	ggz_debug("Setting global message for '%s'.  Length is %d.", mark,
-		  strlen(buf));
-
-	/* we re-duplicate it each time; this is a little slower but saves memory.
-	 * we also check to see if it's identical; this saves bandwidth and user time overall */
-	if (game.messages[hash]) {
-		if (!strcmp(game.messages[hash], buf))
-			different = 0;
-		else
-			free(game.messages[hash]);
-	}
-	if (different) {
-		game.messages[hash] = strdup(buf);
-		if (game.messages[hash] == NULL) {
-			ggz_debug
-				("ERROR: set_global_message: strdup returned NULL");
-			/* it's NULL, so we should just be able to keep going... */
-		}
-		send_global_message_toall(mark);
-	}
+	put_global_message(mark, buf);
+	send_global_message_toall(mark);
 }
 
-char *get_global_message(char *mark)
-{
-	int hash = *mark;
-	return game.messages[hash];
-}
 
+/*
+ * AUTOMATED MESSAGES
+ */
 
 void send_last_hand()
 {

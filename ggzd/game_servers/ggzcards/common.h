@@ -122,7 +122,8 @@ struct wh_game_t
 	seat_t num_seats;	/* the number of "seats" in the table (which includes fake non-players */
 	struct game_seat_t *seats;	/* data for each seat, allocated in game_init */
 
-	char *messages[256];	/* global messages */
+	global_message_list_t *message_head;	/* global messages */
+	global_message_list_t *message_tail;
 
 	void *specific;		/* any extra game-specific data */
 
