@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 5027 2002-10-25 17:10:56Z jdorje $
+ * $Id: ggzdmod.h 5030 2002-10-25 17:33:21Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -607,7 +607,7 @@ int ggzdmod_set_state(GGZdMod * ggzdmod, GGZdModState state);
  *  - When called by the game server, this function makes the
  *    physical connection to ggz.
  *  - When called by ggzd, it will launch a table and connect
- *    to it.
+ *    to it.  Note - if the game fails to exec, this function may not catch it.
  *  @param ggzdmod The ggzdmod object.
  *  @return 0 on success, -1 on failure.
  */
