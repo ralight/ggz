@@ -1,4 +1,4 @@
-/* $Id: common.h 2740 2001-11-13 22:19:42Z jdorje $ */
+/* $Id: common.h 2742 2001-11-13 22:58:05Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -63,12 +63,12 @@ typedef struct seat_t {
 /** GGZCards client game states
  *  @note Any additional state data should be stored separately, while maintaining the state here. */
 typedef enum {
-	WH_STATE_INIT,		/**< game hasn't started yet */
-	WH_STATE_WAIT,		/**< waiting for others */
-	WH_STATE_PLAY,		/**< our turn to play */
-	WH_STATE_BID,		/**< our turn to bid */
-	WH_STATE_DONE,		/**< game's over */
-	WH_STATE_OPTIONS	/**< determining options */
+	STATE_INIT,		/**< game hasn't started yet */
+	STATE_WAIT,		/**< waiting for others */
+	STATE_PLAY,		/**< our turn to play */
+	STATE_BID,		/**< our turn to bid */
+	STATE_DONE,		/**< game's over */
+	STATE_OPTIONS	/**< determining options */
 } client_state_t;
 
 /** The game_t structure contains all global game data. */

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2740 2001-11-13 22:19:42Z jdorje $
+ * $Id: common.c 2742 2001-11-13 22:58:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -52,7 +52,7 @@ int client_initialize(void)
 	ggzfd = ggz_connect();
 	if (ggzfd < 0)
 		exit(-1);
-	game.state = WH_STATE_INIT;
+	game.state = STATE_INIT;
 	return ggzfd;
 }
 
@@ -88,17 +88,17 @@ static const char *get_state_name(client_state_t state)
 	/* A switch statement can be used so that if the ordering changes
 	   it'll still work. */
 	switch (state) {
-	case WH_STATE_INIT:
+	case STATE_INIT:
 		return "INIT";
-	case WH_STATE_WAIT:
+	case STATE_WAIT:
 		return "WAIT";
-	case WH_STATE_PLAY:
+	case STATE_PLAY:
 		return "PLAY";
-	case WH_STATE_BID:
+	case STATE_BID:
 		return "BID";
-	case WH_STATE_DONE:
+	case STATE_DONE:
 		return "DONE";
-	case WH_STATE_OPTIONS:
+	case STATE_OPTIONS:
 		return "OPTIONS";
 	}
 	return "[unknown state]";
@@ -246,7 +246,7 @@ static int handle_msg_gameover(void)
 
 	table_handle_gameover(num_winners, winners);
 
-	set_game_state(WH_STATE_DONE);
+	set_game_state(STATE_DONE);
 
 	return 0;
 }
@@ -348,7 +348,7 @@ static int handle_msg_hand(void)
 			/* TODO: figure out how this code could even fail at
 			   all. In the meantime, I've disabled the call to
 			   free, conceding the memory leak so that we don't
-			   have an unexplained seg fault (which we would have 
+			   have an unexplained seg fault (which we would have
 			   if these two lines were included) */
 			/* if (game.players[p].hand.card != NULL)
 			   free(game.players[p].hand.card); */
@@ -381,7 +381,7 @@ static int handle_req_bid(void)
 	int possible_bids;
 	char **bid_choices;
 
-	if (game.state == WH_STATE_BID)
+	if (game.state == STATE_BID)
 		/* TODO: the new bid request should override the old one */
 		return 0;
 
@@ -399,7 +399,7 @@ static int handle_req_bid(void)
 	}
 
 	/* Get the bid */
-	set_game_state(WH_STATE_BID);
+	set_game_state(STATE_BID);
 	table_get_bid(possible_bids, bid_choices);
 
 	/* Clean up */
@@ -421,7 +421,7 @@ static int handle_req_play(void)
 	assert(game.play_hand >= 0 && game.play_hand < game.num_players);
 
 	/* Get the play. */
-	set_game_state(WH_STATE_PLAY);
+	set_game_state(STATE_PLAY);
 	table_get_play(game.play_hand);
 
 	return 0;
@@ -441,7 +441,7 @@ static int handle_msg_badplay(void)
 	game.players[game.play_hand].table_card = UNKNOWN_CARD;
 
 	/* Get a new play. */
-	set_game_state(WH_STATE_PLAY);
+	set_game_state(STATE_PLAY);
 	table_alert_badplay(err_msg);
 
 	/* Clean up. */
@@ -551,8 +551,7 @@ static int handle_msg_table(void)
 		if (read_card(ggzfd, &game.players[p].table_card) < 0)
 			return -1;
 
-	/* TODO: verify that the table cards have been removed from the hands 
-	 */
+	/* TODO: verify that the table cards have been removed from the hands */
 
 	table_alert_table();
 	return 0;
@@ -576,7 +575,7 @@ static int handle_msg_trick(void)
 }
 
 
-/* An options request asks you to pick a set of options.  Each "option" gives 
+/* An options request asks you to pick a set of options.  Each "option" gives
    a list of choices so that you pick one choice for each option.  An option
    with only one choice is a special case: a boolean option. */
 static int handle_req_options(void)
@@ -584,12 +583,12 @@ static int handle_req_options(void)
 	int i, j;
 	int option_cnt;		/* the number of options */
 	int *choice_cnt;	/* The number of choices for each option */
-	int *defaults;		/* What option choice is currently chosen for 
+	int *defaults;		/* What option choice is currently chosen for
 				   each option */
 	char ***option_choices;	/* The texts for each option choice of each
 				   option */
 
-	if (game.state == WH_STATE_OPTIONS)
+	if (game.state == STATE_OPTIONS)
 		/* Should the new request override the old one? */
 		return 0;
 
@@ -617,7 +616,7 @@ static int handle_req_options(void)
 	}
 
 	/* Get the options. */
-	set_game_state(WH_STATE_OPTIONS);
+	set_game_state(STATE_OPTIONS);
 	table_get_options(option_cnt, choice_cnt, defaults, option_choices);
 
 	/* Clean up. */
@@ -637,7 +636,7 @@ static int handle_req_options(void)
 /* A newgame message tells the server to start a new game. */
 int client_send_newgame(void)
 {
-	if (write_opcode(ggzfd, WH_RSP_NEWGAME) < 0)
+	if (write_opcode(ggzfd, RSP_NEWGAME) < 0)
 		return -1;
 	return 0;
 }
@@ -646,9 +645,8 @@ int client_send_newgame(void)
 /* A bid message tells the server our choice for a bid. */
 int client_send_bid(int bid)
 {
-	set_game_state(WH_STATE_WAIT);
-	if (write_opcode(ggzfd, WH_RSP_BID) < 0 ||
-	    es_write_int(ggzfd, bid) < 0)
+	set_game_state(STATE_WAIT);
+	if (write_opcode(ggzfd, RSP_BID) < 0 || es_write_int(ggzfd, bid) < 0)
 		return -1;
 	return 0;
 }
@@ -659,13 +657,13 @@ int client_send_options(int option_cnt, int *options)
 {
 	int i, status = 0;
 
-	if (write_opcode(ggzfd, WH_RSP_OPTIONS) < 0)
+	if (write_opcode(ggzfd, RSP_OPTIONS) < 0)
 		status = -1;
 	for (i = 0; i < option_cnt; i++)
 		if (es_write_int(ggzfd, options[i]) < 0)
 			status = -1;
 
-	set_game_state(WH_STATE_WAIT);
+	set_game_state(STATE_WAIT);
 
 	return status;
 }
@@ -674,9 +672,8 @@ int client_send_options(int option_cnt, int *options)
 /* A play message tells the server our choice for a play. */
 int client_send_play(card_t card)
 {
-	set_game_state(WH_STATE_WAIT);
-	if (write_opcode(ggzfd, WH_RSP_PLAY) < 0
-	    || write_card(ggzfd, card) < 0)
+	set_game_state(STATE_WAIT);
+	if (write_opcode(ggzfd, RSP_PLAY) < 0 || write_card(ggzfd, card) < 0)
 		return -1;
 	return 0;
 }
@@ -685,7 +682,7 @@ int client_send_play(card_t card)
 /* A sync request asks for a sync from the server. */
 int client_send_sync_request(void)
 {
-	if (write_opcode(ggzfd, WH_REQ_SYNC) < 0)
+	if (write_opcode(ggzfd, REQ_SYNC) < 0)
 		return -1;
 	return 0;
 }
@@ -701,48 +698,48 @@ int client_handle_server(void)
 		return -1;
 
 	switch (op) {
-	case WH_REQ_NEWGAME:
+	case REQ_NEWGAME:
 		table_get_newgame();
 		status = 0;
 		break;
-	case WH_MSG_NEWGAME:
+	case MSG_NEWGAME:
 		/* TODO: don't make "new game" until here */
 		status = 0;
 		break;
-	case WH_MSG_GAMEOVER:
+	case MSG_GAMEOVER:
 		status = handle_msg_gameover();
 		break;
-	case WH_MSG_PLAYERS:
+	case MSG_PLAYERS:
 		status = handle_msg_players();
 		break;
-	case WH_MSG_HAND:
+	case MSG_HAND:
 		status = handle_msg_hand();
 		break;
-	case WH_REQ_BID:
+	case REQ_BID:
 		status = handle_req_bid();
 		break;
-	case WH_REQ_PLAY:
+	case REQ_PLAY:
 		status = handle_req_play();
 		break;
-	case WH_MSG_BADPLAY:
+	case MSG_BADPLAY:
 		status = handle_msg_badplay();
 		break;
-	case WH_MSG_PLAY:
+	case MSG_PLAY:
 		status = handle_msg_play();
 		break;
-	case WH_MSG_TABLE:
+	case MSG_TABLE:
 		status = handle_msg_table();
 		break;
-	case WH_MSG_TRICK:
+	case MSG_TRICK:
 		status = handle_msg_trick();
 		break;
-	case WH_MESSAGE_GLOBAL:
+	case MESSAGE_GLOBAL:
 		status = handle_message_global();
 		break;
-	case WH_MESSAGE_PLAYER:
+	case MESSAGE_PLAYER:
 		status = handle_message_player();
 		break;
-	case WH_REQ_OPTIONS:
+	case REQ_OPTIONS:
 		status = handle_req_options();
 		break;
 	}

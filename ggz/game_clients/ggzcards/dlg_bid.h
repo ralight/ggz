@@ -1,4 +1,4 @@
-/* $Id: dlg_bid.h 2380 2001-09-06 02:26:21Z jdorje $ */
+/* $Id: dlg_bid.h 2742 2001-11-13 22:58:05Z jdorje $ */
 /* 
  * File: dlg_bid.h
  * Author: Rich Gade
@@ -27,7 +27,7 @@ void dlg_bid_display(int possible_bids, char **bid_choices);
 
 /* this next one is included in this file because it's almost identical to
    handle_bid_request */
-int handle_option_request(void);	/* handles a WH_REQ_OPTIONS */
+int handle_option_request(void);	/* handles a REQ_OPTIONS */
 
 extern GtkWidget *dlg_bid_spin;
 extern GtkWidget *dlg_bid_fixed;

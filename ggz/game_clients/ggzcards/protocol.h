@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 2621 2001-10-28 09:50:30Z jdorje $
+ * $Id: protocol.h 2742 2001-11-13 22:58:05Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -49,20 +49,20 @@
 
 /* Messages from server */
 typedef enum {
-	WH_REQ_NEWGAME,
-	WH_MSG_NEWGAME,
-	WH_MSG_GAMEOVER,
-	WH_MSG_PLAYERS,
-	WH_MSG_HAND,
-	WH_REQ_BID,
-	WH_REQ_PLAY,
-	WH_MSG_BADPLAY,
-	WH_MSG_PLAY,
-	WH_MSG_TRICK,
-	WH_MESSAGE_GLOBAL,
-	WH_MESSAGE_PLAYER,
-	WH_REQ_OPTIONS,
-	WH_MSG_TABLE
+	REQ_NEWGAME,
+	MSG_NEWGAME,
+	MSG_GAMEOVER,
+	MSG_PLAYERS,
+	MSG_HAND,
+	REQ_BID,
+	REQ_PLAY,
+	MSG_BADPLAY,
+	MSG_PLAY,
+	MSG_TRICK,
+	MESSAGE_GLOBAL,
+	MESSAGE_PLAYER,
+	REQ_OPTIONS,
+	MSG_TABLE
 } server_msg_t;
 
 /* Global message types */
@@ -81,11 +81,11 @@ typedef enum {
 
 /* Messages from client */
 typedef enum {
-	WH_RSP_NEWGAME,
-	WH_RSP_OPTIONS,
-	WH_RSP_PLAY,
-	WH_RSP_BID,
-	WH_REQ_SYNC
+	RSP_NEWGAME,
+	RSP_OPTIONS,
+	RSP_PLAY,
+	RSP_BID,
+	REQ_SYNC
 } client_msg_t;
 
 

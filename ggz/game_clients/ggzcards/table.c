@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2699 2001-11-08 20:52:37Z jdorje $
+ * $Id: table.c 2742 2001-11-13 22:58:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -376,7 +376,7 @@ void table_style_change(void)
 
 #ifdef ANIMATION
 	/* If there's an animation in progress, zip it */
-	if (game.state == WH_STATE_ANIM)
+	if (game.state == STATE_ANIM)
 		table_animation_zip(FALSE);
 #endif /* ANIMATION */
 
@@ -407,7 +407,7 @@ void table_handle_click_event(GdkEventButton * event)
 	   card" area.  xo and yo describe the offset given by the "selected
 	   card".  x1 and y1 are specific coordinates of a card. xdiff and
 	   ydiff is the overlapping offset for cards in hand.  There are so
-	   many variables because hands can be facing any direction, and it's 
+	   many variables because hands can be facing any direction, and it's
 	   possible to be playing from *any* hand (at least in theory). */
 	int target;
 	int which = -1;
@@ -418,7 +418,7 @@ void table_handle_click_event(GdkEventButton * event)
 	int card_width, card_height;
 
 	/* If it's not our turn to play, we don't care. */
-	if (game.state != WH_STATE_PLAY)
+	if (game.state != STATE_PLAY)
 		return;
 
 	client_debug("table_handle_click_event: " "click at %d %d.", event->x,
@@ -470,8 +470,7 @@ static void table_card_clicked(int card)
 	client_debug("table_card_clicked: Card %d clicked.", card);
 
 	if (card == selected_card) {
-		/* If you click on the already selected card, it gets played. 
-		 */
+		/* If you click on the already selected card, it gets played. */
 		selected_card = -1;
 
 		/* Start the graphic animation */
@@ -565,8 +564,8 @@ void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image)
 			card_backs[orientation], xc, yc, x, y, width, height);
 }
 
-/* Move the selected card out toward the playing area.  We don't actually put 
-   it *on* the table until we hear confirmation from the server that the play 
+/* Move the selected card out toward the playing area.  We don't actually put
+   it *on* the table until we hear confirmation from the server that the play
    is valid. */
 static void table_card_play(int p, int card)
 {
@@ -612,7 +611,7 @@ static void table_animation_trigger(card_t card, int x1, int y1, int x2,
 	anim.cb_tag = gtk_timeout_add(DURATION / FRAMES,
 				      table_animation_callback, NULL);
 
-	set_game_state(WH_STATE_ANIM);
+	set_game_state(STATE_ANIM);
 }
 
 
@@ -657,7 +656,7 @@ gint table_animation_callback(gpointer ignored)
 
 	/* If we are there, stop the animation process */
 	if (new_x == anim.dest_x && new_y == anim.dest_y) {
-		set_game_state(WH_STATE_WAIT);
+		set_game_state(STATE_WAIT);
 		return FALSE;
 	}
 
@@ -670,9 +669,9 @@ gint table_animation_callback(gpointer ignored)
 void table_animation_abort(void)
 {
 	/* First, kill off the animation callback */
-	if (game.state == WH_STATE_ANIM) {
+	if (game.state == STATE_ANIM) {
 		gtk_timeout_remove(anim.cb_tag);
-		set_game_state(WH_STATE_WAIT);
+		set_game_state(STATE_WAIT);
 	}
 
 	/* The caller is assumed to have restored the card to the hand */
@@ -686,9 +685,9 @@ void table_animation_abort(void)
 void table_animation_zip(gboolean restore)
 {
 	/* First, kill off the animation callback */
-	if (game.state == WH_STATE_ANIM) {
+	if (game.state == STATE_ANIM) {
 		gtk_timeout_remove(anim.cb_tag);
-		set_game_state(WH_STATE_WAIT);
+		set_game_state(STATE_WAIT);
 	}
 
 	/* And move the card to it's final resting place */

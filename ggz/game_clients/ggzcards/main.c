@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2699 2001-11-08 20:52:37Z jdorje $
+ * $Id: main.c 2742 2001-11-13 22:58:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -89,7 +89,7 @@ void table_get_newgame()
 void table_get_play(int hand)
 {
 #ifdef ANIMATION
-	if (game.state == WH_STATE_ANIM)
+	if (game.state == STATE_ANIM)
 		table_animation_zip(TRUE);
 #endif /* ANIMATION */
 
@@ -235,8 +235,7 @@ static GtkWidget *new_message_dialog(const char *mark)
 	dlg = gtk_dialog_new();
 	gtk_widget_ref(dlg);
 	gtk_object_set_data(GTK_OBJECT(msg_menu), mark, dlg);
-	/* gtk_object_set_data (GTK_OBJECT (dlg), "dlg_messages", dlg_about); 
-	 */
+	/* gtk_object_set_data (GTK_OBJECT (dlg), "dlg_messages", dlg_about); */
 	gtk_window_set_title(GTK_WINDOW(dlg), mark);
 	GTK_WINDOW(dlg)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dlg), TRUE, TRUE, FALSE);
@@ -405,7 +404,7 @@ void table_alert_badplay(char *err_msg)
 void table_alert_play(int player, card_t card)
 {
 #ifdef ANIMATION
-	if (game.state == WH_STATE_ANIM)
+	if (game.state == STATE_ANIM)
 		table_animation_zip(TRUE);
 #endif /* ANIMATION */
 
@@ -424,7 +423,7 @@ void table_alert_trick(int player)
 	char *t_str;
 
 #ifdef ANIMATION
-	if (game.state == WH_STATE_ANIM)
+	if (game.state == STATE_ANIM)
 		table_animation_zip(TRUE);
 #endif /* ANIMATION */
 
