@@ -1,0 +1,363 @@
+2002-04-12 23:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - bump grubby to 0.0.5
+
+2002-04-12 19:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - remove local make clean rule again
+
+2002-04-09 15:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/: control, rules: - update build information
+
+2002-04-06 15:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/: .cvsignore, changelog, control, postinst, prerm, rules:
+	- debianize grubby
+
+2002-04-06 15:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - config status deletion rule
+
+2002-04-06 09:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.ggz: - sync acinclude.ggz
+
+2002-04-05 16:18  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: - update package information
+
+2002-04-05 16:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README.GGZ: - update installation instructions and overview
+
+2002-03-22 16:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/src/: i18n.c, net.c: - adopt to new ggzconf stuff - check
+	for NULL pointer (yeah, you see how important this is... it hit me 
+	 twice today...)
+
+2002-03-06 15:19  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/de.po: - fix missing %s in translation
+
+2002-03-02 10:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/src/net.c: - omit TLS argument until tls-branch is merged
+	with HEAD
+
+2002-03-02 10:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* TODO: - update todo file
+
+2002-03-02 10:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: data/de.po, data/fr.po, data/grubby-config.in,
+	data/guru.pot, doc/INTERFACE, doc/Setup, modules/badword.c,
+	modules/extra.c, modules/people.c, src/i18n.c, src/i18n.h,
+	src/main.c, src/module.c, src/module.h: - handle 'player
+	translation' and 'default translation' - enhance grubby-config to
+	include default language
+
+2002-03-02 08:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: data/de.po, data/fr.po, data/guru.pot, modules/people.c,
+	modules/self.c, src/i18n.c, src/i18n.h, src/main.c, src/module.h,
+	src/net.c: - i18n updates:  + notify a player if he changes his
+	language (ideally, the bot would tell him  whether a translation is
+	present at all)  + fix some of the modules, BUT: the whole
+	translation system will have to be  altered in order to work
+	properly for combined strings
+
+2002-03-02 07:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - put new auto-generated automake1.5 files into
+	.cvsignore
+
+2002-03-02 06:49  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/grubby-config.1: - fix grubby-config manpage (section 1, not
+	6, and verbose++)
+
+2002-02-03 15:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Updated acinclude.ggz from changes made in ggzd.
+
+2002-01-24 14:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - don't generate player.c anymore as it's not used
+	anyway (we use RTLD_GLOBAL)
+
+2002-01-24 14:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: modules/exec.c, modules/extra.c, modules/learning.c,
+	modules/programming.c, modules/self.c, modules/simplereturn.c,
+	src/guru.c, src/guru.h, src/gurumod.h, src/main.c, src/module.c,
+	src/module.h, src/net.c, src/player.c, src/player.h: - add
+	--datadir command line switch - this needed some API changes and
+	doesn't work for external scripts yet
+
+2002-01-19 13:49  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/modules/people.c: - don't be so loud in modpeople
+
+2002-01-19 12:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/: .cvsignore, README.Debian, changelog, control,
+	copyright, docs, postinst, prerm, rules: - debianize grubby
+
+2002-01-19 11:54  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/: Makefile.am, grubby-config.1: - add minimalistic man page
+	for grubby-config
+
+2002-01-19 11:54  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/src/main.c: - give hint to grubby-config if not configured
+	yet
+
+2002-01-19 11:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - don't check for easysock (it was never needed
+	anyway)
+
+2002-01-19 11:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/: meeting.rb, messages.rb: - correct path to ruby
+
+2002-01-12 04:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Added acinclude.ggz to ggzd and ggz-client-libs.
+
+2002-01-12 04:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Added libggz support to acinclude.ggz.
+
+2002-01-11 07:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - create grubby-config during configure step
+
+2002-01-11 07:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: data/.cvsignore, data/Makefile.am, data/grubby-config,
+	data/grubby-config.in, modules/player.c: - make path entries in
+	grubby-config dynamic so it works in local installations   too
+	(like /home/ggz/usr/lib...)
+
+2002-01-09 06:51  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* TODO: - missed TODO file from earlier commit
+
+2002-01-09 06:51  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/Makefile.am: - update todo file: should be ready for
+	0.0.5 now - fix typo in makefile.am, but make distcheck STILL won't
+	work :(
+
+2002-01-09 05:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: modules/badword.c, modules/exec.c, modules/player.c,
+	src/module.c, src/player.c: - move all configuration over to new
+	ggz_conf_* - this expects libggz in the same place where ggzcore
+	is, which is ok for now - actually a very wise decision, now grubby
+	is independent of GGZ's protocol   stuff except for netggz; after
+	netconsole I expect a netirc module for 0.0.6
+
+2002-01-09 04:56  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: data/dict.pl, data/meeting.rb, data/messages.rb,
+	data/rdf.pl, modules/badword.c, modules/exec.c, modules/extra.c,
+	modules/learning.c, modules/people.c, modules/player.c,
+	modules/programming.c, modules/self.c, modules/simplereturn.c,
+	src/Makefile.am, src/guru.c, src/guru.h, src/gurumod.h, src/i18n.c,
+	src/i18n.h, src/main.c, src/module.c, src/module.h, src/net.c,
+	src/net.h, src/netconsole.c, src/player.c, src/player.h: - add new
+	net module: netconsole (useful for grubby debugging) - suppress
+	most debug messages - update copyrights
+
+2002-01-08 03:20  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Added acinclude to utils/ module, and updated the
+	years on the copyright notice.
+
+2002-01-07 09:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - put acinclude.m4 into .cvsignore
+
+2002-01-07 09:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/grubby-config, grubby/modules/Makefile.am,
+	grubby/src/Makefile.am, man/grubby.6: - install all plugins in
+	$(libdir)/grubby instead of just $(libdir), this saves	 us
+	ldconfig and policy complaints - improve grubby-config: now
+	pressing enter all the time leads to nice default   values, only
+	name and owner must be given - update manpage
+
+2001-12-22 17:54  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/modules/: people.c, player.c, self.c: - more fixes
+	
+	i
+
+2001-12-22 17:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/modules/self.c: - actually let him say '$name help' rather
+	than 'guru help'
+
+2001-12-22 17:06  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/src/main.c: - recognize command line options, e.g. for
+	hostname or grubby's name - requires getopt, but this is standard
+	nowadays.
+
+2001-12-17 02:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Updated acinclude.ggz to check for new ggzmod;
+	added it to gtk-games and gtk-client.
+
+2001-12-13 07:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Added documentation to the file explaining how it
+	has to be kept synced between different modules.  Also updated the
+	file, which appeared to be very out of date.
+
+2001-11-05 05:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: data/Makefile.am, modules/badword.c, src/main.c,
+	src/net.c: - fix modbadword (is now NULL safe) - include a /wall
+	command (announce) for admins - install translation correctly in a
+	fakeroot environment
+
+2001-10-13 16:48  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/: de.po, fr.po, guru.pot: - update german and french
+	translation of what grubby may speak and what he   better keeps for
+	himself :)
+
+2001-10-13 16:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: data/rdf.pl, modules/badword.c, modules/extra.c,
+	modules/learning.c, src/module.c, src/net.c: - some more cleanups -
+	enhance plugins 'badword' and 'extra'
+
+2001-10-12 19:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/modules/: Makefile.am, extra.c: - add extra module: handle
+	'grubby say xxx' commands and reactions on greeting   messages
+
+2001-10-12 05:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: modules/learning.c, modules/people.c,
+	modules/simplereturn.c, src/module.c: - make modlearning NULL-safe
+	- lower the priorities of modsimplereturn and modlearning so they
+	don't speak   up all the time
+
+2001-10-12 05:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/Makefile.am: - put grubby-config into scripts, not
+	data
+
+2001-10-12 04:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/: Makefile.am, grubby-config: - let grubby-config be
+	useful (i.e. it works now)
+
+2001-10-12 03:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/src/module.c: - fix memory issues in module.c - forgot to
+	dlclose() when unloading, fixed now - provide new admin command:
+	reload <plugin> is useful for development
+
+2001-10-12 02:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: doc/Setup, modules/badword.c, modules/exec.c,
+	modules/learning.c, modules/people.c, modules/player.c,
+	modules/programming.c, modules/self.c, modules/simplereturn.c,
+	src/guru.c, src/guru.h, src/gurumod.h, src/i18n.c, src/i18n.h,
+	src/main.c, src/module.c, src/module.h, src/net.c, src/net.h,
+	src/player.c, src/player.h: - more code cleanup - put comments into
+	sources to ease life for hackers - marked critical sections which
+	are to be fixed
+
+2001-10-05 22:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/modules/: Makefile.am, learning.c: - add dynamic learning
+	module - warning: it carries a memory leak
+
+2001-09-09 14:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: data/messages.rb, doc/Setup: - add messages.rb file -
+	put message and meeting databases into $HOME/... instead of /tmp -
+	update Setup file
+
+2001-09-09 14:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: data/Makefile.am, data/de.po, data/fr.po, data/guru.pot,
+	data/meeting.rb, modules/exec.c, modules/people.c, src/i18n.c: -
+	add new module: messages (for private messages and alerts) - enable
+	multiline translation - actually pass player as argv[1] to external
+	programs
+
+2001-09-09 11:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: modules/Makefile.am, modules/player.c, src/Makefile.am,
+	src/module.c, src/net.c, src/player.c: - preloading of player
+	database library to make it globally accessible - changed
+	ggzcore_list_room call
+
+2001-09-02 06:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: modules/.cvsignore, modules/Makefile.am,
+	modules/people.c, modules/self.c, src/.cvsignore, src/Makefile.am,
+	src/gurumod.h, src/i18n.c, src/i18n.h, src/main.c, src/module.c,
+	src/module.h, src/player.c: - implemented dynamic translation
+	("grubby i am from de") - b0rked all code - warning! - because
+	there's no shared instance of player.c - nicer output and
+	recognization of own name
+
+2001-09-01 14:56  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore, AUTHORS, TODO, COPYING, README, INSTALL, Makefile.am,
+	NEWS, README.GGZ, autogen.sh, configure.in, ChangeLog, acconfig.h,
+	acinclude.ggz, grubby/.cvsignore, grubby/Makefile.am,
+	grubby/doc/INTERFACE, grubby/doc/Migration,
+	grubby/doc/SCORING_SYSTEM, grubby/doc/Setup, grubby/doc/Tutorial,
+	grubby/doc/players, grubby/modules/.cvsignore,
+	grubby/modules/Makefile.am, grubby/modules/exec.c,
+	grubby/modules/exec.h, grubby/modules/programming.c,
+	grubby/modules/simplereturn.c, grubby/modules/badword.c,
+	grubby/modules/people.c, grubby/modules/player.c,
+	grubby/modules/self.c, grubby/src/guru.c, grubby/src/guru.h,
+	grubby/src/i18n.h, grubby/src/main.c, grubby/src/.cvsignore,
+	grubby/src/Makefile.am, grubby/src/gurumod.h, grubby/src/i18n.c,
+	grubby/src/module.c, grubby/src/module.h, grubby/src/net.c,
+	grubby/src/net.h, grubby/src/player.c, grubby/src/player.h,
+	grubby/data/.cvsignore, grubby/data/Makefile.am, grubby/data/de.po,
+	grubby/data/dict.pl, grubby/data/fr.po, grubby/data/grubby-config,
+	grubby/data/guru.pot, grubby/data/meeting.rb, grubby/data/rdf.pl,
+	grubby/data/trans_convert.pl, man/.cvsignore, man/Makefile.am,
+	man/grubby.6: Initial revision
+
+2001-09-01 14:56  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore, AUTHORS, TODO, COPYING, README, INSTALL, Makefile.am,
+	NEWS, README.GGZ, autogen.sh, configure.in, ChangeLog, acconfig.h,
+	acinclude.ggz, grubby/.cvsignore, grubby/Makefile.am,
+	grubby/doc/INTERFACE, grubby/doc/Migration,
+	grubby/doc/SCORING_SYSTEM, grubby/doc/Setup, grubby/doc/Tutorial,
+	grubby/doc/players, grubby/modules/.cvsignore,
+	grubby/modules/Makefile.am, grubby/modules/exec.c,
+	grubby/modules/exec.h, grubby/modules/programming.c,
+	grubby/modules/simplereturn.c, grubby/modules/badword.c,
+	grubby/modules/people.c, grubby/modules/player.c,
+	grubby/modules/self.c, grubby/src/guru.c, grubby/src/guru.h,
+	grubby/src/i18n.h, grubby/src/main.c, grubby/src/.cvsignore,
+	grubby/src/Makefile.am, grubby/src/gurumod.h, grubby/src/i18n.c,
+	grubby/src/module.c, grubby/src/module.h, grubby/src/net.c,
+	grubby/src/net.h, grubby/src/player.c, grubby/src/player.h,
+	grubby/data/.cvsignore, grubby/data/Makefile.am, grubby/data/de.po,
+	grubby/data/dict.pl, grubby/data/fr.po, grubby/data/grubby-config,
+	grubby/data/guru.pot, grubby/data/meeting.rb, grubby/data/rdf.pl,
+	grubby/data/trans_convert.pl, man/.cvsignore, man/Makefile.am,
+	man/grubby.6: - push grubby into his very own directory
+
