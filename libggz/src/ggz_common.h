@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 4051 2002-04-22 19:40:12Z jdorje $
+ * $Id: ggz_common.h 4171 2002-05-05 23:47:00Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -91,7 +91,7 @@ GGZSeatType ggz_string_to_seattype(const char *type_str);
 
 /* Changing anything below may require bumping up the protocol version.
  * Experiment at your own risk. */
-#define GGZ_CS_PROTO_VERSION 6
+#define GGZ_CS_PROTO_VERSION 7
 
 /* Chat subop bitmasks */
 #define GGZ_CHAT_M_MESSAGE	(unsigned char) 0x40	/* X1XXXXXX */
