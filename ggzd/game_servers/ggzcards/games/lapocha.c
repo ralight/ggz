@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 2276 2001-08-27 10:29:46Z jdorje $
+ * $Id: lapocha.c 2368 2001-09-05 07:01:58Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -219,6 +219,7 @@ static void lapocha_set_player_message(player_t p)
 	seat_t s = game.players[p].seat;
 
 	clear_player_message(s);
+	add_player_rating_message(p);
 	add_player_score_message(p);
 	if (p == game.dealer)
 		add_player_message(s, "dealer\n");

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: game.c 2368 2001-09-05 07:01:58Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -155,6 +155,7 @@ void game_set_player_message(player_t p)
 	 * information.  See one of the games for a more lively example */
 
 	clear_player_message(game.players[p].seat);
+	add_player_rating_message(p);
 	add_player_score_message(p);
 	add_player_tricks_message(p);
 	add_player_bid_message(p);

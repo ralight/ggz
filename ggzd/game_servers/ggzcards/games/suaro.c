@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 2292 2001-08-28 03:49:43Z jdorje $
+ * $Id: suaro.c 2368 2001-09-05 07:01:58Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -356,6 +356,7 @@ static void suaro_set_player_message(player_t p)
 	seat_t s = game.players[p].seat;
 
 	clear_player_message(s);
+	add_player_rating_message(p);
 	add_player_score_message(p);
 	add_player_tricks_message(p);
 	if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {

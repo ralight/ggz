@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 2366 2001-09-05 06:55:34Z jdorje $
+ * $Id: spades.c 2368 2001-09-05 07:01:58Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -270,6 +270,7 @@ static void spades_set_player_message(player_t p)
 	seat_t s = game.players[p].seat;
 
 	clear_player_message(p);
+	add_player_rating_message(p);
 	add_player_score_message(p);
 	if (game.state != WH_STATE_NEXT_BID
 	    && game.state != WH_STATE_WAIT_FOR_BID) {
