@@ -1,4 +1,5 @@
 ## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 2213 2001-08-24 02:45:21Z jdorje $
 
 EXTRA_DIST = module.dsc.in bitmaps/*.xpm
 
@@ -30,8 +31,6 @@ ggz_chess_SOURCES = main_win.c \
                     game.h \
                     net.c \
                     net.h \
-                    ggz.c \
-                    ggz.h \
                     popup.c \
                     popup.h \
                     main.c

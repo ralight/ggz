@@ -4,6 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
+ * $Id: main.c 2213 2001-08-24 02:45:21Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -23,12 +24,14 @@
  */
 
 
-#include <easysock.h>
 #include <gtk/gtk.h>
+
+#include <easysock.h>
+#include <ggz_client.h>
+
 #include "main_win.h"
 #include "support.h"
 #include "chess.h"
-#include "ggz.h"
 #include "board.h"
 #include "game.h"
 #include "net.h"
@@ -52,11 +55,14 @@ int main(int argc, char *argv[]) {
   board_init();
   game_update(CHESS_EVENT_INIT, NULL);
 
-	game_info.fd = ggz_connect("Chess");
+	game_info.fd = ggzmod_connect();
+	if (game_info.fd < 0)
+		return -1;
 
 	gdk_input_add(game_info.fd, GDK_INPUT_READ, net_handle_input, NULL);
 
 	gtk_main();
 	
+	ggzmod_disconnect();
 	return 0;
 }
