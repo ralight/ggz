@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5860 2004-02-09 01:54:41Z jdorje $
+dnl $Id: configure.ac 5861 2004-02-09 02:04:04Z jdorje $
 
 AC_INIT([GGZ client libraries], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -29,10 +29,10 @@ AC_GGZ_LIBGGZ
 
 # Check for header files
 # ======================
-AC_CHECK_HEADERS([fcntl.h limits.h sys/time.h sys/wait.h time.h \
+AC_CHECK_HEADERS([fcntl.h limits.h sys/time.h time.h \
                   unistd.h], [],
                  [AC_MSG_ERROR([cannot find required header file])])
-AC_CHECK_HEADERS([netdb.h]
+AC_CHECK_HEADERS([netdb.h])
 AC_HEADER_SYS_WAIT
 AC_HEADER_TIME
 # We used to check for the presence of WAIT_ANY, and define it as

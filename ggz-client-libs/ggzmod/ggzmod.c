@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 5024 2002-10-25 08:11:17Z jdorje $
+ * $Id: ggzmod.c 5861 2004-02-09 02:04:04Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -43,7 +43,9 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <sys/wait.h>
+#ifdef HAVE_SYS_WAIT_H
+# include <sys/wait.h>
+#endif
 #include <unistd.h>
 
 #include <ggz.h>

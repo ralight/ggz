@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 5000 2002-10-22 20:17:36Z jdorje $
+ * $Id: game.c 5861 2004-02-09 02:04:04Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -34,7 +34,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-#include <sys/wait.h>
+#ifdef HAVE_SYS_WAIT_H
+# include <sys/wait.h>
+#endif
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/poll.h>
