@@ -1,15 +1,15 @@
-//////////////////////////////////////////
-//                                      //
-// Stackpath 0.1                        //
-//                                      //
-// Copyright (C) 2001 Josef Spillner    //
-// dr_maux@users.sourceforge.net        //
-// The MindX Open Source Project        //
-// http://mindx.sourceforge.net         //
-//                                      //
-// Published under GNU GPL conditions.  //
-//                                      //
-//////////////////////////////////////////
+/////////////////////////////////////////////
+//                                         //
+// Stackpath 0.1                           //
+//                                         //
+// Copyright (C) 2001, 2002 Josef Spillner //
+// dr_maux@users.sourceforge.net           //
+// The MindX Open Source Project           //
+// http://mindx.sourceforge.net            //
+//                                         //
+// Published under GNU GPL conditions.     //
+//                                         //
+/////////////////////////////////////////////
 
 // System includes
 #include <list>
@@ -89,3 +89,4 @@ class Pathitem
 		/** The local list of path items */
 		list<Pathitem*> m_itemlist;
 };
+

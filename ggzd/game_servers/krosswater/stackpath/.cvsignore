@@ -3,3 +3,5 @@ Makefile.in
 *.o
 *.a
 .deps
+teststackpath
+

@@ -1,21 +1,20 @@
-//////////////////////////////////////////
-//                                      //
-// Stackpath 0.1                        //
-//                                      //
-// Copyright (C) 2001 Josef Spillner    //
-// dr_maux@users.sourceforge.net        //
-// The MindX Open Source Project        //
-// http://mindx.sourceforge.net         //
-//                                      //
-// Published under GNU GPL conditions.  //
-//                                      //
-//////////////////////////////////////////
+/////////////////////////////////////////////
+//                                         //
+// Stackpath 0.1                           //
+//                                         //
+// Copyright (C) 2001, 2002 Josef Spillner //
+// dr_maux@users.sourceforge.net           //
+// The MindX Open Source Project           //
+// http://mindx.sourceforge.net            //
+//                                         //
+// Published under GNU GPL conditions.     //
+//                                         //
+/////////////////////////////////////////////
 
 // Stackpath includes
 #include "pathitem.h"
 
 // System includes
-#include <iostream>
 #include <unistd.h>
 
 Pathitem::Pathitem(int width, int height, int** field)
@@ -170,3 +169,5 @@ void Pathitem::setStatus(int status)
 {
 	m_status = status;
 }
+
+

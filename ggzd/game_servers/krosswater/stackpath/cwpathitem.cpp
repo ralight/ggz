@@ -1,15 +1,15 @@
-//////////////////////////////////////////
-//                                      //
-// Stackpath 0.1                        //
-//                                      //
-// Copyright (C) 2001 Josef Spillner    //
-// dr_maux@users.sourceforge.net        //
-// The MindX Open Source Project        //
-// http://mindx.sourceforge.net         //
-//                                      //
-// Published under GNU GPL conditions.  //
-//                                      //
-//////////////////////////////////////////
+/////////////////////////////////////////////
+//                                         //
+// Stackpath 0.1                           //
+//                                         //
+// Copyright (C) 2001, 2002 Josef Spillner //
+// dr_maux@users.sourceforge.net           //
+// The MindX Open Source Project           //
+// http://mindx.sourceforge.net            //
+//                                         //
+// Published under GNU GPL conditions.     //
+//                                         //
+/////////////////////////////////////////////
 
 // Stackpath includes
 #include "cwpathitem.h"
@@ -81,3 +81,4 @@ void CWPathitem::postprocess(int column)
 	for(it = pathlist.begin(); it != pathlist.end(); it++)
 		if(((*it)->x() == column) && (m_field[(*it)->x()][(*it)->y()])) (*it)->setStatus(final);
 }
+

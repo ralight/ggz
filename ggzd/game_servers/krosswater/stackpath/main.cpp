@@ -1,15 +1,15 @@
-//////////////////////////////////////////
-//                                      //
-// Stackpath 0.1                        //
-//                                      //
-// Copyright (C) 2001 Josef Spillner    //
-// dr_maux@users.sourceforge.net        //
-// The MindX Open Source Project        //
-// http://mindx.sourceforge.net         //
-//                                      //
-// Published under GNU GPL conditions.  //
-//                                      //
-//////////////////////////////////////////
+/////////////////////////////////////////////
+//                                         //
+// Stackpath 0.1                           //
+//                                         //
+// Copyright (C) 2001, 2002 Josef Spillner //
+// dr_maux@users.sourceforge.net           //
+// The MindX Open Source Project           //
+// http://mindx.sourceforge.net            //
+//                                         //
+// Published under GNU GPL conditions.     //
+//                                         //
+/////////////////////////////////////////////
 
 // CWPathitem include
 #include "cwpathitem.h"
@@ -37,7 +37,7 @@ void printpath(int width, int height, int **field)
 }
 
 // The main function: Build a map and find a way
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	CWPathitem *path;
 	int **field;
@@ -94,4 +94,7 @@ void main(int argc, char **argv)
 	delete path;
 
 	cout << "Done" << endl;
+
+	return 0;
 }
+

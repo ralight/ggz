@@ -1,15 +1,15 @@
-//////////////////////////////////////////
-//                                      //
-// Stackpath 0.1                        //
-//                                      //
-// Copyright (C) 2001 Josef Spillner    //
-// dr_maux@users.sourceforge.net        //
-// The MindX Open Source Project        //
-// http://mindx.sourceforge.net         //
-//                                      //
-// Published under GNU GPL conditions.  //
-//                                      //
-//////////////////////////////////////////
+/////////////////////////////////////////////
+//                                         //
+// Stackpath 0.1                           //
+//                                         //
+// Copyright (C) 2001, 2002 Josef Spillner //
+// dr_maux@users.sourceforge.net           //
+// The MindX Open Source Project           //
+// http://mindx.sourceforge.net            //
+//                                         //
+// Published under GNU GPL conditions.     //
+//                                         //
+/////////////////////////////////////////////
 
 // Stackpath includes
 #include "pathitem.h"
@@ -43,3 +43,4 @@ class CWPathitem : public Pathitem
 			noforce
 		};
 };
+
