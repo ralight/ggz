@@ -16,9 +16,6 @@
 #include <qpen.h>
 #include <qarray.h>
 
-#include <iostream>
-#include <stdio.h>
-
 #include "config.h"
 
 QPixmap *bgpix;
