@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 3930 2002-04-13 01:29:54Z bmh $
+ * $Id: ggz.h 3931 2002-04-13 01:32:57Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -1351,7 +1351,7 @@ void ggz_read_string_or_die(const int sock, char *data, const unsigned int len);
  *        // ... handle the string ...
  *        ggz_free(str);
  *    }
- *  @code
+ *  @endcode
  *
  *  @param sock The socket file descriptor to write to.
  *  @param data A pointer to an empty string pointer.
