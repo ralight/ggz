@@ -19,7 +19,7 @@ noinst_HEADERS = \
 	kdots_proto.h \
 	kdots_win.h
 
-INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) -I Dot
+INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) -I $(top_srcdir)/kdots/Dot
 
 kdots_client_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS)
 kdots_client_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_GGZ) Dot/libdot.a

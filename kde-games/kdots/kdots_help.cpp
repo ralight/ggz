@@ -34,7 +34,7 @@ KDotsHelp::KDotsHelp(QWidget *parent, const char *name)
 
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccepted()));
 
-	setCaption("KDots Help");
+	setCaption(i18n("KDots Help"));
 	setFixedSize(500, 398);
 }
 
