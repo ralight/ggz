@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 6881 2005-01-24 08:47:59Z jdorje $
+ * $Id: netxml.c 6980 2005-03-11 07:24:52Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
