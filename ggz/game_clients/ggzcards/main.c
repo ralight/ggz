@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3376 2002-02-17 02:05:13Z jdorje $
+ * $Id: main.c 3380 2002-02-17 07:47:26Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -81,6 +81,7 @@ int main(int argc, char *argv[])
 	/* Now clean up and shut down. */
 	ggz_debug("main", "Cleaning up and quitting.");
 	client_quit();
+	table_cleanup();
 
 	access_settings(1);
 	ggz_conf_cleanup();

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3355 2002-02-14 07:42:52Z jdorje $
+ * $Id: table.c 3380 2002-02-17 07:47:26Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -270,6 +270,23 @@ void table_setup(void)
 
 	/* Redraw and display the table. */
 	table_redraw();
+}
+
+
+void table_cleanup(void)
+{
+	int p;
+	
+	/* This doesn't clean up all the GTK stuff, only the ggz_malloc'd
+	   stuff so that the memory check will be clean. */
+	
+	for (p = 0; p < MAX_NUM_PLAYERS; p++) {
+		if (player_names[p] != NULL)
+			ggz_free(player_names[p]);
+		if (player_messages[p] != NULL)
+			ggz_free(player_messages[p]);
+		player_names[p] = player_messages[p] = NULL;
+	}
 }
 
 static void table_show_player_box(int player, int write_to_screen)
