@@ -257,16 +257,20 @@ AC_OUTPUT([Makefile
 
 dnl Status Output
 dnl =============
-echo "*** GGZD will be built with the following debugging flags: $DFLAGS"
-echo "***"
-echo "*** To compile and install server:"
-echo "***"
-echo "***'make install'"
-echo "***"
-echo "*** To compile and test server locally without installing:"
-echo "***"
-echo "*** 'make test; cd ggzd; ./ggzd -f ggzd.test'"
-echo ""
+
+echo "Options"  
+echo "    Build Server........$enable_server" 
+echo "    Build Game Servers..$enable_games" 
+echo "    Database Type.......$database" 
+echo "    General Debuging....$enable_debug" 
+echo "    Socket Debuging.....$enable_debug_socket" 
+echo "    GDB Debuging........$enable_debug_gdb" 
+echo "    Memmory Debuging....$enable_debug_mem" 
+echo " " 
+echo "To compile and install server:" 
+echo "    'make install'" 
+echo "To compile and test server locally without installing:" 
+echo "    'make test; cd ggzd; ./ggzd -f ggzd.test'"
 
 
 
