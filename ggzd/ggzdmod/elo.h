@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 5/07/2002 (moved from ggz_stats.c)
  * Desc: GGZ game module stat functions - ELO ratings
- * $Id: elo.h 4178 2002-05-07 08:06:48Z jdorje $
+ * $Id: elo.h 4182 2002-05-07 16:51:35Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -37,6 +37,6 @@
  *  @note The teams must be specifically enumerated.  If there are no "teams",
  *  just have the array be identical to the player array.
  */
-void elo_recalculate_ratings(int num_players, int *player_ratings,
+void elo_recalculate_ratings(int num_players, float *player_ratings,
 			     int *player_teams, int num_teams,
-			     int *team_ratings, double *team_winners);
+			     float *team_ratings, float *team_winners);

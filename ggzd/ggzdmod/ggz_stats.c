@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.c 4178 2002-05-07 08:06:48Z jdorje $
+ * $Id: ggz_stats.c 4182 2002-05-07 16:51:35Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -40,7 +40,7 @@ struct GGZStats {
 	GGZdMod *ggz;
 	int num_players;
 
-	int *ratings;
+	float *ratings;
 	int *wins, *losses, *ties;
 
 	int teams;
@@ -94,9 +94,9 @@ int read_stats(GGZStats * stats)
 			snprintf(player_name, sizeof(player_name),
 				 "%s(AI)(%d)", seat.name, seat.num);
 
-		stats->ratings[player] =
-			ggz_conf_read_int(handle, "ratings", player_name,
-					  1500);
+		stats->ratings[player] = ggz_conf_read_int(handle, "ratings", player_name, 150000);
+		stats->ratings[player] /= 100;
+		
 		stats->wins[player] =
 			ggz_conf_read_int(handle, "wins", player_name, 0);
 		stats->losses[player] =
@@ -143,6 +143,7 @@ int write_stats(GGZStats * stats)
 	for (player = 0; player < num; player++) {
 		GGZSeat seat = ggzdmod_get_seat(stats->ggz, player);
 		char player_name[128];
+		int rating = (float)(100.0 * stats->ratings[player] + 0.5);
 
 		if (seat.type != GGZ_SEAT_PLAYER && seat.type != GGZ_SEAT_BOT)
 			continue;
@@ -157,8 +158,7 @@ int write_stats(GGZStats * stats)
 			snprintf(player_name, sizeof(player_name),
 				 "%s(AI)(%d)", seat.name, seat.num);
 
-		ggz_conf_write_int(handle, "ratings", player_name,
-				   stats->ratings[player]);
+		ggz_conf_write_int(handle, "ratings", player_name, rating);
 
 		ggz_conf_write_int(handle, "wins", player_name,
 				   stats->wins[player]);
@@ -317,7 +317,7 @@ int ggzstats_get_rating(GGZStats * stats, int player, int *rating)
 		return -1;
 	}
 
-	*rating = stats->ratings[player];
+	*rating = (int) (stats->ratings[player] + 0.5);
 	
 	ggz_debug(DBG_GGZSTATS, "Retrieving rating for player %d: %d.", player, *rating);
 	
@@ -350,10 +350,11 @@ int ggzstats_recalculate_ratings(GGZStats * stats)
 	int i;
 	int num_players = ggzdmod_get_num_seats(stats->ggz);
 	int num_teams = stats->teams > 0 ? stats->teams : num_players;
-	double sum = 0;
+	float sum = 0;
 
-	double team_scores[num_teams];
-	int team_ratings[num_teams], team_sizes[num_teams];
+	float team_scores[num_teams];
+	float team_ratings[num_teams];
+	int team_sizes[num_teams];
 	int player_teams[num_players];
 
 	/* check to see if all data is initted */
@@ -369,7 +370,7 @@ int ggzstats_recalculate_ratings(GGZStats * stats)
 	for (i = 0; i < num_teams; i++) {
 		team_sizes[i] = 0;
 		team_scores[i] = 0.0;
-		team_ratings[i] = 0;
+		team_ratings[i] = 0.0;
 	}
 	for (i = 0; i < num_players; i++) {
 		int team = stats->teams > 0 ? stats->team_list[i] : i;
@@ -380,8 +381,8 @@ int ggzstats_recalculate_ratings(GGZStats * stats)
 	}
 	for (i = 0; i < num_teams; i++) {
 		/* the team rating is the average of the individual ratings. */
-		team_ratings[i] /= team_sizes[i];	/* FIXME */
-		ggz_debug(DBG_GGZSTATS, "Team rating for team %d is %d.",
+		team_ratings[i] /= (float) team_sizes[i];	/* FIXME */
+		ggz_debug(DBG_GGZSTATS, "Team rating for team %d is %f.",
 			  i, team_ratings[i]);
 		sum += team_scores[i];
 	}

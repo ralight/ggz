@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 5/07/2002 (moved from ggz_stats.c)
  * Desc: GGZ game module stat functions - ELO ratings
- * $Id: elo.c 4178 2002-05-07 08:06:48Z jdorje $
+ * $Id: elo.c 4182 2002-05-07 16:51:35Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -389,7 +389,7 @@ static double elo_integrate_all(int num, int i, double *ratings)
 	return prob;
 }
 
-void elo_compute_expectations(int num, int *ratings, double *probs)
+void elo_compute_expectations(int num, float *ratings, float *probs)
 {
 	double myratings[num];
 	int i;
@@ -411,11 +411,11 @@ void elo_compute_expectations(int num, int *ratings, double *probs)
 		probs[i] /= sum;
 }
 
-void elo_recalculate_ratings(int num_players, int *player_ratings,
+void elo_recalculate_ratings(int num_players, float *player_ratings,
 			     int *player_teams, int num_teams,
-			     int *team_ratings, double *team_winners)
+			     float *team_ratings, float *team_winners)
 {
-	double team_probs[num_teams];
+	float team_probs[num_teams];
 	int i;
 
 	/* Calculate the probability for each player to win, ELO-style. */
@@ -425,14 +425,14 @@ void elo_recalculate_ratings(int num_players, int *player_ratings,
 	for (i = 0; i < num_players; i++) {
 		int team = num_teams > 0 ? player_teams[i] : i;
 		ggz_debug(DBG_GGZSTATS,
-			  "Player %d has rating %d, expectation %f.", i,
+			  "Player %d has rating %f, expectation %f.", i,
 			  team_ratings[team], team_probs[team]);
 	}
 
 	/* Calculate new ratings for all players. */
 	for (i = 0; i < num_players; i++) {
 		int team = num_teams > 0 ? player_teams[i] : i;
-		double K, diff;
+		float K, diff;
 
 		/* FIXME: this is the chess distribution; games should be
 		   able to set their own. */
@@ -441,12 +441,12 @@ void elo_recalculate_ratings(int num_players, int *player_ratings,
 		else if (player_ratings[i] > 2400)
 			K = 10.0;
 		else
-			K = 130.0 - (double) player_ratings[i] / 20.0;
+			K = 130.0 - player_ratings[i] / 20.0;
 
 		diff = K * (team_winners[team] - team_probs[team]);
-		player_ratings[i] += (int) (diff + 0.5);
+		player_ratings[i] += diff;
 		ggz_debug(DBG_GGZSTATS,
-			  "Player %d has new rating %d (slope %f).", i,
+			  "Player %d has new rating %f (slope %f).", i,
 			  player_ratings[i], K);
 	}
 }
