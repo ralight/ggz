@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 6416 2004-11-17 22:02:24Z jdorje $
+ * $Id: parse_opt.c 6857 2005-01-23 21:43:37Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -332,7 +332,7 @@ static void get_config_options(int ch)
 
 	/* Miscellaneous */
 	opt.perform_lookups = ggz_conf_read_int(ch, "Miscellaneous", "HostnameLookup", 0);
-	opt.ping_freq = ggz_conf_read_int(ch, "Miscellaneous", "LagFrequency", 10);
+	opt.ping_freq = ggz_conf_read_int(ch, "Miscellaneous", "PingFrequency", 10);
 	for (i = 0; i < 4; i++) {
 		char buf[1024];
 		int defaults[4] = {500, 1000, 2000, 5000};

@@ -211,6 +211,9 @@ MOTD = ggzd.motd
 #LagClass3 = 2000
 #LagClass4 = 5000
 
+# Interval at which to send players room occupancy updates (seconds)
+#RoomUpdateFrequency = 60
+
 # Client hostname lookups
 #   Should the server do hostname lookups on the client's IP address?
 #   (1=yes, 0=no)  Default is 0, even though the lookup is done in the
