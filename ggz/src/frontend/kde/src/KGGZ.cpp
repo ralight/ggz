@@ -94,7 +94,7 @@ KGGZ::KGGZ(QWidget *parent = NULL, char *name = NULL)
 
 	m_workspace = new KGGZWorkspace(this, "workspace");
 
-	connect(m_workspace->widgetChat(), SIGNAL(signalChat(char *, char *, int)), SLOT(slotChat(char *, char *, int)));
+	connect(m_workspace->widgetChat(), SIGNAL(signalChat(const char *, char *, int)), SLOT(slotChat(const char *, char *, int)));
 	connect(m_workspace->widgetLogo(), SIGNAL(signalInfo()), SLOT(menuGameInfo()));
 
 	KGGZDEBUG("Initializing GGZCore...\n");
@@ -871,7 +871,7 @@ GGZHookReturn KGGZ::hookOpenCollector(unsigned int id, void* event_data, void* u
 	return GGZ_HOOK_OK;
 }
 
-void KGGZ::slotChat(char *text, char *player, int mode)
+void KGGZ::slotChat(const char *text, char *player, int mode)
 {
 	char *sendtext;
 

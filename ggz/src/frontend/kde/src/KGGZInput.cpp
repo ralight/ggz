@@ -56,7 +56,7 @@ KGGZInput::KGGZInput(QWidget *parent = NULL, char *name = NULL)
 	m_edit = new QLineEdit(this);
 
 	vbox = new QVBoxLayout(this, 5);
-	vbox->add(m_edit);
+	vbox->add(label);
 
 	hbox = new QHBoxLayout(vbox, 5);
 	vbox->add(m_edit);
