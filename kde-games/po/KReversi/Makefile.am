@@ -1,6 +1,6 @@
 SUBDIRS = .
 
-PACKAGE = kreversi
+PACKAGE = ggz.kreversi
 POTFILE = kreversi.pot
 POFILES = de.po
 LOCATIONS = $(top_srcdir)/KReversi/*.cpp
