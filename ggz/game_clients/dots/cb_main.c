@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Callback functions for the main Gtk window
- * $Id: cb_main.c 4886 2002-10-12 20:04:30Z jdorje $
+ * $Id: cb_main.c 4922 2002-10-14 23:13:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -34,7 +34,6 @@
 
 #include "cb_main.h"
 #include "dlg_main.h"
-#include "dlg_about.h"
 #include "dlg_pref.h"
 #include "support.h"
 #include "main.h"
@@ -86,13 +85,6 @@ on_mnu_preferences_activate            (GtkMenuItem     *menuitem,
 	}
 }
 
-
-void
-on_mnu_about_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	create_or_raise_dlg_about();
-}
 
 gboolean
 on_window_delete_event                 (GtkWidget       *widget,

@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 4886 2002-10-12 20:04:30Z jdorje $
+ * $Id: main.c 4922 2002-10-14 23:13:43Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -41,6 +41,7 @@
 #include <ggz_common.h>
 
 #include "dlg_about.h"
+#include "dlg_players.h"
 
 #include "dlg_main.h"
 #include "dlg_opt.h"
@@ -96,6 +97,7 @@ int main(int argc, char *argv[])
 
 	mod = ggzmod_new(GGZMOD_GAME);
 	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+	init_player_list(mod);
 
 	ggzmod_connect(mod);
 

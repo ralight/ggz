@@ -34,6 +34,9 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "dlg_about.h"
+#include "dlg_players.h"
+
 #include "cb_main.h"
 #include "dlg_main.h"
 #include "support.h"
@@ -45,14 +48,16 @@ static GtkWidget *create_menus(GtkWidget *window)
 	GtkItemFactory *menu;
 	GtkWidget *menu_item;
 	GtkItemFactoryEntry items[] = {
-	  {_("/_File"), NULL, NULL, 0, "<Branch>"},
-	  {_("/File/_Sync with server"), "<ctrl>S", NULL, 0, NULL},
-	  {_("/File/E_xit"), "<ctrl>Q", on_mnu_exit_activate, 0, NULL},
+	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
+	  {_("/Table/Player _list"), "<ctrl>L",
+	   create_or_raise_dlg_players, 0, NULL},
+	  {_("/Table/_Sync with server"), "<ctrl>S", NULL, 0, NULL},
+	  {_("/Table/E_xit"), "<ctrl>X", on_mnu_exit_activate, 0, NULL},
 	  {_("/_Options"), NULL, NULL, 0, "<Branch>"},
 	  {_("/Options/_Preferences"), "<ctrl>P", on_mnu_preferences_activate,
 	   0, NULL},
 	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
-	  {_("/Help/_About"), "<ctrl>A", on_mnu_about_activate, 0, NULL}
+	  {_("/Help/_About"), "<ctrl>A", create_or_raise_dlg_about, 0, NULL}
 	};
 	const int num = sizeof(items) / sizeof(items[0]);
 
@@ -63,7 +68,7 @@ static GtkWidget *create_menus(GtkWidget *window)
 	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
 
 	menu_item = gtk_item_factory_get_widget(menu,
-						_("<main>/File/"
+						_("<main>/Table/"
 						  "Sync with server"));
 	gtk_widget_set_sensitive(menu_item, FALSE);
 
