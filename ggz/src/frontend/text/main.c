@@ -31,6 +31,7 @@
 #include "state.h"
 #include "loop.h"
 
+#include <ggz.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
@@ -88,7 +89,7 @@ int main(void)
 	free(debugfile);
 	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_HOOK & ~GGZ_DBG_MEMDETAIL); 
 	ggzcore_init(opt);
-	free(opt.debug_file);
+	ggz_free(opt.debug_file);
 
 	output_status();
 	output_prompt();
