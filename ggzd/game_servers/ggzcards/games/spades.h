@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.h 2340 2001-09-02 07:50:46Z jdorje $
+ * $Id: spades.h 2341 2001-09-02 08:49:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -24,15 +24,21 @@
  */
 
 /* special bids */
-#define SPADES_NIL 1
+#define SPADES_NIL		1
+#define SPADES_NO_BLIND		2	/* a choice *not* to bid blind nil */
+#define SPADES_DOUBLE_NIL	3	/* double nil and blind nil are the same */
 
 #define GSPADES ( *(spades_game_t *)(game.specific) )
 typedef struct spades_game_t
 {
 	/* options */
 	int nil_value;		/* 0 for none; generally 50 or 100 */
+	int double_nil_value;	/* 0 for none; generally 100 or 200 */
 	int minimum_team_bid;	/* the minimum bid by one team */
 
-	int bags[2];
+	/* data */
+	int show_hand[4];	/* this is 0 if we're supposed to conceal
+				 * the hand (for blind bids */
+	int bags[2];		/* # of overtricks ("sandbags") taken by each team */
 }
 spades_game_t;
