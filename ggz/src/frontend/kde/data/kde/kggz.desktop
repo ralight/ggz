@@ -1,21 +1,18 @@
 [Desktop Entry]
-Comment=The GGZ Gaming Zone for KDE 3
-Comment[de]=Die GGZ Gaming Zone für KDE 3
-Comment[fr]=La GGZ Gaming Zone pour KDE 3
-GenericName=The GGZ Gaming Zone for KDE 3
-GenericName[de]=Die GGZ Gaming Zone für KDE 3
-GenericName[fr]=La GGZ Gaming Zone pour KDE 3
+Name=KGGZ
+GenericName=Internet gaming center for KDE
+GenericName[de]=Internet-Spielezentrum für KDE
+GenericName[fr]=Centre de jeux d'internet pour KDE
+GenericName[pt]=Centro de jogos em rede para KDE
+Comment=GGZ Core Client
+Comment[de]=GGZ-Core-Client
+Comment[fr]=Core Client GGZ
+Comment[pt]=Cliente núcleo do GGZ
+
+Type=Application
 Exec=kggz
 Icon=kggz
-MimeType=application/zone;Application
-Name=KGGZ
-Path=
 DocPath=kggz/index.docbook
-ServiceTypes=
-SwallowExec=
-SwallowTitle=
 Terminal=false
-TerminalOptions=
-Type=Application
-X-KDE-SubstituteUID=false
-X-KDE-Username=
+StartupNotify=true
+Categories=X-GGZ;Network;KDE;Qt;
