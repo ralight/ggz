@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 4986 2002-10-22 05:14:25Z jdorje $
+ * $Id: game.c 4987 2002-10-22 05:33:55Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -82,10 +82,6 @@ static struct ttt_game_t ttt_game;
 /* GGZdMod callbacks */
 static void game_handle_ggz_state(GGZdMod *ggz,
                                   GGZdModEvent event, void *data);
-static void game_handle_ggz_join(GGZdMod *ggz,
-                                 GGZdModEvent event, void *data);
-static void game_handle_ggz_leave(GGZdMod *ggz,
-                                  GGZdModEvent event, void *data);
 static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, void *data);
 #ifdef GGZSPECTATORS
 static void game_handle_ggz_spectator_join(GGZdMod *ggz,
@@ -136,9 +132,9 @@ void game_init(GGZdMod *ggzdmod)
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE,
 	                    &game_handle_ggz_state);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_JOIN,
-	                    &game_handle_ggz_join);
+	                    &game_handle_ggz_seat);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE,
-	                    &game_handle_ggz_leave);
+	                    &game_handle_ggz_seat);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SEAT,
 			    &game_handle_ggz_seat);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA,
@@ -177,6 +173,11 @@ static int seats_full(void)
 		+ ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_RESERVED) == 0;
 }
 
+static int seats_empty(void)
+{
+	return ggzdmod_count_seats(ttt_game.ggz, GGZ_SEAT_PLAYER) == 0;
+}
+
 #ifdef GGZSPECTATORS
 static void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
@@ -212,54 +213,27 @@ static void game_handle_ggz_spectator_leave(GGZdMod *ggz, GGZdModEvent event, vo
 }
 #endif
 
-/* Callback for GGZDMOD_EVENT_JOIN */
-static void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
-{
-	int num = ((GGZSeat*)data)->num;
-	GGZSeat seat = ggzdmod_get_seat(ggz, num);
-
-	/* Send the info to our players */
-	game_send_seat(num);
-	game_send_players();
-	
-	/* We start playing only when there are no open seats. */
-	if (seats_full()) {
-
-		/* If we're continuing a game, send sync to new player */
-		if (ttt_game.turn != -1)
-			game_send_sync(seat.fd);
-		
-		ggzdmod_set_state(ttt_game.ggz, GGZDMOD_STATE_PLAYING);
-	}
-}
-
-
-/* Callback for GGZDMOD_EVENT_LEAVE */
-static void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
-{
-	if (ggzdmod_get_state(ggz) == GGZDMOD_STATE_PLAYING) {
-		ggzdmod_set_state(ggz, GGZDMOD_STATE_WAITING);
-		game_send_players();
-	}
-
-	/* If there are no players left, we'll end the game */
-        if (ggzdmod_count_seats(ggz, GGZ_SEAT_PLAYER) == 0) {
-		ggzdmod_log(ggz, "No players left: ending game");
-		ggzdmod_set_state(ggz, GGZDMOD_STATE_DONE);
-	}
-}
-
-
-/* Callback for GGZDMOD_EVENT_SEAT */
+/* Callback for ggzdmod JOIN, LEAVE, and SEAT events */
 static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 	GGZdModState new_state;
-	if (seats_full()) {
+	GGZSeat *old_seat = data;
+	GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
+
+	if (seats_full())
 		new_state = GGZDMOD_STATE_PLAYING;
-	} else
+	else if (seats_empty())
+		new_state = GGZDMOD_STATE_DONE;
+	else
 		new_state = GGZDMOD_STATE_WAITING;
 
 	game_send_players();
+	if (new_seat.type == GGZ_SEAT_PLAYER) {
+		game_send_seat(new_seat.num);
+		/* If we're continuing a game, send sync to new player */
+		if (ttt_game.turn != -1)
+			game_send_sync(new_seat.fd);
+	}
 
 	ggzdmod_set_state(ttt_game.ggz, new_state);
 }
