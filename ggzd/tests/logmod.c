@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <easysock.h>
 
 int fd = 3;
@@ -73,14 +74,50 @@ int handle_game_launch()
 	return 0;
 }
 
-int handle_game_join()
+
+int handle_game_join(void)
 {
-	return -1;
+	int num, pfd;
+	char *name;
+
+	if (es_read_int(fd, &num) < 0
+	    || es_read_string_alloc(fd, &name) < 0
+	    || es_read_fd(fd, &pfd) < 0) {
+		printf("Error reading from GGZ\n");
+		return -1;
+	}
+	
+	printf("Received %s on %d in seat %d\n", name, pfd, num);
+	free(name);
+	
+	if (es_write_int(fd, RSP_GAME_JOIN) < 0
+	    || es_write_char(fd, 0)) {
+		printf("Error sending data to GGZ\n");
+		return -1;
+	}
+
+	return 0;
 }
 
-int handle_game_leave()
+
+int handle_game_leave(void)
 {
-	return -1;
+	char *name;
+
+	if (es_read_string_alloc(fd, &name) < 0) {
+		printf("Error reading from GGZ\n");
+		return -1;
+	}
+	
+	printf("Removing %s\n", name);
+
+	if (es_write_int(fd, RSP_GAME_LEAVE) < 0 
+	    || es_write_char(fd, 0) < 0) {
+		printf("Error sending data to GGZ\n");
+		return -1;
+	}
+
+	return 0;
 }
 
 

@@ -19,8 +19,14 @@ void callback(GGZdMod *mod, GGZdModEvent event, void *data)
 	case GGZ_EVENT_ERROR:
 		printf("GGZ_EVENT_ERROR: %s\n", (char*)data);
 		break;
+	case GGZ_EVENT_JOIN:
+		printf("GGZ_EVENT_JOIN\n");
+		break;
+	case GGZ_EVENT_LEAVE:
+		printf("GGZ_EVENT_LEAVE\n");
+		break;
 	default:
-		printf("Yay.  A callback\n");
+		printf("Yay.  A callback for event %d\n", event);
 	}
 }
 
@@ -28,6 +34,7 @@ void callback(GGZdMod *mod, GGZdModEvent event, void *data)
 void handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
 {
 	GGZdModState cur, prev;
+	GGZSeat seat;
 	char *states[] = {"CREATED","WAITING","PLAYING","DONE"};
 
 	prev = *(GGZdModState*)data;
@@ -38,7 +45,11 @@ void handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
 	case GGZ_STATE_WAITING:
 		/* Waiting for players */
 		printf("Game now waiting for players\n");
-		ggzdmod_disconnect(mod);
+		seat.num = 2;
+		seat.type = GGZ_SEAT_PLAYER;
+		seat.name = "Larry";
+		seat.fd = 0;
+		ggzdmod_set_seat(mod, &seat);
 		break;
 		
 	case GGZ_STATE_PLAYING:
