@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h.in 5856 2004-02-08 23:46:09Z jdorje $
+ * $Id: ggz.h.in 5857 2004-02-09 00:02:31Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -1324,6 +1324,9 @@ int ggz_make_socket_or_die(const GGZSockType type,
 			   const unsigned short port, 
 			   const char *server);
 
+#define GGZ_HAVE_PF_LOCAL @GGZ_HAVE_PF_LOCAL@
+
+#if GGZ_HAVE_PF_LOCAL
 /** @brief Connect to a unix domain socket.
  *
  *  This function connects to a unix domain socket, a socket associated with
@@ -1344,6 +1347,7 @@ int ggz_make_unix_socket(const GGZSockType type, const char* name);
  *  Aside from the error condition, this is identical to ggz_make_unix_socket.
  */
 int ggz_make_unix_socket_or_die(const GGZSockType type, const char* name);
+#endif
 
 
 /** @brief Write a character value to the given socket.

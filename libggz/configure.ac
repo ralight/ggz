@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5856 2004-02-08 23:46:09Z jdorje $
+dnl $Id: configure.ac 5857 2004-02-09 00:02:31Z jdorje $
 
 AC_INIT([GGZ common libraries], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -89,13 +89,16 @@ AC_EGREP_CPP(PF_LOCAL,
               AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
 				      PF_UNIX ],
                            [AC_MSG_RESULT(no)
-			    AC_MSG_ERROR([cannot find PF_LOCAL or PF_UNIX])],
+			    GGZ_HAVE_PF_LOCAL="0"],
                            [AC_MSG_RESULT(yes)
                             AC_DEFINE([PF_LOCAL], PF_UNIX,
 				      [PF_UNIX is available])
 			    AC_DEFINE([AF_LOCAL], AF_UNIX,
-				      [AF_UNIX is available])])], 
-             AC_MSG_RESULT(yes))
+				      [AF_UNIX is available])
+                            GGZ_HAVE_PF_LOCAL="1"])], 
+             [AC_MSG_RESULT(yes)
+              GGZ_HAVE_PF_LOCAL="1"])
+AC_SUBST(GGZ_HAVE_PF_LOCAL)
 
 
 # Check for SUN_LEN

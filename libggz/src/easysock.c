@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 5856 2004-02-08 23:46:09Z jdorje $
+ * $Id: easysock.c 5857 2004-02-09 00:02:31Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -191,6 +191,7 @@ int ggz_make_socket_or_die(const GGZSockType type, const unsigned short port,
 }
 
 
+#if GGZ_HAVE_PF_LOCAL
 int ggz_make_unix_socket(const GGZSockType type, const char* name) 
 {
 	int sock;
@@ -241,6 +242,7 @@ int ggz_make_unix_socket_or_die(const GGZSockType type, const char* name)
 	
 	return sock;
 }
+#endif
 
 
 int ggz_write_char(const int sock, const char message)
