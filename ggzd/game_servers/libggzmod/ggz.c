@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 2200 2001-08-23 19:56:45Z jdorje $	*/
+/*	$Id: ggz.c 2215 2001-08-24 04:16:58Z jdorje $	*/
 /*
  * File: ggz.c
  * Author: Brent Hendricks
@@ -208,17 +208,20 @@ int ggzdmod_player_leave(int* p_seat, int* p_fd)
 }
 
 
-void ggzdmod_debug(const char *fmt, ...)
+int ggzdmod_debug(const char *fmt, ...)
 {
 	char buf[4096];
 	va_list ap;
+	int status = 0;
 
 	va_start(ap, fmt);
 	vsnprintf(buf, sizeof(buf), fmt, ap);
-	es_write_int(ggzfd, MSG_DBG);
-	es_write_int(ggzfd, GGZ_DBG_TABLE);
-	es_write_string(ggzfd, buf);
+	if (es_write_int(ggzfd, MSG_DBG) < 0 ||
+	    es_write_int(ggzfd, GGZ_DBG_TABLE) < 0 ||
+	    es_write_string(ggzfd, buf) < 0)
+		status = -1;
 	va_end(ap);
+	return status;
 }
 
 

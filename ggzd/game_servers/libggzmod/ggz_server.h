@@ -1,4 +1,4 @@
-/*	$Id: ggz_server.h 2200 2001-08-23 19:56:45Z jdorje $	*/
+/*	$Id: ggz_server.h 2215 2001-08-24 04:16:58Z jdorje $	*/
 /*
  * File: ggz.h
  * Author: Brent Hendricks
@@ -53,8 +53,9 @@ extern struct ggz_seat_t* ggz_seats;
 
 /** Sends a debugging message to ggzd to be logged.
  *  @param fmt a printf-style format string
- *  @param ... a printf-stype list of arguments */
-void ggzdmod_debug(const char *fmt, ...);
+ *  @param ... a printf-stype list of arguments
+ *  @return 0 on success, -1 on failure */
+int ggzdmod_debug(const char *fmt, ...);
 
 int ggzdmod_seats_open(void);
 int ggzdmod_seats_num(void);
