@@ -79,6 +79,24 @@ login_destroy(void)
 }
 
 
+void login_goto_server(gchar *server)
+{
+	GtkWidget *tmp;
+
+	login_create_or_raise();
+	tmp = lookup_widget(GTK_WIDGET(dlg_login), "host_entry");
+	if (!strncasecmp (server, "ggz://", 6))
+		gtk_entry_set_text(GTK_ENTRY(tmp), server+6);
+	else
+		gtk_entry_set_text(GTK_ENTRY(tmp), server);
+
+	tmp = lookup_widget(GTK_WIDGET(dlg_login), "name_entry");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_state_get_profile_login());
+
+	tmp = lookup_widget(GTK_WIDGET(dlg_login), "guest_radio");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+}
+
 static void
 login_fill_defaults                    (GtkWidget       *widget,
                                         gpointer         user_data)
@@ -171,6 +189,10 @@ login_start_session                    (GtkButton       *button,
 
 	/* FIXME: handle other login types */
 	profile->type = GGZ_LOGIN_GUEST;
+
+	/* If currently online, disconnect */
+	if(ggzcore_state_is_online())
+		ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
 
 	/* FIXME: provide a destroy function that frees the appropriate mem */
 	ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);

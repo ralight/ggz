@@ -29,8 +29,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#include "ggzcore.h"
 #include "chat.h"
+#include "ggzcore.h"
+#include "login.h"
 #include "xtext.h"
 #include "support.h"
 
@@ -287,6 +288,16 @@ int chat_checkurl(GtkXText *xtext, char *word)
 void chat_word_clicked(GtkXText *xtext, char *word,
         GdkEventButton *event)
 {
-	if(chat_checkurl(xtext, word) != 0)
+	switch(chat_checkurl(xtext, word))
+	{
+		case WORD_GGZ:
+			login_goto_server(word);
+			break;
+		case WORD_HOST:
+		case WORD_URL:
 			goto_url(word);
+			break;
+		default:
+			break;
+	}
 }
