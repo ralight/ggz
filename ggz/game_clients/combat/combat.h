@@ -486,7 +486,7 @@
 #define CBT_CHECK_ATTACK_RUSH 3
 
 // Random number
-#define RANDOM(N) (1+(int)((float)N*random()/(RAND_MAX+1.0)))
+#define RANDOM(N) (1+(int)((float)N*rand()/(RAND_MAX+1.0)))
 
 
 
