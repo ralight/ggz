@@ -30,14 +30,11 @@ class GGZCoreGame
 		 * Events which can occur during a game. */
 		enum GGZCoreGameEvent
 		{
-			launched,
-			launchfail,
-			negotiated,
-			negotiatefail,
-			playing,
-			over,
-			ioerror,
-			protoerror
+			launched = GGZ_GAME_LAUNCHED,
+			launchfail = GGZ_GAME_LAUNCH_FAIL,
+			negotiated = GGZ_GAME_NEGOTIATED,
+			negotiatefail = GGZ_GAME_NEGOTIATE_FAIL,
+			playing = GGZ_GAME_PLAYING
 		};
 
 		/**

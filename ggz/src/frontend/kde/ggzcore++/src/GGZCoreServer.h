@@ -31,34 +31,34 @@ class GGZCoreServer
 		 * Possible server events */
 		enum GGZCoreServerEvent
 		{
-			connected,
-			connectfail,
-			negotiated,
-			negotiatefail,
-			loggedin,
-			loginfail,
-			motdloaded,
-			roomlist,
-			typelist,
-			entered,
-			enterfail,
-			loggedout,
-			neterror,
-			protoerror,
-			chatfail,
-			statechange,
-			channelconnected,
-			channelready,
-			channelfail
+			connected = GGZ_CONNECTED,
+			connectfail = GGZ_CONNECT_FAIL,
+			negotiated = GGZ_NEGOTIATED,
+			negotiatefail = GGZ_NEGOTIATE_FAIL,
+			loggedin = GGZ_LOGGED_IN,
+			loginfail = GGZ_LOGIN_FAIL,
+			motdloaded = GGZ_MOTD_LOADED,
+			roomlist = GGZ_ROOM_LIST,
+			typelist = GGZ_TYPE_LIST,
+			entered = GGZ_ENTERED,
+			enterfail = GGZ_ENTER_FAIL,
+			loggedout = GGZ_LOGOUT,
+			neterror = GGZ_NET_ERROR,
+			protoerror = GGZ_PROTOCOL_ERROR,
+			chatfail = GGZ_CHAT_FAIL,
+			statechange = GGZ_STATE_CHANGE,
+			channelconnected = GGZ_CHANNEL_CONNECTED,
+			channelready = GGZ_CHANNEL_READY,
+			channelfail = GGZ_CHANNEL_FAIL
 		};
 
 		/**
 		 * Login type */
 		enum GGZCoreServerLogin
 		{
-			normal,
-			guest,
-			firsttime
+			normal = GGZ_LOGIN,
+			guest = GGZ_LOGIN_GUEST,
+			firsttime = GGZ_LOGIN_NEW
 		};
 
 		/**

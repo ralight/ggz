@@ -57,7 +57,7 @@ class GGZCoreRoom
 			chatprivate = GGZ_CHAT_PERSONAL,
 			chatbeep = GGZ_CHAT_BEEP,
 			chattable = GGZ_CHAT_TABLE,
-			chatunknown
+			chatunknown = GGZ_CHAT_UNKNOWN
 		};
 
 		/**

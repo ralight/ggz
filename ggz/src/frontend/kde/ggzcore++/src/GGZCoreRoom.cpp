@@ -113,7 +113,7 @@ GGZCoreGametype* GGZCoreRoom::gametype()
 	{
 		if(m_gametype != m_tmpgametype)
 		{
-			GGZCOREDEBUG("GGZCORE++: gametype(): delete and recreate gametype (%i)\n", m_tmpgametype);
+			GGZCOREDEBUG("GGZCORE++: gametype(): delete and recreate gametype (%p)\n", m_tmpgametype);
 			delete m_coregametype;
 			m_gametype = m_tmpgametype;
 			m_coregametype = new GGZCoreGametype(m_gametype);

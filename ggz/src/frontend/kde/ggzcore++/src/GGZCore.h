@@ -31,9 +31,9 @@ class GGZCore
 		 * Options use to initialize the core lib. */
 		enum GGZCoreOptions
 		{
-			parser   = 1,
-			modules  = 2,
-			threadio = 4
+			parser   = GGZ_OPT_PARSER,
+			modules  = GGZ_OPT_MODULES,
+			threadio = GGZ_OPT_THREADED_IO
 		};
 		
 		/**
