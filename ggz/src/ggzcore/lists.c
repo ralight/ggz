@@ -50,7 +50,7 @@ _ggzcore_list * _ggzcore_list_create(_ggzcoreEntryCompare compare_func,
 		/* debug warn - "Cannot replace dups w/o a compare func" */
 	}
 
-	new = malloc(sizeof(_ggzcore_list));
+	new = ggzcore_malloc(sizeof(_ggzcore_list));
 	if(!new) {
 		/* debug FATAL - "malloc() failure in _ggzcore_list_create" */
 		return NULL;
@@ -97,7 +97,7 @@ void * _ggzcore_list_create_str(void *data)
 		return NULL;
 	}
 
-	new = malloc(strlen(data)+1);
+	new = ggzcore_malloc(strlen(data)+1);
 	if(!new) {
 		/* debug FATAL - "malloc() failure in _ggzcore_list_create_str" */
 		return NULL;
@@ -119,7 +119,7 @@ void _ggzcore_list_destroy_str(void *data)
 		return;
 	}
 
-	free(data);
+	ggzcore_free(data);
 }
 
 
@@ -148,7 +148,7 @@ int _ggzcore_list_insert(_ggzcore_list *list, void *data)
 	}
 
 	/* Setup the new entry */
-	new = malloc(sizeof(_ggzcore_list_entry));
+	new = ggzcore_malloc(sizeof(_ggzcore_list_entry));
 	if(!new) {
 		/* debug FATAL - "malloc() failure in _ggzcore_list_insert" */
 		return -1;
@@ -402,9 +402,9 @@ void _ggzcore_list_destroy(_ggzcore_list *list)
 		q = p->next;
 		if(list->destroy_func)
 			(*list->destroy_func) (p->data);
-		free(p);
+		ggzcore_free(p);
 		p = q;
 	}
 
-	free(list);
+	ggzcore_free(list);
 }

@@ -95,6 +95,12 @@ void ggzcore_debug(GGZDebugLevel level, const char *fmt, ...)
 		case GGZ_DBG_INIT:
 			prefix = "INIT";
 			break;
+		case GGZ_DBG_MEMORY:
+			prefix = "MEMORY";
+			break;
+		case GGZ_DBG_MEMDETAIL:
+			prefix = "MEMDETAIL";
+			break;
 		default:
 			prefix = "DEBUG";
 			break;

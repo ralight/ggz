@@ -34,6 +34,13 @@
 extern "C" {
 #endif 
 
+/* Memory functions */
+void * _ggzcore_malloc(const unsigned int, char *, int);
+int _ggzcore_free(const void *, char *, int);
+#define ggzcore_malloc(x)	_ggzcore_malloc(x, __FUNCTION__ " in " \
+						   __FILE__, __LINE__)
+#define ggzcore_free(x)		_ggzcore_free(x, __FUNCTION__ " in " \
+						 __FILE__,  __LINE__)
 
 /* GGZCore library features */
 typedef enum {

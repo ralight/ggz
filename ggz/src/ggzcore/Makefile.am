@@ -19,6 +19,8 @@ libggzcore_a_SOURCES =	conf.c \
 			hook.h \
 			lists.c \
 			lists.h \
+			memory.c \
+			memory.h \
 			msg.c \
 			msg.h \
 			net.c \
