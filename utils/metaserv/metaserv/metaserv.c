@@ -832,6 +832,7 @@ static int metaserv_work(int fd, int session)
 					logline("[%i] No result", session);
 				}
 				fflush(stream);
+				fclose(stream);
 			}
 			else logline("[%i] Broken pipe", session);
 		}
@@ -867,6 +868,7 @@ static void *metaserv_worker(void *arg)
 	logline("Accepted connection from %s as [%i]", peer, tmpsession);
 	metaserv_work(fd, tmpsession);
 	logline("Disconnection from %s as [%i]", peer, tmpsession);
+	close(fd);
 
 	return NULL;
 }
