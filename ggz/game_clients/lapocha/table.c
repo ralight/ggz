@@ -49,6 +49,7 @@ static GdkPixmap *cards, *cards_b1, *cards_b2, *cards_b3, *cards_b4;
 static GtkStyle *f1_style;
 static GtkWidget *f1;
 static GtkWidget *l_name[4], *l_bid[4], *l_tricks[4], *l_score[4], *l_trump;
+static gboolean table_initialized = FALSE;
 static struct {
 	int	card;
 	int	dest_x, dest_y;
@@ -57,6 +58,7 @@ static struct {
 	float	step_x, step_y;
 	gint	cb_tag;
 } anim;
+static char table_c1=-1, table_c2=-1, table_c3=-1, table_c4=-1;
 
 static void table_card_clicked(int);
 static void table_card_select(int);
@@ -263,6 +265,84 @@ void table_initialize(void)
 
 	/* Finally, build the fixed area for bidding */
 	dlg_bid_setup(f1);
+
+	table_initialized = TRUE;
+}
+
+
+/* table_style_change()
+ *   Handle a redraw of necessary items when a Gtk style change
+ *   is signaled.
+ */
+void table_style_change(void)
+{
+	if(!table_initialized)
+		return;
+
+	gtk_widget_grab_focus(dlg_main);
+
+	f1_style = gtk_widget_get_style(f1);
+
+	/* Clear our buffer to the style's background color */
+	gdk_draw_rectangle(table_buf,
+			   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
+			   TRUE,
+			   0, 0,
+			   f1->allocation.width, f1->allocation.height);
+
+	/* Draw card areas */
+	gdk_draw_rectangle(table_buf,
+			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			   FALSE,
+			   5, 5,
+			   106, 106);
+	gdk_draw_rectangle(table_buf,
+			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			   FALSE,
+			   5, 111,
+			   106, 241);
+	gdk_draw_rectangle(table_buf,
+			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			   FALSE,
+			   5, 357,
+			   106, 106);
+	gdk_draw_rectangle(table_buf,
+			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			   FALSE,
+			   111, 357,
+			   241, 106);
+	gdk_draw_rectangle(table_buf,
+			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			   FALSE,
+			   357, 357,
+			   106, 106);
+	gdk_draw_rectangle(table_buf,
+			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			   FALSE,
+			   357, 116,
+			   106, 241);
+	gdk_draw_rectangle(table_buf,
+			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			   FALSE,
+			   357, 5,
+			   106, 106);
+	gdk_draw_rectangle(table_buf,
+			   f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			   FALSE,
+			   116, 5,
+			   241, 106);
+
+	/* If there's an animation in progress, zip it */
+	if(game.state == LP_STATE_ANIM)
+		table_animation_zip(FALSE);
+
+	/* Redisplay any cards on table and in hands */
+	table_display_hand();
+	table_show_cards(table_c1, table_c2, table_c3, table_c4);
+
+	/* There has GOT to be a better way to force the redraw! */
+	gdk_window_hide(f1->window);
+	gdk_window_show(f1->window);
 }
 
 
@@ -474,6 +554,8 @@ static void table_card_play(int card)
 
 	/* Setup and trigger the card animation */
 	table_animation_trigger(hand.card[card], x2, y2, 199, 242);
+
+	table_c1 = hand.card[card];
 }
 
 
@@ -627,7 +709,7 @@ void table_animation_abort(void)
  *   Exposed function to zip to the finish of an animation sequence
  *   so that a new one may be started
  */
-void table_animation_zip(void)
+void table_animation_zip(gboolean restore)
 {
 	/* First, kill off the animation callback */
 	if(game.state == LP_STATE_ANIM) {
@@ -636,18 +718,20 @@ void table_animation_zip(void)
 	}
 
 	/* Restore table area around old card image from backup */
-	gdk_draw_pixmap(table_buf,
-			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-			table_buf_backup,
-			anim.cur_x, anim.cur_y,
-			anim.cur_x, anim.cur_y,
-			CARDWIDTH, CARDHEIGHT);
-	gdk_draw_pixmap(f1->window,
-			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-			table_buf,
-			anim.cur_x, anim.cur_y,
-			anim.cur_x, anim.cur_y,
-			CARDWIDTH, CARDHEIGHT);
+	if(restore) {
+		gdk_draw_pixmap(table_buf,
+				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				table_buf_backup,
+				anim.cur_x, anim.cur_y,
+				anim.cur_x, anim.cur_y,
+				CARDWIDTH, CARDHEIGHT);
+		gdk_draw_pixmap(f1->window,
+				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				table_buf,
+				anim.cur_x, anim.cur_y,
+				anim.cur_x, anim.cur_y,
+				CARDWIDTH, CARDHEIGHT);
+	}
 
 	/* And move the card to it's final resting place */
 	gdk_draw_pixmap(table_buf,
@@ -855,6 +939,7 @@ void table_animation_opponent(char p_num, char card)
 	/* Calculate start and final position */
 	switch(SEAT_POS(p_num)) {
 		case 1:
+			table_c2 = card;
 			gdk_draw_rectangle(table_buf,
 				   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
 				   TRUE,
@@ -883,6 +968,7 @@ void table_animation_opponent(char p_num, char card)
 			y2 = 186;
 			break;
 		case 2:
+			table_c3 = card;
 			gdk_draw_rectangle(table_buf,
 				   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
 				   TRUE,
@@ -912,6 +998,7 @@ void table_animation_opponent(char p_num, char card)
 			break;
 		case 3:
 		default:
+			table_c4 = card;
 			gdk_draw_rectangle(table_buf,
 				   f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
 				   TRUE,
@@ -985,6 +1072,7 @@ void table_clear_table(void)
 			120, 130,
 			120, 130,
 			231, 208);
+	table_c1 = table_c2 = table_c3 = table_c4 = -1;
 }
 
 
@@ -996,76 +1084,84 @@ void table_show_cards(char c1, char c2, char c3, char c4)
 	int xc, yc, x, y;
 
 	/* Pos 0 (bottom) */
-	xc = (c1 / 13) * CARDWIDTH;
-	yc = (c1 % 13) * CARDHEIGHT;
-	x = 199;
-	y = 242;
-	gdk_draw_pixmap(table_buf,
-			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-			cards,
-			xc, yc,
-			x, y,
-			CARDWIDTH, CARDHEIGHT);
-	gdk_draw_pixmap(f1->window,
-			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-			table_buf,
-			x, y,
-			x, y,
-			CARDWIDTH, CARDHEIGHT);
+	if(c1 != -1) {
+		xc = (c1 / 13) * CARDWIDTH;
+		yc = (c1 % 13) * CARDHEIGHT;
+		x = 199;
+		y = 242;
+		gdk_draw_pixmap(table_buf,
+				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				cards,
+				xc, yc,
+				x, y,
+				CARDWIDTH, CARDHEIGHT);
+		gdk_draw_pixmap(f1->window,
+				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				table_buf,
+				x, y,
+				x, y,
+				CARDWIDTH, CARDHEIGHT);
+	}
 
 	/* Left player */
-	xc = (c2 / 13) * CARDWIDTH;
-	yc = (c2 % 13) * CARDHEIGHT;
-	x = 120;
-	y = 186;
-	gdk_draw_pixmap(table_buf,
-			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-			cards,
-			xc, yc,
-			x, y,
-			CARDWIDTH, CARDHEIGHT);
-	gdk_draw_pixmap(f1->window,
-			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-			table_buf,
-			x, y,
-			x, y,
-			CARDWIDTH, CARDHEIGHT);
+	if(c2 != -1) {
+		xc = (c2 / 13) * CARDWIDTH;
+		yc = (c2 % 13) * CARDHEIGHT;
+		x = 120;
+		y = 186;
+		gdk_draw_pixmap(table_buf,
+				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				cards,
+				xc, yc,
+				x, y,
+				CARDWIDTH, CARDHEIGHT);
+		gdk_draw_pixmap(f1->window,
+				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				table_buf,
+				x, y,
+				x, y,
+				CARDWIDTH, CARDHEIGHT);
+	}
 
 	/* Across player */
-	xc = (c3 / 13) * CARDWIDTH;
-	yc = (c3 % 13) * CARDHEIGHT;
-	x = 199;
-	y = 130;
-	gdk_draw_pixmap(table_buf,
-			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-			cards,
-			xc, yc,
-			x, y,
-			CARDWIDTH, CARDHEIGHT);
-	gdk_draw_pixmap(f1->window,
-			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-			table_buf,
-			x, y,
-			x, y,
-			CARDWIDTH, CARDHEIGHT);
+	if(c3 != -1) {
+		xc = (c3 / 13) * CARDWIDTH;
+		yc = (c3 % 13) * CARDHEIGHT;
+		x = 199;
+		y = 130;
+		gdk_draw_pixmap(table_buf,
+				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				cards,
+				xc, yc,
+				x, y,
+				CARDWIDTH, CARDHEIGHT);
+		gdk_draw_pixmap(f1->window,
+				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				table_buf,
+				x, y,
+				x, y,
+				CARDWIDTH, CARDHEIGHT);
+	}
 
 	/* Right player */
-	xc = (c4 / 13) * CARDWIDTH;
-	yc = (c4 % 13) * CARDHEIGHT;
-	x = 280;
-	y = 186;
-	gdk_draw_pixmap(table_buf,
-			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-			cards,
-			xc, yc,
-			x, y,
-			CARDWIDTH, CARDHEIGHT);
-	gdk_draw_pixmap(f1->window,
-			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
-			table_buf,
-			x, y,
-			x, y,
-			CARDWIDTH, CARDHEIGHT);
+	if(c4 != -1) {
+		xc = (c4 / 13) * CARDWIDTH;
+		yc = (c4 % 13) * CARDHEIGHT;
+		x = 280;
+		y = 186;
+		gdk_draw_pixmap(table_buf,
+				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				cards,
+				xc, yc,
+				x, y,
+				CARDWIDTH, CARDHEIGHT);
+		gdk_draw_pixmap(f1->window,
+				f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				table_buf,
+				x, y,
+				x, y,
+				CARDWIDTH, CARDHEIGHT);
+	}
 }
 
 

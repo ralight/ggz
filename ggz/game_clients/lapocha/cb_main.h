@@ -51,3 +51,8 @@ gboolean
 on_fixed1_expose_event                 (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data);
+
+void
+on_fixed1_style_set		       (GtkWidget	*widget,
+					GtkStyle	*previous_style,
+					gpointer	 user_data);

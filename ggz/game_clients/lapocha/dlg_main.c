@@ -187,6 +187,9 @@ create_dlg_main (void)
   gtk_signal_connect (GTK_OBJECT (fixed1), "expose_event",
                       GTK_SIGNAL_FUNC (on_fixed1_expose_event),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (fixed1), "style_set",
+		      GTK_SIGNAL_FUNC (on_fixed1_style_set),
+		      NULL);
 
   return dlg_main;
 }

@@ -158,7 +158,7 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			break;
 		case LP_REQ_PLAY:
 			if(game.state == LP_STATE_ANIM)
-				table_animation_zip();
+				table_animation_zip(TRUE);
 			game.state = LP_STATE_PLAY;
 			statusbar_message("Your turn to play a card");
 			status = 0;
@@ -431,7 +431,7 @@ static int get_opponent_play(void)
 		return -1;
 
 	if(game.state == LP_STATE_ANIM)
-		table_animation_zip();
+		table_animation_zip(TRUE);
 
 	table_animation_opponent(p_num, card);
 

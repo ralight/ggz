@@ -91,3 +91,11 @@ on_fixed1_expose_event                 (GtkWidget       *widget,
 	return FALSE;
 }
 
+
+void
+on_fixed1_style_set		       (GtkWidget	*widget,
+					GtkStyle	*previous_style,
+					gpointer	 user_data)
+{
+	table_style_change();
+}
