@@ -45,6 +45,7 @@
 #endif
 #include "KGGZGrubby.h"
 #include "KGGZPrefEnv.h"
+#include "KGGZSelector.h"
 
 // KDE includes
 #include <kmessagebox.h>
@@ -62,7 +63,6 @@
 // GGZCore++ includes
 #include "GGZCoreConfio.h"
 #include "GGZCoreTable.h"
-#include "GGZCoreModule.h"
 
 KGGZ::KGGZ(QWidget *parent, const char *name)
 : QWidget(parent, name)
@@ -87,6 +87,8 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	m_motd = NULL;
 	m_grubby = NULL;
 	m_prefenv = NULL;
+	m_selector = NULL;
+	m_module = NULL;
 
 	setBackgroundColor(QColor(0, 0, 0));
 
@@ -317,6 +319,7 @@ void KGGZ::dispatcher()
 	dispatch_delete((void*)kggzroomcallback, "room callback");
 	dispatch_delete((void*)kggzservercallback, "server callback");
 	dispatch_delete((void*)kggzgamecallback, "game callback");
+	dispatch_delete((void*)m_module, "GGZCore++ module object");
 	dispatch_delete((void*)m_config, "GGZCore++ configuration object");
 	dispatch_delete((void*)m_core, "GGZCore++ core object");
 	dispatch_free(m_save_username, "stored user name");
@@ -746,6 +749,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			kggzroom->listTables(-1, 0);
 			slotLoadLogo();
 			buffer.sprintf(i18n("Entered room %s"), kggzroom->name());
+			m_workspace->widgetChat()->init();
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			emit signalLocation(i18n("  Room: ") + kggzroom->name() + "  ");
 			emit signalMenu(MENUSIG_ROOMENTER);
@@ -985,23 +989,49 @@ void KGGZ::detachGameCallbacks()
 
 void KGGZ::slotLaunchGame(GGZCoreGametype *gametype)
 {
-	GGZCoreModule *module;
 	int i;
-	int ret;
 
 	KGGZDEBUG("Create module...\n");
-	module = new GGZCoreModule();
-	module->init(gametype->name(), gametype->protocol());
-	i = module->count();
+	m_module = new GGZCoreModule();
+	m_module->init(gametype->name(), gametype->protocol());
+	i = m_module->count();
 	KGGZDEBUG("Found: %i modules for this game\n", i);
 	if(i == 0)
 	{
 		KMessageBox::information(this, i18n("Sorry, no modules found for this game."), "Error!");
-		delete module;
+		delete m_module;
+		m_module = NULL;
 		return;
 	}
-	module->setActive(0);
-	//module->launch();
+
+	emit signalMenu(MENUSIG_GAMESTART);
+
+	if(i == 1) slotLaunchGameSelected(0);
+	else
+	{
+		if(m_selector) delete m_selector;
+		m_selector = new KGGZSelector(NULL, "KGGZSelector");
+		for(int i = 0; i < (int)m_module->count(); i++)
+		{
+			m_module->setActive(i);
+			m_selector->addFrontend(m_module->frontend());
+		}
+		m_selector->show();
+		connect(m_selector, SIGNAL(signalFrontend(int)), SLOT(slotLaunchGameSelected(int)));
+	}
+}
+
+void KGGZ::slotLaunchGameSelected(int selected)
+{
+	int ret;
+
+	if(!m_module)
+	{
+		KGGZDEBUG("Critical: Eeeeak! No module found.\n");
+		return;
+	}
+	m_module->setActive(selected);
+	//m_module->launch();
 
 	if(kggzgame)
 	{
@@ -1009,11 +1039,12 @@ void KGGZ::slotLaunchGame(GGZCoreGametype *gametype)
 		delete kggzgame;
 	}
 	kggzgame = new GGZCoreGame();
-	kggzgame->init(module->module());
+	kggzgame->init(m_module->module());
 
 	attachGameCallbacks(); // don't forget detaching!
 
-	delete module;
+	delete m_module;
+	m_module = NULL;
 
 	ret = kggzgame->launch();
 	if(ret < 0)
@@ -1027,7 +1058,8 @@ void KGGZ::slotLaunchGame(GGZCoreGametype *gametype)
 
 	slotLoadLogo();
 
-	emit signalMenu(MENUSIG_GAMESTART);
+	// already at slotLaunchGame!
+	//emit signalMenu(MENUSIG_GAMESTART);
 
 	//delete module;
 }

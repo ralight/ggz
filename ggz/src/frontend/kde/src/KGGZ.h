@@ -55,6 +55,7 @@
 #include "GGZCoreRoom.h"
 #include "GGZCoreGame.h"
 #include "GGZCoreGametype.h"
+#include "GGZCoreModule.h"
 
 // Forward declarations
 class KGGZWorkspace;
@@ -64,6 +65,7 @@ class KGGZBrowser;
 #endif
 class KGGZGrubby;
 class KGGZPrefEnv;
+class KGGZSelector;
 
 // Here comes KGGZ.
 class KGGZ : public QWidget
@@ -152,6 +154,8 @@ class KGGZ : public QWidget
 		void slotLaunch();
 		// Send grubby requests
 		void slotGrubby(const char *grubby, const char *argument, int id);
+		// Launches a selected game
+		void slotLaunchGameSelected(int selected);
 
 	protected:
 		// Handle resizing
@@ -216,6 +220,8 @@ class KGGZ : public QWidget
 		GGZCore *m_core;
 		// GGZCore++ configuration object
 		GGZCoreConf *m_config;
+		// Saved gametype on frontend selection
+		GGZCoreModule *m_module;
 		// Callback atoms (all unique)
 		KGGZCallback *kggzservercallback, *kggzroomcallback, *kggzgamecallback;
 		// User data saved from connection dialog
@@ -242,6 +248,9 @@ class KGGZ : public QWidget
 		KGGZGrubby *m_grubby;
 		// Configuration
 		KGGZPrefEnv *m_prefenv;
+		// Frontend selection
+		KGGZSelector *m_selector;
 };
 
 #endif
+
