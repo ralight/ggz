@@ -117,6 +117,13 @@ typedef enum {
 	GGZ_LOGIN_NEW
 } GGZLoginType;
 
+typedef enum {
+	GGZ_SEAT_OPEN   = -1,
+	GGZ_SEAT_COMP   = -2,
+	GGZ_SEAT_RESV   = -3,
+	GGZ_SEAT_NONE   = -4,
+	GGZ_SEAT_PLAYER = -5
+} GGZSeatType;
 
 /* The GGZProfile describes a server/login profile */
 typedef struct _GGZProfile {

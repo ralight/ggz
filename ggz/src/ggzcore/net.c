@@ -47,7 +47,8 @@ static void _ggzcore_net_handle_list_rooms(void);
 static void _ggzcore_net_handle_room_join(void);
 static void _ggzcore_net_handle_rsp_chat(void);
 static void _ggzcore_net_handle_chat(void);
-
+static void _ggzcore_net_handle_update_players(void);
+static void _ggzcore_net_handle_update_tables(void);
 
 /* Error function for Easysock */
 static void _ggzcore_net_err_func(const char *, const EsOpType, 
@@ -77,9 +78,9 @@ static struct _GGZServerMsg ggz_server_msgs[] = {
 	{MSG_SERVER_FULL,    "msg_server_full", NULL },
 	{MSG_MOTD,           "msg_motd", _ggzcore_net_handle_motd},
 	{MSG_CHAT,           "msg_chat", _ggzcore_net_handle_chat},
-	{MSG_UPDATE_PLAYERS, "msg_update_players", NULL},
+	{MSG_UPDATE_PLAYERS, "msg_update_players", _ggzcore_net_handle_update_players},
 	{MSG_UPDATE_TYPES,   "msg_update_types", NULL},
-	{MSG_UPDATE_TABLES,  "msg_update_tables", NULL},
+	{MSG_UPDATE_TABLES,  "msg_update_tables", _ggzcore_net_handle_update_tables},
 	{MSG_UPDATE_ROOMS,   "msg_update_rooms", NULL},
 	{MSG_ERROR,          "msg_error", NULL},
 	{RSP_LOGIN_NEW,      "rsp_login_new", NULL},
@@ -476,3 +477,91 @@ static void _ggzcore_net_handle_chat(void)
 }
 
 
+static void _ggzcore_net_handle_update_players(void)
+{
+	char subop;
+	char* player;
+	
+	if (es_read_char(ggz_server_sock, &subop) < 0
+	    || es_read_string_alloc(ggz_server_sock, &player) < 0)
+		return;
+
+	/* FIXME: Do something with data */
+	
+	switch ((GGZUpdateOp)subop) {
+	case GGZ_UPDATE_DELETE:
+		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s left", player);
+		break;
+
+	case GGZ_UPDATE_ADD:
+		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s enter", player);
+		break;
+	default:
+		/* FIXME: handle invalid opcode? */
+	}
+}
+
+
+static void _ggzcore_net_handle_update_tables(void)
+{
+	char subop, state;
+	int table, room, type, num, i;
+	char *player, *desc;
+	GGZSeatType seat;
+
+	if (es_read_char(ggz_server_sock, &subop) < 0
+	    || es_read_int(ggz_server_sock, &table) < 0)
+		return;
+
+	/* FIXME: Do something with data */
+	
+	switch ((GGZUpdateOp)subop) {
+	case GGZ_UPDATE_DELETE:
+		ggzcore_debug(GGZ_DBG_NET, "UPDATE_TABLE: %d done", table);
+		break;
+		
+	case GGZ_UPDATE_STATE:
+		if (es_read_char(ggz_server_sock, &state) < 0)
+			return;
+		ggzcore_debug(GGZ_DBG_NET, "UPDATE_TABLE: %d new state %d", 
+			      table, state);
+		break;
+
+	case GGZ_UPDATE_JOIN:
+		if (es_read_int(ggz_server_sock, &num) < 0
+		    || es_read_string_alloc(ggz_server_sock, &player) < 0)
+			return;
+		ggzcore_debug(GGZ_DBG_NET, 
+			      "UPDATE_TABLE: %s joined seat %d at table %d", 
+			      player, num, table);
+		break;
+
+	case GGZ_UPDATE_LEAVE:
+		if (es_read_int(ggz_server_sock, &seat) < 0
+		    || es_read_string_alloc(ggz_server_sock, &player) < 0)
+			return;
+		ggzcore_debug(GGZ_DBG_NET, 
+			      "UPDATE_TABLE: %s left seat %d at table %d", 
+			      player, seat, table);
+		break;
+		
+	case GGZ_UPDATE_ADD:
+		es_read_int(ggz_server_sock, &room);
+		es_read_int(ggz_server_sock, &type);
+		es_read_string_alloc(ggz_server_sock, &desc);
+		es_read_char(ggz_server_sock, &state);
+		es_read_int(ggz_server_sock, &num);
+		
+		for (i = 0; i < num; i++) {
+			es_read_int(ggz_server_sock, &seat);
+			if (seat == GGZ_SEAT_PLAYER
+			    || seat == GGZ_SEAT_RESV) {
+				es_read_string_alloc(ggz_server_sock, &player);
+			}
+		}
+
+		ggzcore_debug(GGZ_DBG_NET, "UPDATE_TABLE: new table %d", 
+			      table);
+		break;
+	}
+}

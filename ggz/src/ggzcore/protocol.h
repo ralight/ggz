@@ -106,11 +106,13 @@ typedef enum {
 
 
 /* Update opcodes */
-#define GGZ_UPDATE_DELETE 0
-#define GGZ_UPDATE_ADD    1
-#define GGZ_UPDATE_LEAVE  2
-#define GGZ_UPDATE_JOIN   3
-#define GGZ_UPDATE_STATE   4
+typedef enum {
+	GGZ_UPDATE_DELETE,
+	GGZ_UPDATE_ADD,
+	GGZ_UPDATE_LEAVE,
+	GGZ_UPDATE_JOIN,
+	GGZ_UPDATE_STATE
+} GGZUpdateOp;
 
 
 #define E_USR_LOOKUP   -1
