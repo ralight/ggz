@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZMod library
  * Desc: GGZ game module functions
- * $Id: ggz_client.h 2257 2001-08-26 11:01:43Z jdorje $
+ * $Id: ggz_client.h 2867 2001-12-10 22:30:06Z jdorje $
  *
  * Copyright (C) 2000 GGZ devel team
  *
@@ -100,6 +100,20 @@
 
 #ifndef __GGZ_CLIENT_GGZ_H
 #define __GGZ_CLIENT_GGZ_H
+
+/** @brief Seat status values.
+ *
+ * Each "seat" at a table of a GGZ game can have one of these values.
+ * They are used by ggzdmod and the game server; their use in game
+ * clients is completely optional.
+ */
+typedef enum {
+	GGZ_SEAT_OPEN = -1,	   /**< The seat is open (unoccupied). */
+	GGZ_SEAT_BOT = -2,	   /**< The seat has a bot (AI) in it. */
+	GGZ_SEAT_RESV = -3,	   /**< The seat is reserved for a player. */
+	GGZ_SEAT_NONE = -4,	   /**< This seat does not exist. */
+	GGZ_SEAT_PLAYER = -5	   /**< The seat has a regular player in it. */
+} GGZdModSeat;
 
 /**
  * @brief Connects to GGZ.
