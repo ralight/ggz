@@ -10,5 +10,11 @@
 #define OP_PRESENTATION 200
 #define OP_RULESET 201
 
+#define MODE_RESERVED 1000
+#define MODE_EASY 1001
+#define MODE_MATRIX 1002
+#define MODE_HAVOC 1003
+#define MODE_HAX0R 1004
+
 #endif
 

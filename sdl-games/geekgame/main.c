@@ -36,8 +36,11 @@ static int modfd;
 static int ggzmode = 0;
 static SDL_Surface *screen, *image;
 static TTF_Font *font = NULL;
-
-char scores[MAX_PLAYERS];
+static int playmode = -1;
+static int players = 0;
+static char scores[MAX_PLAYERS];
+static char array[ARRAY_WIDTH][ARRAY_HEIGHT];
+static int winner = -1;
 
 /* Prototypes */
 int startgame(void);
@@ -236,7 +239,7 @@ void drawlevel(int player, int level)
 	int i;
 	for(i = 0; i < 10; i++)
 	{
-		drawbox(20 + player * 150 + i * 10, 420, 5, 20, screen, (i <= level ? 220 : 100), 0);
+		drawbox(20 + player * 150 + i * 10, 420, 5, 20, screen, (i < level ? 220 : 100), 0);
 	}
 }
 
@@ -365,46 +368,29 @@ void renderscore(int x, int y, int sum)
 	}
 }
 
-int startgame(void)
+void screen_intro()
 {
-	SDL_Rect rect;
-	SDL_Event event;
-	int i, j;
-	Uint8 *keystate;
 	int escape;
-	int x, y;
-	char array[ARRAY_WIDTH][ARRAY_HEIGHT];
-	int dimmer;
-	int dimminc;
-	int calc;
-	int sum;
-	int players;
-	int turn;
-	int playmode;
-	int winner;
+	SDL_Event event;
+	Uint8 *keystate;
+	int x, y, i;
+	int dimmer, dimminc;
+	SDL_Rect rect;
 
-	SDL_Init(SDL_INIT_VIDEO);
+	x = 20;
+	y = 20;
 
-	TTF_Init();
+	escape = 0;
+	playmode = -1;
+	dimmer = 250;
+	dimminc = -1;
 
-	font = TTF_OpenFont(DATA_GLOBAL "1979rg__.ttf", 12);
-	/*font = TTF_OpenFont("dark2.ttf", 18);*/
-	if(!font)
-	{
-		fprintf(stderr, "Could not open font file.\n");
-		return -1;
-	}
-	TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
-
-	SDL_WM_SetCaption("GGZ Geek Game", "GGZ Geek Game");
-
-	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 24, 0);
-
-	players = MAX_PLAYERS;
-	for(i = 0; i < players; i++)
-		scores[i] = 0;
-
-	drawturn(screen, players, -1);
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = SCREEN_WIDTH;
+	rect.h = SCREEN_HEIGHT;
+	SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
+	SDL_UpdateRect(screen, rect.x, rect.y, rect.w, rect.h);
 
 	rendermode(22, 24, "easy");
 	rendermode(22, 54, "matrix");
@@ -433,14 +419,6 @@ int startgame(void)
 		}
 	}
 
-	x = 20;
-	y = 20;
-
-	dimmer = 250;
-	dimminc = -1;
-
-	escape = 0;
-	playmode = -1;
 	while(!escape)
 	{
 		while(SDL_PollEvent(&event))
@@ -469,7 +447,7 @@ int startgame(void)
 					if(keystate[SDLK_RETURN])
 					{
 						escape = 1;
-						playmode = (y - 20) / 30;
+						playmode = (y - 20) / 30 + MODE_RESERVED + 1;
 					}
 					break;
 			}
@@ -482,33 +460,36 @@ int startgame(void)
 
 		SDL_Delay(50);
 	}
-	if(playmode < 0)
-	{
-		SDL_Quit();
-		return 0;
-	}
 
-	turn = 0;
-	drawturn(screen, players, 0);
+}
 
-	for(j = 0; j < ARRAY_HEIGHT; j++)
-	{
-		for(i = 0; i < ARRAY_WIDTH; i++)
-		{
-			x = rand() % 2;
-			drawnumber(screen, i, j, x);
-			array[i][j] = x;
-		}
-	}
+void screen_game()
+{
+	int dimmer;
+	int dimminc;
+	Uint8 *keystate;
+	int escape;
+	SDL_Event event;
+	int i, j;
+	int x, y;
+	int turn;
+	int sum;
+	int calc;
+	int makescore;
+
+	dimmer = 250;
+	dimminc = -1;
 
 	calc = 0;
-	winner = 0;
+	winner = -1;
+	turn = 0;
+
+	escape = 0;
 
 	x = 50;
 	y = 50;
 	drawbox(x, y, 32, 32, screen, dimmer, 0);
 
-	escape = 0;
 	while(1)
 	{
 		while(SDL_PollEvent(&event))
@@ -581,19 +562,45 @@ int startgame(void)
 		{
 			calc = 0;
 
-			sum = 0;
-			i = x / 32;
-			for(j = 0; j < ARRAY_HEIGHT; j++)
-				sum += array[i][j];
-			renderscore(x + 10, 360, sum);
+			makescore = 0;
+			switch(playmode)
+			{
+				case MODE_EASY:
+					sum = 0;
+					i = x / 32;
+					for(j = 0; j < ARRAY_HEIGHT; j++)
+						sum += array[i][j];
+					renderscore(x + 10, 360, sum);
+					if(!sum) makescore = 1;
 
-			sum = 0;
-			j = y / 32;
-			for(i = 0; i < ARRAY_WIDTH; i++)
-				sum += array[i][j];
-			renderscore(680, y + 10, sum);
+					sum = 0;
+					j = y / 32;
+					for(i = 0; i < ARRAY_WIDTH; i++)
+						sum += array[i][j];
+					renderscore(680, y + 10, sum);
+					if(!sum) makescore = 1;
+					break;
+				case MODE_MATRIX:
+					sum = 0;
+					i = x / 32;
+					for(j = 0; j < ARRAY_HEIGHT; j++)
+						sum += array[i][j];
+					renderscore(x + 10, 360, sum * 2);
 
-			scores[turn]++;
+					j = y / 32;
+					for(i = 0; i < ARRAY_WIDTH; i++)
+						sum += array[i][j];
+					renderscore(680, y + 10, sum * 2);
+					
+					if(sum * 2 == 42) makescore = 1;
+					break;
+				case MODE_HAVOC:
+					break;
+				case MODE_HAX0R:
+					break;
+			}
+
+			if(makescore) scores[turn]++;
 			if(scores[turn] == 10)
 			{
 				escape = 1;
@@ -609,10 +616,91 @@ int startgame(void)
 
 		if(ggzmode) ggz_network();
 	}
+}
 
-	if(winner)
+void screen_outtro()
+{
+	int escape;
+	SDL_Rect rect;
+	SDL_Event event;
+	Uint8 *keystate;
+
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = SCREEN_WIDTH;
+	rect.h = SCREEN_HEIGHT;
+	SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
+	rendermode(22, 24, "The game is over.");
+	SDL_UpdateRect(screen, rect.x, rect.y, rect.w, rect.h);
+
+	escape = 0;
+	while(!escape)
 	{
-		/* ... */
+		while(SDL_PollEvent(&event))
+		{
+			switch(event.type)
+			{
+				case SDL_KEYDOWN:
+					keystate = SDL_GetKeyState(NULL);
+					if(keystate[SDLK_ESCAPE]) escape = 1;
+			}
+		}
+	}
+}
+
+int startgame(void)
+{
+	int i, j, x;
+	SDL_Rect rect;
+
+	SDL_Init(SDL_INIT_VIDEO);
+
+	TTF_Init();
+
+	font = TTF_OpenFont(DATA_GLOBAL "1979rg__.ttf", 12);
+	/*font = TTF_OpenFont("dark2.ttf", 18);*/
+	if(!font)
+	{
+		fprintf(stderr, "Could not open font file.\n");
+		return -1;
+	}
+	TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
+
+	SDL_WM_SetCaption("GGZ Geek Game", "GGZ Geek Game");
+
+	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 24, 0);
+
+	players = MAX_PLAYERS;
+	for(i = 0; i < players; i++)
+		scores[i] = 0;
+
+	drawturn(screen, players, -1);
+
+	while(1)
+	{
+		screen_intro();
+
+		if(playmode < 0)
+		{
+			SDL_Quit();
+			return 0;
+		}
+
+		drawturn(screen, players, 0);
+
+		for(j = 0; j < ARRAY_HEIGHT; j++)
+		{
+			for(i = 0; i < ARRAY_WIDTH; i++)
+			{
+				x = rand() % 2;
+				drawnumber(screen, i, j, x);
+				array[i][j] = x;
+			}
+		}
+
+		screen_game();
+
+		if(winner >= 0) screen_outtro();
 	}
 
 	SDL_Quit();
