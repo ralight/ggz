@@ -179,7 +179,7 @@ void finalize_options()
 	char *optext;
 	char opbuf[128];
 	char buf[4096] = "Options:\n";
-	int len = strlen(buf);
+	int len = strlen(buf), opcount = 0;
 
 	for (op = optionlist; op != NULL; op = op->next) {
 		game.funcs->handle_option(op->key, op->value);
@@ -191,16 +191,18 @@ void finalize_options()
 				  op->key, op->value);
 			len += snprintf(buf + len, sizeof(buf) - len,
 					"  %s : %d\n", op->key, op->value);
+			opcount++;
 			continue;
 		}
 		if (!*optext)
 			continue;
 		len += snprintf(buf + len, sizeof(buf) - len, "  %s\n",
 				optext);
+		opcount++;
 	}
-	if (optionlist == NULL)
+	if (!opcount)
 		/* there's absolutely no reason for this to be a server string! */
-		snprintf(buf, sizeof(buf),
+		snprintf(buf + len, sizeof(buf) - len,
 			 "  No special options have been selected.\n");
 	set_global_message("Options", "%s", buf);
 }
