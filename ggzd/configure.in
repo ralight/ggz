@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 4997 2002-10-22 17:29:18Z dr_maux $
+dnl $Id: configure.in 5232 2002-11-06 09:07:54Z dr_maux $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(ggz-server, 0.0.7pre)
@@ -352,6 +352,7 @@ AC_OUTPUT([Makefile
 	game_servers/reversi/Makefile
 	game_servers/combat/Makefile
 	game_servers/hastings/Makefile
+	game_servers/hastings/maps/Makefile
 	game_servers/chess/Makefile
 	game_servers/chess/libcgc/Makefile
 	game_servers/chinese-checkers/Makefile
