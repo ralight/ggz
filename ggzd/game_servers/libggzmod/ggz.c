@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2346 2001-09-03 10:43:41Z jdorje $
+ * $Id: ggz.c 2356 2001-09-04 19:30:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -588,10 +588,6 @@ void ggzd_io_read_all(void)
 				(GGZ_EVENT_PLAYER, &i);
 		}
 	}
-
-	/* A "tick" event is sent once each time through the loop */
-	if (handlers[GGZ_EVENT_TICK] != NULL)
-		(*handlers[GGZ_EVENT_TICK])(GGZ_EVENT_TICK, NULL);
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2346 2001-09-03 10:43:41Z jdorje $
+ * $Id: ggz_server.h 2356 2001-09-04 19:30:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -185,7 +185,6 @@ typedef enum {
 	GGZ_EVENT_LEAVE		= 2,  /**< a player leave event from ggzd */
 	GGZ_EVENT_QUIT		= 3,  /**< a game over event from ggzd */
 	GGZ_EVENT_PLAYER	= 4,  /**< a message from a client/player */
-	GGZ_EVENT_TICK		= 5   /**< a passed-time event */
 } ggzd_event_t;
 
 /** @brief Prototype for an event handler function.
@@ -216,9 +215,6 @@ typedef enum {
  *              player = *(int*)data;
  *              socket_fd = ggzd_get_player_socket(player);
  *              // read and handle data from the player
- *              break;
- *            case GGZ_EVENT_TICK:
- *              // Real-time games may use the tick event.
  *              break;
  *          }
  *      }
