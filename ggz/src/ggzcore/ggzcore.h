@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 4974 2002-10-22 01:03:23Z jdorje $
+ * $Id: ggzcore.h 5022 2002-10-24 07:17:12Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -148,72 +148,137 @@ typedef enum {
 /**
  * A GGZServerEvent is an event triggered by a communication from the
  * server.  Each time an event occurs, the associated event handler
- * will be called.
+ * will be called, and will be passed the event data (a void*).
  * @see ggzcore_server_add_event_hook
  */
 typedef enum {
-	/** We have just made a connection to the server.
-	 *  @note This just means we've established a connection socket.
-	 *  @see ggzcore_server_connect */
+	/** We have just made a connection to the server.  After this point
+	 *  the server's socket should be accessible and should be monitored
+	 *  for data.  It happens in direct response to ggzcore_server_connect.
+	 *  Note that most events after this will only happen by calling
+	 *  ggzcore_server_read_data on the server's FD!
+	 *  @param data NULL */
 	GGZ_CONNECTED,
 	
-	/** Error: we have failed to connect to the server. */
+	/** Error: we have failed to connect to the server.  This is
+	 *  generated in place of GGZ_CONNECTED if the connection could
+	 *  not be made.  The server object is otherwise unaffected.
+	 *  @param data An error string (created by strerror) */
 	GGZ_CONNECT_FAIL,
 	
-	/** We have negotiated a connection to the server.
+	/** We have negotiated a connection to the server.  This will
+	 *  happen automatically once a connection has been established,
+	 *  if the server socket is monitored.
 	 *  @note This just means we've determined ggzd is at the other end.
+	 *  @param data NULL
 	 *  @see ggzcore_server_connect  */
 	GGZ_NEGOTIATED,
 	
-	/** Error: negotiation failure.  Could be the wrong version... */
+	/** Error: negotiation failure.  Could be the wrong version.  This
+	 *  will happen in place of a GGZ_NEGOTIATED if the server could
+	 *  not be negotiated with.
+	 *  @param data A useless error string. */
 	GGZ_NEGOTIATE_FAIL,
 	
 	/** We have successfully logged in.  We can now start doing stuff.
-	 *  @see ggzcore_server_login */
+	 *  This will not happen until the client sends their login
+	 *  information.
+	 *  @see ggzcore_server_login
+	 *  @param data NULL */
 	GGZ_LOGGED_IN,
 	
-	/** Error: login failure */
+	/** Error: login failure.  This will happen in place of GGZ_LOGGED_IN
+	 *  if the login failed.  The server object will be otherwise
+	 *  unaffected.
+	 *  @param data A mildly helpful error string. */
 	GGZ_LOGIN_FAIL,
 
-	/** The MOTD has been read from the server and can be displayed. */
+	/** The MOTD has been read from the server and can be displayed.
+	 *  The server will send us the MOTD automatically after login; it
+	 *  can also be requested by ggzcore_server_motd.  It is up to the
+	 *  client whether or not to display it.  See the online
+	 *  documentation (somewhere?) about the MOTD markup format.
+	 *  @param data The full MOTD text.
+	 *  @see ggzcore_server_motd
+	 *  @todo The MOTD cannot be accessed outside of this event! */
 	GGZ_MOTD_LOADED,
 
-	/** The room list arrived. It is very likely followed by the game type
-	 * list. */
+	/** The room list arrived.  This will only happen after the list is
+	 *  requested by ggzcore_server_list_rooms().  The list may be
+	 *  accessed through ggzcore_server_get_num_rooms() and
+	 *  ggzcore_server_get_nth_room().  Until this event arrives these
+	 *  functions will be useless!
+	 *  @param data NULL */
 	GGZ_ROOM_LIST,
 
-	/** The list of game types is available. */
+	/** The list of game types is available.  This will only happen after
+	 *  the list is requested by ggzcore_server_list_types().  The list
+	 *  may be accessed through ggzcore_server_get_num_gametypes() and
+	 *  ggzcore_server_get_nth_gametype().  Until this event arrives
+	 *  these functions will be useless!
+	 *  @param data NULL */
 	GGZ_TYPE_LIST,
 	
-	/** We have successfully entered a room.
+	/** We have successfully entered a room.  This will be issued to
+	 *  tell us a room join has succeeded, after it has been requested.
+	 *  @param data NULL
 	 *  @see ggzcore_server_join_room */
 	GGZ_ENTERED,
 	
-	/** Error: we have tried to enter a room and failed. */
+	/** Error: we have tried to enter a room and failed.  This will be
+	 *  issued to tell us a room join has failed.
+	 *  @param data A mildly helpful error string.
+	 *  @see ggzcore_server_join_room*/
 	GGZ_ENTER_FAIL,
 
-	/** Logged out of the server. */
+	/** Logged out of the server.  This will happen when the server
+	 *  completes the communication; usually after
+	 *  ggzcore_net_send_logout is called.
+	 *  @param data NULL */
 	GGZ_LOGOUT,
 	
-	/** Error: a network error occurred. */
+	/** Error: a network (transmission) error occurred.  The server will
+	 *  automatically disconnect.
+	 *  @param data A generally unhelpful error string. */
 	GGZ_NET_ERROR,
 	
-	/** Error: a communication protocol error occured. */
+	/** Error: a communication protocol error occured.  This can happen
+	 *  in a variety of situations when the server sends us something
+	 *  we can't handle.  The server will be automatically disconnected.
+	 *  @param data A technical error string. */
 	GGZ_PROTOCOL_ERROR,
 
-	/** Error: A chat message could not be sent. */
+	/** Error: A chat message could not be sent.  This will happen when
+	 *  we try to send a chat and the server rejects it.
+	 *  @param data A fairly helpful error string. */
 	GGZ_CHAT_FAIL,
 
 	/** The internal state of ggzcore has changed. */
 	GGZ_STATE_CHANGE,
 
-	/** Status event: a requested direct game connection has been established. */
+	/** Status event: a requested direct game connection has been
+	 *  established.  To start a game (table), a channel must be
+	 *  created.  This event will alert that the channel has been
+	 *  established.  The channel's FD should then be monitored for
+	 *  input, which should then be passed back to the server object
+	 *  for handling.
+	 *  @param data NULL
+	 *  @see ggzcore_server_get_channel
+	 *  @see ggzcore_server_read_data */
 	GGZ_CHANNEL_CONNECTED,
 
-	/** Game channel is ready for read/write operations. */
+	/** Game channel is ready for read/write operations.  After the
+	 *  channel has been connected, if we continue to monitor the socket
+	 *  eventually it will be negotiated and ready to use.  At this point
+	 *  it is ready for the game client to use.
+	 *  @param data NULL */
 	GGZ_CHANNEL_READY,
 
-	/** Error: Failure during setup of direct connection to game server. */
+	/** Error: Failure during setup of direct connection to game server.
+	 *  If the channel could not be prepared, this event will happen
+	 *  instead of GGZ_CHANNEL_READY or GGZ_CHANNEL_CONNECTED event.  At
+	 *  this point the channel is no longer useful (I think).
+	 *  @param data An unhelpful error string */
 	GGZ_CHANNEL_FAIL
 } GGZServerEvent;
 
