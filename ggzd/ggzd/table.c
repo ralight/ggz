@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2846 2001-12-10 03:18:21Z bmh $
+ * $Id: table.c 2847 2001-12-10 03:27:13Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -678,7 +678,14 @@ static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 
 static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
+	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
+	
 	dbg_msg(GGZ_DBG_TABLE, "GAME ERROR: %s", (char*)data);
+
+	/* If we never made out of CREATED state, it's a launch error */
+	if (ggzdmod_get_state(ggzdmod) == GGZDMOD_STATE_CREATED)
+		table_launch_event(table->owner, E_LAUNCH_FAIL, 0);
+
 
 	/* FIXME: instead, we should set state to done, once this is supported*/
 	(void)ggzdmod_disconnect(ggzdmod);
