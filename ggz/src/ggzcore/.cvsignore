@@ -5,3 +5,4 @@ Makefile.in
 ggz-config
 *.lo
 libggzcore.la
+api
