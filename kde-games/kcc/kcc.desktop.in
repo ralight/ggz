@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=GGZ Chinese Checkers for KDE
+GenericName=GGZ Chinese Checkers game for KDE
+Exec=@ggzexecmoddir@/kcc
+Icon=kcc
+MimeType=Application
+Name=Chinese Checkers
+Path=
+ServiceTypes=
+SwallowExec=
+SwallowTitle=
+Terminal=false
+TerminalOptions=
+Type=Application
+

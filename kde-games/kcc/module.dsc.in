@@ -1,0 +1,11 @@
+# KTicTacTux description file
+[ModuleInfo]
+Author = Josef Spillner
+CommandLine = @ggzexecmoddir@/kcc --ggz --icon @prefix@/share/icons/hicolor/32x32/apps/kcc.png
+Frontend = kde
+Homepage = http://ggz.sourceforge.net/games/kcc/
+Name = KCC
+ProtocolEngine = CCheckers
+ProtocolVersion = 3
+Version = 0.0.7
+

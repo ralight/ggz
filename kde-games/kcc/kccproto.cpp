@@ -1,0 +1,231 @@
+/////////////////////////////////////////////////////////////
+// KCC
+// Copyright (C) 2003 Josef Spillner, josef@ggzgamingzone.org
+// Published under GNU GPL conditions
+/////////////////////////////////////////////////////////////
+
+// KCC includes
+#include "kccproto.h"
+#include "kcc.h"
+
+// GGZ includes
+#include <ggz.h>
+#include <ggz_common.h>
+
+// System includes
+#include <stdio.h>
+
+// Static members
+KCCProto *KCCProto::self;
+
+// Empty constructor
+KCCProto::KCCProto(KCC *game)
+{
+	names[0][0] = 0;
+	names[1][0] = 0;
+	stats[0] = 0;
+	stats[1] = 0;
+	num = -1;
+	max = 0;
+
+	mod = NULL;
+	fdcontrol = -1;
+	fd = -1;
+
+	gameobject = game;
+	self = this;
+}
+
+// Even more empty destructor
+KCCProto::~KCCProto()
+{
+}
+
+// Connect to the local game socket
+void KCCProto::connect()
+{
+	mod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_server);
+	ggzmod_connect(mod);
+	fdcontrol = ggzmod_get_fd(mod);
+}
+
+// Initialize the board
+void KCCProto::init()
+{
+	char tboard[17][17] = {
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0  },
+		{ 0, 0, 0, 0, 6, 6, 6, 6, 0, 7, 7, 7, 7, 0, 0, 0, 0 },
+		{0, 0, 0, 0, 6, 6, 6, 1, 1, 1, 7, 7, 7, 0, 0, 0, 0  },
+		{ 0, 0, 0, 0, 6, 1, 1, 1, 1, 1, 1, 1, 7, 0, 0, 0, 0 },
+		{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0  },
+		{ 0, 0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 0, 0, 0 },
+		{0, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 0  },
+		{ 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3 },
+		{0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 0, 0  },
+		{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+		{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0  },
+		{ 0, 0, 0, 0, 4, 4, 1, 1, 1, 1, 1, 5, 5, 0, 0, 0, 0 },
+		{0, 0, 0, 0, 4, 4, 4, 4, 1, 5, 5, 5, 5, 0, 0, 0, 0  },
+		{ 0, 0, 0, 0, 4, 4, 4, 0, 0, 0, 5, 5, 5, 0, 0, 0, 0 },
+		{0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0  },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	};
+
+	for(int i = 0; i < 17 * 17; i++)
+		board[i % 17][i / 17] = tboard[i % 17][i / 17];
+
+	state = stateinit;
+	turn = none;
+}
+
+// Get opcode
+int KCCProto::getOp()
+{
+	int op;
+
+	ggz_read_int(fd, &op);
+	return op;
+}
+
+// Get one's own seat number
+int KCCProto::getSeat()
+{
+	ggz_read_int(fd, &max);
+	return ggz_read_int(fd, &num);
+}
+
+// Receive the player names
+int KCCProto::getPlayers()
+{
+	int ret = 0;
+	int count;
+
+	ggz_read_int(fd, &count);
+	for(int i = 0; i < count; i++)
+	{
+		ret |= ggz_read_int(fd, &seats[i]);
+		if((seats[i] == GGZ_SEAT_PLAYER) || (seats[i] == GGZ_SEAT_BOT))
+			ret |= ggz_read_string(fd, (char*)&names[i], 17);
+	}
+
+	return ret;
+}
+
+// Ask whether move was ok
+int KCCProto::getMoveStatus()
+{
+	char status;
+	int ret;
+
+	ret = ggz_read_char(fd, &status);
+
+	return ret;
+}
+
+// Get opponent's move
+int KCCProto::getOpponentMove()
+{
+	int move;
+	int nummove;
+	int ret = 0;
+
+	ret |= ggz_read_int(fd, &nummove);
+	ret |= ggz_read_int(fd, &move);
+
+	if(num < 0)
+	{
+		if(nummove == 0) board[move % 3][move / 3] = opponent;
+		else board[move % 3][move / 3] = player;
+	}
+	else board[move % 3][move / 3] = opponent;
+
+	return ret;
+}
+
+// Oooops... volunteers :-)
+int KCCProto::getSync()
+{
+	char space;
+	int ret = 0;
+
+	ret |= ggz_read_char(fd, &turn);
+	for(int i = 0; i < 9; i++)
+	{
+		ret |= ggz_read_char(fd, &space);
+		if(space == 0) board[i % 3][i / 3] = opponent;
+		else if(space == 1) board[i % 3][i / 3] = player;
+		else board[i % 3][i / 3] = none;
+	}
+
+	return ret;
+}
+
+// Read the winner over the network
+int KCCProto::getGameOver()
+{
+	return ggz_read_char(fd, &winner);
+}
+
+// Read statistics
+void KCCProto::getStatistics()
+{
+	ggz_read_int(fd, &stats[0]);
+	ggz_read_int(fd, &stats[1]);
+}
+
+// Send the options
+int KCCProto::sendOptions()
+{
+	return ggz_write_int(fd, 0);
+}
+
+// Send the own move, to be approved
+int KCCProto::sendMyMove(int x, int y, int x2, int y2)
+{
+	int ret = 0;
+
+	ret |= ggz_write_int(fd, cc_snd_move);
+	ret |= ggz_write_int(fd, x);
+	ret |= ggz_write_int(fd, y);
+	ret |= ggz_write_int(fd, x2);
+	ret |= ggz_write_int(fd, y2);
+
+	return ret;
+}
+
+// Synchronize game
+void KCCProto::sendSync()
+{
+//	ggz_write_int(fd, reqsync);
+}
+
+// Fetch statistics
+void KCCProto::sendStatistics()
+{
+//	ggz_write_int(fd, reqstats);
+}
+
+// Callbacks
+void KCCProto::handle_server(GGZMod *mod, GGZModEvent e, void *data)
+{
+	self->fd = *(int*)data;
+	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
+	self->gameobject->network();
+}
+
+void KCCProto::dispatch()
+{
+	ggzmod_dispatch(mod);
+}
+
+void KCCProto::shutdown()
+{
+	if(mod)
+	{
+		ggzmod_disconnect(mod);
+		ggzmod_free(mod);
+	}
+}
+
