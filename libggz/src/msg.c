@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 5852 2004-02-08 22:10:26Z jdorje $
+ * $Id: msg.c 5904 2004-02-11 03:50:04Z jdorje $
  *
  * Debug and error messages
  *
@@ -163,7 +163,7 @@ void _ggz_debug(const char *type, const char *fmt, ...)
 	const char *prefix = "LIBGGZ";
   
 	va_start(ap, fmt);
-	err_doit(LOG_DEBUG, prefix, fmt, ap, 0);
+	debug_doit(LOG_DEBUG, prefix, fmt, ap);
 	va_end(ap);
 }
 #endif
