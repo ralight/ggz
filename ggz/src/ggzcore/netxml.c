@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 6762 2005-01-20 07:31:47Z jdorje $
+ * $Id: netxml.c 6862 2005-01-23 22:58:47Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -2099,7 +2099,7 @@ static void _ggzcore_net_handle_session(GGZNet *net, GGZXMLElement *element)
 void _ggzcore_net_send_header(GGZNet *net)
 {
 	_ggzcore_net_send_line(net,
-			       "<?xml version='1.0' encoding='ISO-8859-1'?>");
+			       "<?xml version='1.0' encoding='UTF-8'?>");
 	_ggzcore_net_send_line(net, "<SESSION>");
 }
 
