@@ -11,7 +11,7 @@ dnl
 dnl This file is common to most GGZ modules, and should be kept in sync
 dnl between them all.  Currently the following modules use it:
 dnl kde-games, kde-client, gtk-games, gtk-client, utils, grubby,
-dnl ggz-client-libs, ggzd.
+dnl ggz-client-libs, ggzd, gnome-client, txt-client.
 dnl
 dnl ======================================
 dnl
@@ -23,6 +23,8 @@ dnl 2001-12-16: updated for new ggzmod, imported to gtk-games and gtk-client
 dnl 2002-01-12: include libggz support; imported to ggz-client-libs and ggzd
 dnl 2002-01-18: remove easysock functions; look in prefix dirs for
 dnl             includes and libs
+dnl 2002-08-20: change -I<directory> to -isystem<directory> to avoid
+dnl             warnings in gcc3
 
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
@@ -138,7 +140,7 @@ fi
 AC_SUBST(libggz_libraries)
 AC_SUBST(libggz_includes)
 
-LIBGGZ_INCLUDES="-I$libggz_includes"
+LIBGGZ_INCLUDES="-isystem$libggz_includes"
 LIBGGZ_LDFLAGS="-L$libggz_libraries"
 
 AC_SUBST(LIBGGZ_INCLUDES)
@@ -223,7 +225,7 @@ fi
 AC_SUBST(ggzcore_libraries)
 AC_SUBST(ggzcore_includes)
 
-GGZCORE_INCLUDES="-I$ggzcore_includes"
+GGZCORE_INCLUDES="-isystem$ggzcore_includes"
 GGZCORE_LDFLAGS="-L$ggzcore_libraries"
 
 AC_SUBST(GGZCORE_INCLUDES)
@@ -376,7 +378,7 @@ fi
 AC_SUBST(ggzmod_libraries)
 AC_SUBST(ggzmod_includes)
 
-GGZMOD_INCLUDES="-I$ggzmod_includes"
+GGZMOD_INCLUDES="-isystem$ggzmod_includes"
 GGZMOD_LDFLAGS="-L$ggzmod_libraries"
 
 AC_SUBST(GGZMOD_INCLUDES)
@@ -460,7 +462,7 @@ fi
 AC_SUBST(ggzdmod_libraries)
 AC_SUBST(ggzdmod_includes)
 
-GGZDMOD_INCLUDES="-I$ggzdmod_includes"
+GGZDMOD_INCLUDES="-isystem$ggzdmod_includes"
 GGZDMOD_LDFLAGS="-L$ggzdmod_libraries"
 
 AC_SUBST(GGZDMOD_INCLUDES)
