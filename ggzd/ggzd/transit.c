@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3208 2002-02-02 07:42:58Z jdorje $
+ * $Id: transit.c 3247 2002-02-05 02:33:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -362,7 +362,12 @@ static int transit_send_leave_to_game(GGZTable* table, char* name)
 	seat.name = NULL;
 	seat.fd = -1;
 	seat.type = GGZ_SEAT_OPEN;
-	ggzdmod_set_seat(table->ggzdmod, &seat);
+	if (ggzdmod_set_seat(table->ggzdmod, &seat) < 0) {
+		/* Another fatal error!  This should never happen! */
+		dbg_msg(GGZ_DBG_TABLE, "ERROR: transit_send_leave_to_game: "
+				       "failed ggzdmod_set_seat() call.");
+		return -1;
+	}
 
 	return 0;
 }

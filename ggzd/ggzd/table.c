@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3219 2002-02-03 05:04:54Z jdorje $
+ * $Id: table.c 3247 2002-02-05 02:33:42Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -377,7 +377,8 @@ static int table_start_game(GGZTable *table)
 		else
 			seat.name = NULL;
 		seat.fd = -1;
-		ggzdmod_set_seat(table->ggzdmod, &seat);
+		if (ggzdmod_set_seat(table->ggzdmod, &seat) < 0)
+			status = 1;
         }
 
 	/* And start the game */
