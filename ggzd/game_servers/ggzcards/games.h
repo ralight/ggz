@@ -29,6 +29,7 @@
 
 struct game_function_pointers {
 	/* initializing */
+	int	(*is_valid_game)();		/* is the game valid under the current conditions? */
 	void	(*init_game)();			/* initialize the game data */
 	void	(*get_options)();		/* determine/request options from given player fd */
 	int	(*handle_option)(char*, int);	/* handle an option => 0 on success, -1 on failure */

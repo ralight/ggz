@@ -33,6 +33,7 @@
 extern struct game_function_pointers game_funcs;
 
 
+extern int game_is_valid_game();
 extern void game_init_game();			
 extern void game_get_options();			
 extern int game_handle_option(char*, int);	

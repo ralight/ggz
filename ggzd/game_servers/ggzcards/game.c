@@ -38,6 +38,7 @@
 #include "options.h"
 
 struct game_function_pointers game_funcs = {
+	game_is_valid_game,
 	game_init_game,
 	game_get_options,
 	game_handle_option,
@@ -62,6 +63,15 @@ struct game_function_pointers game_funcs = {
 	game_compare_cards,
 	game_send_hand
 };
+
+/* is_valid_game
+ *   returns true if the game is valid under the current game conditions (i.e. number of players);
+ *   false otherwise
+ */
+int game_is_valid_game()
+{
+	return 0;
+}
 
 /* game.funcs->map_card
  *   newly implemented; it should cause one card to behave

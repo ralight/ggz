@@ -34,6 +34,7 @@
 
 #include "spades.h"
 
+static int spades_is_valid_game();
 static void spades_init_game();
 static void spades_get_options();
 static int spades_handle_option(char* option, int value);
@@ -45,6 +46,7 @@ static void spades_end_trick();
 static void spades_end_hand();
 
 struct game_function_pointers spades_funcs = {
+	spades_is_valid_game,
 	spades_init_game,
 	spades_get_options,
 	spades_handle_option,
@@ -69,6 +71,11 @@ struct game_function_pointers spades_funcs = {
 	game_compare_cards,
 	game_send_hand
 };
+
+static int spades_is_valid_game()
+{
+	return (game.num_players == 4);
+}
 
 static void spades_init_game()
 {

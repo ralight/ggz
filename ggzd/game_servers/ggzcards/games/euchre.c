@@ -31,6 +31,7 @@
 
 #include "euchre.h"
 
+static int euchre_is_valid_game();
 static card_t euchre_map_card(card_t c);
 static void euchre_init_game();
 static void euchre_start_bidding();
@@ -46,6 +47,7 @@ static void euchre_end_trick();
 static void euchre_end_hand();
 
 struct game_function_pointers euchre_funcs = {
+	euchre_is_valid_game,
 	euchre_init_game,
 	game_get_options,
 	game_handle_option,
@@ -70,6 +72,12 @@ struct game_function_pointers euchre_funcs = {
 	game_compare_cards,
 	euchre_send_hand
 };
+
+
+static int euchre_is_valid_game()
+{
+	return (game.num_players == 4);
+}
 
 static card_t euchre_map_card(card_t c)
 {

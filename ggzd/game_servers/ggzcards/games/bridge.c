@@ -31,6 +31,7 @@
 
 #include "bridge.h"
 
+static int bridge_is_valid_game();
 static int bridge_compare_cards(card_t, card_t);
 static void bridge_init_game();
 static void bridge_start_bidding();
@@ -48,6 +49,7 @@ static void bridge_end_trick();
 static void bridge_end_hand();
 
 struct game_function_pointers bridge_funcs = {
+	bridge_is_valid_game,
 	bridge_init_game,
 	game_get_options,
 	game_handle_option,
@@ -77,6 +79,12 @@ struct game_function_pointers bridge_funcs = {
 /* these should be low, clubs, diamonds, ..., high, but that won't fit in the client window */
 static char* short_bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
 static char* long_bridge_suit_names[5] = {"clubs", "diamonds", "hearts", "spades", "notrump"};
+
+
+static int bridge_is_valid_game()
+{
+	return (game.num_players == 4);
+}
 
 
 static int bridge_compare_cards(card_t card1, card_t card2)

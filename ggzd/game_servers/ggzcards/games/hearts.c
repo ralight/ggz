@@ -32,6 +32,7 @@
 
 #include "hearts.h"
 
+static int hearts_is_valid_game();
 static void hearts_init_game();
 static void hearts_get_options();
 static int hearts_handle_option(char* option, int value);
@@ -43,6 +44,7 @@ static void hearts_end_trick();
 static void hearts_end_hand();
 
 struct game_function_pointers hearts_funcs = {
+	hearts_is_valid_game,
 	hearts_init_game,
 	hearts_get_options,
 	hearts_handle_option,
@@ -67,6 +69,12 @@ struct game_function_pointers hearts_funcs = {
 	game_compare_cards,
 	game_send_hand
 };
+
+
+static int hearts_is_valid_game()
+{
+	return (game.num_players >= 3 && game.num_players <= 6);
+}
 
 static void hearts_init_game()
 {

@@ -31,6 +31,7 @@
 
 #include "lapocha.h"
 
+static int lapocha_is_valid_game();
 static void lapocha_init_game();
 static int lapocha_handle_gameover();
 static void lapocha_start_bidding();
@@ -44,6 +45,7 @@ static void lapocha_set_player_message(player_t p);
 static void lapocha_end_hand();
 
 struct game_function_pointers lapocha_funcs = {
+	lapocha_is_valid_game,
 	lapocha_init_game,
 	game_get_options,
 	game_handle_option,
@@ -69,6 +71,11 @@ struct game_function_pointers lapocha_funcs = {
 	game_send_hand
 };
 
+
+static int lapocha_is_valid_game()
+{
+	return (game.num_players == 4);
+}
 
 static void lapocha_init_game()
 {

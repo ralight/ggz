@@ -33,6 +33,7 @@
 
 #include "suaro.h"
 
+static int suaro_is_valid_game();
 static void suaro_init_game();
 static void suaro_get_options();
 static int suaro_handle_option(char* option, int value);
@@ -49,6 +50,7 @@ static void suaro_set_player_message(player_t p);
 static void suaro_end_trick();
 
 struct game_function_pointers suaro_funcs = {
+	suaro_is_valid_game,
 	suaro_init_game,
 	suaro_get_options,
 	suaro_handle_option,
@@ -78,6 +80,11 @@ struct game_function_pointers suaro_funcs = {
  /* these should be low, clubs, diamonds, ..., high, but that won't fit in the client window */
 static char* short_suaro_suit_names[6] = {"lo", "C", "D", "H", "S", "hi"};
 static char* long_suaro_suit_names[6] = {"low", "clubs", "diamonds", "hearts", "spades", "high"};
+
+static int suaro_is_valid_game()
+{
+	return (game.num_players == 2);
+}
 
 static void suaro_init_game()
 {

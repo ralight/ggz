@@ -104,29 +104,10 @@ void games_handle_gametype(int option)
 
 /* game_valid_game
  *   returns a boolean, TRUE if the game is valid in the current setup and false otherwise.
- *   currently, the "current setup" is just the number of players (which is set automatically
- *   by ggz)
- *   THIS FUNCTION WILL BE INTEGRATED INTO THE GAME FUNCTIONS SOON.
  */
 int games_valid_game(int which_game)
 {
-	switch (which_game) {
-		case GGZ_GAME_SUARO:
-			return (game.num_players == 2);
-		case GGZ_GAME_ROOK:
-		case GGZ_GAME_SKAT:
-			return 0;	/* not yet supported */
-		case GGZ_GAME_BRIDGE:
-		case GGZ_GAME_LAPOCHA:
-		case GGZ_GAME_SPADES:
-		case GGZ_GAME_EUCHRE:
-			return (game.num_players == 4);
-		case GGZ_GAME_HEARTS:
-			return (game.num_players > 2 && game.num_players <= 7);	/* 3-7 players */
-		default:
-			ggz_debug("SERVER BUG: game_valid_game: unknown game %d.", which_game);
-			return 0;
-	}
+	return game_data[which_game].funcs->is_valid_game();
 }
 
 /* games_req_gametype
