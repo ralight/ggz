@@ -64,7 +64,6 @@ void input_command(void)
 	/* EOF means user closed session */
 	if (!fgets(line, sizeof(line)/sizeof(char), stdin)) {
 		game_quit();
-		game_destroy();
 		if (server) {
 			server_disconnect();
 			server_destroy();
