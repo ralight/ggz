@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/25/2002
  * Desc: Main window menus
- * $Id: menus.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: menus.h 6387 2004-11-16 05:53:01Z jdorje $
  *
  * The point of this file is to help games to achieve a consistent look
  * and feel in their menus.  The TABLE_MENU and HELP_MENU should be used
@@ -42,7 +42,8 @@
 	{_("/Table/Sit down"), NULL, do_sit, 0, NULL}, \
 	{_("/Table/Stand up"), NULL, do_stand, 0, NULL}, \
 	{_("/Table/_Sync with server"), "<ctrl>S", game_resync, 0, NULL}, \
-	{_("/Table/E_xit"), "<ctrl>X", game_exit, 0, NULL}
+	{_("/Table/E_xit"), "<ctrl>X", game_exit, 0,			\
+	    "<StockItem>", GTK_STOCK_QUIT}
 
 /* These functions should be defined in the game's code. */
 void game_resync(void);
