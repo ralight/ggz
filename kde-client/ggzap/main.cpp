@@ -11,7 +11,11 @@ int main(int argc, char **argv)
 	GGZap *zap;
 	KAboutData *aboutData;
 	KCmdLineArgs *args;
-	static const KCmdLineOptions op[] = {{"module <modulename>", I18N_NOOP("Specify module to launch"), 0}, {0, 0, 0}};
+	static const KCmdLineOptions op[] = {
+		{"module <modulename>", I18N_NOOP("Specify module to launch"), 0},
+		{"frontend <frontendtype>", I18N_NOOP("Preferred frontend"), 0},
+		{0, 0, 0}
+	};
 
 	aboutData = new KAboutData("ggzap",
 		I18N_NOOP("GGZ Quick Launcher"),
@@ -34,6 +38,7 @@ int main(int argc, char **argv)
 	a = new KApplication();
 	zap = new GGZap();
 	if(args->isSet("module")) zap->setModule(args->getOption("module"));
+	if(args->isSet("frontend")) zap->setFrontend(args->getOption("frontend"));
 	a->setMainWidget(zap);
 	return a->exec();
 }

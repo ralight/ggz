@@ -5,17 +5,26 @@
 extern "C" {
 #endif
 
+/* Module structure */
+struct _GGZModuleEntry
+{
+	char *name;
+	char *frontend;
+};
+
+typedef struct _GGZModuleEntry GGZModuleEntry;
+		
 /* Initialize the module sniffer */
 /* Returns 0 on success, -1 on error */
 int modsniff_init(void);
 
 /* Retreive a list of new modules. Must NOT be free()'d! */
 /* Returns null-terminated games list on success, null on error */
-char **modsniff_list(void);
+GGZModuleEntry *modsniff_list(void);
 
 /* Merges the list with a list of (currently visible) installed modules */
-/* Returns null-terminated char* pointer list, null on error */
-char **modsniff_merge(char **orig);
+/* Returns null-terminated pointer list, null on error */
+GGZModuleEntry *modsniff_merge(GGZModuleEntry *orig);
 
 /* Finish and free memory. */
 /* Returns 0 on success, -1 on error */

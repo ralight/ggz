@@ -15,6 +15,7 @@ class GGZap : public QWidget
 		~GGZap();
 
 		void setModule(const char *modulename);
+		void setFrontend(const char *frontendtype);
 
 	public slots:
 		void slotState(int state);

@@ -65,6 +65,11 @@ void GGZap::setModule(const char *modulename)
 	m_handler->init(modulename);
 }
 
+void GGZap::setFrontend(const char *frontendtype)
+{
+	m_handler->setFrontend(frontendtype);
+}
+
 void GGZap::fat(QLabel *label)
 {
 	label->setText("<b>" + label->text() + "</b>");

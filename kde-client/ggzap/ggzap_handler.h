@@ -15,6 +15,7 @@ class GGZapHandler : public QObject
 		~GGZapHandler();
 
 		void init(const char *modulename);
+		void setFrontend(const char *frontendtype);
 		void process();
 
 		enum States
@@ -53,6 +54,7 @@ class GGZapHandler : public QObject
 		GGZCoreRoom *m_room;
 		GGZCoreGame *m_game;
 		const char *m_modulename;
+		const char *m_frontendtype;
 };
 
 #endif

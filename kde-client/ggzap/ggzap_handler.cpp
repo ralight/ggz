@@ -11,6 +11,8 @@ GGZapHandler::GGZapHandler()
 	m_server = new GGZCoreServer();
 	m_room = NULL;
 	m_game = NULL;
+	m_frontendtype = NULL;
+	m_modulename = NULL;
 
 	attachServerCallbacks();
 }
@@ -41,6 +43,11 @@ void GGZapHandler::init(const char *modulename)
 	m_server->setHost("localhost", 5688);
 	result = m_server->connect();
 	if(result == -1) emit signalState(connectfail);
+}
+
+void GGZapHandler::setFrontend(const char *frontendtype)
+{
+	m_frontendtype = frontendtype;
 }
 
 void GGZapHandler::process()
@@ -99,14 +106,20 @@ void GGZapHandler::hookServerActive(unsigned int id)
 		case GGZCoreServer::loggedin:
 			emit signalState(loggedin);
 			m_server->listRooms(-1, 0);
+			m_server->listGames(1);
 			break;
 		case GGZCoreServer::loginfail:
 			emit signalState(loginfail);
 			break;
 		case GGZCoreServer::roomlist:
+			break;
+		case GGZCoreServer::typelist:
 			join = -1;
 			for(int i = 0; i < m_server->countRooms(); i++)
-				if(strcmp(m_server->room(i)->name(), m_modulename) == 0) join = i;
+			{
+				if(strcmp(m_server->room(i)->gametype()->name(), m_modulename) == 0) join = i;
+				else cout << "type: " << m_server->room(i)->gametype()->name() << endl;
+			}
 			if(join == -1) emit signalState(joinroomfail);
 			else m_server->joinRoom(join);
 			break;
@@ -133,6 +146,7 @@ void GGZapHandler::hookRoomActive(unsigned int id)
 	GGZCoreGametype *gametype;
 	char *name;
 	int join;
+	int ret;
 
 	switch(id)
 	{
@@ -155,7 +169,13 @@ void GGZapHandler::hookRoomActive(unsigned int id)
 			else
 			{
 				// launch table and wait...
-				emit signalState(waiting);
+				gametype = m_room->gametype();
+				table = new GGZCoreTable();
+				table->init(gametype->gametype(), "foobar", 2);
+				ret = m_room->launchTable(table->table());
+				delete table;
+				if(ret >= 0) emit signalState(waiting);
+				else emit signalState(startfail);
 			}
 			break;
 		case GGZCoreRoom::enter:

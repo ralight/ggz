@@ -5,6 +5,8 @@
 #include <qmultilineedit.h>
 #include <qpushbutton.h>
 
+#include "modsniff.h"
+
 class KModSniff : public QWidget
 {
 	Q_OBJECT
@@ -16,8 +18,8 @@ class KModSniff : public QWidget
 		void slotSearch();
 
 	private:
-		void addModule(char *modulename);
-		char **installedModules();
+		void addModule(char *modulename, char *frontend);
+		GGZModuleEntry *installedModules();
 
 		QMultiLineEdit *m_ed;
 		QPushButton *m_search;
