@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZMod library
  * Desc: GGZ game module functions
- * $Id: ggz_client.h 2873 2001-12-11 06:23:29Z jdorje $
+ * $Id: ggz_client.h 2876 2001-12-11 07:16:40Z jdorje $
  *
  * Copyright (C) 2000 GGZ devel team
  *
@@ -101,6 +101,10 @@
 #ifndef __GGZ_CLIENT_GGZ_H
 #define __GGZ_CLIENT_GGZ_H
 
+/* This same enumeration is provided by ggzcore as well, so we
+   protect it like this. */
+#ifndef __GGZ_SEAT_TYPE_INCLUDED
+#define __GGZ_SEAT_TYPE_INCLUDED
 /** @brief Seat status values.
  *
  * Each "seat" at a table of a GGZ game can have one of these values.
@@ -114,6 +118,7 @@ typedef enum {
 	GGZ_SEAT_NONE = -4,	   /**< This seat does not exist. */
 	GGZ_SEAT_PLAYER = -5	   /**< The seat has a regular player in it. */
 } GGZSeatType;
+#endif /* GGZ_SEAT_TYPE_INCLUDED */
 
 /**
  * @brief Connects to GGZ.

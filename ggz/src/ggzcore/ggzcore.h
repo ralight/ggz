@@ -144,7 +144,10 @@ typedef enum {
 	GGZ_PLAYER_ADMIN
 } GGZPlayerType;
 
-
+/* This same enumeration is provided by ggzmod as well, so we
+   protect it like this. */
+#ifndef __GGZ_SEAT_TYPE_INCLUDED
+#define __GGZ_SEAT_TYPE_INCLUDED
 typedef enum {
 	GGZ_SEAT_OPEN     = -1,
 	GGZ_SEAT_BOT      = -2,
@@ -152,6 +155,7 @@ typedef enum {
 	GGZ_SEAT_NONE     = -4,
 	GGZ_SEAT_PLAYER   = -5
 } GGZSeatType;
+#endif /* GGZ_SEAT_TYPE_INCLUDED */
 
 
 typedef enum {
