@@ -67,7 +67,8 @@ class KCC : public QWidget
 
 	protected:
 		void mousePressEvent(QMouseEvent *e);
-		//void paintEvent(QPaintEvent *e);
+		void mouseReleaseEvent(QMouseEvent *e);
+		void mouseMoveEvent(QMouseEvent *e);
 
 	private:
 		// Wait for bot or network input
@@ -113,9 +114,11 @@ class KCC : public QWidget
 		int m_opponent;
 		// Internal protocol class
 		KCCProto *proto;
-		// Theme image placeholders
-		QString m_t1, m_t2;
+		// Current theme
+		QString m_theme;
 
+		// Mouse moving
+		int m_mx, m_my, m_moved;
 		// Move source and destination
 		int m_fx, m_fy, m_tx, m_ty, m_ax, m_ay;
 		// Move steps

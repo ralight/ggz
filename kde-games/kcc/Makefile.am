@@ -1,4 +1,4 @@
-SUBDIRS = .
+SUBDIRS = themes
 
 ggzexecmod_PROGRAMS = kcc
 
@@ -22,16 +22,12 @@ METASOURCES = AUTO
 
 EXTRA_DIST = module.dsc.in
 
-pixmapdir = @ggzdatadir@/kcc
-pixmap_DATA = bg.png mask.png point0.png \
-	point1.png point2.png point3.png point4.png point5.png point6.png
-
 KDE_ICON = kcc
 
 appsdir = $(kde_appsdir)/Games/ggz
 apps_DATA = kcc.desktop
 
-kde_conf_DATA = ktictactuxrc
+kde_conf_DATA = kccrc
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force

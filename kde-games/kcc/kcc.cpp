@@ -35,13 +35,20 @@ KCC::KCC(QWidget *parent, const char *name)
 	m_opponent = PLAYER_NONE;
 	m_winner = false;
 
+	m_mx = -1;
+	m_my = -1;
+	m_moved = 0;
+
 	m_score_opp = 0;
 	m_score_you = 0;
+
+	m_theme = "default";
 
 	proto = new KCCProto(this);
 
 	setFixedSize(400, 400);
 	drawBoard();
+	show(); // only for external
 }
 
 // Destructor
@@ -373,18 +380,28 @@ void KCC::drawBoard()
 	QPainter p;
 	QPoint p1, p2;
 
-	QPixmap b(QString("%1/kcc/bg.png").arg(GGZDATADIR));
-	//setMask(QBitmap(QString("%1/kcc/mask.png").arg(GGZDATADIR)));
+	QPixmap b(QString("%1/kcc/%2/board.png").arg(GGZDATADIR).arg(m_theme));
 	p.begin(&b);
+
+	QMap<int, QString> points;
+	points[0] = "hole.png";
+	points[1] = "red.png";
+	points[2] = "blue.png";
+	points[3] = "green.png";
+	points[4] = "yellow.png";
+	points[5] = "cyan.png";
+	points[6] = "purple.png";
 
 	if(proto->state != KCCProto::statenone)
 		for(int j = 0; j < 17; j++)
 			for(int i = 0; i < 15; i++)
 			{
-				if(proto->board[i][j])
-					p.drawPixmap(i * 22 + 40 + (j % 2) * 11, j * 19 + 44,
-						QPixmap(QString("%1/kcc/point%2.png").arg(
-							GGZDATADIR).arg(proto->board[i][j] - 1)));
+				int pn = proto->board[i][j];
+				if(pn)
+				{
+					QString point = QString("%1/kcc/%2/%3").arg(GGZDATADIR).arg(m_theme).arg(points[pn - 1]);
+					p.drawPixmap(i * 22 + 40 + (j % 2) * 11, j * 19 + 44, QPixmap(point));
+				}
 			}
 
 	QValueList<QPoint>::iterator it;
@@ -414,6 +431,13 @@ void KCC::drawBoard()
 	p.end();
 	setErasePixmap(b);
 	//setPaletteBackgroundPixmap(b);
+
+	QBitmap mask(QString("%1/kcc/%2/mask.png").arg(GGZDATADIR).arg(m_theme));
+	if(!mask.isNull())
+	{
+		setMask(mask);
+		reparent(NULL, WStyle_Customize | WRepaintNoErase, QPoint(0, 0), true);
+	}
 	repaint();
 }
 
@@ -539,11 +563,34 @@ kdDebug() << " " << (*it).x() << "/" << (*it).y() << endl;*/
 	return found;
 }
 
+void KCC::mouseMoveEvent(QMouseEvent *e)
+{
+	if((m_mx != -1) && (m_my != -1))
+	{
+		move(e->globalX() - m_mx, e->globalY() - m_my);
+		m_moved = 1;
+	}
+}
+
 void KCC::mousePressEvent(QMouseEvent *e)
+{
+	m_mx = e->x();
+	m_my = e->y();
+}
+
+void KCC::mouseReleaseEvent(QMouseEvent *e)
 {
 	int x, y;
 	char tmp;
 	int error;
+
+	m_mx = -1;
+	m_my = -1;
+	if(m_moved)
+	{
+			m_moved = 0;
+			return;
+	}
 
 	if(m_turn != proto->num) return;
 
@@ -622,9 +669,4 @@ void KCC::mousePressEvent(QMouseEvent *e)
 			m_fx = -1;
 	}
 }
-
-//void KCC::paintEvent(QPaintEvent *e)
-//{
-//	drawBoard();
-//}
 
