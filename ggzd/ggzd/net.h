@@ -57,7 +57,7 @@ int net_send_motd_error(GGZNetIO *net, char status);
 
 int net_send_room_list_error(GGZNetIO *net, char status);
 int net_send_room_list_count(GGZNetIO *net, int count);
-int net_send_room(GGZNetIO *net, int index, RoomStruct *room);
+int net_send_room(GGZNetIO *net, int index, RoomStruct *room, char verbose);
 int net_send_room_list_end(GGZNetIO *net);
 
 int net_send_type_list_error(GGZNetIO *net, char status);

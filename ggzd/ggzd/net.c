@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.c 2398 2001-09-08 03:31:04Z bmh $
+ * $Id: net.c 2449 2001-09-11 02:18:15Z bmh $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -302,11 +302,11 @@ int net_send_room_list_count(GGZNetIO *net, int count)
 }
 
 
-int net_send_room(GGZNetIO *net, int index, RoomStruct *room)
+int net_send_room(GGZNetIO *net, int index, RoomStruct *room, char verbose)
 {
 	_net_send_line(net, "<ROOM ID='%d' NAME='%s' GAME='%d'>",
 		       index, room->name, room->game_type);
-	if (room->description)
+	if (verbose && room->description)
 		_net_send_line(net, "<DESC>%s</DESC>", room->description);
 	_net_send_line(net, "</ROOM>");
 

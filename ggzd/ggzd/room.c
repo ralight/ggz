@@ -57,7 +57,6 @@ static int show_server_info(GGZPlayer *player);
 int room_list_send(GGZPlayer* player, int req_game, char verbose)
 {
 	int i, max, count=0;
-	char *desc;
 
 	/* We don't need to lock anything because CURRENTLY the room count  */
 	/* and options can change ONLY before threads are in existence	    */
@@ -96,8 +95,7 @@ int room_list_send(GGZPlayer* player, int req_game, char verbose)
 	/* Send off all the room announcements */
 	for(i=0; i<room_info.num_rooms; i++)
 		if(req_game == -1 || req_game == rooms[i].game_type) {
-			desc = verbose ? rooms[i].description : NULL;
-			if (net_send_room(player->net, i, &rooms[i]) < 0)
+			if (net_send_room(player->net, i, &rooms[i], verbose) < 0)
 				return GGZ_REQ_DISCONNECT;
 		}
 
