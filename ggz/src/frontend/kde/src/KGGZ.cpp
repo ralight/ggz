@@ -217,25 +217,30 @@ void KGGZ::resizeEvent(QResizeEvent *e)
 void KGGZ::slotConnected(const char *host, int port, const char *username, const char *password, int mode)
 {
 #ifdef KGGZ_WALLET
-	QString pass, p;
+	QString p;
 	KWallet::Wallet *w = NULL;
 
-	if(mode != GGZCoreServer::guest)
-		w = KWallet::Wallet::openWallet("kggz");
-	if(w)
+	if(mode == GGZCoreServer::normal)
 	{
-		if(!w->hasFolder("passwords"))
+		w = KWallet::Wallet::openWallet("kggz");
+		if(w)
 		{
-			w->createFolder("passwords");
-			pass = KLineEditDlg::getText(i18n("Password"), i18n("Please invent a new password:"), NULL, NULL);
+			w->setFolder("passwords");
+			w->readPassword(host, p);
+
+			if(p.isEmpty())
+			{
+				p = KLineEditDlg::getText(i18n("Password"),
+					i18n("Password not found, please input:"), NULL, NULL);
+				if(p) w->writePassword(host, p);
+			}
+			password = p.latin1();
+
+			/*KMessageBox::information(this,
+				i18n("Wallet password: %1").arg(password), i18n("debug"));*/
 		}
-		w->setFolder("passwords");
-		if(pass) w->writePassword(host, pass);
-
-		w->readPassword(host, p);
-		password = p.latin1();
-
-		KMessageBox::information(this, i18n("Wallet password: %1").arg(password), i18n("debug"));
+		else KMessageBox::error(this,
+			i18n("The wallet could not be opened."), i18n("Connection"));
 	}
 #endif
 
@@ -898,6 +903,9 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 	int result;
 	QString buffer;
 	GGZCoreGametype *gametype;
+#ifdef KGGZ_WALLET
+	KWallet::Wallet *w = NULL;
+#endif
 
 	emit signalActivity(true);
 
@@ -958,6 +966,20 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 						"Your personal password is: %1").arg(kggzserver->password()),
 					i18n("Information"));
 			}
+#ifdef KGGZ_WALLET
+		w = KWallet::Wallet::openWallet("kggz");
+		if(w)
+		{
+			if(!w->hasFolder("passwords"))
+				w->createFolder("passwords");
+			w->setFolder("passwords");
+			w->writePassword(m_save_hostname, kggzserver->password());
+		}
+		else KMessageBox::error(this,
+			i18n("The wallet could not be opened to insert the password (%1).").arg(
+				kggzserver->password()),
+			i18n("Connection"));
+#endif
 			buffer.sprintf(i18n("Logged in as %s"), m_save_username);
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_INFO);
 			m_workspace->widgetChat()->receive(NULL, i18n("Please join a room to start!"), KGGZChat::RECEIVE_INFO);

@@ -111,7 +111,13 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	input_port->setValidator(valid);
 	input_name = new QLineEdit(m_pane);
 	input_password = new QLineEdit(m_pane);
+
+#ifdef KGGZ_WALLET
+	input_password->setText(i18n("Using KWallet"));
+	input_password->setEnabled(false);
+#else
 	input_password->setEchoMode(QLineEdit::Password);
+#endif
 
 	button_ok = new QPushButton(i18n("Connect"), this);
 	button_cancel = new QPushButton(i18n("Cancel"), this);
@@ -301,7 +307,9 @@ void KGGZConnect::slotLoadProfile(int profile)
 	input_host->setText(host);
 	input_port->setText(port);
 	input_name->setText(username);
+#ifndef KGGZ_WALLET
 	input_password->setText(password);
+#endif
 	slotModes(type);
 
 	// free allocated memory
