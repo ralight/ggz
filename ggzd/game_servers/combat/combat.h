@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define PROTOCOL_VERSION 8
+#define PROTOCOL_VERSION 9
 
 /* Combat Protocol Version 0.1
  *
@@ -139,7 +139,7 @@
  * 	game_options: To avoid problems between wrong versions of the protocol,
  * 	all the game options are enclosed in packets, like this:
  *
- * 	(byte)OPTION_IDENTIFER ++ (string)OPTION_DATA ++ \0
+ * 	(byte)OPTION_IDENTIFER ++ OPTION_DATA ++ \0
  *
  * 	The client then receives each packet and reads the OPTION_IDENTIFIER. If it
  * 	is a know one, then it reads the OPTION_DATA and does what is appropriated.
@@ -153,6 +153,32 @@
  *    It's the name of this map, so that the client may know which is the
  *    default name when saving it. THe OPTION_DATA is a string (*including* a
  *    closing \0) with the name of the map
+ *
+ *  02h -> Binary Options Pack 1
+ *
+ *    It's a pack of 16 binary options. The OPTION_DATA are two bytes
+ *    (16 bits). Each one of the 16 options have a id. The options that are on
+ *    and whose id is <= 256 are ||ed in the first byte. Those options
+ *    whose id is > 256 receive a 8 bits right shift and then are ||ed on the
+ *    second byte. The options are (in order):
+ *
+ *      - OPT_OPEN_MAP                \
+ *      - OPT_ONE_TIME_BOMB           |
+ *      - OPT_TERRORIST_SPY           |\
+ *      - OPT_MOVING_BOMB             | > first byte
+ *      - OPT_SUPER_SCOUT             |/
+ *      - OPT_UNITS_ADVANCE           |
+ *      - OPT_RANDOM_OUTCOME          |
+ *      - OPT_ALLOW_DIAGONAL          /
+ *
+ *      - OPT_UNKNOWN_VICTOR           \
+ *      - OPT_SILENT_DEFENSE          |
+ *      - OPT_SILENT_OFFENSE          |\
+ *      - OPT_RANDOM_SETUP            | > second byte
+ *      - OPT_SF_SERGEANT             |/
+ *      - OPT_RUSH_ATTACK             |
+ *      - OPT_HIDE_UNIT_LIST          |
+ *      - OPT_SHOW_ENEMY_UNITS        /
  * 	 
  * The server then check for the validity of this options. Things to
  * check:
@@ -317,6 +343,25 @@
 
 // Options codes
 #define O_NAME       0x01 // Name of the map
+#define O_BIN1       0x02 // Binary options pack 1
+
+// Binary options code
+#define OPT_OPEN_MAP         (1<<0)
+#define OPT_ONE_TIME_BOMB    (1<<1)
+#define OPT_TERRORIST_SPY    (1<<2)
+#define OPT_MOVING_BOMB      (1<<3)
+#define OPT_SUPER_SCOUT      (1<<4)
+#define OPT_UNITS_ADVANCE    (1<<5)
+#define OPT_RANDOM_OUTCOME   (1<<6)
+#define OPT_ALLOW_DIAGONAL   (1<<7)
+#define OPT_UNKNOWN_VICTOR   (1<<8)
+#define OPT_SILENT_DEFENSE   (1<<9)
+#define OPT_SILENT_OFFENSE   (1<<10)
+#define OPT_RANDOM_SETUP     (1<<11)
+#define OPT_SF_SERGEANT      (1<<12)
+#define OPT_RUSH_ATTACK      (1<<13)
+#define OPT_HIDE_UNIT_LIST   (1<<14)
+#define OPT_SHOW_ENEMY_UNITS (1<<15)
 
 // Takes a OWNER number and returns a code to be added to U/T
 // Note that player 0 is stored as 0001 (as 0000 must be no player)
@@ -412,10 +457,11 @@ typedef struct combat_game_struct {
   int state;
   int turn;
   int number;
+  unsigned long int options;
 } combat_game;
 
 // Commom functions
-char *combat_options_string_write(combat_game *, int);
-int combat_options_string_read(char *, combat_game *);
+unsigned char *combat_options_string_write(combat_game *, int);
+int combat_options_string_read(unsigned char *optstr, combat_game *);
 int combat_check_move(combat_game *, int, int);
 int combat_options_check(combat_game *);

@@ -46,6 +46,7 @@ void game_init() {
 	cbt_game.height = 0;
 	cbt_game.state = CBT_STATE_INIT;
 	cbt_game.turn = 0;
+  cbt_game.options = 0;
   cbt_game.name = NULL;
 }
 	
