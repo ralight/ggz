@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 4528 2002-09-12 19:34:02Z jdorje $
+ * $Id: ggzd.h 4542 2002-09-13 06:40:51Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -28,8 +28,8 @@
 #define _GGZ_DEFS
 
 /* Server options */
-/* #define UNLIMITED_SEATS */
-/* #define UNLIMITED_SPECTATORS */
+#define UNLIMITED_SEATS
+#define UNLIMITED_SPECTATORS
 
 /* Server limits */
 #define MAX_USER_NAME_LEN 16
