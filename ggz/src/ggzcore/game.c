@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 4970 2002-10-21 04:35:41Z jdorje $
+ * $Id: game.c 4982 2002-10-22 04:25:36Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -49,6 +49,7 @@
 #include "ggzcore.h"
 #include "hook.h"
 #include "module.h"
+#include "net.h"
 #include "room.h"
 #include "server.h"
 
@@ -108,7 +109,16 @@ struct _GGZGame {
 };
 
 
-static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event, void *data);
+static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event,
+				       void *data);
+static void _ggzcore_game_handle_sit(GGZMod *mod, GGZModTransaction t,
+				     void *data);
+static void _ggzcore_game_handle_stand(GGZMod *mod, GGZModTransaction t,
+				       void *data);
+static void _ggzcore_game_handle_boot(GGZMod *mod, GGZModTransaction t,
+				      void *data);
+static void _ggzcore_game_handle_seatchange(GGZMod *mod, GGZModTransaction t,
+					     void *data);
 
 
 /* Publicly exported functions */
@@ -277,6 +287,21 @@ void _ggzcore_game_init(struct _GGZGame *game,
 	ggzmod_set_gamedata(game->client, game);
 	ggzmod_set_handler(game->client, GGZMOD_EVENT_STATE,
 			   &_ggzcore_game_handle_state);
+	ggzmod_set_transaction_handler(game->client,
+				       GGZMOD_TRANSACTION_SIT,
+				       &_ggzcore_game_handle_sit);
+	ggzmod_set_transaction_handler(game->client,
+				       GGZMOD_TRANSACTION_STAND,
+				       &_ggzcore_game_handle_stand);
+	ggzmod_set_transaction_handler(game->client,
+				       GGZMOD_TRANSACTION_BOOT,
+				       &_ggzcore_game_handle_boot);
+	ggzmod_set_transaction_handler(game->client,
+				       GGZMOD_TRANSACTION_OPEN,
+				       &_ggzcore_game_handle_seatchange);
+	ggzmod_set_transaction_handler(game->client,
+				       GGZMOD_TRANSACTION_BOT,
+				       &_ggzcore_game_handle_seatchange);
 	ggzmod_set_module(game->client, NULL,
 			  _ggzcore_module_get_argv(game->module));
 	ggzmod_set_player(game->client,
@@ -314,6 +339,47 @@ static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event, void *dat
 		break;
 
 	}
+}
+
+
+static void _ggzcore_game_handle_sit(GGZMod *mod, GGZModTransaction t,
+				     void *data)
+{
+
+}
+
+
+static void _ggzcore_game_handle_stand(GGZMod *mod, GGZModTransaction t,
+				       void *data)
+{
+
+}
+
+
+static void _ggzcore_game_handle_boot(GGZMod *mod, GGZModTransaction t,
+				      void *data)
+{
+
+}
+
+
+static void _ggzcore_game_handle_seatchange(GGZMod *mod, GGZModTransaction t,
+					    void *data)
+{
+	GGZGame* game = ggzmod_get_gamedata(mod);
+	GGZNet *net = _ggzcore_server_get_net(game->server);
+	int seat_num = *(int*)data;
+	struct _GGZSeat seat = {index: seat_num, name: NULL};
+	GGZRoom *room = _ggzcore_server_get_nth_room(game->server,
+						     game->room_id);
+	GGZTable *table = _ggzcore_room_get_table_by_id(room, game->table_id);
+
+	if (t == GGZMOD_TRANSACTION_OPEN)
+		seat.type = GGZ_SEAT_OPEN;
+	else
+		seat.type = GGZ_SEAT_BOT;
+
+	_ggzcore_net_send_table_seat_update(net, table, &seat);
 }
 
 
