@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 2832 2001-12-09 21:41:07Z jdorje $
+ * $Id: games.c 2834 2001-12-09 22:12:57Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -124,7 +124,7 @@ int games_valid_game(int which_game)
    below. */
 int games_req_gametype()
 {
-	int fd = game.host >= 0 ? ggzd_get_player_socket(game.host) : -1;
+	int fd = game.host >= 0 ? get_player_socket(game.host) : -1;
 	int cnt = 0, i;
 	int status = 0;
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 2832 2001-12-09 21:41:07Z jdorje $
+ * $Id: hearts.c 2834 2001-12-09 22:12:57Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -315,14 +315,14 @@ static void hearts_end_hand(void)
 
 		if (score == -26) {
 			snprintf(buf, sizeof(buf), "%s shot the moon.",
-				 ggzd_get_player_name(p));
+				 get_player_name(p));
 			max = 26;
 		} else if (fullscore > max) {
 			/* only the maximum player's score is written; this
 			   is less than ideal. */
 			max = fullscore;
 			snprintf(buf, sizeof(buf), "%s took %d points.",
-				 ggzd_get_player_name(p), fullscore);
+				 get_player_name(p), fullscore);
 		}
 	}
 	set_global_message("", "%s", buf);

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2833 2001-12-09 21:55:26Z jdorje $
+ * $Id: common.c 2834 2001-12-09 22:12:57Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -135,19 +135,18 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	int fd, op, status = 0;
 	bid_t bid;
 
-	fd = ggzd_get_player_socket(p);
+	fd = get_player_socket(p);
 
 	if (read_opcode(fd, &op) < 0)
 		return;
 
 	if (op >= 0 && op <= REQ_SYNC)
 		ggzdmod_log(game.ggz, "Received %d (%s) from player %d/%s.",
-			    op, player_messages[op], p,
-			    ggzd_get_player_name(p));
+			    op, player_messages[op], p, get_player_name(p));
 	else
 		ggzdmod_log(game.ggz,
 			    "Received unknown message %d from player %d/%s.",
-			    op, p, ggzd_get_player_name(p));
+			    op, p, get_player_name(p));
 
 	switch (op) {
 	case RSP_NEWGAME:
@@ -207,7 +206,7 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	if (status != 0)
 		ggzdmod_log(game.ggz,
 			    "ERROR: handle_player: status is %d on message from player %d/%s.",
-			    status, p, ggzd_get_player_name(p));
+			    status, p, get_player_name(p));
 }
 
 /* Setup game state and board.  Also initializes the _type_ of game. */
@@ -238,12 +237,12 @@ static int try_to_start_game(void)
 
 	for (p = 0; p < game.num_players; p++)
 		if (!game.players[p].ready
-		    && ggzd_get_seat_status(p) != GGZ_SEAT_BOT) {
+		    && get_player_status(p) != GGZ_SEAT_BOT) {
 			/* we could send another REQ_NEWGAME as a reminder,
 			   but there would be no way for the client to know
 			   that it was a duplicate. */
 			ggzdmod_log(game.ggz, "Player %d/%s is not ready.", p,
-				    ggzd_get_player_name(p));
+				    get_player_name(p));
 			ready = 0;
 		}
 	if (ready && options_set()) {
@@ -298,7 +297,7 @@ void next_play(void)
 		for (p = 0; p < game.num_players; p++)
 			game.players[p].ready = 0;
 		for (p = 0; p < game.num_players; p++)
-			if (ggzd_get_seat_status(p) != GGZ_SEAT_BOT)
+			if (get_player_status(p) != GGZ_SEAT_BOT)
 				(void) send_newgame_request(p);
 		break;
 	case STATE_NEXT_HAND:
@@ -357,14 +356,14 @@ void next_play(void)
 	case STATE_NEXT_BID:
 		ggzdmod_log(game.ggz, "Next play: bid %d/%d - player %d/%s.",
 			    game.bid_count, game.bid_total, game.next_bid,
-			    ggzd_get_player_name(game.next_bid));
+			    get_player_name(game.next_bid));
 		game.funcs->get_bid();
 		break;
 	case STATE_NEXT_PLAY:
 		ggzdmod_log(game.ggz,
 			    "Next play: playing %d/%d - player %d/%s.",
 			    game.play_count, game.play_total, game.next_play,
-			    ggzd_get_player_name(game.next_play));
+			    get_player_name(game.next_play));
 		game.funcs->get_play(game.next_play);
 		break;
 	case STATE_FIRST_TRICK:
@@ -388,7 +387,7 @@ void next_play(void)
 		ggzdmod_log(game.ggz,
 			    "Next play: next trick %d/%d - leader is %d/%s.",
 			    game.trick_count, game.trick_total, game.leader,
-			    ggzd_get_player_name(game.leader));
+			    get_player_name(game.leader));
 		game.play_count = 0;
 		game.next_play = game.leader;
 		set_game_state(STATE_NEXT_PLAY);
@@ -411,7 +410,7 @@ static int determine_host(void)
 	player_t p, host = -1;
 	int age = -1;
 	for (p = 0; p < game.num_players; p++)
-		if (ggzd_get_seat_status(p) == GGZ_SEAT_PLAYER)
+		if (get_player_status(p) == GGZ_SEAT_PLAYER)
 			if (game.players[p].age >= 0)
 				if (age == -1 || game.players[p].age < age) {
 					host = p;
@@ -435,8 +434,7 @@ void handle_launch_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 
 	/* determine number of players. */
 	game.num_players = ggzdmod_get_num_seats(game.ggz);	/* ggz seats
-								   == players 
-								 */
+								   == players */
 	game.host = -1;		/* no host since none has joined yet */
 
 	game.players = ggz_malloc(game.num_players * sizeof(*game.players));
@@ -480,7 +478,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 
 	/* get player's name */
 	if (seat >= 0) {	/* see above comment about seat==-1 */
-		game.seats[seat].name = ggzd_get_player_name(player);
+		game.seats[seat].name = get_player_name(player);
 		if (!game.seats[seat].name)
 			game.seats[seat].name = "[unknown]";
 	}
@@ -578,8 +576,7 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 
 	/* save old state and enter waiting phase */
 	if (ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN) > 0)	/* should be
-								   a given... 
-								 */
+								   a given... */
 		save_game_state();
 
 	return;
@@ -589,7 +586,7 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 int handle_newgame_event(player_t player)
 {
 	ggzdmod_log(game.ggz, "Handling a newgame event for player %d/%s.",
-		    player, ggzd_get_player_name(player));
+		    player, get_player_name(player));
 	game.players[player].ready = 1;
 	if (player == game.host && !options_set())
 		get_options();
@@ -815,12 +812,11 @@ void init_game()
 
 	set_global_message("", "%s", "");
 	/* This is no longer necessary under the put_player_message system
-	   for (s = 0; s < game.num_seats; s++) game.seats[s].message[0] = 0; 
-	 */
+	   for (s = 0; s < game.num_seats; s++) game.seats[s].message[0] = 0; */
 
 	/* set AI names */
 	for (p = 0; p < game.num_players; p++)
-		if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT)
+		if (get_player_status(p) == GGZ_SEAT_BOT)
 			set_player_name(p, ai_get_name(p));
 
 	game.initted = 1;
@@ -834,7 +830,7 @@ void assign_seat(seat_t s, player_t p)
 	game.players[p].seat = s;
 
 	/* set up name for seat */
-	name = ggzd_get_player_name(p);
+	name = get_player_name(p);
 	if (name)
 		game.seats[s].name = name;
 }
@@ -857,7 +853,7 @@ const char *get_seat_name(seat_t s)
 GGZdModSeat get_seat_status(seat_t s)
 {
 	if (game.seats[s].player >= 0)
-		return ggzd_get_seat_status(game.seats[s].player);
+		return get_player_status(game.seats[s].player);
 	else
 		return GGZ_SEAT_NONE;
 }

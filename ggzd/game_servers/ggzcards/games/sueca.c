@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 2832 2001-12-09 21:41:07Z jdorje $
+ * $Id: sueca.c 2834 2001-12-09 22:12:57Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein
  *
@@ -177,29 +177,25 @@ static void sueca_end_hand(void)
 		game.players[2].score += 2;
 		set_global_message("",
 				   "%s/%s got more than 90 points and so got 2 games",
-				   ggzd_get_player_name(0),
-				   ggzd_get_player_name(2));
+				   get_player_name(0), get_player_name(2));
 	} else if (points > 60) {
 		game.players[0].score++;
 		game.players[2].score++;
 		set_global_message("",
 				   "%s/%s got more than 60 points and won that hand",
-				   ggzd_get_player_name(0),
-				   ggzd_get_player_name(2));
+				   get_player_name(0), get_player_name(2));
 	} else if (points > 30) {
 		game.players[1].score++;
 		game.players[3].score++;
 		set_global_message("",
 				   "%s/%s got more than 60 points and won that hand",
-				   ggzd_get_player_name(1),
-				   ggzd_get_player_name(3));
+				   get_player_name(1), get_player_name(3));
 	} else {
 		game.players[1].score += 2;
 		game.players[3].score += 2;
 		set_global_message("",
 				   "%s/%s got more than 90 points and so got 2 games",
-				   ggzd_get_player_name(1),
-				   ggzd_get_player_name(3));
+				   get_player_name(1), get_player_name(3));
 	}
 
 	set_all_player_messages();

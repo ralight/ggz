@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2823 2001-12-09 08:16:26Z jdorje $
+ * $Id: net.c 2834 2001-12-09 22:12:57Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -54,12 +54,12 @@ int send_player_list(player_t p)
 	seat_t s_rel;
 	int status = 0;
 
-	fd = ggzd_get_player_socket(p);
+	fd = get_player_socket(p);
 	if (fd == -1)
 		return 0;
 
 	ggzdmod_log(game.ggz, "Sending seat list to player %d/%s (%d seats)",
-		    p, ggzd_get_player_name(p), game.num_seats);
+		    p, get_player_name(p), game.num_seats);
 
 	if (write_opcode(fd, MSG_PLAYERS) < 0 ||
 	    es_write_int(fd, game.num_seats) < 0)
@@ -108,7 +108,7 @@ int send_play(card_t card, seat_t seat)
 	int status = 0;
 
 	for (p = 0; p < game.num_players; p++) {
-		fd = ggzd_get_player_socket(p);
+		fd = get_player_socket(p);
 		if (fd == -1)	/* don't send to bots */
 			continue;
 		if (write_opcode(fd, MSG_PLAY) < 0
@@ -152,7 +152,7 @@ int send_gameover(int winner_cnt, player_t * winners)
 	for (p = 0; p < game.num_players; p++) {
 		set_player_message(p);	/* some data could have changed */
 
-		fd = ggzd_get_player_socket(p);
+		fd = get_player_socket(p);
 		if (fd == -1)
 			continue;
 
@@ -175,13 +175,13 @@ int send_gameover(int winner_cnt, player_t * winners)
 /* sends the list of cards on the table, in their relative orderings */
 int send_table(player_t p)
 {
-	int s_r, s_abs, status = 0, fd = ggzd_get_player_socket(p);
+	int s_r, s_abs, status = 0, fd = get_player_socket(p);
 
 	if (game.num_seats == 0)
 		return 0;
 
 	ggzdmod_log(game.ggz, "Sending table to player %d/%s.", p,
-		    ggzd_get_player_name(p));
+		    get_player_name(p));
 
 	if (fd == -1) {
 		ggzdmod_log(game.ggz, "ERROR: send_table: fd==-1.");
@@ -210,7 +210,7 @@ int send_sync(player_t p)
 	int status = 0;
 
 	ggzdmod_log(game.ggz, "Sending sync to player %d/%s.", p,
-		    ggzd_get_player_name(p));
+		    get_player_name(p));
 
 	if (send_player_list(p) < 0)
 		status = -1;
@@ -250,7 +250,7 @@ int send_sync_all(void)
 	int status = 0;
 
 	for (p = 0; p < game.num_players; p++)
-		if (ggzd_get_seat_status(p) == GGZ_SEAT_PLAYER)
+		if (get_player_status(p) == GGZ_SEAT_PLAYER)
 			if (send_sync(p) < 0)
 				status = -1;
 
@@ -263,7 +263,7 @@ int send_bid_request(player_t p, int bid_count, bid_t * bids)
 {
 	int i, status = 0;
 
-	int fd = ggzd_get_player_socket(p);
+	int fd = get_player_socket(p);
 	/* request a bid from the client */
 	if (fd == -1 ||
 	    write_opcode(fd, REQ_BID) < 0 || es_write_int(fd, bid_count) < 0)
@@ -284,7 +284,7 @@ int send_play_request(player_t p, seat_t s)
 
 	ggzdmod_log(game.ggz, "Requesting player %d/%s "
 		    "to play from seat %d/%s's hand.", p,
-		    ggzd_get_player_name(p), s, get_seat_name(s));
+		    get_player_name(p), s, get_seat_name(s));
 
 	/* although the game_* functions probably track this data themselves,
 	   we track it here as well just in case. */
@@ -294,11 +294,11 @@ int send_play_request(player_t p, seat_t s)
 	set_game_state(STATE_WAIT_FOR_PLAY);
 	set_player_message(p);
 
-	if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT) {
+	if (get_player_status(p) == GGZ_SEAT_BOT) {
 		/* request a play from the ai */
 		handle_play_event(ai_get_play(p, s));
 	} else {
-		int fd = ggzd_get_player_socket(p);
+		int fd = get_player_socket(p);
 		if (fd == -1)
 			ggzdmod_log(game.ggz,
 				    "ERROR: SERVER BUG: "
@@ -312,7 +312,7 @@ int send_play_request(player_t p, seat_t s)
 
 int send_badplay(player_t p, char *msg)
 {
-	int fd = ggzd_get_player_socket(p);
+	int fd = get_player_socket(p);
 	if (fd == -1)		/* don't send to bots */
 		return 0;
 	set_game_state(STATE_WAIT_FOR_PLAY);
@@ -325,7 +325,7 @@ int send_badplay(player_t p, char *msg)
    is true. */
 int send_hand(const player_t p, const seat_t s, int reveal)
 {
-	int fd = ggzd_get_player_socket(p);
+	int fd = get_player_socket(p);
 	int i, status = 0;
 
 	if (fd == -1)		/* Don't send to a bot */
@@ -341,7 +341,7 @@ int send_hand(const player_t p, const seat_t s, int reveal)
 		reveal = 1;
 
 	ggzdmod_log(game.ggz, "Sending player %d/%s hand %d/%s - %srevealing",
-		    p, ggzd_get_player_name(p), s, get_seat_name(s),
+		    p, get_player_name(p), s, get_seat_name(s),
 		    reveal ? "" : "not ");
 
 	if (write_opcode(fd, MSG_HAND) < 0
@@ -373,7 +373,7 @@ int send_trick(player_t winner)
 
 	ggzdmod_log(game.ggz,
 		    "Sending out trick (%d/%s won) and cleaning it up.",
-		    winner, ggzd_get_player_name(winner));
+		    winner, get_player_name(winner));
 
 	for (s = 0; s < game.num_seats; s++)
 		/* note: we also clear the table at the beginning of every
@@ -381,7 +381,7 @@ int send_trick(player_t winner)
 		game.seats[s].table = UNKNOWN_CARD;
 
 	for (p = 0; p < game.num_players; p++) {
-		fd = ggzd_get_player_socket(p);
+		fd = get_player_socket(p);
 		if (fd == -1)
 			continue;
 
@@ -398,22 +398,22 @@ int send_trick(player_t winner)
 int send_newgame_request(player_t p)
 {
 	int fd, status;
-	fd = ggzd_get_player_socket(p);
+	fd = get_player_socket(p);
 	if (fd == -1) {
 		ggzdmod_log(game.ggz, "ERROR: "
 			    "req_newgame: fd is -1 for player %d/%s.", p,
-			    ggzd_get_player_name(p));
+			    get_player_name(p));
 		return -1;
 	}
 
 	ggzdmod_log(game.ggz, "Sending out a REQ_NEWGAME to player %d/%s.", p,
-		    ggzd_get_player_name(p));
+		    get_player_name(p));
 	status = write_opcode(fd, REQ_NEWGAME);
 
 	if (status != 0)
 		ggzdmod_log(game.ggz, "ERROR: "
 			    "req_newgame: status is %d for player %d/%s.",
-			    status, p, ggzd_get_player_name(p));
+			    status, p, get_player_name(p));
 	return status;
 }
 
@@ -425,9 +425,9 @@ int send_newgame(void)
 	ggzdmod_log(game.ggz, "Sending out a newgame message.");
 
 	for (p = 0; p < game.num_players; p++) {
-		if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT)
+		if (get_player_status(p) == GGZ_SEAT_BOT)
 			continue;
-		fd = ggzd_get_player_socket(p);
+		fd = get_player_socket(p);
 		if (fd == -1 || write_opcode(fd, MSG_NEWGAME) < 0) {
 			ggzdmod_log(game.ggz,
 				    "ERROR: send_newgame: couldn't send newgame.");
@@ -442,7 +442,7 @@ int send_newgame(void)
 /* receives a play from the client, and calls update if necessary.  */
 int rec_play(player_t p)
 {
-	int fd = ggzd_get_player_socket(p), i;
+	int fd = get_player_socket(p), i;
 	card_t card;
 	seat_t s = game.play_seat;
 	hand_t *hand = &game.seats[s].hand;
@@ -456,7 +456,7 @@ int rec_play(player_t p)
 	if (game.state != STATE_WAIT_FOR_PLAY) {
 		ggzdmod_log(game.ggz,
 			    "SERVER/CLIENT BUG: we received a play (player %d/%s) when we weren't waiting for one.",
-			    p, ggzd_get_player_name(p));
+			    p, get_player_name(p));
 		return -1;
 	}
 
@@ -466,7 +466,7 @@ int rec_play(player_t p)
 		   play */
 		ggzdmod_log(game.ggz,
 			    "SERVER/CLIENT BUG: player %d/%s played out of turn!?!?",
-			    p, ggzd_get_player_name(p));
+			    p, get_player_name(p));
 		return -1;
 	}
 
@@ -481,14 +481,14 @@ int rec_play(player_t p)
 				    "  This must be a bug.");
 		ggzdmod_log(game.ggz, "CLIENT BUG: "
 			    "player %d/%s played a card that wasn't in their hand (%i %i %i)!?!?",
-			    p, ggzd_get_player_name(p), card.face, card.suit,
+			    p, get_player_name(p), card.face, card.suit,
 			    card.deck);
 		return -1;
 	}
 
 	ggzdmod_log(game.ggz, "We received a play of card "
 		    "(%d %d %d) from player %d/%s.", card.face, card.suit,
-		    card.deck, p, ggzd_get_player_name(p));
+		    card.deck, p, get_player_name(p));
 
 	/* we've verified that this card could have physically been played;
 	   we still need to check if it's a legal play Note, however, that we
@@ -510,9 +510,9 @@ int rec_play(player_t p)
 void send_global_text_message(player_t p, const char *mark,
 			      const char *message)
 {
-	int fd = ggzd_get_player_socket(p);
-	if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT
-	    || ggzd_get_seat_status(p) == GGZ_SEAT_OPEN)
+	int fd = get_player_socket(p);
+	if (get_player_status(p) == GGZ_SEAT_BOT
+	    || get_player_status(p) == GGZ_SEAT_OPEN)
 		return;
 	assert(mark);
 	if (message == NULL)
@@ -531,12 +531,12 @@ void send_global_text_message(player_t p, const char *mark,
 void send_global_cardlist_message(player_t p, const char *mark, int *lengths,
 				  card_t ** cardlist)
 {
-	int fd = ggzd_get_player_socket(p);
+	int fd = get_player_socket(p);
 	int error = 0, i;
 	seat_t s_rel;
 
-	if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT
-	    || ggzd_get_seat_status(p) == GGZ_SEAT_OPEN)
+	if (get_player_status(p) == GGZ_SEAT_BOT
+	    || get_player_status(p) == GGZ_SEAT_OPEN)
 		return;
 	assert(mark && cardlist && lengths);
 	ggzdmod_log(game.ggz, "Sending global cardlist message to player %d.",

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 2823 2001-12-09 08:16:26Z jdorje $
+ * $Id: bid.c 2834 2001-12-09 22:12:57Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -73,7 +73,7 @@ int req_bid(player_t p)
 
 	ggzdmod_log(game.ggz,
 		    "Requesting a bid from player %d/%s; %d choices", p,
-		    ggzd_get_player_name(p), bid_data->bid_count);
+		    get_player_name(p), bid_data->bid_count);
 
 	if (bid_data->is_bidding)
 		ggzdmod_log(game.ggz, "ERROR: req_bid: "
@@ -83,7 +83,7 @@ int req_bid(player_t p)
 	set_player_message(p);
 	set_game_state(STATE_NONE);
 
-	if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT) {
+	if (get_player_status(p) == GGZ_SEAT_BOT) {
 		/* request a bid from the ai */
 		handle_bid_event(p,
 				 ai_get_bid(p, bid_data->bids,
@@ -121,7 +121,7 @@ int request_all_bids(void)
 	/* Send all human-player bid requests */
 	for (p = 0; p < game.num_players; p++)
 		if (game.players[p].bid_data.bid_count > 0
-		    && ggzd_get_seat_status(p) == GGZ_SEAT_PLAYER) {
+		    && get_player_status(p) == GGZ_SEAT_PLAYER) {
 			if (send_bid_request
 			    (p, game.players[p].bid_data.bid_count,
 			     game.players[p].bid_data.bids) < 0)
@@ -132,7 +132,7 @@ int request_all_bids(void)
 	bids = ggz_malloc(sizeof(*bids) * game.num_players);
 	for (p = 0; p < game.num_players; p++)
 		if (game.players[p].bid_data.bid_count > 0
-		    && ggzd_get_seat_status(p) == GGZ_SEAT_BOT)
+		    && get_player_status(p) == GGZ_SEAT_BOT)
 			bids[p] =
 				ai_get_bid(p, game.players[p].bid_data.bids,
 					   game.players[p].bid_data.
@@ -141,7 +141,7 @@ int request_all_bids(void)
 	/* Now register all bot-player bid requests. */
 	for (p = 0; p < game.num_players; p++)
 		if (game.players[p].bid_data.bid_count > 0
-		    && ggzd_get_seat_status(p) == GGZ_SEAT_BOT)
+		    && get_player_status(p) == GGZ_SEAT_BOT)
 			handle_bid_event(p, bids[p]);
 
 	/* OK, we're done.  We return now, and continue to wait for responses
@@ -160,7 +160,7 @@ int request_all_bids(void)
 int rec_bid(player_t p, bid_t * bid)
 {
 	bid_data_t *bid_data = &game.players[p].bid_data;
-	int fd = ggzd_get_player_socket(p), index;
+	int fd = get_player_socket(p), index;
 
 	/* Receive the bid index */
 	if (es_read_int(fd, &index) < 0)
@@ -172,7 +172,7 @@ int rec_bid(player_t p, bid_t * bid)
 		   to.  Of course, a smart client won't do this. */
 		ggzdmod_log(game.ggz,
 			    "Received out-of-turn bid from player %d/%s.", p,
-			    ggzd_get_player_name(p));
+			    get_player_name(p));
 	} else if (bid_data->bid_count == 0) {
 		/* This is probably an error/bug in ggzcards-server. */
 		ggzdmod_log(game.ggz,
@@ -188,6 +188,6 @@ int rec_bid(player_t p, bid_t * bid)
 
 	/* Success! */
 	ggzdmod_log(game.ggz, "Received bid choice %d from player %d/%s",
-		    index, p, ggzd_get_player_name(p));
+		    index, p, get_player_name(p));
 	return 0;
 }

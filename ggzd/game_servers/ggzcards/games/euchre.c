@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2832 2001-12-09 21:41:07Z jdorje $
+ * $Id: euchre.c 2834 2001-12-09 22:12:57Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -267,7 +267,7 @@ static void euchre_start_playing(void)
 		}
 
 	set_global_message("", "%s is the maker in %s.",
-			   ggzd_get_player_name(EUCHRE.maker),
+			   get_player_name(EUCHRE.maker),
 			   suit_names[(int) game.trump]);
 	game.leader = (game.dealer + 1) % game.num_players;
 
@@ -285,8 +285,7 @@ static void euchre_get_play(player_t p)
 		int p2 = (p + 1) % 4;
 		ggzdmod_log(game.ggz,
 			    "EUCHRE: skipping player %d/%s; going on to player %d/%s",
-			    p, ggzd_get_player_name(p), p2,
-			    ggzd_get_player_name(p2));
+			    p, get_player_name(p), p2, get_player_name(p2));
 		p = p2;
 	}
 

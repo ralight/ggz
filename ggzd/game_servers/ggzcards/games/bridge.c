@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 2832 2001-12-09 21:41:07Z jdorje $
+ * $Id: bridge.c 2834 2001-12-09 22:12:57Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -346,12 +346,12 @@ static void bridge_set_score_message(void)
 #define BLANK_LINE len += snprintf(buf+len, sizeof(buf)-len, "%*s | %*s\n", widths[0], "", widths[1], "")
 
 	len = snprintf(buf, sizeof(buf), "%s/%s | %s/%s\n",
-		       ggzd_get_player_name(0), ggzd_get_player_name(2),
-		       ggzd_get_player_name(1), ggzd_get_player_name(3));
+		       get_player_name(0), get_player_name(2),
+		       get_player_name(1), get_player_name(3));
 	for (team = 0; team < 2; team++)
 		widths[team] =
-			strlen(ggzd_get_player_name(team)) +
-			strlen(ggzd_get_player_name(team + 2)) + 1;
+			strlen(get_player_name(team)) +
+			strlen(get_player_name(team + 2)) + 1;
 
 	HORIZONTAL_LINE;
 	BLANK_LINE;
@@ -397,8 +397,8 @@ static void bridge_end_hand(void)
 							   1) % 2;
 
 	snprintf(buf2, sizeof(buf2), "%s and %s get:\n",
-		 ggzd_get_player_name(winning_team),
-		 ggzd_get_player_name(winning_team + 2));
+		 get_player_name(winning_team),
+		 get_player_name(winning_team + 2));
 
 	if (tricks >= BRIDGE.contract) {
 		tricks_below = BRIDGE.contract;
@@ -497,12 +497,12 @@ static void bridge_end_hand(void)
 	if (tricks >= BRIDGE.contract)
 		snprintf(buf, sizeof(buf),
 			 "%s made the bid and earned %d|%d points.",
-			 ggzd_get_player_name(BRIDGE.declarer), points_above,
+			 get_player_name(BRIDGE.declarer), points_above,
 			 points_below);
 	else
 		snprintf(buf, sizeof(buf),
 			 "%s went set, giving up %d points.",
-			 ggzd_get_player_name(BRIDGE.declarer), points_above);
+			 get_player_name(BRIDGE.declarer), points_above);
 
 	/* TODO: points for honors */
 

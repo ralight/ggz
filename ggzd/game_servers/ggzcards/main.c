@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2823 2001-12-09 08:16:26Z jdorje $
+ * $Id: main.c 2834 2001-12-09 22:12:57Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -153,7 +153,6 @@ int main(int argc, char **argv)
 	}
 
 	init_ggzcards(ggz, which_game);
-	ggzdmod = ggz;		/* FIXME -- uses ggz_server.h */
 
 	/* Connect to GGZ server; main loop */
 	if (ggzdmod_connect(ggz) < 0) {
