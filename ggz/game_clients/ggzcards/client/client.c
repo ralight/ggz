@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 4119 2002-04-30 05:04:06Z jdorje $
+ * $Id: client.c 4121 2002-04-30 05:23:12Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -397,15 +397,10 @@ static int handle_msg_players(void)
 		    ggz_read_string_alloc(game_internal.fd, &new_name) < 0)
 			return -1;
 		new_type = type;
-		
+
 		old_name = ggzcards.players[i].name;
 		old_type = ggzcards.players[i].status;
 
-		/* this causes unnecessary memory fragmentation */
-		if (ggzcards.players[i].name) {
-			/* allocated by easysock */
-			ggz_free(ggzcards.players[i].name);
-		}
 		ggzcards.players[i].status = new_type;
 		ggzcards.players[i].name = new_name;
 
@@ -413,6 +408,11 @@ static int handle_msg_players(void)
 		    || !old_name
 		    || strcmp(old_name, new_name) != 0)
 			game_alert_player(i, old_type, old_name);
+
+		if (old_name) {
+			/* allocated by easysock */
+			ggz_free(old_name);
+		}
 	}
 
 	ggzcards.num_players = numplayers;
