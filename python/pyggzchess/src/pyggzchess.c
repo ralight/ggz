@@ -23,6 +23,7 @@ extern int chess_ai_find(int color, int *from, int *to);
 extern void chess_ai_output(void);
 extern int chess_ai_rochade(int color, int which);
 extern int chess_ai_exchange(int pos, int *figure);
+extern int chess_ai_checkmate(void);
 
 /**********************************************/
 /* Definitions                                */
@@ -98,6 +99,15 @@ static PyObject *pyggzchess_exchange(PyObject *self, PyObject *args)
 	return Py_BuildValue("ii", ret, figure);
 }
 
+static PyObject *pyggzchess_checkmate(PyObject *self, PyObject *args)
+{
+	int ret;
+
+	if(!PyArg_ParseTuple(args, "")) return NULL;
+	ret = chess_ai_checkmate();
+	return Py_BuildValue("i", ret);
+}
+
 /**********************************************/
 /* Function lookup table                      */
 /**********************************************/
@@ -110,6 +120,7 @@ static PyMethodDef pyggzchess_methods[] =
 	{"output", pyggzchess_output, METH_VARARGS},
 	{"rochade", pyggzchess_rochade, METH_VARARGS},
 	{"exchange", pyggzchess_exchange, METH_VARARGS},
+	{"checkmate", pyggzchess_checkmate, METH_VARARGS},
 	{NULL, NULL, 0}
 };
 
