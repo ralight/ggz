@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2975 2001-12-21 04:19:49Z jdorje $
+ * $Id: main.c 3030 2002-01-09 12:41:08Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -115,7 +115,7 @@ static void access_settings(int save)
 	if (file < 0) {
 		char *name = g_strdup_printf("%s/.ggz/ggzcards-gtk.rc",
 					     getenv("HOME"));
-		file = ggz_conf_parse(name, CONF_RDWR | CONF_CREATE);
+		file = ggz_conf_parse(name, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 
 		if (file < 0)
 			ggz_debug("main", "Couldn't open conf file '%s'.",
