@@ -19,10 +19,9 @@ require 'xmlparser'
 class GGZCommEvent
 	def initialize(name, section)
 		@datalist = Array.new
-		#@tmplist = Array.new
+		@evallist = nil
 		@name = name
 		@section = section
-		@eval = 0
 	end
 
 	def add(var, type)
@@ -38,7 +37,15 @@ class GGZCommEvent
 	end
 
 	def evaluate
-		@eval = 1
+		@datalist.push ["%EVAL", [], 0]
+	end
+
+	def endevaluate
+		@datalist.push "%ENDEVAL"
+	end
+
+	def setevallist(list)
+		@evallist = list
 	end
 
 	def name
@@ -64,6 +71,10 @@ class GGZCommEvent
 				when "%ENDSEQ"
 					seq -= 1
 					count = 0
+				when "%EVAL"
+					seq += 1
+				when "%ENDEVAL"
+					seq -= 1
 				else
 					if x.length > 0 then
 						if not definition then
@@ -142,6 +153,20 @@ class GGZCommEvent
 					count = 0
 					x = x + indent + "}\n"
 					index = ""
+				when "%EVAL"
+					seq += 1
+					x = x + indent + "\tif("
+					@evallist.each do |name, result, type|
+						if type == "="
+							type = "=="
+						end
+						x = x + name + " " + type + " " + result
+					end
+					x = x + ")\n"
+					x = x + indent + "\t{\n"
+				when "%ENDEVAL"
+					seq -= 1
+					x = x + indent + "}\n"
 				else
 					myvars[data] = 1
 					esname = type
@@ -182,7 +207,7 @@ class GGZComm
 	# Initialize all non-scalar values
 	def initialize
 		@eventlist = Array.new
-		@evallist = Array.new
+		#@evallist = Array.new
 		@constants = Hash.new
 		@clientlinks = Hash.new
 		@serverlinks = Hash.new
@@ -246,12 +271,14 @@ class GGZComm
 
 	def handle_event_eval(data)
 		@event.evaluate
-		@evallist.push "%EVAL"
+		#@evallist.push "%EVAL"
+		@evallist = []
 	end
 
 	def handle_event_condition(data)
 		xname = 0
 		xresult = 0
+		xtype = '='
 		data.each do |key, value|
 			if @verbose then
 				puts "eval:" + key + "=" + value
@@ -261,12 +288,14 @@ class GGZComm
 					xname = value
 				when "result"
 					xresult = value
+				when "type"
+					xtype = value
 				else
 					error "Attribute for 'condition' must be 'name' or 'result'"
 			end
 		end
 		if xname && xresult
-			@evallist.push [xname, xresult]
+			@evallist.push [xname, xresult, xtype]
 		else
 			error "Tag 'condition' requires both 'name' and 'result' as attribute."
 		end
@@ -451,13 +480,14 @@ class GGZComm
 							when "sequence"
 								@event.endsequence
 							when "eval"
-								@evallist.reverse_each do |name, result|
-									if name == "%SEQ"
-										@evallist.pop
-										break
-									end
-									@evallist.pop
-								end
+								@event.endevaluate
+								#@evallist.reverse_each do |name, result, type|
+								#	if name == "%SEQ"
+								#		@evallist.pop
+								#		break
+								#	end
+								#	@evallist.pop
+								@event.setevallist(@evallist)
 						end
 					when XMLParser::CDATA
 						#puts "cdata"
