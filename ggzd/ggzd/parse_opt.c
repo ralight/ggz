@@ -29,11 +29,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <dirent.h>
 
 #include <datatypes.h>
 #include <err_func.h>
 
+/* Stuff from control.c we need access to */
 extern Options opt;
+extern struct GameTypes game_types;
 
 /* Structure for Add/Ignore Games list */
 typedef struct AddIgnore {
@@ -46,12 +49,17 @@ static void parse_file(FILE *);
 static void parse_line(char *);
 static void parse_put_add_ignore_list(char *);
 static void parse_cleanup_add_ignore_list(void);
+static void parse_game(char *);
+static int parse_dselect(struct dirent *);
 
 /* Module local variables for parsing */
 static char *varname;
 static char *varvalue;
 static AddIgnoreStruct *add_ignore_list = NULL;
 static char add_all_games = 't';
+
+/* Convience macro for parse_file(), parse_game() */
+#define PARSE_ERR(s)  err_msg("Config file: %s, line %d", s, linenum)
 
 static const struct poptOption args[] = {
 	
@@ -100,7 +108,7 @@ void parse_args(int argc, char *argv[])
 void parse_conf_file(void)
 {
 	FILE *configfile;
-	char *cfname;
+	char *tempstr;
 
 	if (opt.local_conf) {
 		if((configfile=fopen(opt.local_conf,"r"))) {
@@ -112,24 +120,34 @@ void parse_conf_file(void)
 			err_msg("WARNING:  Local conf file not found!");
 	}
 
-	if((cfname=malloc(strlen(SYSCONFDIR)+11)) == NULL)
+	if((tempstr=malloc(strlen(SYSCONFDIR)+11)) == NULL)
 		err_sys_exit("malloc error in parse_conf_file()");
 
-	strcpy(cfname, SYSCONFDIR);	/* If this changes, be sure to change */
-	strcat(cfname, "/ggzd.conf");	/* the malloc() above!!!!             */
+	strcpy(tempstr, SYSCONFDIR);	/* If this changes, be sure to change */
+	strcat(tempstr, "/ggzd.conf");	/* the malloc() above!!!!             */
 
-	if((configfile=fopen(cfname,"r"))) {
-		dbg_msg("Reading global conf file : %s", cfname);
+	if((configfile=fopen(tempstr,"r"))) {
+		dbg_msg("Reading global conf file : %s", tempstr);
 		parse_file(configfile);
 	} else
 		err_msg("WARNING:  No configuration file loaded!");
 
-	free(cfname);
+	free(tempstr);
+
+	/* Add any defaults which were not config'ed */
+
+	/* If no game_dir, default it to SYSCONFDIR */
+	if(!opt.game_dir) {
+		if((tempstr=malloc(strlen(SYSCONFDIR)+1)) == NULL)
+			err_sys_exit("malloc error in parse_conf_file()");
+		strcpy(tempstr, SYSCONFDIR);
+	}
+
+	/* If no main_port, default it to 1174 */
+	if(!opt.main_port)
+		opt.main_port = 1174;
 }
 
-
-/* Convience macro for parse_file() */
-#define PARSE_ERR(s)  err_msg("Config file: %s, line %d", s, linenum)
 
 /* Parse the pre-openend configuration file, close the file when done */
 static void parse_file(FILE *configfile)
@@ -144,7 +162,7 @@ static void parse_file(FILE *configfile)
 		parse_line(line);
 		if(varname == NULL)
 			continue; /* Blank line or comment */
-		dbg_msg("parse_line file found '%s, %s'", varname, varvalue);
+		dbg_msg("  found '%s, %s'", varname, varvalue);
 
 		/* Apply the configuration line, oh to be able to do */
 		/* a case construct with strings :)                  */
@@ -242,6 +260,212 @@ static void parse_file(FILE *configfile)
 }
 
 
+/* Main entry point for parsing the game files */
+void parse_game_files(void)
+{
+	AddIgnoreStruct *game;
+	struct dirent **namelist;
+	char *name;
+	int num_games, i;
+	int addit;
+
+	if(add_all_games == 'F') {
+		/* Go through all games explicitly included in the add list */
+		dbg_msg("Adding games in add list");
+		game = add_ignore_list;
+		while(game) {
+			parse_game(game->name);
+			game = game->next;
+		}
+	} else {
+		/* Scan for all .dsc files in the game_dir */
+		dbg_msg("Addding all games in %s", opt.game_dir);
+		num_games = scandir(opt.game_dir, &namelist, parse_dselect, 0);
+		for(i=0; i<num_games; i++) {
+			/* Make a temporary copy of the name w/o .dsc */
+			if((name=malloc(strlen(namelist[i]->d_name)+1)) == NULL)
+			       err_sys_exit("malloc error in parse_game_files");
+			strcpy(name, namelist[i]->d_name);
+			name[strlen(name)-4] = '\0';
+			/* Check to see if this game is on the ignore list */
+			game = add_ignore_list;
+			addit = 1;
+			while(game) {
+				if(strncmp(name,game->name,strlen(game->name)))
+					game = game->next;
+				else {
+					addit=0;
+					break;
+				}
+			}
+
+			/* Add it if it's not on the ignore list */
+			if(addit)
+				parse_game(name);
+			else
+				dbg_msg("Ignoring game %s", name);
+
+			free(name);
+		}
+	}
+
+	parse_cleanup_add_ignore_list();
+}
+
+
+/* Parse a single game file, adding it's values to the game table */
+static void parse_game(char *name)
+{
+	char *fname;
+	FILE *gamefile;
+	GameInfo *game_info;
+	char line[256];
+	int linenum = 0;
+	int intval;
+	char players_bits[] = { PLAY_ALLOW_ZERO, PLAY_ALLOW_ONE, PLAY_ALLOW_TWO,
+		PLAY_ALLOW_THREE, PLAY_ALLOW_FOUR, PLAY_ALLOW_FIVE,
+		PLAY_ALLOW_SIX, PLAY_ALLOW_SEVEN, PLAY_ALLOW_EIGHT };
+
+	/* Allocate space and setup a full pathname to description file */
+	if((fname = malloc(strlen(name)+strlen(opt.game_dir)+6)) == NULL)
+		err_sys_exit("malloc error in parse_game()");
+	sprintf(fname, "%s/%s.dsc", opt.game_dir, name);
+
+	if((gamefile = fopen(fname, "r")) == NULL) {
+		err_msg("Ignoring %s, could not open %s", name, fname);
+		free(fname);
+		return;
+	}
+
+	dbg_msg("Adding game %s from %s", name, fname);
+
+	/* Allocate a game_info struct for this game and default to enabled */
+	if((game_info = malloc(sizeof(GameInfo))) == NULL)
+		err_sys_exit("malloc error in parse_game()");
+	game_info->enabled = 1;
+	game_info->launch = NULL;
+
+	while(fgets(line, 256, gamefile)) {
+		linenum++;
+		parse_line(line);
+		if(varname == NULL)
+			continue; /* Blank line or comment */
+		dbg_msg("  found '%s, %s'", varname, varvalue);
+
+		/*** Name = String ***/
+		if(!strcmp(varname, "name")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			strncpy(game_info->name, varvalue, MAX_GAME_NAME_LEN);
+		}
+
+		/*** Version = X.Y.Z ***/
+		if(!strcmp(varname, "version")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			strncpy(game_info->version, varvalue, MAX_GAME_VER_LEN);
+		}
+
+		/*** Description = String ***/
+		if(!strcmp(varname, "description")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			strncpy(game_info->desc, varvalue, MAX_GAME_DESC_LEN);
+		}
+
+		/*** Author = String ***/
+		if(!strcmp(varname, "author")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			strncpy(game_info->author, varvalue, MAX_GAME_AUTH_LEN);
+		}
+
+		/*** Homepage = String ***/
+		if(!strcmp(varname, "homepage")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			strncpy(game_info->homepage, varvalue,MAX_GAME_WEB_LEN);
+		}
+
+		/*** PlayersAllowed = # ***/
+		if(!strcmp(varname, "playersallowed")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			intval = atoi(varvalue);
+			if(intval < 1 || intval > 8) {
+				PARSE_ERR("PlayersAllowed value invalid");
+				continue;
+			}
+			game_info->num_play_allow |= players_bits[intval];
+		}
+
+		/*** BotsAllowed = # ***/
+		if(!strcmp(varname, "botsallowed")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			intval = atoi(varvalue);
+			if(intval < 1 || intval > 8) {
+				PARSE_ERR("BotAllowed value invalid");
+				continue;
+			}
+			game_info->comp_allow |= players_bits[intval];
+		}
+
+		/*** OptionsSize = # ***/
+		if(!strcmp(varname, "optionssize")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			intval = atoi(varvalue);
+			if(intval < 0) {
+				PARSE_ERR("OptionsSize value invalid");
+				continue;
+			}
+			game_info->options_size = intval;
+		}
+
+		/*** ExecutablePath = String ***/
+		if(!strcmp(varname, "executablepath")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			/* Copy just the string if we have an absolute path */
+			if(*varvalue == '/')
+				strncpy(game_info->path, varvalue,MAX_PATH_LEN);
+			else
+				snprintf(game_info->path, MAX_PATH_LEN,
+					  "%s/%s", opt.game_dir, varvalue);
+		}
+
+		/*** GameDisabled ***/
+		if(!strcmp(varname, "gamedisabled"))
+			game_info->enabled = 0;
+	}
+
+	game_types.info[game_types.count] = *game_info;
+	game_types.count++;
+
+	free(game_info);
+	free(fname);
+}
+
+
 /* Parse a single line of input into a left half and a right half */
 /* separated by an (optional) equals sign                         */
 static void parse_line(char *p)
@@ -321,4 +545,11 @@ static void parse_cleanup_add_ignore_list(void)
 		add_ignore_list = add_ignore_list->next;
 		free(temp);
 	}
+}
+
+
+/* Return 1 if filename matches our pattern (ends in '.dsc') */
+static int parse_dselect(struct dirent *dent)
+{
+	return(!strcmp(".dsc", dent->d_name+strlen(dent->d_name)-4));
 }

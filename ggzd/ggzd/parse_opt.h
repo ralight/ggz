@@ -28,3 +28,6 @@ void parse_args(int argc, char *argv[]);
 
 /* Parse options from conf file, but don't overwrite existing options*/
 void parse_conf_file(void);
+
+/* Main entry point for parsing the game files */
+void parse_game_files(void);
