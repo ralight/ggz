@@ -106,11 +106,13 @@ void types_create_or_raise(void)
 	}
 }
 
+/*
 static gboolean types_clist_events(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 
 	return FALSE;
 }
+*/
 
 
 static void types_upgrade(GtkMenuItem *menuitem, gpointer data)

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 2989 2001-12-23 03:29:59Z jdorje $
+ * $Id: game.c 3268 2002-02-06 23:48:10Z dr_maux $
  *
  * Functions for handling game events
  *
@@ -157,7 +157,7 @@ int game_init(void)
 int game_launch(void)
 {
 	gint status;
-	gchar *message;
+	/*gchar *message;*/
 
 	/* Launch game */
 	status = ggzcore_game_launch(game);

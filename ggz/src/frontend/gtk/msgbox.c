@@ -905,7 +905,7 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	GtkWidget *packingbox3;
 	GtkWidget *icon = NULL;
 	GdkColormap *colormap;
-	GdkPixmap *pixmap;
+	GdkPixmap *pixmap = NULL;
 	GdkPixmap *mask;
 	GtkWidget *dialogwidget;
 	GtkWidget *btnok;

@@ -926,7 +926,7 @@ void display_tables(void)
 
 		t = ggzcore_room_get_nth_table(room, i);
 		num   = ggzcore_table_get_id(t);
-		open = ggzcore_table_get_num_open(t);
+		open = ggzcore_table_get_seat_count(t, GGZ_SEAT_OPEN);
 		seats = ggzcore_table_get_num_seats(t);
 		desc = ggzcore_table_get_desc(t);
 			
@@ -953,6 +953,8 @@ void display_players(int event, char *name)
 	GdkPixmap *pixmap1 = NULL, *pixmap2 = NULL;
 	GdkBitmap *mask1, *mask2;
 
+	if(!name)
+		return;
 
 	tmp = lookup_widget(win_main, "player_clist");
 	if ( (num = ggzcore_room_get_num_players(room)) <= 0)
