@@ -51,7 +51,7 @@
 #define GTK_WIDGET(n) ((GtkWidget*)n)
 #undef GTK_OBJECT
 #define GTK_OBJECT(n) ((GtkObject*)n)
-#undef GTK_OBJECT_CLASS(n)
+#undef GTK_OBJECT_CLASS
 #define GTK_OBJECT_CLASS(n) ((GtkObjectClass*)n)
 
 static GtkWidgetClass *parent_class = NULL;

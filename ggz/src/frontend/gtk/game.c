@@ -32,6 +32,7 @@
 #include <gtk/gtk.h>
 #include <ggzcore.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* Hooks for game events */
 static void game_register(GGZGame *game);
