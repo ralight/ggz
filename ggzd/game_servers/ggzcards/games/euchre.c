@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 4040 2002-04-21 21:21:07Z jdorje $
+ * $Id: euchre.c 4044 2002-04-21 23:20:16Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -310,7 +310,7 @@ static void euchre_start_playing(void)
 
 	set_global_message("", "%s is the maker in %s.",
 			   get_player_name(EUCHRE.maker),
-			   suit_names[(int) game.trump]);
+			   get_suit_name(game.trump));
 	game.leader = (game.dealer + 1) % game.num_players;
 
 	/* resort/resend hand - this should be a separate function */
@@ -347,12 +347,12 @@ static void euchre_deal_hand(void)
 	   other 3. */
 	EUCHRE.up_card = deal_card(game.deck);
 	set_global_message("", "The up-card is the %s of %s.",
-			   face_names[(int) EUCHRE.up_card.face],
-			   suit_names[(int) EUCHRE.up_card.suit]);
+			   get_face_name(EUCHRE.up_card.face),
+			   get_suit_name(EUCHRE.up_card.suit));
 	/* FIXME: this message should be cardlist-style instead. */
 	set_global_message("Up-Card", "%s of %s",
-			   face_names[(int) EUCHRE.up_card.face],
-			   suit_names[(int) EUCHRE.up_card.suit]);
+			   get_face_name(EUCHRE.up_card.face),
+			   get_suit_name(EUCHRE.up_card.suit));
 	game.hand_size = 5;
 
 	/* in a regular deal, we just deal out hand_size cards to everyone */
@@ -370,7 +370,7 @@ static int euchre_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 		return snprintf(buf, buf_len, "Take");
 	case EUCHRE_TAKE_SUIT:
 		return snprintf(buf, buf_len, "Take at %s",
-				suit_names[(int) bid.sbid.suit]);
+				get_suit_name(bid.sbid.suit));
 	case EUCHRE_GO_ALONE:
 		return snprintf(buf, buf_len, "Go alone");
 	case EUCHRE_GO_TEAM:

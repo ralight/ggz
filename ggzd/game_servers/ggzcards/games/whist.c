@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Game-dependent game functions for Whist
- * $Id: whist.c 3993 2002-04-15 09:49:55Z jdorje $
+ * $Id: whist.c 4044 2002-04-21 23:20:16Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -115,10 +115,10 @@ static void whist_start_bidding(void)
 	/* TODO: send a cardlist message */
 	game.trump = trump_card.suit;
 	set_global_message("", "The dealer's up-card is the %s of %s.",
-	                   face_names[(int) trump_card.face],
-	                   suit_names[(int) trump_card.suit]);
+	                   get_face_name(trump_card.face),
+	                   get_suit_name(trump_card.suit));
 	set_global_message("Trump", "Trump is %s.",
-	                   suit_names[(int) game.trump]);
+	                   get_suit_name(game.trump));
 	set_game_state(STATE_FIRST_TRICK);
 }
 

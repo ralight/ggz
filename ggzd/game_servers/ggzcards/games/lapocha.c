@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 4040 2002-04-21 21:21:07Z jdorje $
+ * $Id: lapocha.c 4044 2002-04-21 23:20:16Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -201,7 +201,7 @@ static void lapocha_handle_bid(player_t p, bid_t bid)
 	if (bid.sbid.spec == LAPOCHA_TRUMP) {
 		game.trump = bid.sbid.suit;
 		set_global_message("", "Trump is %s.",
-				   suit_names[(int) game.trump % 4]);
+				   get_suit_name(game.trump % 4));
 		lap_send_trump();
 	} else {
 		LAPOCHA.bid_sum += bid.sbid.val;
@@ -250,7 +250,7 @@ static int lapocha_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 {
 	if (bid.sbid.spec == LAPOCHA_TRUMP)
 		return snprintf(buf, buf_len, "%s",
-				suit_names[(int) bid.sbid.suit % 4]);
+				get_suit_name(bid.sbid.suit % 4));
 	return snprintf(buf, buf_len, "%d", (int) bid.sbid.val);
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 3567 2002-03-16 05:48:45Z jdorje $
+ * $Id: suaro.c 4044 2002-04-21 23:20:16Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -251,7 +251,7 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 
 		ggz_debug(DBG_BID,
 			  "We have %d cards in %s.  Figure opponent has %d.",
-			  ourcount, suit_names[(int) c.suit], oppcount);
+			  ourcount, get_suit_name(c.suit), oppcount);
 
 		for (c.face = ACE_HIGH; c.face >= 8; c.face--) {
 			if (libai_is_card_in_hand(ME, c)) {
@@ -264,7 +264,7 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 
 				ggz_debug(DBG_BID,
 					  "Counting %d of %s as %d (%d) points.",
-					  c.face, suit_names[(int) c.suit],
+					  c.face, get_suit_name(c.suit),
 					  value, cardvalue);
 
 				cardvalue = MIN(cardvalue, 0);
@@ -285,7 +285,7 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 		}
 
 		ggz_debug(DBG_BID, "Counting %d points in %s.",
-			  tricks_in_suit, suit_names[(int) c.suit]);
+			  tricks_in_suit, get_suit_name(c.suit));
 		tricks += tricks_in_suit;
 
 	}

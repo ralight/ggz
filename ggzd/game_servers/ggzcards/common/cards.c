@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.c 4037 2002-04-21 08:14:26Z jdorje $
+ * $Id: cards.c 4044 2002-04-21 23:20:16Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.
@@ -43,6 +43,104 @@ const card_t UNKNOWN_CARD = {face: UNKNOWN_FACE,
                              deck: UNKNOWN_DECK,
                              type: UNKNOWN_CARDSET};
 
+const char *get_suit_name(char suit)
+{
+	switch (suit) {
+	case CLUBS:
+		return "clubs";
+	case DIAMONDS:
+		return "diamonds";
+	case HEARTS:
+		return "hearts";
+	case SPADES:
+		return "spades";
+	}
+	return "[invalid suit]";
+}
+
+const char *get_short_suit_name(char suit)
+{
+	switch (suit) {
+	case 0:
+		return "C";
+	case 1:
+		return "D";
+	case 2:
+		return "H";
+	case 3:
+		return "S";
+	}
+	return "X";
+}
+
+const char *get_face_name(char face)
+{
+	switch (face) {
+	case ACE_LOW:
+	case ACE_HIGH:
+		return "ace";
+	case JACK:
+		return "jack";
+	case QUEEN:
+		return "queen";
+	case KING:
+		return "king";
+	case 2:
+		return "two";
+	case 3:
+		return "three";
+	case 4:
+		return "four";
+	case 5:
+		return "five";
+	case 6:
+		return "six";
+	case 7:
+		return "seven";
+	case 8:
+		return "eight";
+	case 9:
+		return "nine";
+	case 10:
+		return "ten";
+	}
+	return "[unknown face]";
+}
+
+const char *get_short_face_name(char face)
+{
+	switch (face) {
+	case ACE_LOW:
+	case ACE_HIGH:
+		return "A";
+	case JACK:
+		return "J";
+	case QUEEN:
+		return "Q";
+	case KING:
+		return "K";
+	case 2:
+		return "2";
+	case 3:
+		return "3";
+	case 4:
+		return "4";
+	case 5:
+		return "5";
+	case 6:
+		return "6";
+	case 7:
+		return "7";
+	case 8:
+		return "8";
+	case 9:
+		return "9";
+	case 10:
+		return "10";
+	}
+	return "X";
+}
+
 int is_valid_card(card_t card)
 {
 	switch (card.type) {
@@ -77,14 +175,3 @@ int are_cards_equal(card_t card1, card_t card2)
 	       && card1.deck == card2.deck
 	       /* && card1.type == card2.type */;
 }
-
-const char *suit_names[4] = { "clubs", "diamonds", "hearts", "spades" };
-const char *short_suit_names[4] = { "C", "D", "H", "S" };
-const char *face_names[15] =
-	{ NULL, "ace", "two", "three", "four", "five", "six", "seven",
-	"eight", "nine", "ten", "jack", "queen", "king", "ace"
-};
-const char *short_face_names[15] =
-	{ NULL, "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q",
-	"K", "A"
-};
