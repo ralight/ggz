@@ -1,12 +1,12 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2609 2001-10-24 17:52:35Z jdorje $
+# $Id: Makefile.am 2611 2001-10-24 17:58:03Z jdorje $
 
 SUBDIRS = .
 
 # We prevent parallel execution since libggzdmod.a and libggzdmod.la will
 # interfere with each other (they use some of the same files, and make gets
 # confused)  --JDS
-# .NOTPARALLEL:
+.NOTPARALLEL:
 
 # This compiles for static linking with ggzd's game servers
 noinst_LIBRARIES = libggzdmod.a
