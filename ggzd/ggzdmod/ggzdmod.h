@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2788 2001-12-06 09:44:43Z jdorje $
+ * $Id: ggzdmod.h 2790 2001-12-06 21:06:22Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -272,6 +272,18 @@ void ggzdmod_set_module(GGZdMod * mod, char **args);
  *  @return 0 on success, negative on failure.
  */
 int ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat);
+
+/** @brief Count seats of the given type.
+ *
+ *  This is a convenience function that counts how many seats
+ *  there are that have the given type.  For instance, giving
+ *  seat_type==GGZ_SEAT_OPEN will count the number of open
+ *  seats.
+ *  @param mod The ggzdmod object.
+ *  @param seat_type The type of seat to be counted.
+ *  @return The number of seats that match seat_type.
+ *  @note This could go into a wrapper library instead. */
+int ggzdmod_count_seats(GGZdMod * mod, GGZdModSeat seat_type);
 
 /* 
  * Event/Data handling
