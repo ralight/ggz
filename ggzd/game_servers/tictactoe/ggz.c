@@ -286,7 +286,7 @@ int ggz_fd_max(void)
 int ggz_done(void)
 {
 	/* FIXME: Should send actual statistics */
-	if (es_write_int(fd, MSG_GAME_OVER) < 0
+	if (es_write_int(fd, REQ_GAME_OVER) < 0
 	    || es_write_int(fd, 0) < 0)
 		return -1;
 	       

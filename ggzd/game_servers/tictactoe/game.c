@@ -74,6 +74,10 @@ int game_handle_ggz(int ggz_fd, int* p_fd)
 			status = 2;
 		}
 		break;
+		
+	case RSP_GAME_OVER:
+		status = 3; /* Signal safe to exit */
+		break;
 
 	default:
 		/* Unrecognized opcode */
@@ -422,6 +426,8 @@ int game_update(int event, void* data)
 		else {
 			ttt_game.state = TTT_STATE_DONE;
 			game_send_gameover(victor);
+			/* Notify GGZ server of game over */
+			ggz_done();
 		}
 		break;
 	}

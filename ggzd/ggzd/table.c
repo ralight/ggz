@@ -359,7 +359,7 @@ static int table_handle(int request, int index, int fd)
 			status = 1;
 		break;
 
-	case MSG_GAME_OVER:
+	case REQ_GAME_OVER:
 		table_game_over(index, fd);
 		status = -1;
 		break;
@@ -501,17 +501,15 @@ static int table_game_leave(int index, int fd)
 
 static int table_game_over(int index, int fd)
 {
-
 	int i, num, p_index, won, lost;
 
 	dbg_msg(GGZ_DBG_TABLE,
-		"Handling game-over message from table %d", index);
+		"Handling game-over request from table %d", index);
 
 	/* Read number of statistics */
 	if (es_read_int(fd, &num) < 0)
 		return (-1);
-
-
+	
 	for (i = 0; i < num; i++) {
 		if (es_read_int(fd, &p_index) < 0
 		    || es_read_int(fd, &won) < 0 
@@ -522,8 +520,16 @@ static int table_game_over(int index, int fd)
 
 	}
 
-	return 0;
+	/* Mark table as done, so people don't attempt transits */
+	pthread_rwlock_wrlock(&tables.lock);
+	tables.info[index].state = GGZ_TABLE_DONE;
+	pthread_rwlock_unlock(&tables.lock);
+	
+	/* Send response back to game server, allowing termination */
+	if (es_write_int(fd, RSP_GAME_OVER) < 0)
+		return -1;
 
+	return 0;
 }
 
 
@@ -739,10 +745,12 @@ int table_leave(int p, int index)
 	pthread_rwlock_unlock(&tables.lock);
 
 	/* Make sure table is valid */
-	if (type < 0)
+	if (type < 0 || state == GGZ_TABLE_DONE) {
+		dbg_msg(GGZ_DBG_TABLE, "Player %d leaving removed table", p);
 		return E_NO_TABLE;
-
-	/* Only allow leave during gameplay if game type supports it */
+	}
+	
+      	/* Only allow leave during gameplay if game type supports it */
 	pthread_rwlock_rdlock(&game_types.lock);
 	if (state == GGZ_TABLE_PLAYING && !game_types.info[type].allow_leave) {
 		pthread_rwlock_unlock(&game_types.lock);

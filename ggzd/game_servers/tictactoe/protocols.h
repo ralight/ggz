@@ -93,13 +93,14 @@ typedef enum {
 	RSP_GAME_LEAVE,
         MSG_LOG,
         MSG_DBG,
-	MSG_GAME_OVER
+	REQ_GAME_OVER
 } TableToControl;
 
 typedef enum {
 	REQ_GAME_LAUNCH,
 	REQ_GAME_JOIN,
-	REQ_GAME_LEAVE
+	REQ_GAME_LEAVE,
+	RSP_GAME_OVER
 } ControlToTable;
 
 #define E_USR_LOOKUP   -1

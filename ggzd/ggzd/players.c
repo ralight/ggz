@@ -264,7 +264,9 @@ static void player_loop(int p_index, int p_fd)
 			case GGZ_REQ_TABLE_LEAVE:
 				dbg_msg(GGZ_DBG_TABLE,
 					"Player %d game-over [user]", p_index);
-				game_over = 1;
+				/* Mark game over if we haven't already */
+				if (t_fd != -1)
+					game_over = 1;
 				break;
 			case GGZ_REQ_FAIL:
 			case GGZ_REQ_OK:

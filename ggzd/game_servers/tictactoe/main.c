@@ -36,6 +36,7 @@ extern struct ttt_game_t ttt_game;
 
 int main(void)
 {
+	char game_over = 0;
 	int i, fd, ggz_sock, fd_max, status;
 	fd_set active_fd_set, read_fd_set;
 	
@@ -50,7 +51,7 @@ int main(void)
 	FD_SET(ggz_sock, &active_fd_set);
 
 	game_init();
-	while(ttt_game.state != TTT_STATE_DONE) {
+	while(!game_over) {
 		
 		read_fd_set = active_fd_set;
 		fd_max = ggz_fd_max();
@@ -82,6 +83,10 @@ int main(void)
 			case 2: /* A player left */
 				FD_CLR(fd, &active_fd_set);
 				break;
+				
+			case 3: /*Safe to exit */
+				game_over = 1;
+				break;
 			}
 		}
 
@@ -96,7 +101,6 @@ int main(void)
 		}
 	}
 
-	ggz_done();
 	ggz_quit();
 	return 0;
 }
