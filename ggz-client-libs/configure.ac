@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5862 2004-02-09 04:58:25Z jdorje $
+dnl $Id: configure.ac 5941 2004-02-16 07:57:50Z jdorje $
 
 AC_INIT([GGZ client libraries], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -69,9 +69,10 @@ AC_EGREP_CPP(PF_LOCAL,
 
 # Check for library functions
 # ===========================
-AC_CHECK_FUNCS([dup2 select strcasecmp strchr strerror \
-                fork malloc select vprintf], [],
+AC_CHECK_FUNCS([dup2 strcasecmp strchr strerror \
+                malloc vprintf], [],
                [AC_MSG_ERROR([cannot find required function])])
+AC_CHECK_FUNCS([fork select]) # These fail; dunno why
 AC_FUNC_FORK
 AC_FUNC_MALLOC
 AC_FUNC_SELECT_ARGTYPES
