@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4133 2002-05-02 06:48:59Z jdorje $
+ * $Id: table.c 4167 2002-05-05 21:18:48Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -329,8 +329,7 @@ void table_cleanup(void)
 
 static void table_show_player_box(int player, int write_to_screen)
 {
-	int x, y;
-	int w = TEXT_BOX_WIDTH - 1, h = TEXT_BOX_WIDTH - 1;
+	int x, y, w, h;
 	GdkFont *font = table_style->font;
 	const char* name = player_names[player];
 	const char* message = player_messages[player];
@@ -348,12 +347,13 @@ static void table_show_player_box(int player, int write_to_screen)
 	/* Clear the text box */
 	gdk_draw_rectangle(table_buf,
 			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
-			   TRUE, x, y, w, h);
+			   TRUE, x, y,
+	                   TEXT_BOX_WIDTH - 1,
+	                   TEXT_BOX_WIDTH - 1);
 			
 	x += XWIDTH;
 	y += XWIDTH;
-	w -= 2 * XWIDTH;
-	h -= 2 * XWIDTH;
+	w = h = TEXT_WIDTH;
 	
 	string_y = y; /* The y values we're going to draw at. */
 	
@@ -429,7 +429,9 @@ static void table_show_player_box(int player, int write_to_screen)
 	}
 	
 	if (write_to_screen)
-		table_show_table(x, y, w, h);
+		table_show_table(x, y,
+		                 TEXT_BOX_WIDTH - 1,
+		                 TEXT_BOX_WIDTH - 1);
 }
 
 /* Display's a player's name on the table. */
