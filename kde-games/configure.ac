@@ -37,7 +37,7 @@ AC_GGZ_CONFIG
 dnl Be a bit more strict
 dnl ====================
 
-CXXFLAGS="$CXXFLAGS -DKDE_NO_COMPAT -DQT_NO_COMPAT"
+CXXFLAGS="$CXXFLAGS -DKDE_NO_COMPAT -DQT_NO_COMPAT -Wall"
 AC_SUBST(CXXFLAGS)
 
 dnl Create Makefiles
