@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 4190 2002-05-12 19:48:41Z jdorje $
+ * $Id: main.c 4203 2002-05-15 21:12:58Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -186,7 +186,7 @@ int main(int argc, char **argv)
 	/* Connect to GGZ server; main loop */
 	if (ggzdmod_connect(ggz) < 0)
 		return -1;
-	(void) ggzdmod_log(ggz, "Starting table.");
+	ggz_debug(DBG_MISC, "Starting table.");
 
 #if 0
 	(void) ggzdmod_loop(ggz);
@@ -197,7 +197,10 @@ int main(int argc, char **argv)
 	main_loop(ggz);
 #endif
 
-	(void) ggzdmod_log(ggz, "Halting table.");
+ 	/* Unfortunately this must come here, since we can do no logging later. */
+	ggz_debug(DBG_MISC, "Halting table.");
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+
 	(void) ggzdmod_disconnect(ggz);
 	ggzdmod_free(ggz);
 
@@ -278,9 +281,8 @@ static void main_loop(GGZdMod * ggz)
 
 static void handle_debug_message(int priority, const char *msg)
 {
-	if (game.ggz)
-		ggzdmod_log(game.ggz, "%s", msg);
-	else {
+	if (!game.ggz
+	    || ggzdmod_log(game.ggz, "%s", msg) < 0) {
 		fflush(stdout);
 		fputs(msg, stderr);
 		fputs("\n", stderr);
