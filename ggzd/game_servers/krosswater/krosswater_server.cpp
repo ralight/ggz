@@ -167,6 +167,13 @@ void KrosswaterServer::getMove()
 	if((valid) && (map[tox][toy] != 0)) valid = 0;
 	if((valid) && (map[fromx][fromy] == 2)) valid = 0;
 
+	if(ggzdmod_count_seats(ggzdmod, GGZ_SEAT_OPEN) +
+		ggzdmod_count_seats(ggzdmod, GGZ_SEAT_RESERVED) > 0) valid = 0;
+	if(ggzdmod_get_seat(ggzdmod, zoneTurn()).fd != m_fd) valid = 0;
+
+	ZONEDEBUG("XXXXX valid = %i, m_numplayers = %i, players+bots = %i", valid, m_numplayers,
+		ggzdmod_count_seats(ggzdmod, GGZ_SEAT_PLAYER) + ggzdmod_count_seats(ggzdmod, GGZ_SEAT_BOT));
+
 	// Process new situation
 	if(valid)
 	{
@@ -327,9 +334,6 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 
 	if((!map) || (!path)) return 0;
 
-	map[fromx][fromy] = 0;
-	map[tox][toy] = 1;
-
 	// broadcast changes here!
 	for(int i = 0; i < m_numplayers; i++)
 	{
@@ -343,6 +347,8 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 				ZONEERROR("couldn't send move broadcast!\n");
 	}
 
+	map[fromx][fromy] = 0;
+	map[tox][toy] = 1;
 
 	ZONEDEBUG("path >>> setValue\n");
 	path->setValue(fromx, fromy, 0);
