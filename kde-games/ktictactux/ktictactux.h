@@ -50,7 +50,9 @@ class KTicTacTux : public QWidget
 
 	signals:
 		// Emit the game status
-		void signalStatus(QString status);
+		void signalStatus(const QString &status);
+		// Emit the score
+		void signalScore(const QString &score);
 
 	private:
 		// Wait for bot or network input
@@ -65,8 +67,6 @@ class KTicTacTux : public QWidget
 		int gameOver();
 		// Ask for another game, showing current results
 		void announce(QString str);
-		// Update the status bar
-		void status(QString str);
 		// Receive optimum move
 		void getAI();
 		// Partial AI resolvation

@@ -41,7 +41,9 @@ class KTicTacTuxWin : public KMainWindow
 
 	public slots:
 		// Receive a status message from the game
-		void slotStatus(QString status);
+		void slotStatus(const QString &status);
+		// Receive a new score
+		void slotScore(const QString &score);
 		// Menu slot
 		void slotMenu(int id);
 

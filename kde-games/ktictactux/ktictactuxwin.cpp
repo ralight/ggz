@@ -32,9 +32,11 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 	menuBar()->insertItem(i18n("Theme"), mtheme);
 	menuBar()->insertItem(i18n("Help"), helpMenu());
 
-	statusBar()->insertItem(i18n("Status"), 1);
+	statusBar()->insertItem(i18n("Status"), 1, 1);
+	statusBar()->insertItem(i18n("Game with the AI"), 2, 1);
 
-	connect(m_tux, SIGNAL(signalStatus(QString)), SLOT(slotStatus(QString)));
+	connect(m_tux, SIGNAL(signalStatus(const QString &)), SLOT(slotStatus(const QString &)));
+	connect(m_tux, SIGNAL(signalScore(const QString &)), SLOT(slotScore(const QString &)));
 	connect(mgame, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(mtheme, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 
@@ -42,6 +44,7 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 	slotMenu(menuthemenew);
 
 	setCaption("KTicTacTux");
+	resize(250, 250);
 	show();
 }
 
@@ -51,9 +54,15 @@ KTicTacTuxWin::~KTicTacTuxWin()
 }
 
 // Display the game status
-void KTicTacTuxWin::slotStatus(QString status)
+void KTicTacTuxWin::slotStatus(const QString &status)
 {
 	statusBar()->changeItem(status, 1);
+}
+
+// Display the game score
+void KTicTacTuxWin::slotScore(const QString &score)
+{
+	statusBar()->changeItem(score, 2);
 }
 
 // Return the game object

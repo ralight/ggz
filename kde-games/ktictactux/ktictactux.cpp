@@ -51,7 +51,7 @@ KTicTacTux::KTicTacTux(QWidget *parent, const char *name)
 	}
 	vbox2->addStretch(1);
 
-	signalStatus(i18n("KTicTacTux - Waiting for opponent!"));
+	emit signalStatus(i18n("Waiting for opponent!"));
 
 	//setFixedSize(210, 210);
 	setCaption("KTicTacTux");
@@ -106,15 +106,15 @@ void KTicTacTux::slotSelected(QWidget *widget)
 // Prepare your turn
 void KTicTacTux::yourTurn()
 {
-	if((m_opponent == PLAYER_AI) || (proto->state == proto->statemove)) status(i18n("Your turn"));
+	if((m_opponent == PLAYER_AI) || (proto->state == proto->statemove)) emit signalStatus(i18n("Your turn"));
 	proto->state = proto->statemove;
 }
 
 // Handle the opponent's turn
 void KTicTacTux::opponentTurn()
 {
-	if(m_opponent == PLAYER_AI) status(i18n("AI's turn"));
-	else status(i18n("Opp's turn"));
+	if(m_opponent == PLAYER_AI) emit signalStatus(i18n("AI's turn"));
+	else emit signalStatus(i18n("Opponent's turn"));
 
 	if(gameOver()) return;
 
@@ -173,7 +173,7 @@ int KTicTacTux::gameOver()
 		getAI();
 		if(m_winner)
 		{
-			status(i18n("Game Over!"));
+			emit signalStatus(i18n("Game Over!"));
 			if(m_winner == proto->opponent)
 			{
 				m_score_opp++;
@@ -190,7 +190,7 @@ int KTicTacTux::gameOver()
 	}
 	else
 	{
-		status(i18n("Game Over!"));
+		emit signalStatus(i18n("Game Over!"));
 		announce(i18n("The game is over. There is no winner."));
 		return 1;
 	}
@@ -205,7 +205,10 @@ void KTicTacTux::announce(QString str)
 
 	if(m_opponent == PLAYER_NETWORK) return;
 
-	ret = KMessageBox::questionYesNo(this, str + "\n\n" + i18n("Play another game?"), "Information");
+	// Announce the new score
+	emit signalScore(i18n(QString("Score: you %1, opponent %2")).arg(m_score_you).arg(m_score_opp));
+
+	ret = KMessageBox::questionYesNo(this, str + "\n\n" + i18n("Play another game?"), i18n("Game over"));
 
 	switch(ret)
 	{
@@ -238,13 +241,6 @@ void KTicTacTux::init()
     	proto->seats[1] = getPlayer(1);
 		getNextTurn();
 	}
-}
-
-// Status output
-void KTicTacTux::status(QString str)
-{
-	str.sprintf(str + " (" + i18n("Score: you %i, opp %i") + ")", m_score_you, m_score_opp);
-	emit signalStatus(str);
 }
 
 // Two functions in one: get AI moves and check for winner
@@ -353,29 +349,30 @@ void KTicTacTux::slotNetwork()
 		case proto->msgplayers:
 			proto->getPlayers();
 			proto->state = proto->statewait;
+			emit signalScore(i18n("Network game with %1").arg(proto->names[!proto->num]));
 			break;
 		case proto->reqmove:
 			proto->state = proto->statemove;
 			m_turn = proto->num;
-			status(i18n("Your move"));
+			emit signalStatus(i18n("Your move"));
 			break;
 		case proto->rspmove:
 			switch(proto->getMoveStatus())
 			{
 				case proto->errstate:
-					status(i18n("*server*"));
+					emit signalStatus(i18n("*server*"));
 					break;
 				case proto->errturn:
-					status(i18n("*turn*"));
+					emit signalStatus(i18n("*turn*"));
 					break;
 				case proto->errbound:
-					status(i18n("*bounds*"));
+					emit signalStatus(i18n("*bounds*"));
 					break;
 				case proto->errfull:
-					status(i18n("*occupied*"));
+					emit signalStatus(i18n("*occupied*"));
 					break;
 				default:
-					status(i18n("Move OK"));
+					emit signalStatus(i18n("Move OK"));
 			}
 			getNextTurn();
 			break;
