@@ -275,40 +275,46 @@
 
 		  <row rowsep="0">
 		    <entry namest="C1" nameend="C3">
-		      &lt;ROOM ID="id" NAME="name" GAME="game"&gt;
-			    &lt;DESC&gt;desc&lt;/DESC&gt;
-			  &lt;/ROOM&gt;
+		      &lt;ROOM ID="id" NAME="name" GAME="game" PLAYERS="players"&gt;
+		      &lt;DESC&gt;desc&lt;/DESC&gt;
+		      &lt;/ROOM&gt;
 		    </entry>
 		  </row>
 
 		  <row rowsep="1">
 		    <entry><emphasis role="bold">Data</emphasis></entry>
 		    <entry><emphasis role="bold">Type</emphasis></entry>
-			<entry><emphasis role="bold">Example</emphasis></entry>
+		    <entry><emphasis role="bold">Example</emphasis></entry>
 		  </row>
 
 		  <row rowsep="1">
 		    <entry>ID</entry>
 		    <entry>string</entry>
-			<entry>0</entry>
+		    <entry>0</entry>
 		  </row>
 
 		  <row rowsep="1">
 		    <entry>NAME</entry>
 		    <entry>string</entry>
-			<entry>TicTacToe</entry>
+		    <entry>TicTacToe</entry>
 		  </row>
 
 		  <row rowsep="1">
 		    <entry>GAME</entry>
 		    <entry>int</entry>
-			<entry>4</entry>
+		    <entry>4</entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>PLAYERS</entry>
+		    <entry>int</entry>
+		    <entry>14</entry>
 		  </row>
 
 		  <row rowsep="1">
 		    <entry>DESC</entry>
 		    <entry>string</entry>
-			<entry>Sample TTT room</entry>
+		    <entry>Sample TTT room</entry>
 		  </row>
 
 		</tbody>
@@ -343,6 +349,20 @@
 	    <listitem>
 	      <para>
 		The identifier of the game associated with this room
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">PLAYERS</emphasis></term>
+	    <listitem>
+	      <para>
+		The number of players currently in the room.  This value
+		is sent in the room list and may be periodically
+		<link linkend="msg.update">updated</link>.  However this
+		information is not updated immediately, so the client's
+		knowledge may become stale.  For the current room the
+		client should use the list of players in the room as a more
+		accurate value.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -896,8 +916,9 @@
 		Action to do. Can be 'add', 'delete', 'lag', or
 		'stats' for players;
 		'add', 'delete', 'join', 'leave', 'status', 'desc', or 'seat'
-		for tables.
-		For 'room' and 'game' updates, 'add' and'delete' are possible.
+		for tables;
+		'players' for rooms.
+		No game updates are possible at this time.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -937,18 +958,24 @@
 	<title>Usage</title>
 	<para>
 	  An UPDATE tag is sent from the server to the client
-	  if the list of players or tables in the current room has changed
+	  if the list of players, tables, rooms or games has changed
 	  since the last update. It is <emphasis>not</emphasis>
-	  sent upon initial entry to a room. To obtain a player or table
-	  list upon entering a room, the client must send a
-	  <link linkend="req.list">LIST</link> of type 'player' or 'table'.
+	  sent upon initial entry to a room or server; the information is
+          originally sent in a <link linkend="req.list">LIST</link>.  An
+	  update is sent when the information of that type changes.
+	</para>
+	<para>
 	  The UPDATE tag contains one or more tags of type
-	  <link linkend="rsp.list.player">PLAYER</link> or
-	  <link linkend="rsp.list.table">TABLE</link>, respectively.
-	  The two other types, updates of type
-	  <link linkend="msg.room">ROOM</link> or
-	  <link linkend="msg.game">GAME</link>, no client request exists;
-	  instead, a reconfiguration of the server leads to such updates.
+	  <link linkend="rsp.list.player">PLAYER</link>,
+	  <link linkend="rsp.list.table">TABLE</link>,
+	  <link linkend="msg.room">ROOM</link>,
+	  or <link linkend="msg.game">GAME</link>.
+
+	  The information included in the subtags depends on the ACTION
+	  attribute of the update.  For instance a "table" "desc" update
+	  would include only the description of the table, while a "player"
+	  "add" update includes the full information about the player.  A
+	  full list of these dependencies is not available at this time.
 	</para>
       </refsect2>
     </refsect1>
