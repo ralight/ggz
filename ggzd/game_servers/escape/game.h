@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 28th June 2001
  * Desc: Game functions
- * $Id: game.h 2782 2001-12-06 00:24:12Z jdorje $
+ * $Id: game.h 2818 2001-12-09 06:43:08Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -22,6 +22,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#include "ggzdmod.h"
 
 
 /* Escape protocol */
@@ -79,6 +81,7 @@
 
 /* Data structure for Escape game */
 struct escape_game_t {
+	GGZdMod *ggz; /* GGZ data object */
 	char boardheight;
 	char goalwidth;
 	char wallwidth;
@@ -95,7 +98,7 @@ struct escape_game_t {
 
 extern struct escape_game_t escape_game;
 
-void game_init(void);
+void game_init(GGZdMod *ggz);
 int game_update(int, void *);
 
 int game_send_seat(int);
@@ -114,8 +117,10 @@ char game_check_move(int, int);
 char game_check_win(void);
 
 
-void ggz_update(GGZdModEvent event, void *data);
-void game_handle_player(GGZdModEvent event, void* data);
+void ggz_update_state(GGZdMod *ggz, GGZdModEvent event, void *data);
+void ggz_update_join(GGZdMod *ggz, GGZdModEvent event, void *data);
+void ggz_update_leave(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void* data);
 
 unsigned char revdir(unsigned char direction);
 

@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 22/06/2001
  * Desc: Main loop
- * $Id: main.c 2649 2001-11-04 17:33:57Z jdorje $
+ * $Id: main.c 2818 2001-12-09 06:43:08Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -25,29 +25,35 @@
 
 
 #include <sys/types.h>
-#include <unistd.h>
 #include <errno.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-#include "../../ggzdmod/ggz_server.h"
+#include <unistd.h>
 
 #include "game.h"
 
 int main(void)
 {
+	/* First, initialize GGZ data. */
+	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &ggz_update_state);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &ggz_update_join);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &ggz_update_leave);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player_data);
+	
 	/* Seed the random number generator */
 	srandom((unsigned)time(NULL));
+	game_init(ggz);
 
-	game_init();
-
-	ggzd_set_handler(GGZ_EVENT_LAUNCH, &ggz_update);
-	ggzd_set_handler(GGZ_EVENT_JOIN, &ggz_update);
-	ggzd_set_handler(GGZ_EVENT_LEAVE, &ggz_update);
-	/* ggzd_set_handler(GGZ_EVENT_QUIT, &ggz_update); */
-	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
-
-	(void)ggzd_main_loop();
+	/* Now connect to GGZ and run the game! */
+	if (ggzdmod_connect(ggz) < 0) {
+		fprintf(stderr, "Couldn't connect to ggz!\n");
+		return -1;
+	}
+	(void)ggzdmod_loop(ggz);
+	(void)ggzdmod_disconnect(ggz);
+	ggzdmod_free(ggz);
 
 	return 0;
 }
