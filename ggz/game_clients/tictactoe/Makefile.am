@@ -16,13 +16,11 @@ ggz_ttt_SOURCES = game.h \
 	      main_win.h \
 	      support.c \
 	      support.h \
-		  ggzintl.c \
-		  ggzintl.h \
 	      x.xpm \
 	      o.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_ttt_LDADD = @GTK_LIBS@ $(LDADD)
+ggz_ttt_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/common/libgtk-games.a
 
 install-data-local:
 	@$(NORMAL_INSTALL)

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Gtk Games (taken from NetSpades)
  * Date: 1/29/99
- * $Id: dlg_exit.c 3640 2002-03-24 00:56:22Z jdorje $
+ * $Id: dlg_exit.c 3656 2002-03-24 17:24:55Z dr_maux $
  *
  * This file contains functions for creating and handling the 
  * exit dialog box.
@@ -32,6 +32,7 @@
 #include <gtk/gtk.h>
 
 #include "dlg_exit.h"
+#include "ggzintl.h"
 
 static GtkWidget *make_exit_dialog(int can_return)
 {
@@ -46,14 +47,14 @@ static GtkWidget *make_exit_dialog(int can_return)
 	char *text;
 	
 	if (can_return) {
-		text = "Are you sure you want to exit?";
+		text = _("Are you sure you want to exit?");
 	} else {
-		text = "Are you sure you want to exit?\n"
-	               "You will not be able to rejoin.";
+		text = _("Are you sure you want to exit?\n"
+	               "You will not be able to rejoin.");
 	}
 
 	window = gtk_dialog_new();
-	gtk_window_set_title(GTK_WINDOW(window), "Really Exit?");
+	gtk_window_set_title(GTK_WINDOW(window), _("Really Exit?"));
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
@@ -62,8 +63,8 @@ static GtkWidget *make_exit_dialog(int can_return)
 	gtk_widget_show(label);
 
 	/* Button widgets */
-	exitButton = gtk_button_new_with_label("Exit");
-	cancelButton = gtk_button_new_with_label("Cancel");
+	exitButton = gtk_button_new_with_label(_("Exit"));
+	cancelButton = gtk_button_new_with_label(_("Cancel"));
 
 	gtk_signal_connect(GTK_OBJECT(exitButton), "clicked",
 			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
@@ -130,3 +131,4 @@ void ggz_show_exit_dialog(int can_return)
 		gtk_widget_show(dialog);
 	}
 }
+

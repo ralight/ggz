@@ -28,9 +28,8 @@ ggz_dots_SOURCES = \
 	dlg_new.c dlg_new.h \
 	cb_new.c cb_new.h \
 	dlg_pref.c dlg_pref.h \
-	cb_pref.c cb_pref.h \
-	ggzintl.c ggzintl.h
+	cb_pref.c cb_pref.h
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_dots_LDADD = @GTK_LIBS@ $(LDADD)
+ggz_dots_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/common/libgtk-games.a
 

@@ -9,8 +9,6 @@ ggz_hastings_SOURCES = \
 	main_win.h \
 	support.c \
 	support.h \
-	ggzintl.c \
-	ggzintl.h \
 	dlg_about.c \
 	dlg_about.h \
 	dlg_yesno.c \
