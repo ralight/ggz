@@ -23,57 +23,57 @@
  */
 
 
-#ifndef _NG_PROTO
-#define _NG_PROTO
-
-typedef enum { 
-      REQ_NEW_LOGIN,
-      REQ_LOGIN,
-      REQ_ANON_LOGIN,
-      REQ_MOTD,
-      REQ_LOGOUT,
-      REQ_USER_LIST,
-      REQ_PREF_CHANGE,
-      REQ_REMOVE_USER,
-      REQ_GAME_TYPES,
-      REQ_TABLE_LIST,
-      REQ_TABLE_OPTIONS,
-      REQ_LAUNCH_GAME,
-      REQ_JOIN_GAME,
-      REQ_USER_STAT,
-      REQ_CHAT
+typedef enum {
+	REQ_NEW_LOGIN,
+	REQ_LOGIN,
+	REQ_ANON_LOGIN,
+	REQ_MOTD,
+	REQ_LOGOUT,
+	REQ_USER_LIST,
+	REQ_PREF_CHANGE,
+	REQ_REMOVE_USER,
+	REQ_GAME_TYPES,
+	REQ_TABLE_LIST,
+	REQ_TABLE_OPTIONS,
+	REQ_LAUNCH_GAME,
+	REQ_JOIN_GAME,
+	REQ_USER_STAT,
+	REQ_GAME,
+	REQ_CHAT
 } UserToControl;
 
 
-typedef enum { 
-      MSG_SERVER_ID,
-      MSG_SERVER_FULL,
-      RSP_NEW_LOGIN,
-      RSP_LOGIN,
-      RSP_ANON_LOGIN,
-      RSP_MOTD,
-      RSP_LOGOUT,
-      RSP_USER_LIST,
-      RSP_PREF_CHANGE,
-      RSP_REMOVE_USER,
-      RSP_GAME_TYPES,
-      RSP_TABLE_LIST,
-      RSP_TABLE_OPTIONS,
-      RSP_LAUNCH_GAME,
-      RSP_JOIN_GAME,
-      RSP_USER_STAT,
-      RSP_CHAT,
-      RSP_ERROR
+typedef enum {
+	MSG_SERVER_ID,
+	MSG_SERVER_FULL,
+	MSG_CHAT,
+	RSP_NEW_LOGIN,
+	RSP_LOGIN,
+	RSP_ANON_LOGIN,
+	RSP_MOTD,
+	RSP_LOGOUT,
+	RSP_USER_LIST,
+	RSP_PREF_CHANGE,
+	RSP_REMOVE_USER,
+	RSP_GAME_TYPES,
+	RSP_TABLE_LIST,
+	RSP_TABLE_OPTIONS,
+	RSP_LAUNCH_GAME,
+	RSP_JOIN_GAME,
+	RSP_USER_STAT,
+	RSP_GAME,
+	RSP_CHAT,
+	RSP_ERROR
 } ControlToUser;
 
 
-typedef enum { 
-  RSP_GAME_LAUNCH,
-  MSG_GAME_OVER
+typedef enum {
+	RSP_GAME_LAUNCH,
+	MSG_GAME_OVER
 } TableToControl;
 
-typedef enum { 
-  REQ_GAME_LAUNCH
+typedef enum {
+	REQ_GAME_LAUNCH
 } ControlToTable;
 
 
@@ -82,6 +82,3 @@ typedef enum {
 #define E_SERVER_FULL -3
 #define E_LAUNCH_FAIL -4
 #define E_RESPOND_FAIL -5
-
-
-#endif
