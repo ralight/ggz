@@ -41,7 +41,7 @@ char *datadir = DATADIR;
 char lb[1024];
 ggzdbPlayerEntry pe;
 
-void getline(void)
+void getnextline(void)
 {
 	char *p;
 
@@ -65,7 +65,7 @@ void list_players(void)
 	while((rc = _ggzdb_player_get_next(&pe)) == 0) {
 		if(++count % 23 == 0) {
 			printf("[pause]\007 ");
-			getline();
+			getnextline();
 			if(lb[0] == 'Q' || lb[0] == 'q')
 				break;
 		}
@@ -73,7 +73,7 @@ void list_players(void)
 	}
 	if(lb[0] != 'Q' && lb[0] != 'q' && (count % 23) > 12) {
 		printf("[pause]\007 ");
-		getline();
+		getnextline();
 	}
 
 	printf("\n");
@@ -124,7 +124,7 @@ void add_player(void)
 
 	printf("Adding new user\n");
 	printf("User handle:   ");
-	getline();
+	getnextline();
 	for(i=0; i<MAX_USER_NAME_LEN; i++) {
 		if(lb[i] == '\0')
 			break;
@@ -134,22 +134,22 @@ void add_player(void)
 	strcpy(pe.handle, lb);
 
 	printf("Real name:     ");
-	getline();
+	getnextline();
 	strncpy(pe.name, lb, 32);
 	pe.name[32] = '\0';
 
 	printf("Email address: ");
-	getline();
+	getnextline();
 	strncpy(pe.email, lb, 32);
 	pe.email[32] = '\0';
 
 	printf("Password:      ");
-	getline();
+	getnextline();
 	strncpy(pe.password, lb, 16);
 	pe.password[16] = '\0';
 
 	printf("Permissions:   0x");
-	getline();
+	getnextline();
 	sscanf(lb, "%x", &pe.perms);
 
 	pe.last_login = 0;
@@ -166,7 +166,7 @@ void add_player(void)
 	lb[0] = '\0';
 	while(lb[0] != 'A' && lb[0] != 'a') {
 		printf("A)ccept or C)ancel: ");
-		getline();
+		getnextline();
 		if(lb[0] == 'C' || lb[0] == 'c') {
 			printf("\nNew user entry canceled\n");
 			return;
@@ -190,7 +190,7 @@ void edit_player(int edit)
 	int accept=0;
 
 	printf("Player handle: ");
-	getline();
+	getnextline();
 	for(i=0; i<MAX_USER_NAME_LEN; i++) {
 		if(lb[i] == '\0')
 			break;
@@ -231,11 +231,11 @@ void edit_player(int edit)
 	printf("   A) Accepts     C) Cancels\n");
 	while(!accept) {
 		printf("===> ");
-		getline();
+		getnextline();
 		switch((int)lb[0]) {
 			case '1':
 				printf("[%s] >", pe.name);
-				getline();
+				getnextline();
 				if(!lb[0])
 					break;
 				strncpy(pe.name, lb, 32);
@@ -244,7 +244,7 @@ void edit_player(int edit)
 				break;
 			case '2':
 				printf("[%s] >", pe.email);
-				getline();
+				getnextline();
 				if(!lb[0])
 					break;
 				strncpy(pe.email, lb, 32);
@@ -253,7 +253,7 @@ void edit_player(int edit)
 				break;
 			case '3':
 				printf("[%s] >", pe.password);
-				getline();
+				getnextline();
 				if(!lb[0])
 					break;
 				strncpy(pe.password, lb, 16);
@@ -262,7 +262,7 @@ void edit_player(int edit)
 				break;
 			case '4':
 				printf("[0x%08X] >0x", pe.perms);
-				getline();
+				getnextline();
 				if(!lb[0])
 					break;
 				sscanf(lb, "%x", &pe.perms);
@@ -308,7 +308,7 @@ int main_menu(void)
 	printf("Q) Quit\n");
 	while(1) {
 		printf("===> ");
-		getline();
+		getnextline();
 		switch((int)lb[0]) {
 			case 'Q':
 			case 'q':	return 0;
