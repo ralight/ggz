@@ -46,6 +46,7 @@ static char *modauthor = NULL;
 static char *modurl = NULL;
 static char *modicon = NULL;
 static char *modhelp = NULL;
+static char *fromfile = NULL;
 static int modforce = 0;
 static int install_mod = 0;
 static int remove_mod = 0;
@@ -81,11 +82,52 @@ static const struct poptOption args[] = {
 	{"modhelp",	'\0',	POPT_ARG_STRING,	&modhelp,	0,
 	 "[INSTALL] (OPT) - set path to main help file", "FILENAME"},
 
+	{"fromfile",	'\0',	POPT_ARG_STRING,	&fromfile,	0,
+	 "[INSTALL] - load RQD/OPT parameters from a file", "FILENAME"},
+
 	{"force",	'\0',	POPT_ARG_NONE,	&modforce,	0,
 	 "[INSTALL] (OPT) - overwrite an existing module"},
 
 	POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
 };
+
+
+void load_fromfile(void)
+{
+	int from;
+
+	if(modname == NULL) {
+		fprintf(stderr, "To use --fromfile, at least --modname must be specified.\n");
+		return;
+	}
+
+	from = ggzcore_confio_parse(fromfile, GGZ_CONFIO_RDONLY);
+
+	if(modversion == NULL)
+		modversion = ggzcore_confio_read_string(from, modname,
+							"Version", NULL);
+	if(modexec == NULL)
+		modexec = ggzcore_confio_read_string(from, modname,
+						     "ExecPath", NULL);
+	if(modui == NULL)
+		modui = ggzcore_confio_read_string(from, modname,
+						   "Frontend", NULL);
+	if(modproto == NULL)
+		modproto = ggzcore_confio_read_string(from, modname,
+						      "Protocol", NULL);
+	if(modauthor == NULL)
+		modauthor = ggzcore_confio_read_string(from, modname,
+						       "Author", NULL);
+	if(modurl == NULL)
+		modurl = ggzcore_confio_read_string(from, modname,
+						    "Homepage", NULL);
+	if(modicon == NULL)
+		modicon = ggzcore_confio_read_string(from, modname,
+						     "IconPath", NULL);
+	if(modhelp == NULL)
+		modhelp = ggzcore_confio_read_string(from, modname,
+						     "HelpPath", NULL);
+}
 
 
 int purge_module_name(int global)
@@ -379,6 +421,9 @@ int main(const int argc, const char **argv)
 		}
 		return 0;
 	}
+
+	if(fromfile != NULL)
+		load_fromfile();
 
 	if(modname == NULL || modauthor == NULL || modui == NULL) {
 		fprintf(stderr, "Required arguments missing\n");
