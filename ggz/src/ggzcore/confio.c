@@ -189,6 +189,7 @@ int _ggzcore_confio_read_list(int handle, char *section, char *key,
 			if((tmp2 = malloc(p-tmp+1)) == NULL)
 				ggzcore_error_sys_exit("malloc failed in _ggzcore_confio_read_list");
 			(*argvp)[index] = strncpy(tmp2, tmp, p - tmp);
+			tmp2[p-tmp] = '\0';
 			s1 = s2 = (*argvp)[index++];
 
 			while (*s1) {
