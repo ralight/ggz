@@ -46,6 +46,7 @@ function stats_players($id, $lookup)
 			echo "achieved <b>$wins</b> wins, <b>$losses</b> losses, <b>$ties</b> ties, <b>$forfeits</b> forfeits.<br>\n";
 		endif;
 		if ($method == "rating") :
+			$rating = (int)($rating);
 			echo "achieved a rating of <b>$rating</b>.<br>\n";
 		endif;
 		if ($method == "highscore") :
@@ -116,6 +117,7 @@ function stats_games($id, $lookup)
 			echo "achieved <b>$wins</b> wins, <b>$losses</b> losses, <b>$ties</b> ties, <b>$forfeits</b> forfeits.<br>\n";
 		endif;
 		if ($method == "rating") :
+			$rating = (int)($rating);
 			echo "achieved a rating of <b>$rating</b>.<br>\n";
 		endif;
 		if ($method == "highscore") :
