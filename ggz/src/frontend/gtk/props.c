@@ -292,11 +292,11 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 
 	/* Friends Color */
 	tmp = lookup_widget((props_dialog), "f_spin");
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "F_COLOR", 2));
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "F_COLOR", 6));
 
 	/* Highlight Color */
 	tmp = lookup_widget((props_dialog), "h_spin");
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "H_COLOR", 2));
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "H_COLOR", 1));
 
 	/* Normal Color */
 	tmp = lookup_widget((props_dialog), "n_spin");

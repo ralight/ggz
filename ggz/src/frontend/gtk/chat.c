@@ -35,6 +35,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <glib.h>
 
 #include "chat.h"
 #include "ggzcore.h"
@@ -42,7 +43,8 @@
 #include "xtext.h"
 #include "support.h"
 
-static gchar *chat_get_color(gchar *name);
+void chat_allocate_colors(void);;
+static gchar *chat_get_color(gchar *name, gchar *msg);
 extern GtkWidget *win_main;
 extern GGZServer *server;
 
@@ -74,6 +76,29 @@ GdkColor colors[] =
 
 GdkColor ColorWhite = {0, 0xFFFF, 0xFFFF, 0xFFFF};
 GdkColor ColorBlack = {0, 0x0000, 0x0000, 0x0000};
+
+struct chatinfo {
+	GArray *friends;
+	GArray *ignore;
+}chatinfo;
+
+/* chat_init() - setsup chatinfo
+ *
+ * Recieves:
+ *
+ * Returns:   
+ */
+void chat_init(void)
+{
+	gchar *name;
+
+	chat_allocate_colors();
+	chatinfo.friends = g_array_new(TRUE, TRUE, sizeof(gchar*));
+	chatinfo.ignore = g_array_new(TRUE, TRUE, sizeof(gchar*));
+
+	name = g_strdup("jdorje");
+	g_array_append_val(chatinfo.friends, name);
+}
 
 /* chat_allocate_colors() - Allocates the collors all at once so they
  *                          can be called without the need to allocate
@@ -146,12 +171,12 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 				name = g_strdup_printf("%s %s", player, message+4);
 			        gtk_xtext_append_indent(GTK_XTEXT(tmp), "*", 1, name, strlen(name));
 			} else {
-				name = g_strdup_printf("<\003%s%s\003>", chat_get_color(player), player);
+				name = g_strdup_printf("<\003%s%s\003>", chat_get_color(player, message),  player);
 			        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			}
 			break;
 		case CHAT_PRVMSG:
-			name = g_strdup_printf(">\003%s%s\003<", chat_get_color(player), player);
+			name = g_strdup_printf(">\003%s%s\003<", chat_get_color(player, message), player);
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
 		case CHAT_BEEP:
@@ -159,7 +184,7 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
 		case CHAT_ANNOUNCE:
-			name = g_strdup_printf("[\003%s%s\003]", chat_get_color(player), player);
+			name = g_strdup_printf("[\003%s%s\003]", chat_get_color(player, message), player);
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
 		case CHAT_SEND_PRVMSG:
@@ -176,8 +201,7 @@ void chat_display_message(CHATTypes id, char *player, char *message)
  *
  * Recieves:
  *
- * Returns:
- */
+ * Returns */
 
 void chat_send_msg(GGZServer *server)
 {
@@ -432,46 +456,53 @@ void chat_word_clicked(GtkXText *xtext, char *word,
  *
  * Recieves:
  * gchar		*name	: The name to get the color for
+ * gchar 		*msg	: Message that was sent
  *
  * Returns:
  * gchar		*color	: The color to use
  */
 
-gchar *chat_get_color(gchar *name)
+gchar *chat_get_color(gchar *name, gchar *msg)
 {
-	gint asc;
-	div_t x;
+	int pos;
 
-	if(!ggzcore_conf_read_int("CHAT", "COLOR", TRUE))
+	/* Is our name in the message? */
+	if(strlen(msg) > strlen(ggzcore_server_get_handle(server))+1)
 	{
-		/* Dont use color */
-		return "00";
-	} else {
-		if(ggzcore_conf_read_int("CHAT", "SOME_COLOR", TRUE))
+		for(pos=0; pos<strlen(msg)-strlen(ggzcore_server_get_handle(server)); pos++)
 		{
-			if(!strcmp(name, ggzcore_server_get_handle(server)))
+			if(!strncasecmp(msg + pos, ggzcore_server_get_handle(server), strlen(ggzcore_server_get_handle(server))))
 			{
-				if(ggzcore_conf_read_int("CHAT", "Y_COLOR", 8) > 9)
-					return g_strdup_printf("%d", ggzcore_conf_read_int("CHAT", "Y_COLOR", 8));
+				if(ggzcore_conf_read_int("CHAT", "H_COLOR", 1) > 9)
+					return g_strdup_printf("%d", ggzcore_conf_read_int("CHAT", "H_COLOR", 1));
 				else
-					return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "Y_COLOR", 8));
+					return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "H_COLOR", 1));
 			}
-
-			if(ggzcore_conf_read_int("CHAT", "O_COLOR", 2) > 9)
-				return g_strdup_printf("%d", ggzcore_conf_read_int("CHAT", "O_COLOR", 2));
-			else
-				return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "O_COLOR", 2));
-		} else if(ggzcore_conf_read_int("CHAT", "FULL_COLOR", FALSE)) {
-			asc = (gint)name[0];
-			x = div(asc, 16); /* Don't use black as a color */
-			if (x.rem == 15) {x.rem--;}
-			if(x.rem > 9)
-				return g_strdup_printf("%d", x.rem + 1);
-			else
-				return g_strdup_printf("0%d", x.rem + 1);
 		}
 	}
 
-	return "00";
+	/* Is a friend talking? */
+	pos = 0;
+	while(1)
+	{
+		/* have we hit the end of the list */
+		if(g_array_index(chatinfo.friends, gchar*, pos) == NULL)
+			break;
+		if(!strcmp(g_array_index(chatinfo.friends, gchar*, pos), name))
+		{
+			if(ggzcore_conf_read_int("CHAT", "F_COLOR", 6) > 9)
+				return g_strdup_printf("%d", ggzcore_conf_read_int("CHAT", "F_COLOR", 6));
+			else
+				return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "F_COLOR", 6));
+		}
+		pos++;
+	}
 
+	/* Normal color */
+	if(ggzcore_conf_read_int("CHAT", "N_COLOR", 2) > 9)
+		return g_strdup_printf("%d", ggzcore_conf_read_int("CHAT", "N_COLOR", 2));
+	else
+		return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "N_COLOR", 2));
+
+	return "00";
 }

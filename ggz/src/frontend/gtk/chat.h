@@ -36,6 +36,7 @@ typedef enum {
 	CHAT_SEND_PRVMSG	= 0x0005
 } CHATTypes;
 
+void chat_init(void);
 void chat_allocate_colors(void);
 void chat_display_message(CHATTypes id, char *player, char *message);
 void chat_send_msg(GGZServer *server);

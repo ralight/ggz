@@ -77,7 +77,7 @@ int main (int argc, char *argv[])
 	server_profiles_load();
 	
 	gtk_init(&argc, &argv);
-	chat_allocate_colors();
+	chat_init();
 
 	if (ggzcore_conf_read_int("INIT", "FIRST", 0) == 0 ||
 	    strcmp(ggzcore_conf_read_string("INIT", "VERSION", VERSION), VERSION) !=0 )
