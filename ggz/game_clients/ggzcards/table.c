@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3380 2002-02-17 07:47:26Z jdorje $
+ * $Id: table.c 3402 2002-02-17 15:14:57Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -159,7 +159,6 @@ static void draw_splash_screen(void)
 
 	assert(!game_started && !table_ready);
 	assert(table_buf);
-	assert(ggzcards.num_players == 0);
 
 	table_clear_table(FALSE);
 	draw_card(card, 0,
