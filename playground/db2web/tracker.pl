@@ -55,6 +55,8 @@ while(1){
 	while(<X>){
 		chomp;
 		my ($pid, $keyword, $message) = m/^\[(\d+)\]\:\ (\S+)\ ([\S\s]+)$/x;
+		#my ($pid, $keyword, $message) =
+		#	m/^\[(\d+)\]\:\ \S+\ \d+\ \d+\ \d+\:\d+\:\d+\ (\S+)\ ([\S\s]+)$/x;
 		#print "<$pid:$keyword:$message>\n";
 		if($keyword eq "TABLE_START"){
 			my ($name, $game, $room) = $message =~ m/^\-\ (\S+)\ \S+\ \S+\ \S+\ \S+\ \S+\ (\S+)\ \S+\ (\S+)$/x;
