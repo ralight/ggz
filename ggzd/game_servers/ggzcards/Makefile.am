@@ -17,7 +17,7 @@ ggzd_ggzcards_SOURCES = ggz.c ggz.h \
 			message.c message.h
 			protocols.h \
 			protocol.h \
-			types.hshadar
+			types.h
 
 
 ggzd_ggzcards_LDADD = $(LDADD)
