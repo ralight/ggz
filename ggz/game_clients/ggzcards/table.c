@@ -1,4 +1,4 @@
-/* $Id: table.c 2078 2001-07-23 08:27:12Z jdorje $ */
+/* $Id: table.c 2079 2001-07-23 11:35:01Z jdorje $ */
 /*
  * File: table.c
  * Author: Rich Gade, Jason Short
@@ -263,7 +263,7 @@ void table_set_global_message(const char* mark, const char* message)
 	else if (!strcmp(mark, "game")) {
 		/* this is the game's name; we just adjust the title bar */
 		char title[50];
-		ggz_snprintf(title, sizeof(title), "GGZ Gaming Zone - %s", message);
+		ggz_snprintf(title, sizeof(title), _("GGZ Gaming Zone - %s"), message);
 		gtk_window_set_title (GTK_WINDOW (dlg_main), title);
 	} else
 		menubar_message(mark, message);

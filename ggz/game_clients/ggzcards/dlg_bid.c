@@ -1,4 +1,4 @@
-/* $Id: dlg_bid.c 2073 2001-07-23 07:47:48Z jdorje $ */
+/* $Id: dlg_bid.c 2079 2001-07-23 11:35:01Z jdorje $ */
 /*
  * File: dlg_bid.c
  * Author: Rich Gade
@@ -123,7 +123,7 @@ void dlg_bid_display(int possible_bids, char** bid_choices)
 	leftover = xw * yw - possible_bids; /* calculate the part of the rectangle unused */
 
 	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_window_set_title (GTK_WINDOW (window), "Select your bid");
+	gtk_window_set_title (GTK_WINDOW (window), _("Select your bid"));
 	gtk_container_set_border_width (GTK_CONTAINER (window), 10);
 
 	table = gtk_table_new( yw, xw, FALSE );
@@ -155,7 +155,7 @@ static void dlg_option_display(int option_cnt, int* option_sizes, char*** option
 	int i, j;
 	
 	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_window_set_title (GTK_WINDOW (window), "Select Options");
+	gtk_window_set_title (GTK_WINDOW (window), _("Select Options"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 
 	box = gtk_vbox_new(FALSE, 0);
@@ -191,7 +191,7 @@ static void dlg_option_display(int option_cnt, int* option_sizes, char*** option
 		gtk_widget_show( subbox );
 	}
 	
-	button = gtk_button_new_with_label( "Send options" );
+	button = gtk_button_new_with_label( _("Send options") );
 	gtk_signal_connect( GTK_OBJECT(button), "clicked",
 			    GTK_SIGNAL_FUNC(dlg_options_submit),
 			    (gpointer)0 );

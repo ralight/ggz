@@ -1,4 +1,4 @@
-/* $Id: dlg_main.c 2070 2001-07-23 00:03:11Z jdorje $ */
+/* $Id: dlg_main.c 2079 2001-07-23 11:35:01Z jdorje $ */
 /*
  * File: dlg_main.c
  * Author: Rich Gade
@@ -68,7 +68,7 @@ create_dlg_main (void)
   dlg_main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_name (dlg_main, "dlg_main");
   gtk_object_set_data (GTK_OBJECT (dlg_main), "dlg_main", dlg_main);
-  gtk_window_set_title (GTK_WINDOW (dlg_main), "GGZ Gaming Zone - GGZ Cards");
+  gtk_window_set_title (GTK_WINDOW (dlg_main), _("GGZ Gaming Zone - GGZ Cards"));
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_set_name (vbox1, "vbox1");
@@ -86,7 +86,7 @@ create_dlg_main (void)
   gtk_widget_show (menubar1);
   gtk_box_pack_start (GTK_BOX (vbox1), menubar1, FALSE, FALSE, 0);
 
-  mnu_game = gtk_menu_item_new_with_label ("Game");
+  mnu_game = gtk_menu_item_new_with_label (_("Game"));
   gtk_widget_set_name (mnu_game, "mnu_game");
   gtk_widget_ref (mnu_game);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_game", mnu_game,
@@ -102,7 +102,7 @@ create_dlg_main (void)
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (mnu_game), mnu_game_menu);
   mnu_game_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_game_menu));
 
-  mnu_exit = gtk_menu_item_new_with_label ("Exit");
+  mnu_exit = gtk_menu_item_new_with_label (_("Exit"));
   gtk_widget_set_name (mnu_exit, "mnu_exit");
   gtk_widget_ref (mnu_exit);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_exit", mnu_exit,
@@ -110,7 +110,7 @@ create_dlg_main (void)
   gtk_widget_show (mnu_exit);
   gtk_container_add (GTK_CONTAINER (mnu_game_menu), mnu_exit);
 
-  mnu_edit = gtk_menu_item_new_with_label ("Edit");
+  mnu_edit = gtk_menu_item_new_with_label (_("Edit"));
   gtk_widget_set_name (mnu_edit, "mnu_edit");
   gtk_widget_ref (mnu_edit);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_edit", mnu_edit,
@@ -126,7 +126,7 @@ create_dlg_main (void)
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (mnu_edit), mnu_edit_menu);
   mnu_edit_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_edit_menu));
 
-  mnu_preferences = gtk_menu_item_new_with_label ("Preferences");
+  mnu_preferences = gtk_menu_item_new_with_label (_("Preferences"));
   gtk_widget_set_name (mnu_preferences, "mnu_preferences");
   gtk_widget_ref (mnu_preferences);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_preferences", mnu_preferences,
@@ -134,7 +134,7 @@ create_dlg_main (void)
   gtk_widget_show (mnu_preferences);
   gtk_container_add (GTK_CONTAINER (mnu_edit_menu), mnu_preferences);
 
-  mnu_messages = gtk_menu_item_new_with_label ("Messages");
+  mnu_messages = gtk_menu_item_new_with_label (_("Messages"));
   gtk_widget_set_name (mnu_messages, "mnu_messages");
   gtk_widget_ref (mnu_messages);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_messages", mnu_messages,
@@ -150,7 +150,7 @@ create_dlg_main (void)
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (mnu_messages), mnu_messages_menu);
   mnu_messages_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_messages_menu));
 
-  mnu_help = gtk_menu_item_new_with_label ("Help");
+  mnu_help = gtk_menu_item_new_with_label (_("Help"));
   gtk_widget_set_name (mnu_help, "mnu_help");
   gtk_widget_ref (mnu_help);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_help", mnu_help,
@@ -166,7 +166,7 @@ create_dlg_main (void)
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (mnu_help), mnu_help_menu);
   mnu_help_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_help_menu));
 
-  mnu_about = gtk_menu_item_new_with_label ("About");
+  mnu_about = gtk_menu_item_new_with_label (_("About"));
   gtk_widget_set_name (mnu_about, "mnu_about");
   gtk_widget_ref (mnu_about);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_about", mnu_about,
