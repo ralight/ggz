@@ -1,5 +1,25 @@
+/*
+ * Geekgame - a game which only real geeks understand
+ * Copyright (C) 2002, 2003 Josef Spillner, josef@ggzgamingzone.org
+
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 #define HAVE_SOUND /* automate later on */
 
+/* SDL include files */
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
@@ -7,9 +27,11 @@
 #include <SDL/SDL_mixer.h>
 #endif
 
+/* GGZ include files */
 #include <ggz.h>
 #include <ggzmod.h>
 
+/* System include files */
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -21,11 +43,13 @@
 #include <dirent.h>
 #include <fnmatch.h>
 
+/* Geekgame includes */
 #include "wwwget.h"
 #include "proto.h"
 
 #include "config.h"
 
+/* Hard-coded definitions */
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 
@@ -56,6 +80,7 @@ static char array[ARRAY_WIDTH][ARRAY_HEIGHT];
 static int winner = -1;
 static int usesound = 1;
 static int usefullscreen = 0;
+static int gamerunning = 0;
 #ifdef HAVE_SOUND
 Mix_Music *music = NULL;
 Mix_Chunk *chunk = NULL;
@@ -68,12 +93,15 @@ void loadsettings(void);
 void savesettings(void);
 void addplayer(const char *picture);
 void musicdone(void);
+void rendermode(int x, int y, const char *mode);
 
+/* Return global read-only data directory */
 static const char *data_global()
 {
 	return GGZDATADIR "/geekgame";
 }
 
+/* Return local read-write data directory */
 static const char *data_local()
 {
 	static char *dl = NULL;
@@ -90,13 +118,15 @@ static const char *data_local()
 	return dl;
 }
 
+/* Protocol handler */
 static void game_handle_io(void)
 {
-	char op;
+	unsigned char op;
 	int version;
 	char greeting[64];
 	char player[64], pic[64];
 	char path[STRING_LENGTH];
+	int result;
 	
 	if (ggz_read_char(modfd, &op) < 0)
 	{
@@ -118,6 +148,9 @@ static void game_handle_io(void)
 				ggz_write_string(modfd, playerimage);
 			}
 			break;
+		case OP_NUMPLAYERS:
+			ggz_read_int(modfd, &players);
+			break;
 		case OP_NEWPLAYER:
 			ggz_read_string(modfd, player, sizeof(player));
 			ggz_read_string(modfd, pic, sizeof(pic));
@@ -126,12 +159,22 @@ static void game_handle_io(void)
 			addplayer(NULL);
 			break;
 		case OP_GAMESTART:
+			rendermode(150, 170, "Game has started!       ");
+			gamerunning = 1;
 			break;
 		case OP_GAMESTOP:
+			rendermode(150, 170, "Game stopped. Try again.");
+			gamerunning = 0;
 			break;
 		case OP_GAMEEND:
 			break;
 		case OP_PRESENTATION:
+			break;
+		case OP_MOVERESULT:
+			ggz_read_int(modfd, &result);
+			break;
+		case OP_MODERESULT:
+			ggz_read_int(modfd, &result);
 			break;
 		default:
 			/* discard */
@@ -139,19 +182,24 @@ static void game_handle_io(void)
 	}
 }
 
+/* GGZMod event dispatcher */
 static void handle_ggz()
 {
 	ggzmod_dispatch(mod);
 }
 
+/* GGZMod server event dispatcher */
 static void handle_ggzmod_server(GGZMod *ggzmod, GGZModEvent e, void *data)
 {
 	int fd = *(int*)data;
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 	modfd = fd;
+
+	/*players = ggzmod_get_num_seats(mod);*/ /* Doesn't work yet! */
 }
 
+/* Initialize GGZMod */
 static void ggz_init()
 {
 	int ret;
@@ -167,12 +215,14 @@ static void ggz_init()
 	}
 }
 
+/* Deinitialize GGZMod */
 static void ggz_finish()
 {
 	ggzmod_disconnect(mod);
 	ggzmod_free(mod);
 }
 
+/* Check for new GGZMod events */
 static void ggz_network()
 {
 	int maxfd;
@@ -208,6 +258,7 @@ static void ggz_network()
 	}
 }
 
+/* Draw a filled green or black box */
 void drawbox(int x, int y, int w, int h, SDL_Surface *screen, int green, int autocrop)
 {
 	SDL_Rect rect;
@@ -249,6 +300,7 @@ void drawbox(int x, int y, int w, int h, SDL_Surface *screen, int green, int aut
 	SDL_UpdateRect(screen, x, y, w + 3, h + 3);
 }
 
+/* Draw an image representing a number */
 void drawnumber(SDL_Surface *screen, int vx, int vy, int num)
 {
 	SDL_Surface *number;
@@ -267,6 +319,7 @@ void drawnumber(SDL_Surface *screen, int vx, int vy, int num)
 	SDL_UpdateRect(screen, rect.x, rect.y, 32, 32);
 }
 
+/* Draw frame around player whose turn it is */
 void drawturn(SDL_Surface *screen, int players, int turn)
 {
 	SDL_Rect rect;
@@ -283,6 +336,7 @@ void drawturn(SDL_Surface *screen, int players, int turn)
 	}
 }
 
+/* Draw box around selected level */
 void drawlevel(int player, int level)
 {
 	int i;
@@ -292,6 +346,7 @@ void drawlevel(int player, int level)
 	}
 }
 
+/* Main function, including commandline argument handling */
 int main(int argc, char *argv[])
 {
 	struct option op[] =
@@ -322,7 +377,7 @@ int main(int argc, char *argv[])
 				printf("[-f | --fullscreen] Use full screen mode\n");
 				printf("[-g | --ggz ] Run game in GGZ mode\n");
 				printf("[-h | --help] This help\n");
-				printf("[-n | --nosound] Don't use sound\n");
+				printf("[-n | --nosound] Don't use sound or music\n");
 				return 0;
 				break;
 			case 'n':
@@ -348,6 +403,7 @@ int main(int argc, char *argv[])
 	return ret;
 }
 
+/* Load individual user settings */
 void loadsettings(void)
 {
 	int conf;
@@ -380,6 +436,7 @@ void loadsettings(void)
 	}
 }
 
+/* Save settings into user preference file */
 void savesettings(void)
 {
 	int conf;
@@ -398,6 +455,7 @@ void savesettings(void)
 	}
 }
 
+/* Add a player to the visual player gallery */
 void addplayer(const char *picture)
 {
 	static int counter = 0;
@@ -420,6 +478,7 @@ void addplayer(const char *picture)
 	counter++;
 }
 
+/* Simple textual messages */
 void rendermode(int x, int y, const char *mode)
 {
 	SDL_Surface *text;
@@ -434,12 +493,14 @@ void rendermode(int x, int y, const char *mode)
 		rect.y = y;
 		rect.h = text->h;
 		rect.w = text->w;
+		SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
 		SDL_BlitSurface(text, NULL, screen, &rect);
 		SDL_FreeSurface(text);
 		SDL_UpdateRect(screen, rect.x, rect.y, rect.w, rect.h);
 	}
 }
 
+/* Draw scores of players */
 void renderscore(int x, int y, int sum)
 {
 	char score[8];
@@ -465,6 +526,7 @@ void renderscore(int x, int y, int sum)
 	}
 }
 
+/* Draw multi-lines game mode descriptions */
 void renderdesc(int x, int y, const char *desc, int active)
 {
 	SDL_Surface *text;
@@ -499,6 +561,7 @@ void renderdesc(int x, int y, const char *desc, int active)
 	free(tmp);
 }
 
+/* Play a sound effect */
 void playnoise()
 {
 #ifdef HAVE_SOUND
@@ -510,6 +573,7 @@ void playnoise()
 #endif
 }
 
+/* Scan directory for files matching pattern */
 char *scan_dir(const char *dir, const char *pattern)
 {
 	DIR *dp;
@@ -531,11 +595,29 @@ char *scan_dir(const char *dir, const char *pattern)
 	return NULL;
 }
 
+/* Return random file matching a pattern from a directory */
+char *scan_file(const char *dir, const char *pattern)
+{
+	char *tmpfile;
+	char *ret;
+	char path[STRING_LENGTH];
+
+	tmpfile = scan_dir(dir, pattern);
+	ret = NULL;
+	if(tmpfile)
+	{
+		snprintf(path, sizeof(path), "%s/fonts/%s", data_local(), tmpfile);
+		ret = strdup(path);
+	}
+
+	return ret;
+}
+
+/* Display notice while scanning for files */
 void screen_scanning(int display)
 {
 	SDL_Rect rect;
 	char path[STRING_LENGTH];
-	char *tmpfont;
 
 	if(display)
 	{
@@ -550,7 +632,7 @@ void screen_scanning(int display)
 		SDL_UpdateRect(screen, rect.x, rect.y, rect.w, rect.h);
 
 		/* Scanning for other stuff */
-		sleep(1);
+		/*sleep(1);*/
 	}
 	else
 	{
@@ -558,7 +640,7 @@ void screen_scanning(int display)
 		mkdir(data_local(), S_IRWXU);
 		snprintf(path, sizeof(path), "%s/music", data_local());
 		mkdir(path, S_IRWXU);
-		snprintf(path, sizeof(path), "%s/sounds", data_local());
+		snprintf(path, sizeof(path), "%s/sound", data_local());
 		mkdir(path, S_IRWXU);
 		snprintf(path, sizeof(path), "%s/fonts", data_local());
 		mkdir(path, S_IRWXU);
@@ -567,35 +649,52 @@ void screen_scanning(int display)
 		if(!fontpath)
 		{
 			snprintf(path, sizeof(path), "%s/fonts", data_local());
-			tmpfont = scan_dir(path, "*.ttf");
-			if(tmpfont)
-			{
-				snprintf(path, sizeof(path), "%s/fonts/%s", data_local(), tmpfont);
-				fontpath = strdup(path);
-			}
+			fontpath = scan_file(path, "*.ttf");
 		}
 		if(!fontpath)
 		{
-			tmpfont = scan_dir("/usr/share/fonts/truetype", "*.ttf");
-			if(tmpfont)
-			{
-				snprintf(path, sizeof(path), "/usr/share/fonts/truetype/%s", tmpfont);
-				fontpath = strdup(path);
-			}
+			snprintf(path, sizeof(path), "%s/fonts", data_global());
+			fontpath = scan_file(path, "*.ttf");
 		}
-		if(!fontpath)
+		if(!fontpath) fontpath = scan_file("/usr/share/fonts/truetype", "*.ttf");
+		if(!fontpath) fontpath = scan_file("/usr/X11R6/lib/X11/fonts/TrueType", "*.ttf");
+
+		/* Scanning for music */
+		if(!musicpath)
 		{
-			tmpfont = scan_dir("/usr/X11R6/lib/X11/fonts/TrueType", "*.ttf");
-			if(tmpfont)
-			{
-				snprintf(path, sizeof(path), "/usr/X11R6/lib/X11/fonts/TrueType/%s", tmpfont);
-				fontpath = strdup(path);
-			}
+			snprintf(path, sizeof(path), "%s/music", data_local());
+			musicpath = scan_file(path, "*.ogg");
+			if(!musicpath) musicpath = scan_file(path, "*.mp3");
+			if(!musicpath) musicpath = scan_file(path, "*.wav");
+		}
+		if(!musicpath)
+		{
+			snprintf(path, sizeof(path), "%s/music", data_global());
+			musicpath = scan_file(path, "*.ogg");
+			if(!musicpath) musicpath = scan_file(path, "*.mp3");
+			if(!musicpath) musicpath = scan_file(path, "*.wav");
+		}
+
+		/* Scanning for sound effects */
+		if(!soundpath)
+		{
+			snprintf(path, sizeof(path), "%s/sound", data_local());
+			soundpath = scan_file(path, "*.ogg");
+			if(!soundpath) musicpath = scan_file(path, "*.mp3");
+			if(!soundpath) musicpath = scan_file(path, "*.wav");
+		}
+		if(!musicpath)
+		{
+			snprintf(path, sizeof(path), "%s/sound", data_global());
+			soundpath = scan_file(path, "*.ogg");
+			if(!soundpath) musicpath = scan_file(path, "*.mp3");
+			if(!soundpath) musicpath = scan_file(path, "*.wav");
 		}
 	}
 }
 
-void screen_intro()
+/* Intro menu with game mode selection and player gallery */
+void screen_intro(int firsttime)
 {
 	int escape;
 	SDL_Event event;
@@ -605,6 +704,7 @@ void screen_intro()
 	SDL_Rect rect;
 	char *desc1, *desc2, *desc3, *desc4;
 	char path[STRING_LENGTH];
+	char *rule[] = {"easy", "matrix", "havoc", "hax0r"};
 
 	x = 20;
 	y = 20;
@@ -622,16 +722,16 @@ void screen_intro()
 	SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
 	SDL_UpdateRect(screen, rect.x, rect.y, rect.w, rect.h);
 
-	rendermode(22, 24, "easy");
-	rendermode(22, 54, "matrix");
-	rendermode(22, 84, "havoc");
-	rendermode(22, 114, "hax0r");
+	rendermode(22, 24, rule[0]);
+	rendermode(22, 54, rule[1]);
+	rendermode(22, 84, rule[2]);
+	rendermode(22, 114, rule[3]);
 
 	if(!ggzmode)
 	{
 		for(i = 0; i < players; i++)
 		{
-			SDL_Delay(100);
+			if(firsttime == 1) SDL_Delay(200);
 	
 			if(!i)
 			{
@@ -662,6 +762,7 @@ void screen_intro()
 			}
 		}
 	}
+	else rendermode(150, 170, "Waiting for players...  ");
 
 	while(!escape)
 	{
@@ -692,8 +793,16 @@ void screen_intro()
 					}
 					if(keystate[SDLK_RETURN])
 					{
-						escape = 1;
-						playmode = (y - 20) / 30 + MODE_RESERVED + 1;
+						if((!ggzmode) || (gamerunning))
+						{
+							escape = 1;
+							playmode = (y - 20) / 30 + MODE_RESERVED + 1;
+							if(ggzmode)
+							{
+								ggz_write_char(modfd, OP_RULESET);
+								ggz_write_string(modfd, rule[playmode - MODE_RESERVED - 1]);
+							}
+						}
 						playnoise();
 					}
 					if(keystate[SDLK_f])
@@ -755,9 +864,12 @@ void screen_intro()
 		if((dimmer <= 150) || (dimmer >= 250)) dimminc = -dimminc;
 
 		SDL_Delay(50);
+
+		if(ggzmode) ggz_network();
 	}
 }
 
+/* Game screen with player gallery and game board */
 void screen_game()
 {
 	int dimmer;
@@ -840,6 +952,12 @@ void screen_game()
 						drawnumber(screen, x / 32, y / 32, array[x / 32][y / 32]);
 						calc = 1;
 						playnoise();
+						if(ggzmode)
+						{
+							ggz_write_char(modfd, OP_MOVE);
+							ggz_write_int(modfd, x / 32);
+							ggz_write_int(modfd, y / 32);
+						}
 					}
 					if(keystate[SDLK_f])
 					{
@@ -926,13 +1044,16 @@ void screen_game()
 					break;
 			}
 
-			if(makescore) scores[turn]++;
-			if(scores[turn] == 10)
+			if(!ggzmode)
 			{
-				escape = 1;
-				winner = turn;
+				if(makescore) scores[turn]++;
+				if(scores[turn] == 10)
+				{
+					escape = 1;
+					winner = turn;
+				}
+				drawlevel(turn, scores[turn]);
 			}
-			drawlevel(turn, scores[turn]);
 
 			turn = (turn + 1) % players;
 			drawturn(screen, players, turn);
@@ -944,6 +1065,7 @@ void screen_game()
 	}
 }
 
+/* Game over menu */
 void screen_outtro()
 {
 	int escape;
@@ -974,6 +1096,7 @@ void screen_outtro()
 	}
 }
 
+/* Program initialization */
 int startgame(void)
 {
 	int i, j, x;
@@ -981,6 +1104,7 @@ int startgame(void)
 	Uint32 init;
 	int ret;
 	char path[STRING_LENGTH];
+	int step;
 
 	init = SDL_INIT_VIDEO;
 #ifdef HAVE_SOUND
@@ -1046,9 +1170,11 @@ int startgame(void)
 
 	savesettings();
 
+	step = 0;
 	while(1)
 	{
-		screen_intro();
+		step++;
+		screen_intro(step);
 
 		if(playmode < 0)
 		{
@@ -1088,6 +1214,7 @@ int startgame(void)
 	return 0;
 }
 
+/* Shutdown music system */
 void musicdone(void)
 {
 #ifdef HAVE_SOUND
