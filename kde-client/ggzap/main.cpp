@@ -30,7 +30,8 @@ int main(int argc, char **argv)
 	GGZap *zap;
 	KAboutData *aboutData;
 	KCmdLineArgs *args;
-	static const KCmdLineOptions op[] = {
+	static const KCmdLineOptions op[] =
+	{
 		{"module <modulename>", I18N_NOOP("Specify module to launch"), 0},
 		{"frontend <frontendtype>", I18N_NOOP("Preferred frontend"), 0},
 		{0, 0, 0}

@@ -4,12 +4,14 @@ GGZap - GGZ Quick Launcher
 This tool lets players play their favorite games without having to launch a
 core client. GGZap works perfectly in the background if there is no other
 player available, and launches the game immediately if a player is found on the
-server which is configured. That's GGZ Europe Two in normal case, but this can
+server which is configured. That's GGZ Europe One in normal case, but this can
 be reconfigured.
 
-Wishlist for 0.0.5:
+ALREADY DONE IN 0.0.5:
+- Handle different game UI's (gtk, kde, ...), together with modsniff
+STARTED IN 0.0.6:
 - Skinnable user interface (like KDE noatun does)
-ALREADY DONE: Handle different game UI's (gtk, kde, ...), together with modsniff
+Wishlist for 0.0.7:
 - KDE taskbar functionality, drag'n'drop of Zone files
 
 Josef

@@ -214,23 +214,20 @@ cout << "hookServerActive!" << endl;
 			emit signalState(loginfail);
 			break;
 		case GGZCoreServer::roomlist:
+			break;
+		case GGZCoreServer::typelist:
 			join = -1;
 			for(int i = 0; i < m_server->countRooms(); i++)
 			{
 				gametype = m_server->room(i)->gametype();
-				if(gametype)
+				if(gametype->gametype())
 				{
-cerr << "compare 0: " << gametype << endl;
-cerr << "compare 1: " << gametype->name() << endl;
-cerr << "compare 2: " << m_modulename << endl;
 					if(strcmp(gametype->name(), m_modulename) == 0) join = i;
 					else cout << "type: " << m_server->room(i)->gametype()->name() << endl;
 				}
 			}
 			if(join == -1) emit signalState(joinroomfail);
 			else m_server->joinRoom(join);
-			break;
-		case GGZCoreServer::typelist:
 			break;
 		case GGZCoreServer::entered:
 			m_room = m_server->room();
