@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5705 2003-12-05 02:24:46Z jdorje $
+ * $Id: client.c 5706 2003-12-06 02:06:19Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1057,13 +1057,8 @@ create_win_main (void)
   ggz = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (ggz)->child),
                                    _("_GGZ"));
-#ifdef GTK2
   gtk_widget_add_accelerator (ggz, "activate", accel_group,
                               tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
-#else
-  gtk_widget_add_accelerator (ggz, "activate_item", accel_group,
-                              tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
-#endif
   gtk_widget_ref (ggz);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "ggz", ggz,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1139,13 +1134,8 @@ create_win_main (void)
   game = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (game)->child),
                                    _("G_ame"));
-#ifdef GTK2
   gtk_widget_add_accelerator (game, "activate", accel_group,
                               tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
-#else
-  gtk_widget_add_accelerator (game, "activate_item", accel_group,
-                              tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
-#endif
   gtk_widget_ref (game);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "game", game,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1237,13 +1227,8 @@ create_win_main (void)
   edit = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (edit)->child),
                                    _("_Edit"));
-#ifdef GTK2
   gtk_widget_add_accelerator (edit, "activate", accel_group,
                               tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
-#else
-  gtk_widget_add_accelerator (edit, "activate_item", accel_group,
-                              tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
-#endif
   gtk_widget_ref (edit);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "edit", edit,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1278,13 +1263,8 @@ create_win_main (void)
   view = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (view)->child),
                                    _("_View"));
-#ifdef GTK2
   gtk_widget_add_accelerator (view, "activate", accel_group,
                               tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
-#else
-  gtk_widget_add_accelerator (view, "activate_item", accel_group,
-                              tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
-#endif
   gtk_widget_ref (view);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "view", view,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1408,13 +1388,8 @@ create_win_main (void)
   help = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (help)->child),
                                    _("_Help"));
-#ifdef GTK2
   gtk_widget_add_accelerator (help, "activate", accel_group,
                               tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
-#else
-  gtk_widget_add_accelerator (help, "activate_item", accel_group,
-                              tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
-#endif
   gtk_widget_ref (help);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "help", help,
                             (GtkDestroyNotify) gtk_widget_unref);
