@@ -1,8 +1,8 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5358 2003-02-04 01:55:26Z jdorje $
+dnl $Id: configure.ac 5370 2003-02-04 09:10:09Z jdorje $
 
-AC_INIT(configure.ac)
-#AC_INIT(acinclude.m4)
+AC_INIT
+AC_CONFIG_SRCDIR([configure.ac])
 
 if test -r $srcdir/package; then
    . $srcdir/package
@@ -37,7 +37,7 @@ fi
 allsubdirs="common $subdirs"
 
 AM_INIT_AUTOMAKE($package, $version)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
 dnl Check for standard build environment
@@ -74,14 +74,18 @@ AC_HEADER_STDC
 dnl Check for gettext support
 dnl =========================
 if test "x$MSGFMT" != "x"; then
-	AC_DEFINE(ENABLE_NLS)
+	AC_DEFINE([ENABLE_NLS], 1, [Define to use NLS (i18n)])
 	allsubdirs="$allsubdirs po"
 	enable_gettext="yes"
 
 	if test "x${prefix}" = "xNONE"; then
-	 AC_DEFINE_UNQUOTED(LOCALEDIR, "${ac_default_prefix}/share/locale")
+		AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
+                                   "${ac_default_prefix}/share/locale",
+                                   [The location to put message catalogs])
 	else
-	 AC_DEFINE_UNQUOTED(LOCALEDIR, "${prefix}/share/locale")
+		AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
+                                   "${prefix}/share/locale",
+                                   [The location to put message catalogs])
 	fi
 else
 	enable_gettext="no"
@@ -122,7 +126,7 @@ if test "$enable_gtk" = "gtk2" || test "$enable_gtk" = "yes"; then
   AM_PATH_GTK_2_0([2.0.0], [found_gtk2="yes"], [found_gtk2="no"])
   if test "$found_gtk2" = "yes"; then
     enable_gtk=gtk2
-    AC_DEFINE(GTK2)
+    AC_DEFINE(GTK2, 1, [Define to link against GTK+-2.0 libraries])
   elif test "$enable_gtk" = "gtk2"; then
     AC_MSG_ERROR([*** Can't build GTK+-2.0 frontend: GTK+-2.0 not found])
   fi
@@ -147,10 +151,10 @@ changequote([,])dnl
 dnl Debug modes
 dnl ===========
 if test "$enable_debug" = yes; then
-    AC_DEFINE(DEBUG)
+    AC_DEFINE([DEBUG], 1, [Define to enable debugging])
     DFLAGS="DEBUG"
 else
-    AC_DEFINE(NDEBUG)
+    AC_DEFINE([NDEBUG], 1, [Define to disable debugging])
     DFLAGS="NDEBUG"
 fi
 
@@ -168,7 +172,7 @@ AC_SUBST(LDADD)
 AC_SUBST(subdirs)
 AC_SUBST(SUBDIRS)
 
-AC_OUTPUT([Makefile 
+AC_CONFIG_FILES([Makefile 
 	   package
 	   common/Makefile
 	   common/cardsets/Makefile
@@ -202,6 +206,7 @@ AC_OUTPUT([Makefile
 	   chess/bitmaps/Makefile
 	   po/Makefile
 	   ])
+AC_OUTPUT
 
 
 dnl Status Output
