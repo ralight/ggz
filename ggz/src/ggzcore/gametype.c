@@ -28,6 +28,7 @@
 #include "gametype.h"
 #include "msg.h"
 
+#include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -139,7 +140,7 @@ struct _GGZGameType* _ggzcore_gametype_new(void)
 {
 	struct _GGZGameType *gametype;
 
-	gametype = ggzcore_malloc(sizeof(struct _GGZGameType));
+	gametype = ggz_malloc(sizeof(struct _GGZGameType));
 	
 	/* FIXME: any fields we should fill in defaults? */
 	return gametype;
@@ -162,41 +163,34 @@ void _ggzcore_gametype_init(struct _GGZGameType *gametype,
 	gametype->allow_players = allow_players;
 	gametype->allow_bots = allow_bots;
 	
-	if (name)
-		gametype->name = strdup(name);
-	if (version)
-		gametype->version = strdup(version);
-	if (prot_engine)
-		gametype->prot_engine = strdup(prot_engine);
-	if (prot_version)
-		gametype->prot_version = strdup(prot_version);
-	if (desc)
-		gametype->desc = strdup(desc);
-	if (author)
-		gametype->author = strdup(author);
-	if (url)
-		gametype->url = strdup(url);
+	gametype->name = ggz_strdup(name);
+	gametype->version = ggz_strdup(version);
+	gametype->prot_engine = ggz_strdup(prot_engine);
+	gametype->prot_version = ggz_strdup(prot_version);
+	gametype->desc = ggz_strdup(desc);
+	gametype->author = ggz_strdup(author);
+	gametype->url = ggz_strdup(url);
 }
 
 
 void _ggzcore_gametype_free(struct _GGZGameType *type)
 {
 	if (type->name)
-		free(type->name);
+		ggz_free(type->name);
 	if (type->prot_engine)
-		free(type->prot_engine);
+		ggz_free(type->prot_engine);
 	if (type->prot_version)
-		free(type->prot_version);
+		ggz_free(type->prot_version);
 	if (type->version)
-		free(type->version);
+		ggz_free(type->version);
 	if (type->desc)
-		free(type->desc);
+		ggz_free(type->desc);
 	if (type->author)
-		free(type->author);
+		ggz_free(type->author);
 	if (type->url)
-		free(type->url);
+		ggz_free(type->url);
 
-	ggzcore_free(type);
+	ggz_free(type);
 }
 
 

@@ -34,6 +34,8 @@
 #include "memory.h"
 #include "module.h"
 
+#include <ggz.h>
+
 int ggzcore_init(GGZOptions options)
 {
 	/*
@@ -61,7 +63,7 @@ void ggzcore_destroy(void)
 {
 	_ggzcore_module_cleanup();
 	_ggzcore_confio_cleanup();
-	_ggzcore_memory_check();
+	ggz_memory_check();
 	_ggzcore_debug_cleanup();
 }
 	

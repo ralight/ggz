@@ -181,7 +181,7 @@ struct _GGZNet* _ggzcore_net_new(void)
 {
 	struct _GGZNet *net;
 
-	net = ggzcore_malloc(sizeof(struct _GGZNet));
+	net = ggz_malloc(sizeof(struct _GGZNet));
 	
 	/* Set fd to invalid value */
 	net->fd = -1;
@@ -194,7 +194,7 @@ struct _GGZNet* _ggzcore_net_new(void)
 void _ggzcore_net_init(struct _GGZNet *net, struct _GGZServer *server, const char *host, unsigned int port)
 {
 	net->server = server;
-	net->host = ggzcore_strdup(host);
+	net->host = ggz_strdup(host);
 	net->port = port;
 	net->fd = -1;
 
@@ -260,7 +260,7 @@ void _ggzcore_net_free(struct _GGZNet *net)
 	GGZXMLElement *element;
 	
 	if (net->host)
-		ggzcore_free(net->host);
+		ggz_free(net->host);
 
 	/* Clear elements off stack and free it */
 	if (net->stack) {
@@ -272,7 +272,7 @@ void _ggzcore_net_free(struct _GGZNet *net)
 	if (net->parser)
 		XML_ParserFree(net->parser);
 
-	ggzcore_free(net);
+	ggz_free(net);
 }
 
 
@@ -848,7 +848,7 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 			/* FIXME: we should check if login type is 'new' */
 			if (code == 0 && data) {
 				_ggzcore_server_set_password(net->server, data);
-				ggzcore_free(data);
+				ggz_free(data);
 			}
 			_ggzcore_server_set_login_status(net->server, code);
 		}
@@ -914,7 +914,7 @@ static void _ggzcore_net_handle_password(GGZNet *net, GGZXMLElement *element)
 		
 		/* It had better be RESULT.... */
 		if (strcmp(parent_tag, "RESULT") == 0)
-			ggz_xmlelement_set_data(parent, ggzcore_strdup(password));
+			ggz_xmlelement_set_data(parent, ggz_strdup(password));
 	}
 }
 
@@ -1068,7 +1068,7 @@ static void _ggzcore_net_handle_update(GGZNet *net, GGZXMLElement *update)
 				/* FIXME: This should be a player "class-based" event */
 				_ggzcore_room_set_player_lag(room, player->name, player->lag);
 			
-			ggzcore_free(player);
+			ggz_free(player);
 		}
 		else if (strcmp(type, "table") == 0) {
 			table = ggz_xmlelement_get_data(update);
@@ -1164,17 +1164,17 @@ static void _ggzcore_net_handle_game(GGZNet *net, GGZXMLElement *game)
 
 		if (data) {
 			if (data->prot_engine)
-				ggzcore_free(data->prot_engine);
+				ggz_free(data->prot_engine);
 			if (data->prot_version)
-				ggzcore_free(data->prot_version);
+				ggz_free(data->prot_version);
 			if (data->author)
-				ggzcore_free(data->author);
+				ggz_free(data->author);
 			if (data->url)
-				ggzcore_free(data->url);
+				ggz_free(data->url);
 			if (data->desc)
-				ggzcore_free(data->desc);
+				ggz_free(data->desc);
 			
-			ggzcore_free(data);
+			ggz_free(data);
 		}
 
 	}
@@ -1189,7 +1189,7 @@ static void _ggzcore_net_game_set_protocol(GGZXMLElement *game, char *engine, ch
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
-		data = ggzcore_malloc(sizeof(struct _GGZGameData));
+		data = ggz_malloc(sizeof(struct _GGZGameData));
 		ggz_xmlelement_set_data(game, data);
 	}
 	
@@ -1206,7 +1206,7 @@ static void _ggzcore_net_game_set_allowed(GGZXMLElement *game, GGZAllowed player
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
-		data = ggzcore_malloc(sizeof(struct _GGZGameData));
+		data = ggz_malloc(sizeof(struct _GGZGameData));
 		ggz_xmlelement_set_data(game, data);
 	}
 	
@@ -1223,7 +1223,7 @@ static void _ggzcore_net_game_set_info(GGZXMLElement *game, char *author, char *
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
-		data = ggzcore_malloc(sizeof(struct _GGZGameData));
+		data = ggz_malloc(sizeof(struct _GGZGameData));
 		ggz_xmlelement_set_data(game, data);
 	}
 	
@@ -1240,7 +1240,7 @@ static void _ggzcore_net_game_set_desc(GGZXMLElement *game, char *desc)
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
-		data = ggzcore_malloc(sizeof(struct _GGZGameData));
+		data = ggz_malloc(sizeof(struct _GGZGameData));
 		ggz_xmlelement_set_data(game, data);
 	}
 	
@@ -1258,8 +1258,8 @@ static void _ggzcore_net_handle_protocol(GGZNet *net, GGZXMLElement *protocol)
 
 	if (protocol && parent) {
 		_ggzcore_net_game_set_protocol(parent,
-						    ggzcore_strdup(ggz_xmlelement_get_attr(protocol, "ENGINE")),
-						    ggzcore_strdup(ggz_xmlelement_get_attr(protocol, "VERSION")));
+						    ggz_strdup(ggz_xmlelement_get_attr(protocol, "ENGINE")),
+						    ggz_strdup(ggz_xmlelement_get_attr(protocol, "VERSION")));
 	}
 }
 
@@ -1291,8 +1291,8 @@ static void _ggzcore_net_handle_about(GGZNet *net, GGZXMLElement *about)
 
 	if (about && parent) {
 		_ggzcore_net_game_set_info(parent, 
-						ggzcore_strdup(ggz_xmlelement_get_attr(about, "AUTHOR")),
-						ggzcore_strdup(ggz_xmlelement_get_attr(about, "URL")));
+						ggz_strdup(ggz_xmlelement_get_attr(about, "AUTHOR")),
+						ggz_strdup(ggz_xmlelement_get_attr(about, "URL")));
 	}
 }
 
@@ -1308,7 +1308,7 @@ static void _ggzcore_net_handle_desc(GGZNet *net, GGZXMLElement *element)
 	parent = ggz_stack_top(net->stack);
 
 	if (element && parent) {
-		desc = ggzcore_strdup(ggz_xmlelement_get_text(element));
+		desc = ggz_strdup(ggz_xmlelement_get_text(element));
 		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "GAME") == 0)
@@ -1348,7 +1348,7 @@ static void _ggzcore_net_handle_room(GGZNet *net, GGZXMLElement *room)
 
 		/* Free description if present */
 		if (desc)
-			ggzcore_free(desc);
+			ggz_free(desc);
 
 		parent_tag = ggz_xmlelement_get_tag(parent);
 		
@@ -1512,7 +1512,7 @@ static GGZTableData* _ggzcore_net_tabledata_new(void)
 {
 	struct _GGZTableData *data;
 
-	data = ggzcore_malloc(sizeof(struct _GGZTableData));
+	data = ggz_malloc(sizeof(struct _GGZTableData));
 
 	data->seats = ggz_list_create(NULL, 
 					   _ggzcore_net_seat_copy, 
@@ -1527,10 +1527,10 @@ static void _ggzcore_net_tabledata_free(GGZTableData *data)
 {
 	if (data) {
 		if (data->desc)
-			ggzcore_free(data->desc);
+			ggz_free(data->desc);
 		if (data->seats)
 			ggz_list_free(data->seats);
-		ggzcore_free(data);
+		ggz_free(data);
 	}
 }
 
@@ -1561,11 +1561,11 @@ static void* _ggzcore_net_seat_copy(void *data)
 
 	seat1 = (GGZSeatData*)data;
 
-	seat2 = ggzcore_malloc(sizeof(struct _GGZSeatData));
+	seat2 = ggz_malloc(sizeof(struct _GGZSeatData));
 
 	seat2->index = seat1->index;
-	seat2->type = ggzcore_strdup(seat1->type);
-	seat2->name = ggzcore_strdup(seat1->name);
+	seat2->type = ggz_strdup(seat1->type);
+	seat2->name = ggz_strdup(seat1->name);
 
 	return seat2;
 }
@@ -1575,10 +1575,10 @@ static void _ggzcore_net_seat_free(GGZSeatData *seat)
 {
 	if (seat) {
 		if (seat->type)
-			ggzcore_free(seat->type);
+			ggz_free(seat->type);
 		if (seat->name)
-			ggzcore_free(seat->name);
-		ggzcore_free(seat);
+			ggz_free(seat->name);
+		ggz_free(seat);
 	}
 }
 

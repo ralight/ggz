@@ -38,20 +38,6 @@
 extern "C" {
 #endif 
 
-/* Memory functions */
-void * _ggzcore_malloc(const unsigned int, char *, int);
-void * _ggzcore_realloc(const void *, const unsigned int, char *, int);
-int _ggzcore_free(const void *, char *, int);
-char * _ggzcore_strdup(const char *, char *, int);
-#define ggzcore_malloc(x)	_ggzcore_malloc(x, __FUNCTION__ " in " \
-						   __FILE__, __LINE__)
-#define ggzcore_realloc(x,y)	_ggzcore_realloc(x, y, __FUNCTION__ " in " \
-						       __FILE__, __LINE__)
-#define ggzcore_free(x)		_ggzcore_free(x, __FUNCTION__ " in " \
-						 __FILE__,  __LINE__)
-#define ggzcore_strdup(x)	_ggzcore_strdup(x, __FUNCTION__ " in " \
-						   __FILE__, __LINE__)
-
 /* GGZCore library features */
 typedef enum {
 	GGZ_OPT_PARSER      = 0x0001,   /* %0000 0000 */

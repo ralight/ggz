@@ -36,6 +36,7 @@
 #include <sys/socket.h>
 #include <sys/poll.h>
 #include <errno.h>
+#include <ggz.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -244,7 +245,7 @@ struct _GGZGame* _ggzcore_game_new(void)
 {
 	struct _GGZGame *game;
 
-	game = ggzcore_malloc(sizeof(struct _GGZGame));
+	game = ggz_malloc(sizeof(struct _GGZGame));
 
 	return game;
 }
@@ -281,7 +282,7 @@ void _ggzcore_game_free(struct _GGZGame *game)
 	for (i = 0; i < _ggzcore_num_events; i++)
 		_ggzcore_hook_list_destroy(game->event_hooks[i]);
 
-	ggzcore_free(game);
+	ggz_free(game);
 }
 
 
@@ -403,7 +404,7 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL,
 				    strerror(errno));
 		ggzcore_debug(GGZ_DBG_GAME, "Bad path: %s", path);
-		ggzcore_free(path);
+		ggz_free(path);
 		return -1;
 	}
 
@@ -441,7 +442,7 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		exit(-1);
 	} else {
 		/* parent */
-		ggzcore_free(path);
+		ggz_free(path);
 		close(sfd[1]);
 		
 		/* Key info about game */
@@ -510,13 +511,13 @@ static char* _ggzcore_game_get_path(char **argv)
 		/* Calcualate string length, leaving room for a slash 
 		   and the trailing null */
 		len = strlen(GAMEDIR) + strlen(mod_path) + 2;
-		path = ggzcore_malloc(len);
+		path = ggz_malloc(len);
 		strcpy(path, GAMEDIR);
 		strcat(path, "/");
 		strcat(path, mod_path);
 	}
 	else
-		path = ggzcore_strdup(mod_path);
+		path = ggz_strdup(mod_path);
 
 	return path;
 }

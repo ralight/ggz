@@ -29,6 +29,7 @@
 #include "msg.h"
 #include "ggzcore.h"
 
+#include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -198,7 +199,7 @@ struct _GGZTable* _ggzcore_table_new(void)
 {
 	struct _GGZTable *table;
 
-	table = ggzcore_malloc(sizeof(struct _GGZTable));
+	table = ggz_malloc(sizeof(struct _GGZTable));
 
 	/* FIXME: anything we should mark invalid? */
 	return table;
@@ -217,11 +218,10 @@ void _ggzcore_table_init(struct _GGZTable *table,
 	table->gametype = gametype;
 	table->id = id;
 	table->state = state;
-	if (desc)
-		table->desc = ggzcore_strdup(desc);
+	table->desc = ggz_strdup(desc);
 
 	table->num_seats = num_seats;
-	table->seats = ggzcore_malloc(num_seats * sizeof(struct _GGZSeat));
+	table->seats = ggz_malloc(num_seats * sizeof(struct _GGZSeat));
 	ggzcore_debug(GGZ_DBG_TABLE, "Allocating %d seats", num_seats);
 
 	for (i = 0; i < num_seats; i++) {
@@ -236,16 +236,16 @@ void _ggzcore_table_free(struct _GGZTable *table)
 	int i;
 
 	if (table->desc)
-		ggzcore_free(table->desc);
+		ggz_free(table->desc);
 
 	if (table->seats) {
 		for (i = 0; i < table->num_seats; i++)
 			if (table->seats[i].name)
-				ggzcore_free(table->seats[i].name);
-		ggzcore_free(table->seats);
+				ggz_free(table->seats[i].name);
+		ggz_free(table->seats);
 	}
 	
-	ggzcore_free(table);
+	ggz_free(table);
 }
 
 
@@ -266,7 +266,7 @@ void _ggzcore_table_add_player(struct _GGZTable *table, char *name, const unsign
 	struct _GGZSeat new_seat;
 
 	new_seat.type = GGZ_SEAT_PLAYER;
-	new_seat.name = ggzcore_strdup(name);
+	new_seat.name = ggz_strdup(name);
 
 	table->seats[seat] = new_seat;
 }
@@ -277,7 +277,7 @@ void _ggzcore_table_add_bot(struct _GGZTable *table, char *name, const unsigned 
 	struct _GGZSeat new_seat;
 
 	new_seat.type = GGZ_SEAT_BOT;
-	new_seat.name = ggzcore_strdup(name);
+	new_seat.name = ggz_strdup(name);
 
 	table->seats[seat] = new_seat;
 }
@@ -288,7 +288,7 @@ void _ggzcore_table_add_reserved(struct _GGZTable *table, char *name, const unsi
 	struct _GGZSeat new_seat;
 
 	new_seat.type = GGZ_SEAT_RESERVED;
-	new_seat.name = ggzcore_strdup(name);
+	new_seat.name = ggz_strdup(name);
 
 	table->seats[seat] = new_seat;
 }
@@ -301,7 +301,7 @@ int  _ggzcore_table_remove_player(struct _GGZTable *table, char *name)
 	for (i = 0; i < table->num_seats; i++)
 		if (table->seats[i].name != NULL 
 		    && strcmp(table->seats[i].name, name) == 0) {
-			ggzcore_free(table->seats[i].name);
+			ggz_free(table->seats[i].name);
 			table->seats[i].name = NULL;
 			table->seats[i].type = GGZ_SEAT_OPEN;
 			status = 0;

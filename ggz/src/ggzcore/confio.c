@@ -509,8 +509,8 @@ void _ggzcore_confio_cleanup(void)
 	while(f_entry) {
 		f_data = ggz_list_get_data(f_entry);
 		ggz_list_free(f_data->section_list);
-		ggzcore_free(f_data->path);
-		ggzcore_free(f_data);
+		ggz_free(f_data->path);
+		ggz_free(f_data);
 		f_entry = ggz_list_next(f_entry);
 	}
 
@@ -534,8 +534,8 @@ void ggzcore_confio_close(int handle)
 
 	if(f_entry) {
 		ggz_list_free(f_data->section_list);
-		ggzcore_free(f_data->path);
-		ggzcore_free(f_data);
+		ggz_free(f_data->path);
+		ggz_free(f_data);
 		ggz_list_delete_entry(file_list, f_entry);
 	}
 }
@@ -633,8 +633,8 @@ int	ggzcore_confio_parse(const char *path, const unsigned char options)
 		return -1;
 
 	/* Build our file list data entry */
-	file_data = ggzcore_malloc(sizeof(_ggzcore_confio_file));
-	file_data->path = ggzcore_strdup(path);
+	file_data = ggz_malloc(sizeof(_ggzcore_confio_file));
+	file_data->path = ggz_strdup(path);
 	file_data->handle = next_handle;
 	file_data->writeable = opt_rdwr;
 	file_data->section_list = section_list;
@@ -687,7 +687,7 @@ static GGZList * file_parser(const char *path)
 	}
 
 	/* Setup some temp storage to use */
-	e_data = ggzcore_malloc(sizeof(_ggzcore_confio_entry));
+	e_data = ggz_malloc(sizeof(_ggzcore_confio_entry));
 
 	/* Read individual lines and pass them off to be parsed */
 	while(fgets(line, 1024, c_file)) {
@@ -727,7 +727,7 @@ static GGZList * file_parser(const char *path)
 	}
 
 	/* Cleanup after ourselves */
-	ggzcore_free(e_data);
+	ggz_free(e_data);
 	fclose(c_file);
 
 	return s_list;
@@ -870,17 +870,17 @@ static void *section_create(void *data)
 	/* is not expected to be the full struct, but just the name str  */
 	_ggzcore_confio_section	*dst;
 
-	dst = ggzcore_malloc(sizeof(_ggzcore_confio_section));
+	dst = ggz_malloc(sizeof(_ggzcore_confio_section));
 
 	/* Copy the section name and create an entry list */
-	dst->name = ggzcore_strdup(data);
+	dst->name = ggz_strdup(data);
 	dst->entry_list = ggz_list_create(entry_compare,
 					       entry_create,
 					       entry_destroy,
 					       GGZ_LIST_REPLACE_DUPS);
 	if(!dst->entry_list) {
-		ggzcore_free(dst->name);
-		ggzcore_free(dst);
+		ggz_free(dst->name);
+		ggz_free(dst);
 		dst = NULL;
 	}
 
@@ -892,9 +892,9 @@ static void section_destroy(void *data)
 	_ggzcore_confio_section	*s_data;
 
 	s_data = data;
-	ggzcore_free(s_data->name);
+	ggz_free(s_data->name);
 	ggz_list_free(s_data->entry_list);
-	ggzcore_free(s_data);
+	ggz_free(s_data);
 }
 
 
@@ -915,11 +915,11 @@ static void *entry_create(void *data)
 	_ggzcore_confio_entry	*src, *dst;
 
 	src = data;
-	dst = ggzcore_malloc(sizeof(_ggzcore_confio_entry));
+	dst = ggz_malloc(sizeof(_ggzcore_confio_entry));
 
 	/* Copy the key and value data */
-	dst->key = ggzcore_strdup(src->key);
-	dst->value = ggzcore_strdup(src->value);
+	dst->key = ggz_strdup(src->key);
+	dst->value = ggz_strdup(src->value);
 
 	return dst;
 }
@@ -929,9 +929,9 @@ static void entry_destroy(void *data)
 	_ggzcore_confio_entry	*e_data;
 
 	e_data = data;
-	ggzcore_free(e_data->key);
-	ggzcore_free(e_data->value);
-	ggzcore_free(e_data);
+	ggz_free(e_data->key);
+	ggz_free(e_data->value);
+	ggz_free(e_data);
 }
 
 /* make_path()
@@ -945,7 +945,7 @@ int make_path(const char *full, mode_t mode)
 	copy = strdup(full);
 
 	/* Allocate and zero memory for path */
-	path = ggzcore_malloc(strlen(full)+1);
+	path = ggz_malloc(strlen(full)+1);
  
 	/* Skip preceding / */
 	if (copy[0] == '/')
@@ -957,8 +957,8 @@ int make_path(const char *full, mode_t mode)
 			strcat(strcat(path, "/"), node);
 			if (mkdir(path, mode) < 0
 			    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
-				ggzcore_free(path);
-				ggzcore_free(copy);
+				ggz_free(path);
+				ggz_free(copy);
 				
 				return -1;
 			}

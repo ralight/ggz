@@ -33,6 +33,7 @@
 #include <msg.h>
 
 #include <errno.h>
+#include <ggz.h>
 #include <poll.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -61,7 +62,7 @@ GGZHookList* _ggzcore_hook_list_init(const unsigned int id)
 {
 	GGZHookList *hooks;
 
-	hooks = ggzcore_malloc(sizeof(GGZHookList));
+	hooks = ggz_malloc(sizeof(GGZHookList));
 	hooks->id = id;
 
 	return hooks;
@@ -101,7 +102,7 @@ int _ggzcore_hook_add_full(GGZHookList* list,
 {
 	struct _GGZHook *hook, *cur, *next;
 	
-	hook = ggzcore_malloc(sizeof(struct _GGZHook));
+	hook = ggz_malloc(sizeof(struct _GGZHook));
 	
 	/* Assign unique ID */
 	hook->id = list->seq_id++;
@@ -136,7 +137,7 @@ void _ggzcore_hook_remove_all(GGZHookList *list)
 	while (next) {
 		cur = next;
 		next = cur->next;
-		ggzcore_free(cur);
+		ggz_free(cur);
 	}
 	list->hooks = NULL;
 }
@@ -248,7 +249,7 @@ GGZHookReturn _ggzcore_hook_list_invoke(GGZHookList *list, void *event_data)
 void _ggzcore_hook_list_destroy(GGZHookList *list)
 {
 	_ggzcore_hook_remove_all(list);
-	ggzcore_free(list);
+	ggz_free(list);
 }
 
 
@@ -279,6 +280,6 @@ static void _ggzcore_hook_remove_actual(GGZHookList *list,
 	else
 		prev->next = hook->next;
 	
-	ggzcore_free(hook);
+	ggz_free(hook);
 }
 

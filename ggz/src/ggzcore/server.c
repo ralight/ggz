@@ -32,6 +32,7 @@
 #include "player.h"
 #include "protocol.h"
 
+#include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
 #include <easysock.h>
@@ -496,7 +497,7 @@ struct _GGZServer* _ggzcore_server_new(void)
 {
 	struct _GGZServer *server;
 
-	server = ggzcore_malloc(sizeof(struct _GGZServer));
+	server = ggz_malloc(sizeof(struct _GGZServer));
 	_ggzcore_server_reset(server);
 	
 	return server;
@@ -600,9 +601,9 @@ void _ggzcore_server_set_handle(struct _GGZServer *server, const char *handle)
 {
 	/* Free old handle if one existed */
 	if (server->handle)
-		ggzcore_free(server->handle);
+		ggz_free(server->handle);
 	
-	server->handle = ggzcore_strdup(handle);
+	server->handle = ggz_strdup(handle);
 }
 
 
@@ -610,9 +611,9 @@ void _ggzcore_server_set_password(struct _GGZServer *server, const char *passwor
 {
 	/* Free old password if one existed */
 	if (server->password)
-		ggzcore_free(server->password);
+		ggz_free(server->password);
 	
-	server->password = ggzcore_strdup(password);
+	server->password = ggz_strdup(password);
 }
 
 
@@ -901,12 +902,12 @@ void _ggzcore_server_clear(struct _GGZServer *server)
 	}
 
 	if (server->handle) {
-		ggzcore_free(server->handle);
+		ggz_free(server->handle);
 		server->handle = NULL;
 	}
 
 	if (server->password) {
-		ggzcore_free(server->password);
+		ggz_free(server->password);
 		server->password = NULL;
 	}
 
@@ -935,7 +936,7 @@ void _ggzcore_server_clear(struct _GGZServer *server)
 void _ggzcore_server_free(struct _GGZServer *server)
 {
 	_ggzcore_server_clear(server);
-	ggzcore_free(server);
+	ggz_free(server);
 }
 
 
@@ -947,7 +948,7 @@ void _ggzcore_server_init_roomlist(struct _GGZServer *server,
 	int i;
 
 	server->num_rooms = num;
-	server->rooms = ggzcore_malloc(num * sizeof(struct _GGZRoom*));
+	server->rooms = ggz_malloc(num * sizeof(struct _GGZRoom*));
 	for(i = 0; i < num; i++)
 		server->rooms[i] = NULL;
 }
@@ -962,7 +963,7 @@ void _ggzcore_server_free_roomlist(struct _GGZServer *server)
 			_ggzcore_room_free(server->rooms[i]);
 	}
 
-	ggzcore_free(server->rooms);
+	ggz_free(server->rooms);
 	server->num_rooms = 0;
 }
 
@@ -987,7 +988,7 @@ void _ggzcore_server_init_typelist(struct _GGZServer *server,
 					  const int num)
 {
 	server->num_gametypes = num;
-	server->gametypes = ggzcore_malloc(num * sizeof(struct _GGZGameType*));
+	server->gametypes = ggz_malloc(num * sizeof(struct _GGZGameType*));
 }
 
 
@@ -999,7 +1000,7 @@ void _ggzcore_server_free_typelist(struct _GGZServer *server)
 		_ggzcore_gametype_free(server->gametypes[i]);
 	}
 
-	ggzcore_free(server->gametypes);
+	ggz_free(server->gametypes);
 	server->num_gametypes = 0;
 }
 

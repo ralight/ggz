@@ -261,7 +261,7 @@ int _ggzcore_module_setup(void)
 	ggzcore_debug(GGZ_DBG_MODULE, "Reading %s", file);
 	mod_handle = ggzcore_confio_parse(file, GGZ_CONFIO_RDONLY);
 	/* Free up space taken by name */
-	ggzcore_free(file);
+	ggz_free(file);
 	
 	if (mod_handle == -1) {
 		ggzcore_debug(GGZ_DBG_MODULE, "Unable to load module conffile");
@@ -459,7 +459,7 @@ static struct _GGZModule* _ggzcore_module_new(void)
 {
 	struct _GGZModule *module;
 
-	module = ggzcore_malloc(sizeof(struct _GGZModule));
+	module = ggz_malloc(sizeof(struct _GGZModule));
 
 	return module;
 }
@@ -477,26 +477,16 @@ static void _ggzcore_module_init(struct _GGZModule *module,
 				 const char *icon_path,
 				 const char *help_path)
 {
-	if (name)
-		module->name = strdup(name);
-	if (version)
-		module->version = strdup(version);
-	if (prot_engine)
-		module->prot_engine = strdup(prot_engine);
-	if (prot_version)
-		module->prot_version = strdup(prot_version);
-	if (author)
-		module->author = strdup(author);
-	if (frontend)
-		module->frontend = strdup(frontend);
-	if (url)
-		module->url = strdup(url);
-/*	if (exec_path)
-	module->path = strdup(exec_path);*/
-	if (icon_path)
-		module->icon = strdup(icon_path);
-	if (help_path)
-		module->help = strdup(help_path);
+	module->name = ggz_strdup(name);
+	module->version = ggz_strdup(version);
+	module->prot_engine = ggz_strdup(prot_engine);
+	module->prot_version = ggz_strdup(prot_version);
+	module->author = ggz_strdup(author);
+	module->frontend = ggz_strdup(frontend);
+	module->url = ggz_strdup(url);
+	/* module->path = ggz_strdup(exec_path);*/
+	module->icon = ggz_strdup(icon_path);
+	module->help = ggz_strdup(help_path);
 }
 
 
@@ -504,27 +494,27 @@ static void _ggzcore_module_free(struct _GGZModule *module)
 {
 	
 	if (module->name)
-		free(module->name);
+		ggz_free(module->name);
 	if (module->version)
-		free(module->version);
+		ggz_free(module->version);
 	if (module->prot_engine)
-		free(module->prot_engine);
+		ggz_free(module->prot_engine);
 	if (module->prot_version)
-		free(module->prot_version);
+		ggz_free(module->prot_version);
 	if (module->author)
-		free(module->author);
+		ggz_free(module->author);
 	if (module->frontend)
-		free(module->frontend);
+		ggz_free(module->frontend);
 	if (module->url)
-		free(module->url);
+		ggz_free(module->url);
 	/*if (module->path)
-	  free(module->path);*/
+	  ggz_free(module->path);*/
 	if (module->icon)
-		free(module->icon);
+		ggz_free(module->icon);
 	if (module->help)
-		free(module->help);
+		ggz_free(module->help);
 	
-	ggzcore_free(module);
+	ggz_free(module);
 }
 
 
@@ -546,7 +536,7 @@ static char* _ggzcore_module_conf_filename(void)
 
 	/* Allow for extra slash and newline when concatenating */
 	new_len = strlen(GGZCONFDIR) + strlen(GGZ_MOD_RC) + 2;
-	filename = ggzcore_malloc(new_len);
+	filename = ggz_malloc(new_len);
 
 	strcpy(filename, GGZCONFDIR);
 	strcat(filename, "/");

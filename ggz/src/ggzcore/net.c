@@ -247,7 +247,7 @@ struct _GGZNet* _ggzcore_net_new(void)
 {
 	struct _GGZNet *net;
 
-	net = ggzcore_malloc(sizeof(struct _GGZNet));
+	net = ggz_malloc(sizeof(struct _GGZNet));
 	
 	/* Set fd to invalid value */
 	net->fd = -1;
@@ -259,7 +259,7 @@ struct _GGZNet* _ggzcore_net_new(void)
 void _ggzcore_net_init(struct _GGZNet *net, struct _GGZServer *server, const char *host, unsigned int port)
 {
 	net->server = server;
-	net->host = ggzcore_strdup(host);
+	net->host = ggz_strdup(host);
 	net->port = port;
 	net->fd = -1;
 }
@@ -286,8 +286,8 @@ int _ggzcore_net_get_fd(struct _GGZNet *net)
 void _ggzcore_net_free(struct _GGZNet *net)
 {
 	if (net->host)
-		ggzcore_free(net->host);
-	ggzcore_free(net);
+		ggz_free(net->host);
+	ggz_free(net);
 }
 
 
@@ -752,7 +752,7 @@ static int _ggzcore_net_read_motd(struct _GGZNet *net, int *lines, char ***buffe
 		status = -1;
 
 	if (status == 0) {
-		/* FIXME: use ggzcore_malloc */
+		/* FIXME: use ggz_malloc */
 		if (!(*buffer = calloc((*lines + 1), sizeof(char*))))
 			ggzcore_error_sys_exit("calloc() failed in net_read_motd");
 		motd = *buffer;

@@ -29,6 +29,7 @@
 #include "msg.h"
 #include "room.h"
 
+#include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -80,7 +81,7 @@ struct _GGZPlayer* _ggzcore_player_new(void)
 {
 	struct _GGZPlayer *player;
 
-	player = ggzcore_malloc(sizeof(struct _GGZPlayer));
+	player = ggz_malloc(sizeof(struct _GGZPlayer));
 
 	/* Set to invalid table */
 	player->table = -1;
@@ -99,9 +100,7 @@ void _ggzcore_player_init(struct _GGZPlayer *player,
 			  const GGZPlayerType type,
 			  const int lag)
 {
-	if (name)
-		player->name = strdup(name);
-
+	player->name = ggz_strdup(name);
 	player->room = room;
 	player->table = table;
 	player->type = type;
@@ -112,9 +111,9 @@ void _ggzcore_player_init(struct _GGZPlayer *player,
 void _ggzcore_player_free(struct _GGZPlayer *player)
 {
 	if (player->name)
-		free(player->name);
+		ggz_free(player->name);
 
-	ggzcore_free(player);
+	ggz_free(player);
 }
 
 

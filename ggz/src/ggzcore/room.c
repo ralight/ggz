@@ -313,7 +313,7 @@ struct _GGZRoom* _ggzcore_room_new(void)
 {
 	struct _GGZRoom *room;
 
-	room = ggzcore_malloc(sizeof(struct _GGZRoom));
+	room = ggz_malloc(sizeof(struct _GGZRoom));
 
 	return room;
 }
@@ -331,9 +331,8 @@ void _ggzcore_room_init(struct _GGZRoom *room,
 	room->server = (struct _GGZServer*)server;
 	room->id = id;
 	room->game = game;
-	room->name = ggzcore_strdup(name);
-	if(desc)
-		room->desc = ggzcore_strdup(desc);
+	room->name = ggz_strdup(name);
+	room->desc = ggz_strdup(desc);
 	
 	/* FIXME: create player list? */
 	/* FIXME: create table list? */
@@ -349,10 +348,10 @@ void _ggzcore_room_free(struct _GGZRoom *room)
 	int i;
 	
 	if (room->name)
-		ggzcore_free(room->name);
+		ggz_free(room->name);
 
 	if (room->desc)
-		ggzcore_free(room->desc);
+		ggz_free(room->desc);
 
 	if (room->players)
 		ggz_list_free(room->players);
@@ -363,7 +362,7 @@ void _ggzcore_room_free(struct _GGZRoom *room)
 	for (i = 0; i < _ggzcore_num_events; i++)
 		_ggzcore_hook_list_destroy(room->event_hooks[i]);
 	
-	ggzcore_free(room);
+	ggz_free(room);
 }
 
 
