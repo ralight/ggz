@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 5007 2002-10-23 17:50:56Z jdorje $
+ * $Id: ggzdmod.c 5011 2002-10-23 20:26:32Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -647,9 +647,9 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 		if (old_seat >= ggzdmod->max_num_spectators || !name)
 			return -1;
 	} else {
-		name = ggzdmod_get_seat(ggzdmod, old_seat).name;
 		GGZSeatType old_type = ggzdmod_get_seat(ggzdmod,
 							old_seat).type;
+		name = ggzdmod_get_seat(ggzdmod, old_seat).name;
 		if (old_seat >= ggzdmod->num_seats
 		    || old_type != GGZ_SEAT_PLAYER
 		    || !name)
