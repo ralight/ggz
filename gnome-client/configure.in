@@ -1,4 +1,4 @@
-AC_INIT(acinclude.m4)
+AC_INIT(configure.in)
 #AM_INIT_AUTOMAKE(ggz, 0.1, http://www.sf.net/projects/ggz/)
 AM_INIT_AUTOMAKE(ggz, 0.1)
 AM_CONFIG_HEADER(config.h)
