@@ -1,10 +1,10 @@
-/*
+/* 
  * File: games/euchre.c
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2454 2001-09-11 20:12:21Z jdorje $
+ * $Id: euchre.c 2701 2001-11-09 01:24:51Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -78,9 +78,9 @@ static int euchre_is_valid_game()
 
 static card_t euchre_map_card(card_t c)
 {
-	/* The "right bauer" is the jack of the trump suit.  It
-	 * is the high trump.  The "left bauer" is the other jack
-	 * of the same color; it is the second highest trump. */
+	/* The "right bauer" is the jack of the trump suit.  It is the high
+	   trump.  The "left bauer" is the other jack of the same color; it
+	   is the second highest trump. */
 	if (c.face == JACK && c.suit == 3 - game.trump) {
 		c.suit = game.trump;
 		c.face = ACE_HIGH + 1;
@@ -101,8 +101,9 @@ static void euchre_init_game()
 	game.deck_type = GGZ_DECK_EUCHRE;
 	game.max_hand_length = 5;
 	game.target_score = 10;
-	EUCHRE.maker = -1;
 	game.trump = -1;
+
+	EUCHRE.maker = -1;
 }
 
 static void euchre_start_bidding()
@@ -163,7 +164,8 @@ static void euchre_start_playing()
 			   ggzd_get_player_name(EUCHRE.maker),
 			   suit_names[(int) game.trump]);
 	game.leader = (game.dealer + 1) % game.num_players;
-	/* resort/resend hand - this should probably be a function in itself... */
+	/* resort/resend hand - this should probably be a function in
+	   itself... */
 	for (s = 0; s < game.num_seats; s++) {
 		cards_sort_hand(&game.seats[s].hand);
 		for (p = 0; p < game.num_players; p++)
@@ -175,9 +177,9 @@ static int euchre_deal_hand()
 {
 	seat_t s;
 
-	/* in Euchre, players 0-3 (seats 0, 1, 3, 4) get 5 cards each.
-	 * the up-card (seat 5) gets one card, and the kitty (seat 2)
-	 * gets the other 3. */
+	/* in Euchre, players 0-3 (seats 0, 1, 3, 4) get 5 cards each. the
+	   up-card (seat 5) gets one card, and the kitty (seat 2) gets the
+	   other 3. */
 	cards_deal_hand(1, &game.seats[0].hand);
 	EUCHRE.up_card = game.seats[0].hand.cards[0];
 	set_global_message("", "The up-card is the %s of %s.",

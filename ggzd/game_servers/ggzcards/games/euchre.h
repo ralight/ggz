@@ -1,10 +1,10 @@
-/*
+/* 
  * File: games/euchre.h
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.h 2344 2001-09-03 09:35:30Z jdorje $
+ * $Id: euchre.h 2701 2001-11-09 01:24:51Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -25,9 +25,20 @@
 
 /* special bids */
 enum {
-	EUCHRE_PASS = 1,
-	EUCHRE_TAKE = 2,
-	EUCHRE_TAKE_SUIT = 3
+	EUCHRE_PASS,		/* A simple pass */
+
+	/* The "take" bid means you take the bid, and the up-card suit
+	   becomes trump.  The exact naming may differ depending on who makes 
+	   the bid; the dealer's opponents "order it up", the dealer's
+	   partner "assists", and the dealer "takes".  This will most likely
+	   be implemented in the bid_text routines rather than by having
+	   separate bid types. */
+	EUCHRE_TAKE,
+
+	/* The "take suit" bid means you take the bid after the up-card has
+	   been turned over.  You now get to choose the trump.  Consequently
+	   the bid's "suit" field will include the suit type. */
+	EUCHRE_TAKE_SUIT
 };
 
 #define EUCHRE ( *(euchre_game_t *)(game.specific) )
@@ -36,5 +47,6 @@ typedef struct euchre_game_t {
 	int dealer_gets_card;	/* does the dealer get the up-card? */
 	card_t up_card;		/* the "up-card" */
 	int alone;		/* is the dealer going alone? */
-	int suit;		/* the suit of trump (TODO: is this necessary?) */
+	int suit;		/* the suit of trump (TODO: is this
+				   necessary?) */
 } euchre_game_t;
