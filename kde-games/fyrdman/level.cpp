@@ -46,12 +46,12 @@ void Level::loadFromNetwork(int fd)
 	for(int j = 0; j < m_height; j++)
 	{
 		m_cell[j] = (char*)ggz_malloc(30);
-		ggz_readn(fd, &m_cell[j], 30);
+		ggz_readn(fd, m_cell[j], 30);
 	}
 	for(int j = 0; j < m_height; j++)
 	{
 		m_cellboard[j] = (char*)ggz_malloc(30);
-		ggz_readn(fd, &m_cellboard[j], 30);
+		ggz_readn(fd, m_cellboard[j], 30);
 	}
 }
 
@@ -102,15 +102,15 @@ void Level::loadFromFile(const char *filename)
 			switch(state)
 			{
 				case state_title:
-					m_title = strdup(buf + 1);
+					m_title = ggz_strdup(buf + 1);
 					state = state_author;
 					break;
 				case state_author:
-					m_author = strdup(buf + 1);
+					m_author = ggz_strdup(buf + 1);
 					state = state_version;
 					break;
 				case state_version:
-					m_version = strdup(buf + 1);
+					m_version = ggz_strdup(buf + 1);
 					state = state_anywhere;
 					break;
 				case state_knights:

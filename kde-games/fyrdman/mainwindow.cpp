@@ -124,7 +124,6 @@ void MainWindow::levelSelector()
 			level = new Level();
 			level->loadFromNetwork(network->fd());
 			m_levels.append(level);
-
 			l.addLevel(level);
 		}
 	}
