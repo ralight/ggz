@@ -1,11 +1,9 @@
 <?xml version="1.0"?>
 <metaserver>
 	<entrylist class="ggz">
-		<connection version="0.0.8pre" preference="100" location="pennsylvania/usa" speed="768">ggz://jzaun.com:5689</connection>
-		<connection version="0.0.6" preference="100" location="dresden/germany" speed="128">ggz://mindx.dyndns.org:5688</connection>
-		<connection version="0.0.7" preference="100" location="dresden/germany" speed="45000">ggz://live.ggzgamingzone.org:5688</connection>
+		<connection version="current" preference="100" location="nottingham/uk" speed="2048">ggz://uk.ggzgamingzone.org:5688</connection>
+		<connection version="0.0.8" preference="100" location="dresden/germany" speed="45000">ggz://live.ggzgamingzone.org:5688</connection>
 		<meta version="0.1" preference="100">ggzmeta://live.ggzgamingzone.org:15689</meta>
-		<meta version="0.1" preference="20">ggzmeta://mindx.dyndns.org:15689</meta>
 	</entrylist>
 	<entrylist class="teg">
 		<connection version="5" preference="100">teg://ggz.homeip.net:2000</connection>
