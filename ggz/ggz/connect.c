@@ -38,6 +38,7 @@
 #include "datatypes.h"
 #include "dlg_error.h"
 #include "dlg_main.h"
+#include "dlg_msgbox.h"
 #include "dlg_motd.h"
 #include "easysock.h"
 #include "err_func.h"
@@ -207,6 +208,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		disconnect(NULL, NULL);
+		msg(0,"Bye-Bye Now","Thanks for trying out GNU-Gaming Zone");
 		break;
 
 	case RSP_LIST_TYPES:

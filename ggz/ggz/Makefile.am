@@ -21,6 +21,8 @@ ggz_SOURCES = 	main.c \
 		dlg_login.c \
 		dlg_login.h \
 		dlg_main.c \
+		dlg_msgbox.h \
+		dlg_msgbox.c \
 		dlg_main.h \
 		dlg_motd.c \
 		dlg_motd.h \
