@@ -287,6 +287,8 @@ GGZ_CONFIG="${ggz_config}/ggz-config"
 
 AC_SUBST(GGZ_CONFIG)
 
+ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
+AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${ggzmoduleconfdir}", [Path where the game registry is located])
 ggzexecmoddir=`$GGZ_CONFIG --gamedir`
 AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
 ggzdatadir=`$GGZ_CONFIG --datadir`
@@ -294,6 +296,7 @@ AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should loo
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
 
+AC_SUBST(ggzmoduleconfdir)
 AC_SUBST(ggzexecmoddir)
 AC_SUBST(ggzdatadir)
 AC_SUBST(packagesrcdir)
