@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 5026 2002-10-25 16:53:20Z jdorje $
+ * $Id: ggzdmod.c 5031 2002-10-25 20:37:55Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -71,6 +71,9 @@ static void _ggzdmod_set_max_num_spectators(GGZdMod * ggzdmod,
 static void set_state(GGZdMod * ggzdmod, GGZdModState state);
 static int handle_event(GGZdMod * ggzdmod, fd_set read_fds);
 static int send_game_launch(GGZdMod * ggzdmod);
+static void postfork_error(int fd, const char *fmt, ...)
+	ggz__attribute((format(printf, 2, 3)))
+	ggz__attribute((noreturn));
 static int game_fork(GGZdMod * ggzdmod);
 
 /* Functions for manipulating seats */
@@ -1014,6 +1017,26 @@ static int send_game_launch(GGZdMod * ggzdmod)
 }
 
 
+static void postfork_error(int fd, const char *fmt, ...)
+{
+	char buf[4096];
+	va_list ap;
+
+	va_start(ap, fmt);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
+	va_end(ap);
+
+	/* To get things to close cleanly, we send the error message and
+	   then set the state to DONE.  This would work better if there
+	   was a GGZDMOD_STATE_ERROR instead.  Note that we still can't
+	   use ggz_debug and friends. */
+	(void) _io_send_log(fd, buf);
+	(void) _io_send_state(fd, GGZDMOD_STATE_DONE);
+	close(fd);
+
+	exit(EXIT_FAILURE);
+}
+
 /* Forks the game.  A negative return value indicates a serious error. */
 /* No locking should be necessary within this function. */
 static int game_fork(GGZdMod * ggzdmod)
@@ -1036,19 +1059,28 @@ static int game_fork(GGZdMod * ggzdmod)
 		/* child */
 		close(fd_pair[0]);
 
-		/* debugging message??? */
+		/* After the fork we shouldn't send any debugging messages
+		   with ggz_debug or its friends.  We could use ggzdmod_log,
+		   but the ggzdmod object isn't set up correctly for that.
+		   Thus the function postfork_error() has been
+		   written.  --JDS */
 
 		/* Now we copy one end of the socketpair to fd 3 */
 		if (fd_pair[1] != 3) {
 			/* We'd like to send an error message if either of
 			   these fail, but we can't.  --JDS */
-			if (dup2(fd_pair[1], 3) != 3 || close(fd_pair[1]) < 0)
-				ggz_error_sys_exit("dup failed");
+			if (dup2(fd_pair[1], 3) != 3)
+				postfork_error(fd_pair[1],
+					       "ERROR: couldn't dup fd: %s",
+					       strerror(errno));
+			if (close(fd_pair[1]) < 0)
+				postfork_error(3,
+					       "ERROR: couldn't close fd: %s",
+					       strerror(errno));
 		}
 
-		/* FIXME: Close all other fd's? */
-		/* FIXME: Not necessary to close other fd's if we use
-		   CLOSE_ON_EXEC */
+		/* It is not necessary to close other fd's if we use
+		   CLOSE_ON_EXEC (?).  --JDS */
 
 		/* Set working directory */
 		if (ggzdmod->pwd
@@ -1059,9 +1091,9 @@ static int game_fork(GGZdMod * ggzdmod)
 		/* FIXME: can we call ggzdmod_log() from here? */
 		execv(ggzdmod->argv[0], ggzdmod->argv);	/* run game */
 
-		/* We should never get here.  If we do, it's an eror */
-		/* we still can't send error messages... */
-		ggz_error_sys_exit("exec of %s failed", ggzdmod->argv[0]);
+		/* We will only get here if the exec fails */
+		postfork_error(3, "ERROR: exec of %s failed: %s",
+			       ggzdmod->argv[0], strerror(errno));
 	} else {
 		/* parent */
 		close(fd_pair[1]);
