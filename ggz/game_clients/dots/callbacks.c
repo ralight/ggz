@@ -8,6 +8,7 @@
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
+#include "main.h"
 #include "game.h"
 
 

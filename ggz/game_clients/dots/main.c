@@ -9,34 +9,153 @@
 
 #include <gtk/gtk.h>
 
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/un.h>
+#include <stdio.h>
+#include <unistd.h>
+
 #include "interface.h"
 #include "support.h"
 #include "main.h"
 #include "game.h"
+#include "easysock.h"
 
-GtkWidget *window;
+GtkWidget *main_win;
+char game_state;
+struct game_t game;
 
-int
-main (int argc, char *argv[])
+static void game_init(void);
+static int send_options(void);
+static int request_options(void);
+static void ggz_connect(void);
+void game_handle_io(gpointer, gint, GdkInputCondition);
+static int get_seat(void);
+static int get_players(void);
+
+int main(int argc, char *argv[])
 {
+	gtk_init(&argc, &argv);
 
-  gtk_set_locale ();
-  gtk_init (&argc, &argv);
+	main_win = create_window();
+	gtk_widget_show(main_win);
 
-  /*add_pixmap_directory (PACKAGE_DATA_DIR "/pixmaps");*/
-  /*add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");*/
+	game_init();
+	ggz_connect();
+	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
-  /*
-   * The following code was added by Glade to create one of each component
-   * (except popup menus), just so that you see something after building
-   * the project. Delete any components that you don't want shown initially.
-   */
-  window = create_window ();
-  gtk_widget_show (window);
+	if(argc > 1) {
+		/* Get Options (board size) from a dialog */
+		board_width = 5;
+		board_height = 5;
+		if(send_options() < 0)
+			exit(1);
+	}
 
-  board_init(10, 10);
+	board_init(0, 0);
+	if(request_options() < 0)
+		exit(1);
 
-  gtk_main ();
-  return 0;
+	gtk_main();
+	return 0;
 }
 
+
+void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
+{
+	int op;
+
+	if(es_read_int(game.fd, &op) < 0) {
+		/* FIXME: do something here... */
+		return;
+	}
+
+	switch(op) {
+		case DOTS_MSG_SEAT:
+			get_seat();
+			break;
+		case DOTS_MSG_PLAYERS:
+			get_players();
+			game_state = DOTS_STATE_WAIT;
+			break;
+		case DOTS_REQ_MOVE:
+			game_state = DOTS_STATE_MOVE;
+			statusbar_message("Your move");
+			break;
+	}
+}
+
+
+void game_init(void)
+{
+	int i, j;
+
+	for(i=0; i<MAX_BOARD_WIDTH; i++)
+		for(j=0; j<MAX_BOARD_HEIGHT-1; j++)
+			vert_board[i][j] = 0;
+	for(i=0; i<MAX_BOARD_WIDTH-1; i++)
+		for(j=0; j<MAX_BOARD_HEIGHT; j++)
+			horz_board[i][j] = 0;
+	game_state = DOTS_STATE_INIT;
+}
+
+
+int send_options(void)
+{
+	if(es_write_int(game.fd, 2) < 0
+	   || es_write_char(game.fd, board_width) < 0
+	   || es_write_char(game.fd, board_height) < 0)
+		return -1;
+	return 0;
+}
+
+
+int request_options(void)
+{
+	if(es_write_int(game.fd, DOTS_REQ_OPTIONS) < 0)
+		return -1;
+	return 0;
+}
+
+
+void ggz_connect(void)
+{
+	char fd_name[30];
+	struct sockaddr_un addr;
+
+	/* Connect to Unix domain socket */
+	sprintf(fd_name, "/tmp/Dots.%d", getpid());
+
+	if((game.fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
+		exit(-1);
+
+	bzero(&addr, sizeof(addr));
+	addr.sun_family = AF_LOCAL;
+	strcpy(addr.sun_path, fd_name);
+
+	if(connect(game.fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+		exit(-1);
+}
+
+
+int get_seat(void)
+{
+	if(es_read_int(game.fd, &game.num) < 0)
+		return -1;
+	return 0;
+}
+
+
+int get_players(void)
+{
+	int i;
+
+	for(i=0; i<2; i++) {
+		if(es_read_int(game.fd, &game.seats[i]) < 0)
+			return -1;
+		if(game.seats[i] != GGZ_SEAT_OPEN)
+			if(es_read_string(game.fd, (char*)&game.names[i], 9) <0)
+				return -1;
+	}
+	return 0;
+}

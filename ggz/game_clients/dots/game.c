@@ -11,13 +11,10 @@
 #include "main.h"
 #include "game.h"
 
-/* Global variables */
-guint8 current_player;
-
 /* Private variables */
-static guint8 vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT-1];
-static guint8 horz_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT];
-static guint8 board_height, board_width;
+guint8 vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT-1];
+guint8 horz_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT];
+guint8 board_height, board_width;
 static GdkPixmap *board_pixmap;
 static gfloat dot_width, dot_height;
 static GdkGC *gc_fg, *gc_bg, *gc_p1, *gc_p2, *gc_p1b, *gc_p2b;
@@ -27,7 +24,6 @@ static guint sb_context;
 /* Private functions */
 static gint8 board_move(guint8, guint8, guint8);
 static void board_fill_square(guint8, guint8);
-static void statusbar_message(gchar *);
 
 
 void board_init(guint8 width, guint8 height)
@@ -38,10 +34,10 @@ void board_init(guint8 width, guint8 height)
 	GdkColor color;
 	GtkWidget *p1b, *p2b;
 
-	board = gtk_object_get_data(GTK_OBJECT(window), "board");
-	statusbar = gtk_object_get_data(GTK_OBJECT(window), "statusbar");
-	p1b = gtk_object_get_data(GTK_OBJECT(window), "p1b");
-	p2b = gtk_object_get_data(GTK_OBJECT(window), "p2b");
+	board = gtk_object_get_data(GTK_OBJECT(main_win), "board");
+	statusbar = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
+	p1b = gtk_object_get_data(GTK_OBJECT(main_win), "p1b");
+	p2b = gtk_object_get_data(GTK_OBJECT(main_win), "p2b");
 
 	if(board_pixmap)
 		gdk_pixmap_unref(board_pixmap);
@@ -86,6 +82,9 @@ void board_init(guint8 width, guint8 height)
 			   0, 0,
 			   board->allocation.width, board->allocation.height);
 
+	if(width == 0 || height == 0)
+		return;
+
 	if(width > MAX_BOARD_WIDTH)
 		width = MAX_BOARD_WIDTH;
 	if(height > MAX_BOARD_HEIGHT)
@@ -104,7 +103,7 @@ void board_init(guint8 width, guint8 height)
 				       x, y);
 		}
 
-	current_player = 1;
+	game.move = 1;
 
 	sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar),
 						  "Game Messages");
@@ -196,11 +195,11 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 	gtk_widget_draw(widget, &update_rect);
 
 	if(result == 0) {
-		if(current_player == 1) {
-			current_player = 2;
+		if(game.move == 1) {
+			game.move = 2;
 			statusbar_message("Waiting For Opponent");
 		} else {
-			current_player = 1;
+			game.move = 1;
 			statusbar_message("Your Turn To Move");
 		}
 
@@ -208,7 +207,7 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 	}
 
 	/* Else update score */
-	if(current_player == 1)
+	if(game.move == 1)
 		statusbar_message("You Get To Move Again!");
 }
 
@@ -276,7 +275,7 @@ void board_fill_square(guint8 x, guint8 y)
 	update_rect.width = dot_width-1;
 	update_rect.height = dot_height-1;
 
-	if(current_player == 1)
+	if(game.move == 1)
 		gdk_draw_rectangle(board_pixmap,
 				   gc_p1,
 				   TRUE,
@@ -293,7 +292,7 @@ void board_fill_square(guint8 x, guint8 y)
 }
 
 
-static void statusbar_message(char *msg)
+void statusbar_message(char *msg)
 {
 	gtk_statusbar_pop(GTK_STATUSBAR(statusbar), sb_context);
 	gtk_statusbar_push(GTK_STATUSBAR(statusbar), sb_context, msg);
@@ -305,8 +304,8 @@ void board_handle_pxb_expose(void)
 	GtkWidget *p1b, *p2b;
 
 	/* Draw them both even if just one got exposed */
-	p1b = gtk_object_get_data(GTK_OBJECT(window), "p1b");
-	p2b = gtk_object_get_data(GTK_OBJECT(window), "p2b");
+	p1b = gtk_object_get_data(GTK_OBJECT(main_win), "p1b");
+	p2b = gtk_object_get_data(GTK_OBJECT(main_win), "p2b");
 
 	gdk_draw_rectangle(p1b->window,
 			   gc_p1b,

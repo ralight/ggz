@@ -6,3 +6,6 @@ Path = @packagesrcdir@/game_clients/spades/ggz.spades
 Version = 0.0.1
 Path = @packagesrcdir@/game_clients/tictactoe/ggz.ttt
 
+[Dots]
+Version = 0.0.1
+Path = @packagesrcdir@/game_clients/dots/ggz.dots
