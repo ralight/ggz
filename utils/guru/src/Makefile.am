@@ -1,12 +1,15 @@
 SUBDIRS = .
 
-noinst_PROGRAMS = guru gi18n
+noinst_PROGRAMS = guru gi18n gplayer
 
 guru_SOURCES = guru.c main.c module.c
 guru_LDADD = -ldl
 
 gi18n_SOURCES = i18n.c test_i18n.c
 gi18n_LDADD =
+
+gplayer_SOURCES = player.c test_player.c
+gplayer_LDADD = -lggzcore
 
 noinst_HEADERS = guru.h module.h i18n.h gurumod.h
 

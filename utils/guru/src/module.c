@@ -108,7 +108,7 @@ char *guru_module_work(const char *message, int priority)
 		{
 			g.message = (char*)message;
 			g.priority = j;
-			printf("Trying module no. %i with '%s'\n", i, g.message);
+			if(j == 10) printf("Trying module no. %i with '%s'\n", i, g.message);
 			g = ((Guru(*)(Guru))functionlist[i])(g);
 			if(g.message)
 			{

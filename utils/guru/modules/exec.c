@@ -141,10 +141,11 @@ int i;
 	handle = ggzcore_confio_parse(path, GGZ_CONFIO_RDONLY);
 	if(handle < 0) return;
 	ret = ggzcore_confio_read_list(handle, "programs", "programs", &count, &programlist);
-printf("ret is: %i\n", ret);
-printf("Modules: %i\n", count);
-for(i = 0; i < count; i++)
-	printf("%s\n", programlist[i]);
+	printf("[ ");
+	for(i = 0; i < count; i++)
+		/*printf("%s ", programlist[i]);*/
+		printf("|");
+	printf(" ] ");
 
 	if(ret < 0) programlist = NULL;
 }
