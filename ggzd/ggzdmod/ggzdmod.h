@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2563 2001-10-14 09:21:40Z jdorje $
+ * $Id: ggzdmod.h 2564 2001-10-14 10:01:42Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -53,7 +53,7 @@ typedef enum {
 /* The "flavor" of GGZdmod object this is.  Affects what operations are
    allowed */
 typedef enum {
-	GGZMOD_SERVER,
+	GGZMOD_GGZ,
 	GGZMOD_GAME
 } GGZdModType;
 
@@ -90,7 +90,7 @@ GGZdModType ggzdmod_get_type(GGZdMod * mod);
 int ggzdmod_get_num_seats(GGZdMod * mod);
 GGZSeat *ggzdmod_get_seat(GGZdMod * mod, int seat);
 
-void ggzdmod_set_num_seats(GGZdMod * mod);
+void ggzdmod_set_num_seats(GGZdMod * mod, int num_seats);
 void ggzdmod_set_handler(GGZdMod * mod, GGZdModEvent e, GGZdModHandler func);
 void ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat);
 
