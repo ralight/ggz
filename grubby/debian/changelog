@@ -1,0 +1,9 @@
+ggz-grubby (0.0.5pre-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Sat, 19 Jan 2002 18:13:21 +0100
+
+Local variables:
+mode: debian-changelog
+End:

@@ -1,0 +1,5 @@
+files
+ggz-grubby.postinst.debhelper
+ggz-grubby.prerm.debhelper
+ggz-grubby.substvars
+ggz-grubby
