@@ -10,6 +10,8 @@ sysconf_DATA = ggz.modules
 
 noinst_LIBRARIES = libggzcore.a
 
+EXTRA_DIST = $(sysconf_DATA)
+
 libggzcore_a_SOURCES =	conf.c \
 			conf.h \
 			confio.c \

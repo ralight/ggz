@@ -29,13 +29,13 @@
 #include "net.h"
 #include "msg.h"
 #include "protocol.h"
-#include "easysock.h"
 #include "player.h"
 #include "room.h"
 #include "state.h"
 #include "table.h"
 #include "gametype.h"
 
+#include <easysock.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <poll.h>
