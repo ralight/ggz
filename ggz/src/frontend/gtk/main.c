@@ -41,10 +41,13 @@ extern GtkWidget *win_main;
 int main (int argc, char *argv[])
 {
 	GGZOptions opt;
+	char *global_conf, *user_conf;
 
 	opt.flags = GGZ_OPT_PARSER;
-	opt.global_conf = "/etc/ggz/ggz.conf";
-	opt.user_conf = g_strdup_printf("%s/.ggz/ggz-gtk.rc", getenv("HOME"));;
+	global_conf = "/etc/ggz/ggz.conf";
+	user_conf = g_strdup_printf("%s/.ggz/ggz-gtk.rc", getenv("HOME"));;
+	ggzcore_conf_initialize(global_conf, user_conf);
+	g_free(user_conf);
 
 	ggzcore_init(opt);
 	server_profiles_load();
