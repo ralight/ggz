@@ -113,17 +113,20 @@ static void ggz_connect(void)
 static int handle_message_global()
 {
  	char mark[100];
-	char message[100];
+	char *message;
 
 	if (es_read_string(game.fd, mark, sizeof(mark)) < 0)
 		return -1;
-	if (es_read_string(game.fd, message, sizeof(message)) < 0)
+	if (es_read_string_alloc(game.fd, &message) < 0)
 		return -1;
+	assert( message );
 
 	ggz_debug("     Global message received, marked as '%s':%s", mark, message);
 	/* TODO: show in interface */
 
 	table_set_message(mark, message);
+
+	g_free( message );
 
 	return 0;
 }
