@@ -484,7 +484,7 @@ void game_add_player_info(int number) {
 		if (b <= U_BOMB)
 			strcpy(info[2], "-");
 		else
-			sprintf(info[2], "%d", b);
+			sprintf(info[2], "%d", b-1);
 		for (a = 0; a < number; a++)
 			gtk_clist_insert(GTK_CLIST(unit_info[a]), b, info);
 	}
