@@ -38,12 +38,10 @@ typedef enum {
 } CHATTypes;
 
 void chat_init(void);
-void chat_allocate_colors(void);
 void chat_display_message(CHATTypes id, char *player, char *message);
 void chat_send(gchar *message);
 void chat_enter(gchar *player);
 void chat_part(gchar *player);
-void chat_help(void);
 int chat_checkurl(GtkXText *xtext, char *word);
 void chat_word_clicked(GtkXText *xtext, char *word,
 	GdkEventButton *event);

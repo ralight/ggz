@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 4820 2002-10-09 01:04:39Z jdorje $
+ * $Id: chat.c 4821 2002-10-09 01:14:28Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -43,23 +43,45 @@
 #include "ggzcore.h"
 #include "login.h"
 #include "xtext.h"
+#define gettext_noop			/* FIXME: why is this necessary? */
 #include "support.h"
 
-void chat_allocate_colors(void);
-void chat_send_msg(GGZServer *server, gchar *message);
-void chat_send_wall(GGZServer *server, gchar *message);
-void chat_send_prvmsg(GGZServer *server, gchar *message);
-void chat_send_beep(GGZServer *server, gchar *message);
-void chat_save_lists(void);
-void chat_load_lists(void);
-void chat_list_friend(void);
-void chat_list_ignore(void);
+static void chat_allocate_colors(void);
 static const gchar *chat_get_color(gchar *name, gchar *msg);
 extern GtkWidget *win_main;
 extern GGZServer *server;
+static void chat_load_lists(void);
 
 static int friend_count;
 static int ignore_count;
+
+static void chat_send_msg(GGZServer *server, gchar *message);
+
+static void chat_send_prvmsg(GGZServer *server, gchar *message);
+static void chat_send_wall(GGZServer *server, gchar *message);
+static void chat_send_beep(GGZServer *server, gchar *message);
+static void chat_help(GGZServer *server, gchar *message);
+static void chat_list_friend(GGZServer *server, gchar *message);
+static void chat_list_ignore(GGZServer *server, gchar *message);
+
+struct {
+	const char *cmd;
+	void (*func)(GGZServer *server, gchar *message);
+	const char *help;
+} commands[] = { {"/msg", chat_send_prvmsg,
+		  N_("/msg <username> <message> . Private message a player")},
+		 {"/wall", chat_send_wall,
+		  N_("/wall <message> ........... Admin command")},
+		 {"/beep", chat_send_beep,
+		  N_("/beep <username> .......... Beep a player")},
+		 {"/help", chat_help,
+		  N_("/help ..................... Get help")},
+		 {"/friends", chat_list_friend,
+		  N_("/friends .................. List your friends")},
+		 {"/ignore", chat_list_ignore,
+		  N_("/ignore ................... List people "
+		     "you're ignoring")} };
+#define NUM_CHAT_COMMANDS (sizeof(commands) / sizeof(commands[0]))
 
 /* Aray of GdkColors currently used for chat and MOTD
  * They are all non-ditherable and as such should look the same everywhere
@@ -136,7 +158,7 @@ void chat_init(void)
  * Returns:   
  */
 
-void chat_allocate_colors(void)
+static void chat_allocate_colors(void)
 {
 	gint i;
         /* Allocate standared colors */
@@ -245,23 +267,20 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 
 void chat_send(gchar *message)
 {
-	if(strcmp(message, ""))
-	{
-		if(strncasecmp(message, "/msg", 4) == 0)
-			chat_send_prvmsg(server, message);
-		else if(strncasecmp(message, "/beep", 5) == 0)
-			chat_send_beep(server, message);
-		else if(strncasecmp(message, "/help", 5) == 0)
-			chat_help();
-		else if(strncasecmp(message, "/friends", 8) == 0)
-			chat_list_friend();
-		else if(strncasecmp(message, "/ignore", 7) == 0)
-			chat_list_ignore();
-		else if(strncasecmp(message, "/wall", 5) == 0)
-			chat_send_wall(server, message);
-		else 
-			chat_send_msg(server, message);
+	int i;
+
+	if (strcmp(message, "") == 0)
+		return;
+
+	for (i = 0; i < NUM_CHAT_COMMANDS; i++) {
+		int len = strlen(commands[i].cmd);
+		if (strncasecmp(message, commands[i].cmd, len) == 0) {
+			(commands[i].func)(server, message + len);
+			return;
+		}
 	}
+
+	chat_send_msg(server, message);
 }
 
 
@@ -273,8 +292,7 @@ void chat_send(gchar *message)
  *
  * Returns:
  */
-
-void chat_send_msg(GGZServer *server, gchar *message)
+static void chat_send_msg(GGZServer *server, gchar *message)
 {
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 
@@ -291,16 +309,13 @@ void chat_send_msg(GGZServer *server, gchar *message)
  *
  * Returns:
  */
-
-void chat_send_prvmsg(GGZServer *server, gchar *message)
+static void chat_send_prvmsg(GGZServer *server, gchar *message)
 {
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	gchar *line, *name;
 	gint i;
-	int success = FALSE;
 
-	assert(strlen(message) >= 4);
-	line = ggz_strdup(message + 5);
+	line = ggz_strdup(message);
 	
 	name = g_strstrip(line);
 	for(i = 0; i < strlen(name); i++)
@@ -311,17 +326,19 @@ void chat_send_prvmsg(GGZServer *server, gchar *message)
 			name[i] = '\0';
 			ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, name, msg);
 			chat_display_message(CHAT_SEND_PRVMSG, name, msg);
-			success = TRUE;
-			break;
+			ggz_free(line);
+			return;
 		}
 	}
 
-	if (!success) {
-		chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Usage: /msg <username> <message>"));
-		chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("    Sends a private message to a user on the network."));
-	}
-	
 	ggz_free(line);
+
+	/* Could not parse it. */
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL,
+			     _("Usage: /msg <username> <message>"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL,
+			     _("    Sends a private message to a user "
+			       "on the network."));	
 }
 
 
@@ -334,14 +351,10 @@ void chat_send_prvmsg(GGZServer *server, gchar *message)
  *
  * Returns:
  */
-
-void chat_send_wall(GGZServer *server, gchar *message)
+static void chat_send_wall(GGZServer *server, gchar *message)
 {
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
-	char *msg;
-
-	assert(strlen(message) >= 4);
-	msg = g_strstrip(ggz_strdup(message + 5));
+	char *msg = g_strstrip(ggz_strdup(message));
 	ggzcore_room_chat(room, GGZ_CHAT_ANNOUNCE, NULL, msg);
 	ggz_free(msg);
 }
@@ -355,14 +368,10 @@ void chat_send_wall(GGZServer *server, gchar *message)
  *
  * Returns:
  */
-
-void chat_send_beep(GGZServer *server, gchar *message)
+static void chat_send_beep(GGZServer *server, gchar *message)
 {
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
-	char *player;
-
-	assert(strlen(message) >= 5);
-	player = g_strstrip(ggz_strdup(message + 6));
+	char *player = g_strstrip(ggz_strdup(message));
 
 	ggzcore_room_chat(room, GGZ_CHAT_BEEP, player, NULL);
 
@@ -418,17 +427,19 @@ void chat_part(gchar *player)
  *
  * Returns:
  */
-
-void chat_help(void)
+static void chat_help(GGZServer *server, gchar *message)
 {
+	int i;
+
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Chat Commands"));
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("-------------"));
+
+	/* This one is hard-coded at the server end. */
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/me <action> .............. Send an action"));
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/msg <username> <message> . Private message a player"));
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/beep <username> .......... Beep a player"));
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/friends .................. List your friends"));
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/ignore ................... List people you're ignoring"));
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/wall <message> ........... Admin command"));
+
+	for (i = 0; i < NUM_CHAT_COMMANDS; i++)
+		chat_display_message(CHAT_LOCAL_NORMAL, NULL,
+				     _(commands[i].help));
 }
 
 
@@ -555,9 +566,8 @@ void chat_word_clicked(GtkXText *xtext, char *word,
  * Returns:
  * gchar		*color	: The color to use (a _static_ string)
  */
-
 /* FIXME: Everything that calls this needs to free the memory */
-const gchar *chat_get_color(gchar *name, gchar *msg)
+static const gchar *chat_get_color(gchar *name, gchar *msg)
 {
 	int pos;
 	char *srv_handle;
@@ -740,8 +750,7 @@ void chat_save_lists(void)
  *
  * Returns:
  */
-
-void chat_load_lists(void)
+static void chat_load_lists(void)
 {
 	int i, count;
 	char num[16], *p;
@@ -764,7 +773,7 @@ void chat_load_lists(void)
 }
 
 
-void chat_list_friend(void)
+static void chat_list_friend(GGZServer *server, gchar *message)
 {
 	int i;
 
@@ -778,7 +787,7 @@ void chat_list_friend(void)
 }
 
 
-void chat_list_ignore(void)
+static void chat_list_ignore(GGZServer *server, gchar *message)
 {
 	int i;
 
