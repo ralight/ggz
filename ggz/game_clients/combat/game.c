@@ -155,15 +155,15 @@ void game_start() {
   game_update_unit_list(cbt_info.seat);
 
   cbt_game.state = CBT_STATE_PLAYING;
-    cbt_info.current = -1;
-    game_draw_board();
+  cbt_info.current = -1;
+  game_draw_board();
 
-    game_status("Game has started!");
+  game_status("Game has started!");
 
-    // Little hack to display the right turn
-    cbt_game.turn--;
-    game_change_turn();
-  }
+  // Little hack to display the right turn
+  cbt_game.turn--;
+  game_change_turn();
+}
 
 
   int game_get_seat() {

@@ -482,6 +482,11 @@
 // Ok messages
 #define CBT_CHECK_MOVE 1
 #define CBT_CHECK_ATTACK 2
+#define CBT_CHECK_ATTACK_RUSH 3
+
+// Random number
+#define RANDOM(N) (1+(int)((float)N*random()/(RAND_MAX+1.0)))
+
 
 
 
@@ -511,3 +516,4 @@ int combat_options_string_read(unsigned char *optstr, combat_game *);
 int combat_check_move(combat_game *, int, int);
 int combat_options_check(combat_game *);
 char *combat_options_describe(combat_game *);
+void combat_random_setup(combat_game *, int player);

@@ -1,13 +1,13 @@
 What *must* be done before next version of GGZ:
 
-- Add the following options:
-  RANDOM_SETUP
-  RUSH
 - Make the "Show Enemy units" menu work
+- Fix the "Request sync" menu
 
 
 What should be done someday
 
+- Add a "ignore client-side checks" option in the client
+- Add a "randomly setup the rest for me" menu in the client
 - Tilesets
 - Clean up the code, separate the game logic from the graphics stuff
 - 3 or 4 players support
