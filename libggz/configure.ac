@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6555 2004-12-22 16:31:06Z josef $
+dnl $Id: configure.ac 6639 2005-01-13 00:36:29Z jdorje $
 
 AC_INIT([GGZ common libraries], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -48,6 +48,7 @@ AC_TYPE_MODE_T
 AC_TYPE_PID_T
 AC_TYPE_SIGNAL
 AC_TYPE_SIZE_T
+C99_VARIABLE_ARRAYS
 
 
 # Signedness overrides
@@ -172,10 +173,10 @@ AC_CHECK_LIB(socket, socket, [LDADD="$LDADD -lsocket"])
 AC_CHECK_LIB(nsl, gethostbyname, [LDADD="$LDADD -lnsl"])
 
 AC_CHECK_FUNCS([getpagesize memmove memset mkdir \
-                stat strcasecmp strerror strstr], [],
+                stat strcasecmp strerror strstr strchr], [],
                [AC_MSG_ERROR([cannot find required function])])
 AC_CHECK_FUNCS([gethostbyname socket]) # These fail; dunno why
-AC_CHECK_FUNCS([alarm getuid inet_pton strtok strtok_r])
+AC_CHECK_FUNCS([alarm getuid inet_pton])
 AC_FUNC_FORK
 # We don't support AC_FUNC_MALLOC yet.  Don't try to malloc(0).  See manual.
 #AC_FUNC_MALLOC
@@ -183,8 +184,6 @@ AC_FUNC_MEMCMP
 AC_FUNC_REALLOC
 AC_FUNC_STAT
 FUNC_MKDIR_TAKES_ONE_ARG
-
-AC_REPLACE_FUNCS([strsep])
 
 
 # Find pthread library

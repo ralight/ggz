@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 6369 2004-11-14 14:53:43Z josef $
+ * $Id: conf.c 6639 2005-01-13 00:36:29Z jdorje $
  *
  * Internal functions for handling configuration files
  *
@@ -965,31 +965,36 @@ static void entry_destroy(void *data)
  */
 int make_path(const char *full, mode_t mode)
 {
-	char		*copy, *node, *path;
-	struct stat	stats;
+	struct stat stats;
+	size_t len = strlen(full) + 1;
+	char copy_buf[len], path[len];
+	char *copy = copy_buf;
 
-	copy = ggz_strdup(full);
+	strcpy(copy, full);
+	path[0] = '\0';
 
-	/* Allocate and zero memory for path */
-	path = ggz_malloc(strlen(full)+1);
- 
 	/* Skip preceding / */
 	if (copy[0] == '/')
 		copy++;
 
-	while ((node = strsep(&copy, "/"))) {
+	do {
+		char *next = strchr(copy, '/');
+
+		/* If this is the last token, it's the file name - break */
+		if (!next) break;
+		
+		*next = '\0';
+
 		/* While there's still stuff left, it's a directory */
-		if (copy != NULL) {
-			strcat(strcat(path, "/"), node);
-			if (mkdir(path, mode) < 0
-			    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
-				ggz_free(path);
-				ggz_free(copy);
-				
-				return -1;
-			}
+		strcat(strcat(path, "/"), copy);
+
+		if (mkdir(path, mode) < 0
+		    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
+			return -1;
 		}
-	}
+
+		copy = next + 1;
+	} while (1);
 
 	return 0;
 }
