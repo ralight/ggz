@@ -1,7 +1,4 @@
-SUBDIRS = serverspec
-
-#all:
-#	docbook-2-html design.sgml
+SUBDIRS = serverspec clientspec
 
 SGML_FILES = appendix.sgml design.sgml overview.sgml client-server.sgml \
 		modules.sgml requirements.sgml

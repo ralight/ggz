@@ -1,0 +1,10 @@
+clientspec-html
+clientspec.txt
+clientspec.pdf
+clientspec.out
+clientspec.log
+clientspec.jtex
+clientspec.aux
+Makefile
+Makefile.in
+jadetex.cfg

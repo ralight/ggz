@@ -7,7 +7,7 @@ EXTRA_DIST = $(SGML_FILES) design-txt.dsl
 all: serverspec-html serverspec.pdf serverspec.txt
 
 serverspec-html: $(SGML_FILES)
-	$(SGML2HTML) --style local=design $(srcdir)/serverspec.sgml
+	$(SGML2HTML) $(srcdir)/serverspec.sgml
 	-mkdir serverspec-html
 	-cp /usr/share/gtk-doc/data/*.png serverspec-html
 	-mv *.html serverspec-html
