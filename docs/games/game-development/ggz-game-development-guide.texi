@@ -410,6 +410,37 @@ KDE does provide very powerful networking mechanisms. There are not only
 classes like KSocket/KExtSocket, but also the DCOP library, and the KDE games
 library named libkdegames.
 
+@subsection Net/MNet (C++)
+
+The game Kamikaze, which provides support for GGZ, uses an own set of network
+classes which are very convenient to use. Their development was backed by
+experiences with the other toolkits.
+Net objects provide simple buffered input/output with host/network conversion
+equal to easysock. MNet objects are inherited and in addition provide
+multicasting.
+A sample networking session looks like this:
+
+@verbatim
+// The network object
+MNet n;
+
+// Send unbuffered and buffered message to player 1
+n << Net::channel << fd1;
+n << "hello world";
+n << Net::begin << arg1 << arg2 << Net::end << Net::flush;
+
+// Setup broadcasting
+n << MNet::add << fd1;
+n << MNet::add << fd2;
+
+// Broadcast message to both players
+n << Mnet::multicast;
+n << "hello all";
+
+// Reset to normal behaviour
+n << MNet::peer;
+@end verbatim
+
 @section Configuration
 
 @subsection GGZConfIO (ini-Style)
