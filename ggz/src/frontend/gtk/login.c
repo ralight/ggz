@@ -267,7 +267,9 @@ login_start_session                    (GtkButton       *button,
 	if(GTK_TOGGLE_BUTTON (tmp)->active)
 		type = GGZ_LOGIN_NEW;
 
-	server = ggzcore_server_new(host, port, type, login, password);
+	server = ggzcore_server_new();
+	ggzcore_server_set_hostinfo(server, host, port);
+	ggzcore_server_set_logininfo(server, type, login, password);
 
 	ggz_event_init(server);
 	ggzcore_server_connect(server);
@@ -310,10 +312,8 @@ login_relogin                          (GtkButton       *button,
 	if(GTK_TOGGLE_BUTTON (tmp)->active)
 		type = GGZ_LOGIN_NEW;
 
-	/* FIXME: provide a destroy function that frees the appropriate mem */
-	server = ggzcore_server_new(host, port, type, login, password);
-	ggzcore_server_connect(server);
-
+	ggzcore_server_set_logininfo(server, type, login, password);
+	ggzcore_server_login(server);
 }
 
 

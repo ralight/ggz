@@ -179,7 +179,6 @@ static GGZHookReturn ggz_login_fail(GGZServerEvent id, void* event_data, void* u
 	g_print("ggz_login_fail\n");
 
 	login_failed();
-	ggzcore_server_logout(server);
 
 	return GGZ_HOOK_OK;
 }
