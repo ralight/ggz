@@ -17,6 +17,7 @@ txt-docs: $(SGML_FILES)
 
 html-docs: $(SGML_FILES) gif-files
 	-cd $(srcdir) && db2html design.sgml
+	-rm -rf html
 	-mv design html
 	-cp images/*.gif html
 

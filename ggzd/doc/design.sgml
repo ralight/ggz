@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 45 $</revnumber>
-	<date>$Date: 2000-02-16 21:33:52 -0800 (Wed, 16 Feb 2000) $</date>
+	<revnumber>$Revision: 53 $</revnumber>
+	<date>$Date: 2000-02-18 21:23:51 -0800 (Fri, 18 Feb 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -165,9 +165,120 @@
 	responses.
       </para>
     
-      <para>
-	List omitted for time being
-      </para>
+      <programlisting role="psuedocode">
+	<title>Pre-Game Client/Server Interactions</title>
+        MSG_SERVER_ID
+          str: server identification (plus relevant server options)
+
+        MSG_SERVER_FULL
+  
+        REQ_NEW_LOGIN
+          str: login name
+        RSP_NEW_LOGIN
+          chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
+          str: initial password (if success)
+          int: game type checksum (if success)
+
+        REQ_LOGIN
+          str: login name
+          str: password
+        RSP_LOGIN
+          chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
+          int: game type checksum (if success)
+          chr: reservation flag 
+
+        REQ_ANON_LOGIN
+          str: name
+        RSP_ANON_LOGIN
+          chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
+          int: game type checksum (if success)
+
+        REQ_MOTD
+        RSP_MOTD
+          str: message of the day (useful or otherwise information from server)
+
+        REQ_LOGOUT
+        RSP_LOGOUT
+          chr: success flag (0 for success, -1 error)
+
+        REQ_PREF_CHANGE
+          chr: preference flag (indicates pref to change)
+          (str): new data value
+        RSP_PREF_CHANGE
+          chr: success flag (0 for success, -1 error)
+
+        REQ_REMOVE_USER
+          str: login name
+          str: password
+        RSP_REMOVE_USER
+          chr: success flag (0 for success, -1 error)
+
+        REQ_USER_LIST
+        RSP_USER_LIST
+          int: number of users (-1 for error)
+          sequence of
+            str: user name
+            int: game table index (-1 if user not at a table)
+
+        REQ_GAMES_TYPES
+          chr: verbose flag (0 for short list, 1 for long descriptions)
+        RSP_GAMES_TYPES
+          int: number of game types (-1 for error)
+          sequence of
+            int: game type index
+            str: game name
+            str: version 
+            str: description (only if long)
+            str: author (only if long)
+            str: homepage (only if long)
+
+        REQ_GAMES_RUN
+          chr: game type index (-1 for all type, -2 for reserved, -3 for open games)
+        RSP_GAMES_RUN
+          int: number of games (-1 for error)
+          sequence of
+            int: game index
+            int: game type index
+            chr: play/wait flag (0 if waiting for players, 1 if playing)
+            int: number of registered players
+            sequence of
+              str: name of registered players
+      
+        REQ_GAME_OPTIONS
+          int: game index
+        RSP_GAME_OPTIONS
+          int: size of options struct (-1 for error)
+          struct: game options
+  
+        REQ_LAUNCH_GAME
+          int: game type index
+          int: number of players
+          chr: computer players (2^num)
+          int: number of reservations (possibly 0)
+          sequence of
+            str: login name for reservation
+          int: size of options struct
+          struct: game options
+        RSP_LAUNCH_GAME
+          chr: success flag (0 for success, negative values for various failures)
+  
+        REQ_JOIN_GAME
+          int: game index
+        RSP_JOIN_GAME
+          chr: success flag (0 for success, 01 for failure)
+  
+        REQ_USER_STAT
+          str: login name (NULL for all users)
+          int: game type index (-1 for all types)
+        RSP_USER_STAT
+          int: number of game types (-1 for error)
+          sequence of
+            int: game type index
+            int: number of users 
+            sequence of 
+              int: number of games played 
+              int: number of games won
+      </programlisting>
     </section>
 
     <section id="chat"><title>Chat Facility</title>
@@ -177,10 +288,18 @@
 	players.  Here are the interactions necessary for the chat
 	functionality.
       </para>
+
+      <programlisting role="psuedocode">
+        <title>Chat Facility Client/Server Interactions</title>
+        REQ_CHAT
+          str: chat string 
+        RSP_CHAT
+          chr: success flag (0 for success, -1 error)
   
-      <para>
-	List omitted for time being
-      </para>
+        MSG_CHAT
+          str: name of user who sent chat
+          str: chat string
+      </programlisting>
     </section>
 
     <section id="gamemsg"><title>Game Interactions</title>
