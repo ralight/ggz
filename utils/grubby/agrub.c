@@ -6,6 +6,7 @@
  * April 8, 2000
  */
 
+#include <string.h>
 #include <stdio.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -46,6 +47,7 @@ void queue_message(char *, char *);
 void graceless_exit(int);
 void log_on(char *sender, char *command);
 void log_off(char *sender, char *command);
+log_it(char *left, char *right);
 
 int my_socket, rooms=0, cur_room=-1, logged_in=0;
 char **room_list;
@@ -311,14 +313,17 @@ int main(const int argc, const char *argv[])
 		} else {
 			if(sig_logout)
 				do_logout(1);
-			else if(!logged_in)
+			else if(logged_in == 0)
 				req_login();
-			else if(rooms != 0 && cur_room == -1)
+			else if(logged_in == 1)
+			{
 				change_room();
-			else if(rooms != 0 && last_used > 480) {
-				if(log_file == NULL && stay_still == 1)
+				logged_in=2;
+			} else if(last_used > 480) {
+				if(log_file == NULL && stay_still != 1)
 					change_room();
 				last_used = 0;
+				save_known();
 			}
 		}
 		last_used ++;
@@ -342,8 +347,9 @@ void handle_read(void)
 			es_read_char(my_socket, &chr);
 			es_read_int(my_socket, &num);
 			if(chr != 0)
+			{
 				logged_in = 0;
-			else
+			} else
 				logged_in = 1;
 			break;
 		case MSG_MOTD:
@@ -377,8 +383,6 @@ void handle_read(void)
 			es_read_string_alloc(my_socket, &string);
 			es_read_string_alloc(my_socket, &string2);
 			handle_chat(string, string2);
-			if (log_file != NULL)
-				fprintf(log_file, "[%s] %s\n",string, string2);
 			free(string);
 			free(string2);
 			break;
@@ -483,28 +487,44 @@ void handle_chat(char *sender, char *msg)
 
 	sprintf(out_msg, "%s: ", bot_name);
 	if(!strncasecmp(msg, out_msg, strlen(out_msg))) {
+		log_it(sender, msg);
 		handle_command(sender, msg+strlen(out_msg));
 		return;
 	}
 
 	sprintf(out_msg, "%s, ", bot_name);
 	if(!strncasecmp(msg, out_msg, strlen(out_msg))) {
+		log_it(sender, msg);
 		handle_command(sender, msg+strlen(out_msg));
 		return;
 	}
 
 	sprintf(out_msg, "%s ", bot_name);
 	if(!strncasecmp(msg, out_msg, strlen(out_msg))) {
+		log_it(sender, msg);
 		handle_command(sender, msg+strlen(out_msg));
 		return;
 	}
 
-	if(!strcmp(msg, "/SjoinS")
+	if(!strncasecmp(msg, "/me ", 4)) {
+		sprintf(out_msg, "%s %s", sender, msg+4);
+		log_it("*", out_msg);
+		return;
+	}else if(!strcmp(msg, "/SjoinS")
 	     && strcasecmp(sender, bot_name)) {
 		newstr = malloc(strlen(sender)+1);
 		strcpy(newstr, sender);
+		log_it("-->", newstr);
 		do_greet(newstr);
 		return;
+	}else if(!strcmp(msg, "/SpartS")
+	     && strcasecmp(sender, bot_name)) {
+		newstr = malloc(strlen(sender)+1);
+		strcpy(newstr, sender);
+		log_it("<--", newstr);
+		return;
+	} else {
+		log_it (sender,msg);
 	}
 }
 
@@ -832,6 +852,9 @@ void log_on(char *sender, char *command)
 		send_chat("Error opening file.");
 		return;
 	}
+	fprintf(log_file,"<center>\n");
+	fprintf(log_file,"<table border=0 width=540 cellpadding=\"1\" cellspacing=\"0\">\n");
+	send_chat("Logging on.");
 }
 
 
@@ -842,6 +865,7 @@ void log_off(char *sender, char *command)
 		send_chat("I'm not logging anything");
 		return;
 	}
+	send_chat("Logging off.");
 	fclose(log_file);
 	log_file=NULL;
 }
@@ -1164,4 +1188,16 @@ void queue_message(char *sender, char *command)
 	sprintf(out_msg, "OK %s, I'll deliver that message next time I see %s.",
 		disp_sender, disp_name);
 	send_chat(out_msg);
+}
+
+
+log_it(char *left, char *right)
+{
+	if (log_file != NULL)
+	{
+		if(!strcmp("-->",left) || !strcmp("<--",left) || !strcmp("---",left) || !strcmp("*",left))
+			fprintf(log_file, "<tr><td valign=top align=right>%s</td><td bgcolor=\"#777777\">&nbsp</td><td valign=top>%s</td></td>\n",left, right);
+		else
+			fprintf(log_file, "<tr><td valign=top align=right>[%s]</td><td bgcolor=\"#777777\">&nbsp</td><td valign=top>%s</td></td>\n",left, right);
+	}
 }
