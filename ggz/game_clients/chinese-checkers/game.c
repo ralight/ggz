@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.c 6669 2005-01-14 03:48:05Z jdorje $
+ * $Id: game.c 6672 2005-01-14 04:02:16Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -558,6 +558,12 @@ static void get_theme_data(void)
 	/* Scan the theme directory and build an array of installed themes.
 	 * This used to use scandir but that's not portable. */
 	dir = opendir(theme_dir);
+	if (!dir) {
+		game.num_themes = 0;
+		/* FIXME: what else? */
+		g_free(theme_dir);
+		return;
+	}
 	while ((entry = readdir(dir))) {
 		if (!select_dirs(entry))  continue;
 		i++;

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6661 2005-01-14 03:17:54Z jdorje $
+dnl $Id: configure.ac 6672 2005-01-14 04:02:16Z jdorje $
 
 AC_INIT([GGZ GTK games], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [gtk-games])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -96,6 +96,7 @@ fi
 
 AC_FUNC_STAT
 AC_FUNC_STRTOD
+AC_FUNC_CLOSEDIR_VOID
 AC_CHECK_FUNCS([localeconv memset mkdir setlocale strcasecmp \
                 strchr strdup strrchr strstr malloc realloc stat \
 	        sqrt floor rand srand],
