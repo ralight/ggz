@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 3487 2002-02-27 07:29:13Z jdorje $
+ * $Id: games.c 3715 2002-03-29 03:40:44Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -136,6 +136,7 @@ int games_req_gametype()
 	int fd = get_player_socket(game.host);
 	int cnt = 0, i;
 	int status = 0;
+	const char *desc = "What do you want to play today?";
 	
 	assert(fd >= 0);
 
@@ -158,16 +159,17 @@ int games_req_gametype()
 		return 0;
 	}
 
-	if (write_opcode(fd, REQ_OPTIONS) < 0 || ggz_write_int(fd, 1) < 0 ||	/* 1
-										   option 
-										 */
+	if (write_opcode(fd, REQ_OPTIONS) < 0 ||
+	    ggz_write_int(fd, 1) < 0 ||	/* 1 option */
+	    ggz_write_string(fd, desc) < 0 || /* description */
 	    ggz_write_int(fd, cnt) < 0 ||	/* cnt choices */
 	    ggz_write_int(fd, 0) < 0)	/* default is 0 */
 		status = -1;
-	for (i = 0; i < cnt; i++)
-		if (ggz_write_string(fd, game_data[game_types[i]].full_name) <
-		    0)
+	for (i = 0; i < cnt; i++) {
+		struct game_info *data = &game_data[game_types[i]];
+		if (ggz_write_string(fd, data->full_name) < 0)
 			status = -1;
+	}
 
 	if (status != 0)
 		ggzdmod_log(game.ggz,
