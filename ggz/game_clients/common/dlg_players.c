@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 5037 2002-10-26 03:42:18Z jdorje $
+ * $Id: dlg_players.c 5126 2002-10-31 00:21:09Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -48,8 +48,9 @@ static int num_entries = 0;
 static void update_player_clist(GtkWidget * player_clist);
 static void update_player_dialog(void);
 
-static gboolean player_clist_event(GtkWidget *widget, GdkEvent *event,
-				   gpointer data);
+static gboolean player_clist_button_event(GtkWidget *widget,
+					  GdkEventButton *event,
+					  gpointer data);
 
 void update_player_lists(void)
 {
@@ -200,8 +201,8 @@ static GtkWidget *create_player_clist(void)
 	gtk_clist_set_column_widget(GTK_CLIST(player_clist), 2, label);
 
 	/* Set up callbacks */
-	gtk_signal_connect(GTK_OBJECT(player_clist), "event",
-			    GTK_SIGNAL_FUNC(player_clist_event),
+	gtk_signal_connect(GTK_OBJECT(player_clist), "button_press_event",
+			   GTK_SIGNAL_FUNC(player_clist_button_event),
 			   player_clist);
 
 	update_player_clist(player_clist);
@@ -495,14 +496,13 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, button, 0);
 }
 
-static gboolean player_clist_event(GtkWidget *widget, GdkEvent *event,
-				   gpointer data)
+static gboolean player_clist_button_event(GtkWidget *widget,
+					  GdkEventButton *buttonevent,
+					  gpointer data)
 {
-	GdkEventButton *buttonevent = (GdkEventButton*)event;
 	GtkWidget *player_clist = data;
 
-	if (event->type == GDK_BUTTON_PRESS
-	    && buttonevent->button == 3) {
+	if (buttonevent->button == 3) {
 		/* Right mouse button; create drop-down menu */
 		gint row, col;
 		int spectator;
@@ -543,6 +543,7 @@ static gboolean player_clist_event(GtkWidget *widget, GdkEvent *event,
 		popup_player_menu(spectator ? NULL : &seat,
 				  spectator ? &sseat : NULL,
 				  buttonevent->button);
+		return TRUE;
 	}
 
 	return FALSE;
