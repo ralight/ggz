@@ -1,8 +1,9 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(configure.ac)
+AC_INIT
+AC_CONFIG_SRCDIR([configure.ac])
 AM_INIT_AUTOMAKE(ggz-grubby, 0.0.7pre)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
 dnl Compiling Options
@@ -65,7 +66,7 @@ if test "$enable_perl" = yes; then
 		AC_MSG_RESULT(ok.)
 		AC_SUBST(perl_includes)
 		AC_SUBST(perl_libraries)
-		AC_DEFINE(EMBED_PERL)
+		AC_DEFINE([EMBED_PERL], 1, [Define to use embedded Perl])
 	fi
 fi
 
@@ -107,7 +108,7 @@ if test "$enable_ruby" = yes; then
 		AC_MSG_RESULT(ok.)
 		AC_SUBST(ruby_includes)
 		AC_SUBST(ruby_libraries)
-		AC_DEFINE(EMBED_RUBY)
+		AC_DEFINE([EMBED_RUBY], 1, [Define to use embedded Ruby])
 	fi
 fi
 
@@ -133,7 +134,7 @@ if test "$enable_python" = yes; then
 		AC_MSG_RESULT(ok.)
 		AC_SUBST(python_includes)
 		AC_SUBST(python_libraries)
-		AC_DEFINE(EMBED_PYTHON)
+		AC_DEFINE([EMBED_PYTHON], 1, [Define to use embedded Python])
 	fi
 fi
 
@@ -147,19 +148,20 @@ fi
 grubbydir="${prefix}/share/grubby"
 grubbymoddir="${prefix}/lib/grubby"
 
-AC_DEFINE_UNQUOTED(GRUBBYDIR, "${grubbydir}")
-AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
+AC_DEFINE_UNQUOTED([GRUBBYDIR], "${grubbydir}", [Grubby's directory])
+AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [The installation prefix])
 
 AC_SUBST(grubbymoddir)
 AC_SUBST(grubbydir)
 
-AC_OUTPUT(Makefile
+AC_CONFIG_FILES([Makefile
 		grubby/Makefile
 		grubby/src/Makefile
 		grubby/modules/Makefile
 		grubby/data/Makefile
 		grubby/data/grubby-config
-		man/Makefile)
+		man/Makefile])
+AC_OUTPUT
 
 dnl Status output
 dnl =============
