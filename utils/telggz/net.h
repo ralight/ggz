@@ -50,19 +50,5 @@ void net_list(void);
 /* List all players in a room */
 void net_who(void);
 
-/* Hooks for ggzcore */
-GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_negotiated(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_failure(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_login(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_motd(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_roomlist(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_prvmsg(unsigned int id, void *event_data, void *user_data);
-GGZHookReturn net_hook_players(unsigned int id, void *event_data, void *user_data);
-
 #endif
 

@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 6648 2005-01-13 18:34:04Z jdorje $
+ * $Id: main.c 6870 2005-01-24 03:23:21Z jdorje $
  *
  * Main program code for ggz-cmd program.
  *
@@ -249,16 +249,20 @@ static void wait_for_input(int fd)
 }
 
 static GGZHookReturn server_failure(GGZServerEvent id,
-				    void *event_data, void *user_data)
+				    const void *event_data,
+				    const void *user_data)
 {
+	const char *msg = event_data;
+
 	ggz_debug(DBG_MAIN, "GGZ failure: event %d.", id);
 	fprintf(errorstream(stderr),
-		"ggz-cmd: Could not connect to server: %s\n", (char*)event_data);
+		"ggz-cmd: Could not connect to server: %s\n", msg);
 	exit(exitcode(STATUS_CRITICAL));
 }
 
 static GGZHookReturn server_connected(GGZServerEvent id,
-				      void *event_data, void *user_data)
+				      const void *event_data,
+				      const void *user_data)
 {
 	ggz_debug(DBG_MAIN, "Connected to server.");
 	server_fd = ggzcore_server_get_fd(server);
@@ -266,7 +270,8 @@ static GGZHookReturn server_connected(GGZServerEvent id,
 }
 
 static GGZHookReturn server_negotiated(GGZServerEvent id,
-				       void *event_data, void *user_data)
+				       const void *event_data,
+				       const void *user_data)
 {
 	ggz_debug(DBG_MAIN, "Server negotiated.");
 	ggzcore_server_login(server);
@@ -274,7 +279,8 @@ static GGZHookReturn server_negotiated(GGZServerEvent id,
 }
 
 static GGZHookReturn server_logged_in(GGZServerEvent id,
-				      void *event_data, void *user_data)
+				      const void *event_data,
+				      const void *user_data)
 {
 	ggz_debug(DBG_MAIN, "Logged in to server.");
 
@@ -284,7 +290,8 @@ static GGZHookReturn server_logged_in(GGZServerEvent id,
 }
 
 static GGZHookReturn server_room_entered(GGZServerEvent id,
-					 void *event_data, void *user_data)
+					 const void *event_data,
+					 const void *user_data)
 {
 	ggz_debug(DBG_MAIN, "Entered room 0.");
 	in_room = 1;
