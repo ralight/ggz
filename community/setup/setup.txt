@@ -2,6 +2,8 @@ Install External software
 -------------------------
 
 www/forums/phpBB2: phpBB2 (Forum software)
+ from http://www.phpbb.com/
+ chrome_ex patches from setup/forum
 
 www/hotstuff/directory/: Hotstuff (GHNS backend software)
  from setup/hotstuff
@@ -18,9 +20,18 @@ Create GGZ database
 SQL setup
  from setup/sql
 
+Configuration
+-------------
+All htconf-dist files must be copied to .htconf and be modified.
+
 Scripts
 -------
 * calcrankings
+  - calculates the player rankings for those games that support it
 * ggz2phpbb.pl
+  - synchronizes phpBB user database from GGZ user database
 * tracker.pl
+  - lists in XML format the currently running games and logged in players
+* ggzblogs.pl
+  - creates the sections part of the planet configuration file (blogs)
 
