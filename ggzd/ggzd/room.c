@@ -49,7 +49,7 @@ RoomStruct *chat_room;
 static void room_spew_chat_room(const int);
 static void room_notify_change(const int, const int, const int);
 static void room_dequeue_chat(const int p);
-static int room_list_send(const int p_fd);
+static int room_list_send(const int p, const int p_fd);
 static int room_handle_join(const int, const int);
 
 
@@ -60,7 +60,7 @@ int room_handle_request(const int request, const int p, const int p_fd)
 
 	switch(request) {
 		case REQ_LIST_ROOMS:
-			status = room_list_send(p_fd);
+			status = room_list_send(p, p_fd);
 			break;
 		case REQ_ROOM_JOIN:
 			status = room_handle_join(p, p_fd);
@@ -84,7 +84,7 @@ int room_handle_request(const int request, const int p, const int p_fd)
 
 
 /* Handle a REQ_LIST_ROOMS opcode */
-static int room_list_send(const int p_fd)
+static int room_list_send(const int p, const int p_fd)
 {
 	int req_game;
 	char verbose;
@@ -92,12 +92,20 @@ static int room_list_send(const int p_fd)
 
 	/* We don't need to lock anything because CURRENTLY the room count  */
 	/* and options can change ONLY before threads are in existence	    */
-
+		
 	/* Get the options from teh client */
 	if(es_read_int(p_fd, &req_game) < 0
 	   || es_read_char(p_fd, &verbose) < 0)
 		return -1;
 
+	/* Don't send list if they're not logged in */
+	if (players.info[p].uid == GGZ_UID_NONE) {
+		if (es_write_int(p_fd, RSP_LIST_ROOMS) < 0
+		    || es_write_int(p_fd, E_NOT_LOGGED_IN) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+	
 	if((verbose != 0 && verbose != 1)
 	   || req_game < -1 || req_game >= game_types.count) {
 		/* Invalid Options Sent */

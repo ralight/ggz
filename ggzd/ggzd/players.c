@@ -458,6 +458,10 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	char table_update = 0;
 	char type_update = 0;
 
+	/* Don't send updates to people who aren't logged in */
+ 	if (players.info[p].uid == GGZ_UID_NONE)
+ 		return GGZ_REQ_FAIL;
+
 	/* Check for player list updates in our room */
 	if ( (room = players.info[p].room) != -1) {
 		pthread_rwlock_rdlock(&chat_room[room].lock);
@@ -573,7 +577,7 @@ static int player_login_anon(int p, int fd)
 		return GGZ_REQ_DISCONNECT;
 
 	/* Can't login twice */
-	if (players.info[p].state >= GGZ_USER_LOGGED_IN) {
+	if (players.info[p].uid != GGZ_UID_NONE) {
 		if (es_write_int(fd, RSP_LOGIN_ANON) < 0
 		    || es_write_char(fd, E_ALREADY_LOGGED_IN) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -693,9 +697,9 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	/* Silly client. Tables are only so big*/
 	if (seats > MAX_TABLE_SIZE) {
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
-		    || es_write_char(p_fd, -1) < 0)
+		    || es_write_char(p_fd, E_BAD_OPTIONS) < 0)
 			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
+		return GGZ_REQ_DISCONNECT;
 	}
 		
 	/* Read in seat assignments */
@@ -723,7 +727,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	}
 
 	/* Now that we've cleared the socket, check if in a room */
-	if (players.info[p_index].state < GGZ_USER_IN_ROOM) {
+	if (players.info[p_index].room == -1) {
 		if (options)
 			free(options);
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
@@ -792,14 +796,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
  * player_table_join implements the following exchange:
  *
  * REQ_TABLE_JOIN
- *  int: game type index
- *  int: number of players
- *  chr: computer players (2^num)
- *  int: number of reservations (possibly 0)
- *  sequence of
- *    str: login name for reservation
- *  int: size of options struct
- *  struct: game options
+ *  int: game table index
  * RSP_TABLE_JOIN
  *  chr: success flag (0 for success, negative values for various failures)
  * 
@@ -819,7 +816,7 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 		"Player %d attempting to join table %d", p_index, t_index);
 
 	/* Now that we've cleared the socket, check if in a room */
-	if (players.info[p_index].state < GGZ_USER_IN_ROOM) {
+	if (players.info[p_index].room == -1) {
 		if (es_write_int(p_fd, RSP_TABLE_JOIN) < 0
 		    || es_write_char(p_fd, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
@@ -913,31 +910,39 @@ static int player_list_players(int p_index, int fd)
 	dbg_msg(GGZ_DBG_UPDATE,
 		"Handling player list request for player %d", p_index);
 
+ 	/* Don't send list if they're not logged in */
+ 	if (players.info[p_index].uid == GGZ_UID_NONE) {
+ 		if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
+ 		    || es_write_int(fd, E_NOT_LOGGED_IN) < 0)
+ 			return GGZ_REQ_DISCONNECT;
+ 		return GGZ_REQ_FAIL;
+ 	}
+
 	pthread_rwlock_rdlock(&players.lock);
 	memcpy(info, players.info, sizeof(info));
 	pthread_rwlock_unlock(&players.lock);
 	
 	if (es_write_int(fd, RSP_LIST_PLAYERS) < 0)
-		return -1;
+		return GGZ_REQ_DISCONNECT;
 
 	/* Write lock the room so no one can duck out on us in mid send */
 	room = players.info[p_index].room;
 	pthread_rwlock_wrlock(&chat_room[room].lock);
 
-	if(es_write_int(fd, chat_room[room].player_count) < 0)
-		return (-1);
+	if (es_write_int(fd, chat_room[room].player_count) < 0)
+		return GGZ_REQ_DISCONNECT;
 
 	for (i = 0; i < chat_room[room].player_count; i++) {
 		p_2 = chat_room[room].player_index[i];
 		if (es_write_string(fd, info[p_2].name) < 0
 		    || es_write_int(fd, info[p_2].table_index) < 0) {
 			pthread_rwlock_unlock(&chat_room[room].lock);
-			return (-1);
+			return GGZ_REQ_DISCONNECT;
 		}
 	}
 
 	pthread_rwlock_unlock(&chat_room[room].lock);
-	return (0);
+	return GGZ_REQ_OK;
 }
 
 
@@ -951,7 +956,15 @@ static int player_list_types(int p_index, int fd)
 		"Handling type list request for player %d", p_index);
 	
 	if (es_read_char(fd, &verbose) < 0)
-		return (-1);
+		return GGZ_REQ_DISCONNECT;
+
+	/* Don't send list if they're not logged in */
+ 	if (players.info[p_index].uid == GGZ_UID_NONE) {
+ 		if (es_write_int(fd, RSP_LIST_TYPES) < 0
+ 		    || es_write_int(fd, E_NOT_LOGGED_IN) < 0)
+ 			return GGZ_REQ_DISCONNECT;
+ 		return GGZ_REQ_FAIL;
+ 	}
 
 	pthread_rwlock_rdlock(&game_types.lock);
 	for (i = 0; (i < MAX_GAME_TYPES && count < game_types.count); i++)
@@ -961,23 +974,23 @@ static int player_list_types(int p_index, int fd)
 
 	if (es_write_int(fd, RSP_LIST_TYPES) < 0
 	    || es_write_int(fd, count) < 0)
-		return (-1);
+		return GGZ_REQ_DISCONNECT;
 
 	for (i = 0; i < count; i++) {
 		if (es_write_int(fd, i) < 0
 		    || es_write_string(fd, info[i].name) < 0
 		    || es_write_string(fd, info[i].version) < 0
 		    || es_write_char(fd, info[i].player_allow_mask) < 0)
-			return (-1);
+			return GGZ_REQ_DISCONNECT;
 		if (!verbose)
 			continue;
 		if (es_write_string(fd, info[i].desc) < 0
 		    || es_write_string(fd, info[i].author) < 0
 		    || es_write_string(fd, info[i].homepage) < 0)
-			return (-1);
+			return GGZ_REQ_DISCONNECT;
 	}
 
-	return (0);
+	return GGZ_REQ_OK;
 }
 
 
@@ -994,8 +1007,16 @@ static int player_list_tables(int p_index, int fd)
 		"Handling table list request for player %d", p_index);	
 
 	if (es_read_int(fd, &type) < 0)
-		return (-1);
+		return GGZ_REQ_DISCONNECT;
 
+ 	/* Don't send list if they're not logged in */
+ 	if (players.info[p_index].uid == GGZ_UID_NONE) {
+ 		if (es_write_int(fd, RSP_LIST_TABLES) < 0
+ 		    || es_write_int(fd, E_NOT_LOGGED_IN) < 0)
+ 			return GGZ_REQ_DISCONNECT;
+ 		return GGZ_REQ_FAIL;
+ 	}
+ 	  	
 	/* Copy tables of interest to local list */
 	pthread_rwlock_rdlock(&tables.lock);
 	for (i = 0; (i < MAX_TABLES && count < tables.count); i++) {
@@ -1009,7 +1030,7 @@ static int player_list_tables(int p_index, int fd)
 
 	if (es_write_int(fd, RSP_LIST_TABLES) < 0
 	    || es_write_int(fd, count) < 0)
-		return (-1);
+		return GGZ_REQ_DISCONNECT;
 
 	for (i = 0; i < count; i++) {
 		if (es_write_int(fd, indices[i]) < 0
@@ -1017,12 +1038,12 @@ static int player_list_tables(int p_index, int fd)
 		    || es_write_string(fd, my_tables[i].desc) < 0
 		    || es_write_char(fd, my_tables[i].state) < 0
 		    || es_write_int(fd, seats_num(my_tables[i])) < 0)
-			return (-1);
+			return GGZ_REQ_DISCONNECT;
 
 		for (j = 0; j < seats_num(my_tables[i]); j++) {
 
 			if (es_write_int(fd, my_tables[i].seats[j]) < 0)
-				return -1;
+				return GGZ_REQ_DISCONNECT;
 
 			switch(my_tables[i].seats[j]) {
 
@@ -1042,11 +1063,11 @@ static int player_list_tables(int p_index, int fd)
 			}
 
 			if (es_write_string(fd, name) < 0)
-				return (-1);
+				return GGZ_REQ_DISCONNECT;
 		}
 	}
 
-	return (0);
+	return GGZ_REQ_OK;
 }
 
 
@@ -1153,6 +1174,14 @@ int player_motd(int p_index, int fd)
 	dbg_msg(GGZ_DBG_CHAT, "Handling motd request for player %d", p_index);
   	if (!motd_info.use_motd)
 		return GGZ_REQ_OK;
+
+ 	/* Don't send motd if they're not logged in */
+ 	if (players.info[p_index].uid == GGZ_UID_NONE) {
+ 		if (es_write_int(fd, RSP_MOTD) < 0
+ 		    || es_write_int(fd, E_NOT_LOGGED_IN) < 0)
+ 			return GGZ_REQ_DISCONNECT;
+ 		return GGZ_REQ_FAIL;
+ 	}
 	
 	if (es_write_int(fd, RSP_MOTD) < 0
 	    || motd_send_motd(fd) < 0)
