@@ -98,6 +98,8 @@ static void sueca_init_game()
   game.ai_type = GGZ_AI_RANDOM;
   /* Use the SUECA deck */
   game.deck_type = GGZ_DECK_SUECA;
+  /* Point to the game rules */
+  game.rules_url = "http://www.pagat.com/aceten/sueca.html";
 
 }
 
