@@ -180,7 +180,7 @@ GGZFile * ggz_get_file_struct(int fdes)
 char * ggz_read_line(GGZFile *file)
 {
 	char *data_line;
-	int d_off;
+	/* int d_off; */
 
 	data_line = file->p;
 	while(1) {
