@@ -26,6 +26,7 @@
 #include <gtk/gtk.h>
 #include <ggzcore.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "about.h"
 #include "chat.h"
@@ -43,12 +44,19 @@ int main (int argc, char *argv[])
 	GGZOptions opt;
 	char *global_conf, *user_conf;
 
-	opt.flags = GGZ_OPT_PARSER;
 	global_conf = "/etc/ggz/ggz.conf";
 	user_conf = g_strdup_printf("%s/.ggz/ggz-gtk.rc", getenv("HOME"));;
 	ggzcore_conf_initialize(global_conf, user_conf);
 	g_free(user_conf);
 
+	opt.flags = GGZ_OPT_PARSER;
+	if (!strcmp(ggzcore_conf_read_string("DEBUG", "FILE", "/tmp/ggz-gtk.debug"), "/tmp/ggz-gtk.debug"))
+	{
+		opt.debug_file = g_strdup_printf("%s%d", "/tmp/ggz-gtk.debug", getpid());
+	} else {
+		opt.debug_file = g_strdup(ggzcore_conf_read_string("DEBUG", "FILE", "/tmp/ggz-gtk.debug"));
+	}
+	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_POLL);
 	ggzcore_init(opt);
 	server_profiles_load();
 	ggz_event_init();
