@@ -1,0 +1,29 @@
+GGZ is released with a common version number,
+which makes it easy to identify a release.
+
+While core clients and some games traditionally follow
+this schema, other games and most tools do not.
+
+Here's a list of version numbers associated to each
+GGZ release. For game versions, see the separate document
+in /docs/games/game-development.
+
+Applications | Version in 0.0.6 | Version in 0.0.7
+-------------+------------------+-----------------
+grubby       |              0.3 |              0.4
+             |                  |
+cmd-client   |              --- |              ---
+ggzcomm      |              0.1 |              0.1
+metaserv     |              0.1 |              0.2
+motd-editor  |              --- |              ---
+telggz       |              0.2 |              0.3
+             |                  |
+shadowbridge |              0.1 |              0.1
+modsniff     |              0.1 |              0.1
+keepalivectl |            0.0.6 |              0.1
+compcal      |              0.1 |              0.2
+ggzap        |              0.2 |              0.3
+
+Unversioned applications should adopt either the
+GGZ version number, or an own one.
+
