@@ -58,7 +58,7 @@ int main( int argc, char* argv[] ) {
   signal (SIGPIPE, termination_handler);
 
   GetGameInfo();
-  dbg_msg("Spades game running");
+  log_msg("Spades game running");
   
   while( !sessionOver ) {
     Randomize();

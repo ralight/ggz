@@ -65,5 +65,6 @@ void err_sys(const char *fmt, ...);
 void err_msg_exit(const char *fmt, ...);
 void err_sys_exit(const char *fmt, ...);
 void dbg_msg(const char *fmt, ...);
+void log_msg(const char *fmt, ...);
 
 

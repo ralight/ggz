@@ -119,3 +119,15 @@ void dbg_msg(const char *fmt, ...)
 }
 
 
+void log_msg(const char *fmt, ...)
+{
+	char buf[4096];
+	va_list ap;
+
+	va_start(ap, fmt);
+        vsprintf(buf, fmt, ap);
+	es_write_int(gameInfo.ggz_sock, MSG_LOG);
+	es_write_int(gameInfo.ggz_sock, GGZ_LOG_NOTICE);
+	es_write_string(gameInfo.ggz_sock, buf);
+	va_end(ap);
+}
