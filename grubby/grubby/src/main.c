@@ -1,7 +1,7 @@
 /*******************************************************************
 *
 * Guru - functional example of a next-generation grubby
-* Copyright (C) 2001 - 2003 Josef Spillner, <josef@ggzgamingzone.org>
+* Copyright (C) 2001 - 2004 Josef Spillner, <josef@ggzgamingzone.org>
 * Original written by Rich Gade and enhanced by Justin Zaun
 * Published under GNU GPL conditions - see 'COPYING' for details
 *
@@ -17,7 +17,7 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#define GRUBBY_VERSION "0.5"
+#define GRUBBY_VERSION "0.6"
 
 /* Execute administrative commands */
 /* FIXME: Log admin commands */
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 		{
 			case 'h':
 				printf(_("Grubby - the GGZ Gaming Zone Chat Bot\n"));
-				printf(_("Copyright (C) 2001 - 2003 Josef Spillner, josef@ggzgamingzone.org\n"));
+				printf(_("Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org\n"));
 				printf(_("Published under GNU GPL conditions\n\n"));
 				printf(_("Recognized options:\n"));
 				printf(_("[-h | --help]:    Show this help screen\n"));
