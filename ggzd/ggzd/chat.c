@@ -34,7 +34,7 @@
 
 /* Server wide data structures*/
 extern struct GameTypes game_types;
-extern struct GameTables game_tables;
+extern struct GameTables tables;
 extern struct Users players;
 
 /* We'll keep the chat structure local to this file */

@@ -1,6 +1,5 @@
 For 0.0.2
 =========
-- Rename functions to match file and opcode names where appropriate
 - Check mutex's. Expecially table.mutex
 - Redo way table structure stores info about whos playing: this should be
 simple and not have lots of redundant data like we do now: the array of fd's

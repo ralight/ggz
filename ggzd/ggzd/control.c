@@ -47,7 +47,7 @@ Options opt;
 
 /* Main data structures */
 struct GameTypes game_types;
-struct GameTables game_tables;
+struct GameTables tables;
 struct Users players;
 
 
@@ -58,7 +58,7 @@ void init_data(void)
 	GameInfo spades;
 
 	pthread_rwlock_init(&game_types.lock, NULL);
-	pthread_rwlock_init(&game_tables.lock, NULL);
+	pthread_rwlock_init(&tables.lock, NULL);
 	pthread_rwlock_init(&players.lock, NULL);
 
 	for (i = 0; i < MAX_USERS; i++) {
@@ -68,7 +68,7 @@ void init_data(void)
 	}
 
 	for (i = 0; i < MAX_TABLES; i++) {
-		game_tables.info[i].type_index = -1;
+		tables.info[i].type_index = -1;
 	}
 
 	/* FIXME: Temporary hack.  This info should be loaded from a file
