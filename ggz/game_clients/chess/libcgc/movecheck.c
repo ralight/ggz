@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: movecheck.c 1121 2001-02-18 23:35:31Z bugg $
+ *  $Id: movecheck.c 1132 2001-02-19 23:21:30Z bugg $
  */
 
 #include <stdlib.h>
@@ -203,9 +203,15 @@ cgc_do_move(struct game *curgame, int fs, int rs, int fd, int rd, int promote)
 		if(abs(rs-rd) > 1) /* They can do ep! */
 			epossible = fd;
 
-		/* Check to see if we're doing ep */
+		/* Check to see if we're doing ep
+		 * This is a bit hackish as we clear the rd above
+		 * and below where we are, but one is guaranteed
+		 * to be the one we're caputring and the other
+		 * really should be (or else uh-oh) empty :)
+		 */
 		if(curgame->board[fd][rd] == EMPTY && fd != fs) {
 			curgame->board[fd][rd-1] = EMPTY;
+			curgame->board[fd][rd+1] = EMPTY;
 		}
 	}
 
@@ -503,6 +509,10 @@ check_attackers(struct game *curgame, int f, int r, int *af, int *ar, int pcol,
 			if(curgame->board[cf][cr] != EMPTY)
 				if(color(curgame->board[cf][cr]) != pcol)
 					break;
+
+			/* Stop for blockers */
+			if(curgame->board[cf][cr] == BLOCKER) 
+				break;
 
 			switch(curgame->board[cf][cr]) {
 			case W_QUEEN:  
@@ -856,7 +866,7 @@ cgc_check_state(struct game *curgame, int kf, int kr)
 	 */
 
 	tmp = board[kf][kr];
-	board[kf][kr] = EMPTY;
+	board[kf][kr] = BLOCKER;
 
 	if(!safe_square(curgame, af, ar)) { /* we can capture */
 		board[kf][kr] = tmp;
