@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6796 2005-01-22 01:06:07Z jdorje $
+ * $Id: ggzmod.c 6800 2005-01-22 10:08:50Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -404,12 +404,18 @@ void _ggzmod_handle_player(GGZMod *ggzmod,
 const char *ggzmod_get_player(GGZMod *ggzmod,
 			      int *is_spectator, int *seat_num)
 {
-	if (ggzmod->state == GGZMOD_STATE_CREATED)
+	if (ggzmod->state == GGZMOD_STATE_CREATED) {
 		ggz_error_msg("ggzmod_get_my_seat:"
 			      " can't call when state is CREATED.");
+		return NULL;
+	}
 
-	*is_spectator = ggzmod->i_am_spectator;
-	*seat_num = ggzmod->my_seat_num;
+	if (is_spectator) {
+		*is_spectator = ggzmod->i_am_spectator;
+	}
+	if (seat_num) {
+		*seat_num = ggzmod->my_seat_num;
+	}
 
 	return ggzmod->my_name;
 }
