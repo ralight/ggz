@@ -19,6 +19,8 @@ ggzd_SOURCES =	chat.c \
 		players.c \
 		players.h \
 		protocols.h \
+		seats.c \
+		seats.h \
 		table.c \
 		table.h
 

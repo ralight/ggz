@@ -41,6 +41,7 @@
 #include <engine.h>
 #include <socketfunc.h>
 #include <protocols.h>
+#include <err_func.h>
 
 /* Global game information variable */
 gameInfo_t gameInfo;
@@ -196,16 +197,6 @@ void GetGameInfo( void ) {
   
   ReadOptions();
 
-  for(i=0; i<4; i++) {
-    if( gameInfo.playerSock[i] == SOCK_COMP )
-      continue;
-    readstring( STDIN_FILENO, &gameInfo.players[i] );
-    ReadIntOrDie( STDIN_FILENO, &gameInfo.playerSock[i] );
-    gameInfo.clientPids[i] = 0;
-    dbg_msg( "[%d]: Player %d has fd %d and name %s\n", getpid(), i,
-	    gameInfo.playerSock[i], gameInfo.players[i]);
-  }
-  
   /* Should check for validity here , but who cares? */
   WriteIntOrDie(STDOUT_FILENO, RSP_GAME_LAUNCH);
   status = 0;
@@ -216,19 +207,20 @@ void GetGameInfo( void ) {
   
 
   for (i=0; i<4; i++) {
-    if( gameInfo.playerSock[i] == SOCK_COMP ) 
-      continue;
-    dbg_msg( "[%d]: Sending info to %s\n", getpid(), gameInfo.players[i] );
-    WriteIntOrDie( gameInfo.playerSock[i], gameInfo.gameNum );
-    WriteIntOrDie( gameInfo.playerSock[i], i );
-    WriteIntOrDie( gameInfo.playerSock[i], gameInfo.gamePid );
-    for(j=0; j<4; j++) {
-      if( writestring( gameInfo.playerSock[i], gameInfo.players[j] ) < 0 ) {
-	dbg_msg( "[%d]: Network error sending string\n", getpid() );
-	svNetClose();
-	Quit(-1);
-      }
-    }
+	  if( gameInfo.playerSock[i] == SOCK_COMP ) {
+		  continue;
+	  }
+	  dbg_msg("[%d]: Sending info to %s\n", getpid(), gameInfo.players[i]);
+	  WriteIntOrDie( gameInfo.playerSock[i], gameInfo.gameNum );
+	  WriteIntOrDie( gameInfo.playerSock[i], i );
+	  WriteIntOrDie( gameInfo.playerSock[i], gameInfo.gamePid );
+	  for(j=0; j<4; j++) {
+		  if (writestring(gameInfo.playerSock[i], gameInfo.players[j]) < 0 ) {
+			  dbg_msg( "[%d]: Network error sending string\n", getpid() );
+			  svNetClose();
+			  Quit(-1);
+		  }
+	  }
 
     ReadIntOrDie( gameInfo.playerSock[i], &status );
     
@@ -250,80 +242,80 @@ void GetGameInfo( void ) {
 
 int ReadOptions( void ) {
   
-  int slots, status = -1;
-  unsigned char ai_mask;
+	int assign, i, seats, status = -1;
   
-  dbg_msg( "[%d]: Reading options from server\n", getpid() );
+	dbg_msg("[%d]: Reading options from server\n", getpid());
 
-  /*  if( readint(0, &(gameInfo.opt.bitOpt) ) < 0 ) {
-      dbg_msg( "[%d]: Error reading bitOpt\n", getpid() );
-      } else if( readint(0, &(gameInfo.opt.endGame) ) < 0 ) { 
-      dbg_msg( "[%d]: Error reading endGame\n", getpid() );
-      } else if( readint(0, &(gameInfo.opt.minBid) ) < 0 ) { 
-      dbg_msg( "[%d]: Error reading minBid\n", getpid() );
-      }*/
-  if( (status = read(STDIN_FILENO, &gameInfo.opt, 12)) < 0 ) 
-    dbg_msg( "[%d]: Error reading options\n", getpid() );
-  else if( readint(STDIN_FILENO, &slots ) < 0 ) 
-    dbg_msg( "[%d]: Error reading number of slots", getpid() );
-  else if( read(STDIN_FILENO, &ai_mask, 1 ) < 0 ) 
-    dbg_msg( "[%d]: Error reading ai_mask", getpid() );
-  else {
-    status = 0;
-    gameInfo.num_humans = slots - num_comp_play(ai_mask);
-    if( gameInfo.opt.bitOpt & MSK_COMP_1 ) {
-      gameInfo.playerSock[1] = SOCK_COMP;
-      gameInfo.players[1] = "Moe";
-    }
-    if( gameInfo.opt.bitOpt & MSK_COMP_2 ) {
-      gameInfo.playerSock[2] = SOCK_COMP;
-      gameInfo.players[2] = "Larry";
-    }
-    if( gameInfo.opt.bitOpt & MSK_COMP_3 ) {
-      gameInfo.playerSock[3] = SOCK_COMP;
-      gameInfo.players[3] = "Curly";
-    }
+	if ( (status = read(STDIN_FILENO, &gameInfo.opt, 12)) < 0) 
+		dbg_msg( "[%d]: Error reading options\n", getpid() );
+	else if (readint(STDIN_FILENO, &seats) < 0) 
+		dbg_msg( "[%d]: Error reading number of slots", getpid() );
+	else {
+		for(i=0; i<4; i++) {
+			readint( STDIN_FILENO, &assign);
+			if (assign == -2) {
+				gameInfo.playerSock[i] = SOCK_COMP;
+				gameInfo.players[i] = "AI";
+			} else {
+				readstring(STDIN_FILENO, &gameInfo.players[i]);
+				ReadIntOrDie(STDIN_FILENO,
+					     &gameInfo.playerSock[i] );
+
+			}
+			dbg_msg( "[%d]: Player %d has fd %d and name %s\n",
+				 getpid(), i, gameInfo.playerSock[i],
+				 gameInfo.players[i]);
+
+			gameInfo.clientPids[i] = 0;
+		}
+
+		status = 0;
+
 #ifdef DEBUG
-    dbg_msg( "[%d]: bitOpt: %d, endGame: %d, minBid: %d, numPlay: %d\n", 
-	    getpid(), gameInfo.opt.bitOpt, gameInfo.opt.endGame, 
-	    gameInfo.opt.minBid, gameInfo.num_humans);
+		dbg_msg( "[%d]: bitOpt: %d, endGame: %d, minBid: %d\n", 
+			 getpid(), gameInfo.opt.bitOpt, gameInfo.opt.endGame, 
+			 gameInfo.opt.minBid);
 #endif
-    if( log ) {
-      switch( gameInfo.opt.bitOpt & MSK_GAME ) {
-      case GAME_SPADES: 
-	dbg_msg( "[%d]: Game choice is spades\n", getpid() );
-	dbg_msg( "[%d]: Game ends at %d points\n", getpid(), gameInfo.opt.endGame);
-	dbg_msg(  "[%d]: Minimum bid of %d\n", getpid(), gameInfo.opt.minBid);
-	if( (gameInfo.opt.bitOpt & MSK_NILS) ) {
-	  dbg_msg(  "[%d]: Nil bids allowed\n", getpid() );
+		if (log) {
+			switch (gameInfo.opt.bitOpt & MSK_GAME) {
+			case GAME_SPADES: 
+				dbg_msg("[%d]: Game choice is spades\n",
+					getpid());
+				dbg_msg("[%d]: Game ends at %d points\n",
+					getpid(), gameInfo.opt.endGame);
+				dbg_msg("[%d]: Minimum bid of %d\n",
+					getpid(), gameInfo.opt.minBid);
+				if (gameInfo.opt.bitOpt & MSK_NILS)
+					dbg_msg("[%d]: Nil bids allowed\n",
+						getpid() );
+				else
+					dbg_msg("[%d]: Nil bids prohibited\n",
+						getpid());
+			
+				if (gameInfo.opt.bitOpt & MSK_BAGS)
+					dbg_msg("[%d]: Penalty imposed for 10 bags\n", getpid() );
+				else
+					dbg_msg("[%d]: No penalty for bags\n",
+						getpid() );
+				break;
+			case GAME_HEARTS: 
+				dbg_msg("[%d]: Game choice is hearts\n",
+					getpid());
+				break;
+			}
+			if (gameInfo.playerSock[1] == SOCK_COMP)
+				dbg_msg("[%d]: Player 1 computer player\n",
+					getpid());
+			if (gameInfo.playerSock[2] == SOCK_COMP)
+				dbg_msg("[%d]: Player 2 computer player\n",
+					getpid());
+			if (gameInfo.playerSock[3] == SOCK_COMP)
+				dbg_msg("[%d]: Player 3 computer player\n",
+					getpid());
+		}
 	}
-	else {
-	  dbg_msg(  "[%d]: Nil bids prohibited\n", getpid() );
-	}
-	if( (gameInfo.opt.bitOpt & MSK_BAGS) ) {
-	  dbg_msg(  "[%d]: Penalty imposed for 10 bags\n", getpid() );
-	}
-	else {
-	  dbg_msg(  "[%d]: No penalty for bags\n", getpid() );
-	}
-	break;
-      case GAME_HEARTS: 
-	dbg_msg(  "[%d]: Game choice is hearts\n", getpid() );
-	break;
-      }
-      if( gameInfo.opt.bitOpt & MSK_COMP_1 ) {
-	dbg_msg(  "[%d]: Player 1 is a computer player\n", getpid() );
-      }
-      if( gameInfo.opt.bitOpt & MSK_COMP_2 ) {
-	dbg_msg(  "[%d]: Player 2 is a computer player\n", getpid() );
-      }
-      if( gameInfo.opt.bitOpt & MSK_COMP_3 ) {
-	dbg_msg(  "[%d]: Player 3 is a computer player\n", getpid() );
-      }
-    }
-  }
-  
-  return status;
+	
+	return status;
 }
 
 

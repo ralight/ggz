@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 113 $</revnumber>
-	<date>$Date: 2000-03-01 23:01:13 -0800 (Wed, 01 Mar 2000) $</date>
+	<revnumber>$Revision: 128 $</revnumber>
+	<date>$Date: 2000-03-04 09:05:49 -0800 (Sat, 04 Mar 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -261,11 +261,10 @@
               int: game type index
               chr: play/wait flag (0 if waiting for players, 1 if playing)
    	      int: number of seats at table
-  	      int: number of open seats at table
-	      int: number of human players at table
               sequence of
-                str: name of human player at table
-      
+	        int: seat assignment (-1 for OPEN, -2 for COMP, -3 RESV )
+  	        str: name of player (if assignment >=0 or == RESV)
+
           REQ_TABLE_OPTIONS
             int: game index
           RSP_TABLE_OPTIONS
@@ -295,12 +294,11 @@
 	<programlisting role="psuedocode">
 	  REQ_TABLE_LAUNCH
             int: game type index
-            int: number of players
-            chr: computer player bitmask
-            int: number of reservations (possibly 0)
-            sequence of
-              str: login name for reservation
-            int: size of options struct
+            int: number of seats
+	    sequence of
+	       int: seat assignment (-1 for OPEN, -2 for COMP, -3 RESV )
+	       str: name for reservation (if status = RESV)
+	    int: size of options struct
             struct: game options
           RSP_TABLE_LAUNCH
             chr: success flag (0 for success, negative values for various failures)

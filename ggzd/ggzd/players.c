@@ -43,6 +43,7 @@
 #include <protocols.h>
 #include <err_func.h>
 #include <chat.h>
+#include <seats.h>
 
 
 /* Timeout for server resync */
@@ -547,32 +548,40 @@ static int player_logout(int p, int fd)
  * returns 0 if successful, -1 on error.  If successful, returns table
  * fd by reference
  */
+
+/*
+ * FIXME: Much of this function should be put into table_launch().
+ * Then upon return from table_launch() we send out RSP_TABLE_LAUNCH
+ */
 static int player_table_launch(int p_index, int p_fd, int *t_fd)
 {
 	TableInfo table;
 	int i, size, t_index = -1;
 	int status = 0;
 	int fds[2];
+	int seats;
 	void *options;
 	char name[MAX_USER_NAME_LEN + 1];
 
 	dbg_msg("Handling table launch for player %d", p_index);
 
-	if (FAIL(es_read_int(p_fd, &(table.type_index))) 
-	    || FAIL(es_read_int(p_fd, &(table.num_seats))) 
-	    || FAIL(es_read_char(p_fd, &(table.comp_players))) 
-	    || FAIL(es_read_int(p_fd, &table.num_reserves)))
+	if (FAIL(es_read_int(p_fd, &table.type_index))
+	    || FAIL(es_read_int(p_fd, &seats)))
 		return -1;
 
-	/* Read in reservations */
-	for (i = 0; i < table.num_reserves; i++) {
-		if (FAIL(read_name(p_fd, name)))
+	/* FIXME: somehow check for seats > MAX_TABLE_SIZE */
+	/* Read in seat assignments */
+	for (i = 1; i < seats; i++) {
+		if (FAIL(es_read_int(p_fd, &table.seats[i])))
 			return -1;
-#if 0
-		if ((table.reserve[i] = uid_lookup(name)) < 0)
-			status = E_USR_LOOKUP;
-#endif
-		table.reserve[i] = i;
+		if (table.seats[i] == GGZ_SEAT_RESV
+		    && FAIL(read_name(p_fd, name)))
+			return -1;
+
+		/*
+		 * FIXME: lookup uid of name and asign to table.reserve[i]
+		 * upon error, set status = E_USR_LOOKUP
+		 */
 	}
 
 	/* Read in game specific options */
@@ -591,17 +600,13 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 
 	/* Fill remaining parameters */
 	if (status == 0) {
-		table.num_humans =
-			table.num_seats - num_comp_play(table.comp_players);
-		table.open_seats = table.num_humans - 1;
 		table.playing = 0;
 		table.pid = -1;
 		table.fd_to_game = -1;
-		table.players[0] = p_index;
 		table.player_fd[0] = fds[0];
-		for (i = 1; i < 8; i++) {
-			table.players[i] = -1;
-		}
+		table.seats[0] = p_index;
+		for (i = seats; i < MAX_TABLE_SIZE; i++)
+			table.seats[i] = GGZ_SEAT_NONE;
 		table.options = options;
 		pthread_mutex_init(&table.seats_lock, NULL);
 		pthread_cond_init(&table.seats_cond, NULL);
@@ -708,14 +713,14 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 		pthread_rwlock_unlock(&tables.lock);
 		status = E_TABLE_EMPTY;
 	}
-	else if (tables.info[t_index].open_seats == 0) {
+	else if (seats_open(tables.info[t_index]) == 0) {
 		pthread_rwlock_unlock(&tables.lock);
 		status = E_TABLE_FULL;
 	} else {
 		/* Take my seat */
-		for (i = 0; i < tables.info[t_index].num_seats; i++)
-			if (tables.info[t_index].players[i] < 0) {
-				tables.info[t_index].players[i] = p_index;
+		for (i = 0; i < seats_num(tables.info[t_index]); i++)
+			if (tables.info[t_index].seats[i] == GGZ_SEAT_OPEN) {
+				tables.info[t_index].seats[i] = p_index;
 				/* Create socketpair for communication */
 				socketpair(PF_UNIX, SOCK_STREAM, 0, fds);
 				tables.info[t_index].player_fd[i] = fds[0];
@@ -724,7 +729,6 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 				break;
 			}
 
-		tables.info[t_index].open_seats--;
 		pthread_rwlock_unlock(&tables.lock);
 
 		pthread_mutex_lock(&tables.info[t_index].seats_lock);
@@ -829,7 +833,7 @@ static int player_list_types(int p_index, int fd)
 static int player_list_tables(int p_index, int fd)
 {
 
-	int i, j, type, player_num, seated_humans;
+	int i, j, type, index, uid;
 	int count = 0;
 	char name[MAX_USER_NAME_LEN + 1];
 
@@ -855,20 +859,34 @@ static int player_list_tables(int p_index, int fd)
 		return (-1);
 
 	for (i = 0; i < count; i++) {
-		seated_humans = my_tables[i].num_humans - my_tables[i].open_seats;
 		if (FAIL(es_write_int(fd, indices[i]))
 		    || FAIL(es_write_int(fd, my_tables[i].type_index))
 		    || FAIL(es_write_char(fd, my_tables[i].playing))
-		    || FAIL(es_write_int(fd, my_tables[i].num_seats))
-		    || FAIL(es_write_int(fd, my_tables[i].open_seats))
-		    || FAIL(es_write_int(fd, seated_humans)))
+		    || FAIL(es_write_int(fd, seats_num(my_tables[i]))))
 			return (-1);
 
-		for (j = 0; j < seated_humans; j++) {
-			player_num = my_tables[i].players[j];
-			pthread_rwlock_rdlock(&players.lock);
-			strcpy(name, players.info[player_num].name);
-			pthread_rwlock_unlock(&players.lock);
+		for (j = 0; j < seats_num(my_tables[i]); j++) {
+
+			if (FAIL(es_write_int(fd, my_tables[i].seats[j])))
+				return -1;
+
+			switch(my_tables[i].seats[j]) {
+
+			case GGZ_SEAT_OPEN:
+			case GGZ_SEAT_COMP:
+				continue;  /* no name for these */
+			case GGZ_SEAT_RESV:
+				uid = my_tables[i].reserve[j];
+				/* Look up player name by uid */
+				strcpy(name,"reserved");
+				break;
+			default: /* must be a player index */
+				index = my_tables[i].seats[j];
+				pthread_rwlock_rdlock(&players.lock);
+				strcpy(name, players.info[index].name);
+				pthread_rwlock_unlock(&players.lock);
+			}
+
 			if (FAIL(es_write_string(fd, name)))
 				return (-1);
 		}
@@ -948,7 +966,6 @@ static int player_chat(int p_index, int p_fd)
  */
 static int read_name(int sock, char name[MAX_USER_NAME_LEN])
 {
-
 	char *tmp;
 	int status = -1;
 
@@ -989,7 +1006,7 @@ int type_match_table(int type, int num)
 	/* FIXME: Do reservation checking properly */
 	return ( type == NG_TYPE_ALL
 		 || (type >= 0 && type == tables.info[num].type_index)
-		 || (type == NG_TYPE_OPEN && tables.info[num].open_seats)
+		 || (type == NG_TYPE_OPEN && seats_open(tables.info[num]))
 		 || type == NG_TYPE_RES);
 }
 		

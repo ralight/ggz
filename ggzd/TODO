@@ -1,17 +1,9 @@
 For 0.0.2
 =========
-- Check table.mutex
 - Plot out mutex nesting and make sure deadlock is impossible
-- Redo way table structure stores info about whos playing: this should be
-simple and not have lots of redundant data like we do now: the array of fd's
-and the array of names.  We need a few special (negative) fd values like
-FD_OPEN, FD_COMP_PLAY, FD_RESERVED, and FD_NOSEAT. Then we can get rid of
-num_players, num_humans, num_openseats, comp_mask, etc. and replace them
-with functions (or macros) operating on this array.  (maybe num_players gets
-to stay since it's important.  not sure)
 - redo table launch so that game server is forked immediately and then
   players join later (pass fd's using sendmsg() )
-- implement REQ_LEAVE_TABLE
+- implement REQ_LEAVE_TABLE (depends on above item)
 - better handing of end-of-game
 - if everyone leaves a table, remove it
 - handle SIGCHLD for when game_servrs die

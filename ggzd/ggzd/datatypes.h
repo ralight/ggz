@@ -23,8 +23,8 @@
  */
 
 
-#ifndef _NG_TYPES
-#define _NG_TYPES
+#ifndef _GGZ_TYPES
+#define _GGZ_TYPES
 
 #include <pthread.h>
 #include <time.h>
@@ -42,6 +42,7 @@
 #define MAX_USERS 500
 #define MAX_CHAT_LEN 512
 #define MAX_CHAT_BUFFER 32
+#define MAX_TABLE_SIZE 8
 
 /* Bitmasks for allowable player numbers */
 #define PLAY_ALLOW_ZERO    0
@@ -79,6 +80,12 @@
 #define NG_HANDLE_LOGOUT      -1
 #define NG_HANDLE_GAME_START   1
 #define NG_HANDLE_GAME_OVER    2
+
+/* Special seat assignment values */
+#define GGZ_SEAT_OPEN   -1
+#define GGZ_SEAT_COMP   -2
+#define GGZ_SEAT_RESV   -3
+#define GGZ_SEAT_NONE   -4
 
 /* Datatypes for server options*/
 typedef struct {
@@ -126,19 +133,14 @@ struct GameTypes {
 /* Info about a particular game-table */
 typedef struct {
 	int type_index;
-	int num_seats;
-	int num_humans;
 	pthread_cond_t seats_cond;
-	int open_seats;
 	pthread_mutex_t seats_lock;
-	int num_reserves;
-	unsigned char comp_players;
 	unsigned char playing;
 	int fd_to_game;
 	int pid;
-	int players[8];
-	int reserve[8];
-	int player_fd[8];
+	int seats[MAX_TABLE_SIZE];
+	int reserve[MAX_TABLE_SIZE];
+	int player_fd[MAX_TABLE_SIZE];
 	void *options;
 } TableInfo;
 
@@ -199,3 +201,4 @@ typedef struct {
 
 
 #endif
+

@@ -37,6 +37,7 @@
 #include <err_func.h>
 #include <table.h>
 #include <players.h>
+#include <seats.h>
 
 /* Server wide data structures*/
 extern struct GameTypes game_types;
@@ -61,17 +62,28 @@ int table_check(int p_index, TableInfo table)
 
 	dbg_msg("Player %d launching table of type %d", p_index,
 		table.type_index);
-	dbg_msg("Num_seats  : %d", table.num_seats);
-	dbg_msg("AI Players : %d", table.comp_players);
-	dbg_msg("Open_seats : %d", table.open_seats);
-	dbg_msg("Num_reserve: %d", table.num_reserves);
+	dbg_msg("Num_seats  : %d", seats_num(table));
+	dbg_msg("AI Players : %d", seats_comp(table));
+	dbg_msg("Open_seats : %d", seats_open(table));
+	dbg_msg("Num_reserve: %d", seats_reserved(table));
 	dbg_msg("Playing    : %d", table.playing);
 	dbg_msg("Control fd : %d", table.fd_to_game);
-	for (i = 0; i < table.num_seats; i++)
-		dbg_msg("Players[i]: %d, fd of %d", table.players[i],
-			table.player_fd[i]);
-	for (i = 0; i < table.num_reserves; i++)
-		dbg_msg("Reserve[i]: %d", table.reserve[i]);
+	for (i = 0; i < seats_num(table); i++)
+		switch (table.seats[i]) {
+		case GGZ_SEAT_OPEN:
+			dbg_msg("Seat[%d]: open", i);
+			break;
+		case GGZ_SEAT_COMP:
+			dbg_msg("Seat[%d]: computer", i);
+			break;
+		case GGZ_SEAT_RESV:
+			dbg_msg("Seat[%d]: reserved for %d", i,
+				table.reserve[i]);
+			break;
+		default:
+			dbg_msg("Seat[%d]: player %d, fd of %d", i,
+				table.seats[i], table.player_fd[i]);
+		}
 
 	return 0;
 }
@@ -87,7 +99,6 @@ int table_check(int p_index, TableInfo table)
  */
 int table_handler_launch(int t_index)
 {
-
 	pthread_t thread;
 	int *index_ptr;
 	int status;
@@ -102,7 +113,6 @@ int table_handler_launch(int t_index)
 	}
 
 	return status;
-
 }
 
 
@@ -130,7 +140,7 @@ static void* table_new(void *index_ptr)
 
 	/* Wait for enough players to join */
 	pthread_mutex_lock(&tables.info[t_index].seats_lock);
-	while (tables.info[t_index].open_seats > 0) {
+	while (seats_open(tables.info[t_index]) > 0) {
 		dbg_msg("Table %d waiting for seats to fill", t_index);
 		pthread_cond_wait(&tables.info[t_index].seats_cond,
 				  &tables.info[t_index].seats_lock);
@@ -185,8 +195,9 @@ static void table_fork(int t_index)
 		/* Close the remote ends of the socket pairs */
 		close(fd[0]);
 		pthread_rwlock_rdlock(&tables.lock);
-		for (i = 0; i < tables.info[t_index].num_humans; i++)
-			close(tables.info[t_index].player_fd[i]);
+		for (i = 0; i < seats_num(tables.info[t_index]); i++)
+			if (tables.info[t_index].seats[i] >= 0)
+				close(tables.info[t_index].player_fd[i]);
 		pthread_rwlock_unlock(&tables.lock);
 
 		pthread_rwlock_wrlock(&tables.lock);
@@ -226,7 +237,7 @@ static void table_run_game(int t_index, int fd, char *path)
  */
 static int table_send_opt(int t_index)
 {
-	int i, fd, size, type, p_index, op;
+	int i, fd, size, type, op, uid, index;
 	char status = 0;
 	char name[MAX_USER_NAME_LEN];
 
@@ -240,20 +251,37 @@ static int table_send_opt(int t_index)
 	/* Pass options struct and other seat info */
 	if (FAIL(es_write_int(fd, REQ_GAME_LAUNCH)) 
 	    || FAIL(es_writen(fd, tables.info[t_index].options, size)) 
-	    || FAIL(es_write_int(fd, tables.info[t_index].num_seats)) 
-	    || FAIL(es_write_char(fd, tables.info[t_index].comp_players)))
+	    || FAIL(es_write_int(fd, seats_num(tables.info[t_index]))))
 		return (-1);
 
-	/* Send player names and file descriptors */
-	for (i = 0; i < tables.info[t_index].num_humans; i++) {
-		p_index = tables.info[t_index].players[i];
-		pthread_rwlock_rdlock(&players.lock);
-		strncpy(name, players.info[p_index].name, MAX_USER_NAME_LEN);
-		pthread_rwlock_unlock(&players.lock);
-		if (FAIL(es_write_string(fd, name)) 
-		    || FAIL(es_write_int(fd, 
-					 tables.info[t_index].player_fd[i])))
-			return (-1);
+	/* Send seat assignments, names, and fd's */
+	for (i = 0; i < seats_num(tables.info[t_index]); i++) {
+
+		if (FAIL(es_write_int(fd, tables.info[t_index].seats[i])))
+			return -1;
+
+		switch(tables.info[t_index].seats[i]) {
+
+		case GGZ_SEAT_OPEN:
+		case GGZ_SEAT_COMP:
+			break;  /* no name for these */
+		case GGZ_SEAT_RESV:
+			uid = tables.info[t_index].reserve[i];
+				/* Look up player name by uid */
+			strcpy(name,"reserved");
+			if (FAIL(es_write_string(fd, name)))
+				return (-1);
+			break;
+		default: /* must be a player index */
+			index = tables.info[t_index].seats[i];
+			pthread_rwlock_rdlock(&players.lock);
+			strcpy(name, players.info[index].name);
+			pthread_rwlock_unlock(&players.lock);
+			if (FAIL(es_write_string(fd, name))
+			    || FAIL(es_write_int(fd, tables.info[t_index].player_fd[i])))
+				return (-1);
+			
+		}
 	}
 
 	/* Make sure game server says everything is OK */
