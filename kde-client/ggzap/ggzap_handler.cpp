@@ -388,6 +388,12 @@ void GGZapHandler::hookRoomActive(unsigned int id, void *data)
 		case GGZCoreRoom::tableupdate:
 			hookRoomActive(GGZCoreRoom::tablelist, NULL);
 			break;
+		case GGZCoreRoom::tableleft:
+			detachGameCallbacks();
+			delete m_game;
+			m_game = NULL;
+			emit signalState(finish);
+			break;
 		default:
 			cout << "not handled: " << id << endl;
 	}
@@ -409,12 +415,12 @@ void GGZapHandler::hookGameActive(unsigned int id, void *data)
 		case GGZCoreGame::negotiated:
 			m_server->createChannel();
 			break;
-		case GGZCoreGame::over:
+		/*case GGZCoreGame::over:
 			detachGameCallbacks();
 			delete m_game;
 			m_game = NULL;
 			emit signalState(finish);
-			break;
+			break;*/
 		case GGZCoreGame::playing:
 			m_room->joinTable(m_activetable);
 			break;
@@ -514,9 +520,9 @@ void GGZapHandler::attachGameCallbacks()
 	m_game->addHook(GGZCoreGame::negotiatefail, &GGZapHandler::hookGame, (void*)this);
 	// FIXME: channel
 	/*m_game->addHook(GGZCoreGame::data, &GGZapHandler::hookGame, (void*)this);*/
-	m_game->addHook(GGZCoreGame::over, &GGZapHandler::hookGame, (void*)this);
+	/*m_game->addHook(GGZCoreGame::over, &GGZapHandler::hookGame, (void*)this);
 	m_game->addHook(GGZCoreGame::ioerror, &GGZapHandler::hookGame, (void*)this);
-	m_game->addHook(GGZCoreGame::protoerror, &GGZapHandler::hookGame, (void*)this);
+	m_game->addHook(GGZCoreGame::protoerror, &GGZapHandler::hookGame, (void*)this);*/
 }
 
 void GGZapHandler::detachGameCallbacks()
@@ -527,9 +533,9 @@ void GGZapHandler::detachGameCallbacks()
 	m_game->removeHook(GGZCoreGame::negotiatefail, &GGZapHandler::hookGame);
 	// FIXME: channel
 	/*m_game->removeHook(GGZCoreGame::data, &GGZapHandler::hookGame);*/
-	m_game->removeHook(GGZCoreGame::over, &GGZapHandler::hookGame);
+	/*m_game->removeHook(GGZCoreGame::over, &GGZapHandler::hookGame);
 	m_game->removeHook(GGZCoreGame::ioerror, &GGZapHandler::hookGame);
-	m_game->removeHook(GGZCoreGame::protoerror, &GGZapHandler::hookGame);
+	m_game->removeHook(GGZCoreGame::protoerror, &GGZapHandler::hookGame);*/
 }
 
 void GGZapHandler::slotServerData()

@@ -648,25 +648,6 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 		case GGZCoreGame::negotiatefail:
 			KGGZDEBUG("negotiatefail\n");
 			break;
-		case GGZCoreGame::over:
-			KGGZDEBUG("over\n");
-			delete m_sn_game;
-			m_sn_game = NULL;
-			m_gamefd = -1;
-			eventLeaveTable(1);
-			m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
-			emit signalMenu(MENUSIG_GAMEOVER); // for spectators
-			break;
-		case GGZCoreGame::ioerror:
-			KGGZDEBUG("ioerror\n");
-			eventLeaveTable(1);
-			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Network error!"), KGGZChat::RECEIVE_ADMIN);
-			break;
-		case GGZCoreGame::protoerror:
-			KGGZDEBUG("protoerror\n");
-			eventLeaveTable(1);
-			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Protocol error!"), KGGZChat::RECEIVE_ADMIN);
-			break;
 		case GGZCoreGame::playing:
 			KGGZDEBUG("playing\n");
 			if(m_gameinfo->type() == KGGZGameInfo::typelaunch)
@@ -877,7 +858,11 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::tableleft:
 			KGGZDEBUG("tableleft\n");
-			eventLeaveTable(0);
+			delete m_sn_game;
+			m_sn_game = NULL;
+			m_gamefd = -1;
+			eventLeaveTable(0); /* was 1 in GGZCoreGame::over */
+			m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetChat()->receive(NULL, i18n("Left table"), KGGZChat::RECEIVE_ADMIN);
 			emit signalMenu(MENUSIG_GAMEOVER);
 			break;
@@ -1280,9 +1265,6 @@ void KGGZ::attachGameCallbacks()
 	kggzgame->addHook(GGZCoreGame::launchfail, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
 	kggzgame->addHook(GGZCoreGame::negotiated, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
 	kggzgame->addHook(GGZCoreGame::negotiatefail, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
-	kggzgame->addHook(GGZCoreGame::over, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
-	kggzgame->addHook(GGZCoreGame::ioerror, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
-	kggzgame->addHook(GGZCoreGame::protoerror, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
 	kggzgame->addHook(GGZCoreGame::playing, &KGGZ::hookOpenCollector, (void*)kggzgamecallback);
 }
 
@@ -1293,9 +1275,6 @@ void KGGZ::detachGameCallbacks()
 	kggzgame->removeHook(GGZCoreGame::launchfail, &KGGZ::hookOpenCollector);
 	kggzgame->removeHook(GGZCoreGame::negotiated, &KGGZ::hookOpenCollector);
 	kggzgame->removeHook(GGZCoreGame::negotiatefail, &KGGZ::hookOpenCollector);
-	kggzgame->removeHook(GGZCoreGame::over, &KGGZ::hookOpenCollector);
-	kggzgame->removeHook(GGZCoreGame::ioerror, &KGGZ::hookOpenCollector);
-	kggzgame->removeHook(GGZCoreGame::protoerror, &KGGZ::hookOpenCollector);
 	kggzgame->removeHook(GGZCoreGame::playing, &KGGZ::hookOpenCollector);
 }
 
@@ -1768,13 +1747,6 @@ void KGGZ::eventLeaveTable(int force)
 		if(m_gameinfo->type() == KGGZGameInfo::typespectator) kggzroom->leaveTableSpectator();
 		else kggzroom->leaveTable(force);
 	}
-
-	//if((kggzserver) && (force))
-	//{
-	//	listPlayers();
-	//	listTables();
-	//}
-	//emit signalMenu(MENUSIG_GAMEOVER);
 }
 
 void KGGZ::eventLeaveRoom()
