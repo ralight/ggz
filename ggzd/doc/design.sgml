@@ -22,8 +22,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 525 $</revnumber>
-	<date>$Date: 2000-05-15 19:50:13 -0700 (Mon, 15 May 2000) $</date>
+	<revnumber>$Revision: 526 $</revnumber>
+	<date>$Date: 2000-05-19 14:08:54 -0700 (Fri, 19 May 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -38,12 +38,12 @@
   <preface id="preface">
     <title>Introduction</title>
     <para>
-      At some point during the devlopment of
+      At some point during the development of
       <application moreinfo="refentry">NetSpades</application>, I
       realized that a major rewrite was in order.  I wasn't happy with
       the client/server interactions, and I wanted to add some
       features which just wouldn't work within the current
-      infrstructure.  So I began to formulate grandiose plans for
+      infrastructure.  So I began to formulate grandiose plans for
       <application>NetSpades v5</application>, but continued to work
       on the 4.X series.  A little later, I began to contemplate
       adding the ability to play Hearts as well as Spades.  But why
@@ -135,7 +135,7 @@
 	  </listitem>
 	  <listitem>
 	    <para>
-	      str: a multibyte null-terminated string preceeded by
+	      str: a multibyte null-terminated string preceded by
 	      its length (including null-termination) as an integer.
 	    </para>
 	  </listitem>
@@ -145,7 +145,7 @@
       <para>
 	Interactions take one of three forms: server messages, client
 	requests, and server responses.  Each interaction is prefaced
-	by a header indentifying it (some interactions consist solely
+	by a header identifying it (some interactions consist solely
 	of the header).  The header (stored as an enumerated value) is
 	sent as an int.
       </para>
@@ -240,18 +240,11 @@
 	
 	<programlisting role="pseudocode">
 	  REQ_TABLE_LAUNCH
-            int: game type index
-	    str: table description
-	    int: number of seats
-	    sequence of
-	       int: seat assignment (-1 for OPEN, -2 for COMP, -3 RESV )
-	       str: name for reservation (if status = RESV)
-	    int: size of options in bytes (possibly 0)
-            (game options)
+
           RSP_TABLE_LAUNCH
   
 	  REQ_TABLE_JOIN
-            int: table index
+
 	  RSP_TABLE_JOIN
 
           REQ_TABLE_LEAVE
@@ -390,10 +383,10 @@
       particular game.  That logic is contained in the individual game
       servers.  It is expected (and hoped!) that game developers will
       write their own games servers for use with GGZ.  GGZ will
-      attempt to provide a simple franework for writing network games
+      attempt to provide a simple framework for writing network games
       in which developer need not worry about connections or user
       logins or maintaining statistics.  All of that will be done by
-      GGZ.  Game devlopers should only have to concern themselves with
+      GGZ.  Game developers should only have to concern themselves with
       gameplay.
     </para>
 
@@ -447,7 +440,7 @@
     </para>
     
     <para>
-      I considered several possble designs before settling on the
+      I considered several possible designs before settling on the
       current one.  It is possible that as GGZ develops this design
       will change as well. Since control must communicate with
       multiple parties (game tables, users, etc.) I decided to use a
@@ -470,12 +463,12 @@
       table and then forks a process, known as the game table process,
       in which to run the game server (The reason game servers are not
       run within a thread is so that game developers not be required
-      to worry about writing thread-dafe code).
+      to worry about writing thread-safe code).
     </para>
     
     <para>
       During the course of the game, the player thread for each player
-      acts as a liason between the player and the game table, passing
+      acts as a liaison between the player and the game table, passing
       requests back and forth transparent to the player and the game
       server.  When a player logs out, the player handler thread is
       destroyed.
@@ -502,7 +495,7 @@
 	    </listitem>
 	    <listitem>
 	      <para>
-	      str: a multibyte null-terminated string preceeded by
+	      str: a multibyte null-terminated string preceded by
 	      its length (including null-termination) as an integer.
 	    </para>
 	    </listitem>
@@ -617,14 +610,14 @@
 	<itemizedlist>
 	  <listitem>
 	    <para>
-	      Compiled in.  The game table process calls a statrtup
+	      Compiled in.  The game table process calls a startup
 	      function which begins execution of the game server.
 	      This scheme has the benefit that the server has access
 	      to control's data structures at the time the process was
 	      forked.  Communication between the game table and
 	      control can be via pipes or a socketpair.  The problem
 	      with this scheme is that to change which games are
-	      offered by a particular server requires a reocmpile.
+	      offered by a particular server requires a recompile.
 	      Not good.
           </para>
 	  </listitem>
@@ -645,7 +638,7 @@
 	      and then doing a fork()/exec() to launch the game
 	      server.  This scheme also allows for adding new games at
 	      runtime and has the bonus effect that game servers can
-	      be written in other kanguages that C.
+	      be written in other languages that C.
 	    </para>
 	  </listitem>
 	</itemizedlist>
@@ -869,7 +862,7 @@
       
       <para>
 	There will be an array of <emphasis>game_run_t</emphasis>
-	structures represnting running games, This array will be
+	structures representing running games, This array will be
 	dynamic since as games are started and finished, entries in
 	the array are created and destroyed.  The index into this
 	array is referred to as the game index.
@@ -947,7 +940,7 @@
       <para>
 	A chat room is implemented internally in a
 	<emphasis>RoomStruct</emphasis>.  These are stored in a run-time
-	allocated array as needed.  Hopefuly this will allow on-the-fly
+	allocated array as needed.  Hopefully this will allow on-the-fly
 	room creation in the future.
       </para>
       <programlisting>
@@ -1046,7 +1039,7 @@
 	  </listitem>
 	  <listitem>
 	    <para>
-	      string: a multibyte null-terminated string preceeded by
+	      string: a multibyte null-terminated string preceded by
 	      its length (including null-termination) as an integer.
 	    </para>
 	  </listitem>
@@ -1056,7 +1049,7 @@
       <para>
 	Interactions take one of three forms: server messages, client
 	requests, and server responses.  Each interaction is prefaced
-	by an opcode indentifying it (some interactions consist solely
+	by an opcode identifying it (some interactions consist solely
 	of the opcode).  The opcode (stored as an enumerated value) is
 	sent as an int.
       </para>
@@ -1124,7 +1117,7 @@
 
 	<refsect1>
 	  <title>Description</title>
-	  <para>An identifcation message from the server</para>
+	  <para>An identification message from the server</para>
 	  <refsect2>
 	    <title>Message Data</title>
 	    <variablelist>
@@ -1368,7 +1361,7 @@
 		<row rowsep="1">
 		  <entry>player</entry>
 		  <entry>string</entry>
-		  <entry>if bit set</entry>
+		  <entry>always</entry>
 		</row>
 
 		<row rowsep="1">
@@ -1397,20 +1390,19 @@
 		      <listitem>
 			<para>
 			  GGZ_CHAT_NORMAL (64) : typical chat message
-			  to all in room (include field: message)
+			  to all in room (includes message field)
 			</para>
 		      </listitem>
 		      <listitem>
 			<para>
 			  GGZ_CHAT_BEEP (128) : send a beep to another
-			  player's console (include field: player)
+			  player's console (does not include message)
 			</para>
 		      </listitem>
 		      <listitem>
 			<para>
 			  GGZ_CHAT_PERSONAL (192) : message directed
-			  to a single player (include fields:
-			  player, message)
+			  to a single player (includes message field)
 			</para>
 		      </listitem>
 		    </itemizedlist>
@@ -1421,9 +1413,7 @@
 		<term><emphasis role="bold">player</emphasis></term>
 		<listitem>
 		  <para>
-		    Name of player who originated message.  Only
-		    included if most-significant bit of sub-opcode is
-		    sent (ie. sub-opcode & 0x80 is true)
+		    Name of player who originated message.
 		  </para>
 		</listitem>
 	      </varlistentry>
@@ -1432,7 +1422,7 @@
 		<listitem>
 		  <para>
 		    Chat message.  Only included if next to
-		    most-significant bit of sub-opcode is sent
+		    most-significant bit of sub-opcode is set
 		    (ie. sub-opcode & 0x40 is true)
 		  </para>
 		</listitem>
@@ -3245,177 +3235,180 @@
     
     <section id ="client-to-server"><title>Client to server messages</title>
       
-      <refentry id="req.login.new"><?dbhtml filename="req_login_new.html">
-	<refmeta>
-	  <indexterm>
-	    <primary>REQ_LOGIN_NEW</primary>
-	  </indexterm>
-	  <refentrytitle>REQ_LOGIN_NEW</refentrytitle>
-	</refmeta>
-
-	<refnamediv>
-	  <refname>REQ_LOGIN_NEW</refname>
-	  <refpurpose>Client requested first-time login</refpurpose>
-	</refnamediv>
-	
-	<refsynopsisdiv><title>Synopsis</title>
-	  <informaltable>
-	    <tgroup cols="3">
-	      <colspec colnum="1" colname="C1" align="left">
-	      <colspec colnum="2" colname="C2">
-	      <colspec colnum="3" colname="C3">
-	      <tbody>
-
-		<row rowsep="0">
-		  <entry namest="C1" nameend="C2">
-                    <emphasis role="bold">Opcode</emphasis>
-                  </entry>
-		  <entry>0</entry>
-		</row>
-
-		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">REQ_LOGIN_NEW</entry>
-		</row>
-		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
-		  <entry><emphasis role="bold">Type</emphasis></entry>
-		</row>
-
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">name</entry>
-		  <entry>string</entry>
-		</row>
-
-	      </tbody>
-	    </tgroup>
+      <![IGNORE[
+      
+    <refentry id="req.login.new"><?dbhtml filename="req_login_new.html">
+    <refmeta>
+    <indexterm>
+    <primary>REQ_LOGIN_NEW</primary>
+    </indexterm>
+    <refentrytitle>REQ_LOGIN_NEW</refentrytitle>
+    </refmeta>
+      
+    <refnamediv>
+    <refname>REQ_LOGIN_NEW</refname>
+    <refpurpose>Client requested first-time login</refpurpose>
+    </refnamediv>
+      
+    <refsynopsisdiv><title>Synopsis</title>
+    <informaltable>
+    <tgroup cols="3">
+    <colspec colnum="1" colname="C1" align="left">
+    <colspec colnum="2" colname="C2">
+    <colspec colnum="3" colname="C3">
+    <tbody>
+      
+    <row rowsep="0">
+    <entry namest="C1" nameend="C2">
+    <emphasis role="bold">Opcode</emphasis>
+    </entry>
+    <entry>0</entry>
+    </row>
+      
+    <row rowsep="0">
+    <entry namest="C1" nameend="C3">REQ_LOGIN_NEW</entry>
+    </row>
+      
+    <row rowsep="1">
+    <entry namest="C1" nameend="C2">
+    <emphasis role="bold">Data</emphasis>
+    </entry>
+    <entry><emphasis role="bold">Type</emphasis></entry>
+    </row>
+      
+    <row rowsep="1">
+    <entry namest="C1" nameend="C2">name</entry>
+    <entry>string</entry>
+    </row>
+      
+    </tbody>
+    </tgroup>
 	  </informaltable>
-	</refsynopsisdiv>
-
-	<refsect1>
-	  <title>Description</title>
-	  <para>Client requested login of new player</para>
-	  <refsect2>
-	    <title>Message Data</title>
-	    <variablelist>
-	      <varlistentry>
-		<term><emphasis role="bold">name</emphasis></term>
-		<listitem>
-		  <para>
-		    Requested user name for new player
-		  </para>
-		</listitem>
-	      </varlistentry>
-	    </variablelist>
-	  </refsect2>
-	  
-	  <refsect2>
-	    <title>Usage</title>
-	    <para>
-	      REQ_LOGIN_NEW is sent from the client to the server to
-	      request that a new player account be created with the
-	      specified name.  The request may come after <link
-	      linkend="msg.server.id">MSG_SERVER_ID</link>.  The server
-	      will respond to the request with <link
-	      linkend="rsp.login.new">RSP_LOGIN_NEW</link>
-	    </para>
-	  </refsect2>
-	</refsect1>
-      </refentry>
-
-            <refentry id="req.login"><?dbhtml filename="req_login.html">
-	<refmeta>
-	  <indexterm>
-	    <primary>REQ_LOGIN</primary>
-	  </indexterm>
-	  <refentrytitle>REQ_LOGIN</refentrytitle>
-	</refmeta>
-
-	<refnamediv>
-	  <refname>REQ_LOGIN</refname>
-	  <refpurpose>Client requested login</refpurpose>
-	</refnamediv>
-	
-	<refsynopsisdiv><title>Synopsis</title>
-	  <informaltable>
-	    <tgroup cols="3">
-	      <colspec colnum="1" colname="C1" align="left">
-	      <colspec colnum="2" colname="C2">
-	      <colspec colnum="3" colname="C3">
-	      <tbody>
-
-		<row rowsep="0">
-		  <entry namest="C1" nameend="C2">
-                    <emphasis role="bold">Opcode</emphasis>
-                  </entry>
-		  <entry>1</entry>
-		</row>
-
-		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">REQ_LOGIN</entry>
-		</row>
-		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
-		  <entry><emphasis role="bold">Type</emphasis></entry>
-		</row>
-
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">name</entry>
-		  <entry>string</entry>
-		</row>
-
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">password</entry>
-		  <entry>string</entry>
-		</row>
-
-	      </tbody>
-	    </tgroup>
-	  </informaltable>
-	</refsynopsisdiv>
-
-	<refsect1>
-	  <title>Description</title>
-	  <para>Client requested login</para>
-	  <refsect2>
-	    <title>Message Data</title>
-	    <variablelist>
-	      <varlistentry>
-		<term><emphasis role="bold">name</emphasis></term>
-		<listitem>
-		  <para>
-		    Login name
-		  </para>
-		</listitem>
-	      </varlistentry>
-	      <varlistentry>
-		<term><emphasis role="bold">password</emphasis></term>
-		<listitem>
-		  <para>
-		    Player password
-		  </para>
-		</listitem>
-	      </varlistentry>
-	    </variablelist>
-	  </refsect2>
-	  
-	  <refsect2>
-	    <title>Usage</title>
-	    <para>
-	      REQ_LOGIN is sent from the client to the server to
-	      request a player login.  The request may come after
-	      <link linkend="msg.server.id">MSG_SERVER_ID</link>.  The
-	      server will respond to the request with <link
-	      linkend="rsp.login">RSP_LOGIN</link>
-	    </para>
-	  </refsect2>
-	</refsect1>
-      </refentry>
+    </refsynopsisdiv>
+      
+    <refsect1>
+    <title>Description</title>
+    <para>Client requested login of new player</para>
+    <refsect2>
+    <title>Message Data</title>
+    <variablelist>
+    <varlistentry>
+    <term><emphasis role="bold">name</emphasis></term>
+    <listitem>
+    <para>
+      Requested user name for new player
+    </para>
+    </listitem>
+    </varlistentry>
+    </variablelist>
+    </refsect2>
+      
+    <refsect2>
+    <title>Usage</title>
+    <para>
+      REQ_LOGIN_NEW is sent from the client to the server to
+      request that a new player account be created with the
+      specified name.  The request may come after <link
+      linkend="msg.server.id">MSG_SERVER_ID</link>.  The server
+      will respond to the request with <link
+      linkend="rsp.login.new">RSP_LOGIN_NEW</link>
+    </para>
+    </refsect2>
+    </refsect1>
+    </refentry>
+      
+    <refentry id="req.login"><?dbhtml filename="req_login.html">
+    <refmeta>
+    <indexterm>
+    <primary>REQ_LOGIN</primary>
+    </indexterm>
+    <refentrytitle>REQ_LOGIN</refentrytitle>
+    </refmeta>
+      
+    <refnamediv>
+    <refname>REQ_LOGIN</refname>
+    <refpurpose>Client requested login</refpurpose>
+    </refnamediv>
+      
+    <refsynopsisdiv><title>Synopsis</title>
+    <informaltable>
+    <tgroup cols="3">
+    <colspec colnum="1" colname="C1" align="left">
+    <colspec colnum="2" colname="C2">
+    <colspec colnum="3" colname="C3">
+    <tbody>
+      
+    <row rowsep="0">
+    <entry namest="C1" nameend="C2">
+    <emphasis role="bold">Opcode</emphasis>
+    </entry>
+    <entry>1</entry>
+    </row>
+      
+    <row rowsep="0">
+    <entry namest="C1" nameend="C3">REQ_LOGIN</entry>
+    </row>
+      
+    <row rowsep="1">
+    <entry namest="C1" nameend="C2">
+    <emphasis role="bold">Data</emphasis>
+    </entry>
+    <entry><emphasis role="bold">Type</emphasis></entry>
+    </row>
+      
+    <row rowsep="1">
+    <entry namest="C1" nameend="C2">name</entry>
+    <entry>string</entry>
+    </row>
+      
+    <row rowsep="1">
+    <entry namest="C1" nameend="C2">password</entry>
+    <entry>string</entry>
+    </row>
+      
+    </tbody>
+    </tgroup>
+    </informaltable>
+    </refsynopsisdiv>
+      
+    <refsect1>
+    <title>Description</title>
+    <para>Client requested login</para>
+    <refsect2>
+    <title>Message Data</title>
+    <variablelist>
+    <varlistentry>
+    <term><emphasis role="bold">name</emphasis></term>
+    <listitem>
+    <para>
+      Login name
+    </para>
+    </listitem>
+    </varlistentry>
+    <varlistentry>
+    <term><emphasis role="bold">password</emphasis></term>
+    <listitem>
+    <para>
+      Player password
+    </para>
+    </listitem>
+    </varlistentry>
+    </variablelist>
+    </refsect2>
+      
+    <refsect2>
+    <title>Usage</title>
+    <para>
+      REQ_LOGIN is sent from the client to the server to
+      request a player login.  The request may come after
+    <link linkend="msg.server.id">MSG_SERVER_ID</link>.  The
+      server will respond to the request with <link
+      linkend="rsp.login">RSP_LOGIN</link>
+    </para>
+    </refsect2>
+    </refsect1>
+    </refentry>
+      ]]>
 
       <refentry id="req.login.anon"><?dbhtml filename="req_login_anon.html">
 	<refmeta>
@@ -3904,31 +3897,85 @@
 	      <colspec colnum="1" colname="C1" align="left">
 	      <colspec colnum="2" colname="C2">
 	      <colspec colnum="3" colname="C3">
+	      <colspec colnum="4" colname="C4">
+	      <spanspec spanname="data.seq0" namest="C1" nameend="C2"
+			align="left">
+	      <spanspec spanname="data.seq1" namest="C1" nameend="C2"
+			align="right">
+	      <spanspec spanname="all" namest="C1" nameend="C4"
+			align="left"> 
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C2">
+		  <entry namest="C1" nameend="C3">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
 		  <entry>12</entry>
 		</row>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">REQ_TABLE_LAUNCH</entry>
+		  <entry spanname="all">REQ_TABLE_LAUNCH</entry>
 		</row>
 		
 		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
+		  <entry spanname="data.seq0">
 		    <emphasis role="bold">Data</emphasis>
 		  </entry>
 		  <entry><emphasis role="bold">Type</emphasis></entry>
+		  <entry><emphasis role="bold">Sent</emphasis></entry>
 		</row>
 
 		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">status</entry>
-		  <entry>char</entry>
+		  <entry spanname="data.seq0">type</entry>
+		  <entry>int</entry>
+		  <entry>always</entry>
 		</row>
 
+		<row rowsep="1">
+		  <entry spanname="data.seq0">description</entry>
+		  <entry>string</entry>
+		  <entry>always</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry spanname="data.seq0">seats</entry>
+		  <entry>int</entry>
+		  <entry>always</entry>
+		</row>
+
+		
+		<row rowsep="1">
+		  <entry spanname="all">
+		    <emphasis>sequence of</emphasis> lines:
+		  </entry>
+		</row>
+
+		
+		<row rowsep="1">
+		  <entry spanname="data.seq1">assignment</entry>
+		  <entry>int</entry>
+		  <entry>always</entry>
+		</row>
+
+
+		<row rowsep="1">
+		  <entry spanname="data.seq1">name</entry>
+		  <entry>string</entry>
+		  <entry>if reserved</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry spanname="data.seq0">size</entry>
+		  <entry>int</entry>
+		  <entry>always</entry>
+		</row>
+
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C3">(raw data)</entry>
+		  <entry>if size != 0</entry>
+		</row>
+		
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -3936,28 +3983,14 @@
 
 	<refsect1>
 	  <title>Description</title>
-	  <para>Server response to player request for new table launch</para>
-	  <refsect2>
-	    <title>Message Data</title>
-	    <variablelist>
-	      <varlistentry>
-		<term><emphasis role="bold">status</emphasis></term>
-		<listitem>
-		  <para>
-		    status of launch request (zero if successful,
-		    negative on error)
-		  </para>
-		</listitem>
-	      </varlistentry>
-	    </variablelist>
-	  </refsect2>
-	  
+	  <para>Client request for new table launch</para>
 	  <refsect2>
 	    <title>Usage</title>
 	    <para>
-	      REQ_TABLE_LAUNCH is sent from the server to client in
-	      response to a table launch request via <link
-	      linkend="req.table.launch">REQ_TABLE_LAUNCH</link>.
+	      REQ_TABLE_LAUNCH is sent from the client to the server
+	      to request the launch of a new table.  The server will
+	      respond with <link
+	      linkend="rsp.table.launch">RSP_TABLE_LAUNCH</link>.
 	    </para>
 	  </refsect2>
 	</refsect1>
@@ -4003,8 +4036,8 @@
 		</row>
 
 		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">status</entry>
-		  <entry>char</entry>
+		  <entry namest="C1" nameend="C2">table</entry>
+		  <entry>int</entry>
 		</row>
 
 	      </tbody>
@@ -4014,16 +4047,15 @@
 
 	<refsect1>
 	  <title>Description</title>
-	  <para>Server response to player request to join table</para>
+	  <para>Client request to join table</para>
 	  <refsect2>
 	    <title>Message Data</title>
 	    <variablelist>
 	      <varlistentry>
-		<term><emphasis role="bold">status</emphasis></term>
+		<term><emphasis role="bold">table</emphasis></term>
 		<listitem>
 		  <para>
-		    status of join request (zero if successful,
-		    negative on error)
+		    table ID of table the player wishes to join
 		  </para>
 		</listitem>
 	      </varlistentry>
@@ -4033,9 +4065,9 @@
 	  <refsect2>
 	    <title>Usage</title>
 	    <para>
-	      REQ_TABLE_JOIN is sent from the server to client in response
-	      to a table join request via <link
-	      linkend="req.table.join">REQ_TABLE_JOIN</link>.  
+	      REQ_TABLE_JOIN is sent from client to the server to
+	      request a table join.  The server will respond with
+	      <link linkend="rsp.table.join">RSP_TABLE_JOIN</link>.
 	    </para>
 	  </refsect2>
 	</refsect1>
@@ -4051,7 +4083,7 @@
 
 	<refnamediv>
 	  <refname>REQ_TABLE_LEAVE</refname>
-	  <refpurpose>Server response to table leave request</refpurpose>
+	  <refpurpose>Client request to leave table</refpurpose>
 	</refnamediv>
 	
 	<refsynopsisdiv><title>Synopsis</title>
@@ -4073,18 +4105,6 @@
 		  <entry namest="C1" nameend="C3">REQ_TABLE_LEAVE</entry>
 		</row>
 		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
-		  <entry><emphasis role="bold">Type</emphasis></entry>
-		</row>
-
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">status</entry>
-		  <entry>char</entry>
-		</row>
-
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -4094,26 +4114,11 @@
 	  <title>Description</title>
 	  <para>Server response to player request to leave tablet</para>
 	  <refsect2>
-	    <title>Message Data</title>
-	    <variablelist>
-	      <varlistentry>
-		<term><emphasis role="bold">status</emphasis></term>
-		<listitem>
-		  <para>
-		    status of logout request (zero if successful,
-		    negative on error)
-		  </para>
-		</listitem>
-	      </varlistentry>
-	    </variablelist>
-	  </refsect2>
-	  
-	  <refsect2>
 	    <title>Usage</title>
 	    <para>
-	      REQ_TABLE_LEAVE is sent from the server to client in response
-	      to a table leave request via <link
-	      linkend="req.table.leave">REQ_TABLE_LEAVE</link>.  
+	      REQ_TABLE_LEAVE is sent from the client to the server to
+	      request a table leave.  The server will respons with
+	      <link linkend="rsp.table.leave">RSP_TABLE_LEAVE</link>.
 	    </para>
 	  </refsect2>
 	</refsect1>
@@ -4235,17 +4240,29 @@
 		</row>
 		
 		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
+		  <entry><emphasis role="bold">Data</emphasis></entry>
 		  <entry><emphasis role="bold">Type</emphasis></entry>
+		  <entry><emphasis role="bold">Sent</emphasis></entry>
 		</row>
 
 		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">status</entry>
+		  <entry>sub-opcode</entry>
 		  <entry>char</entry>
+		  <entry>always</entry>
 		</row>
 
+		<row rowsep="1">
+		  <entry>player</entry>
+		  <entry>string</entry>
+		  <entry>if bit set</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry>message</entry>
+		  <entry>string</entry>
+		  <entry>if bit set</entry>
+		</row>
+		
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -4253,28 +4270,68 @@
 
 	<refsect1>
 	  <title>Description</title>
-	  <para>Server response to player logout request</para>
+	  <para>Client chat message request</para>
 	  <refsect2>
 	    <title>Message Data</title>
 	    <variablelist>
-	      <varlistentry>
-		<term><emphasis role="bold">status</emphasis></term>
-		<listitem>
-		  <para>
-		    status of logout request (zero if successfule,
-		    negative on error)
-		  </para>
-		</listitem>
-	      </varlistentry>
+	    <varlistentry>
+	      <term><emphasis role="bold">sub-opcode</emphasis></term>
+	      <listitem>
+		<para>
+		  Chat operation type:
+		  <itemizedlist>
+		    <listitem>
+		      <para>
+			GGZ_CHAT_NORMAL (64) : typical chat message
+			to all in room (includes message field)
+		      </para>
+		    </listitem>
+		    <listitem>
+		      <para>
+			GGZ_CHAT_BEEP (128) : send a beep to another
+			player's console (includes player field)
+		      </para>
+		    </listitem>
+		    <listitem>
+		      <para>
+			GGZ_CHAT_PERSONAL (192) : message directed
+			to a single player (includes player and
+			message fields)
+		      </para>
+		    </listitem>
+		  </itemizedlist>
+		</para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><emphasis role="bold">player</emphasis></term>
+	      <listitem>
+		<para>
+		  Name of player who will receive message.  Only
+		  included if the most-significant bit of sub-opcode
+		  is set (ie. sub-opcode & 0x80 is true)
+		</para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><emphasis role="bold">message</emphasis></term>
+	      <listitem>
+		<para>
+		  Chat message.  Only included if next to
+		  most-significant bit of sub-opcode is set
+		  (ie. sub-opcode & 0x40 is true)
+		</para>
+	      </listitem>
+	    </varlistentry>
 	    </variablelist>
 	  </refsect2>
 	  
 	  <refsect2>
 	    <title>Usage</title>
 	    <para>
-	      REQ_CHAT is sent from the server to client in response
-	      to a logout request via <link
-	      linkend="req.logout">REQ_LOGOUT</link>.  
+	      REQ_CHAT is sent from the client to send a chat
+	      message. The server will respond with <link
+	      linkend="rsp.chat">RSP_CHAT</link>.
 	    </para>
 	  </refsect2>
 	</refsect1>
