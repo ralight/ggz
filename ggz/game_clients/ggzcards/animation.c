@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 3308 2002-02-11 01:19:31Z jdorje $
+ * $Id: animation.c 3316 2002-02-11 05:55:42Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -77,6 +77,13 @@ void animation_start(int player, card_t card, int card_num)
 		return;
 
 	get_card_pos(player, card_num, &start_x, &start_y);
+	if (orientation(player) % 2 == 1) {
+		/* The player's cards are horizontal, but we're going to
+		   animate vertically.  So we recenter. */
+		start_x = start_x + CARDHEIGHT / 2 - CARDWIDTH / 2;
+		start_y = start_y + CARDWIDTH / 2 - CARDHEIGHT / 2;			
+	}
+	
 	get_tablecard_pos(player, &end_x, &end_y);
 
 	/* FIXME: these should be preferences */
