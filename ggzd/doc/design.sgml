@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 186 $</revnumber>
-	<date>$Date: 2000-03-09 17:51:28 -0800 (Thu, 09 Mar 2000) $</date>
+	<revnumber>$Revision: 274 $</revnumber>
+	<date>$Date: 2000-03-25 23:47:06 -0800 (Sat, 25 Mar 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -156,7 +156,7 @@
 	  directly requested by the client.  They are used by the
 	  server to pass necessary information to the client.
 	</para>
-      <programlisting role="psuedocode">
+	<programlisting role="pseudocode">
 	  MSG_SERVER_ID
 	    str: server identification (plus relevant server options)
 
@@ -185,7 +185,7 @@
 	  responses related to managing player sessions and data.
 	</para>
 	
-	<programlisting role="psuedocode">
+	<programlisting role="pseudocode">
       
 	  REQ_LOGIN_NEW
             str: login name
@@ -233,7 +233,7 @@
 	  corresponding server responses.
 	</para>
 	
-	<programlisting role="psuedocode">
+	<programlisting role="pseudocode">
       
 	  REQ_LIST_PLAYERS
 	  RSP_LIST_PLAYERS
@@ -284,6 +284,13 @@
               sequence of 
                 int: number of games played 
                 int: number of games won
+
+	  REQ_MOTD
+	  RSP_MOTD
+            int: number of MOTD lines
+            sequence of
+	      str: message of the day line
+	  
 	</programlisting>
       </section>
       
@@ -293,7 +300,7 @@
 	  corresponding server responses.
 	</para>
 	
-	<programlisting role="psuedocode">
+	<programlisting role="pseudocode">
 	  REQ_TABLE_LAUNCH
             int: game type index
             int: number of seats
@@ -317,7 +324,7 @@
       </programlisting>
     </section>
 
-    <section id="chat"><title>Chat Facility</title>
+      <section id="chat"><title>Chat Facility</title>
       <para>
 	Similar to the "Taunt" feature provided with NetSpades, the
 	GGZ server will provide the ability to send messages to other
@@ -326,7 +333,7 @@
 	sent to the client with the MSG_CHAT opcode described above.
       </para>
 
-      <programlisting role="psuedocode">
+      <programlisting role="pseudocode">
         REQ_CHAT
           str: chat string 
         RSP_CHAT
@@ -546,36 +553,44 @@
 	  list of ideas.
 
           <programlisting role="pseudocode">
-          REQ_TABLE_LAUNCH
-            int: size of options data in bytes
-            (options data)
-            int: number of seats at table
-              sequence of
+	    REQ_TABLE_LAUNCH
+              int: size of options data in bytes
+              (options data)
+              int: number of seats at table
+  	      sequence of
 	        int: seat assignment (-1 for OPEN, -2 for COMP, -3 RESV)
-  	        str: name of player (if assignment >=0 or == RESV)
+	        str: name of player (if assignment >=0 or == RESV)
                 fd:  file dscriptor of player (if assignment >= 0)
-          RSP_TABLE_LAUNCH
-            chr: success flag (0 if OK, -1 if error)
+            RSP_TABLE_LAUNCH
+              chr: success flag (0 if OK, -1 if error)
           
-          REQ_TABLE_JOIN
-	    int: seat number
-  	    str: name of player
-            fd:  file dscriptor of player 
-          RSP_TABLE_JOIN
-            chr: success flag (0 if OK, -1 if error)
+            REQ_TABLE_JOIN
+	      int: seat number
+  	      str: name of player
+              fd:  file dscriptor of player 
+            RSP_TABLE_JOIN
+              chr: success flag (0 if OK, -1 if error)
 
-          REQ_TABLE_LEAVE
-            str: name of player
-          RSP_TABLE_LEAVE
-            chr: success flag (0 if OK, -1 if error)
+            REQ_TABLE_LEAVE
+              str: name of player
+            RSP_TABLE_LEAVE
+              chr: success flag (0 if OK, -1 if error)
 
-          MSG_GAME_OVER
-            int: number of statistics
-            sequence of
-              int: player index
-              int: number of games won
-              int: number of games lost
-         </programlisting>
+            MSG_GAME_OVER
+              int: number of statistics
+              sequence of
+                int: player index
+                int: number of games won
+                int: number of games lost
+	    
+	    MSG_LOG
+	      int: log level mask
+	      str: log message
+
+	    MSG_DBG
+	      int: debug level mask
+	      str: debug message
+	  </programlisting>
 
 	</para>
       </section>
