@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4515 2002-09-11 08:31:00Z jdorje $
+ * $Id: net.c 4516 2002-09-11 17:00:30Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1192,7 +1192,7 @@ static void _net_handle_list(GGZNetIO *net, GGZXMLElement *list)
 			return;
 		}
 		
-		if (check_playerconn(net, "list")) return;
+		if (!check_playerconn(net, "list")) return;
 
 		if (str_to_bool(ggz_xmlelement_get_attr(list, "FULL"), 0))
 			verbose = 1;
