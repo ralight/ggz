@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2621 2001-10-28 09:50:30Z jdorje $
+ * $Id: table.c 2625 2001-10-29 03:36:53Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -305,7 +305,22 @@ void table_set_global_text_message(const char *mark, const char *message)
 void table_set_global_cardlist_message(const char *mark, int *lengths,
 				       card_t ** cardlist)
 {
-	client_debug("Unusable cardlist message received.");
+	static const char suits[4] = { 'C', 'D', 'H', 'S' };
+	int p, i;
+	char buf[4096] = "";
+
+	for (p = 0; p < game.num_players; p++) {
+		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
+			 "Player %d:", p);
+		for (i = 0; i < lengths[p]; i++) {
+			snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
+				 " %d%c", cardlist[p][i].face,
+				 suits[(int) cardlist[p][i].suit]);
+		}
+		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), "\n");
+	}
+
+	table_set_global_text_message(mark, buf);
 }
 
 /* Handle a redraw of necessary items when a Gtk style change is signaled. */
