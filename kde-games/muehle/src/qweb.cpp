@@ -1,6 +1,7 @@
 #include "qweb.h"
 #include <iostream>
 #include <math.h>
+#include <stdlib.h> /* needed for abs() */
 
 QWebPoint::QWebPoint(QPoint p)
 {
