@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.c 6286 2004-11-06 08:34:37Z jdorje $
+ * $Id: support.c 6323 2004-11-11 04:02:23Z jdorje $
  *
  * Support code
  *
@@ -301,22 +301,6 @@ GdkPixbuf *load_pixbuf(const char *name)
 	g_free(fullpath);
 
 	return image;
-}
-
-GdkPixmap *load_pixmap(const char *name, GdkBitmap **mask)
-{
-	GdkPixbuf *image = load_pixbuf(name);
-	GdkPixmap *pixmap;
-
-	*mask = NULL;
-	if (!image) {
-		return NULL;
-	}
-
-	gdk_pixbuf_render_pixmap_and_mask(image, &pixmap, mask, 1);
-	g_object_unref(image);
-
-	return pixmap;
 }
 
 /* This is an internally used function to check if a pixmap file exists. */

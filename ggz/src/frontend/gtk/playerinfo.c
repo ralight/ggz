@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 6289 2004-11-06 17:40:37Z jdorje $
+ * $Id: playerinfo.c 6323 2004-11-11 04:02:23Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -47,6 +47,7 @@
 
 static GtkWidget *dialog;
 static GtkWidget *create_dlg_info(void);
+static char *player_name;
 
 
 /* player_info_create_or_raise() - Displays the dialog or updates current
@@ -78,6 +79,8 @@ void player_info_create_or_raise(GGZPlayer * player)
 
 	tmp = g_object_get_data(G_OBJECT(dialog), "handle");
 	gtk_label_set_text(GTK_LABEL(tmp), ggzcore_player_get_name(player));
+	if (player_name) g_free(player_name);
+	player_name = g_strdup(ggzcore_player_get_name(player));
 
 	tmp = g_object_get_data(G_OBJECT(dialog), "table");
 	if (table)
@@ -223,7 +226,7 @@ static void chat_activate(GtkEditable *editable, gpointer data)
 	if (strcmp(text, "") == 0)
 		return;
 
-	gtk_label_get(handle, &name);
+	name = player_name;
 	if (!name)
 		return;
 
@@ -538,8 +541,8 @@ GtkWidget *create_dlg_info(void)
 	gtk_widget_show(chat);
 	gtk_box_pack_start(GTK_BOX(chat_hbox), chat, TRUE, TRUE, 0);
 	/* gtk_misc_set_alignment(GTK_MISC(chat), 0, 0.5); */
-	g_signal_connect(GTK_OBJECT(chat), "activate",
-			   GTK_SIGNAL_FUNC(chat_activate), dlg_info);
+	g_signal_connect(chat, "activate",
+			 GTK_SIGNAL_FUNC(chat_activate), NULL);
 
 	/* Make ACTION area. */
 	dialog_action_area1 = GTK_DIALOG(dlg_info)->action_area;

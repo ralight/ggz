@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 6322 2004-11-11 03:35:12Z jdorje $
+ * $Id: about.c 6323 2004-11-11 04:02:23Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -45,7 +45,7 @@
 
 static GtkWidget *about_dialog;
 static GtkWidget *create_dlg_about(void);
-static gint about_tag;
+static guint about_tag;
 static PangoFontDescription *font[4];
 static GdkColormap *colormap;
 static GdkPixmap *pixmap;
@@ -73,7 +73,7 @@ void about_create_or_raise(void)
 
 static void about_ok(GtkWidget * widget, gpointer data)
 {
-	gtk_timeout_remove(about_tag);
+	g_source_remove(about_tag);
 	gtk_widget_destroy(about_dialog);
 	about_dialog = NULL;
 	about_tag = 0;
@@ -187,7 +187,7 @@ static void about_realize(GtkWidget * widget, gpointer data)
 		pango_font_description_set_size(font[3], PANGO_SCALE * 9);
 	}
 
-	about_tag = gtk_timeout_add(100, about_update, NULL);
+	about_tag = g_timeout_add(100, about_update, NULL);
 }
 
 

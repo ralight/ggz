@@ -2,7 +2,7 @@
  * File: msgbox.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: msgbox.c 6305 2004-11-09 00:11:51Z jdorje $
+ * $Id: msgbox.c 6323 2004-11-11 04:02:23Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -119,10 +119,9 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	GtkWidget *vbox;
 	GtkWidget *buttonbox;
 	GtkWidget *hbox;
-	GtkWidget *icon = NULL;
+	GtkWidget *icon;
 	GdkColormap *colormap;
-	GdkPixmap *pixmap = NULL;
-	GdkPixmap *mask;
+	GdkPixbuf *pixbuf;
 	GtkWidget *dialogwidget;
 	GtkWidget *btnok;
 	GtkWidget *btncancel;
@@ -141,34 +140,35 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	hbox = gtk_hbox_new (FALSE, 2);
 	dialogwidget = AddWidget (hbox, vbox);
 
-	if (itype == MSGBOX_STOP)
-	{
+	switch (itype) {
+	case MSGBOX_STOP:
 		colormap = gtk_widget_get_colormap (dialogwidget);
-		pixmap = load_pixmap("msg_stop", &mask);
-		if (pixmap == NULL)
+		pixbuf = load_pixbuf("msg_stop");
+		if (pixbuf == NULL)
 			g_error ("Couldn't create replacement pixmap.");
-		icon = gtk_pixmap_new (pixmap, mask);
-	}
-	if (itype == MSGBOX_INFO)
-	{
+		icon = gtk_image_new_from_pixbuf(pixbuf);
+		break;
+	case MSGBOX_INFO:
 		colormap = gtk_widget_get_colormap (dialogwidget);
-		pixmap = load_pixmap("msg_info", &mask);
-		if (pixmap == NULL)
+		pixbuf = load_pixbuf("msg_info");
+		if (pixbuf == NULL)
 			g_error ("Couldn't create replacement pixmap.");
-		icon = gtk_pixmap_new (pixmap, mask);
-	}
-	if (itype == MSGBOX_QUESTION)
-	{
+		icon = gtk_image_new_from_pixbuf(pixbuf);
+		break;
+	case MSGBOX_QUESTION:
 		colormap = gtk_widget_get_colormap (dialogwidget);
-		pixmap = load_pixmap("msg_help", &mask);
-		if (pixmap == NULL)
+		pixbuf = load_pixbuf("msg_help");
+		if (pixbuf == NULL)
 			g_error ("Couldn't create replacement pixmap.");
-		icon = gtk_pixmap_new (pixmap, mask);
+		icon = gtk_image_new_from_pixbuf(pixbuf);
+		break;
+	case MSGBOX_NONE:
+		icon = NULL;
+		break;
 	}
 
 	if(icon) {
-		g_object_unref(pixmap);
-		g_object_unref(mask);
+		g_object_unref(pixbuf);
 		dialogwidget = AddWidget (icon, hbox);
 	}
 

@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 6278 2004-11-06 00:16:45Z jdorje $
+ * $Id: ggzclient.c 6323 2004-11-11 04:02:23Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -324,7 +324,8 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	{
 		tmp = lookup_widget(win_main, "table_vpaned");
 		if(GTK_PANED(tmp)->child1_size != 0)
-			gtk_object_set(GTK_OBJECT(tmp), "user_data", GTK_PANED(tmp)->child1_size, NULL);
+			g_object_set(G_OBJECT(tmp), "user_data",
+				     GTK_PANED(tmp)->child1_size, NULL);
 		gtk_paned_set_position(GTK_PANED(tmp), 0);
 		tmp = lookup_widget(win_main, "launch_button");
 		gtk_widget_set_sensitive(tmp, FALSE);
@@ -335,7 +336,7 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	}else{
 		int height;
 		tmp = lookup_widget(win_main, "table_vpaned");
-		gtk_object_get(GTK_OBJECT(tmp), "user_data", &height, NULL);
+		g_object_get(G_OBJECT(tmp), "user_data", &height, NULL);
 		gtk_paned_set_position(GTK_PANED(tmp), height);
 		tmp = lookup_widget(win_main, "launch_button");
 		gtk_widget_set_sensitive(tmp, TRUE);

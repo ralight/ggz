@@ -2,7 +2,7 @@
  * File: support.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: support.h 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: support.h 6323 2004-11-11 04:02:23Z jdorje $
  *
  * Support code
  *
@@ -107,4 +107,3 @@ GtkWidget*  create_pixmap              (GtkWidget       *widget,
 
 
 GdkPixbuf *load_pixbuf(const char *name);
-GdkPixmap *load_pixmap(const char *name, GdkBitmap **mask);
