@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 6691 2005-01-16 01:35:32Z oojah $
+ * $Id: main.c 6693 2005-01-16 04:10:53Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -33,7 +33,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <winsock.h>
+#ifdef HAVE_WINSOCK_H
+#  include <winsock.h>
+#endif
 
 #include <ggz.h>
 #include <ggzmod.h>
@@ -73,13 +75,17 @@ static int get_sync_info(void);
 int main(int argc, char *argv[])
 {
 	char *filename;
+#ifdef HAVE_WINSOCK_H
+	WSADATA wsa;
+#endif
 
 	initialize_debugging();
 
-	WSADATA wsa;
-	if (WSAStartup(MAKEWORD(1, 1), &wsa) != 0){
+#ifdef HAVE_WINSOCK_H
+	if (WSAStartup(MAKEWORD(1, 1), &wsa) != 0) {
+		return 1;
 	}
-
+#endif
 
 	ggz_intl_init("dots");
 
