@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2949 2001-12-19 09:44:56Z jdorje $
+ * $Id: game.c 2951 2001-12-19 10:35:31Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -35,6 +35,7 @@
 #include <ggz.h>
 #include "common.h"
 
+#include "animation.h"
 #include "dlg_bid.h"
 #include "dlg_options.h"
 #include "game.h"
@@ -83,6 +84,8 @@ void game_play_card(int card_num)
 	int player = ggzcards.play_hand, status;
 	card_t card = ggzcards.players[player].hand.card[card_num];
 
+	ggz_debug("main", "Playing card number %d.", card_num);
+
 	status = client_send_play(card);
 
 	ggzcards.players[player].table_card = card;
@@ -118,7 +121,13 @@ void game_send_newgame(void)
 	assert(status == 0);
 }
 
-
+void game_request_sync(void)
+{
+#ifdef ANIMATION
+	animation_zip();
+#endif
+	(void) client_send_sync_request();
+}
 
 
 
@@ -238,10 +247,6 @@ void game_get_bid(int possible_bids, char **bid_choices)
 
 void game_get_play(int hand)
 {
-#ifdef ANIMATION
-	animation_zip();
-#endif /* ANIMATION */
-
 	if (hand == 0)
 		statusbar_message(_("Your turn to play a card"));
 	else {
@@ -270,8 +275,8 @@ void game_alert_play(int player, card_t card, int pos)
 {
 #ifdef ANIMATION
 	/* If this is a card _we_ played, then we'll already be animating,
-	   and we really don't want to stop just to start over. */
-	animation_zip();
+	   and we really don't want to stop just to start over.  But we
+	   leave that up to animation_start. */
 	animation_start(player, card, pos);
 #else /* ANIMATION */
 	table_show_card(player, card);

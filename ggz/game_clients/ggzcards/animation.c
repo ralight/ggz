@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 2949 2001-12-19 09:44:56Z jdorje $
+ * $Id: animation.c 2951 2001-12-19 10:35:31Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -46,7 +46,8 @@ static struct {
 	float cur_x, cur_y;
 	float step_x, step_y;
 	gint cb_tag;
-} anim;
+} anim = {
+-1};
 
 /* Function to setup and trigger a card animation */
 void animation_start(int player, card_t card, int card_num)
@@ -54,19 +55,22 @@ void animation_start(int player, card_t card, int card_num)
 	int start_x, start_y;
 	int end_x, end_y;
 
+	ggz_debug("animation", "Setting up animation for player %d", player);
+
 	/* We don't currently support animation for more than one player
 	   at a time. */
-	if (animating)
-		animation_zip();
+	if (animating) {
+		if (player == anim.player && card.suit == anim.card.suit
+		    && card.face == anim.card.face)
+			return;
+		else
+			animation_zip();
+	}
 
 	get_card_pos(player, card_num, &start_x, &start_y);
 	get_tablecard_pos(player, &end_x, &end_y);
 
-	ggz_debug("animation",
-		  "Setting up animation for player %d"
-		  " from (%d, %d) to (%d, %d).", player, start_x, start_y,
-		  end_x, end_y);
-
+/* FIXME: these should be preferences */
 #define FRAMES		15
 #define DURATION	500	/* In milliseconds */
 
@@ -133,6 +137,7 @@ gint animation_callback(gpointer ignored)
 	anim.cur_y = new_y;
 
 	/* If we are there, stop the animation process */
+	/* FIXME: can this go wrong?  Is it possible to "miss"? */
 	if (new_x == anim.dest_x && new_y == anim.dest_y) {
 		animating = 0;
 		return FALSE;
@@ -167,14 +172,13 @@ void animation_zip(void)
 	if (!animating)
 		return;
 
-	ggz_debug("animation", "Zipping animation (%d).", restore);
+	ggz_debug("animation", "Zipping animation.");
 
 	/* First, kill off the animation callback */
 	gtk_timeout_remove(anim.cb_tag);
 
 	/* And move the card to it's final resting place */
-	ggzcards.players[anim.player].table_card = anim.card;
-	table_show_card(anim.player);
+	table_show_card(anim.player, anim.card);
 
 	animating = 0;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 2948 2001-12-19 09:34:42Z jdorje $
+ * $Id: game.h 2951 2001-12-19 10:35:31Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -66,6 +66,8 @@ void game_play_card(int card_num);
 /** @brief Handles IO from the server; called any time data is pending. */
 void game_handle_io(gpointer data, gint source, GdkInputCondition cond);
 
+/** @brief Request a sync from the server, and prepare to receive it. */
+void game_request_sync(void);
 
 
 /*

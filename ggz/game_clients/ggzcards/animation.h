@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.h 2949 2001-12-19 09:44:56Z jdorje $
+ * $Id: animation.h 2951 2001-12-19 10:35:31Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -27,7 +27,7 @@
 
 #include "common.h"
 
-/* if this is defined, the animation code will be used. I've disable it
+/* if this is defined, the animation code will be used. I've disabled it
    because I broke it... */
 /* #define ANIMATION */
 
