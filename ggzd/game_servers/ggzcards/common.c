@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4338 2002-08-05 16:08:38Z jdorje $
+ * $Id: common.c 4339 2002-08-06 01:32:22Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -140,12 +140,11 @@ void init_ggzcards(GGZdMod * ggz, game_data_t *game_data)
    necessary.  returns TRUE on successful start. */
 bool try_to_start_game(void)
 {
-	player_t p;
 	bool ready = TRUE;
 
 	assert(are_options_set());
 
-	for (p = 0; p < game.num_players; p++)
+	players_iterate(p) {
 		if (!game.players[p].ready) {
 			/* we could send another REQ_NEWGAME as a reminder,
 			   but there would be no way for the client to know
@@ -154,6 +153,7 @@ bool try_to_start_game(void)
 				    get_player_name(p));
 			ready = FALSE;
 		}
+	} players_iterate_end;
 
 	if (ready)
 		newgame();
@@ -163,15 +163,14 @@ bool try_to_start_game(void)
 /* start a new game! */
 static void newgame(void)
 {
-	player_t p;
-
 	assert(game.data);
 
 	finalize_options();
 
 	/* should be entered only when we're ready for a new game */
-	for (p = 0; p < game.num_players; p++)
+	players_iterate(p) {
 		game.players[p].ready = 0;
+	} players_iterate_end;
 	if (!game.initted)
 		init_game();
 		
@@ -180,8 +179,10 @@ static void newgame(void)
 	
 	game.data->start_game();
 	
-	for (p = 0; p < game.num_players; p++)
+	players_iterate(p) {
 		set_player_message(p);
+	} players_iterate_end;
+
 	assert(get_cardset_type() != UNKNOWN_CARDSET);
 	net_broadcast_newgame();
 	game.dealer = random() % game.num_players;
@@ -195,7 +196,6 @@ static void newgame(void)
 /* Do the next play, only if all seats are full. */
 void next_move(void)
 {
-	player_t p;
 	seat_t s;
 	/* TODO: split this up into functions */
 	/* TODO: use looping instead of recursion */
@@ -209,10 +209,12 @@ void next_move(void)
 	switch (game.state) {
 	case STATE_NOTPLAYING:
 		ggz_debug(DBG_MISC, "Next play: trying to start a game.");
-		for (p = 0; p < game.num_players; p++)
+		players_iterate(p) {
 			game.players[p].ready = 0;
-		for (p = 0; p < game.num_players; p++)
+		} players_iterate_end;
+		players_iterate(p) {
 			net_send_newgame_request(p);
+		} players_iterate_end;
 		break;
 	case STATE_NEXT_HAND:
 		ggz_debug(DBG_MISC, "Next play: dealing a new hand.");
@@ -226,24 +228,27 @@ void next_move(void)
 
 		/* shuffle and deal a hand */
 		shuffle_deck(game.deck);
-		for (p = 0; p < game.num_players; p++)
+		players_iterate(p) {
 			game.players[p].tricks = 0;
+		} players_iterate_end;
 
 		/* init bid list */
 		game.bid_rounds = 0;
 		game.prev_bid = -1;
-		for (p = 0; p < game.num_players; p++)
+		players_iterate(p) {
 			memset(game.players[p].allbids, 0,
 			       game.max_bid_rounds * sizeof(bid_t));
+		} players_iterate_end;
 
 		ggz_debug(DBG_MISC, "Dealing hand %d.", game.hand_num);
 		game.data->deal_hand();
 		ggz_debug(DBG_MISC, "Dealt hand successfully.");
 
 		/* Now send the resulting hands to each player */
-		for (p = 0; p < game.num_players; p++)
+		allplayers_iterate(p) {
 			for (s = 0; s < game.num_seats; s++)
 				game.data->send_hand(p, s);
+		} allplayers_iterate_end;
 
 		set_game_state(STATE_FIRST_BID);
 		ggz_debug(DBG_MISC,
@@ -254,11 +259,11 @@ void next_move(void)
 		ggz_debug(DBG_MISC, "Next play: starting the bidding.");
 		set_game_state(STATE_NEXT_BID);
 
-		for (p = 0; p < game.num_players; p++) {
+		players_iterate(p) {
 			game.players[p].bid.bid = 0;
 			game.players[p].bid_count = 0;
 			set_player_message(p);
-		}
+		} players_iterate_end;
 		game.bid_count = 0;
 
 		game.data->start_bidding();
@@ -316,23 +321,22 @@ void next_move(void)
    youngest "age". */
 static player_t determine_host(void)
 {
-	player_t p, host = -1;
+	player_t host = -1;
 	int age = -1;
-	for (p = 0; p < game.num_players; p++)
+	players_iterate(p) {
 		if (get_player_status(p) == GGZ_SEAT_PLAYER)
 			if (game.players[p].age >= 0)
 				if (age == -1 || game.players[p].age < age) {
 					host = p;
 					age = game.players[p].age;
 				}
+	} players_iterate_end;
 	return host;
 }
 
 /* This handles a launch event, when GGZ connects to us for the first time. */
 static void handle_launch_event(void)
 {
-	player_t p;
-	
 	ggz_debug(DBG_MISC, "Table launch.");
 	
 	assert(game.state == STATE_PRELAUNCH);
@@ -343,7 +347,7 @@ static void handle_launch_event(void)
 	game.host = -1;		/* no host since none has joined yet */
 
 	game.players = ggz_malloc(game.num_players * sizeof(*game.players));
-	for (p = 0; p < game.num_players; p++) {
+	players_iterate(p) {
 		game.players[p].seat = -1;
 		game.players[p].team = -1;
 		game.players[p].allbids = NULL;
@@ -352,7 +356,7 @@ static void handle_launch_event(void)
 		game.players[p].err_fd = -1;
 #endif
 		game.players[p].pid = -1;
-	}
+	} players_iterate_end;
 
 	/* we don't yet know the number of seats */
 
@@ -368,11 +372,10 @@ static void handle_launch_event(void)
 /* This handles a "done event", when our state is changed to DONE. */
 static void handle_done_event(void)
 {
-	player_t p;
-	
-	for (p = 0; p < game.num_players; p++)
+	players_iterate(p) {
 		if (get_player_status(p) == GGZ_SEAT_BOT)
 			stop_ai(p);
+	} players_iterate_end;
 
 	/* Anything else to shut down? */
 }

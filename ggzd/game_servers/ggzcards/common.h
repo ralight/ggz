@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4338 2002-08-05 16:08:38Z jdorje $
+ * $Id: common.h 4339 2002-08-06 01:32:22Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -31,7 +31,7 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-/* #define SUPPORT_SPECTATORS */
+#define SUPPORT_SPECTATORS
 
 #include <assert.h>
 
@@ -218,6 +218,11 @@ bool seats_full(void);
 #define PLAYER_TO_SPECTATOR(player) (-1 - (player))
 #endif
 
+#define PLAYER_TO_SEAT(p) \
+	((p) >= 0 && (p) < game.num_players ? game.players[p].seat : -1)
+#define SEAT_TO_PLAYER(s) \
+	(assert((s) >= 0 && (s) < game.num_seats), game.seats[s].player)
+
 /* Support functions.  Should go into a different file. */
 void fatal_error(const char *message);
 
@@ -239,6 +244,13 @@ void fatal_error(const char *message);
 #endif
 
 #define allplayers_iterate_end }
+
+#define players_iterate(p)                                  \
+{                                                           \
+	player_t p;                                         \
+		for (p = 0; p < game.num_players; p++)
+
+#define players_iterate_end }
 
 #ifdef SUPPORT_SPECTATORS
 #  define IS_REAL_PLAYER(p) ((p) >= 0)

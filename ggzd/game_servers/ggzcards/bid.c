@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 4146 2002-05-03 08:07:37Z jdorje $
+ * $Id: bid.c 4339 2002-08-06 01:32:22Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -39,11 +39,10 @@
 
 bool is_anyone_bidding(void)
 {
-	player_t p;
-	
-	for (p = 0; p < game.num_players; p++)
+	players_iterate(p) {
 		if (game.players[p].bid_data.is_bidding)
 			return TRUE;
+	} players_iterate_end;
 	return FALSE;
 }
 
@@ -107,26 +106,26 @@ void request_client_bid(player_t p)
 /* FIXME: I don't think this is necessary anymore. */
 void request_all_client_bids(void)
 {
-	player_t p;
-
 	ggz_debug(DBG_BID, "Requesting bids from some/all players.");
 
 	/* Mark all players as bidding. */
-	for (p = 0; p < game.num_players; p++)
+	players_iterate(p) {
 		if (game.players[p].bid_data.bid_count > 0) {
 			assert(!game.players[p].bid_data.is_bidding);
 			game.players[p].bid_data.is_bidding = TRUE;
 			set_player_message(p);
 		}
+	} players_iterate_end;
 
 	set_game_state(STATE_WAIT_FOR_BID);
 
 	/* Send all human-player bid requests */
-	for (p = 0; p < game.num_players; p++)
+	players_iterate(p) {
 		if (game.players[p].bid_data.bid_count > 0)
 			net_send_bid_request(p,
 			                     game.players[p].bid_data.bid_count,
 			                     game.players[p].bid_data.bids);
+	} players_iterate_end;
 
 	/* There's still a potential problem because as
 	   soon as a player bids, that bid will generally become visible to
@@ -199,9 +198,8 @@ void handle_bid_event(player_t p, bid_t bid)
 	if (p <= game.prev_bid)
 		game.bid_rounds++;
 	if (game.bid_rounds >= game.max_bid_rounds) {
-		player_t p2;
 		game.max_bid_rounds += 10;
-		for (p2 = 0; p2 < game.num_players; p2++) {
+		players_iterate(p2) {
 			game.players[p2].allbids =
 				ggz_realloc(game.players[p2].allbids,
 					    game.max_bid_rounds *
@@ -209,7 +207,7 @@ void handle_bid_event(player_t p, bid_t bid)
 			memset(&game.players[p2].
 			       allbids[game.max_bid_rounds - 10], 0,
 			       10 * sizeof(bid_t));
-		}
+		} players_iterate_end;
 	}
 	game.players[p].allbids[game.bid_rounds] = bid;
 	send_bid_history();
