@@ -104,7 +104,7 @@ static void first_button_yes_activate(GtkButton *button, gpointer data)
 	/* Euro 1 */
 	ggzcore_conf_write_string("GGZ Europe (Fast)", "Host",
 		ggzcore_conf_read_string("GGZ Europe (Fast)", "Host",
-					 "213.73.91.24"));
+					 "ggz.snafu.de"));
 	ggzcore_conf_write_string("GGZ Europe (Fast)", "Login",
 		ggzcore_conf_read_string("GGZ Europe (Fast)", "Login",
 					 name));
