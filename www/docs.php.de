@@ -1,0 +1,96 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Dokumentation</b><br>
+Auf dieser Seite sind alle whictigen Dokumentationen kategorisiert und
+beschrieben.
+<br><br>
+
+<i>Spieler-Dokumentation</i><br>
+Alle Anwendungen und Spiele sind auf ihren jeweiligen Webseiten beschrieben.
+Zusätzliche Dokumentation:
+<br><br>
+
+GGZ-Übersicht:
+<a href="/docs/presentation/html/de/ggz-presentation.html">HTML</a>,
+<a href="/docs/presentation/ggz-presentation.de.sxi">OpenOffice</a>
+<br>
+
+Vergleich der Eigenschaften von Spielen:
+<a href="/docs/features.html">HTML</a>
+<br>
+
+Grubby (Chatbot) Benutzerhandbuch:
+<a href="/docs/grubby/user-manual.de.html">HTML</a>
+<br>
+
+Artikel-Serie:
+<a href="/docs/articles/">Übersicht</a>
+<br><br>
+
+<i>Entwickler-Dokumentation</i><br>
+Entwickler-Dokumentation steht im Entwicklerbereich dieser Webseiten
+bereit.
+<br><br>
+
+GGZ Design-Dokument and Protokoll-Referenz:
+<a href="/docs/design/html/">HTML</a>,
+<a href="/docs/design/design.txt">Text</a>
+<br>
+
+Spiele-Entwicklungs-Leitfaden:
+<a href="/docs/guides/gamedev/ggz-game-development-guide.html">HTML</a>,
+<a href="/docs/guides/gamedev/ggz-game-development-guide.ps">PostScript</a>,
+<a href="/docs/guides/gamedev/ggz-game-development-guide.txt">Text</a>
+<br>
+
+Vergleich der Protokolle von Spielen:
+<a href="/docs/games.html">HTML</a>
+<br>
+
+API der Bibliothek libggz:
+<a href="/docs/api/libggz/">HTML</a>
+<br>
+
+API der Bibliothek ggzcore:
+<a href="/docs/api/ggzcore/">HTML</a>
+<br>
+
+API der Bibliothek ggzmod:
+<a href="/docs/api/ggzmod/">HTML</a>
+<br>
+
+API der Bibliothek ggzdmod:
+<a href="/docs/api/ggzdmod/">HTML</a>
+<br><br>
+
+<i>Administrator-Dokumentation</i><br>
+Server-Administratoren können hier Anleitungen und Empfehlungen lesen.
+<br><br>
+
+Leitfaden für Serverbetreiber:
+<a href="/docs/guides/hosting/ggz-hosting-guide.html">HTML</a>,
+<a href="/docs/guides/hosting/ggz-hosting-guide.ps">PostScript</a>,
+<a href="/docs/guides/hosting/ggz-hosting-guide.txt">Text</a>
+<br>
+
+Grubby (Chatbot) Administratorhandbuch:
+<a href="/docs/grubby/admin-manual.html">HTML</a>
+<br>
+
+Darstellung der Paket-Abhängigkeiten:
+<a href="/docs/ggz-debian-depgraph.ps">PostScript</a>,
+<a href="/docs/ggz-debian-depgraph.png">PNG</a>
+<br><br>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+

@@ -26,19 +26,25 @@ KI-Spieler und ein Chatbot gehören zu diesem Projekt dazu.
 <br><br>
 
 <i>Download der aktuellen Version</i><br>
-Die GGZ Gaming Zone 0.0.7 wurde am 17. Mai 2003 veröffentlicht.<br>
-<a href="/docs/release.html">Release-Ankündigung</a><br>
-<a href="downloads.php">Downloadseite aufrufen</a>
+Die GGZ Gaming Zone 0.0.8 wurde am 07. Februar 2004 veröffentlicht.<br>
+<a href="/docs/release.php">Release-Ankündigung</a><br>
+<a href="/docs/download.php">Downloadseite aufrufen</a><br>
+<a href="http://web.mountain.net/ld94/ggz_installation_howto.html">Neues Installations-Howto</a>
 
 </td><td valign="top">
 
-<img src="/pics/site/splash.png">
+<img src="/pics/site/splash-0.0.8.png">
 
 </td>
 </tr>
 </table>
 
 <b>Neuigkeiten</b><br>
+<i>07.02.2004: GGZ 0.0.8</i> (by josef)<br>
+Die neue Version ist endlich da. Die alten Webseiten sind nun offiziell durch
+diese hier ersetzt. Viel Spaß :)
+<br><br>
+
 <i>27.07.2003: Ankündigung von beta.ggzgamingzone.org</i> (by josef)<br>
 Die GGZ Gaming Zone-Homepage wird ein neues Design bekommen.
 Alle Seiten werden im CVS gepflegt werden, und mit modernisiertem
