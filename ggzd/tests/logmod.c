@@ -33,14 +33,17 @@ int handle_game_launch()
 {
 	int i, num;
 	char name[1024];
-	GGZSeatType type;
 	
 	ggz_read_int(fd, &num);
 	printf("Receiving %d seats\n", num);
 	
 	for (i = 0; i < num; i++) {
-		if (ggz_read_int(fd, &type) < 0)
+		GGZSeatType type;
+		int operator;
+
+		if (ggz_read_int(fd, &operator) < 0)
 			return -1;
+		type = operator;
 
 		switch (type) {
 		case GGZ_SEAT_OPEN:
