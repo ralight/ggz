@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 6655 2005-01-13 23:44:54Z jdorje $
+ * $Id: main.c 6667 2005-01-14 03:21:47Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -29,14 +29,13 @@
 #endif
 
 /* System includes */
-#include <sys/types.h>
-#include <sys/un.h>
-#include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>	/* for getenv */
+#include <sys/types.h>
 #include <unistd.h>
 
-/* GGZ includes */
+/* Library includes */
+#include <gtk/gtk.h>
 #include <ggz.h>
 #include <ggz_common.h>
 #include <ggzmod.h>
