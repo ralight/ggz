@@ -12,6 +12,24 @@ echo "<br><br>\n";
 echo "</td></tr></table>\n";
 
 echo "</td></tr>\n";
+
+echo "<tr><td bgcolor='#000000'>";
+
+echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00ff00'>\n";
+
+echo "<b>Teams:</b><br>\n";
+
+$res = pg_exec($id, "SELECT teamname FROM teams ORDER BY teamname");
+for ($i = 0; $i < pg_numrows($res); $i++)
+{
+	$team = pg_result($res, $i, "teamname");
+	echo "<a href='$SCRIPT_NAME?lookup=$team&amp;type=team'>$team</a><br>\n";
+}
+echo "<br><br>\n";
+
+echo "</td></tr></table>\n";
+
+echo "</td></tr>\n";
 echo "<tr><td bgcolor='#000000'>";
 
 echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00ff00'>\n";
@@ -32,7 +50,7 @@ endif;
 echo "<br>\n";
 
 if (!$handle) :
-	$handle = "A";
+	$handle = "---";
 endif;
 if ($handle != "ALL") :
 	$handle = strtolower($handle);
@@ -90,6 +108,8 @@ elseif ($type == "game") :
 	echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#ffff00'>\n";
 elseif ($type == "live") :
 	echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#9f4ff0'>\n";
+elseif ($type == "team") :
+	echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#f0e0c0'>\n";
 else :
 	echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00ff00'>\n";
 endif;
@@ -102,6 +122,8 @@ if ($type == "player") :
 	endif;
 elseif ($type == "game") :
 	echo "<img src='ggzicons/games/$lookup.png' width=32 height=32 alt='$lookup'>\n";
+elseif ($type == "team") :
+	echo "<img src='ggzicons/teams/$lookup.png' width=32 height=32 alt='$lookup'>\n";
 endif;
 if ($lookup) :
 	echo "<b>Statistics for '$lookup'</b><br><br>\n";
@@ -116,6 +138,8 @@ elseif ($type == "game") :
 	stats_games($id, $lookup);
 elseif ($type == "live") :
 	stats_live($ggzhost);
+elseif ($type == "team") :
+	stats_team($id, $lookup);
 endif;
 
 echo "<br><br>\n";

@@ -125,5 +125,36 @@ function xmlData($parser, $data)
 	endif;
 }
 
+function stats_team($id, $lookup)
+{
+	$res = pg_exec($id, "SELECT * FROM teams WHERE teamname = '$lookup'");
+	for ($i = 0; $i < pg_numrows($res); $i++)
+	{
+		$fullname = pg_result($res, $i, "fullname");
+		$icon = pg_result($res, $i, "icon");
+		$foundingdate = pg_result($res, $i, "foundingdate");
+		$homepage = pg_result($res, $i, "homepage");
+
+		$date = date("d.m.Y", $foundingdate);
+
+		echo "Team name: $fullname.<br>\n";
+		echo "Founding date: $date.<br>\n";
+		echo "Homepage: <a href='$homepage'>$homepage</a>.<br>\n";
+		echo "<br>\n";
+
+	}
+	if (pg_numrows($res) == 0) :
+		echo "No statistics found for $lookup.<br>\n";
+	else :
+		echo "Members of the team:<br>\n";
+		$res = pg_exec($id, "SELECT handle FROM teammembers WHERE teamname = '$lookup'");
+		for ($i = 0; $i < pg_numrows($res); $i++)
+		{
+			$handle = pg_result($res, $i, "handle");
+			echo "<a href='index.php?lookup=$handle&amp;type=player'>$handle</a><br>\n";
+		}
+	endif;
+}
+
 ?>
 
