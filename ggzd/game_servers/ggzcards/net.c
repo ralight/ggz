@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2835 2001-12-09 22:22:31Z jdorje $
+ * $Id: net.c 2848 2001-12-10 03:52:32Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -230,9 +230,14 @@ int send_sync(player_t p)
 		status = -1;
 
 	/* request bid/play again, if necessary */
-	if (game.players[p].bid_data.is_bidding)
-		if (req_bid(p) < 0)
+	if (game.players[p].bid_data.is_bidding) {
+		/* We can't call req_bid, because it has side effects (like
+		   changing the game's state). */
+		if (send_bid_request
+		    (p, game.players[p].bid_data.bid_count,
+		     game.players[p].bid_data.bids) < 0)
 			status = -1;
+	}
 	if (game.state == STATE_WAIT_FOR_PLAY && game.curr_play == p)
 		if (send_play_request(game.curr_play, game.play_seat) < 0)
 			status = -1;
@@ -261,8 +266,11 @@ int send_sync_all(void)
 int send_bid_request(player_t p, int bid_count, bid_t * bids)
 {
 	int i, status = 0;
-
 	int fd = get_player_socket(p);
+
+	ggzdmod_log(game.ggz, "Sending bid request to player %d/%s.", p,
+		    get_player_name(p));
+
 	/* request a bid from the client */
 	if (fd == -1 ||
 	    write_opcode(fd, REQ_BID) < 0 || es_write_int(fd, bid_count) < 0)
@@ -339,9 +347,10 @@ int send_hand(const player_t p, const seat_t s, int reveal)
 	if (game.open_hands)
 		reveal = 1;
 
-	ggzdmod_log(game.ggz, "Sending player %d/%s hand %d/%s - %srevealing",
-		    p, get_player_name(p), s, get_seat_name(s),
-		    reveal ? "" : "not ");
+	ggzdmod_log(game.ggz,
+		    "Sending player %d/%d/%s hand %d/%s - %srevealing", p,
+		    game.players[p].seat, get_player_name(p), s,
+		    get_seat_name(s), reveal ? "" : "not ");
 
 	if (write_opcode(fd, MSG_HAND) < 0
 	    || write_seat(fd, CONVERT_SEAT(s, p)) < 0
