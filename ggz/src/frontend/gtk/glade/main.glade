@@ -934,6 +934,7 @@
 		    <last_modification_time>Sun, 15 Oct 2000 00:08:57 GMT</last_modification_time>
 		  </signal>
 		  <label>Send</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
 		</widget>
 	      </widget>
 	    </widget>
@@ -1042,6 +1043,11 @@
   <widget>
     <class>GtkMenuItem</class>
     <name>info</name>
+    <accelerator>
+      <modifiers>GDK_CONTROL_MASK</modifiers>
+      <key>GDK_I</key>
+      <signal>activate</signal>
+    </accelerator>
     <signal>
       <name>activate</name>
       <handler>client_info_activate</handler>
@@ -1054,6 +1060,11 @@
   <widget>
     <class>GtkMenuItem</class>
     <name>join</name>
+    <accelerator>
+      <modifiers>GDK_CONTROL_MASK</modifiers>
+      <key>GDK_J</key>
+      <signal>activate</signal>
+    </accelerator>
     <signal>
       <name>activate</name>
       <handler>client_join_activate</handler>

@@ -1554,6 +1554,9 @@ create_mnu_room (void)
   GtkAccelGroup *mnu_room_accels;
   GtkWidget *info;
   GtkWidget *join;
+  GtkAccelGroup *accel_group;
+
+  accel_group = gtk_accel_group_new ();
 
   mnu_room = gtk_menu_new ();
   gtk_object_set_data (GTK_OBJECT (mnu_room), "mnu_room", mnu_room);
@@ -1565,6 +1568,9 @@ create_mnu_room (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (info);
   gtk_container_add (GTK_CONTAINER (mnu_room), info);
+  gtk_widget_add_accelerator (info, "activate", accel_group,
+                              GDK_I, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
 
   join = gtk_menu_item_new_with_label (_("Join"));
   gtk_widget_ref (join);
@@ -1572,6 +1578,9 @@ create_mnu_room (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (join);
   gtk_container_add (GTK_CONTAINER (mnu_room), join);
+  gtk_widget_add_accelerator (join, "activate", accel_group,
+                              GDK_J, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
 
   gtk_signal_connect (GTK_OBJECT (info), "activate",
                       GTK_SIGNAL_FUNC (client_info_activate),
@@ -1580,6 +1589,10 @@ create_mnu_room (void)
                       GTK_SIGNAL_FUNC (client_join_activate),
                       NULL);
 
+  gtk_menu_set_accel_group (GTK_MENU (mnu_room), accel_group);
+
   return mnu_room;
 }
+
+
 

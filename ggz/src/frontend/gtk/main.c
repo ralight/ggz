@@ -44,8 +44,7 @@ int main (int argc, char *argv[])
 	opt.flags = GGZ_OPT_PARSER;
 	opt.global_conf = "/etc/ggz-text.rc";
 	opt.user_conf = "~/.ggz-txtrc";
-	opt.local_conf = NULL;
-
+	
 	ggzcore_init(opt);
 	ggz_event_init();
 	ggz_state_init();
