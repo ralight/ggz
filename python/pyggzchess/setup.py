@@ -15,6 +15,7 @@ setup(
     ext_modules = [
         Extension('ggzchess',
         ['src/pyggzchess.c'],
+	library_dirs = ['../chess'],
         libraries = ['ggzchess'])
     ]
 )

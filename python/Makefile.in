@@ -57,6 +57,7 @@ rsvgsdl-build:
 
 ggzchess-build:
 	@echo Building library PyGGZChess
+	cd chess && make
 	cd pyggzchess && python setup.py build
 
 ggzmod-install:
