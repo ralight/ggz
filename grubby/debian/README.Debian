@@ -1,7 +1,0 @@
-ggz-grubby for Debian
----------------------
-
-This package contains grubby, including all currently available plugins.
-All further plugins should be placed in here too.
-
- -- Josef Spillner <dr_maux@users.sourceforge.net>, Sat, 19 Jan 2002 18:13:21 +0100
