@@ -2,6 +2,7 @@ Makefile.in
 Makefile
 .deps
 .libs
-ggzmod.lo
+*.lo
+*.o
 libggzmod.la
 api
