@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 4884 2002-10-12 19:51:29Z jdorje $
+ * $Id: game.c 5120 2002-10-30 21:23:07Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -968,9 +968,8 @@ void game_ask_save_map(void) {
 
 void game_confirm_save_map(GtkButton *button, gpointer user_data) {
   GtkWidget *map_name = lookup_widget(user_data, "map_name");
-  char *name = gtk_entry_get_text(GTK_ENTRY(map_name));
-  cbt_game.name = (char *)ggz_malloc(strlen(name) + 1);
-  strcpy(cbt_game.name, name);
+  const char *name = gtk_entry_get_text(GTK_ENTRY(map_name));
+  cbt_game.name = ggz_strdup(name);
   map_save(&cbt_game);
 }
 
