@@ -124,19 +124,15 @@ if test "$enable_python" = yes; then
 	for ver in 2.2 2.3 2.4; do
 		incs="/usr/local/include/python$ver /usr/include/python$ver"
 		AC_GGZ_FIND_FILE("Python.h", $incs, python_incdir)
-		python_includes="$python_incdir"
 
 		libs="/usr/local/lib /usr/lib"
 		AC_GGZ_FIND_FILE(libpython$ver.so, $libs, python_libdir)
-		python_libraries="$python_libdir"
 
-		if test "x$python_includes" = "xNO" || test "x$python_libraries" = "xNO"; then
-			python_includes=""
-			python_libraries=""
-			enable_python=no
+		if test "x$python_incdir" = "xNO" || test "x$python_libdir" = "xNO"; then
+			this_is_not_the_right_version=1
 		else
-			python_includes="-I $python_includes"
-			python_libraries="-L $python_libraries -lpython$ver"
+			python_includes="-I $python_incdir"
+			python_libraries="-L $python_libdir -lpython$ver"
 			usever=$ver
 			enable_python=yes
 		fi
