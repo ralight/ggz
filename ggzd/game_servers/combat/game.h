@@ -39,7 +39,7 @@ int game_handle_player(int);
 
 // Game logic
 int game_handle_move(int, int, int);
-int game_handle_attack(int, int, int);
+int game_handle_attack(int, int, int, int);
 int game_check_over();
 
 // Sends info to the player

@@ -157,6 +157,7 @@ int combat_check_move(combat_game *_game, int from, int to) {
 	int f_s, f_u, t_s, t_u, t_t;
 	int x1, x2, y1, y2, dx, dy, dir = 0;
 	int a;
+  int is_rushing = 0;
 
 	// Check range
 	if (from < 0 || from >= _game->width*_game->height || to < 0 || to >= _game->width*_game->height)
@@ -218,7 +219,7 @@ int combat_check_move(combat_game *_game, int from, int to) {
 		return CBT_ERROR_MOVE_DIAGONAL;
 
 	// Checks if it has distance 1
-	if (f_u != U_SCOUT && f_u != U_SERGEANT && (abs(dx) > 1 || abs(dy) > 1))
+	if (f_u != U_SCOUT && (f_u != U_SERGEANT || !(_game->options & OPT_SF_SERGEANT)) && !(_game->options & OPT_RUSH_ATTACK) && (abs(dx) > 1 || abs(dy) > 1))
 		return CBT_ERROR_MOVE_BIGMOVE;
 	else if (f_u == U_SCOUT) {
 		// Normalizes the vectors
@@ -233,8 +234,11 @@ int combat_check_move(combat_game *_game, int from, int to) {
 				return CBT_ERROR_MOVE_SCOUT;
 		}
 		// Check if he is moving >1 and attacking at the same time
-		if ((abs(dx)>1||abs(dy)>1) && t_u != U_EMPTY && !(_game->options & OPT_SUPER_SCOUT))
+		if ((abs(dx)>1||abs(dy)>1) && t_u != U_EMPTY && !(_game->options & OPT_SUPER_SCOUT) && !(_game->options & OPT_RUSH_ATTACK))
 			return CBT_ERROR_MOVE_SCOUT;
+
+    if ((abs(dx)>1||abs(dy)>1) && (_game->options & OPT_RUSH_ATTACK) && !(_game->options & OPT_SUPER_SCOUT))
+      is_rushing = 1;
 	}
   else if (_game->options & OPT_SF_SERGEANT && f_u == U_SERGEANT) {
     // Ok! Very similar to the scout one, although we must have
@@ -251,17 +255,32 @@ int combat_check_move(combat_game *_game, int from, int to) {
     // We won't check for move + attack
     // He is a SF guy! He should be able to do that!
   }
+  else if (_game->options & OPT_RUSH_ATTACK) {
+    // Rush attack!
+    dir = 0;
+    if (dx != 0)
+      dir += dx/abs(dx);
+    if (dy != 0)
+      dir += dy/abs(dy) * _game->width;
+    for (a = from + dir; a != to; a += dir) {
+      if (LAST(_game->map[a].type) != T_OPEN || LAST(_game->map[a].unit) != U_EMPTY)
+        return CBT_ERROR_NOTOPEN;
+    }
+    // We must also be attacking!
+		if ((abs(dx)>1||abs(dy)>1) && t_u == U_EMPTY)
+			return CBT_ERROR_MOVE_SCOUT;
+    is_rushing = 1;
+  }
 
 	// No error until now! Then its ok!
 	
 	if (t_u == U_EMPTY)
 		return CBT_CHECK_MOVE;		
 
-	if (t_u != U_EMPTY)
+	if (t_u != U_EMPTY && !is_rushing)
 		return CBT_CHECK_ATTACK;
-
-	// This really shouldn't happen!!!!
-	return CBT_ERROR_CRAZY;
+  else
+    return CBT_CHECK_ATTACK_RUSH;
 
 }
 	
@@ -350,4 +369,31 @@ char *combat_options_describe(combat_game *_game) {
   return retstr;
 }
 
-
+void combat_random_setup(combat_game *_game, int seat) {
+  int total = 0;
+  int a, b, c, pos;
+  for (a = 0; a < _game->width * _game->height; a++) {
+    if (GET_OWNER(_game->map[a].type) == seat && LAST(_game->map[a].unit) == U_EMPTY)
+      total++;
+  }
+  for (a = 0; a < 12; a++) {
+    b = _game->army[seat][a];
+    while (b-- > 0) {
+      // Sanity check
+      pos = RANDOM(total);
+      while (pos > total)
+        pos = RANDOM(total);
+      pos--;
+      // Ok, so I'll put army 'a' on position 'pos'
+      for (c = 0; c < _game->width * _game->height; c++) {
+        if (GET_OWNER(_game->map[c].type) == seat && LAST(_game->map[c].unit) == U_EMPTY)
+          pos--;
+        if (pos < 0)
+          break;
+      }
+      // That's the place!
+      _game->map[c].unit = OWNER(seat) + a;
+      total--;
+    }
+  }
+}

@@ -45,8 +45,6 @@ static int done_setup = 0;
 // Odds of winning in random attack
 static int odd[9][2] = { {30, 70}, {35, 74}, {41, 78}, {49, 82}, {56, 85}, {64, 88}, {71, 91}, {77, 92}, {84, 95} };
 
-#define RANDOM (1+(int)(100.0*random()/(RAND_MAX+1.0)))
-
 void game_init() {
   struct timeval tv;
   cbt_game.map = NULL;
@@ -99,6 +97,8 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
             // Request setup!
             cbt_game.state = CBT_STATE_SETUP;
             game_request_setup(-1);
+            if (SET(OPT_RANDOM_SETUP))
+              game_start();
           }
           break;
         case CBT_STATE_SETUP:
@@ -181,8 +181,10 @@ int game_handle_player(int seat) {
             game_send_options(a);
         }
         // Check if must start the game
-        if (!ggz_seats_open() && cbt_game.map)
+        if (!ggz_seats_open() && cbt_game.map) {
           game_request_setup(-1);
+          game_start();
+        }
       } else {
         // Free memory
         free(cbt_game.map);
@@ -369,6 +371,8 @@ void game_send_players() {
 
 void game_request_setup(int seat) {
   int a, fd;
+  if (SET(OPT_RANDOM_SETUP))
+    return;
   if (seat < 0) {
     for (a = 0; a < cbt_game.number; a++) {
       fd = ggz_seats[a].fd;
@@ -443,6 +447,16 @@ int game_get_setup(int seat) {
 void game_start() {
   int a, fd;
 
+  cbt_game.state = CBT_STATE_PLAYING;
+
+  if (SET(OPT_RANDOM_SETUP)) {
+    for (a = 0; a < cbt_game.number; a++) {
+      ggz_debug("Doing random setup for %d", a);
+      combat_random_setup(&cbt_game, a);
+      game_send_sync(a, 0);
+    }
+  }
+
   for (a = 0; a < cbt_game.number; a++) {
     fd = ggz_seats[a].fd;
     if (fd < 0)
@@ -453,7 +467,6 @@ void game_start() {
       ggz_debug("Can't send start message to player %d", a);
   }
 
-  cbt_game.state = CBT_STATE_PLAYING;
 }
 
 void game_send_move_error(int seat, int error) {
@@ -485,7 +498,10 @@ int game_get_move(int seat) {
     return game_handle_move(seat, from, to);
 
   if (a == CBT_CHECK_ATTACK)
-    return game_handle_attack(seat, from, to);
+    return game_handle_attack(seat, from, to, 0);
+
+  if (a == CBT_CHECK_ATTACK_RUSH)
+    return game_handle_attack(seat, from, to, 1);
 
   // An error ocurred
   return a;
@@ -513,7 +529,7 @@ int game_handle_move(int seat, int from, int to) {
 }
   
   
-int game_handle_attack(int f_s, int from, int to) {
+int game_handle_attack(int f_s, int from, int to, int is_rushing) {
   int fd, a, t_u, f_u, t_s;
 
   // Gets variables
@@ -556,7 +572,7 @@ int game_handle_attack(int f_s, int from, int to) {
       }
       // Random attack?
       if (SET(OPT_RANDOM_OUTCOME) && f_u != U_SPY && t_u != U_SPY) {
-        a = RANDOM;
+        a = RANDOM(100);
         ggz_debug("Random: %d\n", a);
         if (f_u >= t_u) {
           // Attacker is better then defender
@@ -599,7 +615,7 @@ int game_handle_attack(int f_s, int from, int to) {
       break;
     case U_MARSHALL:
       if (SET(OPT_RANDOM_OUTCOME) && f_u != U_SPY) {
-        a = RANDOM;
+        a = RANDOM(100);
         ggz_debug("Random: %d\n", a);
         if (a <= odd[t_u-f_u][0]) {
           // Marshall won!
@@ -628,6 +644,10 @@ int game_handle_attack(int f_s, int from, int to) {
     default:
       return CBT_ERROR_CRAZY;
   }
+
+  // If the f_u is rushing, then it always dies!
+  if (is_rushing)
+    t_u = -1 * abs(t_u);
 
   // Now do the tough work
   if (f_u < 0 && t_u >= 0) {
