@@ -232,6 +232,8 @@ static int game_make_move(int ro, int co, int rd, int cd)
 
 	display_refresh_board();
 	display_show_path(path_list);
+
+	return 1;
 }
 
 
