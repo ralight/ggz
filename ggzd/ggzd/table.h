@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 4528 2002-09-12 19:34:02Z jdorje $
+ * $Id: table.h 4541 2002-09-13 05:49:33Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -147,5 +147,12 @@ int table_find_spectator(int room, int index, char *name);
  * Note: table is returned with write lock acquired
  */
 struct GGZTable* table_lookup(int room, int index);
+
+
+/* Packaging for a table launch event */
+typedef struct {
+	int status;
+	int table_index;
+} GGZLaunchEventData;
 
 #endif

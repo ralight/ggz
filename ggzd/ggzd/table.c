@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4540 2002-09-13 05:40:05Z jdorje $
+ * $Id: table.c 4541 2002-09-13 05:49:33Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -1341,31 +1341,13 @@ static GGZEventFuncReturn table_spectator_event_callback(void* target,
 
 static int table_launch_event(char* name, int status, int index)
 {
-	int size;
-	char* current;
-	void* data;
+	GGZLaunchEventData *data = ggz_malloc(sizeof(*data));
 
-	size = sizeof(int);
-	
-	/* We pass back the table index if launch was successful */
-	if (status == 0)
-		size += sizeof(int);
-
-	data = ggz_malloc(size);
-	
-	/* Start packing the data */
-	current = (char*)data;
-	
-	*(int*)current = status;
-	current += sizeof(int);
-	
-	if (status == 0) {
-		*(int*)current = index;
-		current += sizeof(int);
-	}
+	data->status = status;
+	data->table_index = (status == 0) ? index : -1;
 
 	return event_player_enqueue(name, player_launch_callback,
-				    size, data, NULL);
+				    sizeof(*data), data, NULL);
 }
 
 

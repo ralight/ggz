@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4532 2002-09-13 01:35:13Z jdorje $
+ * $Id: players.c 4541 2002-09-13 05:49:33Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -347,34 +347,24 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 GGZEventFuncReturn player_launch_callback(void* target, size_t size,
 					  void* data)
 {
-	int status, index = -1;
-	char *current;
+	GGZLaunchEventData *event = data;
 	GGZPlayer* player = (GGZPlayer*)target;
-
-	/* Unpack event data */
-	current = (char*)data;
-
-	status = *(int*)(current);
-	current += sizeof(int);
-
-	if (status == 0) {
-		index = *(int*)(current);
-		current += sizeof(int);
-	}
 
 	/* Launch compleyed */
 	pthread_rwlock_wrlock(&player->lock);
 	player->launching = 0;
 	pthread_rwlock_unlock(&player->lock);
 
-	dbg_msg(GGZ_DBG_TABLE, "%s launch result: %d", player->name, status);
+	dbg_msg(GGZ_DBG_TABLE, "%s launch result: %d",
+		player->name, event->status);
 	
 	/* Automatically join newly created table */
-	if (status == 0)
-		player_transit(player, GGZ_TRANSIT_JOIN, index);
+	if (event->status == 0)
+		player_transit(player, GGZ_TRANSIT_JOIN, event->table_index);
 
 	/* Return status to client */
-	if (net_send_table_launch(player->client->net, (char)status) < 0)
+	if (net_send_table_launch(player->client->net,
+				  (char)event->status) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
