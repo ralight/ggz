@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3205 2002-02-02 00:26:22Z jdorje $
+ * $Id: transit.c 3208 2002-02-02 07:42:58Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -50,7 +50,8 @@ extern struct GameInfo game_types[MAX_GAME_TYPES];
 /* Local functions for handling transits */
 static int transit_player_event_callback(void* target, int size, void* data);
 static int transit_table_event_callback(void* target, int size, void* data);
-static int transit_send_join_to_game(GGZTable* table, char* name);
+static int transit_send_join_to_game(GGZTable* table, char* name,
+				     int seat_num);
 static int transit_send_leave_to_game(GGZTable* table, char* name);
 
 
@@ -174,22 +175,45 @@ static int transit_table_event_callback(void* target, int size, void* data)
 	 * will be no good way to handle the error.  --JDS */
 	if (opcode == GGZ_TRANSIT_JOIN
 	    && !seats_count(table, GGZ_SEAT_OPEN)) {
-	    	int num_seats = seats_num(table), i;
-	    	for (i = 0; i < num_seats; i++)
-			if (seats_type(table, i) == GGZ_SEAT_RESERVED
-			    && !strcmp(table->seat_names[i], name))
-				break;
-		if (i == num_seats) {
-			/* Don't care if this fails, we aren't transiting anyway */
-			transit_player_event(name, opcode, E_TABLE_FULL, 0, 0);
-			return GGZ_EVENT_OK;
-		}
+
 	}
 	
 	switch (opcode) {
-	case GGZ_TRANSIT_JOIN:
-		status = transit_send_join_to_game(table, name);
+	case GGZ_TRANSIT_JOIN:	
+		{    	
+		/*
+		 * First we must pick a seat number for the player.  We
+		 * want to give them a reserved (for them) seat if
+		 * possible, otherwise any open seat will do.  If no
+		 * seat is available, we let the client know.  If one
+		 * is found, we pass that on to transit_send_join_to_game.
+		 */
+		int num_seats = seats_num(table), i;
+	
+		/* First look for my (reserved) seat. */
+		for (i = 0; i < num_seats; i++)
+			if (seats_type(table, i) == GGZ_SEAT_RESERVED
+			    && !strcmp(table->seat_names[i], name))
+				break;
+			
+		/* If that failed, look for any open seat. */
+		if (i == num_seats)
+			for (i = 0; i < num_seats; i++)
+				if (seats_type(table, i) == GGZ_SEAT_OPEN)
+					break;
+					
+		/* If _that_ failed, let the player know the table is full. */
+		if (i == num_seats) {
+			/* Don't care if this fails,
+			   we aren't transiting anyway */
+			transit_player_event(name, opcode, E_TABLE_FULL, 0, 0);
+			return GGZ_EVENT_OK;
+		}
+		
+		/* Otherwise send the join to the game server. */
+		status = transit_send_join_to_game(table, name, i);
 		break;
+		}
 	case GGZ_TRANSIT_LEAVE:
 		status = transit_send_leave_to_game(table, name);
 		break;
@@ -274,38 +298,14 @@ static int transit_player_event_callback(void* target, int size, void* data)
  * Returns 0 on success, -1 on failure (in which case the
  * player should be sent an failure notice).
  */
-static int transit_send_join_to_game(GGZTable* table, char* name)
+static int transit_send_join_to_game(GGZTable* table, char* name,
+				     int seat_num)
 {
 	GGZSeat seat;
-	int seats, i, fd[2];
+	int fd[2];
 
 	dbg_msg(GGZ_DBG_TABLE, "Sending join for table %d in room %d",
 		table->index, table->room);
-		
-	/* Find my seat or unoccupied one */
-	seats = seats_num(table);
-	
-	/* First look for my (reserved) seat. */
-	for (i = 0; i < seats; i++)
-		if (seats_type(table, i) == GGZ_SEAT_RESERVED
-		    && !strcmp(table->seat_names[i], name))
-			break;
-			
-	/* If that failed, look for any open seat. */
-	if (i == seats)
-		for (i = 0; i < seats; i++)
-			if (seats_type(table, i) == GGZ_SEAT_OPEN)
-				break;
-	
-	/* Ack! Fatal error...this should never happen.
-	 *
-	 * Note, we have checked earlier to see if a spot (open or
-	 * reserved) is available for the player here.  So this
-	 * really should never happen. */
-	if (i == seats) {
-		dbg_msg(GGZ_DBG_TABLE, "No available seats for player!");
-		return -1;
-	}
 	
 	/* Create socket for communication with player thread */
 	if (socketpair(PF_UNIX, SOCK_STREAM, 0, fd) < 0)
@@ -313,11 +313,11 @@ static int transit_send_join_to_game(GGZTable* table, char* name)
 	
 	/* Save transit info so we have it when game module responds */
 	table->transit_name = strdup(name);
-	table->transit_seat = i;
+	table->transit_seat = seat_num;
 	table->transit_fd = fd[1];
 
 	/* Send info to table */
-	seat.num = i;
+	seat.num = seat_num;
 	seat.name = name;
 	seat.fd = fd[0];
 	seat.type = GGZ_SEAT_PLAYER;
