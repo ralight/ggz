@@ -666,14 +666,14 @@ int ggz_read_fd(int fd, int *recvfd)
 	if (cmptr->cmsg_type != SCM_RIGHTS) {
 		_debug("Bad cmsg\n");
 		if (_err_func)
-			(*_err_func) ("type != SOL_RIGHTS", GGZ_IO_READ, GGZ_DATA_FD);
+			(*_err_func) ("type != SCM_RIGHTS", GGZ_IO_READ, GGZ_DATA_FD);
 		return -1;
 	}
 
 	/* Everything is good */
 	*recvfd = *((int *) CMSG_DATA(cmptr));
 #else
-	if (msg.msg_accrightslen =! sizeof(int)) {
+	if (msg.msg_accrightslen != sizeof(int)) {
 		_debug("Bad msg\n");
 		if (_err_func)
 			(*_err_func) ("Bad msg", GGZ_IO_READ, GGZ_DATA_FD);
