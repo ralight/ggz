@@ -71,7 +71,7 @@ AC_EGREP_CPP(PF_LOCAL, [ #include <sys/socket.h>
 
 dnl Check for library functions
 dnl ===========================
-AC_CHECK_FUNC(select)
+AC_CHECK_FUNCS([select scandir gethostname strcasecmp])
 
 AC_CHECK_LIB(popt, poptGetNextOpt,
     AC_CHECK_HEADER(popt.h, ggzd_LIBS="$ggzd_LIBS -lpopt",
@@ -85,8 +85,7 @@ dnl ====================
 AC_CHECK_HEADER(pthread.h, 
     AC_CHECK_LIB(pthread, pthread_create, 
         ggzd_LIBS="$ggzd_LIBS -lpthread" 
-	CFLAGS="$CFLAGS -D_REENTRANT"
-	AC_DEFINE(_XOPEN_SOURCE, 500),
+	CFLAGS="$CFLAGS -D_REENTRANT",
 	AC_CHECK_LIB(c_r, pthread_create, 
 	    ggzd_LIBS="$ggzd_LIBS -pthread"
 	    CFLAGS="$CFLAGS -D_THREAD_SAFE",
@@ -285,6 +284,8 @@ AC_SUBST(ggzdstatedir)
 AC_SUBST(packagesrcdir)
 AC_SUBST(database)
 
+dnl Attempt to use as much as we can on systems with glibc
+AC_DEFINE(_GNU_SOURCE)
 
 AC_OUTPUT([Makefile
 	   ggzdmod/Makefile

@@ -28,6 +28,7 @@
 #undef PACKAGE_SOURCE_DIR
 #undef PF_LOCAL
 #undef _BSD_SOURCE
+#undef _GNU_SOURCE
 #undef _XOPEN_SOURCE
 #undef DB2_IN_DIR
 #undef DB3_IN_DIR
