@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 2218 2001-08-24 06:15:14Z jdorje $
+ * $Id: game.c 2221 2001-08-24 22:31:26Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -235,7 +235,7 @@ int game_send_players(void)
 int game_send_move(int num, int event, char direction)
 {
 	int fd = ggz_seats[escape_game.opponent].fd;
-	int i;
+	/* int i; */
 
 	ggzdmod_debug("game_send_move(%d, %d, %d)",num, event, direction);	
 
@@ -304,7 +304,7 @@ int game_send_gameover(char winner)
 int game_move(void)
 {
 	int num = escape_game.turn;
-	unsigned char dir, x, y;
+	/* unsigned char dir, x, y; */
 
 //	if(ggz_seats[num].assign == GGZ_SEAT_BOT) {
 //		dir = ai_move(&x, &y);
@@ -345,7 +345,7 @@ int game_handle_move(int num, unsigned char *direction)
 	int i;
 	int newx, newy;
 	char status=0;
-	int count=0;
+	/* int count=0; */
 	
 	ggzdmod_debug("Handling move for player %d", num);
 	if(es_read_char(fd, direction) < 0)
@@ -393,6 +393,10 @@ int game_handle_move(int num, unsigned char *direction)
             		newx = escape_game.x - 1;
 				newy = escape_game.y;
 				break;
+			default:
+				ggzdmod_debug("ERROR: game_handle_move: wrong direction %d.", *direction);
+				newx = escape_game.x;
+				newy = escape_game.y;
 		}
 		if((newx<0)||(newy<0)||(newx>escape_game.wallwidth*2+escape_game.goalwidth)||(newy>escape_game.boardheight))
 			status = ESCAPE_ERR_BOUND;
@@ -671,4 +675,6 @@ unsigned char revdir(unsigned char direction)
             	return 1;
 			break;
 	}
+	ggzdmod_debug("ERROR: revdir: invalid direction %d.", direction);
+	return 1;
 }
