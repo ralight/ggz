@@ -24,7 +24,12 @@
 	else :
 		if ($global_leftbar != "disabled") :
 			if (!$global_leftbar) :
-				Locale::includefile("default.leftbar");
+				include_once("auth.php");
+				if(Auth::username()) :
+					Locale::includefile("my/leftbar.inc");
+				else :
+					Locale::includefile("default.leftbar");
+				endif;
 			else:
 				Locale::includefile($global_leftbar);
 			endif;

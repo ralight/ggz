@@ -30,7 +30,11 @@ $datestring = date("d.m.Y", $datestamp);
 echo "Tournament $form_name of $form_game will start on $datestring.\n";
 echo "<br><br>\n";
 
-pg_exec($conn, "INSERT INTO tournaments (name, game, date) VALUES ('$form_name', '$form_game', $datestamp)");
+$organizer = Auth::username();
+
+pg_exec($conn, "INSERT INTO tournaments " .
+	"(name, game, date, organizer) VALUES " .
+	"('$form_name', '$form_game', $datestamp, '$organizer')");
 
 $res = pg_exec($conn, "SELECT MAX(id) FROM tournaments");
 $id = pg_result($res, 0, "max");

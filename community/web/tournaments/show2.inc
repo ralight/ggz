@@ -7,11 +7,13 @@ $res = pg_exec($conn, "SELECT * FROM tournaments WHERE id = $tid");
 $name = pg_result($res, $i, "name");
 $game = pg_result($res, $i, "game");
 $date = pg_result($res, $i, "date");
+$organizer = pg_result($res, $i, "organizer");
 
 $datestr = date("d.m.Y", $date);
 
 echo "Selected tournament: $name<br>\n";
 echo "Game type: <a href=\"/db/games/?lookup=$game\">$game</a><br>\n";
+echo "Organized by: <a href=\"/db/players/?lookup=$organizer\">$organizer</a><br>\n";
 echo "Starting: $datestr<br><br>\n";
 
 echo "Participants:<br><br>\n";
@@ -34,6 +36,7 @@ function played($player1, $player2)
 {
 	global $conn;
 	global $date;
+	global $matchid;
 
 	$res = pg_exec($conn, "SELECT match FROM matchplayers WHERE handle = '$player1'");
 	for($k = 0; $k < pg_numrows($res); $k++)
@@ -42,7 +45,7 @@ function played($player1, $player2)
 	}
 
 	$number = 0;
-	$res = pg_exec($conn, "SELECT match FROM matchplayers WHERE handle = '$player1'");
+	$res = pg_exec($conn, "SELECT match FROM matchplayers WHERE handle = '$player2'");
 	for($k = 0; $k < pg_numrows($res); $k++)
 	{
 		if($x[pg_result($res, $k, "match")] == pg_result($res, $k, "match")) :
@@ -54,9 +57,10 @@ function played($player1, $player2)
 	for($k = 0; $k < sizeof($y); $k++)
 	{
 		$match = $y[$k];
-		$res = pg_exec($conn, "SELECT winner FROM matches WHERE id = $match AND date > $date");
+		$res = pg_exec($conn, "SELECT id, winner FROM matches WHERE id = $match AND date > $date");
 		if(pg_numrows($res) == 1) :
 			$winner = pg_result($res, 0, "winner");
+			$matchid = pg_result($res, 0, "id");
 			if($winner) :
 				return $winner;
 			endif;
@@ -70,7 +74,7 @@ echo "Tournament plan:<br><br>\n";
 
 $names = array("Finals", "Semi-finals", "Quarter-finals", "Qualification", "Pre-qualification");
 
-$level = log($num) / log(2); // 2^$level=$num -> $level=ld($num)=log($num)/log(2)
+$level = log($num) / log(2);
 
 $open = false;
 $op = 1;
@@ -90,11 +94,13 @@ for($i = $level; $i > 0; $i--)
 			if ($winner) :
 				$winners[$op] = $winner;
 				$winnerstr = "<b>$winner</b>";
+				$matchstr = " (<a href='/db/matches/?lookup=$matchid'>match details</a>)";
 			else:
 				$winnerstr = "<b>(open)</b>";
+				$matchstr = "";
 				$open = true;
 			endif;
-			echo "($op) $player1 vs. $player2: $winnerstr<br>\n";
+			echo "($op) $player1 vs. $player2: $winnerstr$matchstr<br>\n";
 
 			$op += 1;
 		}
@@ -117,11 +123,13 @@ for($i = $level; $i > 0; $i--)
 			if ($winner) :
 				$winners[$op] = $winner;
 				$winnerstr = "<b>$winner</b>";
+				$matchstr = " (<a href='/db/matches/?lookup=$matchid'>match details</a>)";
 			else:
 				$winnerstr = "<b>(open)</b>";
+				$matchstr = "";
 				$open = true;
 			endif;
-			echo "($op) $player1 vs. $player2: $winnerstr<br>\n";
+			echo "($op) $player1 vs. $player2: $winnerstr$matchstr<br>\n";
 			$op1 += 2;
 			$op2 += 2;
 			$op += 1;
@@ -136,6 +144,10 @@ if (pg_numrows($res) > 0) :
 	$already_approved = 1;
 else :
 	$already_approved = 0;
+endif;
+
+if (Auth::username() != $organizer) :
+	$approved = 0;
 endif;
 
 if (($approved) && (!$already_approved) && (!$open)) :
@@ -157,8 +169,16 @@ if (!$open) :
 if ($already_approved) :
 	echo "This result has been approved.\n";
 else:
-	echo "<a href='show2.php?id=$tid&approved=1'>Approve this result!</a>\n";
+	if (Auth::username() == $organizer) :
+		echo "<a href='show2.php?id=$tid&approved=1'>Approve this result!</a>\n";
+	else :
+		echo "$Waiting for approval by tournament organizer.\n";
+	endif;
 endif;
+
+else :
+
+echo "This tournament is still running!\n";
 
 endif;
 

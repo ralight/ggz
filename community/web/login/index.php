@@ -10,7 +10,7 @@ if ($task == "resend") :
 	exit;
 endif;
 
-include("auth.php");
+include_once("auth.php");
 
 $input_user = $_POST["input_user"];
 $input_pass = $_POST["input_pass"];
