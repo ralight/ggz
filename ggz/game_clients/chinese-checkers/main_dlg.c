@@ -31,6 +31,9 @@ create_dlg_main (void)
   GtkWidget *exit;
   GtkWidget *preferences_menu;
   GtkWidget *help_menu;
+  GtkWidget *help_menu_menu;
+  GtkAccelGroup *help_menu_menu_accels;
+  GtkWidget *about;
   GtkWidget *hbox3;
   GtkWidget *p3_label;
   GtkWidget *p4_label;
@@ -124,6 +127,26 @@ create_dlg_main (void)
   gtk_container_add (GTK_CONTAINER (menubar1), help_menu);
   gtk_menu_item_right_justify (GTK_MENU_ITEM (help_menu));
 
+  help_menu_menu = gtk_menu_new ();
+  gtk_widget_set_name (help_menu_menu, "help_menu_menu");
+  gtk_widget_ref (help_menu_menu);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "help_menu_menu", help_menu_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (help_menu), help_menu_menu);
+  help_menu_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (help_menu_menu));
+
+  about = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (about)->child),
+                                   "_About");
+  gtk_widget_add_accelerator (about, "activate_item", help_menu_menu_accels,
+                              tmp_key, 0, 0);
+  gtk_widget_set_name (about, "about");
+  gtk_widget_ref (about);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "about", about,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (about);
+  gtk_container_add (GTK_CONTAINER (help_menu_menu), about);
+
   hbox3 = gtk_hbox_new (TRUE, 0);
   gtk_widget_set_name (hbox3, "hbox3");
   gtk_widget_ref (hbox3);
@@ -211,6 +234,9 @@ create_dlg_main (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (exit), "activate",
                       GTK_SIGNAL_FUNC (on_exit_menu_activate),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (about), "activate",
+                      GTK_SIGNAL_FUNC (on_about_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (draw_area), "expose_event",
                       GTK_SIGNAL_FUNC (on_draw_area_expose_event),

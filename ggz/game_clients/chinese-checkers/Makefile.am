@@ -16,6 +16,7 @@ ggz_ccheckers_SOURCES = display.c	display.h	\
 							\
 			main_dlg.c	main_dlg.h	\
 			main_cb.c	main_cb.h	\
+			about_dlg.c	about_dlg.h	\
 							\
 			board.xpm			\
 			hole.xpm			\

@@ -48,3 +48,23 @@ on_draw_area_button_press_event        (GtkWidget       *widget,
 	return TRUE;
 }
 
+
+void
+on_about_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	static GtkWidget *dlg_about = NULL;
+
+	if(dlg_about != NULL) {
+		gdk_window_show(dlg_about->window);
+		gdk_window_raise(dlg_about->window);
+	} else {
+		dlg_about = create_dlg_about();
+		gtk_signal_connect(GTK_OBJECT(dlg_about),
+				   "destroy",
+				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+				   &dlg_about);
+		gtk_widget_show(dlg_about);
+	}
+}
+

@@ -19,3 +19,7 @@ gboolean
 on_draw_area_button_press_event        (GtkWidget       *widget,
                                         GdkEventButton  *event,
                                         gpointer         user_data);
+
+void
+on_about_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

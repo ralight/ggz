@@ -1,0 +1,272 @@
+<?xml version="1.0"?>
+<GTK-Interface>
+
+<project>
+  <name>dlg_main</name>
+  <program_name>dlg_main</program_name>
+  <directory></directory>
+  <source_directory>src</source_directory>
+  <pixmaps_directory>pixmaps</pixmaps_directory>
+  <language>C</language>
+  <gnome_support>False</gnome_support>
+  <gettext_support>False</gettext_support>
+  <use_widget_names>True</use_widget_names>
+  <output_main_file>False</output_main_file>
+  <output_support_files>False</output_support_files>
+  <output_build_files>False</output_build_files>
+  <main_source_file>main_dlg.c</main_source_file>
+  <main_header_file>main_dlg.h</main_header_file>
+  <handler_source_file>main_cb.c</handler_source_file>
+  <handler_header_file>main_cb.h</handler_header_file>
+</project>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>dlg_main</name>
+  <signal>
+    <name>delete_event</name>
+    <handler>on_dlg_main_delete_event</handler>
+    <last_modification_time>Mon, 01 Jan 2001 07:21:56 GMT</last_modification_time>
+  </signal>
+  <title>Chinese Checkers for GGZ</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>False</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkVBox</class>
+    <name>vbox1</name>
+    <homogeneous>False</homogeneous>
+    <spacing>0</spacing>
+
+    <widget>
+      <class>GtkMenuBar</class>
+      <name>menubar1</name>
+      <shadow_type>GTK_SHADOW_OUT</shadow_type>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>game_menu</name>
+	<label>_Game</label>
+	<right_justify>False</right_justify>
+
+	<widget>
+	  <class>GtkMenu</class>
+	  <name>game_menu_menu</name>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>exit</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_exit_menu_activate</handler>
+	      <last_modification_time>Mon, 01 Jan 2001 07:17:47 GMT</last_modification_time>
+	    </signal>
+	    <label>E_xit</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>preferences_menu</name>
+	<label>_Preferences</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>help_menu</name>
+	<label>_Help</label>
+	<right_justify>True</right_justify>
+
+	<widget>
+	  <class>GtkMenu</class>
+	  <name>help_menu_menu</name>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>about</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_about_activate</handler>
+	      <last_modification_time>Sun, 14 Jan 2001 05:12:44 GMT</last_modification_time>
+	    </signal>
+	    <label>_About</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHBox</class>
+      <name>hbox3</name>
+      <homogeneous>True</homogeneous>
+      <spacing>0</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkLabel</class>
+	<name>p3_label</name>
+	<label></label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<name>p4_label</name>
+	<label></label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<name>p5_label</name>
+	<label></label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkDrawingArea</class>
+      <name>draw_area</name>
+      <width>400</width>
+      <height>400</height>
+      <events>GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK</events>
+      <signal>
+	<name>expose_event</name>
+	<handler>on_draw_area_expose_event</handler>
+	<last_modification_time>Mon, 01 Jan 2001 07:45:27 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>button_press_event</name>
+	<handler>on_draw_area_button_press_event</handler>
+	<last_modification_time>Wed, 03 Jan 2001 02:18:24 GMT</last_modification_time>
+      </signal>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+      </child>
+    </widget>
+
+    <widget>
+      <class>GtkHBox</class>
+      <name>hbox2</name>
+      <homogeneous>True</homogeneous>
+      <spacing>0</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkLabel</class>
+	<name>p2_label</name>
+	<label></label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<name>p1_label</name>
+	<label></label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<name>p6_label</name>
+	<label></label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkStatusbar</class>
+      <name>statusbar1</name>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
+    </widget>
+  </widget>
+</widget>
+
+</GTK-Interface>
