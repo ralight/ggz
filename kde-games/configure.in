@@ -48,6 +48,7 @@ AC_OUTPUT(Makefile
 	koenig/libcgc/Makefile
 	koenig/pics/Makefile
 	muehle/Makefile
+	muehle/module.dsc
 	muehle/src/Makefile
 	muehle/pics/Makefile
 	muehle/pics/standard/Makefile
