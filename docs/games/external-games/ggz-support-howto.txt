@@ -1,0 +1,631 @@
+unofficial mini step-by-step guide to add ggz support for your game
+===================================================================
+v0.2.0 - 21/May/2001 - Ricardo Quesada
+
+index
+=====
+
+step 1: download
+step 2: the ggz model
+step 3: modify your client
+step 4: modify your server
+  4.1.1 - teg's way
+  4.1.2 - chess's way  (contributed by perdig)
+  4.2   - modifing the players names
+  4.3   - supporting bots in ggz mode
+appendix A - extra libs
+appendix B - the perdig effect
+appendix C - the .dsc files
+appendix D - resources
+
+
+step 1: download
+================
+
+download GGZ from the GGZ homepage
+	http://ggz.sourceforge.net
+
+or from the CVS:
+	cvs -d:pserver:anonymous@cvs.GGZ.sourceforge.net:/cvsroot/ggz login
+	cvs -z3 -d:pserver:anonymous@cvs.GGZ.sourceforge.net:/cvsroot/ggz co MODULES
+
+	where MODULES is: easysock ggz-client-libs gtk-client ggzd
+
+
+download extra libs from:
+See appendix A
+
+
+step 2: the ggz model
+=====================
+
+tipical model:
+
+         fd = connect()
+     +------...-->--------+
+     |                    |
+     |                    V
+ +---+----+           +--------+
+ | my game|           | my game|
+ | client |           | server | select()
+ +--------+           +--------+
+     ^                    |
+     |                    |
+     +------...--<--------+
+
+
+
+GGZ model:
+                         
+                               connect()
+                         +--------...-->--------+
+                         |                      |
+ggz_client_connect()     |                      V   ggz_server_connect()
+                   +-----+------+         +-----+------+ 
+             +---->+ GGZ client |         | GGZ server +<----+
+             |     +------------+         +------------+     |
+             |              ^                |               |
+          +--------+        |                |           +--------+
+          | my game|        |                |           | my game|
+          | client |        +-----...-<------+           | server |
+          +--------+                                     +--------+
+
+
+
+step 3: modify your client
+==========================
+
+Your old code
+-------------
+
+main()
+{
+	int fd;
+
+	/* your tipical connect function */
+	fd = connect_to_server(); 
+}
+
+Your new code
+-------------
+
+#include <ggz_client.h>
+
+main()
+{
+	int fd;
+
+	if(with_ggz) {
+		if (ggz_client_init("your_game") < 0)
+			return;
+		fd = ggz_client_connect();
+	} else {
+		fd = connect_to_server(); 
+	}
+	
+}
+And link against the ggz-client-lib (See appendix A)
+
+
+step 4: modify your server
+==========================
+
+Here I will present 2 ways of accomplish the same task.
+Use the one that fits your server best.
+Perhaps you find a better way. If so, please tell.
+
+If your server has a GUI or a console, it would be a good idea to
+disable it in GGZ mode. All the servers in GGZ should run without
+interaction with the user.
+
+Note that all the communication between your client and your server
+is done in a transparent manner, so wont need to modify your protocol.
+
+
+step 4.1.1: teg's way
+---------------------
+[This way is used by TEG game ]
+
+so your old code may look like this
+
+main()
+{
+	enable_console();
+	main_loop();
+}
+
+
+Ok, your new code should be more or less like this:
+
+#include <ggz_server.h>
+main()
+{
+	if( with_ggz ) {
+		main_loop_with_ggz();
+		
+	} else {
+		enable_console();
+		enable_gui();
+		main_loop();
+	}
+}
+
+Perhaps you would like to add a new file to your project
+that has the necesary funcions to manage your game under ggz mode.
+
+This is an example that can be used:
+
+
+ggz_support_for_my_server.c
+
+/*
+ * All the ggz_xxx functions are in the ggz-server-lib.
+ * you should link againts it (See appendix A)
+ *
+ */
+
+/*
+ * IN: ggz_fd  <-- your fd that communicates to the ggz server
+ * IN/OUT: Pointer to the New Player file descriptor
+ *
+ * This function interprets the protocol with the ggz server.
+ */
+int game_handle_ggz(int ggz_fd, int* p_fd)
+{
+	int op, seat, status = -1;
+	int i;
+
+	if (es_read_int(ggz_fd, &op) < 0)
+		return -1;
+
+	switch (op) {
+
+	case REQ_GAME_LAUNCH:
+		if (ggz_game_launch() == 0) {
+
+			for (i = 0; i < ggz_seats_num(); i++) {
+				if( ggz_seats[i].assign == GGZ_SEAT_BOT ) {
+					MY_GAME_LAUNCH_BOT()
+				}
+			}
+		} else {
+			perror("Error en game launch()");
+		}
+		status = 0;
+		break;
+		
+	case REQ_GAME_JOIN:
+		if (ggz_player_join(&seat, p_fd) == 0) {
+
+			/* Avoid perdig effect */
+			MY_GAME_SEND_A_MESSAGE_TO_THE_CLIENT()
+/*			SEE APPENDIX B */
+
+			status = 1;
+		}
+		break;
+
+	case REQ_GAME_LEAVE:
+		if ( (status = ggz_player_leave(&seat, p_fd)) == 0) {
+			MY_GAME_DELETE_PLAYER(*p_fd);
+			status = 2;
+		}
+		break;
+		
+	case RSP_GAME_OVER:
+		status = 3; /* Signal safe to exit */
+		break;
+
+	default:
+		/* Unrecognized opcode */
+		status = -1;
+		break;
+	}
+
+	return status;
+}
+
+/*
+ *          
+ *                   This is your main loop */
+ *
+ */
+int main_loop_with_ggz(void)
+{
+	char game_over = 0;
+	int i, fd, ggz_sock, fd_max, status;
+	fd_set active_fd_set, read_fd_set;
+	int nready;
+
+	struct sockaddr client;
+	ssize_t client_len;
+	
+	/* Initialize ggz */
+	if (ggz_server_init("my_game") < 0)
+		return -1;
+
+	if ( (ggz_sock = ggz_server_connect()) < 0) {
+		ggz_server_quit();
+		fprintf(stderr,"Only the GGZ server must call MY_GAME server in GGZ mode!\n");
+		return -1;
+	}
+
+	FD_ZERO(&active_fd_set);
+	FD_SET(ggz_sock, &active_fd_set);
+
+	fd_max = ggz_sock;
+
+	while(!game_over) {
+		
+		read_fd_set = active_fd_set;
+		
+		nready = select((fd_max+1), &read_fd_set, NULL, NULL, NULL);
+		
+		if (nready <= 0) {
+			if (errno == EINTR)
+				continue;
+			else {
+				game_over=1;
+				continue;
+			}
+
+		/* Check for message from GGZ server */
+		} else if (FD_ISSET(ggz_sock, &read_fd_set)) {
+			status = game_handle_ggz(ggz_sock, &fd);
+			switch (status) {
+				
+			case -1:  /* Big error!! */
+				game_over=1;
+				continue;
+				
+			case 0: /* All ok, how boring! */
+				break;
+
+			case 1: /* A player joined */
+				FD_SET(fd, &active_fd_set);
+				if( fd > fd_max )
+					fd_max = fd;
+				break;
+				
+			case 2: /* A player left */
+				FD_CLR(fd, &active_fd_set);
+				break;
+				
+			case 3: /*Safe to exit */
+				game_over = 1;
+				break;
+			}
+
+		/* Check for message from player */
+		} else for (i=0; i<=fd_max; i++) {
+			if (i!=ggz_sock && FD_ISSET(i, &read_fd_set)) {
+				MY_GAME_READ_PLAYER_REQUEST( i );
+			}
+		}
+	}
+
+	if(ggz_sock) close(ggz_sock);
+	ggz_server_quit();
+	return 0;
+}
+
+/* end of file */
+
+
+Perhaps, a real example (that do this) may help you more.
+The game TEG added ggz support more or less with this guidelines.
+http://teg.sourceforge.net
+
+
+step 4.1.2: chess's way
+-----------------------
+[This way is used by perdig's chess. Look the chess game inside the GGZ games ]
+
+If your server uses a event system, you can use the ggz.c file that 
+is included with the Chess server. This way, it would work like this:
+
+You must have a function in the form:
+
+void ggz_handler( int event_id, void *data );
+
+Then, you just register handlers to the server events. The events are:
+
+GGZ_EVENT_LAUNCH  0
+GGZ_EVENT_JOIN    1
+GGZ_EVENT_LEAVE   2
+GGZ_EVENT_QUIT    3
+GGZ_EVENT_PLAYER  4
+
+To register a event, just run ggz_set_handler( <ggz_event>, 
+(GGZHandler)handler )
+
+For example, in the chess server I have a game_update(int eventid, void 
+*data) function. In my main.c file, I call:
+
+  ggz_set_handler(GGZ_EVENT_LAUNCH, (GGZHandler)game_update);
+  ggz_set_handler(GGZ_EVENT_JOIN, (GGZHandler)game_update);
+  ggz_set_handler(GGZ_EVENT_LEAVE, (GGZHandler)game_update);
+  ggz_set_handler(GGZ_EVENT_QUIT, (GGZHandler)game_update);
+  ggz_set_handler(GGZ_EVENT_PLAYER, (GGZHandler)game_handle_player);
+  ggz_main();
+
+The ggz_main() call will take care of the select() call, and will do all the 
+communication with the server. My game_update call looks like:
+
+void game_update(int event_id, void *data) {
+  [...]
+  switch (event_id) {
+     case GGZ_EVENT_LAUNCH:
+       [ do launch stuff... ]
+       break;
+     [ ... ]
+     case GGZ_EVENT_JOIN:
+       [ do join stuff... ]
+       break;
+ [...]
+}
+
+And my game_handle_player(int id, int *seat) call tells the game when player 
+*seat has sent something.
+
+The good thing about this way is that it completely abstracts the entire ggz 
+network code. You only have to worry about the GGZ events.
+
+However, there are a few caveats:
+- Whenever you need extra information, it is informed in the "void *data" 
+member of the handler function. The possible values for data:
+GGZ_EVENT_LAUNCH -> NULL
+GGZ_EVENT_JOIN -> (int *) seat of the joining player
+GGZ_EVENT_LEAVE -> (int *)seat of the leaving player
+GGZ_EVENT_QUIT -> NULL
+GGZ_EVENT_PLAYER -> (int *)seat of the player that sent something
+- Currently, you can only have one handler registered for each event. 
+However, you can change the code in game_servers/chess/ggz.c to add more.
+
+More information, just take a look at the chess server source code.
+
+
+step 4.2 - modifing the players names
+=====================================
+
+It would be nice if the names of players are the same
+as the ggz ones.
+Here I present a easy way to achieve that.
+
+When the player is login in, into your server, before registering that
+name call this function:
+
+#include "ggz_server.h"
+STATUS mygameggz_find_ggzname( int fd, char *n, int len )
+{
+	int i;
+	if(!n)
+		return STATUS_ERROR;
+
+	for (i = 0; i < ggz_seats_num(); i++) {
+		if( ggz_seats[i].fd == fd ) {
+			if( ggz_seats[i].name ) {
+				strncpy(n,ggz_seats[i].name,len);
+				n[len]=0;
+				return STATUS_SUCCESS;
+			} else
+				return STATUS_ERROR;
+		}
+	}
+
+	return STATUS_ERROR;
+}
+
+That function, given the socket of the player, it will return the
+ggz name.
+
+
+step 4.3 - supporting bots in ggz mode
+======================================
+[TODO: Finish this step]
+
+If your game doesnt support bots, you can skip this step.
+
+If your game supports bots, well, I divide them in two classes:
+
+ Internal bots: This bot is inside the server.
+ External bots: These bots are a different app.
+
+Examples of ported bots:
+       Game              Type of bot
+       ------------------------------
+	TEG              external
+	Batnav           external 
+	Freeciv          internal
+
+Look at Resources for the links (appendix D)
+
+
+appendix A: extra libs
+======================
+
+What are the ggz-client-libs and ggz-server-libs ?
+[NOTE: In the near future, they will be renamed to libggzmod]
+
+Well, there is an unofficial `package' of the libs. 
+I extract them from the `internal ggz games' and build a
+sort of `necessary-libs-for-external-games'
+
+You can find them in:
+	http://ggz.sourceforge.net/external_games
+
+	
+The current version of these libs, to work correctly, needs some changes
+in your configure.in or equivalent and to your server and client Makfile.am
+or equivalent.
+
+--> Add these lines to your `configure.in' after AC_INIT() <---
+AC_CONFIG_SUBDIRS(ggz)
+...
+--> end of `Add these lines to your `configure.in' after AC_INIT()' <---
+
+
+--> Add to your server Makefile.am <--
+...
+GGZLIB = ../ggz/easysock/libeasysock.a ../ggz/server/libggzd.a
+GGZINC = -I$(top_srcdir)/ggz/server -I$(top_srcdir)/ggz/easysock
+...
+INCLUDES = ... $(GGZINC) ...
+...
+myserver_DEPENDENCIES = ... $(GGZLIB) ...
+myserver_LDADD        = ...  $(GGZLIB) ...
+--> end of `Add to your server Makefile.am' <--
+
+
+--> Add to your client Makefile.am <--
+...
+GGZLIB = ../ggz/client/libggz.a
+GGZINC = -I$(top_srcdir)/ggz/client
+...
+INCLUDES = ... $(GGZINC) ...
+...
+myclient_DEPENDENCIES = ... $(GGZLIB) ...
+myclient_LDADD        = ... $(GGZLIB) ...
+--> end of `Add to your client Makefile.am' <--
+
+
+appendix B: the perdig effect
+=============================
+
+The perdig effect is a bug that was first discovered by perdig, so this
+is why it is called the `perdig effect'
+If your protocol is something like this:
+
+Client         Server
+  1)    ---->                    (The client sends the first packet)
+  2)    <----                    (The server answer)
+
+Then you i'll notice the perdig effect. To fix it you can do:
+
+Client         Server
+  1)    <----                    (The server sends the first packet)
+  2)    ---->                    (The client answer)
+
+  or:
+
+Client         Server
+  1)   ggz_client_connect()      (Connect to the GGZ client)
+  2)   sleep(5)                  (Sleep 5 seconds before sending the first packet)
+  3)    ---->                    (The client sends the first packet)
+  4)    <----                    (The server answer)
+
+This bug should be fixed in version >= 0.0.5 of ggz.
+
+
+appendix C: the .dsc files
+==========================
+The client & server must have a .dsc file. You must install them.
+
+The client .dsc file
+--------------------
+
+FILE: myclient.dsc
+
+# MY_GAME description file
+[ModuleInfo]
+Game = MY GAME NAME
+Author = My name
+# CommandLine path is figured relative to GameDir unless starting with /
+CommandLine = /usr/local/bin/mygame --ggz
+Frontend = gtk
+Homepage = http://mygame.sourceforge.net
+#
+# this is name used in ggz_client_init("")
+#
+Name = mygame
+Protocol = 0.0.6
+Version = 0.0.6
+
+
+Install the client.dsc file with:
+	ggz-config --install --fromfile=myclient.dsc
+
+Note that if you `make install', and if ggz-config is found in the
+path, it will automatically install your client.dsc file.
+
+Please, remember to edit the Makefile.am and change the name of
+your .dsc file.
+
+
+The server .dsc & .room file
+----------------------------
+
+FILE: mygame.dsc
+
+# The `mygame' is the same used in ggz_server_init("mygame")
+Name = mygame
+Version = 0.0.6
+Description = MY GAME DESCRIPTION
+Author = My Name
+Homepage = http://mygame.sourceforge.net
+# PlayersAllowed and BotsAllowed should be repeated as many times as
+# necessary to specify the valid distinct options which can appear
+PlayersAllowed = 2
+PlayersAllowed = 3
+PlayersAllowed = 4
+PlayersAllowed = 5
+PlayersAllowed = 6
+BotsAllowed = 0
+BotsAllowed = 1
+BotsAllowed = 2
+BotsAllowed = 3
+BotsAllowed = 4
+BotsAllowed = 5
+# Set AllowLeave to 1 if game supports players leaving during gameplay
+AllowLeave = 0
+# ExecutablePath is figured relative to GameDir unless starting with /
+ExecutablePath = /usr/local/bin/myserver --ggz
+# GameDisabled is a quick way to turn off the game if necessary
+#GameDisabled
+
+
+FILE: mygame.room
+
+# This is the short name for the room
+Name = MY GAME NAME
+# This is the long descriptive name for the room
+Description = MY GAME DESCRIPTION
+# The gametype should match up to the Name of an added game
+GameType = mygame
+# These set maximum values for this room
+MaxPlayers = 150
+MaxTables = 45
+
+
+Install this files:
+	cp mygame.dsc `ggz-config --configdir`/ggzd/games
+	cp mygame.room `ggz-config --configdir`/ggzd/rooms
+
+
+appendix D: resources
+=====================
+
+Lastest version of this text:
+  http://ggz.sourceforge.net/ggz-support-howto.txt
+
+
+External Games support for GGZ homepage:
+  Here you will find the list of ported games, games that will be ported,
+  documentation, patches, and more.
+  http://ggz.sourceforge.net/external_games
+
+
+GGZ Homepage:
+  http://ggz.sourceforge.net
+
+
+Compiling, troubleshooting, etc.
+  Read `README.GGZ' from the ggz-client-libs. A MUST read!
+
+
+
+Well, I hope this text could help you.
+If you need more help try to ask it to the ggz-dev list or mail me:
+	riq@mail.ru
+
+riq.

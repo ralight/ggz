@@ -1,0 +1,329 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.1 (Linux)">
+	<META NAME="AUTHOR" CONTENT=" ">
+	<META NAME="CREATED" CONTENT="20010525;14421500">
+	<META NAME="CHANGEDBY" CONTENT=" ">
+	<META NAME="CHANGED" CONTENT="20010525;14421500">
+	<STYLE>
+	<!--
+		@page { margin-left: 1.25in; margin-right: 1.25in; margin-top: 1in; margin-bottom: 1in }
+	-->
+	</STYLE>
+</HEAD>
+<BODY>
+<P STYLE="margin-bottom: 0in">--------------------------------------------------------</P>
+<P STYLE="margin-bottom: 0in"><B>GGZ: Writing KDE game modules</B></P>
+<P STYLE="margin-bottom: 0in">--------------------------------------------------------</P>
+<P STYLE="margin-bottom: 0in">Josef Spillner
+&lt;dr_maux@users.sourceforge.net&gt;, May 2001</P>
+<P STYLE="margin-bottom: 0in">--------------------------------------------------------</P>
+Please note that this is only an
+alpha-version, released due to some</P>
+discussion on kde-games-devel. The
+&quot;real&quot; one with coding examples and</P>
+library documentation, in HTML format,
+will come around June 8, 2001.</P>
+<P STYLE="margin-bottom: 0in">--------------------------------------------------------</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><B>- Introduction -</B></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+Right now we have 13 game types
+available for GGZ; some of them come with</P>
+different frontends, that makes a total
+of around 20 games. The game clients</P>
+are compatible to each other if they
+use the same server, which is currently</P>
+the case for all of them. There could,
+however, be different implementations</P>
+even on the server side - for example,
+two different card games which deal with</P>
+the same game type like Spades or Skat.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+The first game I wrote was
+Hastings1066, just to get into the feeling on how to</P>
+write a GGZ game. At this time (...the
+good old times :)) everything was coded</P>
+byte by byte, there were only plans for
+game module support via libraries.</P>
+Soon after I realized that the whole
+project would benefit from not only having</P>
+Gtk+ games but also KDE ones. This is
+how it all started (must have been around</P>
+October 2000 or so).</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><B>- The KDE games within GGZ -</B></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+Apart from KGGZ (the Core Client used
+to launch games) my other primary task</P>
+was to port at least some games to KDE,
+or invent new ones. Ismael Orenstein,</P>
+author of GGZ-KReversi, was faster than
+me and placed his game in CVS first.</P>
+He has used KDE Studio to achieve a
+port of the user interface, and a C++</P>
+protocol class (reversiprotocol.cpp)
+which uses a list of opcodes and data for</P>
+communication with the server. The data
+exchange itself is typically handled with</P>
+a QSocketNotifier, which is currently
+used in all of our KDE games.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+Both KTicTacTux and KDots use a similar
+technique, albeit there are some</P>
+differences in their proto objects.</P>
+Finally, there is Krosswater (ported
+from the Java game Crosswater), which uses</P>
+the MindX Zone library, which exists as
+ZoneServer and ZoneClient classes.</P>
+Unfortunately this isn't ready yet, but
+it will be for 0.0.5. (Right now there</P>
+is a lot of C code used in C++ wrapper
+classes.)</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+This gives a total amount of 4 KDE
+games, and that's a good start for this</P>
+release. In order to keep balance
+between the widget sets there is still need</P>
+for more KDE games. To avoid
+unnecessary duplicate work, the best choice are</P>
+always new game types.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><B>- How to start -</B></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+A GGZ KDE game is basically a normal
+KApplication which should have a menu bar</P>
+and a status bar - displaying the
+status is essential in turn-based games to</P>
+avoid unnecessary server error messages
+if it's not the player's turn, for</P>
+example.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+The main view consists of the game
+board (in case it's a board game), or</P>
+whatever is appropriate for this type
+of game. Ideally it provides some Qt</P>
+signals which are emitted whenever the
+player does an action, and some slots in</P>
+case there is network input from other
+players or the server-side AI. If the</P>
+game is intended to run both
+stand-alone and as a GGZ game module (for which a</P>
+standard command line option named
+--ggz exists), it is possible to have</P>
+client-side AI as well. This has for
+example been implemented in KTicTacTux,</P>
+and as it shows up some more issues
+I'll give a further explanation later in</P>
+this document.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+The KApplication needs to be fed with
+command line arguments (use KCmdLine for</P>
+that purpose). That is:</P>
+	-ggz (optionally; used to indicate a
+difference between direct and core</P>
+client launch)</P>
+	-o (historycally; some old games need
+this and the KApplication would</P>
+refuse to start otherwise if it
+receives this flag from the GGZ Core Client)</P>
+<BR>
+</P>
+<P STYLE="margin-bottom: 0in"><B>- Connecting to the server -</B></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+On startup, the connection must be
+established. The method doing this isn't</P>
+that long, so I can include it here
+directly:</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">void CLASSNAME::connect()</P>
+<P STYLE="margin-bottom: 0in">{</P>
+<P STYLE="margin-bottom: 0in">    char fd_name[64];</P>
+<P STYLE="margin-bottom: 0in">    struct sockaddr_un addr;</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">    sprintf(fd_name,
+&quot;/tmp/GAMETYPENAME.%d&quot;, getpid());</P>
+<P STYLE="margin-bottom: 0in">    if((fd = socket(PF_LOCAL,
+SOCK_STREAM, 0)) &lt; 0) exit(-1);</P>
+<P STYLE="margin-bottom: 0in">    bzero(&amp;addr, sizeof(addr));</P>
+<P STYLE="margin-bottom: 0in">    addr.sun_family = AF_LOCAL;</P>
+<P STYLE="margin-bottom: 0in">    strcpy(addr.sun_path, fd_name);</P>
+<P STYLE="margin-bottom: 0in">    if(::connect(fd, (struct sockaddr
+*)&amp;addr, sizeof(addr)) &lt; 0) exit(-1);</P>
+<P STYLE="margin-bottom: 0in">}</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+Instead of quitting on connection
+failure you can of course provide a fallback</P>
+or just pop up a
+KMessageBox::information saying that there is something wrong,</P>
+e.g. the tmp/ directory is
+write-protected or another weird thing which might</P>
+have happened.</P>
+Please note that the given socket name
+must match the game type specified in</P>
+the game module description file (more
+on that later).</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+If the connection is established, the
+server will send you your seat number and</P>
+the seat assignments. For example, if
+you decided to play a Monopoly game (which</P>
+has a maximum of 8 players) with 4
+players only, where 2 of them are AI's and</P>
+the third one is open for another real
+player to join, you'll get the following</P>
+results:</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">	(int) seat number = 0</P>
+<P STYLE="margin-bottom: 0in">	(int) seat 0 assignment = PLAYER</P>
+<P STYLE="margin-bottom: 0in">	(char) player 0 name = Hans</P>
+<P STYLE="margin-bottom: 0in">	(int) seat 1 assignment = BOT</P>
+<P STYLE="margin-bottom: 0in">	(char) player 1 name = bot</P>
+<P STYLE="margin-bottom: 0in">	(int) seat 2 assignment = BOT</P>
+<P STYLE="margin-bottom: 0in">	(char) player 2 name = bot</P>
+<P STYLE="margin-bottom: 0in">	(int) seat 3 assignment = OPEN</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+Bots are typically named &quot;bot&quot;,
+and open seats don't contain any name. The</P>
+function reading this information must
+be called whenever there are seat</P>
+updates (players joining and leaving),
+so make sure you don't mess up anything.</P>
+As an example, if in the above case the
+player Rudi joins the open seat, Hans</P>
+gets the information updated:</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">	...</P>
+<P STYLE="margin-bottom: 0in">	(int) seat 3 assignment = PLAYER</P>
+<P STYLE="margin-bottom: 0in">	(char) player 3 name = Rudi</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+And Rudi gets the same one too, except
+his seat number is 3.</P>
+The game client is responsible to
+indicate that the game starts. This can be</P>
+done by checking the number of open
+seats. If none are open, it's the turn of</P>
+the player (or bot) at seat 0,
+displayed (if player) on the status bar with a</P>
+message like &quot;Game started, please
+do your move&quot;, whereas all other player</P>
+should read something like &quot;Waiting
+for opponent&quot;.</P>
+<BR>
+</P>
+<P STYLE="margin-bottom: 0in"><B>- Game play -</B></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+In the shown case of turn-based games,
+whenever the active player is ready with</P>
+his move, the result must be sent to
+the server. The GGZ standard way of doing</P>
+so is using the easysocket library for
+writing/reading the socket, but it can</P>
+be done with the Qt library functions
+as well. However, when using easysock,</P>
+you're not on the wrong side, as issues
+like IPv6, UDP and optimized support</P>
+for real time games are already in
+progress, mostly available as patches.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+If the move is accepted by the server,
+it sends out the results to all players,</P>
+and requests the next move from the
+player who's turn is next. If the game is</P>
+over, the results are broadcasted as
+well, typically this message does only</P>
+contain the winner's seat number to
+save band-width.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+That's it. Easy, isn't it? The whole
+behaviour can be fine-tuned by changing</P>
+the implementation of the game servers
+(which are always launched by the GGZ</P>
+Gaming Zone server, ggzd).</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><B>- Hints, options, pitfalls -</B></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+I have left open the discussion on two
+topics until now:</P>
+First: If any game is also playable
+without GGZ, it might have to show a</P>
+different behaviour depending on how it
+is launched. If a game is designed to</P>
+quit after the server says so, it
+shouldn't quit in single-player mode, but</P>
+instead show a dialog box asking for
+another game or something. This should in</P>
+this case of course be avoided when
+playing over GGZ as the dialog box would</P>
+disappear with the game itself on exit,
+and this gives an ugly visual effect.</P>
+<BR>
+</P>
+Second: Every game module must provide
+accurate information about itself during</P>
+the installation process. This is done
+by providing a module.dsc.in file, which</P>
+is then transformed into a module.dsc
+file by autoconf, and installed by</P>
+ggz-config. There is a special file
+(named acinclude.ggz) for that purpose</P>
+available within the GGZ kde-games
+module. Please look at the existing games on</P>
+how to include standard command line
+options.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">Josef Spillner</P>
+<P STYLE="margin-bottom: 0in">dr_maux@users.sourceforge.net</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">The MindX Open Source Project -
+Relieving the world from proprietary games</P>
+<P STYLE="margin-bottom: 0in">	http://mindx.sourceforge.net</P>
+<P STYLE="margin-bottom: 0in">The GGZ Gaming Zone - Open Source
+Online Gaming</P>
+<P STYLE="margin-bottom: 0in">	http://ggz.sourceforge.net</P>
+<P STYLE="margin-bottom: 0in">The KDE Project - The most powerful
+Desktop available world-wide</P>
+<P STYLE="margin-bottom: 0in">	http://www.kde.org</P>
+</BODY>
+</HTML>

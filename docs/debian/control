@@ -1,0 +1,14 @@
+Source: ggz-docs
+Section: games
+Priority: optional
+Maintainer: Josef Spillner <dr_maux@users.sourceforge.net>
+Standards-Version: 3.0.1
+Build-Depends: debhelper
+
+Package: ggz-docs
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: GGZ Gaming Zone Documentation
+ This package contains design documents, reference material
+ and tutorials for developers, but also some help for users
+ of GGZ.
