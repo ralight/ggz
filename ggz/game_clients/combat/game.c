@@ -671,8 +671,10 @@ void game_handle_move(int p) {
     last_current = cbt_info.current;
     cbt_info.current = -1;
     a = combat_check_move(&cbt_game, last_current, p);
-    if (a < 0)
+    if (a < 0) {
       game_status("This move is invalid!");
+      printf("Move error: %d\n", a);
+    }
     else {
       if (es_write_int(cbt_info.fd, CBT_REQ_MOVE) < 0 ||
           es_write_int(cbt_info.fd, last_current) < 0 ||
