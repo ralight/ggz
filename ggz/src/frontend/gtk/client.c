@@ -398,7 +398,7 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 					 gpointer	 data)
 {
 	GtkWidget *tmp;
-	gint currow, x, i, max, length, first = TRUE;
+	gint x, i, max, length, first = TRUE;
 	gchar *name = NULL, *text = NULL, *startname = NULL, *out = NULL;
 
 	if (event->keyval == GDK_Tab)
@@ -821,11 +821,31 @@ static void
 client_realize                    (GtkWidget       *widget,
 				   gpointer         data)
 {
+	GtkTooltips *client_window_tips;
 	GdkFont* font;
 	GtkXText *tmp, *tmp2;
+	GtkWidget *tmp3;
 	char *buf;
 
+	/* setup Tooltips */
+	client_window_tips = gtk_tooltips_new();
 
+	tmp3 = lookup_widget(win_main, "connect_button");
+	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Connect to a server"), _("Connect to a GGZ Gaming Zone server"));
+	tmp3 = lookup_widget(win_main, "disconnect_button");
+	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Disconnect from server"), _("Disconnect from the GGZ Gaming Zone server"));
+	tmp3 = lookup_widget(win_main, "launch_button");
+	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Launch a new game"), _("Start playing a game at a new table"));
+	tmp3 = lookup_widget(win_main, "join_button");
+	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Join a game"), _("Join an existing game"));
+	tmp3 = lookup_widget(win_main, "leave_button");
+	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Lave a game"), _("Leave the game you're currently playing"));
+	tmp3 = lookup_widget(win_main, "props_button");
+	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Show properties dialog"), _("Show the properties dialog to change the client settings"));
+	tmp3 = lookup_widget(win_main, "stats_button");
+	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Show game stats"), _("Show the game stats for the current room's game type"));
+	tmp3 = lookup_widget(win_main, "exit_button");
+	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Exit the client"), _("Exit the application."));
 
 	/* Set Properties */
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_vpaned");
