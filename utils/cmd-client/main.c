@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 4593 2002-09-17 00:44:14Z jdorje $
+ * $Id: main.c 5255 2002-11-20 22:34:25Z dr_maux $
  *
  * Main program code for ggz-cmd program.
  *
@@ -46,9 +46,11 @@
  */
 
 #define GGZ_CMD_ANNOUNCE_CMD "announce"
+#define GGZ_CMD_CHECKONLINE_CMD "checkonline"
 
 typedef enum {
-	GGZ_CMD_ANNOUNCE
+	GGZ_CMD_ANNOUNCE,
+	GGZ_CMD_CHECKONLINE
 } CommandType;
 
 typedef struct {
@@ -77,10 +79,12 @@ static void print_help(char *exec_name)
 	fprintf(stderr,
 		"  Commands include:\n"
 		"    " GGZ_CMD_ANNOUNCE_CMD
-		" <message> - announce message from room 0.\n");
+		" <message> - announce message from room 0.\n"
+		"    " GGZ_CMD_CHECKONLINE_CMD
+		" - check server status.\n");
 	fprintf(stderr,
 		"  Bugs and issues:\n"
-		"    - Only one command is currently supported.\n");
+		"    - Only two commands are currently supported.\n");
 
 }
 
@@ -113,13 +117,16 @@ static int parse_arguments(int argc, char **argv, GGZCommand * cmd)
 	cmd->passwd = argv[3];
 
 	cmd_name = argv[4];
-	if (!strcasecmp(cmd_name, "announce")) {
+	if (!strcasecmp(cmd_name, GGZ_CMD_ANNOUNCE_CMD)) {
 		cmd->command = GGZ_CMD_ANNOUNCE;
 		if (argc < 6) {
 			print_help(argv[0]);
 			return -1;
 		}
 		cmd->data = argv[5];
+	} else if (!strcasecmp(cmd_name, GGZ_CMD_CHECKONLINE_CMD)){
+		cmd->command = GGZ_CMD_CHECKONLINE;
+		cmd->data = NULL;
 	} else {
 		print_help(argv[0]);
 		return -2;
@@ -153,7 +160,7 @@ static GGZHookReturn server_failure(GGZServerEvent id,
 				    void *event_data, void *user_data)
 {
 	ggz_debug(DBG_MAIN, "GGZ failure: event %d.", id);
-	fprintf(stderr, "Could not connect to server.\n");
+	fprintf(stderr, "ggz-cmd: Could not connect to server: %s\n", (char*)event_data);
 	exit(-1);
 }
 
@@ -226,26 +233,28 @@ static void exec_command(GGZCommand * cmd)
 	/* Now we're ready to execute the command(s), but how we do it
 	   depends on the command itself.  Right now this is hard-wired
 	   for the ANNOUNCE command. */
-	assert(cmd->command == GGZ_CMD_ANNOUNCE);
-	ggzcore_server_add_event_hook(server, GGZ_ENTERED,
-				      server_room_entered);
-	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, server_failure);
-	if (ggzcore_server_join_room(server, 0) < 0) {
-		ggz_debug(DBG_MAIN, "Server join room failed.  "
-			  "There are %d rooms.",
-			  ggzcore_server_get_num_rooms(server));
-		exit(-1);
+	/*assert(cmd->command == GGZ_CMD_ANNOUNCE);*/
+	if(cmd->command == GGZ_CMD_ANNOUNCE)
+	{
+		ggzcore_server_add_event_hook(server, GGZ_ENTERED, server_room_entered);
+		ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, server_failure);
+		if (ggzcore_server_join_room(server, 0) < 0) {
+			ggz_debug(DBG_MAIN, "Server join room failed.  "
+				  "There are %d rooms.",
+				  ggzcore_server_get_num_rooms(server));
+			exit(-1);
+		}
+
+		do {
+			wait_for_input(server_fd);
+			ggzcore_server_read_data(server, server_fd);
+		} while (!in_room);
+
+		assert(command.data);
+		ggzcore_room_chat(ggzcore_server_get_cur_room(server),
+				  GGZ_CHAT_ANNOUNCE, NULL, command.data);
+		ggz_debug(DBG_MAIN, "Sending announcement.");
 	}
-
-	do {
-		wait_for_input(server_fd);
-		ggzcore_server_read_data(server, server_fd);
-	} while (!in_room);
-
-	assert(command.data);
-	ggzcore_room_chat(ggzcore_server_get_cur_room(server),
-			  GGZ_CHAT_ANNOUNCE, NULL, command.data);
-	ggz_debug(DBG_MAIN, "Sending announcement.");
 
 	/* FIXME: we don't officially disconnect, we just close
 	   the communication! */
