@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 3666 2002-03-25 00:07:42Z dr_maux $
+ * $Id: game.c 3716 2002-04-01 21:51:03Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -65,7 +65,8 @@ void game_init(GGZdMod *ggz)
 		{
 			if(hastings_game.board[i][j] == 32) hastings_game.board[i][j] = -1;
 			else hastings_game.board[i][j] -= 48;
-			if(hastings_game.board[i][j] > hastings_game.playernum - 1) hastings_game.board[i][j] = -1;
+			/*if(hastings_game.board[i][j] > hastings_game.playernum - 1) hastings_game.board[i][j] = -1;*/
+			/*if(hastings_game.board[i][j] > ggzdmod_get_num_seats(ggz) - 1) hastings_game.board[i][j] = -1;*/
 		}
 	}
 
@@ -103,6 +104,7 @@ void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data)
 }
 
 
+/* Calculate if all seats are full */
 static int seats_full(void)
 {
 	return ggzdmod_count_seats(hastings_game.ggz, GGZ_SEAT_OPEN)
@@ -130,7 +132,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 				game_update(HASTINGS_EVENT_MOVE, seat_data);
 			break;
 		case HASTINGS_REQ_INIT:
-			game_init(hastings_game.ggz);
+			/*game_init(hastings_game.ggz);*/
 			game_send_sync(num);
 			if (seats_full())
 			{
@@ -177,10 +179,9 @@ int game_send_players(void)
 		hastings_game.players[j] = 1;
 
 		seat = ggzdmod_get_seat(hastings_game.ggz, j);
-		if(seat.fd == -1)
+		if(seat.type != GGZ_SEAT_PLAYER)
 		{
-			ggzdmod_log(hastings_game.ggz, "Player %i is a unassigned (%i).\n", j, seat.type);
-			/*assignment: -1 is unassigned player, -2 is unassigned bot*/
+			ggzdmod_log(hastings_game.ggz, "Player %i is a unassigned or bot (%i).\n", j, seat.type);
 			continue;
 		}
 
@@ -207,15 +208,17 @@ int game_send_move(int num)
 {
 	int i, fd;
 	int status = 0;
+	GGZSeat seat;
 
 	for(i = 0; i < hastings_game.playernum; i++)
 	{
 		if(i != num)
 		{
-			fd = ggzdmod_get_seat(hastings_game.ggz, i).fd;
+			seat = ggzdmod_get_seat(hastings_game.ggz, i);
+			fd = seat.fd;
 
 			/* If player is a computer, don't need to send */
-			if (fd == -1) continue;
+			if (seat.type != GGZ_SEAT_PLAYER) continue;
 
 			ggzdmod_log(hastings_game.ggz, "Sending player %d's move to player %d\n", num, i);
 
@@ -237,20 +240,32 @@ int game_send_move(int num)
 int game_send_sync(int num)
 {
 	int i, j, fd;
+	GGZSeat seat;
+	char knight;
 
+	/* Find the right player */
 	fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
-
+	if(fd < 0) return -1;
 	ggzdmod_log(hastings_game.ggz, "Handling sync for player %d\n", num);
 
 	/* First player? */
 	if (hastings_game.turn == -1) hastings_game.turn = 0;
 
+	/* Send synchonization opcode and turn */
 	if((ggz_write_int(fd, HASTINGS_SND_SYNC) < 0) || (ggz_write_int(fd, hastings_game.turn) < 0)) return -1;
 
-	/* Syncing knights */
+	/* Syncing knights; mask out nonexistant knights */
 	for (i = 0; i < 6; i++)
 		for (j = 0; j < 19; j++)
-			if (ggz_write_char(fd, hastings_game.board[i][j]) < 0) return -1;
+		{
+			knight = hastings_game.board[i][j];
+			if(knight != -1)
+			{
+				seat = ggzdmod_get_seat(hastings_game.ggz, knight);
+				if((seat.type != GGZ_SEAT_PLAYER) && (seat.type != GGZ_SEAT_BOT)) knight = -1;
+			}
+			if (ggz_write_char(fd, knight) < 0) return -1;
+		}
 
 	/* Syncing map */
 	for (i = 0; i < 6; i++)
@@ -349,6 +364,9 @@ int game_handle_move(int num)
 /* Check for valid move */
 char game_check_move(int num, int enemyallowed)
 {
+	char knight;
+	GGZSeat seat;
+
 	/* Check for correct state */
 	if (hastings_game.state != HASTINGS_STATE_PLAYING)
 		return HASTINGS_ERR_STATE;
@@ -401,19 +419,27 @@ char game_check_move(int num, int enemyallowed)
 	/* Check for duplicated move */
 	if (hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] == hastings_game.turn)
 		return HASTINGS_ERR_FULL;
-	/* Check for team collegues */
-	if (hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] % 2 ==
-	    hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] % 2)
-		return HASTINGS_ERR_FULL;
 	/* Check for move onto water */
 	if (hastings_game.boardmap[hastings_game.move_dst_x][hastings_game.move_dst_y] == 32)
 		return HASTINGS_ERR_MAP;
-	/* Check for enemies */
-	if(enemyallowed)
+
+	/* Check for other knights whereever necessary */
+	knight = hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y];
+	seat = ggzdmod_get_seat(hastings_game.ggz, knight);
+	if((seat.type != GGZ_SEAT_PLAYER) && (seat.type != GGZ_SEAT_BOT)) knight = -1;
+	if(knight != -1)
 	{
+		/* Check for team collegues */
 		if (hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] % 2 ==
-			!(hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] % 2))
-			return HASTINGS_ERR_ENEMY;
+		    hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] % 2)
+			return HASTINGS_ERR_FULL;
+		/* Check for enemies */
+		if(enemyallowed)
+		{
+			if (hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] % 2 ==
+				!(hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] % 2))
+				return HASTINGS_ERR_ENEMY;
+		}
 	}
 
 	return 0;
