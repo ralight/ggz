@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 6287 2004-11-06 08:47:13Z jdorje $
+ * $Id: types.c 6288 2004-11-06 17:32:23Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -140,14 +140,11 @@ static void types_filter_button(GtkWidget *widget, gpointer data)
 
 
 
-GtkWidget*
-create_dlg_types (void)
+GtkWidget *create_dlg_types (void)
 {
   GtkWidget *dlg_types;
-  GtkWidget *scrolledwindow1;
-  GtkWidget *viewport1;
-  GtkWidget *vbox1;
-  GtkWidget *scrolledwindow2;
+  GtkWidget *vbox;
+  GtkWidget *scrolledwindow;
   GtkWidget *types_clist;
   GtkWidget *label6;
   GtkWidget *label7;
@@ -158,49 +155,34 @@ create_dlg_types (void)
   GtkWidget *filter_optionmenu;
   GtkWidget *filter_optionmenu_menu;
   GtkWidget *filter_button;
+  GtkWidget *action_area, *button_box, *close_button;
 
-  dlg_types = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  dlg_types = gtk_dialog_new();
   gtk_window_set_transient_for(GTK_WINDOW(dlg_types), GTK_WINDOW(win_main));
   g_object_set_data(G_OBJECT (dlg_types), "dlg_types", dlg_types);
   gtk_widget_set_size_request(dlg_types, 600, 300);
   gtk_window_set_title (GTK_WINDOW (dlg_types), _("Game Types"));
 
-  scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (scrolledwindow1);
-  g_object_set_data_full(G_OBJECT (dlg_types), "scrolledwindow1", scrolledwindow1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (scrolledwindow1);
-  gtk_container_add (GTK_CONTAINER (dlg_types), scrolledwindow1);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  vbox = GTK_DIALOG(dlg_types)->vbox;
+  gtk_widget_show(vbox);
 
-  viewport1 = gtk_viewport_new (NULL, NULL);
-  gtk_widget_ref (viewport1);
-  g_object_set_data_full(G_OBJECT (dlg_types), "viewport1", viewport1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (viewport1);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow1), viewport1);
 
-  vbox1 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox1);
-  g_object_set_data_full(G_OBJECT (dlg_types), "vbox1", vbox1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox1);
-  gtk_container_add (GTK_CONTAINER (viewport1), vbox1);
-
-  scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (scrolledwindow2);
-  g_object_set_data_full(G_OBJECT (dlg_types), "scrolledwindow2", scrolledwindow2,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (scrolledwindow2);
-  gtk_box_pack_start (GTK_BOX (vbox1), scrolledwindow2, TRUE, TRUE, 0);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
+  gtk_widget_ref (scrolledwindow);
+  g_object_set_data_full(G_OBJECT(dlg_types), "scrolledwindow",
+			 scrolledwindow,
+			 (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (scrolledwindow);
+  gtk_box_pack_start(GTK_BOX(vbox), scrolledwindow, TRUE, TRUE, 0);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow),
+				 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
   types_clist = gtk_clist_new (4);
   gtk_widget_ref (types_clist);
   g_object_set_data_full(G_OBJECT (dlg_types), "types_clist", types_clist,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (types_clist);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow2), types_clist);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow), types_clist);
   gtk_clist_set_column_width (GTK_CLIST (types_clist), 0, 74);
   gtk_clist_set_column_width (GTK_CLIST (types_clist), 1, 88);
   gtk_clist_set_column_width (GTK_CLIST (types_clist), 2, 175);
@@ -240,7 +222,7 @@ create_dlg_types (void)
   g_object_set_data_full(G_OBJECT (dlg_types), "toolbar1", toolbar1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (toolbar1);
-  gtk_box_pack_start (GTK_BOX (vbox1), toolbar1, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox), toolbar1, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (toolbar1), 4);
 
   filter_label = gtk_label_new (_("Room List Filter:"));
@@ -274,12 +256,33 @@ create_dlg_types (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (filter_button);
 
-  g_signal_connect (GTK_OBJECT (dlg_types), "destroy",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroyed),
-                      &types_dialog);
-  g_signal_connect (GTK_OBJECT (filter_button), "clicked",
-                      GTK_SIGNAL_FUNC (types_filter_button),
-                      NULL);
+  action_area = GTK_DIALOG(dlg_types)->action_area;
+  gtk_widget_show(action_area);
+
+
+  button_box = gtk_hbutton_box_new();
+  gtk_widget_ref(button_box);
+  g_object_set_data_full(G_OBJECT(dlg_types), "button_box",
+			 button_box,
+			 (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show(button_box);
+  gtk_box_pack_start(GTK_BOX(action_area), button_box, TRUE, TRUE, 0);
+
+  close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+  gtk_widget_ref(close_button);
+  g_object_set_data_full(G_OBJECT (dlg_types),
+			 "close_button", close_button,
+			 (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show(close_button);
+  gtk_container_add(GTK_CONTAINER (button_box), close_button);
+  GTK_WIDGET_SET_FLAGS(close_button, GTK_CAN_DEFAULT);
+
+  g_signal_connect(dlg_types, "destroy",
+		   GTK_SIGNAL_FUNC (gtk_widget_destroyed), &types_dialog);
+  g_signal_connect(filter_button, "clicked",
+		   GTK_SIGNAL_FUNC (types_filter_button), NULL);
+  g_signal_connect_swapped(close_button, "clicked",
+			   GTK_SIGNAL_FUNC(gtk_widget_destroy), dlg_types);
 
   return dlg_types;
 }
