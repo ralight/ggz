@@ -97,12 +97,6 @@ struct wh_game_t
 	int max_bid_rounds;	/* the maximum number of bid rounds we can hold (increased at need) */
 	player_t prev_bid;	/* who made the _previous_ bid? */
 	player_t next_bid;	/* current/next bidder */
-	int num_bid_choices;	/* the number of bid choices */
-	int max_bid_choices;	/* the maximum number of choices there may be == sizeof(bid_texts) == sizeof(bid_choices) */
-	int max_bid_length;	/* the longest possible bid (text-wise) */
-	bid_t *bid_choices;	/* the bid choices -- must be allocated in game_launch or declared static */
-	char **bid_texts;	/* the texts for the player to choose from -- allocated in game_launch  or declared static */
-	char **bid_text_ref;	/* a pointer to the currently-used bid texts */
 
 	int play_count;		/* how many plays there have been this trick */
 	int play_total;		/* how many plays there will be this trick */

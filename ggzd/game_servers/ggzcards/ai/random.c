@@ -39,7 +39,7 @@ static char* get_name(player_t p);
 static void start_hand();
 static void alert_bid( player_t p, bid_t bid );
 static void alert_play( player_t p, card_t card );
-static bid_t get_bid( player_t p );
+static bid_t get_bid( player_t p, bid_t *bid_choices, int bid_count );
 static card_t get_play( player_t p, seat_t s );
 
 struct ai_function_pointers random_ai_funcs = {
@@ -76,10 +76,10 @@ static void alert_play( player_t p, card_t card )
 }
 
 /* this gets a bid or play from the ai */
-static bid_t get_bid( player_t p )
+static bid_t get_bid( player_t p, bid_t* bid_choices, int bid_count )
 {
-	int choice = random() % game.num_bid_choices;
-	return game.bid_choices[ choice ];
+	int choice = random() % bid_count;
+	return bid_choices[ choice ];
 }
 
 static card_t get_play( player_t p, seat_t s )

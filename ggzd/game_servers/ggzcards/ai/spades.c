@@ -42,7 +42,7 @@ static char* get_name(player_t p);
 static void start_hand();
 static void alert_bid(player_t p, bid_t bid);
 static void alert_play(player_t p, card_t play);
-static bid_t get_bid(player_t num);
+static bid_t get_bid(player_t num, bid_t *bid_choices, int bid_count);
 static card_t get_play( player_t p, seat_t s);
 
 struct ai_function_pointers spades_ai_funcs = {
@@ -165,7 +165,7 @@ static void alert_play(player_t p, card_t play)
 	
 }
 
-static bid_t get_bid(player_t num)
+static bid_t get_bid(player_t num, bid_t *bid_choices, int bid_count)
 {
 	int count, points, i, gap, p1, p2, prob;
 	bid_t bid, pard;

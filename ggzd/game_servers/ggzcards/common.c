@@ -312,9 +312,7 @@ int send_sync(player_t p)
 
 	/* request bid/play again, if necessary */
 	if (game.state == WH_STATE_WAIT_FOR_BID && game.next_bid == p)
-		if (req_bid
-		    (game.next_bid, game.num_bid_choices,
-		     game.bid_text_ref) < 0)
+		if (req_bid(game.next_bid) < 0)
 			status = -1;
 	if (game.state == WH_STATE_WAIT_FOR_PLAY && game.curr_play == p)
 		if (req_play(game.curr_play, game.play_seat) < 0)
@@ -567,7 +565,7 @@ static char *player_messages[] = { "WH_RSP_NEWGAME", "WH_RSP_OPTIONS",
 int handle_player(player_t p)
 {
 	int fd, op, status = 0;
-	int index;
+	bid_t bid;
 
 	fd = ggz_seats[p].fd;
 
@@ -617,8 +615,8 @@ int handle_player(player_t p)
 		}
 		break;
 	case WH_RSP_BID:
-		if ((status = rec_bid(p, &index)) == 0)
-			handle_bid_event(game.bid_choices[index]);
+		if ((status = rec_bid(p, &bid)) == 0)
+			handle_bid_event(bid);
 		break;
 	case WH_RSP_PLAY:
 		status = rec_play(p);
@@ -1056,6 +1054,8 @@ int handle_bid_event(bid_t bid)
 	player_t p = game.next_bid;
 	int was_waiting = 0;
 
+	clear_bids();
+
 	ggz_debug("Handling a bid event.");
 	if (game.state == WH_STATE_WAITFORPLAYERS) {
 		/* if a player left while another player was in the middle of 
@@ -1187,22 +1187,11 @@ void init_game()
 					 sizeof(card_t));
 	}
 
-	/* allocate bidding arrays */
-	game.bid_texts =
-		alloc_string_array(game.max_bid_choices, game.max_bid_length);
-	game.bid_choices =
-		(bid_t *) alloc(game.max_bid_choices * sizeof(bid_t));
-
 	set_global_message("", "%s", "");
 	/* This is no longer necessary under the put_player_message system
 	   for (s = 0; s < game.num_seats; s++)
 	   game.seats[s].message[0] = 0;
 	 */
-	if (game.bid_texts == NULL || game.bid_choices == NULL) {
-		ggz_debug("ERROR: SERVER BUG: "
-			  "game.bid_texts not allocated.");
-		exit(-1);
-	}
 
 	/* set AI names */
 	for (p = 0; p < game.num_players; p++)

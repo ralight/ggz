@@ -27,47 +27,75 @@
 
 #include "common.h"
 
+/* TODO: declaring these static is OK for now, but eventually they'll have to be
+ * a part of the game struct */
+static bid_t *bids = NULL;
+static int bid_size = 0;
+static int bid_count = 0;
+
+/* clear_bids
+ *   clears the list of bids
+ */
+void clear_bids()
+{
+	bid_count = 0;
+}
+
+/* add_bid
+ *   adds the bid to the list of bid choices we're going to give the client
+ */
+void add_bid(bid_t bid)
+{
+	bid_count++;
+	if (bid_count > bid_size) {
+		bid_size = bid_size ? 2 * bid_size : 8;
+		bids = realloc(bids, bid_size * sizeof(bid_t));
+	}
+	bids[bid_count - 1] = bid;
+}
+
+void add_sbid(char val, char suit, char spec)
+{
+	bid_t bid;
+	bid.bid = 0;
+	bid.sbid.val = val;
+	bid.sbid.suit = suit;
+	bid.sbid.spec = spec;
+	add_bid(bid);
+}
 
 /* req_bid
  *   Request bid from current bidder
  *   parameters are: player to get bid from, number of possible bids, text entry for each bid
  */
-int req_bid(player_t p, int num, char **bid_choices)
+int req_bid(player_t p)
 {
 	int i, fd = ggz_seats[p].fd, status = 0;
 
 	ggz_debug("Requesting a bid from player %d/%s; %d choices", p,
-		  ggz_seats[p].name, num);
+		  ggz_seats[p].name, bid_count);
 
 	/* although the game_* functions probably track this data
 	   themselves, we track it here as well just in case. */
-	game.num_bid_choices = num;
 	game.next_bid = p;
-	game.bid_text_ref = bid_choices;
 
 	set_game_state(WH_STATE_WAIT_FOR_BID);
 	set_player_message(p);
 
-
 	if (ggz_seats[p].assign == GGZ_SEAT_BOT) {
 		/* request a bid from the ai */
-		handle_bid_event(ai_get_bid(p));
+		handle_bid_event(ai_get_bid(p, bids, bid_count));
 	} else {
 		/* request a bid from the client */
-		if (bid_choices == NULL) {
-			bid_choices = game.bid_texts;
-			for (i = 0; i < num; i++)
-				game.funcs->get_bid_text(bid_choices[i],
-							 game.max_bid_length,
-							 game.bid_choices[i]);
-		}
-
 		if (fd == -1 ||
 		    es_write_int(fd, WH_REQ_BID) < 0 ||
-		    es_write_int(fd, num) < 0)
+		    es_write_int(fd, bid_count) < 0)
 			status = -1;
-		for (i = 0; i < num; i++) {
-			if (es_write_string(fd, bid_choices[i]) < 0)
+		for (i = 0; i < bid_count; i++) {
+			char bid_text[4096];
+			game.funcs->get_bid_text(bid_text, sizeof(bid_text),
+						 bids[i]);
+			if (es_write_string(fd, bid_text) < 0)
 				status = -1;
 		}
 	}
@@ -82,16 +110,16 @@ int req_bid(player_t p, int num, char **bid_choices)
  *   Note that a return of -1 here indicates a GGZ error, which will disconnect the
  *   player.
  */
-int rec_bid(player_t p, int *bid_index)
+int rec_bid(player_t p, bid_t * bid)
 {
-	int fd = ggz_seats[p].fd;
+	int fd = ggz_seats[p].fd, index;
 
-	if (es_read_int(fd, bid_index) < 0)
+	if (es_read_int(fd, &index) < 0)
 		return -1;
 
-	*bid_index = *bid_index % game.num_bid_choices;
-	if (*bid_index < 0)
-		*bid_index += game.num_bid_choices;
+	index = index % bid_count;
+	if (index < 0)
+		index += bid_count;
 
 	/* First of all, is this a valid bid? */
 	if (p != game.next_bid) {
@@ -107,8 +135,9 @@ int rec_bid(player_t p, int *bid_index)
 		return -1;
 	}
 
-	ggz_debug("Received bid choice %d (%s) from player %d/%s",
-		  *bid_index, game.bid_texts[*bid_index], p,
-		  ggz_seats[p].name);
+	*bid = bids[index];
+
+	ggz_debug("Received bid choice %d from player %d/%s",
+		  index, p, ggz_seats[p].name);
 	return 0;
 }

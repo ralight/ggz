@@ -111,10 +111,6 @@ static void bridge_init_game()
 		game.players[p].seat = s;
 		game.seats[s].ggz = &ggz_seats[p];
 	}
-	/* most possible bids for bridge: 7 * 5 suit bids + (re)double + pass = 37
-	 * longest possible bid: "redouble" = 9 */
-	game.max_bid_choices = 37;
-	game.max_bid_length = 9;
 
 	game.cumulative_scores = 0;
 
@@ -136,46 +132,34 @@ static void bridge_start_bidding()
 
 static int bridge_get_bid()
 {
-	int index=0;
-	bid_t bid;
-	bid.bid = 0;
+	char suit, val;
 
-	/* this is based closely on the Suaro code, below */
+	/* this is based closely on the Suaro bidding code */
 
 	/* make a list of regular bids */
-	for (bid.sbid.val = 1; bid.sbid.val <= 7; bid.sbid.val++) {
-		for (bid.sbid.suit = CLUBS; bid.sbid.suit <= BRIDGE_NOTRUMP; bid.sbid.suit++) {
-			if (bid.sbid.val < BRIDGE.contract) continue;
-			if (bid.sbid.val == BRIDGE.contract && bid.sbid.suit <= BRIDGE.contract_suit) continue;
-			game.bid_choices[index] = bid;
-			index++;
+	for (val = 1; val <= 7; val++) {
+		for (suit = CLUBS; suit <= BRIDGE_NOTRUMP; suit++) {
+			if (val < BRIDGE.contract) continue;
+			if (val == BRIDGE.contract && suit <= BRIDGE.contract_suit) continue;
+
+			add_sbid(val, suit, 0);
 		}
 	}
 
 	/* make "double" or "redouble" bid */
 	if (BRIDGE.contract != 0 &&
 	    BRIDGE.bonus == 1 &&
-	    (game.next_bid == (BRIDGE.declarer+1) % 4 || game.next_bid == (BRIDGE.declarer+3) % 4)) {
-		bid.bid = 0;
-		bid.sbid.spec = BRIDGE_DOUBLE;
-		game.bid_choices[index] = bid;
-		index++;
-	} else if (BRIDGE.contract != 0 &&
-		   BRIDGE.bonus == 2 &&
-		   (game.next_bid == BRIDGE.declarer || game.next_bid == (BRIDGE.declarer+2) % 4)) {
-		bid.bid = 0;
-		bid.sbid.spec = BRIDGE_REDOUBLE;
-		game.bid_choices[index] = bid;
-		index++;
-	}
+	    (game.next_bid == (BRIDGE.declarer+1) % 4 || game.next_bid == (BRIDGE.declarer+3) % 4))
+		add_sbid(0, 0, BRIDGE_DOUBLE);
+	else if (BRIDGE.contract != 0 &&
+		 BRIDGE.bonus == 2 &&
+		 (game.next_bid == BRIDGE.declarer || game.next_bid == (BRIDGE.declarer+2) % 4))
+		add_sbid(0, 0, BRIDGE_REDOUBLE);
 
 	/* make "pass" bid */
-	bid.bid = 0;
-	bid.sbid.spec = BRIDGE_PASS;
-	game.bid_choices[index] = bid;
-	index++;
+	add_sbid(0, 0, BRIDGE_PASS);
 
-	return req_bid(game.next_bid, index, NULL);
+	return req_bid(game.next_bid);
 }
 
 static void bridge_handle_bid(bid_t bid)
@@ -310,8 +294,8 @@ static void bridge_set_player_message(player_t p)
 	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
 			add_player_message(s, "Tricks: %d\n", game.players[p].tricks+game.players[(p+2)%4].tricks);
 	if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
-			char bid_text[game.max_bid_length];
-			game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
+			char bid_text[512];
+			game.funcs->get_bid_text(bid_text, sizeof(bid_text), game.players[p].bid);
 			if (*bid_text)
 				add_player_message(s, "Bid: %s\n", bid_text);
 	}

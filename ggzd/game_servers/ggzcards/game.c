@@ -456,8 +456,8 @@ void game_set_player_message(player_t p)
 	if ((game.state == WH_STATE_NEXT_BID
 	     || game.state == WH_STATE_WAIT_FOR_BID)
 	    && game.players[p].bid_count > 0) {
-		char bid_text[game.max_bid_length];
-		game.funcs->get_bid_text(bid_text, game.max_bid_length,
+		char bid_text[512];
+		game.funcs->get_bid_text(bid_text, sizeof(bid_text),
 					 game.players[p].bid);
 		if (*bid_text)
 			add_player_message(s, "Bid: %s\n", bid_text);

@@ -95,13 +95,7 @@ static void suaro_init_game()
 	game.players[1].seat = 2;
 	game.seats[1].ggz = &ggz[0];
 	game.seats[3].ggz = &ggz[1];
-	/* most possible bids for suaro: 6 suits * 5 numbers + pass + double = 32
-	 * for shotgun suaro, that becomes 62 possible bids
-	 * longest possible bid: 9 diamonds = 11
-	 * for shotgun suaro that becomes K 9 diamonds = 13 */
 	game.deck_type = GGZ_DECK_SUARO;
-	game.max_bid_choices = 62;
-	game.max_bid_length = 13;
 	game.max_hand_length = 9;
 	game.rules_url = "http://suaro.dhs.org/";
 	game.target_score = 50;
@@ -182,52 +176,37 @@ static void suaro_start_bidding()
 
 static int suaro_get_bid()
 {
-	int  index=0;
-	bid_t bid;
-	bid.bid = 0;
+	char val, suit;
 
 	/* in suaro, a bid consists of a number and a suit. */
 
 	/* make a list of regular bids */
-	for(bid.sbid.val = 5; bid.sbid.val <= 9; bid.sbid.val++) {
-		for(bid.sbid.suit = SUARO_LOW; bid.sbid.suit <= SUARO_HIGH; bid.sbid.suit++) {
-			if (bid.sbid.val < SUARO.contract) continue;
-			if (bid.sbid.val == SUARO.contract && bid.sbid.suit <= SUARO.contract_suit) continue;
-			game.bid_choices[index] = bid;
-			index++;
-			if (SUARO.shotgun) {
+	for (val = 5; val <= 9; val++) {
+		for(suit = SUARO_LOW; suit <= SUARO_HIGH; suit++) {
+			if (val < SUARO.contract) continue;
+			if (val == SUARO.contract && suit <= SUARO.contract_suit) continue;
+
+			add_sbid(val, suit, 0);
+			if (SUARO.shotgun)
 				/* in "shotgun" suaro, you are allowed to bid on the kitty just like on your hand! */
-				bid_t kbid = bid;
-				kbid.sbid.spec = SUARO_KITTY;
-				game.bid_choices[index] = kbid;
-				index++;
-			}
+				add_sbid(val, suit, SUARO_KITTY);
 		}
 	}
 
 	/* make "double" or "redouble" bid */
-	if ( SUARO.contract > 0 && SUARO.bonus == 1) {
+	if ( SUARO.contract > 0 && SUARO.bonus == 1)
 		/* unless unlimited doubling is specifically allowed,
 		 * only double and redouble are possible */
-		bid.bid = 0;
-		bid.sbid.spec = SUARO_DOUBLE;
-		game.bid_choices[index] = bid;
-		index++;
-	} else if (SUARO.contract > 0 &&
+		add_sbid(0, 0, SUARO_DOUBLE);
+	else if (SUARO.contract > 0 &&
 	           (SUARO.bonus < 4 || SUARO.unlimited_redoubling)) {
-		bid.bid = 0;
-		bid.sbid.spec = SUARO_REDOUBLE;
-		game.bid_choices[index] = bid;
-		index++;
+		add_sbid(0, 0, SUARO_REDOUBLE);
 	}
 
 	/* make "pass" bid */
-	bid.bid = 0;
-	bid.sbid.spec = SUARO_PASS;
-	game.bid_choices[index] = bid;
-	index++;
+	add_sbid(0, 0, SUARO_PASS);
 
-	return req_bid(game.next_bid, index, NULL);
+	return req_bid(game.next_bid);
 }
 
 static void suaro_handle_bid(bid_t bid)
@@ -387,8 +366,8 @@ static void suaro_set_player_message(player_t p)
 			add_player_message(s, "defender\n");
 	}
 	if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
-			char bid_text[game.max_bid_length];
-			game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
+			char bid_text[128];
+			game.funcs->get_bid_text(bid_text, sizeof(bid_text), game.players[p].bid);
 			if (*bid_text) add_player_message(s, "Bid: %s\n", bid_text);
 	}
 	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)

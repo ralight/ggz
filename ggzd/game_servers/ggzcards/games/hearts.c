@@ -88,9 +88,6 @@ static void hearts_init_game()
 		game.players[p].seat = s;
 		game.seats[s].ggz = &ggz_seats[p];
 	}
-	/* hearts has no bidding */
-	game.max_bid_choices = 0;
-	game.max_bid_length = 0;
 	game.target_score = 100;
 
 	GHEARTS.no_blood = 1;

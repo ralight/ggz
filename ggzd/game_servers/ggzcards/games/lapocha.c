@@ -88,8 +88,6 @@ static void lapocha_init_game()
 		game.seats[s].ggz = &ggz_seats[p];
 	}
 	game.deck_type = GGZ_DECK_LAPOCHA;
-	game.max_bid_choices = 12;
-	game.max_bid_length = 4;
 	game.max_hand_length = 10;
 	game.must_overtrump = 1;	/* in La Pocha, you *must* overtrump if you can */
 }
@@ -136,43 +134,42 @@ static void lapocha_start_bidding()
 
 static int lapocha_get_bid()
 {
-	int status = 0;
-	bid_t bid;
-	bid.bid = 0;
-
 	if (game.bid_count == 0) { /* determine the trump suit */
 		/* handled just like a bid */
 		if(game.hand_size != 10) {
-			bid.bid = (long)cards_deal_card().suit;
+			bid_t bid;
+			bid.bid = 0;
+			bid.sbid.suit = cards_deal_card().suit;
+			bid.sbid.spec = LAPOCHA_TRUMP;
 			handle_bid_event(bid);
-		} else
-			status = req_bid(game.dealer, 4, suit_names);
+		} else {
+			char suit;
+			for (suit=0; suit<4; suit++)
+				add_sbid(0, suit, LAPOCHA_TRUMP);
+			return req_bid(game.dealer);
+		}
 	} else { /* get a player's numerical bid */
-		int i, num=0;
+		int i;
 		for (i = 0; i <= game.hand_size; i++) {
 			/* the dealer can't make the sum of the bids equal the hand size;
 			 * somebody's got to go down */
 			if (game.next_bid == game.dealer &&
-			    LAPOCHA.bid_sum + i == game.hand_size) {
-				ggz_debug("Disallowing a bid of %d because that makes the bid sum of %d to equal the hand size of %d.",
-					i, LAPOCHA.bid_sum, game.hand_size);
+			    LAPOCHA.bid_sum + i == game.hand_size)
 				continue;
-			}
-			game.bid_choices[num].bid = i;
-			num++;
+			add_sbid(i, 0, 0);
 		}
-		status = req_bid(game.next_bid, num, NULL);
+		return req_bid(game.next_bid);
 	}
-	return status;
+	return 0;
 }
 
 static void lapocha_handle_bid(bid_t bid)
 {
 	if (game.bid_count == 0) {
-		game.trump = bid.bid;
+		game.trump = bid.sbid.suit;
 		set_global_message("", "Trump is %s.", suit_names[(int)game.trump % 4]);
 	} else
-		LAPOCHA.bid_sum += bid.bid;
+		LAPOCHA.bid_sum += bid.sbid.val;
 }
 
 static void lapocha_next_bid()
@@ -214,7 +211,7 @@ static int lapocha_deal_hand()
 
 static int lapocha_get_bid_text(char* buf, int buf_len, bid_t bid)
 {
-	return snprintf(buf, buf_len, "%d", (int)bid.bid);
+	return snprintf(buf, buf_len, "%d", (int)bid.sbid.val);
 }
 
 static void lapocha_set_player_message(player_t p)
@@ -231,8 +228,8 @@ static void lapocha_set_player_message(player_t p)
 			add_player_message(s, "Tricks: %d\n", game.players[p].tricks);
 	if ( (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID)
 	      && game.players[p].bid_count > 0) {
-		char bid_text[game.max_bid_length];
-		game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
+		char bid_text[512];
+		game.funcs->get_bid_text(bid_text, sizeof(bid_text), game.players[p].bid);
 		if (*bid_text)
 			add_player_message(s, "Bid: %s\n", bid_text);
 	}

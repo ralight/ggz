@@ -86,10 +86,6 @@ static void spades_init_game()
 		game.players[p].seat = s;
 		game.seats[s].ggz = &ggz_seats[p];
 	}
-	/* most possible bids for spades: 0-13 + Nil = 15
-	 * longest possible bid: "Nil" = length 4 */
-	game.max_bid_choices = 15;
-	game.max_bid_length = 4;
 	game.must_break_trump = 1;	/* in spades, you can't lead trump until it's broken */
 	game.target_score = 500;	/* adjustable by options */	
 	GSPADES.nil_value = 100;
@@ -146,29 +142,28 @@ static char* spades_get_option_text(char* buf, int bufsz, char* option, int valu
 
 static int spades_get_bid()
 {
-	int index=0, i;
-	bid_t partners_bid = game.players[ (game.next_bid + 2) % 4].bid;
-	bid_t bid;
-	bid.bid = 0;
-	for (i = 0; i <= game.hand_size; i++) {
+	int i;
+	/* partner's bid (value) */
+	char pard = (game.bid_count >= 2) ? game.players[ (game.next_bid + 2) % 4].bid.sbid.val : 0;
+
+	for (i = 0; i <= game.hand_size - pard; i++) {
 		/* the second bidder on each team must make sure the minimum bid count is met */
 		if (game.bid_count >= 2 &&
-		    partners_bid.sbid.val + i < GSPADES.minimum_team_bid)
+		    pard + i < GSPADES.minimum_team_bid)
 			continue;
-		bid.sbid.val = i;
-		game.bid_choices[index] = bid;
-		index++;
+		add_sbid(i, 0, 0);
 	}
 			
 	/* "Nil" bid */
-	bid.bid = 0;
-	bid.sbid.spec = SPADES_NIL;
-	game.bid_choices[index] = bid;
-	index++;
+	/* If you're the first bidder, you can bid nil - your partner will be forced
+	 * up to the minimum bid.  If you're the second bidder, you can't bid nil
+	 * unless your partner has already met the minimum. */
+	if (game.bid_count < 2 || pard >= GSPADES.minimum_team_bid)
+		add_sbid(0, 0, SPADES_NIL);
 
 	/* TODO: other specialty bids */
 
-	return req_bid(game.next_bid, index, NULL);
+	return req_bid(game.next_bid);
 }
 
 static int spades_get_bid_text(char* buf, int buf_len, bid_t bid)
@@ -184,9 +179,9 @@ static void spades_set_player_message(player_t p)
 	put_player_message(s, "Score: %d\n", game.players[p].score);
 	if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
 		/* we show both the individual and team contract */
-		char bid_text[game.max_bid_length];
+		char bid_text[512];
 		int contract = game.players[p].bid.sbid.val + game.players[(p+2)%4].bid.sbid.val;
-		game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
+		game.funcs->get_bid_text(bid_text, sizeof(bid_text), game.players[p].bid);
 		if (*bid_text)
 			add_player_message(s, "Bid: %s (%d)\n", bid_text, contract);
 	}
@@ -195,8 +190,8 @@ static void spades_set_player_message(player_t p)
 			game.players[p].tricks, game.players[p].tricks + game.players[(p+2)%4].tricks);
 	}
 	if ( (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) && game.players[p].bid_count > 0) {
-			char bid_text[game.max_bid_length];
-			game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
+			char bid_text[512];
+			game.funcs->get_bid_text(bid_text, sizeof(bid_text), game.players[p].bid);
 			if (*bid_text)
 				add_player_message(s, "Bid: %s\n", bid_text);
 	}

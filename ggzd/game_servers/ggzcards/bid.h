@@ -24,5 +24,17 @@
 
 #include "types.h"
 
-extern int req_bid(player_t, int, char **);
-extern int rec_bid(player_t, int *);
+/* clear_bids clears the list of possible bids.
+ * It's called automatically by handle_bid_event(). */
+extern void clear_bids();
+
+/* add_bid and add_sbid add another bid to the list of
+ * possible bids.  add_sbid is just a convenience. */
+extern void add_bid(bid_t bid);
+extern void add_sbid(char val, char suit, char spec);
+
+/* req_bid requests a bid from the client _or_ AI. */
+extern int req_bid(player_t);
+
+/* rec_bid receives a bid from the client */
+extern int rec_bid(player_t, bid_t *);

@@ -36,7 +36,7 @@ struct ai_function_pointers
 	void (*start_hand) ();
 	void (*alert_bid) (player_t, bid_t);
 	void (*alert_play) (player_t, card_t);
-	  bid_t(*get_bid) (player_t);
+	  bid_t(*get_bid) (player_t, bid_t *, int);
 	  card_t(*get_play) (player_t, seat_t);
 };
 
@@ -60,7 +60,7 @@ extern void ai_alert_bid(player_t, bid_t);
 extern void ai_alert_play(player_t, card_t);
 
 /* this gets a bid or play from the ai */
-extern bid_t ai_get_bid(player_t);
+extern bid_t ai_get_bid(player_t, bid_t *, int);
 extern card_t ai_get_play(player_t, seat_t);
 
 #endif /* __AI_H__ */

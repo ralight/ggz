@@ -100,8 +100,6 @@ static void euchre_init_game()
 		game.seats[s].ggz = &ggz_seats[p];
 	}
 	game.deck_type = GGZ_DECK_EUCHRE;
-	game.max_bid_choices = 5;
-	game.max_bid_length = 20; /* TODO */
 	game.max_hand_length = 5;
 	game.target_score = 10;
 	EUCHRE.maker = -1;
@@ -116,31 +114,19 @@ static void euchre_start_bidding()
 
 static int euchre_get_bid()
 {
-	int status = 0;
-	bid_t bid;
-	bid.bid = 0;
-
 	if (game.bid_count < 4) {
 		/* first four bids: either "pass" or "take" */
-		bid.sbid.spec = EUCHRE_TAKE;
-		game.bid_choices[0] = bid;
-		bid.sbid.spec = EUCHRE_PASS;
-		game.bid_choices[1] = bid;
-		status = req_bid(game.next_bid, 2, NULL);
+		add_sbid(0, 0, EUCHRE_TAKE);
+		add_sbid(0, 0, EUCHRE_PASS);
+		return req_bid(game.next_bid);
 	} else {
 		char suit;
-		bid.sbid.spec = EUCHRE_TAKE_SUIT;
-		for (suit=0; suit<4; suit++) {
-			bid.sbid.suit = suit;
-			game.bid_choices[(int)suit] = bid;
-		}
-		bid.bid = 0;
-		bid.sbid.spec = EUCHRE_PASS;
-		game.bid_choices[4] = bid;
-		status = req_bid(game.next_bid, 5, NULL);
+		for (suit=0; suit<4; suit++)
+			add_sbid(0, suit, EUCHRE_TAKE_SUIT);
+		add_sbid(0, 0, EUCHRE_PASS);
+		return req_bid(game.next_bid);
 	}
 	/* TODO: dealer's last bid */
-	return status;	
 }
 
 static void euchre_handle_bid(bid_t bid)

@@ -73,9 +73,10 @@ void ai_alert_play(player_t p, card_t card)
 }
 
 /* this gets a bid or play from the ai */
-bid_t ai_get_bid(player_t p)
+bid_t ai_get_bid(player_t p, bid_t * bid_choices, int bid_count)
 {
-	bid_t bid = ai_funcs[game.ai_type]->get_bid(p);
+	bid_t bid =
+		ai_funcs[game.ai_type]->get_bid(p, bid_choices, bid_count);
 #ifdef DEBUG
 	char buf[100];
 	int i;

@@ -419,15 +419,17 @@ void send_bid_history()
 	int r, buf_len = 0, widths[game.num_players];
 	player_t p;
 	char buf[4096];
-	char buf2[game.max_bid_length];
+	char buf2[512];
 
 	if (!game.bid_history)
 		return;
 
 	for (p = 0; p < game.num_players; p++) {
 		widths[p] = strlen(ggz_seats[p].name);
+/* TODO
 		if (widths[p] < game.max_bid_length)
 			widths[p] = game.max_bid_length;
+*/
 		buf_len +=
 			snprintf(buf + buf_len, sizeof(buf) - buf_len,
 				 "%*s%s", widths[p], ggz_seats[p].name,
