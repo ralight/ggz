@@ -29,3 +29,7 @@ CREATE TABLE "placements" (
 	"handle" character varying(256)
 );
 
+CREATE TABLE "rankings" (
+	"game" character varying(256),
+	"method" character varying(256)
+);
