@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 4656 2002-09-23 00:48:07Z jdorje $
+ * $Id: game.h 5042 2002-10-26 04:00:32Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -123,7 +123,7 @@ void game_handle_ggz(gpointer data, gint source, GdkInputCondition cond);
 void game_handle_io(gpointer data, gint source, GdkInputCondition cond);
 
 /** @brief Request a sync from the server, and prepare to receive it. */
-void game_request_sync(void);
+void game_resync(void);
 
 
 /* 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 5018 2002-10-23 22:48:15Z jdorje $
+ * $Id: dlg_main.c 5042 2002-10-26 04:00:32Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -37,6 +37,7 @@
 
 #include "dlg_players.h"
 #include "ggzintl.h"
+#include "menus.h"
 
 #include "cb_main.h"
 #include "dlg_main.h"
@@ -50,27 +51,19 @@ static GtkWidget *create_menus(GtkWidget *window)
 {
 	GtkAccelGroup *accel_group;
 	GtkItemFactoryEntry items[] = {
-	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
-	  {_("/Table/Player _list"), "<ctrl>L",
-	   create_or_raise_dlg_players, 0, NULL},
-	  {_("/Table/Sit down"), NULL, do_sit, 0, NULL},
-	  {_("/Table/Stand up"), NULL, do_stand, 0, NULL},
-	  {_("/Table/_Sync with server"), "<ctrl>S",
-	   on_mnu_sync_activate, 0, NULL},
-	  {_("/Table/E_xit"), "<ctrl>X", on_mnu_exit_activate, 0, NULL},
-	  {_("/_Game"), NULL, NULL, 0, "<Branch>"},
-	  {_("/Game/Start game"), "<ctrl>N",
-	   on_mnu_startgame_activate, 0, NULL},
+		TABLE_MENU,
+		{_("/_Game"), NULL, NULL, 0, "<Branch>"},
+		{_("/Game/Start game"), "<ctrl>N",
+		 on_mnu_startgame_activate, 0, NULL},
 #ifdef DEBUG
-	  {_("/Game/Force _redraw"), "<ctrl>R",
-	   on_mnu_forceredraw_activate, 0, NULL},
+		{_("/Game/Force _redraw"), "<ctrl>R",
+		 on_mnu_forceredraw_activate, 0, NULL},
 #endif
-	  {_("/_Messages"), NULL, NULL, 0, "<Branch>"},
-	  {_("/_Options"), NULL, NULL, 0, "<Branch>"},
-	  {_("/Options/_Preferences"), "<ctrl>P",
-	   on_mnu_preferences_activate, 0, NULL},
-	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
-	  {_("/Help/_About"), "<ctrl>A", on_mnu_about_activate, 0, NULL}
+		{_("/_Messages"), NULL, NULL, 0, "<Branch>"},
+		{_("/_Options"), NULL, NULL, 0, "<Branch>"},
+		{_("/Options/_Preferences"), "<ctrl>P",
+		 on_mnu_preferences_activate, 0, NULL},
+		HELP_MENU,
 	};
 	const int num = sizeof(items) / sizeof(items[0]);
 	GtkWidget *item;

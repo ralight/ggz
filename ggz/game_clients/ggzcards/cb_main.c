@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.c 4989 2002-10-22 08:24:34Z jdorje $
+ * $Id: cb_main.c 5042 2002-10-26 04:00:32Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -29,8 +29,8 @@
 
 #include <gtk/gtk.h>
 
-#include "dlg_about.h"
 #include "dlg_exit.h"
+#include "menus.h"
 
 #include "cb_main.h"
 #include "dlg_main.h"
@@ -40,7 +40,7 @@
 #include "main.h"
 #include "table.h"
 
-static void try_to_exit_game(void)
+void game_exit(void)
 {
 	/* Really, we shouldn't be checking game_started here.  We should
 	   happily leave between games too.  But for now, this is fine. */
@@ -54,11 +54,6 @@ static void try_to_exit_game(void)
 void on_mnu_startgame_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	game_send_newgame();
-}
-
-void on_mnu_sync_activate(GtkMenuItem * menuitem, gpointer user_data)
-{
-	game_request_sync();
 }
 
 void on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data)
@@ -83,21 +78,10 @@ void on_mnu_forceredraw_activate(GtkMenuItem * menuitem, gpointer user_data)
 	table_redraw();
 }
 
-void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data)
-{
-	try_to_exit_game();
-}
-
-void on_mnu_about_activate(GtkMenuItem * menuitem, gpointer user_data)
-{
-	create_or_raise_dlg_about();
-}
-
-
 gboolean on_dlg_main_delete_event(GtkWidget * widget, GdkEvent * event,
 				  gpointer user_data)
 {
-	try_to_exit_game();
+	game_exit();
 	return TRUE;
 }
 

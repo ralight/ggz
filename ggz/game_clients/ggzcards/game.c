@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4917 2002-10-14 22:27:43Z jdorje $
+ * $Id: game.c 5042 2002-10-26 04:00:32Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -197,7 +197,7 @@ void game_send_newgame(void)
 	assert(status == 0);
 }
 
-void game_request_sync(void)
+void game_resync(void)
 {
 	ggz_debug(DBG_MAIN, "Requesting sync from server.");
 
