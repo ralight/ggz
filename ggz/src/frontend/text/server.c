@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 4677 2002-09-24 05:03:17Z jdorje $
+ * $Id: server.c 4682 2002-09-24 08:09:52Z dr_maux $
  *
  * Functions for handling server events
  *
@@ -129,7 +129,9 @@ static void server_process(void)
 {
 	if (server) {
 		int fd = ggzcore_server_get_fd(server);
+#ifdef DEBUG
 		output_text("Server_process: %d", fd);
+#endif
 		ggzcore_server_read_data(server, fd);
 	}
 }
