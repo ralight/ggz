@@ -1,4 +1,4 @@
-.TH "ggzdmod.h" 3 "22 Jan 2005" "Version 0.0.10" "GGZdMod" \" -*- nroff -*-
+.TH "ggzdmod.h" 3 "23 Jan 2005" "Version 0.0.10" "GGZdMod" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -11,18 +11,6 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 \fC#include <ggz_common.h>\fP
 .br
 
-.SS "Classes"
-
-.in +1c
-.ti -1c
-.RI "struct \fBGGZSeat\fP"
-.br
-.RI "\fIA seat at a GGZ game table. \fP"
-.ti -1c
-.RI "struct \fBGGZSpectator\fP"
-.br
-.RI "\fIA game spectator entry. \fP"
-.in -1c
 .SS "Defines"
 
 .in +1c
@@ -154,7 +142,7 @@ ggzdmod.h \- Common functions for interfacing a game server and GGZ.
 .br
 .RI "\fILog data. \fP"
 .ti -1c
-.RI "void \fBggzdmod_check\fP (\fBGGZdMod\fP *ggzdmod)"
+.RI "int void \fBggzdmod_check\fP (\fBGGZdMod\fP *ggzdmod)"
 .br
 .RI "\fILog all information about the ggzdmod. \fP"
 .ti -1c
@@ -194,8 +182,7 @@ Here is a fairly complete example. In this game we register a handler for each o
 .nf
      // Game-defined handler functions for GGZ events; see below.
      void handle_state_change(GGZdMod* ggz, GGZdModEvent event, void* data);
-     void handle_player_join(GGZdMod* ggz, GGZdModEvent event, void* data);
-     void handle_player_leave(GGZdMod* ggz, GGZdModEvent event, void* data);
+     void handle_player_seat(GGZdMod* ggz, GGZdModEvent event, void* data);
      void handle_player_data(GGZdMod* ggz, GGZdModEvent event, void* data);
 
      // Other game-defined functions (not ggz-related).
@@ -212,9 +199,11 @@ Here is a fairly complete example. In this game we register a handler for each o
          ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE,
                              &handle_state_change);
          ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN,
-                             &handle_player_join);
+                             &handle_player_seat);
          ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE,
-                             &handle_player_leave);
+                             &handle_player_seat);
+         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SEAT,
+                             &handle_player_seat);
          ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA,
                              &handle_player_data);
 
@@ -273,26 +262,24 @@ Here is a fairly complete example. In this game we register a handler for each o
          }
      }
 
-     void handle_player_join(GGZdMod* ggz, GGZdModEvent event, void* data)
+     void handle_player_seat(GGZdMod* ggz, GGZdModEvent event, void* data)
      {
-         GGZSeat *old_seat = (GGZSeat*)data;
-         GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
+       GGZSeat *old_seat = data;
+       GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
 
-         // ... do other player initializations ...
+       if (new_seat.type == GGZ_SEAT_PLAYER
+           && old_seat->type != GGZ_SEAT_PLAYER) {
+         // join event ... do player initializations ...
 
-         if (ggzdmod_count_seats(ggz, GGZ_SEAT_OPEN) == 0)
-             // this particular game will only play when all seats are full.
-             // calling this function triggers the STATE event, so we'll end
-             // up executing resume_playing() above.
-             ggzdmod_set_state(ggz, GGZDMOD_STATE_PLAYING);
-     }
-
-     void handle_player_leave(GGZdMod* ggz, GGZdModEvent event, void* data)
-     {
-         GGZSeat *old_seat = (GGZSeat*)data;
-         GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
-
-         // ... do other player un-initializations ...
+         if (ggzdmod_count_seats(ggz, GGZ_SEAT_OPEN) == 0) {
+           // this particular game will only play when all seats are full.
+           // calling this function triggers the STATE event, so we'll end
+           // up executing resume_playing() above.
+           ggzdmod_set_state(ggz, GGZDMOD_STATE_PLAYING);
+         }
+       } else if (new_seat.type != GGZ_SEAT_PLAYER
+                  && old_seat->type == GGZ_SEAT_PLAYER) {
+         // leave event ... do de-initialization ...
 
          if (ggzdmod_count_seats(ggz, GGZ_SEAT_PLAYER) == 0)
              // the game will exit when all human players are gone
@@ -302,6 +289,7 @@ Here is a fairly complete example. In this game we register a handler for each o
              // calling this function triggers the STATE event, so we'll end
              // up executing stop_playing() above.
              ggzdmod_set_state(ggz, GGZDMOD_STATE_WAITING);
+       }
      }
 
      void handle_player_data(GGZdMod* ggz, GGZdModEvent event, void* data)
@@ -394,7 +382,12 @@ Player joined This event occurs when a player joins the table. The old seat (a G
 .PP
 \fBNote:\fP
 .RS 4
-This may be dropped in favor of the SEAT event. 
+This event is deprecated. 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBGGZDMOD_EVENT_SEAT\fP. 
 .RE
 .PP
 
@@ -404,20 +397,18 @@ Player left This event occurs when a player leaves the table. The old seat (a GG
 .PP
 \fBNote:\fP
 .RS 4
-This may be dropped in favor of the SEAT event 
+This event is deprecated. 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBGGZDMOD_EVENT_SEAT\fP. 
 .RE
 .PP
 
 .TP
 \fB\fIGGZDMOD_EVENT_SEAT \fP\fP
-General seat change This event occurs when a seat change other than a player leave/join happens (which is currently impossible). The old seat (a GGZSeat*) is passed as the event's data. The seat information will be updated before the event is invoked. 
-.PP
-\fBNote:\fP
-.RS 4
-This is currently unused, but may eventually replace JOIN and LEAVE.
-.RE
-.PP
-
+General seat change This event occurs when a seat change other than a player leave/join happens. The old seat (a GGZSeat*) is passed as the event's data. The seat information will be updated before the event is invoked. This event will replace the JOIN and LEAVE events. Games are advised to register the same handler for all three and to check the seat event by comparing the new and old seats. Possible operations include open|reserved->player, player->open, open->bot, bot->open, reserved->open, open->reserved, and bot->bot. Name changes are allowed but there is no player->player (i.e., player swap) seat event. 
 .TP
 \fB\fIGGZDMOD_EVENT_SPECTATOR_JOIN \fP\fP
 A spectator joins the game. The data of the old spectator (GGZSpectator*) is passed as the data for the event. It can be assumed that the spectator seat was previously empty, so the name and socket given will be invalid (NULL/-1). 
@@ -492,7 +483,7 @@ A forfeit is (for instance) an abandoned game. The player will not only be credi
 If the player didn't take part in the game, use this label. For instance if one player abandons the game they might get a forfeit while nobody else is affected. 
 .SH "Function Documentation"
 .PP 
-.SS "void ggzdmod_check (\fBGGZdMod\fP * ggzdmod)"
+.SS "int void ggzdmod_check (\fBGGZdMod\fP * ggzdmod)"
 .PP
 Log all information about the ggzdmod. 
 .PP
