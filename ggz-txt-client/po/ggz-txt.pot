@@ -1,0 +1,287 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2003-04-28 08:44+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../ggz-txt/input.c:164
+#, c-format
+msgid "--- Client version: %s"
+msgstr ""
+
+#: ../ggz-txt/input.c:167
+#, c-format
+msgid "--- Unknown command, try %chelp."
+msgstr ""
+
+#: ../ggz-txt/input.c:262
+msgid "List what?"
+msgstr ""
+
+#: ../ggz-txt/input.c:274
+#, c-format
+msgid "Joining a %s"
+msgstr ""
+
+#: ../ggz-txt/input.c:282
+msgid "Join what?"
+msgstr ""
+
+#: ../ggz-txt/input.c:294
+msgid "Join which room?"
+msgstr ""
+
+#: ../ggz-txt/input.c:309
+msgid "Describe which room?"
+msgstr ""
+
+#: ../ggz-txt/input.c:322
+msgid "You must connect to a server first."
+msgstr ""
+
+#: ../ggz-txt/input.c:326
+msgid "You must join a room first."
+msgstr ""
+
+#: ../ggz-txt/input.c:398 ../ggz-txt/input.c:442
+msgid "You must be in a room to launch a game."
+msgstr ""
+
+#: ../ggz-txt/input.c:404 ../ggz-txt/input.c:448
+msgid "No game types defined for this room. Maybe try 'list types'?"
+msgstr ""
+
+#: ../ggz-txt/input.c:412 ../ggz-txt/input.c:456
+#, c-format
+msgid "Launching game of %s, (%s-%s)"
+msgstr ""
+
+#: ../ggz-txt/input.c:415 ../ggz-txt/input.c:459
+msgid "No game modules defined for that game"
+msgstr ""
+
+#: ../ggz-txt/input.c:416 ../ggz-txt/input.c:460
+#, c-format
+msgid "Download one from %s"
+msgstr ""
+
+#: ../ggz-txt/input.c:436
+msgid "Join which table?"
+msgstr ""
+
+#: ../ggz-txt/input.c:467
+msgid "That table doesn't exist! Maybe try '/list tables'?"
+msgstr ""
+
+#: ../ggz-txt/main.c:135
+msgid "The GGZ Gaming Zone Text Client\n"
+msgstr ""
+
+#: ../ggz-txt/main.c:136
+msgid ""
+"http://ggz.sourceforge.net/\n"
+"\n"
+msgstr ""
+
+#: ../ggz-txt/main.c:137
+msgid "Call: ggz-txt [options] [uri]:\n"
+msgstr ""
+
+#: ../ggz-txt/main.c:138
+msgid "-r / --reverse: Use reverse colours\n"
+msgstr ""
+
+#: ../ggz-txt/main.c:139
+msgid "-h / --help: Display this help\n"
+msgstr ""
+
+#: ../ggz-txt/main.c:140
+msgid "-v / --version: Display version information\n"
+msgstr ""
+
+#: ../ggz-txt/output.c:88
+msgid "--- GGZ Gaming Zone -- Help"
+msgstr ""
+
+#: ../ggz-txt/output.c:89
+msgid "--- -----------------------"
+msgstr ""
+
+#: ../ggz-txt/output.c:90
+msgid "---"
+msgstr ""
+
+#: ../ggz-txt/output.c:91
+msgid "--- /connect [<server>[:<port>]] [<nick>] [<password>]"
+msgstr ""
+
+#: ../ggz-txt/output.c:92
+msgid "---    Connect to a GGZ server"
+msgstr ""
+
+#: ../ggz-txt/output.c:93
+msgid "--- /disconnect                             Disconnect from server"
+msgstr ""
+
+#: ../ggz-txt/output.c:94
+msgid "--- /exit                                   Quit GGZ Gaming Zone"
+msgstr ""
+
+#: ../ggz-txt/output.c:95
+msgid ""
+"--- /desc <room>                            Get description of room <room>"
+msgstr ""
+
+#: ../ggz-txt/output.c:96
+msgid "--- /join room|table <num>                  Join room or table <num>"
+msgstr ""
+
+#: ../ggz-txt/output.c:97
+msgid ""
+"--- /list players|rooms|tables|types        List the requested information."
+msgstr ""
+
+#: ../ggz-txt/output.c:98
+msgid "--- /msg <player> <msg>                     Send a msg to a player"
+msgstr ""
+
+#: ../ggz-txt/output.c:99
+msgid "--- /table <msg>                            Send a msg to your table"
+msgstr ""
+
+#: ../ggz-txt/output.c:100
+msgid "--- /beep <player>                          Beep player <player>"
+msgstr ""
+
+#: ../ggz-txt/output.c:101
+msgid "--- /launch                                 Launch a game if possible"
+msgstr ""
+
+#: ../ggz-txt/output.c:102
+msgid "--- /version                                Display the client version"
+msgstr ""
+
+#: ../ggz-txt/output.c:103
+msgid ""
+"--- /who                                    List current player in the room"
+msgstr ""
+
+#: ../ggz-txt/output.c:104
+msgid ""
+"--- /wall <msg>                             Admin only command, broadcast to "
+"all rooms"
+msgstr ""
+
+#: ../ggz-txt/output.c:109
+msgid "Welcome to the text-only GGZ client!\n"
+msgstr ""
+
+#: ../ggz-txt/output.c:110
+msgid "--Written by Brent Hendricks & Justin Zaun  (C) 2000\n"
+msgstr ""
+
+#: ../ggz-txt/output.c:182
+#, c-format
+msgid "--- You've been beeped by %s."
+msgstr ""
+
+#: ../ggz-txt/output.c:214
+#, c-format
+msgid "-- Room %d : %s (%s)"
+msgstr ""
+
+#: ../ggz-txt/output.c:218
+#, c-format
+msgid "-- Room %d : %s"
+msgstr ""
+
+#: ../ggz-txt/output.c:233
+#, c-format
+msgid "-- Gametype %d : %s"
+msgstr ""
+
+#: ../ggz-txt/output.c:249
+msgid "Players in current room"
+msgstr ""
+
+#: ../ggz-txt/output.c:254
+#, c-format
+msgid "-- %s at table %d"
+msgstr ""
+
+#: ../ggz-txt/output.c:258
+#, c-format
+msgid "-- %s"
+msgstr ""
+
+#: ../ggz-txt/output.c:273
+msgid "Tables in current room:"
+msgstr ""
+
+#: ../ggz-txt/output.c:280
+msgid "No tables"
+msgstr ""
+
+#: ../ggz-txt/output.c:317 ../ggz-txt/output.c:321
+msgid "Username"
+msgstr ""
+
+#: ../ggz-txt/output.c:328 ../ggz-txt/output.c:332
+msgid "Server"
+msgstr ""
+
+#: ../ggz-txt/output.c:337
+msgid "Status"
+msgstr ""
+
+#: ../ggz-txt/output.c:343 ../ggz-txt/output.c:349
+msgid "Room"
+msgstr ""
+
+#: ../ggz-txt/output.c:367
+msgid "Time"
+msgstr ""
+
+#: ../ggz-txt/output.c:452
+#, c-format
+msgid "Table %d : %s"
+msgstr ""
+
+#: ../ggz-txt/output.c:459
+#, c-format
+msgid "-- Seat %d: %s"
+msgstr ""
+
+#: ../ggz-txt/output.c:463
+#, c-format
+msgid "-- Seat %d: Reserved for %s"
+msgstr ""
+
+#: ../ggz-txt/output.c:467
+#, c-format
+msgid "-- Seat %d: -Bot-"
+msgstr ""
+
+#: ../ggz-txt/output.c:470
+#, c-format
+msgid "-- Seat %d: -Open-"
+msgstr ""
+
+#: ../ggz-txt/output.c:473
+msgid "-- Not a seat"
+msgstr ""
+
+#: ../ggz-txt/output.c:476
+msgid "Internal error"
+msgstr ""

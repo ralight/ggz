@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5378 2003-02-04 12:48:49Z dr_maux $
+dnl $Id: configure.ac 5492 2003-04-28 06:53:29Z dr_maux $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -25,6 +25,7 @@ AC_ARG_ENABLE(debug-gdb,       [  --enable-debug-gdb      enable GDB debugging ]
 dnl Check for GGZ stuff
 dnl ===================
 AC_GGZ_INIT(defaults, export)
+AC_GGZ_INTL
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZCORE
 
@@ -91,13 +92,18 @@ AC_SUBST(LIB_READLINE)
 dnl Various dirs
 dnl ============
 
+if test "x$prefix" = "xNONE"; then
+	prefix="/usr/local"
+fi
 
+AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", [The installation prefix])
 
 AC_SUBST(LDADD)
 
-AC_CONFIG_FILES([Makefile 
-	   ggz-txt/Makefile
+AC_CONFIG_FILES([Makefile
+		ggz-txt/Makefile
 		man/Makefile
+		po/Makefile
 	   ])
 AC_OUTPUT
 
