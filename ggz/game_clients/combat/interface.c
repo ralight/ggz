@@ -35,7 +35,7 @@ create_main_window (void)
   GtkWidget *save_map_menu;
   GtkWidget *request_sync;
   GtkWidget *hide_enemy_units1;
-  GtkWidget *show_game_options1;
+  GtkWidget *show_game_options;
   GtkWidget *hbox;
   GtkWidget *mainarea;
   GtkWidget *vseparator1;
@@ -165,18 +165,18 @@ create_main_window (void)
   gtk_tooltips_set_tip (tooltips, hide_enemy_units1, _("Shows/Hide the enemies units that you shouldn't see"), NULL);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (hide_enemy_units1), TRUE);
 
-  show_game_options1 = gtk_menu_item_new_with_label ("");
-  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (show_game_options1)->child),
+  show_game_options = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (show_game_options)->child),
                                    _("_Show game options"));
-  gtk_widget_add_accelerator (show_game_options1, "activate_item", game_menu_accels,
+  gtk_widget_add_accelerator (show_game_options, "activate_item", game_menu_accels,
                               tmp_key, 0, 0);
-  gtk_widget_set_name (show_game_options1, "show_game_options1");
-  gtk_widget_ref (show_game_options1);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "show_game_options1", show_game_options1,
+  gtk_widget_set_name (show_game_options, "show_game_options");
+  gtk_widget_ref (show_game_options);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "show_game_options", show_game_options,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (show_game_options1);
-  gtk_container_add (GTK_CONTAINER (game_menu), show_game_options1);
-  gtk_tooltips_set_tip (tooltips, show_game_options1, _("Displays the current game options"), NULL);
+  gtk_widget_show (show_game_options);
+  gtk_container_add (GTK_CONTAINER (game_menu), show_game_options);
+  gtk_tooltips_set_tip (tooltips, show_game_options, _("Displays the current game options"), NULL);
 
   hbox = gtk_hbox_new (FALSE, 0);
   gtk_widget_set_name (hbox, "hbox");
@@ -269,8 +269,8 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (hide_enemy_units1), "activate",
                       GTK_SIGNAL_FUNC (on_hide_enemy_units1_activate),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (show_game_options1), "activate",
-                      GTK_SIGNAL_FUNC (on_show_game_options1_activate),
+  gtk_signal_connect (GTK_OBJECT (show_game_options), "activate",
+                      GTK_SIGNAL_FUNC (on_show_game_options_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (mainarea), "expose_event",
                       GTK_SIGNAL_FUNC (on_mainarea_expose_event),

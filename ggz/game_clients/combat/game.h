@@ -77,6 +77,9 @@ void game_handle_move(int);
 void game_send_setup();
 int game_send_options(GtkWidget *);
 void game_request_sync();
+gboolean game_refuse_options (GtkWidget       *widget,
+                              GdkEvent        *event,
+                              gpointer         user_data);
 
 // Init variables
 void game_init();

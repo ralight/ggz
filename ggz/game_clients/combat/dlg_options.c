@@ -66,7 +66,7 @@ create_dlg_options (int number)
   GtkWidget *preview_board;
   GtkWidget *preview_label;
   GtkWidget *preview_options;
-  GtkWidget *preview_options_scrollbar;
+  GtkWidget *preview_options_scroll;
   GtkWidget *label11;
   GtkWidget *hbuttonbox3;
   GtkWidget *load;
@@ -705,20 +705,28 @@ create_dlg_options (int number)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
 
-  preview_options = gtk_text_new(NULL, NULL);
+  preview_options_scroll = gtk_scrolled_window_new(NULL, NULL);
+  gtk_object_set_data(GTK_OBJECT(dlg_options), "preview_options_scroll", preview_options_scroll);
+  gtk_widget_show(preview_options_scroll);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(preview_options_scroll),
+                                 GTK_POLICY_NEVER,
+                                 GTK_POLICY_AUTOMATIC);
+  gtk_table_attach(GTK_TABLE(table2), preview_options_scroll, 0, 3, 2, 3, (GtkAttachOptions) (GTK_SHRINK|GTK_FILL), (GtkAttachOptions) (GTK_SHRINK|GTK_FILL), 0, 0);
+  gtk_widget_set_usize (preview_options_scroll, -1, 30);
+
+  preview_options = gtk_text_new(gtk_scrolled_window_get_hadjustment(
+                                  GTK_SCROLLED_WINDOW(preview_options_scroll)),
+                                 gtk_scrolled_window_get_vadjustment(
+                                  GTK_SCROLLED_WINDOW(preview_options_scroll)));
   gtk_text_set_word_wrap(GTK_TEXT(preview_options), TRUE);
   gtk_text_set_line_wrap(GTK_TEXT(preview_options), TRUE);
   gtk_text_set_editable(GTK_TEXT(preview_options), FALSE);
   gtk_widget_set_name(preview_options, "preview_options");
-  gtk_object_set_data_full(GTK_OBJECT(dlg_options), "preview_options", preview_options, (GtkDestroyNotify)gtk_widget_unref);
+  gtk_object_set_data(GTK_OBJECT(dlg_options), "preview_options", preview_options);
   gtk_widget_show(preview_options);
-  gtk_table_attach(GTK_TABLE(table2), preview_options, 0, 2, 2, 3, (GtkAttachOptions) (GTK_SHRINK|GTK_FILL), (GtkAttachOptions)(GTK_SHRINK|GTK_FILL), 0, 0);
-  gtk_widget_set_usize (preview_options, -1, 30);
+  gtk_container_add(GTK_CONTAINER(preview_options_scroll), preview_options);
+  //gtk_table_attach(GTK_TABLE(table2), preview_options, 0, 2, 2, 3, (GtkAttachOptions) (GTK_SHRINK|GTK_FILL), (GtkAttachOptions)(GTK_SHRINK|GTK_FILL), 0, 0);
 
-  preview_options_scrollbar = gtk_vscrollbar_new(GTK_TEXT(preview_options)->vadj);
-  gtk_object_set_data_full(GTK_OBJECT(dlg_options), "preview_options_scrollbar", preview_options_scrollbar, (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(preview_options_scrollbar);
-  gtk_table_attach(GTK_TABLE(table2), preview_options_scrollbar, 2, 3, 2, 3, 0, 0, 0, 0);
 
   label11 = gtk_label_new (_("Map Preview"));
   gtk_widget_set_name (label11, "label11");
@@ -805,7 +813,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (cancel_button);
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), cancel_button);
-  gtk_widget_set_sensitive (cancel_button, FALSE);
+  gtk_widget_set_sensitive (cancel_button, TRUE);
   GTK_WIDGET_SET_FLAGS (cancel_button, GTK_CAN_DEFAULT);
 
 	// Create the army setup stuff
@@ -854,6 +862,18 @@ create_dlg_options (int number)
   gtk_box_pack_start(GTK_BOX(unit_stats_box), army_player_1, FALSE, FALSE, 2);
   gtk_box_pack_start(GTK_BOX(unit_stats_box), army_player_2, FALSE, FALSE, 2);
 
+  gtk_signal_connect(GTK_OBJECT(dlg_options), "delete_event",
+                     GTK_SIGNAL_FUNC (game_refuse_options),
+                     NULL);
+  gtk_signal_connect(GTK_OBJECT(dlg_options), "destroy_event",
+                     GTK_SIGNAL_FUNC (game_refuse_options),
+                     NULL);
+	gtk_signal_connect(GTK_OBJECT (cancel_button), "clicked",
+									   GTK_SIGNAL_FUNC (cancel_button_clicked), 
+                     dlg_options);
+	gtk_signal_connect_object_after(GTK_OBJECT (cancel_button), "clicked",
+									   GTK_SIGNAL_FUNC (gtk_widget_destroy), 
+                     GTK_OBJECT(dlg_options));
 	gtk_signal_connect(GTK_OBJECT (mini_board), "expose_event",
 										 GTK_SIGNAL_FUNC (mini_board_expose), dlg_options);
 	gtk_signal_connect(GTK_OBJECT (mini_board), "configure_event",
@@ -1054,6 +1074,10 @@ void save_button_clicked(GtkButton *button, gpointer dialog) {
                      GTK_SIGNAL_FUNC (save_map), save_dlg); 
   gtk_object_set_data(GTK_OBJECT(save_dlg), "dlg_options", dialog);
   gtk_widget_show_all(save_dlg);
+}
+
+void cancel_button_clicked(GtkButton *button, gpointer dialog) {
+  game_refuse_options(dialog, NULL, NULL);
 }
 
 void load_button_clicked(GtkButton *button, gpointer dialog) {
@@ -1484,9 +1508,11 @@ gboolean draw_preview (GtkWidget *dlg_options) {
   preview = gtk_object_get_data(GTK_OBJECT(dlg_options), "preview");
   if (!preview)
     return FALSE;
-  if (!widget)
+  if (!widget || !widget->window)
     return FALSE;
   if (!preview_buf)
+    return FALSE;
+  if (!dlg_options)
     return FALSE;
 
   solid_gc = gdk_gc_new(widget->window);
@@ -1579,6 +1605,8 @@ void draw_mini_board(GtkWidget *dlg_options) {
   options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
   if (!options)
     dlg_options_update(dlg_options);
+  if (!widget)
+    return;
 
 	solid_gc = gdk_gc_new(widget->window);
 

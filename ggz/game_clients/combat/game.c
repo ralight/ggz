@@ -100,6 +100,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
       game_draw_board();
       callback_widget_set_enabled("request_sync", 2);
       callback_widget_set_enabled("save_map_menu", 2);
+      callback_widget_set_enabled("show_game_options", 2);
       break;
     case CBT_MSG_PLAYERS:
       game_get_players();
@@ -111,6 +112,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
       game_get_options();
       game_draw_board();
       callback_widget_set_enabled("save_map_menu", 3);
+      callback_widget_set_enabled("show_game_options", 3);
       break;
     case CBT_REQ_SETUP:
       cbt_game.state = CBT_STATE_SETUP;
@@ -251,7 +253,7 @@ void game_start() {
 
     // Show we show the game optiosn?
     if (cbt_game.options)
-      on_show_game_options1_activate(NULL, NULL);
+      on_show_game_options_activate(NULL, NULL);
 
     return 0;
   }
@@ -1080,3 +1082,13 @@ int game_send_options(GtkWidget *options_dialog) {
   
 }
   
+gboolean
+game_refuse_options                     (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data) {
+
+  es_write_int(cbt_info.fd, CBT_MSG_OPTIONS);
+  es_write_string(cbt_info.fd, "\0");
+  return FALSE;
+
+}

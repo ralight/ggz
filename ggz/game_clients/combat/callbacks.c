@@ -115,7 +115,7 @@ on_mainarea_button_press_event         (GtkWidget       *widget,
 
 void callback_widget_set_enabled(char *name, int mode) {
  	GtkWidget *widget;
-	widget = gtk_object_get_data(GTK_OBJECT(main_win), name);
+	widget = lookup_widget(main_win, name);
 	if (widget == NULL)
 		return;
 	gtk_widget_set_sensitive (widget, (mode%2));
@@ -159,7 +159,7 @@ on_save_map_menu_activate          (GtkMenuItem     *menuitem,
 }
 
 void
-on_show_game_options1_activate         (GtkMenuItem     *menuitem,
+on_show_game_options_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   if (cbt_game.army && cbt_game.map)

@@ -20,11 +20,6 @@ gboolean
 on_mainarea_expose_event               (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data);
-
-gboolean
-main_window_exit                       (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
 void
 on_exit_menu_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
@@ -66,9 +61,5 @@ on_save_map_menu_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_show_game_options1_activate         (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_save_map_menu_activate              (GtkMenuItem     *menuitem,
+on_show_game_options_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data);

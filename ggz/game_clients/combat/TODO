@@ -1,7 +1,8 @@
 What *must* be done before next version of GGZ:
 
 - Make the "Show Enemy units" menu work
-- Fix the "Request sync" menu
+- Clean up the debug messages
+- Update the version number
 
 
 What should be done someday
