@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 4980 2002-10-22 04:22:22Z jdorje $
+ * $Id: dlg_players.c 5002 2002-10-22 20:32:36Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -423,28 +423,30 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 		gtk_object_set_data_full(GTK_OBJECT(menu), "boot", boot,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), boot);
-#ifndef DEBUG
-		gtk_widget_set_sensitive(boot, FALSE);
-#endif
+		// gtk_widget_set_sensitive(boot, FALSE);
 		gtk_signal_connect(GTK_OBJECT(boot), "activate",
 				   GTK_SIGNAL_FUNC(player_boot_activate),
 				   which);
 	}
 
-	if (seat && is_spectator
+	if (seat
 	    && (seat->type == GGZ_SEAT_OPEN
 		|| (seat->type == GGZ_SEAT_RESERVED
 		    && !strcasecmp(my_name, seat->name)))) {
 		GtkWidget *sit;
+		const char *label;
 
-		sit = gtk_menu_item_new_with_label(_("Sit here"));
+		if (is_spectator)
+			label = _("Sit here");
+		else
+			label = _("Move here");
+
+		sit = gtk_menu_item_new_with_label(label);
 		gtk_widget_ref(sit);
 		gtk_object_set_data_full(GTK_OBJECT(menu), "sit", sit,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), sit);
-#ifndef DEBUG
-		gtk_widget_set_sensitive(sit, FALSE);
-#endif
+		// gtk_widget_set_sensitive(sit, FALSE);
 		gtk_signal_connect(GTK_OBJECT(sit), "activate",
 				   GTK_SIGNAL_FUNC(player_sit_activate),
 				   which);
@@ -459,9 +461,6 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 		gtk_object_set_data_full(GTK_OBJECT(menu), "bot", bot,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), bot);
-#ifndef DEBUG
-		gtk_widget_set_sensitive(bot, FALSE);
-#endif
 		gtk_signal_connect(GTK_OBJECT(bot), "activate",
 				   GTK_SIGNAL_FUNC(player_bot_activate),
 				   which);
@@ -482,9 +481,6 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 		gtk_object_set_data_full(GTK_OBJECT(menu), "open", open,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), open);
-#ifndef DEBUG
-		gtk_widget_set_sensitive(open, FALSE);
-#endif
 		gtk_signal_connect(GTK_OBJECT(open), "activate",
 				   GTK_SIGNAL_FUNC(player_open_activate),
 				   which);
