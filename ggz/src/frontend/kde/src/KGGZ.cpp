@@ -783,6 +783,9 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 					m_workspace->widgetChat()->beep();
 					m_workspace->widgetChat()->receive(NULL, i18n("You have been beeped by %1.").arg(chatsender), KGGZChat::RECEIVE_PERSONAL);
 					break;
+				case GGZCoreRoom::chattable:
+					m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_TABLE);
+					break;
 			}
 			break;
 		case GGZCoreRoom::enter:
@@ -916,8 +919,8 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 					i18n("Information"));
 			}
 			buffer.sprintf(i18n("Logged in as %s"), m_save_username);
-			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
-			m_workspace->widgetChat()->receive(NULL, i18n("Please join a room to start!"), KGGZChat::RECEIVE_ADMIN);
+			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_INFO);
+			m_workspace->widgetChat()->receive(NULL, i18n("Please join a room to start!"), KGGZChat::RECEIVE_INFO);
 			if((m_save_loginmode == GGZCoreServer::firsttime) && (m_motd)) m_motd->raise();
 			kggzserver->listRooms(-1, 1);
 			if(kggzserver->listGames(1) != 0) // NEVER use 0 here, it will hang the client !!!
@@ -1095,6 +1098,9 @@ void KGGZ::slotChat(const char *text, char *player, int mode)
 		{
 			case KGGZChat::RECEIVE_CHAT:
 				kggzroom->chat(GGZ_CHAT_NORMAL, player, sendtext);
+				break;
+			case KGGZChat::RECEIVE_TABLE:
+				kggzroom->chat(GGZ_CHAT_TABLE, player, sendtext);
 				break;
 			case KGGZChat::RECEIVE_ANNOUNCE:
 				if(kggzroom->chat(GGZ_CHAT_ANNOUNCE, NULL, sendtext) < 0)
@@ -1461,7 +1467,7 @@ void KGGZ::slotGameStart()
 	}
 
 	kggzgame = new GGZCoreGame();
-	kggzgame->init(m_module->module());
+	kggzgame->init(kggzserver->server(), m_module->module());
 
 	attachGameCallbacks();
 

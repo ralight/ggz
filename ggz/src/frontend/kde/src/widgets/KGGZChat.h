@@ -57,10 +57,12 @@ class KGGZChat : public QWidget
 			RECEIVE_CHAT,
 			RECEIVE_OWN,
 			RECEIVE_ADMIN,
+			RECEIVE_INFO,
 			RECEIVE_PERSONAL,
 			RECEIVE_ANNOUNCE,
 			RECEIVE_BEEP,
-			RECEIVE_ME
+			RECEIVE_ME,
+			RECEIVE_TABLE
 		};
 
 		KGGZChat(QWidget *parent = NULL, const char *name = NULL);

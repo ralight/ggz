@@ -77,8 +77,8 @@ KGGZChat::KGGZChat(QWidget *parent, const char *name)
 
 	connect(input, SIGNAL(returnPressed()), SLOT(slotSend()));
 
-	receive(NULL, "GGZ Gaming Zone " KGGZVERSION, RECEIVE_ADMIN);
-	receive(NULL, i18n("Ready for connection..."), RECEIVE_ADMIN);
+	receive(NULL, "GGZ Gaming Zone " KGGZVERSION, RECEIVE_INFO);
+	receive(NULL, i18n("Ready for connection..."), RECEIVE_INFO);
 
 	m_listusers = 0;
 	m_log = 0;
@@ -106,7 +106,19 @@ void KGGZChat::setSpeech(int speech)
 // Send out a message or execute command
 void KGGZChat::slotSend()
 {
-	enum Events {EVENT_CHAT, EVENT_BEEP, EVENT_ME, EVENT_NOEVENT, EVENT_PERSONAL, EVENT_HELP, EVENT_MARK, EVENT_AWAY, EVENT_ANNOUNCE};
+	enum Events
+	{
+		EVENT_CHAT,
+		EVENT_BEEP,
+		EVENT_ME,
+		EVENT_NOEVENT,
+		EVENT_PERSONAL,
+		EVENT_HELP,
+		EVENT_MARK,
+		EVENT_AWAY,
+		EVENT_ANNOUNCE,
+		EVENT_TABLE
+	};
 	char *commands = NULL;
 	char *op2 = NULL;
 	int triggerevent;
@@ -155,6 +167,18 @@ void KGGZChat::slotSend()
 							strcat(inputargs, op2);
 						}
 					}
+				}
+				if(strncmp(commands, "/table", 6) == 0)
+				{
+					triggerevent = EVENT_TABLE;
+					op2 = strtok(NULL, " ");
+					while(op2)
+					{
+						strcat(inputargs, " ");
+						strcat(inputargs, op2);
+						op2 = strtok(NULL, " ");
+					}
+					KGGZDEBUG("---table chart %s---\n", inputargs);
 				}
 				if(strncmp(inputtext, "/wall", 5) == 0)
 				{
@@ -205,21 +229,25 @@ void KGGZChat::slotSend()
 	switch(triggerevent)
 	{
 		case EVENT_HELP:
-			receive(NULL, i18n("KGGZ - The KDE client for the GGZ Gaming Zone"), RECEIVE_ADMIN);
-			receive(NULL, i18n("List of available commands:"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/me &lt;msg&gt; - sends an emphasized phrase."), RECEIVE_ADMIN);
-			receive(NULL, i18n("/msg &lt;player&gt; &lt;message&gt; - sends a private message."), RECEIVE_ADMIN);
-			receive(NULL, i18n("/wall &lt;message&gt; - sends a message to all rooms."), RECEIVE_ADMIN);
-			receive(NULL, i18n("/beep &lt;player&gt; - send player a beep."), RECEIVE_ADMIN);
-			receive(NULL, i18n("/help - this screen."), RECEIVE_ADMIN);
-			receive(NULL, i18n("/mark - mark a time stamp."), RECEIVE_ADMIN);
-			receive(NULL, i18n("/away &lt;message&gt; - show a goodbye message."), RECEIVE_ADMIN);
+			receive(NULL, i18n("KGGZ - The KDE client for the GGZ Gaming Zone"), RECEIVE_INFO);
+			receive(NULL, i18n("List of available commands:"), RECEIVE_INFO);
+			receive(NULL, i18n("/me &lt;msg&gt; - sends an emphasized phrase."), RECEIVE_INFO);
+			receive(NULL, i18n("/msg &lt;player&gt; &lt;message&gt; - sends a private message."), RECEIVE_INFO);
+			receive(NULL, i18n("/table &lt;message&gt; - table message."), RECEIVE_INFO);
+			receive(NULL, i18n("/wall &lt;message&gt; - sends a message to all rooms."), RECEIVE_INFO);
+			receive(NULL, i18n("/beep &lt;player&gt; - send player a beep."), RECEIVE_INFO);
+			receive(NULL, i18n("/help - this screen."), RECEIVE_INFO);
+			receive(NULL, i18n("/mark - mark a time stamp."), RECEIVE_INFO);
+			receive(NULL, i18n("/away &lt;message&gt; - show a goodbye message."), RECEIVE_INFO);
 			break;
 		case EVENT_CHAT:
 			emit signalChat(inputtext, NULL, RECEIVE_CHAT);
 			break;
+		case EVENT_TABLE:
+			emit signalChat(inputargs, NULL, RECEIVE_TABLE);
+			break;
 		case EVENT_ANNOUNCE:
-			emit signalChat(inputtext, NULL, RECEIVE_ANNOUNCE);
+			emit signalChat(inputargs, NULL, RECEIVE_ANNOUNCE);
 			break;
 		case EVENT_ME:
 			emit signalChat(inputtext, NULL, RECEIVE_CHAT);
@@ -492,6 +520,9 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 		case RECEIVE_CHAT:
 			color = "0000ff";
 			break;
+		case RECEIVE_TABLE:
+			color = "9999ff";
+			break;
 		case RECEIVE_ANNOUNCE:
 			color = "80d000";
 			break;
@@ -531,6 +562,12 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 			logChat(tmp);
 			parse(plaintext(msg.latin1()));
 			break;
+		case RECEIVE_TABLE:
+			tmp = QString("<tr><td><font color=#%1>").arg(color) + QString(player) + QString(":&nbsp;</font></td><td>");
+			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp);
+			logChat(tmp);
+			parse(plaintext(msg.latin1()));
+			break;
 		case RECEIVE_OWN:
 			tmp = QString("<tr><td><font color=#%1><b>").arg(color) + QString(player) + QString("</b>:&nbsp;</font></td><td>");
 			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp);
@@ -539,6 +576,12 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 			break;
 		case RECEIVE_ADMIN:
 			tmp = QString("<tr><td colspan=2><font color=#ff0000>") + msg + QString("</font></td></tr>");
+			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
+			output->setContentsPos(0, 32767);
+			logChat(tmp);
+			break;
+		case RECEIVE_INFO:
+			tmp = QString("<tr><td colspan=2><font color=#802020>") + msg + QString("</font></td></tr>");
 			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
 			output->setContentsPos(0, 32767);
 			logChat(tmp);

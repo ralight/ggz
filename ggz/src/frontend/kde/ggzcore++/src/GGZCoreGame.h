@@ -63,7 +63,7 @@ class GGZCoreGame
 
 		/**
 		 * Initialize this game. */
-		int init(GGZModule* module);
+		int init(GGZServer *server, GGZModule* module);
 
 		/**
 		 * Return the specific file descriptor. */
@@ -80,7 +80,7 @@ class GGZCoreGame
 		int launch();
 		/**
 		 * Join this game. */
-		int join();
+		/*int join();*/
 		/**
 		 * Join as spectator. */
 		int joinSpectator();

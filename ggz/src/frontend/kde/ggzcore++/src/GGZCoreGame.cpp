@@ -44,9 +44,9 @@ int GGZCoreGame::removeHook(const GGZCoreGameEvent event, const unsigned int id)
 	return ggzcore_game_remove_event_hook_id(m_game, (GGZGameEvent)event, id);
 }
 
-int GGZCoreGame::init(GGZModule* module)
+int GGZCoreGame::init(GGZServer *server, GGZModule* module)
 {
-	return ggzcore_game_init(m_game, module);
+	return ggzcore_game_init(m_game, server, module);
 }
 
 int GGZCoreGame::fd()
@@ -69,10 +69,10 @@ int GGZCoreGame::launch()
 	return ggzcore_game_launch(m_game);
 }
 
-int GGZCoreGame::join()
+/*int GGZCoreGame::join()
 {
 	return ggzcore_game_join(m_game);
-}
+}*/
 
 int GGZCoreGame::joinSpectator()
 {
