@@ -13,3 +13,5 @@ ggz-hosting-guide.toc
 ggz-hosting-guide.tp
 ggz-hosting-guide.vr
 texinfo.tex
+*.html
+

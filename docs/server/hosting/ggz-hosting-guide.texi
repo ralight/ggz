@@ -6,7 +6,6 @@
 @c %**end of header
 
 @c TODO: 
-@c package names? should be equal for deb and rpm
 @c links to other documentation
 @c server log analysis
 @c web presentation of usage percentage etc.
@@ -14,7 +13,7 @@
 @c 'playing nice': metaservers, announce on ggz-servers list
 
 @ifinfo
-Copyright (C) 2001 Josef Spillner
+Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 @end ifinfo
 
 @c Frontpage
@@ -26,7 +25,7 @@ Copyright (C) 2001 Josef Spillner
 @c Copyright page
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2001 Josef Spillner
+Copyright @copyright{} 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 Published under the GNU Free Documentation License.
 @end titlepage
 
@@ -38,7 +37,7 @@ Published under the GNU Free Documentation License.
 This file is the info format of the GGZ Gaming Zone Hosting Guide, which is
 also available in postscript and HTML format.
 It describes how to setup a GGZ server and how to configure and maintain it.
-See http://ggz.sourceforge.net for the latest edition.
+See http://ggz.sourceforge.net/docs/ for the latest edition.
 @end ifinfo
 
 @menu
@@ -82,8 +81,9 @@ players have left the game.
 Permanent game servers are a variant of this: for example, role-play games do
 often only consist of one process which never ends, and players may join and
 leave whenever they wish.
-GGZ does currently only support non-permanent games, but this issue will be
-resolved soon.
+GGZ does now (experimentally) support permanent game servers too; see the
+section about the game Keepalive below. This might however be subject to
+change for 0.0.6.
 
 @node Installation, Internal Games, Game Servers, Top
 @chapter Installation
@@ -106,6 +106,7 @@ this is:
 @itemize
 @item libdb 2 or 3
 @item libpopt
+@item libexpat
 @item perl
 @end itemize
 @end itemize
@@ -126,10 +127,16 @@ tools will follow later.
 
 @section Base installation
 Before the main server (ggzd) can be installed, its dependencies must be
-resolved. The GGZ packages 'libggz' and 'easysock' are currently the questioned
-packages. After they're installed, the server package 'ggzd', including many game
-servers, should follow. Upon installation, quite some files and directories
-are created:
+resolved. The GGZ package 'libggz' is currently the questioned
+package; this replaces the 'easysock' package which was used in version 0.0.4.
+After libggz is installed, the server packages 'ggzd', which is the main
+server, and 'ggz-game-servers' including many game servers, should follow.
+Both need the library package 'libggzdmod' as well.
+When installing from source, all of those can be found in the 'ggzd' CVS
+module.
+Upon installation, quite some files and directories are created under the
+chosen prefix (usually /usr/local when installing from source and /usr
+otherwise):
 
 @itemize
 @item etc: configuration of ggzd and game registry; message of the day (MOTD)
@@ -137,7 +144,7 @@ are created:
 @item lib/ggzd: game servers
 @item share: game server data
 @item var/ggzd: dynamic data such as players and statistics (if not present yet, it
-is created on startup)
+is created on startup), and dynamic game data
 @end itemize
 
 Although normally the server hierarchy will be under /usr or /usr/local, there
@@ -162,6 +169,7 @@ C-style variables place holders can be used, they are currently defined like:
 @item %t: time zone
 @item %a: server administrator
 @item %e: administrator email address
+@item %c: color switch; must be followed by a number between 0 and 9
 @end itemize
 
 @subsection Widely used terms
@@ -176,6 +184,8 @@ called 'TTT Newbies' with a restricted set of maximum 2 tables, and a larger
 one for 50 people tagged 'TTT Tournament' and no further restrictions.
 Therefore, each room is linked to exactly one @emph{game type}. Based on these
 types, players start to play their @emph{games} by creating @emph{tables}.
+Each table can hold 2 to unlimited players, dependent on the room setup.
+At present time, however, the maximum number of players is restricted to 8.
 
 @subsection Main GGZ server configuration
 
@@ -184,6 +194,9 @@ default values are fine for testing and running a few games, but it is strongly
 recommended that server administrators check all values contained in the file.
 For example, the administrative contact information or the server-client
 communication encryption should be customized.
+When running a GGZ server on a desktop system, it will be possible to configure
+the server graphically in the future. A KDE control center module is already
+available for reading in configuration files.
 
 @section Normal installation
 
@@ -200,7 +213,8 @@ In a later chapter the details on how to install these are explained.
 
 Some programs are only installed by very few people, mostly because they are
 very specialized. TelGGZ, the telnet wrapper which allows world-wide
-participation in GGZ chat sessions over telnet, is one such candidate.
+participation in GGZ chat sessions over the telnet protocol, is one such
+candidate.
 
 @node Internal Games, External Games, Installation, Top
 @chapter Internal Games
@@ -223,23 +237,57 @@ Each game has its homepage on:
 
 @section Overview on the games
 
-@subsection KaBoom
+@subsection Kamikaze
+
+This game server is not part of GGZ yet, but will be from version 0.0.6 on.
+
 @subsection Chess
+
+This is the GGZ variant of the chessd server, which is developed using the
+cgc library from @url{http://chessd.sourceforge.net}, like the chessd Fischer
+server.
+
 @subsection Chinese Checkers
+
+A chinese checkers game for 2-6 players.
+
 @subsection Combat
+
+This is the server for the strategy game Combat.
+
 @subsection Copenhagen
+
+The Copenhagen server is not part of GGZ 0.0.5 because it is not stable enough
+yet. It will be present in the next version.
+You can however install it from source, which is available from MindX CVS:
+@url{http://mindx.sourceforge.net}
+
 @subsection Dots
+
+A Connect the Dots server for GGZ.
+
 @subsection Escape
+
+The escape server serves the Windows game client Escape, see
+@url{http://wggz.sourceforge.net} for details.
+
 @subsection GGZCards
 
 This is a special game, it provides different game servers for one game client.
+The following games are currently supported: Bridge, Euchre, Hearts, LaPocha,
+Spades, Suaro, Sueca and Whist.
+There will be more in the future, for example Skat.
 
 @subsection Hastings1066
+
+Strategy game for 2-8 players.
+
 @subsection Keepalive
 
 This game is currently in experimental stage. It has been invented as a
 proof-of-concept to lower the barriers of enhanced game development, including
 game spectators, eternal runtime and a more complex server-side design.
+It writes player data into a subdirectory of ggzd's variable data directory.
 
 @subsection Krosswater
 
@@ -248,9 +296,23 @@ should be taken care of when installing locally. If the installation is not
 done properly, lots of ghost tables will show up after some time.
 
 @subsection LaPocha
+
+A card game server.
+
 @subsection Muehle
+
+The Muehle server is not yet a full server, it only handles game initialization
+for Muehle (Nine men's morris), and passes the game data between the clients.
+
 @subsection NetSpades
+
+A card game server for the NetSpades game which has been derived from the
+former non-GGZ NetSpades.
+
 @subsection Reversi
+
+Game server for the reversi game.
+
 @subsection TicTacToe
 
 The easiest game, which does therefore serve as an example for beginners in GGZ
@@ -271,13 +333,30 @@ should include all of them to give their players a better choice.
 @section Description of available external games
 
 @subsection Bathalla Naval
+
+This is a graphical server using the Gnome libraries, so it is only of interest
+for people who run a GGZ server on a desktop system.
+See @url{http://batnav.sourceforge.net}.
+
 @subsection bzFlag
+
+The server for the well-known realtime 3D tank game. This server is a patched
+version of bzFlag, which is available from @url{http://www.bzflag.org}.
+
 @subsection Freeciv
+
+A patched version of the FreeCiv server (@url{http://www.freeciv.org}) runs
+over GGZ as well.
+
 @subsection Stalker
 
 Stalker is an SDL realtime game which uses UDP communication.
+See @url{http://stalker.sourceforge.net}.
 
 @subsection T.E.G.
+
+T.E.G. is a Gnome game, which has GGZ support built-in. The server needs libxml
+and libglib installed.
 
 @node Other GGZ Servers, GGZ Server Tools, External Games, Top
 @chapter Other GGZ Servers
@@ -295,6 +374,10 @@ configuration file named metaservconf.xml.
 However, during operation a cache file named $HOME/.ggz/metaserver.cache is
 created which contains the URIs of other meta servers, so the network can grow
 dynamically.
+The current implementation of the GGZ Meta Server is read-only, so the
+configuration file needs to be maintained by hand.
+It runs on port 15689.
+You can get ggzmetaserv as part of the GGZ utils package.
 
 @section The GGZ Telnet Wrapper (telggz)
 
@@ -308,7 +391,10 @@ any GGZ server from all over the world, whereever one finds a telnet client.
 @section The GGZ Chat Bot (grubby)
 
 Grubby comes with its own manuals, including an administrator's manual and a
-user's manual.
+user's manual, as part of the GGZ documentation package.
+While grubby can also run client-side (as it is in fact a GGZ client), it makes
+much more sense to have it running permanently on the server side to take
+advantage of its facilities like logging or memorizing things.
 
 @node GGZ Server Tools, Server Maintaining, Other GGZ Servers, Top
 @chapter GGZ Server Tools
@@ -327,6 +413,8 @@ If you want to lookup the registered players, you can do so very easily using
 the ggzduedit tool. This allows you to retrieve the passwords of the registered
 players, and to add or delete them manually.
 It is also very helpful for debugging.
+If any user should get admin privileges on the server, then this can be
+adjusted using ggzduedit as well.
 
 @node Server Maintaining, (dir), GGZ Server Tools, Top
 @chapter Server Maintaining
@@ -346,6 +434,8 @@ script.
 @item Don't install unnecessary extra servers on the host where ggzd runs. Game
 servers are very often the target of people trying to break into the system,
 and be it because they're frustrated by having lost a game.
+@item At a maximum, a full GGZ server needs to have the ports 5688, 15688 and
+15689 open.
 @end itemize
 
 @section Privacy
@@ -366,7 +456,8 @@ flooding or similar.
 
 @appendix Local GGZ server installation
 
-These instructions apply to a vanilla 0.0.5 installation.
+These instructions apply to a vanilla 0.0.5 installation if one doesn't have
+system privileges.
 You may have to modify some details though.
 
 @verbatim
@@ -387,12 +478,14 @@ make install
 cd ..
 cd ggzd
 export LD_RUN_PATH=$HOME/localsys/usr/lib
-export LD_IBRARY_PATH=$LD_RUN_PATH
+export LD_LIBRARY_PATH=$LD_RUN_PATH
 ./autogen.sh --prefix=$HOME/localsys/usr \
-	--with-database=db3
+	--with-database=db3 --with-libggz-dir=$HOME/localsys/usr
 make
 make install
 cd ..
+export PATH="$HOME/localsys/usr:$PATH"
+ggzd
 @end verbatim
 
 @appendix Known GGZ servers and Contact
@@ -402,11 +495,11 @@ please consult the GGZ meta server, using one of the available client-side
 tools.
 
 @itemize @bullet
-@item @url{ggz://jzaun.com} (USA, developers)
-@item @url{ggz://ggz.snafu.de} (Germany)
-@item @url{ggz://ggz.morat.net} (USA)
-@item @url{ggz://ggz.homeip.net} (Argentina)
-@item @url{ggz://mindx.dyndns.org} (Germany)
+@item @url{ggz://jzaun.com} (USA, developers, medium connection)
+@item @url{ggz://ggz.snafu.de} (Germany, fast connection)
+@item @url{ggz://ggz.morat.net} (USA, fast connection)
+@item @url{ggz://ggz.homeip.net} (Argentina, medium connection)
+@item @url{ggz://mindx.dyndns.org} (Germany, medium connection)
 @end itemize
 
 There are so far no known web pages or similar efforts. For more information,
@@ -416,6 +509,7 @@ don't forget to check the GGZ home page regularly:
 
 Server hosters are encouraged to subscribe to the ggz-servers mailing list.
 New servers are announced there, as are updates and hosting problems.
+This is a low traffic mailing list.
 
 @url{http://lists.sourceforge.net/lists/listinfo/ggz-servers}
 
