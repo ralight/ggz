@@ -11,7 +11,7 @@ over their content.
 	<foobar>					-> spaces, tabs, newlines are removed
 		blah					-> content of the element
 	</foobar>
-	<quuux/>					-> NOT supported yet: tag without closing tag
+	<quuux/>					-> tag without closing tag: no problem
 	<notme reason="not supported">
 		hehe					-> NOT supported yet: text AND inside elements
 		<he>

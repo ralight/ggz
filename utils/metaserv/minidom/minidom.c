@@ -9,6 +9,7 @@ char *minidom_cleanstream(const char *stream)
 	static char *cs = NULL;
 	int i, j;
 	int inside;
+	int spaceprotect;
 
 	if(!stream) return NULL;
 	if(cs)
@@ -20,21 +21,38 @@ char *minidom_cleanstream(const char *stream)
 
 	j = 0;
 	inside = 0;
+	spaceprotect = 0;
 	for(i = 0; i < strlen(stream); i++)
 	{
-		if((stream[i] == '\t') || (stream[i] == '\n')) continue;
-		if((!inside) && (stream[i] == ' ')) continue;
+		if(stream[i] == '\t') continue;
+		if(stream[i] == '\n')
+		{
+			if(inside)
+			{
+				cs[j] = ' ';
+				j++;
+			}
+			continue;
+		}
+		if((!inside) && (!spaceprotect) && (stream[i] == ' ')) continue;
 		if(stream[i] == '<')
 		{
 			inside = 1;
 			if(stream[i + 1] == '?') inside = 2;
+			spaceprotect = 0;
+			if(stream[i + 1] == '/') spaceprotect = -1;
 		}
 		if(inside != 2)
 		{
 			cs[j] = stream[i];
 			j++;
 		}
-		if(stream[i] == '>') inside = 0;
+		if(stream[i] == '>')
+		{
+			inside = 0;
+			spaceprotect++;			/* 1 on opening tag, 0 on closing tag */
+			if(stream[i - 1] == '/') spaceprotect = 0;
+		}
 	}
 	cs[j] = 0;
 
@@ -104,7 +122,7 @@ ELE *minidom_makechild(ELE *parent, char *tag)
 				att->name = (char*)malloc(pos + 1);
 				att->value = (char*)malloc(strlen(token) - pos + 1);
 				memcpy(att->name, token, pos);
-				memcpy(att->value, token + pos + 1, strlen(token) - pos);
+				memcpy(att->value, token + pos + 1 + 1, strlen(token) - pos - 1 - 2); /* exclude "" marks */
 			}
 			ele->atnum++;
 			ele->at = realloc(ele->at, ele->atnum + 1);
@@ -126,6 +144,7 @@ DOM *minidom_parse(DOM *dom, const char *stream)
 	char *token;
 	int error = 0;
 	ELE *ele, *cp;							/* root node and current pointer */
+	int endtag;
 
 	if(!stream) return dom;
 	cs = minidom_cleanstream(stream);
@@ -143,6 +162,7 @@ DOM *minidom_parse(DOM *dom, const char *stream)
 	mark = -1;
 	error = 0;
 	lastmark = 0;
+	endtag = 0;
 	for(i = 0; i < strlen(cs); i++)
 	{
 		if(cs[i] == '<')
@@ -172,10 +192,21 @@ DOM *minidom_parse(DOM *dom, const char *stream)
 				if((token[0] == '/') && (cp)) cp = cp->parent;
 				else
 				{
+					if((token[i - mark - 1] == '/') && (cp))
+					{
+						token[i - mark - 1] = 0;
+						/*cp = cp->parent;*/
+						endtag = 1;
+					}
 					/*printf("INSERT AT: %i\n", cp);*/
 					cp = minidom_makechild(cp, token);
 					if((cp) && (!ele)) ele = cp;
 					/*if(cp) cp = cp->parent;*/ /* QUICK HACK?! */
+					if((cp) && (endtag))
+					{
+						cp = cp->parent;
+						endtag = 0;
+					}
 				}
 				mark = -1;
 				lastmark = i + 1;
@@ -211,7 +242,7 @@ DOM *minidom_load(const char *file)
 	while(fgets(buf, sizeof(buf), f))
 	{
 		buffer = (char*)realloc(buffer, strlen(buffer) + strlen(buf));
-		buf[strlen(buf) - 1] = 0;
+		/*buf[strlen(buf) - 1] = 0;*/
 		strcat(buffer, buf);
 	}
 	fclose(f);
@@ -286,8 +317,11 @@ void minidom_free(DOM *dom)
 int main(int argc, char *argv[])
 {
 	DOM *dom;
+	char *file;
 
-	dom = minidom_load("example.xml");
+	file = "example.xml";
+	if(argc == 2) file = argv[1];
+	dom = minidom_load(file);
 	minidom_dump(dom);
 
 	return 0;

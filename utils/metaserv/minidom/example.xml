@@ -4,6 +4,7 @@
 		<host version="0.0.5pre">
 			jzaun.com
 		</host>
+		<foo tag="bar"/>
 		<port>
 			5688
 		</port>
