@@ -91,16 +91,15 @@ es_exit_func es_exit_func_rem(void)
 int es_make_socket(const EsSockType type, const unsigned short port, 
 		   const char *server)
 {
-
-	int sock, error = 0;
+	int sock;
 	const int on = 1;
 	struct sockaddr_in name;
 	struct hostent *hp;
 
-	if ((sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
-		error = 1;
-		if (_err_func != NULL)
+	if ( (sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
+		if (_err_func)
 			(*_err_func) (strerror(errno), ES_CREATE, ES_NONE);
+		return -1;
 	}
 
 	name.sin_family = AF_INET;
@@ -110,49 +109,48 @@ int es_make_socket(const EsSockType type, const unsigned short port,
 
 	case ES_SERVER:
 		name.sin_addr.s_addr = htonl(INADDR_ANY);
-		if (setsockopt
-		    (sock, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0
-		    || bind(sock, (struct sockaddr *) &name,
+		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &on, 
+			       sizeof(on)) < 0
+		    || bind(sock, (struct sockaddr *)&name, 
 			    sizeof(name)) < 0) {
-			error = 1;
-			if (_err_func != NULL)
-				(*_err_func) (strerror(errno), ES_CREATE, ES_NONE);
+			if (_err_func)
+				(*_err_func) (strerror(errno), ES_CREATE, 
+					      ES_NONE);
+			return -1;
 		}
 		break;
 
 	case ES_CLIENT:
-		if ((hp = gethostbyname(server)) == NULL) {
-			error = 1;
-			if (_err_func != NULL)
-				(*_err_func) (strerror(errno), ES_CREATE, ES_NONE);
+		if ( (hp = gethostbyname(server)) == NULL) {
+			if (_err_func)
+				(*_err_func) (strerror(errno), ES_CREATE, 
+					      ES_NONE);
+			return -1;
 			break;
 		}
 		memcpy(&name.sin_addr, hp->h_addr, hp->h_length);
-		if (connect(sock, (struct sockaddr *) &name, sizeof(name))
-		    == -1) {
-			error = 1;
-			if (_err_func != NULL)
-				(*_err_func) (strerror(errno), ES_CREATE, ES_NONE);
+		if (connect(sock, (struct sockaddr *)&name, sizeof(name))< 0) {
+			if (_err_func)
+				(*_err_func) (strerror(errno), ES_CREATE, 
+					      ES_NONE);
+			return -1;
 		}
 		break;
 	}
 
-	return (error ? -1 : sock);
-
+	return sock;
 }
 
 
 int es_make_socket_or_die(const EsSockType type, const unsigned short port, 
 			  const char *server)
 {
-
 	int sock;
-
-	if ((sock = es_make_socket(type, port, server)) == -1)
+	
+	if ( (sock = es_make_socket(type, port, server)) < 0)
 		(*_exit_func) (-1);
-
+	
 	return sock;
-
 }
 
 
@@ -463,7 +461,7 @@ int es_writen(int fd, const void *vptr, size_t n)
 			else
 				return (-1);	/* error */
 		}
-
+		
 		nleft -= nwritten;
 		ptr += nwritten;
 	}
