@@ -36,38 +36,41 @@
 extern GtkWidget *login_dialog;
 extern GtkWidget *win_main;
 
+void ggz_connect_fail(GGZEventID id, void* event_data, void* user_data);
+void ggz_motd(GGZEventID id, void* event_data, void* user_data);
+void ggz_login_ok(GGZEventID id, void* event_data, void* user_data);
+void ggz_login_fail(GGZEventID id, void* event_data, void* user_data);
+void ggz_list_rooms(GGZEventID id, void* event_data, void* user_data);
+void ggz_room_join(GGZEventID id, void* event_data, void* user_data);
+void ggz_list_players(GGZEventID id, void* event_data, void* user_data);
 void ggz_chat_msg(GGZEventID id, void* event_data, void* user_data);
 void ggz_chat_prvmsg(GGZEventID id, void* event_data, void* user_data);
 void ggz_chat_beep(GGZEventID id, void* event_data, void* user_data);
-void ggz_list_rooms(GGZEventID id, void* event_data, void* user_data);
-void ggz_list_players(GGZEventID id, void* event_data, void* user_data);
-void ggz_room_join(GGZEventID id, void* event_data, void* user_data);
+void ggz_logout(GGZEventID id, void* event_data, void* user_data);
 void ggz_room_enter(GGZEventID id, void* event_data, void* user_data);
 void ggz_room_part(GGZEventID id, void* event_data, void* user_data);
-void ggz_login_ok(GGZEventID id, void* event_data, void* user_data);
-void ggz_login_fail(GGZEventID id, void* event_data, void* user_data);
-void ggz_connect_fail(GGZEventID id, void* event_data, void* user_data);
-void ggz_motd(GGZEventID id, void* event_data, void* user_data);
 
 
 void ggz_event_init(void)
 {
+	ggzcore_event_connect(GGZ_SERVER_CONNECT_FAIL, ggz_connect_fail);
+	ggzcore_event_connect(GGZ_SERVER_MOTD, 	ggz_motd);
+	ggzcore_event_connect(GGZ_SERVER_LOGIN, ggz_login_ok);
+	ggzcore_event_connect(GGZ_SERVER_LOGIN_FAIL, ggz_login_fail);
+	ggzcore_event_connect(GGZ_SERVER_LIST_ROOMS, ggz_list_rooms);
+	ggzcore_event_connect(GGZ_SERVER_ROOM_JOIN, ggz_room_join);
+	ggzcore_event_connect(GGZ_SERVER_LIST_PLAYERS, ggz_list_players);
 	ggzcore_event_connect(GGZ_SERVER_CHAT_MSG, ggz_chat_msg);
 	ggzcore_event_connect(GGZ_SERVER_CHAT_PRVMSG, ggz_chat_prvmsg);
 	ggzcore_event_connect(GGZ_SERVER_CHAT_BEEP, ggz_chat_beep);
-	ggzcore_event_connect(GGZ_SERVER_LOGIN, ggz_login_ok);
-	ggzcore_event_connect(GGZ_SERVER_CONNECT_FAIL, ggz_connect_fail);
-	ggzcore_event_connect(GGZ_SERVER_ROOM_JOIN, ggz_room_join);
+	ggzcore_event_connect(GGZ_SERVER_LOGOUT, ggz_logout);
+	ggzcore_event_connect(GGZ_SERVER_ERROR, NULL);
 	ggzcore_event_connect(GGZ_SERVER_ROOM_ENTER, ggz_room_enter);
 	ggzcore_event_connect(GGZ_SERVER_ROOM_LEAVE, ggz_room_part);
-	ggzcore_event_connect(GGZ_SERVER_LOGIN_FAIL, ggz_login_fail);
-	ggzcore_event_connect(GGZ_SERVER_LIST_ROOMS, ggz_list_rooms);
-	ggzcore_event_connect(GGZ_SERVER_LIST_PLAYERS, ggz_list_players);
-	ggzcore_event_connect(GGZ_SERVER_MOTD, ggz_motd);
+	ggzcore_event_connect(GGZ_NET_ERROR, NULL);
 }
 
 
-/* Event functions */
 void ggz_chat_msg(GGZEventID id, void* event_data, void* user_data)
 {
 	gchar *player;
@@ -87,7 +90,6 @@ void ggz_chat_prvmsg(GGZEventID id, void* event_data, void* user_data)
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
 	chat_display_message(CHAT_PRVMSG, player, message);
-
 }
 
 void ggz_chat_beep(GGZEventID id, void* event_data, void* user_data)
@@ -102,6 +104,13 @@ void ggz_chat_beep(GGZEventID id, void* event_data, void* user_data)
 
 	g_free(message);
 }
+
+void ggz_logout(GGZEventID id, void* event_data, void* user_data)
+{
+	/* Check to see if we want to reconnect to a new server */
+	login_reconnect();
+}
+
 
 void ggz_list_players(GGZEventID id, void* event_data, void* user_data)
 {
@@ -155,6 +164,7 @@ void ggz_room_join(GGZEventID id, void* event_data, void* user_data)
 {
 	GtkWidget *tmp;
 	gchar *name;
+	gchar *message;
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
@@ -165,6 +175,11 @@ void ggz_room_join(GGZEventID id, void* event_data, void* user_data)
 	name = g_strdup_printf("Current Room: %s", ggzcore_room_get_name(ggzcore_state_get_room()));
 	gtk_label_set_text(GTK_LABEL(tmp), name);
 	g_free(name);
+
+	/* Display message in chat area */
+	message = g_strdup_printf("You've joined room %s", ggzcore_room_get_name(ggzcore_state_get_room()));
+	chat_display_message(CHAT_BEEP, "---", message);
+	g_free(message);
 
 	/* set senditivity */
 	/* Menu bar */
@@ -286,7 +301,10 @@ void ggz_login_ok(GGZEventID id, void* event_data, void* user_data)
 
 void ggz_connect_fail(GGZEventID id, void* event_data, void* user_data)
 {
+	GtkWidget *tmp;
 
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
 }
 
 void ggz_login_fail(GGZEventID id, void* event_data, void* user_data)

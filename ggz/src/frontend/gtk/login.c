@@ -38,8 +38,8 @@
 
 GtkWidget *login_dialog;
 
-
-static GtkWidget* create_dlg_login(void);
+static GGZProfile *reconnect = NULL;
+static GtkWidget *create_dlg_login(void);
 
 /* Callbacks login dialog box */
 static void login_fill_defaults(GtkWidget *widget, gpointer data);
@@ -170,33 +170,55 @@ static void
 login_start_session                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-	GtkEntry *tmp;
+	GtkWidget *tmp;
 	GGZProfile *profile;
 
 	if (!(profile = calloc(1, sizeof(GGZProfile))))
 		ggzcore_error_sys_exit("malloc() failed in %s", __FILE__);
 
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "host_entry");
-	profile->host = gtk_entry_get_text(tmp);
+	profile->host = gtk_entry_get_text(GTK_ENTRY(tmp));
 
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "port_entry");
-	profile->port = atoi(gtk_entry_get_text(tmp));
+	profile->port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "name_entry");
-	profile->login = gtk_entry_get_text(tmp);
+	profile->login = gtk_entry_get_text(GTK_ENTRY(tmp));
 
 	/* FIXME: handle other login types */
 	profile->type = GGZ_LOGIN_GUEST;
 
-	/* If currently online, disconnect */
 	if(ggzcore_state_is_online())
+	{
+		/* If currently online, disconnect */
 		ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
 
-	/* FIXME: provide a destroy function that frees the appropriate mem */
-	ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);
-
+		/* Set to connect after logout */
+		reconnect = profile;
+	} else {
+		/* FIXME: provide a destroy function that frees the appropriate mem */
+		ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);
+	}
 }
 
+void login_reconnect(void)
+{
+	/* 
+	 * Check to see if we should connect to a server
+	 * This function is needed because we can't send
+	 * a GGZ_USER_LOGIN right after a GGZ_USER_LOGOUT
+	 */
+
+	if(reconnect != NULL)
+	{
+		/* FIXME: provide a destroy function that frees the appropriate mem */
+		ggzcore_event_trigger(GGZ_USER_LOGIN, reconnect, NULL);
+		reconnect = NULL;
+	}
+}
 
 static GtkWidget*
 create_dlg_login (void)
