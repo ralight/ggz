@@ -961,204 +961,235 @@ void next_play(void)
 	return;
 }
 
+int handle_launch_event()
+{
+	ggz_debug("Handling a WH_EVENT_LAUNCH.");
+	if(game.state != WH_STATE_PRELAUNCH) {
+		ggz_debug("ERROR: update: state wasn't prelaunch when handling a launch.");
+		return -1;
+	}
+	/* determine number of players. */
+	game.num_players = ggz_seats_num(); /* ggz seats == players */
+	game.players = (struct game_player_t *)alloc(game.num_players * sizeof(struct game_player_t));
+	/* we don't yet know the number of seats */
+
+	/* as soon as we know which game we're playing, we should init the game */
+	if (game.which_game != GGZ_GAME_UNKNOWN)
+		game_init_game();
+
+	set_game_state(WH_STATE_NOTPLAYING);
+	save_game_state(); /* no players are connected yet, so we enter waiting phase */
+}
+
+int handle_join_event(player_t player)
+{
+	player_t p;
+
+	ggz_debug("Handling a WH_EVENT_JOIN.");
+	if(game.state != WH_STATE_WAITFORPLAYERS) {
+		ggz_debug("SERVER BUG: someone joined while we weren't waiting.");
+		return -1;
+	}
+
+	/* if all seats are occupied, we restore the former state and
+	 * continue playing (below).  The state is restored up here
+	 * so that the sync will be handled correctly. */
+	if (!ggz_seats_open())
+		restore_game_state();
+
+	/* send all table info to joiner */
+	send_sync(player);
+
+	/* send player list to everyone else */
+	for(p = 0; p < game.num_players; p++)
+		if (p != player)
+			send_player_list(p);
+
+	if (game.state != WH_STATE_NOTPLAYING &&
+	    !(game.state == WH_STATE_WAITFORPLAYERS && game.saved_state == WH_STATE_NOTPLAYING))
+		send_player_message_toall(player); /* should this be in sync??? */
+
+	if (player == game.host && game.which_game == GGZ_GAME_UNKNOWN)
+		games_req_gametype();
+
+	if (!ggz_seats_open() && game.which_game != GGZ_GAME_UNKNOWN) {
+		/* (Re)Start game play */
+		if (game.state != WH_STATE_WAIT_FOR_BID && game.state != WH_STATE_WAIT_FOR_PLAY)
+			/* if we're in one of these two states, we have to wait for a response anyway */
+			next_play();
+	}
+
+	return 0;
+}
+
+int handle_newgame_event(player_t player)
+{
+	int ready = 0;
+	player_t p;
+
+	ggz_debug("Handling a WH_EVENT_NEWGAME for player %d/%s.", player, ggz_seats[player].name);
+	game.players[player].ready = 1;
+	ready = 1;
+	ggz_debug("Determining options.");
+	if (player == game.host && !game.options_initted &&
+	    game_get_options() < 0) {
+		ggz_debug("Error in game_get_options.  Using defaults.");
+		game.options_initted = 1;
+	}
+	for (p=0; p<game.num_players; p++)
+		if (!game.players[p].ready) {
+			/* TODO: should another WH_REQ_NEWGAME be sent, just as a reminder?
+			 * if we do, then the client may not be able to determine that it's a duplicate... */
+			ggz_debug("Player %d/%s is not ready.", p, ggz_seats[p].name);
+			ready = 0;
+		}
+	if (ready && game.options_initted) newgame();
+	return 0;
+}
+
+int handle_leave_event()
+{
+	player_t p;
+	ggz_debug("Handling a WH_EVENT_LEAVE.");
+	for(p = 0; p < game.num_players; p++)
+		send_player_list(p);
+
+	/* save old state and enter waiting phase */
+	save_game_state();
+}
+
+int handle_play_event(int card_index)
+{
+	int i;
+	card_t c;
+	hand_t* hand;
+
+	ggz_debug("Handling a WH_EVENT_PLAY.");
+	/* determine the play */
+	hand = &game.seats[game.play_seat].hand;
+	c = hand->cards[card_index];
+
+	/* send the play */
+	send_play(c, game.play_seat);
+
+	/* remove the card from the player's hand
+	 * by sliding it to the end. */
+	/* TODO: this is quite ineffecient */
+	for (i=card_index; i<hand->hand_size; i++)
+		hand->cards[i] = hand->cards[i+1];
+	hand->cards[hand->hand_size-1] = c;
+	hand->hand_size--;
+
+	/* Move the card onto the table */
+	game.seats[ game.play_seat ].table = c;
+	if(game.next_play == game.leader)
+		game.lead_card = c;
+
+	/* do extra handling */
+	if (c.suit == game.trump) game.trump_broken = 1;
+	game_handle_play(c);
+
+	/* set up next move */
+	game.play_count++;
+	game_next_play();
+	if (game.play_count != game.play_total)
+		set_game_state(WH_STATE_NEXT_PLAY);
+	else {
+		/* end of trick */
+		ggz_debug("End of trick; %d/%d.  Scoring it.", game.trick_count, game.trick_total);
+		sleep(1);
+		game_end_trick();
+		send_trick(game.winner);
+		game.trick_count++;
+		set_game_state( WH_STATE_NEXT_TRICK );
+		if (game.trick_count == game.trick_total) {
+			/* end of the hand */
+			ggz_debug("End of hand number %d.", game.hand_num);
+			sleep(1);
+			game_end_hand();
+			set_all_player_messages();
+			game.dealer = (game.dealer + 1) % game.num_players;
+			game.hand_num++;
+			set_game_state( WH_STATE_NEXT_HAND );
+		}
+	}
+
+	/* this is the player that just finished playing */
+	game_set_player_message(game.curr_play);
+
+	/* do next move */
+	next_play();
+	return 0;
+}
+
+int handle_bid_event(int bid_index)
+{
+	player_t p;
+	bid_t bid;
+	int was_waiting = 0;
+
+	ggz_debug("Handling a WH_EVENT_BID.");
+	if (game.state == WH_STATE_WAITFORPLAYERS) {
+		/* if a player left while another player was in the middle of bidding, this
+		 * can happen.  The solution is to temporarily return to playing, handle the
+		 * bid, and then (below) return to waiting. */
+		restore_game_state();
+		was_waiting = 1;
+	}
+
+	/* determine the bid */
+	p = game.next_bid;
+	bid = game.bid_choices[bid_index];
+	game.players[p].bid = bid;
+
+	/* handle the bid */
+	ggz_debug("Entering game_handle_bid(%d).", bid_index);
+	game_handle_bid(bid_index);
+
+	/* set up next move */
+	ggz_debug("Setting up next bid.");
+	game.bid_count++;
+	game_next_bid();
+	if (game.bid_count == game.bid_total)
+		set_game_state(WH_STATE_FIRST_TRICK);
+	else if (game.state == WH_STATE_WAIT_FOR_BID)
+		set_game_state(WH_STATE_NEXT_BID);
+	else
+		ggz_debug("SERVER BUG: handled WH_EVENT_BID while not in WH_STATE_WAIT_FOR_BID.");
+
+	/* this is the player that just finished bidding */
+	game_set_player_message(p);
+
+	if (was_waiting)
+		save_game_state();
+	else
+		/* do next move */
+		next_play();
+	return 0;
+}
+
 /* Update game state */
 int update(server_event_t event, void *data)
 {
-	bid_t bid;
-	int bid_index;
-	player_t p, player;
-	int ready = 0;
 	
 	switch (event) {
 		case WH_EVENT_LAUNCH:
-			ggz_debug("Handling a WH_EVENT_LAUNCH.");
-			if(game.state != WH_STATE_PRELAUNCH) {
-				ggz_debug("ERROR: update: state wasn't prelaunch when handling a launch.");
-				return -1;
-			}
-			/* determine number of players. */
-			game.num_players = ggz_seats_num(); /* ggz seats == players */
-			game.players = (struct game_player_t *)alloc(game.num_players * sizeof(struct game_player_t));
-			/* we don't yet know the number of seats */
-
-			/* as soon as we know which game we're playing, we should init the game */
-			if (game.which_game != GGZ_GAME_UNKNOWN)
-				game_init_game();
-
-			set_game_state(WH_STATE_NOTPLAYING);
-			save_game_state(); /* no players are connected yet, so we enter waiting phase */
+                        handle_launch_event();
 			break;
 		case WH_EVENT_JOIN:
-			ggz_debug("Handling a WH_EVENT_JOIN.");
-			if(game.state != WH_STATE_WAITFORPLAYERS) {
-				ggz_debug("SERVER BUG: someone joined while we weren't waiting.");
-				return -1;
-			}
-
-			player = *(int*)data;
-
-			/* if all seats are occupied, we restore the former state and
-			 * continue playing (below).  The state is restored up here
-			 * so that the sync will be handled correctly. */
-			if (!ggz_seats_open())
-				restore_game_state();
-
-			/* send all table info to joiner */
-			send_sync(player);
-
-			/* send player list to everyone else */
-			for(p = 0; p < game.num_players; p++)
-				if (p != player)
-					send_player_list(p);
-
-			if (game.state != WH_STATE_NOTPLAYING &&
-			    !(game.state == WH_STATE_WAITFORPLAYERS && game.saved_state == WH_STATE_NOTPLAYING))
-				send_player_message_toall(player); /* should this be in sync??? */
-
-			if (player == game.host && game.which_game == GGZ_GAME_UNKNOWN)
-				games_req_gametype();
-
-			if (!ggz_seats_open() && game.which_game != GGZ_GAME_UNKNOWN) {
-				/* (Re)Start game play */
-				if (game.state != WH_STATE_WAIT_FOR_BID && game.state != WH_STATE_WAIT_FOR_PLAY)
-					/* if we're in one of these two states, we have to wait for a response anyway */
-					next_play();
-			}
+                        handle_join_event(*(player_t*)data);
 			break;
 		case WH_EVENT_NEWGAME:
-                        player = *(player_t *)data;
-			ggz_debug("Handling a WH_EVENT_NEWGAME for player %d/%s.", player, ggz_seats[player].name);
-			game.players[player].ready = 1;
-			ready = 1;
-			ggz_debug("Determining options.");
-			if (player == game.host && !game.options_initted &&
-			    game_get_options() < 0) {
-				ggz_debug("Error in game_get_options.  Using defaults.");
-				game.options_initted = 1;
-			}
-			for (p=0; p<game.num_players; p++)
-				if (!game.players[p].ready) {
-					/* TODO: should another WH_REQ_NEWGAME be sent, just as a reminder?
-					 * if we do, then the client may not be able to determine that it's a duplicate... */
-					ggz_debug("Player %d/%s is not ready.", p, ggz_seats[p].name);
-					ready = 0;
-				}
-			if (ready && game.options_initted) newgame();
+                        handle_newgame_event(*(player_t *)data);
 			break;
 		case WH_EVENT_LEAVE:
-			ggz_debug("Handling a WH_EVENT_LEAVE.");
-			for(p = 0; p < game.num_players; p++)
-				send_player_list(p);
-
-			/* save old state and enter waiting phase */
-			save_game_state();
+                        handle_leave_event();
 			break;
 		case WH_EVENT_PLAY:
-			{
-			int card_index, i;
-			card_t c;
-			hand_t* hand;
-
-			ggz_debug("Handling a WH_EVENT_PLAY.");
-			/* determine the play */
-			card_index = *(int *)data;
-			hand = &game.seats[game.play_seat].hand;
-			c = hand->cards[card_index];
-
-			/* send the play */
-			send_play(c, game.play_seat);
-
-			/* remove the card from the player's hand
-			 * by sliding it to the end. */
-			/* TODO: this is quite ineffecient */
-			for (i=card_index; i<hand->hand_size; i++)
-				hand->cards[i] = hand->cards[i+1];
-			hand->cards[hand->hand_size-1] = c;
-			hand->hand_size--;
-
-			/* Move the card onto the table */
-			game.seats[ game.play_seat ].table = c;
-			if(game.next_play == game.leader)
-				game.lead_card = c;
-
-			/* do extra handling */
-			if (c.suit == game.trump) game.trump_broken = 1;
-			game_handle_play(c);
-
-			/* set up next move */
-			game.play_count++;
-			game_next_play();
-			if (game.play_count != game.play_total)
-				set_game_state(WH_STATE_NEXT_PLAY);
-			else {
-				/* end of trick */
-				ggz_debug("End of trick; %d/%d.  Scoring it.", game.trick_count, game.trick_total);
-				sleep(1);
-				game_end_trick();
-				send_trick(game.winner);
-				game.trick_count++;
-				set_game_state( WH_STATE_NEXT_TRICK );
-				if (game.trick_count == game.trick_total) {
-					/* end of the hand */
-					ggz_debug("End of hand number %d.", game.hand_num);
-					sleep(1);
-					game_end_hand();
-					set_all_player_messages();
-					game.dealer = (game.dealer + 1) % game.num_players;
-					game.hand_num++;
-					set_game_state( WH_STATE_NEXT_HAND );
-				}
-			}
-
-			/* this is the player that just finished playing */
-			game_set_player_message(game.curr_play);
-
-			/* do next move */
-			next_play();
-			}
+                        handle_play_event(*(int *)data);
 			break;
 		case WH_EVENT_BID:
-			{
-			int was_waiting = 0;
-			ggz_debug("Handling a WH_EVENT_BID.");
-			if (game.state == WH_STATE_WAITFORPLAYERS) {
-				/* if a player left while another player was in the middle of bidding, this
-				 * can happen.  The solution is to temporarily return to playing, handle the
-				 * bid, and then (below) return to waiting. */
-				restore_game_state();
-				was_waiting = 1;
-			}
-
-			/* determine the bid */
-			bid_index = *(int*)data;
-			p = game.next_bid;
-			bid = game.bid_choices[bid_index];
-			game.players[p].bid = bid;
-
-			/* handle the bid */
-			ggz_debug("Entering game_handle_bid(%d).", bid_index);
-			game_handle_bid(bid_index);
-
-			/* set up next move */
-			ggz_debug("Setting up next bid.");
-			game.bid_count++;
-			game_next_bid();
-			if (game.bid_count == game.bid_total)
-				set_game_state(WH_STATE_FIRST_TRICK);
-			else if (game.state == WH_STATE_WAIT_FOR_BID)
-				set_game_state(WH_STATE_NEXT_BID);
-			else
-				ggz_debug("SERVER BUG: handled WH_EVENT_BID while not in WH_STATE_WAIT_FOR_BID.");
-
-			/* this is the player that just finished bidding */
-			game_set_player_message(p);
-
-			if (was_waiting)
-				save_game_state();
-			else
-				/* do next move */
-				next_play();
-			}
+			handle_bid_event(*(int*)data);
 			break;
 	}
 	
