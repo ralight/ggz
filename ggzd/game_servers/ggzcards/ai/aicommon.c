@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.c 3429 2002-02-21 02:09:24Z jdorje $
+ * $Id: aicommon.c 3435 2002-02-21 08:39:57Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -103,7 +103,7 @@ void ailib_alert_play(int p, card_t play)
 
 	/* we now know that nobody has this card _anymore_ */
 	for (p2 = 0; p2 < 4; p2++)
-		suits[p2][(int) lead.suit] &= ~(1 << play.face);
+		suits[p2][(int) play.suit] &= ~(1 << play.face);
 
 }
 
