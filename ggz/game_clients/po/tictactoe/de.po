@@ -1,11 +1,12 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Deutsche Übersetzung von tictactoe.
+# Copyright (C) 2002 Sebastian Roth
+# Sebastian Roth <xsebbi@gmx.de>, 2002.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-05-17 09:28+0200\n"
+"Project-Id-Version: 0.0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-13 18:38+0200\n"
 "PO-Revision-Date: 2002-04-10 18:13GMT\n"
 "Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -14,18 +15,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.5\n"
 
-#: ../tictactoe/main.c:82
+#: ../tictactoe/main.c:81
 msgid "Watching the game..."
 msgstr "Schaue dem Spiel zu..."
 
-#: ../tictactoe/main.c:96
+#: ../tictactoe/main.c:95
 msgid ""
 "Copyright (C) 2000 by Brent Hendricks\n"
 "\n"
-"Website: http://ggz.sourceforge.net/"
+"Website: http://www.ggzgamingzone.org/games/tictactoe/"
 msgstr ""
+"Copyright (C) 2000 by Brent Hendricks\n"
+"\n"
+"Webseite: http://www.ggzgamingzone.org/games/tictactoe/"
 
-#: ../tictactoe/main.c:101
+#: ../tictactoe/main.c:100
 #, c-format
 msgid ""
 "GGZ Gaming Zone\n"
@@ -34,87 +38,87 @@ msgstr ""
 "GGZ Gaming Zone\n"
 "Tic-Tac-Toe Version %s"
 
-#: ../tictactoe/main.c:103
+#: ../tictactoe/main.c:102
 msgid "About Tic-Tac-Toe"
-msgstr "Ueber Tic-Tac-Toe"
+msgstr "Über Tic-Tac-Toe"
 
-#: ../tictactoe/main.c:152
+#: ../tictactoe/main.c:151
 msgid "It's your move."
 msgstr "Dein Zug"
 
-#: ../tictactoe/main.c:181
+#: ../tictactoe/main.c:180
 msgid "Receiving your seat number..."
 msgstr "Hole die Nummer deines Sitzes..."
 
-#: ../tictactoe/main.c:194
+#: ../tictactoe/main.c:193
 msgid "Getting player names..."
 msgstr "Hole Spielernamen..."
 
-#: ../tictactoe/main.c:202
+#: ../tictactoe/main.c:201
 #, c-format
 msgid "%s is %c."
 msgstr "%s ist %c."
 
-#: ../tictactoe/main.c:226
+#: ../tictactoe/main.c:225
 #, c-format
 msgid "%s (%c) has moved."
 msgstr "%s (%c) hat sich bewegt."
 
-#: ../tictactoe/main.c:229
+#: ../tictactoe/main.c:228
 msgid "Your opponent has moved."
 msgstr "Dein Gegner hat seinen Zug durchgeführt."
 
-#: ../tictactoe/main.c:243
+#: ../tictactoe/main.c:242
 msgid "Syncing with server..."
 msgstr "Synchronisiere mit Server..."
 
-#: ../tictactoe/main.c:248
+#: ../tictactoe/main.c:247
 #, c-format
 msgid "It's %s (%c)'s turn."
 msgstr "Es ist der Zug von %s (%c)."
 
-#: ../tictactoe/main.c:258
+#: ../tictactoe/main.c:257
 msgid "Sync completed."
 msgstr "Synchronisation abgeschlossen"
 
-#: ../tictactoe/main.c:267
+#: ../tictactoe/main.c:266
 msgid "Game over."
 msgstr "Spiel beendet"
 
-#: ../tictactoe/main.c:275
+#: ../tictactoe/main.c:274
 #, c-format
 msgid "%s (%c) won"
 msgstr "%s (%c) hat gewonnen"
 
-#: ../tictactoe/main.c:280
+#: ../tictactoe/main.c:279
 msgid "Tie game!"
 msgstr "Unentschieden!"
 
-#: ../tictactoe/main.c:310
+#: ../tictactoe/main.c:309
 msgid "Sending move."
 msgstr "Sende meinen Zug."
 
-#: ../tictactoe/main.c:322
+#: ../tictactoe/main.c:321
 msgid "Sending options."
 msgstr "Sende Optionen."
 
-#: ../tictactoe/main.c:336
+#: ../tictactoe/main.c:335
 msgid "Server not ready!!"
 msgstr "Server ist nicht bereit!!"
 
-#: ../tictactoe/main.c:339
+#: ../tictactoe/main.c:338
 msgid "Not your turn!"
 msgstr "Nicht dein Zug!"
 
-#: ../tictactoe/main.c:342
+#: ../tictactoe/main.c:341
 msgid "Move out of bounds!"
 msgstr "Zug ist außerhalb der Grenzen"
 
-#: ../tictactoe/main.c:345
+#: ../tictactoe/main.c:344
 msgid "Space already occupied!"
 msgstr "Feld ist bereits besetzt!"
 
-#: ../tictactoe/main.c:348
+#: ../tictactoe/main.c:347
 msgid "Move accepted."
 msgstr "Zug wurde akzeptiert."
 
@@ -126,7 +130,7 @@ msgstr "Du bist noch nicht dran."
 msgid "You're just watching."
 msgstr "Du bist nur Zuschauer."
 
-#: ../tictactoe/main_win.c:281
+#: ../tictactoe/main_win.c:283
 msgid "Tic-Tac-Toe"
 msgstr "Tic-Tac-Toe"
 
@@ -140,9 +144,14 @@ msgstr "Konnte Pixmap nicht finden: %s"
 msgid "Error loading pixmap file: %s"
 msgstr "Konnte Pixmap nicht laden: %s"
 
-#: ../common/dlg_about.c:99 ../common/dlg_players.c:282
+#: ../common/dlg_about.c:99 ../common/dlg_chat.c:241
+#: ../common/dlg_players.c:282
 msgid "Close"
 msgstr "Schliessen"
+
+#: ../common/dlg_chat.c:213 ../common/dlg_players.c:247
+msgid "Player List"
+msgstr "Spielerliste"
 
 #: ../common/dlg_exit.c:53
 msgid "Are you sure you want to exit?"
@@ -203,10 +212,6 @@ msgstr "Status"
 #: ../common/dlg_players.c:198
 msgid "Name"
 msgstr "Name"
-
-#: ../common/dlg_players.c:247
-msgid "Player List"
-msgstr "Spielerliste"
 
 #: ../common/dlg_players.c:259
 msgid "List of players:"

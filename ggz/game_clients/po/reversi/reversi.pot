@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-23 12:30-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-13 18:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,32 +16,43 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../reversi/main_win.c:441
+#: ../reversi/main.c:216
+msgid ""
+"Authors:\n"
+"        Gtk+ Client:\n"
+"            Ismael Orenstein <perdig@linuxbr.com.br>\n"
+"\n"
+"        Game Server:\n"
+"            Ismael Orenstein <perdig@linuxbr.com.br>\n"
+"\n"
+"        Based on Dots code by:\n"
+"            Rich Gade <rgade@users.sourceforge.net>\n"
+"\n"
+"Website:\n"
+"        http://www.ggzgamingzone.org/games/reversi/"
+msgstr ""
+
+#: ../reversi/main.c:229
+#, c-format
+msgid ""
+"GGZ Gaming Zone\n"
+"Reversi Version %s"
+msgstr ""
+
+#: ../reversi/main.c:231
+msgid "About Reversi"
+msgstr ""
+
+#: ../reversi/main_win.c:400
+msgid "/_Options"
+msgstr ""
+
+#: ../reversi/main_win.c:401
+msgid "/Options/_Preferences"
+msgstr ""
+
+#: ../reversi/main_win.c:432
 msgid "Reversi"
-msgstr ""
-
-#: ../reversi/main_win.c:458
-msgid "_Game"
-msgstr ""
-
-#: ../reversi/main_win.c:476
-msgid "Re_sync"
-msgstr ""
-
-#: ../reversi/main_win.c:487
-msgid "O_ptions"
-msgstr ""
-
-#: ../reversi/main_win.c:498
-msgid "E_xit"
-msgstr ""
-
-#: ../reversi/main_win.c:509
-msgid "_Help"
-msgstr ""
-
-#: ../reversi/main_win.c:528
-msgid "_About"
 msgstr ""
 
 #: ../reversi/support.c:118
@@ -53,26 +65,103 @@ msgstr ""
 msgid "Error loading pixmap file: %s"
 msgstr ""
 
-#: ../common/dlg_exit.c:50
+#: ../common/dlg_about.c:99 ../common/dlg_chat.c:241
+#: ../common/dlg_players.c:282
+msgid "Close"
+msgstr ""
+
+#: ../common/dlg_chat.c:213 ../common/dlg_players.c:247
+msgid "Player List"
+msgstr ""
+
+#: ../common/dlg_exit.c:53
 msgid "Are you sure you want to exit?"
 msgstr ""
 
-#: ../common/dlg_exit.c:52
+#: ../common/dlg_exit.c:55
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
 msgstr ""
 
-#: ../common/dlg_exit.c:57
+#: ../common/dlg_exit.c:63
 msgid "Really Exit?"
 msgstr ""
 
-#: ../common/dlg_exit.c:66
+#: ../common/dlg_exit.c:79
 msgid "Exit"
 msgstr ""
 
-#: ../common/dlg_exit.c:67
+#: ../common/dlg_exit.c:80
 msgid "Cancel"
+msgstr ""
+
+#: ../common/dlg_players.c:102
+msgid "Occupied"
+msgstr ""
+
+#: ../common/dlg_players.c:106
+msgid "Empty"
+msgstr ""
+
+#: ../common/dlg_players.c:110
+msgid "Bot"
+msgstr ""
+
+#: ../common/dlg_players.c:114
+msgid "Reserved"
+msgstr ""
+
+#: ../common/dlg_players.c:118
+msgid "-"
+msgstr ""
+
+#: ../common/dlg_players.c:140
+msgid "Spectator"
+msgstr ""
+
+#: ../common/dlg_players.c:182
+msgid "#"
+msgstr ""
+
+#: ../common/dlg_players.c:190
+msgid "Status"
+msgstr ""
+
+#: ../common/dlg_players.c:198
+msgid "Name"
+msgstr ""
+
+#: ../common/dlg_players.c:259
+msgid "List of players:"
+msgstr ""
+
+#: ../common/dlg_players.c:416
+msgid "Info"
+msgstr ""
+
+#: ../common/dlg_players.c:433
+msgid "Boot player"
+msgstr ""
+
+#: ../common/dlg_players.c:452
+msgid "Sit here"
+msgstr ""
+
+#: ../common/dlg_players.c:454
+msgid "Move here"
+msgstr ""
+
+#: ../common/dlg_players.c:471
+msgid "Play with bot"
+msgstr ""
+
+#: ../common/dlg_players.c:487
+msgid "Drop reservation"
+msgstr ""
+
+#: ../common/dlg_players.c:489
+msgid "Remove bot"
 msgstr ""
 
 #: ../common/ggzintl.c:41

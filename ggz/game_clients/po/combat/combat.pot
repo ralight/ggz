@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-23 12:29-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-13 18:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,31 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../combat/dlg_about.c:33
-msgid "About Combat"
-msgstr ""
-
-#: ../combat/dlg_about.c:48
-msgid "Combat, a stratego (tm) game for GGZ\n"
-msgstr ""
-
-#: ../combat/dlg_about.c:56
-msgid ""
-"Author:\n"
-"Ismael Orenstein\n"
-"<perdig@linuxbr.com.br>\n"
-"\n"
-"Special thanks to:\n"
-"Justin G. Zaun\n"
-"Rich Gade\n"
-"And all the GGZ team\n"
-"\n"
-"For more information on Stratego, visit:\n"
-"http://www.inficad.com/~ecollins/stratego/"
-msgstr ""
-
-#: ../combat/dlg_about.c:71
-msgid "OK"
+#: ../combat/callbacks.c:199
+msgid "<main>/Game/Remember enemy units"
 msgstr ""
 
 #: ../combat/dlg_options.c:119
@@ -257,108 +235,103 @@ msgstr ""
 msgid "Stored Maps"
 msgstr ""
 
-#: ../combat/dlg_options.c:734
+#: ../combat/dlg_options.c:741
 msgid "Map Preview"
 msgstr ""
 
-#: ../combat/dlg_options.c:753
+#: ../combat/dlg_options.c:760
 msgid "Load"
 msgstr ""
 
-#: ../combat/dlg_options.c:762
+#: ../combat/dlg_options.c:769
 msgid "Save"
 msgstr ""
 
-#: ../combat/dlg_options.c:771
+#: ../combat/dlg_options.c:778
 msgid "Delete"
 msgstr ""
 
-#: ../combat/dlg_options.c:780
+#: ../combat/dlg_options.c:787
 msgid "Maps"
 msgstr ""
 
-#: ../combat/dlg_options.c:803
+#: ../combat/dlg_options.c:810
 msgid "Start Game"
 msgstr ""
 
-#: ../combat/dlg_options.c:812 ../common/dlg_exit.c:67
+#: ../combat/dlg_options.c:819 ../common/dlg_exit.c:80
 msgid "Cancel"
 msgstr ""
 
-#: ../combat/dlg_options.c:1144
+#: ../combat/dlg_options.c:1150
 msgid "Save Map?"
 msgstr ""
 
-#: ../combat/dlg_options.c:1161
+#: ../combat/dlg_options.c:1167
 msgid "Save map as:"
 msgstr ""
 
-#: ../combat/dlg_options.c:1193
+#: ../combat/dlg_options.c:1199
 msgid "Yep"
 msgstr ""
 
-#: ../combat/dlg_options.c:1202
+#: ../combat/dlg_options.c:1208
 msgid "Nope"
 msgstr ""
 
-#: ../combat/interface.c:62
+#: ../combat/game.c:117
+msgid "<main>/Game/Save current map"
+msgstr ""
+
+#: ../combat/game.c:118
+msgid "<main>/Game/Show game options"
+msgstr ""
+
+#: ../combat/interface.c:29
+msgid "/_Game"
+msgstr ""
+
+#: ../combat/interface.c:30
+msgid "/Game/S_ave current map"
+msgstr ""
+
+#: ../combat/interface.c:32
+msgid "/Game/_Remember enemy units"
+msgstr ""
+
+#: ../combat/interface.c:34
+msgid "/Game/_Show game options"
+msgstr ""
+
+#: ../combat/interface.c:78
 msgid "Combat"
 msgstr ""
 
-#: ../combat/interface.c:82
-msgid "_File"
-msgstr ""
-
-#: ../combat/interface.c:102
-msgid "E_xit"
-msgstr ""
-
-#: ../combat/interface.c:114
-msgid "_Game"
-msgstr ""
-
 #: ../combat/interface.c:134
-msgid "S_ave current map"
-msgstr ""
-
-#: ../combat/interface.c:143
-msgid "Saves the current map"
-msgstr ""
-
-#: ../combat/interface.c:147
-msgid "_Request Sync"
-msgstr ""
-
-#: ../combat/interface.c:156
-msgid "Requests the current game state from the game server"
-msgstr ""
-
-#: ../combat/interface.c:160
-msgid "_Remember enemy units"
-msgstr ""
-
-#: ../combat/interface.c:169
-msgid "Set it if you want to remember your enemy units"
-msgstr ""
-
-#: ../combat/interface.c:173
-msgid "_Show game options"
-msgstr ""
-
-#: ../combat/interface.c:182
-msgid "Displays the current game options"
-msgstr ""
-
-#: ../combat/interface.c:186
-msgid "_Help"
-msgstr ""
-
-#: ../combat/interface.c:207
-msgid "A_bout"
-msgstr ""
-
-#: ../combat/interface.c:256
 msgid "_Send Setup"
+msgstr ""
+
+#: ../combat/main.c:155
+msgid "About Combat"
+msgstr ""
+
+#: ../combat/main.c:156
+msgid "Combat, a stratego (tm) game for GGZ"
+msgstr ""
+
+#: ../combat/main.c:157
+msgid ""
+"Author:\n"
+"Ismael Orenstein\n"
+"<perdig@linuxbr.com.br>\n"
+"\n"
+"Special thanks to:\n"
+"Justin G. Zaun\n"
+"Rich Gade\n"
+"And all the GGZ team\n"
+"\n"
+"For more information on Stratego, visit:\n"
+"http://www.inficad.com/~ecollins/stratego/"
 msgstr ""
 
 #: ../combat/support.c:121
@@ -371,22 +344,99 @@ msgstr ""
 msgid "Error loading pixmap file: %s"
 msgstr ""
 
-#: ../common/dlg_exit.c:50
+#: ../common/dlg_about.c:99 ../common/dlg_chat.c:241
+#: ../common/dlg_players.c:282
+msgid "Close"
+msgstr ""
+
+#: ../common/dlg_chat.c:213 ../common/dlg_players.c:247
+msgid "Player List"
+msgstr ""
+
+#: ../common/dlg_exit.c:53
 msgid "Are you sure you want to exit?"
 msgstr ""
 
-#: ../common/dlg_exit.c:52
+#: ../common/dlg_exit.c:55
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
 msgstr ""
 
-#: ../common/dlg_exit.c:57
+#: ../common/dlg_exit.c:63
 msgid "Really Exit?"
 msgstr ""
 
-#: ../common/dlg_exit.c:66
+#: ../common/dlg_exit.c:79
 msgid "Exit"
+msgstr ""
+
+#: ../common/dlg_players.c:102
+msgid "Occupied"
+msgstr ""
+
+#: ../common/dlg_players.c:106
+msgid "Empty"
+msgstr ""
+
+#: ../common/dlg_players.c:110
+msgid "Bot"
+msgstr ""
+
+#: ../common/dlg_players.c:114
+msgid "Reserved"
+msgstr ""
+
+#: ../common/dlg_players.c:118
+msgid "-"
+msgstr ""
+
+#: ../common/dlg_players.c:140
+msgid "Spectator"
+msgstr ""
+
+#: ../common/dlg_players.c:182
+msgid "#"
+msgstr ""
+
+#: ../common/dlg_players.c:190
+msgid "Status"
+msgstr ""
+
+#: ../common/dlg_players.c:198
+msgid "Name"
+msgstr ""
+
+#: ../common/dlg_players.c:259
+msgid "List of players:"
+msgstr ""
+
+#: ../common/dlg_players.c:416
+msgid "Info"
+msgstr ""
+
+#: ../common/dlg_players.c:433
+msgid "Boot player"
+msgstr ""
+
+#: ../common/dlg_players.c:452
+msgid "Sit here"
+msgstr ""
+
+#: ../common/dlg_players.c:454
+msgid "Move here"
+msgstr ""
+
+#: ../common/dlg_players.c:471
+msgid "Play with bot"
+msgstr ""
+
+#: ../common/dlg_players.c:487
+msgid "Drop reservation"
+msgstr ""
+
+#: ../common/dlg_players.c:489
+msgid "Remove bot"
 msgstr ""
 
 #: ../common/ggzintl.c:41

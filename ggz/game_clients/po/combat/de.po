@@ -1,11 +1,12 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Deutsche Übersetzung von combat.
+# Copyright (C) 2002 Sebastian Roth
+# Sebastian Roth <xsebbi@gmx.de>, 2002.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-23 12:29-0500\n"
+"Project-Id-Version: 0.0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-13 18:38+0200\n"
 "PO-Revision-Date: 2002-04-05 21:28GMT\n"
 "Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -14,43 +15,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.5\n"
 
-#: ../combat/dlg_about.c:33
-msgid "About Combat"
-msgstr "Über Combat"
-
-#: ../combat/dlg_about.c:48
-msgid "Combat, a stratego (tm) game for GGZ\n"
-msgstr "Combat, ein Stratego (tm) Spiel für GGZ\n"
-
-#: ../combat/dlg_about.c:56
-msgid ""
-"Author:\n"
-"Ismael Orenstein\n"
-"<perdig@linuxbr.com.br>\n"
-"\n"
-"Special thanks to:\n"
-"Justin G. Zaun\n"
-"Rich Gade\n"
-"And all the GGZ team\n"
-"\n"
-"For more information on Stratego, visit:\n"
-"http://www.inficad.com/~ecollins/stratego/"
-msgstr ""
-"Autor:\n"
-"Ismael Orenstein\n"
-"<perdig@linuxbr.com.br>\n"
-"\n"
-"Besonderer Dank an:\n"
-"Justin G. Zaun\n"
-"Rich Gade\n"
-".. und das ganze GGZ-Team\n"
-"\n"
-"Besuche die Homepage fuer mehr Informationen:\n"
-"http://www.inficad.com/~ecollins/stratego/"
-
-#: ../combat/dlg_about.c:71
-msgid "OK"
-msgstr "OK"
+#: ../combat/callbacks.c:199
+msgid "<main>/Game/Remember enemy units"
+msgstr "<main>/Spiel/Merke gegnerische Einheiten"
 
 #: ../combat/dlg_options.c:119
 msgid "Game options"
@@ -306,109 +273,115 @@ msgstr "Optionen"
 msgid "Stored Maps"
 msgstr "Gespeicherte Karten"
 
-#: ../combat/dlg_options.c:734
+#: ../combat/dlg_options.c:741
 msgid "Map Preview"
 msgstr "Kartenvorschau"
 
-#: ../combat/dlg_options.c:753
+#: ../combat/dlg_options.c:760
 msgid "Load"
 msgstr "Laden"
 
-#: ../combat/dlg_options.c:762
+#: ../combat/dlg_options.c:769
 msgid "Save"
 msgstr "Speichern"
 
-#: ../combat/dlg_options.c:771
+#: ../combat/dlg_options.c:778
 msgid "Delete"
 msgstr "Löschen"
 
-#: ../combat/dlg_options.c:780
+#: ../combat/dlg_options.c:787
 msgid "Maps"
 msgstr "Karten"
 
-#: ../combat/dlg_options.c:803
+#: ../combat/dlg_options.c:810
 msgid "Start Game"
 msgstr "Starte Spiel"
 
-#: ../combat/dlg_options.c:812 ../common/dlg_exit.c:67
+#: ../combat/dlg_options.c:819 ../common/dlg_exit.c:80
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: ../combat/dlg_options.c:1144
+#: ../combat/dlg_options.c:1150
 msgid "Save Map?"
 msgstr "Karte speichern?"
 
-#: ../combat/dlg_options.c:1161
+#: ../combat/dlg_options.c:1167
 msgid "Save map as:"
 msgstr "Speicher Karte als:"
 
-#: ../combat/dlg_options.c:1193
+#: ../combat/dlg_options.c:1199
 msgid "Yep"
 msgstr "Jepp"
 
-#: ../combat/dlg_options.c:1202
+#: ../combat/dlg_options.c:1208
 msgid "Nope"
 msgstr "Nein"
 
-#: ../combat/interface.c:62
+#: ../combat/game.c:117
+msgid "<main>/Game/Save current map"
+msgstr "<main>/Spiel/Speicher aktuelle Karte"
+
+#: ../combat/game.c:118
+msgid "<main>/Game/Show game options"
+msgstr "<main>/Spiel/Zeige Spieloptionen"
+
+#: ../combat/interface.c:29
+msgid "/_Game"
+msgstr "/_Spiel"
+
+#: ../combat/interface.c:30
+msgid "/Game/S_ave current map"
+msgstr "/Spiel/Speicher aktuelle Karte"
+
+#: ../combat/interface.c:32
+msgid "/Game/_Remember enemy units"
+msgstr "/Spiel/_Merke gegnerische Einheiten"
+
+#: ../combat/interface.c:34
+msgid "/Game/_Show game options"
+msgstr "/Spiel/_Zeige Spieloptionen"
+
+#: ../combat/interface.c:78
 msgid "Combat"
 msgstr "Kampf"
 
-#: ../combat/interface.c:82
-msgid "_File"
-msgstr "_Datei"
-
-#: ../combat/interface.c:102
-msgid "E_xit"
-msgstr "Ausgang"
-
-#: ../combat/interface.c:114
-msgid "_Game"
-msgstr "_Spiel"
-
 #: ../combat/interface.c:134
-msgid "S_ave current map"
-msgstr "Speicher aktuelle Karte"
-
-#: ../combat/interface.c:143
-msgid "Saves the current map"
-msgstr "Speichert die aktuelle Karte"
-
-#: ../combat/interface.c:147
-msgid "_Request Sync"
-msgstr "_Fordere Synchronisation an"
-
-#: ../combat/interface.c:156
-msgid "Requests the current game state from the game server"
-msgstr "Fordert einen aktuellen Spielstaus vom Server ab"
-
-#: ../combat/interface.c:160
-msgid "_Remember enemy units"
-msgstr "_Merke gegnerische Einheiten"
-
-#: ../combat/interface.c:169
-msgid "Set it if you want to remember your enemy units"
-msgstr "Setze um sich an gegnerische Einheiten zu erinnern"
-
-#: ../combat/interface.c:173
-msgid "_Show game options"
-msgstr "_Zeige Spieloptionen"
-
-#: ../combat/interface.c:182
-msgid "Displays the current game options"
-msgstr "Zeigt die aktuellen Spieloptionen"
-
-#: ../combat/interface.c:186
-msgid "_Help"
-msgstr "_Hilfe"
-
-#: ../combat/interface.c:207
-msgid "A_bout"
-msgstr "Über"
-
-#: ../combat/interface.c:256
 msgid "_Send Setup"
 msgstr "_Sende Setup"
+
+#: ../combat/main.c:155
+msgid "About Combat"
+msgstr "Über Combat"
+
+#: ../combat/main.c:156
+msgid "Combat, a stratego (tm) game for GGZ"
+msgstr "Combat, ein Stratego (tm) Spiel für GGZ"
+
+#: ../combat/main.c:157
+msgid ""
+"Author:\n"
+"Ismael Orenstein\n"
+"<perdig@linuxbr.com.br>\n"
+"\n"
+"Special thanks to:\n"
+"Justin G. Zaun\n"
+"Rich Gade\n"
+"And all the GGZ team\n"
+"\n"
+"For more information on Stratego, visit:\n"
+"http://www.inficad.com/~ecollins/stratego/"
+msgstr ""
+"Autor:\n"
+"Ismael Orenstein\n"
+"<perdig@linuxbr.com.br>\n"
+"\n"
+"Besonderer Dank an:\n"
+"Justin G. Zaun\n"
+"Rich Gade\n"
+".. und das ganze GGZ-Team\n"
+"\n"
+"Besuche die Homepage fuer mehr Informationen:\n"
+"http://www.inficad.com/~ecollins/stratego/"
 
 #: ../combat/support.c:121
 #, c-format
@@ -420,11 +393,20 @@ msgstr "Konnte pixmap nicht laden: %s"
 msgid "Error loading pixmap file: %s"
 msgstr "Fehler beim Laden der Pixmap: %s"
 
-#: ../common/dlg_exit.c:50
+#: ../common/dlg_about.c:99 ../common/dlg_chat.c:241
+#: ../common/dlg_players.c:282
+msgid "Close"
+msgstr "Schließen"
+
+#: ../common/dlg_chat.c:213 ../common/dlg_players.c:247
+msgid "Player List"
+msgstr "Spielerliste"
+
+#: ../common/dlg_exit.c:53
 msgid "Are you sure you want to exit?"
 msgstr "Bist du sicher daß du beenden willst?"
 
-#: ../common/dlg_exit.c:52
+#: ../common/dlg_exit.c:55
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
@@ -432,15 +414,113 @@ msgstr ""
 "Bist du sicher daß du beenden willst?\n"
 "Du wirst nicht wieder teilnehmen können."
 
-#: ../common/dlg_exit.c:57
+#: ../common/dlg_exit.c:63
 msgid "Really Exit?"
 msgstr "Wirklich beenden?"
 
-#: ../common/dlg_exit.c:66
+#: ../common/dlg_exit.c:79
 msgid "Exit"
 msgstr "Beenden"
+
+#: ../common/dlg_players.c:102
+msgid "Occupied"
+msgstr "Besetzt"
+
+#: ../common/dlg_players.c:106
+msgid "Empty"
+msgstr "Leer"
+
+#: ../common/dlg_players.c:110
+msgid "Bot"
+msgstr "Bot"
+
+#: ../common/dlg_players.c:114
+msgid "Reserved"
+msgstr "Reserviert"
+
+#: ../common/dlg_players.c:118
+msgid "-"
+msgstr "-"
+
+#: ../common/dlg_players.c:140
+msgid "Spectator"
+msgstr "Zuschauer"
+
+#: ../common/dlg_players.c:182
+msgid "#"
+msgstr "#"
+
+#: ../common/dlg_players.c:190
+msgid "Status"
+msgstr "Status"
+
+#: ../common/dlg_players.c:198
+msgid "Name"
+msgstr "Name"
+
+#: ../common/dlg_players.c:259
+msgid "List of players:"
+msgstr "Liste der Spieler:"
+
+#: ../common/dlg_players.c:416
+msgid "Info"
+msgstr "Info"
+
+#: ../common/dlg_players.c:433
+msgid "Boot player"
+msgstr "Spieler rauswerfen"
+
+#: ../common/dlg_players.c:452
+msgid "Sit here"
+msgstr "Hinsetzen"
+
+#: ../common/dlg_players.c:454
+msgid "Move here"
+msgstr "Hierher bewegen"
+
+#: ../common/dlg_players.c:471
+msgid "Play with bot"
+msgstr "Mit Bot spielen"
+
+#: ../common/dlg_players.c:487
+msgid "Drop reservation"
+msgstr "Reservierung aufheben"
+
+#: ../common/dlg_players.c:489
+msgid "Remove bot"
+msgstr "Bot entfernen"
 
 #: ../common/ggzintl.c:41
 #, c-format
 msgid "nls enabled: %s"
 msgstr "NLS: %s"
+
+#~ msgid "OK"
+#~ msgstr "OK"
+
+#~ msgid "_File"
+#~ msgstr "_Datei"
+
+#~ msgid "E_xit"
+#~ msgstr "Ausgang"
+
+#~ msgid "Saves the current map"
+#~ msgstr "Speichert die aktuelle Karte"
+
+#~ msgid "_Request Sync"
+#~ msgstr "_Fordere Synchronisation an"
+
+#~ msgid "Requests the current game state from the game server"
+#~ msgstr "Fordert einen aktuellen Spielstaus vom Server ab"
+
+#~ msgid "Set it if you want to remember your enemy units"
+#~ msgstr "Setze um sich an gegnerische Einheiten zu erinnern"
+
+#~ msgid "Displays the current game options"
+#~ msgstr "Zeigt die aktuellen Spieloptionen"
+
+#~ msgid "_Help"
+#~ msgstr "_Hilfe"
+
+#~ msgid "A_bout"
+#~ msgstr "Über"

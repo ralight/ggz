@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-23 12:29-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-13 18:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,100 +16,185 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../chinese-checkers/about_dlg.c:54
-msgid "About Chinese Checkers for GGZ"
-msgstr ""
-
-#: ../chinese-checkers/about_dlg.c:62
-msgid ""
-"\n"
-"Chinese Checkers for GGZ, version 0.0.1\n"
-"is part of the GGZ Gaming Zone project.\n"
-"Visit us at http://ggz.sourceforge.net/\n"
-"\n"
-" Copyright (C) 2000, 2001 Richard Gade and Brent Hendricks \n"
-msgstr ""
-
-#: ../chinese-checkers/about_dlg.c:79
-msgid "OK"
-msgstr ""
-
-#: ../chinese-checkers/game.c:219
+#: ../chinese-checkers/game.c:222
 #, c-format
 msgid "You are playing the %s marbles"
 msgstr ""
 
-#: ../chinese-checkers/game.c:233
+#: ../chinese-checkers/game.c:236
 msgid "Wait for your turn..."
 msgstr ""
 
-#: ../chinese-checkers/game.c:243
+#: ../chinese-checkers/game.c:246
 msgid "Click where you want to move the marble."
 msgstr ""
 
-#: ../chinese-checkers/game.c:256
+#: ../chinese-checkers/game.c:259
 msgid "Sending move to GGZ server..."
 msgstr ""
 
-#: ../chinese-checkers/game.c:263
+#: ../chinese-checkers/game.c:266
 msgid "Bad move! Click a marble to move."
 msgstr ""
 
-#: ../chinese-checkers/game.c:506
+#: ../chinese-checkers/game.c:509
 msgid "Your move. Click a marble to move"
 msgstr ""
 
-#: ../chinese-checkers/main.c:187
+#: ../chinese-checkers/main.c:117
+msgid ""
+"Visit us at http://www.ggzgamingzone.org/games/chinese-checkers/\n"
+"\n"
+"Copyright (C) 2000, 2001 Richard Gade and Brent Hendricks \n"
+msgstr ""
+
+#: ../chinese-checkers/main.c:122
+#, c-format
+msgid ""
+"GGZ Gaming Zone\n"
+"Chinese Checkers Version %s"
+msgstr ""
+
+#: ../chinese-checkers/main.c:124
+msgid "About Chinese Checkers"
+msgstr ""
+
+#: ../chinese-checkers/main.c:205
 #, c-format
 msgid "%s joined the table"
 msgstr ""
 
-#: ../chinese-checkers/main.c:193
+#: ../chinese-checkers/main.c:211
 #, c-format
 msgid "%s left the table"
 msgstr ""
 
-#: ../chinese-checkers/main.c:197
+#: ../chinese-checkers/main.c:215
 msgid "empty"
 msgstr ""
 
-#: ../chinese-checkers/main.c:235
+#: ../chinese-checkers/main.c:253
 msgid "Move accepted. Waiting for opponents"
 msgstr ""
 
-#: ../chinese-checkers/main.c:238
+#: ../chinese-checkers/main.c:256
 msgid "Cannot accept move until table is full"
 msgstr ""
 
-#: ../chinese-checkers/main.c:261
+#: ../chinese-checkers/main.c:279
 msgid "Game over!  You won!"
 msgstr ""
 
-#: ../chinese-checkers/main.c:263
+#: ../chinese-checkers/main.c:281
 #, c-format
 msgid "Game over!  %s won!"
 msgstr ""
 
-#: ../common/dlg_exit.c:50
+#: ../chinese-checkers/main_dlg.c:49
+msgid "/_Options"
+msgstr ""
+
+#: ../chinese-checkers/main_dlg.c:50
+msgid "/Options/_Preferences"
+msgstr ""
+
+#: ../common/dlg_about.c:99 ../common/dlg_chat.c:241
+#: ../common/dlg_players.c:282
+msgid "Close"
+msgstr ""
+
+#: ../common/dlg_chat.c:213 ../common/dlg_players.c:247
+msgid "Player List"
+msgstr ""
+
+#: ../common/dlg_exit.c:53
 msgid "Are you sure you want to exit?"
 msgstr ""
 
-#: ../common/dlg_exit.c:52
+#: ../common/dlg_exit.c:55
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
 msgstr ""
 
-#: ../common/dlg_exit.c:57
+#: ../common/dlg_exit.c:63
 msgid "Really Exit?"
 msgstr ""
 
-#: ../common/dlg_exit.c:66
+#: ../common/dlg_exit.c:79
 msgid "Exit"
 msgstr ""
 
-#: ../common/dlg_exit.c:67
+#: ../common/dlg_exit.c:80
 msgid "Cancel"
+msgstr ""
+
+#: ../common/dlg_players.c:102
+msgid "Occupied"
+msgstr ""
+
+#: ../common/dlg_players.c:106
+msgid "Empty"
+msgstr ""
+
+#: ../common/dlg_players.c:110
+msgid "Bot"
+msgstr ""
+
+#: ../common/dlg_players.c:114
+msgid "Reserved"
+msgstr ""
+
+#: ../common/dlg_players.c:118
+msgid "-"
+msgstr ""
+
+#: ../common/dlg_players.c:140
+msgid "Spectator"
+msgstr ""
+
+#: ../common/dlg_players.c:182
+msgid "#"
+msgstr ""
+
+#: ../common/dlg_players.c:190
+msgid "Status"
+msgstr ""
+
+#: ../common/dlg_players.c:198
+msgid "Name"
+msgstr ""
+
+#: ../common/dlg_players.c:259
+msgid "List of players:"
+msgstr ""
+
+#: ../common/dlg_players.c:416
+msgid "Info"
+msgstr ""
+
+#: ../common/dlg_players.c:433
+msgid "Boot player"
+msgstr ""
+
+#: ../common/dlg_players.c:452
+msgid "Sit here"
+msgstr ""
+
+#: ../common/dlg_players.c:454
+msgid "Move here"
+msgstr ""
+
+#: ../common/dlg_players.c:471
+msgid "Play with bot"
+msgstr ""
+
+#: ../common/dlg_players.c:487
+msgid "Drop reservation"
+msgstr ""
+
+#: ../common/dlg_players.c:489
+msgid "Remove bot"
 msgstr ""
 
 #: ../common/ggzintl.c:41

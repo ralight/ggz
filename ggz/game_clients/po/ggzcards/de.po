@@ -1,32 +1,166 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Deutsche Übersetzung von ggzcards.
+# Copyright (C) 2002 Sebastian Roth
+# Sebastian Roth <xsebbi@gmx.de>, 2002.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-23 12:29-0500\n"
+"Project-Id-Version: 0.0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-13 18:38+0200\n"
 "PO-Revision-Date: 2002-04-10 17:06GMT\n"
 "Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
-"Language-Team:  <de@li.org>\n"
+"Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.5\n"
 
-#: ../ggzcards/dlg_about.c:49
-msgid "About GGZCards"
-msgstr "Über GGZCards"
+#: ../ggzcards/dlg_bid.c:102
+msgid "Select your bid:"
+msgstr "Wähle dein Kartenspiel aus:"
 
-#: ../ggzcards/dlg_about.c:66
-msgid ""
-"GGZ Gaming Zone\n"
-"GGZ Cards Version "
+#: ../ggzcards/dlg_bid.c:159
+msgid "Bid Selection"
+msgstr "Spielauswahl"
+
+#: ../ggzcards/dlg_main.c:53
+msgid "/_Game"
+msgstr "/_Spiel"
+
+#: ../ggzcards/dlg_main.c:54
+msgid "/Game/Start game"
+msgstr "/Spiel/Starte Spiel"
+
+#: ../ggzcards/dlg_main.c:57
+msgid "/Game/Force _redraw"
+msgstr "/Spiel/Erzwinge Neuaufbau"
+
+#: ../ggzcards/dlg_main.c:60
+msgid "/_Messages"
+msgstr "/_Meldungen"
+
+#: ../ggzcards/dlg_main.c:61
+msgid "/_Options"
+msgstr "/Optionen"
+
+#: ../ggzcards/dlg_main.c:62
+msgid "/Options/_Preferences"
+msgstr "/Optionen/_Einstellungen"
+
+#: ../ggzcards/dlg_main.c:72 ../ggzcards/game.c:190 ../ggzcards/game.c:219
+msgid "<main>/Game/Start game"
+msgstr "<main>/Spiel/Spiel starten"
+
+#: ../ggzcards/dlg_main.c:92
+msgid "GGZ Gaming Zone - GGZ Cards"
+msgstr "GGZ Gaming Zone - GGZ Cards"
+
+#: ../ggzcards/dlg_options.c:145
+msgid "Select Options"
+msgstr "Wähle Optionen aus"
+
+#: ../ggzcards/dlg_options.c:210
+msgid "Send options"
+msgstr "Sende Optionen"
+
+#: ../ggzcards/dlg_prefs.c:66
+msgid "Preferences"
+msgstr "Einstellungen"
+
+#: ../ggzcards/dlg_prefs.c:108 ../common/dlg_about.c:99
+#: ../common/dlg_chat.c:241 ../common/dlg_players.c:282
+msgid "Close"
+msgstr "Schließen"
+
+#: ../ggzcards/game.c:68
+msgid "Waiting for server..."
+msgstr "Warte auf Server..."
+
+#: ../ggzcards/game.c:92
+msgid "Sending bid to server..."
+msgstr "Sende Angebot an Server..."
+
+#: ../ggzcards/game.c:105
+msgid "Sending options to server..."
+msgstr "Sende Optionen an Server..."
+
+#: ../ggzcards/game.c:129
+msgid "Sending play to server..."
+msgstr "Sende Spielbeginn an Server..."
+
+#: ../ggzcards/game.c:192
+msgid "Waiting for the other players..."
+msgstr "Warte auf andere Spieler..."
+
+#: ../ggzcards/game.c:223
+msgid "Select \"Start Game\" to begin the game."
+msgstr "Wähle \"Starte Spiel\" um das Spiel zu beginnen"
+
+#: ../ggzcards/game.c:269
+#, c-format
+msgid "There was no winner."
+msgstr "Es gab keinen Gewinner."
+
+#: ../ggzcards/game.c:286
+#, c-format
+msgid "won the game."
+msgstr "gewann das Spiel."
+
+#: ../ggzcards/game.c:311
+#, c-format
+msgid "%s joined the table."
+msgstr "%s ist hinzugekommen."
+
+#: ../ggzcards/game.c:315
+msgid "Empty Seat"
+msgstr "Leerer Platz"
+
+#: ../ggzcards/game.c:317
+#, c-format
+msgid "%s left the table."
+msgstr "%s hat das Spiel verlassen."
+
+#: ../ggzcards/game.c:365
+msgid "It's your turn to bid.  Please choose a bid from the selection above."
 msgstr ""
-"GGZ Gaming Zone\n"
-"GGZ Cards Version "
+"Du bist dran, ein Angebot abzugeben. Bitte wähle eines von den verfügbaren "
+"aus."
 
-#: ../ggzcards/dlg_about.c:78
+#: ../ggzcards/game.c:368
+msgid "It's your turn to bid.  Please choose a bid from the bid window."
+msgstr ""
+"Du bist dran, ein Angebot abzugeben. Wähle bitte eines vom Angebotsfenster "
+"aus."
+
+#: ../ggzcards/game.c:418
+msgid "It's your turn to play a card."
+msgstr "Dein Zug um eine Karte zu spielen."
+
+#: ../ggzcards/game.c:422
+#, c-format
+msgid "It's your turn to play a card (from %s's hand)."
+msgstr "Dein Zug um eine Karte aus %ss Hand spielen."
+
+#: ../ggzcards/game.c:559
+#, c-format
+msgid "%s won the trick"
+msgstr "%s hat den Zug gewonnen"
+
+#: ../ggzcards/game.c:580
+msgid "Please select the game's options."
+msgstr "Bitte wähle die Optionen für das Spiel aus."
+
+#: ../ggzcards/game.c:600
+#, c-format
+msgid "GGZ Gaming Zone - %s"
+msgstr "GGZ Gaming Zone - %s"
+
+#: ../ggzcards/game.c:636
+#, c-format
+msgid "%s of %s"
+msgstr "%s von %s"
+
+#: ../ggzcards/main.c:176
 msgid ""
 "Authors:\n"
 "        Gtk+ Client:\n"
@@ -47,7 +181,7 @@ msgid ""
 "            Brent Hendricks  <bmh@users.sourceforge.net>\n"
 "\n"
 "Website:\n"
-"        http://ggz.sourceforge.net/"
+"        http://www.ggzgamingzone.org/games/ggzcards/"
 msgstr ""
 "Autoren: \n"
 "        Gtk+ Client:\n"
@@ -68,194 +202,24 @@ msgstr ""
 "            Brent Hendricks  <bmh@users.sourceforge.net>\n"
 "\n"
 "Webseite:\n"
-"        http://ggz.sourceforge.net/"
+"        http://www.ggzgamingzone.org/games/ggzcards/"
 
-#: ../ggzcards/dlg_about.c:116 ../ggzcards/dlg_players.c:189
-#: ../ggzcards/dlg_prefs.c:109
-msgid "Close"
-msgstr "Schließen"
-
-#: ../ggzcards/dlg_bid.c:102
-msgid "Select your bid:"
-msgstr "Waehle dein Kartenspiel aus:"
-
-#: ../ggzcards/dlg_bid.c:157
-msgid "Bid Selection"
-msgstr "Spielauswahl"
-
-#: ../ggzcards/dlg_main.c:118
-msgid "GGZ Gaming Zone - GGZ Cards"
-msgstr "GGZ Gaming Zone - GGZ Cards"
-
-#: ../ggzcards/dlg_main.c:137
-msgid "Game"
-msgstr "Spiel"
-
-#: ../ggzcards/dlg_main.c:157
-msgid "Start Game"
-msgstr "Starte Spiel"
-
-#: ../ggzcards/dlg_main.c:168
-msgid "Sync"
-msgstr "Synchronisiere"
-
-#: ../ggzcards/dlg_main.c:177 ../ggzcards/dlg_prefs.c:66
-msgid "Preferences"
-msgstr "Einstellungen"
-
-#: ../ggzcards/dlg_main.c:187 ../ggzcards/dlg_players.c:154
-msgid "Player List"
-msgstr "Spielerliste"
-
-#: ../ggzcards/dlg_main.c:198
-msgid "Force Redraw"
-msgstr "Erzwinge Neuaufbau"
-
-#: ../ggzcards/dlg_main.c:209 ../common/dlg_exit.c:66
-msgid "Exit"
-msgstr "Beenden"
-
-#: ../ggzcards/dlg_main.c:217
-msgid "Messages"
-msgstr "Meldungen"
-
-#: ../ggzcards/dlg_main.c:237
-msgid "Help"
-msgstr "Hilfe"
-
-#: ../ggzcards/dlg_main.c:255
-msgid "About"
-msgstr "Über"
-
-#: ../ggzcards/dlg_options.c:145
-msgid "Select Options"
-msgstr "Wähle Optionen aus"
-
-#: ../ggzcards/dlg_options.c:210
-msgid "Send options"
-msgstr "Sende Optionen"
-
-#: ../ggzcards/dlg_players.c:55
-msgid "Occupied"
-msgstr "Geschlagen"
-
-#: ../ggzcards/dlg_players.c:59
-msgid "Empty"
-msgstr "Leer"
-
-#: ../ggzcards/dlg_players.c:63
-msgid "Bot"
-msgstr "Bot"
-
-#: ../ggzcards/dlg_players.c:67
-msgid "Reserved"
-msgstr "Reserviert"
-
-#: ../ggzcards/dlg_players.c:71
-msgid "-"
-msgstr "-"
-
-#: ../ggzcards/dlg_players.c:109
-msgid "#"
-msgstr "#"
-
-#: ../ggzcards/dlg_players.c:117
-msgid "Status"
-msgstr "Status"
-
-#: ../ggzcards/dlg_players.c:125
-msgid "Name"
-msgstr "Name"
-
-#: ../ggzcards/dlg_players.c:167
-msgid "List of players:"
-msgstr "Spielerliste:"
-
-#: ../ggzcards/game.c:66
-msgid "Waiting for server..."
-msgstr "Warte auf Server..."
-
-#: ../ggzcards/game.c:90
-msgid "Sending bid to server..."
-msgstr "Sende Angebot an Server..."
-
-#: ../ggzcards/game.c:103
-msgid "Sending options to server..."
-msgstr "Sende Optionen an Server..."
-
-#: ../ggzcards/game.c:127
-msgid "Sending play to server..."
-msgstr "Sende Spielbeginn an Server..."
-
-#: ../ggzcards/game.c:194
-msgid "Waiting for the other players..."
-msgstr "Warte auf andere Spieler..."
-
-#: ../ggzcards/game.c:229
-msgid "Select \"Start Game\" to begin the game."
-msgstr "Wähle \"Starte Spiel\" um das Spiel zu beginnen"
-
-#: ../ggzcards/game.c:275
-msgid "There was no winner."
-msgstr "Es gab keinen Gewinner."
-
-#: ../ggzcards/game.c:292
-msgid "won the game."
-msgstr "gewann das Spiel."
-
-#: ../ggzcards/game.c:321
+#: ../ggzcards/main.c:198
 #, c-format
-msgid "%s joined the table."
-msgstr "%s ist hinzugekommen."
-
-#: ../ggzcards/game.c:325
-msgid "Empty Seat"
-msgstr "Leerer Platz"
-
-#: ../ggzcards/game.c:327
-#, c-format
-msgid "%s left the table."
-msgstr "%s hat das Spiel verlassen."
-
-#: ../ggzcards/game.c:376
-msgid "It's your turn to bid.  Please choose a bid from the selection above."
+msgid ""
+"GGZ Gaming Zone\n"
+"GGZ Cards Version %s"
 msgstr ""
-"Du bist dran, ein Angebot abzugeben. Bitte wähle eines von den verfügbaren "
-"aus."
+"GGZ Gaming Zone\n"
+"GGZ Cards Version %s"
 
-#: ../ggzcards/game.c:379
-msgid "It's your turn to bid.  Please choose a bid from the bid window."
-msgstr ""
-"Du bist dran, ein Angebot abzugeben. Wähle bitte eines vom Angebotsfenster "
-"aus."
+#: ../ggzcards/main.c:200
+msgid "About GGZCards"
+msgstr "Über GGZCards"
 
-#: ../ggzcards/game.c:429
-msgid "It's your turn to play a card."
-msgstr "Dein Zug um eine Karte zu spielen."
-
-#: ../ggzcards/game.c:433
-#, c-format
-msgid "It's your turn to play a card (from %s's hand)."
-msgstr "Dein Zug um eine Karte aus %ss Hand spielen."
-
-#: ../ggzcards/game.c:570
-#, c-format
-msgid "%s won the trick"
-msgstr "%s hat den Zug gewonnen"
-
-#: ../ggzcards/game.c:591
-msgid "Please select the game's options."
-msgstr "Bitte wähle die Optionen für das Spiel aus."
-
-#: ../ggzcards/game.c:611
-#, c-format
-msgid "GGZ Gaming Zone - %s"
-msgstr "GGZ Gaming Zone - %s"
-
-#: ../ggzcards/game.c:647
-#, c-format
-msgid "%s of %s"
-msgstr "%s von %s"
+#: ../ggzcards/main.c:271
+msgid "<main>/Messages"
+msgstr "<main>/Meldungen"
 
 #: ../ggzcards/preferences.c:42
 msgid "Use animation"
@@ -267,32 +231,32 @@ msgid ""
 "none of the other animation preferences will have any effect."
 msgstr ""
 
-#: ../ggzcards/preferences.c:51
+#: ../ggzcards/preferences.c:54
 msgid "Faster animation"
 msgstr "Schnellere Animationen"
 
-#: ../ggzcards/preferences.c:52
+#: ../ggzcards/preferences.c:55
 msgid ""
 "If this is selected, the animation will happen faster.  The faster animation "
 "generally looks smoother, but may not work well on slower computers."
 msgstr ""
 
-#: ../ggzcards/preferences.c:59
+#: ../ggzcards/preferences.c:62
 msgid "Smoother animation"
 msgstr "Langsamere Optionen"
 
-#: ../ggzcards/preferences.c:60
+#: ../ggzcards/preferences.c:63
 msgid ""
 "If this is selected, there will be more frames in each animation sequence.  "
 "This will generally make the animation look smoother, but may not work well "
 "on slower computers."
 msgstr ""
 
-#: ../ggzcards/preferences.c:67
+#: ../ggzcards/preferences.c:71
 msgid "Multiple (simultaneous) animations"
 msgstr "Mehre gleichzeitige Animationen"
 
-#: ../ggzcards/preferences.c:68
+#: ../ggzcards/preferences.c:72
 msgid ""
 "If this preference is selected, then any time a new animation is ready to "
 "start while an old one is still going they will both proceed "
@@ -301,11 +265,11 @@ msgid ""
 "animation to a finish when the new one is started."
 msgstr ""
 
-#: ../ggzcards/preferences.c:78
+#: ../ggzcards/preferences.c:82
 msgid "Have a longer delay before clearing the table"
 msgstr "Eine laengere Wartezeit bis der Tisch geloescht wird"
 
-#: ../ggzcards/preferences.c:79
+#: ../ggzcards/preferences.c:83
 msgid ""
 "Normally, after the end of a trick the cards will not be cleared off of the "
 "table for one second.  Selecting this option will instead delay for two "
@@ -314,22 +278,32 @@ msgid ""
 "the \"Messages\" menu."
 msgstr ""
 
-#: ../ggzcards/preferences.c:89
+#: ../ggzcards/preferences.c:93
+msgid "Clear the table immediately after each trick"
+msgstr ""
+
+#: ../ggzcards/preferences.c:94
+msgid ""
+"Setting this option causes the cards to be cleared from the table after just "
+"one-tenth of a second."
+msgstr ""
+
+#: ../ggzcards/preferences.c:101
 msgid "Single-click cards to play them"
 msgstr ""
 
-#: ../ggzcards/preferences.c:90
+#: ../ggzcards/preferences.c:102
 msgid ""
 "Normally, you must click a card twice to play it (once to select it and "
 "again to commit to the play).  With this option, the card is played "
 "immediately when you click it."
 msgstr ""
 
-#: ../ggzcards/preferences.c:98
+#: ../ggzcards/preferences.c:110
 msgid "Collapse hand as it is played"
 msgstr ""
 
-#: ../ggzcards/preferences.c:99
+#: ../ggzcards/preferences.c:111
 msgid ""
 "If this is unset, then when a card is played none of the other cards change "
 "position, but an empty spot is left in the hand.  If set, then the hand will "
@@ -337,11 +311,11 @@ msgid ""
 "effect immediately, but the transition may not be smooth."
 msgstr ""
 
-#: ../ggzcards/preferences.c:108
+#: ../ggzcards/preferences.c:120
 msgid "Show graphical cardlists"
 msgstr ""
 
-#: ../ggzcards/preferences.c:109
+#: ../ggzcards/preferences.c:121
 msgid ""
 "If this is selected, then card lists (like the \"Last Trick\" and \"Previous "
 "Hand\" messages) will be drawn graphically.  Disable it to get simple text-"
@@ -349,11 +323,11 @@ msgid ""
 "GGZCards."
 msgstr ""
 
-#: ../ggzcards/preferences.c:117
+#: ../ggzcards/preferences.c:130
 msgid "Show bid choices right on the table"
 msgstr "Zeige Angebotsauswahlen rechts auf dem Tisch"
 
-#: ../ggzcards/preferences.c:118
+#: ../ggzcards/preferences.c:131
 msgid ""
 "If this is selected, then (for games that use bidding) the choices for the "
 "bid will be drawn directly onto the table.  If it's deselected you will "
@@ -361,74 +335,78 @@ msgid ""
 "table is better, but may not work for all games."
 msgstr ""
 
-#: ../ggzcards/preferences.c:127
+#: ../ggzcards/preferences.c:141
 msgid "Show tooltips for bidding"
 msgstr ""
 
-#: ../ggzcards/preferences.c:128
+#: ../ggzcards/preferences.c:142
 msgid ""
 "Select this option to see descriptive tooltips for every choice when you "
 "bid.  The choice will take effect the next time you bid."
 msgstr ""
 
-#: ../ggzcards/preferences.c:135
+#: ../ggzcards/preferences.c:149
 msgid "Draw dominoes much larger"
 msgstr ""
 
-#: ../ggzcards/preferences.c:136
+#: ../ggzcards/preferences.c:150
 msgid ""
 "Some games use dominoes as the card set.  You may choose to have the "
 "dominoes drawn normal size or in a much larger size.  The change may not "
 "happen correctly until you restart the client."
 msgstr ""
 
-#: ../ggzcards/preferences.c:144
+#: ../ggzcards/preferences.c:158
 msgid "Automatically start game"
 msgstr "Starte Spiel automatisch"
 
-#: ../ggzcards/preferences.c:145
+#: ../ggzcards/preferences.c:159
 msgid ""
 "If this is selected, then instead of waiting for you to choose \"Start Game"
 "\" from the \"Game\" menu, the game will instead start immediately (once "
 "everyone else is ready, of course)."
 msgstr ""
 
-#: ../ggzcards/preferences.c:153
+#: ../ggzcards/preferences.c:167
 msgid "Always use default options"
 msgstr "Nutze immer die vorgegebenen Optionen"
 
-#: ../ggzcards/preferences.c:154
+#: ../ggzcards/preferences.c:168
 msgid ""
 "If this is selected, then any time you are prompted for game options (which "
 "only happens at the start of a game when you are the table host) the default "
 "choices will automatically be chosen."
 msgstr ""
 
-#: ../ggzcards/preferences.c:162
+#: ../ggzcards/preferences.c:176
 msgid "Confirmation before exiting"
 msgstr ""
 
-#: ../ggzcards/preferences.c:163
+#: ../ggzcards/preferences.c:177
 msgid ""
 "If selected, you will get a confirmation dialog when you try to exit during "
 "a game."
 msgstr ""
 
-#: ../ggzcards/preferences.c:170
+#: ../ggzcards/preferences.c:184
 msgid "Have the AI play for you"
 msgstr ""
 
-#: ../ggzcards/preferences.c:171
+#: ../ggzcards/preferences.c:185
 msgid ""
 "If selected, the AI player will play the game for you.  This is useful as a "
 "debugging tool."
 msgstr ""
 
-#: ../common/dlg_exit.c:50
+#: ../common/dlg_chat.c:213 ../common/dlg_players.c:247
+msgid "Player List"
+msgstr "Spielerliste"
+
+#: ../common/dlg_exit.c:53
 msgid "Are you sure you want to exit?"
 msgstr "Bist du sicher daß du beenden willst?"
 
-#: ../common/dlg_exit.c:52
+#: ../common/dlg_exit.c:55
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
@@ -436,18 +414,99 @@ msgstr ""
 "Bist du sicher daß du beenden willst?\n"
 "Du wirst nicht wieder mitspielen können."
 
-#: ../common/dlg_exit.c:57
+#: ../common/dlg_exit.c:63
 msgid "Really Exit?"
 msgstr "Wirklich beenden?"
 
-#: ../common/dlg_exit.c:67
+#: ../common/dlg_exit.c:79
+msgid "Exit"
+msgstr "Beenden"
+
+#: ../common/dlg_exit.c:80
 msgid "Cancel"
 msgstr "Abbrechen"
+
+#: ../common/dlg_players.c:102
+msgid "Occupied"
+msgstr "Geschlagen"
+
+#: ../common/dlg_players.c:106
+msgid "Empty"
+msgstr "Leer"
+
+#: ../common/dlg_players.c:110
+msgid "Bot"
+msgstr "Bot"
+
+#: ../common/dlg_players.c:114
+msgid "Reserved"
+msgstr "Reserviert"
+
+#: ../common/dlg_players.c:118
+msgid "-"
+msgstr "-"
+
+#: ../common/dlg_players.c:140
+msgid "Spectator"
+msgstr "Zuschauer"
+
+#: ../common/dlg_players.c:182
+msgid "#"
+msgstr "#"
+
+#: ../common/dlg_players.c:190
+msgid "Status"
+msgstr "Status"
+
+#: ../common/dlg_players.c:198
+msgid "Name"
+msgstr "Name"
+
+#: ../common/dlg_players.c:259
+msgid "List of players:"
+msgstr "Spielerliste:"
+
+#: ../common/dlg_players.c:416
+msgid "Info"
+msgstr "Info"
+
+#: ../common/dlg_players.c:433
+msgid "Boot player"
+msgstr "Spieler rauswerfen"
+
+#: ../common/dlg_players.c:452
+msgid "Sit here"
+msgstr "Hinsetzen"
+
+#: ../common/dlg_players.c:454
+msgid "Move here"
+msgstr "Hierher bewegen"
+
+#: ../common/dlg_players.c:471
+msgid "Play with bot"
+msgstr "Mit Bot spielen"
+
+#: ../common/dlg_players.c:487
+msgid "Drop reservation"
+msgstr "Reservierung aufheben"
+
+#: ../common/dlg_players.c:489
+msgid "Remove bot"
+msgstr "Bot entfernen"
 
 #: ../common/ggzintl.c:41
 #, c-format
 msgid "nls enabled: %s"
 msgstr "NLS: %s"
+
+#~ msgid "Sync"
+#~ msgstr "Synchronisiere"
+
+#~ msgid "Help"
+#~ msgstr "Hilfe"
+
+#~ msgid "About"
+#~ msgstr "Über"
 
 #~ msgid "Your turn to bid"
 #~ msgstr "Dein Zug-Angebot"
