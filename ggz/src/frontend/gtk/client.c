@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5891 2004-02-10 09:21:36Z jdorje $
+ * $Id: client.c 5900 2004-02-11 01:56:43Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1661,7 +1661,7 @@ create_win_main (void)
   gtk_box_pack_start (GTK_BOX (lists_vbox), room_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (room_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  room_clist = gtk_clist_new (1);
+  room_clist = gtk_clist_new(2);
   gtk_widget_ref (room_clist);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "room_clist", room_clist,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1670,7 +1670,8 @@ create_win_main (void)
   gtk_widget_set_sensitive (room_clist, FALSE);
   GTK_WIDGET_UNSET_FLAGS (room_clist, GTK_CAN_FOCUS);
   gtk_widget_set_events (room_clist, GDK_BUTTON_PRESS_MASK);
-  gtk_clist_set_column_width (GTK_CLIST (room_clist), 0, 80);
+  gtk_clist_set_column_width(GTK_CLIST(room_clist), 0, 130);
+  gtk_clist_set_column_width(GTK_CLIST(room_clist), 1, 15);
   gtk_clist_column_titles_show (GTK_CLIST (room_clist));
 
   room_label = gtk_label_new (_("Rooms"));
@@ -1679,6 +1680,13 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (room_label);
   gtk_clist_set_column_widget (GTK_CLIST (room_clist), 0, room_label);
+
+  room_label = gtk_label_new("#");
+  gtk_widget_ref(room_label);
+  gtk_object_set_data_full(GTK_OBJECT (win_main), "room_players_label",
+			   room_label, (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show(room_label);
+  gtk_clist_set_column_widget(GTK_CLIST(room_clist), 1, room_label);
 
   player_scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (player_scrolledwindow);

@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 5877 2004-02-10 06:54:14Z jdorje $
+ * $Id: ggzclient.c 5900 2004-02-11 01:56:43Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -74,6 +74,8 @@ static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* us
 static GGZHookReturn ggz_chat(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_chat_fail(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_list_players(GGZRoomEvent id, void* event_data, void* user_data);
+static GGZHookReturn ggz_player_count(GGZRoomEvent id,
+				      void* event_data, void* user_data);
 
 static GGZHookReturn ggz_room_enter(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_room_leave(GGZRoomEvent id, void* event_data, void* user_data);
@@ -234,30 +236,81 @@ static GGZHookReturn ggz_login_fail(GGZServerEvent id, void* event_data, void* u
 	return GGZ_HOOK_OK;
 }
 
-static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* user_data)
+static void update_room_list(void)
 {
-	GtkWidget *tmp;
-	GGZRoom *room;
-	gint i;
-	gchar *name;
+	GtkWidget *tmp = lookup_widget(win_main, "room_clist");
+	int i;
+	const int numrooms = ggzcore_server_get_num_rooms(server);
 
 	/* Clear current list of rooms */
-	tmp = lookup_widget(win_main, "room_clist");
+	gtk_clist_freeze(GTK_CLIST(tmp));
 	gtk_clist_clear(GTK_CLIST(tmp));
+
+	for (i = 0; i < numrooms; i++) {
+		gchar *table[3];
+		GGZRoom *room = ggzcore_server_get_nth_room(server, i);
+		gchar *name = ggzcore_room_get_name(room);
+		int players = ggzcore_room_get_num_players(room);
+
+		table[0] = g_strdup_printf("%s", name);
+		if (players >= 0) {
+			table[1] = g_strdup_printf("%d", players);
+		} else {
+			table[1] = NULL;
+		}
+		table[2] = NULL;
+
+		gtk_clist_append(GTK_CLIST(tmp), table);
+	}
+
+	gtk_clist_thaw(GTK_CLIST(tmp));
+}
+
+static void update_one_room(int room)
+{
+	GtkWidget *tmp;
+	gchar *name;
+	int players;
+	gchar *table[2];
+	GGZRoom *roomptr = ggzcore_server_get_nth_room(server, room);
+
+	if (!roomptr) return;
+
+	tmp = lookup_widget(win_main, "room_clist");
+	name = ggzcore_room_get_name(roomptr);
+	players = ggzcore_room_get_num_players(roomptr);
+
+	table[0] = g_strdup_printf("%s", name);
+	if (players >= 0) {
+		table[1] = g_strdup_printf("%d", players);
+	} else {
+		table[1] = NULL;
+	}
+
+	gtk_clist_freeze(GTK_CLIST(tmp));
+	gtk_clist_set_text(GTK_CLIST(tmp), room, 0, table[0]);
+	gtk_clist_set_text(GTK_CLIST(tmp), room, 1, table[1]);
+	gtk_clist_thaw(GTK_CLIST(tmp));
+}
+
+static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* user_data)
+{
+	GGZRoom *room;
+	gint i;
 
 	/* Display current list of rooms */
 	numrooms = ggzcore_server_get_num_rooms(server);
-	if (numrooms == 0)
-		return GGZ_HOOK_OK;
+
+	update_room_list();
 
 	for (i = 0; i < numrooms; i++)
 	{
 		room = ggzcore_server_get_nth_room(server, i);
-		name = ggzcore_room_get_name(room);
-		gtk_clist_insert(GTK_CLIST(tmp), i, &name);
+
 		/* Hookup the chat functions to the new room */
 		ggzcore_room_add_event_hook(room, GGZ_CHAT_EVENT, ggz_chat);
 		ggzcore_room_add_event_hook(room, GGZ_PLAYER_LIST, ggz_list_players);
+		ggzcore_room_add_event_hook(room, GGZ_PLAYER_COUNT, ggz_player_count);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_LIST, ggz_list_tables);
 		ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, ggz_room_enter);
 		ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, ggz_room_leave);
@@ -426,7 +479,17 @@ static GGZHookReturn ggz_chat_fail(GGZRoomEvent id, void* event_data,
 
 static GGZHookReturn ggz_list_players(GGZRoomEvent id, void* event_data, void* user_data)
 {
+	int *room = event_data;
+
 	display_players();
+	update_one_room(*room);
+	return GGZ_HOOK_OK;
+}
+
+static GGZHookReturn ggz_player_count(GGZRoomEvent id, void* event_data, void* user_data)
+{
+	int *room = (int *)event_data;
+	update_one_room(*room);
 	return GGZ_HOOK_OK;
 }
 
@@ -435,6 +498,8 @@ static GGZHookReturn ggz_room_enter(GGZRoomEvent id,\
 {
 	GGZRoomChangeEventData *data = event_data;
 
+	update_one_room(data->to_room);
+	update_one_room(data->from_room);
 	display_players();
 	chat_enter(data->player_name, data->from_room);
 
@@ -447,6 +512,8 @@ static GGZHookReturn ggz_room_leave(GGZRoomEvent id,
 {
 	GGZRoomChangeEventData *data = event_data;
 
+	update_one_room(data->to_room);
+	update_one_room(data->from_room);
 	display_players();
 	chat_part(data->player_name, data->to_room);
 
