@@ -1,4 +1,4 @@
-SUBDIRS=
+SUBDIRS = .
 
 XGETTEXT = xgettext
 MSGMERGE = msgmerge
