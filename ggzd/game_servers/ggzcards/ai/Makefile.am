@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3462 2002-02-25 09:15:28Z jdorje $
+# $Id: Makefile.am 3491 2002-02-27 09:42:22Z jdorje $
 
 SUBDIRS = .
 
@@ -15,7 +15,10 @@ EXTRA_SOURCES = aicommon.c aicommon.h \
                 game.c game.h \
                 main.c
 
-EXTRA_LDADD = $(LDADD) ../common/libcommon.a ../client/libclient.a
+# NOTE: for some reason it's necessary to include the libraries
+# twice to get things to work...
+EXTRA_LDADD = ../common/libcommon.a ../client/libclient.a $(LDADD) \
+              ../common/libcommon.a ../client/libclient.a
 
 #EXTRA_DEPENDENCIES = ../common/libcommon.a ../client/libclient.a
 

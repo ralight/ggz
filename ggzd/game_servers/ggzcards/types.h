@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 3490 2002-02-27 08:57:33Z jdorje $
+ * $Id: types.h 3491 2002-02-27 09:42:22Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -27,6 +27,8 @@
 
 #ifndef __TYPES_H__
 #define __TYPES_H__
+
+#include "shared.h"
 
 #include "deck.h"
 

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3466 2002-02-25 10:15:32Z jdorje $
+# $Id: Makefile.am 3491 2002-02-27 09:42:22Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -38,4 +38,8 @@ ggz_ggzcards_SOURCES = \
 	cards-1.xpm cards-2.xpm cards-3.xpm cards-4.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_ggzcards_LDADD = @GTK_LIBS@ $(LDADD) common/libcommon.a client/libclient.a
+
+# NOTE: it is necessary to LDADD the libraries twice to get things to work...
+ggz_ggzcards_LDADD = @GTK_LIBS@ $(LDADD) \
+	common/libcommon.a client/libclient.a \
+	common/libcommon.a client/libclient.a

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: a "random" AI
- * $Id: random.c 3489 2002-02-27 08:40:53Z jdorje $
+ * $Id: random.c 3491 2002-02-27 09:42:22Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -39,6 +39,7 @@
 #include <ggz.h>
 
 #include "client.h"
+
 #include "game.h"
 
 void start_hand(void);
