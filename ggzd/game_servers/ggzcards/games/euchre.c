@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2733 2001-11-13 09:56:05Z jdorje $
+ * $Id: euchre.c 2734 2001-11-13 10:09:16Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -223,9 +223,7 @@ static void euchre_set_player_message(player_t p)
 	clear_player_message(s);
 	add_player_rating_message(p);
 	add_player_score_message(p);
-	if (game.state == STATE_FIRST_BID
-	    || game.state == STATE_NEXT_BID
-	    || game.state == STATE_WAIT_FOR_BID) {
+	if (game.state == STATE_FIRST_BID || game.state == STATE_NEXT_BID) {
 		if (p == game.dealer)
 			add_player_message(s, "dealer\n");
 	} else if (p == EUCHRE.maker)

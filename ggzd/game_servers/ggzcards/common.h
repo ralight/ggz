@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2733 2001-11-13 09:56:05Z jdorje $
+ * $Id: common.h 2734 2001-11-13 10:09:16Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -51,13 +51,13 @@
 
 /* GGZCards server game states */
 typedef enum {
+	STATE_NONE,		/**< no state is set; we'd better figure one out! */
 	STATE_PRELAUNCH,	/**< before the launch happens */
 	STATE_NOTPLAYING,	/**< no game started */
 	STATE_WAITFORPLAYERS,	/**< waiting for players; saved state */
 	STATE_NEXT_HAND,	/**< ready to create a new hand */
 	STATE_FIRST_BID,	/**< about to have the first bid */
 	STATE_NEXT_BID,	/**< asking for new bid */
-	STATE_WAIT_FOR_BID,	/**< waiting for a bid */
 	STATE_FIRST_TRICK,	/**< about to have the first trick of a hand */
 	STATE_NEXT_TRICK,	/**< time for the next trick */
 	STATE_NEXT_PLAY,	/**< asking for a new play */

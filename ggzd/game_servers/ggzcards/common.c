@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2733 2001-11-13 09:56:05Z jdorje $
+ * $Id: common.c 2734 2001-11-13 10:09:16Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -45,6 +45,8 @@ struct wh_game_t game = { 0 };
 static const char *get_state_name(server_state_t state)
 {
 	switch (state) {
+	case STATE_NONE:
+		return "NONE";
 	case STATE_PRELAUNCH:
 		return "PRELAUNCH";
 	case STATE_NOTPLAYING:
@@ -57,8 +59,6 @@ static const char *get_state_name(server_state_t state)
 		return "FIRST_BID";
 	case STATE_NEXT_BID:
 		return "NEXT_BID";
-	case STATE_WAIT_FOR_BID:
-		return "WAIT_FOR_BID";
 	case STATE_FIRST_TRICK:
 		return "FIRST_TRICK";
 	case STATE_NEXT_TRICK:
@@ -503,7 +503,7 @@ void handle_join_event(ggzd_event_t event, void *data)
 
 	if (!ggzd_seats_open() && game.which_game != GGZ_GAME_UNKNOWN) {
 		/* (Re)Start game play */
-		if (game.state != STATE_WAIT_FOR_BID
+		if (game.state != STATE_NONE
 		    && game.state != STATE_WAIT_FOR_PLAY)
 			/* if we're in one of these two states, we have to
 			   wait for a response anyway */
@@ -646,6 +646,8 @@ int handle_bid_event(player_t p, bid_t bid)
 		was_waiting = 1;
 	}
 
+	set_game_state(STATE_NONE);
+
 	/* determine the bid */
 	game.players[p].bid = bid;
 
@@ -681,7 +683,7 @@ int handle_bid_event(player_t p, bid_t bid)
 	/* This is a minor hack.  The game's next_bid function might have
 	   changed the game's state.  If that happened, we don't want to
 	   change it back! */
-	if (game.state == STATE_WAIT_FOR_BID) {
+	if (game.state == STATE_NONE) {
 		if (game.bid_count == game.bid_total)
 			set_game_state(STATE_FIRST_TRICK);
 		else
