@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 4829 2002-10-09 23:12:15Z jdorje $
+ * $Id: client.c 4942 2002-10-18 01:18:38Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -443,8 +443,9 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 	GGZList *last_list;
 	GGZListEntry *entry;
 
-	if (event->keyval == GDK_Tab)
-	{
+	if (event->keyval == GDK_Tab) {
+		int match;
+
 		/* Get start of name */
 		tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
 		text = gtk_entry_get_text(GTK_ENTRY(tmp));
@@ -473,18 +474,22 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 			return TRUE;
 
 		/* Check for matching name */
-		if(chat_complete_name(startname) != NULL)
-		{
+		name = chat_complete_name(startname, &match);
+		if (name != NULL) {
 			gchar *out;
-			name = g_strdup(chat_complete_name(startname));
+
 			/* If it matches, copy the rest of the name */
-			if (first)
+			if (first && match)
 				out = g_strdup_printf("%s%s: ", text, &name[strlen(startname)]);
 			else
-				out = g_strdup_printf("%s%s ", text, &name[strlen(startname)]);
+				out = g_strdup_printf("%s%s%s",
+						      text,
+						      &name[strlen(startname)],
+						      match ? " " : "");
 			tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
 			gtk_entry_set_text(GTK_ENTRY(tmp), out);
 			g_free(out);
+			ggz_free(name);
 			return TRUE;
 		}
 		return TRUE;

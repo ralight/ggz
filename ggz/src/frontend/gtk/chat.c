@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 4857 2002-10-10 20:59:45Z jdorje $
+ * $Id: chat.c 4942 2002-10-18 01:18:38Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -876,49 +876,48 @@ static void chat_list_ignore(GGZServer *server, const gchar *message)
  * 	gchar	*name	: partial name
  *
  * Returns:
- * 	gchar*		: NULL if not matched, or matched name
+ * 	gchar*		: matched name (allocated with ggz_malloc), or NULL
  */
 
-const gchar *chat_complete_name(gchar *name)
+gchar *chat_complete_name(gchar *name, int *perfect)
 {
 	gchar *returnname = NULL;
-	gint multiple = FALSE;
-	gint first = FALSE;
+	int matches = 0;
 
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	int num = ggzcore_room_get_num_players(room);
-	int i;
+	int i, j;
 
 	for (i = 0; i < num; i++) {
 		GGZPlayer *player = ggzcore_room_get_nth_player(room, i);
 		char* fullname = ggzcore_player_get_name(player);
 
-		if (strncasecmp(fullname, name, strlen(name)) == 0)
-		{
-			if (!multiple)
-			{
-				returnname = fullname;
-				multiple = TRUE;
-			}else{
-				if (!first)
-				{
+		if (strncasecmp(fullname, name, strlen(name)) == 0) {
+			if (matches == 0) {
+				returnname = ggz_strdup(fullname);
+			} else {
+				if (matches == 1) {
 					chat_display_local(CHAT_LOCAL_NORMAL,
 						NULL, _("Multiple matches:"));
 					chat_display_local(CHAT_LOCAL_NORMAL,
 						NULL, returnname);
-					first = TRUE;
 				}
-				returnname = fullname;
 				chat_display_local(CHAT_LOCAL_NORMAL,
-					NULL, returnname);
-				returnname = NULL;
+					NULL, fullname);
+
+				/* Terminate returnname after the last
+				   matching character. */
+				for (j = 0; fullname[j]; j++)
+					if (fullname[j] != returnname[j])
+						break;
+				returnname[j] = '\0';
 			}
+			matches++;
 		}
 	}
 
-	if(returnname != NULL)
-		return returnname;
-	return NULL;
+	*perfect = (matches == 1);
+	return returnname;
 }
 
 gint chat_is_friend(const gchar *name)

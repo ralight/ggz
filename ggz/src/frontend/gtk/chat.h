@@ -52,7 +52,7 @@ void chat_remove_friend(gchar *name);
 void chat_add_ignore(gchar *name, gint display);
 void chat_remove_ignore(gchar *name);
 void chat_save_lists(void);
-const gchar *chat_complete_name(gchar *name);
+gchar *chat_complete_name(gchar *name, int *perfect);
 gint chat_is_friend(const gchar *name);
 gint chat_is_ignore(const gchar *name);
 void chat_lists_cleanup(void);
