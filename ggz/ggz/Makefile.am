@@ -10,6 +10,8 @@ ggz_SOURCES = 	main.c \
 		connect.c \
 	   	connect.h \
 		datatypes.h \
+		dlg_about.c \
+		dlg_about.h \
 		dlg_details.c \
 		dlg_details.h \
 		dlg_error.c \

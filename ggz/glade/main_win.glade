@@ -253,6 +253,11 @@
 	  <widget>
 	    <class>GtkMenuItem</class>
 	    <name>about</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>ggz_about</handler>
+	      <last_modification_time>Sat, 01 Apr 2000 20:06:57 GMT</last_modification_time>
+	    </signal>
 	    <label>_About</label>
 	    <right_justify>False</right_justify>
 	  </widget>

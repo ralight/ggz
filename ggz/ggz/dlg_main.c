@@ -42,12 +42,14 @@
 #include <easysock.h>
 #include <connect.h>
 #include <protocols.h>
+#include <dlg_about.h>
 #include <dlg_error.h>
 #include <dlg_exit.h>
 #include <dlg_launch.h>
 #include <dlg_login.h>
 
 /* Globals neaded by this dialog */
+extern GtkWidget *dlg_about;
 extern GtkWidget *dlg_launch;
 extern GtkWidget *dlg_login;
 extern GtkWidget *mnu_players;
@@ -76,6 +78,7 @@ static void ggz_connect(void);
 static void ggz_motd(void);
 static void ggz_realize(GtkWidget* widget, gpointer data);
 static void ggz_room_changed(GtkWidget* widget, gpointer data);
+static void ggz_about(GtkWidget* widget, gpointer data);
 
 
 /*
@@ -308,6 +311,18 @@ void ggz_room_changed(GtkWidget* widget, gpointer data)
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
 	gtk_widget_grab_focus(tmp);
 }
+
+void ggz_about(GtkWidget* widget, gpointer data)
+{
+	GtkWidget *tmp;
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "about");
+	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+
+	dlg_about = create_dlg_about();
+	gtk_widget_show(GTK_WIDGET(dlg_about));
+}
+
 
 
 
@@ -990,6 +1005,9 @@ create_main_win (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (motd), "activate",
                       GTK_SIGNAL_FUNC (ggz_motd),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (about), "activate",
+                      GTK_SIGNAL_FUNC (ggz_about),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (connect_button), "clicked",
                       GTK_SIGNAL_FUNC (ggz_connect),
