@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 5267 2002-11-25 19:16:38Z dr_maux $
+dnl $Id: configure.in 5287 2002-12-15 11:34:18Z jdorje $
 
 AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(ggz-server, 0.0.7pre)
@@ -26,7 +26,7 @@ AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by defau
 AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
 AC_ARG_ENABLE(debug-mem,    [  --enable-debug-mem      enable mem debugging ],,enable_debug_mem=no)
 AC_ARG_WITH(tmpdir,         [  --with-tmpdir=PATH      directory for temporary files [default=/tmp/ggzd]], tmpdir=$withval, tmpdir="/tmp/ggzd")
-AC_ARG_WITH(database,       [  --with-database=DB      type of database to use: db2, db3, db4, pgsql, mysql], database=$withval, database=db3)
+AC_ARG_WITH(database,       [  --with-database=DB      type of database to use: db2, db3, db4, pgsql, mysql], database=$withval, database=yes)
 
 
 dnl Check for GGZ Requirements
@@ -96,114 +96,187 @@ AC_CHECK_LIB(expat, XML_ParserCreate,
 
 dnl Check database libs
 dnl ===================
-dnl First, check for unsupported/invalid databases
-dnl There's got to be a better way to make this check!
-if test "$database" = db2; then
-   database=db2
-elif test "$database" = db3; then
-   database=db3
-elif test "$database" = db4; then
-	database=db4
-elif test "$database" = pgsql; then
-	database=pgsql
-elif test "$database" = mysql; then
-	database=mysql
-else
-   dnl unsupported database
-   AC_MSG_WARN(*** Database $database not supprted, defaulting to db3)
-   database=db3
+dnl Check for available/requested databases.
+case "$database" in
+  db4)   database=db4 ;;
+  db3)   database=db3 ;;
+  db2)   database=db2 ;;
+  pgsql) database=pgsql ;;
+  mysql) database=mysql ;;
+  *)     database=yes ;;
+esac
+
+# Order of preference: db3, db4, db2, PgSQL, MySQL.  This is determined
+# solely by the order of the checks below.  Since a correct db will be
+# auto-detected, we should order these solely based on how good they are
+# (in terms of stability and performance).
+
+# Check for db3 database
+if test "$database" = db3 || test "$database" = yes; then
+  AC_CHECK_LIB(db, db_env_create,
+    [
+      db3_style=0
+      AC_CHECK_HEADER(db.h,
+        [
+          database=db3
+          ggzd_LIBS="$ggzd_LIBS -ldb"
+        ],
+        [
+          if test "$database" = db3; then
+            AC_MSG_ERROR([*** Cannot configure db3 (db3-dev needed)])
+          fi
+        ])
+    ],
+    [
+      AC_CHECK_LIB(db3, db_env_create,
+        [
+          AC_CHECK_HEADER([db3/db.h],
+            [
+              database=db3
+              ggzd_LIBS="$ggzd_LIBS -ldb3"
+              AC_DEFINE(DB4_IN_DIR)
+            ],
+            [
+              if test "$database" = db3; then
+                AC_MSG_ERROR([*** Cannot configure db3 (db3-dev needed)])
+              fi
+            ])
+        ],
+        [
+          if test "$database" = db3; then
+            AC_MSG_ERROR([*** Cannot configure db3 (libdb3 needed)])
+          fi
+        ])
+    ])
 fi
 
-if test "$database" = db4; then
-	database=db4
-	db4_style=-1
-	AC_CHECK_LIB(db, db_env_create_4000,
-		[AC_CHECK_HEADER(db.h, db4_style=0,
-			AC_MSG_ERROR(*** Cannot find db.h header); exit)],
-		AC_MSG_WARN(*** Cannot find db library, trying -ldb-4.0 ))
-	if test "$db4_style" = -1; then
-		AC_CHECK_LIB(db-4.0, db_env_create_4000,
-			[AC_CHECK_HEADER(db.h, db4_style=1,
-				AC_MSG_WARN(*** Cannot find db.h header); database=db3)],
-			AC_MSG_WARN(*** Cannot find db4 library ); database=db3)
-	fi
-
-	if test "$db4_style" = 0; then
-		ggzd_LIBS="$ggzd_LIBS -ldb"
-	elif test "$db4_style" = 1; then
-		ggzd_LIBS="$ggzd_LIBS -ldb-4.0"
-		AC_DEFINE(DB4_IN_DIR)
-	fi
+# Check for db4 database
+if test "$database" = db4 || test "$database" = yes; then
+  AC_CHECK_LIB(db, db_env_create_4000,
+    [
+      db4_style=0
+      AC_CHECK_HEADER(db.h,
+        [
+          database=db4
+          ggzd_LIBS="$ggzd_LIBS -ldb"
+        ],
+        [
+          if test "$database" = db4; then
+            AC_MSG_ERROR([*** Cannot configure db4 (db4-dev needed)])
+          fi
+        ])
+    ],
+    [
+      AC_CHECK_LIB(db-4.0, db_env_create_4000,
+        [
+          AC_CHECK_HEADER(db.h,
+            [
+              database=db4
+              ggzd_LIBS="$ggzd_LIBS -ldb-4.0"
+              AC_DEFINE(DB4_IN_DIR)
+            ],
+            [
+              if test "$database" = db4; then
+                AC_MSG_ERROR([*** Cannot configure db4 (db4-dev needed)])
+              fi
+            ])
+        ],
+        [
+          if test "$database" = db4; then
+            AC_MSG_ERROR([*** Cannot configure db4 (libdb4 needed)])
+          fi
+        ])
+    ])
 fi
 
-if test "$database" = db3; then
-    database=db3
-    db3_style=-1
-    AC_CHECK_LIB(db, db_env_create,
-        [AC_CHECK_HEADER(db.h, db3_style=0,
-            AC_MSG_ERROR(*** Cannot find db.h header); exit)],
-        AC_MSG_WARN(*** Cannot find db library, trying -ldb3 ))
-     if test "$db3_style" = -1; then
-         AC_CHECK_LIB(db3, db_env_create,
-             [AC_CHECK_HEADER(db3/db.h, db3_style=1,
-                 AC_MSG_WARN(*** Cannot find db3/db.h header); database=db2)],
-             AC_MSG_WARN(*** Cannot find db3 library ); database=db2)
-     fi
 
-     if test "$db3_style" = 0; then
-         ggzd_LIBS="$ggzd_LIBS -ldb"
-     elif test "$db3_style" = 1; then
-         ggzd_LIBS="$ggzd_LIBS -ldb3"
-         AC_DEFINE(DB3_IN_DIR)
-     fi
+# Check for db2 database
+if test "$database" = db2 || test "$database" = yes; then
+  AC_CHECK_LIB(db, db_appinit,
+    [
+      db2_style=0
+      AC_CHECK_HEADER(db.h,
+        [
+          database=db2
+          ggzd_LIBS="$ggzd_LIBS -ldb"
+        ],
+        [
+          if test "$database" = db2; then
+            AC_MSG_ERROR([*** Cannot configure db2 (db2-dev needed)])
+          fi
+        ])
+    ],
+    [
+      AC_CHECK_LIB(db2, db_appinit,
+        [
+          AC_CHECK_HEADER(db2/db.h,
+            [
+              database=db2
+              ggzd_LIBS="$ggzd_LIBS -ldb2"
+              AC_DEFINE(DB2_IN_DIR)
+            ],
+            [
+              if test "$database" = db2; then
+                AC_MSG_ERROR([*** Cannot configure db2 (db2-dev needed)])
+              fi
+            ])
+        ],
+        [
+          if test "$database" = db2; then
+            AC_MSG_ERROR([*** Cannot configure db2 (libdb2 needed)])
+          fi
+        ])
+    ])
 fi
 
-if test "$database" = db2; then
-    database=db2
-    db2_style=-1
-    AC_CHECK_LIB(db, db_appinit,
-        [AC_CHECK_HEADER(db.h, db2_style=0,
-            AC_MSG_ERROR(*** Cannot find db.h header); exit)],
-        AC_MSG_WARN(*** Cannot find db library, trying -ldb2 ))
-     if test "$db2_style" = -1; then
-         AC_CHECK_LIB(db2, db_appinit,
-             [AC_CHECK_HEADER(db2/db.h, db2_style=1,
-                 AC_MSG_ERROR(*** Cannot find db2/db.h header); exit)],
-             AC_MSG_ERROR(*** Cannot find db2 library ); exit)
-     fi
-
-     if test "$db2_style" = 0; then
-         ggzd_LIBS="$ggzd_LIBS -ldb"
-     else
-         ggzd_LIBS="$ggzd_LIBS -ldb2"
-         AC_DEFINE(DB2_IN_DIR)
-     fi
+# Check for PgSQL database
+if test "$database" = pgsql || test "$database" = yes; then
+  AC_CHECK_LIB(pq, Pqconnectdb,
+    [
+      AC_CHECK_HEADER([postgresql/libpq-fe.h],
+        [
+          database=pgsql
+          ggzd_LIBS="$ggzd_LIBS -lpq"
+        ],
+        [
+          if test "$database" = pgsql; then
+            AC_MSG_ERROR([*** Cannot configure pgsql (pgsql-dev library needed)])
+          fi
+        ])
+    ],
+    [
+      if test "$database" = pgsql; then
+        AC_MSG_ERROR([*** Cannot configure pgsql (pgsql library needed)])
+      fi
+    ])
 fi
 
-if test "$database" = pgsql; then
-	database=pgsql
-	pgsql_style=-1
-	AC_CHECK_LIB(pq, PQconnectdb,
-		[AC_CHECK_HEADER(postgresql/libpq-fe.h, pgsql_style=0,
-			AC_MSG_ERROR(*** Cannot find libpq-fe.h header); exit)],
-		AC_MSG_ERROR(*** Cannot find pgsql library); exit)
 
-	if test "$pgsql_style" = 0; then
-		ggzd_LIBS="$ggzd_LIBS -lpq"
-	fi
+# Check for MySQL database
+if test "$database" = mysql || test "$database" = yes; then
+  AC_CHECK_LIB(mysqlclient_r, mysql_connect,
+    [
+      AC_CHECK_HEADER(mysql/mysql.h,
+        [
+          database=mysql
+          ggzd_LIBS="$ggzd_LIBS -lmysqlclient_r"
+        ],
+        [
+          if test "$database" = mysql; then
+            AC_MSG_ERROR([*** Cannot configure mysql (mysql-dev library needed)])
+          fi
+        ])
+    ],
+    [
+      if test "$database" = mysql; then
+        AC_MSG_ERROR([*** Cannot configure mysql (mysql library needed)])
+      fi
+    ])
 fi
 
-if test "$database" = mysql; then
-	database=mysql
-	mysql_style=-1
-	AC_CHECK_LIB(mysqlclient_r, mysql_connect,
-		[AC_CHECK_HEADER(mysql/mysql.h, mysql_style=0,
-			AC_MSG_ERROR(*** Cannot find mysql.h header); exit)],
-		AC_MSG_ERROR(*** Cannot find mysql library); exit)
-
-	if test "$mysql_style" = 0; then
-		ggzd_LIBS="$ggzd_LIBS -lmysqlclient_r"
-	fi
+# Make sure a database was configured
+if test "$database" = yes; then
+  AC_MSG_ERROR([*** No usable database library found.  See above messages for more.])
 fi
 
 dnl Use -Wall if we have gcc.
