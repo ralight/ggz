@@ -168,6 +168,7 @@ static void _ggzcore_net_dump_data(struct _GGZNet *net, char *data, int size);
 
 /* Utility functions */
 static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZTable *table, int num);
+static void _ggzcore_net_send_xmldec(GGZNet *net);
 static int _ggzcore_net_send_line(GGZNet *net, char *line, ...);
 static int _ggzcore_net_send_string(GGZNet *net, char *fmt, ...);
 static int safe_atoi(char *string);
@@ -320,6 +321,7 @@ int _ggzcore_net_send_login(struct _GGZNet *net)
 		type = "guest";
 	}
 	
+	_ggzcore_net_send_xmldec(net);
 	_ggzcore_net_send_line(net, "<SESSION>");
 	_ggzcore_net_send_line(net, "<LOGIN TYPE='%s'>", type);
 	_ggzcore_net_send_line(net, "<NAME>%s</NAME>", handle);
@@ -1632,6 +1634,13 @@ static void _ggzcore_net_handle_ping(GGZNet *net, GGZXMLElement *data)
 {
 	/* No need to bother the client or anything, just send pong */
 	_ggzcore_net_send_line(net, "<PONG/>");
+}
+
+
+/* Send the XML declaration */
+static void _ggzcore_net_send_xmldec(GGZNet *net)
+{
+	_ggzcore_net_send_line(net, "<?xml version='1.0' encoding='ISO-8859-1'?>");
 }
 
 
