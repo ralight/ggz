@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 4505 2002-09-11 03:17:07Z jdorje $
+ * $Id: chat.c 4818 2002-10-08 22:58:00Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -427,7 +427,7 @@ void chat_help(void)
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/msg <username> <message> . Private message a player"));
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/beep <username> .......... Beep a player"));
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/friends .................. List your friends"));
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/ignore ................... List people your ignoring"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/ignore ................... List people you're ignoring"));
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/wall <message> ........... Admin command"));
 }
 
