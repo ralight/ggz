@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.h 3433 2002-02-21 04:01:18Z bmh $
+ * $Id: net.h 3446 2002-02-23 06:11:46Z bmh $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -27,11 +27,12 @@
 #ifndef _GGZ_NET_H
 #define _GGZ_NET_H
 
-#include <config.h>
-#include <players.h>
-#include <login.h>
-#include <room.h>
-#include <datatypes.h>
+#include "config.h"
+#include "players.h"
+#include "login.h"
+#include "room.h"
+#include "datatypes.h"
+#include "protocols.h"
 
 typedef struct _GGZNetIO GGZNetIO;
 
@@ -87,7 +88,7 @@ int net_send_table_launch(GGZNetIO *net, char status);
 int net_send_table_join(GGZNetIO *net, char status);
 int net_send_table_leave(GGZNetIO *net, char status);
 int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name);
-int net_send_table_update(GGZNetIO *net, unsigned char opcode, GGZTable *table, int seat);
+int net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode, GGZTable *table, int seat);
 int net_send_update_result(GGZNetIO *net, char status);
 int net_send_logout(GGZNetIO *net, char status);
 

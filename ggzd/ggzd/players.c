@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 3445 2002-02-23 04:59:49Z bmh $
+ * $Id: players.c 3446 2002-02-23 06:11:46Z bmh $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -604,11 +604,8 @@ GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
 	/* Do actual table update */
 
 	/*  Update the description if necessary */
-	if (table->desc) {
-		pthread_rwlock_wrlock(&real_table->lock);
-		strcpy(real_table->desc, table->desc);
-		pthread_rwlock_unlock(&real_table->lock);
-	}
+	if (strlen(table->desc))
+		table_set_desc(real_table, table->desc);
 	
 	/* Find the seat that was sent: it's the one that isn't NONE */
 	for (i = 0; i < MAX_TABLE_SIZE; i++) {

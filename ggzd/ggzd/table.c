@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3445 2002-02-23 04:59:49Z bmh $
+ * $Id: table.c 3446 2002-02-23 06:11:46Z bmh $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -76,9 +76,9 @@ static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 
-static int   table_event_enqueue(GGZTable* table, unsigned char opcode);
+static int   table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode);
 static int   table_update_event_enqueue(GGZTable* table,
-					 unsigned char opcode, char* name,
+					GGZUpdateOpcode opcode, char* name,
 					 unsigned int seat);
 static int   table_pack(void** data, unsigned char opcode, GGZTable* table);
 static int   table_transit_pack(void** data, unsigned char opcode, 
@@ -720,6 +720,19 @@ int table_launch(GGZTable *table, char* name)
 }
 
 
+/* Change table description of running table */
+void table_set_desc(GGZTable *table, char *desc)
+{
+	dbg_msg(GGZ_DBG_TABLE, "Table %p new desc: '%s'", table, desc);
+	
+        pthread_rwlock_wrlock(&table->lock);
+        strcpy(table->desc, desc);
+        pthread_rwlock_unlock(&table->lock);
+	
+        table_event_enqueue(table, GGZ_UPDATE_DESC);
+}
+
+
 /* Search for tables */
 int table_search(char* name, int room, int type, char global, 
 		 GGZTable** tables)
@@ -799,7 +812,7 @@ int table_search(char* name, int room, int type, char global,
 }
 
 
-static int table_event_enqueue(GGZTable* table, unsigned char opcode)
+static int table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode)
 {
 	void* data = NULL;
 	int size, status, room;
@@ -815,7 +828,7 @@ static int table_event_enqueue(GGZTable* table, unsigned char opcode)
 }
 
 
-static int table_update_event_enqueue(GGZTable* table, unsigned char opcode,
+static int table_update_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
 				       char* name, unsigned int seat)
 {
 	void* data = NULL;
@@ -849,7 +862,8 @@ static int table_pack(void** data, unsigned char opcode, GGZTable* table)
 	
 	switch (opcode) {
 	case GGZ_UPDATE_ADD:
-		/* Pack entire table for ADD */
+	case GGZ_UPDATE_DESC:
+		/* Pack entire table for ADD or DESC */
 		size += sizeof(GGZTable);
 		break;
 	case GGZ_UPDATE_STATE:
@@ -871,6 +885,7 @@ static int table_pack(void** data, unsigned char opcode, GGZTable* table)
 
 	switch (opcode) {
 	case GGZ_UPDATE_ADD:
+	case GGZ_UPDATE_DESC:
 		pthread_rwlock_rdlock(&table->lock);
 		info = *table;
 		pthread_rwlock_unlock(&table->lock);
@@ -962,6 +977,14 @@ static GGZEventFuncReturn table_event_callback(void* target, int size,
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d added",
 			player->name, index);
 		break;
+
+	case GGZ_UPDATE_DESC:
+		info = *(GGZTable*)current;
+		current += sizeof(GGZTable);
+		info.index = index;
+		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d new desc '%s'",
+			player->name, index, info.desc);
+		break;		
 		
 	case GGZ_UPDATE_STATE:
 		table_state = *(unsigned char*)current;

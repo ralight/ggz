@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 3445 2002-02-23 04:59:49Z bmh $
+ * $Id: net.c 3446 2002-02-23 06:11:46Z bmh $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -134,6 +134,7 @@ static int _net_send_login_anon_status(GGZNetIO *net, char status);
 static int _net_send_login_new_status(GGZNetIO *net, char status, char *password);
 static int _net_send_table_status(GGZNetIO *net, GGZTable *table);
 static int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int num);
+static int _net_send_table_desc(GGZNetIO *net, GGZTable *table);
 static int _net_send_seat(GGZNetIO *net, GGZTable *table, int num);
 static int _net_send_line(GGZNetIO *net, char *line, ...)
 			  ggz__attribute((format(printf, 2, 3)));
@@ -616,7 +617,7 @@ int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name)
 }
 
 
-int net_send_table_update(GGZNetIO *net, unsigned char opcode, GGZTable *table, int seat)
+int net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode, GGZTable *table, int seat)
 {
 	char *action = NULL;
 	int room;
@@ -642,6 +643,12 @@ int net_send_table_update(GGZNetIO *net, unsigned char opcode, GGZTable *table, 
 	case GGZ_UPDATE_DESC:
 		action = "desc";
 		break;
+	case GGZ_UPDATE_SEAT:
+		action = "seat";
+		break;
+	default:
+		/* We should never get any other update types */
+		return -1;
 	}
 
 	/* Always send opcode */
@@ -656,15 +663,19 @@ int net_send_table_update(GGZNetIO *net, unsigned char opcode, GGZTable *table, 
 		net_send_table(net, table);
 		break;
 	case GGZ_UPDATE_LEAVE:
-		_net_send_table_seat(net, table, seat);
-		break;
 	case GGZ_UPDATE_JOIN:
+	case GGZ_UPDATE_SEAT:
 		_net_send_table_seat(net, table, seat);
 		break;
 	case GGZ_UPDATE_STATE:
 		_net_send_table_status(net, table);
 		break;
 	case GGZ_UPDATE_DESC:
+		_net_send_table_desc(net, table);
+		break;
+	default:
+		/* We should never get any other update types */
+		return -1;
 	}
 	
 	_net_send_line(net, "</UPDATE>");
@@ -1526,7 +1537,7 @@ static char* safe_strdup(char *str)
 }
 
 
-int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int seat)
+static int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int seat)
 {
 	_net_send_line(net, "<TABLE ID='%d' SEATS='%d'>", table->index, 
 		       seats_num(table));
@@ -1537,14 +1548,24 @@ int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int seat)
 }
 
 
-int _net_send_table_status(GGZNetIO *net, GGZTable *table)
+static int _net_send_table_desc(GGZNetIO *net, GGZTable *table)
+{
+	_net_send_line(net, "<TABLE ID='%d'>", table->index);
+	_net_send_line(net, "<DESC>%s</DESC>", table->desc);
+	_net_send_line(net, "</TABLE>");
+	
+	return 0;
+}
+
+
+static int _net_send_table_status(GGZNetIO *net, GGZTable *table)
 {
 	return _net_send_line(net, "<TABLE ID='%d' STATUS='%d' SEATS='%d'/>", 
 			      table->index, table->state, seats_num(table));
 }
 
 
-int _net_send_seat(GGZNetIO *net, GGZTable *table, int num)
+static int _net_send_seat(GGZNetIO *net, GGZTable *table, int num)
 {
 	GGZSeatType type = seats_type(table, num);
 	char *type_str = ggz_seattype_to_string(type);

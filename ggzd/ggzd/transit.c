@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3433 2002-02-21 04:01:18Z bmh $
+ * $Id: transit.c 3446 2002-02-23 06:11:46Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -265,6 +265,10 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	struct GGZSeat *seat = data;
 
 	dbg_msg(GGZ_DBG_TABLE, "Seat change on table %d: Seat %d to %s", table->index, seat->index, ggz_seattype_to_string(seat->type));
+
+	/* FIXME: send request to game */
+
+
 	return GGZ_EVENT_OK;
 }
 		

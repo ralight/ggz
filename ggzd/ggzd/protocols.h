@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 3433 2002-02-21 04:01:18Z bmh $
+ * $Id: protocols.h 3446 2002-02-23 06:11:46Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -23,6 +23,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef _GGZ_PROTOCOL_H
+#define _GGZ_PROTOCOL_H
 
 #define GGZ_CS_PROTO_VERSION  6
 
@@ -68,3 +70,5 @@ typedef enum {
 	E_NO_PERMISSION	    = -16,
 	E_BAD_XML	    = -17,
 } GGZClientReqError;
+
+#endif /*_GGZ_PROTOCOL_H*/
