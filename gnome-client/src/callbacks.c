@@ -23,8 +23,9 @@ extern GConfClient *config;
 
 gboolean
 on_player_tree_popup_leave_notify_event	(GtkWidget	*widget,
-					 GdkEventCrossing *event,
+					 GdkEventMotion *event,
 					 gpointer	*user_data);
+
 
 
 gboolean
@@ -293,7 +294,16 @@ on_tree_selection_changed 		(GtkTreeSelection *selection,
 gint
 on_player_tree_timeout                  (gpointer         user_data)
 {
+	GtkWidget *trePlayers;
+	GtkTreeModel *model = NULL;
+	GtkTreeIter iter;
+	GtkTreePath *path = NULL;
 	FakeTips *tips;
+	gint status;
+	gchar *strPlayer = NULL;
+	gchar *tip = NULL;
+	GGZPlayer *player = NULL;
+	gint wins, losses, ties, forfits;
 
 	tips = (FakeTips*)user_data;
 	if (tips->mouse && tips->timeout < 27)
@@ -311,14 +321,30 @@ on_player_tree_timeout                  (gpointer         user_data)
 
 	if (tips->timeout == 25)
 	{
-		tips->menu = gtk_menu_new();
-		tips->item = gtk_menu_item_new_with_label("test");
-		gtk_widget_show(tips->item);
-		gtk_container_add (GTK_CONTAINER (tips->menu), tips->item);
-		gtk_signal_connect (GTK_OBJECT (tips->menu), "leave_notify_event",
-				    GTK_SIGNAL_FUNC (on_player_tree_popup_leave_notify_event),
-				    user_data);
-		gtk_menu_popup (GTK_MENU (tips->menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
+		trePlayers = lookup_widget (interface, "trePlayers");
+		status = gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (trePlayers), tips->event->x, tips->event->y,
+							&path, NULL, NULL, NULL);
+		if (status)
+		{
+			model = gtk_tree_view_get_model(GTK_TREE_VIEW (trePlayers));
+			gtk_tree_model_get_iter (model, &iter, path);
+			gtk_tree_model_get (model, &iter, 2, &strPlayer, -1);
+			gtk_tree_path_free(path);
+
+			status = ggzcore_player_get_record (player, &wins, &losses, &ties, &forfits);
+			tip = g_strdup_printf(" --==[ %s ]==-- \n", strPlayer);
+
+			tips->menu = gtk_menu_new();
+			tips->item = gtk_menu_item_new_with_label(tip);
+			gtk_widget_show(tips->item);
+			gtk_container_add (GTK_CONTAINER (tips->menu), tips->item);
+			gtk_menu_popup (GTK_MENU (tips->menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time());
+			gtk_signal_connect (GTK_OBJECT (tips->menu), "motion_notify_event",
+					    GTK_SIGNAL_FUNC (on_player_tree_popup_leave_notify_event),
+					    user_data);
+			g_free(strPlayer);
+			g_free(tip);
+		}
 	}
 
 	return TRUE;
@@ -327,21 +353,13 @@ on_player_tree_timeout                  (gpointer         user_data)
 
 gboolean
 on_player_tree_popup_leave_notify_event	(GtkWidget	*widget,
-					 GdkEventCrossing *event,
+					 GdkEventMotion *event,
 					 gpointer	*user_data)
 {
 	FakeTips *tips;
-	static gint count = 0;
 
 	tips = (FakeTips*)user_data;
-	if (count < 6)
-	{
-		count++;
-	} else {
-		count = 0;
-		gtk_menu_popdown(GTK_MENU(tips->menu));
-	}
-
+	gtk_menu_popdown(GTK_MENU(tips->menu));
 
 	return TRUE;
 }
@@ -356,6 +374,7 @@ on_player_tree_motion_notify_event	(GtkWidget	*widget,
 
 	tips = (FakeTips*)user_data;
 	tips->timeout=0;
+	tips->event = event;
 
 	return TRUE;
 }

@@ -8,6 +8,7 @@ typedef struct {
 	int timeout;
 	GtkWidget *menu;
 	GtkWidget *item;
+	GdkEventMotion *event;
 } FakeTips;
 
 void login_set_login (GtkWidget *login);
