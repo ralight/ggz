@@ -4,7 +4,7 @@
  * Project: GGZCards AI Client
  * Date: 02/19/2002
  * Desc: AI client main loop and core logic
- * $Id: main.c 3567 2002-03-16 05:48:45Z jdorje $
+ * $Id: main.c 4067 2002-04-23 21:39:56Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -37,7 +37,7 @@
 
 #include "client.h"
 
-#include "aicommon.h"
+#include "game.h"
 
 int main(int argc, char *argv[])
 {
