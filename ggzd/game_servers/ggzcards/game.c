@@ -197,6 +197,8 @@ void game_init_game()
 	game.max_hand_length = 52 / game.num_players;
 	game.deck_type = GGZ_DECK_FULL;
 
+	game.last_trick = 1;
+
 	/* second round of game-specific initialization */
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
