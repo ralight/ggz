@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4434 2002-09-07 09:52:24Z dr_maux $
+ * $Id: table.c 4447 2002-09-07 21:50:49Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -758,6 +758,10 @@ static void table_game_spectator_leave(GGZdMod *ggzdmod, GGZdModEvent event, voi
 		dbg_msg(GGZ_DBG_TABLE, 
 			"%s left spectator %d at table %d of room %d", name, spectator,
 			table->index, table->room);
+
+		pthread_rwlock_wrlock(&table->lock);
+		table->spectators[spectator][0] = '\0';
+		pthread_rwlock_unlock(&table->lock);
 		
 		table_update_event_enqueue(table, GGZ_UPDATE_SPECTATOR_LEAVE, name,
 					    spectator);

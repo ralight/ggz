@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4435 2002-09-07 13:11:21Z dr_maux $
+ * $Id: transit.c 4447 2002-09-07 21:50:49Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -227,7 +227,7 @@ static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 		spectator->name, spectator->fd);
 
 	action = GGZ_TRANSIT_JOIN_SPECTATOR;
-	if (table->spectators[spectator->index][0])
+	if (spectator->index >= 0 && table->spectators[spectator->index][0])
 		action = GGZ_TRANSIT_LEAVE_SPECTATOR;
 
 
@@ -407,8 +407,9 @@ static int transit_send_spectator_to_game(GGZTable* table, struct GGZSpectatorEv
 	GGZSpectator spectator;
 	int status = 0;
 
-	dbg_msg(GGZ_DBG_TABLE, "Sending spectator for table %d in room %d",
-		table->index, table->room);
+	dbg_msg(GGZ_DBG_TABLE,
+		"Sending spectator for table %d in room %d, index %d",
+		table->index, table->room, event->spectator.index);
 	
 	/* Save transit info so we have it when game module responds */
 	table->transit_name = strdup(event->caller);
