@@ -25,6 +25,7 @@
 
 /* System includes */
 #include <stdlib.h>
+#include <stdio.h>
 
 /* GGZ includes */
 #include <ggz.h>
@@ -49,12 +50,12 @@ void game_init(void)
 	/*hastings_game.state = HASTINGS_STATE_WAIT;*/
 
 	/* set up some knights*/
-	memmove(hastings_game.board[0], "11            555  ", 19);
-	memmove(hastings_game.board[1], "113333         5 5 ", 19);
-	memmove(hastings_game.board[2], " 1 3 4      6 6 6  ", 19);
-	memmove(hastings_game.board[3], "22  44        66   ", 19);
-	memmove(hastings_game.board[4], "22   4   0007777   ", 19);
-	memmove(hastings_game.board[5], " 2   4   0 0 7     ", 19);
+	memmove(hastings_game.board[0], "11            444  ", 19);
+	memmove(hastings_game.board[1], "113333         4 4 ", 19);
+	memmove(hastings_game.board[2], " 1 3 5      6 6 6  ", 19);
+	memmove(hastings_game.board[3], "77  55        66   ", 19);
+	memmove(hastings_game.board[4], "77   5   0002222   ", 19);
+	memmove(hastings_game.board[5], " 7   5   0 0 2     ", 19);
 
 	/* Humancode-to-computercode conversion */
 	for (i = 0; i < 6; i++)
@@ -161,7 +162,7 @@ int game_send_seat(int seat)
 {
 	int fd = ggz_seats[seat].fd;
 
-	ggz_debug("Sending player %d's seat num", seat);
+	printf("Sending player %d's seat num\n", seat);
 
 	if (es_write_int(fd, HASTINGS_MSG_SEAT) < 0 || es_write_int(fd, seat) < 0) return -1;
 
@@ -180,17 +181,23 @@ int game_send_players(void)
 	/* Determine number of players, 8 at a maximum */
 	for(i = 0; i < 8; i++)
 	{
-		if((!ggz_seats[i].assign) && (!hastings_game.playernum)) hastings_game.playernum = i;
+		if((!ggz_seats[i].fd) && (!hastings_game.playernum)) hastings_game.playernum = i;
+		else printf("Evil seat number: %i (step %i) => %i\n", ggz_seats[i].fd, i, hastings_game.playernum);
 	}
-	ggz_debug("%i players found; sending number to client", hastings_game.playernum);
+	printf("%i players found; sending number to clients...\n", hastings_game.playernum);
 
 	for (j = 0; j < hastings_game.playernum; j++)
 	{
 		hastings_game.players[j] = 1;
 
-		if((fd = ggz_seats[j].fd) == -1) continue;
+		if((fd = ggz_seats[j].fd) == -1)
+		{
+			printf("Player %i is a unassigned (%i).\n", j, ggz_seats[j].assign);
+			/*assignment: -1 is unassigned player, -2 is unassigned bot*/
+			continue;
+		}
 
-		ggz_debug("Sending player list to player %d", j);
+		printf("Sending player list to player %d\n", j);
 
 		if(es_write_int(fd, HASTINGS_MSG_PLAYERS) < 0) return -1;
 		if(es_write_int(fd, hastings_game.playernum) < 0) return -1;
@@ -219,7 +226,7 @@ int game_send_move(int num)
 			/* If player is a computer, don't need to send */
 			if (fd == -1) return 0;
 
-			ggz_debug("Sending player %d's move to player %d", num, i);
+			printf("Sending player %d's move to player %d\n", num, i);
 
 			if (es_write_int(fd, HASTINGS_MSG_MOVE) < 0
 			    || es_write_int(fd, num) < 0
@@ -240,7 +247,7 @@ int game_send_sync(int num)
 {
 	int i, j, fd = ggz_seats[num].fd;
 
-	ggz_debug("Handling sync for player %d", num);
+	printf("Handling sync for player %d\n", num);
 
 	/* First player? */
 	if (hastings_game.turn == -1) hastings_game.turn = 0;
@@ -270,7 +277,7 @@ int game_send_gameover(char winner)
 		if ( (fd = ggz_seats[i].fd) == -1)
 			continue;
 
-		ggz_debug("Sending game-over to player %d", i);
+		printf("Sending game-over to player %d\n", i);
 
 		if (es_write_int(fd, HASTINGS_MSG_GAMEOVER) < 0
 		    || es_write_char(fd, winner) < 0)
@@ -314,7 +321,7 @@ int game_handle_move(int num)
 	int fd = ggz_seats[num].fd;
 	char status;
 
-	ggz_debug("Handling move for player %d", num);
+	printf("Handling move for player %d\n", num);
 
 	if ((es_read_int(fd, &hastings_game.move_src_x) < 0)
 	|| (es_read_int(fd, &hastings_game.move_src_y) < 0)
@@ -342,7 +349,7 @@ char game_check_move(int num)
 	/* Check for correct state */
 	if (hastings_game.state != HASTINGS_STATE_PLAYING)
 		return -1;
-		/* Check for correct turn */
+	/* Check for correct turn */
 	if (num != hastings_game.turn)
 		return -2;
 
@@ -379,11 +386,12 @@ char game_check_move(int num)
 	if (hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] == -1)
 		return -4;
 	/* Check for duplicated move */
-
-
 	if (hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] == hastings_game.turn)
 		return -5;
-
+	/* Check for team collegues */
+	if (hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] % 2 ==
+	    hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] % 2)
+		return -5;
 	/* Check for move onto water */
 	if (hastings_game.boardmap[hastings_game.move_dst_x][hastings_game.move_dst_y] == 32)
 		return -7;
@@ -503,8 +511,8 @@ printf("## post-join\n");
 	case HASTINGS_EVENT_MOVE:
 		if (hastings_game.state != HASTINGS_STATE_PLAYING) return -1;
 
-		ggz_debug("Player %d from square %d/%d", hastings_game.turn, hastings_game.move_src_x, hastings_game.move_src_y);
- 		ggz_debug("to square %d/%d", hastings_game.move_dst_x, hastings_game.move_dst_y);
+		printf("Player %d from square %d/%d", hastings_game.turn, hastings_game.move_src_x, hastings_game.move_src_y);
+ 		printf("to square %d/%d\n", hastings_game.move_dst_x, hastings_game.move_dst_y);
 
 		// disallow dead bots to move (should not happen)
 		if(hastings_game.move_src_x > -1)
