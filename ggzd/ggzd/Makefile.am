@@ -1,12 +1,12 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3207 2002-02-02 07:35:22Z bmh $
+# $Id: Makefile.am 3664 2002-03-24 21:13:44Z dr_maux $
 
 SUBDIRS = .
 
-DB_ALL = ggzdb_db2.c ggzdb_db3.c 
-DB_SOURCES = ggzdb_@database@.c
+DBALL = ggzdb_db2.c ggzdb_db3.c 
+DBSOURCES = ggzdb_@database@.c
 
-EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd entry.room $(DB_ALL)
+EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd entry.room $(DBALL)
 
 bin_PROGRAMS = ggzd ggzduedit
 
@@ -44,7 +44,7 @@ ggzd_SOURCES =	chat.c\
 		hash.h \
 		ggzdb.c \
 		ggzdb.h \
-		$(DB_SOURCES) \
+		$(DBSOURCES) \
 		login.c \
 		login.h \
 		perms.h \
@@ -55,7 +55,7 @@ INCLUDES = -I$(top_srcdir)/ggzdmod
 ggzd_LDADD = $(LDADD) $(ggzd_LIBS) @LTLIBOBJS@ $(top_builddir)/ggzdmod/libggzdmod.la
 
 ggzduedit_SOURCES = ggzduedit.c \
-		    $(DB_SOURCES) \
+		    $(DBSOURCES) \
 		    perms.h
 
 ggzduedit_LDADD = $(LDADD) $(ggzd_LIBS)
