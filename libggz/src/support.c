@@ -1,10 +1,10 @@
 /*
- * File: strsep.c
+ * File: support.c
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/06/01
  *
- * Local copy of strsep in case some system doesn't have it
+ * Local copy of helper functions in case systems don't have them
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -27,8 +27,9 @@
 
 #include <string.h>
 
+#ifndef HAVE_STRSEP
 char* strsep(char **stringp, const char *delim)
 {
         return strtok_r(*stringp, delim, stringp);
 }
-
+#endif
