@@ -13,9 +13,6 @@
 #include <kaboutdata.h>
 #include <klocale.h>
 
-// System includes
-#include <stdio.h>
-
 // Available command line options
 static const KCmdLineOptions op[] = {
 	{"ggz", I18N_NOOP("Request GGZ game explicitely"), 0},
@@ -30,7 +27,7 @@ int main(int argc, char **argv)
 
 	aboutData = new KAboutData("ktictactux",
 		I18N_NOOP("KTicTacTux"),
-		"0.0.5pre",
+		"0.0.6pre",
 		I18N_NOOP("This is a TicTacToe game for KDE."),
 		KAboutData::License_GPL,
 		"Copyright (C) 2001, 2002 Josef Spillner",

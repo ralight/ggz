@@ -31,6 +31,7 @@ class KTicTacTuxWin : public KMainWindow
 		enum MenuEntries
 		{
 			menusync,
+			menuscore,
 			menuquit,
 			menuthemenew,
 			menuthemeclassic,
@@ -38,6 +39,10 @@ class KTicTacTuxWin : public KMainWindow
 		};
 		// Enable network functionality
 		void enableNetwork(bool enabled);
+		// Display score
+		void score();
+		// Change the theme
+		void changeTheme(int theme);
 
 	public slots:
 		// Receive a status message from the game

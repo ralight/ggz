@@ -15,7 +15,6 @@
 #include "ktictactuxproto.h"
 
 // Qt includes
-#include "qwhiteframe.h"
 #include <qevent.h>
 
 // Player setup
@@ -23,6 +22,9 @@
 #define PLAYER_HUMAN   1
 #define PLAYER_AI      2
 #define PLAYER_NETWORK 3
+
+// Forward declaration
+class QWhiteFrame;
 
 // TicTacToe GUI for KDE
 class KTicTacTux : public QWidget
@@ -79,7 +81,7 @@ class KTicTacTux : public QWidget
 		// Array of boxes for the images
 		QWhiteFrame *frame[3][3];
 		// ID of the first box
-		WId m_firstid;
+		//WId m_firstid;
 		// The player who does the next move
 		int m_turn;
 		// Coordinates of any field

@@ -7,9 +7,14 @@
 // Header file
 #include "ktictactux.h"
 
+// KTicTacTux includes
+#include "qwhiteframe.h"
+
 // KDE includes
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kconfig.h>
+#include <kapplication.h>
 
 // Qt includes
 #include <qlayout.h>
@@ -42,7 +47,7 @@ KTicTacTux::KTicTacTux(QWidget *parent, const char *name)
 		hbox[j]->addStretch(1);
 		for(int i = 0; i < 3; i++)
 		{
-			frame[i][j] = new QWhiteFrame(container);
+			frame[i][j] = new QWhiteFrame(j * 3 + i, container);
 			frame[i][j]->setFixedSize(64, 64);
 			hbox[j]->add(frame[i][j]);
 			connect(frame[i][j], SIGNAL(signalSelected(QWidget *)), SLOT(slotSelected(QWidget *)));
@@ -55,7 +60,7 @@ KTicTacTux::KTicTacTux(QWidget *parent, const char *name)
 	setCaption("KTicTacTux");
 	show();
 
-	m_firstid = frame[0][0]->winId();
+	//m_firstid = frame[0][0]->winId();
 	m_turn = 0;
 
 	m_opponent = PLAYER_AI;
@@ -76,12 +81,15 @@ KTicTacTux::~KTicTacTux()
 // Evaluate your turn (after click)
 void KTicTacTux::slotSelected(QWidget *widget)
 {
+	QWhiteFrame *tmp;
 	int id;
 
 	if(proto->state != proto->statemove) return;
 	if(m_turn != proto->num) return;
 
-	id = widget->winId() - m_firstid;
+	//id = widget->winId() - m_firstid;
+	tmp = reinterpret_cast<QWhiteFrame*>(widget);
+	id = tmp->id();
 
 	if(proto->board[id % 3][id / 3] == proto->player) return;
 	if(proto->board[id % 3][id / 3] == proto->opponent) return;
@@ -155,6 +163,7 @@ void KTicTacTux::getNextTurn()
 int KTicTacTux::gameOver()
 {
 	m_x = -1;
+	KConfig *conf;
 
 	// Check for draw (no empty fields left)
 	for(int j = 0; j < 3; j++)
@@ -172,14 +181,21 @@ int KTicTacTux::gameOver()
 		if(m_winner)
 		{
 			emit signalStatus(i18n("Game Over!"));
+
+			conf = kapp->config();
+			conf->setGroup("Score");
 			if(m_winner == proto->opponent)
 			{
 				m_score_opp++;
+				if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humanwon", conf->readNumEntry("humanwon") + 1);
+				else conf->writeEntry("aiwon", conf->readNumEntry("aiwon") + 1);
 				announce(i18n("You lost the game."));
 			}
 			else
 			{
 				m_score_you++;
+				if(m_opponent == PLAYER_NETWORK) conf->writeEntry("humanlost", conf->readNumEntry("humanlost") + 1);
+				else conf->writeEntry("ailost", conf->readNumEntry("ailost") + 1);
 				announce(i18n("You are the winner!"));
 			}
 			return 1;
@@ -410,6 +426,7 @@ void KTicTacTux::drawBoard()
 				frame[i % 3][i / 3]->setErasePixmap(NULL);
 		}
 	}
+	update();
 }
 
 // Sets the theme

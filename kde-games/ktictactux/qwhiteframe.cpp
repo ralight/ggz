@@ -8,9 +8,10 @@
 #include "qwhiteframe.h"
 
 // Constructor which defines a style
-QWhiteFrame::QWhiteFrame(QWidget *parent, const char *name)
+QWhiteFrame::QWhiteFrame(int id, QWidget *parent, const char *name)
 : QFrame(parent, name)
 {
+	m_id = id;
 	setEraseColor(QColor(255, 255, 255));
 	setFrameStyle(QFrame::Panel | QFrame::Sunken);
 }
@@ -24,5 +25,11 @@ QWhiteFrame::~QWhiteFrame()
 void QWhiteFrame::mousePressEvent(QMouseEvent *event)
 {
 	emit signalSelected(this);
+}
+
+// Retrieve widget id
+int QWhiteFrame::id()
+{
+	return m_id;
 }
 
