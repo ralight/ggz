@@ -10,6 +10,8 @@ all: design-html design.txt
 
 design-html: $(SGML_FILES)
 	@SGML2HTML@ $(srcdir)/design.sgml
+	-mkdir design-html
+	-mv *.html design-html
 
 design.txt: design-txt.dsl $(SGML_FILES)
 	@JADE@ -tsgml -ilynx -d$(srcdir)/design-txt.dsl\#lynx design.sgml > tmp.html
