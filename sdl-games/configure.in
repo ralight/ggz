@@ -19,10 +19,26 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 
-dnl Check for SDL
-dnl =============
+dnl Check for SDL and OpenGL
+dnl ========================
 
 # blah blah... found it :)
+AM_PATH_SDL(1.2.0)
+
+AC_CHECK_LIB(SDL_image, IMG_Load,
+    [AC_CHECK_HEADER(SDL/SDL_image.h, ,
+        AC_MSG_ERROR(*** Cannot find SDL/SDL_image.h header); exit)],
+    AC_MSG_ERROR(*** Cannot find SDL_image library ); exit)
+
+AC_CHECK_LIB(SDL_ttf, TTF_Init,
+    [AC_CHECK_HEADER(SDL/SDL_ttf.h, ,
+        AC_MSG_ERROR(*** Cannot find SDL/SDL_ttf.h header); exit)],
+    AC_MSG_ERROR(*** Cannot find SDL_ttf library ); exit)
+
+AC_CHECK_LIB(GL, glRotatef,
+    [AC_CHECK_HEADER(GL/gl.h, ,
+        AC_MSG_ERROR(*** Cannot find GL/gl.h header); exit)],
+    AC_MSG_ERROR(*** Cannot find GL library ); exit)
 
 dnl Check for GGZ requirements
 dnl ==========================
