@@ -1,4 +1,4 @@
-/*	$Id: ggz_server.h 2178 2001-08-20 01:38:01Z jdorje $	*/
+/*	$Id: ggz_server.h 2184 2001-08-20 19:08:41Z jdorje $	*/
 /*
  * File: ggz.h
  * Author: Brent Hendricks
@@ -46,20 +46,6 @@ struct ggz_seat_t {
 
 extern struct ggz_seat_t* ggz_seats;
 
-/* Setup functions */
-int ggz_server_init(char* game_name);
-int ggz_server_connect(void);
-int ggz_server_done(void);
-void ggz_server_quit(void);
-
-/* Game functions */
-int ggz_game_launch(void);
-int ggz_game_over(void);
-
-/* Player functions */
-int ggz_player_join(int* seat, int *fd);
-int ggz_player_leave(int* seat, int *fd);
-
 /* Useful functions */
 void ggz_debug(const char *fmt, ...);
 
@@ -70,5 +56,72 @@ int ggz_seats_reserved(void);
 int ggz_seats_human(void);
 
 int ggz_fd_max(void);
+
+/*
+ * FIXME: libggzdmod currently allows for *either* interface:
+ *  - In the old-style manual method ("teg's way"), the main GGZ
+ *    loop is in the game code.  This code calls ggzdmod functions
+ *    to handle GGZ events (as well as doing its own handling).
+ *  - In the new-style event-driven method ("chess's way"), the main
+ *    GGZ loop is in ggzdmod.  Functions are registered by the game
+ *    server to handle specific GGZ events.  All GGZ handling is done
+ *    automatically by the GGZ loop.
+ *
+ * Right now, these methods are entirely incompatible - using the
+ * functions together will lead to Very Bad Things.  They shouldn't
+ * even be in the same library - I've only put them together in this
+ * file so that all code is out in the open and a sensible way for
+ * them to work together can be thought of.
+ *
+ * It should be safe to convert your games to use libggzdmod through
+ * either of these interfaces; although one or both of them will
+ * probably be changed slightly it shouldn't be anything too drastic.
+ */
+
+/*
+ * These allow the old-style GGZ interface.
+ * The main GGZ loop should be in the game server, and
+ * these functions are called to talk to GGZ.
+ */
+
+/* Setup functions */
+int ggz_server_init(char* game_name);
+int ggz_server_connect(void);
+int ggz_server_done(void);
+void ggz_server_quit(void);
+
+/* Event functions */
+int ggz_game_launch(void);
+int ggz_game_over(void);
+int ggz_player_join(int* seat, int *fd);
+int ggz_player_leave(int* seat, int *fd);
+
+/* end of old-style GGZ interface */
+
+
+/*
+ * These allow the event-driven GGZ interface
+ * The main GGZ loop is in ggz_server_main, and
+ * callback functions are registered for specific events.
+ */
+
+enum {
+	GGZ_EVENT_LAUNCH	= 0,
+	GGZ_EVENT_JOIN		= 1,
+	GGZ_EVENT_LEAVE		= 2,
+	GGZ_EVENT_QUIT		= 3,
+	GGZ_EVENT_PLAYER	= 4
+};
+
+/* Set a handler for a specific event */
+typedef void (*GGZHandler)(int event_id, void *handler_data);
+void ggz_server_set_handler(int event_id, const GGZHandler handler);
+
+/* Open the ggz socket and wait for events,
+ * calling handlers when necessary */
+int ggz_server_main(char* game_name);
+
+/* end of event-driven GGZ interface */
+
 
 #endif /* __GGZ_SERVER_GGZ_H */

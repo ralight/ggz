@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 2178 2001-08-20 01:38:01Z jdorje $	*/
+/*	$Id: ggz.c 2184 2001-08-20 19:08:41Z jdorje $	*/
 /*
  * File: ggz.c
  * Author: Brent Hendricks
@@ -25,17 +25,19 @@
 
 #include <config.h>
 
-#include <sys/types.h>
 #include <sys/socket.h>
-
+#include <sys/types.h>
 #include <sys/un.h>
+
+#include <errno.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
-#include <unistd.h>
 #include <string.h>
+#include <unistd.h>
 
-#include "easysock.h"
+#include <easysock.h>
+
 #include "ggz_server.h"
 #include "ggz_protocols.h"
 
@@ -268,4 +270,102 @@ int ggz_server_done(void)
 void ggz_server_quit(void)
 {
 	if(ggz_seats) free(ggz_seats);
+}
+
+/*
+ * these implement "chess's way", the event-driven interface
+ */
+
+/* IO: Hold the handlers here */
+static GGZHandler handlers[5];
+
+void ggz_server_set_handler(int event_id, const GGZHandler handler)
+{
+	if (event_id > 4)
+		return;
+	handlers[event_id] = handler;
+}
+
+int ggz_server_main(char* game_name)
+{
+	char game_over = 0;
+	int i, fd, status, ggz_sock, fd_max, op, seat;
+	fd_set active_fd_set, read_fd_set;
+
+	if (ggz_server_init(game_name) < 0)
+		return -1;
+
+	if ((ggz_sock = ggz_server_connect()) < 0)
+		return -1;
+
+	FD_ZERO(&active_fd_set);
+	FD_SET(ggz_sock, &active_fd_set);
+
+	while (!game_over) {
+
+		read_fd_set = active_fd_set;
+		fd_max = ggz_fd_max();
+
+		status = select((fd_max + 1), &read_fd_set, NULL, NULL, NULL);
+
+		if (status <= 0) {
+			if (errno == EINTR)
+				continue;
+			else
+				return -1;
+		}
+
+		/* Check for message from GGZ server */
+		if (FD_ISSET(ggz_sock, &read_fd_set)) {
+			if (es_read_int(ggz_sock, &op) < 0)
+				return -1;
+			switch (op) {
+
+			case REQ_GAME_LAUNCH:
+				if (ggz_game_launch() == 0
+				    && handlers[GGZ_EVENT_LAUNCH] != NULL)
+					(*handlers[GGZ_EVENT_LAUNCH])
+						(GGZ_EVENT_LAUNCH, NULL);
+				break;
+			case REQ_GAME_JOIN:
+				if (ggz_player_join(&seat, &fd) == 0) {
+					FD_SET(fd, &active_fd_set);
+					if (handlers[GGZ_EVENT_JOIN] != NULL)
+						(*handlers[GGZ_EVENT_JOIN])
+							(GGZ_EVENT_JOIN,
+							 &seat);
+				}
+				break;
+			case REQ_GAME_LEAVE:
+				if (ggz_player_leave(&seat, &fd) == 0) {
+					FD_CLR(fd, &active_fd_set);
+					if (handlers[GGZ_EVENT_LEAVE] != NULL)
+						(*handlers[GGZ_EVENT_LEAVE])
+							(GGZ_EVENT_LEAVE,
+							 &seat);
+				}
+				break;
+			case RSP_GAME_OVER:
+				game_over = 1;
+				if (handlers[GGZ_EVENT_QUIT] != NULL)
+					(*handlers[GGZ_EVENT_QUIT])
+						(GGZ_EVENT_QUIT, NULL);
+				break;
+			}
+		}
+
+		/* Check for message from player */
+		for (i = 0; i < ggz_seats_num(); i++) {
+			fd = ggz_seats[i].fd;
+			if (fd != -1 && FD_ISSET(fd, &read_fd_set)) {
+				if (handlers[GGZ_EVENT_PLAYER] != NULL)
+					(*handlers[GGZ_EVENT_PLAYER])
+						(GGZ_EVENT_PLAYER, &i);
+			}
+		}
+
+	}
+
+	ggz_server_quit();
+	return 0;
 }
