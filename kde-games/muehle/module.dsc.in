@@ -1,0 +1,11 @@
+# Muehle description file
+[ModuleInfo]
+Author = Josef Spillner
+CommandLine = @ggzexecmoddir@/muehle --ggz
+Frontend = kde
+Homepage = http://mindx.sourceforge.net/
+Name = Muehle
+ProtocolEngine = Muehle
+ProtocolVersion = 1
+Version = 0.1
+
