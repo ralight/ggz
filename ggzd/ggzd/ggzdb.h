@@ -25,6 +25,9 @@
 #include "ggzd.h"
 #include <time.h>
 
+/* Can't include twice */
+#ifndef GGZDB_VERSION_ID
+
 /* Structures to use to pass data to front end functions */
 
 /* Anytime structures change, bump the version id */
@@ -69,4 +72,6 @@ extern int _ggzdb_player_update(ggzdbPlayerEntry *);
 extern int _ggzdb_player_get_first(ggzdbPlayerEntry *);
 extern int _ggzdb_player_get_next(ggzdbPlayerEntry *);
 extern void _ggzdb_player_drop_cursor(void);
+#endif
+
 #endif

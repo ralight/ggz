@@ -146,7 +146,6 @@ static void* player_new(void *arg_ptr)
 	player->net = net_new(sock, player);
 	/*net_set_dump_file(player->net, "ggzd.protocol");*/
 
-	player->type = -1;
 	player->thread = pthread_self();
 	player->table = -1;
 	player->game_fd = -1;
@@ -386,12 +385,17 @@ int player_get_room(GGZPlayer *player)
 }
 
 
-int player_get_type(GGZPlayer *player)
+GGZPlayerType player_get_type(GGZPlayer *player)
 {
 	int type;
 
 	pthread_rwlock_rdlock(&player->lock);
-	type = player->type;
+	if(player->uid == GGZ_UID_ANON)
+		type = GGZ_PLAYER_GUEST;
+	else if(perms_is_admin(player))
+		type = GGZ_PLAYER_ADMIN;
+	else
+		type = GGZ_PLAYER_NORMAL;
 	pthread_rwlock_unlock(&player->lock);
 
 	return type;

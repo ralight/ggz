@@ -27,6 +27,13 @@
 #include <ggzd.h>
 #include <players.h>
 #include <perms.h>
+#include <ggzdb.h>
+
+void perms_init(GGZPlayer *player, ggzdbPlayerEntry *pe)
+{
+	player->perms = pe->perms;
+}
+
 
 int perms_check(GGZPlayer *player, unsigned int perm)
 {
@@ -38,4 +45,12 @@ int perms_check(GGZPlayer *player, unsigned int perm)
 	pthread_rwlock_unlock(&player->lock);
 
 	return rc;
+}
+
+
+int perms_is_admin(GGZPlayer *player)
+{
+	if((player->perms & PERMS_ADMIN_MASK) != 0)
+		return 1;
+	return 0;
 }

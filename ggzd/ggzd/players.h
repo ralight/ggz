@@ -80,17 +80,21 @@ struct _GGZPlayer {
 	/* Connection info */
 	long login_time;
 
-	/* Type of player: normal, guest, admin, etc. */
-	/* FIXME: This isn't really type of player, it's just the  */
-	/* login style.  This is being replaced by the permissions */
-	/* system, and we can probably eliminate this 'type' at    */
-	/* some point.						   */
-	int type;
-
 	/* Player permissions settings */
 	unsigned int perms;
 	/*list_t *op_rooms;	Not yet */
 };
+
+/* Special UID values */
+#define GGZ_UID_NONE -1
+#define GGZ_UID_ANON -2
+
+typedef enum {
+	GGZ_PLAYER_NONE,
+	GGZ_PLAYER_NORMAL,
+	GGZ_PLAYER_GUEST,
+	GGZ_PLAYER_ADMIN
+} GGZPlayerType;
 
 typedef struct _GGZPlayer GGZPlayer; 
 
@@ -109,6 +113,6 @@ int   player_list_tables(GGZPlayer* player, int type, char global);
 int   player_motd(GGZPlayer* player);
 
 int player_get_room(GGZPlayer *player);
-int player_get_type(GGZPlayer *player);
+GGZPlayerType player_get_type(GGZPlayer *player);
 
 #endif

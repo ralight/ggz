@@ -399,20 +399,20 @@ int net_send_player_list_count(GGZNetIO *net, int count)
 
 int net_send_player(GGZNetIO *net, GGZPlayer *p2)
 {
-	int type;
+	GGZPlayerType type;
 	char *type_desc;
 	
 	type = player_get_type(p2);
 
 	switch (type) {
-	case GGZ_LOGIN:
+	case GGZ_PLAYER_NORMAL:
 		type_desc = "normal";
 		break;
-	case GGZ_LOGIN_GUEST:
+	case GGZ_PLAYER_GUEST:
 		type_desc = "guest";
 		break;
-	case GGZ_LOGIN_NEW:
-		type_desc = "normal";
+	case GGZ_PLAYER_ADMIN:
+		type_desc = "admin";
 		break;
 	default:
 		type_desc = "**none**";

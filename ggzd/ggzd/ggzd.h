@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 2329 2001-08-31 03:06:17Z jdorje $
+ * $Id: ggzd.h 2525 2001-10-02 04:08:37Z rgade $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -56,10 +56,6 @@
 #define GGZ_ALLOW_SIX     (1 << 5)
 #define GGZ_ALLOW_SEVEN   (1 << 6)
 #define GGZ_ALLOW_EIGHT   (1 << 7)
-
-/* Special UID values */
-#define GGZ_UID_NONE -1
-#define GGZ_UID_ANON -2
 
 /* Specical game type values */
 #define GGZ_TYPE_ALL  -1

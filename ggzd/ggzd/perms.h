@@ -22,6 +22,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include "ggzdb.h"
+
 #define PERMS_ALLOW	1
 #define PERMS_DENY	0
 
@@ -29,6 +31,8 @@
 #define PERMS_LAUNCH_TABLE	0x00000002	/* Can launch a new table */
 #define PERMS_ROOMS_LOGIN	0x00000004	/* Can enter login-only rooms */
 #define PERMS_ROOMS_ADMIN	0x00000008	/* Can enter admin-only rooms */
+
+#define PERMS_ADMIN_MASK	0x00000008	/* Set all admin type bits */
 
 #define PERMS_DEFAULT_ANON ( PERMS_JOIN_TABLE   |  \
 			     PERMS_LAUNCH_TABLE )
@@ -38,3 +42,5 @@
 				 PERMS_ROOMS_LOGIN  )
 
 extern int perms_check(GGZPlayer *player, unsigned int perm);
+extern void perms_init(GGZPlayer *player, ggzdbPlayerEntry *db_pe);
+extern int perms_is_admin(GGZPlayer *player);

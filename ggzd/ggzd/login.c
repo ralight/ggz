@@ -163,13 +163,13 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 	if (type == GGZ_LOGIN_GUEST) 
 		player->uid = GGZ_UID_ANON;
 	else {
+		/* Setup initial registered player info */
 		player->uid = 0;
-		player->perms = db_pe.perms;
+		perms_init(player, &db_pe);
 	}
 	strncpy(player->name, name, MAX_USER_NAME_LEN + 1);
 	ip_addr = player->addr;
 	player->login_time = (long) time(NULL);
-	player->type = type;
 	pthread_rwlock_unlock(&player->lock);
 	
 	/* Notify user of success and give them their password (if new) */
