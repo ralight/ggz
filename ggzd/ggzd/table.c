@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3290 2002-02-10 03:43:48Z jdorje $
+ * $Id: table.c 3291 2002-02-10 03:52:33Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -167,7 +167,7 @@ static int table_check(GGZTable* table)
 	
 	if(ai_total == 0
 	   || (ai_total > 0
-	       && ai_total <= MAX_TABLE_SIZE
+	       && ai_total < seat_total /* at least one non-AI seat */
 	       && game_types[g_type].bot_allow_mask & allow_bits[ai_total]))
 		dbg_msg(GGZ_DBG_TABLE, "Bots   : %d (accept)", ai_total);
 	else {
