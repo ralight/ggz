@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>
+GGZ Gaming Zone Overview
+</title>
+</head>
+<style type="text/css">
+tt {background-color: #e0e0ff}
+h2 {background-color: #e0e0e0}
+h3 {background-color: #e0e0e0}
+div {font-family: sans-serif}
+th {text-align: left}
+</style>
+<body>
+
+<div>
+
+<h2>GGZ Gaming Zone Overview</h2>
+
+<small>
+<i>Revision: 0.1</i><br>
+<i>Date: 26.02.2005</i><br>
+<i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
+</small>
+
+<p>
+This information aims at people who have never heard of GGZ and
+want to get a first impression of the project.
+It is neither complete nor does it contain any information for
+developers or server hosters - please refer to the specialized
+guides for those topics.
+</p>
+
+<h3>In the beginning...</h3>
+
+<p>
+There are a lot of free games available today. Many of them even provide
+multiplayer features such as connecting to a server, or even finding open
+games on a metaserver. But only a few of them offer more than that.
+This is where GGZ comes into play. It makes it easy to achieve network
+gaming integration on various aspects. Some games only use parts of the
+GGZ infrastructure, others use as much as possible.
+</p>
+
+<p>
+The software of which GGZ consists will be described in the next chapter.
+It should be understood that while the project provides several games,
+it also provides a platform for other game developers to build on.
+GGZ games are currently mostly focused on board and card games, but
+there are no limits in what kind of game can be supported.
+</p>
+
+<h3>The software that makes GGZ</h3>
+
+<p>
+The first impression players get from GGZ is usually from the so-called
+core clients, which can be compared to chat clients with the ability to
+play some games. There are currently core clients for the unix command
+line, Gtk+, KDE and GNOME desktop environments, and SDL.
+</p>
+
+<p style="text-align:center">
+<img src="coreclient.200.png" alt="A core client (ggz-gtk)">
+</p>
+
+<p>
+Additionally, it is possible to integrate game launching mechanisms into
+traditional chat or IM clients, into quick launchers and even into the
+games themselves.
+</p>
+
+<p style="text-align:center">
+<img src="tictactoe.200.png" alt="A GGZ game (tictactoe)">
+</p>
+
+<p>
+The games come in many flavours, some of which will be described here.
+For each game, there is a protocol, for which several servers or clients
+might exist. Usually, there is one server, and then one or two clients.
+The clients are compatible, but their features differ. For instance,
+one might support single player games too, while the other one can only
+be played on a GGZ server.
+Other distinguishing properties are support for player options (displaying
+highscores and player lists, booting players), update of themes or levels
+from the internet, resuming cancelled games, spectator capabilities,
+configurable AI players and game replay.
+</p>
+
+<p style="text-align:center">
+<img src="fyrdman.200.png" alt="Another GGZ game (fyrdman)">
+</p>
+
+<p>
+Another major component is the GGZ server, its database and the
+web frontend, for which a reference implementation named GGZ Community
+is permanently available to players all around the world.
+A chatbot is active on the server as well and answers questions,
+and sometimes even likes to play a game.
+</p>
+
+<p style="text-align:center">
+<img src="community.200.png" alt="GGZ Community">
+</p>
+
+<p>
+Using all the software in combination, it is possible to run tournaments,
+organize individual matches with preferred opponents, manage teams,
+control player karma, and get overall good rankings and highscores.
+</p>
+
+<h3>Getting into it</h3>
+
+<p>
+Anyone interested in the project is encouraged to subscribe to the
+really low-traffic ggz-announce mailing list. Only the most important
+information is sent there, about twice a year. Make sure you don't
+miss this information!
+</p>
+
+<p>
+People who just want to check out the games and community should
+look for packages made available for their operating system, or compile
+GGZ by hand based on information from the QuickStart.GGZ and README.GGZ
+files placed into each package.
+</p>
+
+<p>
+Developers should join the ggz-dev mailing list, and talk about their
+plans. There are lots of projects going on, not all of them are
+nicely documented yet, so asking is a good way of avoiding duplicate
+work.
+</p>
+
+<p>
+Packagers and server hosters should subscribe to the ggz-servers list,
+because planned updates are announced at this list, as are general
+administrative problems and compatibility issues.
+</p>
+
+<h3>Further information</h3>
+
+<p>
+Here are some URLs which might guide new users into the right direction.
+</p>
+
+<ul>
+<li>GGZ forums: <a href="https://www.ggzcommunity.org/forums/">https://www.ggzcommunity.org/forums/</a>
+<li>GGZ mailing lists: <a href="https://mail.ggzgamingzone.org/">https://mail.ggzgamingzone.org/</a>
+<li>GGZ documentation page: <a href="http://www.ggzgamingzone.org/docs.php">http://www.ggzgamingzone.org/docs.php</a>
+<li>Developer activity: <a href="http://cia.navi.cx/stats/project/ggz">http://cia.navi.cx/stats/project/ggz</a>
+</ul>
+
+</div>
+
+</body>
+</html>
