@@ -948,7 +948,7 @@ create_main_win (void)
   gtk_widget_show (msg_label);
   gtk_box_pack_start (GTK_BOX (msg_box), msg_label, FALSE, FALSE, 0);
 
-  msg_entry = gtk_entry_new ();
+  msg_entry = gtk_entry_new_with_max_length (512);
   gtk_widget_ref (msg_entry);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "msg_entry", msg_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
