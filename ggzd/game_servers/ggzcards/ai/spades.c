@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2459 2001-09-12 07:42:46Z jdorje $
+ * $Id: spades.c 2460 2001-09-12 08:35:12Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -17,7 +17,7 @@
  * strategies.  I'm in the process of implementing better ones.
  *
  * For some good advice on Spades strategy, see:
- *               http://masterspades.home.att.net/
+ *               http://www.masterspades.com/
  *
  * Copyright (C) 1998 Brent Hendricks.
  *
@@ -121,6 +121,9 @@ static void alert_bid(player_t p, bid_t bid)
 
 static void alert_play(player_t p, card_t play)
 {
+#ifdef USE_AI_TRICKS
+	card_t lead = game.seats[game.players[game.leader].seat].table;
+#endif
 
 	/* Track count cards */
 	if (play.face == ACE_HIGH || play.face == KING ||
@@ -132,9 +135,6 @@ static void alert_play(player_t p, card_t play)
 			 suit_names[(int) play.suit], p);
 		count_cards[p]++;
 	}
-#ifdef USE_AI_TRICKS
-	card_t lead = game.seats[game.players[game.leader].seat].table;
-#endif
 
 	/* The problem with both these "tricks" below is that if a player has 
 	   a run of cards, he may as well play his low instead of his high -
@@ -315,43 +315,30 @@ static int count_spade_tricks(player_t num)
 	return points;
 }
 
-static int count_nonspade_tricks(player_t num, char s)
+static int count_nonspade_tricks(player_t num, char suit)
 {
-	/* We bid non-trump using a confidence system.  We combine two
-	   factors: the confidence we can make some high card good, and the
-	   probability of that trick not getting trumped/finessed. */
-	/* FIXME: there are lots of problems with this system.  For one
-	   thing, it has a tendancy to overvalue queens.  If we have A-K-Q-x, 
-	   the queen shouldn't be counted .81 of a trick.  It undervalues the 
-	   K-Q combination if you have more than 4 trumps.  Finally, it's
-	   incapable of counting length beyond 3 in a strong suit when you
-	   have strong spades (of course the AI can't play hands like this
-	   either). */
-	card_t c = { ACE_HIGH, s, 0 };
-	int count, prob, points = 0;
-	int suit_count = libai_count_suit(num, s);
 
-	/* We calculate the probable number of tricks without ruffage. */
-	count = (game.hand_size - suit_count) / (game.num_players - 1);
-	if (count > suit_count)
-		count = suit_count;
+	card_t ace = { ACE_HIGH, suit, 0 }, king = {
+	KING, suit, 0}, queen = {
+	QUEEN, suit, 0};
+	int has_ace = libai_is_card_in_hand(num, ace);
+	int has_king = libai_is_card_in_hand(num, king);
+	int has_queen = libai_is_card_in_hand(num, queen);
+	int count = libai_count_suit(num, suit);
 
-	prob = 100;		/* probability of not getting finessed */
-	for (; count > 0; count--, c.face--) {
-		if (libai_is_card_in_hand(num, c)) {
-			points += prob;
-			ai_debug("Counting %s of %s as %d",
-				 face_names[(int) c.face],
-				 suit_names[(int) c.suit], prob);
-			prob = prob * 9 / 10;
-		} else
-#ifdef AGGRESSIVE_BIDDING
-			prob = prob * 8 / 10;
-#else
-			prob = prob * 7 / 10;
-#endif
-	}
-	return points;
+	/* This is a pretty "expert" system to count probable tricks in a
+	   non-spade suit.  It can easily be refined further. */
+
+	if (has_ace && has_king)
+		return 200;
+	if (has_ace && has_queen)
+		return 150;
+	if (has_king && has_queen)
+		return 100;
+	if (has_king && count > 1)
+		return 50;
+
+	return 0;
 }
 
 static char find_final_bid(player_t num, int points)
