@@ -236,22 +236,6 @@ void table_setup()
 		gtk_widget_show(label[p]);
 	}
 
-	/* Current trump entry */
-	/* TODO: put this position into an list */
-/*
-	if (msglabel) {
-		gtk_widget_hide(msglabel);
-		gtk_widget_destroy(msglabel);
-	}
-
-	msglabel = gtk_label_new(NULL);
-	x = TEXT_BOX_WIDTH + 2 * XWIDTH;
-	y = TEXT_BOX_WIDTH + CARD_BOX_WIDTH + 2* XWIDTH - 20;
-	gtk_fixed_put(GTK_FIXED(f1), msglabel, x, y);
-	gtk_label_set_justify(GTK_LABEL(msglabel), GTK_JUSTIFY_LEFT);
-	gtk_widget_show(msglabel);
-*/
-
 	/* Display the buffer */
 	if (game.num_players >0 && game.max_hand_size > 0)
 		table_show_table(0, 0, get_table_width(), get_table_height());
@@ -476,10 +460,6 @@ static void draw_card(card_t card,
  */
 static void table_card_play(int p, int card)
 {
-/*
-	int x, y;
-*/
-
 	game.players[p].table_card = game.players[p].hand.card[card];
 
 	/* Draw the cards, eliminating the card in play */
@@ -487,11 +467,6 @@ static void table_card_play(int p, int card)
 
 	/* Now redraw the hand. */
 	table_display_hand(p);
-/*
-	x = TEXT_BOX_WIDTH + 2*XWIDTH + 0.5 + (card * CARDWIDTH/4.0);
-	y = get_table_height() - TEXT_BOX_WIDTH;
-	draw_card(game.players[p].hand.card[card], orientation(p), x, y);
-*/
 
 	/* And refresh the on-screen image */
 	table_show_table(TEXT_BOX_WIDTH + XWIDTH, get_table_height() - TEXT_BOX_WIDTH - 2*XWIDTH,
@@ -510,7 +485,7 @@ static void table_card_play(int p, int card)
 /* table_animation_trigger()
  *   Function to setup and trigger a card animation
  */
-void table_animation_trigger(card_t card, int x1, int y1, int x2, int y2)
+static void table_animation_trigger(card_t card, int x1, int y1, int x2, int y2)
 {
 	#define FRAMES		15
 	#define DURATION	500	/* In milliseconds */
