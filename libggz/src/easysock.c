@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 4128 2002-05-01 06:35:14Z jdorje $
+ * $Id: easysock.c 4622 2002-09-18 18:41:06Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -249,7 +249,7 @@ int ggz_read_char(const int sock, char *message)
 		return -1;
 	}
 
-	if (status < sizeof(char)) {
+	if ((unsigned)status < sizeof(char)) {
 		ggz_debug(GGZ_SOCKET_DEBUG, "Warning: fd is closed.");
 		if (_err_func)
 			(*_err_func) ("fd closed", GGZ_IO_READ, sock, GGZ_DATA_CHAR);
@@ -310,7 +310,7 @@ int ggz_read_int(const int sock, int *message)
 		return -1;
 	}
 	
-	if (status < sizeof(int)) {
+	if ((unsigned)status < sizeof(int)) {
 		ggz_debug(GGZ_SOCKET_DEBUG, "Warning: fd is closed.");
 		if (_err_func)
 			(*_err_func) ("fd closed", GGZ_IO_READ, sock, GGZ_DATA_INT);
@@ -410,7 +410,7 @@ int ggz_read_string(const int sock, char *message, const unsigned int len)
 		return -1;
 	}
 
-	if (status < size) {
+	if ((unsigned)status < size) {
 		ggz_debug(GGZ_SOCKET_DEBUG, "Warning: fd is closed.");
 		if (_err_func)
 			(*_err_func) ("fd closed", GGZ_IO_READ, sock, GGZ_DATA_STRING);
@@ -465,7 +465,7 @@ int ggz_read_string_alloc(const int sock, char **message)
 	/* ggz_malloc zeroes memory, but we do it again anyway. */
 	(*message)[size] = 0;
 
-	if (status < size) {
+	if ((unsigned)status < size) {
 		ggz_debug(GGZ_SOCKET_DEBUG, "Warning: fd is closed.");
 		if (_err_func)
 			(*_err_func) ("fd closed", GGZ_IO_READ, sock, GGZ_DATA_STRING);
