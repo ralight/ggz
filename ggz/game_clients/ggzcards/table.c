@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2866 2001-12-10 22:07:26Z jdorje $
+ * $Id: table.c 2870 2001-12-10 23:34:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -71,6 +71,7 @@ static GtkWidget *label[MAX_NUM_PLAYERS] = { NULL };	/* player labels */
 
 /* static GtkWidget *msglabel = NULL; *//* global label; put in place of old l_trump */
 static gboolean table_initialized = FALSE;
+static gboolean table_ready = FALSE;
 
 static int selected_card = -1;	/* the card currently selected from the
 				   playing hand */
@@ -230,6 +231,10 @@ void table_setup(void)
 	table_buf = gdk_pixmap_new(table->window,
 				   get_table_width(), get_table_height(), -1);
 
+	/* _Now_ we're ready to draw stuff. */
+	table_ready = 1;
+
+	/* Revert to having no selected card. */
 	selected_card = -1;
 
 	/* Add text labels to display */
@@ -730,6 +735,11 @@ void table_display_hand(int p)
 	int cx, cy, cw, ch, cxo, cyo;
 	float ow, oh;
 	card_t table_card = ggzcards.players[p].table_card;
+
+	/* The server may send out a hand of size 0 when we first connect,
+	   but we just want to ignore it. */
+	if (!table_ready)
+		return;
 
 	ggz_debug("table", "Displaying hand for player %d.", p);
 
