@@ -28,3 +28,4 @@
 
 int connect_to_server(void);
 void disconnect(GtkWidget *, gpointer);
+int anon_login(void);

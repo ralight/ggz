@@ -69,7 +69,6 @@ static void server_sync();
 static void connect_msg(const char *, ...);
 static void add_user_list(gchar * name, gint table);
 static void add_table_list(TableInfo table);
-static int anon_login(void);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
 static void display_chat(char *name, char *msg);
 static void handle_list_tables(int op, int fd);
@@ -171,7 +170,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if (status < 0) {
 			login_bad_name();
-			warn_dlg("Invalid name!");
+			warn_dlg("That username is already in usage,\n or not permitted on this server.\n\nPlease choose a different name");
+
 			return;
 		}
 		es_read_int(source, &checksum);

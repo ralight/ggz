@@ -392,8 +392,22 @@ void login_input_options(GtkButton * button, gpointer window)
 
 void login_start_session(GtkButton * button, gpointer window)
 {
+	GtkWidget *tmp;
+
         if (connection.connected) {
-                warn_dlg("Already Connected.");
+        	tmp = gtk_object_get_data(GTK_OBJECT(window), "name_entry");
+	        connection.username = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+                
+        	tmp = gtk_object_get_data(GTK_OBJECT(window), "pass_entry");
+	        connection.password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+                switch (connection.login_type) {
+                case 0: /*Normal login */  
+                case 2: /*First time login */
+                case 1: /*Anonymous login */
+                        anon_login();
+                }
+
                 return;
         } else {
 
