@@ -62,14 +62,6 @@ void ggz_event_init(void)
 	ggzcore_event_connect(GGZ_SERVER_LIST_PLAYERS, ggz_list_players);
 }
 
-int ggz_loop(gpointer data)
-{
-	ggzcore_event_process_all();
-	ggz_state();
-	return 1;
-}
-
-
 
 /* Event functions */
 void ggz_chat_msg(GGZEventID id, void* event_data, void* user_data)

@@ -27,6 +27,7 @@
 #define __GGZCORE_H__
 
 #include <stdarg.h>
+#include <poll.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -212,7 +213,19 @@ int ggzcore_event_remove_all(const GGZEventID id);
 int ggzcore_event_remove(const GGZEventID id, const unsigned int callback_id);
 
 
-/* ggzcore_event_ispending() - Determine if there are any pending events
+/* ggzcore_event_get_fd() - Get a copy of the event pipe fd
+ * Receives:
+ *
+ * Returns:
+ * int : event pipe fd
+ *
+ * Note: this is for detecting event arrivals only.  Do *NOT* attempt
+ * to write to this fd.
+ */
+int ggzcore_event_get_fd(void);
+
+
+/* ggzcore_event_ispending() - Determine if there are pending GGZ events
  *
  * Receives:
  *
@@ -220,6 +233,19 @@ int ggzcore_event_remove(const GGZEventID id, const unsigned int callback_id);
  * int : 1 if there is at least one event pending, 0 otherwise
  */
 int ggzcore_event_ispending(void);
+
+
+/* ggzcore_event_poll() - Replacement poll command for use in event loops 
+ *                        
+ * Receives:
+ * struct pollfd *ufds : array of file descriptors to poll
+ * unsigned int nfds   : number of file descriptors to poll
+ * int timeout         : poll timeout in milliseconds
+ *
+ * Returns:
+ * int : number of fds on which data is waiting, 0 if timed out, -1 on error 
+ */
+int ggzcore_event_poll(struct pollfd *ufds, unsigned int nfds, int timeout);
 
 
 /* ggzcore_event_process_all() - Process all pending events
@@ -264,6 +290,18 @@ typedef enum {
 	GGZ_STATE_LEAVING_TABLE,
 	GGZ_STATE_LOGGING_OUT
 } GGZStateID;
+
+
+/* ggzcore_net_get_fd() - Get a copy of the network socket
+ * Receives:
+ *
+ * Returns:
+ * int : network socket fd
+ *
+ * Note: this is for detecting network data arrival only.  Do *NOT* attempt
+ * to write to this fd.
+ */
+int ggzcore_net_get_fd(void);
 
 
 /* ggzcore_state_is_XXXX()

@@ -139,6 +139,8 @@ void _ggzcore_net_connect(const char* server, const unsigned int port)
 	
 	/* We don't need to handle failure here because it gets done
 	   by the error func. registered with easysock */
+
+	/* FIXME: somehow notify FE that we have a fd now */
 }
 
 
@@ -148,6 +150,21 @@ void _ggzcore_net_disconnect(void)
 	close(ggz_server_sock);
 	ggz_server_sock = -1;
 	_ggzcore_state_set(GGZ_STATE_OFFLINE);
+}
+
+
+/* ggzcore_net_get_fd() - Get a copy of the network socket
+ * Receives:
+ *
+ * Returns:
+ * int : network socket fd
+ *
+ * Note: this is for detecting network data arrival only.  Do *NOT* attempt
+ * to write to this fd.
+ */
+int ggzcore_net_get_fd(void)
+{
+	return ggz_server_sock;
 }
 
 

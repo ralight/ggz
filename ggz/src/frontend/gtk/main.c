@@ -34,6 +34,7 @@
 GtkWidget *win_main;
 GtkWidget *dlg_login;
 
+
 int main (int argc, char *argv[])
 {
 	GGZOptions opt;
@@ -43,13 +44,12 @@ int main (int argc, char *argv[])
 	opt.user_conf = "~/.ggz-txtrc";
 	opt.local_conf = NULL;
 
-	gtk_timeout_add (5, (GtkFunction)ggz_loop, NULL);
-	gtk_quit_add (0, (GtkFunction)ggzcore_destroy, NULL);
-	gtk_init(&argc, &argv);
 	ggzcore_init(opt);
 	ggz_event_init();
-
+	
+	gtk_init(&argc, &argv);
 	chat_allocate_colors();
+	g_main_set_poll_func((GPollFunc)ggzcore_event_poll);
 
 	win_main = create_win_main();
 	dlg_login = create_dlg_login();
@@ -58,5 +58,8 @@ int main (int argc, char *argv[])
 
 	gtk_main();
 
+	ggzcore_destroy();
+
 	return 0;
 }
+

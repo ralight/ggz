@@ -327,39 +327,29 @@ int ggzcore_event_remove_func(const GGZEventID id, const GGZEventFunc cb_func)
 }
 
 
-/* ggzcore_event_ispending() - Determine if there are any pending events
- *
+/* ggzcore_event_get_fd() - Get a copy of the event pipe fd
  * Receives:
  *
  * Returns:
- * int : 1 if there is at least one event pending, 0 otherwise
+ * int : event pipe fd
  *
- * Note that if multi-threaded I/O is disabled, it will return 1 if
- * input is network or module I/O is present as well 
+ * Note: this is for detecting event arrivals only.  Do *NOT* attempt
+ * to write to this fd.
  */
-int ggzcore_event_ispending(void)
+int ggzcore_event_get_fd(void)
 {
-	int status;
-	
-	status = _ggzcore_event_ispending_actual();
-
-	/* FIXME: This is only for non-threaded I/O */
-	if (status == 0)
-		status = _ggzcore_net_ispending();
-
-	
-	return status;
+	return event_pipe[0];
 }
 
 
-/* _ggzcore_event_ispending_actual() - Determine if there are any
+/* ggzcore_event_ispending() - Determine if there are any
  *                                     pending GGZ events
  * Receives:
  *
  * Returns:
  * int : 1 if there is at least one event pending, 0 otherwise
  */
-int _ggzcore_event_ispending_actual(void)
+int ggzcore_event_ispending(void)
 {
 	int status;
 	struct pollfd fd[1] = {{event_pipe[0], POLLIN, 0}};
@@ -374,6 +364,71 @@ int _ggzcore_event_ispending_actual(void)
 }
 
 
+/* ggzcore_event_poll() - Replacement poll command for use in event loops 
+ *                        
+ * Receives:
+ * struct pollfd *ufds : array of file descriptors to poll
+ * unsigned int nfds   : number of file descriptors to poll
+ * int timeout         : poll timeout in milliseconds
+ *
+ * Returns:
+ * int : number of fds on which data is waiting, 0 if timed out, -1 on error 
+ */
+int ggzcore_event_poll(struct pollfd *ufds, unsigned int nfds, int timeout)
+{
+	int count, total_fds, sock, do_net;
+	struct pollfd *fds;
+	
+	total_fds = nfds +1;
+
+	/* FIXME: only do for non-threaded I/O */
+	do_net = 1;
+	
+	if (do_net) {
+		if ( (sock = ggzcore_net_get_fd()) >= 0)
+			total_fds++;
+		else
+			do_net = 0;
+	}
+	
+	/* FIXME: add game module fd also */
+
+	if (!(fds = calloc(total_fds, sizeof(struct pollfd))))
+		ggzcore_error_sys_exit("calloc failed in ggz_poll");
+	
+	/* Copy user's poll fd structures into beginning of array */
+	memcpy(fds, ufds, nfds*sizeof(struct pollfd));
+
+	/* Add ours onto end */
+	fds[nfds].fd = ggzcore_event_get_fd();
+	fds[nfds].events = POLLIN;
+	
+	if (do_net) {
+		fds[nfds+1].fd = sock;
+		fds[nfds+1].events = POLLIN;
+	}
+	
+	/* FIXME: add game module */
+
+	if ( (count = poll(fds, total_fds, timeout)) < 0)
+		ggzcore_error_sys_exit("poll failed in ggzcore_event_pending");
+	
+	if (do_net && fds[nfds+1].revents) {
+		_ggzcore_net_process();
+		count--;
+	}
+
+	if (fds[nfds].revents) {
+		ggzcore_event_process_all();
+		count--;
+	}
+	
+	/* Copy user's poll fd structures back */
+	memcpy(ufds, fds, nfds*sizeof(struct pollfd));
+
+	return count;
+}
+
 
 /* ggzcore_event_process_all() - Process all pending events
  *
@@ -386,11 +441,7 @@ int ggzcore_event_process_all(void)
 {
 	GGZEventID id;
 	
-	/* FIXME: this is only for non-threaded I/O */
-	if (_ggzcore_net_ispending())
-		_ggzcore_net_process();
-	
-	while (_ggzcore_event_ispending_actual()) {
+	while (ggzcore_event_ispending()) {
 		ggzcore_debug(GGZ_DBG_EVENT, "Procesing events");
 		read(event_pipe[0], &id, sizeof(GGZEventID));
 		/* FIXME: do validity checking */

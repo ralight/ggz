@@ -25,7 +25,7 @@
 #ifndef _GGZ_
 #define _GGZ_
 
+
 void ggz_event_init(void);
-int ggz_loop(gpointer data);
 
 #endif
