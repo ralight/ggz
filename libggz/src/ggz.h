@@ -26,6 +26,10 @@
 #ifndef __GGZ_H__
 #define __GGZ_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Under gcc, we use the __attribute__ macro to check variadic arguments,
    for instance to printf-style functions.  Other compilers may be able
    to do something similar.  Great for debugging. */
@@ -623,4 +627,8 @@ void ggz_free_file_struct(GGZFile *file);
 
 /** @} */
 
-#endif  /* __GGZCORE_H__ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif  /* __GGZ_H__ */
