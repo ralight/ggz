@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Graphical functions handling the game board and filters for user input
  * (sending the events to game.c)
- * $Id: board.c 4491 2002-09-09 04:51:32Z jdorje $
+ * $Id: board.c 4878 2002-10-12 07:39:59Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -96,11 +96,23 @@ void board_init(void) {
   piece_gc = gdk_gc_new(main_win->window);
   gdk_gc_set_fill(piece_gc, GDK_TILED);
   /* Colors */
+#ifdef GTK2
+  gdk_color_parse("Tan", &bg_color[0]);
+#else
   gdk_color_parse("rgb:C8/B5/72", &bg_color[0]);
+#endif
   gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), &bg_color[0], TRUE, TRUE);
+#ifdef GTK2
+  gdk_color_parse("DarkSlateGray", &bg_color[1]);
+#else
   gdk_color_parse("rgb:67/55/3F", &bg_color[1]);
+#endif
   gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), &bg_color[1], TRUE, TRUE);
+#ifdef GTK2
+  gdk_color_parse("Red", &bg_color[2]);
+#else
   gdk_color_parse("rgb:FF/00/00", &bg_color[2]);
+#endif
   gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), &bg_color[2], TRUE, TRUE);
   /* Background GC */
   light_gc = gdk_gc_new(main_win->window);
@@ -134,6 +146,7 @@ void board_info_init(void) {
 	GtkWidget *black_arrow, *white_arrow;
 	GdkColor color;
 	GtkStyle *style;
+	GdkFont *font;
 	int j;
 
 	black = lookup_widget(main_win, "black_time");
@@ -148,7 +161,13 @@ void board_info_init(void) {
 		style->fg[j] = gtk_widget_get_style(main_win)->black;
 		style->bg[j] = gtk_widget_get_style(main_win)->black;
 	}
-	style->font = gdk_font_load("-*-*-bold-r-normal-*-14-*");
+	font = gdk_font_load("-*-*-bold-r-normal-*-14-*");
+#ifdef GTK2
+	gtk_style_set_font(style, font);
+#else
+	style->font = font;
+#endif
+
 	gtk_widget_set_style(black, style);
 	/* Arrows */
 	gtk_widget_set_style(black_arrow, style);
@@ -166,7 +185,12 @@ void board_info_init(void) {
 		style->fg[j] = color;
 		style->bg[j] = color;
 	}
-	style->font = gdk_font_load("-*-*-bold-r-normal-*-14-*");
+	font = gdk_font_load("-*-*-bold-r-normal-*-14-*");
+#ifdef GTK2
+	gtk_style_set_font(style, font);
+#else
+	style->font = font;
+#endif
 	gtk_widget_set_style(white, style);
 
 }
@@ -387,9 +411,22 @@ int board_auto_call(void) {
 
 void board_info_add_move(char *move) {
   GtkWidget *move_list = lookup_widget(main_win, "last_moves");
-  char *text;
-  text = g_strdup_printf("%s -> %s\n", game_info.turn % 2 ? "White" : "Black", move);
-  gtk_text_insert(GTK_TEXT(move_list), gtk_widget_get_style(move_list)->font, &gtk_widget_get_style(move_list)->black, &gtk_widget_get_style(move_list)->white, text, strlen(text)+1);
+  char *text= g_strdup_printf("%s -> %s\n",
+			      game_info.turn % 2 ? "White" : "Black",
+			      move);
+#ifdef GTK2
+  /* FIXME: formatting? */
+  GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(move_list));
+  GtkTextIter iter;
+  gtk_text_buffer_get_end_iter(buf, &iter);
+  gtk_text_buffer_insert(buf, &iter, text, strlen(text));
+#else
+  gtk_text_insert(GTK_TEXT(move_list),
+		  gtk_widget_get_style(move_list)->font,
+		  &gtk_widget_get_style(move_list)->black,
+		  &gtk_widget_get_style(move_list)->white,
+		  text, strlen(text));
+#endif
   free(text);
 }
 

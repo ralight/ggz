@@ -26,17 +26,14 @@ create_main_win (void)
   GtkWidget *menubar;
   GtkWidget *file;
   GtkWidget *file_menu;
-  GtkAccelGroup *file_menu_accels;
   GtkWidget *exit;
   GtkWidget *game;
   GtkWidget *game_menu;
-  GtkAccelGroup *game_menu_accels;
   GtkWidget *request_draw;
   GtkWidget *call_flag;
   GtkWidget *request_update;
   GtkWidget *options;
   GtkWidget *options_menu;
-  GtkAccelGroup *options_menu_accels;
   GtkWidget *auto_call_flag;
   GtkWidget *hbox1;
   GtkWidget *hpaned1;
@@ -88,7 +85,6 @@ create_main_win (void)
   gtk_object_set_data_full (GTK_OBJECT (main_win), "file_menu", file_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (file), file_menu);
-  file_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (file_menu));
 
   exit = gtk_menu_item_new_with_label (_("Exit"));
   gtk_widget_ref (exit);
@@ -109,7 +105,6 @@ create_main_win (void)
   gtk_object_set_data_full (GTK_OBJECT (main_win), "game_menu", game_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (game), game_menu);
-  game_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (game_menu));
 
   request_draw = gtk_menu_item_new_with_label (_("Request draw"));
   gtk_widget_ref (request_draw);
@@ -147,7 +142,6 @@ create_main_win (void)
   gtk_object_set_data_full (GTK_OBJECT (main_win), "options_menu", options_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (options), options_menu);
-  options_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (options_menu));
 
   auto_call_flag = gtk_check_menu_item_new_with_label (_("Auto call flag"));
   gtk_widget_ref (auto_call_flag);
@@ -268,14 +262,25 @@ create_main_win (void)
   gtk_box_pack_start (GTK_BOX (vbox3), scrolledwindow1, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
+#ifdef GTK2
+  last_moves = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
+#else
   last_moves = gtk_text_new (NULL, NULL);
+#endif
   gtk_widget_ref (last_moves);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "last_moves", last_moves,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (last_moves);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), last_moves);
+#ifdef GTK2
+  gtk_text_buffer_insert_at_cursor(gtk_text_view_get_buffer
+				   (GTK_TEXT_VIEW(last_moves)),
+				   _("Last moves: \n"),
+				   -1);
+#else
   gtk_text_insert (GTK_TEXT (last_moves), NULL, NULL, NULL,
                    _("Last moves:\n"), -1);
+#endif
 
   statusbar = gtk_statusbar_new ();
   gtk_widget_ref (statusbar);
