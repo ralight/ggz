@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 6273 2004-11-05 21:49:00Z jdorje $
+ * $Id: props.c 6274 2004-11-05 22:39:18Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -23,7 +23,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -45,14 +49,14 @@
 #include "xtext.h"
 #include "client.h"
 
+enum {
+	PROFILE_COLUMN_NAME,
+	PROFILE_COLUMNS
+};
+
 static void props_update(void);
 static void dlg_props_realize(GtkWidget *widget, gpointer user_data);
 static void props_profile_box_realized(GtkWidget *widget, gpointer user_data);
-static void props_profile_list_select(GtkCList *clist,
-                               gint      row,
-                               gint      column,
-                               GdkEvent *event,
-                               gpointer  user_data);
 static void props_profile_entry_changed(GtkWidget *widget, gpointer user_data);
 static void props_normal_toggled(GtkWidget *widget, gpointer user_data);
 static void props_add_button_clicked(GtkWidget *widget, gpointer user_data);
@@ -387,27 +391,35 @@ void props_profile_box_realized(GtkWidget *widget, gpointer user_data)
 }
 
 
-void props_profile_list_select(GtkCList *clist,
-                               gint      row,
-                               gint      column,
-                               GdkEvent *event,
-                               gpointer  user_data)
+static void props_profile_list_select(GtkTreeSelection *select,
+				      gpointer user_data)
 {
 	GtkWidget *tmp;
 	gchar *profile_name;
 	Server *profile;
 	gchar *port;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 
-	tmp = lookup_widget(props_dialog, "add_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = lookup_widget(props_dialog, "modify_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = lookup_widget(props_dialog, "delete_button");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+	if (!gtk_tree_selection_get_selected(select, &model, &iter)) {
+		return;
+	}
 
 	tmp = lookup_widget(props_dialog, "profile_list");
-	gtk_clist_get_text(GTK_CLIST(tmp), row, column, &profile_name);
+	gtk_tree_model_get(model, &iter,
+			   PROFILE_COLUMN_NAME, &profile_name, -1);
 	profile = server_get(profile_name);
+	g_free(profile_name);
+	if (!profile) {
+		return;
+	}
+
+	tmp = lookup_widget(props_dialog, "add_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(props_dialog, "modify_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(props_dialog, "delete_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
 
 	tmp = lookup_widget(props_dialog, "profile_entry");
 	if (profile->name)
@@ -518,6 +530,7 @@ void props_add_button_clicked(GtkWidget *widget, gpointer user_data)
 {
 	GtkWidget *tmp;
 	Server *new_server;
+	GtkTreeIter iter;
 
 	new_server = g_malloc0(sizeof(Server));
 
@@ -551,8 +564,10 @@ void props_add_button_clicked(GtkWidget *widget, gpointer user_data)
 	server_list_add(new_server);
 
 	/* Add profile to list */
-	tmp = lookup_widget(props_dialog, "profile_list");
-	gtk_clist_append(GTK_CLIST(tmp), (char**)&(new_server->name));
+	tmp = lookup_widget(props_dialog, "profile_list_store");
+	gtk_list_store_append(GTK_LIST_STORE(tmp), &iter);
+	gtk_list_store_set(GTK_LIST_STORE(tmp), &iter,
+			   PROFILE_COLUMN_NAME, new_server->name, -1);
 }
 
 
@@ -702,21 +717,60 @@ void props_fapply_button_clicked(GtkWidget *widget, gpointer user_data)
 
 static void props_profiles_reload(void)
 {
-	GtkWidget* tmp;
 	GList *names, *node;
+	GtkListStore *store;
 
-	tmp = lookup_widget(props_dialog, "profile_list");
-	gtk_clist_clear(GTK_CLIST(tmp));
+	store = GTK_LIST_STORE(lookup_widget(props_dialog,
+					     "profile_list_store"));
+	gtk_list_store_clear(store);
 
 	names = server_get_name_list();
-	for (node = names; node != NULL; node = node->next)
-		gtk_clist_append(GTK_CLIST(tmp), (char**)&(node->data));
+	for (node = names; node != NULL; node = node->next) {
+		GtkTreeIter iter;
+
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter,
+				   PROFILE_COLUMN_NAME, node->data, -1);
+		
+	}
 
 	g_list_free(names);
 }
 
+static GtkWidget *tree_new(GtkWidget *window)
+{
+	GtkListStore *store;
+	GtkWidget *tree;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	GtkTreeSelection *select;
 
+	assert(PROFILE_COLUMNS == 1);
+	store = gtk_list_store_new(PROFILE_COLUMNS,
+				   G_TYPE_STRING);
 
+	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes("Profile", renderer,
+				"text", PROFILE_COLUMN_NAME, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	gtk_widget_ref(tree);
+	g_object_set_data_full(G_OBJECT(window), "profile_list", tree,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data(G_OBJECT(window), "profile_list_store", store);
+	gtk_widget_show(tree);
+
+	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+	g_signal_connect(select, "changed",
+			 GTK_SIGNAL_FUNC(props_profile_list_select),
+			 store);
+
+	return tree;
+}
 
 GtkWidget*
 create_dlg_props (void)
@@ -728,7 +782,6 @@ create_dlg_props (void)
   GtkWidget *props_profile_box;
   GtkWidget *scrolledwindow4;
   GtkWidget *profile_list;
-  GtkWidget *label66;
   GtkWidget *edit_box;
   GtkWidget *data_box;
   GtkWidget *profile_box;
@@ -873,21 +926,8 @@ create_dlg_props (void)
   gtk_box_pack_start (GTK_BOX (props_profile_box), scrolledwindow4, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow4), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  profile_list = gtk_clist_new (1);
-  gtk_widget_ref (profile_list);
-  g_object_set_data_full(G_OBJECT (dlg_props), "profile_list", profile_list,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (profile_list);
+  profile_list = tree_new(dlg_props);
   gtk_container_add (GTK_CONTAINER (scrolledwindow4), profile_list);
-  gtk_clist_set_column_width (GTK_CLIST (profile_list), 0, 80);
-  gtk_clist_column_titles_show (GTK_CLIST (profile_list));
-
-  label66 = gtk_label_new (_("Profiles"));
-  gtk_widget_ref (label66);
-  g_object_set_data_full(G_OBJECT (dlg_props), "label66", label66,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label66);
-  gtk_clist_set_column_widget (GTK_CLIST (profile_list), 0, label66);
 
   edit_box = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (edit_box);
@@ -1694,9 +1734,6 @@ create_dlg_props (void)
                       &props_dialog);
   g_signal_connect (GTK_OBJECT (props_profile_box), "realize",
                       GTK_SIGNAL_FUNC (props_profile_box_realized),
-                      NULL);
-  g_signal_connect (GTK_OBJECT (profile_list), "select_row",
-                      GTK_SIGNAL_FUNC (props_profile_list_select),
                       NULL);
   g_signal_connect (GTK_OBJECT (profile_entry), "changed",
                       GTK_SIGNAL_FUNC (props_profile_entry_changed),
