@@ -35,6 +35,8 @@
 #include "protocol.h"
 
 #include <ggz.h>
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -740,21 +742,33 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room, GGZChatOp op, char *name,
 
 void _ggzcore_room_set_table_launch_status(struct _GGZRoom *room, int status)
 {
+	char buf[128];
+	
 	_ggzcore_server_set_table_launch_status(room->server, status);
 	
 	switch (status) {
 	case 0:
 		_ggzcore_room_event(room, GGZ_TABLE_LAUNCHED, NULL);
 		break;
-
-	case E_NOT_IN_ROOM:
+		
+	case E_BAD_OPTIONS:
 		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
-				    "Not in a room");
+				    "Bad option");
+		break;
+		
+	case E_ROOM_FULL:
+		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
+		                    "The room has reached its table limit.");
 		break;
 
 	case E_LAUNCH_FAIL:
 		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
 				    "Launch failed on server");
+		break;
+
+	case E_NOT_IN_ROOM:
+		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
+				    "Not in a room");
 		break;
 
 	case E_AT_TABLE:
@@ -766,19 +780,16 @@ void _ggzcore_room_set_table_launch_status(struct _GGZRoom *room, int status)
 		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
 				    "Already joining/leaving a table");
 		break;
-		
-	case E_BAD_OPTIONS:
-		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
-				    "Bad option");
-		break;
 
 	case E_NO_PERMISSION:
 		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
 				    "Insufficient permissions");
 		break;
 	default:
-		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
-				    "Unknown launch failure");
+		snprintf(buf, sizeof(buf),
+		         "Unknown launch failure (status %d)",
+		         status);
+		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL, buf);
 		break;
 	}
 }
@@ -786,6 +797,8 @@ void _ggzcore_room_set_table_launch_status(struct _GGZRoom *room, int status)
 
 void _ggzcore_room_set_table_join_status(struct _GGZRoom *room, int status)
 {
+	char buf[128];
+	
 	_ggzcore_server_set_table_join_status(room->server, status);
 	
 	switch (status) {
@@ -831,8 +844,10 @@ void _ggzcore_room_set_table_join_status(struct _GGZRoom *room, int status)
 		break;
 
 	default:
-		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
-				    "Unknown join failure");
+		snprintf(buf, sizeof(buf),
+		         "Unknown join failure (status %d)",
+		         status);
+		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL, buf);
 		break;
 
 	}
@@ -841,6 +856,8 @@ void _ggzcore_room_set_table_join_status(struct _GGZRoom *room, int status)
 					 
 void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room, int status)
 {
+	char buf[128];
+	
 	_ggzcore_server_set_table_leave_status(room->server, status);
 
 	switch (status) {
@@ -864,8 +881,10 @@ void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room, int status)
 		break;
 
 	default:
-		_ggzcore_room_event(room, GGZ_TABLE_LEAVE_FAIL,
-				    "Unknown leave failure");
+		snprintf(buf, sizeof(buf),
+		         "Unknown leave failure (status %d)",
+		         status);
+		_ggzcore_room_event(room, GGZ_TABLE_LEAVE_FAIL, buf);
 		break;
 	}
 }
