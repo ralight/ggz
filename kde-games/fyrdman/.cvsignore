@@ -1,0 +1,8 @@
+Makefile
+Makefile.in
+.deps
+.libs
+*.o
+*.moc.cpp
+*_meta_unload.cpp
+fyrdman
