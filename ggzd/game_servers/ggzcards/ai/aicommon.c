@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.c 2421 2001-09-09 09:16:41Z jdorje $
+ * $Id: aicommon.c 2422 2001-09-09 09:29:19Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -35,7 +35,7 @@
 #include "aicommon.h"
 
 static int played[4];		/* bitmask of played cards for each suit */
-static char suits[4][4];		/* information about what each of the 4
+static char suits[4][4];	/* information about what each of the 4
 				   players might hold in each of the 4 suits */
 
 void ailib_start_hand(void)
@@ -78,12 +78,22 @@ int libai_is_card_played(char suit, char face)
 
 int libai_get_suit_map(player_t p, char suit)
 {
-	return suits[p][(int)suit];
+	return suits[p][(int) suit];
 }
 
 int libai_might_player_have_card(player_t p, card_t card)
 {
-	return suits[p][(int)card.suit] & (1 << card.face);
+	return suits[p][(int) card.suit] & (1 << card.face);
+}
+
+int libai_is_card_in_hand(seat_t seat, card_t card)
+{
+	/* TODO: avoid cheating! */
+	int i;
+	for (i = 0; i < game.seats[seat].hand.hand_size; i++)
+		if (cards_equal(game.seats[seat].hand.cards[i], card))
+			return 1;
+	return 0;
 }
 
 int libai_is_highest_in_suit(card_t card)
@@ -105,4 +115,14 @@ int libai_cards_left_in_suit(char suit)
 		if (libai_is_card_played(suit, face))
 			n--;
 	return n;
+}
+
+int libai_count_suit(seat_t seat, char suit)
+{
+	hand_t *hand = &game.seats[seat].hand;
+	int i, total = 0;
+	for (i = 0; i < hand->hand_size; i++)
+		if (hand->cards[i].suit == suit)
+			total++;
+	return total;
 }

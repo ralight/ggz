@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2421 2001-09-09 09:16:41Z jdorje $
+ * $Id: spades.c 2422 2001-09-09 09:29:19Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -97,19 +97,9 @@ static int SetNil(int);
 static int PlayNormal(int);
 static int card_comp(card_t c1, card_t c2);
 
-static int HasCard(seat_t s, card_t c)
-{
-	/* TODO: avoid cheating! */
-	int i;
-	for (i = 0; i < game.seats[s].hand.hand_size; i++)
-		if (cards_equal(game.seats[s].hand.cards[i], c))
-			return 1;
-	return 0;
-}
-
 static void start_hand()
 {
-
+	/* nothing... */
 }
 
 static void alert_bid(player_t p, bid_t bid)
@@ -150,13 +140,11 @@ static void alert_play(player_t p, card_t play)
 		}
 	}
 #endif
-
-
 }
 
 static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 {
-	int count, points, i, gap, p1, p2, prob;
+	int count, points, gap, p1, p2, prob;
 	bid_t bid, pard;
 	int suitCount[4], suitAvg[4];
 	int voids = 0, singletons = 0, doubletons = 0;
@@ -164,7 +152,6 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	card_t card = { 0, 0, 0 };
 	card_t c = { 0, 0, 0 };
 	char s;			/* suit */
-	hand_t *hand = &game.seats[game.players[num].seat].hand;
 
 	bid.bid = 0;
 
@@ -175,9 +162,8 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	   cards the other players each have in each suit.  Also count our
 	   voids, singletons, and doubletons. */
 	for (s = 0; s < 4; s++)
-		suitCount[(int) s] = 0;
-	for (i = 0; i < hand->hand_size; i++)
-		suitCount[(int) hand->cards[i].suit]++;
+		suitCount[(int) s] =
+			libai_count_suit(game.players[num].seat, s);
 	for (s = 0; s < 4; s++) {
 		if (s != SPADES)	/* for off suits */
 			switch (suitCount[(int) s]) {
@@ -207,7 +193,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	card.suit = SPADES;
 	card.deck = 0;
 	for (card.face = ACE_HIGH, gap = 0; card.face >= 0; card.face--) {
-		if (HasCard(num, card)) {
+		if (libai_is_card_in_hand(num, card)) {
 			if (gap > 0)
 				gap--;
 			else {
@@ -243,7 +229,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 
 			/* count our low cards in the suit */
 			for (count = 0, c.face = 2; c.face < 9; c.face++) {
-				if (HasCard(num, c))
+				if (libai_is_card_in_hand(num, c))
 					count++;	/* count low cards */
 			}
 			if (count >= 3)	/* suit is covered */
@@ -261,32 +247,30 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 			/* check for the queen/king of spades */
 			if (s == SPADES) {
 				c.face = KING;
-				if (HasCard(num, c)) {
+				if (libai_is_card_in_hand(num, c)) {
 					nilrisk += 2;
 					ai_debug("Inc. nilrisk for King of spades");
 				}
 				c.face = QUEEN;
-				if (HasCard(num, c)) {
+				if (libai_is_card_in_hand(num, c)) {
 					nilrisk += 1;
 					ai_debug("Inc. nilrisk for Queen of spades");
 				}
 			} else {
 				c.face = KING;
-				if (HasCard(num, c)
+				if (libai_is_card_in_hand(num, c)
 				    && suitCount[(int) s] <= 3) {
 					nilrisk += ((suitCount[(int) s] <= 2) ? 2 : 1);	/* king
 											   is
-											   riskier 
-											 */
+											   riskier */
 					ai_debug("Inc. nilrisk by %d for King of %s", (suitCount[(int) s] <= 2) ? 2 : 1, suit_names[(int) s]);
 				}
 				c.face = ACE_HIGH;
-				if (HasCard(num, c)
+				if (libai_is_card_in_hand(num, c)
 				    && suitCount[(int) s] <= 3) {
 					nilrisk += ((suitCount[(int) s] <= 2) ? 3 : 2);	/* ace
 											   is
-											   riskiest 
-											 */
+											   riskiest */
 					ai_debug("Inc. nilrisk by %d for Ace of %s", (suitCount[(int) s] <= 2) ? 3 : 2, suit_names[(int) s]);
 				}
 			}
@@ -299,14 +283,14 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 		/* King with 1+ covers */
 		c.suit = SPADES;
 		c.face = KING;
-		if (HasCard(num, c) && suitCount[SPADES] >= 2) {
+		if (libai_is_card_in_hand(num, c) && suitCount[SPADES] >= 2) {
 			p1 += ((suitCount[SPADES] >= 3) ? 100 : 60);
 			ai_debug("Counting King of Spades as %d",
 				 (suitCount[SPADES] >= 3) ? 100 : 60);
 		}
 		c.face = QUEEN;
 		/* Queen with 2+ covers */
-		if (HasCard(num, c) && suitCount[SPADES] >= 3) {
+		if (libai_is_card_in_hand(num, c) && suitCount[SPADES] >= 3) {
 			p1 += ((suitCount[SPADES] >= 4) ? 100 : 30);
 			ai_debug("Counting Queen of Spades as %d",
 				 (suitCount[SPADES] >= 4) ? 100 : 30);
@@ -316,7 +300,8 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 
 	/* Now figure if we use our trumps on other suits: */
 	count = suitCount[SPADES];
-	for (c.face = ACE_HIGH; c.face >= 2 && HasCard(num, c); c.face--) {
+	for (c.face = ACE_HIGH; c.face >= 2 && libai_is_card_in_hand(num, c);
+	     c.face--) {
 		p2 += 100;
 		count--;
 	}
@@ -380,7 +365,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 							   w/o trump */
 		prob = 100;	/* probability of not getting finessed */
 		for (; count > 0; count--, c.face--) {
-			if (HasCard(num, c)) {
+			if (libai_is_card_in_hand(num, c)) {
 				points += prob;
 				ai_debug("Counting %s of %s as %d",
 					 face_names[(int) c.face],
@@ -1024,7 +1009,8 @@ static int CoverNil(player_t p)
 		   current high, then just sluff. */
 		if (chosen >= 0 && high >= 0
 		    && play[chosen].card.suit == high_card.suit) {
-			for (r = high_card.face + 1; libai_is_card_played(high_card.suit, r); r++)
+			for (r = high_card.face + 1;
+			     libai_is_card_played(high_card.suit, r); r++)
 				continue;
 			if (r == play[chosen].card.face) {
 				sluff = 1;
