@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(tictactoe/game.h)
+AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(ggz_gtk_games, 0.0.4pre)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
@@ -111,33 +111,10 @@ dnl Various dirs
 dnl ============
 
 dnl FIXME: should get ggzexecmoddir from ggz-config
-
-if test "x${libdir}" = 'x${exec_prefix}/lib'; then
-  if test "x${exec_prefix}" = "xNONE"; then
-    if test "x${prefix}" = "xNONE"; then
-      ggzexecmoddir="${ac_default_prefix}/lib/ggz"
-    else
-      ggzexecmoddir="${prefix}/lib/ggz"
-    fi
-  else
-    ggzexecmoddir="${exec_prefix}/lib/ggz"
-  fi
-else
-  ggzexecmoddir="${libdir}/ggz"
-fi
+ggzexecmoddir=`$GGZ_CONFIG --gamedir`
 AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}")
 
-dnl FIXME: should get ggzdatadir from ggz-config
-
-if test "x${datadir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
-    ggzdatadir="${ac_default_prefix}/share/ggz"
-  else
-    ggzdatadir="${prefix}/share/ggz"
-  fi
-else
-  ggzdatadir="${datadir}/ggz"
-fi
+ggzdatadir=`$GGZ_CONFIG --datadir`
 AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}")
 
 packagesrcdir=`cd $srcdir && pwd`
