@@ -3,6 +3,7 @@
 #include "map.h"
 #include "levelselector.h"
 #include "network.h"
+#include "level.h"
 
 #include <kmenubar.h>
 #include <klocale.h>
@@ -14,10 +15,16 @@
 
 #include <qsocketnotifier.h>
 
+#include "config.h"
+
 MainWindow::MainWindow()
 : KMainWindow()
 {
 	network = NULL;
+	sn = NULL;
+	snc = NULL;
+
+	m_levels.setAutoDelete(true);
 
 	map = new Map(this);
 	setCentralWidget(map);
@@ -72,7 +79,7 @@ void MainWindow::slotMenu(int id)
 	switch(id)
 	{
 		case game_new:
-			levelSelector(false);
+			levelSelector();
 			break;
 		case game_info:
 			break;
@@ -102,43 +109,45 @@ void MainWindow::slotMenu(int id)
 	}
 }
 
-void MainWindow::levelSelector(bool networking)
+void MainWindow::levelSelector()
 {
 	int ret;
 	int count;
 
 	LevelSelector l(this);
-	if(networking)
+	if(network)
 	{
 		ggz_read_int(network->fd(), &count);
 		for(int i = 0; i < count; i++)
 		{
-			char *title, *author, *version;
-			int mapwidth, mapheight;
-			char board[30], boardmap[30];
-			ggz_read_string_alloc(network->fd(), &title);
-			ggz_read_string_alloc(network->fd(), &author);
-			ggz_read_string_alloc(network->fd(), &version);
-			ggz_read_int(network->fd(), &mapwidth);
-			ggz_read_int(network->fd(), &mapheight);
-			for(int j = 0; j < mapheight; j++)
-				ggz_readn(network->fd(), &board, 30);
-			for(int j = 0; j < mapheight; j++)
-				ggz_readn(network->fd(), &boardmap, 30);
+			Level *level;
+			level = new Level();
+			level->loadFromNetwork(network->fd());
+			m_levels.append(level);
 
-			l.addLevel(title);
+			l.addLevel(level);
 		}
+	}
+	else
+	{
+		Level *level = new Level();
+		level->loadFromFile(GGZDATADIR "/fyrdman/battle_of_hastings");
+		m_levels.append(level);
+		l.addLevel(level);
 	}
 	ret = l.exec();
 	if(ret == QDialog::Accepted)
 	{
-		// ...
-		if(networking)
+		if(network)
 		{
 			ggz_write_int(network->fd(), Network::sndmap);
 			ggz_write_string(network->fd(), l.level().latin1());
 		}
 		statusBar()->changeItem(i18n("Level: %1").arg(l.level()), status_level);
+		statusBar()->changeItem(i18n("Waiting for players"), status_state);
+
+		for(Level *le = m_levels.first(); le; le = m_levels.next())
+			if(le->title() == l.level()) map->setupMap(le);
 	}
 }
 
@@ -149,8 +158,8 @@ void MainWindow::enableNetwork()
 	connect(network, SIGNAL(signalData()), SLOT(slotData()));
 	network->connect();
 
-	QSocketNotifier *sn = new QSocketNotifier(network->cfd(), QSocketNotifier::Read, this);
-	connect(sn, SIGNAL(activated(int)), network, SLOT(slotDispatch()));
+	snc = new QSocketNotifier(network->cfd(), QSocketNotifier::Read, this);
+	connect(snc, SIGNAL(activated(int)), network, SLOT(slotDispatch()));
 
 	gamemenu->setItemEnabled(game_new, false);
 	gamemenu->setItemEnabled(game_sync, true);
@@ -169,12 +178,19 @@ void MainWindow::slotData()
 	int turn;
 	char cell;
 
+	kdDebug() << "data!" << endl;
+	if(!sn)
+	{
+		sn = new QSocketNotifier(network->fd(), QSocketNotifier::Read, this);
+		connect(sn, SIGNAL(activated(int)), SLOT(slotData()));
+	}
+
 	ggz_read_int(network->fd(), &op);
 	switch(op)
 	{
 		case Network::msgmaps:
 			statusBar()->changeItem(i18n("Selecting map"), status_state);
-			levelSelector(true);
+			levelSelector();
 			break;
 		case Network::msgseat:
 			ggz_read_int(network->fd(), &seat);

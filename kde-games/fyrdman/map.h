@@ -3,6 +3,8 @@
 
 #include <qwidget.h>
 
+class Level;
+
 class Map : public QWidget
 {
 	Q_OBJECT
@@ -15,6 +17,8 @@ class Map : public QWidget
 		void setPossession(bool possession);
 		void setAnimation(bool animation);
 
+		void setupMap(Level *level);
+
 	signals:
 		void signalMove(int x, int y, int x2, int y2);
 
@@ -23,12 +27,11 @@ class Map : public QWidget
 		void mousePressEvent(QMouseEvent *e);
 
 	private:
-		void setupMap(int x, int y);
-
 		int m_width, m_height;
 		bool m_map, m_knights, m_possession, m_animation;
 		bool m_picked;
 		int m_x, m_y, m_x2, m_y2;
+		Level *m_level;
 };
 
 #endif

@@ -2,9 +2,11 @@
 #define FYRDMAN_LEVELSELECTOR_H
 
 #include <qdialog.h>
+#include <qptrlist.h>
 
 class QComboBox;
 class QTextEdit;
+class Level;
 
 class LevelSelector : public QDialog
 {
@@ -13,7 +15,7 @@ class LevelSelector : public QDialog
 		LevelSelector(QWidget *parent = NULL, const char *name = NULL);
 		~LevelSelector();
 
-		void addLevel(QString title);
+		void addLevel(Level *level);
 		QString level();
 
 	protected slots:
@@ -23,6 +25,7 @@ class LevelSelector : public QDialog
 	private:
 		QComboBox *combo;
 		QTextEdit *desc;
+		QPtrList<Level> m_levels;
 };
 
 #endif

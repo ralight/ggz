@@ -1,4 +1,5 @@
 #include "map.h"
+#include "level.h"
 
 #include <kdebug.h>
 
@@ -13,6 +14,8 @@
 Map::Map(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
+	m_level = NULL;
+
 	m_map = true;
 	m_knights = true;
 	m_possession = true;
@@ -20,7 +23,7 @@ Map::Map(QWidget *parent, const char *name)
 
 	m_picked = false;
 
-	setupMap(6, 13);
+	setupMap(NULL);
 }
 
 Map::~Map()
@@ -80,7 +83,7 @@ void Map::mousePressEvent(QMouseEvent *e)
 	}
 }
 
-void Map::setupMap(int x, int y)
+void Map::setupMap(Level *level)
 {
 	QPainter p;
 	const int fwidth = 60;
@@ -88,17 +91,26 @@ void Map::setupMap(int x, int y)
 	const int offx = 50;
 	const int offy = 50;
 	const int angle = 20;
-	int roffx;
+	int roffx, roffy;
 	const int xs = fwidth * 2 - angle * 2;
 	const int ys = fheight - (int)(angle * 1.5);
+	//const int xs = fwidth - (int)(angle * 1.5);
+	//const int ys = fheight * 2 - angle * 2;
 	int xpos, ypos;
 	const QPixmap *pix;
 	QPixmap pix2, pix3;
 
-	m_width = x;
-	m_height = y;
-
 	setBackgroundPixmap(QPixmap(GGZDATADIR "/fyrdman/bayeux.png"));
+
+	m_level = level;
+	if(!level)
+	{
+		setFixedSize(400, 300);
+		return;
+	}
+
+	m_width = level->width();
+	m_height = level->height();
 
 	pix = backgroundPixmap();
 	QImage im = pix->convertToImage();
@@ -121,24 +133,28 @@ void Map::setupMap(int x, int y)
 			{
 				roffx = offx;
 				if(j % 2) roffx = offx + fwidth - angle;
+				roffy = offy;
+				//if(i % 2) roffy = offy + fheight - angle;
 
 				xpos = i * xs + roffx;
-				ypos = j * ys + offy;
+				ypos = j * ys + roffy;
 
-				int x = rand() % 4;
-				if(x > 2) x = 0;
-				p.setBrush(QColor(x, x, x));
+				int x = level->cell(i, j);
+				if(x >= 0)
+				{
+					p.setBrush(QColor(x % 2 + 1, x % 2 + 1, x % 2 + 1));
 
-				QPointArray a(6);
-				a.putPoints(0, 6,
-					xpos + angle, ypos,
-					xpos + fwidth - angle, ypos,
-					xpos + fwidth, ypos + fheight / 2,
-					xpos + fwidth - angle, ypos + fheight,
-					xpos + angle, ypos + fheight,
-					xpos, ypos + fheight / 2);
+					QPointArray a(6);
+					a.putPoints(0, 6,
+						xpos + angle, ypos,
+						xpos + fwidth - angle, ypos,
+						xpos + fwidth, ypos + fheight / 2,
+						xpos + fwidth - angle, ypos + fheight,
+						xpos + angle, ypos + fheight,
+						xpos, ypos + fheight / 2);
 
-				p.drawPolygon(a);
+					p.drawPolygon(a);
+				}
 			}
 
 		p.end();
@@ -196,19 +212,23 @@ void Map::setupMap(int x, int y)
 			{
 				roffx = offx;
 				if(j % 2) roffx = offx + fwidth - angle;
+				roffy = offy;
+				//if(i % 2) roffy = offy + fheight - angle;
 
 				xpos = i * xs + roffx;
-				ypos = j * ys + offy;
+				ypos = j * ys + roffy;
 
-				p.drawLine(xpos + angle, ypos, xpos + fwidth - angle, ypos);
-				p.drawLine(xpos + angle, ypos + fheight, xpos + fwidth - angle, ypos + fheight);
+				if(level->cellboard(i, j) != 32)
+				{
+					p.drawLine(xpos + angle, ypos, xpos + fwidth - angle, ypos);
+					p.drawLine(xpos + angle, ypos + fheight, xpos + fwidth - angle, ypos + fheight);
 
-				p.drawLine(xpos + angle, ypos, xpos, ypos + fheight / 2);
-				p.drawLine(xpos + angle, ypos + fheight, xpos, ypos + fheight / 2);
+					p.drawLine(xpos + angle, ypos, xpos, ypos + fheight / 2);
+					p.drawLine(xpos + angle, ypos + fheight, xpos, ypos + fheight / 2);
 
-				p.drawLine(xpos + fwidth - angle, ypos, xpos + fwidth, ypos + fheight / 2);
-				p.drawLine(xpos + fwidth - angle, ypos + fheight, xpos + fwidth, ypos + fheight / 2);
-
+					p.drawLine(xpos + fwidth - angle, ypos, xpos + fwidth, ypos + fheight / 2);
+					p.drawLine(xpos + fwidth - angle, ypos + fheight, xpos + fwidth, ypos + fheight / 2);
+				}
 			}
 
 		p.end();
@@ -225,21 +245,30 @@ void Map::setupMap(int x, int y)
 			{
 				roffx = offx;
 				if(j % 2) roffx = offx + fwidth - angle;
+				roffy = offy;
+				//if(i % 2) roffy = offy + fheight - angle;
 
 				xpos = i * xs + roffx;
-				ypos = j * ys + offy;
+				ypos = j * ys + roffy;
 
-				int x = rand() % 10;
-				if(x == 1)
-					p.drawPixmap(QPoint(xpos + angle, ypos - angle / 2), QPixmap(GGZDATADIR "/fyrdman/knight2.png"));
-				else if(x == 2)
-					p.drawPixmap(QPoint(xpos + angle, ypos - angle / 2), QPixmap(GGZDATADIR "/fyrdman/knight1.png"));
+				int x = level->cell(i, j);
+				if(x >= 0)
+				{
+					if(x % 2)
+						p.drawPixmap(QPoint(xpos + angle, ypos - angle / 2), QPixmap(GGZDATADIR "/fyrdman/knight2.png"));
+					else
+						p.drawPixmap(QPoint(xpos + angle, ypos - angle / 2), QPixmap(GGZDATADIR "/fyrdman/knight1.png"));
+				}
 
-				if((x == 1) || (x == 2))
+				if(x >= 0)
 				{
 					p.fillRect(xpos + angle, ypos + 2 * angle, fwidth - 2 * angle, 7, QBrush(QColor(0, 0, 0)));
-					p.fillRect(xpos + angle + 1, ypos + 2 * angle + 1, fwidth - 2 * angle - 2, 2, QBrush(QColor(x * 100, 255, 255 - x * 100)));
-					p.fillRect(xpos + angle + 1, ypos + 2 * angle + 4, fwidth - 2 * angle - 2, 2, QBrush(QColor(x * 100, 0, 255 - x * 100)));
+					QColor c;
+					if(x % 2) c = QColor(0, 0, 255);
+					else c = QColor(255, 0, 0);
+					p.fillRect(xpos + angle + 1, ypos + 2 * angle + 1, fwidth - 2 * angle - 2, 2, QBrush(c));
+					c = QColor(x * 30, 255 - x * 10, x * 15 + 100);
+					p.fillRect(xpos + angle + 1, ypos + 2 * angle + 4, fwidth - 2 * angle - 2, 2, QBrush(c));
 				}
 			}
 
@@ -252,24 +281,24 @@ void Map::setupMap(int x, int y)
 void Map::setMap(bool map)
 {
 	m_map = map;
-	setupMap(m_width, m_height);
+	setupMap(m_level);
 }
 
 void Map::setKnights(bool knights)
 {
 	m_knights = knights;
-	setupMap(m_width, m_height);
+	setupMap(m_level);
 }
 
 void Map::setPossession(bool possession)
 {
 	m_possession = possession;
-	setupMap(m_width, m_height);
+	setupMap(m_level);
 }
 
 void Map::setAnimation(bool animation)
 {
 	m_animation = animation;
-	setupMap(m_width, m_height);
+	setupMap(m_level);
 }
 

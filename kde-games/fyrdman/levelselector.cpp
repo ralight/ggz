@@ -1,4 +1,5 @@
 #include "levelselector.h"
+#include "level.h"
 
 #include <klocale.h>
 
@@ -15,8 +16,6 @@ LevelSelector::LevelSelector(QWidget *parent, const char *name)
 	QPushButton *ok, *cancel;
 
 	combo = new QComboBox(this);
-	combo->insertItem("Level1");
-	combo->insertItem("Level2");
 
 	desc = new QTextEdit(this);
 	desc->setReadOnly(true);
@@ -36,8 +35,6 @@ LevelSelector::LevelSelector(QWidget *parent, const char *name)
 	connect(combo, SIGNAL(activated(int)), SLOT(slotActivated(int)));
 
 	setCaption(i18n("Select a level"));
-
-	slotActivated(0);
 }
 
 LevelSelector::~LevelSelector()
@@ -57,11 +54,21 @@ void LevelSelector::slotActivated(int id)
 	QString text;
 
 	level = combo->currentText();
-	author = "anonymous";
-	version = "0.1";
-	width = 20;
-	height = 20;
-	players = 8;
+	author = "unknown";
+	version = "unknown";
+	width = 0;
+	height = 0;
+	players = 0;
+
+	for(Level *l = m_levels.first(); l; l = m_levels.next())
+		if(l->title() == level)
+		{
+			author = l->author();
+			version = l->version();
+			width = l->width();
+			height = l->height();
+			players = l->players();
+		}
 
 	text = i18n("Level: <i>%1</i><br>Author: <i>%2</i><br>Version: <i>%3</i><br>").arg(level).arg(author).arg(version);
 	text += i18n("Width: <i>%1</i><br>Height: <i>%2</i><br>Players: <i>%3</i>").arg(width).arg(height).arg(players);
@@ -69,9 +76,12 @@ void LevelSelector::slotActivated(int id)
 	desc->setText(text);
 }
 
-void LevelSelector::addLevel(QString title)
+void LevelSelector::addLevel(Level *level)
 {
-	combo->insertItem(title);
+	combo->insertItem(level->title());
+	m_levels.append(level);
+
+	slotActivated(0);
 }
 
 QString LevelSelector::level()
