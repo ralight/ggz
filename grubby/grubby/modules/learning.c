@@ -38,7 +38,7 @@ static void learn(char **wordlist)
 	knowledge[knowledgecounter] = strdup(wordlist[1]);
 	knowledge[knowledgecounter + 1] = strdup(wordlist[2]);
 	i = 3;
-	len = 0;
+	len = strlen(knowledge[knowledgecounter + 1]);
 	while(wordlist[i])
 	{
 		len += strlen(wordlist[i]) + 1;
@@ -115,7 +115,8 @@ Guru *gurumod_exec(Guru *message)
 		return NULL;
 	if(!message->message) return NULL;
 	if(message->priority == 10) return NULL;
-	
+	if(!strcmp(message->player, "[Server]")) return NULL;
+
 	request = NULL;
 	i = 0;
 	mode = mode_none;
