@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000 (as cards.c)
  * Desc: Various useful deck manipulation routines for card games
- * $Id: deck.c 4146 2002-05-03 08:07:37Z jdorje $
+ * $Id: deck.c 4484 2002-09-09 04:09:04Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -214,7 +214,7 @@ card_t deal_card(deck_t * deck)
 }
 
 
-int compare_cards(const void *c1, const void *c2)
+static int compare_cards(const void *c1, const void *c2)
 {
 	register card_t card1 = game.data->map_card(*(card_t *) c1);
 	register card_t card2 = game.data->map_card(*(card_t *) c2);
