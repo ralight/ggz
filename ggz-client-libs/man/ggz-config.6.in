@@ -7,7 +7,7 @@ ggz\-config \- GGZ Gaming Zone configuration manager
 Query Mode:
 .br 
 \fBggz\-config [\-\-configdir] [\-\-gamedir] [\-\-datadir]
-[\-\-version]\fR
+[\-\-protocol] [\-\-version]\fR
 .LP 
 Install Mode:
 .br 
@@ -32,20 +32,22 @@ build process of a client or game module.
 .LP 
 Query Mode Options
 .TP 
-\fB\-\-configdir\fR
+\fB\-c\fR, \fB\-\-configdir\fR
 Output location of the GGZ Client Libs configuration
 directory and exit.
 .TP 
-\fB\-\-gamedir\fR
+\fB\-g\fR, \fB\-\-gamedir\fR
 Output location of the executable game modules and exit.
 .TP 
-\fB\-\-datadir\fR
+\fB\-d\fR, \fB\-\-datadir\fR
 Output location of game module data directory and exit.
 .TP 
+\fB\-p\fR, \fB\-\-protocol\fR
+Query GGZ_CS_PROTO_VERSION - version of core protocol.
 \fB\-\-help\fR
 Output help information and exit.
 .TP 
-\fB\-\-version\fR
+\fB\-v\fR, \fB\-\-version\fR
 Output version information and exit.
 .LP 
 Install Mode Options
@@ -60,7 +62,7 @@ Specifies the source module description file.
 Overwrite an existing module entry of the same name, author
 and version rather than returning an error.
 .TP 
-\fB\-\-destdir\fR
+\fB\-D\fR, \fB\-\-destdir\fR
 Specifies that the \fI$DESTDIR\fP environment variable
 contains a directory to prepend to the path for the GGZ
 module configuration file (\fIggz.modules\fP).  The
