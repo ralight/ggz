@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 7072 2005-04-02 11:54:40Z josef $
+ * $Id: ggzdb_pgsql.c 7075 2005-04-02 19:12:30Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -322,7 +322,7 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	res = PQexec(conn, query);
 
 	snprintf(query, sizeof(query), "DELETE FROM stats "
-		 "WHERE handle = '%s'",
+		 "WHERE lower(handle) = lower('%s')",
 		 pe->handle);
 
 	res = PQexec(conn, query);
@@ -356,7 +356,7 @@ GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	snprintf(query, sizeof(query),
 		 "SELECT "
 		 "password, name, email, lastlogin, permissions "
-		 "FROM users WHERE handle = '%s'",
+		 "FROM users WHERE lower(handle) = lower('%s')",
 		 pe->handle);
 
 	res = PQexec(conn, query);
@@ -404,7 +404,7 @@ GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 		 "UPDATE users SET "
 		 "password = '%s', name = '%s', email = '%s', "
 		 "lastlogin = %li, permissions = %u WHERE "
-		 "handle = '%s'",
+		 "lower(handle) = lower('%s')",
 		 pe->password, pe->name, pe->email, pe->last_login,
 		 pe->perms, pe->handle);
 
@@ -551,7 +551,7 @@ GGZDBResult _ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 	snprintf(query, sizeof(query),
 		"SELECT "
 		"wins, losses, ties, forfeits, rating, ranking, highscore "
-		"FROM stats WHERE handle = '%s' AND game = '%s'",
+		"FROM stats WHERE lower(handle) = lower('%s') AND game = '%s'",
 		stats->player, stats->game);
 
 	res = PQexec(conn, query);
@@ -593,7 +593,7 @@ GGZDBResult _ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 	snprintf(query, sizeof(query),
 		"UPDATE stats "
 		"SET wins = %i, losses = %i, ties = %i, forfeits = %i, rating = %f, ranking = %u, highscore = %li "
-		"WHERE handle = '%s' AND game = '%s'",
+		"WHERE lower(handle) = lower('%s') AND game = '%s'",
 		stats->wins, stats->losses, stats->ties, stats->forfeits, stats->rating, stats->ranking, stats->highest_score,
 		stats->player, stats->game);
 
