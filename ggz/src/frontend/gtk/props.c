@@ -93,6 +93,7 @@ static void props_update(void)
 	GtkWidget *tmp;
 	GdkFont *font;
 	GList *items;
+	const char *text;
 
 	/* Save Changes */
 
@@ -154,7 +155,20 @@ static void props_update(void)
 
 	/* Comments */
 	tmp = lookup_widget((props_dialog), "info_comments");
-	ggzcore_conf_write_string("USER INFO", "COMMENTS", gtk_editable_get_chars(GTK_EDITABLE(tmp), 0, gtk_text_get_length(GTK_TEXT(tmp))));
+#ifdef GTK2
+	{
+		GtkTextIter start, end;
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(
+			GTK_TEXT_VIEW(tmp));
+		gtk_text_buffer_get_bounds(buffer, &start, &end);
+		text = gtk_text_buffer_get_text(buffer,
+						&start, &end, FALSE);
+	}
+#else
+	text = gtk_editable_get_chars(GTK_EDITABLE(tmp), 0,
+				      gtk_text_get_length(GTK_TEXT(tmp)));
+#endif
+	ggzcore_conf_write_string("USER INFO", "COMMENTS", text);
 
 	/* Single click room entry */
 	tmp = lookup_widget((props_dialog), "click_checkbutton");
@@ -334,7 +348,12 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 	/* Comments */
 	tmp = lookup_widget((props_dialog), "info_comments");
 	old = ggzcore_conf_read_string("USER INFO", "COMMENTS", ".");
+#ifdef GTK2
+	gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(tmp)),
+				 old, strlen(old));
+#else
 	gtk_text_insert(GTK_TEXT(tmp), NULL, NULL, NULL, old, strlen(old));
+#endif
 	ggz_free(old);
 
 	/* Single click room entry */
@@ -455,7 +474,7 @@ void props_profile_entry_changed(GtkWidget *widget, gpointer user_data)
 {
 	GtkWidget *tmp;
 	GList *names, *node;
-	gchar* profile;
+	const gchar * profile;
 
 	tmp = lookup_widget(props_dialog, "profile_entry");
 	profile = gtk_entry_get_text(GTK_ENTRY(tmp));
@@ -1511,13 +1530,19 @@ create_dlg_props (void)
   gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow1), 5);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
+#ifdef GTK2
+  info_comments = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
+#else
   info_comments = gtk_text_new (NULL, NULL);
+#endif
   gtk_widget_ref (info_comments);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "info_comments", info_comments,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (info_comments);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), info_comments);
+#ifndef GTK2
   gtk_text_set_editable (GTK_TEXT (info_comments), TRUE);
+#endif
 
   label3 = gtk_label_new (_("User Information"));
   gtk_widget_ref (label3);
