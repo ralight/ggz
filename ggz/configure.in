@@ -55,7 +55,7 @@ AC_CHECK_HEADERS(sys/time.h unistd.h)
 
 dnl Check for gettext support
 dnl =========================
-ALL_LINGUAS="de"
+ALL_LINGUAS="de pt_BR"
 AM_GNU_GETTEXT
 if test "x${prefix}" = "xNONE"; then
   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")
@@ -271,6 +271,7 @@ AC_OUTPUT([Makefile
 		 game_clients/combat/maps/Makefile
 	   game_clients/hastings/Makefile
 	   game_clients/chinese-checkers/Makefile
+     game_clients/chess/Makefile
 	   intl/Makefile
 	   po/Makefile.in
 	   ])
