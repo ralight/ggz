@@ -45,7 +45,7 @@ typedef struct _memptr {
 static struct _memptr *alloc = NULL;
 
 
-void * _ggzcore_malloc(const unsigned int size, char *tag, int line)
+static void * _ggzcore_allocate(const unsigned int size, char *tag, int line)
 {
 	struct _memptr *newmem;
 
@@ -69,16 +69,28 @@ void * _ggzcore_malloc(const unsigned int size, char *tag, int line)
 		      "%d bytes allocated at %p from %s/%d\n",
 		      size, newmem->ptr, tag, line);
 
-	/* Clear the memory to zilcho */
-	memset(newmem->ptr, 0, size);
-
 	return newmem->ptr;
+}
+
+
+void * _ggzcore_malloc(const unsigned int size, char *tag, int line)
+{
+	void *new;
+
+	/* Get a chunk of memory */
+	new = _ggzcore_allocate(size, tag, line);
+
+	/* Clear the memory to zilcho */
+	memset(new, 0, size);
+
+	return new;
 }
 
 
 void * _ggzcore_realloc(const void *ptr, const unsigned size,char *tag,int line)
 {
-	struct _memptr *newmem, *prev, *targetmem;
+	struct _memptr *prev, *targetmem;
+	void *new;
 
 	/* Search through allocated memory for this chunk */
 	prev = NULL;
@@ -99,15 +111,18 @@ void * _ggzcore_realloc(const void *ptr, const unsigned size,char *tag,int line)
 	ggzcore_debug(GGZ_DBG_MEMDETAIL,
 		      "Reallocating %d bytes at %p to %d bytes from %s/%d\n",
 		      targetmem->size, targetmem->ptr, size, tag, line);
-	newmem = _ggzcore_malloc(sizeof(_memptr) + size, tag, line);
+	new = _ggzcore_allocate(sizeof(_memptr) + size, tag, line);
 
 	/* Copy the old to the new */
-	memcpy(newmem->ptr, targetmem->ptr, targetmem->size);
+	memcpy(new, targetmem->ptr, targetmem->size);
+
+	/* And zero out the rest of the block */
+	memset(new+targetmem->size, 0, size-targetmem->size);
 
 	/* And free the old chunk */
 	_ggzcore_free(targetmem->ptr, tag, line);
 
-	return newmem->ptr;
+	return new;
 }
 
 
@@ -169,4 +184,29 @@ int _ggzcore_memory_check(void)
 	ggzcore_debug(GGZ_DBG_MEMORY, "*** End Memory Leak Check ***");
 
 	return 0;
+}
+
+
+char * _ggzcore_strdup(const char *src, char *tag, int line)
+{
+	unsigned len;
+	char *new;
+
+	if(src == NULL) {
+		ggzcore_error_msg("_ggzcore_strdup - NULL pointer from %s/%d",
+				  tag, line);
+		return NULL;
+	}
+
+	len = strlen(src);
+
+	ggzcore_debug(GGZ_DBG_MEMDETAIL,
+		      "Allocating memory for length %d string from %s/%d\n",
+		      len+1, tag, line);
+
+	new = _ggzcore_allocate(len+1, tag, line);
+
+	memcpy(new, src, len+1);
+
+	return new;
 }
