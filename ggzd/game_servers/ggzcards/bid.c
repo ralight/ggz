@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 4118 2002-04-30 04:30:28Z jdorje $
+ * $Id: bid.c 4136 2002-05-02 16:52:55Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -189,6 +189,7 @@ void handle_bid_event(player_t p, bid_t bid)
 
 	/* handle the bid */
 	game.players[p].bid_count++;
+	game.bid_count++;
 	game.data->handle_bid(p, bid);
 
 	set_player_message(p);
@@ -212,10 +213,6 @@ void handle_bid_event(player_t p, bid_t bid)
 	}
 	game.players[p].allbids[game.bid_rounds] = bid;
 	send_bid_history();
-
-	/* Increment the bid count.  It now becomes the number of
-	   bids made so far this hand. */
-	game.bid_count++;
 	
 	/* Also mark the previous bidder, so that next_bid() can
 	   safely access it. */
@@ -226,15 +223,18 @@ void handle_bid_event(player_t p, bid_t bid)
 		return;
 	}
 	
-	/* Set the state appropriately.  Note that it may be change
-	   again below. */
-	if (game.bid_count == game.bid_total)
+	/* Get the game code to handle the bid. */		
+	game.data->next_bid();
+
+	/* This is a minor hack.  The game's next_bid function might have
+	   changed the game's state.  If that happened, we don't want to
+	   change it back!  And it's necessary for this to come below
+	   the next_bid call, since next_bid may change bid_total... */
+	if (game.state == STATE_WAIT_FOR_BID
+	    && game.bid_count == game.bid_total)
 		set_game_state(STATE_FIRST_TRICK);
 	else
 		set_game_state(STATE_NEXT_BID);
-	
-	/* Get the game code to handle the bid. */		
-	game.data->next_bid();
 
 	/* do next move */
 	next_move();
