@@ -2,7 +2,7 @@
 
 SUBDIRS = libcgc .
 
-INCLUDES = -Ilibcgc -I$(top_srdir)/easysock
+INCLUDES = -Ilibcgc -I$(top_srcdir)/easysock
 
 ggzdexecmod_PROGRAMS = ggzd.chess
 ggzdgame_DATA = chess.dsc
@@ -18,7 +18,7 @@ ggzd_chess_SOURCES = ggz.c \
 		         protocols.h
 
 
-ggzd_chess_LDADD = libcgc/libcgc.a -leasysock
+ggzd_chess_LDADD = libcgc/libcgc.a $(top_builddir)/easysock/libeasysock.la
 #ggzd_chess_LDFLAGS = -static
 
 test:
