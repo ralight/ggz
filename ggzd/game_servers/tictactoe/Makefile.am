@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2769 2001-12-01 06:53:01Z bmh $
+# $Id: Makefile.am 3880 2002-04-10 13:53:51Z dr_maux $
 
 EXTRA_DIST = tictactoe.dsc tictactoe.room
 
@@ -14,7 +14,7 @@ ggzd_tictactoe_SOURCES = main.c \
                          game.h
 
 
-INCLUDES = -I$(top_srcdir)/ggzdmod
+INCLUDES = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 ggzd_tictactoe_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.a
 
 ggzd_tictactoe_DEPENDENCIES = $(top_builddir)/ggzdmod/libggzdmod.a

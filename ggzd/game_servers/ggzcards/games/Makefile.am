@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3682 2002-03-25 20:16:53Z jdorje $
+# $Id: Makefile.am 3880 2002-04-10 13:53:51Z dr_maux $
 
 SUBDIRS = .
 
@@ -12,7 +12,10 @@ ggzdroom_DATA =
 
 # NOTE: ggzdmod must come last so we don't include "protocol.h" from
 # that directory!!  Ugh!
-INCLUDES = -I$(top_srcdir)/game_servers/ggzcards -I$(top_srcdir)/game_servers/ggzcards/common -I$(top_srcdir)/ggzdmod
+INCLUDES = -I$(top_srcdir)/game_servers/ggzcards \
+	-I$(top_srcdir)/game_servers/ggzcards/common \
+	-I$(top_srcdir)/ggzdmod \
+	$(LIBGGZ_INCLUDES)
 
 libgames_a_DEPENDENCIES = $(top_builddir)/game_servers/ggzcards/common/libcommon.a
 

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3491 2002-02-27 09:42:22Z jdorje $
+# $Id: Makefile.am 3880 2002-04-10 13:53:51Z dr_maux $
 
 SUBDIRS = .
 
@@ -9,5 +9,7 @@ libcommon_a_SOURCES = \
 	cards.c cards.h \
 	protocol.c protocol.h \
 	shared.h
+
+INCLUDES = $(LIBGGZ_INCLUDES)
 
 test: # nothing to be done (ggz-server only)

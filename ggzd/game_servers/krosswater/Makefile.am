@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3803 2002-04-07 07:41:27Z dr_maux $
+# $Id: Makefile.am 3880 2002-04-10 13:53:51Z dr_maux $
 
 SUBDIRS = stackpath zoneserver
 
@@ -14,7 +14,8 @@ krosswater_server_DEPENDENCIES = $(top_builddir)/ggzdmod/libggzdmod.a
 
 INCLUDES = -I $(top_srcdir)/game_servers/krosswater/stackpath  \
 	   -I $(top_srcdir)/game_servers/krosswater/zoneserver \
-	   -I $(top_srcdir)/ggzdmod
+	   -I $(top_srcdir)/ggzdmod \
+	   $(LIBGGZ_INCLUDES)
 
 ggzdroom_DATA = krosswater.room
 ggzdgame_DATA = krosswater.dsc

@@ -23,6 +23,8 @@ ggzd_spades_SOURCES = card.c \
 
 ggzd_spades_LDADD = $(LDADD)
 
+INCLUDES = $(LIBGGZ_INCLUDES)
+
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
 	-cp -f $(ggzdgame_DATA) $(top_builddir)/test/games
