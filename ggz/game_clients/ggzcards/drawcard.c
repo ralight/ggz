@@ -1,10 +1,10 @@
-/*
+/* 
  * File: drawcard.c
  * Author: Jason Short
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 4062 2002-04-23 19:40:29Z jdorje $
+ * $Id: drawcard.c 4180 2002-05-07 09:44:19Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -33,8 +33,8 @@
 
 #include "cards.h"
 #include "drawcard.h"
-#include "game.h"	/* For preferences information */
-#include "table.h"	/* HACK: we need table_style */
+#include "game.h"		/* For preferences information */
+#include "table.h"		/* HACK: we need table_style */
 
 #include "cards-1.xpm"
 #include "cards-2.xpm"
@@ -55,11 +55,12 @@ static cardset_type_t client_card_type = UNKNOWN_CARDSET;
 
 static void load_french_cardset(void);
 
-static void get_card_coordinates(card_t card, int orientation, int *x, int *y);
-static void draw_french_card(card_t card, int orientation,
-                             int x, int y, GdkPixmap *image);
-static void draw_domino_card(card_t card, int orientation,
-                             int x, int y, GdkPixmap *image);
+static void get_card_coordinates(card_t card, orientation_t orientation,
+				 int *x, int *y);
+static void draw_french_card(card_t card, orientation_t orientation, int x,
+			     int y, GdkPixmap * image);
+static void draw_domino_card(card_t card, orientation_t orientation, int x,
+			     int y, GdkPixmap * image);
 
 static int get_card_width0(void);
 static int get_card_height0(void);
@@ -89,8 +90,7 @@ static void load_french_cardset(void)
 		if (!card_fronts[i] || !card_backs[i])
 			ggz_debug("table", "ERROR: "
 				  "couldn't load card pixmaps "
-				  "for orientation %d.",
-				  i);
+				  "for orientation %d.", i);
 	}
 }
 
@@ -114,15 +114,16 @@ void load_card_data(cardset_type_t cardset_type)
 }
 
 /* Returns the coordinates of the card out of the XPM file. */
-static void get_card_coordinates(card_t card, int orientation, int *x, int *y)
+static void get_card_coordinates(card_t card, orientation_t orientation,
+				 int *x, int *y)
 {
 	int xc = 0, yc = 0;
 	int xp, yp;
 	int height = (orientation % 2 == 0) ? CARDHEIGHT : CARDWIDTH;
 	int width = (orientation % 2 == 0) ? CARDWIDTH : CARDHEIGHT;
-	
-	/* We don't care about the deck, but the rest had better
-	   be accurate. */
+
+	/* We don't care about the deck, but the rest had better be accurate. 
+	 */
 	assert(card.face >= ACE_LOW && card.face <= ACE_HIGH
 	       && card.suit >= CLUBS && card.suit <= SPADES
 	       && orientation >= 0 && orientation < 4);
@@ -139,19 +140,19 @@ static void get_card_coordinates(card_t card, int orientation, int *x, int *y)
 	/* y is measured from the top; x from the left.  This just rotates
 	   the grid as necessary. */
 	switch (orientation) {
-	case 0:
+	case FACE_BOTTOM:
 		xc = xp;
 		yc = yp;
 		break;
-	case 1:
+	case FACE_LEFT:
 		xc = 13 - yp - 1;
 		yc = xp;
 		break;
-	case 2:		/* just mirror everything */
+	case FACE_TOP:		/* just mirror everything */
 		xc = 4 - xp - 1;
 		yc = 13 - yp - 1;
 		break;
-	case 3:
+	case FACE_RIGHT:
 		xc = yp;
 		yc = 4 - xp - 1;
 		break;
@@ -161,8 +162,8 @@ static void get_card_coordinates(card_t card, int orientation, int *x, int *y)
 	*y = yc * height;
 }
 
-static void draw_french_card(card_t card, int orientation,
-                             int x, int y, GdkPixmap *image)
+static void draw_french_card(card_t card, orientation_t orientation,
+			     int x, int y, GdkPixmap * image)
 {
 	int width, height;
 	int xc = 0, yc = 0;
@@ -180,11 +181,11 @@ static void draw_french_card(card_t card, int orientation,
 	else {
 		/* based on there being 4 different backs */
 		/* TODO: do different decks differently */
-		int xy[4][2] =
-			{ {2 * CARDWIDTH, 0},
-			  {0, 2 * CARDWIDTH},
-			  {CARDWIDTH, 0},
-			  {0, CARDWIDTH} };
+		int xy[4][2] = { {2 * CARDWIDTH, 0},
+		{0, 2 * CARDWIDTH},
+		{CARDWIDTH, 0},
+		{0, CARDWIDTH}
+		};
 		xc = xy[orientation][0];
 		yc = xy[orientation][1];
 	}
@@ -194,86 +195,84 @@ static void draw_french_card(card_t card, int orientation,
 			card_backs[orientation], xc, yc, x, y, width, height);
 }
 
-static void draw_domino_card(card_t card, int orientation,
-                             int x, int y, GdkPixmap *image)
+static void draw_domino_card(card_t card, orientation_t orientation,
+			     int x, int y, GdkPixmap * image)
 {
 	const int h = get_card_height0() - 1;
 	const int spot_radius = (h) / 8;
 	const int spots[7][7][2] = { {},
-	                             { {h / 2,       h / 2} },
-	                             { {h / 3,       h / 3},
-	                               {(2 * h) / 3, (2 * h) / 3} },
-	                             { {h / 4,       h / 4},
-	                               {h / 2,       h / 2},
-	                               {(3 * h) / 4, (3 * h) / 4} },
-	                             { {h / 4,       h / 4},
-	                               {(3 * h) / 4, (3 * h) / 4},
-	                               {h / 4,       (3 * h) / 4},
-	                               {(3 * h) / 4, h / 4} },
-	                             { {h / 2,       h / 2},
-	                               {h / 5,       h / 5},
-	                               {(4 * h) / 5, h / 5},
-	                               {h / 5,       (4 * h) / 5},
-	                               {(4 * h) / 5, (4 * h) / 5} },
-	                             { {h / 4,       h / 5},
-	                               {h / 4,       h / 2},
-	                               {h / 4,       (4 * h) / 5},
-	                               {(3 * h) / 4, h / 5},
-	                               {(3 * h) / 4, h / 2},
-	                               {(3 * h) / 4, (4 * h) / 5} } };
+	{{h / 2, h / 2}},
+	{{h / 3, h / 3},
+	 {(2 * h) / 3, (2 * h) / 3}},
+	{{h / 4, h / 4},
+	 {h / 2, h / 2},
+	 {(3 * h) / 4, (3 * h) / 4}},
+	{{h / 4, h / 4},
+	 {(3 * h) / 4, (3 * h) / 4},
+	 {h / 4, (3 * h) / 4},
+	 {(3 * h) / 4, h / 4}},
+	{{h / 2, h / 2},
+	 {h / 5, h / 5},
+	 {(4 * h) / 5, h / 5},
+	 {h / 5, (4 * h) / 5},
+	 {(4 * h) / 5, (4 * h) / 5}},
+	{{h / 4, h / 5},
+	 {h / 4, h / 2},
+	 {h / 4, (4 * h) / 5},
+	 {(3 * h) / 4, h / 5},
+	 {(3 * h) / 4, h / 2},
+	 {(3 * h) / 4, (4 * h) / 5}}
+	};
 	int i, j;
 	int show = (card.suit != -1 && card.face != -1);
 	const int xo = (orientation % 2 == 0) ? h : 0;
 	const int yo = (orientation % 2 == 0) ? 0 : h;
-	
+
 	assert(get_card_width0() - 1 == 2 * h);
-	
+
 	gdk_draw_rectangle(image,
-	                   show ? table_style->bg_gc[GTK_WIDGET_STATE(table)]
-	                        : table_style->fg_gc[GTK_WIDGET_STATE(table)],
-	                   TRUE,
-	                   x, y,
-	                   get_card_width(orientation),
-	                   get_card_height(orientation));
-	
+			   show ? table_style->bg_gc[GTK_WIDGET_STATE(table)]
+			   : table_style->fg_gc[GTK_WIDGET_STATE(table)],
+			   TRUE,
+			   x, y,
+			   get_card_width(orientation),
+			   get_card_height(orientation));
+
 	if (!show)
 		return;
-	
+
 	gdk_draw_rectangle(image,
-	                   table_style->fg_gc[GTK_WIDGET_STATE(table)],
-	                   FALSE,
-	                   x, y,
-	                   h, h);
+			   table_style->fg_gc[GTK_WIDGET_STATE(table)],
+			   FALSE, x, y, h, h);
 	gdk_draw_rectangle(image,
-	                   table_style->fg_gc[GTK_WIDGET_STATE(table)],
-	                   FALSE,
-	                   x + xo, y + yo,
-	                   h, h);
-	
+			   table_style->fg_gc[GTK_WIDGET_STATE(table)],
+			   FALSE, x + xo, y + yo, h, h);
+
 	for (i = 0; i < 2; i++) {
 		int num_spots = i ? card.face : card.suit;
 		int x0 = x + i * xo;
 		int y0 = y + i * yo;
-		
+
 		for (j = 0; j < num_spots; j++) {
 			/* FIXME: the spots should technically be rotated on
 			   the domino to be in the correct position. */
 			int spot_x = x0 + spots[num_spots][j][0];
 			int spot_y = y0 + spots[num_spots][j][1];
-			
+
 			gdk_draw_arc(image,
-			             table_style->fg_gc[GTK_WIDGET_STATE(table)],
-			             TRUE,
-			             spot_x - spot_radius, spot_y - spot_radius,
-			             2 * spot_radius, 2 * spot_radius,
-			             0, 360 * 64);
+				     table_style->
+				     fg_gc[GTK_WIDGET_STATE(table)], TRUE,
+				     spot_x - spot_radius,
+				     spot_y - spot_radius, 2 * spot_radius,
+				     2 * spot_radius, 0, 360 * 64);
 		}
 	}
-	
+
 }
 
 /* Draws the given card at the given location with the given orientation. */
-void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image)
+void draw_card(card_t card, orientation_t orientation, int x, int y,
+	       GdkPixmap * image)
 {
 	switch (client_card_type) {
 	case CARDSET_FRENCH:
@@ -303,7 +302,7 @@ static int get_card_width0(void)
 		else
 			return 65;
 	default:
-		return 0;	
+		return 0;
 	}
 }
 
@@ -315,11 +314,11 @@ static int get_card_height0(void)
 	case CARDSET_DOMINOES:
 		return get_card_width0() / 2 + 1;
 	default:
-		return 0;	
+		return 0;
 	}
 }
 
-int get_card_width(int orientation)
+int get_card_width(orientation_t orientation)
 {
 	if (orientation % 2 == 0)
 		return get_card_width0();
@@ -327,7 +326,7 @@ int get_card_width(int orientation)
 		return get_card_height0();
 }
 
-int get_card_height(int orientation)
+int get_card_height(orientation_t orientation)
 {
 	if (orientation % 2 == 0)
 		return get_card_height0();
@@ -337,12 +336,12 @@ int get_card_height(int orientation)
 
 float get_card_visibility_width(void)
 {
-	float width = (float)get_card_width0();
+	float width = (float) get_card_width0();
 	switch (client_card_type) {
 	case CARDSET_FRENCH:
 		return width / 4.0;
 	case CARDSET_DOMINOES:
-		return width + (float)CARD_OFFSET;
+		return width + (float) CARD_OFFSET;
 	default:
 		return 0.0;
 	}
@@ -350,6 +349,6 @@ float get_card_visibility_width(void)
 
 float get_card_visibility_height(void)
 {
-	float height = (float)get_card_height0();
-	return height + (float)CARD_OFFSET;
+	float height = (float) get_card_height0();
+	return height + (float) CARD_OFFSET;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.h 4093 2002-04-27 22:02:50Z jdorje $
+ * $Id: layout.h 4180 2002-05-07 09:44:19Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -23,9 +23,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef __LAYOUT_H__
+#define __LAYOUT_H__
+
 #include "shared.h"
 
-#include "drawcard.h"
+typedef enum {
+	FACE_BOTTOM,
+	FACE_LEFT,
+	FACE_TOP,
+	FACE_RIGHT
+} orientation_t;
+
+#include "drawcard.h"		/* FIXME */
 
 /* no more than 6 players will work */
 #define MAX_NUM_PLAYERS 6
@@ -38,7 +48,7 @@
 
 /* #define WINDOW_WIDTH 469 */
 /* more cards will fit if you just change table_max_hand_size */
-#define HAND_WIDTH get_hand_width() 	
+#define HAND_WIDTH get_hand_width()
 #define TEXT_WIDTH get_text_width()
 
 #define CARD_BOX_WIDTH	(HAND_WIDTH + 2 * XWIDTH)
@@ -58,7 +68,7 @@ int get_text_width(void);
 int get_max_hand_size(void);
 void set_max_hand_size(int max_hand_size);
 
-int orientation(int p);
+orientation_t orientation(int p);
 
 void get_tablecard_pos(int p, int *x, int *y);
 void get_table_dim(int *x, int *y, int *w, int *h);
@@ -72,3 +82,4 @@ void get_inner_card_area_pos(int p, int *x, int *y);
 
 void get_card_pos(int p, int card_num, bool selected, int *x, int *y);
 
+#endif /* __LAYOUT_H__ */
