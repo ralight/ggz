@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5563 2003-05-10 23:54:28Z dr_maux $
+dnl $Id: configure.ac 5663 2003-10-09 08:27:50Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -34,7 +34,7 @@ else
    subdirs=$DEFAULT_SUBDIRS
 fi
 
-allsubdirs="common $subdirs"
+allsubdirs="common po $subdirs"
 
 AM_INIT_AUTOMAKE($package, $version)
 AC_CONFIG_HEADERS([config.h])
@@ -73,23 +73,12 @@ AC_HEADER_STDC
 
 dnl Check for gettext support
 dnl =========================
-if test "x$MSGFMT" != "x"; then
-	AC_DEFINE([ENABLE_NLS], 1, [Define to use NLS (i18n)])
-	allsubdirs="$allsubdirs po"
-	enable_gettext="yes"
-
-	if test "x${prefix}" = "xNONE"; then
-		AC_DEFINE_UNQUOTED([LOCALEDIR],
-                                   "${ac_default_prefix}/share/locale",
-                                   [The location to put message catalogs])
-	else
-		AC_DEFINE_UNQUOTED([LOCALEDIR],
-                                   "${prefix}/share/locale",
-                                   [The location to put message catalogs])
-	fi
-else
-	enable_gettext="no"
+AM_WITH_NLS
+if test "${prefix}" = "NONE"; then
+	prefix=${ac_default_prefix}
 fi
+AC_DEFINE_UNQUOTED([LOCALEDIR], ["{prefix}/share/locale"],
+		   [The location to put message catalogs])
 
 dnl Check for typedefs, structures, and compiler characteristics
 dnl ============================================================

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5623 2003-07-17 02:27:09Z jdorje $
+#  $Id: Makefile.am 5663 2003-10-09 08:27:50Z jdorje $
 
 SUBDIRS = .
 
@@ -35,7 +35,7 @@ ggz_hastings_SOURCES = \
 	newmanred.xpm \
 	shadow.xpm
 
-ggz_hastings_LDADD =	@GTK_LIBS@ $(LDADD)			\
+ggz_hastings_LDADD =	@GTK_LIBS@ @INTLLIBS@ $(LDADD)		\
 			$(top_builddir)/common/libgtk-games.a	\
 			$(LIB_GGZMOD) $(LIB_GGZ)
 ggz_hastings_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)

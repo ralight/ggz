@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5623 2003-07-17 02:27:09Z jdorje $
+#  $Id: Makefile.am 5663 2003-10-09 08:27:50Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -26,7 +26,7 @@ ggz_reversi_SOURCES = \
 	dot.xpm \
 	white.xpm
 
-ggz_reversi_LDADD =	@GTK_LIBS@ $(LDADD)			\
-			$(top_builddir)/common/libgtk-games.a	\
+ggz_reversi_LDADD =	@GTK_LIBS@ @INTLLIBS@ $(LDADD)			\
+			$(top_builddir)/common/libgtk-games.a		\
 			$(LIB_GGZMOD) $(LIB_GGZ)
 ggz_reversi_LDFLAGS = $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
