@@ -1,0 +1,52 @@
+The Rebirth of KGGZ
+-------------------
+
+Hm, you might ask now why this is now a rebirth as there hasn't even been
+one single release yet. Is it possible to change the development model during
+two versions?
+
+Yes it is. There was no other choice. The current model should give both developers
+and users more flexibility. Please stand by while the rewrite is in progress,
+not everything might work yet.
+Here are the docs (- means: yet todo):
+
+main.cpp		=> main.cpp (enhancement)
+kggz.cpp		=> KGGZ.cpp (enhancement)
+kggz_browser.cpp	-
+kggz_chat.cpp		=> KGGZWorkspace.cpp (replacement)
+kggz_chatwidget.cpp	=> KGGZChat.cpp (enhancement)
+kggz_connect.cpp	=> KGGZConnect.cpp (enhancement)
+kggz_ftp.cpp		-
+kggz_games.cpp		-
+kggz_grubby.cpp		-
+kggz_hosts.cpp		-
+kggz_install.cpp	-
+kggz_internal.cpp	removed
+kggz_launch.cpp		=> KGGZLaunch.cpp (enhancement)
+kggz_motd.cpp		-
+kggz_news.cpp		-
+kggz_playerinfo.cpp	-
+kggz_preferences.cpp	-
+kggz_profiles.cpp	-
+kggz_roomsmenu.cpp	removed (obsolete)
+kggz_server.cpp		=> KGGZServer.cpp (enhancement)
+			=> KGGZRoom.cpp (new)
+kggz_settings.cpp	-
+kggz_startup.cpp	-
+kggz_state.cpp		-
+kggz_tables.cpp		=> KGGZTables.cpp (enhancement)
+kggz_teams.cpp		-
+kggz_themes.cpp		-
+kggz_update.cpp		-
+kggz_users.cpp		=> KGGZUsers.cpp (enhancement)
+--			=> KGGZCommon.cpp (new)
+--			=> KGGZBase.cpp (new)
+--			=> KGGZCallback.cpp (new)
+
+Please note that all sources are now split between the main program with its GGZ-related
+functionality and the additional widgets in the widgets/ directory, as well as non-UI classes
+in the abstract/directory.
+
+If you are interested in the old kggz files, please check out the MindX FTP space.
+
+Josef

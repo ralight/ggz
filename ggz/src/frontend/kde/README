@@ -1,0 +1,83 @@
+=============================================
+KGGZ: The GGZ Gaming Zone Core Client for KDE
+=============================================
+
+KGGZ is one of the GGZ frontends. That means, it is intended to be used as a central
+place for players to gather, chat and play games.
+This is now version 0.0.4pre6 of KGGZ. It is distributed under GNU GPL license conditions.
+
+News - what has changed?:
+-------------------------
+ => this section has gone into doc/ChangeLog.
+Please have a look into the CVS changelog for more accurate information.
+
+ * * * important news: this is _not_ the working version. It is rather a rebirth of kggz :) * * *
+
+Requirements:
+-------------
+-Xlib for the beep :)
+-Qt 2.2.1
+-KDE 2.x (kdelibs should be sufficient)
+-KHTML (optionally) for the browser
+-Qt network extension (optionally) for FTP
+-the GGZ libs of course
+
+Installation:
+-------------
+Just run ./autogen.sh. This should do everything for you.
+During the installation process you will be prompted for your
+root password.
+For more detailed installation instructions, please have a look into doc/INSTALL.
+
+Directory structure:
+--------------------
+/		- sources
+/images/	- images for kggz
+/images/games/	- icons for all game modules
+/images/icons/	- menu & widget icons
+/images/themes/ - theme images and descriptions
+/images/wm/	- window manager decoration, e.g. start menu & desktop
+/doc/		- documentation
+/doc/html	- tbd: detailed programmer information on kggz
+/help/		- local in-client help files
+/po/		- i18n files
+
+Installation structure:
+-----------------------
+~/.kde/share/locale/l10n/...		- i18n .mo files
+~/.kde/share/icons/			- icons for KDE
+~/.kde/share/applnk/Games/ggz/		- KDE menu entries
+~/.kde/share/mimelnk/application/	- Zone entry
+destdir/bin/				- executable
+destdir/share/kggz/...			- core client data
+
+You can do the following things:
+--------------------------------
+-invoke the server and/or connect to it
+-chat
+-browse the rooms list
+-use the chat with all commands
+**attempt to join or launch a game
+**see your network lag
+-browse the internet :-)
+-download game modules
+**configure game modules
+**talk with grubby
+** means: todo, but already prepared
+
+You can't do yet:
+-----------------
+-play games
+
+What else needs to be done?
+---------------------------
+-documentation (html)
+-port some of the games to kde (although one can use gtk+ games, of course)
+-more more games for ggz!!!
+
+Josef Spillner
+
+http://ggz.sourceforge.net - GGZ Gaming Zone
+http://mindx.sourceforge.net - The MindX Open Source Project
+http://www.inf.tu-dresden.de - The university where I study
+dr_maux@users.sourceforge.net - email me
