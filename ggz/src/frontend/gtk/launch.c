@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 4518 2002-09-11 22:11:35Z jdorje $
+ * $Id: launch.c 4594 2002-09-17 01:54:04Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -339,7 +339,8 @@ GtkWidget *create_dlg_launch(void)
 	GtkWidget *dlg_launch;
 	GtkWidget *vbox1;
 	GtkWidget *main_box;
-	GtkWidget *seats_box;
+	GtkWidget *game_box;
+	GtkWidget *seat_box;
 	GtkWidget *type_label;
 	GtkWidget *game_label;
 	GtkWidget *seats_combo;
@@ -393,13 +394,13 @@ GtkWidget *create_dlg_launch(void)
 	gtk_box_pack_start(GTK_BOX(vbox1), main_box, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(main_box), 10);
 
-	seats_box = gtk_hbox_new(FALSE, 10);
-	gtk_widget_ref(seats_box);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "seats_box",
-				 seats_box,
+	game_box = gtk_hbox_new(FALSE, 10);
+	gtk_widget_ref(game_box);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "game_box",
+				 game_box,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(seats_box);
-	gtk_box_pack_start(GTK_BOX(main_box), seats_box, TRUE, TRUE, 5);
+	gtk_widget_show(game_box);
+	gtk_box_pack_start(GTK_BOX(main_box), game_box, FALSE, FALSE, 5);
 
 	type_label = gtk_label_new(_("Game Type:"));
 	gtk_widget_ref(type_label);
@@ -407,7 +408,7 @@ GtkWidget *create_dlg_launch(void)
 				 type_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(type_label);
-	gtk_box_pack_start(GTK_BOX(seats_box), type_label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(game_box), type_label, FALSE, FALSE, 0);
 
 	game_label = gtk_label_new("");
 	gtk_widget_ref(game_label);
@@ -415,7 +416,7 @@ GtkWidget *create_dlg_launch(void)
 				 game_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(game_label);
-	gtk_box_pack_start(GTK_BOX(seats_box), game_label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(game_box), game_label, FALSE, FALSE, 0);
 
 	seats_combo = gtk_combo_new();
 	gtk_widget_ref(seats_combo);
@@ -423,7 +424,7 @@ GtkWidget *create_dlg_launch(void)
 				 seats_combo,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(seats_combo);
-	gtk_box_pack_end(GTK_BOX(seats_box), seats_combo, FALSE, TRUE, 0);
+	gtk_box_pack_end(GTK_BOX(game_box), seats_combo, FALSE, TRUE, 0);
 	gtk_widget_set_usize(seats_combo, 50, -2);
 	gtk_combo_set_value_in_list(GTK_COMBO(seats_combo), TRUE, FALSE);
 	seats_combo_items = g_list_append(seats_combo_items, (gpointer) "");
@@ -444,7 +445,7 @@ GtkWidget *create_dlg_launch(void)
 				 players_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(players_label);
-	gtk_box_pack_end(GTK_BOX(seats_box), players_label, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(game_box), players_label, FALSE, FALSE, 0);
 
 	author_box = gtk_hbox_new(FALSE, 0);
 	gtk_widget_ref(author_box);
@@ -504,7 +505,33 @@ GtkWidget *create_dlg_launch(void)
 				 separator,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(separator);
-	gtk_box_pack_start(GTK_BOX(main_box), separator, TRUE, TRUE, 3);
+	gtk_box_pack_start(GTK_BOX(main_box), separator, FALSE, FALSE, 3);
+
+	if (num_seats > 10) {
+		GtkWidget *scroll;
+
+		scroll = gtk_scrolled_window_new(NULL, NULL);
+		gtk_widget_ref(scroll);
+		gtk_object_set_data_full(GTK_OBJECT(dlg_launch),
+					 "scrolledwindow", scroll,
+					 (GtkDestroyNotify) gtk_widget_unref);
+		gtk_widget_show(scroll);
+		gtk_box_pack_start(GTK_BOX(main_box), scroll, TRUE, TRUE, 0);
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
+					       GTK_POLICY_AUTOMATIC,
+					       GTK_POLICY_AUTOMATIC);
+
+		seat_box = gtk_vbox_new(FALSE, 3);
+		gtk_widget_ref(seat_box);
+		gtk_object_set_data_full(GTK_OBJECT(dlg_launch),
+					 "seat_box", seat_box,
+					 (GtkDestroyNotify) gtk_widget_unref);
+		gtk_widget_show(seat_box);
+		gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW
+						      (scroll), seat_box);
+		gtk_widget_set_usize(scroll, -1, 250);
+	} else
+		seat_box = main_box;
 
 	memset(seats, 0, sizeof(seats));
 	for (i = 0; i < num_seats; i++) {
@@ -517,7 +544,7 @@ GtkWidget *create_dlg_launch(void)
 					 seats[i].box,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_widget_show(seats[i].box);
-		gtk_box_pack_start(GTK_BOX(main_box), seats[i].box, FALSE,
+		gtk_box_pack_start(GTK_BOX(seat_box), seats[i].box, FALSE,
 				   FALSE, 0);
 
 		sprintf(text, _("Seat %d:"), i + 1);
@@ -595,7 +622,7 @@ GtkWidget *create_dlg_launch(void)
 	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "desc_box", desc_box,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(desc_box);
-	gtk_box_pack_start(GTK_BOX(main_box), desc_box, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(main_box), desc_box, FALSE, FALSE, 0);
 
 	game_desc_label = gtk_label_new(_("Game Description   "));
 	gtk_widget_ref(game_desc_label);
