@@ -223,7 +223,10 @@ int ggzcore_game_launch(GGZGame *game)
 }
 
 
-int ggzcore_game_join(GGZGame *game);
+int ggzcore_game_join(GGZGame *game)
+{
+	return -1;
+}
 
 
 int ggzcore_game_send_data(GGZGame *game, char *buffer)
@@ -465,7 +468,11 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 }
 
 
-int _ggzcore_game_join(struct _GGZGame *game);
+int _ggzcore_game_join(struct _GGZGame *game) 
+{
+	return -1;
+}
+
 
 int _ggzcore_game_send_data(struct _GGZGame *game, char *buffer)
 {

@@ -107,7 +107,10 @@ int ggzcore_module_add(const char *game,
 		       const char *url,
 		       const char *exe_path,
 		       const char *icon_path,
-		       const char *help_path);
+		       const char *help_path)
+{
+	return -1;
+}
 
 
 /* This attempts to launch the specified module and returns 0 is
