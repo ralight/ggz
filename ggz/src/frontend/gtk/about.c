@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: about.c 5958 2004-02-21 19:15:00Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -141,7 +141,7 @@ GtkWidget *create_dlg_about(void)
 			   GTK_SIGNAL_FUNC(about_ok), NULL);
 	gtk_signal_connect(GTK_OBJECT(dlg_about), "realize",
 			   GTK_SIGNAL_FUNC(about_realize), NULL);
-	gtk_signal_connect(GTK_OBJECT(dlg_about), "expose_event",
+	gtk_signal_connect(GTK_OBJECT(background), "expose_event",
 			   GTK_SIGNAL_FUNC(about_update), NULL);
 	gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
 			   GTK_SIGNAL_FUNC(about_ok), NULL);
