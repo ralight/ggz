@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
- * $Id: main.c 4272 2002-06-23 11:49:53Z dr_maux $
+ * $Id: main.c 4323 2002-07-30 09:22:24Z dr_maux $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -68,8 +68,9 @@ static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
 	gdk_input_add(fd, GDK_INPUT_READ, net_handle_input, NULL);
 }
 
-int main(int argc, char *argv[]) {
-	
+int main(int argc, char *argv[]) {	
+	int ret;
+
 	initialize_debugging();
 
 	ggz_intl_init("chess");
@@ -81,6 +82,7 @@ int main(int argc, char *argv[]) {
 	gtk_widget_show(main_win);
 
 	game_info.state = CHESS_STATE_INIT;
+	game_info.fd = -1;
 
 	board_init();
 	game_update(CHESS_EVENT_INIT, NULL);
@@ -88,8 +90,8 @@ int main(int argc, char *argv[]) {
 	mod = ggzmod_new(GGZMOD_GAME);
 	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
 
-	ggzmod_connect(mod);
-	if (game_info.fd < 0)
+	ret = ggzmod_connect(mod);
+	if (ret != 0)
 		return -1;
 
 	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz, NULL);
