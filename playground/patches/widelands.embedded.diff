@@ -13,7 +13,7 @@ RCS file: /cvsroot/widelands/widelands/Makefile,v
 retrieving revision 1.47
 diff -u -r1.47 Makefile
 --- Makefile	4 Jan 2005 13:22:50 -0000	1.47
-+++ Makefile	8 Jan 2005 14:47:54 -0000
++++ Makefile	8 Jan 2005 18:33:39 -0000
 @@ -10,7 +10,7 @@
  
  # Compile time includes
@@ -29,13 +29,21 @@ RCS file: /cvsroot/widelands/widelands/src/main.cc,v
 retrieving revision 1.50
 diff -u -r1.50 main.cc
 --- src/main.cc	4 Jan 2005 13:22:50 -0000	1.50
-+++ src/main.cc	8 Jan 2005 14:48:10 -0000
-@@ -285,6 +285,9 @@
++++ src/main.cc	8 Jan 2005 18:33:55 -0000
+@@ -285,6 +285,17 @@
              }
              break;
           }
 +			else if(code == Fullscreen_Menu_NetSetup::GGZGAME) {
-+			    netgame=new NetHost();
++				if(NetGGZ::ref()->host()) netgame = new NetHost();
++				else
++				{
++					while(!NetGGZ::ref()->ip()) NetGGZ::ref()->data();
++
++					IPaddress peer;
++					SDLNet_ResolveHost (&peer, NetGGZ::ref()->ip(), WIDELANDS_PORT);
++					netgame = new NetClient(&peer);
++				}
 +			}
  			else
  			    break;
@@ -46,7 +54,7 @@ RCS file: /cvsroot/widelands/widelands/src/network.cc,v
 retrieving revision 1.15
 diff -u -r1.15 network.cc
 --- src/network.cc	7 Jan 2005 12:42:36 -0000	1.15
-+++ src/network.cc	8 Jan 2005 14:48:11 -0000
++++ src/network.cc	8 Jan 2005 18:33:56 -0000
 @@ -920,14 +920,16 @@
  
  static NetGGZ *ggzobj = 0;
@@ -111,7 +119,16 @@ diff -u -r1.15 network.cc
  
  	switch(op)
  	{
-@@ -1085,9 +1095,8 @@
+@@ -1060,6 +1070,8 @@
+ 	do
+ 	{
+ 		ggzmod_dispatch(mod);
++		if(usedcore())
++			datacore();
+ 		ggzmod_get_player(mod, &spectator, &seat);
+ 	}
+ 	while(seat == -1);
+@@ -1085,9 +1097,8 @@
  
  	printf("GGZCORE ## initialization\n");
  	ggzcore_login = true;
@@ -122,7 +139,7 @@ diff -u -r1.15 network.cc
  	ret = ggzcore_init(opt);
  
  	ggzserver = ggzcore_server_new();
-@@ -1100,6 +1109,7 @@
+@@ -1100,6 +1111,7 @@
  	ggzcore_server_add_event_hook(ggzserver, GGZ_NEGOTIATE_FAIL, &NetGGZ::callback_server);
  	ggzcore_server_add_event_hook(ggzserver, GGZ_LOGIN_FAIL, &NetGGZ::callback_server);
  	ggzcore_server_add_event_hook(ggzserver, GGZ_ENTER_FAIL, &NetGGZ::callback_server);
@@ -130,7 +147,7 @@ diff -u -r1.15 network.cc
  
  	ggzcore_server_add_event_hook(ggzserver, GGZ_ROOM_LIST, &NetGGZ::callback_server);
  	ggzcore_server_add_event_hook(ggzserver, GGZ_TYPE_LIST, &NetGGZ::callback_server);
-@@ -1107,14 +1117,40 @@
+@@ -1107,14 +1119,40 @@
  	ggzcore_server_add_event_hook(ggzserver, GGZ_NET_ERROR, &NetGGZ::callback_server);
  	ggzcore_server_add_event_hook(ggzserver, GGZ_PROTOCOL_ERROR, &NetGGZ::callback_server);
  
@@ -173,7 +190,7 @@ diff -u -r1.15 network.cc
  	}
  #endif
  }
-@@ -1139,10 +1175,22 @@
+@@ -1139,10 +1177,22 @@
  }
  #endif
  
@@ -196,7 +213,7 @@ diff -u -r1.15 network.cc
  	int num, i;
  	int joined;
  
-@@ -1158,6 +1206,7 @@
+@@ -1158,6 +1208,7 @@
  			break;
  		case GGZ_LOGGED_IN:
  			printf("GGZCORE ## -- logged in\n");
@@ -204,7 +221,7 @@ diff -u -r1.15 network.cc
  			ggzcore_server_list_rooms(ggzserver, -1, 1);
  			break;
  		case GGZ_ENTERED:
-@@ -1173,11 +1222,15 @@
+@@ -1173,11 +1224,15 @@
  			for(i = 0; i < num; i++)
  			{
  				room = ggzcore_server_get_nth_room(ggzserver, i);
@@ -224,7 +241,7 @@ diff -u -r1.15 network.cc
  				}
  			}
  			if(!joined)
-@@ -1188,13 +1241,24 @@
+@@ -1188,13 +1243,24 @@
  		case GGZ_TYPE_LIST:
  			printf("GGZCORE ## -- (type list)\n");
  			break;
@@ -250,7 +267,7 @@ diff -u -r1.15 network.cc
  			break;
  	}
  #endif
-@@ -1206,6 +1270,7 @@
+@@ -1206,6 +1272,7 @@
  	GGZRoom *room;
  	int i, num;
  	GGZTable *table;
@@ -258,7 +275,7 @@ diff -u -r1.15 network.cc
  
  	switch(id)
  	{
-@@ -1216,8 +1281,10 @@
+@@ -1216,8 +1283,10 @@
  			for(i = 0; i < num; i++)
  			{
  				table = ggzcore_room_get_nth_table(room, i);
@@ -271,7 +288,7 @@ diff -u -r1.15 network.cc
  			}
  			ggzcore_login = false;
  			break;
-@@ -1225,8 +1292,81 @@
+@@ -1225,8 +1294,81 @@
  #endif
  }
  
@@ -359,7 +376,7 @@ RCS file: /cvsroot/widelands/widelands/src/network.h,v
 retrieving revision 1.9
 diff -u -r1.9 network.h
 --- src/network.h	5 Jan 2005 16:20:17 -0000	1.9
-+++ src/network.h	8 Jan 2005 14:48:11 -0000
++++ src/network.h	8 Jan 2005 18:33:56 -0000
 @@ -303,18 +303,27 @@
  		op_broadcast_ip = 4
  	};
@@ -395,7 +412,7 @@ RCS file: /cvsroot/widelands/widelands/src/network_lan_promotion.cc,v
 retrieving revision 1.4
 diff -u -r1.4 network_lan_promotion.cc
 --- src/network_lan_promotion.cc	1 Jan 2005 17:16:59 -0000	1.4
-+++ src/network_lan_promotion.cc	8 Jan 2005 14:48:11 -0000
++++ src/network_lan_promotion.cc	8 Jan 2005 18:33:56 -0000
 @@ -87,6 +87,7 @@
      fd_set fds;
      timeval tv;
@@ -410,7 +427,7 @@ RCS file: /cvsroot/widelands/widelands/src/options.cc,v
 retrieving revision 1.27
 diff -u -r1.27 options.cc
 --- src/options.cc	4 Jan 2005 13:22:50 -0000	1.27
-+++ src/options.cc	8 Jan 2005 14:48:11 -0000
++++ src/options.cc	8 Jan 2005 18:33:56 -0000
 @@ -59,6 +59,7 @@
  " --coredump       Generates a core dump on segfaults instead of using the SDL\n"
  "\n"
@@ -436,7 +453,7 @@ RCS file: /cvsroot/widelands/widelands/src/system.cc,v
 retrieving revision 1.32
 diff -u -r1.32 system.cc
 --- src/system.cc	4 Jan 2005 13:22:50 -0000	1.32
-+++ src/system.cc	8 Jan 2005 14:48:13 -0000
++++ src/system.cc	8 Jan 2005 18:33:59 -0000
 @@ -615,6 +615,7 @@
  	SDL_Event ev;
  
@@ -451,7 +468,7 @@ RCS file: /cvsroot/widelands/widelands/src/ui/ui_fs_menus/fullscreen_menu_netset
 retrieving revision 1.7
 diff -u -r1.7 fullscreen_menu_netsetup.cc
 --- src/ui/ui_fs_menus/fullscreen_menu_netsetup.cc	7 Jan 2005 12:51:20 -0000	1.7
-+++ src/ui/ui_fs_menus/fullscreen_menu_netsetup.cc	8 Jan 2005 14:48:20 -0000
++++ src/ui/ui_fs_menus/fullscreen_menu_netsetup.cc	8 Jan 2005 18:34:06 -0000
 @@ -30,8 +30,11 @@
  Fullscreen_Menu_NetSetup::Fullscreen_Menu_NetSetup ()
  	:Fullscreen_Menu_Base("singleplmenu.jpg") // change this
@@ -499,7 +516,7 @@ RCS file: /cvsroot/widelands/widelands/src/ui/ui_fs_menus/fullscreen_menu_netset
 retrieving revision 1.6
 diff -u -r1.6 fullscreen_menu_netsetup.h
 --- src/ui/ui_fs_menus/fullscreen_menu_netsetup.h	5 Jan 2005 16:17:45 -0000	1.6
-+++ src/ui/ui_fs_menus/fullscreen_menu_netsetup.h	8 Jan 2005 14:48:20 -0000
++++ src/ui/ui_fs_menus/fullscreen_menu_netsetup.h	8 Jan 2005 18:34:06 -0000
 @@ -39,7 +39,8 @@
  			CANCEL=0,
  			HOSTGAME,
