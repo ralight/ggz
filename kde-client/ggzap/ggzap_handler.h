@@ -6,6 +6,7 @@
 #include "GGZCoreServer.h"
 #include "GGZCoreRoom.h"
 #include "GGZCoreGame.h"
+#include "GGZCoreModule.h"
 
 class GGZapHandler : public QObject
 {
@@ -30,7 +31,8 @@ class GGZapHandler : public QObject
 			joinroomfail,
 			waiting,
 			started,
-			startfail
+			startfail,
+			finish
 		};
 
 		static GGZHookReturn hookServer(unsigned int id, void *event_data, void *user_data);
@@ -38,7 +40,7 @@ class GGZapHandler : public QObject
 		static GGZHookReturn hookGame(unsigned int id, void *event_data, void *user_data);
 
 		void hookServerActive(unsigned int id);
-		void hookRoomActive(unsigned int id);
+		void hookRoomActive(unsigned int id, void *data);
 		void hookGameActive(unsigned int id, void *data);
 
 	signals:
@@ -51,10 +53,13 @@ class GGZapHandler : public QObject
 		void detachRoomCallbacks();
 		void attachGameCallbacks();
 		void detachGameCallbacks();
+
+		void getModule();
 		
 		GGZCoreServer *m_server;
 		GGZCoreRoom *m_room;
 		GGZCoreGame *m_game;
+		GGZCoreModule *m_module;
 		const char *m_modulename;
 		const char *m_frontendtype;
 };

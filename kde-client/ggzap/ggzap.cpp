@@ -158,6 +158,10 @@ printf("GGZap::slotState(%i)\n", state);
 			slotCancel();
 			emit signalMenu(GGZapTray::menucancel);
 			break;
+		case GGZapHandler::finish:
+			slotCancel();
+			emit signalMenu(GGZapTray::menucancel);
+			break;
 	}
 }
 

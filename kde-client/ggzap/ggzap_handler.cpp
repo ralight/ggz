@@ -2,6 +2,7 @@
 
 #include "GGZCoreModule.h"
 #include "GGZCoreGametype.h"
+#include "GGZCore.h"
 
 #include <string.h>
 
@@ -10,11 +11,17 @@
 GGZapHandler::GGZapHandler()
 : QObject()
 {
+	GGZCore *core;
+
 	m_server = NULL;
 	m_room = NULL;
 	m_game = NULL;
+	m_module = NULL;
 	m_frontendtype = NULL;
 	m_modulename = NULL;
+
+	core = new GGZCore();
+	core->init(GGZCore::parser | GGZCore::modules, "/tmp/ggzap.debug", GGZCore::all);
 }
 
 GGZapHandler::~GGZapHandler()
@@ -77,9 +84,11 @@ void GGZapHandler::setFrontend(const char *frontendtype)
 
 void GGZapHandler::process()
 {
-//cout << "." << endl;
 	if(!m_server) return;
 	if(m_server->dataPending()) m_server->dataRead();
+	if(!m_game) return;
+	if(m_game->dataPending()) m_game->dataRead();
+//cout << "." << endl;
 }
 
 GGZHookReturn GGZapHandler::hookServer(unsigned int id, void *event_data, void *user_data)
@@ -100,7 +109,7 @@ GGZHookReturn GGZapHandler::hookRoom(unsigned int id, void *event_data, void *us
 cout << "room " << id << endl;
 
 	handler = (GGZapHandler*)user_data;
-	handler->hookRoomActive(id);
+	handler->hookRoomActive(id, event_data);
 	return GGZ_HOOK_OK;
 }
 
@@ -108,7 +117,7 @@ GGZHookReturn GGZapHandler::hookGame(unsigned int id, void *event_data, void *us
 {
 	GGZapHandler *handler;
 
-cout << "room " << id << endl;
+cout << "game " << id << endl;
 
 	handler = (GGZapHandler*)user_data;
 	handler->hookGameActive(id, event_data);
@@ -165,16 +174,46 @@ void GGZapHandler::hookServerActive(unsigned int id)
 	}
 }
 
-void GGZapHandler::hookRoomActive(unsigned int id)
+void GGZapHandler::getModule()
+{
+	int count;
+	GGZCoreGametype *gametype;
+
+	m_module = new GGZCoreModule();
+	gametype = m_room->gametype();
+cout << "##### init with: " << gametype->name() << ", " << gametype->protocol() << endl;
+	m_module->init(gametype->name(), gametype->protocol());
+	count = m_module->count();
+	if(!count)
+	{
+cout << "##### no module defined!!!" << endl;
+		delete m_module;
+		m_module = NULL;
+		emit signalState(startfail);
+	}
+	else
+	{
+		m_module->setActive(0);
+		if(m_frontendtype)
+		{
+			for(int i = 0; i < count; i++)
+			{
+				m_module->setActive(i);
+				if(!strcmp(m_frontendtype, m_module->frontend())) break;
+			}
+		}
+cout << "##### frontend: " << m_module->frontend() << endl;
+	}
+}
+
+void GGZapHandler::hookRoomActive(unsigned int id, void *data)
 {
 	GGZPlayer *player;
 	GGZCoreTable *table;
-	GGZCoreModule *module;
 	GGZCoreGametype *gametype;
 	char *name;
 	int join;
 	int ret;
-	int count;
 
 	switch(id)
 	{
@@ -186,6 +225,7 @@ void GGZapHandler::hookRoomActive(unsigned int id)
 			}
 			break;
 		case GGZCoreRoom::tablelist:
+			emit signalState(waiting);
 			join = -1;
 			for(int i = 0; i < m_room->countTables(); i++)
 			{
@@ -193,50 +233,54 @@ void GGZapHandler::hookRoomActive(unsigned int id)
 				for(int j = 0; j < table->countSeats(); j++)
 					if(table->playerType(j) == GGZ_SEAT_OPEN) join = i;
 			}
-			//if(join != -1) m_room->joinTable(join);
-			//else
-			//{
-				// launch table and wait...
-				// NO: better wait for race condition?
-				//gametype = m_room->gametype();
-				//table = new GGZCoreTable();
-				//table->init(gametype->gametype(), "foobar", 2);
-				//ret = m_room->launchTable(table->table());
-				//delete table;
-				//if(ret >= 0) emit signalState(waiting);
-				//else emit signalState(startfail);
-			//}
-			emit signalState(waiting);
-			break;
-		case GGZCoreRoom::enter:
-			// recognize victims here :-) But... is this important?
-			break;
-		case GGZCoreRoom::tablejoined:
-			module = new GGZCoreModule();
-			gametype = m_room->gametype();
-			module->init(gametype->name(), gametype->protocol());
-			count = module->count();
-			if(!count) emit signalState(startfail);
-			else
+			if(join != -1)
 			{
-				module->setActive(0);
-				if(m_frontendtype)
+				getModule();
+				if(m_module)
 				{
-					for(int i = 0; i < count; i++)
-					{
-						module->setActive(i);
-						if(!strcmp(m_frontendtype, module->frontend())) break;
-					}
+cout << "##### joinTable: " << join << endl;
+					m_room->joinTable(join);
 				}
-				m_game = new GGZCoreGame();
-				m_game->init(module->module());
-				attachGameCallbacks();
-				if(!m_game->launch()) emit signalState(startfail);
-				else emit signalState(started);
 			}
 			break;
+		case GGZCoreRoom::tablejoined:
+			m_game = new GGZCoreGame();
+			m_game->init(m_module->module());
+			attachGameCallbacks();
+			delete m_module;
+			m_module = NULL;
+			if(m_game->launch() < 0)
+			{
+cout << "##### game launch fail" << endl;
+				emit signalState(startfail);
+			}
+			else emit signalState(started);
+			break;
+		case GGZCoreRoom::enter:
+			// launch table and wait...
+			// NO: better wait for race condition?
+			getModule();
+			if(!m_module) return;
+			gametype = m_room->gametype();
+			table = new GGZCoreTable();
+			table->init(gametype->gametype(), "foobar", 2);
+			ret = m_room->launchTable(table->table());
+			delete table;
+			if(ret >= 0) emit signalState(waiting);
+			else emit signalState(startfail);
+			// recognize victims here :-) But... is this important?
+			break;
 		case GGZCoreRoom::tablejoinfail:
+			delete m_module;
+			m_module = NULL;
+cout << "##### tablejoinfail" << endl;
 			emit signalState(startfail);
+			break;
+		case GGZCoreRoom::tabledata:
+			if(m_game) m_game->dataSend((char*)data);
+			break;
+		case GGZCoreRoom::tableupdate:
+			hookRoomActive(GGZCoreRoom::tablelist, NULL);
 			break;
 		default:
 			cout << "not handled: " << id << endl;
@@ -249,6 +293,12 @@ void GGZapHandler::hookGameActive(unsigned int id, void *data)
 	{
 		case GGZCoreGame::data:
 			m_room->sendData((char*)data);
+			break;
+		case GGZCoreGame::over:
+			detachGameCallbacks();
+			delete m_game;
+			m_game = NULL;
+			emit signalState(finish);
 			break;
 	}
 }
