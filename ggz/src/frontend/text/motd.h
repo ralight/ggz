@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ text Client
- *
+ * $Id: motd.h 4835 2002-10-10 01:30:13Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -21,4 +21,4 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-void motd_print_line(char *line);
+void motd_print_line(const char *line);

@@ -1,8 +1,8 @@
-/*
+/* 
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ text Client
- *
+ * $Id: motd.c 4835 2002-10-10 01:30:13Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -32,148 +32,61 @@
 #include "output.h"
 #include "motd.h"
 
+static char *color_sequences[] = { "\e[0m\e[37m" /* 0 */ ,
+				   "\e[0m\e[34m" /* 1 */ ,
+				   "\e[0m\e[31m" /* 2 */ ,
+				   "\e[1m\e[33m" /* 3 */ ,
+				   "\e[0m\e[36m" /* 4 */ ,
+				   "\e[0m\e[33m" /* 5 */ ,
+				   "\e[1m\e[30m" /* 6 */ ,
+				   "\e[1m\e[34m" /* 7 */ ,
+				   "\e[0m\e[34m" /* 8 */ ,
+				   "\e[0m\e[37m" /* 9 */ };
 
-void motd_print_line(char *line)
-{                                       
-        char out[1024];
-        /*char outline[1024];*/
-        int lindex=0;
-        int oindex=0;                          
-        int color_index=0; /* Black */
-        int letter;
-                        
-        while(line[lindex] != '\0')
-        {
-                if (line[lindex] == '%')
-                {
-                        lindex++;
-                        if (line[lindex] == 'c')
-                        {
-                                lindex++;
-                                letter = atoi(&line[lindex]);
-                                if ((letter>=0) && (letter<=9))
-                                {
-                                        color_index=atoi(&line[lindex]);
-					if (color_index == 0)
-					{
-						out[oindex] = '\e';
-						out[oindex+1] = '[';
-						out[oindex+2] = '0';
-						out[oindex+3] = 'm';
-						out[oindex+4] = '\e';
-						out[oindex+5] = '[';
-						out[oindex+6] = '3';
-						out[oindex+7] = '7';
-						out[oindex+8] = 'm';
-					} else if (color_index == 1)
-					{
-						out[oindex] = '\e';
-						out[oindex+1] = '[';
-						out[oindex+2] = '0';
-						out[oindex+3] = 'm';
-						out[oindex+4] = '\e';
-						out[oindex+5] = '[';
-						out[oindex+6] = '3';
-						out[oindex+7] = '4';
-						out[oindex+8] = 'm';
-					} else if (color_index == 2) {
-						out[oindex] = '\e';
-						out[oindex+1] = '[';
-						out[oindex+2] = '0';
-						out[oindex+3] = 'm';
-						out[oindex+4] = '\e';
-						out[oindex+5] = '[';
-						out[oindex+6] = '3';
-						out[oindex+7] = '1';
-						out[oindex+8] = 'm';
-					} else if (color_index == 3) {
-						out[oindex] = '\e';
-						out[oindex+1] = '[';
-						out[oindex+2] = '1';
-						out[oindex+3] = 'm';
-						out[oindex+4] = '\e';
-						out[oindex+5] = '[';
-						out[oindex+6] = '3';
-						out[oindex+7] = '3';
-						out[oindex+8] = 'm';
-					} else if (color_index == 4) {
-						out[oindex] = '\e';
-						out[oindex+1] = '[';
-						out[oindex+2] = '0';
-						out[oindex+3] = 'm';
-						out[oindex+4] = '\e';
-						out[oindex+5] = '[';
-						out[oindex+6] = '3';
-						out[oindex+7] = '6';
-						out[oindex+8] = 'm';
-					} else if (color_index == 5) {
-						out[oindex] = '\e';
-						out[oindex+1] = '[';
-						out[oindex+2] = '0';
-						out[oindex+3] = 'm';
-						out[oindex+4] = '\e';
-						out[oindex+5] = '[';
-						out[oindex+6] = '3';
-						out[oindex+7] = '3';
-						out[oindex+8] = 'm';
-					} else if (color_index == 6) {
-						out[oindex] = '\e';
-						out[oindex+1] = '[';
-						out[oindex+2] = '1';
-						out[oindex+3] = 'm';
-						out[oindex+4] = '\e';
-						out[oindex+5] = '[';
-						out[oindex+6] = '3';
-						out[oindex+7] = '0';
-						out[oindex+8] = 'm';
-					} else if (color_index == 7) {
-						out[oindex] = '\e';
-						out[oindex+1] = '[';
-						out[oindex+2] = '1';
-						out[oindex+3] = 'm';
-						out[oindex+4] = '\e';
-						out[oindex+5] = '[';
-						out[oindex+6] = '3';
-						out[oindex+7] = '4';
-						out[oindex+8] = 'm';
-					} else if (color_index == 8) {
-						out[oindex] = '\e';
-						out[oindex+1] = '[';
-						out[oindex+2] = '0';
-						out[oindex+3] = 'm';
-						out[oindex+4] = '\e';
-						out[oindex+5] = '[';
-						out[oindex+6] = '3';
-						out[oindex+7] = '4';
-						out[oindex+8] = 'm';
-					} else if (color_index == 9) {
-						out[oindex] = '\e';
-						out[oindex+1] = '[';
-						out[oindex+2] = '0';
-						out[oindex+3] = 'm';
-						out[oindex+4] = '\e';
-						out[oindex+5] = '[';
-						out[oindex+6] = '3';
-						out[oindex+7] = '7';
-						out[oindex+8] = 'm';
-					} 
-					oindex = oindex+9;
-                                        lindex++;
-                                }else {
-                                        lindex--;
-                                        lindex--;
-                                }
-                        }else{
-                                lindex--;
-                        }
-                }
-                out[oindex]=line[lindex];
-                lindex++;
-                oindex++;
-        }
-	/* Remove the \n as we addone in output_text */
-        out[oindex-1]='\0';
-	output_text(out);
+void motd_print_line(const char *line)
+{
+	char out[1024];
+	int lindex = 0;
+	int oindex = 0;
+	int color = 0;	/* Black */
+
+	while (line[lindex] != '\0') {
+		if (line[lindex] == '%') {
+			lindex++;
+			if (line[lindex] == 'c') {
+				lindex++;
+				color = atoi(&line[lindex]);
+				if (color >= 0 && color <= 9) {
+					strcat(out + oindex,
+					       color_sequences[color]);
+					oindex +=
+						strlen(color_sequences
+						       [color]);
+					lindex++;
+				} else {
+					lindex--;
+					lindex--;
+				}
+			} else {
+				lindex--;
+			}
+		}
+		out[oindex] = line[lindex];
+		lindex++;
+		oindex++;
+
+		if (out[oindex - 1] == '\n') {
+			/* Remove the \n as we add one in output_text */
+			out[oindex - 1] = '\0';
+			output_text(out);
+			oindex = 0;
+		}
+	}
+
+	if (oindex > 0) {
+		/* Append any trailing characters that aren't
+		   part of a line. */
+		out[oindex] = '\0';
+		output_text(out);
+	}
 }
-
-
