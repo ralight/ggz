@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 6877 2005-01-24 06:34:32Z jdorje $
+ * $Id: game.c 6878 2005-01-24 06:52:49Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -95,8 +95,8 @@ struct _GGZGame {
 	struct _GGZModule *module;
 
 	/* Room events */
-	struct _GGZHookList *event_hooks[sizeof(_ggzcore_game_events) /
-					 sizeof(_ggzcore_game_events[0])];
+	GGZHookList *event_hooks[sizeof(_ggzcore_game_events) /
+				 sizeof(_ggzcore_game_events[0])];
 
 	/* GGZ Game module connection */
 	GGZMod *client;

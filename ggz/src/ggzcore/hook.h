@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/01/00
- * $Id: hook.h 6868 2005-01-24 02:46:43Z jdorje $
+ * $Id: hook.h 6878 2005-01-24 06:52:49Z jdorje $
  *
  * This is the code for handling hook functions
  * 
@@ -31,37 +31,7 @@
 
 #include "ggzcore.h"
 
-/* _GGZHook : data type for representing single hook in a list */
-struct _GGZHook {
-
-	/* Callback ID (unique within this event) */
-	unsigned int id;
-	
-	/* Actual callback function */
-	GGZHookFunc func;
-	
-	/* Pointer to user data */
-	const void* user_data;
-	
-	/* Pointer to next GGZHook */
-	struct _GGZHook* next;
-};
-
-
-/* GGZHookList : list of hook functions */
-typedef struct _GGZHookList {
-
-	/* Object ID unique to this hooklist: gets passed to callbacks */
-	unsigned int id;
-	
-	/* Sequence number for callbacks */
-	int seq_id;
-
-	/* Linked list of hooks */
-	struct _GGZHook* hooks;
-
-} GGZHookList;
-
+typedef struct _GGZHookList GGZHookList;
 
 /* _ggzcore_hook_list_init() - Allocate room for and initialize a hook
  *                             list structure 
@@ -72,7 +42,7 @@ typedef struct _GGZHookList {
  * Returns:
  * GGZHookList* : pointer to new hooklist structure
  */
-GGZHookList* _ggzcore_hook_list_init(const unsigned int id);
+GGZHookList *_ggzcore_hook_list_init(const unsigned int id);
 
 
 /* _ggzcore_hook_add()      - Add hook function to list
@@ -87,11 +57,11 @@ GGZHookList* _ggzcore_hook_list_init(const unsigned int id);
  * Returns:
  * int : id for this callback 
  */
-int _ggzcore_hook_add(GGZHookList* list, const GGZHookFunc func);
-int _ggzcore_hook_add_full(GGZHookList* list,
+int _ggzcore_hook_add(GGZHookList * list, const GGZHookFunc func);
+int _ggzcore_hook_add_full(GGZHookList * list,
 			   const GGZHookFunc func, const void *data);
 
-			   
+
 /* _ggzcore_hook_remove()     - Remove specific hook from a list
  * _ggzcore_hook_remove_id()  - Remove specific hook from a list
  * _ggzcore_hook_remove_all() - Remove all hooks from a list
@@ -104,9 +74,9 @@ int _ggzcore_hook_add_full(GGZHookList* list,
  * Returns:
  * int : 0 if successful, -1 on error
  */
-int _ggzcore_hook_remove(GGZHookList *list, const GGZHookFunc func);
-int _ggzcore_hook_remove_id(GGZHookList *list, const unsigned int id);
-void _ggzcore_hook_remove_all(GGZHookList *list);
+int _ggzcore_hook_remove(GGZHookList * list, const GGZHookFunc func);
+int _ggzcore_hook_remove_id(GGZHookList * list, const unsigned int id);
+void _ggzcore_hook_remove_all(GGZHookList * list);
 
 
 /* _ggzcore_hook_list_invoke() - Invoke list of hook functions
@@ -120,15 +90,16 @@ void _ggzcore_hook_remove_all(GGZHookList *list);
  * GGZ_HOOK_ERROR  if at least one hook returned an error message
  * GGZ_HOOK_CRISIS if a hook terminated the sequence with a crisis
  */
-GGZHookReturn _ggzcore_hook_list_invoke(GGZHookList *list, void* data);
+GGZHookReturn _ggzcore_hook_list_invoke(GGZHookList * list,
+					const void *data);
 
-			       
+
 /* _ggzcore_hook_list_destroy() - Deallocate and destroy hook list
  *
  * Receives:
  * GGZHookList *list : hooklist to destroy
  */
-void _ggzcore_hook_list_destroy(GGZHookList *list);
+void _ggzcore_hook_list_destroy(GGZHookList * list);
 
 
 /* _ggzcore_hook_list_dump() - Dump list of hooks to screen for debugging
@@ -136,6 +107,6 @@ void _ggzcore_hook_list_destroy(GGZHookList *list);
  * Receives:
  * GGZHookList *list : hooklist to destroy
  */
-void _ggzcore_hook_list_dump(GGZHookList *list);
+void _ggzcore_hook_list_dump(GGZHookList * list);
 
 #endif /* __HOOK_H__ */
