@@ -188,7 +188,7 @@ int game_send_sync(int num)
 	    || es_write_char(fd, ttt_game.turn) < 0)
 		return -1;
 	
-	for (i = 0; i < 3; i++)
+	for (i = 0; i < 9; i++)
 		if (es_write_char(fd, ttt_game.board[i]) < 0)
 			return -1;
 		
