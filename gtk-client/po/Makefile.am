@@ -28,13 +28,13 @@ translation-stamp:
 	touch translation-stamp
 
 clean-local:
-	@for j in $(top_srcdir)/po/*.mo; do \
+	@for j in $(top_builddir)/po/*.mo; do \
 		rm -f $$j; \
 	done
-	rm -f $(top_srcdir)/po/translation-stamp
+	rm -f $(top_builddir)/po/translation-stamp
 
 install-data-local:
-	@for j in $(top_srcdir)/po/*.mo; do \
+	@for j in $(top_builddir)/po/*.mo; do \
 		k=$$(basename $$j); \
 		country=`echo $$k | cut -d "." -f 1`; \
 		dir=$(prefix)/share/locale/$$country/LC_MESSAGES; \
