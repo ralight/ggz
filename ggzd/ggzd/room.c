@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 6416 2004-11-17 22:02:24Z jdorje $
+ * $Id: room.c 6448 2004-12-11 21:14:29Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -61,7 +61,6 @@ RoomInfo room_info;
 static void room_notify_change(char* name, const int, const int);
 static GGZEventFuncReturn room_event_callback(void* target_player,
 					      size_t size, void* data);
-static GGZReturn show_server_info(GGZPlayer *player);
 
 
 /* Handle a REQ_LIST_ROOMS opcode */
@@ -228,10 +227,6 @@ GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room)
 	if (net_send_room_join(player->client->net, result) < 0)
 		return GGZ_REQ_DISCONNECT;
 
-	/* FIXME: remove this once we have a way of making it automatic */
-	if(room == 0 && show_server_info(player) < 0)
-		return GGZ_REQ_DISCONNECT;
-	
 	return GGZ_REQ_OK;
 }
 
@@ -433,34 +428,6 @@ static GGZEventFuncReturn room_event_callback(void* target_player,
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
-}
-
-
-/* This is more or less a temporary hack to get some server info on login */
-static GGZReturn show_server_info(GGZPlayer *player)
-{
-	int players;
-	GGZReturn status;
-	char msg[128];
-
-	pthread_rwlock_rdlock(&state.lock);
-	players = state.players;
-	pthread_rwlock_unlock(&state.lock);
-
-	if(players == 1) {
-		status = chat_server_2_player(player->name,
-			    "You are the only player currently logged in.");
-	} else if(players == 2) {
-		status = chat_server_2_player(player->name,
-			    "There is one other player currently logged in.");
-	} else {
-		snprintf(msg, 128,
-			"There are %d other players currently logged in.",
-		 	players-1);
-		status = chat_server_2_player(player->name, msg);
-	}
-
-	return status;
 }
 
 
