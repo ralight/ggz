@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 4068 2002-04-23 21:46:49Z jdorje $
+ * $Id: spades.c 4096 2002-04-27 23:02:27Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -537,6 +537,7 @@ static char find_final_bid(int points)
 	ggz_debug(DBG_BID, "Adding %d points for rounding.", prob);
 
 	bid_val = (points + prob) / 100;
+	bid_val = MAX(bid_val, 0);
 	ggz_debug(DBG_BID, "Subtotal bid: %d", bid_val);
 
 	/* don't forget the minimum bid!!! */
