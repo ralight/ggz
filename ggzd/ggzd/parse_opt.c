@@ -234,6 +234,21 @@ static void parse_file(FILE *configfile)
 			}
 			continue;
 		}
+
+		/*** MOTD = filename ***/
+		if(!strcmp(varname, "motd")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if((strval = malloc(strlen(varvalue)+1)) == NULL)
+				err_sys_exit("parse_file: malloc error");
+			strcpy(strval, varvalue);
+			opt.motd_file = strval;
+			continue;
+		 }
+
+		
 		/*** INVALID VARIABLE ***/
 		PARSE_ERR("Syntax error");
 	}
