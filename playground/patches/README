@@ -8,6 +8,9 @@ Embedding ggzcore into game clients:
  ggz-client-libs.embedded.diff
  widelands.embedded.diff
 
+Game-side channels (for running GGZ in windows):
+ ggz-client-libs.channels.diff
+
 Old patches (just to keep it in memory)
 ---------------------------------------
 
