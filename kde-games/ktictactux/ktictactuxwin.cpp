@@ -33,18 +33,11 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 : KMainWindow(parent, name)
 {
 	KStandardDirs d;
-	QString icontheme;
 
 	m_tux = new KTicTacTux(this);
 	setCentralWidget(m_tux);
 
 	m_networked = false;
-
-#if (((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 1)) || (KDE_VERSION_MAJOR > 3))
-	icontheme = "crystalsvg";
-#else
-	icontheme = "hicolor";
-#endif
 
 	mgame = new KPopupMenu(this);
 	mgame->insertItem(KGlobal::iconLoader()->loadIcon("reload", KIcon::Small), i18n("Synchronize"), menusync);
@@ -82,7 +75,7 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 	if(theme) changeTheme(theme);
 	else changeTheme(QString::null);
 
-	setCaption("KTicTacTux");
+	setCaption(i18n("KTicTacTux"));
 	resize(250, 250);
 	show();
 }
@@ -241,13 +234,6 @@ void KTicTacTuxWin::loadThemes()
 	QString name, player1, player2;
 	QString file;
 	int index = menuthemes;
-	QString icontheme;
-
-#if (((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 1)) || (KDE_VERSION_MAJOR > 3))
-	icontheme = "crystalsvg";
-#else
-	icontheme = "hicolor";
-#endif
 
 	// Recursively scan all data directories
 	kdDebug() << "loadThemes" << endl;
