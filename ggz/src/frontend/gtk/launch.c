@@ -34,6 +34,8 @@
 #include <support.h>
 #include <ggzcore.h>
 
+extern GGZServer *server;
+
 static void launch_fill_defaults(GtkWidget *widget, gpointer data);
 static void launch_seats_changed(GtkWidget *widget, gpointer data);
 static void launch_resv_toggle(GtkWidget *widget, gpointer data);
@@ -48,7 +50,7 @@ void launch_create_or_raise(void)
 	gchar *text;
 	gint room;
 
-//	room  = ggzcore_state_get_room();
+	room  = ggzcore_server_get_cur_room(server);
 
         if (!launch_dialog) {
                 launch_dialog = create_dlg_launch();

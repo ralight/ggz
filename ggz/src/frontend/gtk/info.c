@@ -45,7 +45,7 @@
 
 static GtkWidget *info_dialog;
 static GtkWidget* create_dlg_info(void);
-
+extern GGZServer *server;
 
 
 
@@ -62,27 +62,27 @@ void info_create_or_raise(gint room)
 {
 	GtkWidget *tmp;
 	if (!info_dialog) {
-//		info_dialog = create_dlg_info();
-//		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "desc");
-//		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_room_get_desc(room));
-//		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "name");
+		info_dialog = create_dlg_info();
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "desc");
+		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_server_get_room_desc(server, room));
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "name");
 //		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_name(ggzcore_room_get_gametype(room)));
 //		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "author");
 //		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_author(ggzcore_room_get_gametype(room)));
 //		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "www");
 //		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_url(ggzcore_room_get_gametype(room)));
-//		gtk_widget_show(info_dialog);
+		gtk_widget_show(info_dialog);
 	}
 	else {
-//		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "desc");
-//		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_room_get_desc(room));
+		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "desc");
+		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_server_get_room_desc(server, room));
 //		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "name");
 //		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_name(ggzcore_room_get_gametype(room)));
 //		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "author");
 //		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_author(ggzcore_room_get_gametype(room)));
 //		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "www");
 //		gtk_label_set_text(GTK_LABEL(tmp), ggzcore_gametype_get_url(ggzcore_room_get_gametype(room)));
-//		gdk_window_raise(info_dialog->window);
+		gdk_window_raise(info_dialog->window);
 	}
 }
 

@@ -37,6 +37,7 @@
 #include "server.h"
 #include "support.h"
 #include "props.h"
+#include "ggz.h"
 
 GtkWidget *login_dialog;
 static GtkWidget *create_dlg_login(void);
@@ -109,19 +110,19 @@ login_destroy(void)
 }
 
 
-void login_goto_server(gchar *server)
+void login_goto_server(gchar *server_url)
 {
 	GtkWidget *tmp;
 
 	login_create_or_raise();
 	tmp = lookup_widget(GTK_WIDGET(login_dialog), "host_entry");
-	if (!strncasecmp (server, "ggz://", 6))
-		gtk_entry_set_text(GTK_ENTRY(tmp), server+6);
+	if (!strncasecmp (server_url, "ggz://", 6))
+		gtk_entry_set_text(GTK_ENTRY(tmp), server_url+6);
 	else
-		gtk_entry_set_text(GTK_ENTRY(tmp), server);
+		gtk_entry_set_text(GTK_ENTRY(tmp), server_url);
 
 	tmp = lookup_widget(GTK_WIDGET(login_dialog), "name_entry");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_server_get_handle(server));
+	gtk_entry_set_text(GTK_ENTRY(tmp), (gchar*)ggzcore_server_get_handle(server));
 
 	tmp = lookup_widget(GTK_WIDGET(login_dialog), "guest_radio");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
@@ -227,7 +228,7 @@ login_start_session                    (GtkButton       *button,
 	GtkWidget *tmp;
 	char *host = NULL, *login = NULL, *password = NULL;
 	int port;
-	GGZLoginType type;
+	GGZLoginType type = GGZ_LOGIN_GUEST;
 
 	g_print("login_start_session\n");
 
@@ -280,7 +281,7 @@ login_relogin                          (GtkButton       *button,
 	GtkWidget *tmp;
 	char *host = NULL, *login = NULL, *password = NULL;
 	int port;
-	GGZLoginType type;
+	GGZLoginType type = GGZ_LOGIN_GUEST;
 
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
 	gtk_widget_set_sensitive(tmp, FALSE);

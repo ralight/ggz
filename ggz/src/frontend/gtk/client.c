@@ -47,6 +47,7 @@
 
 extern GdkColor colors[];
 GtkWidget *win_main;
+extern GGZServer *server;
 /*
  * FIXME: There has got to be a better way than
  *        a global var. This is set at popup time
@@ -113,7 +114,7 @@ client_disconnect_activate		(GtkMenuItem	*menuitem,
 {
 	GtkCList *tmp;
 
-//	ggzcore_event_enqueue(GGZ_USER_LOGOUT, NULL, NULL);
+	ggzcore_server_logout(server);
 
 	/* Clear current list of rooms */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
@@ -318,7 +319,7 @@ client_disconnect_button_clicked	(GtkButton	*button,
 {
 	GtkCList *tmp;
 
-//	ggzcore_event_enqueue(GGZ_USER_LOGOUT, NULL, NULL);
+	ggzcore_server_logout(server);
 
 	/* Clear current list of rooms */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
@@ -486,8 +487,7 @@ client_room_clist_event			(GtkWidget	*widget,
 			gtk_clist_get_selection_info(GTK_CLIST(tmp), buttonevent->x, buttonevent->y,
 						     &row, &column);
 
-//			ggzcore_event_enqueue(GGZ_USER_JOIN_ROOM, (void*)row, NULL); 
-
+			ggzcore_server_join_room(server, row);
 			return TRUE; 
 		}
 	}
