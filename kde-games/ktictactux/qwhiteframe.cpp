@@ -11,7 +11,7 @@
 QWhiteFrame::QWhiteFrame(QWidget *parent = NULL, char *name = NULL)
 : QFrame(parent, name)
 {
-	setBackgroundColor(QColor(255.0, 255.0, 255.0));
+	setBackgroundColor(QColor(255, 255, 255));
 	setFrameStyle(QFrame::Panel | QFrame::Sunken);
 }
 
