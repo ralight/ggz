@@ -113,6 +113,7 @@ void dbg_msg(const gchar *fmt, ...)
 void err_sock(const gchar* err, const EsOpType op, const EsDataType type)
 {
 	switch (op) {
+#ifdef DEBUG
 	case ES_CREATE:
 		err_dlg("Error while creating socket: %s\n", err);
 		break;
@@ -148,6 +149,7 @@ void err_sock(const gchar* err, const EsOpType op, const EsDataType type)
 			break;
 		}
 		break;
+#endif
 	case ES_ALLOCATE:
 		err_dlg("Error while allocating memory: %s\n", err);
 		break;
