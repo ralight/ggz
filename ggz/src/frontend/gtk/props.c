@@ -32,12 +32,14 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include <ggz.h>
 #include "chat.h"
 #include "ggzcore.h"
 #include "props.h"
 #include "server.h"
 #include "support.h"
 #include "xtext.h"
+#include "client.h"
 
 extern GdkColor colors[];
 extern GdkColor ColorBlack;
@@ -259,10 +261,13 @@ static void props_update(void)
 void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 {
 	GtkWidget *tmp;
+	char *old;
 
 	/* Set XText font */
 	tmp = lookup_widget((props_dialog), "chat_font");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("CHAT", "FONT", "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1"));
+	old = ggzcore_conf_read_string("CHAT", "FONT", DEFAULT_FONT);
+	gtk_entry_set_text(GTK_ENTRY(tmp), old);
+	ggz_free(old);
 
 	/* Auto-Indent */
 	tmp = lookup_widget((props_dialog), "indent_check");
@@ -304,24 +309,33 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 
 	/* Name */
 	tmp = lookup_widget((props_dialog), "info_name");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("USER INFO", "NAME", "."));
+	old = ggzcore_conf_read_string("USER INFO", "NAME", ".");
+	gtk_entry_set_text(GTK_ENTRY(tmp), old);
+	ggz_free(old);
 
 	/* City */
 	tmp = lookup_widget((props_dialog), "info_city");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("USER INFO", "CITY", "."));
+	old = ggzcore_conf_read_string("USER INFO", "CITY", ".");
+	gtk_entry_set_text(GTK_ENTRY(tmp), old);
+	ggz_free(old);
 
 	/* State */
 	tmp = lookup_widget((props_dialog), "info_state");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("USER INFO", "STATE", "."));
+	old = ggzcore_conf_read_string("USER INFO", "STATE", ".");
+	gtk_entry_set_text(GTK_ENTRY(tmp), old);
+	ggz_free(old);
 
 	/* Country */
 	tmp = lookup_widget((props_dialog), "info_country");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("USER INFO", "COUNTRY", "."));
+	old = ggzcore_conf_read_string("USER INFO", "COUNTRY", ".");
+	gtk_entry_set_text(GTK_ENTRY(tmp), old);
+	ggz_free(old);
 
 	/* Comments */
 	tmp = lookup_widget((props_dialog), "info_comments");
-	gtk_text_insert(GTK_TEXT(tmp), NULL, NULL, NULL, ggzcore_conf_read_string("USER INFO", "COMMENTS", "."),
-			strlen(ggzcore_conf_read_string("USER INFO", "COMMENTS", ".")));
+	old = ggzcore_conf_read_string("USER INFO", "COMMENTS", ".");
+	gtk_text_insert(GTK_TEXT(tmp), NULL, NULL, NULL, old, strlen(old));
+	ggz_free(old);
 
 	/* Single click room entry */
 	tmp = lookup_widget((props_dialog), "click_checkbutton");
@@ -330,22 +344,27 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 	/* Browser */
 	tmp = lookup_widget((props_dialog), "browser_entry");
 	gtk_entry_set_editable(GTK_ENTRY(tmp), TRUE);
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"));
+	old = ggzcore_conf_read_string("OPTIONS", "BROWSER", "None");
+	gtk_entry_set_text(GTK_ENTRY(tmp), old);
+	ggz_free(old);
 	gtk_entry_set_editable(GTK_ENTRY(tmp), FALSE);
 
 	/* MOTD */
-	tmp = lookup_widget((props_dialog), "motd_all_radio");
-	if (!strcmp(ggzcore_conf_read_string("OPTIONS", "MOTD", "ALL"), "ALL"))
+	old = ggzcore_conf_read_string("OPTIONS", "MOTD", "ALL");
+	if (!strcmp(old, "ALL")) {
+		tmp = lookup_widget((props_dialog), "motd_all_radio");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
-	tmp = lookup_widget((props_dialog), "motd_new_radio");
-	if (!strcmp(ggzcore_conf_read_string("OPTIONS", "MOTD", "ALL"), "NEW"))
+	} else if (!strcmp(old, "NEW")) {
+		tmp = lookup_widget((props_dialog), "motd_new_radio");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
-	tmp = lookup_widget((props_dialog), "motd_important_radio");
-	if (!strcmp(ggzcore_conf_read_string("OPTIONS", "MOTD", "ALL"), "IMPORTANT"))
+	} else if (!strcmp(old, "IMPORTANT")) {
+		tmp = lookup_widget((props_dialog), "motd_important_radio");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
-	tmp = lookup_widget((props_dialog), "motd_none_radio");
-	if (!strcmp(ggzcore_conf_read_string("OPTIONS", "MOTD", "ALL"), "NONE"))
+	} else if (!strcmp(old, "NONE")) {
+		tmp = lookup_widget((props_dialog), "motd_none_radio");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+	}
+	ggz_free(old);
 }
 
 

@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 3387 2002-02-17 08:44:28Z rgade $
+ * $Id: client.c 3393 2002-02-17 09:31:07Z rgade $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -65,9 +65,6 @@ gint poping = FALSE;
 
 /* Maximum cache size for last entries */
 #define CHAT_MAXIMUM_CACHE 5
-
-/* Default font */
-#define DEFAULT_FONT "-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-1"
 
 /* Callbacks for main client window */
 static void client_realize(GtkWidget *widget, gpointer data);
