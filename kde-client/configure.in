@@ -42,7 +42,6 @@ fi
 
 dnl Find temporary categories_and_ratings patch
 func=ggzcore_gametype_get_category
-#func=ggzcore_server_new
 tmp=`grep $func $ggzcore_includes/ggzcore.h`
 if test "$tmp" = ""; then
 	patch_c_and_r=0;
@@ -51,6 +50,16 @@ else
 	AC_DEFINE_UNQUOTED(KGGZ_PATCH_C_AND_R, $patch_c_and_r)
 fi
 echo "checking for GGZ patch 'Categories and Ratings' (C_and_R): $patch_c_and_r"
+
+func=ggzcore_server_get_encryption
+tmp=`grep $func $ggzcore_includes/ggzcore.h`
+if test "$tmp" = ""; then
+	patch_encryption=0;
+else
+	patch_encryption=1;
+	AC_DEFINE_UNQUOTED(KGGZ_PATCH_ENCRYPTION, $patch_encryption)
+fi
+echo "checking for GGZ patch 'Encryption' (Encryption): $patch_encryption"
 
 dnl Set up variables for KGGZ
 dnl =========================
