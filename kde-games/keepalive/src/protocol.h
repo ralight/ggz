@@ -25,6 +25,7 @@ enum KeepaliveOpcodes
 	op_init,
 	op_player,
 	op_name,
+	op_loginfailed,
 	op_moved,
 	op_login,
 	op_move
@@ -38,6 +39,7 @@ enum KeepaliveOpcodes
 // count, {$name, x, y}
 // op_name: The player's character name
 // $name
+// op_loginfailed: Wrong password when trying to login
 // op_moved: a player has moved
 // $name, x, y
 //
