@@ -1,0 +1,103 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Artwork Page</b><br>
+Artwork elements like images, icons or music are crucial to any gaming project.
+This page attempts to provide an overview of what is available already.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Statistics: graphics formats</i><br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Module list</i><br>
+
+<table class="list">
+
+<?php
+
+$arts = array();
+$f = fopen("artstats.txt", "r");
+while($a = fgets($f, 1024))
+{
+	rtrim($a);
+	$ar = split(" ", $a);
+	$xpm = split("=", $ar[1]);
+	$png = split("=", $ar[2]);
+	$svg = split("=", $ar[3]);
+	$arts[] = array($ar[0], $xpm[1], $png[1], $svg[1]);
+}
+fclose($f);
+
+foreach($arts as $art)
+{
+	$modulename = $art[0];
+	$xpm = $art[1];
+	$png = $art[2];
+	$svg = $art[3];
+
+	echo "<tr><td>$modulename</td>";
+
+	if ($xpm > 0) :
+		echo "<td>XPM: $xpm</td>";
+	else :
+		echo "<td></td>";
+	endif;
+	if ($png > 0) :
+		echo "<td>PNG: $png</td>";
+	else :
+		echo "<td></td>";
+	endif;
+	if ($svg > 0) :
+		echo "<td>SVG: $svg</td>";
+	else :
+		echo "<td></td>";
+	endif;
+
+	echo "</tr>";
+}
+
+?>
+
+</table>
+
+<br>
+
+<i>Downloads</i><br>
+
+<a href="ggzgraphics-xpm.tar.gz">XPM graphics</a><br>
+<a href="ggzgraphics-png.tar.gz">PNG graphics</a><br>
+<a href="ggzgraphics-SVG.tar.gz">SVG graphics</a><br>
+
+</td>
+</tr>
+</table>
+
+<i>Rules of thumb</i><br>
+
+To achieve best quality, scalable graphics such as SVG should be used.
+XPMs should be avoided because their compression level is inferior to the one of PNG.
+Games should support multiple graphics sets, only few of which belongs into
+the main distribution.
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
