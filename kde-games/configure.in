@@ -46,7 +46,11 @@ AC_OUTPUT(Makefile
 	koenig/Makefile
 	koenig/module.dsc
 	koenig/libcgc/Makefile
-	koenig/pics/Makefile)
+	koenig/pics/Makefile
+	muehle/Makefile
+	muehle/src/Makefile
+	muehle/pics/Makefile
+	muehle/doc/Makefile)
 
 dnl Report success
 dnl ==============

@@ -1,4 +1,4 @@
-SUBDIRS = krosswater KReversi kdots ktictactux koenig
+SUBDIRS = krosswater KReversi kdots ktictactux koenig muehle
 
 EXTRA_DIST = README.GGZ QuickStart.GGZ
 
