@@ -760,7 +760,11 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::loginfail:
 			KGGZDEBUG("loginfail\n");
 			KMessageBox::error(this, i18n("Login refused!"), i18n("Error!"));
-			// TODO: do something here !? 2001-07-17 josef
+			//detachServerCallbacks();
+			//delete kggzserver;
+			//kggzserver = NULL;
+			kggzserver->disconnect();
+			m_killserver = 1;
 			menuConnect();
 			break;
 		case GGZCoreServer::motdloaded:
