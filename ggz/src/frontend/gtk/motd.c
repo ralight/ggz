@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: motd.c 5963 2004-02-28 05:05:41Z jdorje $
+ * $Id: motd.c 6272 2004-11-05 21:19:52Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -87,7 +87,7 @@ void motd_print_line(gchar *line)
                 g_error("couldn't allocate color");
         }
                                         
-        temp_widget = gtk_object_get_data(GTK_OBJECT(motd_dialog), "motd_text");
+        temp_widget = g_object_get_data(G_OBJECT(motd_dialog), "motd_text");
 
         fixed_font = gdk_font_load ("-misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1");
         while(line[lindex] != '\0')
@@ -157,18 +157,18 @@ create_dlg_motd (void)
   GtkWidget *close_button;
 
   dlg_motd = gtk_dialog_new ();
-  gtk_object_set_data (GTK_OBJECT (dlg_motd), "dlg_motd", dlg_motd);
+  g_object_set_data(G_OBJECT (dlg_motd), "dlg_motd", dlg_motd);
   gtk_widget_set_usize (dlg_motd, 300, 455);
   gtk_window_set_title (GTK_WINDOW (dlg_motd), _("MOTD"));
   gtk_window_set_policy (GTK_WINDOW (dlg_motd), FALSE, TRUE, TRUE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_motd)->vbox;
-  gtk_object_set_data (GTK_OBJECT (dlg_motd), "dialog_vbox1", dialog_vbox1);
+  g_object_set_data(G_OBJECT (dlg_motd), "dialog_vbox1", dialog_vbox1);
   gtk_widget_show (dialog_vbox1);
 
   notd_vbox = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (notd_vbox);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_motd), "notd_vbox", notd_vbox,
+  g_object_set_data_full(G_OBJECT (dlg_motd), "notd_vbox", notd_vbox,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (notd_vbox);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), notd_vbox, TRUE, TRUE, 0);
@@ -176,7 +176,7 @@ create_dlg_motd (void)
 
   motd_scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (motd_scrolledwindow);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_motd), "motd_scrolledwindow", motd_scrolledwindow,
+  g_object_set_data_full(G_OBJECT (dlg_motd), "motd_scrolledwindow", motd_scrolledwindow,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (motd_scrolledwindow);
   gtk_box_pack_start (GTK_BOX (notd_vbox), motd_scrolledwindow, TRUE, TRUE, 0);
@@ -186,36 +186,36 @@ create_dlg_motd (void)
   gtk_text_view_set_editable(GTK_TEXT_VIEW(motd_text), FALSE);
   gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(motd_text), FALSE);
   gtk_widget_ref (motd_text);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_motd), "motd_text", motd_text,
+  g_object_set_data_full(G_OBJECT (dlg_motd), "motd_text", motd_text,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (motd_text);
   gtk_container_add (GTK_CONTAINER (motd_scrolledwindow), motd_text);
 
   dialog_action_area1 = GTK_DIALOG (dlg_motd)->action_area;
-  gtk_object_set_data (GTK_OBJECT (dlg_motd), "dialog_action_area1", dialog_action_area1);
+  g_object_set_data(G_OBJECT (dlg_motd), "dialog_action_area1", dialog_action_area1);
   gtk_widget_show (dialog_action_area1);
   gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 10);
 
   hbuttonbox1 = gtk_hbutton_box_new ();
   gtk_widget_ref (hbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_motd), "hbuttonbox1", hbuttonbox1,
+  g_object_set_data_full(G_OBJECT (dlg_motd), "hbuttonbox1", hbuttonbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbuttonbox1);
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbuttonbox1, TRUE, TRUE, 0);
 
   close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
   gtk_widget_ref (close_button);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_motd),
+  g_object_set_data_full(G_OBJECT (dlg_motd),
 			    "close_button", close_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (close_button);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), close_button);
   GTK_WIDGET_SET_FLAGS (close_button, GTK_CAN_DEFAULT);
 
-  gtk_signal_connect (GTK_OBJECT (dlg_motd), "destroy",
+  g_signal_connect (GTK_OBJECT (dlg_motd), "destroy",
                       GTK_SIGNAL_FUNC (gtk_widget_destroyed),
                       &motd_dialog);
-  gtk_signal_connect_object (GTK_OBJECT (close_button), "clicked",
+  g_signal_connect_swapped(GTK_OBJECT (close_button), "clicked",
                              GTK_SIGNAL_FUNC (gtk_widget_destroy),
                              GTK_OBJECT (dlg_motd));
 

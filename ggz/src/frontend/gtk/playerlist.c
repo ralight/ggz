@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 6262 2004-11-05 01:26:49Z jdorje $
+ * $Id: playerlist.c 6272 2004-11-05 21:19:52Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -97,18 +97,18 @@ static GtkWidget *create_mnu_player(char *name, gboolean is_friend,
 	GtkWidget *ignore;
 
 	mnu_player = gtk_menu_new();
-	gtk_object_set_data(GTK_OBJECT(mnu_player), "mnu_player", mnu_player);
+	g_object_set_data(G_OBJECT(mnu_player), "mnu_player", mnu_player);
 
 	info = gtk_menu_item_new_with_label(_("Info"));
 	gtk_widget_ref(info);
-	gtk_object_set_data_full(GTK_OBJECT(mnu_player), "info", info,
+	g_object_set_data_full(G_OBJECT(mnu_player), "info", info,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(info);
 	gtk_container_add(GTK_CONTAINER(mnu_player), info);
 
 	separator9 = gtk_menu_item_new();
 	gtk_widget_ref(separator9);
-	gtk_object_set_data_full(GTK_OBJECT(mnu_player), "separator9",
+	g_object_set_data_full(G_OBJECT(mnu_player), "separator9",
 				 separator9,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(separator9);
@@ -117,7 +117,7 @@ static GtkWidget *create_mnu_player(char *name, gboolean is_friend,
 
 	friends = gtk_check_menu_item_new_with_label(_("Friends"));
 	gtk_widget_ref(friends);
-	gtk_object_set_data_full(GTK_OBJECT(mnu_player), "friends", friends,
+	g_object_set_data_full(G_OBJECT(mnu_player), "friends", friends,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(friends);
 	gtk_container_add(GTK_CONTAINER(mnu_player), friends);
@@ -128,7 +128,7 @@ static GtkWidget *create_mnu_player(char *name, gboolean is_friend,
 
 	ignore = gtk_check_menu_item_new_with_label(_("Ignore"));
 	gtk_widget_ref(ignore);
-	gtk_object_set_data_full(GTK_OBJECT(mnu_player), "ignore", ignore,
+	g_object_set_data_full(G_OBJECT(mnu_player), "ignore", ignore,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(ignore);
 	gtk_container_add(GTK_CONTAINER(mnu_player), ignore);
@@ -137,13 +137,13 @@ static GtkWidget *create_mnu_player(char *name, gboolean is_friend,
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ignore),
 				       is_ignore);
 
-	gtk_signal_connect(GTK_OBJECT(info), "activate",
+	g_signal_connect(GTK_OBJECT(info), "activate",
 			   GTK_SIGNAL_FUNC(client_player_info_activate),
 			   name);
-	gtk_signal_connect(GTK_OBJECT(friends), "activate",
+	g_signal_connect(GTK_OBJECT(friends), "activate",
 			   GTK_SIGNAL_FUNC(client_player_friends_click),
 			   name);
-	gtk_signal_connect(GTK_OBJECT(ignore), "activate",
+	g_signal_connect(GTK_OBJECT(ignore), "activate",
 			   GTK_SIGNAL_FUNC(client_player_ignore_click),
 			   name);
 
@@ -359,10 +359,10 @@ GtkWidget *create_player_list(GtkWidget *window)
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
 	gtk_widget_ref(tree);
-	gtk_object_set_data_full(GTK_OBJECT(window), "player_list",
+	g_object_set_data_full(G_OBJECT(window), "player_list",
 				 tree,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_object_set_data(GTK_OBJECT(window), "player_list_store", store);
+	g_object_set_data(G_OBJECT(window), "player_list_store", store);
 	gtk_widget_show(tree);
 	gtk_widget_set_sensitive(tree, FALSE);
 	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
@@ -370,7 +370,7 @@ GtkWidget *create_player_list(GtkWidget *window)
 	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
 	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
 
-	gtk_signal_connect(GTK_OBJECT(tree), "button-press-event",
+	g_signal_connect(GTK_OBJECT(tree), "button-press-event",
 			   GTK_SIGNAL_FUNC(client_player_list_event), NULL);
 
 	return tree;

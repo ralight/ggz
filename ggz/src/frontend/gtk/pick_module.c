@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Text Client 
  * Date: 11/5/2002
- * $Id: pick_module.c 6089 2004-07-12 16:50:18Z josef $
+ * $Id: pick_module.c 6272 2004-11-05 21:19:52Z jdorje $
  *
  * Dialog window to pick a module for your game
  *
@@ -77,9 +77,8 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 	pick_module_dlg = gtk_dialog_new();
 	gtk_window_set_transient_for(GTK_WINDOW(pick_module_dlg),
 				     GTK_WINDOW(win_main));
-	gtk_object_set_data(GTK_OBJECT(pick_module_dlg),
-			    "pick_module_dlg",
-			    pick_module_dlg);
+	g_object_set_data(G_OBJECT(pick_module_dlg), "pick_module_dlg",
+			  pick_module_dlg);
 	gtk_window_set_policy(GTK_WINDOW(pick_module_dlg), FALSE, FALSE,
 			      FALSE);
 
@@ -89,7 +88,7 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 	header_label = gtk_label_new
 		(_("Which client would you like to use to play this game?"));
 	gtk_widget_ref(header_label);
-	gtk_object_set_data_full(GTK_OBJECT(pick_module_dlg), "header_label",
+	g_object_set_data_full(G_OBJECT(pick_module_dlg), "header_label",
 				 header_label, (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(header_label);
 	gtk_box_pack_start(GTK_BOX(vbox1), header_label, FALSE, FALSE, 10);
@@ -103,7 +102,7 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 		frontend = gtk_radio_button_new_with_label(group, text);
 		group = gtk_radio_button_group(GTK_RADIO_BUTTON(frontend));
 		gtk_widget_ref(frontend);
-		gtk_object_set_data_full(GTK_OBJECT(pick_module_dlg),
+		g_object_set_data_full(G_OBJECT(pick_module_dlg),
 					 fe,
 					 frontend,
 					 (GtkDestroyNotify) gtk_widget_unref);
@@ -116,14 +115,14 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 			choice = modulenumbers[i];
 		}
 
-		gtk_signal_connect(GTK_OBJECT(frontend), "toggled",
+		g_signal_connect(GTK_OBJECT(frontend), "toggled",
 				   GTK_SIGNAL_FUNC(on_button_toggled),
 				   GINT_TO_POINTER(modulenumbers[i]));
 	}
 
 	hseparator1 = gtk_hseparator_new();
 	gtk_widget_ref(hseparator1);
-	gtk_object_set_data_full(GTK_OBJECT(pick_module_dlg), "hseparator1",
+	g_object_set_data_full(G_OBJECT(pick_module_dlg), "hseparator1",
 				 hseparator1,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(hseparator1);
@@ -131,7 +130,7 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 
 	preserve = gtk_check_button_new_with_label(_("Don't ask me again."));
 	gtk_widget_ref(preserve);
-	gtk_object_set_data_full(GTK_OBJECT(pick_module_dlg), "preserve",
+	g_object_set_data_full(G_OBJECT(pick_module_dlg), "preserve",
 				 preserve,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(preserve);
@@ -139,7 +138,7 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 
 	hbuttonbox1 = gtk_hbutton_box_new();
 	gtk_widget_ref(hbuttonbox1);
-	gtk_object_set_data_full(GTK_OBJECT(pick_module_dlg), "hbuttonbox1",
+	g_object_set_data_full(G_OBJECT(pick_module_dlg), "hbuttonbox1",
 				 hbuttonbox1,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(hbuttonbox1);
@@ -147,16 +146,16 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 
 	button1 = gtk_button_new_with_label(_("OK"));
 	gtk_widget_ref(button1);
-	gtk_object_set_data_full(GTK_OBJECT(pick_module_dlg), "button1",
+	g_object_set_data_full(G_OBJECT(pick_module_dlg), "button1",
 				 button1,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(button1);
 	gtk_container_add(GTK_CONTAINER(hbuttonbox1), button1);
 	GTK_WIDGET_SET_FLAGS(button1, GTK_CAN_DEFAULT);
 
-	gtk_signal_connect(GTK_OBJECT(preserve), "toggled",
+	g_signal_connect(GTK_OBJECT(preserve), "toggled",
 			   GTK_SIGNAL_FUNC(on_preserve_toggled), NULL);
-	gtk_signal_connect(GTK_OBJECT(button1), "clicked",
+	g_signal_connect(GTK_OBJECT(button1), "clicked",
 			   GTK_SIGNAL_FUNC(on_pickmodule_ok_clicked), NULL);
 
 

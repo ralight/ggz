@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 6262 2004-11-05 01:26:49Z jdorje $
+ * $Id: ggzclient.c 6272 2004-11-05 21:19:52Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -906,13 +906,13 @@ static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* us
 	server_disconnect();
 
         /* Clear current list of rooms */
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
+        tmp = g_object_get_data(G_OBJECT(win_main), "room_clist");
         gtk_clist_clear(GTK_CLIST(tmp));
  
 	clear_player_list();
 
         /* Clear current list of tables */
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");
+        tmp = g_object_get_data(G_OBJECT(win_main), "table_clist");
         gtk_clist_clear(GTK_CLIST(tmp));
 
 	return GGZ_HOOK_OK;

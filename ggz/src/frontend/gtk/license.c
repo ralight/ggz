@@ -2,7 +2,7 @@
  * File: license.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: license.c 5963 2004-02-28 05:05:41Z jdorje $
+ * $Id: license.c 6272 2004-11-05 21:19:52Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -80,16 +80,16 @@ create_dlg_license (void)
   GtkWidget *close_button;
 
   dlg_license = gtk_dialog_new ();
-  gtk_object_set_data (GTK_OBJECT (dlg_license), "dlg_license", dlg_license);
+  g_object_set_data(G_OBJECT (dlg_license), "dlg_license", dlg_license);
   gtk_window_set_title (GTK_WINDOW (dlg_license), "License");
 
   dialog_vbox1 = GTK_DIALOG (dlg_license)->vbox;
-  gtk_object_set_data (GTK_OBJECT (dlg_license), "dialog_vbox1", dialog_vbox1);
+  g_object_set_data(G_OBJECT (dlg_license), "dialog_vbox1", dialog_vbox1);
   gtk_widget_show (dialog_vbox1);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_license), "vbox1", vbox1,
+  g_object_set_data_full(G_OBJECT (dlg_license), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox1);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, TRUE, TRUE, 0);
@@ -97,7 +97,7 @@ create_dlg_license (void)
 
   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (scrolledwindow1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_license), "scrolledwindow1", scrolledwindow1,
+  g_object_set_data_full(G_OBJECT (dlg_license), "scrolledwindow1", scrolledwindow1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow1);
   gtk_box_pack_start (GTK_BOX (vbox1), scrolledwindow1, TRUE, TRUE, 0);
@@ -108,7 +108,7 @@ create_dlg_license (void)
   gtk_text_view_set_editable(GTK_TEXT_VIEW(license_text), FALSE);
   gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(license_text), FALSE);
   gtk_widget_ref (license_text);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_license), "license_text", license_text,
+  g_object_set_data_full(G_OBJECT (dlg_license), "license_text", license_text,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (license_text);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), license_text);
@@ -117,35 +117,35 @@ create_dlg_license (void)
 				   license, strlen(license));
 
   dialog_action_area1 = GTK_DIALOG (dlg_license)->action_area;
-  gtk_object_set_data (GTK_OBJECT (dlg_license), "dialog_action_area1", dialog_action_area1);
+  g_object_set_data(G_OBJECT (dlg_license), "dialog_action_area1", dialog_action_area1);
   gtk_widget_show (dialog_action_area1);
   gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 10);
 
   button_box = gtk_hbutton_box_new ();
   gtk_widget_ref (button_box);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_license), "button_box", button_box,
+  g_object_set_data_full(G_OBJECT (dlg_license), "button_box", button_box,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button_box);
   gtk_box_pack_start (GTK_BOX (dialog_action_area1), button_box, TRUE, TRUE, 0);
 
   close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
   gtk_widget_ref (close_button);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_license),
+  g_object_set_data_full(G_OBJECT (dlg_license),
 			    "close_button", close_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (close_button);
   gtk_container_add (GTK_CONTAINER (button_box), close_button);
   GTK_WIDGET_SET_FLAGS (close_button, GTK_CAN_DEFAULT);
 
-  gtk_signal_connect (GTK_OBJECT (dlg_license), "destroy",
+  g_signal_connect (GTK_OBJECT (dlg_license), "destroy",
                       GTK_SIGNAL_FUNC (gtk_widget_destroyed),
                       &license_dialog);
-  gtk_signal_connect (GTK_OBJECT (dlg_license), "realize",
+  g_signal_connect (GTK_OBJECT (dlg_license), "realize",
                       GTK_SIGNAL_FUNC (license_realize),
                       NULL);
-  gtk_signal_connect_object (GTK_OBJECT (close_button), "clicked",
-                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                             GTK_OBJECT (dlg_license));
+  g_signal_connect_swapped(GTK_OBJECT (close_button), "clicked",
+			   GTK_SIGNAL_FUNC (gtk_widget_destroy),
+			   GTK_OBJECT (dlg_license));
 
   gtk_widget_grab_focus (close_button);
   gtk_widget_grab_default (close_button);

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.c 5963 2004-02-28 05:05:41Z jdorje $
+ * $Id: tablelist.c 6272 2004-11-05 21:19:52Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -117,25 +117,25 @@ static GtkWidget *create_mnu_table(void)
 	GtkWidget *info;
 
 	mnu_table = gtk_menu_new();
-	gtk_object_set_data(GTK_OBJECT(mnu_table), "mnu_table", mnu_table);
+	g_object_set_data(G_OBJECT(mnu_table), "mnu_table", mnu_table);
 
 	join = gtk_menu_item_new_with_label(_("Join"));
 	gtk_widget_ref(join);
-	gtk_object_set_data_full(GTK_OBJECT(mnu_table), "join", join,
+	g_object_set_data_full(G_OBJECT(mnu_table), "join", join,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(join);
 	gtk_container_add(GTK_CONTAINER(mnu_table), join);
 
 	leave = gtk_menu_item_new_with_label(_("Leave"));
 	gtk_widget_ref(leave);
-	gtk_object_set_data_full(GTK_OBJECT(mnu_table), "leave", leave,
+	g_object_set_data_full(G_OBJECT(mnu_table), "leave", leave,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(leave);
 	gtk_container_add(GTK_CONTAINER(mnu_table), leave);
 
 	menuitem3 = gtk_menu_item_new();
 	gtk_widget_ref(menuitem3);
-	gtk_object_set_data_full(GTK_OBJECT(mnu_table), "menuitem3",
+	g_object_set_data_full(G_OBJECT(mnu_table), "menuitem3",
 				 menuitem3,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(menuitem3);
@@ -144,18 +144,18 @@ static GtkWidget *create_mnu_table(void)
 
 	info = gtk_menu_item_new_with_label(_("Info"));
 	gtk_widget_ref(info);
-	gtk_object_set_data_full(GTK_OBJECT(mnu_table), "info", info,
+	g_object_set_data_full(G_OBJECT(mnu_table), "info", info,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(info);
 	gtk_container_add(GTK_CONTAINER(mnu_table), info);
 
 #if 0				/* not implemented */
-	gtk_signal_connect(GTK_OBJECT(join), "activate",
+	g_signal_connect(GTK_OBJECT(join), "activate",
 			   GTK_SIGNAL_FUNC(client_join_table_activate),
 			   GINT_TO_POINTER(table_num));
-	gtk_signal_connect(GTK_OBJECT(leave), "activate",
+	g_signal_connect(GTK_OBJECT(leave), "activate",
 			   GTK_SIGNAL_FUNC(client_leave_activate), NULL);
-	gtk_signal_connect(GTK_OBJECT(info), "activate",
+	g_signal_connect(GTK_OBJECT(info), "activate",
 			   GTK_SIGNAL_FUNC(client_table_info_activate),
 			   GINT_TO_POINTER(table_num));
 #endif
@@ -265,7 +265,7 @@ GtkWidget *create_table_list(GtkWidget * window)
 
 	table_clist = gtk_clist_new(3);
 	gtk_widget_ref(table_clist);
-	gtk_object_set_data_full(GTK_OBJECT(window), "table_clist",
+	g_object_set_data_full(G_OBJECT(window), "table_clist",
 				 table_clist,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(table_clist);
@@ -278,7 +278,7 @@ GtkWidget *create_table_list(GtkWidget * window)
 
 	table_no_label = gtk_label_new(_("No."));
 	gtk_widget_ref(table_no_label);
-	gtk_object_set_data_full(GTK_OBJECT(window), "table_no_label",
+	g_object_set_data_full(G_OBJECT(window), "table_no_label",
 				 table_no_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(table_no_label);
@@ -287,7 +287,7 @@ GtkWidget *create_table_list(GtkWidget * window)
 
 	table_steats_label = gtk_label_new(_("Seats"));
 	gtk_widget_ref(table_steats_label);
-	gtk_object_set_data_full(GTK_OBJECT(window),
+	g_object_set_data_full(G_OBJECT(window),
 				 "table_steats_label", table_steats_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(table_steats_label);
@@ -296,20 +296,20 @@ GtkWidget *create_table_list(GtkWidget * window)
 
 	tabel_desc_label = gtk_label_new(_("Description"));
 	gtk_widget_ref(tabel_desc_label);
-	gtk_object_set_data_full(GTK_OBJECT(window), "tabel_desc_label",
+	g_object_set_data_full(G_OBJECT(window), "tabel_desc_label",
 				 tabel_desc_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(tabel_desc_label);
 	gtk_clist_set_column_widget(GTK_CLIST(table_clist), 2,
 				    tabel_desc_label);
 
-	gtk_signal_connect(GTK_OBJECT(table_clist), "select_row",
+	g_signal_connect(GTK_OBJECT(table_clist), "select_row",
 			   GTK_SIGNAL_FUNC(client_table_clist_select_row),
 			   NULL);
-	gtk_signal_connect(GTK_OBJECT(table_clist), "click_column",
+	g_signal_connect(GTK_OBJECT(table_clist), "click_column",
 			   GTK_SIGNAL_FUNC(client_table_clist_click_column),
 			   NULL);
-	gtk_signal_connect(GTK_OBJECT(table_clist), "button-press-event",
+	g_signal_connect(GTK_OBJECT(table_clist), "button-press-event",
 			   GTK_SIGNAL_FUNC(client_table_event), NULL);
 
 

@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 5619 2003-06-28 09:09:12Z dr_maux $
+ * $Id: first.c 6272 2004-11-05 21:19:52Z jdorje $
  *
  * Displayes information about the authors and the application.
  *
@@ -180,7 +180,7 @@ create_dlg_first (void)
   GtkWidget *button_no;
 
   dlg_first = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_object_set_data (GTK_OBJECT (dlg_first), "dlg_first", dlg_first);
+  g_object_set_data(G_OBJECT (dlg_first), "dlg_first", dlg_first);
   gtk_container_set_border_width (GTK_CONTAINER (dlg_first), 21);
   gtk_window_set_title (GTK_WINDOW (dlg_first), _("First Time Configuration"));
   gtk_window_set_position (GTK_WINDOW (dlg_first), GTK_WIN_POS_CENTER);
@@ -188,14 +188,14 @@ create_dlg_first (void)
 
   vbox3 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox3);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_first), "vbox3", vbox3,
+  g_object_set_data_full(G_OBJECT (dlg_first), "vbox3", vbox3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox3);
   gtk_container_add (GTK_CONTAINER (dlg_first), vbox3);
 
   label5 = gtk_label_new (_("This is the first time you are running the GTK+ GGZ Gaming Zone client. Would you like to create some default server profiles?"));
   gtk_widget_ref (label5);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_first), "label5", label5,
+  g_object_set_data_full(G_OBJECT (dlg_first), "label5", label5,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label5);
   gtk_box_pack_start (GTK_BOX (vbox3), label5, TRUE, TRUE, 0);
@@ -203,14 +203,14 @@ create_dlg_first (void)
 
   hbuttonbox2 = gtk_hbutton_box_new ();
   gtk_widget_ref (hbuttonbox2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_first), "hbuttonbox2", hbuttonbox2,
+  g_object_set_data_full(G_OBJECT (dlg_first), "hbuttonbox2", hbuttonbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbuttonbox2);
   gtk_box_pack_start (GTK_BOX (vbox3), hbuttonbox2, FALSE, TRUE, 0);
 
   button_yes = gtk_button_new_with_label (_("Yes"));
   gtk_widget_ref (button_yes);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_first), "button_yes", button_yes,
+  g_object_set_data_full(G_OBJECT (dlg_first), "button_yes", button_yes,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button_yes);
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), button_yes);
@@ -218,16 +218,16 @@ create_dlg_first (void)
 
   button_no = gtk_button_new_with_label (_("No"));
   gtk_widget_ref (button_no);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_first), "button_no", button_no,
+  g_object_set_data_full(G_OBJECT (dlg_first), "button_no", button_no,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button_no);
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), button_no);
   GTK_WIDGET_SET_FLAGS (button_no, GTK_CAN_DEFAULT);
 
-  gtk_signal_connect (GTK_OBJECT (button_yes), "clicked",
+  g_signal_connect (GTK_OBJECT (button_yes), "clicked",
                       GTK_SIGNAL_FUNC (first_button_yes_activate),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (button_no), "clicked",
+  g_signal_connect (GTK_OBJECT (button_no), "clicked",
                       GTK_SIGNAL_FUNC (first_button_no_activate),
                       NULL);
 

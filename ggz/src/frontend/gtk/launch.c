@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 5853 2004-02-08 22:19:24Z jdorje $
+ * $Id: launch.c 6272 2004-11-05 21:19:52Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -96,26 +96,26 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 	gt = ggzcore_room_get_gametype(room);
 
 	/* Set the labels */
-	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "type_label");
+	tmp = g_object_get_data(G_OBJECT(launch_dialog), "type_label");
 	text = g_strdup_printf(_("Game Type:  %s"),
 			       ggzcore_gametype_get_name(gt));
 	gtk_label_set_text(GTK_LABEL(tmp), text);
 	g_free(text);
 
-	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "author_label");
+	tmp = g_object_get_data(G_OBJECT(launch_dialog), "author_label");
 	text = g_strdup_printf(_("Author:  %s"),
 			       ggzcore_gametype_get_author(gt));
 	gtk_label_set_text(GTK_LABEL(tmp), text);
 	g_free(text);
 
-	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog),
+	tmp = g_object_get_data(G_OBJECT(launch_dialog),
 				  "type_desc_label");
 	text = g_strdup_printf(_("Description:  %s"),
 			       ggzcore_gametype_get_desc(gt));
 	gtk_label_set_text(GTK_LABEL(tmp), text);
 	g_free(text);
 
-	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "web_label");
+	tmp = g_object_get_data(G_OBJECT(launch_dialog), "web_label");
 	text = g_strdup_printf(_("Home Page:  %s"),
 			       ggzcore_gametype_get_url(gt));
 	gtk_label_set_text(GTK_LABEL(tmp), text);
@@ -129,7 +129,7 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 			items = g_list_append(items,
 					      g_strdup_printf("%d", x));
 	}
-	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "seats_combo");
+	tmp = g_object_get_data(G_OBJECT(launch_dialog), "seats_combo");
 	gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
 
 	/* Show seats that should be shown (i.e. all of them). */
@@ -137,13 +137,13 @@ static void launch_fill_defaults(GtkWidget * widget, gpointer data)
 		launch_seat_show(x, TRUE);
 
 	/* Default to reserving us a seat */
-	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "seat1_name");
+	tmp = g_object_get_data(G_OBJECT(launch_dialog), "seat1_name");
 	gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_server_get_handle(server));
 
 	/* FIXME: for guest users, the reservation won't work.  But it should
 	   be easily converted by ggzd into an open seat, which should be
 	   fine. */
-	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "seat1_resv");
+	tmp = g_object_get_data(G_OBJECT(launch_dialog), "seat1_resv");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 
 	/* If bots are allowed, default to bot players, otherwise open */
@@ -179,13 +179,13 @@ static void launch_seats_changed(GtkWidget * widget, gpointer data)
 	for (i = 1; i <= seats; i++) {
 		char text[128];
 		sprintf(text, "seat%d_box", i);
-		tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), text);
+		tmp = g_object_get_data(G_OBJECT(launch_dialog), text);
 		gtk_widget_set_sensitive(tmp, TRUE);
 	}
 	for (i = (seats + 1); i <= max; i++) {
 		char text[128];
 		sprintf(text, "seat%d_box", i);
-		tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), text);
+		tmp = g_object_get_data(G_OBJECT(launch_dialog), text);
 		gtk_widget_set_sensitive(tmp, FALSE);
 	}
 }
@@ -332,8 +332,7 @@ static void launch_seat_show(gint seat, gchar show)
 
 	/* Show seat's hbox */
 	sprintf(text, "seat%d_box", seat);
-	tmp = GTK_OBJECT(gtk_object_get_data
-			 (GTK_OBJECT(launch_dialog), text));
+	tmp = g_object_get_data(G_OBJECT(launch_dialog), text);
 	if (show)
 		gtk_widget_show(GTK_WIDGET(tmp));
 	else
@@ -393,17 +392,17 @@ GtkWidget *create_dlg_launch(void)
 	}
 
 	dlg_launch = gtk_dialog_new();
-	gtk_object_set_data(GTK_OBJECT(dlg_launch), "dlg_launch", dlg_launch);
+	g_object_set_data(G_OBJECT(dlg_launch), "dlg_launch", dlg_launch);
 	gtk_window_set_title(GTK_WINDOW(dlg_launch), _("Seat Assignments"));
 	gtk_window_set_policy(GTK_WINDOW(dlg_launch), FALSE, TRUE, TRUE);
 
 	vbox1 = GTK_DIALOG(dlg_launch)->vbox;
-	gtk_object_set_data(GTK_OBJECT(dlg_launch), "vbox1", vbox1);
+	g_object_set_data(G_OBJECT(dlg_launch), "vbox1", vbox1);
 	gtk_widget_show(vbox1);
 
 	main_box = gtk_vbox_new(FALSE, 3);
 	gtk_widget_ref(main_box);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "main_box", main_box,
+	g_object_set_data_full(G_OBJECT(dlg_launch), "main_box", main_box,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(main_box);
 	gtk_box_pack_start(GTK_BOX(vbox1), main_box, TRUE, TRUE, 0);
@@ -411,7 +410,7 @@ GtkWidget *create_dlg_launch(void)
 
 	game_box = gtk_hbox_new(FALSE, 10);
 	gtk_widget_ref(game_box);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "game_box",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "game_box",
 				 game_box,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(game_box);
@@ -419,7 +418,7 @@ GtkWidget *create_dlg_launch(void)
 
 	type_label = gtk_label_new(_("Game Type:"));
 	gtk_widget_ref(type_label);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "type_label",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "type_label",
 				 type_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(type_label);
@@ -427,7 +426,7 @@ GtkWidget *create_dlg_launch(void)
 
 	game_label = gtk_label_new("");
 	gtk_widget_ref(game_label);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "game_label",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "game_label",
 				 game_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(game_label);
@@ -435,7 +434,7 @@ GtkWidget *create_dlg_launch(void)
 
 	seats_combo = gtk_combo_new();
 	gtk_widget_ref(seats_combo);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "seats_combo",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "seats_combo",
 				 seats_combo,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(seats_combo);
@@ -449,14 +448,14 @@ GtkWidget *create_dlg_launch(void)
 
 	seats_entry = GTK_COMBO(seats_combo)->entry;
 	gtk_widget_ref(seats_entry);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "seats_entry",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "seats_entry",
 				 seats_entry,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(seats_entry);
 
 	players_label = gtk_label_new(_("Number of seats"));
 	gtk_widget_ref(players_label);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "players_label",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "players_label",
 				 players_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(players_label);
@@ -464,7 +463,7 @@ GtkWidget *create_dlg_launch(void)
 
 	author_box = gtk_hbox_new(FALSE, 0);
 	gtk_widget_ref(author_box);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "author_box",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "author_box",
 				 author_box,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(author_box);
@@ -472,7 +471,7 @@ GtkWidget *create_dlg_launch(void)
 
 	author_label = gtk_label_new(_("Author:"));
 	gtk_widget_ref(author_label);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "author_label",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "author_label",
 				 author_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(author_label);
@@ -482,7 +481,7 @@ GtkWidget *create_dlg_launch(void)
 
 	type_desc_box = gtk_hbox_new(FALSE, 0);
 	gtk_widget_ref(type_desc_box);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "type_desc_box",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "type_desc_box",
 				 type_desc_box,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(type_desc_box);
@@ -490,7 +489,7 @@ GtkWidget *create_dlg_launch(void)
 
 	type_desc_label = gtk_label_new(_("Description:"));
 	gtk_widget_ref(type_desc_label);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "type_desc_label",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "type_desc_label",
 				 type_desc_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(type_desc_label);
@@ -500,14 +499,14 @@ GtkWidget *create_dlg_launch(void)
 
 	web_box = gtk_hbox_new(FALSE, 0);
 	gtk_widget_ref(web_box);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "web_box", web_box,
+	g_object_set_data_full(G_OBJECT(dlg_launch), "web_box", web_box,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(web_box);
 	gtk_box_pack_start(GTK_BOX(main_box), web_box, FALSE, FALSE, 0);
 
 	web_label = gtk_label_new(_("Homepage:"));
 	gtk_widget_ref(web_label);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "web_label",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "web_label",
 				 web_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(web_label);
@@ -516,7 +515,7 @@ GtkWidget *create_dlg_launch(void)
 
 	separator = gtk_hseparator_new();
 	gtk_widget_ref(separator);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "separator",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "separator",
 				 separator,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(separator);
@@ -527,7 +526,7 @@ GtkWidget *create_dlg_launch(void)
 
 		scroll = gtk_scrolled_window_new(NULL, NULL);
 		gtk_widget_ref(scroll);
-		gtk_object_set_data_full(GTK_OBJECT(dlg_launch),
+		g_object_set_data_full(G_OBJECT(dlg_launch),
 					 "scrolledwindow", scroll,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_widget_show(scroll);
@@ -538,7 +537,7 @@ GtkWidget *create_dlg_launch(void)
 
 		seat_box = gtk_vbox_new(FALSE, 3);
 		gtk_widget_ref(seat_box);
-		gtk_object_set_data_full(GTK_OBJECT(dlg_launch),
+		g_object_set_data_full(G_OBJECT(dlg_launch),
 					 "seat_box", seat_box,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_widget_show(seat_box);
@@ -555,7 +554,7 @@ GtkWidget *create_dlg_launch(void)
 		seats[i].box = gtk_hbox_new(FALSE, 0);
 		gtk_widget_ref(seats[i].box);
 		sprintf(text, "seat%d_box", i + 1);
-		gtk_object_set_data_full(GTK_OBJECT(dlg_launch), text,
+		g_object_set_data_full(G_OBJECT(dlg_launch), text,
 					 seats[i].box,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_widget_show(seats[i].box);
@@ -566,7 +565,7 @@ GtkWidget *create_dlg_launch(void)
 		seats[i].label = gtk_label_new(text);
 		gtk_widget_ref(seats[i].label);
 		sprintf(text, "seat%d_lable", i + 1);
-		gtk_object_set_data_full(GTK_OBJECT(dlg_launch), text,
+		g_object_set_data_full(G_OBJECT(dlg_launch), text,
 					 seats[i].label,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_widget_show(seats[i].label);
@@ -580,7 +579,7 @@ GtkWidget *create_dlg_launch(void)
 					       (seats[i].bot));
 		gtk_widget_ref(seats[i].bot);
 		sprintf(text, "seat%d_bot", i + 1);
-		gtk_object_set_data_full(GTK_OBJECT(dlg_launch), text,
+		g_object_set_data_full(G_OBJECT(dlg_launch), text,
 					 seats[i].bot,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_widget_show(seats[i].bot);
@@ -595,7 +594,7 @@ GtkWidget *create_dlg_launch(void)
 					       (seats[i].open));
 		gtk_widget_ref(seats[i].open);
 		sprintf(text, "seat%d_open", i + 1);
-		gtk_object_set_data_full(GTK_OBJECT(dlg_launch), text,
+		g_object_set_data_full(G_OBJECT(dlg_launch), text,
 					 seats[i].open,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_widget_show(seats[i].open);
@@ -610,7 +609,7 @@ GtkWidget *create_dlg_launch(void)
 					       (seats[i].resv));
 		gtk_widget_ref(seats[i].resv);
 		sprintf(text, "seat%d_resv", i + 1);
-		gtk_object_set_data_full(GTK_OBJECT(dlg_launch), text,
+		g_object_set_data_full(G_OBJECT(dlg_launch), text,
 					 seats[i].resv,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_widget_show(seats[i].resv);
@@ -623,7 +622,7 @@ GtkWidget *create_dlg_launch(void)
 			gtk_entry_new_with_max_length(MAX_RESERVED_NAME_LEN);
 		gtk_widget_ref(seats[i].name);
 		sprintf(text, "seat%d_name", i + 1);
-		gtk_object_set_data_full(GTK_OBJECT(dlg_launch), text,
+		g_object_set_data_full(G_OBJECT(dlg_launch), text,
 					 seats[i].name,
 					 (GtkDestroyNotify) gtk_widget_unref);
 		gtk_widget_show(seats[i].name);
@@ -634,14 +633,14 @@ GtkWidget *create_dlg_launch(void)
 
 	desc_box = gtk_hbox_new(FALSE, 0);
 	gtk_widget_ref(desc_box);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "desc_box", desc_box,
+	g_object_set_data_full(G_OBJECT(dlg_launch), "desc_box", desc_box,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(desc_box);
 	gtk_box_pack_start(GTK_BOX(main_box), desc_box, FALSE, FALSE, 0);
 
 	game_desc_label = gtk_label_new(_("Game Description   "));
 	gtk_widget_ref(game_desc_label);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "game_desc_label",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "game_desc_label",
 				 game_desc_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(game_desc_label);
@@ -650,20 +649,20 @@ GtkWidget *create_dlg_launch(void)
 
 	desc_entry = gtk_entry_new();
 	gtk_widget_ref(desc_entry);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "desc_entry",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "desc_entry",
 				 desc_entry,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(desc_entry);
 	gtk_box_pack_start(GTK_BOX(desc_box), desc_entry, TRUE, TRUE, 0);
 
 	hbox11 = GTK_DIALOG(dlg_launch)->action_area;
-	gtk_object_set_data(GTK_OBJECT(dlg_launch), "hbox11", hbox11);
+	g_object_set_data(G_OBJECT(dlg_launch), "hbox11", hbox11);
 	gtk_widget_show(hbox11);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox11), 10);
 
 	button_box = gtk_hbutton_box_new();
 	gtk_widget_ref(button_box);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "button_box",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "button_box",
 				 button_box,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(button_box);
@@ -671,7 +670,7 @@ GtkWidget *create_dlg_launch(void)
 
 	launch_button = gtk_button_new_with_label(_("Launch"));
 	gtk_widget_ref(launch_button);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "launch_button",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "launch_button",
 				 launch_button,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(launch_button);
@@ -680,28 +679,28 @@ GtkWidget *create_dlg_launch(void)
 
 	cancel_button = gtk_button_new_with_label(_("Cancel"));
 	gtk_widget_ref(cancel_button);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_launch), "cancel_button",
+	g_object_set_data_full(G_OBJECT(dlg_launch), "cancel_button",
 				 cancel_button,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(cancel_button);
 	gtk_container_add(GTK_CONTAINER(button_box), cancel_button);
 	GTK_WIDGET_SET_FLAGS(cancel_button, GTK_CAN_DEFAULT);
 
-	gtk_signal_connect(GTK_OBJECT(dlg_launch), "destroy",
+	g_signal_connect(GTK_OBJECT(dlg_launch), "destroy",
 			   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 			   &launch_dialog);
-	gtk_signal_connect(GTK_OBJECT(dlg_launch), "realize",
+	g_signal_connect(GTK_OBJECT(dlg_launch), "realize",
 			   GTK_SIGNAL_FUNC(launch_fill_defaults), NULL);
-	gtk_signal_connect(GTK_OBJECT(seats_entry), "changed",
+	g_signal_connect(GTK_OBJECT(seats_entry), "changed",
 			   GTK_SIGNAL_FUNC(launch_seats_changed), NULL);
 	for (i = 0; i < num_seats; i++) {
-		gtk_signal_connect(GTK_OBJECT(seats[i].resv), "toggled",
+		g_signal_connect(GTK_OBJECT(seats[i].resv), "toggled",
 				   GTK_SIGNAL_FUNC(launch_resv_toggle),
 				   seats[i].name);
 	}
-	gtk_signal_connect(GTK_OBJECT(launch_button), "clicked",
+	g_signal_connect(GTK_OBJECT(launch_button), "clicked",
 			   GTK_SIGNAL_FUNC(launch_start_game), NULL);
-	gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
+	g_signal_connect(GTK_OBJECT(cancel_button), "clicked",
 			   GTK_SIGNAL_FUNC(launch_cancel_button_clicked),
 			   NULL);
 

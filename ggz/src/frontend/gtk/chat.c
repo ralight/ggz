@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 5963 2004-02-28 05:05:41Z jdorje $
+ * $Id: chat.c 6272 2004-11-05 21:19:52Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -212,7 +212,7 @@ void chat_display_server(GGZChatType type,
 	if (sender && chat_is_ignore(sender))
 		return;
 
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
+        tmp = g_object_get_data(G_OBJECT(win_main), "xtext_custom");
 
 	switch (type) {
 	case GGZ_CHAT_UNKNOWN:
@@ -305,7 +305,7 @@ void chat_display_local(LocalChatType type,
         GtkXText *tmp;
 	gchar *name;
 
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
+        tmp = g_object_get_data(G_OBJECT(win_main), "xtext_custom");
 
 	switch (type) {
 	case CHAT_SEND_PERSONAL:
@@ -504,7 +504,7 @@ void chat_enter(const gchar *player, int from_room)
 			snprintf(message, sizeof(message), "%s", player);
 		}
 
-	        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
+	        tmp = g_object_get_data(G_OBJECT(win_main), "xtext_custom");
 		gtk_xtext_append_indent(tmp->buffer,
 					"-->", 3, message, strlen(message));
 	}
@@ -543,7 +543,7 @@ void chat_part(const gchar *player, int to_room)
 			snprintf(message, sizeof(message), "%s", player);
 		}
 
-	        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
+	        tmp = g_object_get_data(G_OBJECT(win_main), "xtext_custom");
 		gtk_xtext_append_indent(tmp->buffer,
 					"<--", 3, message, strlen(message));
 	}

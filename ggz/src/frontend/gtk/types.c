@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 5963 2004-02-28 05:05:41Z jdorje $
+ * $Id: types.c 6272 2004-11-05 21:19:52Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -159,13 +159,13 @@ create_dlg_types (void)
   GtkWidget *filter_button;
 
   dlg_types = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_object_set_data (GTK_OBJECT (dlg_types), "dlg_types", dlg_types);
+  g_object_set_data(G_OBJECT (dlg_types), "dlg_types", dlg_types);
   gtk_widget_set_usize (dlg_types, 620, 200);
   gtk_window_set_title (GTK_WINDOW (dlg_types), _("Game Types"));
 
   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (scrolledwindow1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_types), "scrolledwindow1", scrolledwindow1,
+  g_object_set_data_full(G_OBJECT (dlg_types), "scrolledwindow1", scrolledwindow1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow1);
   gtk_container_add (GTK_CONTAINER (dlg_types), scrolledwindow1);
@@ -173,21 +173,21 @@ create_dlg_types (void)
 
   viewport1 = gtk_viewport_new (NULL, NULL);
   gtk_widget_ref (viewport1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_types), "viewport1", viewport1,
+  g_object_set_data_full(G_OBJECT (dlg_types), "viewport1", viewport1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (viewport1);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), viewport1);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_types), "vbox1", vbox1,
+  g_object_set_data_full(G_OBJECT (dlg_types), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox1);
   gtk_container_add (GTK_CONTAINER (viewport1), vbox1);
 
   scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (scrolledwindow2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_types), "scrolledwindow2", scrolledwindow2,
+  g_object_set_data_full(G_OBJECT (dlg_types), "scrolledwindow2", scrolledwindow2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow2);
   gtk_box_pack_start (GTK_BOX (vbox1), scrolledwindow2, TRUE, TRUE, 0);
@@ -195,7 +195,7 @@ create_dlg_types (void)
 
   types_clist = gtk_clist_new (4);
   gtk_widget_ref (types_clist);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_types), "types_clist", types_clist,
+  g_object_set_data_full(G_OBJECT (dlg_types), "types_clist", types_clist,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (types_clist);
   gtk_container_add (GTK_CONTAINER (scrolledwindow2), types_clist);
@@ -207,35 +207,35 @@ create_dlg_types (void)
 
   label6 = gtk_label_new (_("Name"));
   gtk_widget_ref (label6);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_types), "label6", label6,
+  g_object_set_data_full(G_OBJECT (dlg_types), "label6", label6,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label6);
   gtk_clist_set_column_widget (GTK_CLIST (types_clist), 0, label6);
 
   label7 = gtk_label_new (_("Author"));
   gtk_widget_ref (label7);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_types), "label7", label7,
+  g_object_set_data_full(G_OBJECT (dlg_types), "label7", label7,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label7);
   gtk_clist_set_column_widget (GTK_CLIST (types_clist), 1, label7);
 
   label8 = gtk_label_new (_("Web Address"));
   gtk_widget_ref (label8);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_types), "label8", label8,
+  g_object_set_data_full(G_OBJECT (dlg_types), "label8", label8,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label8);
   gtk_clist_set_column_widget (GTK_CLIST (types_clist), 2, label8);
 
   label9 = gtk_label_new (_("Description"));
   gtk_widget_ref (label9);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_types), "label9", label9,
+  g_object_set_data_full(G_OBJECT (dlg_types), "label9", label9,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label9);
   gtk_clist_set_column_widget (GTK_CLIST (types_clist), 3, label9);
 
   toolbar1 = gtk_toolbar_new();
   gtk_widget_ref (toolbar1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_types), "toolbar1", toolbar1,
+  g_object_set_data_full(G_OBJECT (dlg_types), "toolbar1", toolbar1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (toolbar1);
   gtk_box_pack_start (GTK_BOX (vbox1), toolbar1, FALSE, FALSE, 0);
@@ -243,7 +243,7 @@ create_dlg_types (void)
 
   filter_label = gtk_label_new (_("Room List Filter:"));
   gtk_widget_ref (filter_label);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_types), "filter_label", filter_label,
+  g_object_set_data_full(G_OBJECT (dlg_types), "filter_label", filter_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (filter_label);
   gtk_toolbar_append_widget (GTK_TOOLBAR (toolbar1), filter_label, NULL, NULL);
@@ -251,7 +251,7 @@ create_dlg_types (void)
 
   filter_optionmenu = gtk_option_menu_new ();
   gtk_widget_ref (filter_optionmenu);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_types), "filter_optionmenu", filter_optionmenu,
+  g_object_set_data_full(G_OBJECT (dlg_types), "filter_optionmenu", filter_optionmenu,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (filter_optionmenu);
   gtk_toolbar_append_space (GTK_TOOLBAR (toolbar1));
@@ -270,15 +270,15 @@ create_dlg_types (void)
                                 NULL, NULL,
                                 NULL, NULL, NULL);
   gtk_widget_ref (filter_button);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_types), "filter_button", filter_button,
+  g_object_set_data_full(G_OBJECT (dlg_types), "filter_button", filter_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (filter_button);
   gtk_widget_set_usize (filter_button, 50, -2);
 
-  gtk_signal_connect (GTK_OBJECT (dlg_types), "destroy",
+  g_signal_connect (GTK_OBJECT (dlg_types), "destroy",
                       GTK_SIGNAL_FUNC (gtk_widget_destroyed),
                       &types_dialog);
-  gtk_signal_connect (GTK_OBJECT (filter_button), "clicked",
+  g_signal_connect (GTK_OBJECT (filter_button), "clicked",
                       GTK_SIGNAL_FUNC (types_filter_button),
                       NULL);
 
@@ -295,27 +295,27 @@ create_menu1 (void)
   GtkWidget *goto_web_site;
 
   menu1 = gtk_menu_new ();
-  gtk_object_set_data (GTK_OBJECT (menu1), "menu1", menu1);
+  g_object_set_data(G_OBJECT (menu1), "menu1", menu1);
   menu1_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (menu1));
 
   upgrage_game = gtk_menu_item_new_with_label (_("Upgrage Game"));
   gtk_widget_ref (upgrage_game);
-  gtk_object_set_data_full (GTK_OBJECT (menu1), "upgrage_game", upgrage_game,
+  g_object_set_data_full(G_OBJECT (menu1), "upgrage_game", upgrage_game,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (upgrage_game);
   gtk_container_add (GTK_CONTAINER (menu1), upgrage_game);
 
   goto_web_site = gtk_menu_item_new_with_label (_("Goto Web Site"));
   gtk_widget_ref (goto_web_site);
-  gtk_object_set_data_full (GTK_OBJECT (menu1), "goto_web_site", goto_web_site,
+  g_object_set_data_full(G_OBJECT (menu1), "goto_web_site", goto_web_site,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (goto_web_site);
   gtk_container_add (GTK_CONTAINER (menu1), goto_web_site);
 
-  gtk_signal_connect (GTK_OBJECT (upgrage_game), "activate",
+  g_signal_connect (GTK_OBJECT (upgrage_game), "activate",
                       GTK_SIGNAL_FUNC (types_upgrade),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (goto_web_site), "activate",
+  g_signal_connect (GTK_OBJECT (goto_web_site), "activate",
                       GTK_SIGNAL_FUNC (types_URL),
                       NULL);
 

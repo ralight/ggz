@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 6255 2004-11-04 22:38:30Z jdorje $
+ * $Id: about.c 6272 2004-11-05 21:19:52Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -89,21 +89,21 @@ GtkWidget *create_dlg_about(void)
 	GtkWidget *ok_button;
 
 	dlg_about = gtk_dialog_new();
-	gtk_object_set_data(GTK_OBJECT(dlg_about), "dlg_about", dlg_about);
+	g_object_set_data(G_OBJECT(dlg_about), "dlg_about", dlg_about);
 	gtk_window_set_title(GTK_WINDOW(dlg_about), _("About"));
 	gtk_window_set_policy(GTK_WINDOW(dlg_about), FALSE, FALSE, FALSE);
 
 	dialog_vbox1 = GTK_DIALOG(dlg_about)->vbox;
-	gtk_object_set_data(GTK_OBJECT(dlg_about), "dialog_vbox1",
-			    dialog_vbox1);
+	g_object_set_data(G_OBJECT(dlg_about), "dialog_vbox1",
+			  dialog_vbox1);
 	gtk_widget_show(dialog_vbox1);
 
 	background = gtk_drawing_area_new();
 	gtk_widget_set_name(GTK_WIDGET(background), "background");
 	gtk_widget_ref(background);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_about), "background",
-				 background,
-				 (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data_full(G_OBJECT(dlg_about), "background",
+			       background,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(background);
 	gtk_box_pack_start(GTK_BOX(dialog_vbox1), background, FALSE, FALSE,
 			   0);
@@ -112,37 +112,37 @@ GtkWidget *create_dlg_about(void)
 	GTK_WIDGET_UNSET_FLAGS(background, GTK_CAN_DEFAULT);
 
 	dialog_action_area1 = GTK_DIALOG(dlg_about)->action_area;
-	gtk_object_set_data(GTK_OBJECT(dlg_about), "dialog_action_area1",
-			    dialog_action_area1);
+	g_object_set_data(G_OBJECT(dlg_about), "dialog_action_area1",
+			  dialog_action_area1);
 	gtk_widget_show(dialog_action_area1);
 	gtk_container_set_border_width(GTK_CONTAINER(dialog_action_area1),
 				       10);
 
 	button_box = gtk_hbutton_box_new();
 	gtk_widget_ref(button_box);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_about), "button_box",
-				 button_box,
-				 (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data_full(G_OBJECT(dlg_about), "button_box",
+			       button_box,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(button_box);
 	gtk_box_pack_start(GTK_BOX(dialog_action_area1), button_box, TRUE,
 			   TRUE, 0);
 
 	ok_button = gtk_button_new_with_label(_("OK"));
 	gtk_widget_ref(ok_button);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_about), "ok_button",
-				 ok_button,
-				 (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data_full(G_OBJECT(dlg_about), "ok_button",
+			       ok_button,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(ok_button);
 	gtk_container_add(GTK_CONTAINER(button_box), ok_button);
 	GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT);
 
-	gtk_signal_connect(GTK_OBJECT(dlg_about), "destroy",
+	g_signal_connect(dlg_about, "destroy",
 			   GTK_SIGNAL_FUNC(about_ok), NULL);
-	gtk_signal_connect(GTK_OBJECT(dlg_about), "realize",
+	g_signal_connect(GTK_OBJECT(dlg_about), "realize",
 			   GTK_SIGNAL_FUNC(about_realize), NULL);
-	gtk_signal_connect(GTK_OBJECT(background), "expose_event",
+	g_signal_connect(GTK_OBJECT(background), "expose_event",
 			   GTK_SIGNAL_FUNC(about_update), NULL);
-	gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
+	g_signal_connect(GTK_OBJECT(ok_button), "clicked",
 			   GTK_SIGNAL_FUNC(about_ok), NULL);
 
 	return dlg_about;
@@ -168,7 +168,7 @@ static void about_realize(GtkWidget * widget, gpointer data)
 	if (bg_img == NULL)
 		g_error("Couldn't create about background pixmap.");
 
-	tmp = gtk_object_get_data(GTK_OBJECT(about_dialog), "background");
+	tmp = g_object_get_data(G_OBJECT(about_dialog), "background");
 	oldstyle = gtk_widget_get_style(tmp);
 	newstyle = gtk_style_copy(oldstyle);
 	newstyle->text[5] = colors[12];
@@ -188,7 +188,7 @@ static gint about_update(gpointer data)
 	int status;
 
 	background =
-		gtk_object_get_data(GTK_OBJECT(about_dialog), "background");
+		g_object_get_data(G_OBJECT(about_dialog), "background");
 	gdk_pixbuf_render_to_drawable(bg_img, pixmap,
 				      GTK_WIDGET(background)->style->
 				      fg_gc[GTK_WIDGET_STATE(background)],
