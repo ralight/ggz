@@ -49,6 +49,8 @@ static int winner = -1;
 static int usesound = 1;
 #ifdef HAVE_SOUND
 Mix_Music *music = NULL;
+Mix_Chunk *chunk = NULL;
+int chunkchannel = -1;
 #endif
 
 /* Prototypes */
@@ -383,6 +385,16 @@ void renderscore(int x, int y, int sum)
 	}
 }
 
+void playnoise()
+{
+#ifdef HAVE_SOUND
+	if(chunk)
+	{
+		chunkchannel = Mix_PlayChannel(-1, chunk, 0);
+	}
+#endif
+}
+
 void screen_intro()
 {
 	int escape;
@@ -463,6 +475,7 @@ void screen_intro()
 					{
 						escape = 1;
 						playmode = (y - 20) / 30 + MODE_RESERVED + 1;
+						playnoise();
 					}
 					break;
 			}
@@ -559,6 +572,7 @@ void screen_game()
 						array[x / 32][y / 32] = !array[x / 32][y / 32];
 						drawnumber(screen, x / 32, y / 32, array[x / 32][y / 32]);
 						calc = 1;
+						playnoise();
 					}
 					break;
 			}
@@ -667,6 +681,7 @@ int startgame(void)
 {
 	int i, j, x;
 	SDL_Rect rect;
+	SDL_Surface *icon;
 	Uint32 init;
 	int ret;
 
@@ -689,9 +704,11 @@ int startgame(void)
 		}
 		else
 		{
-			music = Mix_LoadMUS("/storage/music/ogg/free-software/song32.ogg");
+			music = Mix_LoadMUS(DATA_GLOBAL "music/song32.ogg");
 			Mix_PlayMusic(music, -1);
 			Mix_HookMusicFinished(musicdone);
+
+			chunk = Mix_LoadWAV(DATA_GLOBAL "sound/phaser.wav");
 		}
 	}
 #endif
@@ -706,6 +723,8 @@ int startgame(void)
 	TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
 
 	SDL_WM_SetCaption("GGZ Geek Game", "GGZ Geek Game");
+	icon = IMG_Load(DATA_GLOBAL "icon.png");
+	if(icon) SDL_WM_SetIcon(icon, 0);
 
 	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 24, 0);
 
@@ -743,7 +762,14 @@ int startgame(void)
 	}
 
 #ifdef HAVE_SOUND
-	Mix_CloseAudio();
+	if(usesound)
+	{
+		if(chunkchannel >= 0) Mix_HaltChannel(chunkchannel);
+		chunkchannel = -1;
+		chunk = NULL;
+		Mix_CloseAudio();
+		music = NULL;
+	}
 #endif
 	SDL_Quit();
 
@@ -752,8 +778,13 @@ int startgame(void)
 
 void musicdone(void)
 {
+#ifdef HAVE_SOUND
+	if(chunkchannel >= 0) Mix_HaltChannel(chunkchannel);
+	chunkchannel = -1;
+	chunk = NULL;
 	Mix_HaltMusic();
 	Mix_FreeMusic(music);
 	music = NULL;
+#endif
 }
 
