@@ -122,6 +122,9 @@ struct _GGZServer {
 	/* Port on which GGZ server in running */
 	unsigned int port;
 
+	/* Network object for doing net IO */
+	struct _GGZNet *net;
+
 	/* Login type: one of GGZ_LOGIN, GGZ_LOGIN_GUEST, GGZ_LOGIN_NEW */
 	GGZLoginType type;
 
@@ -293,17 +296,12 @@ void ggzcore_server_free(GGZServer *server)
 int ggzcore_server_set_hostinfo(GGZServer *server, const char *host, const unsigned int port)
 {
 	/* Check for valid arguments */
-	if (!server || !host)
+	if (server && host && server->state == GGZ_STATE_OFFLINE) {
+		_ggzcore_net_init(server->net, server, host, port);
+		return 0;
+	}
+	else
 		return -1;
-
-	/* Check for valid state */
-	if (server->state != GGZ_STATE_OFFLINE)
-		return -1;
-
-	_ggzcore_server_set_host(server, host);
-	_ggzcore_server_set_port(server, port);
-
-	return 0;
 }
 
 
@@ -534,10 +532,11 @@ int ggzcore_server_is_at_table(GGZServer *server)
 
 int ggzcore_server_connect(GGZServer *server)
 {
-	if (!server || !server->host || server->state != GGZ_STATE_OFFLINE)
+	if (server && server->net && server->state == GGZ_STATE_OFFLINE) {
+		return _ggzcore_server_connect(server);
+	}
+	else
 		return -1;
-
-	return _ggzcore_server_connect(server);
 }
 
 
@@ -738,6 +737,9 @@ void _ggzcore_server_reset(struct _GGZServer *server)
 	/* Set initial state */
 	server->state = GGZ_STATE_OFFLINE;
 
+	/* Allocate network object */
+	server->net = _ggzcore_net_new();
+
 	/* Setup event hook lists */
 	for (i = 0; i < _ggzcore_num_events; i++)
 		server->event_hooks[i] = _ggzcore_hook_list_init(i);
@@ -746,11 +748,8 @@ void _ggzcore_server_reset(struct _GGZServer *server)
 
 int _ggzcore_server_connect(struct _GGZServer *server)
 {
-	ggzcore_debug(GGZ_DBG_SERVER, "Connecting to %s:%d", server->host, 
-		      server->port);
-
 	_ggzcore_server_change_state(server, GGZ_TRANS_CONN_TRY);
-	server->fd = _ggzcore_net_connect(server->host, server->port);
+	server->fd = _ggzcore_net_connect(server->net);
 	
 	if (server->fd < 0) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
@@ -807,18 +806,6 @@ int _ggzcore_server_list_tables(GGZServer *server, const int type, const char gl
 		_ggzcore_server_net_error(server, NULL);
 	
 	return status;
-}
-
-
-void _ggzcore_server_set_host(struct _GGZServer *server, const char *host)
-{
-	server->host = strdup(host);
-}
-
-
-void _ggzcore_server_set_port(struct _GGZServer *server, const unsigned int port)
-{
-	server->port = port;
 }
 
 
@@ -947,6 +934,11 @@ void _ggzcore_server_clear(struct _GGZServer *server)
 	int i;
 
 	/* Clear all members */
+	if (server->net) {
+		_ggzcore_net_free(server->net);
+		server->net = NULL;
+	}
+
 	if (server->host) {
 		free(server->host);
 		server->host = NULL;

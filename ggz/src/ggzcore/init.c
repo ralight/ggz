@@ -49,7 +49,6 @@ int ggzcore_init(GGZOptions options)
 
 	/* Initialize various systems */
 	_ggzcore_debug_init(options.debug_levels, options.debug_file);
-	_ggzcore_net_init();
 
 	if (options.flags & GGZ_OPT_MODULES)
 		_ggzcore_module_setup();

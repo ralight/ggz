@@ -31,8 +31,16 @@
 #include <ggzcore.h>
 #include <protocol.h>
 
-void _ggzcore_net_init(void);
-int _ggzcore_net_connect(const char* server, const unsigned int port);
+struct _GGZNet* _ggzcore_net_new(void);
+void _ggzcore_net_init(struct _GGZNet *net, 
+		       struct _GGZServer *server, 
+		       const char *host,
+		       unsigned int port);
+
+void _ggzcore_net_free(struct _GGZNet *net);
+
+int _ggzcore_net_connect(struct _GGZNet *net);
+
 void _ggzcore_net_disconnect(const unsigned int fd);
 
 /* Functions for sending data/requests to server */

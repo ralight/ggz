@@ -43,31 +43,69 @@
 #include <errno.h>
 
 
-/* Handlers for various server commands */
-#if 0
-/* Error function for Easysock */
-static void _ggzcore_net_err_func(const char *, const EsOpType, 
-				  const EsDataType);
-#endif
-
-
-void _ggzcore_net_init(void)
-{
-#if 0
-	/* Install socket error handler */
-	es_err_func_set(_ggzcore_net_err_func);
+/* GGZNet structure for handling the network connection to the server */
+struct _GGZNet {
 	
-#endif
+	/* Server structure handling this session */
+	struct _GGZServer *server;
+	
+	/* Host name of server */
+	char *host;
+
+	/* Port on which GGZ server in running */
+	unsigned int port;
+
+	/* File descriptor for communication with server */
+	int fd;
+	
+
+};
+
+
+/* Internal library functions (prototypes in net.h) */
+
+struct _GGZNet* _ggzcore_net_new(void)
+{
+	struct _GGZNet *net;
+
+	net = ggzcore_malloc(sizeof(struct _GGZNet));
+	
+	/* Set fd to invalid value */
+	net->fd = -1;
+	
+	return net;
+}
+
+
+void _ggzcore_net_init(struct _GGZNet *net, struct _GGZServer *server, const char *host, unsigned int port)
+{
+	net->server = server;
+	net->host = ggzcore_strdup(host);
+	net->port = port;
+	net->fd = -1;
 }
 
 
 /* FIXME: set a timeout for connecting */
-int _ggzcore_net_connect(const char* server, const unsigned int port)
+int _ggzcore_net_connect(struct _GGZNet *net)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Connecting to %s:%d", server, port);
-	return es_make_socket(ES_CLIENT, port, server);
+	ggzcore_debug(GGZ_DBG_NET, "Connecting to %s:%d", net->host, net->port);
+	net->fd = es_make_socket(ES_CLIENT, net->port, net->host);
+	
+	if (net->fd >= 0)
+		/* FIXME: return 0 once we're done transitioning */
+		return net->fd; /* success */
+	else
+		return -1; /* error */
 }
 
+
+void _ggzcore_net_free(struct _GGZNet *net)
+{
+	if (net->host)
+		ggzcore_free(net->host);
+	ggzcore_free(net);
+}
 
 void _ggzcore_net_disconnect(const unsigned int fd)
 {
