@@ -9,7 +9,7 @@ ggzdexecmod_PROGRAMS =
 ggzdgame_DATA =
 ggzdroom_DATA =
 
-libgames_a_DEPENDENCIES = ../common.h ../games.h
+libgames_a_DEPENDENCIES =
 libgames_a_SOURCES = suaro.c suaro.h \
 			spades.c spades.h \
 			hearts.c hearts.h \
