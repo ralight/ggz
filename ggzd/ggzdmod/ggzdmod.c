@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 5400 2003-02-12 04:37:56Z jdorje $
+ * $Id: ggzdmod.c 5802 2004-02-05 12:11:59Z josef $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -97,7 +97,7 @@ static void call_handler(GGZdMod * ggzdmod, GGZdModEvent event, void *data)
 		fprintf(stderr,
 			"GGZDMOD: call_handler called for unknown event %d.\n"
 			"This is a bug in libggzdmod.  Please e-mail the GGZ\n"
-			"development team at ggz-dev@lists.sourceforge.net\n"
+			"development team at ggz-dev@mail.ggzgamingzone.org\n"
 			"to report it.\n", event);
 		return;
 	}

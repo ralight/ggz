@@ -47,7 +47,7 @@ prefer, simply type 'make' to build the executable files.  Assuming
 you have the required libraries and headers, the program should build
 without any difficulties.  If you have problems, please report them to
 one of our web forums, or to the ggz-dev mailing list
-(ggz-dev@lists.sourceforge.net)
+(ggz-dev@mail.ggzgamingzone.org)
 
 If you would like to test the server before installing it, do a 'make
 test' which prepare a mini-installation in the build directory.  You

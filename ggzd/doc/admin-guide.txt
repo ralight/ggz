@@ -1,12 +1,15 @@
-Administrator's Guide to the Gnu Gaming Zone (GGZ)
+Administrator's Guide to the GGZ Gaming Zone (GGZ)
 --------------------------------------------------
 
-Webpage:  http://ggz.sourceforge.net/
+# This document is currently not maintained.
+# Please have a look at the GGZ Hosting Guide
+# for more up-to-date information.
+
+Webpage:  http://www.ggzgamingzone.org/
 Authors:  Brent Hendricks <bmh@users.sourceforge.net>
-	  Justin Zaun <jzaun@telerama.com>
-	  Rich Gade <rgade@users.sourceforge.net>
-	  Doug Hudson <djh@users.sourceforge.net>
-	  
+          Justin Zaun <jzaun@telerama.com>
+          Rich Gade <rgade@users.sourceforge.net>
+          Doug Hudson <djh@users.sourceforge.net>
 
 Welcome
 -------
@@ -220,5 +223,5 @@ one of the authors.
 
 Thanks,
 The GGZ Development Team
-ggz-dev@lists.sourceforge.net
+ggz-dev@mail.ggzgamingzone.org
 
