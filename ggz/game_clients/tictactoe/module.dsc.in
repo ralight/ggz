@@ -7,6 +7,7 @@ CommandLine = @ggzexecmoddir@/ggz.ttt
 Frontend = gtk
 Homepage = http://ggz.sourceforge.net
 Name = TicTacToe
-Protocol = 0.0.2
+ProtocolEngine = TicTacToe
+ProtocolVersion = 0.0.2
 Version = 0.0.2
 

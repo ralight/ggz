@@ -1,7 +1,8 @@
 [ModuleInfo]
 Name = Combat
 Author = Ismael Orenstein
-Protocol = 1.0
+ProtocolEngine = Combat
+ProtocolVersion = 1.0
 Version = 1.0
 CommandLine = @ggzexecmoddir@/ggz.combat
 Frontend = gtk

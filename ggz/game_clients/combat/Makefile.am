@@ -8,11 +8,11 @@ INCLUDES = @GTK_CFLAGS@
 
 install-data-local:
 	@$(NORMAL_INSTALL)
-	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
+	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
 
 uninstall:
 	@$(NORMAL_UNINSTALL)
-	-$(GGZ_CONFIG) --remove --fromfile=module.dsc
+	-$(GGZ_CONFIG) --remove --modfile=module.dsc
 
 ggzexecmod_PROGRAMS = ggz.combat
 

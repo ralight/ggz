@@ -26,8 +26,8 @@ ggz_ttt_LDADD = @GTK_LIBS@ $(LDADD)
 
 install-data-local:
 	@$(NORMAL_INSTALL)
-	$(GGZ_CONFIG) -D --install --fromfile=$(GAME_DSC) --force
+	$(GGZ_CONFIG) -D --install --modfile=$(GAME_DSC) --force
 
 uninstall:
 	@$(NORMAL_UNINSTALL)
-	-$(GGZ_CONFIG) --remove --fromfile=$(GAME_DSC)
+	-$(GGZ_CONFIG) --remove --modfile=$(GAME_DSC)

@@ -5,5 +5,6 @@ CommandLine = @ggzexecmoddir@/ggz.lapocha
 Frontend = gtk
 Homepage = http://ggz.sourceforge.net/
 Name = LaPocha
-Protocol = 0.0.1
+ProtocolEngine = LaPocha
+ProtocolVersion = 0.0.1
 Version = 0.0.1
