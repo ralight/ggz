@@ -161,7 +161,7 @@ void map_load(combat_game *_game, char *filename, int *changed) {
   char *options;
   int a, b;
   char *terrain_data;
-  handle = ggzcore_confio_parse(filename, 0);
+  handle = ggzcore_confio_parse(filename, GGZ_CONFIO_RDONLY);
   if (handle < 0)
     return;
   /* Get the data from the file */
