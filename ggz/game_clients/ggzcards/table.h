@@ -25,6 +25,8 @@
 #include "hand.h"
 #include "game.h" /* for ANIMATION */
 
+extern GtkRcStyle *fixed_font_style;
+
 extern void table_initialize(void);
 extern void table_setup(void);
 extern void table_handle_expose_event(GdkEventExpose *);

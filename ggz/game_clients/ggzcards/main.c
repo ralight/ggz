@@ -70,6 +70,10 @@ int main(int argc, char *argv[])
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 	ggz_debug("ggz_input_add completed.");
 
+	/* this shouldn't go here, but I see no better place right now */
+	fixed_font_style = gtk_rc_style_new ();
+	fixed_font_style->fontset_name = "-*-fixed-medium-r-normal--14-*-*-*-*-*-*-*,*-r-*";
+
 	dlg_main = create_dlg_main();
 	ggz_debug("dlg_main completed.");
 
@@ -463,6 +467,8 @@ void menubar_message(char *mark, char *msg)
 		gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
 			GTK_SIGNAL_FUNC (gtk_widget_hide),
 			GTK_OBJECT (dlg));
+
+		gtk_widget_modify_style (label, fixed_font_style);
 
 		/* in theory, the window *can't* be destroyed. */
 	} else {

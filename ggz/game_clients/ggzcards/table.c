@@ -49,6 +49,8 @@
 #include "cards-b3.xpm"
 #include "cards-b4.xpm"
 
+GtkRcStyle *fixed_font_style = NULL;
+
 static GdkPixmap *table_buf = NULL;
 static GdkPixmap *card_fronts[4];
 static GdkPixmap *card_backs[4];
