@@ -1,18 +1,16 @@
 For 0.0.2
 =========
-- Check for player state at appropriate places
-- implement tic-tac-toe as simple game example
-- better handling of end-of-game
-- handle SIGCHLD for when game_servrs die
-- implement player database (at least API)
-- Finish up room protocol additions
-- List error codes and add to protocol
-
+- Fix ttt to detect tie game
+- Change timestamps to use simple counters
 
 For 0.0.3
 =========
+- List error codes and add to protocol
 - table chat
-- private messages (game type options, server admin option
+- private messages (game type options, server admin option)
+- better handling of end-of-game
+- handle SIGCHLD for when game_servrs die
+- implement player database (at least API)
 
 Medium run
 ==========
