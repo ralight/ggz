@@ -1,11 +1,11 @@
 [Desktop Entry]
-Comment[en]=The GGZ Gaming Zone for KDE 2
+Comment=The GGZ Gaming Zone for KDE 2
 Comment[de]=Die GGZ Gaming Zone für KDE 2
 Comment[fr]=La GGZ Gaming Zone pour KDE 2
 Exec=kggz
 Icon=kggz
 MimeType=application/zone;Application
-Name[en]=KGGZ (KDE Client)
+Name=KGGZ (KDE Client)
 Name[de]=KGGZ (KDE Client)
 Name[fr]=KGGZ (KDE Client)
 Path=
