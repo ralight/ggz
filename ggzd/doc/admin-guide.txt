@@ -31,7 +31,7 @@ Post-Installation
 -----------------
 
 The GGZ server will install with several sample configuration files
-that will enable you to run a basic server with two rooms and two
+that will enable you to run a basic server with four rooms and four
 games.  Totally usable, but how dull...
 
 You want more rooms (easy) and more games (wait for the next version
