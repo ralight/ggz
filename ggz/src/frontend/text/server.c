@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
+ * $Id: server.c 4677 2002-09-24 05:03:17Z jdorje $
  *
  * Functions for handling server events
  *
@@ -54,6 +55,7 @@ static GGZHookReturn server_loggedout(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_state_change(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_motd_loaded(GGZServerEvent id, void*, void*);
 
+static GGZHookReturn server_channel_connected(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_channel_ready(GGZServerEvent id, void*, void*);
 
 static GGZHookReturn server_net_error(GGZServerEvent id, void*, void*);
@@ -125,8 +127,11 @@ void server_destroy(void)
 
 static void server_process(void)
 {
-	if (server)
-		ggzcore_server_read_data(server, ggzcore_server_get_fd(server));
+	if (server) {
+		int fd = ggzcore_server_get_fd(server);
+		output_text("Server_process: %d", fd);
+		ggzcore_server_read_data(server, fd);
+	}
 }
 
 
@@ -160,10 +165,12 @@ static void server_register(GGZServer *server)
 				      server_protocol_error);
 	ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE, 
 				      server_state_change);
-    ggzcore_server_add_event_hook(server, GGZ_MOTD_LOADED,
+	ggzcore_server_add_event_hook(server, GGZ_MOTD_LOADED,
 				      server_motd_loaded);
+	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_CONNECTED,
+				      server_channel_connected);
 	ggzcore_server_add_event_hook(server, GGZ_CHANNEL_READY,
-					  server_channel_ready);
+				      server_channel_ready);
 }
 
 
@@ -294,10 +301,20 @@ static GGZHookReturn server_loggedout(GGZServerEvent id, void* event_data, void*
 }
 
 
+static GGZHookReturn server_channel_connected(GGZServerEvent id,
+					      void *event_data,
+					      void *user_data)
+{
+	output_text("--- Channel connected");
+	game_channel_connected(ggzcore_server_get_channel(server));
+	return GGZ_HOOK_OK;
+}
+
+
 static GGZHookReturn server_channel_ready(GGZServerEvent id, void* event_data, void* user_data)
 {
 	output_text("--- Channel ready");
-	game_channel(ggzcore_server_get_channel(server));
+	game_channel_ready(ggzcore_server_get_channel(server));
 	return GGZ_HOOK_OK;
 }
 

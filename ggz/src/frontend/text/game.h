@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
+ * $Id: game.h 4677 2002-09-24 05:03:17Z jdorje $
  *
  * Functions for handling game events
  *
@@ -32,5 +33,5 @@ void game_quit(void);
 
 void game_destroy(void);
 
-void game_channel(int fd);
-
+void game_channel_connected(int fd);
+void game_channel_ready(int fd);
