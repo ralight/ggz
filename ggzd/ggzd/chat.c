@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 4501 2002-09-10 06:42:12Z jdorje $
+ * $Id: chat.c 4532 2002-09-13 01:35:13Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -51,7 +51,7 @@ extern struct GameInfo game_types[MAX_GAME_TYPES];
 /* Local functions and callbacks */
 static int chat_pack(void** data, unsigned char opcode, char* sender, 
 		     char* msg);
-static GGZEventFuncReturn chat_event_callback(void* target, int size,
+static GGZEventFuncReturn chat_event_callback(void* target, size_t size,
                                               void* data);
 
 
@@ -159,8 +159,8 @@ static int chat_pack(void** data, unsigned char opcode, char* sender,
 
 
 /* Event callback for delivering chat to player */
-static GGZEventFuncReturn chat_event_callback(void* target, int size,
-                                              void* data)
+static GGZEventFuncReturn chat_event_callback(void* target, size_t size,
+					      void* data)
 {
 	unsigned char opcode;
 	char* name;

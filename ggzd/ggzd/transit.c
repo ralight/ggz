@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4531 2002-09-12 21:59:31Z jdorje $
+ * $Id: transit.c 4532 2002-09-13 01:35:13Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -63,13 +63,14 @@ struct GGZSpectatorEvent {
 
 /* Local functions for handling transits */
 static GGZEventFuncReturn transit_player_event_callback(void* target,
-                                                        int size,
+                                                        size_t size,
                                                         void* data);
 static GGZEventFuncReturn transit_seat_event_callback(void* target,
-						      int size,
+						      size_t size,
 						      void* data);
 static GGZEventFuncReturn transit_spectator_event_callback(void* target,
-	int size, void* data);
+							   size_t size,
+							   void* data);
 
 static int transit_send_seat_to_game(GGZTable* table, struct GGZSeatEvent *event);
 static int transit_find_seat(GGZTable *table, char *name);
@@ -142,8 +143,8 @@ int transit_player_event(char* name, GGZTransitType opcode,
 
 
 /* Executed by table hander thread */
-static GGZEventFuncReturn transit_seat_event_callback(void* target, 
-						      int size, 
+static GGZEventFuncReturn transit_seat_event_callback(void* target,
+						      size_t size, 
 						      void* data)
 {
 	int status;
@@ -210,7 +211,8 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 
 /* Executed by table hander thread */
 static GGZEventFuncReturn transit_spectator_event_callback(void* target,
-	int size, void* data)
+							   size_t size,
+							   void* data)
 {
 	int status;
 	GGZTransitType action;
@@ -277,7 +279,7 @@ static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 }
 
 static GGZEventFuncReturn transit_player_event_callback(void* target,
-                                                        int size,
+                                                        size_t size,
                                                         void* data)
 {
 	int status, index = -1;

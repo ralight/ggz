@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4529 2002-09-12 21:44:40Z jdorje $
+ * $Id: table.c 4532 2002-09-13 01:35:13Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -107,13 +107,17 @@ static int   table_pack(void** data, unsigned char opcode, GGZTable* table);
 static int   table_transit_pack(void** data, unsigned char opcode, 
 				GGZTable* table, char* name, 
 				unsigned int seat);
-static GGZEventFuncReturn table_event_callback(void* target, int size,
-                                                 void* data);
-static GGZEventFuncReturn table_seat_event_callback(void* target, int size,
+static GGZEventFuncReturn table_event_callback(void* target, size_t size,
+					       void* data);
+static GGZEventFuncReturn table_seat_event_callback(void* target, size_t size,
 						    void* data);
-/*static GGZEventFuncReturn table_spectator_event_callback(void* target, int size,
-						    void* data);*/
-static GGZEventFuncReturn table_kill_callback(void* target, int size, void* data);
+#if 0
+static GGZEventFuncReturn table_spectator_event_callback(void* target,
+							 size_t size,
+							 void* data);
+#endif
+static GGZEventFuncReturn table_kill_callback(void* target, size_t size,
+					      void* data);
 static int   table_launch_event(char* name, int status, int index);
 
 static int   type_match_table(int type, GGZTable* table);
@@ -994,7 +998,8 @@ int table_kill(int room, int index, char *name)
 }
 
 
-static GGZEventFuncReturn table_kill_callback(void* target, int size, void* data)
+static GGZEventFuncReturn table_kill_callback(void* target, size_t size,
+					      void* data)
 {
 	GGZTable *table = target;
 	char *caller = data;
@@ -1269,7 +1274,7 @@ static int table_transit_pack(void** data, unsigned char opcode,
 
 
 /* Event callback for delivering table list update to a player */
-static GGZEventFuncReturn table_event_callback(void* target, int size,
+static GGZEventFuncReturn table_event_callback(void* target, size_t size,
                                                void* data)
 {
 	unsigned char opcode;
@@ -1355,7 +1360,7 @@ static GGZEventFuncReturn table_event_callback(void* target, int size,
 
 
 /* Event callback for delivering table list update to a player */
-static GGZEventFuncReturn table_seat_event_callback(void* target, int size,
+static GGZEventFuncReturn table_seat_event_callback(void* target, size_t size,
 						    void* data)
 {
 	GGZTable info;
@@ -1377,8 +1382,10 @@ static GGZEventFuncReturn table_seat_event_callback(void* target, int size,
 }
 
 /* Event callback for delivering table list update to a player */
-/*static GGZEventFuncReturn table_spectator_event_callback(void* target, int size,
-	void* data)
+#if 0
+static GGZEventFuncReturn table_spectator_event_callback(void* target,
+							 size_t size,
+							 void* data)
 {
 	GGZTable info;
 	GGZPlayer* player = (GGZPlayer*)target;
@@ -1395,7 +1402,8 @@ static GGZEventFuncReturn table_seat_event_callback(void* target, int size,
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
-}*/
+}
+#endif
 
 static int table_launch_event(char* name, int status, int index)
 {

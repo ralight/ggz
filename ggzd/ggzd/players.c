@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4528 2002-09-12 19:34:02Z jdorje $
+ * $Id: players.c 4532 2002-09-13 01:35:13Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -344,7 +344,8 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 }
 
 
-GGZEventFuncReturn player_launch_callback(void* target, int size, void* data)
+GGZEventFuncReturn player_launch_callback(void* target, size_t size,
+					  void* data)
 {
 	int status, index = -1;
 	char *current;

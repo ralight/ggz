@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/8/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.h 3419 2002-02-19 07:18:31Z jdorje $
+ * $Id: event.h 4532 2002-09-13 01:35:13Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -34,7 +34,7 @@
  * Event callback function type 
  * Receives:
  * void* target  : pointer to event target (some table or player)
- * int size      : size of data (in bytes) to pass to handler
+ * size_t size   : size of data (in bytes) to pass to handler
  * void* data    : pointer to dynamically allocated data (or NULL)
  *
  * Returns:
@@ -43,7 +43,8 @@
  * GGZ_EVENT_OK     : event processed successfully
  * GGZ_EVENT_DEFER  : postpone event for later (no effect for room events)
  */
-typedef GGZEventFuncReturn (*GGZEventFunc)(void* target, int size, void* data);
+typedef GGZEventFuncReturn (*GGZEventFunc)(void* target,
+					   size_t size, void* data);
 
 
 /* 
@@ -62,7 +63,7 @@ typedef struct GGZEvent {
 	unsigned int ref_count;
 
 	/* Size of event data (in bytes) */
-	unsigned int size;
+	size_t size;
 
 	/* Pointer to data for event */
 	void *data;
@@ -79,13 +80,13 @@ typedef struct GGZEvent {
  * Receives:
  * int room          : index of room in which to enqueue event
  * GGZEventFunc func : callback function for handling this event
- * unsigned int size : size of data (in bytes) to pass to handler
+ * size_t size       : size of data (in bytes) to pass to handler
  * void* data        : pointer to dynamically allocated data (or NULL)
  *
  * Note: memory pointed to by data MUST be dynamcially allocated
  */
-int event_room_enqueue(int room, GGZEventFunc func, unsigned int size, 
-		       void* data);
+int event_room_enqueue(int room, GGZEventFunc func,
+		       size_t size, void* data);
 		       
 /* Process queued-up room-specific events for player */
 int event_room_handle(GGZPlayer* player);
@@ -100,13 +101,13 @@ int event_room_flush(GGZPlayer* player);
  * Receives:
  * char *name        : name of player to whom this event is targetted
  * GGZEventFunc func : callback function for handling this event
- * unsigned int size : size of data (in bytes) to pass to handler
+ * size_t size       : size of data (in bytes) to pass to handler
  * void* data        : pointer to dynamically allocated data (or NULL)
  *
  * Note: memory pointed to by data MUST be dynamcially allocated
  */
-int event_player_enqueue(char* name, GGZEventFunc func, unsigned int size, 
-			 void* data);
+int event_player_enqueue(char* name, GGZEventFunc func,
+			 size_t size, void* data);
 			 
 /*
  * event_player_handle() processes all events currently in the private
@@ -131,16 +132,16 @@ int event_player_flush(GGZPlayer* player);
  * event_table_enqueue() adds an event to a table's private event queue
  *
  * Receives:
- * int room        : index of room in which table resides
- * int index       : index of table to which this event is targetted
+ * int room          : index of room in which table resides
+ * int index         : index of table to which this event is targetted
  * GGZEventFunc func : callback function for handling this event
- * unsigned int size : size of data (in bytes) to pass to handler
+ * size_t size       : size of data (in bytes) to pass to handler
  * void* data        : pointer to dynamically allocated data (or NULL)
  *
  * Note: memory pointed to by data MUST be dynamcially allocated
  */
 int event_table_enqueue(int room, int index, GGZEventFunc func, 
-			unsigned int size, void* data);
+			size_t, void* data);
 
 /*
  * event_table_handle() processes all events currently in the private

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 4501 2002-09-10 06:42:12Z jdorje $
+ * $Id: event.c 4532 2002-09-13 01:35:13Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -54,7 +54,7 @@ static void event_table_spew(GGZTable* table);
 #endif
 
 /* Place an event into the room-specific event queue */
-int event_room_enqueue(int room, GGZEventFunc func, unsigned int size, 
+int event_room_enqueue(int room, GGZEventFunc func, size_t size, 
 		       void* data)
 		       
 {
@@ -219,7 +219,7 @@ int event_room_flush(GGZPlayer* player)
 
 
 /* Place an event into the player-specific event queue */
-int event_player_enqueue(char* name, GGZEventFunc func, unsigned int size, 
+int event_player_enqueue(char* name, GGZEventFunc func, size_t size, 
 			 void* data)
 			 
 {
@@ -381,7 +381,7 @@ static void event_player_do_enqueue(GGZPlayer* player, GGZEvent* event) {
 
 /* Place an event into the table-specific event queue */
 int event_table_enqueue(int room, int index, GGZEventFunc func, 
-			unsigned int size, void* data)
+			size_t size, void* data)
 {
 	GGZEvent *event;
 	GGZTable *table;
