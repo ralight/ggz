@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Combat game module
  * Desc: Combat client GTK callback functions
- * $Id: callbacks.c 5165 2002-11-03 07:54:39Z jdorje $
+ * $Id: callbacks.c 6223 2004-10-28 05:24:17Z jdorje $
  *
  * Copyright (C) 2002 Ismael Orenstein.
  *
@@ -212,7 +212,12 @@ void on_remember_enemy_units_toggled(void)
       return;
     }
     // Ok, the user is cheating.
-    dlg = create_yes_no_dlg("You are cheating. This is really bad!\nPlease take a moment to think in your opponent.\nDoes he know what you are doing?\n\n\nSo, are you sure you want to do it?", GTK_SIGNAL_FUNC(change_show_enemy), GINT_TO_POINTER(TRUE));
+    dlg = create_yes_no_dlg(_("You are cheating. This is really bad!\n"
+			      "Please take a moment to think of your opponent.\n"
+			      "Does he know what you are doing?\n\n\n"
+			      "So, are you sure you want to do it?"),
+			    GTK_SIGNAL_FUNC(change_show_enemy),
+			    GINT_TO_POINTER(TRUE));
     yes = lookup_widget(dlg, "yes");
     gtk_object_set_data(GTK_OBJECT(yes), "checkmenu", item);
     gtk_widget_show_all(dlg);
