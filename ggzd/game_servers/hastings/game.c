@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
+ * $Id: game.c 4485 2002-09-09 04:09:53Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -454,7 +454,7 @@ char game_check_move(int num, int enemyallowed)
 
 
 /* My personal AI (tm) :) */
-int game_bot_set(int me, int i, int j, int wanted)
+static int game_bot_set(int me, int i, int j, int wanted)
 {
 	int x, y, k, l;
 
