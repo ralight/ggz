@@ -23,4 +23,4 @@
  */
 
 
-void info_create_or_raise(gint room);
+void info_create_or_raise(GGZRoom *room);

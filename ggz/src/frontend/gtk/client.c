@@ -301,7 +301,7 @@ client_info_activate			(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
 	/* Display room's info in a nice dialog */
-	info_create_or_raise(popup_row);		
+	info_create_or_raise(ggzcore_server_get_room(server, popup_row));		
 }
 
 

@@ -58,7 +58,7 @@ extern GGZServer *server;
  * Returns:
  */
 
-void info_create_or_raise(gint room)
+void info_create_or_raise(GGZRoom *room)
 {
 	GtkWidget *tmp;
 	if (!info_dialog) {
