@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5563 2003-05-10 23:54:28Z dr_maux $
+dnl $Id: configure.ac 5613 2003-06-26 09:23:13Z dr_maux $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -44,6 +44,7 @@ AC_SUBST(LDADD)
 AC_CONFIG_FILES([
 Makefile
 pixmaps/Makefile
+motd-editor/Makefile
 src/Makefile
 po/Makefile
 ])
