@@ -12,11 +12,11 @@ libgurumod_exec_la_SOURCES = exec.c
 INCLUDES = -I../src
 
 
-#all:
-#	gcc -Wall -shared -o gurumod_simplereturn.so simplereturn.c -I ../src
-#	gcc -Wall -shared -o gurumod_programming.so programming.c -I ../src
-#	gcc -Wall -shared -o gurumod_exec.so exec.c -I ../src
-#
-#clean:
-#	rm -f *.so
+plugin:
+	gcc -Wall -shared -o gurumod_simplereturn.so simplereturn.c -I ../src
+	gcc -Wall -shared -o gurumod_programming.so programming.c -I ../src
+	gcc -Wall -shared -o gurumod_exec.so exec.c -I ../src
+
+pluginclean:
+	rm -f *.so
 
