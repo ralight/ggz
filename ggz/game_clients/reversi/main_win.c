@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: main_win.c 6388 2004-11-16 06:14:51Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -51,7 +51,7 @@
 
 /* Pixmaps */
 static int PIXSIZE;
-GdkPixbuf *pix[3];
+GdkPixbuf *blackpiece, *whitepiece, *mydot, *enemydot;
 GdkGC *pix_gc;
 GdkGC *bg_gc;
 GdkGC *last_gc;
@@ -113,7 +113,7 @@ void display_board(void)
 {
 	int i, x, y;
 	GtkWidget *tmp;
-	int piece = -1;
+	GdkPixbuf *piece = NULL;
 	GtkStyle *style;
 	GtkWidget *white_label;
 	GtkWidget *black_label;
@@ -126,13 +126,20 @@ void display_board(void)
 
 	for (i = 0; i < 64; i++) {
 		if (game.board[i] == BLACK) {
-			piece = PLAYER2SEAT(BLACK);
+			piece = blackpiece;
 		} else if (game.board[i] == WHITE) {
-			piece = PLAYER2SEAT(WHITE);
+			piece = whitepiece;
 		} else if (game_check_move(game.turn, i)) {
-			piece = 2;
-		} else
+			if (game.turn == game.num) {
+				piece = mydot;
+			} else if (game.turn == -game.num) {
+				piece = enemydot;
+			} else {
+				continue;
+			}
+		} else {
 			continue;
+		}
 
 		x = (X(i) - 1) * PIXSIZE;
 		y = (Y(i) - 1) * PIXSIZE;
@@ -144,7 +151,7 @@ void display_board(void)
 					   x + 1, y + 1, PIXSIZE - 2,
 					   PIXSIZE - 2);
 		}
-		gdk_draw_pixbuf(rvr_buf, pix_gc, pix[piece],
+		gdk_draw_pixbuf(rvr_buf, pix_gc, piece,
 				0, 0, x + 1, y + 1,
 				PIXSIZE - 2, PIXSIZE - 2,
 				GDK_RGB_DITHER_NONE, 0, 0);
@@ -191,13 +198,13 @@ static void board_resized(void)
 	GtkWidget *widget = g_object_get_data(G_OBJECT(main_win),
 					      "drawingarea");
 	int w = widget->allocation.width, h = widget->allocation.height;
-	int i;
 
 	if (rvr_buf) {
 		g_object_unref(rvr_buf);
-		for (i = 0; i < 3; i++) {
-			g_object_unref(pix[i]);
-		}
+		g_object_unref(blackpiece);
+		g_object_unref(whitepiece);
+		g_object_unref(mydot);
+		g_object_unref(enemydot);
 	}
 
 	gtk_widget_realize(widget);
@@ -208,9 +215,10 @@ static void board_resized(void)
 	PIXSIZE = MIN(w, h) / 8;
 
 	/* Create the white piece, black piece, and dot images. */
-	pix[PLAYER2SEAT(BLACK)] = load_pixmap("black");
-	pix[PLAYER2SEAT(WHITE)] = load_pixmap("white");
-	pix[2] = load_pixmap("dot");
+	blackpiece = load_pixmap("black");
+	whitepiece = load_pixmap("white");
+	mydot = load_pixmap("dot");
+	enemydot = load_pixmap("enemydot");
 
 	draw_bg(widget);
 	display_board();

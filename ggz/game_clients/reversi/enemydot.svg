@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg
+   width="80.000000pt"
+   height="80.000000pt"
+   id="svg1"
+   sodipodi:version="0.32"
+   inkscape:version="0.40pre2"
+   sodipodi:docname="enemydot.svg"
+   sodipodi:docbase="/home/jdorje/src/ggz/gtk-games/reversi"
+   inkscape:export-filename="/home/jdorje/src/ggz/gtk-games/reversi/dot.png"
+   inkscape:export-xdpi="43.200001"
+   inkscape:export-ydpi="43.200001"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs
+     id="defs7" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="4.5500000"
+     inkscape:cx="40.000000"
+     inkscape:cy="40.000000"
+     inkscape:window-width="640"
+     inkscape:window-height="534"
+     inkscape:window-x="40"
+     inkscape:window-y="128"
+     inkscape:current-layer="svg1" />
+  <metadata
+     id="metadata8">
+    <rdf:RDF
+       id="RDF9">
+      <cc:Work
+         rdf:about=""
+         id="Work10">
+        <dc:format
+           id="format11">image/svg+xml</dc:format>
+        <dc:type
+           id="type13"
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     sodipodi:type="arc"
+     style="fill:#ff0000;fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000000;stroke-width:1.9180253;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-opacity:1.0000000;"
+     id="path912"
+     sodipodi:cx="24.000000"
+     sodipodi:cy="24.791208"
+     sodipodi:rx="8.9670334"
+     sodipodi:ry="8.9670334"
+     d="M 32.967033 24.791208 A 8.9670334 8.9670334 0 1 0 15.032967,24.791208 A 8.9670334 8.9670334 0 1 0 32.967033 24.791208 z"
+     transform="matrix(1.007572,0.000000,0.000000,1.007382,25.81827,25.02525)" />
+</svg>
