@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 6124 2004-07-17 00:44:02Z josef $
+ * $Id: ggzmod.h 6149 2004-07-17 20:41:02Z josef $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -434,7 +434,7 @@ int ggzmod_player_get_ranking(GGZSeat *seat, int *ranking);
 /** @brief Get the player's highscore.
  *  @return TRUE if there is a highscore; FALSE if not or on error.
  */
-int ggzmod_player_get_highscore(GGZSeat *seat, long *highscore);
+int ggzmod_player_get_highscore(GGZSeat *seat, int *highscore);
 
 /** @brief Get the spectator's win-loss record.
  *  @return TRUE if there is a record; FALSE if not or on error.
@@ -456,7 +456,7 @@ int ggzmod_spectator_get_ranking(GGZSpectatorSeat *seat, int *ranking);
 /** @brief Get the spectator's highscore.
  *  @return TRUE if there is a highscore; FALSE if not or on error.
  */
-int ggzmod_spectator_get_highscore(GGZSpectatorSeat *seat, long *highscore);
+int ggzmod_spectator_get_highscore(GGZSpectatorSeat *seat, int *highscore);
 
 #ifdef __cplusplus
 }

@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6112 2004-07-16 17:31:15Z jdorje $
+ * $Id: ggzmod.c 6149 2004-07-17 20:41:02Z josef $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -1077,7 +1077,7 @@ int ggzmod_player_get_ranking(GGZSeat *seat, int *ranking)
 	return 0;
 }
 
-int ggzmod_player_get_highscore(GGZSeat *seat, long *highscore)
+int ggzmod_player_get_highscore(GGZSeat *seat, int *highscore)
 {
 	return 0;
 }
