@@ -11,6 +11,14 @@ int main(void)
 	int errs = 0;
 	char *instr, *outstr;
 
+	/* Make sure a character is one byte.  I believe C specs say
+	   this is always the case, so it probably isn't necessary to
+	   check.  But it can't hurt. */
+	if (sizeof(char) != 1) {
+		printf("'char' must have size 1.\n");
+		errs++;
+	}
+
 	instr = TESTSTR1;
 	outstr = ggz_xml_escape(instr);
 	printf("Input string = %s\n", instr);
