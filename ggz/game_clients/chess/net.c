@@ -99,6 +99,7 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
       /* The game is over */
       printf("Got a MSG_GAMEOVER\n");
       es_read_char(fd, &args[0]);
+      printf("Gameover msg: %d\n", args[0]);
       game_update(CHESS_EVENT_GAMEOVER, args);
       break;
     case CHESS_REQ_DRAW:

@@ -41,3 +41,7 @@ on_board_drag_drop                     (GtkWidget       *widget,
                                         gint             y,
                                         guint            time,
                                         gpointer         user_data);
+
+void
+on_auto_call_flag_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);

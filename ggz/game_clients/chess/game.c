@@ -172,7 +172,7 @@ void game_update(int event, void *arg) {
 				net_send_move(arg, -1);
 			else {
 				gtk_timeout_remove(timeout_id);
-				if (game_info.turn == 0)
+				if (game_info.turn == 0 || game_info.turn == 1)
 					net_send_move(arg, 0);
 				else
 					net_send_move(arg, g_timer_elapsed(game_info.timer, NULL));
@@ -247,25 +247,25 @@ void game_update(int event, void *arg) {
           game_message("Gams is over! Time is out and the remaining player doesn't have enough material for a mate");
           break;
         case CHESS_GAMEOVER_WIN_1_MATE:
-          game_message("Game is over! Player 1 wins by a mate");
+          game_message("Game is over! %s wins by a mate", game_info.name[0]);
           break;
         case CHESS_GAMEOVER_WIN_1_RESIGN:
-          game_message("Game is over! Player 1 wins, Player 2 has resigned");
+          game_message("Game is over! %s wins, %s has resigned", game_info.name[0], game_info.name[1]);
           break;
         case CHESS_GAMEOVER_WIN_1_FLAG:
-          game_message("Game is over! Player 1 wins, Player 2 has run out of time");
+          game_message("Game is over! %s wins, %s has run out of time", game_info.name[0], game_info.name[1]);
           break;
         case CHESS_GAMEOVER_WIN_2_MATE:
-          game_message("Game is over! Player 2 wins by a mate");
+          game_message("Game is over! %s wins by a mate", game_info.name[1]);
           break;
         case CHESS_GAMEOVER_WIN_2_RESIGN:
-          game_message("Game is over! Player 2 wins, Player 1 has resigned");
+          game_message("Game is over! %s wins, %s has resigned", game_info.name[1], game_info.name[0]);
           break;
         case CHESS_GAMEOVER_WIN_2_FLAG:
-          game_message("Game is over! Player 2 wins, Player 1 has run out of time");
+          game_message("Game is over! %s wins, %s has run out of time", game_info.name[1], game_info.name[0]);
           break;
         default:
-          game_message("The game should be over, I don't know why");
+          game_message("The game should be over, but I don't know why");
       }
       game_info.state = CHESS_STATE_DONE;
       break;
@@ -283,10 +283,13 @@ int game_timer(gpointer user_data) {
     return FALSE;
   if (game_info.state != CHESS_STATE_PLAYING)
     return TRUE;
-  if (game_info.turn == 0)
+  if (game_info.turn == 0 || game_info.turn == 1)
     return TRUE;
   /* Ok, update the timer */
   game_info.t_seconds[game_info.turn % 2]--;
+  /* Check if we should call a flag */
+  if (board_auto_call() && game_info.t_seconds[(game_info.seat+1)%2] <= 0)
+    board_call_flag();
   board_info_update();
   return TRUE;
 }

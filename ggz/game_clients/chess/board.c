@@ -365,6 +365,12 @@ void board_call_flag() {
   net_call_flag();
 }
 
+int board_auto_call() {
+  GtkWidget *auto_call;
+  auto_call = lookup_widget(main_win, "auto_call_flag");
+  return GTK_CHECK_MENU_ITEM(auto_call)->active;
+}
+
 void board_info_add_move(char *move) {
   GtkWidget *move_list = lookup_widget(main_win, "last_moves");
   char *text;

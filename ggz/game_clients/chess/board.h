@@ -69,6 +69,7 @@ void board_draw_piece(int piece, int x, int y);
 void board_request_draw();
 void board_call_flag();
 void board_request_update();
+int board_auto_call();
 
 /* Promote hack */
 void

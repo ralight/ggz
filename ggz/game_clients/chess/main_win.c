@@ -35,6 +35,10 @@ create_main_win (void)
   GtkWidget *request_draw;
   GtkWidget *call_flag;
   GtkWidget *request_update;
+  GtkWidget *options;
+  GtkWidget *options_menu;
+  GtkAccelGroup *options_menu_accels;
+  GtkWidget *auto_call_flag;
   GtkWidget *hbox1;
   GtkWidget *hpaned1;
   GtkWidget *board;
@@ -131,6 +135,29 @@ create_main_win (void)
   gtk_widget_show (request_update);
   gtk_container_add (GTK_CONTAINER (game_menu), request_update);
   gtk_tooltips_set_tip (tooltips, request_update, _("Ask the server to update his time structures"), NULL);
+
+  options = gtk_menu_item_new_with_label (_("Options"));
+  gtk_widget_ref (options);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "options", options,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (options);
+  gtk_container_add (GTK_CONTAINER (menubar), options);
+
+  options_menu = gtk_menu_new ();
+  gtk_widget_ref (options_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "options_menu", options_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (options), options_menu);
+  options_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (options_menu));
+
+  auto_call_flag = gtk_check_menu_item_new_with_label (_("Auto call flag"));
+  gtk_widget_ref (auto_call_flag);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "auto_call_flag", auto_call_flag,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (auto_call_flag);
+  gtk_container_add (GTK_CONTAINER (options_menu), auto_call_flag);
+  gtk_tooltips_set_tip (tooltips, auto_call_flag, _("Call a flag when your oponnents time drops below 0"), NULL);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (auto_call_flag), TRUE);
 
   hbox1 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox1);
@@ -274,6 +301,9 @@ create_main_win (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (request_update), "activate",
                       GTK_SIGNAL_FUNC (board_request_update),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (auto_call_flag), "activate",
+                      GTK_SIGNAL_FUNC (on_auto_call_flag_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (board), "configure_event",
                       GTK_SIGNAL_FUNC (on_board_configure_event),
