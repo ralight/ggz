@@ -28,7 +28,7 @@ GGZap::GGZap(QWidget *parent, const char *name)
 
 	frame = new QFrame(this);
 	frame->setFixedSize(64, 64);
-	frame->setBackgroundColor(QColor(255.0, 0.0, 0.0));
+	frame->setBackgroundColor(QColor(255, 0, 0));
 	frame->setBackgroundPixmap(QPixmap(KGGZ_DIRECTORY "/ggzap/ggzap.png"));
 
 	m_connect = new QLabel(i18n("Connect to server"), this);

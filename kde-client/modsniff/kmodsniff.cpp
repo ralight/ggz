@@ -24,8 +24,11 @@
 #include <fnmatch.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <iostream>
 
 #define DIRPERM (S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
+
+using namespace std;
 
 KModSniff::KModSniff(QWidget *parent, char *name)
 : QWidget(parent, name)

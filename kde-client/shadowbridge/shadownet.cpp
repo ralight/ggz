@@ -13,6 +13,8 @@
 #include <qsocketnotifier.h>
 #include <kmessagebox.h>
 
+using namespace std;
+
 ShadowNet::ShadowNet()
 {
 }

@@ -32,7 +32,7 @@
     #define GGZCOREDEBUG debugdummy
   #else
     #include <stdio.h>
-    #define GGZCOREDEBUG(fmt...) printf("))) "fmt##)
+    #define GGZCOREDEBUG(fmt, args...) printf("))) " fmt, ##args)
   #endif
 #endif
 

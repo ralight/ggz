@@ -84,8 +84,8 @@
       #define strdup(x) strcpy(((char*)malloc(strlen(x) + 1)), x)
     #endif
   #else
-    #define KGGZDEBUGF(fmt...) printf("KGGZ >> "fmt##)
-    #define KGGZDEBUG(fmt...) printf(">>> "fmt##)
+    #define KGGZDEBUGF(fmt, args...) printf("KGGZ >> " fmt, ##args)
+    #define KGGZDEBUG(fmt, args...) printf(">>> " fmt, ##args)
   #endif
 #else
   #define KGGZDEBUGF(fmt...)

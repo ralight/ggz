@@ -12,6 +12,8 @@
 #include <fstream>
 #include <kmessagebox.h>
 
+using namespace std;
+
 GGZProtocol *me;
 
 GGZProtocol::GGZProtocol(const QCString& pool, const QCString& app)

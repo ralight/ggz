@@ -29,7 +29,7 @@ kggz_METASOURCES = AUTO
 CXXFLAGS = @COMPILEOPTIONS@ $(EASYSOCK_INCLUDES) $(GGZCORE_INCLUDES)
 
 kggz_LDFLAGS = -ggdb3
-LDADD = $(ggz_libraries) $(all_libraries) $(KDE_RPATH) $(LIB_KDEUI) -L widgets -lkggzui -L abstract -lkggzabstract @BROWSERLIB@ -lqt
+LDADD = $(ggz_libraries) $(all_libraries) $(KDE_RPATH) $(LIB_KDEUI) widgets/libkggzui.a abstract/libkggzabstract.a @BROWSERLIB@ -lqt
 
 DISTCLEANFILES = $(kggz_METASOURCES)
 

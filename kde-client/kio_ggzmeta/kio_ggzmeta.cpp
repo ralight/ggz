@@ -18,6 +18,8 @@
 #include <qsocket.h>
 #include <qapplication.h>
 
+using namespace std;
+
 // Global QApplication object to be used for events
 QApplication *a;
 
