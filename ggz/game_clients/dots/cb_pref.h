@@ -1,11 +1,11 @@
 /*
- * File: cb_main.h
+ * File: cb_pref.h
  * Author: Rich Gade
  * Project: GGZ Connect the Dots Client
- * Date: 08/14/2000
- * Desc: Callback functions for the main Gtk window
+ * Date: 01/22/2001
+ * Desc: Callback functions for the "Preferences" Gtk dialog
  *
- * Copyright (C) 2000, 2001 Brent Hendricks.
+ * Copyright (C) 2001 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,41 +24,44 @@
 
 #include <gtk/gtk.h>
 
-extern GtkWidget *dlg_pref;
-
-void
-on_mnu_exit_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_mnu_preferences_activate            (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_mnu_about_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
 gboolean
-on_window_delete_event                 (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-gboolean
-on_board_expose_event                  (GtkWidget       *widget,
-                                        GdkEventExpose  *event,
-                                        gpointer         user_data);
-
-gboolean
-on_board_button_press_event            (GtkWidget       *widget,
+on_bg_colorspot_button_press_event     (GtkWidget       *widget,
                                         GdkEventButton  *event,
                                         gpointer         user_data);
 
 gboolean
-on_p1b_expose_event                    (GtkWidget       *widget,
+on_p2_colorspot_button_press_event     (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data);
+
+gboolean
+on_p1_colorspot_button_press_event     (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data);
+
+gboolean
+on_fg_colorspot_button_press_event     (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data);
+
+void
+on_pref_button_ok_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_pref_button_apply_clicked           (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_pref_button_cancel_clicked          (GtkButton       *button,
+                                        gpointer         user_data);
+
+gboolean
+on_dlg_pref_expose_event               (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data);
 
 gboolean
-on_p2b_expose_event                    (GtkWidget       *widget,
-                                        GdkEventExpose  *event,
+on_dlg_pref_delete_event               (GtkWidget       *widget,
+                                        GdkEvent        *event,
                                         gpointer         user_data);

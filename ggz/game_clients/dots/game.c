@@ -5,7 +5,7 @@
  * Date: 08/14/2000
  * Desc: Routines to manipulate the CtD board
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000, 2001 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
+#include "ggzcore.h"
 #include "dlg_main.h"
 #include "support.h"
 #include "easysock.h"
@@ -40,13 +41,14 @@ guint8 vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT-1];
 guint8 horz_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT];
 gint8 owners_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT-1];
 guint8 board_height, board_width;
+GdkColor fg_color, bg_color, p1_color, p2_color;
 
 /* Private variables */
 static GdkPixmap *board_pixmap;
 static gfloat dot_width, dot_height;
 static GdkGC *gc_fg, *gc_bg, *gc_p1, *gc_p2, *gc_p1b, *gc_p2b;
 static GtkWidget *board, *statusbar;
-static guint sb_context;
+static guint sb_context=0;
 
 /* Private functions */
 static gint8 board_move(guint8, guint8, guint8);
@@ -58,12 +60,10 @@ void board_init(guint8 width, guint8 height)
 	guint8 i, j;
 	guint16 x, y;
 	GdkColormap *sys_colormap;
-	GdkColor color;
 	GtkWidget *p1b, *p2b;
 	GdkRectangle update_rect;
 
 	board = gtk_object_get_data(GTK_OBJECT(main_win), "board");
-	statusbar = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
 	p1b = gtk_object_get_data(GTK_OBJECT(main_win), "p1b");
 	p2b = gtk_object_get_data(GTK_OBJECT(main_win), "p2b");
 
@@ -85,24 +85,68 @@ void board_init(guint8 width, guint8 height)
 	}
 
 	sys_colormap = gdk_colormap_get_system();
-	gdk_color_parse("RGB:00/50/00", &color);
-	gdk_colormap_alloc_color(sys_colormap, &color, FALSE, TRUE);
-	gdk_gc_set_background(gc_fg, &color);
-	gdk_gc_set_background(gc_bg, &color);
-	gdk_gc_set_background(gc_p1, &color);
-	gdk_gc_set_background(gc_p2, &color);
-	gdk_gc_set_foreground(gc_bg, &color);
-	gdk_color_parse("RGB:FF/FF/00", &color);
-	gdk_colormap_alloc_color(sys_colormap, &color, FALSE, TRUE);
-	gdk_gc_set_foreground(gc_fg, &color);
-	gdk_color_parse("RGB:FF/00/00", &color);
-	gdk_colormap_alloc_color(sys_colormap, &color, FALSE, TRUE);
-	gdk_gc_set_foreground(gc_p1, &color);
-	gdk_gc_set_foreground(gc_p1b, &color);
-	gdk_color_parse("RGB:00/00/FF", &color);
-	gdk_colormap_alloc_color(sys_colormap, &color, FALSE, TRUE);
-	gdk_gc_set_foreground(gc_p2, &color);
-	gdk_gc_set_foreground(gc_p2b, &color);
+	bg_color.red = ggzcore_confio_read_int(conf_handle,
+						"BackgroundColor",
+						"Red",
+						0);
+	bg_color.green = ggzcore_confio_read_int(conf_handle,
+						"BackgroundColor",
+						"Green",
+						32768);
+	bg_color.blue = ggzcore_confio_read_int(conf_handle,
+						"BackgroundColor",
+						"Blue",
+						0);
+	fg_color.red = ggzcore_confio_read_int(conf_handle,
+						"ForegroundColor",
+						"Red",
+						65535);
+	fg_color.green = ggzcore_confio_read_int(conf_handle,
+						"ForegroundColor",
+						"Green",
+						65535);
+	fg_color.blue = ggzcore_confio_read_int(conf_handle,
+						"ForegroundColor",
+						"Blue",
+						0);
+	p1_color.red = ggzcore_confio_read_int(conf_handle,
+						"PlayerOneColor",
+						"Red",
+						65535);
+	p1_color.green = ggzcore_confio_read_int(conf_handle,
+						"PlayerOneColor",
+						"Green",
+						0);
+	p1_color.blue = ggzcore_confio_read_int(conf_handle,
+						"PlayerOneColor",
+						"Blue",
+						0);
+	p2_color.red = ggzcore_confio_read_int(conf_handle,
+						"PlayerTwoColor",
+						"Red",
+						0);
+	p2_color.green = ggzcore_confio_read_int(conf_handle,
+						"PlayerTwoColor",
+						"Green",
+						0);
+	p2_color.blue = ggzcore_confio_read_int(conf_handle,
+						"PlayerTwoColor",
+						"Blue",
+						65535);
+	gdk_colormap_alloc_color(sys_colormap, &bg_color, FALSE, TRUE);
+	gdk_gc_set_background(gc_fg, &bg_color);
+	gdk_gc_set_background(gc_bg, &bg_color);
+	gdk_gc_set_background(gc_p1, &bg_color);
+	gdk_gc_set_background(gc_p2, &bg_color);
+	gdk_gc_set_foreground(gc_bg, &bg_color);
+	gdk_colormap_alloc_color(sys_colormap, &fg_color, FALSE, TRUE);
+	gdk_gc_set_foreground(gc_fg, &fg_color);
+	gdk_colormap_alloc_color(sys_colormap, &p1_color, FALSE, TRUE);
+	gdk_gc_set_foreground(gc_p1, &p1_color);
+	gdk_gc_set_foreground(gc_p1b, &p1_color);
+	gdk_colormap_alloc_color(sys_colormap, &p2_color, FALSE, TRUE);
+	gdk_gc_set_foreground(gc_p2, &p2_color);
+	gdk_gc_set_foreground(gc_p2b, &p2_color);
 
 	gdk_draw_rectangle(board_pixmap,
 			   gc_bg,
@@ -139,11 +183,8 @@ void board_init(guint8 width, guint8 height)
 
 	game.move = -1;
 
-	sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar),
-						  "Game Messages");
-	gtk_statusbar_push(GTK_STATUSBAR(statusbar),
-			   sb_context,
-			   "Waiting for server");
+
+	statusbar_message("Waiting for server");
 }
 
 
@@ -276,6 +317,7 @@ gint8 board_move(guint8 dir, guint8 x, guint8 y)
 			   && horz_board[x-1][y]
 			   && horz_board[x-1][y+1]) {
 				/* Winning square */
+				owners_board[x-1][y] = 0;
 				board_fill_square(x-1, y);
 				result++;
 			}
@@ -284,6 +326,7 @@ gint8 board_move(guint8 dir, guint8 x, guint8 y)
 			   && horz_board[x][y]
 			   && horz_board[x][y+1]) {
 				/* Winning square */
+				owners_board[x][y] = 0;
 				board_fill_square(x, y);
 				result++;
 			}
@@ -296,6 +339,7 @@ gint8 board_move(guint8 dir, guint8 x, guint8 y)
 			   && vert_board[x][y-1]
 			   && vert_board[x+1][y-1]) {
 				/* Winning square */
+				owners_board[x][y-1] = 0;
 				board_fill_square(x, y-1);
 				result++;
 			}
@@ -304,6 +348,7 @@ gint8 board_move(guint8 dir, guint8 x, guint8 y)
 			   && vert_board[x][y]
 			   && vert_board[x+1][y]) {
 				/* Winning square */
+				owners_board[x][y] = 0;
 				board_fill_square(x, y);
 				result++;
 			}
@@ -371,6 +416,7 @@ gint8 board_opponent_move(guint8 dir)
 			   && horz_board[x-1][y]
 			   && horz_board[x-1][y+1]) {
 				/* Winning square */
+				owners_board[x-1][y] = 1;
 				board_fill_square(x-1, y);
 				result++;
 			}
@@ -379,6 +425,7 @@ gint8 board_opponent_move(guint8 dir)
 			   && horz_board[x][y]
 			   && horz_board[x][y+1]) {
 				/* Winning square */
+				owners_board[x][y] = 1;
 				board_fill_square(x, y);
 				result++;
 			}
@@ -402,6 +449,7 @@ gint8 board_opponent_move(guint8 dir)
 			   && vert_board[x][y-1]
 			   && vert_board[x+1][y-1]) {
 				/* Winning square */
+				owners_board[x][y-1] = 1;
 				board_fill_square(x, y-1);
 				result++;
 			}
@@ -410,6 +458,7 @@ gint8 board_opponent_move(guint8 dir)
 			   && vert_board[x][y]
 			   && vert_board[x+1][y]) {
 				/* Winning square */
+				owners_board[x][y] = 1;
 				board_fill_square(x, y);
 				result++;
 			}
@@ -462,6 +511,12 @@ void board_fill_square(guint8 x, guint8 y)
 
 void statusbar_message(char *msg)
 {
+	if(statusbar == NULL) {
+		statusbar = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
+		sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar),
+						  "Game Messages");
+	}
+
 	gtk_statusbar_pop(GTK_STATUSBAR(statusbar), sb_context);
 	gtk_statusbar_push(GTK_STATUSBAR(statusbar), sb_context, msg);
 }
@@ -494,6 +549,20 @@ void board_redraw(void)
 	guint16 x1, y1, x2, y2;
 	GdkRectangle update_rect;
 	GdkGC *gc_ptr;
+
+	gdk_draw_rectangle(board_pixmap,
+			   gc_bg,
+			   TRUE,
+			   0, 0,
+			   board->allocation.width, board->allocation.height);
+	for(i=0; i<board_width; i++)
+		for(j=0; j<board_height; j++) {
+			x1 = (i+1) * dot_width;
+			y1 = (j+1) * dot_height;
+			gdk_draw_point(board_pixmap,
+				       gc_fg,
+				       x1, y1);
+		}
 
 	/* Draw all known vertical lines */
 	for(i=0; i<board_width; i++)
@@ -553,4 +622,86 @@ void board_redraw(void)
 	update_rect.width = board->allocation.width;
 	update_rect.height = board->allocation.height;
 	gtk_widget_draw(board, &update_rect);
+}
+
+
+void game_apply_colors(GdkColor new_fg, GdkColor new_bg,
+		       GdkColor new_p1, GdkColor new_p2)
+{
+	GdkColormap *sys_colormap;
+
+	sys_colormap = gdk_colormap_get_system();
+
+	gdk_colormap_alloc_color(sys_colormap, &new_bg, FALSE, TRUE);
+	gdk_gc_set_background(gc_fg, &new_bg);
+	gdk_gc_set_background(gc_bg, &new_bg);
+	gdk_gc_set_background(gc_p1, &new_bg);
+	gdk_gc_set_background(gc_p2, &new_bg);
+	gdk_gc_set_foreground(gc_bg, &new_bg);
+	gdk_colormap_alloc_color(sys_colormap, &new_fg, FALSE, TRUE);
+	gdk_gc_set_foreground(gc_fg, &new_fg);
+	gdk_colormap_alloc_color(sys_colormap, &new_p1, FALSE, TRUE);
+	gdk_gc_set_foreground(gc_p1, &new_p1);
+	gdk_gc_set_foreground(gc_p1b, &new_p1);
+	gdk_colormap_alloc_color(sys_colormap, &new_p2, FALSE, TRUE);
+	gdk_gc_set_foreground(gc_p2, &new_p2);
+	gdk_gc_set_foreground(gc_p2b, &new_p2);
+
+	board_redraw();
+	board_handle_pxb_expose();
+}
+
+
+void game_write_colors(void)
+{
+	ggzcore_confio_write_int(conf_handle,
+				 "BackgroundColor",
+				 "Red",
+				 bg_color.red);
+	ggzcore_confio_write_int(conf_handle,
+				 "BackgroundColor",
+				 "Green",
+				 bg_color.green);
+	ggzcore_confio_write_int(conf_handle,
+				 "BackgroundColor",
+				 "Blue",
+				 bg_color.blue);
+	ggzcore_confio_write_int(conf_handle,
+				 "ForegroundColor",
+				 "Red",
+				 fg_color.red);
+	ggzcore_confio_write_int(conf_handle,
+				 "ForegroundColor",
+				 "Green",
+				 fg_color.green);
+	ggzcore_confio_write_int(conf_handle,
+				 "ForegroundColor",
+				 "Blue",
+				 fg_color.blue);
+	ggzcore_confio_write_int(conf_handle,
+				 "PlayerOneColor",
+				 "Red",
+				 p1_color.red);
+	ggzcore_confio_write_int(conf_handle,
+				 "PlayerOneColor",
+				 "Green",
+				 p1_color.green);
+	ggzcore_confio_write_int(conf_handle,
+				 "PlayerOneColor",
+				 "Blue",
+				 p1_color.blue);
+	ggzcore_confio_write_int(conf_handle,
+				 "PlayerTwoColor",
+				 "Red",
+				 p2_color.red);
+	ggzcore_confio_write_int(conf_handle,
+				 "PlayerTwoColor",
+				 "Green",
+				 p2_color.green);
+	ggzcore_confio_write_int(conf_handle,
+				 "PlayerTwoColor",
+				 "Blue",
+				 p2_color.blue);
+
+	ggzcore_confio_commit(conf_handle);
 }

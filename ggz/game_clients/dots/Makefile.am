@@ -4,7 +4,7 @@ EXTRA_DIST = dots.dsc
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ 
+INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ -I$(top_srcdir)/src/ggzcore
 
 ggzexecmod_PROGRAMS = ggz.dots
 
@@ -18,8 +18,10 @@ ggz_dots_SOURCES = \
 	game.c game.h \
 	dlg_about.c dlg_about.h \
 	dlg_new.c dlg_new.h \
-	cb_new.c cb_new.h
+	cb_new.c cb_new.h \
+	dlg_pref.c dlg_pref.h \
+	cb_pref.c cb_pref.h
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_dots_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ 
+ggz_dots_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ $(top_builddir)/src/ggzcore/libggzcore.a
 

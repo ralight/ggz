@@ -5,7 +5,7 @@
  * Date: 08/14/2000
  * Desc: Callback functions for the main Gtk window
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000, 2001 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,10 +32,13 @@
 #include "cb_main.h"
 #include "dlg_main.h"
 #include "dlg_about.h"
+#include "dlg_pref.h"
 #include "support.h"
 #include "main.h"
 #include "game.h"
 #include "cb_new.h"
+
+GtkWidget *dlg_pref = NULL;
 
 
 void
@@ -56,7 +59,17 @@ void
 on_mnu_preferences_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	if(dlg_pref != NULL) {
+		gdk_window_show(dlg_pref->window);
+		gdk_window_raise(dlg_pref->window);
+	} else {
+		dlg_pref = create_dlg_pref();
+		gtk_signal_connect(GTK_OBJECT(dlg_pref),
+				   "destroy",
+				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+				   &dlg_pref);
+		gtk_widget_show(dlg_pref);
+	}
 }
 
 

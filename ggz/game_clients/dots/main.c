@@ -5,7 +5,7 @@
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000, 2001 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,9 @@
 #include <sys/un.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 
+#include "ggzcore.h"
 #include "dlg_main.h"
 #include "dlg_opt.h"
 #include "dlg_new.h"
@@ -46,6 +48,7 @@ GtkWidget *main_win = NULL;
 GtkWidget *opt_dialog;
 GtkWidget *new_dialog;
 struct game_t game;
+int conf_handle;
 
 static void ggz_connect(void);
 static void game_handle_io(gpointer, gint, GdkInputCondition);
@@ -62,6 +65,10 @@ int main(int argc, char *argv[])
 
 	ggz_connect();
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
+
+	conf_handle = ggzcore_confio_parse("/home/rgade/.ggz/dots-gtk.rc",
+					   GGZ_CONFIO_RDWR |
+					   GGZ_CONFIO_CREATE);
 
 	game.state = DOTS_STATE_INIT;
 	game_init();

@@ -5,7 +5,7 @@
  * Date: 04/27/2000
  * Desc: Routines to manipulate the CtD board
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000, 2001 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,7 @@ extern guint8 board_width, board_height;
 extern guint8 vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT-1];
 extern guint8 horz_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT];
 extern gint8 owners_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT-1];
+extern GdkColor fg_color, bg_color, p1_color, p2_color;
 
 /* Global functions exported from game.c */
 extern void board_init(guint8, guint8);
@@ -81,3 +82,5 @@ extern void board_handle_pxb_expose(void);
 extern void statusbar_message(gchar *);
 extern gint8 board_opponent_move(guint8);
 extern void board_redraw(void);
+extern void game_apply_colors(GdkColor, GdkColor, GdkColor, GdkColor);
+extern void game_write_colors(void);
