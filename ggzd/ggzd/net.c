@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5101 2002-10-29 09:41:07Z jdorje $
+ * $Id: net.c 5106 2002-10-29 11:32:21Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -361,7 +361,8 @@ GGZReturn net_send_room_list_error(GGZNetIO *net, GGZClientReqError status)
 
 GGZReturn net_send_room_list_count(GGZNetIO *net, int count)
 {
-	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
+	_net_send_line(net, "<RESULT ACTION='list' CODE='%s'>",
+		       ggz_error_to_string(E_OK));
 	return _net_send_line(net, "<LIST TYPE='room'>");
 }
 
@@ -392,7 +393,8 @@ GGZReturn net_send_type_list_error(GGZNetIO *net, GGZClientReqError status)
 
 GGZReturn net_send_type_list_count(GGZNetIO *net, int count)
 {
-	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
+	_net_send_line(net, "<RESULT ACTION='list' CODE='%s'>",
+		       ggz_error_to_string(E_OK));
 	return _net_send_line(net, "<LIST TYPE='game'>");
 }
 
@@ -440,7 +442,8 @@ GGZReturn net_send_player_list_count(GGZNetIO *net, int count)
 
 	room = player_get_room(net->client->data);
 	
-	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
+	_net_send_line(net, "<RESULT ACTION='list' CODE='%s'>",
+		       ggz_error_to_string(E_OK));
 	return _net_send_line(net, "<LIST TYPE='player' ROOM='%d'>", room);
 }
 
@@ -541,7 +544,8 @@ GGZReturn net_send_table_list_count(GGZNetIO *net, int count)
 
 	room = player_get_room(net->client->data);
 
-	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
+	_net_send_line(net, "<RESULT ACTION='list' CODE='%s'>",
+		       ggz_error_to_string(E_OK));
 	return _net_send_line(net, "<LIST TYPE='table' ROOM='%d'>", room);
 }
 
@@ -1869,8 +1873,8 @@ static GGZReturn _net_send_spectator(GGZNetIO *net,
 static GGZReturn _net_send_result(GGZNetIO *net, const char *action,
 				  GGZClientReqError code)
 {
-	return _net_send_line(net, "<RESULT ACTION='%s' CODE='%d'/>",
-			      action, code);
+	return _net_send_line(net, "<RESULT ACTION='%s' CODE='%s'/>",
+			      action, ggz_error_to_string(code));
 }
 
 
@@ -1893,10 +1897,11 @@ static GGZReturn _net_send_login_new_status(GGZNetIO *net,
 					    char *password)
 {
 	/* Try to send login status */
-	_net_send_line(net, "<RESULT ACTION='login' CODE='%d'>", status);
-	
+	_net_send_line(net, "<RESULT ACTION='login' CODE='%s'/>",
+		       ggz_error_to_string(status));
+
 	/* Try to send checksum if successful */
-	if (status == 0)
+	if (status == E_OK)
 		_net_send_line(net, "<PASSWORD>%s</PASSWORD>", password);
 	
 	return _net_send_line(net, "</RESULT>");
