@@ -1,7 +1,7 @@
 [GameInfo]
 Author = Josef Spillner
-Description = Another GGZ module
-Homepage = http://mindx.sourceforge.net
+Description = Conquer ancient reigns
+Homepage = http://ggz.sourceforge.net/games/hastings/
 Name = Hastings
 Version = 0.0.4
 

@@ -5,9 +5,9 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.h 2824 2001-12-09 10:00:41Z jdorje $
+ * $Id: game.h 3064 2002-01-11 17:42:38Z dr_maux $
  *
- * Copyright (C) 2000 Josef Spillner
+ * Copyright (C) 2000 - 2002 Josef Spillner
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +24,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "ggzdmod.h"
+#ifndef HASTINGS_GAME_H
+#define HASTINGS_GAME_H
 
+/* GGZdmod includes */
+#include "ggzdmod.h"
 
 /* Hastings protocol */
 /* Messages from server */
@@ -48,9 +51,9 @@
 #define HASTINGS_ERR_ENEMY   -8
 
 /* Messages from client */
-#define HASTINGS_SND_MOVE   0
-#define HASTINGS_REQ_SYNC   1
-#define HASTINGS_REQ_INIT   2
+#define HASTINGS_SND_MOVE     0
+#define HASTINGS_REQ_SYNC     1
+#define HASTINGS_REQ_INIT     2
 
 /* Hastings game states */
 #define HASTINGS_STATE_INIT        0
@@ -62,8 +65,7 @@
 #define HASTINGS_EVENT_LAUNCH      0
 #define HASTINGS_EVENT_JOIN        1
 #define HASTINGS_EVENT_LEAVE       2
-#define HASTINGS_EVENT_MOVE      3
-
+#define HASTINGS_EVENT_MOVE        3
 
 /* Data structure for Hastings1066 */
 struct hastings_game_t {
@@ -101,3 +103,6 @@ char game_check_move(int num, int enemyallowed);
 char game_check_win(void);
 
 int game_update(int event, void* data);
+
+#endif
+

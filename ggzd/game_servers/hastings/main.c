@@ -5,9 +5,9 @@
  * Project: GGZ Hastings1066 game module
  * Date: 2001-01-08
  * Desc: Main loop
- * $Id: main.c 2922 2001-12-17 22:27:22Z jdorje $
+ * $Id: main.c 3064 2002-01-11 17:42:38Z dr_maux $
  *
- * Copyright (C) Josef Spillner
+ * Copyright (C) 2000 - 2002 Josef Spillner
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,10 @@
 #include <stdio.h>
 #include <unistd.h>
 
+/* Hastings includes */
 #include "game.h"
 
+/* Main function: setup ggzdmod hooks and launch the server */
 int main(void)
 {
 	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
@@ -51,3 +53,4 @@ int main(void)
 
 	return 0;
 }
+

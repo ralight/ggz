@@ -5,9 +5,9 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 2824 2001-12-09 10:00:41Z jdorje $
+ * $Id: game.c 3064 2002-01-11 17:42:38Z dr_maux $
  *
- * Copyright (C) 2000 Josef Spillner
+ * Copyright (C) 2000 - 2002 Josef Spillner
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,19 +24,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+/* Header file */
+#include "game.h"
+
 /* System includes */
-#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 
-/* special libraries */
+/* Easysock includes */
 #include <easysock.h>
-
-/* game headers */
-#include "game.h"
-
 
 /* Global game variables */
 struct hastings_game_t hastings_game;
@@ -108,9 +106,10 @@ void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data)
 /* Handle message from player */
 void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 {
-	int num = *(int*)seat_data;
+	int num;
 	int fd, op;
 
+	num = *(int*)seat_data;
 	fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
 
 	if (fd < 0 || es_read_int(fd, &op) < 0) return;
@@ -159,7 +158,8 @@ int game_send_seat(int seat)
 /* Send out player list to everybody */
 int game_send_players(void)
 {
-	int i, j, fd;
+	int i, j;
+	GGZSeat seat, seat2;
 
 	/* Determine number of players, 8 at a maximum */
 	hastings_game.playernum = ggzdmod_get_num_seats(hastings_game.ggz);
@@ -169,27 +169,26 @@ int game_send_players(void)
 	{
 		hastings_game.players[j] = 1;
 
-		if((fd = ggzdmod_get_seat(hastings_game.ggz, j).fd) == -1)
+		seat = ggzdmod_get_seat(hastings_game.ggz, j);
+		if(seat.fd == -1)
 		{
-			ggzdmod_log(hastings_game.ggz, "Player %i is a unassigned (%i).\n", j, ggzdmod_get_seat(hastings_game.ggz, j).type);
+			ggzdmod_log(hastings_game.ggz, "Player %i is a unassigned (%i).\n", j, seat.type);
 			/*assignment: -1 is unassigned player, -2 is unassigned bot*/
 			continue;
 		}
 
 		ggzdmod_log(hastings_game.ggz, "Sending player list to player %d\n", j);
 
-		if(es_write_int(fd, HASTINGS_MSG_PLAYERS) < 0) return -1;
-		if(es_write_int(fd, hastings_game.playernum) < 0) return -1;
+		if(es_write_int(seat.fd, HASTINGS_MSG_PLAYERS) < 0) return -1;
+		if(es_write_int(seat.fd, hastings_game.playernum) < 0) return -1;
 
 		for(i = 0; i < hastings_game.playernum; i++)
 		{
-			GGZSeat seat = ggzdmod_get_seat(hastings_game.ggz, i);
-			if(es_write_int(fd, seat.type) < 0) return -1;
-			if(seat.type != GGZ_SEAT_OPEN) {
-				assert(seat.name);
-				if(es_write_string(fd, seat.name) < 0)
+			seat2 = ggzdmod_get_seat(hastings_game.ggz, i);
+			if(es_write_int(seat.fd, seat2.type) < 0) return -1;
+			if((seat.type != GGZ_SEAT_OPEN) && (seat2.name))
+				if(es_write_string(seat.fd, seat2.name) < 0)
 					return -1;
-			}
 		}
 	}
 	return 0;
@@ -229,7 +228,9 @@ int game_send_move(int num)
 /* Send out board layout */
 int game_send_sync(int num)
 {
-	int i, j, fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
+	int i, j, fd;
+
+	fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
 
 	ggzdmod_log(hastings_game.ggz, "Handling sync for player %d\n", num);
 
@@ -275,18 +276,17 @@ int game_send_gameover(char winner)
 /* Do the next move*/
 int game_move(void)
 {
-	int num = hastings_game.turn;
-	
+	int num, worked;
+
+	num = hastings_game.turn;
 	ggzdmod_log(hastings_game.ggz, "game_move() called when it is player %d's turn.", num);
 
 	if (ggzdmod_get_seat(hastings_game.ggz, num).type == GGZ_SEAT_BOT)
 	{
 		game_bot_move(num);
 		game_update(HASTINGS_EVENT_MOVE, NULL);
-	} else  {
-		int worked = game_req_move(num);
-		assert(worked >= 0);
 	}
+	else worked = game_req_move(num);
 
 	return 0;
 }
@@ -295,10 +295,11 @@ int game_move(void)
 /* Request move from current player */
 int game_req_move(int num)
 {
-	int fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
+	int fd;
+
+	fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
 	
 	ggzdmod_log(hastings_game.ggz, "Requesting move from player %d.", num);
-	assert(fd >= 0);
 
 	if (es_write_int(fd, HASTINGS_REQ_MOVE) < 0)
 		return -1;
@@ -310,8 +311,10 @@ int game_req_move(int num)
 /* Handle incoming move from player */
 int game_handle_move(int num)
 {
-	int fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
+	int fd;
 	char status;
+
+	fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
 
 	ggzdmod_log(hastings_game.ggz, "Handling move for player %d\n", num);
 
@@ -325,10 +328,10 @@ int game_handle_move(int num)
 	status = game_check_move(num, 0);
 
 	/* Send back move status */
-	if ((es_write_int(fd, HASTINGS_RSP_MOVE) < 0)  || (es_write_char(fd, status))) return -1;
+	if ((es_write_int(fd, HASTINGS_RSP_MOVE) < 0) || (es_write_char(fd, status))) return -1;
 
 	/* If move simply invalid, ask for resubmit */
-	if(((status == -3 || status == -4)) && game_req_move(num) < 0) return -1;
+	if(((status == HASTINGS_ERR_BOUND || status == HASTINGS_ERR_EMPTY)) && game_req_move(num) < 0) return -1;
 
 	if (status != 0) return 1;
 
@@ -340,63 +343,63 @@ char game_check_move(int num, int enemyallowed)
 {
 	/* Check for correct state */
 	if (hastings_game.state != HASTINGS_STATE_PLAYING)
-		return -1;
+		return HASTINGS_ERR_STATE;
 	/* Check for correct turn */
 	if (num != hastings_game.turn)
-		return -2;
+		return HASTINGS_ERR_TURN;
 
 	/* Check for out of bounds move */
 	if (hastings_game.move_src_x < 0 || hastings_game.move_src_x > 5)
-		return -3;
+		return HASTINGS_ERR_BOUND;
  	if (hastings_game.move_src_y < 0 || hastings_game.move_src_y > 18)
-		return -3;
+		return HASTINGS_ERR_BOUND;
 	if (hastings_game.move_dst_x < 0 || hastings_game.move_dst_x > 5)
-		return -3;
+		return HASTINGS_ERR_BOUND;
  	if (hastings_game.move_dst_y < 0 || hastings_game.move_dst_y > 18)
-		return -3;
+		return HASTINGS_ERR_BOUND;
 
   	/* cannot jump three miles away */
 	if(abs(hastings_game.move_dst_x - hastings_game.move_src_x) > 1)
-		return -6;
+		return HASTINGS_ERR_DIST;
 	if((hastings_game.move_dst_x - hastings_game.move_src_x == 1)
 	&& (abs(hastings_game.move_dst_y - hastings_game.move_src_y) > 1))
-		return -6;
+		return HASTINGS_ERR_DIST;
 	if((hastings_game.move_dst_x - hastings_game.move_src_x == -1)
 	&& (hastings_game.move_dst_y - hastings_game.move_src_y == 1)
 	&& (!(hastings_game.move_src_y % 2)))
-		return -6;
+		return HASTINGS_ERR_DIST;
 	if((hastings_game.move_dst_y - hastings_game.move_src_y == 0)
 	&& (abs(hastings_game.move_dst_x - hastings_game.move_src_x) > 0))
-		return -6;
+		return HASTINGS_ERR_DIST;
 	if(abs(hastings_game.move_dst_y - hastings_game.move_src_y) > 2)
-		return -6;
+		return HASTINGS_ERR_DIST;
 	if((abs(hastings_game.move_dst_y - hastings_game.move_src_y) == 2)
 	&& (abs(hastings_game.move_dst_x - hastings_game.move_src_x) > 0))
-		return -6;
+		return HASTINGS_ERR_DIST;
 	if((hastings_game.move_dst_y - hastings_game.move_src_y == -1)
 	&& (hastings_game.move_dst_x - hastings_game.move_src_x == -1)
 	&& (!(hastings_game.move_src_y % 2)))
-		return -6;
+		return HASTINGS_ERR_DIST;
 
 	/* Check for moving from empty field (should not be possible ?!) */
 	if (hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] == -1)
-		return -4;
+		return HASTINGS_ERR_EMPTY;
 	/* Check for duplicated move */
 	if (hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] == hastings_game.turn)
-		return -5;
+		return HASTINGS_ERR_FULL;
 	/* Check for team collegues */
 	if (hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] % 2 ==
 	    hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] % 2)
-		return -5;
+		return HASTINGS_ERR_FULL;
 	/* Check for move onto water */
 	if (hastings_game.boardmap[hastings_game.move_dst_x][hastings_game.move_dst_y] == 32)
-		return -7;
+		return HASTINGS_ERR_MAP;
 	/* Check for enemies */
 	if(enemyallowed)
 	{
 		if (hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] % 2 ==
 			!(hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] % 2))
-			return -8;
+			return HASTINGS_ERR_ENEMY;
 	}
 
 	return 0;
@@ -450,12 +453,9 @@ int game_bot_set(int me, int i, int j, int wanted)
 }
 
 /* Do bot moves */
+/* TODO: algorithm of passivism + check for win :-) */
 void game_bot_move(int me)
 {
-/* TODO: algorithm of passivism + check for win :-) */
-/* REMARK: deleted very much code */
-/* me: that's the bot */
-
 	int i, j;
 	int moved;
 	
@@ -503,11 +503,6 @@ void game_bot_move(int me)
 char game_check_win(void)
 {
 	/* TODO: own check */
-	/* REMARK: deleted very much code */
-
-	/* No one won yet */
-	/* if (hastings_game.move_count == 9) */ /* hehe */
-		/*return 2;*/  /* Cat's game */ /* Where's the dog? */
 
 	return -1;
 }
@@ -529,9 +524,7 @@ int game_update(int event, void* data)
 		break;
 
 	case HASTINGS_EVENT_JOIN:
-ggzdmod_log(hastings_game.ggz, "## pre-join\n");
 		if (hastings_game.state != HASTINGS_STATE_WAIT) return -1;
-ggzdmod_log(hastings_game.ggz, "## post-join\n");
 
 		seat = *(int*)data;
 		game_send_seat(seat);
@@ -549,19 +542,18 @@ ggzdmod_log(hastings_game.ggz, "## post-join\n");
 	case HASTINGS_EVENT_MOVE:
 		if (hastings_game.state != HASTINGS_STATE_PLAYING) return -1;
 
-		ggzdmod_log(hastings_game.ggz, "Player %d from square %d/%d", hastings_game.turn, hastings_game.move_src_x, hastings_game.move_src_y);
- 		ggzdmod_log(hastings_game.ggz, "to square %d/%d\n", hastings_game.move_dst_x, hastings_game.move_dst_y);
+		ggzdmod_log(hastings_game.ggz, "Player %d from square %d/%d",
+			hastings_game.turn, hastings_game.move_src_x, hastings_game.move_src_y);
+ 		ggzdmod_log(hastings_game.ggz, "to square %d/%d\n",
+			hastings_game.move_dst_x, hastings_game.move_dst_y);
 
-		// disallow dead bots to move (should not happen)
+		/* disallow dead bots to move (should not happen) */
 		if(hastings_game.move_src_x > -1)
 		{
 			hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] = -1;
 			hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] = hastings_game.turn;
 			game_send_move(hastings_game.turn);
 		}
-
-		/*ggzdmod_log(hastings_game.ggz, "Pre:   --%i--\n", hastings_game.players[hastings_game.turn]);
-		ggzdmod_log(hastings_game.ggz, "(turn) --%i--\n", hastings_game.turn);*/
 
 		if((victor = game_check_win()) < 0)
 		{
@@ -573,10 +565,6 @@ ggzdmod_log(hastings_game.ggz, "## post-join\n");
 			if(i < hastings_game.playernum - 1) game_move();
 		}
 		else i = hastings_game.playernum - 1;
-
-		/*ggzdmod_log(hastings_game.ggz, "After: --%i--\n", hastings_game.players[hastings_game.turn]);
-		ggzdmod_log(hastings_game.ggz, "(turn) --%i--\n", hastings_game.turn);
-		ggzdmod_log(hastings_game.ggz, "(i)    --%i--\n\n", i);*/
 
 		if(i == hastings_game.playernum - 1)
 		{
