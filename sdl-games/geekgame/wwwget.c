@@ -25,8 +25,10 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#include "wwwget.h"
+
 /* Copy a file via FTP or HTTP to a local tempfile */
-void wwwget_internal(const char *source, const char *dest)
+static void wwwget_internal(const char *source, const char *dest)
 {
 	const char *program = "wget";
 	char *const args[] =
@@ -43,7 +45,7 @@ void wwwget_internal(const char *source, const char *dest)
 }
 
 /* Copy a local file to a local tempfile */
-void wwwcopy_internal(const char *source, const char *dest)
+static void wwwcopy_internal(const char *source, const char *dest)
 {
 	const char *program = "cp";
 	char *const args[] =

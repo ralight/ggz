@@ -282,7 +282,8 @@ static void ggz_network()
 }
 
 /* Draw a filled green or black box */
-void drawbox(int x, int y, int w, int h, SDL_Surface *screen, int green, int autocrop)
+static void drawbox(int x, int y, int w, int h, SDL_Surface *screen,
+		    int green, int autocrop)
 {
 	SDL_Rect rect;
 
@@ -326,7 +327,7 @@ void drawbox(int x, int y, int w, int h, SDL_Surface *screen, int green, int aut
 }
 
 /* Draw an image representing a number */
-void drawnumber(SDL_Surface *screen, int vx, int vy, int num)
+static void drawnumber(SDL_Surface *screen, int vx, int vy, int num)
 {
 	SDL_Surface *number;
 	SDL_Rect rect;
@@ -345,7 +346,7 @@ void drawnumber(SDL_Surface *screen, int vx, int vy, int num)
 }
 
 /* Draw frame around player whose turn it is */
-void drawturn(SDL_Surface *screen, int players, int turn)
+static void drawturn(SDL_Surface *screen, int players, int turn)
 {
 	SDL_Rect rect;
 	int i;
@@ -362,7 +363,7 @@ void drawturn(SDL_Surface *screen, int players, int turn)
 }
 
 /* Draw box around selected level */
-void drawlevel(int player, int level)
+static void drawlevel(int player, int level)
 {
 	int i;
 	for(i = 0; i < 10; i++)
@@ -539,7 +540,7 @@ void rendermode(int x, int y, const char *mode)
 }
 
 /* Draw scores of players */
-void renderscore(int x, int y, int sum)
+static void renderscore(int x, int y, int sum)
 {
 	char score[8];
 	SDL_Surface *text;
@@ -565,7 +566,7 @@ void renderscore(int x, int y, int sum)
 }
 
 /* Draw multi-lines game mode descriptions */
-void renderdesc(int x, int y, const char *desc, int active)
+static void renderdesc(int x, int y, const char *desc, int active)
 {
 	SDL_Surface *text;
 	SDL_Rect rect;
@@ -600,7 +601,7 @@ void renderdesc(int x, int y, const char *desc, int active)
 }
 
 /* Play a sound effect */
-void playnoise()
+static void playnoise(void)
 {
 #ifdef HAVE_SOUND
 	if(chunk)
@@ -612,7 +613,7 @@ void playnoise()
 }
 
 /* Scan directory for files matching pattern */
-char *scan_dir(const char *dir, const char *pattern)
+static char *scan_dir(const char *dir, const char *pattern)
 {
 	DIR *dp;
 	struct dirent *ep;
@@ -634,7 +635,7 @@ char *scan_dir(const char *dir, const char *pattern)
 }
 
 /* Return random file matching a pattern from a directory */
-char *scan_file(const char *dir, const char *pattern)
+static char *scan_file(const char *dir, const char *pattern)
 {
 	char *tmpfile;
 	char *ret;
@@ -652,7 +653,7 @@ char *scan_file(const char *dir, const char *pattern)
 }
 
 /* Display notice while scanning for files */
-void screen_scanning(int display)
+static void screen_scanning(int display)
 {
 	SDL_Rect rect;
 	char path[STRING_LENGTH];
@@ -732,7 +733,7 @@ void screen_scanning(int display)
 	}
 }
 
-void showcursor(int mode)
+static void showcursor(int mode)
 {
 #ifdef HAVE_XCURSOR
 	Cursor cursor;
@@ -759,7 +760,7 @@ void showcursor(int mode)
 }
 
 /* Intro menu with game mode selection and player gallery */
-void screen_intro(int firsttime)
+static void screen_intro(int firsttime)
 {
 	int escape;
 	SDL_Event event;
@@ -942,7 +943,7 @@ void screen_intro(int firsttime)
 }
 
 /* Handle input */
-int gameinput(int *ox, int *oy, int userinput)
+static int gameinput(int *ox, int *oy, int userinput)
 {
 	SDL_Event event;
 	Uint8 *keystate;
@@ -1208,7 +1209,7 @@ int gameinput(int *ox, int *oy, int userinput)
 }
 
 /* Game screen with player gallery and game board */
-void screen_game()
+static void screen_game(void)
 {
 	int escape;
 	int i, j;
@@ -1345,7 +1346,7 @@ void screen_game()
 }
 
 /* Game over menu */
-void screen_outtro()
+static void screen_outtro(void)
 {
 	int escape;
 	SDL_Rect rect;
@@ -1389,7 +1390,6 @@ int startgame(void)
 	int i, j, x;
 	SDL_Surface *icon;
 	Uint32 init;
-	int ret;
 	char path[STRING_LENGTH];
 	int step;
 
@@ -1404,7 +1404,7 @@ int startgame(void)
 #ifdef HAVE_SOUND
 	if(usesound)
 	{
-		ret = Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048);
+		int ret = Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048);
 		if(ret < 0)
 		{
 			fprintf(stderr, "Could not open sound device.\n");
