@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4528 2002-09-12 19:34:02Z jdorje $
+ * $Id: net.c 4539 2002-09-13 05:14:21Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -521,7 +521,14 @@ int net_send_table(GGZNetIO *net, GGZTable *table)
 		_net_send_seat(net, &seat);
 	}
 
-	/* FIXME: send spectators? */
+#if 0 /* Should this be enabled??? */
+	for (i = 0; i < spectator_seats_num(table); i++) {
+		GGZTableSpectator seat = {index: i};
+		if (table->spectators[i][0] == '\0') continue;
+		strcpy(seat.name, table->spectators[i]);
+		_net_send_spectator(net, &seat);
+	}
+#endif
 	
 	_net_send_line(net, "</TABLE>");
 
