@@ -184,13 +184,15 @@ static void bridge_handle_bid(bid_t bid)
 		BRIDGE.pass_count = 1;
 		BRIDGE.bonus *= 2;
 	} else {
+		/* TODO: declarer is the first person to name the suit, not the last bidder */
 		BRIDGE.declarer = game.next_bid;
 		BRIDGE.dummy = (BRIDGE.declarer + 2) % 4;
+		BRIDGE.bonus = 1;
 		BRIDGE.pass_count = 1;
 		BRIDGE.contract = bid.sbid.val;
 		BRIDGE.contract_suit = bid.sbid.suit;
 		ggz_debug("Setting bridge contract to %d %s.", BRIDGE.contract, long_bridge_suit_names[BRIDGE.contract_suit]);
-		if (bid.sbid.suit < BRIDGE_NOTRUMP)
+		if (bid.sbid.suit != BRIDGE_NOTRUMP)
 			game.trump = bid.sbid.suit;
 		else
 			game.trump = -1;
