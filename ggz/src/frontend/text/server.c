@@ -35,7 +35,9 @@
 
 void server_login_ok(GGZEventID id, void* event_data, void* user_data)
 {
+#ifdef DEBUG
 	output_text("--- Connected to %s.", ggzcore_state_get_profile_host());
+#endif
 }
 
 void server_chat_msg(GGZEventID id, void* event_data, void* user_data)
@@ -94,6 +96,8 @@ void server_login_fail(GGZEventID id, void* event_data, void* user_data)
 
 void server_logout(GGZEventID id, void* event_data, void* user_data)
 {
+#ifdef DEBUG
 	output_text("--- Disconnected");
+#endif
 }
 

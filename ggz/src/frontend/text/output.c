@@ -103,7 +103,7 @@ void output_text(char* fmt, ...)
 	fflush(NULL);
 }
 
-void output_chat(int type, char *player, char *message)
+void output_chat(ChatTypes type, char *player, char *message)
 {
 	switch(type)
 	{

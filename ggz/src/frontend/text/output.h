@@ -55,7 +55,7 @@ void output_prompt(int status);
 
 void output_text(char* fmt, ...);
 
-void output_chat(int type, char *player, char *message);
+void output_chat(ChatTypes type, char *player, char *message);
 
 void output_status();
 
