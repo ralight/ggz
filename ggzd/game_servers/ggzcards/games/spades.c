@@ -176,29 +176,21 @@ static void spades_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
 
-	put_player_message(s, "Score: %d\n", game.players[p].score);
+	add_player_score_message(p);
 	if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
 		/* we show both the individual and team contract */
 		char bid_text[512];
 		int contract = game.players[p].bid.sbid.val + game.players[(p+2)%4].bid.sbid.val;
 		game.funcs->get_bid_text(bid_text, sizeof(bid_text), game.players[p].bid);
 		if (*bid_text)
-			add_player_message(s, "Bid: %s (%d)\n", bid_text, contract);
+			add_player_message(s, "Contract: %s (%d)\n", bid_text, contract);
 	}
 	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY) {
 		add_player_message(s, "Tricks: %d (%d)\n",
 			game.players[p].tricks, game.players[p].tricks + game.players[(p+2)%4].tricks);
 	}
-	if ( (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) && game.players[p].bid_count > 0) {
-			char bid_text[512];
-			game.funcs->get_bid_text(bid_text, sizeof(bid_text), game.players[p].bid);
-			if (*bid_text)
-				add_player_message(s, "Bid: %s\n", bid_text);
-	}
-	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-		add_player_message(s, "Bidding...");	
-	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
-		add_player_message(s, "Playing...");
+	add_player_bid_message(p);
+	add_player_action_message(p);
 }
 
 static void spades_end_trick()

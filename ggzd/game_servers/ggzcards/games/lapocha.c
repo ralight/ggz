@@ -218,25 +218,16 @@ static void lapocha_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
 
-	put_player_message(s, "Score: %d\n", game.players[p].score);
+	clear_player_message(s);
+	add_player_score_message(p);
 	if (p == game.dealer)
 		add_player_message(s, "dealer\n");
 	if (game.state >= WH_STATE_FIRST_TRICK && game.state <= WH_STATE_WAIT_FOR_PLAY) {
 		add_player_message(s, "Contract: %d\n", (int)game.players[p].bid.bid);
 	}
-	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
-			add_player_message(s, "Tricks: %d\n", game.players[p].tricks);
-	if ( (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID)
-	      && game.players[p].bid_count > 0) {
-		char bid_text[512];
-		game.funcs->get_bid_text(bid_text, sizeof(bid_text), game.players[p].bid);
-		if (*bid_text)
-			add_player_message(s, "Bid: %s\n", bid_text);
-	}
-	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-		add_player_message(s, "Bidding...");	
-	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
-		add_player_message(s, "Playing...");
+	add_player_tricks_message(p);
+	add_player_bid_message(p);
+	add_player_action_message(p);
 }
 
 static void lapocha_end_hand()

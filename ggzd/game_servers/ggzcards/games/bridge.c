@@ -293,16 +293,8 @@ static void bridge_set_player_message(player_t p)
 	}
 	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
 			add_player_message(s, "Tricks: %d\n", game.players[p].tricks+game.players[(p+2)%4].tricks);
-	if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
-			char bid_text[512];
-			game.funcs->get_bid_text(bid_text, sizeof(bid_text), game.players[p].bid);
-			if (*bid_text)
-				add_player_message(s, "Bid: %s\n", bid_text);
-	}
-	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-		add_player_message(s, "Bidding...");	
-	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
-		add_player_message(s, "Playing...");
+	add_player_bid_message(p);
+	add_player_action_message(p);
 }
 
 static void bridge_end_trick()

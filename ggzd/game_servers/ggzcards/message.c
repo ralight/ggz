@@ -82,6 +82,11 @@ static void doput_player_message(seat_t s, char *msg)
 	}
 }
 
+void clear_player_message(seat_t s)
+{
+	doput_player_message(s, "");
+}
+
 void put_player_message(seat_t s, char *fmt, ...)
 {
 	char buf[4096];
@@ -260,7 +265,50 @@ void set_global_message(char *mark, char *message, ...)
 
 
 /*
- * AUTOMATED MESSAGES
+ * AUTOMATED PLAYER MESSAGES
+ */
+
+void add_player_score_message(player_t p)
+{
+	seat_t s = game.players[p].seat;
+	put_player_message(s, "Score: %d\n", game.players[p].score);
+}
+
+void add_player_bid_message(player_t p)
+{
+	seat_t s = game.players[p].seat;
+	if ((game.state == WH_STATE_NEXT_BID
+	     || game.state == WH_STATE_WAIT_FOR_BID)
+	    && game.players[p].bid_count > 0) {
+		char bid_text[512];
+		game.funcs->get_bid_text(bid_text, sizeof(bid_text),
+					 game.players[p].bid);
+		if (*bid_text)
+			add_player_message(s, "Bid: %s\n", bid_text);
+	}
+}
+
+void add_player_tricks_message(player_t p)
+{
+	seat_t s = game.players[p].seat;
+	if (game.state == WH_STATE_WAIT_FOR_PLAY
+	    || game.state == WH_STATE_NEXT_TRICK
+	    || game.state == WH_STATE_NEXT_PLAY)
+		add_player_message(s, "Tricks: %d\n", game.players[p].tricks);
+}
+
+void add_player_action_message(player_t p)
+{
+	seat_t s = game.players[p].seat;
+	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
+		add_player_message(s, "Bidding...");
+	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
+		add_player_message(s, "Playing...");
+}
+
+
+/*
+ * AUTOMATED GLOBAL MESSAGES
  */
 
 void send_last_hand()

@@ -356,24 +356,17 @@ static void suaro_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
 
-	put_player_message(s, "Score: %d\n", game.players[p].score);
-	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
-		add_player_message(s, "Tricks: %d\n", game.players[p].tricks);
+	clear_player_message(s);
+	add_player_score_message(p);
+	add_player_tricks_message(p);
 	if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
 		if (p == SUARO.declarer)
 			add_player_message(s, "declarer\n");
 		if (p == 1-SUARO.declarer)
 			add_player_message(s, "defender\n");
 	}
-	if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
-			char bid_text[128];
-			game.funcs->get_bid_text(bid_text, sizeof(bid_text), game.players[p].bid);
-			if (*bid_text) add_player_message(s, "Bid: %s\n", bid_text);
-	}
-	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-		add_player_message(s, "Bidding...");	
-	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
-		add_player_message(s, "Playing...");
+	add_player_bid_message(p);
+	add_player_action_message(p);
 }
 
 static void suaro_end_trick()

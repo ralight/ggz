@@ -207,7 +207,8 @@ static void euchre_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
 
-	put_player_message(s, "Score: %d\n", game.players[p].score);
+	clear_player_message(s);
+	add_player_score_message(p);
 	if (game.state == WH_STATE_FIRST_BID || game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
 		if (p == game.dealer)
 			add_player_message(s, "dealer\n");
@@ -216,10 +217,7 @@ static void euchre_set_player_message(player_t p)
 			add_player_message(s, "maker\n");
 	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
 		add_player_message(s, "Tricks: %d\n", game.players[p].tricks + game.players[(p+2)%4].tricks);
-	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-		add_player_message(s, "Bidding...");	
-	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
-		add_player_message(s, "Playing...");
+	add_player_action_message(p);
 }
 
 static void euchre_end_trick()

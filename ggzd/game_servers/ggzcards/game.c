@@ -432,8 +432,6 @@ int game_get_bid_text(char *buf, int buf_len, bid_t bid)
  */
 void game_set_player_message(player_t p)
 {
-	seat_t s = game.players[p].seat;
-
 	/* This function is tricky.  The problem is that we're trying to
 	   assemble a single player string out of multiple units of data -
 	   score, bid, tricks, etc.  The solution here is to integrate
@@ -448,24 +446,14 @@ void game_set_player_message(player_t p)
 	   times - every time the player is affected, and on some game state 
 	   changes.  Much of this is handled by the game-independent code */
 
-	put_player_message(s, "Score: %d\n", game.players[p].score);
-	if (game.state == WH_STATE_WAIT_FOR_PLAY
-	    || game.state == WH_STATE_NEXT_TRICK
-	    || game.state == WH_STATE_NEXT_PLAY)
-		add_player_message(s, "Tricks: %d\n", game.players[p].tricks);
-	if ((game.state == WH_STATE_NEXT_BID
-	     || game.state == WH_STATE_WAIT_FOR_BID)
-	    && game.players[p].bid_count > 0) {
-		char bid_text[512];
-		game.funcs->get_bid_text(bid_text, sizeof(bid_text),
-					 game.players[p].bid);
-		if (*bid_text)
-			add_player_message(s, "Bid: %s\n", bid_text);
-	}
-	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-		add_player_message(s, "Bidding...");
-	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
-		add_player_message(s, "Playing...");
+	/* in this "example" function, we just put in several default pieces of
+	 * information.  See one of the games for a more lively example */
+
+	clear_player_message(game.players[p].seat);
+	add_player_score_message(p);
+	add_player_tricks_message(p);
+	add_player_bid_message(p);
+	add_player_action_message(p);
 }
 
 /* game_end_trick

@@ -36,10 +36,12 @@ extern void init_messages();	/* initializes all necessary message data */
 /* player messages */
 extern void send_player_message(seat_t, player_t);	/* sends the seat's message to one player */
 extern void send_player_message_toall(seat_t);	/* sends the seat's message to all players */
-extern void put_player_message(seat_t s, char *, ...);	/* sets the player message for the appropriate seat, printf-style. */
-extern void add_player_message(seat_t s, char *fmt, ...);	/* adds to an existing player message */
 extern void set_player_message(player_t p);	/* calls the appropriate game set_player_message function, then sends mesage to everyone */
 extern void set_all_player_messages();	/* calls set_player_message for all players */
+
+extern void clear_player_message(seat_t s);	/* clears the player message; NOTE it's by seat not player */
+extern void put_player_message(seat_t s, char *, ...);	/* sets the player message for the appropriate seat, printf-style. */
+extern void add_player_message(seat_t s, char *fmt, ...);	/* adds to an existing player message */
 
 /* global messages */
 extern void send_global_message(char *, player_t);	/* simply sends the current message */
@@ -48,7 +50,13 @@ extern void send_all_global_messages(player_t p);	/* sends _all_ messages to one
 extern void set_global_message(char *, char *, ...);	/* sets the global message (sprintf-stype), and sends it to everyone */
 extern char *get_global_message(char *);	/* returns the message */
 
-/* the following are automated messages */
+/* the following are automated player messages */
+extern void add_player_score_message(player_t);
+extern void add_player_bid_message(player_t);
+extern void add_player_tricks_message(player_t);
+extern void add_player_action_message(player_t);
+
+/* the following are automated global messages */
 extern void send_last_hand();	/* sends a listing of the cards in the last hand */
 extern void send_last_trick();	/* sends a listing of the cards on the last trick */
 extern void init_cumulative_scores();	/* initialized the "cumulative scores" tracking */
