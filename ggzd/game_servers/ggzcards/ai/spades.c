@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2436 2001-09-10 06:19:07Z jdorje $
+ * $Id: spades.c 2437 2001-09-10 06:37:19Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -622,7 +622,8 @@ static card_t get_play(player_t p, seat_t s)
 	if (oppNeed < 0)
 		oppNeed = 0;
 
-	ai_debug("We need %d and they need %d", myNeed, oppNeed);
+	ai_debug("We need %d and they need %d out of %d.", myNeed, oppNeed,
+		 totTricks);
 
 	/* XXX agg = 0 for oppNeed == 0 && myNeed == totTricks && this trick
 	   hopeless */
@@ -640,7 +641,7 @@ static card_t get_play(player_t p, seat_t s)
 	else if (totTricks - myNeed - oppNeed >= 2)
 		/* just be cautious */
 		agg = 75;
-	else if (totTricks - myNeed - oppNeed >= 1)
+	else
 		/* need tricks */
 		agg = 100;
 
@@ -1293,7 +1294,7 @@ static int PlayNormal(int p)
 	ai_debug("Strategy: play normal");
 
 	/* 
-	 * If our pard has played, calculate the chances that his card has.
+	 * If our pard has played, calculate the chances that his card is a winner.
 	 */
 	if (high == pard) {
 		pCard.card = game.seats[pard].table;
@@ -1309,9 +1310,8 @@ static int PlayNormal(int p)
 		return PlayNil(p);
 	if (agg == 0) {
 		if (pard > 0 && pard == high && pCard.trick > 30) {
-			/* 
-			 * Our pard's winning the trick -- beat him if we can.
-			 */
+			/* Our pard's winning the trick -- beat him if we
+			   can. */
 		} else
 			return PlayNil(p);
 	}
