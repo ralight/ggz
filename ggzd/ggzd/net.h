@@ -42,11 +42,12 @@ int net_send_room(GGZPlayer *player, int index, char *name, int game, char *desc
 int net_send_room_join(GGZPlayer *player, char status);
 int net_send_chat(GGZPlayer *player, unsigned char opcode, char *name, char *msg);
 int net_send_chat_result(GGZPlayer *player, char status);
+int net_send_table(GGZPlayer *player, GGZTable *table);
 int net_send_table_launch(GGZPlayer *player, char status);
 int net_send_table_join(GGZPlayer *player, char status);
 int net_send_table_leave(GGZPlayer *player, char status);
 int net_send_player_update(GGZPlayer *player, unsigned char opcode, char *name);
-
+int net_send_table_update(GGZPlayer *player, unsigned char opcode, GGZTable *table, int seat);
 int net_send_logout(GGZPlayer *player, char status);
 
 #endif /* _GGZ_NET_H */

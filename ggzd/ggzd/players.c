@@ -76,7 +76,6 @@ static void  player_remove(GGZPlayer* player);
 static int   player_updates(GGZPlayer* player);
 static int   player_msg_to_sized(GGZPlayer* player);
 static int   player_transit(GGZPlayer* player, char opcode, int index);
-static int   player_send_tables(int fd, int count, GGZTable* my_tables);
 
 
 
@@ -744,7 +743,7 @@ int player_list_types(GGZPlayer* player, int fd)
 int player_list_tables(GGZPlayer* player, int fd)
 {
 	GGZTable *my_tables;
-	int count, type, status;
+	int count, type, i;
 	char global;
 	
 	dbg_msg(GGZ_DBG_UPDATE, "Handling table list request for %s", 
@@ -783,50 +782,12 @@ int player_list_tables(GGZPlayer* player, int fd)
 	if (count <= 0)
 		return GGZ_REQ_FAIL;
 	
-	status = player_send_tables(fd, count, my_tables);
+	for (i = 0; i < count; i++)
+		if (net_send_table(player, &my_tables[i]) < 0)
+			return GGZ_REQ_DISCONNECT;
 	
 	free(my_tables);
 	
-	return status;
-}
-
-
-static int player_send_tables(int fd, int count, GGZTable* my_tables)
-{
-	int i, j, seat;
-	char* name = NULL;
-	
-	for (i = 0; i < count; i++) {
-		if (es_write_int(fd, my_tables[i].index) < 0
-		    || es_write_int(fd, my_tables[i].room) < 0
-		    || es_write_int(fd, my_tables[i].type) < 0
-		    || es_write_string(fd, my_tables[i].desc) < 0
-		    || es_write_char(fd, my_tables[i].state) < 0
-		    || es_write_int(fd, seats_num(&my_tables[i])) < 0)
-			return GGZ_REQ_DISCONNECT;
-		
-		for (j = 0; j < seats_num(&my_tables[i]); j++) {
-			seat = seats_type(&my_tables[i], j);
-			if (es_write_int(fd, seat) < 0)
-				return GGZ_REQ_DISCONNECT;
-			
-			switch(seat) {
-			case GGZ_SEAT_OPEN:
-			case GGZ_SEAT_BOT:
-				continue;  /* no name for these */
-			case GGZ_SEAT_RESV:
-				name = my_tables[i].reserve[j];
-				break;
-			case GGZ_SEAT_PLAYER:
-				name = my_tables[i].seats[j];
-				break;
-			}  
-			
-			if (es_write_string(fd, name) < 0)
-				return GGZ_REQ_DISCONNECT;
-		}
-	}
-
 	return GGZ_REQ_OK;
 }
 

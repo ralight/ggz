@@ -46,6 +46,7 @@
 #include <transit.h>
 #include <room.h>
 #include <hash.h>
+#include <net.h>
 
 #define GGZ_RESYNC_SEC  0
 #define GGZ_RESYNC_USEC 500000
@@ -1085,11 +1086,10 @@ static int table_event_callback(void* target, int size, void* data)
 	char* name = NULL;
 	char* current;
 	GGZTable info;
-	int fd, seat, i, index;
+	int seat = 0, index;
 	GGZPlayer* player;
 
 	player = (GGZPlayer*)target;
-	fd = player->fd;
 
 	/* Unpack event data */
 	current = (char*)data;
@@ -1100,14 +1100,10 @@ static int table_event_callback(void* target, int size, void* data)
 	index = *(int*)current;
 	current += sizeof(int);
 
-	/* Always send opcode and table index */
-	if (es_write_int(fd, MSG_UPDATE_TABLES) < 0 
-	    || es_write_char(fd, opcode) < 0
-	    || es_write_int(fd, index) < 0)
-		return GGZ_EVENT_ERROR;
 	
 	switch (opcode) {
 	case GGZ_UPDATE_DELETE:
+		info.index = index;
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d deleted",
 			player->name, index);
 		break;
@@ -1115,39 +1111,20 @@ static int table_event_callback(void* target, int size, void* data)
 	case GGZ_UPDATE_ADD:
 		info = *(GGZTable*)current;
 		current += sizeof(GGZTable);
-
+		info.index = index;
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d added",
 			player->name, index);
-		if (es_write_int(fd, info.room) < 0
-		    || es_write_int(fd, info.type) < 0
-		    || es_write_string(fd, info.desc) < 0
-		    || es_write_char(fd, info.state) < 0
-		    || es_write_int(fd, seats_num(&info)) < 0)
-			return GGZ_EVENT_ERROR;
-		
-		/* Now send seat assignments */
-		for (i = 0; i < seats_num(&info); i++) {
-			seat = seats_type(&info, i);
-			if (es_write_int(fd, seat) < 0)
-				return GGZ_EVENT_ERROR;
-
-			switch (seat) {
-			case GGZ_SEAT_OPEN:
-			case GGZ_SEAT_BOT:
-				continue;  /* no name for these */
-			case GGZ_SEAT_RESV:
-				name = info.reserve[i];
-				break;
-			case GGZ_SEAT_PLAYER: 
-				name = info.seats[i];
-				break;
-			}
-
-			if (es_write_string(fd, name) < 0)
-				return GGZ_EVENT_ERROR;
-		}
 		break;
 		
+	case GGZ_UPDATE_STATE:
+		table_state = *(unsigned char*)current;
+		current += sizeof(char);
+		info.state = table_state;
+
+		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d new state %d",
+			player->name, index, table_state);
+		break;
+
 	case GGZ_UPDATE_LEAVE:
 	case GGZ_UPDATE_JOIN:
 		name = (char*)current;
@@ -1155,25 +1132,18 @@ static int table_event_callback(void* target, int size, void* data)
 		seat = *(int*)current;
 		current += sizeof(int);
 
+		strcpy(info.seats[seat], name);
+
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees %s %s seat %d at table %d", 
 			player->name, name, 
 			(opcode == GGZ_UPDATE_JOIN ? "join" : "leave"),
 			seat, index);
-		if (es_write_int(fd, seat) < 0
-		    || es_write_string(fd, name) < 0) {
-			return GGZ_EVENT_ERROR;
-		}
-		break;
-	case GGZ_UPDATE_STATE:
-		table_state = *(unsigned char*)current;
-		current += sizeof(char);
 
-		dbg_msg(GGZ_DBG_UPDATE, "%s sees table %d new state %d",
-			player->name, index, table_state);
-		if (es_write_char(fd, table_state) < 0)
-			return GGZ_EVENT_ERROR;
 		break;
 	}
+
+	if (net_send_table_update(player, opcode, &info, seat) < 0)
+		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
 }

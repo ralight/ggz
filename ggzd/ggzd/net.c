@@ -36,6 +36,8 @@
 #include <players.h>
 #include <protocols.h>
 #include <room.h>
+#include <seats.h>
+#include <table.h>
 
 
 /* Private internal functions */
@@ -281,6 +283,45 @@ int net_send_chat_result(GGZPlayer *player, char status)
 }
 
 
+int net_send_table(GGZPlayer *player, GGZTable *table)
+{
+	char *name = NULL;
+	int i, seat, fd = _net_get_fd(player);
+	
+
+	if (es_write_int(fd, table->index) < 0
+	    || es_write_int(fd, table->room) < 0
+	    || es_write_int(fd, table->type) < 0
+	    || es_write_string(fd, table->desc) < 0
+	    || es_write_char(fd, table->state) < 0
+	    || es_write_int(fd, seats_num(table)) < 0)
+		return -1;
+	
+	for (i = 0; i < seats_num(table); i++) {
+		seat = seats_type(table, i);
+		if (es_write_int(fd, seat) < 0)
+			return -1;
+		
+		switch(seat) {
+		case GGZ_SEAT_OPEN:
+		case GGZ_SEAT_BOT:
+			continue;  /* no name for these */
+		case GGZ_SEAT_RESV:
+			name = table->reserve[i];
+			break;
+		case GGZ_SEAT_PLAYER:
+			name = table->seats[i];
+			break;
+		}
+		
+		if (es_write_string(fd, name) < 0)
+			return -1;
+	}
+
+	return 0;
+}
+
+
 int net_send_table_launch(GGZPlayer *player, char status)
 {
 	return _net_send_result(player, RSP_TABLE_LAUNCH, status);
@@ -308,6 +349,41 @@ int net_send_player_update(GGZPlayer *player, unsigned char opcode, char *name)
 	    || es_write_string(fd, name) < 0)
 		return -1;
 	
+	return 0;
+}
+
+int net_send_table_update(GGZPlayer *player, unsigned char opcode, GGZTable *table, int seat)
+{
+	int fd = _net_get_fd(player);
+
+	/* Always send opcode */
+	if (es_write_int(fd, MSG_UPDATE_TABLES) < 0 
+	    || es_write_char(fd, opcode) < 0)
+		return -1;
+	
+	/* If it's an add, all we do it send the table */
+	if (opcode == GGZ_UPDATE_ADD)
+		return net_send_table(player, table);
+
+	/* For the others, we always send the index */
+	if (es_write_int(fd, table->index) < 0)
+		return -1;
+
+	/* If it's a delete, we're done now */
+	switch (opcode) {
+	case GGZ_UPDATE_DELETE:  /* no more to do for delete */
+		break;
+	case GGZ_UPDATE_STATE:
+		return es_write_char(fd, table->state);
+		break;
+	case GGZ_UPDATE_JOIN:
+	case GGZ_UPDATE_LEAVE:
+		if (es_write_int(fd, seat) < 0
+		    || es_write_string(fd, table->seats[seat]) < 0)
+			return -1;
+	}
+
+	/* If we get here it must have been OK */
 	return 0;
 }
 
