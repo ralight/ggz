@@ -291,6 +291,7 @@ static void player_loop(int p_index, int p_fd)
 		if (game_over && t_fd != -1) {
 			dbg_msg(GGZ_DBG_TABLE, "Cleaning up player %d's game",
 				p_index);
+			table_leave(p_index, players.info[p_index].table_index);
 			close(t_fd);
 			FD_CLR(t_fd, &active_fd_set);
 			t_fd = -1;

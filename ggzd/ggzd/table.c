@@ -455,7 +455,9 @@ static int table_game_leave(int index, int fd)
 				index);
 			ret_val = -1;
 		}
-		tables.timestamp = time(NULL);
+		else 
+			tables.timestamp = time(NULL);
+
 		pthread_rwlock_unlock(&tables.lock);
 	}
 
@@ -563,6 +565,11 @@ static void table_remove(int t_index)
 	pthread_mutex_lock(&tables.info[t_index].state_lock);
 	pthread_cond_signal(&tables.info[t_index].state_cond);
 	pthread_mutex_unlock(&tables.info[t_index].state_lock);
+
+	pthread_mutex_lock(&tables.info[t_index].transit_lock);
+	pthread_cond_broadcast(&tables.info[t_index].transit_cond);
+	pthread_mutex_unlock(&tables.info[t_index].transit_lock);
+	
 }
 
 

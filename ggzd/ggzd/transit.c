@@ -67,6 +67,8 @@ int transit_handle(int index, int fd)
 		return 0;
 	}
 
+	dbg_msg(GGZ_DBG_TABLE, "Transit handled with result %d", status);
+	
 	/* Signal failure immediately */
 	if (status < 0) {
 		tables.info[index].transit_flag |= GGZ_TRANSIT_ERR;
