@@ -139,7 +139,7 @@ void net_connect(const char *host, int port, const char *name, const char *guest
 	ggzcore_server_add_event_hook(server, GGZ_LOGGED_IN, net_hook_login);
 	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST, net_hook_roomlist);
 
-	ggzcore_server_set_hostinfo(server, host, port/*, 0*/);
+	ggzcore_server_set_hostinfo(server, host, port, 0);
 	ggzcore_server_connect(server);
 }
 
