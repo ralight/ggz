@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 5400 2003-02-12 04:37:56Z jdorje $
+ * $Id: ggzdmod.h 5566 2003-05-11 09:11:27Z dr_maux $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -188,7 +188,7 @@
 #define GGZDMOD_VERSION_MAJOR 0
 #define GGZDMOD_VERSION_MINOR 0
 #define GGZDMOD_VERSION_MICRO 7
-#define GGZDMOD_VERSION_IFACE "1:0:0"
+#define GGZDMOD_VERSION_IFACE "2:0:0"
 
 #ifdef __cplusplus
 extern "C" {
@@ -476,7 +476,7 @@ GGZSpectator ggzdmod_get_spectator(GGZdMod * ggzdmod, int spectator);
  *  time an event is called, the event handler (there can be only one)
  *  for that event will be called.  This function registers such an
  *  event handler.
- *  @param mod The GGZdmod object.
+ *  @param ggzdmod The GGZdmod object.
  *  @param e The GGZdmod event.
  *  @param func The handler function being registered.
  *  @return 0 on success, negative on failure (bad parameters)

@@ -2,7 +2,7 @@ SUBDIRS = .
 
 INCLUDES = -I $(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)
 
-lib_LTLIBRARIES = libzoneserver.la
+noinst_LTLIBRARIES = libzoneserver.la
 
 libzoneserver_la_LIBADD = @LDADD@
 libzoneserver_la_LDFLAGS = -version-info 0:1:0

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5060 2002-10-27 06:26:31Z jdorje $
+# $Id: Makefile.am 5566 2003-05-11 09:11:27Z dr_maux $
 
 SUBDIRS = .
 
@@ -13,7 +13,7 @@ EXTRA_DIST = Doxyfile
 # This compiles for installation as a shared lib for external servers
 lib_LTLIBRARIES = libggzdmod.la
 
-libggzdmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 1:0:0
+libggzdmod_la_LDFLAGS = $(LIBGGZ_LDFLAGS) -version-info 2:0:0
 libggzdmod_la_LIBADD = @LDADD@ $(LIB_GGZ)
 libggzdmod_la_SOURCES = ggzdmod.h ggzdmod-ggz.h \
 			ggzdmod.c \
