@@ -1,7 +1,7 @@
 SUBDIRS = .
 
 gurudatadir = $(prefix)/share/grubby
-gurudata_SCRIPTS = dict.pl rdf.pl meeting.rb messages.rb
+gurudata_SCRIPTS = dict.pl rdf.pl meeting.rb messages.rb embedtest.rb
 
 guruconfigdir = $(prefix)/bin
 guruconfig_SCRIPTS = grubby-config
