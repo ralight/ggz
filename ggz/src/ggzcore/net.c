@@ -290,19 +290,21 @@ int _ggzcore_net_read_login_anon(const unsigned int fd, char *status)
 int _ggzcore_net_read_motd(const unsigned int fd, int *lines, char ***buffer)
 {
 	int i;
-	char **motd = *buffer;
+	char **motd;
 
 	/* FIXME: check for errors */
 	if (es_read_int(fd, lines) < 0)
 		return -1;
 
-	if (!(motd = calloc((*lines + 1), sizeof(char*))))
+	if (!(*buffer = calloc((*lines + 1), sizeof(char*))))
 		ggzcore_error_sys_exit("calloc() failed in net_read_motd");
 	
-	for (i = 0; i < *lines; i++)
+	motd = *buffer;
+	
+	for (i = 0; i < *lines; i++) {
 		if (es_read_string_alloc(fd, &motd[i]) < 0)
 			return -1;
-	
+	}
 	ggzcore_debug(GGZ_DBG_NET, "MSG_MOTD from server : %d lines", *lines);
 
 	return 0;

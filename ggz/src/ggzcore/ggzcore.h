@@ -185,7 +185,9 @@ typedef enum {
 
 
 typedef struct _GGZServer GGZServer;
-typedef struct _GGZRoom GGZRoom;
+typedef struct _GGZRoom   GGZRoom;
+typedef struct _GGZPlayer GGZPlayer;
+typedef struct _GGZTable  GGZTable;
 
 /* Function for allocating and initializing new GGZServer object */
 GGZServer* ggzcore_server_new(const char *host,
@@ -222,7 +224,7 @@ char*        ggzcore_server_get_password(GGZServer *server);
 int          ggzcore_server_get_fd(GGZServer *server);
 GGZStateID   ggzcore_server_get_state(GGZServer *server);
 GGZRoom*     ggzcore_server_get_cur_room(GGZServer *server);
-GGZRoom*     ggzcore_server_get_room(GGZServer *server, const unsigned int id);
+GGZRoom*     ggzcore_server_get_nth_room(GGZServer *server, const unsigned int id);
 int          ggzcore_server_get_num_rooms(GGZServer *server);
 char**       ggzcore_server_get_room_names(GGZServer *server);
 
@@ -275,14 +277,7 @@ int ggzcore_room_remove_event_hook_id(GGZRoom *room,
 				      const GGZRoomEvent event, 
 				      const unsigned int hook_id);
 
-/* Functions for querying a GGZRoom object for information */
-int    ggzcore_room_get_num(GGZRoom *room);
-char*  ggzcore_room_get_name(GGZRoom *room);
-char*  ggzcore_room_get_desc(GGZRoom *room);
-int    ggzcore_room_get_gametype(GGZRoom *room);
-int    ggzcore_room_get_num_players(GGZRoom *room);
-char** ggzcore_room_get_player_names(GGZRoom *room);
-
+/* Functions for performing actions on a room */
 void ggzcore_room_list_players(GGZRoom *room);
 void ggzcore_room_list_tables(GGZRoom *room, 
 			      const int type,
@@ -293,6 +288,22 @@ void ggzcore_room_chat(GGZRoom *room,
 		       const char *player,
 		       const char *msg);
 
+
+
+/* Functions for querying a GGZRoom object for information */
+int        ggzcore_room_get_num(GGZRoom *room);
+char*      ggzcore_room_get_name(GGZRoom *room);
+char*      ggzcore_room_get_desc(GGZRoom *room);
+int        ggzcore_room_get_gametype(GGZRoom *room);
+int        ggzcore_room_get_num_players(GGZRoom *room);
+char**     ggzcore_room_get_player_names(GGZRoom *room);
+GGZPlayer* ggzcore_room_get_nth_player(GGZRoom *room, const unsigned int num);
+int        ggzcore_room_get_num_tables(GGZRoom *room);
+GGZTable*  ggzcore_room_get_nth_table(GGZRoom *room, const unsigned int num);
+
+
+char*     ggzcore_player_get_name(GGZPlayer *player);
+GGZTable* ggzcore_player_get_table(GGZPlayer *player);
 
 typedef enum {
 	GGZ_SEAT_OPEN   = -1,

@@ -110,6 +110,12 @@ char*              _ggzcore_room_get_name(struct _GGZRoom *room);
 unsigned int       _ggzcore_room_get_game(struct _GGZRoom *room); 
 char*              _ggzcore_room_get_desc(struct _GGZRoom *room);
 unsigned int       _ggzcore_room_get_num_players(struct _GGZRoom *room);
+struct _GGZPlayer* _ggzcore_room_get_nth_player(struct _GGZRoom *room, 
+						const unsigned int num);
+
+unsigned int       _ggzcore_room_get_num_tables(struct _GGZRoom *room);
+struct _GGZTable*  _ggzcore_room_get_nth_table(struct _GGZRoom *room, 
+					       const unsigned int num);
 
 void _ggzcore_room_set_player_list(struct _GGZRoom *room,
 				   unsigned int count,

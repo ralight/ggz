@@ -317,7 +317,7 @@ GGZRoom* ggzcore_server_get_cur_room(GGZServer *server)
 }
 
 
-GGZRoom* ggzcore_server_get_room(GGZServer *server, const unsigned int id)
+GGZRoom* ggzcore_server_get_nth_room(GGZServer *server, const unsigned int id)
 {
 	struct _ggzcore_list_entry *entry;
 	struct _GGZRoom data;
@@ -491,7 +491,7 @@ void ggzcore_server_join_room(GGZServer *server, const int room)
 	status = _ggzcore_net_send_join_room(server->fd, room);
 	/* FIXME: handle errors */
 
-	server->new_room = ggzcore_server_get_room(server, room);
+	server->new_room = ggzcore_server_get_nth_room(server, room);
 	
 	_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_TRY);
 }
@@ -741,7 +741,7 @@ static void _ggzcore_server_handle_motd(GGZServer *server)
 
 	status = _ggzcore_net_read_motd(server->fd, &lines, &motd);
 	/* FIXME: handle errors */
-
+	
 	/* FIXME: store somewhere */
 	_ggzcore_server_event(server, GGZ_MOTD_LOADED, motd);
 }

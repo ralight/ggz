@@ -32,9 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* List of players in current room */
-static struct _ggzcore_list *player_list;
-static unsigned int num_players;
 
 /* Local functions for manipulating player list */
 #if 0
@@ -50,51 +47,21 @@ static void  _ggzcore_player_destroy(void* p);
 
 /* Publicly exported functions */
 
-unsigned int ggzcore_player_get_num(void)
+char* ggzcore_player_get_name(GGZPlayer *player)
 {
-	return num_players;
+	if (!player)
+		return NULL;
+
+	return _ggzcore_player_get_name(player);
 }
 
 
-char** ggzcore_player_get_names(void)
+GGZTable* ggzcore_player_get_table(GGZPlayer *player)
 {
-	int i = 0;
-	char **names = NULL;
-	struct _ggzcore_list_entry *cur;
-	struct _GGZPlayer *player;
+	if (!player)
+		return NULL;
 
-	if (num_players >= 0) {
-		if (!(names = calloc((num_players + 1), sizeof(char*))))
-			ggzcore_error_sys_exit("calloc() failed in player_get_names");
-		cur = _ggzcore_list_head(player_list);
-		while (cur) {
-			player = _ggzcore_list_get_data(cur);
-			names[i++] = player->name;
-			cur = _ggzcore_list_next(cur);
-		}
-	}
-				
-	return names;
-}
-
-
-int ggzcore_player_get_table(char *name)
-{
-	struct _ggzcore_list_entry *cur;
-	struct _GGZPlayer *player;
-
-	if (num_players >= 0) {
-		cur = _ggzcore_list_head(player_list);
-		while (cur) {
-			player = _ggzcore_list_get_data(cur);
-			if(!strcmp(player->name, name))
-				return player->table;
-			cur = _ggzcore_list_next(cur);
-		}
-	}
-
-	/* This *should* never happen */
-	return -2;
+	return _ggzcore_player_get_table(player);
 }
 
 
@@ -125,9 +92,9 @@ char* _ggzcore_player_get_name(struct _GGZPlayer *player)
 }
 
 
-int _ggzcore_player_get_table(struct _GGZPlayer *player)
+GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player)
 {
-	return player->table;
+	return NULL;
 }
 
 #if 0

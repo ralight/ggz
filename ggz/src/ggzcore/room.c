@@ -292,6 +292,34 @@ unsigned int _ggzcore_room_get_num_players(struct _GGZRoom *room)
 }
 
 
+struct _GGZPlayer* _ggzcore_room_get_nth_player(struct _GGZRoom *room, 
+						const unsigned int num)
+{
+	int i;
+	_ggzcore_list_entry *cur;
+	
+	cur = _ggzcore_list_head(room->players);
+	for (i = 0; i < num; i++)
+		cur = _ggzcore_list_next(cur);
+	
+	
+	return _ggzcore_list_get_data(cur);
+}
+
+
+unsigned int _ggzcore_room_get_num_tables(struct _GGZRoom *room)
+{
+	return room->num_tables;
+}
+
+
+struct _GGZTable* _ggzcore_room_get_nth_table(struct _GGZRoom *room, 
+					       const unsigned int num)
+{
+	return NULL;
+}
+
+
 void _ggzcore_room_set_player_list(struct _GGZRoom *room,
 				   unsigned int count,
 				   struct _ggzcore_list *list)
