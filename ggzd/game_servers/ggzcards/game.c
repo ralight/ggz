@@ -1482,6 +1482,27 @@ void game_end_trick(void)
 			break;
 	}
 
+
+	{
+		/* this sets up a "last trick" message */
+		int p_r;
+		char message[512];
+		int msg_len = 0;
+		card_t card;
+		for (p_r=0; p_r<game.num_players; p_r++) {
+			p = (game.leader + p_r) % game.num_players;
+			card = game.seats[ game.players[p].seat ].table;
+			msg_len += snprintf(message+msg_len, sizeof(message)-msg_len,
+					"%s - %s of %s\n",
+					ggz_seats[p].name,
+					face_names[(int)card.face],
+					suit_names[(int)card.suit]
+					/*, p == hi_player ? " (winner)" : "" */
+					);
+		}
+		set_global_message("Last Trick", message);
+	}
+
 	game.players[hi_player].tricks++;
 	game.leader = game.winner = hi_player;
 
