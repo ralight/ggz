@@ -20,23 +20,27 @@ The default installation uses the following directory structure:
 where (prefix) defaults to /usr/local
 
 You may want to fine-tune things just a bit.  We recommend using the
-setup that we use for our distributed RPM files:
+following setup:
 
-/etc/ggzd/            (configuration files)  
-/usr/bin/	      (main executable)      
-/usr/lib/ggzd/	      (game server modules)  
-/var/lib/games/ggzd/  (variable game data)
-/var/run/ggzd/        (temporary Unix-domain sockets)
+/etc/ggzd/           (configuration files)  
+/usr/bin/	     (main executable)      
+/usr/lib/ggzd/	     (game server modules)  
+/var/lib/games/ggzd/ (game data)
+/var/run/ggzd/       (temporary Unix-domain sockets)
 
 This set of directories can easily be chosen by running configure as:
 
-./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var/lib/games --with-tmpdir=/var/run/ggzd
+./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var/lib/games --with-tmpdir=/var/run
 
+For security, we recommended that you not run the ggz server as root
+but as a non-privileged user or a specific "games" user.  Note that if
+you use the directory layout given above you will need to make sure
+that the directories for game data and temporary sockets exist and are
+owned by the correct user.
 
 Since this is a developers release of the GGZ server, debugging is
 enabled by default.  To turn this off, you may pass the
 '--disable-debug' option to configure.  
-
 
 Once you have run 'configure' with the options setup the way you
 prefer, simply type 'make' to build the executable files.  Assuming
