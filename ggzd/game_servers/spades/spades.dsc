@@ -12,7 +12,6 @@ BotsAllowed = 2
 BotsAllowed = 3
 # Set AllowLeave to 1 if game supports players leaving during gameplay
 AllowLeave = 0
-OptionsSize = 12
 # ExecutablePath is figured relative to GameDir unless starting with /
 ExecutablePath = ggzd.spades
 # GameDisabled is a quick way to turn off the game if necessary

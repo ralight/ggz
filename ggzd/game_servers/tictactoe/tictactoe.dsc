@@ -10,7 +10,6 @@ PlayersAllowed = 2
 BotsAllowed = 1
 # Set AllowLeave to 1 if game supports players leaving during gameplay
 AllowLeave = 1
-OptionsSize = 0
 # ExecutablePath is figured relative to GameDir unless starting with /
 ExecutablePath = ggzd.tictactoe
 # GameDisabled is a quick way to turn off the game if necessary
