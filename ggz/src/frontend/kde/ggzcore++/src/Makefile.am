@@ -1,6 +1,6 @@
 SUBDIRS = .
 
-lib_LTLIBRARIES = libggzcorepp.la
+noinst_LTLIBRARIES = libggzcorepp.la
 
 libggzcorepp_la_SOURCES = \
 			GGZCore.cpp \
