@@ -1,9 +1,11 @@
 /*
- * File: info.h
+ * File: roominfo.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
+ * $Id: roominfo.h 5092 2002-10-28 23:26:35Z jdorje $
  *
- * This is the main program body for the GGZ client
+ * This dialog is used to display information about a selected room to
+ * the user. 
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -22,5 +24,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <ggzcore.h>
 
-void info_create_or_raise(GGZRoom *room);
+void room_info_create_or_raise(GGZRoom * room);

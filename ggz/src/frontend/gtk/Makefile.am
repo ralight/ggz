@@ -23,8 +23,6 @@ ggz_gtk_SOURCES =	main.c \
 			game.h \
 			ggzclient.c \
 			ggzclient.h \
-			info.c \
-			info.h \
 			launch.c \
 			launch.h \
 			license.c \
@@ -37,6 +35,8 @@ ggz_gtk_SOURCES =	main.c \
 			msgbox.h \
 			props.c \
 			props.h \
+			roominfo.c \
+			roominfo.h \
 			server.c \
 			server.h \
 			support.c \

@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5090 2002-10-28 22:10:58Z jdorje $
+ * $Id: client.c 5092 2002-10-28 23:26:35Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -45,7 +45,7 @@
 #include "chat.h"
 #include "game.h"
 #include "ggzclient.h"
-#include "info.h"
+#include "roominfo.h"
 #include "launch.h"
 #include "license.h"
 #include "login.h"
@@ -369,7 +369,8 @@ static void client_room_info_activate(GtkMenuItem *menuitem, gpointer data)
 {
 	/* Display room's info in a nice dialog */
 	int room_num = GPOINTER_TO_INT(data);
-	info_create_or_raise(ggzcore_server_get_nth_room(server, room_num));		
+	GGZRoom *room = ggzcore_server_get_nth_room(server, room_num);
+	room_info_create_or_raise(room);		
 }
 
 
