@@ -150,8 +150,7 @@ GGZServer* ggzcore_server_new(const char *host,
 		return NULL;
 		
 	/* Allocate and zero space for GGZServer object */
-	if (!(server = calloc(1, sizeof(GGZServer))))
-		ggzcore_error_sys_exit("malloc() failed in ggzcore_server_new");
+	server = ggzcore_malloc(sizeof(GGZServer));
 	
 	server->host = strdup(host);
 	server->port = port;
@@ -250,7 +249,7 @@ void ggzcore_server_free(GGZServer *server)
 	for (i = 0; i < GGZ_NUM_SERVER_EVENTS; i++)
 		_ggzcore_hook_list_destroy(server->event_hooks[i]);
 
-	free(server);
+	ggzcore_free(server);
 }
 
 
@@ -853,13 +852,6 @@ static void _ggzcore_server_handle_login_anon(GGZServer *server)
 		_ggzcore_server_event(server, GGZ_LOGIN_FAIL, "Name taken");
 		break;
 	}
-
-#if 0
-	/* FIXME: Add to its own function */
-	/* Get list of game types */
-	es_write_int(fd, REQ_LIST_TYPES);
-	es_write_char(fd, 1);
-#endif
 }
 
 
