@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 4457 2002-09-08 02:18:00Z jdorje $
+ * $Id: game.c 4829 2002-10-09 23:12:15Z jdorje $
  *
  * Functions for handling game events
  *
@@ -233,7 +233,7 @@ static void game_register(GGZGame *game)
 static GGZHookReturn game_launched(GGZGameEvent id, void* event_data, 
 				   void* user_data)
 {
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Launched game"));
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, _("Launched game"));
 	
 	fd = ggzcore_game_get_control_fd(game);
         game_handle = gdk_input_add_full(fd, GDK_INPUT_READ,
@@ -248,7 +248,7 @@ static GGZHookReturn game_launched(GGZGameEvent id, void* event_data,
 static GGZHookReturn game_launch_fail(GGZGameEvent id, void* event_data,
 				      void* user_data)
 {
-	chat_display_message(CHAT_LOCAL_HIGH, NULL, _("Launch failed"));
+	chat_display_local(CHAT_LOCAL_HIGH, NULL, _("Launch failed"));
 
 	return GGZ_HOOK_OK;
 }
@@ -288,7 +288,7 @@ static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_dat
 {
 	GGZRoom *room;
 
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Game Over"));
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, _("Game Over"));
 	game_quit();
 	
 	switch (ggzcore_server_get_state(server)) {

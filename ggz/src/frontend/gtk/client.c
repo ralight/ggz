@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 4505 2002-09-11 03:17:07Z jdorje $
+ * $Id: client.c 4829 2002-10-09 23:12:15Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1051,11 +1051,11 @@ client_realize                    (GtkWidget       *widget,
 
 	/* Print out client information */
 	buf = g_strdup_printf(_("Client Version:\00314 %s"), VERSION);
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, buf); 
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, buf); 
 	g_free(buf);
 	buf = g_strdup_printf(_("GTK+ Version:\00314 %d.%d.%d\n"),
 		gtk_major_version, gtk_minor_version, gtk_micro_version);
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, buf); 
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, buf); 
 	g_free(buf);
 
 	/* Make the player list rows a bit taller */
@@ -1063,7 +1063,8 @@ client_realize                    (GtkWidget       *widget,
 	gtk_clist_set_row_height(GTK_CLIST(tmp3), 25);
 
 #ifdef DEBUG
-	chat_display_message(CHAT_LOCAL_HIGH, NULL, _("Compiled with debugging."));
+	chat_display_local(CHAT_LOCAL_HIGH, NULL,
+			   _("Compiled with debugging."));
 #endif
 
 }

@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4499 2002-09-09 20:43:45Z uid40310 $
+ * $Id: ggzclient.c 4829 2002-10-09 23:12:15Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -74,10 +74,7 @@ static GGZHookReturn ggz_table_left(GGZServerEvent id, void* event_data, void* u
 static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* user_data);
 
-static GGZHookReturn ggz_chat_msg(GGZRoomEvent id, void* event_data, void* user_data);
-static GGZHookReturn ggz_chat_prvmsg(GGZRoomEvent id, void* event_data, void* user_data);
-static GGZHookReturn ggz_chat_beep(GGZRoomEvent id, void* event_data, void* user_data);
-static GGZHookReturn ggz_chat_announce(GGZRoomEvent id, void* event_data, void* user_data);
+static GGZHookReturn ggz_chat(GGZRoomEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_list_players(GGZRoomEvent id, void* event_data, void* user_data);
 
 static GGZHookReturn ggz_room_enter(GGZRoomEvent id, void* event_data, void* user_data);
@@ -261,10 +258,7 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 		name = ggzcore_room_get_name(room);
 		gtk_clist_insert(GTK_CLIST(tmp), i, &name);
 		/* Hookup the chat functions to the new room */
-		ggzcore_room_add_event_hook(room, GGZ_CHAT, ggz_chat_msg);
-		ggzcore_room_add_event_hook(room, GGZ_PRVMSG, ggz_chat_prvmsg);
-		ggzcore_room_add_event_hook(room, GGZ_BEEP, ggz_chat_beep);
-		ggzcore_room_add_event_hook(room, GGZ_ANNOUNCE, ggz_chat_announce);
+		ggzcore_room_add_event_hook(room, GGZ_CHAT_EVENT, ggz_chat);
 		ggzcore_room_add_event_hook(room, GGZ_PLAYER_LIST, ggz_list_players);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_LIST, ggz_list_tables);
 		ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, ggz_room_enter);
@@ -315,9 +309,10 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 
 	/* Display message in chat area */
 	message = g_strdup_printf(_("You've joined room \"%s\"."), ggzcore_room_get_name(ggzcore_server_get_cur_room(server)));
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, message);
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, message);
 	g_free(message);
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL,  ggzcore_room_get_desc(ggzcore_server_get_cur_room(server)));
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL,
+			   ggzcore_room_get_desc(ggzcore_server_get_cur_room(server)));
 
 	/* Check what the current game type is */
 	room = ggzcore_server_get_cur_room(server);
@@ -377,58 +372,16 @@ static GGZHookReturn ggz_logout(GGZServerEvent id, void* event_data, void* user_
 }
 
 
-static GGZHookReturn ggz_chat_msg(GGZRoomEvent id, void* event_data, void* user_data)
+static GGZHookReturn ggz_chat(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	gchar *player;
-	gchar *message;
+	GGZChatEventData *chat_data = event_data;
 
-	player = ((char**)(event_data))[0];
-	message = ((char**)(event_data))[1];
-
-	chat_display_message(CHAT_MSG, player, message);
+	chat_display_server(chat_data->type,
+			    chat_data->sender, chat_data->message);
 
 	return GGZ_HOOK_OK;
 }
 
-static GGZHookReturn ggz_chat_prvmsg(GGZRoomEvent id, void* event_data, void* user_data)
-{
-	gchar *message;
-	gchar *player;
-
-	player = ((char**)(event_data))[0];
-	message = ((char**)(event_data))[1];
-	chat_display_message(CHAT_PRVMSG, player, message);
-
-	return GGZ_HOOK_OK;
-}
-
-static GGZHookReturn ggz_chat_beep(GGZRoomEvent id, void* event_data, void* user_data)
-{
-	gchar *message;
-	gchar *player;
-
-	player = ((char**)(event_data))[0];
-	message = g_strdup_printf(_("You've been beeped by %s."), player);
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, message);
-	if( ggzcore_conf_read_int("CHAT", "SOUND", TRUE) )
-		gdk_beep();
-
-	g_free(message);
-
-	return GGZ_HOOK_OK;
-}
-
-static GGZHookReturn ggz_chat_announce(GGZRoomEvent id, void* event_data, void* user_data)
-{
-	gchar *message;
-	gchar *player;
-
-	player = ((char**)(event_data))[0];
-	message = ((char**)(event_data))[1];
-	chat_display_message(CHAT_ANNOUNCE, player, message);
-
-	return GGZ_HOOK_OK;
-}
 
 static GGZHookReturn ggz_list_players(GGZRoomEvent id, void* event_data, void* user_data)
 {
@@ -1025,6 +978,6 @@ void server_disconnect(void)
 	gdk_input_remove(server_handle);
 	server_handle = -1;
 
-	chat_display_message(CHAT_LOCAL_HIGH, NULL,
-			     _("Disconnected from server."));
+	chat_display_local(CHAT_LOCAL_HIGH, NULL,
+			   _("Disconnected from server."));
 }

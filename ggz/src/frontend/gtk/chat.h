@@ -25,20 +25,22 @@
 #ifndef _CHAT_
 #define _CHAT_
 
-#include "xtext.h"
-#include "ggzcore.h"
+#include <ggzcore.h>
 
+#include "xtext.h"
+
+/* Local chat types */
 typedef enum {
-	CHAT_MSG		= 0x0001,
-	CHAT_PRVMSG		= 0x0002,
-	CHAT_ANNOUNCE		= 0x0003,
-	CHAT_SEND_PRVMSG	= 0x0004,
-	CHAT_LOCAL_NORMAL	= 0x0005,
-	CHAT_LOCAL_HIGH		= 0x0006
-} CHATTypes;
+	CHAT_LOCAL_NORMAL,
+	CHAT_SEND_PERSONAL,
+	CHAT_LOCAL_HIGH
+} LocalChatType;
 
 void chat_init(void);
-void chat_display_message(CHATTypes id, char *player, char *message);
+void chat_display_server(GGZChatType type,
+			 const char *player, const char *message);
+void chat_display_local(LocalChatType type,
+			const char *player, const char *message);
 void chat_send(gchar *message);
 void chat_enter(gchar *player);
 void chat_part(gchar *player);
@@ -51,8 +53,8 @@ void chat_add_ignore(gchar *name, gint display);
 void chat_remove_ignore(gchar *name);
 void chat_save_lists(void);
 const gchar *chat_complete_name(gchar *name);
-gint chat_is_friend(gchar *name);
-gint chat_is_ignore(gchar *name);
+gint chat_is_friend(const gchar *name);
+gint chat_is_ignore(const gchar *name);
 void chat_lists_cleanup(void);
 
 #endif
