@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: ggz_server.h 2255 2001-08-25 23:53:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,51 +27,90 @@
 #ifndef __GGZ_SERVER_GGZ_H
 #define __GGZ_SERVER_GGZ_H
 
+/**
+ * @file ggz_server.h
+ * @brief The interface for the ggzdmod library used by game servers.
+ *
+ * This file contains all libggzdmod functions used by game servers to
+ * interface with GGZD.  Just include ggz_server.h and make sure your program
+ * is linked with libggzmod.  Then use the functions below as appropriate.
+ *
+ * GGZDmod currently provides an event-driven interface.  Data from GGZD
+ * is read in by the library, and a handler function (registered as a
+ * callback) is invoked to handle the event.  The game server should not
+ * read data from the GGZD socket unless it really knows what it is doing.
+ *
+ * That this does not apply to the client sockets: ggzdmod provides
+ * one file desriptor for communicating (TCP) to each client.  If data
+ * is ready to be read by one of these file descriptors ggzdmod may
+ * invoke the appropriate handler (see below), but will never actually
+ * read any data.
+ *
+ * @todo Example code.
+ *
+ * For more information, see the documentation at http://ggz.sf.net/.
+ */
+
+/** @brief The maximum length of a player name.
+ *  @note Does not include trailing \0.
+ *  @todo If ggzd_seats was encapsulated, this wouldn't be necessary.
+ */
 #define MAX_USER_NAME_LEN 16
 
-/** Seat assignment values */
-enum {
+/** @brief Seat assignment values.
+ *
+ *  Each seat at a game has a status taken from one of these.
+ */
+typedef enum {
 	GGZ_SEAT_OPEN	= -1, /**< The seat is open (unoccupied). */
 	GGZ_SEAT_BOT	= -2, /**< The seat has a bot (AI) in it. */
 	GGZ_SEAT_RESV	= -3, /**< The seat is reserved for a player. */
 	GGZ_SEAT_NONE	= -4, /**< This seat does not exist. */
 	GGZ_SEAT_PLAYER	= -5  /**< The seat has a regular player in it. */
-};
+} ggzd_assign_t;
 
-/** A GGZ seat; one spot at a table. */
+/** @brief A GGZ seat; one spot at a table.
+ *  @see ggzd_seats */
 struct ggzd_seat_t {
-	/** The seat assignment value */
-	int assign;
-	/** The name of the player at the seat */
-	char name[MAX_USER_NAME_LEN +1];
-	/** A file descriptor for communicating with that player */
-	int fd;
+	ggzd_assign_t assign;	/**< The seat assignment value */
+	char name[MAX_USER_NAME_LEN +1];/**< The name of the player at the seat */
+	int fd;			/**< A file descriptor for communicating
+				     with that player */
 };
 
-/** The array of seats at the table */
+/** @brief The array of seats at the table.
+ *
+ *  This is a pointer to an array of GGZ seats.  The size of the array can be
+ *  found with ggz_seats_num().
+ *  @note This array is allocated internally.  Do not change it.
+ *  @todo Should this be encapsulated? */
 extern struct ggzd_seat_t* ggzd_seats;
 
-/** Sends a debugging message to ggzd to be logged.
+/** @brief Sends a debugging message to ggzd to be logged.
  *  @param fmt a printf-style format string
  *  @param ... a printf-stype list of arguments
  *  @return 0 on success, -1 on failure */
 int ggzd_debug(const char *fmt, ...);
 
-int ggzd_seats_open(void);
+/** @return The total number of seats at the table. */
 int ggzd_seats_num(void);
+
+/** @return The number of open (unoccupied) seats at the table. */
+int ggzd_seats_open(void);
+
+/** @return The number of bot-occupied seats at the table. */
 int ggzd_seats_bot(void);
+
+/** @return The number of reserved seats at the table. */
 int ggzd_seats_reserved(void);
+
+/** @return The number of occupied player seats at the table. */
 int ggzd_seats_human(void);
 
+/** @return The highest file descriptor used by ggzd.
+ *  @todo Is this even necessary??? */
 int ggzd_fd_max(void);
 
-/*
- * libggzdmod currently allows for an event-driven interface:
- *  - In the new-style event-driven method ("chess's way"), the main
- *    GGZ loop is in ggzdmod.  Functions are registered by the game
- *    server to handle specific GGZ events.  All GGZ handling is done
- *    automatically by the GGZ loop.
- */
 
 typedef enum {
 	GGZ_EVENT_LAUNCH	= 0,  /**< a game launch event from ggzd */
@@ -82,24 +121,45 @@ typedef enum {
 	GGZ_EVENT_TICK		= 5   /**< a passed-time event */
 } ggzd_event_t;
 
-/* Set a handler for a specific event. */
+/** A handler function should correspond to this prototype. */
 typedef int (*GGZDHandler)(ggzd_event_t event_id, void *handler_data);
+
+/** Sets a handler for the specified event. */
 void ggzd_set_handler(ggzd_event_t event_id, const GGZDHandler handler);
 
-/* Setup functions */
+/** Connects to GGZD.
+ *  @return The GGZ file descriptor on success, -1 on failure
+ */
 int ggzd_connect(void);
+
+/** Disconnects from GGZD.
+ *  @return 0 on success, -1 on failure. */
 int ggzd_disconnect(void);
 
-/* this function should be called when there's GGZ data ready
- * to be read.  It calls the appropriate event handler. */
+/** This function may be called when there's GGZ data ready
+ *  to be read from GGZD.  It calls the appropriate event handler.
+ *  @return 0 normally, 1 on gameover, -1 on failure
+ *  @note This function only covers the GGZ socket, not player sockets.
+ *  @see ggzd_set_handler */
 int ggzd_dispatch(void);
 
-/* this function may not be a part of the final API */
+/** This function may be called to read data from GGZD.  It will
+ *  block until GGZ or player data is available, then dispatch the
+ *  appropriate handler.
+ *  @return 0 normally, 1 on gameover, -1 on failure
+ *  @see ggzd_set_handler
+ *  @note This function supercedes ggzd_dispatch.
+ *  @note This function will check for data on both GGZ and player sockets.
+ *  @note This function may not be a part of the final API */
 int ggzd_read_data(void);
 
-/* Open the ggz socket and wait for events,
- * calling handlers when necessary
- * Handles connect and disconnect also. */
+/** This should do all of the GGZ work necessary for most games.
+ *  It repeatedly takes data from GGZD and calls the appropriate
+ *  event handler.  It also connects to GGZD.
+ *  @return 0 on success, -1 on failure
+ *  @note This function will check for data on both GGZ and player sockets.
+ *  @note This function supercedes ggzd_read_data, ggzd_dispatch, ggzd_connect, and ggzd_disconnect.
+ */
 int ggzd_main(void);
 
 
