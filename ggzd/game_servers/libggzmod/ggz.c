@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2644 2001-11-04 01:45:17Z jdorje $
+ * $Id: ggz.c 2645 2001-11-04 01:57:23Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -40,7 +40,7 @@
 #include <easysock.h>
 
 #include "ggz_server.h"
-#include "../../ggzdmod/protocols.h"
+#include "../../ggzdmod/protocol.h"
 
 
 /* debug level for ggzd_debug() */
