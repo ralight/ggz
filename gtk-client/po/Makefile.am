@@ -1,10 +1,13 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 6375 2004-11-15 03:34:02Z jdorje $
+
 SUBDIRS = .
 
 XGETTEXT = xgettext
 MSGMERGE = msgmerge
 MSGFMT = msgfmt
 
-EXTRA_DIST = ggz-gtk.pot de.po es_AR.po pt_BR.po
+EXTRA_DIST = ggz-gtk.pot de.po es_AR.po pt_BR.po sv.po
 
 CATALOG = ggz-gtk
 
