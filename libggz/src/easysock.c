@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 5355 2003-02-04 00:53:21Z jdorje $
+ * $Id: easysock.c 5483 2003-03-29 20:36:50Z dr_maux $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -139,7 +139,7 @@ int ggz_make_socket(const GGZSockType type, const unsigned short port,
 			if (_err_func)
 				(*_err_func) ("Lookup failure", GGZ_IO_CREATE, 
 					      sock, GGZ_DATA_NONE);
-			return -1;
+			return -2;
 			break;
 		}
 		memcpy(&name.sin_addr, hp->h_addr, hp->h_length);

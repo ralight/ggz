@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 5345 2003-01-23 17:08:28Z dr_maux $
+ * $Id: ggz.h 5483 2003-03-29 20:36:50Z dr_maux $
  * 
  * Header file for ggz components lib
  *
@@ -1292,7 +1292,8 @@ typedef enum {
  *  @param type The type of socket (server or client).
  *  @param port The port to listen/connect to.
  *  @param server The server hostname, for client sockets.
- *  @return File descriptor on success, -1 on error.
+ *  @return File descriptor on success, -1 on creation error, -2 on lookup
+ *  error.
  */
 int ggz_make_socket(const GGZSockType type, 
 		    const unsigned short port, 
