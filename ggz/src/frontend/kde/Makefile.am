@@ -1,0 +1,5 @@
+SUBDIRS = @SUBDIRS@
+
+EXTRA_DIST = README COPYING Current.Status TODO ChangeLog
+
+AUTOMAKE_OPTIONS = foreign
