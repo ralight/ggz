@@ -6,6 +6,8 @@ Author = Josef Spillner
 Homepage = http://mindx.sourceforge.net
 # PlayersAllowed and BotsAllowed should be repeated as many times as
 # necessary to specify the valid distinct options which can appear
+PlayersAllowed = 2
+PlayersAllowed = 3
 PlayersAllowed = 4
 BotsAllowed = 0
 BotsAllowed = 1
