@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2640 2001-11-03 22:29:06Z bmh $
+ * $Id: ggzdmod.h 2651 2001-11-04 19:36:16Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -146,6 +146,7 @@ typedef void GGZdMod;
  *          int player, socket_fd;
  *          switch (event) {
  *            case GGZ_EVENT_STATE:
+ *              old_state = *(GGZdModState*)data; // data for this event
  *              // do something to handle a game launch (startup or quit)
  *              break;
  *            case GGZ_EVENT_JOIN:

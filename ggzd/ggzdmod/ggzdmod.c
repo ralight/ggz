@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2646 2001-11-04 03:28:03Z jdorje $
+ * $Id: ggzdmod.c 2651 2001-11-04 19:36:16Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -331,6 +331,7 @@ static void randomize_names(char **names, char **randnames, int num)
 
 static void set_state(_GGZdMod * ggzdmod, GGZdModState state)
 {
+	GGZdModState old_state = ggzdmod->state;
 	if (state == ggzdmod->state)
 		return;		/* Is this an error? */
 
@@ -339,7 +340,7 @@ static void set_state(_GGZdMod * ggzdmod, GGZdModState state)
 	ggzdmod->state = state;
 	if (ggzdmod->handlers[GGZ_EVENT_STATE])
 		(*ggzdmod->handlers[GGZ_EVENT_STATE]) (ggzdmod,
-						       GGZ_EVENT_STATE, NULL);
+						       GGZ_EVENT_STATE, &old_state);
 }
 
 /* Game-side event: launch event received from ggzd */
