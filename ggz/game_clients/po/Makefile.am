@@ -4,7 +4,7 @@ XGETTEXT = xgettext
 MSGMERGE = msgmerge
 MSGFMT = msgfmt
 
-MODULES = hastings tictactoe dots chess combat ggzcards reversi
+MODULES = hastings tictactoe dots chess combat ggzcards reversi chinese-checkers lapocha
 
 messages:
 	@for i in $(MODULES); do \
