@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5370 2003-02-04 09:10:09Z jdorje $
+dnl $Id: configure.ac 5385 2003-02-04 17:28:58Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -79,11 +79,11 @@ if test "x$MSGFMT" != "x"; then
 	enable_gettext="yes"
 
 	if test "x${prefix}" = "xNONE"; then
-		AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
+		AC_DEFINE_UNQUOTED([LOCALEDIR],
                                    "${ac_default_prefix}/share/locale",
                                    [The location to put message catalogs])
 	else
-		AC_DEFINE_UNQUOTED([PACKAGE_LOCALE_DIR],
+		AC_DEFINE_UNQUOTED([LOCALEDIR],
                                    "${prefix}/share/locale",
                                    [The location to put message catalogs])
 	fi
