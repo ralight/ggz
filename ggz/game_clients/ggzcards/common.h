@@ -1,4 +1,4 @@
-/* $Id: common.h 2073 2001-07-23 07:47:48Z jdorje $ */
+/* $Id: common.h 2075 2001-07-23 08:00:49Z jdorje $ */
 /*
  * File: common.h
  * Author: Jason Short
@@ -26,7 +26,9 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-/** A card */
+/** A card.
+ *  @todo Should the specific values be handled as enumerations?
+ */
 typedef struct card_t
 {
 #define UNKNOWN_FACE -1	/**< An unknown face on a card */
@@ -69,7 +71,6 @@ card_t;
 #define UNKNOWN_CARD (card_t){-1, -1, -1}
 
 
-
 struct hand_t
 {
 	int hand_size;		/**< the number of cards in the hand */
@@ -87,15 +88,16 @@ typedef struct seat_t
 }
 seat_t;
 
-/* GGZCards client game states */
+/** GGZCards client game states
+ *  @note Any additional state data should be stored separately, while maintaining the state here. */
 typedef enum
 {
-	WH_STATE_INIT,		/* game hasn't started yet */
-	WH_STATE_WAIT,		/* waiting for others */
-	WH_STATE_PLAY,		/* our turn to play */
-	WH_STATE_BID,		/* our turn to bid */
-	WH_STATE_DONE,		/* game's over */
-	WH_STATE_OPTIONS	/* determining options */
+	WH_STATE_INIT,		/**< game hasn't started yet */
+	WH_STATE_WAIT,		/**< waiting for others */
+	WH_STATE_PLAY,		/**< our turn to play */
+	WH_STATE_BID,		/**< our turn to bid */
+	WH_STATE_DONE,		/**< game's over */
+	WH_STATE_OPTIONS	/**< determining options */
 }
 client_state_t;
 
