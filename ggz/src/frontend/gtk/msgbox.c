@@ -2,7 +2,7 @@
  * File: msgbox.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: msgbox.c 6323 2004-11-11 04:02:23Z jdorje $
+ * $Id: msgbox.c 6389 2004-11-16 06:42:10Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -120,8 +120,6 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 	GtkWidget *buttonbox;
 	GtkWidget *hbox;
 	GtkWidget *icon;
-	GdkColormap *colormap;
-	GdkPixbuf *pixbuf;
 	GtkWidget *dialogwidget;
 	GtkWidget *btnok;
 	GtkWidget *btncancel;
@@ -142,33 +140,24 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MB
 
 	switch (itype) {
 	case MSGBOX_STOP:
-		colormap = gtk_widget_get_colormap (dialogwidget);
-		pixbuf = load_pixbuf("msg_stop");
-		if (pixbuf == NULL)
-			g_error ("Couldn't create replacement pixmap.");
-		icon = gtk_image_new_from_pixbuf(pixbuf);
+		icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_ERROR,
+						GTK_ICON_SIZE_DIALOG);
 		break;
 	case MSGBOX_INFO:
-		colormap = gtk_widget_get_colormap (dialogwidget);
-		pixbuf = load_pixbuf("msg_info");
-		if (pixbuf == NULL)
-			g_error ("Couldn't create replacement pixmap.");
-		icon = gtk_image_new_from_pixbuf(pixbuf);
+		icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_INFO,
+						GTK_ICON_SIZE_DIALOG);
 		break;
 	case MSGBOX_QUESTION:
-		colormap = gtk_widget_get_colormap (dialogwidget);
-		pixbuf = load_pixbuf("msg_help");
-		if (pixbuf == NULL)
-			g_error ("Couldn't create replacement pixmap.");
-		icon = gtk_image_new_from_pixbuf(pixbuf);
+		icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
+						GTK_ICON_SIZE_DIALOG);
 		break;
 	case MSGBOX_NONE:
-		icon = NULL;
+		icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_WARNING,
+						GTK_ICON_SIZE_DIALOG);
 		break;
 	}
 
 	if(icon) {
-		g_object_unref(pixbuf);
 		dialogwidget = AddWidget (icon, hbox);
 	}
 
