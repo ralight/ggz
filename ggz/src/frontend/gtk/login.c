@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 6326 2004-11-11 05:24:46Z jdorje $
+ * $Id: login.c 6425 2004-11-25 23:15:42Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -577,7 +577,7 @@ create_dlg_login (void)
   gtk_widget_show (profile_box);
   gtk_box_pack_start (GTK_BOX (top_box), profile_box, TRUE, TRUE, 0);
 
-  profile_label = gtk_label_new (_("Profile: "));
+  profile_label = gtk_label_new (_("Profile:"));
   gtk_widget_ref (profile_label);
   g_object_set_data_full(G_OBJECT (dlg_login), "profile_label", profile_label,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -623,7 +623,7 @@ create_dlg_login (void)
   gtk_widget_show (server_box);
   gtk_box_pack_start (GTK_BOX (top_box), server_box, TRUE, TRUE, 0);
 
-  server_label = gtk_label_new (_("Server: "));
+  server_label = gtk_label_new (_("Server:"));
   gtk_widget_ref (server_label);
   g_object_set_data_full(G_OBJECT (dlg_login), "server_label", server_label,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -640,7 +640,7 @@ create_dlg_login (void)
   gtk_box_pack_start (GTK_BOX (server_box), host_entry, FALSE, FALSE, 5);
   gtk_entry_set_text (GTK_ENTRY (host_entry), _("localhost"));
 
-  port_label = gtk_label_new (_("Port: "));
+  port_label = gtk_label_new (_("Port:"));
   gtk_widget_ref (port_label);
   g_object_set_data_full(G_OBJECT (dlg_login), "port_label", port_label,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -693,7 +693,7 @@ create_dlg_login (void)
   gtk_widget_show (username_box);
   gtk_box_pack_start (GTK_BOX (user_box), username_box, TRUE, TRUE, 0);
 
-  user_label = gtk_label_new (_("Username: "));
+  user_label = gtk_label_new (_("Username:"));
   gtk_widget_ref (user_label);
   g_object_set_data_full(G_OBJECT (dlg_login), "user_label", user_label,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -716,7 +716,7 @@ create_dlg_login (void)
   gtk_widget_show (password_box);
   gtk_box_pack_start (GTK_BOX (user_box), password_box, TRUE, TRUE, 0);
 
-  pass_label = gtk_label_new (_("Password: "));
+  pass_label = gtk_label_new (_("Password:"));
   gtk_widget_ref (pass_label);
   g_object_set_data_full(G_OBJECT (dlg_login), "pass_label", pass_label,
                             (GtkDestroyNotify) gtk_widget_unref);

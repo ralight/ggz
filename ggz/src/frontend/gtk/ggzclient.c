@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 6329 2004-11-11 16:29:38Z jdorje $
+ * $Id: ggzclient.c 6425 2004-11-25 23:15:42Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -419,7 +419,7 @@ static GGZHookReturn ggz_chat_fail(GGZRoomEvent id, void* event_data,
 		break;
 	case E_AT_TABLE:
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
-				   _("No private chatting at a table!."));
+				   _("No private chatting at a table!"));
 		break;
 	case E_USR_LOOKUP:
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
