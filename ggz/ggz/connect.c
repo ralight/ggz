@@ -46,9 +46,11 @@
 /* Global state of game variable */
 extern struct ConnectInfo connection;
 extern struct Game game;
+extern struct Users users;
 extern GtkWidget *detail_window;
 extern GtkWidget *main_win;
 extern int selected_table;
+extern GdkColor colors[];
 
 GtkWidget *detail_window = NULL;
 
@@ -131,6 +133,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	int num, op, size, checksum, count, i, j;
 	char buf[4096];
 	TableInfo tmp_table;
+	int color_index;
 
         if (FAIL(es_read_int(source, &op))) {
 	        disconnect(NULL, NULL);
@@ -267,12 +270,19 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_read_int(source, &count);
 		connect_msg("[%s] User List Count %d\n", opcode_str[op], count);
 		for (i = 0; i < count; i++) {
+			color_index++;
+			if ((color_index > 9) || (color_index<0))
+				color_index = 0;
 			es_read_string(source, name);
 			connect_msg("[%s] User %s\n", opcode_str[op], name);
 			es_read_int(source, &num);
 			connect_msg("[%s] Table %d\n", opcode_str[op], num);
 			add_user_list(name, num);
+			users.count++;
+			strcpy(users.info[i].name, name);
+			users.info[i].chat_color=color_index;
 		}
+		users.count=count;
 		break;
 
 	case RSP_GAME:
@@ -434,10 +444,28 @@ static void display_chat(char *name, char *msg)
 {
 	char *buf;
 	gpointer tmp;
+	GdkColormap *cmap;
+	int count, color_index;
+
+	/* Get color for user */
+	color_index=0;
+	for(count=0;count<=users.count-1;count++)
+	{
+		if(!strcmp(users.info[count].name, name))
+			color_index=users.info[count].chat_color;
+	}
+		
+	/* Get the system color map and allocate the color. */
+	cmap = gdk_colormap_get_system();
+	if (!gdk_color_alloc(cmap, &colors[color_index])) {
+		g_error("couldn't allocate color");
+	}
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
-	buf = g_strdup_printf("[ %s ] %s\n", name, msg);
-	/* FIXME: colors for different users */
+	buf = g_strdup_printf(" < %s >  ", name);
+	gtk_text_insert(GTK_TEXT(tmp), NULL, &colors[color_index], NULL, buf, -1);
+	g_free(buf);
+	buf = g_strdup_printf("%s\n", msg);
 	gtk_text_insert(GTK_TEXT(tmp), NULL, NULL, NULL, buf, -1);
 	g_free(buf);
 }

@@ -136,6 +136,7 @@ typedef struct {
 	char name[MAX_USER_NAME_LEN + 1];	/* Room for \0 */
 	int fd;
 	int table_index;
+	int chat_color;
 } UserInfo;
 
 
