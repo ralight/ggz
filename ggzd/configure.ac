@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6584 2005-01-02 13:25:20Z josef $
+dnl $Id: configure.ac 6588 2005-01-05 18:00:09Z josef $
 
 AC_INIT([GGZ server], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -299,6 +299,8 @@ AC_CONFIG_FILES([Makefile
 	game_servers/connectx/Makefile
 	game_servers/tuxman/Makefile
 	game_servers/tuxman/lib/Makefile
+	game_servers/widelands/Makefile
+	game_servers/widelands/lib/Makefile
 	man/Makefile
 	tests/Makefile
 ])
