@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3291 2002-02-10 03:52:33Z jdorje $
+ * $Id: table.c 3292 2002-02-10 03:54:38Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -354,8 +354,6 @@ static int table_start_game(GGZTable *table)
 	/* Build our argument list */
 	type = table->type;
 	pthread_rwlock_rdlock(&game_types[type].lock);
-	/* Why do we need a lock for accessing this read-only
-	   piece of memory?  --JDS */
 	args = game_types[type].exec_args;
 	pthread_rwlock_unlock(&game_types[type].lock);
 
@@ -619,9 +617,7 @@ static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 		pthread_rwlock_rdlock(&table->lock);
 		type = table->type;
 		pthread_rwlock_unlock(&table->lock);
-
-		/* Why is a lock needed for this access?  This data
-		   isn't changed after startup.  --JDS */		
+		
 		pthread_rwlock_rdlock(&game_types[type].lock);
 		game_name = ggz_strdup(game_types[type].name);
 		pthread_rwlock_unlock(&game_types[type].lock);
