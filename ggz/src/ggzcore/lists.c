@@ -61,6 +61,7 @@ _ggzcore_list * _ggzcore_list_create(_ggzcoreEntryCompare compare_func,
 	new->create_func = create_func;
 	new->destroy_func = destroy_func;
 	new->options = options;
+	new->entries = 0;
 
 	return new;
 }
@@ -216,12 +217,15 @@ int _ggzcore_list_insert(_ggzcore_list *list, void *data)
 			list->head = new;
 	}
 
+	list->entries++;
+
 	return rc;
 }
 
 
 /* _ggzcore_list_head/tail/next/prev()
  * _ggzcore_list_get_data()
+ * _ggzcore_list_count()
  *	These functions simply return a pointer from a list or entry
  *	They aren't strictly necessary, but should make the user code
  *	a bit easier to read and maintain.
@@ -269,6 +273,12 @@ void * _ggzcore_list_get_data(_ggzcore_list_entry *entry)
 		return NULL;
 	}
 	return entry->data;
+}
+
+
+int _ggzcore_list_count(_ggzcore_list *list)
+{
+	return list->entries;
 }
 
 
@@ -385,6 +395,8 @@ void _ggzcore_list_delete_entry(_ggzcore_list *list, _ggzcore_list_entry *entry)
 		(*list->destroy_func) (entry->data);
 
 	ggzcore_free(entry);
+
+	list->entries--;
 }
 
 

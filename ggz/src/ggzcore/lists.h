@@ -58,6 +58,7 @@ typedef struct _ggzcore_list {
 	_ggzcoreEntryCreate		create_func;
 	_ggzcoreEntryDestroy		destroy_func;
 	int				options;
+	int				entries;
 } _ggzcore_list;
 
 
@@ -115,5 +116,8 @@ _ggzcore_list_delete_entry	(_ggzcore_list *list,
 
 void
 _ggzcore_list_destroy		(_ggzcore_list *list);
+
+int
+_ggzcore_list_count		(_ggzcore_list *list);
 
 #endif /* __LISTS_H__ */
