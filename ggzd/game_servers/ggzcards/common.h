@@ -195,7 +195,7 @@ extern int handle_join_event(player_t);
 extern int handle_leave_event();
 extern int handle_newgame_event(player_t);
 extern int handle_play_event(int);
-extern int handle_bid_event(int);
+extern int handle_bid_event(bid_t);
 
 extern void init_game(int which); /* pass in the name of the game */
 extern int handle_ggz(int, int *);

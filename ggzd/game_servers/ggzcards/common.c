@@ -798,7 +798,7 @@ int handle_player(player_t p)
 			break;
 		case WH_RSP_BID:
 			if((status = rec_bid(p, &index)) == 0)
-				handle_bid_event(index);
+				handle_bid_event(game.bid_choices[index]);
 			break;
 		case WH_RSP_PLAY:
 			status = rec_play(p, &index);
@@ -1141,10 +1141,9 @@ int handle_play_event(int card_index)
 /* handle_bid_event
  *   this handles the event of someone making a bid
  */
-int handle_bid_event(int bid_index)
+int handle_bid_event(bid_t bid)
 {
-	player_t p;
-	bid_t bid;
+	player_t p = game.next_bid;
 	int was_waiting = 0;
 
 	ggz_debug("Handling a bid event.");
@@ -1157,12 +1156,10 @@ int handle_bid_event(int bid_index)
 	}
 
 	/* determine the bid */
-	p = game.next_bid;
-	bid = game.bid_choices[bid_index];
 	game.players[p].bid = bid;
 
 	/* handle the bid */
-	game_handle_bid(bid_index);
+	game_handle_bid(bid);
 
 	/* set up next move */
 	game.bid_count++;

@@ -639,10 +639,10 @@ int game_get_bid()
 				/* handled just like a bid */
 				if(game.hand_size != 10) {
 					bid.bid = (long)cards_deal_card().suit;
-					handle_bid_event((int) bid.bid); /* TODO: MUST FIX */
+					handle_bid_event(bid); /* TODO: Does this work? */
 				} else
 					status = req_bid(game.dealer, 4, suit_names);
-			} else { /* get a player's numberical bid */
+			} else { /* get a player's numerical bid */
 				int i, num=0;
 				for (i = 0; i <= game.hand_size; i++) {
 					/* the dealer can't make the sum of the bids equal the hand size;
@@ -755,14 +755,10 @@ int game_get_bid()
  *   will already have been set automatically; all we need to do is any additional
  *   game-specific stuff.
  */
-int game_handle_bid(int bid_index)
+int game_handle_bid(bid_t bid)
 {
-	bid_t bid;
-	bid.bid = -1;
-
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
-			bid = game.bid_choices[bid_index];
 			if ( bid.sbid.spec == EUCHRE_TAKE ) {
 				EUCHRE.maker = game.next_bid;
 				game.trump = EUCHRE.up_card.suit;
@@ -774,8 +770,6 @@ int game_handle_bid(int bid_index)
 			break;
 		case GGZ_GAME_BRIDGE:
 			/* closely based on the Suaro code, below */
-			bid = game.bid_choices[bid_index];
-
 			ggz_debug("The bid chosen is %d %s %d.", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit], bid.sbid.spec);
 			
 			if (bid.sbid.spec == BRIDGE_PASS) {
@@ -797,8 +791,6 @@ int game_handle_bid(int bid_index)
 			}
 			break;
 		case GGZ_GAME_SUARO:
-			bid = game.bid_choices[bid_index];
-
 			if (bid.sbid.spec == SUARO_PASS) {
 				SUARO.pass_count++;
 			} else if (bid.sbid.spec == SUARO_DOUBLE ||
@@ -823,13 +815,10 @@ int game_handle_bid(int bid_index)
 			break; /* no special handling necessary */
 		case GGZ_GAME_LAPOCHA:
 			if (game.bid_count == 0) {
-				game.trump = bid_index;
-
+				game.trump = bid.bid;
 				set_global_message("", "Trump is %s.", suit_names[(int)game.trump % 4]);
-			} else {
-				bid = game.bid_choices[bid_index];
+			} else
 				LAPOCHA.bid_sum += bid.bid;
-			}
 			break;	
 		default:
 			ggz_debug("SERVER Not Implemented: game_handle_bid.");

@@ -157,7 +157,7 @@ extern void game_set_player_message(player_t); /* determine and send the player 
 extern int game_get_bid_text(char*, int, bid_t);/* determines the textual string for the bid */
 extern void game_start_bidding();		/* updates data for the first bid */
 extern int game_get_bid();			/* gets a bid from next player */
-extern int game_handle_bid(int);		/* handles a bid from current bidder */
+extern int game_handle_bid(bid_t);		/* handles a bid from current bidder */
 extern void game_next_bid();			/* updates data for the next bid */
 
 /* playing */
