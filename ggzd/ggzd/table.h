@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 4590 2002-09-16 22:46:10Z jdorje $
+ * $Id: table.h 4946 2002-10-18 20:49:12Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -59,16 +59,6 @@ struct GGZTable {
 	/* State of game: One of GGZ_TABLE_XXXX */
 	GGZTableState state;
 
-	/* Transit status flag */
-	char transit;
-
-	/* 
-	 * Variables to hold player name and data during transit to
-	 * and from table 
-	 */
-	char* transit_name;
-	int transit_seat;
-
 	/* Data for communicating with game server module */
 	GGZdMod *ggzdmod;
 
@@ -119,6 +109,22 @@ GGZClientReqError table_launch(struct GGZTable *table, char* name);
 
 /* Change table description of running table */
 void table_set_desc(struct GGZTable *table, char *desc);
+
+/* Call to have a player join the table.  Only the table thread can call
+   this function. */
+void table_game_join(GGZTable *table, char *name, int num);
+
+/* Call to have a player join the table.  Only the table thread can call
+   this function. */
+void table_game_leave(GGZTable *table, char *name, int num);
+
+/* Call to have a player join the table as spectator.  Only the table
+   thread can call this function. */
+void table_game_spectator_join(GGZTable *table, char *name, int num);
+
+/* Call to have a player leave the table as a spectator.  Only the table
+   thread can call this function. */
+void table_game_spectator_leave(GGZTable *table, char *name, int num);
 
 /* Kill the table */
 GGZClientReqError table_kill(int room, int index, char *name);

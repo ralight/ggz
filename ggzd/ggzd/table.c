@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4705 2002-09-25 21:46:41Z jdorje $
+ * $Id: table.c 4946 2002-10-18 20:49:12Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -96,11 +96,6 @@ static void  table_remove(GGZTable* table);
 
 /* Handlers for ggzdmod events */
 static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data);
-static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
-static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
-static void table_game_seatchange(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
-static void table_game_spectator_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
-static void table_game_spectator_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 
@@ -151,9 +146,6 @@ GGZTable* table_new(void)
 	table->room = -1;
 	table->index = -1;
 	table->state = GGZ_TABLE_CREATED;
-	table->transit = 0;
-	table->transit_name = NULL;
-	table->transit_seat = -1;
 	table->ggzdmod = NULL;
 
 #ifdef UNLIMITED_SEATS
@@ -216,9 +208,6 @@ static GGZTable *table_copy(GGZTable *table)
 #endif
 
 	/* Some elements just shouldn't be copied. */
-	new_table->transit = 0;
-	new_table->transit_name = NULL;
-	new_table->transit_seat = -1;
 	new_table->ggzdmod = NULL;
 	new_table->events_head = NULL;
 	new_table->events_tail = NULL;
@@ -474,11 +463,6 @@ static GGZReturn table_start_game(GGZTable *table)
 
 	/* Setup handlers for game module events */
         ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_STATE, &table_handle_state);
-        ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_JOIN, &table_game_join);
-        ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LEAVE, &table_game_leave);
-        ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_SEAT, &table_game_seatchange);
-        ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, &table_game_spectator_join);
-        ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, &table_game_spectator_leave);
         ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LOG, &table_log);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_ERROR, &table_error);
 	
@@ -557,298 +541,151 @@ static void table_loop(GGZTable* table)
  * table_game_join handles the RSP_GAME_JOIN from the table
  * Note: table->transit_name contains allocated mem on entry
  */
-static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
+void table_game_join(GGZTable *table, char *name, int num)
 {
-	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
-	char* name;
-	int seat_num;
-	GGZReturn msg_status;
-	struct GGZTableSeat seat;
-
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to join", 
 		table->index, table->room);
 
-	/* Error: we didn't request a join! */
-	if (!table->transit)
-		return;
-
-	/* Read saved transit data */
-	name = table->transit_name;
-	seat_num = table->transit_seat;
-
-	/* Notify player of transit status */
-	msg_status = transit_player_event(name, GGZ_TRANSIT_JOIN, 0, 
-					  table->index);
-	/* FIXME: we still need to handle the case where the join fails */
-
 	/* Transit successful: Assign seat */
 	pthread_rwlock_wrlock(&table->lock);
-	table->seat_types[seat_num] = GGZ_SEAT_PLAYER;
-	strcpy(table->seat_names[seat_num], name);
+	table->seat_types[num] = GGZ_SEAT_PLAYER;
+	strcpy(table->seat_names[num], name);
 	pthread_rwlock_unlock(&table->lock);
-	
-	/* If player notification failed, they must've logged out */
-	if (msg_status != GGZ_OK) {
-		dbg_msg(GGZ_DBG_TABLE, "%s logged out during join",
-			name);
-		
-		seat.index = seat_num;
-		seat.type = GGZ_SEAT_OPEN;
-		seat.name[0] = '\0';
-		seat.fd = -1;
-		
-		transit_seat_event(table->room, table->index, seat, name);
 
-	} else {
-		table_update_event_enqueue(table, GGZ_UPDATE_JOIN, 
-					   name, seat_num);
-		dbg_msg(GGZ_DBG_TABLE, 
-			"%s in seat %d at table %d of room %d",
-			name, seat_num, table->index, table->room);
+	if (transit_player_event(name, GGZ_TRANSIT_JOIN,
+				 0,  table->index) != GGZ_OK) {
+		/* If player notification failed, they must've logged out.
+		   We have to get them out of the table, but since they've
+		   already joined we have to do this the long way. */
+		struct GGZTableSeat seat = {index: num,
+					    type: GGZ_SEAT_OPEN,
+					    name: "",
+					    fd: -1};
+
+		dbg_msg(GGZ_DBG_TABLE, "%s logged out during join", name);
+		transit_seat_event(table->room, table->index, seat, name);
+		return;
 	}
-	
-	/* Clear table for next transit */
-	pthread_rwlock_wrlock(&table->lock);
-	table->transit = 0;
-	ggz_free(table->transit_name);
-	table->transit_name = NULL;
-	pthread_rwlock_unlock(&table->lock);
+
+	/* Notify everyone in the room about the change. */
+	table_update_event_enqueue(table, GGZ_UPDATE_JOIN, 
+				   name, num);
+	dbg_msg(GGZ_DBG_TABLE, 
+		"%s in seat %d at table %d of room %d",
+		name, num,
+		table->index, table->room);
 }
 
 
 /*
  * table_game_leave handles the RSP_GAME_LEAVE from the table
  */
-static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
+void table_game_leave(GGZTable *table, char *name, int num)
 {
-	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
-	char empty = 0;
-	GGZClientReqError status;
-	char *name;
-	int seat;
-
-	status = (*(char*)data == 0) ? E_OK : E_SEAT_ASSIGN_FAIL;
+	char empty;
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to leave", 
 		table->index, table->room);
 
-	/* Error: we didn't request a leave! */
-	if (!table->transit)
-		return ;
+	/* Vacate seat */
+	dbg_msg(GGZ_DBG_TABLE, 
+		"%s left seat %d at table %d of room %d",
+		name, num,
+		table->index, table->room);
+		
+	pthread_rwlock_wrlock(&table->lock);
+	table->seat_types[num] = GGZ_SEAT_OPEN;
+	empty = (seats_count(table, GGZ_SEAT_PLAYER) == 0);
+	pthread_rwlock_unlock(&table->lock);
 
-	/* Read in saved transit data */
-	name = table->transit_name;
-	seat = table->transit_seat;
-
-	if (status == E_OK) {
-		/* Vacate seat */
-		dbg_msg(GGZ_DBG_TABLE, 
-			"%s left seat %d at table %d of room %d", name, seat,
+	if (empty)
+		dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now empty",
 			table->index, table->room);
-		
-		pthread_rwlock_wrlock(&table->lock);
-		table->seat_types[seat] = GGZ_SEAT_OPEN;
-		
-		if (!seats_count(table, GGZ_SEAT_PLAYER)) {
-			dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d now empty",
-				table->index, table->room);
-			empty = 1;
-		}
-		pthread_rwlock_unlock(&table->lock);
-		table_update_event_enqueue(table, GGZ_UPDATE_LEAVE, name, 
-					    seat);
-	}
 
-	/* Notify player and mark transit as done */
-	transit_player_event(name, GGZ_TRANSIT_LEAVE, status, 0);
+	/* Notify player.  We don't care if this fails; that just means
+	   the player logged out in the meantime. */
+	transit_player_event(name, GGZ_TRANSIT_LEAVE, E_OK, 0);
 
-	/* Free strdup'd player name */
-	ggz_free(table->transit_name);
-
-	table->transit = 0;
-	table->transit_name = NULL;
-	table->transit_seat = -1;
+	/* Notify everyone in the room about the change. */
+	table_update_event_enqueue(table, GGZ_UPDATE_LEAVE,
+				   name, num);
 
 	/* If the game has set the KillWhenEmpty option, we kill it
 	   when the last player leaves.  If not, we rely on the game
 	   to halt itself. */
 	if (empty && game_types[table->type].kill_when_empty)
-		(void)ggzdmod_disconnect(ggzdmod);
+		(void)ggzdmod_disconnect(table->ggzdmod);
 }
 
-
-/*
- * table_game_seatchange handles the RSP_GAME_SEAT from the table
- * Note: table->transit_name contains allocated mem on entry
- */
-static void table_game_seatchange(GGZdMod *ggzdmod,
-				  GGZdModEvent event, void *data)
-{
-	GGZSeat seat;
-	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
-	char* caller;
-	int seat_num;
-	GGZReturn msg_status;
-
-	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to seat change", 
-		table->index, table->room);
-
-	/* Error: we didn't request a seat change! */
-	if (!table->transit)
-		return;
-	
-	/* Read saved transit data */
-	caller = table->transit_name;
-	seat_num = table->transit_seat;
-
-	/* Notify player of transit status */
-	msg_status = transit_player_event(caller, GGZ_TRANSIT_SEAT, 0, 
-					  table->index);
-
-	/* Get new seat info */
-	seat = ggzdmod_get_seat(ggzdmod, seat_num);
-
-	/* Write new seat data to table */
-	pthread_rwlock_wrlock(&table->lock);
-	table->seat_types[seat_num] = seat.type;
-	strcpy(table->seat_names[seat_num], seat.name);
-	pthread_rwlock_unlock(&table->lock);
-	
-	/* If player notification failed, they must've logged out */
-	if (msg_status != GGZ_OK) {
-		dbg_msg(GGZ_DBG_TABLE, "%s logged out during update", caller);
-		
-#if 0 /* FIXME: if this was a join, force a leave */
-		transit_table_event(table->room, table->index, 
-				    GGZ_TRANSIT_LEAVE, name);
-#endif
-	}
-	
-	table_seat_event_enqueue(table, GGZ_UPDATE_SEAT, seat_num);
-				   
-	dbg_msg(GGZ_DBG_TABLE, 
-		"Seat %d of table %d in room %d now %s with name %s", 
-		seat.num, table->index, table->room, 
-		ggz_seattype_to_string(seat.type), seat.name);
-	
-	/* Clear table for next transit */
-	pthread_rwlock_wrlock(&table->lock);
-	table->transit = 0;
-	ggz_free(table->transit_name);
-	table->transit_name = NULL;
-	pthread_rwlock_unlock(&table->lock);
-}
 
 /*
  * table_game_spectator_join handles the RSP_GAME_JOIN_SPECTATOR from the table
  * Note: table->transit_name contains allocated mem on entry
  */
-static void table_game_spectator_join(GGZdMod *ggzdmod,
-				      GGZdModEvent event, void *data)
+void table_game_spectator_join(GGZTable *table, char *name, int num)
 {
-	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
-	char* name;
-	int spectator_num;
-	GGZReturn msg_status;
-	struct GGZTableSpectator spectator;
-
-	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to spectator join", 
+	dbg_msg(GGZ_DBG_TABLE,
+		"Table %d in room %d responded to spectator join", 
 		table->index, table->room);
-
-	/* Error: we didn't request a join! */
-	if (!table->transit)
-		return;
-
-	/* Read saved transit data */
-	name = table->transit_name;
-	spectator_num = table->transit_seat;
-
-	/* Notify player of transit status */
-	msg_status = transit_player_event(name, GGZ_TRANSIT_JOIN_SPECTATOR, 0,
-					  table->index);
-	/* FIXME: we still need to handle the case where the join fails */
 
 	/* Transit successful: Assign seat */
 	pthread_rwlock_wrlock(&table->lock);
-	strcpy(table->spectators[spectator_num], name);
+	strcpy(table->spectators[num], name);
 	pthread_rwlock_unlock(&table->lock);
-	
-	/* If player notification failed, they must've logged out */
-	if (msg_status != GGZ_OK) {
+
+	if (transit_player_event(name, GGZ_TRANSIT_JOIN_SPECTATOR,
+				 E_OK, table->index) != GGZ_OK) {
+		/* If player notification failed, they must've logged out.
+		   We have to get them out of the table, but since they've
+		   already joined we have to do this the long way. */
+		struct GGZTableSpectator spectator = {index: num,
+						      name: "",
+						      fd: -1};
+
 		dbg_msg(GGZ_DBG_TABLE, "%s logged out during spectator join",
 			name);
-		
-		spectator.index = spectator_num;
-		spectator.name[0] = '\0';
-		spectator.fd = -1;
-		
-		transit_spectator_event(table->room, table->index, spectator, name);
 
-	} else {
-		table_update_event_enqueue(table, GGZ_UPDATE_SPECTATOR_JOIN,
-					   name, spectator_num);
-		dbg_msg(GGZ_DBG_TABLE, 
-			"%s in spectator %d at table %d of room %d",
-			name, spectator_num, table->index, table->room);
+		transit_spectator_event(table->room, table->index,
+					spectator, name);
+		return;
 	}
-	
-	/* Clear table for next transit */
-	pthread_rwlock_wrlock(&table->lock);
-	table->transit = 0;
-	ggz_free(table->transit_name);
-	table->transit_name = NULL;
-	pthread_rwlock_unlock(&table->lock);
+
+	/* Notify everyone in the room about the change. */
+	table_update_event_enqueue(table, GGZ_UPDATE_SPECTATOR_JOIN,
+				   name, num);
+	dbg_msg(GGZ_DBG_TABLE, 
+		"%s in spectator %d at table %d of room %d",
+		name, num, table->index, table->room);
 }
 
 
 /*
  * table_game_leave handles the RSP_GAME_LEAVE_SPECTATOR from the table
  */
-static void table_game_spectator_leave(GGZdMod *ggzdmod,
-				       GGZdModEvent event, void *data)
+void table_game_spectator_leave(GGZTable *table, char *name, int num)
 {
-	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
-	char* name;
-	GGZClientReqError status;
-	int spectator;
-
-	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to spectator leave", 
+	dbg_msg(GGZ_DBG_TABLE,
+		"Table %d in room %d responded to spectator leave", 
 		table->index, table->room);
 
-	if(data) status = (*(char*)data == 0 ? E_OK : E_SEAT_ASSIGN_FAIL);
-	else status = E_OK;
+	/* Vacate seat */
+	dbg_msg(GGZ_DBG_TABLE, 
+		"%s left spectator %d at table %d of room %d",
+		name, num,
+		table->index, table->room);
 
-	/* Error: we didn't request a leave! */
-	if (!table->transit)
-		return ;
+	pthread_rwlock_wrlock(&table->lock);
+	table->spectators[num][0] = '\0';
+	pthread_rwlock_unlock(&table->lock);
 
-	/* Read in saved transit data */
-	name = table->transit_name;
-	spectator = table->transit_seat;
-	
-	if (status == 0) {
-		/* Vacate seat */
-		dbg_msg(GGZ_DBG_TABLE, 
-			"%s left spectator %d at table %d of room %d", name, spectator,
-			table->index, table->room);
+	/* Notify player.  We don't care if this fails; that just means
+	   the player logged out in the meantime. */
+	transit_player_event(name, GGZ_TRANSIT_LEAVE_SPECTATOR,
+			     E_OK, table->index);
 
-		pthread_rwlock_wrlock(&table->lock);
-		table->spectators[spectator][0] = '\0';
-		pthread_rwlock_unlock(&table->lock);
-		
-		table_update_event_enqueue(table, GGZ_UPDATE_SPECTATOR_LEAVE, name,
-					    spectator);
-	}
-
-	/* Notify player and mark transit as done */
-	transit_player_event(name, GGZ_TRANSIT_LEAVE_SPECTATOR, status, 0);
-
-	/* Free strdup'd player name */
-	ggz_free(table->transit_name);
-
-	table->transit = 0;
-	table->transit_name = NULL;
-	table->transit_seat = -1;
+	/* Notify everyone in the room about the change. */
+	table_update_event_enqueue(table, GGZ_UPDATE_SPECTATOR_LEAVE,
+				   name, num);
 }
 
 
@@ -1425,13 +1262,6 @@ static GGZReturn table_launch_event(char* name,
 /* Free dynamically allocated memory associated with a table*/
 void table_free(GGZTable* table)
 {
-	if (table->transit_name) {
-		err_msg("table_free: transit still active for %s "
-			"at table %d in room %d.",
-			table->transit_name, table->index, table->room);
-		ggz_free(table->transit_name);
-	}
-
 #ifdef UNLIMITED_SEATS
 	if (table->num_seats > 0) {
 		ggz_free(table->seat_types);
