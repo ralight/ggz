@@ -108,10 +108,12 @@ void login_set_login (GtkWidget *login)
 	} else {
 		for (x = 0; x < intProfiles; x++)
 		{
-			gtk_list_store_append (stoProfiles, &iter);
-			gtk_list_store_set (stoProfiles, &iter,
-					0, g_slist_nth_data (slProfiles, x), 
-					-1);
+			gtk_list_store_append (GTK_LIST_STORE(stoProfiles),
+					       &iter);
+			gtk_list_store_set (GTK_LIST_STORE(stoProfiles),
+					    &iter, 0,
+					    g_slist_nth_data (slProfiles, x), 
+					    -1);
 		}
 	}
 	
