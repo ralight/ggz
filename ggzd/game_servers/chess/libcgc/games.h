@@ -29,10 +29,12 @@ struct game {
 	char lastmove[5];
 };
 
+#ifndef ASSERT
 #ifndef STABLE
 #define ASSERT(a) assert(a)
 #else
 #define ASSERT(a) while(0)
+#endif
 #endif
 
 /* games.c */

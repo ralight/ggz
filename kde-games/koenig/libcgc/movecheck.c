@@ -23,8 +23,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: movecheck.c 2087 2001-07-29 09:17:16Z dr_maux $
+ *  $Id: movecheck.c 4671 2002-09-23 16:45:01Z jdorje $
  */
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -72,7 +76,7 @@ cgc_valid_move(struct game *curgame, int fs, int rs, int fd, int rd, int promote
 		{ QUEEN, valid_queen },
 		{ KING, valid_king },
 		{ PAWN, valid_pawn },
-		{ NULL, NULL }
+		{ 0, NULL }
 	}; 
 
 	struct pinfo *cptr;

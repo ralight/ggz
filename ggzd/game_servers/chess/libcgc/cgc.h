@@ -1,6 +1,10 @@
 #ifndef CGC_CGC_H
 #define CGC_CGC_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct game game_t;
 typedef struct move move_t;
 
@@ -54,5 +58,9 @@ int cgc_join_game(game_t *game, int color);
 int cgc_make_move(game_t *game, char *move);
 int cgc_has_sufficient(game_t *game, int color);
 void cgc_free_game(game_t *game);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
