@@ -102,6 +102,8 @@ dnl AC_FUNC_MALLOC
 dnl AC_FUNC_STAT
 AC_CHECK_FUNCS([memset mkdir strdup strerror malloc stat poll])
 
+AC_REPLACE_FUNCS([strsep])
+
 AC_CHECK_FUNC(socket, ,
     AC_CHECK_LIB(socket, socket,
 	AC_CHECK_HEADER(sys/socket.h, LDADD="-lsocket",
@@ -145,8 +147,11 @@ if test "$enable_debug_socket" = yes; then
     DFLAGS="$DFLAGS DEBUG_SOCKET"
 fi
 
-
+LTLIBOBJS=`echo $LIBOBJS | sed 's/\.o/\.lo/g'`
 AC_SUBST(LDADD)
+AC_SUBST(LIBOBJS)
+AC_SUBST(LTLIBOBJS)
+
 
 AC_OUTPUT([Makefile 
 	   src/Makefile

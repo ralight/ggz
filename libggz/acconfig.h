@@ -52,3 +52,7 @@
 #endif
 #endif
 
+#ifndef HAVE_STRSEP
+char* strsep(char **stringp, const char *delim);
+#endif
+
