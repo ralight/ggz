@@ -1,8 +1,5 @@
 <?php
 
-//require_once(".htconf");
-//$id = pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass");
-
 include_once("database.php");
 include_once("auth.php");
 
@@ -21,45 +18,45 @@ $player_approval = $_POST["player_approval"];
 $player_role = $_POST["player_role"];
 
 if ($join == 1) :
-	$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$team_name' AND handle = '$ggzuser'");
-	if (($res) && (pg_numrows($res) == 0)) :
-		$res = pg_exec($id, "INSERT INTO teammembers " .
+	$res = $database->exec("SELECT * FROM teammembers WHERE teamname = '$team_name' AND handle = '$ggzuser'");
+	if (($res) && ($database->numrows($res) == 0)) :
+		$res = $database->exec("INSERT INTO teammembers " .
 			"(teamname, handle, role) VALUES " .
 			"('$team_name', '$ggzuser', '')");
 	else:
-		pg_exec($id, "DELETE FROM teammembers WHERE teamname = '$team_name' AND handle = '$ggzuser'");
+		$database->exec("DELETE FROM teammembers WHERE teamname = '$team_name' AND handle = '$ggzuser'");
 	endif;
 elseif ($create == 1) :
-	$res = pg_exec($id, "SELECT * FROM teams WHERE teamname = '$team_name'");
-	if (($res) && (pg_numrows($res) == 0)) :
+	$res = $database->exec("SELECT * FROM teams WHERE teamname = '$team_name'");
+	if (($res) && ($database->numrows($res) == 0)) :
 		$stamp = time();
-		$res = pg_exec($id, "INSERT INTO teams " .
+		$res = $database->exec("INSERT INTO teams " .
 			"(teamname, fullname, icon, foundingdate, homepage, founder) VALUES " .
 			"('$team_name', '$team_full', '$team_logo', $stamp, '$team_homepage', '$ggzuser')");
-		$res = pg_exec($id, "INSERT INTO teammembers " .
+		$res = $database->exec("INSERT INTO teammembers " .
 			"(teamname, handle, role) VALUES " .
 			"('$team_name', '$ggzuser', 'leader,founder,member')");
 	endif;
 elseif ($approve == 1) :
 	if ($player_approval == 'approved') :
-		$res = pg_exec($id, "UPDATE teammembers SET " .
+		$res = $database->exec("UPDATE teammembers SET " .
 			"role = 'member' " .
 			"WHERE teamname = '$team_name' AND handle = '$player_name' AND role = ''");
 	else :
-		$res = pg_exec($id, "DELETE FROM teammembers " .
+		$res = $database->exec("DELETE FROM teammembers " .
 			"WHERE teamname = '$team_name' AND handle = '$player_name' AND role = ''");
 	endif;
 elseif ($manage == 1) :
-	$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$team_name' AND handle = '$player_name'");
-	if (($res) && (pg_numrows($res) == 1)) :
-		$role = pg_result($res, 0, "role");
+	$res = $database->exec("SELECT * FROM teammembers WHERE teamname = '$team_name' AND handle = '$player_name'");
+	if (($res) && ($database->numrows($res) == 1)) :
+		$role = $database->result($res, 0, "role");
 		if ($player_role != "member") :
 			$player_role .= ",member";
 		endif;
 		if (strstr($role, "founder")) :
 			$player_role .= ",founder";
 		endif;
-		$res = pg_exec($id, "UPDATE teammembers SET " .
+		$res = $database->exec("UPDATE teammembers SET " .
 			"role = '$player_role' " .
 			"WHERE teamname = '$team_name' AND handle = '$player_name'");
 	endif;

@@ -18,18 +18,18 @@
 include_once("auth.php");
 $ggzuser = Auth::username();
 
-$res = pg_exec($id, "SELECT * FROM users WHERE handle = '$ggzuser'");
-if (($res) && (pg_numrows($res) == 1)) :
-	$realname = pg_result($res, 0, "name");
-	$email = pg_result($res, 0, "email");
+$res = $database->exec("SELECT * FROM users WHERE handle = '$ggzuser'");
+if (($res) && ($database->numrows($res) == 1)) :
+	$realname = $database->result($res, 0, "name");
+	$email = $database->result($res, 0, "email");
 endif;
-$res = pg_exec($id, "SELECT * FROM userinfo WHERE handle = '$ggzuser'");
-if (($res) && (pg_numrows($res) == 1)) :
-	$photo = pg_result($res, 0, "photo");
-	$gender = pg_result($res, 0, "gender");
-	$country = pg_result($res, 0, "country");
-	$pubkey = pg_result($res, 0, "pubkey");
-	$blogfeed = pg_result($res, 0, "blogfeed");
+$res = $database->exec("SELECT * FROM userinfo WHERE handle = '$ggzuser'");
+if (($res) && ($database->numrows($res) == 1)) :
+	$photo = $database->result($res, 0, "photo");
+	$gender = $database->result($res, 0, "gender");
+	$country = $database->result($res, 0, "country");
+	$pubkey = $database->result($res, 0, "pubkey");
+	$blogfeed = $database->result($res, 0, "blogfeed");
 endif;
 
 ?>

@@ -1,12 +1,12 @@
 <?php
 
-include("database.php");
+include_once("database.php");
 
 class Auth
 {
 	function username()
 	{
-		global $id;
+		global $database;
 		static $cached_username;
 
 		if ($cached_username) return $cached_username;
@@ -14,9 +14,10 @@ class Auth
 		$cookie = $_COOKIE[Auth::cookiename()];
 		if (!$cookie) return;
 
-		$res = pg_exec($id, "SELECT * FROM auth WHERE cookie = '$cookie'");
-		if (($res) && (pg_numrows($res) == 1)) :
-			$username = pg_result($res, 0, "handle");
+		$res = $database->exec("SELECT * FROM auth WHERE cookie = '$cookie'");
+		if (($res) && ($database->numrows($res) == 1)) :
+			$username = $database->result($res, 0, "handle");
+
 			$cached_username = $username;
 		endif;
 
@@ -38,65 +39,66 @@ class Auth
 
 	function login($username, $password)
 	{
-		global $id;
+		global $database;
 
 		$cryptpass = Auth::hash($password);
 
-		$res = pg_exec($id, "SELECT * FROM users WHERE handle = '$username' AND password = '$cryptpass'");
-		if (($res) && (pg_numrows($res) == 1)) :
+		$res = $database->exec("SELECT * FROM users WHERE handle = '$username' AND password = '$cryptpass'");
+		if (($res) && ($database->numrows($res) == 1)) :
 			$cookiestem = base64_encode(md5($cryptpass));
 			$stamp = time();
 			$cookie = "$cookiestem$stamp";
 			$cookie = str_replace("=", "", $cookie);
-			pg_exec($id, "DELETE FROM auth WHERE handle = '$username'");
-			pg_exec($id, "INSERT INTO auth (handle, cookie) VALUES ('$username', '$cookie')");
+			$database->exec("DELETE FROM auth WHERE handle = '$username'");
+			$database->exec("INSERT INTO auth (handle, cookie) VALUES ('$username', '$cookie')");
 			setcookie(Auth::cookiename(), $cookie, 0, "/");
 		endif;
 	}
 
 	function logout()
 	{
-		global $id;
+		global $database;
 
 		$username = Auth::username();
 		if(!$username) return;
 
-		pg_exec($id, "DELETE FROM auth WHERE handle = '$username'");
+		$database->exec("DELETE FROM auth WHERE handle = '$username'");
 		setcookie(Auth::cookiename(), "", 0, "/");
 	}
 
 	function register($username, $password, $email)
 	{
-		global $id;
+		global $database;
 
-		$res = pg_exec($id, "SELECT * FROM users WHERE handle = '$username'");
-		if (($res) && (pg_numrows($res) > 0)) :
+		$res = $database->exec("SELECT * FROM users WHERE handle = '$username'");
+		if (($res) && ($database->numrows($res) > 0)) :
 			return;
 		endif;
 
 		$cryptpass = Auth::hash($password);
 
-		$res = pg_exec($id, "INSERT INTO users (handle, password, permissions, name, email) " .
+		$res = $database->exec("INSERT INTO users (handle, password, permissions, name, email) " .
 			"VALUES ('$username', '$cryptpass', 7, '', '$email')");
 	}
 
 	function resend($email, $encryption)
 	{
-		global $id;
+		global $database;
 
-		$res = pg_exec($id, "SELECT * FROM users WHERE email = '$email'");
-		if (($res) && (pg_numrows($res) > 0)) :
+		$res = $database->exec("SELECT * FROM users WHERE email = '$email'");
+		if (($res) && ($database->numrows($res) > 0)) :
 			$text = "";
 			$pubkey = "";
-			for ($i = 0; $i < pg_numrows($res); $i++)
+			for ($i = 0; $i < $database->numrows($res); $i++)
 			{
-				$user = pg_result($res, $i, "handle");
-				$password = pg_result($res, $i, "password");
+				$user = $database->result($res, $i, "handle");
+				$password = $database->result($res, $i, "password");
+
 				$text .= "$user: $password\n";
 				if ((!$pubkey) && ($encryption)) :
-					$res2 = pg_exec($id, "SELECT * FROM userinfo WHERE handle = '$user'");
-					if (($res2) && (pg_numrows($res2) == 1)) :
-						$pubkey = pg_result($res2, 0, "pubkey");
+					$res2 = $database->exec("SELECT * FROM userinfo WHERE handle = '$user'");
+					if (($res2) && ($database->numrows($res2) == 1)) :
+						$pubkey = $database->result($res2, 0, "pubkey");
 					endif;
 				endif;
 			}

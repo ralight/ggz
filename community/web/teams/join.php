@@ -21,11 +21,12 @@
 <select name='team_name'>
 <?php
 $ggzuser = Auth::username();
-$res = pg_exec($id, "SELECT DISTINCT teamname FROM teammembers WHERE teamname NOT IN " .
+$res = $database->exec("SELECT DISTINCT teamname FROM teammembers WHERE teamname NOT IN " .
 	"(SELECT teamname FROM teammembers WHERE handle = '$ggzuser')");
-for ($i = 0; $i < pg_numrows($res); $i++)
+for ($i = 0; $i < $database->numrows($res); $i++)
 {
-	$teamname = pg_result($res, $i, "teamname");
+	$teamname = $database->result($res, $i, "teamname");
+
 	echo "<option>$teamname</option>\n";
 }
 ?>
@@ -48,10 +49,11 @@ for ($i = 0; $i < pg_numrows($res); $i++)
 <select name='team_name'>
 <?php
 $ggzuser = Auth::username();
-$res = pg_exec($id, "SELECT DISTINCT teamname FROM teammembers WHERE handle = '$ggzuser'");
-for ($i = 0; $i < pg_numrows($res); $i++)
+$res = $database->exec("SELECT DISTINCT teamname FROM teammembers WHERE handle = '$ggzuser'");
+for ($i = 0; $i < $database->numrows($res); $i++)
 {
-	$teamname = pg_result($res, $i, "teamname");
+	$teamname = $database->result($res, $i, "teamname");
+
 	echo "<option>$teamname</option>\n";
 }
 ?>

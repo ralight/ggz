@@ -8,10 +8,11 @@ Name of the tournament:
 Game type:
 <select name="form_game">
 <?php
-$res = pg_exec($id, "SELECT DISTINCT game FROM stats");
-for ($i = 0; $i < pg_numrows($res); $i++)
+$res = $database->exec("SELECT DISTINCT game FROM stats");
+for ($i = 0; $i < $database->numrows($res); $i++)
 {
-	$game = pg_result($res, $i, "game");
+	$game = $database->result($res, $i, "game");
+
 	echo "<option>$game</option>\n";
 }
 ?>

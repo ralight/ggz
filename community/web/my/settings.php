@@ -18,30 +18,30 @@ $user_password = $_POST["user_password"];
 $user_pubkey = $_POST["user_pubkey"];
 $user_blogfeed = $_POST["user_blogfeed"];
 
-$res = pg_exec($id, "SELECT * FROM userinfo WHERE handle = '$ggzuser'");
-if (($res) && (pg_numrows($res) == 0)) :
-	$res = pg_exec($id, "INSERT INTO userinfo " .
+$res = $database->exec("SELECT * FROM userinfo WHERE handle = '$ggzuser'");
+if (($res) && ($database->numrows($res) == 0)) :
+	$res = $database->exec("INSERT INTO userinfo " .
 		"(handle, photo, gender, country) VALUES " .
 		"('$ggzuser', '', '', '')");
 endif;
 
 if ($password) :
-	$res = pg_exec($id, "UPDATE users SET ".
+	$res = $database->exec("UPDATE users SET ".
 		"password = '$user_password' " .
 		"WHERE handle = '$ggzuser'");
 	$md5pass = $user_password;
 	setcookie("ggzuser", "$md5pass");
 endif;
 if ($settings) :
-	$res = pg_exec($id, "UPDATE userinfo SET ".
+	$res = $database->exec("UPDATE userinfo SET ".
 		"photo = '$user_photo', gender = '$user_gender', country = '$user_country', blogfeed = '$user_blogfeed' " .
 		"WHERE handle = '$ggzuser'");
-	$res = pg_exec($id, "UPDATE users SET ".
+	$res = $database->exec("UPDATE users SET ".
 		"name = '$user_realname', email = '$user_email' " .
 		"WHERE handle = '$ggzuser'");
 endif;
 if ($pubkey) :
-	$res = pg_exec($id, "UPDATE userinfo SET ".
+	$res = $database->exec("UPDATE userinfo SET ".
 		"pubkey = '$user_pubkey' " .
 		"WHERE handle = '$ggzuser'");
 endif;

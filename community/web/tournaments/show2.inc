@@ -1,13 +1,11 @@
 <?php
 
-$conn = pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass");
+$res = $database->exec("SELECT * FROM tournaments WHERE id = $tid");
 
-$res = pg_exec($conn, "SELECT * FROM tournaments WHERE id = $tid");
-
-$name = pg_result($res, $i, "name");
-$game = pg_result($res, $i, "game");
-$date = pg_result($res, $i, "date");
-$organizer = pg_result($res, $i, "organizer");
+$name = $database->result($res, $i, "name");
+$game = $database->result($res, $i, "game");
+$date = $database->result($res, $i, "date");
+$organizer = $database->result($res, $i, "organizer");
 
 $datestr = date("d.m.Y", $date);
 
@@ -17,12 +15,12 @@ echo "Organized by: <a href=\"/db/players/?lookup=$organizer\">$organizer</a><br
 echo "Starting: $datestr<br><br>\n";
 
 echo "Participants:<br><br>\n";
-$res = pg_exec($conn, "SELECT * FROM tournamentplayers WHERE id = $tid");
+$res = $database->exec($conn, "SELECT * FROM tournamentplayers WHERE id = $tid");
 $num = 0;
-for($i = 0; $i < pg_numrows($res); $i++)
+for($i = 0; $i < $database->numrows($res); $i++)
 {
-	$name = pg_result($res, $i, "name");
-	$number = pg_result($res, $i, "number");
+	$name = $database->result($res, $i, "name");
+	$number = $database->result($res, $i, "number");
 
 	echo "<a href=\"/db/players/?lookup=$name\">$name</a><br>\n";
 
@@ -34,22 +32,22 @@ echo "<br>\n";
 
 function played($player1, $player2)
 {
-	global $conn;
+	global $database;
 	global $date;
 	global $matchid;
 
-	$res = pg_exec($conn, "SELECT match FROM matchplayers WHERE handle = '$player1'");
-	for($k = 0; $k < pg_numrows($res); $k++)
+	$res = $database->exec("SELECT match FROM matchplayers WHERE handle = '$player1'");
+	for($k = 0; $k < $database->numrows($res); $k++)
 	{
-		$x[pg_result($res, $k, "match")] = pg_result($res, $k, "match");
+		$x[$database->result($res, $k, "match")] = $database->result($res, $k, "match");
 	}
 
 	$number = 0;
-	$res = pg_exec($conn, "SELECT match FROM matchplayers WHERE handle = '$player2'");
-	for($k = 0; $k < pg_numrows($res); $k++)
+	$res = $database->exec("SELECT match FROM matchplayers WHERE handle = '$player2'");
+	for($k = 0; $k < $database->numrows($res); $k++)
 	{
-		if($x[pg_result($res, $k, "match")] == pg_result($res, $k, "match")) :
-			$y[$number] = $x[pg_result($res, $k, "match")];
+		if($x[$database->result($res, $k, "match")] == $database->result($res, $k, "match")) :
+			$y[$number] = $x[$database->result($res, $k, "match")];
 			$number += 1;
 		endif;
 	}
@@ -57,10 +55,10 @@ function played($player1, $player2)
 	for($k = 0; $k < sizeof($y); $k++)
 	{
 		$match = $y[$k];
-		$res = pg_exec($conn, "SELECT id, winner FROM matches WHERE id = $match AND date > $date");
-		if(pg_numrows($res) == 1) :
-			$winner = pg_result($res, 0, "winner");
-			$matchid = pg_result($res, 0, "id");
+		$res = $database->exec("SELECT id, winner FROM matches WHERE id = $match AND date > $date");
+		if($database->numrows($res) == 1) :
+			$winner = $database->result($res, 0, "winner");
+			$matchid = $database->result($res, 0, "id");
 			if($winner) :
 				return $winner;
 			endif;
@@ -139,8 +137,8 @@ for($i = $level; $i > 0; $i--)
 	endif;
 }
 
-$res = pg_exec($conn, "SELECT * FROM placements WHERE tournament = $tid");
-if (pg_numrows($res) > 0) :
+$res = $database->exec("SELECT * FROM placements WHERE tournament = $tid");
+if ($database->numrows($res) > 0) :
 	$already_approved = 1;
 else :
 	$already_approved = 0;
@@ -156,10 +154,10 @@ if (($approved) && (!$already_approved) && (!$open)) :
 	else:
 		$second = $player1;
 	endif;
-	pg_exec($conn, "INSERT INTO placements " .
+	$database->exec("INSERT INTO placements " .
 		"(tournament, place, handle) VALUES " .
 		"($tid, 2, '$second')");
-	pg_exec($conn, "INSERT INTO placements " .
+	$database->exec("INSERT INTO placements " .
 		"(tournament, place, handle) VALUES " .
 		"($tid, 1, '$winner')");
 endif;

@@ -10,7 +10,7 @@
 		<a name="database"></a>
 	</h1>
 	<div class="text">
-	<?php stats_team($id, $lookup); ?>
+	<?php stats_team($lookup); ?>
 	</div>
 </div>
 

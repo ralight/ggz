@@ -2,13 +2,14 @@
 
 function latest_matches()
 {
-	global $id;
+	global $database;
 
-	$res = pg_exec($id, "SELECT * FROM matches ORDER BY id DESC LIMIT 3");
-	for ($i = 0; $i < pg_numrows($res); $i++)
+	$res = $database->exec("SELECT * FROM matches ORDER BY id DESC LIMIT 3");
+	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
-		$mid = pg_result($res, $i, "id");
-		$game = pg_result($res, $i, "game");
+		$mid = $database->result($res, $i, "id");
+		$game = $database->result($res, $i, "game");
+
 		echo "<div class='menu'>\n";
 		echo "<a href='/db/matches/?lookup=$mid' class='menuitem' title='$game'>$game #$mid</a>\n";
 		echo "</div>\n";
@@ -17,13 +18,14 @@ function latest_matches()
 
 function latest_tournaments()
 {
-	global $id;
+	global $database;
 
-	$res = pg_exec($id, "SELECT * FROM tournaments ORDER BY id DESC LIMIT 2");
-	for ($i = 0; $i < pg_numrows($res); $i++)
+	$res = $database->exec("SELECT * FROM tournaments ORDER BY id DESC LIMIT 2");
+	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
-		$tid = pg_result($res, $i, "id");
-		$game = pg_result($res, $i, "game");
+		$tid = $database->result($res, $i, "id");
+		$game = $database->result($res, $i, "game");
+
 		echo "<div class='menu'>\n";
 		echo "<a href='/db/tournaments/?lookup=$tid' class='menuitem' title='$game'>$game #$tid (Tournament)</a>\n";
 		echo "</div>\n";
@@ -36,14 +38,14 @@ function latest_forumposts()
 	if(!$ret) $ret = @include("../forums/.htconf");
 	if(!$ret) $ret = @include("../../forums/.htconf");
 
-	$conn = mysql_connect($conf_host, $conf_user, $conf_pass);
-	mysql_select_db($conf_name, $conn);
+	$phpbb = new Database("postgresql");
+	$phpbb->connect($conf_host, $conf_name, $conf_user, $conf_pass);
 
-	$res = mysql_query("SELECT * FROM phpbb_posts_text ORDER BY post_id DESC LIMIT 3", $conn);
-	for ($i = 0; $i < mysql_num_rows($res); $i++)
+	$res = $phpbb->exec("SELECT * FROM phpbb_posts_text ORDER BY post_id DESC LIMIT 3");
+	for ($i = 0; $i < $phpbb->numrows($res); $i++)
 	{
-		$array = mysql_fetch_array($res);
-		$subject = $array['post_subject'];
+		$subject = $phpbb->result($res, $i, "post_subject");
+
 		echo "<div class='menu'>\n";
 		echo "<a href='/forums/' class='menuitem' title='$subject'>$subject</a>\n";
 		echo "</div>\n";

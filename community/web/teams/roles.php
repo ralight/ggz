@@ -11,10 +11,11 @@
 	<div class="text">
 <?php
 $ggzuser = Auth::username();
-$res = pg_exec($id, "SELECT teamname FROM teammembers WHERE handle = '$ggzuser' AND role LIKE '%leader%'");
-for ($i = 0; $i < pg_numrows($res); $i++)
+$res = $database->exec("SELECT teamname FROM teammembers WHERE handle = '$ggzuser' AND role LIKE '%leader%'");
+for ($i = 0; $i < $database->numrows($res); $i++)
 {
-$teamname = pg_result($res, $i, "teamname");
+$teamname = $database->result($res, $i, "teamname");
+
 echo "<h2>$teamname</h2>";
 
 	echo "<form action='teams.php?manage=1' method='POST'>\n";
@@ -22,11 +23,12 @@ echo "<h2>$teamname</h2>";
 	echo "<tr><td>Player:</td><td>\n";
 	echo "<input type='hidden' name='team_name' value='$teamname'>\n";
 	echo "<select name='player_name'>\n";
-	$res2 = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$teamname' AND role <> ''");
-	for ($j = 0; $j < pg_numrows($res2); $j++)
+	$res2 = $database->exec("SELECT * FROM teammembers WHERE teamname = '$teamname' AND role <> ''");
+	for ($j = 0; $j < $database->numrows($res2); $j++)
 	{
-		$playername = pg_result($res2, $j, "handle");
-		$role = pg_result($res2, $j, "role");
+		$playername = $database->result($res2, $j, "handle");
+		$role = $database->result($res2, $j, "role");
+
 		$rolestr = "";
 		if (strstr($role, "leader")) :
 			$rolestr = "Leader";

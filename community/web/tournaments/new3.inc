@@ -22,8 +22,6 @@ function random_array($size)
 	return $y;
 }
 
-$conn = pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass");
-
 $datestamp = strtotime($form_date);
 $datestring = date("d.m.Y", $datestamp);
 
@@ -32,12 +30,12 @@ echo "<br><br>\n";
 
 $organizer = Auth::username();
 
-pg_exec($conn, "INSERT INTO tournaments " .
+$database->exec("INSERT INTO tournaments " .
 	"(name, game, date, organizer) VALUES " .
 	"('$form_name', '$form_game', $datestamp, '$organizer')");
 
-$res = pg_exec($conn, "SELECT MAX(id) FROM tournaments");
-$id = pg_result($res, 0, "max");
+$res = $database->exec("SELECT MAX(id) FROM tournaments");
+$tid = $database->result($res, 0, "max");
 
 $ar = random_array($form_participants);
 for($i = 0; $i < $form_participants; $i++)
@@ -45,7 +43,7 @@ for($i = 0; $i < $form_participants; $i++)
 	$varname = "form_participant_$i";
 	$name = $$varname;
 	$number = $ar[$i];
-	pg_exec($conn, "INSERT INTO tournamentplayers (id, number, name) VALUES ($id, $number, '$name')");
+	$database->exec($conn, "INSERT INTO tournamentplayers (id, number, name) VALUES ($tid, $number, '$name')");
 	echo "Registered player $name as number $number.<br>\n";
 }
 ?>

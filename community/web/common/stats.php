@@ -1,26 +1,27 @@
 <?php
 
-function stats_players($id, $lookup)
+function stats_players($lookup)
 {
+global $database;
 	if (!$lookup) return;
 
-	$res = pg_exec($id, "SELECT * FROM stats WHERE lower(handle) = lower('$lookup')");
-	for ($i = 0; $i < pg_numrows($res); $i++)
+	$res = $database->exec("SELECT * FROM stats WHERE lower(handle) = lower('$lookup')");
+	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
-		$game = pg_result($res, $i, "game");
-		$wins = pg_result($res, $i, "wins");
-		$losses = pg_result($res, $i, "losses");
-		$ties = pg_result($res, $i, "ties");
-		$forfeits = pg_result($res, $i, "forfeits");
-		$rating = pg_result($res, $i, "rating");
-		$rank = pg_result($res, $i, "ranking");
-		$highscore = pg_result($res, $i, "highscore");
+		$game = $database->result($res, $i, "game");
+		$wins = $database->result($res, $i, "wins");
+		$losses = $database->result($res, $i, "losses");
+		$ties = $database->result($res, $i, "ties");
+		$forfeits = $database->result($res, $i, "forfeits");
+		$rating = $database->result($res, $i, "rating");
+		$rank = $database->result($res, $i, "ranking");
+		$highscore = $database->result($res, $i, "highscore");
 
 		$rating = (int)($rating);
 
-		$res2 = pg_exec($id, "SELECT * FROM rankings WHERE game = '$game'");
-		if (($res2) && (pg_numrows($res2) == 1)) :
-			$method = pg_result($res2, 0, "method");
+		$res2 = $database->exec("SELECT * FROM rankings WHERE game = '$game'");
+		if (($res2) && ($database->numrows($res2) == 1)) :
+			$method = $database->result($res2, 0, "method");
 		else :
 			$method = "wins/losses";
 		endif;
@@ -63,12 +64,12 @@ function stats_players($id, $lookup)
 		echo "This is ranking him/her <b>$rank</b>$rankstr place.<br>\n";
 		echo "<br>\n";
 	}
-	if (pg_numrows($res) == 0) :
+	if ($database->numrows($res) == 0) :
 		echo "No statistics found for $lookup.<br>\n";
 	endif;
 }
 
-function stats_gamesheader($id, $lookup)
+function stats_gamesheader($lookup)
 {
 	$game = $lookup;
 
@@ -76,30 +77,31 @@ function stats_gamesheader($id, $lookup)
 	echo $lookup;
 }
 
-function stats_games($id, $lookup)
+function stats_games($lookup)
 {
+global $database;
 	global $ggzuser;
 
 	if (!$lookup) return;
 
-	$res = pg_exec($id, "SELECT * FROM rankings WHERE game = '$lookup'");
-	if (($res) && (pg_numrows($res) == 1)) :
-		$method = pg_result($res, 0, "method");
+	$res = $database->exec("SELECT * FROM rankings WHERE game = '$lookup'");
+	if (($res) && ($database->numrows($res) == 1)) :
+		$method = $database->result($res, 0, "method");
 	else :
 		$method = "wins/losses";
 	endif;
 
-	$res = pg_exec($id, "SELECT * FROM stats WHERE game = '$lookup' AND ranking > 0 ORDER BY ranking ASC");
-	for ($i = 0; $i < pg_numrows($res); $i++)
+	$res = $database->exec("SELECT * FROM stats WHERE game = '$lookup' AND ranking > 0 ORDER BY ranking ASC");
+	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
-		$handle = pg_result($res, $i, "handle");
-		$wins = pg_result($res, $i, "wins");
-		$losses = pg_result($res, $i, "losses");
-		$ties = pg_result($res, $i, "ties");
-		$forfeits = pg_result($res, $i, "forfeits");
-		$rating = pg_result($res, $i, "rating");
-		$rank = pg_result($res, $i, "ranking");
-		$highscore = pg_result($res, $i, "highscore");
+		$handle = $database->result($res, $i, "handle");
+		$wins = $database->result($res, $i, "wins");
+		$losses = $database->result($res, $i, "losses");
+		$ties = $database->result($res, $i, "ties");
+		$forfeits = $database->result($res, $i, "forfeits");
+		$rating = $database->result($res, $i, "rating");
+		$rank = $database->result($res, $i, "ranking");
+		$highscore = $database->result($res, $i, "highscore");
 
 		$rating = (int)($rating);
 
@@ -149,18 +151,19 @@ function stats_games($id, $lookup)
 	}
 }
 
-function stats_team($id, $lookup)
+function stats_team($lookup)
 {
+global $database;
 	if (!$lookup) return;
 
-	$res = pg_exec($id, "SELECT * FROM teams WHERE teamname = '$lookup'");
-	for ($i = 0; $i < pg_numrows($res); $i++)
+	$res = $database->exec("SELECT * FROM teams WHERE teamname = '$lookup'");
+	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
-		$fullname = pg_result($res, $i, "fullname");
-		$icon = pg_result($res, $i, "icon");
-		$foundingdate = pg_result($res, $i, "foundingdate");
-		$founder = pg_result($res, $i, "founder");
-		$homepage = pg_result($res, $i, "homepage");
+		$fullname = $database->result($res, $i, "fullname");
+		$icon = $database->result($res, $i, "icon");
+		$foundingdate = $database->result($res, $i, "foundingdate");
+		$founder = $database->result($res, $i, "founder");
+		$homepage = $database->result($res, $i, "homepage");
 
 		$date = date("d.m.Y", $foundingdate);
 
@@ -174,16 +177,16 @@ function stats_team($id, $lookup)
 		echo "<br>\n";
 
 	}
-	if (pg_numrows($res) == 0) :
+	if ($database->numrows($res) == 0) :
 		echo "No statistics found for $lookup.<br>\n";
 	else :
 		echo "Members of the team:<br>\n";
-		$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$lookup' AND role <> '' ORDER BY entrydate ASC");
-		for ($i = 0; $i < pg_numrows($res); $i++)
+		$res = $database->exec("SELECT * FROM teammembers WHERE teamname = '$lookup' AND role <> '' ORDER BY entrydate ASC");
+		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
-			$handle = pg_result($res, $i, "handle");
-			$role = pg_result($res, $i, "role");
-			$entrydate = pg_result($res, $i, "entrydate");
+			$handle = $database->result($res, $i, "handle");
+			$role = $database->result($res, $i, "role");
+			$entrydate = $database->result($res, $i, "entrydate");
 
 			$date = date("d.m.Y", $entrydate);
 
@@ -216,14 +219,15 @@ function stats_team($id, $lookup)
 	endif;
 }
 
-function stats_match($id, $lookup)
+function stats_match($lookup)
 {
+global $database;
 	if (!$lookup) return;
 
-	$res = pg_exec($id, "SELECT * FROM matches WHERE id = '$lookup'");
-	$game = pg_result($res, $i, "game");
-	$date = pg_result($res, $i, "date");
-	$winner = pg_result($res, $i, "winner");
+	$res = $database->exec("SELECT * FROM matches WHERE id = '$lookup'");
+	$game = $database->result($res, $i, "game");
+	$date = $database->result($res, $i, "date");
+	$winner = $database->result($res, $i, "winner");
 
 	$date = date("d.m.Y", $date);
 
@@ -232,15 +236,15 @@ function stats_match($id, $lookup)
 	echo "Winner: $winner<br>\n";
 	echo "<br>\n";
 
-	if (pg_numrows($res) == 0) :
+	if ($database->numrows($res) == 0) :
 		echo "No statistics found for $lookup.<br>\n";
 	else :
 		echo "Participants:<br>\n";
-		$res = pg_exec($id, "SELECT * FROM matchplayers WHERE match = '$lookup'");
-		for ($i = 0; $i < pg_numrows($res); $i++)
+		$res = $database->exec("SELECT * FROM matchplayers WHERE match = '$lookup'");
+		for ($i = 0; $i < $database->numrows($res); $i++)
 		{
-			$handle = pg_result($res, $i, "handle");
-			$playertype = pg_result($res, $i, "playertype");
+			$handle = $database->result($res, $i, "handle");
+			$playertype = $database->result($res, $i, "playertype");
 
 			if ($playertype == "registered") :
 				echo "<a href='/db/players/?lookup=$handle'>$handle ($playertype)</a><br>\n";
@@ -251,8 +255,9 @@ function stats_match($id, $lookup)
 	endif;
 }
 
-function stats_tournament($id, $lookup)
+function stats_tournament($lookup)
 {
+global $database;
 	if (!$lookup) return;
 
 	echo "not yet!";

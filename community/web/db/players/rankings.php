@@ -1,13 +1,15 @@
 <?php
 
-function rankings_players($id, $lookup)
+function rankings_players($lookup)
 {
-	$res = pg_exec($id, "SELECT * FROM stats WHERE handle = '$lookup' AND ranking > 0 AND ranking < 4");
+	global $database;
 
-	for ($i = 0; $i < pg_numrows($res); $i++)
+	$res = $database->exec("SELECT * FROM stats WHERE handle = '$lookup' AND ranking > 0 AND ranking < 4");
+
+	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
-		$rank = pg_result($res, $i, "ranking");
-		$game = pg_result($res, $i, "game");
+		$rank = $database->result($res, $i, "ranking");
+		$game = $database->result($res, $i, "game");
 
 		if ($rank == 1) :
 			$icon = "cupgoldg.png";
@@ -21,20 +23,22 @@ function rankings_players($id, $lookup)
 		echo "Game class $game: Rank $rank\n";
 		echo "<br>\n";
 	}
-	if(!pg_numrows($res))
+	if(!$database->numrows($res))
 	{
 		echo "The player has not yet played any games.\n";
 	}
 }
 
-function rankings_tournaments($id, $lookup)
+function rankings_tournaments($lookup)
 {
-	$res = pg_exec($id, "SELECT * FROM placements WHERE handle = '$lookup'");
+	global $database;
 
-	for ($i = 0; $i < pg_numrows($res); $i++)
+	$res = $database->exec("SELECT * FROM placements WHERE handle = '$lookup'");
+
+	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
-		$tournament = pg_result($res, $i, "tournament");
-		$place = pg_result($res, $i, "place");
+		$tournament = $database->result($res, $i, "tournament");
+		$place = $database->result($res, $i, "place");
 
 		if ($place == 1) :
 			$ranking = "1st place";
@@ -44,10 +48,10 @@ function rankings_tournaments($id, $lookup)
 			$icon = "cupsilver.png";
 		endif;
 
-		$res2 = pg_exec($id, "SELECT * FROM tournaments WHERE id = $tournament");
-		$game = pg_result($res2, 0, "game");
-		$name = pg_result($res2, 0, "name");
-		$stamp = pg_result($res2, 0, "date");
+		$res2 = $database->exec("SELECT * FROM tournaments WHERE id = $tournament");
+		$game = $database->result($res2, 0, "game");
+		$name = $database->result($res2, 0, "name");
+		$stamp = $database->result($res2, 0, "date");
 
 		$date = date("d.m.Y", $stamp);
 
@@ -55,20 +59,22 @@ function rankings_tournaments($id, $lookup)
 		echo "Tournament '$name' of gametype $game ($date): $ranking\n";
 		echo "<br>\n";
 	}
-	if(!pg_numrows($res))
+	if(!$database->numrows($res))
 	{
 		echo "The player hasn't won a single tournament yet.\n";
 	}
 }
 
-function rankings_matches($id, $lookup)
+function rankings_matches($lookup)
 {
-	$res = pg_exec($id, "SELECT * FROM matches WHERE winner = '$lookup'");
+	global $database;
 
-	for ($i = 0; $i < pg_numrows($res); $i++)
+	$res = $database->exec("SELECT * FROM matches WHERE winner = '$lookup'");
+
+	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
-		$game = pg_result($res, $i, "game");
-		$stamp = pg_result($res, $i, "date");
+		$game = $database->result($res, $i, "game");
+		$stamp = $database->result($res, $i, "date");
 
 		$date = date("d.m.Y", $stamp);
 
@@ -76,7 +82,7 @@ function rankings_matches($id, $lookup)
 		echo "Game of gametype $game ($date): Winner\n";
 		echo "<br>\n";
 	}
-	if(!pg_numrows($res))
+	if(!$database->numrows($res))
 	{
 		echo "The player hasn't won a single game yet.\n";
 	}

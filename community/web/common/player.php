@@ -15,20 +15,20 @@ class Player
 
 	function Player($ggzuser)
 	{
-		global $id;
+		global $database;
 
 		$this->handle = $ggzuser;
 
-		$res = pg_exec($id, "SELECT * FROM users WHERE handle = '$ggzuser'");
-		if (($res) && (pg_numrows($res) == 1)) :
-			$this->realname = pg_result($res, 0, "name");
-			$this->email = pg_result($res, 0, "email");
+		$res = $database->exec("SELECT * FROM users WHERE handle = '$ggzuser'");
+		if (($res) && ($database->numrows($res) == 1)) :
+			$this->realname = $database->result($res, 0, "name");
+			$this->email = $database->result($res, 0, "email");
 		endif;
-		$res = pg_exec($id, "SELECT * FROM userinfo WHERE handle = '$ggzuser'");
-		if (($res) && (pg_numrows($res) == 1)) :
-			$this->photo = pg_result($res, 0, "photo");
-			$this->gender = pg_result($res, 0, "gender");
-			$this->country = pg_result($res, 0, "country");
+		$res = $database->exec("SELECT * FROM userinfo WHERE handle = '$ggzuser'");
+		if (($res) && ($database->numrows($res) == 1)) :
+			$this->photo = $database->result($res, 0, "photo");
+			$this->gender = $database->result($res, 0, "gender");
+			$this->country = $database->result($res, 0, "country");
 		endif;
 	}
 
@@ -65,15 +65,16 @@ class Player
 
 	function permissions()
 	{
-		global $id;
+		global $database;
 
 		$ggzuser = $this->handle;
 
-		$res = pg_exec($id, "SELECT * FROM permissionmasks WHERE handle = '$ggzuser'");
-		if (($res) && (pg_numrows($res) > 0)) :
-			$admin = pg_result($res, 0, "admin_mask");
-			$anon = pg_result($res, 0, "anon_mask");
-			$normal = pg_result($res, 0, "normal_mask");
+		$res = $database->exec("SELECT * FROM permissionmasks WHERE handle = '$ggzuser'");
+		if (($res) && ($database->numrows($res) > 0)) :
+			$admin = $database->result($res, 0, "admin_mask");
+			$anon = $database->result($res, 0, "anon_mask");
+			$normal = $database->result($res, 0, "normal_mask");
+
 			if ($admin == "t") :
 				$permission = "Administrator";
 			elseif ($normal == "t") :
@@ -85,16 +86,16 @@ class Player
 
 		echo "Permissions: $permission<br>\n";
 
-		$res = pg_exec($id, "SELECT * FROM permissions WHERE handle = '$ggzuser'");
-		if (($res) && (pg_numrows($res) > 0)) :
-			$join_table = pg_result($res, 0, "join_table");
-			$launch_table = pg_result($res, 0, "launch_table");
-			$rooms_login = pg_result($res, 0, "rooms_login");
-			$rooms_admin = pg_result($res, 0, "rooms_admin");
-			$chat_announce = pg_result($res, 0, "chat_announce");
-			$chat_bot = pg_result($res, 0, "chat_bot");
-			$no_stats = pg_result($res, 0, "no_stats");
-			$edit_tables = pg_result($res, 0, "edit_tables");
+		$res = $database->exec("SELECT * FROM permissions WHERE handle = '$ggzuser'");
+		if (($res) && ($database->numrows($res) > 0)) :
+			$join_table = $database->result($res, 0, "join_table");
+			$launch_table = $database->result($res, 0, "launch_table");
+			$rooms_login = $database->result($res, 0, "rooms_login");
+			$rooms_admin = $database->result($res, 0, "rooms_admin");
+			$chat_announce = $database->result($res, 0, "chat_announce");
+			$chat_bot = $database->result($res, 0, "chat_bot");
+			$no_stats = $database->result($res, 0, "no_stats");
+			$edit_tables = $database->result($res, 0, "edit_tables");
 		endif;
 
 		echo "<br>\n";
@@ -110,19 +111,20 @@ class Player
 
 	function items()
 	{
-		global $id;
+		global $database;
 
 		$ggzuser = $this->handle;
 
-		$res = pg_exec($id, "SELECT teams.teamname, teams.fullname " .
+		$res = $database->exec("SELECT teams.teamname, teams.fullname " .
 			"FROM teammembers, teams " .
 			"WHERE teams.teamname = teammembers.teamname AND handle = '$ggzuser' AND role <> ''");
-		if (($res) && (pg_numrows($res) > 0)) :
+		if (($res) && ($database->numrows($res) > 0)) :
 			echo "<h2>Teams</h2>\n";
-			for ($i = 0; $i < pg_numrows($res); $i++)
+			for ($i = 0; $i < $database->numrows($res); $i++)
 			{
-				$team = pg_result($res, $i, "teamname");
-				$teamname = pg_result($res, $i, "fullname");
+				$team = $database->result($res, $i, "teamname");
+				$teamname = $database->result($res, $i, "fullname");
+
 				if (!$teamname) :
 					$teamname = "($team)";
 				endif;
@@ -131,13 +133,14 @@ class Player
 			}
 		endif;
 
-		$res = pg_exec($id, "SELECT * FROM tournaments WHERE organizer = '$ggzuser'");
-		if (($res) && (pg_numrows($res) > 0)) :
+		$res = $database->exec("SELECT * FROM tournaments WHERE organizer = '$ggzuser'");
+		if (($res) && ($database->numrows($res) > 0)) :
 			echo "<h2>Tournaments</h2>\n";
-			for ($i = 0; $i < pg_numrows($res); $i++)
+			for ($i = 0; $i < $database->numrows($res); $i++)
 			{
-				$name = pg_result($res, $i, "name");
-				$tid = pg_result($res, $i, "id");
+				$name = $database->result($res, $i, "name");
+				$tid = $database->result($res, $i, "id");
+
 				echo "<a href='/db/tournaments/?lookup=$tid'>$name</a>\n";
 				echo "<br>\n";
 			}
@@ -145,14 +148,16 @@ class Player
 
 		include("hotstuff/.htconf");
 
-		$conn = pg_connect("host=$conf_host dbname=$conf_name user=$conf_user password=$conf_pass");
+		$hotstuff = new Database("postgresql");
+		$hotstuff->connect($conf_host, $conf_name, $conf_user, $conf_pass);
 
-		$res = pg_exec($conn, "SELECT * FROM directory WHERE author = '$this->realname'");
-		if (($res) && (pg_numrows($res) > 0)) :
+		$res = $hotstuff->exec("SELECT * FROM directory WHERE author = '$this->realname'");
+		if (($res) && ($hotstuff->numrows($res) > 0)) :
 			echo "<h2>Game data</h2>\n";
-			for ($i = 0; $i < pg_numrows($res); $i++)
+			for ($i = 0; $i < $hotstuff->numrows($res); $i++)
 			{
-				$name = pg_result($res, $i, "name");
+				$name = $hotstuff->result($res, $i, "name");
+
 				echo "<a href='/hotstuff/'>$name</a>\n";
 				echo "<br>\n";
 			}
