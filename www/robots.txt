@@ -1,4 +1,4 @@
 # not yet guys
-User-agent: *
-Disallow: /
+#User-agent: *
+#Disallow: /
 
