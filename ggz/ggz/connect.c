@@ -503,9 +503,7 @@ void display_chat(char *name, char *msg)
 	}else if (!strcmp(cmd,"/beep")){	/* Beep a person threw chat */
 		if (!strcmp(out,connection.username)){
 
-			/* Big old hack, got to be a better way */
-			printf("\a\n");
-			/* End big old hack */
+			gdk_beep();
 
 			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 			buf = g_strdup_printf("%*s** %s", MAX_USER_NAME_LEN+1-strlen(name), " ", name);
