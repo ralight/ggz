@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3422 2002-02-19 12:04:46Z jdorje $
+ * $Id: protocol.h 3424 2002-02-19 14:41:25Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -242,6 +242,8 @@ typedef struct card_t {
 	 *  @see card_deck_enum */
 	char deck;
 } card_t;
+
+int are_cards_equal(card_t card1, card_t card2);
 
 
 /* in different games, bids may have different meanings.  we'll just use this

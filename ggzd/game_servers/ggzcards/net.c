@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3423 2002-02-19 13:06:43Z jdorje $
+ * $Id: net.c 3424 2002-02-19 14:41:25Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -515,7 +515,7 @@ int rec_play(player_t p)
 
 	/* find the card played */
 	for (i = 0; i < hand->hand_size; i++)
-		if (cards_equal(hand->cards[i], card))
+		if (are_cards_equal(hand->cards[i], card))
 			break;
 
 	if (i == hand->hand_size) {

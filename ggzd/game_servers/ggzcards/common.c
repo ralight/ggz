@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3422 2002-02-19 12:04:46Z jdorje $
+ * $Id: common.c 3424 2002-02-19 14:41:25Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -666,7 +666,7 @@ int handle_play_event(card_t card)
 	/* remove the card from the player's hand by sliding it to the end. */
 	/* TODO: this is quite inefficient */
 	for (i = 0; i < hand->hand_size; i++)
-		if (cards_equal(hand->cards[i], card))
+		if (are_cards_equal(hand->cards[i], card))
 			break;
 	for (; i < hand->hand_size; i++)
 		hand->cards[i] = hand->cards[i + 1];

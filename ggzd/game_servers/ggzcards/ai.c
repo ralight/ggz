@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: ai.c 3424 2002-02-19 14:41:25Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -107,7 +107,7 @@ card_t ai_get_play(player_t p, seat_t s)
 	ai_debug("AI selected card (%d %d %d) to play.", card.face,
 		 card.suit, card.deck);
 	for (i = 0; i < game.seats[s].hand.hand_size; i++)
-		if (cards_equal(game.seats[s].hand.cards[i], card) &&
+		if (are_cards_equal(game.seats[s].hand.cards[i], card) &&
 		    game.funcs->verify_play(card) == NULL)
 			break;
 	if (i > game.seats[s].hand.hand_size)

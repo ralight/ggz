@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: aicommon.c 3424 2002-02-19 14:41:25Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -104,7 +104,7 @@ int libai_is_card_in_hand(seat_t seat, card_t card)
 	/* TODO: avoid cheating! */
 	int i;
 	for (i = 0; i < game.seats[seat].hand.hand_size; i++)
-		if (cards_equal(game.seats[seat].hand.cards[i], card))
+		if (are_cards_equal(game.seats[seat].hand.cards[i], card))
 			return 1;
 	return 0;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3423 2002-02-19 13:06:43Z jdorje $
+ * $Id: protocol.h 3424 2002-02-19 14:41:25Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -117,9 +117,8 @@ typedef enum {
 	MSG_TRICK,
 
 	/* Requests a bid from the client.  It'll be followed by an integer
-	   n, then n bid+string choices.  The client must choose
-	   one of these bids and send a RSP_BID in response.  (Each
-	   "bid+string" choice is a bid, then a string.) */
+	   n, then n strings.  The client must choose one of these strings
+	   and send a RSP_BID in response. */
 	REQ_BID,
 	
 	/* Tells the client of a player's bid.  It is followed by a seat # for
@@ -243,6 +242,8 @@ typedef struct card_t {
 	 *  @see card_deck_enum */
 	char deck;
 } card_t;
+
+int are_cards_equal(card_t card1, card_t card2);
 
 
 /* in different games, bids may have different meanings.  we'll just use this

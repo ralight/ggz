@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 3422 2002-02-19 12:04:46Z jdorje $
+ * $Id: protocol.c 3424 2002-02-19 14:41:25Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -106,6 +106,14 @@ static int is_valid_card(card_t card)
 		return TRUE;
 	else
 		return FALSE;
+}
+
+
+int are_cards_equal(card_t card1, card_t card2)
+{
+	return card1.suit == card2.suit
+	       && card1.face == card2.face
+	       && card1.deck == card2.deck;
 }
 
 int read_card(int fd, card_t * card)

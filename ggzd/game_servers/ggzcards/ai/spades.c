@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 3375 2002-02-16 13:20:55Z jdorje $
+ * $Id: spades.c 3424 2002-02-19 14:41:25Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -847,8 +847,7 @@ static void Calculate(int num, struct play *play, int agg)
 		    && play->card.face >= high_card.face))
 		) {
 		count = sCount = 0;
-		if (!cards_equal
-		    (game.seats[(num + 1) % 4].table, UNKNOWN_CARD)) {
+		if (!are_cards_equal(game.seats[(num + 1) % 4].table, UNKNOWN_CARD)) {
 			/* we're the last card */
 			/* FIXME: above calculation is unnecessary */
 			play->trick = 100;
@@ -864,7 +863,7 @@ static void Calculate(int num, struct play *play, int agg)
 			}
 			for (o = (num + 1) % 4;
 			     o != num
-			     && cards_equal(game.seats[o].table,
+			     && are_cards_equal(game.seats[o].table,
 					    UNKNOWN_CARD); o = (o + 1) % 4) {
 				if (o == pard
 				    && game.players[num].bid.sbid.val > 0)
@@ -960,7 +959,7 @@ static void Calculate(int num, struct play *play, int agg)
 		   the remaining cards per player. */
 		n = 13 - libai_cards_played_in_suit(s);
 		for (r = 0; r < hand->hand_size; r++) {
-			if (cards_equal(hand->cards[(int) r], UNKNOWN_CARD))
+			if (are_cards_equal(hand->cards[(int) r], UNKNOWN_CARD))
 				continue;
 			if (hand->cards[(int) r].suit == s) {
 				cover++;	/* XXX - does ace cover king? 

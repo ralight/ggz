@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulate functions for card games
- * $Id: cards.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: cards.c 3424 2002-02-19 14:41:25Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -255,11 +255,4 @@ char cards_highest_in_suit(hand_t * hand, char suit)
 	}
 
 	return hi_card;
-}
-
-int cards_equal(card_t c1, card_t c2)
-{
-	/* not to take any chances with filler space... */
-	return (c1.face == c2.face && c1.suit == c2.suit
-		&& c1.deck == c2.deck);
 }
