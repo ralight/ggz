@@ -9,28 +9,17 @@ dnl
 dnl ======================================
 dnl
 dnl This file is common to most GGZ modules, and should be kept in sync
-dnl between them all.  Currently the following modules use it:
-dnl kde-games, kde-client, gtk-games, gtk-client, utils, grubby,
-dnl ggz-client-libs, ggzd, gnome-client, txt-client.
+dnl between them all.  The master copy resides with libggz.
+dnl Currently the following modules use it:
+dnl   kde-games, kde-client, gtk-games, gtk-client, utils, grubby,
+dnl   ggz-client-libs, ggzd, gnome-client, txt-client
 dnl See /docs/ggz-project/buildsystem for documentation.
 dnl
 dnl ======================================
 dnl
 dnl History:
-dnl 2001-05-??: first version to find easysock and ggzcore
-dnl 2001-09-09: include libggz[d]mod support, and rename ac_find_file
-dnl 2001-11-05: backport from copenhagen, and more macros
-dnl 2001-12-16: updated for new ggzmod, imported to gtk-games and gtk-client
-dnl 2002-01-12: include libggz support; imported to ggz-client-libs and ggzd
-dnl 2002-01-18: remove easysock functions; look in prefix dirs for
-dnl             includes and libs
-dnl 2002-08-20: change -I<directory> to -isystem<directory> to avoid
-dnl             warnings in gcc3
-dnl 2002-09-25: added AC_GGZ_ERROR, AC_GGZ_REMOVEDUPS, AC_GGZ_INIT, allowing
-dnl             for more control over what is going to happen
-dnl 2002-10-12: added action-if-found and action-if-not-found parameters to
-dnl             all primary macros
-
+dnl   See the CVS log for a full history.
+dnl
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
 dnl ------------------------------------------------------------------------
@@ -177,16 +166,17 @@ libggz_libraries=""
 libggz_includes=""
 
 AC_ARG_WITH(libggz-dir,
-    [  --with-libggz-dir=DIR       libggz installation prefix ],
+    AC_HELP_STRING([--with-libggz-dir=DIR],[libggz installation prefix]),
     [  ac_libggz_includes="$withval"/include
        ac_libggz_libraries="$withval"/lib
     ])
 AC_ARG_WITH(libggz-includes,
-    [  --with-libggz-includes=DIR  where the libggz includes are. ],
+    AC_HELP_STRING([--with-libggz-includes=DIR],
+                   [where the libggz includes are]),
     [  ac_libggz_includes="$withval"
     ])
 AC_ARG_WITH(libggz-libraries,
-    [  --with-libggz-libraries=DIR where the libggz libs are. ],
+    AC_HELP_STRING([--with-libggz-libraries=DIR],[where the libggz libs are]),
     [  ac_libggz_libraries="$withval"
     ])
 
@@ -275,16 +265,18 @@ ggzcore_libraries=""
 ggzcore_includes=""
 
 AC_ARG_WITH(ggzcore-dir,
-    [  --with-ggzcore-dir=DIR       ggzcore installation prefix ],
+    AC_HELP_STRING([--with-ggzcore-dir=DIR],[ggzcore installation prefix]),
     [  ac_ggzcore_includes="$withval"/include
        ac_ggzcore_libraries="$withval"/lib
     ])
 AC_ARG_WITH(ggzcore-includes,
-    [  --with-ggzcore-includes=DIR  where the ggzcore includes are. ],
+    AC_HELP_STRING([--with-ggzcore-includes=DIR],
+                   [where the ggzcore includes are]),
     [  ac_ggzcore_includes="$withval"
     ])
 AC_ARG_WITH(ggzcore-libraries,
-    [  --with-ggzcore-libraries=DIR where the ggzcore libs are. ],
+    AC_HELP_STRING([--with-ggzcore-libraries=DIR],
+                   [where the ggzcore libs are]),
     [  ac_ggzcore_libraries="$withval"
     ])
 
@@ -371,7 +363,7 @@ ac_ggz_config=NO
 ggz_config=""
 
 AC_ARG_WITH(ggzconfig,
-    [  --with-ggzconfig=DIR          path to ggz-config ],
+    AC_HELP_STRING([--with-ggzconfig=DIR],[path to ggz-config]),
     [  ac_ggz_config="$withval"
     ])
 
@@ -452,16 +444,18 @@ ggzmod_libraries=""
 ggzmod_includes=""
 
 AC_ARG_WITH(ggzmod-dir,
-    [  --with-ggzmod-dir=DIR        ggzmod installation prefix ],
+    AC_HELP_STRING([--with-ggzmod-dir=DIR],[ggzmod installation prefix]),
     [  ac_ggzmod_includes="$withval"/include
        ac_ggzmod_libraries="$withval"/lib
     ])
 AC_ARG_WITH(ggzmod-includes,
-    [  --with-ggzmod-includes=DIR   where the ggzmod includes are. ],
+    AC_HELP_STRING([--with-ggzmod-includes=DIR],
+                   [where the ggzmod includes are]),
     [  ac_ggzmod_includes="$withval"
     ])
 AC_ARG_WITH(ggzmod-libraries,
-    [  --with-ggzmod-libraries=DIR  where the ggzmod libs are. ],
+    AC_HELP_STRING([--with-ggzmod-libraries=DIR],
+                   [where the ggzmod libs are]),
     [  ac_ggzmod_libraries="$withval"
     ])
 
@@ -549,16 +543,18 @@ ggzdmod_libraries=""
 ggzdmod_includes=""
 
 AC_ARG_WITH(ggzdmod-dir,
-    [  --with-ggzdmod-dir=DIR        ggzdmod installation prefix ],
+    AC_HELP_STRING([--with-ggzdmod-dir=DIR], [ggzdmod installation prefix]),
     [  ac_ggzdmod_includes="$withval"/include
        ac_ggzdmod_libraries="$withval"/lib
     ])
 AC_ARG_WITH(ggzdmod-includes,
-    [  --with-ggzdmod-includes=DIR   where the ggzdmod includes are. ],
+    AC_HELP_STRING([--with-ggzdmod-includes=DIR], 
+                   [where the ggzdmod includes are]),
     [  ac_ggzdmod_includes="$withval"
     ])
 AC_ARG_WITH(ggzdmod-libraries,
-    [  --with-ggzdmod-libraries=DIR  where the ggzdmod libs are. ],
+    AC_HELP_STRING([--with-ggzdmod-libraries=DIR],
+                   [where the ggzdmod libs are]),
     [  ac_ggzdmod_libraries="$withval"
     ])
 
@@ -641,7 +637,7 @@ AC_DEFUN([AC_GGZ_SERVER],
 [
 AC_MSG_CHECKING([for GGZ server: ggzd])
 AC_ARG_WITH(ggzd-confdir,
-[  --with-ggzd-confdir=DIR       directory for room/game data],
+    AC_HELP_STRING([--with-ggzd-confdir=DIR], [directory for room/game data]),
 [ ac_ggzd_confdir="$withval"
 ])
 
