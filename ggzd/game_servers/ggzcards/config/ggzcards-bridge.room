@@ -1,9 +1,12 @@
 # This is the short name for the room
 Name = GGZ Cards - Bridge
+
 # This is the long descriptive name for the room
 Description = GGZ Cards - Bridge room
+
 # The gametype should match up to the Name of an added game
 GameType = GGZCards-Bridge
+
 # These set maximum values for this room
 MaxPlayers = 150
 MaxTables = 45
