@@ -1,10 +1,10 @@
 /* 
  * File: dlg_about.c
- * Author: Rich Gade, Jason Short
- * Project: GGZCards Client
- * Date: 08/20/2000
+ * Author: GGZ Development Team
+ * Project: GGZ GTK games
+ * Date: 10/12/2002
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.c 4869 2002-10-11 23:16:04Z jdorje $
+ * $Id: dlg_about.c 4882 2002-10-12 19:36:19Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -27,12 +27,16 @@
 #  include <config.h>
 #endif
 
-#include "ggzintl.h"
+#include <gtk/gtk.h>
 
 #include "dlg_about.h"
-#include "game.h"		/* for _( macro only */
+#include "ggzintl.h"
 
-GtkWidget *create_dlg_about(void)
+static const char *dlg_title = NULL;
+static const char *dlg_header = NULL;
+static const char *dlg_content = NULL;
+
+static GtkWidget *create_dlg_about(void)
 {
 	GtkWidget *dialog;
 	GtkWidget *vbox;
@@ -46,7 +50,7 @@ GtkWidget *create_dlg_about(void)
 	 */
 	dialog = gtk_dialog_new();
 	gtk_object_set_data(GTK_OBJECT(dialog), "dlg_about", dialog);
-	gtk_window_set_title(GTK_WINDOW(dialog), _("About GGZCards"));
+	gtk_window_set_title(GTK_WINDOW(dialog), dlg_title);
 	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
 
 	/* 
@@ -60,10 +64,7 @@ GtkWidget *create_dlg_about(void)
 	/* 
 	 * Make title label
 	 */
-	title_label =
-		gtk_label_new(_
-			      ("GGZ Gaming Zone\n"
-			       "GGZ Cards Version " VERSION));
+	title_label = gtk_label_new(dlg_header);
 	gtk_widget_ref(title_label);
 	gtk_object_set_data_full(GTK_OBJECT(dialog), "title_label",
 				 title_label,
@@ -74,26 +75,7 @@ GtkWidget *create_dlg_about(void)
 	/* 
 	 * Make body label
 	 */
-	body_label = gtk_label_new(_("Authors:\n"
-				     "        Gtk+ Client:\n"
-				     "            Rich Gade        <rgade@users.sourceforge.net>\n"
-				     "            Jason Short      <jdorje@users.sourceforge.net>\n"
-				     "\n"
-				     "        Game Server:\n"
-				     "            Jason Short      <jdorje@users.sourceforge.net>\n"
-				     "            Rich Gade        <rgade@users.sourceforge.net>\n"
-				     "\n"
-				     "        Game Modules:\n"
-				     "            Jason Short      <jdorje@users.sourceforge.net>\n"
-				     "            Rich Gade        <rgade@users.sourceforge.net>\n"
-				     "            Ismael Orenstein <perdig@users.sourceforge.net>\n"
-				     "\n"
-				     "        AI Modules:\n"
-				     "            Jason Short      <jdorje@users.sourceforge.net>\n"
-				     "            Brent Hendricks  <bmh@users.sourceforge.net>\n"
-				     "\n"
-				     "Website:\n"
-				     "        http://ggz.sourceforge.net/"));
+	body_label = gtk_label_new(dlg_content);
 	gtk_widget_ref(body_label);
 	gtk_object_set_data_full(GTK_OBJECT(dialog), "body_label", body_label,
 				 (GtkDestroyNotify) gtk_widget_unref);
@@ -136,4 +118,29 @@ GtkWidget *create_dlg_about(void)
 	 * Done!
 	 */
 	return dialog;
+}
+
+void init_dlg_about(const char *title, const char *header,
+		    const char *about)
+{
+	dlg_title = title;
+	dlg_header = header;
+	dlg_content = about;
+}
+
+void create_or_raise_dlg_about(void)
+{
+	static GtkWidget *dlg_about = NULL;
+
+	if (dlg_about != NULL) {
+		gdk_window_show(dlg_about->window);
+		gdk_window_raise(dlg_about->window);
+	} else {
+		dlg_about = create_dlg_about();
+		(void) gtk_signal_connect(GTK_OBJECT(dlg_about),
+					  "destroy",
+					  GTK_SIGNAL_FUNC
+					  (gtk_widget_destroyed), &dlg_about);
+		gtk_widget_show(dlg_about);
+	}
 }

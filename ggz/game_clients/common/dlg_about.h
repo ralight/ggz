@@ -1,10 +1,10 @@
 /* 
- * File: dlg_about.h
- * Author: Rich Gade, Jason Short
- * Project: GGZCards Client
- * Date: 08/20/2000
+ * File: dlg_about.c
+ * Author: GGZ Development Team
+ * Project: GGZ GTK games
+ * Date: 10/12/2002
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.h 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: dlg_about.h 4882 2002-10-12 19:36:19Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -23,6 +23,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "gtk/gtk.h"
+/* Call this function to set the title and content for the
+ * about dialog.  Make sure all of the values are translated. */
+void init_dlg_about(const char *title,
+		    const char *header,
+		    const char *about);
 
-GtkWidget *create_dlg_about(void);
+/* Call this function to show the about dialog. */
+void create_or_raise_dlg_about(void);

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4722 2002-09-26 11:13:59Z dr_maux $
+# $Id: Makefile.am 4882 2002-10-12 19:36:19Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -23,7 +23,6 @@ ggz_ggzcards_SOURCES = \
 	ai.h ai.c \
 	animation.c animation.h \
 	cb_main.c cb_main.h \
-	dlg_about.c dlg_about.h \
 	dlg_bid.c dlg_bid.h \
 	dlg_main.c dlg_main.h \
 	dlg_options.c dlg_options.h \

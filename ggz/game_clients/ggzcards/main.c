@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 4879 2002-10-12 17:20:16Z jdorje $
+ * $Id: main.c 4882 2002-10-12 19:36:19Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -37,6 +37,7 @@
 
 #include <ggz.h>		/* libggz */
 
+#include "dlg_about.h"
 #include "ggzintl.h"
 
 #include "client.h"
@@ -55,8 +56,10 @@ GtkWidget *dlg_main = NULL;
 
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
+static void init_about_dialog(void);
 
 static char *font = "-*-fixed-medium-r-normal--14-*-*-*-*-*-*-*,*-r-*";
+
 
 int main(int argc, char *argv[])
 {
@@ -79,9 +82,9 @@ int main(int argc, char *argv[])
 	fixed_font_style = gtk_rc_style_new();
 	fixed_font_style->fontset_name = font;
 #endif
-	
 
 	/* Now some more initializations... */
+	init_about_dialog();
 	dlg_main = create_dlg_main();
 	gtk_widget_show(dlg_main);
 	table_initialize();
@@ -156,6 +159,38 @@ void listen_for_server(bool listen)
 		gdk_input_remove(server_socket_tag);
 		listening = FALSE;
 	}
+}
+
+/* Initialize data for the "about" dialog */
+static void init_about_dialog(void)
+{
+	const char *about_content =
+	  _("Authors:\n"
+	    "        Gtk+ Client:\n"
+	    "            Rich Gade        <rgade@users.sourceforge.net>\n"
+	    "            Jason Short      <jdorje@users.sourceforge.net>\n"
+	    "\n"
+	    "        Game Server:\n"
+	    "            Jason Short      <jdorje@users.sourceforge.net>\n"
+	    "            Rich Gade        <rgade@users.sourceforge.net>\n"
+	    "\n"
+	    "        Game Modules:\n"
+	    "            Jason Short      <jdorje@users.sourceforge.net>\n"
+	    "            Rich Gade        <rgade@users.sourceforge.net>\n"
+	    "            Ismael Orenstein <perdig@users.sourceforge.net>\n"
+	    "\n"
+	    "        AI Modules:\n"
+	    "            Jason Short      <jdorje@users.sourceforge.net>\n"
+	    "            Brent Hendricks  <bmh@users.sourceforge.net>\n"
+	    "\n"
+	    "Website:\n"
+	    "        http://ggz.sourceforge.net/");
+	char *about_header;
+
+	about_header = g_strdup_printf(_("GGZ Gaming Zone\n"
+					 "GGZ Cards Version %s"), VERSION);
+	init_dlg_about(_("About GGZCards"), about_header, about_content);
+	g_free(about_header);
 }
 
 
