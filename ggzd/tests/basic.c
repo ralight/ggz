@@ -102,12 +102,9 @@ int main (void) {
 	/* Test seat setting/getting */
 	control[0].num = 0;
 	control[0].type = GGZ_SEAT_PLAYER;
-	control[0].name = strdup("Test 0");
+	control[0].name = "Test 0";
 	control[0].fd = 17;
 	ggzdmod_set_seat(mod, &control[0]);
-	control[0].name[2] = 'A';
-	free(control[0].name); /* make sure this is safe */
-	control[0].name = "Test 0";
 
 	control[1].num = 1;
 	control[1].type = GGZ_SEAT_BOT;

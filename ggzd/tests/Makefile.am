@@ -2,12 +2,16 @@
 SUBDIRS = 
 
 INCLUDES = -I$(top_srcdir)/ggzdmod
-LDFLAGS = -static
+#LDFLAGS = -static
 LDADD = $(top_builddir)/ggzdmod/libggzdmod.la
 
 noinst_PROGRAMS =       \
-	basic
+	basic \
+	ggzdtest \
+	logmod
 
 basic_SOURCES = basic.c
+ggzdtest_SOURCES = ggzdtest.c
+logmod_SOURCES = logmod.c
 
 test: # nothing necessary
