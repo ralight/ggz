@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 6405 2004-11-17 12:48:05Z josef $
+ * $Id: ggzdb.h 7067 2005-03-28 19:30:35Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -105,7 +105,10 @@ GGZDBResult ggzdb_stats_update(ggzdbPlayerGameStats *stats);
 int ggzdb_compare_password(const char *input, const char *password);
 
 /* Create a new match statistics entry */
-GGZDBResult ggzdb_stats_newmatch(const char *game, const char *winner);
+GGZDBResult ggzdb_stats_newmatch(const char *game, const char *winner, const char *savegame);
+
+/* Register a savegame entry temporarily */
+GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame);
 
 #endif
 

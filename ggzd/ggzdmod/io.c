@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 6896 2005-01-25 08:34:57Z jdorje $
+ * $Id: io.c 7067 2005-03-28 19:30:35Z josef $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -46,6 +46,7 @@
 static int _io_read_req_state(GGZdMod *ggzdmod);
 static int _io_read_msg_log(GGZdMod *ggzdmod);
 static int _io_read_msg_report(GGZdMod *ggzdmod);
+static int _io_read_msg_savegame(GGZdMod *ggzdmod);
 static int _io_read_req_num_seats(GGZdMod * ggzdmod);
 static int _io_read_req_boot(GGZdMod *ggzdmod);
 static int _io_read_req_bot(GGZdMod *ggzdmod);
@@ -186,6 +187,15 @@ int _io_send_game_report(int fd, int num_players,
 	return 0;
 }
 
+int _io_send_savegame_report(int fd, const char *savegame)
+{
+	if (ggz_write_int(fd, MSG_SAVEGAME_REPORT) < 0
+	    || ggz_write_string(fd, savegame) < 0)
+		return -1;
+
+	return 0;
+}
+
 int _io_send_req_num_seats(int fd, int num_seats)
 {
 	if (ggz_write_int(fd, REQ_NUM_SEATS) < 0
@@ -255,6 +265,8 @@ int _io_read_data(GGZdMod * ggzdmod)
 			return _io_read_msg_log(ggzdmod);
 		case MSG_GAME_REPORT:
 			return _io_read_msg_report(ggzdmod);
+		case MSG_SAVEGAME_REPORT:
+			return _io_read_msg_savegame(ggzdmod);
 		case REQ_NUM_SEATS:
 			return _io_read_req_num_seats(ggzdmod);
 		case REQ_BOOT:
@@ -341,6 +353,21 @@ static int _io_read_msg_report(GGZdMod *ggzdmod)
 			if (names[p])
 				ggz_free(names[p]);
 	}
+
+	return 0;
+}
+
+
+static int _io_read_msg_savegame(GGZdMod *ggzdmod)
+{
+	char *savegame;
+
+	if (ggz_read_string_alloc(ggzdmod->fd, &savegame) < 0)
+		return -1;
+
+	_ggzdmod_handle_savegame(ggzdmod, savegame);
+
+	ggz_free(savegame);
 
 	return 0;
 }

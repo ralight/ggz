@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: table.h 7067 2005-03-28 19:30:35Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -89,10 +89,12 @@ struct GGZTable {
 	/* Name of player who launched (owns?) the table */
 	char owner[MAX_USER_NAME_LEN + 1];
 
+	/* Savegame information related to this table */
+	char *savegame;
+
 	/* Linked-list of private table-specific events */
 	GGZEvent *events_head;
 	GGZEvent *events_tail;
-	
 };
 
 

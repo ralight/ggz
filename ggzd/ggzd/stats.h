@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.h 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: stats.h 7067 2005-03-28 19:30:35Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -33,6 +33,8 @@
 GGZReturn stats_lookup(ggzdbPlayerGameStats *stats);
 
 void report_statistics(int room, int gametype,
-		       const GGZdModGameReportData *report);
+		       const GGZdModGameReportData *report, const char *savegame);
+
+void report_savegame(int gametype, const char *owner, const char *savegame);
 
 #endif /* _GGZ_STATS_H */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 6581 2005-01-02 11:29:36Z josef $
+ * $Id: ggzdb_pgsql.c 7067 2005-03-28 19:30:35Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -677,7 +677,7 @@ GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 	return rc;
 }
 
-GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner)
+GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner, const char *savegame)
 {
 	PGconn *conn;
 	PGresult *res;
@@ -691,10 +691,17 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner)
 	}
 
 	snprintf(query, sizeof(query),
+		"DELETE FROM savegames "
+		"WHERE game = '%s' AND savegame = '%s'",
+		game, savegame);
+
+	res = PQexec(conn, query);
+
+	snprintf(query, sizeof(query),
 		"INSERT INTO matches "
-		"(date, game, winner) VALUES "
-		"(%li, '%s', '%s')",
-		time(NULL), game, winner);
+		"(date, game, winner, savegame) VALUES "
+		"(%li, '%s', '%s', '%s')",
+		time(NULL), game, winner, savegame);
 
 	res = PQexec(conn, query);
 
@@ -708,3 +715,36 @@ GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner)
 
 	return rc;
 }
+
+GGZDBResult _ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame)
+{
+	PGconn *conn;
+	PGresult *res;
+	char query[4096];
+	int rc = GGZDB_ERR_DB;
+
+	conn = claimconnection();
+	if (!conn) {
+		err_msg("_ggzdb_stats_savegame: couldn't claim connection");
+		return rc;
+	}
+
+	snprintf(query, sizeof(query),
+		"INSERT INTO savegames"
+		"(date, game, owner, savegame) VALUES "
+		"(%li, '%s', '%s', '%s')",
+		time(NULL), game, owner, savegame);
+
+	res = PQexec(conn, query);
+
+	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+		err_sys("couldn't insert savegame");
+	}
+	else rc = GGZDB_NO_ERROR;
+	PQclear(res);
+
+	releaseconnection(conn);
+
+	return rc;
+}
+

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 6893 2005-01-25 04:31:44Z jdorje $
+ * $Id: ggzdmod.h 7067 2005-03-28 19:30:35Z josef $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -314,6 +314,9 @@ typedef enum {
 	/** @brief For GGZ only.  Reports the results of a game. */
 	GGZDMOD_EVENT_GAMEREPORT,
 
+	/** @brief For GGZ only.  Reports a savegame. */
+	GGZDMOD_EVENT_SAVEGAMEREPORT,
+
 	/* GGZ-side only.  These should be moved to ggzdmod-ggz.h. */
 	GGZDMOD_EVENT_REQ_NUM_SEATS,
 	GGZDMOD_EVENT_REQ_BOOT,
@@ -327,6 +330,8 @@ typedef enum {
 	 *  not guaranteed that the GGZ connection will continue to
 	 *  work after an error has happened. */
 	GGZDMOD_EVENT_ERROR
+
+	/* GGZDMOD_EVENT_ERROR must be last in the list! */
 } GGZdModEvent;
 
 /** @brief The "type" of ggzdmod.
@@ -649,6 +654,18 @@ typedef enum {
 void ggzdmod_report_game(GGZdMod *ggzdmod,
 			 int *teams,
 			 GGZGameResult *results, int *scores);
+
+/** @brief Report the savegame to GGZ.
+ *
+ *  If a game saves the game data to disk, the directory name, file name or
+ *  any other associated token can be reported to GGZ.
+ *  In the case of a continuous game log, the reporting should happen at the
+ *  beginning as to allow the continuation of the saved game.
+ *
+ *  @param ggzdmod The ggzdmod object.
+ *  @param savegame Name of the savegame file within the game's directory.
+ */
+void ggzdmod_report_savegame(GGZdMod *ggzdmod, const char *savegame);
 
 /** @brief Tell GGZ to change the number of seats at this table.
  *  @note This functionality is incomplete, and should not yet be used. */

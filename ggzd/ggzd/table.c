@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 6906 2005-01-26 03:24:27Z jdorje $
+ * $Id: table.c 7067 2005-03-28 19:30:35Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -84,6 +84,8 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
 static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, const void *data);
 static void table_game_report(GGZdMod *ggzdmod, GGZdModEvent event,
 			      const void *data);
+static void table_game_savegame(GGZdMod *ggzdmod, GGZdModEvent event,
+			      const void *data);
 static void table_game_req_num_seats(GGZdMod *ggzdmod, GGZdModEvent event,
 				     const void *data);
 static void table_game_req_boot(GGZdMod *ggzdmod, GGZdModEvent event,
@@ -135,6 +137,8 @@ GGZTable* table_new(void)
 	table->max_num_spectators = 0;
 	table->spectators = NULL;
 
+	table->savegame = NULL;
+
 	return table;
 }
 
@@ -178,6 +182,7 @@ static GGZTable *table_copy(GGZTable *table)
 	new_table->ggzdmod = NULL;
 	new_table->events_head = NULL;
 	new_table->events_tail = NULL;
+	new_table->savegame = NULL;
 	/* What about table->lock? */
 
 	return new_table;
@@ -436,6 +441,8 @@ static GGZReturn table_start_game(GGZTable *table)
         ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LOG, &table_log);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_GAMEREPORT,
 			    &table_game_report);
+	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_SAVEGAMEREPORT,
+			    &table_game_savegame);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_NUM_SEATS,
 			    &table_game_req_num_seats);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_REQ_BOOT,
@@ -897,7 +904,20 @@ static void table_game_report(GGZdMod *ggzdmod,
 	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
 	const GGZdModGameReportData *report = data;
 
-	report_statistics(table->room, table->type, report);
+	report_statistics(table->room, table->type, report, table->savegame);
+}
+
+
+static void table_game_savegame(GGZdMod *ggzdmod,
+			      GGZdModEvent event, const void *data)
+{
+	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
+
+	if (table->savegame)
+		ggz_free(table->savegame);
+	table->savegame = ggz_strdup((char*)data);
+
+	report_savegame(table->type, table->owner, table->savegame);
 }
 
 
@@ -1575,6 +1595,9 @@ void table_free(GGZTable* table)
 
 	if (table->ggzdmod)
 		ggzdmod_free(table->ggzdmod);
+
+	if (table->savegame)
+		ggz_free(table->savegame);
 
 	ggz_free(table);
 }

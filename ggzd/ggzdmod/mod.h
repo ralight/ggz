@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 6113 2004-07-16 17:44:10Z jdorje $
+ * $Id: mod.h 7067 2005-03-28 19:30:35Z josef $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -69,6 +69,7 @@ void _ggzdmod_handle_log(GGZdMod * ggzdmod, char *msg);
 void _ggzdmod_handle_report(GGZdMod * ggzdmod,
 			    int num_players, char **names, GGZSeatType *types,
 			    int *teams, GGZGameResult *results, int *scores);
+void _ggzdmod_handle_savegame(GGZdMod * ggzdmod, char *savegame);
 void _ggzdmod_handle_num_seats_request(GGZdMod *ggzdmod, int num_seats);
 void _ggzdmod_handle_boot_request(GGZdMod *ggzdmod, char *name);
 void _ggzdmod_handle_bot_request(GGZdMod *ggzdmod, int seat_num);

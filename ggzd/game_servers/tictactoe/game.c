@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 7016 2005-03-18 15:34:52Z josef $
+ * $Id: game.c 7067 2005-03-28 19:30:35Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -875,19 +875,25 @@ static void game_rotate_board(char b[9])
 
 
 #ifdef GGZSAVEDGAMES
+#define TEMPLATE "savegame.XXXXXX"
+
 static void game_save(char *fmt, ...)
 {
 	int fd;
-	char *template;
+	char *savegamepath, *savegamename;
 	char buffer[1024];
 
 	if(!ttt_game.savegame) {
-		template = strdup(DATADIR "/gamedata/TicTacToe/savegame.XXXXXX");
-		fd = mkstemp(template);
-		free(template);
+		savegamepath = strdup(DATADIR "/gamedata/TicTacToe/" TEMPLATE);
+		fd = mkstemp(savegamepath);
+		savegamename = strdup(savegamepath + strlen(savegamepath) - strlen(TEMPLATE));
+		free(savegamepath);
 		if(fd < 0) return;
 		ttt_game.savegame = fdopen(fd, "w");
 		if(!ttt_game.savegame) return;
+
+		ggzdmod_report_savegame(ttt_game.ggz, savegamename);
+		free(savegamename);
 	}
 
 	va_list ap;

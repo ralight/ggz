@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 5996 2004-05-17 14:16:42Z josef $
+ * $Id: ggzdb.c 7067 2005-03-28 19:30:35Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -239,7 +239,7 @@ GGZDBResult ggzdb_stats_lookup(ggzdbPlayerGameStats *stats)
 }
 
 
-GGZDBResult ggzdb_stats_newmatch(const char *game, const char *winner)
+GGZDBResult ggzdb_stats_newmatch(const char *game, const char *winner, const char *savegame)
 {
 	GGZDBResult rc = GGZDB_NO_ERROR;
 
@@ -249,7 +249,7 @@ GGZDBResult ggzdb_stats_newmatch(const char *game, const char *winner)
 		rc = ggzdb_stats_init();
 
 	if (rc == GGZDB_NO_ERROR)
-		rc = _ggzdb_stats_newmatch(game, winner);
+		rc = _ggzdb_stats_newmatch(game, winner, savegame);
 
 	_ggzdb_exit();
 
@@ -268,6 +268,24 @@ GGZDBResult ggzdb_stats_update(ggzdbPlayerGameStats *stats)
 
 	if (rc == GGZDB_NO_ERROR)
 		rc = _ggzdb_stats_update(stats);
+
+	_ggzdb_exit();
+
+	return rc;
+}
+
+
+GGZDBResult ggzdb_stats_savegame(const char *game, const char *owner, const char *savegame)
+{
+	GGZDBResult rc = GGZDB_NO_ERROR;
+
+	_ggzdb_enter();
+
+	if (stats_needs_init)
+		rc = ggzdb_stats_init();
+
+	if (rc == GGZDB_NO_ERROR)
+		rc = _ggzdb_stats_savegame(game, owner, savegame);
 
 	_ggzdb_exit();
 

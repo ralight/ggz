@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: stats.c 7067 2005-03-28 19:30:35Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -224,7 +224,7 @@ static int fill_in_teams(const GGZdModGameReportData *report)
 }
 
 void report_statistics(int room, int gametype,
-		       const GGZdModGameReportData *report)
+		       const GGZdModGameReportData *report, const char *savegame)
 {
 	int i, num_teams;
 	char game_name[MAX_GAME_NAME_LEN + 1];
@@ -337,6 +337,9 @@ void report_statistics(int room, int gametype,
 	}
 	if(!winner) winner = "";
 
+	/* Find out the savegame */
+	if(!savegame) savegame = "";
+
 	/* Calculate stats */
 	if (records)
 		calculate_records(stats, report);
@@ -346,7 +349,7 @@ void report_statistics(int room, int gametype,
 		calculate_highscores(stats, report);
 
 	/* Rewrite the stats to the database. */
-	ggzdb_stats_newmatch(game_name, winner);
+	ggzdb_stats_newmatch(game_name, winner, savegame);
 	for (i = 0; i < report->num_players; i++) {
 		ggzdb_stats_update(&stats[i]);
 	}
@@ -387,3 +390,15 @@ void report_statistics(int room, int gametype,
 				  room, -1);
 	}
 }
+
+void report_savegame(int gametype, const char *owner, const char *savegame)
+{
+	char game_name[MAX_GAME_NAME_LEN + 1];
+
+	pthread_rwlock_rdlock(&game_types[gametype].lock);
+	strcpy(game_name, game_types[gametype].name);
+	pthread_rwlock_unlock(&game_types[gametype].lock);
+
+	ggzdb_stats_savegame(game_name, owner, savegame);
+}
+
