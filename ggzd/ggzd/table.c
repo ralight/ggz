@@ -28,6 +28,7 @@
 #include <sys/signal.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <sys/stat.h>
 #include <pthread.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -170,6 +171,7 @@ static void table_fork(int t_index)
 	char game[MAX_GAME_NAME_LEN + 1];
 	char fd_name[MAX_GAME_NAME_LEN + 12];
 	int type_index, sock, fd;
+	struct stat buf;
 	
 	/* Get path for game server */
 	type_index = tables.info[t_index].type_index;
@@ -183,6 +185,11 @@ static void table_fork(int t_index)
 	if ( (pid = fork()) < 0)
 		err_sys_exit("fork failed");
 	else if (pid == 0) {
+		/* Make sure the parent's socket is created before we go on */
+		sprintf(fd_name, "/tmp/%s.%d", game, getpid());
+		while(stat(fd_name, &buf) < 0)
+			sleep(1);
+
 		table_run_game(t_index, path);
 		/* table_run_game() should never return */
 		err_sys_exit("exec failed");
@@ -216,9 +223,10 @@ static void table_fork(int t_index)
 
 static void table_run_game(int t_index, char *path)
 {
-	dbg_msg(GGZ_DBG_PROCESS, "Process forked.  Game running on table %d", 
-		t_index);
-	
+	/* Comment out for now */
+	/*dbg_msg(GGZ_DBG_PROCESS, "Process forked.  Game running on table %d", 
+		t_index);*/
+
 	/* FIXME: Close all other fd's and kill threads? */
 	execv(path, NULL);
 }
