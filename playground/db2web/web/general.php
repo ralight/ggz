@@ -174,7 +174,19 @@ $res = pg_exec($id, "SELECT * FROM users WHERE handle = '$ggzuser'");
 if (($res) && (pg_numrows($res) == 1)) :
 	$realname = pg_result($res, 0, "name");
 	$email = pg_result($res, 0, "email");
+endif;
+$res = pg_exec($id, "SELECT * FROM userinfo WHERE handle = '$ggzuser'");
+if (($res) && (pg_numrows($res) == 1)) :
 	$photo = pg_result($res, 0, "photo");
+	$gender = pg_result($res, 0, "gender");
+	$country = pg_result($res, 0, "country");
+endif;
+
+if (!$gender) :
+	$gender = "N/A";
+endif;
+if (!$country) :
+	$country = "N/A";
 endif;
 
 if ($photo) :
@@ -186,8 +198,284 @@ else :
 endif;
 echo "Real name: $realname<br>\n";
 echo "Email address: $email<br>\n";
+echo "Gender: $gender<br>\n";
+echo "Country: $country<br>\n";
 
 echo "<br><br>\n";
+
+echo "</td></tr></table>\n";
+echo "</td></tr></table>\n";
+
+echo "<br><br>\n";
+
+echo "<table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>\n";
+echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00c0c0'>\n";
+
+echo "<b>Change information</b><br>\n";
+
+if ($realname == "N/A") :
+	$realname = "";
+endif;
+if ($email == "N/A") :
+	$email = "";
+endif;
+if ($gender == "N/A") :
+	$gender = "";
+endif;
+if ($country == "N/A") :
+	$country = "";
+endif;
+
+echo "<table><tr><td bgcolor='#00a0a0'>\n";
+
+echo "<form action='settings.php?settings=1' method='POST'>\n";
+echo "<table>\n";
+echo "<tr><td>Photo:</td><td><input type='text' name='user_photo' value='$photo'></td></tr>\n";
+echo "<tr><td>Real name:</td><td><input type='text' name='user_realname' value='$realname'></td></tr>\n";
+echo "<tr><td>Email address:</td><td><input type='text' name='user_email' value='$email'></td></tr>\n";
+echo "<tr><td>Gender:</td><td><input type='text' name='user_gender' value='$gender'></td></tr>\n";
+echo "<tr><td>Country:</td><td><input type='text' name='user_country' value='$country'></td></tr>\n";
+echo "<tr><td></td><td><input type='submit' value='Change'></td></tr>\n";
+echo "</table>\n";
+echo "</form>\n";
+
+echo "</td></tr></table>\n";
+
+echo "<br><br>\n";
+
+echo "<b>Password alteration</b><br>\n";
+
+echo "<table><tr><td bgcolor='#00a0a0'>\n";
+
+echo "<form action='settings.php?password=1' method='POST'>\n";
+echo "<table>\n";
+echo "<tr><td>Password:</td><td><input type='password' name='user_password' value=''></td></tr>\n";
+echo "<tr><td></td><td><input type='submit' value='Change'></td></tr>\n";
+echo "</table>\n";
+echo "</form>\n";
+
+echo "</td></tr></table>\n";
+
+echo "<br><br>\n";
+
+echo "</td></tr></table>\n";
+echo "</td></tr></table>\n";
+
+echo "<br><br>\n";
+
+echo "<table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>\n";
+echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00c0c0'>\n";
+
+echo "<b>Teams and Clans</b><br>\n";
+
+echo "<table><tr><td bgcolor='#00a0a0'>\n";
+
+echo "<form action='teams.php?create=1' method='POST'>\n";
+echo "<table>\n";
+echo "<tr><td>Team name:</td><td><input type='input' name='team_name' value=''></td></tr>\n";
+echo "<tr><td></td><td><input type='submit' value='Create'></td></tr>\n";
+echo "</table>\n";
+echo "</form>\n";
+
+echo "</td></tr></table>\n";
+
+echo "<br><br>\n";
+
+echo "<b>Team membership</b><br>\n";
+
+echo "<table><tr><td bgcolor='#00a0a0'>\n";
+
+echo "<form action='teams.php?join=1' method='POST'>\n";
+echo "<table>\n";
+echo "<tr><td>Team name:</td><td>\n";
+echo "<select name='team_name'>\n";
+$res = pg_exec($id, "SELECT * FROM teams");
+for ($i = 0; $i < pg_numrows($res); $i++)
+{
+	$teamname = pg_result($res, $i, "teamname");
+	echo "<option>$teamname</option>\n";
+}
+echo "</select>\n";
+echo "</td></tr>\n";
+echo "<tr><td></td><td><input type='submit' value='Join'>\n";
+echo "<input type='submit' value='Leave'></td></tr>\n";
+echo "</table>\n";
+echo "</form>\n";
+
+echo "</td></tr></table>\n";
+
+echo "<br><br>\n";
+
+echo "</td><td bgcolor='#00c0c0' valign='top'>\n";
+
+echo "Current teams:<br><br>\n";
+
+$res = pg_exec($id, "SELECT * FROM teammembers WHERE handle = '$ggzuser' AND role LIKE '%member%'");
+for ($i = 0; $i < pg_numrows($res); $i++)
+{
+	$teamname = pg_result($res, $i, "teamname");
+	$role = pg_result($res, $i, "role");
+
+	$color = "silver_";
+	$number = 1;
+	$attribute = "";
+	$title = "";
+
+	if (strstr($role, "founder")) :
+		$title .= "Founder & ";
+		$attribute = "s";
+	endif;
+	if (strstr($role, "leader")) :
+		$title .= "Leader & ";
+		$color = "gold_";
+		$attribute = "d";
+	endif;
+	if (strstr($role, "vice")) :
+		$title .= "Vice Leader & ";
+		$color = "gold_";
+	endif;
+
+	$title = substr($title, 0, strlen($title) - 2);
+
+	echo "$teamname\n";
+	echo "<img src='ggzicons/rankings/rank_$color$number$attribute.gif.png' title='$title'><br>\n";
+}
+
+
+echo "Bla\n";
+echo "<img src='ggzicons/rankings/rank_gold_3s.gif.png' title='Multiple Winner & Leader & Founder'><br>\n";
+echo "Kuh\n";
+echo "<img src='ggzicons/rankings/rank_gold_2.gif.png' title='Winner & Vice Leader'><br>\n";
+echo "Narf\n";
+echo "<img src='ggzicons/rankings/rank_silver_2.gif.png' title='Winner'><br>\n";
+echo "Ruffle\n";
+echo "<img src='ggzicons/rankings/rank_silver_1.gif.png' title='Member'><br>\n";
+
+$res = pg_exec($id, "SELECT * FROM teammembers WHERE handle = '$ggzuser' AND role NOT LIKE '%member%'");
+
+if (pg_numrows($res) > 0) :
+	echo "<br>\n";
+	echo "Pending:<br>\n";
+
+	for ($i = 0; $i < pg_numrows($res); $i++)
+	{
+		$teamname = pg_result($res, $i, "teamname");
+
+		echo "$teamname (pending...)<br>\n";
+	}
+endif;
+
+echo "</td></tr></table>\n";
+echo "</td></tr></table>\n";
+
+echo "<br><br>\n";
+
+
+
+echo "<table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>\n";
+echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00c0c0'>\n";
+
+$teamname = 'fooclan';
+
+echo "<b>Team applications for $teamname</b><br>\n";
+
+echo "<table><tr><td bgcolor='#00a0a0'>\n";
+
+echo "<form action='teams.php?approve=1' method='POST'>\n";
+echo "<table>\n";
+echo "<tr><td>Player:</td><td>\n";
+echo "<input type='hidden' name='team_name' value='$teamname'>\n";
+echo "<select name='player_name'>\n";
+$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$teamname' AND role = ''");
+for ($i = 0; $i < pg_numrows($res); $i++)
+{
+	$playername = pg_result($res, $i, "handle");
+	echo "<option>$playername</option>\n";
+}
+echo "</select>\n";
+echo "</td></tr>\n";
+echo "<tr><td>Approval:</td><td>\n";
+echo "<select name='player_approval'>\n";
+echo "<option>approved</option>\n";
+echo "<option>declined</option>\n";
+echo "</select>\n";
+echo "</td></tr>\n";
+echo "<tr><td></td><td><input type='submit' value='Approve'></td></tr>\n";
+echo "</table>\n";
+echo "</form>\n";
+
+echo "</td></tr></table>\n";
+
+echo "<br><br>\n";
+
+echo "</td></tr></table>\n";
+echo "</td></tr></table>\n";
+
+echo "<br><br>\n";
+
+
+
+
+echo "<table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>\n";
+echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00c0c0'>\n";
+
+$teamname = 'fooclan';
+
+echo "<b>Team management for $teamname</b><br>\n";
+
+echo "<table><tr><td bgcolor='#00a0a0'>\n";
+
+echo "<form action='teams.php?manage=1' method='POST'>\n";
+echo "<table>\n";
+echo "<tr><td>Player:</td><td>\n";
+echo "<input type='hidden' name='team_name' value='$teamname'>\n";
+echo "<select name='player_name'>\n";
+$res = pg_exec($id, "SELECT * FROM teammembers WHERE teamname = '$teamname' AND role <> ''");
+for ($i = 0; $i < pg_numrows($res); $i++)
+{
+	$playername = pg_result($res, $i, "handle");
+	$role = pg_result($res, $i, "role");
+	echo "<option value='$playername'>$playername ($role)</option>\n";
+}
+echo "</select>\n";
+echo "</td></tr>\n";
+echo "<tr><td>Assign role:</td><td>\n";
+echo "<select name='player_role'>\n";
+echo "<option value='member'>Member</option>\n";
+echo "<option value='vice'>Vice Leader</option>\n";
+echo "<option value='leader'>Leader</option>\n";
+echo "</select>\n";
+echo "</td></tr>\n";
+echo "<tr><td></td><td><input type='submit' value='Change'></td></tr>\n";
+echo "</table>\n";
+echo "</form>\n";
+
+echo "</td></tr></table>\n";
+
+echo "<br><br>\n";
+
+echo "</td></tr></table>\n";
+echo "</td></tr></table>\n";
+
+echo "<br><br>\n";
+
+
+
+
+
+echo "<table border=0 cellspacing=0 cellpadding=1 width='100%'><tr><td bgcolor='#000000'>\n";
+echo "<table border=0 cellspacing=0 cellpadding=5 width='100%'><tr><td bgcolor='#00c0c0'>\n";
+
+echo "<b>Rankings</b><br>\n";
+
+echo "Global:\n";
+echo "<img src='ggzicons/rankings/rank_silver_4.gif.png' title='Rank 8'><br>\n";
+echo "TicTacToe:\n";
+echo "<img src='ggzicons/rankings/rank_gold_3.gif.png' title='Rank 1'><br>\n";
+echo "Tournament Foo of class Bar:\n";
+echo "<img src='ggzicons/rankings/rank_silver_2.gif.png' title='5th place'><br>\n";
+echo "Tournament class Bar:\n";
+echo "<img src='ggzicons/rankings/rank_silver_3s.gif.png' title='Rank 1'><br>\n";
 
 echo "</td></tr></table>\n";
 echo "</td></tr></table>\n";
