@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 5897 2004-02-11 01:25:52Z jdorje $
+ * $Id: protocols.h 6145 2004-07-17 16:20:35Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -29,7 +29,7 @@
 /* I thought of putting this into ggz_common (in libggz) along with the
    protocol opcodes, but it really needs to stay tied to the network code
    itself (in ggzd and ggzcore). */
-#define GGZ_CS_PROTO_VERSION 9
+#define GGZ_CS_PROTO_VERSION 10
 
 /* Update opcodes */
 typedef enum {
