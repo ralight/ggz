@@ -6,7 +6,7 @@ GMSGFMT = msgfmt
 
 PACKAGE = fyrdman
 POTFILE = fyrdman.pot
-POFILES = de.po
+POFILES = de.po es.po
 LOCATIONS = $(top_srcdir)/fyrdman/*.cpp
 
 # don't do this! maintainer only (will mess up non-latin1 messages)

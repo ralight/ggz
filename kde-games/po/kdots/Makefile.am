@@ -6,7 +6,7 @@ GMSGFMT = msgfmt
 
 PACKAGE = kdots
 POTFILE = kdots.pot
-POFILES = de.po
+POFILES = de.po es.po
 LOCATIONS = $(top_srcdir)/kdots/*.cpp
 
 # don't do this! maintainer only (will mess up non-latin1 messages)
