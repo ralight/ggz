@@ -121,14 +121,6 @@ This game channel is then used to communicate with the game server.
 A basic ggzmod usage may look like this:
 
 @verbatim
-static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
-{
-}
-
-static void handle_ggz(gpointer data, gint source, GdkInputCondition cond);
-{
-}
-
 static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
 {
 	ggzmod_dispatch(ggzmod);
