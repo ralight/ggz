@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 4346 2002-08-07 16:16:54Z jdorje $
+ * $Id: ggz.h 4624 2002-09-18 18:55:10Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -991,7 +991,8 @@ void ggz_error_sys(const char *fmt, ...)
  * @param fmt A printf-style format string
  */
 void ggz_error_sys_exit(const char *fmt, ...)
-                        ggz__attribute((format(printf, 1, 2)));
+                        ggz__attribute((format(printf, 1, 2)))
+                        ggz__attribute((noreturn));
 
 /**
  * @brief Log an error message.
@@ -1013,7 +1014,8 @@ void ggz_error_msg(const char *fmt, ...)
  * @param fmt A printf-style format string
  */
 void ggz_error_msg_exit(const char *fmt, ...)
-                        ggz__attribute((format(printf, 1, 2)));
+                        ggz__attribute((format(printf, 1, 2)))
+                        ggz__attribute((noreturn));
 
 /**
  * @brief Cleans up debugging state and prepares for exit.
