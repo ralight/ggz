@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4543 2002-09-13 06:49:00Z jdorje $
+ * $Id: table.c 4553 2002-09-13 17:39:35Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -1041,7 +1041,7 @@ void table_set_desc(GGZTable *table, char *desc)
 /* Kill the table */
 int table_kill(int room, int index, char *name)
 {
-	int status;
+	GGZReturn status;
 	char *data;
 
 	dbg_msg(GGZ_DBG_TABLE, "Kill request for table %d in room %d", index, 
@@ -1051,7 +1051,7 @@ int table_kill(int room, int index, char *name)
 
 	status = event_table_enqueue(room, index, table_kill_callback, 
 				     strlen(data)+1, data, NULL);
-	return status;
+	return status == GGZ_OK ? E_OK : E_NO_TABLE;
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/8/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.h 4534 2002-09-13 02:20:58Z jdorje $
+ * $Id: event.h 4553 2002-09-13 17:39:35Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -98,14 +98,14 @@ typedef struct GGZEvent {
  *
  * Note: memory pointed to by data MUST be dynamcially allocated
  */
-int event_room_enqueue(int room, GGZEventFunc func,
-		       size_t size, void* data, GGZEventDataFree free);
+GGZReturn event_room_enqueue(int room, GGZEventFunc func,
+			     size_t size, void* data, GGZEventDataFree free);
 		       
 /* Process queued-up room-specific events for player */
-int event_room_handle(GGZPlayer* player);
+GGZReturn event_room_handle(GGZPlayer* player);
 
 /* Flush queued-up room-specific events for player */
-int event_room_flush(GGZPlayer* player);
+GGZReturn event_room_flush(GGZPlayer* player);
 
 
 /*
@@ -119,8 +119,8 @@ int event_room_flush(GGZPlayer* player);
  *
  * Note: memory pointed to by data MUST be dynamcially allocated
  */
-int event_player_enqueue(char* name, GGZEventFunc func,
-			 size_t size, void* data, GGZEventDataFree free);
+GGZReturn event_player_enqueue(char* name, GGZEventFunc func,
+			       size_t size, void* data, GGZEventDataFree free);
 			 
 /*
  * event_player_handle() processes all events currently in the private
@@ -129,7 +129,7 @@ int event_player_enqueue(char* name, GGZEventFunc func,
  * Receives:
  * GGZPlayer *player : pointer to the player whose events we're processing
  */
-int event_player_handle(GGZPlayer* player);
+GGZReturn event_player_handle(GGZPlayer* player);
 
 /*
  * event_player_flush() discards all events currently in the private
@@ -138,7 +138,7 @@ int event_player_handle(GGZPlayer* player);
  * Receives:
  * GGZPlayer *player : pointer to the player whose events we're flushing
  */
-int event_player_flush(GGZPlayer* player);
+GGZReturn event_player_flush(GGZPlayer* player);
 
 
 /*
@@ -153,8 +153,8 @@ int event_player_flush(GGZPlayer* player);
  *
  * Note: memory pointed to by data MUST be dynamcially allocated
  */
-int event_table_enqueue(int room, int index, GGZEventFunc func, 
-			size_t, void* data, GGZEventDataFree free);
+GGZReturn event_table_enqueue(int room, int index, GGZEventFunc func, 
+			      size_t, void* data, GGZEventDataFree free);
 
 /*
  * event_table_handle() processes all events currently in the private
@@ -163,7 +163,7 @@ int event_table_enqueue(int room, int index, GGZEventFunc func,
  * Receives:
  * GGZTable *table : pointer to the table whose events we're processing
  */
-int event_table_handle(GGZTable* table);
+GGZReturn event_table_handle(GGZTable* table);
 
 /*
  * event_table_flush() discards all events currently in the private
@@ -172,7 +172,7 @@ int event_table_handle(GGZTable* table);
  * Receives:
  * GGZTable *table : pointer to the table whose events we're flushing
  */
-int event_table_flush(GGZTable* table);
+GGZReturn event_table_flush(GGZTable* table);
 
 #endif
 

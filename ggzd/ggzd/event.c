@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 4534 2002-09-13 02:20:58Z jdorje $
+ * $Id: event.c 4553 2002-09-13 17:39:35Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -64,8 +64,8 @@ static void event_free(GGZEvent *event)
 }
 
 /* Place an event into the room-specific event queue */
-int event_room_enqueue(int room, GGZEventFunc func,
-		       size_t size, void* data, GGZEventDataFree free)
+GGZReturn event_room_enqueue(int room, GGZEventFunc func,
+			     size_t size, void* data, GGZEventDataFree free)
 		       
 {
 	GGZEvent *event;
@@ -75,7 +75,7 @@ int event_room_enqueue(int room, GGZEventFunc func,
 	/* Check for illegal room # */	
 	if(room < 0) {
 		dbg_msg(GGZ_DBG_LISTS, "event_room_enqueue() called from -1");
-		return 0;
+		return GGZ_OK;
 	}
 
 	/* Allocate a new event item */
@@ -97,7 +97,7 @@ int event_room_enqueue(int room, GGZEventFunc func,
 		event_free(event);
 		dbg_msg(GGZ_DBG_LISTS,
 			"Deallocated event %p (empty room)", event);
-		return 0;
+		return GGZ_OK;
 	}
 
 	event->ref_count = rooms[room].player_count;
@@ -121,12 +121,12 @@ int event_room_enqueue(int room, GGZEventFunc func,
 #endif
 
 	pthread_rwlock_unlock(&rooms[room].lock);
-	return 0;
+	return GGZ_OK;
 }
 
 
 /* Process queued-up room-specific events for player */
-int event_room_handle(GGZPlayer* player)
+GGZReturn event_room_handle(GGZPlayer* player)
 {
 	GGZEvent *event, *rm_list = NULL;
 	int room, status;
@@ -154,7 +154,7 @@ int event_room_handle(GGZPlayer* player)
 
 		/* If there was a fatal error, return immedately */
 		if (status == GGZ_EVENT_ERROR)
-			return -1;
+			return GGZ_ERROR;
 
 		/* We need the lock now to alter the event list */
 		pthread_rwlock_wrlock(&rooms[room].lock);
@@ -190,12 +190,12 @@ int event_room_handle(GGZPlayer* player)
 		event_free(event);
 	}
 	
-	return 0;
+	return GGZ_OK;
 }
 
 
 /* Flush queued up room-specific events for player */
-int event_room_flush(GGZPlayer* player)
+GGZReturn event_room_flush(GGZPlayer* player)
 {
 	GGZEvent *event;
 	int room = player->room;
@@ -220,12 +220,12 @@ int event_room_flush(GGZPlayer* player)
 	event_room_spew(room);
 #endif /* DEBUG */
 
-	return 0;
+	return GGZ_OK;
 }
 
 
 /* Place an event into the player-specific event queue */
-int event_player_enqueue(char* name, GGZEventFunc func,
+GGZReturn event_player_enqueue(char* name, GGZEventFunc func,
 			 size_t size, void* data, GGZEventDataFree free)
 			 
 {
@@ -249,7 +249,7 @@ int event_player_enqueue(char* name, GGZEventFunc func,
 		event_free(event);
 		dbg_msg(GGZ_DBG_LISTS, "Deallocated event %p (no user)", 
 			event);		
-		return -1;
+		return GGZ_ERROR;
 	}
 
 	/* Check to see if player is connected */
@@ -258,7 +258,7 @@ int event_player_enqueue(char* name, GGZEventFunc func,
 		event_free(event);
 		dbg_msg(GGZ_DBG_LISTS, "Deallocated event %p (no user)", 
 			event);
-		return -1;
+		return GGZ_ERROR;
 	}
 
 	/* FIXME: Should we be doing more checking?  logged-in, etc? */
@@ -266,12 +266,12 @@ int event_player_enqueue(char* name, GGZEventFunc func,
 	event_player_do_enqueue(player, event);
 	pthread_rwlock_unlock(&player->lock);
 
-	return 0;
+	return GGZ_OK;
 }
 
 
 /* Process queued-up player-specific events */
-int event_player_handle(GGZPlayer* player)
+GGZReturn event_player_handle(GGZPlayer* player)
 {
 	int status;
 	GGZEvent *event, *next;
@@ -293,7 +293,7 @@ int event_player_handle(GGZPlayer* player)
 		switch (status) {
 		case GGZ_EVENT_ERROR:
 			/* If there was a fatal error, return immedately */
-			return -1;
+			return GGZ_ERROR;
 			break;
 		case GGZ_EVENT_OK:
 			/* Remove event if necessary (always) */
@@ -318,12 +318,12 @@ int event_player_handle(GGZPlayer* player)
 	event_player_spew(player);
 #endif
 
-	return 0;
+	return GGZ_OK;
 }
 
 
 /* Flush queued up room-specific events for player */
-int event_player_flush(GGZPlayer* player)
+GGZReturn event_player_flush(GGZPlayer* player)
 {
 	GGZEvent *event, *next;
 	
@@ -348,7 +348,7 @@ int event_player_flush(GGZPlayer* player)
 	event_player_spew(player);
 #endif
 
-	return 0;
+	return GGZ_OK;
 }
 
 
@@ -379,7 +379,7 @@ static void event_player_do_enqueue(GGZPlayer* player, GGZEvent* event) {
 
 
 /* Place an event into the table-specific event queue */
-int event_table_enqueue(int room, int index, GGZEventFunc func, 
+GGZReturn event_table_enqueue(int room, int index, GGZEventFunc func, 
 			size_t size, void* data, GGZEventDataFree free)
 {
 	GGZEvent *event;
@@ -402,7 +402,7 @@ int event_table_enqueue(int room, int index, GGZEventFunc func,
 		event_free(event);
 		dbg_msg(GGZ_DBG_LISTS, "Deallocated event %p (no table)", 
 			event);				
-		return E_NO_TABLE;
+		return GGZ_ERROR;
 	}
 
 	/* FIXME: Should we be doing more checking? state, etc? */
@@ -410,12 +410,12 @@ int event_table_enqueue(int room, int index, GGZEventFunc func,
 	event_table_do_enqueue(table, event);
 	pthread_rwlock_unlock(&table->lock);
 
-	return 0;
+	return GGZ_OK;
 }
 
 
 /* Process queued-up table-specific events */
-int event_table_handle(GGZTable* table)
+GGZReturn event_table_handle(GGZTable* table)
 {
 	int status;
 	GGZEvent *event, *next;
@@ -438,7 +438,7 @@ int event_table_handle(GGZTable* table)
 		case GGZ_EVENT_ERROR:
 			/* If there was a fatal error, return immedately */
 			/* FIXME: should we flush the rest of the events? */
-			return -1;
+			return GGZ_ERROR;
 			break;
 		case GGZ_EVENT_OK:
 			/* Remove event if necessary (always) */
@@ -463,12 +463,12 @@ int event_table_handle(GGZTable* table)
 	event_table_spew(table);
 #endif
 
-	return 0;
+	return GGZ_OK;
 }
 
 
 /* Flush queued up room-specific events for table */
-int event_table_flush(GGZTable* table)
+GGZReturn event_table_flush(GGZTable* table)
 {
 	GGZEvent *event, *next;
 	
@@ -493,7 +493,7 @@ int event_table_flush(GGZTable* table)
 	event_table_spew(table);
 #endif
 
-	return 0;
+	return GGZ_OK;
 }
 
 
@@ -576,5 +576,3 @@ static void event_table_spew(GGZTable* table)
 }
 
 #endif /* DEBUG */
-
-
