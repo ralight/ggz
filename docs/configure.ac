@@ -1,7 +1,7 @@
 dnl Configuration for the GGZ Documentation
 dnl =======================================
 
-AC_INIT([GGZ documentation], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-docs])
+AC_INIT([GGZ documentation], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [ggz-docs])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE

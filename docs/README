@@ -4,16 +4,12 @@ The GGZ Gaming Zone - Documentation
 
 This module contains reference documentation, tutorials and help for game
 module writers. The client/server specification and a general overview are also
-included.
+included, as well as game comparison tables and the guides for hosting and game
+development.
 
 Some documents are also published online, and may be updated from time to time.
-The (rather preliminary) KDE games guide for GGZ:
-	http://www.kde.org/kdegames/ggz-kde-preview.html
-The external games howto:
-	http://ggz.sourceforge.net/ggz-support-howto.txt
-
-We also intend to put a detailed game help collection here, in addition to the
-one which is available in the games themselves.
+Consult the following pages for more up-to-date information:
+	http://www.ggzgamingzone.org/docs/
 
 Have fun!
 	- The GGZ Gaming Zone Development Team
