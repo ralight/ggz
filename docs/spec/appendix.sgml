@@ -1104,7 +1104,7 @@
 	    <term><emphasis role="bold">TYPE</emphasis></term>
 	    <listitem>
 	      <para>
-		Player type (can be 'guest', 'normal' or 'admin')
+		Player type (can be 'guest', 'normal', 'admin' or 'bot')
 	      </para>
 	    </listitem>
 	  </varlistentry>
