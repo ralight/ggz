@@ -68,6 +68,7 @@
 struct dots_game_t {
 	unsigned char vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT-1];
 	unsigned char horz_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT];
+	char owners_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT-1];
 	unsigned char board_height, board_width;
 	char state;
 	char turn;

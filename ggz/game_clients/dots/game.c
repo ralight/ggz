@@ -12,10 +12,12 @@
 #include "main.h"
 #include "game.h"
 
-/* Private variables */
 guint8 vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT-1];
 guint8 horz_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT];
+gint8 owners_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT-1];
 guint8 board_height, board_width;
+
+/* Private variables */
 static GdkPixmap *board_pixmap;
 static gfloat dot_width, dot_height;
 static GdkGC *gc_fg, *gc_bg, *gc_p1, *gc_p2, *gc_p1b, *gc_p2b;
@@ -448,4 +450,72 @@ void board_handle_pxb_expose(void)
 			   TRUE,
 			   0, 0,
 			   p2b->allocation.width, p2b->allocation.height);
+}
+
+
+void board_redraw(void)
+{
+	guint8 i, j;
+	guint16 x1, y1, x2, y2;
+	GdkRectangle update_rect;
+	GdkGC *gc_ptr;
+
+	/* Draw all known vertical lines */
+	for(i=0; i<board_width; i++)
+		for(j=0; j<board_height-1; j++)
+			if(vert_board[i][j]) {
+				x1 = x2 = (i+1) * dot_width;
+				y1 = (j+1) * dot_height;
+				y2 = (j+2) * dot_height;
+				gdk_draw_line(board_pixmap,
+			      		gc_fg,
+			      		x1, y1,
+			      		x2, y2);
+			}
+
+	/* Draw all known horizontal lines */
+	for(i=0; i<board_width-1; i++)
+		for(j=0; j<board_height; j++)
+			if(horz_board[i][j]) {
+				y1 = y2 = (j+1) * dot_height;
+				x1 = (i+1) * dot_width;
+				x2 = (i+2) * dot_width;
+				gdk_draw_line(board_pixmap,
+			      		gc_fg,
+			      		x1, y1,
+			      		x2, y2);
+			}
+
+	/* Draw all the squares in their proper colors */
+	for(i=0; i<board_width-1; i++)
+		for(j=0; j<board_height-1; j++) {
+			switch(owners_board[i][j]) {
+				case 0:
+					gc_ptr = gc_p1b;
+					break;
+				case 1:
+					gc_ptr = gc_p2b;
+					break;
+				default:
+					gc_ptr = NULL;
+					break;
+			}
+
+			if(gc_ptr) {
+				x1 = (i+1) * dot_width + 1;
+				y1 = (j+1) * dot_height + 1;
+				gdk_draw_rectangle(board_pixmap,
+						   gc_ptr,
+						   TRUE,
+						   x1, y1,
+						   dot_width-1, dot_height-1);
+			}
+		}
+
+	/* Finally, update the on-screen pixmap */
+	update_rect.x = 0;
+	update_rect.y = 0;
+	update_rect.width = board->allocation.width;
+	update_rect.height = board->allocation.height;
+	gtk_widget_draw(board, &update_rect);
 }

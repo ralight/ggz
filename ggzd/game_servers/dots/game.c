@@ -46,6 +46,9 @@ void game_init(void)
 	for(i=0; i<MAX_BOARD_WIDTH-1; i++)
 		for(j=0; j<MAX_BOARD_HEIGHT; j++)
 			dots_game.horz_board[i][j] = 0;
+	for(i=0; i<MAX_BOARD_WIDTH-1; i++)
+		for(j=0; j<MAX_BOARD_HEIGHT-1; j++)
+			dots_game.owners_board[i][j] = -1;
 	dots_game.score[0] = dots_game.score[1] = 0;
 }
 
@@ -214,14 +217,18 @@ int game_send_sync(int num)
 	   || es_write_int(fd, dots_game.score[0]) < 0
 	   || es_write_int(fd, dots_game.score[1]) < 0)
 		return -1;
-	
+
 	for(i=0; i<dots_game.board_width; i++)
 		for(j=0; j<dots_game.board_height-1; j++)
 			if(es_write_char(fd, dots_game.vert_board[i][j]) < 0)
 				return -1;
 	for(i=0; i<dots_game.board_width-1; i++)
 		for(j=0; j<dots_game.board_height; j++)
-			if (es_write_char(fd, dots_game.horz_board[i][j]) < 0)
+			if(es_write_char(fd, dots_game.horz_board[i][j]) < 0)
+				return -1;
+	for(i=0; i<dots_game.board_width-1; i++)
+		for(j=0; j<dots_game.board_height-1; j++)
+			if(es_write_char(fd, dots_game.owners_board[i][j]) < 0)
 				return -1;
 
 	return 0;
@@ -303,13 +310,17 @@ int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 				if(*x != 0
 		   	   	   && dots_game.vert_board[*x-1][*y]
 		   	   	   && dots_game.horz_board[*x-1][*y]
-		   	   	   && dots_game.horz_board[*x-1][*y+1])
+		   	   	   && dots_game.horz_board[*x-1][*y+1]) {
 					status++;
+					dots_game.owners_board[*x-1][*y] = num;
+				}
 				if(*x != dots_game.board_width-1
 			   	   && dots_game.vert_board[*x+1][*y]
 			   	   && dots_game.horz_board[*x][*y]
-			   	   && dots_game.horz_board[*x][*y+1])
+			   	   && dots_game.horz_board[*x][*y+1]) {
 					status++;
+					dots_game.owners_board[*x][*y] = num;
+				}
 			}
 		} else {
 			/* Horizontal move */
@@ -319,13 +330,17 @@ int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 				if(*y != 0
 			   	   && dots_game.horz_board[*x][*y-1]
 			   	   && dots_game.vert_board[*x][*y-1]
-			   	   && dots_game.vert_board[*x+1][*y-1])
+			   	   && dots_game.vert_board[*x+1][*y-1]) {
 					status++;
+					dots_game.owners_board[*x][*y-1] = num;
+				}
 				if(*y != dots_game.board_height-1
 			   	   && dots_game.horz_board[*x][*y+1]
 			   	   && dots_game.vert_board[*x][*y]
-			   	   && dots_game.vert_board[*x+1][*y])
+			   	   && dots_game.vert_board[*x+1][*y]) {
 					status++;
+					dots_game.owners_board[*x][*y] = num;
+				}
 			}
 		}
 	}

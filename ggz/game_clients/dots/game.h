@@ -67,6 +67,7 @@
 extern guint8 board_width, board_height;
 extern guint8 vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT-1];
 extern guint8 horz_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT];
+extern gint8 owners_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT-1];
 
 /* Global functions exported from game.c */
 extern void board_init(guint8, guint8);
@@ -75,3 +76,4 @@ extern void board_handle_click(GtkWidget *, GdkEventButton *);
 extern void board_handle_pxb_expose(void);
 extern void statusbar_message(gchar *);
 extern gint8 board_opponent_move(guint8);
+extern void board_redraw(void);

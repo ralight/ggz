@@ -132,6 +132,9 @@ void game_init(void)
 	for(i=0; i<MAX_BOARD_WIDTH-1; i++)
 		for(j=0; j<MAX_BOARD_HEIGHT; j++)
 			horz_board[i][j] = 0;
+	for(i=0; i<MAX_BOARD_WIDTH-1; i++)
+		for(j=0; j<MAX_BOARD_HEIGHT-1; j++)
+			owners_board[i][j] = -1;
 	game.state = DOTS_STATE_INIT;
 	game.score[0] = 0;
 	game.score[1] = 0;
@@ -249,6 +252,12 @@ static int get_sync_info(void)
 		for(j=0; j<board_height; j++)
 			if(es_read_char(game.fd, &horz_board[i][j]) < 0)
 				return -1;
+	for(i=0; i<board_width-1; i++)
+		for(j=0; j<board_height-1; j++)
+			if(es_read_char(game.fd, &owners_board[i][j]) < 0)
+				return -1;
+
+	board_redraw();
 
 	return 0;
 }
