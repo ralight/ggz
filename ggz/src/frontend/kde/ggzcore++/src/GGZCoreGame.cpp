@@ -54,6 +54,11 @@ int GGZCoreGame::fd()
 	return ggzcore_game_get_fd(m_game);
 }
 
+void GGZCoreGame::setFd(int fd)
+{
+	return ggzcore_game_set_fd(m_game, fd);
+}
+
 GGZModule* GGZCoreGame::module()
 {
 	return ggzcore_game_get_module(m_game);

@@ -1115,6 +1115,8 @@ void KGGZ::slotGameFire()
 	kggzgame = new GGZCoreGame();
 	kggzgame->init(m_module->module());
 
+	kggzgame->setFd(kggzserver->channel());
+
 	attachGameCallbacks(); // don't forget detaching!
 
 	delete m_module;

@@ -68,6 +68,9 @@ class GGZCoreGame
 		 * Return the specific file descriptor. */
 		int fd();
 		/**
+		 * Sets the fd */
+		void setFd(int fd);
+		/**
 		 * Return the associated module. */
 		GGZModule* module();
 
