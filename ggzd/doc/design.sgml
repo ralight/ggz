@@ -22,8 +22,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 524 $</revnumber>
-	<date>$Date: 2000-05-15 16:51:31 -0700 (Mon, 15 May 2000) $</date>
+	<revnumber>$Revision: 525 $</revnumber>
+	<date>$Date: 2000-05-15 19:50:13 -0700 (Mon, 15 May 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -216,23 +216,18 @@
 	  RSP_LIST_PLAYERS
 
 	  REQ_LIST_TYPES
-            chr: verbose flag (0 for short list, 1 for long descriptions)
 
 	  REQ_LIST_TABLES
-            int: game type index (-1 for all type, -2 for reserved, -3 for open games)
-	    chr: server wide search (1 if yes, 0 if no)
+
 	  RSP_LIST_TABLES
 
 	  REQ_LIST_ROOMS
-            int: Reqeusted game type index (-1 for all)
-            chr: Verbose flag (0 for short list, 1 for long descriptions)
+
 	  RSP_LIST_ROOMS
 
 	  REQ_MOTD
+
 	  RSP_MOTD
-            int: number of MOTD lines
-            sequence of
-	      str: message of the day line
 	  
 	</programlisting>
       </section>
@@ -282,7 +277,7 @@
 	    str: player_name
             str: chat_string
         RSP_CHAT
-          chr: success flag (0 for success, -1 error)
+
 	</programlisting>
 
 	<para>
@@ -319,10 +314,8 @@
 
         <programlisting role="pseudocode">
 	  REQ_ROOM_JOIN
-	    int: room number
+
 	  RSP_ROOM_JOIN
-	    chr: success flag (0 for success, -1 not authorized,
-		               -2 E_BAD_OPTIONS, -3 E_ROOM_FULL)
   
 	</programlisting>
       </section>
@@ -341,15 +334,11 @@
 
 	  <programlisting role="pseudocode">
 	    REQ_GAME
-	      int: size of data in bytes
-	      (data)
 	  </programlisting>
 
 	  Similarly, messages from the server appear as:
 	  <programlisting role="pseudocode">
 	    RSP_GAME
-	      int: size of data in bytes
-	      (data)
 	  </programlisting>
 	</para>
       </section>
@@ -3651,7 +3640,19 @@
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">REQ_LIST_TYPES</entry>
 		</row>
-		
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">verbose</entry>
+		  <entry>char</entry>
+		</row>
+
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -3659,18 +3660,33 @@
 
 	<refsect1>
 	  <title>Description</title>
-	  <para></para>
+	  <para>Client request for list of server-supported data types</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">verbose</emphasis></term>
+		<listitem>
+		  <para>
+		    verbosity flag.  Set to 0 for short game type
+		    descriptions, 1 for full descriptions.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
 	  <refsect2>
 	    <title>Usage</title>
 	    <para>
 	      REQ_LIST_TYPES is sent from the client to the server
-	      to request a list of all players in the current room.
-	      The server will respond with <link
-	      linkend="rsp.list.players">RSP_LIST_TYPES</link>.
+	      to request a list of all game types which the server
+	      supports.  The server will respond with <link
+	      linkend="rsp.list.types">RSP_LIST_TYPES</link>.
 	      This request is only valid once the player has
-	      successfully joined a room.  See <link
-	      linkend="req.room.join">REQ_ROOM_JOIN</link>.
-					     
+	      successfully logged in.  (ie. after <link
+	      linkend="rsp.login.new">RSP_LOGIN_NEW</link>,<link
+	      linkend="rsp.login.anon">RSP_LOGIN_ANON</link>, or <link
+	      linkend="rsp.login">RSP_LOGIN</link>)
 	    </para>
 	  </refsect2>
 	</refsect1>
@@ -3710,6 +3726,23 @@
 		  <entry namest="C1" nameend="C3">REQ_LIST_TABLES</entry>
 		</row>
 		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">type</entry>
+		  <entry>int</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">global</entry>
+		  <entry>char</entry>
+		</row>
+
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -3717,18 +3750,44 @@
 
 	<refsect1>
 	  <title>Description</title>
-	  <para></para>
+	  <para>Client request for list of tables</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">type</emphasis></term>
+		<listitem>
+		  <para>
+		    type ID of tables to list.  -1 for all types and
+		    -3 for open tables of any type.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">global</emphasis></term>
+		<listitem>
+		  <para>
+		    global search flag.  Set to 1 to list tables in
+		    any room on the server.  Set to 0 to restrict
+		    table list to current room.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
 	  <refsect2>
 	    <title>Usage</title>
 	    <para>
-	      REQ_LIST_TABLES is sent from the client to the server
-	      to request a list of all players in the current room.
-	      The server will respond with <link
-	      linkend="rsp.list.players">RSP_LIST_TABLES</link>.
-	      This request is only valid once the player has
-	      successfully joined a room.  See <link
+	      REQ_LIST_TABLES is sent from the client to the server to
+	      request a list of tables.  Clients may request lists to
+	      be confined to tables of a specific game type, tables
+	      with open seats, or any table.  Additionally the list
+	      can be global or restricted to the current room.  The
+	      server will respond with <link
+	      linkend="rsp.list.tables">RSP_LIST_TABLES</link>.  This
+	      request is only valid once the player has successfully
+	      joined a room.  See <link
 	      linkend="req.room.join">REQ_ROOM_JOIN</link>.
-					     
 	    </para>
 	  </refsect2>
 	</refsect1>
@@ -3745,7 +3804,7 @@
 	<refnamediv>
 	  <refname>REQ_LIST_ROOMS</refname>
 	  <refpurpose>
-	    Client request for list of players in current room.
+	    Client request for list of rooms on the server
 	  </refpurpose>
 	</refnamediv>
 	
@@ -3768,6 +3827,16 @@
 		  <entry namest="C1" nameend="C3">REQ_LIST_ROOMS</entry>
 		</row>
 		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">type</entry>
+		  <entry>int</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">verbose</entry>
+		  <entry>char</entry>
+		</row>
+
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -3775,18 +3844,42 @@
 
 	<refsect1>
 	  <title>Description</title>
-	  <para></para>
+	  <para>Client request for list of rooms on the server</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">type</emphasis></term>
+		<listitem>
+		  <para>
+		    list of rooms of specified game type ID.  -1 for
+		    all types and.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">verbose</emphasis></term>
+		<listitem>
+		  <para>
+		    verbosity flag.  Set to 0 for short room 
+		    descriptions, 1 for full descriptions.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
 	  <refsect2>
 	    <title>Usage</title>
 	    <para>
-	      REQ_LIST_ROOMS is sent from the client to the server
-	      to request a list of all players in the current room.
-	      The server will respond with <link
-	      linkend="rsp.list.players">RSP_LIST_ROOMS</link>.
-	      This request is only valid once the player has
-	      successfully joined a room.  See <link
-	      linkend="req.room.join">REQ_ROOM_JOIN</link>.
-					     
+	      REQ_LIST_ROOMS is sent from the client to the server to
+	      request a list of all rooms on the server.  The server
+	      will respond with <link
+	      linkend="rsp.list.rooms">RSP_LIST_ROOMS</link>.  This
+	      request is only valid once the player has successfully
+	      logged in. (ie. after <link
+	      linkend="rsp.login.new">RSP_LOGIN_NEW</link>,<link
+	      linkend="rsp.login.anon">RSP_LOGIN_ANON</link>, or <link
+	      linkend="rsp.login">RSP_LOGIN</link>)
 	    </para>
 	  </refsect2>
 	</refsect1>
@@ -4298,7 +4391,7 @@
 		<term><emphasis role="bold">room</emphasis></term>
 		<listitem>
 		  <para>
-		    room ID of requested destination
+		    room ID of requested destination room
 		  </para>
 		</listitem>
 	      </varlistentry>
