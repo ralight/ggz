@@ -930,6 +930,7 @@ void display_players(void)
 	GtkWidget *tmp;
 	gint i, num;
 	gchar *player[4];
+	gchar *path = NULL;
 	GGZPlayer *p;
 	GGZTable *table;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
@@ -961,14 +962,23 @@ void display_players(void)
 		gtk_clist_append(GTK_CLIST(tmp), player);
 
 		if(ggzcore_player_get_type(p) == GGZ_PLAYER_GUEST)
-			pixmap = gdk_pixmap_create_from_xpm(tmp->window, &mask, NULL, "ggz_gtk_guest.xpm");
+			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
+					 "ggz_gtk_guest.xpm", NULL);
 		else if(ggzcore_player_get_type(p) == GGZ_PLAYER_NORMAL)
-			pixmap = gdk_pixmap_create_from_xpm(tmp->window, &mask, NULL, "ggz_gtk_registered.xpm");
+			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
+					 "ggz_gtk_registered.xpm", NULL);
 		else if(ggzcore_player_get_type(p) == GGZ_PLAYER_ADMIN)
-			pixmap = gdk_pixmap_create_from_xpm(tmp->window, &mask, NULL, "ggz_gtk_admin.xpm");
-
-		gtk_clist_set_pixtext(GTK_CLIST(tmp), i, 2, player[2], 5, pixmap, mask);
-
+			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
+					 "ggz_gtk_admin.xpm", NULL);
+		
+		if (path) {
+			pixmap = gdk_pixmap_create_from_xpm(tmp->window, &mask,
+							    NULL, path);
+			if (pixmap)
+				gtk_clist_set_pixtext(GTK_CLIST(tmp), i, 2, player[2], 5, pixmap, mask);
+			g_free(path);
+		}
+		
 		g_free(player[1]);
 		g_free(player[2]);
 	}
