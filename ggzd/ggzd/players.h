@@ -123,4 +123,6 @@ GGZPlayerType player_get_type(GGZPlayer *player);
 
 void player_handle_pong(GGZPlayer *player);
 
+void player_set_ip_ban_list(int count, char **list);
+
 #endif

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3298 2002-02-10 08:19:46Z rgade $
+ * $Id: parse_opt.c 3314 2002-02-11 04:59:13Z rgade $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -41,6 +41,7 @@
 #include <room.h>
 #include <parse_opt.h>
 #include <perms.h>
+#include <players.h>
 
 /* Stuff from control.c we need access to */
 extern Options opt;
@@ -262,6 +263,8 @@ static void get_config_options(int ch)
 					  "<unconfigured>");
 	opt.server_name = ggz_conf_read_string(ch, "General", "ServerName",
 					   "An Unconfigured GGZ Server");
+	ggz_conf_read_list(ch, "General", "IPBanList", &t_count, &t_list);
+	player_set_ip_ban_list(t_count, t_list);
 
 	/* [Directories] */
 	opt.game_dir = ggz_conf_read_string(ch, "Directories", "GameDir", NULL);

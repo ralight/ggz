@@ -70,6 +70,13 @@ extern struct GGZState state;
 extern Options opt;
 
 
+/* Used for banned IP addresses */
+static uint32_t *banned_nets_a;
+static uint32_t *banned_nets_m;
+static int banned_nets_c;
+static int player_check_ip_ban_list(struct in_addr *sin);
+
+
 /* Local functions for handling players */
 static void* player_new(void * sock_ptr);
 static void  player_loop(GGZPlayer* player);
@@ -185,9 +192,18 @@ static void* player_new(void *arg_ptr)
 	player->lag_class = 1;			/* Assume they are low lag */
 	player->next_ping = 0;			/* Don't ping until login */
 
-	/* Send server ID */
-	if (net_send_serverid(player->net, opt.server_name) < 0)
+	if(player_check_ip_ban_list(&addr.sin_addr) < 0) {
+		log_msg(GGZ_LOG_SECURITY,"IPBAN Connection not allowed from %s",
+			player->addr);
+		free(player);
 		pthread_exit(NULL);
+	}
+
+	/* Send server ID */
+	if (net_send_serverid(player->net, opt.server_name) < 0) {
+		free(player);
+		pthread_exit(NULL);
+	}
 	
 	pthread_rwlock_wrlock(&state.lock);
 	if (state.players == MAX_USERS) {
@@ -197,6 +213,7 @@ static void* player_new(void *arg_ptr)
 		log_msg(GGZ_LOG_NOTICE,
 			"SERVER_FULL - Rejected connection from %s",
 			player->addr);
+		free(player);
 		pthread_exit(NULL);
 	}
 	state.players++;
@@ -982,4 +999,53 @@ void player_handle_pong(GGZPlayer *player)
 
 	/* Queue our next ping */
 	player->next_ping = time(NULL) + opt.ping_freq;
+}
+
+
+void player_set_ip_ban_list(int count, char **list)
+{
+	int i;
+	char *addr, *mask;
+	struct in_addr sin;
+
+	if((banned_nets_c = count) == 0)
+		return;
+
+	banned_nets_a = ggz_malloc(count * sizeof(uint32_t));
+	banned_nets_m = ggz_malloc(count * sizeof(uint32_t));
+
+	/* Convert the list of IP/Mask specs to internal format */
+	/* If it's invalid, just make the address part all zeros */
+	for(i=0; i<count; i++) {
+		addr = list[i];
+		for(mask=addr; *mask!='\0' && *mask!='/'; mask++)
+			;
+		if(*mask == '\0')
+			mask = "255.255.255.255";
+		else {
+			*mask = '\0';
+			mask++;
+		}
+		if(inet_aton(addr, &sin) != 0) {
+			banned_nets_a[i] = sin.s_addr;
+			if(inet_aton(mask, &sin) != 0)
+				banned_nets_m[i] = sin.s_addr;
+			else
+				banned_nets_a[i] = 0;
+		} else
+			banned_nets_a[i] = 0;
+	}
+}
+
+
+static int player_check_ip_ban_list(struct in_addr *sina)
+{
+	int i;
+	for(i=0; i<banned_nets_c; i++) {
+		if(banned_nets_a[i] != 0
+                   && (sina->s_addr & banned_nets_m[i]) == banned_nets_a[i])
+			return -1;
+	}
+
+	return 0;
 }
