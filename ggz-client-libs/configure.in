@@ -183,8 +183,8 @@ dnl Status Output
 dnl =============
 echo ""
 echo "Options"
-echo "    General Debuging..$enable_debug"
-echo "    GDB Debuging......$enable_debug_gdb"
+echo "    General Debugging..$enable_debug"
+echo "    GDB Debugging......$enable_debug_gdb"
 echo ""
 echo "-------------------------"
 echo "At the prompt type \"make\" to"
