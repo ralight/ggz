@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 2733 2001-11-13 09:56:05Z jdorje $
+ * $Id: lapocha.c 2766 2001-11-28 07:31:42Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -36,7 +36,7 @@ static void lapocha_handle_bid(player_t p, bid_t bid);
 static void lapocha_next_bid(void);
 static int lapocha_test_for_gameover(void);
 static int lapocha_deal_hand(void);
-static int lapocha_get_bid_text(char *buf, int buf_len, bid_t bid);
+static int lapocha_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static void lapocha_set_player_message(player_t p);
 static void lapocha_end_hand(void);
 
@@ -209,7 +209,7 @@ static int lapocha_deal_hand(void)
 	return 0;
 }
 
-static int lapocha_get_bid_text(char *buf, int buf_len, bid_t bid)
+static int lapocha_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 {
 	if (bid.sbid.spec == LAPOCHA_TRUMP)
 		return snprintf(buf, buf_len, "%s",

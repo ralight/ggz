@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 2736 2001-11-13 11:18:46Z jdorje $
+ * $Id: suaro.c 2766 2001-11-28 07:31:42Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -42,7 +42,7 @@ static void suaro_next_bid(void);
 static void suaro_start_playing(void);
 static int suaro_deal_hand(void);
 static int suaro_send_hand(player_t p, seat_t s);
-static int suaro_get_bid_text(char *buf, int buf_len, bid_t bid);
+static int suaro_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static void suaro_end_hand(void);
 static void suaro_set_player_message(player_t p);
 static void suaro_end_trick(void);
@@ -337,7 +337,7 @@ static int suaro_send_hand(player_t p, seat_t s)
 	return send_hand(p, s, game.players[p].seat == s || s == 3);
 }
 
-static int suaro_get_bid_text(char *buf, int buf_len, bid_t bid)
+static int suaro_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 {
 	if (bid.sbid.spec == SUARO_PASS)
 		return snprintf(buf, buf_len, "Pass");

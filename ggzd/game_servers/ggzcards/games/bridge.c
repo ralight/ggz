@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 2736 2001-11-13 11:18:46Z jdorje $
+ * $Id: bridge.c 2766 2001-11-28 07:31:42Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -41,7 +41,7 @@ static void bridge_get_play(player_t p);
 static void bridge_handle_play(card_t card);
 static int bridge_test_for_gameover(void);
 static int bridge_send_hand(player_t p, seat_t s);
-static int bridge_get_bid_text(char *buf, int buf_len, bid_t bid);
+static int bridge_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static void bridge_set_player_message(player_t p);
 static void bridge_end_trick(void);
 static void bridge_end_hand(void);
@@ -284,7 +284,7 @@ static int bridge_send_hand(player_t p, seat_t s)
 	return game_send_hand(p, s);
 }
 
-static int bridge_get_bid_text(char *buf, int buf_len, bid_t bid)
+static int bridge_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 {
 
 	if (bid.sbid.spec == BRIDGE_PASS)

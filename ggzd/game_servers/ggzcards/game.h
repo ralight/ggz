@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 2730 2001-11-13 06:29:00Z jdorje $
+ * $Id: game.h 2766 2001-11-28 07:31:42Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -78,7 +78,7 @@ void game_set_player_message(player_t player);
  *  @param buf a buffer in which to put the text
  *  @param buf_len the length of the buffer
  *  @param bid the bid for which to create a message for */
-int game_get_bid_text(char *buf, int buf_len, bid_t bid);
+int game_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 
 /** @brief Called at the beginning of the bidding sequence.
  *  Does any special handling necessary before beginning bidding. */

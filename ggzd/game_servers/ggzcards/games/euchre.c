@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2743 2001-11-13 23:34:36Z jdorje $
+ * $Id: euchre.c 2766 2001-11-28 07:31:42Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -44,7 +44,7 @@ static void euchre_next_bid(void);
 static void euchre_start_playing(void);
 static void euchre_get_play(player_t p);
 static int euchre_deal_hand(void);
-static int euchre_get_bid_text(char *buf, int buf_len, bid_t bid);
+static int euchre_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static void euchre_set_player_message(player_t p);
 static void euchre_end_trick(void);
 static void euchre_end_hand(void);
@@ -321,7 +321,7 @@ static int euchre_deal_hand(void)
 	return 0;
 }
 
-static int euchre_get_bid_text(char *buf, int buf_len, bid_t bid)
+static int euchre_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 {
 	switch (bid.sbid.spec) {
 	case EUCHRE_PASS:
