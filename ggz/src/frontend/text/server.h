@@ -26,6 +26,8 @@
 
 void server_login_ok(GGZEventID id, void* event_data, void* user_data);
 
+void server_connect_fail(GGZEventID id, void* event_data, void* user_data);
+
 void server_login_fail(GGZEventID id, void* event_data, void* user_data);
 
 void server_chat_msg(GGZEventID id, void* event_data, void* user_data);

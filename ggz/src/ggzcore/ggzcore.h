@@ -29,7 +29,7 @@
 #include <stdarg.h>
 
 #ifdef __cplusplus
-//extern "C" {
+extern "C" {
 #endif 
 
 
@@ -83,13 +83,18 @@ void ggzcore_destroy(void);
 /* IDs for all GGZ events */
 typedef enum {
 	GGZ_SERVER_CONNECT,
-	GGZ_SERVER_LOGIN_OK,
+	GGZ_SERVER_CONNECT_FAIL,
+	GGZ_SERVER_LOGIN,
 	GGZ_SERVER_LOGIN_FAIL, 
 	GGZ_SERVER_LIST_ROOMS,
 	GGZ_SERVER_ROOM_JOIN,
-	GGZ_SERVER_CHAT_STATUS,
+	GGZ_SERVER_ROOM_JOIN_FAIL,
+	GGZ_SERVER_CHAT,
+	GGZ_SERVER_CHAT_FAIL,
 	GGZ_SERVER_CHAT_MSG,
 	GGZ_SERVER_LOGOUT,
+	GGZ_SERVER_ERROR,
+	GGZ_NET_ERROR,
 	GGZ_USER_LOGIN, 
 	GGZ_USER_LIST_ROOMS,
 	GGZ_USER_LIST_TYPES,
@@ -228,6 +233,18 @@ int ggzcore_event_trigger(const GGZEventID id,
 			  void* event_data,
 			  GGZDestroyFunc func);
 
+
+/* ggzcore_state_is_XXXX()
+ * 
+ * These functions return 1 if ggzcore is in the specified state, and 
+ * 0 otherwise 
+ */
+int ggzcore_state_is_online(void);
+int ggzcore_state_is_logged_in(void);
+int ggzcore_state_is_in_room(void);
+int ggzcore_state_is_at_table(void);
+
+
 /* Debugging categories */
 typedef enum {
 	GGZ_DBG_EVENT  = 0x00000001,
@@ -236,6 +253,7 @@ typedef enum {
 	GGZ_DBG_SERVER = 0x00000008,
 	GGZ_DBG_CONF   = 0x00000010,
 	GGZ_DBG_POLL   = 0x00000020,
+	GGZ_DBG_STATE  = 0x00000040,
 	GGZ_DBG_ALL    = 0xFFFFFFFF
 } GGZDebugLevel;
 

@@ -78,22 +78,27 @@ struct _GGZEvent {
 
 /* Array of all GGZ events */
 static struct _GGZEvent ggz_events[] = {
-	{GGZ_SERVER_CONNECT,    "server_connect",    1, NULL, NULL},
-	{GGZ_SERVER_LOGIN_OK,   "server_login_ok",   1, NULL, NULL},
-	{GGZ_SERVER_LOGIN_FAIL, "server_login_fail", 1, NULL, NULL},
-	{GGZ_SERVER_LIST_ROOMS, "server_list_rooms", 1, NULL, NULL},
-	{GGZ_SERVER_ROOM_JOIN,  "server_room_join",  1, NULL, NULL},
-	{GGZ_SERVER_CHAT_STATUS,"server_chat_status",1, NULL, NULL},
-	{GGZ_SERVER_CHAT_MSG,   "server_chat_msg",   1, NULL, NULL},
-	{GGZ_SERVER_LOGOUT,     "server_logout",     1, NULL, NULL},
-	{GGZ_USER_LOGIN,        "user_login",        1, NULL, NULL},
-	{GGZ_USER_LIST_ROOMS,   "user_list_rooms",   1, NULL, NULL},
-	{GGZ_USER_LIST_TYPES,   "user_list_types",   1, NULL, NULL},
-	{GGZ_USER_JOIN_ROOM,    "user_join_room",    1, NULL, NULL},
-	{GGZ_USER_LIST_TABLES,  "user_list_tables",  1, NULL, NULL},
-	{GGZ_USER_LIST_PLAYERS, "user_list_players", 1, NULL, NULL},
-	{GGZ_USER_CHAT,         "user_chat",         1, NULL, NULL},
-	{GGZ_USER_LOGOUT,       "user_logout",       1, NULL, NULL}
+	{GGZ_SERVER_CONNECT,     "server_connect",     1, NULL, NULL},
+	{GGZ_SERVER_CONNECT_FAIL,"server_connect_fail",1, NULL, NULL},
+	{GGZ_SERVER_LOGIN,       "server_login_ok",    1, NULL, NULL},
+	{GGZ_SERVER_LOGIN_FAIL,  "server_login_fail",  1, NULL, NULL},
+	{GGZ_SERVER_LIST_ROOMS,  "server_list_rooms",  1, NULL, NULL},
+	{GGZ_SERVER_ROOM_JOIN,   "server_room_join",   1, NULL, NULL},
+	{GGZ_SERVER_ROOM_JOIN_FAIL,"server_room_join_fail",   1, NULL, NULL},
+	{GGZ_SERVER_CHAT,        "server_chat", 1, NULL, NULL},
+	{GGZ_SERVER_CHAT_FAIL,   "server_chat_fail",   1, NULL, NULL},
+	{GGZ_SERVER_CHAT_MSG,    "server_chat_msg",    1, NULL, NULL},
+	{GGZ_SERVER_LOGOUT,      "server_logout",      1, NULL, NULL},
+	{GGZ_SERVER_ERROR,       "server_error",       1, NULL, NULL},
+	{GGZ_NET_ERROR,          "net_error",          1, NULL, NULL},
+	{GGZ_USER_LOGIN,         "user_login",         1, NULL, NULL},
+	{GGZ_USER_LIST_ROOMS,    "user_list_rooms",    1, NULL, NULL},
+	{GGZ_USER_LIST_TYPES,    "user_list_types",    1, NULL, NULL},
+	{GGZ_USER_JOIN_ROOM,     "user_join_room",     1, NULL, NULL},
+	{GGZ_USER_LIST_TABLES,   "user_list_tables",   1, NULL, NULL},
+	{GGZ_USER_LIST_PLAYERS,  "user_list_players",  1, NULL, NULL},
+	{GGZ_USER_CHAT,          "user_chat",          1, NULL, NULL},
+	{GGZ_USER_LOGOUT,        "user_logout",        1, NULL, NULL}
 };
 
 /* Number of events */
@@ -175,7 +180,7 @@ int ggzcore_event_connect_full(const GGZEventID id, const GGZEventFunc cb_func,
 	callback->user_data = user_data;
 	callback->destroy = destroy;
 
-	/* Insert into list of callbacks */
+	/* Append onto list of callbacks */
 	if ( (next = ggz_events[id].callbacks) == NULL)
 		ggz_events[id].callbacks = callback;
 	else {
@@ -249,6 +254,53 @@ int ggzcore_event_remove(const GGZEventID id, const unsigned int callback_id)
 			      "Removing callback %d from event %s", id, 
 			      ggz_events[id].name);
 
+		/* Special case if it was first in the list */
+		if (!prev)
+			ggz_events[id].callbacks = cur->next;
+		else
+			prev->next = cur->next;
+
+		free(cur);
+		return 0;
+	}
+}
+
+
+/* ggzcore_event_remove_func() - Remove specific callback from an event
+ *
+ * Receives:
+ * GGZEventID id            : ID code of event
+ * GGZEventFunc cb_func     : pointer to callback function 
+ *
+ * Returns:
+ * int : 0 if successful, -1 on error
+ */
+int ggzcore_event_remove_func(const GGZEventID id, const GGZEventFunc cb_func)
+{
+	struct _GGZCallback *cur, *prev = NULL;
+
+	cur = ggz_events[id].callbacks;
+	while (cur && cur->func != cb_func) {
+		prev = cur;
+		cur = cur->next;
+	}
+
+	/* Couldn't find it! */
+	if (!cur) {
+		ggzcore_debug(GGZ_DBG_EVENT, 
+			      "Can't find callback %d to remove from event %s",
+			      id, ggz_events[id].name);
+		return -1;
+	}
+	else {
+		ggzcore_debug(GGZ_DBG_EVENT, 
+			      "Removing callback %d from event %s", id, 
+			      ggz_events[id].name);
+
+		/* Free callback specific data */
+		if (cur->user_data && cur->destroy)
+			(*cur->destroy)(cur->user_data);
+		
 		/* Special case if it was first in the list */
 		if (!prev)
 			ggz_events[id].callbacks = cur->next;
@@ -354,6 +406,7 @@ static void _ggzcore_event_process(GGZEventID id)
 	
 	ggzcore_debug(GGZ_DBG_EVENT, "Received %s event : invoking callbacks",
 		      event.name);
+	
 	for (cur = event.callbacks; cur != NULL; cur = cur->next) {
 		(*cur->func)(id, data, cur->user_data);
 		
@@ -361,7 +414,7 @@ static void _ggzcore_event_process(GGZEventID id)
 		if (cur->user_data && cur->destroy)
 			(*cur->destroy)(cur->user_data);
 	}
-	
+
 	/* Free event specific data */
 	if (data && destroy)
 		destroy(data);

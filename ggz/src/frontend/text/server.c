@@ -47,6 +47,13 @@ void server_chat_msg(GGZEventID id, void* event_data, void* user_data)
 	output_chat(1,player, message);
 }
 
+
+void server_connect_fail(GGZEventID id, void* event_data, void* user_data)
+{
+	output_chat(2,"---", "Connection failed");
+}
+
+
 void server_login_fail(GGZEventID id, void* event_data, void* user_data)
 {
 	output_chat(2,"---", "Connection failed");

@@ -29,6 +29,7 @@
 #include <user.h>
 #include <msg.h>
 #include <net.h>
+#include <state.h>
 #include <server.h>
 
 
@@ -49,6 +50,9 @@ int ggzcore_init(GGZOptions options)
 	/* FIXME: Get filename and levels from conf file */
 	_ggzcore_debug_init((GGZ_DBG_ALL & ~GGZ_DBG_POLL), "/tmp/ggz.debug");
 	_ggzcore_event_init();
+
+	/* State should have first callbacks registered(?) */
+	_ggzcore_state_init();
 	_ggzcore_net_init();
 
 	/* Register internal callbacks for events */

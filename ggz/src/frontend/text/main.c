@@ -63,7 +63,8 @@ int main(void)
 
 	ggzcore_init(opt);
 	
-	ggzcore_event_connect(GGZ_SERVER_LOGIN_OK, server_login_ok);
+	ggzcore_event_connect(GGZ_SERVER_LOGIN, server_login_ok);
+	ggzcore_event_connect(GGZ_SERVER_CONNECT_FAIL, server_connect_fail);
 	ggzcore_event_connect(GGZ_SERVER_LOGIN_FAIL, server_login_fail);
 	ggzcore_event_connect(GGZ_SERVER_CHAT_MSG, server_chat_msg);
 	ggzcore_event_connect(GGZ_SERVER_LOGOUT, server_logout);

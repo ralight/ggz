@@ -127,5 +127,6 @@ typedef enum {
 #define E_NOT_LOGGED_IN -12
 #define E_NOT_IN_ROOM   -13
 #define E_AT_TABLE     -14
+#define E_IN_TRANSIT   -15
 
 #endif /*__PROTOCOL_H__*/

@@ -28,10 +28,25 @@
 
 #include <ggzcore.h>
 
+typedef enum {
+	GGZ_STATE_OFFLINE,
+	GGZ_STATE_CONNECTING,
+	GGZ_STATE_ONLINE,
+	GGZ_STATE_LOGGING_IN,
+	GGZ_STATE_LOGGED_IN,
+	GGZ_STATE_ENTERING_ROOM,
+	GGZ_STATE_IN_ROOM,
+	GGZ_STATE_JOINING_TABLE,
+	GGZ_STATE_AT_TABLE,
+	GGZ_STATE_LEAVING_TABLE,
+	GGZ_STATE_LOGGING_OUT
+} GGZStateID;
+
+
 struct _GGZState {
-	
-	/* Server socket */
-	int sock;
+
+	/* State ID */
+	GGZStateID id;
 
 	/* Current room on game server */
 	int room;
@@ -55,4 +70,10 @@ extern struct _GGZState _ggzcore_state;
 
 void _ggzcore_state_init(void);
 
+unsigned char _ggzcore_state_event_isvalid(GGZEventID id);
+
+void _ggzcore_state_set(GGZStateID id);
+
+
 #endif /* __STATE_H__ */
+
