@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2677 2001-11-05 21:14:31Z jdorje $
+ * $Id: ggzdmod.c 2678 2001-11-05 21:26:47Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -335,11 +335,13 @@ int ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat)
 	oldseat->fd = seat->fd;
 	oldseat->type = seat->type;
 	
-	if (strcmp(seat->name, oldseat->name)) {
-		if (oldseat->name)
-			ggz_free(oldseat->name);
-		oldseat->name = ggz_strdup(seat->name);	
-	}
+	/* This will duplicate even if the strings are equal, but that should
+	   be fine. */
+	if (oldseat->name)
+		ggz_free(oldseat->name);
+	oldseat->name = seat->name;
+	if (oldseat->name)
+		oldseat->name = strdup(oldseat->name);	
 	
 	return 0;
 }
