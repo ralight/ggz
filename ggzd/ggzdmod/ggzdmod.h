@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 6821 2005-01-22 16:27:20Z josef $
+ * $Id: ggzdmod.h 6832 2005-01-23 10:39:33Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -59,8 +59,7 @@
  * @code
  *     // Game-defined handler functions for GGZ events; see below.
  *     void handle_state_change(GGZdMod* ggz, GGZdModEvent event, void* data);
- *     void handle_player_join(GGZdMod* ggz, GGZdModEvent event, void* data);
- *     void handle_player_leave(GGZdMod* ggz, GGZdModEvent event, void* data);
+ *     void handle_player_seat(GGZdMod* ggz, GGZdModEvent event, void* data);
  *     void handle_player_data(GGZdMod* ggz, GGZdModEvent event, void* data);
  *
  *     // Other game-defined functions (not ggz-related).
@@ -77,9 +76,11 @@
  *         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE,
  *                             &handle_state_change);
  *         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN,
- *                             &handle_player_join);
+ *                             &handle_player_seat);
  *         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE,
- *                             &handle_player_leave);
+ *                             &handle_player_seat);
+ *         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SEAT,
+ *                             &handle_player_seat);
  *         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA,
  *                             &handle_player_data);
  *
@@ -138,26 +139,24 @@
  *         }
  *     }
  *
- *     void handle_player_join(GGZdMod* ggz, GGZdModEvent event, void* data)
+ *     void handle_player_seat(GGZdMod* ggz, GGZdModEvent event, void* data)
  *     {
- *         GGZSeat *old_seat = (GGZSeat*)data;
- *         GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
+ *       GGZSeat *old_seat = data;
+ *       GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
  *
- *         // ... do other player initializations ...
+ *       if (new_seat.type == GGZ_SEAT_PLAYER
+ *           && old_seat->type != GGZ_SEAT_PLAYER) {
+ *         // join event ... do player initializations ...
  *
- *         if (ggzdmod_count_seats(ggz, GGZ_SEAT_OPEN) == 0)
- *             // this particular game will only play when all seats are full.
- *             // calling this function triggers the STATE event, so we'll end
- *             // up executing resume_playing() above.
- *             ggzdmod_set_state(ggz, GGZDMOD_STATE_PLAYING);
- *     }
- *
- *     void handle_player_leave(GGZdMod* ggz, GGZdModEvent event, void* data)
- *     {
- *         GGZSeat *old_seat = (GGZSeat*)data;
- *         GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
- *
- *         // ... do other player un-initializations ...
+ *         if (ggzdmod_count_seats(ggz, GGZ_SEAT_OPEN) == 0) {
+ *           // this particular game will only play when all seats are full.
+ *           // calling this function triggers the STATE event, so we'll end
+ *           // up executing resume_playing() above.
+ *           ggzdmod_set_state(ggz, GGZDMOD_STATE_PLAYING);
+ *         }
+ *       } else if (new_seat.type != GGZ_SEAT_PLAYER
+ *                  && old_seat->type == GGZ_SEAT_PLAYER) {
+ *         // leave event ... do de-initialization ...
  *
  *         if (ggzdmod_count_seats(ggz, GGZ_SEAT_PLAYER) == 0)
  *             // the game will exit when all human players are gone
@@ -167,6 +166,7 @@
  *             // calling this function triggers the STATE event, so we'll end
  *             // up executing stop_playing() above.
  *             ggzdmod_set_state(ggz, GGZDMOD_STATE_WAITING);
+ *       }
  *     }
  *
  *     void handle_player_data(GGZdMod* ggz, GGZdModEvent event, void* data)
@@ -244,7 +244,8 @@ typedef enum {
 	 *  old seat (a GGZSeat*) is passed as the event's data.
 	 *  The seat information will be updated before the event
 	 *  is invoked.
-	 *  @note This may be dropped in favor of the SEAT event. */
+	 *  @note This event is deprecated.
+	 *  @see GGZDMOD_EVENT_SEAT. */
 	GGZDMOD_EVENT_JOIN,
 
 	/** @brief Player left
@@ -252,16 +253,21 @@ typedef enum {
 	 *  old seat (a GGZSeat*) is passed as the event's data.
 	 *  The seat information will be updated before the event
 	 *  is invoked.
-	 *  @note This may be dropped in favor of the SEAT event */
+	 *  @note This event is deprecated.
+	 *  @see GGZDMOD_EVENT_SEAT. */
 	GGZDMOD_EVENT_LEAVE,
 
 	/** @brief General seat change
 	 *  This event occurs when a seat change other than a player
-	 *  leave/join happens (which is currently impossible).  The
-	 *  old seat (a GGZSeat*) is passed as the event's data.  The
-	 *  seat information will be updated before the event is invoked.
-	 *  @note This is currently unused, but may eventually replace JOIN and LEAVE.
-	 */
+	 *  leave/join happens.  The old seat (a GGZSeat*) is passed as the
+	 *  event's data.  The seat information will be updated before the
+	 *  event is invoked. This event will replace the JOIN and LEAVE
+	 *  events.  Games are advised to register the same handler for all
+	 *  three and to check the seat event by comparing the new and old
+	 *  seats.  Possible operations include open|reserved->player,
+	 *  player->open, open->bot, bot->open, reserved->open,
+	 *  open->reserved, and bot->bot.  Name changes are allowed but
+	 *  there is no player->player (i.e., player swap) seat event. */
 	GGZDMOD_EVENT_SEAT,
 
 	/** @brief A spectator joins the game.
