@@ -1,2 +1,2 @@
-SUBDIRS = hosting database metaserver
+SUBDIRS = hosting database metaserver ggzd
 
