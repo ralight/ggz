@@ -11,7 +11,7 @@ tuxmanserv_LDADD = $(LDADD) \
 			lib/libggzgameserver.a \
 			$(top_builddir)/ggzdmod/libggzdmod.la
 
-noinst_HEADERS = map.h pacman.h tuxmanserv.h
+noinst_HEADERS = map.h pacman.h tuxmanserv.h proto.h
 
 mapdir = $(ggzddatadir)/tuxmanserv
 dist_map_DATA = level9.pac
