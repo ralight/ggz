@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 6746 2005-01-19 23:15:12Z jdorje $
+ * $Id: game.c 6747 2005-01-19 23:53:16Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -608,12 +608,14 @@ static void game_request_time(int seat)
 static void game_send_time(int seat)
 {
   int fd = ggzdmod_get_seat(game_info.ggz, seat).fd;
+  int clock_type = game_info.clock_type;
+  int sec = game_info.seconds[0];
 
   if (fd < 0)
     return;
 
-  if (ggz_write_char(fd, CHESS_RSP_TIME) < 0 ||
-      ggz_write_int(fd, (game_info.clock_type<<24)+(game_info.seconds[0]&0xFFFFFF)))
+  if (ggz_write_char(fd, CHESS_RSP_TIME) < 0
+      || ggz_write_int(fd, (clock_type << 24) + (sec & 0xFFFFFF)))
     return;
 
 }
