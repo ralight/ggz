@@ -49,9 +49,9 @@ static void  table_fork(int t_index);
 static void  table_loop(int t_index);
 static int   table_handle(int op, int index, int fd);
 static void  table_remove(int t_index);
-static void run_game(int t_index, int fd, char *path);
-static int pass_options(int t_index);
-static int game_over(int index, int fd);
+static void  table_run_game(int t_index, int fd, char *path);
+static int   table_send_opt(int t_index);
+static int   table_game_over(int index, int fd);
 
 /* FIXME: This should actually do checking */
 int table_check(int p_index, TableInfo table)
@@ -177,7 +177,7 @@ static void table_fork(int t_index)
 	if ((pid = fork()) < 0)
 		err_sys_exit("fork failed");
 	else if (pid == 0) {
-		run_game(t_index, fd[0], path);
+		table_run_game(t_index, fd[0], path);
 		err_sys_exit("exec failed");
 	} else {
 		/* Close the remote ends of the socket pairs */
@@ -189,7 +189,7 @@ static void table_fork(int t_index)
 		game_tables.info[t_index].pid = pid;
 		pthread_rwlock_unlock(&game_tables.lock);
 
-		if (pass_options(t_index) == 0)
+		if (table_send_opt(t_index) == 0)
 			table_loop(t_index);
 
 		/* Make sure game server is dead */
@@ -198,7 +198,7 @@ static void table_fork(int t_index)
 }
 
 
-static void run_game(int t_index, int fd, char *path)
+static void table_run_game(int t_index, int fd, char *path)
 {
 
 	dbg_msg("Process forked.  Game running");
@@ -213,7 +213,7 @@ static void run_game(int t_index, int fd, char *path)
 }
 
 
-static int pass_options(int t_index)
+static int table_send_opt(int t_index)
 {
 
 	int i, fd, size, type, p_index, op;
@@ -286,7 +286,7 @@ static int table_handle(int request, int index, int fd)
 	switch (op) {
 
 	case MSG_GAME_OVER:
-		game_over(index, fd);
+		table_game_over(index, fd);
 		status = -1;
 		break;
 
@@ -319,7 +319,7 @@ static void table_remove(int t_index)
 }
 
 
-static int game_over(int index, int fd)
+static int table_game_over(int index, int fd)
 {
 
 	int i, num, p_index, won, lost;

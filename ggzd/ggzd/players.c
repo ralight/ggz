@@ -65,16 +65,16 @@ static int   player_msg_to_sized(int fd_in, int fd_out);
 static int   player_msg_from_sized(int fd_in, int fd_out);
 static int   player_send_chat(int p_index, char* name, char* chat);
 static int   player_chat(int p_index, int p_fd);
+static int   player_login_anon(int index);
+static int   player_login_new(int p_index);
+static int   player_logout(int p_index);
+static int   player_table_launch(int p_index, int p_fd, int *t_fd);
+static int   player_table_join(int p_index, int p_fd, int *t_fd);
+static int   player_list_players(int p_index);
+static int   player_list_types(int p_index);
+static int   player_list_tables(int p_index);
 
-static int new_login(int p_index);
-static int anon_login(int index);
-static int login(int p_index);
-static int logout(int p_index);
-static int read_table_info(int p_index, int p_fd, int *t_fd);
-static int join_table(int p_index, int p_fd, int *t_fd);
-static int user_list(int p_index);
-static int types_list(int p_index);
-static int table_list(int p_index);
+/* Utility functions: Should either get renamed or moved */
 static int read_name(int, char[MAX_USER_NAME_LEN]);
 static int type_match_table(int type, int num);
 
@@ -259,7 +259,7 @@ static void player_loop(int p_index, int p_fd)
 
 
 /*
- * handle_player() receives the opcode of the incoming message, the
+ * player_handle() receives the opcode of the incoming message, the
  * player's index and player's fd, and the table fd by reference.  It
  * then dispatches the correct function to read in the data and handle
  * any requests.
@@ -278,36 +278,36 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 
 	switch (op) {
 	case REQ_LOGIN_ANON:
-		status = anon_login(p_index);
+		status = player_login_anon(p_index);
 		break;
 
 	case REQ_LOGOUT:
-		logout(p_index);
+		player_logout(p_index);
 		status = NG_HANDLE_LOGOUT;
 		break;
 
 	case REQ_TABLE_LAUNCH:
-		status = read_table_info(p_index, p_fd, t_fd);
+		status = player_table_launch(p_index, p_fd, t_fd);
 		if (status == 0)
 			status = NG_HANDLE_GAME_START;
 		break;
 
 	case REQ_TABLE_JOIN:
-		status = join_table(p_index, p_fd, t_fd);
+		status = player_table_join(p_index, p_fd, t_fd);
 		if (status == 0)
 			status = NG_HANDLE_GAME_START;
 		break;
 
 	case REQ_LIST_PLAYERS:
-		status = user_list(p_index);
+		status = player_list_players(p_index);
 		break;
 
 	case REQ_LIST_TYPES:
-		status = types_list(p_index);
+		status = player_list_types(p_index);
 		break;
 
 	case REQ_LIST_TABLES:
-		status = table_list(p_index);
+		status = player_list_tables(p_index);
 		break;
 
 	case REQ_GAME:
@@ -429,7 +429,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 
 
 /*
- * new_login implements the following exchange:
+ * player_login_new implements the following exchange:
  * 
  * REQ_NEW_LOGIN
  *  str: login name
@@ -438,9 +438,9 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
  *  str: initial password (if success)
  *  int: game type checksum (if success)
  */
-static int new_login(int p)
+static int player_login_new(int p)
 {
-	/*FIXME: needs rewitten in style of read_table_info */
+	/*FIXME: needs rewitten in style of player_table_launch */
 	char name[MAX_USER_NAME_LEN + 1];
 
 	dbg_msg("Creating new login for player %d", p);
@@ -471,7 +471,7 @@ static int new_login(int p)
 }
 
 
-static int anon_login(int p)
+static int player_login_anon(int p)
 {
 
 	char name[MAX_USER_NAME_LEN + 1];
@@ -499,16 +499,7 @@ static int anon_login(int p)
 }
 
 
-static int login(int p)
-{
-	
-	dbg_msg("Handling login for player %d (not implemented)", p);
-	return -1;
-
-}
-
-
-static int logout(int p)
+static int player_logout(int p)
 {
 
 	dbg_msg("Handling logout for player %d", p);
@@ -523,7 +514,7 @@ static int logout(int p)
 
 
 /*
- * read_table_info implements the following exchange:
+ * player_table_launch implements the following exchange:
  *
  * REQ_LAUNCH_GAME
  *  int: game type index
@@ -540,7 +531,7 @@ static int logout(int p)
  * returns 0 if successful, -1 on error.  If successful, returns table
  * fd by reference
  */
-static int read_table_info(int p_index, int p_fd, int *t_fd)
+static int player_table_launch(int p_index, int p_fd, int *t_fd)
 {
 
 	TableInfo table;
@@ -661,7 +652,7 @@ static int read_table_info(int p_index, int p_fd, int *t_fd)
 
 
 /* FIXME: Some day we'll worry about reservations. Not today*/
-static int join_table(int p_index, int p_fd, int *t_fd)
+static int player_table_join(int p_index, int p_fd, int *t_fd)
 {
 	int i, t_index, fds[2];
 	int status = 0;
@@ -735,7 +726,7 @@ static int join_table(int p_index, int p_fd, int *t_fd)
 }
 
 
-static int user_list(int p_index)
+static int player_list_players(int p_index)
 {
 
 	int i, fd, count;
@@ -764,7 +755,7 @@ static int user_list(int p_index)
 }
 
 
-static int types_list(int p_index)
+static int player_list_types(int p_index)
 {
 
 	char verbose;
@@ -803,7 +794,7 @@ static int types_list(int p_index)
 }
 
 
-static int table_list(int p_index)
+static int player_list_tables(int p_index)
 {
 
 	int i, j, fd, type, player_num, seated_humans;
