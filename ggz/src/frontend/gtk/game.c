@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 4916 2002-10-14 22:13:38Z jdorje $
+ * $Id: game.c 5056 2002-10-26 23:35:29Z jdorje $
  *
  * Functions for handling game events
  *
@@ -288,7 +288,6 @@ static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_dat
 {
 	GGZRoom *room;
 
-	chat_display_local(CHAT_LOCAL_NORMAL, NULL, _("Game Over"));
 	game_quit();
 	
 	switch (ggzcore_server_get_state(server)) {

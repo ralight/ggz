@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4873 2002-10-12 02:16:09Z jdorje $
+ * $Id: ggzclient.c 5056 2002-10-26 23:35:29Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -29,6 +29,7 @@
 
 #include <assert.h>
 #include <gtk/gtk.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 
@@ -856,9 +857,16 @@ static GGZHookReturn ggz_table_launch_fail(GGZRoomEvent id, void* event_data, vo
 }
 
 
-static GGZHookReturn ggz_table_joined(GGZRoomEvent id, void* event_data, void* user_data)
+static GGZHookReturn ggz_table_joined(GGZRoomEvent id, void* event_data,
+				      void* user_data)
 {
-	/*output_text("-- Table joined");*/
+	int table_id = *(int*)event_data;
+
+	char message[1024];
+	snprintf(message, sizeof(message),
+		 _("You have joined table %d."), table_id);
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, message);
+
 	return GGZ_HOOK_OK;
 }
 
@@ -877,9 +885,32 @@ static GGZHookReturn ggz_table_join_fail(GGZRoomEvent id, void* event_data, void
 }
 
 
-static GGZHookReturn ggz_table_left(GGZRoomEvent id, void* event_data, void* user_data)
+static GGZHookReturn ggz_table_left(GGZRoomEvent id, void* event_data,
+				    void* user_data)
 {
-	/*output_text("-- Left table");*/
+	GGZTableLeaveEventData *data = event_data;
+	char message[1024] = "???";
+
+	switch (data->reason) {
+	case GGZ_LEAVE_BOOT:
+		snprintf(message, sizeof(message),
+			 _("You have been booted from the table by %s."),
+			 data->player);
+		break;
+	case GGZ_LEAVE_NORMAL:
+		snprintf(message, sizeof(message),
+			 _("You have left the table."));
+		break;
+	case GGZ_LEAVE_GAMEOVER:
+		snprintf(message, sizeof(message),
+			 _("The game is over."));
+		break;
+	case GGZ_LEAVE_GAMEERROR:
+		snprintf(message, sizeof(message),
+			 _("There was an error with the game server."));
+		break;
+	}
+	chat_display_local(CHAT_LOCAL_NORMAL, NULL, message);
 
 	game_quit();
 
