@@ -5,13 +5,6 @@ DIST_SUBDIRS = easysock game_clients src po intl
 
 EXTRA_DIST = HACKING
 
-#ggzconf_DATA = ggz.rc
-#
-#ggz.rc:	Makefile
-#	rm -f ggz.rc
-#	touch ggz.rc
-#	find game_clients -name \*.dsc -exec cat {} > ggz.rc \;
-
 install-data-local:
 	@$(NORMAL_INSTALL)
 	if test -d $(srcdir)/pixmaps; then \
