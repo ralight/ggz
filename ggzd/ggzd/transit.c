@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3198 2002-01-30 09:24:30Z jdorje $
+ * $Id: transit.c 3205 2002-02-02 00:26:22Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -168,15 +168,22 @@ static int transit_table_event_callback(void* target, int size, void* data)
 		break;
 	}
 
-	/* FIXME: This is the point where we should check for a reserved seat.
-	   Instead, we currently check later on...when it's harder to handle
-	   errors. */
+	/* If it's a TRANSIT_JOIN, we check to see if there's a spot
+	 * available (either open or reserved).  We have to check
+	 * now (before doing the transit), since if we wait there
+	 * will be no good way to handle the error.  --JDS */
 	if (opcode == GGZ_TRANSIT_JOIN
-	    && !seats_count(table, GGZ_SEAT_OPEN)
-	    && !seats_count(table, GGZ_SEAT_RESERVED)) {
-		/* Don't care if this fails, we aren't transiting anyway */
-		transit_player_event(name, opcode, E_TABLE_FULL, 0, 0);
-		return GGZ_EVENT_OK;
+	    && !seats_count(table, GGZ_SEAT_OPEN)) {
+	    	int num_seats = seats_num(table), i;
+	    	for (i = 0; i < num_seats; i++)
+			if (seats_type(table, i) == GGZ_SEAT_RESERVED
+			    && !strcmp(table->seat_names[i], name))
+				break;
+		if (i == num_seats) {
+			/* Don't care if this fails, we aren't transiting anyway */
+			transit_player_event(name, opcode, E_TABLE_FULL, 0, 0);
+			return GGZ_EVENT_OK;
+		}
 	}
 	
 	switch (opcode) {
@@ -290,7 +297,11 @@ static int transit_send_join_to_game(GGZTable* table, char* name)
 			if (seats_type(table, i) == GGZ_SEAT_OPEN)
 				break;
 	
-	/* Ack! Fatal error...this should never happen */
+	/* Ack! Fatal error...this should never happen.
+	 *
+	 * Note, we have checked earlier to see if a spot (open or
+	 * reserved) is available for the player here.  So this
+	 * really should never happen. */
 	if (i == seats) {
 		dbg_msg(GGZ_DBG_TABLE, "No available seats for player!");
 		return -1;
