@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: ai.c 3434 2002-02-21 07:42:14Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -71,8 +71,6 @@ void start_ai(player_t p, char* ai_type)
 	
 	snprintf(cmd, sizeof(cmd),
 	         "%s/ggzd.ggzcards.ai-%s", path, ai_type);
-	
-	printf("We're going to exec %s.\n\n", cmd);
 	
 	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
 		ggz_error_sys_exit("socketpair failed");

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: common.c 3434 2002-02-21 07:42:14Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -52,7 +52,7 @@ struct game_t game = { 0 };
  * correctly.  This works as desired...the problem is that all other
  * games will need identical changes too.
  */
-static int seats_full(void)
+static bool seats_full(void)
 {
 	return ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN)
 		+ ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0;
@@ -87,7 +87,7 @@ const char *get_state_name(server_state_t state)
 	return "[unknown state]";
 }
 
-static int try_to_start_game(void);
+static bool try_to_start_game(void);
 static void newgame(void);
 static int determine_host(void);
 static void set_player_name(player_t p, const char *name);
@@ -245,10 +245,10 @@ void init_ggzcards(GGZdMod * ggz, int which)
 
 /* Tries to start a game, requesting information from players where
    necessary.  returns 1 on successful start. */
-static int try_to_start_game(void)
+static bool try_to_start_game(void)
 {
 	player_t p;
-	int ready = 1;
+	int ready = TRUE;
 
 	for (p = 0; p < game.num_players; p++)
 		if (!game.players[p].ready) {
@@ -257,13 +257,13 @@ static int try_to_start_game(void)
 			   that it was a duplicate. */
 			ggzdmod_log(game.ggz, "Player %d/%s is not ready.", p,
 				    get_player_name(p));
-			ready = 0;
+			ready = FALSE;
 		}
 	if (ready && options_set()) {
 		newgame();
-		return 1;
+		return TRUE;
 	} else
-		return 0;
+		return FALSE;
 }
 
 /* start a new game! */
@@ -629,7 +629,7 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 		
 	/* Change the table (and hence game) state. */
 	if (ggzdmod_set_state(game.ggz, new_state) < 0)
-		assert(0);
+		assert(FALSE);
 	
 	ggzdmod_log(game.ggz, "Player leave successful.");
 }
@@ -639,7 +639,7 @@ int handle_newgame_event(player_t player)
 {
 	ggzdmod_log(game.ggz, "Handling a newgame event for player %d/%s.",
 		    player, get_player_name(player));
-	game.players[player].ready = 1;
+	game.players[player].ready = TRUE;
 	if (player == game.host && !options_set())
 		get_options();
 	try_to_start_game();
@@ -678,7 +678,7 @@ int handle_play_event(card_t card)
 
 	/* do extra handling */
 	if (card.suit == game.trump)
-		game.trump_broken = 1;
+		game.trump_broken = TRUE;
 	game.funcs->handle_play(card);
 
 	/* set up next move */
@@ -820,20 +820,16 @@ void init_game()
 	if (!games_valid_game(game.which_game))
 		fatal_error("BUG: init_game: invalid game chosen.");
 
-	if (game.initted || game.which_game == GGZ_GAME_UNKNOWN) {
-		ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
-			    "game_init_game called on unknown or previously initialized game.");
-		return;
-	}
+	assert(!game.initted && game.which_game != GGZ_GAME_UNKNOWN);
 
 	game.funcs = game_data[game.which_game].funcs;
 
 	/* default values */
 	game.deck_type = GGZ_DECK_FULL;
-	game.last_trick = 1;
-	game.last_hand = 1;
-	game.cumulative_scores = 1;
-	game.bid_history = 1;
+	game.last_trick = TRUE;
+	game.last_hand = TRUE;
+	game.cumulative_scores = TRUE;
+	game.bid_history = TRUE;
 	game.name = game_data[game.which_game].full_name;
 
 	/* now we do all the game-specific initialization... */
@@ -841,11 +837,8 @@ void init_game()
 	game.funcs->init_game();
 	
 	for (p = 0; p < game.num_players; p++)
-		if (get_player_status(p) == GGZ_SEAT_BOT) {
-			printf("Starting AI on seat %d.\n\n", p);
+		if (get_player_status(p) == GGZ_SEAT_BOT)
 			start_ai(p, game.ai_type);
-		} else
-			printf("Skipping seat %d.\n\n", p);
 
 	game.deck = cards_create_deck(game.deck_type);
 	if (game.max_hand_length == 0)
@@ -883,7 +876,7 @@ void init_game()
 		if (get_player_status(p) == GGZ_SEAT_BOT)
 			set_player_name(p, ai_get_name(p));
 
-	game.initted = 1;
+	game.initted = TRUE;
 }
 
 

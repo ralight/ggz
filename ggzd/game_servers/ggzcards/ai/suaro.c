@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: suaro.c 3434 2002-02-21 07:42:14Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -50,6 +50,11 @@ card_t get_play(int play_hand, int *valid_plays);
 static int declarer = -1;
 static bid_t contract;
 static char trump = -1;
+
+enum {
+	ME = 0,
+	OPP = 2
+};
 
 /*
  *
@@ -139,7 +144,7 @@ void alert_play(int p, card_t card)
 
 /* This just gives an arbitrary impression of suit strength, sort-of
    accounting for cards that have already been played. */
-static int count_suit_strength(int seat, char suit, int lo)
+static int count_suit_strength(char suit, bool lo)
 {
 	card_t card;
 	int coefficient = 100;
@@ -156,7 +161,7 @@ static int count_suit_strength(int seat, char suit, int lo)
 		if (libai_is_card_played(card.suit, card.face))
 			continue;
 
-		if (libai_is_card_in_hand(seat, card)) {
+		if (libai_is_card_in_hand(ME, card)) {
 			strength += coefficient * value;
 		} else {
 			strength -= coefficient * value;
@@ -173,15 +178,15 @@ static int count_suit_strength(int seat, char suit, int lo)
 
 /* Finds a normal suit (not a suaro suit) that is strongest, using
    count_suit_strength. */
-static char find_best_suit(int seat, int lo)
+static char find_best_suit(bool lo)
 {
 	int bestsuit = -1, bestsuitlength = -1, bestsuitstrength = -1;
 	char suit;
 
 	/* First find our longest suit.  This should be a libai function (?) */
 	for (suit = 0; suit < 4; suit++) {
-		char count = libai_count_suit(seat, suit);
-		int suitstrength = count_suit_strength(seat, suit, lo);
+		char count = libai_count_suit(ME, suit);
+		int suitstrength = count_suit_strength(suit, lo);
 		if (count > bestsuitlength
 		    || (count == bestsuitlength
 			&& suitstrength >= bestsuitstrength)) {
@@ -207,7 +212,7 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 	/* Our strategy is fairly simple: we figure out what we should bid
 	   and we bid it.  If the opponent has already bid higher, we pass. */
 
-	bidsuit = find_best_suit(0, 0) + 1;
+	bidsuit = find_best_suit(FALSE) + 1;
 	ggz_debug("ai", "Best suit is %s.", short_suaro_suit_names[(int) bidsuit]);
 
 	/* This really needs to be more accurate.  It basically just affects
@@ -231,7 +236,7 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 		   should be counted as winners.  If we have A-K-8, we figure
 		   the opponent has about 2.4 cards in the suit, so we'll
 		   expect to get 2.6 tricks. */
-		int ourcount = libai_count_suit(0, c.suit);
+		int ourcount = libai_count_suit(ME, c.suit);
 		int oppcount = 60 * (7 - ourcount);
 
 		int tricks_in_suit = 0;
@@ -243,7 +248,7 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 			 ourcount, suit_names[(int) c.suit], oppcount);
 
 		for (c.face = ACE_HIGH; c.face >= 8; c.face--) {
-			if (libai_is_card_in_hand(0, c)) {
+			if (libai_is_card_in_hand(ME, c)) {
 				int value;
 
 				cardvalue += 100;
@@ -297,43 +302,42 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 
 card_t get_play(int play_seat, int *valid_plays)
 {
-	assert(play_seat == 0);
+	assert(play_seat == ME);
 
-	if (get_leader() == 0) {
+	if (get_leader() == ME) {
 		/* Pick a good lead. */
 		char suit;
 
 		/* If we're the declarer and there is a trump, we want to
 		   pull trump. Otherwise just pick a strong suit. */
-		if (declarer == 0
+		if (declarer == ME
 		    && trump >= 0
-		    && libai_count_suit(0, trump) > 1)
+		    && libai_count_suit(ME, trump) > 1)
 			suit = trump;
 		else
-			suit = find_best_suit(0,
-					      contract.sbid.suit ==
+			suit = find_best_suit(contract.sbid.suit ==
 					      SUARO_LOW);
 
-		return libai_get_highest_card_in_suit(0, suit);
+		return libai_get_highest_card_in_suit(ME, suit);
 	} else {
 		/* Pick a good response. */
 
-		card_t opp_card = ggzcards.players[2].table_card;
+		card_t opp_card = ggzcards.players[OPP].table_card;
 
 		/* FIXME: none of this section can deal with low bids. */
 
-		if (libai_count_suit(0, opp_card.suit) == 0) {
+		if (libai_count_suit(ME, opp_card.suit) == 0) {
 			card_t card;
 
 			/* Try to trump. */
 			if (trump >= 0
-			    && libai_count_suit(0, trump) > 0) {
+			    && libai_count_suit(ME, trump) > 0) {
 				card_t card;
 
 				for (card.suit = trump, card.face =
 				     8, card.deck = 0; card.face <= ACE_HIGH;
 				     card.face++) {
-					if (libai_is_card_in_hand(0, card)) {
+					if (libai_is_card_in_hand(ME, card)) {
 						/* Lowest possible winner -
 						   take it. */
 						return card;
@@ -347,7 +351,7 @@ card_t get_play(int play_seat, int *valid_plays)
 			     card.suit++, card.face =
 			     (card.suit > SPADES ? card.face + 1 : card.face),
 			     card.suit %= 4) {
-				if (libai_is_card_in_hand(0, card)) {
+				if (libai_is_card_in_hand(ME, card)) {
 					/* Lowest possible trash card - toss
 					   it. */
 					return card;
@@ -360,7 +364,7 @@ card_t get_play(int play_seat, int *valid_plays)
 			/* Try to win trick. */
 			for (card = opp_card; card.face <= ACE_HIGH;
 			     card.face++) {
-				if (libai_is_card_in_hand(0, card)) {
+				if (libai_is_card_in_hand(ME, card)) {
 					/* Lowest possible winner - take it. */
 					return card;
 				}
@@ -370,7 +374,7 @@ card_t get_play(int play_seat, int *valid_plays)
 			for (card.face = 8, card.suit =
 			     opp_card.suit, card.deck = 0;
 			     card.face < opp_card.face; card.face++) {
-				if (libai_is_card_in_hand(0, card)) {
+				if (libai_is_card_in_hand(ME, card)) {
 					/* Lowest possible loser - take it. */
 					return card;
 				}
@@ -378,6 +382,6 @@ card_t get_play(int play_seat, int *valid_plays)
 		}
 	}
 
-	assert(0);
+	assert(FALSE);
 	return UNKNOWN_CARD;
 }
