@@ -225,9 +225,6 @@ gint ggz_event_players( GtkWidget *widget, GdkEvent *event )
 			bevent->button, bevent->time);
         }
 
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "msg_entry");
-	gtk_widget_grab_focus(tmp);
-
 	return 0;
 }
 
