@@ -1,9 +1,9 @@
 # Muehle description file
 [ModuleInfo]
 Author = Josef Spillner
-CommandLine = @ggzexecmoddir@/muehle --ggz
+CommandLine = @ggzexecmoddir@/muehle --ggz --icon @prefix@/share/icons/hicolor/32x32/apps/muehle.png
 Frontend = kde
-Homepage = http://mindx.sourceforge.net/
+Homepage = http://ggz.sourceforge.net/games/muehle/
 Name = Muehle
 ProtocolEngine = Muehle
 ProtocolVersion = 1
