@@ -224,7 +224,7 @@ static int get_seat(void)
 
 static int get_players(void)
 {
-	int i;
+	int i, left=0;
 	char *temp;
 	char t_name[17];
 
@@ -251,11 +251,19 @@ static int get_players(void)
 				game.names[i][0] = '\0';
 				statusbar_message(temp);
 				g_free(temp);
+				left++;
 			}
 		}
 	}
 
 	game.got_players++;
+
+	if(left && game.state == LP_STATE_BID)
+		gtk_widget_hide(dlg_bid_fixed);
+	if(left && game.state == LP_STATE_TRUMP)
+		table_clear_table();
+	if(left)
+		game.state = LP_STATE_WAIT;
 
 	return 0;
 }
@@ -298,10 +306,24 @@ static int get_sync_info(void)
 			/* Can't occur */
 			break;
 		case LP_SERVER_GET_TRUMP:
-			/* Can't occur */
+			if(es_read_char(game.fd, &game.dealer) < 0)
+				return -1;
+
 			break;
 		case LP_SERVER_BIDDING:
-			/* Can't occur */
+			if(es_read_char(game.fd, &game.dealer) < 0
+			   || es_read_char(game.fd, &game.trump_suit) < 0)
+				return -1;
+
+			table_set_trump();
+
+			/* Get all four bids */
+			for(i=0; i<4; i++) {
+				if(es_read_int(game.fd, &game.bid[i]) < 0)
+					return -1;
+				table_set_bid(i, game.bid[i]);
+			}
+
 			break;
 		case LP_SERVER_PLAYING:
 			if(es_read_char(game.fd, &game.dealer) < 0

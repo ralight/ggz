@@ -274,9 +274,23 @@ static int game_send_sync(int num)
 			/* Can't occur */
 			break;
 		case LP_STATE_GET_TRUMP:
+			/* Notify of dealer */
+			if(es_write_char(fd, game.dealer) < 0)
+				return -1;
 
+			break;
 		case LP_STATE_BIDDING:
+			/* Notify of dealer and trump */
+			if(es_write_char(fd, game.dealer) < 0
+			   || es_write_char(fd, game.trump) < 0)
+				return -1;
 
+			/* Send all four bids */
+			for(i=0; i<4; i++)
+				if(es_write_int(fd, game.bid[i]) < 0)
+					return -1;
+
+			break;
 		case LP_STATE_PLAYING:
 			/* Notify of dealer, leader, trump and led suit */
 			if(es_write_char(fd, game.dealer) < 0
@@ -356,11 +370,15 @@ static void game_play(void)
 			game.bid_count = 0;
 			game.bid_total = 0;
 			for(i=0; i<4; i++) {
+				game.bid[i] = -1;
 				game.tricks[i] = 0;
 				game.table[i] = -1;
 			}
 			if(game.state == LP_STATE_BIDDING)
 				game_req_bid();
+			break;
+		case LP_STATE_GET_TRUMP:
+			game_req_trump();
 			break;
 		case LP_STATE_BIDDING:
 			if(game.bid_count < 4)

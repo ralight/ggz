@@ -853,10 +853,12 @@ void table_set_bid(int p, int bid)
 {
 	char *t_str;
 
-	t_str = g_strdup_printf("%d", bid);
-	gtk_label_set_text(GTK_LABEL(l_bid[SEAT_POS(p)]), t_str);
-	g_free(t_str);
-	gtk_label_set_text(GTK_LABEL(l_tricks[SEAT_POS(p)]), "0");
+	if(bid != -1) {
+		t_str = g_strdup_printf("%d", bid);
+		gtk_label_set_text(GTK_LABEL(l_bid[SEAT_POS(p)]), t_str);
+		g_free(t_str);
+		gtk_label_set_text(GTK_LABEL(l_tricks[SEAT_POS(p)]), "0");
+	}
 }
 
 
