@@ -2,11 +2,11 @@ Makefile
 Makefile.in
 .deps
 .libs
-ktictactux_client
-ktictactux_client_meta_unload*
+kcc
+kcc_meta_unload*
 *.o
 *.moc.cpp
 module.dsc
 .xvpics
-ktictactux.desktop
+kcc.desktop
 
