@@ -789,8 +789,18 @@ static void parse_game(char *name, char *dir)
 				PARSE_ERR("Syntax error");
 				continue;
 			}
-			strncpy(game_info->protocol, varvalue,
+			strncpy(game_info->p_engine, varvalue,
 				 MAX_GAME_PROTOCOL_LEN);
+		}
+
+		/*** ProtocolVersion = String ***/
+		if(!strcmp(varname, "protocolversion")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			strncpy(game_info->p_version, varvalue,
+				MAX_GAME_VER_LEN);
 		}
 
 		/*** Author = String ***/

@@ -1,7 +1,8 @@
 # GGZ Cards description file
 Name = GGZCards-Spades
 Version = 0.0.4
-ProtocolEngine = GGZCards:1
+ProtocolEngine = GGZCards
+ProtocolVersion = 1
 Description = GGZ game module for trick-taking card games
 Author = Jason Short, Rich Gade
 Homepage = http://ggz.sourceforge.net

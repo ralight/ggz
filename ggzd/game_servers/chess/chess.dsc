@@ -1,6 +1,7 @@
 Name = Chess
 Version = 0.0.6
-ProtocolEngine = Chess:1
+ProtocolEngine = Chess
+ProtocolVersion = 1
 Description = GGZ game module for playing Chess
 Author = Ismael Orenstein
 Homepage = http://ggz.sourceforge.net

@@ -1,7 +1,8 @@
 # Escape description file
 Name = Escape
 Version = 0.0.1
-ProtocolEngine = Escape:1
+ProtocolEngine = Escape
+ProtocolVersion = 1
 Description = Escape from the Room!
 Author = Roger Light
 Homepage = http://wggz.sf.net

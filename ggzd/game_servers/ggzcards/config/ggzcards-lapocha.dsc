@@ -1,7 +1,8 @@
 # GGZ Cards description file
 Name = GGZCards-LaPocha
 Version = 0.0.4
-ProtocolEngine = GGZCards:1
+ProtocolEngine = GGZCards
+ProtocolVersion = 1
 Description = GGZ Cards game module for La Pocha
 Author = Jason Short, Rich Gade
 Homepage = http://ggz.sourceforge.net

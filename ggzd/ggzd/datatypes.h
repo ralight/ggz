@@ -67,7 +67,8 @@ typedef struct GameInfo {
 	pthread_rwlock_t lock;
 	char name[MAX_GAME_NAME_LEN];
 	char version[MAX_GAME_VER_LEN];
-	char protocol[MAX_GAME_PROTOCOL_LEN];
+	char p_engine[MAX_GAME_PROTOCOL_LEN];
+	char p_version[MAX_GAME_VER_LEN];
 	char desc[MAX_GAME_DESC_LEN];
 	char author[MAX_GAME_AUTH_LEN];
 	char homepage[MAX_GAME_WEB_LEN];

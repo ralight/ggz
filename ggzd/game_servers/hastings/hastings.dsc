@@ -1,7 +1,8 @@
 # Hastings1066 description file
 Name = Hastings
 Version = 0.0.4
-ProtocolEngine = Hastings:1
+ProtocolEngine = Hastings
+ProtocolVersion = 1
 Description = Another GGZ module
 Author = Josef Spillner
 Homepage = http://mindx.sourceforge.net

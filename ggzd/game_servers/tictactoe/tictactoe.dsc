@@ -1,7 +1,8 @@
 # NetSpades description file
 Name = TicTacToe
 Version = 0.0.2
-ProtocolEngine = TicTacToe:1
+ProtocolEngine = TicTacToe
+ProtocolVersion = 1
 Description = Simple GGZ game module for playing Tic-Tac-Toe
 Author = Brent Hendricks
 Homepage = http://ggz.sourceforge.net
