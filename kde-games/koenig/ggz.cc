@@ -17,6 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 #include <qsocket.h>
+#include <qsocketnotifier.h>
 #include <qstring.h>
 
 #include <kdebug.h>
@@ -31,43 +32,38 @@ GGZ::GGZ(void)
 	self = this;
 	mod = NULL;
 	socket = NULL;
-	ctlsocket = NULL;
 }
 
 GGZ::~GGZ(void)
 {
 	if(socket)
 		delete socket;
-	if(ctlsocket)
-		delete ctlsocket;
 
 	if (mod)
 	{
 		ggzmod_disconnect(mod);
 		ggzmod_free(mod);
 	}
-	
+
 	socket = NULL;
-	ctlsocket = NULL;
 }
 
 void GGZ::connect(const QString& name)
 {
-	int fd;
+	int fd, ret;
+	QSocketNotifier *sn;
 
 	mod = ggzmod_new(GGZMOD_GAME);
 	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &recvEvent);
-	ggzmod_connect(mod);
+	ret = ggzmod_connect(mod);
 	fd = ggzmod_get_fd(mod);
 
-	ctlsocket = new QSocket();
-	ctlsocket->setSocket(fd);
-	QObject::connect(ctlsocket, SIGNAL(readyRead()), SLOT(recvControl()));
+	sn = new QSocketNotifier(fd, QSocketNotifier::Read, this);
+	QObject::connect(sn, SIGNAL(activated(int)), SLOT(recvControl()));
 }
 
 void GGZ::recvControl()
 {
-kdDebug() << "*** dispatch" << endl;
 	ggzmod_dispatch(mod);
 }
 
@@ -81,8 +77,6 @@ void GGZ::recvRawData()
 
 void GGZ::recvEvent(GGZMod *mod, GGZModEvent e, void *data)
 {
-kdDebug() << "*** event" << endl;
-
 	self->socket = new QSocket();
 	self->socket->setSocket((int)data);
 
