@@ -37,7 +37,7 @@ DISTCLEANFILES = $(krosswater_client_METASOURCES)
 # AUTOMAKE_OPTIONS = foreign
 
 install-data-local:
-@$(NORMAL_INSTALL)
+	@$(NORMAL_INSTALL)
 	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
 	-$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/krosswater/gfx
 	-$(INSTALL) -m 644 gfx/*.png $(DESTDIR)$(ggzdatadir)/krosswater/gfx/
