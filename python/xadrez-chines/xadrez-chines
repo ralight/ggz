@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Client for the Chinese Chess game
 # Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
 # Published under GNU GPL conditions
 
@@ -11,124 +12,58 @@ import sys
 import time
 import random
 import os, pwd
+import re
 
-class Proto:
-	def __init__(self):
-		self.move_invalid = 101
-		self.move_ok = 102
+import ggzmod
+from xadrezlib import *
 
-def ai(x):
-	pass
+def network(message):
+	turn = re.compile("your turn")
+	responseok = re.compile("move was ok")
+	responseinvalid = re.compile("move was invalid")
+	responseturn = re.compile("not your turn")
+	move = re.compile("(\S+) moved from (\d+),(\d+) to (\d+),(\d+)")
+	event = re.compile("(\S+) took figure at (\d+),(\d+) from (\S+)")
+	gameover = re.compile("(\S+) won")
 
-def validate(oldx, oldy, x, y):
-	global field
-	global proto
+	line = message
 
-	ret = proto.move_invalid
-
-	oldfigure = ""
-	oldcolor = ""
-	if field[oldx][oldy] is not "":
-		if field[oldx][oldy].count(":") == 2:
-			(oldfigure, oldcolor, oldoptions) = field[oldx][oldy].split(":")
-		elif field[oldx][oldy].count(":") == 1:
-			(oldfigure, oldcolor) = field[oldx][oldy].split(":")
-			oldoptions = ""
-	print "go with", oldfigure, "of color", oldcolor, "and options", oldoptions
-	figure = ""
-	color = ""
-	if field[x][y] is not "":
-		if field[x][y].count(":") == 2:
-			(figure, color, options) = field[x][y].split(":")
-		elif field[x][y].count(":") == 1:
-			(figure, color) = field[x][y].split(":")
-			options = ""
-	print "to", figure, "of color", color
-
-	if oldfigure == "":
-		return proto.move_invalid
-	if oldcolor == color:
-		return proto.move_invalid
-
-	rivercross = 0
-	if oldy < 5 and y >= 5:
-		rivercross = 1
-	if oldy >= 5 and y < 5:
-		rivercross = 1
-
-	insidecastle = 0
-	if (x >= 3 and x <= 5) and (oldx >= 3 and oldx <= 5):
-		if (oldy >= 7 and oldy <= 9) and (oldy >= 7 and oldy <= 9):
-				insidecastle = 1
-		if (oldy >= 0 and oldy <= 2) and (oldy >= 0 and oldy <= 2):
-				insidecastle = 1
-
-	print "try with rivercross", rivercross, "and insidecastle", insidecastle
-	print "figure", oldfigure, "oldx/y", oldx, oldy, "x/y", x, y
-
-	if oldfigure == "pawn":
-		if rivercross:
-			# XXX: promote
-			field[oldx][oldy] = oldfigure + ":" + oldcolor + ":" + oldoptions + ",promoted"
-		if oldcolor == "white":
-			if x == oldx and y == oldy + 1:
-				ret = proto.move_ok
-		if oldcolor == "black":
-			if x == oldx and y == oldy - 1:
-				ret = proto.move_ok
-		if "promoted" in oldoptions:
-			if y == oldy and x == oldx - 1:
-				ret = proto.move_ok
-			if y == oldy and x == oldx + 1:
-				ret = proto.move_ok
-
-	if oldfigure == "knight":
-		# XXX can be blocked!
-		if abs(oldy - y) == 2 and abs(oldx - x) == 1:
-			ret = proto.move_ok
-		if abs(oldy - y) == 1 and abs(oldx - x) == 2:
-			ret = proto.move_ok
-
-	if oldfigure == "bishop":
-		# XXX: can be blocked!
-		if not rivercross:
-			if abs(oldx - x) == 2 and abs(oldy - y) == 2:
-				ret = proto.move_ok
-
-	if oldfigure == "bodyguard":
-		if insidecastle:
-			if abs(oldy - y) == 1 and abs(oldx - x) == 1:
-				ret = proto.move_ok
-
-	if oldfigure == "cannon":
-		# XXX: jumps!
-		if oldx == x or oldy == y:
-			ret = proto.move_ok
-
-	if oldfigure == "rock":
-		# XXX: can be blocked!
-		if oldx == x or oldy == y:
-			ret = proto.move_ok
-
-	if oldfigure == "king":
-		if insidecastle:
-			if abs(oldx - x) == 1 and y == oldy:
-				ret = proto.move_ok
-			if abs(oldy - y) == 1 and x == oldx:
-				ret = proto.move_ok
-
-	return ret
+	m = turn.match(line)
+	if m:
+		pass
+	m = responseok.match(line)
+	if m:
+		pass
+	m = responseinvalid.match(line)
+	if m:
+		pass
+	m = responseturn.match(line)
+	if m:
+		pass
+	m = move.match(line)
+	if m:
+		player = m.group(1)
+		x1 = m.group(2)
+		y1 = m.group(3)
+		x2 = m.group(4)
+		y2 = m.group(5)
+	m = event.match(line)
+	if m:
+		player = m.group(1)
+		x1 = m.group(2)
+		y1 = m.group(3)
+		player2 = m.group(4)
+	m = gameover.match(line)
+	if m:
+		winner = m.group(1)
 
 def main():
 	global net
 	global madeturn
 	global surface
 	global winner
-	global proto
 
-	global field
-
-	proto = Proto()
+	xadrez = Xadrez()
 
 	""" Pygame setup """
 
@@ -162,16 +97,16 @@ def main():
 	""" Menu captions """
 
 	font = pygame.font.Font(None, 44)
-	xadrez = font.render("XADREZ", 1, (165, 140, 0))
-	chines = font.render("CHINES", 1, (165, 140, 0))
-	sdl = font.render("SDL", 1, (165, 140, 0))
+	xadrezfont = font.render("XADREZ", 1, (165, 140, 0))
+	chinesfont = font.render("CHINES", 1, (165, 140, 0))
+	sdlfont = font.render("SDL", 1, (165, 140, 0))
 	font2 = pygame.font.Font(None, 70)
-	slash = font2.render("/", 1, (165, 140, 0))
+	slashfont = font2.render("/", 1, (165, 140, 0))
 
-	surface.blit(xadrez, (580, 90))
-	surface.blit(chines, (580, 120))
-	surface.blit(sdl, (710, 150))
-	surface.blit(slash, (700, 125))
+	surface.blit(xadrezfont, (580, 90))
+	surface.blit(chinesfont, (580, 120))
+	surface.blit(sdlfont, (710, 150))
+	surface.blit(slashfont, (700, 125))
 
 	#playernames(surface, username(), "opponent")
 
@@ -219,42 +154,6 @@ def main():
 		blob.fill((255, 255, 255, 30), ((16 - x, j), (2 * x, 1)))
 	blob.fill((255, 255, 255, 100), ((14, 14), (2, 2)))
 
-	field = {}
-	for i in range(10):
-		field[i] = {}
-		for j in range(11):
-			field[i][j] = ''
-	#field = zeros([9, 10], "")
-
-	for i in range(0, 5):
-		field[i * 2][3] = 'pawn:white'
-		field[i * 2][6] = 'pawn:black'
-
-	field[1][2] = 'cannon:white'
-	field[7][2] = 'cannon:white'
-	field[1][7] = 'cannon:black'
-	field[7][7] = 'cannon:black'
-
-	field[0][0] = 'rock:white'
-	field[1][0] = 'knight:white'
-	field[2][0] = 'bishop:white'
-	field[3][0] = 'bodyguard:white'
-	field[4][0] = 'king:white:foo'
-	field[5][0] = 'bodyguard:white'
-	field[6][0] = 'bishop:white'
-	field[7][0] = 'knight:white'
-	field[8][0] = 'rock:white'
-
-	field[0][9] = 'rock:black'
-	field[1][9] = 'knight:black'
-	field[2][9] = 'bishop:black'
-	field[3][9] = 'bodyguard:black'
-	field[4][9] = 'king:black'
-	field[5][9] = 'bodyguard:black'
-	field[6][9] = 'bishop:black'
-	field[7][9] = 'knight:black'
-	field[8][9] = 'rock:black'
-	
 	for j in range(0, 11):
 		if j is not 5:
 			for i in range(0, 9):
@@ -350,20 +249,20 @@ def main():
 				figure = ""
 				color = ""
 				options = ""
-				if field[x][y] is not "":
-					if field[x][y].count(":") == 1:
-						(figure, color) = field[x][y].split(":")
-					elif field[x][y].count(":") == 2:
-						(figure, color, options) = field[x][y].split(":")
+				if xadrez.field[x][y] is not "":
+					if xadrez.field[x][y].count(":") == 1:
+						(figure, color) = xadrez.field[x][y].split(":")
+					elif xadrez.field[x][y].count(":") == 2:
+						(figure, color, options) = xadrez.field[x][y].split(":")
 				print "got", figure, "of color", color
 				(oldx, oldy) = lastpos
 				print "lastpos:", oldx, oldy
 				if oldx >= 0 and oldy >= 0:
-					val = validate(oldx, oldy, x, y)
-					if val is not proto.move_invalid:
-						tmp = field[oldx][oldy]
-						field[oldx][oldy] = ""
-						field[x][y] = tmp
+					val = xadrez.validate(oldx, oldy, x, y)
+					if val is not xadrez.proto.move_invalid:
+						tmp = xadrez.field[oldx][oldy]
+						xadrez.field[oldx][oldy] = ""
+						xadrez.field[x][y] = tmp
 						madeturn = 1
 						humanerror = 0
 					else:
@@ -389,8 +288,8 @@ def main():
 			if y == 5:
 				river = 1
 			for x in range(0, 9):
-				if field[x][y] is not "":
-					index = field[x][y]
+				if xadrez.field[x][y] is not "":
+					index = xadrez.field[x][y]
 					if index.count(":") == 2:
 						tmp = index.split(":")
 						index = tmp[0] + ":" + tmp[1]

@@ -1,0 +1,7 @@
+[RoomInfo]
+Name = Xadrez Chines
+Description = Chinese version of chess
+GameType = CChess
+MaxPlayers = 500
+MaxTables = 100
+
