@@ -17,6 +17,7 @@ Description: Development files for the GGZ library libggz
 Package: libggz0
 Architecture: any
 Section: libs
+Replaces: libeasysock
 Depends: ${shlibs:Depends}
 Description: GGZ base library
  The libggz library contains functionality for lists,
