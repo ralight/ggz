@@ -194,7 +194,7 @@ void room_create_additional(void)
 int room_handle_join(const int p_index, const int p_fd)
 {
 	int room, result;
-
+	
 	/* Get the user's room request */
 	if(es_read_int(p_fd, &room) < 0)
 		return -1;
@@ -234,8 +234,9 @@ int room_join(const int p_index, const int room, const int fd)
 	if(room > room_info.num_rooms || room < -2)
 		return E_BAD_OPTIONS;
 
-	/* Give 'em their queued messages */
-	room_send_chat(p_index, fd);
+	/* Give 'em their queued messages if they're in a room*/
+	if (old_room != -1)
+		room_send_chat(p_index, fd);
 
 	/* We ALWAYS lock the lower ordered room first! */
 	if(old_room < room) {
