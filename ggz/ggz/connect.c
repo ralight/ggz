@@ -49,11 +49,11 @@ extern GtkWidget* main_win;
 /* Various local handles */
 static guint sock_handle;
 static void connect_msg( const char *, ... );
-static void add_user_list( gchar *name, gint *table);
+static void add_user_list( gchar* name, gint table);
 static int anon_login( void );
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
 
-GtkWidget* tmp;
+GtkWidget* tmpWidget;
 
 #ifdef DEBUG
 char* user_msg[18] = { "MSG_SERVER_ID", 
@@ -152,6 +152,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 	  }
 	  CheckReadInt(source, &checksum );
 	  connect_msg("[RSP_ANON_LOGIN] Checksum = %d\n", checksum);
+	  tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),"player_list"));
+	  gtk_clist_clear (GTK_CLIST (tmpWidget));
 	  CheckWriteInt(opt.sock, REQ_USER_LIST);  
 	  break;
 	  
@@ -188,8 +190,6 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 	  connect_msg("[RSP_TABLE_LIST] %d\n", byte);
 	  break;
   case RSP_USER_LIST:
-	  tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),"player_list"));
-	  gtk_clist_clear (GTK_CLIST (tmp));
 	  CheckReadInt(source, &ibyte );
 	  count=ibyte;
 	  connect_msg("[RSP_USER_LIST] User List Count %d\n", count);
@@ -197,7 +197,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 		  CheckReadString( source, &message );
 		  connect_msg("[RSP_USER_LIST] User %s\n", message);
 		  CheckReadInt(source, &ibyte );
-		  connect_msg("[RSP_USER_LIST] Table %i\n", ibyte);
+		  connect_msg("[RSP_USER_LIST] Table %d\n", ibyte);
 		  add_user_list(message, ibyte);
 	  }
 	  break;
@@ -232,8 +232,8 @@ void connect_msg( const char* format, ... ) {
   message = g_strdup_vprintf(format, ap);
   va_end(ap);
   
-  tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(detail_window),"text"));
-  gtk_text_insert( GTK_TEXT(tmp), NULL, NULL, NULL, message, -1 );
+  tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(detail_window),"text"));
+  gtk_text_insert( GTK_TEXT(tmpWidget), NULL, NULL, NULL, message, -1 );
   
   g_free( message );
 
@@ -241,24 +241,27 @@ void connect_msg( const char* format, ... ) {
 }
 
 
-void add_user_list( gchar *name, gint *table) {
+void add_user_list( gchar* name, gint table) {
 
   gchar *entry[2];
-
   if (main_win == NULL)
     return;
 
-  tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),"player_list"));
+  tmpWidget = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),"player_list"));
 
   entry[0] = name;
-  if (table == 0){
+  if (table == -1){
     entry[1] = "none";
   }else{
-    entry[1] = (gchar)table;
+    entry[1] = g_strdup_printf("%d",table);
   }
 
-  gtk_clist_append (GTK_CLIST (tmp), entry);
+  gtk_clist_append (GTK_CLIST (tmpWidget), entry);
 
+  if (table == -1){
+  }else{
+    g_free (entry[1]);
+  }
 }
 
 
