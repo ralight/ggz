@@ -58,6 +58,7 @@
 #include <frame_lr.xpm>
 #include <frame_black.xpm>
 #include <map.xpm>
+#include <shadow.xpm>
 
 /* GGZ includes */
 #include <ggz.h>	/* libggz */
@@ -69,11 +70,14 @@ GdkPixmap* frame_ll_pix;
 GdkPixmap* frame_lr_pix;
 GdkPixmap* frame_ul_pix;
 GdkPixmap* frame_ur_pix;
-GdkPixmap *frame_black_pix;
+GdkPixmap* frame_black_pix;
+GdkPixmap* shadow_pix;
 
 /* Transparency mask */
 GdkGC* man_gc[4];
 GdkBitmap* man_mask[4];
+GdkGC* shadow_gc;
+GdkBitmap* shadow_mask;
 
 /* Map picture */
 GdkPixmap* map_pix;
@@ -82,7 +86,7 @@ GdkPixmap* map_pix;
 GdkPixmap* hastings_buf;
 
 /* Main window */
-GtkWidget *main_win;
+GtkWidget* main_win;
 
 /* Global game variables */
 extern struct game_state_t game;
@@ -127,6 +131,19 @@ void highlight(int col, int row, int widgetstate)
 	gdk_draw_pixmap(hastings_buf, style->fg_gc[widgetstate], frame_ur_pix, 0, 0, offsetx + 11, offsety - 16, 5, 5);
 	gdk_draw_pixmap(hastings_buf, style->fg_gc[widgetstate], frame_ll_pix, 0, 0, offsetx - 16, offsety + 11, 5, 5);
 	gdk_draw_pixmap(hastings_buf, style->fg_gc[widgetstate], frame_lr_pix, 0, 0, offsetx + 11, offsety + 11, 5, 5);
+}
+
+/* Mark own knights with shadow */
+void shadow(int col, int row, int widgetstate)
+{
+	GtkStyle *style;
+	int offsetx, offsety;
+
+	style = gtk_widget_get_style(main_win);
+	offsetx = 75 - row % 2 * 45 + col * 90;
+	offsety = 30 + row * 25;
+
+	gdk_draw_pixmap(hastings_buf, style->fg_gc[widgetstate], shadow_pix, 0, 0, offsetx - 16, offsety - 16, 32, 32);
 }
 
 /* Draw a single hexagon */
@@ -197,6 +214,16 @@ void display_board(void)
 					gdk_draw_pixmap(hastings_buf, style->fg_gc[GTK_WIDGET_STATE(tmp)],
 						frame_black_pix, 0, 0, offsetx + 10, offsety + 10, 5, 5);
 				}
+
+				/* Draw a shadow for own knights */
+				if(game.board[i][j] == game.self)
+				{
+					gdk_gc_set_ts_origin(shadow_gc, offsetx - 16, offsety - 16);
+					gdk_gc_set_clip_origin(shadow_gc, offsetx - 16, offsety - 16);
+					gdk_gc_set_clip_mask(shadow_gc, shadow_mask);
+					gdk_draw_rectangle(hastings_buf, shadow_gc, TRUE, offsetx - 16, offsety - 16, 32, 32);
+					/*shadow(i, j, GTK_WIDGET_STATE(tmp));*/
+				}
 			}
 		}
 
@@ -235,6 +262,13 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 		gdk_gc_set_fill(man_gc[i], GDK_TILED);
 		gdk_gc_set_tile(man_gc[i], man_pix[i]);
 	}
+
+	shadow_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
+		&shadow_mask, &style->bg[GTK_STATE_NORMAL], (gchar**)shadow_xpm);
+
+	shadow_gc = gdk_gc_new(main_win->window);
+	gdk_gc_set_fill(shadow_gc, GDK_TILED);
+	gdk_gc_set_tile(shadow_gc, shadow_pix);
 
 	frame_ul_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
 		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_ul_xpm);

@@ -24,7 +24,8 @@ ggz_hastings_SOURCES = \
 	newmanblue.xpm \
 	newmanyellow.xpm \
 	newmangreen.xpm \
-	newmanred.xpm
+	newmanred.xpm \
+	shadow.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_hastings_LDADD = @GTK_LIBS@ $(LDADD)
