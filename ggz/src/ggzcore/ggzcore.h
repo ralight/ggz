@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6446 2004-12-11 20:45:05Z jdorje $
+ * $Id: ggzcore.h 6485 2004-12-15 17:51:58Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -465,7 +465,7 @@ typedef enum {
 
 	/** Game reached the 'playing' state.
 	 *  @param data NULL */
-	GGZ_GAME_PLAYING,
+	GGZ_GAME_PLAYING
 } GGZGameEvent;
 
 
@@ -488,7 +488,7 @@ typedef enum {
 	GGZ_STATE_JOINING_TABLE, /**< Trying to join a table. */
 	GGZ_STATE_AT_TABLE, /**< Online, loggied in, in a room, at a table. */
 	GGZ_STATE_LEAVING_TABLE, /**< Waiting to leave a table. */
-	GGZ_STATE_LOGGING_OUT, /**< In the process of logging out. */
+	GGZ_STATE_LOGGING_OUT /**< In the process of logging out. */
 } GGZStateID;
 
 
