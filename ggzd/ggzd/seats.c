@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/3/00
  * Desc: Support functions for table seats
- * $Id: seats.c 4452 2002-09-08 01:06:03Z jdorje $
+ * $Id: seats.c 4456 2002-09-08 01:59:41Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -27,10 +27,13 @@
 
 #include <string.h>
 
-#include <ggzd.h>
-#include <ggzdmod.h>
-#include <table.h>
-#include <seats.h>
+#include "datatypes.h"
+#include "ggzd.h"
+#include "ggzdmod.h"
+#include "table.h"
+#include "seats.h"
+
+extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 int seats_count(GGZTable* table, GGZSeatType type)
 {
@@ -66,8 +69,16 @@ int spectators_count(GGZTable* table)
 
 int spectator_seats_num(GGZTable *table)
 {
-	/* FIXME: return actual maximum number of spectators! */
-	return MAX_TABLE_SIZE - 1;
+	int allow_spectators;
+
+	pthread_rwlock_rdlock(&game_types[table->type].lock);
+	allow_spectators = game_types[table->type].allow_spectators;
+	pthread_rwlock_unlock(&game_types[table->type].lock);
+
+	if (allow_spectators)
+		return MAX_TABLE_SIZE;
+	else
+		return 0;
 }
 
 

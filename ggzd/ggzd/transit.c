@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4452 2002-09-08 01:06:03Z jdorje $
+ * $Id: transit.c 4456 2002-09-08 01:59:41Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -251,8 +251,13 @@ static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 	/* Try to find a seat if one isn't specified */
 	if (action == GGZ_TRANSIT_JOIN_SPECTATOR && spectator->index == GGZ_SEATNUM_ANY) {
 		if ( (spectator->index = transit_find_spectator(table, event->caller)) < 0) {
-			/* Don't care if this fails, we aren't transiting anyway */
-			transit_player_event(event->caller, action, E_TABLE_FULL, 0);
+			/* Don't care if this fails, we aren't transiting
+			   anyway */
+			/* FIXME: this shouldn't be E_TABLE_FULL, since the
+			   likely error is that the game doesn't support
+			   spectators at all. */
+			transit_player_event(event->caller, action,
+					     E_TABLE_FULL, 0);
 			return GGZ_EVENT_OK;
 		}
 	}

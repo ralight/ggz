@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4453 2002-09-08 01:28:15Z jdorje $
+ * $Id: table.c 4456 2002-09-08 01:59:41Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -882,6 +882,7 @@ static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 static void table_remove(GGZTable* table)
 {
 	int room, count, index, i;
+	int num_spectators = spectator_seats_num(table);
 
 	/* Disconnect from the game server */
 	(void)ggzdmod_disconnect(table->ggzdmod);
@@ -920,7 +921,8 @@ static void table_remove(GGZTable* table)
 	}
 
 	/* And send them out for spectators also */
-	for (i = 0; i < spectator_seats_num(table); i++) {
+	/* Note - we must record num_spectators before we destroy the table. */
+	for (i = 0; i < num_spectators; i++) {
 		if (table->spectators[i][0] != '\0') {
 			table_update_event_enqueue(table,
 						   GGZ_UPDATE_SPECTATOR_LEAVE,
