@@ -42,34 +42,40 @@ static void input_handle_list(char* line);
 static void input_handle_join(char* line);
 static void input_handle_chat(char* line);
 static char delim[] = " \n";
-
+static char command_prefix = '/';
 
 int input_command(short events)
 {
 	char line[LINE_LENGTH];
-	char* command;
+	char *buffer;
+	char *command;
 
 	printf("user input detected\n");
 	if (events & POLLIN) {
 		if (!fgets(line, sizeof(line)/sizeof(char), stdin))
 			return -1;
 			
-		command = strtok(line, delim);
-		printf("user command: %s\n", command);
-		if (strcmp(command, "connect") == 0) {
-			input_handle_connect((char*)line);
-		}
-		else if (strcmp(command, "disconnect") == 0) {
-			ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
-		}
-		else if (strcmp(command, "list") == 0) {
-			input_handle_list((char*)line);
-		}
-		else if (strcmp(command, "join") == 0) {
-			input_handle_join((char*)line);
-		}
-		else if (strcmp(command, "chat") == 0) {
-			input_handle_chat((char*)line);
+		if (line[0] == command_prefix)
+		{
+			buffer = strtok(line, delim);
+			command = &buffer[1];;
+
+			printf("user command: %s\n", command);
+			if (strcmp(command, "connect") == 0) {
+				input_handle_connect((char*)line);
+			}
+			else if (strcmp(command, "disconnect") == 0) {
+				ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
+			}
+			else if (strcmp(command, "list") == 0) {
+				input_handle_list((char*)line);
+			}
+			else if (strcmp(command, "join") == 0) {
+				input_handle_join((char*)line);
+			}
+		} else {
+			/* Its a chat */
+			input_handle_chat(line);
 		}
 	}
 	return 0;
@@ -136,13 +142,14 @@ static void input_handle_join(char* line)
 }
 
 
-static void input_handle_chat(char* line)
+static void input_handle_chat(char *line)
 {
-	char* arg;
-	char* msg;
-	
-	arg = strtok(NULL, "\n");
-	if (arg) {
+	char *arg;
+	char *msg;
+
+	arg = strtok(line, "\n");
+	if(arg)
+	{
 		msg = strdup(arg);
 		ggzcore_event_trigger(GGZ_USER_CHAT, msg, free);
 	}
