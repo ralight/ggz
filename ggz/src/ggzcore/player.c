@@ -24,19 +24,14 @@
  */
 
 
-#include <config.h>
-#include <player.h>
-#include <lists.h>
-#include <msg.h>
+#include "config.h"
+#include "player.h"
+#include "lists.h"
+#include "msg.h"
+#include "room.h"
 
 #include <stdlib.h>
 #include <string.h>
-
-
-/* Utility functions used by _ggzcore_list */
-static int   _ggzcore_player_compare(void* p, void* q);
-static void* _ggzcore_player_create(void* p);
-static void  _ggzcore_player_destroy(void* p);
 
 
 /* Publicly exported functions */
@@ -72,10 +67,38 @@ struct _ggzcore_list* _ggzcore_player_list_new(void)
 				    0);
 }
 
-void _ggzcore_player_init(struct _GGZPlayer *player, const char *name, 
-			  struct _GGZTable *table)
+
+struct _GGZPlayer* _ggzcore_player_new(void)
 {
-	player->name = strdup(name);
+	struct _GGZPlayer *player;
+
+	player = calloc(1, sizeof(struct _GGZPlayer));
+
+	/* Set to invalid table */
+	player->table = -1;
+
+	return player;
+}
+
+
+void _ggzcore_player_free(struct _GGZPlayer *player)
+{
+	if (player->name)
+		free(player->name);
+
+	free(player);
+}
+
+
+void _ggzcore_player_init(struct _GGZPlayer *player, 
+			  const char *name, 
+			  struct _GGZRoom *room,
+			  const int table)
+{
+	if (name)
+		player->name = strdup(name);
+
+	player->room = room;
 	player->table = table;
 }
 
@@ -88,40 +111,37 @@ char* _ggzcore_player_get_name(struct _GGZPlayer *player)
 
 GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player)
 {
-	return player->table;
+	if (player->table == -1)
+		return NULL;
+	
+	return _ggzcore_room_get_table_by_id(player->room, player->table);
 }
 
 
-/* Static functions internal to this file */
-
-
-static int _ggzcore_player_compare(void* p, void* q)
+int _ggzcore_player_compare(void* p, void* q)
 {
 	return strcmp(((struct _GGZPlayer*)p)->name, 
 		      ((struct _GGZPlayer*)q)->name);
 }
 
 
-static void* _ggzcore_player_create(void* p)
+void* _ggzcore_player_create(void* p)
 {
 	struct _GGZPlayer *new, *src = p;
 
-	if (!(new = malloc(sizeof(struct _GGZPlayer))))
-		ggzcore_error_sys_exit("malloc failed in player_create");
-
-	new->name = strdup(src->name);
-	new->table = src->table;
+	new = _ggzcore_player_new();
+	_ggzcore_player_init(new, src->name, src->room, src->table);
 
 	return (void*)new;
 }
 
 
-static void  _ggzcore_player_destroy(void* p)
+void  _ggzcore_player_destroy(void* p)
 {
-	struct _GGZPlayer *player = p;
-
-	if (player->name)
-		free(player->name);
-	free(p);
+	_ggzcore_player_free(p);
 }
+
+/* Static functions internal to this file */
+
+
 

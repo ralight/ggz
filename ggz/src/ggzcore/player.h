@@ -28,6 +28,7 @@
 #define __PLAYER_H_
 
 #include "lists.h"
+#include "room.h"
 
 /* 
  * The Player structure is meant to be a node in a linked list of
@@ -38,20 +39,34 @@ struct _GGZPlayer {
 	/* Name of player */
 	char* name;	
 
-	/* Pointer to table at whoch player is sitting */
-	int table
+	/* Pointer to room player is in */
+	struct _GGZRoom *room;
+
+	/* Server ID of table player is at */
+	int table;
 };
 
 
 struct _ggzcore_list* _ggzcore_player_list_new(void);
 
+struct _GGZPlayer* _ggzcore_player_new(void);
+
+void _ggzcore_player_free(struct _GGZPlayer *player);
+
 void _ggzcore_player_init(struct _GGZPlayer *player, 
 			  const char *name, 
-			  struct _GGZTable *table);
+			  struct _GGZRoom *room,
+			  const int table);
+
 
 char* _ggzcore_player_get_name(struct _GGZPlayer *player);
 
 struct _GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player);
+
+/* Utility functions used by _ggzcore_list */
+int   _ggzcore_player_compare(void* p, void* q);
+void* _ggzcore_player_create(void* p);
+void  _ggzcore_player_destroy(void* p);
 
 
 #endif /* __PLAYER_H_ */

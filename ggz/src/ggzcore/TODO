@@ -22,4 +22,19 @@
 
 - Reimplement net functionality as its own object
 
+- Provide a GGZ_AUTOLOAD feature to automatically load room and type
+  lists (and motd?) upon logging in and the player and table lists
+  upon entering a room.
+
+- Remove the ggzcore_server_get_XXX_names() function
+
+- Fix the player, table pointing problem
+
+- Move over to ggzcore_malloc/free
+
+- Allow option for non-blocking socket: to make this easier, the
+  protocol could be altered so that each message sends its length in
+  bytes right after the opcode.  This is also easier if there are no
+  "conditionals" in the messages.  The verbose information can be
+  obtained in a separate message
 

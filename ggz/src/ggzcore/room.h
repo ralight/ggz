@@ -117,6 +117,10 @@ unsigned int       _ggzcore_room_get_num_tables(struct _GGZRoom *room);
 struct _GGZTable*  _ggzcore_room_get_nth_table(struct _GGZRoom *room, 
 					       const unsigned int num);
 
+struct _GGZTable*  _ggzcore_room_get_table_by_id(struct _GGZRoom *room, 
+						 const unsigned int id);
+
+
 void _ggzcore_room_set_player_list(struct _GGZRoom *room,
 				   unsigned int count,
 				   struct _ggzcore_list *list);

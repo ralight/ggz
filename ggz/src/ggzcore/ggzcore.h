@@ -315,6 +315,7 @@ char*     ggzcore_player_get_name(GGZPlayer *player);
 GGZTable* ggzcore_player_get_table(GGZPlayer *player);
 
 
+int          ggzcore_table_get_num(GGZTable *table);
 GGZGameType* ggzcore_table_get_type(GGZTable *table);
 char         ggzcore_table_get_state(GGZTable *table);
 int          ggzcore_table_get_seats(GGZTable *table);

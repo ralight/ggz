@@ -1026,13 +1026,14 @@ static void _ggzcore_server_handle_chat(GGZServer *server)
 
 static void _ggzcore_server_handle_list_players(GGZServer *server)
 {
-	int i, num, t_index, status;
+	int i, num, table, status;
 	char *name;
-	struct _ggzcore_list *players;
-	struct _GGZPlayer player;
-	struct _GGZTable *table;
+	struct _ggzcore_list *list;
+	struct _GGZPlayer *player;
 
-	players = _ggzcore_player_list_new();
+	/* New list of players */
+	list = _ggzcore_list_create(_ggzcore_player_compare, NULL,
+				    _ggzcore_player_destroy, 0);
 	
 	status = _ggzcore_net_read_num_players(server->fd, &num);
 	/* FIXME: handle errors */
@@ -1040,21 +1041,16 @@ static void _ggzcore_server_handle_list_players(GGZServer *server)
 
 
 	for (i = 0; i < num; i++) {
-		status = _ggzcore_net_read_player(server->fd, &name, &t_index);
-		if (t_index == -1)
-			table = NULL;
-		else {
-			/* FIXME:Gack! problem if table isn't there yet!! */
-			table = _ggzcore_room_get_nth_table(server->room, t_index);
-		}
-		_ggzcore_player_init(&player, name, table);
-		_ggzcore_list_insert(players, &player);
+		status = _ggzcore_net_read_player(server->fd, &name, &table);
+		player = _ggzcore_player_new();
+		_ggzcore_player_init(player, name, server->room, table);
+		_ggzcore_list_insert(list, player);
 		
 		if (name)
 			free(name);
 	}
 
-	_ggzcore_room_set_player_list(server->room, num, players);
+	_ggzcore_room_set_player_list(server->room, num, list);
 }
 
 

@@ -205,7 +205,8 @@ static void _ggzcore_table_set(struct _GGZTable *table,
 	table->seats = seats;
 	table->open = open;
 	table->bots = bots;
-	table->desc = strdup(desc);
+	if (desc)
+		table->desc = strdup(desc);
 }
 
 
