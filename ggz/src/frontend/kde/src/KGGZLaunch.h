@@ -60,7 +60,7 @@ class KGGZLaunch : public QWidget
 		~KGGZLaunch();
 
 		// Initialize the dialog with the given parameters
-		void initLauncher(char *playername, int maxplayers, int maxbots);
+		void initLauncher(QString playername, int maxplayers, int maxbots);
 		// Return the customizable room description
 		QString description();
 		// Return the number of seats wanted
@@ -94,7 +94,7 @@ class KGGZLaunch : public QWidget
 		// The number of seats has changed
 		void slotChanged(int value);
 		// Reservation name received
-		void slotReservation(const char *player);
+		void slotReservation(QString player);
 
 	signals:
 		// Emitted if table is to be launched
@@ -115,7 +115,7 @@ class KGGZLaunch : public QWidget
 		// Widget for the table name
 		QLineEdit *m_edit;
 		// Holds the player name
-		char *m_playername;
+		QString m_playername;
 		// Holds the current configuration
 		QByteArray *m_array;
 		// Hold the combination matrix

@@ -50,9 +50,6 @@
 #include <qpushbutton.h>
 #include <qlabel.h>
 
-// System includes
-#include <stdlib.h>
-
 KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
@@ -65,7 +62,6 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 	m_popup = NULL;
 	m_array = NULL;
 	m_assignment = NULL;
-	m_playername = NULL;
 	m_input = NULL;
 
 	m_slider = new QSlider(this);
@@ -103,7 +99,9 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 	hbox->add(m_ok);
 	hbox->add(cancel);
 
-	connect(m_listbox, SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)), SLOT(slotSelected(QListViewItem*, const QPoint&, int)));
+	connect(m_listbox,
+		SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)),
+		SLOT(slotSelected(QListViewItem*, const QPoint&, int)));
 	connect(m_slider, SIGNAL(valueChanged(int)), SLOT(slotChanged(int)));
 	connect(m_ok, SIGNAL(clicked()), SLOT(slotAccepted()));
 	connect(cancel, SIGNAL(clicked()), SLOT(close()));
@@ -115,7 +113,6 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 
 KGGZLaunch::~KGGZLaunch()
 {
-	if(m_playername) free(m_playername);
 }
 
 void KGGZLaunch::slotSelected(QListViewItem *selected, const QPoint& point, int column)
@@ -173,7 +170,7 @@ void KGGZLaunch::slotChanged(int value)
 	m_curplayers = value;
 	str.setNum(value);
 	str2.setNum(m_slider->maxValue());
-	m_label->setText(i18n("Number of player: ") + str + i18n(" (out of ") + str2 + ")");
+	m_label->setText(i18n("Number of players: ") + str + i18n(" (out of ") + str2 + ")");
 
 	if(m_assignment)
 	{
@@ -194,11 +191,11 @@ int KGGZLaunch::seats()
 	return m_slider->value();
 }
 
-void KGGZLaunch::initLauncher(char *playername, int maxplayers, int maxbots)
+void KGGZLaunch::initLauncher(QString playername, int maxplayers, int maxbots)
 {
 	QString str;
 
-	KGGZDEBUGF("KGGZLaunch::initLauncher(%s, %i, %i)\n", playername, maxplayers, maxbots);
+	KGGZDEBUGF("KGGZLaunch::initLauncher(%s, %i, %i)\n", playername.latin1(), maxplayers, maxbots);
 	if(m_array)
 	{
 		KGGZDEBUG("Critical: array initialized twice!\n");
@@ -208,7 +205,7 @@ void KGGZLaunch::initLauncher(char *playername, int maxplayers, int maxbots)
 	m_slider->setMaxValue(maxplayers);
 	m_slider->setValue(maxplayers);
 	m_curplayers = maxplayers;
-	m_playername = strdup(playername);
+	m_playername = playername;
 	KGGZDEBUG("array: create with %i elements...\n", maxplayers);
 	m_array = new QByteArray(maxplayers);
 	m_assignment = new QByteArray(maxplayers);
@@ -262,6 +259,7 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 {
 	QListViewItem *tmp;
 	int oldtype;
+	QString pixmap;
 
 	if(!m_array)
 	{
@@ -295,15 +293,23 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 
 	tmp->setText(1, typeName(seattype));
 
+	if(seattype == seatplayer) pixmap = "player.png";
+	else if(seattype == seatopen) pixmap = "guest.png";
+	else if(seattype == seatbot) pixmap = "bot.png";
+	else if(seattype == seatreserved) pixmap = "player.png";
+	QPixmap pix = QPixmap(KGGZ_DIRECTORY "/images/icons/players/" + pixmap);
+	tmp->setPixmap(1, pix);
+
 	if(seattype == seatreserved)
 	{
 		if(!m_input)
 		{
-			m_input = new KGGZInput(NULL, NULL, i18n("Reservation"), i18n("Name of the player whom the seat is reserved for"));
+			m_input = new KGGZInput(NULL, NULL, i18n("Reservation"),
+				i18n("Name of the player whom the seat is reserved for"));
 		}
 		m_listbox->setEnabled(false);
 		m_input->show();
-		connect(m_input, SIGNAL(signalText(const char*)), SLOT(slotReservation(const char*)));
+		connect(m_input, SIGNAL(signalText(QString)), SLOT(slotReservation(QString)));
 	}
 	else tmp->setText(2, QString::null);
 
@@ -342,7 +348,7 @@ QString KGGZLaunch::typeName(int seattype)
 	return ret;
 }
 
-void KGGZLaunch::slotReservation(const char *player)
+void KGGZLaunch::slotReservation(QString player)
 {
 	QListViewItem *tmp;
 

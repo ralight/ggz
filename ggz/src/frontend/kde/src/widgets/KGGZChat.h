@@ -69,7 +69,7 @@ class KGGZChat : public QWidget
 		~KGGZChat();
 		void init();
 		void shutdown();
-		void receive(const char *player, QString message, ReceiveMode mode);
+		void receive(QString player, QString message, ReceiveMode mode);
 		void beep();
 
 		// whether or not display a players listing in the chat
@@ -82,7 +82,7 @@ class KGGZChat : public QWidget
 		void setTimestamp(int timestamp);
 
 	signals:
-		void signalChat(const char *text, char *player, int mode);
+		void signalChat(QString text, QString player, int mode);
 
 	protected slots:
 		void slotSend();

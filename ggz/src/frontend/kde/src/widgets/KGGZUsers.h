@@ -69,6 +69,31 @@ class KGGZUsers : public KListView
 		// Set current room
 		void setRoom(GGZCoreRoom *room);
 
+		// Player roles assigned by server
+		enum Roles
+		{
+			assignunknown,
+			assignplayer,
+			assignguest,
+			assignbot,
+			assignadmin
+		};
+
+	signals:
+		// Private chat message to a selected player
+		void signalChat(QString message, QString playername, int mode);
+
+	private slots:
+		// Click on a player
+		void slotClicked(QListViewItem *item, const QPoint& point, int column);
+		// Player crediting
+		void slotCredited(int id);
+		// Get player information
+		void slotInformation(int id);
+		// Request a private message
+		void slotContext(int id);
+
+	private:
 		// Player credits assigned by user
 		enum Credits
 		{
@@ -79,31 +104,13 @@ class KGGZUsers : public KListView
 			creditauto
 		};
 
-		// Player roles assigned by server
-		enum Assignments
-		{
-			assignunknown,
-			assignplayer,
-			assignguest,
-			assignbot,
-			assignadmin
-		};
-
 		// Possible information actions
 		enum Information
 		{
-			inforecord
+			inforecord,
+			infomessage
 		};
 
-	public slots:
-		// Click on a player
-		void slotClicked(QListViewItem *item, const QPoint& point, int column);
-		// Player crediting
-		void slotCredited(int id);
-		// Get player information
-		void slotInformation(int id);
-
-	private:
 		// Returns the item which represents the requested table
 		QListViewItem *table(int i);
 		// Returns the item which represents the wanted player

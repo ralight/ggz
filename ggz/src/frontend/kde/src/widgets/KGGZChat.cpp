@@ -341,7 +341,7 @@ void KGGZChat::logChat(QString text)
 }
 
 // receive chat and admin messages
-void KGGZChat::receive(const char *player, QString message, ReceiveMode mode)
+void KGGZChat::receive(QString player, QString message, ReceiveMode mode)
 {
 	QString tmp;
 	static QString lastplayer;
@@ -408,19 +408,19 @@ void KGGZChat::receive(const char *player, QString message, ReceiveMode mode)
 	switch(mode)
 	{
 		case RECEIVE_CHAT:
-			tmp = QString("<tr><td>%1<font color=#%2>").arg(timestring).arg(color) + QString(player) + QString(":&nbsp;</font></td><td>");
+			tmp = QString("<tr><td>%1<font color=#%2>").arg(timestring).arg(color) + player + QString(":&nbsp;</font></td><td>");
 			tmp += parse(msg);
 			output->append(tmp);
 			logChat(tmp);
 			break;
 		case RECEIVE_TABLE:
-			tmp = QString("<tr><td>%1<font color=#%2>").arg(timestring).arg(color) + QString(player) + QString(":&nbsp;</font></td><td>");
+			tmp = QString("<tr><td>%1<font color=#%2>").arg(timestring).arg(color) + player + QString(":&nbsp;</font></td><td>");
 			tmp += parse(msg);
 			output->append(tmp);
 			logChat(tmp);
 			break;
 		case RECEIVE_OWN:
-			tmp = QString("<tr><td>%1<font color=#%2><b>").arg(timestring).arg(color) + QString(player) + QString("</b>:&nbsp;</font></td><td>");
+			tmp = QString("<tr><td>%1<font color=#%2><b>").arg(timestring).arg(color) + player + QString("</b>:&nbsp;</font></td><td>");
 			tmp += parse(msg);
 			output->append(tmp);
 			logChat(tmp);
@@ -436,12 +436,12 @@ void KGGZChat::receive(const char *player, QString message, ReceiveMode mode)
 			logChat(tmp);
 			break;
 		case RECEIVE_ANNOUNCE:
-			tmp = QString("<tr><td colspan=2>%1<font color=#%2><i>* ").arg(timestring).arg(color) + QString(player) + msg + QString("</i></font></td></tr>");
+			tmp = QString("<tr><td colspan=2>%1<font color=#%2><i>* ").arg(timestring).arg(color) + player + msg + QString("</i></font></td></tr>");
 			output->append(tmp);
 			logChat(tmp);
 			break;
 		case RECEIVE_ME:
-			tmp = QString("<tr><td colspan=2>%1<font color=#%2><i>* ").arg(timestring).arg(color) + QString(player) + msg.right(msg.length() - 3) + QString("</i></font></td></tr>");
+			tmp = QString("<tr><td colspan=2>%1<font color=#%2><i>* ").arg(timestring).arg(color) + player + msg.right(msg.length() - 3) + QString("</i></font></td></tr>");
 			output->append(tmp);
 			logChat(tmp);
 			break;

@@ -179,13 +179,13 @@ class KGGZ : public QWidget
 		void slotAcceptedConfiguration();
 
 		// Receive connection parameters
-		void slotConnected(const char *host, int port, const char *username, const char *password, int mode);
+		void slotConnected(QString host, int port, QString username, QString password, int mode);
 		// Actually start the connection with the pre-resolved host
 		void slotConnectedStart();
 		// Receive chat message
-		void slotChat(const char *text, char *player, int mode);
+		void slotChat(QString text, QString player, int mode);
 		// Send grubby requests
-		void slotGrubby(const char *grubby, const char *argument, int id);
+		void slotGrubby(QString grubby, QString argument, int id);
 		// Prepares a game launch
 		void slotGamePrepare(int frontend);
 		// Launch the game
@@ -275,7 +275,7 @@ class KGGZ : public QWidget
 		// Game information
 		KGGZGameInfo *m_gameinfo;
 		// User data saved from connection dialog
-		char *m_save_username, *m_save_password, *m_save_host, *m_save_hostname;
+		QString m_save_username, m_save_password, m_save_host, m_save_hostname;
 		// Connection data saved from connection dialog
 		int m_save_loginmode, m_save_port, m_save_encryption;
 		// Special flag for failed negotiations and logout

@@ -45,7 +45,8 @@ class KGGZInput : public QWidget
 	Q_OBJECT
 	public:
 		// Constructor which takes the input arguments
-		KGGZInput(QWidget *parent = NULL, const char *name = NULL, QString title = QString::null, QString description = QString::null);
+		KGGZInput(QWidget *parent = NULL, const char *name = NULL,
+			QString title = QString::null, QString description = QString::null);
 		// Destructor
 		~KGGZInput();
 
@@ -57,7 +58,7 @@ class KGGZInput : public QWidget
 
 	signals:
 		// Emitted when pressing OK
-		void signalText(const char *text);
+		void signalText(QString text);
 
 	private:
 		// editable field

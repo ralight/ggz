@@ -84,7 +84,7 @@ class KGGZConnect : public QWidget
 		// Delete the current profile
 		void slotProfileDelete();
 		// Process information about new profile
-		void slotProfileProcess(const char *identifier);
+		void slotProfileProcess(QString identifier);
 		// Show meta server list window
 		void slotProfileMeta();
 		// Get meta server data
@@ -98,11 +98,11 @@ class KGGZConnect : public QWidget
 
 	signals:
 		// Emitted if connection is wanted
-		void signalConnect(const char *host, int port, const char *username, const char *password, int type);
+		void signalConnect(QString host, int port, QString username, QString password, int type);
 
 	private:
 		// add (1) or delete (2) a server from the configuration list
-		void modifyServerList(const char *server, int mode);
+		void modifyServerList(QString server, int mode);
 		// start a zeroconf query
 		void zeroconfQuery();
 

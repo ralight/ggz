@@ -36,6 +36,7 @@
 
 // KGGZ includes
 #include "KGGZCommon.h"
+#include "KGGZChat.h"
 
 // GGZCore++ includes
 #include "GGZCoreConfio.h"
@@ -45,6 +46,7 @@
 // KDE includes
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kinputdialog.h>
 
 // Qt includes
 #include <qpixmap.h>
@@ -69,9 +71,12 @@ KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
 	m_menu = NULL;
 
 	m_menu_assign = new QPopupMenu(NULL);
-	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/normal.png")), i18n("Neutral"), creditnone);
-	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/buddy.png")), i18n("Buddy"), creditbuddy);
-	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/banned.png")), i18n("Banned"), creditbanned);
+	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/normal.png")),
+		i18n("Neutral"), creditnone);
+	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/buddy.png")),
+		i18n("Buddy"), creditbuddy);
+	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/banned.png")),
+		i18n("Banned"), creditbanned);
 
 	m_menu_info = new QPopupMenu(NULL);
 	m_menu_info->insertItem(i18n("Record"), inforecord);
@@ -170,11 +175,12 @@ void KGGZUsers::slotClicked(QListViewItem *item, const QPoint& point, int column
 
 	if(item->text(0) != m_self)
 	{
-		m_menu->insertItem(i18n("Send private message"), -1);
+		m_menu->insertItem(i18n("Send private message"), infomessage);
 		m_menu->insertItem(i18n("Assign a credit"), m_menu_assign);
 	}
 	m_menu->insertItem(i18n("Player information"), m_menu_info);
-	//connect(m_menu, SIGNAL(activated(int)), SLOT(slotCredited(int)));
+
+	connect(m_menu, SIGNAL(activated(int)), SLOT(slotContext(int)));
 
 	m_menu->popup(point);
 }
@@ -353,5 +359,22 @@ void KGGZUsers::slotInformation(int id)
 void KGGZUsers::setRoom(GGZCoreRoom *room)
 {
 	m_room = room;
+}
+
+void KGGZUsers::slotContext(int id)
+{
+	QString player, message;
+	QListViewItem *tmp;
+
+	tmp = selectedItem();
+	if(!tmp) return;
+
+	player = tmp->text(0);
+
+	if(id == infomessage)
+	{
+		message = KInputDialog::getText(i18n("Private message"), i18n("Message text"));
+		if(!message.isNull()) emit signalChat(message, player, KGGZChat::RECEIVE_PERSONAL);
+	}
 }
 

@@ -79,10 +79,6 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	m_gamefd = -1;
 	kggzroom = NULL;
 	kggzserver = NULL;
-	m_save_username = NULL;
-	m_save_password = NULL;
-	m_save_host = NULL;
-	m_save_hostname = NULL;
 	m_launch = NULL;
 	kggzgame = NULL;
 #ifdef KGGZ_BROWSER
@@ -113,7 +109,8 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 
 	m_workspace = new KGGZWorkspace(this, "workspace");
 
-	connect(m_workspace->widgetChat(), SIGNAL(signalChat(const char *, char *, int)), SLOT(slotChat(const char *, char *, int)));
+	connect(m_workspace->widgetChat(), SIGNAL(signalChat(QString, QString, int)), SLOT(slotChat(QString, QString, int)));
+	connect(m_workspace->widgetUsers(), SIGNAL(signalChat(QString, QString, int)), SLOT(slotChat(QString, QString, int)));
 	connect(m_workspace->widgetLogo(), SIGNAL(signalInfo()), SLOT(menuGameInfo()));
 
 	m_core = new GGZCore();
@@ -207,7 +204,7 @@ void KGGZ::autoconnect(QString uri)
 		mode = GGZCoreServer::guest;
 	}
 
-	slotConnected(url.host().latin1(), (url.port() ? url.port() : 5688), user.latin1(), password.latin1(), mode);
+	slotConnected(url.host(), (url.port() ? url.port() : 5688), user, password, mode);
 }
 
 void KGGZ::resizeEvent(QResizeEvent *e)
@@ -215,7 +212,7 @@ void KGGZ::resizeEvent(QResizeEvent *e)
 	m_workspace->resize(e->size());
 }
 
-void KGGZ::slotConnected(const char *host, int port, const char *username, const char *password, int mode)
+void KGGZ::slotConnected(QString host, int port, QString username, QString password, int mode)
 {
 #ifdef KGGZ_WALLET
 	QString p, entry;
@@ -261,17 +258,17 @@ void KGGZ::slotConnected(const char *host, int port, const char *username, const
 	}
 
 	KGGZDEBUG("Connect with: host=%s port=%i username=%s password=%s mode=%i encryption=%i\n",
-		host, port, username, password, mode, m_connect->optionSecure());
+		host.latin1(), port, username.latin1(), password.latin1(), mode, m_connect->optionSecure());
 
 	if(m_dns) delete m_dns;
 	m_dns = new QDns(host, QDns::A);
 	connect(m_dns, SIGNAL(resultsReady()), SLOT(slotConnectedStart()));
 
 	m_save_loginmode = mode;
-	m_save_username = strdup(username);
-	m_save_password = strdup(password);
-	m_save_host = strdup(host);
-	m_save_hostname = strdup(host);
+	m_save_username = username;
+	m_save_password = password;
+	m_save_host = host;
+	m_save_hostname = host;
 	m_save_port = port;
 	m_save_encryption = m_connect->optionSecure();
 }
@@ -290,9 +287,8 @@ void KGGZ::slotConnectedStart()
 	}
 	list = m_dns->addresses();
 	addr = (*list.at(0));
-	if(m_save_host) free(m_save_host);
-	m_save_host = strdup(addr.toString().latin1());
-	KGGZDEBUG("Host resolved to: %s\n", m_save_host);
+	m_save_host = addr.toString();
+	KGGZDEBUG("Host resolved to: %s\n", m_save_host.latin1());
 
 	kggzserver = new GGZCoreServer();
 	attachServerCallbacks();
@@ -402,8 +398,8 @@ void KGGZ::menuConnect()
 	if(!m_connect)
 	{
 		m_connect = new KGGZConnect(this, "connect");
-		connect(m_connect, SIGNAL(signalConnect(const char*, int, const char*, const char*, int)),
-			SLOT(slotConnected(const char*, int, const char*, const char*, int)));
+		connect(m_connect, SIGNAL(signalConnect(QString, int, QString, QString, int)),
+			SLOT(slotConnected(QString, int, QString, QString, int)));
 	}
 	m_connect->show();
 	m_connfront = true;
@@ -427,10 +423,6 @@ void KGGZ::dispatcher()
 	if(m_module) delete m_module;
 	if(m_config) delete m_config;
 	if(m_core) delete m_core;
-	if(m_save_username) delete m_save_username;
-	if(m_save_password) delete m_save_password;
-	if(m_save_host) delete m_save_host;
-	if(m_save_hostname) delete m_save_hostname;
 }
 
 void KGGZ::timerEvent(QTimerEvent *e)
@@ -613,7 +605,7 @@ void KGGZ::listPlayers()
 		}
 		m_workspace->widgetUsers()->assignRole(playername, type);
 		m_workspace->widgetChat()->chatline()->addPlayer(playername);
-		if(m_grubby) m_grubby->addPlayer(playername);
+		if((m_grubby) && (type == KGGZUsers::assignbot)) m_grubby->addPlayer(playername);
 	}
 	m_workspace->widgetUsers()->assignSelf(m_save_username);
 }
@@ -752,7 +744,7 @@ void KGGZ::gameCollector(unsigned int id, const void* data)
 
 void KGGZ::roomCollector(unsigned int id, const void* data)
 {
-	const char *chatsender = NULL, *chatmessage = NULL;
+	QString chatsender, chatmessage;
 	int chattype = GGZCoreRoom::chatnormal;
 	QString buffer;
 	GGZRoomChangeEventData *event;
@@ -775,7 +767,7 @@ void KGGZ::roomCollector(unsigned int id, const void* data)
 			chattype = ((GGZChatEventData*)data)->type;
 			chatsender = ((GGZChatEventData*)data)->sender;
 			chatmessage = ((GGZChatEventData*)data)->message;
-			KGGZDEBUG("Chat receives: %s from %s\n", chatmessage, chatsender);
+			KGGZDEBUG("Chat receives: %s from %s\n", chatmessage.latin1(), chatsender.latin1());
 			if((!m_workspace) || (!m_workspace->widgetChat()))
 			{
 				KGGZDEBUG("Critical: Workspace/Chat absent!\n");
@@ -805,17 +797,17 @@ void KGGZ::roomCollector(unsigned int id, const void* data)
 			{
 				case GGZCoreRoom::chatnormal:
 					KGGZDEBUG("chatnormal\n");
-					if(strncmp(chatmessage, "/me ", 4) == 0)
+					if(chatmessage.startsWith("/me "))
 					{
 						m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_ME);
 					}
 					else
 					{
-						if(strcmp(chatsender, m_save_username) == 0)
+						if(chatsender == m_save_username)
 							m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_OWN);
 						else
 						{
-							KGGZDEBUG("%s != %s\n", chatsender, m_save_username);
+							KGGZDEBUG("%s != %s\n", chatsender.latin1(), m_save_username.latin1());
 							m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_CHAT);
 						}
 					}
@@ -826,7 +818,8 @@ void KGGZ::roomCollector(unsigned int id, const void* data)
 					break;
 				case GGZCoreRoom::chatprivate:
 					KGGZDEBUG("chatprivate\n");
-					m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_PERSONAL);
+					if(m_grubby->isVisible()) m_grubby->answer(chatmessage);
+					else m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_PERSONAL);
 					break;
 				case GGZCoreRoom::chatbeep:
 					KGGZDEBUG("chatbeep\n");
@@ -852,7 +845,7 @@ void KGGZ::roomCollector(unsigned int id, const void* data)
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->add(event->player_name);
 			m_workspace->widgetChat()->chatline()->addPlayer(event->player_name);
-			if(m_grubby) m_grubby->addPlayer(event->player_name);
+			//if(m_grubby) m_grubby->addPlayer(event->player_name);
 			roomnumber = event->to_room;
 			kggzroom = kggzserver->room(roomnumber);
 			emit signalRoomChanged(kggzroom->name(), kggzroom->gametype()->protocolEngine(), roomnumber, kggzroom->countPlayers());
@@ -966,7 +959,7 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 			if(!kggzserver) return;
 			m_sn_server = new QSocketNotifier(kggzserver->fd(), QSocketNotifier::Read, this);
 			connect(m_sn_server, SIGNAL(activated(int)), SLOT(slotServerData()));
-			kggzserver->setLogin(m_save_loginmode, m_save_username, m_save_password);
+			kggzserver->setLogin(m_save_loginmode, m_save_username.latin1(), m_save_password.latin1());
 			break;
 		case GGZCoreServer::connectfail:
 			KGGZDEBUG("connectfail\n");
@@ -1003,7 +996,7 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 		case GGZCoreServer::loggedin:
 			KGGZDEBUG("loggedin\n");
 			emit signalMenu(MENUSIG_LOGIN);
-			buffer.sprintf(i18n("logged in as %s@%s:%i"), m_save_username, m_save_hostname, m_save_port);
+			buffer = i18n("logged in as %1@%2:%3").arg(m_save_username).arg(m_save_hostname).arg(m_save_port);
 			emit signalCaption(buffer, m_save_encryption);
 			menuView(VIEW_CHAT);
 			if(m_save_loginmode == GGZCoreServer::firsttime)
@@ -1028,7 +1021,7 @@ void KGGZ::serverCollector(unsigned int id, const void* data)
 					i18n("Connection"));
 #endif
 			}
-			buffer.sprintf(i18n("Logged in as %s"), m_save_username);
+			buffer = i18n("Logged in as %1").arg(m_save_username);
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_INFO);
 			m_workspace->widgetChat()->receive(NULL, i18n("Please join a room to start!"), KGGZChat::RECEIVE_INFO);
 			if((m_save_loginmode == GGZCoreServer::firsttime) && (m_motd)) m_motd->raise();
@@ -1213,24 +1206,21 @@ GGZHookReturn KGGZ::hookOpenCollector(unsigned int id, const void* event_data, c
 	return GGZ_HOOK_OK;
 }
 
-void KGGZ::slotChat(const char *text, char *player, int mode)
+void KGGZ::slotChat(QString text, QString player, int mode)
 {
-	char *sendtext;
-
 	if((kggzserver) && (kggzroom))
 	{
-		KGGZDEBUG("Chat sends: %s\n", text);
-		sendtext = strdup(text);
+		KGGZDEBUG("Chat sends: %s\n", text.latin1());
 		switch(mode)
 		{
 			case KGGZChat::RECEIVE_CHAT:
-				kggzroom->chat(GGZ_CHAT_NORMAL, player, sendtext);
+				kggzroom->chat(GGZ_CHAT_NORMAL, player, text);
 				break;
 			case KGGZChat::RECEIVE_TABLE:
-				kggzroom->chat(GGZ_CHAT_TABLE, player, sendtext);
+				kggzroom->chat(GGZ_CHAT_TABLE, player, text);
 				break;
 			case KGGZChat::RECEIVE_ANNOUNCE:
-				if(kggzroom->chat(GGZ_CHAT_ANNOUNCE, NULL, sendtext) < 0)
+				if(kggzroom->chat(GGZ_CHAT_ANNOUNCE, NULL, text) < 0)
 				{
 					m_workspace->widgetChat()->receive(NULL,
 						i18n("Only administrators are allowed to broadcast messages."),
@@ -1238,10 +1228,10 @@ void KGGZ::slotChat(const char *text, char *player, int mode)
 				}
 				break;
 			case KGGZChat::RECEIVE_BEEP:
-				kggzroom->chat(GGZ_CHAT_BEEP, player, sendtext);
+				kggzroom->chat(GGZ_CHAT_BEEP, player, text);
 				break;
 			case KGGZChat::RECEIVE_PERSONAL:
-				kggzroom->chat(GGZ_CHAT_PERSONAL, player, sendtext);
+				kggzroom->chat(GGZ_CHAT_PERSONAL, player, text);
 				break;
 		}
 	}
@@ -1757,36 +1747,36 @@ void KGGZ::menuGrubby()
 	m_grubby->show();
 	listPlayers();
 	listTables();
-	connect(m_grubby, SIGNAL(signalAction(const char*, const char*, int)), SLOT(slotGrubby(const char*, const char*, int)));
+	connect(m_grubby, SIGNAL(signalAction(QString, QString, int)), SLOT(slotGrubby(QString, QString, int)));
 }
 
-void KGGZ::slotGrubby(const char *grubby, const char *argument, int id)
+void KGGZ::slotGrubby(QString grubby, QString argument, int id)
 {
 	switch(id)
 	{
 		case KGGZGrubby::actionabout:
-			slotChat(QString("%1 about").arg(grubby).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
+			slotChat("about", grubby, KGGZChat::RECEIVE_PERSONAL);
 			break;
 		case KGGZGrubby::actionhelp:
-			slotChat(QString("%1 help").arg(grubby).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
+			slotChat("help", grubby, KGGZChat::RECEIVE_PERSONAL);
 			break;
 		case KGGZGrubby::actionseen:
-			slotChat(QString("%1 have you seen %2").arg(grubby).arg(argument).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
+			slotChat(QString("have you seen %1").arg(argument), grubby, KGGZChat::RECEIVE_PERSONAL);
 			break;
 		case KGGZGrubby::actionalertadd:
-			slotChat(QString("%1 alert %2").arg(grubby).arg(argument).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
+			slotChat(QString("alert %1").arg(argument), grubby, KGGZChat::RECEIVE_PERSONAL);
 			break;
 		case KGGZGrubby::actionmessages:
-			slotChat(QString("%1 do i have any messages").arg(grubby).latin1(), NULL, KGGZChat::RECEIVE_CHAT);
+			slotChat("do i have any messages", grubby, KGGZChat::RECEIVE_PERSONAL);
 			break;
 		case KGGZGrubby::actionbye:
 			KMessageBox::information(m_grubby, i18n("The pleasure has been on my side :)"), "Grubby");
 			break;
 		case KGGZGrubby::actionteach:
-			slotChat(QString("%1 %2").arg(grubby).arg(argument), NULL, KGGZChat::RECEIVE_CHAT);
+			slotChat(QString("%1").arg(argument), grubby, KGGZChat::RECEIVE_PERSONAL);
 			break;
 		case KGGZGrubby::actionwhois:
-			slotChat(QString("%1 who is %2").arg(grubby).arg(argument), NULL, KGGZChat::RECEIVE_CHAT);
+			slotChat(QString("who is %1").arg(argument), grubby, KGGZChat::RECEIVE_PERSONAL);
 			break;
 		default:
 			KMessageBox::sorry(m_grubby, i18n("I don't know that command, sorry."), i18n("Grubby communication failure"));

@@ -422,7 +422,7 @@ void KGGZConnect::slotProfileNew()
 	if(!m_input) m_input = new KGGZInput(NULL, "KGGZInput", i18n("Profile identifier"), i18n("Chose a name for the new profile."));
 
 	m_input->show();
-	connect(m_input, SIGNAL(signalText(const char*)), SLOT(slotProfileProcess(const char*)));
+	connect(m_input, SIGNAL(signalText(QString)), SLOT(slotProfileProcess(QString)));
 }
 
 void KGGZConnect::slotProfileMeta()
@@ -450,7 +450,7 @@ void KGGZConnect::slotProfileDelete()
 	slotLoadProfile(profile_select->currentItem());
 }
 
-void KGGZConnect::slotProfileProcess(const char *identifier)
+void KGGZConnect::slotProfileProcess(QString identifier)
 {
 	// Save current profile
 	slotSaveProfile();
@@ -459,7 +459,7 @@ void KGGZConnect::slotProfileProcess(const char *identifier)
 	profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), identifier, 0);
 	profile_select->setCurrentItem(0);
 	modifyServerList(identifier, 1);
-	m_current = QString(identifier);
+	m_current = identifier;
 	input_host->setText("");
 	input_name->setText("");
 	input_port->setText("5688");
@@ -475,7 +475,7 @@ void KGGZConnect::slotProfileProcess(const char *identifier)
 }
 
 // mode: 1 = add, 2 = delete
-void KGGZConnect::modifyServerList(const char *server, int mode)
+void KGGZConnect::modifyServerList(QString server, int mode)
 {
 	GGZCoreConfio *config;
 	char **list = NULL;
@@ -483,7 +483,8 @@ void KGGZConnect::modifyServerList(const char *server, int mode)
 	int i;
 	int number;
 
-	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readwrite | GGZCoreConfio::create);
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(),
+		GGZCoreConfio::readwrite | GGZCoreConfio::create);
 
 	// Update the list of available servers
 	config->read("Servers", "Servers", &i, &list);
@@ -495,7 +496,7 @@ void KGGZConnect::modifyServerList(const char *server, int mode)
 	number = 0;
 	for(int j = 0; j < i; j++)
 	{
-		if(strcmp(list[j], server) || (mode == 1))
+		if((server == list[j]) || (mode == 1))
 		{
 			list2[number] = (char*)malloc(strlen(list[j]) + 1);
 			strcpy(list2[number], list[j]);
@@ -504,14 +505,14 @@ void KGGZConnect::modifyServerList(const char *server, int mode)
 	}
 	if(mode == 1)
 	{
-		list2[number] = (char*)malloc(strlen(server) + 1);
-		strcpy(list2[number], server);
+		list2[number] = (char*)malloc(server.length() + 1);
+		strcpy(list2[number], server.latin1());
 		number++;
 	}
 	config->write("Servers", "Servers", number, list2);
 	if(mode == 2)
 	{
-		config->removeSection(server);
+		config->removeSection(server.latin1());
 		if(number == 0) config->removeKey("Servers", "Servers");
 	}
 

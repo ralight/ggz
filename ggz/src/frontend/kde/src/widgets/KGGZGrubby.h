@@ -36,8 +36,11 @@
 
 // Qt includes
 #include <qwidget.h>
-#include <qcombobox.h>
-#include <qlineedit.h>
+
+class QPushButton;
+class QLineEdit;
+class QComboBox;
+class QMultiLineEdit;
 
 // Displays a grubby talk dialog window.
 class KGGZGrubby : public QWidget
@@ -64,7 +67,9 @@ class KGGZGrubby : public QWidget
 		// Clear the list of players
 		void removeAll();
 		// Add a player to the list
-		void addPlayer(const char *player);
+		void addPlayer(QString player);
+		// Answer from grubby
+		void answer(QString message);
 
 	public slots:
 		// Check requested grubby action
@@ -74,12 +79,14 @@ class KGGZGrubby : public QWidget
 
 	signals:
 		// Invoke a grubby action
-		void signalAction(const char *grubby, const char *argument, int id);
+		void signalAction(QString grubby, QString argument, int id);
 
 	private:
 		int m_lastaction;
-		QComboBox *m_player;
+		QComboBox *m_player, *m_combo;
 		QLineEdit *m_ed;
+		QPushButton *m_go;
+		QMultiLineEdit *m_mle;
 };
 
 #endif
