@@ -666,8 +666,6 @@ client_player_clist_event			(GtkWidget	*widget,
 			gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
 					NULL, buttonevent->button, 0);
 
-			g_print("%d", popup_row);
-
 			poping = TRUE;
 			tmp = lookup_widget(menu, "friends");
 			if(chat_is_friend(client_get_players_index(popup_row)) == TRUE)
@@ -1637,8 +1635,8 @@ create_win_main (void)
   gtk_container_add (GTK_CONTAINER (player_scrolledwindow), player_clist);
   gtk_widget_set_sensitive (player_clist, FALSE);
   GTK_WIDGET_UNSET_FLAGS (player_clist, GTK_CAN_FOCUS);
-  gtk_clist_set_column_width (GTK_CLIST (player_clist), 0, 10);
-  gtk_clist_set_column_width (GTK_CLIST (player_clist), 1, 10);
+  gtk_clist_set_column_width (GTK_CLIST (player_clist), 0, 15);
+  gtk_clist_set_column_width (GTK_CLIST (player_clist), 1, 15);
   gtk_clist_set_column_width (GTK_CLIST (player_clist), 2, 80);
   gtk_clist_column_titles_show (GTK_CLIST (player_clist));
 

@@ -348,7 +348,6 @@ void chat_send_wall(GGZServer *server, gchar *message)
 	char *msg;
 
 	msg = g_strstrip(strdup(message+5));
-	g_print("WALL: %s\n", msg);
 	ggzcore_room_chat(room, GGZ_CHAT_ANNOUNCE, NULL, msg);
 }
 

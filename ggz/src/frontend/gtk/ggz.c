@@ -231,6 +231,7 @@ static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* us
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_LEAVE_FAIL, ggz_table_leave_fail);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_UPDATE, ggz_table_update);
 		ggzcore_room_add_event_hook(room, GGZ_TABLE_DATA, ggz_table_data);
+		ggzcore_room_add_event_hook(room, GGZ_PLAYER_LAG, ggz_list_players);
 	}
 
 	return GGZ_HOOK_OK;
@@ -948,8 +949,8 @@ void display_players(void)
 	GGZPlayer *p;
 	GGZTable *table;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
-	GdkPixmap *pixmap = NULL;
-	GdkBitmap *mask;
+	GdkPixmap *pixmap1 = NULL, *pixmap2 = NULL;
+	GdkBitmap *mask1, *mask2;
 
 	/* Clear current list of players */
 	tmp = lookup_widget(win_main, "player_clist");
@@ -960,20 +961,46 @@ void display_players(void)
 		return;
 
 	for (i = 0; i < num; i++) {
-		
 		p = ggzcore_room_get_nth_player(room, i);
 
-		player[0] = " ";
 		table = ggzcore_player_get_table(p);
-		
 		if(!table)
 			player[1] = g_strdup("--");
 		/*else if (ggzcore_player_get_table(names[i]) == -2)
 		  player[1] = g_strdup("??");*/
 		else
 			player[1] = g_strdup_printf("%d", ggzcore_table_get_id(table));
+
 		player[2] = g_strdup(ggzcore_player_get_name(p));
 		gtk_clist_append(GTK_CLIST(tmp), player);
+
+		if(ggzcore_player_get_lag(p) == -1 || ggzcore_player_get_lag(p) ==0)
+			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
+					 "ggz_gtk_lag0.xpm", NULL);
+		else if(ggzcore_player_get_lag(p) == 1)
+			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
+					 "ggz_gtk_lag1.xpm", NULL);
+		else if(ggzcore_player_get_lag(p) == 2)
+			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
+					 "ggz_gtk_lag2.xpm", NULL);
+		else if(ggzcore_player_get_lag(p) == 3)
+			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
+					 "ggz_gtk_lag3.xpm", NULL);
+		else if(ggzcore_player_get_lag(p) == 4)
+			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
+					 "ggz_gtk_lag4.xpm", NULL);
+		else if(ggzcore_player_get_lag(p) == 5)
+			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
+					 "ggz_gtk_lag5.xpm", NULL);
+		
+		if (path) {
+			pixmap1 = gdk_pixmap_create_from_xpm(tmp->window, &mask1,
+							    NULL, path);
+			if (pixmap1)
+				gtk_clist_set_pixmap(GTK_CLIST(tmp), i, 0, pixmap1, mask1);
+			g_free(path);
+		}
+
 
 		if(ggzcore_player_get_type(p) == GGZ_PLAYER_GUEST)
 			path = g_strjoin(G_DIR_SEPARATOR_S, GGZDATADIR, 
@@ -986,13 +1013,14 @@ void display_players(void)
 					 "ggz_gtk_admin.xpm", NULL);
 		
 		if (path) {
-			pixmap = gdk_pixmap_create_from_xpm(tmp->window, &mask,
+			pixmap2 = gdk_pixmap_create_from_xpm(tmp->window, &mask2,
 							    NULL, path);
-			if (pixmap)
-				gtk_clist_set_pixtext(GTK_CLIST(tmp), i, 2, player[2], 5, pixmap, mask);
+			if (pixmap2)
+				gtk_clist_set_pixtext(GTK_CLIST(tmp), i, 2, player[2], 5, pixmap2, mask2);
 			g_free(path);
 		}
 		
+//		g_free(player[0]);
 		g_free(player[1]);
 		g_free(player[2]);
 	}
