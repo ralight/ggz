@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: game.c 6897 2005-01-25 08:47:18Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -256,12 +256,11 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, const void *data)
 int game_handle_move(int seat, int *move) {
 	int fd = ggzdmod_get_seat(rvr_game.ggz, seat).fd, status;
 
-	ggzdmod_log(rvr_game.ggz, "Handling move %d,%dfor player %d\n", X(*move), Y(*move), seat);
-	
 	// Get the move from the message
 	if (ggz_read_int(fd, move) < 0)
 		return -1;
 
+	ggzdmod_log(rvr_game.ggz, "Handling move %d,%dfor player %d\n", X(*move), Y(*move), seat);
 
 	// Check if it's his turn
 	if (SEAT2PLAYER(seat) != rvr_game.turn) {
