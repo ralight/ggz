@@ -30,6 +30,8 @@ ggz_gtk_SOURCES =	main.c \
 			server.h \
 			support.c \
 			support.h \
+			types.c \
+			types.h \
 			xtext.c \
 			xtext.h
 

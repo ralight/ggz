@@ -41,6 +41,7 @@
 #include "login.h"
 #include "props.h"
 #include "support.h"
+#include "types.h"
 #include "xtext.h"
 
 
@@ -228,7 +229,7 @@ static void
 client_game_types_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-
+	types_create_or_raise();
 }
 
 
