@@ -1,5 +1,6 @@
 *.o
 *.moc
+*.moc.cc
 koenig
 Makefile
 Makefile.in

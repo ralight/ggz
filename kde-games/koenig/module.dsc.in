@@ -1,7 +1,7 @@
 # Koenig description file
 [ModuleInfo]
 Author = Tobias Koenig
-CommandLine = @ggzexecmoddir@/koenig
+CommandLine = @ggzexecmoddir@/koenig --ggz
 Frontend = kde
 Homepage = http://mindx.sourceforge.net/
 Name = Koenig

@@ -16,6 +16,7 @@ class TopLevel : public KMainWindow
 public:
 	TopLevel(const char *name = 0);
 	~TopLevel(void);
+	void initGameSocket(void); // wrapper!
 
 public slots:
 	void newGame(void);
@@ -23,10 +24,12 @@ public slots:
 	//void handleNetInput(void);
 	void slotTime(int time);
 	void slotMessage(QString msg);
+	void slotMove(QString msg);
+	void slotStart(int seat);
 
 private:
 	void initGameData(void);
-	void initGameSocket(void);
+	//void initGameSocket(void);
 
 	ChessBoard *chessBoard;
 	Options *options;

@@ -35,10 +35,13 @@ public:
 
 public slots:
 	void handleNetInput(void);
+	void slotMove(int x, int y, int x2, int y2);
 
 signals:
+	void signalStart(int seat);
 	void signalNewGame();
 	void signalMessage(QString msg);
+	void signalMove(QString msg);
 
 private:
 	GGZ *ggz;

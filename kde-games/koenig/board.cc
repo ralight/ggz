@@ -53,9 +53,9 @@ ChessBoard::ChessBoard(QWidget *parent, const char *name)
 	// I like QuickHacks ;)
 	mouseDrag = true;
 	
-	resetBoard(COLOR_BLACK);
+	resetBoard(COLOR_BLACK); // FIXME: invent COLOR_INACTIVE !!!
 
-	setCaption("Chess Board");
+	setCaption("Chess Board - inactive");
 }
 
 ChessBoard::~ChessBoard(void)
@@ -95,6 +95,10 @@ void ChessBoard::resetBoard(int color)
 	board[7][7] = ROOK_BLACK;
 
 	activeColor = color;
+	if(color == COLOR_WHITE)
+		setCaption("Chess Board - White");
+	else
+		setCaption("Chess Board - Black");
 
 	update();
 }

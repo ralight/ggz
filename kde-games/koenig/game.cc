@@ -62,6 +62,7 @@ void Game::handleNetInput(void)
 	char opcode, value;
 	char cval;
 	QString s;
+	int x, y, x2, y2;
 
 	if ((opcode = ggz->getChar()) < 0)
 		return;
@@ -87,6 +88,7 @@ void Game::handleNetInput(void)
 			if (chessInfo.version != PROTOCOL_VERSION)
 				kdDebug(12101) << "Incompatible version. The game may not run as expected" << endl;
 
+			emit signalStart(chessInfo.seat);
 			break;
 		case CHESS_MSG_PLAYERS:
 			kdDebug(12101) << "Got an MSG_PLAYERS" << endl;
@@ -128,19 +130,20 @@ void Game::handleNetInput(void)
 					emit signalMessage("Clock: no limit.");
 					break;
 				case CHESS_CLOCK_CLIENT:
-					kdDebug(12101) << "This game will use a client clock.\nThis option should only be used when playing against people you trust, as it relies much in the client program, that can be cheated.\nSo, if the time behaves very strangely (like your oponnent time never wearing out), he may be running a cheated client.\n\nEach player will have " << chessInfo.seconds[0]/60 << " min : " << chessInfo.seconds[0]%60 << " sec to win the game." << endl;
+					kdDebug(12101) << "This game will use a client clock.\nThis option should only be used when playing against people you trust, as it relies much in the client program, that can be cheated.\nSo, if the time behaves very strangely (like your oponnent time never wearing out), he may be running a cheated client.\n\nEach player will have " << chessInfo.seconds[0] / 60 << " min : " << chessInfo.seconds[0] % 60 << " sec to win the game." << endl;
 					emit signalMessage("Clock: client-side.");
 					break;
 				case CHESS_CLOCK_SERVER:
-//					game_popup("This game will use a server clock.\nIt is very difficult to cheat when using this type of clock, and you should use it if you suspect your oponnent may have a cheated client or if you don't trust him.\nHowever, if either your connection or your opponent's is deeply lagged, it will have a deep effect on the time count as well.\n\nEach player will have %d min : %d sec to win the game.", game_info.seconds[0]/60, game_info.seconds[0]%60);
+					kdDebug(12101) << "This game will use a server clock.\nIt is very difficult to cheat when using this type of clock, and you should use it if you suspect your oponnent may have a cheated client or if you don't trust him.\nHowever, if either your connection or your opponent's is deeply lagged, it will have a deep effect on the time count as well.\n\nEach player will have " << chessInfo.seconds[0] / 60 << " min : " << chessInfo.seconds[0] % 60 << " sec to win the game." << endl;
 					emit signalMessage("Clock: server-side.");
 					break;
 				case CHESS_CLOCK_SERVERLAG:
-//					game_popup("This game will use a server clock with lag support.\nIn this option, we will use a server clock, but using a lag meter to compensate for any lag due to Internet connection. Although it's possible to cheat with this option, it is much more difficult then cheating with the client clock.\nBesides, the lag of either connect won't have a so deep effect on the time of the players.\n\nEach player will have %d min : %d sec to win the game.", game_info.seconds[0]/60, game_info.seconds[0]%60);
+					kdDebug(12101) << "This game will use a server clock with lag support.\nIn this option, we will use a server clock, but using a lag meter to compensate for any lag due to Internet connection. Although it's possible to cheat with this option, it is much more difficult then cheating with the client clock.\nBesides, the lag of either connect won't have a so deep effect on the time of the players.\n\nEach player will have " << chessInfo.seconds[0] / 60 << " min : " << chessInfo.seconds[0] % 60 << " sec to win the game." << endl;
 					emit signalMessage("Clock: server-side with lag.");
 					break;
 				default:
-//					game_popup("Clock type is %d and time is %d", game_info.clock_type, game_info.seconds[0]);
+					kdDebug(12101) << "Clock type is " << chessInfo.clock_type << " and time is " << chessInfo.seconds[0] << " seconds." << endl;
+					emit signalMessage("Clock: Error - unexpected type.");
 					break;
 			}
 			break;
@@ -155,17 +158,28 @@ void Game::handleNetInput(void)
 				chessInfo.timer->changeInterval(1000);
 
 			kdDebug(12101) << "The game has started!" << endl;
+			emit signalMessage("Game: started.");
 			break;
 
 		case CHESS_MSG_MOVE:
 			kdDebug(12101) << "Got an MSG_MOVE" << endl;
-			s = ggz->getString(6);
+			//s = ggz->getString(6);
+			kdDebug(12101) << "Args: ";
+			ggz->getChar();ggz->getChar();ggz->getChar();ggz->getChar(); // FIXME: read string length
+			x = ggz->getChar(); kdDebug(12101) << cval;
+			y = ggz->getChar(); kdDebug(12101) << cval;
+			x2 = ggz->getChar(); kdDebug(12101) << cval;
+			y2 = ggz->getChar(); kdDebug(12101) << cval;
+			cval = ggz->getChar(); kdDebug(12101) << cval; // should be 0 no?
+			//cval = ggz->getChar(); kdDebug(12101) << cval;
+			kdDebug(12101) << endl;
 			//es_read_string(chess.fd, args, 6);
 			/* Should we worry about time ? */
 			if (chessInfo.clock_type != CHESS_CLOCK_NOCLOCK)
 				//es_read_int(chess.fd, (gint*)args+2);
 				ggz->getInt();
 //			game_update(CHESS_EVENT_MOVE, args.latin1());
+			emit signalMove(QString("Net: from %1/%2 to %3/%4").arg(QChar(x + 'A')).arg(QChar(y + '1')).arg(QChar(x2 + 'A')).arg(QChar(y2 + '1')));
 			break;
 
 		case CHESS_MSG_GAMEOVER:
@@ -201,7 +215,23 @@ void Game::handleNetInput(void)
 
 void Game::setTime(int time)
 {
+	chessInfo.clock_type = CHESS_CLOCK_NOCLOCK;
 	ggz->putChar(CHESS_RSP_TIME);
 	ggz->putInt(time);
+}
+
+void Game::slotMove(int x, int y, int x2, int y2)
+{
+	kdDebug(12101) << "Game::slotMove(); got move: " << x << ", " << y << " => " << x2 << ", " << y2 << endl;
+	ggz->putChar(CHESS_REQ_MOVE);
+	ggz->putChar(0);ggz->putChar(0);ggz->putChar(0);ggz->putChar(6);// FIXME: string handling
+	ggz->putChar(x + 'A');
+	ggz->putChar(y + '1');
+	ggz->putChar(x2 + 'A');
+	ggz->putChar(y2 + '1');
+	ggz->putChar(0);
+	ggz->putChar(0);
+	emit signalMove(QString("%1: from %2/%3 to %4/%5").arg((chessInfo.seat ? "Black" : "White")).arg(
+		QChar(x + 'A')).arg(QChar(y + '1')).arg(QChar(x2 + 'A')).arg(QChar(y2 + '1')));
 }
 
