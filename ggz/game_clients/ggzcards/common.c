@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2850 2001-12-10 04:16:28Z jdorje $
+ * $Id: common.c 2851 2001-12-10 04:19:50Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -606,9 +606,12 @@ static int handle_req_options(void)
 	char ***option_choices;	/* The texts for each option choice of each
 				   option */
 
-	if (game.state == STATE_OPTIONS)
-		/* Should the new request override the old one? */
-		return 0;
+	if (game.state == STATE_OPTIONS) {
+		/* The new options request overrides the old one.  But this
+		   means some messy cleanup is necessary. */
+		ggz_debug("core",
+			  "WARNING: new options request overriding old one.");
+	}
 
 	/* Read the number of options. */
 	if (es_read_int(ggzfd, &option_cnt) < 0)
