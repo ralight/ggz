@@ -149,6 +149,7 @@ AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([Makefile 
 	   ggzcore/Makefile
+	   man/Makefile
 	   man/ggz-config.6
 	   man/ggz.modules.5
 	   ])
