@@ -23,10 +23,11 @@
  */
 
 #include <config.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <string.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -34,6 +35,7 @@
 #include "chat.h"
 #include "ggzcore.h"
 #include "props.h"
+#include "server.h"
 #include "support.h"
 #include "xtext.h"
 
@@ -59,10 +61,13 @@ static void props_cancel_button_clicked(GtkWidget *widget, gpointer user_data);
 static void props_fok_button_clicked(GtkWidget *widget, gpointer user_data);
 static void props_fcancel_button_clicked(GtkWidget *widget, gpointer user_data);
 static void props_fapply_button_clicked(GtkWidget *widget, gpointer user_data);
+static void props_profiles_reload(void);
+
 static GtkWidget* create_dlg_props (void);
 static GtkWidget* create_dlg_props_font (void);
 
 extern GtkWidget *win_main;
+extern GtkWidget *login_dialog;
 GtkWidget *props_dialog;
 GtkWidget *props_font_dialog;
 
@@ -82,6 +87,7 @@ static void props_update(void)
 {
 	GtkWidget *tmp;
 	GdkFont *font;
+	GList *items;
 
 	/* Save Changes */
 
@@ -153,7 +159,7 @@ static void props_update(void)
 	tmp = lookup_widget((props_dialog), "info_comments");
 	ggzcore_conf_write_string("USER INFO", "COMMENTS", gtk_editable_get_chars(GTK_EDITABLE(tmp), 0, gtk_text_get_length(GTK_TEXT(tmp))));
 
-
+	server_profiles_save();
 	ggzcore_conf_commit();
 
 
@@ -208,6 +214,14 @@ static void props_update(void)
 
 	/* Display a status Message */
 	chat_display_message(CHAT_BEEP, "---", _("Properties Updated"));
+
+	/* If the login dialog is open refill the combo box */
+	if(login_dialog != NULL) {
+		tmp = lookup_widget(login_dialog, "profile_combo");
+		items = server_get_name_list();
+		if (tmp && items)
+			gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
+	}
 }
 
 
@@ -288,7 +302,16 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 
 void props_profile_box_realized(GtkWidget *widget, gpointer user_data)
 {
+	GtkWidget* tmp;
 
+	props_profiles_reload();
+
+	tmp = lookup_widget(props_dialog, "add_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(props_dialog, "modify_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(props_dialog, "delete_button");
+	gtk_widget_set_sensitive(tmp, FALSE);
 }
 
 
@@ -298,37 +321,224 @@ void props_profile_list_select(GtkCList *clist,
                                GdkEvent *event,
                                gpointer  user_data)
 {
+	GtkWidget *tmp;
+	gchar *profile_name;
+	Server *profile;
+	gchar *port;
 
+	tmp = lookup_widget(props_dialog, "add_button");
+	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	tmp = lookup_widget(props_dialog, "modify_button");
+	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+	tmp = lookup_widget(props_dialog, "delete_button");
+	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+
+	tmp = lookup_widget(props_dialog, "profile_list");
+	gtk_clist_get_text(GTK_CLIST(tmp), row, column, &profile_name);
+	profile = server_get(profile_name);
+
+	tmp = lookup_widget(props_dialog, "profile_entry");
+	if (profile->name)
+		gtk_entry_set_text(GTK_ENTRY(tmp), profile->name );
+	else
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(props_dialog, "server_entry");
+	if (profile->host)
+		gtk_entry_set_text(GTK_ENTRY(tmp), profile->host );
+	else
+		gtk_entry_set_text(GTK_ENTRY(tmp), ""); 
+
+	tmp = lookup_widget(props_dialog, "port_entry");  
+	port = g_strdup_printf("%d", profile->port);
+	gtk_entry_set_text(GTK_ENTRY(tmp), port);
+	g_free(port);
+
+	tmp = lookup_widget(props_dialog, "username_entry");
+	if (profile->login)
+		gtk_entry_set_text(GTK_ENTRY(tmp), profile->login);
+	else
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(props_dialog, "password_entry");
+	if (profile->password)
+		gtk_entry_set_text(GTK_ENTRY(tmp), profile->password);
+	else
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	if (profile->type == GGZ_LOGIN) {
+		tmp = lookup_widget(props_dialog, "normal_radio");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+	}
+	if (profile->type == GGZ_LOGIN_GUEST) {
+		tmp = lookup_widget(props_dialog, "guest_radio");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+	}
 }
 
 
 void props_profile_entry_changed(GtkWidget *widget, gpointer user_data)
 {
+	GtkWidget *tmp;
+	GList *names, *node;
+	gchar* profile;
 
+	tmp = lookup_widget(props_dialog, "profile_entry");
+	profile = gtk_entry_get_text(GTK_ENTRY(tmp));
+
+	if (!strcmp(profile, "")) {
+		tmp = lookup_widget(props_dialog, "add_button");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+		tmp = lookup_widget(props_dialog, "modify_button");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+		tmp = lookup_widget(props_dialog, "delete_button");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+		return;
+	}
+
+	names = server_get_name_list();
+	for (node = names; node != NULL; node = node->next) {
+		/* If we match one of the profiles */
+		if(!strcmp(profile, (char*)(node->data))) {
+			tmp = lookup_widget(props_dialog, "add_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = lookup_widget(props_dialog, "modify_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+			tmp = lookup_widget(props_dialog, "delete_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+			break;
+		}
+	}
+
+	/* If we didn't match anything */
+	if (!node) {
+		tmp = lookup_widget(props_dialog, "add_button");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+		tmp = lookup_widget(props_dialog, "modify_button");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+		tmp = lookup_widget(props_dialog, "delete_button");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	}
+
+	g_list_free(names);
 }
 
 
 void props_normal_toggled(GtkWidget *widget, gpointer user_data)
 {
+	GtkWidget* password;
+	GtkWidget* confirm;           
 
+	password = lookup_widget(GTK_WIDGET(user_data), "password_box");
+	confirm = lookup_widget(GTK_WIDGET(user_data), "confirm_box");
+
+	if (GTK_TOGGLE_BUTTON(widget)->active) {
+		gtk_widget_show(password);
+		gtk_widget_show(confirm);
+	} else {
+		gtk_widget_hide(password);
+		gtk_widget_hide(confirm);
+	}
 }
 
 
 void props_add_button_clicked(GtkWidget *widget, gpointer user_data)
 {
+	GtkWidget *tmp;
+	Server *new_server;
 
+	new_server = g_malloc0(sizeof(Server));
+
+	tmp = lookup_widget(props_dialog, "profile_entry");
+	new_server->name = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(props_dialog, "server_entry");
+	new_server->host = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(props_dialog, "port_entry");
+	new_server->port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(props_dialog, "username_entry");
+	new_server->login = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));   
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(props_dialog, "normal_radio");
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tmp))) {
+		new_server->type = GGZ_LOGIN;  
+		tmp = lookup_widget(props_dialog, "password_entry");
+		new_server->password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+	}
+	else    
+		new_server->type = GGZ_LOGIN_GUEST;
+
+	/* FIXME: check confirm password entry */
+	server_list_add(new_server);
+
+	/* Add profile to list */
+	tmp = lookup_widget(props_dialog, "profile_list");
+	gtk_clist_append(GTK_CLIST(tmp), (char**)&(new_server->name));
 }
 
 
 void props_modify_button_clicked(GtkWidget *widget, gpointer user_data)
 {
+	GtkWidget *tmp;
+	Server *server;
 
+	/* FIXME: check confirm password entry */
+	/* FIXME: free() previous strings if necessary */
+
+	tmp = lookup_widget(props_dialog, "profile_entry"); 
+	server = server_get(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	tmp = lookup_widget(props_dialog, "server_entry");
+	server->host = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	tmp = lookup_widget(props_dialog, "port_entry");  
+	server->port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	tmp = lookup_widget(props_dialog, "username_entry");
+	server->login = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	tmp = lookup_widget(props_dialog, "normal_radio");
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tmp))) {
+		server->type = GGZ_LOGIN;
+		tmp = lookup_widget(props_dialog, "password_entry");
+		server->password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	}
+	else
+		server->type = GGZ_LOGIN_GUEST;
 }
 
 
 void props_delete_button_clicked(GtkWidget *widget, gpointer user_data)
 {
+	GtkWidget *tmp;
 
+	tmp = lookup_widget(props_dialog, "profile_entry");
+	server_list_remove(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(props_dialog, "server_entry");
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(props_dialog, "port_entry");
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(props_dialog, "username_entry");
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(props_dialog, "normal_radio");
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tmp))) {
+		tmp = lookup_widget(props_dialog, "password_entry");
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+	}
+
+	props_profiles_reload();
 }
 
 
@@ -421,6 +631,23 @@ void props_fapply_button_clicked(GtkWidget *widget, gpointer user_data)
 			gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(props_font_dialog)));
 	}
 }
+
+
+static void props_profiles_reload(void)
+{
+	GtkWidget* tmp;
+	GList *names, *node;
+
+	tmp = lookup_widget(props_dialog, "profile_list");
+	gtk_clist_clear(GTK_CLIST(tmp));
+
+	names = server_get_name_list();
+	for (node = names; node != NULL; node = node->next)
+		gtk_clist_append(GTK_CLIST(tmp), (char**)&(node->data));
+
+	g_list_free(names);
+}
+
 
 static GtkWidget*
 create_dlg_props (void)
