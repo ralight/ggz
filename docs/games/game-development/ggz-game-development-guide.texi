@@ -9,7 +9,7 @@
 @c nothing
 
 @ifinfo
-Copyright (C) 2002 Josef Spillner
+Copyright (C) 2002, 2003 Josef Spillner
 @end ifinfo
 
 @c Frontpage
@@ -84,7 +84,7 @@ can be made, for example, most external game have been present before they got
 a GGZ mode, and are thus more complex in design.
 In the future, some GGZ game servers and clients will most likely also provide
 a standalone mode, just like some clients already do for local games,
-namely Muehle and KTicTacTux.
+namely Muehle, KTicTacTux and Geekgame.
 
 @node Game Clients, Game Servers, The GGZ System, Top
 @chapter Game Clients
@@ -196,8 +196,8 @@ You will most likely be interested in using Qt classes for OpenGL or sprite
 animations, so get yourself a copy of the Qt documentation.
 
 The GGZ games KReversi, KDots, KTicTacTux, Krosswater, Muehle, Keepalive,
-Koenig, Kamikaze and Copenhagen have been written using KDE/Qt as development
-framework.
+Koenig, Kamikaze, Copenhagen and Fyrdman have been written using KDE/Qt as
+development framework.
 
 @subsection Gtk+, Gnome (C), Gtk-- (C++)
 
@@ -210,13 +210,15 @@ T.E.G. is an example for a Gnome game.
 
 SDL is a proven toolkit for game development, with tons of games already
 available. See @url{http://www.libsdl.org} for a list of them.
-The GGZ game Stalker has been written using SDL.
+The GGZ games Geekgame and TicTacToe 3D have been written using SDL.
 
 @subsection Others
 
 It does really not matter which toolkit one chooses. Therefore, Mesa3D (an
 OpenGL implementation), PLib, GLUT, Pygame and others are worth to have a look
 at.
+For Pygame, a python wrapper for ggzmod, named pyggzmod, does exist in the
+GGZ Playground CVS module.
 
 @node Game Servers, Programming Details, Game Clients, Top
 @chapter Game Servers
@@ -231,10 +233,14 @@ dedicated file descriptor. There are different event types:
 @item STATE: indicates that the state has changed (see below)
 @item JOIN: a player has joined the game
 @item LEAVE: player has left the game
+@item SEAT: seat occupation has changed
 @item SPECTATOR_JOIN: a spectator came to watch the game
 @item SPECTATOR_LEAVE: spectator went away
+@item SPECTATOR_SEAT: spectator has joined or left
 @item PLAYER_DATA: one of the players (clients) sent some data
 @item SPECTATOR_DATA: data sent from random spectators
+@item LOG: log message has arrived
+@item ERROR: an error has occured
 @end itemize
 
 The states in which a game server can be are:
@@ -289,6 +295,9 @@ ggzstats_recalculate_ratings(stats);
 ggzstats_free(stats);
 @end verbatim
 
+The statistics are saved into the database (next to the list of registered
+players), and can be used as data for web-based community sites.
+
 @section Configuration Files
 
 Each game server must supply at least one file for each of main server's lists.
@@ -318,6 +327,10 @@ BotsAllowed = <0 [1 [2 ...]]>
 PlayersAllowed = <1 [2 [3 ...]]>
 KillWhenEmpty = <0/1>
 AllowSpectators = <0/1>
+
+[Statistics]
+Records = <0/1>
+Ratings = <0/1>
 @end verbatim
 
 The room file (<name>.room) has the following format:
@@ -398,17 +411,33 @@ available. It has been merged into libggz, so all functions are prefixed with
 ggz_ now.
 See the documentation for libggz for more details.
 
+Usage example:
+
+@verbatim
+int fd;
+
+fd = ggzdmod_get_seat(mod, 1).fd;
+ggz_write_int(fd, 0);
+ggz_write_string(fd, "Hello World.");
+@end verbatim
+
 @subsection Qt (C++)
 
 Those game clients which use the Qt toolkit will most likely use the Qt network
 code as well. This has mostly to do with QSocket, QSocketNotifier and
 QDataStream, which are all very easy and intuitive to use.
 
+Documentation:
+@url{http://doc.trolltech.com/3.1/qdatastream.html}
+
 @subsection KDE (C++)
 
 KDE does provide very powerful networking mechanisms. There are not only
 classes like KSocket/KExtSocket, but also the DCOP library, and the KDE games
 library named libkdegames.
+
+Documentation:
+@url{http://developer.kde.org/documentation/library/3.1-api/classref/kdecore/KExtendedSocket.html}
 
 @subsection Net/MNet (C++)
 
@@ -450,6 +479,20 @@ in the ggzcore library, it is now part of libggz and consists of many
 ggz_conf_* functions.
 The details are again explained in the libggz documentation.
 
+Usage example:
+
+@verbatim
+int conf;
+char *value;
+
+conf = ggz_conf_parse("/etc/ggz/games/mygame.conf", GGZ_CONF_RDONLY);
+if(conf != -1)
+{
+	value = ggz_conf_read_string(conf, "SampleSection", "SampleKey", NULL);
+	ggz_conf_close(-1);
+}
+@end verbatim
+
 @subsection Minidom (XML-Style)
 
 If you want to read or write XML data, while avoiding the overhead of a complex
@@ -457,6 +500,20 @@ XML library, the GGZ project offers the minidom library, which you can find in
 utils/metaserv/minidom.
 Currently, both the GGZ meta server and the Copenhagen game server make use of
 this library.
+
+Usage example:
+
+@verbatim
+DOM *conf;
+
+conf = minidom_load("/etc/ggz/games/mygame.xml");
+if((conf) && (conf->valid) && (conf->processed))
+{
+	printf("Root tag is named %s.\n", conf->el->name);
+	printf("Attribute 'version' has value %s.\n", MD_att(conf->el, "version"));
+}
+minidom_free(conf);
+@end verbatim
 
 @c @printindex cp
 
