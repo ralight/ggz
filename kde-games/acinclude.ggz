@@ -342,7 +342,7 @@ AC_ARG_WITH(ggzmod-libraries,
 AC_CACHE_VAL(ac_cv_have_ggzmod,
 [
 ggzmod_incdirs="$ac_ggzmod_includes /usr/local/include /usr/include"
-ggzmod_header=ggz_server.h
+ggzmod_header=ggz_client.h
 
 AC_GGZ_FIND_FILE($ggzmod_header, $ggzmod_incdirs, ggzmod_incdir)
 ac_ggzmod_includes="$ggzmod_incdir"
@@ -426,7 +426,7 @@ AC_ARG_WITH(ggzdmod-libraries,
 AC_CACHE_VAL(ac_cv_have_ggzdmod,
 [
 ggzdmod_incdirs="$ac_ggzdmod_includes /usr/local/include /usr/include"
-ggzdmod_header=ggz_server.h
+ggzdmod_header=ggzdmod.h
 
 AC_GGZ_FIND_FILE($ggzdmod_header, $ggzdmod_incdirs, ggzdmod_incdir)
 ac_ggzdmod_includes="$ggzdmod_incdir"
