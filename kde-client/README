@@ -14,6 +14,8 @@ Content of GGZ-KDE:
 Both have their own README for more information on them.
 
 Please read 'INSTALL' if you aren't experienced with the build yet.
+For an overall view on the GGZ setup procedures, please consult the file
+README.GGZ.
 
 If you encounter any bugs, please send them to
 	Josef Spillner, <dr_maux@users.sourceforge.net>,

@@ -14,6 +14,7 @@ dnl AC_FIND_FILE - macro for convenience (extern in acinclude.kde !!!)
 dnl AC_GGZ_EASYSOCK - find the easysock headers and libraries
 dnl AC_GGZ_GGZCORE - find the ggzcore headers and libraries
 dnl AC_GGZ_GGZCOREPP - find any GGZCore++ installation (TODO)
+dnl AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
 dnl
 
 dnl ------------------------------------------------------------------------
@@ -184,3 +185,68 @@ AC_SUBST(LIB_GGZCORE)
 
 ])
 
+dnl ------------------------------------------------------------------------
+dnl Try to find the ggz-config binary.
+dnl Sets GGZ_CONFIG to the path/name of the program.
+dnl Sets also: ggz_gamedir, ggz_datadir etc.
+dnl ------------------------------------------------------------------------
+dnl
+AC_DEFUN(AC_GGZ_CONFIG,
+[
+AC_MSG_CHECKING([for GGZ configuration tool: ggz-config])
+
+ac_ggz_config=NO
+ggz_config=""
+
+AC_ARG_WITH(ggz_config,
+    [  --with-ggzconfig=DIR          path to ggz-config ],
+    [  ac_ggz_config="$withval"
+    ])
+
+AC_CACHE_VAL(ac_cv_have_ggz_config,
+[
+ggz_config_dirs="$ac_ggz_config /usr/local/bin /usr/bin"
+
+AC_FIND_FILE(ggz-config, $ggz_config_dirs, ggz_config_dir)
+ac_ggz_config="$ggz_config_dir"
+
+if test "$ac_ggz_config" = NO; then
+  ac_cv_have_ggzcore="have_ggz_config=no"
+  ac_ggz_config_notfound=""
+
+  AC_MSG_ERROR([ggz-config not found. Please check your installation! ]);
+else
+  have_ggz_config="yes"
+fi
+])
+
+eval "$ac_cv_have_ggz_config"
+
+if test "$have_ggz_config" != yes; then
+  AC_MSG_RESULT([$have_ggz_config]);
+else
+  ac_cv_have_ggz_config="have_ggz_config=yes \
+    ac_ggz_config=$ac_ggz_config"
+  AC_MSG_RESULT([$ac_ggz_config])
+
+  ggz_config="$ac_ggz_config"
+fi
+
+AC_SUBST(ggz_config)
+
+GGZ_CONFIG="${ggz_config}/ggz-config"
+
+AC_SUBST(GGZ_CONFIG)
+
+ggzexecmoddir=`$GGZ_CONFIG --gamedir`
+AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
+ggzdatadir=`$GGZ_CONFIG --datadir`
+AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should look for their data files])
+packagesrcdir=`cd $srcdir && pwd`
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
+
+AC_SUBST(ggzexecmoddir)
+AC_SUBST(ggzdatadir)
+AC_SUBST(packagesrcdir)
+
+])

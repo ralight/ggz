@@ -12,6 +12,9 @@ Installation of GGZ-KDE
 
 3. Type ./autogen.sh (or ./configure if not building from
    the CVS sources), make and make install (as root).
+   Don't forget to run an ldconfig as well.
 
 4. Have fun :)
 
+5. A detailed GGZ installation help can be found in the project-wide used file
+README.GGZ.
