@@ -1,5 +1,9 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# GGZ Core Client with SDL fullscreen interface
 # Copyright (C) 2004 Josef Spillner <josef@ggzgamingzone.org>
+# Published under GNU GPL conditions
 
 """
 Vibora
@@ -25,6 +29,7 @@ SCROLL_DOWN = 2
 WHITE = (255, 255, 255)
 YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
+DARKRED = (150, 0, 0)
 GREEN = (0, 255, 0)
 
 DATAPATH = "./"
@@ -149,7 +154,7 @@ def background_progress():
 
 	bg = vibora_background(screen_resolution)
 
-	progressrect = ((100, 100), (screen_resolution[0] - 100, screen_resolution[1] - 90))
+	progressrect = ((100, 100), (screen_resolution[0] - 100, 300))
 
 	vibora_frame(bg, progressrect)
 
@@ -163,6 +168,126 @@ def background_progress():
 	pygame.display.flip()
 
 	return bg
+
+def background_firsttime():
+	global screen_resolution
+	global screen_logo
+	global screen_loading
+	global screen
+	global progressrect
+
+	bg = vibora_background(screen_resolution)
+
+	progressrect = ((100, 100), (screen_resolution[0] - 100, 250))
+
+	vibora_frame(bg, progressrect)
+
+	vibora_caption(bg, "First-time setup:", progressrect, CAPTION_ALL, WHITE, 0)
+
+	bg.blit(screen_loading, (100, 10))
+	bg.blit(screen_logo, (10, 15))
+
+	screen.blit(bg, (0, 0))
+
+	pygame.display.flip()
+
+	return bg
+
+def firsttime():
+	global progressrect
+	global bg
+	global screen
+	global username
+	global password
+
+	username = ""
+	password = ""
+	firstlogin = ""
+
+	inputready = 0
+	bgdirty = 1
+
+	try:
+		os.mkdir(os.getenv("HOME") + "/.ggz")
+	except:
+		pass
+
+	try:
+		f = file(os.getenv("HOME") + "/.ggz/vibora.rc", "r")
+		while 1:
+			line = f.readline()
+			if line == "":
+				break
+			(key, value) = line.split("=")
+			value = value[:-1]
+			if key == "username":
+				username = value
+			elif key == "password":
+				password = value
+			elif key == "firstlogin":
+				firstlogin = value
+		f.close()
+	except:
+		pass
+
+	if firstlogin == "false":
+		return 1
+
+	bg = background_firsttime()
+	bgshadow = pygame.Surface(screen_resolution)
+
+	while inputready < 2:
+		pygame.event.pump()
+
+		event = pygame.event.poll()
+
+		if event.type == KEYDOWN:
+			key = event.key
+
+			if key == K_RETURN:
+				inputready += 1
+				bgdirty = 1
+			elif key == K_ESCAPE:
+				return -1
+			elif key == K_BACKSPACE:
+				if inputready == 0:
+					username = username[:-1]
+				else:
+					password = password[:-1]
+				bgdirty = 10
+			else:
+				if inputready == 0:
+					username += event.unicode
+				else:
+					password += event.unicode
+				bgdirty = 10
+
+		if bgdirty == 1:
+			bgshadow.blit(bg, (0, 0))
+			vibora_caption(bgshadow, "* Username (can be registered at rankings.ggzgamingzone.org)", progressrect, CAPTION_ALL, YELLOW, 1)
+			if username:
+				vibora_caption(bgshadow, username, progressrect, CAPTION_ALL, GREEN, 2)
+			if inputready > 0:
+				vibora_caption(bgshadow, "* Password (empty for guest accounts)", progressrect, CAPTION_ALL, YELLOW, 3)
+				if password:
+					passwordsecret = ""
+					for c in password:
+						passwordsecret += "*"
+					vibora_caption(bgshadow, passwordsecret, progressrect, CAPTION_ALL, GREEN, 4)
+			if inputready == 2:
+				vibora_caption(bgshadow, "* Data saved", progressrect, CAPTION_ALL, YELLOW, 5)
+			screen.blit(bgshadow, (0, 0))
+			pygame.display.flip()
+
+		if bgdirty > 0:
+			bgdirty -= 1
+
+	f = file(os.getenv("HOME") + "/.ggz/vibora.rc", "w")
+	f.write("username=" + username + "\n")
+	f.write("password=" + password + "\n")
+	f.close()
+
+	return 1
 
 def background_problem():
 	global screen_resolution
@@ -227,16 +352,36 @@ def background_chat():
 
 	return bg
 
+def ggz_game_event(id, data):
+	print "*game_event*", id, data
+
 def ggz_room_event(id, data):
 	global chatoutput
 	global bg_dirty
+	global playerlist
+	global tablelist
 
 	if id == ggzcoresimple.ROOM_CHAT_EVENT:
 		type = data[0]
 		player = data[1]
 		message = data[2]
 
-		chatoutput.append(message)
+		chatoutput.append(player + ": " + message)
+		bg_dirty = 1
+	elif id == ggzcoresimple.ROOM_TABLE_LIST:
+		tablelist = data
+		bg_dirty = 1
+	elif id == ggzcoresimple.ROOM_PLAYER_LIST:
+		playerlist = data
+		bg_dirty = 1
+	elif id == ggzcoresimple.ROOM_TABLE_UPDATE:
+		tablelist = data
+		bg_dirty = 1
+	elif id == ggzcoresimple.ROOM_ENTER:
+		#tablelist = data
+		bg_dirty = 1
+	elif id == ggzcoresimple.ROOM_LEAVE:
+		#tablelist = data
 		bg_dirty = 1
 
 def ggz_server_event(id, data):
@@ -246,6 +391,9 @@ def ggz_server_event(id, data):
 	global roomlist
 	global bg_dirty
 	global chatoutput
+	global username
+	global playerlist
+	global tablelist
 
 	if id == ggzcoresimple.SERVER_CONNECTED:
 		vibora_caption(bg, "* Connected!", progressrect, CAPTION_ALL, GREEN, 2)
@@ -253,7 +401,7 @@ def ggz_server_event(id, data):
 		vibora_caption(bg, "* Failure!", progressrect, CAPTION_ALL, RED, 2)
 		ggzready = -1
 	elif id == ggzcoresimple.SERVER_NEGOTIATED:
-		vibora_caption(bg, "* Logging in as foo bar", progressrect, CAPTION_ALL, YELLOW, 3)
+		vibora_caption(bg, "* Logging in as " + username, progressrect, CAPTION_ALL, YELLOW, 3)
 		ggzcoresimple.server.login()
 	elif id == ggzcoresimple.SERVER_LOGGED_IN:
 		vibora_caption(bg, "* Logged in!", progressrect, CAPTION_ALL, GREEN, 4)
@@ -267,6 +415,8 @@ def ggz_server_event(id, data):
 			ggzready = 1
 		else:
 			chatoutput.append("* Entered!")
+		playerlist = ""
+		tablelist = ""
 	elif id == ggzcoresimple.SERVER_ENTER_FAIL:
 		vibora_caption(bg, "* Failure!", progressrect, CAPTION_ALL, RED, 6)
 		ggzready = -1
@@ -300,14 +450,20 @@ def ggz_progress(host):
 	global progressrect
 	global bg
 	global ggzready
+	global username
+	global password
 
 	ggzready = 0
 
 	ggzcoresimple.setHandler(ggzcoresimple.EVENT_SERVER, ggz_server_event)
 	ggzcoresimple.setHandler(ggzcoresimple.EVENT_ROOM, ggz_room_event)
+	ggzcoresimple.setHandler(ggzcoresimple.EVENT_GAME, ggz_game_event)
 
 	ggzcoresimple.server.set_hostinfo(host, 5688, 1)
-	ggzcoresimple.server.set_logininfo(ggzcoresimple.LOGIN_GUEST, "player", "")
+	if password:
+		ggzcoresimple.server.set_logininfo(ggzcoresimple.LOGIN, username, password)
+	else:
+		ggzcoresimple.server.set_logininfo(ggzcoresimple.LOGIN_GUEST, username, "")
 
 	vibora_caption(bg, "* Connecting to " + host, progressrect, CAPTION_ALL, YELLOW, 1)
 	screen.blit(bg, (0, 0))
@@ -351,6 +507,9 @@ def main(host):
 	global chatoutput
 	global roomlist
 	global bg_dirty
+	global playerlist
+	global tablelist
+	global tablerects
 
 	""" Initialization """
 
@@ -360,17 +519,18 @@ def main(host):
 	pygame.init()
 	pygame.display.set_caption("GGZ Gaming Zone (Vibora Client)")
 
-	screen = pygame.display.set_mode(screen_resolution, HWSURFACE | DOUBLEBUF | FULLSCREEN)
+	#screen = pygame.display.set_mode(screen_resolution, HWSURFACE | DOUBLEBUF | FULLSCREEN)
+	screen = pygame.display.set_mode(screen_resolution, HWSURFACE | DOUBLEBUF)
 
 	bigfont = pygame.font.Font(None, 48)
 	font = pygame.font.Font(None, 20)
 	smallfont = pygame.font.Font(None, 14)
 
-	screen_loading = bigfont.render("Loading...", 1, (255, 255, 255))
+	#screen_loading = bigfont.render("Loading Víbora 0.0.9...", 1, (255, 255, 255))
+	screen_loading = bigfont.render("Loading Vibora 0.0.1 (GGZ 0.0.9)...", 1, (255, 255, 255))
 	screen_problem = bigfont.render("Problem!", 1, (255, 255, 255))
 	screen_caption = bigfont.render("GGZ Gaming Zone: Lounge", 1, (255, 255, 255))
 
-	DATAPATH = "./"
 	screen_logo = pygame.image.load(DATAPATH + "logo.png")
 
 	clock = pygame.time.Clock()
@@ -382,8 +542,15 @@ def main(host):
 	clock.tick()
 
 	chatoutput = []
+	tablerects = []
 	roomlist = []
 	startroom = 0
+
+	""" Username/password entry on first startup """
+
+	ret = firsttime()
+	if ret < 0:
+		return
 
 	""" Progress """
 
@@ -408,6 +575,7 @@ def main(host):
 	bgshadow = pygame.Surface(screen_resolution)
 
 	switchto_room = -1
+	switchto_table = -1
 	current_room = 0
 
 	maxline = (screen_resolution[1] - 50 - 100) / 20
@@ -446,6 +614,14 @@ def main(host):
 					if line > 0 and line < maxline - 1:
 						if current_room == 0:
 							switchto_room = line + startroom - 1
+						else:
+							if line < maxline - 2:
+								i = 0
+								for r in tablerects:
+									(ypos, yheight) = r
+									if y >= ypos and y <= ypos + yheight:
+										switchto_table = i
+									i += 1
 					if line == maxline - 1:
 						if current_room != 0:
 							switchto_room = 0
@@ -497,6 +673,14 @@ def main(host):
 			current_room = switchto_room
 			switchto_room = -1
 			#bg_dirty = 1
+			playerlist = ""
+			tablelist = ""
+
+		if switchto_table >= 0:
+			chatoutput.append("* Joining table " + str(switchto_table))
+			ggzcoresimple.room.join(switchto_table)
+			switchto_table = -1
+			bg_dirty = 1
 
 		if bg_dirty:
 			bgshadow.blit(bg, (0, 0))
@@ -553,49 +737,67 @@ def main(host):
 						break
 			else:
 				base = 150
-				rect = ((screen_resolution[0] - (roomwidth - 20) + 20, base), (roomwidth - 20 - 100 - 20 * 2, 20))
-				pygame.draw.rect(bgshadow, (195, 190, 127), rect)
-				titletext = smallfont.render("Create new game", 1, (255, 255, 255))
-				bgshadow.blit(titletext, (screen_resolution[0] - (roomwidth - 20) + 20 + 3, base + 1))
 
-				base = 180
-				rect = ((screen_resolution[0] - (roomwidth - 20) + 20, base), (roomwidth - 20 - 100 - 20 * 2, 40))
-				pygame.draw.rect(bgshadow, (155, 150, 127), rect)
-				titletext = smallfont.render("Not playing", 1, (255, 255, 255))
-				bgshadow.blit(titletext, (screen_resolution[0] - (roomwidth - 20) + 20 + 3, base + 1))
+				tableplayers = []
 
-				players = ["Foobar"]
+				if len(tablelist) > 0:
+					index = 0
+					tablerects = []
+					while index < len(tablelist):
+						(tablename, playercount) = tablelist[index]
+						if not tablename:
+							tablename = "Table (untitled)"
+						else:
+							tablename = "Table " + tablename
 
-				i = 2
-				for player in players:
-					name = smallfont.render(player, 1, (255, 255, 255))
-					if i % 2 == 0:
+						tablerects.append((base, 30 + 10 * playercount))
+						
+						rect = ((screen_resolution[0] - (roomwidth - 20) + 20, base), (roomwidth - 20 - 100 - 20 * 2, 30 + 10 * playercount))
+						pygame.draw.rect(bgshadow, (55, 150, 127), rect)
+						titletext = smallfont.render(tablename, 1, (255, 255, 255))
+						bgshadow.blit(titletext, (screen_resolution[0] - (roomwidth - 20) + 20 + 3, base + 1))
+
+						i = 2
+						for j in range(index + 1, index + 1 + playercount):
+							player = tablelist[index + j]
+							tableplayers.append(player)
+							if player == "":
+								player == "(open)"
+							name = smallfont.render(player, 1, (255, 255, 255))
+							if i % 2 == 0:
+								bgshadow.blit(name, (screen_resolution[0] - (roomwidth - 20) + 20 + 3, base + i * 10 + 1))
+							else:
+								w = name.get_width()
+								bgshadow.blit(name, (screen_resolution[0] - 100 - 20 * 2 - w + 3, base + i * 10 + 1))
+							i = i + 1
+						base += 20 + 20 * playercount + 10
+						index += playercount + 1
+
+				if len(playerlist) > 0:
+					players = []
+					for p in playerlist:
+						(name, status) = p
+						if name not in tableplayers:
+							namestr = name
+							if status == "guest":
+								namestr += " (guest)"
+							elif status == "admin":
+								namestr += " (admin)"
+							players.append(namestr)
+
+					rect = ((screen_resolution[0] - (roomwidth - 20) + 20, base), (roomwidth - 20 - 100 - 20 * 2, 30 + 10 * len(players)))
+					pygame.draw.rect(bgshadow, (155, 150, 127), rect)
+					titletext = smallfont.render("Not playing", 1, (255, 255, 255))
+					bgshadow.blit(titletext, (screen_resolution[0] - (roomwidth - 20) + 20 + 3, base + 1))
+
+					i = 2
+					for player in players:
+						name = smallfont.render(player, 1, (255, 255, 255))
 						bgshadow.blit(name, (screen_resolution[0] - (roomwidth - 20) + 20 + 3, base + i * 10 + 1))
-					else:
-						w = name.get_width()
-						bgshadow.blit(name, (screen_resolution[0] - 100 - 20 * 2 - w + 3, base + i * 10 + 1))
-					i = i + 1
+						i = i + 1
 
-				title = "A funny game"
-
-				base = 230
-				rect = ((screen_resolution[0] - (roomwidth - 20) + 20, base), (roomwidth - 20 - 100 - 20 * 2, 100))
-				pygame.draw.rect(bgshadow, (55, 150, 127), rect)
-				titletext = smallfont.render(title, 1, (255, 255, 255))
-				bgshadow.blit(titletext, (screen_resolution[0] - (roomwidth - 20) + 20 + 3, base + 1))
-
-				players = ["Name", "Name2", "Name3"]
-
-				i = 2
-				for player in players:
-					name = smallfont.render(player, 1, (255, 255, 255))
-					if i % 2 == 0:
-						bgshadow.blit(name, (screen_resolution[0] - (roomwidth - 20) + 20 + 3, base + i * 10 + 1))
-					else:
-						w = name.get_width()
-						bgshadow.blit(name, (screen_resolution[0] - 100 - 20 * 2 - w + 3, base + i * 10 + 1))
-					i = i + 1
-
+				i = maxline - 2
+				vibora_caption(bgshadow, "Launch new game", roomrect, CAPTION_ALL, DARKRED, i)
 				i = maxline - 1
 				vibora_caption(bgshadow, "Back to Lounge", roomrect, CAPTION_ALL, RED, i)
 			i = maxline
