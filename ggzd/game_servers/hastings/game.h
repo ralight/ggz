@@ -46,6 +46,7 @@
 /* Messages from client */
 #define HASTINGS_SND_MOVE   0
 #define HASTINGS_REQ_SYNC   1
+#define HASTINGS_REQ_INIT   2
 
 /* Hastings game states */
 #define HASTINGS_STATE_INIT        0
@@ -65,10 +66,11 @@ struct hastings_game_t {
 	char board[6][19]; /* the game board with units */
 	char boardmap[6][19]; /* game board with hexagons */
 	char state; /* current state */
-	char turn; /* who has to move? */
+	int turn; /* who has to move? */
 	int move_src_x, move_src_y; /* used for moves: where a unit comes from */
 	int move_dst_x, move_dst_y; /* used for moves: where a unit goes to */
 	char playernum; /* number of players (isn't this already stored somewhere?) */ /*dirty hack!*/
+	int players[8]; /* 1 for active player, 0 for dead one */
 
 	int parties[8]; /* e.g. countries */
 	int teams[8]; /* 1 or 0, north or south, ... */

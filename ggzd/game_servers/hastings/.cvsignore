@@ -1,0 +1,7 @@
+*.o
+ggzd.hastings
+Makefile
+Makefile.in
+.deps
+.libs
+ 

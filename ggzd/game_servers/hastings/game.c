@@ -23,31 +23,29 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+/* System includes */
 #include <stdlib.h>
 
+/* GGZ includes */
 #include <ggz.h>
 #include <game.h>
 #include <protocols.h>
+
+/* Easysock */
 #include <easysock.h>
 
 /* Global game variables */
 struct hastings_game_t hastings_game;
-
-
-/* Local utility functions */
-/* TODO: Remove as it is not needed
-static void game_rotate_board(char b[9]);
-*/
 
 /* Setup game state and board */
 void game_init(void)
 {
 	int i, j;
 
-/* dirty hack */
-hastings_game.playernum = 8;
-
+	/* Nobody's move yet */
 	hastings_game.turn = -1;
+
+	/* Initialization state */
 	hastings_game.state = HASTINGS_STATE_INIT;
 
 	/* set up some knights*/
@@ -58,27 +56,25 @@ hastings_game.playernum = 8;
 	memmove(hastings_game.board[4], "22   4   0007777   ", 19);
 	memmove(hastings_game.board[5], " 2   4   0 0 7     ", 19);
 
+	/* Humancode-to-computercode conversion */
 	for (i = 0; i < 6; i++)
+	{
 	 	for (j = 0; j < 19; j++)
 		{
 			if(hastings_game.board[i][j] == 32) hastings_game.board[i][j] = -1;
 			else hastings_game.board[i][j] -= 48;
+			if(hastings_game.board[i][j] > hastings_game.playernum - 1) hastings_game.board[i][j] = -1;
 		}
+	}
 
 	/* hexagon fields: this is difficult to understand */
 	/* but it works (one line is two columns, and flip it two times to fit) */
-
 	memmove(hastings_game.boardmap[0], "xxxxxxxxxxxx xxxx  ", 19);
 	memmove(hastings_game.boardmap[1], "xxxxxxxxxx     x x ", 19);
 	memmove(hastings_game.boardmap[2], "xx x xxxxxxxx x x  ", 19);
 	memmove(hastings_game.boardmap[3], "xx  xxxxxxxxxxxx   ", 19);
 	memmove(hastings_game.boardmap[4], "xx   xxxxxxxxxxx   ", 19);
 	memmove(hastings_game.boardmap[5], " x   x x x x x     ", 19);
-
-/* SEMI-READY: initialization (and invoke resync here? same code!)
-	for (i = 0; i < 9; i++)
-		hastings_game.board[i] = -1;
-*/
 }
 
 
@@ -87,38 +83,34 @@ int game_handle_ggz(int ggz_fd, int* p_fd)
 {
 	int op, seat, status = -1;
 
-	if (es_read_int(ggz_fd, &op) < 0)
-		return -1;
+	if (es_read_int(ggz_fd, &op) < 0) return -1;
 
-	switch (op) {
-
-	case REQ_GAME_LAUNCH:
-		if (ggz_game_launch() == 0)
-			status = game_update(HASTINGS_EVENT_LAUNCH, NULL);
-		break;
-
-	case REQ_GAME_JOIN:
-		if (ggz_player_join(&seat, p_fd) == 0) {
-			status = game_update(HASTINGS_EVENT_JOIN, &seat);
-			status = 1;
-		}
-		break;
-
-	case REQ_GAME_LEAVE:
-		if ( (status = ggz_player_leave(&seat, p_fd)) == 0) {
-			game_update(HASTINGS_EVENT_LEAVE, &seat);
-			status = 2;
-		}
-		break;
-
-	case RSP_GAME_OVER:
-		status = 3; /* Signal safe to exit */
-		break;
-
-	default:
-		/* Unrecognized opcode */
-		status = -1;
-		break;
+	switch (op)
+	{
+		case REQ_GAME_LAUNCH:
+			if(ggz_game_launch() == 0) status = game_update(HASTINGS_EVENT_LAUNCH, NULL);
+			break;
+		case REQ_GAME_JOIN:
+			if(ggz_player_join(&seat, p_fd) == 0)
+			{
+				status = game_update(HASTINGS_EVENT_JOIN, &seat);
+				status = 1;
+			}
+			break;
+		case REQ_GAME_LEAVE:
+			if((status = ggz_player_leave(&seat, p_fd)) == 0)
+			{
+				game_update(HASTINGS_EVENT_LEAVE, &seat);
+				status = 2;
+			}
+			break;
+		case RSP_GAME_OVER:
+			status = 3; /* Signal safe to exit */
+			break;
+		default:
+			/* Unrecognized opcode */
+			status = -1;
+			break;
 	}
 
 	return status;
@@ -132,24 +124,29 @@ int game_handle_player(int num)
 
 	fd = ggz_seats[num].fd;
 
-	if (es_read_int(fd, &op) < 0)
-		return -1;
+	if (es_read_int(fd, &op) < 0) return -1;
 
-	switch (op) {
-/* TODO !!!!!!!!!!!!!!!! */
-	case HASTINGS_SND_MOVE:
-		if ( (status = game_handle_move(num)) == 0)
-			game_update(HASTINGS_EVENT_MOVE, NULL);
-		break;
-
-	case HASTINGS_REQ_SYNC:
-		status = game_send_sync(num);
-		break;
-
-	default:
-		/* Unrecognized opcode */
-		status = -1;
-		break;
+	switch (op)
+	{
+		case HASTINGS_SND_MOVE:
+			if((status = game_handle_move(num)) == 0) game_update(HASTINGS_EVENT_MOVE, NULL);
+			break;
+		case HASTINGS_REQ_INIT:
+			game_init();
+			status = game_send_sync(num);
+			if (!ggz_seats_open())
+			{
+				hastings_game.state = HASTINGS_STATE_PLAYING;
+				game_move();
+			}
+			break;
+		case HASTINGS_REQ_SYNC:
+			status = game_send_sync(num);
+			break;
+		default:
+			/* Unrecognized opcode */
+			status = -1;
+			break;
 	}
 
 	return status;
@@ -163,9 +160,7 @@ int game_send_seat(int seat)
 
 	ggz_debug("Sending player %d's seat num", seat);
 
-	if (es_write_int(fd, HASTINGS_MSG_SEAT) < 0
-	    || es_write_int(fd, seat) < 0)
-		return -1;
+	if (es_write_int(fd, HASTINGS_MSG_SEAT) < 0 || es_write_int(fd, seat) < 0) return -1;
 
 	return 0;
 }
@@ -176,21 +171,31 @@ int game_send_players(void)
 {
 	int i, j, fd;
 
-	for (j = 0; j < hastings_game.playernum; j++) {
-		if ((fd = ggz_seats[j].fd) == -1)
-			continue;
+	/* The number of players is unknown yet */
+	hastings_game.playernum = 0;
+
+	/* Determine number of players, 8 at a maximum */
+	for(i = 0; i < 8; i++)
+	{
+		if((!ggz_seats[i].assign) && (!hastings_game.playernum)) hastings_game.playernum = i;
+	}
+	ggz_debug("%i players found; sending number to client", hastings_game.playernum);
+
+	for (j = 0; j < hastings_game.playernum; j++)
+	{
+		hastings_game.players[j] = 1;
+
+		if((fd = ggz_seats[j].fd) == -1) continue;
 
 		ggz_debug("Sending player list to player %d", j);
 
-		if (es_write_int(fd, HASTINGS_MSG_PLAYERS) < 0)
-			return -1;
+		if(es_write_int(fd, HASTINGS_MSG_PLAYERS) < 0) return -1;
+		if(es_write_int(fd, hastings_game.playernum) < 0) return -1;
 
-		for (i = 0; i < hastings_game.playernum; i++) {
-			if (es_write_int(fd, ggz_seats[i].assign) < 0)
-				return -1;
-			if (ggz_seats[i].assign != GGZ_SEAT_OPEN
-			    && es_write_string(fd, ggz_seats[i].name) < 0)
-				return -1;
+		for(i = 0; i < hastings_game.playernum; i++)
+		{
+			if(es_write_int(fd, ggz_seats[i].assign) < 0) return -1;
+			if((ggz_seats[i].assign != GGZ_SEAT_OPEN) && (es_write_string(fd, ggz_seats[i].name) < 0)) return -1;
 		}
 	}
 	return 0;
@@ -207,6 +212,7 @@ int game_send_move(int num)
 		if(i != num)
 		{
 			fd = ggz_seats[i].fd;
+
 			/* If player is a computer, don't need to send */
 			if (fd == -1) return 0;
 
@@ -233,25 +239,20 @@ int game_send_sync(int num)
 
 	ggz_debug("Handling sync for player %d", num);
 
-	if (es_write_int(fd, HASTINGS_SND_SYNC) < 0
-	    || es_write_char(fd, hastings_game.turn) < 0)
-		return -1;
+	/* First player? */
+	if (hastings_game.turn == -1) hastings_game.turn = 0;
 
+	if((es_write_int(fd, HASTINGS_SND_SYNC) < 0) || (es_write_int(fd, hastings_game.turn) < 0)) return -1;
 
+	/* Syncing knights */
 	for (i = 0; i < 6; i++)
 		for (j = 0; j < 19; j++)
-			if (es_write_char(fd, hastings_game.board[i][j]) < 0)
-				return -1;
+			if (es_write_char(fd, hastings_game.board[i][j]) < 0) return -1;
+
+	/* Syncing map */
 	for (i = 0; i < 6; i++)
 		for (j = 0; j < 19; j++)
-			if (es_write_char(fd, hastings_game.boardmap[i][j]) < 0)
-				return -1;
-
-/* READY: cool hastings sync
-	for (i = 0; i < 9; i++)
-		if (es_write_char(fd, hastings_game.board[i]) < 0)
-			return -1;
-*/
+			if (es_write_char(fd, hastings_game.boardmap[i][j]) < 0) return -1;
 
 	return 0;
 }
@@ -282,12 +283,12 @@ int game_move(void)
 {
 	int num = hastings_game.turn;
 
-	if (ggz_seats[num].assign == GGZ_SEAT_BOT) {
+	if (ggz_seats[num].assign == GGZ_SEAT_BOT)
+	{
 		game_bot_move(num);
 		game_update(HASTINGS_EVENT_MOVE, NULL);
 	}
-	else
-		game_req_move(num);
+	else game_req_move(num);
 
 	return 0;
 }
@@ -298,8 +299,7 @@ int game_req_move(int num)
 {
 	int fd = ggz_seats[num].fd;
 
-	if (es_write_int(fd, HASTINGS_REQ_MOVE) < 0)
-		return -1;
+	if (es_write_int(fd, HASTINGS_REQ_MOVE) < 0) return -1;
 
 	return 0;
 }
@@ -323,17 +323,12 @@ int game_handle_move(int num)
 	status = game_check_move(num);
 
 	/* Send back move status */
-	if (es_write_int(fd, HASTINGS_RSP_MOVE) < 0
-	    || es_write_char(fd, status))
-		return -1;
+	if ((es_write_int(fd, HASTINGS_RSP_MOVE) < 0)  || (es_write_char(fd, status))) return -1;
 
 	/* If move simply invalid, ask for resubmit */
-	if ( (status == -3 || status == -4)
-	     && game_req_move(num) < 0)
-		return -1;
+	if(((status == -3 || status == -4)) && game_req_move(num) < 0) return -1;
 
-	if (status != 0)
-		return 1;
+	if (status != 0) return 1;
 
 	return 0;
 }
@@ -359,21 +354,23 @@ char game_check_move(int num)
 		return -3;
 
   	/* cannot jump three miles away */
-  	if(abs(hastings_game.move_dst_x - hastings_game.move_src_x) > 1)
+	if(abs(hastings_game.move_dst_x - hastings_game.move_src_x) > 1)
 		return -6;
-	if ((hastings_game.move_dst_x - hastings_game.move_src_x == 1)
+	if((hastings_game.move_dst_x - hastings_game.move_src_x == 1)
 	&& (abs(hastings_game.move_dst_y - hastings_game.move_src_y) > 1))
 		return -6;
-	if ((hastings_game.move_dst_y - hastings_game.move_src_y == 0)
+	if((hastings_game.move_dst_x - hastings_game.move_src_x == -1)
+	&& (hastings_game.move_dst_y - hastings_game.move_src_y == 1)
+	&& (!(hastings_game.move_src_y % 2)))
+		return -6;
+	if((hastings_game.move_dst_y - hastings_game.move_src_y == 0)
 	&& (abs(hastings_game.move_dst_x - hastings_game.move_src_x) > 0))
 		return -6;
-  	if(abs(hastings_game.move_dst_y - hastings_game.move_src_y) > 2)
+	if(abs(hastings_game.move_dst_y - hastings_game.move_src_y) > 2)
 		return -6;
-
-/* READY!
-	if (move < 0 || move > 8)
-		return -3;
-*/
+	if((abs(hastings_game.move_dst_y - hastings_game.move_src_y) == 2)
+	&& (abs(hastings_game.move_dst_x - hastings_game.move_src_x) > 0))
+		return -6;
 
 	/* Check for moving from empty field (should not be possible ?!) */
 	if (hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] == -1)
@@ -388,16 +385,11 @@ char game_check_move(int num)
 	if (hastings_game.boardmap[hastings_game.move_dst_x][hastings_game.move_dst_y] == 32)
 		return -7;
 
-/* READY!
-	if (hastings_game.board[move] != -1)
-		return -4;
-*/
-
 	return 0;
 }
 
 
-/* My personal AI (tm) :( */
+/* My personal AI (tm) :) */
 int game_bot_set(int me, int i, int j)
 {
 	int x, y, k, l;
@@ -421,32 +413,8 @@ int game_bot_set(int me, int i, int j)
 	hastings_game.move_dst_x = x;
 	hastings_game.move_dst_y = y;
 
-/* doesn't really work */
-/*
-	if (j > 1) if (hastings_game.board[i][j - 2] == -1) y -= 2;
-	if((x == i) && (y == j)) if (j < 17) if (hastings_game.board[i][j + 2] == -1) y += 2;
-	if((x == i) && (y == j)) if ((j < 18) && (i + (j % 2) > 0)) if (hastings_game.board[i + (j % 2) - 1][j + 1] == -1)
-	{
-		y += 1;
-		x += j % 2 - 1;
-	}
-	if((x == i) && (y == j)) if ((j < 18) && (i + (j % 2) < 5)) if (hastings_game.board[i + (j % 2) + 1][j + 1] == -1)
-	{
-		y += 1;
-		x += j % 2 + 1;
-	}
-	if((x == i) && (y == j)) if ((j > 0) && (i + (j % 2) > 0)) if (hastings_game.board[i + (j % 2) - 1][j - 1] == -1)
-	{
-		y -= 1;
-		x += j % 2 - 1;
-	}
-	if((x == i) && (y == j)) if ((j > 0) && (i + (j % 2) < 5)) if (hastings_game.board[i + (j % 2) + 1][j - 1] == -1)
-	{
-		y -= 1;
-		x += j % 2 + 1;
-	}
-*/
 	if((x != i) || (y != j)) return 1;
+
 	return 0;
 }
 
@@ -457,21 +425,28 @@ void game_bot_move(int me)
 /* REMARK: deleted very much code */
 /* me: that's the bot */
 
-int i, j;
-int moved;
+	int i, j;
+	int moved;
 
-moved = 0;
-for (i = 0; i < 6; i++)
-{
-	for (j = 0; j < 19; j++)
+	moved = 0;
+	for (i = 0; i < 6; i++)
 	{
-		if(hastings_game.board[i][j] == me) moved = game_bot_set(me, i, j);
+		for (j = 0; j < 19; j++)
+		{
+			if(hastings_game.board[i][j] == me) moved = game_bot_set(me, i, j);
+			if(moved) break;
+		}
 		if(moved) break;
 	}
-	if(moved) break;
-}
-sleep(1);
-if(!moved) hastings_game.move_src_x = -1;
+
+	sleep(1);
+
+	/* no move found - player dead */
+	if(!moved)
+	{
+		hastings_game.move_src_x = -1;
+		hastings_game.players[me] = 0;
+	}
 }
 
 
@@ -494,78 +469,73 @@ int game_update(int event, void* data)
 {
 	int seat;
 	char victor;
+	int i;
 
-	switch(event) {
+	switch(event)
+	{
 
 	case HASTINGS_EVENT_LAUNCH:
-		if (hastings_game.state != HASTINGS_STATE_INIT)
-			return -1;
+		if (hastings_game.state != HASTINGS_STATE_INIT) return -1;
 		hastings_game.state = HASTINGS_STATE_WAIT;
 		break;
 
 	case HASTINGS_EVENT_JOIN:
-		if (hastings_game.state != HASTINGS_STATE_WAIT)
-			return -1;
+		if (hastings_game.state != HASTINGS_STATE_WAIT) return -1;
 
 		seat = *(int*)data;
 		game_send_seat(seat);
 		game_send_players();
-
-		if (!ggz_seats_open()) {
-			if (hastings_game.turn == -1)
-				hastings_game.turn = 0;
-			else
-				game_send_sync(seat);
-
-			hastings_game.state = HASTINGS_STATE_PLAYING;
-			game_move();
-		}
 		break;
 
 	case HASTINGS_EVENT_LEAVE:
-		if (hastings_game.state == HASTINGS_STATE_PLAYING) {
+		if (hastings_game.state == HASTINGS_STATE_PLAYING)
+		{
 			hastings_game.state = HASTINGS_STATE_WAIT;
 			game_send_players();
 		}
 		break;
 
 	case HASTINGS_EVENT_MOVE:
-		if (hastings_game.state != HASTINGS_STATE_PLAYING)
-			return -1;
-/* shouldn't access a null pointer right here
-		hastings_game.move_src_x = *(int*)data;
-		hastings_game.move_src_y = *(int*)data;
-		hastings_game.move_dst_x = *(int*)data;
-		hastings_game.move_dst_y = *(int*)data;
-*/
+		if (hastings_game.state != HASTINGS_STATE_PLAYING) return -1;
+
 		ggz_debug("Player %d from square %d/%d", hastings_game.turn, hastings_game.move_src_x, hastings_game.move_src_y);
  		ggz_debug("to square %d/%d", hastings_game.move_dst_x, hastings_game.move_dst_y);
 
-		// disallow dead bots to move (temporary workaround!)
+		// disallow dead bots to move (should not happen)
 		if(hastings_game.move_src_x > -1)
 		{
 			hastings_game.board[hastings_game.move_src_x][hastings_game.move_src_y] = -1;
 			hastings_game.board[hastings_game.move_dst_x][hastings_game.move_dst_y] = hastings_game.turn;
+			game_send_move(hastings_game.turn);
 		}
-/* READY
-		hastings_game.board[move] = hastings_game.turn;
-*/
-		game_send_move(hastings_game.turn);
 
-		if ( (victor = game_check_win()) < 0) {
-			hastings_game.turn = (hastings_game.turn + 1) % hastings_game.playernum;
-			game_move();
+		/*printf("Pre:   --%i--\n", hastings_game.players[hastings_game.turn]);
+		printf("(turn) --%i--\n", hastings_game.turn);*/
+
+		if((victor = game_check_win()) < 0)
+		{
+			for(i = 0; i < 8; i++)
+			{
+				hastings_game.turn = (hastings_game.turn + 1) % hastings_game.playernum;
+				if((hastings_game.players[hastings_game.turn]) || (i == hastings_game.playernum - 1)) break;
+			}
+			if(i < hastings_game.playernum - 1) game_move();
 		}
-		else {
+		else i = hastings_game.playernum - 1;
+
+		/*printf("After: --%i--\n", hastings_game.players[hastings_game.turn]);
+		printf("(turn) --%i--\n", hastings_game.turn);
+		printf("(i)    --%i--\n\n", i);*/
+
+		if(i == hastings_game.playernum - 1)
+		{
 			hastings_game.state = HASTINGS_STATE_DONE;
 			game_send_gameover(victor);
 			/* Notify GGZ server of game over */
-			ggz_done();
+			/*ggz_done();*/ /* TODO: is this safe? */
 		}
 		break;
 	}
 
 	return 0;
 }
-
-

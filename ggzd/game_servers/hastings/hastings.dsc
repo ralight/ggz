@@ -1,6 +1,6 @@
 # Hastings1066 description file
 Name = Hastings
-Version = 0.0.1
+Version = 0.0.4
 Description = Another GGZ module
 Author = Josef Spillner
 Homepage = http://mindx.sourceforge.net
