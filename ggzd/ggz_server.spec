@@ -1,26 +1,27 @@
-# RPM Spec file for Gnu Gaming Zone server
+# RPM Spec file for GGZ Gaming Zone server
 
-Summary: Server software for the Gnu Gaming Zone
+Summary: Server software for the GGZ Gaming Zone
 Name: ggz-server
-Version: 0.0.4
+Version: 0.0.5pre
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz-server-0.0.4.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz-server-0.0.5pre.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
-Packager: Rich Gade <rgade@users.sourceforge.net>
+Packager: GGZ Dev Team <ggz-dev@lists.sourceforge.net>
 BuildRoot: /var/tmp/%{name}-buildroot
 
 %description
-The Gnu Gaming Zone server allows other computers to connect to yours via
+The GGZ Gaming Zone server allows other computers to connect to yours via
 the Internet and play network games.  Currently, the following game servers
-are included with GGZ:
+are packaged with GGZ:
   - Spades		- Connect the Dots
   - Tic-Tac-Toe		- La Pocha
   - Chinese Checkers	- Chess
   - Combat		- Hastings
   - Krosswater		- Reversi
+  - GGZ Cards		- Escape
 
 %prep
 %setup
@@ -40,7 +41,7 @@ PATH="$PATH:/sbin" ldconfig
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS COPYING ChangeLog HACKING INSTALL NEWS README TODO doc
+%doc AUTHORS COPYING ChangeLog HACKING INSTALL NEWS README README.GGZ TODO doc
 
 %dir /etc/ggzd
 %config /etc/ggzd/ggzd.conf
@@ -50,6 +51,13 @@ PATH="$PATH:/sbin" ldconfig
 %config /etc/ggzd/games/chess.dsc
 %config /etc/ggzd/games/combat.dsc
 %config /etc/ggzd/games/dots.dsc
+%config /etc/ggzd/games/escape.dsc
+%config /etc/ggzd/games/ggzcards.dsc
+%config /etc/ggzd/games/ggzcards-bridge.dsc
+%config /etc/ggzd/games/ggzcards-hearts.dsc
+%config /etc/ggzd/games/ggzcards-lapocha.dsc
+%config /etc/ggzd/games/ggzcards-spades.dsc
+%config /etc/ggzd/games/ggzcards-suaro.dsc
 %config /etc/ggzd/games/hastings.dsc
 %config /etc/ggzd/games/krosswater.dsc
 %config /etc/ggzd/games/lapocha.dsc
@@ -62,6 +70,14 @@ PATH="$PATH:/sbin" ldconfig
 %config /etc/ggzd/rooms/chess.room
 %config /etc/ggzd/rooms/combat.room
 %config /etc/ggzd/rooms/dots.room
+%config /etc/ggzd/rooms/entry.room
+%config /etc/ggzd/rooms/escape.room
+%config /etc/ggzd/rooms/ggzcards.room
+%config /etc/ggzd/rooms/ggzcards-bridge.room
+%config /etc/ggzd/rooms/ggzcards-hearts.room
+%config /etc/ggzd/rooms/ggzcards-lapocha.room
+%config /etc/ggzd/rooms/ggzcards-spades.room
+%config /etc/ggzd/rooms/ggzcards-suaro.room
 %config /etc/ggzd/rooms/hastings.room
 %config /etc/ggzd/rooms/krosswater.room
 %config /etc/ggzd/rooms/lapocha.room
@@ -71,6 +87,15 @@ PATH="$PATH:/sbin" ldconfig
 
 /usr/bin/ggzd
 /usr/lib/ggzd
+
+# the versioning information here needs to be fixed before 0.0.5
+/usr/lib/libggzdmod.a
+/usr/lib/libggzdmod.la
+/usr/lib/libggzdmod.so
+/usr/lib/libggzdmod.so.0
+/usr/lib/libggzdmod.so.0.0.0
+
+# the libzoneserver is a different (and out-of-date) variant of libggzdmod.
 /usr/lib/libzoneserver.a
 /usr/lib/libzoneserver.la
 /usr/lib/libzoneserver.so
@@ -80,6 +105,9 @@ PATH="$PATH:/sbin" ldconfig
 /usr/man/man6/ggzd.6.gz
 
 %changelog
+* Wed Sep 12 2001 Jason Short <jdorje@users.sourceforge.net>
+- Updated files and miscellany for 0.0.5pre
+
 * Sun Jun 17 2001 Rich Gade <rgade@users.sourceforge.net>
 - Added files necessary for 0.0.4
 
