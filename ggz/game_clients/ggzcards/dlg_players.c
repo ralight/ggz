@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 4656 2002-09-23 00:48:07Z jdorje $
+ * $Id: dlg_players.c 4869 2002-10-11 23:16:04Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -152,7 +152,6 @@ GtkWidget *create_dlg_players(void)
 	dialog = gtk_dialog_new();
 	gtk_object_set_data(GTK_OBJECT(dialog), "dlg_players", dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Player List"));
-	GTK_WINDOW(dialog)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
 
 	/* 

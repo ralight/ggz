@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 4787 2002-10-03 03:02:07Z jdorje $
+ * $Id: main.c 4869 2002-10-11 23:16:04Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -56,6 +56,8 @@ GtkWidget *dlg_main = NULL;
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
 
+static const char *font = "-*-fixed-medium-r-normal--14-*-*-*-*-*-*-*,*-r-*";
+
 int main(int argc, char *argv[])
 {
 	int ggz_fd;
@@ -70,9 +72,14 @@ int main(int argc, char *argv[])
 
 	/* This shouldn't go here, but I see no better place right now. The
 	   message windows are supposed to use a fixed-width font. */
+#ifdef GTK2
+	fixed_font = pango_font_description_new();
+	pango_font_description_set_family(fixed_font, font);
+#else
 	fixed_font_style = gtk_rc_style_new();
-	fixed_font_style->fontset_name =
-		"-*-fixed-medium-r-normal--14-*-*-*-*-*-*-*,*-r-*";
+	fixed_font_style->fontset_name = font;
+#endif
+	
 
 	/* Now some more initializations... */
 	dlg_main = create_dlg_main();
@@ -266,7 +273,6 @@ static GtkWidget *new_message_dialog(const char *mark)
 	gtk_widget_ref(dialog);
 	gtk_object_set_data(GTK_OBJECT(msg_menu), mark, dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), mark);
-	GTK_WINDOW(dialog)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
 	(void) gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
 					 GTK_SIGNAL_FUNC(gtk_widget_hide),
@@ -324,7 +330,11 @@ void menubar_text_message(const char *mark, const char *msg)
 
 		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox), label);
 
+#ifdef GTK2
+		gtk_widget_modify_font(label, fixed_font);
+#else
 		gtk_widget_modify_style(label, fixed_font_style);
+#endif
 
 		/* in theory, the window *can't* be destroyed. */
 	} else {

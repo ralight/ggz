@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 4656 2002-09-23 00:48:07Z jdorje $
+ * $Id: dlg_main.c 4869 2002-10-11 23:16:04Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -91,7 +91,6 @@ GtkWidget *create_dlg_main(void)
 	GtkWidget *menubar1;
 	GtkWidget *mnu_game;
 	GtkWidget *mnu_game_menu;
-	GtkAccelGroup *mnu_game_menu_accels;
 	GtkWidget *mnu_startgame;
 	GtkWidget *mnu_sync;
 	GtkWidget *mnu_preferences;
@@ -102,10 +101,8 @@ GtkWidget *create_dlg_main(void)
 	GtkWidget *mnu_exit;
 	GtkWidget *mnu_messages_menu;
 	GtkWidget *mnu_messages;
-	GtkAccelGroup *mnu_messages_menu_accels;
 	GtkWidget *mnu_help;
 	GtkWidget *mnu_help_menu;
-	GtkAccelGroup *mnu_help_menu_accels;
 	GtkWidget *mnu_about;
 	GtkWidget *fixed1;
 	GtkWidget *statusbar1;
@@ -150,8 +147,6 @@ GtkWidget *create_dlg_main(void)
 				 mnu_game_menu,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mnu_game), mnu_game_menu);
-	mnu_game_menu_accels =
-		gtk_menu_ensure_uline_accel_group(GTK_MENU(mnu_game_menu));
 
 	/* Add "start game" selection to "game" menu. */
 	mnu_startgame = gtk_menu_item_new_with_label(_("Start Game"));
@@ -231,8 +226,6 @@ GtkWidget *create_dlg_main(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mnu_messages),
 				  mnu_messages_menu);
-	mnu_messages_menu_accels =
-		gtk_menu_ensure_uline_accel_group(GTK_MENU(mnu_messages_menu));
 
 	mnu_help = gtk_menu_item_new_with_label(_("Help"));
 	gtk_widget_set_name(mnu_help, "mnu_help");
@@ -249,8 +242,6 @@ GtkWidget *create_dlg_main(void)
 				 mnu_help_menu,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mnu_help), mnu_help_menu);
-	mnu_help_menu_accels =
-		gtk_menu_ensure_uline_accel_group(GTK_MENU(mnu_help_menu));
 
 	mnu_about = gtk_menu_item_new_with_label(_("About"));
 	gtk_widget_set_name(mnu_about, "mnu_about");

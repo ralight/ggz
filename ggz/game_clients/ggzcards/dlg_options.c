@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 4656 2002-09-23 00:48:07Z jdorje $
+ * $Id: dlg_options.c 4869 2002-10-11 23:16:04Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Dev Team.
  *
@@ -141,7 +141,7 @@ void dlg_option_display(int option_cnt,
 	options_selected = g_malloc(option_cnt * sizeof(*defaults));
 	memcpy(options_selected, defaults, option_cnt * sizeof(*defaults));
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Select Options"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 

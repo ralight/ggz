@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4656 2002-09-23 00:48:07Z jdorje $
+ * $Id: table.c 4869 2002-10-11 23:16:04Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -47,7 +47,11 @@
 #include "main.h"
 #include "table.h"
 
-GtkRcStyle *fixed_font_style = NULL;
+#ifdef GTK2
+PangoFontDescription *fixed_font;
+#else
+GtkRcStyle *fixed_font_style;
+#endif
 
 /* Table data */
 GtkWidget *table = NULL;	/* widget containing the whole table */
@@ -338,7 +342,11 @@ void table_cleanup(void)
 static void table_show_player_box(int player, int write_to_screen)
 {
 	int x, y, w, h;
+#ifdef GTK2
+	GdkFont *font = gtk_style_get_font(table_style);
+#else
 	GdkFont *font = table_style->font;
+#endif
 	const char *name = player_names[player];
 	const char *message = player_messages[player];
 	int string_y;

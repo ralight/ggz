@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 4662 2002-09-23 08:11:58Z jdorje $
+ * $Id: dlg_prefs.c 4869 2002-10-11 23:16:04Z jdorje $
  *
  * Copyright (C) 2000-2002 GGZ Development Team
  *
@@ -64,7 +64,6 @@ GtkWidget *create_dlg_prefs(void)
 	dialog = gtk_dialog_new();
 	gtk_object_set_data(GTK_OBJECT(dialog), "dlg_prefs", dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Preferences"));
-	GTK_WINDOW(dialog)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
 
 	/* 

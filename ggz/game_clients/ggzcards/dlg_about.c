@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.c 4005 2002-04-17 17:26:43Z jdorje $
+ * $Id: dlg_about.c 4869 2002-10-11 23:16:04Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -47,7 +47,6 @@ GtkWidget *create_dlg_about(void)
 	dialog = gtk_dialog_new();
 	gtk_object_set_data(GTK_OBJECT(dialog), "dlg_about", dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("About GGZCards"));
-	GTK_WINDOW(dialog)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
 
 	/* 
