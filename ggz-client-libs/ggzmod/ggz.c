@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 2061 2001-07-22 05:28:24Z jdorje $	*/
+/*	$Id: ggz.c 2062 2001-07-22 05:40:30Z jdorje $	*/
 /*
  * Copyright (C) 2000 GGZ devel team
  *
@@ -77,17 +77,14 @@ int ggz_client_connect(void)
 
 int ggz_client_init(char *game_name)
 {
-	int len;
-
 	if(name) {
 		fprintf(stderr,"ggz is already initialized");
 		return 0;
 	}
 
-	len = strlen(game_name);
-	if ( (name = malloc(len+1)) == NULL)
+	name = strdup(game_name);
+	if (!name)
 		return -1;
-	strcpy(name, game_name);
 
 	ggz_sock=-1;
 	
