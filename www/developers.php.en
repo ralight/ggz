@@ -1,0 +1,58 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Developers</b><br>
+The GGZ project is always in need of developers, artists, server administrators
+and power users. As a community projects, everyone can help to make the project
+succeed.
+Development takes place world-wide, and fresh ideas are welcome.
+<br><br>
+
+<table class="inner" width="100%">
+<tr><td valign="bottom">
+
+<i>Development goals</i><br>
+We want to create a first-class online gaming center for everybody.
+A collection of cross-desktop games together with a powerful server-side
+infrastructure is being created to achieve this goal.
+<br><br>
+
+<i>Current areas of work</i><br>
+As of version 0.0.8pre, the most urgent tasks are further internationalization,
+implementation of existing GGZ features into all games, more documentation, a
+working Python module, and server scalability improvements.
+
+</td><td valign="bottom">
+
+<i>Quick links</i><br>
+<table class="list">
+<tr><td>
+<nobr>
+<a href="http://bugs.ggzgamingzone.org/">Bug Tracker</a>
+<hr>
+<a href="http://mail.ggzgamingzone.org/">Mailing lists</a>
+<hr>
+<a href="http://cvs.ggzgamingzone.org">CVS</a>
+<hr>
+<a href="admin/docs.php">Documents</a>
+<hr>
+<a href="admin/gallery.php">Gallery</a>
+</nobr>
+</td></tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+

@@ -1,0 +1,45 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Kontakt mit dem GGZ-Projekt</b><br>
+Es gibt verschiedene Wege und Möglichkeiten, wie man uns kontaktieren kann,
+beispielsweise über:
+<br><br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Mailinglisten</i><br>
+Details zur Anmeldung sowie Archive findet man auf unserem
+<a href="http://mail.ggzgamingzone.org">Mailserver</a>,
+oder man sendet einfach eine Mail an ggz-dev at ggzgamingzone dot org.
+<br><br>
+
+<i>GGZ Live</i><br>
+Sofern man GGZ installiert hat, kann man natürlich auch unseren primären
+<a href="ggz://live.ggzgamingzone.org">Spieleserver</a> nutzen,
+oder nachschauen ob auch <a href="live.php">andere Spieleserver</a>
+bereit stehen.
+<br><br>
+
+<i>Webmaster</i><br>
+Für Fragen oder Vorschläge bezüglich dieser Webseiten ist
+<a href="mailto:webmaster@ggzgamingzone.org">diese Person</a>
+der richtige Ansprechpartner.
+<br><br>
+
+</td>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+

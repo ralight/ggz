@@ -1,0 +1,54 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>The GGZ Gaming Zone Project</b><br>
+Free online gaming for everyone.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>What is GGZ?</i><br>
+GGZ (which is a recursive acronym for GGZ Gaming Zone) develops games and game-related
+applications for client-server online gaming. Player rankings, game spectators, AI players
+and a chat bot are part of this effort.
+
+</td></tr>
+<tr><td valign="top">
+
+<a href="about.html">Read some documentation</a><br>
+<a href="/screenshots/">Have a look at some screenshots</a>
+<br><br>
+
+<i>Download the current version</i><br>
+The GGZ Gaming Zone 0.0.7 has been release on May 17 2003.<br>
+<a href="/docs/release.html">Release announcement</a><br>
+<a href="downloads.php">Go to the download page</a>
+
+</td><td valign="top">
+
+<img src="/pics/site/splash.png">
+
+</td>
+</tr>
+</table>
+
+<b>News</b><br>
+<i>27.07.2003: Announcing beta.ggzgamingzone.org</i> (by josef)<br>
+The GGZ Gaming Zone homepage will get a new look and feel.
+All pages will be maintained in CVS, and will feature modern HTML
+and translation/content negotiation.
+<br>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+

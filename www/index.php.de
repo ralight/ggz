@@ -1,0 +1,54 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Das GGZ Gaming Zone Projekt</b><br>
+Freie Onlinespiele für jedermann.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Was ist GGZ?</i><br>
+GGZ (ein rekursives Akronym für GGZ Gaming Zone) entwickelt Spiele und Programme
+im Spieleumfeld für Netzwerk/Onlinespiele. Bewertungslisten (Rankings), Zuschauer,
+KI-Spieler und ein Chatbot gehören zu diesem Projekt dazu.
+
+</td></tr>
+<tr><td valign="top">
+
+<a href="about.html">Documentation lesen</a><br>
+<a href="/screenshots/">Screenshots ansehen</a>
+<br><br>
+
+<i>Download der aktuellen Version</i><br>
+Die GGZ Gaming Zone 0.0.7 wurde am 17. Mai 2003 veröffentlicht.<br>
+<a href="/docs/release.html">Release-Ankündigung</a><br>
+<a href="downloads.php">Downloadseite aufrufen</a>
+
+</td><td valign="top">
+
+<img src="/pics/site/splash.png">
+
+</td>
+</tr>
+</table>
+
+<b>Neuigkeiten</b><br>
+<i>27.07.2003: Ankündigung von beta.ggzgamingzone.org</i> (by josef)<br>
+Die GGZ Gaming Zone-Homepage wird ein neues Design bekommen.
+Alle Seiten werden im CVS gepflegt werden, und mit modernisiertem
+HTML-Code sowie Übersetzungen aufwarten können.
+<br>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+
