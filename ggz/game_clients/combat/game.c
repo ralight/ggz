@@ -41,9 +41,8 @@
 
 #include "callbacks.h"
 #include "support.h"
-#include "confio.h"
 
-#define GAME_WEBPAGE "http://ggz.sourceforge.net"
+#define GAME_WEBPAGE "http://ggz.sourceforge.net/gamehelp/combat.shtml"
 
 GtkWidget *main_win;
 GtkWidget **player_list = NULL;
