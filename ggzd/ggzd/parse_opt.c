@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3001 2002-01-05 11:09:29Z rgade $
+ * $Id: parse_opt.c 3025 2002-01-08 22:31:22Z bmh $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -160,7 +160,7 @@ void parse_conf_file(void)
 
 	/* Use conf_parse on an approrpriate configuration file */
 	if (opt.local_conf) {
-		if((c_handle = ggz_conf_parse(opt.local_conf, CONF_RDONLY)) >= 0) {
+		if((c_handle = ggz_conf_parse(opt.local_conf, GGZ_CONF_RDONLY)) >= 0) {
 			dbg_msg(GGZ_DBG_CONFIGURATION,
 				"Reading local conf file : %s", opt.local_conf);
 		} else
@@ -172,7 +172,7 @@ void parse_conf_file(void)
 		strcpy(tempstr, GGZDCONFDIR);  /* If this changes be sure to */
 		strcat(tempstr, "/ggzd.conf"); /* change the malloc() above! */
 
-		if((c_handle = ggz_conf_parse(tempstr, CONF_RDONLY)) >= 0) {
+		if((c_handle = ggz_conf_parse(tempstr, GGZ_CONF_RDONLY)) >= 0) {
 			dbg_msg(GGZ_DBG_CONFIGURATION,
 				"Reading global conf file : %s", tempstr);
 		} else
@@ -423,7 +423,7 @@ static void parse_game(char *name, char *dir)
 		err_sys_exit("malloc error in parse_game()");
 	snprintf(fname, len, "%s/%s.dsc", dir, name);
 
-	if((ch = ggz_conf_parse(fname, CONF_RDONLY)) < 0) {
+	if((ch = ggz_conf_parse(fname, GGZ_CONF_RDONLY)) < 0) {
 		err_msg("Ignoring %s, could not open %s", name, fname);
 		free(fname);
 		return;
@@ -621,7 +621,7 @@ static void parse_room(char *name, char *dir)
 		err_sys_exit("malloc error in parse_game()");
 	snprintf(fname, len, "%s/%s.room", dir, name);
 
-	if((ch = ggz_conf_parse(fname, CONF_RDONLY)) < 0) {
+	if((ch = ggz_conf_parse(fname, GGZ_CONF_RDONLY)) < 0) {
 		err_msg("Ignoring %s, could not open %s", name, fname);
 		free(fname);
 		return;
