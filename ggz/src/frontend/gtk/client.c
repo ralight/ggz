@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5088 2002-10-28 21:21:49Z jdorje $
+ * $Id: client.c 5089 2002-10-28 21:37:04Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -122,7 +122,7 @@ static void client_chat_entry_activate(GtkEditable *editable, gpointer data);
 gboolean client_chat_entry_key_press_event(GtkWidget *widget, 
 					   GdkEventKey *event, gpointer data);
 static void client_send_button_clicked(GtkButton *button, gpointer data);
-static void client_info_activate(GtkMenuItem *menuitem, gpointer data);
+static void client_room_info_activate(GtkMenuItem *menuitem, gpointer data);
 static int client_get_table_index(guint row);
 static int client_get_table_open(guint row);
 static void client_join_room(guint room);				 
@@ -130,7 +130,7 @@ static void client_start_table_join(void);
 static void client_start_table_watch(void);
 static void client_player_friends_click(GtkMenuItem *menuitem, gpointer data);
 static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data);
-static void client_send_private_message_activate(GtkMenuItem *menuitem, gpointer data);
+static void client_player_info_activate(GtkMenuItem *menuitem, gpointer data);
 static char *client_get_players_index(guint row);
 static void client_tables_size_request(GtkWidget *widget, gpointer data);
 
@@ -366,7 +366,7 @@ main_xtext_chat_create			(gchar		*widget_name,
 
 
 static void
-client_info_activate			(GtkMenuItem	*menuitem,
+client_room_info_activate			(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
 	/* Display room's info in a nice dialog */
@@ -1104,9 +1104,13 @@ static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data)
 	}
 }
 
-static void client_send_private_message_activate(GtkMenuItem *menuitem, gpointer data)
+static void client_player_info_activate(GtkMenuItem *menuitem, gpointer data)
 {
 	/* TODO */
+	/* This should pop up a dialog window about the player.  It should
+	   show information about the player (whatever we have, especially
+	   statistics) and allow you to send a private dialog to the player
+	   (with a text entry similar to the chat line). */
 	assert(0);
 }
 
@@ -2426,7 +2430,7 @@ create_mnu_table (void)
                       GTK_SIGNAL_FUNC (client_leave_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (info), "activate",
-                      GTK_SIGNAL_FUNC (client_info_activate),
+                      GTK_SIGNAL_FUNC (client_room_info_activate),
                       NULL);
 
   return mnu_table;
@@ -2468,7 +2472,7 @@ create_mnu_room (void)
                               GTK_ACCEL_VISIBLE);
 
   gtk_signal_connect (GTK_OBJECT (info), "activate",
-                      GTK_SIGNAL_FUNC (client_info_activate),
+                      GTK_SIGNAL_FUNC (client_room_info_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (join), "activate",
                       GTK_SIGNAL_FUNC (client_join_activate),
@@ -2484,14 +2488,30 @@ create_mnu_player (void)
 {
   GtkWidget *mnu_player;
   GtkAccelGroup *mnu_player_accels;
+  GtkWidget *info;
+  GtkWidget *separator9;
   GtkWidget *friends;
   GtkWidget *ignore;
-  GtkWidget *separator9;
-  GtkWidget *send_private_message;
 
   mnu_player = gtk_menu_new ();
   gtk_object_set_data (GTK_OBJECT (mnu_player), "mnu_player", mnu_player);
   mnu_player_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_player));
+
+  info = gtk_menu_item_new_with_label(_("Info"));
+  gtk_widget_ref(info);
+  gtk_object_set_data_full(GTK_OBJECT(mnu_player), "info", info,
+			   (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_sensitive(info, FALSE);
+  gtk_widget_show(info);
+  gtk_container_add(GTK_CONTAINER(mnu_player), info);
+
+  separator9 = gtk_menu_item_new ();
+  gtk_widget_ref (separator9);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "separator9", separator9,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (separator9);
+  gtk_container_add (GTK_CONTAINER (mnu_player), separator9);
+  gtk_widget_set_sensitive (separator9, FALSE);
 
   friends = gtk_check_menu_item_new_with_label (_("Friends"));
   gtk_widget_ref (friends);
@@ -2509,30 +2529,13 @@ create_mnu_player (void)
   gtk_container_add (GTK_CONTAINER (mnu_player), ignore);
   gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (ignore), TRUE);
 
-  separator9 = gtk_menu_item_new ();
-  gtk_widget_ref (separator9);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "separator9", separator9,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (separator9);
-  gtk_container_add (GTK_CONTAINER (mnu_player), separator9);
-  gtk_widget_set_sensitive (separator9, FALSE);
-
-  send_private_message = gtk_menu_item_new_with_label (_("Send Private message"));
-  gtk_widget_ref (send_private_message);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "send_private_message", send_private_message,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_set_sensitive(send_private_message, FALSE);
-  gtk_widget_show (send_private_message);
-  gtk_container_add (GTK_CONTAINER (mnu_player), send_private_message);
-
+  gtk_signal_connect(GTK_OBJECT(info), "activate",
+		      GTK_SIGNAL_FUNC(client_player_info_activate), NULL);
   gtk_signal_connect (GTK_OBJECT (friends), "activate",
                       GTK_SIGNAL_FUNC (client_player_friends_click),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (ignore), "activate",
                       GTK_SIGNAL_FUNC (client_player_ignore_click),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (send_private_message), "activate",
-                      GTK_SIGNAL_FUNC (client_send_private_message_activate),
                       NULL);
 
   return mnu_player;
