@@ -1,0 +1,13 @@
+There are two utility programs currently available for developers/testers:
+
+AGRUE - A Ggz Random User Emulator
+  Used to simulate load on the server.  You must edit the defines PORT
+  and HOSTNAME to setup the server you want to test load on.  This program
+  will simply spawn random bots that login and move around chatting
+  occasionally.
+
+AGRUB - A Ggz Really Useful Bot (Grubby)
+  Grubby is a prototype program to provide a service bot on a GGZ server.
+  The code is fairly rough-and-ready, but should be expandable.  The default
+  defines at the beginning of agrub.c can be overriden at run time.  Type
+  'agrub --help' for a full listing of command line arguments.
