@@ -165,8 +165,6 @@ void game_about(GtkMenuItem *menuitem, gpointer user_data)
 gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event, 
 			  gpointer user_data)
 {
-	fprintf(stderr, "Handling config event\n");
-	
 	if (ttt_buf)
 		gdk_pixmap_unref(ttt_buf);
 	else {

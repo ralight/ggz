@@ -30,7 +30,7 @@
 GtkWidget* create_dlg_login (void);
 
 void login_ok();
-void login_bad_name();
+void login_bad_name(gchar* title, gchar* msg);
 void login_disconnect();
 void login_online();
 

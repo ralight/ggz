@@ -215,8 +215,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if(status < 0) {
-			login_bad_name();
-			warn_dlg("That username is already in usage,\nor not permitted on this server.\n\nPlease choose a different name");
+			login_bad_name("Sorry!", "That username is already in usage,\nor not permitted on this server.\n\nPlease choose a different name");
 			return;
 		}
 		
@@ -241,8 +240,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if(status < 0) {
-			login_bad_name();
-			warn_dlg("Login denied, please check your username\nand password before trying again.");
+			login_bad_name("Denied", "Login denied, please check your username\nand password before trying again.");
 			
 			return;
 		}
@@ -266,8 +264,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		if (status < 0) {
-			login_bad_name();
-			warn_dlg("That username is already in usage,\n or not permitted on this server.\n\nPlease choose a different name");
+			login_bad_name("Sorry!", "That username is already in usage,\n or not permitted on this server.\n\nPlease choose a different name");
 			
 			return;
 		}
