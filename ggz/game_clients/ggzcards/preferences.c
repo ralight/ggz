@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 3695 2002-03-27 08:30:36Z jdorje $
+ * $Id: preferences.c 3698 2002-03-28 00:11:43Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -120,6 +120,13 @@ PrefType pref_types[] = {
 	    "automatically be chosen."),
 	 &preferences.use_default_options,
 	 FALSE},
+	
+	{"confirm_exit",
+	 N_("Confirmation before exiting"),
+	 N_("If selected, you will get a confirmation dialog when you "
+	    "try to exit during a game."),
+	 &preferences.confirm_exit,
+	 TRUE},
 	
 	{NULL, NULL, NULL, 0}
 };
