@@ -66,6 +66,8 @@ There are individual category pages for
 <i>External Games:</i><br>
 <table class="list">
 <tr><td>
+<a href="/games/gnugo/">GNU Go</a>
+<hr>
 <a href="/games/teg/">T.E.G.</a>
 <hr>
 <a href="/games/batnav/">Batalla Naval</a>
@@ -96,6 +98,8 @@ There are individual category pages for
 <a href="/clients/telnet/">Telnet (TelGGZ)</a>
 <hr>
 <a href="/clients/windows/">Windows (WGGZ)</a>
+<hr>
+<a href="/clients/sdl/">SDL (Víbora)</a>
 </td></tr>
 </table>
 

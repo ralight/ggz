@@ -10,16 +10,17 @@ Server, network and mirrors information.
 <tr>
 <td valign="top">
 
-<i>Name server</i><br>
+<i>Administration</i><br>
 The name server for ggzgamingzone.org is hosted in Berlin/Germany.
 <br><br>
-<i>Main GGZ Server</i><br>
+<i>Main GGZ Server <img src="/pics/site/flags/flag-us.png"> USA</i><br>
 The server ggzgamingzone.org is located in Atlanta/USA. It hosts www, dev, ftp,
 live, rankings, mail, bugs and cvs.
+The system is a leased User-Mode-Linux image.
 <br><br>
-<i>Mirror Germany</i><br>
+<i>Mirror <img src="/pics/site/flags/flag-de.png"> Germany</i><br>
 The server de.ggzgamingzone.org is located in Berlin/Germany. It mirrors www and
-ftp services.
+ftp services, in a shared hosting area.
 </td>
 </tr>
 </table>

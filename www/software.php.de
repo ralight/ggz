@@ -66,6 +66,8 @@ Es gibt individuelle Kategorien für
 <i>Externe Spiele:</i><br>
 <table class="list">
 <tr><td>
+<a href="/games/gnugo/">GNU Go</a>
+<hr>
 <a href="/games/teg/">T.E.G.</a>
 <hr>
 <a href="/games/batnav/">Batalla Naval</a>
@@ -96,6 +98,8 @@ Es gibt individuelle Kategorien für
 <a href="/clients/telnet/">Telnet</a>
 <hr>
 <a href="/clients/windows/">Windows</a>
+<hr>
+<a href="/clients/sdl/">SDL (Víbora)</a>
 </td></tr>
 </table>
 

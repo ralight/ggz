@@ -5,14 +5,14 @@
 <td>
 <font size="3">
 
-<b>Über die GGZ Gaming Zone</b><br>
-Das GGZ-Projekt, gegründet Anfang 2000, ist von einer simplen
+<b>Ãœber die GGZ Gaming Zone</b><br>
+Das GGZ-Projekt, gegrÃ¼ndet Anfang 2000, ist von einer simplen
 Netzwerkarchitektur zu einem vielseitigen Onlinespielezentrum gewachsen,
 komplett basierend auf Freier Software (Open Source).
 Mit dem integrierten Spieler-Bewertungssystem und Merkmalen wie Spielzuschauern,
-Einladungen, Gastspielern und dem zugehörigen Chatsystem wird das Entwickeln
+Einladungen, Gastspielern und dem zugehÃ¶rigen Chatsystem wird das Entwickeln
 von Spielen zu einer einfachen Aufgabe, insbesondere durch die Verwendung von
-den vorhandenen unterstützenden Bibliotheken.
+den vorhandenen unterstÃ¼tzenden Bibliotheken.
 <br><br>
 
 <table class="inner">
@@ -21,8 +21,8 @@ den vorhandenen unterstützenden Bibliotheken.
 
 <i>Einige Statistiken</i><br>
 <ul>
-<li>13 Pakete (CVS-Module) verfügbar, plus einer Windows-Portierung
-<li>16 Spiele-Engines und 25 Spiele-Clients für endlosen Spielspaß
+<li>13 Pakete (CVS-Module) verfÃ¼gbar, plus einer Windows-Portierung
+<li>16 Spiele-Engines und 25 Spiele-Clients fÃ¼r endlosen SpielspaÃŸ
 <li>Mehr als 130 000 Zeilen Code in C, C++, Python
 </ul>
 

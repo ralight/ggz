@@ -12,10 +12,10 @@ beschrieben.
 
 <i>Spieler-Dokumentation</i><br>
 Alle Anwendungen und Spiele sind auf ihren jeweiligen Webseiten beschrieben.
-Zusätzliche Dokumentation:
+ZusÃ¤tzliche Dokumentation:
 <br><br>
 
-GGZ-Übersicht:
+GGZ-Ãœbersicht:
 <a href="/docs/presentation/html/de/ggz-presentation.html">HTML</a>,
 <a href="/docs/presentation/ggz-presentation.de.sxi">OpenOffice</a>
 <br>
@@ -29,7 +29,7 @@ Grubby (Chatbot) Benutzerhandbuch:
 <br>
 
 Artikel-Serie:
-<a href="/docs/articles/">Übersicht</a>
+<a href="/docs/articles/">Ãœbersicht</a>
 <br><br>
 
 <i>Entwickler-Dokumentation</i><br>
@@ -69,10 +69,10 @@ API der Bibliothek ggzdmod:
 <br><br>
 
 <i>Administrator-Dokumentation</i><br>
-Server-Administratoren können hier Anleitungen und Empfehlungen lesen.
+Server-Administratoren kÃ¶nnen hier Anleitungen und Empfehlungen lesen.
 <br><br>
 
-Leitfaden für Serverbetreiber:
+Leitfaden fÃ¼r Serverbetreiber:
 <a href="/docs/guides/hosting/ggz-hosting-guide.html">HTML</a>,
 <a href="/docs/guides/hosting/ggz-hosting-guide.ps">PostScript</a>,
 <a href="/docs/guides/hosting/ggz-hosting-guide.txt">Text</a>
@@ -82,7 +82,7 @@ Grubby (Chatbot) Administratorhandbuch:
 <a href="/docs/grubby/admin-manual.html">HTML</a>
 <br>
 
-Darstellung der Paket-Abhängigkeiten:
+Darstellung der Paket-AbhÃ¤ngigkeiten:
 <a href="/docs/ggz-debian-depgraph.ps">PostScript</a>,
 <a href="/docs/ggz-debian-depgraph.png">PNG</a>
 <br><br>
