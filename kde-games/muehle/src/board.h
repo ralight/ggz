@@ -39,6 +39,7 @@ class Board : public QWidget
 		void init();
 		void remis();
 		void loose();
+		void check(int x, int y, Stone *stone);
 		void setTheme(const QString &theme);
 		void setVariant(const QString &variant);
 		void enableNetwork(bool enabled);
@@ -59,6 +60,8 @@ class Board : public QWidget
 
 	private:
 		void paintStone(QPixmap *tmp, QPainter *p, int x, int y, int owner);
+		void resetStones();
+
 		enum Colors
 		{
 			colornone,
@@ -73,6 +76,9 @@ class Board : public QWidget
 		Net *net;
 		int m_color;
 		int m_turn;
+		int m_take;
+		int m_wait;
+		int m_whitescore, m_blackscore;
 };
 
 #endif

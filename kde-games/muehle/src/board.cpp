@@ -56,6 +56,10 @@ Board::Board(QWidget *parent, const char *name)
 
 	m_color = colorwhite;
 	m_turn = 1;
+	m_take = 0;
+	m_wait = 0;
+	m_whitescore = 0;
+	m_blackscore = 0;
 
 	web = NULL;
 	setVariant("classic");
@@ -185,13 +189,10 @@ void Board::resizeEvent(QResizeEvent *e)
 // Handle a mouse click
 void Board::mousePressEvent(QMouseEvent *e)
 {
-	int x, y, xrow, yrow, xrows, yrows;
+	int x, y;
 	QPoint final;
 	int count, active;
 	Stone *stone, *astone;
-	QList<QWebPoint> pointlist;
-	QList<QPoint> peerlist;
-	QWebPoint *wp;
 
 	if(!web) return;
 	if(m_color == colornone)
@@ -254,6 +255,29 @@ void Board::mousePressEvent(QMouseEvent *e)
 			}
 		}
 
+		// Take the stone if allowed
+		if(m_take)
+		{
+			if((stone) &&
+			(((m_color == colorwhite) && (stone->owner() == Stone::black))
+			|| ((m_color == colorblack) && (stone->owner() == Stone::white))))
+			{
+				stonelist.remove(stone);
+				m_take = 0;
+				m_turn = 0;
+				emit signalScore(i18n("Opponent's turn"), Toplevel::statushint, 0);
+
+				if(net) net->output(QString("[%1,%1].").arg(x).arg(y));
+
+				resetStones();
+			}
+			else
+			{
+				KMessageBox::sorry(this, i18n("Please take one of your opponent's stones"), i18n("Client message"));
+			}
+			return;
+		}
+
 		// If click on stone, change it
 		if(stone)
 		{
@@ -289,17 +313,18 @@ void Board::mousePressEvent(QMouseEvent *e)
 				{
 					if(net)
 					{
+						// Move a stone
 						net->output(QString("[%1,%2,%3,%4].").arg(astone->x()).arg(astone->y()).arg(x).arg(y));
 						m_turn = 0;
 						emit signalScore(i18n("Opponent's turn"), Toplevel::statushint, 0);
 					}
 					stonelist.remove(astone);
-					//delete astone;
 				}
 				else
 				{
 					if(net)
 					{
+						// Place a new stone
 						net->output(QString("[%1,%2].").arg(x).arg(y));
 						m_turn = 0;
 						emit signalScore(i18n("Opponent's turn"), Toplevel::statushint, 0);
@@ -313,63 +338,106 @@ void Board::mousePressEvent(QMouseEvent *e)
 			}
 		}
 
-		// Check for turn-win situation (muehle)
-		xrow = x;
-		yrow = y;
-		xrows = 0;
-		yrows = 0;
-		pointlist = web->pointlist();
-		QWebPoint *xp;
-		for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
-			if((p->point().x() == x) && (p->point().y() == y)) xp = p;
-		peerlist = xp->peerlist();
-		wp = xp;
-
-		// Count all stones which are on one row with the current one
-		QWebPath *path;
-		path = new QWebPath(web, xp);
-		path->create(2);
-		pointlist = path->pathlist();
-		//delete path;
-
-		for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
-		{
-			if(p->point().x() == xrow)
-				for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
-					if((p->point().x() == s2->x()) && (p->point().y() == s2->y()) && (stone->owner() == s2->owner()))
-						xrows++;
-			if(p->point().y() == yrow)
-				for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
-					if((p->point().x() == s2->x()) && (p->point().y() == s2->y()) && (stone->owner() == s2->owner()))
-						yrows++;
-		}
-
-		// If 3 stones on a row, player has won one turn
-		kdDebug(12101) << xrows << " - " << yrows << endl;
-		for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
-		{
-			if(((xrows == 3) && (p->point().x() == xrow)) || ((yrows == 3) && (p->point().y() == yrow)))
-			{
-				for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
-					if((p->point().x() == s2->x()) && (p->point().y() == s2->y()))
-					{
-						if(m_color == colorwhite)
-							s2->assign(Stone::whitemuehle);
-						else if(m_color == colorblack)
-							s2->assign(Stone::blackmuehle);
-					}
-			}
-		}
-		if((xrows == 3) || (yrows == 3))
-		{
-			m_turn = -1;
-			KMessageBox::information(this, i18n("You have won the game!"), i18n("Client message"));
-		}
-
-		delete path;
-
-		repaint();
+		check(x, y, stone);
 	}
+}
+
+void Board::check(int x, int y, Stone *stone)
+{
+	QWebPoint *wp;
+	QList<QWebPoint> pointlist;
+	QList<QPoint> peerlist;
+	int xrow, yrow, xrows, yrows;
+	int color;
+
+	// Check for turn-win situation (muehle)
+	xrow = x;
+	yrow = y;
+	xrows = 0;
+	yrows = 0;
+	pointlist = web->pointlist();
+	QWebPoint *xp;
+	for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
+		if((p->point().x() == x) && (p->point().y() == y)) xp = p;
+	peerlist = xp->peerlist();
+	wp = xp;
+	color = stone->owner();
+
+	// Count all stones which are on one row with the current one
+	QWebPath *path;
+	path = new QWebPath(web, xp);
+	path->create(2);
+	pointlist = path->pathlist();
+
+	// Look for longest stones-in-a-row
+	for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
+	{
+		if(p->point().x() == xrow)
+			for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
+				if((p->point().x() == s2->x()) && (p->point().y() == s2->y()) && (color == s2->owner()))
+					xrows++;
+		if(p->point().y() == yrow)
+			for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
+				if((p->point().x() == s2->x()) && (p->point().y() == s2->y()) && (color == s2->owner()))
+					yrows++;
+	}
+
+	// If 3 stones on a row, player has won one turn; display it
+	kdDebug(12101) << xrows << " - " << yrows << endl;
+	for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
+	{
+		if(((xrows == 3) && (p->point().x() == xrow)) || ((yrows == 3) && (p->point().y() == yrow)))
+		{
+			for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
+				if((p->point().x() == s2->x()) && (p->point().y() == s2->y()))
+				{
+					if(color == Stone::white)
+						s2->assign(Stone::whitemuehle);
+					else if(color == Stone::black)
+						s2->assign(Stone::blackmuehle);
+				}
+		}
+	}
+
+	// Muehle!
+	if((xrows == 3) || (yrows == 3))
+	{
+		/*KMessageBox::information(this, i18n("You have won the game!"), i18n("Client message"));*/
+		if(((m_color == colorwhite) && (stone->owner() == Stone::whitemuehle))
+		|| ((m_color == colorblack) && (stone->owner() == Stone::blackmuehle)))
+		{
+			emit signalScore(i18n("Take a stone from your opponent"), Toplevel::statushint, 0);
+			m_turn = 1;
+			m_take = 1;
+			kdDebug(12101) << "TAKE" << endl;
+		}
+		else
+		{
+			emit signalScore(i18n("Waiting for opponent's action"), Toplevel::statushint, 0);
+			m_turn = 0;
+			m_wait = 1;
+			kdDebug(12101) << "GIVE" << endl;
+		}
+
+		if(stone->owner() == Stone::whitemuehle)
+		{
+			if(m_color == colorwhite)
+				emit signalScore(i18n("White"), Toplevel::statusplayer, ++m_whitescore);
+			else
+				emit signalScore(i18n("White"), Toplevel::statusopponent, ++m_whitescore);
+		}
+		else
+		{
+			if(m_color == colorwhite)
+				emit signalScore(i18n("Black"), Toplevel::statusopponent, ++m_blackscore);
+			else
+				emit signalScore(i18n("Black"), Toplevel::statusplayer, ++m_blackscore);
+		}
+	}
+
+	delete path;
+
+	repaint();
 }
 
 // Send remis to the server
@@ -493,6 +561,7 @@ void Board::slotInput()
 	QString s;
 	int error;
 	int ret;
+	int x, y;
 
 	error = 0;
 
@@ -517,27 +586,51 @@ void Board::slotInput()
 		emit signalScore(i18n("White"), Toplevel::statusopponent, 0);
 		emit signalScore(i18n("Opponent's turn"), Toplevel::statushint, 0);
 	}
-	else if((s.left(1) == "[") && (s.right(2) == "].") && (m_color != colornone) && (!m_turn))
+	else if((s.left(1) == "[") && (s.right(2) == "].") && (m_color != colornone) && ((!m_turn) || (m_wait)))
 	{
 		QStringList l;
 		Stone *stone;
 
 		l = l.split(",", s.mid(1, s.length() - 3));
 		kdDebug(12101) << "Parts: " << l.count() << " in " << s.mid(1, s.length() - 3) << endl;
+
+		x = (*(l.at(0))).toInt();
+		y = (*(l.at(1))).toInt();
+
 		switch(l.count())
 		{
 			case 2:
-				stone = new Stone();
-				stone->move((*(l.at(0))).toInt(), (*(l.at(1))).toInt());
-				if(m_color == colorwhite)
-					stone->assign(Stone::black);
-				else if(m_color == colorblack)
-					stone->assign(Stone::white);
-				stonelist.append(stone);
-				m_turn = 1;
-				emit signalScore(i18n("Your turn"), Toplevel::statushint, 0);
+				if(!m_wait)
+				{
+					stone = new Stone();
+					stone->move(x, y);
+					if(m_color == colorwhite)
+						stone->assign(Stone::black);
+					else if(m_color == colorblack)
+						stone->assign(Stone::white);
+					stonelist.append(stone);
+
+					check(x, y, stone);
+				}
+				else
+				{
+					for(stone = stonelist.first(); stone; stone = stonelist.next())
+						if((stone->x() == x) && (stone->y() == y))
+							stonelist.remove(stone);
+					m_wait = 0;
+					resetStones();
+					repaint();
+					kdDebug(12101) << "GAVE" << endl;
+				}
+				if(!m_wait)
+				{
+					m_turn = 1;
+					emit signalScore(i18n("Your turn"), Toplevel::statushint, 0);
+				}
 				break;
 			case 4:
+				break;
+			case 6:
 				break;
 			default:
 				error = 1;
@@ -566,7 +659,7 @@ void Board::slotInput()
 	{
 		KMessageBox::sorry(this, i18n("Your opponent refuses to give you remis."), i18n("Opponent message"));
 	}
-	else if(s == "loose.")
+	else if((s == "loose.") || (s == "gameover."))
 	{
 		KMessageBox::information(this, i18n("Your opponent has given up."), i18n("Server message"));
 		m_turn = -1;
@@ -582,4 +675,17 @@ void Board::slotInput()
 	}
 }
 
+void Board::resetStones()
+{
+	// Reset the muehle to normal colors
+	for(Stone *s = stonelist.first(); s; s = stonelist.next())
+	{
+		//if(m_color == colorwhite)
+			if(s->owner() == Stone::whitemuehle)
+				s->assign(Stone::white);
+		//if(m_color == colorblack)
+			if(s->owner() == Stone::blackmuehle)
+				s->assign(Stone::black);
+	}
+}
 
