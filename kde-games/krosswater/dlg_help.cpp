@@ -31,7 +31,7 @@ void DlgHelp::paintEvent(QPaintEvent *e)
 	p.begin(this);
 	p.drawTiledPixmap(0, 0, 400, 400, QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
 	p.drawPixmap(60, 30, QPixmap(GGZDATADIR "/krosswater/gfx/title.png"));
-	p.setPen(QPen(QColor(255.0, 255.0, 0.0)));
+	p.setPen(QPen(QColor(255, 255, 0)));
 	p.setFont(QFont("arial", 10));
 	p.drawText(15, 90, "As one of 2 to 4 players on the board, your task is to");
 	p.drawText(15, 103, "cross the water from the left to the right. This can be accomplished");

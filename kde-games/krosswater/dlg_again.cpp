@@ -40,7 +40,7 @@ void DlgAgain::paintEvent(QPaintEvent *e)
 	p.begin(this);
 	p.drawTiledPixmap(0, 0, 300, 300, QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
 	p.drawPixmap(60, 30, QPixmap(GGZDATADIR "/krosswater/gfx/title.png"));
-	p.setPen(QPen(QColor(255.0, 255.0, 0.0)));
+	p.setPen(QPen(QColor(255, 255, 0)));
 	p.setFont(QFont("arial", 10));
 	p.drawText(15, 90, i18n("The game is over."));
 	p.drawText(15, 103, m_result);

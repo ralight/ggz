@@ -19,6 +19,8 @@
 
 #include "config.h"
 
+using namespace std;
+
 Krosswater::Krosswater(QWidget *parent, char *name)
 : ZoneGGZModUI(parent, name)
 {
@@ -314,7 +316,7 @@ void Krosswater::showStatus(QString state)
 
 	p.begin(m_statusframe);
 	p.setFont(QFont("arial", 10));
-	p.setPen(QPen(QColor(255.0, 255.0, 0.0)));
+	p.setPen(QPen(QColor(255, 255, 0)));
 	p.drawText(0, 20, state);
 	p.end();
 
