@@ -17,7 +17,7 @@
 
 #include "config.h"
 
-GGZCoreGametype::GGZCoreGametype(GGZGameType *gametype)
+GGZCoreGametype::GGZCoreGametype(const GGZGameType *gametype)
 {
 	m_gametype = gametype;
 }
@@ -105,7 +105,7 @@ int GGZCoreGametype::isSpectatorsValid(unsigned int number)
 #endif
 }
 
-GGZGameType *GGZCoreGametype::gametype()
+const GGZGameType *GGZCoreGametype::gametype()
 {
 	return m_gametype;
 }

@@ -39,7 +39,7 @@ class GGZCoreTable
 
 		/**
 		 * Initialize a table. Set a game type and the maximum number of seats. */
-		int init(GGZGameType* gametype, char* description, const unsigned int seats);
+		int init(const GGZGameType* gametype, char* description, const unsigned int seats);
 
 		/**
 		 * Add a player to the table. */
@@ -96,7 +96,7 @@ class GGZCoreTable
 	private:
 		GGZTable *m_table;
 		GGZCoreGametype *m_coregametype;
-		GGZGameType *m_gametype, *m_tmpgametype;
+		const GGZGameType *m_gametype, *m_tmpgametype;
 		int m_destructive;
 };
 

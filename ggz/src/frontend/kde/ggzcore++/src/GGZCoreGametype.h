@@ -29,7 +29,7 @@ class GGZCoreGametype
 		GGZCoreGametype();
 		/**
 		 * Overloaded. */
-		GGZCoreGametype(GGZGameType *gametype);
+		GGZCoreGametype(const GGZGameType *gametype);
 		/**
 		 * Destructor */
 		~GGZCoreGametype();
@@ -83,10 +83,10 @@ class GGZCoreGametype
 
 		/**
 		 * Retrieve the wrapped ggzcore object for this game type. */
-		GGZGameType *gametype();
+		const GGZGameType *gametype();
 
 	private:
-		GGZGameType *m_gametype;
+		const GGZGameType *m_gametype;
 };
 
 #endif

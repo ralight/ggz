@@ -35,7 +35,7 @@ GGZCoreTable::~GGZCoreTable()
 	if(m_destructive) ggzcore_table_free(m_table);
 }
 
-int GGZCoreTable::init(GGZGameType* gametype, char* description, const unsigned int seats)
+int GGZCoreTable::init(const GGZGameType* gametype, char* description, const unsigned int seats)
 {
 	return ggzcore_table_init(m_table, gametype, description, seats);
 }
