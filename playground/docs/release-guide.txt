@@ -1,0 +1,6 @@
+Stuff to do before release:
+
+  - Bump version numbers in configure.in for each module.
+  - Bump game version numbers from e.g. "2-pre1" to "2", where applicable.
+  - Bump Doxyfile version numbers (ggzdmod, libggz, ggzcore, ggzmod).
+  - Regenerate Doxygen man pages (ggzdmod, libggz, ggzcore, ggzmod).
