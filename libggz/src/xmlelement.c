@@ -88,8 +88,9 @@ char* ggz_xmlelement_get_attr(GGZXMLElement *element, char *attr)
 
 	item = ggz_list_head(element->attributes);
 	while (item) {
+		/* FIXME: we should use the list searching features */
 		data = ggz_list_get_data(item);
-		if (ggz_strcmp(data, attr) == 0) {
+		if (ggz_strcasecmp(data, attr) == 0) {
 			value = ggz_list_get_data(ggz_list_next(item));
 			break;
 		}

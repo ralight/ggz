@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 4841 2002-10-10 12:40:29Z dr_maux $
+ * $Id: ggz.h 5103 2002-10-29 10:46:30Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -1112,6 +1112,18 @@ void ggz_free_file_struct(GGZFile *file);
  * than s2.  NULL in considered to be less than any non-NULL string
  * and equal to itself */
 int ggz_strcmp(const char *s1, const char *s2);
+
+
+/** @brief Case-insensitive string comparison function that is safe with NULLs
+ *  The function returns an integer less than, equal to, or greater than
+ *  zero if s1 is found, respectively, to be less than, to match, or be greater
+ *  than s2.  NULL in considered to be less than any non-NULL string
+ *  and equal to itself
+ *  @param s1 First string to compare
+ *  @param s2 Second string to compare
+ *  @return The comparison value.
+ */
+int ggz_strcasecmp(const char *s1, const char *s2);
  
 /** @} */
 

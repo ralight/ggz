@@ -249,7 +249,8 @@ void ggz_free_file_struct(GGZFile *file)
 }
 
 
-int ggz_strcmp(const char *s1, const char *s2)
+static int safe_string_compare(const char *s1, const char *s2,
+			       int (*cmp_func)(const char *a, const char *b))
 {
 	
 	if (s1 == NULL) {
@@ -263,5 +264,15 @@ int ggz_strcmp(const char *s1, const char *s2)
 		return 1;
 	
 	/* If both strings are non-NULL, do normal string compare */
-	return strcmp(s1, s2);
+	return cmp_func(s1, s2);
+}
+
+int ggz_strcmp(const char *a, const char *b)
+{
+	return safe_string_compare(a, b, strcmp);
+}
+
+int ggz_strcasecmp(const char *a, const char *b)
+{
+	return safe_string_compare(a, b, strcasecmp);
 }
