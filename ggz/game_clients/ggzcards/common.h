@@ -1,4 +1,4 @@
-/* $Id: common.h 2081 2001-07-23 13:07:48Z jdorje $ */
+/* $Id: common.h 2082 2001-07-23 23:38:03Z jdorje $ */
 /*
  * File: common.h
  * Author: Jason Short
@@ -71,15 +71,19 @@ card_t;
 #define UNKNOWN_CARD (card_t){-1, -1, -1}
 
 
+/** Hand structure.
+ *  @todo Should this be merted into struct seat_t?
+ */
 struct hand_t
 {
 	int hand_size;		/**< the number of cards in the hand */
 	card_t *card;		/**< the list of cards */
 };
 
+/** Contains all information about a seat at the table. */
 typedef struct seat_t
 {
-	int seat;		/**< ggz seating info */
+	int seat;		/**< ggz seating assignment info */
 	char *name;		/**< player's name */
 	card_t table_card;	/**< card on table */
 	struct hand_t hand;	/**< player's hand */
@@ -99,12 +103,13 @@ typedef enum
 }
 client_state_t;
 
+/** The game_t structure contains all global game data. */
 struct game_t
 {
 	int num_players;	/**< The number of players in the game. */
 	seat_t *players;	/**< Data about each player */
-	client_state_t state;	/**< The state the game is, i.e. LA_STATE_<something> */
-	int play_hand;		/**< The hand we're playing from */
+	client_state_t state;	/**< The state the game is in */
+	int play_hand;		/**< The hand we're currently playing from */
 	int max_hand_size;	/**< The maximum number of cards in a hand */
 };
 
@@ -245,16 +250,20 @@ extern void table_set_player_message(int player, const char *msg);
 int client_send_newgame();
 
 /** Sends a bid response.
+ *  @param bid The index of the bid chosen.
  *  @return 0 on success, -1 on failure
  *  @see table_get_bid */
 int client_send_bid(int bid);
 
 /** Sends an options response.
+ *  @param option_cnt The number of options.
+ *  @param options The choice made for each option.
  *  @return 0 on success, -1 on failure
  *  @see table_get_options */
 int client_send_options(int option_cnt, int *options);
 
 /** Sends a play response.
+ *  @param card The card chosen to be played.
  *  @return 0 on success, -1 on failure
  *  @see table_get_play, table_alert_badplay */
 int client_send_play(card_t card);
