@@ -765,6 +765,7 @@ void table_display_hand(int p)
 	int x_outer, y_outer;
 	int cx, cy, cw, ch, cxo, cyo;
 	float ow, oh;
+	card_t table_card = game.players[p].table_card;
 
 	ggz_debug("     Displaying hand for player %d.", p); 		
 
@@ -785,7 +786,10 @@ void table_display_hand(int p)
 	/* Draw the cards */
 	for(i=0; i<game.players[p].hand.hand_size; i++) {
 		card_t card = game.players[p].hand.card[i];
-		if ( !memcmp(&card, &game.players[p].table_card, sizeof(card_t)) )
+		if ( table_card.face != -1 && /* is this an adequate check? */
+		     !memcmp(&card, &table_card, sizeof(card_t)) )
+			/* if the player has a card on the table _and_ it matches this card,
+			 * skip over it. */
 			continue;
 		x = cx + 0.5 + (i * ow);
 		y = cy + 0.5 + (i * oh);
