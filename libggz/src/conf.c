@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 5905 2004-02-11 04:14:40Z jdorje $
+ * $Id: conf.c 6369 2004-11-14 14:53:43Z josef $
  *
  * Internal functions for handling configuration files
  *
@@ -700,7 +700,7 @@ static GGZList * file_parser(const char *path)
 	GGZListEntry	*s_entry;
 	conf_section_t	*s_data=NULL;
 	conf_entry_t	*e_data=NULL;
-
+	struct stat		st;
 
 	/* Create the section list */
 	s_list = ggz_list_create(section_compare,
@@ -709,6 +709,12 @@ static GGZList * file_parser(const char *path)
 			      GGZ_LIST_REPLACE_DUPS);
 	if(!s_list)
 		return NULL;
+
+	/* Check for file mode */
+	if((stat(path, &st)) || (!S_ISREG(st.st_mode))) {
+		ggz_error_msg("File %s is not a regular file", path);
+		return NULL;
+	}
 
 	/* Open the input config file */
 	if((c_file = open(path, O_RDONLY)) == -1) {
