@@ -582,7 +582,9 @@ client_room_clist_event			(GtkWidget	*widget,
 		gtk_clist_get_selection_info(GTK_CLIST(tmp), buttonevent->x, 
 					     buttonevent->y, &row, &column);
 		gtk_clist_select_row(GTK_CLIST(tmp), row, column);
+
 		client_join_room(row);
+
 		return TRUE;
 	}
 
@@ -647,6 +649,7 @@ static void client_join_room(guint room)
 	gchar *err_msg = NULL;
 	gint singleclick, status = -1;
 	GtkWidget *tmp;
+	GGZRoom *ggzroom;
 
 	switch (ggzcore_server_get_state(server)) {
 	case GGZ_STATE_OFFLINE:
@@ -675,11 +678,12 @@ static void client_join_room(guint room)
 	}
 
 	if (status == 0) {
-		if (ggzcore_server_join_room(server, room) == 0) {
-
+		ggzroom = ggzcore_server_get_cur_room(server);
+			if (ggzcore_server_join_room(server, room) == 0) {
+	
 			/* Only desensitize with single click, dues to
-                           some weird bug that freezes the mouse if we
-                           doubleclick and then desensitize */
+	                some weird bug that freezes the mouse if we
+        	        doubleclick and then desensitize */
 			singleclick = ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE);
 			if (singleclick) {
 				/* Set roomlist insensitive */
