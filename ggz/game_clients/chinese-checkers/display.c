@@ -124,9 +124,9 @@ int display_init(void)
 	}
 
 	/* Get and store a pointer to our drawingarea and statusbar */
-	draw_area = gtk_object_get_data(GTK_OBJECT(dlg_main), "draw_area");
+	draw_area = g_object_get_data(G_OBJECT(dlg_main), "draw_area");
 	draw_area_style = gtk_widget_get_style(draw_area);
-	statusbar = gtk_object_get_data(GTK_OBJECT(dlg_main), "statusbar1");
+	statusbar = g_object_get_data(G_OBJECT(dlg_main), "statusbar1");
 	sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar),
 						  "Game Messages");
 
@@ -390,12 +390,12 @@ void display_set_label_colors(void)
 	GtkStyle *label_style;
 
 	/* Setup the styles for our name labels */
-	label[0] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p1_label");
-	label[1] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p2_label");
-	label[2] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p3_label");
-	label[3] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p4_label");
-	label[4] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p5_label");
-	label[5] = gtk_object_get_data(GTK_OBJECT(dlg_main), "p6_label");
+	label[0] = g_object_get_data(G_OBJECT(dlg_main), "p1_label");
+	label[1] = g_object_get_data(G_OBJECT(dlg_main), "p2_label");
+	label[2] = g_object_get_data(G_OBJECT(dlg_main), "p3_label");
+	label[3] = g_object_get_data(G_OBJECT(dlg_main), "p4_label");
+	label[4] = g_object_get_data(G_OBJECT(dlg_main), "p5_label");
+	label[5] = g_object_get_data(G_OBJECT(dlg_main), "p6_label");
 
 	sys_colormap = gdk_colormap_get_system();
 	for(i=0; i<6; i++) {

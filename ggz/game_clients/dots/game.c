@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Routines to manipulate the CtD board
- * $Id: game.c 3609 2002-03-21 11:10:29Z dr_maux $
+ * $Id: game.c 6285 2004-11-06 07:00:27Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -65,9 +65,9 @@ void board_init(guint8 width, guint8 height)
 	GtkWidget *p1b, *p2b;
 	GdkRectangle update_rect;
 
-	board = gtk_object_get_data(GTK_OBJECT(main_win), "board");
-	p1b = gtk_object_get_data(GTK_OBJECT(main_win), "p1b");
-	p2b = gtk_object_get_data(GTK_OBJECT(main_win), "p2b");
+	board = g_object_get_data(G_OBJECT(main_win), "board");
+	p1b = g_object_get_data(G_OBJECT(main_win), "p1b");
+	p2b = g_object_get_data(G_OBJECT(main_win), "p2b");
 
 	if(board_pixmap)
 		gdk_pixmap_unref(board_pixmap);
@@ -358,8 +358,8 @@ gint8 board_move(guint8 dir, guint8 x, guint8 y)
 
 	if(result > 0) {
                 game.score[(int)game.move] += result;
-                l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
-                l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
+                l1 = g_object_get_data(G_OBJECT(main_win), "lbl_score0");
+                l2 = g_object_get_data(G_OBJECT(main_win), "lbl_score1");
                 text = g_strdup_printf(_("Score = %d"), game.score[0]);
                 gtk_label_set_text(GTK_LABEL(l1), text);
                 g_free(text);
@@ -468,8 +468,8 @@ gint8 board_opponent_move(guint8 dir)
 
 	if(result > 0) {
                 game.score[(int)game.move] += result;
-                l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
-                l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
+                l1 = g_object_get_data(G_OBJECT(main_win), "lbl_score0");
+                l2 = g_object_get_data(G_OBJECT(main_win), "lbl_score1");
                 text = g_strdup_printf(_("Score = %d"), game.score[0]);
                 gtk_label_set_text(GTK_LABEL(l1), text);
                 g_free(text);
@@ -514,7 +514,7 @@ void board_fill_square(guint8 x, guint8 y)
 void statusbar_message(char *msg)
 {
 	if(statusbar == NULL) {
-		statusbar = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
+		statusbar = g_object_get_data(G_OBJECT(main_win), "statusbar");
 		sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar),
 						  _("Game Messages"));
 	}
@@ -529,8 +529,8 @@ void board_handle_pxb_expose(void)
 	GtkWidget *p1b, *p2b;
 
 	/* Draw them both even if just one got exposed */
-	p1b = gtk_object_get_data(GTK_OBJECT(main_win), "p1b");
-	p2b = gtk_object_get_data(GTK_OBJECT(main_win), "p2b");
+	p1b = g_object_get_data(G_OBJECT(main_win), "p1b");
+	p2b = g_object_get_data(G_OBJECT(main_win), "p2b");
 
 	gdk_draw_rectangle(p1b->window,
 			   gc_p1b,

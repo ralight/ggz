@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: main_win.c 6285 2004-11-06 07:00:27Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -69,7 +69,7 @@ void game_status( const char* format, ... )
 	message = g_strdup_vprintf(format, ap);
 	va_end(ap);
 	
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
+	tmp = g_object_get_data(G_OBJECT(main_win), "statusbar");
 	
 	id = gtk_statusbar_get_context_id( GTK_STATUSBAR(tmp), "Main" );
 	
@@ -86,7 +86,7 @@ void display_board(void)
 	int i, x, y;
 	GdkPixbuf* piece;
 	GtkStyle* style;
-	GtkWidget *tmp = gtk_object_get_data(GTK_OBJECT(main_win),
+	GtkWidget *tmp = g_object_get_data(G_OBJECT(main_win),
 						"drawingarea");
 	int w = tmp->allocation.width, h = tmp->allocation.height;
 
@@ -99,7 +99,7 @@ void display_board(void)
 	g_print("\n");
 #endif
 
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
+	tmp = g_object_get_data(G_OBJECT(main_win), "drawingarea");
 	style = gtk_widget_get_style(main_win);
 
 	gdk_draw_rectangle(ttt_buf,
@@ -164,7 +164,7 @@ static GdkPixbuf *load_pixmap(const char *name)
 
 static void window_resized(void)
 {
-	GtkWidget *widget = gtk_object_get_data(GTK_OBJECT(main_win),
+	GtkWidget *widget = g_object_get_data(G_OBJECT(main_win),
 						"drawingarea");
 	int w = widget->allocation.width, h = widget->allocation.height;
 

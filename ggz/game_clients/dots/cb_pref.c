@@ -295,13 +295,13 @@ on_dlg_pref_expose_event               (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	if(fg_spot == NULL) {
-		fg_spot = gtk_object_get_data(GTK_OBJECT(dlg_pref),
+		fg_spot = g_object_get_data(G_OBJECT(dlg_pref),
 					      "fg_colorspot");
-		bg_spot = gtk_object_get_data(GTK_OBJECT(dlg_pref),
+		bg_spot = g_object_get_data(G_OBJECT(dlg_pref),
 					      "bg_colorspot");
-		p1_spot = gtk_object_get_data(GTK_OBJECT(dlg_pref),
+		p1_spot = g_object_get_data(G_OBJECT(dlg_pref),
 					      "p1_colorspot");
-		p2_spot = gtk_object_get_data(GTK_OBJECT(dlg_pref),
+		p2_spot = g_object_get_data(G_OBJECT(dlg_pref),
 					      "p2_colorspot");
 
 		sys_colormap = gdk_colormap_get_system();

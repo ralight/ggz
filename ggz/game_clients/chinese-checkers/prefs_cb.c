@@ -31,8 +31,8 @@ on_apply_button_clicked                (GtkButton       *button,
 	int beep;
 	GtkWidget *list, *toggle;
 
-	list = gtk_object_get_data(GTK_OBJECT(dlg_prefs), "theme_list");
-	toggle = gtk_object_get_data(GTK_OBJECT(dlg_prefs), "check_beep");
+	list = g_object_get_data(G_OBJECT(dlg_prefs), "theme_list");
+	toggle = g_object_get_data(G_OBJECT(dlg_prefs), "check_beep");
 
 	gtk_clist_get_text(GTK_CLIST(list), sel, 0, &theme);
 

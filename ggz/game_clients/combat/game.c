@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: game.c 6285 2004-11-06 07:00:27Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -436,7 +436,7 @@ void game_draw_board(void) {
   game_draw_extra();
 
   // Update the widget
-  tmp = gtk_object_get_data(GTK_OBJECT(main_win), "mainarea");
+  tmp = g_object_get_data(G_OBJECT(main_win), "mainarea");
   gtk_widget_draw(tmp, NULL);
 
 }
@@ -515,13 +515,13 @@ void game_add_player_info(int number) {
   unit_info = (GtkWidget **)calloc(number, sizeof(GtkWidget *));
 
   // Finds box
-  box = gtk_object_get_data(GTK_OBJECT(main_win), "player_box");
+  box = g_object_get_data(G_OBJECT(main_win), "player_box");
 
   // Creates and puts on the right place
   for (a = 0; a < number; a++) {
     sprintf(name_str, "player_list[%d]", a);
     player_list[a] = (GtkWidget *)gtk_player_info_new(main_win, name_str, a);
-    unit_info[a] = gtk_object_get_data(GTK_OBJECT(player_list[a]), "unit_list");
+    unit_info[a] = g_object_get_data(G_OBJECT(player_list[a]), "unit_list");
     gtk_box_pack_start (GTK_BOX(box), player_list[a], TRUE, TRUE, 0);
     gtk_widget_show(player_list[a]);
     gtk_widget_ref(player_list[a]);
@@ -548,8 +548,8 @@ void game_update_unit_list(int seat) {
   int a;
 
   sprintf(widget_name, "player_list[%d]", seat);
-  player_info = gtk_object_get_data(GTK_OBJECT(main_win), widget_name);
-  unit_list = gtk_object_get_data(GTK_OBJECT(player_info), "unit_list");
+  player_info = g_object_get_data(G_OBJECT(main_win), widget_name);
+  unit_list = g_object_get_data(G_OBJECT(player_info), "unit_list");
 
   for (a = 0; a < 12; a++) {
     if (seat == cbt_info.seat || !(cbt_game.options & OPT_HIDE_UNIT_LIST)) {
@@ -569,8 +569,8 @@ void game_update_player_name(int seat) {
   char widget_name[32];
 
   sprintf(widget_name, "player_list[%d]", seat);
-  player_info = gtk_object_get_data(GTK_OBJECT(main_win), widget_name);
-  player_label = gtk_object_get_data(GTK_OBJECT(player_info), "player_name");
+  player_info = g_object_get_data(G_OBJECT(main_win), widget_name);
+  player_label = g_object_get_data(G_OBJECT(player_info), "player_name");
 
   if (cbt_info.seats[seat] == GGZ_SEAT_BOT)
     gtk_label_set_text(GTK_LABEL(player_label), "Bot");
@@ -624,7 +624,7 @@ void game_status( const char* format, ... )
   
   /* ggz_debug("main", "%s", message); */
   
-  tmp = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
+  tmp = g_object_get_data(G_OBJECT(main_win), "statusbar");
   
   id = gtk_statusbar_get_context_id( GTK_STATUSBAR(tmp), "Main" );
   
@@ -1059,7 +1059,7 @@ int game_send_options(GtkWidget *options_dialog) {
   char *game_str = NULL;
   int a = 0;
 
-  _game = gtk_object_get_data(GTK_OBJECT(options_dialog), "options");
+  _game = g_object_get_data(G_OBJECT(options_dialog), "options");
 
   if (!_game) {
     game_message("No options?");

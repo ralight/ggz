@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 6100 2004-07-13 17:04:00Z josef $
+ * $Id: main.c 6285 2004-11-06 07:00:27Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -273,8 +273,8 @@ void game_init(void)
 	/* Setup the main board now */
 	if(main_win == NULL)
 		main_win = create_dlg_main();
-	l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
-	l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
+	l1 = g_object_get_data(G_OBJECT(main_win), "lbl_score0");
+	l2 = g_object_get_data(G_OBJECT(main_win), "lbl_score1");
 	gtk_label_set_text(GTK_LABEL(l1), _("No Score"));
 	gtk_label_set_text(GTK_LABEL(l2), _("No Score"));
 	gtk_widget_show(main_win);
@@ -318,8 +318,8 @@ static int get_players(void)
 	GtkWidget *frame[2];
 	char *temp;
 
-	frame[0] = gtk_object_get_data(GTK_OBJECT(main_win), "frame_left");
-	frame[1] = gtk_object_get_data(GTK_OBJECT(main_win), "frame_right");
+	frame[0] = g_object_get_data(G_OBJECT(main_win), "frame_left");
+	frame[1] = g_object_get_data(G_OBJECT(main_win), "frame_right");
 
 	for(i=0; i<2; i++) {
 		if(ggz_read_int(game.fd, &game.seats[i]) < 0)
@@ -403,8 +403,8 @@ static int get_sync_info(void)
 
 	if(game.score[0] != 0 || game.score[1] != 0)
 	{
-		l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
-		l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
+		l1 = g_object_get_data(G_OBJECT(main_win), "lbl_score0");
+		l2 = g_object_get_data(G_OBJECT(main_win), "lbl_score1");
 		text = g_strdup_printf(_("Score = %d"), game.score[0]);
 		gtk_label_set_text(GTK_LABEL(l1), text);
 		g_free(text);
@@ -428,8 +428,8 @@ static int get_gameover_status(void)
 
 	/* Create the New Game dialog */
 	new_dialog = create_dlg_new();
-	lbl_winner = gtk_object_get_data(GTK_OBJECT(new_dialog), "lbl_winner");
-	lbl_score = gtk_object_get_data(GTK_OBJECT(new_dialog), "lbl_score");
+	lbl_winner = g_object_get_data(G_OBJECT(new_dialog), "lbl_winner");
+	lbl_score = g_object_get_data(G_OBJECT(new_dialog), "lbl_score");
 
 	if(status == game.me) {
 		tstr = g_strconcat(_("Game over, you beat "),

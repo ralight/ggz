@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Combat game module
  * Desc: Combat client GTK callback functions
- * $Id: callbacks.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: callbacks.c 6285 2004-11-06 07:00:27Z jdorje $
  *
  * Copyright (C) 2002 Ismael Orenstein.
  *
@@ -172,7 +172,7 @@ on_send_setup_clicked                  (GtkButton       *button,
 
 
 void change_show_enemy(GtkWidget *button, gpointer user_data) {
-  GtkWidget *checkmenuitem = gtk_object_get_data(GTK_OBJECT(button), "checkmenu");
+  GtkWidget *checkmenuitem = g_object_get_data(G_OBJECT(button), "checkmenu");
   g_object_set_data(G_OBJECT(checkmenuitem), "dirty", GINT_TO_POINTER(TRUE));
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(checkmenuitem), GPOINTER_TO_INT(user_data));
   cbt_info.show_enemy = GPOINTER_TO_INT(user_data);
@@ -197,7 +197,7 @@ void on_remember_enemy_units_toggled(void)
   GtkWidget *dlg;
   GtkWidget *yes;
   GtkWidget *item = get_menu_item(_("<main>/Game/Remember enemy units"));
-  gboolean dirty = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(item), "dirty"));
+  gboolean dirty = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(item), "dirty"));
   if (dirty) {
     g_object_set_data(G_OBJECT(item), "dirty", GINT_TO_POINTER(FALSE));
     return;

@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: main_win.c 6285 2004-11-06 07:00:27Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -98,7 +98,7 @@ void game_status( const char* format, ... )
 	message = g_strdup_vprintf(format, ap);
 	va_end(ap);
 
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
+	tmp = g_object_get_data(G_OBJECT(main_win), "statusbar");
 
 	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(tmp), "Main");
 
@@ -114,7 +114,7 @@ void game_status( const char* format, ... )
 static void draw(GdkPixbuf *image, int x, int y, int w, int h)
 {
 	GtkStyle *style = gtk_widget_get_style(main_win);
-	GtkWidget *tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
+	GtkWidget *tmp = g_object_get_data(G_OBJECT(main_win), "drawingarea");
 	GdkGC *gc = style->fg_gc[GTK_WIDGET_STATE(tmp)];
 
 	gdk_pixbuf_render_to_drawable(image, hastings_buf, gc,
@@ -185,7 +185,7 @@ static void hexagon(GtkWidget *widget, int offsetx, int offsety)
 void display_board(void)
 {
 	int i, j;
-	GtkWidget* tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
+	GtkWidget* tmp = g_object_get_data(G_OBJECT(main_win), "drawingarea");
 	int offsetx, offsety;
 
 	/* map background */

@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Options dialog
- * $Id: dlg_options.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: dlg_options.c 6285 2004-11-06 07:00:27Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -947,7 +947,7 @@ create_dlg_options (int number)
   init_map_data(dlg_options);
 
   def = dlg_options_list_maps(maps_list);
-  namelist = gtk_object_get_data(GTK_OBJECT(maps_list), "maps");
+  namelist = g_object_get_data(G_OBJECT(maps_list), "maps");
   if (def >= 0 && namelist && namelist[def]) {
     load_map(namelist[def], dlg_options);
   }
@@ -961,7 +961,7 @@ void init_map_data(GtkWidget *dlg_options) {
   int a;
 
 	// Now init the data
-  options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
+  options = g_object_get_data(G_OBJECT(dlg_options), "options");
   if (!options)
     dlg_options_update(dlg_options);
   if (options->map) {
@@ -991,10 +991,10 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
   int changed = -1;
   int tot = 0, other = 0, a, pos = 0;
   g_object_set_data(G_OBJECT(clist), "row", GINT_TO_POINTER(row));
-  filenames = gtk_object_get_data(GTK_OBJECT(clist), "maps");
+  filenames = g_object_get_data(G_OBJECT(clist), "maps");
   preview_game = (combat_game *)ggz_malloc(sizeof(combat_game));
   preview_game->number = GPOINTER_TO_INT(
-                        gtk_object_get_data(GTK_OBJECT(user_data), "number"));
+                        g_object_get_data(G_OBJECT(user_data), "number"));
   preview_game->army = (char **)calloc(preview_game->number+1, sizeof(char *));
   preview_game->army[preview_game->number] = (char *)calloc(12, sizeof(char));
   preview_game->map = NULL;
@@ -1069,14 +1069,14 @@ void delete_button_clicked(GtkButton *button, gpointer dialog) {
   GtkWidget *dlg = create_yes_no_dlg("Delete the map?", GTK_SIGNAL_FUNC(delete_map), maps_list);
   GtkWidget *yes = lookup_widget(dlg, "yes");
   char **namelist;
-  selection = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(maps_list), "row"));
-  namelist = gtk_object_get_data(GTK_OBJECT(maps_list), "maps");
+  selection = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(maps_list), "row"));
+  namelist = g_object_get_data(G_OBJECT(maps_list), "maps");
   g_object_set_data(G_OBJECT(yes), "filename", namelist[selection]);
   gtk_widget_show_all(dlg);
 }
 
 void delete_map(GtkButton *button, gpointer user_data) {
-  char *filename = gtk_object_get_data(GTK_OBJECT(button), "filename");
+  char *filename = g_object_get_data(G_OBJECT(button), "filename");
   unlink(filename);
   dlg_options_list_maps(GTK_WIDGET(user_data));
 }
@@ -1100,19 +1100,19 @@ void load_button_clicked(GtkButton *button, gpointer dialog) {
   GtkWidget *maps_list = lookup_widget(dialog, "maps_list");
   gint selection;
   char **namelist;
-  selection = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(maps_list), "row"));
-  namelist = gtk_object_get_data(GTK_OBJECT(maps_list), "maps");
+  selection = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(maps_list), "row"));
+  namelist = g_object_get_data(G_OBJECT(maps_list), "maps");
   load_map(namelist[selection], (GtkWidget *)dialog);
 }
 
 void save_map(GtkButton *button, GtkWidget *dialog) {
-  GtkWidget *dlg_options = gtk_object_get_data(GTK_OBJECT(dialog), "dlg_options");
+  GtkWidget *dlg_options = g_object_get_data(G_OBJECT(dialog), "dlg_options");
   GtkWidget *map_name = lookup_widget(dialog, "map_name");
   const char *name = gtk_entry_get_text(GTK_ENTRY(map_name));
-  combat_game *game = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
+  combat_game *game = g_object_get_data(G_OBJECT(dlg_options), "options");
   game->name = ggz_strdup(name);
   map_save(game);
-  dlg_options_list_maps(gtk_object_get_data(GTK_OBJECT(dlg_options), "maps_list"));
+  dlg_options_list_maps(g_object_get_data(G_OBJECT(dlg_options), "maps_list"));
 }
 
 
@@ -1124,7 +1124,7 @@ void load_map(char *filename, GtkWidget *dialog) {
   int a;
   combat_game *map = (combat_game *)ggz_malloc(sizeof(combat_game));
   map->number = GPOINTER_TO_INT(
-                  gtk_object_get_data(GTK_OBJECT(dialog), "number"));
+                  g_object_get_data(G_OBJECT(dialog), "number"));
   map->army = (char **)calloc(map->number+1, sizeof(char *));
   map->army[map->number] = (char *)calloc(12, sizeof(char));
   map->map = NULL;
@@ -1258,11 +1258,11 @@ void dlg_options_update(GtkWidget *dlg_options) {
   combat_game *options;
 
   // Gets old value or allocs it
-  options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
+  options = g_object_get_data(G_OBJECT(dlg_options), "options");
   if (!options) {
     options = (combat_game *)ggz_malloc(sizeof(combat_game));
     options->number = GPOINTER_TO_INT(
-                      gtk_object_get_data(GTK_OBJECT(dlg_options), "number"));
+                      g_object_get_data(G_OBJECT(dlg_options), "number"));
     options->army = (char **)calloc(options->number+1, sizeof(char *));
     options->army[options->number] = (char *)calloc(12, sizeof(char));
     options->map = NULL;
@@ -1279,7 +1279,7 @@ void dlg_options_update(GtkWidget *dlg_options) {
 
 	// Gets army data
 	for (a = 0; a < 12; a++) {
-		unit_spin = gtk_object_get_data(GTK_OBJECT(dlg_options), spin_name[a]);
+		unit_spin = g_object_get_data(G_OBJECT(dlg_options), spin_name[a]);
 		ARMY(options, a) = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(unit_spin));
 	}
 
@@ -1320,7 +1320,7 @@ void update_counters(GtkWidget *dlg_options) {
 
   /* Map data counters */
   // Get options
-  options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
+  options = g_object_get_data(G_OBJECT(dlg_options), "options");
 
   // Get widgets
   open_label = GTK_BIN( lookup_widget(dlg_options, "open") )->child;
@@ -1409,7 +1409,7 @@ int dlg_options_list_maps(GtkWidget *dlg) {
   int a, len, current = -1;
   int def = -1;
   names = map_list();
-  current = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(dlg), "row"));
+  current = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(dlg), "row"));
   clist_name = (char **)calloc(1, sizeof(char *));
   clist_name[0] = (char *)ggz_malloc(64 * sizeof(char));
   gtk_clist_clear(GTK_CLIST(dlg));
@@ -1440,7 +1440,7 @@ gboolean mini_board_expose               (GtkWidget       *widget, GdkEventExpos
 
 gboolean mini_board_configure            (GtkWidget       *widget, GdkEventConfigure *event, gpointer         user_data) {
   combat_game *options;
-	options = gtk_object_get_data(GTK_OBJECT(user_data), "options");
+	options = g_object_get_data(G_OBJECT(user_data), "options");
   if (!options) {
     dlg_options_update(user_data);
   }
@@ -1455,7 +1455,7 @@ gboolean mini_board_click         (GtkWidget       *widget, GdkEventButton  *eve
 	GSList *radio_button;
 	int current = OPEN;
 
-  options = gtk_object_get_data(GTK_OBJECT(user_data), "options");
+  options = g_object_get_data(G_OBJECT(user_data), "options");
 
 	gdk_window_get_size(widget->window, &width, &height);
 
@@ -1476,7 +1476,7 @@ gboolean mini_board_click         (GtkWidget       *widget, GdkEventButton  *eve
 		}
 	}
 
-	current = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(radio_button->data), "type"));
+	current = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(radio_button->data), "type"));
 
 	options->map[y*options->width+x].type = current;
 
@@ -1509,7 +1509,7 @@ gboolean init_preview (GtkWidget *widget, GdkEventConfigure *event,
 
 gboolean preview_expose (GtkWidget *widget, GdkEventExpose *event, 
                        gpointer user_data) {
-  if (GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "clean")))
+  if (GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "clean")))
     gdk_draw_pixmap( widget->window, widget->style->fg_gc[GTK_WIDGET_STATE(widget)], preview_buf, event->area.x, event->area.y, event->area.x, event->area.y,
         event->area.width, event->area.height);
 	return 1;
@@ -1523,7 +1523,7 @@ gboolean draw_preview (GtkWidget *dlg_options) {
   int t_width, t_height;
   int x, y;
   GdkGC *solid_gc;
-  preview = gtk_object_get_data(GTK_OBJECT(dlg_options), "preview");
+  preview = g_object_get_data(G_OBJECT(dlg_options), "preview");
   if (!preview)
     return FALSE;
   if (!widget || !widget->window)
@@ -1619,7 +1619,7 @@ void draw_mini_board(GtkWidget *dlg_options) {
   combat_game *options;
 	GdkGC *solid_gc;
 
-  options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
+  options = g_object_get_data(G_OBJECT(dlg_options), "options");
   if (!options)
     dlg_options_update(dlg_options);
   if (!widget || !widget->window)

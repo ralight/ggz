@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 6100 2004-07-13 17:04:00Z josef $
+ * $Id: main.c 6285 2004-11-06 07:00:27Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -177,8 +177,8 @@ static void save_data(void)
 	GdkColor *back_color, *last_color;
 
 	/* Write to config file */
-	back_color = gtk_object_get_data(GTK_OBJECT(main_win), "back_color");
-	last_color = gtk_object_get_data(GTK_OBJECT(main_win), "last_color");
+	back_color = g_object_get_data(G_OBJECT(main_win), "back_color");
+	last_color = g_object_get_data(G_OBJECT(main_win), "last_color");
 	
 	ggz_conf_write_int(config_file, "background color", "red",
 	                   back_color->red);

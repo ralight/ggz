@@ -44,8 +44,8 @@ on_opt_btn_ok_clicked                  (GtkButton       *button,
 {
 	GtkWidget *sb_x, *sb_y;
 
-	sb_x = gtk_object_get_data(GTK_OBJECT(opt_dialog), "opt_spin_x");
-	sb_y = gtk_object_get_data(GTK_OBJECT(opt_dialog), "opt_spin_y");
+	sb_x = g_object_get_data(G_OBJECT(opt_dialog), "opt_spin_x");
+	sb_y = g_object_get_data(G_OBJECT(opt_dialog), "opt_spin_y");
 
 	/* Get the number of squares wide and high */
 	board_width = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(sb_x));

@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 2000
  * Desc: Options dialog code
- * $Id: options_dlg.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: options_dlg.c 6285 2004-11-06 07:00:27Z jdorje $
  *
  * Copyright (C) 2000-2004 GGZ Development Team
  *
@@ -280,7 +280,7 @@ on_back_button_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
   GtkWidget *ok;
-  GdkColor *col = gtk_object_get_data(GTK_OBJECT(button), "color");
+  GdkColor *col = g_object_get_data(G_OBJECT(button), "color");
   color_sel = create_colorselectiondialog(col);
   ok = lookup_widget(color_sel, "ok_button1");
   g_signal_connect_object(ok, "clicked",
@@ -325,7 +325,7 @@ on_last_button_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
   GtkWidget *ok;
-  GdkColor *col = gtk_object_get_data(GTK_OBJECT(button), "color");
+  GdkColor *col = g_object_get_data(G_OBJECT(button), "color");
   color_sel = create_colorselectiondialog(col);
   ok = lookup_widget(color_sel, "ok_button1");
   g_signal_connect_object(ok, "clicked",

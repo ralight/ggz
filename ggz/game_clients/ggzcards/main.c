@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: main.c 6285 2004-11-06 07:00:27Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -210,7 +210,7 @@ void statusbar_message(const char *msg)
 	if (sb == NULL) {
 		/* Retrieve the statusbar widget, which was allocated in
 		   create_dlg_main(). */
-		sb = gtk_object_get_data(GTK_OBJECT(dlg_main), "statusbar1");
+		sb = g_object_get_data(G_OBJECT(dlg_main), "statusbar1");
 		sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(sb),
 							  "Game Messages");
 	}
@@ -229,7 +229,7 @@ void messagebar_message(const char *msg)
 	static guint sb_context;
 
 	if (sb == NULL) {
-		sb = gtk_object_get_data(GTK_OBJECT(dlg_main), "messagebar");
+		sb = g_object_get_data(G_OBJECT(dlg_main), "messagebar");
 		sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(sb),
 							  "Game Messages");
 	}
@@ -245,7 +245,7 @@ static void on_mnu_messages_activate(GtkMenuItem * menuitem,
 				     gpointer user_data)
 {
 	char *mark = user_data;
-	GtkWidget *dlg = gtk_object_get_data(GTK_OBJECT(msg_menu), mark);
+	GtkWidget *dlg = g_object_get_data(G_OBJECT(msg_menu), mark);
 
 	ggz_debug(DBG_TABLE, "Activating dialog for mark %s.", mark);
 
@@ -268,11 +268,11 @@ static GtkWidget *get_message_dialog(const char *mark)
 {
 	GtkWidget *menu_item, *dlg;
 
-	menu_item = gtk_object_get_data(GTK_OBJECT(dlg_main), mark);
+	menu_item = g_object_get_data(G_OBJECT(dlg_main), mark);
 	if (!menu_item)
 		return NULL;
 
-	dlg = gtk_object_get_data(GTK_OBJECT(msg_menu), mark);
+	dlg = g_object_get_data(G_OBJECT(msg_menu), mark);
 	assert(dlg);
 	return dlg;
 }
@@ -366,7 +366,7 @@ void menubar_text_message(const char *mark, const char *msg)
 
 		/* in theory, the window *can't* be destroyed. */
 	} else {
-		label = gtk_object_get_data(GTK_OBJECT(dlg), "label");
+		label = g_object_get_data(G_OBJECT(dlg), "label");
 		assert(label);
 		gtk_label_set_text(GTK_LABEL(label), msg);
 	}
@@ -432,9 +432,9 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 
 	/* Retrieve data.  If the cardlist maxlength has changed, we're in
 	   trouble. */
-	image = gtk_object_get_data(GTK_OBJECT(dlg), "image");
-	canvas = gtk_object_get_data(GTK_OBJECT(dlg), "canvas");
-	name_labels = gtk_object_get_data(GTK_OBJECT(dlg), "names");
+	image = g_object_get_data(G_OBJECT(dlg), "image");
+	canvas = g_object_get_data(G_OBJECT(dlg), "canvas");
+	name_labels = g_object_get_data(G_OBJECT(dlg), "names");
 	assert(image && canvas && name_labels);
 
 	gdk_window_get_size(image, &w, &h);

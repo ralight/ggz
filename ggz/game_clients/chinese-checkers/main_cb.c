@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Callbacks for the main dialog window
- * $Id: main_cb.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: main_cb.c 6285 2004-11-06 07:00:27Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -86,8 +86,8 @@ on_preferences_menu_activate	       (GtkMenuItem	*menuitem,
 				   "destroy",
 				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 				   &dlg_prefs);
-		list = gtk_object_get_data(GTK_OBJECT(dlg_prefs), "theme_list");
-		toggle = gtk_object_get_data(GTK_OBJECT(dlg_prefs), "check_beep");
+		list = g_object_get_data(G_OBJECT(dlg_prefs), "theme_list");
+		toggle = g_object_get_data(G_OBJECT(dlg_prefs), "check_beep");
 
 		gtk_clist_columns_autosize(GTK_CLIST(list));
 		for(i=0; i<game.num_themes; i++) {

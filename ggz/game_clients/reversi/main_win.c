@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: main_win.c 6285 2004-11-06 07:00:27Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -80,7 +80,7 @@ void game_status( const char* format, ... )
 	
 	/* ggz_debug("main", "Game status message: %s", message); */
 	
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
+	tmp = g_object_get_data(G_OBJECT(main_win), "statusbar");
 	
 	id = gtk_statusbar_get_context_id( GTK_STATUSBAR(tmp), "Main" );
 	
@@ -118,7 +118,7 @@ void display_board(void)
 	GtkWidget* black_label;
 	char score[29];
 
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
+	tmp = g_object_get_data(G_OBJECT(main_win), "drawingarea");
 	style = gtk_widget_get_style(main_win);
 
 	draw_bg(main_win);
@@ -188,7 +188,7 @@ static GdkPixbuf *load_pixmap(const char *name)
 
 static void board_resized(void)
 {
-	GtkWidget *widget = gtk_object_get_data(GTK_OBJECT(main_win),
+	GtkWidget *widget = g_object_get_data(G_OBJECT(main_win),
 						"drawingarea");
 	int w = widget->allocation.width, h = widget->allocation.height;
 	int i;
@@ -270,8 +270,8 @@ static void game_get_options(GtkMenuItem *menuitem, gpointer user_data)
   GtkWidget *dialog;
   GtkWidget *ok;
   GdkColor *last_color, *back_color;
-  last_color = gtk_object_get_data(GTK_OBJECT(main_win), "last_color");
-  back_color = gtk_object_get_data(GTK_OBJECT(main_win), "back_color");
+  last_color = g_object_get_data(G_OBJECT(main_win), "last_color");
+  back_color = g_object_get_data(G_OBJECT(main_win), "back_color");
   dialog = create_options_dialog(back_color, last_color);
   gtk_widget_show_all(dialog);
   ok = lookup_widget(dialog, "ok_button");
@@ -289,8 +289,8 @@ void update_options(GtkButton *button, gpointer user_data)
   GdkColor *bg_color, *last_color;
   GtkWidget *last = lookup_widget(user_data, "last_button");
   GtkWidget *back = lookup_widget(user_data, "back_button");
-  bg_color = gtk_object_get_data(GTK_OBJECT(back), "color");
-  last_color = gtk_object_get_data(GTK_OBJECT(last), "color");
+  bg_color = g_object_get_data(G_OBJECT(back), "color");
+  last_color = g_object_get_data(G_OBJECT(last), "color");
   g_object_set_data(G_OBJECT(main_win), "last_color", last_color);
   g_object_set_data(G_OBJECT(main_win), "back_color", bg_color);
   gdk_gc_set_foreground(bg_gc, bg_color);
@@ -591,7 +591,7 @@ int get_gameover() {
 	else
 		game_status("That's a draw! Not bad!");
 
-	button = gtk_object_get_data(GTK_OBJECT(main_win), "again_button");
+	button = g_object_get_data(G_OBJECT(main_win), "again_button");
 	gtk_widget_show(button);
 
 	return 1;
