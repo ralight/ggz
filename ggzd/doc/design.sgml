@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 337 $</revnumber>
-	<date>$Date: 2000-03-30 19:12:47 -0800 (Thu, 30 Mar 2000) $</date>
+	<revnumber>$Revision: 351 $</revnumber>
+	<date>$Date: 2000-03-31 23:07:30 -0800 (Fri, 31 Mar 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -171,6 +171,8 @@
             str: name of user who sent chat
             str: chat string
 
+	  MSG_UPDATE_ROOMS
+
 	  MSG_UPDATE_PLAYERS
 
 	  MSG_UPDATE_TYPES
@@ -257,10 +259,12 @@
 
 	  REQ_LIST_TABLES
             int: game type index (-1 for all type, -2 for reserved, -3 for open games)
+	    chr: server wide search (1 if yes, 0 if no)
 	  RSP_LIST_TABLES
             int: number of games (-1 for error)
             sequence of
-              int: table index
+	      int: room number
+   	      int: table index
               int: game type index
 	      str: table description
   	      chr: table state (1 if waiting for players, 2 if playing)
@@ -584,7 +588,7 @@
 	  list of ideas.
 
           <programlisting role="pseudocode">
-	    REQ_TABLE_LAUNCH
+	    REQ_GAME_LAUNCH
               int: size of options data in bytes
               (options data)
               int: number of seats at table
@@ -592,19 +596,19 @@
 	        int: seat assignment (-1 for OPEN, -2 for COMP, -3 RESV)
 	        str: name of player (if assignment >=0 or == RESV)
                 fd:  file dscriptor of player (if assignment >= 0)
-            RSP_TABLE_LAUNCH
+            RSP_GAME_LAUNCH
               chr: success flag (0 if OK, -1 if error)
           
-            REQ_TABLE_JOIN
+            REQ_GAME_JOIN
 	      int: seat number
   	      str: name of player
               fd:  file dscriptor of player 
-            RSP_TABLE_JOIN
+            RSP_GAME_JOIN
               chr: success flag (0 if OK, -1 if error)
 
-            REQ_TABLE_LEAVE
+            REQ_GAME_LEAVE
               str: name of player
-            RSP_TABLE_LEAVE
+            RSP_GAME_LEAVE
               chr: success flag (0 if OK, -1 if error)
 
             MSG_GAME_OVER
