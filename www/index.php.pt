@@ -13,29 +13,29 @@ Jogos na internet para todos.
 <tr>
 <td valign="top" colspan="2">
 
-<i>Nos precisamos um tradutor brasileiro :)</i><br>
+<i>Nós precisamos um tradutor para a língua portuguesa :)</i><br>
 
 <i>O que é GGZ?</i><br>
-GGZ (uma abreviatura de GGZ Gaming Zone) desinvolve jogos e programas parentes
+GGZ (uma abreviatura de GGZ Gaming Zone) desenvolve jogos e programas parentes
 para jogar online (tipo client-servidor). Valorizações dos jogadores, espetadores,
-jogadores artifiçais e um chatbot são peças do projeto.
+jogadores artifiçiais e um chatbot são peças do projeto.
 
 </td></tr>
 <tr><td valign="top">
 
-<a href="docs.php">Ler alguns documentos</a><br>
-<a href="/screenshots/">Ver alguns capturas da tela</a>
+<a href="docs.php">Leia alguns documentos</a><br>
+<a href="/screenshots/">Veja algumas capturas da tela</a>
 <br><br>
 
-<i>Baixe a versão a mais novo</i><br>
-O GGZ Gaming Zone 0.0.9 é disponível desde 17/Jul/2004.<br>
-<a href="/releases/0.0.9/release.php">Declaração do release</a><br>
-<a href="/releases/0.0.9/download.php">Vai para a página de baixar</a><br>
-<a href="/releases/0.0.9/installation.php">Como instalar</a>
+<i>Baixe a versão a mais nova</i><br>
+O GGZ Gaming Zone 0.0.10 é disponível desde 24/Jan/2005.<br>
+<a href="/releases/0.0.10/release.php">Declaração do release</a><br>
+<a href="/releases/0.0.10/download.php">Vai para a página de baixar</a><br>
+<a href="/releases/0.0.10/installation.php">Como instalar</a>
 
 </td><td valign="top">
 
-<a href="https://www.ggzcommunity.org/"><img src="/pics/splash/community.png" border="0"></a>
+<a href="/releases/0.0.10/release.php"><img src="/pics/splash/splash-0.0.10.png" border="0"></a>
 
 </td>
 </tr>
@@ -45,7 +45,7 @@ O GGZ Gaming Zone 0.0.9 é disponível desde 17/Jul/2004.<br>
 
 <?php include_once("site/newsparser.php"); ?>
 
-Notícias antigas podem ser procurado nos <a href="news.php">arquivos</a>.
+Notícias antigas podem ser procuradas nos <a href="news.php">arquivos</a>.
 <br>
 
 </font>
