@@ -247,10 +247,11 @@ void game_init_game()
 			game.max_bid_choices = 62;
 			game.max_bid_length = 13;
 			game.max_hand_length = 9;
+			game.name = "Suaro";
 			game.target_score = 50;
 			SUARO.shotgun = 1;	/* shotgun suaro */
 			SUARO.declarer = -1;
-			game.name = "Suaro";
+			game.last_trick = 1;	/* show "last trick" */
 			}
 			break;
 		case GGZ_GAME_LAPOCHA:
@@ -321,7 +322,7 @@ void game_init_game()
 
 	cards_create_deck(game.deck_type);
 
-	set_global_message("game", game.name);
+	set_global_message("game", "%s", game.name);
 
 	/* allocate hands */
 	for (s=0; s<game.num_seats; s++) {
@@ -332,7 +333,7 @@ void game_init_game()
 	game.bid_texts = alloc_string_array(game.max_bid_choices, game.max_bid_length);
 	game.bid_choices = (bid_t*)alloc(game.max_bid_choices * sizeof(bid_t));
 
-	set_global_message("", "");
+	set_global_message("", "%s", "");
 	for (s = 0; s < game.num_seats; s++)
 		game.seats[s].message[0] = 0;
 	if (game.bid_texts == NULL || game.bid_choices == NULL) {
@@ -880,7 +881,7 @@ void game_next_bid()
 			if (EUCHRE.maker >= 0)
 				game.bid_total = game.bid_count;
 			else if (game.bid_count == 8) {
-				set_global_message("", "Everyone passed; redealing.");
+				set_global_message("", "s", "Everyone passed; redealing.");
 				set_game_state( WH_STATE_NEXT_HAND );
 			} else
 				goto normal_order;
@@ -891,7 +892,7 @@ void game_next_bid()
 				/* done bidding */
 				if (BRIDGE.contract == 0) {
 					ggz_debug("Four passes; redealing hand.");
-					set_global_message("", "Everyone passed; redealing.");
+					set_global_message("", "%s", "Everyone passed; redealing.");
 					set_game_state( WH_STATE_NEXT_HAND ); /* redeal hand */
 				} else {
 					ggz_debug("Three passes; bidding is over.");
@@ -910,7 +911,7 @@ void game_next_bid()
 				/* done bidding */
 				if (SUARO.contract == 0) {
 					ggz_debug("Two passes; redealing hand.");
-					set_global_message("", "Everyone passed; redealing.");
+					set_global_message("", "%s", "Everyone passed; redealing.");
 					set_game_state( WH_STATE_NEXT_HAND ); /* redeal hand */
 				} else {
 					ggz_debug("A pass; bidding is over.");
@@ -1332,6 +1333,8 @@ void game_set_player_message(player_t p)
 	char* message = game.seats[s].message;
 	int len = 0;
 
+	ggz_debug("Setting player %d/%s's message.", p, ggz_seats[p].name);
+
 	/* This function is tricky.  The problem is that we're trying to assemble a single player string out of
 	 * multiple units of data - score, bid, tricks, etc.  The solution here is to integrate these all into one
 	 * function (this one).  The problem is that you have to check each unit of data to see if it should be
@@ -1483,7 +1486,7 @@ void game_end_trick(void)
 	}
 
 
-	{
+	if (game.last_trick) {
 		/* this sets up a "last trick" message */
 		int p_r;
 		char message[512];
@@ -1500,7 +1503,7 @@ void game_end_trick(void)
 					/*, p == hi_player ? " (winner)" : "" */
 					);
 		}
-		set_global_message("Last Trick", message);
+		set_global_message("Last Trick", "%s", message);
 	}
 
 	game.players[hi_player].tricks++;
@@ -1530,7 +1533,7 @@ void game_end_trick(void)
  */
 void game_end_hand(void)
 {
-	player_t p, p_r;
+	player_t p;
 
 	switch (game.which_game) {
 		case GGZ_GAME_LAPOCHA:

@@ -110,6 +110,7 @@ struct wh_game_t {
 	int must_overtrump;	/* if this is set, then a player must trump/overtrump if possible (i.e. La Pocha) */
 	int must_break_trump;	/* if this is set, then trump can't be lead until it's been broken (i.e. spades) */
 	int target_score;	/* after someone reaches this score, the game is over (if used) */
+	int last_trick;		/* should the last trick be sent to all the players? */
 
 	card_t lead_card;	/* the card that was lead this trick */
 	char trump;		/* the suit of trump; 0-3 or other for none*/

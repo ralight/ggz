@@ -39,16 +39,8 @@
 /* Global game variables */
 struct wh_game_t game = {0};
 
-
-/* NOTE ON "MESSAGES"
- *   - Each seat has a message.  The client should display this near to the player.
- *     It may contain information such as bid, etc.
- *   - There is a global message.  The client should display this prominently.
- *     It may contain information such as contract, trump, etc.
- *   - There are additional "tagged" global messages.  These are not implemented.
- */
-
-char* game_states[] = {"WH_STATE_NOTPLAYING", "WH_STATE_WAITFORPLAYERS", "WH_STATE_NEXT_HAND",
+char* game_states[] = {"WH_STATE_PRELAUNCH", "WH_STATE_NOTPLAYING", "WH_STATE_WAITFORPLAYERS",
+			"WH_STATE_NEXT_HAND",
 			"WH_STATE_FIRST_BID", "WH_STATE_NEXT_BID", "WH_STATE_WAIT_FOR_BID",
 			"WH_STATE_FIRST_TRICK", "WH_STATE_NEXT_TRICK", "WH_STATE_NEXT_PLAY",
 			"WH_STATE_WAIT_FOR_PLAY"};
@@ -84,6 +76,15 @@ void restore_game_state()
 	game.state = game.saved_state;
 }
 
+
+/* NOTE ON "MESSAGES"
+ *   - Each seat has a message.  The client should display this near to the player.
+ *     It may contain information such as bid, etc.
+ *   - There is a global message.  The client should display this prominently.
+ *     It may contain information such as contract, trump, etc.
+ *   - There are additional "tagged" global messages.  These are not implemented.
+ */
+
 /* send_player_message()
  *   sends seat s's message to player p
  *   fails silently...
@@ -105,6 +106,7 @@ void send_player_message(seat_t s, player_t p)
 void send_player_message_toall(seat_t s)
 {
 	player_t p;
+	ggz_debug("Sending seat %d/%s's message to all.", s, game.seats[s].ggz->name);
 	for (p = 0; p < game.num_players; p++)
 		send_player_message(s, p);
 }
@@ -118,8 +120,12 @@ void send_global_message(char* mark, player_t p)
 	/* the "mark" is a tag on the message that the client uses to identify it */
 	int fd = ggz_seats[p].fd;
 	char* message = get_global_message(mark);
+	if (mark == NULL) {
+		ggz_debug("SERVER BUG: send_global_message: NULL mark.");
+		return;
+	}
 	if (fd == -1) return;
-	if (message == NULL) return;
+	if (message == NULL) message = ""; /* this happens sometimes */
 	ggz_debug("Sending global message to player %d/%s: %s", p, ggz_seats[p].name, message);
 	es_write_int(fd, WH_MESSAGE_GLOBAL);
 	es_write_string(fd, mark);
@@ -143,6 +149,7 @@ void send_all_global_messages(player_t p)
 	send_global_message("", p);
 	send_global_message("game", p);
 	send_global_message("Options", p);
+	send_global_message("Last Trick", p);
 }
 
 /* set_global_message
@@ -174,7 +181,7 @@ void set_global_message(char* mark, char* message, ...)
 	if (different) {
 		game.messages[hash] = strdup(buf);
 		if (game.messages[hash] == NULL) {
-			ggz_debug("strdup returned NULL");
+			ggz_debug("ERROR: set_global_message: strdup returned NULL");
 			/* it's NULL, so we should just be able to keep going... */
 		}
 		send_global_message_toall(mark);
