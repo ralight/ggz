@@ -27,6 +27,9 @@
 #include "protocols.h"
 #include <easysock.h>
 
+#include <time.h>
+#include <stdlib.h>
+
 // Global game variables
 struct rvr_game_t rvr_game;
 
@@ -45,6 +48,8 @@ void game_init() {
 	rvr_game.board[CART(5,5)] = WHITE;
 	rvr_game.board[CART(5,4)] = BLACK;
 	rvr_game.board[CART(4,5)] = BLACK;
+	// Inits random number generator
+	srand(time(0));
 }
 
 // Handle server messages
@@ -267,8 +272,14 @@ void game_play() {
 }
 
 int game_bot_move(int player) {
-	// Returns a invalid move
-	return RVR_ERROR_INVALIDMOVE;
+	int i;
+
+	// Returns a random move between 0 and 63
+	i=(int) (64.0*rand()/(RAND_MAX+1.0));
+	if (game_check_move(player, i) >= 0)
+		return i;
+	else
+		return game_bot_move(player);
 }
 
 int game_check_move(int player, int move) {
@@ -339,7 +350,7 @@ int game_make_move(int player, int move) {
 		status = -1;
 
 	for (a = 0; a < ggz_seats_num(); a++) {
-		fd = ggz_seats[PLAYER2SEAT(player)].fd;
+		fd = ggz_seats[a].fd;
 		if (fd == -1)
 			continue;
 		if (status > 0) {
