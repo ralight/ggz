@@ -25,7 +25,7 @@ msgstr "  Lade...  "
 #: ../../ggz-kde/src/KGGZ.cpp:1552 ../../ggz-kde/src/widgets/KGGZBase.cpp:65
 #: KGGZ.cpp:1437 KGGZBase.cpp:68
 msgid "  No room selected  "
-msgstr "  Kein Raum ausgewählt"
+msgstr "  Kein Raum ausgewÃ¤hlt"
 
 #: ../../ggz-kde/src/widgets/KGGZBase.cpp:63 KGGZBase.cpp:66
 msgid "  Not connected  "
@@ -33,7 +33,7 @@ msgstr "  Nicht verbunden  "
 
 #: ../../ggz-kde/src/widgets/KGGZBase.cpp:140 KGGZBase.cpp:167
 msgid "  Ready for connection.  "
-msgstr "  Bereit für Verbindung.  "
+msgstr "  Bereit fÃ¼r Verbindung.  "
 
 #: ../../ggz-kde/src/KGGZ.cpp:785 KGGZ.cpp:754
 msgid "  Room: "
@@ -45,7 +45,7 @@ msgstr "  Status: "
 
 #: ../../ggz-kde/src/KGGZLaunch.cpp:166 KGGZLaunch.cpp:165
 msgid " (out of "
-msgstr " (außerhalb von "
+msgstr " (auÃŸerhalb von "
 
 #: ../../ggz-kde/src/KGGZ.cpp:615 KGGZ.cpp:574
 msgid " enters the room."
@@ -167,7 +167,7 @@ msgstr "/help - Dieser Hilfebildschirm (auch /?)"
 
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:215 KGGZChat.cpp:249
 msgid "/mark - mark a time stamp."
-msgstr "/mark - Füge einen Zeitstempel ein."
+msgstr "/mark - FÃ¼ge einen Zeitstempel ein."
 
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:210 KGGZChat.cpp:245
 msgid "/me &lt;msg&gt; - sends an emphasized phrase."
@@ -201,11 +201,11 @@ msgstr "Ein Protokollfehler ist aufgetreten!"
 #: ../../ggz-kde/src/widgets/KGGZBase.cpp:108 KGGZAbout.cpp:69
 #: KGGZBase.cpp:125
 msgid "About the GGZ Gaming Zone"
-msgstr "Über die GGZ Gaming Zone"
+msgstr "Ãœber die GGZ Gaming Zone"
 
 #: KGGZGrubby.cpp:75
 msgid "Add this to the alert words:"
-msgstr "Füge dies zu den Alert-Wörtern hinzu:"
+msgstr "FÃ¼ge dies zu den Alert-WÃ¶rtern hinzu:"
 
 #: ../../ggz-kde/src/widgets/KGGZGrubby.cpp:85
 msgid "Alert this player if you see him:"
@@ -216,7 +216,7 @@ msgid ""
 "Although the TLS implementation may work,\n"
 "it is not widely tested yet and in no way secure!"
 msgstr "Obwohl die TLS-Implementierung funktionieren sollte,\n"
-"ist sie noch nicht genügend getestet!"
+"ist sie noch nicht genÃ¼gend getestet!"
 
 #: KGGZ.cpp:272
 msgid "An error occured! Sure it runs? Sure you don't need to be root?"
@@ -275,7 +275,7 @@ msgstr "Abbrechen"
 
 #: ../../ggz-kde/src/KGGZInput.cpp:52
 msgid "Chose a name for the new profile."
-msgstr "Wähle einen Namen für das neue Profil aus."
+msgstr "WÃ¤hle einen Namen fÃ¼r das neue Profil aus."
 
 #: ../../ggz-kde/src/KGGZConnect.cpp:117
 #, fuzzy
@@ -446,12 +446,12 @@ msgstr ""
 #: ../../ggz-kde/src/widgets/KGGZSelector.cpp:66 KGGZSelector.cpp:66
 #, fuzzy
 msgid "Frontend Selection"
-msgstr "OberflÃƒÂ¤che"
+msgstr "OberflÃ¤chenauswahl"
 
 #: ../../ggz-kde/src/KGGZ.cpp:1399
 #, fuzzy
 msgid "Frontend: "
-msgstr "OberflÃƒÂ¤che"
+msgstr "OberflÃ¤che"
 
 #: ../../ggz-kde/src/widgets/KGGZBase.cpp:111 KGGZBase.cpp:129
 #, fuzzy
@@ -881,9 +881,8 @@ msgid "Server port:"
 msgstr "Server host:"
 
 #: ../../ggz-kde/src/KGGZMeta.cpp:59 ../../ggz-kde/src/KGGZMeta.cpp:82
-#, fuzzy
 msgid "Server selection"
-msgstr "OberflÃƒÂ¤che"
+msgstr "Serverauswahl"
 
 #: ../../ggz-kde/src/widgets/KGGZPrefEnv.cpp:68
 msgid "Show connection dialog on startup"

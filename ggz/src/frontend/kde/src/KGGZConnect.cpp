@@ -243,7 +243,7 @@ void KGGZConnect::slotLoadProfile(int profile)
 		slotSaveProfile();
 	m_nosafe = 0;
 
-	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readonly);
+	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readonly | GGZCoreConfio::create);
 
 	// setup entries; try to find suitable first entry
 	if(profile == -1)
