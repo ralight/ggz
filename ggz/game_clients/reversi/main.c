@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 4272 2002-06-23 11:49:53Z dr_maux $
+ * $Id: main.c 4341 2002-08-07 06:31:57Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -62,7 +62,7 @@ static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
 
 static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
 {
-	int fd = (int)data;
+	int fd = *(int*)data;
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 	game.fd = fd;

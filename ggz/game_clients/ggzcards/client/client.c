@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 4332 2002-08-02 03:35:46Z jdorje $
+ * $Id: client.c 4341 2002-08-07 06:31:57Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -85,7 +85,7 @@ static int handle_req_play(void);
 static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e, void *data)
 {
 	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
-	handle_server_connect( (int)data );
+	handle_server_connect(*(int*)data);
 }
 #endif
 

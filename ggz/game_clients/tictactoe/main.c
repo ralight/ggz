@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 4268 2002-06-22 05:19:13Z bmh $
+ * $Id: main.c 4341 2002-08-07 06:31:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -88,7 +88,7 @@ static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
 
 static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e, void *data)
 {
-	int fd = (int)data;
+	int fd = *(int*)data;
 
 	ggzmod_set_state(game.ggzmod, GGZMOD_STATE_PLAYING);
 	game.fd = fd;

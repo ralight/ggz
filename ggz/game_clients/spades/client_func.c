@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 4269 2002-06-23 11:33:21Z dr_maux $
+ * $Id: client_func.c 4341 2002-08-07 06:31:57Z jdorje $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -190,7 +190,7 @@ void AppInit(void)
 
 static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
 {
-	int fd = (int)data;
+	int fd = *(int*)data;
 
 	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
 	gameState.spadesSock = fd;
