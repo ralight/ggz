@@ -105,7 +105,7 @@ static void ggz_connect(void)
 
 	bzero(&addr, sizeof(addr));
 	addr.sun_family = AF_LOCAL;
-	strcpy(addr.sun_path, fd_name);
+	strncpy(addr.sun_path, fd_name, 30);
 
 	if(connect(game.fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
 		ggz_debug("ggz_connect: no connection.  exit(-1).");
@@ -290,7 +290,7 @@ static int get_players(void)
 			statusbar_message(temp);
 			g_free(temp);
 		}
-		strcpy(game.players[i].name, t_name);
+		strncpy(game.players[i].name, t_name, 17);
 		table_set_name(i, game.players[i].name);
 		/* TODO: check for leaving the table, etc. */
 	}
