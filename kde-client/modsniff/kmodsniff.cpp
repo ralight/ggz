@@ -51,7 +51,7 @@ KModSniff::KModSniff(QWidget *parent, const char *name)
 	connect(m_search, SIGNAL(clicked()), SLOT(slotSearch()));
 
 	resize(400, 200);
-	setCaption("GGZ Module Sniffer");
+	setCaption(i18n("GGZ Module Sniffer"));
 	show();
 }
 

@@ -40,7 +40,8 @@ char *modsniff_modulefile(void)
 {
 	char *path;
 
-	path = modsniff_moduletest(PREFIX "/etc");
+	path = modsniff_moduletest(GGZMODULECONFDIR);
+	if(!path) path = modsniff_moduletest(PREFIX "/etc");
 	if(!path) path = modsniff_moduletest("/usr/local/etc");
 	if(!path) path = modsniff_moduletest("/etc");
 

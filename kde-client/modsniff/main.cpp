@@ -15,13 +15,13 @@ int main(int argc, char **argv)
 		"0.1",
 		I18N_NOOP("Utily to find locally installed GGZ game modules."),
 		KAboutData::License_GPL,
-		"(C) 2000,2001 Josef Spillner\n"
+		"(C) 2000 - 2003 Josef Spillner\n"
 		"The MindX Open Source Project",
 		I18N_NOOP("GGZ ModSniffer"),
-		"http://mindx.sourceforge.net/games/kggz",
-		"dr_maux@users.sourceforge.net");
+		"http://ggz.sourceforge.net/clients/modsniff",
+		"josef@ggzgamingzone.org");
 
-	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Author"), "dr_maux@users.sourceforge.net", "http://mindx.sourceforge.net");
+	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Author"), "josef@ggzgamingzone.org", "http://mindx.dyndns.org");
 
 	KCmdLineArgs::init(argc, argv, aboutData);
 
