@@ -75,7 +75,7 @@ static int user_list(int p_index);
 static int types_list(int p_index);
 static int table_list(int p_index);
 static int read_name(int, char[MAX_USER_NAME_LEN]);
-
+static int type_match_table(int type, int num);
 
 /*
  * launch_handler accepts the socket of a new player and launches
@@ -762,20 +762,27 @@ static int types_list(int p_index)
 static int table_list(int p_index)
 {
 
-	int i, j, fd, count, type, tmp;
+	int i, j, fd, type, player_num, seated_humans;
+	int count = 0;
 	char name[MAX_USER_NAME_LEN + 1];
 
-	TableInfo info[MAX_TABLES];
-
+	TableInfo tables[MAX_TABLES];
+	int indices[MAX_TABLES];
+	
 	fd = players.info[p_index].fd;
 
 	if (FAIL(es_read_int(fd, &type)))
 		return (-1);
 
+	/* Copy tables of interest to local list */
 	pthread_rwlock_rdlock(&game_tables.lock);
-	count = game_tables.count;
-	for (i = 0; i < count; i++)
-		info[i] = game_tables.info[i];
+	for (i = 0; i < MAX_TABLES; i++) {
+		if (game_tables.info[i].type_index != -1
+		    && type_match_table(type, i)) {
+			tables[count] = game_tables.info[i];
+			indices[count++] = i;
+		}
+	}
 	pthread_rwlock_unlock(&game_tables.lock);
 
 	if (FAIL(es_write_int(fd, RSP_TABLE_LIST)) ||
@@ -783,27 +790,19 @@ static int table_list(int p_index)
 		return (-1);
 
 	for (i = 0; i < count; i++) {
-		if (type >= 0 && type != info[i].type_index)
-			continue;
-		if (type == NG_TYPE_OPEN && info[i].open_seats == 0)
-			continue;
-		if (type == NG_TYPE_RES)   /* we don't handle reserves yet */
-			continue;
-		
-		if (FAIL(es_write_int(fd, i)) ||
-		    FAIL(es_write_int(fd, info[i].type_index)) ||
-		    FAIL(es_write_char(fd, info[i].playing)) ||
-		    FAIL(es_write_int(fd, info[i].num_seats)) ||
-		    FAIL(es_write_int(fd, info[i].open_seats)) ||
-		    FAIL(es_write_int(fd,
-				      info[i].num_humans -
-				      info[i].open_seats))) 
+		seated_humans = tables[i].num_humans - tables[i].open_seats;
+		if (FAIL(es_write_int(fd, indices[i]))
+		    || FAIL(es_write_int(fd, tables[i].type_index))
+		    || FAIL(es_write_char(fd, tables[i].playing))
+		    || FAIL(es_write_int(fd, tables[i].num_seats))
+		    || FAIL(es_write_int(fd, tables[i].open_seats))
+		    || FAIL(es_write_int(fd, seated_humans)))
 			return (-1);
-		for (j = 0; j < info[i].num_humans - info[i].open_seats; j++) {
-			tmp = info[i].players[j];
+
+		for (j = 0; j < seated_humans; j++) {
+			player_num = tables[i].players[j];
 			pthread_rwlock_rdlock(&players.lock);
-			strncpy(name, players.info[tmp].name,
-				MAX_USER_NAME_LEN + 1);
+			strcpy(name, players.info[player_num].name);
 			pthread_rwlock_unlock(&players.lock);
 			if (FAIL(es_write_string(fd, name)))
 				return (-1);
@@ -920,4 +919,15 @@ int num_comp_play(unsigned char mask)
 
 }
 
+
+/* FIXME: move to type.c */
+int type_match_table(int type, int num)
+{
+	/* FIXME: Do reservation checking properly */
+	return ( type == NG_TYPE_ALL
+		 || (type >= 0 && type == game_tables.info[num].type_index)
+		 || (type == NG_TYPE_OPEN && game_tables.info[num].open_seats)
+		 || type == NG_TYPE_RES);
+}
+		
 
