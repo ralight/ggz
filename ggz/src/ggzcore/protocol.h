@@ -26,8 +26,6 @@
 #ifndef __PROTOCOL_H__
 #define __PROTOCOL_H__
 
-#include <ggz_common.h>
-
-/* FIXME: this file is depricated */
+#define GGZ_CS_PROTO_VERSION 7
 
 #endif /*__PROTOCOL_H__*/
