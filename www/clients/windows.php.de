@@ -1,0 +1,36 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Windows-Client: WGGZ</b><br>
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" width="100%">
+
+<i>Merkmale</i><br>
+<ul>
+<li>Portierung von GGZ nach Windows
+<li>unterstützt etliche Spiele
+</ul>
+<br>
+
+</td><td valign="top">
+
+<img src="pics/wggz.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

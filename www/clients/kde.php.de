@@ -1,0 +1,39 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>KDE-Client: KGGZ</b><br>
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" width="100%">
+
+<i>Merkmale</i><br>
+<ul>
+<li>zeigt Icons aller Spieltypen an
+<li>Chat unterstützt Auto-Vervollständigung und Befehlsspeicher
+<li>enhält einen kleinen Webbrowser
+<li>kann in die Taskleiste geschrumpft werden, um Platz zu sparen
+<li>Dialogfenster zur Kommunikation mit Grubby
+</ul>
+<br>
+
+</td><td valign="top">
+
+<img src="pics/kggz.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

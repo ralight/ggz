@@ -1,0 +1,37 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Client für die Konsole: GGZ-Txt</b><br>
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" width="100%">
+
+<i>Merkmale</i><br>
+<ul>
+<li>benötigt kein X11 zur Ausführung
+<li>unterstützt Terminal-Farben und Befehlsspeicher (readline, history)
+<li>kann zum Spielen verwendet werden, z.B. unter xterm
+</ul>
+<br>
+
+</td><td valign="top">
+
+<img src="pics/ggz-txt.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

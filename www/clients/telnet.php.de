@@ -1,0 +1,37 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Telnet-Client: TelGGZ</b><br>
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" width="100%">
+
+<i>Merkmale</i><br>
+<ul>
+<li>läuft auf entfernten Rechnern und ist von überall her über telnet/netcat ansprechbar
+<li>nutzt den Meta-Server, um nur gültige Server anzubieten
+<li>Antwort-Pufferung während der Chat-Eingaben
+</ul>
+<br>
+
+</td><td valign="top">
+
+<img src="pics/telggz.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
