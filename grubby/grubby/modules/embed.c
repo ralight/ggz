@@ -27,7 +27,7 @@ static char **aliaslist = NULL;
 static char **scriptlist = NULL;
 
 /* Empty init */
-static void gurumod_init(const char *datadir)
+void gurumod_init(const char *datadir)
 {
 	int handle;
 	char *path;
@@ -69,7 +69,7 @@ static void gurumod_init(const char *datadir)
 }
 
 /* Execute embedded scripts */
-static Guru *gurumod_exec(Guru *message)
+Guru *gurumod_exec(Guru *message)
 {
 	char *script = NULL;
 	int i;
