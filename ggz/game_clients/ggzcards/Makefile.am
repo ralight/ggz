@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4027 2002-04-21 01:36:44Z jdorje $
+# $Id: Makefile.am 4064 2002-04-23 19:58:44Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -21,6 +21,7 @@ uninstall:
 ggzexecmod_PROGRAMS = ggz.ggzcards
 
 ggz_ggzcards_SOURCES = \
+	ai.h ai.c \
 	animation.c animation.h \
 	cb_main.c cb_main.h \
 	dlg_about.c dlg_about.h \

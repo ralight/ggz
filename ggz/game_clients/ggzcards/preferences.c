@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 4059 2002-04-23 07:36:00Z jdorje $
+ * $Id: preferences.c 4064 2002-04-23 19:58:44Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -153,6 +153,15 @@ PrefType pref_types[] = {
 	    "try to exit during a game."),
 	 &preferences.confirm_exit,
 	 TRUE},
+	
+#ifdef DEBUG
+	{"use_ai",
+	 N_("Have the AI play for you"),
+	 N_("If selected, the AI player will play the game for you.  "
+	    "This is useful as a debugging tool."),
+	 &preferences.use_ai,
+	 FALSE},
+#endif /* DEBUG */
 	
 	{NULL, NULL, NULL, 0}
 };

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4058 2002-04-23 07:13:12Z jdorje $
+ * $Id: game.c 4064 2002-04-23 19:58:44Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -29,6 +29,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -38,6 +39,7 @@
 
 #include "client.h"
 
+#include "ai.h"
 #include "animation.h"
 #include "cb_main.h"
 #include "dlg_bid.h"
@@ -132,6 +134,22 @@ void game_play_card(int card_num)
 	assert(status == 0);
 }
 
+#ifdef DEBUG
+static void game_play_card2(card_t card)
+{
+	int i;
+	hand_t *hand = &ggzcards.players[ggzcards.play_hand].hand;
+	
+	for (i = 0; i < hand->hand_size; i++)
+		if (are_cards_equal(card, hand->cards[i])) {
+			game_play_card(i);
+			return;
+		}
+	assert(0);
+	game_play_card(0);
+}
+#endif /* DEBUG */
+
 void game_send_newgame(void)
 {
 	GtkWidget *menu;
@@ -185,6 +203,11 @@ void game_alert_newgame(cardset_type_t cardset_type)
 	int p;
 	
 	ggz_debug("main", "Received newgame alert from server.");
+	
+#ifdef DEBUG
+	if (preferences.use_ai)
+		start_hand();
+#endif /* DEBUG */
 	
 	/* Initialize table_cards to unknown. */
 	for (p = 0; p < MAX_NUM_PLAYERS; p++)
@@ -308,6 +331,33 @@ void game_get_bid(int possible_bids,
 {
 	ggz_debug("main", "Handling bid request; %d choices.", possible_bids);
 
+	if (preferences.bid_on_table) {
+		statusbar_message(_("It's your turn to bid.  Please choose "
+		                    "a bid from the selection above."));
+	} else {
+		statusbar_message(_("It's your turn to bid.  Please choose "
+		                    "a bid from the bid window."));
+	}
+	
+#ifdef DEBUG
+	if (preferences.use_ai) {
+		/* We ignore bid_texts and bid_descs */
+		bid_t bid = get_bid(bid_choices, possible_bids);
+		int i;
+	
+		for (i = 0; i < possible_bids; i++) {
+			if (bid.bid == bid_choices[i].bid) {
+				game_send_bid(i);
+				return;
+			}
+		}
+	
+		assert(0);
+		game_send_bid(random() % possible_bids);
+		return;	
+	}
+#endif /* DEBUG */
+
 	/* We ignore the bid_choices themselves. */
 	dlg_bid_display(possible_bids, bid_texts, bid_descs);
 
@@ -316,20 +366,22 @@ void game_get_bid(int possible_bids,
 	   this point. */
 	table_redraw();
 #endif
-
-	if (preferences.bid_on_table) {
-		statusbar_message(_("It's your turn to bid.  Please choose "
-		                    "a bid from the selection above."));
-	} else {
-		statusbar_message(_("It's your turn to bid.  Please choose "
-		                    "a bid from the bid window."));
-	}
 }
 
 void game_alert_bid(int bidder, bid_t bid)
 {
-	/* nothing */
+#ifdef DEBUG
+	if (preferences.use_ai)
+		alert_bid(bidder, bid);
+#endif /* DEBUG */
+
+	/* otherwise nothing */
 }
+
+#ifdef DEBUG
+static bool *valid_plays = NULL;
+static card_t play_card;
+#endif /* DEBUG */
 
 void game_get_play(int hand)
 {
@@ -344,6 +396,19 @@ void game_get_play(int hand)
 			 ggzcards.players[hand].name);
 		statusbar_message(buf);
 	}
+	
+#ifdef DEBUG
+	if (preferences.use_ai) {
+		int i;
+
+		valid_plays = ggz_realloc(valid_plays, ggzcards.players[hand].hand.hand_size * sizeof(*valid_plays));
+		for (i = 0; i < ggzcards.players[hand].hand.hand_size; i++)
+			valid_plays[i] = TRUE;
+	
+		play_card = get_play(ggzcards.play_hand, valid_plays);
+		game_play_card2(play_card);
+	}
+#endif /* DEBUG */
 }
 
 void game_alert_badplay(char *err_msg)
@@ -370,6 +435,21 @@ void game_alert_badplay(char *err_msg)
 	table_show_cards(TRUE);
 
 	statusbar_message(err_msg);
+	
+#ifdef DEBUG
+	if (preferences.use_ai) {
+		int i, hand = ggzcards.play_hand;
+	
+		for (i = 0; i < ggzcards.players[hand].hand.hand_size; i++)
+			if (are_cards_equal(ggzcards.players[hand].hand.cards[i], play_card)) {
+				valid_plays[i] = 0;
+				break;
+			}
+	
+		play_card = get_play(ggzcards.play_hand, valid_plays);
+		game_play_card2(play_card);
+	}
+#endif /* DEBUG */
 }
 
 void game_alert_play(int player, card_t card, int pos)
@@ -377,6 +457,11 @@ void game_alert_play(int player, card_t card, int pos)
 	ggz_debug("main", "Handling play alert for player %d.", player);
 	
 	assert(player >= 0 && player < ggzcards.num_players);
+	
+#ifdef DEBUG
+	if (preferences.use_ai)
+		alert_play(player, card);
+#endif /* DEBUG */
 
 	if (preferences.animation) {
 		/* If this is a card _we_ played, then we'll already be
@@ -419,6 +504,11 @@ void game_alert_trick(int winner)
 	char *t_str;
 
 	ggz_debug("main", "Handling trick alert; player %d won.", winner);
+	
+#ifdef DEBUG
+	if (preferences.use_ai)
+		alert_trick(winner);
+#endif /* DEBUG */
 	
 	/* This is a bit of a hack - the code to move cards off the table
 	   is a bit mixed between animating and non-animating versions,

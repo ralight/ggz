@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 4059 2002-04-23 07:36:00Z jdorje $
+ * $Id: game.h 4064 2002-04-23 19:58:44Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -56,6 +56,11 @@ typedef struct {
 	bool autostart;
 	bool use_default_options;
 	bool confirm_exit;
+	
+#ifdef DEBUG
+	/* Debugging prefs */
+	bool use_ai;
+#endif
 } Preferences;
 
 /* Our set of preferences.  See above. */
