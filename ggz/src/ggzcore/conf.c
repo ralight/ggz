@@ -61,7 +61,7 @@ static int u_handle = -1;
 int make_path(char *full, mode_t mode);
 
 
-/* _ggzcore_conf_initialize()
+/* ggzcore_conf_initialize()
  *	Opens the global and/or user configuration files for the frontend.
  *	Either g_path or u_path can be NULL if the file is not to be used.
  *	The user config file will be created if it does not exist.
@@ -76,7 +76,7 @@ int ggzcore_conf_initialize(char *g_path, char *u_path)
 
 	if(g_handle != -1 || u_handle != -1) {
 		ggzcore_debug(GGZ_DBG_CONF,
-			      "_ggzcore_conf_initialize() called twice");
+			      "ggzcore_conf_initialize() called twice");
 		return -1;
 	}
 
