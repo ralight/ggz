@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2357 2001-09-04 20:22:55Z jdorje $
+ * $Id: ggz.c 2360 2001-09-05 02:47:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -545,12 +545,29 @@ void ggzd_dispatch(void)
 }
 
 
-/* NOT IMPLEMENTED
-void ggzd_io_is_pending(void)
+/* FIXME: this hasn't really been tested.  --JDS */
+int ggzd_io_is_pending(void)
 {
+	fd_set read_fd_set = active_fd_set;
+	int status;
+	struct timeval timeout;
 
+	/* is this really portable? */
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 0;
+
+	status = select(ggzd_fd_max() + 1,
+			&read_fd_set,
+			NULL, NULL, &timeout); /* FIXME */
+	if (status <= 0) {
+		if (errno != EINTR)
+			ggzd_gameover(-1);
+	}
+
+	/* the return value indicates the #
+	 * of FD's with pending data */
+	return (status > 0);	
 }
-*/
 
 
 void ggzd_io_read_all(void)
