@@ -30,6 +30,10 @@ GGZ-Gtk-Client: This core client has its translation files under po/. The
 process is nearly the same as with GGZ-Gtk-Games, but it is already sufficient
 to copy a .po file in there. Very easy.
 
+Both Gtk modules are now designed to not touch the translations at all, so
+don't forget to run a "make messages" in their po directories (as opposed to
+kggz).
+
 Documentation: Feel free to translate as you like - we will be thankful for
 every bit! Especially for docs which have yet to be written ;)
 
