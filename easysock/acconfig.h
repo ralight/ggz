@@ -16,7 +16,10 @@
 
 /* defined by automake */
 
+#undef AF_LOCAL
 #undef DEBUG_SOCKET
+#undef HAVE_MSGHDR_MSG_CONTROL
+#undef PF_LOCAL
 
 
 /* Leave that blank line there!!  Autoheader needs it.

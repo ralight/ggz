@@ -47,8 +47,6 @@
 
 #include <easysock.h>
 
-/* FIXME: Make configure test for this..*/
-#define HAVE_MSGHDR_MSG_CONTROL
 #define SA struct sockaddr  
 
 static es_err_func _err_func = NULL;
@@ -136,7 +134,7 @@ int es_make_socket(const EsSockType type, const unsigned short port,
 
 	case ES_SERVER:
 		name.sin_addr.s_addr = htonl(INADDR_ANY);
-		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &on, 
+		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void*)&on, 
 			       sizeof(on)) < 0
 		    || bind(sock, (SA *)&name, sizeof(name)) < 0) {
 			if (_err_func)
