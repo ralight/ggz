@@ -8,8 +8,8 @@
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
-#include "game.h"
 #include "combat.h"
+#include "game.h"
 
 extern GdkPixmap *cbt_buf;
 extern combat_game cbt_game;

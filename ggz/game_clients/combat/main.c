@@ -31,8 +31,8 @@
 #include <easysock.h>
 #include <gtk/gtk.h>
 
-#include "game.h"
 #include "combat.h"
+#include "game.h"
 #include "interface.h"
 #include "callbacks.h"
 #include "support.h"

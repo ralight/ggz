@@ -33,8 +33,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
-#include "game.h"
 #include "combat.h"
+#include "game.h"
 #include "map.h"
 #include "dlg_options.h"
 
@@ -204,6 +204,7 @@ void game_ask_options() {
   gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
                              GTK_SIGNAL_FUNC (game_send_options), 
                              GTK_OBJECT (options_dialog));
+  gtk_object_set_data(GTK_OBJECT(options_dialog), "number", GINT_TO_POINTER(cbt_game.number));
   gtk_widget_show_all(options_dialog);
 }
 
@@ -1012,14 +1013,14 @@ void game_request_sync() {
 }
 
 int game_send_options(GtkWidget *options_dialog) {
-  combat_game _game;
-  int a;
-  int *army_data;
-  char *map_data;
+  combat_game *_game;
   char *game_str = NULL;
 
 
   dlg_options_update(options_dialog);
+
+  _game = gtk_object_get_data(GTK_OBJECT(options_dialog), "options");
+  /*
 
   // Gets data
   _game.width = GPOINTER_TO_INT (gtk_object_get_data(GTK_OBJECT(options_dialog), "width_v"));
@@ -1061,7 +1062,8 @@ int game_send_options(GtkWidget *options_dialog) {
   // What I don't know, I just keep blank
   _game.name = NULL;
 
-  game_str = combat_options_string_write(&_game, 0);
+  */
+  game_str = combat_options_string_write(_game, 0);
 
   if (es_write_int(cbt_info.fd, CBT_MSG_OPTIONS) < 0 || es_write_string(cbt_info.fd, game_str) < 0)
     return -1;

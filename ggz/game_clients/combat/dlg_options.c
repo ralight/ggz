@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdlib.h>
 #include <dirent.h>
 
 #include <gdk/gdkkeysyms.h>
@@ -66,6 +67,7 @@ create_dlg_options (void)
   GtkWidget *label11;
   GtkWidget *hbuttonbox3;
   GtkWidget *load;
+  GtkWidget *save;
   GtkWidget *delete;
   GtkWidget *label9;
   GtkWidget *dialog_action_area2;
@@ -368,6 +370,15 @@ create_dlg_options (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox3), load);
   GTK_WIDGET_SET_FLAGS (load, GTK_CAN_DEFAULT);
 
+  save = gtk_button_new_with_label (_("Save"));
+  gtk_widget_set_name (save, "save");
+  gtk_widget_ref (save);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "save", save,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (save);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox3), save);
+  GTK_WIDGET_SET_FLAGS (save, GTK_CAN_DEFAULT);
+
   delete = gtk_button_new_with_label (_("Delete"));
   gtk_widget_set_name (delete, "delete");
   gtk_widget_ref (delete);
@@ -454,6 +465,8 @@ create_dlg_options (void)
 									   GTK_SIGNAL_FUNC (mini_board_click), dlg_options);
 	gtk_signal_connect(GTK_OBJECT (load), "clicked",
 									   GTK_SIGNAL_FUNC (load_button_clicked), dlg_options);
+	gtk_signal_connect(GTK_OBJECT (save), "clicked",
+									   GTK_SIGNAL_FUNC (save_button_clicked), dlg_options);
 	gtk_signal_connect(GTK_OBJECT (delete), "clicked",
 									   GTK_SIGNAL_FUNC (delete_button_clicked), dlg_options);
 	gtk_signal_connect(GTK_OBJECT (maps_list), "select-row",
@@ -521,6 +534,16 @@ void delete_map(GtkButton *button, gpointer user_data) {
   dlg_options_list_maps(GTK_WIDGET(user_data));
 }
 
+void save_button_clicked(GtkButton *button, gpointer dialog) {
+  GtkWidget *save_dlg;
+  GtkWidget *yes;
+  save_dlg = create_dlg_save();
+  yes = lookup_widget(save_dlg, "yes");
+  gtk_signal_connect(GTK_OBJECT(yes), "clicked",
+                     GTK_SIGNAL_FUNC (save_map), save_dlg); 
+  gtk_object_set_data(GTK_OBJECT(save_dlg), "dlg_options", dialog);
+  gtk_widget_show_all(save_dlg);
+}
 
 void load_button_clicked(GtkButton *button, gpointer dialog) {
   GtkWidget *maps_list = lookup_widget(dialog, "maps_list");
@@ -532,11 +555,22 @@ void load_button_clicked(GtkButton *button, gpointer dialog) {
   load_map(namelist[selection], (GtkWidget *)dialog);
 }
 
+void save_map(GtkButton *button, GtkWidget *dialog) {
+  GtkWidget *dlg_options = gtk_object_get_data(GTK_OBJECT(dialog), "dlg_options");
+  GtkWidget *map_name = lookup_widget(dialog, "map_name");
+  char *name = gtk_entry_get_text(GTK_ENTRY(map_name));
+  combat_game *game = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
+  game->name = (char *)malloc(strlen(name) + 1);
+  strcpy(game->name, name);
+  map_save(game);
+  dlg_options_list_maps(gtk_object_get_data(GTK_OBJECT(dlg_options), "maps_list"));
+}
+
+
 void load_map(char *filename, GtkWidget *dialog) {
   GtkWidget *width, *height;
   GtkWidget *unit_spin;
   int a;
-  char *terrain_data;
   combat_game *map;
   map = map_load(filename, NULL);
   /* Get the widgets */
@@ -552,31 +586,7 @@ void load_map(char *filename, GtkWidget *dialog) {
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(unit_spin), map->army[0][a]);
   }
   // Terrain data
-  terrain_data = (char *)malloc(map->width * map->height);
-  a = map->width*map->height;
-  while (--a>=0) {
-    switch(map->map[a].type) {
-      case T_OPEN:
-        terrain_data[a] = OPEN;
-        break;
-      case T_LAKE:
-        terrain_data[a] = LAKE;
-        break;
-      case T_NULL:
-        terrain_data[a] = BLACK;
-        break;
-      case OWNER(0)+T_OPEN:
-        terrain_data[a] = PLAYER_1;
-        break;
-      case OWNER(1)+T_OPEN:
-        terrain_data[a] = PLAYER_2;
-        break;
-      default:
-        terrain_data[a] = OPEN;
-        break;
-    }
-  }
-  gtk_object_set_data(GTK_OBJECT(dialog), "map_data", terrain_data);
+  gtk_object_set_data(GTK_OBJECT(dialog), "options", map);
   draw_mini_board(dialog);
 
   dlg_options_update(dialog);
@@ -600,6 +610,7 @@ create_dlg_save (void)
   gtk_widget_set_name (dlg_save, "dlg_save");
   gtk_object_set_data (GTK_OBJECT (dlg_save), "dlg_save", dlg_save);
   gtk_window_set_title (GTK_WINDOW (dlg_save), _("Save Map?"));
+  gtk_window_set_modal (GTK_WINDOW (dlg_save), TRUE);
   gtk_window_set_policy (GTK_WINDOW (dlg_save), TRUE, TRUE, FALSE);
 
   dialog_vbox3 = GTK_DIALOG (dlg_save)->vbox;
@@ -678,31 +689,35 @@ create_dlg_save (void)
 void dlg_options_update(GtkWidget *dlg_options) {
 	GtkWidget *width, *height;
 	GtkWidget *unit_spin;
-	int *army_data = NULL;
 	int a;
-	int width_v, height_v;
+  combat_game *options;
+
+  // Gets old value or allocs it
+  options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
+  if (!options) {
+    options = (combat_game *)malloc(sizeof(combat_game));
+    options->army = (char **)calloc(1, sizeof(char *));
+    options->army[0] = (char *)calloc(12, sizeof(char));
+    options->map = NULL;
+    options->name = NULL;
+    options->number = 0;
+  }
+  gtk_object_set_data(GTK_OBJECT(dlg_options), "options", options);
 
 	// Gets width / height
 	width = lookup_widget(dlg_options, "width");
 	height = lookup_widget(dlg_options, "height");
-	width_v = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(width));
-	height_v = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(height));
-
-	// Try to get old army data
-	army_data = gtk_object_get_data(GTK_OBJECT(dlg_options), "army_data");
-	if (!army_data)
-		army_data = (int *)malloc(sizeof(int) * 12);
+	options->width = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(width));
+	options->height = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(height));
 
 	// Gets army data
 	for (a = 0; a < 12; a++) {
 		unit_spin = gtk_object_get_data(GTK_OBJECT(dlg_options), spin_name[a]);
-		army_data[a] = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(unit_spin));
+		options->army[0][a] = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(unit_spin));
 	}
 	
 	// Sets data
-	gtk_object_set_data(GTK_OBJECT(dlg_options), "width_v", GINT_TO_POINTER(width_v));
-	gtk_object_set_data(GTK_OBJECT(dlg_options), "height_v", GINT_TO_POINTER(height_v));
-	gtk_object_set_data(GTK_OBJECT(dlg_options), "army_data", army_data);
+	gtk_object_set_data(GTK_OBJECT(dlg_options), "options", options);
 
 }
 
@@ -739,25 +754,29 @@ gboolean mini_board_expose               (GtkWidget       *widget, GdkEventExpos
 }
 
 gboolean mini_board_configure            (GtkWidget       *widget, GdkEventConfigure *event, gpointer         user_data) {
-	char *map_data = gtk_object_get_data(GTK_OBJECT(user_data), "map_data");
-	if (!map_data)
+  combat_game *options;
+	options = gtk_object_get_data(GTK_OBJECT(user_data), "options");
+  if (!options) {
+    dlg_options_update(user_data);
+  }
+	if (!options->map)
 		init_mini_board(user_data);
+	gtk_object_set_data(GTK_OBJECT(user_data), "options", options);
 	return 1;
 }
 
 gboolean mini_board_click         (GtkWidget       *widget, GdkEventButton  *event, gpointer         user_data) {
-	int width, height, width_v, height_v, pix_width, pix_height, x, y;
-	char *map_data = gtk_object_get_data(GTK_OBJECT(user_data), "map_data");
+	int width, height, pix_width, pix_height, x, y;
+  combat_game *options;
 	GSList *radio_button;
 	int current = OPEN;
 
+  options = gtk_object_get_data(GTK_OBJECT(user_data), "options");
+
 	gdk_window_get_size(widget->window, &width, &height);
 
-	width_v = GPOINTER_TO_INT (gtk_object_get_data(GTK_OBJECT(user_data), "width_v"));
-	height_v = GPOINTER_TO_INT (gtk_object_get_data(GTK_OBJECT(user_data), "height_v"));
-
-	pix_width = width/width_v;
-	pix_height = height/height_v;
+	pix_width = width/options->width;
+	pix_height = height/options->height;
 
 	x = event->x/(pix_width);
 	y = event->y/(pix_height);
@@ -775,7 +794,7 @@ gboolean mini_board_click         (GtkWidget       *widget, GdkEventButton  *eve
 
 	current = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(radio_button->data), "type"));
 
-	map_data[y*width_v+x] = current;
+	options->map[y*options->width+x].type = current;
 
 	draw_mini_board(user_data);
 
@@ -785,7 +804,7 @@ gboolean mini_board_click         (GtkWidget       *widget, GdkEventButton  *eve
 void init_mini_board(GtkWidget *dlg_options) {
 	int width, height, a;
 	GtkWidget *widget = lookup_widget(dlg_options, "mini_board");
-	char *map_data;
+  combat_game *options;
 
 	if (widget == NULL) {
 		game_status("Can't find widget!");
@@ -800,12 +819,16 @@ void init_mini_board(GtkWidget *dlg_options) {
 	mini_buf = gdk_pixmap_new( widget->window, width, height, -1 );
 
 	// Now init the data
-	width = GPOINTER_TO_INT (gtk_object_get_data(GTK_OBJECT(dlg_options), "width_v"));
-	height = GPOINTER_TO_INT (gtk_object_get_data(GTK_OBJECT(dlg_options), "height_v"));
-	map_data = (char *)malloc(sizeof(char) * width * height + 1);
-	for (a = 0; a < width * height; a++)
-		map_data[a] = OPEN;
-	gtk_object_set_data(GTK_OBJECT(dlg_options), "map_data", map_data);
+  options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
+  if (options->map) {
+    free(options->map);
+    options->map = NULL;
+  }
+	options->map = (tile *)malloc(sizeof(tile) * options->width * options->height + 1);
+	for (a = 0; a < options->width * options->height; a++)
+	  options->map[a].type = OPEN;
+
+	gtk_object_set_data(GTK_OBJECT(dlg_options), "options", options);
 
 	draw_mini_board(dlg_options);
 
@@ -813,29 +836,28 @@ void init_mini_board(GtkWidget *dlg_options) {
 
 void draw_mini_board(GtkWidget *dlg_options) {
 	GtkWidget *widget = lookup_widget(dlg_options, "mini_board");
-	int width, height, width_v, height_v, pix_width, pix_height, i, j;
-	char *map_data = gtk_object_get_data(GTK_OBJECT(dlg_options), "map_data");
+	int width, height, pix_width, pix_height, i, j;
+  combat_game *options;
 	GdkGC *solid_gc;
+
+  options = gtk_object_get_data(GTK_OBJECT(dlg_options), "options");
 
 	solid_gc = gdk_gc_new(widget->window);
 
 	gdk_window_get_size(widget->window, &width, &height);
-
-	width_v = GPOINTER_TO_INT (gtk_object_get_data(GTK_OBJECT(dlg_options), "width_v"));
-	height_v = GPOINTER_TO_INT (gtk_object_get_data(GTK_OBJECT(dlg_options), "height_v"));
 
 	// Draw background
 	gdk_draw_rectangle (mini_buf,
 			dlg_options->style->white_gc, TRUE, 0, 0, width, height);
 
 	// Gets the size of each square
-	pix_width = width/width_v;
-	pix_height = height/height_v;
+	pix_width = width/options->width;
+	pix_height = height/options->height;
 
 	// Draw terrain
-	for (j = 0; j < height_v; j++) {
-		for (i = 0; i < width_v; i++) {
-			switch (map_data[j*width_v+i]) {
+	for (j = 0; j < options->height; j++) {
+		for (i = 0; i < options->width; i++) {
+			switch (options->map[j*options->width+i].type) {
 				case (OPEN):
 					gdk_gc_set_foreground(solid_gc, &open_color);
 					break;
@@ -862,12 +884,12 @@ void draw_mini_board(GtkWidget *dlg_options) {
 
 
 	// Draw lines
-	for (i = 0; i < width_v; i++) {
+	for (i = 0; i < options->width; i++) {
 		gdk_draw_line(mini_buf, widget->style->black_gc,
 				i*pix_width, 0, i*pix_width, height);
 	}
 
-	for (i = 0; i < height_v; i++) {
+	for (i = 0; i < options->height; i++) {
 		gdk_draw_line(mini_buf, widget->style->black_gc,
 				0, i*pix_height, width, i*pix_height);
 	}

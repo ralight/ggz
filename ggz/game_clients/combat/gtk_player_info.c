@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 
-#include "game.h"
+void game_unit_list_handle (GtkCList *clist, gint row, gint column,
+	 													GdkEventButton *event, gpointer user_data);
 
 
 GtkWidget *gtk_player_info_new(GtkWidget *parent, char *name) {

@@ -6,6 +6,8 @@ void dlg_options_update(GtkWidget *);
 void dlg_options_list_maps(GtkWidget *);
 
 void load_button_clicked(GtkButton *, gpointer dialog);
+void save_button_clicked(GtkButton *, gpointer dialog);
+void save_map(GtkButton *, GtkWidget *);
 
 void delete_button_clicked(GtkButton *button, gpointer dialog);
 
@@ -37,8 +39,8 @@ mini_board_click         (GtkWidget       *widget,
 void init_mini_board(GtkWidget *);
 void draw_mini_board(GtkWidget *);
 
-#define OPEN 0
-#define LAKE 1
-#define BLACK 2
-#define PLAYER_1 3
-#define PLAYER_2 4
+#define OPEN T_OPEN
+#define LAKE T_LAKE
+#define BLACK T_NULL
+#define PLAYER_1 OWNER(0) + T_OPEN
+#define PLAYER_2 OWNER(1) + T_OPEN
