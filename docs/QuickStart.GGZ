@@ -1,7 +1,7 @@
 The GGZ Gaming Zone - Client Setup
 ==================================
 
-Installation Requirements for the release 0.0.5
+Installation Requirements for the release 0.0.6
 -----------------------------------------------
 The GGZ Gaming Zone client is built from three separate packages
 (these may be available as an integrated package in the future), upon
@@ -134,10 +134,10 @@ This will install the gtk client under /usr/local.
 KDE Client Installation
 -----------------------
 
-The KDE client requires that the KDE libraries 2.X be installed.
+The KDE client requires that the KDE libraries 3.X be installed.
 These can be downloaded from http://www.kde.org.  We recommend the
-latest stable version, 2.2.2.  As KDE depends on Qt, you will need Qt
-version >= 2.2 (2.3.1 is recommended).
+latest stable version, 3.0.3.  As KDE depends on Qt, you will need Qt
+version >= 3.0 (3.0.5 is recommended).
 
 Unpack the ggz-kde-client sources.  They should extract into a
 directory named ggz-kde-client-X.X.X.  Enter that directory and run
@@ -150,6 +150,9 @@ make install (as root)
 
 This will install the KDE client under your KDE installation.  You may
 also need to run ldconfig as root on some systems.
+Make sure to use the same configuration prefix as KDE does, otherwise no menu
+entries will show up, and programs might not work as expected. Professional
+users can use the KDEDIRS environment variable.
 
 
 Gtk/KDE Games Installation
@@ -205,17 +208,22 @@ Troubleshooting/Tips
    list is also available here.
 
 7) Once you have everything compiled you need a server to connect to!  There
-   is a permanent server installed at ggz.morat.net (U.S.) on port 5688, and
-   at ggz.snafu.de (Germany) on the same port.  Check the
-   FAQ on our webpage (http://ggz.sourceforge.net) for any other permanent
-   servers that may get setup.
+   is a permanent server installed at ggz.snafu.de (Germany) on port 5688.
+   Check the FAQ on our webpage (http://ggz.sourceforge.net) for any other
+   permanent servers that may get setup.
 
 8) If you are compiling from CVS and are getting weird errors during
    the compilations, make sure you have the correct version of each
    build tool. The following are known to cause problems:
-	libtool < 1.4
-	autoconf 2.53
-	automake 1.5d or 1.6
-   The recommended compiler is gcc 2.95, although later versions (including
-   3.0.x) should work as well.
+     libtool < 1.4
+     automake 1.5d or 1.6
+   The recommended compiler is gcc 3.2, although many other versions
+   (including 2.95 or previous 3.x) should work as well (see point 9 below).
    On non-GNU systems, use gmake rather than make.
+
+9) All C++ code must be compiled with the same compiler. This does currently
+   affect the KDE packages of GGZ. It means that if your KDE and Qt has been
+   compiled with gcc 2.9x, you cannot compile ggz-kde-client or ggz-kde-games
+   with gcc 3. The reverse is also true.
+
+

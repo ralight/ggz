@@ -1,4 +1,4 @@
-The GGZ Gaming Zone - Release 0.0.5
+The GGZ Gaming Zone - Release 0.0.6
 ===================================
 
 Welcome to the GGZ Gaming Zone, a multiuser networked gaming
@@ -8,9 +8,10 @@ machine (although we do our best to make sure it does).  If you are
 interested in assisting with development or in writing a module for
 your favorite game, please let us know at ggz-dev@lists.sourceforge.net
 
-The server currently supports twelve different game types, including
+The server currently supports thirteen different game types, including
 spades, tic-tac-toe, chess, reversi, and others.  Players can create
 accounts, login, and play games in any one of multiple game rooms.
+Sometimes they can even watch other players.
 More game servers are available in experimental state or as part of
 other projects.
 
@@ -69,7 +70,7 @@ flexibility.  The components are:
 
   If you want to experience everything of GGZ, try this out.
   The current additional packages are grubby (our chat bot), available
-  as ggz-grubby-X.X.X.tar.gz, and various utilies, ggz-utils.X.X.X.
+  as ggz-grubby-X.X.X.tar.gz, and various utilities, ggz-utils.X.X.X.
   For the very bleeding edge, some more (not distributed) software
   can be found in the playground CVS module.
 
@@ -82,7 +83,7 @@ flexibility.  The components are:
 
 Compiling and Installing
 ========================
-For more detailed instructions on configuring and installing each 
+For more detailed instructions on configuring and installing each
 of GGZ components, please read the INSTALL file in each of the
 respective source directories.  For an overview of the installation
 process, please read the QuickStart.GGZ file.
@@ -119,7 +120,7 @@ Some additional options may also be specified:
 	--destdir       Typically used during package builds, this causes
 			the installation information to go to a
 			ggz.modules file in a temporary build
-			directory.
+			directory, as specified by the DESTDIR environment variable.
 
 ggz-config Game Module Uninstall 
 --------------------------------
