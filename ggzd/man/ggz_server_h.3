@@ -1,4 +1,4 @@
-.TH "ggz_server.h" 3 "27 Aug 2001" "libggzdmod" \" -*- nroff -*-
+.TH "ggz_server.h" 3 "3 Sep 2001" "libggzdmod" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -33,6 +33,10 @@ ggz_server.h \- The interface for the ggzdmod library used by game servers.
 .RI "\fBggzd_assign_t\fR \fBggzd_get_seat_status\fR (int seat)"
 .br
 .RI "\fIFind the seat assignment status of a given seat.\fR"
+.ti -1c
+.RI "int \fBggzd_set_seat_status\fR (int seat, \fBggzd_assign_t\fR status)"
+.br
+.RI "\fIChange the status of a seat.\fR"
 .ti -1c
 .RI "const char* \fBggzd_get_player_name\fR (int seat)"
 .br
@@ -78,10 +82,6 @@ ggz_server.h \- The interface for the ggzdmod library used by game servers.
 .br
 .RI "\fIGet ggzdmod's highest FD.\fR"
 .ti -1c
-.RI "void \fBggzd_set_blocking\fR (int block)"
-.br
-.RI "\fISet ggzdmod to block (or not) waiting for data.\fR"
-.ti -1c
 .RI "void \fBggzd_gameover\fR (int status)"
 .br
 .RI "\fITell ggzdmod the game is over.\fR"
@@ -106,11 +106,15 @@ ggz_server.h \- The interface for the ggzdmod library used by game servers.
 .br
 .RI "\fIHandle data from GGZD.\fR"
 .ti -1c
-.RI "void \fBggzd_read_data\fR (void)"
+.RI "int \fBggzd_io_is_pending\fR (void)"
+.br
+.RI "\fICheck to see if there's input ready.\fR"
+.ti -1c
+.RI "void \fBggzd_io_read_all\fR (void)"
 .br
 .RI "\fIRead data from all sockets.\fR"
 .ti -1c
-.RI "int \fBggzd_main\fR (void)"
+.RI "int \fBggzd_main_loop\fR (void)"
 .br
 .RI "\fIConnect to GGZ and run the game.\fR"
 .in -1c
@@ -128,7 +132,7 @@ Note that this does not apply to the client sockets: ggzdmod provides one file d
 Here's the simplest possible example: 
 .PP
 .nf
-     void ggz_update(ggzd_assign_t event, void* data); // See GGZDHandler
+     void ggz_update(ggzd_event_t event, void* data); // See GGZDHandler
 
      int main() {
          // First we register functions to handle some events.
@@ -137,8 +141,8 @@ Here's the simplest possible example:
          ggzd_set_handler(GGZ_EVENT_LEAVE, &ggz_update);
          ggzd_set_handler(GGZ_EVENT_PLAYER, &ggz_update);
 
-         // Then ggzd_main does all the rest.
-         ggzd_main();
+         // Then ggzd_main_loop does all the rest.
+         ggzd_main_loop();
      }
 .fi
 .PP
@@ -316,7 +320,7 @@ The highest file descriptor used by ggzd.
 .PP
 Tell ggzdmod the game is over.
 .PP
-Call this function when the game is over; that way ggzd_main will know to stop looping and your own code can query the gameover. 
+Call this function when the game is over; that way ggzd_main_loop will know to stop looping and the game can query the gameover. 
 .PP
 \fBParameters: \fR
 .in +1c
@@ -408,23 +412,26 @@ The GGZ seat number of the queried seat
 \fBReturns: \fR
 .in +1c
 The assignment status. 
-.SS int ggzd_main (void)
+.SS int ggzd_io_is_pending (void)
 .PP
-Connect to GGZ and run the game.
+Check to see if there's input ready.
 .PP
-This should do all of the GGZ work necessary for most games. It repeatedly takes data from GGZD and calls the appropriate event handler. It also connects to GGZD. 
+This function will check to see if there is data waiting to be read from any of the ggzdmod sockets (client sockets and ggzd socket). 
 .PP
 \fBReturns: \fR
 .in +1c
-0 on success, -1 on connection failure 
+1 if there is data waiting to be read; 0 otherwise. 
 .PP
 \fBNote: \fR
 .in +1c
-This function will check for data on both GGZ and player sockets. 
+This is mostly useful to avoid blocking in ggzd_io_read_all. 
 .in -1c
 .in +1c
-This function supercedes ggzd_read_data, ggzd_dispatch, ggzd_connect, and ggzd_disconnect. 
-.SS void ggzd_read_data (void)
+This is an experimental function. 
+.in -1c
+.in +1c
+This is not implemented yet. 
+.SS void ggzd_io_read_all (void)
 .PP
 Read data from all sockets.
 .PP
@@ -448,6 +455,22 @@ This function will check for data on both GGZ and player sockets.
 \fB\fBTodo: \fR\fR
 .in +1c
  This function may not be a part of the final API 
+.SS int ggzd_main_loop (void)
+.PP
+Connect to GGZ and run the game.
+.PP
+This should do all of the GGZ work necessary for most games. It repeatedly takes data from GGZD and calls the appropriate event handler. It also connects to GGZD. 
+.PP
+\fBReturns: \fR
+.in +1c
+0 on success, -1 on connection failure 
+.PP
+\fBNote: \fR
+.in +1c
+This function will check for data on both GGZ and player sockets. 
+.in -1c
+.in +1c
+This function supercedes ggzd_io_is_pending, ggzd_io_read_all, ggzd_dispatch, ggzd_connect, and ggzd_disconnect. 
 .SS int ggzd_seats_bot (void)
 .PP
 Count the number of bot/AI seats.
@@ -511,25 +534,6 @@ This is the number of seats whose status is GGZ_SEAT_RESV
 \fB\fBTodo: \fR\fR
 .in +1c
  Is this function necessary? 
-.SS void ggzd_set_blocking (int block)
-.PP
-Set ggzdmod to block (or not) waiting for data.
-.PP
-Sets blocking status of ggzdmod. If blocking is set, ggzd_main and ggzd_read_data will block waiting for data (the default). 
-.PP
-\fBParameters: \fR
-.in +1c
-.TP
-\fB\fIblock\fR\fR
-1 for blocking, 0 for not 
-.PP
-\fB\fBTodo: \fR\fR
-.in +1c
-Brent doesn't want to allow non-blocking or have this function. 
-.PP
-\fBNote: \fR
-.in +1c
-This is an experimental function. 
 .SS void ggzd_set_handler (\fBggzd_event_t\fR event_id, const \fBGGZDHandler\fR handler)
 .PP
 Sets a handler for the specified event.
@@ -564,6 +568,29 @@ The new name for the player.
 \fBNote: \fR
 .in +1c
 You may only set the name of an AI player. 
+.in -1c
+.in +1c
+This is an experimental function. 
+.SS int ggzd_set_seat_status (int seat, \fBggzd_assign_t\fR status)
+.PP
+Change the status of a seat.
+.PP
+\fBParameters: \fR
+.in +1c
+.TP
+\fB\fIseat\fR\fR
+The number of the seat to be changed. 
+.TP
+\fB\fItype\fR\fR
+The new status of the seat. 
+.PP
+\fBReturns: \fR
+.in +1c
+0 on success, -1 on failure. 
+.PP
+\fBNote: \fR
+.in +1c
+You may only switch between open<->bot seats. 
 .in -1c
 .in +1c
 This is an experimental function. 
