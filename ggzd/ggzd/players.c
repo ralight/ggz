@@ -936,6 +936,7 @@ static int player_list_tables(int p_index, int fd)
 	for (i = 0; i < count; i++) {
 		if (es_write_int(fd, indices[i]) < 0
 		    || es_write_int(fd, my_tables[i].type_index) < 0
+		    || es_write_string(fd, my_tables[i].desc) < 0
 		    || es_write_char(fd, my_tables[i].playing) <0
 		    || es_write_int(fd, seats_num(my_tables[i])) < 0)
 			return (-1);
@@ -965,8 +966,6 @@ static int player_list_tables(int p_index, int fd)
 			if (es_write_string(fd, name) < 0)
 				return (-1);
 		}
-		if (es_write_string(fd, my_tables[i].desc) < 0)
-			return (-1);
 	}
 
 	return (0);

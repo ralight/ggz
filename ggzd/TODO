@@ -12,10 +12,18 @@ For 0.0.2
 - implement player database (at least API)
 - implement tic-tac-toe as simple game example
 - Do we really need player.info[].playing?  Nothing uses it!
+- rewrite of chat functions (per ggz-dev)
+- implement REQ_MOTD, RSP_MOTD
+
+For 0.0.3
+=========
+- chat rooms
+- table chat
+- private messages (game type options, server admin option
+
 
 Medium run
 ==========
-- rooms?
 - multiple implementations of user database (SQL/libdb)
 - implement rooms
 - reservations
@@ -25,4 +33,4 @@ Long run
 - user statistics
 - observers
 - re-write spades
-
+- banner adds
