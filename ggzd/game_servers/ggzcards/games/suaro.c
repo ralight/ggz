@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: suaro.c 3993 2002-04-15 09:49:55Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -61,7 +61,7 @@ typedef struct suaro_game_t {
 	int kitty_revealed;
 } suaro_game_t;
 
-static int suaro_is_valid_game(void);
+static bool suaro_is_valid_game(void);
 static void suaro_init_game(void);
 static void suaro_get_options(void);
 static int suaro_handle_option(char *option, int value);
@@ -118,7 +118,7 @@ char *short_suaro_suit_names[6] = { "lo", "C", "D", "H", "S", "hi" };
 static char *long_suaro_suit_names[6] =
 	{ "low", "clubs", "diamonds", "hearts", "spades", "high" };
 
-static int suaro_is_valid_game(void)
+static bool suaro_is_valid_game(void)
 {
 	return (game.num_players == 2);
 }

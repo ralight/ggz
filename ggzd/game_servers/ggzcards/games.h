@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: games.h 3993 2002-04-15 09:49:55Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -38,7 +38,7 @@ typedef struct {
 	char *full_name;
 	
 	/* initializing */
-	int (*is_valid_game) (void);	/* is the game valid under the
+	bool (*is_valid_game) (void);	/* is the game valid under the
 					   current conditions? */
 	void (*init_game) (void);	/* initialize the game data */
 
@@ -85,7 +85,7 @@ typedef struct {
 
 	/* starting/ending games */
 	void (*start_game) (void);	/* start a game */
-	int (*test_for_gameover) (void);	/* returns TRUE iff gameover */
+	bool (*test_for_gameover) (void);	/* returns TRUE iff gameover */
 	int (*handle_gameover) (void);	/* handle a gameover */
 
 	/* miscellaneous */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: game.h 3993 2002-04-15 09:49:55Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -37,7 +37,7 @@
  *  @return TRUE iff the game is valid with the current settings.
  *  @note Must be replaced by a game-specific function.
  */
-int game_is_valid_game(void);
+bool game_is_valid_game(void);
 
 /** @brief Initialize the game.
  *  @note Must be replaced by a game-specific function.

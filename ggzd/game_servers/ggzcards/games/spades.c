@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: spades.c 3993 2002-04-15 09:49:55Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -57,7 +57,7 @@ typedef struct spades_game_t {
 				   team */
 } spades_game_t;
 
-static int spades_is_valid_game(void);
+static bool spades_is_valid_game(void);
 static void spades_init_game(void);
 static void spades_get_options(void);
 static int spades_handle_option(char *option, int value);
@@ -106,7 +106,7 @@ game_data_t spades_data = {
 	spades_send_hand
 };
 
-static int spades_is_valid_game(void)
+static bool spades_is_valid_game(void)
 {
 	return (game.num_players == 4);
 }

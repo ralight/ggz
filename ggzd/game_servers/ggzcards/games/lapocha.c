@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: lapocha.c 3993 2002-04-15 09:49:55Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -39,14 +39,14 @@
 
 #include "lapocha.h"
 
-static int lapocha_is_valid_game(void);
+static bool lapocha_is_valid_game(void);
 static void lapocha_init_game(void);
 static int lapocha_handle_gameover(void);
 static void lapocha_start_bidding(void);
 static int lapocha_get_bid(void);
 static void lapocha_handle_bid(player_t p, bid_t bid);
 static void lapocha_next_bid(void);
-static int lapocha_test_for_gameover(void);
+static bool lapocha_test_for_gameover(void);
 static void lapocha_deal_hand(void);
 static int lapocha_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static void lapocha_set_player_message(player_t p);
@@ -92,7 +92,7 @@ game_data_t lapocha_data = {
 };
 
 
-static int lapocha_is_valid_game(void)
+static bool lapocha_is_valid_game(void)
 {
 	return (game.num_players == 4);
 }
@@ -210,7 +210,7 @@ static void lapocha_next_bid(void)
 		game_next_bid();
 }
 
-static int lapocha_test_for_gameover(void)
+static bool lapocha_test_for_gameover(void)
 {
 	return (game.hand_num >= 28);
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.h 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: bid.h 3993 2002-04-15 09:49:55Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -36,12 +36,14 @@ void clear_bids(player_t p);
 void add_bid(bid_t bid);
 void add_sbid(char val, char suit, char spec);
 
-/* req_bid requests a bid from the client _or_ AI. */
+/* req_bid requests a bid from the client _or_ AI.
+   Return 0 on success; -1 on (communication) error */
 int req_bid(player_t p);
 
 /* request_all_bids requests bids from all players whom have pending bid
-   lists. */
+   lists.  Return 0 on success; -1 on (communication) error */
 int request_all_bids(void);
 
-/* rec_bid receives a bid from the client */
+/* rec_bid receives a bid from the client.
+   Return 0 on success; -1 on (communication) error */
 int rec_bid(player_t p, bid_t * bid);

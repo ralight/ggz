@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: game.c 3993 2002-04-15 09:49:55Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -57,7 +57,7 @@ static void bad_game(char *func)
 
 /* is_valid_game returns true if the game is valid under the current game
    conditions (i.e. number of players); false otherwise */
-int game_is_valid_game(void)
+bool game_is_valid_game(void)
 {
 	bad_game("is_valid_game");
 	return 0;

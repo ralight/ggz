@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: euchre.c 3993 2002-04-15 09:49:55Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -41,7 +41,7 @@
 
 #include "euchre.h"
 
-static int euchre_is_valid_game(void);
+static bool euchre_is_valid_game(void);
 static card_t euchre_map_card(card_t c);
 static void euchre_init_game(void);
 static void euchre_get_options(void);
@@ -91,7 +91,7 @@ game_data_t euchre_data = {
 };
 
 
-static int euchre_is_valid_game(void)
+static bool euchre_is_valid_game(void)
 {
 	return (game.num_players == 4);
 }

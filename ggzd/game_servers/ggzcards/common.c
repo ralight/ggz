@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: common.c 3993 2002-04-15 09:49:55Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -661,7 +661,7 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 }
 
 /* This handles the event of a player responding to a newgame request */
-int handle_newgame_event(player_t player)
+void handle_newgame_event(player_t player)
 {
 	ggzdmod_log(game.ggz, "Handling a newgame event for player %d/%s.",
 		    player, get_player_name(player));
@@ -669,11 +669,10 @@ int handle_newgame_event(player_t player)
 	if (player == game.host && !options_set())
 		get_options();
 	try_to_start_game();
-	return 0;
 }
 
 /* This handles the event of someone playing a card */
-int handle_play_event(player_t p, card_t card)
+void handle_play_event(player_t p, card_t card)
 {
 	seat_t s = game.players[p].play_seat;
 	int i, still_playing;
@@ -724,7 +723,6 @@ int handle_play_event(player_t p, card_t card)
 	
 	if (still_playing > 0) {
 		assert(game.state == STATE_WAIT_FOR_PLAY);
-		return 0;
 	}
 
 	/* set up next move */
@@ -757,11 +755,10 @@ int handle_play_event(player_t p, card_t card)
 
 	/* do next move */
 	next_play();
-	return 0;
 }
 
 /* This handles the event of someone making a bid */
-int handle_bid_event(player_t p, bid_t bid)
+void handle_bid_event(player_t p, bid_t bid)
 {
 	int was_waiting = 0;
 	
@@ -832,7 +829,6 @@ int handle_bid_event(player_t p, bid_t bid)
 	else
 		/* do next move */
 		next_play();
-	return 0;
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: sueca.c 3993 2002-04-15 09:49:55Z jdorje $
  *
  * Copyright (C) 2001-2002 Ismael Orenstein
  *
@@ -37,7 +37,7 @@
 
 #include "sueca.h"
 
-static int sueca_is_valid_game(void);
+static bool sueca_is_valid_game(void);
 static void sueca_deal_hand(void);
 static card_t sueca_map_card(card_t c);
 static void sueca_init_game(void);
@@ -79,7 +79,7 @@ game_data_t sueca_data = {
 };
 
 
-static int sueca_is_valid_game(void)
+static bool sueca_is_valid_game(void)
 {
 	return (game.num_players == 4);
 }

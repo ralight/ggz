@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: hearts.c 3993 2002-04-15 09:49:55Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -38,7 +38,7 @@
 
 #include "hearts.h"
 
-static int hearts_is_valid_game(void);
+static bool hearts_is_valid_game(void);
 static void hearts_init_game(void);
 static void hearts_get_options(void);
 static int hearts_handle_option(char *option, int value);
@@ -83,7 +83,7 @@ game_data_t hearts_data = {
 };
 
 
-static int hearts_is_valid_game(void)
+static bool hearts_is_valid_game(void)
 {
 	return (game.num_players >= 3 && game.num_players <= 6);
 }

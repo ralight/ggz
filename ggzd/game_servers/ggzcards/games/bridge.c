@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 3992 2002-04-15 09:36:11Z jdorje $
+ * $Id: bridge.c 3993 2002-04-15 09:49:55Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -40,7 +40,7 @@
 
 #include "bridge.h"
 
-static int bridge_is_valid_game(void);
+static bool bridge_is_valid_game(void);
 static int bridge_compare_cards(card_t, card_t);
 static void bridge_init_game(void);
 static void bridge_start_bidding(void);
@@ -50,7 +50,7 @@ static void bridge_next_bid(void);
 static void bridge_start_playing(void);
 static void bridge_get_play(player_t p);
 static void bridge_handle_play(player_t p, seat_t s, card_t card);
-static int bridge_test_for_gameover(void);
+static bool bridge_test_for_gameover(void);
 static int bridge_send_hand(player_t p, seat_t s);
 static int bridge_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static void bridge_set_player_message(player_t p);
@@ -98,7 +98,7 @@ static char *long_bridge_suit_names[5] =
 	{ "clubs", "diamonds", "hearts", "spades", "notrump" };
 
 
-static int bridge_is_valid_game(void)
+static bool bridge_is_valid_game(void)
 {
 	return (game.num_players == 4);
 }
@@ -284,7 +284,7 @@ static void bridge_handle_play(player_t p, seat_t s, card_t card)
 	}
 }
 
-static int bridge_test_for_gameover(void)
+static bool bridge_test_for_gameover(void)
 {
 	/* TODO: implement bridge scoring */
 	return 0;
