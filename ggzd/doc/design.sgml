@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 316 $</revnumber>
-	<date>$Date: 2000-03-29 15:02:26 -0800 (Wed, 29 Mar 2000) $</date>
+	<revnumber>$Revision: 317 $</revnumber>
+	<date>$Date: 2000-03-29 15:06:26 -0800 (Wed, 29 Mar 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -364,6 +364,7 @@
 	  REQ_ROOM_JOIN
 	    int: room number
 	  RSP_ROOM_JOIN
+	    int: new room number
 	    chr: success flag (0 for success, -1 not authorized,
 		               -2 E_BAD_OPTIONS, -3 E_ROOM_FULL)
   
