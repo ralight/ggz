@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4421 2002-09-06 20:37:18Z jdorje $
+ * $Id: ggzclient.c 4422 2002-09-06 20:49:06Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -106,9 +106,6 @@ static GGZHookReturn ggz_table_leave_fail(GGZRoomEvent id, void*, void*);
 /* One Time Functions */
 static GGZHookReturn ggz_auto_join(GGZServerEvent id, void*, void*);
 
-/* Helper functions */
-static void server_disconnect(void);
-
 
 
 
@@ -147,6 +144,7 @@ static GGZHookReturn ggz_connected(GGZServerEvent id, void* event_data, void* us
 		
 		/* Add the fd to the ggtk main loop */
 		fd = ggzcore_server_get_fd(server);
+		assert(server_handle == -1);
 		server_handle = gdk_input_add_full(fd, GDK_INPUT_READ, 
 						   ggz_check_fd, 
 						   (gpointer)server,
@@ -157,6 +155,7 @@ static GGZHookReturn ggz_connected(GGZServerEvent id, void* event_data, void* us
 
 		/* Add the fd to the ggtk main loop */
 		fd = ggzcore_server_get_channel(server);
+		assert(channel_handle == -1);
 		channel_handle = gdk_input_add(fd, GDK_INPUT_READ, 
 					       ggz_check_fd, 
 					       (gpointer)server);
@@ -1143,9 +1142,13 @@ int ggz_connection_query(void)
 	return 1;
 }
 
-static void server_disconnect(void)
+/* Handle the ggz-gtk end of disconnecting. */
+void server_disconnect(void)
 {
+	assert(server_handle != -1);
+
 	gdk_input_remove(server_handle);
 	server_handle = -1;
-	chat_display_message(CHAT_LOCAL_HIGH, NULL, _("Disconnected from server."));
+	chat_display_message(CHAT_LOCAL_HIGH, NULL,
+			     _("Disconnected from server."));
 }

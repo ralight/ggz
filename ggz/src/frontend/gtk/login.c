@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 4373 2002-08-20 02:15:12Z jdorje $
+ * $Id: login.c 4422 2002-09-06 20:49:06Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -84,6 +84,7 @@ login_connect_failed(void)
 {
 	/* Destroy server object */
 	ggzcore_server_free(server);
+	server_disconnect();
 	server = NULL;
 }
 
