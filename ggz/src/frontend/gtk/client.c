@@ -39,6 +39,7 @@
 #include "launch.h"
 #include "license.h"
 #include "login.h"
+#include "msgbox.h"
 #include "props.h"
 #include "support.h"
 #include "types.h"
@@ -136,9 +137,11 @@ static void
 client_exit_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	gtk_main_quit();
+	if (msgbox(_("Are you sure you want to quit?"), _("Quit?"), MSGBOX_YESNO) == MSGBOX_YES)
+	{
+		gtk_main_quit();
+	}
 }
-
 
 static void
 client_launch_activate		(GtkMenuItem	*menuitem,
@@ -443,7 +446,10 @@ static void
 client_exit_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	gtk_main_quit();
+	if (msgbox(_("Are you sure you want to quit?"), _("Quit?"), MSGBOX_YESNO) == MSGBOX_YES)
+	{
+		gtk_main_quit();
+	}
 }
 
 static gboolean 

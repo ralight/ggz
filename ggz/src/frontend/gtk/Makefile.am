@@ -26,6 +26,8 @@ ggz_gtk_SOURCES =	main.c \
 			login.h \
 			motd.c \
 			motd.h \
+			msgbox.c \
+			msgbox.h \
 			props.c \
 			props.h \
 			server.c \
