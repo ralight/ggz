@@ -5,11 +5,26 @@ AC_INIT(configure.in)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE(ggz-docs,0.0.5pre)
 
+dnl Options for building GGZ-Docs
+dnl =============================
+
+AC_ARG_ENABLE(guides,  [  --enable-guides    build the GGZ guides], enable_guides=yes, enable_guides=no)
+
 dnl Use GGZDOCDIR as the top-level installation directory
 dnl =====================================================
 
 GGZDOCDIR="$datadir/doc/ggz-docs"
 AC_SUBST(GGZDOCDIR)
+
+dnl Apply options
+dnl =============
+
+if test "$enable_guides" = yes; then
+	ggzgamedevelopmentguide="ggz-game-development-guide.ps"
+	ggzhostingguide="ggz-hosting-guide.ps"
+fi
+AC_SUBST(ggzgamedevelopmentguide)
+AC_SUBST(ggzhostingguide)
 
 dnl Create the Makefiles
 dnl ====================
@@ -37,5 +52,6 @@ echo "The following installation layout is used:"
 echo ""
 echo "Installation prefix: $prefix"
 echo "Documentation goes to: $GGZDOCDIR"
+echo "Build guides: $enable_guides"
 echo ""
 
