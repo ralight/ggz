@@ -1,0 +1,29 @@
+Announcing the release of NetGames-0.0.1!
+
+This is the first developers release of the code for NetGames.  It is meant
+solely for feedback and information purposes.  It probably won't run
+correctly, and may not even compile.  Most of the features are absent.
+
+Then why release?  Because I'm holding to the Free Software guidline of
+"Release Early.  Release Often." I'd like to get more eyeballs on the code
+than just my own. Also, since NetGames is designed to be an infrastructure
+for game developers to incorporate their games into, this gives them a
+chance to looks things over.
+
+For this first release, the important things to observer are in the main
+NetGames server.  The basic architecture for handling players and game
+tables is in place.  I have not done a large amount of client or game server
+coding. Therefore, in order to test the NetGames server, I hacked my spades
+client and server to work.  Please don't flame me too much for the messiness
+:)
+
+There is much more information about the server architecture in
+README.Design.  It is a lengthy document, but it should answer many
+questions about the way the NetGames server works (or will work).  There is
+also an xfig sketch in server_arch.fig.  If you don't have xfig, a copy in
+GIF format is available at my website.
+
+So what can I do with it?  Other than looking at the code, you can play
+spades with 1-4 players.  See the README file for more details.
+
+

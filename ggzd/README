@@ -1,0 +1,40 @@
+NetGames
+=========
+
+Welcome to NetGames, a multiuser networked gaming environment.  This project
+is still in the development phase, and as such is not generally playable.
+If you are interested in assisting with development, or in writing server
+modules for you favorite game, please let me know.
+
+At this moment, the server only supports one type of game (spades), and
+users can only login anonymously.  In fact the client is simply a hack of my
+NetSpades client.  I am releasing this only so that people can look at the
+server architecture and play with it.  Everything is subject to change.
+
+Compiling
+=========
+You need to have popt, libtool, autoconf, automake, pthreads, and gtk
+installed in order to compile NetGames.  Most developers have these, or at
+least are capable of installing these.  I will probably not make a binary
+release unless people really press me.  After unpacking the tarball, you
+should be able to compile NetGames via the following:
+
+cd NetGames; ./autogen.sh; make
+
+Running
+=======
+The server is named netgamed and will be created in NetGames/server.  You
+must run it from that dir since the path to the spades server is hardcoded.
+When you run it, you *must* specify a port number with the -p option.
+
+The client is named gnetgames and will be in NetGames/gtkclient.  Remember
+that only anonymous logins work, and the only game operations which work are
+launching and joining.
+
+Please let me know if you have any problems, comments, feedback. etc.
+
+
+Enjoy!
+--Brent Hendricks <brentmh@rice.edu>
+
+

@@ -1,0 +1,28 @@
+Everything!
+
+Seriously though.  Here is my first go at a todo list.  As people suggest
+ideas I will try to put them on the list.  As the code progresess I will
+nail down more specific time frames.
+
+Short run
+=========
+- chat facility
+- better handing of end-of-game
+- handle SIGCHLD
+- list of currently playing games
+- list of available game types
+
+
+Medium run
+==========
+- list of logged in users
+- user database
+- another game type
+- config file handling
+
+
+Long run
+========
+- user statistics
+- observers
+
