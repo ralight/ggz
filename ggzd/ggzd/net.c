@@ -131,8 +131,10 @@ static int _net_send_login_new_status(GGZNetIO *net, char status, char *password
 static int _net_send_table_status(GGZNetIO *net, GGZTable *table);
 static int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int num);
 static int _net_send_seat(GGZNetIO *net, GGZTable *table, int num);
-static int _net_send_line(GGZNetIO *net, char *line, ...);
-static int _net_send_string(GGZNetIO *net, char *fmt, ...);
+static int _net_send_line(GGZNetIO *net, char *line, ...)
+			  ggz__attribute((format(printf, 2, 3)));
+static int _net_send_string(GGZNetIO *net, char *fmt, ...)
+			    ggz__attribute((format(printf, 2, 3)));
 
 static void _net_login_set_name(GGZXMLElement *login, char *name);
 static void _net_login_set_password(GGZXMLElement *login, char *password);
