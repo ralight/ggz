@@ -27,6 +27,7 @@
 #include <pthread.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include <easysock.h>
 #include <ggzd.h>
@@ -69,12 +70,13 @@ void room_initialize_lists(void)
 }
 
 
-/* Join a player to a room */
-/* (for now this just moves them and says "success" */
+/* Join a player to a room, returns explanatory code on failure */
 int room_join(const int p_index, const int room)
 {
 	int old_room;
 	int i, count, last;
+	int got_locks;
+	struct timespec req;
 
 	/* No other thread could possibly be changing the room # */
 	/* so we can read it without a lock! */
@@ -84,10 +86,38 @@ int room_join(const int p_index, const int room)
 	if(old_room == room)
 		return 0;
 
-	if(old_room != -1)
-		pthread_rwlock_wrlock(&chat_room[old_room].lock);
-	if(room != -1)
-		pthread_rwlock_wrlock(&chat_room[room].lock);
+	/* This avoids deadlock where user A is in transit from x->y */
+	/*                        and user B is in transit from y->x */
+	got_locks = 0;
+	req.tv_sec = 0;
+	req.tv_nsec = 100000000;	/* 100 ms for nanosleep() */
+	while(!got_locks) {
+		/* Try getting write lock on the new room */
+		got_locks = 1;
+		if(room != -1) {
+		    if(!pthread_rwlock_trywrlock(&chat_room[room].lock)) {
+			/* Failed, try again shortly */
+			got_locks = 0;
+			nanosleep(&req, NULL);
+		    } else
+			/* Check for room full condition before going further */
+			if(chat_room[room].player_count == MAX_ROOM_USERS) {				    /* The transit room is full, stay here */
+			    pthread_rwlock_unlock(&chat_room[room].lock);
+			    return E_ROOM_FULL;
+			}
+		}
+
+		/* Try to get write lock on the old room */
+		if(old_room != -1)
+		    if(!pthread_rwlock_trywrlock(&chat_room[old_room].lock)) {
+			/* Failed, release the room lock and try again */
+			pthread_rwlock_unlock(&chat_room[room].lock);
+			got_locks = 0;
+			nanosleep(&req, NULL);
+			continue;
+		    }
+	}
+	/* We now have both rooms locked, and the target room is not full */
 
 	/* Yank them from this room */
 	if(old_room != -1) {
