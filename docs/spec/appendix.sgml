@@ -1337,6 +1337,188 @@
     </refsect1>
   </refentry>
 
+  <refentry id="rsp.table.join"><?dbhtml filename="rsp_table_join.html">
+    <refmeta>
+      <indexterm>
+        <primary>JOIN</primary>
+      </indexterm>
+      <refentrytitle>JOIN</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>JOIN</refname>
+      <refpurpose>
+	Message to indicate you've joined a table
+      </refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv><title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+            <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+		<tbody>
+		  <row rowsep="0">
+		    <entry namest="C1" nameend="C3">
+			  &lt;JOIN TABLE='table' SPECTATOR='spectator'/&gt;
+	            </entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>TABLE</entry>
+		    <entry>integer</entry>
+		    <entry>1</entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>SPECTATOR</entry>
+		    <entry>boolstring</entry>
+		    <entry>false</entry>
+		  </row>
+
+		</tbody>
+	</tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>Tells the client that they have joined a table.  Currently each
+            client and each player can only be at one table at a time.  The
+            join will be initiated when the client sends either a 
+            <link linkend="req.table.join">JOIN</link> request to join an
+            existing table or a <link linkend="req.launch">LAUNCH</link>
+            request to launch a new table (and subsequently join it).
+      </para>
+      <refsect2>
+	<title>Message Data</title>
+	<variablelist>
+	  <varlistentry>
+	    <term><emphasis role="bold">TABLE</emphasis></term>
+	    <listitem>
+	      <para>
+                The index of the table that has been joined.  This will be
+                a non-negative integer corresponding to the index sent in
+                the <link linkend="rsp.table">TABLE</link> tag.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+          <varlistentry>
+            <term><emphasis role="bold">SPECTATOR</emphasis></term>
+            <listitem>
+              <para>
+                Either "true" if the player is a spectator or "false" if
+                they are a normal player.  This is generally determined
+                based upon the client's
+                <link linkend="req.table.join">JOIN</link> request.
+              </para>
+            </listitem>
+          </varlistentry>
+	</variablelist>
+      </refsect2>
+
+      <refsect2>
+	<title>Usage</title>
+	<para>
+          JOIN is sent from the server to the client to inform the player
+          they've joined a table.  The client should take any necessary
+          actions.
+	</para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
+  <refentry id="rsp.table.leave"><?dbhtml filename="rsp_table_leave.html">
+    <refmeta>
+      <indexterm>
+        <primary>LEAVE</primary>
+      </indexterm>
+      <refentrytitle>LEAVE</refentrytitle>
+    </refmeta>
+
+    <refnamediv>
+      <refname>LEAVE</refname>
+      <refpurpose>
+	Message to indicate you've left a table
+      </refpurpose>
+    </refnamediv>
+
+    <refsynopsisdiv><title>Synopsis</title>
+      <informaltable>
+        <tgroup cols="3">
+          <colspec colnum="1" colname="C1" align="left">
+            <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+		<tbody>
+		  <row rowsep="0">
+		    <entry namest="C1" nameend="C3">
+			  &lt;LEAVE REASON='reason' PLAYER='player'/&gt;
+	            </entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>REASON</entry>
+		    <entry>string</entry>
+		    <entry>normal</entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>PLAYER</entry>
+		    <entry>player</entry>
+		    <entry>jdorje</entry>
+		  </row>
+
+		</tbody>
+	</tgroup>
+      </informaltable>
+    </refsynopsisdiv>
+
+    <refsect1>
+      <title>Description</title>
+      <para>
+        Tells the client that they have left a table.  This may be initiated
+        by the player sending the server a
+        <link linkend="req.table.leave">LEAVE</link> request, by the game
+        server exiting when the game is over, by the player being booted
+        from the table, or by the game server aborting.  In any of the cases
+        the client should make sure the game client exits normally.
+      </para>
+      <refsect2>
+	<title>Message Data</title>
+	<variablelist>
+	  <varlistentry>
+	    <term><emphasis role="bold">REASON</emphasis></term>
+	    <listitem>
+	      <para>
+                The reason the player left the table, currently one of
+                "normal", "boot", "gameover", or "gameerror".
+	      </para>
+	    </listitem>
+	  </varlistentry>
+          <varlistentry>
+            <term><emphasis role="bold">PLAYER</emphasis></term>
+            <listitem>
+              <para>
+                The name of the (remote) player responsible for the leave.
+                This is currently only provided for the "boot" leave, where
+                it gives the name of the player who initiated the boot.
+              </para>
+            </listitem>
+          </varlistentry>
+	</variablelist>
+      </refsect2>
+
+      <refsect2>
+	<title>Usage</title>
+	<para>
+	  LEAVE is sent from the server to the client to tell of a table
+          leave.  The client should take any necessary actions.
+	</para>
+      </refsect2>
+    </refsect1>
+  </refentry>
+
   <refentry id="rsp.result"><?dbhtml filename="rsp_result.html">
     <refmeta>
       <indexterm>
@@ -1979,8 +2161,12 @@
 	<para>
 	  JOIN is sent from client to the server to
 	  request a table join. The server will respond with
-	  <link linkend="rsp.result">RESULT</link>, followed by an
-	  <link linkend="msg.update">UPDATE</link> of type 'table'.
+	  <link linkend="rsp.result">RESULT</link> telling us the success
+          of the action.  If the action was successful the client will also
+          receive a <link linkend="rsp.table.join">JOIN</link>, which we
+          should act upon.  If the join succeeds it is likely an
+	  <link linkend="msg.update">UPDATE</link> of type 'table' will also
+          be necessary..
 	</para>
       </refsect2>
     </refsect1>
@@ -2048,7 +2234,9 @@
 	<para>
 	  LEAVE is sent from the client to the server to
 	  request a table leave.  The server will respons with a
-	  <link linkend="rsp.result">RESULT</link> message.
+	  <link linkend="rsp.result">RESULT</link> message as well as a
+          <link linkend="rsp.table.leave">LEAVE</link> message with reason
+          "normal" if the leave succeeded.
 	</para>
       </refsect2>
     </refsect1>
