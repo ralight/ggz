@@ -28,6 +28,7 @@
 #include <string.h>
 #include <popt.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "config.h"
 #include "protocol.h"
@@ -56,6 +57,7 @@ static int moddest = 0;
 static char *destdir = NULL;
 static int install_mod = 0;
 static int remove_mod = 0;
+static int check_file = 0;
 static int did_query = 0;
 static const struct poptOption args[] = {
 	{"configdir",	'c',	POPT_ARG_NONE,	&did_query,	QUERY_CONFIG,
@@ -73,6 +75,8 @@ static const struct poptOption args[] = {
 	 "Install a module"},
 	{"remove",	'\0',	POPT_ARG_NONE,	&remove_mod,	0,
 	 "Remove a module"},
+	{"check", 	'\0',	POPT_ARG_NONE,	&check_file,	0,
+	 "Check/repair module installation file"},
 
 	{"modfile",	'\0',	POPT_ARG_STRING,	&modfile,	0,
 	 "Specifies module installation file", "FILENAME"},
@@ -450,6 +454,297 @@ int install_module(void)
 }
 
 
+int query(char *name, char *text, int def)
+{
+	char buf[3];
+
+	fflush(stdin);
+	printf("\n%s: %s [%c] ", name, text, def == 1?'Y':'N');
+	fgets(buf, 3, stdin);
+	if(def == 0) {
+		if(*buf == 'Y' || *buf == 'y')
+			return 1;
+	} else {
+		if(*buf == 'N' || *buf == 'n')
+			return 0;
+	}
+
+	return def;
+}
+
+
+char *reqd_keys[] = { "Author", "Frontend", "Name", "ProtocolEngine",
+		     "ProtocolVersion", "Version" };
+#define N_REQD_KEYS	6
+
+
+int check_module_file(void)
+{
+	int	global;
+	int	rc;
+	int	e_count, s_count, k_count;
+	char	**e_list, **s_list, **k_list;
+	char	*str, *str2, *str3;
+	int	kill, ok, alt;
+	int	i, j;
+	int	*section_refd;
+	int	errs=0;
+
+	if((global = open_conffile()) < 0)
+		return global;
+
+	/* Phase One */
+	/* Check that every game engine section has req'd entries */
+	if((rc = ggz_conf_get_sections(global, &s_count, &s_list)) <0
+	   || s_count == 0) {
+		printf("Error getting config file sections list\n");
+		printf("May be an empty config file?\n");
+		return rc;
+	}
+	for(i=0; i<s_count; i++) {
+		if(!strcmp(s_list[i], "Games")) {
+			ggz_free(s_list[i]);
+			continue;
+		}
+		printf("*** Checking game config section [%s]\n", s_list[i]);
+		kill=0;
+		for(j=0; j<N_REQD_KEYS; j++) {
+			str = ggz_conf_read_string(global, s_list[i],
+						     reqd_keys[j], NULL);
+			if(str == NULL) {
+				errs++;
+				printf("ERR: missing required key '%s'\n",
+					reqd_keys[j]);
+				kill=1;
+			} else
+				ggz_free(str);
+		}
+		if(!kill) {
+			str = ggz_conf_read_string(global, s_list[i],
+						     "CommandLine", NULL);
+			if(str != NULL) {
+				if(access(str, X_OK))
+					kill=1;
+				ggz_free(str);
+			}
+			if(kill) {
+				errs++;
+				printf("ERR: missing or invalid executable\n");
+			}
+		}
+		if(kill) {
+			printf("Removing section for '%s'\n", s_list[i]);
+			ggz_conf_remove_section(global, s_list[i]);
+		}
+
+		ggz_free(s_list[i]);
+	}
+	ggz_free(s_list);
+
+
+	/* Phase Two */
+	/* Check for cross references (multiple engines -> one game section) */
+	if((rc = ggz_conf_get_sections(global, &s_count, &s_list)) <0) {
+		printf("Error getting config file sections list\n");
+		return rc;
+	}
+phase_two:
+	if((rc = ggz_conf_get_keys(global, "Games", &k_count, &k_list)) <0
+	   || k_count == 0) {
+		printf("Error getting config file [Games]:keys list\n");
+		printf("May be an emtpy config file?\n");
+		return rc;
+	}
+	printf("*** Computing section cross references\n");
+	section_refd = ggz_malloc(s_count * sizeof(int));
+	for(i=0; i<k_count; i++) {
+		if(!strcmp(k_list[i], "*Engines*"))
+			continue;
+		str = ggz_conf_read_string(global, "Games", k_list[i], NULL);
+		for(j=0; j<s_count; j++) {
+			if(!strcmp(str, s_list[j])) {
+				if(!section_refd[j]) {
+					section_refd[j] = i+1;
+					continue;
+				}
+				/* Check name in [p#] to see if it matches */
+				/* either of the xrefs to decide smartly */
+				str2 = ggz_conf_read_string(global, s_list[j],
+							    "Name", NULL);
+				if(str2 && !strcmp(k_list[i], str2))
+					kill = section_refd[j]-1;
+				else
+					kill = i;
+				if(str2)
+					ggz_free(str2);
+				errs++;
+				printf("ERR %s & %s XRefs [%s], deleting %s\n",
+					k_list[i], k_list[section_refd[j]-1],
+					s_list[j], k_list[kill]);
+				ggz_conf_remove_key(global, "Games",
+						    k_list[kill]);
+				for(i=0; i<k_count; i++)
+					ggz_free(k_list[i]);
+				ggz_free(k_list);
+				ggz_free(section_refd);
+
+				/* Restart the phase */
+				goto phase_two;
+			}
+		}
+	}
+	ggz_free(section_refd);
+	for(i=0; i<s_count; i++)
+		ggz_free(s_list[i]);
+	ggz_free(s_list);
+	/* Since we made it through phase two, k_list hasn't */
+	/* changed, so we carry it over to phase three */
+
+
+	/* Phase Three */
+	/* Check each game key for correct name */
+	for(i=0; i<k_count; i++) {
+		if(!strcmp(k_list[i], "*Engines*")) {
+			ggz_free(k_list[i]);
+			continue;
+		}
+		printf("*** Checking Name key for engine '%s'\n", k_list[i]);
+		str = ggz_conf_read_string(global, "Games", k_list[i], NULL);
+		str2 = ggz_conf_read_string(global, str, "Name", NULL);
+		if(strcmp(k_list[i], str2)) {
+			errs++;
+			printf("ERR Setting Name key [%s] to '%s'\n",
+				str, k_list[i]);
+			ggz_conf_write_string(global, str, "Name", k_list[i]);
+		}
+		ggz_free(str);
+		ggz_free(str2);
+		ggz_free(k_list[i]);
+	}
+	ggz_free(k_list);
+
+
+	/* Phase Four */
+	/* Check that each section references back to a [Games]:key */
+	printf("*** Checking back references\n");
+	if((rc = ggz_conf_get_sections(global, &s_count, &s_list)) <0) {
+		printf("Error getting config file sections list\n");
+		return rc;
+	}
+	for(i=0; i<s_count; i++) {
+		if(!strcmp(s_list[i], "Games")) {
+			ggz_free(s_list[i]);
+			continue;
+		}
+		str = ggz_conf_read_string(global, s_list[i], "Name", NULL);
+		str2 = ggz_conf_read_string(global, "Games", str, NULL);
+		if(str2 && strcmp(s_list[i], str2)) {
+			str3 = ggz_conf_read_string(global, str2, "Name", NULL);
+			if(str3) {
+				errs++;
+				printf("ERR %s & %s XRefs '%s', deleting %s\n",
+					str2, s_list[i], str, s_list[i]);
+				ggz_conf_remove_section(global, s_list[i]);
+				ggz_free(str);
+				ggz_free(str2);
+				ggz_free(str3);
+				ggz_free(s_list[i]);
+				continue;
+			}
+		}
+		if(!str2 || strcmp(s_list[i], str2)) {
+			errs++;
+			printf("ERR Adding [Games]:%s key pointing to [%s]\n",
+				 str, s_list[i]);
+			ggz_conf_write_string(global, "Games", str, s_list[i]);
+			ggz_free(str);
+			if(str2)
+				ggz_free(str2);
+			ggz_free(s_list[i]);
+			continue;
+		}
+		ggz_free(str);
+		ggz_free(str2);
+		ggz_free(s_list[i]);
+	}
+	ggz_free(s_list);
+
+
+	/* Phase Five */
+	/* Check that each entry in *Engines* points to something */
+	printf("*** Checking for spurious game engine entries\n");
+phase_five:
+	ggz_conf_read_list(global, "Games", "*Engines*", &e_count, &e_list);
+	for(i=0; i<e_count; i++) {
+		str = ggz_conf_read_string(global, "Games", e_list[i], NULL);
+		if(!str) {
+			errs++;
+			printf("ERR Game engine '%s' invalid, removing\n",
+			       e_list[i]);
+			ggz_free(e_list[i]);
+			e_count--;
+			if(i < e_count)
+				e_list[i] = e_list[e_count];
+			ggz_conf_write_list(global, "Games","*Engines*",
+					    e_count, e_list);
+			for(i=0; i<e_count; i++)
+				ggz_free(e_list[i]);
+			ggz_free(e_list);
+
+			/*** Restart the phase ***/
+			goto phase_five;
+		}
+		ggz_free(str);
+	}
+	/* e_list is still valid and used in next phase */
+
+	/* Final Phase */
+	/* Make sure that every [Games]:key exists in [Games]:*Engines* */
+	printf("*** Checking for missing game engine pointers\n");
+	if((rc = ggz_conf_get_keys(global, "Games", &k_count, &k_list)) <0) {
+		printf("Error getting config file [Games]:keys list\n");
+		return rc;
+	}
+	alt = 0;
+	for(i=0; i<k_count; i++) {
+		if(!strcmp(k_list[i], "*Engines*")) {
+			ggz_free(k_list[i]);
+			continue;
+		}
+		ok = 0;
+		for(j=0; j<e_count; j++)
+			if(!strcmp(k_list[i], e_list[j]))
+				ok=1;
+		if(!ok) {
+			errs++;
+			printf("ERR Adding '%s' to game engine list\n",
+				k_list[i]);
+			e_count++;
+			e_list = ggz_realloc(e_list, e_count*sizeof(char *));
+			e_list[e_count-1] = ggz_strdup(k_list[i]);
+			alt=1;
+		}
+		ggz_free(k_list[i]);
+	}
+	ggz_free(k_list);
+	ggz_conf_write_list(global, "Games", "*Engines*", e_count, e_list);
+	for(i=0; i<e_count; i++)
+		if(alt || i<e_count-1)
+			ggz_free(e_list[i]);
+	ggz_free(e_list);
+
+	if(errs)
+		printf("Finished - writing %d repairs\n", errs);
+	else
+		printf("Finished - no configuration errors detected\n");
+	ggz_conf_commit(global);
+
+	ggz_conf_cleanup();
+
+	return 0;
+}
+
+
 int main(const int argc, const char **argv)
 {
 	poptContext	context;
@@ -483,13 +778,16 @@ int main(const int argc, const char **argv)
 		}
 	}
 
-	if(install_mod + remove_mod != 1) {
+	if(install_mod + remove_mod + check_file != 1) {
 		if(!did_query) {
 			fprintf(stderr, "Try '%s --help' for help\n", argv[0]);
 			return 1;
 		}
 		return 0;
 	}
+
+	if(check_file)
+		return check_module_file();
 
 	if(modfile == NULL) {
 		fprintf(stderr, "Must specify module installation file.\n");

@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 4184 2002-05-11 05:20:57Z bmh $
+ * $Id: ggz.h 4186 2002-05-11 06:02:27Z rgade $
  * 
  * Header file for ggz components lib
  *
@@ -377,7 +377,45 @@ int ggz_conf_remove_section	(int	handle,
 int ggz_conf_remove_key	(int	handle,
 			 const char	*section,
 			 const char	*key);
-			
+
+/**
+ * This function returns a list of all sections in a config file.
+ * @param handle A valid handle returned by ggz_conf_parse()
+ * @param argcp A pointer to an integer which will receive the number of
+ * sections in the configuration file
+ * @param argvp A pointer to a string array.  This will receive a value
+ * pointing to a dynamically allocated array of string values.  This list
+ * is NOT NULL terminated.
+ * @return 0 on success, -1 on failure
+ * @note The array is allocated via standard ggz_malloc() calls and the
+ * caller is expected to be responsible for calling ggz_free() on the string
+ * values and the associated array structure when they no longer need the
+ * list. 
+ */
+int ggz_conf_get_sections (int handle,
+			 int	*argcp,
+			 char	***argvp);
+
+/**
+ * This function returns a list of all keys within a section in a config file.
+ * @param handle A valid handle returned by ggz_conf_parse()
+ * @param section A string section name
+ * @param argcp A pointer to an integer which will receive the number of
+ * lists within section in the configuration file
+ * @param argvp A pointer to a string array.  This will receive a value
+ * pointing to a dynamically allocated array of string values.  This list
+ * is NOT NULL terminated.
+ * @return 0 on success, -1 on failure
+ * @note The array is allocated via standard ggz_malloc() calls and the
+ * caller is expected to be responsible for calling ggz_free() on the string
+ * values and the associated array structure when they no longer need the
+ * list. 
+ */
+int ggz_conf_get_keys (int handle,
+			 const char *section,
+			 int	*argcp,
+			 char	***argvp);
+
 /** @} */
 
 

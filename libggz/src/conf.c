@@ -4,7 +4,7 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
- * $Id: conf.c 3714 2002-03-28 20:42:04Z jdorje $
+ * $Id: conf.c 4186 2002-05-11 06:02:27Z rgade $
  *
  * Internal functions for handling configuration files
  *
@@ -948,6 +948,65 @@ int make_path(const char *full, mode_t mode)
 			}
 		}
 	}
+
+	return 0;
+}
+
+
+int ggz_conf_get_sections(int handle, int *argcp, char ***argvp)
+{
+	conf_file_t	*f_data;
+	GGZListEntry	*s_entry;
+	conf_section_t	*s_data;
+	int count=0;
+	char **sections=NULL;
+
+	if((f_data = get_file_data(handle)) == NULL)
+		return -1;
+
+	s_entry = ggz_list_head(f_data->section_list);
+	while(s_entry) {
+		s_data = ggz_list_get_data(s_entry);
+		sections = ggz_realloc(sections, ++count * sizeof(char *));
+		sections[count-1] = ggz_strdup(s_data->name);
+		s_entry = ggz_list_next(s_entry);
+	}
+
+	*argcp = count;
+	*argvp = sections;
+
+	return 0;
+}
+
+
+int ggz_conf_get_keys(int handle, const char *section, int *argcp, char ***argvp)
+{
+	conf_file_t	*f_data;
+	GGZListEntry	*s_entry, *e_entry;
+	conf_section_t	*s_data;
+	conf_entry_t	*e_data;
+	int count=0;
+	char **keys=NULL;
+
+	if((f_data = get_file_data(handle)) == NULL)
+		return -1;
+
+	/* Find the requested [Section] */
+	s_entry = ggz_list_search(f_data->section_list, (void*)section);
+	if(s_entry == NULL)
+		return -1;
+	s_data = ggz_list_get_data(s_entry);
+
+	e_entry = ggz_list_head(s_data->entry_list);
+	while(e_entry) {
+		e_data = ggz_list_get_data(e_entry);
+		keys = ggz_realloc(keys, ++count * sizeof(char *));
+		keys[count-1] = ggz_strdup(e_data->key);
+		e_entry = ggz_list_next(e_entry);
+	}
+
+	*argcp = count;
+	*argvp = keys;
 
 	return 0;
 }
