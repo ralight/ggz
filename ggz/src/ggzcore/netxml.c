@@ -108,7 +108,7 @@ typedef struct _GGZGameData {
 /* Table data structure */
 typedef struct _GGZTableData {
 	char *desc;
-	_ggzcore_list *seats;
+	GGZList *seats;
 } GGZTableData;
 
 
@@ -922,8 +922,8 @@ static void _ggzcore_net_handle_password(GGZNet *net, GGZXMLElement *element)
 /* Functions for <LIST> tag */
 static void _ggzcore_net_handle_list(GGZNet *net, GGZXMLElement *list_tag)
 {
-	_ggzcore_list *list;
-	_ggzcore_list_entry *entry;
+	GGZList *list;
+	GGZListEntry *entry;
 	GGZRoom *room;
 	int count, room_num;
 	char *type;
@@ -938,13 +938,13 @@ static void _ggzcore_net_handle_list(GGZNet *net, GGZXMLElement *list_tag)
 		else
 			room_num = safe_atoi(ggz_xmlelement_get_attr(list_tag, "ROOM"));
 		
-		entry = _ggzcore_list_head(list);
+		entry = ggz_list_head(list);
 
 		/* Get length of list */
 		/* FIXME: it would be nice if we could get this from the list itself */
 		count = 0;
 		while (entry) {
-			entry = _ggzcore_list_next(entry);
+			entry = ggz_list_next(entry);
 			count++;
 		}
 
@@ -956,10 +956,10 @@ static void _ggzcore_net_handle_list(GGZNet *net, GGZXMLElement *list_tag)
 
 			_ggzcore_server_init_roomlist(net->server, count);
 
-			entry = _ggzcore_list_head(list);
+			entry = ggz_list_head(list);
 			while (entry) {
-				_ggzcore_server_add_room(net->server, _ggzcore_list_get_data(entry));
-				entry = _ggzcore_list_next(entry);
+				_ggzcore_server_add_room(net->server, ggz_list_get_data(entry));
+				entry = ggz_list_next(entry);
 			}
 			_ggzcore_server_event(net->server, GGZ_ROOM_LIST, NULL);
 		}
@@ -969,10 +969,10 @@ static void _ggzcore_net_handle_list(GGZNet *net, GGZXMLElement *list_tag)
 				_ggzcore_server_free_typelist(net->server);
 
 			_ggzcore_server_init_typelist(net->server, count);
-			entry = _ggzcore_list_head(list);
+			entry = ggz_list_head(list);
 			while (entry) {
-				_ggzcore_server_add_type(net->server, _ggzcore_list_get_data(entry));
-				entry = _ggzcore_list_next(entry);
+				_ggzcore_server_add_type(net->server, ggz_list_get_data(entry));
+				entry = ggz_list_next(entry);
 			}
 			_ggzcore_server_event(net->server, GGZ_TYPE_LIST, NULL);
 		}
@@ -988,7 +988,7 @@ static void _ggzcore_net_handle_list(GGZNet *net, GGZXMLElement *list_tag)
 		}
 
 		if (list)
-			_ggzcore_list_destroy(list);
+			ggz_list_free(list);
 	}
 }
 
@@ -996,10 +996,10 @@ static void _ggzcore_net_handle_list(GGZNet *net, GGZXMLElement *list_tag)
 static void _ggzcore_net_list_insert(GGZXMLElement *list_tag, void *data)
 {
 	char *type;
-	_ggzcore_list *list;
-	_ggzcoreEntryCompare compare_func = NULL;
-	_ggzcoreEntryCreate  create_func = NULL;
-	_ggzcoreEntryDestroy destroy_func = NULL;
+	GGZList *list;
+	ggzEntryCompare compare_func = NULL;
+	ggzEntryCreate  create_func = NULL;
+	ggzEntryDestroy destroy_func = NULL;
 
 	type = ggz_xmlelement_get_attr(list_tag, "TYPE");
 	list = ggz_xmlelement_get_data(list_tag);
@@ -1017,15 +1017,15 @@ static void _ggzcore_net_list_insert(GGZXMLElement *list_tag, void *data)
 			compare_func = _ggzcore_table_compare;
 			destroy_func = _ggzcore_table_destroy;
 		}		
-		list = _ggzcore_list_create(compare_func, 
+		list = ggz_list_create(compare_func, 
 					    create_func, 
 					    destroy_func,
-					    _GGZCORE_LIST_ALLOW_DUPS);
+					    GGZ_LIST_ALLOW_DUPS);
 		
 		ggz_xmlelement_set_data(list_tag, list);
 	}
 
-	_ggzcore_list_insert(list, data);
+	ggz_list_insert(list, data);
 }
 
 
@@ -1415,8 +1415,8 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 	GGZSeatData *seat;
 	GGZTableData *data;
 	GGZTable *table_obj;
-	_ggzcore_list *seats = NULL;
-	_ggzcore_list_entry *entry;
+	GGZList *seats = NULL;
+	GGZListEntry *entry;
 	int id, game, status, num_seats;
 	char *desc = NULL;
 	GGZXMLElement *parent;
@@ -1446,9 +1446,9 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 				    id);
 				    
 		/* Add seats */
-		entry = _ggzcore_list_head(seats);
+		entry = ggz_list_head(seats);
 		while (entry) {
-			seat = _ggzcore_list_get_data(entry);
+			seat = ggz_list_get_data(entry);
 			if (strcmp(seat->type, "open") == 0) {
 				/* Nothing to do: seats default to open */
 			}
@@ -1461,7 +1461,7 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 			else if (strcmp(seat->type, "reserved") == 0) {
 				_ggzcore_table_add_reserved(table_obj, seat->name, seat->index);
 			}
-			entry = _ggzcore_list_next(entry);
+			entry = ggz_list_next(entry);
 		}
 		
 		if (strcmp(parent_tag, "LIST") == 0) {
@@ -1488,7 +1488,7 @@ static void _ggzcore_net_table_add_seat(GGZXMLElement *table, GGZSeatData *seat)
 		ggz_xmlelement_set_data(table, data);
 	}
 
-	_ggzcore_list_insert(data->seats, seat);
+	ggz_list_insert(data->seats, seat);
 }
 
 
@@ -1514,10 +1514,10 @@ static GGZTableData* _ggzcore_net_tabledata_new(void)
 
 	data = ggzcore_malloc(sizeof(struct _GGZTableData));
 
-	data->seats = _ggzcore_list_create(NULL, 
+	data->seats = ggz_list_create(NULL, 
 					   _ggzcore_net_seat_copy, 
-					   (_ggzcoreEntryDestroy)_ggzcore_net_seat_free, 
-					   _GGZCORE_LIST_ALLOW_DUPS);
+					   (ggzEntryDestroy)_ggzcore_net_seat_free, 
+					   GGZ_LIST_ALLOW_DUPS);
 
 	return data;
 }
@@ -1529,7 +1529,7 @@ static void _ggzcore_net_tabledata_free(GGZTableData *data)
 		if (data->desc)
 			ggzcore_free(data->desc);
 		if (data->seats)
-			_ggzcore_list_destroy(data->seats);
+			ggz_list_free(data->seats);
 		ggzcore_free(data);
 	}
 }

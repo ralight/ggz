@@ -36,6 +36,7 @@
 #include "gametype.h"
 
 #include <easysock.h>
+#include <ggz.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <poll.h>
@@ -1282,14 +1283,14 @@ static void _ggzcore_net_handle_list_players(struct _GGZNet *net)
 {
 	int i, num, table, status;
 	char *name;
-	struct _ggzcore_list *list;
+	GGZList *list;
 	struct _GGZPlayer *player;
 	struct _GGZRoom *room;
 
 	room = ggzcore_server_get_cur_room(net->server);
 
 	/* New list of players */
-	list = _ggzcore_list_create(_ggzcore_player_compare, NULL,
+	list = ggz_list_create(_ggzcore_player_compare, NULL,
 				    _ggzcore_player_destroy, 0);
 	
 	status = _ggzcore_net_read_num_players(net, &num);
@@ -1318,7 +1319,7 @@ static void _ggzcore_net_handle_list_players(struct _GGZNet *net)
 
 		player = _ggzcore_player_new();
 		_ggzcore_player_init(player, name, room, table);
-		_ggzcore_list_insert(list, player);
+		ggz_list_insert(list, player);
 		
 		if (name)
 			free(name);
@@ -1369,13 +1370,13 @@ static void _ggzcore_net_handle_update_players(struct _GGZNet *net)
 static void _ggzcore_net_handle_list_tables(struct _GGZNet *net)
 {
 	int i, num, status;
-	struct _ggzcore_list *list;
+	GGZList *list;
 	struct _GGZTable *table;
 	struct _GGZRoom *room;
 
 	room = ggzcore_server_get_cur_room(net->server);
 	
-	list = _ggzcore_list_create(_ggzcore_table_compare, NULL,
+	list = ggz_list_create(_ggzcore_table_compare, NULL,
 				    _ggzcore_table_destroy, 0);
 
 	status = _ggzcore_net_read_num_tables(net, &num);
@@ -1396,7 +1397,7 @@ static void _ggzcore_net_handle_list_tables(struct _GGZNet *net)
 	for (i = 0; i < num; i++) {
 		table = _ggzcore_net_handle_table(net);
 		if (table)
-			_ggzcore_list_insert(list, table);
+			ggz_list_insert(list, table);
 	}
 	
 	_ggzcore_room_set_table_list(room, num, list);

@@ -33,6 +33,7 @@
 #include "table.h"
 #include "gametype.h"
 
+#include <ggz.h>
 
 /* Allocate space for a new room object */
 struct _GGZRoom* _ggzcore_room_new(void);
@@ -87,14 +88,14 @@ void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor);
 
 void _ggzcore_room_set_player_list(struct _GGZRoom *room,
 				   unsigned int count,
-				   struct _ggzcore_list *list);
+				   GGZList *list);
 void _ggzcore_room_add_player(struct _GGZRoom *room, char *name, GGZPlayerType type, int lag);
 void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name);
 void _ggzcore_room_set_player_lag(struct _GGZRoom *room, char *name, int lag);
 
 void _ggzcore_room_set_table_list(struct _GGZRoom *room,
 				  unsigned int count,
-				  struct _ggzcore_list *list);
+				  GGZList *list);
 void _ggzcore_room_add_table(struct _GGZRoom *room, struct _GGZTable *table);
 void _ggzcore_room_remove_table(struct _GGZRoom *room, const unsigned int id);
 

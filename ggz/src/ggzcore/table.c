@@ -26,7 +26,6 @@
 
 #include "config.h"
 #include "table.h"
-#include "lists.h"
 #include "msg.h"
 #include "ggzcore.h"
 

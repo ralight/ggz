@@ -29,6 +29,7 @@
 #include "msg.h"
 #include "game.h"
 
+#include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
@@ -37,7 +38,7 @@
 
        
 /* List of modules */
-static struct _ggzcore_list *module_list;
+static GGZList *module_list;
 static unsigned int num_modules;
 static int mod_handle = -1;
 
@@ -61,7 +62,7 @@ static int _ggzcore_module_add(struct _GGZModule *module);
 static char* _ggzcore_module_conf_filename(void);
 static void _ggzcore_module_print(struct _GGZModule*);
 static void _ggzcore_module_list_print(void);
-/* Utility functions used by _ggzcore_list */
+/* Utility functions used by ggz_list */
 static int   _ggzcore_module_compare(void* p, void* q);
 #if 0
 static int   _ggzcore_module_match_version(void *p, void *q);
@@ -252,7 +253,7 @@ int _ggzcore_module_setup(void)
 	}
 
 	
-	module_list = _ggzcore_list_create(_ggzcore_module_compare, NULL,
+	module_list = ggz_list_create(_ggzcore_module_compare, NULL,
 					   _ggzcore_module_destroy, 0);
 	num_modules = 0;
 
@@ -446,7 +447,7 @@ int _ggzcore_module_launch(struct _GGZModule *module)
 void _ggzcore_module_cleanup(void)
 {
 	if (module_list)
-		_ggzcore_list_destroy(module_list);
+		ggz_list_free(module_list);
 	num_modules = 0;
 	/* FIXME: do we need to close the file? */
 }
@@ -531,7 +532,7 @@ static int _ggzcore_module_add(struct _GGZModule *module)
 {
 	int status;
 	
-	if ( (status = _ggzcore_list_insert(module_list, module)) == 0)
+	if ( (status = ggz_list_insert(module_list, module)) == 0)
 		num_modules++;
 
 	return status;
@@ -619,14 +620,14 @@ static void _ggzcore_module_print(struct _GGZModule *module)
 
 static void _ggzcore_module_list_print(void)
 {
-	struct _ggzcore_list_entry *cur;
+	GGZListEntry *cur;
 	
-	for (cur = _ggzcore_list_head(module_list); cur; cur = _ggzcore_list_next(cur))
-		_ggzcore_module_print(_ggzcore_list_get_data(cur));
+	for (cur = ggz_list_head(module_list); cur; cur = ggz_list_next(cur))
+		_ggzcore_module_print(ggz_list_get_data(cur));
 }
 
 
-/* Utility functions used by _ggzcore_list */
+/* Utility functions used by ggz_list */
 static int _ggzcore_module_compare(void* p, void* q)
 {
 	return 1;

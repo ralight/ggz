@@ -26,7 +26,6 @@
 
 #include "config.h"
 #include "gametype.h"
-#include "lists.h"
 #include "msg.h"
 
 #include <stdlib.h>

@@ -25,6 +25,7 @@
 
 #include <config.h>
 
+#include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -34,7 +35,6 @@
 #include <fcntl.h>
 
 #include "ggzcore.h"
-#include "lists.h"
 #include "confio.h"
 
 
@@ -55,7 +55,7 @@
  */
 
 /* Our private functions and vars */
-static _ggzcore_list * file_parser(const char *path);
+static GGZList * file_parser(const char *path);
 static void parse_line(char *line, char **varname, char **varvalue);
 static int section_compare(void *a, void *b);
 static void *section_create(void *data);
@@ -67,7 +67,7 @@ static char *dup_string(const char *src);
 static _ggzcore_confio_file * get_file_data(int handle);
 static int make_path(const char *path, mode_t mode);
 
-static _ggzcore_list	*file_list=NULL;
+static GGZList *file_list=NULL;
 
 
 /* ggzcore_confio_read_string()
@@ -83,7 +83,7 @@ char * ggzcore_confio_read_string(int handle, const char *section,
 				   const char *key, const char *def)
 {
 	_ggzcore_confio_file	*f_data;
-	_ggzcore_list_entry	*s_entry, *e_entry;
+	GGZListEntry	*s_entry, *e_entry;
 	_ggzcore_confio_section	*s_data;
 	_ggzcore_confio_entry	e_srch, *e_data;
 
@@ -92,17 +92,17 @@ char * ggzcore_confio_read_string(int handle, const char *section,
 		goto do_default;
 
 	/* Find the requested [Section] */
-	s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
+	s_entry = ggz_list_search(f_data->section_list, (void*)section);
 	if(s_entry == NULL)
 		goto do_default;
-	s_data = _ggzcore_list_get_data(s_entry);
+	s_data = ggz_list_get_data(s_entry);
 
 	/* Locate the requested Key */
 	e_srch.key = (char*)key;
-	e_entry = _ggzcore_list_search(s_data->entry_list, &e_srch);
+	e_entry = ggz_list_search(s_data->entry_list, &e_srch);
 	if(e_entry == NULL)
 		goto do_default;
-	e_data = _ggzcore_list_get_data(e_entry);
+	e_data = ggz_list_get_data(e_entry);
 
 	/* Duplicate the resulting value and return it to the caller */
 	return dup_string(e_data->value);
@@ -233,7 +233,7 @@ int ggzcore_confio_write_string(int handle, const char *section,
 				 const char *key, const char *value)
 {
 	_ggzcore_confio_file	*f_data;
-	_ggzcore_list_entry	*s_entry;
+	GGZListEntry	*s_entry;
 	_ggzcore_confio_section	*s_data;
 	_ggzcore_confio_entry	e_data;
 
@@ -249,22 +249,22 @@ int ggzcore_confio_write_string(int handle, const char *section,
 	}
 
 	/* Find the requested [Section] */
-	s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
+	s_entry = ggz_list_search(f_data->section_list, (void*)section);
 	if(s_entry == NULL) {
 		/* We need to create a new [Section] */
-		if(_ggzcore_list_insert(f_data->section_list, (void*)section) < 0) {
+		if(ggz_list_insert(f_data->section_list, (void*)section) < 0) {
 			ggzcore_debug(GGZ_DBG_CONF,
 			      "ggzcore_confio_write_string: insertion error");
 			return -1;
 		}
-		s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
+		s_entry = ggz_list_search(f_data->section_list, (void*)section);
 	}
-	s_data = _ggzcore_list_get_data(s_entry);
+	s_data = ggz_list_get_data(s_entry);
 
 	/* Insert the new value into the [Section]'s list */
 	e_data.key = (char*)key;
 	e_data.value = (char*)value;
-	if(_ggzcore_list_insert(s_data->entry_list, &e_data) < 0) {
+	if(ggz_list_insert(s_data->entry_list, &e_data) < 0) {
 		ggzcore_debug(GGZ_DBG_CONF,
 			      "ggzcore_confio_write_string: insertion error");
 		return -1;
@@ -349,7 +349,7 @@ int ggzcore_confio_write_list(int handle, const char *section,
 int ggzcore_confio_remove_section(int handle, const char *section)
 {
 	_ggzcore_confio_file	*f_data;
-	_ggzcore_list_entry	*s_entry;
+	GGZListEntry	*s_entry;
 
 	/* Find this file entry in our file list */
 	if((f_data = get_file_data(handle)) == NULL)
@@ -363,13 +363,13 @@ int ggzcore_confio_remove_section(int handle, const char *section)
 	}
 
 	/* Find the requested [Section] */
-	s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
+	s_entry = ggz_list_search(f_data->section_list, (void*)section);
 	if(s_entry == NULL)
 		return 1;
 
 	/* Since the entry list will automatically be destroyed, all */
 	/* we need to do is remove this section entry */
-	_ggzcore_list_delete_entry(f_data->section_list, s_entry);
+	ggz_list_delete_entry(f_data->section_list, s_entry);
 
 	return 0;
 }
@@ -387,7 +387,7 @@ int ggzcore_confio_remove_section(int handle, const char *section)
 int ggzcore_confio_remove_key(int handle, const char *section, const char *key)
 {
 	_ggzcore_confio_file	*f_data;
-	_ggzcore_list_entry	*s_entry, *e_entry;
+	GGZListEntry	*s_entry, *e_entry;
 	_ggzcore_confio_section	*s_data;
 	_ggzcore_confio_entry	e_data;
 
@@ -403,19 +403,19 @@ int ggzcore_confio_remove_key(int handle, const char *section, const char *key)
 	}
 
 	/* Find the requested [Section] */
-	s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
+	s_entry = ggz_list_search(f_data->section_list, (void*)section);
 	if(s_entry == NULL)
 		return 1;
-	s_data = _ggzcore_list_get_data(s_entry);
+	s_data = ggz_list_get_data(s_entry);
 
 	/* Find the requested Key */
 	e_data.key = (char*)key;
-	e_entry = _ggzcore_list_search(s_data->entry_list, &e_data);
+	e_entry = ggz_list_search(s_data->entry_list, &e_data);
 	if(e_entry == NULL)
 		return 1;
 
 	/* Remove the key's list entry */
-	_ggzcore_list_delete_entry(s_data->entry_list, e_entry);
+	ggz_list_delete_entry(s_data->entry_list, e_entry);
 
 	return 0;
 }
@@ -433,7 +433,7 @@ int ggzcore_confio_remove_key(int handle, const char *section, const char *key)
 int ggzcore_confio_commit(int handle)
 {
 	_ggzcore_confio_file	*f_data;
-	_ggzcore_list_entry	*s_entry, *e_entry;
+	GGZListEntry	*s_entry, *e_entry;
 	_ggzcore_confio_section	*s_data;
 	_ggzcore_confio_entry	*e_data;
 	FILE			*c_file;
@@ -458,9 +458,9 @@ int ggzcore_confio_commit(int handle)
 	}
 
 	/* Now step through each section, writing each entry from it's list */
-	s_entry = _ggzcore_list_head(f_data->section_list);
+	s_entry = ggz_list_head(f_data->section_list);
 	while(s_entry) {
-		s_data = _ggzcore_list_get_data(s_entry);
+		s_data = ggz_list_get_data(s_entry);
 
 		/* Output a line for our [SectionID] */
 		if(firstline) {
@@ -470,18 +470,18 @@ int ggzcore_confio_commit(int handle)
 			fprintf(c_file, "\n[%s]\n", s_data->name);
 
 		/* Bounce through the key entry list */
-		e_entry = _ggzcore_list_head(s_data->entry_list);
+		e_entry = ggz_list_head(s_data->entry_list);
 		while(e_entry) {
-			e_data = _ggzcore_list_get_data(e_entry);
+			e_data = ggz_list_get_data(e_entry);
 
 			/* Output a line for our Key = Value */
 			fprintf(c_file, "%s = %s\n", e_data->key,
 						     e_data->value);
 
-			e_entry = _ggzcore_list_next(e_entry);
+			e_entry = ggz_list_next(e_entry);
 		}
 
-		s_entry = _ggzcore_list_next(s_entry);
+		s_entry = ggz_list_next(s_entry);
 	}
 
 	fclose(c_file);
@@ -502,41 +502,41 @@ int ggzcore_confio_commit(int handle)
  */
 void _ggzcore_confio_cleanup(void)
 {
-	_ggzcore_list_entry	*f_entry;
+	GGZListEntry	*f_entry;
 	_ggzcore_confio_file	*f_data;
 
-	f_entry = _ggzcore_list_head(file_list);
+	f_entry = ggz_list_head(file_list);
 	while(f_entry) {
-		f_data = _ggzcore_list_get_data(f_entry);
-		_ggzcore_list_destroy(f_data->section_list);
+		f_data = ggz_list_get_data(f_entry);
+		ggz_list_free(f_data->section_list);
 		ggzcore_free(f_data->path);
 		ggzcore_free(f_data);
-		f_entry = _ggzcore_list_next(f_entry);
+		f_entry = ggz_list_next(f_entry);
 	}
 
-	_ggzcore_list_destroy(file_list);
+	ggz_list_free(file_list);
 	file_list = NULL;
 }
 
 
 void ggzcore_confio_close(int handle)
 {
-	_ggzcore_list_entry	*f_entry;
+	GGZListEntry	*f_entry;
 	_ggzcore_confio_file	*f_data=NULL;
 
-	f_entry = _ggzcore_list_head(file_list);
+	f_entry = ggz_list_head(file_list);
 	while(f_entry) {
-		f_data = _ggzcore_list_get_data(f_entry);
+		f_data = ggz_list_get_data(f_entry);
 		if(f_data->handle == handle)
 			break;
-		f_entry = _ggzcore_list_next(f_entry);
+		f_entry = ggz_list_next(f_entry);
 	}
 
 	if(f_entry) {
-		_ggzcore_list_destroy(f_data->section_list);
+		ggz_list_free(f_data->section_list);
 		ggzcore_free(f_data->path);
 		ggzcore_free(f_data);
-		_ggzcore_list_delete_entry(file_list, f_entry);
+		ggz_list_delete_entry(file_list, f_entry);
 	}
 }
 
@@ -553,8 +553,8 @@ int	ggzcore_confio_parse(const char *path, const unsigned char options)
 	static int		next_handle=0;
 
 	_ggzcore_confio_file	*file_data=NULL;
-	_ggzcore_list		*section_list;
-	_ggzcore_list_entry	*file_entry;
+	GGZList		*section_list;
+	GGZListEntry	*file_entry;
 
 	int			opt_create, opt_rdonly, opt_rdwr;
 	int			t_file;
@@ -562,8 +562,8 @@ int	ggzcore_confio_parse(const char *path, const unsigned char options)
 
 	/* Our first time through we need to intialize the file list */
 	if(!file_list)
-		file_list = _ggzcore_list_create(NULL, NULL, NULL,
-						 _GGZCORE_LIST_ALLOW_DUPS);
+		file_list = ggz_list_create(NULL, NULL, NULL,
+						 GGZ_LIST_ALLOW_DUPS);
 
 	/* Check for insane options */
 	opt_create = ((options & GGZ_CONFIO_CREATE) == GGZ_CONFIO_CREATE);
@@ -610,12 +610,12 @@ int	ggzcore_confio_parse(const char *path, const unsigned char options)
 	/* See if this path is already opened */
 	/* Note this code can easily be fooled by using different */
 	/* relative paths to the same file. */
-	file_entry = _ggzcore_list_head(file_list);
+	file_entry = ggz_list_head(file_list);
 	while(file_entry) {
-		file_data = _ggzcore_list_get_data(file_entry);
+		file_data = ggz_list_get_data(file_entry);
 		if(!strcmp(file_data->path, path))
 			break;
-		file_entry = _ggzcore_list_next(file_entry);
+		file_entry = ggz_list_next(file_entry);
 	}
 	if(file_entry) {
 		/* Check if we need to enable writing */
@@ -640,9 +640,9 @@ int	ggzcore_confio_parse(const char *path, const unsigned char options)
 	file_data->section_list = section_list;
 
 	/* Now store the new list entry */
-	if(_ggzcore_list_insert(file_list, file_data) < 0) {
+	if(ggz_list_insert(file_list, file_data) < 0) {
 		/* ACK - PUKE */
-		_ggzcore_list_destroy(section_list);
+		ggz_list_free(section_list);
 		return -1;
 	}
 
@@ -659,23 +659,23 @@ int	ggzcore_confio_parse(const char *path, const unsigned char options)
  *	  - ptr to a section list
  *	  - NULL on failure
  */
-static _ggzcore_list * file_parser(const char *path)
+static GGZList * file_parser(const char *path)
 {
 	FILE			*c_file;
 	char			line[1024];
 	char			*varname, *varvalue;
 	int			linenum = 0;
-	_ggzcore_list		*s_list;
-	_ggzcore_list_entry	*s_entry;
+	GGZList		*s_list;
+	GGZListEntry	*s_entry;
 	_ggzcore_confio_section	*s_data=NULL;
 	_ggzcore_confio_entry	*e_data=NULL;
 
 
 	/* Create the section list */
-	s_list = _ggzcore_list_create(section_compare,
+	s_list = ggz_list_create(section_compare,
 				      section_create,
 				      section_destroy,
-				      _GGZCORE_LIST_REPLACE_DUPS);
+				      GGZ_LIST_REPLACE_DUPS);
 	if(!s_list)
 		return NULL;
 
@@ -702,11 +702,11 @@ static _ggzcore_list * file_parser(const char *path)
 				/* It is, so setup a new section entry */
 				varname[strlen(varname)-1] = '\0';
 				varname++;
-				if(_ggzcore_list_insert(s_list, varname) < 0)
+				if(ggz_list_insert(s_list, varname) < 0)
 					ggzcore_error_sys_exit(
 					      "list insert error: file_parser");
-				s_entry = _ggzcore_list_search(s_list, varname);
-				s_data = _ggzcore_list_get_data(s_entry);
+				s_entry = ggz_list_search(s_list, varname);
+				s_data = ggz_list_get_data(s_entry);
 			} else
 				ggzcore_error_msg("Syntax error, %s (line %d)",
 						  path, linenum);
@@ -722,7 +722,7 @@ static _ggzcore_list * file_parser(const char *path)
 		}
 		e_data->key = varname;
 		e_data->value = varvalue;
-		if(_ggzcore_list_insert(s_data->entry_list, e_data) < 0)
+		if(ggz_list_insert(s_data->entry_list, e_data) < 0)
 			ggzcore_error_sys_exit("list insert error: file_parser");
 	}
 
@@ -832,15 +832,15 @@ static char *dup_string(const char *src)
  */
 static _ggzcore_confio_file * get_file_data(int handle)
 {
-	_ggzcore_list_entry	*f_entry;
+	GGZListEntry	*f_entry;
 	_ggzcore_confio_file	*f_data=NULL;
 
-	f_entry = _ggzcore_list_head(file_list);
+	f_entry = ggz_list_head(file_list);
 	while(f_entry) {
-		f_data = _ggzcore_list_get_data(f_entry);
+		f_data = ggz_list_get_data(f_entry);
 		if(f_data->handle == handle)
 			break;
-		f_entry = _ggzcore_list_next(f_entry);
+		f_entry = ggz_list_next(f_entry);
 	}
 	if(f_entry == NULL) {
 		ggzcore_debug(GGZ_DBG_CONF,
@@ -874,10 +874,10 @@ static void *section_create(void *data)
 
 	/* Copy the section name and create an entry list */
 	dst->name = ggzcore_strdup(data);
-	dst->entry_list = _ggzcore_list_create(entry_compare,
+	dst->entry_list = ggz_list_create(entry_compare,
 					       entry_create,
 					       entry_destroy,
-					       _GGZCORE_LIST_REPLACE_DUPS);
+					       GGZ_LIST_REPLACE_DUPS);
 	if(!dst->entry_list) {
 		ggzcore_free(dst->name);
 		ggzcore_free(dst);
@@ -893,7 +893,7 @@ static void section_destroy(void *data)
 
 	s_data = data;
 	ggzcore_free(s_data->name);
-	_ggzcore_list_destroy(s_data->entry_list);
+	ggz_list_free(s_data->entry_list);
 	ggzcore_free(s_data);
 }
 

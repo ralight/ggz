@@ -23,9 +23,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifndef _GGZCORE_LIST_REPLACE_DUPS	/* Make sure we have list datatypes */
-#include "lists.h"
-#endif
+
+#include <ggz.h>
 
 
 /****
@@ -36,12 +35,12 @@ typedef struct _ggzcore_confio_file {
 	char		*path;
 	int		handle;
 	int		writeable;
-	_ggzcore_list	*section_list;
+	GGZList	*section_list;
 } _ggzcore_confio_file;
 
 typedef struct _ggzcore_confio_section {
 	char		*name;
-	_ggzcore_list	*entry_list;
+	GGZList	*entry_list;
 } _ggzcore_confio_section;
 
 typedef struct _ggzcore_confio_entry {

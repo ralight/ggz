@@ -26,7 +26,6 @@
 
 #include "config.h"
 #include "player.h"
-#include "lists.h"
 #include "msg.h"
 #include "room.h"
 

@@ -29,7 +29,6 @@
 #include "server.h"
 #include "net.h"
 #include "errno.h"
-#include "lists.h"
 #include "player.h"
 #include "protocol.h"
 
