@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 5340 2003-01-22 13:50:38Z dr_maux $
+ * $Id: client.c 5809 2004-02-06 17:37:51Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -230,6 +230,31 @@ static void client_loop(GGZClient* client)
 	while (!client->session_over) {
 		fd_set read_fd_set = active_fd_set;
 
+		/*
+		 * FIXME: This implementation won't scale well.
+		 *
+		 * Select is fundamentally an O(fd_max) operation.  With an
+		 * increasing number of players this means each select in
+		 * each player thread will take O(players) time, and thus
+		 * ggzd overall will take O(players^2) time for each step.
+		 *
+		 * This is a problem for the other select calls (in table.c
+		 * and control.c) as well, but in all cases the limiting
+		 * factor is the number of players.  Note it is only a
+		 * problem because we have one thread and one select call
+		 * per player.
+		 *
+		 * Fixing this may be as simple as using a different function
+		 * to monitor the socket.  Since we're only watching one
+		 * socket it should be easy!  Another possibility is
+		 * distributed GGZ: where multiple GGZD processes, possibly
+		 * running on different machines, interoperate to provide
+		 * one "server".
+		 *
+		 * Since the actual overhead of select is very small, I
+		 * suspect we won't have a problem with this unless there
+		 * are a _lot_ of players.
+		 */
 		status = select(fd + 1, &read_fd_set, NULL, NULL, &timer);
 		if (status <= 0) {
 			if (status != 0 && errno != EINTR)
