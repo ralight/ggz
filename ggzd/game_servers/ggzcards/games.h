@@ -40,7 +40,7 @@ struct game_function_pointers {
 	int	(*get_bid_text)(char*, int, bid_t);  /* determines the textual string for the bid */
 	void	(*start_bidding)();		/* updates data for the first bid */
 	int	(*get_bid)();			/* gets a bid from next player */
-	int	(*handle_bid)(bid_t);		/* handles a bid from current bidder */
+	void	(*handle_bid)(bid_t);		/* handles a bid from current bidder */
 	void	(*next_bid)();			/* updates data for the next bid */
 
 	/* playing */
@@ -62,7 +62,7 @@ struct game_function_pointers {
 
 	/* miscellaneous */
 	card_t	(*map_card)(card_t);
-	int	(*compare_cards)(const void *, const void *);
+	int	(*compare_cards)(card_t, card_t);
 	int	(*send_hand)(player_t, seat_t);	 /* sends a hand to a player */
 };
 

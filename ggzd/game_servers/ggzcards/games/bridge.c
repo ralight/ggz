@@ -31,11 +31,11 @@
 
 #include "bridge.h"
 
-static int bridge_compare_cards(const void *c1, const void *c2);
+static int bridge_compare_cards(card_t, card_t);
 static void bridge_init_game();
 static void bridge_start_bidding();
 static int bridge_get_bid();
-static int bridge_handle_bid(bid_t bid);
+static void bridge_handle_bid(bid_t bid);
 static void bridge_next_bid();
 static void bridge_start_playing();
 static void bridge_get_play(player_t p);
@@ -79,18 +79,15 @@ static char* short_bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
 static char* long_bridge_suit_names[5] = {"clubs", "diamonds", "hearts", "spades", "notrump"};
 
 
-static int bridge_compare_cards(const void *c1, const void *c2)
+static int bridge_compare_cards(card_t card1, card_t card2)
 {
-	register card_t card1 = game.funcs->map_card( *(card_t *)c1 );
-	register card_t card2 = game.funcs->map_card( *(card_t *)c2 );
-
 	/* in Bridge, the trump suit is always supposed to be shown on the left */
 	if (card1.suit == game.trump && card2.suit != game.trump)
 		return -1;
 	if (card2.suit == game.trump && card1.suit != game.trump)
 		return 1;
 
-	return game_compare_cards(c1, c2);
+	return game_compare_cards(card1, card2);
 }
 
 static void bridge_init_game()
@@ -167,7 +164,7 @@ static int bridge_get_bid()
 	return req_bid(game.next_bid, index, NULL);
 }
 
-static int bridge_handle_bid(bid_t bid)
+static void bridge_handle_bid(bid_t bid)
 {
 	/* closely based on the Suaro code*/
 	ggz_debug("The bid chosen is %d %s %d.", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit], bid.sbid.spec);
@@ -189,7 +186,6 @@ static int bridge_handle_bid(bid_t bid)
 		else
 			game.trump = -1;
 	}
-	return 0;
 }
 
 static void bridge_next_bid()
@@ -259,9 +255,8 @@ static int bridge_test_for_gameover()
 
 static int bridge_send_hand(player_t p, seat_t s)
 {
-	/* TODO: we explicitly send out the dummy hand, but a player who
+	/* we explicitly send out the dummy hand, but a player who
 	 * joins late won't see it.  We have the same problem with Suaro. */
-	/* fall through */
 	if (s == BRIDGE.dummy /* player/seat crossover; ok because it's bridge */
 	    && BRIDGE.dummy_revealed)
 		return send_hand(p, s, 1);
@@ -287,7 +282,6 @@ static void bridge_set_player_message(player_t p)
 
 	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d\n", game.players[p].score);
 	if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
-		/* TODO: declarer and dummy really shouldn't be at the top */
 		if (p == BRIDGE.declarer)
 			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "declarer\n");
 		if (p == BRIDGE.dummy)

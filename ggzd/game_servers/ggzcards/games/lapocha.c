@@ -35,7 +35,7 @@ static void lapocha_init_game();
 static int lapocha_handle_gameover();
 static void lapocha_start_bidding();
 static int lapocha_get_bid();
-static int lapocha_handle_bid(bid_t bid);
+static void lapocha_handle_bid(bid_t bid);
 static void lapocha_next_bid();
 static int lapocha_test_for_gameover();
 static int lapocha_deal_hand();
@@ -140,7 +140,7 @@ static int lapocha_get_bid()
 		/* handled just like a bid */
 		if(game.hand_size != 10) {
 			bid.bid = (long)cards_deal_card().suit;
-			handle_bid_event(bid); /* TODO: Does this work? */
+			handle_bid_event(bid);
 		} else
 			status = req_bid(game.dealer, 4, suit_names);
 	} else { /* get a player's numerical bid */
@@ -162,14 +162,13 @@ static int lapocha_get_bid()
 	return status;
 }
 
-static int lapocha_handle_bid(bid_t bid)
+static void lapocha_handle_bid(bid_t bid)
 {
 	if (game.bid_count == 0) {
 		game.trump = bid.bid;
 		set_global_message("", "Trump is %s.", suit_names[(int)game.trump % 4]);
 	} else
 		LAPOCHA.bid_sum += bid.bid;
-	return 0;
 }
 
 static void lapocha_next_bid()

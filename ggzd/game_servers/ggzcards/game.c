@@ -76,10 +76,8 @@ card_t game_map_card(card_t c)
  *   This function is used for the automatic sorting of hands by
  *   cards_sort_hand.
  */
-int game_compare_cards(const void *c1, const void *c2)
+int game_compare_cards(card_t card1, card_t card2)
 {
-	register card_t card1 = game.funcs->map_card( *(card_t *)c1 );
-	register card_t card2 = game.funcs->map_card( *(card_t *)c2 );
 	if (card1.suit < card2.suit) return -1;
 	if (card1.suit > card2.suit) return 1;
 	if (card1.face < card2.face) return -1;
@@ -210,11 +208,10 @@ int game_get_bid()
  *   will already have been set automatically; all we need to do is any additional
  *   game-specific stuff.
  */
-int game_handle_bid(bid_t bid)
+void game_handle_bid(bid_t bid)
 {
 	/* no special handling necessary */
 	/* the bid message is set automatically */
-	return 0; /* TODO */	
 }
 
 /* game_next_bid

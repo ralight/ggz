@@ -42,7 +42,7 @@ extern void game_set_player_message(player_t);
 extern int game_get_bid_text(char*, int, bid_t);
 extern void game_start_bidding();		
 extern int game_get_bid();		
-extern int game_handle_bid(bid_t);		
+extern void game_handle_bid(bid_t);		
 extern void game_next_bid();		
 
 extern void game_start_playing();		
@@ -60,7 +60,7 @@ extern int game_test_for_gameover();
 extern int game_handle_gameover();		
 
 extern card_t game_map_card(card_t);
-extern int game_compare_cards(const void *, const void *);
+extern int game_compare_cards(card_t, card_t);
 extern int game_send_hand(player_t, seat_t);
 
 

@@ -36,7 +36,7 @@ static int suaro_get_options(int fd);
 static void suaro_handle_options(int *options);
 static void suaro_start_bidding();
 static int suaro_get_bid();
-static int suaro_handle_bid(bid_t bid);
+static void suaro_handle_bid(bid_t bid);
 static void suaro_next_bid();
 static void suaro_start_playing(void);
 static int suaro_deal_hand();
@@ -178,7 +178,7 @@ static void suaro_start_bidding()
 
 static int suaro_get_bid()
 {
-	int status = 0, index=0;
+	int  index=0;
 	bid_t bid;
 	bid.bid = 0;
 
@@ -223,12 +223,10 @@ static int suaro_get_bid()
 	game.bid_choices[index] = bid;
 	index++;
 
-	status = req_bid(game.next_bid, index, NULL);
-
-	return status;
+	return req_bid(game.next_bid, index, NULL);
 }
 
-static int suaro_handle_bid(bid_t bid)
+static void suaro_handle_bid(bid_t bid)
 {
 	if (bid.sbid.spec == SUARO_PASS) {
 		SUARO.pass_count++;
@@ -249,7 +247,6 @@ static int suaro_handle_bid(bid_t bid)
 		else
 			game.trump = -1;
 	}	
-	return 0;
 }
 
 static void suaro_next_bid()
@@ -266,7 +263,7 @@ static void suaro_next_bid()
 			/* contract was determined in game_handle_bid */
 		}
 	} else
-		game_next_bid(); /* TODO */
+		game_next_bid();
 }
 
 static void suaro_start_playing(void)

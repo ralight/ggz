@@ -35,7 +35,7 @@ static card_t euchre_map_card(card_t c);
 static void euchre_init_game();
 static void euchre_start_bidding();
 static int euchre_get_bid();
-static int euchre_handle_bid(bid_t bid);
+static void euchre_handle_bid(bid_t bid);
 static void euchre_next_bid();
 static void euchre_start_playing();
 static int euchre_deal_hand();
@@ -138,7 +138,7 @@ static int euchre_get_bid()
 	return status;	
 }
 
-static int euchre_handle_bid(bid_t bid)
+static void euchre_handle_bid(bid_t bid)
 {
 	if ( bid.sbid.spec == EUCHRE_TAKE ) {
 		EUCHRE.maker = game.next_bid;
@@ -148,7 +148,6 @@ static int euchre_handle_bid(bid_t bid)
 		game.trump = bid.sbid.suit;
 	}
 	/* bidding is ended automatically by game_next_bid */
-	return 0;
 }
 
 static void euchre_next_bid()

@@ -180,11 +180,18 @@ void cards_deal_hand(int handsize, hand_t *hand)
 	cards_sort_hand(hand);
 }
 
+int compare_cards(const void *c1, const void *c2)
+{
+	register card_t card1 = game.funcs->map_card( *(card_t *)c1 );
+	register card_t card2 = game.funcs->map_card( *(card_t *)c2 );	
+	return game.funcs->compare_cards(card1, card2);
+}
+
 void cards_sort_hand(hand_t *hand)
 {
 	/* sort cards -- this should be in another function
 	 * so it can be done later as well */
-	qsort(hand->cards, hand->hand_size, sizeof(card_t), game.funcs->compare_cards);
+	qsort(hand->cards, hand->hand_size, sizeof(card_t), compare_cards);
 }
 
 
