@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2571 2001-10-15 08:20:00Z jdorje $
+ * $Id: ggzdmod.c 2574 2001-10-16 17:02:53Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -32,10 +32,23 @@
 
 #include <assert.h>
 #include <errno.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+
+#include <easysock.h>
+#include "../game_servers/libggzmod/ggz_protocols.h"	/* FIXME */
 
 #include "ggzdmod.h"
+
+
+/* debug level for ggzdmod_log() */
+/* Moved out of ggz_server.h since it's not used outside the library.
+   Imported from ggzd; make sure it stays consistent! A better alternative
+   would be to #include ../../ggzd/err_func.h --JDS */
+#define GGZ_DBG_TABLE	(unsigned) 0x00000010
 
 #define CHECK_GGZDMOD(ggzdmod)                             \
 	(assert(ggzdmod && ggzdmod->magic == MAGIC_VALUE), \
@@ -51,6 +64,7 @@ typedef struct _GGZdMod {
 	int num_seats;
 	GGZSeat *seats;
 	GGZdModHandler handlers[GGZDMOD_NUM_HANDLERS];
+	int gameover;
 	/* etc. */
 #ifdef DEBUG
 #define MAGIC_VALUE 0xdeadbeef
@@ -271,10 +285,31 @@ void ggzdmod_io_read(GGZdMod * mod)
 	}
 }
 
+/* unlike the old ggzd_main_loop() this one doesn't connect/disconnect. */
 int ggzdmod_loop(GGZdMod * mod)
 {
-	assert(0);
-	return -1;
+	_GGZdMod *ggzdmod = mod;
+	if (!CHECK_GGZDMOD(ggzdmod)) {
+		return -1;
+	}
+	while (!ggzdmod->gameover) {
+		ggzdmod_io_read(mod);
+	}
+	return 0;		/* should handle errors */
+}
+
+int ggzdmod_halt_game(GGZdMod * mod)
+{
+	_GGZdMod *ggzdmod = mod;
+	if (!CHECK_GGZDMOD(ggzdmod))
+		return -1;
+	if (ggzdmod->type == GGZDMOD_GAME) {
+		ggzdmod->gameover = 1;
+	} else {
+		assert(0);
+		return -1;
+	}
+	return 0;
 }
 
 /* 
@@ -287,30 +322,90 @@ int ggzdmod_launch_game(GGZdMod * mod, char **args)
 	return -1;
 }
 
-int ggzdmod_halt_game(GGZdMod * mod)
-{
-	assert(0);
-	return -1;
-}
-
 /* 
  * module specific actions
  */
 
 int ggzdmod_connect(GGZdMod * mod)
 {
-	assert(0);
-	return -1;
+	_GGZdMod *ggzdmod = mod;
+	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GAME)
+		return -1;
+	ggzdmod->fd = 3;
+
+	if (ggzdmod_log(ggzdmod, "GGZDMOD: Connecting to GGZ server.") < 0) {
+		ggzdmod->fd = -1;
+		return -1;
+	}
+
+	FD_ZERO(&ggzdmod->active_fd_set);
+	FD_SET(ggzdmod->fd, &ggzdmod->active_fd_set);
+
+	return ggzdmod->fd;
 }
 
 int ggzdmod_disconnect(GGZdMod * mod)
 {
-	assert(0);
-	return -1;
+	_GGZdMod *ggzdmod = mod;
+	int response, p;
+	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GAME)
+		return -1;
+
+	/* first send a gameover message (request) */
+	if (es_write_int(ggzdmod->fd, REQ_GAME_OVER) < 0)
+		return -1;
+
+	/* The server will send a message in response; we should wait for it. 
+	 */
+	if (es_read_int(ggzdmod->fd, &response) < 0)
+		return -1;
+	if (response != RSP_GAME_OVER) {
+		/* what else can we do? */
+		ggzdmod_log(ggzdmod,
+			    "GGZDMOD: ERROR: "
+			    "Got %d response while waiting for RSP_GAME_OVER.",
+			    response);
+	}
+
+	ggzdmod_log(ggzdmod, "GGZDMOD: Disconnected from GGZ server.");
+
+	/* close all file descriptors */
+	for (p = 0; p < ggzdmod->num_seats; p++)
+		if (ggzdmod->seats[p].fd != -1) {
+			close(ggzdmod->seats[p].fd);
+			ggzdmod->seats[p].fd = -1;
+		}
+
+	close(ggzdmod->fd);
+	ggzdmod->fd = -1;
+
+	FD_ZERO(&ggzdmod->active_fd_set);
+
+	free(ggzdmod->seats);
+	ggzdmod->seats = NULL;
+
+	return 0;
 }
 
 int ggzdmod_log(GGZdMod * mod, char *fmt, ...)
 {
-	assert(0);
-	return -1;
+	_GGZdMod *ggzdmod = mod;
+	char buf[4096];
+	va_list ap;
+
+	if (!CHECK_GGZDMOD(ggzdmod) || !fmt || ggzdmod->fd < 0) {
+		/* This will happen when ggzdmod_log is called before
+		   connection.  We could store the buffer for later, but... */
+		return -1;
+	}
+
+	va_start(ap, fmt);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
+	va_end(ap);
+
+	if (es_write_int(ggzdmod->fd, MSG_DBG) < 0 ||
+	    es_write_int(ggzdmod->fd, GGZ_DBG_TABLE) < 0 ||
+	    es_write_string(ggzdmod->fd, buf) < 0)
+		return -1;
+	return 0;
 }
