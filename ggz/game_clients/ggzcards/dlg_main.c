@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 5014 2002-10-23 21:18:44Z jdorje $
+ * $Id: dlg_main.c 5018 2002-10-23 22:48:15Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -73,6 +73,7 @@ static GtkWidget *create_menus(GtkWidget *window)
 	  {_("/Help/_About"), "<ctrl>A", on_mnu_about_activate, 0, NULL}
 	};
 	const int num = sizeof(items) / sizeof(items[0]);
+	GtkWidget *item;
 
 	accel_group = gtk_accel_group_new();
 
@@ -81,6 +82,9 @@ static GtkWidget *create_menus(GtkWidget *window)
 	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
 
 	gtk_object_set_data(GTK_OBJECT(window), "mbar", menu);
+
+	item = get_menu_item(_("<main>/Game/Start game"));
+	gtk_widget_set_sensitive(item, FALSE);
 
 	return gtk_item_factory_get_widget(menu, "<main>");
 }
