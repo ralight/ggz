@@ -6,5 +6,5 @@ Frontend = kde
 Homepage = http://ggz.sourceforge.net/games/krosswater/
 Name = Krosswater
 ProtocolEngine = Krosswater
-ProtocolVersion = 0.0.2
+ProtocolVersion = 2
 Version = 0.0.5
