@@ -325,6 +325,11 @@ int room_emit(const int room, const int sender, char *msg)
 	ChatItemStruct *new_chat;
 	int i, t_p;
 
+	/* Check if the message is too big to fit in */
+	/* room_send_chat()'s outbuf and truncate.   */
+	if(strlen(msg) > CHAT_OUTBUF_SIZE - MAX_USER_NAME_LEN - 3)
+		msg[CHAT_OUTBUF_SIZE-MAX_USER_NAME_LEN-3] = '\0';
+
 	/* Allocate a new chat item */
 	if((new_chat = malloc(sizeof(ChatItemStruct))) == NULL) {
 		free(msg);
@@ -392,49 +397,41 @@ int room_pemit(const int room, const int sender, char *stmt)
 
 
 /* Send out all chat to a player from his current room */
-int room_send_chat(const int p)
+int room_send_chat(const int p_index)
 {
 	ChatItemStruct *cur_chat;
 	int room;
 	int fd;
+	char outbuf[CHAT_OUTBUF_SIZE];
+	char *p = outbuf;
+	char *end = outbuf + (CHAT_OUTBUF_SIZE - 3);
+			     /* space for three NULLs */
 
 	pthread_rwlock_rdlock(&players.lock);
-	fd = players.info[p].fd;
-	room = players.info[p].room;
-	cur_chat = players.info[p].chat_head;
+	fd = players.info[p_index].fd;
+	room = players.info[p_index].room;
+	cur_chat = players.info[p_index].chat_head;
 	pthread_rwlock_unlock(&players.lock);
 
-	/* We carefully sequence our locks so that:             */
-	/* 1) Other threads can be in room_send_chat at the     */
-	/*    same time as us, even in the same room            */
-	/* 2) Chats can be added to the room, and the player    */
-	/*    while we are dumping the chat.                    */
-	/* This is safe assuming these (currently true) facts:  */
-	/* 1) No one can remove a chat from our queue except us */
-	/* 2) Anyone can alter our chat_head ONLY if it is NULL */
-	/* 3) No one can alter or remove the chat strings while */
-	/*    we still have a reference_count to it             */
+	/* Copy all of our chats we can fit into outbuf */
 	while(cur_chat) {
-		pthread_rwlock_rdlock(&chat_room[room].lock);
-		if (es_write_int(fd, MSG_CHAT) < 0
-		    || es_write_string(fd, cur_chat->chat_sender) < 0
-		    || es_write_string(fd, cur_chat->chat_msg) < 0) {
-			pthread_rwlock_unlock(&chat_room[room].lock);
-			return(-1);
+		/* We obviously have a reference to it, so it can't change */
+		if((end - p) > (strlen(cur_chat->chat_sender)
+				+ strlen(cur_chat->chat_msg))) {
+			strcpy(p, cur_chat->chat_sender);
+			p += (strlen(p) + 1);
+			strcpy(p, cur_chat->chat_msg);
+			p += (strlen(p) + 1);
 		}
-		pthread_rwlock_unlock(&chat_room[room].lock);
 
-		/* Need write lock to update player chat head and ref count */
+		/* We need a lock now to alter our chat_head */
 		pthread_rwlock_wrlock(&chat_room[room].lock);
-		players.info[p].chat_head = cur_chat->next;
+		players.info[p_index].chat_head = cur_chat->next;
 		cur_chat->reference_count --;
-		pthread_rwlock_unlock(&chat_room[room].lock);
 
-		pthread_rwlock_rdlock(&chat_room[room].lock);
+		/* And delete the chat if need be */
 		if(cur_chat->reference_count == 0) {
 			dbg_msg(GGZ_DBG_LISTS, "Removing chat %p", cur_chat);
-			pthread_rwlock_unlock(&chat_room[room].lock);
-			pthread_rwlock_wrlock(&chat_room[room].lock);
 			if(chat_room[room].chat_tail == cur_chat) {
 				chat_room[room].chat_tail = NULL;
 			}
@@ -445,7 +442,6 @@ int room_send_chat(const int p)
 			free(cur_chat->chat_sender);
 			free(cur_chat->chat_msg);
 			free(cur_chat);
-			pthread_rwlock_rdlock(&chat_room[room].lock);
 		}
 #ifdef DEBUG
 		if(chat_room[room].chat_tail == NULL)
@@ -453,9 +449,23 @@ int room_send_chat(const int p)
 		room_spew_chat_room(room);
 #endif
 
-		/* Update cur_chat */
-		cur_chat = players.info[p].chat_head;
+		/* Finally, point us to the next chat */
+		cur_chat = players.info[p_index].chat_head;
 		pthread_rwlock_unlock(&chat_room[room].lock);
+	}
+	/* Mark the end of the buffer */
+	*p = '\0';
+
+	/* Now we can write these chats w/o locks */
+	p = outbuf;
+	while(*p) {
+		if(es_write_int(fd, MSG_CHAT) < 0
+		   || es_write_string(fd, p) < 0)
+			return -1;
+		p += (strlen(p) + 1);
+		if(es_write_string(fd, p) < 0)
+			return -1;
+		p += (strlen(p) + 1);
 	}
 
 	return 0;

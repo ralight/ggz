@@ -43,6 +43,7 @@
 #define MAX_MOTD_LINES 80
 #define DEFAULT_MAX_ROOM_USERS 100
 #define DEFAULT_MAX_ROOM_TABLES 50
+#define CHAT_OUTBUF_SIZE 4096
 
 /* Bitmasks for allowable player numbers */
 #define GGZ_ALLOW_ZERO    0
