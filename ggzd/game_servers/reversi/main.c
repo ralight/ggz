@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: main loop for the server
- * $Id: main.c 2280 2001-08-27 18:29:25Z jdorje $
+ * $Id: main.c 2346 2001-09-03 10:43:41Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -38,7 +38,7 @@ int main(void) {
 	ggzd_set_handler(GGZ_EVENT_JOIN, &game_handle_ggz);
 	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
 	
-	ggzd_main();
+	(void)ggzd_main_loop();
 
 	return 0;
 }

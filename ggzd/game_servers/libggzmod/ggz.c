@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2331 2001-08-31 21:58:33Z jdorje $
+ * $Id: ggz.c 2346 2001-09-03 10:43:41Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -543,7 +543,15 @@ void ggzd_dispatch(void)
 }
 
 
-void ggzd_read_data(void)
+/* NOT IMPLEMENTED
+void ggzd_io_is_pending(void)
+{
+
+}
+*/
+
+
+void ggzd_io_read_all(void)
 {
 	fd_set read_fd_set;
 	int i, fd, status;
@@ -591,13 +599,13 @@ void ggzd_read_data(void)
  * 0 => success
  * -1 => can't connect
  */
-int ggzd_main(void)
+int ggzd_main_loop(void)
 {
 	if (ggzd_connect() < 0)
 		return -1;
 
 	do
-		ggzd_read_data();
+		ggzd_io_read_all();
 	while (!gameover);
 
 	(void)ggzd_disconnect();

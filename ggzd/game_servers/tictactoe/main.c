@@ -42,7 +42,7 @@ int main(void)
 	ggzd_set_handler(GGZ_EVENT_LEAVE, &game_handle_ggz);
 	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
 
-	ggzd_main();
+	(void)ggzd_main_loop();
 
 	return 0;
 }

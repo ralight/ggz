@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game server main loop
- * $Id: main.c 2299 2001-08-28 05:13:32Z jdorje $
+ * $Id: main.c 2346 2001-09-03 10:43:41Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -40,7 +40,7 @@ int main(void)
 	ggzd_set_handler(GGZ_EVENT_LEAVE, &game_handle_ggz);
 	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
 
-	(void)ggzd_main();
+	(void)ggzd_main_loop();
 
 	return 0;
 }

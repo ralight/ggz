@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 22/06/2001
  * Desc: Main loop
- * $Id: main.c 2242 2001-08-25 14:58:07Z jdorje $
+ * $Id: main.c 2346 2001-09-03 10:43:41Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -47,6 +47,8 @@ int main(void)
 	/* ggzd_set_handler(GGZ_EVENT_QUIT, &ggz_update); */
 	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
 
-	return ggzd_main();
+	(void)ggzd_main_loop();
+
+	return 0;
 }
 

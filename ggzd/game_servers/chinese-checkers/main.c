@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 04/27/2000
  * Desc: Main loop
- * $Id: main.c 2300 2001-08-28 05:35:33Z jdorje $
+ * $Id: main.c 2346 2001-09-03 10:43:41Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -43,7 +43,7 @@ int main(void)
 	ggzd_set_handler(GGZ_EVENT_JOIN, &game_handle_ggz);
 	ggzd_set_handler(GGZ_EVENT_LEAVE, &game_handle_ggz);
 	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
-	(void)ggzd_main();
+	(void)ggzd_main_loop();
 
 	return 0;
 }

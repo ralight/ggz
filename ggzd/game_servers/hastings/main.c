@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 2001-01-08
  * Desc: Main loop
- * $Id: main.c 2244 2001-08-25 15:21:40Z jdorje $
+ * $Id: main.c 2346 2001-09-03 10:43:41Z jdorje $
  *
  * Copyright (C) Josef Spillner
  *
@@ -38,5 +38,7 @@ int main(void)
 	ggzd_set_handler(GGZ_EVENT_LEAVE, &game_handle_ggz);
 	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
 
-	return ggzd_main();
+	(void)ggzd_main_loop();
+
+	return 0;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2278 2001-08-27 17:52:23Z jdorje $
+ * $Id: main.c 2346 2001-09-03 10:43:41Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -153,5 +153,7 @@ int main(int argc, char **argv)
 	ggzd_set_handler(GGZ_EVENT_PLAYER, &handle_player_event);
 
 	/* Connect to GGZ server; main loop */
-	return ggzd_main();
+	(void)ggzd_main_loop();
+
+	return 0;
 }
