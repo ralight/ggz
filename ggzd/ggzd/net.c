@@ -726,7 +726,7 @@ int net_read_data(GGZNetIO *net)
 		if (net->byte_count > MAX_CHAT_LEN) {
 			dbg_msg(GGZ_DBG_XML, "Error: player overflowed XML buffer");
 			
-			_net_send_result(net, "protocol", -2);
+			_net_send_result(net, "protocol", E_BAD_OPTIONS);
 			done = 1;
 		}
 	}
@@ -857,6 +857,13 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login)
 
 	if (login) {
 		type = xmlelement_get_attr(login, "TYPE");
+
+		/* If they didn't send TYPE, it's an error */
+		if (!type) {
+			_net_send_result(net, "login", E_BAD_OPTIONS);
+			return;
+		}
+
 		if (strcmp(type, "normal") == 0)
 			login_type = GGZ_LOGIN;
 		else if (strcmp(type, "guest") == 0)
@@ -864,7 +871,7 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login)
 		else if (strcmp(type, "first") == 0)
 			login_type = GGZ_LOGIN_NEW;
 		else {
-			_net_send_result(net, "login", -2);
+			_net_send_result(net, "login", E_BAD_OPTIONS);
 			return;
 		}
 		
@@ -872,7 +879,7 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login)
 		
 		/* If there's no data, then they must not have sent a name */
 		if (!data || !data[0]) {
-			_net_send_result(net, "login", -2);
+			_net_send_result(net, "login", E_BAD_OPTIONS);
 			return;
 		}
 		
@@ -930,13 +937,20 @@ static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element)
 	/* Get parent off top of stack */
 	parent = stack_top(net->stack);
 
-	if (element && parent) {
+	/* If there are no elements above us, it's protocol error */
+	if (!parent) {
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
+	}
+
+	if (element) {
 		name = strdup(xmlelement_get_text(element));
 		parent_tag = xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "LOGIN") == 0)
 			_net_login_set_name(parent, name);
-		/* FIXME: do something if we got something else */
+		else 
+			_net_send_result(net, "protocol", E_BAD_OPTIONS);
 	}
 }
 
@@ -951,12 +965,20 @@ static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element)
 	/* Get parent off top of stack */
 	parent = stack_top(net->stack);
 
-	if (element && parent) {
+	/* If there are no elements above us, it's protocol error */
+	if (!parent) {
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
+	}
+
+	if (element) {
 		password = strdup(xmlelement_get_text(element));
 		parent_tag = xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "LOGIN") == 0)
 			_net_login_set_password(parent, password);
+		else 
+			_net_send_result(net, "protocol", E_BAD_OPTIONS);
 	}
 }
 
@@ -971,7 +993,7 @@ static void _net_handle_list(GGZNetIO *net, GGZXMLElement *list)
 		type = xmlelement_get_attr(list, "TYPE");
 		
 		if (!type) {
-			_net_send_result(net, "list", -2);
+			_net_send_result(net, "list", E_BAD_OPTIONS);
 			return;
 		}
 		
@@ -989,6 +1011,8 @@ static void _net_handle_list(GGZNetIO *net, GGZXMLElement *list)
 		else if (strcmp(type, "table") == 0)
 			/* FIXME: Currently send all local types */
 			player_list_tables(net->player, -1, 0);
+		else
+			_net_send_result(net, "protocol", E_BAD_OPTIONS);
 	}
 }
 
@@ -1017,6 +1041,13 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *chat)
 		type = xmlelement_get_attr(chat, "TYPE");
 		to = xmlelement_get_attr(chat, "TO");
 		msg = xmlelement_get_text(chat);
+
+		/* TYPE is required */
+		if (!type) {
+			_net_send_result(net, "chat", E_BAD_OPTIONS);
+			return;
+		}
+			
 		/* FIXME: error checking on these? */
 		
 		if (strcmp(type, "normal") == 0)
@@ -1027,6 +1058,9 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *chat)
 			op = GGZ_CHAT_ANNOUNCE;
 		else if (strcmp(type, "beep") == 0)
 			op = GGZ_CHAT_BEEP;
+		else {
+			_net_send_result(net, "chat", E_BAD_OPTIONS);
+		}
 
 		player_chat(net->player, op, to, msg);
 	}
@@ -1065,10 +1099,9 @@ static void _net_handle_launch(GGZNetIO *net, GGZXMLElement *element)
 	if (element) {
 		table = xmlelement_get_data(element);
 		if (!table) {
-			_net_send_result(net, "launch", -2);
+			_net_send_result(net, "launch", E_BAD_OPTIONS);
 			return;
 		}
-
 		
 		player_table_launch(net->player, table);
 	}
@@ -1088,8 +1121,21 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	char *parent_tag;
 	GGZXMLElement *parent;
 
+	parent = stack_top(net->stack);
+	
+	if (!parent) {
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
+	}
+
 	/* Get table data from tag */
 	type = safe_atoi(xmlelement_get_attr(element, "GAME"));
+
+	if (!type) {
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
+	}
+		
 	data = xmlelement_get_data(element);
 	if (data) {
 		desc = data->desc;
@@ -1127,12 +1173,12 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 		entry = list_next(entry);
 	}
 
-	parent = stack_top(net->stack);
 	parent_tag = xmlelement_get_tag(parent);
  	if (strcmp(parent_tag, "LAUNCH") == 0) {
 		xmlelement_set_data(parent, table);
 	}
-	/* FIXME: handle case where parent is not LAUNCH */
+	else
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
 	
 	if (data)
 		_net_tabledata_free(data);
@@ -1210,10 +1256,17 @@ static void _net_handle_seat(GGZNetIO *net, GGZXMLElement *element)
 
 	/* Get parent off top of stack */
 	parent = stack_top(net->stack);
+	if (!parent) {
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
+	}
 
-	if (element && parent) {
-		/* FIXME: make sure parent is a TABLE */
-		
+	if (strcmp(parent->tag, "TABLE") != 0) {
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
+	}
+
+	if (element) {
 		/* Get seat information out of tag */
 		seat.index = safe_atoi(xmlelement_get_attr(element, "NUM"));
 		seat.type = xmlelement_get_attr(element, "TYPE");
@@ -1263,14 +1316,20 @@ static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element)
 
 	/* Get parent off top of stack */
 	parent = stack_top(net->stack);
+	if (!parent) {
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
+	}
 
-	if (element && parent) {
+	if (element) {
 		if (xmlelement_get_text(element))
 			desc = strdup(xmlelement_get_text(element));
 		parent_tag = xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "TABLE") == 0)
 			_net_table_set_desc(parent, desc);
+		else
+			_net_send_result(net, "protocol", E_BAD_OPTIONS);
 	}
 }
 
@@ -1295,6 +1354,11 @@ static void _net_handle_data(GGZNetIO *net, GGZXMLElement *data)
 		/* Grab data from tag */
 		size = safe_atoi(xmlelement_get_attr(data, "SIZE"));
 		msg = xmlelement_get_text(data);
+
+		if (!msg) {
+			_net_send_result(net, "protocol", E_BAD_OPTIONS);
+			return;
+		}
 		
 		token = strtok(msg, " ");
 		for (i = 0; i < size; i++) {
