@@ -39,7 +39,7 @@ int main(void)
 	fd_set active_fd_set, read_fd_set;
 	
 	/* Initialize ggz */
-	if (ggz_init("Dots", dots_game.options) < 0)
+	if (ggz_init("Dots") < 0)
 		return -1;
 	
 	if ( (ggz_sock = ggz_connect()) < 0)

@@ -28,9 +28,13 @@
 #include <game.h>
 #include <protocols.h>
 #include <easysock.h>
+#include <ai.h>
 
 /* Global game variables */
 struct dots_game_t dots_game;
+
+/* Private functions */
+static int game_get_options(int);
 
 
 /* Setup game state and board */
@@ -115,12 +119,28 @@ int game_handle_player(int num)
 		case DOTS_REQ_SYNC:
 			status = game_send_sync(num);
 			break;
+		case DOTS_SND_OPTIONS:
+			status = game_get_options(num);
+			break;
 		default:
 			/* Unrecognized opcode */
 			status = -1;
 			break;
 	}
 	return status;
+}
+
+
+/* Get options from client */
+static int game_get_options(int seat)
+{
+	int fd = ggz_seats[seat].fd;
+
+	if(es_read_char(fd, &dots_game.board_width) < 0
+	   || es_read_char(fd, &dots_game.board_height) < 0)
+		return -1;
+
+	return game_update(DOTS_EVENT_OPTIONS, NULL, NULL);
 }
 
 
@@ -411,23 +431,49 @@ int game_update(int event, void *d1, void *d2)
 	int seat;
 	char x, y;
 	char victor;
+	static int join_queue[2];
+	static int waiting=0;
 	
 	switch(event) {
 		case DOTS_EVENT_LAUNCH:
 			if(dots_game.state != DOTS_STATE_INIT)
 				return -1;
+			dots_game.state = DOTS_STATE_OPTIONS;
+			break;
+		case DOTS_EVENT_OPTIONS:
+			if(dots_game.state != DOTS_STATE_OPTIONS)
+				return -1;
 			dots_game.state = DOTS_STATE_WAIT;
-			dots_game.board_width = dots_game.options[0];
-			dots_game.board_height = dots_game.options[1];
+			while(waiting) {
+				seat = join_queue[--waiting];
+				game_send_options(seat);
+				game_send_seat(seat);
+				game_send_players();
+			}
+
+			if(!ggz_seats_open()) {
+				if(dots_game.turn == -1)
+					dots_game.turn = 0;
+				else 
+					game_send_sync(seat);
+			
+				dots_game.state = DOTS_STATE_PLAYING;
+				game_move();
+			}
 			break;
 		case DOTS_EVENT_JOIN:
+			seat = *(int*)d1;
+			if(dots_game.state == DOTS_STATE_OPTIONS) {
+				join_queue[waiting++] = seat;
+				return 0;
+			}
+
 			if(dots_game.state != DOTS_STATE_WAIT)
 				return -1;
 
-			seat = *(int*)d1;
+			game_send_options(seat);
 			game_send_seat(seat);
 			game_send_players();
-			game_send_options(seat);
 
 			if(!ggz_seats_open()) {
 				if(dots_game.turn == -1)

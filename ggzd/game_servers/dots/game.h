@@ -34,6 +34,7 @@
 #define DOTS_RSP_MOVE     6
 #define DOTS_SND_SYNC     7
 #define DOTS_MSG_OPTIONS  8
+#define DOTS_SND_OPTIONS  9
 
 /* Move errors */
 #define DOTS_ERR_STATE   -1
@@ -48,16 +49,18 @@
 
 /* Connect the Dots game states */
 #define DOTS_STATE_INIT        0
-#define DOTS_STATE_WAIT        1
-#define DOTS_STATE_PLAYING     2
-#define DOTS_STATE_DONE        3
+#define DOTS_STATE_OPTIONS     1
+#define DOTS_STATE_WAIT        2
+#define DOTS_STATE_PLAYING     3
+#define DOTS_STATE_DONE        4
 
 /* Connect the Dots game events */
 #define DOTS_EVENT_LAUNCH      0
 #define DOTS_EVENT_JOIN        1
 #define DOTS_EVENT_LEAVE       2
-#define DOTS_EVENT_MOVE_H      3
-#define DOTS_EVENT_MOVE_V      4
+#define DOTS_EVENT_OPTIONS     3
+#define DOTS_EVENT_MOVE_H      4
+#define DOTS_EVENT_MOVE_V      5
 
 
 /* Madximum board sizes */

@@ -40,18 +40,16 @@
 struct ggz_seat_t* ggz_seats;
 
 /* Local copies of necessary data */
-static unsigned char* opt;
 static char* name;
 static int fd;
 static int seats;
 
 
 /* Initialize data structures*/
-int ggz_init(char* game_name, void* options)
+int ggz_init(char* game_name)
 {
 	int len;
 
-	opt = options;
 	len = strlen(game_name);
 	if ( (name = malloc(len+1)) == NULL)
 		return -1;
@@ -96,17 +94,6 @@ int ggz_game_launch(void)
 	int i, len;
 	char status = 0;
 
-	if (es_read_int(fd, &len) < 0)
-		return -1;
-		
-	/* Read options (if any to read */
-	if (len != 0) {
-		if (es_readn(fd, opt, len) < len) {
-			free(opt);
-			return -1;
-		}
-	}
-	
 	if (es_read_int(fd, &seats) < 0)
 		return -1;
 
@@ -295,6 +282,5 @@ int ggz_done(void)
 void ggz_quit(void)
 {
 	free(name);
-	free(opt);
 	free(ggz_seats);
 }
