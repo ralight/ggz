@@ -30,8 +30,8 @@
 
 #include <config.h>		/* Site config data */
 
-#include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <sys/un.h>
 #include <gtk/gtk.h>
 #include <unistd.h>		/* For getopt et. al */

@@ -25,6 +25,8 @@
 #ifndef _GGZ_TYPES
 #define _GGZ_TYPES
 
+#include <sys/types.h>
+
 #include <stdlib.h>
 
 #include <server.h>

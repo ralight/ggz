@@ -23,6 +23,7 @@
  */
 #include <config.h>		/* Site specific config */
 
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <stdlib.h>

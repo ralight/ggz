@@ -35,6 +35,8 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/uio.h>
+#include <sys/param.h>
+
 #include <netinet/in.h>
 #include <netdb.h>
 #include <stdio.h>
