@@ -18,11 +18,16 @@ Specific contributions
 * Chess figures
   Taken from xboard
   - gtk-games/chess/bitmaps/*.svg (autoscanned)
-  - kde-games/koenig/pixs/*.xpm
+  - kde-games/koenig/pixs/*.svg
+  - python/ggzboard/chess/*.svg
 
 * Combat figures
   Grabbed from a clipart cd (perdig)
   - gtk-games/combat/pixmaps/default/*.png
+
+* Background image for GGZBoard
+  Michal M (belgarath@o2.pl) (from kde-look.org)
+  - python/ggzboard/sunset.jpg
 
 * GGZCards?
 * LaPocha, NetSpades, ...?
