@@ -200,8 +200,7 @@ int game_send_sync(int num)
 
 	ggz_debug("Handling sync for player %d", num);
 
-	if(es_write_int(fd, CC_MSG_SYNC) < 0
-	   || es_write_char(fd, game.turn) < 0)
+	if(es_write_int(fd, CC_MSG_SYNC) < 0)
 		return -1;
 
 	for(i=0; i<17; i++)
@@ -270,11 +269,6 @@ int game_handle_move(int num, unsigned char *ro, unsigned char *co,
 	int fd = ggz_seats[num].fd;
 	char status;
 
-	if(num != game.turn)
-		if(es_write_int(fd, CC_RSP_MOVE) < 0
-		    || es_write_char(fd, CC_ERR_TURN) < 0)
-			return -1;
-
 	ggz_debug("Handling move for player %d", num);
 	if(es_read_char(fd, ro) < 0)
 		return -1;
@@ -284,6 +278,20 @@ int game_handle_move(int num, unsigned char *ro, unsigned char *co,
 		return -1;
 	if(es_read_char(fd, cd) < 0)
 		return -1;
+
+	if(game.state != CC_STATE_PLAYING) {
+		if(es_write_int(fd, CC_RSP_MOVE) < 0
+		   || es_write_char(fd, CC_ERR_STATE) < 0)
+			return -1;
+		return 1;
+	}
+
+	if(num != game.turn) {
+		if(es_write_int(fd, CC_RSP_MOVE) < 0
+		    || es_write_char(fd, CC_ERR_TURN) < 0)
+			return -1;
+		return 1;
+	}
 
 	if(*ro >= 17 || *co >= 25 || *rd >=17 || *cd >= 25
 	   || game.board[*ro][*co] == -1 || game.board[*rd][*cd] == -1)
