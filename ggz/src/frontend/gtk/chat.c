@@ -22,6 +22,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <stdlib.h>
+#include <string.h>
 #include <gtk/gtk.h>
 
 #include "ggzcore.h"
@@ -73,12 +75,36 @@ void chat_allocate_colors(void)
         }
 }
 
-void chat_display_message(char *player, char *message)
+void chat_display_message(CHATTypes id, char *player, char *message)
 {
         GtkXText *tmp;
+	gchar *name = NULL;
 
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
-        gtk_xtext_append_indent(GTK_XTEXT(tmp), player, strlen(player), message, strlen(message));
+	switch(id)
+	{
+		case CHAT_MSG:
+			name = g_strdup_printf("<%s>", player);
+		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
+			break;
+		case CHAT_PRVMSG:
+			name = g_strdup_printf(">%s<", player);
+		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
+			break;
+		case CHAT_BEEP:
+			name = g_strdup_printf("%s", player);
+		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
+			break;
+		case CHAT_ANNOUNCE:
+			name = g_strdup_printf("[%s]", player);
+		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
+			break;
+		case CHAT_SEND_PRVMSG:
+			name = g_strdup_printf("--> %s", player);
+		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
+			break;
+	}
+	g_free(name);
         gtk_xtext_refresh(tmp, 0);
 }
 
@@ -93,6 +119,39 @@ void chat_send_msg(void)
                 /* Send the current text */
                 ggzcore_event_trigger(GGZ_USER_CHAT, gtk_entry_get_text(GTK_ENTRY(tmp)), NULL);
         
+                /* Clear the entry box */
+                gtk_entry_set_text(GTK_ENTRY(tmp), "");
+        }
+}
+
+
+void chat_send_prvmsg(void)
+{
+        GtkEntry *tmp = NULL;
+	gchar *name = NULL;
+	gint i;
+	char **data;
+
+	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
+        if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
+        {
+		name = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp))+5);
+		for(i = 0; i < strlen(name); i++)
+		{
+			if(name[i] == ' ')
+			{
+				name[i] = '\0';
+				if(!(data = calloc(2, sizeof(char*))))
+					ggzcore_error_sys_exit("calloc() failed in chat_send_prvmsg");
+
+				data[0] = g_strdup(name);
+				data[1] = g_strdup(name+1+i);
+				ggzcore_event_trigger(GGZ_USER_CHAT_PRVMSG, data, g_free);
+				chat_display_message(CHAT_SEND_PRVMSG, data[0], data[1]);
+				i = strlen(name)+1;
+			}
+		}
+
                 /* Clear the entry box */
                 gtk_entry_set_text(GTK_ENTRY(tmp), "");
         }
@@ -133,3 +192,10 @@ void chat_part(gchar *player)
         gtk_xtext_append_indent(GTK_XTEXT(tmp), "<--", 3, player, strlen(player));
 }
 
+void chat_help(void)
+{
+	chat_display_message(CHAT_BEEP, "---", "Chat Commands");
+	chat_display_message(CHAT_BEEP, "---", "-------------");
+	chat_display_message(CHAT_BEEP, "---", "/msg <username> <message>");
+	chat_display_message(CHAT_BEEP, "---", "/beep <username>");
+}

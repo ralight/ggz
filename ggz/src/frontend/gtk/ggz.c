@@ -34,6 +34,8 @@ extern GtkWidget *dlg_login;
 extern GtkWidget *win_main;
 
 void ggz_chat_msg(GGZEventID id, void* event_data, void* user_data);
+void ggz_chat_prvmsg(GGZEventID id, void* event_data, void* user_data);
+void ggz_chat_beep(GGZEventID id, void* event_data, void* user_data);
 void ggz_list_rooms(GGZEventID id, void* event_data, void* user_data);
 void ggz_list_players(GGZEventID id, void* event_data, void* user_data);
 void ggz_room_join(GGZEventID id, void* event_data, void* user_data);
@@ -48,6 +50,8 @@ void ggz_state(void);
 void ggz_event_init(void)
 {
 	ggzcore_event_connect(GGZ_SERVER_CHAT_MSG, ggz_chat_msg);
+	ggzcore_event_connect(GGZ_SERVER_CHAT_PRVMSG, ggz_chat_prvmsg);
+	ggzcore_event_connect(GGZ_SERVER_CHAT_BEEP, ggz_chat_beep);
 	ggzcore_event_connect(GGZ_SERVER_LOGIN, ggz_login_ok);
 	ggzcore_event_connect(GGZ_SERVER_CONNECT_FAIL, ggz_connect_fail);
 	ggzcore_event_connect(GGZ_SERVER_ROOM_JOIN, ggz_room_join);
@@ -68,7 +72,6 @@ int ggz_loop(gpointer data)
 
 
 /* Event functions */
-
 void ggz_chat_msg(GGZEventID id, void* event_data, void* user_data)
 {
 	gchar *player;
@@ -77,7 +80,31 @@ void ggz_chat_msg(GGZEventID id, void* event_data, void* user_data)
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
 
-	chat_display_message(player, message);
+	chat_display_message(CHAT_MSG, player, message);
+}
+
+void ggz_chat_prvmsg(GGZEventID id, void* event_data, void* user_data)
+{
+	gchar *message;
+	gchar *player;
+
+	player = ((char**)(event_data))[0];
+	message = ((char**)(event_data))[1];
+	chat_display_message(CHAT_PRVMSG, player, message);
+
+}
+
+void ggz_chat_beep(GGZEventID id, void* event_data, void* user_data)
+{
+	gchar *message;
+	gchar *player;
+
+	player = ((char**)(event_data))[0];
+	message = g_strdup_printf("You've been beeped by %s.", player);
+	chat_display_message(CHAT_BEEP, "---", message);
+	gdk_beep();
+
+	g_free(message);
 }
 
 void ggz_list_players(GGZEventID id, void* event_data, void* user_data)

@@ -281,27 +281,16 @@ on_chat_entry_activate                 (GtkEditable     *editable,
 
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
 
-	if(strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/help", 5))
+	if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
 	{
-		if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
-		{
-			if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/msg", 3))
-			{
-				/* A private message */
-			}
-			else if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/beep", 4))
-			{
-				/* A beep message */
-				chat_send_beep();
-			}
-			else
-			{
-				/* Just a normal message */
-				chat_send_msg();
-			}
-		}
-	} else {
-		/* Display Help */
+		if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/msg", 3))
+			chat_send_prvmsg();
+		else if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/beep", 4))
+			chat_send_beep();
+		else if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(user_data)), "/help", 4))
+			chat_help();
+		else
+			chat_send_msg();
 	}
 
 	/* Clear the entry box */
