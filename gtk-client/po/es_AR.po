@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-06-02 05:01+0200\n"
+"POT-Creation-Date: 2001-06-06 12:47-0400\n"
 "PO-Revision-Date: 2000-12-30 00:56GMT\n"
 "Last-Translator: Ricardo Quesada <riq@core-sdi.com>\n"
 "Language-Team: Spanish (Argentinian) <es_AR@li.org>\n"
@@ -91,7 +91,9 @@ msgstr "Error al entrar a una sala"
 msgid ""
 "Failed to join table.\n"
 " Join aborted."
-msgstr "Falló la entrada a la tabla.\n Entrada abortada"
+msgstr ""
+"Falló la entrada a la tabla.\n"
+" Entrada abortada"
 
 #: ../ggz-gtk/client.c:736
 msgid "Join Error"
@@ -215,7 +217,7 @@ msgstr "Conectar"
 msgid "Disconnect"
 msgstr "Desconectar"
 
-#: ../ggz-gtk/client.c:1323 ../ggz-gtk/launch.c:889
+#: ../ggz-gtk/client.c:1323 ../ggz-gtk/launch.c:895
 msgid "Launch"
 msgstr "Iniciar"
 
@@ -371,8 +373,9 @@ msgstr "Configuración por 1ra vez"
 msgid ""
 "This is the first time you are running the GTK+ GGZ Gaming Zone client. "
 "Would you like to create some default server profiles?"
-msgstr "Esta es la 1ra vez que corres el cliente GTK+ de GGZ."
-"¿Querés que se creen los perfiles de servers por defecto?"
+msgstr ""
+"Esta es la 1ra vez que corres el cliente GTK+ de GGZ.¿Querés que se creen "
+"los perfiles de servers por defecto?"
 
 #: ../ggz-gtk/first.c:212
 msgid "Yes"
@@ -399,11 +402,12 @@ msgstr "Todavía estas en una tabla."
 msgid ""
 "You must be in a room to launch a game.\n"
 "Launch aborted"
-msgstr "Debés estar en una sala para lanzar un juego.\n"
+msgstr ""
+"Debés estar en una sala para lanzar un juego.\n"
 "Lanzamiento abortado"
 
 #: ../ggz-gtk/game.c:85 ../ggz-gtk/game.c:92 ../ggz-gtk/game.c:104
-#: ../ggz-gtk/game.c:139 ../ggz-gtk/game.c:162 ../ggz-gtk/launch.c:246
+#: ../ggz-gtk/game.c:139 ../ggz-gtk/game.c:162 ../ggz-gtk/launch.c:252
 msgid "Launch Error"
 msgstr "Error en el lanzamiento"
 
@@ -411,7 +415,8 @@ msgstr "Error en el lanzamiento"
 msgid ""
 "No game types defined for this server.\n"
 "Launch aborted."
-msgstr "No hay definición de juegos para este servidor.\n"
+msgstr ""
+"No hay definición de juegos para este servidor.\n"
 "Lanzamiento abortado"
 
 #: ../ggz-gtk/game.c:102
@@ -419,21 +424,24 @@ msgstr "No hay definición de juegos para este servidor.\n"
 msgid ""
 "You don't have this game installed. You can download\n"
 "it from %s."
-msgstr "No tenes este juego instalado. Lo podes bajar\n"
+msgstr ""
+"No tenes este juego instalado. Lo podes bajar\n"
 "de %s."
 
 #: ../ggz-gtk/game.c:139
 msgid ""
 "No modules defined for this game.\n"
 "Launch aborted."
-msgstr "No hay módulos definidos para este juego.\n"
+msgstr ""
+"No hay módulos definidos para este juego.\n"
 "Lanzamiento abortado."
 
 #: ../ggz-gtk/game.c:162
 msgid ""
 "Failed to execute game module.\n"
 " Launch aborted."
-msgstr "Falló la ejecución del módule.\n"
+msgstr ""
+"Falló la ejecución del módule.\n"
 "Lanzamiento abortado."
 
 #: ../ggz-gtk/game.c:277 ../ggz-gtk/game.c:296
@@ -519,7 +527,7 @@ msgstr "Número de juego:"
 msgid "Black Jack"
 msgstr ""
 
-#: ../ggz-gtk/info.c:181 ../ggz-gtk/launch.c:435
+#: ../ggz-gtk/info.c:181 ../ggz-gtk/launch.c:441
 msgid "Author:"
 msgstr "Autor:"
 
@@ -527,7 +535,7 @@ msgstr "Autor:"
 msgid "John Doe"
 msgstr ""
 
-#: ../ggz-gtk/info.c:205 ../ggz-gtk/launch.c:465
+#: ../ggz-gtk/info.c:205 ../ggz-gtk/launch.c:471
 msgid "Homepage:"
 msgstr "Página:"
 
@@ -544,8 +552,9 @@ msgid ""
 "This is an example room description that people can view. This gets wrpped "
 "around to accomodate larger room descriptions. Overall this can be as large "
 "as is needed."
-msgstr "Ejemplo de descripción de sala. Esto se wrapea para poder acomodar"
-"descripciones largas. Esto puede ser tan largo como quieras."
+msgstr ""
+"Ejemplo de descripción de sala. Esto se wrapea para poder "
+"acomodardescripciones largas. Esto puede ser tan largo como quieras."
 
 #: ../ggz-gtk/launch.c:85
 #, c-format
@@ -567,92 +576,93 @@ msgstr "Descripción: %s"
 msgid "Home Page:  %s"
 msgstr "Página: %s"
 
-#: ../ggz-gtk/launch.c:216
+#: ../ggz-gtk/launch.c:222
 msgid "Invalid number of bots specified"
 msgstr "Número invalido de robots"
 
-#: ../ggz-gtk/launch.c:216
+#: ../ggz-gtk/launch.c:222
 msgid "Error"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:246
+#: ../ggz-gtk/launch.c:252
 msgid ""
 "Failed to launch table.\n"
 " Launch aborted."
-msgstr "Falló el lanzamiento de la tabla.\n"
+msgstr ""
+"Falló el lanzamiento de la tabla.\n"
 "Lanzamiento abortado."
 
-#: ../ggz-gtk/launch.c:366
+#: ../ggz-gtk/launch.c:372
 msgid "Seat Assignments"
 msgstr "Asignación de lugares"
 
-#: ../ggz-gtk/launch.c:389
+#: ../ggz-gtk/launch.c:395
 msgid "Game Type:"
 msgstr "Tipo de juego:"
 
-#: ../ggz-gtk/launch.c:421
+#: ../ggz-gtk/launch.c:427
 msgid "Number of seats"
 msgstr "Número de lugares"
 
-#: ../ggz-gtk/launch.c:450
+#: ../ggz-gtk/launch.c:456
 msgid "Description:"
 msgstr "Descripción:"
 
-#: ../ggz-gtk/launch.c:487
+#: ../ggz-gtk/launch.c:493
 msgid "Seat 1:"
 msgstr "Lugar 1:"
 
-#: ../ggz-gtk/launch.c:494 ../ggz-gtk/launch.c:541 ../ggz-gtk/launch.c:588
-#: ../ggz-gtk/launch.c:635 ../ggz-gtk/launch.c:682 ../ggz-gtk/launch.c:729
-#: ../ggz-gtk/launch.c:776 ../ggz-gtk/launch.c:823
+#: ../ggz-gtk/launch.c:500 ../ggz-gtk/launch.c:547 ../ggz-gtk/launch.c:594
+#: ../ggz-gtk/launch.c:641 ../ggz-gtk/launch.c:688 ../ggz-gtk/launch.c:735
+#: ../ggz-gtk/launch.c:782 ../ggz-gtk/launch.c:829
 msgid "Computer"
 msgstr "Robot"
 
-#: ../ggz-gtk/launch.c:502 ../ggz-gtk/launch.c:549 ../ggz-gtk/launch.c:596
-#: ../ggz-gtk/launch.c:643 ../ggz-gtk/launch.c:690 ../ggz-gtk/launch.c:737
-#: ../ggz-gtk/launch.c:784 ../ggz-gtk/launch.c:831
+#: ../ggz-gtk/launch.c:508 ../ggz-gtk/launch.c:555 ../ggz-gtk/launch.c:602
+#: ../ggz-gtk/launch.c:649 ../ggz-gtk/launch.c:696 ../ggz-gtk/launch.c:743
+#: ../ggz-gtk/launch.c:790 ../ggz-gtk/launch.c:837
 msgid "Open"
 msgstr "Abierto"
 
-#: ../ggz-gtk/launch.c:510 ../ggz-gtk/launch.c:557 ../ggz-gtk/launch.c:604
-#: ../ggz-gtk/launch.c:651 ../ggz-gtk/launch.c:698 ../ggz-gtk/launch.c:745
-#: ../ggz-gtk/launch.c:792 ../ggz-gtk/launch.c:839
+#: ../ggz-gtk/launch.c:516 ../ggz-gtk/launch.c:563 ../ggz-gtk/launch.c:610
+#: ../ggz-gtk/launch.c:657 ../ggz-gtk/launch.c:704 ../ggz-gtk/launch.c:751
+#: ../ggz-gtk/launch.c:798 ../ggz-gtk/launch.c:845
 msgid "Reserved for"
 msgstr "Reservado para"
 
-#: ../ggz-gtk/launch.c:534
+#: ../ggz-gtk/launch.c:540
 msgid "Seat 2:"
 msgstr "Lugar 2"
 
-#: ../ggz-gtk/launch.c:581
+#: ../ggz-gtk/launch.c:587
 msgid "Seat 3:"
 msgstr "Lugar 3"
 
-#: ../ggz-gtk/launch.c:628
+#: ../ggz-gtk/launch.c:634
 msgid "Seat 4:"
 msgstr "Lugar 4"
 
-#: ../ggz-gtk/launch.c:675
+#: ../ggz-gtk/launch.c:681
 msgid "Seat 5:"
 msgstr "Lugar 5"
 
-#: ../ggz-gtk/launch.c:722
+#: ../ggz-gtk/launch.c:728
 msgid "Seat 6:"
 msgstr "Lugar 6"
 
-#: ../ggz-gtk/launch.c:769
+#: ../ggz-gtk/launch.c:775
 msgid "Seat 7:"
 msgstr "Lugar 7"
 
-#: ../ggz-gtk/launch.c:816
+#: ../ggz-gtk/launch.c:822
 msgid "Seat 8:"
 msgstr "Lugar 8"
 
-#: ../ggz-gtk/launch.c:863
+#: ../ggz-gtk/launch.c:869
 msgid "Game Description   "
 msgstr "Descripción del juego"
 
-#: ../ggz-gtk/launch.c:897 ../ggz-gtk/login.c:714 ../ggz-gtk/props.c:1523
+#: ../ggz-gtk/launch.c:903 ../ggz-gtk/login.c:714 ../ggz-gtk/props.c:1523
 msgid "Cancel"
 msgstr "Cancelar"
 

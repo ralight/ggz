@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-06-02 05:01+0200\n"
+"POT-Creation-Date: 2001-06-06 12:47-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -215,7 +215,7 @@ msgstr ""
 msgid "Disconnect"
 msgstr ""
 
-#: ../ggz-gtk/client.c:1323 ../ggz-gtk/launch.c:889
+#: ../ggz-gtk/client.c:1323 ../ggz-gtk/launch.c:895
 msgid "Launch"
 msgstr ""
 
@@ -401,7 +401,7 @@ msgid ""
 msgstr ""
 
 #: ../ggz-gtk/game.c:85 ../ggz-gtk/game.c:92 ../ggz-gtk/game.c:104
-#: ../ggz-gtk/game.c:139 ../ggz-gtk/game.c:162 ../ggz-gtk/launch.c:246
+#: ../ggz-gtk/game.c:139 ../ggz-gtk/game.c:162 ../ggz-gtk/launch.c:252
 msgid "Launch Error"
 msgstr ""
 
@@ -513,7 +513,7 @@ msgstr ""
 msgid "Black Jack"
 msgstr ""
 
-#: ../ggz-gtk/info.c:181 ../ggz-gtk/launch.c:435
+#: ../ggz-gtk/info.c:181 ../ggz-gtk/launch.c:441
 msgid "Author:"
 msgstr ""
 
@@ -521,7 +521,7 @@ msgstr ""
 msgid "John Doe"
 msgstr ""
 
-#: ../ggz-gtk/info.c:205 ../ggz-gtk/launch.c:465
+#: ../ggz-gtk/info.c:205 ../ggz-gtk/launch.c:471
 msgid "Homepage:"
 msgstr ""
 
@@ -560,91 +560,91 @@ msgstr ""
 msgid "Home Page:  %s"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:216
+#: ../ggz-gtk/launch.c:222
 msgid "Invalid number of bots specified"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:216
+#: ../ggz-gtk/launch.c:222
 msgid "Error"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:246
+#: ../ggz-gtk/launch.c:252
 msgid ""
 "Failed to launch table.\n"
 " Launch aborted."
 msgstr ""
 
-#: ../ggz-gtk/launch.c:366
+#: ../ggz-gtk/launch.c:372
 msgid "Seat Assignments"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:389
+#: ../ggz-gtk/launch.c:395
 msgid "Game Type:"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:421
+#: ../ggz-gtk/launch.c:427
 msgid "Number of seats"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:450
+#: ../ggz-gtk/launch.c:456
 msgid "Description:"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:487
+#: ../ggz-gtk/launch.c:493
 msgid "Seat 1:"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:494 ../ggz-gtk/launch.c:541 ../ggz-gtk/launch.c:588
-#: ../ggz-gtk/launch.c:635 ../ggz-gtk/launch.c:682 ../ggz-gtk/launch.c:729
-#: ../ggz-gtk/launch.c:776 ../ggz-gtk/launch.c:823
+#: ../ggz-gtk/launch.c:500 ../ggz-gtk/launch.c:547 ../ggz-gtk/launch.c:594
+#: ../ggz-gtk/launch.c:641 ../ggz-gtk/launch.c:688 ../ggz-gtk/launch.c:735
+#: ../ggz-gtk/launch.c:782 ../ggz-gtk/launch.c:829
 msgid "Computer"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:502 ../ggz-gtk/launch.c:549 ../ggz-gtk/launch.c:596
-#: ../ggz-gtk/launch.c:643 ../ggz-gtk/launch.c:690 ../ggz-gtk/launch.c:737
-#: ../ggz-gtk/launch.c:784 ../ggz-gtk/launch.c:831
+#: ../ggz-gtk/launch.c:508 ../ggz-gtk/launch.c:555 ../ggz-gtk/launch.c:602
+#: ../ggz-gtk/launch.c:649 ../ggz-gtk/launch.c:696 ../ggz-gtk/launch.c:743
+#: ../ggz-gtk/launch.c:790 ../ggz-gtk/launch.c:837
 msgid "Open"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:510 ../ggz-gtk/launch.c:557 ../ggz-gtk/launch.c:604
-#: ../ggz-gtk/launch.c:651 ../ggz-gtk/launch.c:698 ../ggz-gtk/launch.c:745
-#: ../ggz-gtk/launch.c:792 ../ggz-gtk/launch.c:839
+#: ../ggz-gtk/launch.c:516 ../ggz-gtk/launch.c:563 ../ggz-gtk/launch.c:610
+#: ../ggz-gtk/launch.c:657 ../ggz-gtk/launch.c:704 ../ggz-gtk/launch.c:751
+#: ../ggz-gtk/launch.c:798 ../ggz-gtk/launch.c:845
 msgid "Reserved for"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:534
+#: ../ggz-gtk/launch.c:540
 msgid "Seat 2:"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:581
+#: ../ggz-gtk/launch.c:587
 msgid "Seat 3:"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:628
+#: ../ggz-gtk/launch.c:634
 msgid "Seat 4:"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:675
+#: ../ggz-gtk/launch.c:681
 msgid "Seat 5:"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:722
+#: ../ggz-gtk/launch.c:728
 msgid "Seat 6:"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:769
+#: ../ggz-gtk/launch.c:775
 msgid "Seat 7:"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:816
+#: ../ggz-gtk/launch.c:822
 msgid "Seat 8:"
 msgstr ""
 
-#: ../ggz-gtk/launch.c:863
+#: ../ggz-gtk/launch.c:869
 msgid "Game Description   "
 msgstr ""
 
-#: ../ggz-gtk/launch.c:897 ../ggz-gtk/login.c:714 ../ggz-gtk/props.c:1523
+#: ../ggz-gtk/launch.c:903 ../ggz-gtk/login.c:714 ../ggz-gtk/props.c:1523
 msgid "Cancel"
 msgstr ""
 
