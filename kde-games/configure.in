@@ -81,7 +81,9 @@ AC_OUTPUT(Makefile
 	po/kdots/Makefile
 	po/krosswater/Makefile
 	po/muehle/Makefile
-	po/koenig/Makefile)
+	po/koenig/Makefile
+	lib/Makefile
+	lib/test/Makefile)
 
 dnl Report success
 dnl ==============
