@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.h 2422 2001-09-09 09:29:19Z jdorje $
+ * $Id: aicommon.h 2423 2001-09-09 09:47:59Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -42,6 +42,10 @@ void ailib_alert_play(player_t p, card_t play);
 /** @brief Has this card been played? */
 int libai_is_card_played(char suit, char face);
 
+
+/** @Remember that the player doesn't have the card. */
+void libai_player_doesnt_have_card(player_t p, card_t card);
+
 /* A convenience function; returns the bitmap of cards p has in suit. */
 int libai_get_suit_map(player_t p, char suit);
 
@@ -59,3 +63,6 @@ int libai_cards_left_in_suit(char suit);
 
 /** @brief How many cards do we have in this suit? */
 int libai_count_suit(seat_t seat, char suit);
+
+/** @brief Forget what we know about player's holdings in this suit. */
+void libai_forget_players_hand(player_t p, char suit);

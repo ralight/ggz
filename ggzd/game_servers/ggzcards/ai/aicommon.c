@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.c 2422 2001-09-09 09:29:19Z jdorje $
+ * $Id: aicommon.c 2423 2001-09-09 09:47:59Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -76,6 +76,11 @@ int libai_is_card_played(char suit, char face)
 	return played[(int) suit] & (1 << face);
 }
 
+void libai_player_doesnt_have_card(player_t p, card_t card)
+{
+	suits[p][(int) card.suit] &= ~(1 << card.face);
+}
+
 int libai_get_suit_map(player_t p, char suit)
 {
 	return suits[p][(int) suit];
@@ -125,4 +130,9 @@ int libai_count_suit(seat_t seat, char suit)
 		if (hand->cards[i].suit == suit)
 			total++;
 	return total;
+}
+
+void libai_forget_players_hand(player_t p, char suit)
+{
+	suits[p][(int) suit] = (~played[(int) suit]) & 0x7ffff;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2422 2001-09-09 09:29:19Z jdorje $
+ * $Id: spades.c 2423 2001-09-09 09:47:59Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -36,11 +36,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <stdlib.h>
+
 #include "../ai.h"
 #include "../common.h"
 #include "../games/spades.h"
 
 #include "aicommon.h"
+
+/* #define USE_AI_TRICKS */
 
 
 static char *get_name(player_t p);
@@ -109,34 +113,47 @@ static void alert_bid(player_t p, bid_t bid)
 
 static void alert_play(player_t p, card_t play)
 {
-#if 0
+#ifdef USE_AI_TRICKS
+	card_t lead = game.seats[game.players[game.leader].seat].table;
+	card_t card;
+#endif
+
+#ifdef USE_AI_TRICKS
 	/* when a nil player sluffs, they'll sluff their highest card in that
 	   suit */
+	card = play;
 	if (game.players[p].bid.sbid.spec == SPADES_NIL
 	    && game.players[p].tricks == 0 && play.suit != lead.suit
 	    && play.suit != SPADES)
-		for (face = play.face + 1; face <= ACE_HIGH; face++)
-			suits[p][play.suit] &= ~(1 << face);
+		for (card.face++; card.face <= ACE_HIGH; card.face++)
+			libai_player_doesnt_have_card(p, card);
 #endif
 
-#if 0
+#ifdef USE_AI_TRICKS
 	/* a nil player will generally play their highest card beneath an
 	   already-played card */
 	if (game.players[p].bid.sbid.spec == SPADES_NIL &&
-	    game.players[p].tricks == 0 && s == lead.suit) {
-		if (!(suits[p][s] & (1 << r))) {
-			/* 
-			 * If we didn't think this player could have this card, then he's
-			 * doing something funky and all bets are off.  He might have anything.
-			 */
-			suits[p][s] = (~played[s]) & 0x7ffff;
-		} else if (card.face <
-			   THE HIGHEST CARD PLAYED SO FAR IN THAT SUIT) {
-			/* 
-			 * nil bids don't have any between this card and highest play
-			 */
-			for (i = play.face + 1; i < trick[high].face; i++)
-				suits[num][s] &= ~(1 << i);
+	    game.players[p].tricks == 0 && play.suit == lead.suit) {
+		if (!libai_might_player_have_card(p, play)) {
+			/* If we didn't think this player could have this
+			   card, then he's doing something funky and all bets 
+			   are off.  He might have anything. */
+			libai_forget_players_hand(p, play.suit);
+		} else if (play.face < -1	/* THE HIGHEST CARD PLAYED SO 
+						   FAR IN THIS SUIT */ ) {
+			/* nil bids don't have any between this card and
+			   highest play */
+			for (card = play, card.face++; card.face < -1	/* THE 
+									   HIGHEST 
+									   CARD 
+									   PLAYED 
+									   SO 
+									   FAR 
+									   IN 
+									   THIS 
+									   SUIT 
+									 */ ; card.face++)
+				libai_player_doesnt_have_card(p, card);
 		}
 	}
 #endif
@@ -262,7 +279,8 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 				    && suitCount[(int) s] <= 3) {
 					nilrisk += ((suitCount[(int) s] <= 2) ? 2 : 1);	/* king
 											   is
-											   riskier */
+											   riskier 
+											 */
 					ai_debug("Inc. nilrisk by %d for King of %s", (suitCount[(int) s] <= 2) ? 2 : 1, suit_names[(int) s]);
 				}
 				c.face = ACE_HIGH;
@@ -270,7 +288,8 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 				    && suitCount[(int) s] <= 3) {
 					nilrisk += ((suitCount[(int) s] <= 2) ? 3 : 2);	/* ace
 											   is
-											   riskiest */
+											   riskiest 
+											 */
 					ai_debug("Inc. nilrisk by %d for Ace of %s", (suitCount[(int) s] <= 2) ? 3 : 2, suit_names[(int) s]);
 				}
 			}
@@ -1258,15 +1277,15 @@ static int PlayNormal(int p)
 	 * one then our aggression would be higher.
 	 */
 	if (agg > 0 && agg < 75 && chosen >= 0 && (pard < 0 || high != pard)
-	    && (SysRandom(0) % 100) > agg)
+	    && (random() % 100) > agg)
 		chosen = -1;
 
 	/* 
 	 * Consider leading to our pard's void.
 	 */
 	if (high < 0 && SuitMap(pard, p, 0) != 0
-	    && (chosen < 0 || (SysRandom(0) % 2) == 0)) {
-		tmp = -1;
+	    && (chosen < 0 || (random() % 2) == 0)) {
+		int tmp = -1;
 		for (s = 0; s < 4; s++) {
 			pmap[s] = SuitMap(pard, p, s);
 			omap[s] = SuitMap((p + 3) % 4, p, s);
