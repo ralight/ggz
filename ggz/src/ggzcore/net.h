@@ -29,7 +29,6 @@
 
 #include "config.h"
 #include "ggzcore.h"
-#include "xmlelement.h"
 
 struct _GGZNet* _ggzcore_net_new(void);
 void _ggzcore_net_init(struct _GGZNet *net, 

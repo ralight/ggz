@@ -46,11 +46,7 @@ libggzcore_la_SOURCES =	conf.c \
 			room.h \
 			server.c \
 			server.h \
-			stack.c \
-			stack.h \
 			state.c \
 			state.h \
 			table.c \
-			table.h \
-			xmlelement.c \
-			xmlelement.h 
+			table.h 

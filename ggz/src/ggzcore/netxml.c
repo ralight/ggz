@@ -34,10 +34,9 @@
 #include "state.h"
 #include "table.h"
 #include "gametype.h"
-#include "stack.h"
-#include "xmlelement.h"
 
 #include <easysock.h>
+#include <ggz.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <poll.h>
@@ -211,7 +210,7 @@ void _ggzcore_net_init(struct _GGZNet *net, struct _GGZServer *server, const cha
 	XML_SetUserData(net->parser, net);
 
 	/* Initialize stack for messages */
-	net->stack = _ggzcore_stack_new();
+	net->stack = ggz_stack_new();
 }
 
 
@@ -265,9 +264,9 @@ void _ggzcore_net_free(struct _GGZNet *net)
 
 	/* Clear elements off stack and free it */
 	if (net->stack) {
-		while ( (element = _ggzcore_stack_pop(net->stack))) 
-			_ggzcore_xmlelement_free(element);
-		_ggzcore_stack_free(net->stack);
+		while ( (element = ggz_stack_pop(net->stack))) 
+			ggz_xmlelement_free(element);
+		ggz_stack_free(net->stack);
 	}
 
 	if (net->parser)
@@ -657,7 +656,7 @@ static void _ggzcore_net_parse_start_tag(void *data, const char *el, const char 
 	element = _ggzcore_net_new_element((char*)el, (char**)attr);
 
 	/* Put element on stack so we can process its children */
-	_ggzcore_stack_push(stack, element);
+	ggz_stack_push(stack, element);
 }
 
 
@@ -667,17 +666,17 @@ static void _ggzcore_net_parse_end_tag(void *data, const char *el)
 	struct _GGZNet *net = (struct _GGZNet*)data;
 	
 	/* Pop element off stack */
-	element = _ggzcore_stack_pop(net->stack);
+	element = ggz_stack_pop(net->stack);
 
 	/* Process tag */
 	ggzcore_debug(GGZ_DBG_XML, "Handling %s element", 
-		      _ggzcore_xmlelement_get_tag(element));
+		      ggz_xmlelement_get_tag(element));
 	
 	if (element->process)
 		element->process(net, element);
 
 	/* Free data structures */
-	_ggzcore_xmlelement_free(element);
+	ggz_xmlelement_free(element);
 }
 
 
@@ -687,8 +686,8 @@ static void _ggzcore_net_parse_text(void *data, const char *text, int len)
 	GGZStack *stack = net->stack;
 	GGZXMLElement *top;
 
-	top = _ggzcore_stack_top(stack);
-	_ggzcore_xmlelement_add_text(top, text, len);
+	top = ggz_stack_top(stack);
+	ggz_xmlelement_add_text(top, text, len);
 }
 
 
@@ -754,7 +753,7 @@ static GGZXMLElement* _ggzcore_net_new_element(char *tag, char **attrs)
 	else
 		process_func = NULL;
 	
-	return _ggzcore_xmlelement_new(tag, attrs, process_func, NULL);
+	return ggz_xmlelement_new(tag, attrs, process_func, NULL);
 }
 
 
@@ -765,11 +764,11 @@ static void _ggzcore_net_handle_server(GGZNet *net, GGZXMLElement *server)
 	int version, chatlen;
 
 	if (server) {
-		name = _ggzcore_xmlelement_get_attr(server, "NAME");
-		id = _ggzcore_xmlelement_get_attr(server, "ID");
-		status = _ggzcore_xmlelement_get_attr(server, "STATUS");
-		version = safe_atoi(_ggzcore_xmlelement_get_attr(server, "VERSION"));
-		chatlen = (int)_ggzcore_xmlelement_get_data(server);
+		name = ggz_xmlelement_get_attr(server, "NAME");
+		id = ggz_xmlelement_get_attr(server, "ID");
+		status = ggz_xmlelement_get_attr(server, "STATUS");
+		version = safe_atoi(ggz_xmlelement_get_attr(server, "VERSION"));
+		chatlen = (int)ggz_xmlelement_get_data(server);
 
 		ggzcore_debug(GGZ_DBG_NET, 
 			      "%s(%s) : status %s: protocol %d: chat size %d", 
@@ -796,12 +795,12 @@ static void _ggzcore_net_handle_options(GGZNet *net, GGZXMLElement *options)
 	GGZXMLElement *server;
 
 	/* Get parent off top of stack */
-	server = _ggzcore_stack_top(net->stack);
+	server = ggz_stack_top(net->stack);
 
 	if (options && server) {
 		/* Grab chat length out of options and store on server */
-		len = safe_atoi(_ggzcore_xmlelement_get_attr(options, "CHATLEN"));
-		_ggzcore_xmlelement_set_data(server, (void*)len);
+		len = safe_atoi(ggz_xmlelement_get_attr(options, "CHATLEN"));
+		ggz_xmlelement_set_data(server, (void*)len);
 	}
 }
 
@@ -812,8 +811,8 @@ static void _ggzcore_net_handle_motd(GGZNet *net, GGZXMLElement *motd)
 	char **buffer;
 	char *message, *priority;
 
-	message = _ggzcore_xmlelement_get_text(motd);
-	priority = _ggzcore_xmlelement_get_attr(motd, "PRIORITY");
+	message = ggz_xmlelement_get_text(motd);
+	priority = ggz_xmlelement_get_attr(motd, "PRIORITY");
 	
 	ggzcore_debug(GGZ_DBG_NET, "Motd of priority %s", priority);
 
@@ -836,9 +835,9 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 
 	if (result) {
 		
-		action = _ggzcore_xmlelement_get_attr(result, "ACTION");
-		code = safe_atoi(_ggzcore_xmlelement_get_attr(result, "CODE"));
-		data = _ggzcore_xmlelement_get_data(result);
+		action = ggz_xmlelement_get_attr(result, "ACTION");
+		code = safe_atoi(ggz_xmlelement_get_attr(result, "CODE"));
+		data = ggz_xmlelement_get_data(result);
 		
 		ggzcore_debug(GGZ_DBG_NET, "Result of %s was %d", action, 
 			      code);
@@ -907,15 +906,15 @@ static void _ggzcore_net_handle_password(GGZNet *net, GGZXMLElement *element)
 	GGZXMLElement *parent;
 	
 	/* Get parent off top of stack */
-	parent = _ggzcore_stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 	
 	if (element && parent) {
-		password = _ggzcore_xmlelement_get_text(element);
-		parent_tag = _ggzcore_xmlelement_get_tag(parent);
+		password = ggz_xmlelement_get_text(element);
+		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		/* It had better be RESULT.... */
 		if (strcmp(parent_tag, "RESULT") == 0)
-			_ggzcore_xmlelement_set_data(parent, ggzcore_strdup(password));
+			ggz_xmlelement_set_data(parent, ggzcore_strdup(password));
 	}
 }
 
@@ -932,12 +931,12 @@ static void _ggzcore_net_handle_list(GGZNet *net, GGZXMLElement *list_tag)
 	if (list_tag) {
 
 		/* Grab list data from tag */
-		type = _ggzcore_xmlelement_get_attr(list_tag, "TYPE");
-		list = _ggzcore_xmlelement_get_data(list_tag);
-		if (!_ggzcore_xmlelement_get_attr(list_tag, "ROOM"))
+		type = ggz_xmlelement_get_attr(list_tag, "TYPE");
+		list = ggz_xmlelement_get_data(list_tag);
+		if (!ggz_xmlelement_get_attr(list_tag, "ROOM"))
 			room_num = -1;
 		else
-			room_num = safe_atoi(_ggzcore_xmlelement_get_attr(list_tag, "ROOM"));
+			room_num = safe_atoi(ggz_xmlelement_get_attr(list_tag, "ROOM"));
 		
 		entry = _ggzcore_list_head(list);
 
@@ -1002,8 +1001,8 @@ static void _ggzcore_net_list_insert(GGZXMLElement *list_tag, void *data)
 	_ggzcoreEntryCreate  create_func = NULL;
 	_ggzcoreEntryDestroy destroy_func = NULL;
 
-	type = _ggzcore_xmlelement_get_attr(list_tag, "TYPE");
-	list = _ggzcore_xmlelement_get_data(list_tag);
+	type = ggz_xmlelement_get_attr(list_tag, "TYPE");
+	list = ggz_xmlelement_get_data(list_tag);
 	
 	/* If list doesn't already exist, create it */
 	if (!list) {
@@ -1023,7 +1022,7 @@ static void _ggzcore_net_list_insert(GGZXMLElement *list_tag, void *data)
 					    destroy_func,
 					    _GGZCORE_LIST_ALLOW_DUPS);
 		
-		_ggzcore_xmlelement_set_data(list_tag, list);
+		ggz_xmlelement_set_data(list_tag, list);
 	}
 
 	_ggzcore_list_insert(list, data);
@@ -1042,12 +1041,12 @@ static void _ggzcore_net_handle_update(GGZNet *net, GGZXMLElement *update)
 	if (update) {
 
 		/* Grab update data from tag */
-		type = _ggzcore_xmlelement_get_attr(update, "TYPE");
-		action = _ggzcore_xmlelement_get_attr(update, "ACTION");
-		if (!_ggzcore_xmlelement_get_attr(update, "ROOM"))
+		type = ggz_xmlelement_get_attr(update, "TYPE");
+		action = ggz_xmlelement_get_attr(update, "ACTION");
+		if (!ggz_xmlelement_get_attr(update, "ROOM"))
 			room_num = -1;
 		else
-			room_num = safe_atoi(_ggzcore_xmlelement_get_attr(update, "ROOM"));
+			room_num = safe_atoi(ggz_xmlelement_get_attr(update, "ROOM"));
 
 
 		if (strcmp(type, "room") == 0) {
@@ -1057,7 +1056,7 @@ static void _ggzcore_net_handle_update(GGZNet *net, GGZXMLElement *update)
 			/* FIXME: implement this */
 		}
 		else if (strcmp(type, "player") == 0) {
-			player = _ggzcore_xmlelement_get_data(update);
+			player = ggz_xmlelement_get_data(update);
 			room = _ggzcore_server_get_room_by_id(net->server, room_num);
 
 			if (strcmp(action, "add") == 0)
@@ -1072,7 +1071,7 @@ static void _ggzcore_net_handle_update(GGZNet *net, GGZXMLElement *update)
 			ggzcore_free(player);
 		}
 		else if (strcmp(type, "table") == 0) {
-			table = _ggzcore_xmlelement_get_data(update);
+			table = ggz_xmlelement_get_data(update);
 			room = _ggzcore_server_get_room_by_id(net->server, room_num);
 			if (strcmp(action, "add") == 0) {
 				_ggzcore_room_add_table(room, table);
@@ -1133,15 +1132,15 @@ static void _ggzcore_net_handle_game(GGZNet *net, GGZXMLElement *game)
 	char *url = NULL;
 
 	/* Get parent off top of stack */
-	parent = _ggzcore_stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 	
 	if (game && parent) {
 		
 		/* Get game data from tag */
-		id = safe_atoi(_ggzcore_xmlelement_get_attr(game, "ID"));
-		name = _ggzcore_xmlelement_get_attr(game, "NAME");
-		version = _ggzcore_xmlelement_get_attr(game, "VERSION");
-		data = _ggzcore_xmlelement_get_data(game);
+		id = safe_atoi(ggz_xmlelement_get_attr(game, "ID"));
+		name = ggz_xmlelement_get_attr(game, "NAME");
+		version = ggz_xmlelement_get_attr(game, "VERSION");
+		data = ggz_xmlelement_get_data(game);
 
 		if (data) {
 			prot_engine = data->prot_engine;
@@ -1158,7 +1157,7 @@ static void _ggzcore_net_handle_game(GGZNet *net, GGZXMLElement *game)
 				       prot_version, allow_players,
 				       allow_bots,  desc, author, url);
 
-		parent_tag = _ggzcore_xmlelement_get_tag(parent);
+		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "LIST") == 0)
 			_ggzcore_net_list_insert(parent, type);
@@ -1186,12 +1185,12 @@ static void _ggzcore_net_game_set_protocol(GGZXMLElement *game, char *engine, ch
 {
 	struct _GGZGameData *data;
 	
-	data = _ggzcore_xmlelement_get_data(game);
+	data = ggz_xmlelement_get_data(game);
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
 		data = ggzcore_malloc(sizeof(struct _GGZGameData));
-		_ggzcore_xmlelement_set_data(game, data);
+		ggz_xmlelement_set_data(game, data);
 	}
 	
 	data->prot_engine = engine;
@@ -1203,12 +1202,12 @@ static void _ggzcore_net_game_set_allowed(GGZXMLElement *game, GGZAllowed player
 {
 	struct _GGZGameData *data;
 	
-	data = _ggzcore_xmlelement_get_data(game);
+	data = ggz_xmlelement_get_data(game);
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
 		data = ggzcore_malloc(sizeof(struct _GGZGameData));
-		_ggzcore_xmlelement_set_data(game, data);
+		ggz_xmlelement_set_data(game, data);
 	}
 	
 	data->allow_players = players;
@@ -1220,12 +1219,12 @@ static void _ggzcore_net_game_set_info(GGZXMLElement *game, char *author, char *
 {
 	struct _GGZGameData *data;
 	
-	data = _ggzcore_xmlelement_get_data(game);
+	data = ggz_xmlelement_get_data(game);
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
 		data = ggzcore_malloc(sizeof(struct _GGZGameData));
-		_ggzcore_xmlelement_set_data(game, data);
+		ggz_xmlelement_set_data(game, data);
 	}
 	
 	data->author = author;
@@ -1237,12 +1236,12 @@ static void _ggzcore_net_game_set_desc(GGZXMLElement *game, char *desc)
 {
 	struct _GGZGameData *data;
 	
-	data = _ggzcore_xmlelement_get_data(game);
+	data = ggz_xmlelement_get_data(game);
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
 		data = ggzcore_malloc(sizeof(struct _GGZGameData));
-		_ggzcore_xmlelement_set_data(game, data);
+		ggz_xmlelement_set_data(game, data);
 	}
 	
 	data->desc = desc;
@@ -1255,12 +1254,12 @@ static void _ggzcore_net_handle_protocol(GGZNet *net, GGZXMLElement *protocol)
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
-	parent = _ggzcore_stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 
 	if (protocol && parent) {
 		_ggzcore_net_game_set_protocol(parent,
-						    ggzcore_strdup(_ggzcore_xmlelement_get_attr(protocol, "ENGINE")),
-						    ggzcore_strdup(_ggzcore_xmlelement_get_attr(protocol, "VERSION")));
+						    ggzcore_strdup(ggz_xmlelement_get_attr(protocol, "ENGINE")),
+						    ggzcore_strdup(ggz_xmlelement_get_attr(protocol, "VERSION")));
 	}
 }
 
@@ -1271,12 +1270,12 @@ static void _ggzcore_net_handle_allow(GGZNet *net, GGZXMLElement *allow)
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
-	parent = _ggzcore_stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 
 	if (allow && parent) {
 		_ggzcore_net_game_set_allowed(parent, 
-						   safe_atoi(_ggzcore_xmlelement_get_attr(allow, "PLAYERS")),
-						   safe_atoi(_ggzcore_xmlelement_get_attr(allow, "BOTS")));
+						   safe_atoi(ggz_xmlelement_get_attr(allow, "PLAYERS")),
+						   safe_atoi(ggz_xmlelement_get_attr(allow, "BOTS")));
 
 	}
 }
@@ -1288,12 +1287,12 @@ static void _ggzcore_net_handle_about(GGZNet *net, GGZXMLElement *about)
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
-	parent = _ggzcore_stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 
 	if (about && parent) {
 		_ggzcore_net_game_set_info(parent, 
-						ggzcore_strdup(_ggzcore_xmlelement_get_attr(about, "AUTHOR")),
-						ggzcore_strdup(_ggzcore_xmlelement_get_attr(about, "URL")));
+						ggzcore_strdup(ggz_xmlelement_get_attr(about, "AUTHOR")),
+						ggzcore_strdup(ggz_xmlelement_get_attr(about, "URL")));
 	}
 }
 
@@ -1306,16 +1305,16 @@ static void _ggzcore_net_handle_desc(GGZNet *net, GGZXMLElement *element)
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
-	parent = _ggzcore_stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 
 	if (element && parent) {
-		desc = ggzcore_strdup(_ggzcore_xmlelement_get_text(element));
-		parent_tag = _ggzcore_xmlelement_get_tag(parent);
+		desc = ggzcore_strdup(ggz_xmlelement_get_text(element));
+		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "GAME") == 0)
 			_ggzcore_net_game_set_desc(parent, desc);
 		else if (strcmp(parent_tag, "ROOM") == 0)
-			_ggzcore_xmlelement_set_data(parent, desc);
+			ggz_xmlelement_set_data(parent, desc);
 		else if (strcmp(parent_tag, "TABLE") == 0)
 			_ggzcore_net_table_set_desc(parent, desc);
 	}
@@ -1332,15 +1331,15 @@ static void _ggzcore_net_handle_room(GGZNet *net, GGZXMLElement *room)
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
-	parent = _ggzcore_stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 
 	if (room && parent) {
 
 		/* Grab data from tag */
-		id = safe_atoi(_ggzcore_xmlelement_get_attr(room, "ID"));
-		name = _ggzcore_xmlelement_get_attr(room, "NAME");
-		game = safe_atoi(_ggzcore_xmlelement_get_attr(room, "GAME"));
-		desc = _ggzcore_xmlelement_get_data(room);
+		id = safe_atoi(ggz_xmlelement_get_attr(room, "ID"));
+		name = ggz_xmlelement_get_attr(room, "NAME");
+		game = safe_atoi(ggz_xmlelement_get_attr(room, "GAME"));
+		desc = ggz_xmlelement_get_data(room);
 
 		/* Set up GGZRoom object */
 		ggz_room = _ggzcore_room_new();
@@ -1351,7 +1350,7 @@ static void _ggzcore_net_handle_room(GGZNet *net, GGZXMLElement *room)
 		if (desc)
 			ggzcore_free(desc);
 
-		parent_tag = _ggzcore_xmlelement_get_tag(parent);
+		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "LIST") == 0)
 			_ggzcore_net_list_insert(parent, ggz_room);
@@ -1371,16 +1370,16 @@ static void _ggzcore_net_handle_player(GGZNet *net, GGZXMLElement *player)
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
-	parent = _ggzcore_stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 
 	if (player && parent) {
 		room = ggzcore_server_get_cur_room(net->server);
 
 		/* Grab player data from tag */
-		str_type = _ggzcore_xmlelement_get_attr(player, "TYPE");
-		name = _ggzcore_xmlelement_get_attr(player, "ID");
-		table = safe_atoi(_ggzcore_xmlelement_get_attr(player, "TABLE"));
-		lag = safe_atoi(_ggzcore_xmlelement_get_attr(player, "LAG"));
+		str_type = ggz_xmlelement_get_attr(player, "TYPE");
+		name = ggz_xmlelement_get_attr(player, "ID");
+		table = safe_atoi(ggz_xmlelement_get_attr(player, "TABLE"));
+		lag = safe_atoi(ggz_xmlelement_get_attr(player, "LAG"));
 
 		/* Set player's type */
 		type = GGZ_PLAYER_NONE;
@@ -1398,12 +1397,12 @@ static void _ggzcore_net_handle_player(GGZNet *net, GGZXMLElement *player)
 		ggz_player = _ggzcore_player_new();
 		_ggzcore_player_init(ggz_player,  name, room, table, type, lag);
 
-		parent_tag = _ggzcore_xmlelement_get_tag(parent);
+		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		if (strcmp(parent_tag, "LIST") == 0)
 			_ggzcore_net_list_insert(parent, ggz_player);
 		else if (strcmp(parent_tag, "UPDATE") == 0)
-			_ggzcore_xmlelement_set_data(parent, ggz_player);
+			ggz_xmlelement_set_data(parent, ggz_player);
 	}
 }
 
@@ -1423,18 +1422,18 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
-	parent = _ggzcore_stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 
 	if (table && parent) {
-		parent_tag = _ggzcore_xmlelement_get_tag(parent);
+		parent_tag = ggz_xmlelement_get_tag(parent);
 
 		/* Grab table data from tag */
 
-		id = safe_atoi(_ggzcore_xmlelement_get_attr(table, "ID"));
-		game = safe_atoi(_ggzcore_xmlelement_get_attr(table, "GAME"));
-		status = safe_atoi(_ggzcore_xmlelement_get_attr(table, "STATUS"));
-		num_seats = safe_atoi(_ggzcore_xmlelement_get_attr(table, "SEATS"));
-		data = _ggzcore_xmlelement_get_data(table);
+		id = safe_atoi(ggz_xmlelement_get_attr(table, "ID"));
+		game = safe_atoi(ggz_xmlelement_get_attr(table, "GAME"));
+		status = safe_atoi(ggz_xmlelement_get_attr(table, "STATUS"));
+		num_seats = safe_atoi(ggz_xmlelement_get_attr(table, "SEATS"));
+		data = ggz_xmlelement_get_data(table);
 		if (data) {
 			desc = data->desc;
 			seats = data->seats;
@@ -1469,7 +1468,7 @@ static void _ggzcore_net_handle_table(GGZNet *net, GGZXMLElement *table)
 			_ggzcore_net_list_insert(parent, table_obj);
 		}
 		else if (strcmp(parent_tag, "UPDATE") == 0) {
-			_ggzcore_xmlelement_set_data(parent, table_obj);
+			ggz_xmlelement_set_data(parent, table_obj);
 		}
 
 		if (data)
@@ -1481,12 +1480,12 @@ static void _ggzcore_net_table_add_seat(GGZXMLElement *table, GGZSeatData *seat)
 {
 	struct _GGZTableData *data;
 	
-	data = _ggzcore_xmlelement_get_data(table);
+	data = ggz_xmlelement_get_data(table);
 	
 	/* If data doesn't already exist, create it */
 	if (!data) {
 		data = _ggzcore_net_tabledata_new();
-		_ggzcore_xmlelement_set_data(table, data);
+		ggz_xmlelement_set_data(table, data);
 	}
 
 	_ggzcore_list_insert(data->seats, seat);
@@ -1497,12 +1496,12 @@ static void _ggzcore_net_table_set_desc(GGZXMLElement *table, char *desc)
 {
 	struct _GGZTableData *data;
 	
-	data = _ggzcore_xmlelement_get_data(table);
+	data = ggz_xmlelement_get_data(table);
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
 		data = _ggzcore_net_tabledata_new();
-		_ggzcore_xmlelement_set_data(table, data);
+		ggz_xmlelement_set_data(table, data);
 	}
 	
 	data->desc = desc;
@@ -1543,14 +1542,14 @@ static void _ggzcore_net_handle_seat(GGZNet *net, GGZXMLElement *seat)
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
-	parent = _ggzcore_stack_top(net->stack);
+	parent = ggz_stack_top(net->stack);
 
 	if (seat && parent) {
 
 		/* Get seat information out of tag */
-		seat_obj.index = safe_atoi(_ggzcore_xmlelement_get_attr(seat, "NUM"));
-		seat_obj.type = _ggzcore_xmlelement_get_attr(seat, "TYPE");
-		seat_obj.name = _ggzcore_xmlelement_get_text(seat);
+		seat_obj.index = safe_atoi(ggz_xmlelement_get_attr(seat, "NUM"));
+		seat_obj.type = ggz_xmlelement_get_attr(seat, "TYPE");
+		seat_obj.name = ggz_xmlelement_get_text(seat);
 		_ggzcore_net_table_add_seat(parent, &seat_obj);
 	}
 }
@@ -1595,9 +1594,9 @@ static void _ggzcore_net_handle_chat(GGZNet *net, GGZXMLElement *chat)
 	if (chat) {
 		
 		/* Grab chat data from tag */
-		type = _ggzcore_xmlelement_get_attr(chat, "TYPE");
-		from = _ggzcore_xmlelement_get_attr(chat, "FROM");
-		msg = _ggzcore_xmlelement_get_text(chat);
+		type = ggz_xmlelement_get_attr(chat, "TYPE");
+		from = ggz_xmlelement_get_attr(chat, "FROM");
+		msg = ggz_xmlelement_get_text(chat);
 
 		ggzcore_debug(GGZ_DBG_NET, "%s message from %s: '%s'", 
 			      type, from, msg);	
@@ -1630,8 +1629,8 @@ static void _ggzcore_net_handle_data(GGZNet *net, GGZXMLElement *data)
 	if (data) {
 
 		/* Grab data from tag */
-		size = safe_atoi(_ggzcore_xmlelement_get_attr(data, "SIZE"));
-		msg = _ggzcore_xmlelement_get_text(data);
+		size = safe_atoi(ggz_xmlelement_get_attr(data, "SIZE"));
+		msg = ggz_xmlelement_get_text(data);
 		
 		room = ggzcore_server_get_cur_room(net->server);
 		
