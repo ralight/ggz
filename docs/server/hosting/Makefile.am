@@ -6,3 +6,9 @@ guidedir = $(GGZDOCDIR)/guides
 #guide_DATA = ggz-hosting-guide.ps
 guide_DATA = $(ggzhostingguide)
 
+.html: .texi
+	texi2html -split_node $<
+
+clean-local:
+	-rm -f *.html
+
