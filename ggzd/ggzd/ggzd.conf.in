@@ -118,18 +118,21 @@ DebugTypes = All
 # Directory and File Options
 ############################################################################
 
+# Configuration directory
+#   This is where the server looks for game and room description files
+#ConfDir = @ggzdconfdir@
+
 # Data directory (Not Implemented)
 #   Where all server tables are stored if SQL is not used
 #datadir = /usr/local/ggzd/data/
 
 # Game Servers directory
-#   This is where the server can find the game server description files
-GameDir = @ggzdmoddir@
+#   This is where the server can find the game server modules
+#GameDir = @ggzdmoddir@
 
 # MOTD File
-#   If the file doesn't exist, no message of the day will be sent
-#   to clients.  Default directory for it is in GameDir.  Default motd
-#   file is none.
+#   File in ConfDir containing MOTD to be sent to clients.  If the
+#   file doesn't exist, no message of the day will be sent.
 #motd = ggzd.motd
 
 ############################################################################
