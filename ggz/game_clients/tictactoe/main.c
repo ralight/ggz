@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: main.c 6655 2005-01-13 23:44:54Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -31,7 +31,6 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
 

@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat client main loop
- * $Id: main.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: main.c 6655 2005-01-13 23:44:54Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -31,7 +31,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <sys/un.h>
 #include <gtk/gtk.h>
 

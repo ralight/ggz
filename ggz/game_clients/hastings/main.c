@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 6385 2004-11-16 05:21:05Z jdorje $
+ * $Id: main.c 6655 2005-01-13 23:44:54Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -30,7 +30,6 @@
 
 /* System includes */
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <sys/un.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
