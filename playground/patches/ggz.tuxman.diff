@@ -1,7 +1,7 @@
-Binärdateien original.tuxman-0.7/bin/tuxman and tuxman-0.7/bin/tuxman sind verschieden.
+Binary files original.tuxman-0.7/bin/tuxman and tuxman-0.7/bin/tuxman differ
 diff -Nur original.tuxman-0.7/Makefile tuxman-0.7/Makefile
---- original.tuxman-0.7/Makefile	2003-05-21 23:36:00.000000000 +0200
-+++ tuxman-0.7/Makefile	2003-05-22 21:05:58.000000000 +0200
+--- original.tuxman-0.7/Makefile	2004-01-01 12:41:17.000000000 +0100
++++ tuxman-0.7/Makefile	2004-01-01 12:41:18.000000000 +0100
 @@ -1,8 +1,8 @@
  all: bin/tuxman
  
@@ -9,13 +9,13 @@ diff -Nur original.tuxman-0.7/Makefile tuxman-0.7/Makefile
 -LDFLAGS = `sdl-config --libs`
 -CXXFLAGS = `sdl-config --cflags`
 +LDFLAGS = `sdl-config --libs` -lggzmod
-+CXXFLAGS = `sdl-config --cflags` -ggdb3
++CXXFLAGS = `sdl-config --cflags` -ggdb3 -Wall
  
  bin/tuxman: obj/main.o \
  	obj/pacman.o \
 diff -Nur original.tuxman-0.7/module.dsc tuxman-0.7/module.dsc
 --- original.tuxman-0.7/module.dsc	1970-01-01 01:00:00.000000000 +0100
-+++ tuxman-0.7/module.dsc	2003-05-22 09:06:19.000000000 +0200
++++ tuxman-0.7/module.dsc	2004-01-01 12:41:18.000000000 +0100
 @@ -0,0 +1,11 @@
 +[ModuleInfo]
 +Game = Tuxman
@@ -28,15 +28,15 @@ diff -Nur original.tuxman-0.7/module.dsc tuxman-0.7/module.dsc
 +ProtocolVersion = 1
 +Version = 0.7
 +
-Binärdateien original.tuxman-0.7/obj/control.o and tuxman-0.7/obj/control.o sind verschieden.
-Binärdateien original.tuxman-0.7/obj/main.o and tuxman-0.7/obj/main.o sind verschieden.
-Binärdateien original.tuxman-0.7/obj/pacman.o and tuxman-0.7/obj/pacman.o sind verschieden.
-Binärdateien original.tuxman-0.7/obj/sound.o and tuxman-0.7/obj/sound.o sind verschieden.
-Binärdateien original.tuxman-0.7/obj/tile.o and tuxman-0.7/obj/tile.o sind verschieden.
-Binärdateien original.tuxman-0.7/screen.bmp and tuxman-0.7/screen.bmp sind verschieden.
+Binary files original.tuxman-0.7/obj/control.o and tuxman-0.7/obj/control.o differ
+Binary files original.tuxman-0.7/obj/main.o and tuxman-0.7/obj/main.o differ
+Binary files original.tuxman-0.7/obj/pacman.o and tuxman-0.7/obj/pacman.o differ
+Binary files original.tuxman-0.7/obj/sound.o and tuxman-0.7/obj/sound.o differ
+Binary files original.tuxman-0.7/obj/tile.o and tuxman-0.7/obj/tile.o differ
+Binary files original.tuxman-0.7/screen.bmp and tuxman-0.7/screen.bmp differ
 diff -Nur original.tuxman-0.7/src/control.cpp tuxman-0.7/src/control.cpp
---- original.tuxman-0.7/src/control.cpp	2003-05-21 23:36:00.000000000 +0200
-+++ tuxman-0.7/src/control.cpp	2003-05-23 07:27:20.000000000 +0200
+--- original.tuxman-0.7/src/control.cpp	2004-01-01 12:41:18.000000000 +0100
++++ tuxman-0.7/src/control.cpp	2004-01-01 12:41:18.000000000 +0100
 @@ -1,4 +1,16 @@
  #include "control.h"
 +#include <iostream>
@@ -92,8 +92,8 @@ diff -Nur original.tuxman-0.7/src/control.cpp tuxman-0.7/src/control.cpp
        case SDLK_PLUS:
  	pac.GameSpeed-=1;	
 diff -Nur original.tuxman-0.7/src/control.h tuxman-0.7/src/control.h
---- original.tuxman-0.7/src/control.h	2003-05-21 23:36:00.000000000 +0200
-+++ tuxman-0.7/src/control.h	2003-05-22 20:39:27.000000000 +0200
+--- original.tuxman-0.7/src/control.h	2004-01-01 12:41:18.000000000 +0100
++++ tuxman-0.7/src/control.h	2004-01-01 12:41:18.000000000 +0100
 @@ -8,6 +8,38 @@
  
  #define SCROLL_SIZE 6
@@ -144,9 +144,9 @@ diff -Nur original.tuxman-0.7/src/control.h tuxman-0.7/src/control.h
  
  #endif
 diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
---- original.tuxman-0.7/src/main.cpp	2003-05-21 23:36:00.000000000 +0200
-+++ tuxman-0.7/src/main.cpp	2003-05-23 08:08:08.000000000 +0200
-@@ -2,6 +2,142 @@
+--- original.tuxman-0.7/src/main.cpp	2004-01-01 12:41:18.000000000 +0100
++++ tuxman-0.7/src/main.cpp	2004-01-01 12:41:18.000000000 +0100
+@@ -2,6 +2,143 @@
  #include "control.h"
  #include "tile.h"
  #include "sound.h"
@@ -176,7 +176,7 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
 +{
 +	int opcode, fd, arg;
 +	int x, y, direction, count, pos;
-+	char level[256];
++	char *level;
 +
 +	fd = pacptr->ggzfd;
 +	ggz_read_int(fd, &opcode);
@@ -188,13 +188,14 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
 +		case PACNET::list:
 +			std::cout << "pacnet: got level list, sending dummy" << std::endl;
 +			ggz_read_int(fd, &count);
-+			for(int i = 0; i < count; i++)
++			/*for(int i = 0; i < count; i++)
 +			{
-+				ggz_read_string(fd, level, sizeof(level));
++				ggz_read_string_alloc(fd, &level);
 +				std::cout << " * level " << level << std::endl;
++				ggz_free(level);
 +			}
 +			ggz_write_int(fd, PACNET::selected);
-+			ggz_write_string(fd, "dummy.level");
++			ggz_write_string(fd, "dummy.level");*/
 +			break;
 +		case PACNET::name:
 +			/* ... ? */
@@ -289,7 +290,7 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
  
  int main(int argc, char *argv[]) {
    int food, i;
-@@ -12,6 +148,20 @@
+@@ -12,6 +149,20 @@
  
    pac.readConfig("tuxman.conf",pac);  
  
@@ -310,7 +311,7 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
    srand(time(0));
    
    pac.initSDL();
-@@ -25,12 +175,31 @@
+@@ -25,12 +176,34 @@
    pac.ac_level=1;
    my_tile.my_pac.score=0;
    my_tile.my_pac.lives = 10;
@@ -341,11 +342,14 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
        sprintf(pac.level,"%s",argv[1]);
 - 
 +	}
++	if(pac.ggzmode) {
++		sprintf(pac.level, "levels/level9.pac");
++	}
 +
      my_tile.initTiles(pac);
      playSound("share/hunger.wav");
      SDL_PauseAudio(0);
-@@ -46,6 +215,9 @@
+@@ -46,6 +219,9 @@
  	if (food==0)
  	  break;
  
@@ -355,7 +359,7 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
  	ctrl.checkPacmansDeath(my_tile, pac);
  	ctrl.checkScroll(my_tile,pac);	
        }
-@@ -58,11 +230,13 @@
+@@ -58,11 +234,13 @@
        }
  
        if (pac.pause != PAUSE) {
@@ -371,7 +375,7 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
  
  	my_tile.drawTiles(pac);
  	my_tile.showInformation(pac);
-@@ -74,7 +248,15 @@
+@@ -74,7 +252,15 @@
      playSound("share/end.wav");
      SDL_PauseAudio(0);
      sleep(2);
@@ -389,8 +393,8 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
  }
  
 diff -Nur original.tuxman-0.7/src/main.h tuxman-0.7/src/main.h
---- original.tuxman-0.7/src/main.h	2003-05-21 23:36:00.000000000 +0200
-+++ tuxman-0.7/src/main.h	2003-05-21 23:48:15.000000000 +0200
+--- original.tuxman-0.7/src/main.h	2004-01-01 12:41:18.000000000 +0100
++++ tuxman-0.7/src/main.h	2004-01-01 12:41:18.000000000 +0100
 @@ -11,6 +11,8 @@
  #include <string.h>
  #include <ctype.h>
@@ -401,8 +405,8 @@ diff -Nur original.tuxman-0.7/src/main.h tuxman-0.7/src/main.h
  
  #define ICON                ""
 diff -Nur original.tuxman-0.7/src/pacman.h tuxman-0.7/src/pacman.h
---- original.tuxman-0.7/src/pacman.h	2003-05-21 23:36:00.000000000 +0200
-+++ tuxman-0.7/src/pacman.h	2003-05-22 09:20:10.000000000 +0200
+--- original.tuxman-0.7/src/pacman.h	2004-01-01 12:41:18.000000000 +0100
++++ tuxman-0.7/src/pacman.h	2004-01-01 12:41:18.000000000 +0100
 @@ -2,6 +2,9 @@
  #define _pacman_h_
  
@@ -426,12 +430,27 @@ diff -Nur original.tuxman-0.7/src/pacman.h tuxman-0.7/src/pacman.h
    //Prototypes
    void initSDL();
    void setVideoMode();
-diff -Nur original.tuxman-0.7/src/tile.cpp tuxman-0.7/src/tile.cpp
---- original.tuxman-0.7/src/tile.cpp	2003-05-21 23:36:00.000000000 +0200
-+++ tuxman-0.7/src/tile.cpp	2003-05-23 07:59:59.000000000 +0200
-@@ -24,7 +24,8 @@
+diff -Nur original.tuxman-0.7/src/sound.cpp tuxman-0.7/src/sound.cpp
+--- original.tuxman-0.7/src/sound.cpp	2004-01-01 12:41:18.000000000 +0100
++++ tuxman-0.7/src/sound.cpp	2004-01-11 15:32:23.000000000 +0100
+@@ -39,7 +39,7 @@
    
-   if(!(tiles=fopen(pac.level,"r+")))
+   if ( SDL_OpenAudio(&music, NULL) < 0 ) {
+     fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
+-    pac.quit();
++    /*pac.quit();*/
+   }
+ }
+ 
+diff -Nur original.tuxman-0.7/src/tile.cpp tuxman-0.7/src/tile.cpp
+--- original.tuxman-0.7/src/tile.cpp	2004-01-01 12:41:18.000000000 +0100
++++ tuxman-0.7/src/tile.cpp	2004-01-11 15:34:01.000000000 +0100
+@@ -22,9 +22,10 @@
+   int row = 0;
+   int col = 0;
+   
+-  if(!(tiles=fopen(pac.level,"r+")))
++  if(!(tiles=fopen(pac.level,"r")))
      printf("Error: Couldn't read %s\n",pac.level);
 -  
 +
@@ -447,12 +466,22 @@ diff -Nur original.tuxman-0.7/src/tile.cpp tuxman-0.7/src/tile.cpp
        col=(-1);
      }
      col++;
-@@ -289,8 +291,14 @@
+@@ -281,16 +283,22 @@
+   
+   SDL_BlitSurface(pac.tuxman, &src, pac.screen, &dest); 
+   
+-  sprintf(font_string,"A GAME BY ROBERT STROBL 2003",my_pac.lives);
++  sprintf(font_string,"A GAME BY ROBERT STROBL 2003");
+   drawFont((pac.SCREEN_WIDTH / 2) - (pac.tuxman->w / 2),
+ 	   (pac.SCREEN_HEIGHT / 2), pac);
+ 
+-  sprintf(font_string,"WWW FTPNET ORG",my_pac.lives);
++  sprintf(font_string,"WWW FTPNET ORG");
    drawFont((pac.SCREEN_WIDTH / 2) - (pac.tuxman->w / 2),
  	   (pac.SCREEN_HEIGHT / 2) + FONT_HEIGHT + 5, pac);
  
 +  if(pac.ggzmode) {
-+    sprintf(font_string,"RUNNING IN GGZ MODE",my_pac.lives);
++    sprintf(font_string,"RUNNING IN GGZ MODE");
 +    drawFont((pac.SCREEN_WIDTH / 2) - (pac.tuxman->w / 2),
 +	   (pac.SCREEN_HEIGHT / 2) + FONT_HEIGHT * 2 + 10, pac);
 +  }
@@ -464,8 +493,8 @@ diff -Nur original.tuxman-0.7/src/tile.cpp tuxman-0.7/src/tile.cpp
    pac.BGColor = SDL_MapRGB(pac.screen->format, 97, 144, 181);
    SDL_FillRect(pac.screen, 0, pac.BGColor);
 diff -Nur original.tuxman-0.7/src/tile.h tuxman-0.7/src/tile.h
---- original.tuxman-0.7/src/tile.h	2003-05-21 23:36:00.000000000 +0200
-+++ tuxman-0.7/src/tile.h	2003-05-23 07:59:23.000000000 +0200
+--- original.tuxman-0.7/src/tile.h	2004-01-01 12:41:18.000000000 +0100
++++ tuxman-0.7/src/tile.h	2004-01-01 12:41:18.000000000 +0100
 @@ -15,6 +15,7 @@
   public:
    int monster;
@@ -475,8 +504,8 @@ diff -Nur original.tuxman-0.7/src/tile.h tuxman-0.7/src/tile.h
  
    struct tileset {
 diff -Nur original.tuxman-0.7/tuxman.conf tuxman-0.7/tuxman.conf
---- original.tuxman-0.7/tuxman.conf	2003-05-21 23:36:00.000000000 +0200
-+++ tuxman-0.7/tuxman.conf	2003-05-22 09:30:32.000000000 +0200
+--- original.tuxman-0.7/tuxman.conf	2004-01-01 12:41:18.000000000 +0100
++++ tuxman-0.7/tuxman.conf	2004-01-01 12:41:18.000000000 +0100
 @@ -2,10 +2,12 @@
  # Please edit your config file!
  
