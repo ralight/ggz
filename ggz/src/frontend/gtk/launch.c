@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 4930 2002-10-16 05:13:21Z jdorje $
+ * $Id: launch.c 5175 2002-11-03 19:43:26Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -237,7 +237,7 @@ void launch_table(void)
 		sprintf(text, "seat%d_resv", x + 1);
 		tmp = lookup_widget(launch_dialog, text);
 		if (GTK_TOGGLE_BUTTON(tmp)->active) {
-			gchar *name;
+			const gchar *name;
 			sprintf(text, "seat%d_name", x + 1);
 			tmp = lookup_widget(launch_dialog, text);
 			name = gtk_entry_get_text(GTK_ENTRY(tmp));

@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5172 2002-11-03 19:18:33Z jdorje $
+ * $Id: client.c 5175 2002-11-03 19:43:26Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -448,7 +448,7 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 {
 	GtkWidget *tmp;
 	gint x, i, max, length, first = TRUE;
-	gchar *name = NULL, *text = NULL, *startname = NULL;
+	const gchar *name = NULL, *text = NULL, *startname = NULL;
 	GGZList *last_list;
 	GGZListEntry *entry;
 
