@@ -6,6 +6,8 @@
 #include <ksimpleconfig.h>
 #include <kapplication.h>
 #include <klocale.h>
+#include <kmessagebox.h>
+#include <kdebug.h>
 
 #include <qlayout.h>
 #include <qpixmap.h>
@@ -69,6 +71,51 @@ void KCMGGZGames::load()
 			QString protocol = conf.readEntry("ProtocolVersion");
 			QString homepage = conf.readEntry("Homepage");
 			add(i18n("System"), (*it), frontend, author, homepage, version, protocol);
+		}
+	}
+}
+
+void KCMGGZGames::information(QString name, QString frontend)
+{
+	QStringList enginelist, gameslist;
+	KSimpleConfig conf(GGZMODULECONFDIR "/ggz.modules");
+
+	conf.setGroup("Games");
+	QString engine = conf.readEntry("*Engines*");
+	enginelist = enginelist.split(" ", engine);
+	for(QStringList::Iterator it = enginelist.begin(); it != enginelist.end(); it++)
+	{
+		if((*it) == name)
+		{
+			conf.setGroup("Games");
+			QString game = conf.readEntry((*it));
+			gameslist = gameslist.split(" ", game);
+			for(QStringList::Iterator it2 = gameslist.begin(); it2 != gameslist.end(); it2++)
+			{
+				conf.setGroup((*it2));
+				QString tmp = conf.readEntry("Frontend");
+				if(tmp == frontend)
+				{
+					QString author = conf.readEntry("Author");
+					QString version = conf.readEntry("Version");
+					QString protocol = conf.readEntry("ProtocolVersion");
+					QString homepage = conf.readEntry("Homepage");
+					QString engine = conf.readEntry("ProtocolEngine");
+					QString commandline = conf.readEntry("CommandLine");
+
+					KMessageBox::information(this,
+						i18n("Name: ") + name + "\n" +
+						i18n("Frontend: ") + frontend + "\n" +
+						i18n("Author: ") + author + "\n" +
+						i18n("Version: ") + version + "\n" +
+						i18n("Protocol version: ") + protocol + "\n" +
+						i18n("Homepage: ") + homepage + "\n" +
+						i18n("Engine: ") + engine + "\n" +
+						i18n("Commandline: ") + commandline + "\n",
+						i18n("Detailed information"));
+					return;
+				}
+			}
 		}
 	}
 }
@@ -150,6 +197,7 @@ void KCMGGZGames::slotUpdate()
 void KCMGGZGames::slotActivated(int index)
 {
 	if(!view->currentItem()) return;
+	if(view->currentItem()->text(1) == QString::null) return;
 
 	switch(index)
 	{
@@ -157,6 +205,7 @@ void KCMGGZGames::slotActivated(int index)
 			kapp->invokeBrowser(view->currentItem()->text(3));
 			break;
 		case menuinformation:
+			information(view->currentItem()->parent()->text(0), view->currentItem()->text(0));
 			break;
 	}
 }

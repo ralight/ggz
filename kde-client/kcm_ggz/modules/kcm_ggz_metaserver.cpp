@@ -5,13 +5,16 @@
 #include "metaserver_add_server.h"
 
 #include <klistview.h>
-#include <qpushbutton.h>
 #include <klocale.h>
+#include <kmessagebox.h>
+#include <kconfig.h>
+#include <kdebug.h>
 
 #include <qlayout.h>
 #include <qgroupbox.h>
 #include <qsocket.h>
 #include <qdom.h>
+#include <qpushbutton.h>
 
 #include "config.h"
 
@@ -47,6 +50,7 @@ KCMGGZMetaserver::KCMGGZMetaserver(QWidget *parent, const char *name)
 	view_servers = new KListView(box_servers);
 	view_servers->addColumn(i18n("URI"));
 	view_servers->addColumn(i18n("Type"));
+	view_servers->addColumn(i18n("Priority"));
 	view_servers->addColumn(i18n("Description"));
 
 	vboxroot = new QVBoxLayout(this, 5);
@@ -119,7 +123,8 @@ void KCMGGZMetaserver::slotAuto()
 	sock = new QSocket();
 	connect(sock, SIGNAL(connected()), SLOT(slotAutoConnected()));
 	connect(sock, SIGNAL(readyRead()), SLOT(slotAutoRead()));
-	sock->connectToHost("localhost", 15689);
+	connect(sock, SIGNAL(error(int)), SLOT(slotAutoError(int)));
+	sock->connectToHost("ggz.snafu.de", 15689);
 }
 
 void KCMGGZMetaserver::slotAutoServer()
@@ -128,7 +133,28 @@ void KCMGGZMetaserver::slotAutoServer()
 	sock = new QSocket();
 	connect(sock, SIGNAL(connected()), SLOT(slotAutoConnected()));
 	connect(sock, SIGNAL(readyRead()), SLOT(slotAutoRead()));
-	sock->connectToHost("localhost", 15689);
+	connect(sock, SIGNAL(error(int)), SLOT(slotAutoError(int)));
+	sock->connectToHost("ggz.snafu.de", 15689);
+}
+
+void KCMGGZMetaserver::slotAutoError(int error)
+{
+	QString errstr = i18n("Unknown error");
+
+	switch(error)
+	{
+		case QSocket::ErrConnectionRefused:
+			errstr = i18n("Connection refused");
+			break;
+		case QSocket::ErrHostNotFound:
+			errstr = i18n("Host not found");
+			break;
+		case QSocket::ErrSocketRead:
+			errstr = i18n("Read error");
+			break;
+	}
+
+	KMessageBox::error(this, i18n("An error occured: %1").arg(errstr), i18n("Autoconfiguration failed"));
 }
 
 void KCMGGZMetaserver::slotAutoConnected()
@@ -162,12 +188,12 @@ void KCMGGZMetaserver::slotAutoRead()
 			element = element.firstChild().toElement();
 			if(m_query == query)
 			{
-				(void)new KListViewItem(view, element.text(), "ggz");
+				addURI(element.text(), "ggz");
 			}
 			else
 			{
 				pref = element.attribute("preference", "20");
-				(void)new KListViewItem(view_servers, element.text(), pref, "???");
+				addServerURI(element.text(), "GGZ Gaming Zone", pref, "(none)");
 			}
 		}
 		node = node.nextSibling();
@@ -178,28 +204,102 @@ void KCMGGZMetaserver::slotAutoRead()
 
 void KCMGGZMetaserver::slotAdded(QString uri, QString proto)
 {
-	(void)new KListViewItem(view, uri, proto);
+	addURI(uri, proto);
 }
 
 void KCMGGZMetaserver::slotAddedServer(QString uri, QString type, QString comment)
 {
-	(void)new KListViewItem(view_servers, uri, type, comment);
+	addServerURI(uri, type, "100", comment);
+}
+
+void KCMGGZMetaserver::addURI(QString uri, QString proto)
+{
+	for(QListViewItem *item = view->firstChild(); item; item = item->nextSibling())
+		if(item->text(0) == uri)
+		{
+			delete item;
+			break;
+		}
+	(void)new KListViewItem(view, uri, proto);
+}
+
+void KCMGGZMetaserver::addServerURI(QString uri, QString type, QString preference, QString comment)
+{
+	for(QListViewItem *item = view_servers->firstChild(); item; item = item->nextSibling())
+		if(item->text(0) == uri)
+		{
+			delete item;
+			break;
+		}
+	(void)new KListViewItem(view_servers, uri, type, preference, comment);
 }
 
 void KCMGGZMetaserver::load()
 {
-	(void)new KListViewItem(view_servers, "ggz://jzaun.com", "GGZ Gaming Zone", "Justin's Developer server");
-	(void)new KListViewItem(view_servers, "ggz://ggz.snafu.de", "GGZ Gaming Zone", "GGZ Europe One server");
-	(void)new KListViewItem(view_servers, "kmonop://somewhere.org", "Atlantik", "Yet another host");
-	(void)new KListViewItem(view_servers, "freeciv://civserver.freeciv.org", "FreeCiv", "SmallPox is cool");
+	QStringList servers, metaservers;
 
-	(void)new KListViewItem(view, "ggzmeta://jzaun.com", "ggz");
-	(void)new KListViewItem(view, "ggzmeta://ggz.snafu.de", "ggz");
-	(void)new KListViewItem(view, "http://www.freeciv.org/metaserver.html", "freeciv");
+	// Load default game servers
+	addServerURI("ggz://ggz.jzaun.com:5689", "GGZ Gaming Zone", "10", "Justin's Developer server");
+	addServerURI("ggz://ggz.snafu.de", "GGZ Gaming Zone", "10", "GGZ Europe One server");
+	addServerURI("kmonop://somewhere.org", "Atlantik", "10", "Yet another host");
+	addServerURI("freeciv://civserver.freeciv.org", "FreeCiv", "10", "SmallPox is cool");
+
+	// Load default meta servers
+	addURI("ggzmeta://mindx.dyndns.org", "ggz");
+	addURI("ggzmeta://ggz.snafu.de", "ggz");
+	addURI("http://www.freeciv.org/metaserver.html", "freeciv");
+
+	// Read directory;
+	KConfig conf("ggzmetaserverrc");
+	conf.setGroup("Directory");
+	servers = conf.readListEntry("servers");
+	metaservers = conf.readListEntry("metaservers");
+
+	// Load local meta servers
+	conf.setGroup("Meta servers");
+	for(QStringList::iterator s = metaservers.begin(); s != metaservers.end(); s++)
+	{
+		addURI((*s), conf.readEntry((*s)));
+	}
+
+	// Load local game servers
+	conf.setGroup("Game servers");
+	for(QStringList::iterator s = servers.begin(); s != servers.end(); s++)
+	{
+		QStringList list;
+		list = conf.readListEntry((*s));
+		if(list.count() == 3)
+			addServerURI((*s), *(list.at(0)), *(list.at(1)), *(list.at(2)));
+	}
 }
 
 void KCMGGZMetaserver::save()
 {
+	QStringList servers, metaservers;
+	KConfig conf("ggzmetaserverrc");
+
+	// Save all meta servers
+	conf.setGroup("Meta servers");
+	for(QListViewItem *item = view->firstChild(); item; item = item->nextSibling())
+	{
+		conf.writeEntry(item->text(0), item->text(1));
+		metaservers << item->text(0);
+	}
+
+	// Save all game servers
+	conf.setGroup("Game servers");
+	for(QListViewItem *item = view_servers->firstChild(); item; item = item->nextSibling())
+	{
+		QStringList list;
+		list << item->text(1) << item->text(2) << item->text(3);
+		conf.writeEntry(item->text(0), list);
+		servers << item->text(0);
+	}
+
+	// Save directory
+	conf.setGroup("Directory");
+	conf.writeEntry("servers", servers);
+	conf.writeEntry("metaservers", metaservers);
 }
 
 QString KCMGGZMetaserver::caption()
@@ -214,4 +314,6 @@ extern "C"
 		return new KCMGGZMetaserver(parent, name);
 	}
 }
+
+
 

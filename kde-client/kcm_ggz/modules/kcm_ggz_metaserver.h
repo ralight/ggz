@@ -29,11 +29,15 @@ class KCMGGZMetaserver : public KCMGGZPane
 		void slotAutoRead();
 		void slotAdded(QString uri, QString proto);
 		void slotAddedServer(QString uri, QString type, QString comment);
+		void slotAutoError(int error);
 
 	signals:
 		void signalChanged();
 
 	private:
+		void addURI(QString uri, QString proto);
+		void addServerURI(QString uri, QString type, QString pref, QString comment);
+
 		KListView *view, *view_servers;
 		MetaserverAdd *dialog;
 		MetaserverAddServer *dialog_servers;

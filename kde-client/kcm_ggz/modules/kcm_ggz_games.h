@@ -31,6 +31,7 @@ class KCMGGZGames : public KCMGGZPane
 		void signalChanged();
 
 	private:
+		void information(QString name, QString frontend);
 		void add(QString location, QString name, QString frontend, QString authors, QString homepage, QString version, QString protocol);
 
 		KListView *view;

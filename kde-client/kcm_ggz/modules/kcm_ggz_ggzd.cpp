@@ -25,8 +25,8 @@ KCMGGZGgzd::KCMGGZGgzd(QWidget *parent, const char *name)
 
 	view = new KListView(this);
 	view->addColumn(i18n("Parameters"));
-	view->addColumn(i18n("Values"));
 	view->addColumn(i18n("Default"));
+	view->addColumn(i18n("Values"));
 	view->setRootIsDecorated(true);
 
 	add("General", "Server", "Honest Harry's Server");
@@ -37,6 +37,10 @@ KCMGGZGgzd::KCMGGZGgzd(QWidget *parent, const char *name)
 	add("General", "EncryptionPassword", "");
 	add("General", "EncryptionCert", "");
 	add("General", "EncryptionKey", "");
+	add("General", "DatabaseHost", "localhost");
+	add("General", "DatabaseName", "ggz");
+	add("General", "DatabaseUsername", "ggzd");
+	add("General", "DatabasePassword", "ggzd");
 
 	add("Logs", "LogFile", "/var/log/ggzd/ggzd.log");
 	add("Logs", "LogTypes", "All");
@@ -88,7 +92,7 @@ KCMGGZGgzd::~KCMGGZGgzd()
 void KCMGGZGgzd::load()
 {
 	KSimpleConfig conf("kcmggz_ggzd");
-	conf.setGroup("[General]");
+	conf.setGroup("General");
 	locator->setText(conf.readEntry("Configuration"));
 
 	if(locator->text().isEmpty())
@@ -98,7 +102,7 @@ void KCMGGZGgzd::load()
 void KCMGGZGgzd::save()
 {
 	KSimpleConfig conf("kcmggz_ggzd");
-	conf.setGroup("[General]");
+	conf.setGroup("General");
 	conf.writeEntry("Configuration", locator->text());
 }
 
