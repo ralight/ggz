@@ -1,6 +1,6 @@
 SUBDIRS = .
 
-noinst_LTLIBRARIES = \
+lib_LTLIBRARIES = \
 	libgurumod_simplereturn.la \
 	libgurumod_programming.la \
 	libgurumod_exec.la
@@ -8,6 +8,7 @@ noinst_LTLIBRARIES = \
 libgurumod_simplereturn_la_SOURCES = simplereturn.c
 libgurumod_programming_la_SOURCES = programming.c
 libgurumod_exec_la_SOURCES = exec.c
+libgurumod_exec_la_LIBADD = -lggzcore
 
 INCLUDES = -I../src
 
@@ -20,3 +21,6 @@ plugin:
 pluginclean:
 	rm -f *.so
 
+test:
+	rm -f /usr/local/lib/libgurumod_programming.so
+	rm -f /usr/local/lib/libgurumod_simplereturn.so

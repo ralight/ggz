@@ -12,7 +12,10 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include "gurumod.h"
+#include <ggzcore.h>
+#include "exec.h"
+
+char **programlist = NULL;
 
 char *const *optlist(char *cmdline, char *options)
 {
@@ -32,7 +35,7 @@ char *const *optlist(char *cmdline, char *options)
 		free(list);
 	}
 
-	list = (char**)malloc(2);
+	list = (char**)malloc(2 * sizeof(char*));
 	list[0] = (char*)malloc(strlen(cmdline) + 1);
 	strcpy(list[0], cmdline);
 	list[1] = NULL;
@@ -41,7 +44,7 @@ char *const *optlist(char *cmdline, char *options)
 	while(token)
 	{
 		listsize++;
-		list = (char**)realloc(list, listsize);
+		list = (char**)realloc(list, listsize * sizeof(char*));
 		list[listsize - 2] = (char*)malloc(strlen(token) + 1);
 		strcpy(list[listsize - 2], token);
 		list[listsize - 1] = NULL;
@@ -53,12 +56,12 @@ char *const *optlist(char *cmdline, char *options)
 
 void simpleexec(const char *cmdline, const char *options)
 {
-	char *const *opts = optlist((char*)cmdline, (char*)options);
+	char *const *opts = optlist(strdup(cmdline), strdup(options));
 
 	execvp(cmdline, opts);
 }
 
-void process(const char *program, Guru *message)
+char *process(const char *program, Guru *message)
 {
 	int readfd[2], writefd[2];
 	int result1, result2;
@@ -69,17 +72,13 @@ void process(const char *program, Guru *message)
 	result2 = socketpair(AF_UNIX, SOCK_STREAM, 0, writefd);
 	if((result1 == -1) || (result2 == -1))
 	{
-		message->message = "Socketpair() failed.";
-		message->type = GURU_ADMIN;
-		return;
+		return NULL;
 	}
 
 	pid = fork();
 	switch(pid)
 	{
 		case -1:
-			message->message = "Couldn't fork!";
-			message->type = GURU_ADMIN;
 			break;
 		case 0:
 			dup2(readfd[0], 0);
@@ -89,25 +88,64 @@ void process(const char *program, Guru *message)
 			exit(-1);
 			break;
 		default:
+			//printf("parent...\n");
 			if(!buffer) buffer = (char*)malloc(1024);
 			sprintf(buffer, "%s\n", message->message);
 			write(readfd[1], buffer, strlen(buffer));
 			for(i = 0; i < 1024; i++)
 				buffer[i] = 0;
-			read(writefd[1], buffer, 1024);
-			buffer[strlen(buffer) - 1] = 0;
-			message->message = buffer;
+			i = read(writefd[1], buffer, 1024);
+			//printf("got answer...\n");
+			if(i > 1)
+			{
+				buffer[strlen(buffer) - 1] = 0;
+				return buffer;
+			}
 			break;
 	}
+	return NULL;
 }
 
-Guru gurumod_exec(Guru message)
+Guru *gurumod_exec(Guru *message)
 {
-	process("../data/rdf.pl", &message);
+	char *answer;
+	int i;
+	
+	answer = NULL;
+	i = 0;
+	while((programlist) && (programlist[i]))
+	{	
+		printf("EXEC: %s\n", programlist[i]);
+		answer = process(programlist[i], message);
+		if(answer)
+		{
+			free(message->message);
+			message->message = strdup(answer);
+			printf(" --> GOT ANSWER: %s\n", answer);
+			return message;
+		}
+		i++;
+	}
 	return message;
 }
 
 void gurumod_init()
 {
+	int handle;
+	char path[1024];
+	int count;
+	int ret;
+int i;
+
+	sprintf(path, "%s/.ggz/guru/modexec.rc", getenv("HOME"));
+	handle = ggzcore_confio_parse(path, GGZ_CONFIO_RDONLY);
+	if(handle < 0) return;
+	ret = ggzcore_confio_read_list(handle, "programs", "programs", &count, &programlist);
+printf("ret is: %i\n", ret);
+printf("Modules: %i\n", count);
+for(i = 0; i < count; i++)
+	printf("%s\n", programlist[i]);
+
+	if(ret < 0) programlist = NULL;
 }
 

@@ -15,13 +15,13 @@ void gurumod_init()
 {
 }
 
-Guru gurumod_exec(Guru message)
+Guru *gurumod_exec(Guru *message)
 {
 	const char *tokenizer = " ,.()?!";
 	char *token;
 	char *outtoken;
 	
-	token = strtok(strdup(message.message), tokenizer);
+	token = strtok(strdup(message->message), tokenizer);
 	outtoken = NULL;
 	while((token) && (!outtoken))
 	{
@@ -33,8 +33,8 @@ Guru gurumod_exec(Guru message)
 	}
 	while(token) token = strtok(NULL, tokenizer);
 	if(outtoken) sleep(strlen(outtoken) / 30);
-	message.message = outtoken;
-	message.type = GURU_CHAT;
+	message->message = outtoken;
+	message->type = GURU_CHAT;
 	return message;
 }
 

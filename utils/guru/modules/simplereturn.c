@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include "gurumod.h"
 
-Guru gurumod_exec(Guru message)
+Guru *gurumod_exec(Guru *message)
 {
 	return message;
 }

@@ -15,7 +15,7 @@
 #include <fnmatch.h>
 #include <stdlib.h>
 
-#define MODULEDIR "../modules"
+#define MODULEDIR "/usr/local/lib"
 
 typedef Guru (*modulefunc)(Guru message);
 
