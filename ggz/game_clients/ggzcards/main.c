@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2892 2001-12-13 15:53:48Z jdorje $
+ * $Id: main.c 2913 2001-12-17 03:22:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -274,9 +274,13 @@ static GtkWidget *get_message_dialog(const char *mark)
 
 static GtkWidget *new_message_dialog(const char *mark)
 {
-	GtkWidget *menu_item, *dlg, *close_button;
+	GtkWidget *menu_item, *dialog, *close_button, *vbox;
 
 	ggz_debug("table", "Making new thingy for mark %s.", mark);
+
+	/*
+	 * Make the menu item
+	 */
 	menu_item = gtk_menu_item_new_with_label(mark);
 	gtk_widget_set_name(menu_item, mark);
 	gtk_widget_ref(menu_item);
@@ -284,41 +288,48 @@ static GtkWidget *new_message_dialog(const char *mark)
 				 menu_item,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(menu_item);
-
 	gtk_container_add(GTK_CONTAINER(msg_menu), menu_item);
 	gtk_signal_connect(GTK_OBJECT(menu_item), "activate",
 			   GTK_SIGNAL_FUNC(on_mnu_messages_activate),
 			   (gpointer) g_strdup(mark));
 
-	dlg = gtk_dialog_new();
-	gtk_widget_ref(dlg);
-	gtk_object_set_data(GTK_OBJECT(msg_menu), mark, dlg);
-	/* gtk_object_set_data (GTK_OBJECT (dlg), "dlg_messages", dlg_about); 
+	/*
+	 * Make the dialog window
 	 */
-	gtk_window_set_title(GTK_WINDOW(dlg), mark);
-	GTK_WINDOW(dlg)->type = GTK_WINDOW_DIALOG;
-	gtk_window_set_policy(GTK_WINDOW(dlg), TRUE, TRUE, FALSE);
+	dialog = gtk_dialog_new();
+	gtk_widget_ref(dialog);
+	gtk_object_set_data(GTK_OBJECT(msg_menu), mark, dialog);
+	gtk_window_set_title(GTK_WINDOW(dialog), mark);
+	GTK_WINDOW(dialog)->type = GTK_WINDOW_DIALOG;
+	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
+	gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
+				  GTK_SIGNAL_FUNC(gtk_widget_hide),
+				  GTK_OBJECT(dialog));
 
+	/* dialog->vbox is used for placing the message data in; however,
+	   this data depends on the _type_ of message so we leave that
+	   for later. */
+	vbox = GTK_DIALOG(dialog)->vbox;
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
+	gtk_widget_show(vbox);
 
+	/*
+	 * Make the "close" button
+	 */
 	close_button = gtk_button_new_with_label("Close");
 	gtk_widget_ref(close_button);
-	gtk_object_set_data_full(GTK_OBJECT(dlg), "close_button",
+	gtk_object_set_data_full(GTK_OBJECT(dialog), "close_button",
 				 close_button,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(close_button);
 	gtk_widget_set_usize(close_button, 64, -2);
 	gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_hide),
-				  GTK_OBJECT(dlg));
-
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->action_area),
+				  GTK_OBJECT(dialog));
+	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area),
 			  close_button);
 
-	gtk_signal_connect_object(GTK_OBJECT(dlg), "delete_event",
-				  GTK_SIGNAL_FUNC(gtk_widget_hide),
-				  GTK_OBJECT(dlg));
-
-	return dlg;
+	return dialog;
 }
 
 void menubar_text_message(const char *mark, const char *msg)
@@ -338,7 +349,6 @@ void menubar_text_message(const char *mark, const char *msg)
 		dlg = new_message_dialog(mark);
 
 		vbox = GTK_DIALOG(dlg)->vbox;
-		gtk_widget_show(vbox);
 
 		label = gtk_label_new(msg);
 		gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
