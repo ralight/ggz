@@ -19,9 +19,11 @@
 <?php
 
 include_once("match.php");
-include_once("savegame.php");
 
 $match = new Match($lookup);
+$game = strtolower($match->game);
+
+include_once("savegame_$game.php");
 
 $savegamedir = $ggzgamedir;
 $savegamefile = "$savegamedir/$match->game/$match->savegame";
@@ -29,7 +31,7 @@ $savegamefile = "$savegamedir/$match->game/$match->savegame";
 $savegame = new Savegame();
 $savegame->load($savegamefile);
 
-echo "<img src='image.php?savegamefile=$savegamefile'>\n";
+echo "<img src='image_$game.php?savegamefile=$savegamefile'>\n";
 
 ?>
 	</div>

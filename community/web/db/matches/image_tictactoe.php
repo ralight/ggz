@@ -28,7 +28,7 @@ $circle = array(
 	13, 25
 );
 
-include("savegame.php");
+include("savegame_tictactoe.php");
 $savegame = new Savegame();
 $savegame->load($savegamefile);
 
