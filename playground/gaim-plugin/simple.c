@@ -9,7 +9,6 @@
 #include <gaim/gtkutils.h>
 #include <gaim/gtkplugin.h>
 #include <gaim/gtkconv.h>
-/*#include <gaim/ui.h>*/
 #include <gaim/prefs.h>
 #include <gaim/blist.h>
 #include <gaim/gtkblist.h>
@@ -20,11 +19,16 @@
 #include <gaim/debug.h>
 #include <gaim/plugin.h>
 #include <gaim/version.h>
+
+#include <ggz.h>
+
 #include "tictactoe.xpm"
 
 #define HEADER "*** Command from the gaim-ggz plugin:"
 #define FOOTER "***"
-#define GGZ_PHH "/home/alh/ggz-test/test-ggz"
+#define GGZWRAPPER "ggz-wrapper"
+#define GGZMODULECONFIG "/home/ggz/BUILD/etc/ggz.modules"
+#define SERVER "localhost"
 
 GaimCmdRet commande(GaimConversation *conv, const gchar *cmd, gchar **args, gchar **error, void *data) {
 	int argc,pid;
@@ -37,11 +41,6 @@ GaimCmdRet commande(GaimConversation *conv, const gchar *cmd, gchar **args, gcha
 			*error=g_strdup("Il faut spécifier un jeu, les jeux possibles sont(respectez la casse):\n-TicTacToe\n-Reversi\n-Chess");
 		return GAIM_CMD_RET_FAILED;
 	}
-	if(strcmp(args[0], "TicTacToe")!=0 && strcmp(args[0], "Reversi")!=0 && strcmp(args[0], "Chess")) {
-		if(error)
-			*error=g_strdup("Le jeu doit être soit :\n-TicTacToe\n-Reversi\n-Chess");
-		return GAIM_CMD_RET_FAILED;
-	}
 	jeu=args[0];
 	pid=fork();
 	if(pid==0) {
@@ -49,15 +48,13 @@ GaimCmdRet commande(GaimConversation *conv, const gchar *cmd, gchar **args, gcha
 		char *sys_parm;
 		parms[0]=joueur;
 		parms[1]=jeu;
-		sys_parm=g_strdup_printf("%s -u %s -g %s -s 66.45.225.43", GGZ_PHH, parms[0], parms[1]);
+		sys_parm=g_strdup_printf("%s -u %s -g %s -s %s", GGZWRAPPER, parms[0], parms[1], SERVER);
 		parms[0]="sh";
 		parms[1]="-c";
 		parms[2]=sys_parm;
 		parms[3]=NULL;
+		printf("LAUNCH: %s,%s %s %s\n", "/bin/sh", parms[0], parms[1], parms[2]);
 		execv("/bin/sh", parms);
-		printf("%s,%s %s %s\n", "/bin/sh", parms[0], parms[1], parms[2]);
-		printf("Grumpf\n");
-		perror("execv");
 		exit(0);
 	} else if(pid>0) {
 		gaim_conv_im_send(GAIM_CONV_IM(conv), g_strdup_printf("%s%s %s %s", HEADER, jeu,joueur, FOOTER));
@@ -97,8 +94,15 @@ static void nouvelle_convers(GaimConversation *conv, void *data) {
 	GtkWidget *icon;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
-	void **arg=malloc(sizeof(void *)*2);
-	GtkSizeGroup *sg=gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
+	void **arg;
+	GtkSizeGroup *sg;
+
+	int i, ret, handle;
+	int argcp;
+	char **argvp;
+	char *gamename;
+
+	sg=gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 	icon=gaim_gtkconv_button_new(NULL,"Jeu","Pfff",gtkconv->tooltips, GTK_SIGNAL_FUNC(PopMenu), NULL);
 	if(icon==NULL) {
 		printf("Arf :/ \n");
@@ -106,24 +110,25 @@ static void nouvelle_convers(GaimConversation *conv, void *data) {
 	} else {
 		printf("OK :) \n");
 	}
-	//g_signal_connect(G_OBJECT(icon), "clicked", GTK_SIGNAL_FUNC(icon_clicked), (gpointer) conv);
+
 	/* Menu */
-	menu=gtk_menu_new();
-	arg[0]=(gpointer)conv;
-	//TicTacToe
-	menuitem=gtk_menu_item_new_with_label("TicTacToe");
-	arg[1]=strdup("TicTacToe");
-	gtk_signal_connect_object(GTK_OBJECT(menuitem), "event", GTK_SIGNAL_FUNC(icon_clicked), (gpointer) arg);
-	gtk_menu_append(GTK_MENU(menu), menuitem);
-	gtk_widget_show(menuitem);
-	
-	//Chess
-	menuitem=gtk_menu_item_new_with_label("Chess");
-	arg[1]=strdup("Chess");
-	gtk_signal_connect_object(GTK_OBJECT(menuitem), "event", GTK_SIGNAL_FUNC(icon_clicked), (gpointer) arg);
-	gtk_menu_append(GTK_MENU(menu), menuitem);
-	gtk_widget_show(menuitem);
-	
+	menu = gtk_menu_new();
+
+	handle = ggz_conf_parse(GGZMODULECONFIG, GGZ_CONF_RDONLY);
+	ret = ggz_conf_read_list(handle, "Games", "*Engines*", &argcp, &argvp);
+	for(i = 0; i < argcp; i++)
+	{
+		gamename = argvp[i];
+		arg = malloc(sizeof(void*)*2);
+		arg[0] = (gpointer)conv;
+		arg[1] = strdup(gamename);
+		menuitem = gtk_menu_item_new_with_label(gamename);
+		gtk_signal_connect_object(GTK_OBJECT(menuitem), "event", GTK_SIGNAL_FUNC(icon_clicked), (gpointer) arg);
+		gtk_menu_append(GTK_MENU(menu), menuitem);
+		gtk_widget_show(menuitem);
+	}
+	ggz_conf_close(handle);
+
 	//Menu général
 	gtk_signal_connect_object(GTK_OBJECT(icon), "event", GTK_SIGNAL_FUNC(PopMenu),GTK_OBJECT(menu));
 
@@ -180,10 +185,6 @@ static void message_recu2(GaimAccount *acct,char **sender, char **buffer,int fla
 	}
 	joueur[0]='\0';
 	joueur++;
-	if(strcmp(jeu, "TicTacToe")!=0 && strcmp(jeu, "Chess")!=0 && strcmp(jeu, "Reversi")!=0) {
-		*buffer="Votre correspondant vous a envoyé une demande de jeu non permise";
-		return;
-	}
 	if(index(joueur, ' ')) {
 		joueur[strlen(joueur) - strlen(index(joueur, ' '))]='\0';
 	}
@@ -195,18 +196,13 @@ static void message_recu2(GaimAccount *acct,char **sender, char **buffer,int fla
 		char *sys_parm;
 		parms[1]=g_strdup_printf("guest%d", (int) (999.0*rand()/(RAND_MAX+1.0)));
 		parms[2]=joueur;
-		sys_parm=g_strdup_printf("%s -u %s -d %s -g %s -s 66.45.225.43", GGZ_PHH, parms[1], parms[2],jeu);
+		sys_parm=g_strdup_printf("%s -u %s -d %s -g %s -s %s", GGZWRAPPER, parms[1], parms[2], jeu, SERVER);
 		parms[0]="sh";
 		parms[1]="-c";
 		parms[2]=sys_parm;
 		parms[3]=NULL;
+		printf("LAUNCH: %s,%s %s %s\n", "/bin/sh", parms[0], parms[1], parms[2]);
 		execv("/bin/sh", parms);
-		printf("%s,%s %s %s\n", "/bin/sh", parms[0], parms[1], parms[2]);
-		printf("Grumpf\n");
-		perror("execv");
-	/*	printf("Lance: execv(%s, %s %s %s\n", GGZ_PHH, parms[0], parms[1], parms[2]);
-		if(!execv(GGZ_PHH, parms))
-			printf("execve de m****\n");*/
 		exit(0);
 	} else if(pid>0) {
 		//Ici c'est le pere je vous apprends beaucoup de choses non? ;)
@@ -278,4 +274,4 @@ init_plugin(GaimPlugin *plugin)
 {
 }
 
-GAIM_INIT_PLUGIN(simple, init_plugin, info)
+GAIM_INIT_PLUGIN(ggz4gaim, init_plugin, info)
