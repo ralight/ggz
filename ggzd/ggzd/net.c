@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 6729 2005-01-18 18:23:46Z jdorje $
+ * $Id: net.c 6865 2005-01-23 23:28:03Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -287,6 +287,10 @@ GGZReturn net_send_serverid(GGZNetIO *net, const char *srv_name, bool use_tls)
 {
 	char *xml_srv_name = ggz_xml_escape(srv_name);
 	GGZReturn status;
+
+	/* This could go into a separate function, net_send_header, along
+	   with the DTD. */
+	_net_send_line(net, "<?xml version='1.0' encoding='UTF-8'?>");
 
 	_net_send_line(net, "<SESSION>");
 	_net_send_line(net, "<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' "
