@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5022 2002-10-24 07:17:12Z jdorje $
+ * $Id: ggzcore.h 5023 2002-10-24 09:56:04Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -290,71 +290,108 @@ typedef struct {
 } GGZChatEventData;
 
 typedef enum {
-	/** The list of players in a room has arrived. */
+	/** The list of players in a room has arrived.
+	 *  @param data NULL
+	 *  @see ggzcore_room_list_players */
 	GGZ_PLAYER_LIST,
 
-	/** Received the list of active tables. */
+	/** Received the list of active tables.
+	 *  @param data NULL
+	 *  @see ggzcore_room_list_tables */
 	GGZ_TABLE_LIST,
 
-	/** Received a normal chat message, sent to all players.
+	/** Received a chat message of any kind.  This can happen at any
+	 *  time when you're in a room.
+	 *  @param data The GGZChatEventData associated with the chat.
 	 *  @see GGZChatEventData */
 	GGZ_CHAT_EVENT,
 
-	/** Attempt to enter a room has been successful. */
+	/** A player has entered the room with you.
+	 *  @param data The name of the player (a char*). */
 	GGZ_ROOM_ENTER,
 
-	/** A room could not be entered. */
+	/** A player has left your room.
+	 *  @param data The name of the player (a char*). */
 	GGZ_ROOM_LEAVE,
 
-	/** Update at one of the tables. */
+	/** One of the tables in the current room has changed.
+	 *  @todo How are you supposed to know which table has changed?
+	 *  @param data NULL */
 	GGZ_TABLE_UPDATE,
 
-	/** A new table has been launched successfully. */
+	/** The table you tried to launch has launched!
+	 *  @see ggzcore_room_launch_table
+	 *  @param data NULL */
 	GGZ_TABLE_LAUNCHED,
 
-	/** Table could not be launched by the player. */
+	/** The table you tried to launch couldn't be launched
+	 *  @see GGZ_TABLE_LAUNCHED
+	 *  @param data A helpful error string. */
 	GGZ_TABLE_LAUNCH_FAIL,
 
-	/** Successfully joined an existing table. */
+	/** Your table join attempt has succeeded.
+	 *  @see ggzcore_room_join_table
+	 *  @param data NULL. */
 	GGZ_TABLE_JOINED,
 
-	/** Joining a table did not succeed. */
+	/** Joining a table did not succeed.
+	 *  @see GGZ_TABLE_JOINED
+	 *  @param data A helpful error string. */
 	GGZ_TABLE_JOIN_FAIL,
 
-	/** The player successfully left a table. */
+	/** You have successfully left the table you were at.
+	 *  @see ggzcore_room_leave_table
+	 *  @param data NULL */
 	GGZ_TABLE_LEFT,
 
-	/** Failure leaving a table. */
+	/** Your attempt to leave the table has failed.
+	 *  @see GGZ_TABLE_LEFT
+	 *  @param data A helpful error string. */
 	GGZ_TABLE_LEAVE_FAIL,
 
-	/** Lag message from the server to measure the connection speed. */
+	/** A player's lag (measure of connection speed) has been updated
+	 *  @see ggzcore_player_get_lag
+	 *  @param data The name of the player whose lag has changed. */
 	GGZ_PLAYER_LAG
 } GGZRoomEvent;
 
 
 typedef enum {
-	/** A game was launched by the player. */
+	/** A game was launched by the player (you).
+	 *  @param data NULL
+	 *  @see ggzcore_game_launch */
 	GGZ_GAME_LAUNCHED,
 
-	/** Game launch failed. */
+	/** Your game launch has failed.
+	 *  @param data NULL
+	 *  @see GGZ_GAME_LAUNCHED */
 	GGZ_GAME_LAUNCH_FAIL,
 
-	/** Negotiation with server was successful. */
+	/** Negotiation with server was successful.  This should happen
+	 *  some time after the launch succeeds.
+	 *  @todo This isn't handled correctly by ggzcore.
+	 *  @param data NULL */
 	GGZ_GAME_NEGOTIATED,
 
-	/** Negotiation was not successful, game launch failed. */
+	/** Negotiation was not successful, game launch failed.
+	 *  @todo Currently this can't actually happen... */
 	GGZ_GAME_NEGOTIATE_FAIL,
 
-	/** Game reached the 'playing' state. */
+	/** Game reached the 'playing' state.
+	 *  @param data NULL */
 	GGZ_GAME_PLAYING,
 
-	/** A game is over. The player is going to leave the table. */
+	/** A game is over. The player is going to leave the table.
+	 *  @todo Currently IO errors cause this event.
+	 *  @param data NULL */
 	GGZ_GAME_OVER,
 
-	/** Error: An input/output error happened. */
+	/** Error: An input/output error happened.
+	 *  @todo Currently this can't actually happen... */
 	GGZ_GAME_IO_ERROR,
 
-	/** Error: Protocol error caused by the game. */
+	/** Error: Protocol error caused by the game.
+	 *  @todo Currently this can't actually happen... */
 	GGZ_GAME_PROTO_ERROR,
 } GGZGameEvent;
 
@@ -765,29 +802,71 @@ int ggzcore_room_remove_event_hook_id(GGZRoom *room,
 				      const unsigned int hook_id);
 
 
-/* Functions for performing actions on a room */
+/** @brief Call to request a list of players in the room.
+ *  @see GGZ_PLAYER_LIST */
 int ggzcore_room_list_players(GGZRoom *room);
-int ggzcore_room_list_tables(GGZRoom *room, 
+
+/** @brief Call to request a list of tables in the room.
+ *  @param type currently ignored (???)
+ *  @param global currently ignored (???)
+ *  @see GGZ_TABLE_LIST */
+int ggzcore_room_list_tables(GGZRoom *room,
 			     const int type,
 			     const char global);
 
+/** @brief Chat!
+ *  @param room Your current room.
+ *  @param type The chat type.
+ *  @param player The name of the target player (only for certain chat types)
+ *  @param msg The text of the chat message (some chat types don't need it)
+ *  @return 0 on success, negative on (any) failure */
 int ggzcore_room_chat(GGZRoom *room,
 		      const GGZChatType opcode,
 		      const char *player,
 		      const char *msg);
 
+/** @brief Launch a table in the room.
+ *
+ *  When a player wants to launch a new table, this is the function to do
+ *  it.  You must first create the table and set up the number and type of
+ *  seats.  Then call this function to initiate the launch.
+ *  @param room Your current room.
+ *  @param table The table to launch.
+ *  @return 0 on success, negative on (any) failure */
 int ggzcore_room_launch_table(GGZRoom *room, GGZTable *table);
-int ggzcore_room_join_table(GGZRoom *room, const unsigned int num, 
+
+/** @brief Join a table in the room, so that you can then play at it.
+ *  @param room Your current room.
+ *  @param table_id The table to join.
+ *  @param spectator TRUE if you wish to spectate, FALSE if you want to play
+ *  @return 0 on success, negative on (any) failure */
+int ggzcore_room_join_table(GGZRoom *room, const unsigned int table_id, 
 			    int spectator);
+
+/** @brief Leave the table you are currently playing at.
+ *
+ *  This function tries to leave your current table.  You should "force" the
+ *  leave only if the game client is inoperable, since for some games this
+ *  will destroy the game server as well.
+ *  @param room Your current room.
+ *  @param force TRUE to force the leave, FALSE to leave it up to ggzd
+ *  @param 0 on success, negative on (any) failure */
 int ggzcore_room_leave_table(GGZRoom *room, int force);
 
 
 /* Functions for manipulating GGZPlayer objects */
 /* -------------------------------------------- */
 
+/** @brief Return the name of the player. */
 char*         ggzcore_player_get_name(GGZPlayer *player);
+
+/** @brief Return the type of the player (admin/registered/guest) */
 GGZPlayerType ggzcore_player_get_type(GGZPlayer *player);
+
+/** @brief Return the player's table, or NULL if none */
 GGZTable*     ggzcore_player_get_table(GGZPlayer *player);
+
+/** @brief Return the player's lag class (1..5) */
 int	      ggzcore_player_get_lag(GGZPlayer *player);
 
 
