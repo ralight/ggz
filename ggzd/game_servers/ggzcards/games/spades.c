@@ -1,10 +1,10 @@
-/*
+/* 
  * File: games/spades.c
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 2454 2001-09-11 20:12:21Z jdorje $
+ * $Id: spades.c 2476 2001-09-14 07:27:18Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -30,21 +30,22 @@
 
 #include "spades.h"
 
-static int spades_is_valid_game();
-static void spades_init_game();
-static void spades_get_options();
+static int spades_is_valid_game(void);
+static void spades_init_game(void);
+static void spades_get_options(void);
 static int spades_handle_option(char *option, int value);
 static char *spades_get_option_text(char *buf, int bufsz, char *option,
 				    int value);
-static void spades_start_bidding();
-static int spades_get_bid();
+static void spades_start_bidding(void);
+static int spades_get_bid(void);
 static void spades_handle_bid(bid_t bid);
-static void spades_next_bid();
+static void spades_next_bid(void);
 static int spades_get_bid_text(char *buf, int buf_len, bid_t bid);
 static void spades_set_player_message(player_t p);
-static int spades_deal_hand();
-static void spades_end_trick();
-static void spades_end_hand();
+static int spades_deal_hand(void);
+static void spades_end_trick(void);
+static void spades_end_hand(void);
+static void spades_start_game(void);
 static int spades_send_hand(player_t p, seat_t s);
 
 struct game_function_pointers spades_funcs = {
@@ -67,7 +68,7 @@ struct game_function_pointers spades_funcs = {
 	spades_deal_hand,
 	spades_end_trick,
 	spades_end_hand,
-	game_start_game,
+	spades_start_game,
 	game_test_for_gameover,
 	game_handle_gameover,
 	game_map_card,
@@ -89,7 +90,8 @@ static void spades_init_game()
 	for (s = 0; s < game.num_players; s++)
 		assign_seat(s, s);	/* one player per seat */
 
-	game.must_break_trump = 1;	/* in spades, you can't lead trump until it's broken */
+	game.must_break_trump = 1;	/* in spades, you can't lead trump
+					   until it's broken */
 	game.target_score = 500;	/* adjustable by options */
 	game.trump = SPADES;
 	game.ai_type = GGZ_AI_SPADES;
@@ -100,12 +102,8 @@ static void spades_init_game()
 
 static void spades_get_options()
 {
-	/* three options:
-	 *   target score: 100, 250, 500, 1000
-	 *   nil value: 0, 50, 100
-	 *   minimum team bid: 0, 1, 2, 3, 4
-	 *   double nil value: 0, 100, 200
-	 */
+	/* three options: target score: 100, 250, 500, 1000 nil value: 0, 50, 
+	   100 minimum team bid: 0, 1, 2, 3, 4 double nil value: 0, 100, 200 */
 	add_option("nil_value", 3, 2, "No nil bids", "Nil is worth 50",
 		   "Nil is worth 100");
 	add_option("target_score", 4, 2, "Game to 100", "Game to 250",
@@ -181,8 +179,7 @@ static void spades_start_bidding()
 	game_start_bidding();
 	game.bid_total = game.num_players;
 
-	/* With blind bids, you first make a blind bid then
-	 * a regular one. */
+	/* With blind bids, you first make a blind bid then a regular one. */
 	if (GSPADES.double_nil_value > 0)
 		game.bid_total += game.num_players;
 }
@@ -194,7 +191,8 @@ static int spades_get_bid()
 	char pard = game.players[(game.next_bid + 2) % 4].bid.sbid.val;
 
 	if (GSPADES.double_nil_value > 0 && (game.bid_count % 2 == 0)) {
-		/* A "blind" bid - you must first choose to bid blind (or not). */
+		/* A "blind" bid - you must first choose to bid blind (or
+		   not). */
 
 		/* TODO: make sure partner made minimum bid */
 		add_sbid(0, 0, SPADES_NO_BLIND);
@@ -203,7 +201,8 @@ static int spades_get_bid()
 		/* A regular bid */
 
 		for (i = 0; i <= game.hand_size - pard; i++) {
-			/* the second bidder on each team must make sure the minimum bid count is met */
+			/* the second bidder on each team must make sure the
+			   minimum bid count is met */
 			if (game.bid_count >= 2 &&
 			    pard + i < GSPADES.minimum_team_bid)
 				continue;
@@ -211,9 +210,10 @@ static int spades_get_bid()
 		}
 
 		/* "Nil" bid */
-		/* If you're the first bidder, you can bid nil - your partner will be forced
-		 * up to the minimum bid.  If you're the second bidder, you can't bid nil
-		 * unless your partner has already met the minimum. */
+		/* If you're the first bidder, you can bid nil - your partner 
+		   will be forced up to the minimum bid.  If you're the
+		   second bidder, you can't bid nil unless your partner has
+		   already met the minimum. */
 		if (GSPADES.nil_value > 0
 		    && (game.bid_count < 2
 			|| pard >= GSPADES.minimum_team_bid))
@@ -228,8 +228,8 @@ static int spades_get_bid()
 
 static void spades_handle_bid(bid_t bid)
 {
-	/* Regular bids don't need any special handling;
-	 * however blind bids do. */
+	/* Regular bids don't need any special handling; however blind bids
+	   do. */
 	if (GSPADES.double_nil_value > 0 && (game.bid_count % 2 == 0)) {
 		GSPADES.show_hand[game.next_bid] = 1;
 		spades_send_hand(game.next_bid, game.next_bid);
@@ -303,11 +303,10 @@ static int spades_deal_hand()
 	int shown = GSPADES.double_nil_value == 0;
 	seat_t s;
 
-	/* initialize all "shown hand" variables.  Setting this
-	 * to 1 means the hand is always shown; setting it to 0
-	 * means it's not shown.  This is used for blind bids,
-	 * when the hand must be hidden until the blind bid is
-	 * made. */
+	/* initialize all "shown hand" variables.  Setting this to 1 means
+	   the hand is always shown; setting it to 0 means it's not shown.
+	   This is used for blind bids, when the hand must be hidden until
+	   the blind bid is made. */
 	for (s = 0; s < game.num_seats; s++)
 		GSPADES.show_hand[s] = shown;
 
@@ -371,10 +370,16 @@ static void spades_end_hand()
 	}
 }
 
+static void spades_start_game(void)
+{
+	GSPADES.bags[0] = GSPADES.bags[1] = 0;
+	game_start_game();
+}
+
 static int spades_send_hand(player_t p, seat_t s)
 {
-	/* in most cases, we want to reveal the hand only to the player
-	 * who owns it. */
+	/* in most cases, we want to reveal the hand only to the player who
+	   owns it. */
 	return send_hand(p, s, (game.players[p].seat == s)
 			 && GSPADES.show_hand[s]);
 }
