@@ -24,6 +24,4 @@
  */
 
 
-void state_register(void);
-
 char* state_get(void);

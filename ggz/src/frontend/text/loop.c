@@ -88,7 +88,9 @@ void loop_remove_fd(unsigned int fd)
 
 	for (i = 0; i < num_fds; i++) 
 		if (fds[i].fd == fd) {
+#if 0
 			output_text("removing fd %d", fd);
+#endif
 			FD_CLR(fd, &active_fd_set);
 			/* FIXME: for efficiency, we should recalc fd_max */
 			fds[i].removed = 1;

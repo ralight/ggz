@@ -48,6 +48,7 @@ static GGZHookReturn server_list_rooms(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_enter_ok(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_enter_fail(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_logout(GGZServerEvent id, void*, void*);
+static GGZHookReturn server_state_change(GGZServerEvent id, void*, void*);
 
 
 static GGZHookReturn server_chat_msg(GGZEventID id, void*, void*);
@@ -111,6 +112,8 @@ static void server_register(GGZServer *server)
 				      server_enter_fail);
 	ggzcore_server_add_event_hook(server, GGZ_LOGOUT, 
 				      server_logout);
+	ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE, 
+				      server_state_change);
 
 	ggzcore_event_add_hook(GGZ_SERVER_CHAT_MSG, server_chat_msg);
 
@@ -194,6 +197,14 @@ static GGZHookReturn server_enter_ok(GGZServerEvent id, void* event_data,
 static GGZHookReturn server_enter_fail(GGZServerEvent id, void* event_data, void* user_data)
 {
 	output_text("--- Enter failed: %s", (char*)event_data);
+
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn server_state_change(GGZServerEvent id, void *event_data, void *user_data)
+{
+	output_status();
 
 	return GGZ_HOOK_OK;
 }

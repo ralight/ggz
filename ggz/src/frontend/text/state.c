@@ -34,33 +34,19 @@
 #include <string.h>
 
 
-static GGZStateID ggz_state;
-
-
-/* Hook for state change events */
-static GGZHookReturn state_change(GGZStateID id, void *state_data, void *user_data);
-
-
-void state_register(void)
-{
-	ggzcore_state_add_hook(GGZ_STATE_OFFLINE, state_change);
-	ggzcore_state_add_hook(GGZ_STATE_CONNECTING, state_change);
-	ggzcore_state_add_hook(GGZ_STATE_ONLINE, state_change);
-	ggzcore_state_add_hook(GGZ_STATE_LOGGING_IN, state_change);
-	ggzcore_state_add_hook(GGZ_STATE_LOGGED_IN, state_change);
-	ggzcore_state_add_hook(GGZ_STATE_BETWEEN_ROOMS, state_change);
-	ggzcore_state_add_hook(GGZ_STATE_ENTERING_ROOM, state_change);
-	ggzcore_state_add_hook(GGZ_STATE_IN_ROOM, state_change);
-	ggzcore_state_add_hook(GGZ_STATE_JOINING_TABLE, state_change);
-	ggzcore_state_add_hook(GGZ_STATE_AT_TABLE, state_change);
-	ggzcore_state_add_hook(GGZ_STATE_LEAVING_TABLE, state_change);
-	ggzcore_state_add_hook(GGZ_STATE_LOGGING_OUT, state_change);
-}
+extern GGZServer *server;
 
 
 char* state_get(void)
 {
-	switch (ggz_state) {
+	GGZStateID state;
+
+	if (!server)
+		return "Offline";
+	
+	state = ggzcore_server_get_state(server);
+
+	switch (state) {
 	case GGZ_STATE_OFFLINE:
 		return "Offline";
 		break;
@@ -100,13 +86,3 @@ char* state_get(void)
 		
 	}
 }
-
-
-static GGZHookReturn state_change(GGZStateID id, void *state_data, void *user_data)
-{
-	ggz_state = id;
-	
-	output_status();
-	return GGZ_HOOK_OK;
-}
-

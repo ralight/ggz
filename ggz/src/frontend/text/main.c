@@ -88,9 +88,6 @@ int main(void)
 	ggzcore_init(opt);
 	free(opt.debug_file);
 
-	/* Register for callbacks */
-	state_register();
-
 	output_status();
 	output_prompt();
 
