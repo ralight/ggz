@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 5327 2003-01-12 14:44:15Z dr_maux $
+ * $Id: ggzdb_pgsql.c 5334 2003-01-16 22:11:58Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -157,6 +157,8 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	PGresult *res;
 	char query[4096];
 	int rc;
+	int init;
+	char *version;
 
 	dbhost = connection.host;
 	dbname = connection.database;
@@ -169,33 +171,76 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 
 	conn = claimconnection();
 	if (!conn)
-		return GGZ_ERROR;
+		return GGZDB_ERR_DB;
+
+	rc = GGZDB_NO_ERROR;
 
 	/* Hack: Fire-and-forget table initialization. It might already be
 	 * present, or the database user doesn't have the privileges. */
-	snprintf(query, sizeof(query), "CREATE TABLE users "
-		"(id serial, handle varchar(256), password varchar(256), name varchar(256), email varchar(256), "
-		"lastlogin int8, permissions int8)");
+	init = 1;
+	if(init)
+	{
+		snprintf(query, sizeof(query), "CREATE TABLE users "
+			"(id serial, handle varchar(256), password varchar(256), name varchar(256), email varchar(256), "
+			"lastlogin int8, permissions int8)");
 
-	res = PQexec(conn, query);
+		res = PQexec(conn, query);
 
-	rc = !(PQresultStatus(res) == PGRES_COMMAND_OK);
-	PQclear(res);
+		/*if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;*/
+		PQclear(res);
 
 
-	snprintf(query, sizeof(query), "CREATE TABLE stats "
-		"(id serial, handle varchar(256), game varchar(256), wins int8, losses int8, ties int8, forfeits int8, "
-		"rating float, ranking int8, highscore int8)");
+		snprintf(query, sizeof(query), "CREATE TABLE stats "
+			"(id serial, handle varchar(256), game varchar(256), wins int8, losses int8, ties int8, forfeits int8, "
+			"rating float, ranking int8, highscore int8)");
 
-	res = PQexec(conn, query);
+		res = PQexec(conn, query);
 
-	rc = !(PQresultStatus(res) == PGRES_COMMAND_OK);
-	PQclear(res);
+		/*if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;*/
+		PQclear(res);
+
+
+		snprintf(query, sizeof(query), "CREATE TABLE control "
+			"(key varchar(256), value varchar(256))");
+
+		res = PQexec(conn, query);
+
+		/*if(PQresultStatus(res) != PGRES_COMMAND_OK) rc = GGZDB_ERR_DB;*/
+		PQclear(res);
+	}
+
+	/* Check database format version */
+	if(rc == GGZDB_NO_ERROR)
+	{
+		res = PQexec(conn, "SELECT value FROM control WHERE key = 'version'");
+		if(PQresultStatus(res) == PGRES_TUPLES_OK)
+		{
+			if(PQntuples(res) == 1)
+			{
+				version = PQgetvalue(res, 0, 0);
+				if(strcmp(version, GGZDB_VERSION_ID))
+				{
+					err_msg_exit("Wrong database version: %s present, %s needed.\n", version, GGZDB_VERSION_ID);
+					rc = GGZDB_ERR_DB;
+				}
+				PQclear(res);
+			}
+			else
+			{
+				PQclear(res);
+				snprintf(query, sizeof(query), "INSERT INTO control "
+					"(key, value) VALUES ('version', '%s')", GGZDB_VERSION_ID);
+				res = PQexec(conn, query);
+				PQclear(res);
+			}
+		}
+		else rc = GGZDB_ERR_DB;
+	}
 
 	releaseconnection(conn);
 
 	/* Hack is here ;) */
-	return GGZ_OK;
+	return rc;
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 5327 2003-01-12 14:44:15Z dr_maux $
+ * $Id: ggzdb.h 5334 2003-01-16 22:11:58Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -33,13 +33,13 @@
 /* Structures to use to pass data to front end functions */
 
 /* Anytime structures change, bump the version id */
-#define GGZDB_VERSION_ID	"0.4"
+#define GGZDB_VERSION_ID	"0.5"
 
 /* For ggzdb_player_XXX */
 typedef struct {
 	unsigned int user_id;			/* Numeric UID */
 	char handle[MAX_USER_NAME_LEN+1];	/* Players nickname/handle */
-	char password[17];			/* Players password */
+	char password[33];			/* Players password (probably hashed) */
 	char name[33];				/* Players real name */
 	char email[33];				/* Players email address */
 	time_t last_login;			/* Last login */
@@ -53,6 +53,7 @@ typedef struct {
 	char *database;
 	char *username;
 	char *password;
+	char *hashing;
 } ggzdbConnection;
 
 typedef struct {
@@ -96,6 +97,10 @@ GGZDBResult ggzdb_stats_lookup(ggzdbPlayerGameStats *stats);
 
 /* Update a stats entry in the DB, adding it if necessary. */
 GGZDBResult ggzdb_stats_update(ggzdbPlayerGameStats *stats);
+
+/* Matches a password input against a (possibly hashed) password, returns 1 on
+ * match, 0 on no match, -1 on error. */
+int ggzdb_compare_password(const char *input, const char *password);
 
 #endif
 

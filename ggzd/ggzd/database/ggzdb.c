@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 5327 2003-01-12 14:44:15Z dr_maux $
+ * $Id: ggzdb.c 5334 2003-01-16 22:11:58Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -89,6 +89,7 @@ int ggzdb_init(void)
 	connection.database = opt.dbname;
 	connection.username = opt.dbusername;
 	connection.password = opt.dbpassword;
+	connection.hashing = opt.dbhashing;
 	if (_ggzdb_init(connection, 0) != GGZ_OK)
 		return GGZ_ERROR;
 	db_needs_init = 0;
@@ -109,7 +110,12 @@ GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
 	GGZDBResult rc = GGZDB_NO_ERROR;
 	char orig[MAX_USER_NAME_LEN + 1];
-	
+	hash_t hash;
+	char *password64;
+	char *origpassword = NULL;
+
+	if(!opt.dbhashing) return GGZDB_ERR_DB;
+
 	/* Lowercase player's name for comparison, saving original */
 	ggzdb_player_lowercase(pe, orig);
 
@@ -118,10 +124,30 @@ GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
 		rc = ggzdb_player_init();
 
 	if(rc == GGZDB_NO_ERROR)
+	{
+		if((!strcmp(opt.dbhashing, "md5"))
+		|| (!strcmp(opt.dbhashing, "sha1"))
+		|| (!strcmp(opt.dbhashing, "ripemd160")))
+		{
+			hash = ggz_hash_create(opt.dbhashing, pe->password);
+			password64 = ggz_base64_encode(hash.hash, hash.hashlen);
+			if(password64)
+			{
+				free(hash.hash);
+				origpassword = strdup(pe->password);
+				snprintf(pe->password, sizeof(pe->password), "%s", password64);
+			}
+		}
 		rc = _ggzdb_player_add(pe);
+	}
 
 	/* Restore the original name */
 	strcpy(pe->handle, orig);
+	if(origpassword)
+	{
+		snprintf(pe->password, sizeof(pe->password), "%s", origpassword);
+		free(origpassword);
+	}
 	
 	_ggzdb_exit();
 	return rc;
@@ -255,6 +281,7 @@ static GGZDBResult ggzdb_stats_init(void)
 	connection.database = opt.dbname;
 	connection.username = opt.dbusername;
 	connection.password = opt.dbpassword;
+	connection.hashing = opt.dbhashing;
 
 	rc = _ggzdb_init_stats(connection);
 	if (rc == GGZDB_NO_ERROR)
@@ -276,3 +303,37 @@ static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *buf)
 		*dest = tolower(*src);
 	*dest = '\0';
 }
+
+
+int ggzdb_compare_password(const char *input, const char *password)
+{
+	hash_t hash;
+	char *password64;
+	int ret = 0;
+
+	if(!opt.dbhashing) return -1;
+	if((!input) || (!password)) return -1;
+
+	else if(!strcmp(opt.dbhashing, "plain"))
+	{
+		if(!strcmp(input, password)) return 1;
+		else return 0;
+	}
+	else if((!strcmp(opt.dbhashing, "md5"))
+	|| (!strcmp(opt.dbhashing, "sha1"))
+	|| (!strcmp(opt.dbhashing, "ripemd160")))
+	{
+		hash = ggz_hash_create(opt.dbhashing, input);
+		password64 = ggz_base64_encode(hash.hash, hash.hashlen);
+		if(!password64) return -1;
+		if(!strcmp(password64, password)) ret = 1;
+		free(hash.hash);
+		free(password64);
+		return ret;
+	}
+
+	err_msg_exit("Unknown hashing type '%s'", opt.dbhashing);
+	
+	return -1;
+}
+
