@@ -41,6 +41,11 @@
 #include <table.h>
 #include <protocols.h>
 #include <err_func.h>
+#include <chat.h>
+
+
+/* Timeout for server resync */
+#define NG_RESYNC_SEC  5
 
 
 /* Server wide data structures*/
@@ -57,6 +62,8 @@ static void  player_remove(int p_index);
 static int   player_updates(int p_index);
 static int   player_msg_to_sized(int fd_in, int fd_out);
 static int   player_msg_from_sized(int fd_in, int fd_out);
+static int   player_send_chat(int p_index, char* name, char* chat);
+static int   player_chat(int p_index, int p_fd);
 
 static int new_login(int p_index);
 static int anon_login(int index);
@@ -155,6 +162,7 @@ static void player_loop(int p_index, int p_fd)
 	int op, status, fd_max, t_fd = -1;
 	char game_over = 0;
 	fd_set active_fd_set, read_fd_set;
+	struct timeval timer;
 
 	/* Start off listening only to player */
 	p_fd = players.info[p_index].fd;
@@ -164,15 +172,20 @@ static void player_loop(int p_index, int p_fd)
 	for (;;) {
 
 		/* Send updated info if need be */
-		player_updates(p_index);
+		if (FAIL(player_updates(p_index)))
+			break;
 		
 		read_fd_set = active_fd_set;
 		fd_max = ((p_fd > t_fd) ? p_fd : t_fd) + 1;
+
+		/* Setup timeout for select*/
+		timer.tv_sec = NG_RESYNC_SEC;
+		timer.tv_usec = 0;
 		
-		/* FIXME: add timeout */
-		status = select(fd_max, &read_fd_set, NULL, NULL, NULL);
-		if (status < 0) {
-			if (errno == EINTR)
+		status = select(fd_max, &read_fd_set, NULL, NULL, &timer);
+
+		if (status <= 0) {
+			if (status == 0 || errno == EINTR)
 				continue;
 			else
 				err_sys_exit("select error");
@@ -230,6 +243,10 @@ static void player_loop(int p_index, int p_fd)
 		}
 
 	} /* for(;;) */
+
+	/* Clean up if there was an error during a game */
+	if (t_fd != -1)
+		close(t_fd);
 }
 
 
@@ -295,6 +312,9 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		break;
 			
 	case REQ_CHAT:
+		status = player_chat(p_index, p_fd);
+		break;
+
 	case REQ_NEW_LOGIN:
 	case REQ_LOGIN:
 	case REQ_MOTD:
@@ -344,10 +364,24 @@ static void player_remove(int p_index)
  */
 static int player_updates(int p) {
 
+	int i, count;
+	char player[MAX_USER_NAME_LEN + 1];
+	char chat[MAX_CHAT_LEN + 1];
+
 	/*FIXME: Add user_list updates */
 	/*FIXME: Add game_type updates */
 	/*FIXME: Add game_table updates */
 	
+	/* Send any unread chats */
+	count = chat_check_num_unread(p);
+	for (i = 0; (i < MAX_CHAT_BUFFER && count > 0) ; i++)
+		if (chat_check_unread(p, i)) {
+			chat_get(i, player, chat);
+			chat_mark_read(p, i);
+			if (FAIL(player_send_chat(p, player, chat)))
+				return(-1);
+			count--;
+		}
 	
 	return 0;
 }
@@ -743,7 +777,8 @@ static int table_list(int p_index)
 	pthread_rwlock_unlock(&game_tables.lock);
 
 	if (FAIL(es_write_int(fd, RSP_TABLE_LIST)) ||
-	    FAIL(es_write_int(fd, count))) return (-1);
+	    FAIL(es_write_int(fd, count))) 
+		return (-1);
 
 	for (i = 0; i < count; i++) {
 		if (type >= 0 && type != info[i].type_index)
@@ -804,6 +839,45 @@ static int player_msg_from_sized(int in, int out)
 	
 	return (es_writen(out, buf, size));
 }
+
+
+static int player_send_chat(int p_index, char* name, char* msg) 
+{
+	int fd;
+	
+	fd = players.info[p_index].fd;	
+	if (FAIL(es_write_int(fd, MSG_CHAT)) ||
+	    FAIL(es_write_string(fd, name)) ||
+	    FAIL(es_write_string(fd, msg)))
+		return(-1);
+	
+	return 0;
+}
+
+
+static int player_chat(int p_index, int p_fd) 
+{
+	char* tmp;
+	char msg[MAX_CHAT_LEN + 1];
+	int status;
+
+	dbg_msg("Handling chat for player %d", p_index);
+
+	if (FAIL(es_read_string_alloc(p_fd, &tmp)))
+		return(-1);
+	
+	strncpy(msg, tmp, MAX_CHAT_LEN);
+	free(tmp);
+	msg[MAX_CHAT_LEN] = '\0';  /* Make sure strings are null-terminated */
+	status = chat_add(p_index, msg);
+
+	if (FAIL(es_write_int(p_fd, RSP_TABLE_LIST)) ||
+	    FAIL(es_write_int(p_fd, status))) 
+		return (-1);
+
+	return 0;
+}
+
 
 /*
  * Utility function for reading in names

@@ -46,6 +46,7 @@ typedef enum {
 typedef enum {
 	MSG_SERVER_ID,
 	MSG_SERVER_FULL,
+	MSG_CHAT,
 	RSP_NEW_LOGIN,
 	RSP_LOGIN,
 	RSP_ANON_LOGIN,

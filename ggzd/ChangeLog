@@ -1,3 +1,72 @@
+Tue Feb  8 13:52:18 2000  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/datatypes.h, ggzd/players.c, ggzd/protocols.h:
+	- Implemented supporyt for REQ_GAME and RSP_GAME
+	  (removes ugly message passing hack while at a table)
+	- New functions player_msg_{to|from}_sized() for passing messages
+	  between client and game server
+	- Fixed ugly reference return of t_fd (now, it's a pretty reference
+	  return)
+
+Mon Feb  7 20:59:12 2000  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.h:
+	- Fixed typo in comment.  es_{write|read}n return -1 on error, not 1
+
+	* ggzd/Makefile.am, ggzd/chat.c, ggzd/chat.h, ggzd/control.c, ggzd/datatypes.h, ggzd/players.c:
+	- Added infratructure for chat facility (data types and
+	  func. interface)
+
+Sun Feb  6 00:10:32 2000  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/players.c:
+	- Fixed player_remove() to reses table index to -1, not 0.
+	- Added stub function player_updates() for doing periodic updates
+
+Sat Feb  5 23:05:32 2000  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/control.c, ggzd/players.c, ggzd/players.h, ggzd/table.c, ggzd/table.h:
+	- Renamed functions to better reflect filename and purpose
+	  (all in the name of clean code)
+
+	* ggzd/control.c, ggzd/datatypes.h, ggzd/err_func.c, ggzd/err_func.h, ggzd/parse_opt.c, ggzd/parse_opt.h, ggzd/players.c, ggzd/protocols.h, ggzd/table.c, ggzd/table.h:
+	- Ran code through 'indent -kr -i8'
+
+Sat Jan 29 19:40:11 2000  bmh  <bmh@users.sourceforce.net>
+
+	* ggzd/control.c:
+	- Updated path to spades game server (still needs permanenet fix)
+
+Wed Jan 26 16:43:41 2000  bmh  <bmh@users.sourceforce.net>
+
+	* configure.in:
+	- Packahe name is ggzd, not ggz
+
+	* doc/README.Design:
+	- Created doc dir and put README.Design there
+
+	* configure.in:
+	- Moved easysock to beginning of SUBDIRS since other depend on it
+	  being compiled
+
+	* .cvsignore, AUTHORS, COPYING, ChangeLog, INSTALL, Makefile.am, NEWS, README, TODO, acconfig.h, autogen.sh, configure.in, game_servers/.cvsignore, game_servers/Makefile.am, game_servers/spades/.cvsignore, game_servers/spades/Makefile.am, game_servers/spades/ai.c, game_servers/spades/card.c, game_servers/spades/card.h, game_servers/spades/engine.h, game_servers/spades/engine_func.c, game_servers/spades/engine_main.c, game_servers/spades/options.h, game_servers/spades/protocols.h, game_servers/spades/socketfunc.c, game_servers/spades/socketfunc.h, ggzd/.cvsignore, ggzd/Makefile.am, ggzd/control.c, ggzd/datatypes.h, ggzd/err_func.c, ggzd/err_func.h, ggzd/ggzd.conf, ggzd/parse_opt.c, ggzd/parse_opt.h, ggzd/players.c, ggzd/players.h, ggzd/protocols.h, ggzd/table.c, ggzd/table.h:
+	- Imported files from NetGames project
+
+	* /cvsroot/GGZ/easysock/.cvsignore:
+	- Added easysock.lo and libeasysock.la to .cvsignore
+
+	* /cvsroot/GGZ/easysock/.cvsignore, /cvsroot/GGZ/easysock/BUGS, /cvsroot/GGZ/easysock/COPYING, /cvsroot/GGZ/easysock/ChangeLog, /cvsroot/GGZ/easysock/INSTALL, /cvsroot/GGZ/easysock/Makefile.am, /cvsroot/GGZ/easysock/NEWS, /cvsroot/GGZ/easysock/TODO, /cvsroot/GGZ/easysock/acconfig.h, /cvsroot/GGZ/easysock/configure.in, /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	Imported easysock sources
+
+	* /cvsroot/GGZ/easysock/.cvsignore, /cvsroot/GGZ/easysock/BUGS, /cvsroot/GGZ/easysock/COPYING, /cvsroot/GGZ/easysock/ChangeLog, /cvsroot/GGZ/easysock/INSTALL, /cvsroot/GGZ/easysock/Makefile.am, /cvsroot/GGZ/easysock/NEWS, /cvsroot/GGZ/easysock/TODO, /cvsroot/GGZ/easysock/acconfig.h, /cvsroot/GGZ/easysock/configure.in, /cvsroot/GGZ/easysock/easysock.c, /cvsroot/GGZ/easysock/easysock.h:
+	Initial revision
+
+	* /cvsroot/GGZ/easysock/AUTHORS, /cvsroot/GGZ/easysock/README, /cvsroot/GGZ/easysock/autogen.sh:
+	Imported easysock sources
+
+	* /cvsroot/GGZ/easysock/AUTHORS, /cvsroot/GGZ/easysock/README, /cvsroot/GGZ/easysock/autogen.sh:
+	Initial revision
+
 2000-01-21 04:57:17  Brent Hendricks  <brentmh@ece.rice.edu>
 
 	* /home/brentmh/pub/sp.cvsroot/NetGames/server/players.c:
