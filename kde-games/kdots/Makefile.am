@@ -19,7 +19,7 @@ noinst_HEADERS = \
 	kdots_proto.h \
 	kdots_win.h
 
-INCLUDES = $(all_includes) $(EASYSOCK_INCLUDES) -I Dot
+INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) -I Dot
 
 # A note on LDADD: on my machine, the -l is prepended automatically to
 # everything listed in the LDADD section.  This means putting
@@ -28,9 +28,9 @@ INCLUDES = $(all_includes) $(EASYSOCK_INCLUDES) -I Dot
 # too).  --JDS
 
 #UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
-#kdots_client_LDFLAGS = -rpath $(easysock_libraries)
-kdots_client_LDFLAGS = $(all_libraries) $(EASYSOCK_LDFLAGS)
-kdots_client_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_EASYSOCK) Dot/libdot.a
+#kdots_client_LDFLAGS = -rpath
+kdots_client_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS)
+kdots_client_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_GGZ) Dot/libdot.a
 
 METASOURCES = AUTO
 

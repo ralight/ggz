@@ -17,7 +17,9 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <easysock.h>
+
+// GGZ includes
+#include <ggz.h>
 
 #include <iostream>
 
@@ -32,20 +34,20 @@ KDotsProto::~KDotsProto()
 
 void KDotsProto::sync()
 {
-	es_write_int(fd, reqsync);
+	ggz_write_int(fd, reqsync);
 }
 
 void KDotsProto::init()
 {
 	state = stateinit;
-	es_write_int(fd, reqnewgame);
+	ggz_write_int(fd, reqnewgame);
 }
 
 int KDotsProto::getOpcode()
 {
 	int op;
 
-	es_read_int(fd, &op);
+	ggz_read_int(fd, &op);
 	return op;
 }
 
@@ -53,7 +55,7 @@ int KDotsProto::getStatus()
 {
 	char status;
 
-	es_read_char(fd, &status);
+	ggz_read_char(fd, &status);
 	return status;
 }
 
@@ -61,7 +63,7 @@ int KDotsProto::getSyncMove()
 {
 	char move;
 
-	es_read_char(fd, &move);
+	ggz_read_char(fd, &move);
 	return move;
 }
 
@@ -69,13 +71,13 @@ int KDotsProto::getSyncScore()
 {
 	int score;
 
-	es_read_int(fd, &score);
+	ggz_read_int(fd, &score);
 	return score;
 }
 
 void KDotsProto::getSeat()
 {
-	es_read_int(fd, &num);
+	ggz_read_int(fd, &num);
 }
 
 void KDotsProto::getPlayers()
@@ -84,8 +86,8 @@ void KDotsProto::getPlayers()
 
 	for(int i = 0; i < 2; i++)
 	{
-		es_read_int(fd, &seattmp);
-		if(seattmp != -1) es_read_string(fd, (char*)&players[i], 17);
+		ggz_read_int(fd, &seattmp);
+		if(seattmp != -1) ggz_read_string(fd, (char*)&players[i], 17);
 	}
 }
 
@@ -105,9 +107,9 @@ void KDotsProto::connect()
 
 void KDotsProto::sendMove(int x, int y, int direction)
 {
-	es_write_int(fd, direction);
-	es_write_char(fd, x);
-	es_write_char(fd, y);
+	ggz_write_int(fd, direction);
+	ggz_write_char(fd, x);
+	ggz_write_char(fd, y);
 
 	m_lastx = x;
 	m_lasty = y;
@@ -117,15 +119,15 @@ void KDotsProto::sendOptions(int wantwidth, int wantheight)
 {
 	width = wantwidth;
 	height = wantheight;
-	es_write_int(fd, sndoptions);
-	es_write_char(fd, width);
-	es_write_char(fd, height);
+	ggz_write_int(fd, sndoptions);
+	ggz_write_char(fd, width);
+	ggz_write_char(fd, height);
 }
 
 void KDotsProto::getOptions()
 {
-	es_read_char(fd, &width);
-	es_read_char(fd, &height);
+	ggz_read_char(fd, &width);
+	ggz_read_char(fd, &height);
 }
 
 int KDotsProto::getMove()
@@ -133,13 +135,13 @@ int KDotsProto::getMove()
 	char status;
 	char s, x, y;
 
-	es_read_char(fd, &status);
-	es_read_char(fd, &s);
+	ggz_read_char(fd, &status);
+	ggz_read_char(fd, &s);
 
 	for(int i = 0; i < s; i++)
 	{
-		es_read_char(fd, &x);
-		es_read_char(fd, &y);
+		ggz_read_char(fd, &x);
+		ggz_read_char(fd, &y);
 	}
 
 	return (int)status;
@@ -151,14 +153,14 @@ void KDotsProto::getOppMove(int direction)
 
 	if(state == stateopponent) state = statewait;
 
-	es_read_char(fd, &nx);
-	es_read_char(fd, &ny);
-	es_read_char(fd, &s);
+	ggz_read_char(fd, &nx);
+	ggz_read_char(fd, &ny);
+	ggz_read_char(fd, &s);
 
 	for(int i = 0; i < s; i++)
 	{
-		es_read_char(fd, &x);
-		es_read_char(fd, &y);
+		ggz_read_char(fd, &x);
+		ggz_read_char(fd, &y);
 	}
 
 	movex = nx;
