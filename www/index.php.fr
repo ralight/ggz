@@ -1,0 +1,56 @@
+<?php include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Le projet GGZ Gaming Zone</b><br>
+Service de jeu en ligne libre pour tout le monde.
+<!-- Free online gaming for everyone. Confirm translate -->
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Qu'est-ce que GGZ?<!--What is GGZ?--></i><br>
+GGZ (qui est un acronyme récursif pour GGZ Gaming Zone) a pour but de développer des jeux
+et des applications en raports avec ceux jeux pour jouer en ligne sur le principe de client/serveur.
+Classements de joueurs, spéctateurs des jeux, joueurs artificiels et un robot parleur <!-- Ouch --> font parti de ce projet.
+
+</td></tr>
+<tr><td valign="top">
+
+<a href="/docs.php">Lire quelques documentations</a><br>
+<a href="/screenshots/">Regarder quelques copies d'écrans</a>
+<br><br>
+
+<i>Télécharger la version courante</i><br>
+La version 0.0.9 de GGZ Gaming Zone est sortie le 17 Juillet 2004.<br/>
+<a href="/releases/0.0.9/release.php">Anonce de la sorite</a><br>
+<a href="/releases/0.0.9/download.php">Aller à la page de téléchargements</a><br>
+<a href="/releases/0.0.9/installation.php">Notes d'installation</a>
+
+</td><td valign="top">
+
+<a href="http://dev.ggzgamingzone.org/contribute.php"><img src="/pics/splash/helpout.png" border="0"></a>
+
+</td>
+</tr>
+</table>
+
+<b>Nouvelles</b><br>
+
+<?php include_once("site/newsparser.php"); ?>
+
+Lire les nouvelles plus anciennes <a href="news.php">archive</a>.
+<br>
+
+</font>
+</td>
+</tr>
+</table>
+
+<?php include_once("site/footer.php"); ?>
+

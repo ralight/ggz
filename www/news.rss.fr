@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN"
+ "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+<rss version="0.91">
+<channel>
+
+<title>Nouvelles GGZ</title>
+<link>http://www.ggzgamingzone.org/changes.rss</link>
+<description>Nouvelles GGZ</description>
+<language>fr-fr</language>
+
+<item>
+<title><i>17.10.2004: Ca avance!</i> (de josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+Le dévelopement a démarer le début de la prochaine version.
+Pour être informer des nouvelles fonctionnalitées, rejoignez-nous sur 
+notre liste de diffusion apellée ggz-dev
+</full>
+</item>
+
+<item>
+<title><i>16.07.2004: GGZ 0.0.9</i> (de josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+La version 0.0.9 de GGZ est officiellement sortie aujourd'hui.
+Regardez les liens suivant pour plus d'informations.
+</full>
+</item>
+
+<item>
+<title><i>07.04.2004: Changement de serveur</i> (de josef)</title>
+<link>http://www.ggzgamingzone.org/</link>
+<full>
+Le projet GGZ a changé d'hébergement, vers un nouveau fournissuer.
+Désolé pour le dérangement de ces derniers jours.
+</full>
+</item>
+
+</channel>
+</rss>
+
