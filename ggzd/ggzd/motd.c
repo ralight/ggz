@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 4731 2002-09-26 12:42:45Z dr_maux $
+ * $Id: motd.c 4742 2002-09-26 21:04:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -56,15 +56,16 @@
 typedef struct {
 	unsigned long startup_time;
 	int motd_lines;
-	char **motd_text;			/* cleanup() via ggz_free() */
+	char **motd_text;			/* cleanup() */
 	char *hostname;				/* cleanup() */
 	char *sysname;				/* cleanup() */
 	char *cputype;				/* cleanup() */
 	char *port;				/* cleanup() */
 } MOTDInfo;
 
-/* MOTD info */
-MOTDInfo motd_info = { motd_lines : 0,
+/* MOTD info - the fields are initialized to their starting values. */
+MOTDInfo motd_info = { startup_time : 0,
+		       motd_lines : 0,
 		       motd_text : NULL,
 		       hostname : NULL,
 		       sysname : NULL,
@@ -128,17 +129,21 @@ void motd_read_file(const char *file)
 
 	motd_cleanup();
 
+	/* Save the server startup time so we can calculate uptime later.
+	   But only do this once (in case we re-load the MOTD later) */
+	if (!motd_info.startup_time)
+		motd_info.startup_time = (unsigned long) time(NULL);
+
 	/* Check if we're even supposed to have a MOTD. */
 	if (!file) return;
-	if (!opt.conf_dir) return;
-
-	/* Save the server startup time so we can calculate uptime later */
-	motd_info.startup_time = (unsigned int) time(NULL);
 
 	/* If it's an absolute path already, we don't need to add conf_dir */
-	if(file[0] == '/')
+	if (file[0] == '/')
 		fullpath = ggz_strdup(file);
-	else {
+	else if (!opt.conf_dir) {
+		err_msg("motd_read_file: config directory unspecified");
+		return;
+	} else {
 		len = strlen(file) + strlen(opt.conf_dir) + 2;
 		fullpath = ggz_malloc(len);
 		snprintf(fullpath, len, "%s/%s", opt.conf_dir, file);
