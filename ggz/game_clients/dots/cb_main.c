@@ -4,8 +4,9 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Callback functions for the main Gtk window
+ * $Id: cb_main.c 3707 2002-03-28 08:01:35Z jdorje $
  *
- * Copyright (C) 2000, 2001 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +30,8 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 
+#include "dlg_exit.h"
+
 #include "cb_main.h"
 #include "dlg_main.h"
 #include "dlg_about.h"
@@ -41,17 +44,28 @@
 GtkWidget *dlg_pref = NULL;
 
 
-void
-on_mnu_exit_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+static void try_to_quit(void)
 {
+
 	/* In CHOOSE state, exiting means NO */
 	if(game.state == DOTS_STATE_CHOOSE)
 		handle_newgame(FALSE);
 
 	/* Are you sure? / Cleanup */
-	/* See also on_window_delete_event */
-	gtk_main_quit();
+	/* See also on_mnu_exit_activate */
+	if (game.state == DOTS_STATE_CHOOSE ||
+	    game.state == DOTS_STATE_INIT ||
+	    game.state == DOTS_STATE_WAIT)
+		gtk_main_quit();
+	else
+		ggz_show_exit_dialog(1);
+}
+
+void
+on_mnu_exit_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	try_to_quit();
 }
 
 
@@ -97,14 +111,8 @@ on_window_delete_event                 (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-	/* In CHOOSE state, exiting means NO */
-	if(game.state == DOTS_STATE_CHOOSE)
-		handle_newgame(FALSE);
-
-	/* Are you sure? / Cleanup */
-	/* See also on_mnu_exit_activate */
-	gtk_main_quit();
-	return FALSE;
+	try_to_quit();
+	return TRUE;
 }
 
 gboolean
