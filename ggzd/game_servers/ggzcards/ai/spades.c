@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2462 2001-09-12 08:56:34Z jdorje $
+ * $Id: spades.c 2463 2001-09-12 20:56:23Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -317,10 +317,9 @@ static int count_spade_tricks(player_t num)
 
 static int count_nonspade_tricks(player_t num, char suit)
 {
-
-	card_t ace = { ACE_HIGH, suit, 0 }, king = {
-	KING, suit, 0}, queen = {
-	QUEEN, suit, 0};
+	card_t ace = { ACE_HIGH, suit, 0 };
+	card_t king = { KING, suit, 0 };
+	card_t queen = { QUEEN, suit, 0 };
 	int has_ace = libai_is_card_in_hand(num, ace);
 	int has_king = libai_is_card_in_hand(num, king);
 	int has_queen = libai_is_card_in_hand(num, queen);
@@ -329,14 +328,22 @@ static int count_nonspade_tricks(player_t num, char suit)
 	/* This is a pretty "expert" system to count probable tricks in a
 	   non-spade suit.  It can easily be refined further. */
 
-	if (has_ace && has_king)
-		return 200;
-	if (has_ace && has_queen)
-		return 150;
-	if (has_king && has_queen)
+	if (has_ace) {
+		if (has_king)
+			return 200;
+		if (has_queen)
+			return 150;
 		return 100;
-	if (has_king && count > 1)
+
+	}
+
+	if (has_king) {
+		if (has_queen)
+			return 100;
+		if (count > 1)
+			return 75;
 		return 50;
+	}
 
 	return 0;
 }
