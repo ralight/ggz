@@ -33,7 +33,8 @@ CREATE TABLE matches (
     id serial NOT NULL,
     date bigint,
     game character varying(256),
-    winner character varying(256)
+    winner character varying(256),
+	savegame character varying(256)
 );
 
 CREATE TABLE matchplayers (
