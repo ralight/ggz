@@ -13,6 +13,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 /* Globals */
 int status = NET_NOOP;
@@ -149,9 +151,19 @@ void net_join(int room)
 int net_status()
 {
 	int ret;
+	int fd;
+	fd_set set;
 
-	if(ggzcore_server_data_is_pending(server))
-		ggzcore_server_read_data(server, ggzcore_server_get_fd(server));
+	/*if(ggzcore_server_data_is_pending(server))
+		ggzcore_server_read_data(server, ggzcore_server_get_fd(server));*/
+
+	fd = ggzcore_server_get_fd(server);
+
+	FD_ZERO(&set);
+	FD_SET(fd, &set);
+
+	ret = select(fd + 1, &set, NULL, NULL, NULL);
+	if(ret == 1) ggzcore_server_read_data(server, fd);
 
 	ret = status;
 	if(status == NET_GOTREADY) status = NET_NOOP;
