@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.c 6281 2004-11-06 03:58:52Z jdorje $
+ * $Id: tablelist.c 6738 2005-01-19 06:48:08Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -167,6 +167,7 @@ void update_table_list(void)
 		int avail, total;
 		const gchar *desc;
 		GGZTable *t = ggzcore_room_get_nth_table(room, i);
+		int id = ggzcore_table_get_id(t);
 
 		avail = (ggzcore_table_get_seat_count(t, GGZ_SEAT_OPEN)
 			 + ggzcore_table_get_seat_count(t, GGZ_SEAT_RESERVED));
@@ -180,7 +181,7 @@ void update_table_list(void)
 
 		gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter,
-				   TABLE_COLUMN_ID, i,
+				   TABLE_COLUMN_ID, id,
 				   TABLE_COLUMN_SEATS, seats,
 				   TABLE_COLUMN_DESC, desc,
 				   -1);
