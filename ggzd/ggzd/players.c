@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4522 2002-09-12 03:02:55Z jdorje $
+ * $Id: players.c 4523 2002-09-12 03:27:25Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -74,7 +74,7 @@ extern Options opt;
 
 
 /* Local functions for handling players */
-static int   player_transit(GGZPlayer* player, char opcode, int index);
+static int player_transit(GGZPlayer* player, GGZTransitType opcode, int index);
 static GGZPlayerHandlerStatus player_send_ping(GGZPlayer *player);
 static int player_get_time_since_ping(GGZPlayer *player);
 
@@ -658,7 +658,7 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 #endif
 
 
-static int player_transit(GGZPlayer* player, char opcode, int index)
+static int player_transit(GGZPlayer* player, GGZTransitType opcode, int index)
 {
 	struct GGZTableSeat seat;
 	struct GGZTableSpectator spectator;
