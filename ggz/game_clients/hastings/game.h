@@ -46,6 +46,7 @@
 /* Messages from client */
 #define HASTINGS_SND_MOVE     0
 #define HASTINGS_REQ_SYNC     1
+#define HASTINGS_REQ_INIT     2
 
 /* GGZ define */
 #define GGZ_SEAT_OPEN   -1
@@ -56,6 +57,7 @@
 #define STATE_SELECT     2
 #define STATE_MOVE       3
 #define STATE_DONE       4
+#define STATE_PREINIT    5
 
 /* Data structure for the Game */
 struct game_state_t {
@@ -64,7 +66,7 @@ struct game_state_t {
 	int num; /* current player */
 	int seats[8]; /* maximum 8 seats */
 	int parties[8]; /* black or white, bad or good */
-	int teams[8]; /* countries, earldoms */
+	int teams[8]; /* countries, earldoms, nations */
 	char knightnames[8][17]; /* player names */
 	char teamnames[8][17]; /* team names */
 
@@ -96,3 +98,6 @@ int get_gameover(void);
 /* Functions to send data to server */
 int send_options(void);
 int send_my_move(void);
+
+/* Requests */
+int request_sync(void);

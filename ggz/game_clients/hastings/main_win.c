@@ -23,68 +23,67 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+/* Configuration file */
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
+/* System includes */
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
 
+/* Gtk+ files */
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+/* Hastings files */
 #include <main_win.h>
 #include <game.h>
 #include <support.h>
 #include <dlg_about.h>
-/* READY: unit and map pixmaps
-#include <x.xpm>
-#include <o.xpm>
-*/
+
+/* Pixmap files */
 #include <newmanred.xpm>
 #include <newmangreen.xpm>
 #include <newmanblue.xpm>
 #include <newmanyellow.xpm>
-/*
-#include <mangreen.xpm>
-#include <manred.xpm>
-#include <manblue.xpm>
-#include <manyellow.xpm>
-*/
 #include <frame_ul.xpm>
 #include <frame_ur.xpm>
 #include <frame_ll.xpm>
 #include <frame_lr.xpm>
+#include <frame_black.xpm>
 #include <map.xpm>
 
-
-/* Pixmaps */
-/* READY: unit pictures */
-GdkPixmap* manred_pix;
-GdkPixmap* mangreen_pix;
-GdkPixmap* manblue_pix;
-GdkPixmap* manyellow_pix;
+/* Unit pictures */
+/* Red is 0, green is 1, blue is 2, yellow is 3 */
+GdkPixmap* man_pix[4];
 GdkPixmap* frame_ll_pix;
 GdkPixmap* frame_lr_pix;
 GdkPixmap* frame_ul_pix;
 GdkPixmap* frame_ur_pix;
-/* READY: map picture */
+GdkPixmap *frame_black_pix;
+
+/* Transparency mask */
+GdkGC* man_gc[4];
+GdkBitmap* man_mask[4];
+
+/* Map picture */
 GdkPixmap* map_pix;
-/*
-GdkPixmap* x_pix;
-GdkPixmap* o_pix;
-*/
+
+/* Buffer for the map */
 GdkPixmap* hastings_buf;
 
+/* Main window */
 GtkWidget *main_win;
 
 /* Global game variables */
 extern struct game_state_t game;
 
 
+/* Display the game's current status on status bar and console */
 void game_status( const char* format, ... )
 {
 	int id;
@@ -98,15 +97,18 @@ void game_status( const char* format, ... )
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
 
-	id = gtk_statusbar_get_context_id( GTK_STATUSBAR(tmp), "Main" );
+	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(tmp), "Main");
 
 	gtk_statusbar_pop(GTK_STATUSBAR(tmp), id);
 	gtk_statusbar_push(GTK_STATUSBAR(tmp), id, message);
 
-	g_free( message );
+	printf("STATUS: %s\n", message);
+
+	g_free(message);
 
 }
 
+/* Draw a frame around a knight */
 void highlight(int col, int row, int widgetstate)
 {
 	GtkStyle* style;
@@ -122,6 +124,7 @@ void highlight(int col, int row, int widgetstate)
 	gdk_draw_pixmap(hastings_buf, style->fg_gc[widgetstate], frame_lr_pix, 0, 0, offsetx + 11, offsety + 11, 5, 5);
 }
 
+/* Draw a single hexagon */
 void hexagon(GtkWidget *widget, int offsetx, int offsety)
 {
 	const int radius = 30;
@@ -143,64 +146,52 @@ void hexagon(GtkWidget *widget, int offsetx, int offsety)
 		offsetx + radx, offsety - rady, offsetx + radius, offsety);
 	gdk_draw_line(hastings_buf, widget->style->white_gc,
 		offsetx + radx, offsety + rady, offsetx + radius, offsety);
-
-/* READY: remove v+h lines?
-	gdk_draw_line(ttt_buf, widget->style->mid_gc[0],
-		offsetx - radx, offsety - rady, offsetx + radx, offsety - rady);
-	gdk_draw_line(ttt_buf, widget->style->mid_gc[0],
-		offsetx - radx, offsety + rady, offsetx + radx, offsety + rady);
-	gdk_draw_line(ttt_buf, widget->style->mid_gc[0],
-		offsetx - radx, offsety - rady, offsetx - radx, offsety + rady);
-	gdk_draw_line(ttt_buf, widget->style->mid_gc[0],
-		offsetx + radx, offsety - rady, offsetx + radx, offsety + rady);
-*/
-
 }
 
+/* Do all display works */
 void display_board(void)
 {
 	int i, j;
 	GtkWidget* tmp;
-	/* GdkPixmap* piece; */ /* ??? */
 	GtkStyle* style;
-	int offsetx, offsety; /* quick hack */
+	int offsetx, offsety;
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
 	style = gtk_widget_get_style(main_win);
 
-	gdk_draw_pixmap(hastings_buf, tmp->style->black_gc,
-		map_pix, 0, 0, 0, 0, 510, 510);
+	/* map background */
+	gdk_draw_pixmap(hastings_buf, tmp->style->black_gc, map_pix, 0, 0, 0, 0, 510, 510);
+
+	/* hexagons */
 	for(j = 0; j < 19; j++)
 		for(i = 0; i < 5 + j % 2; i++)
 			if (game.boardmap[i][j] != 32) hexagon(tmp, 75 - j % 2 * 45 + i * 90, 30 + j * 25);
 
+	/* knights */
 	for(j = 0; j < 19; j++)
 		for(i = 0; i < 5 + j % 2; i++)
 		{
 			offsetx = 75 - j % 2 * 45 + i * 90;
 			offsety = 30 + j * 25;
-			switch(game.board[i][j])
+
+			if(game.board[i][j] > -1)
 			{
-				case 1:
-				case 5:
+				/* draw mask */
+				gdk_gc_set_ts_origin(man_gc[game.board[i][j] % 4], offsetx - 16, offsety - 16);
+				gdk_gc_set_clip_origin(man_gc[game.board[i][j] % 4], offsetx - 16, offsety - 16);
+				gdk_gc_set_clip_mask(man_gc[game.board[i][j] % 4], man_mask[game.board[i][j] % 4]);
+				gdk_draw_rectangle(hastings_buf, man_gc[game.board[i][j] % 4], TRUE, offsetx - 16, offsety - 16, 32, 32);
+
+				/* which nation is the knight of? */
+				/*gdk_draw_pixmap(hastings_buf, style->fg_gc[GTK_WIDGET_STATE(tmp)],
+							man_pix[game.board[i][j] % 4], 0, 0, offsetx - 16, offsety - 16, 32, 32);*/
+
+				/* Black team */
+				if(game.board[i][j] % 4)
+				{
 					gdk_draw_pixmap(hastings_buf, style->fg_gc[GTK_WIDGET_STATE(tmp)],
-						manblue_pix, 0, 0, offsetx - 16, offsety - 16, 32, 32);
-				break;
-				case 2:
-				case 6:
-					gdk_draw_pixmap(hastings_buf, style->fg_gc[GTK_WIDGET_STATE(tmp)],
-						manyellow_pix, 0, 0, offsetx - 16, offsety - 16, 32, 32);
-				break;
-				case 3:
-				case 7:
-					gdk_draw_pixmap(hastings_buf, style->fg_gc[GTK_WIDGET_STATE(tmp)],
-						mangreen_pix, 0, 0, offsetx - 16, offsety - 16, 32, 32);
-				break;
-				case 4:
-				case 0:
-					gdk_draw_pixmap(hastings_buf, style->fg_gc[GTK_WIDGET_STATE(tmp)],
-						manred_pix, 0, 0, offsetx - 16, offsety - 16, 32, 32);
-				break;
+						frame_black_pix, 0, 0, offsetx + 10, offsety + 10, 5, 5);
+				}
 			}
 		}
 
@@ -208,63 +199,45 @@ void display_board(void)
 	if (game.state == STATE_MOVE)
 		highlight(game.move_src_x, game.move_src_y, GTK_WIDGET_STATE(tmp));
 
-/* SEMI-READY: own drawing routine
-	for (i = 0; i < 9; i++) {
-		if (game.board[i] == 'x')
-			piece = x_pix;
-		else if (game.board[i] == 'o')
-			piece = o_pix;
-		else
-			continue;
+	/*gdk_draw_pixmap(main_win->window, tmp->style->black_gc, hastings_buf, 0, 0, 0, 0, 510, 510);*/
 
-		x = (i % 3)*60 + 10 + 20;
-		y = (i / 3)*60 + 10 + 20;
-
-		gdk_draw_pixmap(ttt_buf, style->fg_gc[GTK_WIDGET_STATE(tmp)],
-				piece, 0, 0, x, y, 18, 20);
-	}
-
-*/
+	/* finally, draw it */
 	gtk_widget_draw(tmp, NULL);
 }
 
-
+/* Load pixmap files */
 void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 {
 	GtkStyle* style;
 	GdkBitmap* mask;
+	int i;
 
 	/* now for the pixmap from gdk */
 	style = gtk_widget_get_style(main_win);
 
-	manred_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)newmanred_xpm);
-	manblue_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)newmanblue_xpm);
-	mangreen_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)newmangreen_xpm);
-	manyellow_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)newmanyellow_xpm);
+	man_pix[0] = gdk_pixmap_create_from_xpm_d(main_win->window, &man_mask[0], &style->bg[GTK_STATE_NORMAL], (gchar**)newmanred_xpm);
+	man_pix[1] = gdk_pixmap_create_from_xpm_d(main_win->window, &man_mask[1], &style->bg[GTK_STATE_NORMAL], (gchar**)newmanblue_xpm);
+	man_pix[2] = gdk_pixmap_create_from_xpm_d(main_win->window, &man_mask[2], &style->bg[GTK_STATE_NORMAL], (gchar**)newmangreen_xpm);
+	man_pix[3] = gdk_pixmap_create_from_xpm_d(main_win->window, &man_mask[3], &style->bg[GTK_STATE_NORMAL], (gchar**)newmanyellow_xpm);
 
-	/*manblue_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)manblue);*/
-	/*mangreen_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)mangreen);*/
-	/*manred_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)manred);*/
-	/*manyellow_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)manyellow);*/
+	for(i = 0; i < 4; i++)
+	{
+		man_gc[i] = gdk_gc_new(main_win->window);
+		gdk_gc_set_fill(man_gc[i], GDK_TILED);
+		gdk_gc_set_tile(man_gc[i], man_pix[i]);
+	}
 
 	frame_ul_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_ul_xpm);
 	frame_ur_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_ur_xpm);
  	frame_ll_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_ll_xpm);
 	frame_lr_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_lr_xpm);
 
-	map_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)map_xpm);
-/* READY: own pixmaps
-	x_pix = gdk_pixmap_create_from_xpm_d( main_win->window, &mask,
-					      &style->bg[GTK_STATE_NORMAL],
-					      (gchar**)x );
+	frame_black_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_black_xpm);
 
-	o_pix = gdk_pixmap_create_from_xpm_d( main_win->window, &mask,
-					      &style->bg[GTK_STATE_NORMAL],
-					      (gchar**)o );
-*/
+	map_pix = gdk_pixmap_create_from_xpm_d(main_win->window, &mask, &style->bg[GTK_STATE_NORMAL], (gchar**)map_xpm);
 }
 
-
+/* Quit the game */
 gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 	/* FIXME: should call an "are you sure dialog" */
@@ -273,30 +246,32 @@ gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 	return FALSE;
 }
 
-
+/* Resyncing... */
 void game_resync(GtkMenuItem *menuitem, gpointer user_data)
 {
-	/* TODO: do sth here? */
-	printf("DEBUG: resyncing!!!\n");
+	request_sync();
 }
 
-
+/* Leave the game */
 void game_exit(GtkMenuItem *menuitem, gpointer user_data)
 {
 	/* FIXME: should call an "are you sure dialog" */
 	gtk_main_quit();
 }
 
-
+/* Display the about dialog, crediting me all over... */
 void game_about(GtkMenuItem *menuitem, gpointer user_data)
 {
 
 	static GtkWidget *dlg_about = NULL;
 
-	if(dlg_about != NULL) {
+	if(dlg_about != NULL)
+	{
 		gdk_window_show(dlg_about->window);
 		gdk_window_raise(dlg_about->window);
-	} else {
+	}
+	else
+	{
 		dlg_about = create_dlg_about();
 		gtk_signal_connect(GTK_OBJECT(dlg_about),
 				   "destroy",
@@ -306,12 +281,13 @@ void game_about(GtkMenuItem *menuitem, gpointer user_data)
 	}
 }
 
+/* Draw the screen? Unsure */
 gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event,
 			  gpointer user_data)
 {
-	if (hastings_buf)
-		gdk_pixmap_unref(hastings_buf);
-	else {
+	if (hastings_buf) gdk_pixmap_unref(hastings_buf);
+	else
+	{
 		hastings_buf = gdk_pixmap_new(widget->window,
 					  widget->allocation.width,
 					  widget->allocation.height,
@@ -322,34 +298,11 @@ gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event,
 				    0, 0,
 				    widget->allocation.width,
 				    widget->allocation.height);
-
-/* READY: hexagons
-		gdk_draw_line(ttt_buf,
-			      widget->style->white_gc,
-			      70, 10,
-			      70, 190);
-
-		gdk_draw_line(ttt_buf,
-			      widget->style->white_gc,
-			      130, 10,
-			      130, 190);
-
-		gdk_draw_line(ttt_buf,
-			      widget->style->white_gc,
-			      10, 70,
-			      190, 70);
-
-		gdk_draw_line(ttt_buf,
-			      widget->style->white_gc,
-			      10, 130,
-			      190, 130);
-
-*/
 	}
 	return TRUE;
 }
 
-
+/* Unsure */
 gboolean expose_handle(GtkWidget *widget, GdkEventExpose  *event,
 		       gpointer user_data)
 {
@@ -363,30 +316,35 @@ gboolean expose_handle(GtkWidget *widget, GdkEventExpose  *event,
 	return FALSE;
 }
 
-
+/* Evaluate user mouse click on the field */
 gboolean get_move(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
-/* READY: complete rewrite */
 	int x = (int)(event->x);
 	int y = (int)(event->y);
 	int col;
 	int row;
 
+	/* Determine whether player is allowed to play */
+	if ((game.state != STATE_SELECT) && (game.state != STATE_MOVE))
+	{
+		game_status(_("Not my turn yet"));
+		return TRUE;
+	}
+
 	/* determine hex-field from coordinates */
  	col = x / 15;
 	row = ((y - 5) / 50) * 2;
-	if(col % 3 != 0) {
+	if(col % 3 != 0)
+	{
 		col = col / 3;
 		if(col % 2 == 0) row = ((y + 20) / 50) * 2 - 1;
 		col = col / 2;
 	}
 
-	if ((game.state != STATE_SELECT) && (game.state != STATE_MOVE)) {
-		game_status(_("Not my turn yet"));
-		return TRUE;
-	}
-
-	if (event->button == 1 && hastings_buf != NULL) {
+	/* Left mouse button pressed on a valid context */
+	if (event->button == 1 && hastings_buf != NULL)
+	{
+		/* Step 1: Click on a guy to select him ... */
 		if(game.state == STATE_SELECT)
 		{
 			game.move_src_x = col;
@@ -411,6 +369,7 @@ gboolean get_move(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 			display_board();
 			game_status(_("Where shall I go?"));
 		}
+		/* Step 2: ... an send him to heaven or hell. */
 		else
 		{
  			game.move_dst_x = col;
@@ -421,7 +380,7 @@ gboolean get_move(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 	return TRUE;
 }
 
-
+/* Gtk+ stuff: set up the window */
 GtkWidget*
 create_main_win (void)
 {
