@@ -274,7 +274,7 @@ int ggzcore_room_launch_table(GGZRoom *room, GGZTable *table)
 
 int ggzcore_room_join_table(GGZRoom *room, const unsigned int num)
 {
-	if (room && room->server && num < room->num_tables)
+	if (room && room->server)
 		return _ggzcore_room_join_table(room, num);
 	else
 		return -1;
@@ -750,6 +750,11 @@ void _ggzcore_room_set_table_launch_status(struct _GGZRoom *room, int status)
 		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
 				    "Bad option");
 		break;
+
+	default:
+		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
+				    "Unknown launch failure");
+		break;
 	}
 }
 					   
@@ -782,6 +787,17 @@ void _ggzcore_room_set_table_join_status(struct _GGZRoom *room, int status)
 		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
 				    "Bad option");
 		break;
+
+	case E_NO_TABLE:
+		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
+				    "No such table");
+		break;
+
+	default:
+		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
+				    "Unknown join failure");
+		break;
+
 	}
 }
 
@@ -799,8 +815,18 @@ void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room, int status)
 		_ggzcore_room_event(room, GGZ_TABLE_LEAVE_FAIL,
 				    "Not at a table");
 		break;
-	}
 
+	case E_NO_TABLE:
+		_ggzcore_room_event(room, GGZ_TABLE_LEAVE_FAIL,
+				    "No such table");
+		break;
+
+	default:
+		_ggzcore_room_event(room, GGZ_TABLE_LEAVE_FAIL,
+				    "Unknown launch failure");
+		break;
+
+	}
 }
 					  
 
