@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 4240 2002-06-09 18:59:16Z jdorje $
+ * $Id: hearts.c 4400 2002-09-03 17:26:05Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -38,17 +38,20 @@
 
 #include "hearts.h"
 
+#define MIN_HEARTS_PLAYERS 3
+#define MAX_HEARTS_PLAYERS 6
+
 #define GHEARTS ( *(hearts_game_t *)(game.specific) )
 typedef struct hearts_game_t {
-	int points_on_hand[10];	/* the points each player has taken this
-				   hand.  Works for up to 10 players. */
+	/* the points each player has taken this hand. */
+	int points_on_hand[MAX_HEARTS_PLAYERS];
 
 	/* options */
-	int jack_diamonds;	/* is the jack-of-diamonds rule in effect? */
-	int no_blood;		/* no blood on the first trick */
+	bool jack_diamonds;	/* is the jack-of-diamonds rule in effect? */
+	bool no_blood;		/* no blood on the first trick */
 	int num_decks;		/* the number of decks to use */
 
-	int jack_winner;	/* who has won the jack of diamonds this
+	player_t jack_winner;	/* who has won the jack of diamonds this
 				   hand? */
 	char lead_card_face;	/* the card that leads first.  It's a club.
 				   Two-deck issues aren't dealt with. */
@@ -103,7 +106,8 @@ game_data_t hearts_data = {
 
 static bool hearts_is_valid_game(void)
 {
-	return (game.num_players >= 3 && game.num_players <= 6);
+	return game.num_players >= MIN_HEARTS_PLAYERS
+	       && game.num_players <= MAX_HEARTS_PLAYERS;
 }
 
 static void hearts_init_game(void)
@@ -117,8 +121,6 @@ static void hearts_init_game(void)
 
 	game.trump = -1;	/* no trump in hearts */
 	game.target_score = 100;
-
-	GHEARTS.no_blood = 1;
 }
 
 static void hearts_get_options(void)
@@ -126,14 +128,14 @@ static void hearts_get_options(void)
 	add_option("jack_diamonds",
 	           "The jack of diamonds rule is that whoever wins the jack "
 	           "of diamonds gets -10 points.",
-	           1, 0, "Use the jack of diamonds rule");
+	           1, FALSE, "Use the jack of diamonds rule");
 	add_option("no_blood",
 	           "If selected, nobody will be allowed to play point cards "
 	           "on the first trick.",
-	           1, 1, "No blood on the first trick");
+	           1, TRUE, "No blood on the first trick");
 	add_option("num_decks",
 	           "How many decks should be used?",
-	           1, 0, "Play with two decks");
+	           1, FALSE, "Play with two decks");
 	add_option("target_score",
 	           "How many points until the game is over?",
 	           5,
@@ -353,6 +355,8 @@ static char *hearts_verify_play(player_t p, card_t card)
 	     || (card.suit == SPADES && card.face == QUEEN))) {
 		int i;
 		card_t c;
+
+		/* Check to make sure they have a non-point card. */
 		for (i = 0; i < game.seats[s].hand.hand_size;
 		     i++) {
 			c = game.seats[s].hand.cards[i];
@@ -370,14 +374,18 @@ static char *hearts_verify_play(player_t p, card_t card)
 static void hearts_end_trick(void)
 {
 	player_t p;
+
 	game_end_trick();
+
 	for (p = 0; p < game.num_players; p++) {
 		card_t card = game.seats[game.players[p].seat].table;
 		int points = 0;
+
 		if (card.suit == HEARTS)
 			points = 1;
 		if (card.suit == SPADES && card.face == QUEEN)
 			points = 13;
+
 		/* as an optional rule, the Jack of Diamonds is worth -10 */
 		if (GHEARTS.jack_diamonds && card.suit == DIAMONDS
 		    && card.face == JACK)
@@ -387,7 +395,7 @@ static void hearts_end_trick(void)
 			/* in hearts, it's not really "trump broken" but
 			   rather "points broken". However, it works about
 			   the same way. */
-			game.trump_broken = 1;
+			game.trump_broken = TRUE;
 		}
 		GHEARTS.points_on_hand[game.winner] += points;
 	}
