@@ -20,6 +20,15 @@ function hex_decode($s)
 	return $ret;
 }
 
+if (($input_user) && ($input_email)) :
+	$res = pg_exec($id, "SELECT * FROM users WHERE handle = '$input_user' AND email = '$input_email'");
+	if (($res) && (pg_numrows($res) == 1)) :
+		$pass = pg_result($res, 0, "password");
+		mail($input_email, "GGZ Rankings: Your password",
+			"The password for the user $input_user is $pass.");
+	endif;
+endif;
+
 if (($input_user) && ($input_pass)) :
 	$md5pass = $input_pass;
 
@@ -27,7 +36,7 @@ if (($input_user) && ($input_pass)) :
 	if (($res) && (pg_numrows($res) == 1)) :
 		if (!$register) :
 			// login success
-			setcookie("ggzuser", "$input_user");
+			setcookie("ggzuser", "$md5pass");
 		else :
 			// registration failed
 		endif;

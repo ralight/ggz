@@ -73,7 +73,7 @@ function stats_statistics($id)
 function stats_live($host)
 {
 
-	$f = fsockopen($host, "8080", $errno, $errstr, 10);
+	$f = @fsockopen($host, "8080", $errno, $errstr, 10);
 	if ($f) :
 		echo "The following people are currently playing games on $host:<br>\n";
 

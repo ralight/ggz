@@ -10,12 +10,26 @@ GGZ Gaming Zone Ranking System
 <?php
 
 require_once(".htconf");
+
+$id = @pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass");
+
+if (($id) && ($ggzuser)) :
+	$res = pg_exec($id, "SELECT * FROM users WHERE password = '$ggzuser'");
+	if (($res) && (pg_numrows($res) == 1)) :
+		$ggzuser = pg_result($res, 0, "handle");
+	else :
+		unset($ggzuser);
+	endif;
+endif;
+
 include("top.php");
 
-$id = pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass");
-
-if (!$register) :
-	include("general.php");
+if ($id) :
+	if ((!$register) && (!$lostpw)) :
+		include("general.php");
+	endif;
+else :
+	echo "Access to the database is currently not possible.";
 endif;
 
 ?>

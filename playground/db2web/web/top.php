@@ -23,32 +23,45 @@ else :
 	if (!$register) :
 		echo " - <a href='index.php?register=1'>Register</a>";
 	endif;
+	if (!$lostpw) :
+		echo " - <a href='index.php?lostpw=1'>Lost password</a>";
+	endif;
 	echo ".\n";
 endif;
 echo "<br>\n";
 
 echo "<map name='mymap'>";
 echo "<table border=0 cellspacing=0 cellpadding=2><tr>\n";
-if (!$register) :
-	echo "<td bgcolor='#00c000'>\n";
-else :
+if ($register) :
 	echo "<td bgcolor='#ccc000'>\n";
-endif;
-if (!$register) :
-	echo "<form action='account.php' method='POST'>\n";
+elseif ($lostpw) :
+	echo "<td bgcolor='#ccc000'>\n";
 else :
+	echo "<td bgcolor='#00c000'>\n";
+endif;
+if ($register) :
 	echo "<form action='account.php?register=1' method='POST'>\n";
+elseif ($lostpw) :
+	echo "<form action='account.php?lostpw=1' method='POST'>\n";
+else :
+	echo "<form action='account.php' method='POST'>\n";
 endif;
 echo "<font color='#000000' size=2>\n";
 if (!$ggzuser) :
 	echo "Username: <input type='text' name='input_user' size=8>\n";
-	echo "Password: <input type='password' name='input_pass' size=8>\n";
+	if (!$lostpw) :
+		echo "Password: <input type='password' name='input_pass' size=8>\n";
+	endif;
 	if ($register) :
 		echo "Realname: <input type='text' name='input_realname' size=8>\n";
+	endif;
+	if (($register) || ($lostpw)) :
 		echo "Email: <input type='text' name='input_email' size=8>\n";
 	endif;
 	if ($register) :
 		echo "&nbsp;<input type='submit' value='Register'>\n";
+	elseif ($lostpw) :
+		echo "&nbsp;<input type='submit' value='Resend'>\n";
 	else :
 		echo "&nbsp;<input type='submit' value='Login'>\n";
 	endif;

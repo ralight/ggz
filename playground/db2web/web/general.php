@@ -182,7 +182,7 @@ if ($photo) :
 	echo "<img src='$photo' width='100'>\n";
 	echo "<br clear='all'>\n";
 else :
-	echo "Photo: none found\n";
+	echo "Photo: none found<br>\n";
 endif;
 echo "Real name: $realname<br>\n";
 echo "Email address: $email<br>\n";
