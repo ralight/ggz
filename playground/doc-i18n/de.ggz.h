@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: de.ggz.h 6967 2005-03-10 11:13:33Z josef $
+ * $Id: de.ggz.h 6968 2005-03-10 12:25:34Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -902,157 +902,161 @@ void ggz_xmlelement_free(GGZXMLElement *element);
 
 
 /**
- * @defgroup debug Debug/error logging
+ * @defgroup debug Logfunktionen für Debug- und Fehlermeldungen
  * 
- * Functions for debugging and error messages
+ * Funktionen für Debug- und Fehlermeldungen.
  * @{
  */
 
-/** @brief What memory checks should we do?
+/** @brief Welche Prüfungen sollen durchgeführt werden?
  *
  *  @see ggz_debug_cleanup
  */
 typedef enum {
-	GGZ_CHECK_NONE = 0x00, /**< No checks. */
-	GGZ_CHECK_MEM = 0x01   /**< Memory (leak) checks. */
+	GGZ_CHECK_NONE = 0x00, /**< Keine Prüfungen. */
+	GGZ_CHECK_MEM = 0x01   /**< Speicher-(leck-)prüfungen. */
 } GGZCheckType;
 
-/** @brief A callback function to handle debugging output.
+/** @brief Callback-Funktion zur Verarbeitung von Debugausgaben.
  *
- *  A function of this type can be registered as a callback handler to handle
- *  debugging output, rather than having the output go to stderr or to a file.
- *  If this is done, each line of output will be sent directly to this function
- *  (no trailing newline will be appended).
+ *  Eine Funktion diesen Typs kann als Callback-Verarbeitung registriert werden,
+ *  um Debugmeldungen zu verarbeiten, anstelle der normalerweise erfolgenden
+ *  Ausgabe nach stderr oder in eine Datei.
+ *  Wenn sie verwendet wird, wird jede Zeile an Ausgabetext direkt an diese
+ *  Funktion gesendet werden, ohne das Anfügen von Zeilenendenmarkierungen.
  *
  *  @see ggz_debug_set_func
- *  @param priority The priority of the log, i.e. LOG_DEBUG; see syslog().
- *  @param msg The debugging output message.
+ *  @param priority Die Priorität der Meldung, z.B. LOG_DEBUG; siehe syslog()
+ *  @param msg Die Debug-Ausgabemeldung
  *  @note If your program is threaded, this function must be threadsafe.
  */
 typedef void (*GGZDebugHandlerFunc)(int priority, const char *msg);
 
 /**
- * @brief Initialize and configure debugging for the program.
+ * @brief Initialisierung und Konfiguration der Debugmeldungen für das Programm.
  * 
- * This should be called early in the program to set up the debugging routines.
- * @param types A null-terminated list of arbitrary string debugging "types".
- * @param file A file to write debugging output to, or NULL for none.
+ * Dies sollte frühzeitig im Programm aufgerufen werden, um Debugroutinen einzurichten.
+ * @param types Nullterminierte Liste von beliebigen Zeichenketten mit Debugtypen
+ * @param file Datei zur Ausgabe der Debugmeldungen, oder NULL für keine Datei
  * @see ggz_debug
  */
 void ggz_debug_init(const char **types, const char* file);
 
-/** @brief Set the debug handler function.
+/** @brief Setzen der Debug-Verarbeitungsfunktion.
  *
- *  Call this function to register a debug handler function.  NULL can
- *  be passed to disable the debug handler.  If set, the debug handler
- *  function will be called to handle debugging output, overriding any
- *  file that had previously been specified.
+ *  Der Aufruf dieser Funktion registriert eine Verarbeitungsfunktion für
+ *  Debugmeldungen. Wird NULL übergeben, wird die Verarbeitung ausgeschaltet.
+ *  Wird hingegen eine Funktion übergeben, so wird diese aufgerufen,
+ *  um Debug-Meldungen zu verarbeiten, und ersetzt damit eventuell vorher
+ *  eingestellte Ausgabedateien.
  *
- *  @param func The new debug handler function.
- *  @return The previous debug handler function.
- *  @note This function is not threadsafe (re-entrant).
+ *  @param func Die neue Funktion zur Verarbeitung von Debug-Meldungen
+ *  @return Die vorherige Verarbeitungsfunktion
+ *  @note Diese Funktion ist nicht thread-sicher (re-entrant).
  */
 GGZDebugHandlerFunc ggz_debug_set_func(GGZDebugHandlerFunc func);
 
 /**
- * @brief Enable a specific type of debugging.
+ * @brief Ermöglicht Debug-Meldungen eines speziellen Typs.
  *
- * Any ggz_debug calls that use that type will then be logged.
- * @param type The "type" of debugging to enable.
+ * Jeder Aufruf von ggz_debug(), der diesen Typ enhält, wird dann mitprotokolliert.
+ * @param type Der Debug-Typ, welcher ermöglicht werden soll
  * @see ggz_debug
  */
 void ggz_debug_enable(const char *type);
 
 /**
- * @brief Disable a specific type of debugging.
+ * @brief Schaltet Debug-Meldungen eines speziellen Typs ab.
  *
- * Any ggz_debug calls that use the given type of debugging will then not be
- * logged.
- * @param type The "type" of debugging to disable.
+ * Aufrufe von ggz_debug(), welche den angegebenen Debug-Typ enthalten, werden
+ * anschließend nicht mehr protokolliert.
+ * @param type Der abzuschaltende Debug-Typ
  * @see ggz_debug
  */
 void ggz_debug_disable(const char *type);
 
 /**
- * @brief Log a debugging message.
+ * @brief Protokollierung einer Debug-Meldung.
  *
- * This function takes a debugging "type" as well as a printf-style list of
- * arguments.  It assembles the debugging message (printf-style) and logs it
- * if the given type of debugging is enabled.
- * @param type The "type" of debugging (similar to a loglevel).
- * @param fmt A printf-style format string
+ * Diese Funktion nimmt als Argumente einen Debug-Typ sowie eine printf-artige
+ * Liste von Argumenten. Daraus baut sie die Debug-Meldung zusammen und
+ * protokolliert sie, wenn der jeweilige Debug-Typ eingeschalten ist.
+ * @param type Der Debug-Typ der Meldung (ähnlich einem Logniveau)
+ * @param fmt Eine printf-artige Formatzeichenkette
  * @see ggz_debug_enable, ggz_debug_disable
  */
 void ggz_debug(const char *type, const char *fmt, ...)
                ggz__attribute((format(printf, 2, 3)));
 
-/** @brief Log a notice message.
+/** @brief Protokollierung einer Hinweis-Meldung.
  *
- *  This function is nearly identical to ggz_debug, except that if the
- *  debugging output ends up passed to the debug handler function,
- *  the priority will be LOG_NOTICE instead of LOG_DEBUG.  This is only
- *  of interest to a few programs.
- *  @param type The "type" of debugging (similar to a loglevel).
- *  @param fmt A printf-style format string
+ *  Diese Funktion ist nahezu identisch mit ggz_debug(), außer dass
+ *  im Falle einer Übergabe der Meldung an die Debug-Verarbeitungsfunktion
+ *  die Priorität auf LOG_NOTICE statt auf LOG_DEBUG gesetzt wird.
+ *  Dies ist nur für wenige Anwendungsfälle notwendig.
+ *  @param type Der Debug-Typ (ähnlich einem Logniveau)
+ *  @param fmt Eine printf-artige Formatzeichenkette
  *  @see ggz_debug, ggz_debug_set_func
  */
 void ggz_log(const char *type, const char *fmt, ...)
              ggz__attribute((format(printf, 2, 3)));
 
 /**
- * @brief Log a syscall error.
+ * @brief Protokollierung eines Fehlers während eines Systemaufrufes.
  *
- * This logs an error message in a similar manner to ggz_debug's debug
- * logging.  However, the logging is done regardless of whether
- * debugging is enabled or what debugging types are set.  errno and
- * strerror are also used to create a more useful message.
- * @param fmt A printf-style format string
+ * Protokolliert eine Fehlermeldung ähnlich wie die Debug-Meldungen von
+ * ggz_debug(). Die Protokollierung erfolgt aber unabhängig davon,
+ * ob Debugmeldungen erlaubt sind oder welche Debug-Typen eingeschaltet sind.
+ * Die Variablen errno und strerror werden ebenfalls verwendet, um die
+ * Nützlichkeit der Meldung zu erhöhen.
+ * @param fmt Eine printf-artige Formatzeichenkette
  * @see ggz_debug
  */
 void ggz_error_sys(const char *fmt, ...)
                    ggz__attribute((format(printf, 1, 2)));
 
 /**
- * @brief Log a fatal syscall error.
+ * @brief Protokollierung eines schwerwiegenden Fehlers eines Systemaufrufes.
  *
- * This logs an error message just like ggz_error_sys, and also
- * exits the program.
- * @param fmt A printf-style format string
+ * Diese Funktion protokolliert eine Meldung genauso wie ggz_error_sys(),
+ * beendet aber zusätzlich anschließend das Programm.
+ * @param fmt Eine printf-artige Formatzeichenkette
  */
 void ggz_error_sys_exit(const char *fmt, ...)
                         ggz__attribute((format(printf, 1, 2)))
                         ggz__attribute((noreturn));
 
 /**
- * @brief Log an error message.
+ * @brief Protokollierung einer Fehlermeldung.
  *
- * This logs an error message in a similar manner to ggz_debug's debug
- * logging.  However, the logging is done regardless of whether
- * debugging is enabled or what debugging types are set.
- * @param fmt A printf-style format string
- * @note This is equivalent to ggz_debug(NULL, ...) with debugging enabled.
+ * Protokolliert eine Fehlermeldung ähnlich wie die Debug-Meldungen von
+ * ggz_debug(). Die Protokollierung erfolgt aber unabhängig davon,
+ * ob Debugmeldungen erlaubt sind oder welche Debug-Typen eingeschaltet sind.
+ * @param fmt Eine printf-artige Formatzeichenkette
+ * @note Dies ist äquivalent zu ggz_debug(NULL, ...) ohne eingeschaltete Debug-Typen.
  */
 void ggz_error_msg(const char *fmt, ...)
                    ggz__attribute((format(printf, 1, 2)));
 
 /**
- * @brief Log a fatal error message.
+ * @brief Protokollierung einer schwerwiegenden Fehlermeldung.
  *
- * This logs an error message just like ggz_error_msg, and also
- * exits the program.
- * @param fmt A printf-style format string
+ * Diese Funktion protokolliert eine Meldung genauso wie ggz_error_msg(),
+ * beendet aber zusätzlich anschließend das Programm.
+ * @param fmt Eine printf-artige Formatzeichenkette
  */
 void ggz_error_msg_exit(const char *fmt, ...)
                         ggz__attribute((format(printf, 1, 2)))
                         ggz__attribute((noreturn));
 
 /**
- * @brief Cleans up debugging state and prepares for exit.
+ * @brief Aufräumen der Debug-Einrichtungen und Vorbereitung auf das Programmende.
  *
- * This function should be called right before the program exits.  It cleans
- * up all of the debugging state data, including writing out the memory check
- * data (if enabled) and closing the debugging file (if enabled).
- * @param check A mask of things to check.
+ * Diese Funktion sollte direkt vor dem Beenden eines Programmes aufgerufen werden.
+ * Sie säubert sämtliche Debug-Zustandsdaten, schreibt (falls konfiguriert)
+ * Daten der Prüfungen auf Speicherzugriffsverletzungen, und schließt eventuell
+ * offene Debug-Ausgabedateien.
+ * @param check Maske von durchzuführenden Prüfungen
  */
 void ggz_debug_cleanup(GGZCheckType check);
 
@@ -1060,87 +1064,90 @@ void ggz_debug_cleanup(GGZCheckType check);
 
 
 /**
- * @defgroup misc Miscellaneous convenience functions
+ * @defgroup misc Verschiedene komfortable Funktionen
  *
  * @{
  */
 
 /**
- * Escape XML characters in a text string.
- * @param str The string to encode
- * @return A pointer to a dynamically allocated string with XML characters
- * replaced with ampersand tags, or NULL on error.
- * @note The dyanmic memory is allocated using ggz_malloc() and the caller is
- * expected to later free this memory using ggz_free().  If the original string
- * did not contain any characters which required escaping a ggz_strdup() copy
- * is returned.
+ * Maskierung von XML-Zeichen in einer Textzeichenkette.
+ * @param str Zu kodierende Zeichenkette
+ * @return Pointer zu einer dynamisch allokierten Zeichenkette, deren XML-Zeichen
+ * durch Kaufmannsund-Zeichen ersetzt worden sind, oder NULL im Fehlerfall
+ * @note Der dynamische Speicherbereich wird mit Hilfe von ggz_malloc() allokiert,
+ * und der Aufrufer sollte später ggz_free() verwenden, um ihn wieder freizugeben.
+ * Wenn die ursprüngliche Zeichenkette keine Zeichen enthielt, welche maskiert
+ * werden müssen, wird eine Kopie mit Hilfe von ggz_strdup() zurückgeliefert.
  */
 char * ggz_xml_escape(const char *str);
 
 /**
- * Restore escaped XML characters into a text string.
- * @param str The string to decode
- * @return A pointer to a dynamically allocated string with XML ampersand tags
- * replaced with their normal ASCII characters, or NULL on error.
- * @note The dyanmic memory is allocated using ggz_malloc() and the caller is
- * expected to later free this memory using ggz_free().  If the original string
- * did not contain any characters which required decoding, a ggz_strdup() copy
- * is returned.
+ * Wiederherstellung von XML-Zeichen in einer Textzeichenkette.
+ * @param str Zu enkodierende Zeichenkette
+ * @return Pointer zu einer dynamisch allokierten Zeichenkette, der maskierte
+ * XML-Zeichen durch die normalen ASCII-Zeichen ersetzt worden sind, oder NULL
+ * im Fehlerfall
+ * @note Der dynamische Speicherbereich wird mit Hilfe von ggz_malloc() allokiert,
+ * und der Aufrufer sollte später ggz_free() verwenden, um ihn wieder freizugeben.
+ * Wenn die ursprüngliche Zeichenkette keine Zeichen enthielt, welche unmaskiert
+ * werden müssen, wird eine Kopie mit Hilfe von ggz_strdup() zurückgeliefert.
  */
 char * ggz_xml_unescape(const char *str);
 
-/** @brief Structure used internally by ggz_read_line()
+/** @brief Struktur, die intern von ggz_read_line() verwendet wird.
  */
 typedef struct _GGZFile GGZFile;
 
 /**
- * Setup a file structure to use with ggz_read_line()
- * @param fdes A preopened integer file descriptor to read from
- * @return A pointer to a dynamically allocated GGZFile structure
- * @note The user MUST have  opened the requested file for reading before
- * using this function.  When finished using ggz_read_line, the user should
- * cleanup this struct using ggz_free_file_struct().
+ * Erstellung einer Dateistruktur zur Benutzung mit ggz_read_line().
+ * @param fdes Ein bereits geöffneter Dateideskriptor, von welchem gelesen werden soll
+ * @return Pointer zu einer dynamisch allokierten ::GGZFile-Struktur
+ * @note Der Nutzer MUSS die Datei vor der Benutzung dieser Funktion
+ * für den Lesezugriff geöffnet haben. Nach der Verwendung von ggz_read_line()
+ * sollte diese Struktur mit Hilfe von ggz_free_file_struct() wieder freigegeben werden.
  */
 GGZFile * ggz_get_file_struct(int fdes);
 
 /**
- * Read a line of arbitrary length from a file
- * @param file A GGZFile structure allocated via ggz_get_file_struct()
- * @return A NULL terminated line from the file of arbitrary length or
- * NULL at end of file.
- * @note The dyanmic memory is allocated using ggz_malloc() and the caller is
- * expected to later free this memory using ggz_free().
+ * Einlesen einer Zeile beliebiger Länge von einer Datei.
+ * @param file Eine ::GGZFile-Struktur, die mit ggz_get_file_struct() angelegt wurde
+ * @return Nullterminierte Zeile beliebiger Länge oder NULL am Dateiende
+ * @note Der dynamische Speicherbereich wird mit Hilfe von ggz_malloc() allokiert,
+ * und der Aufrufer sollte später ggz_free() verwenden, um ihn wieder freizugeben.
  */
 char * ggz_read_line(GGZFile *file);
 
 /**
- * Deallocate a file structure allocated via ggz_get_file_struct()
- * @param file A GGZFile structure allocated via ggz_get_file_struct()
- * @note The caller is expected to close the I/O file before or after
- * freeing the file structure.
+ * Freigabe einer mit Hilfe von ggz_get_file_struct() angelegten Dateistruktur.
+ * @param file Eine ::GGZFile-Struktur, die mit ggz_get_file_struct() angelegt wurde
+ * @note Der Aufrufer sollte neben der Freigabe der Struktur auch die zugehörige
+ * Datei schließen.
  */
 void ggz_free_file_struct(GGZFile *file);
 
 
 /**
- * String comparison function that is safe with NULLs
- * @param s1 First string to compare
- * @param s2 Second string to compare
- * @return An integer less than, equal to, or greater than zero if s1
- * is found, respectively, to be less than, to match, or be greater
- * than s2.  NULL in considered to be less than any non-NULL string
- * and equal to itself */
+ * Zeichenkettenvergleichsfunktion, die auch mit NULL-Werten umgehen kann.
+ * @param s1 Erste Zeichenkette für den Vergleich
+ * @param s2 Zweite Zeichenkette für den Vergleich
+ * @return Ganzzahl, welche entweder kleiner, gleich oder größer Null ist,
+ * je nachdem ob s1 kleiner, gleich oder größer als s2 ist
+ * @note NULL wird kleiner als alle Nicht-NULL-Zeichenketten eingestuft,
+ * und gleich zu sich selbst.
+ */
 int ggz_strcmp(const char *s1, const char *s2);
 
 
-/** @brief Case-insensitive string comparison function that is safe with NULLs
- *  The function returns an integer less than, equal to, or greater than
- *  zero if s1 is found, respectively, to be less than, to match, or be greater
- *  than s2.  NULL in considered to be less than any non-NULL string
- *  and equal to itself
- *  @param s1 First string to compare
- *  @param s2 Second string to compare
- *  @return The comparison value.
+/** Zeichenkettenvergleichsfunktion, die auch mit NULL-Werten umgehen kann,
+ *  ohne Beachtung der Groß- und Kleinschreibung.
+ *  Diese Funktion liefert eine Ganzzahl zurück, welche entweder kleiner,
+ *  gleich oder größer Null ist, je nachdem ob s1 kleiner, gleich oder
+ *  größer als s2 ist.
+ *  @param s1 Erste Zeichenkette für den Vergleich
+ *  @param s2 Zweite Zeichenkette für den Vergleich
+ *  @return Ganzzahl als Vergleichswert
+ *  @note NULL wird kleiner als alle Nicht-NULL-Zeichenketten eingestuft,
+ *  und gleich zu sich selbst.
  */
 int ggz_strcasecmp(const char *s1, const char *s2);
  
