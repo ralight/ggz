@@ -41,7 +41,7 @@ static int game_send_players(void);
 static int game_send_bid(char bid);
 static int game_send_play(char card);
 static int game_send_sync(int num);
-static int game_send_gameover(char winner);
+static int game_send_gameover(void);
 static void game_play(void);
 static int game_req_bid(void);
 static int game_req_play(void);
@@ -133,6 +133,11 @@ int game_handle_player(int num)
 			if((status = game_receive_trump(num)) == 0)
 				game_update(LP_EVENT_TRUMP, NULL);
 			break;
+		/*case LP_REQ_NEWGAME:
+			if(game.state == LP_STATE_DONE)
+				game_start_newgame();
+			status = 0;
+			break;*/
 		default:
 			/* Unrecognized opcode */
 			status = -1;
@@ -251,10 +256,23 @@ static int game_send_sync(int num)
 	
 
 /* Send out game-over message */
-static int game_send_gameover(char winner)
+static int game_send_gameover(void)
 {
-	int i, fd;
-	
+	int i, fd, hi_score;
+	int status = 0;
+	char winner = -1;
+
+	hi_score = -9999;
+	for(i=0; i<4; i++) {
+		if(game.score[i] == 0) {
+			winner = i;
+			hi_score = 9999;
+		} else if(game.score[i] > hi_score) {
+			winner = i;
+			hi_score = game.score[i];
+		}
+	}
+
 	for(i=0; i<4; i++) {
 		if((fd = ggz_seats[i].fd) == -1)
 			continue;
@@ -263,9 +281,10 @@ static int game_send_gameover(char winner)
 
 		if(es_write_int(fd, LP_MSG_GAMEOVER) < 0
 		    || es_write_char(fd, winner) < 0)
-			return -1;
+			status = -1;
 	}
-	return 0;
+
+	return status;
 }
 
 
@@ -278,6 +297,10 @@ static void game_play(void)
 		case LP_STATE_NEW_HAND:
 			if(game_generate_next_hand() < 0)
 				return;
+			if(game.state == LP_STATE_DONE) {
+				game_send_gameover();
+				return;
+			}
 			game.bid_now = (game.dealer + 1) % 4;
 			game.bid_count = 0;
 			game.bid_total = 0;
@@ -576,6 +599,12 @@ static int card_count[] = { 1, 1, 1, 1,
 static int game_generate_next_hand(void)
 {
 	int p, result=0;
+
+	/* Test for end of game */
+	if(game.hand_num == 29) {
+		game.state = LP_STATE_DONE;
+		return 0;
+	}
 
 	/* First, shuffle and deal a hand */
 	cards_shuffle_deck(GGZ_DECK_LAPOCHA);
