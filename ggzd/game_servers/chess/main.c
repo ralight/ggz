@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Main loop
- * $Id: main.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: main.c 6748 2005-01-20 00:23:37Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -46,7 +46,7 @@ int main(void)
 
   /* Init the game info */
   game_info.ggz = ggz;
-  game_info.clock_type = -1;
+  game_info.clock_type = CHESS_CLOCK_UNSET;
   game_info.seconds[0] = -1;
   game_info.seconds[1] = -1;
   game_info.state = CHESS_STATE_INIT;

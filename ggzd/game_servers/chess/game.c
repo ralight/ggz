@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 6747 2005-01-19 23:53:16Z jdorje $
+ * $Id: game.c 6748 2005-01-20 00:23:37Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -173,12 +173,12 @@ static int game_update(int event_id, void *data)
         /* Congratulations: You are the host! */
         game_info.host = *(int *)data;
         game_request_time(*(int *)data);
-      } else if (game_info.clock_type >= 0) {
+      } else if (game_info.clock_type != CHESS_CLOCK_UNSET) {
         /* We already have set the time */
         game_send_time(*(int *)data);
       }
       /* Should we start the game? */
-      if (game_info.clock_type >= 0 && seats_full())
+      if (game_info.clock_type != CHESS_CLOCK_UNSET && seats_full())
         game_update(CHESS_EVENT_START, NULL);
       break;
     case CHESS_EVENT_TIME:
@@ -200,7 +200,7 @@ static int game_update(int event_id, void *data)
       if (ggzdmod_get_seat(game_info.ggz, 1).type == GGZ_SEAT_PLAYER)
         game_send_time(1);
       /* Should we start the game? */
-      if (game_info.clock_type >= 0 && seats_full())
+      if (game_info.clock_type != CHESS_CLOCK_UNSET && seats_full())
         game_update(CHESS_EVENT_START, NULL);
       break;
     case CHESS_EVENT_START:
