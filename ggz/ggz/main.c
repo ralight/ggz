@@ -17,12 +17,12 @@
 
 
 Options opt;
+GtkWidget *main_win;
 
 int
 main (int argc, char *argv[])
 {
   GtkWidget *dlg_login;
-  GtkWidget *main_win;
 
   parse_args(argc, argv);
 

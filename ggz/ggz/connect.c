@@ -44,14 +44,16 @@
 /* Global state of game variable */
 extern Options opt;
 extern GtkWidget* detail_window;
+extern GtkWidget* main_win;
 
 /* Various local handles */
 static guint sock_handle;
-
 static void connect_msg( const char *, ... );
+static void add_user_list( gchar *name, gint *table);
 static int anon_login( void );
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
 
+GtkWidget* tmp;
 
 #ifdef DEBUG
 char* user_msg[18] = { "MSG_SERVER_ID", 
@@ -112,9 +114,9 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
   char *message;
   int op, size, status;
   char byte;
-  int checksum;
+  int checksum, ibyte;
   char buf[4096];
-
+  int count, i;
 
   if (opt.playing) {
 	  size = read(source, buf, 4096);
@@ -128,12 +130,11 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
   }
 
   CheckReadInt(source, (int*)&op);
-  connect_msg("Recv: %s\n", user_msg[op]);
   
   switch (op) {
   case MSG_SERVER_ID:
 	  CheckReadString( source, &message );
-	  connect_msg("Recv: %s\n", message);
+	  connect_msg("[MSG_SERVER_ID] %s\n", message);
 	  switch (opt.login_type) {
 	  case 0: /*Normal login */
 	  case 2: /*First time login */
@@ -144,19 +145,19 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 	  
   case RSP_ANON_LOGIN:
 	  read(source, &byte, 1);
-	  connect_msg("Recv: %d\n", byte);
+	  connect_msg("[RSP_ANON_LOGIN] %d\n", byte);
 	  if (byte < 0) {
 		  Disconnect(NULL, NULL);
 		  return;
 	  }
 	  CheckReadInt(source, &checksum );
-	  connect_msg("Recv: %d\n", checksum);
-	  
+	  connect_msg("[RSP_ANON_LOGIN] Checksum = %d\n", checksum);
+	  CheckWriteInt(opt.sock, REQ_USER_LIST);  
 	  break;
 	  
   case RSP_LAUNCH_GAME:
 	  read(source, &byte, 1);
-	  connect_msg("Recv: %d\n", byte);
+	  connect_msg("[RSP_LAUNCH_GAME] %d\n", byte);
 	  if (byte < 0) {
 		  Disconnect(NULL, NULL);
 		  return;
@@ -166,7 +167,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 	  
   case RSP_JOIN_GAME:
 	  read(source, &byte, 1);
-	  connect_msg("Recv: %d\n", byte);
+	  connect_msg("[RSP_JOIN_GAME] %d\n", byte);
 	  if (byte < 0) {
 		  Disconnect(NULL, NULL);
 		  return;
@@ -176,20 +177,37 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond) {
 	  
   case RSP_LOGOUT:
 	  read(source, &byte, 1);
-	  connect_msg("Recv: %d\n", byte);
+	  connect_msg("[RSP_LOGOUT] %d\n", byte);
 	  Disconnect(NULL,NULL);
 	  break;
 	  
   case RSP_GAME_TYPES:
+	  connect_msg("[RSP_GAME_TYPES] %d\n", byte);
 	  break;
   case RSP_TABLE_LIST:
+	  connect_msg("[RSP_TABLE_LIST] %d\n", byte);
 	  break;
   case RSP_USER_LIST:
+	  tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),"player_list"));
+	  gtk_clist_clear (GTK_CLIST (tmp));
+	  CheckReadInt(source, &ibyte );
+	  count=ibyte;
+	  connect_msg("[RSP_USER_LIST] User List Count %d\n", count);
+	  for (i=1;i<=count;i++){
+		  CheckReadString( source, &message );
+		  connect_msg("[RSP_USER_LIST] User %s\n", message);
+		  CheckReadInt(source, &ibyte );
+		  connect_msg("[RSP_USER_LIST] Table %i\n", ibyte);
+		  add_user_list(message, ibyte);
+	  }
 	  break;
 	  
   case MSG_SERVER_FULL:
   case RSP_NEW_LOGIN:
   case RSP_LOGIN:
+	  connect_msg("[RSP_LOGIN] %d\n", byte);
+	  CheckWriteInt(opt.sock, REQ_USER_LIST);  
+	  break;
   case RSP_MOTD:
   case RSP_PREF_CHANGE:
   case RSP_REMOVE_USER:
@@ -206,7 +224,6 @@ void connect_msg( const char* format, ... ) {
 
   va_list ap;
   char* message;
-  GtkWidget* tmp;
   
   if (detail_window == NULL)
     return;
@@ -221,6 +238,27 @@ void connect_msg( const char* format, ... ) {
   g_free( message );
 
   
+}
+
+
+void add_user_list( gchar *name, gint *table) {
+
+  gchar *entry[2];
+
+  if (main_win == NULL)
+    return;
+
+  tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),"player_list"));
+
+  entry[0] = name;
+  if (table == 0){
+    entry[1] = "none";
+  }else{
+    entry[1] = (gchar)table;
+  }
+
+  gtk_clist_append (GTK_CLIST (tmp), entry);
+
 }
 
 
