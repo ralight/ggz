@@ -1,0 +1,8 @@
+<section id = "server-to-module"><title>Messages from server to game module</title>
+  <para>Messages from server to game module</para>
+</section>
+
+<section id = "module-to-server"><title>Messages from game module to the server</title>
+  <para>Messages from game module to the server</para>
+</section>
+
