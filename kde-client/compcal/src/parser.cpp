@@ -1,7 +1,7 @@
 //
 //    Competition Calendar
 //
-//    Copyright (C) 2002 Josef Spillner <dr_maux@users.sourceforge.net>
+//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -28,15 +28,17 @@
 #include <qstring.h>
 #include <qdom.h>
 
-#include <stdio.h>
-
 Parser::Parser(const char *file)
 {
 	int ret = parse(file);
-	printf("ret: %i\n", ret);
 
 	m_series = NULL;
 
+	if(ret == normal) buildTree();
+}
+
+void Parser::buildTree()
+{
 	for(unsigned int j = 0; j < m_eventgrouplist.count(); j++)
 	{
 		Eventgroup *eventgroup = m_eventgrouplist.at(j);

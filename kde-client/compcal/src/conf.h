@@ -17,33 +17,33 @@
 //    along with this program; if not, write to the Free Software
 //    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#include <kapplication.h>
-#include <klocale.h>
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
-#include "toplevel.h"
+#ifndef COMPCAL_CONF_H
+#define COMPCAL_CONF_H
 
-int main(int argc, char **argv)
+#include <kdialogbase.h>
+
+class QLineEdit;
+class QListBox;
+
+class Conf : public KDialogBase
 {
-	Toplevel *top;
-	KAboutData *about;
+	Q_OBJECT
+	public:
+		Conf(QWidget *parent = NULL, const char *name = NULL);
+		~Conf();
 
-	about = new KAboutData("compcal",
-		I18N_NOOP("Competition Calendar"),
-		"0.2",
-		I18N_NOOP("Online game scheduling system"),
-		KAboutData::License_GPL,
-		"Copyright (C) 2002, 2003 Josef Spillner",
-		I18N_NOOP("Manages GGZ Gaming Zone tournaments and challenges"),
-		"http://ggz.sourceforge.net/",
-		"josef@ggzgamingzone.org");
-	about->addAuthor("Josef Spillner", I18N_NOOP("Developer"), "josef@ggzgamingzone.org");
+		void load();
+		void save();
 
-	KCmdLineArgs::init(argc, argv, about);
+	public slots:
+		void slotAccept();
+		void slotAdd();
+		void slotRemove();
 
-	KApplication a;
-	top = new Toplevel();
-	a.setMainWidget(top);
-	return a.exec();
-}
+	private:
+		QLineEdit *line;
+		QListBox *resources;
+};
+
+#endif
 

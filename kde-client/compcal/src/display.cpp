@@ -1,7 +1,7 @@
 //
 //    Competition Calendar
 //
-//    Copyright (C) 2002 Josef Spillner <dr_maux@users.sourceforge.net>
+//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -52,7 +52,6 @@ Eventdisplay::Eventdisplay(QWidget *parent, const char *name)
 
 	image = new QFrame(this);
 	image->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-	//image->setBackgroundPixmap(QPixmap("logo.png"));
 	image->setFixedSize(128, 128);
 
 	title = new QLabel("", this);
@@ -64,7 +63,6 @@ Eventdisplay::Eventdisplay(QWidget *parent, const char *name)
 
 	logo = new QWidget(this);
 	logo->setFixedSize(64, 64);
-	//logo->setBackgroundPixmap(QPixmap("tictactoe.png"));
 
 	vbox = new QVBoxLayout(this, 5);
 	hbox2 = new QHBoxLayout(vbox, 5);

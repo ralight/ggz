@@ -1,7 +1,7 @@
 //
 //    Competition Calendar
 //
-//    Copyright (C) 2002 Josef Spillner <dr_maux@users.sourceforge.net>
+//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 #include "toplevel.h"
 #include "app.h"
+#include "conf.h"
 
 #include <kmenubar.h>
 #include <kpopupmenu.h>
@@ -33,6 +34,7 @@ Toplevel::Toplevel()
 	setCentralWidget(m_app);
 
 	menu_file = new KPopupMenu(this);
+	menu_file->insertItem(i18n("Configure"), menuconfigure);
 	menu_file->insertItem(i18n("Update events"), menuupdate);
 	menu_file->insertItem(i18n("Quit"), menuquit);
 
@@ -58,6 +60,9 @@ void Toplevel::slotMenu(int id)
 {
 	switch(id)
 	{
+		case menuconfigure:
+			configure();
+			break;
 		case menuupdate:
 			m_app->fetch();
 			break;
@@ -70,6 +75,17 @@ void Toplevel::slotMenu(int id)
 		case menuquit:
 			close();
 			break;
+	}
+}
+
+void Toplevel::configure()
+{
+	int ret;
+
+	Conf c(this);
+	ret = c.exec();
+	if(ret == QDialog::Accepted)
+	{
 	}
 }
 

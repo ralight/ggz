@@ -1,7 +1,7 @@
 //
 //    Competition Calendar
 //
-//    Copyright (C) 2002 Josef Spillner <dr_maux@users.sourceforge.net>
+//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -49,6 +49,8 @@ class Parser
 		int parseEventgroup(QDomNode *pnode);
 		int parseEvent(QDomNode *pnode);
 		int parseParticipants(QDomNode *pnode);
+
+		void buildTree();
 
 		QPtrList<Series> m_serieslist;
 		QPtrList<Eventgroup> m_eventgrouplist;

@@ -1,7 +1,7 @@
 //
 //    Competition Calendar
 //
-//    Copyright (C) 2002 Josef Spillner <dr_maux@users.sourceforge.net>
+//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
 #include "eventgroup.h"
 #include "event.h"
 
+#include <kapplication.h>
+#include <kconfig.h>
 #include <klocale.h>
 #include <klistview.h>
 #include <kmessagebox.h>
@@ -44,8 +46,6 @@
 App::App(QWidget *parent, const char *name)
 : QSplitter(Qt::Horizontal, parent, name)
 {
-	QHBoxLayout *hbox;
-
 	m_view = sorted;
 	p = NULL;
 
@@ -56,13 +56,8 @@ App::App(QWidget *parent, const char *name)
 
 	m_display = new Eventdisplay(this);
 
-	hbox = new QHBoxLayout(this, 5);
-	hbox->add(m_list);
-	hbox->add(m_display);
-
 	connect(m_list, SIGNAL(clicked(QListViewItem*)), SLOT(slotEvent(QListViewItem*)));
 
-	//load();
 	fetch();
 }
 
@@ -73,30 +68,46 @@ App::~App()
 void App::fetch()
 {
 	QString src, dst;
+	KConfig *conf;
+	QStringList list;
+	QStringList::iterator it;
 
 	if(p)
 	{
 		delete p;
 		p = NULL;
+		load(true);
 	}
 
-	src = "http://mindx.dyndns.org/ggz/calendar/calendar.xml";
+	conf = kapp->config();
+	conf->setGroup("resources");
 
-	if(KIO::NetAccess::download(src, dst))
+	list = conf->readListEntry("resources");
+
+	for(it = list.begin(); it != list.end(); it++)
 	{
-		p = new Parser(dst.latin1());
-		load();
+		src = (*it);
+
+		if(KIO::NetAccess::download(src, dst))
+		{
+			p = new Parser(dst.latin1());
+			if(!p->series())
+			{
+				KMessageBox::error(this, i18n("Could not parse list."), i18n("Parse error"));
+			}
+			else load(false);
+		}
+		else KMessageBox::error(this, i18n("Could not fetch event list."), i18n("Fetch error"));
 	}
-	else KMessageBox::error(this, i18n("Could not fetch event list."), i18n("Fetch error"));
 }
 
 void App::view(int mode)
 {
 	m_view = mode;
-	load();
+	load(true);
 }
 
-void App::load()
+void App::load(bool destructive)
 {
 	QListViewItem *tmp = NULL, *tmp2 = NULL, *tmp3 = NULL;
 	KStandardDirs d;
@@ -109,9 +120,9 @@ void App::load()
 	icontheme = "hicolor";
 #endif
 
-	if(!p) return;
+	if(destructive) m_list->clear();
 
-	m_list->clear();
+	if(!p) return;
 
 	s = p->series();
 	if(s)

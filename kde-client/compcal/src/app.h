@@ -1,7 +1,7 @@
 //
 //    Competition Calendar
 //
-//    Copyright (C) 2002 Josef Spillner <dr_maux@users.sourceforge.net>
+//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ class App : public QSplitter
 		App(QWidget *parent = NULL, const char *name = NULL);
 		~App();
 		void view(int mode);
-		void load();
+		void load(bool destructive);
 		void fetch();
 
 		enum Modes
