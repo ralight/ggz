@@ -142,6 +142,9 @@ void game_init_game()
 
 	cards_create_deck(game.which_game);
 
+	/* default value */
+	game.max_hand_length = 52 / game.num_players;
+
 	/* second round of game-specific initialization */
 	switch (game.which_game) {
 		case GGZ_GAME_SUARO:
@@ -192,7 +195,6 @@ void game_init_game()
 			 * longest possible bid: "redouble" = 9 */
 			game.max_bid_choices = 37;
 			game.max_bid_length = 9;
-			game.max_hand_length = 13;
 			game.name = "Bridge";
 
 			/* TODO: for now we won't use bridge scoring */
@@ -209,9 +211,8 @@ void game_init_game()
 			 * longest possible bid: "Nil" = length 4 */
 			game.max_bid_choices = 15;
 			game.max_bid_length = 4;
-			game.max_hand_length = 13;
 			game.must_break_trump = 1;	/* in spades, you can't lead trump until it's broken */
-			game.target_score = 500;	
+			game.target_score = 500;	/* adjustable by options */	
 			GSPADES.nil_value = 100;
 			game.trump = SPADES;
 			game.name = "Spades";
@@ -227,7 +228,6 @@ void game_init_game()
 			/* hearts has no bidding */
 			game.max_bid_choices = 0;
 			game.max_bid_length = 0;
-			game.max_hand_length = 13;
 			game.target_score = 100;
 			game.name = "Hearts";
 			break;
