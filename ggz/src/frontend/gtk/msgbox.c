@@ -1,3 +1,4 @@
+
 /*
  * File: msgbox.c
  * Author: Justin Zaun
@@ -28,8 +29,7 @@
 
 static MBReturn mb_status;
 
-/* TODO  - Make Icon backgrounds transparent
- * TODO  - Make the icon take up less toom on the left of the dialog
+/* TODO  - Make the icon take up less toom on the left of the dialog
  */
 
 
@@ -90,7 +90,7 @@ static char *stop[] = {
 "- c #00000000ff00",
 ". c #ff000000ff00",
 "/ c #0000ff00ff00",
-"0 c #ff00ff00ff00",
+"0 c None",
 /* pixels */
 "                                ",
 "00000000000000000000000000000000",
@@ -134,7 +134,7 @@ static char *info[] = {
 /* colors */
 "` c black",
 "a c cyan",
-"b c white",
+"b c None",
 "c c slate grey",
 /* pixels */
 "bbbbbbbbbbbbbbbaaaabbbbbbbbbbbbb",
