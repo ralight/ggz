@@ -1,6 +1,7 @@
 <?php
 
 include_once("player.php");
+include_once("match.php");
 
 function stats_players($lookup)
 {
@@ -220,38 +221,24 @@ global $database;
 
 function stats_match($lookup)
 {
-global $database;
 	if (!$lookup) return;
 
-	$res = $database->exec("SELECT * FROM matches WHERE id = '$lookup'");
-	$game = $database->result($res, $i, "game");
-	$date = $database->result($res, $i, "date");
-	$winner = $database->result($res, $i, "winner");
+	$match = new Match($lookup);
+	if(!$match->game) :
+		echo "No statistics found for $lookup.<br>\n";
+		return;
+	endif;
 
-	$date = date("d.m.Y", $date);
-
-	echo "Match game type: $game<br>\n";
-	echo "Date: $date<br>\n";
-	echo "Winner: $winner<br>\n";
+	echo "Match game type: $match->game<br>\n";
+	echo "Date: $match->date<br>\n";
+	echo "Winner: $match->winner<br>\n";
 	echo "<br>\n";
 
-	if ($database->numrows($res) == 0) :
-		echo "No statistics found for $lookup.<br>\n";
-	else :
-		echo "Participants:<br>\n";
-		$res = $database->exec("SELECT * FROM matchplayers WHERE match = '$lookup'");
-		for ($i = 0; $i < $database->numrows($res); $i++)
-		{
-			$handle = $database->result($res, $i, "handle");
-			$playertype = $database->result($res, $i, "playertype");
-
-			if ($playertype == "registered") :
-				echo "<a href='/db/players/?lookup=$handle'>$handle ($playertype)</a><br>\n";
-			else :
-				echo "<span class='linklike'>$handle ($playertype)</span><br>\n";
-			endif;
-		}
-	endif;
+	echo "Participants:<br>\n";
+	foreach ($match->playertypes as $handle => $playertype)
+	{
+		echo $match->link($handle), "<br>";
+	}
 }
 
 function stats_tournament($lookup)
