@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 6573 2005-01-01 22:36:30Z josef $
+ * $Id: playerlist.c 6727 2005-01-18 16:35:50Z josef $
  * 
  * List of players in the current room
  * 
@@ -201,7 +201,7 @@ void clear_player_list(void)
 
 #define LAG_CATEGORIES 6
 gboolean pixmaps_initted = FALSE;
-GdkPixbuf *lag[LAG_CATEGORIES], *guest, *registered, *admin;
+GdkPixbuf *lag[LAG_CATEGORIES], *guest, *registered, *admin, *bot;
 
 void update_player_list(void)
 {
@@ -236,6 +236,7 @@ void update_player_list(void)
 		guest = load_pixbuf("ggz_gtk_guest");
 		registered = load_pixbuf("ggz_gtk_registered");
 		admin = load_pixbuf("ggz_gtk_admin");
+		bot = load_pixbuf("ggz_gtk_bot");
 		pixmaps_initted = TRUE;
 	}
 
@@ -310,6 +311,9 @@ void update_player_list(void)
 					   PLAYER_COLUMN_TYPE, admin, -1);
 			break;
 		case GGZ_PLAYER_BOT:
+			gtk_list_store_set(store, &iter,
+					   PLAYER_COLUMN_TYPE, bot, -1);
+			break;
 		case GGZ_PLAYER_UNKNOWN:
 			pixmap = mask = NULL;
 			break;
