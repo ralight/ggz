@@ -3,7 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: gametype.c 4941 2002-10-17 23:56:16Z jdorje $
+ * $Id: gametype.c 5174 2002-11-03 19:37:36Z jdorje $
  *
  * This file contains functions for hadiling games
  *
@@ -38,7 +38,7 @@
 
 /* Publicly exported functions */
 
-char* ggzcore_gametype_get_name(GGZGameType *type)
+const char * ggzcore_gametype_get_name(GGZGameType *type)
 {
 	if (!type)
 		return NULL;
@@ -47,7 +47,7 @@ char* ggzcore_gametype_get_name(GGZGameType *type)
 }
 
 
-char* ggzcore_gametype_get_author(GGZGameType *type)
+const char * ggzcore_gametype_get_author(GGZGameType *type)
 {
 	if (!type)
 		return NULL;
@@ -55,7 +55,7 @@ char* ggzcore_gametype_get_author(GGZGameType *type)
 	return _ggzcore_gametype_get_author(type);
 }
 
-char*  ggzcore_gametype_get_prot_engine(GGZGameType *type)
+const char * ggzcore_gametype_get_prot_engine(GGZGameType *type)
 {
 	if (!type)
 		return NULL;
@@ -64,7 +64,7 @@ char*  ggzcore_gametype_get_prot_engine(GGZGameType *type)
 }
 
 
-char*  ggzcore_gametype_get_prot_version(GGZGameType *type)
+const char * ggzcore_gametype_get_prot_version(GGZGameType *type)
 {
 	if (!type)
 		return NULL;
@@ -73,7 +73,7 @@ char*  ggzcore_gametype_get_prot_version(GGZGameType *type)
 }
 
 
-char*  ggzcore_gametype_get_version(GGZGameType *type)
+const char * ggzcore_gametype_get_version(GGZGameType *type)
 {
 	if (!type)
 		return NULL;
@@ -82,7 +82,7 @@ char*  ggzcore_gametype_get_version(GGZGameType *type)
 }
 
 
-char* ggzcore_gametype_get_url(GGZGameType *type)
+const char * ggzcore_gametype_get_url(GGZGameType *type)
 {
 	if (!type)
 		return NULL;
@@ -91,7 +91,7 @@ char* ggzcore_gametype_get_url(GGZGameType *type)
 }
 
 
-char* ggzcore_gametype_get_desc(GGZGameType *type)
+const char * ggzcore_gametype_get_desc(GGZGameType *type)
 {
 	if (!type)
 		return NULL;
@@ -214,43 +214,43 @@ unsigned int _ggzcore_gametype_get_id(struct _GGZGameType *type)
 }
 
 
-char*  _ggzcore_gametype_get_name(struct _GGZGameType *type)
+const char *  _ggzcore_gametype_get_name(struct _GGZGameType *type)
 {
 	return type->name;
 }
 
 
-char*  _ggzcore_gametype_get_prot_engine(struct _GGZGameType *type)
+const char * _ggzcore_gametype_get_prot_engine(struct _GGZGameType *type)
 {
 	return type->prot_engine;
 }
 
 
-char*  _ggzcore_gametype_get_prot_version(struct _GGZGameType *type)
+const char * _ggzcore_gametype_get_prot_version(struct _GGZGameType *type)
 {
 	return type->prot_version;
 }
 
 
-char*  _ggzcore_gametype_get_version(struct _GGZGameType *type)
+const char * _ggzcore_gametype_get_version(struct _GGZGameType *type)
 {
 	return type->version;
 }
 
 
-char*  _ggzcore_gametype_get_author(struct _GGZGameType *type)
+const char * _ggzcore_gametype_get_author(struct _GGZGameType *type)
 {
 	return type->author;
 }
 
 
-char*  _ggzcore_gametype_get_url(struct _GGZGameType *type)
+const char * _ggzcore_gametype_get_url(struct _GGZGameType *type)
 {
 	return type->url;
 }
 
 
-char*  _ggzcore_gametype_get_desc(struct _GGZGameType *type)
+const char * _ggzcore_gametype_get_desc(struct _GGZGameType *type)
 {
 	return type->desc;
 }

@@ -3,7 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: gametype.h 4508 2002-09-11 03:48:41Z jdorje $
+ * $Id: gametype.h 5174 2002-11-03 19:37:36Z jdorje $
  *
  * This file contains functions for handling game types
  *
@@ -89,19 +89,19 @@ void _ggzcore_gametype_free(struct _GGZGameType *type);
 
 unsigned int _ggzcore_gametype_get_id(struct _GGZGameType *type);
 
-char*  _ggzcore_gametype_get_name(struct _GGZGameType *type);
+const char * _ggzcore_gametype_get_name(struct _GGZGameType *type);
 
-char*  _ggzcore_gametype_get_version(struct _GGZGameType *type);
+const char * _ggzcore_gametype_get_version(struct _GGZGameType *type);
 
-char*  _ggzcore_gametype_get_prot_engine(struct _GGZGameType *type);
+const char * _ggzcore_gametype_get_prot_engine(struct _GGZGameType *type);
 
-char*  _ggzcore_gametype_get_prot_version(struct _GGZGameType *type);
+const char * _ggzcore_gametype_get_prot_version(struct _GGZGameType *type);
 
-char*  _ggzcore_gametype_get_author(struct _GGZGameType *type);
+const char * _ggzcore_gametype_get_author(struct _GGZGameType *type);
 
-char*  _ggzcore_gametype_get_url(struct _GGZGameType *type);
+const char * _ggzcore_gametype_get_url(struct _GGZGameType *type);
 
-char*  _ggzcore_gametype_get_desc(struct _GGZGameType *type);
+const char * _ggzcore_gametype_get_desc(struct _GGZGameType *type);
 
 /* Return the maximum number of allowed players/bots */
 unsigned int _ggzcore_gametype_get_max_players(struct _GGZGameType *type);

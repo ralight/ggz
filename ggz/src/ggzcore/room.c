@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 5130 2002-11-01 05:15:57Z jdorje $
+ * $Id: room.c 5174 2002-11-03 19:37:36Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -673,7 +673,8 @@ void _ggzcore_room_remove_table(struct _GGZRoom *room, const unsigned int id)
 }
 
 
-void _ggzcore_room_player_set_table(struct _GGZRoom *room, char *name, int table)
+void _ggzcore_room_player_set_table(struct _GGZRoom *room,
+				    const char * name, int table)
 {
 	struct _GGZPlayer *player;
 

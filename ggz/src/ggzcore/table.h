@@ -42,7 +42,7 @@ struct _GGZSeat {
 
 	/* Player's name; or NULL if none.  An empty spectator seat
 	   will have no name. */
-	char *name;
+	const char *name;
 };
 
 
@@ -59,7 +59,7 @@ struct _GGZTable {
 	struct _GGZGameType *gametype;
 
 	/* Table description */
-	char *desc;        
+	const char * desc;        
 
         /* Table state */
         GGZTableState state;
@@ -114,7 +114,7 @@ void _ggzcore_table_set_spectator_seat(struct _GGZTable *table,
 struct _GGZRoom*      _ggzcore_table_get_room(struct _GGZTable *table);
 int                   _ggzcore_table_get_id(struct _GGZTable *table);
 struct _GGZGameType*  _ggzcore_table_get_type(struct _GGZTable *table);
-char*                 _ggzcore_table_get_desc(struct _GGZTable *table);
+const char * _ggzcore_table_get_desc(struct _GGZTable *table);
 GGZTableState         _ggzcore_table_get_state(struct _GGZTable *table);
 int _ggzcore_table_get_num_seats(GGZTable *table);
 int _ggzcore_table_get_num_spectator_seats(GGZTable *table);
@@ -124,7 +124,8 @@ struct _GGZSeat* _ggzcore_table_get_nth_seat(GGZTable *table,
 					     const unsigned int num);
 struct _GGZSeat* _ggzcore_table_get_nth_spectator_seat(GGZTable *table,
 						       const unsigned int num);
-char* _ggzcore_table_get_nth_player_name(struct _GGZTable *table, const unsigned int num);
+const char * _ggzcore_table_get_nth_player_name(struct _GGZTable *table,
+						const unsigned int num);
 GGZSeatType _ggzcore_table_get_nth_player_type(struct _GGZTable *table, const unsigned int num);
 const char *_ggzcore_table_get_nth_spectator_name(GGZTable *table,
 						  const unsigned int num);

@@ -3,7 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: table.c 4945 2002-10-18 06:23:14Z jdorje $
+ * $Id: table.c 5174 2002-11-03 19:37:36Z jdorje $
  *
  * This fils contains functions for handling tables
  *
@@ -56,7 +56,7 @@ GGZTable* ggzcore_table_new(void)
 
 int ggzcore_table_init(GGZTable *table,
 		       GGZGameType *gametype,
-		       char *desc,
+		       const char *desc,
 		       const unsigned int num_seats)
 {
 	if (table && gametype) {
@@ -80,7 +80,7 @@ void ggzcore_table_free(GGZTable *table)
 int ggzcore_table_set_seat(GGZTable *table,
 			   const unsigned int index,
 			   GGZSeatType type,
-			   char *name)
+			   const char *name)
 {
 	GGZRoom *room;
 	GGZServer *server;
@@ -200,7 +200,7 @@ int ggzcore_table_get_id(GGZTable *table)
 }
 
      
-char* ggzcore_table_get_desc(GGZTable *table)
+const char * ggzcore_table_get_desc(GGZTable *table)
 {
 	if (table)
 		return _ggzcore_table_get_desc(table);
@@ -235,7 +235,8 @@ int ggzcore_table_get_seat_count(GGZTable *table, GGZSeatType type)
 		return -1;
 }
 
-char* ggzcore_table_get_nth_player_name(GGZTable *table, const unsigned int num)
+const char * ggzcore_table_get_nth_player_name(GGZTable *table,
+					       const unsigned int num)
 {
 	if (table && num < table->num_seats)
 		return _ggzcore_table_get_nth_player_name(table, num);
@@ -543,7 +544,7 @@ struct _GGZGameType* _ggzcore_table_get_type(struct _GGZTable *table)
 }
 
 
-char* _ggzcore_table_get_desc(struct _GGZTable *table)
+const char * _ggzcore_table_get_desc(struct _GGZTable *table)
 {
 	return table->desc;
 }
@@ -579,7 +580,7 @@ struct _GGZSeat* _ggzcore_table_get_nth_seat(struct _GGZTable *table, const unsi
 }
 
 
-char* _ggzcore_table_get_nth_player_name(struct _GGZTable *table, const unsigned int num)
+const char * _ggzcore_table_get_nth_player_name(struct _GGZTable *table, const unsigned int num)
 {
 	return table->seats[num].name;
 }

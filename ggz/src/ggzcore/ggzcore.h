@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5131 2002-11-01 05:35:41Z jdorje $
+ * $Id: ggzcore.h 5174 2002-11-03 19:37:36Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -1062,7 +1062,7 @@ GGZTable* ggzcore_table_new(void);
  *  @note Useful when launching a game. */
 int ggzcore_table_init(GGZTable *table,
 		       GGZGameType *gametype,
-		       char *desc,
+		       const char *desc,
 		       const unsigned int num_seats);
 
 /** @brief Free the table object. */
@@ -1084,7 +1084,7 @@ void ggzcore_table_free(GGZTable *table);
 int ggzcore_table_set_seat(GGZTable *table,
 			   const unsigned int seat,
 			   GGZSeatType type,
-			   char *name);
+			   const char *name);
 
 /** @brief Find and remove the player from the table. */
 int ggzcore_table_remove_player(GGZTable *table, char *name);
@@ -1096,7 +1096,7 @@ int           ggzcore_table_get_id(GGZTable *table);
 GGZGameType*  ggzcore_table_get_type(GGZTable *table);
 
 /** @brief Return the table's description (or NULL). */
-char*         ggzcore_table_get_desc(GGZTable *table);
+const char * ggzcore_table_get_desc(GGZTable *table);
 
 /** @brief Return the state of the table. */
 GGZTableState ggzcore_table_get_state(GGZTable *table);
@@ -1119,7 +1119,7 @@ int           ggzcore_table_set_desc(GGZTable *table, const char *desc);
 int          ggzcore_table_get_seat_count(GGZTable *table, GGZSeatType type);
 
 /** @brief Return the name of a player at the table, or NULL on error. */
-char*        ggzcore_table_get_nth_player_name(GGZTable *table,
+const char * ggzcore_table_get_nth_player_name(GGZTable *table,
 					       const unsigned int num);
 
 /** @brief Return the number of spectator seats at the table, or -1. */
@@ -1136,25 +1136,25 @@ GGZSeatType  ggzcore_table_get_nth_player_type(GGZTable *table,
 
 
 /** @brief Get the name of the game type. */
-char* ggzcore_gametype_get_name(GGZGameType *type);
+const char * ggzcore_gametype_get_name(GGZGameType *type);
 
 /** @brief Get the protocol "engine" used by the game type. */
-char* ggzcore_gametype_get_prot_engine(GGZGameType *type);
+const char* ggzcore_gametype_get_prot_engine(GGZGameType *type);
 
 /** @brief Get the version of the protocol the game uses. */
-char* ggzcore_gametype_get_prot_version(GGZGameType *type);
+const char* ggzcore_gametype_get_prot_version(GGZGameType *type);
 
 /** @brief Get the version of the game itself. */
-char* ggzcore_gametype_get_version(GGZGameType *type);
+const char* ggzcore_gametype_get_version(GGZGameType *type);
 
 /** @brief Get the author of the game. */
-char* ggzcore_gametype_get_author(GGZGameType *type);
+const char* ggzcore_gametype_get_author(GGZGameType *type);
 
 /** @brief Get a URL for more info about the game. */
-char* ggzcore_gametype_get_url(GGZGameType *type);
+const char* ggzcore_gametype_get_url(GGZGameType *type);
 
 /** @brief Get a description of the game. */
-char* ggzcore_gametype_get_desc(GGZGameType *type);
+const char* ggzcore_gametype_get_desc(GGZGameType *type);
 
 /** @brief Get the maximum number of players the game can support.
  *  @see ggzcore_gametype_num_players_is_valid */
