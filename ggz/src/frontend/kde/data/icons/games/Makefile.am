@@ -18,6 +18,7 @@ pix_DATA = \
 	Copenhagen.png \
 	Geekgame.png \
 	Kamikaze.png \
+	TEG.png \
 	notinstalled.png \
 	lounge.png
 
