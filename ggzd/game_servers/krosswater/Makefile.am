@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3671 2002-03-25 19:08:56Z jdorje $
+# $Id: Makefile.am 3802 2002-04-07 07:18:01Z dr_maux $
 
 SUBDIRS = stackpath zoneserver
 
@@ -8,7 +8,7 @@ ggzdexecmod_PROGRAMS = krosswater_server
 krosswater_server_SOURCES = main.cpp krosswater_server.h krosswater_server.cpp
 krosswater_server_LDADD = zoneserver/libzoneserver.la \
 	stackpath/libstackpath.a \
-	$(top_builddir)/ggzdmod/libggzdmod.la
+	$(top_builddir)/ggzdmod/libggzdmod.a
 
 INCLUDES = -I $(top_srcdir)/game_servers/krosswater/stackpath  \
 	   -I $(top_srcdir)/game_servers/krosswater/zoneserver \
