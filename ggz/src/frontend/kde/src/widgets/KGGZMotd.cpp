@@ -82,7 +82,7 @@ void KGGZMotd::append(char *text)
 	unsigned int i;
 	int j, count;
 	//char tmp[8];
-	const char *html[] = {"000000", "00ff00", "0000ff", "ffff00", "ff00ff", "0000ff", "ffff00", "00ffff", "ff00ff", "777777", "AAAAAA"};
+	const char *html[] = {"000000", "20ff00", "0000ff", "ffa000", "ff00ff", "300fff", "a0d000", "00ff70", "ff20ff", "777777", "AAAAAA"};
 	//char buf[1024];
 	QString buffer;
 

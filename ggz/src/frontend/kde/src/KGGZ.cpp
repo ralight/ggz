@@ -449,6 +449,7 @@ void KGGZ::listPlayers()
 	char *playername;
 
 	KGGZDEBUGF("KGGZ::listPlayers()\n");
+	if(!kggzroom) return;
 	m_workspace->widgetUsers()->removeall();
 	m_workspace->widgetChat()->chatline()->removeAll();
 	if(m_grubby) m_grubby->removeAll();
