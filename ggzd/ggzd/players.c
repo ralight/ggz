@@ -729,12 +729,12 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 				break;
 			}
 
-		pthread_rwlock_unlock(&tables.lock);
+		tables.timestamp = time(NULL);
+	        pthread_rwlock_unlock(&tables.lock);
 
 		pthread_mutex_lock(&tables.info[t_index].seats_lock);
 		pthread_cond_signal(&tables.info[t_index].seats_cond);
 		pthread_mutex_unlock(&tables.info[t_index].seats_lock);
-		tables.timestamp = time(NULL);
 	}
 
 
