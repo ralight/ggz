@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/30/97
- * $Id: engine_func.c 4486 2002-09-09 04:11:44Z jdorje $
+ * $Id: engine_func.c 4664 2002-09-23 09:44:15Z dr_maux $
  *
  * This file contains the support functions for the spades engines.
  *
@@ -334,7 +334,7 @@ void ReadOptions(void)
 
 int ggz_init(void)
 {
-  	int assign, i, seats, status = -1;
+  	int assign, i, seats, spectators, status = -1;
 	
 	open_seats = 4;
   
@@ -342,6 +342,8 @@ int ggz_init(void)
 
 	if (ggz_read_int(gameInfo.ggz_sock, &seats) < 0) 
 		err_msg_exit( "Error reading number of slots" );
+	if (ggz_read_int(gameInfo.ggz_sock, &spectators) < 0) 
+		err_msg_exit( "Error reading number of spectators" );
 
 	for(i=0; i<4; i++) {
 		readint( gameInfo.ggz_sock, &assign);
