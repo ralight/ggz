@@ -70,7 +70,7 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 
 	m_slider = new QSlider(this);
 	m_slider->setOrientation(QSlider::Horizontal);
-	m_slider->setMinValue(2);
+	m_slider->setMinValue(1);
 	m_slider->setTickInterval(1);
 	m_slider->setTickmarks(QSlider::Below);
 	m_slider->setPageStep(1);

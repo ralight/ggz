@@ -112,8 +112,9 @@ void KGGZAbout::paintEvent(QPaintEvent *e)
 	const QPixmap *pix;
 	int h;
 	int w, w2;
-	const QString developers = "Brian Cox - Brent Hendricks - Doug Hudson -	Rich Gade - Ismael Orenstein - Dan Papasian - "
-		"Ricardo Quesada - Jason Short - Josef Spillner - Justin Zaun - and many supporters...";
+	const QString developers = QString("Brian Cox - Brent Hendricks - Doug Hudson - Rich Gade - "
+		"Ismael Orenstein - Dan Papasian - Ricardo Quesada - Jason Short - Josef Spillner - Justin Zaun - ") +
+		i18n("and many supporters...");
 
 	pix = new QPixmap(m_frame->width(), m_frame->height());
 
