@@ -21,6 +21,7 @@ AM_PROG_LIBTOOL
 
 dnl GGZ checks
 dnl ==========
+AC_GGZ_INTL
 AC_GGZ_GGZCORE
 
 dnl Use -Wall if we have gcc.
@@ -46,12 +47,17 @@ fi
 if test "$enable_ruby" = yes; then
 	echo -n "Extra check: ruby... "
 
-	incs="/usr/local/lib/ruby/1.6/i386-linux /usr/lib/ruby/1.6/i386-linux /usr/local/lib/ruby/1.7/i386-linux"
+	incs="/usr/local/lib/ruby/1.6/i386-linux /usr/lib/ruby/1.6/i386-linux /usr/local/lib/ruby/1.7/i386-linux /usr/lib/ruby/1.7/i386-linux"
 	AC_GGZ_FIND_FILE("ruby.h", $incs, ruby_incdir)
 	ruby_includes="$ruby_incdir"
 
 	libs="/usr/local/lib /usr/lib"
 	AC_GGZ_FIND_FILE("libruby.so", $libs, ruby_libdir)
+	rubystyle=old
+	if test "x$ruby_libdir" = "xNO"; then
+		AC_GGZ_FIND_FILE("libruby1.7.so", $libs, ruby_libdir)
+		rubystyle=new
+	fi
 	ruby_libraries="$ruby_libdir"
 
 	if test "x$ruby_includes" = "xNO" || test "x$ruby_libraries" = "xNO"; then
@@ -60,7 +66,11 @@ if test "$enable_ruby" = yes; then
 		ruby_libraries=""
 	else
 		ruby_includes="-I $ruby_includes"
-		ruby_libraries="-L $ruby_libraries -lruby"
+		if test "$rubystyle" = "old"; then
+			ruby_libraries="-L $ruby_libraries -lruby"
+		else
+			ruby_libraries="-L $ruby_libraries -lruby1.7"
+		fi
 		AC_MSG_RESULT(ok.)
 		AC_SUBST(ruby_includes)
 		AC_SUBST(ruby_libraries)
