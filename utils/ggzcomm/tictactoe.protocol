@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <ggzcomm engine="tictactoe" version="2">
+	<def name="ggz_seat_bot" value="2"/>
+	<def name="ggz_seat_player" value="3"/>
 	<client>
 		<event name="sndmove">
 			<data name="move" type="int"/>
@@ -13,10 +15,9 @@
 		<event name="msgplayers">
 			<sequence count="2">
 				<data name="seat" type="int"/>
-				<eval name="seat" result="ggz_seat_player">
-					<data name="name" type="string"/>
-				</eval>
-				<eval name="seat" result="ggz_seat_bot">
+				<eval>
+					<condition name="seat" result="ggz_seat_player"/>
+					<condition name="seat" result="ggz_seat_bot"/>
 					<data name="name" type="string"/>
 				</eval>
 			</sequence>
