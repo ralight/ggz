@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 3997 2002-04-16 19:03:58Z jdorje $
+ * $Id: client.c 4031 2002-04-21 02:57:42Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -39,6 +39,7 @@
 
 #include "net_common.h"
 #include "protocol.h"
+#include "shared.h"
 
 #include "client.h"
 
@@ -433,6 +434,20 @@ static void increase_max_hand_size(int max_hand_size)
 	}
 }
 
+static void handle_card_type(char type)
+{
+	static bool alerted = FALSE;
+	static enum card_type_enum card_type = -1;
+	
+	if (alerted) {
+		assert(card_type == type);
+		return;
+	}
+	alerted = TRUE;
+	card_type = type;
+	game_alert_card_type(card_type);
+}
+
 /* A hand message tells you all the cards in one player's hand. */
 static int handle_msg_hand(void)
 {
@@ -458,9 +473,11 @@ static int handle_msg_hand(void)
 	   increase_max_hand_size won't have inconsistent data. */
 	hand = &ggzcards.players[player].hand;
 	hand->hand_size = hand_size;
-	for (i = 0; i < hand->hand_size; i++)
+	for (i = 0; i < hand->hand_size; i++) {
 		if (read_card(game_internal.fd, &hand->cards[i]) < 0)
 			return -1;
+		handle_card_type(hand->cards[i].type);
+	}
 
 	ggz_debug("core", "Received hand message for player %d; %d cards.",
 		  player, hand->hand_size);
@@ -639,6 +656,8 @@ static int handle_msg_play(void)
 	if (read_seat(game_internal.fd, &p) < 0
 	    || read_card(game_internal.fd, &card) < 0)
 		return -1;
+		
+	handle_card_type(card.type);
 
 	assert(p >= 0 && p < ggzcards.num_players);
 	assert(ggzcards.play_hand < 0 || p == ggzcards.play_hand);
@@ -704,6 +723,7 @@ static int handle_msg_table(void)
 		if (read_card(game_internal.fd, &card) < 0)
 			return -1;
 		ggzcards.players[p].table_card = card;
+		handle_card_type(card.type);
 	}
 
 	/* TODO: verify that the table cards have been removed from the hands 
