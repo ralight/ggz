@@ -33,12 +33,13 @@
 
 <legalnotice>&FDLNotice;</legalnotice>
 
-<date>2002-07-30</date>
-<releaseinfo>0.10.00</releaseinfo>
+<date>2002-09-15</date>
+<releaseinfo>0.10.01</releaseinfo>
 
 <abstract>
 <para>
 &kggz; is &kde;'s Core Client for the GGZ Gaming Zone.
+This handbook describes how to use it to satisfy everyone's gaming needs.
 </para>
 </abstract>
 
@@ -55,6 +56,7 @@
 
 <para>
 &kggz; is &kde; Core Client for the GGZ Gaming Zone.
+It is a central place where people can play games, chat and have much fun.
 </para>
 
 <sect1 id="starting">
@@ -77,10 +79,85 @@ Alternatively, it can be launched with a connection URI such as ggz://username@g
 
 <para>
 This handy dialog manages user/server profiles.
+By default, a few connection profiles should be available, but more can be
+added of course.
+The name of the GGZ server (hostname), username and (when attempting to do a
+regular login) password must be given to &kggz;.
 </para>
 
 </sect1>
 
+<sect1 id="connection-login">
+<title>Login</title>
+
+<para>
+When the connection succeeds (i.e. GGZ client and server protocol versions
+match), the login procedure takes place. If it succeeds as well, the first room
+is entered, which will almost always be the Lounge, which has no associated
+game. From there, a game-specific room might be searched.
+</para>
+</sect1>
+
+</chapter>
+
+<chapter id="chat">
+<title>Chat</title>
+
+<sect1 id="chat-chat">
+<title>Chatting</title>
+
+<para>
+Simply type some text into the input box and press enter to send it over the
+wire. For private messages, type /msg (playername) (text). A list of all chat
+commands can be fetched by typing /help.
+</para>
+</sect1>
+
+<sect1 id="chat-bot">
+<title>Chat bots</title>
+
+<para>
+There are chat bots on most GGZ servers. You can speak with them using another
+set of commands, which might also be requested from the bot by typing:
+(botname) help.
+</para>
+</sect1>
+
+</chapter>
+
+<chapter id="games">
+<title>GGZ Games</title>
+
+<sect1 id="games-playing">
+<title>Playing games</title>
+
+<para>
+When being in a game room, the game associated with this room can be played.
+Click Launch game in the game menu to launch a one at a new table.
+Alternatively, you can join an existing table if it allows this and if there's
+a free seat on it. Some games also support spectators, so feel free to watch
+the other players anonymously while they play.
+</para>
+
+<para>
+When launching a new game, a dialog pops up which can be used to control the
+maximum number of players and bots. Seat reservations for friend players or
+tournaments can also be handled here.
+</para>
+
+<para>
+When multiple game frontends are available, one can be chosen before the game
+is launched. Since they all speak the same protocol, it doesn't matter which
+frontend is chosen.
+</para>
+
+<para>
+Sometimes, games crash or fubar for some odd reason. Such a game can be
+cancelled then by clicking at the appropriate menu entry. Some games support
+leaving during gameplay, others will be stopped if leaving before they're
+finished.
+</para>
+</sect1>
 </chapter>
 
 <chapter id="credits">
@@ -110,7 +187,7 @@ Documentation copyright 2002 Josef Spillner
 <!-- TRANS:CREDIT_FOR_TRANSLATORS -->
 
 &underFDL;               <!-- FDL: do not remove -->
-&underGPL;               <!-- BSD License -->
+&underGPL;               <!-- GPL License -->
 
 </chapter>
 
