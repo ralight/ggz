@@ -1,7 +1,7 @@
 dnl Configuration for GGZ-SDL-Games
 dnl ===============================
 
-AC_INIT([GGZ SDL games], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-sdl-games])
+AC_INIT([GGZ SDL games], [0.0.8pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-sdl-games])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -62,10 +62,10 @@ AC_CHECK_LIB(Xcursor, XcursorLibraryLoadCursor,
         [AC_MSG_WARN(*** Cannot find X11/Xcursor/Xcursor.h header)],
         [#include <X11/Xlib.h>])],
     [AC_MSG_WARN(*** Cannot find Xcursor library )],
-    [-L /usr/X11R6/lib])
+    [-L /usr/X11R6/lib -l Xrender])
 if test "x$xcursor" = "xyes"; then
     XCURSOR_LDFLAGS="-L /usr/X11R6/lib"
-    LIB_XCURSOR="-lXcursor"
+    LIB_XCURSOR="-lXcursor -lXrender"
     AC_SUBST(XCURSOR_LDFLAGS)
     AC_SUBST(LIB_XCURSOR)
     AC_DEFINE_UNQUOTED(HAVE_XCURSOR, 1, [Xcursor support])
