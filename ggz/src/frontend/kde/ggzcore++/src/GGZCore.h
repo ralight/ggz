@@ -34,38 +34,14 @@ class GGZCore
 			modules  = 2,
 			threadio = 4
 		};
-
-		/** Debug options. This is an or'd list. */
-		enum GGZCoreDebug
-		{
-			event     = 0x000001,
-			net       = 0x000002,
-			user      = 0x000004,
-			server    = 0x000008,
-			conf      = 0x000010,
-			poll      = 0x000020,
-			state     = 0x000040,
-			player    = 0x000080,
-			room      = 0x000100,
-			table     = 0x000200,
-			gametype  = 0x000400,
-			hook      = 0x000800,
-			start     = 0x001000,
-			memory    = 0x002000,
-			memdetail = 0x004000,
-			module    = 0x008000,
-			game      = 0x010000,
-			xml       = 0x020000,
-			all       = 0xFFFFFF
-		};
-
+		
 		/** Constructor */
 		GGZCore();
 		/** Destructor */
 		~GGZCore();
 
 		/** Initialize ggzcore. */
-		int init(int options, const char* debugfile, int debuglevel);
+		int init(int options);
 
 	private:
 		int m_initialized;
