@@ -34,6 +34,8 @@
 #include "callbacks.h"
 #include "support.h"
 
+#define GAME_WEBPAGE "http://ggz.sourceforge.net"
+
 GtkWidget *main_win;
 GtkWidget **player_list = NULL;
 struct game_info_t cbt_info;
@@ -167,7 +169,7 @@ int game_get_seat() {
 
 	// TODO: Compare the client and the server version
 	if (cbt_info.version != PROTOCOL_VERSION)
-		game_message("Your client is using Combat protocol %d, while the server uses protocol %d. You may run into problems", PROTOCOL_VERSION, cbt_info.version);
+		game_message("Your client is using Combat protocol %d, while the server uses protocol %d. You may run into problems.\nYou should get a newer version on %s", PROTOCOL_VERSION, cbt_info.version, GAME_WEBPAGE);
 
 	game_status("Getting init information\nSeat: %d\tPlayers: %d\tVersion: %d\n", cbt_info.seat, cbt_info.number, cbt_info.version);
 
@@ -184,99 +186,15 @@ int game_get_seat() {
 	return 0;
 }
 
-int game_ask_options() {
+void game_ask_options() {
 	GtkWidget *options_dialog;
 	GtkWidget *ok_button;
-	combat_game _game;
-	char *game_str = NULL;
-	int a;
 	options_dialog = create_dlg_options(); 
 	ok_button = lookup_widget(options_dialog, "ok_button"); 
 	gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
 			                       GTK_SIGNAL_FUNC (game_send_options), 
 														 GTK_OBJECT (options_dialog));
 	gtk_widget_show_all(options_dialog);
-	/* Default game 
-	_game.width = 10;
-	_game.height = 10;
-	_game.map = (tile *)calloc(_game.width * _game.height, sizeof(tile));
-	_game.army = (char **)calloc(1, sizeof(char *));
-	_game.army[0] = (char *)calloc(12, sizeof(char));
-	for (a = 0; a < _game.width*4; a++) {
-		_game.map[a].type = OWNER(0) + T_OPEN;
-		_game.map[a+60].type = OWNER(1) + T_OPEN;
-	}
-
-	for (a = 40; a < _game.width*6; a++) {
-		_game.map[a].type = T_OPEN;
-	}
-
-	_game.map[CART(3,5,10)].type = T_LAKE;
-	_game.map[CART(4,5,10)].type  = T_LAKE;
-	_game.map[CART(3,6,10)].type  = T_LAKE;
-	_game.map[CART(4,6,10)].type  = T_LAKE;
-
-	_game.map[CART(7,5,10)].type  = T_LAKE;
-	_game.map[CART(8,5,10)].type  = T_LAKE;
-	_game.map[CART(7,6,10)].type  = T_LAKE;
-	_game.map[CART(8,6,10)].type  = T_LAKE;
-
-	_game.army[0][U_FLAG] = 1;
-	_game.army[0][U_BOMB] = 6;
-	_game.army[0][U_SPY] = 1;
-	_game.army[0][U_SCOUT] = 8;
-	_game.army[0][U_MINER] = 5;
-	_game.army[0][U_SERGEANT] = 4;
-	_game.army[0][U_LIEUTENANT] = 4;
-	_game.army[0][U_CAPTAIN] = 4;
-	_game.army[0][U_MAJOR] = 3;
-	_game.army[0][U_COLONEL] = 2;
-	_game.army[0][U_GENERAL] = 1;
-	_game.army[0][U_MARSHALL] = 1;
-
-	Mini Game
-	_game.width = 4;
-	_game.height = 4;
-	_game.map = (tile *)calloc(_game.width * _game.height, sizeof(tile));
-	_game.army = (char **)calloc(1, sizeof(char *));
-	_game.army[0] = (char *)calloc(12, sizeof(char));
-	for (a = 0; a < 4; a++) {
-		_game.map[a].type = OWNER(0) + T_OPEN;
-		_game.map[a+12].type = OWNER(1) + T_OPEN;
-	}
-
-	for (a = 5; a < 12; a++) {
-		_game.map[a].type = T_OPEN;
-	}
-
-	_game.map[CART(2,2,4)].type  = T_LAKE;
-	_game.map[CART(3,3,4)].type  = T_LAKE;
-
-	// FIXME: Delete this
-	printf("Writing army data\n");
-
-	_game.army[0][U_FLAG] = 1;
-	_game.army[0][U_BOMB] = 0;
-	_game.army[0][U_SPY] = 0;
-	_game.army[0][U_SCOUT] = 3;
-	_game.army[0][U_MINER] = 0;
-	_game.army[0][U_SERGEANT] = 0;
-	_game.army[0][U_LIEUTENANT] = 0;
-	_game.army[0][U_CAPTAIN] = 0;
-	_game.army[0][U_MAJOR] = 0;
-	_game.army[0][U_COLONEL] = 0;
-	_game.army[0][U_GENERAL] = 0;
-	_game.army[0][U_MARSHALL] = 0; */
-	
-		/*
-	game_status("Sending options string to server");
-
-	game_str = combat_options_string_write(game_str, &_game);
-
-	if (es_write_int(cbt_info.fd, CBT_MSG_OPTIONS) < 0 || es_write_string(cbt_info.fd, game_str) < 0)
-		return -1;
-	return 0;
-	*/
 }
 
 int game_get_options() {
@@ -289,7 +207,9 @@ int game_get_options() {
 	if (es_read_string_alloc(cbt_info.fd, &optstr) < 0)
 		return -1;
 
-	combat_options_string_read(optstr, &cbt_game, cbt_info.number);
+  a =	combat_options_string_read(optstr, &cbt_game, cbt_info.number);
+  if (a > 0)
+    game_message("Please note: \nThis client couldn't recognize %d options sent by the server.\nThe game may have unexpected behavior.\nYou should update your client at %s", a, GAME_WEBPAGE);
 
 	if (old_width != cbt_game.width || old_height != cbt_game.height) {
 		gdk_pixmap_unref(cbt_buf);
@@ -319,6 +239,7 @@ void game_init() {
 	cbt_game.width = 10;
 	cbt_game.height = 10;
 	cbt_game.army = NULL;
+  cbt_game.name = NULL;
 	cbt_game.state = CBT_STATE_INIT;
 	cbt_game.turn = 0;
 	cbt_info.current = U_EMPTY;
@@ -1103,6 +1024,9 @@ int game_send_options(GtkWidget *options_dialog) {
 		printf("%s: %d\n", unitname[a], army_data[a]);
 		_game.army[0][a] = army_data[a];
 	}
+  
+  // What I don't know, I just keep blank
+  _game.name = NULL;
 
 	game_str = combat_options_string_write(game_str, &_game);
 

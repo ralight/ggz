@@ -30,15 +30,31 @@ char *combat_options_string_write(char *optstr, combat_game *_game) {
 	char *ptr;
 	int a;
 	int len = (2 + _game->width*_game->height + 12 + 1);
+  // Should we add space for the name option?
+  if (_game->name && (strcmp(_game->name, "") != 0))
+    len += 1 + strlen(_game->name) + 1 + 1;
 	optstr = (char *)malloc(sizeof(char) * len);
 	ptr = optstr;
+  /* Width * Height */
 	*ptr = _game->width;
 	*(++ptr) = _game->height;
+  /* Terrain data */
 	for (a = 0; a < _game->width * _game->height; a++)
 		*(++ptr) = _game->map[a].type;
+  /* Army data */
 	for (a = 0; a < 12; a++)
 		*(++ptr) = _game->army[0][a];
-	*(++ptr) = 0;
+  /* Options */
+  // Map name
+  if (_game->name && (strcmp(_game->name, "") != 0)) {
+    *(++ptr) = O_NAME; // It's a name option
+    for (a = 0; a < strlen(_game->name); a++)
+      *(++ptr) = _game->name[a];
+    *(++ptr) = 0; // Closing \0 for the name
+    *(++ptr) = 0; // Closing \0 for the option packet
+  }
+  /* Close */
+  *(++ptr) = 0;
 	// Adds one to all the string, to avoid having zeros between them
 	for (a = 0; a < len; a++)
 		optstr[a]++;
@@ -46,20 +62,24 @@ char *combat_options_string_write(char *optstr, combat_game *_game) {
 	return optstr;
 }
 
-void combat_options_string_read(char *optstr, combat_game *_game, int num_players) {
+int combat_options_string_read(char *optstr, combat_game *_game, int num_players) {
 	int a, b;
 	int len = strlen(optstr);
+  int retval = 0;
 	// Removes one from all the string, to return the zeroes
 	for (a = 0; a < len; a++)
 		optstr[a]--;
+  /* Width and Height */
 	_game->width = optstr[0];
 	_game->height = optstr[1];
+  /* Terrain data */
 	optstr+=2;
 	_game->map = malloc(_game->width*_game->height * sizeof(tile));
 	for (a = 0; a < _game->width*_game->height; a++) {
 			_game->map[a].type = optstr[a];
 			_game->map[a].unit = U_EMPTY;
 	}
+  /* Army Data */
 	optstr+=_game->width*_game->height;
 	_game->army = (char **)calloc(num_players+1, sizeof(char*));
 	for (a = 0 ; a < num_players+1; a++) {
@@ -67,9 +87,35 @@ void combat_options_string_read(char *optstr, combat_game *_game, int num_player
 		for (b = 0; b < 12; b++)
 			_game->army[a][b] = optstr[b];
 	}
+  /* Options */
 	optstr+=12;
-	while (*(optstr++) != 0)
-		printf("Unsuported option! (%d)\n", *optstr);
+	while (*optstr != 0) {
+    // Got a option packet! Check what it is
+    switch (*optstr) {
+      case O_NAME:
+        optstr++;
+        // optstr now points to the name of the map
+        _game->name = (char *)malloc(strlen(optstr) + 1);
+        if (_game->name)
+          strcpy(_game->name, optstr);
+        printf("Map name: %s\n", _game->name);
+        // Go until the last character in the string
+        while (*optstr != 0)
+          optstr++;
+        optstr++;
+        break;
+      default:
+		    printf("Unsuported option! (%d)\n", *optstr);
+        retval++;
+        break;
+    }
+    // Now go until the end of the packet
+    while (*optstr != 0)
+      optstr++;
+    // Next byte in the stream
+    optstr++;
+  }
+  return retval;
 }
 
 int combat_check_move(combat_game *_game, int from, int to) {
