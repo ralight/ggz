@@ -180,9 +180,9 @@ int GGZCoreRoom::joinTable(const unsigned int number)
 	return ggzcore_room_join_table(m_room, number);
 }
 
-int GGZCoreRoom::leaveTable()
+int GGZCoreRoom::leaveTable(int force)
 {
-	return ggzcore_room_leave_table(m_room);
+	return ggzcore_room_leave_table(m_room, force);
 }
 
 int GGZCoreRoom::sendData(char* buffer)

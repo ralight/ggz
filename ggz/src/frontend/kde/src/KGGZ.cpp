@@ -233,7 +233,7 @@ void KGGZ::slotConnectedStart()
 
 void KGGZ::menuDisconnect()
 {
-	eventLeaveGame();
+	eventLeaveGame(0);
     eventLeaveRoom();
 
 	if(!kggzserver)
@@ -539,14 +539,16 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreGame::over:
 			KGGZDEBUG("over\n");
-			eventLeaveGame();
+			eventLeaveGame(1);
 			break;
 		case GGZCoreGame::ioerror:
 			KGGZDEBUG("ioerror\n");
+			eventLeaveGame(1);
 			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Network error!"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreGame::protoerror:
 			KGGZDEBUG("protoerror\n");
+			eventLeaveGame(1);
 			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Protocol error!"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		default:
@@ -667,7 +669,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 		case GGZCoreRoom::tableleft:
 			KGGZDEBUG("tableleft\n");
 			KGGZDEBUG("SHALL I QUIT THE GAME HERE???\n");
-			eventLeaveGame();
+			eventLeaveGame(0);
 			m_workspace->widgetChat()->receive(NULL, i18n("Left table"), KGGZChat::RECEIVE_ADMIN);
 			emit signalMenu(MENUSIG_GAMEOVER);
 			break;
@@ -1056,7 +1058,7 @@ void KGGZ::slotGameFire()
 	if(ret < 0)
 	{
 		KGGZDEBUG("Red Alert! Game launching failed immedeately!\n");
-		eventLeaveGame();
+		eventLeaveGame(1);
 		KMessageBox::error(this, i18n("Couldn't launch game!"), i18n("Error!"));
 		return;
 	}
@@ -1511,7 +1513,7 @@ void KGGZ::menuPreferencesSettings()
 	m_prefenv->show();
 }
 
-void KGGZ::eventLeaveGame()
+void KGGZ::eventLeaveGame(int force)
 {
 	if(!kggzgame)
 	{
@@ -1529,7 +1531,7 @@ void KGGZ::eventLeaveGame()
 	if(kggzserver->state() == GGZ_STATE_AT_TABLE)
 	{
 		KGGZDEBUG("**** Still at table (alert) -> leaving now!\n");
-		kggzroom->leaveTable();
+		kggzroom->leaveTable(force);
 	}
 	listPlayers();
 	listTables();
@@ -1557,6 +1559,6 @@ void KGGZ::eventLeaveRoom()
 void KGGZ::menuGameCancel()
 {
 	KGGZDEBUGF("KGGZ::menuGameCancel()\n");
-	eventLeaveGame();
+	eventLeaveGame(0);
 }
 

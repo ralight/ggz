@@ -112,7 +112,7 @@ class GGZCoreRoom
 		int joinTable(const unsigned int number);
 		/**
 		 * Leave a table again. */
-		int leaveTable();
+		int leaveTable(int force);
 
 		/**
 		 * Invoke player listing. */

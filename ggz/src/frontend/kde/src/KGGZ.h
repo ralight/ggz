@@ -198,7 +198,7 @@ class KGGZ : public QWidget
 		void detachGameCallbacks();
 
 		// cancel a game
-		void eventLeaveGame();
+		void eventLeaveGame(int force);
 		// leave a room
 		void eventLeaveRoom();
 
