@@ -37,6 +37,7 @@ static void handle_log(GGZdMod *mod, GGZdModEvent event, void *data)
 static void handle_error(GGZdMod *mod, GGZdModEvent event, void *data)
 {
 	printf("GGZDMOD_EVENT_ERROR: %s\n", (char*)data);
+	abort();
 }
 
 
@@ -84,8 +85,11 @@ static void handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
 static int table_launch(void)
 {
         int i;
-	char *args[] = {"logmod", NULL};
+	char cmd[1024];
+	char *args[] = {cmd, NULL};
         GGZdMod *ggz;
+
+	snprintf(cmd, sizeof(cmd), "%s/logmod", getenv("PWD"));
 
         /* Create new ggz game module object */
         ggz = ggzdmod_new(GGZDMOD_GGZ);
