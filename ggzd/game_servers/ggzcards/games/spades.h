@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.h 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: spades.h 2340 2001-09-02 07:50:46Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,10 +27,12 @@
 #define SPADES_NIL 1
 
 #define GSPADES ( *(spades_game_t *)(game.specific) )
-typedef struct spades_game_t {
+typedef struct spades_game_t
+{
 	/* options */
-	int nil_value;		/* generally 50 or 100 */
+	int nil_value;		/* 0 for none; generally 50 or 100 */
 	int minimum_team_bid;	/* the minimum bid by one team */
 
 	int bags[2];
-} spades_game_t;
+}
+spades_game_t;
