@@ -1,7 +1,317 @@
-2002-04-12 22:40  Brent Hendricks <bmh@users.sourceforge.net>
+2002-10-01 17:55  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, configure.in, man/.cvsignore, man/Makefile.am,
+	man/ggz.h.3: Added man page for libggz.
+	
+	Unfortunately, the man page does not include the entire
+	documentation.	Since ggz.h defines different Doxygen "groups",
+	these are put into their own manual pages (list.3, easysock.3,
+	etc.), which are currently not included (because who would know to
+	look for them?).  A better solution is needed.
+
+2002-09-29 15:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/Makefile.am, configure.in: - don't touch LIBOBJS or LTLIBOBJS
+	- autoconf 2.50 doesn't like it anyway
+
+2002-09-29 14:43  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - libggz goes 0.0.6
+
+2002-09-27 17:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/Makefile.am: - increase libggz interface version number
+	
+	In libggz's case this is questionable, because only one function
+	really changed.  But there were some obscure macro changes as well.
+	Instead of writing wrapper functions, we better chose the safe way.
+	
+	This is also a candidate which I expect to become stable.
+
+2002-09-27 10:56  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen
+
+2002-09-25 21:17  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: conf.c, ggz.h: Fix a bug in libggz: interface documentation
+	for ggz_conf_read_list was wrong.
+	
+	When ggz_conf_read_list is called and no list is present, don't
+	allocate space for an empty, NULL-terminated list of strings. 
+	Instead just set the list to NULL.  The interface ducumentation is
+	changed to match.
+
+2002-09-24 09:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* QuickStart.GGZ, README.GGZ: - update intro docs
+
+2002-09-22 16:56  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/msg.c: Disable the fork-and-abort feature of ggz_error_msg
+	and ggz_error_sys.
+
+2002-09-22 16:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/ggz.h: - commit fix for FUNCTION macro in c++ apps
+
+2002-09-18 20:55  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/ggz.h: Add attributes to ggz_error_msg_exit and
+	ggz_error_sys_exit marking them as noreturn.
+
+2002-09-18 20:50  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: misc.h, msg.c: Declare _ggz_debug only when DEBUG is
+	defined.  This prevents an unused-variable warning (spurious) and
+	also makes compiled code more streamlined.
+
+2002-09-18 20:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/easysock.c: Cast the "status" variable (an integer) to
+	(unsigned) in several places, just to avoid a spurious warning
+	(status was previously checked to see if it was negative).
+
+2002-09-18 20:40  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/misc.c: s/int/size_t/ in two places.
+
+2002-09-17 20:11  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/ggz_common.h: Remove the now-unused GGZ_CHAT_M_MESSAGE and
+	GGZ_CHAT_M_PLAYER.
+
+2002-09-17 04:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* tests/Makefile.am: Added the strcmp program to TESTS.
+
+2002-09-13 19:19  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/ggz_common.h: Added E_OK to the GGZClientReqError
+	enumeration.  This allows more explicit use of the enumeration.
+
+2002-09-13 18:11  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/numberlist.c, tests/ggzcommon.c: Let numberlists be empty or
+	use arbitrary whitespace.
+
+2002-09-13 17:43  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/msg.c: To help in debugging: ggz_error_msg_exit and
+	ggz_error_sys_exit abort(), instead of just exiting.  ggz_error_msg
+	and ggz_error_sys fork and abort, to leave core while the original
+	process continues.
+	
+	If core is disabled "ulimit -c 0", no core will be left and the
+	behavior will be virtually unchanged (at least on my platform).
+	
+	Eventually something slightly more complicated may be better: we
+	can attach the core to gdb (if it exists) and mail a backtrace to
+	ggz-dev.  THere's probably some tool out there for automating this.
+
+2002-09-11 05:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/ggz_common.h, src/numberlist.c, tests/ggzcommon.c: Added a
+	function to return the max of a numberlist.
+
+2002-09-11 05:25  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/Makefile.am, src/ggz_common.c, src/ggz_common.h,
+	src/numberlist.c, tests/.cvsignore, tests/Makefile.am,
+	tests/ggzcommon.c: Added numberlist code to ggz_common.h, and some
+	boolean conversion helper functions.
+
+2002-08-20 23:12  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/msg.c, tests/debugmsg.c: Fix some (probably harmless)
+	compiler warnings:   - msg.c: #if 0...#endif around the unused
+	ggz_debug_debug().    - debugmsg.c: debug_suite() is static.
+
+2002-08-07 18:44  Jason Short <jdorje@users.sourceforge.net>
+
+	* .cvsignore: Change "doc" to "api" to match the doxygen change.
+
+2002-08-07 18:39  Jason Short <jdorje@users.sourceforge.net>
+
+	* Doxyfile: Updated Doxyfile:	- Name: GGZ Gaming Zone -> LibGGZ  
+	- Version: (empty) -> 0.0.6pre	 - Output directory: doc -> api
+	(conforms with other modules)
+
+2002-08-07 18:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: ggz.h, msg.c: Add ggz_log() function.  This will be of
+	future use in ggzd.
+
+2002-06-25 22:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - solving a digital problem: I fixed a bug after
+	copying the affected lines.  I only fixed it in the original.  Ergo
+	I have to fix it in the copy too.
+
+2002-06-23 21:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - remove unnecessary extra paths from configure.in
+	
+	(hell, why does CVS force me to do a second commit for the
+	top-level directory...)
+
+2002-06-23 21:49  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* src/ggz.h: - when detecting gcc >= 3 is in use, don't use
+	__FUNCTION__, because this is	incompatible with the latest C
+	standard and will vanish in gcc 3.2 (at least	the gcc developers
+	say so)   For gcc 2.95 this macro will still be used.  - remove
+	unnecessary extra path from configure.in
+
+2002-05-23 22:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - check for pthread in libggz already, not only in
+	ggzd
+	
+	This bug fix is proudly presented by the GNU/Hurd which doesn't
+	have pthread installed by default :-)
+
+2002-05-16 01:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore, configure.in: - more M4 macro fixes
+
+2002-05-11 18:02  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* src/ggz_common.h: 
+	- Remove protocol version since protocol isn't actually implemented
+	  here
+
+2002-05-11 08:02  Rich Gade <rgade@users.sourceforge.net>
+
+	* src/: conf.c, ggz.h: - ggz-config --check option written to
+	check/repair a ggz.modules file - ggz_conf_get_sections() added to
+	retrieve a list of all sections in a config - ggz_conf_get_keys()
+	added to retrieve a list of all keys in a config section
+
+2002-05-11 07:43  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* src/: ggz_common.c, list.c, xmlelement.c: 
+	- Use ggz_strcmp() in several places
+
+2002-05-11 07:20  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* src/ggz.h, src/misc.c, tests/.cvsignore, tests/Makefile.am,
+	tests/strcmp.c: 
+	- Added ggz_strcmp() function that accepts NULL strings
+
+2002-05-06 01:47  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/ggz_common.h: Bumped up GGZ_CS_PROTO_VERSION to 7 (from 6). 
+	This should force people to upgrade their ggzcore, without which
+	things will fail badly for anyone who tries to launch a game table.
+	
+	Brent wants to move this definition back into ggzcore/ggzd, but for
+	now I've only bumped it up.
+
+2002-05-03 09:54  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: ggz.h, msg.c: Changed the debug callback handler function
+	to accept a syslog-style priority as well:   typedef void
+	(*GGZDebugHandlerFunc)(int priority, const char *msg);
+	
+	This is the only change to the interface, although some changes to
+	msg.c were needed as well, of course.  The priority associated with
+	the message depends on how the message was generated:	ggz_debug
+	and _ggz_debug => LOG_DEBUG   _ggz_msg => LOG_NOTICE (?)  
+	ggz_error_sys and ggz_error_msg => LOG_ERR   ggz_error_sys_exit and
+	ggz_error_msg_exit => LOG_CRIT
+	
+	Libggz is not capable of providing nearly all of the features
+	currently used by ggzd for logging/debugging.  The only thing extra
+	feature ggzd uses is a separation of "logging" and "debugging"
+	messages.
+
+2002-05-02 19:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: ggz.h, msg.c: Added a new typedef, GGZDebugHandlerFunc, to
+	ggz.h, along with a function to set the debug handler function,
+	ggz_debug_set_func().  Added code in msg.c to have the debug
+	handler (if present) be called to handle debugging output instead
+	of writing it to a file/stderr.
+
+2002-05-01 08:35  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/: easysock.c, ggz.h: Add the FD of the offending socket to
+	the parameters of the socket error callback function
+	
+	  -typedef void (*ggzIOError) (const char * msg, const GGZIOType
+	type,
+	  +typedef void (*ggzIOError) (const char * msg,
+	  +			       const GGZIOType type,
+	  +			       const int fd,
+				       const GGZDataType data);
+	
+	and change the interal code to pass this parameter along with the
+	others.  -1 is passed if there is no applicable FD.
+	
+	I believe no code currently uses this callback except ggzcards (and
+	that not much, yet), so nothing should be disrupted by this change.
+	 The advantage is that the callee is now able to tell what socket
+	the problem occurred on, so action can be taken to correct it.	See
+	ggz-dev for more.
+
+2002-04-27 11:29  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - fix for configure process on 4.5BSD
+
+2002-04-22 21:40  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/ggz_common.h: Moved the list of protocol opcodes out of
+	ggzcore and ggzd and into ggz_common.h in libggz.  This may not be
+	their final resting place, but it is at least an improvement over
+	having duplicated code.
+
+2002-04-13 07:27  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ChangeLog: 
+	- Updated changelog entries for 0.0.5 release
+
+2002-04-13 05:40  Brent Hendricks <bmh@users.sourceforge.net>
 
 	* NEWS: 
 	- Add reservation support to NEWS
+
+2002-04-13 05:40  Rich Gade <rgade@users.sourceforge.net>
+
+	* libggz.spec: - RPM Spec file for libggz
+
+2002-04-13 05:35  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* Makefile.am: 
+	- Include README.GGZ and QuickStart.GGZ in dist
+
+2002-04-13 05:32  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* AUTHORS, INSTALL, NEWS, QuickStart.GGZ, README, README.GGZ: 
+	- Doc updates for 0.0.5 release
+
+2002-04-13 03:41  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* configure.in: 
+	- Set version number to 0.0.5
+
+2002-04-13 03:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* src/ggz.h: Fixed doxygen (documentation) syntax error:
+	s/@code/@endcode/.
+
+2002-04-13 03:29  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* src/ggz.h: 
+	- Document XML element objects/functions
+
+2002-04-13 02:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - addon
+
+2002-04-13 02:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/rules: - move clean rule to debian/rules
 
 2002-04-12 22:40  Rich Gade <rgade@users.sourceforge.net>
 

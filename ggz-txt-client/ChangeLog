@@ -1,7 +1,104 @@
-2002-04-12 23:04  Brent Hendricks <bmh@users.sourceforge.net>
+2002-10-01 21:05  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - use configure.in for AC_INIT
+
+2002-09-29 14:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/ggz-txt.6, configure.in: - finalize ggz-txt version numbers
+
+2002-09-27 10:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen
+
+2002-09-26 13:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-txt/Makefile.am, acinclude.ggz, configure.in: - deploy new
+	acinclude.ggz for txt client
+
+2002-09-24 10:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-txt/: game.c, server.c: - enclose socket process debugging
+	messages within DEBUG
+
+2002-09-24 09:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* QuickStart.GGZ, README.GGZ: - update intro docs
+
+2002-09-24 07:03  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/: game.c, game.h, server.c: Add handling of
+	GGZ_CHANNEL_CONNECTED - watch the FD and handle data that comes on
+	it, until we get a GGZ_CHANNEL_READY.
+
+2002-09-24 00:54  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-txt/: main.c, state.c: Fix compile warnings:   - Marked
+	several functions as static;   - #if 0'd out one unused function.  
+	 - Added in a missing #include.
+
+2002-09-24 00:49  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Change -I to -isystem when adding ${prefix}/include
+	to the C flags.
+
+2002-09-24 00:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Update acinclude.ggz in the txt-client, and label
+	acinclude.ggz as being included in txt-client.
+
+2002-09-24 00:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-txt/: game.c, game.h, server.c: - deal with channel request:
+	setup ggzcore handler for GGZ_CHANNEL_READY.	But this event
+	never arrives :(
+
+2002-09-23 17:49  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-txt/: game.c, game.h, input.c, output.c: - (almost) bring
+	back game launch/join functionality
+	
+	One thing is still broken: The GGZ_GAME_PLAYING event does never
+	arrive the client, which renders the whole thing useless... until
+	this bug is fixed.
+
+2002-09-23 17:05  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-txt/: input.c, server.c: - preinitialize server object to
+	NULL - only disconnect when still online, so the clueless user can
+	now type /connect   and /disconnect as long as he wants, without
+	causing a client freeze - warn about unknown commands
+
+2002-09-08 07:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-txt/input.c: - add spectator parameter (zero)
+
+2002-09-01 19:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/ggz-txt.6: - improve ggz-txt man page a bit
+
+2002-07-29 20:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - shut up cvs
+
+2002-07-29 20:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-txt/: game.c, input.c, main.c, output.c, output.h, server.c:
+	- commit the 'reverse' display and the compile fixes, it doesn't
+	seem to harm
+
+2002-04-13 07:36  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ChangeLog: 
+	- Updated ChangeLog for 0.0.5 release
+
+2002-04-13 06:04  Brent Hendricks <bmh@users.sourceforge.net>
 
 	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ: 
 	- Updated doc files
+
+2002-04-13 02:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - remove make clean rule
 
 2002-04-12 19:44  Josef Spillner <dr_maux@users.sourceforge.net>
 

@@ -1,6 +1,777 @@
-2002-04-13 01:21  Rich Gade <rgade@users.sourceforge.net>
+2002-10-03 05:02  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: ai.h, main.c, main.h: s/int/bool/ in several places.
+
+2002-10-01 21:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - use configure.in
+
+2002-09-29 13:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* chess/module.dsc.in, chinese-checkers/module.dsc.in,
+	combat/module.dsc.in, dots/dlg_about.c, dots/module.dsc.in,
+	ggzcards/module.dsc.in, hastings/dlg_about.c,
+	hastings/module.dsc.in, lapocha/module.dsc.in,
+	reversi/module.dsc.in, spades/module.dsc.in,
+	tictactoe/module.dsc.in, configure.in: - number bumping for gtk+
+	games
+
+2002-09-27 10:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen
+
+2002-09-26 13:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* chess/Makefile.am, chinese-checkers/Makefile.am,
+	combat/Makefile.am, dots/Makefile.am, ggzcards/Makefile.am,
+	hastings/Makefile.am, lapocha/Makefile.am, reversi/Makefile.am,
+	spades/Makefile.am, tictactoe/Makefile.am: - fix all makefiles for
+	gtk+ games: use ggzmod variables explicitly
+
+2002-09-26 12:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in, acinclude.ggz: - deploy new acinclude.ggz - no more
+	--disable-gettext
+
+2002-09-25 18:19  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/Makefile.am: - argh! (2nd time today already)
+	
+	s/DIST_SUBDIRS/EXTRA_DIST/ because there are no makefiles within
+	the subdirectories.
+	
+	Note that users will get the CVS directories together with the
+	translation, but this seems better than specifying all the files by
+	hand.  Later on a clever dist-hook mechanism can delete them.
+
+2002-09-25 18:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/Makefile.am: - list game translation directories in
+	DIST_SUBDIRS
+
+2002-09-24 09:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README.GGZ, QuickStart.GGZ: - update intro docs
+
+2002-09-24 07:20  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Remove some duplicated directory detection (already
+	handled in AC_GGZ_CONFIG), and print the paths when we're done
+	configuring.
+
+2002-09-24 00:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Update acinclude.ggz in the txt-client, and label
+	acinclude.ggz as being included in txt-client.
+
+2002-09-23 18:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/libcgc/: cgc.h, games.h: Updated libcgc to make it
+	identical between ggzd, gtk-games, and kde-games.
+
+2002-09-23 18:34  Jason Short <jdorje@users.sourceforge.net>
+
+	* po/: chess/chess.pot, chess/de.po,
+	chinese-checkers/chinese-checkers.pot, chinese-checkers/de.po,
+	combat/combat.pot, combat/de.po, dots/de.po, dots/dots.pot,
+	ggzcards/de.po, ggzcards/es_AR.po, ggzcards/ggzcards.pot,
+	hastings/de.po, hastings/es_AR.po, hastings/hastings.pot,
+	hastings/pt_BR.po, lapocha/de.po, lapocha/lapocha.pot,
+	reversi/de.po, reversi/reversi.pot, spades/de.po,
+	spades/spades.pot, tictactoe/de.po, tictactoe/es_AR.po,
+	tictactoe/pt_BR.po, tictactoe/tictactoe.pot: Run "make messages"
+	with the new N_ keyword.  This catches some extra material
+	(especially in ggzcards) that was previously untranslated.
+
+2002-09-23 18:31  Jason Short <jdorje@users.sourceforge.net>
+
+	* po/Makefile.am: Add N_ as a keyword to mark translatable
+	material.
+
+2002-09-23 14:33  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, chess/Makefile.am, chess/libcgc/Makefile.am,
+	chinese-checkers/Makefile.am, chinese-checkers/pixmaps/Makefile.am,
+	combat/Makefile.am, combat/maps/In The Wild.33347979,
+	combat/maps/In_The_Wild.33347979, combat/maps/Island I.1321921533,
+	combat/maps/Island II.1321922021, combat/maps/Island_I.1321921533,
+	combat/maps/Island_II.1321922021, combat/maps/Makefile.am,
+	combat/maps/Plenty of options.8183865,
+	combat/maps/Plenty_of_options.8183865, combat/pixmaps/Makefile.am,
+	common/Makefile.am, dots/Makefile.am, ggzcards/Makefile.am,
+	hastings/Makefile.am, lapocha/Makefile.am, po/Makefile.am,
+	reversi/Makefile.am, spades/Makefile.am, tictactoe/Makefile.am:
+	Many cleanups and fixes to the build system:   - Removed
+	@$(NORMAL_INSTALL) and @$(NORMAL_UNINSTALL), which don't     do
+	anything useful anyway.    - Change the "uninstall" directive to
+	"uninstall-local" when	    uninstalling the ggz-config module.   
+	- Add -D parameter to ggz-config when uninstalling (not just when  
+	   installing).    - Expand all wildcards.  Doing otherwise breaks
+	things at odd times.	- Reorder source listings to be in
+	alphabetical order.  Formatted the	source listings
+	consistently throughout the package.	- Reorder game
+	Makefile.am's to be in consistent order:      * SUBDIRS      *
+	INCLUDES      * CFLAGS	    * EXTRA_DIST      * install-data-local 
+	    * uninstall-local	   * ggzexecmod_PROGRAMS      * source and
+	linker information for game program    - Remove duplicate
+	@GTK_CFLAGS@ entries.  @GTK_CFLAGS@ is now only      included as
+	part of CFLAGS, not INCLUDES.	 - Include chinese-checkers' pixmap
+	template README file.	 - Remove custom script code to install
+	groups of data files.  Instead	    just let automake take care of
+	it.    - Use $(DESTDIR) consistently and correctly.  In some places
+	it had	    to be added on (po/Makefile.am); in others it is not
+	needed (and I	   put a comment to that effect).    - Remove -lggz
+	from game module LDADDs.  This is included package-wide      in
+	configure.in.	 - Renamed some files to remove spaces from their
+	names.	Without this,	   the build system would inevitably get
+	confused.    - Touch the GGZ module config file at the beginning of
+	a "make      install".	The actual mechanism for doing this is a
+	bit of a kludge.      But this allows a local installation of the
+	package to be done	without the file already being present.   
+	- Possibly some other fixes I forgot to mention.
+
+2002-09-23 12:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* spades/client_func.c: - Spades controls the network flow by
+	enabling and disabling the handler. It	 was mistakenly assigned to
+	the game/ggzmod socket, not the game/game server   socket.
+
+2002-09-23 11:06  Jason Short <jdorje@users.sourceforge.net>
+
+	* chinese-checkers/Makefile.am: Fixes to chinese-checkers build
+	system:   - Only include @GTK_CFLAGS@ once.    - Remove
+	@$(NORMAL_INSTALL) and @$(NORMAL_UNINSTALL).	- Rename
+	"uninstall" target as "uninstall-local" so uninstall works.
+
+2002-09-23 10:11  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/dlg_prefs.c: Save preferences when the prefs dialog is
+	closed in addition to when the application quits.  This is
+	significant because often the application won't quit of its own
+	volition.
+
+2002-09-23 09:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: By default, build the games in alphabetical order. 
+	This is just for convenience when watching the build...
+
+2002-09-23 09:54  Jason Short <jdorje@users.sourceforge.net>
+
+	* combat/: maps/Makefile.am, pixmaps/Makefile.am: Fixes to the
+	combat build/install system:   - Don't use wildcards when listing
+	files - it breaks "make dist".	    However, "make dist" is still
+	broken because some map files with	spaces in them are not
+	escaped properly (and I don't see how to      correct this).	-
+	Don't use a custom script to install/uninstall the data files. 
+	Just	  tell automake to do it.
+
+2002-09-23 09:42  Jason Short <jdorje@users.sourceforge.net>
+
+	* combat/Makefile.am: Fix several problems with the combat
+	build/install system:	- Only use @GTK_CFLAGS@ once, in CFLAGS and
+	not INCLUDES.	 - Remove @$(NORMAL_INSTALL) and
+	@$(NORMAL_INSTALL), which don't do	anything useful.    -
+	Rename the "uninstall" target as "uninstall-local", so that the    
+	 "normal" uninstall isn't overridden and subdirectories are
+	correctly      uninstalled.
+
+2002-09-23 02:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: ai.c, ai.h, animation.c, animation.h, cb_main.c,
+	cb_main.h, dlg_bid.c, dlg_bid.h, dlg_main.c, dlg_options.c,
+	dlg_options.h, dlg_players.c, dlg_players.h, dlg_prefs.c,
+	drawcard.c, game.c, game.h, layout.c, main.c, main.h,
+	preferences.c, table.c, table.h: Replaced GGZ debugging type
+	strings with macro definitions.  s/"table"/DBG_TABLE/,
+	s/"animation"/DBG_ANIM/, s/"main"/DBG_MAIN/.
+
+2002-09-23 02:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/client/: client.c, client.h: Changed "core" (the
+	ggz_debug debugging type) to DBG_CLIENT.
+
+2002-09-23 01:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/table.c: Record an error message if we can't setup the
+	table.
+
+2002-09-19 18:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Include gnome-client on the list of modules that
+	use acinclude.ggz.
+
+2002-09-19 00:34  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: ai.c, ai.h: - Only declare the AI functions (in ai.c)
+	if DEBUG is defined.  This   matches the header file.  - Remove
+	extra prototypes from ai.c.  - Clean up ai.h.
+
+2002-09-19 00:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* hastings/main_win.c: Surround the unused function shadow(), and
+	its caller, in an #ifdef conditional.
+
+2002-09-15 13:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/: chess/chess.pot, chess/de.po,
+	chinese-checkers/chinese-checkers.pot, chinese-checkers/de.po,
+	combat/combat.pot, combat/de.po, dots/de.po, dots/dots.pot,
+	ggzcards/de.po, ggzcards/es_AR.po, ggzcards/ggzcards.pot,
+	hastings/de.po, hastings/es_AR.po, hastings/hastings.pot,
+	hastings/pt_BR.po, lapocha/de.po, lapocha/lapocha.pot,
+	reversi/de.po, reversi/reversi.pot, spades/de.po,
+	spades/spades.pot, tictactoe/de.po, tictactoe/es_AR.po,
+	tictactoe/pt_BR.po, tictactoe/tictactoe.pot: - translation updates
+	for Gtk+ games
+
+2002-09-09 07:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/game.c: Another fix to avoid a compiler warning: use char*
+	for pointer arithmetic, not void*.
+
+2002-09-09 06:51  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/: board.c, board.h, game.c, game.h, main.c, net.c, net.h: -
+	Mark function parameter lists as "void" in prototypes to avoid a
+	compiler   warning, and enable stricter parameter checking by the
+	compiler.  - Added the correct parameter to the prototype of
+	board_translate.  - Avoid pointer arithmetic with void* - use char*
+	instead.  - Added missing #include "net.h" to net.c.
+
+2002-09-09 06:44  Jason Short <jdorje@users.sourceforge.net>
+
+	* hastings/main_win.c: Marked some local functions as static.
+
+2002-09-09 06:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* combat/: game.c, game.h, gtk_player_info.c, map.c, map.h: - Mark
+	function parameter lists as "void" in prototypes to avoid a
+	compiler   warning, and enable stricter parameter checking by the
+	compiler.  - Add missing #include "game.h" to gtk_player_info.h.
+
+2002-09-09 06:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* reversi/: game.h, main.c, main_win.c, options_dlg.c: - Mark
+	function parameter lists as "void" in prototypes to avoid a
+	compiler   warning, and enable stricter parameter checking by the
+	compiler.  - Changed ggz_debug("reversi", ...) to ggz_debug("main",
+	...) since type   "reversi" isn't used.  - Made some functions in
+	main_win.c static.  - Removed a spurious printf from the
+	options_dlg.c.	(This file is	generated by Glade, but I doubt
+	Glade put the printf in there.)
+
+2002-09-09 01:26  Jason Short <jdorje@users.sourceforge.net>
+
+	* tictactoe/module.dsc.in: TTT has broken network compatability:
+	
+	1.  The introduction of the stats part of the protocol is not	 
+	backwards-compatable.  2.  With the introduction of spectators, the
+	handling of moves is done     slightly differently.  I'm not quite
+	sure why, but connecting to an	   old server breaks things.
+	
+	Because of #1 we'll have to bump the proto # for 0.0.6 anyway, so I
+	went ahead and bumped it.
+	
+	NOTE: to preserve compatability, the network portions of the
+	statistics code cannot be dependent on compile-time directives for
+	0.0.6.
+
+2002-09-08 00:33  Jason Short <jdorje@users.sourceforge.net>
+
+	* tictactoe/: main.c, main_win.c: Rewrote many of the game status
+	messages.  Some of this was necessary for spectators, but I changed
+	many others to improve syntax and add in player names explicitly.
+
+2002-09-07 20:34  Jason Short <jdorje@users.sourceforge.net>
+
+	* tictactoe/: game.h, main.c: Some fixes for TTT with spectators:
+	
+	  - In get_opponent_move, look at the player # the server tells us
+	for the
+	    move instead of our player # to determine whether the move is
+	    'x' or 'o'.  Added some comments explaining this.
+	  - Renamed get_opponent_move as get_move, since it can work for
+	any move
+	    (although the server needn't tell us about our moves).
+	  - Renamed get_*** (functions to read data from server) as
+	receive_***
+	    to avoid naming conflict with the frontend function get_move().
+
+2002-09-07 11:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* tictactoe/main.c: - before the initial synchronization, set state
+	to 'watching game' - don't refer to other player as opponent when
+	being spectator - disallow moves when being spectator (= when
+	game.num < 0)
+
+2002-09-03 23:19  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/client/client.c: Remove an assertion in the client to
+	allow more than one person to "play" (a card from a hand) at the
+	same time.
+
+2002-08-21 00:15  Jason Short <jdorje@users.sourceforge.net>
+
+	* tictactoe/main_win.c: Made a bunch of functions static.
+
+2002-08-21 00:14  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/: gtk_dlg_about.c, gtk_dlg_error.c: #include .h files from
+	within .c files.
+
+2002-08-21 00:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/ai.c: Added #include "ai.h".
+
+2002-08-20 22:49  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Changed -I<directory> to -isystem<directory> to
+	avoid warnings in gcc3.
+
+2002-08-20 22:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Changed -I<directory> to -isystem<directory> to
+	avoid warnings in gcc3.
+
+2002-08-10 21:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* tictactoe/main.c: - read player number in TTT_MSG_MOVE in Gtk+
+	client too
+
+2002-08-07 08:31  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/main.c, chinese-checkers/game.c, combat/main.c,
+	dots/main.c, ggzcards/client/client.c, hastings/main.c,
+	lapocha/main.c, reversi/main.c, spades/client_func.c,
+	tictactoe/main.c: Changed gtk-games to match the ggzmod API change
+	to the GGZMOD_SERVER_EVENT callback.
+
+2002-08-02 05:35  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: game.c, game.h, main.c, client/client.c,
+	client/client.h: Updated the client to use the new ggzmod.
+	
+	This was a bit of a pain, since the server-side AI runs as a
+	separate process that uses the same client code, but does not now
+	use ggzmod.  This was solved (for now) in a rather inelegant way
+	using preprocessor #definitions in the client code.
+
+2002-07-30 11:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* chess/main.c: - file descriptor is -1 on startup, and is assigned
+	later
+
+2002-06-23 13:49  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* chess/main.c, chinese-checkers/game.c, combat/main.c,
+	hastings/main.c, lapocha/main.c, reversi/main.c: -
+	GGZMOD_STATE_EVENT -> GGZMOD_STATE_SERVER - I played some games,
+	they seem to work
+
+2002-06-23 13:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - silence CVS for autom4te.cache
+
+2002-06-23 13:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* chess/game.c, chess/main.c, chess/net.c, chinese-checkers/game.c,
+	chinese-checkers/game.h, chinese-checkers/main.c, combat/game.c,
+	combat/main.c, dots/main.c, hastings/main.c, lapocha/main.c,
+	reversi/main.c, spades/client_func.c: - adapt all Gtk+ games to the
+	new ggzmod API - untested, because ggz-gtk doesn't work properly
+	yet, I'll try the unpatched   one for that
+
+2002-06-22 07:19  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* tictactoe/: game.h, main.c: 
+	- Work with new control-channel-enabled ggzmod
+
+2002-05-07 11:44  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: animation.c, drawcard.c, drawcard.h, layout.c,
+	layout.h: Added "rotation" data to the layout information for each
+	player.  The rotation determines the relative positions of the text
+	box/card box.  With 5 or 6 players, we switch the positions for
+	some players so that selected cards don't overwrite the text boxes
+	of other players.
+
+2002-05-05 23:44  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: game.c, game.h, client/client.c, client/client.h: Fix
+	the card-position determination so that cards are animated out of
+	the correct positions when playing with !collapse_hands.
+
+2002-05-05 23:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/table.c: Make sure the whole text box is redrawn when we
+	update a player message, otherwise parts of an old message may be
+	left on the screen.
+
+2002-05-05 22:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/common/shared.h: Avoid a compiler warning if
+	TRUE/FALSE/MIN/MAX have already bee defined.
+
+2002-05-02 08:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/client/client.c: Fixed buglet in calculation of card
+	played: the position of the card was first calculated, and then
+	unintentionally modified before calling the drawing code.
+
+2002-05-02 08:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/table.c: Removed accidental printf statement.
+
+2002-04-30 07:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/game.c: Update the on-table player list when the number
+	of players changes.
+
+2002-04-30 07:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/client/client.c: Doh!  Avoid passing an invalid pointer
+	to game_alert_pointer().
+
+2002-04-30 07:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: game.c, game.h, client/client.c, client/client.h:
+	Changed the interface of game_alert_player so that the update is
+	made _before_ the function is called, and the _old_ values are
+	passed in to the function (thus reversing its previous interface). 
+	This makes it work similarly to ggzdmod seat-change functions, and
+	should fix the synchronization problems that the client has had.
+
+2002-04-29 19:00  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/game.c: Fixed grammar on the end-of-game statusbar
+	message.
+
+2002-04-29 08:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/game.c: If use_ai is set, call start_hand() to init the
+	ai at the beginning of each hand.
+
+2002-04-29 07:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: game.c, game.h, module.dsc.in, client/client.c,
+	client/client.h, common/protocol.h: Changed the protocol so that a
+	REQ_PLAY also sends a list of valid plays.  This is necessary to
+	get any kind of reasonably efficient behavior out of most AIs.
+
+2002-04-28 02:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: dlg_bid.c, dlg_bid.h, dlg_options.c, dlg_options.h,
+	game.c: Make sure the bid and options dialogs are destroyed, even
+	if they are created, then we switch to having them be automatically
+	selected, and then a sync causes a new request to be automatically
+	answered.
+
+2002-04-28 00:15  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/game.h: Added DBG_*** debugging types to game.h.
+
+2002-04-28 00:02  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: animation.c, layout.c, layout.h, table.c: Cleanup to
+	the handling of selected_card, and to some of the drawing code in
+	general.
+
+2002-04-26 21:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: game.c, game.h, preferences.c, table.c,
+	client/client.c, client/client.h, common/cards.h: A (possibly)
+	better way of handling !collapse_hand.	Now the client tracks two
+	separate hand structures, and the GUI has the option of using
+	either.  There are two advantages: it does not require the hackish
+	addition to the card structure, and (closely related) it does not
+	requre AI code to be able to deal with it.  But, it does require
+	some more complex code to track two separate hand structures.  Oh
+	well...
+
+2002-04-26 09:26  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/client/client.c: Avoid matching a played card with an
+	already-played card.
+
+2002-04-26 08:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: preferences.c, table.c, client/client.c,
+	client/client.h, common/cards.h: - Added a new field to the card
+	structure, called "meta".  This is intended   for internal use;
+	i.e. it is not transferred over the network.  It is   essentially
+	just a great timesaver (and a mild hack).  - Added an option to not
+	compact the hand as you played it.  When this	option is toggled
+	off, when a card is played the rest of the hand won't	be filled
+	in, but instead a space will be left where that card was.  This  
+	may give a better interface, particularly in the case of dominoes.
+
+2002-04-25 23:20  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/dlg_options.c: If we receive a new options request while
+	an old options window is still up, destroy the old window.
+
+2002-04-25 22:42  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/dlg_main.c: Only provide the "Force Redraw" menu item
+	when compiling with debugging.
+
+2002-04-23 21:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: Makefile.am, ai.c, ai.h, game.c, game.h,
+	preferences.c: Added a means for running AI client-side, if
+	compiled with DEBUG enabled.  Just drop in a server AI module in
+	place of ai.c (currently the random module is here).
+	
+	This should be of great aid, in debugging both games and AI
+	modules.
+
+2002-04-23 21:40  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/drawcard.c: Remove compiler warning when compiling with
+	NDEBUG.
+
+2002-04-23 09:36  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: drawcard.c, game.h, preferences.c: Changed the default
+	size of drawn dominoes to make them much smaller, and added a new
+	preference allowing them to be drawn in a large size.
+
+2002-04-23 09:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: drawcard.c, drawcard.h, game.c, game.h, layout.c,
+	layout.h, table.c: Further, and rather rediculous, refinements to
+	the layout system.  It can now handle multiple rows of cards. 
+	Currently the dominoes cardset is set to use 2 rows and the french
+	(and all others) to use 1.
+	
+	Also, I added a slight fix to the player-text-message drawing code,
+	as well as removing a spurious (and accidental) printf from that
+	code.
+	
+	Unfortunately, the whole thing just keeps getting more and more
+	complicated.  Perhaps someday someone will write a fresh
+	implementation that can handle all of these different options in a
+	cleaner manner.  At least most of the code is pretty well
+	modularized...
+
+2002-04-23 07:38  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: game.h, preferences.c, preferences.h, table.c: Added
+	an option, single_click_play.  When chosen, you must just click on
+	a card once to play it (instead of twice).
+
+2002-04-22 19:19  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: layout.c, layout.h, table.c: Change the layout code so
+	that we can expand the text box as necessary.  Also adjust the hand
+	drawing to account for this.  Change the internal layout of the
+	text box slightly.
+
+2002-04-22 03:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/common/cards.c: Return the correct name in get_***_name
+	functions, based on the cardset in use.
+
+2002-04-22 02:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: drawcard.c, drawcard.h, game.c, game.h, module.dsc.in,
+	client/client.c, client/client.h, common/cards.c, common/cards.h,
+	common/net_common.c, common/protocol.h: A different approach to
+	using different cardsets: the type of cardset is no longer stored
+	for each card (using different cardsets together isn't feasible
+	anyway), but is transferred to the client with the newgame message.
+
+2002-04-22 01:27  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: game.c, common/cards.c, common/cards.h: Changed the
+	suit/face name arrays to functions.
+
+2002-04-21 23:26  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/module.dsc.in: Some of the recent changes have subtly
+	changed the form of the data the server sends to the client, thus
+	introducing protocol incompatibilities for some games.	So I've
+	bumped the protocol engine # up (again).
+
+2002-04-21 10:57  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/animation.c: Fixed a longstanding typo bug in the
+	animation code: s/CARDHEIGHT/CARDWIDTH/.
+
+2002-04-21 10:54  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/drawcard.c: More fixes to the domino drawing code.  It
+	now works reasonably well.
+
+2002-04-21 10:14  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: game.c, table.c, client/client.c, common/cards.c,
+	common/cards.h: Added UNKNOWN_CARDSET to the enumeration of
+	possible card types.  Changed UNKNOWN_CARD to use UNKNOWN_CARDSET
+	for the card type.
+	
+	When the client receives UNKNOWN_CARDSET as the type of card, don't
+	try to initialize the card drawing code.  Also, don't setup the
+	table before we have been told the cardset type, and try to setup
+	the table when we hear the cardset type.
+
+2002-04-21 09:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/drawcard.c: Minor fixes to domino-drawing code.  It
+	still doesn't particularly work.
+
+2002-04-21 08:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/drawcard.c: Added preliminary support for drawing
+	dominoes.  It is untested, since the server does not yet support
+	any domino games.
+
+2002-04-21 08:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/common/: cards.c, cards.h: Added a new type of card
+	type: CARDSET_DOMINOES.
+
+2002-04-21 04:56  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: drawcard.c, drawcard.h, game.c, game.h, table.c,
+	client/client.c, client/client.h: Instead of loading and
+	initializing the card data when the table is initialized (i.e. when
+	the executable first launches), don't do this until we receive a
+	card from the server so that we know the type of the deck.
+	
+	This will allow different deck *types* to be used seamlessly within
+	the client (once that is implemented).
+
+2002-04-21 03:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: drawcard.c, drawcard.h, table.c: - Removed
+	get_card_size, adding in get_card_width & get_card_height in its  
+	place.	- Added in function get_card_visibility().  - Changed
+	macros CARDWIDTH, CARDHEIGHT, and CARD_VISIBILITY to just call	
+	the functions get_card_width(0), get_card_height(0), and  
+	get_card_visibility(), respectively.  - Added MY_CARDWIDTH and
+	MY_CARDHEIGHT to drawcard.c.  These are now used   in
+	get_card_width()/get_card_height()/get_card_visibility().  Thus the
+	  values are encapsulated within drawcard.c.
+
+2002-04-21 03:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: animation.c, drawcard.c, drawcard.h: Removed
+	get_card_coordinates from drawcard.h, making it static within
+	drawcard.c.  Changed the animation code to just call drawcard
+	instead of drawing the card manually (using get_card_coordinates).
+
+2002-04-21 03:36  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: Makefile.am, animation.c, drawcard.c, drawcard.h,
+	layout.c, layout.h, main.c, table.c, table.h: Added new files
+	drawcard.[ch] to handle card drawing code.  Pulled that code out of
+	table.[ch] and layout.[ch].
+
+2002-04-18 21:57  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Bump up default version to 0.0.6pre.
+
+2002-04-17 23:22  Ismael Orenstein <perdig@users.sourceforge.net>
+
+	* combat/: Makefile.am, combat.c, dlg_options.c, game.c, map.c: 
+	- Changed all uses of malloc/free to ggz_malloc/ggz_free - Included
+	ggz.h (because of ggz_malloc/ggz_free)
+	
+	(now I have how to find more memory leaks! Cool! :) )
+
+2002-04-17 23:09  Ismael Orenstein <perdig@users.sourceforge.net>
+
+	* combat/: combat.c, game.c: 
+	- Fixed several memory leaks
+
+2002-04-17 19:26  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/dlg_about.c: In the about dialog, use the "official"
+	package version number as the GGZCards version number.
+	
+	Unfortunately, this still seems to be 0.0.5pre (!), so it's not
+	quite accurate.
+
+2002-04-17 19:21  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/libcgc/movecheck.c: s/NULL/0/ to avoid a compiler warning
+	from casting NULL to an integer.
+
+2002-04-16 21:09  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/: module.dsc.in, client/client.c, common/Makefile.am,
+	common/cards.c, common/cards.h, common/net_common.c,
+	common/net_common.h, common/protocol.c, common/protocol.h,
+	common/shared.h: - Updated client/ and common/ code from server.  -
+	Bumped protocol version # to match server.
+
+2002-04-15 10:51  Jason Short <jdorje@users.sourceforge.net>
+
+	* spades/gtk_menu.c: In the GtkFactoryItem initializer, changed
+	_(...) to N_(...) so that we can do i18n without trying to have a
+	non-constant initializer.  Also, I added an #include <config.h> up
+	top.
+	
+	However, although the strings are correctly marked to be translated
+	the code never actually translates them.  I added a FIXME comment
+	about this.
+
+2002-04-15 09:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* chess/board.c, chess/game.c, chess/net.c, chess/libcgc/board.c,
+	chess/libcgc/cgc.c, chess/libcgc/games.c, chess/libcgc/movecheck.c,
+	chess/libcgc/movecheck.h, combat/combat.c,
+	combat/gtk_player_info.c, combat/main.c, ggzcards/dlg_players.c,
+	hastings/dlg_yesno.c, hastings/main.c, reversi/main.c,
+	spades/card.c, spades/gtk_dlg_error.c, spades/gtk_dlg_options.c,
+	spades/gtk_menu.c, spades/gtk_taunt.c, spades/gtkspinbutton.c,
+	tictactoe/main.c: Added "#include <config.h>" line to lots and lots
+	and lots (and lots) of files.
+	
+	AFAIK this line should be included at the top of every .c and .cpp
+	file, before any other #inlcudes (so that it will affect them as
+	well).	It should now be the case that this is true for all files
+	in the ggzd, gtk-games, and gtk-client modules.
+	
+	  There is one exception: gtk-games/spades/gtk_menu.c breaks if
+	config.h
+	  is #included, because doing so causes i18n to take effect and the
+	file
+	  is not prepared for this.  A separate fix will be necessary.
+
+2002-04-15 07:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcards/common/: cards.c, cards.h: Minor cleanups to cards.[ch]
+	interface and code:   - Made card name arrays const char *'s
+	instead of char *'s.	- Replaced some occurances of -1 with
+	UNKNOWN_*** macros.    - Changed UNKNOWN_CARD initializer to use
+	explicit field initializers.
+
+2002-04-14 00:09  Ismael Orenstein <perdig@users.sourceforge.net>
+
+	* reversi/: options_dlg.c, options_dlg.h: 
+	- When changing any color of the game, initializes the color
+	selector with the current color (fix the bug Jason submitted)
+
+2002-04-13 08:29  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ChangeLog: 
+	- Updated for 0.0.5 release
+
+2002-04-13 08:21  Rich Gade <rgade@users.sourceforge.net>
 
 	* rpm/ggz-gtk-games.spec: - Updated for 0.0.5 release
+
+2002-04-13 06:25  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* configure.in: 
+	- Bumped version to 0.0.5
+
+2002-04-13 05:59  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ: 
+	- Updated documentation files
 
 2002-04-12 23:25  Brent Hendricks <bmh@users.sourceforge.net>
 
@@ -2105,7 +2876,7 @@
 	* ggzcards/: cb_bid.c, cb_bid.h, cb_main.c, cb_main.h, dlg_about.c,
 	dlg_about.h, dlg_bid.c, dlg_bid.h, dlg_main.c, dlg_main.h, game.c,
 	game.h, hand.c, hand.h, layout.c, layout.h, main.c, main.h,
-	protocol.h, table.c, table.h: Added $Id: ChangeLog 3965 2002-04-13 06:29:00Z bmh $ headers to all (well,
+	protocol.h, table.c, table.h: Added $Id: ChangeLog 4794 2002-10-07 21:16:10Z dr_maux $ headers to all (well,
 	almost all) files.
 	
 	Note that the commit will in itself will make the last-modified
@@ -2114,7 +2885,7 @@
 2001-07-22 18:41  Jason Short <jdorje@users.sourceforge.net>
 
 	* ggzcards/: common.c, common.h: Test of CVS (RCS) keyword
-	substitution for $Id: ChangeLog 3965 2002-04-13 06:29:00Z bmh $.
+	substitution for $Id: ChangeLog 4794 2002-10-07 21:16:10Z dr_maux $.
 
 2001-07-22 18:38  Jason Short <jdorje@users.sourceforge.net>
 

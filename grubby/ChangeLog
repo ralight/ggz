@@ -1,6 +1,205 @@
-2002-04-12 23:45  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-09-29 14:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/src/main.c, man/grubby-config.1, man/grubby.6,
+	configure.in: - grubby version number bumping
+
+2002-09-27 10:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen
+
+2002-09-26 20:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - ugh! as it turned out, using
+	acinclude.ggz as AC_INIT file didn't turn out to   be good - use
+	configure.in now - stupid build system: put conftest* into
+	DISTCLEANFILES - grubby does now pass 'make distcheck'
+
+2002-09-26 20:41  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/Makefile.am: - include embedtest.rb into EXTRA_DIST
+
+2002-09-26 20:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/doc/: Setup, Tutorial: - update internal grubby docs a bit
+
+2002-09-26 20:19  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/modules/embed.c: - don't crash in NULL messages (e.g. if
+	players enter the room)
+
+2002-09-26 20:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/embedtest.rb: - shut up debug information in
+	mod_embed test script
+
+2002-09-26 12:12  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.ggz: - some fixes for acinclude.ggz, now allowing for
+	conditional AC_GGZ_SERVER,   AC_GGZ_CONFIG and AC_GGZ_INTL too
+
+2002-09-25 17:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.ggz: - only accept <libname>.so as library.
+	
+	This prevents the macros from "finding" a library if the devel
+	package is not installed.  Otherwise, a header could be found in
+	the right directory while the library is chosen from the wrong one.
+
+2002-09-25 17:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.ggz, configure.in: - update build files * new macro
+	AC_GGZ_INIT[([export], [defaults])] * new internal macro
+	AC_GGZ_ERROR(name, incdirs, libdirs) * new internal macro
+	AC_GGZ_REMOVEDUPS(list, <retlist>)
+
+2002-09-25 16:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.ggz, autogen.sh, configure.in: - more updates "for a
+	better build system": * include space after -isystem. Otherwise gcc
+	2.95.3 will not work * initialize AC_INIT with a file from the
+	source tree, so I'd vote for   acinclude.ggz (to be consistent
+	across modules) * in autogen, take acinclude.ggz from $srcdir
+	explicitely
+
+2002-09-25 12:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.ggz, configure.in: - add AC_GGZ_INTL to check for i18n
+	stuff
+	
+	Note that this is not yet the final version, which will also take a
+	condition parameter. It should be tested here first however.
+
+2002-09-25 12:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/: Makefile.am, de.po, fr.po: - update French and
+	German translation
+	
+	Too bad my Spanish skills are still in their infancy...
+
+2002-09-24 10:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/src/net.c: - use select() instead of polling
+	
+	Old grubby ate 95% CPU.  New grubby is dieting.
+
+2002-09-24 09:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* QuickStart.GGZ, README.GGZ: - update intro docs
+
+2002-09-24 00:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Update acinclude.ggz in the txt-client, and label
+	acinclude.ggz as being included in txt-client.
+
+2002-09-19 18:17  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Include gnome-client on the list of modules that
+	use acinclude.ggz.
+
+2002-09-14 09:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/grubby.6: - add command line options to grubby's man page
+
+2002-09-05 21:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/: dict.pl, rdf.pl: - Perl cleanups:  * 'use strict'
+	syntax	* check for Perl 5.8 compatibility  * add Worldforge to RDF
+	news feeds  * when requesting news via HTTP, send out compliant
+	HTTP/1.0 header
+
+2002-08-20 22:44  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Changed -I<directory> to -isystem<directory> to
+	avoid warnings in gcc3.
+
+2002-08-18 09:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/webtranslator.sh: - swapped argument order, since the
+	message to be has a variable length, we put   it at the last
+	position - read input line instead of using command line arguments
+	
+	The script can now be used in a pipe: echo "grubby translate de-fr
+	was ist ein fisch" | ./webtranslator.sh -> yields: ce qui est un
+	poisson (Grubby is less than 3 years old - nobody expects that a
+	3yo can speak French perfectly, n'est-ce pas?)
+
+2002-08-13 07:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/webtranslator.sh: - fix cache: only accept a
+	translation if it was stored with the very same   language
+	combination   (I guess it's a bug in grep? It doesn't accept \t in
+	an expression) - store cache in ~/.ggz/grubby/google instead of
+	~/google
+
+2002-08-12 22:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/: Makefile.am, webtranslator.sh: - Powerful
+	translation backend for grubby using google's translation service. 
+	- Initial code written by chimera
+	
+	It is intended to work like	grubby translate "oh my god this is
+	a whole sentence" en-es
+	
+	All translations are cached (there's a bug but this is fixed soon).
+	 The only thing left to do is to recognize quotes from the input.
+	On the command line, this works already.
+	
+	For single words, the traditional translator will still be faster I
+	guess.
+
+2002-05-24 20:56  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore, configure.in: - if ruby is not found, reset the
+	variables for it Another Hurd-powered bug reports - and we do now
+	have experimental Debian GNU/Hurd packages if they're ever needed
+	:) (Using a stripped-down version of libggz because the pthreads
+	are experimental there.) - add autom4te.cache to .cvsignore
+
+2002-05-22 11:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/data/Makefile.am: - add embedtest.rb to makefile.am - to
+	test this, add to .ggz/grubby/modembed.rc
+	
+	[scripts] = test test = /usr/local/.../embedtest.rb
+
+2002-05-22 11:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: data/embedtest.rb, modules/embed.c, src/net.c: -
+	implement embedded scripts interpreter for ruby - add test script  
+	=> The script gets the chat messages properly, but when changing it
+	to return   the results, the original content reappears in the
+	module, and so grubby acts   like a repeater. This is odd.  - fix
+	ggzcore_read_data
+
+2002-04-18 22:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acconfig.h, configure.in: - add check for ruby so it can be setup
+	correctly - if it's not there, 'embed' turns into an empty module
+
+2002-04-18 22:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/modules/: Makefile.am, embed.c: - prepare embedded
+	scripting in grubby: new module 'embed' - this can use the same
+	modules as 'exec', but is faster and can provide more	advantages
+	in the future
+
+2002-04-18 21:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - go up to 0.0.6pre - output some text after
+	running configure
+
+2002-04-13 09:16  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* AUTHORS, ChangeLog, NEWS, QuickStart.GGZ, README.GGZ: 
+	- Updated docs for 0.0.5
+
+2002-04-13 06:45  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* configure.in: - bump grubby to 0.0.5
+
+2002-04-13 02:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - remove local make clean rule again
 
 2002-04-12 19:45  Josef Spillner <dr_maux@users.sourceforge.net>
 

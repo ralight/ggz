@@ -1,6 +1,543 @@
-2002-04-13 00:50  Rich Gade <rgade@users.sourceforge.net>
+2002-10-01 21:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - use configure.in
+
+2002-09-29 16:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzap/Makefile.am: [gentoo] -s/KDE_KDECORE/LIB_KDECORE/
+	
+	Doh! Nobody ever noticed that. The new automake is clever.
+
+2002-09-29 16:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.kde: [gentoo] - erase AM_KDE_WITH_NLS here too
+
+2002-09-29 14:06  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/ggzap.6, man/ggzmodsniff.6, man/kggz.6, man/shadowbridge.6,
+	configure.in: - final version numbers for kde-client
+
+2002-09-27 18:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - sync with kde-games:
+	
+	In autogen.sh, perl am_edit must be called, otherwise no Qt meta
+	object files will be created.  This should be synced consecutively
+	with all the other modules.
+
+2002-09-27 17:49  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/Makefile.am: - bump ggzcore++ library
+	interface version to 2
+
+2002-09-27 10:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen
+
+2002-09-27 09:49  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: KGGZ.cpp, KGGZConnect.cpp, KGGZConnect.h: - don't
+	do anything when a negotiation error occurs - disable connection
+	button so users cannot click it 2 times
+
+2002-09-26 21:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzap/ggzap_handler.cpp: - bugfix: avoid segfault when game
+	negotiation fails
+
+2002-09-26 19:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/KGGZConnect.cpp: - found two uncaught translations
+
+2002-09-26 19:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/widgets/: KGGZBase.cpp, KGGZTeam.cpp, KGGZTeam.h: -
+	improve team widget (buttons and stuff does now work)
+
+2002-09-26 14:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.ggz, configure.in: - deploy acinclude.ggz here too
+
+2002-09-26 04:07  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: po/de.po, po/es.po, po/fr.po, po/kggz.pot, po/pt_BR.po,
+	src/main.cpp: - update kggz translation template - update German
+	translation
+
+2002-09-24 09:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* QuickStart.GGZ, README.GGZ: - update intro docs
+
+2002-09-24 00:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Update acinclude.ggz in the txt-client, and label
+	acinclude.ggz as being included in txt-client.
+
+2002-09-23 20:54  Jason Short <jdorje@users.sourceforge.net>
+
+	* compcal/src/Makefile.am: Change "-Ilib" to "-I$(srcdir)/lib" in
+	INCLUDES.
+
+2002-09-20 23:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kio_ggz/: kio_ggz.cpp, kio_ggz.h: - ability to work with URIs
+	which specify a non-default port (like	 ggz://ggz.jzaun.com:5689)
+
+2002-09-20 22:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzap/: ggzap.cpp, ggzap.h, ggzap_handler.cpp, ggzap_handler.h,
+	ggzap_tray.cpp, ggzap_tray.h: - use state variable to keep track of
+	launch game/cancel game menu item (This is not strictly necessary
+	but Qt gives an error to stdout when removing an already removed
+	menu item) - don't crash when ending a game: don't use a QTimer
+	anymore, rely solely on   QSocket
+
+2002-09-19 19:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzap/: README, ggzap_handler.cpp, main.cpp: - don't try to
+	evaluate the game types if only the rooms are sent (those are  
+	sent first)
+	
+	At this point, all gametypes are NULL. Yet ggzcore++ cannot handle
+	it. Strange.  Therefore, we test with gametype()->gametype(), to
+	get the ggzcore structure, until the behaviour of C++ here can be
+	explained.
+
+2002-09-19 18:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* shadowbridge/: Makefile.am, hi16-app-shadowbridge.png,
+	hi32-app-shadowbridge.png, hi48-app-shadowbridge.png,
+	shadowbridge.desktop: - add icon for shadowbridge - but install
+	desktop file into $(kde_appsdir)/.hidden so the user doesn't try  
+	to run the program him/herself
+
+2002-09-19 18:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kcm_ggz/main.cpp: - use stock KAboutData so KInstance doesn't
+	whine
+
+2002-09-19 18:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kcm_ggz/modules/: kcm_ggz_games.cpp, kcm_ggz_games.h,
+	kcm_ggz_ggzd.cpp, kcm_ggz_metaserver.cpp, kcm_ggz_metaserver.h: -
+	seems CVS works again :) metaserver pane: - add ability to save and
+	load URIs, in addition to the few default ones - connect to
+	ggz.snafu.de by default, not localhost ggzd pane: - add database
+	connection parameters games pane: - let context menu (right mouse
+	button) show detailed game information
+
+2002-09-19 18:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Include gnome-client on the list of modules that
+	use acinclude.ggz.
+
+2002-09-17 21:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - interim changes until acinclude.kde is fixed
+
+2002-09-17 21:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.kde: - synchronized with KDE CVS HEAD - shrinked
+	(shrunk?) size to about 50%:   * removed Java checks   * removed
+	Mico/CORBA checks (good ol' pre-KDE 2.0 days)	* removed Python
+	checks	 * removed utmp, gethostname, PAM, passwd, MAXPATHLEN
+	checks	 * kde-extra and qimgio are no more   * separate jpeg, png,
+	gif checks are gone as well   * many more small things
+	
+	The remaining parts is mostly:	 * Qt (qt-embedded, qt/x11, qtopia)
+	  * KDE (kdefsstnd, fast-creating makefiles, versioning)   * X11
+	(dcop, special platform-dependent libs, xinerama, Xt)
+	
+	This will have to be cleaned up as well, but that's not urgent.
+
+2002-09-16 21:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* compcal/src/: display.cpp, parser.cpp: - display events correctly
+
+2002-09-16 21:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* compcal/src/lib/: event.cpp, event.h, eventgroup.cpp,
+	eventgroup.h: - fix association of events to eventgroups
+	
+	The current test calendard on mindx.dyndns.org does now contain
+	entries for the next two fridays as well as the release party
+	meeting.  For permanent usage, such data should be fed into the xml
+	file by a web interface or something.
+
+2002-09-15 17:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kio_ggzmeta/: kio_ggzmeta.cpp, kio_ggzmeta.h: - substitute
+	KInstance by KApplication (this is what kept the whole thing  
+	unusable all the time)	 -> Freeciv works already, Netrek and
+	Dopewars metaservers are not reachable - first stub for error
+	handling for ggz class
+
+2002-09-15 14:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/doc/index.docbook: - fill KGGZ handbook with useful
+	contents about logging into a server, chatting	 and playing games
+
+2002-09-15 14:12  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/data/splash/: title-ggz-mask.png, title-ggz.png,
+	title-kggz-mask.png, title-kggz.png, title-version-mask.png,
+	title-version.png: - change kggz splash to show 0.0.6 version
+	number images - the gimp and me - two incomatible creatures
+
+2002-09-14 10:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalivecontrol/src/connection.cpp: - don't hardcode connection
+	parameters - store them using KConfig instead
+
+2002-09-14 09:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: KGGZ.cpp, KGGZConnect.cpp, KGGZInput.cpp,
+	KGGZInput.h, KGGZLaunch.cpp, KGGZLaunch.h: - better handling of
+	large player numbers - support for seat reservations
+
+2002-09-13 20:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - make spectator-specific code permanent
+
+2002-09-08 07:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/GGZCoreRoom.cpp: - use spectator parameter,
+	not separate function
+
+2002-09-07 15:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/KGGZ.cpp: - delete socket notifier immediately when
+	the connection is interrupted - this is clearly a Qt bug, which
+	exit(0)'s the application in such a case,   instead of providing
+	feedback (qt-copy/src/kernel/qapplication_x11.cpp).    I'll report
+	it to the Trolls.
+
+2002-09-07 09:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: ggzcore++/src/GGZCoreRoom.cpp,
+	ggzcore++/src/GGZCoreRoom.h, src/KGGZ.cpp: - leave as spectator
+	when watching a game, leave seat otherwise
+
+2002-09-06 08:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzap/: ggzap.cpp, ggzap_handler.cpp, ggzap_handler.h: - first
+	round in letting GGZap catch up with ggzcore API changes - there is
+	a strange crash, which is not yet fixed by that, and basically	
+	prevents all playing until it is fixed :(
+
+2002-09-05 23:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/GGZCoreGametype.cpp: - forgot to include
+	ggzcoreppcommon.h
+
+2002-09-05 23:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/ggzcore++/src/GGZCoreGametype.cpp: - use NULL instead of
+	0 for pointer
+
+2002-08-22 08:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: ggzcore++/src/GGZCoreGametype.cpp, src/KGGZ.cpp,
+	src/KGGZ.h, src/widgets/KGGZBase.cpp: - if a game type allow
+	spectators, display menu choice for it, otherwise   disable it
+
+2002-08-21 22:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/po/de.po, ggz-kde/po/fr.po, po/ggzap/de.po,
+	po/kcm_ggz/de.po, po/modsniff/de.po, po/shadowbridge/de.po: -
+	rename charset utf8 to UTF-8 - fix run-away multibyte character
+
+2002-08-20 22:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Changed -I<directory> to -isystem<directory> to
+	avoid warnings in gcc3.
+
+2002-08-10 20:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: KGGZ.cpp, widgets/KGGZBase.cpp: - another case of
+	forgotten commits: correctly enable/disable menu items for  
+	spectators
+
+2002-08-01 16:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalivecontrol/: data/Makefile.am, data/avatars.png,
+	data/frozenworld.png, data/normalworld.png, data/worlds.png,
+	src/app.cpp, src/app.h, src/connection.cpp, src/create.cpp,
+	src/create.h: - add some icons - freezing, unfreezing and deleting
+	worlds does now work
+
+2002-07-31 23:21  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - build keepalivecontrol correctly
+
+2002-07-31 23:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalivecontrol/: .cvsignore, Makefile.am, data/.cvsignore,
+	data/Makefile.am, data/hi16-app-keepalivecontrol.png,
+	data/hi32-app-keepalivecontrol.png,
+	data/hi48-app-keepalivecontrol.png, data/keepalivecontrol.desktop,
+	src/.cvsignore, src/Makefile.am, src/app.cpp, src/app.h,
+	src/connection.cpp, src/connection.h, src/create.cpp, src/create.h,
+	src/main.cpp, src/toplevel.cpp, src/toplevel.h: - add Keepalive
+	server control client for KDE
+	
+	This is basically the same as the text-based one.  It aims at
+	desktop-friendy server management (and also gives me a test bed for
+	Qt/AGS interaction which will be important for the keepalive game).
+	
+	Logging in and creating worlds works already.
+
+2002-07-30 17:55  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzap/: ggzap.cpp, ggzap_config.cpp, ggzap_gui.cpp,
+	ggzap_handler.cpp, ggzap_handler.h, ggzap_tray.cpp: - handle wrong
+	server version - ggz.snafu.de is now default server, and system
+	user name is default user name	 instead of empty one - tool tip
+	for the system tray widget :) - set don't-redraw-on-repaint flag,
+	but when moving the window, it creates	 flicker nevertheless.
+	Since it happens with e.g. Noatun too, it's either a Qt   bug or a
+	X11 bug for me only.
+
+2002-07-30 10:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/KGGZ.cpp: - when a game is over, close its channel,
+	otherwise we won't get the table   leave event and everything would
+	be messed up - fix disconnection: 'logged out' message does now
+	appear again
+
+2002-07-30 09:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/KGGZ.cpp: - when game is over, display it in the chat
+	window
+
+2002-07-30 08:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - include new documentation directory
+
+2002-07-30 08:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/doc/: .cvsignore, Makefile.am, index.docbook: - start
+	with user documentation for kggz
+
+2002-07-15 23:05  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: widgets/KGGZChat.cpp, widgets/KGGZLogo.cpp,
+	KGGZ.cpp: - don't freeze on second connection	(socket notifier
+	must be deleted when kggzserver is killed) - if chat input contains
+	text upon disconnection, remove it - room icon is now centered
+	correctly
+
+2002-07-14 20:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* compcal/.cvsignore, compcal/Makefile.am, compcal/README.compcal,
+	compcal/data/.cvsignore, compcal/data/Makefile.am,
+	compcal/data/compcal.desktop, compcal/data/example.xml,
+	compcal/data/hi16-app-compcal.png,
+	compcal/data/hi32-app-compcal.png,
+	compcal/data/hi48-app-compcal.png, compcal/src/.cvsignore,
+	compcal/src/Makefile.am, compcal/src/app.cpp, compcal/src/app.h,
+	compcal/src/display.cpp, compcal/src/display.h,
+	compcal/src/main.cpp, compcal/src/parser.cpp, compcal/src/parser.h,
+	compcal/src/toplevel.cpp, compcal/src/toplevel.h,
+	compcal/src/lib/.cvsignore, compcal/src/lib/Makefile.am,
+	compcal/src/lib/event.cpp, compcal/src/lib/event.h,
+	compcal/src/lib/eventgroup.cpp, compcal/src/lib/eventgroup.h,
+	compcal/src/lib/participant.cpp, compcal/src/lib/participant.h,
+	compcal/src/lib/series.cpp, compcal/src/lib/series.h, Makefile.am,
+	configure.in: - add the Competition Calendar to CVS
+	
+	See mail to ggz-dev
+
+2002-07-14 17:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: KGGZ.cpp, KGGZ.h, main.cpp: - and the rest for the
+	automatic login stuff
+
+2002-07-14 17:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/widgets/: KGGZBase.cpp, KGGZBase.h: - accept URI as
+	command line argument
+	
+	This allows for automatic logins: kggz ggz://localhost -> login as
+	guest-xxx kggz ggz://josef3:gnu69@localhost:5689 -> login as
+	registered user josef3
+	
+	In order to make this more useful, the guest-xxx should be replaced
+	with a global preferred nickname, which is set in kcm_ggz and also
+	present when creating new profiles.
+
+2002-07-07 17:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/data/icons/games/: Copenhagen.png, Makefile.am: - add
+	room icon for the game Copenhagen
+
+2002-06-30 13:51  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/widgets/: KGGZTeam.cpp, KGGZTeam.h: - team dialog
+	classes
+
+2002-06-30 13:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: data/icons/players/Makefile.am,
+	data/icons/players/team-founder.png,
+	data/icons/players/team-member.png, src/KGGZ.cpp, src/KGGZ.h,
+	src/widgets/KGGZBase.cpp, src/widgets/KGGZBase.h,
+	src/widgets/KGGZGameInfoDialog.cpp, src/widgets/Makefile.am: -
+	playing games is now possible again - start with team dialog
+
+2002-06-29 16:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: data/browser/index.html, src/KGGZ.cpp, src/KGGZ.h: -
+	provide link for dummy rankings page (to be filled with real
+	statistical   information soon)
+
+2002-06-29 16:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/widgets/: KGGZBase.cpp, KGGZBase.h, KGGZChat.cpp,
+	KGGZMotd.cpp, KGGZMotd.h, KGGZPrefEnv.cpp, KGGZPrefEnv.h: - new
+	configuration setting: display MOTD automatically or not - new menu
+	entry: display MOTD - chat fix: When typing /away without argument,
+	treat player as being returned	 (conforming to how IRC does it)
+
+2002-06-29 15:47  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/po/de.po: - small translation fix
+
+2002-06-29 13:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/data/kde/Makefile.am: - when copying files manually
+	during the install, use DESTDIR (recognized by the Gentoo build
+	system which told that there's an access violation)
+
+2002-06-23 15:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: ggzcore++/src/GGZCoreGame.cpp,
+	ggzcore++/src/GGZCoreGame.h, src/KGGZ.cpp, src/KGGZ.h: - use new
+	game launching methods - this does not work yet, but the code is at
+	least written
+
+2002-06-16 17:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/: KGGZ.cpp, KGGZConnect.cpp: - don't choke on clean
+	installations
+
+2002-06-02 20:21  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: po/de.po, src/KGGZConnect.cpp: - some UTF-8 fixes - let
+	~/.ggz directory be created if not present yet on startup
+
+2002-05-20 19:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - argh! had to change detection function again
+
+2002-05-20 17:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: ggzcore++/src/GGZCoreGame.cpp,
+	ggzcore++/src/GGZCoreGame.h, src/KGGZ.cpp: - better set the game fd
+	before attaching its callbacks and launching it,   otherwise it
+	will be not too happy with its situation - playing games in kggz
+	should now work again
+
+2002-05-20 15:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - use this new function for spectator detection
+
+2002-05-20 15:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/KGGZ.cpp, ggz-kde/src/KGGZ.h,
+	ggzap/ggzap_handler.cpp: - quick compile fix for ggzap (-> FIXME) -
+	some more bits for channel and spectator support in kggz
+
+2002-05-19 13:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: ggzcore++/src/GGZCoreGame.cpp,
+	ggzcore++/src/GGZCoreGame.h, ggzcore++/src/GGZCoreGametype.cpp,
+	ggzcore++/src/GGZCoreRoom.cpp, ggzcore++/src/GGZCoreRoom.h,
+	ggzcore++/src/GGZCoreServer.cpp, ggzcore++/src/GGZCoreServer.h,
+	ggzcore++/src/GGZCoreTable.cpp, src/KGGZ.cpp, src/KGGZ.h,
+	src/KGGZLaunch.cpp, src/abstract/KGGZGameInfo.h,
+	src/widgets/KGGZBase.cpp, src/widgets/KGGZBase.h: - updated
+	spectator support
+
+2002-05-19 11:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - add autom4te.cache to cvsignore
+
+2002-05-08 00:07  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/: ggzcore++/src/GGZCoreGame.cpp,
+	ggzcore++/src/GGZCoreRoom.cpp, ggzcore++/src/GGZCoreServer.cpp,
+	src/KGGZ.cpp: - don't use the 'killserver' hack for failed
+	negotiations - cool: using ggzcore++, not a single line of client
+	code must be changed in   order to be able to chat now :)
+
+2002-05-06 10:12  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/menu: - same like gtk+ client
+
+2002-04-18 21:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/KGGZ.cpp, ggz-kde/src/KGGZLaunch.cpp,
+	ggz-kde/src/KGGZLaunch.h, ggz-kde/src/widgets/KGGZAbout.cpp,
+	ggz-kde/src/widgets/KGGZCaption.cpp,
+	ggz-kde/src/widgets/KGGZGrubby.cpp,
+	ggz-kde/src/widgets/KGGZLineSeparator.cpp,
+	ggz-kde/src/widgets/KGGZLogo.cpp,
+	ggz-kde/src/widgets/KGGZSplash.cpp,
+	ggz-kde/src/widgets/KGGZUsers.cpp, ggz-kde/src/widgets/KGGZUsers.h,
+	ggz-kde/src/widgets/more/KGGZBrowser.cpp, ggzap/ggzap_gui.cpp,
+	kcm_ggz/modules/kcm_ggz_default.cpp,
+	kcm_ggz/modules/kcm_ggz_games.cpp,
+	kcm_ggz/modules/kcm_ggz_ggzd.cpp,
+	kcm_ggz/modules/kcm_ggz_metaserver.cpp,
+	kio_ggzmeta/kio_ggzmeta.cpp, shadowbridge/shadowcontainer.cpp: -
+	more KDE 3.0 porting stuff
+
+2002-04-18 00:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, acinclude.kde, am_edit, autogen.sh, configure.in: -
+	setup KDE 3 administrativia
+
+2002-04-18 00:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/src/KGGZMeta.cpp, ggz-kde/src/Makefile.am,
+	ggz-kde/src/main.cpp, ggz-kde/src/widgets/KGGZBase.cpp,
+	ggz-kde/src/widgets/KGGZCaption.cpp,
+	ggz-kde/src/widgets/KGGZChat.cpp,
+	ggz-kde/src/widgets/KGGZChatLine.cpp,
+	ggz-kde/src/widgets/KGGZChatLine.h, ggzap/Makefile.am,
+	ggzap/ggzap.cpp, ggzap/ggzap_game.cpp, ggzap/ggzap_gui.cpp,
+	ggzap/main.cpp, kcm_ggz/kcm_ggz.cpp, kcm_ggz/kcm_ggz.h,
+	kcm_ggz/main.cpp, kcm_ggz/modules/kcm_ggz_games.cpp,
+	kio_ggz/Makefile.am, kio_ggzmeta/Makefile.am, modsniff/Makefile.am,
+	modsniff/kmodsniff.cpp, modsniff/main.cpp,
+	shadowbridge/Makefile.am, shadowbridge/main.cpp,
+	shadowbridge/shadowapp.cpp, shadowbridge/shadowclientggz.h,
+	shadowbridge/shadownet.h: - here we go: trash your KDE 2, install
+	KDE 3
+
+2002-04-13 07:58  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ChangeLog: 
+	- Updated ChangeLog for 0.0.5
+
+2002-04-13 07:50  Rich Gade <rgade@users.sourceforge.net>
 
 	* ggz-kde-client.spec: - Updated for 0.0.5
+
+2002-04-13 07:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-kde/data/: Makefile.am, kggz.xpm: - install XPM file for kggz
+	for the Debian menus and whatever may need it
+
+2002-04-13 06:02  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README.GGZ: 
+	- Updated docfiles
+
+2002-04-13 05:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/menu: - add menu entry for kggz
 
 2002-04-13 00:35  Josef Spillner <dr_maux@users.sourceforge.net>
 

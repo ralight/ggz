@@ -1,7 +1,389 @@
-2002-04-12 22:55  Rich Gade <rgade@users.sourceforge.net>
+2002-10-04 05:32  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/ggzcore.h: Remove the flag-based values for the GGZChatOp
+	enumeration; these values were undocumented and newly depricated
+	anyway.  Just let the enum be an enum.
+
+2002-10-04 05:27  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/net.c: Remove the long-depricated net.c file.
+
+2002-10-01 21:05  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - use configure.in for AC_INIT
+
+2002-10-01 17:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* man/: ggzcore_h.3.in, ggzmod_h.3.in: Update man pages for ggzcore
+	and ggzmod.
+
+2002-10-01 17:44  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/Doxyfile, ggzmod/Doxyfile: Bump Doxyfile versions to
+	0.0.6.
+
+2002-09-29 14:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/ggz-config.6.in, man/ggz.modules.5.in, configure.in: - client
+	libs version number bumping
+
+2002-09-27 17:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzmod/Makefile.am: - increase ggzmod interface version by one
+	
+	For example, the semantics of ggzmod_connect/disconnect have
+	changed, and get_udp_fd is not available anymore.
+	
+	This is, of course, no surprise because of the direct connections.
+
+2002-09-27 10:56  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen
+
+2002-09-26 13:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzmod/Makefile.am: - let ggzmod use libggz linkage information,
+	too
+
+2002-09-26 12:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.ggz, configure.in: - deploy new configuration macros
+	for ggz-client-libs
+
+2002-09-26 12:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/Makefile.am: - use libggz libraries and headers
+	explicitly - IMPORTANT: library interface version has been
+	increased.
+	
+	Before: libggzcore.so.1 Now: libggzcore.so.2
+
+2002-09-24 09:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* QuickStart.GGZ, README.GGZ: - update intro docs
+
+2002-09-24 00:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Update acinclude.ggz in the txt-client, and label
+	acinclude.ggz as being included in txt-client.
+
+2002-09-20 09:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/ggzcore.h: - some bits of additional documentation for
+	the ggzcore header file
+
+2002-09-19 18:17  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Include gnome-client on the list of modules that
+	use acinclude.ggz.
+
+2002-09-19 00:27  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.in: If DEBUG isn't enabled (via
+	--enable-debug), define NDEBUG.
+
+2002-09-17 04:40  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzmod/Makefile.am: Added mod.h and protocol.h to
+	libggzmod_la_SOURCES.
+
+2002-09-17 04:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/ggz-config.c: #if 0'd out the unused function query().
+
+2002-09-12 19:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/room.c: Set room->spectating to 0 when we launch a game.
+	
+	This value really needs to be tracked better: updated when we
+	actually join a table rather than when we try to.  Also ggzd should
+	not rely on the client to tell it whether it is spectating or not:
+	doing so is why this caused a bug in the first place.
+	
+	(Bug: open two clients, and connect to a server.  With one client,
+	launch a game.	Then spectate it with the other.  Exit the game. 
+	Then launch a game with the second client.  The client and the
+	table will now be fubar.  This is fixed with this change, but a
+	different client could still mess things up.)
+
+2002-09-11 05:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: gametype.c, gametype.h, netxml.c, protocol.h: Changed
+	the GGZ network protocol so that player and bot allow lists are
+	transmitted in a more flexible and legible way.  The allow
+	spectator boolean value is transferred as "true"/"false".
+	
+	I also bumped the protocol version up to 8.  This change will break
+	backwards-compatability, but only when players play games.  Is
+	there a system in place for allowing for backwards-compatability in
+	a case like this?  There should be (eventually).
+
+2002-09-09 03:47  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/table.c: Instead of hard-coding the number of spectator
+	seats as 8, instead dynamically allocate them as needed, with
+	unlimited growth.
+	
+	The implementation uses a variable-sized array.  We start out with
+	0 spectators, and if we get a new spectator N we know we must grow
+	the array to hold N spectators.  The growth is done geometrically
+	to keep overhead low.
+
+2002-09-08 10:49  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: netxml.c, table.c, table.h: Problem: when spectators
+	join and leave tables, the other clients do not know what table
+	those players are at.
+	
+	Solution: ggzcore must track the list of spectators for each table,
+	so that when a table update is sent it can properly remove/add
+	players from the table.  This is, needless to say, a rather
+	involved process.
+	
+	There's a significant hack involved: the maximum number of
+	spectators is hard-coded at 8.	The "correct" thing to do would be
+	to use a GGZList which *only* has elements for the existing
+	spectators.  That way the list could grow arbitrarily.	All in good
+	time...
+
+2002-09-08 08:34  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: Removed the 'joinspectator' and
+	'leavespectator' result tags.  Instead 'join' and 'leave' are
+	simply used instead.
+	
+	The handling for these was already identical at the client end.
+	
+	At the server end, this allowed the removal of the functions
+	net_send_table_join_spectator and net_send_table_leave_spectator,
+	and the merging of some other code that is now identical between
+	spectators and players.
+
+2002-09-07 19:16  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: net.h, netxml.c, room.c: Instead of <JOINSPECTATOR/>
+	and <LEAVESPECTATOR/>, make the XML protocol use <JOIN
+	SPECTATOR='true'/> and <LEAVE SPECTATOR='true'/>.
+	
+	This gives sufficient backwards-compatability: now if you try to
+	"watch" a game on a server that doesn't support spectators, you'll
+	just join the game as a player.  The other way, if you did this the
+	client would become fubar.
+	
+	Note that this *does* break compatability with the CVS code of the
+	past several days.  But this is a small price to pay.
+
+2002-09-07 15:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: ggzcore.h, room.c, room.h: Fixes to ggzcore so that
+	joining & leaving a table as a spectator works:   - Removed
+	ggzcore_room_join_table_spectator and	 
+	ggzcore_room_leave_table_spectator.    - Added a "spectator"
+	parameter to ggzcore_room_join_table.  This	 breaks
+	compatability (although only for our core clients!), but will	  
+	be simpler in the long run.    - Track whether we're playing or
+	spectating at a table, and use this	 information when
+	ggzcre_room_leave_table is called.
+
+2002-09-07 09:21  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/: ggzcore.h, net.h, netxml.c, room.c, room.h: - separate
+	seat leave from spectator leave
+
+2002-09-06 21:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/netxml.c: In _ggzcore_net_free, call
+	_ggzcore_net_disconnect if the connection still exists.
+
+2002-09-04 20:49  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/: gametype.c, gametype.h, ggzcore.h, net.h, netxml.c,
+	room.c, room.h: - ggzcore interface update: * support for
+	spectators
+
+2002-09-02 00:24  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/ggz-config.c: Marked some functions as static.
+
+2002-08-20 22:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Changed -I<directory> to -isystem<directory> to
+	avoid warnings in gcc3.
+
+2002-08-20 22:44  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Changed -I<directory> to -isystem<directory> to
+	avoid warnings in gcc3.
+
+2002-08-20 04:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/game.c: "#if 0" out the unused _ggzcore_game_get_path
+	function.
+
+2002-08-07 18:43  Jason Short <jdorje@users.sourceforge.net>
+
+	* man/ggzcore_h.3.in: Updated ggzcore manpage.
+
+2002-08-07 18:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/Doxyfile: Doh!  Finish updating Doxyfile:   - Enable
+	latex output.
+
+2002-08-07 18:36  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzmod/Doxyfile: Updated Doxyfile:   - Version: 0.0.5pre ->
+	0.0.6pre   - Enabled latex output.
+
+2002-08-07 18:35  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/Doxyfile: Updated Doxyfile:	-Version: 0.0.5pre ->
+	0.0.6pre
+
+2002-08-07 17:31  Jason Short <jdorje@users.sourceforge.net>
+
+	* man/ggzmod_h.3.in: Updated manpage for ggzmod.
+
+2002-08-07 08:31  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzmod/: ggzmod.c, ggzmod.h: Changed the ggzmod interface
+	slightly: the GGZMOD_EVENT_SERVER event now passes a pointer to the
+	FD (int*) instead of passing the FD directly (int).
+	
+	This makes it consistent with the rest of the ggzmod and ggzdmod
+	api's, as well as more stable overall.
+
+2002-08-05 14:10  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/: conf.c, game.c, ggzcore.h, hook.c, init.c, module.c,
+	net.c, netxml.c, room.c, server.c, state.c, table.c: Changed
+	strings of the form "GGZCORE:XXXX" that are passed to ggz_debug to
+	#definitions in ggzcore.h of the form GGZCORE_DBG_XXXX.  This
+	allows client programs (e.g. xyz-client) to pass these values to
+	ggz_debug_init.
+
+2002-08-01 06:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Exit the configure script if expat-dev is not
+	found; don't just give a warning and continue.	This makes the
+	process nearly identical to what is used for ggzd.
+	
+	Note there are a few problems with this system: (1) ggzmod is
+	linked to expat (as the game servers are in ggzd); (2) if we're
+	only compiling ggzmod (or the game servers in ggzd) we shouldn't
+	need expat, and (3) there is no way (that I know of) to compile
+	just ggzmod (without ggzcore).
+
+2002-07-30 09:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcore/game.c: - don't send game over event for the state
+	change, since we already send it   upon disconnection
+
+2002-06-22 07:13  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* Makefile.am: 
+	- compile ggzmod before ggzcore
+
+2002-06-22 07:13  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggzcore/: Makefile.am, game.c, game.h, ggzcore.h, module.c: 
+	- Link with new ggzmod (handes both sides of client-sde game
+	modules) - Allow for presence of control channel to game client
+
+2002-06-22 07:10  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggzmod/: .cvsignore, Makefile.am, ggzmod.c, ggzmod.h, io.c, io.h,
+	mod.h, protocol.h: 
+	- New ggzmod (parallels server-side ggzdmod) with a control channel
+	  between the ggz client and game modules
+
+2002-05-15 21:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - silence autoconf's new "autom4te"
+
+2002-05-13 21:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - more fixes for ac > 2.5
+
+2002-05-11 18:03  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggzcore/protocol.h: 
+	- Put back GGZ protocol version
+
+2002-05-11 08:02  Rich Gade <rgade@users.sourceforge.net>
+
+	* ggzcore/ggz-config.c: - ggz-config --check option written to
+	check/repair a ggz.modules file - ggz_conf_get_sections() added to
+	retrieve a list of all sections in a config - ggz_conf_get_keys()
+	added to retrieve a list of all keys in a config section
+
+2002-05-05 23:13  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggzcore/: game.c, game.h, ggzcore.h, net.h, netxml.c, room.c,
+	server.c, server.h, table.c: 
+	- Removed old game data stuff:	 * Room event GGZ_TABLE_DATA   *
+	Game event GGZ_GAME_DATA   * ggzcore_room_send_game_data()   *
+	ggzcore_game_data_is_pending()	 * ggzcore_game_read_data()   *
+	ggzcore_game_write_data()   * ggzcore_game_send_data()	 *
+	socketpair() for communicating with game module   * All <DATA>
+	handling code
+	
+	- New direct game channel mechanism:   * New server events:
+	GGZ_CHANNEL_CONNECTED, GGZ_CHANNEL_READY, and	  GGZ_CHANNEL_FAIL 
+	 * New function ggzcore_server_create_channel() to create new game
+	channel   * New function ggzcore_server_get_channel() to get
+	channel fd   * Add fd argument to ggzcore_server_read_data()   *
+	New function ggzcore_game_set_fd()   * New GGZServer.channel member
+	  * New code to send <CHANNEL>	 * Rename
+	_ggzcore_server_set_logout_status() to	  
+	_ggzcore_server_session_over()	 * Pass GGZNet obj to
+	_ggzcore_set_negotiate_status() so we can tell	   which connection
+	is ready   * Don't call _ggzcore_net_disconnect() from <SESSION>
+	handler
+
+2002-05-03 07:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Bumped the version up to 0.0.6pre.
+
+2002-04-22 21:40  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcore/protocol.h: Moved the list of protocol opcodes out of
+	ggzcore and ggzd and into ggz_common.h in libggz.  This may not be
+	their final resting place, but it is at least an improvement over
+	having duplicated code.
+
+2002-04-14 14:55  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - add configure-stamp
+
+2002-04-13 07:34  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ChangeLog: 
+	- Updated ChangeLog for 0.0.5
+
+2002-04-13 05:55  Rich Gade <rgade@users.sourceforge.net>
 
 	* configure.in, ggz-client-libs.spec: - Updated versioning for
 	release - Updated RPM Spec file for 0.0.5
+
+2002-04-13 05:44  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ, TODO: 
+	- Updated doc files
+
+2002-04-13 03:52  Jason Short <jdorje@users.sourceforge.net>
+
+	* man/.cvsignore: Added ggzmod_h.3 to .cvsignore.
+
+2002-04-13 03:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* man/: ggzcore_h.3.in, ggzmod_h.3.in: Updated man files for
+	ggzmod/ggzcore.
+
+2002-04-13 02:43  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - exclude local clean-rule again - if at all, it
+	should be present in debian/rules - oterwhise, 'make clean' broke
+	sometimes
 
 2002-04-12 22:44  Brent Hendricks <bmh@users.sourceforge.net>
 

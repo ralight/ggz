@@ -1,6 +1,207 @@
-2002-04-12 23:44  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-01 23:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* motd-editor/callbacks.c: #if 0...#endif to disable an unused
+	function.
+
+2002-10-01 20:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - use configure.in for AC_INIT
+
+2002-09-29 15:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: [gentoo] - fix brackets for configure.in checks
+	(this was not yet synced)
+
+2002-09-29 15:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acconfig.h, acinclude.gnome: [gentoo] - acinclude.gnome updates -
+	predefine HAVE_LIBSM (needed for Gnome)
+	
+	This comment written in nano. Ugh.
+
+2002-09-29 14:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/ggz-cmd.1, man/metaserv.1, man/telggz.1, acinclude.gnome,
+	autogen.sh, configure.in: - new: acinclude.gnome for GNOME
+	configuration - bump version numbers
+
+2002-09-27 10:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen
+
+2002-09-26 13:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.ggz, configure.in: - deploy new acinclude.ggz
+
+2002-09-24 09:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* QuickStart.GGZ, README.GGZ: - update intro docs
+
+2002-09-24 00:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Update acinclude.ggz in the txt-client, and label
+	acinclude.ggz as being included in txt-client.
+
+2002-09-19 18:41  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/gui-qt/Makefile.gui-qt: - use qt-mt instead of qt
+
+2002-09-19 18:17  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Include gnome-client on the list of modules that
+	use acinclude.ggz.
+
+2002-09-17 05:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, configure.in, motd-editor/.cvsignore,
+	motd-editor/AUTHORS, motd-editor/COPYING, motd-editor/ChangeLog,
+	motd-editor/INSTALL, motd-editor/Makefile, motd-editor/Makefile.am,
+	motd-editor/NEWS, motd-editor/README, motd-editor/acconfig.h,
+	motd-editor/autogen.sh, motd-editor/callbacks.c,
+	motd-editor/callbacks.h, motd-editor/config.cache,
+	motd-editor/config.h, motd-editor/configure.in,
+	motd-editor/interface.c, motd-editor/interface.h,
+	motd-editor/main.c, motd-editor/stamp-h, motd-editor/stamp-h.in,
+	motd-editor/support.c, motd-editor/support.h,
+	motd-editor/intl/.cvsignore, motd-editor/po/.cvsignore,
+	motd-editor/po/Makefile, motd-editor/po/POTFILES,
+	motd-editor/po/POTFILES.in, motd-editor/src/.cvsignore,
+	motd-editor/src/Makefile.am, motd-editor/src/callbacks.c,
+	motd-editor/src/callbacks.h, motd-editor/src/interface.c,
+	motd-editor/src/interface.h, motd-editor/src/main.c,
+	motd-editor/src/support.c, motd-editor/src/support.h: Remove
+	configure.in and associated stuff from the motd-editor directory. 
+	Change configure.in and Makefile.am so that the motd-editor is
+	compile.
+
+2002-09-17 02:44  Jason Short <jdorje@users.sourceforge.net>
+
+	* cmd-client/main.c: One final fix: use the server FD we track
+	instead of ggzcore_server_get_channel (which means something
+	different now) as the GGZCore server FD.
+
+2002-09-17 02:15  Jason Short <jdorje@users.sourceforge.net>
+
+	* cmd-client/main.c: - Put a 10-second timeout on the connection to
+	the server.  - Make sure the server reads data from the correct FD.
+	 A change to   ggzcore made the old code pass an invalid FD, thus
+	totally breaking the   program.  - Removing trailing \n from
+	ggz_debug lines.
+
+2002-09-17 01:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* cmd-client/main.c: - Replaced most stderr debugging output with
+	ggz_debug.  - Enable ggz_debug types when DEBUG is defined.  -
+	#include "config.h"
+
+2002-09-14 23:21  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/: chat.c, chat.h, main.c, meta.c, meta.h, net.c, net.h: -
+	source code cleanups - support for room join/leave events
+
+2002-09-09 07:54  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggzcomm/ggzcommgen.c: Added missing #include "ggzcommgen.h".
+
+2002-09-09 07:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* telggz/: chat.c, chat.h, main.c, meta.h, net.h: - Added missing
+	#include "chat.h" to chat.c.  - Marked some functions as static.  -
+	Mark function parameter lists as "void" in prototypes to avoid a  
+	compiler warning, and enable stricter parameter checking by the  
+	compiler.  - Rename VERSION macro as TELGGZ_VERSION, to avoid
+	conflict with the   VERSION that's #defined in config.h.
+
+2002-09-09 07:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* metaserv/metaserv/metaserv.c: Marked some functions as static.
+
+2002-09-09 07:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* cmd-client/main.c, metaserv/minidom/minidom.c: Mark some
+	functions as static.
+
+2002-08-20 22:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Changed -I<directory> to -isystem<directory> to
+	avoid warnings in gcc3.
+
+2002-08-12 20:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcomm/tictactoe.protocol: - updated the TTT protocol
+	description
+
+2002-06-16 14:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* cmd-client/main.c, telggz/meta.c, telggz/net.c: - fix cmd-client
+	and telggz: add ggzcore_server_read_data channel parameter - fix
+	segfault in TelGGZ's meta server handling
+
+2002-05-25 19:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcomm/: chess.protocol, dots.protocol, ggzcommgen.c,
+	hastings.protocol, muehle.protocol: - fix: generate missing bracket
+	for opcode read statement - add 4 more protocol description files
+	
+	It seems that none of our games has a static protocol.	A
+	reconsideration of the 'eval' statement would however make some of
+	them usable, so I'm going to think over it again.  Of special
+	interest is chess, which evaluates a non-protocol variable.
+
+2002-05-05 09:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* cmd-client/main.c: Added support for different server ports to
+	cmd-client.
+
+2002-05-01 09:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcomm/: ggzcommgen.rb, tictactoe.protocol: - add GGZCommEvent
+	class - some more implementation done
+
+2002-05-01 00:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcomm/: .cvsignore, Makefile.am, ggzcards.protocol,
+	ggzcommgen.c, ggzcommgen.rb, protocol-format.txt,
+	tictactoe.protocol: - started alternative implementation for
+	ggzcomm source generator
+
+2002-04-27 09:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/metaserv.c: - treat EOF correctly (disconnect)
+
+2002-04-24 17:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - build ggzcomm stuff correctly
+	(depends on minidom for XML parsing)
+
+2002-04-24 17:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggzcomm/.cvsignore, ggzcomm/DESIGN, ggzcomm/Makefile.am,
+	ggzcomm/ggzcommgen.c, ggzcomm/ggzcommgen.h, ggzcomm/main.c,
+	ggzcomm/tictactoe.protocol, man/Makefile.am, man/ggzcommgen.1: -
+	move the not yet complete ggzcommgen to the utils module
+
+2002-04-14 14:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/main.c: - use correct version (not 0.0.5pre hardcoded)
+
+2002-04-13 09:15  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ChangeLog: 
+	- Updated for 0.0.5 release
+
+2002-04-13 06:44  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* configure.in: - bump version to 0.0.5
+
+2002-04-13 06:06  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README.GGZ: 
+	- Doc file updates
+
+2002-04-13 02:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - remove local make clean rule again
 
 2002-04-12 23:06  Brent Hendricks <bmh@users.sourceforge.net>
 

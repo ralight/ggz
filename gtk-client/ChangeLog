@@ -1,6 +1,323 @@
-2002-04-12 23:20  Josef Spillner <dr_maux@users.sourceforge.net>
+2002-10-01 20:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - use configure.in for AC_INIT
+
+2002-09-29 14:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/ggz-gtk.6, configure.in: - finalize ggz-gtk version numbers
+
+2002-09-27 10:56  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen
+
+2002-09-26 13:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/Makefile.am, po/es_AR.po, acinclude.ggz, configure.in: -
+	new acinclude.ggz - fix charset in Spanish translation
+
+2002-09-24 20:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/types.c: Put two more unused functions within #if
+	0...#endif.
+
+2002-09-24 09:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* QuickStart.GGZ, README.GGZ: - update intro docs
+
+2002-09-24 00:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Update acinclude.ggz in the txt-client, and label
+	acinclude.ggz as being included in txt-client.
+
+2002-09-23 04:10  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/first.c: Make the list of defaults hosts into its own
+	structure, and iterate over the structure to assemble the hosts for
+	a first-time user.  This should make it much easier to change the
+	list.
+	
+	Also, I commented out "ggz.morat.net" from the list...
+
+2002-09-19 18:17  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Include gnome-client on the list of modules that
+	use acinclude.ggz.
+
+2002-09-17 03:54  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/launch.c: If there are more than 10 seats at a table,
+	place them within a scrolled window.
+	
+	Although not especially pretty, this should at least allow the user
+	to launch games that support lots of players.
+
+2002-09-15 11:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/main.c, po/de.po, configure.in: - update German
+	translation - use correct PACKAGE_LOCALE_DIR to setup i18n stuff
+
+2002-09-13 19:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/: de.po, es_AR.po, ggz-gtk.pot, pt_BR.po: - strange: We didn't
+	have any Portuguese/Brazilian and German translation for   months
+	for ggz-gtk! - therefore, pulled back revisions 1.3 and 1.2
+	respectively - updated (merged) and did some pseudo translation
+	already
+
+2002-09-12 00:11  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/launch.c: - Removed the hard-coded 8 seats from the
+	launch dialog.	Now as many   seats are allocated as needed (note
+	that this will not work well for a   large number of seats).  This
+	has the secondary advantage of reducing   memory overhead, and
+	drastically reducing the number of lines of code   necessary to
+	create the seats.  - By default, reserve the first seat for
+	yourself.  This mechanism was	already in place, but had not yet
+	been enabled.  Note that guest users   cannot have seat
+	reservations - the server should transparently convert	 such a
+	reservation into an open seat.	The only advantages of the   system
+	are (1) it's cool and (2) a player on a slow connection cannot	 be
+	usurped on their own table.  - Make the indentation of some parts
+	of the code more consistent.  - A slight cleanup to the list of
+	#includes.  - Edited a couple of unrelated comments in the file.
+
+2002-09-11 05:17  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: about.c, chat.c, client.c, launch.c: Don't compare
+	boolean values to TRUE and FALSE.  Just look at their boolean
+	state.
+	
+	Doing it the other way is both bad and ugly.  It lead directly to a
+	bug when a function returning a boolean value returned a true value
+	other than TRUE.
+
+2002-09-09 22:43  uid40310
+
+	* ggz-gtk/: client.c, client.h, ggzclient.c: Index table entries in
+	the GtkCList by their ID, not by row.  This makes table selection
+	much more persistent, especially in an active room.
+
+2002-09-08 04:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/game.c: Don't let the player try to watch a game that
+	doesn't support spectators.
+
+2002-09-07 19:49  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, client.h, ggzclient.c: Don't reset the table
+	selection when we join a table.  Instead, reset it when the tables
+	are redrawn.  It's when they're redrawn that the selection actually
+	goes away graphically.	This happens when we successfully join a
+	table, but not if a table join fails.
+
+2002-09-07 15:36  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/client.c: Add a spectator parameter to the
+	ggzcore_room_join_table function.
+
+2002-09-07 04:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c: Fix yet another problem: when the server
+	spontaneously disconnects from us, the server data is freed before
+	the input handler is removed.
+
+2002-09-07 00:34  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c: Another fix: make sure we free the server in
+	server_disconnect() even if there is no input handler registered.
+
+2002-09-07 00:22  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: ggzclient.c, login.c: A fix to the fix: prevent
+	ggzcore_server_free from being called more than once on the same
+	pointer.  Also added in an extra assertion and safety check.
+
+2002-09-06 23:06  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c: OK, it looks like that was one assertion too
+	many.  I've replaced it with a simple check.
+
+2002-09-06 22:49  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: ggzclient.c, ggzclient.h, login.c: Call
+	server_disconnect() from within login_connect_failed(), so that we
+	correctly clean up for another connection.
+	
+	Also, I added some extra assertions to make sure something like
+	this doesn't happen elsewhere.
+
+2002-09-06 22:37  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c: Add an assertion to make sure we stay sane
+	with the calling of ggz_check_fd.  If the GDK input hook is not
+	correctly removed, we'll end up potentially calling this
+	twice...sometimes with an invalid server value.
+	
+	Currently this can happen in certain situations (like when you
+	connect to a server and there's a protocol mismatch).  I haven't
+	yet tracked down the error.
+
+2002-09-06 21:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/chat.c: Avoid a buffer underflow in checking for string
+	suffixes.
+	
+	Thanks to Valgrind for helping find this buglet.
+
+2002-09-06 21:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/xtext.c: Make sure a particular value is initialized
+	within xtext code.
+	
+	This required making changes to the exernal code of xtext.c
+	(imported from xchat).	I tried to update the file to the most
+	recent one xchat has, but that didn't seem to be feasible.  So I
+	just fixed the buglet.
+
+2002-09-04 21:43  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - bump number to 0.0.6pre, so people are not
+	confused
+
+2002-09-04 20:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, game.c, game.h, ggzclient.c, launch.c: - Gtk+
+	client support for spectators
+
+2002-08-20 23:19  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, ggzclient.c, main.c, msgbox.c, types.c: Fix
+	some (mostly harmless) compiler warnings:   - client.c: make
+	main_xtext_chat_create() static.    - ggzclient.c: #include
+	"ggzclient.h".	  - main.c: make init_debug() static.	 -
+	msgbox.c: make many functions static	- types.c: #if 0...#endif
+	around the unused create_menu1().
+
+2002-08-20 22:49  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Changed -I<directory> to -isystem<directory> to
+	avoid warnings in gcc3.
+
+2002-08-20 22:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Changed -I<directory> to -isystem<directory> to
+	avoid warnings in gcc3.
+
+2002-08-20 04:15  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: login.c, types.c: Put "#if 0...#endif" around some
+	unused functions and function prototpyes: types_clist_events and
+	login_reconnect.
+
+2002-07-08 17:52  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/first.c: Changed the default port of the "CVS Developer
+	Server (Slow)" to 5689.
+	
+	There are other changes that would be good here:   - This server is
+	not currently "Slow".	 - The list of default servers is generated
+	manually.  It'd be better to	  have a full list in a struct
+	array and loop over it to generate the	    list.    - It would be
+	good to use the metaserver for this task.
+
+2002-06-22 07:16  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, game.c, game.h, ggzclient.c, launch.c: 
+	- Work with new ggzcore, now that games have a control channel -
+	Reverse the previous launch order: now launching the game module  
+	comes first in case there are problems on the server (much easier
+	to   kill a forked game module here than un-request a launch from
+	the   server)
+
+2002-05-15 21:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - shut up autom4te
+
+2002-05-06 10:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/: control, menu: - use icon for Gtk+ client - we have to
+	byte the apple: Apps/Net section in debian :( - suggest games by
+	version, not by core client source version
+
+2002-05-05 23:18  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, client.h, game.c, ggzclient.c, ggzclient.h,
+	launch.c, launch.h: 
+	- Split game joining/launching into two steps: creating channel,
+	and   (when that is done), launching the game - Removed old stuff
+	for communicating with game fd - Call game_destroy() from
+	game_quit()
+
+2002-05-05 23:15  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/main.c: 
+	- Remove unnecessary hack with ggz_conf_read_list().  It was #if'd
+	out   anyway
+
+2002-04-15 09:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, first.c, game.c, ggzclient.c, msgbox.c,
+	server.c, types.c: Added "#include <config.h>" line to lots and
+	lots and lots (and lots) of files.
+	
+	AFAIK this line should be included at the top of every .c and .cpp
+	file, before any other #inlcudes (so that it will affect them as
+	well).	It should now be the case that this is true for all files
+	in the ggzd, gtk-games, and gtk-client modules.
+	
+	  There is one exception: gtk-games/spades/gtk_menu.c breaks if
+	config.h
+	  is #included, because doing so causes i18n to take effect and the
+	file
+	  is not prepared for this.  A separate fix will be necessary.
+
+2002-04-15 06:17  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/launch.c: Removed ALLOW_RESERVED_SEATS macro, and removed
+	the code to disable reserved seats.  Seat reservations are thus now
+	an integrated part of the code.
+
+2002-04-13 23:11  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/chat.c: Fix to player-name tab-autocompletion code:
+	instead of doing a loop over the GtkCList, instead use GGZCore
+	functions to loop over the players in the room directly.
+
+2002-04-13 22:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/chat.c: Cleanup & improvement to the "friends" and
+	"ignore" list checking code:   - Make it case-insensitive by using
+	strcasecmp instead strcmp.    - Use the chat_is_friend and
+	chat_is_ignore functions in a couple of      extra places (instead
+	of doing a manual loop).
+
+2002-04-13 07:37  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ChangeLog: 
+	- Updated ChangeLog for 0.0.5
+
+2002-04-13 06:20  Josef Spillner <dr_maux@users.sourceforge.net>
 
 	* debian/rules: - install pixmaps correctly
+
+2002-04-13 06:09  Rich Gade <rgade@users.sourceforge.net>
+
+	* ggz-gtk-client.spec: - Turn off debugging in RPM release - Added
+	pixmap dir (DOH!)
+
+2002-04-13 06:01  Rich Gade <rgade@users.sourceforge.net>
+
+	* configure.in, ggz-gtk-client.spec: - Updated versioning info -
+	Updated RPM Spec for 0.0.5
+
+2002-04-13 05:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/menu: - add menu entry for ggz-gtk
+
+2002-04-13 05:56  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ: 
+	- Documentation updates
 
 2002-04-12 23:09  Rich Gade <rgade@users.sourceforge.net>
 

@@ -1,6 +1,462 @@
-2002-04-13 01:55  Rich Gade <rgade@users.sourceforge.net>
+2002-10-01 20:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - use configure.in for AC_INIT
+
+2002-09-29 16:30  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.kde: [gentoo] - erase AM_KDE_WITH_NLS reference instead
+	of simply disabling it
+
+2002-09-27 18:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* KReversi/main.cpp, KReversi/module.dsc.in, kdots/main.cpp,
+	kdots/module.dsc.in, koenig/main.cc, koenig/module.dsc.in,
+	krosswater/main.cpp, krosswater/module.dsc.in,
+	krosswater/zoneclient/Makefile.am, ktictactux/main.cpp,
+	ktictactux/module.dsc.in, man/ggzwrap.1, man/muehle-ai.pl.6,
+	muehle/module.dsc.in, muehle/src/main.cpp, README, autogen.sh,
+	configure.in, ggz-kde-games.spec: - happy number bumping in
+	kde-games
+
+2002-09-27 10:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* autogen.sh: - new autogen
+
+2002-09-26 14:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.ggz, configure.in: - deploy acinclude.ggz in kde-games
+	- change my mind on KDE_SET_PREFIX again (using by default)
+
+2002-09-26 03:29  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/: kdots/de.po, kdots/kdots.pot, ktictactux/de.po,
+	ktictactux/ktictactux.pot, muehle/de.po, muehle/muehle.pot: -
+	translated translator credits :)
+
+2002-09-26 03:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kdots/main.cpp: - translator credits
+
+2002-09-26 03:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/main.cpp: - translator credit
+
+2002-09-26 03:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* muehle/src/: main.cpp, toplevel.cpp: - more icons for our users -
+	credit where credit is due: of course, the dummy values in
+	setTranslator must   be used with I18N_NOOP, otherwise the
+	translator's name will never show up...
+
+2002-09-26 03:04  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/ktictactuxwin.cpp: - users want icons -> users will
+	get some for the menus...
+
+2002-09-26 02:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/: KReversi/de.po, KReversi/kreversi.pot, kdots/de.po,
+	kdots/kdots.pot, krosswater/de.po, krosswater/krosswater.pot,
+	muehle/de.po, muehle/muehle.pot: - more i18n updates (mostly
+	trivia)
+
+2002-09-26 02:29  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/ktictactux/: de.po, ktictactux.pot: - ktictactux translation
+	update
+
+2002-09-24 17:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* keepalive/Makefile.am: Some cleanups and fixes to build system:  
+	- Removed @$(NORMAL_INSTALL) and @$(NORMAL_UNINSTALL), which don't 
+	   do anything useful anyway.	 - Change the "uninstall" directive
+	to "uninstall-local" when      uninstalling the ggz-config module. 
+	  - Add -D parameter to ggz-config when uninstalling (not just when
+	     installing).
+
+2002-09-24 17:22  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, KReversi/Makefile.am, KReversi/pixmaps/Makefile.am,
+	kdots/Makefile.am, koenig/Makefile.am, koenig/pics/Makefile.am,
+	krosswater/Makefile.am, krosswater/gfx/Makefile.am,
+	ktictactux/Makefile.am, muehle/Makefile.am,
+	po/KReversi/Makefile.am, po/kdots/Makefile.am,
+	po/koenig/Makefile.am, po/krosswater/Makefile.am,
+	po/ktictactux/Makefile.am, po/muehle/Makefile.am: Some cleanups and
+	fixes to build system:	 - Removed @$(NORMAL_INSTALL) and
+	@$(NORMAL_UNINSTALL), which don't     do anything useful anyway.   
+	- Change the "uninstall" directive to "uninstall-local" when	 
+	uninstalling the ggz-config module.    - Add -D parameter to
+	ggz-config when uninstalling (not just when	 installing).	 -
+	Expand all wildcards.  Doing otherwise breaks things at odd times. 
+	  - Remove custom script code to install groups of data files. 
+	Instead      just let automake take care of it.    - Include
+	kreversi.blend file in list to be installed.	- Remove duplicate
+	installation for krosswater gfx.    - Manually efine XGETTEXT,
+	MSGMERGE, and GMSGFMT in po directories.      This is not the ideal
+	solution, but it should allow things to build	   on their own.   
+	- Touch the GGZ module config file at the beginning of a "make	   
+	install".  The actual mechanism for doing this is a bit of a
+	kludge.      But this allows a local installation of the package to
+	be done      without the file already being present.	- Possibly
+	some other fixes I forgot to mention.
+
+2002-09-24 09:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* QuickStart.GGZ, README.GGZ: - update intro docs
+
+2002-09-24 00:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Update acinclude.ggz in the txt-client, and label
+	acinclude.ggz as being included in txt-client.
+
+2002-09-23 18:45  Jason Short <jdorje@users.sourceforge.net>
+
+	* koenig/libcgc/: Makefile.am, movecheck.c: Updated libcgc to make
+	it identical between ggzd, gtk-games, and kde-games.
+
+2002-09-22 19:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kdots/kdots.cpp: - add spectator support prophylactically
+
+2002-09-20 18:21  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/src/: canvas.cpp, chatbox.cpp: - improved sending and
+	receiving of chat messages
+
+2002-09-20 10:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/src/: canvas.cpp, unitfactory.cpp: - forgot to add
+	fallback alias for "peasant" graphics (man.png) - nevertheless,
+	don't crash anymore if player graphics cannot be loaded for  
+	whatever reason
+
+2002-09-19 18:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Include gnome-client on the list of modules that
+	use acinclude.ggz.
+
+2002-09-18 17:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* muehle/src/ggzwrap/ggzwrap.c: Mark some functions as static.
+
+2002-09-18 10:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/src/: canvas.cpp, canvas.h, intro.cpp, intro.h,
+	login.cpp, login.h, win.cpp, win.h: - in login screen, ask for game
+	server hostname unless GGZ mode is enabled - prepare direct login
+	functionality
+	
+	This is intended to be compatible with AGS so the server can easily
+	be switched: When connecting to the traditional Keepalive server,
+	only one World is available. When connecting to AGS, many more can
+	be found there.
+	
+	Of course, this still doesn't add any sense to the game itself, but
+	that's not the point here :-)
+
+2002-09-18 09:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/src/: canvas.cpp, canvas.h, intro.cpp, main.cpp,
+	unitfactory.cpp, win.cpp, win.h: - re-add ability to use built-in
+	graphics if FcMP is not installed - don't crash when there are no
+	graphics - don't require --ggz anymore for testing purpose (the
+	window simply gets black   when entering the game mode then)
+
+2002-09-17 21:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - argh! Forgot closing parenthesis.  This caused an
+	endless loop of sed, called by configure.  Funny.
+
+2002-09-17 21:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - similar to kde-client: temporary rearrangement
+	for KDE_PLUGIN et al
+
+2002-09-17 21:34  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.kde: - same as with kde-client
+
+2002-09-07 09:29  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/: ktictactux.cpp, ktictactuxproto.cpp: - when playing
+	as spectator, set status bar to "watching the game"
+
+2002-08-27 09:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - create makefile in themes directory
+
+2002-08-27 09:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/: themes/.cvsignore, themes/Makefile.am,
+	themes/circle.png, themes/classic, themes/cross.png,
+	themes/desktopwar, themes/gnome.png, themes/kde.png,
+	themes/merlin.png, themes/symbols, themes/tux.png, Makefile.am,
+	circle.png, cross.png, gnome.png, kde.png, ktictactux.cpp,
+	ktictactuxwin.cpp, ktictactuxwin.h, merlin.png, tux.png: - move
+	pixmaps into new themes directory - load themes dynamically, no
+	hardcoding anymore - this allows for adding new themes into the
+	user's home directory, which   should by done by kdeshare one day
+	("update GGZ games graphics" or something)
+
+2002-08-22 09:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/: ktictactux.cpp, ktictactuxproto.cpp, main.cpp: - yet
+	another update: correctly interpret one's own number when being
+	spectator
+
+2002-08-20 22:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Changed -I<directory> to -isystem<directory> to
+	avoid warnings in gcc3.
+
+2002-08-10 21:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/: ktictactux.cpp, ktictactuxproto.cpp: - update to new
+	protocol - better game over support (should now work, no?)
+
+2002-08-07 18:00  Jason Short <jdorje@users.sourceforge.net>
+
+	* KReversi/network.cpp, kdots/kdots_proto.cpp,
+	keepalive/src/network.cpp, koenig/ggz.cc,
+	krosswater/zoneclient/ZoneGGZModUI.cpp,
+	ktictactux/ktictactuxproto.cpp, muehle/src/ggzwrap/ggzwrap.c:
+	Changed kde-games to match the GGZMOD_EVENT_SERVER interface change
+	to ggzmod.
+
+2002-07-30 22:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/src/: canvas.cpp, canvas.h, win.cpp, win.h, world.cpp,
+	world.h: - avatar can now be controlled with the mouse - old login
+	screen can be used again (mainly thought for developers) when  
+	adding intro=off to the [Media] section in keepaliverc
+
+2002-07-30 21:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/src/intro.cpp: - allow cancellation of shading effect
+	(good for slow computers)
+
+2002-07-30 11:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* koenig/: ggz.cc, ggz.h: - fix koenig: don't use a QSocket for the
+	control channel, otherwise ggzmod will never give us any data
+
+2002-07-30 11:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* muehle/src/ggzwrap/ggzwrap.c: - fix select()
+
+2002-07-30 07:51  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/: ktictactux.cpp, ktictactux.h, ktictactuxwin.cpp,
+	ktictactuxwin.h: - disable 'sync' and 'show score' menu items when
+	game is over
+
+2002-07-14 11:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/: pics/Makefile.am, pics/intro.png,
+	pics/introarrow.png, pics/introavatar.png, pics/introfont.png,
+	pics/intrologin.png, pics/introscores.png, pics/world1.png,
+	pics/world2.png, src/Makefile.am, src/canvas.cpp, src/intro.cpp,
+	src/intro.h, src/login.cpp, src/win.cpp, src/win.h: - new intro GUI
+	for keepalive
+
+2002-07-09 09:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* muehle/src/: board.cpp, board.h, main.cpp: - add spectator
+	support for Muehle client - scale stones so they always fit the
+	current board size - start with crediting translators in
+	KAboutDialog
+
+2002-07-09 08:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* muehle/src/board.cpp: - doh, this took me a while to figure out:
+	When using Qt 3.x without compatibility settings, QRegExp wants "("
+	replaced with "\\("
+
+2002-07-07 18:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/src/: Makefile.am, animdialog.cpp, animdialog.h,
+	canvas.cpp, canvas.h, main.cpp, network.cpp, network.h,
+	unitfactory.cpp, unitfactory.h, win.cpp, win.h: - As I suck as
+	graphician, Keepalive does now support Freecraft Media Project	
+	graphics (FcMP), they're nice, animated and 8-way directional
+	
+	"Mum, there's a gryphon rider on my desk..."
+
+2002-07-07 16:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* KReversi/: network.cpp, network.h: - the necessary class files
+	for KReversi
+
+2002-07-07 16:20  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* KReversi/: Makefile.am, main.cpp, reversiprotocol.cpp,
+	reversiprotocol.h: - port KReversi
+	
+	A method similar to Keepalive is used, except that we cannot use a
+	second QSocketNotifier, since KReversi uses QSocket which already
+	cares about a socket (and confuses if another notifier is there).
+	
+	Strange enogh, this works, while Keepalive seems to be a read-only
+	game client :)
+
+2002-07-07 14:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/src/: Makefile.am, canvas.cpp, canvas.h, network.cpp,
+	network.h: - port keepalive This is using a new approach (a
+	separate C++ wrapper for ggzmod), which seems so far the best idea.
+
+2002-07-07 11:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* koenig/: Makefile.am, ggz.cc, ggz.h: - another non-working port
+	(heck, today is not my day...)
+
+2002-07-07 10:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* krosswater/zoneclient/Makefile.am,
+	krosswater/zoneclient/ZoneGGZModUI.cpp,
+	krosswater/zoneclient/ZoneGGZModUI.h, muehle/src/main.cpp,
+	muehle/src/ggzwrap/Makefile.am, muehle/src/ggzwrap/ggzwrap.c: -
+	port Krosswater to new ggzmod (very easy, since the game code isn't
+	even   affected) - port 'ggzwrap' too so that Muehle should work...
+	but it doesn't :(
+
+2002-06-30 11:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* kdots/: Makefile.am, kdots.cpp, kdots.h, kdots_proto.cpp,
+	kdots_proto.h: - port kdots to new ggzmod
+
+2002-06-30 09:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/: Makefile.am, ktictactux.cpp, ktictactux.h,
+	ktictactuxproto.cpp, ktictactuxproto.h: - port to new ggzmod stuff
+	(which is very unfriendly to c++)
+
+2002-06-29 17:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/: ktictactux.cpp, ktictactux.h, ktictactuxproto.cpp,
+	ktictactuxproto.h, ktictactuxwin.cpp, ktictactuxwin.h: - implement
+	proper network statistics support
+
+2002-06-23 13:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* KReversi/reversiprotocol.cpp, koenig/game.cc: - include
+	ggz_common.h for player types
+
+2002-06-16 17:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ktictactux/: ktictactux.cpp, ktictactux.h, ktictactuxwin.cpp,
+	ktictactuxwin.h, main.cpp, qwhiteframe.cpp, qwhiteframe.h: - ugh,
+	KTicTacTux didn't work because of some X11 internals... so I had to
+	  replace my neat window id hack with something proper.  - add
+	score menu - save/load scores and selected theme
+
+2002-06-02 10:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* KReversi/kreversi.h, KReversi/reversiview.cpp,
+	kdots/Dot/qdots.cpp, kdots/Dot/qdots.h, koenig/Makefile.am: A new
+	fresh system lets new bugs show up: - fixed KReversi's KDE 3 port -
+	fixed QDot's constructor definition, for gcc 3.1 which is more
+	strict - fixed Koenig's Makefile to work with multi-threaded
+	version of Qt
+
+2002-05-20 22:43  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/src/: canvas.cpp, canvas.h, login.cpp, main.cpp: -
+	spectators can now view the whole game area without login. 
+	However, updates are not yet broadcasted to them.
+
+2002-05-20 21:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/src/: Makefile.am, canvas.cpp, protocol.h, win.cpp: -
+	spectator support for Keepalive client - start Qt -> KDE transition
+
+2002-05-15 21:46  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - shut up autom4te
+
+2002-05-14 10:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/src/: canvas.cpp, protocol.h: - protocol update
+
+2002-05-13 11:05  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/pics/: Makefile.am, rip.png: - add R.I.P. icon, which
+	is used for dead avatars - players will be able to join the game
+	again, thus reviving their avatar,   until they leave the game and
+	send the character into the grave again
+
+2002-05-13 10:43  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* keepalive/src/canvas.cpp: - show sprites once they're created -
+	fix op_loginfailed opcode
+
+2002-04-27 22:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* KReversi/Makefile.am: - fix backslash followed by an empty line
+
+2002-04-18 20:55  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* KReversi/kreversi.cpp, kdots/kdots.cpp, kdots/kdots_about.cpp,
+	kdots/kdots_help.cpp, kdots/kdots_win.cpp, kdots/Dot/qdots.cpp,
+	keepalive/src/login.cpp, keepalive/src/win.cpp,
+	koenig/boardcontainer.cc, koenig/toplevel.cc,
+	krosswater/krosswater.cpp, krosswater/qcw.cpp,
+	ktictactux/ktictactux.cpp, ktictactux/qwhiteframe.cpp,
+	muehle/src/board.cpp: - more KDE 3.0 porting issues resolved:  *
+	KMessageBox does now automatic line break  *
+	setBackgroundColor/setBackgroundPixmap are obsolete (strange
+	enough, in    QCanvas they're not)  * KListViewItem instead of
+	QListViewItem
+
+2002-04-17 23:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, acinclude.kde, am_edit, autogen.sh, configure.in: -
+	replace KDE 2 administrativia with KDE 3 ones - setup QT_NO_COMPAT
+	and KDE_NO_COMPAT - bump package version to 0.0.6pre - now for
+	real: use --foreign-libtool
+
+2002-04-17 23:21  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* KReversi/Makefile.am, KReversi/kreversi.cpp, KReversi/kreversi.h,
+	KReversi/main.cpp, KReversi/reversiprotocol.h,
+	KReversi/reversiview.h, kdots/kdots_about.cpp,
+	kdots/kdots_options.cpp, kdots/kdots_win.cpp, kdots/main.cpp,
+	kdots/Dot/qdots.cpp, keepalive/src/canvas.cpp,
+	keepalive/src/main.cpp, koenig/board.cc, koenig/main.cc,
+	krosswater/Makefile.am, krosswater/dlg_person.cpp,
+	krosswater/krosswater.h, krosswater/main.cpp,
+	ktictactux/ktictactuxwin.cpp, ktictactux/main.cpp,
+	muehle/src/board.cpp, muehle/src/board.h, muehle/src/main.cpp,
+	muehle/src/qextpainter.cpp, muehle/src/qweb.cpp, muehle/src/qweb.h,
+	muehle/src/qwebpath.cpp, muehle/src/qwebpath.h,
+	muehle/src/toplevel.cpp: Steve: "Bill, I'm giving up on MSN." Bill:
+	"Hm, ok. What ya doin'?" Steve: "I joined GGZ." Bill: "What was
+	your fist action there?" Steve: "I told a guy to drop KDE 2 support
+	at once." Bill: "Cool, so they're using .NET Gui's now?" Steve:
+	"You know... not really..."
+
+2002-04-13 08:57  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ChangeLog: 
+	- Updated for 0.0.5 release
+
+2002-04-13 08:55  Rich Gade <rgade@users.sourceforge.net>
 
 	* ggz-kde-games.spec: - Updated RPM Spec for 0.0.5
+
+2002-04-13 06:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - bump to 0.0.5
+
+2002-04-13 06:03  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README.GGZ: 
+	- Updated documentation files
+
+2002-04-13 02:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - remove local make clean rule again
 
 2002-04-12 23:44  Josef Spillner <dr_maux@users.sourceforge.net>
 
