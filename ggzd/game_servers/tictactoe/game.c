@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 4948 2002-10-19 00:04:36Z jdorje $
+ * $Id: game.c 4986 2002-10-22 05:14:25Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -86,6 +86,7 @@ static void game_handle_ggz_join(GGZdMod *ggz,
                                  GGZdModEvent event, void *data);
 static void game_handle_ggz_leave(GGZdMod *ggz,
                                   GGZdModEvent event, void *data);
+static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, void *data);
 #ifdef GGZSPECTATORS
 static void game_handle_ggz_spectator_join(GGZdMod *ggz,
                                  GGZdModEvent event, void *data);
@@ -138,6 +139,8 @@ void game_init(GGZdMod *ggzdmod)
 	                    &game_handle_ggz_join);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE,
 	                    &game_handle_ggz_leave);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SEAT,
+			    &game_handle_ggz_seat);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA,
 	                    &game_handle_ggz_player);
 #ifdef GGZSPECTATORS
@@ -244,6 +247,21 @@ static void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
 		ggzdmod_log(ggz, "No players left: ending game");
 		ggzdmod_set_state(ggz, GGZDMOD_STATE_DONE);
 	}
+}
+
+
+/* Callback for GGZDMOD_EVENT_SEAT */
+static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, void *data)
+{
+	GGZdModState new_state;
+	if (seats_full()) {
+		new_state = GGZDMOD_STATE_PLAYING;
+	} else
+		new_state = GGZDMOD_STATE_WAITING;
+
+	game_send_players();
+
+	ggzdmod_set_state(ttt_game.ggz, new_state);
 }
 
 
