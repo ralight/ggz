@@ -541,24 +541,22 @@ static void _ggzcore_net_handle_chat(void)
 static void _ggzcore_net_handle_update_players(void)
 {
 	char subop;
-	char name[256];
+	char *name;
 	
 	if (es_read_char(ggz_server_sock, &subop) < 0
-	    || es_read_string(ggz_server_sock, name, sizeof(name)) < 0)
+	    || es_read_string_alloc(ggz_server_sock, &name) < 0)
 		return;
 
-	/* FIXME: Do something with data */
-	
 	switch ((GGZUpdateOp)subop) {
 	case GGZ_UPDATE_DELETE:
 		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s left", name);
-		ggzcore_event_trigger(GGZ_SERVER_ROOM_LEAVE, name, NULL);
+		ggzcore_event_trigger(GGZ_SERVER_ROOM_LEAVE, name, free);
 		_ggzcore_player_list_remove(name);
 		break;
 
 	case GGZ_UPDATE_ADD:
 		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s enter", name);
-		ggzcore_event_trigger(GGZ_SERVER_ROOM_ENTER, name, NULL);
+		ggzcore_event_trigger(GGZ_SERVER_ROOM_ENTER, name, free);
 		_ggzcore_player_list_add(name, -1);
 		break;
 	default:
