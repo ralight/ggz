@@ -342,6 +342,7 @@ GGZRoom* ggzcore_server_get_nth_room(GGZServer *server, const unsigned int num)
 	if (!server || num >= server->num_rooms)
 		return NULL;
 
+	cur = _ggzcore_list_head(server->room_list);
 	for (i = 0; i < num; i++)
 		cur = _ggzcore_list_next(cur);
 	
