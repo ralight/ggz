@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 4044 2002-04-21 23:20:16Z jdorje $
+ * $Id: spades.c 4063 2002-04-23 19:55:51Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -110,6 +110,8 @@ static int card_comp(card_t c1, card_t c2);
 void start_hand(void)
 {
 	int p;
+	
+	ailib_start_hand();
 
 	for (p = 0; p < 4; p++) {
 		count_cards[p] = 0;
@@ -121,6 +123,8 @@ void start_hand(void)
 
 void alert_bid(int p, bid_t bid)
 {
+	ailib_alert_bid(p, bid);
+	
 	assert(p >= 0 && p < 4);
 
 	has_bid[p] = 1;
@@ -132,6 +136,7 @@ void alert_play(int p, card_t play)
 #ifdef USE_AI_TRICKS
 	card_t lead = ggzcards.players[get_leader()].table_card;
 #endif
+	ailib_alert_play(p, play);
 
 	assert(p >= 0 && p < 4);
 
@@ -192,6 +197,11 @@ void alert_play(int p, card_t play)
 
 	if (p == get_leader() && p == PARTNER && play.suit == SPADES)
 		partner_lead_spades = 1;
+}
+
+void alert_trick(int winner)
+{
+	/* nothing */
 }
 
 
@@ -701,6 +711,8 @@ card_t get_play(int play_seat, int *valid_plays)
 	int agg, lastTrick;
 	card_t lead, hi_card;
 	hand_t *hand = &ggzcards.players[ME].hand;
+	
+	ailib_our_play(play_seat);
 
 	assert(play_seat == 0);
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 4044 2002-04-21 23:20:16Z jdorje $
+ * $Id: suaro.c 4063 2002-04-23 19:55:51Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -119,6 +119,7 @@ enum {
 /* this inits AI static data at the start of a hand */
 void start_hand(void)
 {
+	ailib_start_hand();
 	declarer = -1;
 	trump = -1;
 }
@@ -126,6 +127,8 @@ void start_hand(void)
 /* this alerts the ai to someone else's bid/play */
 void alert_bid(int p, bid_t bid)
 {
+	ailib_alert_bid(p, bid);
+	
 	/* we really need to take advantage of this information! */
 
 	if (bid.sbid.val > 0) {
@@ -142,6 +145,12 @@ void alert_bid(int p, bid_t bid)
 }
 
 void alert_play(int p, card_t card)
+{
+	ailib_alert_play(p, card);
+	/* nothing else */
+}
+
+void alert_trick(int winner)
 {
 	/* nothing */
 }
@@ -311,6 +320,8 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 card_t get_play(int play_seat, int *valid_plays)
 {
 	assert(play_seat == ME);
+	
+	ailib_our_play(play_seat);
 
 	if (get_leader() == ME) {
 		/* Pick a good lead. */

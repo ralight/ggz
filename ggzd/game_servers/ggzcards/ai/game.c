@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.c 4046 2002-04-22 00:04:41Z jdorje $
+ * $Id: game.c 4063 2002-04-23 19:55:51Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -32,8 +32,6 @@
 
 #include <ggz.h>
 
-#include "aicommon.h"
-
 #include "game.h"
 
 void game_get_newgame(void)
@@ -48,7 +46,6 @@ void game_alert_newgame(cardset_type_t cardset_type)
 
 void game_alert_newhand(void)
 {
-	ailib_start_hand();
 	start_hand();
 }
 
@@ -100,22 +97,19 @@ void game_get_bid(int possible_bids,
 
 void game_alert_bid(int bidder, bid_t bid)
 {
-	ailib_alert_bid(bidder, bid);
 	alert_bid(bidder, bid);
 }
 
-static int *valid_plays = NULL;
+static bool *valid_plays = NULL;
 static card_t play_card;
 
 void game_get_play(int hand)
 {
 	int i;
-	
-	ailib_our_play(hand);
 
 	valid_plays = ggz_realloc(valid_plays, ggzcards.players[hand].hand.hand_size * sizeof(*valid_plays));
 	for (i = 0; i < ggzcards.players[hand].hand.hand_size; i++)
-		valid_plays[i] = 1;
+		valid_plays[i] = TRUE;
 	
 	play_card = get_play(ggzcards.play_hand, valid_plays);
 	client_send_play(play_card);
@@ -127,7 +121,7 @@ void game_alert_badplay(char *err_msg)
 	
 	for (i = 0; i < ggzcards.players[hand].hand.hand_size; i++)
 		if (are_cards_equal(ggzcards.players[hand].hand.cards[i], play_card)) {
-			valid_plays[i] = 0;
+			valid_plays[i] = FALSE;
 			break;
 		}
 	
@@ -137,7 +131,6 @@ void game_alert_badplay(char *err_msg)
 
 void game_alert_play(int player, card_t card, int pos)
 {
-	ailib_alert_play(player, card);
 	alert_play(player, card);
 }
 
@@ -146,9 +139,9 @@ void game_alert_table(void)
 	/* nothing */
 }
 
-void game_alert_trick(int player)
+void game_alert_trick(int winner)
 {
-	ailib_alert_trick(player);
+	alert_trick(winner);
 }
 
 int game_get_options(int option_cnt,

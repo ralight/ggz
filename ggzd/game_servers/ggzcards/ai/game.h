@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.h 4046 2002-04-22 00:04:41Z jdorje $
+ * $Id: game.h 4063 2002-04-23 19:55:51Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -22,6 +22,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#include "shared.h"
 
 #include "client.h"
 
@@ -43,7 +45,7 @@ void game_get_play(int hand);
 void game_alert_badplay(char *err_msg);
 void game_alert_play(int player, card_t card, int pos);
 void game_alert_table(void);
-void game_alert_trick(int player);
+void game_alert_trick(int winner);
 int game_get_options(int option_cnt,
                      char **descriptions,
                      int *choice_cnt,
@@ -60,5 +62,6 @@ int game_handle_game_message(int fd, const char *game, int size);
 extern void start_hand(void);
 extern void alert_bid(int p, bid_t bid);
 extern void alert_play(int p, card_t card);
+extern void alert_trick(int winner);
 extern bid_t get_bid(bid_t * bid_choices, int bid_count);
-extern card_t get_play(int play_hand, int *valid_plays);
+extern card_t get_play(int play_hand, bool *valid_plays);
