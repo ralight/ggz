@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 3749 2002-04-05 07:49:23Z jdorje $
+ * $Id: ai.c 3977 2002-04-13 23:59:43Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -106,9 +106,9 @@ void start_ai(game_t *g, player_t p, char* ai_type)
 		}
 		
 		/* Close stdin, stdout, and stderr. */
-		close(0);
-		close(1);
-		close(2);
+		close(fileno(stdin));
+		close(fileno(stdout));
+		close(fileno(stderr));
 		
 #ifdef DEBUG
 		/* Move our pipe to stderr. */
