@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 		"Copyright (C) 2003, 2004 Josef Spillner",
 		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
 		"http://www.ggzgamingzone.org/games/kcc/",
-		"josef@users.sourceforge.net");
+		"josef@ggzgamingzone.org");
 	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Inventor"), "josef@ggzgamingzone.org");
 	aboutData->setTranslator(I18N_NOOP("TRANSLATOR-NAME"), I18N_NOOP("TRANSLATOR-EMAIL"));
 
