@@ -22,10 +22,16 @@ KDE_USE_QT(3)
 AC_CHECK_COMPILERS
 AC_ENABLE_SHARED(yes)
 AC_ENABLE_STATIC(no)
-KDE_PROG_LIBTOOL
+#KDE_PROG_LIBTOOL
 AM_PROG_LIBTOOL
-AM_KDE_WITH_NLS
+#AM_KDE_WITH_NLS
 AC_PATH_KDE
+
+dnl KDE-what-have-I-done
+dnl ====================
+
+KDE_PLUGIN="-avoid-version -module -no-undefined \$(KDE_RPATH) \$(KDE_MT_LDFLAGS)"
+AC_SUBST(KDE_PLUGIN)
 
 SUBDIRS="src data po doc"
 COMPILEOPTIONS=""
