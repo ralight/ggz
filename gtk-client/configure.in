@@ -64,14 +64,14 @@ AC_HEADER_TIME
 dnl Check for library functions
 dnl ===========================
 
-dnl Check for libs
-dnl ==============
-AC_CHECK_LIB(ggzcore, ggzcore_server_new,
-    AC_CHECK_HEADER(ggzcore.h, LDADD="$LDADD -lggzcore",
-        AC_MSG_ERROR(*** Cannot find ggzcore.h header)),
-AC_MSG_ERROR(*** Cannot find ggzcore library ))
-
 AM_PATH_GTK(1.2.0,, AC_MSG_ERROR(*** Can't build GTK frontend: GTK not found))
+
+
+dnl Check for GGZ Requirements
+dnl ==============
+
+AC_GGZ_GGZCORE
+LDADD="$LDADD $LIB_GGZCORE"
 	 	       
 
 dnl Use -Wall if we have gcc.
