@@ -8,7 +8,7 @@ lib_LTLIBRARIES = libkcm_ggz.la
 libkcm_ggz_la_SOURCES = kcm_ggz.cpp
 libkcm_ggz_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
 
-bin_PROGRAMS = kcm_ggz_test
+noinst_PROGRAMS = kcm_ggz_test
 kcm_ggz_test_SOURCES = main.cpp kcm_ggz.cpp
 kcm_ggz_test_LDFLAGS = $(QUICK1) $(QUICK2)
 
