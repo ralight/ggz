@@ -2,21 +2,21 @@
 # Copyright (C) 2002 GGZ Gaming Zone
 # Josef Spillner <dr_maux@users.sourceforge.net>, 2002.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Dots 0.1\n"
-"POT-Creation-Date: 2002-04-04 10:14+0200\n"
-"PO-Revision-Date: 2002-03-20 22:01+0100\n"
-"Last-Translator: Josef Spillner <dr_maux@users.sourceforge.net>\n"
-"Language-Team: Deutsch <de@li.org>\n"
+"POT-Creation-Date: 2002-03-24 17:39+0100\n"
+"PO-Revision-Date: 2002-04-10 16:46GMT\n"
+"Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
+"Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
 
 #: ../dots/dlg_about.c:54
 msgid "About Connect the Dots"
-msgstr "ber Connect the Dots"
+msgstr "Ueber Connect the Dots"
 
 #: ../dots/dlg_about.c:76
 msgid ""
@@ -33,6 +33,18 @@ msgid ""
 "Website:\n"
 "        http://ggz.sourceforge.net/"
 msgstr ""
+"Autore:\n"
+"        Gtk+ Client:\n"
+"            Rich Gade        <rgade@users.sourceforge.net>\n"
+"\n"
+"        Windows 9X Client:\n"
+"            Doug Hudson  <djh@users.sourceforge.net>\n"
+"\n"
+"        Game Server:\n"
+"            Rich Gade        <rgade@users.sourceforge.net>\n"
+"\n"
+"Webseite:\n"
+"        http://ggz.sourceforge.net/"
 
 #: ../dots/dlg_main.c:97
 msgid "_Game"
@@ -139,7 +151,7 @@ msgstr "OK"
 msgid "Apply"
 msgstr "Anwenden"
 
-#: ../common/dlg_exit.c:67 ../dots/dlg_pref.c:234
+#: ../dots/dlg_pref.c:234
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -172,6 +184,11 @@ msgstr "Punktzahl = %d"
 #: ../dots/game.c:519
 msgid "Game Messages"
 msgstr "Spiel-Mitteilungen"
+
+#: ../dots/ggzintl.c:13
+#, c-format
+msgid "nls enabled: %s"
+msgstr "nls enabled: %s"
 
 #: ../dots/main.c:286
 #, c-format
@@ -224,26 +241,3 @@ msgstr "Du liegt gleichauf mit "
 msgid "%d to %d."
 msgstr "%d zu %d."
 
-#: ../common/dlg_exit.c:50
-msgid "Are you sure you want to exit?"
-msgstr ""
-
-#: ../common/dlg_exit.c:52
-msgid ""
-"Are you sure you want to exit?\n"
-"You will not be able to rejoin."
-msgstr ""
-
-#: ../common/dlg_exit.c:57
-msgid "Really Exit?"
-msgstr ""
-
-#: ../common/dlg_exit.c:66
-#, fuzzy
-msgid "Exit"
-msgstr "_Verlassen"
-
-#: ../common/ggzintl.c:41
-#, c-format
-msgid "nls enabled: %s"
-msgstr "nls enabled: %s"

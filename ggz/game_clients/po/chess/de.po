@@ -2,89 +2,89 @@
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-04 10:14+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2002-03-24 17:39+0100\n"
+"PO-Revision-Date: 2002-04-10 16:55GMT\n"
+"Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
+"Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
 
-#: ../chess/main_win.c:63
+#: ../chess/main_win.c:64
 msgid "GGZ Chess"
-msgstr ""
+msgstr "GGZ Schach"
 
-#: ../chess/main_win.c:79
+#: ../chess/main_win.c:80
 msgid "File"
-msgstr ""
+msgstr "Datei"
 
-#: ../chess/main_win.c:93 ../common/dlg_exit.c:66
+#: ../chess/main_win.c:94
 msgid "Exit"
-msgstr ""
+msgstr "Beenden"
 
-#: ../chess/main_win.c:100
+#: ../chess/main_win.c:101
 msgid "Game"
-msgstr ""
+msgstr "Spiel"
 
-#: ../chess/main_win.c:114
+#: ../chess/main_win.c:115
 msgid "Request draw"
-msgstr ""
+msgstr "Antwortzug"
 
-#: ../chess/main_win.c:120
+#: ../chess/main_win.c:121
 msgid "Ask the other player for a draw"
-msgstr ""
+msgstr "Frag den Mitspieler nach einem zug"
 
-#: ../chess/main_win.c:122
+#: ../chess/main_win.c:123
 msgid "Call flag"
-msgstr ""
+msgstr "Anrufflagge"
 
-#: ../chess/main_win.c:128
+#: ../chess/main_win.c:129
 msgid "If your opponent has run out of time, ask the server to end the game"
-msgstr ""
+msgstr "Wenn der Gegner nicht reagiert, wird der Server um Beendigung des Spiels gebeten"
 
-#: ../chess/main_win.c:130
+#: ../chess/main_win.c:131
 msgid "Request update"
-msgstr ""
+msgstr "Antwort-Update"
 
-#: ../chess/main_win.c:136
+#: ../chess/main_win.c:137
 msgid "Ask the server to update his time structures"
-msgstr ""
+msgstr "Fragt den Server ob er seine Zeitstruturen updatet"
 
-#: ../chess/main_win.c:138
+#: ../chess/main_win.c:139
 msgid "Options"
-msgstr ""
+msgstr "Optionen"
 
-#: ../chess/main_win.c:152
+#: ../chess/main_win.c:153
 msgid "Auto call flag"
-msgstr ""
+msgstr "Auto Zug"
 
-#: ../chess/main_win.c:158
+#: ../chess/main_win.c:159
 msgid "Call a flag when your oponnents time drops below 0"
-msgstr ""
+msgstr "Rufe einen Zug wenn die Zeit des Gegners 0 unterschreitet"
 
 #: ../chess/main_win.c:215
 msgid "White -> 99:99"
-msgstr ""
+msgstr "Weiss -> 99:99"
 
 #: ../chess/main_win.c:239
 msgid "Black -> 99:99"
-msgstr ""
+msgstr "Schwarz -> 99:99"
 
 #: ../chess/main_win.c:256
 msgid "Last moves"
-msgstr ""
+msgstr "Letzte Zuege"
 
 #: ../chess/main_win.c:278
 msgid "Last moves:\n"
-msgstr ""
+msgstr "Letzte Zuege:\n"
 
 #: ../chess/popup.c:55
 msgid "Do you want do draw the game ?"
-msgstr ""
+msgstr "Moechtest du das Spiel aufgeben?"
 
 #: ../chess/popup.c:62
 msgid ""
@@ -96,30 +96,38 @@ msgid ""
 "\n"
 "So, do you want do draw the game ?"
 msgstr ""
+"Der Server will das Spiel beenden. Das bedeutet, dass eines der Kriterien dafuer "
+"(Positionen wurden zo oft wieder eingenommen, 50 Zuege ohne Schlag auf gegnerische "
+"Figur). "
+"Das spielt wird in dem Moment beendet, wenn dein Gegner die Entscheidung des Servers akzepiert. "
+"Es kann auch sein, das dein Gegenspieler um das Ende dieses Spiels gebeten hat, was allerdings "
+"nur mit deiner Zustimmung gueltig ist. \n"
+"\n"
+"Willst du das Spiel nun vorzeitig beenden ?"
 
 #: ../chess/popup.c:82
 msgid "Draw"
-msgstr ""
+msgstr "Beenden"
 
 #: ../chess/popup.c:90
 msgid "Don't Draw"
-msgstr ""
+msgstr "Nicht beenden"
 
 #: ../chess/popup.c:141
 msgid "Select your clock option"
-msgstr ""
+msgstr "Suche dir deine Uhrzeit-Optionen aus"
 
 #: ../chess/popup.c:155
 msgid "No clock"
-msgstr ""
+msgstr "Keine Uhr"
 
 #: ../chess/popup.c:162
 msgid "If you select this option, this game won't have a time limit"
-msgstr ""
+msgstr "Wenn du diese Option auswaehlst, wird das Spiel kein Zeitlimit haben"
 
 #: ../chess/popup.c:165
 msgid "Server clock"
-msgstr ""
+msgstr "Server-Uhr"
 
 #: ../chess/popup.c:172
 msgid ""
@@ -131,10 +139,13 @@ msgid ""
 "strong disadvantage. You should only use it on a local LAN or if both you "
 "and your oponnent have similar connection speeds."
 msgstr ""
+"Mit dem Auswaehlen dieser Option wird der Server die Zeiten jedes Spielers speichern. "
+"Durch diese Methode wird es sehr schwer zu cheaten. Diese Option sollte man jedoch nur "
+"im LAN nutzen oder wenn der Gegenspieler eine gleich gute Verbindung hat."
 
 #: ../chess/popup.c:174
 msgid "Server clock with lag meter"
-msgstr ""
+msgstr "Server-Uhr mit Zeitmesser"
 
 #: ../chess/popup.c:182
 msgid ""
@@ -143,10 +154,12 @@ msgid ""
 "balance between security (the strong point in the server clock) and fairness "
 "(the strong point in the client clock)"
 msgstr ""
+"Diese Option wirkt wie die Server-Uhr. Hier werden ebenfalls lueckenhaft Verbindungen "
+"beruecksichtigt. Diese Option bietet eine gute Balance zwischen Sicherheit und Fairheit."
 
 #: ../chess/popup.c:184
 msgid "Client clock"
-msgstr ""
+msgstr "Client-Uhr"
 
 #: ../chess/popup.c:191
 msgid ""
@@ -156,72 +169,57 @@ msgid ""
 "can use a cheated client that won't report the time as expected. So, only "
 "use this option if you trust your oponnent."
 msgstr ""
+"Mit dieser Option wird jeder Client seine aktuelle Zeit speichern. Dies ist die fairste Option "
+"weil sie, unuebersichtliche Zeiten auf Null setzt. Ein gepatchter Client kann jedoch trotzdem cheaten, "
+"indem er sein Programm falsche Werte schicken laesst."
 
 #: ../chess/popup.c:200
 msgid "Game time :"
-msgstr ""
+msgstr "Spiel Zeit :"
 
 #: ../chess/popup.c:223
 msgid "min : "
-msgstr ""
+msgstr "min :"
 
 #: ../chess/popup.c:239
 msgid "sec"
-msgstr ""
+msgstr "sec"
 
 #: ../chess/popup.c:258
 msgid "Send option"
-msgstr ""
+msgstr "Sende option"
 
-#: ../chess/popup.c:266 ../common/dlg_exit.c:67
+#: ../chess/popup.c:266
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: ../chess/popup.c:307 ../chess/popup.c:360
 msgid "Promote"
-msgstr ""
+msgstr "Beguenstige"
 
 #: ../chess/popup.c:322
 msgid "Queen"
-msgstr ""
+msgstr "Koenigin"
 
 #: ../chess/popup.c:331
 msgid "Rook"
-msgstr ""
+msgstr "Turm"
 
 #: ../chess/popup.c:339
 msgid "Bishop"
-msgstr ""
+msgstr "Laeufer"
 
 #: ../chess/popup.c:347
 msgid "Knight"
-msgstr ""
+msgstr "Springer"
 
 #: ../chess/support.c:121
 #, c-format
 msgid "Couldn't find pixmap file: %s"
-msgstr ""
+msgstr "Konnte Pixmap nicht laden: %s"
 
 #: ../chess/support.c:130
 #, c-format
 msgid "Error loading pixmap file: %s"
-msgstr ""
+msgstr "Error beim Laden der Pixmap: %s"
 
-#: ../common/dlg_exit.c:50
-msgid "Are you sure you want to exit?"
-msgstr ""
-
-#: ../common/dlg_exit.c:52
-msgid ""
-"Are you sure you want to exit?\n"
-"You will not be able to rejoin."
-msgstr ""
-
-#: ../common/dlg_exit.c:57
-msgid "Really Exit?"
-msgstr ""
-
-#: ../common/ggzintl.c:41
-#, c-format
-msgid "nls enabled: %s"
-msgstr ""

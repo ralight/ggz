@@ -2,196 +2,197 @@
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: 2002-03-24 17:06+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2002-04-10 18:11GMT\n"
+"Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
+"Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
 
 #: ../../muehle/src/board.cpp:577
 msgid "AI"
-msgstr "xxx"
+msgstr "AI"
 
 #: ../../muehle/src/board.cpp:745
 msgid "Aborting game due to unhandled network input."
-msgstr ""
+msgstr "Das Spiel waehrend einer ungueltigen Netzwerkeingabe abbrechen."
 
 #: ../../muehle/src/board.cpp:767 ../../muehle/src/board.cpp:772
 msgid "Black"
-msgstr ""
+msgstr "Schwarz"
 
 #: ../../muehle/src/board.cpp:201 ../../muehle/src/board.cpp:206
 #: ../../muehle/src/board.cpp:211 ../../muehle/src/board.cpp:277
 #: ../../muehle/src/board.cpp:302 ../../muehle/src/board.cpp:358
 #: ../../muehle/src/board.cpp:469
 msgid "Client message"
-msgstr ""
+msgstr "Client-Meldung"
 
 #: ../../muehle/src/toplevel.cpp:83
 msgid "Game"
-msgstr ""
+msgstr "Spiel"
 
 #: ../../muehle/src/toplevel.cpp:175
 msgid "Game over"
-msgstr ""
+msgstr "Spiel vorbei"
 
 #: ../../muehle/src/toplevel.cpp:81
 msgid "Give up"
-msgstr ""
+msgstr "Aufgeben"
 
 #: ../../muehle/src/board.cpp:578
 msgid "Good luck."
-msgstr ""
+msgstr "Viel Glueck."
 
 #: ../../muehle/src/toplevel.cpp:87
 msgid "Help"
-msgstr ""
+msgstr "Hilfe"
 
 #: ../../muehle/src/board.cpp:206
 msgid "It's not your turn - please wait for the opponent."
-msgstr ""
+msgstr "Du bist noch nicht dran - bitte warte auf deinen Gegner."
 
 #: ../../muehle/src/board.cpp:588 ../../muehle/src/main.cpp:41
 msgid "KDE Muehle Game"
-msgstr ""
+msgstr "KDE Muehle"
 
 #: ../../muehle/src/board.cpp:302
 msgid "Moves aren't allowed while placing the stones initially"
-msgstr ""
+msgstr "Zuege sind nicht erlaubt, wenn man die Steine anfangs setzt"
 
 #: ../../muehle/src/main.cpp:43
 msgid "Muehle game for KDE supporting multiple variants"
-msgstr ""
+msgstr "Muehle fuer KDE unterstuetzt mehrere Varianten"
 
 #: ../../muehle/src/board.cpp:745
 msgid "Network error"
-msgstr ""
+msgstr "Netzwerkfehler"
 
 #: ../../muehle/src/toplevel.cpp:166
 msgid "Network game"
-msgstr ""
+msgstr "Netzwerkspiel"
 
 #: ../../muehle/src/toplevel.cpp:80
 msgid "Offer remis"
-msgstr ""
+msgstr "Frage nach einem Unentschieden"
 
 #: ../../muehle/src/board.cpp:710 ../../muehle/src/board.cpp:724
 msgid "Opponent message"
-msgstr ""
+msgstr "Gegnerische Meldung"
 
 #: ../../muehle/src/board.cpp:269 ../../muehle/src/board.cpp:336
 #: ../../muehle/src/board.cpp:347 ../../muehle/src/board.cpp:628
 msgid "Opponent's turn"
-msgstr ""
+msgstr "Der Gegner ist dran"
 
 #: ../../muehle/src/toplevel.cpp:85
 msgid "Player"
-msgstr ""
+msgstr "Spieler"
 
 #: ../../muehle/src/board.cpp:277
 msgid "Please take one of your opponent's stones"
-msgstr ""
+msgstr "Bitte nimm einen der generischen Steine"
 
 #: ../../muehle/src/toplevel.cpp:47
 msgid "Quit"
-msgstr ""
+msgstr "Beenden"
 
 #: ../../muehle/src/main.cpp:37
 msgid "Request GGZ game explicitely"
-msgstr ""
+msgstr "Fordere ein GGZ-Spiel"
 
 #: ../../muehle/src/board.cpp:612 ../../muehle/src/board.cpp:623
 #: ../../muehle/src/board.cpp:730 ../../muehle/src/board.cpp:737
 msgid "Server message"
-msgstr ""
+msgstr "Server-Meldung"
 
 #: ../../muehle/src/toplevel.cpp:45
 msgid "Start new game"
-msgstr ""
+msgstr "Starte neues Spiel"
 
 #: ../../muehle/src/board.cpp:82
 msgid "Starting new game."
-msgstr ""
+msgstr "Starte neues Spiel"
 
 #: ../../muehle/src/board.cpp:435
 msgid "Take a stone from your opponent"
-msgstr ""
+msgstr "Nimm einen Stein deines Gegners"
 
 #: ../../muehle/src/board.cpp:201
 msgid "The server doesn't have assigned a color to you yet."
-msgstr ""
+msgstr "Dir wurde noch keine Farbe vom Server zugewiesen."
 
 #: ../../muehle/src/toplevel.cpp:86
 msgid "Theme"
-msgstr ""
+msgstr "Thema"
 
 #: ../../muehle/src/board.cpp:211
 msgid "This game has already finished."
-msgstr ""
+msgstr "Das Spiel wurde schon beendet."
 
 #: ../../muehle/src/main.cpp:46
 msgid "This game is part of the GGZ Gaming Zone."
-msgstr ""
+msgstr "Dieses Spiel ist Teil der GGZ Gaming Zone."
 
 #: ../../muehle/src/toplevel.cpp:84
 msgid "Variants"
-msgstr ""
+msgstr "Varianten"
 
 #: ../../muehle/src/board.cpp:442
 msgid "Waiting for opponent's action"
-msgstr ""
+msgstr "Warte auf den Zug deines Gegners"
 
 #: ../../muehle/src/toplevel.cpp:91
 msgid "Welcome to Muehle."
-msgstr ""
+msgstr "Willkommen bei Muehle."
 
 #: ../../muehle/src/board.cpp:768 ../../muehle/src/board.cpp:773
 msgid "White"
-msgstr ""
+msgstr "Weiss"
 
 #: ../../muehle/src/board.cpp:576
 msgid "You"
-msgstr ""
+msgstr "Du"
 
 #: ../../muehle/src/board.cpp:469
 msgid "You have won the game!"
-msgstr ""
+msgstr "Du hast das Spiel gewonnen!"
 
 #: ../../muehle/src/board.cpp:358
 msgid "You must now move your stones."
-msgstr ""
+msgstr "Du musst deine Steine jetzt bewegen."
 
 #: ../../muehle/src/board.cpp:623
 msgid "You play with the black stones, but wait for your opponent first."
-msgstr ""
+msgstr "Du spielst mit schwarzen Steinen, also warte erst auf deinen Gegner."
 
 #: ../../muehle/src/board.cpp:730
 msgid "Your opponent has given up."
-msgstr ""
+msgstr "Dein Gegner hat aufgegeben."
 
 #: ../../muehle/src/board.cpp:737
 msgid "Your opponent has won the game! You have lost!"
-msgstr ""
+msgstr "Dein Gegner hat gewonnen!"
 
 #: ../../muehle/src/board.cpp:724
 msgid "Your opponent refuses to give you remis."
-msgstr ""
+msgstr "Dein Gegner gibt auf um dir ein Unentschieden zu gewaehren."
 
 #: ../../muehle/src/board.cpp:710
 msgid "Your opponent wants to get a remis. Do you accept this?"
-msgstr ""
+msgstr "Dein Gegner moechte ein Unentschieden? Akzeptierst du?"
 
 #: ../../muehle/src/board.cpp:617 ../../muehle/src/board.cpp:682
 #: ../../muehle/src/board.cpp:692
 msgid "Your turn"
-msgstr ""
+msgstr "Dein Zug"
 
 #: ../../muehle/src/board.cpp:612
 msgid "Your turn, you play with the white stones."
-msgstr ""
+msgstr "Dein Zug, du spielst mit weissen Steinen."
+

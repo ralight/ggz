@@ -2,79 +2,53 @@
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-04 10:14+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2002-03-24 17:39+0100\n"
+"PO-Revision-Date: 2002-04-10 18:12GMT\n"
+"Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
+"Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
 
-#: ../reversi/main_win.c:439
+#: ../reversi/main_win.c:466
 msgid "Reversi"
-msgstr ""
+msgstr "Reversi"
 
-#: ../reversi/main_win.c:456
+#: ../reversi/main_win.c:483
 msgid "_Game"
-msgstr ""
+msgstr "_Spiel"
 
-#: ../reversi/main_win.c:474
+#: ../reversi/main_win.c:501
 msgid "Re_sync"
-msgstr ""
+msgstr "Neu synchronisieren"
 
-#: ../reversi/main_win.c:485
+#: ../reversi/main_win.c:512
 msgid "O_ptions"
-msgstr ""
+msgstr "O_ptionen"
 
-#: ../reversi/main_win.c:496
+#: ../reversi/main_win.c:523
 msgid "E_xit"
-msgstr ""
+msgstr "Ausgang"
 
-#: ../reversi/main_win.c:507
+#: ../reversi/main_win.c:534
 msgid "_Help"
-msgstr ""
+msgstr "_Hilfe"
 
-#: ../reversi/main_win.c:526
+#: ../reversi/main_win.c:553
 msgid "_About"
-msgstr ""
+msgstr "_Ueber"
 
 #: ../reversi/support.c:118
 #, c-format
 msgid "Couldn't find pixmap file: %s"
-msgstr ""
+msgstr "Konnte Pixmap nicht laden: %s"
 
 #: ../reversi/support.c:127
 #, c-format
 msgid "Error loading pixmap file: %s"
-msgstr ""
+msgstr "Fehler beim Laden der Pixmap: %s"
 
-#: ../common/dlg_exit.c:50
-msgid "Are you sure you want to exit?"
-msgstr ""
-
-#: ../common/dlg_exit.c:52
-msgid ""
-"Are you sure you want to exit?\n"
-"You will not be able to rejoin."
-msgstr ""
-
-#: ../common/dlg_exit.c:57
-msgid "Really Exit?"
-msgstr ""
-
-#: ../common/dlg_exit.c:66
-msgid "Exit"
-msgstr ""
-
-#: ../common/dlg_exit.c:67
-msgid "Cancel"
-msgstr ""
-
-#: ../common/ggzintl.c:41
-#, c-format
-msgid "nls enabled: %s"
-msgstr ""

@@ -2,25 +2,25 @@
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-04 10:14+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2002-03-24 17:39+0100\n"
+"PO-Revision-Date: 2002-04-05 21:28GMT\n"
+"Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
+"Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
 
 #: ../combat/dlg_about.c:33
 msgid "About Combat"
-msgstr ""
+msgstr "Uber Combat"
 
 #: ../combat/dlg_about.c:48
 msgid "Combat, a stratego (tm) game for GGZ\n"
-msgstr ""
+msgstr "Combat, ein Stratego (tm) Spiel fuer GGZ\n"
 
 #: ../combat/dlg_about.c:56
 msgid ""
@@ -36,58 +36,69 @@ msgid ""
 "For more information on Stratego, visit:\n"
 "http://www.inficad.com/~ecollins/stratego/"
 msgstr ""
+"Autor:\n"
+"Ismael Orenstein\n"
+"<perdig@linuxbr.com.br>\n"
+"\n"
+"Besonderer Dank an:\n"
+"Justin G. Zaun\n"
+"Rich Gade\n"
+".. und das ganze GGZ-Team\n"
+"\n"
+"Besuche die Homepage fuer mehr Informationen:\n"
+"http://www.inficad.com/~ecollins/stratego/"
 
 #: ../combat/dlg_about.c:71
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: ../combat/dlg_options.c:117
 msgid "Game options"
-msgstr ""
+msgstr "Spieloptionen"
 
 #: ../combat/dlg_options.c:168
 msgid "Height: "
-msgstr ""
+msgstr "Hoehe:"
 
 #: ../combat/dlg_options.c:200
 msgid "Width: "
-msgstr ""
+msgstr "Weite:"
 
 #: ../combat/dlg_options.c:218
 msgid "Open"
-msgstr ""
+msgstr "Offen"
 
 #: ../combat/dlg_options.c:229
 msgid "Lake"
-msgstr ""
+msgstr "See"
 
 #: ../combat/dlg_options.c:239
 msgid "Black"
-msgstr ""
+msgstr "Schwarz"
 
 #: ../combat/dlg_options.c:249
 msgid "Player 1"
-msgstr ""
+msgstr "Spieler 1"
 
 #: ../combat/dlg_options.c:259
 msgid "Player 2"
-msgstr ""
+msgstr "Spieler 2"
 
 #: ../combat/dlg_options.c:269
 msgid "Terrain"
-msgstr ""
+msgstr "Umgebung"
 
 #: ../combat/dlg_options.c:285
 msgid "Army"
-msgstr ""
+msgstr "Army"
 
 #: ../combat/dlg_options.c:312
 msgid "If set, the bombs who explode will be removed from the game."
-msgstr ""
+msgstr "Wenn gesetzt werden die explodierten Bomben vom Spiel entfernt."
 
 #: ../combat/dlg_options.c:314
 msgid "One Time Bomb"
-msgstr ""
+msgstr "Einfachbombe"
 
 #: ../combat/dlg_options.c:332
 msgid ""
@@ -95,40 +106,49 @@ msgid ""
 "he will die with the unit (think of it like a terrorist, with a body full of "
 "bombs)"
 msgstr ""
+"Wenn gesetzt, wird der Spion andere Einheiten toeten koennen (Bomben ausgeschlossen), "
+"wird aber mit der anderen Einhait zusammen sterben (denk an Terroristen mit lauter "
+"Bomben um den Koerper)"
 
 #: ../combat/dlg_options.c:334
 msgid "Terrorist Spy"
-msgstr ""
+msgstr "Terroristen-Spion"
 
 #: ../combat/dlg_options.c:352
 msgid ""
 "If set, the bombs can walk, just like regular officers. But they aren't able "
 "to attack! (think of it like a officer carrying a bomb)"
 msgstr ""
+"Wenn gesetzt koennen die Bomben gehen, wie auch normale Offiziere, sind aber nicht in der "
+"Lage anzugreifen! (Denke an Soldaten die Bomben tragen)"
 
 #: ../combat/dlg_options.c:354
 msgid "Moving Bombs"
-msgstr ""
+msgstr "Bomben bewegen"
 
 #: ../combat/dlg_options.c:372
 msgid ""
 "If set, scouts are able to walk more then one square at a time and attack at "
 "the same turn."
 msgstr ""
+"Wenn gesetzt koennen die Scouts ueber mehr als ein Quadrat laufen in einer "
+"bestimmten Zeit und gleichzeitug auch noch angreifen."
 
 #: ../combat/dlg_options.c:374
 msgid "Super Scout"
-msgstr ""
+msgstr "Super Scout"
 
 #: ../combat/dlg_options.c:392
 msgid ""
 "If set, the flags will be able to walk, just like a regular unit (think of "
 "it like a officer carrying a flag)"
 msgstr ""
+"Wenn gesetzt koennen die Flaggen laufen wie auch andere regulaere Einheiten "
+"(Denke an flaggentragende Offiziere)"
 
 #: ../combat/dlg_options.c:394
 msgid "Moving Flags"
-msgstr ""
+msgstr "Flaggenbewegung"
 
 #: ../combat/dlg_options.c:412
 msgid ""
@@ -148,48 +168,52 @@ msgid ""
 "If set, units will be able to move (and attack) diagonally. (Scouts will be "
 "able of walking how many squares as they want diagonally)"
 msgstr ""
+"Wenn gesetzt koennen sich die Einheiten diagonal bewegen und angreifen. "
+"(Scouts koennen so viele Quadrate wie sie wollen diagonal laufen)"
 
 #: ../combat/dlg_options.c:434
 msgid "Allow diagonal moves"
-msgstr ""
+msgstr "Erlaube diagonale Zuege"
 
 #: ../combat/dlg_options.c:452
 msgid "If set, the type of the winning unit in a attack will not be shown."
-msgstr ""
+msgstr "Wenn gesetzt wird die siegende Einheit eines Angriffs nicht angezeigt."
 
 #: ../combat/dlg_options.c:454
 msgid "Unknow Victor"
-msgstr ""
+msgstr "Unbekannter Sieger"
 
 #: ../combat/dlg_options.c:472
 msgid ""
 "If set, the defense won't have to reveal what is his type, only wheter he "
 "wins or loses to the attacking unit."
-msgstr ""
+msgstr "Wenn gesetzt wird die Verteidigung nur wissen, ob sie eine Einheit verloren hat oder nicht."
 
 #: ../combat/dlg_options.c:474
 msgid "Silent Defense"
-msgstr ""
+msgstr "Leise Verteidigung"
 
 #: ../combat/dlg_options.c:492
 msgid ""
 "If set, the attacking won't have to reveal it's type, only wheter it wins or "
 "loses to the defending unit."
-msgstr ""
+msgstr "Wenn gesetzt wird die attackierende Einheit nur wissen ob sie eine Einheit verloren hat oder nicht."
 
 #: ../combat/dlg_options.c:494
 msgid "Silent Offense"
-msgstr ""
+msgstr "Leiser Angriff"
 
 #: ../combat/dlg_options.c:512
 msgid ""
 "If set, the players won't be able to setup their units. It will be randomly "
 "set up by the server."
 msgstr ""
+"Wenn gesetzt werden die Spieler nicht in der Lage sein ihr Einheiten aufzustellen. Jenes wird "
+"vom Server uebernommen."
 
 #: ../combat/dlg_options.c:514
 msgid "Random Setup"
-msgstr ""
+msgstr "Voreingestellter Setup"
 
 #: ../combat/dlg_options.c:532
 msgid ""
@@ -199,10 +223,13 @@ msgid ""
 "of a lake (it must go through a straight line, and it must be only lake "
 "tiles between the source and the destination)"
 msgstr ""
+"Wenn gesetzt wird der Seargant aller Teams ein rigeroses Training erhalten. Dadurch kann er "
+"durch Seen gehen, dort aber nicht stehen bleiben. Dafuer waere es moeglich dafuer an der anderen "
+"Seite des Sees aufzutauchen."
 
 #: ../combat/dlg_options.c:534
 msgid "Special Forces Sergeant"
-msgstr ""
+msgstr "Spezialkraefte-Seargant"
 
 #: ../combat/dlg_options.c:552
 msgid ""
@@ -211,10 +238,13 @@ msgid ""
 "the enemy, in the same turn. However, your units die after this attack, even "
 "if they succeed doing it."
 msgstr ""
+"Wenn gesetzt werden die Einheiten faehig sein, einen Gemeinschaftsangriff zu starten, wo alle "
+"ausgewaehlten Einheiten in einer Linie angreifen koennen, in einem Zug. Wie auch immer, "
+"deine Einhaiten sterben nach dieser Aktion, egal ob ueberlebt oder nicht."
 
 #: ../combat/dlg_options.c:554
 msgid "Rush Attack"
-msgstr ""
+msgstr "Gemeinschaftsangriff"
 
 #: ../combat/dlg_options.c:572
 msgid ""
@@ -223,10 +253,13 @@ msgid ""
 "left. Please note that this option can't be enforceable by the server, so "
 "just use it against trusted opponents."
 msgstr ""
+"Wenn gesetzt werden die Spieler nicht in der Lage sein, die uebrigen Einheiten "
+"der Gegners zu sehen. Beachte das diese Option auch vom Server voreingestellt "
+"sein, deshalb solltest du diese Option nur bei vertrauten Spielern benutzen."
 
 #: ../combat/dlg_options.c:574
 msgid "Hide enemy's unit list"
-msgstr ""
+msgstr "Generische Einheitenanzahl verstecken"
 
 #: ../combat/dlg_options.c:592
 msgid ""
@@ -235,160 +268,143 @@ msgid ""
 "and a bad client could cheat, showing all the enemy units it knows about "
 "(just the ones that the server tells them, like after an attack)"
 msgstr ""
+"Wenn gesetzt wird der Sever fragen, ob sie die generischen Einheiten "
+"sehen wollen. Dies geschieht nur nach einem Zug (z.B. Attacke). Das "
+"kann nicht voreingestellt werden und ein schlechter Client koennte cheaten, "
+"in dem er alle Einhaiten zeigt ueber die er Bescheid weiss. "
+"(Nur die ueber die er vom Server erfahren hat, wie z.B nach einer Attacke)"
 
 #: ../combat/dlg_options.c:594
 msgid "Forget enemy units"
-msgstr ""
+msgstr "Vergiss gegnerische Einheiten"
 
 #: ../combat/dlg_options.c:613
 msgid "If set, all the units will be shown to both players"
-msgstr ""
+msgstr "Wenn gesetzt werden alle Einheiten beiden Spielern gezeigt"
 
 #: ../combat/dlg_options.c:615
 msgid "Open Map"
-msgstr ""
+msgstr "Oeffne Karte"
 
 #: ../combat/dlg_options.c:626
 msgid "Options"
-msgstr ""
+msgstr "Optionen"
 
 #: ../combat/dlg_options.c:663
 msgid "Stored Maps"
-msgstr ""
+msgstr "Gespeicherte Karten"
 
 #: ../combat/dlg_options.c:732
 msgid "Map Preview"
-msgstr ""
+msgstr "Kartenvorschau"
 
 #: ../combat/dlg_options.c:751
 msgid "Load"
-msgstr ""
+msgstr "Laden"
 
 #: ../combat/dlg_options.c:760
 msgid "Save"
-msgstr ""
+msgstr "Speichern"
 
 #: ../combat/dlg_options.c:769
 msgid "Delete"
-msgstr ""
+msgstr "Loeschen"
 
 #: ../combat/dlg_options.c:778
 msgid "Maps"
-msgstr ""
+msgstr "Karten"
 
 #: ../combat/dlg_options.c:801
 msgid "Start Game"
-msgstr ""
+msgstr "Starte Spiel"
 
-#: ../combat/dlg_options.c:810 ../common/dlg_exit.c:67
+#: ../combat/dlg_options.c:810
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: ../combat/dlg_options.c:1142
 msgid "Save Map?"
-msgstr ""
+msgstr "Karte speichern?"
 
 #: ../combat/dlg_options.c:1159
 msgid "Save map as:"
-msgstr ""
+msgstr "Speicher Karte als:"
 
 #: ../combat/dlg_options.c:1191
 msgid "Yep"
-msgstr ""
+msgstr "Jepp"
 
 #: ../combat/dlg_options.c:1200
 msgid "Nope"
-msgstr ""
+msgstr "Nein"
 
 #: ../combat/interface.c:62
 msgid "Combat"
-msgstr ""
+msgstr "Kampf"
 
 #: ../combat/interface.c:82
 msgid "_File"
-msgstr ""
+msgstr "_Datei"
 
 #: ../combat/interface.c:102
 msgid "E_xit"
-msgstr ""
+msgstr "Ausgang"
 
 #: ../combat/interface.c:114
 msgid "_Game"
-msgstr ""
+msgstr "_Spiel"
 
 #: ../combat/interface.c:134
 msgid "S_ave current map"
-msgstr ""
+msgstr "Speicher aktuelle Karte"
 
 #: ../combat/interface.c:143
 msgid "Saves the current map"
-msgstr ""
+msgstr "Speichert die aktuelle Karte"
 
 #: ../combat/interface.c:147
 msgid "_Request Sync"
-msgstr ""
+msgstr "_Fordere Synchronisation an"
 
 #: ../combat/interface.c:156
 msgid "Requests the current game state from the game server"
-msgstr ""
+msgstr "Fordert einen aktuellen Spielstaus vom Server ab"
 
 #: ../combat/interface.c:160
 msgid "_Remember enemy units"
-msgstr ""
+msgstr "_Merke gegnerische Einheiten"
 
 #: ../combat/interface.c:169
 msgid "Set it if you want to remember your enemy units"
-msgstr ""
+msgstr "Setze um sich an gegnerische Einheiten zu erinnern"
 
 #: ../combat/interface.c:173
 msgid "_Show game options"
-msgstr ""
+msgstr "_Zeige Spieloptionen"
 
 #: ../combat/interface.c:182
 msgid "Displays the current game options"
-msgstr ""
+msgstr "Zeigt die aktuellen Spieloptionen"
 
 #: ../combat/interface.c:186
 msgid "_Help"
-msgstr ""
+msgstr "_Hilfe"
 
 #: ../combat/interface.c:207
 msgid "A_bout"
-msgstr ""
+msgstr "Ueber"
 
 #: ../combat/interface.c:256
 msgid "_Send Setup"
-msgstr ""
+msgstr "_Sende Setup"
 
 #: ../combat/support.c:121
 #, c-format
 msgid "Couldn't find pixmap file: %s"
-msgstr ""
+msgstr "Konnte pixmap nicht laden: %s"
 
 #: ../combat/support.c:130
 #, c-format
 msgid "Error loading pixmap file: %s"
-msgstr ""
+msgstr "Fehler beim Laden der Pixmap: %s"
 
-#: ../common/dlg_exit.c:50
-msgid "Are you sure you want to exit?"
-msgstr ""
-
-#: ../common/dlg_exit.c:52
-msgid ""
-"Are you sure you want to exit?\n"
-"You will not be able to rejoin."
-msgstr ""
-
-#: ../common/dlg_exit.c:57
-msgid "Really Exit?"
-msgstr ""
-
-#: ../common/dlg_exit.c:66
-msgid "Exit"
-msgstr ""
-
-#: ../common/ggzintl.c:41
-#, c-format
-msgid "nls enabled: %s"
-msgstr ""

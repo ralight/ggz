@@ -2,151 +2,152 @@
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: 2002-03-24 17:06+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2002-04-10 18:02GMT\n"
+"Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
+"Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
 
 #: ../../ktictactux/ktictactux.cpp:371
 msgid "*bounds*"
-msgstr "xxx"
+msgstr "*Grenzen*"
 
 #: ../../ktictactux/ktictactux.cpp:374
 msgid "*occupied*"
-msgstr ""
+msgstr "*uebergenommen*"
 
 #: ../../ktictactux/ktictactux.cpp:365
 msgid "*server*"
-msgstr ""
+msgstr "*Server*"
 
 #: ../../ktictactux/ktictactux.cpp:368
 msgid "*turn*"
-msgstr ""
+msgstr "*Zug*"
 
 #: ../../ktictactux/ktictactux.cpp:114
 msgid "AI's turn"
-msgstr ""
+msgstr "AI ist dran"
 
 #: ../../ktictactux/ktictactuxwin.cpp:31
 msgid "Game"
-msgstr ""
+msgstr "Spiel"
 
 #: ../../ktictactux/ktictactux.cpp:174 ../../ktictactux/ktictactux.cpp:191
 msgid "Game Over!"
-msgstr ""
+msgstr "Spiel vorbei!"
 
 #: ../../ktictactux/ktictactux.cpp:209
 msgid "Game over"
-msgstr ""
+msgstr "Spiel vorbei"
 
 #: ../../ktictactux/ktictactuxwin.cpp:36
 msgid "Game with the AI"
-msgstr ""
+msgstr "Spiel mit dem Computer"
 
 #: ../../ktictactux/ktictactuxwin.cpp:33
 msgid "Help"
-msgstr ""
+msgstr "Hilfe"
 
 #: ../../ktictactux/main.cpp:40
 msgid "Inventor"
-msgstr ""
+msgstr "Erfinder"
 
 #: ../../ktictactux/ktictactuxwin.cpp:27
 msgid "KDE/Gnome"
-msgstr ""
+msgstr "KDE/Gnome"
 
 #: ../../ktictactux/main.cpp:32
 msgid "KTicTacTux"
-msgstr ""
+msgstr "KTicTacTux"
 
 #: ../../ktictactux/ktictactux.cpp:377
 msgid "Move OK"
-msgstr ""
+msgstr "Zug OK"
 
 #: ../../ktictactux/ktictactux.cpp:328
 msgid "Network game"
-msgstr ""
+msgstr "Netzwerkspiel"
 
 #: ../../ktictactux/ktictactux.cpp:354
 #, c-format
 msgid "Network game with %1"
-msgstr ""
+msgstr "Netzwerkspiel mit %1"
 
 #: ../../ktictactux/ktictactux.cpp:115
 msgid "Opponent's turn"
-msgstr ""
+msgstr "Der Gegner ist dran"
 
 #: ../../ktictactux/ktictactux.cpp:209
 msgid "Play another game?"
-msgstr ""
+msgstr "Ein weiteres Spiel spielen?"
 
 #: ../../ktictactux/ktictactuxwin.cpp:24
 msgid "Quit"
-msgstr ""
+msgstr "Beenden"
 
 #: ../../ktictactux/main.cpp:21
 msgid "Request GGZ game explicitely"
-msgstr ""
+msgstr "Fordere ein GGZ-Spiel"
 
 #: ../../ktictactux/ktictactux.cpp:207
 msgid "Score: you %1, opponent %2"
-msgstr ""
+msgstr "Punkte: du: %1, Gegner: %2"
 
 #: ../../ktictactux/ktictactuxwin.cpp:35
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: ../../ktictactux/ktictactuxwin.cpp:29
 msgid "Symbols"
-msgstr ""
+msgstr "Symbole"
 
 #: ../../ktictactux/ktictactuxwin.cpp:23
 msgid "Synchronize"
-msgstr ""
+msgstr "Synchronisiere"
 
 #: ../../ktictactux/ktictactux.cpp:192
 msgid "The game is over. There is no winner."
-msgstr ""
+msgstr "Das Spiel ist beendet. Es gibt keinen Gewinner."
 
 #: ../../ktictactux/ktictactuxwin.cpp:32
 msgid "Theme"
-msgstr ""
+msgstr "Thema"
 
 #: ../../ktictactux/main.cpp:37
 msgid "This game is part of the GGZ Gaming Zone."
-msgstr ""
+msgstr "Dieses Spiel ist Teil der GGZ Gaming Zone."
 
 #: ../../ktictactux/main.cpp:34
 msgid "This is a TicTacToe game for KDE."
-msgstr ""
+msgstr "Dies ist ein TicTacToe-Spiel fuer KDE."
 
 #: ../../ktictactux/ktictactuxwin.cpp:28
 msgid "Tux/Kandalf (classic)"
-msgstr ""
+msgstr "Tux/Kandalf (klassisch)"
 
 #: ../../ktictactux/ktictactux.cpp:329
 msgid "Waiting for opponent!"
-msgstr ""
+msgstr "Warte auf deinen Gegner!"
 
 #: ../../ktictactux/ktictactux.cpp:183
 msgid "You are the winner!"
-msgstr ""
+msgstr "Du bist der Gewinner!"
 
 #: ../../ktictactux/ktictactux.cpp:178
 msgid "You lost the game."
-msgstr ""
+msgstr "Du hast das Spiel verloren."
 
 #: ../../ktictactux/ktictactux.cpp:359
 msgid "Your move"
-msgstr ""
+msgstr "Dein Zug"
 
 #: ../../ktictactux/ktictactux.cpp:107
 msgid "Your turn"
-msgstr ""
+msgstr "Dein Zug"
+

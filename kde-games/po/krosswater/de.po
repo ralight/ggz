@@ -2,193 +2,193 @@
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: 2002-03-24 17:23+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2002-04-10 17:56GMT\n"
+"Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
+"Language-Team:  <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
 
 #: ../../krosswater/dlg_again.cpp:44
 msgid "(result unknown)"
-msgstr "xx"
+msgstr "(Ergebnis unbekannt)"
 
 #: ../../krosswater/krosswater.cpp:110 ../../krosswater/krosswater.cpp:112
 msgid "A protocol error has been detected. Aborting the game."
-msgstr ""
+msgstr "Ein Protokoll-Fehler wurde entdeckt. Spiel wird beendet."
 
 #: ../../krosswater/krosswater.cpp:73 ../../krosswater/krosswater.cpp:74
 msgid "About"
-msgstr ""
+msgstr "Ueber"
 
 #: ../../krosswater/dlg_about.cpp:42
 msgid "About Krosswater"
-msgstr ""
+msgstr "Ueber Krosswater"
 
 #: ../../krosswater/dlg_help.cpp:62
 msgid "As one of 2 to 4 players on the board, your task is to"
-msgstr ""
+msgstr "Als einer der 2 bis 4 Spieler auf dem Spielfeld, ist dein Aufgabe"
 
 #: ../../krosswater/krosswater.cpp:110 ../../krosswater/krosswater.cpp:112
 #: ../../krosswater/krosswater.cpp:134 ../../krosswater/krosswater.cpp:136
 msgid "Client message"
-msgstr ""
+msgstr "Client-Meldung"
 
 #: ../../krosswater/main.cpp:45
 msgid "GGZ version of Cross The Water"
-msgstr ""
+msgstr "GGZ Version von Cross The Water"
 
 #: ../../krosswater/krosswater.cpp:76 ../../krosswater/krosswater.cpp:77
 msgid "Game"
-msgstr ""
+msgstr "Spiel"
 
 #: ../../krosswater/dlg_again.cpp:49
 msgid "Game Over"
-msgstr ""
+msgstr "Spiel vorbei"
 
 #: ../../krosswater/krosswater.cpp:267 ../../krosswater/krosswater.cpp:271
 msgid "Game over"
-msgstr ""
+msgstr "Spiel vorbei"
 
 #: ../../krosswater/krosswater.cpp:118 ../../krosswater/krosswater.cpp:120
 msgid "Game started"
-msgstr ""
+msgstr "Spiel gestartet"
 
 #: ../../krosswater/krosswater.cpp:340 ../../krosswater/krosswater.cpp:344
 msgid "Get move"
-msgstr ""
+msgstr "Hole Zug"
 
 #: ../../krosswater/krosswater.cpp:74 ../../krosswater/krosswater.cpp:75
 #: ../../krosswater/krosswater.cpp:78 ../../krosswater/krosswater.cpp:79
 msgid "Help"
-msgstr ""
+msgstr "Hilfe"
 
 #: ../../krosswater/krosswater.cpp:276 ../../krosswater/krosswater.cpp:280
 msgid "Invalid move!"
-msgstr ""
+msgstr "Ungueltiger Zug!"
 
 #: ../../krosswater/krosswater.cpp:99
 msgid "Krosswater - Cross the Water!"
-msgstr ""
+msgstr "Krosswater - Ueberquere das Wasser!"
 
 #: ../../krosswater/dlg_help.cpp:42
 msgid "Krosswater Help"
-msgstr ""
+msgstr "Krosswater Hilfe"
 
 #: ../../krosswater/dlg_again.cpp:39
 msgid "No"
-msgstr ""
+msgstr "Nein"
 
 #: ../../krosswater/krosswater.cpp:134 ../../krosswater/krosswater.cpp:136
 msgid "Not your turn yet."
-msgstr ""
+msgstr "Du bist noch nicht dran."
 
 #: ../../krosswater/dlg_help.cpp:38
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: ../../krosswater/dlg_again.cpp:71
 msgid "Play another game?"
-msgstr ""
+msgstr "Ein weiteres Spiel spielen?"
 
 #: ../../krosswater/dlg_person.cpp:94
 msgid "Please select your"
-msgstr ""
+msgstr "Bitte waehle dein"
 
 #: ../../krosswater/krosswater.cpp:70 ../../krosswater/krosswater.cpp:71
 msgid "Quit"
-msgstr ""
+msgstr "Beenden"
 
 #: ../../krosswater/krosswater.cpp:162 ../../krosswater/krosswater.cpp:166
 msgid "Receiving..."
-msgstr ""
+msgstr "Empfange..."
 
 #: ../../krosswater/main.cpp:38
 msgid "Request GGZ game explicitely"
-msgstr ""
+msgstr "Fordere ein GGZ-Spiel an"
 
 #: ../../krosswater/krosswater.cpp:251 ../../krosswater/krosswater.cpp:255
 msgid "Send map"
-msgstr ""
+msgstr "Sende Karte"
 
 #: ../../krosswater/krosswater.cpp:138 ../../krosswater/krosswater.cpp:140
 msgid "Sending move"
-msgstr ""
+msgstr "Sende Zug"
 
 #: ../../krosswater/krosswater.cpp:276 ../../krosswater/krosswater.cpp:280
 msgid "Server message"
-msgstr ""
+msgstr "Server-Meldung"
 
 #: ../../krosswater/krosswater.cpp:242 ../../krosswater/krosswater.cpp:246
 msgid "Sorry, but you lost the game."
-msgstr ""
+msgstr "Sorry, aber du hast verloren."
 
 #: ../../krosswater/dlg_help.cpp:68
 msgid "The game ends if the first player has build a track of stones from his"
-msgstr ""
+msgstr "Das Spiel wird beendet, so bald ein Spiel eine Bruecke von Steinen von seinem"
 
 #: ../../krosswater/dlg_again.cpp:69
 msgid "The game is over."
-msgstr ""
+msgstr "Das Spiel ist vorbei."
 
 #: ../../krosswater/dlg_help.cpp:66
-msgid ""
-"The more players participate, the more fun it is to steal stone tiles that"
-msgstr ""
+msgid "The more players participate, the more fun it is to steal stone tiles that"
+msgstr "Je mehr Spieler mitmachen, desto lusiger wird es den anderen die Stein zu klauen welche"
 
 #: ../../krosswater/dlg_about.cpp:63 ../../krosswater/main.cpp:48
 msgid "This game is part of the GGZ Gaming Zone."
-msgstr ""
+msgstr "Dieses Spiel ist Teil der GGZ Gaming Zone."
 
 #: ../../krosswater/dlg_about.cpp:62
 msgid "Try to cross the water the most efficient way!"
-msgstr ""
+msgstr "Versuche das Wasser auf dem effizientesten Weg zu ueberqueren!"
 
 #: ../../krosswater/krosswater.cpp:67 ../../krosswater/krosswater.cpp:68
 msgid "Uninitialized"
-msgstr ""
+msgstr "Nicht initialisiert"
 
 #: ../../krosswater/krosswater.cpp:119 ../../krosswater/krosswater.cpp:121
 msgid "Waiting for other players..."
-msgstr ""
+msgstr "Warte auf andere Spieler..."
 
 #: ../../krosswater/dlg_again.cpp:38
 msgid "Yes"
-msgstr ""
+msgstr "Ja"
 
 #: ../../krosswater/krosswater.cpp:241 ../../krosswater/krosswater.cpp:245
 msgid "You won the game."
-msgstr ""
+msgstr "Du hast das Spiel gewonnen."
 
 #: ../../krosswater/krosswater.cpp:260 ../../krosswater/krosswater.cpp:264
 msgid "Your turn"
-msgstr ""
+msgstr "Dein Zug"
 
 #: ../../krosswater/dlg_help.cpp:64
 msgid "by clicking on a stone tile, and then clicking on a water tile to move"
-msgstr ""
+msgstr "durch klicken auf einen Stein, und danach auf das Wasser klicken"
 
 #: ../../krosswater/dlg_help.cpp:63
 msgid "cross the water from the left to the right. This can be accomplished"
-msgstr ""
+msgstr "ueberquere das Wasser von links nach rechts. Das kann gemacht werden"
 
 #: ../../krosswater/dlg_person.cpp:95
 msgid "favorite character!"
-msgstr ""
+msgstr "Lieblingscharakter!"
 
 #: ../../krosswater/dlg_help.cpp:67
 msgid "have been placed by the opponents for their own purpose."
-msgstr ""
+msgstr "wurde von den Gegnern zu ihrem eigenen Nutzen gesetzt."
 
 #: ../../krosswater/dlg_help.cpp:69
 msgid "starting point to somewhere on the right side."
-msgstr ""
+msgstr "Startpunkt irgendwo auf der rechten Seite."
 
 #: ../../krosswater/dlg_help.cpp:65
 msgid "the stone tile there."
-msgstr ""
+msgstr "das Steinteil hier."
+
