@@ -46,7 +46,7 @@ static char *metaserv_lookup(const char *class, const char *category, const char
 	const char *header = "<?xml version=\"1.0\"?><resultset referer=\"query\">";
 	const char *footer = "</resultset>";
 	static char *xmlret = NULL;
-	char *ret, *r, *version;
+	char *ret, *r, *version, *prefstr;
 	int i, j, valid;
 	ELE **ele;
 	ATT **att;
@@ -119,7 +119,9 @@ static char *metaserv_lookup(const char *class, const char *category, const char
 			r = ele[i]->value;
 			if(!xmlformat)
 			{
-				pref = atoi(MD_att(ele[i], "preference"));
+				prefstr = MD_att(ele[i], "preference");
+				if(prefstr) pref = atoi(prefstr);
+				else pref = 0;
 
 				if((pref == preference) && (rand() % 2)) ret = r;
 				if((rand() % (100 + pref) > preference) || (!preference))
@@ -130,7 +132,9 @@ static char *metaserv_lookup(const char *class, const char *category, const char
 			}
 			else
 			{
-				preference = atoi(MD_att(ele[i], "preference"));
+				prefstr = MD_att(ele[i], "preference");
+				if(prefstr) preference = atoi(prefstr);
+				else preference = 0;
 				snprintf(tmp, sizeof(tmp), "<result preference=\"%i\"><uri>%s</uri>", preference, r);
 				xmlret = (char*)realloc(xmlret, strlen(xmlret) + strlen(tmp) + 1);
 				strcat(xmlret, tmp);
