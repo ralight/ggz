@@ -73,11 +73,11 @@ void KDotsHelp::paintEvent(QPaintEvent *e)
 	p.setFont(m_font);
 	p.drawText(20, 120, measure(i18n("This game consists of a game board with")));
 	p.drawText(20, 140, measure(i18n("dots which are to be connected. Whenever")));
-	p.drawText(20, 160, measure(i18n("you achieve it to fill one square by surrounding")));
-	p.drawText(20, 180, measure(i18n("it, it is marked as yours. If all dots are")));
-	p.drawText(20, 200, measure(i18n("connected, the player with the highest number")));
-	p.drawText(20, 220, measure(i18n("of fields has won. Tip: Prefer always an odd")));
-	p.drawText(20, 240, measure(i18n("number of dots to prevent a tie game!")));
+	p.drawText(20, 160, measure(i18n("you fill one square by surrounding it, it")));
+	p.drawText(20, 180, measure(i18n("is marked as yours. If all dots are connected,")));
+	p.drawText(20, 200, measure(i18n("the player with the highest number of squares")));
+	p.drawText(20, 220, measure(i18n("has won.  Tip: Always prefer an odd number of")));
+	p.drawText(20, 240, measure(i18n("dots to prevent a tie game!")));
 	p.drawText(20, 290, measure(i18n("Have fun!")));
 	p.end();
 
