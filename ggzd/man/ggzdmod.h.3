@@ -1,0 +1,661 @@
+.TH "ggzdmod.h" 3 "15 Feb 2002" "GGZDMOD" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ggzdmod.h \- Common functions for interfacing a game server and GGZ. 
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <ggz.h>\fP
+.br
+\fC#include <ggz_common.h>\fP
+.br
+.SS "Compounds"
+
+.in +1c
+.ti -1c
+.RI "struct \fBGGZSeat\fP"
+.br
+.RI "\fIA seat at a GGZ game table.\fP"
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct GGZdMod \fBGGZdMod\fP"
+.br
+.RI "\fIA GGZdmod object, used for tracking a ggzd<->table connection.\fP"
+.ti -1c
+.RI "typedef void (* \fBGGZdModHandler\fP )(\fBGGZdMod\fP *mod, \fBGGZdModEvent\fP e, void *data)"
+.br
+.RI "\fIEvent handler prototype.\fP"
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBGGZdModState\fP { \fBGGZDMOD_STATE_CREATED\fP, \fBGGZDMOD_STATE_WAITING\fP, \fBGGZDMOD_STATE_PLAYING\fP, \fBGGZDMOD_STATE_DONE\fP }"
+.br
+.RI "\fITable states.\fP"
+.ti -1c
+.RI "enum \fBGGZdModEvent\fP { \fBGGZDMOD_EVENT_STATE\fP, \fBGGZDMOD_EVENT_JOIN\fP, \fBGGZDMOD_EVENT_LEAVE\fP, \fBGGZDMOD_EVENT_LOG\fP, \fBGGZDMOD_EVENT_PLAYER_DATA\fP, \fBGGZDMOD_EVENT_ERROR\fP }"
+.br
+.RI "\fICallback events.\fP"
+.ti -1c
+.RI "enum \fBGGZdModType\fP { \fBGGZDMOD_GGZ\fP, \fBGGZDMOD_GAME\fP }"
+.br
+.RI "\fIThe 'type' of ggzdmod.\fP"
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBGGZdMod\fP* \fBggzdmod_new\fP (\fBGGZdModType\fP type)"
+.br
+.RI "\fICreate a new ggzdmod object.\fP"
+.ti -1c
+.RI "void \fBggzdmod_free\fP (\fBGGZdMod\fP *ggzdmod)"
+.br
+.RI "\fIDestroy a finished ggzdmod object.\fP"
+.ti -1c
+.RI "int \fBggzdmod_get_fd\fP (\fBGGZdMod\fP *ggzdmod)"
+.br
+.RI "\fIGet the file descriptor for the ggzdmod socket.\fP"
+.ti -1c
+.RI "\fBGGZdModType\fP \fBggzdmod_get_type\fP (\fBGGZdMod\fP *ggzdmod)"
+.br
+.RI "\fIGet the type of the ggzdmod object.\fP"
+.ti -1c
+.RI "\fBGGZdModState\fP \fBggzdmod_get_state\fP (\fBGGZdMod\fP *ggzdmod)"
+.br
+.RI "\fIGet the current state of the table.\fP"
+.ti -1c
+.RI "int \fBggzdmod_get_num_seats\fP (\fBGGZdMod\fP *ggzdmod)"
+.br
+.RI "\fIGet the total number of seats at the table.\fP"
+.ti -1c
+.RI "\fBGGZSeat\fP \fBggzdmod_get_seat\fP (\fBGGZdMod\fP *ggzdmod, int seat)"
+.br
+.RI "\fIGet all data for the specified seat.\fP"
+.ti -1c
+.RI "void* \fBggzdmod_get_gamedata\fP (\fBGGZdMod\fP *ggzdmod)"
+.br
+.RI "\fIReturn gamedata pointer.\fP"
+.ti -1c
+.RI "void \fBggzdmod_set_num_seats\fP (\fBGGZdMod\fP *ggzdmod, int num_seats)"
+.br
+.RI "\fISet the number of seats for the table.\fP"
+.ti -1c
+.RI "void \fBggzdmod_set_gamedata\fP (\fBGGZdMod\fP *ggzdmod, void *data)"
+.br
+.RI "\fISet gamedata pointer.\fP"
+.ti -1c
+.RI "void \fBggzdmod_set_handler\fP (\fBGGZdMod\fP *ggzdmod, \fBGGZdModEvent\fP e, \fBGGZdModHandler\fP func)"
+.br
+.RI "\fISet a handler for the given event.\fP"
+.ti -1c
+.RI "void \fBggzdmod_set_module\fP (\fBGGZdMod\fP *ggzdmod, char **args)"
+.br
+.RI "\fISet the module executable and it's arguments.\fP"
+.ti -1c
+.RI "int \fBggzdmod_set_seat\fP (\fBGGZdMod\fP *ggzdmod, \fBGGZSeat\fP *seat)"
+.br
+.RI "\fISet seat data.\fP"
+.ti -1c
+.RI "int \fBggzdmod_count_seats\fP (\fBGGZdMod\fP *ggzdmod, GGZSeatType seat_type)"
+.br
+.RI "\fICount seats of the given type.\fP"
+.ti -1c
+.RI "int \fBggzdmod_dispatch\fP (\fBGGZdMod\fP *ggzdmod)"
+.br
+.RI "\fICheck for and handle input.\fP"
+.ti -1c
+.RI "int \fBggzdmod_loop\fP (\fBGGZdMod\fP *ggzdmod)"
+.br
+.RI "\fILoop while handling input.\fP"
+.ti -1c
+.RI "int \fBggzdmod_set_state\fP (\fBGGZdMod\fP *ggzdmod, \fBGGZdModState\fP state)"
+.br
+.RI "\fIChange the table's state.\fP"
+.ti -1c
+.RI "int \fBggzdmod_connect\fP (\fBGGZdMod\fP *ggzdmod)"
+.br
+.RI "\fIConnect to ggz.\fP"
+.ti -1c
+.RI "int \fBggzdmod_disconnect\fP (\fBGGZdMod\fP *ggzdmod)"
+.br
+.RI "\fIDisconnect from ggz.\fP"
+.ti -1c
+.RI "int \fBggzdmod_log\fP (\fBGGZdMod\fP *ggzdmod, char *fmt,...) ggz__attribute((format(printf, 2, 3)))"
+.br
+.RI "\fILog data.\fP"
+.ti -1c
+.RI "void \fBggzdmod_check\fP (\fBGGZdMod\fP *ggzdmod)"
+.br
+.RI "\fILog all information about the ggzdmod.\fP"
+.in -1c
+.SH "DETAILED DESCRIPTION"
+.PP 
+Common functions for interfacing a game server and GGZ.
+.PP
+ 
+.PP
+ This file contains all libggzdmod functions used by game servers to interface with GGZ (and vice versa). Just include \fBggzdmod.h\fP and make sure your program is linked with libggzdmod. Then use the functions below as appropriate.
+.PP
+GGZdmod currently provides an event-driven interface. Data from communication sockets is read in by the library, and a handler function (registered as a callback) is invoked to handle any events. The calling program should not read/write data from/to the GGZ socket unless it really knows what it is doing.
+.PP
+That this does not apply to the client sockets: ggzdmod provides one file desriptor for communicating (TCP) to each client. If data is ready to be read by one of these file descriptors ggzdmod may invoke the appropriate handler (see below), but will never actually read any data.
+.PP
+Here is a fairly complete example. In this game we register a handler for each of the possible callbacks. This particular game is played only when all seats are full; when any seats are empty it must wait (much like a card or board game).
+.PP
+.nf
+     // Game-defined handler functions for GGZ events; see below.
+     void handle_state_change(GGZdMod* ggz, GGZdModEvent event, void* data);
+     void handle_player_join(GGZdMod* ggz, GGZdModEvent event, void* data);
+     void handle_player_leave(GGZdMod* ggz, GGZdModEvent event, void* data);
+     void handle_player_data(GGZdMod* ggz, GGZdModEvent event, void* data);
+
+     // Other game-defined functions (not ggz-related).
+     void game_init(GGZdMod *ggz); // initialize a game
+     void game_launch(void);           // handle a game 'launch'
+     void game_end(void);              // called before the table shuts down
+     void resume_playing(void);        // we have enough players to play
+     void stop_playing(void);          // not enough players to play
+
+     int main()
+     {
+         GGZdMod *ggz = ggzdmod_new(GGZ_GAME);
+         // First we register functions to handle some events.
+         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE,
+                             &handle_state_change);
+         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN,
+                             &handle_player_join);
+         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE,
+                             &handle_player_leave);
+         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA,
+                             &handle_player_data);
+
+         // Do any other game initializations.  You'll probably want to
+         // track 'ggz' globally.
+         game_init(mod);
+
+         // Then we must connect to GGZ
+         if (ggzdmod_connect(ggz) < 0)
+             exit(-1);
+         (void) ggzdmod_log(ggz, 'Starting game.');
+
+         // ggzdmod_loop does most of the work, dispatching handlers
+         // above as necessary.
+         (void) ggzdmod_loop(ggz);
+
+         // At the end, we disconnect and destroy the ggzdmod object.
+         (void) ggzdmod_log(ggz, 'Ending game.');
+         (void) ggzdmod_disconnect(ggz);
+         ggzdmod_free(ggz);
+     }
+
+     void handle_state_change(GGZdMod* ggz, GGZdModEvent event, void* data)
+     {
+         GGZdModState old_state = *(GGZdModState*)data;
+         GGZdModState new_state = ggzdmod_get_state(ggz);
+         if (old_state == GGZDMOD_STATE_CREATED)
+             // ggzdmod data isn't initialized until it connects with GGZ
+             // during the game launch, so some initializations should wait
+             // until here.
+             game_launch();
+         switch (new_state) {
+           case GGZDMOD_STATE_WAITING:
+             // At this point we've entered the 'waiting' state where we
+             // aren't actually playing.  This is generally triggered by
+             // the game calling ggzdmod_set_state, which happens when
+             // a player leaves (down below).  It may also be triggered
+             // by GGZ automatically.
+             stop_playing();
+             break;
+           case GGZDMOD_STATE_PLAYING:
+             // At this point we've entered the 'playing' state, so we
+             // should resume play.  This is generally triggered by
+             // the game calling ggzdmod_set_state, which happens when
+             // all seats are full (down below).  It may also be
+             // triggered by GGZ automatically.
+             resume_playing();
+             break;
+           case GGZDMOD_STATE_DONE:
+             // at this point ggzdmod_loop will stop looping, so we'd
+             // better close up shop fast.  This will only happen
+             // automatically if all players leave, but we can force it
+             // using ggzdmod_set_state.
+             game_end();
+             break;
+         }
+     }
+
+     void handle_player_join(GGZdMod* ggz, GGZdModEvent event, void* data)
+     {
+         int player = *(int*)data;
+         GGZSeat seat = ggzdmod_get_seat(ggz, player);
+
+         // ... do other player initializations ...
+
+         if (ggzdmod_count_seats(ggz, GGZ_SEAT_OPEN) == 0)
+             // this particular game will only play when all seats are full.
+             // calling this function triggers the STATE event, so we'll end
+             // up executing resume_playing() above.
+             ggzdmod_set_state(ggz, GGZDMOD_STATE_PLAYING);
+     }
+
+     void handle_player_leave(GGZdMod* ggz, GGZdModEvent event, void* data)
+     {
+         int player = *(int*)data;
+
+         // ... do other player un-initializations ...
+
+         if (ggzdmod_count_seats(ggz, GGZ_SEAT_PLAYER) == 0)
+             // the game will exit when all human players are gone
+             ggzdmod_set_state(ggz, GGZDMOD_STATE_DONE);
+         else
+             // this particular game will only play when all seats are full.
+             // calling this function triggers the STATE event, so we'll end
+             // up executing stop_playing() above.
+             ggzdmod_set_state(ggz, GGZDMOD_STATE_WAITING);
+     }
+
+     void handle_player_data(GGZdMod* ggz, GGZdModEvent event, void* data)
+     {
+         int player = *(int*)data;
+         int socket_fd = ggzdmod_get_seat(ggz, player).fd;
+
+         // ... read a packet from the socket ...
+     }
+.fi
+.PP
+For more information, see the documentation at http://ggz.sf.net/.
+.PP
+.SH "TYPEDEF DOCUMENTATION"
+.PP 
+.SS "typedef struct GGZdMod GGZdMod"
+.PP
+A GGZdmod object, used for tracking a ggzd<->table connection.
+.PP
+A game server should track a pointer to a GGZdMod object; it contains all the state information for communicating with GGZ. The GGZ server will track one such object for every game table that is running. 
+.SS "typedef void(* GGZdModHandler)(\fBGGZdMod\fP *mod, \fBGGZdModEvent\fP e, void *data)"
+.PP
+Event handler prototype.
+.PP
+A function of this type will be called to handle a ggzdmod event. 
+.PP
+\fBParameters: \fP
+.in +1c
+.TP
+\fB\fImod\fP\fP
+The ggzdmod state object. 
+.TP
+\fB\fIe\fP\fP
+The event that has occured. 
+.TP
+\fB\fIdata\fP\fP
+Pointer to additional data for the event. The additional data will be of the following form:
+.TP
+GGZDMOD_EVENT_STATE: The old state (GGZdModState*)
+.TP
+GGZDMOD_EVENT_JOIN: The player number (int*)
+.TP
+GGZDMOD_EVENT_LEAVE: The player number (int*)
+.TP
+GGZDMOD_EVENT_LOG: The message string (char*)
+.TP
+GGZDMOD_EVENT_PLAYER_DATA: The player number (int*)
+.TP
+GGZDMOD_EVENT_ERROR: NULL (for now) 
+.PP
+.SH "ENUMERATION TYPE DOCUMENTATION"
+.PP 
+.SS "enum GGZdModEvent"
+.PP
+Callback events.
+.PP
+Each of these is a possible GGZdmod event. For each event, the table may register a handler with GGZdmod to handle that event. 
+.PP
+\fBSee also: \fP
+.in +1c
+\fBGGZdModHandler\fP , \fBggzdmod_set_handler\fP 
+.PP
+\fBEnumeration values:\fP
+.in +1c
+.TP
+\fB\fIGGZDMOD_EVENT_STATE\fP \fP
+Module status changed 
+.TP
+\fB\fIGGZDMOD_EVENT_JOIN\fP \fP
+Player joined 
+.TP
+\fB\fIGGZDMOD_EVENT_LEAVE\fP \fP
+Player left 
+.TP
+\fB\fIGGZDMOD_EVENT_LOG\fP \fP
+Module log request 
+.TP
+\fB\fIGGZDMOD_EVENT_PLAYER_DATA\fP \fP
+Data avilable from player 
+.TP
+\fB\fIGGZDMOD_EVENT_ERROR\fP \fP
+Error (not used yet) 
+.SS "enum GGZdModState"
+.PP
+Table states.
+.PP
+Each table has a current 'state' that is tracked by ggzdmod. First the table is executed and begins running. Then it receives a launch event from GGZD and begins waiting for players. At some point a game will be started and played at the table, after which it may return to waiting. Eventually the table will probably halt and then the program will exit. 
+.PP
+\fBEnumeration values:\fP
+.in +1c
+.TP
+\fB\fIGGZDMOD_STATE_CREATED\fP \fP
+Pre-launch; waiting for ggzdmod 
+.TP
+\fB\fIGGZDMOD_STATE_WAITING\fP \fP
+Ready and waiting to play. 
+.TP
+\fB\fIGGZDMOD_STATE_PLAYING\fP \fP
+Currently playing a game. 
+.TP
+\fB\fIGGZDMOD_STATE_DONE\fP \fP
+Table halted, prepping to exit. 
+.SS "enum GGZdModType"
+.PP
+The 'type' of ggzdmod.
+.PP
+The 'flavor' of GGZdmod object this is. Affects what operations are allowed. 
+.PP
+\fBEnumeration values:\fP
+.in +1c
+.TP
+\fB\fIGGZDMOD_GGZ\fP \fP
+Used by the ggz server ('ggzd'). 
+.TP
+\fB\fIGGZDMOD_GAME\fP \fP
+Used by the game server ('table'). 
+.SH "FUNCTION DOCUMENTATION"
+.PP 
+.SS "void ggzdmod_check (\fBGGZdMod\fP * ggzdmod)"
+.PP
+Log all information about the ggzdmod.
+.PP
+This is a debugging function that will log all available information about the GGZdMod object. It uses ggzdmod_log for logging.
+.PP
+\fBParameters: \fP
+.in +1c
+.TP
+\fB\fIggzdmod\fP\fP
+The GGZdMod object. 
+.PP
+\fBReturns: \fP
+.in +1c
+void; errors in ggzdmod_log are ignored. 
+.SS "int ggzdmod_connect (\fBGGZdMod\fP * ggzdmod)"
+.PP
+Connect to ggz.
+.PP
+.TP
+When called by the game server, this function makes the physical connection to ggz.
+.TP
+When called by ggzd, it will launch a table and connect to it. 
+.PP
+\fBParameters: \fP
+.in +1c
+.TP
+\fB\fImod\fP\fP
+The ggzdmod object. 
+.PP
+\fBReturns: \fP
+.in +1c
+0 on success, -1 on failure. 
+.PP
+.SS "int ggzdmod_count_seats (\fBGGZdMod\fP * ggzdmod, GGZSeatType seat_type)"
+.PP
+Count seats of the given type.
+.PP
+This is a convenience function that counts how many seats there are that have the given type. For instance, giving seat_type==GGZ_SEAT_OPEN will count the number of open seats. 
+.PP
+\fBParameters: \fP
+.in +1c
+.TP
+\fB\fImod\fP\fP
+The ggzdmod object. 
+.TP
+\fB\fIseat_type\fP\fP
+The type of seat to be counted. 
+.PP
+\fBReturns: \fP
+.in +1c
+The number of seats that match seat_type. 
+.PP
+\fBNote: \fP
+.in +1c
+This could go into a wrapper library instead. 
+.SS "int ggzdmod_disconnect (\fBGGZdMod\fP * ggzdmod)"
+.PP
+Disconnect from ggz.
+.PP
+.TP
+When called by the game server, this function stops the connection to GGZ. It should only be called when the table is ready to exit.
+.TP
+When called by the GGZ server, this function will kill and clean up after the table. 
+.PP
+\fBParameters: \fP
+.in +1c
+.TP
+\fB\fImod\fP\fP
+The ggzdmod object. 
+.PP
+\fBReturns: \fP
+.in +1c
+0 on success, -1 on failure. 
+.PP
+.SS "int ggzdmod_dispatch (\fBGGZdMod\fP * ggzdmod)"
+.PP
+Check for and handle input.
+.PP
+This function handles input from the communications sockets:
+.TP
+It will check for input, but will not block.
+.TP
+It will monitor input from the GGZdmod socket.
+.TP
+It will monitor input from player sockets only if a handler is registered for the PLAYER_DATA event.
+.TP
+It will call an event handler as necessary. 
+.PP
+.SS "void ggzdmod_free (\fBGGZdMod\fP * ggzdmod)"
+.PP
+Destroy a finished ggzdmod object.
+.PP
+After the connection is through, the object may be freed. 
+.PP
+\fBParameters: \fP
+.in +1c
+.TP
+\fB\fImod\fP\fP
+The GGZdMod object. 
+.SS "int ggzdmod_get_fd (\fBGGZdMod\fP * ggzdmod)"
+.PP
+Get the file descriptor for the ggzdmod socket.
+.PP
+\fBParameters: \fP
+.in +1c
+.TP
+\fB\fImod\fP\fP
+The GGZdMod object. 
+.PP
+\fBReturns: \fP
+.in +1c
+GGZdmod's main ggzd<->table socket FD. 
+.PP
+\fBNote: \fP
+.in +1c
+Games should not use this; in fact it probably shouldn't be used at all! 
+.PP
+\fB\fBTodo: \fP\fP
+.in +1c
+ Should this be removed?  
+.SS "void * ggzdmod_get_gamedata (\fBGGZdMod\fP * ggzdmod)"
+.PP
+Return gamedata pointer.
+.PP
+Each GGZdmod object can be given a 'gamedata' pointer, that is returned by this function. This is useful for when a single process serves multiple GGZdmod's. 
+.PP
+\fBSee also: \fP
+.in +1c
+\fBggzdmod_set_gamedata\fP 
+.SS "\fBGGZSeat\fP ggzdmod_get_seat (\fBGGZdMod\fP * ggzdmod, int seat)"
+.PP
+Get all data for the specified seat.
+.PP
+\fBReturns: \fP
+.in +1c
+A valid \fBGGZSeat\fP structure, if seat is a valid seat. 
+.SS "int ggzdmod_log (\fBGGZdMod\fP * ggzdmod, char * fmt, ...)"
+.PP
+Log data.
+.PP
+This function sends the specified string (printf-style) to the GGZ server to be logged. 
+.PP
+\fBParameters: \fP
+.in +1c
+.TP
+\fB\fImod\fP\fP
+The GGZdmod object. 
+.TP
+\fB\fIfmt\fP\fP
+A printf-style format string. 
+.PP
+\fBReturns: \fP
+.in +1c
+0 on success, -1 on failure. 
+.SS "int ggzdmod_loop (\fBGGZdMod\fP * ggzdmod)"
+.PP
+Loop while handling input.
+.PP
+This function repeatedly handles input from all sockets. It will only stop once the game state has been changed to DONE. 
+.PP
+\fBParameters: \fP
+.in +1c
+.TP
+\fB\fImod\fP\fP
+The ggzdmod object. 
+.PP
+\fBReturns: \fP
+.in +1c
+0 on success, -1 on error. 
+.PP
+\fBSee also: \fP
+.in +1c
+\fBggzdmod_dispatch\fP , \fBggzdmod_set_state\fP 
+.SS "\fBGGZdMod\fP * ggzdmod_new (\fBGGZdModType\fP type)"
+.PP
+Create a new ggzdmod object.
+.PP
+Before connecting through ggzdmod, a new ggzdmod object is needed. 
+.PP
+\fBSee also: \fP
+.in +1c
+\fBGGZdModType\fP 
+.SS "void ggzdmod_set_gamedata (\fBGGZdMod\fP * ggzdmod, void * data)"
+.PP
+Set gamedata pointer.
+.PP
+\fBSee also: \fP
+.in +1c
+\fBggzdmod_get_gamedata\fP 
+.SS "void ggzdmod_set_handler (\fBGGZdMod\fP * ggzdmod, \fBGGZdModEvent\fP e, \fBGGZdModHandler\fP func)"
+.PP
+Set a handler for the given event.
+.PP
+As described above, GGZdmod uses an event-driven structure. Each time an event is called, the event handler (there can be only one) for that event will be called. This function registers such an event handler. 
+.PP
+\fBParameters: \fP
+.in +1c
+.TP
+\fB\fImod\fP\fP
+The GGZdmod object. 
+.TP
+\fB\fIe\fP\fP
+The GGZdmod event. 
+.TP
+\fB\fIfunc\fP\fP
+The handler function being registered. 
+.PP
+\fBSee also: \fP
+.in +1c
+\fBggzdmod_get_gamedata\fP 
+.SS "void ggzdmod_set_module (\fBGGZdMod\fP * ggzdmod, char ** args)"
+.PP
+Set the module executable and it's arguments.
+.PP
+\fBNote: \fP
+.in +1c
+This should not be called by the table, only ggzd. GGZdmod must execute and launch the game to start a table; this function allows ggzd to specify how this should be done. 
+.PP
+\fBParameters: \fP
+.in +1c
+.TP
+\fB\fImod\fP\fP
+The GGZdmod object. 
+.TP
+\fB\fIargs\fP\fP
+The arguments for the program, as needed by exec. 
+.SS "void ggzdmod_set_num_seats (\fBGGZdMod\fP * ggzdmod, int num_seats)"
+.PP
+Set the number of seats for the table.
+.PP
+\fBNote: \fP
+.in +1c
+This will only work for ggzd. 
+.PP
+\fB\fBTodo: \fP\fP
+.in +1c
+ Allow the table to change the number of seats. 
+.SS "int ggzdmod_set_seat (\fBGGZdMod\fP * ggzdmod, \fBGGZSeat\fP * seat)"
+.PP
+Set seat data.
+.PP
+A game server or the ggz server can use this function to set data about a seat. The game server may only change the following things about a seat:
+.TP
+The name (only if the seat is a bot). 
+.PP
+\fBParameters: \fP
+.in +1c
+.TP
+\fB\fIseat\fP\fP
+The new seat structure (which includes seat number). 
+.PP
+\fBReturns: \fP
+.in +1c
+0 on success, negative on failure. 
+.PP
+\fB\fBTodo: \fP\fP
+.in +1c
+The game should be able to toggle between BOT and OPEN seats. 
+.PP
+ The game should be able to kick a player out of the table.  
+.PP
+.SS "int ggzdmod_set_state (\fBGGZdMod\fP * ggzdmod, \fBGGZdModState\fP state)"
+.PP
+Change the table's state.
+.PP
+This function should be called to change the state of a table. A game can use this function to change state between WAITING and PLAYING, or to set it to DONE. 
+.PP
+\fBParameters: \fP
+.in +1c
+.TP
+\fB\fImod\fP\fP
+The ggzdmod object. 
+.TP
+\fB\fIstate\fP\fP
+The new state. 
+.PP
+\fBReturns: \fP
+.in +1c
+0 on success, -1 on failure/error. 
+.SH "AUTHOR"
+.PP 
+Generated automatically by Doxygen for GGZDMOD from the source code.
