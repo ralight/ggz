@@ -35,13 +35,7 @@ KDE_ICON = krosswater
 DISTCLEANFILES = $(METASOURCES)
 
 install-data-local:
-	@$(NORMAL_INSTALL)
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
-	-$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/krosswater/gfx
-	-$(INSTALL) -m 644 gfx/*.png $(DESTDIR)$(ggzdatadir)/krosswater/gfx/
 
-uninstall:
-	@$(NORMAL_UNINSTALL)
-	-$(GGZ_CONFIG) --remove --modfile=module.dsc
-	-rm -rf $(DESTDIR)$(ggzdatadir)/krosswater/
-
+uninstall-local:
+	-$(GGZ_CONFIG) -D --remove --modfile=module.dsc

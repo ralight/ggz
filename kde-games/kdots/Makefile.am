@@ -30,14 +30,11 @@ EXTRA_DIST = module.dsc.in
 
 KDE_ICON = kdots
 
-install-data-local:
-	@$(NORMAL_INSTALL)
-	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
-	-$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/kdots
-	-$(INSTALL) -m 644 *.png $(DESTDIR)$(ggzdatadir)/kdots/
- 
-uninstall:
-	@$(NORMAL_UNINSTALL)
-	-$(GGZ_CONFIG) --remove --modfile=module.dsc
-	-rm -rf $(DESTDIR)$(ggzdatadir)/kdots/
+GFX_data = dragon.png firedragon.png hi32-app-kdots.png snowdragon.png
+GFXdir = $(ggzdataadir)/kdots # $(DESTDIR) preprended automatically
 
+install-data-local:
+	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
+ 
+uninstall-local:
+	-$(GGZ_CONFIG) -D --remove --modfile=module.dsc

@@ -1,5 +1,9 @@
 SUBDIRS = .
 
+XGETTEXT = xgettext
+MSGMERGE = msgmerge
+GMSGFMT = msgfmt
+
 PACKAGE = muehle
 POTFILE = muehle.pot
 POFILES = de.po

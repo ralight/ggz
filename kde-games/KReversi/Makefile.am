@@ -29,10 +29,8 @@ rcdir = $(kde_datadir)/ggz.kreversi
 rc_DATA = ggz.kreversiui.rc
 
 install-data-local:
-	@$(NORMAL_INSTALL)
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
 
-uninstall:
-	@$(NORMAL_UNINSTALL)
-	-$(GGZ_CONFIG) --remove --modfile=module.dsc
+uninstall-local:
+	-$(GGZ_CONFIG) -D --remove --modfile=module.dsc
 

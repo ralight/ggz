@@ -1,5 +1,9 @@
 SUBDIRS = .
 
+XGETTEXT = xgettext
+MSGMERGE = msgmerge
+GMSGFMT = msgfmt
+
 PACKAGE = krosswater
 POTFILE = krosswater.pot
 POFILES = de.po

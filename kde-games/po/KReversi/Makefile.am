@@ -1,5 +1,9 @@
 SUBDIRS = .
 
+XGETTEXT = xgettext
+MSGMERGE = msgmerge
+GMSGFMT = msgfmt
+
 PACKAGE = ggz.kreversi
 POTFILE = kreversi.pot
 POFILES = de.po

@@ -1,5 +1,9 @@
 SUBDIRS = .
 
+XGETTEXT = xgettext
+MSGMERGE = msgmerge
+GMSGFMT = msgfmt
+
 PACKAGE = koenig
 POTFILE = koenig.pot
 POFILES = de.po

@@ -1,5 +1,9 @@
 SUBDIRS = .
 
+XGETTEXT = xgettext
+MSGMERGE = msgmerge
+GMSGFMT = msgfmt
+
 PACKAGE = kdots
 POTFILE = kdots.pot
 POFILES = de.po

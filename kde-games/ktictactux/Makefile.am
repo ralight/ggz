@@ -33,10 +33,8 @@ appsdir = $(kde_appsdir)/Games/ggz
 apps_DATA = ktictactux.desktop
 
 install-data-local:
-	@$(NORMAL_INSTALL)
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
 
 uninstall-local:
-	@$(NORMAL_UNINSTALL)
-	-$(GGZ_CONFIG) --remove --modfile=module.dsc
+	-$(GGZ_CONFIG) -D --remove --modfile=module.dsc
 
