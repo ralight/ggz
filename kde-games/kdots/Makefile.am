@@ -34,7 +34,7 @@ install-data-local:
 	@$(NORMAL_INSTALL)
 	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
 	-$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/kdots
-	-cp -r *.png $(DESTDIR)$(ggzdatadir)/kdots/
+	-$(INSTALL) -m 644 *.png $(DESTDIR)$(ggzdatadir)/kdots/
  
 uninstall:
 	@$(NORMAL_UNINSTALL)

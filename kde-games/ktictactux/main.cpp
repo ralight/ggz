@@ -21,13 +21,13 @@ int main(int argc, char **argv)
 	aboutData = new KAboutData("KTicTacTux",
 		I18N_NOOP("TicTacToe with animal images"),
 		"0.0.1",
-		I18N_NOOP("test1"),
+		I18N_NOOP("This is a TicTacToe game for KDE."),
 		KAboutData::License_GPL,
 		"(C) 2001 Josef Spillner",
 		I18N_NOOP("You can update this game with KGGZ!"),
 		"http://mindx.sourceforge.net",
 		"dr_maux@users.sourceforge.net");
-	aboutData->addAuthor("Josef Spillner", I18N_NOOP("this is a test"), "dr_maux@users.sourceforge.net", "http://mindx.sourceforge.net");
+	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Inventor"), "dr_maux@users.sourceforge.net", "http://mindx.sourceforge.net");
 
 	KCmdLineArgs::init(argc, argv, aboutData);
 	KCmdLineArgs::addCmdLineOptions(op);
@@ -36,9 +36,9 @@ int main(int argc, char **argv)
 	a = new KApplication();
 	ktictactux = new KTicTacTux(NULL, "KTicTacTux");
 	if(args->isSet("ggz")) ktictactux->setOpponent(PLAYER_NETWORK);
-printf("initialize\n");
+	//printf("initialize\n");
 	ktictactux->init();
-printf("done; execute now\n");
+	//printf("done; execute now\n");
 	a->setMainWidget(ktictactux);
 	return a->exec();
 }

@@ -40,7 +40,7 @@ install-data-local:
 @$(NORMAL_INSTALL)
 	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
 	-$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/krosswater/gfx
-	-cp -r *.png $(DESTDIR)$(ggzdatadir)/krosswater/gfx/
+	-$(INSTALL) -m 644 gfx/*.png $(DESTDIR)$(ggzdatadir)/krosswater/gfx/
 
 uninstall:
 	@$(NORMAL_UNINSTALL)

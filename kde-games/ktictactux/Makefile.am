@@ -27,7 +27,7 @@ install-data-local:
 	@$(NORMAL_INSTALL)
 	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
 	-$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/ktictactux
-	-cp -r *.png $(DESTDIR)$(ggzdatadir)/ktictactux/
+	-$(INSTALL) -m 644 *.png $(DESTDIR)$(ggzdatadir)/ktictactux/
 
 uninstall-local:
 	@$(NORMAL_UNINSTALL)

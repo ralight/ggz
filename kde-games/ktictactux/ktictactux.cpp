@@ -49,6 +49,7 @@ KTicTacTux::KTicTacTux(QWidget *parent = NULL, char *name = NULL)
 	m_score_you = 0;
 
 	proto = new KTicTacTuxProto();
+	proto->num = 0;
 
 	//init();
 }
@@ -62,21 +63,26 @@ void KTicTacTux::slotSelected(QWidget *widget)
 {
 	int id;
 
+	//printf("quickdebug: %i/%i\n", proto->state, proto->statemove);
 	if(proto->state != proto->statemove) return;
 	if(m_turn != proto->num)
 	{
-		printf("Hey, wrong turn!!! (%i should be %i)\n", m_turn, proto->num);
+		//printf("Hey, wrong turn!!! (%i should be %i)\n", m_turn, proto->num);
 		return;
 	}
 
 	id = widget->winId() - m_firstid;
 
-	printf("selected %i... checking...\n", id);
+	//printf("selected %i... checking...\n", id);
 	if(proto->board[id % 3][id / 3] == proto->player) return;
 	if(proto->board[id % 3][id / 3] == proto->opponent) return;
-	printf("ok, let's go!\n");
+	//printf("ok, let's go!\n");
 
-	if(m_opponent == PLAYER_AI) proto->board[id % 3][id / 3] = proto->player;
+	if(m_opponent == PLAYER_AI)
+	{
+		proto->board[id % 3][id / 3] = proto->player;
+		getNextTurn();
+	}
 	else
 	{
 		proto->move = id;
@@ -89,6 +95,7 @@ void KTicTacTux::slotSelected(QWidget *widget)
 void KTicTacTux::yourTurn()
 {
 	if((m_opponent == PLAYER_AI) || (proto->state == proto->statemove)) status(i18n("Your turn"));
+	proto->state = proto->statemove;
 
 	if(gameOver()) return;
 }
@@ -130,7 +137,7 @@ void KTicTacTux::getNextTurn()
 	//m_turn++;
 	//if(m_turn > 2) m_turn = 1;
 
-	printf("-turn: %i-\n", m_turn);
+	//printf("-turn: %i- (%i)\n", m_turn, proto->num);
 	if(m_turn == proto->num) yourTurn();
 	else opponentTurn();
 
@@ -238,6 +245,7 @@ void KTicTacTux::getAI()
 {
 	m_winner = proto->none;
 
+	//printf("%i\n", m_winner);
 	getAIAt(0, 0, 1, 1);
 	getAIAt(2, 0, -1, 1);
 	for(int i = 0; i < 3; i++)
@@ -245,6 +253,7 @@ void KTicTacTux::getAI()
 		getAIAt(i, 0, 0, 1);
 		getAIAt(0, i, 1, 0);
 	}
+	//printf("%i\n", m_winner);
 }
 
 void KTicTacTux::getAIAt(int xo, int yo, int xp, int yp)
@@ -302,22 +311,22 @@ void KTicTacTux::slotNetwork()
 	switch(op)
 	{
 		case proto->msgseat:
-		printf("=== Msg Seat!\n");
+		//printf("=== Msg Seat!\n");
 			proto->getSeat();
 			break;
 		case proto->msgplayers:
-		printf("=== Msg Players!\n");
+		//printf("=== Msg Players!\n");
 			proto->getPlayers();
 			proto->state = proto->statewait;
 			break;
 		case proto->reqmove:
-		printf("=== Req Move!\n");
+		//printf("=== Req Move!\n");
 			proto->state = proto->statemove;
 			m_turn = proto->num;
 			status(i18n("Your move"));
 			break;
 		case proto->rspmove:
-		printf("=== Rsp Move!\n");
+		//printf("=== Rsp Move!\n");
 			switch(proto->getMoveStatus())
 			{
 				case proto->errstate:
@@ -338,16 +347,16 @@ void KTicTacTux::slotNetwork()
 			getNextTurn();
 			break;
 		case proto->msgmove:
-		printf("=== Msg Move!\n");
+		//printf("=== Msg Move!\n");
 			proto->getOpponentMove();
 			//getNextTurn();
 			break;
 		case proto->sndsync:
-		printf("=== Send Sync!\n");
+		//printf("=== Send Sync!\n");
 			proto->getSync();
 			break;
 		case proto->msggameover:
-		printf("=== Game Over!\n");
+		//printf("=== Game Over!\n");
 			proto->getGameOver();
 			proto->state = proto->statedone;
 			gameOver();
@@ -369,9 +378,9 @@ void KTicTacTux::drawBoard()
 				frame[i % 3][i / 3]->setBackgroundPixmap(QPixmap(GGZDATADIR "/ktictactux/merlin.png"));
 				break;
 			default:
-				printf("Unkown: %i\n", proto->board[i % 3][i / 3]);
+				//printf("Unkown: %i\n", proto->board[i % 3][i / 3]);
 				frame[i % 3][i / 3]->setBackgroundPixmap(NULL);
 		}
 	}
-	printf("..board drawn..\n");
+	//printf("..board drawn..\n");
 }
