@@ -2,11 +2,11 @@
 The GGZ Gaming Zone - GTK+ Client
 =================================
 
-The GGZ Gaming Zone GTK+ Client provides a GTK+ 1.2 user interface for
-logging into a GGZ server, chatting with other players, and locating
-and launching game tables.
+The GGZ Gaming Zone GTK+ Client provides a GTK+ 1.2 or GTK+ 2.x user
+interface for logging into a GGZ server, chatting with other players,
+and locating and launching game tables.
 
-This version of the GTK+ Client (0.0.5) requires version 0.0.5 of the
+This version of the GTK+ Client (0.0.7) requires version 0.0.7 of the
 ggz-client-libs.
 
 The GTK+ Client module is only one part of the GGZ Gaming Zone client
@@ -15,8 +15,8 @@ setup.  The following additional packages are required:
     communications between client modules and the GGZ servers
   * ggz-client-libs -  provides common procedures and utilites required
     to run the GGZ client and games
-  * gtk-games/kde-games - one or more games or game packs are required
-    in order to launch and play games
+  * gtk-games/kde-games/sdl-games - one or more games or game packs are
+    required in order to launch and play games
 
 In addition, the following package is available:
   * kde-client - a KDE version of the GGZ client is also available

@@ -1,5 +1,5 @@
 ==========================================================
-The GGZ Gaming Zone - Grubby, the chat bot - Release 0.0.6
+The GGZ Gaming Zone - Grubby, the chat bot - Release 0.0.7
 ==========================================================
 
 This package contains grubby, the almighty chatbot. It's a single binary, but
@@ -8,7 +8,7 @@ it is very flexible and extensible by plugins and scripts.
 Grubby is intended to be used on servers so it doesn't miss players, but it is
 in fact a client program. It reads all necessary startup information from
 ~/.ggz/grubby.rc and runs as long as it isn't shut down by its owner. See the
-Setup file to view a common setup.
+Setup file to view a common setup, or generate one using grubby-config.
 
 Extensive documentation about the available commands can be found in the
 ggz-docs package.

@@ -7,8 +7,8 @@ and utilities required to run the GGZ client and games.  The routines
 are shared by other modules in order to ease coding and promote
 compatibility and stability.
 
-This version of the client libraries (0.0.5) should provide
-compatibility with version 0.0.5 clients and servers.
+This version of the client libraries (0.0.7) should provide
+compatibility with version 0.0.7 clients and servers.
 
 The core client libraries is only one part of the GGZ Gaming Zone
 client setup.  The following additional packages are required:
@@ -16,8 +16,8 @@ client setup.  The following additional packages are required:
     communications between client modules and the GGZ servers
   * gtk-client/kde-client - one or more of the GGZ clients will be
     required in order to login to a server, chat and launch games
-  * gtk-games/kde-games - one or more games or game packs are required
-    in order to launch and play games
+  * gtk-games/kde-games/sdl-games - one or more games or game packs
+    are required in order to launch and play games
 
 The order in which these components are compiled and installed is very
 important.  See the README.GGZ file for complete information on
