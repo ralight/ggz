@@ -37,6 +37,9 @@
 // KGGZ includes
 #include "KGGZCommon.h"
 
+// KDE includes
+#include <klocale.h>
+
 // Qt includes
 #include <qlayout.h>
 #include <qpushbutton.h>
@@ -63,7 +66,7 @@ KGGZAbout::KGGZAbout(QWidget *parent, const char *name)
 	startTimer(70);
 
 	setFixedSize(350, 250);
-	setCaption("About the GGZ Gaming Zone");
+	setCaption(i18n("About the GGZ Gaming Zone"));
 	show();
 }
 
@@ -95,12 +98,12 @@ void KGGZAbout::paintEvent(QPaintEvent *e)
 	p.drawLine(10, 32, 330, 32);
 	font.setPointSize(10);
 	p.setFont(font);
-	p.drawText(10, 45, "Free Software shall dominate all Online Games!");
-	p.drawText(10, 65, "The GGZ Gaming Zone is a collaboration between several people who");
-	p.drawText(10, 77, "try to make public online game services available for free -");
-	p.drawText(10, 89, "including source code and professional help for both gamers and");
-	p.drawText(10, 101, "game developers. GGZ is available for many platforms and toolkits.");
-	p.drawText(10, 185, "Homepage: http://ggz.sourceforge.net");
+	p.drawText(10, 45, i18n("Free Software shall dominate all Online Games!"));
+	p.drawText(10, 65, i18n("The GGZ Gaming Zone is a collaboration between several people who"));
+	p.drawText(10, 77, i18n("try to make public online game services available for free -"));
+	p.drawText(10, 89, i18n("including source code and professional help for both gamers and"));
+	p.drawText(10, 101, i18n("game developers. GGZ is available for many platforms and toolkits."));
+	p.drawText(10, 185, i18n("Homepage: http://ggz.sourceforge.net"));
 	font.setPointSize(50);
 	font.setWeight(QFont::Black);
 	p.setFont(font);

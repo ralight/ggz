@@ -84,7 +84,7 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccept()));
 
 	setFixedSize(400, 200);
-	setCaption("Global Settings");
+	setCaption(i18n("Global Settings"));
 	show();
 
 	loadSettings();
