@@ -425,7 +425,8 @@ int ggzcore_server_list_gametypes(GGZServer *server, const char verbose)
 int ggzcore_server_join_room(GGZServer *server, const unsigned int room_num)
 {
 	/* FIXME: check validity of this action */
-	if (server && room_num < server->num_rooms) 
+	if (server && (room_num < server->num_rooms) 
+	    && (server->state == GGZ_STATE_IN_ROOM || server->state == GGZ_STATE_LOGGED_IN))
 		return _ggzcore_server_join_room(server, room_num);
 	else
 		return -1;
@@ -633,6 +634,12 @@ void _ggzcore_server_set_login_status(struct _GGZServer *server, int status)
 		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_FAIL);
 		_ggzcore_server_event(server, GGZ_LOGIN_FAIL, "Name taken");
 		break;
+
+	default:
+		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_FAIL);
+		_ggzcore_server_event(server, GGZ_LOGIN_FAIL, "Unknown login error");
+				      
+		break;
 	}
 }
 
@@ -644,6 +651,13 @@ void _ggzcore_server_set_room_join_status(struct _GGZServer *server, int status)
 		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_OK);
 		_ggzcore_server_event(server, GGZ_ENTERED, NULL);
 		break;
+
+	case E_ROOM_FULL:
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
+		_ggzcore_server_event(server, GGZ_ENTER_FAIL,
+				      "Room full");
+		break;
+
 	case E_AT_TABLE:
 		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
 		_ggzcore_server_event(server, GGZ_ENTER_FAIL,
@@ -660,6 +674,12 @@ void _ggzcore_server_set_room_join_status(struct _GGZServer *server, int status)
 		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
 		_ggzcore_server_event(server, GGZ_ENTER_FAIL, 
 				      "Bad room number");
+		break;
+
+	default:
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_FAIL);
+		_ggzcore_server_event(server, GGZ_ENTER_FAIL, 
+				      "Unknown room-joining error");
 		break;
 	}
 }

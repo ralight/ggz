@@ -820,12 +820,16 @@ void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room, int status)
 		_ggzcore_room_event(room, GGZ_TABLE_LEAVE_FAIL,
 				    "No such table");
 		break;
+		
+	case E_LEAVE_FORBIDDEN:
+		_ggzcore_room_event(room, GGZ_TABLE_LEAVE_FAIL,
+				    "Cannot leave games of this type");
+		break;
 
 	default:
 		_ggzcore_room_event(room, GGZ_TABLE_LEAVE_FAIL,
-				    "Unknown launch failure");
+				    "Unknown leave failure");
 		break;
-
 	}
 }
 					  
