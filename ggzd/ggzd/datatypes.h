@@ -112,14 +112,18 @@ typedef struct ChatItem {
 	int reference_count;
 	char *chat_sender;
 	char *chat_msg;
-	struct ChatList *next;
+	struct ChatItem *next;
 } ChatItemStruct;
 
 
 /* A Room Structure */
 typedef struct {
 	pthread_rwlock_t lock;
+	int player_count;
 	ChatItemStruct *chat_tail;
+#ifdef DEBUG
+	ChatItemStruct *chat_head;
+#endif
 } RoomStruct;
 
 

@@ -182,7 +182,7 @@ static void* player_new(void *arg_ptr)
 					sizeof(players.info[i].ip_addr)));
 	players.info[i].hostname = hostname;
 	players.count++;
-	players.info[i].room = room_join(-1);
+	players.info[i].room = -1;
 	players.info[i].chat_head = NULL;
 	players.info[i].personal_head = NULL;
 	pthread_rwlock_unlock(&players.lock);
@@ -408,6 +408,7 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 static void player_remove(int p_index)
 {
 	int fd;
+	int room;
 
 	pthread_rwlock_wrlock(&players.lock);
 	dbg_msg(GGZ_DBG_CONNECTION, "Removing player %d (uid: %d)", p_index, 
@@ -421,7 +422,10 @@ static void player_remove(int p_index)
 	if(players.info[p_index].room == -1)
 		chat_mark_all_read(p_index);
 	else {
+		room = players.info[p_index].room;
+		pthread_rwlock_wrlock(&chat_room[room].lock);
 		room_dequeue_chat(p_index);
+		pthread_rwlock_unlock(&chat_room[room].lock);
 		room_dequeue_personal(p_index);
 	}
 	pthread_rwlock_unlock(&players.lock);
@@ -1015,9 +1019,7 @@ static int player_chat(int p_index, int p_fd)
 		if(strlen(msg) > 6) {
 			room = atoi(msg+6);
 			if(room > -2 && room < opt.num_rooms) {
-				pthread_rwlock_wrlock(&players.lock);
-				players.info[p_index].room = room_join(room);
-				pthread_rwlock_unlock(&players.lock);
+				room_join(p_index, room);
 			}
 		}
 
@@ -1102,27 +1104,24 @@ int player_handle_chat_enqueue(int p_index, int p_fd)
 
 	if (es_read_string_alloc(p_fd, &msg) < 0)
 		return(-1);
-	
+
+	dbg_msg(GGZ_DBG_CHAT, "(message is) %s", msg);
+
 	/* Garish hack for now to change rooms */
 	if(!strncmp(msg, "/join", 5)) {
 		if(strlen(msg) > 6) {
 			room = atoi(msg+6);
-			if(room > -2 && room < opt.num_rooms) {
-				pthread_rwlock_wrlock(&players.lock);
-				players.info[p_index].room = room_join(room);
-				pthread_rwlock_unlock(&players.lock);
-			}
+			if(room > -2 && room < opt.num_rooms)
+				room_join(p_index, room);
 		}
+		free(msg);
 
 		/* We always tell them it worked, because we are antisocial */
 		status = 0;
 	} else if(!strncmp(msg, "/msg", 4)) {
-		if(strlen(msg) > 5)
-			status = room_pemit(room, msg+5);
-		else
-			status = -1;
+		status = room_pemit(room, p_index, msg);
 	} else {
-		status = room_emit(room, msg);
+		status = room_emit(room, p_index, msg);
 	}
 
 	if (es_write_int(p_fd, RSP_CHAT) < 0

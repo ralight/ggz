@@ -856,6 +856,14 @@ static unsigned parse_dbg_types(char *var, int linenum)
 			dbg_msg(GGZ_DBG_CONFIGURATION,
 				"Update added to debug types");
 			types |= GGZ_DBG_MISC;
+		} else if(!strcmp(s, "room")) {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Room added to debug types");
+			types |= GGZ_DBG_ROOM;
+		} else if(!strcmp(s, "lists")) {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Lists added to debug types");
+			types |= GGZ_DBG_LISTS;
 		} else
 			PARSE_ERR("Invalid debug type specified");
 

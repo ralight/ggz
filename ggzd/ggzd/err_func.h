@@ -41,9 +41,9 @@
 #define GGZ_DBG_PROTOCOL	(unsigned) 0x0020
 #define GGZ_DBG_UPDATE		(unsigned) 0x0040
 #define GGZ_DBG_MISC		(unsigned) 0x0080
+#define GGZ_DBG_ROOM		(unsigned) 0x0100
+#define GGZ_DBG_LISTS		(unsigned) 0x0200
 #define GGZ_DBG_ALL		(unsigned) 0xFFFF
-
-#define GGZ_DBG_ROOM	GGZ_DBG_CHAT
 
 /* Logging options */
 #define GGZ_LOGOPT_INC_PID	(unsigned) 0x0001
