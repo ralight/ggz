@@ -32,3 +32,6 @@ libggzcorepp_la_LDFLAGS = -version-info 1:0:0 @GGZCORE_LDFLAGS@ @LIB_GGZCORE@ -l
 
 CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
 
+api-docs:
+	-kdoc -d ../doc/html -n GGZCore++ *.cpp *.h
+

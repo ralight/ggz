@@ -28,6 +28,8 @@
 class GGZCoreRoom
 {
 	public:
+		/**
+		 * Possible events which can occur when entering rooms and staying in them. */
 		enum GGZCoreRoomEvent
 		{
 			playerlist,
@@ -48,64 +50,90 @@ class GGZCoreRoom
 			tabledata
 		};
 
-		/** Constructor */
+		/**
+		 * Constructor */
 		GGZCoreRoom();
-		/** Constructor, overloaded to assign an existant room. */
+		/**
+		 * Constructor, overloaded to assign an existant room. */
 		GGZCoreRoom(GGZRoom* room);
-		/** Destructor */
+		/**
+		 * Destructor */
 		~GGZCoreRoom();
 
-		/** Add a simple callback to the room. */
+		/**
+		 * Add a simple callback to the room. */
 		int addHook(const GGZCoreRoomEvent event, const GGZHookFunc func);
-		/** Add a callback with arguments. */
+		/**
+		 * Add a callback with arguments. */
 		int addHook(const GGZCoreRoomEvent event, const GGZHookFunc func, void* data);
 
-		/** Remove a callback from the room. */
+		/**
+		 * Remove a callback from the room. */
 		int removeHook(const GGZCoreRoomEvent event, const GGZHookFunc func);
-		/** Overloaded: Remove a callback on its id. */
+		/**
+		 * Overloaded: Remove a callback on its id. */
 		int removeHook(const GGZCoreRoomEvent event, const unsigned int id);
 
-		/** Initialize a room with the required information. */
+		/**
+		 * Initialize a room with the required information. */
 		int init(const GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description, const char *category);
 
-		/** Return the name of the room. */
+		/**
+		 * Return the name of the room. */
 		char* name();
-		/** Return its description. */
+		/**
+		 * Return its description. */
 		char* description();
-		/** Return its category */
+		/**
+		 * Return its category */
 		char* category();
-		/** Return the associated game type. */
+		/**
+		 * Return the associated game type. */
 		GGZCoreGametype* gametype();
 
-		/** Return the number of players in this room. */
+		/**
+		 * Return the number of players in this room. */
 		int countPlayers();
-		/** Return specified player. */
+		/**
+		 * Return specified player. */
 		GGZPlayer* player(const unsigned int number);
 
-		/** Count number of launched tables. */
+		/**
+		 * Count number of launched tables. */
 		int countTables();
-		/** Return the specified table. */
+		/**
+		 * Return the specified table. */
 		GGZCoreTable* table(const unsigned int number);
-		/** Launch a table */
+		/**
+		 * Launch a table */
 		int launchTable(GGZTable* table);
-		/** Join an already launched table. */
+		/**
+		 * Join an already launched table. */
 		int joinTable(const unsigned int number);
-		/** Leave a table again. */
+		/**
+		 * Leave a table again. */
 		int leaveTable();
 
-		/** Invoke player listing. */
+		/**
+		 * Invoke player listing. */
 		int listPlayers();
-		/** Invoke tables listing. */
+		/**
+		 * Invoke tables listing. */
 		int listTables(const int type, const char global);
 
-		/** Send a chat message to the other players. */
+		/**
+		 * Send a chat message to the other players. */
 		int chat(const GGZChatOp opcode, const char* player, const char* message);
-		/** Send other data. */
+		/**
+		 * Send other data. */
 		int sendData(char* buffer);
 
-		/** Return the internal GGZRoom structure */
+		/**
+		 * Return the internal GGZRoom structure */
 		GGZRoom* room();
 
+		/**
+		 * Get a reference on itself. */
 		void selfRegister(GGZCoreRoom **room);
 
 	private:
@@ -119,3 +147,4 @@ class GGZCoreRoom
 };
 
 #endif
+

@@ -1,22 +1,48 @@
+// ShadowBridge - Game developer tool to visualize network protocols
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
 #ifndef SHADOW_CONTAINER_H
 #define SHADOW_CONTAINER_H
 
+// Qt includes
 #include <qwidget.h>
-#include <klistview.h>
-#include <kcombobox.h>
 
+// Forward declarations
+class KListView;
+class KComboBox;
+
+// Basic container widget for displaying the traffic
 class ShadowContainer : public QWidget
 {
 	Q_OBJECT
 	public:
 		ShadowContainer(QWidget *parent = NULL, const char *name = NULL);
 		~ShadowContainer();
+
 	public slots:
-		void slotIncoming(const char *data);
-		void slotOutgoing(const char *data);
-		void slotAdmin(const char *data);
+		void slotIncoming(const QString& data);
+		void slotOutgoing(const QString& data);
+		void slotAdmin(const QString& data);
+
+	signals:
+		void signalActivated(int index);
+
 	private:
-		void addEntry(const char *data, const char *pixmap);
+		void addEntry(const QString &data, const char *pixmap);
 
 		KListView *view;
 		KComboBox *combo;

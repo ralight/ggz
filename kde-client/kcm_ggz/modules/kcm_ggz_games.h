@@ -5,6 +5,7 @@
 
 class KListView;
 class QListViewItem;
+class QPopupMenu;
 
 class KCMGGZGames : public KCMGGZPane
 {
@@ -15,9 +16,16 @@ class KCMGGZGames : public KCMGGZPane
 		void load();
 		void save();
 		const char *caption();
+		enum MenuEntries
+		{
+			menuhomepage,
+			menuinformation
+		};
 
 	public slots:
-		void slotSelected(QListViewItem *item, const QPoint &point, int column);
+		void slotSelected(QListViewItem *item, const QPoint& point, int column);
+		void slotUpdate();
+		void slotActivated(int index);
 
 	signals:
 		void signalChanged();
@@ -26,6 +34,7 @@ class KCMGGZGames : public KCMGGZPane
 		void add(QString location, QString name, QString frontend, QString authors, QString homepage, QString version, QString protocol);
 
 		KListView *view;
+		QPopupMenu *popup;
 };
 
 #endif

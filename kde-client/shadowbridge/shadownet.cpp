@@ -1,107 +1,198 @@
+// ShadowBridge - Game developer tool to visualize network protocols
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+// ShadowBridge includes
 #include "shadownet.h"
 
-#include <iostream>
+// KDE includes
+#include <klocale.h>
 
+// Qt includes
+#include <qsocketnotifier.h>
+#include <qdatastream.h>
+#include <qsocketdevice.h>
+
+// System includes
+#include <iostream>
+#include <cstdlib>
+#include <cstdio>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <sys/un.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <unistd.h>
-#include <sys/stat.h>
-
-#include <qsocketnotifier.h>
-#include <kmessagebox.h>
 
 using namespace std;
 
 ShadowNet::ShadowNet()
 {
+	net = NULL;
+	m_activated = 0;
 }
 
 ShadowNet::~ShadowNet()
 {
+	if(net) delete net;
 }
 
-void ShadowNet::addClient(const char *name, const char *commandline)
+void ShadowNet::simpleexec(const char *program)
 {
-	char *tmp;
-	struct stat st;
-	char *const options[] = {(char*)commandline, NULL};
+	char *tok;
+	char **l;
+	int i;
 
-	tmp = strdup(commandline);
-	list.append(tmp);
+	tok = strtok(strdup(program), " ");
+	if(!tok) return;
 
-	cout << "CREATE FAKE SOCKET for " << name << endl;
+	l = (char**)malloc(sizeof(char*) * 2);
+	l[0] = (char*)malloc(sizeof(char*));
+	l[1] = (char*)malloc(sizeof(char*));
+	l[0] = tok;
 
-	int sock;
-	struct sockaddr_un sa;
-	QSocketNotifier *snr, *snw;
-	char *sockfile;
+	i = 1;
+	while(tok)
+	{
+		tok = strtok(NULL, " ");
+		l = (char**)realloc(l, i + 2);
+		l[i + 1] = (char*)malloc(sizeof(char*));
+		l[i] = tok;
+		i++;
+	}
+
+	l[i] = NULL;
+	execvp(l[0], l);
+}
+
+void ShadowNet::addClient(const QString& exec, const QString& fdin, const QString& fdout)
+{
+	int fd[2];
+	QSocketNotifier *snr;
 	int ret;
-	int acc;
-	int fd;
+	QDataStream *net2;
+	QSocketDevice *dev;
 
-	ret = fork();
-	sockfile = (char*)malloc(128);
-	sprintf(sockfile, "/tmp/KTicTacTux.%d", ret);
-	switch(ret)
+	ret = socketpair(AF_UNIX, SOCK_STREAM, 0, fd);
+	if(ret < 0)
+	{
+		emit signalError(i18n("Couldn't create socket pair."));
+		return;
+	}
+
+	switch(fork())
 	{
 		case -1:
+			emit signalError(i18n("Couldn't fork,"));
 			return;
 			break;
 		case 0:
-			while (stat(sockfile, &st) < 0) sleep(1);
-			execvp(commandline, options);
+			dup2(fd[0], fdin.toInt());
+			dup2(fd[0], fdout.toInt());
+			simpleexec(exec.latin1());
 			exit(-1);
 			break;
 		default:
 			break;
 	}
 
-	sock = socket(PF_LOCAL, SOCK_STREAM, 0);
-	memset(&sa, 0, sizeof(sa));
-	sa.sun_family = AF_LOCAL;
-	strncpy(sa.sun_path, sockfile, sizeof(sa.sun_path) - 1);
-	unlink(sockfile);
-	acc = bind(sock, (struct sockaddr*)&sa, SUN_LEN(&sa));
-	if(listen(acc, 1) < 0) return;
-	fd = accept(acc, NULL, NULL);
-	if(fd < 0) return;
-
-	snr = new QSocketNotifier(sock, QSocketNotifier::Read, this);
+	snr = new QSocketNotifier(fd[1], QSocketNotifier::Read, this);
 	connect(snr, SIGNAL(activated(int)), SLOT(slotRead(int)));
-	snw = new QSocketNotifier(sock, QSocketNotifier::Write, this);
-	connect(snw, SIGNAL(activated(int)), SLOT(slotWrite(int)));
+
+	dev = new QSocketDevice(fd[1], QSocketDevice::Stream);
+	net2 = new QDataStream(dev);
+	list.append(net2);
 }
 
 void ShadowNet::start()
 {
-	char fd_name[64];
-	struct sockaddr_un addr;
-	int error;
 	int fd;
+	QSocketNotifier *snw;
+	QSocketDevice *dev;
 
-	error = 0; 
-	sprintf(fd_name, "/tmp/ShadowBridge.%d", getpid());
-	if((fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) error = 1;
-	else
-	{
-		bzero(&addr, sizeof(addr));
-		addr.sun_family = AF_LOCAL;
-		strcpy(addr.sun_path, fd_name);
-		if(::connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) error = 1;
-	}
-	if(error) KMessageBox::error(NULL, "Couldn't connect to ggzcore!", "Connection error");
+	fd = 3;
+
+	snw = new QSocketNotifier(fd, QSocketNotifier::Read, this);
+	connect(snw, SIGNAL(activated(int)), SLOT(slotWrite(int)));
+
+	dev = new QSocketDevice(fd, QSocketDevice::Stream);
+	net = new QDataStream(dev);
 }
 
 void ShadowNet::slotRead(int sock)
 {
-	cout << "Read from socket: " << sock << endl;
+	QDataStream *s;
+	char transmit;
+
+	//cout << "game -> ggzcore: " << sock << endl;
+
+	s = list.at(m_activated);
+	if((!s) || (!net)) return;
+
+	*s >> (Q_INT8)transmit;
+	*net << (Q_INT8)transmit;
+
+	if(!m_incoming.isEmpty())
+	{
+		emit signalIncoming(m_incoming);
+		m_incoming = "";
+	}
+	m_outgoing.append(convert(transmit));
 }
 
 void ShadowNet::slotWrite(int sock)
 {
-	cout << "Write to socket: " << sock << endl;
+	QDataStream *s;
+	char transmit;
+
+	//cout << "ggzcore -> game " << sock << endl;
+
+	s = list.at(m_activated);
+	if((!s) || (!net)) return;
+
+	*net >> (Q_INT8)transmit;
+	*s << (Q_INT8)transmit;
+
+	if(!m_outgoing.isEmpty())
+	{
+		emit signalOutgoing(m_outgoing);
+		m_outgoing = "";
+	}
+	m_incoming.append(convert(transmit));
+}
+
+void ShadowNet::slotActivated(int index)
+{
+	m_activated = index;
+}
+
+QString ShadowNet::convert(char byte)
+{
+	if((byte > 31) && (byte < 123)) return QString(QChar(byte));
+	return QString("(0x%1%2)").arg((byte & 0xF0) >> 4).arg(byte & 0x0F);
+}
+
+void ShadowNet::sync()
+{
+	if(!m_outgoing.isEmpty())
+	{
+		emit signalOutgoing(m_outgoing);
+		m_outgoing = "";
+	}
+	if(!m_incoming.isEmpty())
+	{
+		emit signalIncoming(m_incoming);
+		m_incoming = "";
+	}
 }
 

@@ -27,7 +27,8 @@
 class GGZCore
 {
 	public:
-		/** Options use to initialize the core lib. */
+		/**
+		 * Options use to initialize the core lib. */
 		enum GGZCoreOptions
 		{
 			parser   = 1,
@@ -35,12 +36,15 @@ class GGZCore
 			threadio = 4
 		};
 		
-		/** Constructor */
+		/**
+		 * Constructor */
 		GGZCore();
-		/** Destructor */
+		/**
+		 * Destructor */
 		~GGZCore();
 
-		/** Initialize ggzcore. */
+		/**
+		 * Initialize ggzcore. */
 		int init(int options);
 
 	private:
@@ -48,3 +52,4 @@ class GGZCore
 };
 
 #endif
+

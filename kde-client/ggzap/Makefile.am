@@ -11,16 +11,18 @@ ggzap_SOURCES = \
 	ggzap_tray.cpp \
 	ggzap_config.cpp \
 	ggzap_handler.cpp \
-	ggzap_game.cpp
+	ggzap_game.cpp \
+	ggzap_gui.cpp
 
 noinst_HEADERS = \
 	ggzap.h \
 	ggzap_tray.h \
 	ggzap_config.h \
 	ggzap_handler.h \
-	ggzap_game.h
+	ggzap_game.h \
+	ggzap_gui.h
 
-CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
+CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES) -ggdb3
 
 ggzap_LDADD = $(ggz_libraries) $(all_libraries) $(KDE_RPATH) $(LIB_KDEUI) -lqt
 
@@ -30,6 +32,6 @@ INCLUDES = $(ggzcorepp_includes) $(all_includes)
 
 EXTRA_DIST = README
 
-pix_DATA = ggzap.png tray.png trayradar.mng
+pix_DATA = ggzap.png tray.png trayradar.mng redgear.png redgearmask.png
 pixdir = $(kde_datadir)/kggz/ggzap
 

@@ -90,11 +90,8 @@ void KGGZUsers::add(const char *name)
 {
 	QListViewItem *tmp;
 
-	KGGZDEBUG("USER CONTROL: ===========> add player %s\n", name);
 	tmp = new QListViewItem(itemmain, name);
-	//tmp->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/player.png"));
 	itemmain->insertItem(tmp);
-	KGGZDEBUG("Added token %s\n", name);
 	assign(tmp, -1);
 	lag(tmp, 1);
 }
@@ -111,13 +108,7 @@ void KGGZUsers::remove(const char *name)
 	QListViewItem *tmp;
 	const char *tokentmp;
 
-	KGGZDEBUG("USER CONTROL: ===========> remove player %s\n", name);
-	KGGZDEBUG("It must be %s!\n", name);
-	if(itemmain->firstChild())
-	{
-		KGGZDEBUG("(1) ==> %s\n", itemmain->firstChild()->text(0).latin1());
-		tmp = itemmain->firstChild(); //!
-	}
+	if(itemmain->firstChild()) tmp = itemmain->firstChild();
 	else
 	{
 		KGGZDEBUG("Error while removing %s!\n", name);
@@ -127,17 +118,13 @@ void KGGZUsers::remove(const char *name)
 	while(tmp)
 	{
 		tokentmp = tmp->text(0).latin1();
-		KGGZDEBUG("Is it %s?\n", tokentmp);
 		if(strcmp(tokentmp, name) == 0)
 		{
-			KGGZDEBUG("Yes it is %s, removing...!\n", tokentmp);
-			//itemmain->takeItem(tmp);
 			delete tmp;
 			tmp = NULL;
 		}
 		else
 		{
-			KGGZDEBUG("Nope. Next please!\n");
 			if(tmp->itemBelow() == NULL) KGGZDEBUG("itemBelow is NULL!\n");
 			if(tmp->itemAbove() == NULL) KGGZDEBUG("itemAbove is NULL!\n");
 			if(tmp->nextSibling() == NULL) KGGZDEBUG("nextSibling is NULL!\n");
@@ -152,28 +139,20 @@ void KGGZUsers::removeall()
 {
 	QListViewItem *tmp;
 
-	KGGZDEBUG("USER CONTROL: ===========> remove all\n");
 	if(!itemmain) return;
 	tmp = NULL;
 
 	KGGZDEBUG("Remove all players from the list\n");
 
-	if(itemmain->firstChild())
-	{
-		KGGZDEBUG("(1) |==> %s\n", itemmain->firstChild()->text(0).latin1());
-		tmp = itemmain->firstChild(); //!
-	}
+	if(itemmain->firstChild()) tmp = itemmain->firstChild();
 
 	while(tmp)
 	{
 		KGGZDEBUG("removeall: %s\n", tmp->text(0).latin1());
-		//itemmain->takeItem(tmp);
 		delete tmp;
-		tmp = itemmain->firstChild(); //!
-		//tmp = tmp->itemBelow();
+		tmp = itemmain->firstChild();
 	}
 
-	KGGZDEBUG("Remove all tables from the list\n");
 	if(firstChild()) tmp = firstChild();
 	else tmp = NULL;
 	while(tmp)
@@ -193,8 +172,6 @@ void KGGZUsers::addTable(int i)
 	QListViewItem *tmp;
 	QString foo;
 
-	KGGZDEBUG("USER CONTROL: ===========> add table %i\n", i);
-	KGGZDEBUG("KGGZUsers::addTable(%i)\n", i);
 	foo.sprintf("Table: %i", i);
 	tmp = new QListViewItem(this, foo);
 	insertItem(tmp);
@@ -207,8 +184,6 @@ void KGGZUsers::addTablePlayer(int i, const char *name)
 	//char foo[128];
 	QString foo;
 
-	KGGZDEBUG("USER CONTROL: ===========> add player %s into table %i\n", name, i);
-	KGGZDEBUG("KGGZUsers::addTablePlayer(%i, %s)\n", i, name);
 	foo.sprintf("%s-%i", name, i);
 	remove(name);
 
@@ -218,7 +193,6 @@ void KGGZUsers::addTablePlayer(int i, const char *name)
 		KGGZDEBUG("Player %sshould go to table %i; however, it's absent!\n");
 		return;
 	}
-	KGGZDEBUG("Create new player item!\n");
 	tmp = new QListViewItem(tmp2, name);
 	tmp2->insertItem(tmp);
 	assign(tmp, -1);
@@ -230,7 +204,6 @@ QListViewItem *KGGZUsers::table(int i)
 	//char foo[128];
 	QString foo;
 
-	KGGZDEBUG("KGGZUsers::table(%i)\n", i);
 	tmp = firstChild();
 	if(!tmp)
 	{
@@ -238,21 +211,14 @@ QListViewItem *KGGZUsers::table(int i)
 		return NULL;
 	}
 
-	KGGZDEBUG("Scanning table...\n");
 	foo.sprintf("Table: %i", i);
-	KGGZDEBUG("Compare: %s\n", tmp->text(0).latin1());
-	KGGZDEBUG("To: %s\n", foo.latin1());
 	while(tmp)
 	{
 		if(tmp->text(0) == foo) return tmp;
-		KGGZDEBUG("Now or never: get next item!\n");
 		if(tmp == NULL) KGGZDEBUG("ALERT!!!! isNull()!!!\n");
-		//tmp = tmp->itemBelow();
 		tmp = tmp->nextSibling();
-		KGGZDEBUG("Nope, that's a no-op\n");
 		if(tmp) KGGZDEBUG("This one is new: %s\n", tmp->text(0).latin1());
 	}
-	KGGZDEBUG("Hm, none found :(\n");
 	return NULL;
 }
 
@@ -309,7 +275,6 @@ void KGGZUsers::assign(QListViewItem *item, int role)
 	GGZCoreConfio *config;
 	int save;
 
-	KGGZDEBUG("<= (role: %i)\n", role);
 	if(!item) return;
 
 	save = 1;
@@ -344,7 +309,6 @@ void KGGZUsers::assign(QListViewItem *item, int role)
 	}
 	item->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/" + pixmap));
 
-	KGGZDEBUG("Assign %s to %s\n", pixmap.latin1(), item->text(0).latin1());
 	if(save)
 	{
 		config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")), GGZCoreConfio::readwrite | GGZCoreConfio::create);
@@ -364,7 +328,6 @@ void KGGZUsers::setLag(const char *playername, int lagvalue)
 
 void KGGZUsers::assignRole(const char *playername, int role)
 {
-	KGGZDEBUG("=> %s\n", playername);
 	assign(player(playername), role);
 }
 

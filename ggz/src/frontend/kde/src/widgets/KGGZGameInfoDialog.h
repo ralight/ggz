@@ -38,7 +38,7 @@
 #include <qwidget.h>
 
 // Forward declarations
-class QLabel;
+class KTextBrowser;
 
 // KGGZGameInfo: Game information dialog
 class KGGZGameInfoDialog : public QWidget
@@ -58,7 +58,7 @@ class KGGZGameInfoDialog : public QWidget
 
 		private:
 			// The information label
-			QLabel *m_information;
+			KTextBrowser *m_information;
 };
 
 #endif

@@ -21,17 +21,17 @@
 <TR><TH><A HREF="full-list-GGZCoreTable.html">List of all Methods</A></TH></TR>
 	</TABLE>
 	</TD>
-<TD align="right"><TABLE BORDER="0"><TR><TD><small><A HREF="index-long.html">Annotated List</small></TD></TR>
-<TR><TD><small><A HREF="header-list.html">Files</small></TD></TR>
-<TR><TD><small><A HREF="all-globals.html">Globals</small></TD></TR>
-<TR><TD><small><A HREF="hier.html">Hierarchy</small></TD></TR>
-<TR><TD><small><A HREF="index.html">Index</small></TD></TR>
+<TD align="right"><TABLE BORDER="0"><TR><TD><small><A HREF="index-long.html">Annotated List</A></small></TD></TR>
+<TR><TD><small><A HREF="header-list.html">Files</A></small></TD></TR>
+<TR><TD><small><A HREF="all-globals.html">Globals</A></small></TD></TR>
+<TR><TD><small><A HREF="hier.html">Hierarchy</A></small></TD></TR>
+<TR><TD><small><A HREF="index.html">Index</A></small></TD></TR>
 </TABLE></TD></TR></TABLE>
 <h4>Public Methods</h4><ul><LI>&nbsp;<b><A HREF="#ref1">GGZCoreTable</A></b> () 
 </LI>
 <LI>&nbsp;<b><A HREF="#ref2">GGZCoreTable</A></b> (GGZTable *table) 
 </LI>
-<LI>~&nbsp;<b><A HREF="#ref3">GGZCoreTable</A></b> () 
+<LI>&nbsp;<b><A HREF="#ref3">~GGZCoreTable</A></b> () 
 </LI>
 <LI>int &nbsp;<b><A HREF="#ref4">init</A></b> (GGZGameType* gametype, char* description, const unsigned int seats) 
 </LI>
@@ -41,69 +41,93 @@
 </LI>
 <LI>int &nbsp;<b><A HREF="#ref7">addReserved</A></b> (char* name, const unsigned int seat) 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref8">removePlayer</A></b> (char* name) 
+<LI>int &nbsp;<b><A HREF="#ref8">addSpectator</A></b> (char *name, const unsigned int seat) 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref9">id</A></b> () 
+<LI>int &nbsp;<b><A HREF="#ref9">removePlayer</A></b> (char* name) 
 </LI>
-<LI><A HREF="GGZCoreGametype.html">GGZCoreGametype</A>* &nbsp;<b><A HREF="#ref10">type</A></b> () 
+<LI>int &nbsp;<b><A HREF="#ref10">id</A></b> () 
 </LI>
-<LI>char* &nbsp;<b><A HREF="#ref11">description</A></b> () 
+<LI><A HREF="GGZCoreGametype.html">GGZCoreGametype</A>* &nbsp;<b><A HREF="#ref11">type</A></b> () 
 </LI>
-<LI>char &nbsp;<b><A HREF="#ref12">state</A></b> () 
+<LI>char* &nbsp;<b><A HREF="#ref12">description</A></b> () 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref13">countSeats</A></b> () 
+<LI>char &nbsp;<b><A HREF="#ref13">state</A></b> () 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref14">countBots</A></b> () 
+<LI>int &nbsp;<b><A HREF="#ref14">countSeats</A></b> () 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref15">countOpen</A></b> () 
+<LI>int &nbsp;<b><A HREF="#ref15">countBots</A></b> () 
 </LI>
-<LI>char* &nbsp;<b><A HREF="#ref16">playerName</A></b> (const unsigned int number) 
+<LI>int &nbsp;<b><A HREF="#ref16">countOpen</A></b> () 
 </LI>
-<LI>GGZSeatType &nbsp;<b><A HREF="#ref17">playerType</A></b> (const unsigned int number) 
+<LI>char* &nbsp;<b><A HREF="#ref17">playerName</A></b> (const unsigned int number) 
 </LI>
-<LI>GGZTable *&nbsp;<b><A HREF="#ref18">table</A></b> () 
+<LI>GGZSeatType &nbsp;<b><A HREF="#ref18">playerType</A></b> (const unsigned int number) 
 </LI>
-</ul><HR><A NAME="longdesc"><H2>Detailed Description</H2><p>
+<LI>GGZTable *&nbsp;<b><A HREF="#ref19">table</A></b> () 
+</LI>
+</ul><HR><H2><A NAME="longdesc">Detailed Description</A></H2><p>
  Table representation.
 </p>
-<A NAME="GGZCoreTable"></A><A NAME="ref1"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>&nbsp;<underline>GGZCoreTable</underline> ()
-</strong></td></tr></table><p></p><p> Constructor </p>
-<A NAME="GGZCoreTable"></A><A NAME="ref2"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>&nbsp;<underline>GGZCoreTable</underline> (GGZTable *table)
-</strong></td></tr></table><p></p><p> Constructor (overloaded) </p>
-<A NAME="GGZCoreTable"></A><A NAME="ref3"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>~&nbsp;<underline>GGZCoreTable</underline> ()
-</strong></td></tr></table><p></p><p> Destructor </p>
-<A NAME="init"></A><A NAME="ref4"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>init</underline> (GGZGameType* gametype, char* description, const unsigned int seats)
-</strong></td></tr></table><p></p><p> Initialize a table. Set a game type and the maximum number of seats. </p>
-<A NAME="addPlayer"></A><A NAME="ref5"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>addPlayer</underline> (char* name, const unsigned int seat)
-</strong></td></tr></table><p></p><p> Add a player to the table. </p>
-<A NAME="addBot"></A><A NAME="ref6"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>addBot</underline> (char* name, const unsigned int seat)
-</strong></td></tr></table><p></p><p> Add a bot to the table. </p>
-<A NAME="addReserved"></A><A NAME="ref7"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>addReserved</underline> (char* name, const unsigned int seat)
-</strong></td></tr></table><p></p><p> Add a reserved seat. This one can then be accessed by other players. </p>
-<A NAME="removePlayer"></A><A NAME="ref8"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>removePlayer</underline> (char* name)
-</strong></td></tr></table><p></p><p> Remove a player from the table. </p>
-<A NAME="id"></A><A NAME="ref9"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>id</underline> ()
-</strong></td></tr></table><p></p><p> Return the id of the table. </p>
-<A NAME="type"></A><A NAME="ref10"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong><A HREF="GGZCoreGametype.html">GGZCoreGametype</A>* &nbsp;<underline>type</underline> ()
-</strong></td></tr></table><p></p><p> Return the game type. </p>
-<A NAME="description"></A><A NAME="ref11"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>description</underline> ()
-</strong></td></tr></table><p></p><p> Return the description for this table. </p>
-<A NAME="state"></A><A NAME="ref12"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char &nbsp;<underline>state</underline> ()
-</strong></td></tr></table><p></p><p> Return the current table state. </p>
-<A NAME="countSeats"></A><A NAME="ref13"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>countSeats</underline> ()
-</strong></td></tr></table><p></p><p> Get the number of seats in total. </p>
-<A NAME="countBots"></A><A NAME="ref14"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>countBots</underline> ()
-</strong></td></tr></table><p></p><p> Get the number of seats occupied by bots. </p>
-<A NAME="countOpen"></A><A NAME="ref15"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>countOpen</underline> ()
-</strong></td></tr></table><p></p><p> Get the number of open seats. If none are open, the game starts. </p>
-<A NAME="playerName"></A><A NAME="ref16"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>playerName</underline> (const unsigned int number)
-</strong></td></tr></table><p></p><p> Return the name of a player. </p>
-<A NAME="playerType"></A><A NAME="ref17"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>GGZSeatType &nbsp;<underline>playerType</underline> (const unsigned int number)
-</strong></td></tr></table><p></p><p> Return the type of a player. </p>
-<A NAME="table"></A><A NAME="ref18"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>GGZTable *&nbsp;<underline>table</underline> ()
-</strong></td></tr></table><p></p><HR>
+<A NAME="GGZCoreTable"></A><A NAME="ref1"></A><table width="100%"><tr bgcolor="#eeeeee"><td>&nbsp;<strong>GGZCoreTable</strong> ()
+<br></td><td align="right"><h3><strong>GGZCoreTable</strong></h3></td></tr></table><p></p><p>
+ Constructor </p>
+<A NAME="GGZCoreTable"></A><A NAME="ref2"></A><table width="100%"><tr bgcolor="#eeeeee"><td>&nbsp;<strong>GGZCoreTable</strong> (GGZTable *table)
+<br></td><td align="right"><h3><strong>GGZCoreTable</strong></h3></td></tr></table><p></p><p>
+ Constructor (overloaded) </p>
+<A NAME="~GGZCoreTable"></A><A NAME="ref3"></A><table width="100%"><tr bgcolor="#eeeeee"><td>&nbsp;<strong>~GGZCoreTable</strong> ()
+<br></td><td align="right"><h3><strong>~GGZCoreTable</strong></h3></td></tr></table><p></p><p>
+ Destructor </p>
+<A NAME="init"></A><A NAME="ref4"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>init</strong> (GGZGameType* gametype, char* description, const unsigned int seats)
+<br></td><td align="right"><h3><strong>init</strong></h3></td></tr></table><p></p><p>
+ Initialize a table. Set a game type and the maximum number of seats. </p>
+<A NAME="addPlayer"></A><A NAME="ref5"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>addPlayer</strong> (char* name, const unsigned int seat)
+<br></td><td align="right"><h3><strong>addPlayer</strong></h3></td></tr></table><p></p><p>
+ Add a player to the table. </p>
+<A NAME="addBot"></A><A NAME="ref6"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>addBot</strong> (char* name, const unsigned int seat)
+<br></td><td align="right"><h3><strong>addBot</strong></h3></td></tr></table><p></p><p>
+ Add a bot to the table. </p>
+<A NAME="addReserved"></A><A NAME="ref7"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>addReserved</strong> (char* name, const unsigned int seat)
+<br></td><td align="right"><h3><strong>addReserved</strong></h3></td></tr></table><p></p><p>
+ Add a reserved seat. This one can then be accessed by other players. </p>
+<A NAME="addSpectator"></A><A NAME="ref8"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>addSpectator</strong> (char *name, const unsigned int seat)
+<br></td><td align="right"><h3><strong>addSpectator</strong></h3></td></tr></table><p></p><p>
+ Add a game spectator </p>
+<A NAME="removePlayer"></A><A NAME="ref9"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>removePlayer</strong> (char* name)
+<br></td><td align="right"><h3><strong>removePlayer</strong></h3></td></tr></table><p></p><p>
+ Remove a player from the table. </p>
+<A NAME="id"></A><A NAME="ref10"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>id</strong> ()
+<br></td><td align="right"><h3><strong>id</strong></h3></td></tr></table><p></p><p>
+ Return the id of the table. </p>
+<A NAME="type"></A><A NAME="ref11"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="GGZCoreGametype.html">GGZCoreGametype</A>* &nbsp;<strong>type</strong> ()
+<br></td><td align="right"><h3><strong>type</strong></h3></td></tr></table><p></p><p>
+ Return the game type. </p>
+<A NAME="description"></A><A NAME="ref12"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char* &nbsp;<strong>description</strong> ()
+<br></td><td align="right"><h3><strong>description</strong></h3></td></tr></table><p></p><p>
+ Return the description for this table. </p>
+<A NAME="state"></A><A NAME="ref13"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char &nbsp;<strong>state</strong> ()
+<br></td><td align="right"><h3><strong>state</strong></h3></td></tr></table><p></p><p>
+ Return the current table state. </p>
+<A NAME="countSeats"></A><A NAME="ref14"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>countSeats</strong> ()
+<br></td><td align="right"><h3><strong>countSeats</strong></h3></td></tr></table><p></p><p>
+ Get the number of seats in total. </p>
+<A NAME="countBots"></A><A NAME="ref15"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>countBots</strong> ()
+<br></td><td align="right"><h3><strong>countBots</strong></h3></td></tr></table><p></p><p>
+ Get the number of seats occupied by bots. </p>
+<A NAME="countOpen"></A><A NAME="ref16"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>countOpen</strong> ()
+<br></td><td align="right"><h3><strong>countOpen</strong></h3></td></tr></table><p></p><p>
+ Get the number of open seats. If none are open, the game starts. </p>
+<A NAME="playerName"></A><A NAME="ref17"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char* &nbsp;<strong>playerName</strong> (const unsigned int number)
+<br></td><td align="right"><h3><strong>playerName</strong></h3></td></tr></table><p></p><p>
+ Return the name of a player. </p>
+<A NAME="playerType"></A><A NAME="ref18"></A><table width="100%"><tr bgcolor="#eeeeee"><td>GGZSeatType &nbsp;<strong>playerType</strong> (const unsigned int number)
+<br></td><td align="right"><h3><strong>playerType</strong></h3></td></tr></table><p></p><p>
+ Return the type of a player. </p>
+<A NAME="table"></A><A NAME="ref19"></A><table width="100%"><tr bgcolor="#eeeeee"><td>GGZTable *&nbsp;<strong>table</strong> ()
+<br></td><td align="right"><h3><strong>table</strong></h3></td></tr></table><p></p><p>
+ Return the internal ggzcore table object. </p>
+<HR>
 	<table>
-	<tr><td><small>Generated by: comtec@localhost.localdomain on Wed Apr 18 19:49:08 2001, using kdoc 2.0a40.</small></td></tr>
+	<tr><td><small>Generated by: josef on athlon500 on Tue Mar 19 23:18:22 2002, using kdoc 2.0a53.</small></td></tr>
 	</table>
 </BODY>
 </HTML>

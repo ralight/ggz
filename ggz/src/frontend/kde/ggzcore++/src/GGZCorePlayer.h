@@ -24,12 +24,15 @@
 class GGZCorePlayer
 {
 	public:
-		/** Constructor */
+		/**
+		 * Constructor */
 		GGZCorePlayer();
-		/** Destructor */
+		/**
+		 * Destructor */
 		~GGZCorePlayer();
 
-		/** Available player types */
+		/**
+		 * Available player types */
 		enum PlayerTypes
 		{
 			none,
@@ -38,14 +41,18 @@ class GGZCorePlayer
 			admin
 		};
 
-		/** Return the name of this player. */
+		/**
+		 * Return the name of this player. */
 		char* name();
-		/** Return the player's current table. */
+		/**
+		 * Return the player's current table. */
 		GGZTable* table();
-		/** Return the player's type */
+		/**
+		 * Return the player's type */
 		int type();
 
-		/** Lag measurement */
+		/**
+		 * Lag measurement */
 		int lag();
 
 	private:

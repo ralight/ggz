@@ -22,19 +22,35 @@
 <TR><TH><A HREF="full-list-GGZCoreRoom.html">List of all Methods</A></TH></TR>
 	</TABLE>
 	</TD>
-<TD align="right"><TABLE BORDER="0"><TR><TD><small><A HREF="index-long.html">Annotated List</small></TD></TR>
-<TR><TD><small><A HREF="header-list.html">Files</small></TD></TR>
-<TR><TD><small><A HREF="all-globals.html">Globals</small></TD></TR>
-<TR><TD><small><A HREF="hier.html">Hierarchy</small></TD></TR>
-<TR><TD><small><A HREF="index.html">Index</small></TD></TR>
+<TD align="right"><TABLE BORDER="0"><TR><TD><small><A HREF="index-long.html">Annotated List</A></small></TD></TR>
+<TR><TD><small><A HREF="header-list.html">Files</A></small></TD></TR>
+<TR><TD><small><A HREF="all-globals.html">Globals</A></small></TD></TR>
+<TR><TD><small><A HREF="hier.html">Hierarchy</A></small></TD></TR>
+<TR><TD><small><A HREF="index.html">Index</A></small></TD></TR>
 </TABLE></TD></TR></TABLE>
-<h4>Public Types</h4><ul><LI>enum <A HREF="#ref1"> GGZCoreRoomEvent</A> {playerlist, tablelist, chatnormal, chatannounce, chatprivate, chatbeep, enter, leave, tableupdate, tablelaunched, tablelaunchfail, tablejoined, tablejoinfail, tableleft, tableleavefail, tabledata }
+<h4>Public Types</h4><ul><LI>enum <A HREF="#ref1">GGZCoreRoomEvent</A> {			playerlist,
+			tablelist,
+			chatnormal,
+			chatannounce,
+			chatprivate,
+			chatbeep,
+			enter,
+			leave,
+			tableupdate,
+			tablelaunched,
+			tablelaunchfail,
+			tablejoined,
+			tablejoinfail,
+			tableleft,
+			tableleavefail,
+			tabledata
+		}
 </LI>
 </ul><h4>Public Methods</h4><ul><LI>&nbsp;<b><A HREF="#ref2">GGZCoreRoom</A></b> () 
 </LI>
 <LI>&nbsp;<b><A HREF="#ref3">GGZCoreRoom</A></b> (GGZRoom* room) 
 </LI>
-<LI>~&nbsp;<b><A HREF="#ref4">GGZCoreRoom</A></b> () 
+<LI>&nbsp;<b><A HREF="#ref4">~GGZCoreRoom</A></b> () 
 </LI>
 <LI>int &nbsp;<b><A HREF="#ref5">addHook</A></b> (const GGZCoreRoomEvent event, const GGZHookFunc func) 
 </LI>
@@ -44,95 +60,143 @@
 </LI>
 <LI>int &nbsp;<b><A HREF="#ref8">removeHook</A></b> (const GGZCoreRoomEvent event, const unsigned int id) 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref9">init</A></b> (const GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description) 
+<LI>int &nbsp;<b><A HREF="#ref9">init</A></b> (const GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description, const char *category) 
 </LI>
 <LI>char* &nbsp;<b><A HREF="#ref10">name</A></b> () 
 </LI>
 <LI>char* &nbsp;<b><A HREF="#ref11">description</A></b> () 
 </LI>
-<LI><A HREF="GGZCoreGametype.html">GGZCoreGametype</A>* &nbsp;<b><A HREF="#ref12">gametype</A></b> () 
+<LI>char* &nbsp;<b><A HREF="#ref12">category</A></b> () 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref13">countPlayers</A></b> () 
+<LI><A HREF="GGZCoreGametype.html">GGZCoreGametype</A>* &nbsp;<b><A HREF="#ref13">gametype</A></b> () 
 </LI>
-<LI>GGZPlayer* &nbsp;<b><A HREF="#ref14">player</A></b> (const unsigned int number) 
+<LI>int &nbsp;<b><A HREF="#ref14">countPlayers</A></b> () 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref15">countTables</A></b> () 
+<LI>GGZPlayer* &nbsp;<b><A HREF="#ref15">player</A></b> (const unsigned int number) 
 </LI>
-<LI><A HREF="GGZCoreTable.html">GGZCoreTable</A>* &nbsp;<b><A HREF="#ref16">table</A></b> (const unsigned int number) 
+<LI>int &nbsp;<b><A HREF="#ref16">countTables</A></b> () 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref17">launchTable</A></b> (GGZTable* table) 
+<LI><A HREF="GGZCoreTable.html">GGZCoreTable</A>* &nbsp;<b><A HREF="#ref17">table</A></b> (const unsigned int number) 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref18">joinTable</A></b> (const unsigned int number) 
+<LI>int &nbsp;<b><A HREF="#ref18">launchTable</A></b> (GGZTable* table) 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref19">leaveTable</A></b> () 
+<LI>int &nbsp;<b><A HREF="#ref19">joinTable</A></b> (const unsigned int number) 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref20">listPlayers</A></b> () 
+<LI>int &nbsp;<b><A HREF="#ref20">leaveTable</A></b> () 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref21">listTables</A></b> (const int type, const char global) 
+<LI>int &nbsp;<b><A HREF="#ref21">listPlayers</A></b> () 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref22">chat</A></b> (const GGZChatOp opcode, const char* player, const char* message) 
+<LI>int &nbsp;<b><A HREF="#ref22">listTables</A></b> (const int type, const char global) 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref23">sendData</A></b> (char* buffer) 
+<LI>int &nbsp;<b><A HREF="#ref23">chat</A></b> (const GGZChatOp opcode, const char* player, const char* message) 
 </LI>
-<LI>GGZRoom* &nbsp;<b><A HREF="#ref24">room</A></b> () 
+<LI>int &nbsp;<b><A HREF="#ref24">sendData</A></b> (char* buffer) 
 </LI>
-<LI>void &nbsp;<b><A HREF="#ref25">selfRegister</A></b> (<A HREF="GGZCoreRoom.html">GGZCoreRoom</A> **room) 
+<LI>GGZRoom* &nbsp;<b><A HREF="#ref25">room</A></b> () 
 </LI>
-</ul><HR><A NAME="longdesc"><H2>Detailed Description</H2><p>
+<LI>void &nbsp;<b><A HREF="#ref26">selfRegister</A></b> (<A HREF="GGZCoreRoom.html">GGZCoreRoom</A> **room) 
+</LI>
+</ul><HR><H2><A NAME="longdesc">Detailed Description</A></H2><p>
  A GGZCoreRoom stands for a room on a server, which is connected to a
  certain game type.
 </p>
-<A NAME="%2520GGZCoreRoomEvent"></A><A NAME="ref1"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>enum <underline> GGZCoreRoomEvent</underline> {playerlist, tablelist, chatnormal, chatannounce, chatprivate, chatbeep, enter, leave, tableupdate, tablelaunched, tablelaunchfail, tablejoined, tablejoinfail, tableleft, tableleavefail, tabledata }
-</strong></td></tr></table><p></p><A NAME="GGZCoreRoom"></A><A NAME="ref2"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>&nbsp;<underline>GGZCoreRoom</underline> ()
-</strong></td></tr></table><p></p><p> Constructor </p>
-<A NAME="GGZCoreRoom"></A><A NAME="ref3"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>&nbsp;<underline>GGZCoreRoom</underline> (GGZRoom* room)
-</strong></td></tr></table><p></p><p> Constructor, overloaded to assign an existant room. </p>
-<A NAME="GGZCoreRoom"></A><A NAME="ref4"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>~&nbsp;<underline>GGZCoreRoom</underline> ()
-</strong></td></tr></table><p></p><p> Destructor </p>
-<A NAME="addHook"></A><A NAME="ref5"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>addHook</underline> (const GGZCoreRoomEvent event, const GGZHookFunc func)
-</strong></td></tr></table><p></p><p> Add a simple callback to the room. </p>
-<A NAME="addHook"></A><A NAME="ref6"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>addHook</underline> (const GGZCoreRoomEvent event, const GGZHookFunc func, void* data)
-</strong></td></tr></table><p></p><p> Add a callback with arguments. </p>
-<A NAME="removeHook"></A><A NAME="ref7"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>removeHook</underline> (const GGZCoreRoomEvent event, const GGZHookFunc func)
-</strong></td></tr></table><p></p><p> Remove a callback from the room. </p>
-<A NAME="removeHook"></A><A NAME="ref8"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>removeHook</underline> (const GGZCoreRoomEvent event, const unsigned int id)
-</strong></td></tr></table><p></p><p> Overloaded: Remove a callback on its id. </p>
-<A NAME="init"></A><A NAME="ref9"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>init</underline> (const GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description)
-</strong></td></tr></table><p></p><p> Initialize a room with the required information. </p>
-<A NAME="name"></A><A NAME="ref10"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>name</underline> ()
-</strong></td></tr></table><p></p><p> Return the name of the room. </p>
-<A NAME="description"></A><A NAME="ref11"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>description</underline> ()
-</strong></td></tr></table><p></p><p> Return its description. </p>
-<A NAME="gametype"></A><A NAME="ref12"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong><A HREF="GGZCoreGametype.html">GGZCoreGametype</A>* &nbsp;<underline>gametype</underline> ()
-</strong></td></tr></table><p></p><p> Return the associated game type. </p>
-<A NAME="countPlayers"></A><A NAME="ref13"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>countPlayers</underline> ()
-</strong></td></tr></table><p></p><p> Return the number of players in this room. </p>
-<A NAME="player"></A><A NAME="ref14"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>GGZPlayer* &nbsp;<underline>player</underline> (const unsigned int number)
-</strong></td></tr></table><p></p><p> Return specified player. </p>
-<A NAME="countTables"></A><A NAME="ref15"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>countTables</underline> ()
-</strong></td></tr></table><p></p><p> Count number of launched tables. </p>
-<A NAME="table"></A><A NAME="ref16"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong><A HREF="GGZCoreTable.html">GGZCoreTable</A>* &nbsp;<underline>table</underline> (const unsigned int number)
-</strong></td></tr></table><p></p><p> Return the specified table. </p>
-<A NAME="launchTable"></A><A NAME="ref17"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>launchTable</underline> (GGZTable* table)
-</strong></td></tr></table><p></p><p> Launch a table </p>
-<A NAME="joinTable"></A><A NAME="ref18"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>joinTable</underline> (const unsigned int number)
-</strong></td></tr></table><p></p><p> Join an already launched table. </p>
-<A NAME="leaveTable"></A><A NAME="ref19"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>leaveTable</underline> ()
-</strong></td></tr></table><p></p><p> Leave a table again. </p>
-<A NAME="listPlayers"></A><A NAME="ref20"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>listPlayers</underline> ()
-</strong></td></tr></table><p></p><p> Invoke player listing. </p>
-<A NAME="listTables"></A><A NAME="ref21"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>listTables</underline> (const int type, const char global)
-</strong></td></tr></table><p></p><p> Invoke tables listing. </p>
-<A NAME="chat"></A><A NAME="ref22"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>chat</underline> (const GGZChatOp opcode, const char* player, const char* message)
-</strong></td></tr></table><p></p><p> Send a chat message to the other players. </p>
-<A NAME="sendData"></A><A NAME="ref23"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>sendData</underline> (char* buffer)
-</strong></td></tr></table><p></p><p> Send other data. </p>
-<A NAME="room"></A><A NAME="ref24"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>GGZRoom* &nbsp;<underline>room</underline> ()
-</strong></td></tr></table><p></p><p> Return the internal GGZRoom structure </p>
-<A NAME="selfRegister"></A><A NAME="ref25"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>void &nbsp;<underline>selfRegister</underline> (<A HREF="GGZCoreRoom.html">GGZCoreRoom</A> **room)
-</strong></td></tr></table><p></p><HR>
+<A NAME="GGZCoreRoomEvent"></A><A NAME="ref1"></A><table width="100%"><tr bgcolor="#eeeeee"><td>enum <strong>GGZCoreRoomEvent</strong> {			playerlist,
+			tablelist,
+			chatnormal,
+			chatannounce,
+			chatprivate,
+			chatbeep,
+			enter,
+			leave,
+			tableupdate,
+			tablelaunched,
+			tablelaunchfail,
+			tablejoined,
+			tablejoinfail,
+			tableleft,
+			tableleavefail,
+			tabledata
+		}
+</td><td align="right"><h3><strong>GGZCoreRoomEvent</strong></h3></td></tr></table><p></p><p>
+ Possible events which can occur when entering rooms and staying in them. </p>
+<A NAME="GGZCoreRoom"></A><A NAME="ref2"></A><table width="100%"><tr bgcolor="#eeeeee"><td>&nbsp;<strong>GGZCoreRoom</strong> ()
+<br></td><td align="right"><h3><strong>GGZCoreRoom</strong></h3></td></tr></table><p></p><p>
+ Constructor </p>
+<A NAME="GGZCoreRoom"></A><A NAME="ref3"></A><table width="100%"><tr bgcolor="#eeeeee"><td>&nbsp;<strong>GGZCoreRoom</strong> (GGZRoom* room)
+<br></td><td align="right"><h3><strong>GGZCoreRoom</strong></h3></td></tr></table><p></p><p>
+ Constructor, overloaded to assign an existant room. </p>
+<A NAME="~GGZCoreRoom"></A><A NAME="ref4"></A><table width="100%"><tr bgcolor="#eeeeee"><td>&nbsp;<strong>~GGZCoreRoom</strong> ()
+<br></td><td align="right"><h3><strong>~GGZCoreRoom</strong></h3></td></tr></table><p></p><p>
+ Destructor </p>
+<A NAME="addHook"></A><A NAME="ref5"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>addHook</strong> (const GGZCoreRoomEvent event, const GGZHookFunc func)
+<br></td><td align="right"><h3><strong>addHook</strong></h3></td></tr></table><p></p><p>
+ Add a simple callback to the room. </p>
+<A NAME="addHook"></A><A NAME="ref6"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>addHook</strong> (const GGZCoreRoomEvent event, const GGZHookFunc func, void* data)
+<br></td><td align="right"><h3><strong>addHook</strong></h3></td></tr></table><p></p><p>
+ Add a callback with arguments. </p>
+<A NAME="removeHook"></A><A NAME="ref7"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>removeHook</strong> (const GGZCoreRoomEvent event, const GGZHookFunc func)
+<br></td><td align="right"><h3><strong>removeHook</strong></h3></td></tr></table><p></p><p>
+ Remove a callback from the room. </p>
+<A NAME="removeHook"></A><A NAME="ref8"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>removeHook</strong> (const GGZCoreRoomEvent event, const unsigned int id)
+<br></td><td align="right"><h3><strong>removeHook</strong></h3></td></tr></table><p></p><p>
+ Overloaded: Remove a callback on its id. </p>
+<A NAME="init"></A><A NAME="ref9"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>init</strong> (const GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description, const char *category)
+<br></td><td align="right"><h3><strong>init</strong></h3></td></tr></table><p></p><p>
+ Initialize a room with the required information. </p>
+<A NAME="name"></A><A NAME="ref10"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char* &nbsp;<strong>name</strong> ()
+<br></td><td align="right"><h3><strong>name</strong></h3></td></tr></table><p></p><p>
+ Return the name of the room. </p>
+<A NAME="description"></A><A NAME="ref11"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char* &nbsp;<strong>description</strong> ()
+<br></td><td align="right"><h3><strong>description</strong></h3></td></tr></table><p></p><p>
+ Return its description. </p>
+<A NAME="category"></A><A NAME="ref12"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char* &nbsp;<strong>category</strong> ()
+<br></td><td align="right"><h3><strong>category</strong></h3></td></tr></table><p></p><p>
+ Return its category </p>
+<A NAME="gametype"></A><A NAME="ref13"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="GGZCoreGametype.html">GGZCoreGametype</A>* &nbsp;<strong>gametype</strong> ()
+<br></td><td align="right"><h3><strong>gametype</strong></h3></td></tr></table><p></p><p>
+ Return the associated game type. </p>
+<A NAME="countPlayers"></A><A NAME="ref14"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>countPlayers</strong> ()
+<br></td><td align="right"><h3><strong>countPlayers</strong></h3></td></tr></table><p></p><p>
+ Return the number of players in this room. </p>
+<A NAME="player"></A><A NAME="ref15"></A><table width="100%"><tr bgcolor="#eeeeee"><td>GGZPlayer* &nbsp;<strong>player</strong> (const unsigned int number)
+<br></td><td align="right"><h3><strong>player</strong></h3></td></tr></table><p></p><p>
+ Return specified player. </p>
+<A NAME="countTables"></A><A NAME="ref16"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>countTables</strong> ()
+<br></td><td align="right"><h3><strong>countTables</strong></h3></td></tr></table><p></p><p>
+ Count number of launched tables. </p>
+<A NAME="table"></A><A NAME="ref17"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="GGZCoreTable.html">GGZCoreTable</A>* &nbsp;<strong>table</strong> (const unsigned int number)
+<br></td><td align="right"><h3><strong>table</strong></h3></td></tr></table><p></p><p>
+ Return the specified table. </p>
+<A NAME="launchTable"></A><A NAME="ref18"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>launchTable</strong> (GGZTable* table)
+<br></td><td align="right"><h3><strong>launchTable</strong></h3></td></tr></table><p></p><p>
+ Launch a table </p>
+<A NAME="joinTable"></A><A NAME="ref19"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>joinTable</strong> (const unsigned int number)
+<br></td><td align="right"><h3><strong>joinTable</strong></h3></td></tr></table><p></p><p>
+ Join an already launched table. </p>
+<A NAME="leaveTable"></A><A NAME="ref20"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>leaveTable</strong> ()
+<br></td><td align="right"><h3><strong>leaveTable</strong></h3></td></tr></table><p></p><p>
+ Leave a table again. </p>
+<A NAME="listPlayers"></A><A NAME="ref21"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>listPlayers</strong> ()
+<br></td><td align="right"><h3><strong>listPlayers</strong></h3></td></tr></table><p></p><p>
+ Invoke player listing. </p>
+<A NAME="listTables"></A><A NAME="ref22"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>listTables</strong> (const int type, const char global)
+<br></td><td align="right"><h3><strong>listTables</strong></h3></td></tr></table><p></p><p>
+ Invoke tables listing. </p>
+<A NAME="chat"></A><A NAME="ref23"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>chat</strong> (const GGZChatOp opcode, const char* player, const char* message)
+<br></td><td align="right"><h3><strong>chat</strong></h3></td></tr></table><p></p><p>
+ Send a chat message to the other players. </p>
+<A NAME="sendData"></A><A NAME="ref24"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>sendData</strong> (char* buffer)
+<br></td><td align="right"><h3><strong>sendData</strong></h3></td></tr></table><p></p><p>
+ Send other data. </p>
+<A NAME="room"></A><A NAME="ref25"></A><table width="100%"><tr bgcolor="#eeeeee"><td>GGZRoom* &nbsp;<strong>room</strong> ()
+<br></td><td align="right"><h3><strong>room</strong></h3></td></tr></table><p></p><p>
+ Return the internal GGZRoom structure </p>
+<A NAME="selfRegister"></A><A NAME="ref26"></A><table width="100%"><tr bgcolor="#eeeeee"><td>void &nbsp;<strong>selfRegister</strong> (<A HREF="GGZCoreRoom.html">GGZCoreRoom</A> **room)
+<br></td><td align="right"><h3><strong>selfRegister</strong></h3></td></tr></table><p></p><p>
+ Get a reference on itself. </p>
+<HR>
 	<table>
-	<tr><td><small>Generated by: comtec@localhost.localdomain on Wed Apr 18 19:49:08 2001, using kdoc 2.0a40.</small></td></tr>
+	<tr><td><small>Generated by: josef on athlon500 on Tue Mar 19 23:18:22 2002, using kdoc 2.0a53.</small></td></tr>
 	</table>
 </BODY>
 </HTML>

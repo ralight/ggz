@@ -15,7 +15,7 @@
 #include "GGZCoreServer.h"
 #include "config.h"
 
-GGZCoreServer* GGZCoreServer::m_instance = 0;
+GGZCoreServer* GGZCoreServer::m_instance = NULL;
 
 GGZCoreServer::GGZCoreServer()
 {
@@ -31,7 +31,7 @@ GGZCoreServer::GGZCoreServer()
 GGZCoreServer::~GGZCoreServer()
 {
 	ggzcore_server_free(m_server);
-	m_instance = 0;
+	m_instance = NULL;
 }
 
 int GGZCoreServer::addHook(const GGZCoreServerEvent event, const GGZHookFunc func)
@@ -130,7 +130,6 @@ GGZCoreRoom* GGZCoreServer::room()
 	m_tmproom = ggzcore_server_get_cur_room(m_server);
 	if(!m_room)
 	{
-		GGZCOREDEBUG("GGZCORE++: room(): create new room\n");
 		m_room = m_tmproom;
 		m_coreroom = new GGZCoreRoom(m_room);
 		m_coreroom->selfRegister(&m_coreroom);
@@ -139,16 +138,13 @@ GGZCoreRoom* GGZCoreServer::room()
 	{
 		if(m_room != m_tmproom)
 		{
-			GGZCOREDEBUG("GGZCORE++: room(): delete room and create new one\n");
 			delete m_coreroom;
-			GGZCOREDEBUG("GGZCORE++: room(): deleted...\n");
 			m_room = m_tmproom;
 			m_coreroom = new GGZCoreRoom(m_room);
 			m_coreroom->selfRegister(&m_coreroom);
 		}
 		else
 		{
-			GGZCOREDEBUG("GGZCORE++: room(): same room\n");
 			if(!m_coreroom)
 			{
 				GGZCOREDEBUG("GGZCORE++: room(): Hey Joe, that's unfair! Thou deleted my child!\n");
@@ -165,7 +161,6 @@ GGZCoreRoom* GGZCoreServer::room(const unsigned int number)
 	m_tmproom = ggzcore_server_get_nth_room(m_server, number);
 	if(!m_room)
 	{
-		GGZCOREDEBUG("GGZCORE++: room(number): create new room\n");
 		m_room = m_tmproom;
 		m_coreroom = new GGZCoreRoom(m_room);
 		m_coreroom->selfRegister(&m_coreroom);
@@ -174,7 +169,6 @@ GGZCoreRoom* GGZCoreServer::room(const unsigned int number)
 	{
 		if(m_room != m_tmproom)
 		{
-			GGZCOREDEBUG("GGZCORE++: room(number): delete room and create new one\n");
 			delete m_coreroom;
 			m_room = m_tmproom;
 			m_coreroom = new GGZCoreRoom(m_room);
@@ -182,7 +176,6 @@ GGZCoreRoom* GGZCoreServer::room(const unsigned int number)
 		}
 		else
 		{
-			GGZCOREDEBUG("GGZCORE++: room(number): same room\n");
 			if(!m_coreroom)
 			{
 				GGZCOREDEBUG("GGZCORE++: room(): Hey Joe, that's unfair! Thou deleted my child!\n");
@@ -232,9 +225,7 @@ int GGZCoreServer::isAtTable()
 int GGZCoreServer::connect()
 {
 	int ret;
-	GGZCOREDEBUG("connect start.\n");
 	ret = ggzcore_server_connect(m_server);
-	GGZCOREDEBUG("connect done.\n");
 	return ret;
 }
 
@@ -251,6 +242,11 @@ int GGZCoreServer::motd()
 int GGZCoreServer::logout()
 {
 	return ggzcore_server_logout(m_server);
+}
+
+int GGZCoreServer::disconnect()
+{
+	return ggzcore_server_disconnect(m_server);
 }
 
 int GGZCoreServer::listRooms(const int type, const char verbose)

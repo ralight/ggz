@@ -21,73 +21,113 @@
 <TR><TH><A HREF="full-list-GGZCoreGametype.html">List of all Methods</A></TH></TR>
 	</TABLE>
 	</TD>
-<TD align="right"><TABLE BORDER="0"><TR><TD><small><A HREF="index-long.html">Annotated List</small></TD></TR>
-<TR><TD><small><A HREF="header-list.html">Files</small></TD></TR>
-<TR><TD><small><A HREF="all-globals.html">Globals</small></TD></TR>
-<TR><TD><small><A HREF="hier.html">Hierarchy</small></TD></TR>
-<TR><TD><small><A HREF="index.html">Index</small></TD></TR>
+<TD align="right"><TABLE BORDER="0"><TR><TD><small><A HREF="index-long.html">Annotated List</A></small></TD></TR>
+<TR><TD><small><A HREF="header-list.html">Files</A></small></TD></TR>
+<TR><TD><small><A HREF="all-globals.html">Globals</A></small></TD></TR>
+<TR><TD><small><A HREF="hier.html">Hierarchy</A></small></TD></TR>
+<TR><TD><small><A HREF="index.html">Index</A></small></TD></TR>
 </TABLE></TD></TR></TABLE>
 <h4>Public Methods</h4><ul><LI>&nbsp;<b><A HREF="#ref1">GGZCoreGametype</A></b> () 
 </LI>
 <LI>&nbsp;<b><A HREF="#ref2">GGZCoreGametype</A></b> (GGZGameType *gametype) 
 </LI>
-<LI>~&nbsp;<b><A HREF="#ref3">GGZCoreGametype</A></b> () 
+<LI>&nbsp;<b><A HREF="#ref3">~GGZCoreGametype</A></b> () 
 </LI>
 <LI>char* &nbsp;<b><A HREF="#ref4">name</A></b> () 
 </LI>
-<LI>char* &nbsp;<b><A HREF="#ref5">protocol</A></b> () 
+<LI>char* &nbsp;<b><A HREF="#ref5">protocolVersion</A></b> () 
 </LI>
-<LI>char* &nbsp;<b><A HREF="#ref6">version</A></b> () 
+<LI>char *&nbsp;<b><A HREF="#ref6">protocolEngine</A></b> () 
 </LI>
-<LI>char* &nbsp;<b><A HREF="#ref7">author</A></b> () 
+<LI>char* &nbsp;<b><A HREF="#ref7">version</A></b> () 
 </LI>
-<LI>char* &nbsp;<b><A HREF="#ref8">url</A></b> () 
+<LI>char* &nbsp;<b><A HREF="#ref8">author</A></b> () 
 </LI>
-<LI>char* &nbsp;<b><A HREF="#ref9">description</A></b> () 
+<LI>char* &nbsp;<b><A HREF="#ref9">url</A></b> () 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref10">maxPlayers</A></b> () 
+<LI>char* &nbsp;<b><A HREF="#ref10">description</A></b> () 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref11">maxBots</A></b> () 
+<LI>char* &nbsp;<b><A HREF="#ref11">category</A></b> () 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref12">isPlayersValid</A></b> (unsigned int number) 
+<LI>char* &nbsp;<b><A HREF="#ref12">rating</A></b> () 
 </LI>
-<LI>int &nbsp;<b><A HREF="#ref13">isBotsValid</A></b> (unsigned int number) 
+<LI>int &nbsp;<b><A HREF="#ref13">maxPlayers</A></b> () 
 </LI>
-<LI>GGZGameType *&nbsp;<b><A HREF="#ref14">gametype</A></b> () 
+<LI>int &nbsp;<b><A HREF="#ref14">maxBots</A></b> () 
 </LI>
-</ul><HR><A NAME="longdesc"><H2>Detailed Description</H2><p>
+<LI>int &nbsp;<b><A HREF="#ref15">maxSpectators</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref16">isPlayersValid</A></b> (unsigned int number) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref17">isBotsValid</A></b> (unsigned int number) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref18">isSpectatorsValid</A></b> (unsigned int number) 
+</LI>
+<LI>GGZGameType *&nbsp;<b><A HREF="#ref19">gametype</A></b> () 
+</LI>
+</ul><HR><H2><A NAME="longdesc">Detailed Description</A></H2><p>
  A class which contains all information on a certain game type.
 </p>
-<A NAME="GGZCoreGametype"></A><A NAME="ref1"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>&nbsp;<underline>GGZCoreGametype</underline> ()
-</strong></td></tr></table><p></p><p> Constructor </p>
-<A NAME="GGZCoreGametype"></A><A NAME="ref2"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>&nbsp;<underline>GGZCoreGametype</underline> (GGZGameType *gametype)
-</strong></td></tr></table><p></p><p> Overloaded. </p>
-<A NAME="GGZCoreGametype"></A><A NAME="ref3"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>~&nbsp;<underline>GGZCoreGametype</underline> ()
-</strong></td></tr></table><p></p><p> Destructor </p>
-<A NAME="name"></A><A NAME="ref4"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>name</underline> ()
-</strong></td></tr></table><p></p><p> The unique name of this game type. </p>
-<A NAME="protocol"></A><A NAME="ref5"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>protocol</underline> ()
-</strong></td></tr></table><p></p><p> Protocol version </p>
-<A NAME="version"></A><A NAME="ref6"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>version</underline> ()
-</strong></td></tr></table><p></p><p> Game version </p>
-<A NAME="author"></A><A NAME="ref7"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>author</underline> ()
-</strong></td></tr></table><p></p><p> Author of this game. </p>
-<A NAME="url"></A><A NAME="ref8"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>url</underline> ()
-</strong></td></tr></table><p></p><p> Url to the game homepage</p>
-<A NAME="description"></A><A NAME="ref9"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>char* &nbsp;<underline>description</underline> ()
-</strong></td></tr></table><p></p><p> Short description on the game. </p>
-<A NAME="maxPlayers"></A><A NAME="ref10"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>maxPlayers</underline> ()
-</strong></td></tr></table><p></p><p> Return the maximum number of players. </p>
-<A NAME="maxBots"></A><A NAME="ref11"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>maxBots</underline> ()
-</strong></td></tr></table><p></p><p> Return the maximum number of bots. </p>
-<A NAME="isPlayersValid"></A><A NAME="ref12"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>isPlayersValid</underline> (unsigned int number)
-</strong></td></tr></table><p></p><p> Check whether given number of players is allowed. </p>
-<A NAME="isBotsValid"></A><A NAME="ref13"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>isBotsValid</underline> (unsigned int number)
-</strong></td></tr></table><p></p><p> Check whether given number of bots is allowed. </p>
-<A NAME="gametype"></A><A NAME="ref14"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>GGZGameType *&nbsp;<underline>gametype</underline> ()
-</strong></td></tr></table><p></p><HR>
+<A NAME="GGZCoreGametype"></A><A NAME="ref1"></A><table width="100%"><tr bgcolor="#eeeeee"><td>&nbsp;<strong>GGZCoreGametype</strong> ()
+<br></td><td align="right"><h3><strong>GGZCoreGametype</strong></h3></td></tr></table><p></p><p>
+ Constructor </p>
+<A NAME="GGZCoreGametype"></A><A NAME="ref2"></A><table width="100%"><tr bgcolor="#eeeeee"><td>&nbsp;<strong>GGZCoreGametype</strong> (GGZGameType *gametype)
+<br></td><td align="right"><h3><strong>GGZCoreGametype</strong></h3></td></tr></table><p></p><p>
+ Overloaded. </p>
+<A NAME="~GGZCoreGametype"></A><A NAME="ref3"></A><table width="100%"><tr bgcolor="#eeeeee"><td>&nbsp;<strong>~GGZCoreGametype</strong> ()
+<br></td><td align="right"><h3><strong>~GGZCoreGametype</strong></h3></td></tr></table><p></p><p>
+ Destructor </p>
+<A NAME="name"></A><A NAME="ref4"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char* &nbsp;<strong>name</strong> ()
+<br></td><td align="right"><h3><strong>name</strong></h3></td></tr></table><p></p><p>
+ The unique name of this game type. </p>
+<A NAME="protocolVersion"></A><A NAME="ref5"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char* &nbsp;<strong>protocolVersion</strong> ()
+<br></td><td align="right"><h3><strong>protocolVersion</strong></h3></td></tr></table><p></p><p>
+ Protocol version </p>
+<A NAME="protocolEngine"></A><A NAME="ref6"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char *&nbsp;<strong>protocolEngine</strong> ()
+<br></td><td align="right"><h3><strong>protocolEngine</strong></h3></td></tr></table><p></p><p>
+ Protocol engine </p>
+<A NAME="version"></A><A NAME="ref7"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char* &nbsp;<strong>version</strong> ()
+<br></td><td align="right"><h3><strong>version</strong></h3></td></tr></table><p></p><p>
+ Game version </p>
+<A NAME="author"></A><A NAME="ref8"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char* &nbsp;<strong>author</strong> ()
+<br></td><td align="right"><h3><strong>author</strong></h3></td></tr></table><p></p><p>
+ Author of this game. </p>
+<A NAME="url"></A><A NAME="ref9"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char* &nbsp;<strong>url</strong> ()
+<br></td><td align="right"><h3><strong>url</strong></h3></td></tr></table><p></p><p>
+ Url to the game homepage</p>
+<A NAME="description"></A><A NAME="ref10"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char* &nbsp;<strong>description</strong> ()
+<br></td><td align="right"><h3><strong>description</strong></h3></td></tr></table><p></p><p>
+ Short description on the game. </p>
+<A NAME="category"></A><A NAME="ref11"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char* &nbsp;<strong>category</strong> ()
+<br></td><td align="right"><h3><strong>category</strong></h3></td></tr></table><p></p><p>
+ Game category </p>
+<A NAME="rating"></A><A NAME="ref12"></A><table width="100%"><tr bgcolor="#eeeeee"><td>char* &nbsp;<strong>rating</strong> ()
+<br></td><td align="right"><h3><strong>rating</strong></h3></td></tr></table><p></p><p>
+ Game rating </p>
+<A NAME="maxPlayers"></A><A NAME="ref13"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>maxPlayers</strong> ()
+<br></td><td align="right"><h3><strong>maxPlayers</strong></h3></td></tr></table><p></p><p>
+ Return the maximum number of players. </p>
+<A NAME="maxBots"></A><A NAME="ref14"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>maxBots</strong> ()
+<br></td><td align="right"><h3><strong>maxBots</strong></h3></td></tr></table><p></p><p>
+ Return the maximum number of bots. </p>
+<A NAME="maxSpectators"></A><A NAME="ref15"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>maxSpectators</strong> ()
+<br></td><td align="right"><h3><strong>maxSpectators</strong></h3></td></tr></table><p></p><p>
+ Return the maximum number of spectators </p>
+<A NAME="isPlayersValid"></A><A NAME="ref16"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>isPlayersValid</strong> (unsigned int number)
+<br></td><td align="right"><h3><strong>isPlayersValid</strong></h3></td></tr></table><p></p><p>
+ Check whether given number of players is allowed. </p>
+<A NAME="isBotsValid"></A><A NAME="ref17"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>isBotsValid</strong> (unsigned int number)
+<br></td><td align="right"><h3><strong>isBotsValid</strong></h3></td></tr></table><p></p><p>
+ Check whether given number of bots is allowed. </p>
+<A NAME="isSpectatorsValid"></A><A NAME="ref18"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>isSpectatorsValid</strong> (unsigned int number)
+<br></td><td align="right"><h3><strong>isSpectatorsValid</strong></h3></td></tr></table><p></p><p>
+ Check whether a given number of spectators is allowed </p>
+<A NAME="gametype"></A><A NAME="ref19"></A><table width="100%"><tr bgcolor="#eeeeee"><td>GGZGameType *&nbsp;<strong>gametype</strong> ()
+<br></td><td align="right"><h3><strong>gametype</strong></h3></td></tr></table><p></p><p>
+ Retrieve the wrapped ggzcore object for this game type. </p>
+<HR>
 	<table>
-	<tr><td><small>Generated by: comtec@localhost.localdomain on Wed Apr 18 19:49:08 2001, using kdoc 2.0a40.</small></td></tr>
+	<tr><td><small>Generated by: josef on athlon500 on Tue Mar 19 23:18:22 2002, using kdoc 2.0a53.</small></td></tr>
 	</table>
 </BODY>
 </HTML>

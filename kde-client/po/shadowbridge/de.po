@@ -1,0 +1,140 @@
+# GGZ ShadowBridge German Translation.
+# Copyright (C) 2002 GGZ Gaming Zone
+# Josef Spillner <dr_maux@users.sourceforge.net>, 2002.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1\n"
+"POT-Creation-Date: 2002-03-20 16:45+0100\n"
+"PO-Revision-Date: 2002-03-20 16:45+0100\n"
+"Last-Translator: Josef Spillner <dr_maux@users.sourceforge.net>\n"
+"Language-Team: Deutsch <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../shadowbridge/shadowcontainer.cpp:47
+msgid "Active client:"
+msgstr "Aktiver Client:"
+
+#: ../../shadowbridge/shadowapp.cpp:45
+msgid "Add GGZ game client"
+msgstr "GGZ Spieleclient hinzufügen"
+
+#: ../../shadowbridge/shadowapp.cpp:44
+msgid "Add game client"
+msgstr "Spieleclient hinzufügen"
+
+#: ../../shadowbridge/shadowclient.cpp:38
+msgid "Application command line:"
+msgstr "Ausführungsbefehl für diese Anwendung:"
+
+#: ../../shadowbridge/main.cpp:26 ../../shadowbridge/main.cpp:45
+msgid "Author"
+msgstr "Autor"
+
+#: ../../shadowbridge/shadowclient.cpp:47
+#: ../../shadowbridge/shadowclientggz.cpp:48
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: ../../shadowbridge/shadownet.cpp:89
+msgid "Couldn't create socket pair."
+msgstr "Konnte Socket-Verbindung nicht erstellen."
+
+#: ../../shadowbridge/shadownet.cpp:96
+msgid "Couldn't fork,"
+msgstr "Konnte nicht forken."
+
+#: ../../shadowbridge/shadowcontainer.cpp:45
+msgid "Data"
+msgstr "Daten"
+
+#: ../../shadowbridge/shadowapp.cpp:56
+msgid "Debug"
+msgstr "Debuggen"
+
+#: ../../shadowbridge/main.cpp:18 ../../shadowbridge/main.cpp:37
+msgid ""
+"Drop-in fake game client to record\n"
+"and distribute game events."
+msgstr "Jederzeit einsetzbarer Spieleclient,\n"
+"der Daten und Events von Spielen aufnehmen kann."
+
+#: ../../shadowbridge/shadowcontainer.cpp:44
+msgid "Event"
+msgstr "Event"
+
+#: ../../shadowbridge/shadowapp.cpp:55
+msgid "File"
+msgstr "Datei"
+
+#: ../../shadowbridge/shadowapp.cpp:53
+msgid "Force synchronizing"
+msgstr "Synchronisation erzwingen"
+
+#: ../../shadowbridge/main.cpp:16 ../../shadowbridge/main.cpp:35
+msgid "GGZ Shadow Bridge"
+msgstr "GGZ Shadow Bridge"
+
+#: ../../shadowbridge/shadowapp.cpp:57
+msgid "Help"
+msgstr "Hilfe"
+
+#: ../../shadowbridge/shadowapp.cpp:107
+msgid "In Test"
+msgstr "Eingangstest"
+
+#: ../../shadowbridge/shadowclient.cpp:39
+msgid "Inbound socket:"
+msgstr "Einführende Verbindung:"
+
+#: ../../shadowbridge/shadowapp.cpp:51
+msgid "Incoming message"
+msgstr "Einkommende Nachrichten"
+
+#: ../../shadowbridge/shadowapp.cpp:126
+msgid "Net Error!"
+msgstr "Verbindungsfehler!"
+
+#: ../../shadowbridge/shadowclient.cpp:46
+#: ../../shadowbridge/shadowclientggz.cpp:47
+msgid "OK"
+msgstr "OK"
+
+#: ../../shadowbridge/shadowapp.cpp:110
+msgid "Out Test"
+msgstr "Ausgangstest"
+
+#: ../../shadowbridge/shadowclient.cpp:40
+msgid "Outbound socket:"
+msgstr "Ausführende Verbindung:"
+
+#: ../../shadowbridge/shadowapp.cpp:52
+msgid "Outgoing message"
+msgstr "Ausführende Nachrichten"
+
+#: ../../shadowbridge/shadowclientggz.cpp:50
+msgid "Please select a GGZ game client:"
+msgstr "Bitte wähle einen GGZ Spieleclient aus:"
+
+#: ../../shadowbridge/shadowapp.cpp:48
+msgid "Quit"
+msgstr "Beenden"
+
+#: ../../shadowbridge/shadowapp.cpp:59
+msgid "Ready."
+msgstr "Fertig."
+
+#: ../../shadowbridge/main.cpp:22 ../../shadowbridge/main.cpp:41
+msgid "ShadowBridge"
+msgstr "ShadowBridge"
+
+#: ../../shadowbridge/shadowapp.cpp:46
+msgid "Start"
+msgstr "Start"
+
+#: ../../shadowbridge/shadowcontainer.cpp:43
+msgid "Time"
+msgstr "Zeit"

@@ -27,46 +27,70 @@
 class GGZCoreModule
 {
 	public:
-		/** Constructor */
+		/**
+		 * Constructor */
 		GGZCoreModule();
-		/** Destructor */
+		/**
+		 * Destructor */
 		~GGZCoreModule();
 
-		/** Return all available games. */
+		/**
+		 * Return all available games. */
 		unsigned int countAll();
-		/** Return all games which match the given type. */
+		/**
+		 * Return all games which match the given type. */
 		unsigned int count();
 
-		/** Add a game. */
-		int add(const char* game, const char* version, const char* protocol, const char *engine, const char* author, const char* frontend, const char* url, const char* exe_path, const char* icon_path, const char* help_path);
+		/**
+		 * Add a game. */
+		int add(const char* game, const char* version, const char* protocol, const char *engine,
+			const char* author, const char* frontend, const char* url,
+			const char* exe_path, const char* icon_path, const char* help_path);
 
-		/** Launch this module. */
+		/**
+		 * Launch this module. */
 		int launch();
 
-		/** Return the name of this game module. */
+		/**
+		 * Return the name of this game module. */
 		char* game();
-		/** Return the version of this game module. */
+		/**
+		 * Return the version of this game module. */
 		char* version();
-		/** Return the protocol version of this game module. */
+		/**
+		 * Return the protocol version of this game module. */
 		char* protocolVersion();
-		/** Return the associated protocol engine. */
+		/**
+		 * Return the associated protocol engine. */
 		char *protocolEngine();
-		/** Return the author of this game module. */
+		/**
+		 * Return the author of this game module. */
 		char* author();
-		/** Return the frontend type of this game module. */
+		/**
+		 * Return the frontend type of this game module. */
 		char* frontend();
-		/** Return the homepage of this game module. */
+		/**
+		 * Return the homepage of this game module. */
 		char* url();
-		/** Return the execution path of this game module, including command line options. */
+		/**
+		 * Return the execution path of this game module, including command line options. */
 		char** argv();
-		/** Return the icon path of this game module. */
+		/**
+		 * Return the icon path of this game module. */
 		char* pathIcon();
-		/** Return the help path of this game module. */
+		/**
+		 * Return the help path of this game module. */
 		char* pathHelp();
 
+		/**
+		 * Initialize this module to find out compatible ones. */
 		void init(const char* game, const char* protocol, const char *engine);
+		/**
+		 * Select a module as the active one. */
 		void setActive(const unsigned int number);
 
+		/**
+		 * Retreive the internal ggzcore module object. */
 		GGZModule *module();
 
 	private:
@@ -77,3 +101,4 @@ class GGZCoreModule
 };
 
 #endif
+

@@ -26,6 +26,8 @@
 class GGZCoreGame
 {
 	public:
+		/**
+		 * Events which can occur during a game. */
 		enum GGZCoreGameEvent
 		{
 			launched,
@@ -38,42 +40,57 @@ class GGZCoreGame
 			protoerror
 		};
 
-		/** Constructor */
+		/**
+		 * Constructor */
 		GGZCoreGame();
-		/** Destructor */
+		/**
+		 * Destructor */
 		~GGZCoreGame();
 
-		/** Add a simple callback to the game. */
+		/**
+		 * Add a simple callback to the game. */
 		int addHook(const GGZCoreGameEvent event, const GGZHookFunc func);
-		/** Add a callback with arguments. */
+		/**
+		 * Add a callback with arguments. */
 		int addHook(const GGZCoreGameEvent event, const GGZHookFunc func, void* data);
 
-		/** Remove a callback from the game. */
+		/**
+		 * Remove a callback from the game. */
 		int removeHook(const GGZCoreGameEvent event, const GGZHookFunc func);
-		/** Overloaded: Remove a callback on its id. */
+		/**
+		 * Overloaded: Remove a callback on its id. */
 		int removeHook(const GGZCoreGameEvent event, const unsigned int id);
 
-		/** Initialize this game. */
+		/**
+		 * Initialize this game. */
 		int init(GGZModule* module);
 
-		/** Return the specific file descriptor. */
+		/**
+		 * Return the specific file descriptor. */
 		int fd();
-		/** Return the associated module. */
+		/**
+		 * Return the associated module. */
 		GGZModule* module();
 
-		/** Launch this game. */
+		/**
+		 * Launch this game. */
 		int launch();
-		/** Join this game. */
+		/**
+		 * Join this game. */
 		int join();
 
-		/** Send other data. */
+		/**
+		 * Send other data. */
 		int dataSend(char* buffer);
 
-		/** Control data flow. */
+		/**
+		 * Control data flow. */
 		int dataPending();
-		/** Returns whether data is read. */
+		/**
+		 * Returns whether data is read. */
 		int dataRead();
-		/** Return whether data is written. */
+		/**
+		 * Return whether data is written. */
 		int dataWrite();
 
 	private:

@@ -40,6 +40,7 @@
 
 // KDE includes
 #include <klocale.h>
+#include <ktextbrowser.h>
 
 // Qt includes
 #include <qlabel.h>
@@ -58,7 +59,7 @@ KGGZGameInfoDialog::KGGZGameInfoDialog(QWidget *parent, const char *name)
 
 	title = new KGGZCaption(i18n("Game information"), i18n("Properties of the game played in this room."), this);
 
-	m_information = new QLabel("", this);
+	m_information = new KTextBrowser(this);
 	m_information->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	sep = new KGGZLineSeparator(this);
 
@@ -74,8 +75,8 @@ KGGZGameInfoDialog::KGGZGameInfoDialog(QWidget *parent, const char *name)
 
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccept()));
 
-	//setFixedSize(300, 210);
 	setCaption(i18n("Game information"));
+	resize(300, 300);
 	show();
 }
 
@@ -92,7 +93,5 @@ void KGGZGameInfoDialog::slotAccept()
 void KGGZGameInfoDialog::setInformation(const QString& information)
 {
 	m_information->setText(information);
-	update();
-	resize(m_information->width() + 20, m_information->height() + 100);
 }
 

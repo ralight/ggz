@@ -1,11 +1,38 @@
+// ShadowBridge - Game developer tool to visualize network protocols
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+// ShadowBridge includes
 #include "shadowclientggz.h"
 
+// KDE includes
+#include <kcombobox.h>
+#include <klocale.h>
+
+// Qt includes
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
+
+// GGZ includes
+#include "GGZCoreConfio.h"
+
+// System includes
 #include <stdlib.h>
 #include <string.h>
-#include "GGZCoreConfio.h"
 
 ShadowClientGGZ::ShadowClientGGZ(QWidget *parent, const char *name)
 : QWidget(parent, name)
@@ -15,10 +42,12 @@ ShadowClientGGZ::ShadowClientGGZ(QWidget *parent, const char *name)
 	QVBoxLayout *vbox;
 	QHBoxLayout *hbox;
 
-	ok = new QPushButton("OK", this);
-	cancel = new QPushButton("Cancel", this);
+	m_activated = 0;
 
-	label = new QLabel("Please select a GGZ game client:", this);
+	ok = new QPushButton(i18n("OK"), this);
+	cancel = new QPushButton(i18n("Cancel"), this);
+
+	label = new QLabel(i18n("Please select a GGZ game client:"), this);
 
 	combo = new KComboBox(this);
 
@@ -31,6 +60,7 @@ ShadowClientGGZ::ShadowClientGGZ(QWidget *parent, const char *name)
 
 	connect(cancel, SIGNAL(clicked()), SLOT(close()));
 	connect(ok, SIGNAL(clicked()), SLOT(slotPressed()));
+	connect(combo, SIGNAL(activated(int)), SLOT(slotActivated(int)));
 
 	init();
 }
@@ -41,13 +71,12 @@ ShadowClientGGZ::~ShadowClientGGZ()
 
 void ShadowClientGGZ::init()
 {
-	// GGZ stuff goes here
 	GGZCoreConfio *conf;
 	char **list, **felist;
 	int count, fecount, ret;
 	char *fe;
 
-	conf = new GGZCoreConfio("/etc/ggz.modules", GGZCoreConfio::readonly);
+	conf = new GGZCoreConfio("/usr/local/etc/ggz.modules", GGZCoreConfio::readonly);
 	ret = conf->read("Games", "*Engines*", &count, &list);	
 	if(ret == -1) return;
 
@@ -70,12 +99,12 @@ void ShadowClientGGZ::init()
 						namelist.append(strdup(fe));
 						free(felist[j]);
 					}
-					free(felist);
+					GGZCoreConfio::free(felist);
 				}
 			}
-			free(list[i]);
+			GGZCoreConfio::free(list[i]);
 		}
-		free(list);
+		GGZCoreConfio::free(list);
 	}
 
 	delete conf;
@@ -83,10 +112,12 @@ void ShadowClientGGZ::init()
 
 void ShadowClientGGZ::slotPressed()
 {
-	int i;
-
-	i = 0; // QUICK HACK
-    emit signalClient(namelist.at(i), cmdlinelist.at(i));
+    emit signalClient(cmdlinelist.at(m_activated), "3", "3");
     close();
+}
+
+void ShadowClientGGZ::slotActivated(int index)
+{
+	m_activated = index;
 }
 

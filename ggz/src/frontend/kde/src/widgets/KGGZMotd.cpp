@@ -94,7 +94,6 @@ void KGGZMotd::append(char *text)
 	const char *html[] = {"000000", "20ff00", "0000ff", "ffa000", "ff00ff", "300fff", "a0d000", "00ff70", "ff20ff", "777777", "AAAAAA"};
 	QString buffer;
 
-	KGGZDEBUGF("KGGZMotd::append(%s)\n", text);
 	count = 0;
 	for(i = 0; i < strlen(text); i++)
 	{
@@ -112,13 +111,8 @@ void KGGZMotd::append(char *text)
 					buffer.append("&gt;");
 					break;
 				case '\n':
-					KGGZDEBUG("motd: end of line\n");
-					//if((!i) || (text[i - i] != '\n'))
-					//{
-						buffer.append("<br>\n");
-						count = 0;
-					//}
-					//else KGGZDEBUG("rejected!\n");
+					buffer.append("<br>\n");
+					count = 0;
 					break;
 				default:
 					buffer.append(text[i]);
@@ -153,14 +147,15 @@ void KGGZMotd::setSource(void *data)
 {
 	char **motd;
 
-	KGGZDEBUGF("KGGZMotd::setSource()\n");
-
 	motd = (char**)data;
 	if(!motd)
 	{
 		KGGZDEBUG("No MOTD data received!\n");
 		return;
 	}
+
+	m_edit->setText("");
 	for(int i = 0; motd[i] != NULL; i++)
 		append(motd[i]);
 }
+

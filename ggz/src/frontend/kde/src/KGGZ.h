@@ -116,7 +116,7 @@ class KGGZ : public QWidget
 		// Emitted to dis/enable menu items
 		void signalMenu(int signal);
 		// Emitted to announce new room
-		void signalRoom(char *roomname, char *category);
+		void signalRoom(const char *roomname, const char *category);
 		// Emitted to change window caption
 		void signalCaption(const char *caption);
 		// Emitted if connection state changes
@@ -183,10 +183,6 @@ class KGGZ : public QWidget
 	private:
 		// ensure that KGGZ is in a proper state
 		void dispatcher();
-		// free allocated memory
-		void dispatch_free(char *var, const char *description);
-		// delete created objects
-		void dispatch_delete(void *object, const char *description);
 
 		// set up room callbacks
 		void attachRoomCallbacks();
@@ -244,9 +240,7 @@ class KGGZ : public QWidget
 		char *m_save_username, *m_save_password, *m_save_host;
 		// Connection data saved from connection dialog
 		int m_save_loginmode, m_save_port, m_save_encryption;
-		// Lock for time-critical operations
-		int m_lock;
-		// Special flag for failed negotiations
+		// Special flag for failed negotiations and logout
 		int m_killserver;
 
 		// Launch dialog

@@ -79,8 +79,6 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	QFrame *frame;
 	QHBoxLayout *hbox_frame;
 
-	KGGZDEBUGF("KGGZConnect::KGGZConnect()\n");
-
 	m_input = NULL;
 	m_meta = NULL;
 	m_sock = NULL;
@@ -93,8 +91,8 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 	m_pane = new QWidget(this);
 
 	caption = new KGGZCaption(i18n("Connection"),
-		i18n("Select your favorite connection profile\n"
-		"and connect to a game server."), this);
+		i18n("Select your favorite connection profile\nand connect to a game server."),
+		this);
 
 	label_host = new QLabel(i18n("Server host:"), m_pane);
 	label_port = new QLabel(i18n("Server port:"), m_pane);
@@ -207,15 +205,12 @@ KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
 /* Destructor */
 KGGZConnect::~KGGZConnect()
 {
-	KGGZDEBUGF("KGGZConnect::~KGGZConnect()\n");
 }
 
 void KGGZConnect::slotSaveProfile()
 {
 	GGZCoreConfio *config;
 	const char *current;
-
-	KGGZDEBUGF("KGGZConnect::slotSaveProfile()\n");
 
 	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 
@@ -243,8 +238,6 @@ void KGGZConnect::slotLoadProfile(int profile)
 	char *password = NULL;
 	int type;
 	const char *listentry = NULL;
-
-	KGGZDEBUGF("KGGZConnect::slotLoadProfile()\n");
 
 	if((profile != -1) && (!m_nosafe))
 		slotSaveProfile();
@@ -335,7 +328,8 @@ void KGGZConnect::slotAccept()
 	if(input_host->text() != i18n("Automatic"))
 	{
 		close();
-		emit signalConnect(input_host->text().latin1(), atoi(input_port->text().latin1()), input_name->text().latin1(), input_password->text().latin1(), m_loginmode);
+		emit signalConnect(input_host->text().latin1(), atoi(input_port->text().latin1()),
+			input_name->text().latin1(), input_password->text().latin1(), m_loginmode);
 	}
 	else
 	{
@@ -406,8 +400,6 @@ void KGGZConnect::slotProfileDelete()
 
 void KGGZConnect::slotProfileProcess(const char *identifier)
 {
-	KGGZDEBUGF("KGGZConnect::slotProfileProcess()\n");
-
 	// Save current profile
 	slotSaveProfile();
 
@@ -438,8 +430,6 @@ void KGGZConnect::modifyServerList(const char *server, int mode)
 	char **list2 = NULL;
 	int i;
 	int number;
-
-	KGGZDEBUGF("KGGZConnect::modifyServerList(%s, %i)\n", server, mode);
 
 	config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")).latin1(), GGZCoreConfio::readwrite | GGZCoreConfio::create);
 

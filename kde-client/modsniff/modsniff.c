@@ -2,13 +2,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "modsniff.h"
 
-int handle = -1;
-GGZModuleEntry *list = NULL;
-int listcount = 0;
-char *modulefile = NULL;
+static int handle = -1;
+static GGZModuleEntry *list = NULL;
+static int listcount = 0;
+static char *modulefile = NULL;
 
 /* Prototypes */
 char *modsniff_moduletest(const char *directory);
@@ -52,7 +53,6 @@ int modsniff_init(void)
 		printf("ERROR: Couldn't open configuration file: %s.\n", modulefile);
 		return -1;
 	}
-	printf("Initialized with %s\n", modulefile);
 
 	return 0;
 }
@@ -70,8 +70,7 @@ GGZModuleEntry *modsniff_list(void)
 	list = NULL;
 	listcount = 0;
 
-printf("modsniff: get list\n");	
-	ret = ggz_conf_read_list(handle, "Games", "*GameList*", &modulecount, &modulelist);
+	ret = ggz_conf_read_list(handle, "Games", "*Engines*", &modulecount, &modulelist);
 	if(ret == -1)
 	{
 		printf("ERROR: Couldn't read games list.\n");
@@ -89,23 +88,19 @@ printf("modsniff: get list\n");
 			list = (GGZModuleEntry*)realloc(list, sizeof(GGZModuleEntry) * (listcount + 1));
 			list[listcount].name = NULL;
 			list[listcount].frontend = NULL;
-			list[listcount - 1].name = (char*)malloc(strlen(modulelist[i]) + 1);
-			list[listcount - 1].frontend = (char*)malloc(strlen(fe) + 1);
-			strcpy(list[listcount - 1].name, modulelist[i]);
-			strcpy(list[listcount - 1].frontend, fe);
+			list[listcount - 1].name = strdup(modulelist[i]);
+			list[listcount - 1].frontend = strdup(fe);
 		}
 		for(j = 0; j < fecount; j++)
-			free(felist[j]);
-		free(felist);
+			ggz_free(felist[j]);
+		ggz_free(felist);
 	}
 
-printf("modsniff: got list\n");
-	
 	if(modulelist)
 	{
 		for(i = 0; i < modulecount; i++)
-			if(modulelist[i]) free(modulelist[i]);
-		free(modulelist);
+			if(modulelist[i]) ggz_free(modulelist[i]);
+		ggz_free(modulelist);
 	}
 	
 	return list;
@@ -118,8 +113,6 @@ GGZModuleEntry *modsniff_merge(GGZModuleEntry *orig)
 	if(handle == -1) return NULL;
 	if(!list) return NULL;
 
-printf("modsniff: merge\n");
-	
 	j = 0;
 	while((orig) && (orig[j].name))
 	{
@@ -129,10 +122,7 @@ printf("modsniff: merge\n");
 				k = j;
 				free(list[i].name);
 				free(list[i].frontend);
-				/*free(list[i]);*/
 				list[i] = list[listcount - 1];
-				/*list[i].name = list[listcount - 1].name;
-				list[i].frontend = list[listcount - 1].frontend;*/
 				list[listcount - 1].name = NULL;
 				list[listcount - 1].frontend = NULL;
 				listcount--;

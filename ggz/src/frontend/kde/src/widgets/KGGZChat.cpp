@@ -513,7 +513,6 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 		KProcess *proc = new KProcess();
 		*proc << "say" << msg.latin1();
 		proc->start();
-		KGGZDEBUG("TTS: said '%s'\n", msg.latin1());
 	}
 
 	KGGZDEBUG("Receiving: %s (%i)\n", msg.latin1(), mode);

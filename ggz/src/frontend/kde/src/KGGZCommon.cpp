@@ -118,7 +118,6 @@ int KGGZCommon::findProcess(const char *process)
 	KGGZDEBUG("findProcess: %s\n", process); 
     d = opendir("/proc/");
     if(d == NULL) return -1;
-	KGGZDEBUG("let's go...\n");
     ret = 0;
     sprintf(bprocess, "(%s)", process);
     while((!ret) && (e = readdir(d)))
@@ -148,16 +147,12 @@ int KGGZCommon::launchProcess(const char* process, char* processpath)
 	int counter;
 
 	KGGZDEBUG("Starting process %s...\n", process);
-	if(findProcess(process) > 0)
-	{
-		KGGZDEBUG("Process %s already running!\n", process);
-		return -2;
-	}
-	KGGZDEBUG("Forking...\n");
+	if(findProcess(process) > 0) return -2;
 	result = fork();
 	if(result < 0) /* external validation */
 	{
 		KGGZDEBUG("Undefined error!\n");
+		return -1;
 	}
 	else if(result == 0)
 	{
@@ -183,7 +178,6 @@ int KGGZCommon::launchProcess(const char* process, char* processpath)
 		}
 		KGGZDEBUG("Ok.\n");
 	}
-	KGGZDEBUG("Return: %i\n", result);
 	return result;
 }
 

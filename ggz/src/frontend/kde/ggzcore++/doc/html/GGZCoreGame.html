@@ -21,17 +21,25 @@
 <TR><TH><A HREF="full-list-GGZCoreGame.html">List of all Methods</A></TH></TR>
 	</TABLE>
 	</TD>
-<TD align="right"><TABLE BORDER="0"><TR><TD><small><A HREF="index-long.html">Annotated List</small></TD></TR>
-<TR><TD><small><A HREF="header-list.html">Files</small></TD></TR>
-<TR><TD><small><A HREF="all-globals.html">Globals</small></TD></TR>
-<TR><TD><small><A HREF="hier.html">Hierarchy</small></TD></TR>
-<TR><TD><small><A HREF="index.html">Index</small></TD></TR>
+<TD align="right"><TABLE BORDER="0"><TR><TD><small><A HREF="index-long.html">Annotated List</A></small></TD></TR>
+<TR><TD><small><A HREF="header-list.html">Files</A></small></TD></TR>
+<TR><TD><small><A HREF="all-globals.html">Globals</A></small></TD></TR>
+<TR><TD><small><A HREF="hier.html">Hierarchy</A></small></TD></TR>
+<TR><TD><small><A HREF="index.html">Index</A></small></TD></TR>
 </TABLE></TD></TR></TABLE>
-<h4>Public Types</h4><ul><LI>enum <A HREF="#ref1"> GGZCoreGameEvent</A> {launched, launchfail, negotiated, negotiatefail, data, over, ioerror, protoerror }
+<h4>Public Types</h4><ul><LI>enum <A HREF="#ref1">GGZCoreGameEvent</A> {			launched,
+			launchfail,
+			negotiated,
+			negotiatefail,
+			data,
+			over,
+			ioerror,
+			protoerror
+		}
 </LI>
 </ul><h4>Public Methods</h4><ul><LI>&nbsp;<b><A HREF="#ref2">GGZCoreGame</A></b> () 
 </LI>
-<LI>~&nbsp;<b><A HREF="#ref3">GGZCoreGame</A></b> () 
+<LI>&nbsp;<b><A HREF="#ref3">~GGZCoreGame</A></b> () 
 </LI>
 <LI>int &nbsp;<b><A HREF="#ref4">addHook</A></b> (const GGZCoreGameEvent event, const GGZHookFunc func) 
 </LI>
@@ -59,45 +67,70 @@
 </LI>
 <LI>int &nbsp;<b><A HREF="#ref16">dataWrite</A></b> () 
 </LI>
-</ul><HR><A NAME="longdesc"><H2>Detailed Description</H2><p>
+</ul><HR><H2><A NAME="longdesc">Detailed Description</A></H2><p>
 </p>
 <p> Every game is represented by an object of this type.
 </p>
 <p></p>
-<A NAME="%2520GGZCoreGameEvent"></A><A NAME="ref1"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>enum <underline> GGZCoreGameEvent</underline> {launched, launchfail, negotiated, negotiatefail, data, over, ioerror, protoerror }
-</strong></td></tr></table><p></p><A NAME="GGZCoreGame"></A><A NAME="ref2"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>&nbsp;<underline>GGZCoreGame</underline> ()
-</strong></td></tr></table><p></p><p> Constructor </p>
-<A NAME="GGZCoreGame"></A><A NAME="ref3"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>~&nbsp;<underline>GGZCoreGame</underline> ()
-</strong></td></tr></table><p></p><p> Destructor </p>
-<A NAME="addHook"></A><A NAME="ref4"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>addHook</underline> (const GGZCoreGameEvent event, const GGZHookFunc func)
-</strong></td></tr></table><p></p><p> Add a simple callback to the game. </p>
-<A NAME="addHook"></A><A NAME="ref5"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>addHook</underline> (const GGZCoreGameEvent event, const GGZHookFunc func, void* data)
-</strong></td></tr></table><p></p><p> Add a callback with arguments. </p>
-<A NAME="removeHook"></A><A NAME="ref6"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>removeHook</underline> (const GGZCoreGameEvent event, const GGZHookFunc func)
-</strong></td></tr></table><p></p><p> Remove a callback from the game. </p>
-<A NAME="removeHook"></A><A NAME="ref7"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>removeHook</underline> (const GGZCoreGameEvent event, const unsigned int id)
-</strong></td></tr></table><p></p><p> Overloaded: Remove a callback on its id. </p>
-<A NAME="init"></A><A NAME="ref8"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>init</underline> (GGZModule* module)
-</strong></td></tr></table><p></p><p> Initialize this game. </p>
-<A NAME="fd"></A><A NAME="ref9"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>fd</underline> ()
-</strong></td></tr></table><p></p><p> Return the specific file descriptor. </p>
-<A NAME="module"></A><A NAME="ref10"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>GGZModule* &nbsp;<underline>module</underline> ()
-</strong></td></tr></table><p></p><p> Return the associated module. </p>
-<A NAME="launch"></A><A NAME="ref11"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>launch</underline> ()
-</strong></td></tr></table><p></p><p> Launch this game. </p>
-<A NAME="join"></A><A NAME="ref12"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>join</underline> ()
-</strong></td></tr></table><p></p><p> Join this game. </p>
-<A NAME="dataSend"></A><A NAME="ref13"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>dataSend</underline> (char* buffer)
-</strong></td></tr></table><p></p><p> Send other data. </p>
-<A NAME="dataPending"></A><A NAME="ref14"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>dataPending</underline> ()
-</strong></td></tr></table><p></p><p> Control data flow. </p>
-<A NAME="dataRead"></A><A NAME="ref15"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>dataRead</underline> ()
-</strong></td></tr></table><p></p><p> Returns whether data is read. </p>
-<A NAME="dataWrite"></A><A NAME="ref16"></A><table width="100%"><tr bgcolor="#eeeeee"><td><strong>int &nbsp;<underline>dataWrite</underline> ()
-</strong></td></tr></table><p></p><p> Return whether data is written. </p>
+<A NAME="GGZCoreGameEvent"></A><A NAME="ref1"></A><table width="100%"><tr bgcolor="#eeeeee"><td>enum <strong>GGZCoreGameEvent</strong> {			launched,
+			launchfail,
+			negotiated,
+			negotiatefail,
+			data,
+			over,
+			ioerror,
+			protoerror
+		}
+</td><td align="right"><h3><strong>GGZCoreGameEvent</strong></h3></td></tr></table><p></p><p>
+ Events which can occur during a game. </p>
+<A NAME="GGZCoreGame"></A><A NAME="ref2"></A><table width="100%"><tr bgcolor="#eeeeee"><td>&nbsp;<strong>GGZCoreGame</strong> ()
+<br></td><td align="right"><h3><strong>GGZCoreGame</strong></h3></td></tr></table><p></p><p>
+ Constructor </p>
+<A NAME="~GGZCoreGame"></A><A NAME="ref3"></A><table width="100%"><tr bgcolor="#eeeeee"><td>&nbsp;<strong>~GGZCoreGame</strong> ()
+<br></td><td align="right"><h3><strong>~GGZCoreGame</strong></h3></td></tr></table><p></p><p>
+ Destructor </p>
+<A NAME="addHook"></A><A NAME="ref4"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>addHook</strong> (const GGZCoreGameEvent event, const GGZHookFunc func)
+<br></td><td align="right"><h3><strong>addHook</strong></h3></td></tr></table><p></p><p>
+ Add a simple callback to the game. </p>
+<A NAME="addHook"></A><A NAME="ref5"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>addHook</strong> (const GGZCoreGameEvent event, const GGZHookFunc func, void* data)
+<br></td><td align="right"><h3><strong>addHook</strong></h3></td></tr></table><p></p><p>
+ Add a callback with arguments. </p>
+<A NAME="removeHook"></A><A NAME="ref6"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>removeHook</strong> (const GGZCoreGameEvent event, const GGZHookFunc func)
+<br></td><td align="right"><h3><strong>removeHook</strong></h3></td></tr></table><p></p><p>
+ Remove a callback from the game. </p>
+<A NAME="removeHook"></A><A NAME="ref7"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>removeHook</strong> (const GGZCoreGameEvent event, const unsigned int id)
+<br></td><td align="right"><h3><strong>removeHook</strong></h3></td></tr></table><p></p><p>
+ Overloaded: Remove a callback on its id. </p>
+<A NAME="init"></A><A NAME="ref8"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>init</strong> (GGZModule* module)
+<br></td><td align="right"><h3><strong>init</strong></h3></td></tr></table><p></p><p>
+ Initialize this game. </p>
+<A NAME="fd"></A><A NAME="ref9"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>fd</strong> ()
+<br></td><td align="right"><h3><strong>fd</strong></h3></td></tr></table><p></p><p>
+ Return the specific file descriptor. </p>
+<A NAME="module"></A><A NAME="ref10"></A><table width="100%"><tr bgcolor="#eeeeee"><td>GGZModule* &nbsp;<strong>module</strong> ()
+<br></td><td align="right"><h3><strong>module</strong></h3></td></tr></table><p></p><p>
+ Return the associated module. </p>
+<A NAME="launch"></A><A NAME="ref11"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>launch</strong> ()
+<br></td><td align="right"><h3><strong>launch</strong></h3></td></tr></table><p></p><p>
+ Launch this game. </p>
+<A NAME="join"></A><A NAME="ref12"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>join</strong> ()
+<br></td><td align="right"><h3><strong>join</strong></h3></td></tr></table><p></p><p>
+ Join this game. </p>
+<A NAME="dataSend"></A><A NAME="ref13"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>dataSend</strong> (char* buffer)
+<br></td><td align="right"><h3><strong>dataSend</strong></h3></td></tr></table><p></p><p>
+ Send other data. </p>
+<A NAME="dataPending"></A><A NAME="ref14"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>dataPending</strong> ()
+<br></td><td align="right"><h3><strong>dataPending</strong></h3></td></tr></table><p></p><p>
+ Control data flow. </p>
+<A NAME="dataRead"></A><A NAME="ref15"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>dataRead</strong> ()
+<br></td><td align="right"><h3><strong>dataRead</strong></h3></td></tr></table><p></p><p>
+ Returns whether data is read. </p>
+<A NAME="dataWrite"></A><A NAME="ref16"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>dataWrite</strong> ()
+<br></td><td align="right"><h3><strong>dataWrite</strong></h3></td></tr></table><p></p><p>
+ Return whether data is written. </p>
 <HR>
 	<table>
-	<tr><td><small>Generated by: comtec@localhost.localdomain on Wed Apr 18 19:49:08 2001, using kdoc 2.0a40.</small></td></tr>
+	<tr><td><small>Generated by: josef on athlon500 on Tue Mar 19 23:18:22 2002, using kdoc 2.0a53.</small></td></tr>
 	</table>
 </BODY>
 </HTML>

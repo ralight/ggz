@@ -1,0 +1,139 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2002-03-20 16:45+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../shadowbridge/shadowcontainer.cpp:47
+msgid "Active client:"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:45
+msgid "Add GGZ game client"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:44
+msgid "Add game client"
+msgstr ""
+
+#: ../../shadowbridge/shadowclient.cpp:38
+msgid "Application command line:"
+msgstr ""
+
+#: ../../shadowbridge/main.cpp:26 ../../shadowbridge/main.cpp:45
+msgid "Author"
+msgstr ""
+
+#: ../../shadowbridge/shadowclient.cpp:47
+#: ../../shadowbridge/shadowclientggz.cpp:48
+msgid "Cancel"
+msgstr ""
+
+#: ../../shadowbridge/shadownet.cpp:89
+msgid "Couldn't create socket pair."
+msgstr ""
+
+#: ../../shadowbridge/shadownet.cpp:96
+msgid "Couldn't fork,"
+msgstr ""
+
+#: ../../shadowbridge/shadowcontainer.cpp:45
+msgid "Data"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:56
+msgid "Debug"
+msgstr ""
+
+#: ../../shadowbridge/main.cpp:18 ../../shadowbridge/main.cpp:37
+msgid ""
+"Drop-in fake game client to record\n"
+"and distribute game events."
+msgstr ""
+
+#: ../../shadowbridge/shadowcontainer.cpp:44
+msgid "Event"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:55
+msgid "File"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:53
+msgid "Force synchronizing"
+msgstr ""
+
+#: ../../shadowbridge/main.cpp:16 ../../shadowbridge/main.cpp:35
+msgid "GGZ Shadow Bridge"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:57
+msgid "Help"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:107
+msgid "In Test"
+msgstr ""
+
+#: ../../shadowbridge/shadowclient.cpp:39
+msgid "Inbound socket:"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:51
+msgid "Incoming message"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:126
+msgid "Net Error!"
+msgstr ""
+
+#: ../../shadowbridge/shadowclient.cpp:46
+#: ../../shadowbridge/shadowclientggz.cpp:47
+msgid "OK"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:110
+msgid "Out Test"
+msgstr ""
+
+#: ../../shadowbridge/shadowclient.cpp:40
+msgid "Outbound socket:"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:52
+msgid "Outgoing message"
+msgstr ""
+
+#: ../../shadowbridge/shadowclientggz.cpp:50
+msgid "Please select a GGZ game client:"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:48
+msgid "Quit"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:59
+msgid "Ready."
+msgstr ""
+
+#: ../../shadowbridge/main.cpp:22 ../../shadowbridge/main.cpp:41
+msgid "ShadowBridge"
+msgstr ""
+
+#: ../../shadowbridge/shadowapp.cpp:46
+msgid "Start"
+msgstr ""
+
+#: ../../shadowbridge/shadowcontainer.cpp:43
+msgid "Time"
+msgstr ""

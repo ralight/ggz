@@ -1,13 +1,32 @@
+// GGZap - GGZ quick start application for the KDE panel
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+// GGZap includes
 #include "ggzap_handler.h"
 
+// GGZCore++ includes
 #include "GGZCoreModule.h"
 #include "GGZCoreGametype.h"
 #include "GGZCore.h"
 #include "GGZCoreConfio.h"
 
-#include <string.h>
-#include <stdlib.h>
-
+// System includes
+#include <cstring>
+#include <cstdlib>
 #include <iostream>
 
 using namespace std;
@@ -67,34 +86,40 @@ void GGZapHandler::init()
 
 void GGZapHandler::shutdown()
 {
-	if(m_zapuser)
-	{
-		free(m_zapuser);
-		m_zapuser = NULL;
-	}
-	if(m_server)
-	{
-		m_server->logout();
-		process();
-	}
 	if(m_game)
 	{
 		detachGameCallbacks();
 		delete m_game;
 		m_game = NULL;
 	}
+
 	if(m_room)
 	{
 		detachRoomCallbacks();
 		delete m_room;
 		m_room = NULL;
 	}
+
+	if(m_server)
+	{
+		m_server->logout();
+		m_server->disconnect();
+		process();
+	}
+
 	if(m_server)
 	{
 		detachServerCallbacks();
 		delete m_server;
 		m_server = NULL;
 	}
+
+	if(m_zapuser)
+	{
+		free(m_zapuser);
+		m_zapuser = NULL;
+	}
+
 	m_modulename = NULL;
 	m_frontendtype = NULL;
 }
@@ -115,7 +140,6 @@ void GGZapHandler::process()
 	if(m_server->dataPending()) m_server->dataRead();
 	if(!m_game) return;
 	if(m_game->dataPending()) m_game->dataRead();
-//cout << "." << endl;
 }
 
 GGZHookReturn GGZapHandler::hookServer(unsigned int id, void *event_data, void *user_data)
@@ -154,6 +178,8 @@ cout << "game " << id << endl;
 void GGZapHandler::hookServerActive(unsigned int id)
 {
 	int join;
+
+cout << "hookServerActive!" << endl;
 
 	switch(id)
 	{
@@ -242,6 +268,8 @@ void GGZapHandler::hookRoomActive(unsigned int id, void *data)
 	int join;
 	int ret;
 
+cout << "hookRoomActive!" << endl;
+
 	switch(id)
 	{
 		case GGZCoreRoom::playerlist:
@@ -316,6 +344,7 @@ cout << "##### tablejoinfail" << endl;
 
 void GGZapHandler::hookGameActive(unsigned int id, void *data)
 {
+cout << "hookGameActive!" << endl;
 	switch(id)
 	{
 		case GGZCoreGame::data:

@@ -38,7 +38,7 @@ KModSniff::KModSniff(QWidget *parent, char *name)
 	QLabel *label;
 	QPushButton *ok;
 
-	ok = new QPushButton("Exit", this);
+	ok = new QPushButton(i18n("Exit"), this);
 
 	m_search = new QPushButton(i18n("Find games"), this);
 
@@ -59,7 +59,7 @@ KModSniff::KModSniff(QWidget *parent, char *name)
 	connect(ok, SIGNAL(clicked()), SLOT(close()));
 	connect(m_search, SIGNAL(clicked()), SLOT(slotSearch()));
 
-	setFixedSize(300, 200);
+	resize(400, 200);
 	setCaption("GGZ ModSniffer");
 	show();
 }
@@ -90,7 +90,7 @@ void KModSniff::slotSearch()
 	list = modsniff_merge(installed);
 
 	i = 0;
-	m_ed->setText("The following games have been added:");
+	m_ed->setText(i18n("The following games have been added:"));
 	while((list) && (list[i].name))
 	{
 		m_ed->append(QString("%1 (%2)").arg(list[i].name).arg(list[i].frontend));
@@ -168,30 +168,6 @@ GGZModuleEntry *KModSniff::installedModules()
 		mkdir(moddir, DIRPERM);
 	}
 
-	// Won't work :(
-	/*dp = opendir(moddir);
-	if(dp)
-	{
-		while(ep = readdir(dp))
-		{
-			if(!fnmatch("*.desktop", ep->d_name, FNM_NOESCAPE))
-			{
-				cout << "found installed: " << ep->d_name << endl;
-				bak = list;
-				listcount++;
-				list = (char**)malloc(listcount + 1);
-				for(int i = 0; i < listcount - 1; i++)
-					list[i] = bak[i];
-				list[listcount - 1] = strdup(ep->d_name);
-				if(bak) free(bak);
-
-				for(int i = 0; i < listcount; i++)
-					cout << "list " << list[i] << endl;
-			}
-		}
-		closedir(dp);
-	}*/
-
 	for(int k = 0; k < 2; k++)
 	{
 		i = 0;
@@ -223,7 +199,6 @@ GGZModuleEntry *KModSniff::installedModules()
 									buffer[strlen(buffer) - 1] = 0;
 									if(strncmp(buffer, "Exec", 4) == 0)
 									{
-cout << "debug: token2 (" << buffer << ") in " << modfile << endl;
 										token2 = strtok(buffer, " ");
 										while(token2)
 										{
@@ -234,11 +209,8 @@ cout << "debug: token2 (" << buffer << ") in " << modfile << endl;
 								}
 							}
 							else frontend = "unknown";
-cout << "debug: fe is " << frontend << endl;
 							list[i].name =(char*)malloc(strlen(token) + 1);
 							strcpy(list[i].name, strdup(token));
-							//list[i].frontend = (char*)malloc(strlen(frontend) + 1);
-							//strcpy(list[i].frontend, frontend);
 							list[i].frontend = frontend;
 						}
 						while(token) token = strtok(NULL, ".");
@@ -255,9 +227,6 @@ cout << "debug: fe is " << frontend << endl;
 			list[listcount].frontend = NULL;
 		}
 	}
-
-	//for(int i = 0; i < listcount; i++)
-	//	cout << "  LIST " << list[i] << endl;
 
 	return list;
 }

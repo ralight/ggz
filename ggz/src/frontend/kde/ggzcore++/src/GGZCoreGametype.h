@@ -24,45 +24,65 @@
 class GGZCoreGametype
 {
 	public:
-		/** Constructor */
+		/**
+		 * Constructor */
 		GGZCoreGametype();
-		/** Overloaded. */
+		/**
+		 * Overloaded. */
 		GGZCoreGametype(GGZGameType *gametype);
-		/** Destructor */
+		/**
+		 * Destructor */
 		~GGZCoreGametype();
 
-		/** The unique name of this game type. */
+		/**
+		 * The unique name of this game type. */
 		char* name();
-		/** Protocol version */
+		/**
+		 * Protocol version */
 		char* protocolVersion();
-		/** Protocol engine */
+		/**
+		 * Protocol engine */
 		char *protocolEngine();
-		/** Game version */
+		/**
+		 * Game version */
 		char* version();
-		/** Author of this game. */
+		/**
+		 * Author of this game. */
 		char* author();
-		/** Url to the game homepage*/
+		/**
+		 * Url to the game homepage*/
 		char* url();
-		/** Short description on the game. */
+		/**
+		 * Short description on the game. */
 		char* description();
-		/** Game category */
+		/**
+		 * Game category */
 		char* category();
-		/** Game rating */
+		/**
+		 * Game rating */
 		char* rating();
 
-		/** Return the maximum number of players. */
+		/**
+		 * Return the maximum number of players. */
 		int maxPlayers();
-		/** Return the maximum number of bots. */
+		/**
+		 * Return the maximum number of bots. */
 		int maxBots();
-		/** Return the maximum number of spectators */
+		/**
+		 * Return the maximum number of spectators */
 		int maxSpectators();
-		/** Check whether given number of players is allowed. */
+		/**
+		 * Check whether given number of players is allowed. */
 		int isPlayersValid(unsigned int number);
-		/** Check whether given number of bots is allowed. */
+		/**
+		 * Check whether given number of bots is allowed. */
 		int isBotsValid(unsigned int number);
-		/** Check whether a given number of spectators is allowed */
+		/**
+		 * Check whether a given number of spectators is allowed */
 		int isSpectatorsValid(unsigned int number);
 
+		/**
+		 * Retrieve the wrapped ggzcore object for this game type. */
 		GGZGameType *gametype();
 
 	private:
@@ -70,3 +90,4 @@ class GGZCoreGametype
 };
 
 #endif
+

@@ -11,7 +11,7 @@
 #include <dlfcn.h>
 
 typedef KCMGGZPane* (*panefunc)(QWidget *parent = NULL, const char *name = NULL);
-#define PATH "/usr/local/kde/lib"
+#define PATH "/usr/local/lib"
 
 KCMGGZ::KCMGGZ(QWidget *parent, const char *name)
 : KCModule(parent, name)

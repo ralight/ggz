@@ -39,21 +39,21 @@
 #include "KGGZAbout.h"
 
 // KDE includes
-#include <ktmainwindow.h>
-#include <kmenubar.h>
-#include <kpopupmenu.h>
-#include <ksimpleconfig.h>
+#include <kmainwindow.h>
 
 // Qt includes
 #include <qiconset.h>
 
+// Forward declarations
+class KPopupMenu;
+
 // This class represents the visible main window of KGGZ.
-class KGGZBase : public KTMainWindow
+class KGGZBase : public KMainWindow
 {
 	Q_OBJECT
 	public:
 		// Constructor
-		KGGZBase(char *name = NULL);
+		KGGZBase();
 		// Destructor
 		~KGGZBase();
 
@@ -65,7 +65,7 @@ class KGGZBase : public KTMainWindow
 		// Receive a dis/enable event from the KGGZ object
 		void slotMenuSignal(int signal);
 		// Receive a room to be added to the menu
-		void slotRoom(char *roomname, char *category);
+		void slotRoom(const char *roomname, const char *category);
 		// Receive the caption dynamically from KGGZ
 		void slotCaption(const char *caption);
 		// Display the state in the status bar
@@ -123,8 +123,6 @@ class KGGZBase : public KTMainWindow
 			MENU_HELP
 		};
 
-		// The menu bar
-		KMenuBar *m_menu;
 		// The KGGZ object
 		KGGZ *kggz;
 		// "About GGZ" dialog
@@ -133,8 +131,7 @@ class KGGZBase : public KTMainWindow
 		KPopupMenu *m_menu_client, *m_menu_rooms, *m_menu_ggz, *m_menu_game, *m_menu_preferences;
 		// The number of available rooms on a server
 		int m_rooms;
-		// KDE specific Configuration
-		KSimpleConfig *konfig;
 };
 
 #endif
+

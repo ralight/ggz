@@ -42,36 +42,33 @@
 #include <kmessagebox.h>
 #include <ksimpleconfig.h>
 #include <kapp.h>
+#include <kpopupmenu.h>
+#include <kmenubar.h>
 
-KGGZBase::KGGZBase(char *name)
-: KTMainWindow(name)
+KGGZBase::KGGZBase()
+: KMainWindow()
 {
-	KPopupMenu *menu_help;
 	int x, y, width, height;
-
-	KGGZDEBUGF("KGGZBase::KGGZBase()\n");
 
 	m_about = NULL;
 	m_rooms = 0;
 
-	konfig = new KSimpleConfig("kggz");
-	konfig->setGroup("kggzbase");
-	x = konfig->readNumEntry("x");
-	y = konfig->readNumEntry("y");
-	width = konfig->readNumEntry("width");
-	height = konfig->readNumEntry("height");
+	KSimpleConfig konfig("kggzrc");
+	konfig.setGroup("kggzbase");
+	x = konfig.readNumEntry("x");
+	y = konfig.readNumEntry("y");
+	width = konfig.readNumEntry("width");
+	height = konfig.readNumEntry("height");
 
-	m_menu = new KMenuBar(this);
-	enableStatusBar();
 	statusBar()->insertItem(i18n("  Not connected  "), 1);
 	statusBar()->insertItem(i18n("  Loading...  "), 2);
 	statusBar()->insertItem(i18n("  No room selected  "), 3);
 
 	kggz = new KGGZ(this, "kggz");
 
- 	m_menu_ggz = new KPopupMenu(this, "menu_ggz");
-  	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_CONNECT), i18n("&Connect"), MENU_GGZ_CONNECT);
-  	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_DISCONNECT), i18n("&Disconnect"), MENU_GGZ_DISCONNECT);
+	m_menu_ggz = new KPopupMenu(this, "menu_ggz");
+	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_CONNECT), i18n("&Connect"), MENU_GGZ_CONNECT);
+	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_DISCONNECT), i18n("&Disconnect"), MENU_GGZ_DISCONNECT);
 	m_menu_ggz->insertSeparator();
 	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_STARTSERVER), i18n("Start server"), MENU_GGZ_STARTSERVER);
 	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_STOPSERVER), i18n("Stop server"), MENU_GGZ_STOPSERVER);
@@ -93,9 +90,7 @@ KGGZBase::KGGZBase(char *name)
 	m_menu_client->setItemEnabled(MENU_CLIENT_TABLES, FALSE);
 	m_menu_client->setItemEnabled(MENU_CLIENT_PLAYERS, FALSE);
 
- 	m_menu_rooms = new KPopupMenu(this, "menu_rooms");
-	m_menu_rooms->setEnabled(FALSE);
-	//m_menu_rooms->hide();
+	m_menu_rooms = new KPopupMenu(this, "menu_rooms");
 
 	m_menu_game = new KPopupMenu(this, "menu_games");
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_INFO), i18n("&Information"), MENU_GAME_INFO);
@@ -103,33 +98,25 @@ KGGZBase::KGGZBase(char *name)
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_LAUNCH), i18n("&Launch new game"), MENU_GAME_LAUNCH);
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_JOIN), i18n("&Join game"), MENU_GAME_JOIN);
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_CANCEL), i18n("&Cancel game"), MENU_GAME_CANCEL);
-	//m_menu_game->insertItem(kggzGetIcon(MENU_GAME_UPDATE), i18n("&Update from FTP"), MENU_GAME_UPDATE);
-	//m_menu_game->insertItem(kggzGetIcon(MENU_GAME_NEWS), i18n("&GGZ News"), MENU_GAME_NEWS);
 	m_menu_game->insertSeparator();
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_GRUBBY), i18n("&Grubby"), MENU_GAME_GRUBBY);
-	m_menu_game->setEnabled(FALSE);
-	//m_menu_game->hide();
 	m_menu_game->setItemEnabled(MENU_GAME_CANCEL, FALSE);
 
 	m_menu_preferences = new KPopupMenu(this, "menu_preferences");
 	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_SETTINGS), i18n("Se&ttings"), MENU_PREFERENCES_SETTINGS);
-	//m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_PLAYERINFO), i18n("&Player information"), MENU_PREFERENCES_PLAYERINFO);
-	//m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_HOSTS), i18n("Ga&me servers"), MENU_PREFERENCES_HOSTS);
-	//m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_FTP), i18n("&FTP servers"), MENU_PREFERENCES_FTP);
-	//m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_GAMES), i18n("&Games"), MENU_PREFERENCES_GAMES);
-	//m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_THEMES), i18n("Th&emes"), MENU_PREFERENCES_THEMES);
-	//m_menu_preferences->insertSeparator();
-	//m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_PREFERENCES), i18n("&All Preferences"), MENU_PREFERENCES_PREFERENCES);
 
-	menu_help = helpMenu(NULL, FALSE);
-	menu_help->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/ggz.png"), i18n("About the GGZ Gaming Zone"), 99, 5);
-	menu_help->connectItem(99, this, SLOT(slotAboutGGZ()));
-	KGGZDEBUG("GGZ Icon at: " KGGZ_DIRECTORY "\n");
+	helpMenu()->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/ggz.png"), i18n("About the GGZ Gaming Zone"), 99, 5);
+	helpMenu()->connectItem(99, this, SLOT(slotAboutGGZ()));
 
-	m_menu->insertItem(i18n("GG&Z"), m_menu_ggz, MENU_GGZ, 0);
-	m_menu->insertItem(i18n("&Client"), m_menu_client, MENU_CLIENT, 1);
-	m_menu->insertItem(i18n("&Preferences"), m_menu_preferences, MENU_PREFERENCES, 4);
-	m_menu->insertItem(i18n("&Help"), menu_help, MENU_HELP, 5);
+	menuBar()->insertItem(i18n("GG&Z"), m_menu_ggz, MENU_GGZ);
+	menuBar()->insertItem(i18n("&Client"), m_menu_client, MENU_CLIENT);
+	menuBar()->insertItem(i18n("&Rooms"), m_menu_rooms, MENU_ROOMS);
+	menuBar()->insertItem(i18n("&Game"), m_menu_game, MENU_GAME);
+	menuBar()->insertItem(i18n("&Preferences"), m_menu_preferences, MENU_PREFERENCES);
+	menuBar()->insertItem(i18n("&Help"), helpMenu(), MENU_HELP);
+
+	menuBar()->setItemEnabled(MENU_ROOMS, false);
+	menuBar()->setItemEnabled(MENU_GAME, false);
 
 	connect(m_menu_ggz, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu_client, SIGNAL(activated(int)), SLOT(slotMenu(int)));
@@ -137,45 +124,29 @@ KGGZBase::KGGZBase(char *name)
 	connect(m_menu_game, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu_preferences, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(kggz, SIGNAL(signalMenu(int)), SLOT(slotMenuSignal(int)));
-	connect(kggz, SIGNAL(signalRoom(char*, char*)), SLOT(slotRoom(char*, char*)));
+	connect(kggz, SIGNAL(signalRoom(const char*, const char*)), SLOT(slotRoom(const char*, const char*)));
 	connect(kggz, SIGNAL(signalCaption(const char*)), SLOT(slotCaption(const char*)));
 	connect(kggz, SIGNAL(signalState(int)), SLOT(slotState(int)));
 	connect(kggz, SIGNAL(signalLocation(const char*)), SLOT(slotLocation(const char*)));
 
-	setView(kggz);
-	setCaption("KGGZ - [offline]");
-	// Resize at dummy size first, then apply settings
-	//setGeometry(200, 200, 200, 200);
-	//show();
-	//updateGeometry();
-	if(x || y || width || height)
-	{
-		KGGZDEBUG("Geometry Management: Session at (%i, %i) found\n", x, y);
-		setGeometry(x, y, width, height);
-	}
-	else
-	{
-		KGGZDEBUG("No session - first start: resize to (500, 400)!\n");
-		//resize(500, 400);
-		setGeometry(KApplication::desktop()->width() / 2 - 250, KApplication::desktop()->height() / 2 - 225, 500, 441);
-	}
+	setCentralWidget(kggz);
+	setCaption(i18n("offline"));
+	if(x || y || width || height) setGeometry(x, y, width, height);
+	else setGeometry(KApplication::desktop()->width() / 2 - 250, KApplication::desktop()->height() / 2 - 225, 500, 441);
 	show();
-	//updateGeometry();
 
 	kggz->menuView(KGGZ::VIEW_SPLASH);
 
 	statusBar()->changeItem(i18n("  Ready for connection.  "), 2);
-
-	KGGZDEBUGF("KGGZBase::KGGZBase() done\n");
 }
 
 KGGZBase::~KGGZBase()
 {
-	konfig->writeEntry("x", x());
-	konfig->writeEntry("y", y());
-	konfig->writeEntry("width", width());
-	konfig->writeEntry("height", height());
-	delete konfig;
+	KSimpleConfig konfig("kggzrc");
+	konfig.writeEntry("x", x());
+	konfig.writeEntry("y", y());
+	konfig.writeEntry("width", width());
+	konfig.writeEntry("height", height());
 }
 
 QIconSet KGGZBase::kggzGetIcon(int menuid)
@@ -260,8 +231,6 @@ QIconSet KGGZBase::kggzGetIcon(int menuid)
 
 void KGGZBase::slotAboutGGZ()
 {
-	KGGZDEBUGF("KGGZBase::slotAboutGGZ()\n");
-	KGGZDEBUG("About it... hm, it's pretty cool and open for everyone!\n");
 	if(!m_about) m_about = new KGGZAbout(NULL, "KGGZAbout");
 	m_about->show();
 }
@@ -269,9 +238,6 @@ void KGGZBase::slotAboutGGZ()
 void KGGZBase::slotMenu(int id)
 {
 	int ret;
-
-	KGGZDEBUGF("KGGZBase::slotMenu()\n");
-	KGGZDEBUG("got id: %i\n", id);
 
 	switch(id)
 	{
@@ -317,7 +283,6 @@ void KGGZBase::slotMenu(int id)
 			kggz->menuGameCancel();
 			break;
 		case MENU_GAME_GRUBBY:
-			//KGGZDEBUG("Aaaaargh.... ;)\n");
 			kggz->menuGrubby();
 			break;
 		case MENU_GAME_INFO:
@@ -330,7 +295,6 @@ void KGGZBase::slotMenu(int id)
 			kggz->menuView(KGGZ::VIEW_CHAT);
 			kggz->menuRoom(id - MENU_ROOMS_SLOTS);
 	}
-	KGGZDEBUGF("KGGZBase::slotMenu() ready\n");
 }
 
 void KGGZBase::slotMenuSignal(int signal)
@@ -338,33 +302,23 @@ void KGGZBase::slotMenuSignal(int signal)
 	switch(signal)
 	{
 		case KGGZ::MENUSIG_DISCONNECT:
-			for(int i = 0; i < m_rooms; i++) m_menu_rooms->removeItemAt(0);
+			for(int i = 0; i < m_rooms; i++)
+				m_menu_rooms->removeItemAt(0);
 			m_rooms = 0;
-			m_menu_rooms->setEnabled(FALSE);
 			m_menu_ggz->setItemEnabled(MENU_GGZ_CONNECT, TRUE);
 			m_menu_ggz->setItemEnabled(MENU_GGZ_DISCONNECT, FALSE);
 			m_menu_client->setItemEnabled(MENU_CLIENT_CHAT, FALSE);
 			m_menu_client->setItemEnabled(MENU_CLIENT_TABLES, FALSE);
 			m_menu_client->setItemEnabled(MENU_CLIENT_PLAYERS, FALSE);
-			m_menu_game->setEnabled(FALSE);
-			setCaption("KGGZ - [offline]");
-			//m_menu_game->hide();
-			//m_menu_rooms->hide();
-			m_menu->removeItem(MENU_GAME);
-			m_menu->removeItem(MENU_ROOMS);
+			menuBar()->setItemEnabled(MENU_ROOMS, false);
+			menuBar()->setItemEnabled(MENU_GAME, false);
+			setCaption(i18n("offline"));
 			break;
 		case KGGZ::MENUSIG_ROOMLIST:
-			m_menu_rooms->setEnabled(TRUE);
-			//m_menu_rooms->show();
-			m_menu->insertItem(i18n("&Rooms"), m_menu_rooms, MENU_ROOMS, 2);
+			menuBar()->setItemEnabled(MENU_ROOMS, true);
 			break;
 		case KGGZ::MENUSIG_ROOMENTER:
-			if(!m_menu_game->isEnabled())
-			{
-				m_menu_game->setEnabled(TRUE);
-				//m_menu_game->show();
-				m_menu->insertItem(i18n("&Game"), m_menu_game, MENU_GAME, 3);
-			}
+			menuBar()->setItemEnabled(MENU_GAME, true);
 			break;
 		case KGGZ::MENUSIG_LOGIN:
 			m_menu_client->setItemEnabled(MENU_CLIENT_CHAT, TRUE);
@@ -397,11 +351,15 @@ void KGGZBase::slotMenuSignal(int signal)
 	}
 }
 
-void KGGZBase::slotRoom(char *roomname, char *category)
+void KGGZBase::slotRoom(const char *roomname, const char *category)
 {
 	QString caption;
 
+#ifdef KGGZ_PATCH_C_AND_R
 	caption = QString("%1 (%2)").arg(roomname).arg(category);
+#else
+	caption = roomname;
+#endif
 	m_menu_rooms->insertItem(kggzGetIcon(MENU_ROOMS_SLOTS + m_rooms), caption, MENU_ROOMS_SLOTS + m_rooms);
 	m_rooms++;
 }

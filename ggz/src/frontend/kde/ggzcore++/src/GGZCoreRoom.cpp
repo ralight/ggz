@@ -39,18 +39,12 @@ GGZCoreRoom::GGZCoreRoom(GGZRoom* room)
 
 GGZCoreRoom::~GGZCoreRoom()
 {
-	GGZCOREDEBUG("GGZCORE++: ~GGZCoreRoom(): m_destructive is %i\n", m_destructive);
 	if(m_destructive)
 	{
 		GGZCOREDEBUG("GGZCORE++: ~GGZCoreRoom(): DESTROY!\n");
 		ggzcore_room_free(m_room);
 	}
-	if(m_register)
-	{
-		GGZCOREDEBUG("Unregister at: %i -> %i\n", m_register, *m_register);
-		*m_register = NULL;
-	}
-	GGZCOREDEBUG("GGZCORE++: ~GGZCoreRoom(): ready!\n");
+	if(m_register) *m_register = NULL;
 }
 
 int GGZCoreRoom::addHook(const GGZCoreRoomEvent event, const GGZHookFunc func)
@@ -106,7 +100,6 @@ GGZCoreGametype* GGZCoreRoom::gametype()
 	m_tmpgametype = ggzcore_room_get_gametype(m_room);
 	if(!m_gametype)
 	{
-		GGZCOREDEBUG("GGZCORE++: gametype(): create new gametype\n");
 		m_gametype = m_tmpgametype;
 		if(!m_gametype) GGZCOREDEBUG("isNull()!!!\n");
 		m_coregametype = new GGZCoreGametype(m_gametype);
@@ -120,7 +113,6 @@ GGZCoreGametype* GGZCoreRoom::gametype()
 			m_gametype = m_tmpgametype;
 			m_coregametype = new GGZCoreGametype(m_gametype);
 		}
-		else GGZCOREDEBUG("GGZCORE++: gametype(): same\n");
 	}
 	return m_coregametype;
 }
@@ -206,5 +198,5 @@ GGZRoom* GGZCoreRoom::room()
 void GGZCoreRoom::selfRegister(GGZCoreRoom **room)
 {
 	m_register = room;
-	GGZCOREDEBUG("Register at: %i -> %i\n", m_register, *m_register);
 }
+

@@ -37,6 +37,7 @@
 // KGGZ includes
 #include "KGGZCommon.h"
 #include "KGGZCaption.h"
+#include "KGGZLineSeparator.h"
 
 // GGZCore++ includes
 #include "GGZCoreConfio.h"
@@ -61,6 +62,7 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	QHBoxLayout *hbox;
 	QPushButton *ok, *cancel;
 	QLabel *server;
+	KGGZLineSeparator *sep;
 
 	title = new KGGZCaption(i18n("Global Settings"), i18n("Please specify some environment variables here."), this);
 
@@ -70,6 +72,8 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	m_speech = new QCheckBox(i18n("Enable text-to-speech (rsynth)"), this);
 
 	m_server = new QLineEdit(this);
+
+	sep = new KGGZLineSeparator(this);
 
 	ok = new QPushButton(i18n("Save configuration"), this);
 	cancel = new QPushButton(i18n("Cancel"), this);
@@ -81,6 +85,7 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	vbox->add(m_startup);
 	vbox->add(m_chatlog);
 	vbox->add(m_speech);
+	vbox->add(sep);
 
 	hbox = new QHBoxLayout(vbox, 5);
 	hbox->add(ok);
@@ -89,7 +94,7 @@ KGGZPrefEnv::KGGZPrefEnv(QWidget *parent, const char *name)
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccept()));
 	connect(cancel, SIGNAL(clicked()), SLOT(close()));
 
-	setFixedSize(300, 210);
+	resize(330, 250);
 	setCaption(i18n("Global Settings"));
 	show();
 

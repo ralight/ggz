@@ -1,13 +1,34 @@
+// GGZap - GGZ quick start application for the KDE panel
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
 #ifndef GGZAP_H
 #define GGZAP_H
 
+// Qt includes
 #include <qwidget.h>
-#include <qlabel.h>
 #include <qevent.h>
 
+// Forward declarations
 class GGZapHandler;
+class GGZapGui;
+class QLabel;
 
-class GGZap : public QWidget
+// The main window for GGZap
+class GGZap : public QObject
 {
 	Q_OBJECT
 	public:
@@ -18,6 +39,8 @@ class GGZap : public QWidget
 		void setFrontend(const char *frontendtype);
 
 		void launch();
+
+		QWidget *gui();
 
 	signals:
 		void signalMenu(int id);
@@ -31,11 +54,8 @@ class GGZap : public QWidget
 		void timerEvent(QTimerEvent *e);
 
 	private:
-		void fat(QLabel *label);
-		void unfat(QLabel *label);
-		
-		QLabel *m_connect, *m_login, *m_room, *m_wait, *m_start;
 		GGZapHandler *m_handler;
+		GGZapGui *m_gui;
 		int m_autolaunch;
 };
 
