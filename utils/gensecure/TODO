@@ -1,0 +1,5 @@
+- undefined behaviour if client wants SSL but server doesn't provide it
+- the other way around too I guess
+- configure ciphers in use to exclude patent issues
+- more documentation
+

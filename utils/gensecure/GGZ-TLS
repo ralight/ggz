@@ -1,0 +1,29 @@
+The GGZ Gaming Zone should provide encryption and data integrity one day.
+In particular, the following scenarios are possible.
+('-' means no TLS necessary, 'o' means recommended, 'x' means necessary)
+
+Area            | Client | Server
+----------------+--------+-------
+Connection      |   -    |   o
+Normal chat     |   -    |   -
+Private chat    |   -    |   o
+Game spectator  |   -    |   -
+Game player     |   o    |   o
+Registered game |   x    |   x
+
+Please note that if the authentication is only on the server side,
+only the encryption effect counts, not the authentication itself.
+
+As there are many situations where the encryption is useful (i.e.
+when the password is given to a freshly registered player), it is
+strongly recommended that the GGZ server (ggzd) is preconfigured
+with TLS support, once available.
+The client doesn't need to have a certificate, but in order to
+verify the player for global highscores or similar, we should
+consider a policy which enforces this here too. However, this is
+currently not possible because most players do probably not know
+how to issue a certificate request, and we lack a CA infrastructure.
+So please consider client authentication as an option for the future.
+
+Josef
+

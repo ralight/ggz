@@ -1,0 +1,43 @@
+I assume you are basically familiar with the concept of PKI
+(Public Key Infrastructure). If you're not, don't worry,
+this guide will hopefully lead to a proper configured environment.
+
+1. Install OpenSSL and SSLeay. (http://www.openssl.org)
+2. Make sure you've got the development files installed, too
+   (normally under /usr/local/ssl/include/openssl).
+3. Create a Certificate Authority (CA) self-signed certificate,
+   and create a certificate request for your "server" (virtually),
+   to be signed by the CA.
+4. Install all files appropriately, maybe change the locations is
+   src/configuration.h.
+5. Compile, without installation. Run genserver and genclient locally.
+
+For point 3, you could use this little script. However, it depends on
+how your openssl.cnf is installed.
+Copy this script into your $SSLDIR and execute it.
+
+#!/bin/sh
+#
+# GGZ Gaming Zone
+# Transport Layer Security Configuration
+ 
+echo "Prepare environment (* CA *)"
+echo "============================"
+mkdir private/crl
+mkdir private/newcerts
+echo "01" > private/serial
+touch private/index.txt
+
+echo "Create self-signed CA certificate (* CA *)"
+echo "=========================================="
+./bin/openssl req -new -x509 -keyout private/cakey.pem -out private/cacert.pem
+
+echo "Create a certificate request (* Server *)"
+echo "========================================="
+./bin/openssl req -new -keyout certs/newkey.pem -out certs/newreq.pem -days 365
+
+echo "Signing the request (* CA* )"
+echo "============================"
+cat certs/newreq.pem certs/newkey.pem > certs/new.pem
+./bin/openssl ca -out certs/newcert.pem -infiles certs/new.pem
+rm certs/new.pem

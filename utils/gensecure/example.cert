@@ -1,0 +1,69 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 1 (0x1)
+        Signature Algorithm: md5WithRSAEncryption
+        Issuer: C=DE, ST=Saxony, L=Dresden, O=GGZ Gaming Zone, OU=Certificate Authority, CN=Josef Spillner/Email=dr_maux@users.sourceforge.net
+        Validity
+            Not Before: Jun 24 14:47:35 2001 GMT
+            Not After : Jun 24 14:47:35 2002 GMT
+        Subject: C=DE, ST=Saxony, O=GGZ Gaming Zone, OU=Europe One, CN=Josef Spillner/Email=dr_maux@users.sourceforge.net
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+            RSA Public Key: (1024 bit)
+                Modulus (1024 bit):
+                    00:c8:a4:22:ce:5f:5f:36:7b:0c:c0:0d:83:4f:55:
+                    df:50:89:66:c7:b0:15:61:d1:33:33:ff:b4:ce:95:
+                    d3:9c:95:31:08:a9:9a:53:ed:b3:af:2d:8d:83:25:
+                    29:90:92:88:1a:50:aa:78:2a:23:67:da:bf:d0:87:
+                    d2:10:fe:cc:50:33:77:c1:1d:28:06:40:34:54:ce:
+                    6c:98:b5:b0:57:83:2e:d0:1b:f4:d9:28:44:2d:62:
+                    61:8e:a4:30:33:a2:0a:b6:fe:df:1d:c3:70:1a:28:
+                    b3:2b:a5:e4:be:c8:22:e8:5e:6d:61:5d:2c:23:12:
+                    48:51:e3:21:21:9a:72:74:03
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Comment: 
+                GGZ Gaming Zone Certificate
+            X509v3 Subject Key Identifier: 
+                3C:14:7F:5E:9F:EC:E4:3D:C1:B9:99:27:6C:BC:4F:D9:8E:86:8D:0E
+            X509v3 Authority Key Identifier: 
+                keyid:6A:C4:65:DD:1A:61:AC:B7:0B:49:7C:74:CB:3B:0B:4D:73:AF:FB:8F
+                DirName:/C=DE/ST=Saxony/L=Dresden/O=GGZ Gaming Zone/OU=Certificate Authority/CN=Josef Spillner/Email=dr_maux@users.sourceforge.net
+                serial:00
+
+    Signature Algorithm: md5WithRSAEncryption
+        8f:5c:2f:e7:1e:98:0b:13:c2:97:a0:d6:5a:60:c7:c9:87:fc:
+        b6:87:23:8f:ac:0f:f5:29:fd:1b:33:34:fd:8b:79:61:aa:00:
+        5d:34:93:50:6d:24:50:dc:1e:8b:57:fd:20:26:4b:36:0d:49:
+        28:1a:19:ce:c9:2f:82:fd:3c:f7:aa:17:d6:a0:fb:2e:21:5d:
+        52:8e:a7:01:f7:7e:b3:b5:8e:e9:23:7a:aa:c6:52:4a:a3:e8:
+        bc:66:ea:56:4f:a9:7d:5d:d7:51:76:88:96:5a:6e:94:a5:08:
+        30:6d:9b:62:1f:e8:3e:aa:c8:38:f2:34:13:dd:7f:b2:15:d3:
+        48:bb
+-----BEGIN CERTIFICATE-----
+MIID+jCCA2OgAwIBAgIBATANBgkqhkiG9w0BAQQFADCBsTELMAkGA1UEBhMCREUx
+DzANBgNVBAgTBlNheG9ueTEQMA4GA1UEBxMHRHJlc2RlbjEYMBYGA1UEChMPR0da
+IEdhbWluZyBab25lMR4wHAYDVQQLExVDZXJ0aWZpY2F0ZSBBdXRob3JpdHkxFzAV
+BgNVBAMTDkpvc2VmIFNwaWxsbmVyMSwwKgYJKoZIhvcNAQkBFh1kcl9tYXV4QHVz
+ZXJzLnNvdXJjZWZvcmdlLm5ldDAeFw0wMTA2MjQxNDQ3MzVaFw0wMjA2MjQxNDQ3
+MzVaMIGUMQswCQYDVQQGEwJERTEPMA0GA1UECBMGU2F4b255MRgwFgYDVQQKEw9H
+R1ogR2FtaW5nIFpvbmUxEzARBgNVBAsTCkV1cm9wZSBPbmUxFzAVBgNVBAMTDkpv
+c2VmIFNwaWxsbmVyMSwwKgYJKoZIhvcNAQkBFh1kcl9tYXV4QHVzZXJzLnNvdXJj
+ZWZvcmdlLm5ldDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAyKQizl9fNnsM
+wA2DT1XfUIlmx7AVYdEzM/+0zpXTnJUxCKmaU+2zry2NgyUpkJKIGlCqeCojZ9q/
+0IfSEP7MUDN3wR0oBkA0VM5smLWwV4Mu0Bv02ShELWJhjqQwM6IKtv7fHcNwGiiz
+K6Xkvsgi6F5tYV0sIxJIUeMhIZpydAMCAwEAAaOCATswggE3MAkGA1UdEwQCMAAw
+KgYJYIZIAYb4QgENBB0WG0dHWiBHYW1pbmcgWm9uZSBDZXJ0aWZpY2F0ZTAdBgNV
+HQ4EFgQUPBR/Xp/s5D3BuZknbLxP2Y6GjQ4wgd4GA1UdIwSB1jCB04AUasRl3Rph
+rLcLSXx0yzsLTXOv+4+hgbekgbQwgbExCzAJBgNVBAYTAkRFMQ8wDQYDVQQIEwZT
+YXhvbnkxEDAOBgNVBAcTB0RyZXNkZW4xGDAWBgNVBAoTD0dHWiBHYW1pbmcgWm9u
+ZTEeMBwGA1UECxMVQ2VydGlmaWNhdGUgQXV0aG9yaXR5MRcwFQYDVQQDEw5Kb3Nl
+ZiBTcGlsbG5lcjEsMCoGCSqGSIb3DQEJARYdZHJfbWF1eEB1c2Vycy5zb3VyY2Vm
+b3JnZS5uZXSCAQAwDQYJKoZIhvcNAQEEBQADgYEAj1wv5x6YCxPCl6DWWmDHyYf8
+tocjj6wP9Sn9GzM0/Yt5YaoAXTSTUG0kUNwei1f9ICZLNg1JKBoZzskvgv0896oX
+1qD7LiFdUo6nAfd+s7WO6SN6qsZSSqPovGbqVk+pfV3XUXaIllpulKUIMG2bYh/o
+PqrIOPI0E91/shXTSLs=
+-----END CERTIFICATE-----

@@ -1,0 +1,21 @@
+In order to enhance the GGZ Gaming Zone with Transport Layer Security,
+a bit of preparation is needed.
+For that purpose I've written the GenSecure example server and client.
+As a reference I used the SSLeay tutorial, and the OpenSSL man pages.
+
+Please have a look at:            If you want:
+---------------------------------------------------------------------
+Preparation                       Test the gensecure example
+GGZ-TLS                           Know my plans for GGZ
+example.cert                      Look how a certificate might look like
+io/                               Test non-blocking IO
+src/                              Build the generic server and client
+
+To test gensecure: run genserver -notls and genclient -notls to switch off
+TLS first. Do a "ngrep -d lo" to play script kid on your localhost device.
+You can type stuff in the client, and "quit" lets it exit (and the server
+accepts a new connection then).
+Run server and client without -notls then. Doh! The script kid has lost :-)
+
+Josef
+
