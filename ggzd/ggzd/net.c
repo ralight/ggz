@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Server
  * Date: 9/22/01
- * $Id: net.c 3245 2002-02-05 02:15:13Z bmh $
+ * $Id: net.c 3261 2002-02-05 23:53:49Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1072,7 +1072,7 @@ static void _net_handle_list(GGZNetIO *net, GGZXMLElement *list)
 			player_list_players(net->player);
 		else if (strcmp(type, "table") == 0)
 			/* FIXME: Currently send all local types */
-			player_list_tables(net->player, -1, 0);
+			player_list_tables(net->player, GGZ_TYPE_ALL, 0);
 		else
 			_net_send_result(net, "protocol", E_BAD_OPTIONS);
 	}
