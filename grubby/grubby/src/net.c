@@ -42,8 +42,6 @@ void net_internal_init(const char *logfile)
 	int ret;
 
 	opt.flags = GGZ_OPT_MODULES | GGZ_OPT_PARSER;
-	opt.debug_file = NULL /*"/tmp/doobadoo"*/; /* In ggzcore 0.0.5 this can be NULL, but we want to be save */
-	opt.debug_levels = 0;
 	ret = ggzcore_init(opt);
 }
 

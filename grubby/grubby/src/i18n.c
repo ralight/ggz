@@ -87,7 +87,8 @@ char *guru_i18n_check(char *player, char *message, int language)
 		if(language)
 		{
 			p = guru_player_lookup(player);
-			guru_i18n_setlanguage(p->language);
+			if((p) && (p->language)) guru_i18n_setlanguage(p->language);
+			else guru_i18n_setlanguage(stdlang);
 		}
 		else guru_i18n_setlanguage(stdlang);
 	}
