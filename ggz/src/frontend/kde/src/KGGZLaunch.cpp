@@ -57,6 +57,7 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 	KGGZDEBUGF("KGGZLaunch::KGGZLaunch()\n");
 	m_popup = NULL;
 	m_array = NULL;
+	m_assignment = NULL;
 	m_playername = NULL;
 
 	m_slider = new QSlider(this);
@@ -64,6 +65,7 @@ KGGZLaunch::KGGZLaunch(QWidget *parent, const char *name)
 	m_slider->setMinValue(2);
 	m_slider->setTickInterval(1);
 	m_slider->setTickmarks(QSlider::Below);
+	m_slider->setPageStep(1);
 
 	m_listbox = new QListView(this);
 	m_listbox->addColumn(i18n("Seat"));
@@ -108,14 +110,18 @@ KGGZLaunch::~KGGZLaunch()
 
 void KGGZLaunch::slotSelected(QListViewItem *selected, const QPoint& point, int column)
 {
+	int seat;
+
 	if(!selected) return;
 	if(!selected->isSelectable()) return;
 	if(selected == m_listbox->firstChild()) return;
 
 	if(m_popup) delete m_popup;
 
+	seat = selected->text(0).toInt();
+
 	m_popup = new QPopupMenu(this);
-	m_popup->insertItem(typeName(seatbot), -seatbot);
+	if(seat <= m_maxbots) m_popup->insertItem(typeName(seatbot), -seatbot);
 	m_popup->insertItem(typeName(seatopen), -seatopen);
 	m_popup->insertItem(typeName(seatreserved), -seatreserved);
 	m_popup->popup(point);
@@ -147,9 +153,24 @@ void KGGZLaunch::slotChanged(int value)
 {
 	QString str, str2;
 
+	if((m_assignment) && (m_assignment->at(value - 1) == 0))
+	{
+		m_slider->setValue(m_curplayers);
+		return;
+	}
+
+	m_curplayers = value;
 	str.setNum(value);
 	str2.setNum(m_slider->maxValue());
 	m_label->setText(i18n("Number of player: ") + str + i18n(" (out of ") + str2 + ")");
+
+	if(m_assignment)
+	{
+		for(int i = value; i < m_slider->maxValue(); i++)
+			setSeatType(i, seatunused);
+		for(int i = 0; i < value; i++)
+			if(seatType(i) == seatunused) setSeatType(i, seatopen);
+	}
 }
 
 const char *KGGZLaunch::description()
@@ -162,11 +183,11 @@ int KGGZLaunch::seats()
 	return m_slider->value();
 }
 
-void KGGZLaunch::initLauncher(char *playername, int maxplayers)
+void KGGZLaunch::initLauncher(char *playername, int maxplayers, int maxbots)
 {
 	QString str;
 
-	KGGZDEBUGF("KGGZLaunch::initLauncher(%s, %i)\n", playername, maxplayers);
+	KGGZDEBUGF("KGGZLaunch::initLauncher(%s, %i, %i)\n", playername, maxplayers, maxbots);
 	if(m_array)
 	{
 		KGGZDEBUG("Critical: array initialized twice!\n");
@@ -175,9 +196,11 @@ void KGGZLaunch::initLauncher(char *playername, int maxplayers)
 
 	m_slider->setMaxValue(maxplayers);
 	m_slider->setValue(maxplayers);
+	m_curplayers = maxplayers;
 	m_playername = strdup(playername);
 	KGGZDEBUG("array: create with %i elements...\n", maxplayers);
 	m_array = new QByteArray(maxplayers);
+	m_assignment = new QByteArray(maxplayers);
 	KGGZDEBUG("array: done: size = %i\n", m_array->size());
 
 	for(int i = 0; i < maxplayers; i++)
@@ -191,11 +214,14 @@ void KGGZLaunch::initLauncher(char *playername, int maxplayers)
 		setSeatType(0, seatplayer);
 		for(int i = 1; i < maxplayers; i++)
 		{
-			setSeatType(i, seatbot);
+			if(i <= maxbots) setSeatType(i, seatbot);
+			else setSeatType(i, seatopen);
 		}
 	}
 
 	m_ok->setEnabled(TRUE);
+
+	m_maxbots = maxbots;
 
 	KGGZDEBUGF("KGGZLaunch::initLauncher() done\n");
 }
@@ -207,6 +233,17 @@ int KGGZLaunch::seatType(int seat)
 	if((!m_array) || ((int)m_array->size() <= seat)) return seatunknown;
 	ret = m_array->at(seat);
 	return ret;
+}
+
+void KGGZLaunch::setSeatAssignment(int seat, int enabled)
+{
+	if(!m_assignment)
+	{
+		KGGZDEBUG("Critical! No combination matrix found!\n");
+		return;
+	}
+
+	m_assignment->at(seat) = enabled;
 }
 
 void KGGZLaunch::setSeatType(int seat, int seattype)
@@ -276,3 +313,4 @@ QString KGGZLaunch::typeName(int seattype)
 	KGGZDEBUG("return: %s for %i\n", ret.latin1(), seattype);
 	return ret;
 }
+

@@ -88,7 +88,7 @@ class KGGZ : public QWidget
 			VIEW_CHAT,
 			VIEW_USERS,
 			VIEW_TABLES,
-                        VIEW_SPLASH,
+			VIEW_SPLASH,
 			VIEW_BROWSER
 		};
 
@@ -99,7 +99,8 @@ class KGGZ : public QWidget
 			MENUSIG_ROOMLIST,
 			MENUSIG_LOGIN,
 			MENUSIG_SERVERSTART,
-			MENUSIG_SERVERSTOP
+			MENUSIG_SERVERSTOP,
+			MENUSIG_ROOMENTER
 		};
 
 	signals:

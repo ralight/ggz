@@ -55,13 +55,15 @@ class KGGZLaunch : public QWidget
 		~KGGZLaunch();
 
 		// Initialize the dialog with the given parameters
-		void initLauncher(char *playername, int maxplayers);
+		void initLauncher(char *playername, int maxplayers, int maxbots);
 		// Return the customizable room description
 		const char *description();
 		// Return the number of seats wanted
 		int seats();
 		// For each seat, return the set type
 		int seatType(int seat);
+		// Enable/disable seat combinations
+		void setSeatAssignment(int seat, int enabled);
 
 		// All possible seat types
 		enum SeatTypes
@@ -106,10 +108,16 @@ class KGGZLaunch : public QWidget
 		char *m_playername;
 		// Holds the current configuration
 		QByteArray *m_array;
+		// Hold the combination matrix
+		QByteArray *m_assignment;
 		// OK button
 		QPushButton *m_ok;
 		// Description of this dialog
 		QLabel *m_label;
+		// Holds the maximum number of bots
+		int m_maxbots;
+		// Holds the current number of players and bots
+		int m_curplayers;
 };
 
 #endif

@@ -776,6 +776,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			buffer.sprintf(i18n("Entered room %s"), kggzroom->name());
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			emit signalLocation(i18n("  Room: ") + kggzroom->name() + "  ");
+			emit signalMenu(MENUSIG_ROOMENTER);
 			break;
 		case GGZCoreServer::enterfail:
 			KGGZDEBUG("enterfail\n");
@@ -1199,13 +1200,26 @@ void KGGZ::menuView(int viewtype)
 
 void KGGZ::menuGameLaunch()
 {
+	GGZCoreGametype *gametype;
+
 	if(!kggzroom)
 	{
 		KMessageBox::information(this, i18n("You cannot launch a game outside a room!"), "Error!");
 		return;
 	}
+	if(m_launch)
+	{
+		delete m_launch;
+		m_launch = NULL;
+	}
 	if(!m_launch) m_launch = new KGGZLaunch(NULL, "KGGZLaunch");
-	m_launch->initLauncher(m_save_username, kggzroom->gametype()->maxPlayers());
+	gametype = kggzroom->gametype();
+	m_launch->initLauncher(m_save_username, gametype->maxPlayers(), gametype->maxBots());
+	for(int i = 0; i < gametype->maxPlayers(); i++)
+	{
+		KGGZDEBUG("Assignment: %i is %i\n", i, gametype->isPlayersValid(i + 1));
+		m_launch->setSeatAssignment(i, gametype->isPlayersValid(i + 1));
+	}
 	m_launch->show();
 	connect(m_launch, SIGNAL(signalLaunch()), SLOT(slotLaunch()));
 }
@@ -1340,6 +1354,11 @@ void KGGZ::slotLoadLogo()
 
 void KGGZ::menuGrubby()
 {
+	if(!kggzroom)
+	{
+		KMessageBox::information(this, i18n("Please join a room first."), "Error!");
+		return;
+	}
 	if(m_grubby) delete m_grubby;
 	m_grubby = new KGGZGrubby(NULL, "KGGZGrubby");
 	m_grubby->show();

@@ -95,6 +95,7 @@ KGGZBase::KGGZBase(char *name)
 
  	m_menu_rooms = new KPopupMenu(this, "menu_rooms");
 	m_menu_rooms->setEnabled(FALSE);
+	//m_menu_rooms->hide();
 
 	m_menu_game = new KPopupMenu(this, "menu_games");
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_INFO), i18n("&Information"), MENU_GAME_INFO);
@@ -106,6 +107,7 @@ KGGZBase::KGGZBase(char *name)
 	m_menu_game->insertSeparator();
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_GRUBBY), i18n("&Grubby"), MENU_GAME_GRUBBY);
 	m_menu_game->setEnabled(FALSE);
+	//m_menu_game->hide();
 
 	m_menu_preferences = new KPopupMenu(this, "menu_preferences");
 	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_SETTINGS), i18n("Se&ttings"), MENU_PREFERENCES_SETTINGS);
@@ -122,12 +124,10 @@ KGGZBase::KGGZBase(char *name)
 	menu_help->connectItem(99, this, SLOT(slotAboutGGZ()));
 	KGGZDEBUG("GGZ Icon at: " KGGZ_DIRECTORY "\n");
 
-	m_menu->insertItem(i18n("GG&Z"), m_menu_ggz);
-	m_menu->insertItem(i18n("&Client"), m_menu_client);
-	m_menu->insertItem(i18n("&Rooms"), m_menu_rooms);
-	m_menu->insertItem(i18n("&Game"), m_menu_game);
-	m_menu->insertItem(i18n("&Preferences"), m_menu_preferences);
-	m_menu->insertItem(i18n("&Help"), menu_help);
+	m_menu->insertItem(i18n("GG&Z"), m_menu_ggz, MENU_GGZ, 0);
+	m_menu->insertItem(i18n("&Client"), m_menu_client, MENU_CLIENT, 1);
+	m_menu->insertItem(i18n("&Preferences"), m_menu_preferences, MENU_PREFERENCES, 4);
+	m_menu->insertItem(i18n("&Help"), menu_help, MENU_HELP, 5);
 
 	connect(m_menu_ggz, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu_client, SIGNAL(activated(int)), SLOT(slotMenu(int)));
@@ -308,7 +308,7 @@ void KGGZBase::slotMenu(int id)
 			kggz->menuGameJoin();
 			break;
 		case MENU_GAME_GRUBBY:
-			KGGZDEBUG("Aaaaargh.... ;)\n");
+			//KGGZDEBUG("Aaaaargh.... ;)\n");
 			kggz->menuGrubby();
 			break;
 		case MENU_GAME_INFO:
@@ -336,10 +336,23 @@ void KGGZBase::slotMenuSignal(int signal)
 			m_menu_client->setItemEnabled(MENU_CLIENT_PLAYERS, FALSE);
 			m_menu_game->setEnabled(FALSE);
 			setCaption("KGGZ - [offline]");
+			//m_menu_game->hide();
+			//m_menu_rooms->hide();
+			m_menu->removeItem(MENU_GAME);
+			m_menu->removeItem(MENU_ROOMS);
 			break;
 		case KGGZ::MENUSIG_ROOMLIST:
 			m_menu_rooms->setEnabled(TRUE);
-			m_menu_game->setEnabled(TRUE);
+			//m_menu_rooms->show();
+			m_menu->insertItem(i18n("&Rooms"), m_menu_rooms, MENU_ROOMS, 2);
+			break;
+		case KGGZ::MENUSIG_ROOMENTER:
+			if(!m_menu_game->isEnabled())
+			{
+				m_menu_game->setEnabled(TRUE);
+				//m_menu_game->show();
+				m_menu->insertItem(i18n("&Game"), m_menu_game, MENU_GAME, 3);
+			}
 			break;
 		case KGGZ::MENUSIG_LOGIN:
 			m_menu_client->setItemEnabled(MENU_CLIENT_CHAT, TRUE);

@@ -77,7 +77,7 @@ class KGGZBase : public KTMainWindow
 		// assign an icon to a menu item
 		QIconSet kggzGetIcon(int menuid);
 
-		// All menus visible in the main window's menu bar
+		// All menu items visible in the main window's menu bar
 		enum MenuItems
 		{
 			MENU_GGZ_TEST,
@@ -109,6 +109,17 @@ class KGGZBase : public KTMainWindow
 			MENU_PREFERENCES_PREFERENCES,
 
 			MENU_ROOMS_SLOTS // MENU_ROOMS_SLOTS _must_ be the last element
+		};
+
+		// All menus, some of them are created dynamically
+		enum Menus
+		{
+			MENU_GGZ,
+			MENU_CLIENT,
+			MENU_ROOMS,
+			MENU_GAME,
+			MENU_PREFERENCES,
+			MENU_HELP
 		};
 
 		// The menu bar
