@@ -43,6 +43,7 @@ class Win : public QWidget
 		void slotLoggedin(QString name);
 		void slotChat(QString message);
 		void slotUnit(QCanvasPixmapArray *a);
+		void slotMouse(int x, int y);
 
 	protected:
 		void keyPressEvent(QKeyEvent *e);

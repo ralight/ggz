@@ -48,6 +48,7 @@ Canvas::Canvas(QWidget *parent, const char *name)
 	m_dev = NULL;
 	m_net = NULL;
 	m_network = NULL;
+	m_player = NULL;
 
 	setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/grass.png"));
 
@@ -56,6 +57,8 @@ Canvas::Canvas(QWidget *parent, const char *name)
 	// FIXME: I'm afraid we have to do this here (spectators catch-22 problem)
 	init();
 	m_spectator = 0;
+
+	startTimer(100);
 }
 
 // Destructor
@@ -133,6 +136,8 @@ void Canvas::slotInput()
 			m_player = new QCanvasSprite(/*new QCanvasPixmapArray(KEEPALIVE_DIR "/man.png", 1)*/ar, this);
 			m_player->move(x, y);
 			m_player->show();
+			m_targetx = x;
+			m_targety = y;
 			break;
 		case op_player:
 			*m_net >> count;
@@ -196,8 +201,49 @@ void Canvas::slotInput()
 	}
 }
 
+// Timer period
+void Canvas::timerEvent(QTimerEvent *e)
+{
+	if(m_player) moves();
+}
+
+// Check outstanding moves
+void Canvas::moves()
+{
+	int diffx, diffy;
+
+	diffx = m_targetx - (int)m_player->x();
+	diffy = m_targety - (int)m_player->y();
+
+	if((diffx) || (diffy))
+	{
+		if(diffx < -3) diffx = -3;
+		if(diffx > 3) diffx = 3;
+		if(diffy < -3) diffy = -3;
+		if(diffy > 3) diffy = 3;
+
+		domove(diffx, diffy);
+	}
+}
+
+// Absolute move
+void Canvas::moveTo(int x, int y)
+{
+	m_targetx = x;
+	m_targety = y;
+}
+
 // Move for the given distance if it's valid
 void Canvas::move(int x, int y)
+{
+	m_targetx = (int)m_player->x() + x * 3;
+	m_targety = (int)m_player->y() + y * 3;
+
+	domove(x * 3, y * 3);
+}
+
+// Actually execute a move command
+void Canvas::domove(int x, int y)
 {
 	int vx, vy;
 	int offset;
@@ -210,8 +256,8 @@ void Canvas::move(int x, int y)
 
 	if(!(x || y)) return;
 
-	vx = (int)(m_player->x() + x * 3);
-	vy = (int)(m_player->y() + y * 3);
+	vx = (int)(m_player->x() + x);
+	vy = (int)(m_player->y() + y);
 
 	/*if((diffx < -tol) && (diffy < -tol)) offset = 7;
 	if((diffx < -tol) && (diffy > tol)) offset = 5;
@@ -257,10 +303,10 @@ void Canvas::login(QString username, QString password)
 	*m_net << (Q_INT8)op_login << username.latin1() << password.latin1();
 }
 
-void Canvas::keyPressEvent(QKeyEvent *e)
-{
-	std::cout << "extra key press event!" << std::endl;
-}
+//void Canvas::keyPressEvent(QKeyEvent *e)
+//{
+//	std::cout << "extra key press event!" << std::endl;
+//}
 
 void Canvas::chat(QString message)
 {

@@ -44,17 +44,24 @@ Win::Win(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	QVBoxLayout *vbox;
+	KConfig *conf;
+	QString s;
 
 	m_canvas = new Canvas(this);
 	m_world = new World(m_canvas, this);
 	m_world->hide();
 	m_login = new Login(this);
 	m_login->setFocus();
-	m_login->hide();
 	chatbox = NULL;
 	m_anim = NULL;
 	m_intro = new Intro(this);
 	m_intro->setFocus();
+
+	conf = kapp->config();
+	conf->setGroup("Media");
+	s = conf->readEntry("intro");
+	if(s == "off") m_intro->hide();
+	else m_login->hide();
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(m_world);
@@ -70,6 +77,9 @@ Win::Win(QWidget *parent, const char *name)
 		SLOT(slotLoggedin(QString)));
 	connect(m_canvas, SIGNAL(signalUnit(QCanvasPixmapArray*)),
 		SLOT(slotUnit(QCanvasPixmapArray*)));
+
+	connect(m_world, SIGNAL(signalMouse(int, int)),
+		SLOT(slotMouse(int, int)));
 
 	setEraseColor(QColor(0, 0, 0));
 
@@ -107,6 +117,12 @@ void Win::slotLoggedin(QString name)
 	m_world->setFocus();
 }
 
+// React on mouse events
+void Win::slotMouse(int x, int y)
+{
+	m_canvas->moveTo(x, y);
+}
+
 // Forward key presses to the canvas
 void Win::keyPressEvent(QKeyEvent *e)
 {
@@ -138,7 +154,7 @@ void Win::keyPressEvent(QKeyEvent *e)
 		close();
 	}
 
-	std::cout << "KEYCODE: " << e->key() << std::endl;
+	//std::cout << "KEYCODE: " << e->key() << std::endl;
 }
 
 void Win::slotUnit(QCanvasPixmapArray *a)

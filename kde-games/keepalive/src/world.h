@@ -28,6 +28,10 @@ class World : public QCanvasView
 	public:
 		World(QCanvas *canvas = NULL, QWidget *parent = NULL, const char *name = NULL);
 		~World();
+	signals:
+		void signalMouse(int x, int y);
+	protected:
+		void contentsMousePressEvent(QMouseEvent *e);
 };
 
 #endif

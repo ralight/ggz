@@ -25,13 +25,17 @@
 World::World(QCanvas *canvas, QWidget *parent, const char *name)
 : QCanvasView(canvas, parent, name)
 {
-	//setFocusPolicy(StrongFocus);
-
 	show();
 }
 
 // Destructor
 World::~World()
 {
+}
+
+void World::contentsMousePressEvent(QMouseEvent *e)
+{
+	std::cout << "mouse!" << std::endl;
+	emit signalMouse(e->x(), e->y());
 }
 

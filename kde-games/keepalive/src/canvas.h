@@ -36,6 +36,7 @@ class Canvas : public QCanvas
 		~Canvas();
 		void load();
 		void move(int x, int y);
+		void moveTo(int x, int y);
 		void login(QString username, QString password);
 		void chat(QString message);
 
@@ -46,17 +47,22 @@ class Canvas : public QCanvas
 	public slots:
 		void slotInput();
 
-	protected slots:
-		void keyPressEvent(QKeyEvent *e);
+	//protected slots:
+	//	void keyPressEvent(QKeyEvent *e);
+	protected:
+		void timerEvent(QTimerEvent *e);
 
 	private:
 		void init();
+		void moves();
+		void domove(int x, int y);
 
 		QCanvasSprite *m_player;
 		QSocketDevice *m_dev;
 		QDataStream *m_net;
 		int m_spectator;
 		Network *m_network;
+		int m_targetx, m_targety;
 };
 
 #endif
