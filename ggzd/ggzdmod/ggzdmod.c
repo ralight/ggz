@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2597 2001-10-23 21:53:31Z jdorje $
+ * $Id: ggzdmod.c 2598 2001-10-23 22:34:55Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -388,6 +388,61 @@ static void game_over(_GGZdMod * ggzdmod)
 						     NULL);
 }
 
+void ggz_rsp_launch(_GGZdMod * ggzdmod)
+{
+	char status;
+	if (es_read_char(ggzdmod->fd, &status) < 0)
+		return;
+	if (ggzdmod->handlers[GGZ_GAME_LAUNCH])
+		(*ggzdmod->handlers[GGZ_GAME_LAUNCH]) (ggzdmod,
+						       GGZ_GAME_LAUNCH,
+						       &status);
+}
+
+void ggz_rsp_join(_GGZdMod * ggzdmod)
+{
+	char status;
+	if (es_read_char(ggzdmod->fd, &status) < 0)
+		return;
+	if (ggzdmod->handlers[GGZ_GAME_JOIN])
+		(*ggzdmod->handlers[GGZ_GAME_JOIN]) (ggzdmod, GGZ_GAME_JOIN,
+						     &status);
+}
+
+void ggz_rsp_leave(_GGZdMod * ggzdmod)
+{
+	char status;
+	if (es_read_char(ggzdmod->fd, &status) < 0)
+		return;
+	if (ggzdmod->handlers[GGZ_GAME_LEAVE])
+		(*ggzdmod->handlers[GGZ_GAME_LEAVE]) (ggzdmod, GGZ_GAME_LEAVE,
+						      &status);
+}
+
+void ggz_req_gameover(_GGZdMod * ggzdmod)
+{
+	es_write_int(ggzdmod->fd, RSP_GAME_OVER);	/* ignore error */
+	if (ggzdmod->handlers[GGZ_GAME_OVER])
+		(*ggzdmod->handlers[GGZ_GAME_OVER]) (ggzdmod, GGZ_GAME_OVER,
+						     NULL);
+}
+
+void ggz_log(_GGZdMod * ggzdmod)
+{
+	char *msg;
+
+	/* We used to have different levels of logging, but I've gotten rid
+	   of all that. */
+	if (es_read_string_alloc(ggzdmod->fd, &msg) < 0)
+		return;
+
+	if (ggzdmod->handlers[GGZ_GAME_LOG])
+		(*ggzdmod->handlers[GGZ_GAME_LOG]) (ggzdmod, GGZ_GAME_LOG,
+						    msg);
+
+	free(msg);
+}
+
 /* Returns -1 on error (?). */
 int ggzdmod_dispatch(GGZdMod * mod)
 {
@@ -419,11 +474,29 @@ int ggzdmod_dispatch(GGZdMod * mod)
 			break;
 		}
 	} else {
-
+		switch (op) {
+		case RSP_GAME_LAUNCH:
+			ggz_rsp_launch(ggzdmod);
+			break;
+		case RSP_GAME_JOIN:
+			ggz_rsp_join(ggzdmod);
+			break;
+		case RSP_GAME_LEAVE:
+			ggz_rsp_leave(ggzdmod);
+			break;
+		case REQ_GAME_OVER:
+			ggz_req_gameover(ggzdmod);
+		case MSG_LOG:
+		case MSG_DBG:
+			ggz_log(ggzdmod);
+		case REQ_SEAT_CHANGE:
+		case MSG_STATS:
+		default:
+			break;
+		}
 	}
 
-	assert(0);
-	return -1;
+	return 0;
 }
 
 /* Checks the ggzdmod FD and all player FD's for pending data; returns TRUE
@@ -546,6 +619,7 @@ int ggzdmod_connect(GGZdMod * mod)
 		return -1;
 	}
 
+	/* We maintain active_fd_set as the set of active file descriptors. */
 	FD_ZERO(&ggzdmod->active_fd_set);
 	FD_SET(ggzdmod->fd, &ggzdmod->active_fd_set);
 
@@ -584,11 +658,11 @@ int ggzdmod_disconnect(GGZdMod * mod)
 			ggzdmod->seats[p].fd = -1;
 		}
 
+	/* Clean up the ggzdmod object.  In theory it could now reconnect for 
+	   a new game. */
 	close(ggzdmod->fd);
 	ggzdmod->fd = -1;
-
 	FD_ZERO(&ggzdmod->active_fd_set);
-
 	free(ggzdmod->seats);
 	ggzdmod->seats = NULL;
 
@@ -612,8 +686,9 @@ int ggzdmod_log(GGZdMod * mod, char *fmt, ...)
 	vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
 
-	if (es_write_int(ggzdmod->fd, MSG_DBG) < 0 ||
-	    es_write_int(ggzdmod->fd, GGZ_DBG_TABLE) < 0 ||
+	/* We used to have different levels of logging and allow debugging
+	   and logging messages, but I've gotten rid of all that. */
+	if (es_write_int(ggzdmod->fd, MSG_LOG) < 0 ||
 	    es_write_string(ggzdmod->fd, buf) < 0)
 		return -1;
 	return 0;
