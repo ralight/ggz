@@ -1,0 +1,7 @@
+[RoomInfo]
+Name = Geekgame
+Description = A game only for true geeks and nerds
+GameType = Geekgame
+MaxPlayers = 500
+MaxTables = 100
+
