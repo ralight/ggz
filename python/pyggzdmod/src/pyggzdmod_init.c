@@ -120,13 +120,35 @@ static PyObject *pyggzdmod_loop(PyObject *self, PyObject *args)
 	return Py_BuildValue("i", ret);
 }
 
-/*static PyObject *pyggzdmod_seat_fd(PyObject *self, PyObject *args)
+static PyObject *pyggzdmod_seat_fd(PyObject *self, PyObject *args)
 {
-	GGZSeat *seat = NULL;
+	GGZSeat seat;
+	int seatnum;
 
-	if(!PyArg_ParseTuple(args, "O", seat)) return NULL;
-	return Py_BuildValue("i", seat->fd);
-}*/
+	if(!PyArg_ParseTuple(args, "i", &seatnum)) return NULL;
+	seat = ggzdmod_get_seat(ggzdmod, seatnum);
+	return Py_BuildValue("i", seat.fd);
+}
+
+static PyObject *pyggzdmod_seat_name(PyObject *self, PyObject *args)
+{
+	GGZSeat seat;
+	int seatnum;
+
+	if(!PyArg_ParseTuple(args, "i", &seatnum)) return NULL;
+	seat = ggzdmod_get_seat(ggzdmod, seatnum);
+	return Py_BuildValue("s", seat.name);
+}
+
+static PyObject *pyggzdmod_seat_type(PyObject *self, PyObject *args)
+{
+	GGZSeat seat;
+	int seatnum;
+
+	if(!PyArg_ParseTuple(args, "i", &seatnum)) return NULL;
+	seat = ggzdmod_get_seat(ggzdmod, seatnum);
+	return Py_BuildValue("i", seat.type);
+}
 
 static PyObject *pyggzdmod_set_handler(PyObject *self, PyObject *args)
 {
@@ -205,7 +227,9 @@ static PyMethodDef pyggzdmod_methods[] =
 	{"mainLoop", pyggzdmod_loop, METH_VARARGS},
 	{"setHandler", pyggzdmod_set_handler, METH_VARARGS},
 	{"test", pyggzdmod_test, METH_VARARGS},
-	/*{"seatFd", pyggzdmod_seat_fd, METH_VARARGS},*/
+	{"seatFd", pyggzdmod_seat_fd, METH_VARARGS},
+	{"seatName", pyggzdmod_seat_name, METH_VARARGS},
+	{"seatType", pyggzdmod_seat_type, METH_VARARGS},
 	{NULL, NULL}
 };
 
