@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2643 2001-11-04 00:17:24Z jdorje $
+ * $Id: ggzdmod.c 2646 2001-11-04 03:28:03Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -96,12 +96,17 @@ static fd_set get_active_fd_set(_GGZdMod *ggzdmod)
 	fd_set active_fd_set;
 	
 	FD_ZERO(&active_fd_set);
-	FD_SET(ggzdmod->fd, &active_fd_set);
+	if (ggzdmod->fd != -1)
+		FD_SET(ggzdmod->fd, &active_fd_set);
 	if (ggzdmod->handlers[GGZ_EVENT_PLAYER_DATA]) {
 		int i;
 		for (i=0; i<ggzdmod->num_seats; i++)
-			FD_SET(ggzdmod->seats[i].fd, &active_fd_set);
+			if (ggzdmod->seats[i].fd != -1)
+				FD_SET(ggzdmod->seats[i].fd, &active_fd_set);
 	}
+	
+	/* FIXME: shouldn't we log an error if there are no available FD's? */
+	
 	return active_fd_set;
 }
 
