@@ -305,7 +305,7 @@ static void player_remove(GGZPlayer* player)
 
 	/* Remove us from room, so we get no new events */
 	if (player->room != -1)
-		room_join(player, -1, fd);
+		room_join(player, -1);
 	
 	/* FIXME: is this the right place for this? */
 	event_player_flush(player);

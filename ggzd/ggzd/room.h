@@ -89,7 +89,9 @@ extern RoomInfo room_info;
 
 extern void room_initialize(void);
 extern void room_create_additional(void);
-extern int room_join(GGZPlayer* player, const int, const int);
-extern int room_handle_request(const int, GGZPlayer*, const int);
+extern int room_join(GGZPlayer* player, const int);
+extern int room_list_send(GGZPlayer* player, int game, char verbose);
+extern int room_handle_join(GGZPlayer* player, int room);
+
 
 #endif

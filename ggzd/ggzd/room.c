@@ -28,7 +28,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <easysock.h>
 #include <ggzd.h>
 #include <datatypes.h>
 #include <room.h>
@@ -36,6 +35,7 @@
 #include <protocols.h>
 #include <event.h>
 #include <chat.h>
+#include <net.h>
 
 
 /* Server wide data structures */
@@ -49,60 +49,22 @@ RoomInfo room_info;
 
 /* Internal use only */
 static void room_notify_change(char* name, const int, const int);
-static int room_list_send(GGZPlayer* player, const int p_fd);
-static int room_handle_join(GGZPlayer* player, const int);
 static int room_event_callback(GGZPlayer* player, int size, void* data);
-static int show_server_info(GGZPlayer *player, const int p_fd);
-
-/* Handle opcodes from player_handle() */
-int room_handle_request(const int request, GGZPlayer* player, const int p_fd)
-{
-	int status = GGZ_REQ_OK;
-
-	switch(request) {
-		case REQ_LIST_ROOMS:
-			status = room_list_send(player, p_fd);
-			break;
-		case REQ_ROOM_JOIN:
-			status = room_handle_join(player, p_fd);
-			break;
-		default:
-			/* player_handle() sent us an invalid opcode	*/
-			/* this is utterly impossible and so we mark it */
-			/* with something utterly inexplicable, and	*/
-			/* do the only honorable thing....		*/
-
-			err_msg("Truth is false and logic lost");
-			err_msg("Now the fourth dimension is crossed");
-			err_msg_exit("--in room_handle_request()");
-
-			/* Suicide is painless -- Not Reached */
-			break;
-	}
-
-	return status;
-}
+static int show_server_info(GGZPlayer *player);
 
 
 /* Handle a REQ_LIST_ROOMS opcode */
-static int room_list_send(GGZPlayer* player, const int p_fd)
+int room_list_send(GGZPlayer* player, int req_game, char verbose)
 {
-	int req_game;
-	char verbose;
 	int i, max, count=0;
+	char *desc;
 
 	/* We don't need to lock anything because CURRENTLY the room count  */
 	/* and options can change ONLY before threads are in existence	    */
 		
-	/* Get the options from teh client */
-	if(es_read_int(p_fd, &req_game) < 0
-	   || es_read_char(p_fd, &verbose) < 0)
-		return GGZ_REQ_DISCONNECT;
-
 	/* Don't send list if they're not logged in */
 	if (player->uid == GGZ_UID_NONE) {
-		if (es_write_int(p_fd, RSP_LIST_ROOMS) < 0
-		    || es_write_int(p_fd, E_NOT_LOGGED_IN) < 0)
+		if (net_send_room_list_error(player, E_NOT_LOGGED_IN) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -113,8 +75,7 @@ static int room_list_send(GGZPlayer* player, const int p_fd)
 
 	if((verbose != 0 && verbose != 1) || req_game < -1 || req_game >= max){
 		/* Invalid Options Sent */
-		if(es_write_int(p_fd, RSP_LIST_ROOMS) < 0
-		   || es_write_int(p_fd, E_BAD_OPTIONS) < 0)
+		if (net_send_room_list_error(player, E_BAD_OPTIONS) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -129,19 +90,15 @@ static int room_list_send(GGZPlayer* player, const int p_fd)
 		count = room_info.num_rooms;
 
 	/* Do da opcode, and announce our count */
-	if(es_write_int(p_fd, RSP_LIST_ROOMS) < 0
-	   || es_write_int(p_fd, count) < 0)
+	if (net_send_room_list_count(player, count) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	/* Send off all the room announcements */
 	for(i=0; i<room_info.num_rooms; i++)
 		if(req_game == -1 || req_game == rooms[i].game_type) {
-			if(es_write_int(p_fd, i) < 0
-			   || es_write_string(p_fd, rooms[i].name) < 0
-			   || es_write_int(p_fd, rooms[i].game_type) < 0)
-				return GGZ_REQ_DISCONNECT;
-			if(verbose
-			   && es_write_string(p_fd, rooms[i].description)<0)
+			desc = verbose ? rooms[i].description : NULL;
+			if (net_send_room(player, i, rooms[i].name, 
+					  rooms[i].game_type, desc) < 0)
 				return GGZ_REQ_DISCONNECT;
 		}
 
@@ -194,53 +151,46 @@ void room_create_additional(void)
 
 
 /* Handle the REQ_ROOM_JOIN opcode */
-int room_handle_join(GGZPlayer* player, const int p_fd)
+int room_handle_join(GGZPlayer* player, int room)
 {
-	int room, result;
+	int result;
 	
-	/* Get the user's room request */
-	if(es_read_int(p_fd, &room) < 0)
-		return GGZ_REQ_DISCONNECT;
-
 	/* Check for silliness from the user */
 	if (player->table != -1 || player->launching) {
-		if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
-		   || es_write_char(p_fd, E_AT_TABLE) < 0)
+		if (net_send_room_join(player, E_AT_TABLE) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
 
 	if (player->transit) {
-		if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
-		   || es_write_char(p_fd, E_IN_TRANSIT) < 0)
+		if (net_send_room_join(player, E_IN_TRANSIT) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
 	
 	if(room > room_info.num_rooms || room < 0) {
-		if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
-		   || es_write_char(p_fd, E_BAD_OPTIONS) < 0)
+		if (net_send_room_join(player, E_BAD_OPTIONS) < 0)
 			return GGZ_REQ_DISCONNECT;
-		
 		return GGZ_REQ_FAIL;
 	}
 
 	/* Do the actual room change, and return results */
-	if((result = room_join(player, room, p_fd)) == GGZ_REQ_DISCONNECT)
+	if((result = room_join(player, room)) == GGZ_REQ_DISCONNECT)
 		return result;
-	if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
-	   || es_write_char(p_fd, result) < 0)
+
+	if (net_send_room_join(player, result) < 0)
 		return GGZ_REQ_DISCONNECT;
 
-	if(room == 0 && show_server_info(player, p_fd) < 0)
+	/* FIXME: remove this once we have a way of making it automatic */
+	if(room == 0 && show_server_info(player) < 0)
 		return GGZ_REQ_DISCONNECT;
-
+	
 	return GGZ_REQ_OK;
 }
 
 
 /* Join a player to a room, returns explanatory code on failure */
-int room_join(GGZPlayer* player, const int room, const int fd)
+int room_join(GGZPlayer* player, const int room)
 {
 	int old_room;
 	int i, count;
@@ -375,10 +325,6 @@ static int room_event_callback(GGZPlayer* player, int size, void* data)
 {
 	unsigned char opcode;
 	char* name;
-	int fd, room;
-
-	room = player->room;
-	fd = player->fd;
 
 	/* Unpack event data */
 	opcode = *(unsigned char*)data;
@@ -387,10 +333,8 @@ static int room_event_callback(GGZPlayer* player, int size, void* data)
 	/* Don't deliver updates about ourself! */
 	if (strcmp(name, player->name) == 0)
 		return 0;
-	
-	if (es_write_int(fd, MSG_UPDATE_PLAYERS) < 0
-	    || es_write_char(fd, opcode) < 0
-	    || es_write_string(fd, name) < 0)
+
+	if (net_send_player_update(player, opcode, name) < 0)
 		return -1;
 	
 	return 0;
@@ -398,7 +342,7 @@ static int room_event_callback(GGZPlayer* player, int size, void* data)
 
 
 /* This is more or less a temporary hack to get some server info on login */
-static int show_server_info(GGZPlayer *player, const int p_fd)
+static int show_server_info(GGZPlayer *player)
 {
 	int players;
 	int status;

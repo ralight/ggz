@@ -36,11 +36,16 @@ int net_read_data(GGZPlayer* player);
 int net_send_login(GGZLoginType type, GGZPlayer *player, char status, char *password);
 int net_send_motd(GGZPlayer *player);
 int net_send_motd_error(GGZPlayer *player, char status);
+int net_send_room_list_error(GGZPlayer *player, char status);
+int net_send_room_list_count(GGZPlayer *player, int count);
+int net_send_room(GGZPlayer *player, int index, char *name, int game, char *desc);
+int net_send_room_join(GGZPlayer *player, char status);
 int net_send_chat(GGZPlayer *player, unsigned char opcode, char *name, char *msg);
 int net_send_chat_result(GGZPlayer *player, char status);
 int net_send_table_launch(GGZPlayer *player, char status);
 int net_send_table_join(GGZPlayer *player, char status);
 int net_send_table_leave(GGZPlayer *player, char status);
+int net_send_player_update(GGZPlayer *player, unsigned char opcode, char *name);
 
 int net_send_logout(GGZPlayer *player, char status);
 

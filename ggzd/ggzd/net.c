@@ -41,13 +41,14 @@
 /* Private internal functions */
 static int _net_handle_login(GGZLoginType type, GGZPlayer *player);
 static int _net_handle_logout(GGZPlayer *player);
+static int _net_handle_room_list(GGZPlayer *player);
+static int _net_handle_room_join(GGZPlayer *player);
 static int _net_handle_table_launch(GGZPlayer *player);
 static int _net_handle_table_join(GGZPlayer *player);
 static int _net_handle_table_leave(GGZPlayer *player);
 static int _net_handle_list_players(GGZPlayer *player);
 static int _net_handle_list_types(GGZPlayer *player);
 static int _net_handle_list_tables(GGZPlayer *player);
-static int _net_handle_room_request(int op, GGZPlayer *Player);
 static int _net_handle_msg_from_sized(GGZPlayer *player);
 static int _net_handle_chat(GGZPlayer *player);
 static int _net_handle_motd(GGZPlayer *player);
@@ -131,8 +132,11 @@ int net_read_data(GGZPlayer* player)
 		break;
 
 	case REQ_LIST_ROOMS:
+		status = _net_handle_room_list(player);
+		break;
+
 	case REQ_ROOM_JOIN:
-		status = _net_handle_room_request((int)op, player);
+		status = _net_handle_room_join(player);
 		break;
 
 	case REQ_GAME:
@@ -208,6 +212,52 @@ int net_send_motd_error(GGZPlayer *player, char status)
 }
 
 
+int net_send_room_list_error(GGZPlayer *player, char status)
+{
+	int fd = _net_get_fd(player);
+	
+	if (es_write_int(fd, RSP_LIST_ROOMS) < 0
+	    || es_write_int(fd, (int)status) < 0)
+		return -1;
+	
+	return 0;
+}
+
+
+int net_send_room_list_count(GGZPlayer *player, int count)
+{
+	int fd = _net_get_fd(player);
+	
+	if (es_write_int(fd, RSP_LIST_ROOMS) < 0
+	    || es_write_int(fd, count) < 0)
+		return -1;
+	
+	return 0;
+}
+
+
+int net_send_room(GGZPlayer *player, int index, char *name, int game, char *desc)
+{
+	int fd = _net_get_fd(player);
+	
+	if (es_write_int(fd, index) < 0
+	    || es_write_string(fd, name) < 0
+	    || es_write_int(fd, game) < 0)
+		return -1;
+
+	if (desc && es_write_string(fd, desc) <0)
+		return -1;
+
+	return 0;
+}
+
+
+int net_send_room_join(GGZPlayer *player, char status)
+{
+	return _net_send_result(player, RSP_ROOM_JOIN, status);
+}
+
+
 int net_send_chat(GGZPlayer *player, unsigned char opcode, char *name, char *msg)
 {
 	int fd = _net_get_fd(player);
@@ -249,12 +299,165 @@ int net_send_table_leave(GGZPlayer *player, char status)
 }
 
 
+int net_send_player_update(GGZPlayer *player, unsigned char opcode, char *name)
+{
+	int fd = _net_get_fd(player);
+	
+	if (es_write_int(fd, MSG_UPDATE_PLAYERS) < 0
+	    || es_write_char(fd, opcode) < 0
+	    || es_write_string(fd, name) < 0)
+		return -1;
+	
+	return 0;
+}
+
 
 int net_send_logout(GGZPlayer *player, char status)
 {
 	return _net_send_result(player, RSP_LOGOUT, status);
 }
 
+
+/**************** Opcode Handlers **************************/
+
+static int _net_handle_login(GGZLoginType type, GGZPlayer *player) 
+{
+	char name[MAX_USER_NAME_LEN + 1];
+	char password[17];
+	int fd = _net_get_fd(player);	
+
+	if (_net_read_name(fd, name) < 0)
+		return GGZ_REQ_DISCONNECT;
+
+	if (type == GGZ_LOGIN && es_read_string(fd, password, 17) < 0)
+		return GGZ_REQ_DISCONNECT;
+	
+	return login_player(type, player, name, password);
+}
+
+
+static int _net_handle_logout(GGZPlayer *player) 
+{
+	logout_player(player);
+	return GGZ_REQ_DISCONNECT;
+}
+
+
+static int _net_handle_room_list(GGZPlayer *player)
+{
+	int fd = _net_get_fd(player);
+	int game;
+	char verbose;
+	
+	/* Get the options from teh client */
+	if(es_read_int(fd, &game) < 0
+	   || es_read_char(fd, &verbose) < 0)
+		return GGZ_REQ_DISCONNECT;
+
+	return room_list_send(player, game, verbose);
+}
+
+
+static int _net_handle_room_join(GGZPlayer *player)
+{
+	int room, fd = _net_get_fd(player);
+	
+	/* Get the user's room request */
+	if(es_read_int(fd, &room) < 0)
+		return GGZ_REQ_DISCONNECT;
+	
+	return room_handle_join(player, room);
+}
+
+
+static int _net_handle_table_launch(GGZPlayer *player) 
+{
+	int fd = _net_get_fd(player);
+	return player_table_launch(player, fd);
+}
+
+
+static int _net_handle_table_join(GGZPlayer *player) 
+{
+	int fd = _net_get_fd(player);
+	return player_table_join(player, fd);
+}
+
+
+static int _net_handle_table_leave(GGZPlayer *player) 
+{
+	int fd = _net_get_fd(player);
+	return player_table_leave(player, fd);
+}
+
+
+static int _net_handle_list_players(GGZPlayer *player) 
+{
+	int fd = _net_get_fd(player);
+	return player_list_players(player, fd);
+}
+
+
+static int _net_handle_list_types(GGZPlayer *player) 
+{
+	int fd = _net_get_fd(player);
+	return player_list_types(player, fd);
+}
+
+
+static int _net_handle_list_tables(GGZPlayer *player) 
+{
+	int fd = _net_get_fd(player);
+	return player_list_tables(player, fd);;
+}
+
+
+static int _net_handle_msg_from_sized(GGZPlayer *player) 
+{
+	return player_msg_from_sized(player);
+}
+ 
+
+static int _net_handle_chat(GGZPlayer *player) 
+{
+	int fd = _net_get_fd(player);
+	unsigned char subop;
+	char *msg = NULL, *target = NULL;
+	int status;
+
+	if (es_read_char(fd, &subop) < 0)
+		return GGZ_REQ_DISCONNECT;
+
+	/* Get arguments if they are used for this subop */
+	if (subop & GGZ_CHAT_M_PLAYER) {
+		if (es_read_string_alloc(fd, &target) < 0)
+			return GGZ_REQ_DISCONNECT;
+	}
+
+	if (subop & GGZ_CHAT_M_MESSAGE) {
+		if (es_read_string_alloc(fd, &msg) < 0) {
+			return GGZ_REQ_DISCONNECT;
+		}
+	}
+
+	status = player_chat(player, subop, target, msg);
+
+	/* Free message now it's been dealt with  */
+	if (msg)
+		free(msg);
+	
+	return status;
+}
+
+
+static int _net_handle_motd(GGZPlayer *player) 
+{
+	int fd = _net_get_fd(player);
+	return player_motd(player, fd);
+}
+
+
+/************ Utility/Convenience functions *******************/
 
 static int _net_send_result(GGZPlayer *player, unsigned char opcode, char result)
 {
@@ -318,123 +521,6 @@ static int _net_send_login_new_status(GGZPlayer *player, char status, char *pass
 		return -1;
 	
 	return 0;
-}
-
-
-static int _net_handle_login(GGZLoginType type, GGZPlayer *player) 
-{
-	char name[MAX_USER_NAME_LEN + 1];
-	char password[17];
-	int fd = _net_get_fd(player);	
-
-	if (_net_read_name(fd, name) < 0)
-		return GGZ_REQ_DISCONNECT;
-
-	if (type == GGZ_LOGIN && es_read_string(fd, password, 17) < 0)
-		return GGZ_REQ_DISCONNECT;
-	
-	return login_player(type, player, name, password);
-}
-
-
-static int _net_handle_logout(GGZPlayer *player) 
-{
-	logout_player(player);
-	return GGZ_REQ_DISCONNECT;
-}
-
-
-static int _net_handle_table_launch(GGZPlayer *player) 
-{
-	int fd = _net_get_fd(player);
-	return player_table_launch(player, fd);
-}
-
-
-static int _net_handle_table_join(GGZPlayer *player) 
-{
-	int fd = _net_get_fd(player);
-	return player_table_join(player, fd);
-}
-
-
-static int _net_handle_table_leave(GGZPlayer *player) 
-{
-	int fd = _net_get_fd(player);
-	return player_table_leave(player, fd);
-}
-
-
-static int _net_handle_list_players(GGZPlayer *player) 
-{
-	int fd = _net_get_fd(player);
-	return player_list_players(player, fd);
-}
-
-
-static int _net_handle_list_types(GGZPlayer *player) 
-{
-	int fd = _net_get_fd(player);
-	return player_list_types(player, fd);
-}
-
-
-static int _net_handle_list_tables(GGZPlayer *player) 
-{
-	int fd = _net_get_fd(player);
-	return player_list_tables(player, fd);;
-}
-
-
-static int _net_handle_room_request(int op, GGZPlayer *player) 
-{
-	int fd = _net_get_fd(player);
-	return room_handle_request(op, player, fd);
-}
-
-
-static int _net_handle_msg_from_sized(GGZPlayer *player) 
-{
-	return player_msg_from_sized(player);
-}
- 
-
-static int _net_handle_chat(GGZPlayer *player) 
-{
-	int fd = _net_get_fd(player);
-	unsigned char subop;
-	char *msg = NULL, *target = NULL;
-	int status;
-
-	if (es_read_char(fd, &subop) < 0)
-		return GGZ_REQ_DISCONNECT;
-
-	/* Get arguments if they are used for this subop */
-	if (subop & GGZ_CHAT_M_PLAYER) {
-		if (es_read_string_alloc(fd, &target) < 0)
-			return GGZ_REQ_DISCONNECT;
-	}
-
-	if (subop & GGZ_CHAT_M_MESSAGE) {
-		if (es_read_string_alloc(fd, &msg) < 0) {
-			return GGZ_REQ_DISCONNECT;
-		}
-	}
-
-	status = player_chat(player, subop, target, msg);
-
-	/* Free message now it's been dealt with  */
-	if (msg)
-		free(msg);
-	
-	return status;
-}
-
-
-static int _net_handle_motd(GGZPlayer *player) 
-{
-	int fd = _net_get_fd(player);
-	return player_motd(player, fd);
 }
 
 
