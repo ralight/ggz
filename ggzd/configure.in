@@ -271,7 +271,8 @@ if test "$enable_games" = yes; then
     SUBDIRS="$SUBDIRS game_servers"
 fi
 
-SUBDIRS="$SUBDIRS tests"
+dnl Put this back in for 0.0.6
+dnl SUBDIRS="$SUBDIRS tests"
 
 LTLIBOBJS=`echo $LIBOBJS | sed 's/\.o/\.lo/g'`
 
