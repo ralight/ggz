@@ -62,10 +62,6 @@ struct game_function_pointers game_funcs = {
 	game_send_hand
 };
 
-/* these should be low, clubs, diamonds, ..., high, but that won't fit in the client window */
-static char* short_bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
-static char* long_bridge_suit_names[5] = {"clubs", "diamonds", "hearts", "spades", "notrump"};
-
 /* game.funcs->map_card
  *   newly implemented; it should cause one card to behave
  *   as another in just about all situations */
@@ -97,13 +93,6 @@ int game_compare_cards(const void *c1, const void *c2)
 	register card_t card1 = game.funcs->map_card( *(card_t *)c1 );
 	register card_t card2 = game.funcs->map_card( *(card_t *)c2 );
 	switch (game.which_game) {
-		case GGZ_GAME_BRIDGE:
-			/* in Bridge, the trump suit is always supposed to be shown on the left */
-			if (card1.suit == game.trump && card2.suit != game.trump)
-				return -1;
-			if (card2.suit == game.trump && card1.suit != game.trump)
-				return 1;
-			/* fall through */
 		default:
 			if (card1.suit < card2.suit) return -1;
 			if (card1.suit > card2.suit) return 1;
@@ -172,23 +161,6 @@ void game_init_game()
 			game.max_hand_length = 10;
 			game.must_overtrump = 1;	/* in La Pocha, you *must* overtrump if you can */
 			game.name = "La Pocha";
-			break;
-		case GGZ_GAME_BRIDGE:
-			game.specific = alloc(sizeof(bridge_game_t));
-			set_num_seats(4);
-			for(p = 0; p < game.num_players; p++) {
-				s = p;
-				game.players[p].seat = s;
-				game.seats[s].ggz = &ggz_seats[p];
-			}
-			/* most possible bids for bridge: 7 * 5 suit bids + (re)double + pass = 37
-			 * longest possible bid: "redouble" = 9 */
-			game.max_bid_choices = 37;
-			game.max_bid_length = 9;
-			game.name = "Bridge";
-
-			/* TODO: for now we won't use bridge scoring */
-			BRIDGE.declarer = -1;
 			break;
 		default:  	
 			ggz_debug("SERVER BUG: game_launch not implemented for game %d.", game.which_game);
@@ -265,7 +237,6 @@ int game_handle_gameover(void)
 			}
 			if (winner_cnt > 0) break;
 			/* else fall through */
-		case GGZ_GAME_BRIDGE:
 		case GGZ_GAME_EUCHRE:
 		default:
 			/* in the default case, just take the highest score(s)
@@ -317,12 +288,6 @@ void game_start_bidding()
 			game.bid_total = 8; /* twice around, at most */
 			game.next_bid = (game.dealer + 1) % game.num_players;
 			break;
-		case GGZ_GAME_BRIDGE:
-			game.next_bid = game.dealer; /* dealer bids first */
-			game.bid_total = -1; /* no set total */
-			BRIDGE.pass_count = 0;
-			BRIDGE.bonus = 1;
-			break;
 		default:
 			/* all players bid once */
 			game.bid_total = game.num_players;
@@ -339,7 +304,7 @@ void game_start_bidding()
 /* TODO: verify that it will work with and without bots */
 int game_get_bid()
 {
-	int status = 0, index=0;
+	int status = 0;
 	bid_t bid;
 	bid.bid = 0;
 
@@ -392,44 +357,6 @@ int game_get_bid()
 				status = req_bid(game.next_bid, num, NULL);
 			}
 			break;
-		case GGZ_GAME_BRIDGE:
-			/* this is based closely on the Suaro code, below */
-
-			/* make a list of regular bids */
-			for (bid.sbid.val = 1; bid.sbid.val <= 7; bid.sbid.val++) {
-				for (bid.sbid.suit = CLUBS; bid.sbid.suit <= BRIDGE_NOTRUMP; bid.sbid.suit++) {
-					if (bid.sbid.val < BRIDGE.contract) continue;
-					if (bid.sbid.val == BRIDGE.contract && bid.sbid.suit <= BRIDGE.contract_suit) continue;
-					game.bid_choices[index] = bid;
-					index++;
-				}
-			}
-
-			/* make "double" or "redouble" bid */
-			if (BRIDGE.contract != 0 &&
-			    BRIDGE.bonus == 1 &&
-			    (game.next_bid == (BRIDGE.declarer+1) % 4 || game.next_bid == (BRIDGE.declarer+3) % 4)) {
-				bid.bid = 0;
-				bid.sbid.spec = BRIDGE_DOUBLE;
-				game.bid_choices[index] = bid;
-				index++;
-			} else if (BRIDGE.contract != 0 &&
-				   BRIDGE.bonus == 2 &&
-				   (game.next_bid == BRIDGE.declarer || game.next_bid == (BRIDGE.declarer+2) % 4)) {
-				bid.bid = 0;
-				bid.sbid.spec = BRIDGE_REDOUBLE;
-				game.bid_choices[index] = bid;
-				index++;
-			}
-
-			/* make "pass" bid */
-			bid.bid = 0;
-			bid.sbid.spec = BRIDGE_PASS;
-			game.bid_choices[index] = bid;
-			index++;
-
-			status = req_bid(game.next_bid, index, NULL);
-			break;
 		default:
 			ggz_debug("SERVER BUG: game_get_bid called for unimplemented game.");
 			status = -1;
@@ -455,28 +382,6 @@ int game_handle_bid(bid_t bid)
 				game.trump = bid.sbid.suit;
 			}
 			/* bidding is ended automatically by game_next_bid */
-			break;
-		case GGZ_GAME_BRIDGE:
-			/* closely based on the Suaro code, below */
-			ggz_debug("The bid chosen is %d %s %d.", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit], bid.sbid.spec);
-			
-			if (bid.sbid.spec == BRIDGE_PASS) {
-				BRIDGE.pass_count++;
-			} else if (bid.sbid.spec == BRIDGE_DOUBLE || bid.sbid.spec == BRIDGE_REDOUBLE) {
-				BRIDGE.pass_count = 1;
-				BRIDGE.bonus *= 2;
-			} else {
-				BRIDGE.declarer = game.next_bid;
-				BRIDGE.dummy = (BRIDGE.declarer + 2) % 4;
-				BRIDGE.pass_count = 1;
-				BRIDGE.contract = bid.sbid.val;
-				BRIDGE.contract_suit = bid.sbid.suit;
-				ggz_debug("Setting bridge contract to %d %s.", BRIDGE.contract, long_bridge_suit_names[BRIDGE.contract_suit]);
-				if (bid.sbid.suit < BRIDGE_NOTRUMP)
-					game.trump = bid.sbid.suit;
-				else
-					game.trump = -1;
-			}
 			break;
 		case GGZ_GAME_LAPOCHA:
 			if (game.bid_count == 0) {
@@ -512,26 +417,6 @@ void game_next_bid()
 				set_game_state( WH_STATE_NEXT_HAND );
 			} else
 				goto normal_order;
-			break;
-		case GGZ_GAME_BRIDGE:
-			/* closely based on Suaro code, below */
-			if (BRIDGE.pass_count == 4) {
-				/* done bidding */
-				if (BRIDGE.contract == 0) {
-					ggz_debug("Four passes; redealing hand.");
-					set_global_message("", "%s", "Everyone passed; redealing.");
-					set_game_state( WH_STATE_NEXT_HAND ); /* redeal hand */
-				} else {
-					ggz_debug("Three passes; bidding is over.");
-					game.bid_total = game.bid_count;
-					/* contract was determined in game_handle_bid */
-				}
-			} else {
-				if (game.bid_count == 0)
-					game.next_bid = game.dealer;
-				else
-					game.next_bid = (game.next_bid + 1) % game.num_players;
-			}
 			break;
 		case GGZ_GAME_LAPOCHA:
 			if (game.bid_count == 1) {
@@ -574,15 +459,8 @@ void game_start_playing(void)
 			for(s=0; s<game.num_seats; s++) {
 				cards_sort_hand( &game.seats[ s ].hand );
 				for (p=0; p<game.num_players; p++)
-					game_send_hand(p, s);
+					game.funcs->send_hand(p, s);
 			}
-			break;
-		case GGZ_GAME_BRIDGE:
-			/* declarer is set in game_handle_bid */
-			set_global_message("", "Contract: %d %s%s.",
-				BRIDGE.contract, long_bridge_suit_names[(int)BRIDGE.contract_suit],
-				BRIDGE.bonus == 1 ? "" : BRIDGE.bonus == 2 ? ", doubled" : ", redoubled");
-			game.leader = (BRIDGE.declarer + 1) % game.num_players;
 			break;
 		default:
 			game.leader = (game.dealer + 1) % game.num_players;
@@ -680,19 +558,8 @@ void game_next_play()
  */
 void game_get_play(player_t p)
 {
-	switch (game.which_game) {
-		case GGZ_GAME_BRIDGE:
-			if (p == BRIDGE.dummy) {
-				/* the declarer plays the dummy's hand */
-				req_play(BRIDGE.declarer, game.players[p].seat);
-				break;
-			}
-			/* else fall through */
-		default:
-			/* in almost all cases, we just want the player to play from their own hand */
-			req_play(p, game.players[p].seat);
-			break;
-	}
+	/* in almost all cases, we just want the player to play from their own hand */
+	req_play(p, game.players[p].seat);
 }
 
 /* game_handle_play
@@ -703,25 +570,7 @@ void game_get_play(player_t p)
  */
 void game_handle_play(card_t c)
 {
-	switch (game.which_game) {
-		case GGZ_GAME_BRIDGE:
-			if (game.play_count == 0 && game.trick_count == 0) {
-				/* after the first play of the hand, we reveal
-				 * the dummy's hand to everyone */
-				player_t p;
-				seat_t dummy_seat = game.players[BRIDGE.dummy].seat;
-				cards_sort_hand(&game.seats[dummy_seat].hand);
-				BRIDGE.dummy_revealed = 1;
-				for (p=0; p<game.num_players; p++) {
-					/* if (p == BRIDGE.dummy) continue; */
-					game_send_hand(p, dummy_seat);
-				}
-			}
-			break;
-		default:
-			/* nothing needs to be done... */
-			break;
-	}
+	/* nothing needs to be done... */
 }
 
 /* game_test_for_gameover
@@ -734,9 +583,6 @@ int game_test_for_gameover()
 	switch (game.which_game) {
 		case GGZ_GAME_LAPOCHA:
 			return (game.hand_num == 29);
-		case GGZ_GAME_BRIDGE:
-			ggz_debug("FIXME: bridge scoring not implemented.");
-			return 0;
 		case GGZ_GAME_EUCHRE:
 		default:
 			/* in the default case, it's just a race toward a target score */
@@ -784,7 +630,6 @@ int game_deal_hand(void)
 				face_names[(int)EUCHRE.up_card.face], suit_names[(int)EUCHRE.up_card.suit]);
 			game.hand_size = 5;
 			goto regular_deal;
-		case GGZ_GAME_BRIDGE:
 		default:
 			game.hand_size = 52 / game.num_players;
 regular_deal:
@@ -808,14 +653,6 @@ int game_send_hand(player_t p, seat_t s)
 		case GGZ_GAME_EUCHRE:
 			/* reveal the up-card */
 			return send_hand(p, s, game.players[p].seat == s || s == 5);
-		case GGZ_GAME_BRIDGE:
-			/* TODO: we explicitly send out the dummy hand, but a player who
-			 * joins late won't see it.  We have the same problem with Suaro. */
-			/* fall through */
-			if (s == BRIDGE.dummy /* player/seat crossover; ok because it's bridge */
-			    && BRIDGE.dummy_revealed)
-				return send_hand(p, s, 1);
-			/* else fall through */
 		default:
 			/* in most cases, we want to reveal the hand only to the player
 			 * who owns it. */
@@ -835,12 +672,6 @@ int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 			if (bid.sbid.spec == EUCHRE_PASS) return snprintf(buf, buf_len, "Pass");
 			if (bid.sbid.spec == EUCHRE_TAKE) return snprintf(buf, buf_len, "Take");
 			if (bid.sbid.spec == EUCHRE_TAKE_SUIT) return snprintf(buf, buf_len, "Take at %s", suit_names[(int)bid.sbid.suit]);
-			break;
-		case GGZ_GAME_BRIDGE:
-			if (bid.sbid.spec == BRIDGE_PASS) return snprintf(buf, buf_len, "Pass");
-			if (bid.sbid.spec == BRIDGE_DOUBLE) return snprintf(buf, buf_len, "Double");
-			if (bid.sbid.spec == BRIDGE_REDOUBLE) return snprintf(buf, buf_len, "Redouble");
-			if (bid.sbid.val > 0) return snprintf(buf, buf_len, "%d %s", bid.sbid.val, short_bridge_suit_names[(int)bid.sbid.suit]);
 			break;
 		case GGZ_GAME_LAPOCHA:
 			return snprintf(buf, buf_len, "%d", (int)bid.bid);
@@ -900,19 +731,6 @@ void game_set_player_message(player_t p)
 					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "maker\n");
 			if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
 				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks + game.players[(p+2)%4].tricks);
-			REGULAR_ACTION_MESSAGES;
-			break;
-		case GGZ_GAME_BRIDGE:
-			REGULAR_SCORE_MESSAGE;
-			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
-				/* TODO: declarer and dummy really shouldn't be at the top */
-				if (p == BRIDGE.declarer)
-					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "declarer\n");
-				if (p == BRIDGE.dummy)
-					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dummy\n");
-			}
-			REGULAR_TRICKS_MESSAGE;
-			REGULAR_BID_MESSAGE;
 			REGULAR_ACTION_MESSAGES;
 			break;
 		case GGZ_GAME_LAPOCHA:
@@ -988,7 +806,6 @@ void game_end_trick(void)
 			/* TODO: handle out-of-order cards */
 			break;
 		case GGZ_GAME_LAPOCHA:
-		case GGZ_GAME_BRIDGE:	
 		default:
 			/* no additional scoring is necessary */
 			break;
@@ -1001,7 +818,6 @@ void game_end_trick(void)
 
 	/* update teammate's info, if necessary */
 	switch (game.which_game) {
-		case GGZ_GAME_BRIDGE:
 		case GGZ_GAME_EUCHRE:
 			/* update teammate's info as well */
 			game_set_player_message((game.winner+2)%4);
@@ -1030,59 +846,6 @@ void game_end_hand(void)
 				else
 					game.players[p].score -= 5 * game.players[p].bid.bid;
 			}
-			break;
-		case GGZ_GAME_BRIDGE:
-			{
-			int points_above, points_below, tricks;
-			int winning_team, team;
-			int tricks_above, tricks_below;
-			tricks = game.players[BRIDGE.declarer].tricks + game.players[BRIDGE.dummy].tricks;
-			if (tricks >= BRIDGE.contract) {
-				winning_team = BRIDGE.declarer % 2;
-				tricks_below = BRIDGE.contract;
-				tricks_above = tricks - BRIDGE.contract;
-
-			} else {
-				winning_team = (BRIDGE.declarer + 1) % 2;
-				tricks_below = 0;
-				tricks_above = BRIDGE.contract - tricks;
-			}
-			switch (BRIDGE.contract_suit) {
-				case CLUBS:
-				case DIAMONDS:
-					points_below = 20 * tricks_below;
-					points_above = 20 * tricks_above;
-					break;
-				case HEARTS:
-				case SPADES:
-					points_below = 30 * tricks_below;
-					points_above = 30 * tricks_above;
-					break;
-				case BRIDGE_NOTRUMP:
-				default:
-					points_below = 30 * tricks_below + (tricks_below > 0) ? 10 : 0;
-					points_above = 30 * tricks_above;
-					break;
-			}
-			points_below *= BRIDGE.bonus;
-			points_above *= BRIDGE.bonus;
-			BRIDGE.points_above_line[winning_team] += points_above;
-			BRIDGE.points_below_line[winning_team] += points_below;
-			
-			if (BRIDGE.points_below_line[winning_team] >= 100) {
-				/* 500 point bonus for winning a game */
-				BRIDGE.points_above_line[winning_team] += 500;
-				for (team=0; team<2; team++) {
-					BRIDGE.points_above_line[team] += BRIDGE.points_below_line[team];
-					BRIDGE.points_below_line[team] = 0;
-				}
-			}
-			/* TODO: vulnerable, etc. */
-			}
-
-			BRIDGE.declarer = BRIDGE.dummy = -1;
-			BRIDGE.dummy_revealed = 0;
-			BRIDGE.contract = 0;
 			break;
 		case GGZ_GAME_EUCHRE:
 			{

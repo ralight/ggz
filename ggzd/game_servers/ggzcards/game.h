@@ -36,35 +36,6 @@ typedef struct lapocha_game_t {
 	int bid_sum;		/* what the sum of the bids is */
 } lapocha_game_t;
 
-/* ---------- BRIDGE ---------- */
-
-/* special bids */
-#define BRIDGE_PASS	1
-#define BRIDGE_DOUBLE	2
-#define BRIDGE_REDOUBLE	3
-
-/* special suits */
-	/* clubs-spades = 0-3 = regular values */
-#define BRIDGE_NOTRUMP 4
-
-#define BRIDGE ( *(bridge_game_t *)(game.specific) )
-typedef struct bridge_game_t {
-	int pass_count;		/* number of passes in a row */
-
-	/* we ignore the regular player_t score field altogether */
-	int points_above_line[2];
-	int points_below_line[2];
-
-	/* contract information */
-	int contract;		/* value of the contract */
-	int contract_suit;	/* suit of the contract; 0-4 */
-	int bonus;		/* 1=regular; 2=doubled; 4=redoubled */
-	player_t declarer;	/* player with the contract */
-	player_t dummy;		/* dummy player; the declarer's partner */
-
-	int dummy_revealed;
-} bridge_game_t;
-
 /* ---------- EUCHRE ---------- */
 
 /* special bids */
