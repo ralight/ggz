@@ -1,7 +1,8 @@
-#! /usr/bin/python
+#! /usr/local/bin/python1.5
 
 from gtk import *
 import socket
+import sys
 from os import getpid
 from string import atoi
 
@@ -83,8 +84,7 @@ entry.show()
 
 # Connect to ggz server
 global sock
-# PUT YOUR GAME NAME HERE
-sock = ggz_connect("Chess")
+sock = ggz_connect(sys.argv[1])
 
 # Add a input handler
 input_add(sock, 1<<0, handle_ggz)
