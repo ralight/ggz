@@ -936,7 +936,7 @@ static int player_msg_to_sized(GGZPlayer* p)
 	if (size == 0) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Empty msg from %s's game ", 
 			p->name);
-		player_transit(p, GGZ_TRANSIT_LEAVE, p->table);
+		/*player_transit(p, GGZ_TRANSIT_LEAVE, p->table);*/
 		return GGZ_REQ_FAIL;
 	}
 	
@@ -965,7 +965,7 @@ static int player_msg_from_sized(GGZPlayer* p)
 	
 	if (size == 0) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Empty game msg from %s", p->name);
-		player_transit(p, GGZ_TRANSIT_LEAVE, p->table);
+		/*player_transit(p, GGZ_TRANSIT_LEAVE, p->table);*/
 		return GGZ_REQ_FAIL;
 	}
 	
