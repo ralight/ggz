@@ -45,6 +45,7 @@ GGZapHandler::GGZapHandler()
 	m_confserver = NULL;
 	m_confusername = NULL;
 	m_zapuser = NULL;
+	m_killserver = 0;
 
 	core = new GGZCore();
 	core->init(GGZCore::parser | GGZCore::modules);
@@ -104,15 +105,10 @@ void GGZapHandler::shutdown()
 	{
 		m_server->logout();
 		m_server->disconnect();
-		process();
+		//process();
 	}
 
-	if(m_server)
-	{
-		detachServerCallbacks();
-		delete m_server;
-		m_server = NULL;
-	}
+	m_killserver = 1;
 
 	if(m_zapuser)
 	{
@@ -136,6 +132,14 @@ void GGZapHandler::setFrontend(const char *frontendtype)
 
 void GGZapHandler::process()
 {
+	if((m_killserver) && (m_server))
+	{
+		detachServerCallbacks();
+		delete m_server;
+		m_server = NULL;
+		m_killserver = 0;
+	}
+
 	if(!m_server) return;
 	if(m_server->dataPending()) m_server->dataRead();
 	if(!m_game) return;

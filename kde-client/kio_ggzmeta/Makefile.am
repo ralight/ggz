@@ -1,6 +1,6 @@
 SUBDIRS = kioslave .
 
-lib_LTLIBRARIES = libkio_ggzmeta.la
+kde_module_LTLIBRARIES = libkio_ggzmeta.la
 
 libkio_ggzmeta_la_SOURCES = kio_ggzmeta.cpp helper.cpp
 

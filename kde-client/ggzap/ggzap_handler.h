@@ -84,6 +84,7 @@ class GGZapHandler : public QObject
 		const char *m_frontendtype;
 		const char *m_confserver, *m_confusername;
 		char *m_zapuser;
+		int m_killserver;
 };
 
 #endif

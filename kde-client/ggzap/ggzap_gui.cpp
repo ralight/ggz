@@ -72,11 +72,19 @@ void GGZapGui::mousePressEvent(QMouseEvent *e)
 	m_x = e->x();
 	m_y = e->y();
 
-	if((m_x > 240) && (m_x < 270) && (m_y > 340) && (m_y < 357)) hide();
+	if((m_x > 240) && (m_x < 270) && (m_y > 340) && (m_y < 357))
+	{
+		hide();
+		m_x = -1;
+		m_y = -1;
+	}
 	if((m_x > 240) && (m_x < 270) && (m_y > 360) && (m_y < 377))
 	{
 		kapp->invokeBrowser("http://ggz.sourceforge.net/clients/ggzap/");
+		m_x = -1;
+		m_y = -1;
 	}
+
 }
 
 void GGZapGui::mouseReleaseEvent(QMouseEvent *e)

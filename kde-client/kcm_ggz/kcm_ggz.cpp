@@ -4,27 +4,30 @@
 #include <ktabctl.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kstddirs.h>
 
 #include <qlayout.h>
 #include <qdir.h>
+#include <qstringlist.h>
 
 #include <dlfcn.h>
 
 #include "config.h"
 
 typedef KCMGGZPane* (*panefunc)(QWidget *parent = NULL, const char *name = NULL);
-#define PATH PREFIX "/lib"
 
 KCMGGZ::KCMGGZ(QWidget *parent, const char *name)
 : KCModule(parent, name)
 {
+	KStandardDirs d;
 	QVBoxLayout *vbox;
 	KTabCtl *ctl;
 	KCMGGZPane *pane;
 	void *handle, *func;
 	panefunc init;
 	QString error;
-	QDir *d;
+	QDir *dir;
+	QStringList pathlist;
 
 	ctl = new KTabCtl(this);
 
@@ -32,29 +35,33 @@ KCMGGZ::KCMGGZ(QWidget *parent, const char *name)
 	//ctl->addTab(kcmggzdefault, "General settings");
 	//connect(kcmggzdefault, SIGNAL(signalChanged()), SLOT(slotChanged()));
 
-	d = new QDir(PATH, "libkcm_ggz_*.so");
-	for(int i = 0; i < d->count(); i++)
+	pathlist = d.resourceDirs("module");
+	for(QStringList::Iterator it = pathlist.begin(); it != pathlist.end(); it++)
 	{
-		if(!error.isEmpty()) error.append("\n");
-		handle = dlopen(QString("%1/%2").arg(PATH).arg((*d)[i].latin1()), RTLD_NOW);
-		if(handle)
+		dir = new QDir((*it), "libkcm_ggz_*.so");
+		for(int i = 0; i < dir->count(); i++)
 		{
-			func = dlsym(handle, "kcmggz_init");
-			if(func)
+			if(!error.isEmpty()) error.append("\n");
+			handle = dlopen(QString("%1/%2").arg((*it)).arg((*dir)[i].latin1()), RTLD_NOW);
+			if(handle)
 			{
-				init = (panefunc)func;
-				pane = (*init)(ctl);
-				if(pane)
+				func = dlsym(handle, "kcmggz_init");
+				if(func)
 				{
-					panelist.append(pane);
-					ctl->addTab(pane, pane->caption());
-					connect(pane, SIGNAL(signalChanged()), SLOT(slotChanged()));
+					init = (panefunc)func;
+					pane = (*init)(ctl);
+					if(pane)
+					{
+						panelist.append(pane);
+						ctl->addTab(pane, pane->caption());
+						connect(pane, SIGNAL(signalChanged()), SLOT(slotChanged()));
+					}
+					else error.append(i18n("Got a NULL object."));
 				}
-				else error.append(i18n("Got a NULL object."));
+				else error.append(i18n("This is no KCM_GGZ module."));
 			}
-			else error.append(i18n("This is no KCM_GGZ module."));
+			else error.append(dlerror());
 		}
-		else error.append(dlerror());
 	}
 
 	vbox = new QVBoxLayout(this, 5);
