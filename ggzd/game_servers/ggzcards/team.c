@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/27/2002
  * Desc: Functions and data for tracking teams
- * $Id: team.c 3573 2002-03-16 15:19:46Z jdorje $
+ * $Id: team.c 3574 2002-03-16 15:56:43Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -75,6 +75,6 @@ int get_team_score(team_t t)
 		if (game.players[p].team == t)
 			return game.players[p].score;
 			
-	assert(0);
+	assert(FALSE);
 	return 0;
 }
