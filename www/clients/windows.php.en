@@ -19,6 +19,14 @@
 </ul>
 <br>
 
+<i>Note about the Windows port of GGZ</i><br>
+Historically, the <a href="http://wggz.sourceforge.net/">WGGZ project</a>
+has provided a port of the most important client-side GGZ components to
+Windows. This project is currently not active. However, most of GGZ runs fine
+under Cygwin. Work is being done on supporting native compilation using the
+mingw compiler.
+<br>
+
 </td><td valign="top">
 
 <img src="pics/wggz.png"><br>

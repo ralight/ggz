@@ -19,6 +19,14 @@
 </ul>
 <br>
 
+<i>Hinweis zu der Windows-Portierung von GGZ</i><br>
+Bis vor kurzem hat das <a href="http://wggz.sourceforge.net/">WGGZ-Projekt</a>
+die Portierung der wichtigsten client-seitigen Komponenten auf Windows
+angeboten. Dieses Projekt ist momentan nicht aktiv. Allerdings funktioniert das
+meiste von GGZ unter Cygwin. Es wird momentan auch daran gearbeitet, die native
+Compilierung mit Hilfe des mingw-Compilers zu unterstützen.
+<br>
+
 </td><td valign="top">
 
 <img src="pics/wggz.png"><br>
