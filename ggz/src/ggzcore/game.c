@@ -49,7 +49,6 @@ static int _ggzcore_game_event_is_valid(GGZGameEvent event);
 static GGZHookReturn _ggzcore_game_event(struct _GGZGame *game, 
 					 GGZGameEvent id, void *data);
 static char* _ggzcore_game_get_path(char **argv);
-static void _ggzcore_game_exec(char *path, char **argv);
 
 
 /* Array of GGZGame messages */
@@ -75,9 +74,6 @@ struct _GGZGame {
 
 	/* File descriptor for communication with game process */
 	int fd;
-
-	/* Filename used for Unix domain socket */
-	char *file_name;
 
 	/* PID of running game process */
 	pid_t pid;
@@ -275,8 +271,6 @@ void _ggzcore_game_free(struct _GGZGame *game)
 	int i;
 
 	ggzcore_debug(GGZ_DBG_GAME, "Destroying game object");
-	if (game->file_name)
-		ggzcore_free(game->file_name);
 
 	if (game->fd != -1)
 		close(game->fd);
@@ -393,18 +387,15 @@ struct _GGZModule* _ggzcore_game_get_module(struct _GGZGame *game)
 int _ggzcore_game_launch(struct _GGZGame *game)
 {
 	pid_t pid;
-	int fd, sock_accept;
-	char *name, *path, **argv;
+	int sfd[2];
+	char *path, **argv;
 	struct stat file_status;
-	
-	name = _ggzcore_module_get_name(game->module);
+
 	argv = _ggzcore_module_get_argv(game->module);
 	path = _ggzcore_game_get_path(argv);
 
-	/* Leave room for "/tmp/" + 6 digit PID + '\0' */
-	game->file_name = ggzcore_malloc(strlen(name) + 12);
-
-	ggzcore_debug(GGZ_DBG_GAME, "Launching game of %s", name);
+	ggzcore_debug(GGZ_DBG_GAME, "Launching game of %s",
+		      _ggzcore_module_get_name(game->module));
 	ggzcore_debug(GGZ_DBG_GAME, "Exec path is %s", path);
 
 	/* Check for existence of game module */
@@ -415,47 +406,47 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		ggzcore_free(path);
 		return -1;
 	}
+
+	/* Set up socket pair for ggz<->game communication */
+	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, sfd) < 0)
+		ggzcore_error_sys_exit("socketpair failed"); 	
 	
 	/* Fork table process */
 	if ( (pid = fork()) < 0) {
 		ggzcore_error_sys_exit("fork failed");
 	} else if (pid == 0) {
+		/* child */
+		close(sfd[0]);
 
-		/* Wait for parent to create Unix domain socket */
-		sprintf(game->file_name, "/tmp/%s.%d", name, getpid());
-		while (stat(game->file_name, &file_status) < 0)
-			sleep(1);
+		/* NOTE: after we close FD 3, below, we can't send any
+		 * more communications to this FD.  Although this seems
+		 * to be safe with ggzcore_debug right now, I'm not
+		 * going to count on it.  --JDS */
 
-		_ggzcore_game_exec(path, argv);
-		/* If we get here, exec failed.  Bad news */
-		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL,
-				    strerror(errno));
-		ggzcore_debug(GGZ_DBG_GAME, "Exec failed");
-		return -1;
-	} else {
-		ggzcore_free(path);
-		/* Create Unix domain socket for communication*/
-
-		/* FIXME: should use more secure way of getting filename */
-		/* FIXME: this will go away once we pass fd using env */
-		sprintf(game->file_name, "/tmp/%s.%d", name, pid);
-		sock_accept = es_make_unix_socket(ES_SERVER, game->file_name);
-		if (sock_accept < 0) {
-			_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL,
-					    strerror(errno));
-			ggzcore_debug(GGZ_DBG_GAME, "Failed to create Unix socket");
-			return -1;
+		/* libggzmod expects FD 3 to be the socket's FD */
+		if(sfd[1] != 3) {
+			if (dup2(sfd[1], 3) != 3)
+				exit(-1);
+			if (close(sfd[1]) < 0)
+				exit(-1);
 		}
 
-		if (listen(sock_accept, 1) < 0)
-			ggzcore_error_sys_exit("listen falied");
+		/* It's tempting to put this in its own function, but
+		 * since we can't use debugging it wouldn't be safe. */
+		execv(path, argv);
 
-		if ( (fd = accept(sock_accept, NULL, NULL)) < 0)
-			ggzcore_error_sys_exit("accept failed");
+		/* If we get here, exec failed.  Bad news */
+		/* we still can't write debug info here!  But, we could write
+		 * game info to socket 3. */
+		exit(-1);
+	} else {
+		/* parent */
+		ggzcore_free(path);
+		close(sfd[1]);
 		
 		/* Key info about game */
 		game->pid = pid;
-		game->fd = fd;
+		game->fd = sfd[0];
 
 		ggzcore_debug(GGZ_DBG_GAME, "Successful launch");
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCHED, NULL);
@@ -528,15 +519,6 @@ static char* _ggzcore_game_get_path(char **argv)
 		path = ggzcore_strdup(mod_path);
 
 	return path;
-}
-
-
-static void _ggzcore_game_exec(char *path, char **argv)
-{
-	ggzcore_debug(GGZ_DBG_GAME, "Process forked.  Game running");
-	
-	/* FIXME: Maybe pass over sock, rather than cmd-line? */
-	execv(path, argv);
 }
 
 

@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 2063 2001-07-22 05:51:36Z jdorje $	*/
+/*	$Id: ggz.c 2174 2001-08-19 20:01:14Z jdorje $	*/
 /*
  * Copyright (C) 2000 GGZ devel team
  *
@@ -26,78 +26,28 @@
 #include <config.h>
 #endif /* HAVE_CONFIG */
 
-#include <sys/types.h>
 #include <sys/socket.h>
-#include <sys/un.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
 
-static char *name=NULL;
-static int ggz_sock=-1;
+/* The socket will always be FD 3. */
+#define GGZ_SOCK_FD 3
 
-/**
- * @fn void ggz_connect(void)
- * Se conecta al ggz client
- */
 int ggz_client_connect(void)
 {
-	char fd_name[80];
-        struct sockaddr_un addr;
-	int fd;
-
-	if(!name) {
-		fprintf(stderr,"ggz is not initialized!\n");
-		return -1;
-	}
-	
-	/* Connect to Unix domain socket */
-	snprintf(fd_name, sizeof(fd_name), "/tmp/%s.%d", name, getpid());
-	/* FIXME: if this string is cut short, the game will just hang -- JDS */
-
-	if ( (fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) {
-		perror("ggz_connect:");
-		return -1;
-	}
-
-	bzero(&addr, sizeof(addr));
-	addr.sun_family = AF_LOCAL;
-	strncpy(addr.sun_path, fd_name,sizeof(addr.sun_path)-1);
-	addr.sun_path[sizeof(addr.sun_path)-1]=0;
-
-	if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-		perror("ggz_connect:");
-		return -1;
-	}
-
-	ggz_sock = fd;
-	return fd;
+	/* TODO: make sure the socket is real */
+	return GGZ_SOCK_FD;
 }
 
 int ggz_client_init(char *game_name)
 {
-	if(name) {
-		fprintf(stderr,"ggz is already initialized");
-		return 0;
-	}
-
-	name = strdup(game_name);
-	if (!name)
-		return -1;
-
-	ggz_sock=-1;
-	
 	return 0;
 }
 
 int ggz_client_quit()
 {
-	if(name) free(name);
 	return 0;
 }
 
 int ggz_client_get_sock()
 {
-	return ggz_sock;
+	return GGZ_SOCK_FD;
 }
