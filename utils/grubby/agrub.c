@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <popt.h>
+#include <signal.h>
 
 #include <easysock.h>
 #include <protocols.h>
@@ -32,7 +33,7 @@ void handle_chat(char *, char *);
 void handle_command(char *, char *);
 void send_chat(char *);
 void send_chat_insert_name(char *);
-void do_logout(void);
+void do_logout(int);
 void do_greet(char *);
 void store_aka(char *, char *);
 void store_email(char *, char *);
@@ -41,12 +42,14 @@ void store_info(char *, char *);
 void check_seen(char *, char *);
 void whois(char *sender, char *name);
 void queue_message(char *, char *);
+void graceless_exit(int);
 
 int my_socket, rooms=0, cur_room=-1, logged_in=0;
 char **room_list;
 char out_msg[1024];
 int player_greet = 0;
 int last_used = 0;
+int sig_logout = 0;
 
 #define MAX_KNOWN 50
 struct {
@@ -249,6 +252,11 @@ int main(const int argc, const char *argv[])
 		fclose(grub_file);
 	}
 
+	/* Trap ^C and family */
+	signal(SIGINT, graceless_exit);
+	signal(SIGQUIT, graceless_exit);
+	signal(SIGTERM, graceless_exit);
+
 	/* Connect up to GGZ server */
 	my_socket = es_make_socket(ES_CLIENT, port, host);
 	if(my_socket < 0) {
@@ -263,10 +271,14 @@ int main(const int argc, const char *argv[])
 		timeout.tv_sec = 1;
 		timeout.tv_usec = 0;
 		if(select(my_socket+1, &select_mux, NULL, NULL, &timeout)) {
-			if(FD_ISSET(my_socket, &select_mux))
+			if(sig_logout)
+				do_logout(1);
+			else if(FD_ISSET(my_socket, &select_mux))
 				handle_read();
 		} else {
-			if(!logged_in)
+			if(sig_logout)
+				do_logout(1);
+			else if(!logged_in)
 				req_login();
 			else if(rooms != 0 && cur_room == -1)
 				change_room();
@@ -480,7 +492,7 @@ void handle_command(char *sender, char *command)
 	} else if(!strcasecmp(command, "shutdown")) {
 		if(!strcmp(sender, owner)) {
 			send_chat("NOoooooo... I'm melting....");
-			do_logout();
+			do_logout(0);
 		} else {
 			send_chat("You can't order me around like that!");
 		}
@@ -533,7 +545,14 @@ void send_chat_insert_name(char *msg)
 	send_chat(out_msg);
 }
 
-void do_logout(void)
+
+void graceless_exit(int sig)
+{
+	sig_logout = 1;
+}
+
+
+void do_logout(int on_sig)
 {
 	FILE *grub_file;
 	char *home;
@@ -541,7 +560,8 @@ void do_logout(void)
 	int i;
 
 	/* Logout of GGZ server */
-	es_write_int(my_socket, REQ_LOGOUT);
+	if(!on_sig)
+		es_write_int(my_socket, REQ_LOGOUT);
 	
 	/* Save current information */
 	home = getenv("HOME");
@@ -605,6 +625,9 @@ void do_logout(void)
 	}
 
 	fclose(grub_file);
+
+	if(on_sig)
+		exit(0);
 }
 
 
@@ -800,6 +823,8 @@ void check_seen(char *sender, char *name)
 	int i, j;
 	time_t now;
 	char *disp_sender, *disp_name;
+	int secs, mins, hours, days, sz;
+	char tstr[128];
 
 	now = time(NULL);
 
@@ -821,10 +846,38 @@ void check_seen(char *sender, char *name)
 			disp_name = known[i].aka;
 		else
 			disp_name = name;
+
+		secs = difftime(now, known[i].last_seen);
+		days = secs/86400;
+		secs -= days*86400;
+		hours = secs/3600;
+		secs -= hours*3600;
+		mins = secs/60;
+		secs -= mins*60;
+
+		sz = 0;
+		if(days > 0)
+			if(days > 1)
+				sz = sprintf(tstr, "%d days, ", days);
+			else
+				sz = sprintf(tstr, "1 day, ");
+		if(hours > 0)
+			if(hours > 1)
+				sz += sprintf(tstr+sz, "%d hours, ", hours);
+			else
+				sz += sprintf(tstr+sz, "1 hour, ");
+		if(mins == 1)
+			sz += sprintf(tstr+sz, "1 minute and ");
+		else
+			sz += sprintf(tstr+sz, "%d minutes and ", mins);
+		if(secs == 1)
+			sprintf(tstr+sz, "1 second");
+		else
+			sprintf(tstr+sz, "%d seconds", secs);
+
 		sprintf(out_msg,
-		       "I last greeted %s %d seconds ago in the '%s' room, %s.",
-			disp_name, (int)difftime(now, known[i].last_seen),
-			known[i].last_room, disp_sender);
+		       "I last greeted %s %s ago in the '%s' room, %s.",
+			disp_name, tstr, known[i].last_room, disp_sender);
 	}
 
 	send_chat(out_msg);
@@ -870,12 +923,12 @@ void whois(char *sender, char *name)
 			sprintf(out_msg, "%s, %s's email is %s.", disp_sender, disp_name, email);
 			send_chat(out_msg);
 		}
-		if(email != NULL)
+		if(url != NULL)
 		{
 			sprintf(out_msg, "%s, %s's URL is %s.", disp_sender, disp_name, url);
 			send_chat(out_msg);
 		}
-		if(email != NULL)
+		if(info != NULL)
 		{
 			sprintf(out_msg, "%s, %s's info is \"%s\".", disp_sender, disp_name, info);
 			send_chat(out_msg);
