@@ -4,7 +4,7 @@ dnl ===============================
 AC_INIT(configure.ac)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
-AM_INIT_AUTOMAKE(ggz-sdl-games, 0.0.7pre)
+AM_INIT_AUTOMAKE(ggz-sdl-games, 0.0.7)
 AM_CONFIG_HEADER(config.h)
 
 dnl Basic checks

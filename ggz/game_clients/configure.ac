@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5385 2003-02-04 17:28:58Z jdorje $
+dnl $Id: configure.ac 5563 2003-05-10 23:54:28Z dr_maux $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -9,7 +9,7 @@ if test -r $srcdir/package; then
 fi
 
 DEFAULT_PACKAGE="ggz-gtk-games"
-DEFAULT_VERSION="0.0.7pre"
+DEFAULT_VERSION="0.0.7"
 DEFAULT_SUBDIRS="chess chinese-checkers combat dots ggzcards hastings lapocha reversi spades tictactoe"
 
 dnl If an override is present, use it

@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
-AM_INIT_AUTOMAKE(ggz-grubby, 0.0.7pre)
+AM_INIT_AUTOMAKE(ggz-grubby, 0.0.7)
 AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 

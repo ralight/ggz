@@ -1,9 +1,9 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5466 2003-02-28 18:41:46Z dr_maux $
+dnl $Id: configure.ac 5563 2003-05-10 23:54:28Z dr_maux $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
-AM_INIT_AUTOMAKE(ggz-gnome-client, 0.0.7pre)
+AM_INIT_AUTOMAKE(ggz-gnome-client, 0.0.7)
 AC_CONFIG_HEADERS([config.h])
 
 PKG_CHECK_MODULES(GGZ, libgnomeui-2.0)

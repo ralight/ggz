@@ -1,9 +1,9 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5492 2003-04-28 06:53:29Z dr_maux $
+dnl $Id: configure.ac 5563 2003-05-10 23:54:28Z dr_maux $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
-AM_INIT_AUTOMAKE(ggz-txt-client, 0.0.7pre)
+AM_INIT_AUTOMAKE(ggz-txt-client, 0.0.7)
 AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 

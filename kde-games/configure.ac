@@ -5,7 +5,7 @@ AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CANONICAL_TARGET([])
 AC_ARG_PROGRAM
-AM_INIT_AUTOMAKE(ggz-kde-games, 0.0.7pre)
+AM_INIT_AUTOMAKE(ggz-kde-games, 0.0.7)
 AC_CONFIG_HEADERS([config.h])
 
 dnl Check for Qt and KDE
