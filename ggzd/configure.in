@@ -115,13 +115,13 @@ if test "$database" = db3; then
      if test "$db3_style" = -1; then
          AC_CHECK_LIB(db3, db_env_create,
              AC_CHECK_HEADER(db3/db.h, db3_style=1,
-                 AC_MSG_ERROR(*** Cannot find db3/db.h header); database=db2),
-             AC_MSG_ERROR(*** Cannot find db3 library ); database=db2)
+                 AC_MSG_WARN(*** Cannot find db3/db.h header); database=db2),
+             AC_MSG_WARN(*** Cannot find db3 library ); database=db2)
      fi
 
      if test "$db3_style" = 0; then
          ggzd_LIBS="$ggzd_LIBS -ldb"
-     else
+     elif test "$db3_style" = 1; then
          ggzd_LIBS="$ggzd_LIBS -ldb3"
          AC_DEFINE(DB3_IN_DIR)
      fi
