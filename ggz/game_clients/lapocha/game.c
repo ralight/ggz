@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3174 2002-01-21 08:09:42Z jdorje $
+ * $Id: game.c 3728 2002-04-04 07:59:26Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -31,6 +31,8 @@
 
 #include <ggz.h>
 
+#include "ggzintl.h"
+
 #include "main.h"
 #include "game.h"
 
@@ -44,7 +46,7 @@ void game_send_bid(int bid)
 
 	game.bid[game.me] = bid;
 
-	statusbar_message("Sending bid to server");
+	statusbar_message(_("Sending bid to server"));
 }
 
 
@@ -53,7 +55,7 @@ void game_play_card(int card)
 	ggz_write_int(game.fd, LP_SND_PLAY);
 	ggz_write_char(game.fd, (char)card);
 
-	statusbar_message("Sending play to server");
+	statusbar_message(_("Sending play to server"));
 }
 
 
@@ -76,5 +78,6 @@ void game_handle_table_click(char card)
 	ggz_write_int(game.fd, LP_SND_TRUMP);
 	ggz_write_char(game.fd, trump);
 
-	statusbar_message("Sending trump selection to server");
+	statusbar_message(_("Sending trump selection to server"));
 }
+

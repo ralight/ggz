@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3386 2002-02-17 08:41:22Z jdorje $
+ * $Id: main.c 3728 2002-04-04 07:59:26Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -38,6 +38,8 @@
 
 #include <ggz.h>
 #include <ggzmod.h>
+
+#include "ggzintl.h"
 
 #include "support.h"
 #include "main.h"
@@ -73,6 +75,8 @@ int main(int argc, char *argv[])
 {
 	initialize_debugging();
 	gtk_init(&argc, &argv);
+
+	ggz_intl_init("lapocha");
 
 	game.fd = ggzmod_connect();
 	if (game.fd < 0) return -1;
@@ -206,7 +210,7 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			status = 0;
 			table_show_cards(0, 13, 39, 26);
 			game.state = LP_STATE_TRUMP;
-			statusbar_message("Please choose the trump suit");
+			statusbar_message(_("Please choose the trump suit"));
 			break;
 		case LP_MSG_TRICK:
 			status = get_trick_winner();
@@ -233,7 +237,7 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 
 static void game_init(void)
 {
-	statusbar_message("Waiting for server");
+	statusbar_message(_("Waiting for server"));
 	game.state = LP_STATE_INIT;
 }
 
@@ -260,7 +264,7 @@ static int get_players(void)
 				return -1;
 			if(i != game.me && game.got_players
 			   &&  strcmp(t_name, game.names[i])) {
-				temp = g_strdup_printf("%s joined the table",
+				temp = g_strdup_printf(_("%s joined the table"),
 							t_name);
 				statusbar_message(temp);
 				g_free(temp);
@@ -268,9 +272,9 @@ static int get_players(void)
 			strcpy(game.names[i], t_name);
 			table_set_name(i, game.names[i]);
 		} else {
-			table_set_name(i, "Empty Seat");
+			table_set_name(i, _("Empty Seat"));
 			if(game.names[i][0] != '\0' && game.got_players) {
-				temp = g_strdup_printf("%s left the table",
+				temp = g_strdup_printf(_("%s left the table"),
 							game.names[i]);
 				game.names[i][0] = '\0';
 				statusbar_message(temp);
@@ -395,7 +399,7 @@ static int get_gameover_status(void)
 	if(ggz_read_char(game.fd, &winner) < 0)
 		return -1;
 
-	t_str = g_strdup_printf("%s won the game", game.names[(int)winner]);
+	t_str = g_strdup_printf(_("%s won the game"), game.names[(int)winner]);
 	statusbar_message(t_str);
 	g_free(t_str);
 	game.state = LP_STATE_DONE;
@@ -424,7 +428,7 @@ void statusbar_message(char *msg)
 	if(sb == NULL) {
 		sb = gtk_object_get_data(GTK_OBJECT(dlg_main), "statusbar1");
 		sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(sb),
-							  "Game Messages");
+							  _("Game Messages"));
 	}
 
 	gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
@@ -440,12 +444,12 @@ static int get_bid_status(void)
 
 	if(status == 0) {
 		table_set_bid(game.me, game.bid[game.me]);
-		statusbar_message("Your bid was accepted");
+		statusbar_message(_("Your bid was accepted"));
 		game.state = LP_STATE_WAIT;
 		table_set_bidder(game.me);
 	} else if(status == LP_ERR_INVALID) {
 		dlg_bid_display(hand.hand_size);
-		statusbar_message("Invalid bid, please resubmit");
+		statusbar_message(_("Invalid bid, please resubmit"));
 	}
 
 	return status;
@@ -460,11 +464,11 @@ static int get_trump_status(void)
 		return -1;
 
 	if(status == 0) {
-		statusbar_message("Your trump was accepted");
+		statusbar_message(_("Your trump was accepted"));
 		game.state = LP_STATE_WAIT;
 		table_clear_table();
 	} else if(status == LP_ERR_INVALID)
-		statusbar_message("Invalid trump, this shouldn't happen");
+		statusbar_message(_("Invalid trump, this shouldn't happen"));
 
 	return status;
 }
@@ -485,7 +489,7 @@ static int get_player_bid(void)
 	game.bid[num] = bid;
 	table_set_bid(num, bid);
 
-	t_str = g_strdup_printf("%s bid %d", game.names[num], game.bid[num]);
+	t_str = g_strdup_printf(_("%s bid %d"), game.names[num], game.bid[num]);
 	statusbar_message(t_str);
 	g_free(t_str);
 
@@ -515,7 +519,7 @@ static int get_play_status(void)
 		return -1;
 
 	if(status == 0) {
-		statusbar_message("Waiting for next play");
+		statusbar_message(_("Waiting for next play"));
 		table_set_turn(game.me);
 	} else {
 		/* Restore the cards the way they should be */
@@ -525,15 +529,15 @@ static int get_play_status(void)
 
 		switch((int)status) {
 			case LP_ERR_FOLLOW_SUIT:
-				msg = "You must follow the led suit";
+				msg = _("You must follow the led suit");
 				game.state = LP_STATE_PLAY;
 				break;
 			case LP_ERR_MUST_TRUMP:
-				msg = "You must play a trump card";
+				msg = _("You must play a trump card");
 				game.state = LP_STATE_PLAY;
 				break;
 			case LP_ERR_TURN:
-				msg = "Wait for your turn to play";
+				msg = _("Wait for your turn to play");
 				game.state = LP_STATE_WAIT;
 				break;
 			case LP_ERR_INVALID:
@@ -541,7 +545,7 @@ static int get_play_status(void)
 				/* Should resynch at this point */
 				/* but we return -1 below for now */
 				game.state = LP_STATE_WAIT;
-				msg = "Internal error, ack puke";
+				msg = _("Internal error, ack puke");
 				break;
 		}
 		statusbar_message(msg);
@@ -586,7 +590,7 @@ static int get_trick_winner(void)
 
 	table_set_tricks(p_num, ++game.tricks[(int)p_num]);
 
-	t_str = g_strdup_printf("%s won the trick", game.names[(int)p_num]);
+	t_str = g_strdup_printf(_("%s won the trick"), game.names[(int)p_num]);
 	statusbar_message(t_str);
 	g_free(t_str);
 
@@ -626,3 +630,4 @@ static int get_dealer(void)
 
 	return 0;
 }
+

@@ -34,6 +34,8 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "ggzintl.h"
+
 #include "cb_bid.h"
 #include "dlg_bid.h"
 #include "support.h"
@@ -65,7 +67,7 @@ void dlg_bid_setup(GtkWidget *widget)
   /*gtk_widget_show (dlg_bid_fixed);*/
   gtk_widget_set_usize (dlg_bid_fixed, 100, 100);
 
-  bid_frame1 = gtk_frame_new ("Enter Your Bid");
+  bid_frame1 = gtk_frame_new (_("Enter Your Bid"));
   gtk_widget_set_name (bid_frame1, "bid_frame1");
   gtk_widget_ref (bid_frame1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "bid_frame1", bid_frame1,
@@ -91,7 +93,7 @@ void dlg_bid_setup(GtkWidget *widget)
   gtk_widget_show (bid_hbox1);
   gtk_box_pack_start (GTK_BOX (bid_vbox1), bid_hbox1, TRUE, TRUE, 5);
 
-  bid_label1 = gtk_label_new (" Your Bid ");
+  bid_label1 = gtk_label_new (_(" Your Bid "));
   gtk_widget_set_name (bid_label1, "bid_label1");
   gtk_widget_ref (bid_label1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "bid_label1", bid_label1,
@@ -109,7 +111,7 @@ void dlg_bid_setup(GtkWidget *widget)
   gtk_box_pack_start (GTK_BOX (bid_hbox1), dlg_bid_spin, TRUE, TRUE, 0);
   gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (dlg_bid_spin), TRUE);
 
-  dlg_bid_submit = gtk_button_new_with_label ("Submit Bid");
+  dlg_bid_submit = gtk_button_new_with_label (_("Submit Bid"));
   gtk_widget_set_name (dlg_bid_submit, "dlg_bid_submit");
   gtk_widget_ref (dlg_bid_submit);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "dlg_bid_submit", dlg_bid_submit,
@@ -133,3 +135,4 @@ void dlg_bid_display(int max_bid)
 	gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(dlg_bid_spin), adj);
 	gtk_widget_show(dlg_bid_fixed);
 }
+

@@ -34,6 +34,8 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "ggzintl.h"
+
 #include "dlg_about.h"
 #include "support.h"
 
@@ -50,7 +52,7 @@ create_dlg_about (void)
 
   dlg_about = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_about), "dlg_about", dlg_about);
-  gtk_window_set_title (GTK_WINDOW (dlg_about), "About La Pocha");
+  gtk_window_set_title (GTK_WINDOW (dlg_about), _("About La Pocha"));
   GTK_WINDOW (dlg_about)->type = GTK_WINDOW_DIALOG;
   gtk_window_set_policy (GTK_WINDOW (dlg_about), TRUE, TRUE, FALSE);
 
@@ -65,14 +67,14 @@ create_dlg_about (void)
   gtk_widget_show (vbox1);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, TRUE, TRUE, 0);
 
-  label3 = gtk_label_new ("GGZ Gaming Zone\nLa Pocha Version 0.0.1");
+  label3 = gtk_label_new (_("GGZ Gaming Zone\nLa Pocha Version 0.0.1"));
   gtk_widget_ref (label3);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "label3", label3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label3);
   gtk_box_pack_start (GTK_BOX (vbox1), label3, FALSE, FALSE, 0);
 
-  label4 = gtk_label_new ("Authors:\n        Gtk+ Client:\n            Rich Gade        <rgade@users.sourceforge.net>\n\n        Windows 9X Client:\n            Doug Hudson  <djh@users.sourceforge.net>\n\n        Game Server:\n            Rich Gade        <rgade@users.sourceforge.net>\n\nWebsite:\n        http://ggz.sourceforge.net/");
+  label4 = gtk_label_new (_("Authors:\n        Gtk+ Client:\n            Rich Gade        <rgade@users.sourceforge.net>\n\n        Windows 9X Client:\n            Doug Hudson  <djh@users.sourceforge.net>\n\n        Game Server:\n            Rich Gade        <rgade@users.sourceforge.net>\n\nWebsite:\n        http://ggz.sourceforge.net/games/lapocha/"));
   gtk_widget_ref (label4);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "label4", label4,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -85,7 +87,7 @@ create_dlg_about (void)
   gtk_widget_show (dialog_action_area1);
   gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 10);
 
-  ok_button = gtk_button_new_with_label ("OK");
+  ok_button = gtk_button_new_with_label (_("OK"));
   gtk_widget_ref (ok_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "ok_button", ok_button,
                             (GtkDestroyNotify) gtk_widget_unref);
