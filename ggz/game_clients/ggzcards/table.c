@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2626 2001-10-29 03:39:56Z jdorje $
+ * $Id: table.c 2692 2001-11-08 01:05:23Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -305,19 +305,53 @@ void table_set_global_text_message(const char *mark, const char *message)
 void table_set_global_cardlist_message(const char *mark, int *lengths,
 				       card_t ** cardlist)
 {
-	static const char suits[4] = { 'C', 'D', 'H', 'S' };
 	int p, i;
 	char buf[4096] = "";
+	int maxlen = 0, namewidth = 0;
 
-	/* FIXME: this should take over the work of the server
-	   text-generating code. */
+	/* FIXME: translations */
+	char *suit_names[4] = { "clubs", "diamonds", "hearts", "spades" };
+	char *short_suit_names[4] = { "C", "D", "H", "S" };
+	char *face_names[15] =
+		{ NULL, "ace", "two", "three", "four", "five", "six", "seven",
+		"eight", "nine", "ten", "jack", "queen", "king", "ace"
+	};
+	char *short_face_names[15] =
+		{ NULL, "A", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+		"J", "Q", "K", "A"
+	};
+
 	for (p = 0; p < game.num_players; p++) {
-		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), "%s:",
-			 game.players[p].name);
-		for (i = 0; i < lengths[p]; i++) {
-			snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
-				 " %d%c", cardlist[p][i].face,
-				 suits[(int) cardlist[p][i].suit]);
+		if (lengths[p] > maxlen)
+			maxlen = lengths[p];
+		assert(game.players[p].name);
+		if (strlen(game.players[p].name) > namewidth)
+			namewidth = strlen(game.players[p].name);
+	}
+
+	assert(maxlen > 0);
+	assert(namewidth > 0);
+
+	for (p = 0; p < game.num_players; p++) {
+		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
+			 "%*s: ", namewidth, game.players[p].name);
+		if (maxlen == 1) {
+			if (lengths[p]) {
+				card_t card = cardlist[p][0];
+				snprintf(buf + strlen(buf),
+					 sizeof(buf) - strlen(buf),
+					 _("%s of %s"),
+					 face_names[(int) card.face],
+					 suit_names[(int) card.suit]);
+			}
+		} else {
+			for (i = 0; i < lengths[p]; i++) {
+				card_t card = cardlist[p][i];
+				snprintf(buf + strlen(buf),
+					 sizeof(buf) - strlen(buf), "%2s%s ",
+					 short_face_names[(int) card.face],
+					 short_suit_names[(int) card.suit]);
+			}
 		}
 		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), "\n");
 	}
