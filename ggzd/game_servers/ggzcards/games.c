@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 3421 2002-02-19 10:59:53Z jdorje $
+ * $Id: games.c 3439 2002-02-22 23:33:47Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -51,12 +51,10 @@ extern struct game_function_pointers bridge_funcs;
 extern struct game_function_pointers lapocha_funcs;
 extern struct game_function_pointers euchre_funcs;
 extern struct game_function_pointers sueca_funcs;
+extern struct game_function_pointers whist_funcs;
 
-/* These names are sent to the client when options are requested.  They're
-   different from what's sent to the client as the game name later.  They
-   MUST correspond in ordering to the enumeration defined in games.h.
-   Finally, the text name should be all lower-case and without any
-   whitespace. */
+/* This holds the actual info about the different game modules.  It
+   need not correspond with the enumeration in games.h. */
 struct game_info game_data[] = {
 	{"suaro", "Suaro", &suaro_funcs},
 	{"spades", "Spades", &spades_funcs},
@@ -64,7 +62,8 @@ struct game_info game_data[] = {
 	{"bridge", "Bridge", &bridge_funcs},
 	{"lapocha", "La Pocha", &lapocha_funcs},
 	{"euchre", "Euchre", &euchre_funcs},
-	{"sueca", "Sueca", &sueca_funcs}
+	{"sueca", "Sueca", &sueca_funcs},
+	{"whist", "Whist", &whist_funcs}
 };
 
 

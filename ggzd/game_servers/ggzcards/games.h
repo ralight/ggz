@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 3437 2002-02-21 10:05:18Z jdorje $
+ * $Id: games.h 3439 2002-02-22 23:33:47Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -96,8 +96,7 @@ struct game_info {
 };
 
 /* Game types. */
-/* The game enumerations must start at 0 and count upwards; they also must
-   match with game_names, below */
+/* The game enumerations must start at 0 and count upwards */
 typedef enum game_type_t {
 	GGZ_GAME_UNKNOWN = -1,
 	GGZ_GAME_SUARO = 0,	/* http://suaro.dhs.org */
@@ -108,7 +107,8 @@ typedef enum game_type_t {
 	GGZ_GAME_EUCHRE = 5,
 	GGZ_GAME_ROOK = 6,
 	GGZ_GAME_SKAT = 7,
-	GGZ_GAME_SUECA = 8
+	GGZ_GAME_SUECA = 8,
+	GGZ_GAME_WHIST = 9,
 } game_type_t;
 
 extern struct game_info game_data[];
