@@ -8,20 +8,13 @@ AM_MAINTAINER_MODE
 
 dnl Compiling Options
 dnl =====================
-dnl AC_ARG_WITH(slang,    [  --without-slang         Don't build slang client], sl_client=$withval, sl_client=yes)
-AC_ARG_WITH(gtk,      [  --without-gtk           Don't build GTK+ client], gtk_client=$withval, gtk_client=yes)
-dnl AC_ARG_WITH(history,  [  --without-history       Disable use of Taunt history through libhistory], hist=$withval, hist=yes)
-AC_ARG_ENABLE(server, [  --disable-server        Don't build NetGames server], server=$enableval, server=yes)
 AC_ARG_ENABLE(server, [  --disable-games         Don't build NetGames games], games=$enableval, games=yes)
 AC_ARG_ENABLE(client, [  --disable-client        Don't build NetGames clients], client=$enableval, client=yes)
 AC_ARG_ENABLE(debug,  [  --enable-debug          enable debugging ],, enable_debug=no)
 AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
 AC_ARG_ENABLE(debug-mem,    [  --enable-debug-mem      enable mem debugging ],,enable_debug_mem=no)
-AC_ARG_ENABLE(debug-taunt,  [  --enable-debug-taunt    enable taunt debugging ],, enable_debug_taunt=no)
 AC_ARG_ENABLE(debug-socket, [  --enable-debug-socket   enable socket debugging ],, enable_debug_socket=no)
-dnl AC_ARG_ENABLE(debug-screen, [  --enable-debug-screen   enable screen debugging ],, enable_debug_screen=no)
-dnl AC_ARG_ENABLE(debug-bid,    [  --enable-debug-bid      enable bid AI debugging ],, enable_debug_bid=no)
-dnl AC_ARG_ENABLE(debug-play,   [  --enable-debug-play     enable play AI debugging ],, enable_debug_play=no)
+
 
 dnl Check for standard build environment
 dnl ====================================
@@ -74,25 +67,21 @@ AC_CHECK_LIB(popt, poptGetNextOpt,
         AC_MSG_ERROR(*** Cannot find popt.h header); exit),
     AC_MSG_ERROR(*** Cannot find popt library ); exit)
     
-AC_CHECK_LIB(pthread, pthread_create,
-    AC_CHECK_HEADER(pthread.h, LDADD="$LDADD -lpthread" 
-         CFLAGS="$CFLAGS -D_REENTRANT"
-         AC_DEFINE(_XOPEN_SOURCE, 500),
-         AC_MSG_ERROR(*** Cannot find pthread.h header); exit),
-    AC_MSG_ERROR(*** Cannot find pthread library ); exit)
+dnl AC_CHECK_LIB(pthread, pthread_create,
+dnl    AC_CHECK_HEADER(pthread.h, LDADD="$LDADD -lpthread" 
+dnl         CFLAGS="$CFLAGS -D_REENTRANT"
+dnl         AC_DEFINE(_XOPEN_SOURCE, 500),
+dnl         AC_MSG_ERROR(*** Cannot find pthread.h header); exit),
+dnl    AC_MSG_ERROR(*** Cannot find pthread library ); exit)
 
 
     
 dnl Check for client libs
 dnl =====================
 if test "$client" = yes; then
-   
-    if test "$gtk_client" = yes; then 
-        AM_PATH_GTK(1.2.0, ,
-            AC_MSG_WARN(*** GTK client will not be built: GTK not found);
-	    gtk_client=no)
-    fi
-
+   AM_PATH_GTK(1.2.0, ,
+       AC_MSG_WARN(*** GTK client will not be built: GTK not found);
+       client=no)
 fi
 
 
@@ -115,29 +104,9 @@ if test "$enable_debug" = yes; then
     DFLAGS="DEBUG"
 fi
 
-if test "$enable_debug_screen" = yes; then
-    AC_DEFINE(DEBUG_SCREEN)
-    DFLAGS="$DFLAGS DEBUG_SCREEN"
-fi
-
 if test "$enable_debug_socket" = yes; then
     AC_DEFINE(DEBUG_SOCKET)
     DFLAGS="$DFLAGS DEBUG_SOCKET"
-fi
-
-if test "$enable_debug_taunt" = yes; then
-    AC_DEFINE(DEBUG_TAUNT)
-    DFLAGS="$DFLAGS DEBUG_TAUNT"
-fi
-
-if test "$enable_debug_bid" = yes; then
-    AC_DEFINE(DEBUG_BID)
-    DFLAGS="$DFLAGS DEBUG_BID"
-fi
-
-if test "$enable_debug_play" = yes; then
-    AC_DEFINE(DEBUG_PLAY)
-    DFLAGS="$DFLAGS DEBUG_PLAY"
 fi
 
 if test "$enable_debug_mem" = yes; then
@@ -182,12 +151,14 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 dnl Which progs to compile
 dnl ======================
 
-SUBDIRS="easysock ggz"
+SUBDIRS="easysock"
 
-dnl if test "$games" = yes; then
-dnl     SUBDIRS="$SUBDIRS game_clients"
-dnl fi
-
+if test "$games" = yes; then
+    SUBDIRS="$SUBDIRS game_clients"
+fi
+if test "$client" = yes; then
+    SUBDIRS="$SUBDIRS ggz"
+fi
 
 AC_SUBST(PROGS)
 AC_SUBST(LDADD)
@@ -195,8 +166,8 @@ AC_SUBST(SUBDIRS)
 
 AC_OUTPUT([Makefile 
 	   ggz/Makefile
-dnl	   game_clients/Makefile
-dnl	   game_clients/spades/Makefile
+	   game_clients/Makefile
+	   game_clients/spades/Makefile
 	   ])
 
 
