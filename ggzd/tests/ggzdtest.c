@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <ggz.h>
+
 #include "ggzdmod.h"
-#include "ggz.h"
+#include "ggzdmod-ggz.h"
 
 
 GGZSeat seats[] = {
