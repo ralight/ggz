@@ -8,7 +8,9 @@ CREATE TABLE userinfo (
     gender character varying(256),
     country character varying(256),
     pubkey character varying(8192),
-	blogfeed character varying(256)
+	blogfeed character varying(256),
+	longitude double precision,
+	latitude double precision
 );
 
 CREATE TABLE "teams" (
@@ -41,4 +43,10 @@ CREATE TABLE "rankings" (
 CREATE TABLE "auth" (
 	"handle" character varying(256),
 	"cookie" character varying(256)
+);
+
+CREATE TABLE "karma" (
+	"fromhandle" character varying(256),
+	"tohandle" character varying(256),
+	"karma" integer
 );
