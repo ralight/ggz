@@ -1,9 +1,8 @@
-/*
- * File: ggz.h
- * Author: Brent Hendricks
- * Project: GGZ Common components library
- * Date: 2001-10-12
- *
+/**
+ * @file   ggz.h
+ * @author Brent M. Hendricks
+ * @date   Fri Nov  2 23:32:17 2001
+ * 
  * Header file for ggz componenets lib
  *
  * Copyright (C) 2001 Brent Hendricks.
@@ -28,31 +27,130 @@
 #define __GGZ_H__
 
 
-/* Memory Handling
+/**
+ * @defgroup memory Memory Handling
  *
- * (these are currently in our ggzcore, but they're so useful I'm having
- * trouble progarmming on the server without them!)
+ * These macros proivide an alternative to the normal C library
+ * functions for dynamically allocating memory.  They keep track of
+ * memory allocated by storing the name of the function and file in
+ * which they were called 
+ *
+ * You can then call ggz_memory_check() to make sure all allocated
+ * memory has been freed  Note that you will need to enable MEMORY
+ * debugging to see this
+ * 
+ * @{
  */
 
+/** 
+ * Macro for memory allocation
+ * 
+ * @param size the size of memory to allocate
+ * 
+ * @return a pointer to the newly allocated memory
+ */
+#define ggz_malloc(size) _ggz_malloc(size, __FUNCTION__ " in " __FILE__, __LINE__)
+						   
+
+/** 
+ * Macro for resizing previously allocated memory
+ * 
+ * @param mem pointer to memory to reallocate
+ * @param size new size requested
+ * 
+ * @return pointer to allocated memory
+ */
+#define ggz_realloc(mem, size) _ggz_realloc(mem, size, __FUNCTION__ " in " __FILE__, __LINE__)
+						       
+
+/** 
+ * Macro for freeing memory previously allocated 
+ * 
+ * @param mem pointer to allocated memory
+ * 
+ * @return failure code
+ */
+#define ggz_free(mem) _ggz_free(mem, __FUNCTION__ " in " __FILE__,  __LINE__)
+						 
+
+/** 
+ * Macro for duplicating string
+ * 
+ * @param string string to duplicate
+ * 
+ * @return pointer to new string
+ */
+#define ggz_strdup(string) _ggz_strdup(string, __FUNCTION__ " in " __FILE__,  __LINE__)
+						 
+
+
+/** 
+ * Function to actually perform memory allocation.  Don't call this
+ * directly.  Instead, call ggz_malloc()
+ * 
+ * @param int size of memory to allocate
+ * @param  char * string describing the calling function 
+ * @param int linenumber 
+ * 
+ * @return pointer to newly allocated memory
+*/
 void * _ggz_malloc(const unsigned int, char *, int);
+
+/** 
+ * Function to perform memory reallocation.  Don't call this
+ * directly.  Instead, call ggz_realloc()
+ * 
+ * @param void * pointer to memory to reallocate
+ * @param const unsigned int new size 
+ * @param  char * string describing the calling function 
+ * @param int linenumber 
+ * 
+ * @return pointer to allocated memory
+*/
 void * _ggz_realloc(const void *, const unsigned int, char *, int);
+
+/** 
+ * Function to free allocated memory.  Don't call this
+ * directly.  Instead, call ggz_free()
+ * 
+ * @param const void * pointer to memory
+ * @param  char * string describing the calling function 
+ * @param int linenumber 
+ * 
+ * @return 
+*/
 int _ggz_free(const void *, char *, int);
+
+/** 
+ * Function to copy a string.  Don't call this
+ * directly.  Instead, call ggz_strdup()
+ * 
+ * @param const char* string to duplicate
+ * @param  char * string describing the calling function 
+ * @param int linenumber 
+ * 
+ * @return newly allocated string
+*/
 char * _ggz_strdup(const char *, char *, int);
-#define ggz_malloc(x)	_ggz_malloc(x, __FUNCTION__ " in " \
-						   __FILE__, __LINE__)
-#define ggz_realloc(x,y)	_ggz_realloc(x, y, __FUNCTION__ " in " \
-						       __FILE__, __LINE__)
-#define ggz_free(x)		_ggz_free(x, __FUNCTION__ " in " \
-						 __FILE__,  __LINE__)
-#define ggz_strdup(x)	_ggz_strdup(x, __FUNCTION__ " in " \
-						 __FILE__,  __LINE__)
-int ggz_memory_check(void);
 
 
-/* Config file parsing
+/** 
+ * Check memory allocated against memory freed and display any discrepencies
+ * 
+ * 
+ * @return 
+ */int ggz_memory_check(void);
+
+/** @} */
+
+
+
+/**
+ * @defgroup conf Config file parsing
  *
  * (currently exists in server and ggzcore )
  *
+ * @{
  */
 #define CONF_RDONLY	((unsigned char) 0x01)
 #define CONF_RDWR	((unsigned char) 0x02)
@@ -96,14 +194,15 @@ int ggz_conf_remove_section	(int	handle,
 int ggz_conf_remove_key	(int	handle,
 			 const char	*section,
 			 const char	*key);
+/** @} */
 
 
 
-/* Data structures
- * (currently found in ggzcore and on the server)
+/**
+ * @defgroup list List functions 
+ * 
+ * @{
  */
-
-/* List functions */
 typedef int	(*ggzEntryCompare)	(void *a, void *b);
 typedef	void *	(*ggzEntryCreate)	(void *data);
 typedef	void	(*ggzEntryDestroy)	(void *data);
@@ -155,8 +254,13 @@ int ggz_list_count		(GGZList *list);
 int ggz_list_compare_str	(void *a, void *b);
 void * ggz_list_create_str	(void *data);
 void ggz_list_destroy_str	(void *data);
+/** @} */
 
-/* Stacks */
+/**
+ * @defgroup stcak Stacks 
+ *
+ * @{
+ */
 typedef struct _GGZList GGZStack;
 
 GGZStack* ggz_stack_new(void);
@@ -164,11 +268,14 @@ void ggz_stack_push(GGZStack*, void*);
 void* ggz_stack_pop(GGZStack*);
 void* ggz_stack_top(GGZStack*);
 void ggz_stack_free(GGZStack*);
+/** @} */
 
-
-/* XML parsing 
+/**
+ * @defgroup xml XML parsing 
  * 
  * (currently used on client and server)
+ *
+ * @{
  */
 
 struct _GGZXMLElement {
@@ -207,11 +314,13 @@ char* ggz_xmlelement_get_text(GGZXMLElement*);
 void ggz_xmlelement_add_text(GGZXMLElement*, const char *text, int len);
 
 void ggz_xmlelement_free(GGZXMLElement*);
+/** @} */
 
-
-/* Debug/error logging
+/**
+ * @defgroup debug Debug/error logging
  * 
  * (currently used on client and server)
+ * @{
  */
 void ggz_debug_init(const char **types, const char* file);
 void ggz_debug_enable(const char *type);
@@ -222,5 +331,6 @@ void ggz_error_sys_exit(const char *fmt, ...);
 void ggz_error_msg(const char *fmt, ...);
 void ggz_error_msg_exit(const char *fmt, ...);
 void ggz_debug_cleanup(void);
+/** @} */
 
 #endif  /* __GGZCORE_H__ */
