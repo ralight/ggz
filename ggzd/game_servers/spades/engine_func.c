@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/30/97
- * $Id: engine_func.c 4664 2002-09-23 09:44:15Z dr_maux $
+ * $Id: engine_func.c 4935 2002-10-17 01:05:42Z jdorje $
  *
  * This file contains the support functions for the spades engines.
  *
@@ -340,9 +340,11 @@ int ggz_init(void)
   
 	dbg_msg("Reading seats from server");
 
-	if (ggz_read_int(gameInfo.ggz_sock, &seats) < 0) 
+	if (ggz_read_int(gameInfo.ggz_sock, &seats) < 0
+	    || seats != 4) 
 		err_msg_exit( "Error reading number of slots" );
-	if (ggz_read_int(gameInfo.ggz_sock, &spectators) < 0) 
+	if (ggz_read_int(gameInfo.ggz_sock, &spectators) < 0
+	    || spectators != 0) 
 		err_msg_exit( "Error reading number of spectators" );
 
 	for(i=0; i<4; i++) {
@@ -354,11 +356,15 @@ int ggz_init(void)
 			gameInfo.players[i] = "AI";
 			dbg_msg("Seat %d is a bot", i);
 			break;
+		case GGZ_SEAT_RESERVED:
+			readstring(gameInfo.ggz_sock, &gameInfo.players[i]);
+			/* Fall through */
 		case GGZ_SEAT_OPEN: 
 			gameInfo.playerSock[i] = SOCK_INVALID;
-			dbg_msg("Seat %d is open", i);
+			dbg_msg("Seat %d is %s",
+				i, ggz_seattype_to_string(assign));
 			break;
-		default:
+		case GGZ_SEAT_PLAYER:
 			open_seats--;
 			readstring(gameInfo.ggz_sock, &gameInfo.players[i]);
 			ReadIntOrDie(gameInfo.ggz_sock, &gameInfo.playerSock[i] );
@@ -366,6 +372,8 @@ int ggz_init(void)
 				gameInfo.players[i], 
 				gameInfo.playerSock[i]);
 			break;
+		default:
+			err_msg_exit("Error reading seat type.");
 		}
 
 		gameInfo.clientPids[i] = 0;
