@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 6893 2005-01-25 04:31:44Z jdorje $
+ * $Id: ggzdmod.c 6895 2005-01-25 08:32:11Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -971,6 +971,27 @@ int ggzdmod_loop(GGZdMod * ggzdmod)
 	return 0;		/* should handle errors */
 }
 
+/* FIXME
+
+For seats, any change must be done in ggzdmod-ggz.  This means a single point
+ where a change can be made.  If the game server wants to change seats it
+sends a request to ggzd which is then approved (or not) and the new seat 
+data sent back.
+
+For game state, however, it is the opposite.  The change must be done in 
+ggzdmod-game.  There is currently no way for the ggzd to change the state 
+(maybe there never will be).
+
+However this conflicts.  Some seat changes should depend on the game 
+state, and the game state as known by ggzdmod-ggz (which determines seat 
+changes) may be out of date.  The solution is that the same mechanism 
+should be used for state changes as is used for seat changes.  This may 
+affect games however because it means the state change is asynchronous and 
+not immediate (there is a state-change callback in ggzdmod, that currently 
+gets invoked from inside ggzdmod_set_state; if this were changed then it 
+wouldn't be invoked until the message was sent to ggzd and the response 
+was received).
+*/
 int ggzdmod_set_state(GGZdMod * ggzdmod, GGZdModState state)
 {
 	if (!CHECK_GGZDMOD(ggzdmod))
