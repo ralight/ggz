@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6173 2004-09-04 06:29:25Z jdorje $
+ * $Id: ggzmod.c 6176 2004-09-04 07:22:54Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -982,7 +982,7 @@ static int game_fork(GGZMod * ggzmod)
 		ggz_error_sys("Listening to socket failed.");
 		return -1;
 	}
-	close(sock);
+	closesocket(sock);
 	ggzmod->fd = sock2;
 #endif
 	return 0;
