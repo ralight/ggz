@@ -74,6 +74,15 @@ int GGZCoreGametype::maxBots()
 	return ggzcore_gametype_get_max_bots(m_gametype);
 }
 
+int GGZCoreGametype::maxSpectators()
+{
+#ifdef KGGZ_PATCH_SPECTATORS
+	return ggzcore_gametype_get_max_spectators(m_gametype);
+#else
+	return 0;
+#endif
+}
+
 int GGZCoreGametype::isPlayersValid(unsigned int number)
 {
 	return ggzcore_gametype_num_players_is_valid(m_gametype, number);
@@ -82,6 +91,15 @@ int GGZCoreGametype::isPlayersValid(unsigned int number)
 int GGZCoreGametype::isBotsValid(unsigned int number)
 {
 	return ggzcore_gametype_num_players_is_valid(m_gametype, number);
+}
+
+int GGZCoreGametype::isSpectatorsValid(unsigned int number)
+{
+#ifdef KGGZ_PATCH_SPECTATORS
+	return ggzcore_gametype_num_spectators_is_valid(m_gametype, number);
+#else
+	return 1;
+#endif
 }
 
 GGZGameType *GGZCoreGametype::gametype()

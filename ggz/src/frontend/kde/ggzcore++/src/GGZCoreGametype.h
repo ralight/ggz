@@ -54,10 +54,14 @@ class GGZCoreGametype
 		int maxPlayers();
 		/** Return the maximum number of bots. */
 		int maxBots();
+		/** Return the maximum number of spectators */
+		int maxSpectators();
 		/** Check whether given number of players is allowed. */
 		int isPlayersValid(unsigned int number);
 		/** Check whether given number of bots is allowed. */
 		int isBotsValid(unsigned int number);
+		/** Check whether a given number of spectators is allowed */
+		int isSpectatorsValid(unsigned int number);
 
 		GGZGameType *gametype();
 
