@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4086 2002-04-26 19:37:51Z jdorje $
+ * $Id: table.c 4093 2002-04-27 22:02:50Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -518,8 +518,6 @@ void table_handle_click_event(GdkEventButton * event)
 	   possible to be playing from *any* hand (at least in theory). */
 	int target;
 	int which = -1;
-	int x_outer, y_outer, w_outer, h_outer, xo, yo;
-	int x, y;
 	int p = ggzcards.play_hand;	/* player whose hand it is */
 	int card_width, card_height;
 	int hand_size;
@@ -535,39 +533,25 @@ void table_handle_click_event(GdkEventButton * event)
 
 	/* This gets all of the layout information from the layout engine.
 	   Unfortunately, it's very dense code. */
-	get_full_card_area(p, &x_outer, &y_outer, &w_outer, &h_outer, &xo,
-			   &yo);
-	get_inner_card_area_pos(p, &x, &y);
 	card_width = get_card_width(orientation(p));
 	card_height = get_card_height(orientation(p));
-
-	/* make sure it's within the card area */
-	if (event->x < x_outer || event->x > x_outer + w_outer
-	    || event->y < y_outer || event->y > y_outer + h_outer)
-		return;
 
 	/* Calculate our card target */
 	hand_size = preferences.collapse_hand
 	            ? ggzcards.players[p].hand.hand_size
 	            : ggzcards.players[p].u_hand_size;
 	for (target = 0; target < hand_size; target++) {
-		int x1, y1;
+		int x, y;
 		
 		if (!preferences.collapse_hand &&
 		    !ggzcards.players[p].u_hand[target].is_valid)
 			continue;
 		
-		get_card_pos(p, target, &x1, &y1);
+		get_card_pos(p, target, target == selected_card, &x, &y);
 		
-		if (target == selected_card) {
-			/* account for the selected card being offset */
-			x1 += xo;
-			y1 += yo;
-		}
-		
-		if (event->x >= x1 && event->x <= x1 + card_width
+		if (event->x >= x && event->x <= x + card_width
 		    /* TODO: generalize for any orientation */
-		    && event->y >= y1 && event->y <= y1 + card_height)
+		    && event->y >= y && event->y <= y + card_height)
 			which = target;
 	}
 
@@ -598,12 +582,33 @@ static void table_card_clicked(int card_num)
 	}
 }
 
+static void clear_card_area(int p)
+{
+	int cx, cy, cw, ch;
+
+	/* get layout information */
+	get_full_card_area(p, &cx, &cy, &cw, &ch);
+
+	/* Clean the total drawing area */
+	gdk_draw_rectangle(table_buf,
+			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
+			   TRUE, cx, cy, cw, ch);
+}
+
+static void show_card_area(p)
+{
+	int cx, cy, cw, ch;
+
+	/* get layout information */
+	get_full_card_area(p, &cx, &cy, &cw, &ch);
+	
+	table_show_table(cx, cy, cw, ch);
+}
+
 /* Exposed function to show one player's hand. */
 void table_display_hand(int p, int write_to_screen)
 {
 	int i;
-	int x_outer, y_outer;
-	int cx, cy, cw, ch, cxo, cyo;
 	card_t table_card = table_cards[p];
 	int hand_size;
 
@@ -619,17 +624,9 @@ void table_display_hand(int p, int write_to_screen)
 		return;
 
 	ggz_debug("table", "Displaying hand for player %d.", p);
-
-	/* get layout information */
-	get_full_card_area(p, &x_outer, &y_outer, &cw, &ch, &cxo, &cyo);
-	get_inner_card_area_pos(p, &cx, &cy);
-
-	/* Clean the total drawing area */
-	gdk_draw_rectangle(table_buf,
-			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
-			   TRUE, x_outer, y_outer, cw, ch);
-
+	
 	/* redraw outer rectangle */
+	clear_card_area(p);
 	draw_card_box(p);
 
 	/* Draw the cards */
@@ -654,19 +651,16 @@ void table_display_hand(int p, int write_to_screen)
 			/* if the player has a card on the table _and_ it
 			   matches this card, skip over it. */
 			continue;
-		get_card_pos(p, i, &x, &y);
-		
-		if (i == selected_card && p == ggzcards.play_hand) {
-			x += cxo;
-			y += cyo;
-		}
+		get_card_pos(p, i,
+		             p == ggzcards.play_hand && i == selected_card,
+		             &x, &y);
 		
 		draw_card(card, orientation(p), x, y, table_buf);
 	}
 
 	/* And refresh the on-screen image for card areas */
 	if (write_to_screen)
-		table_show_table(x_outer, y_outer, cw, ch);
+		show_card_area(p);
 }
 
 /* table_display_all_hands exposed function to show all players' hands */

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 4058 2002-04-23 07:13:12Z jdorje $
+ * $Id: layout.c 4093 2002-04-27 22:02:50Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -328,11 +328,40 @@ void get_card_box_dim(int p, int *w, int *h)
 	}
 }
 
+static int get_card_selection_offset_x(int p)
+{
+	switch (orientation(p)) {
+	case 0:
+	case 2:
+		return 0;
+	case 1:
+		return 2 * XWIDTH;
+	case 3:
+		return -2 * XWIDTH;
+	}
+	assert(FALSE);
+	return 0;
+}
+
+static int get_card_selection_offset_y(int p)
+{
+	switch (orientation(p)) {
+	case 0:
+		return -2 * XWIDTH;
+	case 1:
+	case 3:
+		return 0;
+	case 2:
+		return 2 * XWIDTH;
+	}
+	assert(FALSE);
+	return 0;
+}
+
 /* (*x,*y) is the position of the upper left corner.  (w,h) is the width and
    heigh of the box.  (*xo,*yo) is the offset vector to be used for
    "selected" cards. */
-void get_full_card_area(int p, int *x, int *y, int *w, int *h, int *xo,
-			int *yo)
+void get_full_card_area(int p, int *x, int *y, int *w, int *h)
 {
 	/* the actual card area is inset within the card box by XWIDTH units,
 	   and extends inwards (toward the table) by 2*XWIDTH units. */
@@ -347,28 +376,21 @@ void get_full_card_area(int p, int *x, int *y, int *w, int *h, int *xo,
 	*w -= 2 * XWIDTH;
 	*h -= 2 * XWIDTH;
 
-	*xo = 0;
-	*yo = 0;
-
 	/* now account for the offset */
 	switch (orientation(p)) {
 	case 0:
 		*y -= 2 * XWIDTH;
 		*h += 2 * XWIDTH;
-		*yo = -2 * XWIDTH;
 		break;
 	case 1:
 		*w += 2 * XWIDTH;
-		*xo = 2 * XWIDTH;
 		break;
 	case 2:
 		*h += 2 * XWIDTH;
-		*yo = 2 * XWIDTH;
 		break;
 	case 3:
 		*x -= 2 * XWIDTH;
 		*w += 2 * XWIDTH;
-		*xo = -2 * XWIDTH;
 		break;
 	default:
 		ggz_debug("table", "CLIENT BUG: get_full_card_area");
@@ -431,7 +453,7 @@ static void get_card_rowoffset(int p, float *w, float *h)
 	}
 }
 
-void get_card_pos(int p, int card_num, int *x, int *y)
+void get_card_pos(int p, int card_num, bool selected, int *x, int *y)
 {
 	int x0, y0;
 	float w, h;
@@ -461,6 +483,11 @@ void get_card_pos(int p, int card_num, int *x, int *y)
 	get_card_rowoffset(p, &w, &h);
 	x0 += (int)(((float) row * w) + 0.5);
 	y0 += (int)(((float) row * h) + 0.5);
+	
+	if (selected) {
+		x0 += get_card_selection_offset_x(p);
+		y0 += get_card_selection_offset_y(p);
+	}
 
 	*x = x0;
 	*y = y0;

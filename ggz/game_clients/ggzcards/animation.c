@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 4039 2002-04-21 08:57:54Z jdorje $
+ * $Id: animation.c 4093 2002-04-27 22:02:50Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -166,7 +166,9 @@ int animation_start(int player, card_t card, int card_num, int destination)
 	/* Find the initial position of the animation. */
 	if (destination < 0) {
 		/* We're moving the card out of the player's hand. */
-		get_card_pos(player, card_num, &start_x, &start_y);
+		get_card_pos(player, card_num,
+		             !preferences.single_click_play,
+		             &start_x, &start_y);
 		if (orientation(player) % 2 == 1) {
 			/* The player's cards are horizontal, but we're going
 			   to animate vertically.  So we recenter. */
