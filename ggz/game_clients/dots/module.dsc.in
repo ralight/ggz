@@ -3,7 +3,7 @@
 Author = Rich Gade
 CommandLine = @ggzexecmoddir@/ggz.dots
 Frontend = gtk
-Homepage = http://ggz.sourceforge.net/
+Homepage = http://ggz.sourceforge.net/games/dots/
 Name = Dots
 ProtocolEngine = Dots
 ProtocolVersion = 2-pre1

@@ -7,4 +7,4 @@ ProtocolEngine = Chess
 ProtocolVersion = 2-pre1
 CommandLine = @ggzexecmoddir@/ggz.chess
 Frontend = gtk
-Homepage = http://ggz.sourceforge.net/sections.php?op=viewarticle&artid=4
+Homepage = http://ggz.sourceforge.net/games/chess/
