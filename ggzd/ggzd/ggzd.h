@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 3368 2002-02-16 03:06:13Z bmh $
+ * $Id: ggzd.h 3409 2002-02-18 07:55:49Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -38,17 +38,6 @@
 #define MAX_TABLE_SIZE 8
 #define DEFAULT_MAX_ROOM_USERS 100
 #define DEFAULT_MAX_ROOM_TABLES 50
-
-/* Bitmasks for allowable player numbers */
-#define GGZ_ALLOW_ZERO    0
-#define GGZ_ALLOW_ONE     1
-#define GGZ_ALLOW_TWO     (1 << 1)
-#define GGZ_ALLOW_THREE   (1 << 2)
-#define GGZ_ALLOW_FOUR    (1 << 3)
-#define GGZ_ALLOW_FIVE    (1 << 4)
-#define GGZ_ALLOW_SIX     (1 << 5)
-#define GGZ_ALLOW_SEVEN   (1 << 6)
-#define GGZ_ALLOW_EIGHT   (1 << 7)
 
 /* Specical game type values */
 typedef enum {

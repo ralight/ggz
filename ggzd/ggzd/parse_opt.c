@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3314 2002-02-11 04:59:13Z rgade $
+ * $Id: parse_opt.c 3409 2002-02-18 07:55:49Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -418,9 +418,6 @@ static void parse_game(char *name, char *dir)
 	int intval, len, i, num_args;
 	char **b_list;
 	int b_count = 0;
-	char allow_bits[] = { GGZ_ALLOW_ZERO, GGZ_ALLOW_ONE, GGZ_ALLOW_TWO,
-		GGZ_ALLOW_THREE, GGZ_ALLOW_FOUR, GGZ_ALLOW_FIVE,
-		GGZ_ALLOW_SIX, GGZ_ALLOW_SEVEN, GGZ_ALLOW_EIGHT };
 
 	/* Check to see if we are allocating too many games */
 	if(state.types == MAX_GAME_TYPES) {
@@ -507,7 +504,8 @@ static void parse_game(char *name, char *dir)
 					name);
 				continue;
 			}
-			game_info->bot_allow_mask |= allow_bits[intval];
+			if (intval > 0)
+				game_info->bot_allow_mask |= 1 << (intval - 1);
 			ggz_free(b_list[i]);
 		}
 		ggz_free(b_list);
@@ -522,7 +520,7 @@ static void parse_game(char *name, char *dir)
 				err_msg("PlayersAllowed has invalid value");
 				continue;
 			}
-			game_info->player_allow_mask |= allow_bits[intval];
+			game_info->player_allow_mask |= 1 << (intval - 1);
 			ggz_free(b_list[i]);
 		}
 		ggz_free(b_list);

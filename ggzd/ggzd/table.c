@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3368 2002-02-16 03:06:13Z bmh $
+ * $Id: table.c 3409 2002-02-18 07:55:49Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -137,9 +137,6 @@ static int table_check(GGZTable* table)
 	int seat_total = seats_num(table);
 	int g_type = table->type;
 	int room_type;
-        char allow_bits[] = { GGZ_ALLOW_ZERO, GGZ_ALLOW_ONE, GGZ_ALLOW_TWO,
-			      GGZ_ALLOW_THREE, GGZ_ALLOW_FOUR, GGZ_ALLOW_FIVE,
-			      GGZ_ALLOW_SIX, GGZ_ALLOW_SEVEN, GGZ_ALLOW_EIGHT};
 	
 	pthread_rwlock_rdlock(&rooms[table->room].lock);
 	room_type = rooms[table->room].game_type;
@@ -160,7 +157,7 @@ static int table_check(GGZTable* table)
 	/* Display and verify total seats and bot seats */
 	if(seat_total >= 0
 	   && seat_total <= MAX_TABLE_SIZE
-	   && game_types[g_type].player_allow_mask & allow_bits[seat_total])
+	   && game_types[g_type].player_allow_mask & (1 << (seat_total - 1)))
 		dbg_msg(GGZ_DBG_TABLE, "Seats  : %d (accept)", seat_total);
 	else {
 		dbg_msg(GGZ_DBG_TABLE, "Seats  : %d (invalid)", seat_total);
@@ -170,7 +167,7 @@ static int table_check(GGZTable* table)
 	if(ai_total == 0
 	   || (ai_total > 0
 	       && ai_total < seat_total /* at least one non-AI seat */
-	       && game_types[g_type].bot_allow_mask & allow_bits[ai_total]))
+	       && game_types[g_type].bot_allow_mask & (1 << (ai_total-1))))
 		dbg_msg(GGZ_DBG_TABLE, "Bots   : %d (accept)", ai_total);
 	else {
 		dbg_msg(GGZ_DBG_TABLE, "Bots   : %d (invalid)", ai_total);
