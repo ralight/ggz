@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4515 2002-09-11 08:31:00Z jdorje $
+ * $Id: players.c 4522 2002-09-12 03:02:55Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -512,49 +512,80 @@ GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index)
  *  GGZ_REQ_FAIL         : request failed
  *  GGZ_REQ_OK           : request succeeded.  
  */
-GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player, char force)
+GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
+					  int spectator, int force)
 {
 	int status, gametype;
 	char allow;
 	GGZTableState state;
 	GGZTable *table;
-
-	dbg_msg(GGZ_DBG_TABLE, "%s attempting to leave table %d (force: %d)", 
-		player->name, player->table, force);
+	GGZTransitType transit;
 
 	/* Check if leave during gameplay is allowed */
 	table = table_lookup(player->room, player->table);
-	
+
 	if (!table) {
-		dbg_msg(GGZ_DBG_TABLE, "%s tried to leave table that was already gone", player->name);
+		dbg_msg(GGZ_DBG_TABLE,
+			"%s tried to leave nonexistent table %d (room %d)",
+			player->name, player->table, player->room);
+		if (player->room >= 0 && player->table >= 0) {
+			err_msg("Couldn't find %s's table %d (room %d)!",
+				player->name, player->table, player->room);
+			player->table = -1; /* What else can we do? */
+		}
+		/* This is probably an error on the client's part.  But
+		   to avoid confusion, the best bet is probably to
+		   claim success. */
+		if (net_send_table_leave(player->client->net, 0) < 0)
+			return GGZ_REQ_DISCONNECT;
 		return 0;
 	}		
 
-	gametype = table->type;
-	state = table->state;
-	pthread_rwlock_unlock(&table->lock);
-	pthread_rwlock_rdlock(&game_types[gametype].lock);
-	allow = game_types[gametype].allow_leave;
-	pthread_rwlock_unlock(&game_types[gametype].lock);
+	if (spectator) {
+		pthread_rwlock_unlock(&table->lock);
+
+		/* FIXME: make sure the player really is a spectator!
+		   Otherwise the table could break! */
+		allow = 1;
+		state = GGZ_TABLE_WAITING;
+
+		transit = GGZ_TRANSIT_LEAVE_SPECTATOR;
+	} else {
+		gametype = table->type;
+		state = table->state;
+		pthread_rwlock_unlock(&table->lock);
+
+		/* FIXME: make sure the player isn't a spectator!  Otherwise
+		   we could up killing the table when a spectator leaves! */
+		pthread_rwlock_rdlock(&game_types[gametype].lock);
+		allow = game_types[gametype].allow_leave;
+		pthread_rwlock_unlock(&game_types[gametype].lock);
+
+		transit = GGZ_TRANSIT_LEAVE;
+	}
+
+	dbg_msg(GGZ_DBG_TABLE, "%s attempting to leave table %d%s", 
+		player->name, player->table,
+		spectator ? " (spectating)" : (force ? " (forced)" : ""));
 
 	/* Error if we're already in transit */
 	if (player->transit)
 		status = E_IN_TRANSIT;
-	else if (state == GGZ_TABLE_PLAYING && !allow) {
-		if (force) {
-			status = table_kill(player->room, player->table, player->name);
-		}
+	else if (!spectator && state == GGZ_TABLE_PLAYING && !allow) {
+		if (force)
+			status = table_kill(player->room, player->table,
+					    player->name);
 		else 
 			status = E_LEAVE_FORBIDDEN;
-	}
-	else 
+	} else { 
 		/* All clear: send leave event to table */
-		status = player_transit(player, GGZ_TRANSIT_LEAVE, 
-					player->table);
-	
+		status = player_transit(player, transit, player->table);
+	}
+
 	/* Return any immediate failures to client*/
 	if (status < 0) {
-		if (net_send_table_leave(player->client->net, (char)status) < 0)
+		if (net_send_table_leave(player->client->net,
+					 (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		status = GGZ_REQ_FAIL;
 	}
@@ -563,6 +594,7 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player, char force)
 }
 
 
+#if 0 /* Folded into player_table_leave() */
 /* 
  * player_table_leave_spectator() handles REQ_TABLE_LEAVE_SPECTATOR request from the
  * client.
@@ -583,16 +615,23 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 	GGZTableState state;
 	GGZTable *table;
 
-	dbg_msg(GGZ_DBG_TABLE, "%s attempting to leave table %d as spectator",
-		player->name, player->table);
-
 	/* Check if leave during gameplay is allowed */
 	table = table_lookup(player->room, player->table);
-	
+
 	if (!table) {
-		dbg_msg(GGZ_DBG_TABLE, "%s tried to leave table that was already gone", player->name);
+		dbg_msg(GGZ_DBG_TABLE,
+			"%s tried to leave nonexistent table %d (room %d)",
+			player->name, player->table, player->room);
+		/* This is probably an error on the client's part.  But
+		   to avoid confusion, the best bet is probably to
+		   claim success. */
+		if (net_send_table_leave(player->client->net, 0) < 0)
+			return GGZ_REQ_DISCONNECT;
 		return 0;
 	}		
+
+	dbg_msg(GGZ_DBG_TABLE, "%s attempting to leave table %d as spectator",
+		player->name, player->table);
 
 	gametype = table->type;
 	state = table->state;
@@ -605,7 +644,7 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 		/* All clear: send leave event to table */
 		status = player_transit(player, GGZ_TRANSIT_LEAVE_SPECTATOR,
 					player->table);
-	
+
 	/* Return any immediate failures to client*/
 	if (status < 0) {
 		if (net_send_table_leave(player->client->net,
@@ -616,6 +655,7 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 
 	return status;
 }
+#endif
 
 
 static int player_transit(GGZPlayer* player, char opcode, int index)

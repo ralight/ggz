@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4520 2002-09-12 01:26:20Z jdorje $
+ * $Id: net.c 4522 2002-09-12 03:02:55Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1298,10 +1298,7 @@ static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
 
 		if (!check_playerconn(net, "leave")) return;
 
-		if (spectator)
-			player_table_leave_spectator(net->client->data);
-		else
-			player_table_leave(net->client->data, force);
+		player_table_leave(net->client->data, spectator, force);
 	}
 }
 
