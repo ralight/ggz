@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 5483 2003-03-29 20:36:50Z dr_maux $
+ * $Id: ggz.h 5565 2003-05-11 09:08:52Z dr_maux $
  * 
  * Header file for ggz components lib
  *
@@ -30,7 +30,7 @@
 #define LIBGGZ_VERSION_MAJOR 0
 #define LIBGGZ_VERSION_MINOR 0
 #define LIBGGZ_VERSION_MICRO 7
-#define LIBGGZ_VERSION_IFACE "1:0:0"
+#define LIBGGZ_VERSION_IFACE "1:1:0"
 
 #include <sys/types.h>
 
@@ -1561,54 +1561,150 @@ int ggz_readn(const int sock, void *data, size_t n);
  * @{
  */
 
-/* Hash data structure */
-struct hash_t
+/** @brief Hash data structure
+ *
+ *  Contains a string and its length, so that NULL-safe
+ *  functions are possible.
+ */
+typedef struct
 {
-	char *hash;
-	int hashlen;
-};
-typedef struct hash_t hash_t;
+	char *hash;		/**< Hash value */
+	int hashlen;	/**< Length of the hash value in bytes */
+} hash_t;
 
-/* Create a hash over a text, allocating space as needed */
+/** @brief Create a hash over a text
+ *
+ *  A hash sum over a given text is created, using the given
+ *  algorithm. Space is allocated as needed.
+ *
+ *  @param algo The algorithm, like md5 or sha1
+ *  @param text Plain text used to calculate the hash sum
+ *  @return Hash value in a structure
+ */
 hash_t ggz_hash_create(const char *algo, const char *text);
 
-/* Create a HMAC hash over a text, allocating space as needed */
+/** @brief Create a HMAC hash over a text
+ *
+ *  Creates a hash sum using a secret key.
+ *  Space is allocated as needed and must be freed afterwards.
+ *
+ *  @param algo The algorithm to use, like md5 or sha1
+ *  @param text Plain text used to calculate the hash sum
+ *  @param secret Secret key to be used for the HMAC creation
+ *  @return Hash value in a structure
+ */
 hash_t ggz_hmac_create(const char *algo, const char *text, const char *secret);
 
-/* Encodes to base64, allocating space as needed */
+/** @brief Encodes text to base64
+ *
+ *  Plain text with possibly unsafe characters is converted
+ *  to the base64 format through this function.
+ *  The returned string is allocated internally and must be freed.
+ *
+ *  @param text Plain text to encode
+ *  @param length Length of the text (which may contain binary characters)
+ *  @return Base64 representation of the text
+ */
 char *ggz_base64_encode(const char *text, int length);
 
-/* Decodes from base64, allocating space as needed */
+/** @brief Decodes text from base64
+ *
+ *  This is the reverse function to ggz_base64_encode.
+ *  It will also allocate space as needed.
+ *
+ *  @param text Text in base64 format
+ *  @param length Length of the text
+ *  @return Native representation, may contain binary characters
+ */
 char *ggz_base64_decode(const char *text, int length);
 
-/* TLS operation mode */
+/** @brief TLS operation mode
+ *
+ *  Hints whether the TLS handshake will happen in either
+ *  client or server mode.
+ *
+ *  @see ggz_tls_enable_fd
+ */
 typedef enum {
-	GGZ_TLS_CLIENT,
-	GGZ_TLS_SERVER
+	GGZ_TLS_CLIENT,		/**< Operate as client */
+	GGZ_TLS_SERVER		/**< Operate as server */
 } GGZTLSType;
 
-/* TLS verification type */
+/** @brief TLS verification type
+ *
+ *  The authentication (verification) model to be used
+ *  for the handshake. None means that no certificate
+ *  is validated.
+ *
+ *  @see ggz_tls_enable_fd
+ */
 typedef enum {
-	GGZ_TLS_VERIFY_NONE,
-	GGZ_TLS_VERIFY_PEER
+	GGZ_TLS_VERIFY_NONE,		/**< Don't perform verification */
+	GGZ_TLS_VERIFY_PEER			/**< Perform validation of the server's cert */
 } GGZTLSVerificationType;
 
-/* Initialize TLS support on the server side */
+/** @brief Initialize TLS support on the server side
+ *
+ *  This function ought only be used on the server side.
+ *  It sets up the necessary initialization values.
+ *
+ *  @param certfile File containing the certificate, or NULL
+ *  @param keyfile File containing the private key, or NULL
+ *  @param password Password to the private key, or NULL
+ */
 void ggz_tls_init(const char *certfile, const char *keyfile, const char *password);
 
-/* Check TLS support, returns 1 on support, 0 on no support */
+/** @brief Check TLS support
+ *
+ *  Since handshakes can fail, this function checks whether TLS
+ *  was actually successfully activated.
+ *
+ *  @return 1 if TLS is supported, 0 if no support is present
+ */
 int ggz_tls_support_query(void);
 
-/* Enable TLS on fd, returns 1 on success, 0 on failure */
+/** @brief Enable TLS for a file descriptor
+ *
+ *  A TLS handshake is performed for an existing connection on the given
+ *  file descriptor. On success, all consecutive data will be encrypted.
+ *
+ *  @param fdes File descriptor in question
+ *  @param whoami Operation mode (client or server)
+ *  @param verify Verification mode
+ *  @return 1 on success, 0 on failure
+ */
 int ggz_tls_enable_fd(int fdes, GGZTLSType whoami, GGZTLSVerificationType verify);
 
-/* Disable TLS on fd*/
+/** @brief Disable TLS for a file descriptor
+ *
+ *  An existing TLS connection is reset to a normal connection on which
+ *  all communication happens without encryption.
+ *
+ *  @param fdes File descriptor in question
+ *  @return 1 on success, 0 on failure
+ */
 int ggz_tls_disable_fd(int fdes);
 
-/* Write some bytes to a secured file descriptor */
+/** @brief Write some bytes to a secured file descriptor
+ *
+ *  This function acts as a TLS-aware wrapper for write(2).
+ *
+ *  @param fd File descriptor to use
+ *  @param ptr Pointer to the data to write
+ *  @param n Length of the data to write
+ *  @return Actual number of bytes written
+ */
 size_t ggz_tls_write(int fd, void *ptr, size_t n);
 
-/* Read from a secured file descriptor */
+/** @brief Read from a secured file descriptor
+ *
+ *  This function acts as a TLS-aware wrapper for read(2).
+ *
+ *  @param fd File descriptor to use
+ *  @param ptr Pointer to a buffer to store the data into
+ *  @param n Number of bytes to read, and minimum size of the buffer
+ *  @return Actually read number of bytes
+ */
 size_t ggz_tls_read(int fd, void *ptr, size_t n);
 
 /** @} */

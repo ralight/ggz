@@ -1,13 +1,15 @@
-.TH "ggz.h" 3 "1 Oct 2002" "LibGGZ" \" -*- nroff -*-
+.TH "ggz.h" 3 "11 May 2003" "LibGGZ" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
 ggz.h \-  
+
 .SH SYNOPSIS
 .br
 .PP
 \fC#include <sys/types.h>\fP
 .br
+
 .SS "Data Structures"
 
 .in +1c
@@ -23,14 +25,33 @@ ggz.h \-
 .RI "struct \fB_GGZXMLElement\fP"
 .br
 .RI "\fIObject representing a single XML element.\fP"
+.ti -1c
+.RI "struct \fBhash_t\fP"
+.br
+.RI "\fIHash data structure.\fP"
 .in -1c
 .SS "Defines"
 
 .in +1c
 .ti -1c
+.RI "#define \fBLIBGGZ_VERSION_MAJOR\fP   0"
+.br
+.ti -1c
+.RI "#define \fBLIBGGZ_VERSION_MINOR\fP   0"
+.br
+.ti -1c
+.RI "#define \fBLIBGGZ_VERSION_MICRO\fP   7"
+.br
+.ti -1c
+.RI "#define \fBLIBGGZ_VERSION_IFACE\fP   '1:1:0'"
+.br
+.ti -1c
 .RI "#define \fBggz__attribute\fP(att)"
 .br
 .RI "\fIAllow easy use of GCC's 'attribute' macro for debugging.\fP"
+.ti -1c
+.RI "#define \fB_GGZFUNCTION_\fP   __FUNCTION__"
+.br
 .ti -1c
 .RI "#define \fBggz_malloc\fP(size)   _ggz_malloc(size, _GGZFUNCTION_ ' in ' __FILE__, __LINE__)"
 .br
@@ -66,11 +87,11 @@ ggz.h \-
 .ti -1c
 .RI "typedef int(* \fBggzEntryCompare\fP )(void *a, void *b)"
 .br
-.RI "\fIA function type for doing data comparison on two items in a \fBGGZList\fP.\fP"
+.RI "\fIA function type for doing data comparison on two items in a \fB::GGZList\fP.\fP"
 .ti -1c
 .RI "typedef void *(* \fBggzEntryCreate\fP )(void *data)"
 .br
-.RI "\fIA function type for creating a copy of a data item for insertion into a \fBGGZList\fP.\fP"
+.RI "\fIA function type for creating a copy of a data item for insertion into a \fB::GGZList\fP.\fP"
 .ti -1c
 .RI "typedef void(* \fBggzEntryDestroy\fP )(void *data)"
 .br
@@ -86,7 +107,7 @@ ggz.h \-
 .ti -1c
 .RI "typedef \fB_GGZList\fP \fBGGZStack\fP"
 .br
-.RI "\fISimple implementation of stacks using \fBGGZList\fP.\fP"
+.RI "\fISimple implementation of stacks using \fB::GGZList\fP.\fP"
 .ti -1c
 .RI "typedef \fB_GGZXMLElement\fP \fBGGZXMLElement\fP"
 .br
@@ -112,7 +133,7 @@ ggz.h \-
 
 .in +1c
 .ti -1c
-.RI "enum \fBGGZConfType\fP "
+.RI "enum \fBGGZConfType\fP { \fBGGZ_CONF_RDONLY\fP =  ((unsigned char) 0x01), \fBGGZ_CONF_RDWR\fP =  ((unsigned char) 0x02), \fBGGZ_CONF_CREATE\fP =  ((unsigned char) 0x04) }"
 .br
 .RI "\fISpecifies the mode for opening a configuration file.\fP"
 .ti -1c
@@ -131,6 +152,14 @@ ggz.h \-
 .RI "enum \fBGGZSockType\fP { \fBGGZ_SOCK_SERVER\fP, \fBGGZ_SOCK_CLIENT\fP }"
 .br
 .RI "\fIA socket type.\fP"
+.ti -1c
+.RI "enum \fBGGZTLSType\fP { \fBGGZ_TLS_CLIENT\fP, \fBGGZ_TLS_SERVER\fP }"
+.br
+.RI "\fITLS operation mode.\fP"
+.ti -1c
+.RI "enum \fBGGZTLSVerificationType\fP { \fBGGZ_TLS_VERIFY_NONE\fP, \fBGGZ_TLS_VERIFY_PEER\fP }"
+.br
+.RI "\fITLS verification type.\fP"
 .in -1c
 .SS "Functions"
 
@@ -159,6 +188,10 @@ ggz.h \-
 .RI "void \fBggz_conf_cleanup\fP (void)"
 .br
 .RI "\fICloses all open configuration files.\fP"
+.ti -1c
+.RI "void \fBggz_conf_close\fP (int handle)"
+.br
+.RI "\fICloses one configuration file.\fP"
 .ti -1c
 .RI "int \fBggz_conf_parse\fP (const char *path, const \fBGGZConfType\fP options)"
 .br
@@ -210,7 +243,7 @@ ggz.h \-
 .ti -1c
 .RI "\fBGGZList\fP * \fBggz_list_create\fP (\fBggzEntryCompare\fP compare_func, \fBggzEntryCreate\fP create_func, \fBggzEntryDestroy\fP destroy_func, int options)"
 .br
-.RI "\fICreate a new \fBGGZList\fP.\fP"
+.RI "\fICreate a new \fB::GGZList\fP.\fP"
 .ti -1c
 .RI "int \fBggz_list_insert\fP (\fBGGZList\fP *list, void *data)"
 .br
@@ -290,15 +323,15 @@ ggz.h \-
 .ti -1c
 .RI "\fBGGZXMLElement\fP * \fBggz_xmlelement_new\fP (char *tag, char **attrs, void(*process)(), void(*free)())"
 .br
-.RI "\fICreate a new \fBGGZXMLElement\fP element.\fP"
+.RI "\fICreate a new \fB::GGZXMLElement\fP element.\fP"
 .ti -1c
 .RI "void \fBggz_xmlelement_init\fP (\fBGGZXMLElement\fP *element, char *tag, char **attrs, void(*process)(), void(*free)())"
 .br
-.RI "\fIInitialize a \fBGGZXMLElement\fP.\fP"
+.RI "\fIInitialize a \fB::GGZXMLElement\fP.\fP"
 .ti -1c
 .RI "void \fBggz_xmlelement_set_data\fP (\fBGGZXMLElement\fP *element, void *data)"
 .br
-.RI "\fISet ancillary data on a \fBGGZXMLElement\fP object.\fP"
+.RI "\fISet ancillary data on a \fB::GGZXMLElement\fP object.\fP"
 .ti -1c
 .RI "char * \fBggz_xmlelement_get_tag\fP (\fBGGZXMLElement\fP *element)"
 .br
@@ -356,6 +389,9 @@ ggz.h \-
 .br
 .RI "\fILog a fatal syscall error.\fP"
 .ti -1c
+.RI "void \fBggz__attribute\fP ((noreturn))"
+.br
+.ti -1c
 .RI "void \fBggz_error_msg\fP (const char *fmt,...) ggz__attribute((format(printf"
 .br
 .RI "\fILog an error message.\fP"
@@ -391,6 +427,10 @@ ggz.h \-
 .RI "int \fBggz_strcmp\fP (const char *s1, const char *s2)"
 .br
 .RI "\fIString comparison function that is safe with NULLs.\fP"
+.ti -1c
+.RI "int \fBggz_strcasecmp\fP (const char *s1, const char *s2)"
+.br
+.RI "\fICase-insensitive string comparison function that is safe with NULLs The function returns an integer less than, equal to, or greater than zero if s1 is found, respectively, to be less than, to match, or be greater than s2. NULL in considered to be less than any non-NULL string and equal to itself.\fP"
 .ti -1c
 .RI "int \fBggz_set_io_error_func\fP (\fBggzIOError\fP func)"
 .br
@@ -511,22 +551,63 @@ ggz.h \-
 .RI "int \fBggz_readn\fP (const int sock, void *data, size_t n)"
 .br
 .RI "\fIRead a sequence of bytes from the socket.\fP"
+.ti -1c
+.RI "\fBhash_t\fP \fBggz_hash_create\fP (const char *algo, const char *text)"
+.br
+.RI "\fICreate a hash over a text.\fP"
+.ti -1c
+.RI "\fBhash_t\fP \fBggz_hmac_create\fP (const char *algo, const char *text, const char *secret)"
+.br
+.RI "\fICreate a HMAC hash over a text.\fP"
+.ti -1c
+.RI "char * \fBggz_base64_encode\fP (const char *text, int length)"
+.br
+.RI "\fIEncodes text to base64.\fP"
+.ti -1c
+.RI "char * \fBggz_base64_decode\fP (const char *text, int length)"
+.br
+.RI "\fIDecodes text from base64.\fP"
+.ti -1c
+.RI "void \fBggz_tls_init\fP (const char *certfile, const char *keyfile, const char *password)"
+.br
+.RI "\fIInitialize TLS support on the server side.\fP"
+.ti -1c
+.RI "int \fBggz_tls_support_query\fP (void)"
+.br
+.RI "\fICheck TLS support.\fP"
+.ti -1c
+.RI "int \fBggz_tls_enable_fd\fP (int fdes, \fBGGZTLSType\fP whoami, \fBGGZTLSVerificationType\fP verify)"
+.br
+.RI "\fIEnable TLS for a file descriptor.\fP"
+.ti -1c
+.RI "int \fBggz_tls_disable_fd\fP (int fdes)"
+.br
+.RI "\fIDisable TLS for a file descriptor.\fP"
+.ti -1c
+.RI "size_t \fBggz_tls_write\fP (int fd, void *ptr, size_t n)"
+.br
+.RI "\fIWrite some bytes to a secured file descriptor.\fP"
+.ti -1c
+.RI "size_t \fBggz_tls_read\fP (int fd, void *ptr, size_t n)"
+.br
+.RI "\fIRead from a secured file descriptor.\fP"
 .in -1c
-.SH "DETAILED DESCRIPTION"
+.SH "Detailed Description"
 .PP 
- 
-.PP
-\fBAuthor: \fP
-.in +1c
+\fBAuthor:\fP
+.RS 4
 Brent M. Hendricks 
+.RE
 .PP
-\fBDate: \fP
-.in +1c
+\fBDate:\fP
+.RS 4
 Fri Nov 2 23:32:17 2001 
 .PP
-\fBId: \fP
-.in +1c
- ggz.h,v 1.39 2002/09/25 19:17:21 jdorje Exp 
+\fBId\fP.RS 4
+\fBggz.h\fP,v 1.46 2003/03/29 20:36:50 dr_maux Exp 
+.RE
+.PP
+.RE
 .PP
 Header file for ggz components lib
 .PP
@@ -537,14 +618,11 @@ This program is free software; you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 .PP
 You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
-.PP
-.SH "DEFINE DOCUMENTATION"
+.SH "Define Documentation"
 .PP 
 .SS "#define ggz__attribute(att)"
 .PP
-Allow easy use of GCC's 'attribute' macro for debugging.
-.PP
-Under gcc, we use the __attribute__ macro to check variadic arguments, for instance to printf-style functions. Other compilers may be able to do something similar, but this is generally unnecessary since it's only realy purpose is to give warning messages when the developer compiles the code. 
-.SH "AUTHOR"
+Allow easy use of GCC's 'attribute' macro for debugging.Under gcc, we use the __attribute__ macro to check variadic arguments, for instance to printf-style functions. Other compilers may be able to do something similar, but this is generally unnecessary since it's only realy purpose is to give warning messages when the developer compiles the code. 
+.SH "Author"
 .PP 
 Generated automatically by Doxygen for LibGGZ from the source code.

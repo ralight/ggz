@@ -1,4 +1,4 @@
-# $Id: Doxyfile 4845 2002-10-10 17:13:26Z jdorje $
+# $Id: Doxyfile 5565 2003-05-11 09:08:52Z dr_maux $
 # Doxyfile 1.2.10
 
 # This file describes the settings to be used by the documentation system
@@ -24,7 +24,7 @@ PROJECT_NAME           = LibGGZ
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = 0.0.7pre
+PROJECT_NUMBER         = 0.0.7
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 

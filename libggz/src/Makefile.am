@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5355 2003-02-04 00:53:21Z jdorje $
+# $Id: Makefile.am 5565 2003-05-11 09:08:52Z dr_maux $
 
 SUBDIRS = security
 
@@ -9,7 +9,7 @@ include_HEADERS = ggz.h ggz_common.h
 
 libggz_la_LIBADD = @LDADD@ $(top_builddir)/src/security/libggzsecurity.la
 
-libggz_la_LDFLAGS = -version-info 1:0:0
+libggz_la_LDFLAGS = -version-info 1:1:0
 
 libggz_la_SOURCES =	conf.c \
 			easysock.c \
