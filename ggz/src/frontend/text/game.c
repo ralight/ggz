@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5917 2004-02-13 07:27:52Z jdorje $
+ * $Id: game.c 6869 2005-01-24 03:08:12Z jdorje $
  *
  * Functions for handling game events
  *
@@ -36,13 +36,8 @@
 #include "server.h"
 
 /* Hooks for game events */
-static void game_register(GGZGame *game);
+static void game_register(GGZGame * game);
 static void game_process(void);
-static GGZHookReturn game_launched(GGZGameEvent, void*, void*);
-static GGZHookReturn game_launch_fail(GGZGameEvent, void*, void*);
-static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
-static GGZHookReturn game_negotiate_fail(GGZGameEvent, void*, void*);
-static GGZHookReturn game_playing(GGZGameEvent, void *, void*);
 
 
 static GGZGame *game = NULL;
@@ -50,7 +45,7 @@ static GGZGameType *gametype = NULL;
 static int gameindex = -1;
 static int fd = -1;
 
-void game_init(GGZModule *module, GGZGameType *type, int index)
+void game_init(GGZModule * module, GGZGameType * type, int index)
 {
 	if (game) {
 		output_text("You're already playing a game!");
@@ -114,21 +109,11 @@ void game_channel_ready(int fd)
 }
 
 
-static void game_register(GGZGame *game)
-{
-	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCHED, game_launched);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCH_FAIL, game_launch_fail);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED, game_negotiated);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL, game_negotiate_fail);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_PLAYING, game_playing);
-}
-
-
-static GGZHookReturn game_launched(GGZGameEvent id, void* event_data, 
-				   void* user_data)
+static GGZHookReturn game_launched(GGZGameEvent id, const void *event_data,
+				   const void *user_data)
 {
 	output_text("--- Launched game");
-	
+
 	fd = ggzcore_game_get_control_fd(game);
 	loop_add_fd(fd, game_process, game_destroy);
 
@@ -136,17 +121,21 @@ static GGZHookReturn game_launched(GGZGameEvent id, void* event_data,
 }
 
 
-static GGZHookReturn game_launch_fail(GGZGameEvent id, void* event_data,
-				      void* user_data)
+static GGZHookReturn game_launch_fail(GGZGameEvent id,
+				      const void *event_data,
+				      const void *user_data)
 {
-	output_text("--- Launch failed: %s", (char*)event_data);
+	const char *msg = event_data;
+
+	output_text("--- Launch failed: %s", msg);
 
 	return GGZ_HOOK_OK;
 }
 
 
-static GGZHookReturn game_negotiated(GGZGameEvent id, void* event_data,
-				     void* user_data)
+static GGZHookReturn game_negotiated(GGZGameEvent id,
+				     const void *event_data,
+				     const void *user_data)
 {
 	output_text("--- Negotiated game");
 
@@ -156,16 +145,20 @@ static GGZHookReturn game_negotiated(GGZGameEvent id, void* event_data,
 }
 
 
-static GGZHookReturn game_negotiate_fail(GGZGameEvent id, void* event_data,
-				      void* user_data)
+static GGZHookReturn game_negotiate_fail(GGZGameEvent id,
+					 const void *event_data,
+					 const void *user_data)
 {
-	output_text("--- Negotiate failed: %s", (char*)event_data);
+	const char *msg = event_data;
+
+	output_text("--- Negotiate failed: %s", msg);
 
 	return GGZ_HOOK_OK;
 }
 
 
-static GGZHookReturn game_playing(GGZGameEvent id, void* event_data, void* user_data)
+static GGZHookReturn game_playing(GGZGameEvent id, const void *event_data,
+				  const void *user_data)
 {
 	GGZRoom *room;
 	GGZTable *table;
@@ -174,17 +167,30 @@ static GGZHookReturn game_playing(GGZGameEvent id, void* event_data, void* user_
 
 	room = ggzcore_server_get_cur_room(server);
 
-	if(gameindex < 0) {
+	if (gameindex < 0) {
 		table = ggzcore_table_new();
 		ggzcore_table_init(table, gametype, "Fun with ggz-txt", 2);
 		ggzcore_table_set_seat(table, 1, GGZ_SEAT_BOT, NULL);
 
 		ggzcore_room_launch_table(room, table);
 		ggzcore_table_free(table);
-	}
-	else {
+	} else {
 		ggzcore_room_join_table(room, gameindex, 0);
 	}
 
 	return GGZ_HOOK_OK;
+}
+
+
+static void game_register(GGZGame * game)
+{
+	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCHED,
+				    game_launched);
+	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCH_FAIL,
+				    game_launch_fail);
+	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED,
+				    game_negotiated);
+	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL,
+				    game_negotiate_fail);
+	ggzcore_game_add_event_hook(game, GGZ_GAME_PLAYING, game_playing);
 }
