@@ -292,6 +292,7 @@ static void input_handle_launch(char *line)
 	ggzcore_table_add_bot(table, NULL, 1);
 
 	ggzcore_room_launch_table(room, table);
+	ggzcore_table_free(table);
 }
 
 	
