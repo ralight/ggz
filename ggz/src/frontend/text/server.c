@@ -1,10 +1,10 @@
 /*
- * File: main.c
+ * File: server.c
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
- * Date: 9/15/00
+ * Date: 9/26/00
  *
- * Main loop
+ * Functions for handling server events
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,51 +23,35 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+
 #include <config.h>
 #include <ggzcore.h>
 #include "server.h"
-#include "input.h"
 #include "output.h"
 
-#include <stdlib.h>
-#include <poll.h>
-#include <unistd.h>
-
-#define TIMEOUT 500
+#include <stdio.h>
 
 
-int main(void)
+void server_login_ok(GGZEventID id, void* event_data, void* user_data)
 {
-	GGZOptions opt;
-	struct pollfd fd[1] = {{STDIN_FILENO, POLLIN, 0}};
-
-	output_banner();
-
-	/* Setup options and initialize ggzcore lib */
-	opt.flags = GGZ_OPT_PARSER;
-	opt.global_conf = "/etc/ggz-text.rc";
-	opt.user_conf = "~/.ggz-txtrc";
-	opt.local_conf = NULL;
-
-	ggzcore_init(opt);
-	
-	ggzcore_event_connect(GGZ_SERVER_LOGIN_OK, server_login_ok);
-	ggzcore_event_connect(GGZ_SERVER_LOGIN_FAIL, server_login_fail);
-	ggzcore_event_connect(GGZ_SERVER_LOGOUT, server_logout);
+	printf("\nconnected\n");
 
 	output_prompt();
-	for (;;) {
-		if (poll(fd, 1, TIMEOUT)) {
-			if (input_command(fd[0].revents) < 0)
-				break;
-			else
-				output_prompt();
-		}
-		ggzcore_event_process_all();
-	}
-
-	ggzcore_event_process_all();
-	ggzcore_destroy();
-	
-	return 0;
 }
+
+
+void server_login_fail(GGZEventID id, void* event_data, void* user_data)
+{
+	printf("\nConnection failed: %s\n", (char*)event_data);
+
+	output_prompt();
+}
+
+
+void server_logout(GGZEventID id, void* event_data, void* user_data)
+{
+	printf("\ndisconnected\n");
+
+	output_prompt();
+}
+
