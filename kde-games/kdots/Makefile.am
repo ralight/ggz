@@ -30,8 +30,8 @@ EXTRA_DIST = module.dsc.in
 
 KDE_ICON = kdots
 
-GFX_data = dragon.png firedragon.png hi32-app-kdots.png snowdragon.png
-GFXdir = $(ggzdataadir)/kdots # $(DESTDIR) preprended automatically
+gfxdir = $(ggzdatadir)/kdots
+gfx_DATA = dragon.png firedragon.png hi32-app-kdots.png snowdragon.png
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
