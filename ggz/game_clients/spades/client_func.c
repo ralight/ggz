@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
+ * $Id: client_func.c 2205 2001-08-23 21:27:24Z jdorje $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -51,6 +52,9 @@
 #include <client.h>
 #include <options.h>
 #include <socketfunc.h>
+
+#include <ggz_client.h>
+
 #include "gtk_connect.h"
 #include "gtk_dlg_options.h"
 
@@ -152,8 +156,6 @@ int CheckWriteString(int msgsock, char *message)
 void AppInit(void)
 {
 	int i;
-	char fd_name[21];
-        struct sockaddr_un addr;
 		
 	gameState.get_opt = FALSE;
 	gameState.gameSegment = ST_GET_ID;
@@ -169,22 +171,11 @@ void AppInit(void)
 	for (i = 0; i < 4; i++)
 		gameState.players[i] = NULL;
 
+	/* use libggzmod to connect to GGZ.  --JDS */
+	ggz_client_init("NetSpades");
+	gameState.spadesSock = ggz_client_connect();
 
-	/* Connect to Unix domain socket */
-	sprintf(fd_name, "/tmp/NetSpades.%d", getpid());
-
-	if ( (gameState.spadesSock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
-		exit(-1);
-
-	bzero(&addr, sizeof(addr));
-	addr.sun_family = AF_LOCAL;
-	strcpy(addr.sun_path, fd_name);
-
-	if (connect(gameState.spadesSock, (struct sockaddr *)&addr,
-		    sizeof(addr)) < 0)
-		exit(-1);
-
-	spadesHandle = gdk_input_add(gameState.spadesSock, GDK_INPUT_READ, 
+	spadesHandle = gdk_input_add(gameState.spadesSock, GDK_INPUT_READ,
 				     ReadServerSocket, NULL);
 }
 
