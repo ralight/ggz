@@ -240,6 +240,17 @@ static int get_sync_info(void)
 
 static int get_gameover_status(void)
 {
+	char winner;
+	char *t_str;
+
+	if(es_read_char(game.fd, &winner) < 0)
+		return -1;
+
+	t_str = g_strdup_printf("%s won the game", game.names[(int)winner]);
+	statusbar_message(t_str);
+	g_free(t_str);
+	game.state = LP_STATE_DONE;
+
 	return 0;
 }
 
