@@ -1,0 +1,10 @@
+[ModuleInfo]
+Author = Josef Spillner
+CommandLine = @prefix@/bin/escape-sdl --ggz
+Frontend = sdl
+Homepage = http://www.ggzgamingzone.org/games/escape/
+Name = Escape/SDL
+ProtocolEngine = Escape
+ProtocolVersion = 2
+Version = 0.0.1
+

@@ -1,0 +1,28 @@
+Dresden - The Flood Game
+========================
+
+To play, you need:
+* Python 2.x
+* Pygame
+* SDL
+
+Story:
+You're a helper in a flooded area.
+Your task is to fix a dam, which isn't able to keep the water.
+The goal is to reach a high score (which can be increased by fixing many holes
+and staying alive as long as possible).
+Finally, you'll die (yes, that's the only way to end the game).
+
+Controls:
+* cursor left/right to move guy
+* space to jump
+* shift key to fix the holes
+
+Glossary:
+What is Dresden?
+- A very nice city in Germany.
+What is a 'saggse'?
+- An inhabitant of Saxony, which Dresden is capital of.
+Why this game?
+- Look at the source.
+
