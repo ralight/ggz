@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 4160 2002-05-05 07:13:20Z jdorje $
+ * $Id: main.c 4258 2002-06-16 12:26:45Z dr_maux $
  *
  * Main program code for ggz-cmd program.
  *
@@ -209,7 +209,7 @@ void exec_command(GGZCommand * cmd)
 
 	do {
 		wait_for_input(server_fd);
-		ggzcore_server_read_data(server);
+		ggzcore_server_read_data(server, ggzcore_server_get_channel(server));
 	} while (ggzcore_server_get_num_rooms(server) <= 0);
 
 
@@ -229,7 +229,7 @@ void exec_command(GGZCommand * cmd)
 
 	do {
 		wait_for_input(server_fd);
-		ggzcore_server_read_data(server);
+		ggzcore_server_read_data(server, ggzcore_server_get_channel(server));
 	} while (!in_room);
 
 	assert(command.data);

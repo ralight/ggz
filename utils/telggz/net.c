@@ -70,7 +70,7 @@ void net_process()
 {
 	if(server)
 		if(ggzcore_server_data_is_pending(server))
-			ggzcore_server_read_data(server);
+			ggzcore_server_read_data(server, ggzcore_server_get_channel(server));
 }
 
 void net_send(char *buffer)
@@ -142,7 +142,8 @@ GGZHookReturn net_hook_players(unsigned int id, void *event_data, void *user_dat
 
 GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data)
 {
-	while(!ggzcore_server_is_online(server)) ggzcore_server_read_data(server);
+	while(!ggzcore_server_is_online(server))
+		ggzcore_server_read_data(server, ggzcore_server_get_channel(server));
 
 	ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, m_username, m_password);
 	ggzcore_server_login(server);

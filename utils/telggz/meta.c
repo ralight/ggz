@@ -91,7 +91,7 @@ ServerGGZ **meta_query(const char *version)
 
 	finished = 0;
 	j = 0;
-	while((!finished) && (j < metaservercount - 1))
+	while((!finished) && (j < metaservercount))
 	{
 		host = meta_uri_host_internal(metaservers[j]);
 		port = meta_uri_port_internal(metaservers[j]);
@@ -154,7 +154,7 @@ void meta_sync()
 
 	finished = 0;
 	j = 0;
-	while((!finished) && (j < metaservercount - 1))
+	while((!finished) && (j < metaservercount))
 	{
 		host = meta_uri_host_internal(metaservers[j]);
 		port = meta_uri_port_internal(metaservers[j]);
@@ -177,7 +177,11 @@ void meta_sync()
 						{
 							uri = tmp->value;
 							for(k = 0; k < metaservercount; k++)
-								if(!strcmp(uri, metaservers[k])) uri = NULL;
+								if(!strcmp(uri, metaservers[k]))
+								{
+									uri = NULL;
+									break;
+								}
 							if(uri)
 							{
 								metaservers = (char**)realloc(metaservers, (metaservercount + 1) * sizeof(char*));
