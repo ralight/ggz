@@ -19,9 +19,11 @@
 
 #include "connection.h"
 
+#include <kapplication.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kdebug.h>
+#include <kconfig.h>
 
 #include <qlabel.h>
 #include <qlayout.h>
@@ -38,14 +40,22 @@ Connection::Connection(QWidget *parent, const char *name)
 	QHBoxLayout *hbox;
 	QLabel *label_server, *label_username, *label_password;
 	QPushButton *button_connect, *button_cancel;
+	KConfig *conf;
+	QString server, username, password;
+
+	conf = kapp->config();
+	conf->setGroup("Connection");
+	server = conf->readEntry("server");
+	username = conf->readEntry("username");
+	password = conf->readEntry("password");
 
 	label_server = new QLabel(i18n("Server"), this);
 	label_username = new QLabel(i18n("Username"), this);
 	label_password = new QLabel(i18n("Password"), this);
 
-	input_server = new QLineEdit("localhost", this);
-	input_username = new QLineEdit("josef", this);
-	input_password = new QLineEdit("moo", this);
+	input_server = new QLineEdit(server, this);
+	input_username = new QLineEdit(username, this);
+	input_password = new QLineEdit(password, this);
 
 	button_connect = new QPushButton(i18n("Connect"), this);
 	button_cancel = new QPushButton(i18n("Cancel"), this);
@@ -77,6 +87,14 @@ Connection::~Connection()
 
 void Connection::slotConnect()
 {
+	KConfig *conf;
+
+	conf = kapp->config();
+	conf->setGroup("Connection");
+	conf->writeEntry("server", input_server->text());
+	conf->writeEntry("username", input_username->text());
+	conf->writeEntry("password", input_password->text());
+
 	bar->setProgress(1);
 
 	sock = new QSocket(this);
