@@ -383,7 +383,7 @@ void KGGZConnect::modifyServerList(const char *server, int mode)
 	config->read("Servers", "Servers", &i, &list);
 	KGGZDEBUG("** found %i entries\n", i);
 
-	list2 = (char**)malloc(i + 2);
+	list2 = (char**)malloc((i + 2) * sizeof(char*));
 	for(int j = 0; j < i + 2; j++)
 		list2[j] = NULL;
 
@@ -438,6 +438,6 @@ void KGGZConnect::modifyServerList(const char *server, int mode)
 	if(list) free(list);
 	KGGZDEBUG("** update server list - 4.5\n");
 	// WARNING!!!!! TODO!!!!! SECURITY BUG!!!!!!! MEMORY HOLE!!!!!
-	//if(list2) free(list2);
+	if(list2) free(list2);
 	KGGZDEBUG("** update server list - 5\n");
 }
