@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat client main loop
- * $Id: main.c 3392 2002-02-17 09:29:11Z jdorje $
+ * $Id: main.c 3658 2002-03-24 17:40:17Z dr_maux $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -60,6 +60,9 @@ static void cleanup_debugging(void);
 int main(int argc, char *argv[]) {
 	
 	initialize_debugging();
+
+	ggz_intl_init("combat");
+
 	gtk_init(&argc, &argv);
 
 	game_init();

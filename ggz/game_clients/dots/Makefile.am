@@ -4,7 +4,7 @@ EXTRA_DIST = module.dsc.in
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@
+INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/common
 
 install-data-local:
 	@$(NORMAL_INSTALL)

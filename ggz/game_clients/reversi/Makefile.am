@@ -4,7 +4,7 @@ EXTRA_DIST = module.dsc.in
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@
+INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/common
 
 install-data-local:
 	@$(NORMAL_INSTALL)
@@ -30,4 +30,5 @@ ggz_reversi_SOURCES = game.h \
 	white.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_reversi_LDADD = @GTK_LIBS@ $(LDADD) 
+ggz_reversi_LDADD = @GTK_LIBS@ $(LDADD)  $(top_builddir)/common/libgtk-games.a
+

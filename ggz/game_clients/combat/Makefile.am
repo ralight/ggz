@@ -4,7 +4,7 @@ EXTRA_DIST = module.dsc.in
 
 SUBDIRS = . pixmaps maps
 
-INCLUDES = @GTK_CFLAGS@ 
+INCLUDES = @GTK_CFLAGS@  -I$(top_srcdir)/common
 
 install-data-local:
 	@$(NORMAL_INSTALL)
@@ -36,4 +36,5 @@ ggz_combat_SOURCES = combat.h \
 				game.c
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_combat_LDADD = @GTK_LIBS@ $(LDADD) 
+ggz_combat_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/common/libgtk-games.a
+

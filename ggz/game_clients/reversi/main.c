@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 3396 2002-02-17 09:59:47Z jdorje $
+ * $Id: main.c 3658 2002-03-24 17:40:17Z dr_maux $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -50,6 +50,8 @@ static void cleanup_debugging(void);
 int main(int argc, char *argv[]) {
 	
 	initialize_debugging();
+
+	ggz_intl_init("reversi");
 
 	gtk_init(&argc, &argv);
   add_pixmap_directory(".");
