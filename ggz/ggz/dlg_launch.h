@@ -29,3 +29,5 @@
 
 GtkWidget* create_dlgLaunch (void);
 int launch_seat_type(int i);
+void launch_get_reserve_name(int seat, char *name);
+

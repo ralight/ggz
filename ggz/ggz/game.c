@@ -119,6 +119,7 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 	int i,count;
 	int launch_game_type=0;
 	int launch_num_seats=0;
+	char name[MAX_USER_NAME_LEN+1];
 
 	/* Get game type to play */
 	dbg_msg("handle_options: Get Game Type");
@@ -168,6 +169,8 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 			case 3:		/* Reservation */
 				dbg_msg("Sending Seat GGZ_SEAT_RESV");
 				es_write_int(connection.sock, GGZ_SEAT_RESV);
+				launch_get_reserve_name(count,name);
+				es_write_string(connection.sock, name);
 				break;
 			default:
 

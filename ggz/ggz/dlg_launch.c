@@ -735,6 +735,11 @@ void launch_start_game(GtkWidget *btn_launch, gpointer user_data)
           
 }
 
+
+/*                              *
+ *        Helper Functions      *
+ *                              */
+
 void launch_seat_show(int i, char show)
 {
         gpointer tmp;
@@ -792,4 +797,16 @@ int launch_seat_type(int i)
 
 	dbg_msg("\tSeat type: %d",ret);
         return ret;
+}
+
+void launch_get_reserve_name(int seat, char *name)
+{
+        char* widget;
+        GtkWidget *temp_widget;
+
+        widget = g_strdup_printf("entry%d", seat+11);
+        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), widget);
+	g_free(widget);
+
+	name = gtk_entry_get_text(GTK_ENTRY(temp_widget));
 }
