@@ -1,9 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5359 2003-02-04 02:01:10Z jdorje $
+dnl $Id: configure.ac 5372 2003-02-04 09:24:26Z jdorje $
 
-AC_INIT(configure.ac)
+AC_INIT
+AC_CONFIG_SRCDIR([configure.ac])
 AM_INIT_AUTOMAKE(ggz-txt-client, 0.0.7pre)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
 dnl Check for standard build environment
@@ -30,6 +31,10 @@ AC_GGZ_GGZCORE
 dnl Check for header files
 dnl ======================
 AC_HEADER_STDC
+
+dnl Check for NLS
+dnl ============================================================
+dnl FIXME: TODO
 
 dnl Check for typedefs, structures, and compiler characteristics
 dnl ============================================================
@@ -64,10 +69,10 @@ dnl ===========
 dnl This defines either DEBUG or NDEBUG.  We could provide a third option
 dnl where neither are defined.
 if test "$enable_debug" = yes; then
-    AC_DEFINE(DEBUG)
+    AC_DEFINE([DEBUG], 1, [Define to enable debugging])
     DFLAGS="DEBUG"
 else
-    AC_DEFINE(NDEBUG)
+    AC_DEFINE([NDEBUG], 1, [Define to disable debugging])
     DFLAGS="NDEBUG"
 fi
 
@@ -82,10 +87,11 @@ dnl ============
 
 AC_SUBST(LDADD)
 
-AC_OUTPUT([Makefile 
+AC_CONFIG_FILES([Makefile 
 	   ggz-txt/Makefile
 		man/Makefile
 	   ])
+AC_OUTPUT
 
 
 dnl Status Output
