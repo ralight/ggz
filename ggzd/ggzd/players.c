@@ -128,7 +128,7 @@ static void* player_new(void *sock_ptr)
 	pthread_rwlock_wrlock(&players.lock);
 	if (players.count == MAX_USERS) {
 		pthread_rwlock_unlock(&players.lock);
-		es_write_char(sock, MSG_SERVER_FULL);
+		es_write_int(sock, MSG_SERVER_FULL);
 		pthread_exit(NULL);
 	}
 
@@ -917,7 +917,7 @@ static int player_chat(int p_index, int p_fd)
 	status = chat_add(p_index, msg);
 
 	if (FAIL(es_write_int(p_fd, RSP_CHAT)) ||
-	    FAIL(es_write_int(p_fd, status))) 
+	    FAIL(es_write_char(p_fd, status))) 
 		return (-1);
 
 	return 0;
