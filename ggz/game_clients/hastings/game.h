@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 9/10/00
  * Desc: Hastings1066 game functions
- * $Id: game.h 3063 2002-01-11 17:11:15Z dr_maux $
+ * $Id: game.h 5233 2002-11-06 22:11:22Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -36,6 +36,7 @@
 #define HASTINGS_REQ_MOVE     4
 #define HASTINGS_RSP_MOVE     5
 #define HASTINGS_SND_SYNC     6
+#define HASTINGS_MSG_MAPS     7
 
 /* Move errors */
 #define HASTINGS_ERR_STATE   -1
@@ -50,6 +51,7 @@
 #define HASTINGS_SND_MOVE     0
 #define HASTINGS_REQ_SYNC     1
 #define HASTINGS_REQ_INIT     2
+#define HASTINGS_SND_MAP      3
 
 /* Hastings client game states */
 #define STATE_INIT       0
@@ -58,6 +60,7 @@
 #define STATE_MOVE       3
 #define STATE_DONE       4
 #define STATE_PREINIT    5
+#define STATE_MAPS       6
 
 /* Data structure for the Game */
 struct game_state_t {
@@ -81,6 +84,14 @@ struct game_state_t {
 	int self;
 };
 
+struct hastings_map_t {
+	char board[10][30];
+	char boardmap[10][30];
+	char *author;
+	char *version;
+	char *title;
+	int height, width;
+};
 
 /* Setup functions */
 void game_handle_io(gpointer data, gint fd, GdkInputCondition cond);
@@ -93,6 +104,7 @@ int get_move_status(void);
 int get_opponent_move(void);
 int get_sync(void);
 int get_gameover(void);
+int get_maps(void);
 
 /* Functions to send data to server */
 int send_options(void);

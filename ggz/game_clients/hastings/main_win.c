@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 5165 2002-11-03 07:54:39Z jdorje $
+ * $Id: main_win.c 5233 2002-11-06 22:11:22Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -63,7 +63,7 @@
 #include <frame_ll.xpm>
 #include <frame_lr.xpm>
 #include <frame_black.xpm>
-#include <map.xpm>
+#include <bayeux.xpm>/*<map.xpm>*/
 #include <shadow.xpm>
 
 /* GGZ includes */
@@ -300,7 +300,7 @@ static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_black_xpm);
 
 	map_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
-		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)map_xpm);
+		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)/*map_xpm*/bayeux_xpm);
 }
 
 /* Quit the game */

@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 4923 2002-10-14 23:18:21Z jdorje $
+ * $Id: main.c 5233 2002-11-06 22:11:22Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -45,6 +45,7 @@
 /* GTK-games includes */
 #include "dlg_about.h"
 #include "dlg_players.h"
+#include "selector.h"
 #include "ggzintl.h"
 
 /* Hastings includes */
@@ -154,8 +155,8 @@ static void initialize_about_dialog(void)
 	    "        http://ggz.sourceforge.net/games/hastings/");
 	char *header;
 
-	header = g_strdup_printf("GGZ Gaming Zone\n"
-				 "Hastings1066 Version %s", VERSION);
+	header = g_strdup_printf(_("GGZ Gaming Zone\n"
+				 "Hastings1066 Version %s"), VERSION);
 	init_dlg_about(_("About Hastings1066"), header, content);
 	g_free(header);
 }
@@ -174,6 +175,9 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 	/* Distinguish between different server responses */
 	switch(op)
 	{
+		case HASTINGS_MSG_MAPS:
+			get_maps();
+			break;
 		case HASTINGS_MSG_SEAT:
 			get_seat();
 			break;
@@ -206,6 +210,13 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			game.state = STATE_DONE;
 			break;
 	}
+}
+
+int get_maps(void)
+{
+	GtkWidget *w;
+
+	w = selector();
 }
 
 /* Read in own data: seat number */

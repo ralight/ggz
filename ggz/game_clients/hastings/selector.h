@@ -1,5 +1,5 @@
-#ifndef HASTINGS_GAME_H
-#define HASTINGS_GAME_H
+#ifndef HASTINGS_SELECTOR_H
+#define HASTINGS_SELECTOR_H
 
 GtkWidget *selector();
 
