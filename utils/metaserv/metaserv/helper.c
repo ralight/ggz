@@ -10,6 +10,8 @@
 #include <stdarg.h>
 #include <time.h>
 
+#include "helper.h"
+
 extern char *logfile;
 
 void logline(const char *fmt, ...)
