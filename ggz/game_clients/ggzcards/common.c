@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3317 2002-02-11 06:22:24Z jdorje $
+ * $Id: common.c 3320 2002-02-11 06:55:47Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -252,7 +252,8 @@ static int handle_message_global(void)
 
 	op = opcode;
 
-	ggz_debug("core", "Received global message opcode of type %d.", op);
+	ggz_debug("core", "Received %s global message opcode.",
+	          get_game_message_name(op));
 
 	switch (op) {
 	case GAME_MESSAGE_TEXT:
@@ -817,13 +818,18 @@ int client_send_sync_request(void)
 /* This function handles any input from the server. */
 int client_handle_server(void)
 {
-	int op, status = -1;
+	int opcode, status = -1;
+	server_msg_t op;
 
 	/* Read the opcode */
-	if (read_opcode(game_internal.fd, &op) < 0) {
+	if (read_opcode(game_internal.fd, &opcode) < 0) {
 		ggz_debug("core-error", "Couldn't read server opcode.");
 		return -1;
 	}
+	op = opcode;
+	
+	ggz_debug("core", "Received %s opcode from the server.",
+	          get_server_opcode_name(op));
 
 	switch (op) {
 	case REQ_NEWGAME:
