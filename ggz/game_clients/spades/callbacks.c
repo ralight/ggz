@@ -34,7 +34,7 @@ void launch_game(GtkButton * button, gpointer user_data)
 	write(gameState.spadesSock, &options, sizeof(options));
 	g_printerr("Sent options\n");
 
-	DisplayInit();
+	/*DisplayInit();*/
 }
 
 

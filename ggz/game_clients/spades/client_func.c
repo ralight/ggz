@@ -52,6 +52,7 @@
 #include <options.h>
 #include <socketfunc.h>
 #include "gtk_connect.h"
+#include "gtk_dlg_options.h"
 
 #define basename(path) (strrchr(path,'/')==NULL) ? path : strrchr(path, '/')+1
 
@@ -155,7 +156,7 @@ void AppInit(void)
         struct sockaddr_un addr;
 		
 	gameState.get_opt = FALSE;
-	gameState.gameSegment = ST_GET_GAME;
+	gameState.gameSegment = ST_GET_ID;
 
 	options.endGame = 100;
 	options.minBid = 3;
@@ -326,12 +327,16 @@ int RegisterTaunt(void)
 int GetPlayerId(void)
 {
 
-	int status = NET_FAIL;
+	int status;
 	g_printerr("Getting my ID\n");
 
-	if (CheckReadInt(gameState.spadesSock, &gameState.playerId) == NET_OK)
+	if ( (status = CheckReadInt(gameState.spadesSock, &gameState.playerId) == NET_OK))
 		g_printerr("My ID is %d\n", gameState.playerId);
-	    
+
+	/* If we're player 0, read in game options */
+	if (gameState.playerId == 0)
+		OptionsDialog(NULL, NULL);
+
 #if 0
 	    NET_OK 
 	    && gameState.playerId > -1
