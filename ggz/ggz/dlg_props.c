@@ -506,10 +506,12 @@ static void props_update(void)
 	server_profiles_save();
 
 	/* If the login dialog is open refill the combo box */
-	tmp = lookup_widget(dlg_login, "profile_combo");
-	items = server_get_name_list();
-	if (tmp && items) 
-		gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
+	if(dlg_login != NULL) {
+		tmp = lookup_widget(dlg_login, "profile_combo");
+		items = server_get_name_list();
+		if (tmp && items) 
+			gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
+	}
 
 	/* Chat Tab */
         tmp = lookup_widget(dlg_props, "chat_font");

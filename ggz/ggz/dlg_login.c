@@ -350,8 +350,10 @@ void login_ok()
 	gchar* buf;
 
 
-	if(dlg_login)
+	if(dlg_login != NULL) {
 		gtk_widget_destroy(dlg_login);	
+		dlg_login = NULL;
+	}
 
 	/* Clear old lists */
 	tmp = lookup_widget(main_win, "table_tree");
