@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.h 6785 2005-01-21 18:48:01Z jdorje $
+ * $Id: player.h 6880 2005-01-24 08:36:55Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -30,87 +30,53 @@
 
 #include "room.h"
 
-/* 
- * The Player structure is meant to be a node in a linked list of
- * the players in the current room .
- */
-struct _GGZPlayer {
-	
-	/* Name of player */
-	char* name;	
-
-	/* Type of player */
-	GGZPlayerType type;
-
-	/* Pointer to room player is in */
-	struct _GGZRoom *room;
-
-	/* Server ID of table player is at */
-	int table;
-
-	/* Lag of the player */
-	int lag;
-
-	/* Record of the player */
-#define NO_RECORD -1
-	int wins, losses, ties, forfeits;
-
-	/* Rating of the player */
-#define NO_RATING 0
-	int rating;
-
-	/* Ranking of the player */
-#define NO_RANKING 0
-	int ranking;
-
-	/* Player's highest score */
-#define NO_HIGHSCORE -1
-	int highscore;
-};
 
 
-struct _GGZPlayer* _ggzcore_player_new(void);
+GGZPlayer *_ggzcore_player_new(void);
 
-void _ggzcore_player_free(struct _GGZPlayer *player);
+void _ggzcore_player_free(GGZPlayer * player);
 
-void _ggzcore_player_init(struct _GGZPlayer *player, 
-			  const char *name, 
+void _ggzcore_player_init(GGZPlayer * player,
+			  const char *name,
 			  struct _GGZRoom *room,
 			  const int table,
-			  const GGZPlayerType type,
-			  const int lag);
-void _ggzcore_player_init_stats(GGZPlayer *player,
-				const int wins,
-				const int losses,
-				const int ties,
-				const int forfeits,
-				const int rating,
-				const int ranking,
-				const long highscore);
+			  const GGZPlayerType type, const int lag);
+void _ggzcore_player_init_stats(GGZPlayer * player,
+				int wins, int losses, int ties,
+				int forfeits, int rating, int ranking,
+				int highscore);
 
 
-void _ggzcore_player_set_table(struct _GGZPlayer *player, const int table);
+void _ggzcore_player_set_table(GGZPlayer * player, const int table);
+void _ggzcore_player_set_lag(GGZPlayer * player, const int lag);
 
-void _ggzcore_player_set_lag(struct _GGZPlayer *player, const int lag);
+char *_ggzcore_player_get_name(const GGZPlayer * player);
+GGZPlayerType _ggzcore_player_get_type(const GGZPlayer * player);
+struct _GGZTable *_ggzcore_player_get_table(const GGZPlayer * player);
+int _ggzcore_player_get_lag(const GGZPlayer * player);
+GGZRoom *_ggzcore_player_get_room(const GGZPlayer * player);
 
-char* _ggzcore_player_get_name(struct _GGZPlayer *player);
-
-GGZPlayerType _ggzcore_player_get_type(struct _GGZPlayer *player);
-
-struct _GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player);
-
-int _ggzcore_player_get_lag(struct _GGZPlayer *player);
-int _ggzcore_player_get_record(GGZPlayer *player,
+#define NO_RECORD -1
+#define NO_RATING 0
+#define NO_RANKING 0
+#define NO_HIGHSCORE -1
+int _ggzcore_player_get_record(const GGZPlayer * player,
 			       int *wins, int *losses,
 			       int *ties, int *forfeits);
-int _ggzcore_player_get_rating(GGZPlayer *player, int *rating);
-int _ggzcore_player_get_ranking(GGZPlayer *player, int *ranking);
-int _ggzcore_player_get_highscore(GGZPlayer *player, int *highscore);
+int _ggzcore_player_get_rating(const GGZPlayer * player, int *rating);
+int _ggzcore_player_get_ranking(const GGZPlayer * player, int *ranking);
+int _ggzcore_player_get_highscore(const GGZPlayer * player,
+				  int *highscore);
 
 /* Utility functions used by _ggzcore_list */
-int _ggzcore_player_compare(const void* p, const void* q);
-void* _ggzcore_player_create(void* p);
-void  _ggzcore_player_destroy(void* p);
+int _ggzcore_player_compare(const void *p, const void *q);
+void *_ggzcore_player_create(void *p);
+void _ggzcore_player_destroy(void *p);
+
+/* Room-player functions. */
+void _ggzcore_room_set_player_lag(GGZRoom * room, const char *name,
+				  int lag);
+void _ggzcore_room_set_player_stats(GGZRoom * room, GGZPlayer * pdata);
 
 
 #endif /* __PLAYER_H_ */

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 6877 2005-01-24 06:34:32Z jdorje $
+ * $Id: netxml.c 6880 2005-01-24 08:36:55Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -234,8 +234,7 @@ void _ggzcore_net_init(GGZNet * net, GGZServer * server,
 		    ("Couldn't allocate memory for XML parser");
 
 	/* Setup handlers for tags */
-	XML_SetElementHandler(net->parser,
-			      (XML_StartElementHandler)
+	XML_SetElementHandler(net->parser, (XML_StartElementHandler)
 			      _ggzcore_net_parse_start_tag,
 			      (XML_EndElementHandler)
 			      _ggzcore_net_parse_end_tag);
@@ -1302,11 +1301,22 @@ static void _ggzcore_net_player_update(GGZNet * net,
 	int room_num;
 	GGZPlayer *player;
 	GGZRoom *room;
+	const char *player_name;
 
 	room_num = str_to_int(ATTR(update, "ROOM"), -1);
 
 	player = ggz_xmlelement_get_data(update);
+	if (!player) {
+		return;
+	}
+	player_name = ggzcore_player_get_name(player);
+
 	room = _ggzcore_server_get_room_by_id(net->server, room_num);
+	if (!room) {
+		_ggzcore_player_free(player);
+		return;
+	}
+
 
 	if (strcasecmp(action, "add") == 0) {
 		int from_room = str_to_int(ATTR(update, "FROMROOM"), -2);
@@ -1315,11 +1325,12 @@ static void _ggzcore_net_player_update(GGZNet * net,
 	} else if (strcasecmp(action, "delete") == 0) {
 		int to_room = str_to_int(ATTR(update, "TOROOM"), -2);
 
-		_ggzcore_room_remove_player(room, player->name, to_room);
+		_ggzcore_room_remove_player(room, player_name, to_room);
 	} else if (strcasecmp(action, "lag") == 0) {
 		/* FIXME: Should be a player "class-based" event */
-		_ggzcore_room_set_player_lag(room, player->name,
-					     player->lag);
+		int lag = ggzcore_player_get_lag(player);
+
+		_ggzcore_room_set_player_lag(room, player_name, lag);
 	} else if (strcasecmp(action, "stats") == 0) {
 		/* FIXME: Should be a player "class-based" event */
 		_ggzcore_room_set_player_stats(room, player);
@@ -1773,6 +1784,7 @@ static void _ggzcore_net_handle_player(GGZNet * net,
 	int table, lag;
 	GGZXMLElement *parent;
 	const char *parent_tag, *parent_type;
+	int wins, losses, ties, forfeits, rating, ranking, highscore;
 
 	if (!element)
 		return;
@@ -1793,20 +1805,15 @@ static void _ggzcore_net_handle_player(GGZNet * net,
 	_ggzcore_player_init(ggz_player, name, room, table, type, lag);
 
 	/* FIXME: should these be initialized through an accessor function? */
-	ggz_player->wins = str_to_int(ATTR(element, "WINS"), NO_RECORD);
-	ggz_player->ties = str_to_int(ATTR(element, "TIES"), NO_RECORD);
-	ggz_player->losses =
-	    str_to_int(ATTR(element, "LOSSES"), NO_RECORD);
-	ggz_player->forfeits =
-	    str_to_int(ATTR(element, "FORFEITS"), NO_RECORD);
-	ggz_player->rating =
-	    str_to_int(ATTR(element, "RATING"), NO_RATING);
-	ggz_player->ranking =
-	    str_to_int(ATTR(element, "RANKING"), NO_RANKING);
-
-	/* FIXME: highscore is a long... */
-	ggz_player->highscore = str_to_int(ATTR(element, "HIGHSCORE"),
-					   NO_HIGHSCORE);
+	wins = str_to_int(ATTR(element, "WINS"), NO_RECORD);
+	ties = str_to_int(ATTR(element, "TIES"), NO_RECORD);
+	losses = str_to_int(ATTR(element, "LOSSES"), NO_RECORD);
+	forfeits = str_to_int(ATTR(element, "FORFEITS"), NO_RECORD);
+	rating = str_to_int(ATTR(element, "RATING"), NO_RATING);
+	ranking = str_to_int(ATTR(element, "RANKING"), NO_RANKING);
+	highscore = str_to_int(ATTR(element, "HIGHSCORE"), NO_HIGHSCORE);
+	_ggzcore_player_init_stats(ggz_player, wins, losses, ties,
+				   forfeits, rating, ranking, highscore);
 
 	/* Get parent off top of stack */
 	parent = ggz_stack_top(net->stack);
@@ -1948,15 +1955,13 @@ static GGZTableData *_ggzcore_net_tabledata_new(void)
 {
 	GGZTableData *data = ggz_malloc(sizeof(GGZTableData));
 
-	data->seats = ggz_list_create(NULL,
-				      (ggzEntryCreate)
+	data->seats = ggz_list_create(NULL, (ggzEntryCreate)
 				      _ggzcore_net_seat_copy,
 				      (ggzEntryDestroy)
 				      _ggzcore_net_seat_free,
 				      GGZ_LIST_ALLOW_DUPS);
 
-	data->spectatorseats = ggz_list_create(NULL,
-					       (ggzEntryCreate)
+	data->spectatorseats = ggz_list_create(NULL, (ggzEntryCreate)
 					       _ggzcore_net_seat_copy,
 					       (ggzEntryDestroy)
 					       _ggzcore_net_seat_free,

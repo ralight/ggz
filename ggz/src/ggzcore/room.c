@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 6877 2005-01-24 06:34:32Z jdorje $
+ * $Id: room.c 6880 2005-01-24 08:36:55Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -46,8 +46,6 @@
 
 /* Local functions */
 static int _ggzcore_room_event_is_valid(GGZRoomEvent event);
-static GGZHookReturn _ggzcore_room_event(GGZRoom * room,
-					 GGZRoomEvent id, void *data);
 
 /* Total number of server events messages */
 static unsigned int _ggzcore_num_events =
@@ -98,9 +96,8 @@ static unsigned int _ggzcore_room_get_num_players(GGZRoom * room)
 }
 
 
-static struct _GGZPlayer *_ggzcore_room_get_nth_player(GGZRoom * room,
-						       const unsigned int
-						       num)
+static GGZPlayer *_ggzcore_room_get_nth_player(GGZRoom * room,
+					       const unsigned int num)
 {
 	int i;
 	GGZListEntry *cur;
@@ -113,19 +110,20 @@ static struct _GGZPlayer *_ggzcore_room_get_nth_player(GGZRoom * room,
 }
 
 
-static struct _GGZPlayer *_ggzcore_room_get_player_by_name(GGZRoom * room,
-							   const char
-							   *name)
+GGZPlayer *_ggzcore_room_get_player_by_name(GGZRoom * room,
+					    const char *name)
 {
 	GGZListEntry *entry;
-	struct _GGZPlayer player, *found = NULL;
+	GGZPlayer *player, *found = NULL;
 
 	if (room->players) {
-		player.name = (char *)name;
+		player = _ggzcore_player_new();
+		_ggzcore_player_init(player, name, NULL, -1, 0, 0);
 		entry = ggz_list_search(room->players, &player);
 
 		if (entry)
 			found = ggz_list_get_data(entry);
+		_ggzcore_player_free(player);
 	}
 
 	return found;
@@ -556,11 +554,13 @@ void _ggzcore_room_set_monitor(GGZRoom * room, char monitor)
 void _ggzcore_room_add_player(GGZRoom * room, GGZPlayer * pdata,
 			      int from_room)
 {
-	struct _GGZPlayer *player;
+	GGZPlayer *player;
 	GGZRoomChangeEventData data;
 	GGZServer *server = _ggzcore_room_get_server(room);
+	int wins, losses, ties, forfeits, rating, ranking, highscore;
 
-	ggz_debug(GGZCORE_DBG_ROOM, "Adding player %s", pdata->name);
+	ggz_debug(GGZCORE_DBG_ROOM, "Adding player %s",
+		  ggzcore_player_get_name(pdata));
 
 	/* Create the list if it doesn't exist yet */
 	if (!room->players)
@@ -571,21 +571,23 @@ void _ggzcore_room_add_player(GGZRoom * room, GGZPlayer * pdata,
 
 	/* Default new people in room to no table (-1) */
 	player = _ggzcore_player_new();
-	_ggzcore_player_init(player, pdata->name, pdata->room,
-			     -1, pdata->type, pdata->lag);
-	_ggzcore_player_init_stats(player,
-				   pdata->wins,
-				   pdata->losses,
-				   pdata->ties,
-				   pdata->forfeits,
-				   pdata->rating,
-				   pdata->ranking, pdata->highscore);
+	_ggzcore_player_init(player, ggzcore_player_get_name(pdata),
+			     _ggzcore_player_get_room(pdata),
+			     -1, ggzcore_player_get_type(pdata),
+			     ggzcore_player_get_lag(pdata));
+	_ggzcore_player_get_record(pdata, &wins, &losses, &ties,
+				   &forfeits);
+	_ggzcore_player_get_rating(player, &rating);
+	_ggzcore_player_get_ranking(player, &ranking);
+	_ggzcore_player_get_highscore(player, &highscore);
+	_ggzcore_player_init_stats(player, wins, losses, ties, forfeits,
+				   rating, ranking, highscore);
 
 	ggz_list_insert(room->players, player);
 	room->num_players++;
 	room->player_count = room->num_players;
 
-	data.player_name = pdata->name;
+	data.player_name = ggzcore_player_get_name(pdata);
 	data.from_room = from_room;
 	data.to_room = room->id;
 	_ggzcore_room_event(room, GGZ_ROOM_ENTER, &data);
@@ -598,9 +600,9 @@ void _ggzcore_room_add_player(GGZRoom * room, GGZPlayer * pdata,
 }
 
 
-void _ggzcore_room_remove_player(GGZRoom * room, char *name, int to_room)
+void _ggzcore_room_remove_player(GGZRoom * room, const char *name,
+				 int to_room)
 {
-	struct _GGZPlayer player;
 	GGZListEntry *entry;
 	GGZRoomChangeEventData data;
 
@@ -608,7 +610,8 @@ void _ggzcore_room_remove_player(GGZRoom * room, char *name, int to_room)
 
 	/* Only try to delete if the list exists */
 	if (room->players) {
-		player.name = name;
+		GGZPlayer *player = _ggzcore_player_new();
+		_ggzcore_player_init(player, name, NULL, -1, 0, 0);
 		entry = ggz_list_search(room->players, &player);
 		if (entry) {
 			GGZServer *server = _ggzcore_room_get_server(room);
@@ -624,56 +627,12 @@ void _ggzcore_room_remove_player(GGZRoom * room, char *name, int to_room)
 			_ggzcore_room_event(room, GGZ_ROOM_LEAVE, &data);
 			_ggzcore_server_queue_players_changed(server);
 		}
+		_ggzcore_player_free(player);
 	}
 
 	if ((room = _ggzcore_server_get_room_by_id(room->server, to_room))) {
 		_ggzcore_room_set_players(room, room->player_count + 1);
 	}
-}
-
-
-void _ggzcore_room_set_player_lag(GGZRoom * room, char *name, int lag)
-{
-	/* FIXME: This should be sending a player "class-based" event */
-	struct _GGZPlayer *player;
-
-	ggz_debug(GGZCORE_DBG_ROOM, "Setting lag to %d for %s", lag, name);
-
-	if (room->players) {
-		player = _ggzcore_room_get_player_by_name(room, name);
-		if (player) {	/* make sure they're still in room */
-			_ggzcore_player_set_lag(player, lag);
-			_ggzcore_room_event(room, GGZ_PLAYER_LAG, name);
-		}
-	}
-}
-
-
-void _ggzcore_room_set_player_stats(GGZRoom * room, GGZPlayer * pdata)
-{
-	/* FIXME: This should be sending a player "class-based" event */
-	GGZPlayer *player;
-
-	ggz_debug(GGZCORE_DBG_ROOM, "Setting stats for %s: %d-%d-%d",
-		  pdata->name, pdata->wins, pdata->losses, pdata->ties);
-
-	if (!room->players)
-		return;
-
-	player = _ggzcore_room_get_player_by_name(room, pdata->name);
-
-	/* make sure they're still in room */
-	if (!player)
-		return;
-
-	_ggzcore_player_init_stats(player,
-				   pdata->wins,
-				   pdata->losses,
-				   pdata->ties,
-				   pdata->forfeits,
-				   pdata->rating,
-				   pdata->ranking, pdata->highscore);
-	_ggzcore_room_event(room, GGZ_PLAYER_STATS, player->name);
 }
 
 
@@ -723,7 +682,7 @@ void _ggzcore_room_remove_table(GGZRoom * room, const unsigned int id)
 void _ggzcore_room_player_set_table(GGZRoom * room,
 				    const char *name, int table)
 {
-	struct _GGZPlayer *player;
+	GGZPlayer *player;
 
 	ggz_debug(GGZCORE_DBG_ROOM, "%s table is now %d", name, table);
 
@@ -1165,8 +1124,8 @@ static int _ggzcore_room_event_is_valid(GGZRoomEvent event)
 }
 
 
-static GGZHookReturn _ggzcore_room_event(GGZRoom * room, GGZRoomEvent id,
-					 void *data)
+GGZHookReturn _ggzcore_room_event(GGZRoom * room, GGZRoomEvent id,
+				  const void *data)
 {
 	return _ggzcore_hook_list_invoke(room->event_hooks[id], data);
 }

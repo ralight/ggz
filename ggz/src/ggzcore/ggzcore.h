@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6879 2005-01-24 07:28:38Z jdorje $
+ * $Id: ggzcore.h 6880 2005-01-24 08:36:55Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -369,7 +369,7 @@ typedef struct {
 /** @brief The data associated with GGZ_ROOM_ENTER/GGZ_ROOM_LEAVE events. */
 typedef struct {
 	/** @brief The name of the player entering/leaving. */
-	char *player_name;
+	const char *player_name;
 
 	/** @brief The room we are entering.
 	 *
@@ -1096,38 +1096,41 @@ int ggzcore_room_leave_table(GGZRoom *room, int force);
 /* -------------------------------------------- */
 
 /** @brief Return the name of the player. */
-char*         ggzcore_player_get_name(GGZPlayer *player);
+char *ggzcore_player_get_name(const GGZPlayer *player);
 
 /** @brief Return the type of the player (admin/registered/guest) */
-GGZPlayerType ggzcore_player_get_type(GGZPlayer *player);
+GGZPlayerType ggzcore_player_get_type(const GGZPlayer *player);
+
+/** @brief Return the player's room, or NULL if none. */
+GGZRoom *ggzcore_player_get_room(const GGZPlayer *player);
 
 /** @brief Return the player's table, or NULL if none */
-GGZTable*     ggzcore_player_get_table(GGZPlayer *player);
+GGZTable* ggzcore_player_get_table(const GGZPlayer *player);
 
 /** @brief Return the player's lag class (1..5) */
-int	      ggzcore_player_get_lag(GGZPlayer *player);
+int ggzcore_player_get_lag(const GGZPlayer *player);
 
 /** @brief Get the player's win-loss record.
  *  @return TRUE if there is a record; FALSE if not or on error.
  */
-int ggzcore_player_get_record(GGZPlayer *player,
+int ggzcore_player_get_record(const GGZPlayer *player,
 			      int *wins, int *losses,
 			      int *ties, int *forfeits);
 
 /** @brief Get the player's rating.
  *  @return TRUE if there is a rating; FALSE if not or on error.
  */
-int ggzcore_player_get_rating(GGZPlayer *player, int *rating);
+int ggzcore_player_get_rating(const GGZPlayer *player, int *rating);
 
 /** @brief Get the player's ranking.
  *  @return TRUE if there is a ranking; FALSE if not or on error.
  */
-int ggzcore_player_get_ranking(GGZPlayer *player, int *ranking);
+int ggzcore_player_get_ranking(const GGZPlayer *player, int *ranking);
 
 /** @brief Get the player's highscore.
  *  @return TRUE if there is a highscore; FALSE if not or on error.
  */
-int ggzcore_player_get_highscore(GGZPlayer *player, int *highscore);
+int ggzcore_player_get_highscore(const GGZPlayer *player, int *highscore);
 
 
 /** @brief Create a new table object.
