@@ -9,6 +9,7 @@ dnl Compiling Options
 dnl =====================
 AC_ARG_ENABLE(perl,  [  --disable-perl        Exclude perl modules],, enable_perl=yes)
 AC_ARG_ENABLE(ruby,  [  --disable-ruby        Exclude ruby modules],, enable_ruby=yes)
+AC_ARG_ENABLE(python,[  --disable-python      Exclude python modules],, enable_python=yes)
 
 dnl Check for standard build environment
 dnl ====================================
@@ -55,6 +56,7 @@ if test "$enable_perl" = yes; then
 		AC_MSG_RESULT(no.)
 		perl_includes=""
 		perl_libraries=""
+		enable_perl=no
 	else
 		#perl_includes="-I $perl_includes"
 		#perl_libraries="-L $perl_libraries -lperl"
@@ -87,6 +89,7 @@ if test "$enable_ruby" = yes; then
 		AC_MSG_RESULT(no.)
 		ruby_includes=""
 		ruby_libraries=""
+		enable_ruby=no
 	else
 		ruby_includes="-I $ruby_includes"
 		if test "$rubystyle" = "old"; then
@@ -98,6 +101,32 @@ if test "$enable_ruby" = yes; then
 		AC_SUBST(ruby_includes)
 		AC_SUBST(ruby_libraries)
 		AC_DEFINE(EMBED_RUBY)
+	fi
+fi
+
+if test "$enable_python" = yes; then
+	echo -n "Extra check: python... "
+
+	incs="/usr/local/include/python2.2 /usr/include/python2.2"
+	AC_GGZ_FIND_FILE("Python.h", $incs, python_incdir)
+	python_includes="$python_incdir"
+
+	libs="/usr/local/lib /usr/lib"
+	AC_GGZ_FIND_FILE("libpython2.2.so", $libs, python_libdir)
+	python_libraries="$python_libdir"
+
+	if test "x$python_includes" = "xNO" || test "x$python_libraries" = "xNO"; then
+		AC_MSG_RESULT(no.)
+		python_includes=""
+		python_libraries=""
+		enable_python=no
+	else
+		python_includes="-I $python_includes"
+		python_libraries="-L $python_libraries -lpython2.2"
+		AC_MSG_RESULT(ok.)
+		AC_SUBST(python_includes)
+		AC_SUBST(python_libraries)
+		AC_DEFINE(EMBED_PYTHON)
 	fi
 fi
 
@@ -130,5 +159,9 @@ dnl =============
 
 echo ""
 echo "Configured grubby. Type 'make' to compile it, followed by a 'make install'."
+echo ""
+echo "Python support: $enable_python"
+echo "Ruby support: $enable_ruby"
+echo "Perl support: $enable_perl"
 echo ""
 
