@@ -816,7 +816,8 @@ static int player_list_types(int p_index, int fd)
 	for (i = 0; i < count; i++) {
 		if (FAIL(es_write_int(fd, i)) 
 		    || FAIL(es_write_string(fd, info[i].name)) 
-		    || FAIL(es_write_string(fd, info[i].version)))
+		    || FAIL(es_write_string(fd, info[i].version))
+		    || FAIL(es_write_char(fd, info[i].num_play_allow)))
 			return (-1);
 		if (!verbose)
 			continue;

@@ -94,6 +94,26 @@ void init_data(void)
 	game_types.info[0] = spades;
 	game_types.count++;
 
+	strncpy(spades.name, "Test Game", MAX_GAME_NAME_LEN);
+	strncpy(spades.version, "1.0c", MAX_GAME_VER_LEN);
+	strncpy(spades.desc,
+		"Very crude hack to start multi-game support",
+		MAX_GAME_DESC_LEN);
+	strncpy(spades.author, "Anonymous", MAX_GAME_AUTH_LEN);
+	strncpy(spades.homepage, "http://ggz.sourceforge.net", 
+		MAX_GAME_WEB_LEN);
+	spades.num_play_allow = (char) (PLAY_ALLOW_FIVE);
+	spades.comp_allow =
+		(char) (COMP_ALLOW_ZERO | COMP_ALLOW_ONE | COMP_ALLOW_TWO |
+			COMP_ALLOW_THREE);
+	spades.options_size = 12;
+	spades.enabled = 1;
+	spades.launch = NULL;
+	strncpy(spades.path, "../game_servers/spades/spades", MAX_PATH_LEN);
+
+	game_types.info[1] = spades;
+	game_types.count++;
+
 	chat_init();
 }
 
