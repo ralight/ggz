@@ -1,4 +1,10 @@
 design-html
 design.txt
+design.pdf
+design.out
+design.log
+design.jtex
+design.aux
 Makefile
 Makefile.in
+jadetex.cfg
