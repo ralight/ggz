@@ -1,7 +1,8 @@
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/intl
+INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/intl \
+	$(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)
 
 bin_PROGRAMS = ggz-gtk
 
@@ -46,5 +47,8 @@ ggz_gtk_SOURCES =	main.c \
 			xtext.h
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_gtk_LDADD = @GTK_LIBS@ $(LDADD) @LIBS@
+ggz_gtk_LDADD = @GTK_LIBS@ $(LDADD) @LIBS@ $(LIB_GGZCORE) $(LIB_GGZ)
+ggz_gtk_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS)
+
 EXTRA_DIST = $(ggzdata_DATA)
+

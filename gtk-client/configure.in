@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 4566 2002-09-15 09:57:47Z dr_maux $
+dnl $Id: configure.in 4723 2002-09-26 11:20:39Z dr_maux $
 
 AC_INIT(ggz-gtk/main.c)
 AM_INIT_AUTOMAKE(ggz-gtk-client, 0.0.6pre)
@@ -8,16 +8,6 @@ AM_MAINTAINER_MODE
 
 dnl Check for standard build environment
 dnl ====================================
-
-dnl Make sure ${prefix}/include is on include path
-dnl ==============================================
-if test "x${prefix}" = "xNONE"; then
-   CPPFLAGS="$CPPFLAGS -isystem${ac_default_prefix}/include"
-   LDFLAGS="$LDFLAGS -L${ac_default_prefix}/lib"
-else
-   CPPFLAGS="$CPPFLAGS -isystem${prefix}/include"
-   LDFLAGS="$LDFLAGS -L${prefix}/lib"
-fi
 
 AC_PROG_CC
 AC_ISC_POSIX
@@ -30,7 +20,14 @@ dnl Compiling Options
 dnl =================
 AC_ARG_ENABLE(debug,           [  --disable-debug         Disable debugging ],, enable_debug=yes)
 AC_ARG_ENABLE(debug-gdb,       [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
-AC_ARG_ENABLE(gettext,         [  --disable-gettext       disable gettext  ],, enable_gettext=yes)
+
+
+dnl Check for GGZ Requirements
+dnl ==========================
+AC_GGZ_INIT(defaults, export)
+AC_GGZ_GGZCORE
+AC_GGZ_LIBGGZ
+AC_GGZ_INTL(ignore)
 
 
 dnl Check for header files
@@ -42,9 +39,10 @@ subdirs="ggz-gtk man"
 
 dnl Check for NLS
 dnl ============================================================
-if test "$enable_gettext" = yes; then
+if test "x$MSGFMT" != "x"; then
 	AC_DEFINE(ENABLE_NLS)
 	allsubdirs="$subdirs po"
+	enable_gettext="yes"
 	if test "x${prefix}" = "xNONE"; then
 		AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/share/locale")
 	else
@@ -53,6 +51,7 @@ if test "$enable_gettext" = yes; then
 
 else
 	allsubdirs="$subdirs"
+	enable_gettext="no"
 fi
 
 dnl Check for typedefs, structures, and compiler characteristics
@@ -66,14 +65,6 @@ dnl Check for library functions
 dnl ===========================
 
 AM_PATH_GTK(1.2.0,, AC_MSG_ERROR(*** Can't build GTK frontend: GTK not found))
-
-
-dnl Check for GGZ Requirements
-dnl ==============
-
-AC_GGZ_GGZCORE
-AC_GGZ_LIBGGZ
-LDADD="$LDADD $LIB_GGZCORE $LIB_GGZ"
 
 
 dnl Use -Wall if we have gcc.

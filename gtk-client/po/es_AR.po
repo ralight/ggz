@@ -11,7 +11,7 @@ msgstr ""
 "Last-Translator: Ricardo Quesada <riq@core-sdi.com>\n"
 "Language-Team: Spanish (Argentinian) <es_AR@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../ggz-gtk/about.c:105
