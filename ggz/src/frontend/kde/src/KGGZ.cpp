@@ -173,6 +173,8 @@ void KGGZ::readConfiguration(bool immediate)
 		m_workspace->widgetChat()->setLogging(value);
 		value = m_config->read("Preferences", "Speech", 0);
 		m_workspace->widgetChat()->setSpeech(value);
+		value = m_config->read("Preferences", "Timestamps", 0);
+		m_workspace->widgetChat()->setTimestamp(value);
 
 		m_showmotd = m_config->read("Preferences", "MOTD", 1);
 	}
