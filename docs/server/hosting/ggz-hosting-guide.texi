@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-hosting-guide.info
-@settitle The GGZ Gaming Zone 0.0.9 - Hosting Guide
+@settitle The GGZ Gaming Zone 0.0.10 - Hosting Guide
 @setchapternewpage odd
 @c %**end of header
 
@@ -13,19 +13,19 @@
 @c 'playing nice': metaservers, announce on ggz-servers list
 
 @ifinfo
-Copyright (C) 2001 - 2004 Josef Spillner
+Copyright (C) 2001 - 2005 Josef Spillner
 @end ifinfo
 
 @c Frontpage
 @titlepage
-@title The GGZ Gaming Zone 0.0.9 - Hosting Guide
+@title The GGZ Gaming Zone 0.0.10 - Hosting Guide
 @subtitle Instructions and Recommendations for Server Hosters
 @author GGZ Development Team
 
 @c Copyright page
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 2001 - 2004 Josef Spillner.
+Copyright @copyright{} 2001 - 2005 Josef Spillner.
 Published under the GNU Free Documentation License.
 @end titlepage
 
@@ -91,7 +91,7 @@ section about the game Keepalive below.
 
 @section Overview
 
-This describes a typical setup for GGZ 0.0.9.
+This describes a typical setup for GGZ 0.0.10.
 All following versions will certainly require other tools or other versions of
 the present one, but the main concept hasn't changed for a while.
 Before installing GGZ on a server, make sure that the following conditions are
@@ -886,7 +886,7 @@ can be filled with either a file name or a virtual file name such as stderr.
 
 @appendix Local GGZ server installation
 
-These instructions apply to a vanilla 0.0.9 installation if one doesn't have
+These instructions apply to a vanilla 0.0.10 installation if one doesn't have
 system privileges.
 You may have to modify some details though.
 
@@ -895,11 +895,11 @@ cd ~
 mkdir localsys
 mkdir localsys/usr
 mkdir localsys/etc
-mkdir ggz-0.0.9
-cd ggz-0.0.9
+mkdir ggz-0.0.10
+cd ggz-0.0.10
 export CVSROOT=:pserver:anonymous@cvs.ggzgamingzone.org:/ggz
 cvs login
-cvs -z3 co -rggz-0-0-9 libggz ggzd
+cvs -z3 co -rggz-0-0-10 libggz ggzd
 cd libggz
 ./autogen.sh --prefix=$HOME/localsys/usr
 make
@@ -924,8 +924,7 @@ please consult the GGZ meta server, using one of the available client-side
 tools.
 
 @itemize @bullet
-@item @url{ggz://live.ggzgamingzone.org} (Germany, very fast connection)
-@item @url{ggz://uk.ggzgamingzone.org} (UK, developers, very fast connection)
+@item @url{ggz://live.ggzgamingzone.org} (USA, fast connection)
 @end itemize
 
 There are so far no known web pages or similar efforts. For more information,
