@@ -7,6 +7,7 @@
 #include "qweb.h"
 #include "net.h"
 #include <qimage.h>
+#include "qwebpath.h"
 
 Board::Board(QWidget *parent, const char *name)
 : QWidget(parent, name)
@@ -155,6 +156,7 @@ void Board::mousePressEvent(QMouseEvent *e)
 	Stone *stone, *astone;
 	QList<QWebPoint> pointlist;
 	QList<QPoint> peerlist;
+	QWebPoint *wp;
 
 	// Translate coordinates into qweb representation
 	x = (int)(e->x() / web->scale());
@@ -178,7 +180,7 @@ void Board::mousePressEvent(QMouseEvent *e)
 		{
 			if((s->x() == x) && (s->y() == y))
 				stone = s;
-			if((s->owner() == Stone::white) || (s->owner() == Stone::whiteactive))
+			if((s->owner() == Stone::white) || (s->owner() == Stone::whiteactive) || (s->owner() == Stone::whitemuehle))
 				count++;
 			if(s->owner() == Stone::whiteactive)
 			{
@@ -225,56 +227,38 @@ void Board::mousePressEvent(QMouseEvent *e)
 		for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
 			if((p->point().x() == x) && (p->point().y() == y)) xp = p;
 		peerlist = xp->peerlist();
+		wp = xp;
 
 		// Count all stones which are on one row with the current one
-		for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
+		QWebPath *path;
+		path = new QWebPath(web, xp);
+		path->create(2);
+		pointlist = path->pathlist();
+		//delete path;
+
+		for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
 		{
-			if(s2->x() == xrow)
-			{
-				for(QPoint *p = peerlist.first(); p; p = peerlist.next())
-				{
-					if((p->x() == s2->x()) && (p->y() == s2->y()))
-					{
+			if(p->point().x() == xrow)
+				for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
+					if((p->point().x() == s2->x()) && (p->point().y() == s2->y()))
 						xrows++;
-						kdDebug(12101) << "Yep: " << p->x() << "," << p->y() << " - " << s2->x() << "," << s2->y() << endl;
-						kdDebug(12101) << xrow << "," << yrow << endl;
-						break;
-					}
-					else kdDebug(12101) << "Nope: " << p->x() << "," << p->y() << " - " << s2->x() << "," << s2->y() << endl;
-				}
-			}
-			if(s2->y() == yrow)
-			{
-				for(QPoint *p = peerlist.first(); p; p = peerlist.next())
-				{
-					if((p->x() == s2->x()) && (p->y() == s2->y()))
-					{
+			if(p->point().y() == yrow)
+				for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
+					if((p->point().x() == s2->x()) && (p->point().y() == s2->y()))
 						yrows++;
-						kdDebug(12101) << "Yep: " << p->x() << "," << p->y() << " - " << s2->x() << "," << s2->y() << endl;
-						kdDebug(12101) << xrow << "," << yrow << endl;
-						break;
-					}
-					else kdDebug(12101) << "Nope: " << p->x() << "," << p->y() << " - " << s2->x() << "," << s2->y() << endl;
-				}
-			}
 		}
 
 		// If 3 stones on a row, player has won one turn
 		kdDebug(12101) << xrows << " - " << yrows << endl;
-		if(xrows == 2)
+		for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
 		{
-			for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
-			{
-				if(s2->x() == xrow) s2->assign(Stone::whitemuehle);
-			}
+			if(((xrows == 3) && (p->point().x() == xrow)) || ((yrows == 3) && (p->point().y() == yrow)))
+				for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
+					if((p->point().x() == s2->x()) && (p->point().y() == s2->y()))
+						s2->assign(Stone::whitemuehle);
 		}
-		if(yrows == 2)
-		{
-			for(Stone *s2 = stonelist.first(); s2; s2 = stonelist.next())
-			{
-				if(s2->y() == yrow) s2->assign(Stone::whitemuehle);
-			}
-		}
+
+		delete path;
 
 		repaint();
 	}
