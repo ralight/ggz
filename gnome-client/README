@@ -1,0 +1,21 @@
+==================================================
+The GGZ Gaming Zone - GNOME client - Version 0.0.7
+==================================================
+
+This is the GNOME core client for GGZ.
+It does not support all the features yet, but is
+usable already and should encourage people to try it out.
+
+Please read 'INSTALL' if you aren't experienced with the build yet.
+For an overall view on the GGZ setup procedures, please consult the file
+README.GGZ.
+Have a look at QuickStart.GGZ to learn about the installation process.
+
+If you encounter any bugs, please send them to
+	Justin Zaun <jzaun@users.sourceforge.net>,
+or to the mailing list,
+	<ggz-dev@lists.sourceforge.net>.
+
+Have fun!
+	The GGZ Gaming Zone Development Team
+
