@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 5996 2004-05-17 14:16:42Z josef $
+ * $Id: ggzdb_mysql.c 6069 2004-07-09 13:14:36Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -293,13 +293,13 @@ unsigned int _ggzdb_player_next_uid(void)
 	return 0;
 }
 
-GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats);
+GGZDBResult _ggzdb_stats_match(ggzdbPlayerGameStats *stats)
 {
 	/* Not implemented, but do not return error */
 	return GGZDB_NO_ERROR;
 }
 
-GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner);
+GGZDBResult _ggzdb_stats_newmatch(const char *game, const char *winner)
 {
 	/* Not implemented, but do not return error */
 	return GGZDB_NO_ERROR;
