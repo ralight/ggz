@@ -234,7 +234,7 @@ GGZRoom*     ggzcore_server_get_nth_room(GGZServer *server,
 char**       ggzcore_server_get_room_names(GGZServer *server);
 
 int          ggzcore_server_get_num_gametypes(GGZServer *server);
-GGZGameType* ggzcore_server_get_nth_gametpe(GGZServer *server, 
+GGZGameType* ggzcore_server_get_nth_gametype(GGZServer *server, 
 					    const unsigned int num);
 char**       ggzcore_server_get_gametype_names(GGZServer *server);
 

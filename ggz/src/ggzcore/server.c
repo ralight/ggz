@@ -412,7 +412,7 @@ char** ggzcore_server_get_gametype_names(GGZServer *server)
 }
 
 
-GGZGameType* ggzcore_server_get_nth_gametpe(GGZServer *server, 
+GGZGameType* ggzcore_server_get_nth_gametype(GGZServer *server, 
 					    const unsigned int num)
 {
 	if (!server || num >= server->num_gametypes)
