@@ -1,0 +1,18 @@
+The contents of playground/db2web should with the next GGZ version be
+released as a ggz-community package.
+
+It will provide a framework, in which several content modules can be
+used.
+The following modules will have to be written:
+
+- start (start page, login, registration, news etc.)
+- rankings (includes player ratings and records)
+- teams (clan pages)
+- tournaments
+- forums
+
+The modularity should be high enough to allow using an already-existing
+framework such as eGroupWare or similar.
+It should follow modern HTML standards so the appearance can be adapted
+to the needs of different gaming communities.
+
