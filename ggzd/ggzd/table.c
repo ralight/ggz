@@ -475,9 +475,9 @@ static int table_game_launch(GGZTable* table)
  */
 static int table_game_join(GGZTable* table)
 {
-	char status;
+	char status, full;
 	char* name;
-	int seat, fd;
+	int seat, fd, msg_status;
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to join", 
 		table->index, table->room);
@@ -494,41 +494,48 @@ static int table_game_join(GGZTable* table)
 	seat = table->transit_seat;
 	fd = table->transit_fd;
 
+	/* Notify player of transit status */
+	msg_status = transit_player_event(name, GGZ_TRANSIT_JOIN, status, 
+					  table->index, fd);
+
+	/* Transit successful: Assign seat */
 	if (status == 0) {
-		/* Assign seat */
-		dbg_msg(GGZ_DBG_TABLE, "%s in seat %d at table %d of room %d",
-			name, seat, table->index, table->room);
-
 		pthread_rwlock_wrlock(&table->lock);
-		/*free(table->seats[seat]);*/
 		strcpy(table->seats[seat], name);
-		if (!seats_open(table)) {
-			dbg_msg(GGZ_DBG_TABLE, 
-				"Table %d in room %d now full", 
-				table->index, table->room);
-
+		/* Is table full now? */
+		if ( (full = !seats_open(table)))
 			table->state = GGZ_TABLE_PLAYING;
-			pthread_rwlock_unlock(&table->lock);
-			table_update_event_enqueue(table, GGZ_UPDATE_JOIN, 
-						    name, seat);
-			table_event_enqueue(table, GGZ_UPDATE_STATE);
-			
+		pthread_rwlock_unlock(&table->lock);
+		
+		/* If player notification failed, they must've logged out */
+		if (msg_status < 0) {
+			dbg_msg(GGZ_DBG_TABLE, "%s logged out during join",
+				name);
+			transit_table_event(table->room, table->index, 
+					    GGZ_TRANSIT_LEAVE, name);
 		} else {
-			pthread_rwlock_unlock(&table->lock);
 			table_update_event_enqueue(table, GGZ_UPDATE_JOIN, 
-						    name, seat);
+						   name, seat);
+			dbg_msg(GGZ_DBG_TABLE, 
+				"%s in seat %d at table %d of room %d",
+				name, seat, table->index, table->room);
+						
+			if (full) {
+				table_event_enqueue(table, GGZ_UPDATE_STATE);
+				dbg_msg(GGZ_DBG_TABLE, 
+					"Table %d in room %d now full", 
+					table->index, table->room);
+			}
 		}
 	}
-
-	/* Notify player and mark transit as done */
-	transit_player_event(name, GGZ_TRANSIT_JOIN, status, table->index, fd);
-			     
-	/* Free strdup'd player name */
-	free(table->transit_name);
-				     
+	
+	/* Clear table for next transit */
+	pthread_rwlock_wrlock(&table->lock);
 	table->transit = 0;
+	free(table->transit_name);
 	table->transit_name = NULL;
 	table->transit_fd = -1;
+	pthread_rwlock_unlock(&table->lock);
 
 	return 0;
 }
