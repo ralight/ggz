@@ -51,9 +51,6 @@ LogInfo log_info = { 0, 0,
 #endif
 };
 
-/* Internal use - Lock for logfile usage */
-static pthread_rwlock_t ggz_log_lock;
-
 /* Internal use functions */
 static FILE *log_open_logfile(char *);
 
@@ -112,16 +109,12 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 		} else {
 			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
 				f = log_open_logfile(log_info.log_fname);
-			else {
+			else
 				f = log_info.logfile;
-				pthread_rwlock_wrlock(&ggz_log_lock);
-			}
 			fputs(buf, f);
 			fflush(NULL);
 			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
 				fclose(f);
-			else
-				pthread_rwlock_unlock(&ggz_log_lock);
 		}
 	}
 #ifdef DEBUG
@@ -131,16 +124,12 @@ static void err_doit(int flag, int priority, const char *fmt, va_list ap)
 		} else {
 			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
 				f = log_open_logfile(log_info.dbg_fname);
-			else {
+			else
 				f = log_info.dbgfile;
-				pthread_rwlock_wrlock(&ggz_log_lock);
-			}
 			fputs(buf, f);
 			fflush(NULL);
 			if(log_info.options & GGZ_LOGOPT_THREAD_LOGS)
 				fclose(f);
-			else
-				pthread_rwlock_unlock(&ggz_log_lock);
 		}
 	}
 #endif
@@ -324,8 +313,6 @@ void logfile_initialize(void)
 		openlog("ggzd", 0, log_info.syslog_facility);
 	}
 #endif
-
-	pthread_rwlock_init(&ggz_log_lock, NULL);
 
 	log_info.log_initialized = 1;
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Logfiles initialized");
