@@ -1,7 +1,8 @@
-Welcome to %h on port %p. The current date is %d at  %t. If you have any problems please contact %a at %e.
-
-
-	Enjoy your stay,
-
-
-	GGZ-Dev Team
+# Welcome to %h on port %p.
+# The current date is %d at  %t.
+# If you have any problems please contact %a at %e.
+#
+#
+#	Enjoy your stay,
+#
+#	GGZ-Dev Team
