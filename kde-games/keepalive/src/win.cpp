@@ -24,6 +24,9 @@
 #include "canvas.h"
 #include "chatbox.h"
 
+// KDE includes
+#include <klocale.h>
+
 // Qt includes
 #include <qlayout.h>
 #include <qlineedit.h>
@@ -59,7 +62,7 @@ Win::Win(QWidget *parent, const char *name)
 
 	//setFixedSize(400, 300);
 	resize(500, 400);
-	setCaption("Keepalive: Login");
+	setCaption(i18n("Keepalive: Login"));
 	show();
 }
 
@@ -82,7 +85,7 @@ void Win::slotLogin(QString username, QString password)
 // Login and show game screen
 void Win::slotLoggedin(QString name)
 {
-	setCaption(QString("Keepalive: Logged in as %1").arg(name));
+	setCaption(QString(i18n("Keepalive: Logged in as %1")).arg(name));
 	m_login->hide();
 	m_world->show();
 	m_world->setFocusPolicy(StrongFocus);

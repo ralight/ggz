@@ -22,6 +22,9 @@
 #include "protocol.h"
 #include "config.h"
 
+// KDE includes
+#include <klocale.h>
+
 // Qt includes
 #include <qsocketnotifier.h>
 #include <qsocketdevice.h>
@@ -108,6 +111,9 @@ void Canvas::slotInput()
 				sprite->show();
 				free(name);
 			}
+			break;
+		case op_spectator:
+			emit signalLoggedin(i18n("spectator"));
 			break;
 		case op_name:
 			*m_net >> name;
