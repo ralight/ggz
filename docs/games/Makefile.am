@@ -1,2 +1,2 @@
-SUBDIRS = hastings external-games ggzcards
+SUBDIRS = hastings external-games ggzcards game-development
 
