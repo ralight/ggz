@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 6290 2004-11-06 18:10:55Z jdorje $
+ * $Id: client.c 6320 2004-11-11 02:11:31Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -435,7 +435,7 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 			   text. Since autocompletion will only work at the
 			   end of the chatline, we can just set it to the
 			   end of the line. */
-			gtk_entry_set_position(GTK_ENTRY(tmp), -1);
+			gtk_editable_set_position(GTK_EDITABLE(tmp), -1);
 			g_free(out);
 			ggz_free(name);
 			return TRUE;
@@ -672,7 +672,7 @@ client_realize                    (GtkWidget       *widget,
 
 	/* Set Properties */
 	tmp = g_object_get_data(G_OBJECT(win_main), "table_vpaned");
-	gtk_object_set(GTK_OBJECT(tmp), "user_data", 125, NULL);
+	g_object_set(G_OBJECT(tmp), "user_data", 125, NULL);
 	font_str = ggzcore_conf_read_string("CHAT", "FONT", DEFAULT_FONT);
 	tmp = g_object_get_data(G_OBJECT(win_main), "xtext_custom");
 	gtk_xtext_set_font(tmp, font_str);
@@ -726,7 +726,8 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 	gt = ggzcore_room_get_gametype(room);
 
 	if(ggzcore_gametype_get_name(gt) != NULL)
-		gtk_object_set(GTK_OBJECT(tmp), "user_data",  GTK_PANED(tmp)->child1_size, NULL);
+		g_object_set(G_OBJECT(tmp), "user_data",
+			     GTK_PANED(tmp)->child1_size, NULL);
 	if(ggzcore_gametype_get_name(gt) == NULL && GTK_PANED(tmp)->child1_size != 0 )
 		gtk_paned_set_position(GTK_PANED(tmp), 0);
 }
@@ -821,7 +822,7 @@ create_win_main (void)
   g_object_set_data(G_OBJECT (win_main), "win_main", win_main);
   gtk_widget_set_size_request(win_main, 620, 400);
   gtk_window_set_title (GTK_WINDOW (win_main), _("GGZ Gaming Zone"));
-  gtk_window_set_policy (GTK_WINDOW (win_main), FALSE, TRUE, TRUE);
+  gtk_window_set_resizable(GTK_WINDOW(win_main), TRUE);
 
   main_vbox = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (main_vbox);
