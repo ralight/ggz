@@ -41,11 +41,11 @@ struct game_info_t {
 	char **names;
 	int *seats;
 	int version;
-	char current;
+	int current;
 	gboolean show_enemy;
 	char last_unit;
-	char last_from;
-	char last_to;
+	int last_from;
+	int last_to;
 };
 
 // Handle IO

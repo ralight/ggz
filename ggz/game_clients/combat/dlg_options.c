@@ -395,7 +395,7 @@ gboolean mini_board_click         (GtkWidget       *widget, GdkEventButton  *eve
 	height_v = GPOINTER_TO_INT (gtk_object_get_data(GTK_OBJECT(user_data), "height_v"));
 
 	pix_width = width/width_v;
-	pix_height = width/height_v;
+	pix_height = height/height_v;
 
 	x = event->x/(pix_width);
 	y = event->y/(pix_height);
