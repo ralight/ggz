@@ -1,7 +1,7 @@
 Binary files original.tuxman-0.7/bin/tuxman and tuxman-0.7/bin/tuxman differ
 diff -Nur original.tuxman-0.7/Makefile tuxman-0.7/Makefile
 --- original.tuxman-0.7/Makefile	2004-01-01 12:41:17.000000000 +0100
-+++ tuxman-0.7/Makefile	2004-01-01 12:41:18.000000000 +0100
++++ tuxman-0.7/Makefile	2004-01-11 18:11:32.000000000 +0100
 @@ -1,8 +1,8 @@
  all: bin/tuxman
  
@@ -13,6 +13,13 @@ diff -Nur original.tuxman-0.7/Makefile tuxman-0.7/Makefile
  
  bin/tuxman: obj/main.o \
  	obj/pacman.o \
+@@ -20,3 +20,6 @@
+ 
+ clean:
+ 	rm obj/*
++
++ggzinstall:
++	ggz-config --install --modfile=module.dsc
 diff -Nur original.tuxman-0.7/module.dsc tuxman-0.7/module.dsc
 --- original.tuxman-0.7/module.dsc	1970-01-01 01:00:00.000000000 +0100
 +++ tuxman-0.7/module.dsc	2004-01-01 12:41:18.000000000 +0100
@@ -36,7 +43,7 @@ Binary files original.tuxman-0.7/obj/tile.o and tuxman-0.7/obj/tile.o differ
 Binary files original.tuxman-0.7/screen.bmp and tuxman-0.7/screen.bmp differ
 diff -Nur original.tuxman-0.7/src/control.cpp tuxman-0.7/src/control.cpp
 --- original.tuxman-0.7/src/control.cpp	2004-01-01 12:41:18.000000000 +0100
-+++ tuxman-0.7/src/control.cpp	2004-01-01 12:41:18.000000000 +0100
++++ tuxman-0.7/src/control.cpp	2004-01-11 18:49:34.000000000 +0100
 @@ -1,4 +1,16 @@
  #include "control.h"
 +#include <iostream>
@@ -45,7 +52,7 @@ diff -Nur original.tuxman-0.7/src/control.cpp tuxman-0.7/src/control.cpp
 +{
 +#ifdef GGZ_SUPPORT
 +	  if(pac.ggzmode) {
-+		std::cout << "event: move left to " << pac.ggzfd << std::endl;
++		std::cout << "event: move " << pac.ggzfd << std::endl;
 +		ggz_write_int(pac.ggzfd, PACNET::move);
 +		ggz_write_int(pac.ggzfd, direction);
 +	  }
@@ -145,8 +152,8 @@ diff -Nur original.tuxman-0.7/src/control.h tuxman-0.7/src/control.h
  #endif
 diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
 --- original.tuxman-0.7/src/main.cpp	2004-01-01 12:41:18.000000000 +0100
-+++ tuxman-0.7/src/main.cpp	2004-01-01 12:41:18.000000000 +0100
-@@ -2,6 +2,143 @@
++++ tuxman-0.7/src/main.cpp	2004-01-11 19:15:38.000000000 +0100
+@@ -2,6 +2,159 @@
  #include "control.h"
  #include "tile.h"
  #include "sound.h"
@@ -177,71 +184,87 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
 +	int opcode, fd, arg;
 +	int x, y, direction, count, pos;
 +	char *level;
++	bool hasinput;
 +
 +	fd = pacptr->ggzfd;
-+	ggz_read_int(fd, &opcode);
 +
-+	std::cout << "pacnet: input opcode=" << opcode << std::endl << std::flush;
-+
-+	switch(opcode)
++	hasinput = true;
++	while(hasinput)
 +	{
-+		case PACNET::list:
-+			std::cout << "pacnet: got level list, sending dummy" << std::endl;
-+			ggz_read_int(fd, &count);
-+			/*for(int i = 0; i < count; i++)
-+			{
-+				ggz_read_string_alloc(fd, &level);
-+				std::cout << " * level " << level << std::endl;
-+				ggz_free(level);
-+			}
-+			ggz_write_int(fd, PACNET::selected);
-+			ggz_write_string(fd, "dummy.level");*/
-+			break;
-+		case PACNET::name:
-+			/* ... ? */
-+			break;
-+		case PACNET::monster:
-+			ggz_read_int(fd, &x);
-+			ggz_read_int(fd, &y);
-+			ggz_read_int(fd, &direction);
-+			std::cout << "pacnet: move monster" << std::endl;
-+			pos = tileptr->width * y + x;
-+			std::cout << "would move monster at " << pos << std::endl;
-+			/*if(direction == PACNET::up) tileptr->my_tile[pos].row -= TILE_SIZE;
-+			else if(direction == PACNET::down) tileptr->my_tile[pos].row += TILE_SIZE;
-+			else if(direction == PACNET::left) tileptr->my_tile[pos].col -= TILE_SIZE;
-+			else if(direction == PACNET::right) tileptr->my_tile[pos].col += TILE_SIZE;*/
-+			break;
-+		case PACNET::event:
-+			ggz_read_int(fd, &arg);
-+			if(arg == PACNET::start)
-+			{
-+				std::cout << "pacnet: start event" << std::endl;
-+			}
-+			else if(arg == PACNET::error)
-+			{
-+				std::cout << "pacnet: error event" << std::endl;
-+			}
-+			else;
-+			break;
-+		case PACNET::pacman:
-+			ggz_read_int(fd, &x);
-+			ggz_read_int(fd, &y);
-+			ggz_read_int(fd, &direction);
-+			std::cout << "pacnet: move pacman" << std::endl;
-+			/*if(direction == PACNET::up) {
-+				tileptr->my_pac.state = UP;
-+			} else if(direction == PACNET::down) {
-+				tileptr->my_pac.state = DOWN;
-+			} else if(direction == PACNET::left) {
-+				tileptr->my_pac.state = LEFT;
-+			} else if(direction == PACNET::right) {
-+				tileptr->my_pac.state = RIGHT;
-+			}*/
-+			break;
-+		default:
-+			std::cout << "pacnet: error" << std::endl;
-+			// error
++		ggz_read_int(fd, &opcode);
++
++		std::cout << "pacnet: input opcode=" << opcode << std::endl << std::flush;
++
++		switch(opcode)
++		{
++			case PACNET::list:
++				std::cout << "pacnet: got level list, sending dummy" << std::endl;
++				ggz_read_int(fd, &count);
++				for(int i = 0; i < count; i++)
++				{
++					ggz_read_string_alloc(fd, &level);
++					std::cout << " * level " << level << std::endl;
++					ggz_free(level);
++				}
++				ggz_write_int(fd, PACNET::selected);
++				ggz_write_string(fd, "dummy.level");
++				break;
++			case PACNET::name:
++				/* ... ? */
++				break;
++			case PACNET::monster:
++				ggz_read_int(fd, &x);
++				ggz_read_int(fd, &y);
++				ggz_read_int(fd, &direction);
++				std::cout << "pacnet: move monster" << std::endl;
++				pos = tileptr->width * y + x;
++				std::cout << "would move monster at " << pos << std::endl;
++				if(direction == PACNET::up) tileptr->my_tile[pos].row -= TILE_SIZE;
++				else if(direction == PACNET::down) tileptr->my_tile[pos].row += TILE_SIZE;
++				else if(direction == PACNET::left) tileptr->my_tile[pos].col -= TILE_SIZE;
++				else if(direction == PACNET::right) tileptr->my_tile[pos].col += TILE_SIZE;
++				break;
++			case PACNET::event:
++				ggz_read_int(fd, &arg);
++				if(arg == PACNET::start)
++				{
++					std::cout << "pacnet: start event" << std::endl;
++				}
++				else if(arg == PACNET::error)
++				{
++					std::cout << "pacnet: error event" << std::endl;
++				}
++				else;
++				break;
++			case PACNET::pacman:
++				ggz_read_int(fd, &x);
++				ggz_read_int(fd, &y);
++				ggz_read_int(fd, &direction);
++				std::cout << "pacnet: move pacman" << std::endl;
++				if(direction == PACNET::up) {
++					tileptr->my_pac.state = UP;
++				} else if(direction == PACNET::down) {
++					tileptr->my_pac.state = DOWN;
++				} else if(direction == PACNET::left) {
++					tileptr->my_pac.state = LEFT;
++				} else if(direction == PACNET::right) {
++					tileptr->my_pac.state = RIGHT;
++				}
++				break;
++			default:
++				std::cout << "pacnet: error" << std::endl;
++				// error
++		}
++
++		fd_set tmp;
++		struct timeval tv;
++		tv.tv_sec = 0;
++		tv.tv_usec = 0;
++
++		FD_ZERO(&tmp);
++		FD_SET(fd, &tmp);
++		select(fd + 1, &tmp, NULL, NULL, &tv);
++		if(!FD_ISSET(fd, &tmp)) hasinput = false;
 +	}
 +}
 +
@@ -290,7 +313,7 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
  
  int main(int argc, char *argv[]) {
    int food, i;
-@@ -12,6 +149,20 @@
+@@ -12,6 +165,20 @@
  
    pac.readConfig("tuxman.conf",pac);  
  
@@ -311,7 +334,7 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
    srand(time(0));
    
    pac.initSDL();
-@@ -25,12 +176,34 @@
+@@ -25,12 +192,34 @@
    pac.ac_level=1;
    my_tile.my_pac.score=0;
    my_tile.my_pac.lives = 10;
@@ -349,7 +372,7 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
      my_tile.initTiles(pac);
      playSound("share/hunger.wav");
      SDL_PauseAudio(0);
-@@ -46,6 +219,9 @@
+@@ -46,6 +235,9 @@
  	if (food==0)
  	  break;
  
@@ -359,7 +382,7 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
  	ctrl.checkPacmansDeath(my_tile, pac);
  	ctrl.checkScroll(my_tile,pac);	
        }
-@@ -58,11 +234,13 @@
+@@ -58,11 +250,13 @@
        }
  
        if (pac.pause != PAUSE) {
@@ -375,7 +398,7 @@ diff -Nur original.tuxman-0.7/src/main.cpp tuxman-0.7/src/main.cpp
  
  	my_tile.drawTiles(pac);
  	my_tile.showInformation(pac);
-@@ -74,7 +252,15 @@
+@@ -74,7 +268,15 @@
      playSound("share/end.wav");
      SDL_PauseAudio(0);
      sleep(2);
