@@ -1,5 +1,5 @@
 AC_INIT(easysock.h)
-AM_INIT_AUTOMAKE(libeasysock, 0.0.0)
+AM_INIT_AUTOMAKE(libeasysock, 0.0.1)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
