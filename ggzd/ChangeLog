@@ -1,3 +1,725 @@
+2001-06-16  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/doc/admin-guide.txt:
+	- Mini ggzd administration guide updated
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/ggz.c, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/ggz.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/ggz.c, /cvsroot/ggz/ggzd/game_servers/dots/ggz.c, /cvsroot/ggz/ggzd/game_servers/hastings/ggz.c, /cvsroot/ggz/ggzd/game_servers/krosswater/zoneserver/ZoneGGZModGGZ.cpp, /cvsroot/ggz/ggzd/game_servers/lapocha/ggz.c, /cvsroot/ggz/ggzd/game_servers/reversi/ggz.c, /cvsroot/ggz/ggzd/game_servers/spades/engine_func.c, /cvsroot/ggz/ggzd/game_servers/spades/err_func.c, /cvsroot/ggz/ggzd/game_servers/tictactoe/ggz.c, /cvsroot/ggz/ggzd/ggzd/login.c, /cvsroot/ggz/ggzd/ggzd/motd.c, /cvsroot/ggz/ggzd/ggzd/parse_opt.c, /cvsroot/ggz/ggzd/ggzd/table.c:
+	- Applied snprintf patches to avoid buffer overruns
+
+2001-06-14  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/NEWS:
+	- Updated NEWS file for 0.0.4 release
+
+	* /cvsroot/ggz/ggzd/configure.in, /cvsroot/ggz/ggzd/ggz_server.spec, /cvsroot/ggz/ggzd/Makefile.am, /cvsroot/ggz/ggzd/README.GGZ:
+	- Updated docs
+	- Bumped version to 0.0.4
+
+	* /cvsroot/ggz/ggzd/man/Makefile.am:
+	- Use SUBDIRS = . otherwise 'make dist' fails
+	- Put $(man_MANS) in EXTRA_DIST otherwise the man page doesn't get
+	  included in the tarball
+
+	* /cvsroot/ggz/ggzd/game_servers/krosswater/Makefile.am, /cvsroot/ggz/ggzd/game_servers/krosswater/stackpath/Makefile.am, /cvsroot/ggz/ggzd/game_servers/krosswater/zoneserver/Makefile.am:
+	- Fix name of description and room files to krosswater, not hastings
+	- List header files in Makefile.am, otherwise they don't get included
+	  in the tarball
+	- Use include paths relative to $(top_srcdir) otherwise people can't
+	  build outside the srcdir.
+
+2001-06-08  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/.cvsignore: - add build-stamp to cvsignore
+
+	* /cvsroot/ggz/ggzd/man/ggz-txt.6, /cvsroot/ggz/ggzd/man/Makefile.am:
+	- ouch! put ggz-txt.6 into wrong directory :)
+
+	* /cvsroot/ggz/ggzd/man/ggz-txt.6, /cvsroot/ggz/ggzd/man/Makefile.am:
+	- add man page
+
+	* /cvsroot/ggz/ggzd/README.GGZ: - actually add readme.ggz
+
+	* /cvsroot/ggz/ggzd/configure.in, /cvsroot/ggz/ggzd/Makefile.am:
+	- create Makefile in man dir
+
+	* /cvsroot/ggz/ggzd/man/.cvsignore, /cvsroot/ggz/ggzd/man/ggzd.6, /cvsroot/ggz/ggzd/man/Makefile.am:
+	- add man page
+
+2001-06-07  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/debian/docs: - add project-wide readme file
+
+2001-06-02  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/configure.in: - find new easysock version
+
+	* /cvsroot/ggz/ggzd/debian/postinst, /cvsroot/ggz/ggzd/debian/prerm:
+	- suppress warning messages on server startup/shutdown
+
+	* /cvsroot/ggz/ggzd/debian/ggzd.init.d:
+	- improved start/stop code of the server
+
+2001-05-30  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/configure.in:
+	- Fixed spelling
+
+2001-05-30  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/debian/changelog, /cvsroot/ggz/ggzd/debian/conffiles, /cvsroot/ggz/ggzd/debian/control, /cvsroot/ggz/ggzd/debian/copyright, /cvsroot/ggz/ggzd/debian/.cvsignore, /cvsroot/ggz/ggzd/debian/docs, /cvsroot/ggz/ggzd/debian/ggzd.init.d, /cvsroot/ggz/ggzd/debian/postinst, /cvsroot/ggz/ggzd/debian/postrm, /cvsroot/ggz/ggzd/debian/prerm, /cvsroot/ggz/ggzd/debian/README.Debian, /cvsroot/ggz/ggzd/debian/rules, /cvsroot/ggz/ggzd/debian/shlibs, /cvsroot/ggz/ggzd/game_servers/krosswater/zoneserver/Makefile.am:
+	- debianized source tree
+	- don't install Zone headers
+
+2001-05-29  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/krosswater/zoneserver/ZoneGGZ.h:
+	- added string.h
+
+2001-05-22  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/spades/spades.dsc:
+	- Bumped version nbumber to 0.0.3 because of incompatible protocol
+	  change
+
+	* /cvsroot/ggz/ggzd/game_servers/spades/engine_func.c:
+	- Once all players are "seated", send them their player numbers.  This
+	  enables player 0 to send us the game options
+
+2001-05-19  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/configure.in:
+	- create krosswater makefiles in configure.in
+
+	* /cvsroot/ggz/ggzd/game_servers/krosswater/zoneserver/ZoneGGZModServer.cpp, /cvsroot/ggz/ggzd/game_servers/Makefile.am:
+	- compile krosswater server on default
+	- fix krosswater bug
+
+2001-05-12  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/krosswater/krosswater_server.cpp:
+	- send winner
+
+	* /cvsroot/ggz/ggzd/game_servers/krosswater/krosswater.dsc:
+	- fixed number of valid players
+
+2001-05-11  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/krosswater/.cvsignore, /cvsroot/ggz/ggzd/game_servers/krosswater/krosswater.dsc, /cvsroot/ggz/ggzd/game_servers/krosswater/krosswater.room, /cvsroot/ggz/ggzd/game_servers/krosswater/krosswater_server.cpp, /cvsroot/ggz/ggzd/game_servers/krosswater/Makefile.am:
+	- removed nasty move bug (move stone, not water)
+
+2001-04-29  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/krosswater/stackpath/.cvsignore, /cvsroot/ggz/ggzd/game_servers/krosswater/zoneserver/.cvsignore:
+	-added .cvsignore files (the usual stuff)
+	-modified Makefile to fit current GGZ game module concept
+
+	* /cvsroot/ggz/ggzd/game_servers/hastings/game.c, /cvsroot/ggz/ggzd/game_servers/hastings/game.h:
+	- get rid of move bug (better checked now)
+	- fixed bug so that 8 players can now participate
+	- AI improvement: enemy is now the first target
+
+2001-04-27  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/ggzd/table.c:
+	- Handle case where user sends us a seat with GGZ_SEAT_PLAYER:
+	  E_BAD_OPTIONS
+	- In table_check() handle unknown seat types with E_BAD_OPTIONS
+
+2001-04-23  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/.cvsignore, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/.cvsignore:
+	- .cvsignore files for chess server
+
+	* /cvsroot/ggz/ggzd/game_servers/chinese-checkers/.cvsignore:
+	- Added .cvsignore file
+
+2001-04-08  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/reversi/game.c, /cvsroot/ggz/ggzd/game_servers/reversi/Makefile.am:
+	- Added a 1 second delay before the AI sends a move
+	- Added -leasysock to $(LDADD) in Makefile.am (for some weird reason, it was missing and the server wouldn't compile)
+
+2001-04-05  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/krosswater/krosswater_server.cpp, /cvsroot/ggz/ggzd/game_servers/krosswater/krosswater_server.h, /cvsroot/ggz/ggzd/game_servers/krosswater/main.cpp, /cvsroot/ggz/ggzd/game_servers/krosswater/Makefile.am, /cvsroot/ggz/ggzd/game_servers/krosswater/stackpath/cwpathitem.cpp, /cvsroot/ggz/ggzd/game_servers/krosswater/stackpath/cwpathitem.h, /cvsroot/ggz/ggzd/game_servers/krosswater/stackpath/main.cpp, /cvsroot/ggz/ggzd/game_servers/krosswater/stackpath/Makefile.am, /cvsroot/ggz/ggzd/game_servers/krosswater/stackpath/Makefile.stackpath, /cvsroot/ggz/ggzd/game_servers/krosswater/stackpath/pathitem.cpp, /cvsroot/ggz/ggzd/game_servers/krosswater/stackpath/pathitem.h, /cvsroot/ggz/ggzd/game_servers/krosswater/stackpath/README.stackpath, /cvsroot/ggz/ggzd/game_servers/krosswater/zoneserver/Makefile.am, /cvsroot/ggz/ggzd/game_servers/krosswater/zoneserver/ZoneGGZ.h, /cvsroot/ggz/ggzd/game_servers/krosswater/zoneserver/ZoneGGZModGGZ.cpp, /cvsroot/ggz/ggzd/game_servers/krosswater/zoneserver/ZoneGGZModGGZ.h, /cvsroot/ggz/ggzd/game_servers/krosswater/zoneserver/ZoneGGZModServer.cpp, /cvsroot/ggz/ggzd/game_servers/krosswater/zoneserver/ZoneGGZModServer.h, /cvsroot/ggz/ggzd/game_servers/krosswater/zoneserver/ZoneProtocols.h:
+	Initial krosswater server sources
+	contains server-side Zone files
+	contains Stackpath library
+
+2001-03-31  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/dots/dots.dsc:
+	- Reset server version to 0.0.1 to match protocol revision number - this is
+	  OK as there really weren't any changes to the server anyway
+
+2001-03-30  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/ggzd/table.c:
+	- New function table_split_args() to split command line string into
+	  array of args (thanks to riq for the patch)
+
+	* /cvsroot/ggz/ggzd/configure.in:
+	- Portablilty fix for FreeBSD: look for threads in -lc_r
+
+2001-03-29  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/libcgc/Makefile.am, /cvsroot/ggz/ggzd/game_servers/chess/Makefile.am, /cvsroot/ggz/ggzd/game_servers/combat/Makefile.am, /cvsroot/ggz/ggzd/game_servers/reversi/Makefile.am, /cvsroot/ggz/ggzd/game_servers/spades/spades.room, /cvsroot/ggz/ggzd/Makefile.am:
+	- Lots of little fixes for files not being included in the dist: 'make
+	  dist' should work now
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/Makefile.am, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/Makefile.am, /cvsroot/ggz/ggzd/game_servers/combat/Makefile.am, /cvsroot/ggz/ggzd/game_servers/dots/Makefile.am, /cvsroot/ggz/ggzd/game_servers/hastings/Makefile.am, /cvsroot/ggz/ggzd/game_servers/lapocha/Makefile.am, /cvsroot/ggz/ggzd/game_servers/reversi/Makefile.am, /cvsroot/ggz/ggzd/game_servers/spades/Makefile.am, /cvsroot/ggz/ggzd/game_servers/tictactoe/Makefile.am, /cvsroot/ggz/ggzd/ggzd/Makefile.am, /cvsroot/ggz/ggzd/configure.in:
+	- Removed included easysock.  easysock 0.2.X must now be installed on
+	  the system in order to compile
+
+2001-03-25  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/reversi/game.c:
+	- Fixed a really dumb bug where an invalid move would break complete havoc in the server
+
+2001-03-17  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- Fixed some spelling errors
+	- Fixed a division by zero bug when Silent Defense was set
+
+2001-03-17  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/dots/dots.dsc:
+	- Version bump - Dots is now version 0.0.2
+
+2001-03-14  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- Fixed bug with the random setup option
+
+2001-03-10  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/chess.dsc:
+	- Updated the version number to 0.0.6 (so that it matches the client one)
+
+	* /cvsroot/ggz/ggzd/game_servers/reversi/reversi.dsc:
+	- Updated the server .dsc so that it matchs the client protocol version (it is 0.0.1 while it should be 0.0.5)
+
+2001-03-04  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chinese-checkers/game.c:
+	- Added support to server for leave/rejoin
+	- A few miscellaneous fixes
+
+2001-03-03  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/game.c:
+	- Fixed bug when calling a flag using server clock, that led to the wrong
+	  player being named winner
+	- Only start the time after both players have moved, not only the white one
+
+2001-02-27  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/ggzd/ggzd.motd:
+	- MOTD update to new colors
+
+2001-02-22  bugg  <bugg@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/libcgc/movecheck.c:
+	Sync with the other versions.  I'm tired
+	of typing out all of these commit messages! :)
+
+	We're fooling with the check to see if we're entering
+	check.
+
+	(Do you folks realize when I make a change to libcgc,
+	I have to make three commits?)
+
+2001-02-20  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/chess.h, /cvsroot/ggz/ggzd/game_servers/chess/game.c, /cvsroot/ggz/ggzd/game_servers/chess/game.h:
+	- Changed REQ_UPDATE to send a RSP_UPDATE to both players, instead of just the
+	  one that requested it, and update the time structures as well. (so that, in
+	  server clock, if a player is out of time it won't just refuse to play so that
+	  the server never knows his time is over)
+
+2001-02-19  bugg  <bugg@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/libcgc/movecheck.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/movecheck.h:
+	Remove the debugging info that I had placed in
+	Fix the bugs that were reported to me by jzaun
+	Namely, interposition code, en passant code, and
+	contact mate code
+
+2001-02-19  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/chess.h, /cvsroot/ggz/ggzd/game_servers/chess/game.c:
+	- Changed protocol so that promoting of pieces now works
+
+2001-02-18  bugg  <bugg@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/libcgc/movecheck.c:
+	Fix the bug introduced in last commit.
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/libcgc/movecheck.c:
+	Oops, I commited twice to the client and not once
+	to the server.  (and the latter of the commits to
+	the client was probably like whitespace)
+
+	Fixing the interposition bug introduced in the last
+	commit..
+
+	dunce cap: bugg
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/libcgc/movecheck.c:
+	Fix (haha, Fix- more like try to fix) a bug
+	that caused mates in which there was a piece that
+	would have been able to interpose if it wasn't pinned
+	to be recognised as checks.
+
+	I haven't tested this with the game that broke it,
+	but the patch has passed regression testing- and
+	everyone (jzaun, perdig) wants me to commit in the form
+	that it is.
+
+2001-02-17  bugg  <bugg@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/libcgc/board.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/cgc.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/cgc.h, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/games.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/movecheck.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/movecheck.h:
+	Sync libcgc (in ggzd) to fischer's version.
+	Hopefully this won't break anything ^^; (should be no API changes)
+
+2001-02-11  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/game.c:
+	- Fixed a bug when translating between the representation of the moves used by
+	  the protocol and by libcgc (it was just completely wrong)
+
+2001-01-22  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/dots/game.c:
+	- Simulate that a bot always requests to play a new game
+
+2001-01-20  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/hastings/game.c:
+	Bugfix for game with 5 players and AI.
+
+2001-01-14  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/ggzd/ggzd.motd:
+	- Name change "GNU-Gaming Zone" -> "GGZ Gaming Zone"
+
+	* /cvsroot/ggz/ggzd/ggzd/parse_opt.c, /cvsroot/ggz/ggzd/NEWS, /cvsroot/ggz/ggzd/README:
+	- Name change "Gnu Gaming Zone" -> "GGZ Gaming Zone"
+
+	* /cvsroot/ggz/ggzd/game_servers/chinese-checkers/game.c:
+	- Removed temporary debugging printf's
+	- Eliminated all compiler warnings
+
+2001-01-11  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/game.c:
+	- The time for the first turn is not counted anymore
+	- When some client sends REQ_FLAG and clock type is SERVER, it will get the
+	  time that the current player is taking to think about the move to check if
+	  his flag has fall. (This way, even if the player never sends a move when his
+	  time is over, the other player can still call a flag)
+	- Fixed but that wasn't sending time = 0
+	- The player that is out of time can't claim. When a player is out of time,
+	  it's forced to be 0, not going negative ever (looks better)
+
+2001-01-10  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/chess.h, /cvsroot/ggz/ggzd/game_servers/chess/game.c, /cvsroot/ggz/ggzd/game_servers/chess/game.h, /cvsroot/ggz/ggzd/game_servers/chess/main.c:
+	- Added CHESS_REQ_DRAW to the protocol
+	- The server should handle draws in a nice way now
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/chess.h, /cvsroot/ggz/ggzd/game_servers/chess/game.c, /cvsroot/ggz/ggzd/game_servers/chess/game.h:
+	- Added CHESS_REQ_FLAG to the protocol, used by the client when he wants to
+	  end the game because his oponnent has run out of time (the client will have
+	  auto-flag, not the server)
+	- Added gameover codes, and updated EVENT_GAMEOVER to send the right ones to
+	  the player (no work done on the draw stuff, though)
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/libcgc/board.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/cgc.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/cgc.h, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/games.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/games.h, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/movecheck.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/movecheck.h, /cvsroot/ggz/ggzd/game_servers/chess/chess.h, /cvsroot/ggz/ggzd/game_servers/chess/game.c, /cvsroot/ggz/ggzd/game_servers/chess/game.h:
+	- In libcgc:
+	  Applied Dan's patch to remove the player argument to cgc_join_game
+
+	- In the chess server:
+	  Added CHESS_REQ_UPDATE and CHESS_RSP_UPDATE to the protocol.
+	    - Send the current time from the server to the client, so that he can
+	      update his time structures if they are out of sync
+	  Added CHESS_MSG_UPDATE to the protocol.
+	    - Used by the client when using CLOCK_CLIENT, to note how much time he
+	      has spent until now, and hasn't made a move yet. This makes the server
+	      send CHESS_RSP_UPDATE to the other player. (the use of it: when the time
+	      is over in CLOCK_CLIENT mode, the losing client sends this message to the
+	      server, that updates his structures and send them to the other player.
+	      Then he can decide about ending the game or not)
+
+2001-01-09  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/hastings/game.c:
+	Changed HASTINGS_STATE_INIT to HASTINGS_STATE_WAIT after game launching; this
+	prevents black client screens.
+
+2001-01-08  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/hastings/.cvsignore, /cvsroot/ggz/ggzd/game_servers/hastings/game.c, /cvsroot/ggz/ggzd/game_servers/hastings/game.h, /cvsroot/ggz/ggzd/game_servers/hastings/hastings.dsc, /cvsroot/ggz/ggzd/game_servers/hastings/main.c:
+	Server updates include e.g. game over handling.
+
+2001-01-08  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chinese-checkers/ai.c, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/game.c, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/game.h:
+	- Enhanced the AI by making it give precedence to more distant marbles
+	  as the game progresses
+
+	* /cvsroot/ggz/ggzd/game_servers/chinese-checkers/game.c:
+	- Added path display routines
+	- Added 1 second delay in server so things don't blink super-quick with AI's
+	- Updated statusbar to pop entries after they are done displaying
+
+2001-01-07  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/Makefile.am:
+	- Fixed problems which prevented easysock from being found
+
+2001-01-07  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/game.c:
+	- Fixed bugs with the clock stuff (should be working fine now)
+
+2001-01-06  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/chess.h, /cvsroot/ggz/ggzd/game_servers/chess/game.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/movecheck.c:
+	- Changed protocol
+	  REQ_MOVE and MSG_MOVE now sends (char)FROM and (char)TO
+	  with the index of the source and destination positions on the board
+	- Fixed some more bugs
+	- The player id in cgcs aren't the seat numbers any more, but 5 and 6
+	  (because 1 was the code for EMPTY seat, and it was causing problems)
+	- libcgc/movecheck.c:85
+	  Changed
+	    if(curgame->player1 == NULL || curgame->player2 == NULL)
+	  To
+	    if(curgame->player1 == EMPTY || curgame->player2 == EMPTY)
+	  As player1 and player2 aren't pointers and are initialized as EMPTY, not
+	  NULL
+
+2001-01-06  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chinese-checkers/ccheckers.dsc:
+	- Fixed an error which disallowed having four bots (six players, two human)
+
+	* /cvsroot/ggz/ggzd/game_servers/chinese-checkers/ai.c, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/game.c:
+	- Corrected player move order
+	- Added statusbar messages for movement and game over
+
+2001-01-06  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/configure.in:
+	Updated the configure.in script to output useful information about the
+	resulting build.
+
+2001-01-05  bugg  <bugg@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/libcgc/games.c:
+	Fix returning E_GAMEFULL and E_SEATFULL - it was doing
+	the exact opposite of what it should before this fix.
+
+2001-01-05  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/game.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/games.c:
+	- Fixed typos and other simple mistakes (like using es_read_int instead of
+	  es_read_char)
+	- In libcgc/games.c:139
+	  Changed
+	     joined->player2 = player;
+	  To
+	     joined->player1 = player;
+	  From what it seems, it was a typo... and it wasn't allowing the black player
+	  to join the table
+
+2001-01-04  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/game.h:
+	- Ops, another file
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/ggz.h, /cvsroot/ggz/ggzd/game_servers/chess/protocols.h:
+	- Ops, forgot those files
+
+	* /cvsroot/ggz/ggzd/game_servers/chess/chess.dsc, /cvsroot/ggz/ggzd/game_servers/chess/chess.h, /cvsroot/ggz/ggzd/game_servers/chess/chess.room, /cvsroot/ggz/ggzd/game_servers/chess/game.c, /cvsroot/ggz/ggzd/game_servers/chess/ggz.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/board.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/board.h, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/cgc.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/cgc.h, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/games.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/games.h, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/Makefile.am, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/movecheck.c, /cvsroot/ggz/ggzd/game_servers/chess/libcgc/movecheck.h, /cvsroot/ggz/ggzd/game_servers/chess/main.c, /cvsroot/ggz/ggzd/game_servers/chess/Makefile.am, /cvsroot/ggz/ggzd/configure.in, /cvsroot/ggz/ggzd/game_servers/Makefile.am:
+	- Initial commit of chess server
+
+2001-01-04  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/chinese-checkers/ai.c, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/ccheckers.dsc:
+	- Basic AI added - easy to beat
+
+	* /cvsroot/ggz/ggzd/game_servers/chinese-checkers/game.c:
+	+ Fixed game_find_path()
+	+ Server determines end of game and winner
+	+ Clients accept end of game message
+	- No statusbar prompts or anything yet
+
+2001-01-03  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/configure.in, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/ai.c, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/ai.h, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/ccheckers.dsc, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/ccheckers.room, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/game.c, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/game.h, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/ggz.c, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/ggz.h, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/main.c, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/Makefile.am, /cvsroot/ggz/ggzd/game_servers/chinese-checkers/protocols.h, /cvsroot/ggz/ggzd/game_servers/Makefile.am:
+	- First semi-playable version of Chinese Checkers
+
+2000-12-31  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.dsc, /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c, /cvsroot/ggz/ggzd/game_servers/combat/main.c:
+	- Cleaned up the debug messages
+	- Changed game version to 1.0
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.h:
+	- combat_options_describe now supports a quick description option, to be used
+	  w/ the preview of the map
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- If the server receives a NULL option string it will change the current host
+	  player (ie, it will ask the next player in the table for the game options)
+	- If someone who isn't the current host send the options, the server won't
+	  accept them
+	- Fixed some bugs due to the RANDOM_SETUP option:
+	  - The game was sometimes starting before players have sent setup
+	  - The game state wasn't being update
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c, /cvsroot/ggz/ggzd/game_servers/combat/game.h:
+	- Added 2 more options:
+	  Rush Attack
+	  Random setup
+	- All the 16 binary options are now implemented
+
+2000-12-30  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- Added 3 more options:
+	  Unknown Victor
+	  Silent Offense
+	  Silent Defense
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- Added Random Outcome of Attack option
+	- Changed protocol for changing options (was causing problems when sending a
+	  255 byte... it would be converted to 0 and would mean the end of the options
+	  string)
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.h:
+	- Added a combat_options_describe to combat.[ch] that returns a string w/ the
+	  current game options
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c:
+	- Fixed bug with Scouts attacking w/ diagonal move enabled
+
+2000-12-29  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c:
+	- Added 5 options
+	  Super Scout
+	  Diagonal Move
+	  Special Forces Sergeant
+	  Remember enemy units
+	  Hide enemy list
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- Implemented 5 options:
+	  Open Map
+	  One Time Bomb
+	  Terrorist Spy
+	  Moving Bombs
+	  Moving Flags
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- Added preliminary support for the 16 binary game options
+
+2000-12-24  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- Added a game_send_players() call when someones leaves the game (it wasn't
+	  updating the client's player list)
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- It's now possible to leave and then return to a running game (at any moment of it)
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- Added the ARMY(OPTIONS, TYPE) macro that is on client's combat.h file
+	- Fixed a bug (missing \0 on combat_options_string_read) that caused the client
+	  to think it had a wrong version of the protocol
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- Moved all the options checking stuff to combat.[ch]
+	- combat_options_string_read now makes a copy of option string and uses it, so
+	  that the string isn't corrupted after the call to it
+
+2000-12-23  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/game.c, /cvsroot/ggz/ggzd/game_servers/combat/main.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.h:
+	- It now uses the same combat.[ch] files of the client
+
+2000-12-09  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- Modified protocol to include support for game options (details in combat.h)
+	- Added a O_NAME option (Map name)
+
+2000-12-03  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/configure.in, /cvsroot/ggz/ggzd/game_servers/Makefile.am:
+	- Added Hastings to the configre process
+
+2000-11-23  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/hastings/game.c, /cvsroot/ggz/ggzd/game_servers/hastings/game.h, /cvsroot/ggz/ggzd/game_servers/hastings/ggz.c, /cvsroot/ggz/ggzd/game_servers/hastings/ggz.h, /cvsroot/ggz/ggzd/game_servers/hastings/hastings.dsc, /cvsroot/ggz/ggzd/game_servers/hastings/hastings.room, /cvsroot/ggz/ggzd/game_servers/hastings/main.c, /cvsroot/ggz/ggzd/game_servers/hastings/Makefile.am, /cvsroot/ggz/ggzd/game_servers/hastings/protocols.h:
+	-the server part of Hastings1066
+	-also unchanged
+
+2000-11-10  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/acconfig.h, /cvsroot/ggz/ggzd/configure.in, /cvsroot/ggz/ggzd/ggzd/ggzdb_db3.c, /cvsroot/ggz/ggzd/ggzd/Makefile.am:
+	- Added libdb3 support to ggzd server
+
+2000-11-09  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/ggzd/ggzdb_db2.c, /cvsroot/ggz/ggzd/acconfig.h, /cvsroot/ggz/ggzd/configure.in:
+	- Modified db2 library and header lookup to work with RH7
+
+2000-10-26  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c, /cvsroot/ggz/ggzd/game_servers/combat/game.h:
+	- Fixed the sync message
+	- Two modes of sync message: Full (with all the units) and Normal (with only
+		the units this player knows)
+	- Sends a full sync message when the game is over
+
+2000-10-22  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- Added common functions to combat.[ch] to check if a move is valid
+	- Now uses this functions instead of the old, ugly, way
+
+2000-10-21  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/.cvsignore, /cvsroot/ggz/ggzd/game_servers/combat/game.c, /cvsroot/ggz/ggzd/game_servers/combat/main.c:
+	- Responds to CBT_REQ_SYNC (sends the game sync)
+	- Responds to CBT_REQ_OPTIONS (sends the current game options)
+	- Checks the validity of the options sent
+	- Checks the validity of the setup sent
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.dsc:
+	- Fixed the game dir on the combat.dsc (it pointed to my home dir... ops! :) )
+
+2000-10-20  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/.cvsignore, /cvsroot/ggz/ggzd/game_servers/combat/game.c, /cvsroot/ggz/ggzd/game_servers/combat/game.h:
+	- Added .cvsignore (had forgotten)
+	- Server receives CBT_REQ_MOVE msgs, and answers with
+		CBT_MSG_MOVE or CBT_MSG_ATTACK
+	- Implemented moving logic, with some sanity checks (to avoid cheating)
+	- Checks if the game is over, and send a CBT_MSG_GAMEOVER if its the case
+	- In general: The game now works! :)
+
+2000-10-19  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c, /cvsroot/ggz/ggzd/game_servers/combat/game.h:
+	- Requests player setups
+	- Receives player setups
+		(Does some basic validity checks)
+	- Starts the game when all the players are done
+
+2000-10-15  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/game.c:
+	- Sends player names to the client
+
+2000-10-13  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/configure.in:
+	- Creates a Makefile for the Combat game module
+
+	* /cvsroot/ggz/ggzd/game_servers/combat/combat.c, /cvsroot/ggz/ggzd/game_servers/combat/combat.dsc, /cvsroot/ggz/ggzd/game_servers/combat/combat.h, /cvsroot/ggz/ggzd/game_servers/combat/combat.room, /cvsroot/ggz/ggzd/game_servers/combat/game.c, /cvsroot/ggz/ggzd/game_servers/combat/game.h, /cvsroot/ggz/ggzd/game_servers/combat/ggz.c, /cvsroot/ggz/ggzd/game_servers/combat/ggz.h, /cvsroot/ggz/ggzd/game_servers/combat/main.c, /cvsroot/ggz/ggzd/game_servers/combat/Makefile.am, /cvsroot/ggz/ggzd/game_servers/combat/protocols.h:
+	Initial files for the Combat game module server. Already implemented:
+	- Launching the table
+	- Joining / Leaving the table
+	- Sending the joining player game info (number of players, seat number, etc)
+	- Asking the host player for the options
+	- Receiving the options from him
+	- Broadcasting this options to the other players
+
+	* /cvsroot/ggz/ggzd/game_servers/Makefile.am:
+	- Creates Makefile for the Combat game module
+
+2000-10-10  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/reversi/game.c, /cvsroot/ggz/ggzd/game_servers/reversi/main.c:
+	- Fixed bug that caused the server to hang when the player did stupid things
+	- Sends sync to the player when he does stupid things
+
+2000-10-08  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/reversi/game.c, /cvsroot/ggz/ggzd/game_servers/reversi/game.h, /cvsroot/ggz/ggzd/game_servers/reversi/main.c:
+	- Honors a RVR_REQ_AGAIN message (added play again feature)
+
+2000-09-27  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/reversi/game.c, /cvsroot/ggz/ggzd/game_servers/reversi/game.h:
+	- Fixed stupid bug that caused scores to be wrongly calculated
+	(no more tries to calculate the score from the players moves... do it by hand, checking each square)
+
+2000-09-25  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/reversi/game.c:
+	- Made AI work
+	- Added random AI (better than nothing!)
+
+	* /cvsroot/ggz/ggzd/game_servers/reversi/game.h, /cvsroot/ggz/ggzd/game_servers/reversi/game.c:
+	- Added RVR_REQ_SYNC to protocol (client requesting sync)
+	- The server now honors the RVR_REQ_SYNC message (sends sync to the player)
+	- Fixed bug when a player was returning the game (ignored the current turn - reseted it to BLACK)
+
+2000-09-24  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/configure.in, /cvsroot/ggz/ggzd/game_servers/Makefile.am, /cvsroot/ggz/ggzd/game_servers/reversi/.cvsignore, /cvsroot/ggz/ggzd/game_servers/reversi/game.c, /cvsroot/ggz/ggzd/game_servers/reversi/game.h, /cvsroot/ggz/ggzd/game_servers/reversi/ggz.c, /cvsroot/ggz/ggzd/game_servers/reversi/ggz.h, /cvsroot/ggz/ggzd/game_servers/reversi/main.c, /cvsroot/ggz/ggzd/game_servers/reversi/Makefile.am, /cvsroot/ggz/ggzd/game_servers/reversi/protocols.h, /cvsroot/ggz/ggzd/game_servers/reversi/reversi.dsc, /cvsroot/ggz/ggzd/game_servers/reversi/reversi.room, /cvsroot/ggz/ggzd/game_servers/reversi/TODO:
+	- Added reversi game module from Ismael Orenstein
+
+2000-09-24  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/ggzd/ggzd.h, /cvsroot/ggz/ggzd/ggzd/parse_opt.c:
+	- Increased MAX_GAME_TYPES to 15
+	- parse_game() now checks to see if we are adding too many games
+
+2000-09-15  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/dots/game.c:
+	- Addressed bug #113525 by not issuing DOTS_REQ_MOVE until both clients
+	  have specified "yes" to a new game request
+
+2000-09-12  bugg  <bugg@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/game_servers/tictactoe/ggz.c, /cvsroot/ggz/ggzd/ggzd/table.c, /cvsroot/ggz/ggzd/ggzd/transit.c, /cvsroot/ggz/ggzd/game_servers/dots/ggz.c, /cvsroot/ggz/ggzd/game_servers/lapocha/ggz.c:
+	Always include <sys/types.h> before <sys/socket.h>
+
+	Well, it's not technically not always, but it's a good habit
+	because with most common things defined in sys/socket.h
+	sys/types.h must have been included first.  (If it were always,
+	then socket.h should obviously always include types.h for itself)
+
+	Bruce Evans (A FreeBSD developer who really, really, really knows
+	his stuff) had explained it to a FreeBSD list once, if anyone thinks
+	that this behavior is braindead.  To summarize: it's not braindead,
+	so include sys/types.h before sys/socket.h for most things :)
+
+	glibc is in the minority for having sys/socket.h include sys/types.h.
+
+	First of several commits to make ggzd portable.
+
+2000-09-07  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggzd/ChangeLog:
+	- Updated ChangeLog before 0.0.3 release
+
+	* /cvsroot/ggz/ggzd/doc/C/design/client-server.sgml:
+	- Fix missing </para>
+
+	* /cvsroot/ggz/ggzd/ggzd/control.c, /cvsroot/ggz/ggzd/game_servers/spades/engine.h:
+	- Use RETSIGTYPE as return type for signal handlers
+
 2000-09-07 21:32:11  bmh  <bmh@users.sourceforce.net>
 
 	* /cvsroot/GGZ/ggzd/doc/C/design/client-server.sgml:

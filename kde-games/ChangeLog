@@ -1,0 +1,300 @@
+2001-06-17  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/KReversi/pixmaps/Makefile.am:
+	- install pixmaps properly
+
+2001-06-17  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/KReversi/module.dsc.in:
+	- Changed homepage field
+
+2001-06-14  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/NEWS:
+	- Updated NEWS for 0.0.4
+
+	* /cvsroot/ggz/kde-games/Makefile.am, /cvsroot/ggz/kde-games/QuickStart.GGZ, /cvsroot/ggz/kde-games/README.GGZ:
+	- Updated docs
+	- Include docs in tarball
+
+2001-06-11  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/krosswater/Makefile.am:
+	- Fixed a missing tab that caused install-local-data to not trigger during
+	  make install
+
+2001-06-10  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/kdots/kdots_proto.cpp, /cvsroot/ggz/kde-games/KReversi/main.cpp, /cvsroot/ggz/kde-games/ktictactux/ktictactux.cpp, /cvsroot/ggz/kde-games/ktictactux/ktictactuxproto.cpp:
+	- #include <stdlib.h> required for use of exit() call
+
+2001-06-10  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/.cvsignore: - add build-stamp
+
+	* /cvsroot/ggz/kde-games/kdots/Makefile.am, /cvsroot/ggz/kde-games/KReversi/pixmaps/Makefile.am, /cvsroot/ggz/kde-games/krosswater/Makefile.am, /cvsroot/ggz/kde-games/ktictactux/ktictactux.cpp, /cvsroot/ggz/kde-games/ktictactux/main.cpp, /cvsroot/ggz/kde-games/ktictactux/Makefile.am:
+	- fixed standalone mode of KTicTacTux
+	- renamed all "cp" commands to "$(INSTALL)"
+
+2001-06-09  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/krosswater/Makefile.am:
+	- handle module.dsc installation
+
+	* /cvsroot/ggz/kde-games/configure.in: - change version number to 0.0.4
+
+	* /cvsroot/ggz/kde-games/kdots/Makefile.am:
+	- change version number to 0.0.4
+	- enable ggz-config run
+
+2001-06-03  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/kdots/kdots.cpp:
+	- implemented synchronization properly
+
+	* /cvsroot/ggz/kde-games/kdots/Dot/dots.cpp, /cvsroot/ggz/kde-games/kdots/Dot/dots.h:
+	- implemented synchronisation properly
+
+	* /cvsroot/ggz/kde-games/kdots/module.dsc.in, /cvsroot/ggz/kde-games/ktictactux/module.dsc.in:
+	- change protocol versions so they fit Gtk+ frontends
+
+2001-05-30  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/kdots/module.dsc.in:
+	- changed type to "dots" so frontend can be selected
+
+	* /cvsroot/ggz/kde-games/debian/prerm:
+	- corrected behaviour on removal if errors occur
+
+	* /cvsroot/ggz/kde-games/debian/changelog, /cvsroot/ggz/kde-games/debian/control, /cvsroot/ggz/kde-games/debian/copyright, /cvsroot/ggz/kde-games/debian/.cvsignore, /cvsroot/ggz/kde-games/debian/docs, /cvsroot/ggz/kde-games/debian/postinst, /cvsroot/ggz/kde-games/debian/prerm, /cvsroot/ggz/kde-games/debian/README.Debian, /cvsroot/ggz/kde-games/debian/rules, /cvsroot/ggz/kde-games/debian/shlibs, /cvsroot/ggz/kde-games/krosswater/zoneclient/Makefile.am:
+	- don't install Zone header files
+	- debianized source tree
+
+2001-05-20  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/README.GGZ:
+	- Synched to ggz-client-libs copy of README.GGZ
+
+2001-05-20  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/kdots/Dot/qdots.cpp, /cvsroot/ggz/kde-games/kdots/kdots.cpp, /cvsroot/ggz/kde-games/kdots/kdots_help.cpp, /cvsroot/ggz/kde-games/kdots/kdots_options.cpp, /cvsroot/ggz/kde-games/kdots/kdots_win.cpp:
+	- fixed SEGFAULT occurence: dots is only 24x24 fields, not 25x25 :)
+	- optimized graphics (is now faster)
+
+2001-05-19  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/krosswater/krosswater.cpp, /cvsroot/ggz/kde-games/krosswater/krosswater.h, /cvsroot/ggz/kde-games/krosswater/qcw.cpp, /cvsroot/ggz/kde-games/krosswater/qcw.h, /cvsroot/ggz/kde-games/krosswater/zoneclient/ZoneGGZModUI.cpp, /cvsroot/ggz/kde-games/krosswater/zoneclient/ZoneGGZModUI.h:
+	- minor krosswater changes
+
+	* /cvsroot/ggz/kde-games/am_edit: - changed build process
+
+2001-05-14  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/README: -updated README file
+
+2001-05-12  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/krosswater/dlg_again.cpp, /cvsroot/ggz/kde-games/krosswater/dlg_again.h, /cvsroot/ggz/kde-games/krosswater/krosswater.cpp, /cvsroot/ggz/kde-games/krosswater/krosswater.h, /cvsroot/ggz/kde-games/krosswater/qcw.cpp:
+	-minor updates
+	-only show active players, not all
+
+2001-05-11  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/krosswater/krosswater.cpp, /cvsroot/ggz/kde-games/krosswater/qcw.cpp, /cvsroot/ggz/kde-games/krosswater/qcw.h:
+	- fixed stone states
+
+2001-05-10  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/krosswater/dlg_help.cpp, /cvsroot/ggz/kde-games/krosswater/dlg_help.h:
+	- new help window
+	- small code changes, animation
+
+	* /cvsroot/ggz/kde-games/krosswater/dlg_about.cpp, /cvsroot/ggz/kde-games/krosswater/krosswater.cpp, /cvsroot/ggz/kde-games/krosswater/Makefile.am, /cvsroot/ggz/kde-games/krosswater/qcw.cpp, /cvsroot/ggz/kde-games/krosswater/qcw.h:
+	- modified Krosswater code
+	- game is not playable yet, but testable.
+	- modified Krosswater code
+	- game is not playable yet, but testable.
+
+	* /cvsroot/ggz/kde-games/krosswater/gfx/bg.png, /cvsroot/ggz/kde-games/krosswater/gfx/.cvsignore, /cvsroot/ggz/kde-games/krosswater/gfx/ok.png:
+	- some changes on the about dialog (get rid of ugly OK image)
+
+2001-05-06  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/kdots/dragon.png, /cvsroot/ggz/kde-games/kdots/firedragon.png, /cvsroot/ggz/kde-games/kdots/kdots_about.cpp, /cvsroot/ggz/kde-games/kdots/kdots_about.h, /cvsroot/ggz/kde-games/kdots/kdots.cpp, /cvsroot/ggz/kde-games/kdots/kdots.h, /cvsroot/ggz/kde-games/kdots/kdots_help.cpp, /cvsroot/ggz/kde-games/kdots/kdots_help.h, /cvsroot/ggz/kde-games/kdots/kdots_proto.cpp, /cvsroot/ggz/kde-games/kdots/kdots_proto.h, /cvsroot/ggz/kde-games/kdots/kdots_win.cpp, /cvsroot/ggz/kde-games/kdots/kdots_win.h, /cvsroot/ggz/kde-games/kdots/main.cpp, /cvsroot/ggz/kde-games/kdots/Makefile.am, /cvsroot/ggz/kde-games/kdots/snowdragon.png:
+	- added missing pictures
+
+	* /cvsroot/ggz/kde-games/kdots/Dot/dots.cpp, /cvsroot/ggz/kde-games/kdots/Dot/dots.h, /cvsroot/ggz/kde-games/kdots/Dot/qdots.cpp, /cvsroot/ggz/kde-games/kdots/Dot/qdots.h, /cvsroot/ggz/kde-games/kdots/Dot/vdots.cpp:
+	- made this game playable
+	- included dragon pictures
+	- improved algorithms (a bit at least)
+
+2001-05-04  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/kdots/kdots.cpp, /cvsroot/ggz/kde-games/kdots/kdots_options.cpp, /cvsroot/ggz/kde-games/kdots/kdots_proto.cpp, /cvsroot/ggz/kde-games/kdots/kdots_proto.h, /cvsroot/ggz/kde-games/kdots/Makefile.am, /cvsroot/ggz/kde-games/ktictactux/Makefile.am:
+	- some updates on the network sources
+
+	* /cvsroot/ggz/kde-games/kdots/Dot/qdots.cpp: - improved network stuff
+	- playing will be possible soon
+
+2001-05-03  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/README.GGZ:
+	- added readme.ggz (this beast is still not convinced to go into CVS)
+
+	* /cvsroot/ggz/kde-games/INSTALL, /cvsroot/ggz/kde-games/README:
+	- changed some references between files
+
+	* /cvsroot/ggz/kde-games/KReversi/.cvsignore, /cvsroot/ggz/kde-games/krosswater/.cvsignore, /cvsroot/ggz/kde-games/krosswater/zoneclient/.cvsignore:
+	- added README.GGZ (now, will you go in, beast)
+
+	* /cvsroot/ggz/kde-games/KReversi/.cvsignore, /cvsroot/ggz/kde-games/KReversi/pixmaps/.cvsignore, /cvsroot/ggz/kde-games/krosswater/.cvsignore, /cvsroot/ggz/kde-games/krosswater/gfx/.cvsignore, /cvsroot/ggz/kde-games/krosswater/zoneclient/.cvsignore, /cvsroot/ggz/kde-games/ktictactux/.cvsignore:
+	- added .cvsignore files for lazy coders like me
+	- updated some other .cvsignores
+
+	* /cvsroot/ggz/kde-games/ktictactux/.cvsignore: - added README.GGZ
+
+2001-05-02  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/kdots/.cvsignore, /cvsroot/ggz/kde-games/kdots/kdots_about.cpp, /cvsroot/ggz/kde-games/kdots/kdots.cpp, /cvsroot/ggz/kde-games/kdots/kdots.h, /cvsroot/ggz/kde-games/kdots/kdots_proto.cpp, /cvsroot/ggz/kde-games/kdots/kdots_proto.h, /cvsroot/ggz/kde-games/kdots/Makefile.am:
+	- second trial: minor updates
+
+	* /cvsroot/ggz/kde-games/kdots/Dot/.cvsignore:
+	- added protocol specific skeleton files
+	- updated .cvsignore files
+
+	* /cvsroot/ggz/kde-games/kdots/Dot/dots.cpp:
+	- fixed dangling NULL pointer in class Dot (I'm sensibilized for that kind of problems now)
+	- prepared networking support
+	- implemented conversion algorithm between Rich's server representation and the client one
+	(line orientated vs. dot orientated), which is rather simple
+
+2001-05-01  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/ktictactux/ktictactux.cpp, /cvsroot/ggz/kde-games/ktictactux/ktictactuxproto.cpp:
+	- fixed some bugs
+	- differentiation between GGZ-game and standalone is now clearer
+	- fixed status messages
+
+	* /cvsroot/ggz/kde-games/KReversi/module.dsc, /cvsroot/ggz/kde-games/KReversi/module.dsc.in, /cvsroot/ggz/kde-games/krosswater/module.dsc.in:
+	- added correct descriptions
+
+	* /cvsroot/ggz/kde-games/.cvsignore: - add list of files to ignore
+
+	* /cvsroot/ggz/kde-games/AUTHORS: -added authors file
+
+	* /cvsroot/ggz/kde-games/acconfig.h, /cvsroot/ggz/kde-games/acinclude.ggz, /cvsroot/ggz/kde-games/acinclude.kde, /cvsroot/ggz/kde-games/acinclude.m4, /cvsroot/ggz/kde-games/am_edit, /cvsroot/ggz/kde-games/autogen.sh, /cvsroot/ggz/kde-games/ChangeLog, /cvsroot/ggz/kde-games/configure.in, /cvsroot/ggz/kde-games/configure.in.in, /cvsroot/ggz/kde-games/COPYING, /cvsroot/ggz/kde-games/INSTALL, /cvsroot/ggz/kde-games/install-sh, /cvsroot/ggz/kde-games/kde-games.stdio, /cvsroot/ggz/kde-games/Makefile.am, /cvsroot/ggz/kde-games/Makefile.cvs, /cvsroot/ggz/kde-games/missing, /cvsroot/ggz/kde-games/mkinstalldirs, /cvsroot/ggz/kde-games/NEWS, /cvsroot/ggz/kde-games/README:
+	- more stuff in top-level dir
+
+	* /cvsroot/ggz/kde-games/ktictactux/module.dsc.in, /cvsroot/ggz/kde-games/ktictactux/qwhiteframe.cpp, /cvsroot/ggz/kde-games/ktictactux/qwhiteframe.h, /cvsroot/ggz/kde-games/ktictactux/tux.png, /cvsroot/ggz/kde-games/admin/acinclude.m4.in, /cvsroot/ggz/kde-games/admin/am_edit, /cvsroot/ggz/kde-games/admin/am_edit.py, /cvsroot/ggz/kde-games/admin/conf.change.pl, /cvsroot/ggz/kde-games/admin/config.guess, /cvsroot/ggz/kde-games/admin/config.pl, /cvsroot/ggz/kde-games/admin/config.sub, /cvsroot/ggz/kde-games/admin/configure.in.min, /cvsroot/ggz/kde-games/admin/debianrules, /cvsroot/ggz/kde-games/admin/depcomp, /cvsroot/ggz/kde-games/admin/install-sh, /cvsroot/ggz/kde-games/admin/libtool.m4.in, /cvsroot/ggz/kde-games/admin/ltcf-c.sh, /cvsroot/ggz/kde-games/admin/ltcf-cxx.sh, /cvsroot/ggz/kde-games/admin/ltcf-gcj.sh, /cvsroot/ggz/kde-games/admin/ltconfig, /cvsroot/ggz/kde-games/admin/ltmain.sh, /cvsroot/ggz/kde-games/admin/Makefile.common, /cvsroot/ggz/kde-games/admin/missing, /cvsroot/ggz/kde-games/admin/mkinstalldirs, /cvsroot/ggz/kde-games/admin/ylwrap, /cvsroot/ggz/kde-games/kdots/.cvsignore, /cvsroot/ggz/kde-games/kdots/Dot/.cvsignore, /cvsroot/ggz/kde-games/kdots/Dot/dots.cpp, /cvsroot/ggz/kde-games/kdots/Dot/dots.h, /cvsroot/ggz/kde-games/kdots/Dot/Makefile.am, /cvsroot/ggz/kde-games/kdots/Dot/qdots.cpp, /cvsroot/ggz/kde-games/kdots/Dot/qdots.h, /cvsroot/ggz/kde-games/kdots/Dot/test.cpp, /cvsroot/ggz/kde-games/kdots/Dot/vdots.cpp, /cvsroot/ggz/kde-games/kdots/Dot/vdots.h, /cvsroot/ggz/kde-games/kdots/kdots_about.cpp, /cvsroot/ggz/kde-games/kdots/kdots_about.h, /cvsroot/ggz/kde-games/kdots/kdots.cpp, /cvsroot/ggz/kde-games/kdots/kdots.h, /cvsroot/ggz/kde-games/kdots/kdots_help.cpp, /cvsroot/ggz/kde-games/kdots/kdots_help.h, /cvsroot/ggz/kde-games/kdots/kdots_options.cpp, /cvsroot/ggz/kde-games/kdots/kdots_options.h, /cvsroot/ggz/kde-games/kdots/main.cpp, /cvsroot/ggz/kde-games/kdots/Makefile.am, /cvsroot/ggz/kde-games/kdots/module.dsc.in, /cvsroot/ggz/kde-games/ktictactux/.cvsignore, /cvsroot/ggz/kde-games/ktictactux/ktictactux.cpp, /cvsroot/ggz/kde-games/ktictactux/ktictactux.h, /cvsroot/ggz/kde-games/ktictactux/ktictactuxproto.cpp, /cvsroot/ggz/kde-games/ktictactux/ktictactuxproto.h, /cvsroot/ggz/kde-games/ktictactux/main.cpp, /cvsroot/ggz/kde-games/ktictactux/Makefile.am, /cvsroot/ggz/kde-games/ktictactux/merlin.png:
+	- added 2 new KDE games: KDots (not working yet) and KTicTacTux (rarely working)
+	- modified build process
+	- added standard files
+
+2001-04-10  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/KReversi/kreversi.cpp, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/themerc, /cvsroot/ggz/kde-games/KReversi/pixmaps/gtk-client/disc0000.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/gtk-client/disc0001.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/gtk-client/themerc, /cvsroot/ggz/kde-games/KReversi/pixmaps/gtk-client/tiles.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/Makefile.am, /cvsroot/ggz/kde-games/KReversi/reversiview.cpp, /cvsroot/ggz/kde-games/KReversi/reversiview.h, /cvsroot/ggz/kde-games/KReversi/THEME.HOWTO:
+	- Added new theme, with the look of the gtk client
+	- Themes can now have a themerc file that defines the filename pattern, the number and the speed of frames in the animation and the name of the players colors (to be displayed on the status bar)
+
+2001-04-08  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0003.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0004.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0005.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0006.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0007.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0008.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0009.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0010.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0011.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0012.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0013.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0014.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0015.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0016.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0017.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0018.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0019.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/tiles.png, /cvsroot/ggz/kde-games/KReversi/ggz.kreversiui.rc, /cvsroot/ggz/kde-games/KReversi/kreversi.cpp, /cvsroot/ggz/kde-games/KReversi/kreversi.h, /cvsroot/ggz/kde-games/KReversi/main.cpp, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0000.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0001.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/blend/disc0002.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/Makefile.am, /cvsroot/ggz/kde-games/KReversi/reversiview.cpp, /cvsroot/ggz/kde-games/KReversi/reversiview.h, /cvsroot/ggz/kde-games/KReversi/THEME.HOWTO:
+	- Added a new theme: blend
+	- Made it possible to change themes at run time
+	- Added a "Select Theme" menu
+	- Scans GGZDATADIR/kreversi/pixmaps for themes (got code from Rich's ccheckers)
+	- Saves the selected theme using KDE's KConfig class (in ~/.kde/share/config/ggz.kreversirc)
+
+	* /cvsroot/ggz/kde-games/KReversi/kreversi.cpp:
+	- Fixed a bug when the possible moves weren't displayed
+
+	* /cvsroot/ggz/kde-games/KReversi/kreversi.cpp, /cvsroot/ggz/kde-games/KReversi/kreversi.h:
+	- Displays a "Sending move..." message after the player clicks to send a move
+	- The possible moves always appear, no matter what
+
+2001-04-07  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/admin/acinclude.m4.in:
+	- It now used kde-config instead of KDEDIR to query the kde prefix
+
+2001-04-06  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/autogen.sh:
+	- Added a little autogen.sh script to run "make -f Makefile.cvs" and "configure"
+
+	* /cvsroot/ggz/kde-games/KReversi/kreversi.cpp, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0000.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0001.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0002.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0003.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0004.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0005.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0006.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0007.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0008.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0009.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0010.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0011.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0012.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0013.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0014.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0015.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0016.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0017.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0018.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0019.png, /cvsroot/ggz/kde-games/KReversi/reversiview.cpp, /cvsroot/ggz/kde-games/KReversi/reversiview.h:
+	- Disc animation is now from 0000 to 0019 when going from blue to red, and 0019 to 0000 when going to red from blue (it was 0~10 and then 11~19)
+	- Animation is now faster and better
+	- Fixed bug when trying to send move when it wasn't your turn
+
+	* /cvsroot/ggz/kde-games/KReversi/kreversi.cpp, /cvsroot/ggz/kde-games/KReversi/kreversi.h, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/tiles.png, /cvsroot/ggz/kde-games/KReversi/reversiview.cpp, /cvsroot/ggz/kde-games/KReversi/reversiview.h, /cvsroot/ggz/kde-games/KReversi/tiles.xpm:
+	- Moved tiles.xpm to pixmaps/default/tiles.png (and changed it to PNG format)
+	- Fixed bug when clicking on top of a existing disc (it hanged the client. Thanks to Riq for pointing it out)
+	- Displays the last move with a different tile
+	- Shows possible moves for the current player
+
+2001-04-05  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/krosswater/gfx/Makefile.am, /cvsroot/ggz/kde-games/krosswater/Makefile.am, /cvsroot/ggz/kde-games/krosswater/zoneclient/Makefile.am, /cvsroot/ggz/kde-games/Makefile.am:
+	- Changed ./Makefile.am to include krosswater
+	- Changed krosswater/Makefile.am to install in ggzexecdir and fixed some typos
+	- Changed krosswater/gfx/Makefile.am to install images correctly in GGZDATADIR
+	- Changed krosswater/zoneclient/Makefile.am to fix some typos
+
+	* /cvsroot/ggz/kde-games/config.h.bot:
+	- This file isn't really necessary (I guess) and was causing some weird conflicts with krosswater
+
+2001-04-05  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/krosswater/dlg_about.cpp, /cvsroot/ggz/kde-games/krosswater/dlg_about.h, /cvsroot/ggz/kde-games/krosswater/dlg_again.cpp, /cvsroot/ggz/kde-games/krosswater/dlg_again.h, /cvsroot/ggz/kde-games/krosswater/dlg_person.cpp, /cvsroot/ggz/kde-games/krosswater/dlg_person.h, /cvsroot/ggz/kde-games/krosswater/gfx/alien.png, /cvsroot/ggz/kde-games/krosswater/gfx/bg.png, /cvsroot/ggz/kde-games/krosswater/gfx/franzl.png, /cvsroot/ggz/kde-games/krosswater/gfx/geek.png, /cvsroot/ggz/kde-games/krosswater/gfx/Makefile.am, /cvsroot/ggz/kde-games/krosswater/gfx/mindx.png, /cvsroot/ggz/kde-games/krosswater/gfx/ok.png, /cvsroot/ggz/kde-games/krosswater/gfx/title.png, /cvsroot/ggz/kde-games/krosswater/krosswater.cpp, /cvsroot/ggz/kde-games/krosswater/krosswater.h, /cvsroot/ggz/kde-games/krosswater/main.cpp, /cvsroot/ggz/kde-games/krosswater/Makefile.am, /cvsroot/ggz/kde-games/krosswater/qcw.cpp, /cvsroot/ggz/kde-games/krosswater/qcw.h, /cvsroot/ggz/kde-games/krosswater/zoneclient/Makefile.am, /cvsroot/ggz/kde-games/krosswater/zoneclient/ZoneGGZ.h, /cvsroot/ggz/kde-games/krosswater/zoneclient/ZoneGGZModUI.cpp, /cvsroot/ggz/kde-games/krosswater/zoneclient/ZoneGGZModUI.h, /cvsroot/ggz/kde-games/krosswater/zoneclient/ZoneProtocols.h:
+	Initial Krosswater source import
+	includes client-side Zone files (not ready yet)
+
+2001-04-05  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/KReversi/kreversi.cpp, /cvsroot/ggz/kde-games/KReversi/reversiview.cpp, /cvsroot/ggz/kde-games/KReversi/reversiview.h:
+	- The discs now play a cute animation when flipped
+
+2001-04-04  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/KReversi/kreversi.cpp, /cvsroot/ggz/kde-games/KReversi/Makefile.am, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0000.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0001.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0002.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0003.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0004.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0005.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0006.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0007.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0008.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0009.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0010.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0011.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0012.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0013.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0014.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0015.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0016.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0017.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0018.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/disc0019.png, /cvsroot/ggz/kde-games/KReversi/pixmaps/default/kreversi.blend, /cvsroot/ggz/kde-games/KReversi/pixmaps/Makefile.am, /cvsroot/ggz/kde-games/KReversi/reversiview.cpp, /cvsroot/ggz/kde-games/KReversi/reversiview.h:
+	- Added new images and blender file in case anyone wants to change them
+	- New images install to GGZDATADIR/kreversi/pixmaps/default
+	- Using new images (now as a QCanvasSprite instead of a QCanvas tile)
+	- Fixed bug when opponent didn't have an avaialable move
+	- The images aren't animated yet, but this is the next step in the TODO
+
+2001-04-01  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/configure.in.in, /cvsroot/ggz/kde-games/kde-games.stdio, /cvsroot/ggz/kde-games/KReversi/Makefile.am, /cvsroot/ggz/kde-games/KReversi/module.dsc:
+	- Added KReversi's module.dsc file
+	- kde-games now checks for GGZ (ggz-config and ggzcore)
+		- Got code from gtk-games
+	- ggz.kreversi is now installed in GAMEDIR
+	- Everything seems to work fine, as improbable as it seems... :)
+
+	* /cvsroot/ggz/kde-games/aclocal.m4, /cvsroot/ggz/kde-games/config.h.in, /cvsroot/ggz/kde-games/configure, /cvsroot/ggz/kde-games/configure.files, /cvsroot/ggz/kde-games/configure.in, /cvsroot/ggz/kde-games/stamp-h.in, /cvsroot/ggz/kde-games/subdirs:
+	- First step trying to understand KDE's auto* system
+	- Removed files that should be created at runtime
+	*** You must do a "make -f Makefile.cvs" before trying to compile it ! ***
+
+	* /cvsroot/ggz/kde-games/KReversi/kreversi.cpp, /cvsroot/ggz/kde-games/KReversi/kreversi.h:
+	- Client now checks if a move is valid before sending it
+
+2001-03-31  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-games/KReversi/ggz.kreversiui.rc, /cvsroot/ggz/kde-games/KReversi/Makefile.am:
+	- Forgot to commit these files
+
+	* /cvsroot/ggz/kde-games/acinclude.m4, /cvsroot/ggz/kde-games/aclocal.m4, /cvsroot/ggz/kde-games/admin/acinclude.m4.in, /cvsroot/ggz/kde-games/admin/am_edit, /cvsroot/ggz/kde-games/admin/am_edit.py, /cvsroot/ggz/kde-games/admin/conf.change.pl, /cvsroot/ggz/kde-games/admin/config.guess, /cvsroot/ggz/kde-games/admin/config.pl, /cvsroot/ggz/kde-games/admin/config.sub, /cvsroot/ggz/kde-games/admin/configure.in.min, /cvsroot/ggz/kde-games/admin/debianrules, /cvsroot/ggz/kde-games/admin/depcomp, /cvsroot/ggz/kde-games/admin/install-sh, /cvsroot/ggz/kde-games/admin/libtool.m4.in, /cvsroot/ggz/kde-games/admin/ltcf-c.sh, /cvsroot/ggz/kde-games/admin/ltcf-cxx.sh, /cvsroot/ggz/kde-games/admin/ltcf-gcj.sh, /cvsroot/ggz/kde-games/admin/ltconfig, /cvsroot/ggz/kde-games/admin/ltmain.sh, /cvsroot/ggz/kde-games/admin/Makefile.common, /cvsroot/ggz/kde-games/admin/missing, /cvsroot/ggz/kde-games/admin/mkinstalldirs, /cvsroot/ggz/kde-games/admin/ylwrap, /cvsroot/ggz/kde-games/config.h.bot, /cvsroot/ggz/kde-games/config.h.in, /cvsroot/ggz/kde-games/configure, /cvsroot/ggz/kde-games/configure.files, /cvsroot/ggz/kde-games/configure.in, /cvsroot/ggz/kde-games/configure.in.in, /cvsroot/ggz/kde-games/install-sh, /cvsroot/ggz/kde-games/kde-games.stdio, /cvsroot/ggz/kde-games/KReversi/kreversi.cpp, /cvsroot/ggz/kde-games/KReversi/kreversi.h, /cvsroot/ggz/kde-games/KReversi/main.cpp, /cvsroot/ggz/kde-games/KReversi/Makefile.am, /cvsroot/ggz/kde-games/KReversi/reversiprotocol.cpp, /cvsroot/ggz/kde-games/KReversi/reversiprotocol.h, /cvsroot/ggz/kde-games/KReversi/reversiview.cpp, /cvsroot/ggz/kde-games/KReversi/reversiview.h, /cvsroot/ggz/kde-games/KReversi/tiles.xpm, /cvsroot/ggz/kde-games/Makefile.am, /cvsroot/ggz/kde-games/Makefile.cvs, /cvsroot/ggz/kde-games/missing, /cvsroot/ggz/kde-games/mkinstalldirs, /cvsroot/ggz/kde-games/stamp-h.in, /cvsroot/ggz/kde-games/subdirs:
+	- Initial commit of the Reversi game client for KDE
+	- Working:
+	  - The entire game protocol
+		- Non-blocking sockets
+		- Integration with the KDE desktop (using KActions, Styles, the whole stuff)
+		- Autoconf/Automake
+	- Not working yet:
+		- Checking of move validity before sending it to the server
+		- Checking for ggz-config
+		- Installing in the right place (currently installs in $(kde_bindir))
+		- module.dsc file

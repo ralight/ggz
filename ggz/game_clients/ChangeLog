@@ -1,0 +1,1706 @@
+2001-06-17  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/module.dsc.in:
+	- Changed homepage field, yada yada yada
+
+	* /cvsroot/ggz/ggz/game_clients/combat/module.dsc.in:
+	- Homepage field now links to GGZ's Combat page
+
+	* /cvsroot/ggz/ggz/game_clients/chess/module.dsc.in:
+	- Changed the Homepage field to link to ggz's Combat help page
+
+2001-06-14  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/NEWS:
+	- Updated NEWS file for 0.0.4
+
+	* /cvsroot/ggz/ggz/game_clients/Makefile.am, /cvsroot/ggz/ggz/game_clients/QuickStart.GGZ, /cvsroot/ggz/ggz/game_clients/README.GGZ:
+	- Documentation updates
+	- Include docs in tarball
+
+	* /cvsroot/ggz/ggz/game_clients/po/Makefile.am:
+	- Use SUBDIRS = . so that 'make dist' works
+
+2001-06-14  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Makefile.am:
+	- Use $(INSTALL) not 'cp' to install pixmap files
+
+2001-06-09  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/configure.in: - roundup version number
+
+2001-06-08  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/debian/rules: - little debian updates
+
+2001-06-02  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/debian/rules:
+	- fix translation build bug
+
+2001-06-02  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/po/tictactoe/pt_BR.po:
+	- Added brazilian portuguese translation
+
+	* /cvsroot/ggz/ggz/game_clients/po/hastings/pt_BR.po:
+	- Updated translation
+	- Forget about my last note about a entry not ending with /n... that it was my fault... :)
+
+2001-06-02  riq  <riq@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/po/tictactoe/es_AR.po:
+	added spanish (Argentinian) translation to Tic-Tac-Toe
+
+	* /cvsroot/ggz/ggz/game_clients/po/hastings/es_AR.po:
+	added spanish (Argentinian) translation for Hastings 1066
+
+2001-06-02  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/po/hastings/de.po, /cvsroot/ggz/ggz/game_clients/po/hastings/hastings.pot, /cvsroot/ggz/ggz/game_clients/po/Makefile.am, /cvsroot/ggz/ggz/game_clients/po/tictactoe/de.po, /cvsroot/ggz/ggz/game_clients/po/tictactoe/tictactoe.pot:
+	- force "make messages"
+
+2001-06-01  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/po/hastings/pt_BR.po:
+	- Added brazilian portuguese translation
+	- Note: In the about dialog, it must be an extra "\n" at the end of the text (I don't know why, but KBabel complains about it!)
+
+2001-05-31  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/po/tictactoe/de.po:
+	- added German TTT translation
+
+	* /cvsroot/ggz/ggz/game_clients/configure.in, /cvsroot/ggz/ggz/game_clients/.cvsignore:
+	- let old libc5 boxes live without gettext
+
+	* /cvsroot/ggz/ggz/game_clients/hastings/dlg_about.c, /cvsroot/ggz/ggz/game_clients/hastings/ggzintl.c, /cvsroot/ggz/ggz/game_clients/hastings/ggzintl.h, /cvsroot/ggz/ggz/game_clients/hastings/main.c, /cvsroot/ggz/ggz/game_clients/hastings/main_win.c, /cvsroot/ggz/ggz/game_clients/hastings/Makefile.am, /cvsroot/ggz/ggz/game_clients/hastings/support.h, /cvsroot/ggz/ggz/game_clients/po/.cvsignore, /cvsroot/ggz/ggz/game_clients/po/hastings/de.po, /cvsroot/ggz/ggz/game_clients/po/hastings/hastings.pot, /cvsroot/ggz/ggz/game_clients/po/Makefile.am, /cvsroot/ggz/ggz/game_clients/po/tictactoe/de.po, /cvsroot/ggz/ggz/game_clients/po/tictactoe/tictactoe.pot, /cvsroot/ggz/ggz/game_clients/tictactoe/ggzintl.c, /cvsroot/ggz/ggz/game_clients/tictactoe/ggzintl.h, /cvsroot/ggz/ggz/game_clients/tictactoe/main.c, /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am, /cvsroot/ggz/ggz/game_clients/tictactoe/support.h:
+	- internationalized ggz-gtk-games module
+	- first translation attempts: hastings, tictactoe
+	- own gettext handler
+
+2001-05-30  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/configure.in:
+	- Fixed spelling
+
+2001-05-30  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/debian/prerm:
+	- changed behaviour of deinstallation process if errors occur
+
+	* /cvsroot/ggz/ggz/game_clients/debian/changelog, /cvsroot/ggz/ggz/game_clients/debian/control, /cvsroot/ggz/ggz/game_clients/debian/copyright, /cvsroot/ggz/ggz/game_clients/debian/.cvsignore, /cvsroot/ggz/ggz/game_clients/debian/docs, /cvsroot/ggz/ggz/game_clients/debian/postinst, /cvsroot/ggz/ggz/game_clients/debian/prerm, /cvsroot/ggz/ggz/game_clients/debian/README.Debian, /cvsroot/ggz/ggz/game_clients/debian/rules:
+	- debianized source tree
+
+2001-05-29  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/hastings/doc/hastings0.png, /cvsroot/ggz/ggz/game_clients/hastings/doc/hastings1.png, /cvsroot/ggz/ggz/game_clients/hastings/doc/hastings2.png, /cvsroot/ggz/ggz/game_clients/hastings/doc/hastings3.png, /cvsroot/ggz/ggz/game_clients/hastings/doc/module_writing.html, /cvsroot/ggz/ggz/game_clients/hastings/doc/README:
+	- move hastings documentation to docs CVS module
+
+2001-05-22  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/spades/module.dsc.in:
+	- New protocol number 0.0.3
+
+	* /cvsroot/ggz/ggz/game_clients/spades/callbacks.c, /cvsroot/ggz/ggz/game_clients/spades/client_func.c:
+	- Start in state GET_ID
+	- After getting ID, if we're player 0 display options dialog
+	- Don't call DisplayInit() from options dialog because now we
+	  automatically display it
+
+2001-05-21  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/README:
+	- General information for the gtk-games module
+
+2001-05-20  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/README.GGZ:
+	- Added README.GGZ to each client module
+
+2001-05-10  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/kdots/Dot/dots.cpp, /cvsroot/ggz/ggz/game_clients/kdots/Dot/dots.h, /cvsroot/ggz/ggz/game_clients/kdots/Dot/Makefile, /cvsroot/ggz/ggz/game_clients/kdots/Dot/qdots.cpp, /cvsroot/ggz/ggz/game_clients/kdots/Dot/qdots.h, /cvsroot/ggz/ggz/game_clients/kdots/Dot/test.cpp, /cvsroot/ggz/ggz/game_clients/kdots/Dot/vdots.cpp, /cvsroot/ggz/ggz/game_clients/kdots/Dot/vdots.h, /cvsroot/ggz/ggz/game_clients/kdots/kdots_about.cpp, /cvsroot/ggz/ggz/game_clients/kdots/kdots_about.h, /cvsroot/ggz/ggz/game_clients/kdots/kdots.cpp, /cvsroot/ggz/ggz/game_clients/kdots/kdots.h, /cvsroot/ggz/ggz/game_clients/kdots/kdots_help.cpp, /cvsroot/ggz/ggz/game_clients/kdots/kdots_help.h, /cvsroot/ggz/ggz/game_clients/kdots/kdots_options.cpp, /cvsroot/ggz/ggz/game_clients/kdots/kdots_options.h, /cvsroot/ggz/ggz/game_clients/kdots/main.cpp, /cvsroot/ggz/ggz/game_clients/kdots/Makefile:
+	- removed obsolete kdots files from gtk-games (it's now in kde-games)
+
+2001-04-29  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/hastings/main_win.c:
+	- fixed unit color bug
+
+2001-04-24  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am:
+	- GAME_DSC should not have the .in extension, EXTRA_DST should
+
+2001-04-22  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/rpm/ggz-gtk-combat.spec, /cvsroot/ggz/ggz/game_clients/rpm/ggz-gtk-dots.spec, /cvsroot/ggz/ggz/game_clients/rpm/ggz-gtk-hastings.spec, /cvsroot/ggz/ggz/game_clients/rpm/ggz-gtk-lapocha.spec, /cvsroot/ggz/ggz/game_clients/rpm/ggz-gtk-netspades.spec, /cvsroot/ggz/ggz/game_clients/rpm/ggz-gtk-reversi.spec, /cvsroot/ggz/ggz/game_clients/rpm/ggz-gtk-tictactoe.spec:
+	- Finished up with RPM spec files for the rest of the games
+
+	* /cvsroot/ggz/ggz/game_clients/rpm/ggz-gtk-ccheckers.spec:
+	- RPM spec file for individual install of Chinese Checkers
+
+	* /cvsroot/ggz/ggz/game_clients/ggz-gtk-chess.spec, /cvsroot/ggz/ggz/game_clients/ggz-gtk-games.spec, /cvsroot/ggz/ggz/game_clients/rpm/ggz-gtk-chess.spec, /cvsroot/ggz/ggz/game_clients/rpm/ggz-gtk-games.spec:
+	- Before I go too far... move spec files into a subdir so they don't clog
+	  up the source root too much
+
+	* /cvsroot/ggz/ggz/game_clients/.cvsignore:
+	- Get rid of annoying 'package' CVS error
+
+	* /cvsroot/ggz/ggz/game_clients/chess/.cvsignore, /cvsroot/ggz/ggz/game_clients/chinese-checkers/.cvsignore, /cvsroot/ggz/ggz/game_clients/combat/.cvsignore, /cvsroot/ggz/ggz/game_clients/dots/.cvsignore, /cvsroot/ggz/ggz/game_clients/hastings/.cvsignore, /cvsroot/ggz/ggz/game_clients/lapocha/.cvsignore, /cvsroot/ggz/ggz/game_clients/reversi/.cvsignore, /cvsroot/ggz/ggz/game_clients/spades/.cvsignore, /cvsroot/ggz/ggz/game_clients/tictactoe/.cvsignore:
+	- Get rid of annoying module.dsc cvs errors
+
+	* /cvsroot/ggz/ggz/game_clients/ggz-gtk-chess.spec:
+	- RPM spec file to install just chess
+
+	* /cvsroot/ggz/ggz/game_clients/configure.in, /cvsroot/ggz/ggz/game_clients/ggz-gtk-games.spec:
+	- Rewrote the package specifier for individual game packages so it shows up
+	  ggz-gtk-gamename instead of just Gamename
+	- Forgot the uninstall script for ggz-gtk-games.spec :(
+
+	* /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am, /cvsroot/ggz/ggz/game_clients/tictactoe/module.dsc, /cvsroot/ggz/ggz/game_clients/tictactoe/module.dsc.in, /cvsroot/ggz/ggz/game_clients/chess/Makefile.am, /cvsroot/ggz/ggz/game_clients/chess/module.dsc, /cvsroot/ggz/ggz/game_clients/chess/module.dsc.in, /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am, /cvsroot/ggz/ggz/game_clients/chinese-checkers/module.dsc, /cvsroot/ggz/ggz/game_clients/chinese-checkers/module.dsc.in, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/module.dsc, /cvsroot/ggz/ggz/game_clients/combat/module.dsc.in, /cvsroot/ggz/ggz/game_clients/configure.in, /cvsroot/ggz/ggz/game_clients/dots/Makefile.am, /cvsroot/ggz/ggz/game_clients/dots/module.dsc, /cvsroot/ggz/ggz/game_clients/dots/module.dsc.in, /cvsroot/ggz/ggz/game_clients/ggz-gtk-games.spec, /cvsroot/ggz/ggz/game_clients/hastings/Makefile.am, /cvsroot/ggz/ggz/game_clients/hastings/module.dsc, /cvsroot/ggz/ggz/game_clients/hastings/module.dsc.in, /cvsroot/ggz/ggz/game_clients/lapocha/Makefile.am, /cvsroot/ggz/ggz/game_clients/lapocha/module.dsc, /cvsroot/ggz/ggz/game_clients/lapocha/module.dsc.in, /cvsroot/ggz/ggz/game_clients/reversi/Makefile.am, /cvsroot/ggz/ggz/game_clients/reversi/module.dsc, /cvsroot/ggz/ggz/game_clients/reversi/module.dsc.in, /cvsroot/ggz/ggz/game_clients/spades/Makefile.am, /cvsroot/ggz/ggz/game_clients/spades/module.dsc, /cvsroot/ggz/ggz/game_clients/spades/module.dsc.in:
+	- Game module.dsc files -> module.dsc.in
+	- Put full game path into module.dsc at configure time
+	- Distribute module.dsc.in rather than module.dsc in games
+
+	- Wrote RPM spec file for mega-game pack (full install)
+
+2001-04-13  bugg  <bugg@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/board.c:
+	Properly draw the colors of the squares on the board.
+
+2001-04-13  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/board.c, /cvsroot/ggz/ggz/game_clients/chess/callbacks.c, /cvsroot/ggz/ggz/game_clients/chess/game.c:
+	- Fixed a *HUGE* bug with the way the Chess module handled the game board (it was completely different from the way cgc handled it... ops! :) )
+
+2001-04-12  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/options_dlg.c, /cvsroot/ggz/ggz/game_clients/reversi/options_dlg.h:
+	- Removed the "background pixmap" button, as it was causing some compile errors (besides, it isn't implemented yet)
+
+2001-04-03  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.c:
+	- Rewrote directory scan code to always use stat() to determine directories
+	  the dirent information doesn't appear to always work
+
+2001-04-03  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/configure.in, /cvsroot/ggz/ggz/game_clients/Makefile.am, /cvsroot/ggz/ggz/game_clients/package.in:
+	- New configure option '--with-game' allows you to select a single
+	  game for building and distribution
+
+	* /cvsroot/ggz/ggz/game_clients/spades/module.dsc:
+	- Delete extra "Name" line
+
+	* /cvsroot/ggz/ggz/game_clients/spades/Makefile.am, /cvsroot/ggz/ggz/game_clients/spades/module.dsc, /cvsroot/ggz/ggz/game_clients/spades/spades.dsc, /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am, /cvsroot/ggz/ggz/game_clients/tictactoe/module.dsc, /cvsroot/ggz/ggz/game_clients/tictactoe/ttt.dsc:
+	- Rename spades and ttt description file to follow convention of
+	  "module.dsc"
+
+2001-04-03  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.c:
+	- Fix for holes with inner transparency, recopy from background
+
+2001-04-02  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/glade/dlg_prefs.glade, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_cb.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Makefile.am, /cvsroot/ggz/ggz/game_clients/chinese-checkers/prefs_cb.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/prefs_cb.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/prefs_dlg.c:
+	- Pixmaps now install under GGZDATADIR
+	- Build a list of themes found in theme directory
+	- Select theme from a list by name rather than absolute pathname
+
+2001-04-01  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/main.c, /cvsroot/ggz/ggz/game_clients/combat/map.c, /cvsroot/ggz/ggz/game_clients/combat/maps/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/Makefile.am:
+	- Now using GGZDATADIR instead of GAMEDIR for maps and pixmaps
+
+2001-03-31  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/configure.in:
+	- Get GAMEDIR and GGZDATADIR from ggz-config so that files get
+	  installed in the right places
+
+2001-03-31  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/module.dsc:
+	- Changed protocol version back to three digits to match server version
+
+2001-03-28  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/configure.in:
+	- Equality test is '=' not '=='
+
+2001-03-28  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Makefile.am:
+	- added Dragon and Electric for installation and distribution
+
+2001-03-27  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Electric/purple.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Electric/red.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Electric/yellow.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Dragon/blue.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Dragon/board.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Dragon/cyan.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Dragon/green.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Dragon/hole.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Dragon/purple.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Dragon/red.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Dragon/yellow.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Electric/blue.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Electric/board.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Electric/cyan.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Electric/green.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Electric/hole.xpm:
+	- Thanks to Jonas Ström <noceur_metal@hotmail.com>
+
+2001-03-27  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/Makefile.am, /cvsroot/ggz/ggz/game_clients/spades/Makefile.am, /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am, /cvsroot/ggz/ggz/game_clients/hastings/hastings.dsc, /cvsroot/ggz/ggz/game_clients/hastings/module.dsc, /cvsroot/ggz/ggz/game_clients/lapocha/Makefile.am, /cvsroot/ggz/ggz/game_clients/chess/Makefile.am, /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am, /cvsroot/ggz/ggz/game_clients/dots/Makefile.am, /cvsroot/ggz/ggz/game_clients/hastings/Makefile.am, /cvsroot/ggz/ggz/game_clients/acconfig.h, /cvsroot/ggz/ggz/game_clients/AUTHORS, /cvsroot/ggz/ggz/game_clients/autogen.sh, /cvsroot/ggz/ggz/game_clients/ChangeLog, /cvsroot/ggz/ggz/game_clients/configure.in, /cvsroot/ggz/ggz/game_clients/COPYING, /cvsroot/ggz/ggz/game_clients/.cvsignore, /cvsroot/ggz/ggz/game_clients/INSTALL, /cvsroot/ggz/ggz/game_clients/NEWS, /cvsroot/ggz/ggz/game_clients/README:
+	- Added autoconf/automake stuff now that the game modules have beeb
+	  split off
+	- Look for install ggzcore and ggz-config
+	- Converted hastings to new .dsc file format
+
+2001-03-25  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/kdots/Dot/dots.cpp, /cvsroot/ggz/ggz/game_clients/kdots/Dot/dots.h, /cvsroot/ggz/ggz/game_clients/kdots/Dot/Makefile, /cvsroot/ggz/ggz/game_clients/kdots/Dot/qdots.cpp, /cvsroot/ggz/ggz/game_clients/kdots/Dot/qdots.h, /cvsroot/ggz/ggz/game_clients/kdots/Dot/test.cpp, /cvsroot/ggz/ggz/game_clients/kdots/Dot/vdots.cpp, /cvsroot/ggz/ggz/game_clients/kdots/Dot/vdots.h, /cvsroot/ggz/ggz/game_clients/kdots/kdots_about.cpp, /cvsroot/ggz/ggz/game_clients/kdots/kdots_about.h, /cvsroot/ggz/ggz/game_clients/kdots/kdots.cpp, /cvsroot/ggz/ggz/game_clients/kdots/kdots.h, /cvsroot/ggz/ggz/game_clients/kdots/kdots_help.cpp, /cvsroot/ggz/ggz/game_clients/kdots/kdots_help.h, /cvsroot/ggz/ggz/game_clients/kdots/kdots_options.cpp, /cvsroot/ggz/ggz/game_clients/kdots/kdots_options.h, /cvsroot/ggz/ggz/game_clients/kdots/main.cpp, /cvsroot/ggz/ggz/game_clients/kdots/Makefile:
+	- Connect the Dots for KDE - client files
+	- including C++ Dots classes
+	- game is working on the client side
+
+2001-03-17  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/glade/dlg_options.glade:
+	- Fixed some spelling errors
+
+	* /cvsroot/ggz/ggz/game_clients/combat/map.c:
+	- Fixed a really dumb bug that wasn't letting the maps being saved (used || as a binary operator, instead of a single |)
+
+2001-03-17  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am, /cvsroot/ggz/ggz/game_clients/dots/Makefile.am, /cvsroot/ggz/ggz/game_clients/reversi/Makefile.am, /cvsroot/ggz/ggz/game_clients/spades/Makefile.am:
+	- Converted libggzcore into a libtool shared library
+	- Converted the included libeasysock into a non-installed libtool
+	  convenience library
+	- Various Makefile changes to support the above
+
+2001-03-17  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/dlg_about.c, /cvsroot/ggz/ggz/game_clients/dots/module.dsc:
+	- Version bump - Dots is now version 0.0.2
+
+	* /cvsroot/ggz/ggz/game_clients/chess/module.dsc, /cvsroot/ggz/ggz/game_clients/chinese-checkers/module.dsc, /cvsroot/ggz/ggz/game_clients/combat/module.dsc, /cvsroot/ggz/ggz/game_clients/dots/module.dsc, /cvsroot/ggz/ggz/game_clients/lapocha/module.dsc, /cvsroot/ggz/ggz/game_clients/reversi/module.dsc, /cvsroot/ggz/ggz/game_clients/spades/spades.dsc, /cvsroot/ggz/ggz/game_clients/tictactoe/ttt.dsc:
+	- In all *.dsc files: ExecPath -> CommandLine
+
+2001-03-16  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/Makefile.am, /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/maps/Makefile.am, /cvsroot/ggz/ggz/game_clients/dots/Makefile.am, /cvsroot/ggz/ggz/game_clients/lapocha/Makefile.am, /cvsroot/ggz/ggz/game_clients/reversi/Makefile.am, /cvsroot/ggz/ggz/game_clients/spades/Makefile.am, /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am:
+	- Updated RPM spec file to use the right filenames for binaries
+	- Must call ggz-config from the source build directories since it won't
+	  be installed in the path if using DESTDIR
+	- combat maps needed to be copied to DESTDIR
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/maps/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/Makefile.am:
+	- The last of the stragglers that need to be in the dist
+	- tarball will now configure, make and make install
+
+	* /cvsroot/ggz/ggz/game_clients/chess/libcgc/Makefile.am, /cvsroot/ggz/ggz/game_clients/chess/Makefile.am, /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am, /cvsroot/ggz/ggz/game_clients/hastings/Makefile.am:
+	- More Makefile.am fixes - mostly missing xpm files
+
+2001-03-16  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/gathering/gathering.cpp, /cvsroot/ggz/ggz/game_clients/gathering/gathering.h, /cvsroot/ggz/ggz/game_clients/gathering/main.cpp, /cvsroot/ggz/ggz/game_clients/gathering/Makefile, /cvsroot/ggz/ggz/game_clients/gathering/maps/handcrafted.22x22.map, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/Makefile, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/Netmap, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/Netmap.cpp, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/NetmapMap, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/NetmapMap.cpp, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/NetmapResource, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/NetmapResource.cpp, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/NetmapResourceFile, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/NetmapResourceFileBinary, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/NetmapResourceFileBinary.cpp, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/NetmapResourceFile.cpp, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/NetmapResourceFileText, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/NetmapResourceFileText.cpp, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/NetmapResourceSocket, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/NetmapResourceSocket.cpp, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/Nvtile, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/Nvtile.cpp, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/StringExt, /cvsroot/ggz/ggz/game_clients/gathering/netmap-copy/StringExt.cpp, /cvsroot/ggz/ggz/game_clients/gathering/qnetmap.cpp, /cvsroot/ggz/ggz/game_clients/gathering/qnetmap.h, /cvsroot/ggz/ggz/game_clients/gathering/qnetmapsample.cpp, /cvsroot/ggz/ggz/game_clients/gathering/qnetmapsample.h, /cvsroot/ggz/ggz/game_clients/gathering/sprites/boy.png, /cvsroot/ggz/ggz/game_clients/gathering/sprites/dark.png, /cvsroot/ggz/ggz/game_clients/gathering/sprites/ddown.png, /cvsroot/ggz/ggz/game_clients/gathering/sprites/dld.png, /cvsroot/ggz/ggz/game_clients/gathering/sprites/dleft.png, /cvsroot/ggz/ggz/game_clients/gathering/sprites/dlu.png, /cvsroot/ggz/ggz/game_clients/gathering/sprites/drd.png, /cvsroot/ggz/ggz/game_clients/gathering/sprites/dright.png, /cvsroot/ggz/ggz/game_clients/gathering/sprites/dru.png, /cvsroot/ggz/ggz/game_clients/gathering/sprites/dup.png, /cvsroot/ggz/ggz/game_clients/gathering/sprites/grass.png:
+	- First check in of GGZ Gathering (client code)
+	- Including copy of Netmap 0.2.1
+	- Makefiles are not using autoconf yet
+	- To work, map must be copied to /tmp/random.map
+	- more to come...
+
+2001-03-15  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/map.c:
+	- map.c includes <ggzcore.h>, not "ggzcore.h"
+
+2001-03-15  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/hastings/Makefile.in:
+	- Makefile.in files should not be in CVS
+
+	* /cvsroot/ggz/ggz/game_clients/chess/Makefile.am, /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am, /cvsroot/ggz/ggz/game_clients/dots/Makefile.am, /cvsroot/ggz/ggz/game_clients/hastings/Makefile.am, /cvsroot/ggz/ggz/game_clients/hastings/Makefile.in, /cvsroot/ggz/ggz/game_clients/lapocha/Makefile.am, /cvsroot/ggz/ggz/game_clients/reversi/Makefile.am:
+	First set of changes to get 'make dist' working
+	(though I'm sure it's not yet complete)
+
+	- A lot of Makefile.am cleanups - missing and extraneous file inclusions fixed
+	- "po" and "intl" directories MUST be in Makefile.am and NOT in configure.in
+
+2001-03-15  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/spades/Makefile.am, /cvsroot/ggz/ggz/game_clients/spades/spades.dsc, /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am, /cvsroot/ggz/ggz/game_clients/tictactoe/ttt.dsc:
+	- Fixed up spades and ttt to use ggz-config for installing game module
+	  information
+
+2001-03-14  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/dlg_about.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/glade/dlg_about.glade:
+	- Fixed segfault when clicking on the army list before the game had started
+	- Added a 5 pixel padding around some dialogs
+	- Fixed some bugs related to random setup
+
+	* /cvsroot/ggz/ggz/game_clients/combat/pixmaps/Makefile.am:
+	- Added changes to make RPM generation easier
+
+2001-03-14  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/Makefile.am, /cvsroot/ggz/ggz/game_clients/chess/Makefile.am, /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am, /cvsroot/ggz/ggz/game_clients/dots/Makefile.am, /cvsroot/ggz/ggz/game_clients/lapocha/Makefile.am:
+	- All calls to ggz-config should use the '-D' option
+	- ggz-config now uses -D to make it build the config file in $DESTDIR
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Makefile.am:
+	- This change will make RPM generation easier one day
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am:
+	- Forgot to check in configure.in with the big CC themes update
+	- Fixed the extra \ in CC's Makefile.am
+
+2001-03-13  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/about_dlg.c, /cvsroot/ggz/ggz/game_clients/reversi/main.c, /cvsroot/ggz/ggz/game_clients/reversi/main_win.c, /cvsroot/ggz/ggz/game_clients/reversi/options_dlg.c:
+	- Added a game_update_scores when getting sync (when returning to a table, it wasn't updating the score until a move was made)
+	- All windows are now non-resizable, as they should be
+	- Changed the title from the options dialog (was "dialog1")
+	- Added some padding around the options and about dialogs
+
+2001-03-12  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am:
+	- Removed *.xpm files from Makefile.am, even though automake didn't complain
+	  about the fact they weren't there
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/glade/dlg_prefs.glade:
+	- Glade file for preferences dialog
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/cyan.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/glade/dlg_main.glade, /cvsroot/ggz/ggz/game_clients/chinese-checkers/green.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/hole.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_cb.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_cb.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_dlg.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_dlg.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/.cvsignore, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/default/blue.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/default/board.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/default/cyan.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/default/green.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/default/hole.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/default/purple.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/default/red.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/default/yellow.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/Makefile.am, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/templates/blue.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/templates/board.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/templates/cyan.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/templates/green.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/templates/hole.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/templates/purple.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/templates/README, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/templates/red.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/pixmaps/templates/yellow.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/prefs_cb.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/prefs_cb.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/prefs_dlg.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/prefs_dlg.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/purple.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/red.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/yellow.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/blue.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/board.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am:
+	- Added preferences dialog
+	- Added option to beep when it's your move
+	- Added custom board theme design support to Chinese Checkers
+	- If theme fails to load, fall back on 'default' theme
+	- This is a really big commit - hopefully I didn't miss anything :)
+
+2001-03-11  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.dsc, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/module.dsc:
+	- The .dsc file uses the new format
+	- The module installs nicely with a "make install"
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/Makefile.am, /cvsroot/ggz/ggz/game_clients/reversi/module.dsc, /cvsroot/ggz/ggz/game_clients/reversi/reversi.dsc:
+	- The .dsc files use the new format
+	- The module installs just like Rich's modules
+
+	* /cvsroot/ggz/ggz/game_clients/chess/chess.dsc, /cvsroot/ggz/ggz/game_clients/chess/Makefile.am, /cvsroot/ggz/ggz/game_clients/chess/module.dsc:
+	- The .dsc file uses the new format (with [ModuleInfo])
+	- The module installs nicely, just like the Rich modules (ggz-config --install --fromfile=module.dsc --force)
+
+2001-03-11  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/lapocha.dsc, /cvsroot/ggz/ggz/game_clients/lapocha/Makefile.am, /cvsroot/ggz/ggz/game_clients/lapocha/module.dsc:
+	- lapocha.dsc -> module.dsc - converted to new format
+	- Makefile.am patched to provide make install and uninstall
+
+	* /cvsroot/ggz/ggz/game_clients/dots/dots.dsc, /cvsroot/ggz/ggz/game_clients/dots/Makefile.am, /cvsroot/ggz/ggz/game_clients/dots/module.dsc:
+	- dots.dsc -> module.dsc converted to new format
+	- Makefile.am now supports make install and uninstall
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am:
+	- Added uninstall ability to game package
+	- A blank ggz.modules file is now installed and uninstalled with ggzcore
+	  so that installations can occur w/o a preexisting modules file
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/ccheckers.dsc, /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am, /cvsroot/ggz/ggz/game_clients/chinese-checkers/module.dsc:
+	- ccheckers.dsc -> module.dsc
+	- Makefile.am - load fromfile from module.dsc
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/ccheckers.dsc, /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am:
+	ggz-config:
+	- Accept module name from the fromfile so --modname is not necessary
+	- Look in section [ModuleInfo] for information in the fromfile
+
+	chinese-checkers:
+	- Makefile.am - --modname no longer necessary
+	- ccheckers.dsc - changed section id to [ModuleInfo] and added Name= param
+
+2001-03-10  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am:
+	- DOH! I should use --force so we don't get any errors
+
+2001-03-10  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/chess.dsc:
+	- Updated the .dsc file to the new format
+
+2001-03-10  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/ccheckers.dsc, /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am:
+	- patched up the .dsc file to proper format
+	- updated Makefile to call ggz-config to put game info in ggz-modules
+
+2001-03-10  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/map.c:
+	- Fixed a stupid bug in the map loading stuff
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.dsc, /cvsroot/ggz/ggz/game_clients/combat/game.c:
+	- Updated the .dsc file to the new format
+	- Changed the GAMEWEBPAGE declaration to point to the gamehelp page on ggz's website
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/reversi.dsc:
+	- Updated the .dsc format for using with ggz-config
+
+2001-03-05  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/glade/popup_dialogs.glade, /cvsroot/ggz/ggz/game_clients/chess/popup.c:
+	- Created a game_popup function
+	- When receives the time option, displays a descriptive msgbox telling what the option was, and how much time each player have
+	- Added better tooltips for the options in the clock dialog
+
+	* /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h:
+	- Removed definition of GGZ_SEAT_OPEN and GGZ_SEAT_BOT from game.h, and included ggzcore.h in game.c too
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/game.h:
+	- Removed definition of GGZ_SEAT_OPEN from game.h, since it is already defined in ggzcore.h
+
+2001-03-04  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/hastings/Makefile.in, /cvsroot/ggz/ggz/game_clients/reversi/main_win.c:
+	- Moved ggzcore.h above game.h so the build works again.
+
+2001-03-04  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main.c:
+	- Added support to client for leave/rejoin
+	- Client requests resync on move requests during invalid server state
+	- Client dies on most invalid moves - ones indicating a broken client
+	- Player name display now issues leave/rejoin statusbar messages
+
+2001-03-03  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/board.h, /cvsroot/ggz/ggz/game_clients/chess/callbacks.c, /cvsroot/ggz/ggz/game_clients/chess/callbacks.h, /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/glade/ggz.chess.glade, /cvsroot/ggz/ggz/game_clients/chess/main_win.c, /cvsroot/ggz/ggz/game_clients/chess/net.c, /cvsroot/ggz/ggz/game_clients/chess/board.c:
+	- Added a "Auto call flag" option
+	- Changed the winning messages to include the players name, instead of "Player
+	  1", "Player 2"
+	- Only starts the timer after both players have moved, instead of after the
+	  first move
+
+2001-03-02  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/board.c, /cvsroot/ggz/ggz/game_clients/chess/board.h:
+	- Fixed a bug with the drag and drop stuff (I was calling gdk_pixmap|bitmap_ref for every drag and drop, instead of calling it only once, when the images was loaded)
+
+2001-02-22  bugg  <bugg@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/libcgc/movecheck.c:
+	Improve handling of checking to see if we're
+	entering check.
+
+2001-02-20  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/board.h, /cvsroot/ggz/ggz/game_clients/chess/chess.h, /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/game.h, /cvsroot/ggz/ggz/game_clients/chess/glade/ggz.chess.glade, /cvsroot/ggz/ggz/game_clients/chess/main_win.c, /cvsroot/ggz/ggz/game_clients/chess/net.c, /cvsroot/ggz/ggz/game_clients/chess/net.h, /cvsroot/ggz/ggz/game_clients/chess/board.c:
+	- Disabled the styles on the info box for now, so the "No names" bug should be gone. (as I couldn't reproduce it, I think this is the best solution by now)
+	- Client clock now works
+	- Added a menu to request a time update from the server (useful for Server clock)
+	- When using client clock, every 15 seconds send a MSG_UPDATE to the server, telling that in the last 15 seconds he hasn't done anything. (to avoid player that are out of time just refusing to move, and so don't telling the server that they are out of time)
+
+2001-02-19  bugg  <bugg@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/libcgc/movecheck.c, /cvsroot/ggz/ggz/game_clients/chess/libcgc/movecheck.h:
+	Fix the bugs that were reported to me by jzaun
+	Namely, interposition code, en passant code, and
+	contact mate code
+
+2001-02-19  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/board.c, /cvsroot/ggz/ggz/game_clients/chess/board.h, /cvsroot/ggz/ggz/game_clients/chess/chess.h, /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/game.h, /cvsroot/ggz/ggz/game_clients/chess/glade/ggz.chess.glade, /cvsroot/ggz/ggz/game_clients/chess/glade/popup_dialogs.glade, /cvsroot/ggz/ggz/game_clients/chess/main.c, /cvsroot/ggz/ggz/game_clients/chess/main_win.c, /cvsroot/ggz/ggz/game_clients/chess/net.c, /cvsroot/ggz/ggz/game_clients/chess/net.h, /cvsroot/ggz/ggz/game_clients/chess/popup.c:
+	- Popups the clock dialog instead of sending "No clock"
+	- Server clock is working
+	- Added a "Call flag" menu to end a game when your oponent has run out of time
+	- The info box (on the top right) cronometer works ok
+
+	* /cvsroot/ggz/ggz/game_clients/chess/board.c, /cvsroot/ggz/ggz/game_clients/chess/board.h, /cvsroot/ggz/ggz/game_clients/chess/callbacks.c, /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/glade/popup_dialogs.glade, /cvsroot/ggz/ggz/game_clients/chess/net.c, /cvsroot/ggz/ggz/game_clients/chess/net.h, /cvsroot/ggz/ggz/game_clients/chess/popup.c, /cvsroot/ggz/ggz/game_clients/chess/popup.h:
+	- Promoting of pieces now work
+	- The protocol had to be changed, so this version is not backwards compatible
+	  with the previous one
+
+	* /cvsroot/ggz/ggz/game_clients/chess/board.c, /cvsroot/ggz/ggz/game_clients/chess/board.h, /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/glade/ggz.chess.glade, /cvsroot/ggz/ggz/game_clients/chess/main_win.c:
+	- Changed the last_moves column from a GtkList to a GtkText
+	- Show the last moves on screen (using cgc's notation for now, useful for
+	  debugging)
+
+2001-02-18  bugg  <bugg@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/libcgc/movecheck.c:
+	I'm an idiot.  My brain has fried from cgc.
+	Fix the bug introduced in previous commit.
+
+	* /cvsroot/ggz/ggz/game_clients/chess/libcgc/movecheck.c:
+	Fix the bug introduced in the last commit.
+
+	* /cvsroot/ggz/ggz/game_clients/chess/libcgc/movecheck.c:
+	Fix the one bug from the last commit.
+
+	* /cvsroot/ggz/ggz/game_clients/chess/libcgc/movecheck.c:
+	Fix (haha, Fix- more like try to fix) a bug
+	that caused mates in which there was a piece that
+	would have been able to interpose if it wasn't pinned
+	to be recognised as checks.
+
+	I haven't tested this with the game that broke it,
+	but the patch has passed regression testing- and
+	everyone (jzaun, perdig) wants me to commit in the form
+	that it is.
+
+2001-02-18  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/game.h:
+	- Fixed a missing declaration bug
+
+	* /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/glade/.cvsignore, /cvsroot/ggz/ggz/game_clients/chess/glade/popup_dialogs.glade, /cvsroot/ggz/ggz/game_clients/chess/popup.c, /cvsroot/ggz/ggz/game_clients/chess/popup.h:
+	- Changed message of the draw dialog to a much longer and descriptive one
+	- First sketchs of the clock option dialog
+
+	* /cvsroot/ggz/ggz/game_clients/combat/glade/dlg_about.glade, /cvsroot/ggz/ggz/game_clients/combat/maps/.cvsignore, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/.cvsignore, /cvsroot/ggz/ggz/game_clients/chess/.cvsignore, /cvsroot/ggz/ggz/game_clients/chess/glade/.cvsignore, /cvsroot/ggz/ggz/game_clients/chess/libcgc/.cvsignore, /cvsroot/ggz/ggz/game_clients/combat/glade/.cvsignore, /cvsroot/ggz/ggz/game_clients/combat/random_attack_matrix, /cvsroot/ggz/ggz/game_clients/reversi/glade/.cvsignore, /cvsroot/ggz/ggz/game_clients/reversi/glade/options_dlg.glade:
+	- Updated a couple of .cvsignore (all those '?' were getting on my nerve)
+	- Added the glade files
+	- Added the matrix showing how random attack works in combat
+
+2001-02-17  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/callbacks.c:
+	- Quick hack so that it will compile
+
+	* /cvsroot/ggz/ggz/game_clients/chess/board.c, /cvsroot/ggz/ggz/game_clients/chess/board.h, /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/game.h, /cvsroot/ggz/ggz/game_clients/chess/glade/ggz.chess.glade, /cvsroot/ggz/ggz/game_clients/chess/main_win.c, /cvsroot/ggz/ggz/game_clients/chess/net.c:
+	- Fixed bug when displaying time option (was displaying a weird number instead of 0)
+	- Players names show up in the main window (instead of "White" and "Black")
+	- Player's labels are painted with different colors (black for the black player, a gray for white -> pure white was impossible to read)
+	- Draw a small arrow besides the player's name to show the current turn
+
+2001-02-17  bugg  <bugg@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/libcgc/board.c, /cvsroot/ggz/ggz/game_clients/chess/libcgc/cgc.c, /cvsroot/ggz/ggz/game_clients/chess/libcgc/cgc.h, /cvsroot/ggz/ggz/game_clients/chess/libcgc/games.c, /cvsroot/ggz/ggz/game_clients/chess/libcgc/movecheck.c, /cvsroot/ggz/ggz/game_clients/chess/libcgc/movecheck.h:
+	Sync libcgc to fischer's version.
+	Hopefully this won't break anything ^^; (should be no API changes)
+
+2001-02-14  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/glade/popup_dialogs.glade, /cvsroot/ggz/ggz/game_clients/chess/board.c, /cvsroot/ggz/ggz/game_clients/chess/board.h, /cvsroot/ggz/ggz/game_clients/chess/callbacks.h, /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/glade/ggz.chess.glade, /cvsroot/ggz/ggz/game_clients/chess/main_win.c, /cvsroot/ggz/ggz/game_clients/chess/Makefile.am, /cvsroot/ggz/ggz/game_clients/chess/net.c, /cvsroot/ggz/ggz/game_clients/chess/net.h, /cvsroot/ggz/ggz/game_clients/chess/popup.c, /cvsroot/ggz/ggz/game_clients/chess/popup.h:
+	- Receiving a REQ_DRAW from the server popups a dialog asking if you want to
+	  draw the game
+	- Added a "Request draw" submenu that will request the server for a draw
+
+2001-02-12  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/board.c, /cvsroot/ggz/ggz/game_clients/chess/board.h, /cvsroot/ggz/ggz/game_clients/chess/callbacks.c, /cvsroot/ggz/ggz/game_clients/chess/chess.h, /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/net.c:
+	- When moving a piece, highlight the place where it currently is and the place
+	  where it is over, if it's a valid move. (ie, you can easily know if your move
+	  is valid)
+	- Check for validity of a move before sending it (to avoid unecessary traffic)
+	- Don't allow the user to drag his opponents pieces (duh!)
+	- Tells the user if his opponent is in check, or highlight his own king if he
+	  is on check
+
+2001-02-11  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/game.h:
+	- Added some status bar messages for user feedback
+
+	* /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/net.c, /cvsroot/ggz/ggz/game_clients/chess/net.h:
+	- Dragging and dropping a piece now sends the move to the server
+	- Receives a MSG_MOVE and update the board
+	- Handles MSG_GAMEOVER
+	- In short, the game is now playable!
+
+2001-02-10  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/callbacks.c:
+	- Fixed a bug with the drag drop
+
+	* /cvsroot/ggz/ggz/game_clients/chess/board.c, /cvsroot/ggz/ggz/game_clients/chess/board.h, /cvsroot/ggz/ggz/game_clients/chess/callbacks.c, /cvsroot/ggz/ggz/game_clients/chess/callbacks.h, /cvsroot/ggz/ggz/game_clients/chess/chess.h, /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/game.h, /cvsroot/ggz/ggz/game_clients/chess/glade/ggz.chess.glade, /cvsroot/ggz/ggz/game_clients/chess/main.c, /cvsroot/ggz/ggz/game_clients/chess/main_win.c, /cvsroot/ggz/ggz/game_clients/chess/net.c, /cvsroot/ggz/ggz/game_clients/chess/net.h:
+	- Handles MSG_PLAYERS (Get the players names)
+	- Handles REQ_TIME (answer with a time option 0, ie, no clock, for now)
+	- Handles MNS_START (to start the game)
+	- Drag and drop of pieces work (nothing is sent to the server yet, though)
+
+2001-02-09  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/bitmaps/bishop_b.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/bishop_b.xpm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/bishop_w.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/bishop_w.xpm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/king_b.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/king_b.xpm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/king_w.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/king_w.xpm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/knight_b.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/knight_b.xpm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/knight_w.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/knight_w.xpm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/pawn_b.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/pawn_b.xpm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/pawn_w.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/pawn_w.xpm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/queen_b.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/queen_b.xpm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/queen_w.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/queen_w.xpm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/rook_b.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/rook_b.xpm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/rook_w.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/rook_w.xpm, /cvsroot/ggz/ggz/game_clients/chess/board.c, /cvsroot/ggz/ggz/game_clients/chess/board.h, /cvsroot/ggz/ggz/game_clients/chess/callbacks.c, /cvsroot/ggz/ggz/game_clients/chess/chess.h, /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/game.h, /cvsroot/ggz/ggz/game_clients/chess/net.c:
+	- Changed all images from xbm to xpm (so that I can use transparency and keep
+	  the images with two colors). Besides, any better looking xpms are welcomed.
+	  (to test them, just overwrite the existing ones)
+	- Draw the pieces on the board (it will draw depending on the current board
+	  state. As we can't move yet, the only thing you can see is the initial setup,
+	  but trust me)
+	- Get the seat information from the server. Started doing the event system
+
+	* /cvsroot/ggz/ggz/game_clients/chess/bitmaps/bishop_b.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/bishop_w.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/king_b.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/king_w.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/knight_b.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/knight_w.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/pawn_b.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/pawn_w.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/queen_b.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/queen_w.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/rook_b.xbm, /cvsroot/ggz/ggz/game_clients/chess/bitmaps/rook_w.xbm, /cvsroot/ggz/ggz/game_clients/chess/board.c, /cvsroot/ggz/ggz/game_clients/chess/board.h, /cvsroot/ggz/ggz/game_clients/chess/callbacks.c, /cvsroot/ggz/ggz/game_clients/chess/chess.h, /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/game.h, /cvsroot/ggz/ggz/game_clients/chess/glade/ggz.chess.glade, /cvsroot/ggz/ggz/game_clients/chess/main.c, /cvsroot/ggz/ggz/game_clients/chess/main_win.c, /cvsroot/ggz/ggz/game_clients/chess/Makefile.am:
+	- Added bitmaps (using the xboard's ones by now)
+	- Displays the board background (squares and lines) and loads the pieces (but
+	  doesn't displays them)
+
+2001-02-08  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chess/libcgc/board.c, /cvsroot/ggz/ggz/game_clients/chess/libcgc/board.h, /cvsroot/ggz/ggz/game_clients/chess/libcgc/cgc.c, /cvsroot/ggz/ggz/game_clients/chess/libcgc/cgc.h, /cvsroot/ggz/ggz/game_clients/chess/libcgc/games.c, /cvsroot/ggz/ggz/game_clients/chess/libcgc/games.h, /cvsroot/ggz/ggz/game_clients/chess/libcgc/Makefile.am, /cvsroot/ggz/ggz/game_clients/chess/libcgc/movecheck.c, /cvsroot/ggz/ggz/game_clients/chess/libcgc/movecheck.h, /cvsroot/ggz/ggz/game_clients/chess/board.c, /cvsroot/ggz/ggz/game_clients/chess/board.h, /cvsroot/ggz/ggz/game_clients/chess/callbacks.c, /cvsroot/ggz/ggz/game_clients/chess/callbacks.h, /cvsroot/ggz/ggz/game_clients/chess/chess.h, /cvsroot/ggz/ggz/game_clients/chess/game.c, /cvsroot/ggz/ggz/game_clients/chess/game.h, /cvsroot/ggz/ggz/game_clients/chess/ggz.c, /cvsroot/ggz/ggz/game_clients/chess/ggz.h, /cvsroot/ggz/ggz/game_clients/chess/glade/ggz.chess.glade, /cvsroot/ggz/ggz/game_clients/chess/main.c, /cvsroot/ggz/ggz/game_clients/chess/main_win.c, /cvsroot/ggz/ggz/game_clients/chess/Makefile.am, /cvsroot/ggz/ggz/game_clients/chess/net.c, /cvsroot/ggz/ggz/game_clients/chess/net.h:
+	- Added a lot of files (the file structure for the module should be this)
+	- It doesn't do much yet, but now we have a lot of files! :)
+
+	* /cvsroot/ggz/ggz/game_clients/chess/glade/ggz.chess.glade, /cvsroot/ggz/ggz/game_clients/chess/callbacks.c, /cvsroot/ggz/ggz/game_clients/chess/callbacks.h, /cvsroot/ggz/ggz/game_clients/chess/chess.dsc, /cvsroot/ggz/ggz/game_clients/chess/ggz.c, /cvsroot/ggz/ggz/game_clients/chess/main.c, /cvsroot/ggz/ggz/game_clients/chess/main_win.c, /cvsroot/ggz/ggz/game_clients/chess/main_win.h, /cvsroot/ggz/ggz/game_clients/chess/Makefile.am, /cvsroot/ggz/ggz/game_clients/chess/support.c, /cvsroot/ggz/ggz/game_clients/chess/support.h:
+	- Initial commit of the chess client
+	- Nothing works now. In fact, be careful when running it, cause it will hang up your old
+	  client
+	- Just a basic interface is implemented. No connections to the server yet
+
+	* /cvsroot/ggz/ggz/game_clients/Makefile.am:
+	- Initial commit of the chess client
+
+2001-02-01  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/confio.h, /cvsroot/ggz/ggz/game_clients/reversi/game.h, /cvsroot/ggz/ggz/game_clients/reversi/lists.c, /cvsroot/ggz/ggz/game_clients/reversi/lists.h, /cvsroot/ggz/ggz/game_clients/reversi/main.c, /cvsroot/ggz/ggz/game_clients/reversi/main_win.c, /cvsroot/ggz/ggz/game_clients/reversi/confio.c, /cvsroot/ggz/ggz/game_clients/reversi/Makefile.am:
+	- Now using ggzcore's confio functions (linking to it, instead of using 4 more
+	  files)
+
+2001-01-31  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/confio.c, /cvsroot/ggz/ggz/game_clients/combat/confio.h, /cvsroot/ggz/ggz/game_clients/combat/lists.c, /cvsroot/ggz/ggz/game_clients/combat/lists.h, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/map.c:
+	- Now using ggzcore's config system (ie, linking to ggzcore instead of having 4
+	  extra files)
+
+2001-01-22  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/main.c:
+	- DOH! Forgot to update filename to use $HOME
+
+	* /cvsroot/ggz/ggz/game_clients/dots/cb_main.c, /cvsroot/ggz/ggz/game_clients/dots/cb_main.h, /cvsroot/ggz/ggz/game_clients/dots/cb_pref.c, /cvsroot/ggz/ggz/game_clients/dots/cb_pref.h, /cvsroot/ggz/ggz/game_clients/dots/dlg_pref.c, /cvsroot/ggz/ggz/game_clients/dots/dlg_pref.h, /cvsroot/ggz/ggz/game_clients/dots/game.c, /cvsroot/ggz/ggz/game_clients/dots/game.h, /cvsroot/ggz/ggz/game_clients/dots/main.c, /cvsroot/ggz/ggz/game_clients/dots/main.h, /cvsroot/ggz/ggz/game_clients/dots/Makefile.am:
+	- Added color preferences dialog to choose screen colors
+	- Store and retrieve screen colors using ggzcore's confio module
+	- Fixed a few minor glitches
+
+2001-01-20  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/hastings/main.c, /cvsroot/ggz/ggz/game_clients/hastings/main_win.c:
+	Fixed little color bug.
+
+2001-01-14  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/dlg_main.c, /cvsroot/ggz/ggz/game_clients/dots/dlg_about.c, /cvsroot/ggz/ggz/game_clients/lapocha/dlg_about.c:
+	- "Gnu Gaming Zone" -> "GGZ Gaming Zone"
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/about_dlg.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/about_dlg.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_cb.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_cb.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_dlg.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_dlg.h:
+	Final cleanups for 0.0.4 release
+
+	- Added a few copyright/license notices
+	- Eliminated all warnings during compilation
+	- Grey out the "Preferences" menu
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/.cvsignore, /cvsroot/ggz/ggz/game_clients/chinese-checkers/glade/.cvsignore:
+	-.cvsignore files added to repository
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/about_dlg.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/about_dlg.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/glade/dlg_about.glade, /cvsroot/ggz/ggz/game_clients/chinese-checkers/glade/dlg_main.glade, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_cb.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_cb.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_dlg.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am:
+	- Added about dialog to Chinese Checkers
+	- Committing glade files to SF for safe-keeping
+
+2001-01-10  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_dlg.c:
+	- Reworked player name display for a top and bottom row of three
+
+2001-01-08  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/hastings/Makefile.in:
+	Removed that file.
+
+	* /cvsroot/ggz/ggz/game_clients/hastings/.cvsignore, /cvsroot/ggz/ggz/game_clients/hastings/dlg_about.c, /cvsroot/ggz/ggz/game_clients/hastings/frame_black.xpm, /cvsroot/ggz/ggz/game_clients/hastings/game.h, /cvsroot/ggz/ggz/game_clients/hastings/hastings.dsc, /cvsroot/ggz/ggz/game_clients/hastings/main.c, /cvsroot/ggz/ggz/game_clients/hastings/main_win.c:
+	Some more updated files.
+
+	* /cvsroot/ggz/ggz/game_clients/hastings/doc/README:
+	A whole bunch of minor updates. Added transparency and more server control.
+
+2001-01-08  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h, /cvsroot/ggz/ggz/game_clients/combat/gtk_player_info.c:
+	- The label with the player name now has the player color as foreground.
+
+2001-01-08  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/board.xpm:
+	- Slashed board.xpm file size and memory usage by reducing to 64 colors
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_dlg.c:
+	- A first stab at player name labels
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.c:
+	- Fixed bug where game_make_move() wasn't returning TRUE for a valid move,
+	  even after sending the valid move to the server
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main.c, /cvsroot/ggz/ggz/game_clients/hastings/Makefile.in:
+	- Added path display routines
+	- Added 1 second delay in server so things don't blink super-quick with AI's
+	- Updated statusbar to pop entries after they are done displaying
+
+2001-01-07  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/callbacks.h, /cvsroot/ggz/ggz/game_clients/combat/combat.glade, /cvsroot/ggz/ggz/game_clients/combat/dlg_about.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_about.h, /cvsroot/ggz/ggz/game_clients/combat/interface.c, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am:
+	- Added about dialog
+
+2001-01-06  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.c:
+	- Fixes the color reporting at game startup
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main.c:
+	- Corrected player move order
+	- Added statusbar messages for movement and game over
+
+2001-01-04  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main.c:
+	+ Fixed game_find_path()
+	+ Server determines end of game and winner
+	+ Clients accept end of game message
+	- No statusbar prompts or anything yet
+
+2001-01-03  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/chinese-checkers/blue.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/board.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/ccheckers.dsc, /cvsroot/ggz/ggz/game_clients/chinese-checkers/cyan.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/display.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/game.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/ggz.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/ggz.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/green.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/hole.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_cb.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_cb.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_dlg.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main_dlg.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/main.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/Makefile.am, /cvsroot/ggz/ggz/game_clients/chinese-checkers/protocol.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/purple.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/red.xpm, /cvsroot/ggz/ggz/game_clients/chinese-checkers/support.c, /cvsroot/ggz/ggz/game_clients/chinese-checkers/support.h, /cvsroot/ggz/ggz/game_clients/chinese-checkers/yellow.xpm, /cvsroot/ggz/ggz/game_clients/Makefile.am:
+	- First semi-playable version of Chinese Checkers
+
+2000-12-31  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/combat.dsc, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/map.c, /cvsroot/ggz/ggz/game_clients/combat/maps/Checkers+Options.5003353, /cvsroot/ggz/ggz/game_clients/combat/maps/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/maps/Plenty, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Cleaned up the debug messages
+	- Changed the version number to 1.0
+	- Added two new maps
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/callbacks.h, /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/combat.glade, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/interface.c, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Added a default yes / no dialog
+	- Added a "Remember enemy units" menu (it replaces the "Hide enemy units" one,
+	  and now it works)
+	- When the options dialog opens, it loads the "Default" map, if some map has
+	  this name
+	- combat_options_describe now supports a quick description, used in the
+	  preview of the map
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/callbacks.h, /cvsroot/ggz/ggz/game_clients/combat/combat.glade, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h, /cvsroot/ggz/ggz/game_clients/combat/interface.c, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- When the user closes or click cancel on the options dialog, it will send a
+	  NULL option string to the server (which means that this player doesn't want
+	  to set up the options)
+	- The "Show Game Options" menu is disable while we don't know the game options
+	- Fixed some gtk errors
+	- The preview_options text is now enclosed in a scrolled widow widget, instead
+	  of having it's own scrollbar
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Added two more options:
+	  Random Setup
+	  Rush Attack
+	- All the 16 options are now implemented
+
+2000-12-30  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Added 3 more options:
+	  Unknown Victor
+	  Silent Offense
+	  Silent Defense
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Added Random Outcome of Attack option
+	- Added a GtkText widget to the preview screen, to show the options of the
+	  selected map
+	- Changed protocol for sending binary options
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/callbacks.h, /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/combat.glade, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/interface.c, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Added a combat_options_describe to combat.[ch], that returns a text with the
+	  current game options
+	- Added a "Show game options" menu that displays the game options (from
+	  combat_options_describe)
+	- If the game has any binary option set, automatically pops up this game
+	  options dialog
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/game.c:
+	- Fixed bug w/ scouts attacking when diagonal move was enabled
+
+2000-12-30  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/hastings/Makefile, /cvsroot/ggz/ggz/game_clients/hastings/Makefile.in:
+	Deleted Makefile, because it doesn't belong here.
+
+2000-12-30  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/hastings/Makefile:
+	- Add the new grubby, useing ggzcore
+
+2000-12-29  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/game.c:
+	- Added 5 options
+	  Super Scout
+	  Diagonal moves
+	  Special Forces Sergeant
+	  Remember enemy units
+	  Hide enemy unit list
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/map.c, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Implemented 5 options
+	  Open Map
+	  One Time Bomb
+	  Terrorist Spy
+	  Moving Bombs
+	  Moving Flags
+	- Map saving/loading also saves/loads the map options
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/glade/dlg_options.glade:
+	- Added interface for the 16 binary game options (disabled, as support for it
+	  on the server is not yet)
+	- The option_string functions on combat.[ch] now correctly sends and receives
+	  the binary options
+
+	* /cvsroot/ggz/ggz/game_clients/combat/glade/dlg_options.glade, /cvsroot/ggz/ggz/game_clients/combat/maps/Bridge.127237, /cvsroot/ggz/ggz/game_clients/combat/maps/Corridors.1483793000, /cvsroot/ggz/ggz/game_clients/combat/maps/In, /cvsroot/ggz/ggz/game_clients/combat/maps/Island, /cvsroot/ggz/ggz/game_clients/combat/maps/Isles.3312569487, /cvsroot/ggz/ggz/game_clients/combat/maps/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/maps/Pipes.1854974081, /cvsroot/ggz/ggz/game_clients/combat/maps/Small.4176275962:
+	- Added more maps to the distribution
+	- Changed one of the proposed options (from wall-like bomb to hide enemy unit
+	  list)
+
+2000-12-28  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/glade/dlg_options.glade, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- New options dialog, with the 16 proposed options
+
+2000-12-24  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/map.c, /cvsroot/ggz/ggz/game_clients/combat/map.h, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Added a ARMY(OPTIONS, TYPE) macro to combat.h to avoid the need to type
+	  OPTIONS->ARMY[OPTIONS->NUMBER][TYPE]. It is used to get the default number of
+	  units of this type for this map
+	- Fixed a lot of bugs
+	  - No more GTK error messages
+	  - No more "Your client must be updated" messages
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- All the options checking stuff is in the combat_options_check function in
+	  combat.[ch]
+	- combat_options_string_read now makes a copy of the options string passed, so
+	  that it can be used after the call
+	- Uses the combat_options_check function to check if it should send the current
+	  options to the server. If it can't, tells the user what has gone wrong (and
+	  doesn't erase the map)
+
+2000-12-23  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- If the current map has a name, window title is not "Combat - Map Name"
+	- The preview dialog now shows the number of units of the map and it's size
+	  (the map editor should be complete now)
+
+	* /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Fixed memory leak on the map editor
+	- Fixed some minor quirks in the map editor interface
+
+2000-12-21  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Map editor now shows a preview of the selected map
+
+	* /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Name of the map is now sent over to the other player, so that he can have an
+	  idea of how to name it when saving it.
+	  - This only works if the host player has given a name for the map, ie, if
+	    this map was loaded from a file or if the player has saved it after
+	    designing it.
+
+2000-12-20  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Added more information to the map editor (how many of each tile type, the
+	  total of units used until now), to make it easier to create a map
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/gtk_player_info.c, /cvsroot/ggz/ggz/game_clients/combat/main.c, /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Made the map editor use the combat_game struct to store the game information,
+	  instead of a different format (as it was supposed to be since the beggining)
+	- Added a "Save" button to the map editor (no more need to start a game in
+	  order to save a map)
+
+2000-12-19  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/TODO:
+	- Added a TODO file
+
+	* /cvsroot/ggz/ggz/game_clients/combat/map.c:
+	- Fixed bug when saving map (was using the army of the player 0, not of the -
+	  dummy - player 2.)
+
+2000-12-17  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/callbacks.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/interface.c:
+	- Added a "Save current map" menu item, so that you don't have to play a map
+	  until the end to save it
+
+2000-12-16  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h:
+	- You can now delete a map from the list (and it will delete the file as well,
+	  as long as you have user permissions to do that)
+	- Display a (ugly) confirmation dialog before removing the file
+
+2000-12-15  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/confio.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h, /cvsroot/ggz/ggz/game_clients/combat/map.c, /cvsroot/ggz/ggz/game_clients/combat/map.h, /cvsroot/ggz/ggz/game_clients/combat/maps/Checkers.4227780237, /cvsroot/ggz/ggz/game_clients/combat/maps/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am:
+	- Added a new map
+	- "make install" install the maps on $ggzexecdir/combat/maps, usually
+	  /usr/local/lib/ggz/combat/maps
+	- The games now reads your maps from the $ggzexecdir/combat/maps and
+	  $home/.ggz/combat/maps
+	- When saving a map, it will try to save it under $ggzexecdir/combat/maps. If
+	  it doesn't have enough permissions, it will save it under
+	  $home/.ggz/combat/maps (creating the directory if that's the case)
+	- All map related functions are now done in the map.c file
+
+2000-12-10  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h, /cvsroot/ggz/ggz/game_clients/combat/maps/8x8, /cvsroot/ggz/ggz/game_clients/combat/maps/8x8.127742, /cvsroot/ggz/ggz/game_clients/combat/maps/Default, /cvsroot/ggz/ggz/game_clients/combat/maps/Default.127898, /cvsroot/ggz/ggz/game_clients/combat/maps/Island:
+	- Made the names of the maps display fine in the maps list (Only the map name,
+	  not it's name + hash)
+	- Selecting a map in the maps list does a quick load on it (will be used later,
+	  when we have previewing of the maps working)
+	- As the map is being loaded anyway, generate his hash and check if it matches
+	  the one in the filename. If it doesn't (the map was manually edited or his
+	  filename doesn't have the hash), rename the file to the correct name.
+	- Changed the name of the Default and the 8x8 map to have the hash as well
+	- Added map from last game w/ Justin
+
+2000-12-09  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h:
+	- Changed the API in combat.[ch]
+	- Added the number of players to the combat_game structure
+	- Implemented saving of maps. (when the game is over, it will search your
+	  maps directories and will see if you have a map whose hash matches the
+	  current one. If you haven't, it will ask you to save it)
+
+	* /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c:
+	- Fixed a segfault when couldn't find any map
+
+	* /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h, /cvsroot/ggz/ggz/game_clients/combat/maps/8x8, /cvsroot/ggz/ggz/game_clients/combat/maps/Default, /cvsroot/ggz/ggz/game_clients/combat/maps/default:
+	- Renamed the "default" map to "Default"
+	- Added another map (The 'chessboard' one from
+	  http://www.inficad.com/~ecollins/stratego/stratego-rule-variations.htm)
+	- Made loading of maps work. Some notes though:
+	  - You must run the ggz client from the combat source directory, or it won't
+	    find your maps (it will search for them in the ./maps dir)
+	  - You can't save a map yet, so you will have to write it by hand
+
+	* /cvsroot/ggz/ggz/game_clients/combat/confio.c, /cvsroot/ggz/ggz/game_clients/combat/confio.h, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/lists.c, /cvsroot/ggz/ggz/game_clients/combat/lists.h, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/maps/default:
+	- Added confio.[ch] and lists.[ch] files
+	- Added a default map (not being loaded yet)
+	- The map lists loads *all* the visible files on the "./maps" subdir
+	- Clicking on the "Load" button returns the correct filename of the selected
+	  file. (That will be different from what is showed on the maps list)
+	- Added Rich's ROL algorithm to calculate the Hash of a map (not being used
+	  yet)
+
+	TODO:
+
+	- Load the map from the file (this weekend it will be working, I guess)
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/confio.c:
+	- Fixed bug in confio_write_list (the same one that was in ggzcore's confio.c)
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h, /cvsroot/ggz/ggz/game_clients/combat/combat.c:
+	- Modified protocol to include game options (details in combat.h)
+	- Added O_NAME option (Map name)
+	- Tells the user when can't recognize the options sent by the server
+	- Removed some unecessary code
+
+2000-12-08  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h, /cvsroot/ggz/ggz/game_clients/combat/glade/dlg_options.glade, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c:
+	- Added Justin`s Load/Save Maps dialog
+
+2000-12-05  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/about_dlg.c, /cvsroot/ggz/ggz/game_clients/reversi/about_dlg.h, /cvsroot/ggz/ggz/game_clients/reversi/main_win.c, /cvsroot/ggz/ggz/game_clients/reversi/Makefile.am, /cvsroot/ggz/ggz/game_clients/reversi/options_dlg.c:
+	- Made the background pixmap buttons and labels non sensitive (won't implement
+	  it until I get some nice background images)
+	- Added an about dialog
+
+2000-12-04  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/confio.c, /cvsroot/ggz/ggz/game_clients/reversi/confio.h, /cvsroot/ggz/ggz/game_clients/reversi/main_win.c:
+	- changed game's _ggzcore_confio_parse and file_parser to accept a autocreate
+	  argument
+	- made the game autocreate a config file if it doesn't exist (call
+	  _ggzcore_confio_parse w/ autocreate = 1)
+
+	  This fixes all the bugs that were happening with the config files not being
+	  found or not able to be writen on
+
+2000-12-03  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/confio.c, /cvsroot/ggz/ggz/game_clients/reversi/confio.h, /cvsroot/ggz/ggz/game_clients/reversi/lists.c, /cvsroot/ggz/ggz/game_clients/reversi/lists.h, /cvsroot/ggz/ggz/game_clients/reversi/main.c, /cvsroot/ggz/ggz/game_clients/reversi/main_win.c, /cvsroot/ggz/ggz/game_clients/reversi/Makefile.am, /cvsroot/ggz/ggz/game_clients/reversi/options_dlg.c, /cvsroot/ggz/ggz/game_clients/reversi/options_dlg.h:
+	- Created a options dialog, with the background color, last played color and
+	  background pixmap
+	- Implemented changing of background color and last played color
+	- Saves this options to ~/.ggz/reversi-gtk.rc
+
+	Knows bugs:
+	  - If this file doesn't exist, it won't save the options the first time the
+	    game is run, but only on the following
+	  - As _ggzcore_confio_parse was returning -1 when the file didn't existed, it
+	    was never saving anything. So I removed that check, but some other stuff
+	    may be broken because of that. (probably the first bug is because of it
+	    also)... not the best solution, but it worked by now... later I'll see the
+	    best way of fixing that. (should I create the file first, and then call
+	    confio_parse?)
+
+2000-12-03  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/hastings/Makefile, /cvsroot/ggz/ggz/game_clients/hastings/Makefile.in, /cvsroot/ggz/ggz/game_clients/Makefile.am:
+	- Added Hastings to configure
+
+2000-11-23  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/hastings/doc/hastings0.png, /cvsroot/ggz/ggz/game_clients/hastings/doc/hastings1.png, /cvsroot/ggz/ggz/game_clients/hastings/doc/hastings2.png, /cvsroot/ggz/ggz/game_clients/hastings/doc/hastings3.png, /cvsroot/ggz/ggz/game_clients/hastings/doc/module_writing.html, /cvsroot/ggz/ggz/game_clients/hastings/dlg_about.c, /cvsroot/ggz/ggz/game_clients/hastings/dlg_about.h, /cvsroot/ggz/ggz/game_clients/hastings/frame_ll.xpm, /cvsroot/ggz/ggz/game_clients/hastings/frame_lr.xpm, /cvsroot/ggz/ggz/game_clients/hastings/frame_ul.xpm, /cvsroot/ggz/ggz/game_clients/hastings/frame_ur.xpm, /cvsroot/ggz/ggz/game_clients/hastings/game.h, /cvsroot/ggz/ggz/game_clients/hastings/hastings.dsc, /cvsroot/ggz/ggz/game_clients/hastings/main.c, /cvsroot/ggz/ggz/game_clients/hastings/main_win.c, /cvsroot/ggz/ggz/game_clients/hastings/main_win.h, /cvsroot/ggz/ggz/game_clients/hastings/Makefile, /cvsroot/ggz/ggz/game_clients/hastings/Makefile.am, /cvsroot/ggz/ggz/game_clients/hastings/Makefile.in, /cvsroot/ggz/ggz/game_clients/hastings/map.xpm, /cvsroot/ggz/ggz/game_clients/hastings/newmanblue.xpm, /cvsroot/ggz/ggz/game_clients/hastings/newmangreen.xpm, /cvsroot/ggz/ggz/game_clients/hastings/newmanred.xpm, /cvsroot/ggz/ggz/game_clients/hastings/newmanyellow.xpm, /cvsroot/ggz/ggz/game_clients/hastings/support.c, /cvsroot/ggz/ggz/game_clients/hastings/support.h:
+	-initial CVS import
+	-nothing has changed since the last tests...
+
+2000-11-12  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/game.h:
+	- Fixed bug with big maps (some variables were chars instead of ints), which
+		made some units impossible to move
+	- Fixed bug on edit map dialog (made clicking on the right spot a bit
+		difficult)
+
+2000-11-11  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/glade/dlg_options.glade:
+	- Some changes to the option dialog
+
+2000-11-11  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/glade/dlg_options.glade:
+	- Aded glade files
+
+2000-11-10  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/combat.dsc, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/game.c:
+	- Implemented setup of the number of initial units
+	- Fixed bug when using a map bigger then 10x10 (the main board now resizes
+		nicely)
+	- You can set up almost any initial army, and almost any initial map, making
+		for virtually ilimited ways of playing the game
+
+	* /cvsroot/ggz/ggz/game_clients/combat/dlg_options.c, /cvsroot/ggz/ggz/game_clients/combat/dlg_options.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am:
+	- Added options dialog, to set up a starting game. Currently works:
+		- Set up the initial map
+	- Known bugs:
+		- As you can't currently set up the initial army, you must use 40 starting
+			positions for each player, or the server won't accept your setup.
+		- It may work with more than 40 starting positions, but I haven't tested it
+			yet
+		- It won't work with maps bigger than 10x10 (the options dialog handles it
+			nicely, but the client won't resize its board)
+		- It may work with maps smaller then that... hadn't tested it yet
+	- Todo:
+		- Add a "Load default" button
+
+2000-10-29  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h:
+	- Improved border around last unit (thicker and w/ better color)
+	- Added a border around the currently selected unit
+	- Fixed "ghost" bug (when drawing a already dead unit)
+
+2000-10-28  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/callbacks.h, /cvsroot/ggz/ggz/game_clients/combat/combat.glade, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h, /cvsroot/ggz/ggz/game_clients/combat/interface.c, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/.cvsignore:
+	- Added a menu item for the "Show/Hide enemy units" option
+	- Only shows the enemy unit used on the last move (like on the original game)
+	- Draws a little border around the last from and to tiles (needs some work, though)
+
+	* /cvsroot/ggz/ggz/game_clients/combat/main.c:
+	- Added the combat source dir to the list of possible pixmaps locations
+		That means that you don't have to do a "make install" to run combat from
+		any directory. (as long as you don't move the original sources)
+
+	* /cvsroot/ggz/ggz/game_clients/combat/pixmaps/default/bomb.xpm, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/default/captain.xpm, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/default/colonel.xpm, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/default/flag.xpm, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/default/general.xpm, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/default/lieutenant.xpm, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/default/major.xpm, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/default/marshall.xpm, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/default/miner.xpm, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/default/scout.xpm, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/default/sergeant.xpm, /cvsroot/ggz/ggz/game_clients/combat/pixmaps/default/spy.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/bomb.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/captain.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/colonel.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/flag.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/general.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/lieutenant.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/major.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/marshall.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/miner.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/scout.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/sergeant.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/spy.xpm:
+	Renamed tiles with pixmaps
+
+	* /cvsroot/ggz/ggz/game_clients/combat/pixmaps/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/tiles/Makefile.am:
+	- Renamed "tiles" to "pixmaps"
+
+	* /cvsroot/ggz/ggz/game_clients/combat/tiles/Makefile.am:
+	- Install the pixmaps
+
+	* /cvsroot/ggz/ggz/game_clients/combat/main.c, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am:
+	- Installs pixmaps file on $(GAMEDIR)/combat/pixmaps (usually
+		/usr/local/lib/ggz)
+	- Added this directory as a pixmap directory
+		(In short: As long as you've done a "make install", you can run ggz from
+		any dir that combat will find his pixmaps)
+	- Besides, renamed the tiles dir to pixmaps
+
+2000-10-27  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/game.c:
+	- Fixed little bug with the units power (Displayed '2' for Spy, '3' for Scout,
+		etc)
+
+2000-10-26  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/callbacks.h, /cvsroot/ggz/ggz/game_clients/combat/combat.glade, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h, /cvsroot/ggz/ggz/game_clients/combat/interface.c:
+	- Displays a little message when the server protocol is different from the
+		client protocol
+	- Correctly receives and analyzes a sync message
+	- Added a "Request Sync" item at the menubar
+	- Requests game sync when the "Request Sync" menu is clicked
+
+2000-10-23  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/game.c:
+	- Added a status message with the outcome of the attacks (who won, who lose)
+
+2000-10-22  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/game.c:
+	- Added the common functions to check if a move is valid (in combat.[ch])
+	- Now uses this functions to check if it should send the move to the server
+
+2000-10-21  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/combat.glade, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h, /cvsroot/ggz/ggz/game_clients/combat/gtk_player_info.c, /cvsroot/ggz/ggz/game_clients/combat/interface.c:
+	- Fixed the -1/1 bug (When you were attacked by a unit of same power and both
+		died)
+	- When updating the unit list, it oesn't clears the entire list and insert it
+		all again. Now it only changes one collumn. (So it remembers the previous
+		selection)
+	- Rewrote the setup subroutines. Now it should work a lot better
+	- Added a small statusbar, next to the main statusbar, with the current turn
+													- Removed the horizontal scrollbar from the unit list
+														(I don't think anyone will need it, and it occupied
+														space)
+
+	* /cvsroot/ggz/ggz/game_clients/combat/tiles/default/bomb.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/captain.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/colonel.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/flag.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/lieutenant.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/major.xpm:
+	- Some minor graphical changes
+		- Removed the "B" and the "F" from the bomb and flag pixmaps
+		- Moved the numbers around in the other pixmaps, so that they aren't so
+		close to the main image
+
+2000-10-20  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h:
+	- Now handles user input in the moving state
+		- Selects the current unit
+		- Selects where it is going to move / who it is going to attack
+		- Sends a CBT_REQ_MOVE
+		(Must add some sanity checks)
+	- Receives CBT_MSG_MOVE or CBT_MSG_ATTACK from the server and do the moving
+		logic
+	- Some minor bug fixes
+					- Receives a CBT_MSG_GAMEOVER from the server and ends the game
+
+2000-10-19  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/callbacks.h, /cvsroot/ggz/ggz/game_clients/combat/combat.glade, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h, /cvsroot/ggz/ggz/game_clients/combat/interface.c:
+	- Honors the server CBT_REQ_SETUP request for setup
+	- Sends setup to the server
+	- Receives a CBT_MSG_START message (starts the game)
+	- Minor bugfixes
+
+	* /cvsroot/ggz/ggz/game_clients/combat/tiles/default/captain.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/colonel.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/flag.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/general.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/lieutenant.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/major.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/marshall.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/miner.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/scout.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/sergeant.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/spy.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/bomb.xpm:
+	- Some color manipulation (images look a litle better)
+	- The unit numbers are white and bigger
+
+2000-10-15  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/tiles/default/marshall.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/miner.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/scout.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/sergeant.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/spy.xpm, /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/callbacks.h, /cvsroot/ggz/ggz/game_clients/combat/combat.glade, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h, /cvsroot/ggz/ggz/game_clients/combat/gtk_player_info.c, /cvsroot/ggz/ggz/game_clients/combat/interface.c, /cvsroot/ggz/ggz/game_clients/combat/main.c, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/bomb.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/captain.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/colonel.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/flag.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/general.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/lieutenant.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/major.xpm:
+	- Some small improvements on the tiles (all of them have the same size and
+		now have a small id on their side)
+	- Gets player names from the server (and display them)
+	- Improvements on the drawing subroutines (all of them respect the tiles
+		transparency)
+	- Allow user to setup his pieces (but can't send them to the server yet)
+
+2000-10-14  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/combat.glade, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h, /cvsroot/ggz/ggz/game_clients/combat/interface.c, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/bomb.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/captain.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/colonel.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/flag.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/general.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/lieutenant.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/major.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/marshall.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/miner.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/scout.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/sergeant.xpm, /cvsroot/ggz/ggz/game_clients/combat/tiles/default/spy.xpm:
+	- Added some (very!) experimental tiles, so that we can continue the client
+	development
+	- Loads the tiles and display them on the board
+		(Note: ggz must be running from the combat dir or it won't work)
+
+	* /cvsroot/ggz/ggz/game_clients/combat/.cvsignore, /cvsroot/ggz/ggz/game_clients/combat/gtk_player_info.c:
+	- Forgot to add this files before... ops! :)
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/callbacks.h, /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/combat.glade, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h, /cvsroot/ggz/ggz/game_clients/combat/interface.c, /cvsroot/ggz/ggz/game_clients/combat/main.c, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am:
+	- Interface is almost looking as planned
+	- Dinamically loads information of each players army
+	- Display army information (sent by the server) in the columm list
+	- Draws the tiles in the main area (but don't fill them yet)
+
+2000-10-13  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/combat/callbacks.c, /cvsroot/ggz/ggz/game_clients/combat/callbacks.h, /cvsroot/ggz/ggz/game_clients/combat/combat.c, /cvsroot/ggz/ggz/game_clients/combat/combat.glade, /cvsroot/ggz/ggz/game_clients/combat/combat.h, /cvsroot/ggz/ggz/game_clients/combat/game.c, /cvsroot/ggz/ggz/game_clients/combat/game.h, /cvsroot/ggz/ggz/game_clients/combat/interface.c, /cvsroot/ggz/ggz/game_clients/combat/interface.h, /cvsroot/ggz/ggz/game_clients/combat/main.c, /cvsroot/ggz/ggz/game_clients/combat/Makefile.am, /cvsroot/ggz/ggz/game_clients/combat/support.c, /cvsroot/ggz/ggz/game_clients/combat/support.h, /cvsroot/ggz/ggz/game_clients/Makefile.am:
+	- Makefile.am now creates a Makefile.in for Combat
+	- Initial files for the Combat game module gtk client. Already implemented:
+		- Experimental interface (Built with Glade)
+			- Only loads... nothing is working for now
+		- Receives game info from the server (seat number, protocol version, etc)
+		- Honors a request for the game options
+			- Sends default options (10x10 map, 40 initial units)
+		- Receives the options from the server
+
+2000-10-12  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/Makefile.am, /cvsroot/ggz/ggz/game_clients/lapocha/Makefile.am, /cvsroot/ggz/ggz/game_clients/reversi/Makefile.am, /cvsroot/ggz/ggz/game_clients/spades/Makefile.am, /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am:
+	- Bunch of autoconf/automake changes to accomodate easysock detection
+	  and build it internally if not found
+
+2000-10-10  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/main_win.c:
+	- Fixed bug that caused a X error when resizing window
+	- Only shows the "Play again" button when game is over
+
+2000-10-08  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/game.h, /cvsroot/ggz/ggz/game_clients/reversi/main.c, /cvsroot/ggz/ggz/game_clients/reversi/main_win.c:
+	- Sends a RVR_REQ_AGAIN message (play again feature)
+	- Added a play again button
+
+2000-09-27  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/game.h, /cvsroot/ggz/ggz/game_clients/reversi/main.c, /cvsroot/ggz/ggz/game_clients/reversi/main_win.c, /cvsroot/ggz/ggz/game_clients/reversi/reversi.dsc:
+	- Shows last played move
+	- Changed the version to 0.1 (0.0.1 isn't fair to the lots of changes the module recently received)
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/.cvsignore, /cvsroot/ggz/ggz/game_clients/reversi/dot.xpm:
+	- Added .libs to .cvsignore
+	- Added dot.xpm (xpm used to mark the possible moves). Forgot to add it before!
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/game.h, /cvsroot/ggz/ggz/game_clients/reversi/main_win.c, /cvsroot/ggz/ggz/game_clients/reversi/TODO:
+	- Shows possible moves for the current player
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/black.xpm, /cvsroot/ggz/ggz/game_clients/reversi/game.h, /cvsroot/ggz/ggz/game_clients/reversi/main.c, /cvsroot/ggz/ggz/game_clients/reversi/main_win.c, /cvsroot/ggz/ggz/game_clients/reversi/TODO, /cvsroot/ggz/ggz/game_clients/reversi/white.xpm:
+	- Added transparency effect to pixmaps
+	- Changed pixmap files to other ones, bigger and better looking
+	- Added two labels with the current score
+	- Fixed bug when calculating score (the same of the server). Now do it by hand, square by square
+
+2000-09-25  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/game.h, /cvsroot/ggz/ggz/game_clients/reversi/main.c, /cvsroot/ggz/ggz/game_clients/reversi/main_win.c:
+	- Added RVR_REQ_SYNC to protocol (client requesting sync)
+	- Connected the Resync menu to request sync
+	- Accepts sync from the server (changes the current board and turn to the one the server said)
+
+2000-09-24  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/reversi/Makefile, /cvsroot/ggz/ggz/game_clients/reversi/Makefile.am:
+	- Put Makefile.am in CVS, not Makefile.  Oops!
+
+	* /cvsroot/ggz/ggz/game_clients/Makefile.am, /cvsroot/ggz/ggz/game_clients/reversi/black.xpm, /cvsroot/ggz/ggz/game_clients/reversi/.cvsignore, /cvsroot/ggz/ggz/game_clients/reversi/game.h, /cvsroot/ggz/ggz/game_clients/reversi/main.c, /cvsroot/ggz/ggz/game_clients/reversi/main_win.c, /cvsroot/ggz/ggz/game_clients/reversi/Makefile, /cvsroot/ggz/ggz/game_clients/reversi/reversi.dsc, /cvsroot/ggz/ggz/game_clients/reversi/support.c, /cvsroot/ggz/ggz/game_clients/reversi/support.h, /cvsroot/ggz/ggz/game_clients/reversi/TODO, /cvsroot/ggz/ggz/game_clients/reversi/white.xpm:
+	- Added reversi client game module from Ismael Orenstein
+
+2000-09-04  bugg  <bugg@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/main.c, /cvsroot/ggz/ggz/game_clients/spades/client_func.c, /cvsroot/ggz/ggz/game_clients/tictactoe/main.c, /cvsroot/ggz/ggz/game_clients/dots/main.c:
+	Shuffle the header files around so we can
+	build ggz (no ggzd yet) on the BSDs. ggz may now be
+	built like such:
+
+	curly% GTK_CONFIG="/usr/X11R6/bin/gtk12-config" \
+	CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib" \
+	./autogen.sh
+
+	The CPPFLAGS and LDFLAGS are so it can find popt.h and -lpopt,
+	respectively.  It would be nice if they searched here as well
+	by default, so you'd only have to specify the location of
+	gtk12-config.
+
+2000-08-30  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/spades/spades.dsc, /cvsroot/ggz/ggz/game_clients/tictactoe/ttt.dsc:
+	- doc updates for release
+	- Set version to 0.0.3
+
+2000-08-27  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/main.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.c:
+	- Full leave/rejoin capability coded
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/game.h, /cvsroot/ggz/ggz/game_clients/lapocha/main.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.h:
+	- Improved the handling of player joined and player left notices
+	- Handle game leave/rejoin during card play only
+	  - during bidding, etc, to follow shortly :)
+
+2000-08-23  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/tictactoe/main.c:
+	- Read up to 16 characters when getting player name
+
+2000-08-22  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/Makefile.am:
+	- add card*.xpm to sources so they get distributed
+
+	* /cvsroot/ggz/ggz/game_clients/dots/Makefile.am:
+	- add main.h to sources so it get's distributed
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/lapocha.dsc:
+	- Uh, we need this file :)
+
+2000-08-20  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/cb_main.c, /cvsroot/ggz/ggz/game_clients/lapocha/dlg_about.c, /cvsroot/ggz/ggz/game_clients/lapocha/dlg_about.h, /cvsroot/ggz/ggz/game_clients/lapocha/Makefile.am:
+	Added Help->About dialog to project
+
+2000-08-18  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/docs.html:
+	Cleaned up the HTML, added more examples and some clarifications.
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/game.h, /cvsroot/ggz/ggz/game_clients/lapocha/main.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.h:
+	- Indicate current player's turn with "* NAME *"
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/table.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.h, /cvsroot/ggz/ggz/game_clients/lapocha/game.h, /cvsroot/ggz/ggz/game_clients/lapocha/main.c:
+	server
+	  - Alter MSG_HAND protocol to send a char representing dealer's seat
+
+	client
+	  - Display dealer's seat with a (D) after name
+	  - Display current bidder's seat with a (B) after name ((DB) if dealer too)
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/main.c:
+	- This should fix the animation bug some have noted after a trick is taken
+
+2000-08-16  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/cb_main.c, /cvsroot/ggz/ggz/game_clients/lapocha/cb_main.h, /cvsroot/ggz/ggz/game_clients/lapocha/dlg_main.c, /cvsroot/ggz/ggz/game_clients/lapocha/main.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.h:
+	- This update fixes the segfaults that occured when the Gtk theme is changed
+	  while an LP game is in progress
+
+2000-08-15  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/docs.html:
+	- Basic La Pocha documentation in HTML (thanks Austin!)
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/cb_bid.c, /cvsroot/ggz/ggz/game_clients/lapocha/cb_bid.h, /cvsroot/ggz/ggz/game_clients/lapocha/cb_main.c, /cvsroot/ggz/ggz/game_clients/lapocha/cb_main.h, /cvsroot/ggz/ggz/game_clients/lapocha/dlg_bid.c, /cvsroot/ggz/ggz/game_clients/lapocha/dlg_bid.h, /cvsroot/ggz/ggz/game_clients/lapocha/dlg_main.c, /cvsroot/ggz/ggz/game_clients/lapocha/dlg_main.h, /cvsroot/ggz/ggz/game_clients/lapocha/game.c, /cvsroot/ggz/ggz/game_clients/lapocha/game.h, /cvsroot/ggz/ggz/game_clients/lapocha/hand.c, /cvsroot/ggz/ggz/game_clients/lapocha/hand.h, /cvsroot/ggz/ggz/game_clients/lapocha/main.c, /cvsroot/ggz/ggz/game_clients/lapocha/main.h, /cvsroot/ggz/ggz/game_clients/lapocha/table.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.h:
+	- Added license notices
+
+	* /cvsroot/ggz/ggz/game_clients/dots/game.h, /cvsroot/ggz/ggz/game_clients/dots/main.c, /cvsroot/ggz/ggz/game_clients/dots/main.h, /cvsroot/ggz/ggz/game_clients/dots/cb_main.c, /cvsroot/ggz/ggz/game_clients/dots/cb_main.h, /cvsroot/ggz/ggz/game_clients/dots/cb_new.c, /cvsroot/ggz/ggz/game_clients/dots/cb_new.h, /cvsroot/ggz/ggz/game_clients/dots/cb_opt.c, /cvsroot/ggz/ggz/game_clients/dots/cb_opt.h, /cvsroot/ggz/ggz/game_clients/dots/dlg_about.c, /cvsroot/ggz/ggz/game_clients/dots/dlg_about.h, /cvsroot/ggz/ggz/game_clients/dots/dlg_main.c, /cvsroot/ggz/ggz/game_clients/dots/dlg_main.h, /cvsroot/ggz/ggz/game_clients/dots/dlg_new.c, /cvsroot/ggz/ggz/game_clients/dots/dlg_new.h, /cvsroot/ggz/ggz/game_clients/dots/dlg_opt.c, /cvsroot/ggz/ggz/game_clients/dots/dlg_opt.h, /cvsroot/ggz/ggz/game_clients/dots/game.c:
+	- Added license notice
+
+2000-07-28  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/main.c, /cvsroot/ggz/ggz/game_clients/dots/game.c:
+	- Commented out move-ahead of server response support
+	  - This seems to cause some undesirable effects which are difficult to debug
+	    as it only happens when a server is lagged (which fortunately doesn't
+	    happen locally, although it'd make debugging easier :)
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/main.c:
+	- Print winner at end of game
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/game.c, /cvsroot/ggz/ggz/game_clients/lapocha/game.h, /cvsroot/ggz/ggz/game_clients/lapocha/main.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.h:
+	- Allow trump choice on LP_REQ_TRUMP from server
+
+2000-07-26  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/game.c, /cvsroot/ggz/ggz/game_clients/lapocha/game.h, /cvsroot/ggz/ggz/game_clients/lapocha/hand.h, /cvsroot/ggz/ggz/game_clients/lapocha/main.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.h:
+	First (semi)playable version of La Pocha
+
+	WHAT WORKS
+
+2000-07-24  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/game.h, /cvsroot/ggz/ggz/game_clients/lapocha/hand.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.c:
+	- Improved card display handling
+
+2000-07-23  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/cb_bid.c, /cvsroot/ggz/ggz/game_clients/lapocha/cb_bid.h, /cvsroot/ggz/ggz/game_clients/lapocha/dlg_bid.c, /cvsroot/ggz/ggz/game_clients/lapocha/dlg_bid.h, /cvsroot/ggz/ggz/game_clients/lapocha/dlg_main.c, /cvsroot/ggz/ggz/game_clients/lapocha/game.c, /cvsroot/ggz/ggz/game_clients/lapocha/game.h, /cvsroot/ggz/ggz/game_clients/lapocha/main.c, /cvsroot/ggz/ggz/game_clients/lapocha/Makefile.am, /cvsroot/ggz/ggz/game_clients/lapocha/table.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.h:
+	- Players are now displayed in proper seats
+	- Receive trump suit from server
+	- Handle bid requests, sends and replies
+	- Display opponent bids
+
+	* /cvsroot/ggz/ggz/game_clients/dots/game.c, /cvsroot/ggz/ggz/game_clients/dots/main.c:
+	- Updated client to receive (and throw away since we don't need it)
+	  the score information from server
+
+2000-06-30  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/game.h, /cvsroot/ggz/ggz/game_clients/lapocha/hand.c, /cvsroot/ggz/ggz/game_clients/lapocha/hand.h, /cvsroot/ggz/ggz/game_clients/lapocha/main.c, /cvsroot/ggz/ggz/game_clients/lapocha/main.h, /cvsroot/ggz/ggz/game_clients/lapocha/table.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.h:
+	Initial checkin of La Pocha server.
+
+	Current status:
+	- Clients can connect and a sample 10 cards are dealt by the server.
+	- No game play is functional.
+	- Player one is told to play (so card animation can still be tested)
+
+	Bugs:
+	- Far far too numerous to mention, but nothing that appears to make either
+	  server or client unstable
+
+2000-06-27  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/table.c:
+	- Fixed card selection bug mentioned on ggz-dev
+	- Added labels to appropriate positions in info boxes
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/dlg_main.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.c:
+	- Resized table display to be appropriate for La Pocha
+	- Fixed animation bug where leading edge of right-moving card was missing
+
+2000-06-26  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/lapocha/cards-b1.xpm, /cvsroot/ggz/ggz/game_clients/lapocha/cards-b2.xpm, /cvsroot/ggz/ggz/game_clients/lapocha/cards-b3.xpm, /cvsroot/ggz/ggz/game_clients/lapocha/cards-b4.xpm, /cvsroot/ggz/ggz/game_clients/lapocha/cards.xpm, /cvsroot/ggz/ggz/game_clients/lapocha/cb_main.c, /cvsroot/ggz/ggz/game_clients/lapocha/cb_main.h, /cvsroot/ggz/ggz/game_clients/lapocha/.cvsignore, /cvsroot/ggz/ggz/game_clients/lapocha/dlg_main.c, /cvsroot/ggz/ggz/game_clients/lapocha/dlg_main.h, /cvsroot/ggz/ggz/game_clients/lapocha/game.c, /cvsroot/ggz/ggz/game_clients/lapocha/game.h, /cvsroot/ggz/ggz/game_clients/lapocha/hand.c, /cvsroot/ggz/ggz/game_clients/lapocha/hand.h, /cvsroot/ggz/ggz/game_clients/lapocha/main.c, /cvsroot/ggz/ggz/game_clients/lapocha/main.h, /cvsroot/ggz/ggz/game_clients/lapocha/Makefile.am, /cvsroot/ggz/ggz/game_clients/lapocha/support.c, /cvsroot/ggz/ggz/game_clients/lapocha/support.h, /cvsroot/ggz/ggz/game_clients/lapocha/table.c, /cvsroot/ggz/ggz/game_clients/lapocha/table.h, /cvsroot/ggz/ggz/game_clients/Makefile.am:
+	Initial checkin of LaPocha
+
+2000-06-24  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/tictactoe/main_win.c:
+	- Took out a straggling debug comment in ttt
+	- Lengthened usename entry box on login dialog and allow 16 chars
+	- Work around buggy Gtk combo box by disabling profile combo if there
+	  are no profiles
+	- Create swappable top panel (notbook without tabs) for login dialog
+	  to use on login errors
+
+	* /cvsroot/ggz/ggz/game_clients/tictactoe/game.h:
+	- Update tic-tac-toe client to 16char names
+
+2000-06-24  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/main.c, /cvsroot/ggz/ggz/game_clients/dots/main.h:
+	- Fix to support name lengths of 16 characters
+
+2000-06-22  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/tictactoe/main.c, /cvsroot/ggz/ggz/game_clients/tictactoe/main_win.c:
+	- Remove some debugging information
+
+2000-06-09  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/cb_main.c, /cvsroot/ggz/ggz/game_clients/dots/cb_main.h, /cvsroot/ggz/ggz/game_clients/dots/cb_new.c, /cvsroot/ggz/ggz/game_clients/dots/cb_new.h, /cvsroot/ggz/ggz/game_clients/dots/dlg_main.c, /cvsroot/ggz/ggz/game_clients/dots/dlg_new.c, /cvsroot/ggz/ggz/game_clients/dots/dlg_new.h, /cvsroot/ggz/ggz/game_clients/dots/dlg_opt.c, /cvsroot/ggz/ggz/game_clients/dots/game.h, /cvsroot/ggz/ggz/game_clients/dots/main.c, /cvsroot/ggz/ggz/game_clients/dots/main.h, /cvsroot/ggz/ggz/game_clients/dots/Makefile.am:
+	- Pop up a dialog asking if you want to play another game
+	- Added new OPCODE - DOTS_REQ_NEWGAME
+
+2000-06-07  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/cb_opt.c, /cvsroot/ggz/ggz/game_clients/dots/game.h, /cvsroot/ggz/ggz/game_clients/dots/main.c:
+	- Always display main dialog on startup
+	- Wait for DOTS_REQ_OPTIONS to display options dialog
+	- We will receive a DOTS_MSG_OPTIONS even if we are the launcher
+
+2000-06-06  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/game.h:
+	- Moved DOTS_SND_OPTIONS to client->server portion of protocol where it belongs
+
+	* /cvsroot/ggz/ggz/game_clients/dots/game.h, /cvsroot/ggz/ggz/game_clients/dots/main.c:
+	Updated client to work with new launch protocol
+
+	- Send DOTS_SND_OPTIONS (9) opcode to send options to game server
+
+2000-05-22  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/spades/socketfunc.h, /cvsroot/ggz/ggz/game_clients/tictactoe/main.c:
+	- Updated client to comply with protocol version 1:
+	- Let game client modules handle options
+	- Don't launch game module client until after receiving
+	  RSP_TABLE_{LAUNCH, JOIN}
+	- Use support function lookup_widget() in a few more places
+
+2000-05-13  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/Makefile.am, /cvsroot/ggz/ggz/game_clients/spades/Makefile.am, /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am:
+	- s/ggzmod/ggzexecmod/g; so we can use 'make install-exec'
+	- Use ggzexecmod_PROGRAMS target for ggz.dots
+
+2000-05-13  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/cb_main.c, /cvsroot/ggz/ggz/game_clients/dots/dlg_about.c, /cvsroot/ggz/ggz/game_clients/dots/dlg_about.h, /cvsroot/ggz/ggz/game_clients/dots/Makefile.am:
+	- Created about dialog and connected to help menu
+
+	* /cvsroot/ggz/ggz/game_clients/dots/main.c, /cvsroot/ggz/ggz/game_clients/dots/main.h:
+	- Update the score after receiving sync
+	- Notify via statusbar on player join and leave
+
+2000-05-11  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/game.c, /cvsroot/ggz/ggz/game_clients/dots/game.h, /cvsroot/ggz/ggz/game_clients/dots/main.c:
+	Completed implementation of DOTS_SND_SYNC
+
+	Server:
+	- Keep track of owned squares and send them as part of DOTS_SND_SYNC
+
+	Client:
+	- After receiving DOTS_SND_SYNC, call board_redraw() to display game
+	- Implemented board_redraw() to draw all lines and owned squares
+
+2000-05-10  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/game.c, /cvsroot/ggz/ggz/game_clients/dots/main.c, /cvsroot/ggz/ggz/game_clients/dots/main.h:
+	DOTS_SND_SYNC handled by client (protocol will change shortly)
+
+	- Client can now leave and rejoin game
+	- Board is not redrawn with proper lines/boxes on rejoin but plays properly
+
+	* /cvsroot/ggz/ggz/game_clients/dots/cb_opt.c, /cvsroot/ggz/ggz/game_clients/dots/game.h, /cvsroot/ggz/ggz/game_clients/dots/main.c:
+	Altered CtD protocol to always send DOTS_MSG_OPTIONS
+
+	- Removed DOTS_REQ_OPTIONS
+	- Renamed DOTS_RSP_OPTIONS -> DOTS_MSG_OPTIONS
+	- Send DOTS_MSG_OPTIONS to joining board, before SYNC is sent
+
+2000-05-09  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/game.h, /cvsroot/ggz/ggz/game_clients/dots/main.c, /cvsroot/ggz/ggz/game_clients/dots/dlg_main.c, /cvsroot/ggz/ggz/game_clients/dots/game.c:
+	- Fixed a minor label glitch
+	- Game move-ahead (before server response) should be more reliable
+
+2000-05-08  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/cb_opt.c:
+	Convert the square size (from opt dialog) to dot size before sending to server
+
+2000-05-07  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/dlg_main.c, /cvsroot/ggz/ggz/game_clients/dots/game.c, /cvsroot/ggz/ggz/game_clients/dots/main.c, /cvsroot/ggz/ggz/game_clients/dots/main.h:
+	- Player names appear on score frames
+	- Scores are now updated in the score boxes
+
+	* /cvsroot/ggz/ggz/game_clients/dots/callbacks.c, /cvsroot/ggz/ggz/game_clients/dots/callbacks.h, /cvsroot/ggz/ggz/game_clients/dots/cb_main.c, /cvsroot/ggz/ggz/game_clients/dots/cb_main.h, /cvsroot/ggz/ggz/game_clients/dots/cb_opt.c, /cvsroot/ggz/ggz/game_clients/dots/cb_opt.h, /cvsroot/ggz/ggz/game_clients/dots/dlg_main.c, /cvsroot/ggz/ggz/game_clients/dots/dlg_main.h, /cvsroot/ggz/ggz/game_clients/dots/dlg_opt.c, /cvsroot/ggz/ggz/game_clients/dots/dlg_opt.h, /cvsroot/ggz/ggz/game_clients/dots/game.c, /cvsroot/ggz/ggz/game_clients/dots/interface.c, /cvsroot/ggz/ggz/game_clients/dots/interface.h, /cvsroot/ggz/ggz/game_clients/dots/main.c, /cvsroot/ggz/ggz/game_clients/dots/main.h, /cvsroot/ggz/ggz/game_clients/dots/Makefile.am:
+	Added options dialog and reorganized the code a bit
+
+2000-05-03  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/game.c:
+	Force the board to draw at board_init time
+
+2000-05-01  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/dots.dsc:
+	- Added dots description file
+
+2000-04-30  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/game.c, /cvsroot/ggz/ggz/game_clients/dots/main.c, /cvsroot/ggz/ggz/game_clients/dots/main.h:
+	Can now play a full game of CtD
+
+	- game over message handled, prints winner in statusbar
+	- player turns are now updated properly in all cases
+
+2000-04-29  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/game.c, /cvsroot/ggz/ggz/game_clients/dots/game.h, /cvsroot/ggz/ggz/game_clients/dots/main.c:
+	Connect the Dots getting ever closer
+
+	- Games now launch, moves are sent to server
+	  (don't know what happens if you include a bot - DDT cuz there are no bots)
+	- Server calculates moves and responds to both clients
+	- Turn processing not handled just right yet (sometimes it's both players turn!)
+	- Game leaves ghost at end of game (clients don't handle EOG yet)
+
+2000-04-28  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/callbacks.c, /cvsroot/ggz/ggz/game_clients/dots/game.c, /cvsroot/ggz/ggz/game_clients/dots/game.h, /cvsroot/ggz/ggz/game_clients/dots/main.c, /cvsroot/ggz/ggz/game_clients/dots/main.h, /cvsroot/ggz/ggz/game_clients/dots/Makefile.am:
+	Beginning to make client work with server
+
+	- Don't launch games yet, they won't work!
+
+2000-04-27  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/dots/callbacks.c, /cvsroot/ggz/ggz/game_clients/dots/callbacks.h, /cvsroot/ggz/ggz/game_clients/dots/.cvsignore, /cvsroot/ggz/ggz/game_clients/dots/game.c, /cvsroot/ggz/ggz/game_clients/dots/game.h, /cvsroot/ggz/ggz/game_clients/dots/interface.c, /cvsroot/ggz/ggz/game_clients/dots/interface.h, /cvsroot/ggz/ggz/game_clients/dots/main.c, /cvsroot/ggz/ggz/game_clients/dots/main.h, /cvsroot/ggz/ggz/game_clients/dots/Makefile.am, /cvsroot/ggz/ggz/game_clients/dots/support.c, /cvsroot/ggz/ggz/game_clients/dots/support.h, /cvsroot/ggz/ggz/game_clients/Makefile.am:
+	Adding Connect the Dots game to CVS
+
+	- No server yet
+	- Can't play a game, just see the UI ^_^
+
+2000-04-21  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am:
+	Include x.xpm and o.xpm in a 'make dist'
+
+2000-04-20  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/spades/.cvsignore, /cvsroot/ggz/ggz/game_clients/spades/Makefile.am, /cvsroot/ggz/ggz/game_clients/spades/spades.dsc, /cvsroot/ggz/ggz/game_clients/tictactoe/.cvsignore, /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am, /cvsroot/ggz/ggz/game_clients/tictactoe/ttt.dsc:
+	- Some about box touchups
+	- Default to port 5688 like server
+	- Don't hardcode game paths, read them from rc file
+	- Re-did autoconf so that 'make install' works
+
+2000-04-11  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/tictactoe/game.h, /cvsroot/ggz/ggz/game_clients/tictactoe/main.c, /cvsroot/ggz/ggz/game_clients/tictactoe/main_win.c, /cvsroot/ggz/ggz/game_clients/tictactoe/main_win.h, /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am:
+	- Reworked some internals, putting global vars into a struct
+	- Keep a state variable: INIT, WAIT, MOVE, and DONE
+	- Only accept input from user if in MOVE state
+
+2000-04-07  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/tictactoe/main.c, /cvsroot/ggz/ggz/game_clients/tictactoe/main_win.c, /cvsroot/ggz/ggz/game_clients/tictactoe/main_win.h:
+	- Moved pixmap init stuff into main_win.c in a callback for main_win
+	  realize
+	- Fixed up synchronization.
+	- Moved most logging messages to status bar
+
+2000-04-06  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/tictactoe/main.c, /cvsroot/ggz/ggz/game_clients/tictactoe/main_win.c, /cvsroot/ggz/ggz/game_clients/tictactoe/main_win.h, /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am, /cvsroot/ggz/ggz/game_clients/tictactoe/o.xpm, /cvsroot/ggz/ggz/game_clients/tictactoe/support.c, /cvsroot/ggz/ggz/game_clients/tictactoe/support.h, /cvsroot/ggz/ggz/game_clients/tictactoe/x.xpm:
+	- Simple GTK GUI hacked onto existing hack of a text client :)
+
+2000-04-05  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/tictactoe/main.c, /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am:
+	- Simple text-based hack for playing tictactoe
+
+2000-04-01  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/Makefile.am, /cvsroot/ggz/ggz/game_clients/tictactoe/.cvsignore, /cvsroot/ggz/ggz/game_clients/tictactoe/main.c, /cvsroot/ggz/ggz/game_clients/tictactoe/Makefile.am:
+	- Added stub tictactoe client
+
+	* /cvsroot/ggz/ggz/game_clients/spades/client_main.c, /cvsroot/ggz/ggz/game_clients/spades/client_func.c:
+	- Use Unix domain sockets for talking with game client modules.  This
+	  allows the game module to have access to stdin and stdout.
+
+2000-03-30  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/spades/callbacks.c:
+	- Don't send ai to GGZ.  That's silly
+
+2000-03-05  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/spades/gtk_dlg_options.c:
+	- Commented out the gtk_widget_show call for the computer/human seating tab of the
+	- spades options dialog.
+
+2000-03-02  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/spades/gtk_io.c:
+	- commented out the gtk_show call for taunt area. Spades now takes up much less room on the screen
+
+2000-02-29  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/spades/Makefile.am:
+	- Replace 'SUBDIRS =' with 'SUBDIRS = .'  Seems make dist chokes if
+	  SUBDIRS is empty
+
+2000-02-08  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/spades/callbacks.c, /cvsroot/ggz/ggz/game_clients/spades/client_func.c, /cvsroot/ggz/ggz/game_clients/spades/client.h, /cvsroot/ggz/ggz/game_clients/spades/client_main.c, /cvsroot/ggz/ggz/game_clients/spades/gtk_connect.c:
+	- Fixed spades client to accept '-o' option if player needs to
+	  set game options (and don't ask for them otherwise)
+	- Display main window earlier (so it looks like we're doing something)
+
+2000-02-05  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/spades/all-cards.xpm, /cvsroot/ggz/ggz/game_clients/spades/Makefile.am:
+	- Oops, forgot a couple
+
+	* /cvsroot/ggz/ggz/game_clients/spades/callbacks.c, /cvsroot/ggz/ggz/game_clients/spades/callbacks.h, /cvsroot/ggz/ggz/game_clients/spades/card.c, /cvsroot/ggz/ggz/game_clients/spades/card.h, /cvsroot/ggz/ggz/game_clients/spades/client_func.c, /cvsroot/ggz/ggz/game_clients/spades/client.h, /cvsroot/ggz/ggz/game_clients/spades/client_main.c, /cvsroot/ggz/ggz/game_clients/spades/.cvsignore, /cvsroot/ggz/ggz/game_clients/spades/display.h, /cvsroot/ggz/ggz/game_clients/spades/gtk_connect.c, /cvsroot/ggz/ggz/game_clients/spades/gtk_connect.h, /cvsroot/ggz/ggz/game_clients/spades/gtk_dlg_about.c, /cvsroot/ggz/ggz/game_clients/spades/gtk_dlg_about.h, /cvsroot/ggz/ggz/game_clients/spades/gtk_dlg_disconnect.c, /cvsroot/ggz/ggz/game_clients/spades/gtk_dlg_disconnect.h, /cvsroot/ggz/ggz/game_clients/spades/gtk_dlg_error.c, /cvsroot/ggz/ggz/game_clients/spades/gtk_dlg_error.h, /cvsroot/ggz/ggz/game_clients/spades/gtk_dlg_exit.c, /cvsroot/ggz/ggz/game_clients/spades/gtk_dlg_exit.h, /cvsroot/ggz/ggz/game_clients/spades/gtk_dlg_options.c, /cvsroot/ggz/ggz/game_clients/spades/gtk_dlg_options.h, /cvsroot/ggz/ggz/game_clients/spades/gtk_dlg_stat.c, /cvsroot/ggz/ggz/game_clients/spades/gtk_dlg_stat.h, /cvsroot/ggz/ggz/game_clients/spades/gtk_io.c, /cvsroot/ggz/ggz/game_clients/spades/gtk_io.h, /cvsroot/ggz/ggz/game_clients/spades/gtk_menu.c, /cvsroot/ggz/ggz/game_clients/spades/gtk_menu.h, /cvsroot/ggz/ggz/game_clients/spades/gtk_play.c, /cvsroot/ggz/ggz/game_clients/spades/gtk_play.h, /cvsroot/ggz/ggz/game_clients/spades/gtkspinbutton.c, /cvsroot/ggz/ggz/game_clients/spades/gtkspinbutton.h, /cvsroot/ggz/ggz/game_clients/spades/gtk_taunt.c, /cvsroot/ggz/ggz/game_clients/spades/gtk_taunt.h, /cvsroot/ggz/ggz/game_clients/spades/options.h, /cvsroot/ggz/ggz/game_clients/spades/socketfunc.c, /cvsroot/ggz/ggz/game_clients/spades/socketfunc.h:
+	- Added files from spades client as a temporary hack (sigh).
+
+2000-01-29  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/game_clients/.cvsignore, /cvsroot/ggz/ggz/game_clients/Makefile.am:
+	- Added files

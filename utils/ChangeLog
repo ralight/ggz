@@ -1,0 +1,257 @@
+2001-06-08  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/chat.c:
+	- removed debug code
+
+	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/commands.c:
+	- Fixed the : and , problem
+
+2001-06-08  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/.cvsignore: - add build-stamp here too
+
+2001-06-08  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/commands.c:
+	- Fixed a segfault in the tell command
+
+2001-06-08  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/man/agrub.6, /cvsroot/ggz/utils/man/agrue.6, /cvsroot/ggz/utils/man/Makefile.am:
+	- add aGRUE man page
+	- shadow grubby to agrub manpage
+
+	* /cvsroot/ggz/utils/README.GGZ: - actually add readme.ggz
+
+	* /cvsroot/ggz/utils/configure.in: - forgot man/ in configure.in
+
+	* /cvsroot/ggz/utils/configure.in, /cvsroot/ggz/utils/Makefile.am:
+	- also build man page
+
+	* /cvsroot/ggz/utils/man/.cvsignore, /cvsroot/ggz/utils/man/grubby.6, /cvsroot/ggz/utils/man/Makefile.am:
+	- create simple man page for grubby
+
+	* /cvsroot/ggz/utils/AUTHORS, /cvsroot/ggz/utils/ChangeLog, /cvsroot/ggz/utils/NEWS:
+	- added standard files for finalizing this module
+
+2001-06-07  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/debian/docs: - adding project-wide readme file
+
+2001-05-30  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/COPYING, /cvsroot/ggz/utils/INSTALL:
+	- added standard files
+
+	* /cvsroot/ggz/utils/debian/changelog, /cvsroot/ggz/utils/debian/control, /cvsroot/ggz/utils/debian/copyright, /cvsroot/ggz/utils/debian/.cvsignore, /cvsroot/ggz/utils/debian/docs, /cvsroot/ggz/utils/debian/postinst, /cvsroot/ggz/utils/debian/prerm, /cvsroot/ggz/utils/debian/README.Debian, /cvsroot/ggz/utils/debian/rules:
+	- debianized source tree
+	- added standard files
+
+2001-05-22  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/agrub.c, /cvsroot/ggz/utils/grubby/agrub_popt.h, /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/chat.h, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/commands.h, /cvsroot/ggz/utils/grubby/datatypes.h, /cvsroot/ggz/utils/grubby/grubby-config.pl, /cvsroot/ggz/utils/grubby/init.c, /cvsroot/ggz/utils/grubby/init.h, /cvsroot/ggz/utils/grubby/log.c, /cvsroot/ggz/utils/grubby/log.h, /cvsroot/ggz/utils/grubby/loop.c, /cvsroot/ggz/utils/grubby/loop.h, /cvsroot/ggz/utils/grubby/Makefile.am, /cvsroot/ggz/utils/grubby/messages.h, /cvsroot/ggz/utils/grubby/net.c, /cvsroot/ggz/utils/grubby/net.h, /cvsroot/ggz/utils/grubby/popt.c, /cvsroot/ggz/utils/grubby/protocols.h, /cvsroot/ggz/utils/grubby/support.c, /cvsroot/ggz/utils/grubby/support.h, /cvsroot/ggz/utils/grubby/.cvsignore:
+	- reintroduces grubby in the utils/ module
+	- ported him to the new ggzcore API
+
+2001-04-30  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/pygenclient/pygenclient.py:
+	- Limited support for sending strings over the socket (just type a string and it should be sent)
+
+2001-04-15  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/pygenclient/pygenclient.py:
+	- Get the module name from the argument (ie: "pygenclient.py Chess" would connect to the Chess module)
+
+2001-01-10  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/pygenclient/pygenclient.py:
+	- Everything that you send will also show in the main screen, but in red color
+	- It now uses python's "eval" to evaluate expressions before sending them. So
+	  you can type (1<<24)+100 and it will send 16777316
+	- If you type anything bigger then 255, it will send it as a 4-byte integer, in
+	  network byte order
+	- You can also force it to send a small number using 4-bytes, appending a "i"
+	  to the end of the number (por example, "40i" sends 0, 0, 0, 40)
+
+2001-01-06  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/pygenclient/pygenclient.py, /cvsroot/ggz/utils/pygenclient/README, /cvsroot/ggz/utils/README:
+	- Added the Python generic client, some little utility to communicate with
+	  the game server without any hassle (ie, just like a regular game client).
+	  I found it really useful to test the chess server, but maybe anyone may
+	  find another use for it... :)
+	- Instructions of use are in the pygenclient/README file
+
+2000-12-30  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/agrub.c, /cvsroot/ggz/utils/grubby/agrub.old, /cvsroot/ggz/utils/grubby/agrub_popt.h, /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/chat.h, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/commands.h, /cvsroot/ggz/utils/grubby/.cvsignore, /cvsroot/ggz/utils/grubby/datatypes.h, /cvsroot/ggz/utils/grubby/init.c, /cvsroot/ggz/utils/grubby/init.h, /cvsroot/ggz/utils/grubby/log.c, /cvsroot/ggz/utils/grubby/log.h, /cvsroot/ggz/utils/grubby/loop.c, /cvsroot/ggz/utils/grubby/loop.h, /cvsroot/ggz/utils/grubby/Makefile.am, /cvsroot/ggz/utils/grubby/messages.h, /cvsroot/ggz/utils/grubby/net.c, /cvsroot/ggz/utils/grubby/net.h, /cvsroot/ggz/utils/grubby/popt.c, /cvsroot/ggz/utils/grubby/protocols.h, /cvsroot/ggz/utils/grubby/rc.c, /cvsroot/ggz/utils/grubby/rc.h, /cvsroot/ggz/utils/grubby/support.c, /cvsroot/ggz/utils/grubby/support.h:
+	- Removeing old out of date grubby files
+
+2000-09-09  bugg  <bugg@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/loop.c: Include unistd.h for select().
+
+2000-09-07  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/loop.c, /cvsroot/ggz/utils/grubby/support.c:
+	- Added owner command goto <room number> so grubby can now change rooms
+	- Made help a little easier to read
+
+	* /cvsroot/ggz/utils/grubby/loop.c, /cvsroot/ggz/utils/grubby/net.c:
+	- Updated for protocol version 3
+
+2000-09-07  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/agrue/agrue.c, /cvsroot/ggz/utils/agrue/protocols.h:
+	- Updated agrue.c to work with ggz protocol 3
+	- GRUEs are less random now, doing one thing every five seconds always
+
+2000-06-14  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/init.c:
+	- Grubby saves on exit.
+	  I'm catching SIGINT, SIGQUIT, and SIGTERM
+
+	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/init.c, /cvsroot/ggz/utils/grubby/rc.c, /cvsroot/ggz/utils/grubby/rc.h, /cvsroot/ggz/utils/grubby/Makefile.am:
+	- Grubby now saves his memory between sessions. Everything is in rc.[ch].
+
+2000-06-11  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/datatypes.h, /cvsroot/ggz/utils/grubby/init.c, /cvsroot/ggz/utils/grubby/support.c:
+	- Fixed a spelling mistake s/memmory/memory/
+
+	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/chat.h, /cvsroot/ggz/utils/grubby/commands.c:
+	- Grubby now accepts commands give thew a personal message (/msg) as well.
+
+	* /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/datatypes.h, /cvsroot/ggz/utils/grubby/log.c, /cvsroot/ggz/utils/grubby/chat.c:
+	- Added the 'tell <username> <message>' command back in.
+
+	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/commands.h:
+	- Added a bit more flexibility to the command recognition system
+
+2000-06-10  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/chat.h, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/messages.h, /cvsroot/ggz/utils/grubby/support.c:
+	- Added the about command back in
+
+	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/support.c:
+	- Everything in Grubby is fully working, thanks in part to Jason.
+
+	* /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/log.c:
+	- the command 'my name is <real name>' now works correctly thank to Jason
+	- Also fixed in one of the log functions (had not happed yet, but could of).
+
+	* /cvsroot/ggz/utils/grubby/agrub.c, /cvsroot/ggz/utils/grubby/agrub.old, /cvsroot/ggz/utils/grubby/agrub_popt.h, /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/chat.h, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/commands.h, /cvsroot/ggz/utils/grubby/datatypes.h, /cvsroot/ggz/utils/grubby/init.c, /cvsroot/ggz/utils/grubby/init.h, /cvsroot/ggz/utils/grubby/log.c, /cvsroot/ggz/utils/grubby/log.h, /cvsroot/ggz/utils/grubby/loop.c, /cvsroot/ggz/utils/grubby/loop.h, /cvsroot/ggz/utils/grubby/Makefile.am, /cvsroot/ggz/utils/grubby/messages.h, /cvsroot/ggz/utils/grubby/net.c, /cvsroot/ggz/utils/grubby/net.h, /cvsroot/ggz/utils/grubby/popt.c, /cvsroot/ggz/utils/grubby/protocols.h, /cvsroot/ggz/utils/grubby/support.c, /cvsroot/ggz/utils/grubby/support.h:
+	- Big rewrite to grubby
+
+2000-05-09  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/agrub.c, /cvsroot/ggz/utils/grubby/protocols.h:
+	- Grubby now works with the new chat protocol
+	- Grubby can teke command by grubby: or /msg grubby
+
+2000-05-06  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- Don't free room_list strings until just before exit
+
+2000-05-05  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- Fixed the random crashes caused by not freeing string in all cases
+
+2000-05-02  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- stay here command actualy works now
+	- logging is in html format for posting to our web site. looks nicer too.
+
+2000-04-28  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/agrue/.cvsignore, /cvsroot/ggz/utils/agrue/Makefile, /cvsroot/ggz/utils/agrue/Makefile.am, /cvsroot/ggz/utils/agrue/protocols.h, /cvsroot/ggz/utils/grubby/.cvsignore, /cvsroot/ggz/utils/grubby/Makefile, /cvsroot/ggz/utils/grubby/Makefile.am, /cvsroot/ggz/utils/grubby/protocols.h, /cvsroot/ggz/utils/acconfig.h, /cvsroot/ggz/utils/autogen.sh, /cvsroot/ggz/utils/configure.in, /cvsroot/ggz/utils/.cvsignore, /cvsroot/ggz/utils/Makefile.am:
+	- Make grie and grubby use autoconf/automake
+
+2000-04-26  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- Upped the room change timeout
+	- addedd stay/move commands for owners only
+
+2000-04-19  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- s/memmory/memory
+	- added the ability to have random greatings.
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- Added command 'save memmory' as a owner only wich forces a update of ~/.agrub
+
+2000-04-18  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- Grubby can now log a room.
+	- grubby: log on <FULL PATH>
+	- grubby: log off
+
+	You _must_ be owner for the command to work
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- Grubby can now rember an arbatrary number of messages to tell a person.
+	  the default is set to 4 in a #define. This REALY break the data file format
+	  you should remove your old one before trying this out.
+
+2000-04-16  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- Forgot to add the help item. (sorry)
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- ok I've added the ability to story your bday.
+	  this has changed the file format a bit,but don't worrie, it
+	  auto-updates for you. The bday won't be displayed anywhere yet,
+	  and not sure if it should, I'm planing of Grubby saying 'Happy Brithday' to
+	  you on your brithday.
+
+	- I've made the unknown user message a little bigger, and my human like (I hope...)
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- Updated Grubby's about text.
+
+		I removed the 2 paragraph, as Grubby can now remember things from a past lifetime.
+
+2000-04-16  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/agrub.c: Various enhancements to Grubby:
+	  - Now dumps his information database if he is killed by a signal
+	  - Reports time since having last seen a user in a sensible format
+	  - Correctly tests for url and info values when reporting whois
+
+2000-04-15  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- Grubby now shows all known information entered when he recieves the whois command
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- Storing of email, url and info
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- Added a whois command
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- Now load information back in at startup. This means that a grub can remember between sesions
+
+	* /cvsroot/ggz/utils/grubby/agrub.c:
+	- now saves known information to ~/.agrub in the following structure
+
+	Version Number
+	Number Known
+	(repeated Number Known times)
+	the known struct
+
+2000-04-15  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/utils/README: - Some notes for AGRUE and AGRUB
+
+	* /cvsroot/ggz/utils/agrue/agrue.c, /cvsroot/ggz/utils/agrue/launch_grues, /cvsroot/ggz/utils/agrue/Makefile, /cvsroot/ggz/utils/grubby/agrub.c, /cvsroot/ggz/utils/grubby/Makefile:
+	Initial checkins for AGRUE and AGRUB

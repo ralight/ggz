@@ -1,3 +1,505 @@
-Just forgot where the real one is...
+2001-06-14  bmh  <bmh@users.sourceforge.net>
 
-	wil be replaces soon!
+	* /cvsroot/ggz/kde-client/NEWS:
+	- Updated NEWS file for 0.0.4
+
+	* /cvsroot/ggz/kde-client/ggz-kde-client.spec, /cvsroot/ggz/kde-client/Makefile.am, /cvsroot/ggz/kde-client/QuickStart.GGZ, /cvsroot/ggz/kde-client/README.GGZ:
+	- Updated docs
+	- Bumped version to 0.0.4
+
+2001-06-11  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap.cpp:
+	- Fixed the auto-logout bug on network errors.
+
+2001-06-08  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-client/debian/rules: - little debian updates
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZConnect.cpp, /cvsroot/ggz/kde-client/man/.cvsignore, /cvsroot/ggz/kde-client/man/ggzap.6, /cvsroot/ggz/kde-client/man/ggzmodsniff.6, /cvsroot/ggz/kde-client/man/kggz.6, /cvsroot/ggz/kde-client/man/Makefile.am:
+	- fix stupid memory hole bug in KGGZConnect
+	- add man pages for KGGZ, GGZap, GGZModSniff
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZPrefEnv.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZPrefEnv.h, /cvsroot/ggz/kde-client/ggzap/ggzap.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_tray.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_tray.h:
+	- fix GGZap autostart bug
+	- let user decide in KGGZ whether to log chat or not
+
+	* /cvsroot/ggz/kde-client/autogen.sh: - fix SuSE-related bug
+
+2001-06-07  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZPrefEnv.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZPrefEnv.h:
+	- changed configuration: can now control connection dialog behaviour
+	- make connection dialog stay always on top
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/data/kde/lo16-app-ggzap.png, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/Makefile.am:
+	- add GGZap icon for KDE
+
+	* /cvsroot/ggz/kde-client/ggzap/ggzap_config.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_config.h, /cvsroot/ggz/kde-client/ggzap/ggzap.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.h, /cvsroot/ggz/kde-client/ggzap/ggzap_tray.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_tray.h, /cvsroot/ggz/kde-client/ggzap/Makefile.am:
+	- add configuration files for GGZap
+	- automatically append a /zap to their names
+	- set Euro 2 as the reservation server
+
+	* /cvsroot/ggz/kde-client/ggzap/ggzap.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.h:
+	- made GGZap working (roughly) in active and passive mode
+
+	* /cvsroot/ggz/kde-client/ggzap/trayradar.mng:
+	- actually upload animation
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/data/browser/help.html, /cvsroot/ggz/ggz/src/frontend/kde/data/browser/index.html, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZConnect.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_game.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap.h, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_tray.cpp, /cvsroot/ggz/kde-client/ggzap/Makefile.am:
+	- fixed bugs in KGGZ and GGZap
+	- new animated icon for GGZap
+
+2001-06-06  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZConnect.cpp:
+	- add port number when creating new profiles
+	- change default server: now ggzeuropeone
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZMotd.cpp:
+	- prevent segfault when disconnecting without room
+	- adjust colors so they fit ggzeuropeone
+
+2001-06-04  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-client/ggzap/ggzap.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_game.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_game.h, /cvsroot/ggz/kde-client/ggzap/ggzap.h, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.h, /cvsroot/ggz/kde-client/ggzap/ggzap_tray.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_tray.h, /cvsroot/ggz/kde-client/ggzap/main.cpp, /cvsroot/ggz/kde-client/ggzap/Makefile.am, /cvsroot/ggz/kde-client/ggzap/README, /cvsroot/ggz/kde-client/ggzap/tray.png:
+	- first GGZap update
+
+2001-06-03  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-client/.cvsignore: - updated cvsignore
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZGameInfo.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZGameInfo.h:
+	- added new files which contain the game launch/join state
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/DESIGN, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h:
+	- heavily modified launch and join procedures
+	- made frontend selection working
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChatLine.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZUsers.cpp:
+	- replace takeItem() with delete
+
+2001-06-03  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/po/pt_BR.po:
+	- Updated translation
+	- Everything should be translated now, although the "About GGZ" dialog sounds really *weird*. The problem is that each string must be translated separatedly, so the text is a bit strange.
+
+2001-06-02  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-client/modsniff/kmodsniff.cpp:
+	- Changed .desktop file creation to use "Name" and "Comment" instead of "Name[de]" and "Comment[de]"
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/data/kde/dist.directory, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/games.directory, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/ggzmodsniff.desktop, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/kggz.desktop, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/lo16-app-ggz.png:
+	- Some changes in the .directory and .desktop files so that they work under
+	  KDE2.2alplha2
+	- Added transparency to the ggz icon
+
+2001-06-02  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZCommon.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp:
+	- really applied the fixes
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZPrefEnv.cpp:
+	- improved server start/stop code (hey, forgot an exit())
+	- fixed the player list bug perdig found yesterday
+	- better handling of spades-like ghost tables
+
+2001-06-01  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/po/de.po, /cvsroot/ggz/ggz/src/frontend/kde/po/es.po, /cvsroot/ggz/ggz/src/frontend/kde/po/fr.po, /cvsroot/ggz/ggz/src/frontend/kde/po/pt_BR.po:
+	- updated translations
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/po/kggz.pot, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZAbout.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZPrefEnv.cpp:
+	- some more i18n()
+
+	* /cvsroot/ggz/kde-client/ggzap/ggzap.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap.h, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.h, /cvsroot/ggz/kde-client/ggzap/main.cpp, /cvsroot/ggz/kde-client/modsniff/kmodsniff.cpp, /cvsroot/ggz/kde-client/modsniff/kmodsniff.h, /cvsroot/ggz/kde-client/modsniff/modsniff.c, /cvsroot/ggz/kde-client/modsniff/modsniff.h:
+	- added frontend handling to modsniff (currently gtk and kde games known)
+	- improved ggzap a bit, can now also handle (preferred) frontends, fallback to default
+
+2001-06-01  perdig  <perdig@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/po/pt_BR.po:
+	- Translated to brazilian portuguese (still a bit cheesy, but at least it is translated)
+	- note: Some strings in the original program aren't i18n'ed yet:
+	  - "No room selected" in the startup screen
+	  - The text in the preferences dialog
+	  - The "About GGZ" dialog box
+
+2001-05-30  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSelector.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSelector.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am:
+	- added ability to select a frontend
+	- minor fixes
+
+	* /cvsroot/ggz/kde-client/debian/.cvsignore: - forgot cvsignore
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/Makefile.am, /cvsroot/ggz/kde-client/debian/changelog, /cvsroot/ggz/kde-client/debian/control, /cvsroot/ggz/kde-client/debian/copyright, /cvsroot/ggz/kde-client/debian/docs, /cvsroot/ggz/kde-client/debian/postinst, /cvsroot/ggz/kde-client/debian/prerm, /cvsroot/ggz/kde-client/debian/README.Debian, /cvsroot/ggz/kde-client/debian/rules, /cvsroot/ggz/kde-client/debian/shlibs, /cvsroot/ggz/kde-client/ggzap/Makefile.am, /cvsroot/ggz/kde-client/modsniff/Makefile.am:
+	- disable -rpath feature
+	- debianized source tree
+
+2001-05-29  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp:
+	- fixed 60-character-bug in the chat widget
+
+2001-05-27  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/data/icons/cancel.png, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZPrefEnv.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZPrefEnv.h:
+	- added forgotten files
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/data/icons/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZGrubby.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am:
+	- added ability to interrupt a game (hard cancelling)
+	- first configuration dialog (humm, an ugly one)
+	- moved code around to new game/room leave events
+
+2001-05-23  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZAbout.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplash.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplashScreen.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWorkspace.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/more/KGGZBrowser.cpp:
+	- pass int values to QColor (hey, why has nobody noticed that)
+	- make launcher more crash proof when an error occurs
+
+2001-05-22  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZGrubby.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZGrubby.h:
+	- extending grubby dialog
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp:
+	 -fixed private messages in chat (HTML parsing)
+
+2001-05-20  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-client/README.GGZ:
+	- Synched to ggz-client-libs copy of README.GGZ
+
+2001-05-20  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZLaunch.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZLaunch.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChatLine.cpp:
+	- improve launch dialog (should now work also for LaPocha and family)
+	- make room/game menus dynamic
+	- little fix for the grubby dialog
+
+	* /cvsroot/ggz/kde-client/configure.in: - force configure.in update
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreCommon.cpp:
+	- forgot new file
+
+	* /cvsroot/ggz/kde-client/ggzap/ggzap.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.cpp, /cvsroot/ggz/kde-client/ggzap/Makefile.am, /cvsroot/ggz/kde-client/modsniff/kmodsniff.cpp, /cvsroot/ggz/kde-client/modsniff/Makefile.am, /cvsroot/ggz/kde-client/modsniff/modsniff.c, /cvsroot/ggz/kde-client/modsniff/modsniff.h, /cvsroot/ggz/ggz/src/frontend/kde/DESIGN, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreCommon.h, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCore.cpp, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCore.h, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZCommon.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZCommon.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZConnect.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZConnect.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZInput.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZInput.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZLaunch.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZLaunch.h, /cvsroot/ggz/ggz/src/frontend/kde/src/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZAbout.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZAbout.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChatLine.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChatLine.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZGrubby.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZGrubby.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZLogo.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZLogo.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZMotd.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZMotd.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplash.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplash.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplashScreen.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplashScreen.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZTables.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZTables.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZUsers.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZUsers.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWorkspace.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWorkspace.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/more/KGGZBrowser.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/more/KGGZBrowser.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/more/Makefile.am:
+	- made sources ANSI C/C++ compliant
+	- finished visual grubby dialog (basic functionality)
+	- added option: ./configure --enable-ggzfinal
+	- added current room to the status bar (new entry
+
+2001-05-19  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-client/configure.in, /cvsroot/ggz/kde-client/ggz-kde-client.spec:
+	- force top-level commits (as always)
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/Current.Status, /cvsroot/ggz/ggz/src/frontend/kde/README, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZCommon.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/main.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZAbout.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZGrubby.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZGrubby.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWorkspace.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWorkspace.h, /cvsroot/ggz/kde-client/ggzap/README:
+	- changed version information to 0.0.4, and use constants everywhere now
+	- updated README and Status files
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp:
+	- handle spaces in chat correctly
+	- fixed SEGFAULT occurence: allocate buffer large enough when stripping HTML code
+
+	* /cvsroot/ggz/kde-client/am_edit: - force am_edit update
+
+	* /cvsroot/ggz/kde-client/ggzap/.cvsignore, /cvsroot/ggz/kde-client/ggzap/ggzap.png:
+	- added picture, changed .cvsignore
+
+	* /cvsroot/ggz/kde-client/ggzap/ggzap.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap.h, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.h, /cvsroot/ggz/kde-client/ggzap/Makefile.am:
+	- removed meta_unload stuff from build process
+	- increased ggzap functionality
+	- added pixmap to ggzap
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp:
+	- improved chat autocompletion
+
+2001-05-18  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZInput.cpp:
+	- minor qt layout fix
+	- changed chat handling from char* to const char*
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChatLine.cpp:
+	- added IRC-style /away to chat
+	- added Syslog-style /mark to chat
+	- reenabled copy, cut & paste as key bindings
+
+2001-05-14  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-client/README: - updated README file
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZGrubby.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZGrubby.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/data/grubbybig.png, /cvsroot/ggz/ggz/src/frontend/kde/data/Makefile.am:
+	-updated README file
+	-first implementation of a grubby dialog
+	-added grubby picture
+
+2001-05-13  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-client/configure.in, /cvsroot/ggz/kde-client/Makefile.am:
+	- force build update
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/data/icons/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/.cvsignore, /cvsroot/ggz/kde-client/ggzap/.cvsignore:
+	- polishing CVS
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/data/kde/dist.directory, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/games.directory, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/ggzmodsniff.desktop, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/lo16-app-ggzmodsniff.png, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/lo16-app-ggz.png, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/lo16-app-ggzquick.png, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/lo32-app-ggzmodsniff.png, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/Makefile.am, /cvsroot/ggz/kde-client/ggzap/.cvsignore, /cvsroot/ggz/kde-client/ggzap/ggzap.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap.h, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.cpp, /cvsroot/ggz/kde-client/ggzap/ggzap_handler.h, /cvsroot/ggz/kde-client/ggzap/main.cpp, /cvsroot/ggz/kde-client/ggzap/Makefile.am, /cvsroot/ggz/kde-client/ggzap/README, /cvsroot/ggz/kde-client/modsniff/.cvsignore, /cvsroot/ggz/kde-client/modsniff/kmodsniff.cpp, /cvsroot/ggz/kde-client/modsniff/kmodsniff.h, /cvsroot/ggz/kde-client/modsniff/main.cpp, /cvsroot/ggz/kde-client/modsniff/Makefile.am, /cvsroot/ggz/kde-client/modsniff/modsniff.c, /cvsroot/ggz/kde-client/modsniff/modsniff.h, /cvsroot/ggz/kde-client/modsniff/README:
+	- added new application: GGZ Module Sniffer
+	- added new application skeleton: GGZ Quick starter
+	- added some icons
+
+2001-05-10  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/Krosswater.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/Makefile.am:
+	-added Krosswater icon
+
+2001-05-08  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/po/de.po, /cvsroot/ggz/ggz/src/frontend/kde/po/es.po, /cvsroot/ggz/ggz/src/frontend/kde/po/fr.po, /cvsroot/ggz/ggz/src/frontend/kde/po/kggz.pot, /cvsroot/ggz/ggz/src/frontend/kde/po/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/po/pt_BR.po, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.h:
+	- added Spanish translation
+	- merged old German translation
+	- improved Chat: /me and /msg are now possible
+	- a few minor fixes
+
+2001-05-06  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChatLine.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChatLine.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am:
+	- added chat autocompletion of names
+	- added class KGGZChatLine for this purpose (blame it if something goes wrong)
+
+2001-05-05  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/data/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/data/startup.png, /cvsroot/ggz/ggz/src/frontend/kde/po/es.po, /cvsroot/ggz/ggz/src/frontend/kde/po/fr.po, /cvsroot/ggz/ggz/src/frontend/kde/po/kggz.pot, /cvsroot/ggz/ggz/src/frontend/kde/po/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZMotd.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplash.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplash.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplashScreen.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplashScreen.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am:
+	- added real splash screen
+	- fixed bug: logout if network error occurs
+	- added French and Spanish translation templates
+	- fixed nasty Qt bug in chat (QTextView related)
+	- fixed up MOTD display
+
+2001-05-03  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-client/README.GGZ: - added file README.GGZ
+
+	* /cvsroot/ggz/kde-client/acinclude.ggz, /cvsroot/ggz/kde-client/INSTALL, /cvsroot/ggz/kde-client/README:
+	- added README.GGZ (from Rich) for detailed GGZ installation instructions
+	- updated acinclude.ggz to be synchronous with the ggz-kde-games one
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZConnect.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZConnect.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZInput.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZInput.h, /cvsroot/ggz/ggz/src/frontend/kde/src/Makefile.am:
+	- added server profiles editing facility
+	- added generic input window class
+
+2001-05-01  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp:
+	- little fix: destroy room object when disconnecting
+
+2001-04-30  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/po/kggz.pot, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZCallback.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZCallback.h, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZRoom.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZRoom.h, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZServer.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZServer.h, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZCommon.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZCommon.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZConnect.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZConnect.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZLaunch.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZLaunch.h, /cvsroot/ggz/ggz/src/frontend/kde/src/main.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZAbout.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZAbout.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZLogo.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZLogo.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZMotd.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZMotd.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplash.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplash.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZTables.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZTables.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZUsers.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZUsers.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWidgetCommon.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWorkspace.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWorkspace.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/more/KGGZBrowser.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/more/KGGZBrowser.h:
+	- removed old stuff (was never really in use, but took alot of time anyway)
+	z-added copyright to all files (i hate this official procedure)
+	- fixed some launching/leaving bugs
+	- general cleanup: standardized all constructors, removed all fixed-length arrays
+	- documentation in every header file available for hacking on kggz
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZMotd.cpp:
+	- played around with Qt patch
+
+2001-04-29  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h: -forgot header file
+
+	* /cvsroot/ggz/kde-client/configure.in:
+	- submitting configure.in changes
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp:
+	- load motd when logging in
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZMotd.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZMotd.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am:
+	-added MOTD dialog
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/po/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/po/de.po, /cvsroot/ggz/ggz/src/frontend/kde/po/kggz.pot, /cvsroot/ggz/ggz/src/frontend/kde/po/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/po/pt_BR.po:
+	-added i18n files
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/data/icons/browser.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/chat.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/connect.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/disconnect.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/grubby.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/info.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/join.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/launch.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/players.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/preferences.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/pref.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/quit.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/server.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/startserver.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/startup.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/stopserver.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/tables.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/update.png, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am, /cvsroot/ggz/kde-client/debian/README.Debian:
+	- added debian directory (yet empty)
+	- added icons
+	- added i18n stuff
+	- minor source improvements
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZLogo.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZLogo.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWorkspace.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWorkspace.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/data/browser/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/data/browser/gear_red.png, /cvsroot/ggz/ggz/src/frontend/kde/data/browser/help.html, /cvsroot/ggz/ggz/src/frontend/kde/data/browser/index.html, /cvsroot/ggz/ggz/src/frontend/kde/data/browser/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/data/browser/zone_impr2.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/ccheckers.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/Chess.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/Combat.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/Dots.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/Hastings.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/LaPocha.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/NetSpades.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/Reversi.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/games/TicTacToe.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/data/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/DESIGN, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZAbout.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.cpp:
+	- reenabled building with browser
+	- fixed window title bug
+	- introduced status bar
+	- introduced game icons (click on them to get some information)
+	- little cleanups for i18n and chat
+	- added HTML files and images for the help
+
+2001-04-28  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/autogen.sh, /cvsroot/ggz/kde-client/configure.in, /cvsroot/ggz/kde-client/ggz-kde-client.spec:
+	- Changed distro name to ggz-kde-client
+	- Wrote RPM specification file
+
+2001-04-28  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-client/acinclude.kde, /cvsroot/ggz/kde-client/.cvsignore:
+	- updated (hopefully working) M4 macros
+
+	* /cvsroot/ggz/kde-client/acconfig.h, /cvsroot/ggz/kde-client/acinclude.ggz:
+	- more changes to commit: get rid of duplicate M4 macro
+
+	* /cvsroot/ggz/kde-client/acinclude.m4, /cvsroot/ggz/kde-client/autogen.sh, /cvsroot/ggz/kde-client/configure.in, /cvsroot/ggz/kde-client/Makefile.am:
+	- commited changes (didn't work last time)
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/more/.cvsignore:
+	- added missing files
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZCommon.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h, /cvsroot/ggz/ggz/src/frontend/kde/src/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/more/KGGZBrowser.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/more/KGGZBrowser.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/more/Makefile.am:
+	- modified build system to ensure successive make calls don't fail
+	- added KGGZBrowser
+	- fixed compile bug which resulted from restructuring
+
+2001-04-26  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZCommon.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZLaunch.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp:
+	- eliminated "launch table" bug
+	- cleaned up sources a bit using -Wall
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/DESIGN, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplash.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZSplash.h:
+	-added help for programmers
+	-checked in missing splash screen class
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/src/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h, /cvsroot/ggz/ggz/src/frontend/kde/src/main.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZUsers.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWorkspace.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWorkspace.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/TODO:
+	-added some more files to cvsignore
+	-fixed geometry management/layout
+	-added splash screen
+	-added first session management (KGGZ memorizes its position)
+	-reorganized KGGZBase handling
+
+2001-04-25  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/kde-client/autogen.sh: - modified autogen.sh
+
+	* /cvsroot/ggz/kde-client/.cvsignore: - added .cvsignore
+
+	* /cvsroot/ggz/kde-client/am_edit, /cvsroot/ggz/kde-client/autogen.sh, /cvsroot/ggz/kde-client/configure.in, /cvsroot/ggz/kde-client/acconfig.h, /cvsroot/ggz/kde-client/acinclude.ggz, /cvsroot/ggz/kde-client/acinclude.m4, /cvsroot/ggz/kde-client/AUTHORS, /cvsroot/ggz/kde-client/ChangeLog, /cvsroot/ggz/kde-client/COPYING, /cvsroot/ggz/kde-client/INSTALL, /cvsroot/ggz/kde-client/Makefile.am, /cvsroot/ggz/kde-client/NEWS, /cvsroot/ggz/kde-client/README:
+	- Added more build files
+	- should work now
+
+	* /cvsroot/ggz/kde-client/configure.in:
+	- second attempt to add configure.in
+
+2001-04-24  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/admin/acconfig.h, /cvsroot/ggz/ggz/src/frontend/kde/admin/acinclude.m4, /cvsroot/ggz/ggz/src/frontend/kde/admin/am_edit, /cvsroot/ggz/ggz/src/frontend/kde/admin/am_edit.2.2, /cvsroot/ggz/ggz/src/frontend/kde/admin/configure.in, /cvsroot/ggz/ggz/src/frontend/kde/admin/Makefile.am:
+	Some more cleanups
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/data/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/.cvsignore:
+	- strange, he treats them all as modified :)
+	- added .cvsignore files
+	- forgot autogen.sh script, following now
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/autogen.sh, /cvsroot/ggz/ggz/src/frontend/kde/Current.Status, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am:
+	- got rid of buildtree
+	- standardized build process
+	- added M4 macros for GGZ
+	- wrote some lines for readme file
+
+2001-04-23  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/admin/acinclude.m4, /cvsroot/ggz/ggz/src/frontend/kde/admin/am_edit, /cvsroot/ggz/ggz/src/frontend/kde/admin/am_edit.2.2, /cvsroot/ggz/ggz/src/frontend/kde/admin/configure.in, /cvsroot/ggz/ggz/src/frontend/kde/admin/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/ggz.png, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/data/icons/module.png, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/kggz.desktop, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/lo16-app-kggz.png, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/lo32-app-kggz.png, /cvsroot/ggz/ggz/src/frontend/kde/data/kde/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/data/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZCommon.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZCommon.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZConnect.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZConnect.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZLaunch.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZLaunch.h, /cvsroot/ggz/ggz/src/frontend/kde/src/main.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZAbout.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZTables.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZTables.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am:
+	- applied Brent's Makefile changes
+	- Password is now shown when logging in the first time
+	- improved server handling (but still buggy)
+	- Game joining works, icon is shown correctly
+	- Launching improved, does now use real values (dialog enhanced)
+	- New KDE am_edit (taken from CVS, slightly modified)
+	- Table widget works now
+	- Added KDE stuff
+
+2001-04-18  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/Makefile.am:
+	Skipping CVS directory now.
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/autogen.sh, /cvsroot/ggz/ggz/src/frontend/kde/ChangeLog, /cvsroot/ggz/ggz/src/frontend/kde/COPYING, /cvsroot/ggz/ggz/src/frontend/kde/Current.Status, /cvsroot/ggz/ggz/src/frontend/kde/README, /cvsroot/ggz/ggz/src/frontend/kde/TODO:
+	The top-level files for KGGZ.
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/all-globals.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/full-list-GGZCoreConf.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/full-list-GGZCoreConfio.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/full-list-GGZCoreGame.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/full-list-GGZCoreGametype.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/full-list-GGZCore.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/full-list-GGZCoreModule.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/full-list-GGZCorePlayer.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/full-list-GGZCoreRoom.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/full-list-GGZCoreServer.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/full-list-GGZCoreTable.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreCommon_h.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreConf_h.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreConf.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreConfio_h.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreConfio.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreGame_h.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreGame.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreGametype_h.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreGametype.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCore_h.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCore.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreModule_h.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreModule.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCorePlayer_h.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCorePlayer.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreRoom_h.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreRoom.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreServer_h.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreServer.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreTable_h.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/GGZCoreTable.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/header-list.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/hier.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/index.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/index-long.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/html/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZCommon.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZCommon.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZConnect.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZConnect.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZ.h, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZLaunch.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/KGGZLaunch.h, /cvsroot/ggz/ggz/src/frontend/kde/src/main.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZAbout.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZAbout.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZBase.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZChat.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZTables.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZTables.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZUsers.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZUsers.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWidgetCommon.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWorkspace.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/KGGZWorkspace.h, /cvsroot/ggz/ggz/src/frontend/kde/src/widgets/Makefile.am:
+	More stuff.
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZRoom.h, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZServer.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZServer.h, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/admin/acconfig.h, /cvsroot/ggz/ggz/src/frontend/kde/admin/acinclude.m4, /cvsroot/ggz/ggz/src/frontend/kde/admin/am_edit, /cvsroot/ggz/ggz/src/frontend/kde/admin/configure.in, /cvsroot/ggz/ggz/src/frontend/kde/admin/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/COPYING, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/kdoc-generated.html, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/doc/README.ggzcore++, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/README, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreCommon.h, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreConf.cpp, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreConf.h, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreConfio.cpp, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreConfio.h, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCore.cpp, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreGame.cpp, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreGame.h, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreGametype.cpp, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreGametype.h, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCore.h, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreModule.cpp, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreModule.h, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCorePlayer.cpp, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCorePlayer.h, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreRoom.cpp, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreRoom.h, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreServer.cpp, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreServer.h, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreTable.cpp, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/GGZCoreTable.h, /cvsroot/ggz/ggz/src/frontend/kde/ggzcore++/src/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZCallback.cpp, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZCallback.h, /cvsroot/ggz/ggz/src/frontend/kde/src/abstract/KGGZRoom.cpp:
+	Doh! The new KDE client is here.
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/.cvsignore: one more file.
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/po/.cvsignore: That should be it.
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/doc/BUGS, /cvsroot/ggz/ggz/src/frontend/kde/doc/HACKERS, /cvsroot/ggz/ggz/src/frontend/kde/doc/README, /cvsroot/ggz/ggz/src/frontend/kde/doc/TODO, /cvsroot/ggz/ggz/src/frontend/kde/images/grubbybig.png, /cvsroot/ggz/ggz/src/frontend/kde/images/startup.png:
+	SourceForge likes large Attic/ directories.
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/config.h, /cvsroot/ggz/ggz/src/frontend/kde/kdetiny.m4, /cvsroot/ggz/ggz/src/frontend/kde/kggz_browser.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_browser.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chat.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chatwidget.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chatwidget.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_connect.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_connect.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_ftp.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_ftp.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_games.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_games.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_grubby.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_grubby.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_hosts.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_hosts.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_install.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_install.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_internal.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_launch.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_launch.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_motd.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_motd.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_playerinfo.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_playerinfo.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_preferences.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_preferences.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_profiles.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_profiles.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_roomsmenu.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_roomsmenu.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_server.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_server.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_settings.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_settings.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_startup.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_startup.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_state.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_state.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_tables.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_tables.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_teams.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_teams.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_update.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_update.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_users.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_users.h, /cvsroot/ggz/ggz/src/frontend/kde/main.cpp, /cvsroot/ggz/ggz/src/frontend/kde/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/Makefile.mindx:
+	The third one. Hm, I must have been coding :)
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/doc/html/bigpicture.png, /cvsroot/ggz/ggz/src/frontend/kde/doc/html/index_donotdelete.html, /cvsroot/ggz/ggz/src/frontend/kde/doc/html/index.html, /cvsroot/ggz/ggz/src/frontend/kde/help/client.html, /cvsroot/ggz/ggz/src/frontend/kde/help/clients.html, /cvsroot/ggz/ggz/src/frontend/kde/help/games.html, /cvsroot/ggz/ggz/src/frontend/kde/help/ggzproto.html, /cvsroot/ggz/ggz/src/frontend/kde/help/index.html, /cvsroot/ggz/ggz/src/frontend/kde/help/info.html, /cvsroot/ggz/ggz/src/frontend/kde/help/modules.html, /cvsroot/ggz/ggz/src/frontend/kde/po/de.po, /cvsroot/ggz/ggz/src/frontend/kde/po/kggz.pot, /cvsroot/ggz/ggz/src/frontend/kde/po/pt_BR.po:
+	Blank it out completely.
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/images/games/hastings.png, /cvsroot/ggz/ggz/src/frontend/kde/images/games/tictactoe.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/browser.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/chat.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/connect.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/disconnect.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/grubby.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/join.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/launch.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/module_dir.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/module.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/players.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/preferences.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/pref.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/quit.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/server.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/startserver.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/startup.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/stopserver.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/tables.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/unknown.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/update.png, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/ggz.directory, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/ggz-gtk.desktop, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/ggz-gtk.png, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/ggz-txt.desktop, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/ggz-txt.png, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/GNU, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/kggz.desktop, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/kggz.png, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/zone.desktop.applnk, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/zone.desktop.mimelnk, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/zone.desktop.services, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/zone.png:
+	Start cleanup
+
+2001-01-06  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/config.h, /cvsroot/ggz/ggz/src/frontend/kde/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/kdetiny.m4, /cvsroot/ggz/ggz/src/frontend/kde/kggz_browser.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_browser.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chatwidget.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chatwidget.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_connect.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_connect.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_ftp.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_ftp.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_games.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_grubby.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_grubby.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_hosts.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_hosts.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_install.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_install.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_launch, /cvsroot/ggz/ggz/src/frontend/kde/kggz_launch.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_motd.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_playerinfo.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_playerinfo.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_preferences.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_preferences.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_profiles.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_profiles.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_roomsmenu.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_server.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_server.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_settings.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_settings.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_startup.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_state.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_state.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_tables.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_teams.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_update.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_update.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_users.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_users.h, /cvsroot/ggz/ggz/src/frontend/kde/main.cpp, /cvsroot/ggz/ggz/src/frontend/kde/Makefile, /cvsroot/ggz/ggz/src/frontend/kde/Makefile.am, /cvsroot/ggz/ggz/src/frontend/kde/Makefile.mindx:
+	Cleanup step 4. Should be sufficient now?!
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/images/wm/GNU:
+	Cleanup step 3. It does now mark everythink as modified, although it isn't.
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/help/clients.html, /cvsroot/ggz/ggz/src/frontend/kde/help/ggzproto.html, /cvsroot/ggz/ggz/src/frontend/kde/help/modules.html, /cvsroot/ggz/ggz/src/frontend/kde/images/games/hastings.png, /cvsroot/ggz/ggz/src/frontend/kde/images/games/tictactoe.png, /cvsroot/ggz/ggz/src/frontend/kde/images/GNU, /cvsroot/ggz/ggz/src/frontend/kde/images/grubbybig.png, /cvsroot/ggz/ggz/src/frontend/kde/images/hastings.png, /cvsroot/ggz/ggz/src/frontend/kde/images/hastings.xpm, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/browser.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/chat.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/connect.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/disconnect.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/grubby.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/join.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/launch.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/module_dir.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/module.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/players.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/preferences.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/pref.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/quit.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/server.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/startserver.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/startup.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/stopserver.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/tables.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/unknown.png, /cvsroot/ggz/ggz/src/frontend/kde/images/icons/update.png, /cvsroot/ggz/ggz/src/frontend/kde/images/kggz.desktop, /cvsroot/ggz/ggz/src/frontend/kde/images/kggz.png, /cvsroot/ggz/ggz/src/frontend/kde/images/kggz_small.png, /cvsroot/ggz/ggz/src/frontend/kde/images/tictactoe.png, /cvsroot/ggz/ggz/src/frontend/kde/images/tictactoe.xpm, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/ggz.directory, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/ggz-gtk.desktop, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/ggz-gtk.png, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/ggz-txt.desktop, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/ggz-txt.png, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/kggz.desktop, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/kggz.png, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/zone.desktop.applnk, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/zone.desktop.mimelnk, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/zone.desktop.services, /cvsroot/ggz/ggz/src/frontend/kde/images/wm/zone.png, /cvsroot/ggz/ggz/src/frontend/kde/po/.cvsignore, /cvsroot/ggz/ggz/src/frontend/kde/po/de.po, /cvsroot/ggz/ggz/src/frontend/kde/po/kggz.pot, /cvsroot/ggz/ggz/src/frontend/kde/po/pt_BR.po, /cvsroot/ggz/ggz/src/frontend/kde/doc/BUGS, /cvsroot/ggz/ggz/src/frontend/kde/doc/TODO:
+	Modified directory structure, cleanup step 2. Better KDE integration, and
+	autoconf preparation. Minor improvements. I18n support.
+
+2001-01-05  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/doc/HACKERS, /cvsroot/ggz/ggz/src/frontend/kde/doc/README, /cvsroot/ggz/ggz/src/frontend/kde/help/index.html, /cvsroot/ggz/ggz/src/frontend/kde/images/startup.png:
+	First round in order to clean up a bit. And updates of course.
+
+2000-12-08  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/kggz_server.cpp:
+	-local conf stuff now compatible to Gtk+ FE
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/kggz_games.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_games.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_teams.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_teams.h:
+	-games: list of available games (doesn't work yet)
+	-teams: assignment dialog (probably for games, not kggz itself; doesn't work
+	either)
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/kggz_chatwidget.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_connect.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_connect.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_launch.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_launch.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_preferences.cpp, /cvsroot/ggz/ggz/src/frontend/kde/Makefile:
+	-can now launch server from client
+	-proposals rather than real updates
+
+2000-11-23  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/kggz_chat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chat.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chatwidget.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chatwidget.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_motd.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_roomsmenu.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_server.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_server.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_state.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_state.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_users.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_users.h, /cvsroot/ggz/ggz/src/frontend/kde/Makefile:
+	-added transitions (currently only in chat), copied from ggz-txt
+	-removed crash on exit (but still problems with reconnecting)
+	-more chat functionality
+
+2000-11-05  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/doc/README, /cvsroot/ggz/ggz/src/frontend/kde/images/GNU, /cvsroot/ggz/ggz/src/frontend/kde/images/hastings.png, /cvsroot/ggz/ggz/src/frontend/kde/images/kggz.desktop, /cvsroot/ggz/ggz/src/frontend/kde/images/kggz.png, /cvsroot/ggz/ggz/src/frontend/kde/images/kggz_small.png, /cvsroot/ggz/ggz/src/frontend/kde/images/tictactoe.png, /cvsroot/ggz/ggz/src/frontend/kde/kggz_motd.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_motd.h:
+	the new files
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/doc/HACKERS, /cvsroot/ggz/ggz/src/frontend/kde/help/games.html, /cvsroot/ggz/ggz/src/frontend/kde/images/startup.png, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chatwidget.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_connect.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_roomsmenu.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_roomsmenu.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_server.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_server.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_startup.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_tables.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_users.cpp, /cvsroot/ggz/ggz/src/frontend/kde/Makefile:
+	-implemented new enqueue and add_callback functions
+	-kggz now crashes on exit, to be fixed (no feature ;)
+	-improved Makefile, e.g. make uninstall
+	-some more functionality, but not all yet
+
+2000-10-28  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/kde/doc/html/bigpicture.png, /cvsroot/ggz/ggz/src/frontend/kde/doc/html/index_donotdelete.html, /cvsroot/ggz/ggz/src/frontend/kde/doc/html/index.html, /cvsroot/ggz/ggz/src/frontend/kde/help/client.html, /cvsroot/ggz/ggz/src/frontend/kde/help/games.html, /cvsroot/ggz/ggz/src/frontend/kde/help/index.html, /cvsroot/ggz/ggz/src/frontend/kde/help/info.html, /cvsroot/ggz/ggz/src/frontend/kde/images/hastings.xpm, /cvsroot/ggz/ggz/src/frontend/kde/images/startup.png, /cvsroot/ggz/ggz/src/frontend/kde/images/tictactoe.xpm, /cvsroot/ggz/ggz/src/frontend/kde/doc/HACKERS, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chat.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chat.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chatwidget.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_chatwidget.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_connect.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_connect.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_internal.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_launch, /cvsroot/ggz/ggz/src/frontend/kde/kggz_launch.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_launch.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_preferences.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_preferences.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_profiles.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_profiles.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_roomsmenu.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_roomsmenu.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_server.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_server.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_settings.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_settings.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_startup.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_startup.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_tables.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_tables.h, /cvsroot/ggz/ggz/src/frontend/kde/kggz_users.cpp, /cvsroot/ggz/ggz/src/frontend/kde/kggz_users.h, /cvsroot/ggz/ggz/src/frontend/kde/main.cpp, /cvsroot/ggz/ggz/src/frontend/kde/Makefile:
+	KGGZ 0.0.1pre, that is all for today :-)
+	A bit overloaded but this is what KDE users want.

@@ -1,0 +1,497 @@
+2001-06-14  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz-txt-client/NEWS:
+	- Updated NEWS for 0.0.4 release
+
+	* /cvsroot/ggz/ggz-txt-client/configure.in, /cvsroot/ggz/ggz-txt-client/Makefile.am, /cvsroot/ggz/ggz-txt-client/QuickStart.GGZ, /cvsroot/ggz/ggz-txt-client/README.GGZ:
+	- Updated docs
+	- Bump version to 0.0.4
+
+	* /cvsroot/ggz/ggz-txt-client/man/Makefile.am:
+	- Use SUBDiRS = . or 'make dist' will choke
+	- Set EXTRA_DIST = $(man_MANS) or the manpages won't get included in
+	  the tarball file
+
+	* /cvsroot/ggz/ggz/src/frontend/text/output.c:
+	- Updated /help message
+
+2001-06-08  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz-txt-client/configure.in, /cvsroot/ggz/ggz-txt-client/.cvsignore, /cvsroot/ggz/ggz-txt-client/Makefile.am:
+	- modified build
+
+	* /cvsroot/ggz/ggz-txt-client/man/.cvsignore, /cvsroot/ggz/ggz-txt-client/man/ggz-txt.6, /cvsroot/ggz/ggz-txt-client/man/Makefile.am:
+	- add man pages for ggz-txt (twice?)
+
+2001-06-07  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz-txt-client/debian/docs:
+	- install readme.ggz in debian package
+
+	* /cvsroot/ggz/ggz-txt-client/README.GGZ:
+	- add missing project-wide readme files
+
+2001-06-04  bcox  <bcox@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c:
+	- Segfault fixes: Added checks for NULL in input_handle_list(),
+	  input_handle_desc(), input_handle_join_room(), input_handle_join_table(),
+	  input_handle_msg(), and input_handle_beep().
+
+2001-05-30  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz-txt-client/configure.in:
+	- Fixed spelling
+
+2001-05-30  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz-txt-client/README: - added readme file
+
+	* /cvsroot/ggz/ggz-txt-client/debian/changelog, /cvsroot/ggz/ggz-txt-client/debian/control, /cvsroot/ggz/ggz-txt-client/debian/copyright, /cvsroot/ggz/ggz-txt-client/debian/.cvsignore, /cvsroot/ggz/ggz-txt-client/debian/docs, /cvsroot/ggz/ggz-txt-client/debian/postinst, /cvsroot/ggz/ggz-txt-client/debian/prerm, /cvsroot/ggz/ggz-txt-client/debian/README.Debian, /cvsroot/ggz/ggz-txt-client/debian/rules:
+	- debianized source tree
+	- added readme file
+
+2001-03-31  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz-txt-client/.cvsignore:
+	- Added .cvsignore file for text client
+
+	* /cvsroot/ggz/ggz-txt-client/acconfig.h, /cvsroot/ggz/ggz-txt-client/AUTHORS, /cvsroot/ggz/ggz-txt-client/autogen.sh, /cvsroot/ggz/ggz-txt-client/ChangeLog, /cvsroot/ggz/ggz-txt-client/configure.in, /cvsroot/ggz/ggz-txt-client/COPYING, /cvsroot/ggz/ggz-txt-client/INSTALL, /cvsroot/ggz/ggz-txt-client/Makefile.am, /cvsroot/ggz/ggz-txt-client/NEWS, /cvsroot/ggz/ggz-txt-client/README, /cvsroot/ggz/ggz-txt-client/TODO:
+	- Added autoconf/make stuff and other boilerplate
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/Makefile.am:
+	- Removed references to ggzcore from Makefile.am since we link it
+	  externally now
+
+2001-03-17  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/Makefile.am:
+	- Converted libggzcore into a libtool shared library
+	- Converted the included libeasysock into a non-installed libtool
+	  convenience library
+	- Various Makefile changes to support the above
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c:
+	- Don't output path to executable anymore
+
+2001-03-16  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Kill the running game module if launch or join fails
+
+	* /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/state.c:
+	- New callbacks for table-related room events
+
+2001-03-10  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c:
+	- Check for valid room, type, and game module before launching or joining
+
+2001-03-09  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c:
+	- Basic support for joining tables
+	- Changed syntax of /join command to allow for joining rooms and
+	  tables: "/join room num" and "/join table num"
+
+2001-03-09  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- beep only once not for every text after a beep
+	  (removed the \007 from the que)
+
+2001-03-08  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c:
+	- Remove unnecessary call to game_destroy() in input.c.  It will get
+	  called when the loop removes the fd
+
+2001-03-07  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/loop.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h:
+	- resizing of the terminal now resizes GGZ-txt
+
+2001-03-06  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c:
+	- Free table after launching
+
+	* /cvsroot/ggz/ggz/src/frontend/text/game.c, /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Handlers for GGZ_GAME_DATA, GGZ_GAME_OVER, GGZ_TABLE_DATA,
+	  GGZ_TABLE_LEFT
+	- Default to GGZ_DBG_MEMDETAIL off again
+
+2001-03-04  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- New function input_is_command()
+	- New function server_list_tables() to handle GGZ_TABLE_LIST event
+	- New functions output_tables() and output_table_info() to output the
+	  list of tables
+	- Temporarily reenable MEMDETAIL debugging
+
+2001-03-02  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/game.c, /cvsroot/ggz/ggz/src/frontend/text/game.h, /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/Makefile.am:
+	- Moved game module functions into game.[ch]
+	- Added callbacks for GGZ_GAME_LAUNCHED, GGZ_GAME_NEGOTIATED, and the
+	  failed versions of those
+
+2001-03-02  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/motd.c:
+	- Fixed up the displaying of the MOTD
+
+2001-03-02  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/output.c:
+	- Redid chat buffer code after talking with Justin
+
+2001-02-24  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Updated to work with new ggzcore functions:
+	- ggzcore_server_set_{hostinfo,logininfo}
+	- Turn off MEMDETAIL debugging by default
+
+2001-02-23  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/output.c:
+	- Fixed prompt problem
+
+2001-02-22  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/output.c:
+	- New output_text code in preperation for up and down scrolling
+
+	* /cvsroot/ggz/ggz/src/frontend/text/Makefile.am, /cvsroot/ggz/ggz/src/frontend/text/motd.c, /cvsroot/ggz/ggz/src/frontend/text/motd.h, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Added a help line for /list
+	- Added the display of the MOTD at login
+
+2001-02-22  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Callbacks for GGZ_NET_ERROR and GGZ_PROTOCOL_ERROR
+
+2001-02-21  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c:
+	- Default to not displaying MEMDETAIL debug messages
+
+	* /cvsroot/ggz/ggz/src/frontend/text/output.c:
+	- Show gametype for each room if types are loaded
+	- Show table player is at if tables are loaded
+
+2001-02-19  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/output.c:
+	- Reimplemented output_rooms() and output_text() to avoid
+	  ggzcore_server_get_XXX_names()
+
+2001-02-18  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/loop.c, /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/server.h:
+	- Made server_destroy() a public function
+	- If the server object still exists when the user exits, destroy it
+
+	* /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Hooked up a callback to GGZ_LIST_TYPES and created output_types() so
+	  that "/list types" will work.
+
+2001-02-17  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- work with latest ggzcore changes:
+	- rename ggzcore_server_get_room() to ggzcore_server_get_nth_room()
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/main.c:
+	- Use latest ggzcore changes:
+	- ggzcore_server_list_types() and ggzcore_room_list_tables()
+	- Remove all references to ggzcore_event functions
+
+2001-02-16  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/loop.c, /cvsroot/ggz/ggz/src/frontend/text/loop.h, /cvsroot/ggz/ggz/src/frontend/text/main.c:
+	- Some loop cleanups:
+	- Make timeout value a parameter of loop_init()
+	- Actually remove removed fds from array
+	- Call loop_quit() after /exit rather than calling exit() directly
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Work with latest ggzcore changes:
+	- Use GGZRoom object for player lists and updates
+	- Don't register any more events under the old system
+
+2001-02-15  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Simple changes to work with GGZRoom objects from ggzcore (really
+	  should put this into a separate room.c)
+
+2001-02-06  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c:
+	- Support temporary hack ggzcore_server_chat()
+
+2001-01-31  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/loop.c, /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/state.c, /cvsroot/ggz/ggz/src/frontend/text/state.h:
+	- New method for handling states as GGZServer event GGZ_STATE_CHANGE
+
+2001-01-29  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/input.h, /cvsroot/ggz/ggz/src/frontend/text/loop.c, /cvsroot/ggz/ggz/src/frontend/text/loop.h, /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/Makefile.am, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/server.h:
+	- Put event loop handling code in loop.c
+	- Generalized method for adding/removing fds to event loop
+	- Re-done for latest ggzcore changes
+
+2001-01-20  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/state.c:
+	- Updated to ggzcore changes:
+	- s/callback/hook
+	- hook functions have a return value
+
+2001-01-20  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c:
+	- Added .pid to the debug file so the client can be run multible times on the
+	  same system by different users
+
+2001-01-13  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c:
+	- Modified to work with latest ggzcore chsnges:
+	- Call ggzcore_conf_initilize() directly
+	- Read conf file for debugging file
+	- Pass debug file and levels to ggzcore_init()
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c:
+	- Use GGZCONFDIR for localtion of global conf file
+	- Use ggz-text.rc as name of user conf file
+
+2001-01-13  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c:
+	- Fixed SEGV due to the config file using ~/.ggz/ggz-txt.rc rather than the
+	  full path
+
+2000-12-02  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c:
+	- Removed reference to local conf file
+
+2000-11-11  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/output.c:
+	- Added /desc command to get room descriptions
+
+2000-11-10  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/Makefile.am, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/server.h, /cvsroot/ggz/ggz/src/frontend/text/state.c, /cvsroot/ggz/ggz/src/frontend/text/state.h:
+	- Simple example of using ggzcore's state callbacks in the text and
+	  gtk frontends
+
+2000-11-05  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- s/ggzcore_event_trigger/ggzcore_event_enqueue
+	- s/ggzcore_event_connect/ggzcore_event_add_callback
+	- Handle new state case of GGZ_STATE_BETWEEN_ROOMS
+
+2000-10-14  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c:
+	- New function ggzcore_event_poll() works as a replacement for poll()
+	  except it tacks on the ggzcore fds and handles them automatically.
+	  This function can easily be used in FE event loops
+	- Remove ggzcore_event_ispending()
+	- Rename _ggzcore_event_ispending_actual() to ggzcore_event_ispending()
+	- Don't check for net input in ggzcore_event_ispending()
+	- New functions ggzcore_event_get_fd() and ggzcore_net_get_fd() allow
+	  access to ggzcore fds in case FE needs to add them to event loop
+	- Use ggzcore_event_poll() in text and gtk frontends
+	- remove ggz_loop() from gtk FE
+
+2000-10-12  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/Makefile.am:
+	- Bunch of autoconf/automake changes to accomodate easysock detection
+	  and build it internally if not found
+
+2000-10-09  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/input.c:
+	- added output_label
+	- removed varible from output_prompt
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/output.c:
+	- Added /exit /version /who
+		/exit - Exting the client cleanly
+		/version - Display current client version
+		/who - and alias that calls /list players   (IRC like)
+
+	- Updated /help with above commands
+
+2000-10-08  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/server.h, /cvsroot/ggz/ggz/src/frontend/text/input.c:
+	- Added ggzcore functions to return room and player names
+	- Actually list player and room names when user issues command
+
+2000-10-07  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c:
+	- Fixed the missnaming of an event I commited last night.
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/server.h:
+	- Added join and part events
+	- Display join and part messages
+
+2000-10-06  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/output.c:
+	- Fixed up currentstatus in output_status()
+	- /connect can now take a port and username too
+
+	* /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Full status listing
+	- Auto get rooms on login
+
+2000-10-06  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Use ChatTypes enum as argument for output_chat()
+	- Wrap some debugging stuff in #ifdef DEBUG
+
+	* /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Display error messages for failed connections and failed logins
+
+2000-10-06  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Big cleanup of output.c
+	- Added Status: to the status bar
+
+2000-10-06  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Correct logic on _ggzcore_room_compare() Return 0 if equal, doh!
+	- New exported function ggzcore_room_get_name()
+	- Display room name in status if in a room and list had been gotten
+
+2000-10-05  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Added functions to get at current profile name, login, host, and
+	  room
+	- Use those on the client status line
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c:
+	- Pass room number to GGZ_USER_ROOM_JOIN as a tyecasted int
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c:
+	- Strip \n from input strings
+	- Use strsep() instead of strtok()
+	- Don't bother parsing token for commands that just use the rest of
+	  the line
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/output.c:
+	- New commands /msg and /beep
+	- New events GGZ_USER_CHAT_PRVMSG and GGZ_USER_CHAT_BEEP
+	- Don't bother initializing NULL pointers in GGZEvent structure
+	- Check for ID mismatch when initializing events
+	- Allow new GGZ_USER_CHAT_XXX events from GGZ_STATE_IN_ROOM
+
+2000-10-05  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/server.h:
+	- Chat now works with all subop codes
+
+2000-10-03  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/server.h:
+	- Renamed GGZ_EVENT_LOGIN_OK to GGZ_EVENT_LOGIN
+	- Renamed GGZ_EVENT_CHAT_STATUS to GGZ_EVENT_CHAT
+	- New event GGZ_EVENT_ROOM_JOIN_FAIL
+	- New event GGZ_EVENT_CHAT_FAIL
+	- New event GGZ_SERVER_ERROR
+	- New event GGZ_NET_ERROR
+	- Trigger network error event from easysock error handler
+	- Move global socket variable out of state var
+	- New function ggzcore_event_remove_func() to delete specific callback
+	- Keep track of state
+	- Better handling of error messages from server
+	- Do simple user event validity checking based on state
+	- Have client handle GGZ_CONNECT_FAIL
+
+2000-10-02  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/input.c:
+	- Added a output_status to the main loop, and removed all other occuances of
+	  output_status from the application.
+	- Added the display of the current date and time
+
+2000-10-01  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Made the colors look a little better in the status line
+	- added a /help command
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/server.c:
+	- Lots of UI improvments.
+	  - Better status lines
+	  - Added some color
+	  - Fix a problem with current input
+	    being removed on incoming chat
+
+2000-09-30  jzaun  <jzaun@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/server.h:
+	- fixed up the UI alot.
+
+	Note: at this point there is one known bug. If you chat while not connected, it
+	distorts the command line, press enter to clear it up.
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c:
+	- commands are prefixed with /
+	- if not a command then assume a chat
+
+2000-09-29  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/server.h:
+	- Abstracted messages from server into a datatype with the opcode, the
+	  name as a string and a pointer to the handler
+	- Added events for listing rooms, joining a room and basic chatting
+	- Added code to support the added events
+	- Make chat protocol subops an enum
+	- Added "list", "join", and "chat" commands to text frontend to take
+	  advantage of newly added events
+
+	* /cvsroot/ggz/ggz/src/frontend/text/input.c, /cvsroot/ggz/ggz/src/frontend/text/input.h, /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/Makefile.am, /cvsroot/ggz/ggz/src/frontend/text/output.c, /cvsroot/ggz/ggz/src/frontend/text/output.h, /cvsroot/ggz/ggz/src/frontend/text/server.c, /cvsroot/ggz/ggz/src/frontend/text/server.h:
+	- Split logic into separate files for input, output and server
+	  callbacks
+	- More intelligent command parsing (still needs work)
+	- Display error message if connection fails
+
+2000-09-23  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/main.c:
+	- Rudimentary main loop polls stdin with a timeout to check for
+	  pending events
+	- If user issues "connect" command, trigger GGZ_USER_LOGIN with
+	  hardcoded values
+
+2000-09-17  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/.cvsignore, /cvsroot/ggz/ggz/src/frontend/text/main.c:
+	- First revision of event system
+	- Basic callback handling (connect, remove, process)
+	- Some testing of event queue in text frontend
+
+2000-09-15  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/ggz/src/frontend/text/.cvsignore, /cvsroot/ggz/ggz/src/frontend/text/main.c, /cvsroot/ggz/ggz/src/frontend/text/Makefile.am:
+	- Added new directories for core client and frontends
+	- Modified build system to work with new source layout
+	- Skeletal libggzcore and text frontend
