@@ -1,0 +1,10 @@
+[ModuleInfo]
+Author = Josef Spillner
+CommandLine = /usr/local/bin/keepalive
+Frontend = qt
+Homepage = http://ggz.sourceforge.net/games/keepalive/
+Name = Keepalive
+ProtocolEngine = Keepalive
+ProtocolVersion = 1
+Version = 0.1
+

@@ -54,7 +54,7 @@ Options::Options(QWidget *parent, const char *name)
 	labelseconds = new QLabel("Seconds:", this);
 
 	vbox2 = new QVBoxLayout(group, 5);
-	vbox2->addSpacing(10);
+	vbox2->addSpacing(15);
 	vbox2->add(noclock);
 	vbox2->add(serverclock);
 	vbox2->add(clientclock);
