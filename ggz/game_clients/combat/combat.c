@@ -284,3 +284,59 @@ int combat_options_check(combat_game *_game) {
   return 0;
 }
 
+char *combat_options_describe(combat_game *_game) {
+  char *retstr;
+  char temp[32];
+  int a, tot = 0;
+  retstr = (char *)malloc(sizeof(char) * 1024);
+  strcpy(retstr, "");
+  if (_game->name) {
+    strcat(retstr, "Map: ");
+    strcat(retstr, _game->name);
+    strcat(retstr, "\n");
+  }
+  sprintf(temp, "Size: %d x %d\n", _game->width, _game->height);
+  strcat(retstr, temp);
+  for (a = 0; a < 12; a++)
+    tot += ARMY(_game, a);
+  sprintf(temp, "%d units\n", tot);
+  strcat(retstr, temp);
+  if (_game->options)
+    strcat(retstr, "Options:\n");
+  if (_game->options & OPT_OPEN_MAP)
+    strcat(retstr, "Open map\n");
+  if (_game->options & OPT_ONE_TIME_BOMB)
+    strcat(retstr, "One time bomb\n");
+  if (_game->options & OPT_TERRORIST_SPY)
+    strcat(retstr, "Terrorist spy\n");
+  if (_game->options & OPT_MOVING_BOMB)
+    strcat(retstr, "Moving bombs\n");
+  if (_game->options & OPT_SUPER_SCOUT)
+    strcat(retstr, "Super scout\n");
+  if (_game->options & OPT_MOVING_FLAG)
+    strcat(retstr, "Moving flags\n");
+  if (_game->options & OPT_RANDOM_OUTCOME)
+    strcat(retstr, "Random outcome of attacks\n");
+  if (_game->options & OPT_ALLOW_DIAGONAL)
+    strcat(retstr, "Allow diagonal moves\n");
+  if (_game->options & OPT_UNKNOWN_VICTOR)
+    strcat(retstr, "Unknown victor\n");
+  if (_game->options & OPT_SILENT_DEFENSE)
+    strcat(retstr, "Silent deffense\n");
+  if (_game->options & OPT_SILENT_OFFENSE)
+    strcat(retstr, "Silent offense\n");
+  if (_game->options & OPT_RANDOM_SETUP)
+    strcat(retstr, "Random setup\n");
+  if (_game->options & OPT_SF_SERGEANT)
+    strcat(retstr, "Special forces sergeant\n");
+  if (_game->options & OPT_RUSH_ATTACK)
+    strcat(retstr, "Rush attack\n");
+  if (_game->options & OPT_HIDE_UNIT_LIST)
+    strcat(retstr, "Hide enemy unit list\n");
+  if (_game->options & OPT_SHOW_ENEMY_UNITS)
+    strcat(retstr, "Remember enemy units\n");
+
+  return retstr;
+}
+
+

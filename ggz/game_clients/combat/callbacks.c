@@ -157,3 +157,11 @@ on_save_map_menu_activate          (GtkMenuItem     *menuitem,
   if (cbt_game.army && cbt_game.map)
     game_ask_save_map();
 }
+
+void
+on_show_game_options1_activate         (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  if (cbt_game.army && cbt_game.map)
+    game_message(combat_options_describe(&cbt_game));
+}

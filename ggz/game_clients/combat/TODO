@@ -1,18 +1,12 @@
 What *must* be done before next version of GGZ:
 
 - Add the following options:
-  SUPER_SCOUT
   RANDOM_COMBAT
-  DIAGONAL_MOVE
   UNKNOWN_VICTOR
   SILENT_DEFFENSE
   SILENT_OFFENSE
   RANDOM_SETUP
-  SGT_SF
   RUSH
-  HIDE_ENEMY_LIST
-  SHOW_ENEMY_UNITS
-- Add a combat_* function returning a description of the current options
 - Make the "Show Enemy units" menu work
 
 
@@ -26,3 +20,4 @@ What should be done someday
 - About dialog
 - Are you sure? on some places
   - Add a "Yes/No" dialog widget
+- Play again

@@ -88,6 +88,19 @@
 
 	  <widget>
 	    <class>GtkMenuItem</class>
+	    <name>save_map_menu</name>
+	    <tooltip>Saves the current map</tooltip>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_save_map_menu_activate</handler>
+	      <last_modification_time>Sat, 30 Dec 2000 14:46:13 GMT</last_modification_time>
+	    </signal>
+	    <label>S_ave current map</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
 	    <name>request_sync</name>
 	    <tooltip>Requests the current game state from the game server</tooltip>
 	    <signal>
@@ -111,6 +124,19 @@
 	    <label>_Hide enemy units</label>
 	    <active>True</active>
 	    <always_show_toggle>False</always_show_toggle>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>show_game_options1</name>
+	    <tooltip>Displays the current game options</tooltip>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_show_game_options1_activate</handler>
+	      <last_modification_time>Sat, 30 Dec 2000 14:29:39 GMT</last_modification_time>
+	    </signal>
+	    <label>_Show game options</label>
+	    <right_justify>False</right_justify>
 	  </widget>
 	</widget>
       </widget>

@@ -249,6 +249,10 @@ void game_start() {
     if (cbt_game.options & OPT_OPEN_MAP || cbt_game.options & OPT_SHOW_ENEMY_UNITS)
       cbt_info.show_enemy = TRUE;
 
+    // Show we show the game optiosn?
+    if (cbt_game.options)
+      on_show_game_options1_activate(NULL, NULL);
+
     return 0;
   }
 

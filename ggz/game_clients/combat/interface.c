@@ -31,10 +31,11 @@ create_main_window (void)
   GtkWidget *exit_menu;
   GtkWidget *game;
   GtkWidget *game_menu;
-  GtkWidget *save_map_menu;
   GtkAccelGroup *game_menu_accels;
+  GtkWidget *save_map_menu;
   GtkWidget *request_sync;
   GtkWidget *hide_enemy_units1;
+  GtkWidget *show_game_options1;
   GtkWidget *hbox;
   GtkWidget *mainarea;
   GtkWidget *vseparator1;
@@ -124,13 +125,18 @@ create_main_window (void)
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (game), game_menu);
   game_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (game_menu));
 
-  save_map_menu = gtk_menu_item_new_with_label ("Save current map");
+  save_map_menu = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (save_map_menu)->child),
+                                   _("S_ave current map"));
+  gtk_widget_add_accelerator (save_map_menu, "activate_item", game_menu_accels,
+                              tmp_key, 0, 0);
   gtk_widget_set_name (save_map_menu, "save_map_menu");
   gtk_widget_ref (save_map_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_map_menu", game_menu,
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "save_map_menu", save_map_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show(save_map_menu);
-  gtk_container_add( GTK_CONTAINER(game_menu), save_map_menu);
+  gtk_widget_show (save_map_menu);
+  gtk_container_add (GTK_CONTAINER (game_menu), save_map_menu);
+  gtk_tooltips_set_tip (tooltips, save_map_menu, _("Saves the current map"), NULL);
 
   request_sync = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (request_sync)->child),
@@ -158,6 +164,19 @@ create_main_window (void)
   gtk_container_add (GTK_CONTAINER (game_menu), hide_enemy_units1);
   gtk_tooltips_set_tip (tooltips, hide_enemy_units1, _("Shows/Hide the enemies units that you shouldn't see"), NULL);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (hide_enemy_units1), TRUE);
+
+  show_game_options1 = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (show_game_options1)->child),
+                                   _("_Show game options"));
+  gtk_widget_add_accelerator (show_game_options1, "activate_item", game_menu_accels,
+                              tmp_key, 0, 0);
+  gtk_widget_set_name (show_game_options1, "show_game_options1");
+  gtk_widget_ref (show_game_options1);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "show_game_options1", show_game_options1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (show_game_options1);
+  gtk_container_add (GTK_CONTAINER (game_menu), show_game_options1);
+  gtk_tooltips_set_tip (tooltips, show_game_options1, _("Displays the current game options"), NULL);
 
   hbox = gtk_hbox_new (FALSE, 0);
   gtk_widget_set_name (hbox, "hbox");
@@ -241,14 +260,17 @@ create_main_window (void)
   gtk_signal_connect (GTK_OBJECT (exit_menu), "activate",
                       GTK_SIGNAL_FUNC (on_exit_menu_activate),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (save_map_menu), "activate",
+                      GTK_SIGNAL_FUNC (on_save_map_menu_activate),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (request_sync), "activate",
                       GTK_SIGNAL_FUNC (on_request_sync_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (hide_enemy_units1), "activate",
                       GTK_SIGNAL_FUNC (on_hide_enemy_units1_activate),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (save_map_menu), "activate",
-                      GTK_SIGNAL_FUNC (on_save_map_menu_activate),
+  gtk_signal_connect (GTK_OBJECT (show_game_options1), "activate",
+                      GTK_SIGNAL_FUNC (on_show_game_options1_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (mainarea), "expose_event",
                       GTK_SIGNAL_FUNC (on_mainarea_expose_event),
