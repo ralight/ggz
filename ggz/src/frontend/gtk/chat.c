@@ -845,3 +845,40 @@ gchar *chat_complete_name(gchar *name)
 		return returnname;
 	return NULL;
 }
+
+gint chat_is_friend(gchar *name)
+{
+	gint f=FALSE;
+	gint pos = 0;
+
+	while(1)
+	{
+		/* have we hit the end of the list */
+		if(g_array_index(chatinfo.friends, gchar*, pos) == NULL)
+			break;
+		if(!strcmp(g_array_index(chatinfo.friends, gchar*, pos), name))
+			f = TRUE;	
+		pos++;
+	}
+	
+	return f;
+}
+
+gint chat_is_ignore(gchar *name)
+{
+	gint f=FALSE;
+	gint pos = 0;
+
+	while(1)
+	{
+		/* have we hit the end of the list */
+		if(g_array_index(chatinfo.ignore, gchar*, pos) == NULL)
+			break;
+		if(!strcmp(g_array_index(chatinfo.ignore, gchar*, pos), name))
+			f = TRUE;	
+		pos++;
+	}
+	
+	return f;
+}
+

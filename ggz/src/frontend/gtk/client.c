@@ -59,7 +59,8 @@ static gint tablerow = -1;
  *        a global var. This is set at popup time
  *        search for the word popup.
  */
-gint popup_row;
+gint popup_row = 0;
+gint poping = FALSE;
 
 /* Callbacks for main client window */
 static void client_realize(GtkWidget *widget, gpointer data);
@@ -113,10 +114,9 @@ static int client_get_table_index(guint row);
 static int client_get_table_open(guint row);
 static void client_join_room(guint room);				 
 static void client_join_table(void);
-static void client_add_friend(GtkMenuItem *menuitem, gpointer data);
-static void client_remove_friend(GtkMenuItem *menuitem, gpointer data);
-static void client_add_ignore(GtkMenuItem *menuitem, gpointer data);
-static void client_remove_ignore(GtkMenuItem *menuitem, gpointer data);
+static void client_player_friends_click(GtkMenuItem *menuitem, gpointer data);
+static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data);
+static void client_send_private_message_activate(GtkMenuItem *menuitem, gpointer data);
 static char *client_get_players_index(guint row);
 static void client_tables_size_request(GtkWidget *widget, gpointer data);
 
@@ -660,8 +660,28 @@ client_player_clist_event			(GtkWidget	*widget,
 
 			/* FIXME: There has to be a better way to pass*/
 			popup_row=row;
+			if(popup_row<0 || popup_row>GTK_CLIST(tmp)->rows)
+				return FALSE;
+
 			gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
 					NULL, buttonevent->button, 0);
+
+			g_print("%d", popup_row);
+
+			poping = TRUE;
+			tmp = lookup_widget(menu, "friends");
+			if(chat_is_friend(client_get_players_index(popup_row)) == TRUE)
+				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tmp), TRUE);
+			else
+				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tmp), FALSE);
+
+			tmp = lookup_widget(menu, "ignore");
+			if(chat_is_ignore(client_get_players_index(popup_row)) == TRUE)
+				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tmp), TRUE);
+			else
+				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(tmp), FALSE);
+
+			poping = FALSE;
 		}
 		break;
 	default:
@@ -892,24 +912,35 @@ client_realize                    (GtkWidget       *widget,
 
 }
 
-static void client_add_friend(GtkMenuItem *menuitem, gpointer data)
+static void client_player_friends_click(GtkMenuItem *menuitem, gpointer data)
 {
-	chat_add_friend(client_get_players_index(popup_row), TRUE);
+	if(poping == FALSE)
+	{
+		if(GTK_CHECK_MENU_ITEM(menuitem)->active == TRUE)
+		{
+			chat_add_friend(client_get_players_index(popup_row), TRUE);
+		}else{
+			chat_remove_friend(client_get_players_index(popup_row));
+		}
+	}	
 }
 
-static void client_remove_friend(GtkMenuItem *menuitem, gpointer data)
+static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data)
 {
-	chat_remove_friend(client_get_players_index(popup_row));
+	if(poping == FALSE)
+	{
+		if(GTK_CHECK_MENU_ITEM(menuitem)->active == TRUE )
+		{
+			chat_add_ignore(client_get_players_index(popup_row), TRUE);
+		}else{
+			chat_remove_ignore(client_get_players_index(popup_row));
+		}
+	}
 }
 
-static void client_add_ignore(GtkMenuItem *menuitem, gpointer data)
+static void client_send_private_message_activate(GtkMenuItem *menuitem, gpointer data)
 {
-	chat_add_ignore(client_get_players_index(popup_row), TRUE);
-}
 
-static void client_remove_ignore(GtkMenuItem *menuitem, gpointer data)
-{
-	chat_remove_ignore(client_get_players_index(popup_row));
 }
 
 static void client_tables_size_request(GtkWidget *widget, gpointer data)
@@ -929,6 +960,8 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 	if(ggzcore_gametype_get_name(gt) == NULL && GTK_PANED(tmp)->child1_size != 0 )
 		gtk_paned_set_position(GTK_PANED(tmp), 0);
 }
+
+
 
 
 GtkWidget*
@@ -2023,88 +2056,54 @@ create_mnu_player (void)
 {
   GtkWidget *mnu_player;
   GtkAccelGroup *mnu_player_accels;
-  GtkWidget *friends_list;
-  GtkWidget *friends_list_menu;
-  GtkAccelGroup *friends_list_menu_accels;
-  GtkWidget *friends_add;
-  GtkWidget *friends_remove;
-  GtkWidget *ignore_list;
-  GtkWidget *ignore_list_menu;
-  GtkAccelGroup *ignore_list_menu_accels;
-  GtkWidget *ignore_add;
-  GtkWidget *ignore_remove;
+  GtkWidget *friends;
+  GtkWidget *ignore;
+  GtkWidget *separator9;
+  GtkWidget *send_private_message;
 
   mnu_player = gtk_menu_new ();
   gtk_object_set_data (GTK_OBJECT (mnu_player), "mnu_player", mnu_player);
   mnu_player_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_player));
 
-  friends_list = gtk_menu_item_new_with_label (_("Friends List"));
-  gtk_widget_ref (friends_list);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "friends_list", friends_list,
+  friends = gtk_check_menu_item_new_with_label (_("Friends"));
+  gtk_widget_ref (friends);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "friends", friends,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (friends_list);
-  gtk_container_add (GTK_CONTAINER (mnu_player), friends_list);
+  gtk_widget_show (friends);
+  gtk_container_add (GTK_CONTAINER (mnu_player), friends);
+  gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (friends), TRUE);
 
-  friends_list_menu = gtk_menu_new ();
-  gtk_widget_ref (friends_list_menu);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "friends_list_menu", friends_list_menu,
+  ignore = gtk_check_menu_item_new_with_label (_("Ignore"));
+  gtk_widget_ref (ignore);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "ignore", ignore,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (friends_list), friends_list_menu);
-  friends_list_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (friends_list_menu));
+  gtk_widget_show (ignore);
+  gtk_container_add (GTK_CONTAINER (mnu_player), ignore);
+  gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (ignore), TRUE);
 
-  friends_add = gtk_menu_item_new_with_label (_("Add"));
-  gtk_widget_ref (friends_add);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "friends_add", friends_add,
+  separator9 = gtk_menu_item_new ();
+  gtk_widget_ref (separator9);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "separator9", separator9,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (friends_add);
-  gtk_container_add (GTK_CONTAINER (friends_list_menu), friends_add);
+  gtk_widget_show (separator9);
+  gtk_container_add (GTK_CONTAINER (mnu_player), separator9);
+  gtk_widget_set_sensitive (separator9, FALSE);
 
-  friends_remove = gtk_menu_item_new_with_label (_("Remove"));
-  gtk_widget_ref (friends_remove);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "friends_remove", friends_remove,
+  send_private_message = gtk_menu_item_new_with_label (_("Send Private message"));
+  gtk_widget_ref (send_private_message);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "send_private_message", send_private_message,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (friends_remove);
-  gtk_container_add (GTK_CONTAINER (friends_list_menu), friends_remove);
+  gtk_widget_show (send_private_message);
+  gtk_container_add (GTK_CONTAINER (mnu_player), send_private_message);
 
-  ignore_list = gtk_menu_item_new_with_label (_("Ignore List"));
-  gtk_widget_ref (ignore_list);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "ignore_list", ignore_list,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (ignore_list);
-  gtk_container_add (GTK_CONTAINER (mnu_player), ignore_list);
-
-  ignore_list_menu = gtk_menu_new ();
-  gtk_widget_ref (ignore_list_menu);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "ignore_list_menu", ignore_list_menu,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (ignore_list), ignore_list_menu);
-  ignore_list_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (ignore_list_menu));
-
-  ignore_add = gtk_menu_item_new_with_label (_("Add"));
-  gtk_widget_ref (ignore_add);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "ignore_add", ignore_add,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (ignore_add);
-  gtk_container_add (GTK_CONTAINER (ignore_list_menu), ignore_add);
-
-  ignore_remove = gtk_menu_item_new_with_label (_("Remove"));
-  gtk_widget_ref (ignore_remove);
-  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "ignore_remove", ignore_remove,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (ignore_remove);
-  gtk_container_add (GTK_CONTAINER (ignore_list_menu), ignore_remove);
-
-  gtk_signal_connect (GTK_OBJECT (friends_add), "activate",
-                      GTK_SIGNAL_FUNC (client_add_friend),
+  gtk_signal_connect (GTK_OBJECT (friends), "activate",
+                      GTK_SIGNAL_FUNC (client_player_friends_click),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (friends_remove), "activate",
-                      GTK_SIGNAL_FUNC (client_remove_friend),
+  gtk_signal_connect (GTK_OBJECT (ignore), "activate",
+                      GTK_SIGNAL_FUNC (client_player_ignore_click),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (ignore_add), "activate",
-                      GTK_SIGNAL_FUNC (client_add_ignore),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (ignore_remove), "activate",
-                      GTK_SIGNAL_FUNC (client_remove_ignore),
+  gtk_signal_connect (GTK_OBJECT (send_private_message), "activate",
+                      GTK_SIGNAL_FUNC (client_send_private_message_activate),
                       NULL);
 
   return mnu_player;
