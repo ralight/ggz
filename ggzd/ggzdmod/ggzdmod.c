@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2608 2001-10-24 06:28:43Z jdorje $
+ * $Id: ggzdmod.c 2612 2001-10-24 18:53:54Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -608,7 +608,9 @@ int ggzdmod_halt_game(GGZdMod * mod)
 		   function in this case? */
 		set_state(ggzdmod, GGZ_STATE_GAMEOVER);
 	} else {
-		/* TODO: not implemented */
+		/* TODO: an extension to the communications protocol will be
+		   needed for halt_game to work ggz-side.  Let's get the rest 
+		   of it working first... */
 		return -1;
 	}
 	return 0;
@@ -618,9 +620,42 @@ int ggzdmod_halt_game(GGZdMod * mod)
  * ggzd specific actions
  */
 
+/* Sends a game launch packet to ggzdmod-game. A negative return value
+   indicates a serious (fatal) error. */
+static int send_game_launch(_GGZdMod * ggzdmod)
+{
+	int seat;
+	/* Send packet header and # of seats. */
+	if (es_write_int(ggzdmod->fd, REQ_GAME_LAUNCH) < 0 ||
+	    es_write_int(ggzdmod->fd, ggzdmod->num_seats) < 0)
+		return -1;
+
+	/* Send seat assignments */
+	for (seat = 0; seat < ggzdmod->num_seats; seat++) {
+		GGZdModSeat type = ggzdmod->seats[seat].type;
+		char *name = ggzdmod->seats[seat].name;
+		if (es_write_int(ggzdmod->fd, type) < 0)
+			return -1;
+		if (type == GGZ_SEAT_RESV) {
+			if (!name || es_write_string(ggzdmod->fd, name) < 0)
+				return -1;
+		}
+	}
+
+	return 0;
+}
+
 int ggzdmod_launch_game(GGZdMod * mod, char **args)
 {
+	_GGZdMod *ggzdmod = mod;
+	if (!CHECK_GGZDMOD(ggzdmod) || args == NULL)
+		return -1;
+
 	/* TODO: not implemented */
+	/* This needs to allocate everything, launch the actual program, then 
+	   call send_game_launch to tell the game to start. */
+	abort();
+	send_game_launch(ggzdmod);
 	return -1;
 }
 
