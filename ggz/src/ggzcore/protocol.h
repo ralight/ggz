@@ -4,6 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
+ * $Id: protocol.h 4508 2002-09-11 03:48:41Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -26,6 +27,9 @@
 #ifndef __PROTOCOL_H__
 #define __PROTOCOL_H__
 
-#define GGZ_CS_PROTO_VERSION 7
+/* I thought of putting this into ggz_common (in libggz) along with the
+   protocol opcodes, but it really needs to stay tied to the network code
+   itself (in ggzd and ggzcore). */
+#define GGZ_CS_PROTO_VERSION 8
 
 #endif /*__PROTOCOL_H__*/

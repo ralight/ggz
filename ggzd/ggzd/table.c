@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4501 2002-09-10 06:42:12Z jdorje $
+ * $Id: table.c 4508 2002-09-11 03:48:41Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -163,7 +163,7 @@ static int table_check(GGZTable* table)
 	int i, status = 0;
 	int ai_total = seats_count(table, GGZ_SEAT_BOT);
 	int seat_total = seats_num(table);
-	/*int spectator_total = spectators_count(table);*/
+	int spectator_total = spectators_count(table);
 	int g_type = table->type;
 	int room_type;
 	
@@ -184,9 +184,8 @@ static int table_check(GGZTable* table)
 
 	/* FIXME: should technically lock game_types */
 	/* Display and verify total seats and bot seats */
-	if(seat_total >= 0
-	   && seat_total <= MAX_TABLE_SIZE
-	   && game_types[g_type].player_allow_mask & (1 << (seat_total - 1)))
+	if (ggz_numberlist_isset(&game_types[g_type].player_allow_list,
+				  seat_total))
 		dbg_msg(GGZ_DBG_TABLE, "Seats  : %d (accept)", seat_total);
 	else {
 		dbg_msg(GGZ_DBG_TABLE, "Seats  : %d (invalid)", seat_total);
@@ -194,23 +193,21 @@ static int table_check(GGZTable* table)
 	}
 	
 	if(ai_total == 0
-	   || (ai_total > 0
-	       && ai_total < seat_total /* at least one non-AI seat */
-	       && game_types[g_type].bot_allow_mask & (1 << (ai_total-1))))
+	   || ggz_numberlist_isset(&game_types[g_type].bot_allow_list,
+				   ai_total))
 		dbg_msg(GGZ_DBG_TABLE, "Bots   : %d (accept)", ai_total);
 	else {
 		dbg_msg(GGZ_DBG_TABLE, "Bots   : %d (invalid)", ai_total);
 		status = E_BAD_OPTIONS;
 	}
 
-	/*if(spectator_total == 0
-		|| (spectator_total > 0
-			&& game_types[g_type].spectator_allow_mask & (1 << (spectator_total - 1))))
-		dbg_msg(GGZ_DBG_TABLE, "Spectators: %d (accept)", spectator_total);
+	if (game_types[g_type].allow_spectators)
+		dbg_msg(GGZ_DBG_TABLE, "Spectators: %d", spectator_total);
 	else {
-		dbg_msg(GGZ_DBG_TABLE, "Spectators: %d (invalid)", spectator_total);
-		status = E_BAD_OPTIONS;
-	}*/
+		if (spectator_total > 0)
+			status = E_BAD_OPTIONS;
+		dbg_msg(GGZ_DBG_TABLE, "Spectators not supported.");
+	}
 
 	dbg_msg(GGZ_DBG_TABLE, "Open Seats : %d", seats_count(table, GGZ_SEAT_OPEN));
 	dbg_msg(GGZ_DBG_TABLE, "Resv.Seats : %d", seats_count(table, GGZ_SEAT_RESERVED));

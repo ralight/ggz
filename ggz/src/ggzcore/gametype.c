@@ -3,6 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
+ * $Id: gametype.c 4508 2002-09-11 03:48:41Z jdorje $
  *
  * This file contains functions for hadiling games
  *
@@ -162,16 +163,16 @@ void _ggzcore_gametype_init(struct _GGZGameType *gametype,
 			    const char* version,
 			    const char* prot_engine,
 			    const char* prot_version,
-			    const GGZAllowed allow_players,
-			    const GGZAllowed allow_bots,
-				const unsigned int spectators_allowed,
+			    const GGZNumberList player_allow_list,
+			    const GGZNumberList bot_allow_list,
+			    const unsigned int spectators_allowed,
 			    const char* desc,
 			    const char* author,
 			    const char *url)
 {
 	gametype->id = id;
-	gametype->allow_players = allow_players;
-	gametype->allow_bots = allow_bots;
+	gametype->player_allow_list = player_allow_list;
+	gametype->bot_allow_list = bot_allow_list;
 	gametype->spectators_allowed = spectators_allowed;
 	
 	gametype->name = ggz_strdup(name);
@@ -256,31 +257,13 @@ char*  _ggzcore_gametype_get_desc(struct _GGZGameType *type)
 /* Return the maximum number of allowed players/bots */
 unsigned int _ggzcore_gametype_get_max_players(struct _GGZGameType *type)
 {
-	int i, num = 0;
-	/* FIXME: come up with a cool bit maniuplation to do this */
-
-	for (i = 8; i > 0; i--)
-		if (_ggzcore_gametype_num_players_is_valid(type, i)) {
-			num = i;
-			break;
-		}
-	
-	return num;
+	return ggz_numberlist_get_max(&type->player_allow_list);
 }
 
 
 unsigned int _ggzcore_gametype_get_max_bots(struct _GGZGameType *type)
 {
-	int i, num = 0;
-	/* FIXME: come up with a cool bit maniuplation to do this */
-
-	for (i = 8; i > 0; i--)
-		if (_ggzcore_gametype_num_bots_is_valid(type, i)) {
-			num = i;
-			break;
-		}
-	
-	return num;
+	return ggz_numberlist_get_max(&type->bot_allow_list);
 }
 
 
@@ -289,30 +272,17 @@ unsigned int _ggzcore_gametype_get_spectators_allowed(struct _GGZGameType *type)
 	return type->spectators_allowed;
 }
 
-
 /* Verify that a paticular number of players/bots is valid */
 unsigned int _ggzcore_gametype_num_players_is_valid(struct _GGZGameType *type, unsigned int num)
 {
-	char mask;
-
-	/* 2^(num-1) */
-	mask = 1 << (num-1);
-
-	return ((type->allow_players & mask) != 0);
+	return ggz_numberlist_isset(&type->player_allow_list, num);
 }
 
 
 unsigned int _ggzcore_gametype_num_bots_is_valid(struct _GGZGameType *type, unsigned int num)
 {
-	char mask;
-
-	if (num != 0) {
-		/* 2^(num-1) */
-		mask = 1 << (num-1);
-		return ((type->allow_bots & mask) != 0);
-	}
-	else /* always allow 0 bots */
-		return 1;
+	return num == 0
+	  || ggz_numberlist_isset(&type->bot_allow_list, num);
 }
 
 
@@ -338,10 +308,11 @@ void* _ggzcore_gametype_create(void* p)
 
 	_ggzcore_gametype_init(new, src->id, src->name, src->version,
 			       src->prot_engine, src->prot_version,
-			       src->allow_players, src->allow_bots, src->spectators_allowed,
-				   src->desc, src->author, src->url);
+			       src->player_allow_list, src->bot_allow_list,
+			       src->spectators_allowed,
+			       src->desc, src->author, src->url);
 	
-	return (void*)new;
+	return new;
 }
 
 

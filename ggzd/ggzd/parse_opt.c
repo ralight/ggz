@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4501 2002-09-10 06:42:12Z jdorje $
+ * $Id: parse_opt.c 4508 2002-09-11 03:48:41Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -389,9 +389,8 @@ static void parse_game(char *name, char *dir)
 	char fname[strlen(name) + strlen(dir) + 6];
 	int ch;
 	GameInfo game_info;
-	int intval, i, len, num_args;
-	char **b_list;
-	int b_count = 0;
+	int len, num_args;
+	char *tmp;
 
 	/* Check to see if we are allocating too many games */
 	if(state.types == MAX_GAME_TYPES) {
@@ -459,36 +458,14 @@ static void parse_game(char *name, char *dir)
 	game_info.kill_when_empty = ggz_conf_read_int(ch, "TableOptions",
 						      "KillWhenEmpty", 1);
 
-	ggz_conf_read_list(ch, "TableOptions", "BotsAllowed",
-			   &b_count, &b_list);
-	if(b_count != 0) {
-		for(i=0; i<b_count; i++) {
-			intval = atoi(b_list[i]);
-			if(intval < 0 || intval > MAX_TABLE_SIZE) {
-				err_msg("BotsAllowed has invalid value [%s]",
-					name);
-				continue;
-			}
-			if (intval > 0)
-				game_info.bot_allow_mask |= 1 << (intval - 1);
-			ggz_free(b_list[i]);
-		}
-		ggz_free(b_list);
-	}
-	ggz_conf_read_list(ch, "TableOptions", "PlayersAllowed",
-			   &b_count, &b_list);
-	if(b_count != 0) {
-		for(i=0; i<b_count; i++) {
-			intval = atoi(b_list[i]);
-			if(intval < 1 || intval > MAX_TABLE_SIZE) {
-				err_msg("PlayersAllowed has invalid value");
-				continue;
-			}
-			game_info.player_allow_mask |= 1 << (intval - 1);
-			ggz_free(b_list[i]);
-		}
-		ggz_free(b_list);
-	}
+	tmp = ggz_conf_read_string(ch, "TableOptions", "BotsAllowed", "");
+	game_info.bot_allow_list = ggz_numberlist_read(tmp);
+	ggz_free(tmp);
+
+	tmp = ggz_conf_read_string(ch, "TableOptions", "PlayersAllowed", "1");
+	game_info.player_allow_list = ggz_numberlist_read(tmp);
+	ggz_free(tmp);
+
 	game_info.allow_spectators = ggz_conf_read_int(ch, "TableOptions",
 						       "AllowSpectators", 0);
 

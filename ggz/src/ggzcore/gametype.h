@@ -3,6 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
+ * $Id: gametype.h 4508 2002-09-11 03:48:41Z jdorje $
  *
  * This file contains functions for handling game types
  *
@@ -23,21 +24,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <ggz_common.h>
 
 #ifndef __GAMETYPE_H_
 #define __GAMETYPE_H_
-
-
-typedef enum {
-	GGZ_ALLOW_ONE   =   1,    /* %0000 0001 */
-	GGZ_ALLOW_TWO   =   2,    /* %0000 0010 */
-	GGZ_ALLOW_THREE =   4,    /* %0000 0100 */
-	GGZ_ALLOW_FOUR  =   8,    /* %0000 1000 */
-	GGZ_ALLOW_FIVE  =  16,    /* %0001 0000 */
-	GGZ_ALLOW_SIX   =  32,    /* %0010 0000 */
-	GGZ_ALLOW_SEVEN =  64,    /* %0100 0000 */
-	GGZ_ALLOW_EIGHT = 128     /* %1000 0000 */
-} GGZAllowed;
 
 
 /* Structure describing specific game type */
@@ -65,10 +55,10 @@ struct _GGZGameType {
 	char *url;
 
 	/* Bitmask of alowable numbers of players */
-	GGZAllowed allow_players;
+	GGZNumberList player_allow_list;
 
 	/* Bitmask of alowable numbers of bots */
-	GGZAllowed allow_bots;
+	GGZNumberList bot_allow_list;
 
 	/* Whether spectators are allowed or not */
 	unsigned int spectators_allowed;
@@ -88,9 +78,9 @@ void _ggzcore_gametype_init(struct _GGZGameType *gametype,
 			    const char* version,
 			    const char* prot_engine,
 			    const char* prot_version,
-			    const GGZAllowed allow_players,
-			    const GGZAllowed allow_bots,
-				unsigned int spectators_allowed,
+			    const GGZNumberList player_allow_list,
+			    const GGZNumberList bot_allow_list,
+			    unsigned int spectators_allowed,
 			    const char* desc,
 			    const char* author, 
 			    const char *url);

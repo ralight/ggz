@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 4501 2002-09-10 06:42:12Z jdorje $
+ * $Id: datatypes.h 4508 2002-09-11 03:48:41Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -33,7 +33,9 @@
 #include <pthread.h>
 
 #include <ggz.h>
-#include <ggzd.h>
+#include <ggz_common.h>
+
+#include "ggzd.h"
 
 
 /* Datatypes for server options*/
@@ -92,8 +94,8 @@ typedef struct GameInfo {
 	
 	/* Masks for how many overall players, bots and spectators are allowed
 	   to be selected for the game. */
-	unsigned char player_allow_mask;
-	unsigned char bot_allow_mask;
+	GGZNumberList player_allow_list;
+	GGZNumberList bot_allow_list;
 	unsigned char allow_spectators;
 	
 	/* Are players allowed to leave mid-game?  (i.e. does the

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 4466 2002-09-08 08:49:39Z jdorje $
+ * $Id: netxml.c 4508 2002-09-11 03:48:41Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -98,8 +98,8 @@ struct _GGZNet {
 typedef struct _GGZGameData {
 	char *prot_engine;
 	char *prot_version;
-	GGZAllowed allow_players;
-	GGZAllowed allow_bots;
+	GGZNumberList player_allow_list;
+	GGZNumberList bot_allow_list;
 	int spectators_allow;
 	char *desc;
 	char *author;
@@ -143,7 +143,8 @@ static void _ggzcore_net_handle_session(GGZNet*, GGZXMLElement*);
 /* Extra functions fot handling data associated with specific tags */
 static void _ggzcore_net_list_insert(GGZXMLElement*, void*);
 static void _ggzcore_net_game_set_protocol(GGZXMLElement*, char*, char *);
-static void _ggzcore_net_game_set_allowed(GGZXMLElement*, GGZAllowed, GGZAllowed, int);
+static void _ggzcore_net_game_set_allowed(GGZXMLElement*,
+					  GGZNumberList, GGZNumberList, int);
 static void _ggzcore_net_game_set_info(GGZXMLElement*, char*, char *);
 static void _ggzcore_net_game_set_desc(GGZXMLElement*, char*);
 static void _ggzcore_net_table_add_seat(GGZXMLElement*, struct _GGZSeat*);
@@ -367,10 +368,7 @@ int _ggzcore_net_send_list_types(struct _GGZNet *net, const char verbose)
 	net->gametype_verbose = verbose;
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending gametype list request");	
-	if (verbose)
-		full = "true";
-	else
-		full = "false";
+	full = bool_to_str(verbose);
 	
 	_ggzcore_net_send_line(net, "<LIST TYPE='game' FULL='%s'/>", full);
 
@@ -385,10 +383,7 @@ int _ggzcore_net_send_list_rooms(struct _GGZNet *net, const int type, const char
 	
 	net->room_verbose = verbose;
 	ggz_debug(GGZCORE_DBG_NET, "Sending room list request");	
-	if (verbose)
-		full = "true";
-	else
-		full = "false";
+	full = bool_to_str(verbose);
 	
 	_ggzcore_net_send_line(net, "<LIST TYPE='room' FULL='%s'/>", full);
 
@@ -517,8 +512,7 @@ int _ggzcore_net_send_table_join(struct _GGZNet *net,
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending table join request");
 	_ggzcore_net_send_line(net, "<JOIN TABLE='%d' SPECTATOR='%s'/>",
-			       num,
-			       spectator ? "true" : "false");
+			       num, bool_to_str(spectator));
 
 	return status;
 }
@@ -531,8 +525,8 @@ int _ggzcore_net_send_table_leave(struct _GGZNet *net,
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending table leave request");
 	_ggzcore_net_send_line(net, "<LEAVE FORCE='%s' SPECTATOR='%s'/>",
-			       force ? "true" : "false",
-			       spectator ? "true" : "false");
+			       bool_to_str(force),
+			       bool_to_str(spectator));
 
 	return status;
 }
@@ -1203,8 +1197,8 @@ static void _ggzcore_net_handle_game(GGZNet *net, GGZXMLElement *game)
 	char *name, *version;
 	char *prot_engine = NULL;
 	char *prot_version = NULL;
-	GGZAllowed allow_players = 0;
-	GGZAllowed allow_bots = 0;
+	GGZNumberList player_allow_list = ggz_numberlist_new();
+	GGZNumberList bot_allow_list = ggz_numberlist_new();
 	int spectators_allow = 0;
 	char *desc = NULL;
 	char *author = NULL;
@@ -1224,8 +1218,8 @@ static void _ggzcore_net_handle_game(GGZNet *net, GGZXMLElement *game)
 		if (data) {
 			prot_engine = data->prot_engine;
 			prot_version = data->prot_version;
-			allow_players = data->allow_players;
-			allow_bots = data->allow_bots;
+			player_allow_list = data->player_allow_list;
+			bot_allow_list = data->bot_allow_list;
 			spectators_allow = data->spectators_allow;
 			desc = data->desc;
 			author = data->author;
@@ -1234,8 +1228,9 @@ static void _ggzcore_net_handle_game(GGZNet *net, GGZXMLElement *game)
 
 		type = _ggzcore_gametype_new();
 		_ggzcore_gametype_init(type, id, name, version, prot_engine,
-				       prot_version, allow_players,
-				       allow_bots, spectators_allow, desc, author, url);
+				       prot_version, 
+				       player_allow_list, bot_allow_list,
+				       spectators_allow, desc, author, url);
 
 		parent_tag = ggz_xmlelement_get_tag(parent);
 		
@@ -1278,7 +1273,10 @@ static void _ggzcore_net_game_set_protocol(GGZXMLElement *game, char *engine, ch
 }
 
 
-static void _ggzcore_net_game_set_allowed(GGZXMLElement *game, GGZAllowed players, GGZAllowed bots, int spectators)
+static void _ggzcore_net_game_set_allowed(GGZXMLElement *game,
+					  GGZNumberList players, 
+					  GGZNumberList bots,
+					  int spectators)
 {
 	struct _GGZGameData *data;
 	
@@ -1290,8 +1288,8 @@ static void _ggzcore_net_game_set_allowed(GGZXMLElement *game, GGZAllowed player
 		ggz_xmlelement_set_data(game, data);
 	}
 	
-	data->allow_players = players;
-	data->allow_bots = bots;
+	data->player_allow_list = players;
+	data->bot_allow_list = bots;
 	data->spectators_allow = spectators;
 }
 
@@ -1354,11 +1352,12 @@ static void _ggzcore_net_handle_allow(GGZNet *net, GGZXMLElement *allow)
 	parent = ggz_stack_top(net->stack);
 
 	if (allow && parent) {
-		_ggzcore_net_game_set_allowed(parent, 
-						   safe_atoi(ggz_xmlelement_get_attr(allow, "PLAYERS")),
-						   safe_atoi(ggz_xmlelement_get_attr(allow, "BOTS")),
-						   safe_atoi(ggz_xmlelement_get_attr(allow, "SPECTATORS")));
+		GGZNumberList players = ggz_numberlist_read(ggz_xmlelement_get_attr(allow, "PLAYERS"));
+		GGZNumberList bots = ggz_numberlist_read(ggz_xmlelement_get_attr(allow, "BOTS"));
+		int spectators = str_to_bool(ggz_xmlelement_get_attr(allow, "SPECTATORS"), 0);
 
+		_ggzcore_net_game_set_allowed(parent,
+					      players, bots, spectators);
 	}
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4501 2002-09-10 06:42:12Z jdorje $
+ * $Id: net.c 4508 2002-09-11 03:48:41Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -385,12 +385,19 @@ int net_send_type_list_count(GGZNetIO *net, int count)
 
 int net_send_type(GGZNetIO *net, int index, GameInfo *type, char verbose)
 {
+	char *players = ggz_numberlist_write(&type->player_allow_list);
+	char *bots = ggz_numberlist_write(&type->bot_allow_list);
+	char *spectators = bool_to_str(type->allow_spectators);
+
 	_net_send_line(net, "<GAME ID='%d' NAME='%s' VERSION='%s'>",
 		       index, type->name, type->version);
 	_net_send_line(net, "<PROTOCOL ENGINE='%s' VERSION='%s'/>",
 		       type->p_engine, type->p_version);
-	_net_send_line(net, "<ALLOW PLAYERS='%d' BOTS='%d' SPECTATORS='%d'/>",
-		       type->player_allow_mask, type->bot_allow_mask, type->allow_spectators);
+	_net_send_line(net, "<ALLOW PLAYERS='%s' BOTS='%s' SPECTATORS='%s'/>",
+		       players, bots, spectators);
+
+	ggz_free(players);
+	ggz_free(bots);
 	
 	if (verbose) {
 		_net_send_line(net, "<ABOUT AUTHOR='%s' URL='%s'/>",
@@ -1180,7 +1187,7 @@ static void _net_handle_list(GGZNetIO *net, GGZXMLElement *list)
 		}
 		
 		full = ggz_xmlelement_get_attr(list, "FULL");
-		if (full && strcmp(full, "true") == 0)
+		if (str_to_bool(full, 0))
 			verbose = 1;
 		
 		if (strcmp(type, "game") == 0)
@@ -1246,24 +1253,6 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *chat)
 
 		player_chat(net->client->data, op, to, msg);
 	}
-}
-
-
-/* Convert a possibly-null string that should contain "true" or "false"
-   to a boolean (int) value.  The default value is returned if an invalid
-   or empty value is sent. */
-static int str_to_bool(const char *str, int dflt)
-{
-	if (!str)
-		return dflt;
-  
-	if (strcasecmp(str, "true") == 0)
-		return 1;
-
-	if (strcasecmp(str, "false") == 0)
-		return 0;
-
-	return dflt;
 }
 
 
