@@ -25,17 +25,26 @@ extern struct Memmory memmory;
 
 void show_bad_lang( char *from );
 
-void handle_chat( char OpCode, char *from, char *message )
+void handle_chat( unsigned char OpCode, char *from, char *message )
 {
 	int i, word_c, old, size;
 	char **words;
-	char out[grubby.chat_length];
+	char out[grubby.chat_length + strlen(grubby.name) + 1];
 
-	word_c = 0;
 	old = 0;
 
-	strcpy( out, message );
+	/* Personal Message */
+	if( OpCode == GGZ_CHAT_PERSONAL )
+		sprintf( out, "%s %s", grubby.name, message );
+	else
+		strcpy( out, message );
 
+	/* Personal Message */
+	if( OpCode == GGZ_CHAT_PERSONAL )
+		word_c=1;
+	else
+		word_c=0;
+	
 	/* Prescan for total number of words */
 	for( i=0; i<strlen( message )+1; i++)
 	{
@@ -50,7 +59,12 @@ void handle_chat( char OpCode, char *from, char *message )
 		exit(1);
 	}
 	
-	word_c=0;
+	/* Personal Message */
+	if( OpCode == GGZ_CHAT_PERSONAL )
+		word_c=1;
+	else
+		word_c=0;
+
 	size = strlen(message)+1;
 	for( i=0; i<size; i++)
 	{
@@ -70,8 +84,11 @@ void handle_chat( char OpCode, char *from, char *message )
 		}
 	}
 
-	i = check_known( from );
+	/* Personal Message */
+	if( OpCode == GGZ_CHAT_PERSONAL )
+		words[0] = grubby.name;
 
+	i = check_known( from );
 	/* Unknown person */
 	if( i == -1 )
 	{

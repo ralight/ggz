@@ -108,6 +108,13 @@ void public_commands( char *from, char **words, int totalwords, char *fullmessag
 			add_message( from, fullmessage+strlen( out ) );
 			return;
 		}
+
+		sprintf( out, "%s say ", grubby.name );
+		if( !strncasecmp( fullmessage, out, strlen( out ) ) )
+		{
+			send_chat( fullmessage+strlen( out ) );
+			return;
+		}
 	}
 }
 
@@ -185,7 +192,7 @@ void show_public_help( char *from )
 	send_msg( from, "                             I will accept from you." );
 	send_msg( from, "have you seen <username> ... Will return how long ago" );
 	send_msg( from, "                             I saw <username>." );
-	send_msg( from, "my name is <ream name> ..... I'd love to get to know" );
+	send_msg( from, "my name is <real name> ..... I'd love to get to know" );
 	send_msg( from, "                             you a little better." );
 	send_msg( from, "tell <username> <message>  . I'll tell <username> your" );
 	send_msg( from, "                             <message> next time I see them." );
