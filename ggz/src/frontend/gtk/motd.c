@@ -48,7 +48,11 @@ void motd_create_or_raise(void)
                 motd_dialog = create_dlg_motd();
 
 		tmp = lookup_widget(motd_dialog, "motd_text");
+#ifdef GTK2
+		gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(tmp), GTK_WRAP_WORD);
+#else
 		gtk_text_set_word_wrap(GTK_TEXT(tmp), TRUE);
+#endif
                 gtk_widget_show(motd_dialog);
         }
         else {
@@ -57,9 +61,15 @@ void motd_create_or_raise(void)
 
 		/* Clear out what is currently there */
 		tmp = lookup_widget(motd_dialog, "motd_text");
+#ifdef GTK2
+		gtk_text_buffer_set_text(gtk_text_view_get_buffer(
+						 GTK_TEXT_VIEW(tmp)),
+					 "", -1);
+#else
 		gtk_text_set_point(GTK_TEXT(tmp), 0);
 		gtk_text_forward_delete(GTK_TEXT(tmp),
 			gtk_text_get_length(GTK_TEXT(tmp)));
+#endif
         }
 
 }
@@ -87,7 +97,9 @@ void motd_print_line(gchar *line)
         }
                                         
         temp_widget = gtk_object_get_data(GTK_OBJECT(motd_dialog), "motd_text");
+#ifndef GTK2
 	gtk_text_freeze(GTK_TEXT(temp_widget));
+#endif
 
         fixed_font = gdk_font_load ("-misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1");
         while(line[lindex] != '\0')
@@ -107,8 +119,13 @@ void motd_print_line(gchar *line)
                                 if ((letter>=0) && (letter<=9))
                                 {
                                         out[oindex]='\0';
+#ifdef GTK2
+					/* FIXME: handle colors */
+					gtk_text_buffer_insert_at_cursor(gtk_text_view_get_buffer(GTK_TEXT_VIEW(temp_widget)), out, -1);
+#else
                                         gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
                                                                 &colors[color_index], NULL, out, -1);
+#endif
                                         color_index=atoi(&line[lindex]);
                                         cmap = gdk_colormap_get_system();
                                         if (!gdk_color_alloc(cmap, &colors[color_index])) {
@@ -134,10 +151,18 @@ void motd_print_line(gchar *line)
 		out = ggz_realloc(out, outlen);
 	}
         out[oindex]='\0';
+
+#ifdef GTK2
+	/* FIXME: handle colors */
+	gtk_text_buffer_insert_at_cursor(gtk_text_view_get_buffer(
+						 GTK_TEXT_VIEW(temp_widget)),
+					 out, -1);
+#else
         gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
                         &colors[color_index], NULL, out, -1);
-
 	gtk_text_thaw(GTK_TEXT(temp_widget));
+#endif
+
 	ggz_free(out);
 }
 
@@ -158,7 +183,6 @@ create_dlg_motd (void)
   gtk_object_set_data (GTK_OBJECT (dlg_motd), "dlg_motd", dlg_motd);
   gtk_widget_set_usize (dlg_motd, 300, 455);
   gtk_window_set_title (GTK_WINDOW (dlg_motd), _("MOTD"));
-  GTK_WINDOW (dlg_motd)->type = GTK_WINDOW_DIALOG;
   gtk_window_set_policy (GTK_WINDOW (dlg_motd), FALSE, TRUE, TRUE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_motd)->vbox;
@@ -181,7 +205,11 @@ create_dlg_motd (void)
   gtk_box_pack_start (GTK_BOX (notd_vbox), motd_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (motd_scrolledwindow), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
+#ifdef GTK2
+  motd_text = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
+#else
   motd_text = gtk_text_new (NULL, NULL);
+#endif
   gtk_widget_ref (motd_text);
   gtk_object_set_data_full (GTK_OBJECT (dlg_motd), "motd_text", motd_text,
                             (GtkDestroyNotify) gtk_widget_unref);
