@@ -41,7 +41,7 @@
 #include "xtext.h"
 #include "support.h"
 
-static gint chat_get_color(gchar *name);
+static gchar *chat_get_color(gchar *name);
 extern GtkWidget *win_main;
 
 /* Aray of GdkColors currently used for chat and MOTD */
@@ -122,12 +122,12 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 				name = g_strdup_printf("%s %s", player, message+4);
 			        gtk_xtext_append_indent(GTK_XTEXT(tmp), "*", 1, name, strlen(name));
 			} else {
-				name = g_strdup_printf("<\003%d%s\00300>", chat_get_color(player), player);
+				name = g_strdup_printf("<\003%s%s\00300>", chat_get_color(player), player);
 			        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			}
 			break;
 		case CHAT_PRVMSG:
-			name = g_strdup_printf(">\003%d%s\00300<", chat_get_color(player), player);
+			name = g_strdup_printf(">\003%s%s\00300<", chat_get_color(player), player);
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
 		case CHAT_BEEP:
@@ -135,7 +135,7 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
 		case CHAT_ANNOUNCE:
-			name = g_strdup_printf("[\003%d%s\00300]", chat_get_color(player), player);
+			name = g_strdup_printf("[\003%s%s\00300]", chat_get_color(player), player);
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
 		case CHAT_SEND_PRVMSG:
@@ -412,25 +412,35 @@ void chat_word_clicked(GtkXText *xtext, char *word,
  * gchar		*name	: The name to get the color for
  *
  * Returns:
- * gint			color	: The color to use
+ * gchar		*color	: The color to use
  */
 
-gint chat_get_color(gchar *name)
+gchar *chat_get_color(gchar *name)
 {
 	if(!ggzcore_conf_read_int("CHAT", "COLOR", TRUE))
 	{
 		/* Dont use color */
-		return 0;
+		return "00";
 	} else {
 		if(ggzcore_conf_read_int("CHAT", "SOME_COLOR", TRUE))
 		{
 			if(!strcmp(name,  ggzcore_state_get_profile_login()))
-				return ggzcore_conf_read_int("CHAT", "Y_COLOR", 8);
+			{
+				if(ggzcore_conf_read_int("CHAT", "Y_COLOR", 8) > 9)
+					return g_strdup_printf("%d", ggzcore_conf_read_int("CHAT", "Y_COLOR", 8));
+				else
+					return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "Y_COLOR", 8));
+			}
 
-			return ggzcore_conf_read_int("CHAT", "O_COLOR", 2);
+			if(ggzcore_conf_read_int("CHAT", "O_COLOR", 2) > 9)
+				return g_strdup_printf("%d", ggzcore_conf_read_int("CHAT", "O_COLOR", 2));
+			else
+				return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "O_COLOR", 2));
 		} else if(ggzcore_conf_read_int("CHAT", "FULL_COLOR", FALSE)) {
 			
 		}
 	}
-	return 0;
+
+	return "00";
+
 }
