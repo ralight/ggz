@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZMod library
  * Desc: GGZ game client module functions
- * $Id: ggzmod.h 3111 2002-01-14 05:53:06Z jdorje $
+ * $Id: ggzmod.h 3849 2002-04-08 05:54:10Z jdorje $
  *
  * This contains basic functions that can be used by game client programs
  * so that they can interface as a GGZ module.
@@ -99,8 +99,12 @@
  * For more information, see the documentation at http://ggz.sf.net/.
  */
 
-#ifndef __GGZ_CLIENT_GGZ_H
-#define __GGZ_CLIENT_GGZ_H
+#ifndef __GGZMOD_H__
+#define __GGZMOD_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <ggz_common.h>
 
@@ -149,4 +153,8 @@ int ggzmod_get_fd(void);
  */
 int ggzmod_get_udp_fd(void);
 
-#endif /* __GGZ_CLIENT_GGZ_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __GGZMOD_H__ */
