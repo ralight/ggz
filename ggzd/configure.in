@@ -213,6 +213,7 @@ AC_OUTPUT([Makefile
 	   game_servers/tictactoe/Makefile
 	   game_servers/dots/Makefile
 	   game_servers/lapocha/Makefile
+	   game_servers/reversi/Makefile
 	   ])
 
 
