@@ -34,14 +34,16 @@ with the frontends
 <a href="/games/reversi/">Reversi</a>
 with the frontends
 <a href="/games/reversi/">Reversi (Gtk+)</a> and
-<a href="/games/kreversi/">KReversi (KDE)</a>
+<a href="/games/kreversi/">KReversi (KDE)</a> and
+<a href="/games/ggzboard/">GGZBoard Reversi (SDL)</a>
 <br>
 <a href="/games/combat/">Combat</a>
 <br>
 <a href="/games/chess/">Chess</a>
 with the frontends
 <a href="/games/chess/">Chess (Gtk+)</a> and
-<a href="/games/koenig/">Koenig (KDE)</a>
+<a href="/games/koenig/">Koenig (KDE)</a> and
+<a href="/games/ggzboard/">GGZBoard Chess (SDL)</a>
 <br>
 <a href="/games/cchess/">Chinese Chess</a>
 <br>
@@ -52,7 +54,7 @@ with the frontends
 <br>
 <a href="/games/krosswater/">Krosswater</a>
 <br>
-<a href="/games/muehle/">Mühle</a>
+<a href="/games/muehle/">MÃ¼hle</a>
 <br>
 <a href="/games/escape/">Escape</a>
 with the frontends
@@ -60,6 +62,12 @@ with the frontends
 <a href="/games/escape-sdl/">Escape/SDL (SDL)</a>
 <br>
 <a href="/games/connectx/">ConnectX</a>
+<br>
+<a href="/games/ggzboard/">Go</a>
+<br>
+<a href="/games/ggzboard/">Checkers</a>
+<br>
+<a href="/games/ggzboard/">Hnefatafl</a>
 <br>
 <br>
 
@@ -69,6 +77,7 @@ with the frontends
 <a href="/games/lapocha/">LaPocha</a>
 <br>
 <a href="/games/ggzcards/">GGZCards</a>
+(Bridge, FortyTwo, Hearts, LaPocha, Spades, Suaro, Sueca, Whist)
 <br>
 <br>
 
@@ -97,7 +106,9 @@ with the frontends Kamikaze (KDE) and PyKamikaze (SDL)
 <a href="/games/teg/">T.E.G.</a>
 <br>
 <a href="/games/gnugo/">GNU Go</a>
-with the frontends CGoBan (X11)
+with the frontend CGoBan (X11)
+<br>
+<a href="/games/widelands/">Widelands</a>
 
 </td>
 </tr>

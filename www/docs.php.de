@@ -10,6 +10,9 @@ Auf dieser Seite sind alle wichtigen Dokumentationen kategorisiert und
 beschrieben.
 <br><br>
 
+</td></tr>
+<tr><td>
+
 <i>Spieler-Dokumentation</i><br>
 Alle Anwendungen und Spiele sind auf ihren jeweiligen Webseiten beschrieben.
 Zusätzliche Dokumentation:
@@ -32,6 +35,9 @@ Artikel-Serie:
 <a href="/docs/articles/">Übersicht</a>
 <br><br>
 
+</td></tr>
+<tr><td>
+
 <i>Entwickler-Dokumentation</i><br>
 Entwickler-Dokumentation steht im Entwicklerbereich dieser Webseiten
 bereit.
@@ -45,7 +51,8 @@ GGZ Design-Dokument and Protokoll-Referenz:
 Spiele-Entwicklungs-Leitfaden:
 <a href="/docs/guides/gamedev/ggz-game-development-guide.html">HTML</a>,
 <a href="/docs/guides/gamedev/ggz-game-development-guide.ps">PostScript</a>,
-<a href="/docs/guides/gamedev/ggz-game-development-guide.txt">Text</a>
+<a href="/docs/guides/gamedev/ggz-game-development-guide.txt">Text</a>,
+<a href="/docs/guides/gamedev/ggz-game-development-guide.pdf">PDF</a> (erweitert)
 <br>
 
 Vergleich der Protokolle von Spielen:
@@ -72,6 +79,9 @@ API der Bibliothek ggzdmod:
 <a href="/docs/api/ggzdmod.pdf">PDF</a>
 <br><br>
 
+</td></tr>
+<tr><td>
+
 <i>Administrator-Dokumentation</i><br>
 Server-Administratoren können hier Anleitungen und Empfehlungen lesen.
 <br><br>
@@ -89,6 +99,10 @@ Grubby (Chatbot) Administratorhandbuch:
 Darstellung der Paket-Abhängigkeiten:
 <a href="/docs/ggz-debian-depgraph.ps">PostScript</a>,
 <a href="/docs/ggz-debian-depgraph.png">PNG</a>
+<br>
+
+Datenbankdesign:
+<a href="/docs/ggzdb/">HTML</a>
 <br><br>
 
 </font>

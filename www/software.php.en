@@ -47,7 +47,7 @@ There are individual category pages for
 <hr>
 <a href="/games/ggzcards/">GGZCards</a>
 <hr>
-<a href="/games/muehle/">Mühle</a>
+<a href="/games/muehle/">MÃ¼hle</a>
 <hr>
 <a href="/games/keepalive/">Keepalive</a>
 <hr>
@@ -58,6 +58,8 @@ There are individual category pages for
 <a href="/games/geekgame/">Geekgame</a>
 <hr>
 <a href="/games/cchess/">Chinese Chess</a>
+<hr>
+<a href="/games/ggzboard/">GGZBoard</a>
 </td></tr>
 </table>
 
@@ -79,6 +81,8 @@ There are individual category pages for
 <a href="/games/tuxman/">Tuxman</a>
 <hr>
 <a href="/games/freeciv/">Freeciv</a>
+<hr>
+<a href="/games/widelands/">Widelands</a>
 </td></tr>
 </table>
 
@@ -99,7 +103,7 @@ There are individual category pages for
 <hr>
 <a href="/clients/windows/">Windows (WGGZ)</a>
 <hr>
-<a href="/clients/sdl/">SDL (Víbora)</a>
+<a href="/clients/sdl/">SDL (VÃ­bora)</a>
 </td></tr>
 </table>
 

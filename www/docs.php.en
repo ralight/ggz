@@ -9,6 +9,9 @@
 All existing documentation is categorized and described here.
 <br><br>
 
+</td></tr>
+<tr><td>
+
 <i>Player docs</i><br>
 All applications and games are described on their respective pages on this
 web site. Additional documentation:
@@ -31,6 +34,9 @@ Article Series:
 <a href="/docs/articles/">Directory</a>
 <br><br>
 
+</td></tr>
+<tr><td>
+
 <i>Developer docs</i><br>
 Developer documentation can be found in the developer section of this
 web site.
@@ -44,7 +50,8 @@ GGZ Design Document and Protocol Reference:
 Game Development Guide:
 <a href="/docs/guides/gamedev/ggz-game-development-guide.html">HTML</a>,
 <a href="/docs/guides/gamedev/ggz-game-development-guide.ps">PostScript</a>,
-<a href="/docs/guides/gamedev/ggz-game-development-guide.txt">text</a>
+<a href="/docs/guides/gamedev/ggz-game-development-guide.txt">text</a>,
+<a href="/docs/guides/gamedev/ggz-game-development-guide.pdf">PDF</a> (extended)
 <br>
 
 Game Protocol Comparison:
@@ -71,6 +78,9 @@ Library API for ggzdmod:
 <a href="/docs/api/ggzdmod.pdf">PDF</a>
 <br><br>
 
+</td></tr>
+<tr><td>
+
 <i>Admin docs</i><br>
 Server administrators can find instructions and recommendations here.
 <br><br>
@@ -88,6 +98,10 @@ Grubby Chatbot Admin Manual:
 Package Dependency Graph:
 <a href="/docs/ggz-debian-depgraph.ps">PostScript</a>,
 <a href="/docs/ggz-debian-depgraph.png">PNG</a>
+<br>
+
+Database design:
+<a href="/docs/ggzdb/">HTML</a>
 <br><br>
 
 </font>

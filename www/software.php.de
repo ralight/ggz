@@ -58,6 +58,8 @@ Es gibt individuelle Kategorien für
 <a href="/games/geekgame/">Geekgame</a>
 <hr>
 <a href="/games/cchess/">Chinesisches Schach</a>
+<hr>
+<a href="/games/ggzboard/">GGZBoard</a>
 </td></tr>
 </table>
 
@@ -79,6 +81,8 @@ Es gibt individuelle Kategorien für
 <a href="/games/tuxman/">Tuxman</a>
 <hr>
 <a href="/games/freeciv/">Freeciv</a>
+<hr>
+<a href="/games/widelands/">Widelands</a>
 </td></tr>
 </table>
 
@@ -120,7 +124,7 @@ Es gibt individuelle Kategorien für
 
 </td><td valign="bottom">
 
-<i>Basis, Infrastruktur und Werkzeuge für Admins:</i><br>
+<i>Basis, Infrastruktur und Werkzeuge:</i><br>
 <table class="list">
 <tr><td>
 <a href="/backend/server/">GGZ-Server</a>
