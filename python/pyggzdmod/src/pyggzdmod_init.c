@@ -1,7 +1,7 @@
 /**********************************************/
 /*                                            */
 /* PyGGZDMod - Python wrapper for libggzdmod  */
-/* Copyright (C) 2001, 2002 Josef Spillner    */
+/* Copyright (C) 2001 - 2004 Josef Spillner   */
 /* josef@ggzgamingzone.org                    */
 /* Published under GNU GPL conditions         */
 /*                                            */
@@ -120,6 +120,14 @@ static PyObject *pyggzdmod_loop(PyObject *self, PyObject *args)
 	return Py_BuildValue("i", ret);
 }
 
+/*static PyObject *pyggzdmod_seat_fd(PyObject *self, PyObject *args)
+{
+	GGZSeat *seat = NULL;
+
+	if(!PyArg_ParseTuple(args, "O", seat)) return NULL;
+	return Py_BuildValue("i", seat->fd);
+}*/
+
 static PyObject *pyggzdmod_set_handler(PyObject *self, PyObject *args)
 {
 	int id;
@@ -197,6 +205,7 @@ static PyMethodDef pyggzdmod_methods[] =
 	{"mainLoop", pyggzdmod_loop, METH_VARARGS},
 	{"setHandler", pyggzdmod_set_handler, METH_VARARGS},
 	{"test", pyggzdmod_test, METH_VARARGS},
+	/*{"seatFd", pyggzdmod_seat_fd, METH_VARARGS},*/
 	{NULL, NULL}
 };
 
@@ -207,8 +216,11 @@ static PyMethodDef pyggzdmod_methods[] =
 void pyggzdmod_cb_join_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data)
 {
 	PyObject *arg, *res;
+	GGZSeat seat;
 
-	arg = Py_BuildValue("(i)", *(int*)handler_data);
+	seat = *(GGZSeat*)handler_data;
+	seat = ggzdmod_get_seat(ggzdmod, seat.num);
+	arg = Py_BuildValue("(iisi)", seat.num, seat.type, seat.name, seat.fd);
 	res = PyEval_CallObject(pyggzdmod_cb_join, arg);
 	if(res == NULL)
 	{
@@ -223,8 +235,11 @@ void pyggzdmod_cb_join_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_
 void pyggzdmod_cb_leave_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data)
 {
 	PyObject *arg, *res;
+	GGZSeat seat;
 
-	arg = Py_BuildValue("(i)", *(int*)handler_data);
+	seat = *(GGZSeat*)handler_data;
+	seat = ggzdmod_get_seat(ggzdmod, seat.num);
+	arg = Py_BuildValue("(iisi)", seat.num, seat.type, seat.name, seat.fd);
 	res = PyEval_CallObject(pyggzdmod_cb_leave, arg);
 	if(res == NULL)
 	{
@@ -239,8 +254,10 @@ void pyggzdmod_cb_leave_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler
 void pyggzdmod_cb_data_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_data)
 {
 	PyObject *arg, *res;
+	GGZSeat seat;
 
-	arg = Py_BuildValue("(i)", *(int*)handler_data);
+	seat = ggzdmod_get_seat(ggzdmod, *(int*)handler_data);
+	arg = Py_BuildValue("(iisi)", seat.num, seat.type, seat.name, seat.fd);
 	res = PyEval_CallObject(pyggzdmod_cb_data, arg);
 	if(res == NULL)
 	{
@@ -304,7 +321,7 @@ void pyggzdmod_cb_error_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler
 {
 	PyObject *arg, *res;
 
-	arg = Py_BuildValue("(i)", *(int*)handler_data);
+	arg = Py_BuildValue("(s)", (char*)handler_data);
 	res = PyEval_CallObject(pyggzdmod_cb_error, arg);
 	if(res == NULL)
 	{
@@ -320,7 +337,7 @@ void pyggzdmod_cb_log_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler_d
 {
 	PyObject *arg, *res;
 
-	arg = Py_BuildValue("()");
+	arg = Py_BuildValue("(s)", (char*)handler_data);
 	res = PyEval_CallObject(pyggzdmod_cb_log, arg);
 	if(res == NULL)
 	{
@@ -336,7 +353,7 @@ void pyggzdmod_cb_state_hook(GGZdMod *ggzdmod, GGZdModEvent event, void *handler
 {
 	PyObject *arg, *res;
 
-	arg = Py_BuildValue("()");
+	arg = Py_BuildValue("(i)", *(GGZdModState*)handler_data);
 	res = PyEval_CallObject(pyggzdmod_cb_state, arg);
 	if(res == NULL)
 	{
