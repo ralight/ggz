@@ -63,6 +63,7 @@ void cards_create_deck(deck_type_t which_deck)
 	char std_deck_suits[] = { CLUBS, DIAMONDS, HEARTS, SPADES };
 	char std_deck_decks[] = { 0 };
 
+	char double_deck_decks[] = {0, 1};
 	char lap_deck_faces[] =
 		{ 2, 3, 4, 5, 6, 10, JACK, QUEEN, KING, ACE_HIGH };
 	char suaro_deck_faces[] = { 8, 9, 10, JACK, QUEEN, KING, ACE_HIGH };
@@ -77,6 +78,10 @@ void cards_create_deck(deck_type_t which_deck)
 
 	/* First set the deck parameters up */
 	switch (which_deck) {
+	case GGZ_DECK_DOUBLE:
+		deck_decks = double_deck_decks;
+		deck_deck_cnt = 2;
+		break;
 	case GGZ_DECK_LAPOCHA:
 		/* La Pocha doesn't use 7,8,9 */
 		deck_faces = lap_deck_faces;
@@ -121,6 +126,11 @@ void cards_create_deck(deck_type_t which_deck)
 			}
 
 	ggz_debug("Built a deck of size %d.", deck_size);
+}
+
+int cards_deck_size()
+{
+	return deck_size;
 }
 
 void cards_destroy_deck()
