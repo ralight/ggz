@@ -16,3 +16,46 @@ on_exit_activate                       (GtkMenuItem     *menuitem,
 
 }
 
+
+gboolean
+on_board_configure_event               (GtkWidget       *widget,
+                                        GdkEventConfigure *event,
+                                        gpointer         user_data)
+{
+
+  return FALSE;
+}
+
+
+gboolean
+on_board_expose_event                  (GtkWidget       *widget,
+                                        GdkEventExpose  *event,
+                                        gpointer         user_data)
+{
+
+  return FALSE;
+}
+
+
+gboolean
+on_board_button_press_event            (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data)
+{
+
+  return FALSE;
+}
+
+
+gboolean
+on_board_drag_drop                     (GtkWidget       *widget,
+                                        GdkDragContext  *drag_context,
+                                        gint             x,
+                                        gint             y,
+                                        guint            time,
+                                        gpointer         user_data)
+{
+
+  return FALSE;
+}
+

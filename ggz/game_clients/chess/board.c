@@ -1,11 +1,12 @@
 /*
- * File: main.c
+ * File: board.c
  * Author: Ismael Orenstein
  * Project: GGZ Chess game module
  * Date: 09/17/2000
- * Desc: Chess client main game loop
+ * Desc: Graphical functions handling the game board and filters for user input
+ * (sending the events to game.c)
  *
- * Copyright (C) 2001 Ismael Orenstein.
+ * Copyright (C) 2000 Ismael Orenstein.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,37 +23,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
-#include <easysock.h>
-#include <gtk/gtk.h>
-#include "main_win.h"
-#include "support.h"
-#include "chess.h"
-#include "ggz.h"
-#include "board.h"
-#include "net.h"
-
-/* main window widget */
-GtkWidget *main_win;
-
-/* Game info */
-struct chess_info game_info;
-
-int main(int argc, char *argv[]) {
-	
-	gtk_init(&argc, &argv);
-  add_pixmap_directory(".");
-
-	main_win = create_main_win();
-	gtk_widget_show(main_win);
-
-	game_info.fd = ggz_connect("Chess");
-
-  board_init();
-
-	gdk_input_add(game_info.fd, GDK_INPUT_READ, net_handle_input, NULL);
-
-	gtk_main();
-	
-	return 0;
+void board_init() {
+  // FIXME: Do something
 }

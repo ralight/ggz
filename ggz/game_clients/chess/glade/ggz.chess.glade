@@ -96,6 +96,27 @@
 	  <name>board</name>
 	  <width>500</width>
 	  <height>500</height>
+	  <events>GDK_BUTTON_PRESS_MASK</events>
+	  <signal>
+	    <name>configure_event</name>
+	    <handler>on_board_configure_event</handler>
+	    <last_modification_time>Thu, 08 Feb 2001 18:48:31 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>expose_event</name>
+	    <handler>on_board_expose_event</handler>
+	    <last_modification_time>Thu, 08 Feb 2001 18:48:36 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>button_press_event</name>
+	    <handler>on_board_button_press_event</handler>
+	    <last_modification_time>Thu, 08 Feb 2001 19:06:13 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>drag_drop</name>
+	    <handler>on_board_drag_drop</handler>
+	    <last_modification_time>Thu, 08 Feb 2001 19:06:58 GMT</last_modification_time>
+	  </signal>
 	  <child>
 	    <shrink>False</shrink>
 	    <resize>False</resize>

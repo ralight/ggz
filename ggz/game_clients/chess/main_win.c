@@ -101,6 +101,7 @@ create_main_win (void)
   gtk_widget_show (board);
   gtk_paned_pack1 (GTK_PANED (hpaned1), board, FALSE, FALSE);
   gtk_widget_set_usize (board, 500, 500);
+  gtk_widget_set_events (board, GDK_BUTTON_PRESS_MASK);
 
   vpaned1 = gtk_vpaned_new ();
   gtk_widget_ref (vpaned1);
@@ -162,6 +163,18 @@ create_main_win (void)
 
   gtk_signal_connect (GTK_OBJECT (exit), "activate",
                       GTK_SIGNAL_FUNC (on_exit_activate),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (board), "configure_event",
+                      GTK_SIGNAL_FUNC (on_board_configure_event),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (board), "expose_event",
+                      GTK_SIGNAL_FUNC (on_board_expose_event),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (board), "button_press_event",
+                      GTK_SIGNAL_FUNC (on_board_button_press_event),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (board), "drag_drop",
+                      GTK_SIGNAL_FUNC (on_board_drag_drop),
                       NULL);
 
   return main_win;

@@ -22,6 +22,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+
 /* Use this function to connect to the game server 
  * name -> the game name, as described in the .dsc file
  * This function returns the file description for the connection, 

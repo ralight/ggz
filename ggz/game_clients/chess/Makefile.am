@@ -2,7 +2,7 @@
 
 EXTRA_DIST = chess.dsc
 
-SUBDIRS = .
+SUBDIRS = libcgc .
 
 INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@
 
@@ -14,6 +14,15 @@ ggz_chess_SOURCES = main_win.c \
                     support.h \
                     callbacks.c \
                     callbacks.h \
+                    chess.h \
+                    board.c \
+                    board.h \
+                    game.c \
+                    game.h \
+                    net.c \
+                    net.h \
+                    ggz.c \
+                    ggz.h \
                     main.c
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
