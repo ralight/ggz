@@ -1089,21 +1089,24 @@ static void _ggzcore_server_handle_update_players(GGZServer *server)
 static void _ggzcore_server_handle_list_tables(GGZServer *server)
 {
 	int i, num, status;
-	struct _ggzcore_list *tables;
-	struct _GGZTable table;
+	struct _ggzcore_list *list;
+	struct _GGZTable *table;
 	
-	tables = _ggzcore_table_list_new();
+	list = _ggzcore_list_create(_ggzcore_table_compare, NULL,
+				    _ggzcore_table_destroy, 0);
+
 	
 	status = _ggzcore_net_read_num_tables(server->fd, &num);
 	/* FIXME: handle errors */
 	ggzcore_debug(GGZ_DBG_SERVER, "Server sending %d tables", num);
 	
 	for (i = 0; i < num; i++) {
-		status = _ggzcore_net_read_table(server->fd, &table); 
-		_ggzcore_list_insert(tables, &table);
+		table = _ggzcore_table_new();
+		status = _ggzcore_net_read_table(server->fd, table); 
+		_ggzcore_list_insert(list, table);
 	}
 	
-	_ggzcore_room_set_table_list(server->room, num, tables);
+	_ggzcore_room_set_table_list(server->room, num, list);
 }
 
 

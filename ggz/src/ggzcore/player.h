@@ -47,8 +47,6 @@ struct _GGZPlayer {
 };
 
 
-struct _ggzcore_list* _ggzcore_player_list_new(void);
-
 struct _GGZPlayer* _ggzcore_player_new(void);
 
 void _ggzcore_player_free(struct _GGZPlayer *player);

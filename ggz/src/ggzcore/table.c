@@ -39,21 +39,6 @@
  */
 
 
-/* Utility functions used by _ggzcore_list */
-static void _ggzcore_table_set(struct _GGZTable *table, 
-			       const int id,
-			       struct _GGZGameType *gametype,
-			       const char state,
-			       const int seats,
-			       const int open,
-			       const int bots,
-			       const char *desc);
-
-static int   _ggzcore_table_compare(void* p, void* q);
-static void* _ggzcore_table_create(void* p);
-static void  _ggzcore_table_destroy(void* p);
-
-
 /* Publicly exported functions */
 
 
@@ -125,13 +110,16 @@ char* ggzcore_table_get_desc(GGZTable *table)
  * NOTE:All of these functions assume valid inputs!
  */
 
-struct _ggzcore_list* _ggzcore_table_list_new(void)
+struct _GGZTable* _ggzcore_table_new(void)
 {
-	return _ggzcore_list_create(_ggzcore_table_compare,
-				    _ggzcore_table_create,
-				    _ggzcore_table_destroy,
-				    0);
+	struct _GGZTable *table;
+
+	table = ggzcore_malloc(sizeof(struct _GGZTable));
+
+	/* FIXME: anything we should mark invalid? */
+	return table;
 }
+
 
 void _ggzcore_table_init(struct _GGZTable *table, 
 			 const int id,
@@ -142,7 +130,24 @@ void _ggzcore_table_init(struct _GGZTable *table,
 			 const int bots,
 			 const char *desc)
 {
-	_ggzcore_table_set(table, id, gametype, state, seats, open, bots, desc);
+	table->id = id;
+	table->gametype = gametype;
+	table->state = state;
+	table->seats = seats;
+	table->open = open;
+	table->bots = bots;
+	if (desc)
+		table->desc = strdup(desc);
+
+}
+
+
+void _ggzcore_table_free(struct _GGZTable *table)
+{
+	if (table->desc)
+		free(table->desc);
+	
+	ggzcore_free(table);
 }
 
 
@@ -188,29 +193,7 @@ char* _ggzcore_table_get_desc(struct _GGZTable *table)
 }
 
 
-/* Static functions internal to this file */
-
-static void _ggzcore_table_set(struct _GGZTable *table, 
-			       const int id,
-			       struct _GGZGameType *gametype,
-			       const char state,
-			       const int seats,
-			       const int open,
-			       const int bots,
-			       const char *desc)
-{
-	table->id = id;
-	table->gametype = gametype;
-	table->state = state;
-	table->seats = seats;
-	table->open = open;
-	table->bots = bots;
-	if (desc)
-		table->desc = strdup(desc);
-}
-
-
-static int _ggzcore_table_compare(void* p, void* q)
+int _ggzcore_table_compare(void* p, void* q)
 {
 	if(((struct _GGZTable*)p)->id == ((struct _GGZTable*)q)->id)
 		return 0;
@@ -223,27 +206,23 @@ static int _ggzcore_table_compare(void* p, void* q)
 }
 
 
-static void* _ggzcore_table_create(void* p)
+void* _ggzcore_table_create(void* p)
 {
 	struct _GGZTable *new, *src = p;
 
-	if (!(new = malloc(sizeof(struct _GGZTable))))
-		ggzcore_error_sys_exit("malloc failed in table_create");
-
-	_ggzcore_table_set(new, src->id, src->gametype, src->state, src->seats,
-			   src->open, src->bots, src->desc);
-
+	new = _ggzcore_table_new();
+	_ggzcore_table_init(new, src->id, src->gametype, src->state, 
+			    src->seats, src->open, src->bots, src->desc);
 	return (void*)new;
 }
 
 
-static void  _ggzcore_table_destroy(void* p)
+void  _ggzcore_table_destroy(void* p)
 {
-	struct _GGZTable *table = p;
-
-	if (table->desc)
-		free(table->desc);
-	free(p);
+	_ggzcore_table_free(p);
 }
 
+
+
+/* Static functions internal to this file */
 

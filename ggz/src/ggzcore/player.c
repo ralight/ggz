@@ -59,34 +59,16 @@ GGZTable* ggzcore_player_get_table(GGZPlayer *player)
  * NOTE:All of these functions assume valid inputs!
  */
 
-struct _ggzcore_list* _ggzcore_player_list_new(void)
-{
-	return _ggzcore_list_create(_ggzcore_player_compare,
-				    _ggzcore_player_create,
-				    _ggzcore_player_destroy,
-				    0);
-}
-
-
 struct _GGZPlayer* _ggzcore_player_new(void)
 {
 	struct _GGZPlayer *player;
 
-	player = calloc(1, sizeof(struct _GGZPlayer));
+	player = ggzcore_malloc(sizeof(struct _GGZPlayer));
 
 	/* Set to invalid table */
 	player->table = -1;
 
 	return player;
-}
-
-
-void _ggzcore_player_free(struct _GGZPlayer *player)
-{
-	if (player->name)
-		free(player->name);
-
-	free(player);
 }
 
 
@@ -100,6 +82,15 @@ void _ggzcore_player_init(struct _GGZPlayer *player,
 
 	player->room = room;
 	player->table = table;
+}
+
+
+void _ggzcore_player_free(struct _GGZPlayer *player)
+{
+	if (player->name)
+		free(player->name);
+
+	ggzcore_free(player);
 }
 
 

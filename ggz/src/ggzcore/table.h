@@ -56,8 +56,7 @@ struct _GGZTable {
 };
 
 
-
-struct _ggzcore_list* _ggzcore_table_list_new(void);
+struct _GGZTable* _ggzcore_table_new(void);
 
 void _ggzcore_table_init(struct _GGZTable *table, 
 			 const int id,
@@ -67,8 +66,10 @@ void _ggzcore_table_init(struct _GGZTable *table,
 			 const int open,
 			 const int bots,
 			 const char *desc);
-	
 
+void _ggzcore_table_free(struct _GGZTable *table);
+
+	
 unsigned int          _ggzcore_table_get_num(struct _GGZTable *table);
 struct _GGZGameType*  _ggzcore_table_get_type(struct _GGZTable *table);
 char                  _ggzcore_table_get_state(struct _GGZTable *table);
@@ -76,5 +77,10 @@ int                   _ggzcore_table_get_seats(struct _GGZTable *table);
 int                   _ggzcore_table_get_open(struct _GGZTable *table);
 int                   _ggzcore_table_get_bots(struct _GGZTable *table);
 char*                 _ggzcore_table_get_desc(struct _GGZTable *table);
+
+/* Utility functions used by _ggzcore_list */
+int   _ggzcore_table_compare(void* p, void* q);
+void* _ggzcore_table_create(void* p);
+void  _ggzcore_table_destroy(void* p);
 
 #endif /* __TABLE_H_ */
