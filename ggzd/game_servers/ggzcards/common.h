@@ -23,8 +23,8 @@
  */
 
 /* this will be replaced by ../libggzmod/whatever to use libggzdmod */
-#include "ggz.h"
-#include "protocols.h"
+#include "../libggzmod/ggz_server.h"
+#include "../libggzmod/ggz_protocols.h"
 
 #include "ai.h"
 #include "bid.h"

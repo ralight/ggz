@@ -14,18 +14,16 @@ ggzd_ggzcards_SOURCES = ai.c ai.h \
 			common.c common.h \
 			game.c game.h \
 			games.c games.h \
-			ggz.c ggz.h \
 			main.c \
 			message.c message.h \
 			options.c options.h \
-			protocols.h \
 			protocol.h \
 			types.h
 
-ggzd_ggzcards_DEPENENCIES = games/libgames.a ai/libai.a
+ggzd_ggzcards_DEPENENCIES = games/libgames.a ai/libai.a ../libggzmod/libggzdmod.a
 
 
-ggzd_ggzcards_LDADD = $(LDADD) games/libgames.a ai/libai.a
+ggzd_ggzcards_LDADD = $(LDADD) games/libgames.a ai/libai.a ../libggzmod/libggzdmod.a
 
 test: test-recursive
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
