@@ -14,6 +14,7 @@ The Grubby Admin Manual
 <B>Table Of Contents:</B><BR>
 <A HREF="#modnews">News module</A><BR>
 <A HREF="#moddict">Dictionary module</A><BR>
+<A HREF="#modmeeting">Meeting module</A><BR>
 <HR>
 <BR><BR>
 
@@ -35,6 +36,15 @@ Under Unix, those are mostly under /usr/share/trans/X-Y, where X and Y are lower
 dictionary files contain key:value pairs of words. Now when a search is done, the module simply opens the appropriate file and scans
 it. In the case of inverse search, key and value are swapped. The module returns a concatenated string which contains all translations
 it found for the key word.
+<BR><BR>
+
+<HR>
+<A NAME="modmeeting">
+<FONT SIZE=4>Meeting Module</FONT>
+<BR><BR>
+This one needs Ruby installed, preferably version 1.6+. Its configurable database goes normally to /tmp/meetings, you might want to
+change that. It uses an interesting technique to store its data: Instead of writing key-value pairs, it dumps the whole object
+so one can transfer it from one host to another :)
 <BR><BR>
 
 <HR>
