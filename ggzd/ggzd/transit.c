@@ -74,9 +74,11 @@ int transit_handle(int index, int fd)
 		tables.info[index].transit_flag |= GGZ_TRANSIT_ERR;
 		pthread_cond_broadcast(&tables.info[index].transit_cond);
 		pthread_mutex_unlock(&tables.info[index].transit_lock);
+		return status;
 	}
-	
-	return status;
+
+	/* Return sign that we're in transit now */
+	return 1;
 }
 
 

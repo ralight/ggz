@@ -291,15 +291,17 @@ static void table_loop(int t_index)
 	int request, fd, status;
 	fd_set active_fd_set, read_fd_set;
 	struct timeval timer;
-
+	char in_transit = 0;
+	
 	fd = tables.info[t_index].fd_to_game;
 	FD_ZERO(&active_fd_set);
 	FD_SET(fd, &active_fd_set);
 
 	for (;;) {
-		/* Check for player transits */
-		if (transit_handle(t_index, fd) < 0)
-			break;
+		/* Check for player transits if not already in one */
+		if (!in_transit)
+			if ( (in_transit = transit_handle(t_index, fd)) < 0)
+				break;
 		
 		read_fd_set = active_fd_set;
 		
@@ -319,8 +321,10 @@ static void table_loop(int t_index)
 		if (es_read_int(fd, &request) < 0)
 			break;
 		
-		if (table_handle(request, t_index, fd) < 0)
+		if ( (status = table_handle(request, t_index, fd)) < 0)
 			break;
+		else if (status)
+			in_transit = 0;
 	}
 }
 
@@ -337,10 +341,14 @@ static int table_handle(int request, int index, int fd)
 
 	case RSP_GAME_JOIN:
 		status = table_game_join(index, fd);
+		if (status == 0)   /* Mark transit as done */
+			status = 1;
 		break;
 
 	case RSP_GAME_LEAVE:
 		status = table_game_leave(index, fd);
+		if (status == 0)   /* Mark transit as done */
+			status = 1;
 		break;
 
 	case MSG_GAME_OVER:
