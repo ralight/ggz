@@ -15,5 +15,5 @@ noinst_HEADERS = \
 
 AM_CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
 
-INCLUDES = $(ggzcorepp_includes) -I $(top_srcdir)/ggz-kde/src
+INCLUDES = $(ggzcorepp_includes) -I $(top_srcdir)/ggz-kde/src -I $(kde_includes)
 

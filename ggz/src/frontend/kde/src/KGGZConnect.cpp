@@ -65,7 +65,7 @@
 
 /* Constructor: set up a small dialog for connections; provide server profile list */
 KGGZConnect::KGGZConnect(QWidget *parent, const char *name)
-: QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
+: QWidget(parent, name, WType_Dialog)
 {
 	QVBoxLayout *vbox1, *vbox2;
 	QHBoxLayout *hbox1, *hbox2, *hbox3, *hbox4;

@@ -394,7 +394,7 @@ void KGGZ::menuConnect()
 {
 	if(!m_connect)
 	{
-		m_connect = new KGGZConnect(NULL, "connect");
+		m_connect = new KGGZConnect(this, "connect");
 		connect(m_connect, SIGNAL(signalConnect(const char*, int, const char*, const char*, int)),
 			SLOT(slotConnected(const char*, int, const char*, const char*, int)));
 	}
@@ -1334,9 +1334,6 @@ void KGGZ::menuView(int viewtype)
 	// Qt is crappy here... so we must do something for the chicks (animation)
 	m_workspace->resize(width() - 1, height() - 1);
 	m_workspace->resize(width(), height());
-
-	// Don't hide connection dialog
-	if(m_connect) m_connect->raise();
 }
 
 void KGGZ::menuGameLaunch()
