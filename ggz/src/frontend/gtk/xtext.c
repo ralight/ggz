@@ -78,8 +78,8 @@ static gint gtk_xtext_selection_kill (GtkWidget * widget,
 static void gtk_xtext_selection_get (GtkWidget * widget,
 												 GtkSelectionData * selection_data_ptr,
 												 guint info, guint time);
-static int gtk_xtext_text_width (GtkXText * xtext, unsigned char *text,
-											int len);
+static int gtk_xtext_text_width (GtkXText * xtext, unsigned const char *text,
+				 int len);
 static void gtk_xtext_adjustment_changed (GtkAdjustment * adj,
 														GtkXText * xtext);
 static void gtk_xtext_draw_sep (GtkXText * xtext, int height);
@@ -1287,7 +1287,8 @@ gtk_xtext_freeze (GtkXText *xtext)
 /* strip MIRC colors and other attribs. */
 
 char *
-gtk_xtext_strip_color (unsigned char *text, int len, char *outbuf, int *newlen)
+gtk_xtext_strip_color (unsigned const char *text, int len,
+		       char *outbuf, int *newlen)
 {
 	int nc = 0;
 	int i = 0;
@@ -1366,7 +1367,7 @@ gtk_xtext_text_width_simple (GtkXText * xtext, unsigned char *str, int len)
 /* gives width of a string, excluding the mIRC codes */
 
 static int
-gtk_xtext_text_width (GtkXText * xtext, unsigned char *text, int len)
+gtk_xtext_text_width (GtkXText * xtext, unsigned const char *text, int len)
 {
 	unsigned char *tmp, *new_buf;
 	int width, new_len;
@@ -2874,8 +2875,8 @@ gtk_xtext_append_entry (GtkXText * xtext, textentry * ent)
 
 void
 gtk_xtext_append_indent (GtkXText * xtext,
-								 char *left_text, int left_len,
-								 char *right_text, int right_len)
+			 const char *left_text, int left_len,
+			 const char *right_text, int right_len)
 {
 	textentry *ent;
 	char *str;

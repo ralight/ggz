@@ -179,8 +179,8 @@ GtkWidget *gtk_xtext_new (int indent, int separator);
 guint gtk_xtext_get_type (void);
 void gtk_xtext_append (GtkXText * xtext, char *text, int len);
 void gtk_xtext_append_indent (GtkXText * xtext,
-										char *left_text, int left_len,
-										char *right_text, int right_len);
+			      const char *left_text, int left_len,
+			      const char *right_text, int right_len);
 void gtk_xtext_set_font (GtkXText * xtext, GdkFont * font, char *name);
 void gtk_xtext_set_background (GtkXText * xtext, GdkPixmap * pixmap,
 										 int trans, int shaded);
@@ -191,6 +191,7 @@ void gtk_xtext_refresh (GtkXText * xtext, int do_trans);
 void gtk_xtext_thaw (GtkXText * xtext);
 void gtk_xtext_freeze (GtkXText * xtext);
 void *gtk_xtext_search (GtkXText * xtext, char *text, void *start);
-char *gtk_xtext_strip_color (unsigned char *text, int len, char *outbuf, int *newlen);
+char *gtk_xtext_strip_color (unsigned const char *text, int len,
+			     char *outbuf, int *newlen);
 
 #endif
