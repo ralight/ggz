@@ -48,19 +48,21 @@ class KGGZUsers : public QListView
 		// Dectructor
 		~KGGZUsers();
 		// Add a user to the table
-		void add(char *name);
+		void add(const char *name);
 		// Remove user from table
-		void remove(char *name);
+		void remove(const char *name);
 		// Remove all users
 		void removeall();
 		// Add a table
 		void addTable(int i);
 		// Add a player to a table, or move hime there
-		void addTablePlayer(int i, char *name);
+		void addTablePlayer(int i, const char *name);
 		// Specify the player's name
 		void assignSelf(QString self);
 		// Set a player's lag
 		void setLag(const char *playername, int lagvalue);
+		// Assign a role to a player
+		void assignRole(const char *playername, int role);
 
 		enum Assignments
 		{
@@ -68,7 +70,8 @@ class KGGZUsers : public QListView
 			assignbuddy,
 			assignplayer,
 			assignbanned,
-			assignbot
+			assignbot,
+			assignadmin
 		};
 
 	public slots:

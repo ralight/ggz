@@ -37,3 +37,8 @@ int GGZCorePlayer::lag()
 	return ggzcore_player_get_lag(m_player);
 }
 
+int GGZCorePlayer::type()
+{
+	return ggzcore_player_get_type(m_player);
+}
+

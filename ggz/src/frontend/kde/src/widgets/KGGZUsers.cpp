@@ -86,7 +86,7 @@ KGGZUsers::~KGGZUsers()
 }
 
 // add a player to the list
-void KGGZUsers::add(char *name)
+void KGGZUsers::add(const char *name)
 {
 	QListViewItem *tmp;
 
@@ -106,7 +106,7 @@ void KGGZUsers::lag(QListViewItem *item, int lag)
 }
 
 // remove a player from the list
-void KGGZUsers::remove(char *name)
+void KGGZUsers::remove(const char *name)
 {
 	QListViewItem *tmp;
 	const char *tokentmp;
@@ -201,7 +201,7 @@ void KGGZUsers::addTable(int i)
 	tmp->setOpen(TRUE);
 }
 
-void KGGZUsers::addTablePlayer(int i, char *name)
+void KGGZUsers::addTablePlayer(int i, const char *name)
 {
 	QListViewItem *tmp, *tmp2;
 	//char foo[128];
@@ -309,6 +309,7 @@ void KGGZUsers::assign(QListViewItem *item, int role)
 	GGZCoreConfio *config;
 	int save;
 
+	KGGZDEBUG("<= (role: %i)\n", role);
 	if(!item) return;
 
 	save = 1;
@@ -337,9 +338,13 @@ void KGGZUsers::assign(QListViewItem *item, int role)
 		case assignyou:
 			pixmap = "you.png";
 			break;
+		case assignadmin:
+			pixmap = "admin.png";
+			break;
 	}
 	item->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/" + pixmap));
 
+	KGGZDEBUG("Assign %s to %s\n", pixmap.latin1(), item->text(0).latin1());
 	if(save)
 	{
 		config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")), GGZCoreConfio::readwrite | GGZCoreConfio::create);
@@ -355,5 +360,11 @@ void KGGZUsers::setLag(const char *playername, int lagvalue)
 	if(lagvalue < 0) lagvalue = 0;
 	if(lagvalue > 5) lagvalue = 5;
 	lag(player(playername), lagvalue);
+}
+
+void KGGZUsers::assignRole(const char *playername, int role)
+{
+	KGGZDEBUG("=> %s\n", playername);
+	assign(player(playername), role);
 }
 

@@ -29,10 +29,21 @@ class GGZCorePlayer
 		/** Destructor */
 		~GGZCorePlayer();
 
+		/** Available player types */
+		enum PlayerTypes
+		{
+			none,
+			normal,
+			guest,
+			admin
+		};
+
 		/** Return the name of this player. */
 		char* name();
 		/** Return the player's current table. */
 		GGZTable* table();
+		/** Return the player's type */
+		int type();
 
 		/** Lag measurement */
 		int lag();

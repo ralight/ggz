@@ -62,6 +62,7 @@
 
 // GGZCore++ includes
 #include "GGZCoreConfio.h"
+#include "GGZCorePlayer.h"
 
 KGGZ::KGGZ(QWidget *parent, const char *name)
 : QWidget(parent, name)
@@ -507,6 +508,7 @@ void KGGZ::listPlayers()
 	int number;
 	GGZPlayer *player;
 	char *playername;
+	int type;
 
 	KGGZDEBUGF("KGGZ::listPlayers()\n");
 	if(!kggzroom) return;
@@ -521,6 +523,23 @@ void KGGZ::listPlayers()
 		playername = ggzcore_player_get_name(player);
 		KGGZDEBUG(" # player: %s\n", playername);
 		m_workspace->widgetUsers()->add(playername);
+		switch(ggzcore_player_get_type(player))
+		{
+			case GGZCorePlayer::guest:
+				type = KGGZUsers::assignplayer;
+				break;
+			case GGZCorePlayer::normal:
+				type = KGGZUsers::assignbuddy;
+				break;
+			case GGZCorePlayer::admin:
+				type = KGGZUsers::assignadmin;
+				break;
+			case GGZCorePlayer::none:
+			default:
+				type = KGGZUsers::assignbot;
+				break;
+		}
+		m_workspace->widgetUsers()->assignRole(playername, type);
 		m_workspace->widgetChat()->chatline()->addPlayer(playername);
 		if(m_grubby) m_grubby->addPlayer(playername);
 	}

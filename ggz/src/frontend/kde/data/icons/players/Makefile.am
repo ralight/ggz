@@ -1,6 +1,7 @@
 SUBDIRS = .
 
 pix_DATA = \
+	admin.png \
 	you.png \
 	buddy.png \
 	player.png \

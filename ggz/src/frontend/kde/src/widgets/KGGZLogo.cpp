@@ -39,6 +39,7 @@
 
 // Qt includes
 #include <qpixmap.h>
+#include <qlayout.h>
 
 // System includes
 #include <sys/stat.h>
@@ -46,6 +47,20 @@
 KGGZLogo::KGGZLogo(QWidget *parent, const char *name)
 : QFrame(parent, name)
 {
+	QVBoxLayout *vbox;
+
+	setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	setBackgroundColor(QColor(150, 0, 0));
+	setMinimumSize(64, 64);
+
+	m_logo = new QFrame(this);
+	//m_logo->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	m_logo->setBackgroundColor(QColor(150, 0, 0));
+
+	vbox = new QVBoxLayout(this, 0);
+	vbox->add(m_logo);
+
+	m_logo->installEventFilter(this);
 }
 
 KGGZLogo::~KGGZLogo()
@@ -54,6 +69,7 @@ KGGZLogo::~KGGZLogo()
 
 void KGGZLogo::setLogo(const char *logo, const char *name)
 {
+	QPixmap pix;
 	QString buffer;
 	struct stat st;
 	const char *uselogo;
@@ -71,7 +87,10 @@ void KGGZLogo::setLogo(const char *logo, const char *name)
 		if((stat(uselogo, &st) < 0) || (!S_ISREG(st.st_mode))) uselogo = NULL;
 	}
 	if(!uselogo) uselogo = KGGZ_DIRECTORY "/images/icons/module.png";
-	setBackgroundPixmap(QPixmap(uselogo));
+
+	pix = QPixmap(uselogo);
+	m_logo->setBackgroundPixmap(pix);
+	m_logo->setFixedSize(pix.width(), pix.height());
 }
 
 void KGGZLogo::mousePressEvent(QMouseEvent *e)
@@ -82,6 +101,16 @@ void KGGZLogo::mousePressEvent(QMouseEvent *e)
 void KGGZLogo::shutdown()
 {
 	erase();
-	setBackgroundPixmap(NULL);
+	m_logo->setBackgroundPixmap(NULL);
+}
+
+bool KGGZLogo::eventFilter(QObject *o, QEvent *e)
+{
+	if(e->type() == QEvent::MouseButtonPress)
+	{
+		emit signalInfo();
+		return true;
+	}
+	return QWidget::eventFilter(o, e);
 }
 

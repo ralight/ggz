@@ -58,10 +58,6 @@ KGGZWorkspace::KGGZWorkspace(QWidget *parent, const char *name)
 	m_widget->setMinimumHeight(74);
 
 	m_logo = new KGGZLogo(m_widget);
-	m_logo->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-	m_logo->setBackgroundColor(QColor(255, 0, 0));
-	m_logo->setMinimumSize(64, 64);
-	//m_logo->setFixedSize(64, 64);
 
 	m_tables = new KGGZTables(m_widget, "workspace_tables");
 	m_tables->setMinimumHeight(64);

@@ -59,6 +59,13 @@ class KGGZLogo : public QFrame
 	protected:
 		// Slot for user mouse events
 		void mousePressEvent(QMouseEvent *e);
+		// Child object events
+		bool eventFilter(QObject *o, QEvent *e);
+
+	private:
+		// Widget containing the logo
+		QFrame *m_logo;
 };
 
 #endif
+
