@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 4768 2002-09-29 13:10:57Z dr_maux $
+dnl $Id: configure.in 4782 2002-10-01 18:49:32Z dr_maux $
 
-AC_INIT(acinclude.ggz)
+AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(ggz-server, 0.0.6)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
@@ -338,9 +338,6 @@ AC_OUTPUT([Makefile
 	ggzd/Makefile 
 	ggzd/ggzd.conf
 	ggzd/ggzd.test
-	doc/Makefile
-	doc/C/Makefile
-	doc/C/design/Makefile
 	game_servers/Makefile
 	game_servers/spades/Makefile
 	game_servers/tictactoe/Makefile
