@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 4888 2002-10-12 20:20:55Z jdorje $
+ * $Id: main.c 4924 2002-10-14 23:22:02Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -41,6 +41,7 @@
 #include <ggzmod.h>
 
 #include "dlg_about.h"
+#include "dlg_players.h"
 #include "ggzintl.h"
 
 #include "support.h"
@@ -99,6 +100,7 @@ int main(int argc, char *argv[])
 
 	mod = ggzmod_new(GGZMOD_GAME);
 	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+	init_player_list(mod);
 
 	ggzmod_connect(mod);
 

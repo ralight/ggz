@@ -33,10 +33,6 @@ void
 on_mnu_preferences_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-void
-on_mnu_about_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
 gboolean
 on_dlg_main_delete_event               (GtkWidget       *widget,
                                         GdkEvent        *event,
