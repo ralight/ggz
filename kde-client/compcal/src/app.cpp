@@ -101,6 +101,13 @@ void App::load()
 	QListViewItem *tmp, *tmp2, *tmp3;
 	KStandardDirs d;
 	Series *s;
+	QString icontheme;
+
+#if ((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 1) || (KDE_VERSION_MAJOR > 3))
+	icontheme = "crystalsvg";
+#else
+	icontheme = "hicolor";
+#endif
 
 	if(!p) return;
 
@@ -112,7 +119,7 @@ void App::load()
 		if(m_view == sorted)
 		{
 			tmp = new QListViewItem(m_list, s->title());
-			tmp->setPixmap(0, d.findResource("icon", "hicolor/16x16/filesystems/folder_yellow.png"));
+			tmp->setPixmap(0, d.findResource("icon", icontheme + "/16x16/filesystems/folder_yellow.png"));
 		}
 		QPtrList<Eventgroup> eventgrouplist = s->eventgroups();
 		for(Eventgroup *eventgroup = eventgrouplist.first(); eventgroup; eventgroup = eventgrouplist.next())
@@ -120,7 +127,7 @@ void App::load()
 			if(m_view == sorted)
 			{
 				tmp2 = new QListViewItem(tmp, eventgroup->title());
-				tmp2->setPixmap(0, d.findResource("icon", "hicolor/16x16/filesystems/folder_green.png"));
+				tmp2->setPixmap(0, d.findResource("icon", icontheme + "/16x16/filesystems/folder_green.png"));
 			}
 			QPtrList<Event> eventlist = eventgroup->events();
 			for(Event *event = eventlist.first(); event; event = eventlist.next())
@@ -133,7 +140,7 @@ void App::load()
 				{
 					tmp3 = new QListViewItem(m_list, QString("%1").arg(event->date()), event->title());
 				}
-				tmp3->setPixmap(0, d.findResource("icon", "hicolor/16x16/filesystems/exec.png"));
+				tmp3->setPixmap(0, d.findResource("icon", icontheme + "/16x16/filesystems/exec.png"));
 			}
 		}
 	}
