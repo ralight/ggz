@@ -5,7 +5,9 @@ INCLUDES = @EASYSOCK_INC@
 
 noinst_LIBRARIES = libggzcore.a
 
-libggzcore_a_SOURCES =	confio.c \
+libggzcore_a_SOURCES =	conf.c \
+			conf.h \
+			confio.c \
 			confio.h \
 			event.c \
 		      	event.h \

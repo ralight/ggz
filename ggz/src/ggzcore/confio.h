@@ -85,7 +85,7 @@ int _ggzcore_confio_read_int		(int	handle,
 					 char	*key,
 					 int	def);
 
-void _ggzcore_confio_read_list		(int	handle,
+int _ggzcore_confio_read_list		(int	handle,
 					 char	*section,
 					 char	*key,
 					 int	*argcp,

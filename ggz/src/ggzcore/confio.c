@@ -139,11 +139,14 @@ int _ggzcore_confio_read_int(int handle, char *section, char *key, int def)
  *
  *	Returns:
  *	  - an array and count of entries via the arglist
+ *	AND
+ *	  - 0 on success
+ *	  - -1 on error
  */
-void _ggzcore_confio_read_list(int handle, char *section, char *key,
-			       int *argcp, char ***argvp)
+int _ggzcore_confio_read_list(int handle, char *section, char *key,
+			      int *argcp, char ***argvp)
 {
-	int	index;
+	int	index, rc;
 	char	*p, *s1, *s2;
 	char	*str, *tmp, *tmp2;
 	char	saw_space=0, saw_backspace;
@@ -151,6 +154,7 @@ void _ggzcore_confio_read_list(int handle, char *section, char *key,
 	str = _ggzcore_confio_read_string(handle, section, key, NULL);
 
 	if (str != NULL) {
+		rc = 0;
 		for (*argcp = 1, p = str; *p != '\0'; p++) {
 			if (*p == '\\' && *(p+1)) {
 				p++;
@@ -201,8 +205,11 @@ void _ggzcore_confio_read_list(int handle, char *section, char *key,
 
 		free(str);
 	} else {
+		rc = -1;
 		*argcp = 0;
 	}
+
+	return rc;
 }
 
 
