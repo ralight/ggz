@@ -175,7 +175,8 @@ int ggzcore_confio_read_list(int handle, const char *section, const char *key,
 			}
 		}
 
-		*argvp = (char **) malloc((*argcp + 1) * sizeof(char *));
+		*argvp = (char **) calloc((*argcp + 1), sizeof(char *));
+
 
 		p = str;
 		index = 0;
