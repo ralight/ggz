@@ -16,6 +16,7 @@
 
 Dots::Dots()
 {
+	m_field = NULL;
 	cleanup();
 }
 
