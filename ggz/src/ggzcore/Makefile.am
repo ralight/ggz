@@ -19,6 +19,8 @@ libggzcore_a_SOURCES =	$(easysock_SOURCES) \
 			player.c \
 			player.h \
 			protocol.h \
+			room.c \
+			room.h \
 			server.c \
 			server.h \
 			state.c \

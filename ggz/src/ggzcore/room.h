@@ -1,10 +1,10 @@
 /*
- * File: player.h
+ * File: room.h
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
  *
- * This fils contains functions for handling players
+ * This fils contains functions for handling rooms
  *
  * Copyright (C) 1998 Brent Hendricks.
  *
@@ -25,13 +25,15 @@
 
 
 
-void _ggzcore_player_list_clear(void);
+void _ggzcore_room_list_clear(void);
 
-int _ggzcore_player_list_add(const char* name, const int table);
+int _ggzcore_room_list_add(const unsigned int id, const char* name, 
+			   const unsigned int game, const char* desc);
 
-int _ggzcore_player_list_remove(const char* name);
+int _ggzcore_room_list_remove(const unsigned int id);
 
-int _ggzcore_player_list_replace(const char* name, const int table);
+int _ggzcore_room_list_replace(const unsigned int id, const char* name, 
+			       const unsigned int game, const char* desc);
 
 
 

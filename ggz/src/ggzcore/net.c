@@ -31,6 +31,7 @@
 #include <state.h>
 #include <easysock.h>
 #include <player.h>
+#include <room.h>
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -102,7 +103,7 @@ static struct _GGZServerMsg ggz_server_msgs[] = {
 	{RSP_TABLE_LEAVE,    "rsp_table_leave", NULL},
 	{RSP_GAME,           "rsp_game", NULL},
 	{RSP_CHAT,           "rsp_chat", _ggzcore_net_handle_rsp_chat},
-        {RSP_MOTD,           "rsp_motd", NULL},
+        {RSP_MOTD,           "rsp_motd", _ggzcore_net_handle_motd},
 	{RSP_ROOM_JOIN,      "rsp_room_join", _ggzcore_net_handle_room_join}
 };
 
@@ -392,15 +393,21 @@ static void _ggzcore_net_handle_logout(void)
 
 static void _ggzcore_net_handle_list_rooms(void)
 {
-	int i, rooms, id, game;
-	char name[4096];
+	int i, num, id, game;
+	char name[256];
 	
-	es_read_int(ggz_server_sock, &rooms);
+	if (es_read_int(ggz_server_sock, &num) < 0)
+		return;
 
-	for (i = 0; i < rooms; i++) {
-		es_read_int(ggz_server_sock, &id);
-		es_read_string(ggz_server_sock, name, 4096);
-		es_read_int(ggz_server_sock, &game);
+	_ggzcore_room_list_clear();
+
+	for (i = 0; i < num; i++) {
+		if (es_read_int(ggz_server_sock, &id) < 0
+		    || es_read_string(ggz_server_sock, name, sizeof(name)) < 0
+		    || es_read_int(ggz_server_sock, &game) < 0)
+			return;
+
+		_ggzcore_room_list_add(id, name, game, NULL);
 		ggzcore_debug(GGZ_DBG_NET, "Room: %d plays %d %s", id, game, 
 			      name);
 	}
