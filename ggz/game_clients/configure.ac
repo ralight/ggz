@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5948 2004-02-21 05:27:59Z jdorje $
+dnl $Id: configure.ac 5953 2004-02-21 08:03:37Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -14,7 +14,8 @@ DEFAULT_SUBDIRS="chess chinese-checkers combat dots ggzcards hastings lapocha re
 
 dnl If an override is present, use it
 dnl =================================
-AC_ARG_WITH(game, [  --with-game=DIR         Dir for game module], game="$withval", game="")
+AC_ARG_WITH(game, AC_HELP_STRING([--with-game=DIR],[Dir for game module]),
+            game="$withval", game="")
 
 dnl Order of precedence: command-line > OVERRIDE_XXX > DEFAULT_XXX
 dnl ==============================================================
