@@ -290,7 +290,7 @@ void update_cumulative_scores()
 	c_score_count++;
 	if (c_score_count > c_score_size) {
 		c_score_size += 10;
-		cumulative_scores = realloc(cumulative_scores, sizeof(int*));
+		cumulative_scores = realloc(cumulative_scores, c_score_size * sizeof(int*));
 		if (cumulative_scores == NULL) {
 			ggz_debug("ERROR: update_cumulative_scores: NULL realloc.");
 			exit( -1 );
