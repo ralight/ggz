@@ -18,7 +18,9 @@ int check_known( char *name )
 {
 	int i;
 
-	/* get the users numer */
+	printf( "Checking on name: %s, Total known: %d\n", name, memmory.num_people );
+
+	/* get the users number */
 	for(i=0; i<memmory.num_people; i++)
 		if( !strcmp(memmory.people[i].username, name))
 			break;
@@ -35,10 +37,9 @@ char *get_name( char *name )
 	int i;
 
 	i = check_known( name );
-	printf("%d\n",i);
 	if( i == -1 )
 		return( name );
-	printf("%s\n",memmory.people[i].realname);
+
 	if( memmory.people[i].realname )
 		return( memmory.people[i].realname );
 	else

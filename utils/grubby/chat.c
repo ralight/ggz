@@ -77,7 +77,8 @@ void handle_chat( char OpCode, char *from, char *message )
 	{
 		if( i < MAX_PEOPLE )
 		{
-			memmory.people[memmory.num_people].username = from;
+			memmory.people[memmory.num_people].username = malloc( sizeof(char) * ( strlen(from) + 1 ) );
+			strcpy( memmory.people[memmory.num_people].username, from );
 			memmory.people[memmory.num_people].lastseen = time(NULL);
 			memmory.num_people++;
 		}
@@ -109,10 +110,6 @@ void handle_join( char *from )
 
 	int i;
 
-	/* Check if it's us entring the room */
-	if( !strcmp(from, grubby.name) )
-		return;
-
 	i = check_known( from );
 
 	/* Unknown person */
@@ -124,7 +121,8 @@ void handle_join( char *from )
 		send_msg( from, out );
 		if( i < MAX_PEOPLE )
 		{
-			memmory.people[memmory.num_people].username = from;
+			memmory.people[memmory.num_people].username = malloc( sizeof(char) * ( strlen(from) + 1 ) );
+			strcpy( memmory.people[memmory.num_people].username, from );
 			memmory.people[memmory.num_people].lastseen = time(NULL);
 			memmory.num_people++;
 		} else {
@@ -155,10 +153,6 @@ void handle_part( char *from )
 	char out[grubby.chat_length];
 
 	int i;
-
-	/* Check if it's us entring the room */
-	if( !strcmp(from, grubby.name) )
-		return;
 
 	/* Check wether we already know the person */
 	i = check_known( from );

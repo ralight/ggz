@@ -134,7 +134,7 @@ void show_time( char *from, char *name )
 	hours = secs/3600;
 	secs -= hours*3600;
 	mins = secs/60;
-	secs -= secs*60;
+	secs -= mins*60;
 
 	loc = 0;
 	if( days > 0 )
