@@ -137,7 +137,7 @@ static void
 client_exit_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	if (msgbox(_("Are you sure you want to quit?"), _("Quit?"), MSGBOX_YESNO, MSGBOX_INFO) == MSGBOX_YES)
+	if (msgbox(_("Are you sure you want to quit?"), _("Quit?"), MSGBOX_YESNO, MSGBOX_INFO, MSGBOX_MODAL) == MSGBOX_YES)
 	{
 		gtk_main_quit();
 	}
@@ -446,7 +446,7 @@ static void
 client_exit_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	if (msgbox(_("Are you sure you want to quit?"), _("Quit?"), MSGBOX_YESNO, MSGBOX_INFO) == MSGBOX_YES)
+	if (msgbox(_("Are you sure you want to quit?"), _("Quit?"), MSGBOX_YESNO, MSGBOX_INFO, MSGBOX_MODAL) == MSGBOX_YES)
 	{
 		gtk_main_quit();
 	}

@@ -173,7 +173,7 @@ static char *info[] = {
 
 
 
-MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype)
+MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype, MBModal modal)
 {
 	GtkWidget *dialogwindow;
 	GtkWidget *packingbox;
@@ -265,7 +265,10 @@ MBReturn msgbox (gchar *textmessage, gchar *title, MBType type, MBIcon itype)
 				GTK_SIGNAL_FUNC (CloseTheApp),
 				dialogwindow);
 
-	gtk_window_set_modal (GTK_WINDOW (dialogwindow), TRUE);
+	if (modal == MSGBOX_MODAL)
+	{
+		gtk_window_set_modal (GTK_WINDOW (dialogwindow), TRUE);
+	}
 	gtk_widget_show_all (dialogwindow);
 	gtk_main();
 	return mb_status;
