@@ -40,6 +40,7 @@
 #include "protocols.h"
 #include "err_func.h"
 #include "datatypes.h"
+#include "callbacks.h"
 
 /* Global state of game variable */
 extern struct ConnectInfo connection;
@@ -156,7 +157,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		}
 		es_read_int(source, &checksum);
 		connect_msg("[%s] Checksum = %d\n", opcode_str[op], checksum);
-		server_sync();
+		/*server_sync();*/
 		break;
 
 	case RSP_LAUNCH_GAME:
@@ -292,6 +293,19 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
 		es_write_int(connection.sock, REQ_USER_LIST);
+		break;
+
+	case MSG_USERS_UPDATE:
+		connect_msg("[%s]\n", opcode_str[op]);
+		get_players(NULL, NULL);
+		break;
+	case MSG_TYPES_UPDATE:
+		connect_msg("[%s]\n", opcode_str[op]);
+		get_types(NULL, NULL);
+		break;
+	case MSG_TABLES_UPDATE:
+		connect_msg("[%s]\n", opcode_str[op]);
+		get_tables(NULL, NULL);
 		break;
 
 	case RSP_NEW_LOGIN:
