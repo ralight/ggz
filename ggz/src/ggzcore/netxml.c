@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 4428 2002-09-07 07:21:14Z dr_maux $
+ * $Id: netxml.c 4439 2002-09-07 17:16:45Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -509,45 +509,30 @@ static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZSeat *se
 }
 
 
-int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num)
+int _ggzcore_net_send_table_join(struct _GGZNet *net,
+				 const unsigned int num,
+				 int spectator)
 {
 	int status = 0;
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending table join request");
-	_ggzcore_net_send_line(net, "<JOIN TABLE='%d'/>", num);
+	_ggzcore_net_send_line(net, "<JOIN TABLE='%d' SPECTATOR='%s'/>",
+			       num,
+			       spectator ? "true" : "false");
 
 	return status;
 }
 
-int _ggzcore_net_send_table_join_spectator(struct _GGZNet *net, const unsigned int num)
-{
-	int status = 0;
-
-	ggz_debug("GGZCORE:NET", "Sending table join-as-spectator request");
-	_ggzcore_net_send_line(net, "<JOINSPECTATOR TABLE='%d'/>", num);
-
-	return status;
-}
-
-
-int _ggzcore_net_send_table_leave(struct _GGZNet *net, int force)
+int _ggzcore_net_send_table_leave(struct _GGZNet *net,
+				  int force,
+				  int spectator)
 {
 	int status = 0;
 
 	ggz_debug(GGZCORE_DBG_NET, "Sending table leave request");
-	_ggzcore_net_send_line(net, "<LEAVE FORCE='%s'/>",
-			       force ? "true" : "false");
-
-	return status;
-}
-
-
-int _ggzcore_net_send_table_leave_spectator(struct _GGZNet *net)
-{
-	int status = 0;
-
-	ggz_debug(GGZCORE_DBG_NET, "Sending table leave-as-spectator request");
-	_ggzcore_net_send_line(net, "<LEAVESPECTATOR/>");
+	_ggzcore_net_send_line(net, "<LEAVE FORCE='%s' SPECTATOR='%s'/>",
+			       force ? "true" : "false",
+			       spectator ? "true" : "false");
 
 	return status;
 }

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4429 2002-09-07 07:21:45Z dr_maux $
+ * $Id: net.c 4439 2002-09-07 17:16:45Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -121,9 +121,7 @@ static void _net_handle_list(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_enter(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element);
-static void _net_handle_join_spectator(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element);
-static void _net_handle_leave_spectator(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_launch(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_seat(GGZNetIO *net, GGZXMLElement *element);
@@ -913,12 +911,8 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 		process_func = _net_handle_chat;
 	else if (strcmp(tag, "JOIN") == 0)
 		process_func = _net_handle_join;
-	else if (strcmp(tag, "JOINSPECTATOR") == 0)
-		process_func = _net_handle_join_spectator;
 	else if (strcmp(tag, "LEAVE") == 0)
 		process_func = _net_handle_leave;
-	else if (strcmp(tag, "LEAVESPECTATOR") == 0)
-		process_func = _net_handle_leave_spectator;
 	else if (strcmp(tag, "LAUNCH") == 0)
 		process_func = _net_handle_launch;
 	else if (strcmp(tag, "TABLE") == 0)
@@ -1259,26 +1253,38 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *chat)
 }
 
 
-/* Functions for <JOIN> tag */
-static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element)
+/* Convert a possibly-null string that should contain "true" or "false"
+   to a boolean (int) value.  The default value is returned if an invalid
+   or empty value is sent. */
+static int str_to_bool(const char *str, int dflt)
 {
-	int table;
+	if (!str)
+		return dflt;
+  
+	if (strcasecmp(str, "true") == 0)
+		return 1;
 
-	if (element) {
-		table = safe_atoi(ggz_xmlelement_get_attr(element, "TABLE"));
-		player_table_join(net->client->data, table);
-	}
+	if (strcasecmp(str, "false") == 0)
+		return 0;
+
+	return dflt;
 }
 
 
-/* Functions for <JOINSPECTATOR> tag */
-static void _net_handle_join_spectator(GGZNetIO *net, GGZXMLElement *element)
+/* Functions for <JOIN> tag */
+static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element)
 {
-	int table;
-
 	if (element) {
-		table = safe_atoi(ggz_xmlelement_get_attr(element, "TABLE"));
-		player_table_join_spectator(net->client->data, table);
+		int table = safe_atoi(ggz_xmlelement_get_attr(element,
+							      "TABLE"));
+		int spectator =
+			str_to_bool(ggz_xmlelement_get_attr(element,
+							    "SPECTATOR"), 0);
+
+		if (spectator)
+			player_table_join_spectator(net->client->data, table);
+		else
+			player_table_join(net->client->data, table);
 	}
 }
 
@@ -1286,24 +1292,16 @@ static void _net_handle_join_spectator(GGZNetIO *net, GGZXMLElement *element)
 /* Functions for <LEAVE> tag */
 static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
 {
-	char *att;
-	char force = 0;
-	
 	if (element) {
-		att = ggz_xmlelement_get_attr(element, "FORCE");
-		if (att && strcmp(att, "true") == 0)
-			force = 1;
-		player_table_leave(net->client->data, force);
-	}
-}
-
-
-/* Functions for <LEAVESPECTATOR> tag */
-static void _net_handle_leave_spectator(GGZNetIO *net, GGZXMLElement *element)
-{
-
-	if (element) {
-		player_table_leave_spectator(net->client->data);
+		int force = str_to_bool(ggz_xmlelement_get_attr(element,
+								"FORCE"), 0);
+		int spectator =
+			str_to_bool(ggz_xmlelement_get_attr(element,
+							    "SPECTATOR"), 0);
+		if (spectator)
+			player_table_leave_spectator(net->client->data);
+		else
+			player_table_leave(net->client->data, force);
 	}
 }
 

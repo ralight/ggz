@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 4437 2002-09-07 13:28:04Z jdorje $
+ * $Id: room.c 4439 2002-09-07 17:16:45Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -889,11 +889,7 @@ int _ggzcore_room_join_table(struct _GGZRoom *room,
 
 
 	net = _ggzcore_server_get_net(room->server);
-
-	if (spectator)
-		status = _ggzcore_net_send_table_join_spectator(net, num);
-	else
-		status = _ggzcore_net_send_table_join(net, num);
+	status = _ggzcore_net_send_table_join(net, num, spectator);
 
 	if (status == 0) {
 		room->spectating = spectator;
@@ -915,10 +911,7 @@ int _ggzcore_room_leave_table(struct _GGZRoom *room, int force)
 		return -1;
 
 	net = _ggzcore_server_get_net(room->server);
-	if (room->spectating)
-		status = _ggzcore_net_send_table_leave_spectator(net);
-	else
-		status = _ggzcore_net_send_table_leave(net, force);
+	status = _ggzcore_net_send_table_leave(net, force, room->spectating);
 
 	if (status == 0)
 		_ggzcore_server_set_table_leaving(room->server);
