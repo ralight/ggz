@@ -34,7 +34,8 @@ unsigned int GGZCoreModule::countAll()
 void GGZCoreModule::init(const char* game, const char* protocol, const char *engine)
 {
 	m_game = (char*)game;
-	m_protocol = (char*)protocol;
+	if(protocol) m_protocol = (char*)protocol;
+	else m_protocol = NULL;
 	m_engine = (char*)engine;
 }
 
@@ -45,7 +46,7 @@ void GGZCoreModule::setActive(const unsigned int number)
 
 unsigned int GGZCoreModule::count()
 {
-	if((!m_game) || (!m_protocol)) return 0;
+	if((!m_game) || (!m_engine)) return 0;
 	return ggzcore_module_get_num_by_type(m_game, m_engine, m_protocol);
 }
 
@@ -115,3 +116,4 @@ GGZModule *GGZCoreModule::module()
 {
 	return m_module;
 }
+

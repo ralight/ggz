@@ -1280,7 +1280,15 @@ void KGGZ::slotGameFrontend()
 	KGGZDEBUG("Found: %i modules for this game\n", modules);
 	if(modules == 0)
 	{
-		KMessageBox::information(this, i18n("Sorry, no modules found for this game."), "Error!");
+		m_module->init(gametype->name(), NULL, gametype->protocolEngine());
+		modules = m_module->count();
+		if(modules == 0)
+			KMessageBox::information(this, i18n("Sorry, no game modules found for this game type."), "Error!");
+		else
+			KMessageBox::information(this,
+				i18n(QString("The installed game modules for this game type are all incompatible.\n")) +
+				i18n(QString("Please look for a game with the protocol engine '%1' and the protocol version '%2'.").arg(
+				gametype->protocolEngine()).arg(gametype->protocolVersion())), "Error!");
 		delete m_module;
 		m_module = NULL;
 		//eventLeaveGame();
