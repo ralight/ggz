@@ -23,9 +23,12 @@
 	-------------------------------------------------------------------------
 	A summary of what is contained (might be out of date):
 
-	Agrue
+	Agrue:
 		A GGZ Real User Emulator
 		Simulates high load on servers. Needs porting to the new GGZ protocol.
+
+	Colorsniff:
+		Debug utily which colorizes network traffic.
 
 	GGZ-Java:
 	GGZ-Python:
@@ -34,12 +37,18 @@
 		languages.
 		If you don't like C or C++, this is your chance!
 
-	Patches:
-		Non-structured, partly non-working patches.
-		If you have a good one just add it here.
-
 	GGZWars:
 		A Gtk+/SDL game. Needs to be cleaned up, and before any release
 		the sounds and graphics have to get rid of any copyright/trademark
 		issues.
+
+	Patches:
+		Non-structured, partly non-working patches.
+		If you have a good one just add it here.
+
+	SDL-Games:
+		Games which will eventually make up the ggz-sdl-games package.
+
+	XMLGettext:
+		An xgettext variant to extract textual information from xml files.
 
