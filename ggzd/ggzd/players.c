@@ -821,19 +821,17 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 		chat_room[table.room].table_timestamp = time(NULL);
 		chat_room[table.room].player_timestamp = time(NULL);
 		pthread_rwlock_unlock(&chat_room[table.room].lock);
+
+		/* Join newly created table */
+		status = table_join(p_index, t_index, t_fd);
+		if (status != 0) 
+			dbg_msg(GGZ_DBG_TABLE, 
+				"Player %d's table join failed with err %d",
+				p_index, status);
+		else
+			dbg_msg(GGZ_DBG_TABLE,
+				"Player %d's table join successful", p_index);
 	}
-
-	/* Join newly created table */
-	status = table_join(p_index, t_index, t_fd);
-
-	if (status != 0) 
-		dbg_msg(GGZ_DBG_TABLE, 
-			"Player %d's table join failed with err %d", p_index, 
-			status);
-	else
-		dbg_msg(GGZ_DBG_TABLE, "Player %d's table join successful", 
-			p_index);
-
 
 	/* Return status to client */
 	if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0

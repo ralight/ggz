@@ -71,20 +71,46 @@ static int   table_game_join(int index, int fd, char* transit);
 static int   table_game_leave(int index, int fd, char* transit);
 
 
-/* FIXME: This should actually do checking */
+/*
+ * table_check() - Logs seating assignments to debug
+ *                 and verifies their validity
+ *
+ * Returns:  0 on success
+ *           E_BAD_OPTIONS if invalid
+ */
 static int table_check(int p_index, TableInfo table)
 {
-	int i;
+	int i, status=0;
+	int ai_total=seats_bot(table);
+	int seat_total=seats_num(table);
+	int g_type=table.type_index;
+        char allow_bits[] = { GGZ_ALLOW_ZERO, GGZ_ALLOW_ONE, GGZ_ALLOW_TWO,
+                GGZ_ALLOW_THREE, GGZ_ALLOW_FOUR, GGZ_ALLOW_FIVE,
+                GGZ_ALLOW_SIX, GGZ_ALLOW_SEVEN, GGZ_ALLOW_EIGHT };
 
 	dbg_msg(GGZ_DBG_TABLE, "Player %d launching table of type %d", p_index,
-		table.type_index);
-	dbg_msg(GGZ_DBG_TABLE, "Num_seats  : %d", seats_num(table));
-	dbg_msg(GGZ_DBG_TABLE, "AI Players : %d", seats_bot(table));
+		g_type);
+
+	/* Display and verify total seats and bot seats */
+	if(game_types.info[g_type].player_allow_mask & allow_bits[seat_total])
+		dbg_msg(GGZ_DBG_TABLE, "Num_seats  : %d (accept)", seat_total);
+	else {
+		dbg_msg(GGZ_DBG_TABLE, "Num_seats  : %d (invalid)", seat_total);
+		status = E_BAD_OPTIONS;
+	}
+	if(game_types.info[g_type].bot_allow_mask & allow_bits[ai_total]
+	   || ai_total == 0)
+		dbg_msg(GGZ_DBG_TABLE, "AI Players : %d (accept)", ai_total);
+	else {
+		dbg_msg(GGZ_DBG_TABLE, "AI Players : %d (invalid)", ai_total);
+		status = E_BAD_OPTIONS;
+	}
+
 	dbg_msg(GGZ_DBG_TABLE, "Open_seats : %d", seats_open(table));
 	dbg_msg(GGZ_DBG_TABLE, "Num_reserve: %d", seats_reserved(table));
 	dbg_msg(GGZ_DBG_TABLE, "State    : %d", table.state);
 	dbg_msg(GGZ_DBG_TABLE, "Control fd : %d", table.fd_to_game);
-	for (i = 0; i < seats_num(table); i++)
+	for (i = 0; i < seat_total; i++)
 		switch (table.seats[i]) {
 		case GGZ_SEAT_OPEN:
 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: open", i);
@@ -101,7 +127,7 @@ static int table_check(int p_index, TableInfo table)
 				"Seat[%d]: player %d", i, table.seats[i]);
 		}
 
-	return 0;
+	return status;
 }
 
 
