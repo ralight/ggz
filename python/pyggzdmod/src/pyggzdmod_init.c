@@ -150,6 +150,22 @@ static PyObject *pyggzdmod_seat_type(PyObject *self, PyObject *args)
 	return Py_BuildValue("i", seat.type);
 }
 
+static PyObject *pyggzdmod_statistics_report(PyObject *self, PyObject *args)
+{
+	GGZSeat seat;
+	int winner, i;
+	GGZGameResult results[8];
+
+	if(!PyArg_ParseTuple(args, "i", &winner)) return NULL;
+	if((winner < 0) || (winner > 8)) return;
+	for(i = 0; i < ggzdmod_get_num_seats(ggzdmod); i++)
+		results[i] = GGZ_GAME_LOSS;
+	results[winner] = GGZ_GAME_WIN;
+	ggzdmod_report_game(ggzdmod, NULL, results, NULL);
+
+	return Py_BuildValue("");
+}
+
 static PyObject *pyggzdmod_set_handler(PyObject *self, PyObject *args)
 {
 	int id;
@@ -230,6 +246,7 @@ static PyMethodDef pyggzdmod_methods[] =
 	{"seatFd", pyggzdmod_seat_fd, METH_VARARGS},
 	{"seatName", pyggzdmod_seat_name, METH_VARARGS},
 	{"seatType", pyggzdmod_seat_type, METH_VARARGS},
+	{"reportStatistics", pyggzdmod_statistics_report, METH_VARARGS},
 	{NULL, NULL}
 };
 
