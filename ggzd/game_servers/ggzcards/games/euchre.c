@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2706 2001-11-09 02:05:18Z jdorje $
+ * $Id: euchre.c 2725 2001-11-12 23:38:54Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -38,7 +38,6 @@ static void euchre_handle_bid(bid_t bid);
 static void euchre_next_bid(void);
 static void euchre_start_playing(void);
 static int euchre_deal_hand(void);
-static int euchre_send_hand(player_t p, seat_t s);
 static int euchre_get_bid_text(char *buf, int buf_len, bid_t bid);
 static void euchre_set_player_message(player_t p);
 static void euchre_end_trick(void);
@@ -69,7 +68,7 @@ struct game_function_pointers euchre_funcs = {
 	game_handle_gameover,
 	euchre_map_card,
 	game_compare_cards,
-	euchre_send_hand
+	game_send_hand
 };
 
 
@@ -203,12 +202,6 @@ static int euchre_deal_hand(void)
 	for (s = 0; s < game.num_seats; s++)
 		cards_deal_hand(game.hand_size, &game.seats[s].hand);
 	return 0;
-}
-
-static int euchre_send_hand(player_t p, seat_t s)
-{
-	/* reveal the up-card */
-	return send_hand(p, s, game.players[p].seat == s || s == 5);
 }
 
 static int euchre_get_bid_text(char *buf, int buf_len, bid_t bid)
