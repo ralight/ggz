@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 2961 2001-12-19 23:54:36Z jdorje $
+ * $Id: animation.c 2965 2001-12-20 03:06:01Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -126,26 +126,28 @@ gint animation_callback(gpointer ignored)
 
 	animation_delete();
 
-	/* Draw our new card position */
-	gdk_draw_pixmap(table->window,
-			table_style->fg_gc[GTK_WIDGET_STATE(table)],
-			card_fronts[0],
-			anim.card_x, anim.card_y,
-			new_x, new_y, CARDWIDTH, CARDHEIGHT);
-
-	/* Update our information for next time */
-	anim.cur_x = new_x;
-	anim.cur_y = new_y;
-
-	/* If we are there, stop the animation process */
-	/* FIXME: can this go wrong?  Is it possible to "miss"? */
+	/* If we are there, stop the animation process and draw the card
+	   "for real".  Otherwise, we just draw the next step in the
+	   animation and then continue. */
 	if (new_x == anim.dest_x && new_y == anim.dest_y) {
+		table_show_card(anim.player, anim.card);
 		animating = 0;
 		return FALSE;
-	}
+	} else {
+		/* Draw our new card position */
+		gdk_draw_pixmap(table->window,
+				table_style->fg_gc[GTK_WIDGET_STATE(table)],
+				card_fronts[0],
+				anim.card_x, anim.card_y,
+				new_x, new_y, CARDWIDTH, CARDHEIGHT);
 
-	/* Continue animating */
-	return TRUE;
+		/* Update our information for next time */
+		anim.cur_x = new_x;
+		anim.cur_y = new_y;
+
+		/* Continue animating */
+		return TRUE;
+	}
 }
 
 
