@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 2308 2001-08-29 00:29:20Z bmh $
+ * $Id: motd.c 3297 2002-02-10 07:34:26Z rgade $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -32,7 +32,11 @@
 #include <string.h>
 #include <sys/utsname.h>
 #include <pthread.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
+#include <ggz.h>
 #include <ggzd.h>
 #include <datatypes.h>
 #include <err_func.h>
@@ -59,8 +63,10 @@ static char *motd_get_tables(int, char *, int);
 void motd_read_file(void)
 {
 	char *fullpath;
-	FILE *motd_file;
-	char line[128];
+	int motd_fdes;
+	GGZFile *motd_file;
+	char *line;
+	int alloc_lines;
 	int lines;
 	int len;
 	struct utsname unames;
@@ -79,23 +85,30 @@ void motd_read_file(void)
 	}
 
 	/* Try to open the file */
-	if((motd_file = fopen(fullpath, "r")) == NULL) {
+	if((motd_fdes = open(fullpath, O_RDONLY)) < 0) {
 		err_msg("MOTD file not found");
 		motd_info.use_motd = 0;
 		return;
 	}
 
+	motd_file = ggz_get_file_struct(motd_fdes);
+
 	/* Read the file one line at a time (up to MAX_MOTD_LINES) */
+	alloc_lines = 10;
+	motd_info.motd_text = ggz_malloc(alloc_lines * sizeof(char *));
 	lines = 0;
-	while(fgets(line, 128, motd_file) && (lines < MAX_MOTD_LINES)) {
-		if((motd_info.motd_text[lines] = malloc(strlen(line)+1)) ==NULL)
-			err_sys_exit("malloc error in motd_read_file()");
-		strcpy(motd_info.motd_text[lines], line);
-		lines++;
+	while((line = ggz_read_line(motd_file))) {
+		if(lines == alloc_lines) {
+			alloc_lines += 10;
+			motd_info.motd_text = ggz_realloc(motd_info.motd_text,
+						alloc_lines * sizeof(char *));
+		}
+		motd_info.motd_text[lines++] = line;
 	}
 	motd_info.motd_lines = lines;
 
-	fclose(motd_file);
+	ggz_free_file_struct(motd_file);
+	close(motd_fdes);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Read MOTD file, %d lines", lines);
 
 	/* Initialize stuff that is constant as long as the server is up */
@@ -138,15 +151,24 @@ int motd_get_num_lines(void)
 
 
 /* Return cooked version of a motd line */
-char *motd_get_line(int index, char *outline, int sz_outline)
+char *motd_get_line(int index)
 {
 	char *in = motd_info.motd_text[index];
+	char *outline;
+	int sz_outline;
 	char *p;
 	int outindex = 0;
 	char str[32];
 
+	sz_outline = 1024;
+	outline = ggz_malloc(sz_outline);
+
 	/* Loop through the string, watching out for % specifiers */
-	while(*in && (outindex < (sz_outline-1))) {
+	while(*in) {
+		if(outindex >= sz_outline-1) {
+			sz_outline += 512;
+			outline = ggz_realloc(outline, sz_outline);
+		}
 		if(*in == '%') {
 			in++;
 			/* Set a pointer to a string to replace the %? with */
@@ -194,16 +216,22 @@ char *motd_get_line(int index, char *outline, int sz_outline)
 					p = NULL;
 					outline[outindex] = '%';
 					outindex++;
-					if(outindex < (sz_outline-1)) {
-						outline[outindex] = *in;
-						outindex++;
+					if(outindex >= sz_outline-1) {
+						sz_outline += 512;
+						outline = ggz_realloc(outline, sz_outline);
 					}
+					outline[outindex] = *in;
+					outindex++;
 					break;
 			}
 
 			/* Copy a string if we have one pointed to */
 			if(p) {
 				while(*p && outindex < (sz_outline-1)) {
+					if(outindex >= sz_outline-1) {
+						sz_outline += 512;
+						outline = ggz_realloc(outline, sz_outline);
+					}
 					outline[outindex] = *p;
 					p++;
 					outindex++;
@@ -217,6 +245,10 @@ char *motd_get_line(int index, char *outline, int sz_outline)
 		outline[outindex] = *in;
 		outindex++;
 		in++;
+	}
+	if(outindex >= sz_outline-1) {
+		sz_outline += 1;
+		outline = ggz_realloc(outline, sz_outline);
 	}
 	outline[outindex] = '\0';
 

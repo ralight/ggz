@@ -32,7 +32,7 @@ typedef struct {
 	char use_motd;
 	unsigned long startup_time;
 	int motd_lines;
-	char *motd_text[MAX_MOTD_LINES];	/* cleanup() */
+	char **motd_text;			/* cleanup() via ggz_free() */
 	char *hostname;				/* cleanup() */
 	char *sysname;				/* cleanup() */
 	char *cputype;				/* cleanup() */
@@ -53,5 +53,5 @@ int motd_is_defined(void);
 int motd_get_num_lines(void);
 
 /* Parse a line of the motd, filling in parameters */
-char *motd_get_line(int, char *, int);
+char *motd_get_line(int);
 

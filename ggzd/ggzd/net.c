@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Server
  * Date: 9/22/01
- * $Id: net.c 3261 2002-02-05 23:53:49Z jdorje $
+ * $Id: net.c 3297 2002-02-10 07:34:26Z rgade $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -302,15 +302,16 @@ int net_send_login(GGZNetIO *net, GGZLoginType type, char status, char *password
 int net_send_motd(GGZNetIO *net)
 {
 	int i, num;
-	char line[1024];
+	char *line;
 	
 	_net_send_line(net, "<MOTD PRIORITY='normal'><![CDATA[");
 
 	num = motd_get_num_lines();
 		
 	for (i = 0; i < num; i++) {
-		motd_get_line(i, line, sizeof(line));
+		line = motd_get_line(i);
 		_net_send_line(net, line);
+		ggz_free(line);
 	}
 
 	_net_send_line(net, "]]></MOTD>");
