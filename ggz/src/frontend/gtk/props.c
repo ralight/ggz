@@ -296,7 +296,7 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 
 	/* Highlight Color */
 	tmp = lookup_widget((props_dialog), "h_spin");
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "H_COLOR", 1));
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp), ggzcore_conf_read_int("CHAT", "H_COLOR", 3));
 
 	/* Normal Color */
 	tmp = lookup_widget((props_dialog), "n_spin");

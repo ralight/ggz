@@ -429,23 +429,17 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 			return TRUE;
 
 		/* Check for matching name */
-		tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
-		for (currow=0; currow<GTK_CLIST(tmp)->rows; currow++)
+		if(chat_complete_name(startname) != NULL)
 		{
-			gtk_clist_get_text(GTK_CLIST(tmp), currow, 2, &name);
-
-			/* Compare startname with first part of name */
-			if (strncmp(startname, name, strlen(startname)) == 0)
-			{
-				/* If it matches, copy the rest of the name */
-				if (first == TRUE)
-					out = g_strdup_printf("%s%s: ", text, &name[strlen(startname)]);
-				else
-					out = g_strdup_printf("%s%s ", text, &name[strlen(startname)]);
-				tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
-				gtk_entry_set_text(GTK_ENTRY(tmp), out);
-				return TRUE;
-			}
+			name = g_strdup(chat_complete_name(startname));
+			/* If it matches, copy the rest of the name */
+			if (first == TRUE)
+				out = g_strdup_printf("%s%s: ", text, &name[strlen(startname)]);
+			else
+				out = g_strdup_printf("%s%s ", text, &name[strlen(startname)]);
+			tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
+			gtk_entry_set_text(GTK_ENTRY(tmp), out);
+			return TRUE;
 		}
 		if (out)
 			g_free(out);

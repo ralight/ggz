@@ -51,5 +51,6 @@ void chat_add_friend(gchar *name);
 void chat_remove_friend(gchar *name);
 void chat_add_ignore(gchar *name);
 void chat_remove_ignore(gchar *name);
+gchar *chat_complete_name(gchar *name);
 
 #endif

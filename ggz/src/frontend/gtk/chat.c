@@ -501,14 +501,14 @@ gchar *chat_get_color(gchar *name, gchar *msg)
 	/* Is our name in the message? */
 	if(strlen(msg) > strlen(ggzcore_server_get_handle(server))+1)
 	{
-		for(pos=0; pos<strlen(msg)-strlen(ggzcore_server_get_handle(server)); pos++)
+		for(pos=0; pos<strlen(msg)-strlen(ggzcore_server_get_handle(server))+1; pos++)
 		{
 			if(!strncasecmp(msg + pos, ggzcore_server_get_handle(server), strlen(ggzcore_server_get_handle(server))))
 			{
-				if(ggzcore_conf_read_int("CHAT", "H_COLOR", 1) > 9)
-					return g_strdup_printf("%d", ggzcore_conf_read_int("CHAT", "H_COLOR", 1));
+				if(ggzcore_conf_read_int("CHAT", "H_COLOR", 3) > 9)
+					return g_strdup_printf("%d", ggzcore_conf_read_int("CHAT", "H_COLOR", 3));
 				else
-					return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "H_COLOR", 1));
+					return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "H_COLOR", 3));
 			}
 		}
 	}
@@ -639,3 +639,53 @@ void chat_remove_ignore(gchar *name)
 	}
 }
 
+
+/* chat_complete_name() - Given a partial name we try to compleate it
+ *
+ * Recieves:
+ * 	gchar	*name	: partial name
+ *
+ * Returns:
+ * 	gchar*		: NULL if not matched, or matched name
+ */
+
+gchar *chat_complete_name(gchar *name)
+{
+	GtkWidget *tmp;
+	gchar *fullname = NULL;
+	gchar *returnname = NULL;
+	gint currow;
+	gint multiple = FALSE;
+	gint first = FALSE;
+
+	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
+	for (currow=0; currow<GTK_CLIST(tmp)->rows; currow++)
+	{
+		gtk_clist_get_text(GTK_CLIST(tmp), currow, 2, &fullname);
+
+		if (strncasecmp(fullname, name, strlen(name)) == 0)
+		{
+			if(multiple == FALSE)
+			{
+				returnname = g_strdup(fullname);
+				multiple = TRUE;
+			}else{
+				if(first == FALSE)
+				{
+					chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Multiple matches:"));
+					chat_display_message(CHAT_LOCAL_NORMAL, NULL, returnname);
+					g_free(returnname);
+					first = TRUE;
+				}
+				returnname = g_strdup(fullname);
+				chat_display_message(CHAT_LOCAL_NORMAL, NULL, returnname);
+				g_free(returnname);
+				returnname = NULL;
+			}
+		}
+	}
+
+	if(returnname != NULL)
+		return returnname;
+	return NULL;
+}
