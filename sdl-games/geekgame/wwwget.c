@@ -63,6 +63,8 @@ void wwwget(const char *source, const char *dest)
 	pid_t pid;
 	int status;
 
+	unlink(dest);
+
 	pid = fork();
 	switch(pid)
 	{

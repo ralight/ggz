@@ -432,7 +432,7 @@ void loadsettings(void)
 	if((conf == -1) || (!playerimage))
 	{
 		playerimage = (char*)malloc(STRING_LENGTH);
-		snprintf(playerimage, STRING_LENGTH, "%s/bot.png", data_global());
+		snprintf(playerimage, STRING_LENGTH, "%s/default.png", data_global());
 	}
 }
 
@@ -606,7 +606,7 @@ char *scan_file(const char *dir, const char *pattern)
 	ret = NULL;
 	if(tmpfile)
 	{
-		snprintf(path, sizeof(path), "%s/fonts/%s", data_local(), tmpfile);
+		snprintf(path, sizeof(path), "%s/%s", dir, tmpfile);
 		ret = strdup(path);
 	}
 
@@ -657,6 +657,7 @@ void screen_scanning(int display)
 			fontpath = scan_file(path, "*.ttf");
 		}
 		if(!fontpath) fontpath = scan_file("/usr/share/fonts/truetype", "*.ttf");
+		if(!fontpath) fontpath = scan_file("/usr/share/fonts/truetype/freefont", "*.ttf");
 		if(!fontpath) fontpath = scan_file("/usr/X11R6/lib/X11/fonts/TrueType", "*.ttf");
 
 		/* Scanning for music */
