@@ -1,6 +1,6 @@
 SUBDIRS = .
 
-EXTRA_DIST = grubby.pot de.po
+EXTRA_DIST = grubby.pot de.po pt_BR.po
 
 messages:
 	$(XGETTEXT) -k_ ../src/*.c -o grubby.pot; \
