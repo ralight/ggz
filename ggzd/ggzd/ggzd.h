@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 4590 2002-09-16 22:46:10Z jdorje $
+ * $Id: ggzd.h 4971 2002-10-21 21:27:03Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -48,6 +48,11 @@
 #endif
 #define DEFAULT_MAX_ROOM_USERS 100
 #define DEFAULT_MAX_ROOM_TABLES 50
+
+/* Timeout for server resync */
+#define GGZ_RESYNC_SEC  0
+#define GGZ_RESYNC_USEC 500000
+
 
 typedef struct GGZClient GGZClient;
 

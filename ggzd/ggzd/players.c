@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: players.c 4971 2002-10-21 21:27:03Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -63,11 +63,6 @@
 #include "seats.h"
 #include "table.h"
 #include "transit.h"
-
-
-/* Timeout for server resync */
-#define GGZ_RESYNC_SEC  0
-#define GGZ_RESYNC_USEC 500000
 
 
 /* Server wide data structures*/

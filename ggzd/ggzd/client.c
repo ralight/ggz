@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: client.c 4971 2002-10-21 21:27:03Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -63,11 +63,6 @@ static GGZClient* client_new(int fd);
 static void client_loop(GGZClient* client);
 static void client_free(GGZClient *client);
 static void client_create_channel(GGZClient *client);
-
-/* Timeout for server resync */
-#define GGZ_RESYNC_SEC  0
-#define GGZ_RESYNC_USEC 500000
-
 
 /** 
  * Launches a new dedicated thread for handling this client connection 

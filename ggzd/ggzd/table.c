@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: table.c 4971 2002-10-21 21:27:03Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -54,9 +54,6 @@
 #include "table.h"
 #include "transit.h"
 
-
-#define GGZ_RESYNC_SEC  0
-#define GGZ_RESYNC_USEC 500000
 
 /* Packaging for seat events */
 typedef struct {
