@@ -21,7 +21,7 @@ extern void chess_ai_init(int color, int depth);
 extern int chess_ai_move(int from, int to, int force);
 extern int chess_ai_find(int color, int *from, int *to);
 extern void chess_ai_output(void);
-extern int chess_ai_rochade(int color);
+extern int chess_ai_rochade(int color, int which);
 extern int chess_ai_exchange(int pos, int *figure);
 
 /**********************************************/
@@ -80,11 +80,11 @@ static PyObject *pyggzchess_output(PyObject *self, PyObject *args)
 
 static PyObject *pyggzchess_rochade(PyObject *self, PyObject *args)
 {
-	int color;
+	int color, which;
 	int ret;
 
-	if(!PyArg_ParseTuple(args, "i", &color)) return NULL;
-	ret = chess_ai_rochade(color);
+	if(!PyArg_ParseTuple(args, "ii", &color, &which)) return NULL;
+	ret = chess_ai_rochade(color, which);
 	return Py_BuildValue("i", ret);
 }
 
