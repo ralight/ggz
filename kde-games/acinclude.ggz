@@ -175,7 +175,7 @@ AC_SUBST(ggzcore_libraries)
 AC_SUBST(ggzcore_includes)
 
 GGZCORE_INCLUDES="-I$ggzcore_includes"
-GGZCORE_LDFLAGS="-L$ggzcore_includes"
+GGZCORE_LDFLAGS="-L$ggzcore_libraries"
 
 AC_SUBST(GGZCORE_INCLUDES)
 AC_SUBST(GGZCORE_LDFLAGS)
