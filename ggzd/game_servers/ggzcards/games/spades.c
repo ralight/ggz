@@ -212,9 +212,9 @@ static void spades_set_player_message(player_t p)
 			if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text);
 	}
 	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding..."); /* "Waiting for bid" won't fit */	
+		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding...");	
 	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing..."); /* "Waiting for play" won't fit */;
+		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing...");
 }
 
 static void spades_end_trick()
