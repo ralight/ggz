@@ -41,12 +41,10 @@ extern Options opt;
 /* Read the motd file */
 void motd_read_file(void)
 {
-#ifdef 0
 	char *fullpath;
 	FILE *motd_file;
-	char motd_temp[MOTD_MAX+1];
-	int motd_size;
-	char *motd_final;
+	char line[128];
+	int lines;
 
 	/* If it's an absolute path already, we don't need to add game_dir */
 	if(motd_info.motd_file[0] == '/')
@@ -66,21 +64,16 @@ void motd_read_file(void)
 		return;
 	}
 
-	/* Read the whole file in one chunk, up to MOTD_MAX */
-	motd_size = fread(motd_temp, 1, MOTD_MAX, motd_file);
-	if(motd_size > 0) {
-		/* Make a string out of it */
-		motd_temp[motd_size] = '\0';
-
-		/* Allocate and fill a permanent buffer for it */
-		if((motd_final = malloc(motd_size+1)) == NULL)
+	/* Read the file one line at a time (up to 15) */
+	lines = 0;
+	while(fgets(line, 128, motd_file) && (lines < 15)) {
+		if((motd_info.motd_text[lines] = malloc(strlen(line)+1)) ==NULL)
 			err_sys_exit("malloc error in motd_read_file()");
-		strcpy(motd_final, motd_temp);
-		motd_info.motd_text = motd_final;
-	} else
-		motd_info.use_motd = 0;
+		strcpy(motd_info.motd_text[lines], line);
+		lines++;
+	}
+	motd_info.motd_lines = lines;
 
 	fclose(motd_file);
-	dbg_msg("Read MOTD file, %d bytes", motd_size);
-#endif
+	dbg_msg("Read MOTD file, %d lines", lines);
 }
