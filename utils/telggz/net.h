@@ -1,6 +1,6 @@
 /*
  * TelGGZ - The GGZ Gaming Zone Telnet Wrapper
- * Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+ * Copyright (C) 2001 - 2003 Josef Spillner, dr_maux@users.sourceforge.net
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ void net_allow(int allow);
 void net_join(int roomnum);
 
 /* Set the host name */
-void net_host(const char *hostname);
+void net_host(const char *hostname, int portnumber);
 
 /* List all available rooms */
 void net_list(void);
@@ -52,8 +52,10 @@ void net_who(void);
 
 /* Hooks for ggzcore */
 GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data);
+GGZHookReturn net_hook_negotiated(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_failure(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_login(unsigned int id, void *event_data, void *user_data);
+GGZHookReturn net_hook_motd(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_roomlist(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_data);

@@ -1,6 +1,6 @@
 /*
  * TelGGZ - The GGZ Gaming Zone Telnet Wrapper
- * Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+ * Copyright (C) 2001 - 2003 Josef Spillner, dr_maux@users.sourceforge.net
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ char *m_password = NULL;
 char *buffer = NULL;
 int m_allow = 1;
 char *host = NULL;
+int port = 0;
 
 /* Prototypes */
 static void flush_buffer(void);
@@ -46,7 +47,9 @@ void net_init()
 	ggzcore_server_add_event_hook(server, GGZ_CONNECT_FAIL, net_hook_failure);
 	ggzcore_server_add_event_hook(server, GGZ_LOGGED_IN, net_hook_login);
 	ggzcore_server_add_event_hook(server, GGZ_LOGIN_FAIL, net_hook_failure);
+	ggzcore_server_add_event_hook(server, GGZ_NEGOTIATED, net_hook_negotiated);
 	ggzcore_server_add_event_hook(server, GGZ_NEGOTIATE_FAIL, net_hook_failure);
+	ggzcore_server_add_event_hook(server, GGZ_MOTD_LOADED, net_hook_motd);
 	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST, net_hook_roomlist);
 	ggzcore_server_add_event_hook(server, GGZ_ENTERED, net_hook_enter);
 	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, net_hook_failure);
@@ -63,7 +66,8 @@ void net_login(const char *username, const char *password)
 	if(password) m_password = strdup(password);
 
 	if(!host) host = "localhost";
-	ggzcore_server_set_hostinfo(server, host, 5688, 0);
+	if(!port) port = 5688;
+	ggzcore_server_set_hostinfo(server, host, port, 0);
 	printf("Logging in as %s...\n", m_username);
 	fflush(NULL);
 	ggzcore_server_connect(server);
@@ -73,7 +77,7 @@ void net_process()
 {
 	if(server)
 		if(ggzcore_server_data_is_pending(server))
-			ggzcore_server_read_data(server, ggzcore_server_get_channel(server));
+			ggzcore_server_read_data(server, ggzcore_server_get_fd(server));
 }
 
 void net_send(char *buffer)
@@ -88,13 +92,14 @@ void net_allow(int allow)
 	m_allow = allow;
 }
 
-void net_host(const char *hostname)
+void net_host(const char *hostname, int portnumber)
 {
 	if(room) return;
 
 	if(host) free(host);
 	host = strdup(hostname);
-	printf("TelGGZ: Host is now %s.\n", hostname);
+	port = portnumber;
+	printf("TelGGZ: Host is now %s:%i.\n", hostname, port);
 	fflush(NULL);
 }
 
@@ -146,7 +151,7 @@ GGZHookReturn net_hook_players(unsigned int id, void *event_data, void *user_dat
 GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data)
 {
 	while(!ggzcore_server_is_online(server))
-		ggzcore_server_read_data(server, ggzcore_server_get_channel(server));
+		ggzcore_server_read_data(server, ggzcore_server_get_fd(server));
 
 	ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, m_username, m_password);
 	ggzcore_server_login(server);
@@ -154,9 +159,17 @@ GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_dat
 	return GGZ_HOOK_OK;
 }
 
+GGZHookReturn net_hook_negotiated(unsigned int id, void *event_data, void *user_data)
+{
+	return GGZ_HOOK_OK;
+}
+
 GGZHookReturn net_hook_failure(unsigned int id, void *event_data, void *user_data)
 {
-	printf("TelGGZ: Error! Hook error (%i)\n", id);
+	GGZErrorEventData error;
+
+	error = *(GGZErrorEventData*)event_data;
+	printf("TelGGZ: Error %i: %s\n", id, error.message);
 	fflush(NULL);
 	exit(-1);
 
@@ -167,6 +180,21 @@ GGZHookReturn net_hook_login(unsigned int id, void *event_data, void *user_data)
 {
 	ggzcore_server_list_rooms(server, -1, 0);
 
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_motd(unsigned int id, void *event_data, void *user_data)
+{
+	char **motd;
+	int i;
+
+	motd = (char**)event_data;
+	i = 0;
+	while(motd[i])
+	{
+		printf("MOTD: %s\n", motd[i]);
+		i++;
+	}
 	return GGZ_HOOK_OK;
 }
 

@@ -1,6 +1,6 @@
 /*
  * TelGGZ - The GGZ Gaming Zone Telnet Wrapper
- * Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+ * Copyright (C) 2001 - 2003 Josef Spillner, dr_maux@users.sourceforge.net
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,6 +88,10 @@ ServerGGZ **meta_query(const char *version)
 	int finished;
 	char *host;
 	int port;
+	ELE *speedstr, *locationstr;
+	char *preferencestr;
+	int speed, preference;
+	char *location;
 
 	finished = 0;
 	j = 0;
@@ -110,6 +114,15 @@ ServerGGZ **meta_query(const char *version)
 					while((el) && (el[i]))
 					{
 						tmp = MD_query(el[i], "uri");
+						speedstr = MD_query(el[i], "speed");
+						locationstr = MD_query(el[i], "location");
+						preferencestr = MD_att(el[i], "preference");
+						if(!speedstr) speed = 0;
+						else speed = atoi(speedstr->value);
+						if(!preferencestr) preference = 99;
+						else preference = atoi(preferencestr);
+						if(!locationstr) location = "unknown";
+						else location = locationstr->value;
 						if(tmp)
 						{
 							uri = tmp->value;
@@ -118,9 +131,9 @@ ServerGGZ **meta_query(const char *version)
 							list[listcount]->host = meta_uri_host_internal(uri);
 							list[listcount]->port = meta_uri_port_internal(uri);
 							list[listcount]->version = strdup(version);
-							list[listcount]->speed = 0;
-							list[listcount]->location = strdup("unknown");
-							list[listcount]->preference = 100;
+							list[listcount]->speed = speed;
+							list[listcount]->location = strdup(location);
+							list[listcount]->preference = preference;
 							list[listcount]->id = listcount + 1;
 							list[listcount + 1] = NULL;
 							listcount++;

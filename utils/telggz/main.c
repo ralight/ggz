@@ -1,6 +1,6 @@
 /*
  * TelGGZ - The GGZ Gaming Zone Telnet Wrapper
- * Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+ * Copyright (C) 2001 - 2003 Josef Spillner, dr_maux@users.sourceforge.net
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ static void pref_listservers()
 int main(int argc, char *argv[])
 {
 	GGZOptions opt;
-	int ret;
+	int ret, i;
 	char hostname[128];
 	char *username, *password;
 
@@ -101,6 +101,10 @@ int main(int argc, char *argv[])
 	fflush(NULL);
 	ret = chat_getserver() - 1;
 
+	/* Check argument */
+	for(i = 0; i <= ret; i++)
+		if(!preflist[i]) ret = -1;
+
 	/* Connect to that server */
 	if(ret >= 0)
 	{
@@ -119,6 +123,11 @@ int main(int argc, char *argv[])
 
 		/* Enter the chat loop */
 		chat_loop();
+	}
+	else
+	{
+		printf("Well, maybe next time...\n");
+		fflush(NULL);
 	}
 
 	/* Exit with humor */
