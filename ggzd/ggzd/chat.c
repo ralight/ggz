@@ -135,8 +135,11 @@ void chat_mark_all_read(int p_index)
 	
 	if(chats.player_unread_count[p_index]) {
 		/* Mark all the chats as read */
-		for(c_index = 0; c_index < MAX_CHAT_BUFFER; c_index++)
+		for(c_index = 0; c_index < MAX_CHAT_BUFFER; c_index++) {
 			chats.info[c_index].unread[p_index] = 0;
+			if(--chats.info[c_index].unread_count == 0)
+				chat_remove(c_index);
+		}
 		chats.player_unread_count[p_index] = 0;
 	}
 
