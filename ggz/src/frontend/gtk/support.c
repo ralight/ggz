@@ -354,7 +354,7 @@ void support_goto_url(gchar *url)
 	}
         if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Mozilla - Existing"))
 	{
-		command = g_strdup_printf("mozilla -remote 'openURL(%s,new-window)'", url);
+		command = g_strdup_printf("mozilla -remote 'openURL(%s)'", url);
 		support_exec(command);
 	}
         if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Netscape - New"))
@@ -364,7 +364,7 @@ void support_goto_url(gchar *url)
 	}
         if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Netscape - Existing"))
 	{
-		command = g_strdup_printf("netscape -remote 'openURL(%s,new-window)'", url);
+		command = g_strdup_printf("netscape -remote 'openURL(%s)'", url);
 		support_exec(command);
 	}
         if(!strcmp(ggzcore_conf_read_string("OPTIONS", "BROWSER", "None"), "Opera - New"))
