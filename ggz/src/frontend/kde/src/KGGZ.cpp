@@ -222,11 +222,12 @@ void KGGZ::slotConnected(const char *host, int port, const char *username, const
 	if(m_connect->optionSecure())
 	{
 		KMessageBox::information(this,
-			i18n("Although the TLS implementation may work,\nit is not widely tested yet and in no way secure!"),
+			i18n("Although the TLS implementation may work, it is not widely tested yet and in no way secure!"),
 			i18n("Security warning"));
 	}
 
-	KGGZDEBUG("Connect with: host=%s port=%i username=%s password=%s mode=%i\n", host, port, username, password, mode);
+	KGGZDEBUG("Connect with: host=%s port=%i username=%s password=%s mode=%i encryption=%i\n",
+		host, port, username, password, mode, m_connect->optionSecure());
 
 	if(m_dns) delete m_dns;
 	m_dns = new QDns(host, QDns::A);
