@@ -114,6 +114,7 @@ typedef int player_t; /* just to make things clearer */
 /* Data structure for generic trick-taking card game */
 struct wh_game_t {
 	int which_game;		/* the game; currently defined in cards.h */
+	int deck_type;		/* the type of deck used, as defined in cards.h */
 	char* name;		/* the name of the game */
 
 	int initted;		/* has the game been initialized? */

@@ -116,6 +116,20 @@ typedef struct suaro_game_t {
 	int kitty_revealed;
 } suaro_game_t;
 
+/* ---------- EUCHRE ---------- */
+
+/* special bids */
+#define EUCHRE_PASS 1
+#define EUCHRE_TAKE 2
+#define EUCHRE_TAKE_SUIT 3
+
+#define EUCHRE ( *(euchre_game_t *)(game.specific) )
+typedef struct euchre_game_t {
+	player_t maker;		/* just like the declarer */
+	int alone;		/* is the dealer going alone? */
+	int suit;		/* the suit of trump (TODO: is this necessary?) */
+} euchre_game_t;
+
 /* TODO: make a more generalized macro instead of LAPOCHA, etc. */
 
 

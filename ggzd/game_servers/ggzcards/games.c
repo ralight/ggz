@@ -62,6 +62,9 @@ int games_get_gametype(char* text)
 	if (!strcmp(text, "hearts"))
 		return GGZ_GAME_HEARTS;
 
+	if (!strcmp(text, "euchre"))
+		return GGZ_GAME_EUCHRE;
+
 	/* NOTE: we may not yet be connected to the ggz server, in which case this won't work. */
 	ggz_debug("Unknown game for '%s'.", text);
 	return GGZ_GAME_UNKNOWN;

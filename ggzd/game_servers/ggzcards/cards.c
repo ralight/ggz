@@ -25,7 +25,6 @@
 #include <stdlib.h>
 
 #include "cards.h"
-#include "games.h"
 #include "ggz.h"
 
 #include "game.h" /* just for alloc */
@@ -43,7 +42,7 @@ char* short_suit_names[4] = {"C", "D", "H", "S"};
  *   This is more complex than might seem necessary, but allows a game-designer
  *   to very easily invent new card deck types by merely setting the params
  */
-void cards_create_deck(int which_game)
+void cards_create_deck(int which_deck)
 {
 	int face, suit, deck;
 	int cardnum;
@@ -57,25 +56,32 @@ void cards_create_deck(int which_game)
 
 	char lap_deck_faces[] = {2, 3, 4, 5, 6, 10, JACK, QUEEN, KING, ACE_HIGH};
 	char suaro_deck_faces[] = {8, 9, 10, JACK, QUEEN, KING, ACE_HIGH};
+	char euchre_deck_faces[] = {9, 10, JACK, QUEEN, KING, ACE_HIGH};
 
 	deck_faces = std_deck_faces;
 	deck_suits = std_deck_suits;
 	deck_decks = std_deck_decks;
 
 	/* First set the deck parameters up */
-	switch (which_game) {
-		case GGZ_GAME_LAPOCHA:
+	switch (which_deck) {
+		case GGZ_DECK_LAPOCHA:
 			/* La Pocha doesn't use 7,8,9 */
 			deck_faces = lap_deck_faces;
 			deck_face_cnt = 10;
 			break;
-		case GGZ_GAME_SUARO:
+		case GGZ_DECK_SUARO:
 			deck_faces = suaro_deck_faces;
 			deck_face_cnt = 7;
 			break;
-		default:
-			/* in the default case, use a full deck */
+		case GGZ_DECK_EUCHRE:
+			deck_faces = euchre_deck_faces;
+			deck_face_cnt = 6;
 			break;
+		case GGZ_DECK_FULL:
+			/* use a full 52-card deck */
+			break;
+		default:
+			ggz_debug("Unknown deck %d.", which_deck);
 	}
 
 	/* Now generate an in-order deck */

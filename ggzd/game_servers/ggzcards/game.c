@@ -135,22 +135,47 @@ void game_init_game()
 		case GGZ_GAME_BRIDGE:
 			game.specific = alloc(sizeof(bridge_game_t));
 			break;
+		case GGZ_GAME_EUCHRE:
+			game.specific = alloc(sizeof(euchre_game_t));
+			break;
 		default:
 			ggz_debug("game_alloc_game not implemented for game %d.", game.which_game);
 			exit(-1);
 	}
 
-	cards_create_deck(game.which_game);
-
 	/* default value */
 	game.max_hand_length = 52 / game.num_players;
+	game.deck_type = GGZ_DECK_FULL;
 
 	/* second round of game-specific initialization */
 	switch (game.which_game) {
+		case GGZ_GAME_EUCHRE:
+			{
+			static struct ggz_seat_t ggz[2] = { {GGZ_SEAT_NONE, "Kitty", -1},
+								    {GGZ_SEAT_NONE, "Up-Card", -1} };
+			set_num_seats(6);
+			game.seats[0].ggz = &ggz_seats[0];
+			game.players[0].seat = 0;
+			game.seats[1].ggz = &ggz_seats[1];
+			game.players[1].seat = 1;
+			game.seats[3].ggz = &ggz_seats[2];
+			game.players[2].seat = 3;
+			game.seats[4].ggz = &ggz_seats[3];
+			game.players[3].seat = 4;
+			game.seats[2].ggz = &ggz[0];
+			game.seats[5].ggz = &ggz[1];
+			game.deck_type = GGZ_DECK_EUCHRE;
+			game.max_bid_choices = 5;
+			game.max_bid_length = 20; /* TODO */
+			game.max_hand_length = 5;
+			game.target_score = 10;
+			game.name = "Euchre";
+			}
+			break;
 		case GGZ_GAME_SUARO:
 			{
 			static struct ggz_seat_t ggz[2] = { {GGZ_SEAT_NONE, "Kitty", -1},
-							    {GGZ_SEAT_NONE, "Key Card", -1} };
+							    {GGZ_SEAT_NONE, "Up-Card", -1} };
 			set_num_seats(4);
 			game.seats[0].ggz = &ggz_seats[0];
 			game.players[0].seat = 0;
@@ -162,6 +187,7 @@ void game_init_game()
 			 * for shotgun suaro, that becomes 62 possible bids
 			 * longest possible bid: 9 diamonds = 11
 			 * for shotgun suaro that becomes K 9 diamonds = 13 */
+			game.deck_type = GGZ_DECK_SUARO;
 			game.max_bid_choices = 62;
 			game.max_bid_length = 13;
 			game.max_hand_length = 9;
@@ -178,6 +204,7 @@ void game_init_game()
 				game.players[p].seat = s;
 				game.seats[s].ggz = &ggz_seats[p];
 			}
+			game.deck_type = GGZ_DECK_LAPOCHA;
 			game.max_bid_choices = 12;
 			game.max_bid_length = 4;
 			game.max_hand_length = 10;
@@ -235,6 +262,8 @@ void game_init_game()
 			ggz_debug("SERVER BUG: game_launch not implemented for game %d.", game.which_game);
 			game.name = "(Unknown)";
 	}
+
+	cards_create_deck(game.deck_type);
 
 	set_global_message("game", game.name);
 
@@ -445,6 +474,7 @@ int game_handle_gameover(void)
 		case GGZ_GAME_BRIDGE:
 		case GGZ_GAME_SUARO:
 		case GGZ_GAME_SPADES:
+		case GGZ_GAME_EUCHRE:
 		default:
 			/* in the default case, just take the highest score(s)
 			 * this should automatically handle the case of teams! */
@@ -467,15 +497,17 @@ int game_handle_gameover(void)
  */
 void game_start_bidding()
 {
+	char suit;
 	switch (game.which_game) {
 		case GGZ_GAME_LAPOCHA:
 			/* all 4 players bid once, but the first bid determines the trump */
 			game.bid_total = 5;
 			LAPOCHA.bid_sum = 0;
 			break;
+		case GGZ_GAME_EUCHRE:
+			game.bid_total = 8; /* twice around, at most */
+			break;
 		case GGZ_GAME_SUARO:
-			{
-			char suit;
 			game.bid_total = -1; /* no set total */
 
 			/* key card determines first bidder */
@@ -484,7 +516,6 @@ void game_start_bidding()
 
 			SUARO.pass_count = 0;
 			SUARO.bonus = 1;
-			}
 			break;
 		case GGZ_GAME_BRIDGE:
 			game.next_bid = game.dealer; /* dealer bids first */
@@ -542,6 +573,32 @@ int game_get_bid()
 
 			status = req_bid(game.next_bid, index, game.bid_texts);
 			}
+			break;
+		case GGZ_GAME_EUCHRE:
+			if (game.bid_count < 4) {
+				/* first four bids: either "pass" or "take" */
+				bid.sbid.spec = EUCHRE_TAKE;
+				game.bid_choices[0] = bid;
+				game_get_bid_text(game.bid_texts[0], game.max_bid_length, game.bid_choices[0]);
+				bid.sbid.spec = EUCHRE_PASS;
+				game.bid_choices[1] = bid;
+				game_get_bid_text(game.bid_texts[1], game.max_bid_length, game.bid_choices[1]);
+				status = req_bid(game.next_bid, 2, game.bid_texts);
+			} else {
+				char suit;
+				bid.sbid.spec = EUCHRE_TAKE_SUIT;
+				for (suit=0; suit<4; suit++) {
+					bid.sbid.suit = suit;
+					game.bid_choices[(int)suit] = bid;
+					game_get_bid_text(game.bid_texts[(int)suit], game.max_bid_length, game.bid_choices[(int)suit]);
+				}
+				bid.bid = 0;
+				bid.sbid.spec = EUCHRE_PASS;
+				game.bid_choices[4] = bid;
+				game_get_bid_text(game.bid_texts[4], game.max_bid_length, game.bid_choices[4]);
+				status = req_bid(game.next_bid, 5, game.bid_texts);
+			}
+			/* TODO: dealer's last bid */
 			break;
 		case GGZ_GAME_LAPOCHA:
 			if (game.bid_count == 0) { /* determine the trump suit */
@@ -671,6 +728,17 @@ int game_handle_bid(int bid_index)
 	bid.bid = -1;
 
 	switch (game.which_game) {
+		case GGZ_GAME_EUCHRE:
+			bid = game.bid_choices[bid_index];
+			if ( bid.sbid.spec == EUCHRE_TAKE ) {
+				EUCHRE.maker = game.next_bid;
+				game.trump = game.seats[5].hand.cards[0].suit;
+			} else if ( bid.sbid.spec == EUCHRE_TAKE_SUIT ) {
+				EUCHRE.maker = game.next_bid;
+				game.trump = bid.sbid.suit;
+			}
+			/* bidding is ended automatically by game_next_bid */
+			break;
 		case GGZ_GAME_BRIDGE:
 			/* closely based on the Suaro code, below */
 			bid = game.bid_choices[bid_index];
@@ -764,6 +832,12 @@ int game_handle_bid(int bid_index)
 void game_next_bid()
 {
 	switch (game.which_game) {
+		case GGZ_GAME_EUCHRE:
+			if (EUCHRE.maker >= 0)
+				game.bid_total = game.bid_count;
+			else
+				goto normal_order;
+			break;
 		case GGZ_GAME_BRIDGE:
 			/* closely based on Suaro code, below */
 			if (BRIDGE.pass_count == 4) {
@@ -825,8 +899,16 @@ void game_start_playing(void)
 	player_t p;
 	char face;
 
+	game.trick_total = game.hand_size;
+	game.play_total = game.num_players;
+
 	switch (game.which_game) {
 		case GGZ_GAME_LAPOCHA:
+			game.leader = (game.dealer + 1) % game.num_players;
+			break;
+		case GGZ_GAME_EUCHRE:
+			/* maker is set in game_handle_bid */
+			set_global_message("", "Trump is %s.", suit_names[(int)game.trump]);
 			game.leader = (game.dealer + 1) % game.num_players;
 			break;
 		case GGZ_GAME_BRIDGE:
@@ -835,8 +917,6 @@ void game_start_playing(void)
 				BRIDGE.contract, long_bridge_suit_names[(int)BRIDGE.contract_suit],
 				BRIDGE.bonus == 1 ? "" : BRIDGE.bonus == 2 ? ", doubled" : ", redoubled");
 			game.leader = (BRIDGE.declarer + 1) % game.num_players;
-			game.trick_total = game.hand_size;
-			game.play_total = game.num_players;
 			break;
 		case GGZ_GAME_SUARO:
 			/* declarer is set in game_handle_bid */
@@ -1056,6 +1136,7 @@ int game_test_for_gameover()
 		case GGZ_GAME_SPADES:
 		case GGZ_GAME_HEARTS:
 		case GGZ_GAME_SUARO:
+		case GGZ_GAME_EUCHRE:
 		default:
 			/* in the default case, it's just a race toward a target score */
 			for (p = 0; p < game.num_players; p++)
@@ -1098,7 +1179,19 @@ int game_deal_hand(void)
 			for(s = 0; s < 3; s++)
 				cards_deal_hand(game.hand_size, &game.seats[s].hand);
 			cards_deal_hand(1, &game.seats[3].hand);
-			break;		
+			break;
+		case GGZ_GAME_EUCHRE:
+			/* in Euchre, players 0-3 (seats 0, 1, 3, 4) get 5 cards each.
+			 * the up-card (seat 5) gets one card, and the kitty (seat 2)
+			 * gets the other 3. */
+			game.hand_size = 5;
+			cards_deal_hand(5, &game.seats[0].hand);
+			cards_deal_hand(5, &game.seats[1].hand);
+			cards_deal_hand(5, &game.seats[3].hand);
+			cards_deal_hand(5, &game.seats[4].hand);
+			cards_deal_hand(3, &game.seats[2].hand);
+			cards_deal_hand(1, &game.seats[5].hand);
+			break;
 		case GGZ_GAME_SPADES:
 		case GGZ_GAME_BRIDGE:
 		case GGZ_GAME_HEARTS:
@@ -1121,6 +1214,9 @@ regular_deal:
 int game_send_hand(player_t p, seat_t s)
 {
 	switch (game.which_game) {
+		case GGZ_GAME_EUCHRE:
+			/* reveal the up-card */
+			return send_hand(p, s, game.players[p].seat == s || s == 5);
 		case GGZ_GAME_SUARO:
 			/* reveal the kitty after it's been turned up */
 			if (s == 1 && SUARO.kitty_revealed)
@@ -1152,6 +1248,11 @@ int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 {
 	/* TODO: in case of an overflow, the result from snprintf probably isn't what we want to return. */
 	switch (game.which_game) {
+		case GGZ_GAME_EUCHRE:
+			if (bid.sbid.spec == EUCHRE_PASS) return snprintf(buf, buf_len, "Pass");
+			if (bid.sbid.spec == EUCHRE_TAKE) return snprintf(buf, buf_len, "Take");
+			if (bid.sbid.spec == EUCHRE_TAKE_SUIT) return snprintf(buf, buf_len, "Take at %s", suit_names[(int)bid.sbid.suit]);
+			break;
 		case GGZ_GAME_SUARO:
 			if (bid.sbid.spec == SUARO_PASS) return snprintf(buf, buf_len, "Pass");
 			if (bid.sbid.spec == SUARO_DOUBLE) return snprintf(buf, buf_len, "Double"); /* TODO: differentiate redouble */
@@ -1197,6 +1298,12 @@ void game_set_player_message(player_t p)
 	/* anyway, it's really ugly, but I don't see a better way... */
 
 	switch (game.which_game) {
+		case GGZ_GAME_EUCHRE:
+			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
+				if (p == EUCHRE.maker)
+					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "maker\n");
+			}
+			goto normal_message;
 		case GGZ_GAME_BRIDGE:
 			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
 				/* TODO: declarer and dummy really shouldn't be at the top */
@@ -1315,7 +1422,11 @@ void game_end_trick(void)
 				GHEARTS.points_on_hand[hi_player] += points;
 			}
 			break;
-		case GGZ_GAME_LAPOCHA:		
+		case GGZ_GAME_EUCHRE:	
+			/* TODO: handle out-of-order cards */
+			break;
+		case GGZ_GAME_LAPOCHA:
+		case GGZ_GAME_BRIDGE:	
 		default:
 			/* no additional scoring is necessary */
 			break;
@@ -1330,6 +1441,7 @@ void game_end_trick(void)
 	switch (game.which_game) {
 		case GGZ_GAME_BRIDGE:
 		case GGZ_GAME_SPADES:
+		case GGZ_GAME_EUCHRE:
 			/* update teammate's info as well */
 			game_set_player_message((hi_player+2)%4);
 			break;
@@ -1412,6 +1524,20 @@ void game_end_hand(void)
 			BRIDGE.declarer = BRIDGE.dummy = -1;
 			BRIDGE.dummy_revealed = 0;
 			BRIDGE.contract = 0;
+			break;
+		case GGZ_GAME_EUCHRE:
+			{
+			int tricks, winning_team;
+			tricks = game.players[EUCHRE.maker].tricks + game.players[(EUCHRE.maker+2)%4].tricks;
+			if (tricks >= 3)
+				winning_team = EUCHRE.maker % 2;
+			else
+				winning_team = (EUCHRE.maker + 1) % 2;
+			/* TODO: point values other than 1 */
+			game.players[winning_team].score += 1;
+			game.players[winning_team+2].score += 1;
+			EUCHRE.maker = -1;
+			}
 			break;
 		case GGZ_GAME_SUARO:
 			{
@@ -1496,11 +1622,11 @@ int game_valid_game(int which_game)
 		case GGZ_GAME_SUARO:
 			return (game.num_players == 2);
 		case GGZ_GAME_ROOK:
-		case GGZ_GAME_EUCHRE:
 			return 0;	/* not yet supported */
 		case GGZ_GAME_BRIDGE:
 		case GGZ_GAME_LAPOCHA:
 		case GGZ_GAME_SPADES:
+		case GGZ_GAME_EUCHRE:
 			return (game.num_players == 4);
 		case GGZ_GAME_HEARTS:
 			return (game.num_players > 2 && game.num_players <= 7);	/* 3-7 players */

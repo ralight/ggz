@@ -36,6 +36,7 @@
 #define GGZ_GAME_LAPOCHA	4
 #define GGZ_GAME_EUCHRE		5
 #define GGZ_GAME_ROOK		6
+#define GGZ_GAME_SKAT		7
 /* ... etc. ... */
 #define GGZ_GAME_UNKNOWN	-1
 
@@ -43,7 +44,7 @@
 extern char* game_names[];
 
 #define GGZ_DEFAULT_GAME	0       /* the default game */
-#define GGZ_NUM_GAMES		7	/* the _number_ of valid games */
+#define GGZ_NUM_GAMES		8	/* the _number_ of valid games */
 
 extern int game_types[];
 
