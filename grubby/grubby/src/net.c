@@ -527,7 +527,8 @@ GGZHookReturn net_hook_over(unsigned int id, void *event_data, void *user_data)
 {
 	printf("-- over; kill gamefd\n");
 
-	ggzcore_room_leave_table(room, tableid);
+	ggzcore_room_leave_table(room, 1);
+	ggzcore_game_free(game);
 
 	game = NULL;
 	gamefd = -1;

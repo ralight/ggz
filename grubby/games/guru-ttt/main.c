@@ -24,16 +24,17 @@
 #include <ggz_common.h>
 #include <ggzmod.h>
 
-GGZMod *mod = NULL;
-int gamefd = -1;
-int gamenum = -1;
-int gamemove = -1;
-char gameturn = -1;
-int seats[2];
-char names[2][17];
+static GGZMod *mod = NULL;
+static int gamefd = -1;
+static int gamenum = -1;
+static int gamemove = -1;
+static char gameturn = -1;
+static int seats[2];
+static char names[2][17];
 
-char board[9];
-int movemove = 0;
+static char board[9];
+static int movemove = 0;
+static int done = 0;
 
 #define TTT_MSG_SEAT     0
 #define TTT_MSG_PLAYERS  1
@@ -105,6 +106,7 @@ static void game_handle_io(void)
 		case TTT_MSG_GAMEOVER:
 			ggz_read_char(gamefd, &winner);
 			gameturn = -1;
+			done = 1;
 			break;
 	}
 }
@@ -183,11 +185,8 @@ static void ggz_network()
 
 int main(int argc, char *argv[])
 {
-	int done;
-
 	ggz_init();
 
-	done = 0;
 	while (!done)
 	{
 		ggz_network();
@@ -202,6 +201,7 @@ int main(int argc, char *argv[])
 	}
 
 	ggz_finish();
+	sleep(1);
 
 	return 0;
 }
