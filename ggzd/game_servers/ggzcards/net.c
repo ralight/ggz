@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2848 2001-12-10 03:52:32Z jdorje $
+ * $Id: net.c 2861 2001-12-10 20:28:44Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -527,9 +527,9 @@ void send_global_text_message(player_t p, const char *mark,
 		message = "";	/* this happens sometimes (hmmm, really?
 				   how?) */
 	if (fd < 0
-	    || write_opcode(fd, MESSAGE_GLOBAL) < 0
+	    || write_opcode(fd, MESSAGE_GAME) < 0
+	    || write_opcode(fd, GAME_MESSAGE_TEXT) < 0
 	    || es_write_string(fd, mark) < 0
-	    || write_opcode(fd, GL_MESSAGE_TEXT) < 0
 	    || es_write_string(fd, message) < 0)
 		ggzdmod_log(game.ggz,
 			    "ERROR: " "send_global_text_message: es error.");
@@ -549,9 +549,9 @@ void send_global_cardlist_message(player_t p, const char *mark, int *lengths,
 	assert(mark && cardlist && lengths);
 	ggzdmod_log(game.ggz, "Sending global cardlist message to player %d.",
 		    p);
-	if (fd < 0 || write_opcode(fd, MESSAGE_GLOBAL) < 0
-	    || es_write_string(fd, mark) < 0
-	    || write_opcode(fd, GL_MESSAGE_CARDLIST) < 0)
+	if (fd < 0 || write_opcode(fd, MESSAGE_GAME) < 0
+	    || write_opcode(fd, GAME_MESSAGE_CARDLIST) < 0
+	    || es_write_string(fd, mark) < 0)
 		error++;
 
 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
