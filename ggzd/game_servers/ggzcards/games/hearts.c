@@ -209,7 +209,7 @@ static void hearts_end_trick()
 			points = 13;
 		/* as an optional rule, the Jack of Diamonds is worth -10 */
 		if (GHEARTS.jack_diamonds && card.suit == DIAMONDS && card.face == JACK)
-			GHEARTS.jack_winner = p;
+			GHEARTS.jack_winner = game.winner;
 
 		if (points > 0) {
 			/* in hearts, it's not really "trump broken"
