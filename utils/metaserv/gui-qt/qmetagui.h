@@ -24,6 +24,7 @@ class QMetaGUI : public QWidget
 		void slotRead();
 		void slotURI();
 		void slotXML();
+		void slotUpdate();
 		void slotSubmit();
 	private:
 		void doconnection();

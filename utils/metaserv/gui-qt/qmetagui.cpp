@@ -14,15 +14,16 @@
 QMetaGUI::QMetaGUI()
 : QWidget()
 {
-	QPushButton *uri, *xml, *submit;
+	QPushButton *uri, *xml, *submit, *update;
 	QVBoxLayout *vbox;
 	QHBoxLayout *hbox;
 	QLabel *lhost, *lport, *lrawresult, *lresult, *ldata;
 	
 	host = new QLineEdit("localhost", this);
 	port = new QLineEdit("15689", this);
-	uri = new QPushButton("Add Simple URI Query", this);
-	xml = new QPushButton("Add Advanced XML Query", this);
+	uri = new QPushButton("Simple URI", this);
+	xml = new QPushButton("Advanced XML", this);
+	update = new QPushButton("Update", this);
 	submit = new QPushButton("Submit Query", this);
 	view = new QListView(this);
 	view->addColumn("URI");
@@ -43,6 +44,7 @@ QMetaGUI::QMetaGUI()
 	hbox->add(port);
 	hbox->add(uri);
 	hbox->add(xml);
+	hbox->add(update);
 	hbox->add(submit);
 	vbox->add(ldata);
 	vbox->add(data);
@@ -57,6 +59,7 @@ QMetaGUI::QMetaGUI()
 	connect(uri, SIGNAL(clicked()), SLOT(slotURI()));
 	connect(xml, SIGNAL(clicked()), SLOT(slotXML()));
 	connect(submit, SIGNAL(clicked()), SLOT(slotSubmit()));
+	connect(update, SIGNAL(clicked()), SLOT(slotUpdate()));
 }
 
 QMetaGUI::~QMetaGUI()
@@ -81,6 +84,11 @@ void QMetaGUI::slotXML()
 {
 	//m_type = 1;
 	data->setText("<?xml version=\"1.0\"><query class=\"ggz\" type=\"connection\">0.0.4</query>\n");
+}
+
+void QMetaGUI::slotUpdate()
+{
+	data->setText("<?xml version=\"1.0\"><update class=\"ggz\" type=\"connection\" username=\"???\" password=\"???\"><option name=\"mode\">add</option><option name=\"uri\">ggz://somewhere</option><option name=\"version\">0.0.5pre</option><option name=\"preference\">30</option></update>\n");
 }
 
 void QMetaGUI::slotSubmit()
