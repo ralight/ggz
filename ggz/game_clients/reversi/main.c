@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 4341 2002-08-07 06:31:57Z jdorje $
+ * $Id: main.c 4488 2002-09-09 04:32:04Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -125,7 +125,7 @@ static void initialize_debugging(void)
 	ggz_debug_init(debugging_types, file_name);
 	g_free(file_name);
 
-	ggz_debug("reversi", "Starting Reversi client.");	
+	ggz_debug("main", "Starting Reversi client.");	
 }
 
 static int config_file = -1;
@@ -246,7 +246,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 		
 
 
-void game_init() {
+void game_init(void) {
 	int i;
 
 	for (i = 0; i < 64; i++) {
@@ -267,7 +267,7 @@ void game_init() {
 
 }
 
-int get_seat() {
+int get_seat(void) {
 
 	if (ggz_read_int(game.fd, &game.num) < 0)
 		return -1;
@@ -279,7 +279,7 @@ int get_seat() {
 	return 0;
 }
 
-int get_players() {
+int get_players(void) {
   int i;
 	 
 	for (i = 0; i < 2; i++) {
@@ -298,7 +298,7 @@ int get_players() {
 }
 
 // Get the move from the server and makes it (don't check for validity!!)
-int get_move() {
+int get_move(void) {
 	int move;
 
 	if (ggz_read_int(game.fd, &move) < 0)
@@ -380,7 +380,7 @@ void send_my_move(int move) {
 	ggz_debug("main", "Sent move: %d", move);
 }
 
-int request_sync() {
+int request_sync(void) {
 	if (ggz_write_int(game.fd, RVR_REQ_SYNC) < 0) {
 		// Not that someone would check this return value, but...
 		return -1;
@@ -390,7 +390,7 @@ int request_sync() {
 	return 0;
 }
 		
-int get_sync() {
+int get_sync(void) {
 	char fboard[64];
 	char fturn;
 	int i;
@@ -417,7 +417,7 @@ int get_sync() {
 	return 0;
 }
 
-void game_update_scores() {
+void game_update_scores(void) {
 	int i;
 	game.white = 0;
 	game.black = 0;

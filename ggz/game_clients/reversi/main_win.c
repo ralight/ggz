@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 3711 2002-03-28 18:41:29Z jdorje $
+ * $Id: main_win.c 4488 2002-09-09 04:32:04Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -105,7 +105,7 @@ void game_status( const char* format, ... )
 	
 }
 
-void play_again(GtkButton *button, gpointer user_data) {
+static void play_again(GtkButton *button, gpointer user_data) {
 	// Check if game is over
 	if (game.state != RVR_STATE_DONE) {
 		game_status("Game is not over yet");
@@ -180,7 +180,7 @@ void display_board(void)
 }
 
 
-void on_main_win_realize(GtkWidget* widget, gpointer user_data)
+static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 {
 	GtkStyle* style;
 	
@@ -233,7 +233,8 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 }
 
 
-gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
+static gboolean main_exit(GtkWidget *widget, GdkEvent *event,
+			  gpointer user_data)
 {
 	try_to_quit();
 	
@@ -241,13 +242,13 @@ gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 }
 
 
-void game_resync(GtkMenuItem *menuitem, gpointer user_data)
+static void game_resync(GtkMenuItem *menuitem, gpointer user_data)
 {
 	// Request sync from the server
 	request_sync();
 }
 
-void game_get_options(GtkMenuItem *menuitem, gpointer user_data)
+static void game_get_options(GtkMenuItem *menuitem, gpointer user_data)
 {
   GtkWidget *dialog;
   GtkWidget *ok;
@@ -282,21 +283,21 @@ void update_options(GtkButton *button, gpointer user_data)
 }
 
 
-void game_exit(GtkMenuItem *menuitem, gpointer user_data)
+static void game_exit(GtkMenuItem *menuitem, gpointer user_data)
 {
   try_to_quit();
 }
 
 
-void game_about(GtkMenuItem *menuitem, gpointer user_data)
+static void game_about(GtkMenuItem *menuitem, gpointer user_data)
 {
   GtkWidget *dialog = create_about_dialog();
   gtk_widget_show_all(dialog);
 }
 
 
-gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event, 
-			  gpointer user_data)
+static gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event, 
+				 gpointer user_data)
 {
 	if (!rvr_buf)
 		rvr_buf = gdk_pixmap_new( widget->window,
@@ -335,8 +336,8 @@ void draw_bg(GtkWidget *widget) {
 }
 
 
-gboolean expose_handle(GtkWidget *widget, GdkEventExpose  *event, 
-		       gpointer user_data)
+static gboolean expose_handle(GtkWidget *widget, GdkEventExpose  *event, 
+			      gpointer user_data)
 {
 
 	gdk_draw_pixmap( widget->window,
@@ -350,7 +351,8 @@ gboolean expose_handle(GtkWidget *widget, GdkEventExpose  *event,
 }
 
 
-gboolean handle_move(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
+static gboolean handle_move(GtkWidget *widget, GdkEventButton *event,
+			    gpointer user_data)
 {
 	int x = (int)(event->x);
 	int y = (int)(event->y);

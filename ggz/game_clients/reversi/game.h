@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Description of game variables
- * $Id: game.h 3711 2002-03-28 18:41:29Z jdorje $
+ * $Id: game.h 4488 2002-09-09 04:32:04Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -201,30 +201,30 @@ extern GdkColor *last_color;
 extern GdkColor *back_color;
 
 // Setup functions
-void game_init();
+void game_init(void);
 void game_handle_io(gpointer data, gint fd, GdkInputCondition cond);
 
 // Get stuff from server
-int get_seat();
-int get_players();
-int get_sync();
-int get_move();
-int get_gameover();
+int get_seat(void);
+int get_players(void);
+int get_sync(void);
+int get_move(void);
+int get_gameover(void);
 
 // Send stuff to server
 void send_my_move(int);
-int request_sync();
+int request_sync(void);
 
 // Game functions
 void game_make_move(int, int);
 void game_mark_board(int, int, int, int, int);
 int game_check_direction(int, int, int, int, int);
 int game_check_move(int, int);
-void game_update_scores();
+void game_update_scores(void);
 
 
 // Graphic functions
-GtkWidget* create_main_win ();  
-void display_board();
+GtkWidget* create_main_win (void);  
+void display_board(void);
 void game_status( const char *, ...);
 void draw_bg(GtkWidget *);

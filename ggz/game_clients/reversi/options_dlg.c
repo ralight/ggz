@@ -220,7 +220,6 @@ create_colorselectiondialog (GdkColor *col)
   color[2] = col->blue / 65535.0;
 
   colorselectiondialog1 = gtk_color_selection_dialog_new (("Select Color"));
-  printf("RGB: %f %f %f\n", color[0], color[1], color[2]);
   gtk_color_selection_set_color(GTK_COLOR_SELECTION(GTK_COLOR_SELECTION_DIALOG(colorselectiondialog1)->colorsel), color);
   gtk_widget_set_name (colorselectiondialog1, "colorselectiondialog1");
   gtk_object_set_data (GTK_OBJECT (colorselectiondialog1), "colorselectiondialog1", colorselectiondialog1);
