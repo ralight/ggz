@@ -5,20 +5,23 @@
 # Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 # Published under GNU GPL conditions
 
+use strict;
+
 # Commands:
 # guru what is foo in de				-> translate from en to de
 # guru what is bar in fuzzy english		-> translate from de to en, use fuzzy match
 
-$dictdir = "/usr/share/trans";
+my $dictdir = "/usr/share/trans";
 
 ###################################################################################
 
-sub i18n{$foo = shift(@_);return $foo;}
+sub i18n{my $foo = shift(@_);return $foo;}
 
-$inputline = <STDIN>;
+my $inputline = <STDIN>;
 chomp($inputline);
-@input = split(/\ /, $inputline);
+my @input = split(/\ /, $inputline);
 
+my $letthrough;
 $letthrough = 0;
 if(($input[1] eq "what") && ($input[2] eq "is")){
 	if($input[3] ne ""){
@@ -37,6 +40,7 @@ if(!$letthrough){
 	exit(0);
 }
 
+my ($fuzzy, $LANG, $WORD);
 $fuzzy = 0;
 if($input[5] eq "fuzzy"){
 	$LANG = $input[6];
@@ -47,7 +51,7 @@ if($input[5] eq "fuzzy"){
 $WORD = $input[3];
 
 # make configurable!
-$FROM = "en";
+my $FROM = "en";
 
 if($LANG eq "german"){$LANG = "de";}
 if($LANG eq "italian"){$LANG = "it";}
@@ -62,7 +66,7 @@ if(($LANG ne "de") && ($LANG ne "en") && ($LANG ne "it") && ($LANG ne "pt") && (
 	exit(0);
 }
 
-$reverse = 1;
+my $reverse = 1;
 if($LANG eq "en"){
 	$FROM = "de";
 	$reverse = 0;
@@ -79,12 +83,14 @@ if($LANG eq "es"){
 	$reverse = 0;
 }
 
+my $file;
 if($reverse){
 	$file = "$LANG-$FROM";
 }else{
 	$file = "$FROM-$LANG";
 }
 
+my (@ar, $exp, $answer, $num);
 open(FILE, "$dictdir/$file");
 while(<FILE>){
 	chomp;

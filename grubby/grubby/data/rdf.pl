@@ -5,28 +5,30 @@
 # Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 # Published under GNU GPL conditions
 
+use strict;
+
 # Commands:
 # guru news					-> list all news sources
 # guru news slashdot		-> show random headline from slashdot
 
-$gurudir = "/tmp";
+my $gurudir = $ENV{HOME} . "/.ggz/grubby";
 
 #########################################################################
 
 use Net::Telnet;
 
-sub i18n{$foo = shift(@_);return "$foo\n";}
+sub i18n{my $foo = shift(@_);return "$foo\n";}
 
-$inputline = <STDIN>;
+my $inputline = <STDIN>;
 chomp($inputline);
-@input = split(/\ /, $inputline);
+my @input = split(/\ /, $inputline);
 
 if($input[1] ne "news"){
 	exit();
 }
 if($input[2] eq ""){
 	print i18n("From what news source my friend?");
-	print i18n("Available are: slashdot, register, happypenguin, heise");
+	print i18n("Available are: slashdot, register, happypenguin, heise, worldforge");
 	close(STDOUT);
 	sleep(1);
 	exit();
@@ -34,20 +36,26 @@ if($input[2] eq ""){
 
 sub xml{
 	my $arg = shift(@_);
-	@ar1 = split(/\>/, $arg);
-	@ar2 = split(/\</, $ar1[1]);
-	$ret = $ar2[0];
+	my @ar1 = split(/\>/, $arg);
+	my @ar2 = split(/\</, $ar1[1]);
+	my $ret = $ar2[0];
 	return $ret;
 }
 
+my $downloaded;
+
 sub download
 {
-	$host = shift(@_);
-	$document = shift(@_);
+	my $host = shift(@_);
+	my $document = shift(@_);
 
-	$conn = new Net::Telnet(Host => $host, Port => 80) or die "Sorry, cannot fetch news";
-	$conn->print("GET $document\n");
-	$data = $conn->get(Timeout => 5);
+	my $conn = new Net::Telnet(Host => $host, Port => 80) or die "Sorry, cannot fetch news";
+	$conn->print("GET $document HTTP/1.0");
+	$conn->print("Host: $host\n");
+	my ($data, $tmp);
+	while($tmp = $conn->get(Timeout => 10)){
+		$data .= $tmp;
+	}
 	mkdir("$gurudir/cache", 0755);
 	open(FILE, ">$gurudir/cache/$input[2].rdf");
 	print FILE "$data\n";
@@ -60,6 +68,7 @@ if($input[2] eq "slashdot"){download("slashdot.org", "/slashdot.rdf");}
 if($input[2] eq "register"){download("theregister.co.uk", "/tonys/slashdot.rdf");}
 if($input[2] eq "happypenguin"){download("happypenguin.org", "/html/news.rdf");}
 if($input[2] eq "heise"){download("heise.de", "/newsticker/heise.rdf");}
+if($input[2] eq "worldforge"){download("worldforge.org", "/worldforgenews.rdf");}
 
 if(!$downloaded){
 	print i18n("News source not available.");
@@ -68,14 +77,16 @@ if(!$downloaded){
 	exit();
 }
 
-$r = rand(100) % 10 + 2;
-$ret = open(FILE, "$gurudir/cache/$input[2].rdf");
+my $r = rand(100) % 10 + 2;
+my $ret = open(FILE, "$gurudir/cache/$input[2].rdf");
 if(!$ret){
 	print "Sorry, no more news on $input[2].";
 	close(STDOUT);
 	sleep(1);
 	exit();
 }
+
+my ($title, $link, $news);
 while(<FILE>){
 	if($_ =~ /\<title\>/){
 		$title = xml($_);
