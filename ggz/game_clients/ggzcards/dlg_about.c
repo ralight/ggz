@@ -1,4 +1,4 @@
-/* $Id: dlg_about.c 2696 2001-11-08 10:09:24Z jdorje $ */
+/* $Id: dlg_about.c 2892 2001-12-13 15:53:48Z jdorje $ */
 /* 
  * File: dlg_about.c
  * Author: Rich Gade
@@ -47,7 +47,7 @@ GtkWidget *create_dlg_about(void)
 	GtkWidget *label3;
 	GtkWidget *label4;
 	GtkWidget *dialog_action_area1;
-	GtkWidget *ok_button;
+	GtkWidget *close_button;
 
 	dlg_about = gtk_dialog_new();
 	gtk_object_set_data(GTK_OBJECT(dlg_about), "dlg_about", dlg_about);
@@ -108,20 +108,20 @@ GtkWidget *create_dlg_about(void)
 	gtk_container_set_border_width(GTK_CONTAINER(dialog_action_area1),
 				       10);
 
-	ok_button = gtk_button_new_with_label(_("OK"));
-	gtk_widget_ref(ok_button);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_about), "ok_button",
-				 ok_button,
+	close_button = gtk_button_new_with_label(_("Close"));
+	gtk_widget_ref(close_button);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_about), "close_button",
+				 close_button,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(ok_button);
-	gtk_box_pack_start(GTK_BOX(dialog_action_area1), ok_button, FALSE,
+	gtk_widget_show(close_button);
+	gtk_box_pack_start(GTK_BOX(dialog_action_area1), close_button, FALSE,
 			   FALSE, 0);
-	gtk_widget_set_usize(ok_button, 64, -2);
+	gtk_widget_set_usize(close_button, 64, -2);
 
 	gtk_signal_connect_object(GTK_OBJECT(dlg_about), "delete_event",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(dlg_about));
-	gtk_signal_connect_object(GTK_OBJECT(ok_button), "clicked",
+	gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(dlg_about));
 
