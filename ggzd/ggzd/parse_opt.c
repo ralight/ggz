@@ -35,13 +35,23 @@
 
 extern Options opt;
 
+/* Structure for Add/Ignore Games list */
+typedef struct AddIgnore {
+  char *name;
+  struct AddIgnore *next;
+} AddIgnoreStruct;
+
 /* Private file parsing functions */
 static void parse_file(FILE *);
 static void parse_line(char *);
+static void parse_put_add_ignore_list(char *);
+static void parse_cleanup_add_ignore_list(void);
 
 /* Module local variables for parsing */
 static char *varname;
 static char *varvalue;
+static AddIgnoreStruct *add_ignore_list = NULL;
+static char add_all_games = 't';
 
 static const struct poptOption args[] = {
 	
@@ -134,12 +144,12 @@ static void parse_file(FILE *configfile)
 		parse_line(line);
 		if(varname == NULL)
 			continue; /* Blank line or comment */
-		dbg_msg("parse_line file found '%s, %s'\n", varname, varvalue);
+		dbg_msg("parse_line file found '%s, %s'", varname, varvalue);
 
 		/* Apply the configuration line, oh to be able to do */
 		/* a case construct with strings :)                  */
 
-		/*** PORT = X ***/
+		/*** Port = X ***/
 		if(!strcmp(varname, "port")) {
 			if(varvalue == NULL) {
 				PARSE_ERR("Syntax error");
@@ -154,9 +164,8 @@ static void parse_file(FILE *configfile)
 				opt.main_port = intval;
 			continue;
 		}
-		/*** END PORT = X ***/
 
-		/*** GAMEDIR = DIR ***/
+		/*** GameDir = DIR ***/
 		if(!strcmp(varname, "gamedir")) {
 			if(varvalue == NULL) {
 				PARSE_ERR("Syntax error");
@@ -168,13 +177,68 @@ static void parse_file(FILE *configfile)
 			opt.game_dir = strval;
 			continue;
 		 }
-		/*** END GAMEDIR = DIR ***/
 
+		/*** AddAllGames ***/
+		if(!strcmp(varname, "addallgames")) {
+			if(add_all_games == 'F')
+				PARSE_ERR("AddAllGames after AddGame ignored");
+			else
+				add_all_games = 'T';
+			continue;
+		}
+
+		/*** AddGame = GAME ***/
+		if(!strcmp(varname, "addgame")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if(add_all_games == 'T')
+				PARSE_ERR("AddGame after AddAllGames ignored");
+			else {
+				add_all_games = 'F';
+				parse_put_add_ignore_list(varvalue);
+			}
+			continue;
+		}
+
+		/*** IgnoreGame = GAME ***/
+		if(!strcmp(varname, "ignoregame")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if(add_all_games == 'F')
+				PARSE_ERR("IgnoreGame after AddGame ignored");
+			else {
+				add_all_games = 'T';
+				parse_put_add_ignore_list(varvalue);
+			}
+			continue;
+		}
 		/*** INVALID VARIABLE ***/
 		PARSE_ERR("Syntax error");
 	}
 
+
 	fclose(configfile);
+
+#ifdef DEBUG
+	{
+	  AddIgnoreStruct *AI = add_ignore_list;
+	  if(AI) {
+	    if(add_all_games == 'T')
+	      dbg_msg("Game ignore list:");
+	    else
+	      dbg_msg("Game add list:");
+	    while(AI)
+	    {
+	      dbg_msg("  %s", AI->name);
+	      AI = AI->next;
+	    }
+	  }
+	}
+#endif /*DEBUG*/
 }
 
 
@@ -226,4 +290,35 @@ static void parse_line(char *p)
 	p++;
 	/* Finally terminate it with a NUL */
 	*p = '\0'; /* Might have already been the NUL, but who cares? */
+}
+
+
+/* Put a string onto the Add/Ignore list */
+static void parse_put_add_ignore_list(char *s)
+{
+	AddIgnoreStruct *new_listitem;
+	char *newstring;
+
+	if((new_listitem=malloc(sizeof(AddIgnoreStruct))) == NULL)
+		err_sys_exit("malloc error in parse_put_add_ignore_list()");
+	if((newstring=malloc(strlen(s)+1)) == NULL)
+		err_sys_exit("malloc error in parse_put_add_ignore_list()");
+
+	strcpy(newstring, s);
+	new_listitem->name = newstring;
+	new_listitem->next = add_ignore_list;
+	add_ignore_list = new_listitem;
+}
+
+
+/* Cleanup the Add/Ignore list after we are finished */
+static void parse_cleanup_add_ignore_list(void)
+{
+	AddIgnoreStruct *temp;
+
+	while((temp = add_ignore_list)) {
+		free(add_ignore_list->name);
+		add_ignore_list = add_ignore_list->next;
+		free(temp);
+	}
 }
