@@ -1,0 +1,26 @@
+<br>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+International
+<?php
+include("international.php");
+?>
+|
+<a href="http://cvs.ggzgamingzone.org/">CVS</a>
+|
+<a href="http://mail.ggzgamingzone.org/">Mail</a>
+|
+<a href="http://bugs.ggzgamingzone.org/">Bugs</a>
+|
+<a href="http://bugs.ggzgamingzone.org/">Rankings</a>
+</font>
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+

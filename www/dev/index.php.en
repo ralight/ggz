@@ -1,0 +1,39 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>The GGZ Gaming Zone Project - Developer Area</b><br>
+Information about developers resources and processes.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Resources</i><br>
+This is work in progress. Please see below for some quick links.
+
+</td></tr>
+<tr><td valign="top">
+
+<i>Documents</i><br>
+Not available yet.
+
+</td>
+</tr>
+</table>
+
+<b>Developers</b><br>
+<i>Gallery of GGZ developers</i><br>
+<br>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+

@@ -1,0 +1,15 @@
+<? include_once("/var/www/ggz/www/dev/site/header.php"); ?>
+
+The page you requested could not been found :(
+<br>
+<?php
+if ($_SERVER['HTTP_REFERER']) :
+	echo "<a href='", $_SERVER['HTTP_REFERER'], "'>Go back</a>\n";
+else :
+	echo "<a href='/'>Go to the start page</a>\n";
+endif;
+?>
+<br>
+
+<? include_once("/var/www/ggz/www/dev/site/footer.php"); ?>
+
