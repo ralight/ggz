@@ -13,6 +13,14 @@
   Bad data from user: report or ignore
   What to do when an error occurs during a callback?1
 
+- Remove the ggzcore_server_get_XXX_names() function
+
+- Fix the player, table pointing problem
+
+- Move over to ggzcore_malloc/free
+
+- Implement GGZModule
+
 - rather than permanently having a callback for events like
   SERVER_ROOM_CHANGE, we will register one when the client makes a
   request for a room change.  This hook then gets removed after it is
@@ -20,17 +28,11 @@
   whether a verbose listing was requested, or what room was requested
   (this is really a frontend TODO)
 
-- Reimplement net functionality as its own object
-
-- Provide a GGZ_AUTOLOAD feature to automatically load room and type
+- Provide a GGZ_AUTOLOAD option to automatically load room and type
   lists (and motd?) upon logging in and the player and table lists
   upon entering a room.
 
-- Remove the ggzcore_server_get_XXX_names() function
-
-- Fix the player, table pointing problem
-
-- Move over to ggzcore_malloc/free
+- Reimplement net functionality as its own object
 
 - Allow option for non-blocking socket: to make this easier, the
   protocol could be altered so that each message sends its length in

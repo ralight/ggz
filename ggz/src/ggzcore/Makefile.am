@@ -23,6 +23,8 @@ libggzcore_a_SOURCES =	conf.c \
 			lists.h \
 			memory.c \
 			memory.h \
+			module.c \
+			module.h \
 			msg.c \
 			msg.h \
 			net.c \

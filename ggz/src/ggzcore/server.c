@@ -1096,13 +1096,13 @@ static void _ggzcore_server_handle_list_tables(GGZServer *server)
 }
 
 
-/* completely bogus functions to avoid messiness */
 static void _ggzcore_server_handle_update_tables(GGZServer *server)
 {
 	_ggzcore_net_read_update_tables(server->fd);
 }
 
 
+/* completely bogus functions to avoid messiness */
 static void _ggzcore_server_handle_rsp_chat(GGZServer *server)
 {
 	char status;

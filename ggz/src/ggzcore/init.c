@@ -32,7 +32,7 @@
 #include "state.h"
 #include "gametype.h"
 #include "memory.h"
-
+#include "module.h"
 
 int ggzcore_init(GGZOptions options)
 {
@@ -50,16 +50,17 @@ int ggzcore_init(GGZOptions options)
 	/* Initialize various systems */
 	_ggzcore_debug_init(options.debug_levels, options.debug_file);
 	_ggzcore_net_init();
-/*     	_ggzcore_module_init();*/
 
-	/* Setup the gametype linked list */
+	if (options.flags & GGZ_OPT_MODULES)
+		_ggzcore_module_setup();
+
 	return 0;
 }
 
 
 void ggzcore_destroy(void)
 {
-/*	_ggzcore_module_cleanup();*/
+	_ggzcore_module_cleanup();
 	_ggzcore_confio_cleanup();
 	_ggzcore_memory_check();
 	_ggzcore_debug_cleanup();

@@ -67,6 +67,7 @@ typedef enum {
 	GGZ_DBG_INIT      = 0x00001000,
 	GGZ_DBG_MEMORY    = 0x00002000,
 	GGZ_DBG_MEMDETAIL = 0x00004000,
+	GGZ_DBG_MODULE    = 0x00008000,
 	GGZ_DBG_ALL       = 0xFFFFFFFF
 } GGZDebugLevel;
 
@@ -191,6 +192,7 @@ typedef struct _GGZRoom     GGZRoom;
 typedef struct _GGZPlayer   GGZPlayer;
 typedef struct _GGZTable    GGZTable;
 typedef struct _GGZGameType GGZGameType;
+typedef struct _GGZModule   GGZModule;
 
 /* Function for allocating and initializing new GGZServer object */
 GGZServer* ggzcore_server_new(const char *host,
@@ -566,27 +568,27 @@ int ggzcore_module_add(const char *game,
   version of the game specified, or NULL if there are no modules
   registered for that game/version.  The last element in the array is
   the flag value -1.*/
-int* ggzcore_module_get_by_type(const char *game, const char *version);
+GGZModule** ggzcore_module_get_by_type(const char *game, const char *version);
 
 
 /* This attempts to launch the specified module and returns 0 is
    successful or -1 on error. */
-int ggzcore_module_launch(const unsigned int id);
+int ggzcore_module_launch(GGZModule *module);
 
 
 /* These functions lookup a particular property of a module.  I've added
    icon to the list we discussed at the meeting.  This is an optional xpm
    file that the module can provide to use for representing the game
    graphically.*/
-char* ggzcore_module_get_game(const unsigned int id);
-char* ggzcore_module_get_version(const unsigned int id);
-char* ggzcore_module_get_protocol(const unsigned int id);
-char* ggzcore_module_get_author(const unsigned int id);
-char* ggzcore_module_get_frontend(const unsigned int id);
-char* ggzcore_module_get_url(const unsigned int id);
-char* ggzcore_module_get_path(const unsigned int id);
-char* ggzcore_module_get_icon_path(const unsigned int id);
-char* ggzcore_module_get_help_path(const unsigned int id);
+char* ggzcore_module_get_game(GGZModule *module);
+char* ggzcore_module_get_version(GGZModule *module);
+char* ggzcore_module_get_protocol(GGZModule *module);
+char* ggzcore_module_get_author(GGZModule *module);
+char* ggzcore_module_get_frontend(GGZModule *module);
+char* ggzcore_module_get_url(GGZModule *module);
+char* ggzcore_module_get_path(GGZModule *module);
+char* ggzcore_module_get_icon_path(GGZModule *module);
+char* ggzcore_module_get_help_path(GGZModule *module);
 
 
 #ifdef __cplusplus

@@ -101,6 +101,9 @@ void ggzcore_debug(GGZDebugLevel level, const char *fmt, ...)
 		case GGZ_DBG_MEMDETAIL:
 			prefix = "MEMDETAIL";
 			break;
+		case GGZ_DBG_MODULE:
+			prefix = "MODULE";
+			break;
 		default:
 			prefix = "DEBUG";
 			break;
