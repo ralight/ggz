@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2313 2001-08-29 03:55:39Z jdorje $
+# $Id: Makefile.am 2314 2001-08-29 04:00:38Z jdorje $
 
 SUBDIRS = .
 
@@ -53,7 +53,7 @@ ggzd_SOURCES =	chat.c\
 		conf.h
 
 
-ggzd_LDADD = $(DB_OBJECTS) $(LDADD) $(ggzd_LIBS) ../game_servers/libggzmod/libggzdmod.a
+ggzd_LDADD = $(DB_OBJECTS) $(LDADD) $(ggzd_LIBS)
 
 ggzdconf_DATA = ggzd.conf ggzd.motd
 
