@@ -82,6 +82,8 @@
 	<br>
 	<a href="ggz://live.ggzgamingzone.org/Xadrez Chines/">Xadrez Chines</a>
 	<br>
+	<a href="ggz://live.ggzgamingzone.org/Widelands/">Widelands</a>
+	<br>
 	</div>
 </div>
 
