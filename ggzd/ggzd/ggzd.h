@@ -28,7 +28,7 @@
 
 /* Server limits */
 #define MAX_USER_NAME_LEN 16
-#define MAX_GAME_NAME_LEN 16
+#define MAX_GAME_NAME_LEN 24
 #define MAX_GAME_VER_LEN  8
 #define MAX_GAME_PROTOCOL_LEN 16
 #define MAX_GAME_DESC_LEN 512
