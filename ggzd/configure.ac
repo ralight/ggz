@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6117 2004-07-16 19:08:39Z josef $
+dnl $Id: configure.ac 6232 2004-10-29 04:06:39Z jdorje $
 
 AC_INIT([GGZ server], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -457,7 +457,6 @@ AC_CONFIG_FILES([Makefile
 	game_servers/spades/Makefile
 	game_servers/tictactoe/Makefile
 	game_servers/dots/Makefile
-	game_servers/lapocha/Makefile
 	game_servers/ggzcards/Makefile
 	game_servers/ggzcards/games/Makefile
 	game_servers/ggzcards/ai/Makefile
