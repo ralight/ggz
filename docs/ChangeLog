@@ -1,65 +1,324 @@
-2001-06-17  Rich Gade  <rgade@users.sourceforge.net>
+2002-04-12 23:06  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/docs/coreclients/Makefile.am, /cvsroot/ggz/docs/games/external-games/Makefile.am, /cvsroot/ggz/docs/games/hastings/Makefile.am, /cvsroot/ggz/docs/ggz-project/Makefile.am:
-	- None of the files were included in the distribution :(
-	  Fixed...
+	* AUTHORS, NEWS, QuickStart.GGZ, README.GGZ: 
+	- Doc file updates
 
-2001-06-08  dr_maux  <dr_maux@users.sourceforge.net>
+2002-04-12 16:22  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/docs/README.GGZ: - actually add readme.ggz
+	* games/game-development/: Makefile.am, games.html: - add games
+	compatibility/version page and install it into $ggzdocdir/games
 
-	* /cvsroot/ggz/docs/ggz-project/cvs-modules.txt, /cvsroot/ggz/docs/ggz-project/Makefile.am:
-	- more docs
+2002-04-11 07:20  Josef Spillner <dr_maux@users.sourceforge.net>
 
-2001-06-07  dr_maux  <dr_maux@users.sourceforge.net>
+	* server/hosting/ggz-hosting-guide.texi: - fix typo: Batalla Naval
 
-	* /cvsroot/ggz/docs/debian/docs: - add project-wide readme file
+2002-04-11 07:09  Josef Spillner <dr_maux@users.sourceforge.net>
 
-2001-06-03  dr_maux  <dr_maux@users.sourceforge.net>
+	* server/hosting/ggz-hosting-guide.texi: - pointer to premade MOTDs
 
-	* /cvsroot/ggz/docs/configure.in, /cvsroot/ggz/docs/Makefile.am:
-	- build updates
+2002-04-11 07:06  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/docs/ggz-project/.cvsignore, /cvsroot/ggz/docs/ggz-project/Makefile.am:
-	- install Internationalization file
+	* games/game-development/ggz-game-development-guide.texi: - remove
+	email address again (texinfo doesn't like it)
 
-	* /cvsroot/ggz/docs/coreclients/coreclients.html, /cvsroot/ggz/docs/coreclients/.cvsignore, /cvsroot/ggz/docs/coreclients/gameflow.png, /cvsroot/ggz/docs/coreclients/ggzcore.png, /cvsroot/ggz/docs/coreclients/Makefile.am:
-	- add core client documentation skeleton
+2002-04-11 07:04  Josef Spillner <dr_maux@users.sourceforge.net>
 
-2001-06-02  dr_maux  <dr_maux@users.sourceforge.net>
+	* games/game-development/: .cvsignore, Makefile.am,
+	ggz-game-development-guide.texi: - update game development guide
 
-	* /cvsroot/ggz/docs/Makefile.am: - add ggz-project dir to subdirs
+2002-04-11 06:37  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/docs/ggz-project/Internationalization: - new rules
+	* server/hosting/: .cvsignore, Makefile.am, ggz-hosting-guide.texi:
+	- extend the hosting guide
 
-	* /cvsroot/ggz/docs/ggz-project/Internationalization: - little update
+2002-04-11 05:55  Josef Spillner <dr_maux@users.sourceforge.net>
 
-2001-06-01  dr_maux  <dr_maux@users.sourceforge.net>
+	* Makefile.am, configure.in: - addon
 
-	* /cvsroot/ggz/docs/ggz-project/Internationalization:
-	- added small localization/internationalization help
+2002-04-11 05:55  Josef Spillner <dr_maux@users.sourceforge.net>
 
-2001-05-30  dr_maux  <dr_maux@users.sourceforge.net>
+	* overview/Makefile.am: - let 'make distcheck' work
 
-	* /cvsroot/ggz/docs/AUTHORS, /cvsroot/ggz/docs/autogen.sh, /cvsroot/ggz/docs/ChangeLog, /cvsroot/ggz/docs/configure.in, /cvsroot/ggz/docs/COPYING, /cvsroot/ggz/docs/.cvsignore, /cvsroot/ggz/docs/INSTALL, /cvsroot/ggz/docs/Makefile.am, /cvsroot/ggz/docs/NEWS, /cvsroot/ggz/docs/README:
-	- more files
+2002-04-11 05:41  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/docs/games/.cvsignore, /cvsroot/ggz/docs/games/hastings/.cvsignore, /cvsroot/ggz/docs/spec/.cvsignore, /cvsroot/ggz/docs/spec/Makefile.am:
-	- added some more files
+	* configure.in: - version number goes up to 0.0.5 - generate HTML
+	pages too with --enable-guides
 
-	* /cvsroot/ggz/docs/debian/changelog, /cvsroot/ggz/docs/debian/control, /cvsroot/ggz/docs/debian/copyright, /cvsroot/ggz/docs/debian/.cvsignore, /cvsroot/ggz/docs/debian/docs, /cvsroot/ggz/docs/debian/postinst, /cvsroot/ggz/docs/debian/prerm, /cvsroot/ggz/docs/debian/README.Debian, /cvsroot/ggz/docs/debian/rules, /cvsroot/ggz/docs/games/external-games/.cvsignore, /cvsroot/ggz/docs/games/external-games/ggz-kde-preview.html, /cvsroot/ggz/docs/games/external-games/ggz-support-howto.txt, /cvsroot/ggz/docs/games/external-games/Makefile.am, /cvsroot/ggz/docs/games/hastings/Makefile.am, /cvsroot/ggz/docs/games/Makefile.am:
-	- debianized documentation tree
-	- added docs for external and kde games
+2002-04-11 05:38  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/docs/README: - add readme for documentation
+	* games/game-development/Makefile.am: - add rules for HTML
+	documentation
 
-	* /cvsroot/ggz/docs/games/hastings/description.txt, /cvsroot/ggz/docs/games/hastings/hastings0.png, /cvsroot/ggz/docs/games/hastings/hastings1.png, /cvsroot/ggz/docs/games/hastings/hastings2.png, /cvsroot/ggz/docs/games/hastings/hastings3.png, /cvsroot/ggz/docs/games/hastings/module_writing.html:
-	- add hastings documentation in doc module
+2002-04-11 05:38  Josef Spillner <dr_maux@users.sourceforge.net>
 
-2000-11-20  bmh  <bmh@users.sourceforge.net>
+	* server/hosting/Makefile.am: - add rules for HTML generation
 
-	* /cvsroot/ggz/docs/spec/bodytags1.cnxml, /cvsroot/ggz/docs/spec/spec.cnxml, /cvsroot/ggz/docs/spec/spec.css, /cvsroot/ggz/docs/spec/spec.xml, /cvsroot/ggz/docs/spec/spec.xsl:
+2002-04-09 15:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/: control, rules: - update documentation rules - run
+	autogen.sh automatically if not configure is present
+
+2002-04-09 13:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* NEWS, configure.in: - addon
+
+2002-04-09 13:35  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/control, debian/rules, games/game-development/Makefile.am,
+	server/hosting/Makefile.am: - GGZ documentation does now ship with
+	2 nice PostScript guides when telling	--enable-guides - Debian
+	packages include guides by default
+
+2002-04-07 03:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/.cvsignore: - update .cvsignore
+
+2002-04-07 01:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/: .cvsignore, changelog, control, copyright, postinst,
+	prerm, rules: - debianize our documentation Note: a rule to
+	generate all "hardcopy" stuff (PDF's and the like) will yet have to
+	be adjusted.
+
+2002-04-05 16:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* server/hosting/ggz-hosting-guide.texi: - add a section about
+	ggzduedit - some minor updates
+
+2002-04-05 16:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README.GGZ: - update installation instructions and overview
+
+2002-03-21 05:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* games/game-development/ggz-game-development-guide.texi,
+	ggz-project/Internationalization, ggz-project/cvs-modules.txt: -
+	the Speck Hack commits - see mail to ggz-dev for the details
+
+2002-02-03 05:49  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - create makefile for gamedev guide
+
+2002-02-03 05:49  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* games/Makefile.am: - include gamedev guide
+
+2002-02-03 05:48  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* games/game-development/: .cvsignore, Makefile.am,
+	ggz-game-development-guide.texi: - add first example of a game
+	development guide
+
+2002-01-20 03:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* server/hosting/ggz-hosting-guide.texi: - add keepalive -
+	encourage server hosters to subscribe to ggz-servers
+
+2002-01-09 07:21  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* server/hosting/ggz-hosting-guide.texi: - include cmd-client into
+	the GGZ hosting guide
+
+2001-12-21 18:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* server/hosting/ggz-hosting-guide.texi: - one more chapter for our
+	'hosting guide'
+
+2001-12-16 16:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - top-level updates: include server
+	directory into build process
+
+2001-12-16 16:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* server/.cvsignore: - write .cvsignore file for server directory
+
+2001-12-16 16:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* server/: Makefile.am, hosting/.cvsignore, hosting/Makefile.am,
+	hosting/ggz-hosting-guide.texi: - add GGZ Gaming Zone Hosting Guide
+	- default installation produces an info file, but HTML and
+	Postscript   generation is easily doable and should be done before
+	the release (dist-hook	 maybe?)
+
+2001-12-09 11:21  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* server/metaserver/: index.html, spec.html, spec.txt,
+	pics/about.png, pics/back.png, pics/clients.png, pics/servers.png,
+	pics/spec.png, pics/title.png, pics/web.png: - Voila: Started
+	documentation directory for the server, and put in the	 metaserver
+	as the first component - includes Official (tm) specification of
+	our meta server protocol
+
+2001-10-22 03:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - install overview docs
+
+2001-10-22 03:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* overview/: .cvsignore, Makefile.am, ggz-big-0.0.4.png,
+	ggz-big-0.0.5.png, ggz-big-legend.png, ggzbig.html: - add overview
+	documentation - includes graphical representation of the source
+	code
+
+2001-10-12 05:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: admin-manual.html, user-manual.html: - update grubby
+	user and admin manual
+
+2001-09-09 10:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - updated configure.in to place makefile for
+	ggzcards
+
+2001-09-09 10:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* games/ggzcards/.cvsignore, games/ggzcards/Makefile.am,
+	ggz-project/Roadmap, ggz-project/security-and-privacy: - the new
+	files come here
+
+2001-09-09 10:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* games/Makefile.am, ggz-project/Internationalization,
+	ggz-project/Makefile.am, ggz-project/cvs-modules.txt,
+	spec/Makefile.am: - include ggzcards docs in installation - fix bug
+	in the spec directory (if that's needed at all, but it's cool) -
+	some additions everywhere
+
+2001-08-23 00:52  Jason Short <jdorje@users.sourceforge.net>
+
+	* games/external-games/ggz-support-howto.txt: Added short blurb
+	about libggzmod/libggzdmod to the readme on interfacing with GGZ.
+	
+	More should be written about this soon.
+
+2001-08-17 02:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/user-manual.html: - user documentation update
+
+2001-08-14 02:41  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: admin-manual.html, user-manual.html: - grubby docs
+	update
+
+2001-08-04 08:41  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - update build system
+
+2001-08-04 08:41  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/: .cvsignore, Makefile.am, admin-manual.html,
+	user-manual.html: - add a bit of grubby documentation - currently
+	covers only the latest guru stuff
+
+2001-07-08 16:01  Jason Short <jdorje@users.sourceforge.net>
+
+	* games/ggzcards/adding_games.txt: Updated the adding-games
+	document for the new server structure.
+	
+	I started to add adding-AI informaiton to it, but didn't do very
+	much of it.
+
+2001-06-26 03:09  Jason Short <jdorje@users.sourceforge.net>
+
+	* games/ggzcards/adding_games.txt: Wrote a simple howto for adding
+	games.
+
+2001-06-26 01:22  Jason Short <jdorje@users.sourceforge.net>
+
+	* games/ggzcards/adding_games.txt: Added new documentation file.
+
+2001-06-17 17:14  Rich Gade <rgade@users.sourceforge.net>
+
+	* ChangeLog: - Updated ChangeLog
+
+2001-06-17 17:13  Rich Gade <rgade@users.sourceforge.net>
+
+	* coreclients/Makefile.am, games/external-games/Makefile.am,
+	games/hastings/Makefile.am, ggz-project/Makefile.am: - None of the
+	files were included in the distribution :(   Fixed...
+
+2001-06-08 12:05  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README.GGZ: - actually add readme.ggz
+
+2001-06-08 11:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-project/: Makefile.am, cvs-modules.txt: - more docs
+
+2001-06-07 16:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/docs: - add project-wide readme file
+
+2001-06-03 15:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - build updates
+
+2001-06-03 15:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-project/: .cvsignore, Makefile.am: - install
+	Internationalization file
+
+2001-06-03 15:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* coreclients/: .cvsignore, Makefile.am, coreclients.html,
+	gameflow.png, ggzcore.png: - add core client documentation skeleton
+
+2001-06-02 15:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - add ggz-project dir to subdirs
+
+2001-06-01 22:18  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-project/Internationalization: - new rules
+
+2001-06-01 19:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-project/Internationalization: - little update
+
+2001-06-01 18:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-project/Internationalization: - added small
+	localization/internationalization help
+
+2001-05-30 12:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore, AUTHORS, COPYING, ChangeLog, INSTALL, Makefile.am,
+	NEWS, README, autogen.sh, configure.in: - more files
+
+2001-05-30 12:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* games/.cvsignore, games/hastings/.cvsignore, spec/.cvsignore,
+	spec/Makefile.am: - added some more files
+
+2001-05-30 12:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/.cvsignore, debian/README.Debian, debian/changelog,
+	debian/control, debian/copyright, debian/docs, debian/postinst,
+	debian/prerm, debian/rules, games/Makefile.am,
+	games/external-games/.cvsignore, games/external-games/Makefile.am,
+	games/external-games/ggz-kde-preview.html,
+	games/external-games/ggz-support-howto.txt,
+	games/hastings/Makefile.am: - debianized documentation tree - added
+	docs for external and kde games
+
+2001-05-30 08:18  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: - add readme for documentation
+
+2001-05-30 08:17  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* games/hastings/: description.txt, hastings0.png, hastings1.png,
+	hastings2.png, hastings3.png, module_writing.html: - add hastings
+	documentation in doc module
+
+2000-11-20 11:53  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* spec/: bodytags1.cnxml, spec.cnxml, spec.css, spec.xml, spec.xsl:
+	Initial revision
+
+2000-11-20 11:53  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* spec/: bodytags1.cnxml, spec.cnxml, spec.css, spec.xml, spec.xsl:
 	Imported files
 
-	* /cvsroot/ggz/docs/spec/bodytags1.cnxml, /cvsroot/ggz/docs/spec/spec.cnxml, /cvsroot/ggz/docs/spec/spec.css, /cvsroot/ggz/docs/spec/spec.xml, /cvsroot/ggz/docs/spec/spec.xsl:
-	New file.
