@@ -122,7 +122,9 @@ static void* player_new(void *arg_ptr)
 	struct sockaddr_in addr;
 	GGZPlayer *player;
 	int addrlen = sizeof(addr);
-	/*struct hostent *host;		Hostname lookups disabled */
+	struct hostent hostbuf, *hp;
+	char tmphstbuf[1024];
+	int rc, herr;
 
 	/* Get our arguments out of the arg buffer */
 	sock = *((int *)arg_ptr);
@@ -162,8 +164,19 @@ static void* player_new(void *arg_ptr)
 	player->uid = GGZ_UID_NONE;
 	player->perms = PERMS_DEFAULT_ANON;
 	strcpy(player->name, "<none>");
-	/*player->addr = addr.sin_addr;*/
-	inet_ntop(AF_INET, &addr.sin_addr, player->addr, sizeof(player->addr));
+	rc = -1;
+	if(opt.perform_lookups) {
+		rc = gethostbyaddr_r(&addr.sin_addr, sizeof(struct in_addr),
+			AF_INET, &hostbuf, tmphstbuf, 1024, &hp, &herr);
+		/* Note if we get an error we don't bother expanding the */
+		/* buffer or so forth. Is the hostname vs. IP that important? */
+		if(rc == 0) {
+			strncpy(player->addr, hostbuf.h_name, sizeof(player->addr));
+			player->addr[sizeof(player->addr)-1] = '\0';
+		}
+	}
+	if(rc < 0)
+		inet_ntop(AF_INET, &addr.sin_addr, player->addr, sizeof(player->addr));
  
 	player->room_events = NULL;
 	player->my_events_head = NULL;

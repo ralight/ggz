@@ -46,8 +46,8 @@ struct _GGZPlayer {
 	/* Player name, leaving room for '\0' */
 	char name[MAX_USER_NAME_LEN + 1]; 
 
-	/* IP address from which player connected */
-	char addr[16];
+	/* IP (or hostname) address from which player connected */
+	char addr[64];
 
 	/* Network IO object for communicating with player */
 	struct _GGZNetIO *net;
