@@ -113,7 +113,11 @@ void CreatePlayArea(void)
 		style =
 		    gtk_style_copy(gtk_widget_get_style
 				   (playArea->teams[0]));
+#ifdef GTK2
+		gtk_style_set_font(style, fixedFont);
+#else
 		style->font = fixedFont;
+#endif
 
 		gtk_widget_set_style(playArea->teams[0], style);
 		gtk_widget_set_style(playArea->teams[1], style);

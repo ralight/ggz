@@ -51,19 +51,33 @@ static GdkColor tauntColor[4];
 GtkWidget *CreateTauntArea(void)
 {
 
-	GtkWidget *box1, *box2, *box3, *vscrollbar, *button, *separator;
+	GtkWidget *box1, *box2, *box3, *button, *separator;
+#ifndef GTK2 /* FIXME */
+	GtkWidget *vscrollbar;
+#endif
 	GdkColormap *cMap;
 
 	/* Create the GtkText widget */
+#ifdef GTK2
+	tauntDisplay =
+		gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(tauntDisplay), FALSE);
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(tauntDisplay),
+				    GTK_WRAP_WORD);
+	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(tauntDisplay), FALSE);
+#else
 	tauntDisplay = gtk_text_new(NULL, NULL);
 	gtk_text_set_editable(GTK_TEXT(tauntDisplay), FALSE);
 	gtk_text_set_word_wrap(GTK_TEXT(tauntDisplay), TRUE);
+#endif
 	gtk_widget_show(tauntDisplay);
 
 
+#ifndef GTK2 /* FIXME: GTK2 scrolling */
 	/* Add a vertical scrollbar to the GtkText widget */
 	vscrollbar = gtk_vscrollbar_new(GTK_TEXT(tauntDisplay)->vadj);
 	gtk_widget_show(vscrollbar);
+#endif
 
 
 	/* Separator between entry and display */
@@ -122,7 +136,9 @@ GtkWidget *CreateTauntArea(void)
 	box3 = gtk_hbox_new(FALSE, 10);
 
 	gtk_box_pack_start(GTK_BOX(box2), tauntDisplay, TRUE, TRUE, 0);
+#ifndef GTK2 /* FIXME */
 	gtk_box_pack_start(GTK_BOX(box2), vscrollbar, FALSE, FALSE, 0);
+#endif
 	gtk_widget_show(box2);
 
 	gtk_box_pack_start(GTK_BOX(box3), tauntBox, TRUE, TRUE, 0);
@@ -173,11 +189,21 @@ void DisplayTaunt(char *taunt, int playerNum)
 				    gameState.players[playerNum], taunt);
 	}
 
+#ifdef GTK2
+	/* FIXME: color */
+	gtk_text_buffer_insert_at_cursor(
+		gtk_text_view_get_buffer(GTK_TEXT_VIEW(tauntDisplay)),
+		buf, -1);
+	gtk_text_buffer_insert_at_cursor(
+		gtk_text_view_get_buffer(GTK_TEXT_VIEW(tauntDisplay)),
+		"\n", -1);
+#else
 	gtk_text_insert(GTK_TEXT(tauntDisplay), NULL,
 			&tauntColor[playerNum], NULL, buf, -1);
 
 	gtk_text_insert(GTK_TEXT(tauntDisplay), NULL, NULL, NULL, "\n",
 			-1);
+#endif
 
 	g_free(buf);
 
