@@ -9,6 +9,7 @@
 
 #define OP_PRESENTATION 200
 #define OP_RULESET 201
+#define OP_MOVE 202
 
 #define MODE_RESERVED 1000
 #define MODE_EASY 1001

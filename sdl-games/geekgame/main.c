@@ -590,7 +590,7 @@ void screen_game()
 	int i, j;
 	int x, y;
 	int turn;
-	int sum;
+	int sum, sum2;
 	int calc;
 	int makescore;
 
@@ -709,12 +709,37 @@ void screen_game()
 					for(i = 0; i < ARRAY_WIDTH; i++)
 						sum += array[i][j];
 					renderscore(680, y + 10, sum * 2);
-					
+
 					if(sum * 2 == 42) makescore = 1;
 					break;
 				case MODE_HAVOC:
+					sum = 0;
+					for(j = y / 32 - 3; j <= y / 32 + 3; j++)
+						for(i = x / 32 - 3; i <= x / 32 + 3; i++)
+						{
+							if((i < 0) || (i >= ARRAY_WIDTH)) continue;
+							if((j < 0) || (j >= ARRAY_HEIGHT)) continue;
+							if((i == x / 32) || (j == y / 32))
+							{
+								sum += array[i][j];
+							}
+						}
+					if(sum == (sum & ~0x03)) makescore = 1;
 					break;
 				case MODE_HAX0R:
+					sum = 0;
+					sum2 = 0;
+					for(j = y / 32 - 3; j <= y / 32 + 3; j++)
+					{
+						if((j < 0) || (j >= ARRAY_HEIGHT)) continue;
+						sum += array[x / 32][j];
+					}
+					for(i = x / 32 - 3; i <= x / 32 + 3; i++)
+					{
+						if((i < 0) || (i >= ARRAY_WIDTH)) continue;
+						sum2 += array[i][y / 32];
+					}
+					if(sum == sum2) makescore = 1;
 					break;
 			}
 
