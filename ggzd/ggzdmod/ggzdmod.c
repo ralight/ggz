@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2604 2001-10-24 04:20:39Z jdorje $
+ * $Id: ggzdmod.c 2606 2001-10-24 05:01:20Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -38,6 +38,7 @@
 #include <unistd.h>
 
 #include <easysock.h>
+#include <ggz.h>
 #include "../game_servers/libggzmod/ggz_protocols.h"	/* FIXME */
 
 #include "ggzdmod.h"
@@ -94,9 +95,7 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 		return NULL;
 
 	/* allocate */
-	ggzdmod = malloc(sizeof(*ggzdmod));
-	if (!ggzdmod)
-		return NULL;
+	ggzdmod = ggz_malloc(sizeof(*ggzdmod));
 
 	/* initialize */
 	memset(ggzdmod, sizeof(*ggzdmod), 0);
@@ -198,12 +197,8 @@ void ggzdmod_set_num_seats(GGZdMod * mod, int num_seats)
 
 	/* (Re)allocate seats. */
 	ggzdmod->seats =
-		realloc(ggzdmod->seats, num_seats * sizeof(*ggzdmod->seats));
-	if (!ggzdmod->seats) {
-		/* With no error return value, there's not much we can do. */
-		ggzdmod->num_seats = 0;
-		return;
-	}
+		ggz_realloc(ggzdmod->seats,
+			    num_seats * sizeof(*ggzdmod->seats));
 
 	/* Initialize new seats (if any) */
 	for (seat = ggzdmod->num_seats; seat < num_seats; seat++) {
@@ -324,7 +319,7 @@ static void game_launch(_GGZdMod * ggzdmod)
 				free(ggzdmod->seats[i].name);
 			}
 			len = strlen(rand_bot_names[bots]) + 4;
-			ggzdmod->seats[i].name = malloc(len);
+			ggzdmod->seats[i].name = ggz_malloc(len);
 			snprintf(ggzdmod->seats[i].name, len, "%s-AI",
 				 rand_bot_names[bots]);
 			ggzdmod_log(ggzdmod,
