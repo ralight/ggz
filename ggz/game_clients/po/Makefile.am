@@ -4,11 +4,11 @@ XGETTEXT = xgettext
 MSGMERGE = msgmerge
 MSGFMT = msgfmt
 
-MODULES = hastings tictactoe dots chess combat ggzcards reversi chinese-checkers lapocha
+MODULES = hastings tictactoe dots chess combat ggzcards reversi chinese-checkers lapocha spades
 
 messages:
 	@for i in $(MODULES); do \
-		$(XGETTEXT) -k_ ../$$i/*.c -o $$i/$$i.pot; \
+		$(XGETTEXT) -k_ ../$$i/*.c ../common/*.c -o $$i/$$i.pot; \
 		for j in `cd $$i; ls -1 *.po`; do \
 			echo "process $$i.$$j"; \
 			$(MSGMERGE) $$i/$$j $$i/$$i.pot > .$$j 2>/dev/null; \
