@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3750 2002-04-05 07:51:47Z jdorje $
+ * $Id: common.c 3992 2002-04-15 09:36:11Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -184,7 +184,7 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 				    "SERVER/CLIENT bug: received options from non-host player.");
 			status = -1;
 		} else {
-			if (game.which_game == NULL) {
+			if (game.data == NULL) {
 				int option;
 				rec_options(1, &option);
 				games_handle_gametype(option);
@@ -226,7 +226,7 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 }
 
 /* Setup game state and board.  Also initializes the _type_ of game. */
-void init_ggzcards(GGZdMod * ggz, char* which_game)
+void init_ggzcards(GGZdMod * ggz, game_data_t *game_data)
 {
 	/* Seed the random number generator */
 	srandom((unsigned) time(NULL));
@@ -234,14 +234,15 @@ void init_ggzcards(GGZdMod * ggz, char* which_game)
 	/* TODO: we should manually initialize pointers to NULL */
 	memset(&game, 0, sizeof(game_t));
 
-	/* JDS: Note: the game type must have been initialized by here */
-	game.which_game = which_game;
+	/* Note: the game type need not have been initialized by here;
+	   game_data can be NULL and we'll query for the game later */
+	game.data = game_data;
 
 	game.state = STATE_PRELAUNCH;
 	game.ggz = ggz;
 
-	ggzdmod_log(game.ggz, "Game initialized as game %s.",
-		    game.which_game);
+	ggzdmod_log(game.ggz, "Game initialized as %s.",
+		    game_data ? game_data->name : "");
 }
 
 /* Tries to start a game, requesting information from players where
@@ -272,8 +273,7 @@ static void newgame(void)
 {
 	player_t p;
 
-	if (game.which_game == NULL)
-		fatal_error("BUG: newgame(): unknown game.");
+	assert(game.data);
 
 	finalize_options();
 
@@ -286,7 +286,7 @@ static void newgame(void)
 	init_cumulative_scores();
 	set_global_message("", "%s", "");
 	
-	game.funcs->start_game();
+	game.data->start_game();
 	
 	for (p = 0; p < game.num_players; p++)
 		set_player_message(p);
@@ -320,8 +320,8 @@ void next_play(void)
 		break;
 	case STATE_NEXT_HAND:
 		ggzdmod_log(game.ggz, "Next play: dealing a new hand.");
-		if (game.funcs->test_for_gameover()) {
-			game.funcs->handle_gameover();
+		if (game.data->test_for_gameover()) {
+			game.data->handle_gameover();
 			set_game_state(STATE_NOTPLAYING);
 			next_play();	/* start a new game */
 			return;
@@ -342,13 +342,13 @@ void next_play(void)
 			       game.max_bid_rounds * sizeof(bid_t));
 
 		ggzdmod_log(game.ggz, "Dealing hand %d.", game.hand_num);
-		game.funcs->deal_hand();
+		game.data->deal_hand();
 		ggzdmod_log(game.ggz, "Dealt hand successfully.");
 
 		/* Now send the resulting hands to each player */
 		for (p = 0; p < game.num_players; p++)
 			for (s = 0; s < game.num_seats; s++)
-				if (game.funcs->send_hand(p, s) < 0)
+				if (game.data->send_hand(p, s) < 0)
 					ggzdmod_log(game.ggz,
 						    "Error: game_send_hand returned -1.");
 
@@ -368,21 +368,21 @@ void next_play(void)
 		}
 		game.bid_count = 0;
 
-		game.funcs->start_bidding();
+		game.data->start_bidding();
 		next_play();	/* recursion */
 		break;
 	case STATE_NEXT_BID:
 		ggzdmod_log(game.ggz, "Next play: bid %d/%d - player %d/%s.",
 			    game.bid_count, game.bid_total, game.next_bid,
 			    get_player_name(game.next_bid));
-		game.funcs->get_bid();
+		game.data->get_bid();
 		break;
 	case STATE_NEXT_PLAY:
 		ggzdmod_log(game.ggz,
 			    "Next play: playing %d/%d - player %d/%s.",
 			    game.play_count, game.play_total, game.next_play,
 			    get_player_name(game.next_play));
-		game.funcs->get_play(game.next_play);
+		game.data->get_play(game.next_play);
 		break;
 	case STATE_FIRST_TRICK:
 		ggzdmod_log(game.ggz, "Next play: first trick of the hand.");
@@ -394,7 +394,7 @@ void next_play(void)
 		for (s = 0; s < game.num_seats; s++)
 			game.seats[s].table = UNKNOWN_CARD;
 
-		game.funcs->start_playing();
+		game.data->start_playing();
 		set_all_player_messages();
 		game.trump_broken = 0;
 		game.next_play = game.leader;
@@ -465,9 +465,10 @@ static void handle_launch_event(void)
 
 	/* we don't yet know the number of seats */
 
-	/* as soon as we know which game we're playing, we should init the
-	   game */
-	if (game.which_game != NULL)
+	/* As soon as we know which game we're playing, we should init the
+	   game.  But it may have been initted already if the game was
+	   specified in the command-line options. */
+	if (game.data && !game.initted)
 		init_game();
 
 	set_game_state(STATE_NOTPLAYING);
@@ -578,11 +579,11 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	      && game.saved_state == STATE_NOTPLAYING))
 		send_player_message_toall(seat);
 
-	if (player == game.host && game.which_game == NULL)
+	if (player == game.host && game.data == NULL)
 		games_req_gametype();
 
 	if (seats_full()
-	    && game.which_game != NULL) {
+	    && game.data != NULL) {
 		/* (Re)Start game play */
 		if (game.state != STATE_WAIT_FOR_BID
 		    && game.state != STATE_WAIT_FOR_PLAY)
@@ -712,7 +713,7 @@ int handle_play_event(player_t p, card_t card)
 	/* do extra handling */
 	if (card.suit == game.trump)
 		game.trump_broken = TRUE;
-	game.funcs->handle_play(p, s, card);
+	game.data->handle_play(p, s, card);
 	
 	for (p2 = 0, still_playing = 0; p2 < game.num_players; p2++)
 		if (game.players[p2].is_playing)
@@ -728,14 +729,14 @@ int handle_play_event(player_t p, card_t card)
 
 	/* set up next move */
 	game.play_count++;
-	game.funcs->next_play();
+	game.data->next_play();
 	if (game.play_count != game.play_total)
 		set_game_state(STATE_NEXT_PLAY);
 	else {
 		/* end of trick */
 		ggzdmod_log(game.ggz, "End of trick; %d/%d.  Scoring it.",
 			    game.trick_count, game.trick_total);
-		game.funcs->end_trick();
+		game.data->end_trick();
 		send_last_trick();
 		(void) send_trick(game.winner);
 		game.trick_count++;
@@ -745,7 +746,7 @@ int handle_play_event(player_t p, card_t card)
 			ggzdmod_log(game.ggz, "End of hand number %d.",
 				    game.hand_num);
 			send_last_hand();
-			game.funcs->end_hand();
+			game.data->end_hand();
 			set_all_player_messages();
 			update_cumulative_scores();
 			game.dealer = (game.dealer + 1) % game.num_players;
@@ -786,7 +787,7 @@ int handle_bid_event(player_t p, bid_t bid)
 
 	/* handle the bid */
 	game.players[p].bid_count++;
-	game.funcs->handle_bid(p, bid);
+	game.data->handle_bid(p, bid);
 
 	set_player_message(p);
 
@@ -812,7 +813,7 @@ int handle_bid_event(player_t p, bid_t bid)
 
 	/* set up next move */
 	game.bid_count++;
-	game.funcs->next_bid();
+	game.data->next_bid();
 
 	/* This is a minor hack.  The game's next_bid function might have
 	   changed the game's state.  If that happened, we don't want to
@@ -866,13 +867,10 @@ void init_game()
 {
 	seat_t s;
 	player_t p;
-	int game_id = games_get_game_id(game.which_game);
 	
-	assert(game_data[game_id].funcs->is_valid_game());
-
-	assert(!game.initted && game.which_game != NULL);
-
-	game.funcs = game_data[game_id].funcs;
+	assert(game.data != NULL);
+	assert(game.data->is_valid_game());
+	assert(!game.initted);
 
 	/* default values */
 	game.deck_type = GGZ_DECK_FULL;
@@ -880,11 +878,10 @@ void init_game()
 	game.last_hand = TRUE;
 	game.cumulative_scores = TRUE;
 	game.bid_history = TRUE;
-	game.name = game_data[game_id].full_name;
 
 	/* now we do all the game-specific initialization... */
 	assert(game.ai_type == NULL);
-	game.funcs->init_game();
+	game.data->init_game();
 	
 	for (p = 0; p < game.num_players; p++)
 		if (get_player_status(p) == GGZ_SEAT_BOT)
@@ -897,9 +894,7 @@ void init_game()
 			get_deck_size(game.deck) / game.num_players;
 
 	/* set the game message */
-	if (game.name == NULL)
-		game.name = "Unknown Game";
-	set_global_message("game", "%s", game.name);
+	set_global_message("game", "%s", game.data->full_name);
 
 	/* set the Rules message */
 	if (game.rules_url == NULL)

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: game.c 3992 2002-04-15 09:36:11Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -51,7 +51,7 @@ static void bad_game(char *func)
 	assert(FALSE);
 	ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
 	            "%s not implemented for game %s.",
-	            func, game.which_game);
+	            func, game.data ? game.data->full_name : "---");
 }
 
 
@@ -157,7 +157,7 @@ int game_get_bid_text(char *buf, size_t buf_len, bid_t bid)
    text. */
 int game_get_bid_desc(char *buf, size_t buf_len, bid_t bid)
 {
-	return game.funcs->get_bid_text(buf, buf_len, bid);
+	return game.data->get_bid_text(buf, buf_len, bid);
 }
 
 
@@ -242,7 +242,7 @@ char *game_verify_play(player_t p, card_t card)
 	seat_t s = game.players[p].play_seat;
 	int cnt;
 
-	card = game.funcs->map_card(card);
+	card = game.data->map_card(card);
 
 	/* the leader has his own restrictions */
 	if (game.play_count == 0) {
@@ -268,7 +268,7 @@ char *game_verify_play(player_t p, card_t card)
 		return NULL;
 
 	/* not following suit is never allowed */
-	c = game.funcs->map_card(game.lead_card);
+	c = game.data->map_card(game.lead_card);
 	if ((cnt = cards_suit_in_hand(&game.seats[s].hand, c.suit)))
 		return "You must follow suit.";
 
@@ -284,7 +284,7 @@ char *game_verify_play(player_t p, card_t card)
 		hi_trump_played = 0;
 		for (p2 = 0; p2 < game.num_players; p2++) {
 			c = game.seats[game.players[p2].seat].table;
-			c = game.funcs->map_card(c);
+			c = game.data->map_card(c);
 			if (c.suit == game.trump && c.face > hi_trump_played)
 				hi_trump_played = c.face;
 		}
@@ -355,14 +355,14 @@ void game_deal_hand(void)
 void game_end_trick(void)
 {
 	player_t hi_player = game.leader, p_r;
-	card_t hi_card = game.funcs->map_card(game.lead_card);
+	card_t hi_card = game.data->map_card(game.lead_card);
 
 	/* default method of winning tricks: the winning card is the highest
 	   card of the suit lead, or the highest trump if there is trump */
 	for (p_r = 1; p_r < game.num_players; p_r++) {
 		player_t p = (game.leader + p_r) % game.num_players;
 		card_t card = game.seats[game.players[p].seat].table;
-		card = game.funcs->map_card(card);
+		card = game.data->map_card(card);
 		if ((card.suit == game.trump
 		     && (hi_card.suit != game.trump
 			 || hi_card.face < card.face))

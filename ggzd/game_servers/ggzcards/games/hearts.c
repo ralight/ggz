@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 3909 2002-04-12 07:20:52Z jdorje $
+ * $Id: hearts.c 3992 2002-04-15 09:36:11Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -51,7 +51,9 @@ static char *hearts_verify_play(player_t p, card_t card);
 static void hearts_end_trick(void);
 static void hearts_end_hand(void);
 
-struct game_function_pointers hearts_funcs = {
+game_data_t hearts_data = {
+	"hearts",
+	N_("Hearts"),
 	hearts_is_valid_game,
 	hearts_init_game,
 	hearts_get_options,

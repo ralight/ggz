@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 3700 2002-03-28 01:18:27Z jdorje $
+ * $Id: options.c 3992 2002-04-15 09:36:11Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -124,7 +124,7 @@ void get_options()
 
 	ggzdmod_log(game.ggz, "Entering get_options.");
 
-	game.funcs->get_options();
+	game.data->get_options();
 
 	if (pending_options == NULL) {
 		options_initted = 1;
@@ -194,8 +194,8 @@ void finalize_options()
 	int len = strlen(buf), opcount = 0;
 
 	for (op = optionlist; op != NULL; op = op->next) {
-		game.funcs->handle_option(op->key, op->value);
-		optext = game.funcs->get_option_text(opbuf, sizeof(opbuf),
+		game.data->handle_option(op->key, op->value);
+		optext = game.data->get_option_text(opbuf, sizeof(opbuf),
 						     op->key, op->value);
 		if (optext == NULL) {
 			ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "

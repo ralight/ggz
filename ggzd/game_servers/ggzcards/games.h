@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: games.h 3992 2002-04-15 09:36:11Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -32,7 +32,11 @@
 
 #include "types.h"
 
-struct game_function_pointers {
+typedef struct {
+	/* General data */
+	char *name;
+	char *full_name;
+	
 	/* initializing */
 	int (*is_valid_game) (void);	/* is the game valid under the
 					   current conditions? */
@@ -88,17 +92,12 @@ struct game_function_pointers {
 	  card_t(*map_card) (card_t);
 	int (*compare_cards) (card_t, card_t);
 	int (*send_hand) (player_t, seat_t);	/* sends a hand to a player */
-};
+} game_data_t;
 
-struct game_info {
-	char *name;
-	char *full_name;
-	struct game_function_pointers *funcs;
-};
+extern game_data_t *game_data[];
 
-extern struct game_info game_data[];
-
-char* games_get_gametype(char *text);	/* which game is this? */
+/* which game is this? */
+game_data_t *games_get_gametype(char *game_name);	
 
 void games_handle_gametype(int choice);	/* set the game */
 

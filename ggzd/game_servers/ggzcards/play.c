@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: play.c 3992 2002-04-15 09:36:11Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -98,7 +98,7 @@ void handle_client_play(player_t p, card_t card)
 	   don't return -1 on an error here.  An error returned indicates a
 	   GGZ error, which is not what happened.  This is just a player
 	   mistake */
-	err = game.funcs->verify_play(p, card);
+	err = game.data->verify_play(p, card);
 	if (err == NULL)
 		/* any AI routine would also call handle_play_event, so the
 		   ai must also check the validity as above.  This could be

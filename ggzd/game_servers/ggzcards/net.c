@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3742 2002-04-05 05:29:49Z jdorje $
+ * $Id: net.c 3992 2002-04-15 09:36:11Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -224,7 +224,7 @@ int send_sync(player_t p)
 	/* Send out hands */
 	if (game.state != STATE_NOTPLAYING)
 		for (s = 0; s < game.num_seats; s++)
-			if (game.funcs->send_hand(p, s) < 0)
+			if (game.data->send_hand(p, s) < 0)
 				status = -1;
 
 	/* Send out table cards */
@@ -277,9 +277,9 @@ int send_bid_request(player_t p, int bid_count, bid_t * bids)
 		char bid_text[128] = "";
 		char bid_desc[1024] = "";
 		if (seat_type != GGZ_SEAT_BOT) {
-			game.funcs->get_bid_text(bid_text, sizeof(bid_text),
+			game.data->get_bid_text(bid_text, sizeof(bid_text),
 			                         bids[i]);
-			game.funcs->get_bid_desc(bid_desc, sizeof(bid_desc),
+			game.data->get_bid_desc(bid_desc, sizeof(bid_desc),
 			                         bids[i]);
 		}
 		if (write_bid(fd, bids[i]) < 0 ||

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 3715 2002-03-29 03:40:44Z jdorje $
+ * $Id: games.c 3992 2002-04-15 09:36:11Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -45,33 +45,33 @@
 
 /* an extern should be listed here for each game function set you create this 
    is preferable to including the whole <game>.h file. */
-extern struct game_function_pointers suaro_funcs;
-extern struct game_function_pointers spades_funcs;
-extern struct game_function_pointers hearts_funcs;
-extern struct game_function_pointers bridge_funcs;
-extern struct game_function_pointers lapocha_funcs;
-extern struct game_function_pointers euchre_funcs;
-extern struct game_function_pointers sueca_funcs;
-extern struct game_function_pointers whist_funcs;
+extern game_data_t suaro_data;
+extern game_data_t spades_data;
+extern game_data_t hearts_data;
+extern game_data_t bridge_data;
+extern game_data_t lapocha_data;
+extern game_data_t euchre_data;
+extern game_data_t sueca_data;
+extern game_data_t whist_data;
 
 /* This holds the actual info about the different game modules.  It
    need not correspond with the enumeration in games.h. */
-struct game_info game_data[] = {
-	{"suaro", "Suaro", &suaro_funcs},
-	{"spades", "Spades", &spades_funcs},
-	{"hearts", "Hearts", &hearts_funcs},
-	{"bridge", "Bridge", &bridge_funcs},
-	{"lapocha", "La Pocha", &lapocha_funcs},
-	{"euchre", "Euchre", &euchre_funcs},
-	{"sueca", "Sueca", &sueca_funcs},
-	{"whist", "Whist", &whist_funcs}
+game_data_t *game_data[] = {
+	&suaro_data,
+	&spades_data,
+	&hearts_data,
+	&bridge_data,
+	&lapocha_data,
+	&euchre_data,
+	&sueca_data,
+	&whist_data
 };
 
 
 /* END of game data */
 
 
-#define NUM_GAMES (sizeof(game_data) / sizeof(struct game_info))
+#define NUM_GAMES ARRAY_LEN(game_data)
 
 /* these aren't *quite* worthy of being in the game struct */
 /* static int game_type_cnt; */
@@ -81,20 +81,17 @@ static int game_types[NUM_GAMES];	/* possible types of games; used for
 /* games_get_gametype determines which game the text corresponds to.  If the
    --game=<game> parameter is passed to the server on startup, <game> is
    passed here to determine the type of game. */
-char* games_get_gametype(char *text)
+game_data_t * games_get_gametype(char *game_name)
 {
 	int i;
 
-	for (i = 0; i < strlen(text); i++)
-		text[i] = tolower(text[i]);
-
 	for (i = 0; i < NUM_GAMES; i++)
-		if (!strcmp(text, game_data[i].name))
-			return game_data[i].name;
+		if (!strcasecmp(game_name, game_data[i]->name))
+			return game_data[i];
 
 	/* NOTE: we may not yet be connected to the ggz server, in which case 
 	   this won't work. */
-	ggzdmod_log(game.ggz, "Unknown game for '%s'.", text);
+	ggzdmod_log(game.ggz, "Unknown game for '%s'.", game_name);
 	return NULL;
 }
 
@@ -107,7 +104,7 @@ void games_handle_gametype(int choice)
 			    choice);
 		choice = 0;
 	}
-	game.which_game = game_data[choice].name;
+	game.data = game_data[choice];
 }
 
 
@@ -119,7 +116,7 @@ int games_get_game_id(char* game_name)
 	int i;
 	
 	for (i = 0; i < NUM_GAMES; i++) {
-		if (strcmp(game_data[i].name, game_name) == 0)
+		if (strcmp(game_data[i]->name, game_name) == 0)
 			return i;
 	}
 	
@@ -141,7 +138,7 @@ int games_req_gametype()
 	assert(fd >= 0);
 
 	for (i = 0; i < NUM_GAMES; i++) {
-		if (game_data[i].funcs->is_valid_game()) {
+		if (game_data[i]->is_valid_game()) {
 			game_types[cnt] = i;
 			cnt++;
 		}
@@ -153,7 +150,7 @@ int games_req_gametype()
 	if (cnt == 1) {
 		ggzdmod_log(game.ggz, "Just one valid game: choosing %d.",
 			    game_types[0]);
-		game.which_game = game_data[game_types[0]].name;
+		game.data = game_data[game_types[0]];
 		init_game();
 		broadcast_sync();
 		return 0;
@@ -166,7 +163,7 @@ int games_req_gametype()
 	    ggz_write_int(fd, 0) < 0)	/* default is 0 */
 		status = -1;
 	for (i = 0; i < cnt; i++) {
-		struct game_info *data = &game_data[game_types[i]];
+		game_data_t *data = game_data[game_types[i]];
 		if (ggz_write_string(fd, data->full_name) < 0)
 			status = -1;
 	}

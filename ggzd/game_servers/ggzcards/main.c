@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 3746 2002-04-05 07:09:05Z jdorje $
+ * $Id: main.c 3992 2002-04-15 09:36:11Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -116,7 +116,7 @@ static void es_exit(int result)
 int main(int argc, char **argv)
 {
 	int i;
-	char *which_game = NULL;
+	game_data_t *game_data = NULL;
 
 	/* Initialize GGZ structures. */
 	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
@@ -145,9 +145,9 @@ int main(int argc, char **argv)
 		char *option;
 		ggzdmod_log(game.ggz, "Reading option %s.", argv[i]);
 		if ((option = get_option("--game", argv, &i, argc)) != NULL) {
-			which_game = games_get_gametype(option);
+			game_data = games_get_gametype(option);
 			ggzdmod_log(game.ggz, "which_game set to %s.",
-				    which_game);
+				    game_data->name);
 		} else if ((option =
 			    get_option("--option", argv, &i, argc)) != NULL) {
 			/* argument is of the form --option=<option>:<value> */
@@ -173,7 +173,7 @@ int main(int argc, char **argv)
 	/* pre-initialization of the program.  Although we may know what game 
 	   we're playing at this point, we don't yet do any specific
 	   initializations. */
-	init_ggzcards(ggz, which_game);
+	init_ggzcards(ggz, game_data);
 
 	/* Connect to GGZ server; main loop */
 	if (ggzdmod_connect(ggz) < 0)

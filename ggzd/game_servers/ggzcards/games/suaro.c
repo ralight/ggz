@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: suaro.c 3992 2002-04-15 09:36:11Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -80,7 +80,9 @@ static void suaro_end_hand(void);
 static void suaro_set_player_message(player_t p);
 static void suaro_end_trick(void);
 
-struct game_function_pointers suaro_funcs = {
+game_data_t suaro_data = {
+	"suaro",
+	N_("Suaro"),
 	suaro_is_valid_game,
 	suaro_init_game,
 	suaro_get_options,
@@ -354,8 +356,8 @@ static void suaro_start_playing(void)
 		SUARO.kitty_revealed = 1;
 		for (p = 0; p < game.num_players; p++) {
 			/* resend the hands */
-			(void) game.funcs->send_hand(p, s1);
-			(void) game.funcs->send_hand(p, s2);
+			(void) game.data->send_hand(p, s1);
+			(void) game.data->send_hand(p, s2);
 		}
 
 	}
@@ -481,7 +483,7 @@ static void suaro_end_trick(void)
 	   card of the suit lead, or the highest trump if there is trump */
 	for (p = 0; p < game.num_players; p++) {
 		card_t card = game.seats[game.players[p].seat].table;
-		card = game.funcs->map_card(card);
+		card = game.data->map_card(card);
 		if ((card.suit == game.trump
 		     && (hi_card.suit != game.trump
 			 || hi_card.face < card.face))

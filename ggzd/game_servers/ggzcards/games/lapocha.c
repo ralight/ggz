@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: lapocha.c 3992 2002-04-15 09:36:11Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -60,7 +60,9 @@ static void lap_send_trump(void);
 static void lap_send_bid(player_t bidder, bid_t bid);
 static void lap_send_scores(void);
 
-struct game_function_pointers lapocha_funcs = {
+game_data_t lapocha_data = {
+	"lapocha",
+	N_("La Pocha"),
 	lapocha_is_valid_game,
 	lapocha_init_game,
 	game_get_options,

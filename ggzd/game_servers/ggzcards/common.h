@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 3595 2002-03-17 00:14:56Z jdorje $
+ * $Id: common.h 3992 2002-04-15 09:36:11Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -67,8 +67,7 @@ typedef struct {
 	GGZdMod *ggz;
 
 	/* Game meta-data */
-	char* which_game;	/**< the type of game game */
-	struct game_function_pointers *funcs;	/**< an array of game-specific functions */
+	game_data_t *data;	/**< Game-specific data */
 	
 	char* ai_type;	/**< the type of AI we're using */
 
@@ -76,11 +75,10 @@ typedef struct {
 	deck_t *deck;		/**< the deck being used */
 
 	/* misc. game data */
-	char *name;		/**< the name of the game */
 	char *rules_url;	/**< the URL of where to read the game's rules */
 
 	/* misc. state data */
-	int initted;		/**< has the game been initialized? */
+	bool initted;		/**< has the game been initialized? */
 	player_t host;		/**< the host of the table; cannot be an AI */
 
 	/* state data */
@@ -89,16 +87,16 @@ typedef struct {
 
 	/* these next few are general game-specific options that are used by
 	   the game-independent code */
-	int must_overtrump;	/**< if this is set, then a player must trump/overtrump if possible (i.e. La Pocha) */
-	int must_break_trump;	/**< if this is set, then trump can't be lead until it's been broken (i.e. Spades) */
+	bool must_overtrump;	/**< if this is set, then a player must trump/overtrump if possible (i.e. La Pocha) */
+	bool must_break_trump;	/**< if this is set, then trump can't be lead until it's been broken (i.e. Spades) */
 	int target_score;	/**< after someone reaches this score, the game is over (0=unused) */
-	int last_trick;		/**< should the last trick be sent to all the players? */
-	int last_hand;		/**< should the last hand be sent to all the players? */
-	int cumulative_scores;	/**< should the cumulative score be sent to all the players? */
-	int bid_history;	/**< should a complete history of the hand's bidding be shown? */
+	bool last_trick;	/**< should the last trick be sent to all the players? */
+	bool last_hand;		/**< should the last hand be sent to all the players? */
+	bool cumulative_scores;	/**< should the cumulative score be sent to all the players? */
+	bool bid_history;	/**< should a complete history of the hand's bidding be shown? */
 
 	/* Table options */
-	int open_hands;		/**< are we playing with open hands? */
+	bool open_hands;	/**< are we playing with open hands? */
 
 	/* State-tracking data: dealing */
 	int hand_num;		/**< the number of the current hand (counting
@@ -131,7 +129,7 @@ typedef struct {
 	player_t leader;	/**< who leads next trick/lead this trick */
 	int trick_count;	/**< how many tricks have been played this hand */
 	int trick_total;	/**< how many tricks there will be this hand */
-	int trump_broken;	/**< has trump been broken this hand?  See must_break_trump, above. */
+	bool trump_broken;	/**< has trump been broken this hand?  See must_break_trump, above. */
 
 	/* table data: players */
 	int num_players;	/**< the number of players in the game */
@@ -167,8 +165,8 @@ typedef struct {
 /* Game-independent functions */
 const char *get_state_name(server_state_t state);
 void set_game_state(server_state_t state);
-void save_game_state();
-void restore_game_state();
+void save_game_state(void);
+void restore_game_state(void);
 
 void init_game(void);
 
@@ -191,7 +189,7 @@ int handle_bid_event(player_t p, bid_t bid);
 void handle_player_language(player_t p, const char* lang);
 
 /* Initialize the program, passing in the name of the game (if known) */
-void init_ggzcards(GGZdMod * ggz, char* which_game);
+void init_ggzcards(GGZdMod * ggz, game_data_t *game_data);
 
 void set_num_seats(int num_seats);
 void assign_seat(seat_t s, player_t p);	/* player #p sits in seat #s */
@@ -213,5 +211,8 @@ int get_player_socket(int p);
 
 /* Support functions.  Should go into a different file. */
 void fatal_error(const char *message);
+
+/* Preliminary i18n macros */
+#define N_(string) (string)
 
 #endif /* __COMMON_H__ */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: spades.c 3992 2002-04-15 09:36:11Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -75,7 +75,9 @@ static void spades_end_hand(void);
 static void spades_start_game(void);
 static int spades_send_hand(player_t p, seat_t s);
 
-struct game_function_pointers spades_funcs = {
+game_data_t spades_data = {
+	"spades",
+	N_("Spades"),
 	spades_is_valid_game,
 	spades_init_game,
 	spades_get_options,
@@ -347,7 +349,7 @@ static void spades_set_player_message(player_t p)
 		int contract =
 			game.players[p].bid.sbid.val +
 			game.players[(p + 2) % 4].bid.sbid.val;
-		game.funcs->get_bid_text(bid_text, sizeof(bid_text),
+		game.data->get_bid_text(bid_text, sizeof(bid_text),
 					 game.players[p].bid);
 		if (*bid_text)
 			add_player_message(s, "Contract: %s (%d)\n", bid_text,

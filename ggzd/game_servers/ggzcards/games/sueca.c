@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: sueca.c 3992 2002-04-15 09:36:11Z jdorje $
  *
  * Copyright (C) 2001-2002 Ismael Orenstein
  *
@@ -47,7 +47,9 @@ static void sueca_end_trick(void);
 static void sueca_end_hand(void);
 static void sueca_set_player_message(player_t p);
 
-struct game_function_pointers sueca_funcs = {
+game_data_t sueca_data = {
+	"sueca",
+	N_("Sueca"),
 	sueca_is_valid_game,
 	sueca_init_game,
 	game_get_options,

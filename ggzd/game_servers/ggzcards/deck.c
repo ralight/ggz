@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000 (as cards.c)
  * Desc: Various useful deck manipulation routines for card games
- * $Id: deck.c 3490 2002-02-27 08:57:33Z jdorje $
+ * $Id: deck.c 3992 2002-04-15 09:36:11Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -204,9 +204,9 @@ card_t deal_card(deck_t * deck)
 
 int compare_cards(const void *c1, const void *c2)
 {
-	register card_t card1 = game.funcs->map_card(*(card_t *) c1);
-	register card_t card2 = game.funcs->map_card(*(card_t *) c2);
-	return game.funcs->compare_cards(card1, card2);
+	register card_t card1 = game.data->map_card(*(card_t *) c1);
+	register card_t card2 = game.data->map_card(*(card_t *) c2);
+	return game.data->compare_cards(card1, card2);
 }
 
 void cards_sort_hand(hand_t * hand)
@@ -223,7 +223,7 @@ int cards_suit_in_hand(hand_t * hand, char suit)
 	int i, cnt = 0;
 
 	for (i = 0; i < hand->hand_size; i++) {
-		card_t card = game.funcs->map_card(hand->cards[i]);
+		card_t card = game.data->map_card(hand->cards[i]);
 		if (card.suit == suit)
 			cnt++;
 	}
