@@ -1,10 +1,10 @@
-/*
+/* 
  * File: options.h
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.h 2195 2001-08-23 09:02:56Z jdorje $
+ * $Id: options.h 2418 2001-09-09 03:42:21Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -33,6 +33,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-130
  */
+
+#include <config.h>		/* Site-specific config */
 
 #include <string.h>
 

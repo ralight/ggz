@@ -1,10 +1,10 @@
-/*
+/* 
  * File: games.h
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 2190 2001-08-23 08:06:05Z jdorje $
+ * $Id: games.h 2418 2001-09-09 03:42:21Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -30,31 +30,43 @@
 #ifndef __GAMES_H__
 #define __GAMES_H__
 
+#include <config.h>		/* Site-specific config */
+
 #include "types.h"
 
-struct game_function_pointers
-{
+struct game_function_pointers {
 	/* initializing */
-	int (*is_valid_game) ();	/* is the game valid under the current conditions? */
+	int (*is_valid_game) ();	/* is the game valid under the
+					   current conditions? */
 	void (*init_game) ();	/* initialize the game data */
 
 	/* options */
-	void (*get_options) ();	/* determine/request options from given player fd */
-	int (*handle_option) (char *, int);	/* handle an option => 0 on success, -1 on failure */
-	char *(*get_option_text) (char *, int, char *, int);	/* return a descriptive string for the option chosen */
+	void (*get_options) ();	/* determine/request options from given
+				   player fd */
+	int (*handle_option) (char *, int);	/* handle an option => 0 on
+						   success, -1 on failure */
+	char *(*get_option_text) (char *, int, char *, int);	/* return a
+								   descriptive 
+								   string for 
+								   the option 
+								   chosen */
 
 	/* messaging */
-	void (*set_player_message) (player_t);	/* determine and send the player message */
+	void (*set_player_message) (player_t);	/* determine and send the
+						   player message */
 
 	/* bidding */
-	int (*get_bid_text) (char *, int, bid_t);	/* determines the textual string for the bid */
+	int (*get_bid_text) (char *, int, bid_t);	/* determines the
+							   textual string for 
+							   the bid */
 	void (*start_bidding) ();	/* updates data for the first bid */
 	int (*get_bid) ();	/* gets a bid from next player */
 	void (*handle_bid) (bid_t);	/* handles a bid from current bidder */
 	void (*next_bid) ();	/* updates data for the next bid */
 
 	/* playing */
-	void (*start_playing) ();	/* updates data after the last bid/before the playing starts */
+	void (*start_playing) ();	/* updates data after the last
+					   bid/before the playing starts */
 	char *(*verify_play) (card_t);	/* verifies the play is legal */
 	void (*next_play) ();	/* sets up for next play */
 	void (*get_play) ();	/* retreives a play */
@@ -76,18 +88,16 @@ struct game_function_pointers
 	int (*send_hand) (player_t, seat_t);	/* sends a hand to a player */
 };
 
-struct game_info
-{
+struct game_info {
 	char *name;
 	char *full_name;
 	struct game_function_pointers *funcs;
 };
 
 /* Game types. */
-/* The game enumerations must start at 0 and count upwards;
- * they also must match with game_names, below */
-typedef enum game_type_t
-{
+/* The game enumerations must start at 0 and count upwards; they also must
+   match with game_names, below */
+typedef enum game_type_t {
 	GGZ_GAME_UNKNOWN = -1,
 	GGZ_GAME_SUARO = 0,	/* http://suaro.dhs.org */
 	GGZ_GAME_SPADES = 1,
@@ -98,8 +108,7 @@ typedef enum game_type_t
 	GGZ_GAME_ROOK = 6,
 	GGZ_GAME_SKAT = 7,
 	GGZ_GAME_SUECA = 8
-}
-game_type_t;
+} game_type_t;
 
 extern struct game_info game_data[];
 

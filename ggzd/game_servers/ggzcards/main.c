@@ -1,10 +1,10 @@
-/*
+/* 
  * File: main.c
  * Author: Brent Hendricks, Jason Short
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2346 2001-09-03 10:43:41Z jdorje $
+ * $Id: main.c 2418 2001-09-09 03:42:21Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -27,6 +27,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <config.h>		/* Site-specific config */
+
 #include <stdlib.h>
 
 #include <easysock.h>
@@ -41,14 +43,10 @@ static char *get_option(const char *option_name, char **argv, int *i,
 /***************************************************************
  ...
 ***************************************************************/
-/*
-static int is_option(const char *option_name,char *option)
-{
-  if (!strcmp(option_name,option) ||
-      !strncmp(option_name+1,option,2)) return 1;
-  return 0;
-}
-*/
+/* 
+   static int is_option(const char *option_name,char *option) { if
+   (!strcmp(option_name,option) || !strncmp(option_name+1,option,2)) return
+   1; return 0; } */
 
 /**************************************************************************
   return a char * to the parameter of the option or NULL.
@@ -92,8 +90,8 @@ static char *get_option(const char *option_name, char **argv, int *i,
 }
 
 /* these should be part of libggzdmod */
-/* note that for both es_error and es_exit, easysock must be called again
- * to report the error! */
+/* note that for both es_error and es_exit, easysock must be called again to
+   report the error! */
 static void es_error(const char *msg, const EsOpType op,
 		     const EsDataType data)
 {
@@ -153,7 +151,7 @@ int main(int argc, char **argv)
 	ggzd_set_handler(GGZ_EVENT_PLAYER, &handle_player_event);
 
 	/* Connect to GGZ server; main loop */
-	(void)ggzd_main_loop();
+	(void) ggzd_main_loop();
 
 	return 0;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.h 2417 2001-09-09 03:26:34Z jdorje $
+ * $Id: ai.h 2418 2001-09-09 03:42:21Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -29,6 +29,8 @@
 
 #ifndef __AI_H__
 #define __AI_H__
+
+#include <config.h>		/* Site-specific config */
 
 #include "types.h"
 

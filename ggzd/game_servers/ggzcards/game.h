@@ -1,10 +1,10 @@
-/*
+/* 
  * File: game.h
  * Author: Rich Gade, Jason Short
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 2199 2001-08-23 19:45:12Z jdorje $
+ * $Id: game.h 2418 2001-09-09 03:42:21Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -27,6 +27,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#include <config.h>		/* Site-specific config */
 
 #include <stdio.h>		/* just for debugging */
 

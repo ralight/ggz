@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 2409 2001-09-08 23:58:40Z jdorje $
+ * $Id: protocol.h 2418 2001-09-09 03:42:21Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -32,6 +32,10 @@
 
 #ifndef __PROTOCOL_H__
 #define __PROTOCOL_H__
+
+#ifdef HAVE_CONFIG
+#  include <config.h>		/* Site-specific config */
+#endif
 
 
 /* 

@@ -1,10 +1,10 @@
-/*
+/* 
  * File: bid.h
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.h 2190 2001-08-23 08:06:05Z jdorje $
+ * $Id: bid.h 2418 2001-09-09 03:42:21Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -23,14 +23,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-130
  */
 
+#include <config.h>		/* Site-specific config */
+
 #include "types.h"
 
-/* clear_bids clears the list of possible bids.
- * It's called automatically by handle_bid_event(). */
+/* clear_bids clears the list of possible bids. It's called automatically by
+   handle_bid_event(). */
 void clear_bids();
 
-/* add_bid and add_sbid add another bid to the list of
- * possible bids.  add_sbid is just a convenience. */
+/* add_bid and add_sbid add another bid to the list of possible bids.
+   add_sbid is just a convenience. */
 void add_bid(bid_t bid);
 void add_sbid(char val, char suit, char spec);
 

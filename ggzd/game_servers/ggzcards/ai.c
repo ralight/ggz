@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 2417 2001-09-09 03:26:34Z jdorje $
+ * $Id: ai.c 2418 2001-09-09 03:42:21Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -27,6 +27,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <config.h>		/* Site-specific config */
+
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -74,40 +77,40 @@ bid_t ai_get_bid(player_t p, bid_t * bid_choices, int bid_count)
 {
 	bid_t bid =
 		ai_funcs[game.ai_type]->get_bid(p, bid_choices, bid_count);
-#ifdef DEBUG
+#ifdef AI_DEBUG
 	char buf[100];
 	int i;
 	game.funcs->get_bid_text(buf, sizeof(buf), bid);
-	ggz_debug("AI chose to bid %s.", buf);
-	for (i = 0; i < game.num_bid_choices; i++)
-		if (game.bid_choices[i].bid == bid.bid)
+	ai_debug("AI chose to bid %s.", buf);
+	for (i = 0; i < bid_count; i++)
+		if (bid_choices[i].bid == bid.bid)
 			break;
-	if (i > game.num_bid_choices)
-		ggz_debug("AI chose invalid bid!!!");
-#endif /* DEBUG */
+	if (i > bid_count)
+		ai_debug("AI chose invalid bid!!!");
+#endif /* AI_DEBUG */
 	return bid;
 }
 
 card_t ai_get_play(player_t p, seat_t s)
 {
 	card_t card = ai_funcs[game.ai_type]->get_play(p, s);
-#ifdef DEBUG
+#ifdef AI_DEBUG
 	int i;
-	ggz_debug("AI selected card (%d %d %d) to play.", card.face,
-		  card.suit, card.deck);
+	ai_debug("AI selected card (%d %d %d) to play.", card.face,
+		 card.suit, card.deck);
 	for (i = 0; i < game.seats[s].hand.hand_size; i++)
 		if (cards_equal(game.seats[s].hand.cards[i], card) &&
 		    game.funcs->verify_play(card) == NULL)
 			break;
 	if (i > game.seats[s].hand.hand_size)
-		ggz_debug("AI chose invalid play!");
-#endif /* DEBUG */
+		ai_debug("AI chose invalid play!");
+#endif /* AI_DEBUG */
 	return card;
 }
 
 void ai_debug(const char *fmt, ...)
 {
-#ifdef DEBUG_AI
+#ifdef AI_DEBUG
 	char buf[4096];
 	va_list ap;
 
@@ -116,5 +119,5 @@ void ai_debug(const char *fmt, ...)
 	va_end(ap);
 
 	(void) ggzd_debug("AI-DEBUG: %s", buf);
-#endif /* DEBUG_AI */
+#endif /* AI_DEBUG */
 }

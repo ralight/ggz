@@ -1,10 +1,10 @@
-/*
+/* 
  * File: cards.c
  * Author: Rich Gade, Jason Short
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulate functions for card games
- * $Id: cards.c 2386 2001-09-07 09:45:15Z jdorje $
+ * $Id: cards.c 2418 2001-09-09 03:42:21Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -25,6 +25,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <config.h>		/* Site-specific config */
+
 #include <stdlib.h>
 
 #include "common.h"
@@ -44,12 +46,9 @@ char *short_face_names[15] =
 	"K", "A"
 };
 
-/* cards_create_deck()
- *   set up the deck of the given type
- *
- *   This is more complex than might seem necessary, but allows a game-designer
- *   to very easily invent new card deck types by merely setting the params
- */
+/* cards_create_deck() set up the deck of the given type This is more
+   complex than might seem necessary, but allows a game-designer to very
+   easily invent new card deck types by merely setting the params */
 void cards_create_deck(deck_type_t which_deck)
 {
 	int face, suit, deck;
@@ -137,15 +136,13 @@ void cards_destroy_deck()
 {
 	if (gamedeck == NULL)
 		ggzd_debug("ERROR: SERVER BUG: "
-			      "cards_destroy_deck called on a NULL deck.");
+			   "cards_destroy_deck called on a NULL deck.");
 	free(gamedeck);
 	deck_size = 0;
 	deck_ptr = -1;
 }
 
-/* cards_shuffle_deck()
- *   shuffle the deck
- */
+/* cards_shuffle_deck() shuffle the deck */
 void cards_shuffle_deck()
 {
 	card_t temp;
@@ -169,11 +166,8 @@ void cards_shuffle_deck()
 	deck_ptr = 0;
 }
 
-/* cards_deal_hand
- *   This deals the cards out from a pre-shuffled deck into a hand structure
- *
- *   Game-nonspecific
- */
+/* cards_deal_hand This deals the cards out from a pre-shuffled deck into a
+   hand structure Game-nonspecific */
 void cards_deal_hand(int handsize, hand_t * hand)
 {
 	int c;
@@ -188,7 +182,7 @@ void cards_deal_hand(int handsize, hand_t * hand)
 
 	if (gamedeck == NULL) {
 		ggzd_debug("ERROR: SERVER BUG: "
-			      "can't deal from NULL deck.");
+			   "can't deal from NULL deck.");
 		exit(-1);
 	}
 
@@ -218,17 +212,13 @@ int compare_cards(const void *c1, const void *c2)
 
 void cards_sort_hand(hand_t * hand)
 {
-	/* sort cards -- this should be in another function
-	 * so it can be done later as well */
+	/* sort cards -- this should be in another function so it can be done 
+	   later as well */
 	qsort(hand->cards, hand->hand_size, sizeof(card_t), compare_cards);
 }
 
 
-/* cards_deal_card
- *   This deals one card out from the deck
- *
- *  Game-nonspecific
- */
+/* cards_deal_card This deals one card out from the deck Game-nonspecific */
 card_t cards_deal_card()
 {
 	card_t card;
@@ -243,9 +233,8 @@ card_t cards_deal_card()
 	return card;
 }
 
-/* cards_suit_in_hand?
- *   This checks to see how many of a suit is contained in a hand
- */
+/* cards_suit_in_hand? This checks to see how many of a suit is contained in
+   a hand */
 int cards_suit_in_hand(hand_t * hand, char suit)
 {
 	int i, cnt = 0;
@@ -260,10 +249,8 @@ int cards_suit_in_hand(hand_t * hand, char suit)
 }
 
 
-/* cards_highest_in_suit
- *   This checks a hand for the highest card value in the requested suit
- *   it returns the numeric value of the card (1-13)
- */
+/* cards_highest_in_suit This checks a hand for the highest card value in the 
+   requested suit it returns the numeric value of the card (1-13) */
 char cards_highest_in_suit(hand_t * hand, char suit)
 {
 	int i;

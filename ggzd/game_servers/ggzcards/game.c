@@ -1,10 +1,10 @@
-/*
+/* 
  * File: game.c
  * Author: Rich Gade, Jason Short
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 2368 2001-09-05 07:01:58Z jdorje $
+ * $Id: game.c 2418 2001-09-09 03:42:21Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -28,8 +28,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <stdio.h>
+#include <config.h>		/* Site-specific config */
+
 #include <stdarg.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -67,48 +69,40 @@ struct game_function_pointers game_funcs = {
 };
 
 
-/* is_valid_game
- *   returns true if the game is valid under the current game conditions (i.e. number 
- *   of players); false otherwise
- */
+/* is_valid_game returns true if the game is valid under the current game
+   conditions (i.e. number of players); false otherwise */
 int game_is_valid_game()
 {
 	return 0;
 }
 
 
-/* game_init_game
- *   This function initializes the game soon after GGZCards is launched.
- *   This is tricky, because it really has to set up _everything_ about the
- *   game, including allocating any extra data, setting any game options or
- *   global options, and setting up all of the GGZ information so that
- *   seats and players can both be used intelligently.
- */
+/* game_init_game This function initializes the game soon after GGZCards is
+   launched.  This is tricky, because it really has to set up _everything_
+   about the game, including allocating any extra data, setting any game
+   options or global options, and setting up all of the GGZ information so
+   that seats and players can both be used intelligently. */
 void game_init_game()
 {
 	ggzd_debug("ERROR: SERVER BUG: "
-		      "game_launch not implemented for game %d.",
-		      game.which_game);
+		   "game_launch not implemented for game %d.",
+		   game.which_game);
 }
 
 
-/* game_get_options
- *   This function manually requests options from the client; the response
- *   is handled by game_handle_options.  Options are optional; it can
- *   be left as-is for a game that has no options.
- */
+/* game_get_options This function manually requests options from the client;
+   the response is handled by game_handle_options.  Options are optional; it
+   can be left as-is for a game that has no options. */
 void game_get_options()
 {
 	add_option("open_hands", 1, 0, "Play with open hands");
 }
 
 
-/* game_handle_options
- *   This handles options being sent from the client.  A value
- *   of -1 will be passed in as an option to indicate an error.
- *   It corresponds very closely to game_get_options, above;
- *   and can be left as-is for games that have no options.
- */
+/* game_handle_options This handles options being sent from the client.  A
+   value of -1 will be passed in as an option to indicate an error.  It
+   corresponds very closely to game_get_options, above; and can be left as-is 
+   for games that have no options. */
 int game_handle_option(char *option, int value)
 {
 	if (!strcmp("open_hands", option))
@@ -132,27 +126,26 @@ char *game_get_option_text(char *buf, int bufsz, char *option, int value)
 }
 
 
-/* game_set_player_message
- *   sets the player message for a given player.
- */
+/* game_set_player_message sets the player message for a given player. */
 void game_set_player_message(player_t p)
 {
 	/* This function is tricky.  The problem is that we're trying to
 	   assemble a single player string out of multiple units of data -
-	   score, bid, tricks, etc.  The solution here is to integrate
-	   these all into one function (this one).  You have to check each
-	   unit of data to see if it should be shown - for instance, tricks
-	   should only be shown while the hand is being played.  Another
-	   solution would be to update things separately.  The disadvantage
-	   there is that the code is all spread out, and it's difficult to
-	   deal with multiple units of data */
+	   score, bid, tricks, etc.  The solution here is to integrate these
+	   all into one function (this one).  You have to check each unit of
+	   data to see if it should be shown - for instance, tricks should
+	   only be shown while the hand is being played.  Another solution
+	   would be to update things separately.  The disadvantage there is
+	   that the code is all spread out, and it's difficult to deal with
+	   multiple units of data */
 
-	/* Note that this way depends on this function being called at the proper
-	   times - every time the player is affected, and on some game state
-	   changes.  Much of this is handled by the game-independent code */
+	/* Note that this way depends on this function being called at the
+	   proper times - every time the player is affected, and on some game 
+	   state changes.  Much of this is handled by the game-independent
+	   code */
 
-	/* in this "example" function, we just put in several default pieces of
-	 * information.  See one of the games for a more lively example */
+	/* in this "example" function, we just put in several default pieces
+	   of information.  See one of the games for a more lively example */
 
 	clear_player_message(game.players[p].seat);
 	add_player_rating_message(p);
@@ -163,36 +156,30 @@ void game_set_player_message(player_t p)
 }
 
 
-/* game_get_bid_text
- *   places text for the bid into the buffer.  Returns the length of the text.
- */
+/* game_get_bid_text places text for the bid into the buffer.  Returns the
+   length of the text. */
 int game_get_bid_text(char *buf, int buf_len, bid_t bid)
 {
 	return snprintf(buf, buf_len, "%s", "");
 }
 
 
-/* game_start_bidding
- *   This is called at the start of bidding, shortly after
- *   the hand has been dealt.  It corresponds closely to
- *   the other bidding functions.
- *   The way bidding works is this:
- *     - We will enter the "bidding" phase right before this function is called.
- *     - This function can change the phase; for instance you can skip bidding
- *       by jumping right to the first trick (e.g. hearts).
- *     - After this, we'll just keep requesting bids until we're done.
- *     - For each bid, game_get_bid is called to request the bid from the client.
- *       Once the bid is returned, game_hand_bid is called to handle it.
- *       game_next_bid is called after this to prepare for the next bid.
- *     - There are two game values: game.bid_count and game.bid_total.  bid_count
- *       tracks the number of bids that have happened.  bid_total is used to
- *       check the total number of bids that _should_ have happened; if bid_count
- *       ever equals bid_total then the bidding will be automatically ended.
- *       (note: I'm thinking of getting rid of bid_total since it's only used
- *       by spades.)
- *     - Aside from this, your own game data should be used to
- *       track what's going on with the bidding.
- */
+/* game_start_bidding This is called at the start of bidding, shortly after
+   the hand has been dealt.  It corresponds closely to the other bidding
+   functions.  The way bidding works is this: - We will enter the "bidding"
+   phase right before this function is called.  - This function can change
+   the phase; for instance you can skip bidding by jumping right to the first 
+   trick (e.g. hearts).  - After this, we'll just keep requesting bids until
+   we're done.  - For each bid, game_get_bid is called to request the bid
+   from the client.  Once the bid is returned, game_hand_bid is called to
+   handle it.  game_next_bid is called after this to prepare for the next
+   bid.  - There are two game values: game.bid_count and game.bid_total.
+   bid_count tracks the number of bids that have happened.  bid_total is used 
+   to check the total number of bids that _should_ have happened; if
+   bid_count ever equals bid_total then the bidding will be automatically
+   ended.  (note: I'm thinking of getting rid of bid_total since it's only
+   used by spades.) - Aside from this, your own game data should be used to
+   track what's going on with the bidding. */
 void game_start_bidding()
 {
 	/* by default, all players bid once */
@@ -201,25 +188,20 @@ void game_start_bidding()
 }
 
 
-/* game_get_bid()
- *   asks for bid from the client/AI.
- *   AI can be inserted here; just call handle_bid_event;
- *   however, this has never been tested.  It needs to work pretty
- *   closely with the other bidding functions.
- */
+/* game_get_bid() asks for bid from the client/AI.  AI can be inserted here;
+   just call handle_bid_event; however, this has never been tested.  It needs 
+   to work pretty closely with the other bidding functions. */
 int game_get_bid()
 {
 	ggzd_debug("ERROR: SERVER BUG: "
-		      "game_get_bid called for unimplemented game.");
+		   "game_get_bid called for unimplemented game.");
 	return -1;
 }
 
 
-/* game_handle_bid
- *   Handle incoming bid from player.  Note that the player's bid (game.players[p].bid)
- *   will already have been set automatically; all we need to do is any additional
- *   game-specific stuff.
- */
+/* game_handle_bid Handle incoming bid from player.  Note that the player's
+   bid (game.players[p].bid) will already have been set automatically; all we 
+   need to do is any additional game-specific stuff. */
 void game_handle_bid(bid_t bid)
 {
 	/* no special handling necessary */
@@ -227,13 +209,10 @@ void game_handle_bid(bid_t bid)
 }
 
 
-/* game_next_bid
- *   sets up for the next bid
- *   note that game.bid_count has already been incremented, and will now
- *   equal the number of the current bid.  game.next_bid
- *   should equal the player who just bid, and should be changed to
- *   the player who bids next.
- */
+/* game_next_bid sets up for the next bid note that game.bid_count has
+   already been incremented, and will now equal the number of the current
+   bid.  game.next_bid should equal the player who just bid, and should be
+   changed to the player who bids next. */
 void game_next_bid()
 {
 	if (game.bid_count == 0)
@@ -243,11 +222,10 @@ void game_next_bid()
 }
 
 
-/* game_start_playing
- *   called between the bidding and playing sequences.  A lot of stuff is done
- *   automatically at this point, all we have to do is any game-specific stuff.
- *   This means figuring out who leads, writing out any contract messages, etc.
- */
+/* game_start_playing called between the bidding and playing sequences.  A
+   lot of stuff is done automatically at this point, all we have to do is any 
+   game-specific stuff.  This means figuring out who leads, writing out any
+   contract messages, etc. */
 void game_start_playing(void)
 {
 	game.trick_total = game.hand_size;
@@ -257,14 +235,13 @@ void game_start_playing(void)
 }
 
 
-/* game_verify_play
- *   Here we verify that the play is legal; returning NULL if it is and an
- *   error message otherwise.  The error message must be statically declared!!!
- *   Note that we've already checked that the play is legal _in general_, here we
- *   only check that it's legal _for this game_.  Except for games that have
- *   special rules (outside of those covered by game.must_overtrump and
- *   game.must_break_trump), no changes should be necessary.
- */
+/* game_verify_play Here we verify that the play is legal; returning NULL if
+   it is and an error message otherwise.  The error message must be
+   statically declared!!! Note that we've already checked that the play is
+   legal _in general_, here we only check that it's legal _for this game_.
+   Except for games that have special rules (outside of those covered by
+   game.must_overtrump and game.must_break_trump), no changes should be
+   necessary. */
 char *game_verify_play(card_t card)
 {
 	card_t c;
@@ -276,7 +253,8 @@ char *game_verify_play(card_t card)
 	/* the leader has his own restrictions */
 	if (game.next_play == game.leader) {
 		/* if must_break_trump is set, you can't lead trump until
-		 * it's been broken.  This is the case in spades, for instance. */
+		   it's been broken.  This is the case in spades, for
+		   instance. */
 		/* otherwise the leader can lead anything */
 		if (!game.must_break_trump)
 			return NULL;
@@ -300,12 +278,11 @@ char *game_verify_play(card_t card)
 	if ((cnt = cards_suit_in_hand(&game.seats[s].hand, c.suit)))
 		return "You must follow suit.";
 
-	/* if must_overtrump is set, then you must overtrump to win if you can */
+	/* if must_overtrump is set, then you must overtrump to win if you
+	   can */
 	if (game.must_overtrump && game.trump >= 0 && game.trump < 4) {
-		/* The player doesn't have led suit.
-		 * He MUST overtrump
-		 * if he has a trump card higher than
-		 * any trump card on the table. */
+		/* The player doesn't have led suit. He MUST overtrump if he
+		   has a trump card higher than any trump card on the table. */
 		char hi_trump, hi_trump_played;
 		player_t p2;
 		hi_trump = cards_highest_in_suit(&game.seats[s].hand,
@@ -318,8 +295,9 @@ char *game_verify_play(card_t card)
 				hi_trump_played = c.face;
 		}
 
-		/* the play is invalid if they had a higher trump than any on the table
-		 * AND they didn't play a higher trump than any on the table */
+		/* the play is invalid if they had a higher trump than any on 
+		   the table AND they didn't play a higher trump than any on
+		   the table */
 		if (hi_trump > hi_trump_played
 		    && !(card.suit == game.trump
 			 && card.face > hi_trump_played))
@@ -331,46 +309,38 @@ char *game_verify_play(card_t card)
 }
 
 
-/* game_next_play
- *   sets up for the next play
- *   note that game.play_count has already been incremented.
- *   As with bidding, we track the play_count and play_total.  For
- *   most games, you can just say game.play_total = 4 up above
- *   so that we'll automatically get 4 plays on each hand.
- */
+/* game_next_play sets up for the next play note that game.play_count has
+   already been incremented.  As with bidding, we track the play_count and
+   play_total.  For most games, you can just say game.play_total = 4 up above 
+   so that we'll automatically get 4 plays on each hand. */
 void game_next_play()
 {
 	game.next_play = (game.next_play + 1) % game.num_players;
 }
 
 
-/* game_get_play
- *   this gets a play.  It most likely just requests one from the player, but
- *   AI can be inserted to call handle_play_event.  We also handle
- *   game-specific stuff here (e.g. playing from the dummy hand in Bridge).
- */
+/* game_get_play this gets a play.  It most likely just requests one from the 
+   player, but AI can be inserted to call handle_play_event.  We also handle
+   game-specific stuff here (e.g. playing from the dummy hand in Bridge). */
 void game_get_play(player_t p)
 {
-	/* in almost all cases, we just want the player to play from their own hand */
+	/* in almost all cases, we just want the player to play from their
+	   own hand */
 	req_play(p, game.players[p].seat);
 }
 
 
-/* game_handle_play
- *   this handles a play.  Just about everything is taken care of by the
- *   game-independent code; all that needs to be done here is anything
- *   game-specific (e.g. revealing the dummy hand after the first lead in
- *   Bridge).
- */
+/* game_handle_play this handles a play.  Just about everything is taken care 
+   of by the game-independent code; all that needs to be done here is
+   anything game-specific (e.g. revealing the dummy hand after the first lead 
+   in Bridge). */
 void game_handle_play(card_t c)
 {
 	/* nothing needs to be done... */
 }
 
 
-/* game_deal_hand
- *   Deal a new hand.
- */
+/* game_deal_hand Deal a new hand. */
 int game_deal_hand(void)
 {
 	seat_t s;
@@ -383,21 +353,18 @@ int game_deal_hand(void)
 }
 
 
-/* game_end_trick
- *   Figure who won the trick.
- *   game.winner will be announced as the winner; game.leader
- *   will lead the next trick.
- *   Some games (none that I know) may wish to do other tricky stuff here;
- *   for most games just setting game.trick_total = game.hand_size up above will
- *   result in all the cards being played out.
- */
+/* game_end_trick Figure who won the trick.  game.winner will be announced as 
+   the winner; game.leader will lead the next trick.  Some games (none that I 
+   know) may wish to do other tricky stuff here; for most games just setting
+   game.trick_total = game.hand_size up above will result in all the cards
+   being played out. */
 void game_end_trick(void)
 {
 	player_t hi_player = game.leader, p_r;
 	card_t hi_card = game.funcs->map_card(game.lead_card);
 
 	/* default method of winning tricks: the winning card is the highest
-	 * card of the suit lead, or the highest trump if there is trump */
+	   card of the suit lead, or the highest trump if there is trump */
 	for (p_r = 1; p_r < game.num_players; p_r++) {
 		player_t p = (game.leader + p_r) % game.num_players;
 		card_t card = game.seats[game.players[p].seat].table;
@@ -419,36 +386,30 @@ void game_end_trick(void)
 }
 
 
-/* game_end_hand
- *   Calculate scores for this hand and announce.
- */
+/* game_end_hand Calculate scores for this hand and announce. */
 void game_end_hand(void)
 {
 	ggzd_debug("SERVER not implemented: game_end_hand for game %d.",
-		      game.which_game);
+		   game.which_game);
 }
 
 
-/* game_start_game
- *   Called at the beginning of a game, it initializes any necessary data.
- *   This is pretty empty right now, but we don't yet play multiple games
- *   so it's not necessary yet anyway.
- */
+/* game_start_game Called at the beginning of a game, it initializes any
+   necessary data.  This is pretty empty right now, but we don't yet play
+   multiple games so it's not necessary yet anyway. */
 void game_start_game(void)
 {
 	player_t p;
 
 	/* TODO: initialize the game; right now we just assume everything's
-	 * zero which won't be true the second time around. */
+	   zero which won't be true the second time around. */
 	for (p = 0; p < game.num_players; p++)
 		game.players[p].score = 0;
 }
 
 
-/* game_test_for_gameover
- *   called at the beginning of a new hand to determine if the game is over.
- *   Return 1 for gameover, 0 otherwise.
- */
+/* game_test_for_gameover called at the beginning of a new hand to determine
+   if the game is over.  Return 1 for gameover, 0 otherwise. */
 int game_test_for_gameover()
 {
 	player_t p;
@@ -460,19 +421,16 @@ int game_test_for_gameover()
 	return 0;
 }
 
-/* game.funcs->map_card
- *   newly implemented; it should cause one card to behave
- *   as another in just about all situations */
+/* game.funcs->map_card newly implemented; it should cause one card to behave 
+   as another in just about all situations */
 card_t game_map_card(card_t c)
 {
 	return c;
 }
 
 
-/* game_handle_gameover
- *   The game is over and we should send out game-over message.
- *   This function determines who has won and calls send_gameover.
- */
+/* game_handle_gameover The game is over and we should send out game-over
+   message.  This function determines who has won and calls send_gameover. */
 int game_handle_gameover(void)
 {
 	player_t p;
@@ -480,8 +438,8 @@ int game_handle_gameover(void)
 	player_t winners[game.num_players];
 	int winner_cnt = 0;
 
-	/* in the default case, just take the highest score(s)
-	 * this should automatically handle the case of teams! */
+	/* in the default case, just take the highest score(s) this should
+	   automatically handle the case of teams! */
 	for (p = 0; p < game.num_players; p++) {
 		if (game.players[p].score > hi_score) {
 			winner_cnt = 1;
@@ -497,11 +455,9 @@ int game_handle_gameover(void)
 }
 
 
-/* game_compare_cards
- *   Returns -1, 0, or 1 if c1 is lower, equal, or higher than c2.
- *   This function is used for the automatic sorting of hands by
- *   cards_sort_hand.
- */
+/* game_compare_cards Returns -1, 0, or 1 if c1 is lower, equal, or higher
+   than c2.  This function is used for the automatic sorting of hands by
+   cards_sort_hand. */
 int game_compare_cards(card_t card1, card_t card2)
 {
 	if (card1.suit < card2.suit)
@@ -516,14 +472,13 @@ int game_compare_cards(card_t card1, card_t card2)
 }
 
 
-/* game_send_hand
- *   Show a player a hand.  This has to determine whether the hand is going to
- *   be revealed to the player or not.  It's called automatically after dealing
- *   the hand, but may be called at other times as well.
- */
+/* game_send_hand Show a player a hand.  This has to determine whether the
+   hand is going to be revealed to the player or not.  It's called
+   automatically after dealing the hand, but may be called at other times as
+   well. */
 int game_send_hand(player_t p, seat_t s)
 {
-	/* in most cases, we want to reveal the hand only to the player
-	 * who owns it. */
+	/* in most cases, we want to reveal the hand only to the player who
+	   owns it. */
 	return send_hand(p, s, game.players[p].seat == s);
 }

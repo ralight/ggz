@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 2405 2001-09-08 23:03:15Z jdorje $
+ * $Id: games.c 2418 2001-09-09 03:42:21Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -27,10 +27,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <config.h>		/* Site-specific config */
+
 #include <ctype.h>
-#include <easysock.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <easysock.h>
 
 #include "common.h"
 
