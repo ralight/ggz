@@ -81,7 +81,7 @@ struct escape_game_t {
 	char boardheight;
 	char goalwidth;
 	char wallwidth;
-	int board[MAX_WALLWIDTH*2 + MAX_GOALWIDTH+1][MAX_BOARDHEIGHT+1][10];
+	int board[MAX_WALLWIDTH*2 + MAX_GOALWIDTH+3][MAX_BOARDHEIGHT+3][10];
 	int x;
 	int y;
 	char state;

@@ -164,15 +164,15 @@ static int game_get_options(int seat)
 
 	ggz_debug("\tOptions recieved ok\n\tboardheight=%d\n\twallwidth=%d\n\tgoalwidth=%d",escape_game.boardheight, escape_game.wallwidth, escape_game.goalwidth);
 
-	for(p = 0;p<escape_game.wallwidth * 2 + escape_game.goalwidth+1;p++){
-		for(q = 0;q<escape_game.boardheight+1;q++){
+	for(p = 0;p<=escape_game.wallwidth * 2 + escape_game.goalwidth+1;p++){
+		for(q = 0;q<=escape_game.boardheight+1;q++){
 			for(d = 0;d<10;d++){
 				escape_game.board[p][q][d] = dtEmpty;
             	}
 		}
 	}
     
-    	for(p = 0;p<escape_game.wallwidth * 2 + escape_game.goalwidth+1;p++){
+    	for(p = 0;p<=escape_game.wallwidth * 2 + escape_game.goalwidth+1;p++){
       	escape_game.board[p][0][4] = dtBlocked;
         	escape_game.board[p][0][7] = dtBlocked;
         	escape_game.board[p][0][8] = dtBlocked;
@@ -186,7 +186,7 @@ static int game_get_options(int seat)
         	escape_game.board[p][escape_game.boardheight+1][6] = dtBlocked;
 	}
     
-	for(q = 0;q<escape_game.boardheight+1;q++){
+	for(q = 0;q<=escape_game.boardheight+1;q++){
         	escape_game.board[0][q][1] = dtBlocked;
         	escape_game.board[0][q][4] = dtBlocked;
         	escape_game.board[0][q][7] = dtBlocked;
@@ -311,6 +311,7 @@ int game_send_move(int num, int event, char direction)
 	return 0;
 }
 
+// FIXME - incomplete (should send x, y)
 /* Send out board layout */
 int game_send_sync(int num)
 {	
@@ -455,9 +456,9 @@ int game_handle_move(int num, unsigned char *direction)
 			{
 				if((escape_game.board[newx][newy][i]!=dtEmpty)&&
 						(!((newx==1)&&(newy==1)&&(i==7))||
-						((newx==1)&&(newy==escape_game.boardheight-1)&&(i==1))||
+						((newx==1)&&(newy==escape_game.boardheight)&&(i==1))||
 						((newx==escape_game.goalwidth+escape_game.wallwidth*2)&&(newy==1)&&(i==9))||
-						((newx==escape_game.goalwidth+escape_game.wallwidth*2)&&(newy==escape_game.boardheight-1)&&(i==3))))
+						((newx==escape_game.goalwidth+escape_game.wallwidth*2)&&(newy==escape_game.boardheight)&&(i==3))))
 				{
 					// give new move
 					escape_game.repeatmove=1;
@@ -532,8 +533,19 @@ char game_check_win(void)
 		if((escape_game.board[escape_game.x][escape_game.y][i]!=dtEmpty) && (i!=5))
 			count++;
 
-	if(count==8)
+	if(count==8){
+		ggz_debug("game_checkwin() count = 8");
+		ggz_debug("\tescape_game.boardheight = %d",escape_game.boardheight);
+		ggz_debug("\escape_game.wallwidth+escape_game.goalwidth = %d",escape_game.wallwidth+escape_game.goalwidth);
+		ggz_debug("\tescape_game.x = %d",escape_game.x);
+		ggz_debug("\tescape_game.y = %d",escape_game.y);
+		for(i=1; i<10; i++){
+			if(i!=5){
+				ggz_debug("\tescape_game.board[][][%d] = %d",escape_game.board[escape_game.x][escape_game.y][i]);
+			}
+		}	
 		return 2;
+	}
 
 	/* Game not over yet */
 	return -1;
