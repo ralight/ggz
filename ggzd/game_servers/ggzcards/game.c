@@ -1147,16 +1147,22 @@ void game_set_player_message(player_t p)
 
 	switch (game.which_game) {
 		case GGZ_GAME_BRIDGE:
-			if (p == BRIDGE.declarer)
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "declarer\n");
-			if (p == BRIDGE.dummy)
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dummy\n");
-			/* TODO: declarer and dummy really shouldn't be at the top */
+			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
+				/* TODO: declarer and dummy really shouldn't be at the top */
+				if (p == BRIDGE.declarer)
+					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "declarer\n");
+				if (p == BRIDGE.dummy)
+					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dummy\n");
+			}
 			goto normal_message;
 		case GGZ_GAME_SUARO:
-			if (p == SUARO.declarer)
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "declarer\n");
-			/* TODO: declarer really shouldn't be at the top */
+			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
+				/* TODO: declarer really shouldn't be at the top */
+				if (p == SUARO.declarer)
+					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "declarer\n");
+				else
+					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "defender\n");
+			}
 			goto normal_message;
 		case GGZ_GAME_LAPOCHA:
 			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
