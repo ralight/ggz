@@ -1,0 +1,44 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZ Clients Pages</b><br>
+The following core clients have been created by the GGZ Gaming Zone developers:
+<br><br>
+
+<table class="inner">
+<tr><td>
+
+<i>KDE client:</i><br>
+<a href="/clients/kde/">KGGZ</a>
+<br>
+<i>Gtk+ client:</i><br>
+<a href="/clients/gtk/">GGZ-Gtk</a>
+<br>
+<i>GNOME client:</i><br>
+<a href="/clients/gnome/">GGZ-Gnome</a>
+<br>
+<i>Console client:</i><br>
+<a href="/clients/console/">ggz-txt</a>
+<br>
+<i>Telnet client:</i><br>
+<a href="/clients/telnet/">TelGGZ</a>
+<br>
+<i>Windows client:</i><br>
+<a href="/clients/windows/">WGGZ</a>
+<br>
+
+
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
