@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(ggz-txt/main.c)
-AM_INIT_AUTOMAKE(ggz-txt-client, 0.0.5pre)
+AM_INIT_AUTOMAKE(ggz-txt-client, 0.0.5)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
@@ -63,10 +63,8 @@ dnl ===========================
 
 dnl Check for libs
 dnl ==============
-AC_CHECK_LIB(ggzcore, ggzcore_server_new,
-    AC_CHECK_HEADER(ggzcore.h, LDADD="$LDADD -lggzcore",
-        AC_MSG_ERROR(*** Cannot find ggzcore.h header)),
-AC_MSG_ERROR(*** Cannot find ggzcore library ))
+AC_GGZ_GGZCORE
+LDADD="$LDADD $GGZCORE_LDFLAGS $LIB_GGZCORE"
 
 
 dnl Use -Wall if we have gcc.
