@@ -580,12 +580,20 @@ void _ggzcore_server_set_logintype(struct _GGZServer *server, const GGZLoginType
 
 void _ggzcore_server_set_handle(struct _GGZServer *server, const char *handle)
 {
+	/* Free old handle if one existed */
+	if (server->handle)
+		ggzcore_free(server->handle);
+	
 	server->handle = ggzcore_strdup(handle);
 }
 
 
 void _ggzcore_server_set_password(struct _GGZServer *server, const char *password)
 {
+	/* Free old password if one existed */
+	if (server->password)
+		ggzcore_free(server->password);
+	
 	server->password = ggzcore_strdup(password);
 }
 
