@@ -742,6 +742,12 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 
 static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void* user_data)
 {
+	gchar* msg;
+
+	msg = g_strdup_printf("Server error: %s", (char*)event_data);
+	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	g_free(msg);
+
 	return GGZ_HOOK_OK;
 }
 
