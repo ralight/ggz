@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2851 2001-12-10 04:19:50Z jdorje $
+ * $Id: common.c 2856 2001-12-10 07:10:08Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -239,9 +239,8 @@ static int handle_msg_gameover(void)
 		return -1;
 	assert(num_winners >= 0 && num_winners <= game.num_players);
 
-	if (num_winners > 0) {
+	if (num_winners > 0)
 		winners = ggz_malloc(num_winners * sizeof(*winners));
-	}
 
 	for (i = 0; i < num_winners; i++)
 		if (read_seat(ggzfd, &winners[i]) < 0)
@@ -250,6 +249,9 @@ static int handle_msg_gameover(void)
 	table_handle_gameover(num_winners, winners);
 
 	set_game_state(STATE_DONE);
+
+	if (winners)
+		ggz_free(winners);
 
 	return 0;
 }
