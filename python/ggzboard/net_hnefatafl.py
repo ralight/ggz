@@ -25,10 +25,11 @@ class Network(NetworkBase, NetworkInfo):
 		NetworkInfo.__init__(self)
 		self.MSG_SEAT = 0
 		self.MSG_PLAYERS = 1
+		self.MSG_START = 5
+
 		self.MSG_MOVE = 2
 		self.MSG_GAMEOVER = 3
 		self.REQ_MOVE = 4
-		self.MSG_START = 5
 		self.MSG_SYNC = 6
 		self.REQ_SYNC = 7
 		self.REQ_AGAIN = 8
@@ -68,23 +69,17 @@ class Network(NetworkBase, NetworkInfo):
 			print " + move", move
 			# FIXME: error handling...
 			if move > 0:
-				topos = (move % 8, move / 8)
+				topos = (move % 9, move / 9)
 				self.movequeue.append((None, topos))
 		elif op == self.MSG_GAMEOVER:
 			print "- gameover"
 			winner = self.getbyte()
 			print " + winner", winner
-#		elif op == self.REQ_MOVE:
-#			print "- req move"
 		elif op == self.MSG_START:
 			print "- start"
 			self.inputallowed = 1
 		elif op == self.MSG_SYNC:
 			print "- sync"
-#		elif op == self.REQ_SYNC:
-#			print "- req sync"
-#		elif op == self.REQ_AGAIN:
-#			print "- req again"
 		else:
 			print "- unknown opcode"
 			self.errorcode = 1
@@ -92,7 +87,7 @@ class Network(NetworkBase, NetworkInfo):
 	def domove(self, frompos, topos):
 		self.sendbyte(self.REQ_MOVE)
 		(x, y) = topos
-		toposval = y * 8 + x
+		toposval = y * 9 + x
 		self.sendbyte(toposval)
 		print "*** SENT", toposval
 

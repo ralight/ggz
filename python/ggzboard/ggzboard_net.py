@@ -74,6 +74,7 @@ class NetworkBase:
 
 	def getstring(self):
 		length = self.getbyte()
+		opstr = ""
 		if not self.errorcode:
 			opstr = self.sock.recv(length)
 			if len(opstr) < length:
