@@ -271,14 +271,15 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 	ZONEDEBUG("from: %i/%i to: %i/*\n", 0, yl, map_x - 1);
 	backtrace = path->result();
 
-        if(backtrace)
+	if(backtrace)
 	{
 		cout << "## Found the path (" << backtrace->x() << ", " << backtrace->y() << ") !!! Doing backtrace..." << endl;
 
 		// prepare for backtrace broadcast
 		for(int i = 0; i < m_numplayers; i++)
 			if(ZoneGGZModGGZ::ggz_seats[i].assign == -5)
-	  			if(es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, proto_map_backtrace) < 0)
+	  			if((es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, proto_map_backtrace) < 0)
+				|| (es_write_int(ZoneGGZModGGZ::ggz_seats[i].fd, zoneTurn()) < 0))
 					ZONEERROR("couldn't send backtrace control\n");
 		do
 		{
