@@ -8,10 +8,12 @@
 #include <unistd.h>
 #include <stdio.h>
 
+#include "connect.h"
 #include "datatypes.h"
 #include "dlg_error.h"
 #include "dlg_exit.h"
 #include "dlg_launch.h"
+#include "dlg_login.h"
 #include "dlg_main.h"
 #include "easysock.h"
 #include "err_func.h"
@@ -22,6 +24,7 @@
 
 /* Globals neaded by this dialog */
 extern GtkWidget *dlg_launch;
+extern GtkWidget *dlg_login;
 extern GtkWidget *mnu_players;
 extern GtkWidget *mnu_tables;
 extern int selected_table;
@@ -714,6 +717,9 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (logout1), "activate",
                       GTK_SIGNAL_FUNC (ggz_logout),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (login1), "activate",
+                      GTK_SIGNAL_FUNC (ggz_login),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (exit1), "activate",
                       GTK_SIGNAL_FUNC (exit_dlg),
                       NULL);
@@ -762,8 +768,16 @@ void ggz_join_game(GtkButton * button, gpointer user_data)
                         
 void ggz_logout(GtkMenuItem * menuitem, gpointer user_data)
 {
+	GtkWidget *tmp;
+
         dbg_msg("Logging out");
         es_write_int(connection.sock, REQ_LOGOUT);
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
+        gtk_clist_clear(GTK_CLIST(tmp));
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "player_list");
+        gtk_clist_clear(GTK_CLIST(tmp));
+	display_chat("< <  > >","Disconnected from server.");
 }
         
                         
@@ -858,4 +872,11 @@ int ggz_event_players( GtkWidget *widget, GdkEvent *event )
         }
 
 	return 0;
+}
+
+void ggz_login()
+{
+	dlg_login = create_dlg_login();
+	login_bad_name();
+	gtk_widget_show(dlg_login);
 }

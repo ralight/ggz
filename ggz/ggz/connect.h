@@ -26,6 +26,7 @@
 
 #include<gtk/gtk.h>
 
+int anon_login(void);
 int connect_to_server(void);
 void disconnect(GtkWidget *, gpointer);
-int anon_login(void);
+void display_chat(char *name, char *msg);

@@ -70,7 +70,6 @@ static void connect_msg(const char *, ...);
 static void add_user_list(gchar * name, gint table);
 static void add_table_list(TableInfo table);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
-static void display_chat(char *name, char *msg);
 static void handle_list_tables(int op, int fd);
 static void motd_print_line(char *line);
 
@@ -434,7 +433,7 @@ static void server_sync()
 } 
 
 
-static void display_chat(char *name, char *msg)
+void display_chat(char *name, char *msg)
 {
 	char *buf;			/* incomeing text */
 	gpointer tmp;			/* chat widget */
