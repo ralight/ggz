@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: common.c 3485 2002-02-27 07:15:45Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -680,10 +680,11 @@ int handle_play_event(player_t p, card_t card)
 	for (i = 0; i < hand->hand_size; i++)
 		if (are_cards_equal(hand->cards[i], card))
 			break;
-	for (; i < hand->hand_size; i++)
+	assert(i < hand->hand_size);
+	for (; i < hand->hand_size - 1; i++)
 		hand->cards[i] = hand->cards[i + 1];
-	hand->cards[hand->hand_size - 1] = card;
 	hand->hand_size--;
+	hand->cards[hand->hand_size] = card;
 
 	/* Move the card onto the table */
 	game.seats[s].table = card;

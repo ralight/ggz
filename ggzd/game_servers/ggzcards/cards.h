@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulation routines for card games
- * $Id: cards.h 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: cards.h 3485 2002-02-27 07:15:45Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -31,8 +31,8 @@
 
 /* A hand structure */
 typedef struct hand_t {
-	char full_hand_size;	/* the size of the hand, when it's full */
-	char hand_size;		/* the current size of the hand */
+	int full_hand_size;	/* the size of the hand, when it's full */
+	int hand_size;		/* the current size of the hand */
 	card_t *cards;		/* must be allocated; memory leaks will be
 				   rampant! */
 } hand_t;
