@@ -52,6 +52,12 @@ static char* _ggzcore_room_events[] = {
 	"GGZ_ROOM_ENTER",
 	"GGZ_ROOM_LEAVE",
 	"GGZ_TABLE_UPDATE",
+	"GGZ_TABLE_LAUNCHED",
+	"GGZ_TABLE_LAUNCH_FAIL",
+	"GGZ_TABLE_JOINED",
+	"GGZ_TABLE_JOIN_FAIL",
+	"GGZ_TABLE_LEFT",
+	"GGZ_TABLE_LEAVE_FAIL",
 	"GGZ_TABLE_DATA"
 };
 
@@ -711,6 +717,93 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room, GGZChatOp op, char *name,
 }
 
 
+void _ggzcore_room_set_table_launch_status(struct _GGZRoom *room, int status)
+{
+	_ggzcore_server_set_table_launch_status(room->server, status);
+	
+	switch (status) {
+	case 0:
+		_ggzcore_room_event(room, GGZ_TABLE_LAUNCHED, NULL);
+		break;
+
+	case E_NOT_IN_ROOM:
+		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
+				    "Not in a room");
+		break;
+
+	case E_LAUNCH_FAIL:
+		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
+				    "Launch failed on server");
+		break;
+
+	case E_AT_TABLE:
+		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
+				    "Already at a table");
+		break;
+		
+	case E_IN_TRANSIT:
+		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
+				    "Already joining/leaving a table");
+		break;
+		
+	case E_BAD_OPTIONS:
+		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
+				    "Bad option");
+		break;
+	}
+}
+					   
+
+void _ggzcore_room_set_table_join_status(struct _GGZRoom *room, int status)
+{
+	_ggzcore_server_set_table_join_status(room->server, status);
+	
+	switch (status) {
+	case 0:
+		_ggzcore_room_event(room, GGZ_TABLE_JOINED, NULL);
+		break;
+
+	case E_NOT_IN_ROOM:
+		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
+				    "Not in a room");
+		break;
+
+	case E_AT_TABLE:
+		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
+				    "Already at a table");
+		break;
+		
+	case E_IN_TRANSIT:
+		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
+				    "Already joining/leaving a table");
+		break;
+		
+	case E_BAD_OPTIONS:
+		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
+				    "Bad option");
+		break;
+	}
+}
+
+					 
+void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room, int status)
+{
+	_ggzcore_server_set_table_leave_status(room->server, status);
+
+	switch (status) {
+	case 0:
+		_ggzcore_room_event(room, GGZ_TABLE_LEFT, NULL);
+		break;
+
+	case E_NOT_IN_ROOM:
+		_ggzcore_room_event(room, GGZ_TABLE_LEAVE_FAIL,
+				    "Not at a table");
+		break;
+	}
+
+}
+					  
+
 int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
 {
 	struct _GGZNet *net;
@@ -733,6 +826,9 @@ int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
 			if (status < 0)
 				break;
 		}
+
+	if (status == 0)
+		_ggzcore_server_set_table_launching(room->server);
 	
 	return status;
 }
@@ -740,19 +836,31 @@ int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
 
 int _ggzcore_room_join_table(struct _GGZRoom *room, const unsigned int num)
 {
+	int status;
 	struct _GGZNet *net;
 
 	net = _ggzcore_server_get_net(room->server);
-	return _ggzcore_net_send_table_join(net, num);
+	status = _ggzcore_net_send_table_join(net, num);
+
+	if (status == 0)
+		_ggzcore_server_set_table_joining(room->server);
+	
+	return status;
 }
 
 
 int _ggzcore_room_leave_table(struct _GGZRoom *room)
 {
+	int status;
 	struct _GGZNet *net;
 
 	net = _ggzcore_server_get_net(room->server);
-	return _ggzcore_net_send_table_leave(net);
+	status = _ggzcore_net_send_table_leave(net);
+
+	if (status == 0)
+		_ggzcore_server_set_table_leaving(room->server);
+	
+	return status;
 }
 
 

@@ -70,6 +70,9 @@ void _ggzcore_server_set_login_status(struct _GGZServer *server,
 				      int status);
 void _ggzcore_server_set_room_join_status(struct _GGZServer *server, 
 					  int status);
+void _ggzcore_server_set_table_launching(struct _GGZServer *server);
+void _ggzcore_server_set_table_joining(struct _GGZServer *server);
+void _ggzcore_server_set_table_leaving(struct _GGZServer *server);
 void _ggzcore_server_set_table_launch_status(struct _GGZServer *server, 
 					     int status);
 void _ggzcore_server_set_table_join_status(struct _GGZServer *server, 

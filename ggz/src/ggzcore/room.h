@@ -117,6 +117,14 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room,
 			    char *name,
 			    char *msg);
 
+/* Functions for notifying GGZRoom */
+void _ggzcore_room_set_table_launch_status(struct _GGZRoom *room, 
+					   int status);
+void _ggzcore_room_set_table_join_status(struct _GGZRoom *room, 
+					 int status);
+void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room, 
+					  int status);
+
 /* Functions for invoking GGZRoom "actions" */
 
 int _ggzcore_room_load_playerlist(struct _GGZRoom *room);

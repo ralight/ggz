@@ -892,20 +892,27 @@ static int _ggzcore_net_read_rsp_chat(struct _GGZNet *net, char *status)
 static int _ggzcore_net_read_chat(struct _GGZNet *net, GGZChatOp *op, char **name, 
 			   char **msg)
 {
+	int status = 0;
 	unsigned char opcode;
 
 	if (es_read_char(net->fd, &opcode) < 0
 	    || es_read_string_alloc(net->fd, name) < 0)
-		return -1;
-	
-	ggzcore_debug(GGZ_DBG_NET, "Chat opcode = %d", opcode);	
+		status = -1;
+
 	*op = opcode;
 
-	if (opcode & GGZ_CHAT_M_MESSAGE) 
-		if (es_read_string_alloc(net->fd, msg) < 0)
-			return -1;
+	if (status == 0) {
+		if (opcode & GGZ_CHAT_M_MESSAGE) 
+			if (es_read_string_alloc(net->fd, msg) < 0)
+				status = -1;
+	}
+	
+	if (status == 0)
+		ggzcore_debug(GGZ_DBG_NET, "Chat opcode = %d", opcode);	
+	else
+		_ggzcore_net_error(net, "Reading chat");
 
-	return 0;
+	return status;
 }
 
 
@@ -1204,25 +1211,19 @@ static void _ggzcore_net_handle_chat(struct _GGZNet *net)
 {
 	GGZChatOp op;
 	char *name = NULL, *msg = NULL;
-	int status;
 	struct _GGZRoom *room;
 	
-	status = _ggzcore_net_read_chat(net, &op, &name, &msg);
+	if (_ggzcore_net_read_chat(net, &op, &name, &msg) == 0) {
 
-	room = ggzcore_server_get_cur_room(net->server);
-
-	if (status < 0) {
-		_ggzcore_net_error(net, NULL);
-		return;
+		room = ggzcore_server_get_cur_room(net->server);
+		_ggzcore_room_add_chat(room, op, name, msg);
+	
+		if (name)
+			free(name);
+	
+		if (msg)
+			free(msg);
 	}
-	
-	_ggzcore_room_add_chat(room, op, name, msg);
-	
-	if (name)
-		free(name);
-	
-	if (msg)
-		free(msg);
 }
 
 
@@ -1473,58 +1474,36 @@ static void _ggzcore_net_handle_rsp_game(struct _GGZNet *net)
 
 static void _ggzcore_net_handle_table_launch(struct _GGZNet *net)
 {
-	int net_status;
-	char op_status;
+	char status;
+	struct _GGZRoom *room;
 
-	net_status = _ggzcore_net_read_table_launch(net, &op_status);
-
-	if (net_status < 0) {
-		_ggzcore_net_error(net, NULL);
-		return;
-	}
-	
-	switch (op_status) {
-	case 0: /* Do nothing if successful */
-		break; 
+	if (_ggzcore_net_read_table_launch(net, &status) == 0) {
+		room = _ggzcore_server_get_cur_room(net->server);
+		_ggzcore_room_set_table_launch_status(room, status);
 	}
 }
 
 
 static void _ggzcore_net_handle_table_join(struct _GGZNet *net)
 {
-	int net_status;
-	char op_status;
+	char status;
+	struct _GGZRoom *room;
 
-	net_status = _ggzcore_net_read_table_join(net, &op_status);
-
-	if (net_status < 0) {
-		_ggzcore_net_error(net, NULL);
-		return;
-	}
-	
-	switch (op_status) {
-	case 0: /* Do nothing if successful */
-		break; 
+	if (_ggzcore_net_read_table_join(net, &status) == 0) {
+		room = _ggzcore_server_get_cur_room(net->server);
+		_ggzcore_room_set_table_join_status(room, status);
 	}
 }
 
 
 static void _ggzcore_net_handle_table_leave(struct _GGZNet *net)
 {
-	int net_status;
-	char op_status;
+	char status;
+	struct _GGZRoom *room;
 
-	net_status = _ggzcore_net_read_table_leave(net, &op_status);
-
-	if (net_status < 0) {
-		_ggzcore_net_error(net, NULL);
-		return;
-	}
-	
-	switch (op_status) {
-	case 0: 
-		_ggzcore_server_event(net->server, GGZ_TABLE_LEFT, NULL);
-		break; 
+	if (_ggzcore_net_read_table_leave(net, &status) == 0) {
+		room = _ggzcore_server_get_cur_room(net->server);
+		_ggzcore_room_set_table_leave_status(room, status);
 	}
 }
 

@@ -140,6 +140,7 @@ static struct _GGZTransition _joining_table_transitions[] = {
 
 static struct _GGZTransition _at_table_transitions[] = {
 	{GGZ_TRANS_LEAVE_TRY,    GGZ_STATE_LEAVING_TABLE},
+	{GGZ_TRANS_LEAVE_OK,     GGZ_STATE_IN_ROOM},
 	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
 	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}

@@ -54,11 +54,6 @@ static char* _ggzcore_server_events[] = {
 	"GGZ_NET_ERROR",
 	"GGZ_PROTOCOL_ERROR",
 	"GGZ_CHAT_FAIL",
-	"GGZ_TABLE_LAUNCHED",
-	"GGZ_TABLE_JOINED",
-	"GGZ_TABLE_LEFT",
-	"GGZ_LAUNCH_FAIL",
-	"GGZ_JOIN_FAIL",
 	"GGZ_STATE_CHANGE"
 };
 
@@ -669,21 +664,50 @@ void _ggzcore_server_set_room_join_status(struct _GGZServer *server, int status)
 	}
 }
 
-					  
+
+void _ggzcore_server_set_table_launching(struct _GGZServer *server)
+{
+	_ggzcore_server_change_state(server, GGZ_TRANS_LAUNCH_TRY);
+}
+
+
+void _ggzcore_server_set_table_joining(struct _GGZServer *server)
+{
+	_ggzcore_server_change_state(server, GGZ_TRANS_JOIN_TRY);
+}
+
+
+void _ggzcore_server_set_table_leaving(struct _GGZServer *server)
+{
+	_ggzcore_server_change_state(server, GGZ_TRANS_LEAVE_TRY);
+}
+
+
 void _ggzcore_server_set_table_launch_status(struct _GGZServer *server, int status)
 {
-
+	if (status == 0)
+		_ggzcore_server_change_state(server, GGZ_TRANS_LAUNCH_OK);
+	else
+		_ggzcore_server_change_state(server, GGZ_TRANS_LAUNCH_FAIL);
 }
 
 					     
 void _ggzcore_server_set_table_join_status(struct _GGZServer *server, int status)
 {
+	if (status == 0)
+		_ggzcore_server_change_state(server, GGZ_TRANS_JOIN_OK);
+	else
+		_ggzcore_server_change_state(server, GGZ_TRANS_JOIN_FAIL);
 
 }					   
 
 
 void _ggzcore_server_set_table_leave_status(struct _GGZServer *server, int status)
 {
+	if (status == 0)
+		_ggzcore_server_change_state(server, GGZ_TRANS_LEAVE_OK);
+	else
+		_ggzcore_server_change_state(server, GGZ_TRANS_LEAVE_FAIL);
 
 }
 
