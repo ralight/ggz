@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: numberlist.c 4507 2002-09-11 03:37:21Z jdorje $
+ * $Id: numberlist.c 4547 2002-09-13 16:11:40Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -30,6 +30,7 @@
 #  include "config.h"
 #endif
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,10 +57,16 @@ GGZNumberList ggz_numberlist_read(char* text)
 
 	do {
 		char *str;
-		next = strchr(this, ' ');
 
-		if (next)
-		  *next = '\0';
+		while (isspace(*this)) this++;
+		if (*this == '\0') break;
+
+		next = this + 1;
+		while (*next != '\0' && !isspace(*next)) next++;
+		if (*next == '\0')
+			next = NULL;
+		else
+			*next = '\0';
 
 		str = strstr(this, "..");
 		if (str) {
