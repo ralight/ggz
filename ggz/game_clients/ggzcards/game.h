@@ -25,6 +25,7 @@
 #include <assert.h>
 
 #include "hand.h"
+#include "protocol.h"
 
 #ifndef __GAME_H
 #define __GAME_H
@@ -56,37 +57,6 @@ extern void game_send_options(int option_cnt, int* options);
 extern void game_play_card(card_t card);
 extern void game_handle_table_click(char);
 extern void set_game_state(char);
-
-/* NOTE: the following protocol information is copied from server code */
-/* GGZCards protocol */
-/* Messages from server */
-/* TODO: numbers aren't finalized */
-#define WH_REQ_NEWGAME		0
-#define WH_MSG_NEWGAME		1
-#define WH_MSG_GAMEOVER		2
-#define WH_MSG_PLAYERS		3
-#define WH_MSG_HAND     	4
-#define WH_REQ_BID		5
-#define WH_REQ_PLAY     	6
-#define WH_MSG_BADPLAY 		7
-#define WH_MSG_PLAY		8
-#define WH_MSG_TRICK		9
-#define WH_MESSAGE_GLOBAL	10
-#define WH_MESSAGE_PLAYER	11
-#define WH_REQ_OPTIONS		12
-#define WH_MSG_TABLE		13
-
-/* Messages from client */
-#define WH_RSP_NEWGAME		0
-#define WH_RSP_OPTIONS		1
-#define WH_RSP_PLAY		2
-#define WH_RSP_BID		3
-#define WH_REQ_SYNC		4
-
-
-
-
-
 
 /* GGZCards client game states */
 #define WH_STATE_INIT	  	0 /* game hasn't started yet */

@@ -17,6 +17,7 @@ uninstall:
 ggzexecmod_PROGRAMS = ggz.ggzcards
 
 ggz_ggzcards_SOURCES = \
+	protocol.h \
 	main.c main.h \
 	support.c support.h \
 	dlg_main.c dlg_main.h \
