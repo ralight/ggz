@@ -46,6 +46,8 @@ void server_profiles_load(void)
 	guint i, count; 
 	char** profiles;
 	Server* server;
+	
+	servers = NULL;
 
 	ggzrc_read_list("Servers", "ProfileList", &count, &profiles);
 

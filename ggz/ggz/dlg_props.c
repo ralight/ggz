@@ -25,7 +25,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
-#include <stdio.h>
+#include <stdlib.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -56,6 +56,7 @@ void props_color_type_toggled (GtkButton *button, gpointer user_data);
 void props_fok_button_clicked (GtkButton *button, gpointer user_data);
 void props_fapply_button_clicked (GtkButton *button, gpointer user_data);
 void props_fcancel_button_clicked (GtkButton *button, gpointer user_data);
+void props_pro_name_changed (GtkWidget *widget, gpointer user_data);
 void on_profile_list_select_row (GtkWidget *widget, gint row, gint column,
 				 GdkEventButton *event, gpointer data);
 GtkWidget *create_fontselect (void);
@@ -66,6 +67,7 @@ void props_update()
 	GtkWidget *tmp;
 	GdkFont *font;
 	/* Servers Tab */
+	server_profiles_save();
 
 	/* Chat Tab */
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "chat_font");
@@ -123,21 +125,130 @@ void props_update()
 	ggzrc_write_string("UserInfo","Country",gtk_entry_get_text(GTK_ENTRY(tmp)));
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_comments");
 	ggzrc_write_string("UserInfo","Comments",gtk_editable_get_chars(GTK_EDITABLE(tmp), 0, -1));
+
+	/* Force save to file */
+	ggzrc_commit_changes();
 }
 
 void props_add_button_clicked (GtkButton *button, gpointer user_data)
 {
+	GtkWidget *tmp;
+	GList *items = NULL;
+	GList *item;
+	guint x;
+	gchar *entry[1];
+	Server *new_server;
 
+	new_server = g_malloc0(sizeof(Server));
+
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
+	new_server->name = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_server");
+	new_server->host = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_port");
+	new_server->port = atoi( gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_username");
+	new_server->login = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_password");
+	new_server->password = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "radiobutton3");
+	gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON(tmp), TRUE );
+	if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(tmp) ) )
+		new_server->type = 0;
+	else
+		new_server->type = 1;
+
+	server_list_add( new_server );
+
+	/* Reload profile list */
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "profile_list");
+	gtk_clist_clear( GTK_CLIST( tmp ) );
+
+	items = server_get_names();
+	if (items != NULL)
+	{
+		for(x = 0; x != g_list_length(items); x++)
+		{
+			item = g_list_nth( items, x );
+		        entry[0] = g_strdup_printf("%s",
+						   (char*)item->data);
+		        gtk_clist_append(GTK_CLIST(tmp), entry);
+        		g_free(entry[0]);
+		}
+	}
 }
 
 void props_modify_button_clicked (GtkButton *button, gpointer user_data)
 {
+	GtkWidget *tmp;
+	GList *items = NULL;
+	GList *item;
+	guint x;
+	gchar *entry[1];
+	Server *new_server;
 
+	new_server = g_malloc0(sizeof(Server));
+
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
+	new_server->name = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_server");
+	new_server->host = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_port");
+	new_server->port = atoi( gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_username");
+	new_server->login = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_password");
+	new_server->password = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
+	server_list_remove( gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+	server_list_add( new_server );
+
+	/* Reload profile list */
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "profile_list");
+	gtk_clist_clear( GTK_CLIST( tmp ) );
+
+	items = server_get_names();
+	if (items != NULL)
+	{
+		for(x = 0; x != g_list_length(items); x++)
+		{
+			item = g_list_nth( items, x );
+		        entry[0] = g_strdup_printf("%s",
+						   (char*)item->data);
+		        gtk_clist_append(GTK_CLIST(tmp), entry);
+        		g_free(entry[0]);
+		}
+	}
 }
 
 void props_delete_button_clicked (GtkButton *button, gpointer user_data)
 {
+	GtkWidget *tmp;
+	GList *items = NULL;
+	GList *item;
+	guint x;
+	gchar *entry[1];
 
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
+	server_list_remove( gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
+
+	/* Reload profile list */
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "profile_list");
+	gtk_clist_clear( GTK_CLIST( tmp ) );
+
+	items = server_get_names();
+	if (items != NULL)
+	{
+		for(x = 0; x != g_list_length(items); x++)
+		{
+			item = g_list_nth( items, x );
+		        entry[0] = g_strdup_printf("%s",
+						   (char*)item->data);
+		        gtk_clist_append(GTK_CLIST(tmp), entry);
+        		g_free(entry[0]);
+		}
+	}
 }
 
 void on_profile_list_select_row (GtkWidget *widget, gint row, gint column,
@@ -147,6 +258,13 @@ void on_profile_list_select_row (GtkWidget *widget, gint row, gint column,
 	char *profile_name;
 	Server *profile;
 	char *port;
+
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button4");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button5");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button6");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 
 	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "profile_list");
 	gtk_clist_get_text( GTK_CLIST(tmp), row, column, &profile_name);
@@ -193,6 +311,58 @@ void on_profile_list_select_row (GtkWidget *widget, gint row, gint column,
 	}
 }
 
+void props_pro_name_changed (GtkWidget *widget, gpointer user_data)
+{
+	GtkWidget *tmp;
+	GList *items = NULL;
+	GList *item;
+	gchar *entry;
+	gint x;
+	
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button4");
+	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+	items = server_get_names();
+	if (items != NULL)
+	{
+		for(x = 0; x != g_list_length(items); x++)
+		{
+			item = g_list_nth( items, x );
+		        entry = g_strdup_printf("%s",
+						   (char*)item->data);
+			tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
+			if( !strcmp(entry, gtk_entry_get_text(GTK_ENTRY(tmp))) )
+			{
+				tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button4");
+				gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+				tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button5");
+				gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+				tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button6");
+				gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+				break;
+			}else{
+				tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button4");
+				gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+				tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button5");
+				gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+				tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button6");
+				gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			}
+        		g_free(entry);
+		}
+	}
+
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
+	if( !strcmp("", gtk_entry_get_text(GTK_ENTRY(tmp))) )
+	{
+		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button4");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button5");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button6");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	}
+}
+
 void props_Font_button_clicked (GtkButton *button, gpointer user_data)
 {
 	if( dlg_props_font == NULL )
@@ -234,6 +404,11 @@ void props_cancel_button_clicked (GtkButton *button, gpointer user_data)
 {
 	/* Close dialog and don't save any changes */
 	GtkWidget *tmp;
+
+	/* Reload profiles to what they were before
+	 * we messed with them
+	 */
+	server_profiles_load();
 
 	/* Close font selector if open */
 	if( dlg_props_font != NULL )
@@ -282,6 +457,9 @@ void dlg_props_realize (GtkWidget *widget, gpointer user_data)
 	gchar *entry[1];
 
 	/* Servers Tab */
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "profile_list");
+	gtk_clist_clear( GTK_CLIST( tmp ) );
+
 	items = server_get_names();
 	if (items != NULL)
 	{
@@ -295,6 +473,14 @@ void dlg_props_realize (GtkWidget *widget, gpointer user_data)
         		g_free(entry[0]);
 		}
 	}
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button4");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button5");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button6");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+
+
 
 	/* Chat Tab */
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "chat_font");
@@ -380,6 +566,11 @@ void props_fcancel_button_clicked (GtkButton *button, gpointer user_data)
 	gtk_widget_destroy(dlg_props_font);
 	dlg_props_font = NULL;
 }
+
+
+/*
+ * DO NOT EDIT THIS FILE - it is generated by Glade.
+ */
 
 
 
@@ -477,7 +668,7 @@ create_dlg_props (void)
 
   dlg_props = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_props), "dlg_props", dlg_props);
-  gtk_widget_set_usize (dlg_props, 550, 350);
+  gtk_widget_set_usize (dlg_props, 600, 350);
   gtk_window_set_title (GTK_WINDOW (dlg_props), _("Properties"));
   gtk_window_set_policy (GTK_WINDOW (dlg_props), FALSE, FALSE, FALSE);
 
@@ -546,6 +737,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button4);
   gtk_container_add (GTK_CONTAINER (vbuttonbox1), button4);
+  gtk_widget_set_usize (button4, 44, -2);
   GTK_WIDGET_SET_FLAGS (button4, GTK_CAN_DEFAULT);
 
   button5 = gtk_button_new_with_label (_("Modify"));
@@ -1164,6 +1356,9 @@ create_dlg_props (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (button6), "clicked",
                       GTK_SIGNAL_FUNC (props_delete_button_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (pro_name), "changed",
+                      GTK_SIGNAL_FUNC (props_pro_name_changed),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (Font_button), "clicked",
                       GTK_SIGNAL_FUNC (props_Font_button_clicked),
