@@ -1,4 +1,4 @@
-/* $Id: common.h 2918 2001-12-17 10:11:39Z jdorje $ */
+/* $Id: common.h 2931 2001-12-18 07:27:02Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -167,8 +167,9 @@ extern void table_alert_badplay(char *err_msg);
 /** Called when we're informed of a play.  The hand itself has already
  *  been updated; the frontend should redraw it and perhaps draw animation.
  *  @param player The player whose hand was played from.
- *  @param card The card that was played. */
-extern void table_alert_play(int player, card_t card);
+ *  @param card The card that was played.
+ *  @param pos The (former) position of the card. */
+extern void table_alert_play(int player, card_t card, int pos);
 
 /** Called when we're informaed of the table cards.  The information
  *  itself resides in the player structures; all the frontend has to

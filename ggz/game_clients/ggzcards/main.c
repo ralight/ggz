@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2913 2001-12-17 03:22:24Z jdorje $
+ * $Id: main.c 2931 2001-12-18 07:27:02Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -125,8 +125,9 @@ void table_send_newgame(void)
 void table_get_play(int hand)
 {
 #ifdef ANIMATION
-	if (ggzcards.state == STATE_ANIM)
+	if (animating)
 		table_animation_zip(TRUE);
+	assert(!animating);
 #endif /* ANIMATION */
 
 	if (hand == 0)
@@ -478,15 +479,16 @@ void table_alert_badplay(char *err_msg)
 	sleep(1);		/* just a delay? */
 }
 
-void table_alert_play(int player, card_t card)
+void table_alert_play(int player, card_t card, int pos)
 {
 #ifdef ANIMATION
-	if (ggzcards.state == STATE_ANIM)
+	if (animating)
 		table_animation_zip(TRUE);
+	assert(!animating);
 #endif /* ANIMATION */
 
 	table_display_hand(player);
-	table_play_card(player, card);
+	table_play_card(player, card, pos);
 }
 
 
@@ -501,8 +503,9 @@ void table_alert_trick(int player)
 	char *t_str;
 
 #ifdef ANIMATION
-	if (ggzcards.state == STATE_ANIM)
+	if (animating)
 		table_animation_zip(TRUE);
+	assert(!animating);
 #endif /* ANIMATION */
 
 	t_str = g_strdup_printf(_("%s won the trick"),

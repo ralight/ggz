@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2929 2001-12-18 04:06:09Z jdorje $
+ * $Id: common.c 2931 2001-12-18 07:27:02Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -425,6 +425,9 @@ static int handle_msg_hand(void)
 		if (read_card(game_internal.fd, &hand->card[i]) < 0)
 			return -1;
 
+	ggz_debug("core", "Received hand message for player %d; %d cards.",
+		  player, hand->hand_size);
+
 	/* Finally, show the hand. */
 	table_display_hand(player);
 
@@ -598,7 +601,7 @@ static int handle_msg_play(void)
 	hand->hand_size--;
 
 	/* Update the graphics */
-	table_alert_play(p, card);
+	table_alert_play(p, card, tc);
 
 	return 0;
 }

@@ -1,4 +1,4 @@
-/* $Id: layout.c 2866 2001-12-10 22:07:26Z jdorje $ */
+/* $Id: layout.c 2931 2001-12-18 07:27:02Z jdorje $ */
 /* 
  * File: layout.c
  * Author: Jason Short, Rich Gade
@@ -299,6 +299,16 @@ void get_inner_card_area_pos(int p, int *x, int *y)
 	get_card_box_pos(p, x, y);
 	*x += XWIDTH;
 	*y += XWIDTH;
+}
+
+void get_card_pos(int p, int card_num, int *x, int *y)
+{
+	int x0, y0;
+	float w, h;
+	get_inner_card_area_pos(p, &x0, &y0);
+	get_card_offset(p, &w, &h);
+	*x = x0 + (((float) card_num * w) + 0.5);
+	*y = y0 + (((float) card_num * h) + 0.5);
 }
 
 void get_card_offset(int p, float *w, float *h)

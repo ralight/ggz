@@ -1,4 +1,4 @@
-/* $Id: layout.h 2860 2001-12-10 17:17:29Z jdorje $ */
+/* $Id: layout.h 2931 2001-12-18 07:27:02Z jdorje $ */
 /* 
  * File: layout.h
  * Author: Jason Short, Rich Gade
@@ -59,6 +59,7 @@ void get_full_card_area(int p, int *x, int *y,	/* the (x, y) position of the
 			int *xo, int *yo	/* the x and y offsets for
 						   "selected" cards */ );
 void get_inner_card_area_pos(int p, int *x, int *y);
+void get_card_pos(int p, int card_num, int *x, int *y);
 
 void get_card_offset(int p, float *w, float *h);
 void get_card_size(int orientation, int *w, int *h);

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2871 2001-12-11 00:05:03Z jdorje $
+ * $Id: table.c 2931 2001-12-18 07:27:02Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -88,13 +88,13 @@ static struct {
 #endif /* ANIMATION */
 
 static void table_card_clicked(int);
-static void table_card_play(int p, int card);
+static void table_card_play(int p, int card_num, card_t card);
 
 static void table_show_card(int, card_t);
 
 #ifdef ANIMATION
 static gint table_animation_callback(gpointer);
-static void table_animation_trigger(card_t, int, int, int, int);
+static void table_animation_trigger(int player, card_t card, int card_num);
 #endif /* ANIMATION */
 
 static void table_show_table(int x, int y, int w, int h)
@@ -388,8 +388,9 @@ void table_redraw(void)
 
 #ifdef ANIMATION
 	/* If there's an animation in progress, zip it */
-	if (ggzcards.state == STATE_ANIM)
+	if (animating)
 		table_animation_zip(FALSE);
+	assert(!animating);
 #endif /* ANIMATION */
 
 	/* Redisplay any cards on table and in hands */
@@ -433,7 +434,7 @@ void table_handle_click_event(GdkEventButton * event)
 	if (ggzcards.state != STATE_PLAY)
 		return;
 
-	ggz_debug("table", "table_handle_click_event: " "click at %d %d.",
+	ggz_debug("table", "table_handle_click_event: " "click at %f %f.",
 		  event->x, event->y);
 
 	/* This gets all of the layout information from the layout engine.
@@ -476,29 +477,30 @@ void table_handle_click_event(GdkEventButton * event)
 
 /* Handle a card that is clicked by either popping it forward or playing it
    if it is already selected. */
-static void table_card_clicked(int card)
+static void table_card_clicked(int card_num)
 {
 	int p = ggzcards.play_hand;
 
-	ggz_debug("table", "table_card_clicked: Card %d clicked.", card);
+	ggz_debug("table", "table_card_clicked: Card %d clicked.", card_num);
 
-	if (card == selected_card) {
+	if (card_num == selected_card) {
+		card_t card = ggzcards.players[p].hand.card[card_num];
 		/* If you click on the already selected card, it gets played. 
 		 */
 		selected_card = -1;
 
 		/* Start the graphic animation */
-		table_card_play(p, card);
+		table_card_play(p, card_num, card);
 
 		/* We don't remove the card from our hand until we have
 		   validation that it's been played. Graphically, the
 		   table_card is skipped over when drawing the hand. */
 
 		/* Call the game function to notify server of play */
-		game_play_card(ggzcards.players[p].hand.card[card]);
+		game_play_card(card);
 	} else {
 		/* Pop the card forward and select it */
-		selected_card = card;
+		selected_card = card_num;
 		table_display_hand(p);
 	}
 }
@@ -581,9 +583,11 @@ void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image)
 /* Move the selected card out toward the playing area.  We don't actually put
    it *on* the table until we hear confirmation from the server that the play
    is valid. */
-static void table_card_play(int p, int card)
+static void table_card_play(int p, int card_num, card_t card)
 {
-	ggzcards.players[p].table_card = ggzcards.players[p].hand.card[card];
+	ggz_debug("table", "table_card_play(%d, %d) called.", p, card_num);
+
+	ggzcards.players[p].table_card = card;
 
 	/* Draw the cards, eliminating the card in play */
 	table_display_hand(p);
@@ -595,37 +599,45 @@ static void table_card_play(int p, int card)
 
 #ifdef ANIMATION
 	/* Setup and trigger the card animation */
-	table_animation_trigger(ggzcards.players[p].hand.card[card], x, y,
-				199, 242);
+	table_animation_trigger(p, card, card_num);
 #endif /* ANIMATION */
 }
 
 
 #ifdef ANIMATION
 /* table_animation_trigger() Function to setup and trigger a card animation */
-static void table_animation_trigger(card_t card, int x1, int y1, int x2,
-				    int y2)
+static void table_animation_trigger(int player, card_t card, int card_num)
 {
+	int start_x, start_y;
+	int end_x, end_y;
+
+	get_card_pos(player, card_num, &start_x, &start_y);
+	get_tablecard_pos(player, &end_x, &end_y);
+
+	ggz_debug("main",
+		  "Setting up animation for player %d from (%d, %d) to (%d, %d).",
+		  player, start_x, start_y, end_x, end_y);
+
 #define FRAMES		15
 #define DURATION	500	/* In milliseconds */
 
 	/* Store all our info */
 	anim.card = card;
 	get_card_coordinates(card, 0, &anim.card_x, &anim.card_y);
-	anim.cur_x = x1;
-	anim.cur_y = y1;
-	anim.dest_x = x2;
-	anim.dest_y = y2;
+	anim.cur_x = start_x;
+	anim.cur_y = start_y;
+	anim.dest_x = end_x;
+	anim.dest_y = end_y;
 
 	/* This sets up 15 frames of animation */
-	anim.step_x = (x1 - x2) / (float) FRAMES;
-	anim.step_y = (y1 - y2) / (float) FRAMES;
+	anim.step_x = (start_x - end_x) / (float) FRAMES;
+	anim.step_y = (start_y - end_y) / (float) FRAMES;
 
 	/* This sets up our timeout callback */
 	anim.cb_tag = gtk_timeout_add(DURATION / FRAMES,
 				      table_animation_callback, NULL);
 
-	set_game_state(STATE_ANIM);
+	animating = TRUE;
 }
 
 
@@ -644,13 +656,6 @@ gint table_animation_callback(gpointer ignored)
 	if (abs(new_y - anim.dest_y) < 2)
 		new_y = anim.dest_y;
 
-	/* Draw our new card position */
-	gdk_draw_pixmap(table_buf,
-			table_style->fg_gc[GTK_WIDGET_STATE(table)],
-			card_fronts[0],
-			anim.card_x, anim.card_y,
-			new_x, new_y, CARDWIDTH, CARDHEIGHT);
-
 	/* And refresh the on-screen image */
 	if (new_x < anim.cur_x)
 		ref_x = new_x;
@@ -660,9 +665,16 @@ gint table_animation_callback(gpointer ignored)
 		ref_y = new_y;
 	else
 		ref_y = anim.cur_y;
-	table_show_table(ref_x, ref, y,
+	table_show_table(ref_x, ref_y,
 			 CARDWIDTH + abs(anim.step_x) + 2,
 			 CARDHEIGHT + abs(anim.step_y) + 2);
+
+	/* Draw our new card position */
+	gdk_draw_pixmap(table->window,
+			table_style->fg_gc[GTK_WIDGET_STATE(table)],
+			card_fronts[0],
+			anim.card_x, anim.card_y,
+			new_x, new_y, CARDWIDTH, CARDHEIGHT);
 
 	/* Update our information for next time */
 	anim.cur_x = new_x;
@@ -670,7 +682,7 @@ gint table_animation_callback(gpointer ignored)
 
 	/* If we are there, stop the animation process */
 	if (new_x == anim.dest_x && new_y == anim.dest_y) {
-		set_game_state(STATE_WAIT);
+		animating = 0;
 		return FALSE;
 	}
 
@@ -682,10 +694,12 @@ gint table_animation_callback(gpointer ignored)
 /* table_animation_abort() Exposed function to abort the animation process */
 void table_animation_abort(void)
 {
+	ggz_debug("table", "Aborting animation.");
+
 	/* First, kill off the animation callback */
-	if (ggzcards.state == STATE_ANIM) {
+	if (animating) {
 		gtk_timeout_remove(anim.cb_tag);
-		set_game_state(STATE_WAIT);
+		animating = 0;
 	}
 
 	/* The caller is assumed to have restored the card to the hand */
@@ -699,9 +713,9 @@ void table_animation_abort(void)
 void table_animation_zip(gboolean restore)
 {
 	/* First, kill off the animation callback */
-	if (ggzcards.state == STATE_ANIM) {
+	if (animating) {
 		gtk_timeout_remove(anim.cb_tag);
-		set_game_state(STATE_WAIT);
+		animating = 0;
 	}
 
 	/* And move the card to it's final resting place */
@@ -711,19 +725,6 @@ void table_animation_zip(gboolean restore)
 			anim.card_x, anim.card_y,
 			anim.dest_x, anim.dest_y, CARDWIDTH, CARDHEIGHT);
 	table_show_table(anim.dest_x, anim.dest_y, CARDWIDTH, CARDHEIGHT);
-}
-
-/* table_animation() Exposed function to setup an animation */
-void table_animation(int p, card_t card)
-{
-	int pos[4][4] = { {0, 0, 0, 0},
-	{0, 146, 120, 186},
-	{159, 0, 199, 130},
-	{get_table_width() - CARDWIDTH, 226, 280, 186}
-	};
-
-	table_animation_trigger(card, pos[p][0], pos[p][1], pos[p][2],
-				pos[p][3]);
 }
 #endif /* ANIMATION */
 
@@ -787,10 +788,10 @@ void table_display_all_hands(void)
 }
 
 /* Called when a player plays a card on the table. */
-void table_play_card(int p, card_t card)
+void table_play_card(int p, card_t card, int pos)
 {
 #ifdef ANIMATION
-	table_animation(p, card);
+	table_animation_trigger(p, card, pos);
 #else
 	table_show_card(p, card);
 #endif

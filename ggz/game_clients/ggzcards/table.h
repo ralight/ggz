@@ -1,4 +1,4 @@
-/* $Id: table.h 2871 2001-12-11 00:05:03Z jdorje $ */
+/* $Id: table.h 2931 2001-12-18 07:27:02Z jdorje $ */
 /* 
  * File: table.h
  * Author: Rich Gade
@@ -43,13 +43,12 @@ void table_set_trump(void);
 #ifdef ANIMATION
 void table_animation_abort(void);
 void table_animation_zip(gboolean);
-void table_animation(int, card_t);
 #endif /* ANIMATION */
 void table_clear_table(void);
 void table_show_cards();
 void table_redraw(void);
 
-void table_play_card(int, card_t);
+void table_play_card(int p, card_t card, int pos);
 
 void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image);
 

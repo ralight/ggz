@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2843 2001-12-10 02:19:53Z jdorje $
+ * $Id: game.c 2931 2001-12-18 07:27:02Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -37,6 +37,10 @@
 #include "main.h"
 #include "game.h"
 #include "easysock.h"
+
+#ifdef ANIMATION
+int animating = 0;
+#endif
 
 
 void game_send_bid(int bid)
