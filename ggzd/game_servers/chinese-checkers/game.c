@@ -445,9 +445,9 @@ static int homes[6][6] = {
 	{ 0, -1, -1, -1, -1, -1 },	/* One player game (just filler) */
 	{ 0,  3, -1, -1, -1, -1 },
 	{ 0,  2,  4, -1, -1, -1 },
-	{ 0,  3,  1,  4, -1, -1 },
+	{ 0,  1,  3,  4, -1, -1 },
 	{ 0,  1,  2,  3,  4, -1 },	/* Five player game also filler */
-	{ 0,  3,  1,  4,  2,  5 }
+	{ 0,  1,  2,  3,  4,  5 }
 };
 
 static void game_setup_board(void)

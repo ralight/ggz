@@ -36,6 +36,7 @@
 #include "easysock.h"
 #include "protocol.h"
 #include "ggz.h"
+#include "display.h"
 
 
 static int get_seat(void);
@@ -158,6 +159,9 @@ static int get_move_response(void)
 	if(es_read_char(game.fd, &status) < 0)
 		return -1;
 
+	if(status == 0)
+		display_statusbar("Move accepted, waiting for opponents");
+
 	return status;
 }
 
@@ -165,9 +169,18 @@ static int get_move_response(void)
 static int get_gameover_msg(void)
 {
 	char winner;
+	char *msg;
 
 	if(es_read_char(game.fd, &winner) < 0)
 		return -1;
+
+	if(winner == game.me)
+		msg = "Game over!  You won!";
+	else
+		msg = g_strdup_printf("Game over!  %s won!",game.names[winner]);
+	display_statusbar(msg);
+	if(winner != game.me)
+		g_free(msg);
 
 	return 0;
 }

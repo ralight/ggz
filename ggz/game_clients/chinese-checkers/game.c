@@ -120,16 +120,19 @@ static int homes[6][6] = {
         { 0, -1, -1, -1, -1, -1 },      /* One player game (just filler) */
         { 0,  3, -1, -1, -1, -1 },
         { 0,  2,  4, -1, -1, -1 },
-        { 0,  3,  1,  4, -1, -1 },
+        { 0,  1,  3,  4, -1, -1 },
         { 0,  1,  2,  3,  4, -1 },      /* Five player game also filler */
-        { 0,  3,  1,  4,  2,  5 }
+        { 0,  1,  2,  3,  4,  5 }
 };
+
+static char *color[6] = { "red", "blue", "green", "yellow", "cyan", "purple" };
 
 
 /* Clear the game board to blanks */
 static void game_zap_board(void)
 {
 	int i, j;
+	char *msg;
 
 	for(i=0; i<17; i++)
 		for(j=0; j<25; j++)
@@ -139,6 +142,11 @@ static void game_zap_board(void)
 				game.board[i][j] = 0;
 
 	display_refresh_board();
+
+	msg = g_strdup_printf("You are playing the %s marbles",
+			      color[homes[game.players][game.me]]);
+	display_statusbar(msg);
+	g_free(msg);
 }
 
 
@@ -197,6 +205,7 @@ void game_handle_click_event(int r, int c)
 	/* Is it my turn ? */
 	if(!game.my_turn) {
 		gdk_beep();
+		display_statusbar("Wait for your turn...");
 		return;
 	}
 
@@ -206,6 +215,7 @@ void game_handle_click_event(int r, int c)
 			ro = r;
 			co = c;
 			click_state++;
+			display_statusbar("Click where you want to move the marble.");
 			return;
 		}
 		else {
@@ -218,11 +228,13 @@ void game_handle_click_event(int r, int c)
 	if(game.board[r][c] == 0)
 		if(game_make_move(ro, co, r, c)) {
 			click_state = 0;
+			display_statusbar("Sending move to GGZ server...");
 			return;
 		}
 
 	/* Bad dest */
 	gdk_beep();
+	display_statusbar("Bad move, click a marble to move.");
 	click_state = 0;
 	return;
 }
@@ -367,6 +379,8 @@ static int game_find_path(int from, int ro, int co, int rd, int cd)
 void game_notify_our_turn(void)
 {
 	game.my_turn = 1;
+
+	display_statusbar("Your move, click a marble to move");
 }
 
 

@@ -42,16 +42,18 @@
 #include "purple.xpm"
 
 
-GtkWidget *dlg_main;
-GtkWidget *draw_area = NULL;
-GtkStyle *draw_area_style;
-GdkPixmap *board_buf;
-GdkPixmap *hole_pixmap;
-GdkBitmap *hole_mask;
-GdkGC *hole_gc;
-GdkPixmap *marble_pixmap[6];
-GdkBitmap *marble_mask[6];
-GdkGC *marble_gc[6];
+static GtkWidget *dlg_main;
+static GtkWidget *draw_area = NULL;
+static GtkWidget *statusbar;
+static guint sb_context;
+static GtkStyle *draw_area_style;
+static GdkPixmap *board_buf;
+static GdkPixmap *hole_pixmap;
+static GdkBitmap *hole_mask;
+static GdkGC *hole_gc;
+static GdkPixmap *marble_pixmap[6];
+static GdkBitmap *marble_mask[6];
+static GdkGC *marble_gc[6];
 
 
 static void display_draw_holes(void);
@@ -64,9 +66,13 @@ void display_init(void)
 	dlg_main = create_dlg_main();
 	gtk_widget_show(dlg_main);
 
-	/* Get and store a pointer to our drawingarea */
+	/* Get and store a pointer to our drawingarea and statusbar */
 	draw_area = gtk_object_get_data(GTK_OBJECT(dlg_main), "draw_area");
 	draw_area_style = gtk_widget_get_style(draw_area);
+	statusbar = gtk_object_get_data(GTK_OBJECT(dlg_main), "statusbar1");
+	sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar),
+						  "Game Messages");
+	display_statusbar("Chinese Checkers for GGZ, version 0.0.1");
 
 	/* Create a pixmap buffer from our xpm */
 	board_buf = gdk_pixmap_create_from_xpm_d(draw_area->window, NULL,
@@ -240,4 +246,10 @@ void display_handle_click_event(GdkEventButton *event)
 	/*printf("[%d][%d]\n", row, col);*/
 
 	game_handle_click_event(row, col);
+}
+
+
+void display_statusbar(char *msg)
+{
+	gtk_statusbar_push(GTK_STATUSBAR(statusbar), sb_context, msg);
 }
