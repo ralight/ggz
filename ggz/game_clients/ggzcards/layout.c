@@ -1,3 +1,4 @@
+/* $Id: layout.c 2070 2001-07-23 00:03:11Z jdorje $ */
 /*
  * File: layout.c
  * Author: Jason Short, Rich Gade

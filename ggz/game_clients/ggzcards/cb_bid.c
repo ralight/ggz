@@ -1,3 +1,4 @@
+/* $Id: cb_bid.c 2070 2001-07-23 00:03:11Z jdorje $ */
 /*
  * File: cb_bid.c
  * Author: Rich Gade

@@ -1,3 +1,4 @@
+/* $Id: game.h 2070 2001-07-23 00:03:11Z jdorje $ */
 /*
  * File: game.h
  * Author: Rich Gade

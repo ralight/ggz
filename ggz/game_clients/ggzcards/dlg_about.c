@@ -1,3 +1,4 @@
+/* $Id: dlg_about.c 2070 2001-07-23 00:03:11Z jdorje $ */
 /*
  * File: dlg_about.c
  * Author: Rich Gade
