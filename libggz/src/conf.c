@@ -4,10 +4,11 @@
  * Project: GGZ Core Client Lib
  *          Modified from confio for use by server (rgade - 08/06/01)
  * Date: 11/27/00
+ * $Id: conf.c 3714 2002-03-28 20:42:04Z jdorje $
  *
  * Internal functions for handling configuration files
  *
- * Copyright (C) 2000, 2001 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +36,8 @@
 #include <fcntl.h>
 
 #include "ggz.h"
-#include "msg.h"
+
+#include "misc.h" /* Internal data/functions */
 
 
 /* The majority of this code deals with maintaining a set of lists to

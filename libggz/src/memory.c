@@ -3,10 +3,11 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/15/01
+ * $Id: memory.c 3714 2002-03-28 20:42:04Z jdorje $
  *
  * This is the code for handling memory allocation for ggzcore
  *
- * Copyright (C) 2001 Brent Hendricks.
+ * Copyright (C) 2001-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +31,8 @@
 #include <pthread.h>
 
 #include "ggz.h"
-#include "msg.h"
+
+#include "misc.h" /* Internal data/functions */
 
 
 /* This is used basically as a LIFO stack, on the basis that most malloc/free

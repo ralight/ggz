@@ -3,11 +3,11 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 2719 2001-11-10 04:32:36Z bmh $
+ * $Id: msg.c 3714 2002-03-28 20:42:04Z jdorje $
  *
  * Debug and error messages
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,8 @@
 #include <unistd.h>
 
 #include "ggz.h"
-#include "msg.h"
+
+#include "misc.h" /* Internal data/functions */
 
 /* Workhorse function for actually outputting messages */
 static void err_doit(const char *prefix, const char *fmt, va_list ap, char err);
