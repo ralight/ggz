@@ -474,6 +474,23 @@ client_room_clist_event			(GtkWidget	*widget,
 			return TRUE; 
 		}
 	}
+	if( event->type == GDK_2BUTTON_PRESS )
+	{
+		GdkEventButton *buttonevent = (GdkEventButton*)event;
+		/* Check the button which was pressed */
+		if(buttonevent->button == 1)
+		{
+			/* Double-Click, join roon */
+			tmp =  gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
+			gtk_clist_get_selection_info(GTK_CLIST(tmp), buttonevent->x, buttonevent->y,
+						     &row, &column);
+
+			ggzcore_event_enqueue(GGZ_USER_JOIN_ROOM, (void*)row, NULL); 
+
+			return TRUE; 
+		}
+	}
+
 	return FALSE;
 }
 
@@ -484,8 +501,6 @@ client_room_clist_select_row		(GtkCList       *clist,
                                          GdkEvent       *event,
                                          gpointer        data)
 {
-	ggzcore_event_enqueue(GGZ_USER_JOIN_ROOM, (void*)row, NULL); 
-	gtk_clist_unselect_row(GTK_CLIST(clist), row, column);
 }
 
 
