@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: movecheck.c 1120 2001-02-18 23:28:16Z bugg $
+ *  $Id: movecheck.c 1122 2001-02-18 23:36:09Z bugg $
  */
 
 #include <stdlib.h>
@@ -431,9 +431,9 @@ can_be_occupied(struct game *curgame, int f, int r, int pcol)
 			curgame->board[f][r] = EMPTY;
 			return rval;
 		}
+		curgame->board[af][ar] = tmp;
 	}
 
-	curgame->board[af][ar] = tmp;
 	curgame->board[f][r] = EMPTY;	
 	curgame->board[kf][kr] = EMPTY;
 
