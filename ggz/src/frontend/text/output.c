@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 4960 2002-10-19 23:13:09Z jdorje $
+ * $Id: output.c 5124 2002-10-30 23:04:23Z jdorje $
  *
  * Functions for display text/messages
  *
@@ -279,7 +279,7 @@ void output_status(void)
 	time_t now;		/* time */
 	char *currenttime;	/* String formatted time */
 	char displaytime[9];	/* What we display */
-	char *user = NULL, *host = NULL, *roomname = NULL;
+	const char *user = NULL, *host = NULL, *roomname = NULL;
 	char *currentstatus = NULL;
 	GGZRoom *room;
 
