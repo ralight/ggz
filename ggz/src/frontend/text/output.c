@@ -25,29 +25,61 @@
 
 
 #include <config.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/ioctl.h>
 #include "output.h"
 
-#include <stdio.h>
-
+static struct winsize window;
+static int tty_des;
 
 void output_banner(void)
 {
-	printf("\n");
+	fflush(NULL);
+	printf("\33[f\n");
 	printf("Welcome to the text-only GGZ client!\n");
-	printf("--Written by Brent Hendricks (C) 2000\n");
+	printf("--Written by Brent Hendricks & Justin Zaun  (C) 2000\n");
 	printf("\n");
+	fflush(NULL);
 }
-
 
 void output_prompt(void)
 {
 	fflush(NULL);
-	printf("command> ");
+	printf("\33[%d;0f\33[2KGGZ> ",window.ws_row-1);
 	fflush(NULL);
 }
 
-
-void output_chat(char* player, char* message)
+void output_chat(int type, char* player, char* message)
 {
-	printf("\n <%s> : %s\n", player, message);
+	if(type == 0)
+	{
+		printf("\33[%d;0f\33D<%s> : %s",window.ws_row-3, player, message);
+	} else if (type == 1) {
+		printf("\33[%d;0f\33D>%s< : %s",window.ws_row-3, player, message);
+	}
+	output_prompt();
+}
+
+void output_status(char* message)
+{
+	fflush(NULL);
+	printf("\33[%d;0f\33[K%s",window.ws_row-2, message);
+	fflush(NULL);
+}
+
+void output_init(void)
+{
+	fflush(NULL);
+	printf("\33[2J");
+	ioctl(tty_des, TIOCGWINSZ, &window);
+	printf("\33[0;%dr",window.ws_row-3);
+	fflush(NULL);
+}
+
+void output_shutdown(void)
+{
+	printf("\33[0;%dr",window.ws_row);
+	printf("\33[2J");
+	fflush(NULL);
 }

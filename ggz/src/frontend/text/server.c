@@ -31,11 +31,9 @@
 
 #include <stdio.h>
 
-
 void server_login_ok(GGZEventID id, void* event_data, void* user_data)
 {
-	printf("\nconnected\n");
-
+	output_status("connected");
 	output_prompt();
 }
 
@@ -47,14 +45,14 @@ void server_chat_msg(GGZEventID id, void* event_data, void* user_data)
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
 
-	output_chat(player, message);
-
+	output_chat(0, player, message);
+	output_status("Chat");
 	output_prompt();
 }
 
 void server_login_fail(GGZEventID id, void* event_data, void* user_data)
 {
-	printf("\nConnection failed: %s\n", (char*)event_data);
+	output_status("Connection failed");
 
 	output_prompt();
 }
@@ -62,7 +60,7 @@ void server_login_fail(GGZEventID id, void* event_data, void* user_data)
 
 void server_logout(GGZEventID id, void* event_data, void* user_data)
 {
-	printf("\ndisconnected\n");
+	output_status("disconnected");
 
 	output_prompt();
 }

@@ -31,3 +31,4 @@ void server_login_fail(GGZEventID id, void* event_data, void* user_data);
 void server_chat_msg(GGZEventID id, void* event_data, void* user_data);
 
 void server_logout(GGZEventID id, void* event_data, void* user_data);
+

@@ -50,17 +50,17 @@ int input_command(short events)
 	char *buffer;
 	char *command;
 
-	printf("user input detected\n");
+	output_status("user input detected\n");
 	if (events & POLLIN) {
 		if (!fgets(line, sizeof(line)/sizeof(char), stdin))
 			return -1;
-			
+		
 		if (line[0] == command_prefix)
 		{
 			buffer = strtok(line, delim);
 			command = &buffer[1];;
 
-			printf("user command: %s\n", command);
+			output_status("user command entered");
 			if (strcmp(command, "connect") == 0) {
 				input_handle_connect((char*)line);
 			}
@@ -75,6 +75,7 @@ int input_command(short events)
 			}
 		} else {
 			/* Its a chat */
+			output_status("chat entered");
 			input_handle_chat(line);
 		}
 	}

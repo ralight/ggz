@@ -32,15 +32,27 @@
 #include <stdlib.h>
 #include <poll.h>
 #include <unistd.h>
+#include <signal.h>
 
 #define TIMEOUT 500
 
+/* Termination handler */
+RETSIGTYPE term_handle(int signum)
+{
+        ggzcore_event_process_all();
+        ggzcore_destroy();
+        output_shutdown();
+	exit(1);
+}
 
 int main(void)
 {
 	GGZOptions opt;
 	struct pollfd fd[1] = {{STDIN_FILENO, POLLIN, 0}};
 
+	output_init();
+	signal(SIGTERM, term_handle);
+	signal(SIGINT, term_handle);
 	output_banner();
 
 	/* Setup options and initialize ggzcore lib */
@@ -69,6 +81,8 @@ int main(void)
 
 	ggzcore_event_process_all();
 	ggzcore_destroy();
-	
+
+	output_shutdown();
+
 	return 0;
 }
