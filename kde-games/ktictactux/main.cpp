@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 
 	aboutData = new KAboutData("ktictactux",
 		I18N_NOOP("KTicTacTux"),
-		"0.0.6pre",
+		"0.0.6",
 		I18N_NOOP("This is a TicTacToe game for KDE."),
 		KAboutData::License_GPL,
 		"Copyright (C) 2001, 2002 Josef Spillner",

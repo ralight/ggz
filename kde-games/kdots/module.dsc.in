@@ -6,5 +6,6 @@ Frontend = kde
 Homepage = http://ggz.sourceforge.net/games/kdots/
 Name = Dots
 ProtocolEngine = Dots
-ProtocolVersion = 2
-Version = 0.0.5
+ProtocolVersion = 3
+Version = 0.0.6
+

@@ -2,11 +2,11 @@
 
 Summary: GGZ Games for KDE
 Name: ggz-kde-games
-Version: 0.0.5
+Version: 0.0.6
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz-kde-games-0.0.5.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz-kde-games-0.0.6.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: Rich Gade <rgade@users.sourceforge.net>
@@ -16,7 +16,7 @@ BuildRoot: /var/tmp/%{name}-buildroot
 The complete set of Gnu Gaming Zone games for the KDE user interface.
 Includes all of the following:
     KReversi		Tic-Tac-Tux		Connect the Dots
-    Krosswater		Keepalive		Koening
+    Krosswater		Keepalive		Koenig
     Muehle
 
 %prep

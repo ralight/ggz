@@ -6,6 +6,6 @@ Frontend = kde
 Homepage = http://ggz.sourceforge.net/games/muehle/
 Name = Muehle
 ProtocolEngine = Muehle
-ProtocolVersion = 1
-Version = 0.1
+ProtocolVersion = 2
+Version = 0.2
 

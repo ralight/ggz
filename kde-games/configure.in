@@ -4,7 +4,7 @@ dnl ===============================
 AC_INIT(acinclude.ggz)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
-AM_INIT_AUTOMAKE(ggz-kde-games, 0.0.6pre)
+AM_INIT_AUTOMAKE(ggz-kde-games, 0.0.6)
 AM_CONFIG_HEADER(config.h)
 
 dnl Check for Qt and KDE

@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 
 	about = new KAboutData("kdots",
 		I18N_NOOP("KDots"),
-		"0.0.5pre",
+		"0.0.6",
 		I18N_NOOP("Connect The Dots for KDE"),
 		KAboutData::License_GPL,
 		"Copyright (C) 2001, 2002 Josef Spillner",

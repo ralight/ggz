@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 
 	about = new KAboutData("Krosswater",
 		"krosswater",
-		"0.0.1",
+		"0.0.6",
 		I18N_NOOP("GGZ version of Cross The Water"),
 		KAboutData::License_GPL,
 		"(C) 2001, 2002 Josef Spillner",

@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 
 	about = new KAboutData("muehle",
 		I18N_NOOP("KDE Muehle Game"),
-		"0.1",
+		"0.2",
 		I18N_NOOP("Muehle game for KDE supporting multiple variants"),
 		KAboutData::License_GPL,
 		"Copyright (C) 2001, 2002 Josef Spillner",

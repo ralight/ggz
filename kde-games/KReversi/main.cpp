@@ -33,7 +33,7 @@
 
 #include "kreversi.h"
 
-static const char *REV_VERSION = I18N_NOOP("0.0.1");
+static const char *REV_VERSION = "0.0.2";
 
 static const char *description =
 	I18N_NOOP("KDE client for GGZ's Reversi game module");
