@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.h 2458 2001-09-12 07:39:48Z jdorje $
+ * $Id: aicommon.h 2832 2001-12-09 21:41:07Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -28,8 +28,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "../ai.h"
-#include "../types.h"
+#include "ai.h"
+#include "types.h"
 
 /* FIXME: Right now this code assumes 4 players and 4 suits. */
 

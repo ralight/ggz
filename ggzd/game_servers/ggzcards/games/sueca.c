@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 2733 2001-11-13 09:56:05Z jdorje $
+ * $Id: sueca.c 2832 2001-12-09 21:41:07Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein
  *
@@ -25,7 +25,7 @@
 
 #include <stdlib.h>
 
-#include "../common.h"
+#include "common.h"
 
 #include "sueca.h"
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 2823 2001-12-09 08:16:26Z jdorje $
+ * $Id: lapocha.c 2832 2001-12-09 21:41:07Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "../common.h"
+#include "common.h"
 
 #include "lapocha.h"
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 2823 2001-12-09 08:16:26Z jdorje $
+ * $Id: game.c 2832 2001-12-09 21:41:07Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -111,7 +111,8 @@ int game_handle_option(char *option, int value)
 }
 
 
-/* This function finds descriptive text for the current setting of an option. */
+/* This function finds descriptive text for the current setting of an option. 
+ */
 char *game_get_option_text(char *buf, int bufsz, char *option, int value)
 {
 	if (!strcmp("open_hands", option))

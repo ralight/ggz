@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 2772 2001-12-02 02:39:48Z jdorje $
+ * $Id: suaro.c 2832 2001-12-09 21:41:07Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -27,10 +27,10 @@
 
 #include <stdlib.h>
 
-#include "../ai.h"
-#include "../common.h"
+#include "ai.h"
+#include "common.h"
 
-#include "../games/suaro.h"
+#include "games/suaro.h"
 
 #include "aicommon.h"
 

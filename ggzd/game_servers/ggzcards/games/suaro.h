@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.h 2561 2001-10-14 06:56:17Z jdorje $
+ * $Id: suaro.h 2832 2001-12-09 21:41:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -24,7 +24,7 @@
  */
 
 
-#include "../types.h"
+#include "types.h"
 
 /* special bids */
 #define SUARO_PASS	1

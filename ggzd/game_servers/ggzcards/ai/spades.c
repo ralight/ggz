@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2732 2001-11-13 06:56:14Z jdorje $
+ * $Id: spades.c 2832 2001-12-09 21:41:07Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -38,9 +38,10 @@
 
 #include <stdlib.h>
 
-#include "../ai.h"
-#include "../common.h"
-#include "../games/spades.h"
+#include "ai.h"
+#include "common.h"
+
+#include "games/spades.h"
 
 #include "aicommon.h"
 

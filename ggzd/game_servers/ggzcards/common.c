@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2823 2001-12-09 08:16:26Z jdorje $
+ * $Id: common.c 2832 2001-12-09 21:41:07Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -434,7 +434,8 @@ void handle_launch_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 
 	/* determine number of players. */
 	game.num_players = ggzdmod_get_num_seats(game.ggz);	/* ggz seats
-								   == players */
+								   == players 
+								 */
 	game.host = -1;		/* no host since none has joined yet */
 
 	game.players = ggz_malloc(game.num_players * sizeof(*game.players));
@@ -560,7 +561,8 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 
 	/* save old state and enter waiting phase */
 	if (ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN) > 0)	/* should be
-								   a given... */
+								   a given... 
+								 */
 		save_game_state();
 
 	return;
@@ -796,7 +798,8 @@ void init_game()
 
 	set_global_message("", "%s", "");
 	/* This is no longer necessary under the put_player_message system
-	   for (s = 0; s < game.num_seats; s++) game.seats[s].message[0] = 0; */
+	   for (s = 0; s < game.num_seats; s++) game.seats[s].message[0] = 0; 
+	 */
 
 	/* set AI names */
 	for (p = 0; p < game.num_players; p++)

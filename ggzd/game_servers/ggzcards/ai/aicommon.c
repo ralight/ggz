@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.c 2458 2001-09-12 07:39:48Z jdorje $
+ * $Id: aicommon.c 2832 2001-12-09 21:41:07Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -30,7 +30,7 @@
 
 #include <string.h>
 
-#include "../common.h"
+#include "common.h"
 
 #include "aicommon.h"
 
