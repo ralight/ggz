@@ -21,6 +21,7 @@ int admin(Guru *guru, Gurucore *core)
 {
 	int i;
 	int room;
+	int valid;
 
 	if(!guru) return 0;
 	if(!guru->message) return 0;
@@ -30,6 +31,11 @@ int admin(Guru *guru, Gurucore *core)
 	i = 0;
 	while((guru->list) && (guru->list[i])) i++;
 
+	valid = 0;
+	if(guru->type == GURU_PRIVMSG) valid = 1;
+	else if((i > 1) && (!strcmp(guru->list[0], core->name))) valid = 1;
+	if(!valid) return 0;
+
 	switch(i)
 	{
 		case 0:
@@ -37,7 +43,7 @@ int admin(Guru *guru, Gurucore *core)
 		case 2:
 			break;
 		case 3:
-			if(!strcmp(guru->list[1], "goto"))
+			if((!strcmp(guru->list[1], "goto")) && (valid = 1))
 			{
 				room = atoi(guru->list[2]);
 				guru->message = strdup("Yes, I follow, my master.");
@@ -46,7 +52,7 @@ int admin(Guru *guru, Gurucore *core)
 				(core->net_join)(room);
 				return 1;
 			}
-			if(!strcmp(guru->list[1], "logging"))
+			if((!strcmp(guru->list[1], "logging")) && (valid = 1))
 			{
 				if(!strcmp(guru->list[2], "off")) (core->net_log)(NULL);
 				else (core->net_log)(core->logfile);
@@ -56,9 +62,8 @@ int admin(Guru *guru, Gurucore *core)
 			}
 			break;
 		default:
-			if(!strcmp(guru->list[1], "announce"))
+			if((!strcmp(guru->list[1], "announce")) && (valid = 1))
 			{
-				/*printf("DEBUG: announce!!!!!!!!\n");*/
 				guru->message = strdup(guru->list[2]);
 				guru->type = GURU_ADMIN;
 				(core->net_output)(guru);
@@ -76,6 +81,7 @@ int main(int argc, char *argv[])
 	Guru *guru;
 	char *opthost = NULL, *optname = NULL, *optdatadir = NULL;
 	char *input;
+	int language;
 
 	/* Recognize command line arguments */
 	struct option options[] =
@@ -147,7 +153,7 @@ int main(int argc, char *argv[])
 	printf("Grubby: connect to %s...\n", core->host);
 	(core->net_log)(core->logfile);
 	(core->net_connect)(core->host, 5688, core->name, core->guestname);
-	if(core->i18n_init) (core->i18n_init)();
+	if(core->i18n_init) (core->i18n_init)(core->language);
 	while(1)
 	{
 		/* Permanently check states */
@@ -174,7 +180,11 @@ int main(int argc, char *argv[])
 					input = NULL;
 					if(core->i18n_check)
 					{
-						input = (core->i18n_check)(guru->player, guru->message);
+						language = 0;
+						if(guru->type == GURU_PRIVMSG) language = 1;
+						else if((guru->list) && (guru->list[0]) && (!strcmp(guru->list[0], core->name))) language = 1;
+
+						input = (core->i18n_check)(guru->player, guru->message, language);
 						if(input)
 						{
 							free(guru->message);
@@ -188,7 +198,7 @@ int main(int argc, char *argv[])
 						guru = guru_work(guru);
 						if(guru)
 						{
-							if(core->i18n_translate) guru->message = (core->i18n_translate)(guru->player, guru->message);
+							/*if(core->i18n_translate) guru->message = (core->i18n_translate)(guru->player, guru->message);*/
 							(core->net_output)(guru);
 						}
 					}

@@ -6,6 +6,7 @@ This is my setup for the current version of grubby:
 
 [preferences]
 name = Grubby
+language = en
 autojoin = 0
 owner = josef
 host = localhost

@@ -33,15 +33,18 @@ print "The owner of $name: "; $owner = <STDIN>; chomp($owner);
 print "Which room should $name join first (default: 0)? "; $room = <STDIN>; chomp($room);
 print "What is $names\'s default host (default: localhost)? "; $host = <STDIN>; chomp($host);
 print "Where should $name log to (default: no log file)? "; $logfile = <STDIN>; chomp($logfile);
+print "What is $name\'s native language (default: en)? "; $language = <STDIN>; chomp($language);
 print "\n";
 
 if(!$host){$host = "localhost";}
 if(!$room){$room = 0;}
+if(!$language){$language = "en";}
 
 # Write grubby.rc
 open(FILE, ">$ggzdir/grubby.rc");
 print FILE "[preferences]\n";
 print FILE "name = $name\n";
+print FILE "language = $language\n";
 print FILE "owner = $owner\n";
 print FILE "autojoin = $room\n";
 print FILE "host = $host\n";

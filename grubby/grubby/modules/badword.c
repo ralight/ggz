@@ -97,7 +97,7 @@ Guru *gurumod_exec(Guru *message)
 				strcat(buf, _(" is a dirty evil bastard."));
 				message->message = buf;
 			}
-			else message->message = "You aren't any better, bugger.";
+			else message->message = _("You aren't any better, bugger.");
 			return message;
 		}
 		else

@@ -76,6 +76,7 @@ Gurucore *guru_module_init(const char *datadir)
 	strcpy(core->guestname, core->name);
 	strcat(core->guestname, "(G)");
 	core->owner = ggz_conf_read_string(handler, "preferences", "owner", NULL);
+	core->language = ggz_conf_read_string(handler, "preferences", "language", "en");
 	core->autojoin = ggz_conf_read_int(handler, "preferences", "autojoin", 0);
 	core->logfile = ggz_conf_read_string(handler, "preferences", "logfile", NULL);
 

@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "gurumod.h"
+#include "i18n.h"
 
 #define COMMAND_SAY 1
 #define COMMAND_HI 2
@@ -86,7 +87,7 @@ Guru *gurumod_exec(Guru *message)
 			break;
 		case COMMAND_HI:
 			buf = (char*)malloc(strlen(message->player) + 10);
-			sprintf(buf, "Hi %s", message->player);
+			sprintf(buf, _("Hi %s"), message->player);
 			message->message = buf;
 			return message;
 			break;
@@ -110,11 +111,11 @@ Guru *gurumod_exec(Guru *message)
 			return message;
 			break;
 		case COMMAND_FUNNY:
-			message->message = "funny eh?";
+			message->message = _("funny eh?");
 			return message;
 			break;
 		case COMMAND_FUNNY2:
-			message->message = "hehe";
+			message->message = _("hehe");
 			return message;
 			break;
 	}

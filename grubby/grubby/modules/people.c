@@ -166,7 +166,7 @@ Guru *gurumod_exec(Guru *message)
 			{
 				realname = (p->realname ? p->realname : "unknown");
 				contact = (p->contact ? p->contact : "unknown");
-				sprintf(info, "Name: %s, Contact: %s", realname, contact);
+				sprintf(info, "%s: %s, %s: %s", _("Name"), realname, _("Contact"), contact);
 				message->message = info;
 			}
 			else message->message = _("Sorry, I don't know who this is.");

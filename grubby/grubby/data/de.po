@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-02 15:24+0100\n"
+"POT-Creation-Date: 2002-03-02 16:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +18,26 @@ msgstr ""
 msgid " is a dirty evil bastard."
 msgstr " ist ein dummes Ding."
 
+#: ../modules/badword.c:100
+msgid "You aren't any better, bugger."
+msgstr "Du bist auch nicht viel besser."
+
 #: ../modules/badword.c:105
 msgid "Watch your language please!"
 msgstr "Achte mal auf deine Wortwahl, Freundchen!"
+
+#: ../modules/extra.c:89
+#, fuzzy, c-format
+msgid "Hi %s"
+msgstr "Hallo "
+
+#: ../modules/extra.c:113
+msgid "funny eh?"
+msgstr "witzig, was?"
+
+#: ../modules/extra.c:117
+msgid "hehe"
+msgstr "hehe"
 
 #: ../modules/learning.c:121
 msgid "OK, learned that."
@@ -78,6 +95,14 @@ msgstr "Hm, warum ist er gegangen?"
 msgid "OK, registered your information."
 msgstr "OK, diese Information wurde gespeichert."
 
+#: ../modules/people.c:169
+msgid "Name"
+msgstr "Name"
+
+#: ../modules/people.c:169
+msgid "Contact"
+msgstr "Kontakt"
+
 #: ../modules/people.c:172
 msgid "Sorry, I don't know who this is."
 msgstr "Tut mir leid, ich weißOBn nicht wer das ist."
@@ -130,15 +155,15 @@ msgstr ""
 "my (email | sms) is <kontakt>: Registriere Kontaktinformationen\n"
 "my name is <voller_name>: Registriere mich mit vollem Namen"
 
-#: ../src/i18n.c:71
+#: ../src/i18n.c:77
 msgid "Your language has been registered."
 msgstr "Deine Sprache wurde registriert."
 
-#: ../src/module.c:256
+#: ../src/module.c:257
 msgid "List of available modules:"
 msgstr "Liste der verfüOBgbaren Module:"
 
-#: ../src/module.c:257
+#: ../src/module.c:258
 msgid "No modules loaded at all."
 msgstr "üOBerhapt keine Module geladen."
 

@@ -15,19 +15,26 @@
 #include "config.h"
 #include "player.h"
 
+/* Global variables */
+static char *stdlang = NULL;
+
 /* Initializes the i18n subsystem */
-void guru_i18n_initialize()
+void guru_i18n_initialize(const char *language)
 {
 	bindtextdomain("guru", PREFIX "/share/locale");
 	textdomain("guru");
 	setlocale(LC_ALL, "");
+
+	if(language) stdlang = strdup(language);
 }
 
 /* Sets the language to the given locale code */
 void guru_i18n_setlanguage(const char *language)
 {
 	extern int _nl_msg_cat_cntr;
-	
+
+	if(!language) return;
+
 	setenv("LANGUAGE", language, 1);
 	++_nl_msg_cat_cntr;
 }
@@ -40,24 +47,24 @@ void setlanguage(char *player, char *language)
 	p = guru_player_lookup(player);
 	if(p)
 	{
-		/*printf("||||| %s is from %s |||||\n", player, language);*/
 		p->language = language;
 		guru_player_save(p);
 	}
 }
 
 /* Check whether player says his language */
-char *guru_i18n_check(char *player, char *message)
+char *guru_i18n_check(char *player, char *message, int language)
 {
-	char *token;
+	char *token, *msg;
 	int i, c;
 	char *ret;
+	Player *p;
 
 	if(!message) return NULL;
 
 	ret = NULL;
-	message = strdup(message);
-	token = strtok(message, " .,:");
+	msg = strdup(message);
+	token = strtok(msg, " .,:");
 	i = 0;
 	c = 0;
 	while(token)
@@ -73,7 +80,17 @@ char *guru_i18n_check(char *player, char *message)
 		i++;
 		token = strtok(NULL, " .,:");
 	}
-	free(message);
+	free(msg);
+
+	if(!ret)
+	{
+		if(language)
+		{
+			p = guru_player_lookup(player);
+			guru_i18n_setlanguage(p->language);
+		}
+		else guru_i18n_setlanguage(stdlang);
+	}
 
 	return ret;
 }

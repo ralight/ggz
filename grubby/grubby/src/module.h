@@ -26,7 +26,7 @@ typedef void (*playerinitfunc)(const char *datadir);
 /* I18n function handlers */
 typedef void (*i18ninitfunc)();
 typedef char* (*i18ntransfunc)(char *player, char *messageset);
-typedef char* (*i18ncheckfunc)(char *player, char *message);
+typedef char* (*i18ncheckfunc)(char *player, char *message, int language);
 
 /* Grubby's structure */
 struct gurucore_t
@@ -34,6 +34,7 @@ struct gurucore_t
 	char *host;
 	char *owner;
 	char *name;
+	char *language;
 	char *guestname;
 	char *datadir;
 	char *logfile;

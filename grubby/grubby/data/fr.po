@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-02 15:24+0100\n"
+"POT-Creation-Date: 2002-03-02 16:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +18,26 @@ msgstr ""
 msgid " is a dirty evil bastard."
 msgstr " est fous."
 
+#: ../modules/badword.c:100
+msgid "You aren't any better, bugger."
+msgstr ""
+
 #: ../modules/badword.c:105
 msgid "Watch your language please!"
 msgstr "Regarde la langue s'il te plais!"
+
+#: ../modules/extra.c:89
+#, c-format
+msgid "Hi %s"
+msgstr ""
+
+#: ../modules/extra.c:113
+msgid "funny eh?"
+msgstr ""
+
+#: ../modules/extra.c:117
+msgid "hehe"
+msgstr ""
 
 #: ../modules/learning.c:121
 msgid "OK, learned that."
@@ -76,6 +93,14 @@ msgstr ""
 msgid "OK, registered your information."
 msgstr ""
 
+#: ../modules/people.c:169
+msgid "Name"
+msgstr ""
+
+#: ../modules/people.c:169
+msgid "Contact"
+msgstr ""
+
 #: ../modules/people.c:172
 msgid "Sorry, I don't know who this is."
 msgstr ""
@@ -115,15 +140,15 @@ msgid ""
 "my name is <fullname>: register you as fullname"
 msgstr ""
 
-#: ../src/i18n.c:71
+#: ../src/i18n.c:77
 msgid "Your language has been registered."
 msgstr ""
 
-#: ../src/module.c:256
+#: ../src/module.c:257
 msgid "List of available modules:"
 msgstr "Liste des modules:"
 
-#: ../src/module.c:257
+#: ../src/module.c:258
 msgid "No modules loaded at all."
 msgstr "Pas des modules sont actives."
 
