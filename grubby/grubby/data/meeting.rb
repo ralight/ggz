@@ -1,4 +1,4 @@
-#!/usr/local/bin/ruby
+#!/usr/bin/ruby
 
 # Guru module: blackboard to remember meetings
 # Copyright (C) 2001, 2002 Josef Spillner, dr_maux@user.sourceforge.net
