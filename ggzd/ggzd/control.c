@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 2266 2001-08-26 21:51:03Z jdorje $
+ * $Id: control.c 2310 2001-08-29 01:17:32Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -220,7 +220,7 @@ int main(int argc, const char *argv[])
 		}
 
 		addrlen = sizeof(addr);
-		if ( (new_sock = accept(main_sock, &addr, &addrlen)) < 0) {
+		if ( (new_sock = accept(main_sock, (struct sockaddr*)&addr, &addrlen)) < 0) {
 			switch (errno) {
 			case EWOULDBLOCK:
 			case ECONNABORTED:

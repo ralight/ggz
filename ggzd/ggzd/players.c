@@ -140,7 +140,7 @@ static void* player_new(void *arg_ptr)
 	}
 
 	/* Get the client's IP address and store it */
-	getpeername(sock, &addr, &addrlen);
+	getpeername(sock, (struct sockaddr*)&addr, &addrlen);
 
 	/* Send server ID */
 	if (es_write_int(sock, MSG_SERVER_ID) < 0 
