@@ -19,6 +19,11 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 
+dnl Check for header files
+dnl ======================
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS([winsock.h fnmatch.h])
+
 dnl Compiler stuff
 dnl ==============
 

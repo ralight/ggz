@@ -1,6 +1,7 @@
 /*
  * GGZ Gaming Zone TicTacToe 3D
  * Copyright (C) 2002 Josef Spillner, dr_maux@users.sourceforge.net
+ * $Id: display.c 6759 2005-01-20 05:17:31Z jdorje $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +18,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
+
 #include "display.h"
 
 #include <math.h>
@@ -24,8 +29,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <SDL/SDL.h>
-
-#include "config.h"
 
 #define texture_none 0
 #define texture_board 1
