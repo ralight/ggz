@@ -1,7 +1,7 @@
 /*
  * File: players.c
  * Author: Brent Hendricks
- * Project: NetGames
+ * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
  *
@@ -122,7 +122,7 @@ static void* player_new(void *sock_ptr)
 
 	/* Send server ID */
 	if (FAIL(es_write_int(sock, MSG_SERVER_ID)) ||
-	    FAIL(es_va_write_string(sock, "NetGames-%s", VERSION)))
+	    FAIL(es_va_write_string(sock, "GGZ-%s", VERSION)))
 		pthread_exit(NULL);
 
 	pthread_rwlock_wrlock(&players.lock);

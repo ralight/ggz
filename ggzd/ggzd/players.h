@@ -1,7 +1,7 @@
 /*
  * File: players.h
  * Author: Brent Hendricks
- * Project: NetGames
+ * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
  *

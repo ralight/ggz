@@ -1,7 +1,7 @@
 /*
  * File: chat.h
  * Author: Brent Hendricks
- * Project: NetGames
+ * Project: GGZ Server
  * Date: 2/5/00
  * Desc: Functions for interfacing with the chat facility
  *

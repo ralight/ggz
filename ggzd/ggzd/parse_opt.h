@@ -1,7 +1,7 @@
 /*
  * File: parse_opt.h
  * Author: Brent Hendricks
- * Project: NetGames
+ * Project: GGZ Server
  * Date: 10/29/99
  * Desc: Parse command-line arguments and conf file
  *

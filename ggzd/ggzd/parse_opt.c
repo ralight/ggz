@@ -1,7 +1,7 @@
 /*
  * File: parse_opt.c
  * Author: Brent Hendricks
- * Project: NetGames
+ * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
  *
@@ -39,7 +39,7 @@ static const struct poptOption args[] = {
 	{"log", 'l', POPT_ARG_INT, &opt.log_level, 0,
 	 "Verbosity of logging", "LEVEL"},
 	{"port", 'p', POPT_ARG_INT, &opt.main_port, 0,
-	 "NetGames main port", "PORT"},
+	 "GGZ port number", "PORT"},
 	{"version", 'V', POPT_ARG_NONE, NULL, 1},
 	POPT_AUTOHELP {NULL, '\0', 0, NULL, 0}	/* end the list */
 };
@@ -54,7 +54,8 @@ void parse_args(int argc, char *argv[])
 	while ((rc = poptGetNextOpt(context)) != -1) {
 		switch (rc) {
 		case 1:	/* Version command */
-			printf("NetGames Server Version %s\n", VERSION);
+			printf("Gnu Gaming Zone server: version %s\n", 
+			       VERSION);
 			poptFreeContext(context);
 			exit(0);
 		case POPT_ERROR_NOARG:

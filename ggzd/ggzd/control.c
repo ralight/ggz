@@ -1,7 +1,7 @@
 /*
  * File: control.c
  * Author: Brent Hendricks
- * Project: NetGames
+ * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
  *
@@ -75,12 +75,12 @@ void init_data(void)
 	 * or something
 	 */
 	strncpy(spades.name, "NetSpades", MAX_GAME_NAME_LEN);
-	strncpy(spades.version, "Version", MAX_GAME_VER_LEN);
+	strncpy(spades.version, "0.0.1", MAX_GAME_VER_LEN);
 	strncpy(spades.desc,
-		"NetSpades is a multiuser networked spades game written by Brent Hendricks.",
+		"NetSpades is a multiuser networked spades game",
 		MAX_GAME_DESC_LEN);
-	strncpy(spades.author, "Brent", MAX_GAME_AUTH_LEN);
-	strncpy(spades.homepage, "Web Site", MAX_GAME_WEB_LEN);
+	strncpy(spades.author, "Brent Hendricks", MAX_GAME_AUTH_LEN);
+	strncpy(spades.homepage, "http://www.ece.rice.edu/~brentmh/spades", MAX_GAME_WEB_LEN);
 	spades.num_play_allow = (char) (PLAY_ALLOW_FOUR);
 	spades.comp_allow =
 	    (char) (COMP_ALLOW_ZERO | COMP_ALLOW_ONE | COMP_ALLOW_TWO |

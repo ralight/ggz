@@ -1,7 +1,7 @@
 /*
  * File: table.c
  * Author: Brent Hendricks
- * Project: NetGames
+ * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
  *

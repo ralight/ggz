@@ -1,7 +1,7 @@
 /*
  * File: err_func.c
  * Author: Brent Hendricks
- * Project: NetGames
+ * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
  *

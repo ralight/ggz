@@ -1,7 +1,7 @@
 /*
  * File: datatypes.h
  * Author: Brent Hendricks
- * Project: NetGames
+ * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
  *
