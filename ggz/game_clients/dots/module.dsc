@@ -1,7 +1,7 @@
 # Connect the Dots description file
 [ModuleInfo]
 Author = Rich Gade
-ExecPath = ggz.dots
+CommandLine = ggz.dots
 Frontend = gtk
 Homepage = http://ggz.sourceforge.net/
 Name = Dots

@@ -1,7 +1,7 @@
 # Chinese Checkers description file
 [ModuleInfo]
 Author = Rich Gade
-ExecPath = ggz.ccheckers
+CommandLine = ggz.ccheckers
 Frontend = gtk
 Homepage = http://ggz.sourceforge.net/
 Name = ccheckers

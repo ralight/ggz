@@ -1,7 +1,7 @@
 [ModuleInfo]
 Name = NetSpades
 Author = Brent Hendricks
-ExecPath = ggz.spades
+CommandLine = ggz.spades
 Frontend = gtk
 Homepage = http://www.ece.rice.edu/~brentmh/spades
 Name = NetSpades

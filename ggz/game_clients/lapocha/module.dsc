@@ -1,7 +1,7 @@
 # La Pocha description file
 [ModuleInfo]
 Author = Rich Gade
-ExecPath = ggz.lapocha
+CommandLine = ggz.lapocha
 Frontend = gtk
 Homepage = http://ggz.sourceforge.net/
 Name = LaPocha

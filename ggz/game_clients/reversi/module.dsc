@@ -2,7 +2,7 @@
 [ModuleInfo]
 Name = Reversi
 Author = Ismael Orenstein
-ExecPath = ggz.reversi
+CommandLine = ggz.reversi
 Frontend = gtk
 Homepage = http://ggz.sourceforge.net
 Protocol = 0.0.5
