@@ -30,16 +30,16 @@ CREATE TABLE "control" (
 	"value" character varying(256)
 );
 
-CREATE TABLE "teams" (
-	"teamname" character varying(256),
-	"fullname" character varying(256),
-	"icon" character varying(256),
-	"foundingdate" integer,
-	"homepage" character varying(256)
+CREATE TABLE matches (
+    id serial NOT NULL,
+    date bigint,
+    game character varying(256),
+    winner character varying(256)
 );
 
-CREATE TABLE "teammembers" (
-	"teamname" character varying(256),
-	"handle" character varying(256)
+CREATE TABLE matchplayers (
+    id serial NOT NULL,
+    "match" bigint,
+    handle character varying(256)
 );
 
