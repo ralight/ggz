@@ -19,11 +19,13 @@ dnl 2001-05-??: first version to find easysock and ggzcore
 dnl 2001-09-09: include libggz[d]mod support, and rename ac_find_file
 dnl 2001-11-05: backport from copenhagen, and more macros
 dnl 2001-12-16: updated for new ggzmod, imported to gtk-games and gtk-client
+dnl 2002-01-12: include libggz support (copied from ggzcore checks)
 
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
 dnl ------------------------------------------------------------------------
 dnl AC_GGZ_FIND_FILE - macro for convenience (thanks kde)
+dnl AC_GGZ_LIBGGZ - find the libggz headers and libraries
 dnl AC_GGZ_EASYSOCK(x.y) - find the easysock headers and libraries (new: with version numbers)
 dnl AC_GGZ_GGZCORE - find the ggzcore headers and libraries
 dnl AC_GGZ_GGZCOREPP - find any GGZCore++ installation (TODO)
@@ -52,6 +54,90 @@ do
     fi
   done
 done
+])
+
+dnl ------------------------------------------------------------------------
+dnl Try to find the libggz headers and libraries.
+dnl $(LIBGGZ_LDFLAGS) will be -L ... (if needed)
+dnl and $(LIBGGZ_INCLUDES) will be -I ... (if needed)
+dnl ------------------------------------------------------------------------
+dnl
+AC_DEFUN(AC_GGZ_LIBGGZ,
+[
+AC_MSG_CHECKING([for GGZ library: libggz])
+
+ac_libggz_includes=NO ac_libggz_libraries=NO
+libggz_libraries=""
+libggz_includes=""
+
+AC_ARG_WITH(libggz-dir,
+    [  --with-libggz-dir=DIR       libggz installation prefix ],
+    [  ac_libggz_includes="$withval"/include
+       ac_libggz_libraries="$withval"/lib
+    ])
+AC_ARG_WITH(libggz-includes,
+    [  --with-libggz-includes=DIR  where the libggz includes are. ],
+    [  ac_libggz_includes="$withval"
+    ])
+AC_ARG_WITH(libggz-libraries,
+    [  --with-libggz-libraries=DIR where the libggz libs are. ],
+    [  ac_libggz_libraries="$withval"
+    ])
+
+AC_CACHE_VAL(ac_cv_have_libggz,
+[
+libggz_incdirs="$ac_libggz_includes /usr/local/include /usr/include"
+libggz_header=ggz.h
+
+AC_GGZ_FIND_FILE($libggz_header, $libggz_incdirs, libggz_incdir)
+ac_libggz_includes="$libggz_incdir"
+
+libggz_libdirs="$ac_libggz_libraries /usr/local/lib /usr/lib"
+
+test=NONE
+libggz_libdir=NONE
+for dir in $libggz_libdirs; do
+  try="ls -1 $dir/libggz.*"
+  if test -n "`$try 2> /dev/null`"; then libggz_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
+done
+
+ac_libggz_libraries="$libggz_libdir"
+
+if test "$ac_libggz_includes" = NO || test "$ac_libggz_libraries" = NO; then
+  ac_cv_have_libggz="have_libggz=no"
+  ac_libggz_notfound=""
+
+  AC_MSG_ERROR([libggz not found. Please check your installation! ]);
+else
+  have_libggz="yes"
+fi
+])
+
+eval "$ac_cv_have_libggz"
+
+if test "$have_libggz" != yes; then
+  AC_MSG_RESULT([$have_libggz]);
+else
+  ac_cv_have_libggz="have_libggz=yes \
+    ac_libggz_includes=$ac_libggz_includes ac_libggz_libraries=$ac_libggz_libraries"
+  AC_MSG_RESULT([libraries $ac_libggz_libraries, headers $ac_libggz_includes])
+
+  libggz_libraries="$ac_libggz_libraries"
+  libggz_includes="$ac_libggz_includes"
+fi
+
+AC_SUBST(libggz_libraries)
+AC_SUBST(libggz_includes)
+
+LIBGGZ_INCLUDES="-I$libggz_includes"
+LIBGGZ_LDFLAGS="-L$libggz_libraries"
+
+AC_SUBST(LIBGGZ_INCLUDES)
+AC_SUBST(LIBGGZ_LDFLAGS)
+
+LIB_GGZ='-lggz'
+AC_SUBST(LIB_GGZ)
+
 ])
 
 dnl ------------------------------------------------------------------------
