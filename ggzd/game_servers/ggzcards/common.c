@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2316 2001-08-29 04:46:45Z jdorje $
+ * $Id: common.c 2325 2001-08-29 17:46:27Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -1181,7 +1181,7 @@ void init_game()
 	for (p = 0; p < game.num_players; p++)
 		if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT) {
 			int s = game.players[p].seat;
-			char *name = ai_get_name(p);
+			char *name = (char *) ai_get_name(p);
 			game.seats[s].name = name;
 			ggzd_set_player_name(game.seats[s].player, name);
 			ggzd_debug("Setting AI name to %s.", name);

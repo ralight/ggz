@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.h 2190 2001-08-23 08:06:05Z jdorje $
+ * $Id: ai.h 2325 2001-08-29 17:46:27Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -52,7 +52,7 @@ typedef enum
 ai_type_t;
 
 /* get a name for an ai player sitting at the given spot */
-char *ai_get_name(player_t);
+const char *ai_get_name(player_t);
 
 /* this inits AI static data at the start of a hand */
 void ai_start_hand();

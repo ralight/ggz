@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: ai.c 2325 2001-08-29 17:46:27Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -27,11 +27,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-
 #include <stdlib.h>
+#include <string.h>
 
 #include "ai.h"
 #include "common.h"
@@ -43,15 +41,12 @@ struct ai_function_pointers *ai_funcs[] = { &random_ai_funcs,
 	&spades_ai_funcs
 };
 
-char *ai_get_name(player_t p)
+const char *ai_get_name(player_t p)
 {
-	char *name;
+	const char *name;
 	name = ai_funcs[game.ai_type]->get_name(p);
-	if (name == NULL) {
-		char buf[17];
-		snprintf(buf, 17, "Bot %d", p + 1);
-		name = strdup(buf);
-	}
+	if (name == NULL)
+		name = ggzd_get_player_name(p);
 	if (name == NULL)
 		name = "Bot";
 	return name;
