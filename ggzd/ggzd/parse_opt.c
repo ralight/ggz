@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 4508 2002-09-11 03:48:41Z jdorje $
+ * $Id: parse_opt.c 4544 2002-09-13 14:36:44Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -438,8 +438,9 @@ static void parse_game(char *name, char *dir)
 	}
 	/* If there's no absolute path given, we prepend the game_dir. */
 	if (game_info.exec_args[0][0] != '/') {
+		char *new_exec;
 		len = strlen(game_info.exec_args[0])+strlen(opt.game_dir)+2;
-		char *new_exec = ggz_malloc(len);
+		new_exec = ggz_malloc(len);
 		snprintf(new_exec, len, "%s/%s",
 			 opt.game_dir, game_info.exec_args[0]);
 		ggz_free(game_info.exec_args[0]);
