@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.h 3160 2002-01-20 08:50:01Z jdorje $
+ * $Id: animation.h 3329 2002-02-11 12:46:54Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -27,10 +27,5 @@
 
 #include "common.h"
 
-
-/* Are we currently in the process of animating? */
-extern int animating;
-
 void animation_start(int player, card_t card, int card_num);
-gint animation_callback(gpointer ignored);
 void animation_stop(int success);

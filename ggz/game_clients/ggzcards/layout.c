@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 3301 2002-02-10 11:10:05Z jdorje $
+ * $Id: layout.c 3329 2002-02-11 12:46:54Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -108,33 +108,33 @@ typedef struct layout_t {
 	box_func *player_boxes[MAX_NUM_PLAYERS];
 } layout_t;
 
-layout_t layout_2 = {
+static layout_t layout_2 = {
 	{0, 2},
 	{&bottom_box4, &top_box4}
 };
 
-layout_t layout_3 = {
+static layout_t layout_3 = {
 	{0, 1, 2},
 	{&bottom_box4, &left_box4, &top_box4}
 };
 
-layout_t layout_4 = {
+static layout_t layout_4 = {
 	{0, 1, 2, 3},
 	{&bottom_box4, &left_box4, &top_box4, &right_box4}
 };
 
 
-layout_t layout_5 = {
+static layout_t layout_5 = {
 	{0, 1, 1, 2, 3},
 	{&bottom_box6, &bl_box6, &tl_box6, &top_box6, &tr_box6}
 };
 
-layout_t layout_6 = {
+static layout_t layout_6 = {
 	{0, 1, 1, 2, 3, 3},
 	{&bottom_box6, &bl_box6, &tl_box6, &top_box6, &tr_box6, &br_box6}
 };
 
-layout_t *layouts[MAX_NUM_PLAYERS + 1] =
+static layout_t *layouts[MAX_NUM_PLAYERS + 1] =
 	{ NULL, NULL, &layout_2, &layout_3, &layout_4, &layout_5, &layout_6 };
 
 #define LAYOUT (layouts[ggzcards.num_players])

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3328 2002-02-11 10:52:11Z jdorje $
+ * $Id: main.c 3329 2002-02-11 12:46:54Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -226,7 +226,7 @@ void messagebar_message(const char *msg)
 
 static GtkWidget *msg_menu = NULL;
 
-void on_mnu_messages_activate(GtkMenuItem * menuitem, gpointer user_data)
+static void on_mnu_messages_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	char *mark = user_data;
 	GtkWidget *dlg = gtk_object_get_data(GTK_OBJECT(msg_menu), mark);

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 3325 2002-02-11 09:12:57Z jdorje $
+ * $Id: animation.c 3329 2002-02-11 12:46:54Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -38,7 +38,7 @@
 #include "table.h"
 
 
-int animating = 0;
+static int animating = 0;
 
 static struct {
 	int player;
@@ -52,6 +52,7 @@ static struct {
 } anim = {-1};
 
 static void animation_delete(void);
+static gint animation_callback(gpointer ignored);
 
 /* Function to setup and trigger a card animation */
 void animation_start(int player, card_t card, int card_num)
@@ -130,7 +131,7 @@ static void animation_delete(void)
 
 /* Handle one frame of card animation, this is triggered by a GtkTimeout
    setup in animation_start(). */
-gint animation_callback(gpointer ignored)
+static gint animation_callback(gpointer ignored)
 {
 	float new_x, new_y;
 
