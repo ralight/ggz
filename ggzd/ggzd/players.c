@@ -50,18 +50,20 @@ extern struct Users players;
 
 
 /* Local functions for handling players */
-static void* player_new(void *);
-static void  player_loop(int);
-static int   player_handle(int, int, int *);
+static void* player_new(void * sock_ptr);
+static void  player_loop(int p_index, int p_fd);
+static int   player_handle(int op, int p_index, int p_fd, int * t_fd);
 static void  player_remove(int p_index);
 static int   player_updates(int p_index);
+static int   player_msg_to_sized(int fd_in, int fd_out);
+static int   player_msg_from_sized(int fd_in, int fd_out);
 
 static int new_login(int p_index);
-static int anon_login(int p_index);
+static int anon_login(int index);
 static int login(int p_index);
 static int logout(int p_index);
-static int read_table_info(int p_index, int *fd);
-static int join_table(int p_index, int *fd);
+static int read_table_info(int p_index, int p_fd, int *t_fd);
+static int join_table(int p_index, int p_fd, int *t_fd);
 static int user_list(int p_index);
 static int types_list(int p_index);
 static int table_list(int p_index);
@@ -98,7 +100,6 @@ void player_handler_launch(int sock)
  */
 static void* player_new(void *sock_ptr)
 {
-
 	int sock, status, i;
 
 	sock = *((int *) sock_ptr);
@@ -135,7 +136,7 @@ static void* player_new(void *sock_ptr)
 	pthread_rwlock_unlock(&players.lock);
 
 	dbg_msg("New player %d connected", i);
-	player_loop(i);
+	player_loop(i, sock);
 	
 	player_remove(i);
 
@@ -148,14 +149,11 @@ static void* player_new(void *sock_ptr)
  * main loop for communicating with players and game tables
  * 
  */
-static void player_loop(int p_index)
+static void player_loop(int p_index, int p_fd)
 {
 
-	int op, status, fd_max;
-	int fd, p_fd, t_fd = -1, t_index = -1;
-	int size;
-	char playing = 0;
-	char buf[4096];
+	int op, status, fd_max, t_fd = -1;
+	char game_over = 0;
 	fd_set active_fd_set, read_fd_set;
 
 	/* Start off listening only to player */
@@ -171,6 +169,7 @@ static void player_loop(int p_index)
 		read_fd_set = active_fd_set;
 		fd_max = ((p_fd > t_fd) ? p_fd : t_fd) + 1;
 		
+		/* FIXME: add timeout */
 		status = select(fd_max, &read_fd_set, NULL, NULL, NULL);
 		if (status < 0) {
 			if (errno == EINTR)
@@ -181,82 +180,73 @@ static void player_loop(int p_index)
 
 		/* Check for message from player */
 		if (FD_ISSET(p_fd, &read_fd_set)) {
-
-			/* FIXME: Temp hack until client implements MSG_GAME */
-			if (playing) {
-				size = read(p_fd, buf, 4096);
-				status = es_writen(t_fd, buf, size);
-				/*dbg_msg("Player %d sent %d bytes to game", p_index, size); */
-
-				if (status <= 0) {	/* Game over */
-					dbg_msg("Player %d's game is over (msg from player)", p_index);
-					playing = 0;
-					close(t_fd);
-					FD_CLR(t_fd, &active_fd_set);
-					t_fd = -1;
-					pthread_rwlock_wrlock(&players.lock);
-					players.info[p_index].table_index = -1;
-					pthread_rwlock_unlock(&players.lock);
-				}
-			} else {
-				if (FAIL(es_read_int(p_fd, (int *) &op)))
-					break;
-				
-				fd = p_fd;
-				if (FAIL(status = player_handle(op, p_index,
-								&fd))) 
-					break;
-				
-				dbg_msg("Player %d op handled successfully", p_index);
-				
+			
+			if (FAIL(es_read_int(p_fd, (int *)&op)))
+				break;
+			
+			status = player_handle(op, p_index, p_fd, &t_fd);
+			
+			if (status == NG_HANDLE_LOGOUT)
+				break;
+			
+			switch (status) {
+			case NG_HANDLE_GAME_START:
 				/* Player launched or joined a game */
-				if (status == 1) {	
-					dbg_msg("Player %d now playing a game",p_index);
-					playing = 1;
-					t_index = players.info[p_index].table_index;
-					t_fd = fd;
-					FD_SET(t_fd, &active_fd_set);
-				}
+				dbg_msg("Player %d now in game", p_index);
+				players.info[p_index].playing = 1;
+				FD_SET(t_fd, &active_fd_set);
+				break;
+			case NG_HANDLE_GAME_OVER:
+				dbg_msg("Player %d game-over [user]", p_index);
+				game_over = 1;
+				break;
+			case NG_HANDLE_OK:
+				break;
 			}
 		}
 		
 		/* Check for data from table */
-		if (playing && FD_ISSET(t_fd, &read_fd_set)) {
-			size = read(t_fd, buf, 4096);
-			status = es_writen(p_fd, buf, size);
-			/*dbg_msg("Game sent %d bytes to player %d", size, p_index); */
-			
-			if (status <= 0) {	/* Game over */
-				dbg_msg("Game saya Player %d's game is over",
-					p_index);
-				playing = 0;
-				close(t_fd);
-				FD_CLR(t_fd, &active_fd_set);
-				t_fd = -1;
-				pthread_rwlock_wrlock(&players.lock);
-				players.info[p_index].table_index = -1;
-				pthread_rwlock_unlock(&players.lock);
+		if (t_fd != -1  && FD_ISSET(t_fd, &read_fd_set)) {
+			if (FAIL(es_write_int(p_fd, RSP_GAME)) ||
+			    (status = player_msg_to_sized(t_fd, p_fd)) <= 0) {
+				dbg_msg("Player %d game-over [game]", p_index);
+				game_over = 1;
 			}
+			else 
+				dbg_msg("Game to User: %d bytes", status);
 		}
+
+		/* Clean up after either player or table ends game */
+		if (game_over) {
+			dbg_msg("Cleaning up player %d's game", p_index);
+			players.info[p_index].playing = 0;
+			close(t_fd);
+			FD_CLR(t_fd, &active_fd_set);
+			t_fd = -1;
+			pthread_rwlock_wrlock(&players.lock);
+			players.info[p_index].table_index = -1;
+			pthread_rwlock_unlock(&players.lock);
+			game_over = 0;
+		}
+
 	} /* for(;;) */
-
-	if (playing) {
-		/* FIXME: Error reading from player during game.  Do something! */
-	}
-
 }
 
 
 
 /*
- * handle_player() receives the opcode of the incoming message, 
- * the player's index and fd by reference.  It then dispatches the
- * correct function to read in the data and handle any requests.
+ * handle_player() receives the opcode of the incoming message, the
+ * player's index and player's fd, and the table fd by reference.  It
+ * then dispatches the correct function to read in the data and handle
+ * any requests.
  *
- * returns 0 if OK, -1 if error, and 1 if a table has been launched
- * If a table has been launched, returns the fd by reference
- */
-int player_handle(int request, int p_index, int *fd)
+ * returns: 
+ *  NG_HANDLE_GAME_START : player is now in a game.  fd of the game 
+ *                         is returned by reference.
+ *  NG_HANDLE_GAME_OVER  : player has completed game
+ *  NG_HANDLE_LOGOUT     : player is being logged out (possbily due to  error)
+ *  NG_HANDLE_OK : nothing special */
+int player_handle(int request, int p_index, int p_fd, int *t_fd)
 {
 
 	int status;
@@ -269,19 +259,19 @@ int player_handle(int request, int p_index, int *fd)
 
 	case REQ_LOGOUT:
 		logout(p_index);
-		status = -1;
+		status = NG_HANDLE_LOGOUT;
 		break;
 
 	case REQ_LAUNCH_GAME:
-		status = read_table_info(p_index, fd);
+		status = read_table_info(p_index, p_fd, t_fd);
 		if (status == 0)
-			status = 1;
+			status = NG_HANDLE_GAME_START;
 		break;
 
 	case REQ_JOIN_GAME:
-		status = join_table(p_index, fd);
+		status = join_table(p_index, p_fd, t_fd);
 		if (status == 0)
-			status = 1;
+			status = NG_HANDLE_GAME_START;
 		break;
 
 	case REQ_USER_LIST:
@@ -296,6 +286,14 @@ int player_handle(int request, int p_index, int *fd)
 		status = table_list(p_index);
 		break;
 
+	case REQ_GAME:
+		status = player_msg_from_sized(p_fd, *t_fd); 
+		if (status <= 0)
+			status = NG_HANDLE_GAME_OVER;
+		else 
+			dbg_msg("User to Game: %d bytes", status);
+		break;
+			
 	case REQ_CHAT:
 	case REQ_NEW_LOGIN:
 	case REQ_LOGIN:
@@ -307,7 +305,7 @@ int player_handle(int request, int p_index, int *fd)
 	default:
 		dbg_msg("Player %d (uid: %d) requested unimplemented op %d",
 			p_index, players.info[p_index].uid, op);
-		status = -1;
+		status = NG_HANDLE_LOGOUT;
 	}
 
 	return status;
@@ -329,6 +327,7 @@ static void player_remove(int p_index)
 	players.info[p_index].uid = NG_UID_NONE;
 	players.info[p_index].name[0] = '\0';
 	players.info[p_index].table_index = -1;
+	players.info[p_index].playing = 0;
 	fd = players.info[p_index].fd;
 	players.info[p_index].fd = -1;
 	players.count--;
@@ -465,18 +464,15 @@ static int logout(int p)
  * returns 0 if successful, -1 on error.  If successful, returns table
  * fd by reference
  */
-static int read_table_info(int p_index, int *fd)
+static int read_table_info(int p_index, int p_fd, int *t_fd)
 {
 
 	TableInfo table;
-	int i, size, t_index = -1, p_fd, t_fd;
+	int i, size, t_index = -1;
 	int status = 0;
 	int fds[2];
 	void *options;
 	char name[MAX_USER_NAME_LEN + 1];
-
-	/*  Gets overwritten by the table fd */
-	p_fd = *fd;
 
 	dbg_msg("Handling table launch for player %d", p_index);
 
@@ -502,15 +498,14 @@ static int read_table_info(int p_index, int *fd)
 		return -1;
 	if ((options = malloc(size)) < 0)
 		err_sys_exit("malloc error");
-	/* FIXME: Replace with es_readn() as soon as it's written */
-	if (read(p_fd, options, size) <= 0) {
+	if (es_readn(p_fd, options, size) <= 0) {
 		free(options);
 		return -1;
 	}
 
 	/* Create socketpair for communication */
 	socketpair(PF_UNIX, SOCK_STREAM, 0, fds);
-	t_fd = fds[1];
+	*t_fd = fds[1];
 
 	/* Fill remaining parameters */
 	if (status == 0) {
@@ -578,7 +573,6 @@ static int read_table_info(int p_index, int *fd)
 		pthread_rwlock_wrlock(&players.lock);
 		players.info[p_index].table_index = t_index;
 		pthread_rwlock_unlock(&players.lock);
-		*fd = t_fd;
 		break;
 	default:
 		break;
@@ -589,14 +583,11 @@ static int read_table_info(int p_index, int *fd)
 
 
 /* FIXME: Some day we'll worry about reservations. Not today*/
-static int join_table(int p_index, int *fd)
+static int join_table(int p_index, int p_fd, int *t_fd)
 {
 
-	int i, p_fd, t_fd, t_index, fds[2];
+	int i, t_index, fds[2];
 	int status = 0;
-
-	/*  Gets overwritten by the table fd */
-	p_fd = *fd;
 
 	dbg_msg("Handling table join for player %d", p_index);
 
@@ -607,7 +598,7 @@ static int join_table(int p_index, int *fd)
 
 	/* Create socketpair for communication */
 	socketpair(PF_UNIX, SOCK_STREAM, 0, fds);
-	t_fd = fds[1];
+	*t_fd = fds[1];
 
 	/* Check for open seats at table */
 	pthread_rwlock_wrlock(&game_tables.lock);
@@ -654,7 +645,6 @@ static int join_table(int p_index, int *fd)
 		pthread_rwlock_wrlock(&players.lock);
 		players.info[p_index].table_index = t_index;
 		pthread_rwlock_unlock(&players.lock);
-		*fd = t_fd;
 		break;
 	default:
 		break;
@@ -760,20 +750,19 @@ static int table_list(int p_index)
 			continue;
 		if (type == NG_TYPE_OPEN && info[i].open_seats == 0)
 			continue;
-		if (type == NG_TYPE_RES)	/* we don't handle reserves yet */
+		if (type == NG_TYPE_RES)   /* we don't handle reserves yet */
 			continue;
-
+		
 		if (FAIL(es_write_int(fd, i)) ||
 		    FAIL(es_write_int(fd, info[i].type_index)) ||
 		    FAIL(es_write_char(fd, info[i].playing)) ||
 		    FAIL(es_write_int(fd, info[i].num_seats)) ||
 		    FAIL(es_write_int(fd, info[i].open_seats)) ||
-		    FAIL(es_write_int
-			 (fd,
-			  info[i].num_humans -
-			  info[i].open_seats))) return (-1);
-		for (j = 0; j < info[i].num_humans - info[i].open_seats;
-		     j++) {
+		    FAIL(es_write_int(fd,
+				      info[i].num_humans -
+				      info[i].open_seats))) 
+			return (-1);
+		for (j = 0; j < info[i].num_humans - info[i].open_seats; j++) {
 			tmp = info[i].players[j];
 			pthread_rwlock_rdlock(&players.lock);
 			strncpy(name, players.info[tmp].name,
@@ -787,6 +776,34 @@ static int table_list(int p_index)
 	return (0);
 }
 
+
+static int player_msg_to_sized(int in, int out) 
+{
+	char buf[4096];
+	int size;
+	
+	if ( (size = read(in, buf, 4096)) <= 0)
+		return(-1);
+	
+	if (FAIL(es_write_int(out, size)) ||
+	    FAIL(es_writen(out, buf, size)))
+		return(-1);
+
+	return size;
+}
+
+
+static int player_msg_from_sized(int in, int out) 
+{
+	char buf[4096];
+	int size;
+	
+	if (FAIL(es_read_int(in, &size)) ||
+	    FAIL(es_readn(in, buf, size)))
+		return (-1);
+	
+	return (es_writen(out, buf, size));
+}
 
 /*
  * Utility function for reading in names
@@ -826,3 +843,5 @@ int num_comp_play(unsigned char mask)
 	return count;
 
 }
+
+

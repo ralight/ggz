@@ -73,6 +73,11 @@
 #define NG_TYPE_RES  -2
 #define NG_TYPE_OPEN -3
 
+/* Handler return values */
+#define NG_HANDLE_OK           0
+#define NG_HANDLE_LOGOUT      -1
+#define NG_HANDLE_GAME_START   1
+#define NG_HANDLE_GAME_OVER    2
 
 /* Datatypes for server options*/
 typedef struct {
@@ -148,6 +153,7 @@ typedef struct {
 	int uid;
 	char name[MAX_USER_NAME_LEN + 1];	/* Room for \0 */
 	int fd;
+	char playing;
 	pthread_t pid;
 	int table_index;
 } UserInfo;

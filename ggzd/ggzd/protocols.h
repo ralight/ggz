@@ -38,6 +38,7 @@ typedef enum {
 	REQ_LAUNCH_GAME,
 	REQ_JOIN_GAME,
 	REQ_USER_STAT,
+	REQ_GAME,
 	REQ_CHAT
 } UserToControl;
 
@@ -59,6 +60,7 @@ typedef enum {
 	RSP_LAUNCH_GAME,
 	RSP_JOIN_GAME,
 	RSP_USER_STAT,
+	RSP_GAME,
 	RSP_CHAT,
 	RSP_ERROR
 } ControlToUser;
