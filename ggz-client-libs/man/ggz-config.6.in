@@ -1,0 +1,100 @@
+.TH "ggz-config" "6" "0.0.4" "The GGZ Development Team" "GGZ Gaming Zone"
+.SH "NAME"
+.LP 
+ggz\-config \- GGZ Gaming Zone configuration manager
+.SH "SYNOPSIS"
+.LP 
+Query Mode:
+.br 
+\fBggz\-config [\-\-configdir] [\-\-gamedir] [\-\-datadir]
+[\-\-version]\fR
+.LP 
+Install Mode:
+.br 
+\fBggz\-config \-\-install \-\-fromfile=\fR\fIFILENAME\fP
+\fB[\-\-destdir] [\-\-force]\fR
+.LP 
+Uninstall Mode:
+.br 
+\fBggz\-config \-\-remove \-\-fromfile=\fR\fIFILENAME\fP
+.SH "DESCRIPTION"
+.LP 
+This program can be used for several purposes.  Primarily
+it is used to maintain the \fIggz.modules\fP configuration
+file by installing and removing game module information.
+This is done with the \fI\-\-install\fP and \fI\-\-remove\fP
+modes of operation.
+.LP 
+Additionally, the program can query the installation settings
+of the GGZ Client Libraries to assist in configuring the
+build process of a client or game module.
+.SH "OPTIONS"
+.LP 
+Query Mode Options
+.TP 
+\fB\-\-configdir\fR
+Output location of the GGZ Client Libs configuration
+directory and exit.
+.TP 
+\fB\-\-gamedir\fR
+Output location of the executable game modules and exit.
+.TP 
+\fB\-\-datadir\fR
+Output location of game module data directory and exit.
+.TP 
+\fB\-\-help\fR
+Output help information and exit.
+.TP 
+\fB\-\-version\fR
+Output version information and exit.
+.LP 
+Install Mode Options
+.TP 
+\fB\-\-install\fR
+Specifies that we are installing a game module description.
+.TP 
+\fB\-\-fromfile=\fR\fIFILENAME\fP
+Specifies the source module description file.
+.TP 
+\fB\-\-force\fR
+Overwrite an existing module entry of the same name, author
+and version rather than returning an error.
+.TP 
+\fB\-\-destdir\fR
+Specifies that the \fI$DESTDIR\fP environment variable
+contains a directory to prepend to the path for the GGZ
+module configuration file (\fIggz.modules\fP).  The
+only known purpose for this is for RPM packaging builds.
+.LP 
+Uninstall Mode Options
+.TP 
+\fB\-\-remove\fR
+Specifies that we are removing a game module description.
+.TP 
+\fB\-\-fromfile=\fR\fIFILENAME\fP
+Specifies the source module description file.
+.SH "FILES"
+.LP 
+\fI@ggzconfdir@/ggz.modules\fP 
+.SH "ENVIRONMENT VARIABLES"
+.LP 
+.TP 
+\fBDESTDIR\fR
+Used during install process, most commonly by the RPM
+build sequence.
+.SH "BUGS"
+.LP 
+The program is currently unable to detect many problems
+that could arise with an invalid \fIggz.modules\fP file.
+.LP 
+There are a large number of undocumented program options,
+these options should be considered deprecated.
+.LP 
+Probably others, too numerous to mention.
+.SH "AUTHORS"
+.LP 
+The GGZ Development Team
+<ggz\-dev@lists.sourceforge.net>
+.SH "SEE ALSO"
+.LP 
+ggz.modules(5)
