@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 6382 2004-11-16 03:37:51Z jdorje $
+ * $Id: client.c 6417 2004-11-18 04:03:01Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -635,34 +635,40 @@ client_realize                    (GtkWidget       *widget,
 {
 	GtkTooltips *client_window_tips;
 	GtkXText *tmp, *tmp2;
-	GtkWidget *tmp3;
 	char *buf;
 	char *font_str;
 
 	/* setup Tooltips */
 	client_window_tips = gtk_tooltips_new();
 
-	tmp3 = lookup_widget(win_main, "connect_button");
-	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Connect to a server"), _("Connect to a GGZ Gaming Zone server"));
-	tmp3 = lookup_widget(win_main, "disconnect_button");
-	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Disconnect from server"), _("Disconnect from the GGZ Gaming Zone server"));
-	tmp3 = lookup_widget(win_main, "launch_button");
-	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Launch a new game"), _("Start playing a game at a new table"));
-	tmp3 = lookup_widget(win_main, "join_button");
-	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Join a game"), _("Join an existing game"));
-	tmp3 = lookup_widget(win_main, "watch_button");
-	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3,
-			     _("Watch (spectate) a game"),
-			     _("Watch an existing game - "
-			       "become a spectator of the table"));
-	tmp3 = lookup_widget(win_main, "leave_button");
-	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Leave a game"), _("Leave the game you're currently playing"));
-	tmp3 = lookup_widget(win_main, "props_button");
-	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Show properties dialog"), _("Show the properties dialog to change the client settings"));
-	tmp3 = lookup_widget(win_main, "stats_button");
-	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Show game stats"), _("Show the game stats for the current room's game type"));
-	tmp3 = lookup_widget(win_main, "exit_button");
-	gtk_tooltips_set_tip(GTK_TOOLTIPS (client_window_tips), tmp3, _("Exit the client"), _("Exit the application."));
+#define tooltip(widget, tip)						\
+	do {								\
+		GtkWidget *tmp = lookup_widget(win_main, widget);	\
+		gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(tmp),		\
+					  GTK_TOOLTIPS(client_window_tips), \
+					  tip, NULL);			\
+	} while (0)
+
+	tooltip("connect_button", 
+		_("Connect to a GGZ Gaming Zone server"));
+	tooltip("disconnect_button",
+		_("Disconnect from the GGZ Gaming Zone server"));
+	tooltip("launch_button",
+		_("Start playing a game at a new table"));
+	tooltip("join_button",
+		_("Join an existing game"));
+	tooltip("watch_button",
+		_("Watch an existing game - "
+		  "become a spectator of the table"));
+	tooltip("leave_button",
+		_("Leave the game you're currently playing"));
+	tooltip("props_button",
+		_("Show the properties dialog to change "
+		  "the client settings"));
+	tooltip("stats_button",
+		_("Show the game stats for the current room's game type"));
+	tooltip("exit_button",
+		_("Exit the GGZ client application."));
 
 	/* Set Properties */
 	tmp = g_object_get_data(G_OBJECT(win_main), "table_vpaned");
