@@ -50,7 +50,7 @@ struct 	timeval	timeout;
 					/* Chit-Chat, Parsing, everything else*/
 					break;
 				case SIG_CHANGEROOM:
-					change_room(1);
+					change_room(0);
 					sig=SIG_NORMAL;
 					break;
 				case SIG_CLEANUP:

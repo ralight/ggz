@@ -38,7 +38,7 @@ char *get_name( char *name )
 	if( i == -1 )
 		return( name );
 
-	if( memory.people[i].realname )
+	if( memory.people[i].realname && strcmp(memory.people[i].realname, "(null)") )
 		return( memory.people[i].realname );
 	else
 		return( name );

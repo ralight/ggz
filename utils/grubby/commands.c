@@ -18,6 +18,7 @@
 #include "messages.h"
 #include "rc.h"
 #include "support.h"
+#include "net.h"
 
 struct Grubby grubby;
 struct Memory memory;
@@ -45,6 +46,9 @@ void owner_commands( char **words, int totalwords )
 					show_stats();
 				break;
 			case 3:
+				if( !strcasecmp( words[1], "goto" ) )
+					change_room(atoi(words[2]));
+
 				if( !strcasecmp( words[1], "log" ) && !strcasecmp( words[2], "off" ) )
 					end_log();
 
@@ -198,22 +202,28 @@ void show_public_help( char *from )
 	send_msg( from, "          Public Commands I Understand" );
 	send_msg( from, "          ----------------------------" );
 	send_msg( from, " " );
-	send_msg( from, "about ...................... I'll tell you a little about");
-	send_msg( from, "                             my history." );
-	send_msg( from, "help ....................... Displays the commands that");
-	send_msg( from, "                             I will accept from you." );
-	send_msg( from, "have you seen <username> ... Will return how long ago" );
-	send_msg( from, "                             I saw <username>." );
-	send_msg( from, "my name is <real name> ..... I'd love to get to know" );
-	send_msg( from, "                             you a little better." );
-	send_msg( from, "tell <username> <message>  . I'll tell <username> your" );
-	send_msg( from, "                             <message> next time I see them." );
-	send_msg( from, "do i have any messages ..... get any messages people may have" );
-	send_msg( from, "                             left you." );
+	send_msg( from, "\00314about" );
+	send_msg( from, "I'll tell you a little about my history." );
 	send_msg( from, " ");
-	send_msg( from, "When you're telling, or asking something of me, please" );
-	send_msg( from, "make sure to address me properly:");
-	sprintf( out,   "        %s <command>", grubby.name);
+	send_msg( from, "\00314help");
+	send_msg( from, "Displays the commands that I will accept from you." );
+	send_msg( from, " ");
+	send_msg( from, "\00314have you seen <username>" );
+	send_msg( from, "Will return how long ago I saw <username>." );
+	send_msg( from, " ");
+	send_msg( from, "\00314my name is <real name>" );
+	send_msg( from, "I'd love to get to know you a little better." );
+	send_msg( from, " ");
+	send_msg( from, "\00314tell <username> <message>" );
+	send_msg( from, "I'll tell <username> your <message> next time I see them." );
+	send_msg( from, " ");
+	send_msg( from, "\00314do i have any messages" );
+	send_msg( from, "Get any messages people may have left you." );
+	send_msg( from, " ");
+	send_msg( from, " ");
+	send_msg( from, "When you're telling, or asking something of me, please make sure to address me properly:");
+	send_msg( from, " ");
+	sprintf( out,   "        \00314%s <command>", grubby.name);
 	send_msg( from, out );
 }
 
@@ -222,14 +232,23 @@ void show_owner_help( void )
 	send_msg( grubby.owner, "           Owner Commands I Understand" );
 	send_msg( grubby.owner, "           ---------------------------" );
 	send_msg( grubby.owner, " " );
-	send_msg( grubby.owner, "turn [on|off] lang checker .. Turns on or off the foul");
-	send_msg( grubby.owner, "                              language checker." );
-	send_msg( grubby.owner, "stats ....................... Lists out all of the" );
-	send_msg( grubby.owner, "                              current settings." );
-	send_msg( grubby.owner, "log to <file> as [html|text]  Starts loggint the room to" );
-	send_msg( grubby.owner, "                              a file in the given format." );
-	send_msg( grubby.owner, "log off ..................... Turn logging to file off." );
-	send_msg( grubby.owner, "save memory ................. Force save of memory to file." );
+	send_msg( grubby.owner, "\00314goto <room number>" );
+	send_msg( grubby.owner, "goto the new room");
+	send_msg( grubby.owner, " " );
+	send_msg( grubby.owner, "\00314turn [on|off] lang checker");
+	send_msg( grubby.owner, "Turns on or off the foul language checker." );
+	send_msg( grubby.owner, " " );
+	send_msg( grubby.owner, "\00314stats" );
+	send_msg( grubby.owner, "Lists out all of the current settings." );
+	send_msg( grubby.owner, " " );
+	send_msg( grubby.owner, "\00314log to <file> as [html|text]");
+	send_msg( grubby.owner, "Starts loggint the room to a file in the given format." );
+	send_msg( grubby.owner, " " );
+	send_msg( grubby.owner, "\00314log off");
+	send_msg( grubby.owner, "Turn logging to file off." );
+	send_msg( grubby.owner, " " );
+	send_msg( grubby.owner, "\00314save memory");
+	send_msg( grubby.owner, "Force save of memory to file.");
 	send_msg( grubby.owner, " " );
 	send_msg( grubby.owner, " " );
 }
