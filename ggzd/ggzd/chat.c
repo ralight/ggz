@@ -25,7 +25,6 @@
 #include <config.h>
 
 #include <stdlib.h>
-#include <easysock.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -37,6 +36,7 @@
 #include <ggzd.h>
 #include <protocols.h>
 #include <hash.h>
+#include <net.h>
 #include <players.h>
 
 /* Server wide data structures */
@@ -155,7 +155,6 @@ static int chat_event_callback(void* target, int size, void* data)
 	char* name;
 	char* msg = NULL;
 	GGZPlayer* player = (GGZPlayer*)target;
-	int fd = player->fd;
 	
 
 	/* Unpack event data */
@@ -168,15 +167,9 @@ static int chat_event_callback(void* target, int size, void* data)
 	dbg_msg(GGZ_DBG_CHAT, "%s chat opcode: %d, sender: %s, msg: %s",
 		player->name, opcode, name, msg);
 
-	if (es_write_int(fd, MSG_CHAT) < 0
-	    || es_write_char(fd, opcode) < 0
-	    || es_write_string(fd, name) < 0)
+	if (net_send_chat(player, opcode, name, msg) < 0)
 		return GGZ_EVENT_ERROR;
-
-	if (opcode & GGZ_CHAT_M_MESSAGE
-	    && es_write_string(fd, msg) < 0)
-		return GGZ_EVENT_ERROR;
-	
+		
 	return GGZ_EVENT_OK;
 }
 

@@ -251,7 +251,7 @@ static void player_loop(GGZPlayer* player, int p_fd)
 
 		/* Check for message from player */
 		if (FD_ISSET(p_fd, &read_fd_set)) {
-			if ( (status = net_read_data(player, p_fd)) < 0)
+			if ( (status = net_read_data(player)) < 0)
 				break;
 		}
 		
@@ -892,49 +892,21 @@ int player_msg_from_sized(GGZPlayer* p)
 }
 
 
-int player_chat(GGZPlayer* player, int p_fd) 
+int player_chat(GGZPlayer* player, unsigned char subop, char *target, char *msg)
 {
-	unsigned char subop;
-	char *msg = NULL;
-	char t_player[MAX_USER_NAME_LEN+1];
 	int status;
 
-	if (es_read_char(p_fd, &subop) < 0)
-		return GGZ_REQ_DISCONNECT;
-
 	dbg_msg(GGZ_DBG_CHAT, "Handling chat for %s", player->name);
-
-	/* Get arguments if they are used for this subop */
-	if (subop & GGZ_CHAT_M_PLAYER) {
-		if (es_read_string(p_fd, t_player, MAX_USER_NAME_LEN+1) < 0)
-			return GGZ_REQ_DISCONNECT;
-	}
-
-	if (subop & GGZ_CHAT_M_MESSAGE) {
-		if ( (msg = malloc(MAX_CHAT_LEN+1)) == NULL)
-			err_sys_exit("malloc error in player_chat()");
-		/* FIXME: use es_r_s_a() once it supports max length*/
-		if (es_read_string(p_fd, msg, MAX_CHAT_LEN+1) < 0) {
-			free(msg);
-			return GGZ_REQ_DISCONNECT;
-		}
-	}
-
+	
 	/* Verify that we are in a regular room */
-	/* No lock needed, no one can change our room but us */
+	/* No lock needed: no one can change our room but us */
 	if (player->room == -1) {
 		dbg_msg(GGZ_DBG_CHAT, "%s tried to chat from room -1", 
 			player->name);
-		if (msg)
-			free(msg);
-		
-		if (es_write_int(p_fd, RSP_CHAT) < 0
-		    || es_write_char(p_fd, E_NOT_IN_ROOM) < 0)
+		if (net_send_chat_result(player, E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
-		return GGZ_REQ_FAIL;
 	}
 	
-
 	/* Parse subop */
 	switch (subop) {
 	case GGZ_CHAT_NORMAL:
@@ -943,7 +915,7 @@ int player_chat(GGZPlayer* player, int p_fd)
 		break;
 	case GGZ_CHAT_BEEP:
 	case GGZ_CHAT_PERSONAL:
-		status = chat_player_enqueue(t_player, subop, player, msg);
+		status = chat_player_enqueue(target, subop, player, msg);
 		break;
 	default:
 		dbg_msg(GGZ_DBG_PROTOCOL, "%s sent invalid chat subop %d", 
@@ -951,12 +923,8 @@ int player_chat(GGZPlayer* player, int p_fd)
 		status = E_BAD_OPTIONS;
 	}
 
-	/* Free message now it's been copied to chat queue */
-	if (msg)
-		free(msg);
-	
-	if (es_write_int(p_fd, RSP_CHAT) < 0
-	    || es_write_char(p_fd, status) < 0)
+	dbg_msg(GGZ_DBG_CHAT, "%s's chat result: %d", player->name, status);
+	if (net_send_chat_result(player, status) < 0)
 		return GGZ_REQ_DISCONNECT;
 	
 	/* Don't return the chat error code */

@@ -31,10 +31,12 @@
 #include <login.h>
 
 /* Read data from socket for a particu;ar player */
-int net_read_data(GGZPlayer* player, int fd);
+int net_read_data(GGZPlayer* player);
 
 int net_send_login(GGZLoginType type, GGZPlayer *player, char status, char *password);
 int net_send_motd(GGZPlayer *player);
+int net_send_chat(GGZPlayer *player, unsigned char opcode, char *name, char *msg);
+int net_send_chat_result(GGZPlayer *player, char status);
 int net_send_logout(GGZPlayer *player, char status);
 
 #endif /* _GGZ_NET_H */

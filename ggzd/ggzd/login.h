@@ -40,7 +40,7 @@ int  login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwo
 int  login_player_anon(GGZPlayer* player, char *name);
 int  login_player_new(GGZPlayer* player, char *name);
 int  login_player_normal(GGZPlayer* player, char *name, char *password);
-int  logout_player(GGZPlayer* player, int fd);
+int  logout_player(GGZPlayer* player);
 
 
 #endif /* _GGZ_LOGIN_H */

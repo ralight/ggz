@@ -190,7 +190,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
  * RSP_LOGOUT
  *  chr: success flag (0 for success, -1 for error )
  */
-int logout_player(GGZPlayer* player, int fd)
+int logout_player(GGZPlayer* player)
 {
 	dbg_msg(GGZ_DBG_CONNECTION, "Handling logout for %s", player->name);
 
