@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
+ * $Id: login.h 3420 2002-02-19 08:04:27Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -36,11 +37,12 @@ typedef enum {
 } GGZLoginType;
 
 
-int  login_player(GGZLoginType type, GGZPlayer* player, char *name, char *password);
+GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
+                                   char *name, char *password);
 int  login_player_anon(GGZPlayer* player, char *name);
 int  login_player_new(GGZPlayer* player, char *name);
 int  login_player_normal(GGZPlayer* player, char *name, char *password);
-int  logout_player(GGZPlayer* player);
+GGZPlayerHandlerStatus logout_player(GGZPlayer* player);
 
 
 #endif /* _GGZ_LOGIN_H */

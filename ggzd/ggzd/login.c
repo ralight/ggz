@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
+ * $Id: login.c 3420 2002-02-19 08:04:27Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -55,7 +56,8 @@ static int  validate_username(char *);
  *  int: game type checksum (if success)
  *  chr: reservation flag (if success)
  */
-int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *password)
+GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
+                                    char *name, char *password)
 {
 	char *ip_addr;
 	int name_ok;
@@ -201,7 +203,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
  * RSP_LOGOUT
  *  chr: success flag (0 for success, -1 for error )
  */
-int logout_player(GGZPlayer* player)
+GGZPlayerHandlerStatus logout_player(GGZPlayer* player)
 {
 	dbg_msg(GGZ_DBG_CONNECTION, "Handling logout for %s", player->name);
 

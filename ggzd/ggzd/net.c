@@ -3,7 +3,8 @@
  * Author: Brent Hendricks
  * Project: GGZ Server
  * Date: 9/22/01
- * $Id: net.c 3297 2002-02-10 07:34:26Z rgade $
+ * Desc: Functions for handling network IO
+ * $Id: net.c 3420 2002-02-19 08:04:27Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -722,7 +723,7 @@ int net_data_is_pending(GGZNetIO *net)
 
 
 /* Read in a bit more from the server and send it to the parser */
-int net_read_data(GGZNetIO *net)
+GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 {
 	char *buf;
 	int len, done;

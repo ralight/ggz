@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 3419 2002-02-19 07:18:31Z jdorje $
+ * $Id: players.c 3420 2002-02-19 08:04:27Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -83,10 +83,10 @@ static int player_check_ip_ban_list(struct in_addr *sin);
 static void* player_new(void * sock_ptr);
 static void  player_loop(GGZPlayer* player);
 static void  player_remove(GGZPlayer* player);
-static int   player_updates(GGZPlayer* player);
-static int   player_msg_to_sized(GGZPlayer* player);
+static GGZPlayerHandlerStatus   player_updates(GGZPlayer* player);
+static GGZPlayerHandlerStatus player_msg_to_sized(GGZPlayer* player);
 static int   player_transit(GGZPlayer* player, char opcode, int index);
-static int   player_send_ping(GGZPlayer *player);
+static GGZPlayerHandlerStatus player_send_ping(GGZPlayer *player);
 
 
 /*
@@ -392,9 +392,8 @@ static void player_remove(GGZPlayer* player)
  *  GGZ_REQ_FAIL         : request failed
  *  GGZ_REQ_OK           : nothing special 
  */
-static int player_updates(GGZPlayer* player)
+static GGZPlayerHandlerStatus player_updates(GGZPlayer* player)
 {
-	int status = 0;
 	int old_table = player->table;
 	
 	/* Don't send updates to people who aren't logged in */
@@ -406,10 +405,8 @@ static int player_updates(GGZPlayer* player)
 		return GGZ_REQ_DISCONNECT;
 	
 	if (player->my_events_head)
-		status = event_player_handle(player);
-
-	if (status < 0)
-		return GGZ_REQ_DISCONNECT;
+		if (event_player_handle(player) < 0)
+			return GGZ_REQ_DISCONNECT;
 
 	if (old_table == -1 && player->table != -1)
 		return GGZ_REQ_TABLE_JOIN;
@@ -472,9 +469,10 @@ GGZPlayerType player_get_type(GGZPlayer *player)
  *  GGZ_REQ_FAIL         : request failed
  *  GGZ_REQ_OK           : request succeeded.  t_fd points to new fd 
  */
-int player_table_launch(GGZPlayer* player, GGZTable *table)
+GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 {
-	int room, status;
+	int room;
+	GGZPlayerHandlerStatus status;
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table launch for %s", player->name);
 
@@ -596,7 +594,7 @@ GGZEventFuncReturn player_launch_callback(void* target, int size, void* data)
  *  GGZ_REQ_FAIL         : request failed
  *  GGZ_REQ_OK           : request succeeded. 
  */
-int player_table_join(GGZPlayer* player, int index)
+GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index)
 {
 	int status;
 
@@ -691,7 +689,7 @@ static int player_transit(GGZPlayer* player, char opcode, int index)
 }
 
 
-int player_list_players(GGZPlayer* player)
+GGZPlayerHandlerStatus player_list_players(GGZPlayer* player)
 {
 	int i, count, room;
 	GGZPlayer* p;
@@ -748,7 +746,7 @@ int player_list_players(GGZPlayer* player)
 }
 
 
-int player_list_types(GGZPlayer* player, char verbose)
+GGZPlayerHandlerStatus player_list_types(GGZPlayer* player, char verbose)
 {
 	int i, max, count = 0;
 	GameInfo info[MAX_GAME_TYPES];
@@ -791,7 +789,8 @@ int player_list_types(GGZPlayer* player, char verbose)
 }
 
 
-int player_list_tables(GGZPlayer* player, int type, char global)
+GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
+                                          char global)
 {
 	GGZTable *my_tables;
 	int count, i;
@@ -841,7 +840,7 @@ int player_list_tables(GGZPlayer* player, int type, char global)
 }
 
 
-static int player_msg_to_sized(GGZPlayer* p) 
+static GGZPlayerHandlerStatus player_msg_to_sized(GGZPlayer* p)
 {
 	char buf[4096];
 	int size;
@@ -869,7 +868,7 @@ static int player_msg_to_sized(GGZPlayer* p)
 }
 
 
-int player_msg_from_sized(GGZPlayer* p, int size, char *buf) 
+GGZPlayerHandlerStatus player_msg_from_sized(GGZPlayer* p, int size, char *buf)
 {
 	
 	if (size == 0) {
@@ -937,7 +936,7 @@ int player_chat(GGZPlayer* player, unsigned char subop, char *target, char *msg)
 }
 
 
-int player_motd(GGZPlayer* player)
+GGZPlayerHandlerStatus player_motd(GGZPlayer* player)
 {
 	dbg_msg(GGZ_DBG_CHAT, "Handling motd request for %s", player->name);
 
@@ -960,7 +959,7 @@ int player_motd(GGZPlayer* player)
 }
 
 
-int player_send_ping(GGZPlayer *player)
+GGZPlayerHandlerStatus player_send_ping(GGZPlayer *player)
 {
 	/* Send a ping and mark send time */
 	if(net_send_ping(player->net) < 0)

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 3419 2002-02-19 07:18:31Z jdorje $
+ * $Id: players.h 3420 2002-02-19 08:04:27Z jdorje $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -114,15 +114,16 @@ void player_handler_launch(int sock);
 
 GGZEventFuncReturn player_launch_callback(void* target, int size, void* data);
 
-int player_msg_from_sized(GGZPlayer* p, int size, char *buf);
+GGZPlayerHandlerStatus player_msg_from_sized(GGZPlayer* p, int size, char *buf);
 int player_chat(GGZPlayer* player, unsigned char subop, char *target, char *msg);
-int   player_table_launch(GGZPlayer* player, GGZTable *table);
-int   player_table_join(GGZPlayer* player, int index);
+GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table);
+GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index);
 int   player_table_leave(GGZPlayer* player);
-int   player_list_players(GGZPlayer* player);
-int   player_list_types(GGZPlayer* player, char verbose);
-int   player_list_tables(GGZPlayer* player, int type, char global);
-int   player_motd(GGZPlayer* player);
+GGZPlayerHandlerStatus player_list_players(GGZPlayer* player);
+GGZPlayerHandlerStatus player_list_types(GGZPlayer* player, char verbose);
+GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
+                                          char global);
+GGZPlayerHandlerStatus player_motd(GGZPlayer* player);
 
 int player_get_room(GGZPlayer *player);
 GGZPlayerType player_get_type(GGZPlayer *player);

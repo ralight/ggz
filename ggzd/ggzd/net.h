@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
+ * $Id: net.h 3420 2002-02-19 08:04:27Z jdorje $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -44,7 +45,7 @@ int net_set_dump_file(GGZNetIO *net, const char* filename);
 int net_get_fd(GGZNetIO* net);
 
 /* Read data from socket for a particular player */
-int net_read_data(GGZNetIO* net);
+GGZPlayerHandlerStatus net_read_data(GGZNetIO* net);
 
 /* Disconnect from network */
 void net_disconnect(GGZNetIO* net);

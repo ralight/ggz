@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with the room and chat facility
+ * $Id: room.h 3420 2002-02-19 08:04:27Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -93,8 +94,9 @@ extern RoomInfo room_info;
 extern void room_initialize(void);
 extern void room_create_additional(void);
 extern int room_join(GGZPlayer* player, const int);
-extern int room_list_send(GGZPlayer* player, int game, char verbose);
-extern int room_handle_join(GGZPlayer* player, int room);
+extern GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int game,
+                                             char verbose);
+extern GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room);
 extern int room_get_num_rooms(void);
 extern void room_notify_lag(char *name, int room);
 

@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
+ * $Id: room.c 3420 2002-02-19 08:04:27Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -55,7 +56,8 @@ static int show_server_info(GGZPlayer *player);
 
 
 /* Handle a REQ_LIST_ROOMS opcode */
-int room_list_send(GGZPlayer* player, int req_game, char verbose)
+GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int req_game,
+                                      char verbose)
 {
 	int i, max, count=0;
 
@@ -153,7 +155,7 @@ void room_create_additional(void)
 
 
 /* Handle the REQ_ROOM_JOIN opcode */
-int room_handle_join(GGZPlayer* player, int room)
+GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room)
 {
 	int result;
 	char *rname;
@@ -204,6 +206,8 @@ int room_handle_join(GGZPlayer* player, int room)
 
 
 /* Join a player to a room, returns explanatory code on failure */
+/* FIXME: this may return either a GGZPlayerHandlerStatus or an E_***
+   error code. */
 int room_join(GGZPlayer* player, const int room)
 {
 	int old_room;
