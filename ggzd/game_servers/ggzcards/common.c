@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: common.c 3356 2002-02-14 09:38:48Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -286,7 +286,7 @@ static void newgame(void)
 	init_cumulative_scores();
 	for (p = 0; p < game.num_players; p++)
 		set_player_message(p);
-	(void) send_newgame();
+	send_newgame_all();
 	game.dealer = random() % game.num_players;
 	set_game_state(STATE_NEXT_HAND);
 
@@ -507,6 +507,12 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	   the sync will be handled correctly. */
 	if (seats_full())
 		restore_game_state();
+		
+	/* If we're already playing, we should send the client a NEWGAME
+	   alert - although it's not really a NEWGAME but a game in
+	   progress. */
+	if (game.state > STATE_WAITFORPLAYERS)
+		send_newgame(player);
 
 	/* send all table info to joiner */
 	(void) send_sync(player);

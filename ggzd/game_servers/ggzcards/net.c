@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3347 2002-02-13 04:17:07Z jdorje $
+ * $Id: net.c 3356 2002-02-14 09:38:48Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -431,25 +431,24 @@ int send_newgame_request(player_t p)
 	return status;
 }
 
-int send_newgame(void)
+int send_newgame(player_t p)
 {
-	int fd;
+	int fd = get_player_socket(p);
+	
+	assert(get_player_status(p) == GGZ_SEAT_PLAYER);
+	
+	return write_opcode(fd, MSG_NEWGAME);
+}
+
+void send_newgame_all(void)
+{
 	player_t p;
 
-	ggzdmod_log(game.ggz, "Sending out a newgame message.");
+	ggzdmod_log(game.ggz, "Sending out a newgame message to everyone.");
 
-	for (p = 0; p < game.num_players; p++) {
-		if (get_player_status(p) == GGZ_SEAT_BOT)
-			continue;
-		fd = get_player_socket(p);
-		if (fd == -1 || write_opcode(fd, MSG_NEWGAME) < 0) {
-			ggzdmod_log(game.ggz,
-				    "ERROR: send_newgame: couldn't send newgame.");
-			return -1;
-		}
-	}
-
-	return 0;
+	for (p = 0; p < game.num_players; p++)
+		if (get_player_status(p) != GGZ_SEAT_BOT)
+			(void) send_newgame(p);
 }
 
 
