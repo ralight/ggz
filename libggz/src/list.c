@@ -71,11 +71,7 @@ GGZList* ggz_list_create(ggzEntryCompare compare_func,
  */
 int ggz_list_compare_str(void *a, void *b)
 {
-	if(!a || !b) {
-		/* debug FATAL - "NULL passed to ggz_list_compare_str" */
-		return 1;
-	}
-	return strcmp(a, b);
+	return ggz_strcmp(a, b);
 }
 
 
@@ -86,16 +82,7 @@ int ggz_list_compare_str(void *a, void *b)
  */
 void * ggz_list_create_str(void *data)
 {
-	void *new;
-
-	if(!data) {
-		/* debug FATAL - "NULL passed to ggz_list_create_str" */
-		return NULL;
-	}
-
-	new = ggz_strdup(data);
-	
-	return new;
+	return ggz_strdup(data);
 }
 
 

@@ -89,7 +89,7 @@ char* ggz_xmlelement_get_attr(GGZXMLElement *element, char *attr)
 	item = ggz_list_head(element->attributes);
 	while (item) {
 		data = ggz_list_get_data(item);
-		if (strcmp(data, attr) == 0) {
+		if (ggz_strcmp(data, attr) == 0) {
 			value = ggz_list_get_data(ggz_list_next(item));
 			break;
 		}
