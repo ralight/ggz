@@ -1,7 +1,8 @@
 ## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 2208 2001-08-23 21:38:59Z jdorje $
 
 SUBDIRS = libggzmod spades tictactoe dots lapocha reversi combat hastings \
-	  chinese-checkers chess krosswater ggzcards
+	  chinese-checkers chess krosswater ggzcards escape
 
 
 
