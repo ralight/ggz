@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(ggz-grubby, 0.0.6)
+AM_INIT_AUTOMAKE(ggz-grubby, 0.0.7pre)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
@@ -72,7 +72,14 @@ fi
 if test "$enable_ruby" = yes; then
 	echo -n "Extra check: ruby... "
 
-	incs="/usr/local/lib/ruby/1.6/i386-linux /usr/lib/ruby/1.6/i386-linux /usr/local/lib/ruby/1.7/i386-linux /usr/lib/ruby/1.7/i386-linux"
+	incs=""
+	for i in 1.7 1.6; do
+		for j in i686 i586 i486 i386; do
+			incs="$incs /usr/local/lib/ruby/$i/$j-linux";
+			incs="$incs /usr/lib/ruby/$i/$j-linux";
+		done;
+	done
+
 	AC_GGZ_FIND_FILE("ruby.h", $incs, ruby_incdir)
 	ruby_includes="$ruby_incdir"
 
