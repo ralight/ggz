@@ -50,7 +50,7 @@ void launch_create_or_raise(void)
 	gchar *text;
 	gint room;
 
-	room  = ggzcore_server_get_cur_room(server);
+	room  = (gint)ggzcore_server_get_cur_room(server);
 
         if (!launch_dialog) {
                 launch_dialog = create_dlg_launch();

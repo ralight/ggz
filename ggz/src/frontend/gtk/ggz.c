@@ -216,7 +216,7 @@ static GGZHookReturn ggz_entered(GGZEventID id, void* event_data, void* user_dat
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
-	ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
+//	ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
 
 
 	/* Hookup the chat functions to the new room */
@@ -396,7 +396,7 @@ static GGZHookReturn ggz_room_enter(GGZEventID id, void* event_data, void* user_
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
-	ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
+//	ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
 
 	return GGZ_HOOK_OK;
 }
@@ -411,7 +411,7 @@ static GGZHookReturn ggz_room_part(GGZEventID id, void* event_data, void* user_d
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
-	ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
+//	ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
 
 	return GGZ_HOOK_OK;
 }
