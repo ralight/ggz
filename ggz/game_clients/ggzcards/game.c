@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3685 2002-03-25 22:40:22Z jdorje $
+ * $Id: game.c 3699 2002-03-28 00:29:34Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -61,7 +61,7 @@ static void text_cardlist_message(const char *mark, int *lengths,
 void game_init(void)
 {
 	ggz_debug("main", "Entering game_init().");
-	statusbar_message(_("Waiting for server"));
+	statusbar_message(_("Waiting for server..."));
 }
 
 void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
@@ -78,7 +78,7 @@ void game_send_bid(int bid)
 
 	status = client_send_bid(bid);
 
-	statusbar_message(_("Sending bid to server"));
+	statusbar_message(_("Sending bid to server..."));
 
 	assert(status == 0);
 }
@@ -91,7 +91,7 @@ void game_send_options(int option_count, int *options_selection)
 
 	status = client_send_options(option_count, options_selection);
 
-	statusbar_message(_("Sending options to server"));
+	statusbar_message(_("Sending options to server..."));
 
 	assert(status == 0);
 }
@@ -108,7 +108,7 @@ void game_play_card(int card_num)
 	assert(player >= 0 && player < ggzcards.num_players);
 
 	ggz_debug("main", "Sending play of card %d to server.", card_num);
-	statusbar_message(_("Sending play to server"));
+	statusbar_message(_("Sending play to server..."));
 
 	status = client_send_play(card);
 
@@ -175,9 +175,8 @@ void game_get_newgame(void)
 
 		ggz_debug("main", "Handling newgame request from server.");
 
-		statusbar_message(_
-				  ("Select \"Start Game\" "
-				   "to begin the game."));
+		statusbar_message(_("Select \"Start Game\" "
+				    "to begin the game."));
 	}
 }
 
@@ -254,13 +253,13 @@ void game_alert_player(int player, GGZSeatType status, const char *name)
 		/* This assumes we can't have a smooth transition from one
 		   human player to another.  Could be a problem... */
 		if (ggzcards.players[player].status != GGZ_SEAT_PLAYER)
-			temp = g_strdup_printf(_("%s joined the table"),
+			temp = g_strdup_printf(_("%s joined the table."),
 					       name);
 		break;
 	case GGZ_SEAT_OPEN:
 		name = _("Empty Seat");
 		if (ggzcards.players[player].status == GGZ_SEAT_PLAYER)
-			temp = g_strdup_printf(_("%s left the table"),
+			temp = g_strdup_printf(_("%s left the table."),
 					       ggzcards.players[player].name);
 		break;
 	default:
@@ -328,7 +327,13 @@ void game_get_bid(int possible_bids, bid_t *bid_choices, char **bid_descriptions
 	table_redraw();
 #endif
 
-	statusbar_message(_("Your turn to bid"));
+	if (preferences.bid_on_table) {
+		statusbar_message(_("It's your turn to bid.  Please choose "
+		                    "a bid from the selection above."));
+	} else {
+		statusbar_message(_("It's your turn to bid.  Please choose "
+		                    "a bid from the bid window."));
+	}
 }
 
 void game_alert_bid(int bidder, bid_t bid)
@@ -341,11 +346,11 @@ void game_get_play(int hand)
 	ggz_debug("main", "Handle play request.");
 
 	if (hand == 0)
-		statusbar_message(_("Your turn to play a card"));
+		statusbar_message(_("It's your turn to play a card."));
 	else {
 		char buf[100];
 		snprintf(buf, sizeof(buf),
-			 _("Your turn to play a card from %s's hand."),
+			 _("It's your turn to play a card (from %s's hand)."),
 			 ggzcards.players[hand].name);
 		statusbar_message(buf);
 	}
@@ -451,7 +456,7 @@ int game_get_options(int option_cnt, int *choice_cnt, int *defaults,
 
 	dlg_option_display(option_cnt, choice_cnt, defaults, option_choices);
 
-	statusbar_message(_("Please select options."));
+	statusbar_message(_("Please select the game's options."));
 
 	return 0;
 }
