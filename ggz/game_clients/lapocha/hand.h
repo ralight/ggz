@@ -1,8 +1,10 @@
 struct hand_t {
-	int hand_size;
-	int card[13];
-	int selected_card;
-	int in_play_card;
+	char hand_size;
+	char card[13];
+	char selected_card;
+	char in_play_card;
 };
 
 extern struct hand_t hand;
+
+extern int hand_read_hand(void);

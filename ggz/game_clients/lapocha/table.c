@@ -46,7 +46,7 @@ static gint table_animation_callback(gpointer);
 void table_initialize(void)
 {
 	GdkBitmap *mask;
-	int i, x1, y1, x2, y2;
+	int i, x, y;
 	GtkWidget *label;
 
 	/* This starts our drawing code */
@@ -125,58 +125,46 @@ void table_initialize(void)
 			   116, 5,
 			   241, 106);
 
-/* JUST TESTING FOR NOW */
-	/* Fill hand with random cards */
-	hand.hand_size = 10;
-	hand.selected_card = -1;
-	for(i=0; i<10; i++)
-		hand.card[i] = random() % 52;
-	game.state = LP_STATE_MOVE;
-
-	/* Put some cards in the buffer */
-	for(i=0; i<10; i++) {
-		x1 = (hand.card[i] / 13) * CARDWIDTH;
-		y1 = (hand.card[i] % 13) * CARDHEIGHT;
-		x2 = 116.5 + (i * CARDWIDTH/4.0);
-		y2 = 363;
+	for(i=9; i>=0; i--) {
+		x = 116.5 + (i * CARDWIDTH/4.0);
+		y = 363;
 		gdk_draw_pixmap(table_buf,
 			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards,
-				x1, y1,
-				x2, y2,
+				1248, 71,
+				x, y,
 				CARDWIDTH, CARDHEIGHT);
 	}
 	for(i=0; i<10; i++) {
-		x1 = 10;
-		y1 = 116.5 + (i * CARDWIDTH/4.0);
+		x = 10;
+		y = 116.5 + (i * CARDWIDTH/4.0);
 		gdk_draw_pixmap(table_buf,
 			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards_b2,
 				0, 142,
-				x1, y1,
+				x, y,
 				CARDHEIGHT, CARDWIDTH);
 	}
 	for(i=9; i>=0; i--) {
-		x1 = 121.5 + (i * CARDWIDTH/4.0);
-		y1 = 10;
+		x = 121.5 + (i * CARDWIDTH/4.0);
+		y = 10;
 		gdk_draw_pixmap(table_buf,
 			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards_b3,
 				71, 0,
-				x1, y1,
+				x, y,
 				CARDWIDTH, CARDHEIGHT);
 	}
 	for(i=9; i>=0; i--) {
-		x1 = 363;
-		y1 = 121.5 + (i * CARDWIDTH/4.0);
+		x = 363;
+		y = 121.5 + (i * CARDWIDTH/4.0);
 		gdk_draw_pixmap(table_buf,
 			        f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
 				cards_b4,
 				0, 71,
-				x1, y1,
+				x, y,
 				CARDHEIGHT, CARDWIDTH);
 	}
-/* END OF JUST TESTING */
 
 	/* Display the buffer */
 	gdk_draw_pixmap(f1->window,
@@ -188,19 +176,19 @@ void table_initialize(void)
 
 	/* Add text labels to display */
 	/* Name entries */
-	l_name[0] = gtk_label_new("Player One");
+	l_name[0] = gtk_label_new("Empty Seat");
 	gtk_fixed_put(GTK_FIXED(f1), l_name[0], 8, 358);
 	gtk_widget_set_usize(l_name[0], 98, -1);
 	gtk_widget_show(l_name[0]);
-	l_name[1] = gtk_label_new("Player Two");
+	l_name[1] = gtk_label_new("Empty Seat");
 	gtk_fixed_put(GTK_FIXED(f1), l_name[1], 8, 6);
 	gtk_widget_set_usize(l_name[1], 98, -1);
 	gtk_widget_show(l_name[1]);
-	l_name[2] = gtk_label_new("Player Three");
+	l_name[2] = gtk_label_new("Empty Seat");
 	gtk_fixed_put(GTK_FIXED(f1), l_name[2], 360, 6);
 	gtk_widget_set_usize(l_name[2], 98, -1);
 	gtk_widget_show(l_name[2]);
-	l_name[3] = gtk_label_new("Player Four");
+	l_name[3] = gtk_label_new("Empty Seat");
 	gtk_fixed_put(GTK_FIXED(f1), l_name[3], 360, 358);
 	gtk_widget_set_usize(l_name[3], 98, -1);
 	gtk_widget_show(l_name[3]);
@@ -317,7 +305,7 @@ void table_handle_click_event(GdkEventButton *event)
 	/* Real quick, see if we even care */
 	if(event->x < 116 || event->x > 400
 	   || event->y < 363 || event->y > 512
-	   || game.state != LP_STATE_MOVE)
+	   || game.state != LP_STATE_PLAY)
 		return;
 
 	/* Calculate our card target */
@@ -576,7 +564,7 @@ gint table_animation_callback(gpointer ignored)
 	/* If we are there, stop the animation process */
 	if(new_x == anim.dest_x && new_y == anim.dest_y) {
 		/* We'll go to WAIT state in the real game */
-		game.state = LP_STATE_MOVE;
+		game.state = LP_STATE_PLAY;
 		return FALSE;
 	}
 
@@ -586,4 +574,53 @@ gint table_animation_callback(gpointer ignored)
 
 	/* Continue animating */
 	return TRUE;
+}
+
+
+/* table_set_name()
+ *   Exposed function to set name on display
+ */
+void table_set_name(int p, char *name)
+{
+	gtk_label_set_text(GTK_LABEL(l_name[p]), name);
+}
+
+
+/* table_display_hand()
+ *   Exposed function to show the player's hand
+ */
+void table_display_hand(void)
+{
+	int i, x1, y1, x2, y2;
+
+	/* Clean the card area */
+	gdk_draw_rectangle(table_buf,
+		   	f1_style->bg_gc[GTK_WIDGET_STATE(f1)],
+		   	TRUE,
+		   	112, 358,
+		   	239, 104);
+
+	/* Draw the cards, skipping any missing cards (syncing player) */
+	for(i=0; i<hand.hand_size; i++) {
+		if(hand.card[i] < 0)
+			continue;
+		x1 = (hand.card[i] / 13) * CARDWIDTH;
+		y1 = (hand.card[i] % 13) * CARDHEIGHT;
+		x2 = 116.5 + (i * CARDWIDTH/4.0);
+		y2 = 363;
+		gdk_draw_pixmap(table_buf,
+		        	f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+				cards,
+				x1, y1,
+				x2, y2,
+				CARDWIDTH, CARDHEIGHT);
+	}
+
+	/* And refresh the on-screen image */
+	gdk_draw_pixmap(f1->window,
+			f1_style->fg_gc[GTK_WIDGET_STATE(f1)],
+			table_buf,
+			112, 358,
+			112, 358,
+			239, 104);
 }

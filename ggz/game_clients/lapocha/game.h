@@ -15,32 +15,31 @@ extern struct game_t game;
 /* Messages from server */
 #define LP_MSG_SEAT     0
 #define LP_MSG_PLAYERS  1
-#define LP_MSG_MOVE_H   2
-#define LP_MSG_MOVE_V   3
-#define LP_MSG_GAMEOVER 4
-#define LP_REQ_MOVE     5
-#define LP_RSP_MOVE     6
-#define LP_SND_SYNC     7
-#define LP_MSG_OPTIONS  8
-#define LP_REQ_OPTIONS  9
+#define LP_MSG_GAMEOVER 2
+#define LP_MSG_HAND     3
+#define LP_REQ_BID	4
+#define LP_RSP_BID	5
+#define LP_MSG_BID	6
+#define LP_REQ_PLAY     7
+#define LP_RSP_PLAY     8
+#define LP_MSG_PLAY	9
+#define LP_SND_SYNC     10
 
-/* Move errors */
+/* Play errors */
 #define LP_ERR_STATE   -1
 #define LP_ERR_TURN    -2
-#define LP_ERR_BOUND   -3
-#define LP_ERR_FULL    -4
+#define LP_ERR_INVALID -3
 
 /* Messages from client */
-#define LP_SND_MOVE_H   0
-#define LP_SND_MOVE_V   1
+#define LP_SND_PLAY     0
+#define LP_SND_BID      1
 #define LP_REQ_SYNC     2
-#define LP_SND_OPTIONS  3
-#define LP_REQ_NEWGAME  4
+#define LP_REQ_NEWGAME  3
 
 /* LaPocha game states */
 #define LP_STATE_INIT		0
 #define LP_STATE_WAIT		1
-#define LP_STATE_MOVE		2
+#define LP_STATE_PLAY		2
 #define LP_STATE_ANIM		3
 #define LP_STATE_DONE		4
 #define LP_STATE_OPPONENT	5
@@ -55,4 +54,3 @@ extern struct game_t game;
 
 /* GGZ define */
 #define GGZ_SEAT_OPEN	       -1
-
