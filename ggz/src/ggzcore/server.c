@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 6883 2005-01-24 17:44:11Z jdorje $
+ * $Id: server.c 6901 2005-01-25 17:23:50Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -992,7 +992,6 @@ int ggzcore_channel_connect(const char *host, unsigned int port,
 	 * error handling.  There's also a major problem that it blocks the
 	 * whole time while the connection is being made. */
 	server = ggzcore_server_new();
-	ggzcore_server_log_session(server, "channel.xml");
 	server->is_channel = 1;
 	server->channel_complete = server->channel_failed = 0;
 	if (ggzcore_server_set_hostinfo(server, host, port, 0) < 0
