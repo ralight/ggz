@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 8/28/01
  * Desc: GGZD game module functions
- * $Id: ggzdmod.c 2322 2001-08-29 07:03:38Z jdorje $
+ * $Id: ggzdmod.c 2323 2001-08-29 07:12:17Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -77,6 +77,19 @@ int ggzdmod_req_gameleave(int fd, char *name)
 	    || es_write_string(fd, name) < 0)
 		return -1;
 	return 0;
+}
+
+int ggzdmod_handle_log(int fd, void *data, char debug)
+{
+	char *msg;
+	int level, status;
+
+	if (es_read_int(fd, &level) < 0 || es_read_string_alloc(fd, &msg) < 0)
+		return -1;
+
+	status = table_log(data, msg, debug);
+	free(msg);
+	return status;
 }
 
 int ggzdmod_dispatch(int fd, void *data)
