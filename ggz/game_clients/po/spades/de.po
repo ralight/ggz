@@ -1,0 +1,251 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2002-04-04 10:14+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../spades/gtk_dlg_about.c:49
+msgid "About GtkSpades"
+msgstr "Über GtkSpades"
+
+#: ../spades/gtk_dlg_about.c:55
+#, c-format
+msgid "GtkSpades Client Version %s\n"
+msgstr "GtkSpades Client Version %s\n"
+
+#: ../spades/gtk_dlg_about.c:58
+msgid "Copyright 1999: Brent Hendricks"
+msgstr "Copyright 1999: Brent Hendricks"
+
+#: ../spades/gtk_dlg_about.c:67 ../spades/gtk_dlg_error.c:71
+#: ../spades/gtk_dlg_stat.c:93
+msgid "OK"
+msgstr "OK"
+
+#: ../spades/gtk_dlg_disconnect.c:56
+msgid "Disconnect from Server"
+msgstr "Trenne Verbindung zum Server"
+
+#: ../spades/gtk_dlg_disconnect.c:61
+msgid "Really Disconnect?"
+msgstr "Wirklich trennen?"
+
+#: ../spades/gtk_dlg_disconnect.c:66 ../spades/gtk_dlg_options.c:162
+#: ../spades/gtk_dlg_options.c:352 ../spades/gtk_dlg_stat.c:77
+msgid "No"
+msgstr "Nein"
+
+#: ../spades/gtk_dlg_disconnect.c:67 ../spades/gtk_dlg_options.c:162
+#: ../spades/gtk_dlg_options.c:348 ../spades/gtk_dlg_stat.c:76
+msgid "Yes"
+msgstr "Ja"
+
+#: ../spades/gtk_dlg_error.c:50
+msgid "Error!"
+msgstr "Fehler!"
+
+#: ../spades/gtk_dlg_error.c:52
+msgid "Warning!"
+msgstr "Warnung!"
+
+#: ../spades/gtk_dlg_error.c:60
+msgid "An error occurred!"
+msgstr "Ein Fehler ist aufgetreten!"
+
+#: ../spades/gtk_dlg_error.c:62
+msgid "Please note!"
+msgstr "Bitte beachten!"
+
+#: ../spades/gtk_dlg_options.c:71
+msgid "Options"
+msgstr "Optionen"
+
+#: ../spades/gtk_dlg_options.c:95
+msgid "Player Options"
+msgstr "Spieler-Optionen"
+
+#: ../spades/gtk_dlg_options.c:96
+msgid "Game Options"
+msgstr "Spiel-Optionen"
+
+#: ../spades/gtk_dlg_options.c:106 ../spades/gtk_dlg_options.c:107
+#: ../spades/gtk_dlg_options.c:108 ../spades/gtk_dlg_options.c:334
+msgid "Human"
+msgstr "Mensch"
+
+#: ../spades/gtk_dlg_options.c:136 ../spades/gtk_dlg_options.c:139
+#: ../spades/gtk_dlg_options.c:142
+msgid "Click to toggle Human/Computer player"
+msgstr "Klick um zwischen Mensch und Computer zu wechseln"
+
+#: ../spades/gtk_dlg_options.c:173
+msgid "Minimum Bid :"
+msgstr "Minimalangebot :"
+
+#: ../spades/gtk_dlg_options.c:174
+msgid "Game ends at :"
+msgstr "Spiel hört auf bei :"
+
+#: ../spades/gtk_dlg_options.c:175
+msgid "Nil bids allowed :"
+msgstr "Nichts-Angebote erlaubt :"
+
+#: ../spades/gtk_dlg_options.c:185
+msgid "Start"
+msgstr "Start"
+
+#: ../common/dlg_exit.c:67 ../spades/gtk_dlg_options.c:186
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: ../spades/gtk_dlg_options.c:330
+msgid "Computer"
+msgstr "Computer"
+
+#: ../spades/gtk_dlg_stat.c:63
+msgid "Session Statistics"
+msgstr "Ablaufstatistiken"
+
+#: ../spades/gtk_dlg_stat.c:68
+msgid "Game Statistics"
+msgstr "Spielstatistiken"
+
+#: ../spades/gtk_dlg_stat.c:69
+msgid "Would you like to play again?"
+msgstr "Willst du nochmal spielen?"
+
+#: ../spades/gtk_dlg_stat.c:122
+#, c-format
+msgid "Game %d:  %4d  %4d  (%c)"
+msgstr "Spiel %d: %4d %4d  (%c)"
+
+#: ../spades/gtk_dlg_stat.c:133
+msgid "(No statistics yet)"
+msgstr "(Noch keine Statistiken)"
+
+#: ../spades/gtk_io.c:382
+#, c-format
+msgid "%s and %s"
+msgstr "%s und %s"
+
+#: ../spades/gtk_io.c:387
+#, c-format
+msgid "Score: % 4d"
+msgstr "Punkte: % 4d"
+
+#: ../spades/gtk_io.c:397
+#, c-format
+msgid "  Bid: n%3d "
+msgstr "  Angebot: n%3d "
+
+#: ../spades/gtk_io.c:404
+#, c-format
+msgid "  Bid:  %3d "
+msgstr "  Angebot:  %3d "
+
+#: ../spades/gtk_io.c:409
+msgid "  Bid:  "
+msgstr "  Angebot:  "
+
+#: ../spades/gtk_io.c:435
+msgid "Your bid: "
+msgstr "Dein Angebot: "
+
+#: ../spades/gtk_io.c:441
+msgid "Please play a card"
+msgstr "Bitte spiele eine Karte"
+
+#: ../spades/gtk_menu.c:49
+msgid "/_Game"
+msgstr "/_Spiel"
+
+#: ../spades/gtk_menu.c:50
+msgid "/Game/_New"
+msgstr "/Spiel/_Neu"
+
+#: ../spades/gtk_menu.c:51
+msgid "/Game/_End"
+msgstr "/Spiel/_Ende"
+
+#: ../spades/gtk_menu.c:52
+msgid "/Game/_Statistics"
+msgstr "/Spiel/_Statistiken"
+
+#: ../spades/gtk_menu.c:53
+msgid "/Game/sep1"
+msgstr "/Spiel/sep1"
+
+#: ../spades/gtk_menu.c:54
+msgid "/Game/_Quit"
+msgstr "/Spiel/_Beenden"
+
+#: ../spades/gtk_menu.c:55
+msgid "/_Help"
+msgstr "/_Hilfe"
+
+#: ../spades/gtk_menu.c:57
+msgid "/Help/_About"
+msgstr "/Hilfe/_Über"
+
+#: ../spades/gtk_menu.c:78
+msgid "<main>/Game/End"
+msgstr "<main>/Spiel/Ende"
+
+#: ../spades/gtk_play.c:202
+msgid "Bid"
+msgstr "Angebot"
+
+#: ../spades/gtk_play.c:215
+msgid "Send Bid"
+msgstr "Sende Angebot"
+
+#: ../spades/gtk_play.c:466
+msgid "You already played that card"
+msgstr "Du hast diese Karte bereits gespielt"
+
+#: ../spades/gtk_play.c:470
+msgid "Hey, no cheating, you're not out yet"
+msgstr "Hey, kein Betrug, du bist noch nicht dran"
+
+#: ../spades/gtk_play.c:511
+msgid "Invalid Bid"
+msgstr "Ungültiges Angebot"
+
+#: ../spades/gtk_play.c:515
+msgid "Your team must bid at least the minimum"
+msgstr "Dein Team darf nicht weniger als das Minimum anbieten"
+
+#: ../common/dlg_exit.c:50
+msgid "Are you sure you want to exit?"
+msgstr "Bist du sicher daß du beenden willst?"
+
+#: ../common/dlg_exit.c:52
+msgid ""
+"Are you sure you want to exit?\n"
+"You will not be able to rejoin."
+msgstr ""
+"Bist du sicher daß du beenden willst?\n"
+"Du kannst nicht wieder teilnehmen."
+
+#: ../common/dlg_exit.c:57
+msgid "Really Exit?"
+msgstr "Wirklich beenden?"
+
+#: ../common/dlg_exit.c:66
+msgid "Exit"
+msgstr "Beenden"
+
+#: ../common/ggzintl.c:41
+#, c-format
+msgid "nls enabled: %s"
+msgstr "nls eingeschalten: %s"
