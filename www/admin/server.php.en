@@ -24,7 +24,7 @@ The GGZ Gaming Zone Main Server (ggzd).
 <br>
 
 <i>Detailed information</i><br>
-The GGZ protocol can be looked up <a href="/docs/spec/">here</a>.
+The GGZ protocol can be looked up <a href="/docs/design/html/">here</a>.
 People who want to run a GGZ server should definitely read the
 <a href="/docs/guides/hosting/">GGZ Hosting Guide</a>.
 
