@@ -27,6 +27,10 @@ If a web page is available in language x.php.foo, but the browser only accepts
 bar, no web page at all is served. Adding x.php would however always override
 the browser language. The key is to have x.php.php as the fallback solution.
 
+The menus are clever about using a common language (like en) if a browser only
+supports a region-specific language (like en-us). The content is not, as it is
+apache's task to find the correct page.
+
 Maintenance
 -----------
 The script missingtranslation.pl should be called from time to time,
@@ -40,4 +44,9 @@ later enhancements by creating a directory /file/ and renaming /file.php to
 /file/index.php.
 Images are to be placed in /pics/section/, or (if /section/ exists)
 /section/pics/.
+
+TODO
+----
+- replace <? ?> with <?php ?>
+- use absolute includes using DOCUMENT_ROOT for header and footer
 
