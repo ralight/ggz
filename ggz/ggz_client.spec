@@ -36,12 +36,12 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %config /etc/ggz.rc
 
 /usr/bin/ggz
-/usr/include/easysock.h
 /usr/lib/ggz
-/usr/lib/libeasysock.a
-/usr/lib/libeasysock.la
-/usr/lib/libeasysock.so.0.0.0
 
 %changelog
+%changelog
+* Mon Apr 24 2000 Brent Hendricks <bmh@users.sourceforge.net>
+- Removed easysock files from list
+
 * Thu Apr 20 2000 Rich Gade <rgade@users.sourceforge.net>
 - Rewrote the server spec file for the Gnu Gaming Zone client
