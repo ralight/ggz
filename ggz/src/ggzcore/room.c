@@ -62,7 +62,6 @@ static char* _ggzcore_room_events[] = {
 	"GGZ_TABLE_JOIN_FAIL",
 	"GGZ_TABLE_LEFT",
 	"GGZ_TABLE_LEAVE_FAIL",
-	"GGZ_TABLE_DATA",
 	"GGZ_PLAYER_LAG"
 };
 
@@ -290,15 +289,6 @@ int ggzcore_room_leave_table(GGZRoom *room, int force)
 {
 	if (room && room->server)
 		return _ggzcore_room_leave_table(room, force);
-	else
-		return -1;
-}
-
-
-int ggzcore_room_send_game_data(GGZRoom *room, char *buffer)
-{
-	if (room && buffer)
-		return _ggzcore_room_send_game_data(room, buffer);
 	else
 		return -1;
 }
@@ -918,29 +908,6 @@ int _ggzcore_room_leave_table(struct _GGZRoom *room, int force)
 	
 	return status;
 }
-
-
-int _ggzcore_room_send_game_data(struct _GGZRoom *room, char *buffer)
-{
-	int size;
-	char *buf_offset;
-	struct _GGZNet *net;
-
-	/* Extract size from first bytes of buffer */
-	size = *(int*)buffer;
-	buf_offset = buffer + sizeof(size);
-
-	net = _ggzcore_server_get_net(room->server);
-	return _ggzcore_net_send_game_data(net, size, buf_offset);
-}
-
-
-void _ggzcore_room_recv_game_data(struct _GGZRoom *room, char *buffer)
-{
-	_ggzcore_room_event(room, GGZ_TABLE_DATA, buffer);
-}
-
-
 
 
 /* Functions for attaching hooks to GGZRoom events */

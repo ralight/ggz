@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 3734 2002-04-04 09:26:47Z dr_maux $
+ * $Id: ggzcore.h 4164 2002-05-05 21:13:29Z bmh $
  *
  * Interface file to be included by client frontends
  *
@@ -166,7 +166,10 @@ typedef enum {
 	GGZ_PROTOCOL_ERROR,
 	
 	GGZ_CHAT_FAIL,
-	GGZ_STATE_CHANGE
+	GGZ_STATE_CHANGE,
+	GGZ_CHANNEL_CONNECTED,
+	GGZ_CHANNEL_READY,
+	GGZ_CHANNEL_FAIL
 } GGZServerEvent;
 
 
@@ -186,7 +189,6 @@ typedef enum {
 	GGZ_TABLE_JOIN_FAIL,
 	GGZ_TABLE_LEFT,
 	GGZ_TABLE_LEAVE_FAIL,
-	GGZ_TABLE_DATA,
 	GGZ_PLAYER_LAG
 } GGZRoomEvent;
 
@@ -196,7 +198,6 @@ typedef enum {
 	GGZ_GAME_LAUNCH_FAIL,
 	GGZ_GAME_NEGOTIATED,
 	GGZ_GAME_NEGOTIATE_FAIL,
-	GGZ_GAME_DATA,
 	GGZ_GAME_OVER,
 	GGZ_GAME_IO_ERROR,
 	GGZ_GAME_PROTO_ERROR,
@@ -419,6 +420,20 @@ char*        ggzcore_server_get_password(GGZServer *server);
  */
 int          ggzcore_server_get_fd(GGZServer *server);
 
+
+/** @brief Get the socket used for direct gane connections
+ *
+ *  This returns the file descriptor of the socket for
+ *  the TCP game connection.  This will be handed off to a game module 
+ *  when it is ready.
+ *
+ *  @param server The GGZ server object.
+ *  @return The file descriptor of the connection socket.
+ *  @see ggzcore_server_create_channel
+ */
+int ggzcore_server_get_channel(GGZServer *server);
+
+
 /** @brief Get the state of the server connection.
  *
  *  @param server The GGZ server object.
@@ -475,6 +490,8 @@ int ggzcore_server_is_at_table(GGZServer *server);
  */
 int ggzcore_server_connect(GGZServer *server);
 
+int ggzcore_server_create_channel(GGZServer *server);
+
 /** @brief Log in to the server.
  *
  *  Call this function to log in to the server once a connection
@@ -501,7 +518,7 @@ int ggzcore_server_disconnect(GGZServer *server);
 
 /* Functions for data processing */
 int ggzcore_server_data_is_pending(GGZServer *server);
-int ggzcore_server_read_data(GGZServer *server);
+int ggzcore_server_read_data(GGZServer *server, int fd);
 int ggzcore_server_write_data(GGZServer *server);
 
 /* Free GGZServer object and accompanying data */
@@ -568,7 +585,6 @@ int ggzcore_room_chat(GGZRoom *room,
 int ggzcore_room_launch_table(GGZRoom *room, GGZTable *table);
 int ggzcore_room_join_table(GGZRoom *room, const unsigned int num);
 int ggzcore_room_leave_table(GGZRoom *room, int force);
-int ggzcore_room_send_game_data(GGZRoom *room, char *buffer);
 
 
 /* Functions for manipulating GGZPlayer objects */
@@ -849,20 +865,13 @@ int ggzcore_game_remove_event_hook_id(GGZGame *game,
 				      const GGZGameEvent event, 
 				      const unsigned int hook_id);
 
-
-/* Functions for data processing */
-int ggzcore_game_data_is_pending(GGZGame *game);
-int ggzcore_game_read_data(GGZGame *game);
-int ggzcore_game_write_data(GGZGame *game);
-
-
-int        ggzcore_game_get_fd(GGZGame *game);
+int  ggzcore_game_get_fd(GGZGame *game);
+void ggzcore_game_set_fd(GGZGame *game, unsigned int fd);
 GGZModule* ggzcore_game_get_module(GGZGame *game);
 
 
 int ggzcore_game_launch(GGZGame *game);
 int ggzcore_game_join(GGZGame *game);
-int ggzcore_game_send_data(GGZGame *game, char *buffer);
 			   
 
 #ifdef __cplusplus

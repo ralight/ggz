@@ -135,7 +135,6 @@ static void _ggzcore_net_handle_player(GGZNet*, GGZXMLElement*);
 static void _ggzcore_net_handle_table(GGZNet*, GGZXMLElement*);
 static void _ggzcore_net_handle_seat(GGZNet*, GGZXMLElement*);
 static void _ggzcore_net_handle_chat(GGZNet*, GGZXMLElement*);
-static void _ggzcore_net_handle_data(GGZNet*, GGZXMLElement*);
 static void _ggzcore_net_handle_ping(GGZNet*, GGZXMLElement*);
 static void _ggzcore_net_handle_session(GGZNet*, GGZXMLElement*);
 
@@ -164,7 +163,6 @@ static void _ggzcore_net_dump_data(struct _GGZNet *net, char *data, int size);
 static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZSeat *seat);
 static void _ggzcore_net_send_header(GGZNet *net);
 static int _ggzcore_net_send_line(GGZNet *net, char *line, ...);
-static int _ggzcore_net_send_string(GGZNet *net, char *fmt, ...);
 static int safe_atoi(char *string);
 
 
@@ -324,6 +322,21 @@ int _ggzcore_net_send_login(struct _GGZNet *net)
 
 	if (status < 0)
 		_ggzcore_net_error(net, "Sending login");
+
+	return status;
+}
+
+
+int _ggzcore_net_send_channel(struct _GGZNet *net)
+{
+	char *id;
+	int status = 0;
+
+	id = _ggzcore_server_get_handle(net->server);
+	
+	status = _ggzcore_net_send_line(net, "<CHANNEL ID='%s' />", id);
+	if (status < 0)
+		_ggzcore_net_error(net, "Sending channel");
 
 	return status;
 }
@@ -540,25 +553,6 @@ int _ggzcore_net_send_table_desc_update(struct _GGZNet *net, struct _GGZTable *t
 }
 
 
-int _ggzcore_net_send_game_data(struct _GGZNet *net, int size, char *data)
-{
-	int i, status = 0;
-	char buf[5];
-
-	ggz_debug("GGZCORE:NET", "Sending game data: %d bytes", size);
-
-	_ggzcore_net_send_string(net, "<DATA SIZE='%d'><![CDATA[", size);
-	buf[0] = '\0';
-	for (i = 0; i < size; i++) {
-		sprintf(buf, "%d ", data[i]);
-		write(net->fd, buf, strlen(buf));
-	}
-	_ggzcore_net_send_string(net, "]]></DATA>");
-
-	return status;
-}
-
-
 int _ggzcore_net_send_logout(struct _GGZNet *net)
 {
 	int status = 0;
@@ -633,7 +627,7 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 	if (done) {
 		_ggzcore_server_protocol_error(net->server, "Server disconnected");
 		_ggzcore_net_disconnect(net);
-		_ggzcore_server_set_logout_status(net->server, -1);
+		_ggzcore_server_session_over(net->server, net);
 	}
 	else if (!XML_ParseBuffer(net->parser, len, done)) {
 		ggz_debug("GGZCORE:XML", "Parse error at line %d, col %d:%s",
@@ -747,8 +741,6 @@ static GGZXMLElement* _ggzcore_net_new_element(char *tag, char **attrs)
 		process_func = _ggzcore_net_handle_seat;
 	else if (strcmp(tag, "CHAT") == 0)
 		process_func = _ggzcore_net_handle_chat;
-	else if (strcmp(tag, "DATA") == 0)
-		process_func = _ggzcore_net_handle_data;
 	else if (strcmp(tag, "DESC") == 0)
 		process_func = _ggzcore_net_handle_desc;
 	else if (strcmp(tag, "PASSWORD") == 0)
@@ -765,7 +757,7 @@ static GGZXMLElement* _ggzcore_net_new_element(char *tag, char **attrs)
 
 
 /* Functions for <SERVER> tag */
-static void _ggzcore_net_handle_server(GGZNet *net, GGZXMLElement *server)
+void _ggzcore_net_handle_server(GGZNet *net, GGZXMLElement *server)
 {
 	char *name, *id, *status;
 	int version, chatlen;
@@ -787,10 +779,10 @@ static void _ggzcore_net_handle_server(GGZNet *net, GGZXMLElement *server)
 			/* Everything checked out so start session */
 			_ggzcore_net_send_header(net);
 
-			_ggzcore_server_set_negotiate_status(net->server, 0);
+			_ggzcore_server_set_negotiate_status(net->server, net, 0);
 		}
 		else
-			_ggzcore_server_set_negotiate_status(net->server, -1);
+			_ggzcore_server_set_negotiate_status(net->server, net, -1);
 	}
 }
 
@@ -1660,40 +1652,6 @@ static void _ggzcore_net_handle_chat(GGZNet *net, GGZXMLElement *chat)
 }
 
 
-/* Functions for <DATA> tag */
-static void _ggzcore_net_handle_data(GGZNet *net, GGZXMLElement *data)
-{
-	GGZRoom *room;
-	int i, size;
-	char buffer[4096 + sizeof(size)];
-	char *buf_offset;
-	char *msg;
-	char *token;
-
-	if (data) {
-
-		/* Grab data from tag */
-		size = safe_atoi(ggz_xmlelement_get_attr(data, "SIZE"));
-		msg = ggz_xmlelement_get_text(data);
-		
-		room = ggzcore_server_get_cur_room(net->server);
-		
-		/* Leave room for storing 'size' in the first buf_offset bytes */
-		*(int*)buffer = size;
-		buf_offset = buffer + sizeof(size);
-
-		token = strtok(msg, " ");
-		for (i = 0; i < size; i++) {
-			buf_offset[i] = safe_atoi(token);
-			token = strtok(NULL, " ");
-		}
-		/*memcpy(buf_offset, msg, data->size);*/
-
-		_ggzcore_room_recv_game_data(room, buffer);
-	}
-}
-
-
 /* Function for <PING> tag */
 static void _ggzcore_net_handle_ping(GGZNet *net, GGZXMLElement *data)
 {
@@ -1705,13 +1663,11 @@ static void _ggzcore_net_handle_ping(GGZNet *net, GGZXMLElement *data)
 /* Function for <SESSION> tag */
 static void _ggzcore_net_handle_session(GGZNet *net, GGZXMLElement *data)
 {
-	/* Server is ending session */
-	_ggzcore_net_disconnect(net);
-	_ggzcore_server_set_logout_status(net->server, 1);
+	_ggzcore_server_session_over(net->server, net);
 }
 
 /* Send the session header */
-static void _ggzcore_net_send_header(GGZNet *net)
+void _ggzcore_net_send_header(GGZNet *net)
 {
 	_ggzcore_net_send_line(net, "<?xml version='1.0' encoding='ISO-8859-1'?>");
 	_ggzcore_net_send_line(net, "<SESSION>");
@@ -1727,18 +1683,6 @@ static int _ggzcore_net_send_line(GGZNet *net, char *line, ...)
 	vsprintf(buf, line, ap);
 	va_end(ap);
 	strcat(buf, "\n");
-	return write(net->fd, buf, strlen(buf));
-}
-
-
-static int _ggzcore_net_send_string(GGZNet *net, char *fmt, ...)
-{
-	char buf[4096];
-	va_list ap;
-
-	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
-	va_end(ap);
 	return write(net->fd, buf, strlen(buf));
 }
 

@@ -64,8 +64,7 @@ void _ggzcore_server_set_room(struct _GGZServer *server,
 			      struct _GGZRoom *room);
 
 /* functions to pass status of other information to server object */
-void _ggzcore_server_set_negotiate_status(struct _GGZServer *server, 
-					  int status);
+void _ggzcore_server_set_negotiate_status(struct _GGZServer *server, struct _GGZNet *net, int status);
 void _ggzcore_server_set_login_status(struct _GGZServer *server, 
 				      int status);
 void _ggzcore_server_set_room_join_status(struct _GGZServer *server, 
@@ -79,14 +78,14 @@ void _ggzcore_server_set_table_join_status(struct _GGZServer *server,
 					   int status);
 void _ggzcore_server_set_table_leave_status(struct _GGZServer *server, 
 					    int status);
-void _ggzcore_server_set_logout_status(struct _GGZServer *server, 
-				       int status);
+void _ggzcore_server_session_over(struct _GGZServer *server, struct _GGZNet *net);
 
 /* functions to perform an action */
 int _ggzcore_server_log_session(struct _GGZServer *server, 
 				const char *filename);
 void _ggzcore_server_reset(struct _GGZServer *server);
 int _ggzcore_server_connect(struct _GGZServer *server);
+int _ggzcore_server_create_channel(struct _GGZServer *server);
 int _ggzcore_server_login(struct _GGZServer *server);
 int _ggzcore_server_load_motd(struct _GGZServer *server);
 int _ggzcore_server_load_typelist(struct _GGZServer *server, 

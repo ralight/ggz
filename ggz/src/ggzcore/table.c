@@ -279,9 +279,9 @@ void _ggzcore_table_init(struct _GGZTable *table,
 	table->desc = ggz_strdup(desc);
 
 	table->num_seats = num_seats;
+	ggz_debug("GGZCORE:TABLE", "Allocating %d seats", num_seats);
 	if (num_seats)
 		table->seats = ggz_malloc(num_seats * sizeof(struct _GGZSeat));
-	ggz_debug("GGZCORE:TABLE", "Allocating %d seats", num_seats);
 
 	for (i = 0; i < num_seats; i++) {
 		table->seats[i].index = i;

@@ -53,6 +53,7 @@ void _ggzcore_net_disconnect(struct _GGZNet *net);
 
 /* Functions for sending data/requests to server */
 int _ggzcore_net_send_login(struct _GGZNet *net);
+int _ggzcore_net_send_channel(struct _GGZNet *net);
 int _ggzcore_net_send_motd(struct _GGZNet *net);
 int _ggzcore_net_send_list_types(struct _GGZNet *net, 
 				 const char verbose);

@@ -58,11 +58,11 @@ int _ggzcore_game_read_data(struct _GGZGame *game);
 int _ggzcore_game_write_data(struct _GGZGame *game);
 
 int _ggzcore_game_get_fd(struct _GGZGame *game);
+void _ggzcore_game_set_fd(struct _GGZGame *game, int fd);
 struct _GGZModule* _ggzcore_game_get_module(struct _GGZGame *game);
 
 int _ggzcore_game_launch(struct _GGZGame *game);
 int _ggzcore_game_join(struct _GGZGame *game);
-int _ggzcore_game_send_data(struct _GGZGame *game, char *buffer);
 RETSIGTYPE _ggzcore_game_dead(int sig);			    
 
 #endif /* __GAME_H_ */

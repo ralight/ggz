@@ -57,7 +57,6 @@ static char* _ggzcore_game_events[] = {
 	"GGZ_GAME_LAUNCH_FAIL",
 	"GGZ_GAME_NEGOTIATED",
 	"GGZ_GAME_NEGOTIATE_FAIL",
-	"GGZ_GAME_DATA",
 	"GGZ_GAME_OVER",
 	"GGZ_GAME_IO_ERROR",
 	"GGZ_GAME_PROTO_ERROR"
@@ -165,39 +164,19 @@ int ggzcore_game_remove_event_hook_id(GGZGame *game,
 }
 
 
-int ggzcore_game_data_is_pending(GGZGame *game)
-{
-	if (game && game->fd != -1)
-		return _ggzcore_game_data_is_pending(game);
-	else
-		return 0;
-}
-
-
-int ggzcore_game_read_data(GGZGame *game)
-{
-	if (game && game->fd != -1)
-		return _ggzcore_game_read_data(game);
-	else
-		return -1;
-}
-		
-
-int ggzcore_game_write_data(GGZGame *game)
-{
-	if (game && game->fd != -1)
-		return _ggzcore_game_write_data(game);
-	else
-		return -1;
-}
-
-
 int ggzcore_game_get_fd(GGZGame *game)
 {
 	if (game)
 		return _ggzcore_game_get_fd(game);
 	else
 		return -1;
+}
+
+
+void ggzcore_game_set_fd(GGZGame *game, unsigned int fd)
+{
+	if (game)
+		return _ggzcore_game_set_fd(game, fd);
 }
 
 
@@ -222,15 +201,6 @@ int ggzcore_game_launch(GGZGame *game)
 int ggzcore_game_join(GGZGame *game)
 {
 	return -1;
-}
-
-
-int ggzcore_game_send_data(GGZGame *game, char *buffer)
-{
-	if (game && buffer)
-		return _ggzcore_game_send_data(game, buffer);
-	else
-		return -1;
 }
 
 
@@ -311,71 +281,15 @@ int _ggzcore_game_remove_event_hook_id(struct _GGZGame *game,
 }
 
 
-int _ggzcore_game_data_is_pending(struct _GGZGame *game)
-{
-	int status = 0;
-	struct pollfd fd[1] = {{game->fd, POLLIN, 0}};
-	
-	ggz_debug("GGZCORE:POLL", "Checking for game events");	
-	if ( (status = poll(fd, 1, 0)) < 0) {
-		if (errno == EINTR) 
-			/* Ignore interruptions */
-			status = 0;
-		else 
-			ggz_error_sys_exit("poll failed in ggzcore_game_data_is_pending");
-	}
-	else if (status)
-		ggz_debug("GGZCORE:POLL", "Found a game event!");
-
-	return status;
-}
-
-
-int _ggzcore_game_read_data(struct _GGZGame *game)
-{
-	unsigned int size;
-	char buf[4096];
-	char *buf_offset;
-
-	ggz_debug("GGZCORE:GAME", "Got game msg from game client");
-
-	/* Leave room for storing 'size' in the first buf_offset bytes */
-	buf_offset = buf + sizeof(size);
-	size = read(game->fd, buf_offset,
-		    sizeof(buf) - sizeof(size)); /* FIXME: check for error */
-
-
-	/* If there's actual data */
-	if (size > 0) {
-		*(int*)buf = size;
-		_ggzcore_game_event(game, GGZ_GAME_DATA, buf);
-	}
-
-	/* If the socket gets closed */
-	if (size == 0) {
-		_ggzcore_game_event(game, GGZ_GAME_OVER, NULL);
-		close(game->fd);
-	}
-
-	/* Socket error */
-	if (size < 0) {
-		_ggzcore_game_event(game, GGZ_GAME_IO_ERROR, NULL);
-		close(game->fd);
-	}
-
-	return 0;
-}
-
-
-int _ggzcore_game_write_data(struct _GGZGame *game)
-{
-	return 0;
-}
-
-
 int _ggzcore_game_get_fd(struct _GGZGame *game)
 {
 	return game->fd;
+}
+
+
+void _ggzcore_game_set_fd(struct _GGZGame *game, int fd)
+{
+	game->fd = fd;
 }
 
 
@@ -388,7 +302,6 @@ struct _GGZModule* _ggzcore_game_get_module(struct _GGZGame *game)
 int _ggzcore_game_launch(struct _GGZGame *game)
 {
 	pid_t pid;
-	int sfd[2];
 	char *path, **argv;
 	struct stat file_status;
 
@@ -408,16 +321,11 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		return -1;
 	}
 
-	/* Set up socket pair for ggz<->game communication */
-	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, sfd) < 0)
-		ggz_error_sys_exit("socketpair failed"); 	
-	
 	/* Fork table process */
 	if ( (pid = fork()) < 0) {
 		ggz_error_sys_exit("fork failed");
 	} else if (pid == 0) {
 		/* child */
-		close(sfd[0]);
 
 		/* NOTE: after we close FD 3, below, we can't send any
 		 * more communications to this FD.  Although this seems
@@ -425,12 +333,13 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 		 * going to count on it.  --JDS */
 
 		/* libggzmod expects FD 3 to be the socket's FD */
-		if(sfd[1] != 3) {
-			if (dup2(sfd[1], 3) != 3)
+		if (game->fd != 3) {
+			if (dup2(game->fd, 3) != 3)
 				exit(-1);
-			if (close(sfd[1]) < 0)
+			if (close(game->fd) < 0)
 				exit(-1);
 		}
+
 
 		/* It's tempting to put this in its own function, but
 		 * since we can't use debugging it wouldn't be safe. */
@@ -443,11 +352,9 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 	} else {
 		/* parent */
 		ggz_free(path);
-		close(sfd[1]);
 		
 		/* Key info about game */
 		game->pid = pid;
-		game->fd = sfd[0];
 
 		ggz_debug("GGZCORE:GAME", "Successful launch");
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCHED, NULL);
@@ -463,24 +370,6 @@ int _ggzcore_game_launch(struct _GGZGame *game)
 int _ggzcore_game_join(struct _GGZGame *game) 
 {
 	return -1;
-}
-
-
-int _ggzcore_game_send_data(struct _GGZGame *game, char *buffer)
-{
-	int size;
-	char *buf_offset;
-
-	/* Extract size from first bytes of buffer */
-	size = *(int*)buffer;
-	buf_offset = buffer + sizeof(size);
-
-	if (ggz_writen(game->fd, buf_offset, size) < 0) {
-		/* FIXME: game error */
-		return -1;
-	}
-
-	return 0;
 }
 
 
