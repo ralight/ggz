@@ -64,6 +64,7 @@ static void  table_loop(GGZTable* table);
 static int   table_handle(int op, GGZTable* table);
 static void  table_remove(GGZTable* table);
 static void  table_run_game(GGZTable* table, char *path);
+static char** table_split_args(char *path);
 static int   table_send_opt(GGZTable* table);
 static int   table_game_over(GGZTable* table);
 static int   table_log(GGZTable* table, char debug);
@@ -264,7 +265,7 @@ static void table_fork(GGZTable* table)
 	char fd_name[MAX_PATH_LEN];
 	int type, sock, fd;
 	struct stat buf;
-	
+
 	/* Get path for game server */
 	type = table->type;
 
@@ -319,13 +320,51 @@ static void table_fork(GGZTable* table)
 
 static void table_run_game(GGZTable* table, char *path)
 {
+	char **args;
+	char *vpath;
 	/* Comment out for now */
 	/*dbg_msg(GGZ_DBG_PROCESS, "Process forked.  Game running on table %d", 
 		t_index);*/
 
 	/* FIXME: Close all other fd's and kill threads? */
 	/* FIXME: Not necessary to close other fd's if we use CLOSE_ON_EXEC */
-	execv(path, NULL);
+
+	vpath = strdup(path);
+	args = table_split_args(vpath);
+	dbg_msg(GGZ_DBG_TABLE, "%s, %s, ", args[0], args[1]);
+	execv(args[0], args);
+	free(args);
+	free(vpath);
+}
+
+
+/* Split out command line aruments from path string */
+static char** table_split_args(char *path)
+{
+	char **args;
+	int i,argc,s,len;
+
+	len = strlen(path);
+
+	if ( (args = calloc(51, sizeof(char*))) == NULL)
+		err_sys_exit("malloc error in table_split_args()");
+
+	for(i=0,argc=0;i<len && argc<50;i++,argc++) {
+		while( (path[i]==' ' || path[i]=='\t') && i<len) i++;
+		if(i>=len) break;
+	
+		s=i;		/* start of char */
+
+		while( path[i]!=' ' && path[i]!='\t' && i<len) i++;
+		if(i>len) break;
+
+		path[i]=0;
+
+		args[argc]=&path[s];
+	}
+	args[argc]=NULL;
+
+	return args;
 }
 
 
