@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/23/99
+ * $Id: gtk_play.c 5118 2002-10-30 20:24:39Z jdorje $
  *
  * This fils contains functions for creating and handling the playing area
  *
@@ -34,6 +35,9 @@
 #include <gtk_play.h>
 #include <client.h>
 #include <display.h>
+#ifndef GTK2
+#include "gtkspinbutton.h"
+#endif
 
 #include "ggzintl.h"
 
