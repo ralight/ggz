@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6545 2004-12-21 17:17:17Z josef $
+dnl $Id: configure.ac 6652 2005-01-13 19:37:24Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -140,7 +140,7 @@ dnl ============
 SUBDIRS=$allsubdirs
 
 AC_SUBST(LDADD)
-#AC_SUBST(subdirs)
+AC_SUBST(subdirs)
 AC_SUBST(SUBDIRS)
 
 AC_CONFIG_FILES([Makefile 
