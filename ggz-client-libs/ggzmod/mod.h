@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 4968 2002-10-21 04:27:00Z jdorje $
+ * $Id: mod.h 5945 2004-02-16 22:19:52Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -31,6 +31,10 @@
 
 #ifndef __GGZ_MOD_H__
 #define __GGZ_MOD_H__
+
+#ifdef HAVE_WINSOCK_H
+# include <winsock.h>
+#endif
 
 #include <ggz.h>
 
@@ -61,7 +65,11 @@ struct GGZMod {
 	GGZList *spectator_seats;
 
 	/* ggz-only data */
+#ifdef HAVE_FORK
 	pid_t pid;	/* process ID of table */
+#else
+	HANDLE process;
+#endif
 	char *pwd;	/* working directory for game */
 	char **argv;	/* command-line arguments for launching module */
 	GGZModTransactionHandler thandlers[GGZMOD_NUM_TRANSACTIONS];

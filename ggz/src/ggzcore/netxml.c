@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5942 2004-02-16 17:07:31Z jdorje $
+ * $Id: netxml.c 5945 2004-02-16 22:19:52Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -331,10 +331,10 @@ int _ggzcore_net_connect(GGZNet *net)
 void _ggzcore_net_disconnect(GGZNet *net)
 {
 	ggz_debug(GGZCORE_DBG_NET, "Disconnecting");
-#ifdef HAVE_CLOSE
-	close(net->fd);
-#else
+#ifdef HAVE_WINSOCK_H
 	closesocket(net->fd);
+#else
+	close(net->fd);
 #endif
 	net->fd = -1;
 }

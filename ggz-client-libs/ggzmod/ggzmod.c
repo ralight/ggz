@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 5862 2004-02-09 04:58:25Z jdorje $
+ * $Id: ggzmod.c 5945 2004-02-16 22:19:52Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -121,7 +121,11 @@ GGZMod *ggzmod_new(GGZModType type)
 				GGZ_LIST_REPLACE_DUPS);
 	ggzmod->num_seats = ggzmod->num_spectator_seats = 0;
 
+#ifdef HAVE_FORK
 	ggzmod->pid = -1;
+#else
+	ggzmod->process = INVALID_HANDLE_VALUE;
+#endif
 	ggzmod->argv = NULL;
 	for (i = 0; i < GGZMOD_NUM_TRANSACTIONS; i++)
 		ggzmod->thandlers[i] = NULL;
@@ -662,6 +666,7 @@ int ggzmod_disconnect(GGZMod * ggzmod)
 	if (ggzmod->type == GGZMOD_GGZ) {
 		/* For the ggz side, we kill the game server and close the socket */
 		
+#ifdef HAVE_KILL
 		/* Make sure game server is dead */
 		if (ggzmod->pid > 0) {
 			kill(ggzmod->pid, SIGINT);
@@ -671,6 +676,13 @@ int ggzmod_disconnect(GGZMod * ggzmod)
 			(void) waitpid(ggzmod->pid, NULL, 0);
 		}
 		ggzmod->pid = -1;
+#else
+		if (ggzmod->process != INVALID_HANDLE_VALUE) {
+			TerminateProcess(ggzmod->process, 0);
+			CloseHandle(ggzmod->process);
+			ggzmod->process = INVALID_HANDLE_VALUE;
+		}
+#endif
 		
 		_ggzmod_set_state(ggzmod, GGZMOD_STATE_DONE);
 		/* FIXME: what other cleanups should we do? */
@@ -687,7 +699,11 @@ int ggzmod_disconnect(GGZMod * ggzmod)
 
 	/* Clean up the ggzmod object.  In theory it could now reconnect for
 	   a new game. */
+#ifdef HAVE_WINSOCK_H
+	closesocket(ggzmod->fd);
+#else
 	close(ggzmod->fd);
+#endif
 	ggzmod->fd = -1;
 
 	return 0;
@@ -784,8 +800,14 @@ static int send_game_launch(GGZMod * ggzmod)
 /* No locking should be necessary within this function. */
 static int game_fork(GGZMod * ggzmod)
 {
-	int pid;
 	int fd_pair[2];		/* socketpair */
+#ifdef HAVE_FORK
+	int pid;
+#else
+	char cmdline[1024] = "";
+	int i;
+	PROCESS_INFORMATION pi;
+#endif
 
 	/* If there are no args, we don't know what to run! */
 	if (ggzmod->argv == NULL || ggzmod->argv[0] == NULL) {
@@ -796,7 +818,10 @@ static int game_fork(GGZMod * ggzmod)
 	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
 		ggz_error_sys_exit("socketpair failed");
 
-	if ( (pid = fork()) < 0)
+#ifdef HAVE_FORK
+	pid = fork();
+
+	if ((pid = fork()) < 0)
 		ggz_error_sys_exit("fork failed");
 	else if (pid == 0) {
 		/* child */
@@ -839,6 +864,21 @@ static int game_fork(GGZMod * ggzmod)
 		
 		/* That's all! */
 	}
+#else
+	for (i = 0; ggzmod->argv[i]; i++) {
+		snprintf(cmdline + strlen(cmdline),
+			 sizeof(cmdline) - strlen(cmdline),
+			 "%s ", ggzmod->argv[i]);
+	}
+
+	if (!CreateProcess(NULL, cmdline, NULL, NULL, TRUE,
+			   DETACHED_PROCESS | NORMAL_PRIORITY_CLASS,
+			   NULL, NULL, NULL, &pi)) {
+		return -1;
+	}
+	CloseHandle(pi.hThread);
+	ggzmod->process = pi.hProcess;
+#endif
 	return 0;
 }
 
