@@ -38,7 +38,7 @@ GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_chatfail(unsigned int id, void *event_data, void *user_data);
 
 /* Initialize the net functions */
-void net_internal_init(const char *logfile)
+static void net_internal_init(const char *logfile)
 {
 	GGZOptions opt;
 	int ret;
@@ -66,7 +66,8 @@ void net_logfile(const char *logfile)
 
 /* Add a message to the incoming queue */
 /* FIXME: Provide real queue */
-void net_internal_queueadd(const char *player, const char *message, int type)
+static void net_internal_queueadd(const char *player, const char *message,
+				  int type)
 {
 	Guru *guru;
 	char *listtoken;
@@ -148,7 +149,7 @@ void net_join(int room)
 }
 
 /* Loop function */
-int net_status()
+int net_status(void)
 {
 	int ret;
 	int fd;
@@ -173,7 +174,7 @@ int net_status()
 }
 
 /* Get an entry from the queue */
-Guru *net_input()
+Guru *net_input(void)
 {
 	if(queue)
 	{

@@ -17,7 +17,7 @@
 
 /* Execute administrative commands */
 /* FIXME: Log admin commands */
-int admin(Guru *guru, Gurucore *core)
+static int admin(Guru *guru, Gurucore *core)
 {
 	int i;
 	int room;

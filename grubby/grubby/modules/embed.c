@@ -27,7 +27,7 @@ static char **aliaslist = NULL;
 static char **scriptlist = NULL;
 
 /* Empty init */
-void gurumod_init(const char *datadir)
+static void gurumod_init(const char *datadir)
 {
 	int handle;
 	char *path;
@@ -69,11 +69,11 @@ void gurumod_init(const char *datadir)
 }
 
 /* Execute embedded scripts */
-Guru *gurumod_exec(Guru *message)
+static Guru *gurumod_exec(Guru *message)
 {
 	char *script = NULL;
 	int i;
-	int status;
+	/* int status; */
 #ifdef EMBED_RUBY
 	VALUE answer, tmp;
 #endif
