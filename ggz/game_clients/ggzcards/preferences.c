@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 4064 2002-04-23 19:58:44Z jdorje $
+ * $Id: preferences.c 4083 2002-04-26 06:18:29Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -92,6 +92,15 @@ PrefType pref_types[] = {
 	    "click it."),
 	 &preferences.single_click_play,
 	 FALSE},
+	
+	{"collapse_hand",
+	 N_("Collapse hand as it is played"),
+	 N_("If this is unset, then when a card is played none of "
+	    "the other cards change position, but an empty spot is "
+	    "left in the hand.  If set, then the hand will be collapsed "
+	    "so that the empty spot is filled."),
+	 &collapse_hand,
+	 TRUE},
 	
 	{"cardlists",
 	 N_("Show graphical cardlists"),

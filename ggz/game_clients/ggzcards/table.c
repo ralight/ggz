@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4058 2002-04-23 07:13:12Z jdorje $
+ * $Id: table.c 4083 2002-04-26 06:18:29Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -547,6 +547,10 @@ void table_handle_click_event(GdkEventButton * event)
 	for (target = 0; target < ggzcards.players[p].hand.hand_size;
 	     target++) {
 		int x1, y1;
+		
+		if (!ggzcards.players[p].hand.cards[target].meta)
+			continue;
+		
 		get_card_pos(p, target, &x1, &y1);
 		
 		if (target == selected_card) {
@@ -625,6 +629,10 @@ void table_display_hand(int p, int write_to_screen)
 	for (i = 0; i < ggzcards.players[p].hand.hand_size; i++) {
 		card_t card = ggzcards.players[p].hand.cards[i];
 		int x, y;
+		
+		/* If this is set, then the card is out-of-play. */
+		if (!card.meta)
+			continue;
 		
 		if (card.face >= 0 && card.face == table_card.face &&
 		    card.suit >= 0 && card.suit == table_card.suit &&

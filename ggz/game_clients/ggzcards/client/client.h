@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 4046 2002-04-22 00:04:41Z jdorje $
+ * $Id: client.h 4083 2002-04-26 06:18:29Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -26,6 +26,7 @@
 #include <ggz_common.h>
 
 #include "protocol.h"
+#include "shared.h"
 
 #ifndef __CLIENT_H__
 #define __CLIENT_H__
@@ -122,6 +123,13 @@ void client_quit(void);
  *  with the server.
  */
 int client_get_fd(void);
+
+/** If true, when a card is played from a hand the hand will be collapsed.
+ *  If false, an empty spot will be left in the hand, indicated by a card
+ *  with its meta field set FALSE.
+ *  TRUE by default.
+ */
+extern bool collapse_hand;
 
 /** @} end of Setup */
 
