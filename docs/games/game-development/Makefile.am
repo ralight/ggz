@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4598 2002-09-17 03:15:49Z jdorje $
+# $Id: Makefile.am 4646 2002-09-21 10:11:00Z dr_maux $
 
 SUBDIRS = .
 
@@ -9,7 +9,7 @@ guidedir = $(GGZDOCDIR)/guides
 guide_DATA = $(ggzgamedevelopmentguide)
 
 docdir = $(GGZDOCDIR)/games
-doc_DATA = games.html
+doc_DATA = games.html features.html
 
 EXTRA_DIST = $(doc_DATA)
 
