@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 6125 2004-07-17 00:58:43Z josef $
+ * $Id: msg.c 6733 2005-01-19 00:34:26Z jdorje $
  *
  * Debug and error messages
  *
@@ -233,7 +233,7 @@ void ggz_error_msg_exit(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(LOG_CRIT, NULL, fmt, ap, 1);
+	err_doit(LOG_CRIT, NULL, fmt, ap, 0);
 	va_end(ap);
 
 	abort();
