@@ -26,6 +26,8 @@
 #ifndef __GGZ_H__
 #define __GGZ_H__
 
+#include <sys/types.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -629,6 +631,193 @@ char * ggz_read_line(GGZFile *file);
  * freeing the file structure.
  */
 void ggz_free_file_struct(GGZFile *file);
+
+/** @} */
+
+/**
+ * @defgroup easysock Easysock IO
+ * 
+ * Simple functions for reading/writing binary data across file descriptors
+ *
+ * @{
+ */
+
+/****************************************************************************
+ * Error function
+ *
+ * Any error encountered in an easysock function will cause the error 
+ * function to be called if one has been set.
+ * 
+ * Upon removal, the previous error function is returned
+ *
+ ***************************************************************************/
+typedef enum {
+	GGZ_IO_CREATE,
+	GGZ_IO_READ,
+	GGZ_IO_WRITE,
+	GGZ_IO_ALLOCATE
+} GGZIOType;
+
+typedef enum {
+	GGZ_DATA_NONE,
+	GGZ_DATA_CHAR,
+	GGZ_DATA_INT,
+	GGZ_DATA_STRING,
+	GGZ_DATA_FD
+} GGZDataType;
+
+
+
+/****************************************************************************
+ * Error function
+ *
+ * Any easysock function that generates an error will call this
+ * function, if defined.  
+ * 
+ * Upon removal, the old error function is returned.
+ *
+ ***************************************************************************/
+typedef void (*ggzIOError) (const char *, const GGZIOType, const GGZDataType);
+			      
+
+int ggz_set_io_error_func(ggzIOError func);
+ggzIOError ggz_remove_io_error_func(void);
+
+
+/****************************************************************************
+ * Exit function
+ *
+ * Any of the *_or_die() functions will call the set exit function
+ * if there is an error.  If there is no set function, exit() will be 
+ * called.
+ * 
+ * Upon removal, the old exit function is returned.
+ *
+ ***************************************************************************/
+typedef void (*ggzIOExit) (int);
+
+int ggz_set_io_exit_func(ggzIOExit func);
+ggzIOExit ggz_remove_io_exit_func(void);
+
+
+/****************************************************************************
+ * Getting/Setting the limit on memory allocation
+ * 
+ * limit    : limit (in bytes) to allow on ggz_read_XXX_alloc() calls
+ * 
+ * Upon setting the limit, the old value is returned
+ *
+ ***************************************************************************/
+unsigned int ggz_get_io_alloc_limit(void);
+unsigned int ggz_set_io_alloc_limit(const unsigned int limit);
+
+
+/****************************************************************************
+ * Creating a socket.
+ * 
+ * type  :  one of GGZ_SERVER or GGZ_CLIENT
+ * port  :  tcp port number 
+ * server:  hostname to connect to (only relevant for client)
+ * 
+ * Returns socket fd or -1 on error
+ ***************************************************************************/
+typedef enum {
+	GGZ_SOCK_SERVER,
+	GGZ_SOCK_CLIENT
+} GGZSockType;
+	
+int ggz_make_socket(const GGZSockType type, 
+		    const unsigned short port, 
+		    const char *server);
+
+int ggz_make_socket_or_die(const GGZSockType type,
+			   const unsigned short port, 
+			   const char *server);
+
+int ggz_make_unix_socket(const GGZSockType type, const char* name);
+int ggz_make_unix_socket_or_die(const GGZSockType type, const char* name);
+
+
+/****************************************************************************
+ * Reading/Writing a single char.
+ * 
+ * sock  :  socket fd
+ * data  :  single char for write.  pointer to char for read
+ * 
+ * Returns 0 if successful, -1 on error.
+ ***************************************************************************/
+int ggz_write_char(const int sock, const char data);
+void ggz_write_char_or_die(const int sock, const char data);
+int ggz_read_char(const int sock, char *data);
+void ggz_read_char_or_die(const int sock, char *data);
+
+
+/****************************************************************************
+ * Reading/Writing an integer in network byte order
+ * 
+ * sock  :  socket fd
+ * data  :  int for write.  pointer to int for read
+ * 
+ * Returns 0 if successful, -1 on error.
+ ***************************************************************************/
+int ggz_write_int(const int sock, const int data);
+void ggz_write_int_or_die(const int sock, const int data);
+int ggz_read_int(const int sock, int *data);
+void ggz_read_int_or_die(const int sock, int *data);
+
+
+/****************************************************************************
+ * Reading/Writing a char string
+ * 
+ * sock  : socket fd
+ * data  : char string or address of char string for alloc func
+ * fmt   : format string for sprintf-like behavior  
+ * len   : length of user-provided data buffer in bytes
+ * 
+ * Returns 0 if successful, -1 on error.
+ *
+ ***************************************************************************/
+int ggz_write_string(const int sock, const char *data);
+void ggz_write_string_or_die(const int sock, const char *data);
+int ggz_va_write_string(const int sock, const char *fmt, ...);
+void ggz_va_write_string_or_die(const int sock, const char *fmt, ...);
+int ggz_read_string(const int sock, char *data, const unsigned int len);
+void ggz_read_string_or_die(const int sock, char *data, const unsigned int len);
+int ggz_read_string_alloc(const int sock, char **data);
+void ggz_read_string_alloc_or_die(const int sock, char **data);
+
+
+/****************************************************************************
+ * Reading/Writing a file descriptor
+ * 
+ * sock  : socket fd
+ * data  : address of data to be read/written
+ * n     : size of data (in bytes) to be read/written
+ * 
+ * Returns 0 on success, or -1 on error
+ *
+ * Many thanks to Richard Stevens and his wonderful books, from which
+ * these functions come.
+ *
+ ***************************************************************************/
+int ggz_read_fd(const int sock, int *recvfd);
+int ggz_write_fd(const int sock, int sendfd);
+
+/****************************************************************************
+ * Reading/Writing a byte sequence 
+ * 
+ * sock  : socket fd
+ * data  : address of data to be read/written
+ * n     : size of data (in bytes) to be read/written
+ * 
+ * Returns number of bytes processed, or -1 on error
+ *
+ * Many thanks to Richard Stevens and his wonderful books, from which
+ * these functions come.
+ *
+ ***************************************************************************/
+int ggz_readn(const int sock, void *data, size_t n);
+int ggz_writen(const int sock, const void *vdata, size_t n);
 
 /** @} */
 

@@ -16,12 +16,16 @@
 
 /* defined by automake */
 
+#undef AF_LOCAL
 #undef DEBUG
-#undef GGZDATADIR
-#undef GGZCONFDIR
-#undef GAMEDIR
+#undef DEBUG_SOCKET
+#undef HAVE_CMSG_ALIGN
+#undef HAVE_CMSG_LEN
+#undef HAVE_CMSG_SPACE
+#undef HAVE_MSGHDR_MSG_CONTROL
+#undef HAVE_SUN_LEN
 #undef PACKAGE_SOURCE_DIR
-#undef WAIT_ANY
+#undef PF_LOCAL
     
 
 /* Leave that blank line there!!  Autoheader needs it.
