@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3419 2002-02-19 07:18:31Z jdorje $
+ * $Id: transit.c 3433 2002-02-21 04:01:18Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -34,14 +34,14 @@
 
 #include "ggzdmod.h"
 
-#include <ggzd.h>
-#include <datatypes.h>
-#include <protocols.h>
-#include <err_func.h>
-#include <transit.h>
-#include <seats.h>
-#include <event.h>
-#include <net.h>
+#include "ggzd.h"
+#include "datatypes.h"
+#include "protocols.h"
+#include "err_func.h"
+#include "transit.h"
+#include "seats.h"
+#include "event.h"
+#include "net.h"
 
 /* Server wide data structures*/
 extern struct GameInfo game_types[MAX_GAME_TYPES];
@@ -51,9 +51,13 @@ extern struct GameInfo game_types[MAX_GAME_TYPES];
 static GGZEventFuncReturn transit_player_event_callback(void* target,
                                                         int size,
                                                         void* data);
+static GGZEventFuncReturn transit_seat_event_callback(void* target,
+						      int size,
+						      void* data);
 static GGZEventFuncReturn transit_table_event_callback(void* target,
                                                        int size,
                                                        void* data);
+
 static int transit_send_join_to_game(GGZTable* table, char* name,
 				     int seat_num);
 static int transit_send_leave_to_game(GGZTable* table, char* name);
@@ -80,6 +84,22 @@ int transit_table_event(int room, int index, char opcode, char* name)
 
 	status = event_table_enqueue(room, index, transit_table_event_callback,
 				     size, data);
+	return status;
+}
+
+
+int transit_seat_event(int room, int index, struct GGZSeat seat)
+{
+	int status;
+	struct GGZSeat *data;
+
+	if ( (data = malloc(sizeof(struct GGZSeat))) == NULL)
+		err_sys_exit("malloc failed in transit_pack");
+
+	*data = seat;
+	
+	status = event_table_enqueue(room, index, transit_seat_event_callback,
+				     sizeof(data), data);
 	return status;
 }
 
@@ -233,6 +253,19 @@ static GGZEventFuncReturn transit_table_event_callback(void* target,
 	}
 
 	return status;
+}
+
+
+/* Executed by table hander thread */
+static GGZEventFuncReturn transit_seat_event_callback(void* target, 
+						      int size, 
+						      void* data)
+{
+	GGZTable *table = target;
+	struct GGZSeat *seat = data;
+
+	dbg_msg(GGZ_DBG_TABLE, "Seat change on table %d: Seat %d to %s", table->index, seat->index, ggz_seattype_to_string(seat->type));
+	return GGZ_EVENT_OK;
 }
 		
 

@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 3273 2002-02-08 21:23:28Z jdorje $
+ * $Id: protocols.h 3433 2002-02-21 04:01:18Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -24,7 +24,7 @@
  */
 
 
-#define GGZ_CS_PROTO_VERSION  5
+#define GGZ_CS_PROTO_VERSION  6
 
 /* Chat subops */					/* PMCCCCCC */
 #define GGZ_CHAT_NORMAL		(unsigned char) 0x40	/* 01000000 */
@@ -43,6 +43,8 @@ typedef enum {
 	GGZ_UPDATE_JOIN	  = 3,
 	GGZ_UPDATE_STATE  = 4,
 	GGZ_UPDATE_LAG	  = 5,
+	GGZ_UPDATE_SEAT   = 6,
+	GGZ_UPDATE_DESC   = 7
 } GGZUpdateOpcode;
 
 /* These opcodes must be in sync with the client,

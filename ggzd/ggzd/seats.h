@@ -22,7 +22,28 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <table.h>
+
+#ifndef __GGZ_TABLE_H_
+#define __GGZ_TABLE_H_
+
+#include "table.h"
+#include <ggz_common.h>
+
+
+/* Seat structure */
+struct GGZSeat {
+
+	/* Seat index */
+	int index;
+
+	/* Type of player in seat */
+	GGZSeatType type;
+
+	/* Player's name */
+	char name[MAX_USER_NAME_LEN + 1];
+};
+
+
 
 /** @brief Count the number of seats of the given type at the table.
  *
@@ -46,3 +67,6 @@ int seats_num(GGZTable* table);
  *  @return The type of the given seat.
  */
 GGZSeatType seats_type(GGZTable* table, int seat);
+
+
+#endif /* __GGZ_TABLE_H_ */

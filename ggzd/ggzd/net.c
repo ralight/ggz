@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 3420 2002-02-19 08:04:27Z jdorje $
+ * $Id: net.c 3433 2002-02-21 04:01:18Z bmh $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -110,6 +110,7 @@ static void _net_handle_session(GGZNetIO *net, GGZXMLElement *session);
 static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login);
 static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element);
+static void _net_handle_update(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_list(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_enter(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *element);
@@ -639,6 +640,9 @@ int net_send_table_update(GGZNetIO *net, unsigned char opcode, GGZTable *table, 
 	case GGZ_UPDATE_STATE:
 		action = "status";
 		break;
+	case GGZ_UPDATE_DESC:
+		action = "desc";
+		break;
 	}
 
 	/* Always send opcode */
@@ -661,11 +665,18 @@ int net_send_table_update(GGZNetIO *net, unsigned char opcode, GGZTable *table, 
 	case GGZ_UPDATE_STATE:
 		_net_send_table_status(net, table);
 		break;
+	case GGZ_UPDATE_DESC:
 	}
 	
 	_net_send_line(net, "</UPDATE>");
 
 	return 0;
+}
+
+
+int net_send_update_result(GGZNetIO *net, char status)
+{
+	return _net_send_result(net, "update", status);
 }
 
 
@@ -871,6 +882,8 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 		process_func = _net_handle_name;
 	else if (strcmp(tag, "PASSWORD") == 0)
 		process_func = _net_handle_password;
+	else if (strcmp(tag, "UPDATE") == 0)
+		process_func = _net_handle_update;
 	else if (strcmp(tag, "LIST") == 0)
 		process_func = _net_handle_list;
 	else if (strcmp(tag, "ENTER") == 0)
@@ -1047,6 +1060,42 @@ static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element)
 }
 
 
+/* Functions for <UPDATE> tag */
+static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
+{
+	char *type, *room;
+	GGZTable *table;
+	GGZPlayer *player;
+
+	if (update) {
+
+		/* Grab update data from tag */
+		type = ggz_xmlelement_get_attr(update, "TYPE");
+
+		if (strcmp(type, "player") == 0) {
+			if (!(player = ggz_xmlelement_get_data(update))) {
+				_net_send_result(net, "protocol", E_BAD_OPTIONS);
+				return;
+			}
+
+			/* FIXME: update password and other data */
+		}
+		else if (strcmp(type, "table") == 0) {
+			if (!(table = ggz_xmlelement_get_data(update))) {
+				_net_send_result(net, "protocol", E_BAD_OPTIONS);
+				return;
+			}
+
+			/* If room was specified, override default current room */
+			if ( (room = ggz_xmlelement_get_attr(update, "ROOM")))
+				table->room = safe_atoi(room);
+			
+			player_table_update(net->player, table);
+		}
+	}
+}
+
+
 /* Functions for <LIST> tag */
 static void _net_handle_list(GGZNetIO *net, GGZXMLElement *list)
 {
@@ -1175,7 +1224,7 @@ static void _net_handle_launch(GGZNetIO *net, GGZXMLElement *element)
 /* Functions for <TABLE> tag */
 static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 {
-	int type, db_status;
+	int type, index, db_status;
 	GGZTable *table;
 	GGZTableData *data;
 	GGZSeatData *seat;
@@ -1195,6 +1244,9 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 
 	/* Get table data from tag */
 	type = safe_atoi(ggz_xmlelement_get_attr(element, "GAME"));
+
+	/* For updates, they might have specified the ID and room */
+	index = safe_atoi(ggz_xmlelement_get_attr(element, "ID"));
 		
 	data = ggz_xmlelement_get_data(element);
 	if (data) {
@@ -1204,7 +1256,10 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	
 	/* Create and init new table */
 	table = table_new();
+	table->index = index;
 	table->type = type;
+
+	/* If room was specified, use it, otherwise use players current room */
 	table->room = player_get_room(net->player);
 	
 	if (desc) {
@@ -1257,7 +1312,8 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	}
 
 	parent_tag = ggz_xmlelement_get_tag(parent);
- 	if (strcmp(parent_tag, "LAUNCH") == 0) {
+ 	if (strcmp(parent_tag, "LAUNCH") == 0
+	    || strcmp(parent_tag, "UPDATE") == 0 ) {
 		ggz_xmlelement_set_data(parent, table);
 	}
 	else

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 3420 2002-02-19 08:04:27Z jdorje $
+ * $Id: players.c 3433 2002-02-21 04:01:18Z bmh $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -157,10 +157,10 @@ static void* player_new(void *arg_ptr)
 	pthread_rwlock_init(&player->lock, NULL);
 	player->net = net_new(sock, player);
 	
-#if 0
 	/* This will dump all XML output into the file ggzd.protocol.
 	   Unfortunately, it'll get overwritten each time a new player
 	   connects. */
+#if 0
 	net_set_dump_file(player->net, "ggzd.protocol");
 #endif
 
@@ -576,6 +576,62 @@ GGZEventFuncReturn player_launch_callback(void* target, int size, void* data)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
+}
+
+
+GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
+{
+	int i;
+	char owner[MAX_USER_NAME_LEN + 1];
+	GGZPlayerHandlerStatus status = 0;
+	GGZTable *real_table;
+	struct GGZSeat seat;
+	
+	dbg_msg(GGZ_DBG_TABLE, "Handling table update for %s", player->name);
+	
+	/* Check permissions */
+	real_table = table_lookup(table->room, table->index);
+	strcpy(owner, real_table->owner);
+	pthread_rwlock_unlock(&real_table->lock);
+	if (strcmp(owner, player->name) != 0) {
+		dbg_msg(GGZ_DBG_TABLE, "%s tried to modify table owned by %s",
+			player->name, owner);
+		if(net_send_update_result(player->net, E_NO_PERMISSION) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+	
+	/* Do actual table update */
+
+	/*  Update the description if necessary */
+	if (table->desc) {
+		pthread_rwlock_wrlock(&real_table->lock);
+		if (real_table->desc)
+			free(real_table->desc);
+		real_table->desc = strdup(table->desc);
+		pthread_rwlock_unlock(&real_table->lock);
+	}
+	
+	/* Find the seat that was sent: it's the one that isn't NONE */
+	for (i = 0; i < MAX_TABLE_SIZE; i++) {
+		if (seats_type(table, i) != GGZ_SEAT_NONE) {
+			seat.index = i;
+			seat.type = seats_type(table, i);
+			strcpy(seat.name, table->seat_names[i]);
+			
+			if ( (status = transit_seat_event(table->room, table->index, seat)))
+				break;
+		}
+	}
+
+	/* Return any immediate failures to client*/
+	if (status < 0) {
+		if (net_send_update_result(player->net, (char)status) < 0)
+			return GGZ_REQ_DISCONNECT;
+		status = GGZ_REQ_FAIL;
+	}
+	
+	return status;
 }
 
 
