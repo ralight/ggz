@@ -605,7 +605,8 @@ void _ggzcore_room_player_join_table(struct _GGZRoom *room,
 	
 		if (room->players) {
 			player = _ggzcore_room_get_player_by_name(room, name);
-			_ggzcore_player_set_table(player, id);
+			if (player) /* make sure they're still in room */
+				_ggzcore_player_set_table(player, id);
 		}
 
 		_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
@@ -630,7 +631,8 @@ void _ggzcore_room_player_leave_table(struct _GGZRoom *room,
 
 		if (room->players) {
 			player = _ggzcore_room_get_player_by_name(room, name);
-			_ggzcore_player_set_table(player, -1);
+			if (player) /* make sure they're still in room */
+				_ggzcore_player_set_table(player, -1);
 		}
 
 		_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
