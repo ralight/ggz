@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5174 2002-11-03 19:37:36Z jdorje $
+ * $Id: ggzcore.h 5223 2002-11-05 10:18:42Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -1341,32 +1341,32 @@ int ggzcore_module_launch(GGZModule *module);
 
 
 /** @brief Return the name of the module. */
-char* ggzcore_module_get_name(GGZModule *module);
+const char * ggzcore_module_get_name(GGZModule *module);
 
 /** @brief Return the (game?) version of the module. */
-char* ggzcore_module_get_version(GGZModule *module);
+const char* ggzcore_module_get_version(GGZModule *module);
 
 /** @brief Return the name of the module's protocol engine. */
-char* ggzcore_module_get_prot_engine(GGZModule *module);
+const char* ggzcore_module_get_prot_engine(GGZModule *module);
 
 /** @brief Return the version of the module's protocol engine. */
-char* ggzcore_module_get_prot_version(GGZModule *module);
+const char* ggzcore_module_get_prot_version(GGZModule *module);
 
 /** @brief Return the author of the module. */
-char* ggzcore_module_get_author(GGZModule *module);
+const char* ggzcore_module_get_author(GGZModule *module);
 
 /** @brief Return the module's frontend type. */
-char* ggzcore_module_get_frontend(GGZModule *module);
+const char* ggzcore_module_get_frontend(GGZModule *module);
 
 /** @brief Return the URL associated with the module. */
-char* ggzcore_module_get_url(GGZModule *module);
+const char* ggzcore_module_get_url(GGZModule *module);
 
 /** This is (intended to be) an optional xpm file that the module can provide
  *  to use for representing the game graphically. */
-char* ggzcore_module_get_icon_path(GGZModule *module);
+const char* ggzcore_module_get_icon_path(GGZModule *module);
 
 /** @brief Return the help path of the module (?). */
-char* ggzcore_module_get_help_path(GGZModule *module);
+const char* ggzcore_module_get_help_path(GGZModule *module);
 
 /** @brief Return the executable arguments for the module.  See exec(). */
 char** ggzcore_module_get_argv(GGZModule *module);

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/23/00
- * $Id: module.c 4941 2002-10-17 23:56:16Z jdorje $
+ * $Id: module.c 5223 2002-11-05 10:18:42Z jdorje $
  *
  * This fils contains functions for handling client-side game modules
  *
@@ -144,7 +144,7 @@ int ggzcore_module_launch(GGZModule *module)
    icon to the list we discussed at the meeting.  This is an optional xpm
    file that the module can provide to use for representing the game
    graphically.*/
-char* ggzcore_module_get_name(GGZModule *module)
+const char * ggzcore_module_get_name(GGZModule *module)
 {	
 	if (!module)
 		return NULL;
@@ -153,7 +153,7 @@ char* ggzcore_module_get_name(GGZModule *module)
 }
 
 
-char* ggzcore_module_get_version(GGZModule *module)
+const char * ggzcore_module_get_version(GGZModule *module)
 {	
 	if (!module)
 		return NULL;
@@ -162,7 +162,7 @@ char* ggzcore_module_get_version(GGZModule *module)
 }
 
 
-char* ggzcore_module_get_prot_engine(GGZModule *module)
+const char * ggzcore_module_get_prot_engine(GGZModule *module)
 {	
 	if (!module)
 		return NULL;
@@ -171,7 +171,7 @@ char* ggzcore_module_get_prot_engine(GGZModule *module)
 }
 
 
-char* ggzcore_module_get_prot_version(GGZModule *module)
+const char * ggzcore_module_get_prot_version(GGZModule *module)
 {	
 	if (!module)
 		return NULL;
@@ -180,7 +180,7 @@ char* ggzcore_module_get_prot_version(GGZModule *module)
 }
 
 
-char* ggzcore_module_get_author(GGZModule *module)
+const char * ggzcore_module_get_author(GGZModule *module)
 {	
 	if (!module)
 		return NULL;
@@ -189,7 +189,7 @@ char* ggzcore_module_get_author(GGZModule *module)
 }
 
 
-char* ggzcore_module_get_frontend(GGZModule *module)
+const char * ggzcore_module_get_frontend(GGZModule *module)
 {	
 	if (!module)
 		return NULL;
@@ -198,7 +198,7 @@ char* ggzcore_module_get_frontend(GGZModule *module)
 }
 
 
-char* ggzcore_module_get_url(GGZModule *module)
+const char * ggzcore_module_get_url(GGZModule *module)
 {	
 	if (!module)
 		return NULL;
@@ -207,7 +207,7 @@ char* ggzcore_module_get_url(GGZModule *module)
 }
 
 
-char* ggzcore_module_get_icon_path(GGZModule *module)
+const char * ggzcore_module_get_icon_path(GGZModule *module)
 {	
 	if (!module)
 		return NULL;
@@ -216,7 +216,7 @@ char* ggzcore_module_get_icon_path(GGZModule *module)
 }
 
 
-char* ggzcore_module_get_help_path(GGZModule *module)
+const char * ggzcore_module_get_help_path(GGZModule *module)
 {	
 	if (!module)
 		return NULL;
@@ -402,55 +402,55 @@ struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game,
 }
 
 
-char* _ggzcore_module_get_name(struct _GGZModule *module)
+const char* _ggzcore_module_get_name(struct _GGZModule *module)
 {
 	return module->name;
 }
 
 
-char* _ggzcore_module_get_version(struct _GGZModule *module)
+const char* _ggzcore_module_get_version(struct _GGZModule *module)
 {
 	return module->version;
 }
 
 
-char* _ggzcore_module_get_prot_engine(struct _GGZModule *module)
+const char* _ggzcore_module_get_prot_engine(struct _GGZModule *module)
 {
 	return module->prot_engine;
 }
 
 
-char* _ggzcore_module_get_prot_version(struct _GGZModule *module)
+const char* _ggzcore_module_get_prot_version(struct _GGZModule *module)
 {
 	return module->prot_version;
 }
 
 
-char* _ggzcore_module_get_author(struct _GGZModule *module)
+const char* _ggzcore_module_get_author(struct _GGZModule *module)
 {
 	return module->author;
 }
 
 
-char* _ggzcore_module_get_frontend(struct _GGZModule *module)
+const char* _ggzcore_module_get_frontend(struct _GGZModule *module)
 {
 	return module->frontend;
 }
 
 
-char* _ggzcore_module_get_url(struct _GGZModule *module)
+const char* _ggzcore_module_get_url(struct _GGZModule *module)
 {
 	return module->url;
 }
 
 
-char* _ggzcore_module_get_icon_path(struct _GGZModule *module)
+const char* _ggzcore_module_get_icon_path(struct _GGZModule *module)
 {
 	return module->icon;
 }
 
 
-char* _ggzcore_module_get_help_path(struct _GGZModule *module)
+const char* _ggzcore_module_get_help_path(struct _GGZModule *module)
 {
 	return module->help;
 }

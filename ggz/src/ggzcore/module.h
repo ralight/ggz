@@ -30,37 +30,37 @@
 struct _GGZModule {
 
 	/* Name of module */
-	char *name;
+	const char *name;
 
 	/* Game module version */
-	char *version;
+	const char *version;
 
 	/* Protocol engine implemented */
-	char *prot_engine;
+	const char *prot_engine;
 
 	/* Protocol version implemented */
-	char *prot_version;
+	const char *prot_version;
 
 	/* Supported games */
 	char **games;
 
 	/* Module author */
-	char *author;
+	const char *author;
 
 	/* Native frontend */
-	char *frontend;
+	const char *frontend;
 
 	/* Hopepage for this module */
-	char *url;
+	const char *url;
 
 	/* Commandline for executing module */
 	char **argv;
 
 	/* Path to icon for this game module */
-	char *icon;
+	const char *icon;
 
 	/* Path to help file */
-	char *help;
+	const char *help;
 
 };
 
@@ -82,15 +82,15 @@ struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game,
 int _ggzcore_module_launch(struct _GGZModule *module);
 void _ggzcore_module_cleanup(void);
 
-char* _ggzcore_module_get_name(struct _GGZModule *module);
-char* _ggzcore_module_get_version(struct _GGZModule *module);
-char* _ggzcore_module_get_prot_engine(struct _GGZModule *module);
-char* _ggzcore_module_get_prot_version(struct _GGZModule *module);
-char* _ggzcore_module_get_author(struct _GGZModule *module);
-char* _ggzcore_module_get_frontend(struct _GGZModule *module);
-char* _ggzcore_module_get_url(struct _GGZModule *module);
-char* _ggzcore_module_get_icon_path(struct _GGZModule *module);
-char* _ggzcore_module_get_help_path(struct _GGZModule *module);
+const char* _ggzcore_module_get_name(struct _GGZModule *module);
+const char* _ggzcore_module_get_version(struct _GGZModule *module);
+const char* _ggzcore_module_get_prot_engine(struct _GGZModule *module);
+const char* _ggzcore_module_get_prot_version(struct _GGZModule *module);
+const char* _ggzcore_module_get_author(struct _GGZModule *module);
+const char* _ggzcore_module_get_frontend(struct _GGZModule *module);
+const char* _ggzcore_module_get_url(struct _GGZModule *module);
+const char* _ggzcore_module_get_icon_path(struct _GGZModule *module);
+const char* _ggzcore_module_get_help_path(struct _GGZModule *module);
 char** _ggzcore_module_get_argv(struct _GGZModule *module);
 
 
