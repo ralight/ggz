@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 6299 2004-11-07 16:28:09Z phh $
+ * $Id: server.c 6468 2004-12-14 18:04:45Z josef $
  *
  * Functions for handling server events
  *
@@ -38,6 +38,8 @@
 #include <string.h>
 #include <unistd.h>
 
+extern char *dst_nick;
+extern char *game_name;
 
 /* Hooks for server events */
 static void server_register(GGZServer *server);
@@ -76,22 +78,10 @@ static GGZHookReturn room_table_leave_fail(GGZRoomEvent id, void*, void*);
 GGZServer *server = NULL;
 static int fd;
 static int first_room_list = 0;
-static int workinprogress = 0;
 static int tableleft_once = 0;
 int a;
 
 extern GGZGame *game;
-
-void server_workinprogress(int command, int progress)
-{
-	workinprogress = progress;
-}
-
-void server_progresswait(void)
-{
-	while(workinprogress)
-		server_process();
-}
 
 int server_init(char *host, int port, GGZLoginType type, char* login, char* password)
 {
@@ -184,8 +174,6 @@ static GGZHookReturn server_connected(GGZServerEvent id, void* event_data,
 static GGZHookReturn server_connect_fail(GGZServerEvent id, void* event_data,
 					 void* user_data)
 {
-	server_workinprogress(COMMAND_CONNECT, 0);
-
 	output_text("--- Connection failed: %s", (char*)event_data);
 
 	return GGZ_HOOK_OK;
@@ -202,8 +190,6 @@ static GGZHookReturn server_negotiated(GGZServerEvent id, void* event_data,
 static GGZHookReturn server_login_ok(GGZServerEvent id, void* event_data, 
 				     void* user_data)
 {
-	server_workinprogress(COMMAND_CONNECT, 0);
-	server_workinprogress(COMMAND_LIST, 1);
 	ggzcore_server_list_rooms(server, -1, 1);
 
 	return GGZ_HOOK_OK;
@@ -212,8 +198,6 @@ static GGZHookReturn server_login_ok(GGZServerEvent id, void* event_data,
 
 static GGZHookReturn server_login_fail(GGZServerEvent id, void* event_data, void* user_data)
 {
-	server_workinprogress(COMMAND_CONNECT, 0);
-
 	output_text("--- Login failed: %s", (char*)event_data);
 
 	/* For the time being disconnect at not to confuse us */
@@ -308,17 +292,12 @@ static GGZHookReturn server_enter_ok(GGZServerEvent id, void* event_data,
 {
 	GGZRoom *room;
 
-	server_workinprogress(COMMAND_JOIN, 0);
-
 	room = ggzcore_server_get_cur_room(server);
 	if (ggzcore_room_get_num_players(room) > 0) {
 	} else { /* Get list from server */
-		server_workinprogress(COMMAND_LIST, 1);
 		ggzcore_room_list_players(room);
 	}
 		
-	server_workinprogress(COMMAND_LIST, 1);
-//	ggzcore_server_list_gametypes(server, 1);
 	return GGZ_HOOK_OK;
 }
 
@@ -367,18 +346,15 @@ static GGZHookReturn room_chat(GGZRoomEvent id, void* event_data,
 
 static GGZHookReturn room_list_players(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	server_workinprogress(COMMAND_LIST, 0);
 	GGZRoom *room;
 	room=ggzcore_server_get_cur_room(server);
 	ggzcore_room_list_tables(room,0,0);
-	//output_players();
 	return GGZ_HOOK_OK;
 }
 
 
 static GGZHookReturn room_list_tables(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	server_workinprogress(COMMAND_LIST, 0);
 	GGZRoom *room;
 	GGZPlayer *player;
 	GGZTable *table;
@@ -434,7 +410,6 @@ static GGZHookReturn room_enter(GGZRoomEvent id, void* event_data, void* user_da
 {
 	char *player;
 	player=event_data;
-	//output_text("--> %s entered the room.", player);
 	return GGZ_HOOK_OK;
 }
 
@@ -443,7 +418,6 @@ static GGZHookReturn room_leave(GGZRoomEvent id, void* event_data, void* user_da
 {
 	char *player;
 	player=event_data;
-	//output_text("<-- %s left the room.", player);
 	return GGZ_HOOK_OK;
 }
 
@@ -451,7 +425,6 @@ static GGZHookReturn room_leave(GGZRoomEvent id, void* event_data, void* user_da
 static GGZHookReturn room_table_launched(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	tableleft_once = 0;
-	//output_text("-- Table launched");
 	return GGZ_HOOK_OK;
 }
 
@@ -470,8 +443,6 @@ static GGZHookReturn room_table_launch_fail(GGZRoomEvent id, void* event_data, v
 static GGZHookReturn room_table_joined(GGZRoomEvent id, void* event_data, void* user_data)
 {
 	tableleft_once = 0;
-	server_workinprogress(COMMAND_JOIN, 0);
-	//output_text("-- Table joined");
 	return GGZ_HOOK_OK;
 }
 
@@ -491,10 +462,6 @@ static GGZHookReturn room_table_left(GGZRoomEvent id, void* event_data, void* us
 {
 	if(tableleft_once) return GGZ_HOOK_OK;
 	tableleft_once = 1;
-	//output_enable(1);
-	//loop_add_fd(STDIN_FILENO, input_command, NULL);
-
-	//output_text("-- Left table");
 
 	exit(0);
 
@@ -521,7 +488,6 @@ static GGZHookReturn server_list_rooms(GGZServerEvent id, void* event_data, void
 	num = ggzcore_server_get_num_rooms(server);
 	for (i = 0; i < num; i++)
 		room_register(ggzcore_server_get_nth_room(server, i));
-	server_workinprogress(COMMAND_LIST, 0);
 	ggzcore_server_list_gametypes(server, 0);
 	return GGZ_HOOK_OK;
 }
@@ -529,22 +495,23 @@ static GGZHookReturn server_list_rooms(GGZServerEvent id, void* event_data, void
 
 static GGZHookReturn server_list_types(GGZServerEvent id, void* event_data, void* user_data)
 {
-	server_workinprogress(COMMAND_LIST, 0);
-	int i,num;
+	int i, num;
 	GGZRoom *room;
 	GGZGameType *type;
-	num=ggzcore_server_get_num_rooms(server);
+	const char *name;
+
+	num = ggzcore_server_get_num_rooms(server);
 	for (i = 0; i < num; i++) {
 		room = ggzcore_server_get_nth_room(server, i);
 		type = ggzcore_room_get_gametype(room);
-	//	if (type && strcmp(ggzcore_gametype_get_name(type), "TicTacToe")==0) {
-		if (type && strcmp(ggzcore_gametype_get_name(type), game_name)==0) {
-			ggzcore_server_join_room(server, i);
+		if (type) {
+			name = ggzcore_gametype_get_name(type);
+			if (name && game_name && strcmp(name, game_name) == 0) {
+				ggzcore_server_join_room(server, i);
+			}
 		}
 	}
 	return GGZ_HOOK_OK;
-/*	output_rooms();
-	return GGZ_HOOK_OK;*/
 }
 
 static GGZHookReturn server_channel_connected(GGZServerEvent id,

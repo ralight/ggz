@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 6299 2004-11-07 16:28:09Z phh $
+ * $Id: game.c 6468 2004-12-14 18:04:45Z josef $
  *
  * Functions for handling game events
  *
@@ -44,7 +44,6 @@ static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiate_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_playing(GGZGameEvent, void *, void*);
 
-
 static GGZGame *game = NULL;
 static GGZGameType *gametype = NULL;
 static int gameindex = -1;
@@ -53,7 +52,7 @@ static char *user;
 
 void game_init(GGZModule *module, GGZGameType *type, int index, char *nick)
 {
-	user=nick;
+	user = nick;
 	if (game) {
 		output_text("You're already playing a game!");
 		return;
@@ -170,13 +169,11 @@ static GGZHookReturn game_playing(GGZGameEvent id, void* event_data, void* user_
 	if(gameindex < 0) {
 		table = ggzcore_table_new();
 		ggzcore_table_init(table, gametype, "Fun with gaim-ggz", 2);
-//		ggzcore_table_set_seat(table, 1, GGZ_SEAT_BOT, NULL);
 		if(user!=NULL)
 			ggzcore_table_set_seat(table, 1, GGZ_SEAT_RESERVED, user);
 		else
 			ggzcore_table_set_seat(table, 1, GGZ_SEAT_OPEN, NULL);
 
-		room_id=ggzcore_table_get_id(table);
 		ggzcore_room_launch_table(room, table);
 		ggzcore_table_free(table);
 	}
