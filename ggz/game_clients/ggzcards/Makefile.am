@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3642 2002-03-24 01:16:42Z jdorje $
+# $Id: Makefile.am 3685 2002-03-25 22:40:22Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -43,5 +43,7 @@ CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 # NOTE: it is necessary to LDADD the libraries twice to get things to work...
 ggz_ggzcards_LDADD = @GTK_LIBS@ $(LDADD) \
 	$(top_builddir)/common/libgtk-games.a \
-	common/libcommon.a client/libclient.a \
-	common/libcommon.a client/libclient.a
+	$(top_builddir)/ggzcards/common/libcommon.a \
+	$(top_builddir)/ggzcards/client/libclient.a \
+	$(top_builddir)/ggzcards/common/libcommon.a \
+	$(top_builddir)/ggzcards/client/libclient.a

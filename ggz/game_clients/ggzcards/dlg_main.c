@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 3610 2002-03-21 13:08:52Z jdorje $
+ * $Id: dlg_main.c 3685 2002-03-25 22:40:22Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -34,6 +34,8 @@
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
+
+#include "ggzintl.h"
 
 #include "cb_main.h"
 #include "dlg_main.h"

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 3400 2002-02-17 13:10:57Z jdorje $
+ * $Id: dlg_prefs.c 3685 2002-03-25 22:40:22Z jdorje $
  *
  * Copyright (C) 2000-2002 GGZ Development Team
  *
@@ -28,6 +28,8 @@
 #endif
 
 #include <ggz.h>
+
+#include "ggzintl.h"
 
 #include "game.h"
 #include "dlg_prefs.h"
@@ -69,7 +71,7 @@ GtkWidget *create_dlg_prefs(void)
 
 	/* Make preferences buttons. */
 	for (pref = pref_types; pref->name; pref++) {
-		button = gtk_check_button_new_with_label(pref->desc);
+		button = gtk_check_button_new_with_label(_(pref->desc));
 		gtk_widget_ref(button);
 		gtk_widget_show(button);
 		gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);

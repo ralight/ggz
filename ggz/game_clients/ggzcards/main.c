@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3595 2002-03-17 00:14:56Z jdorje $
+ * $Id: main.c 3685 2002-03-25 22:40:22Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -36,6 +36,9 @@
 #include <unistd.h>
 
 #include <ggz.h>		/* libggz */
+
+#include "ggzintl.h"
+
 #include "client.h"
 
 #include "animation.h"
@@ -58,6 +61,7 @@ int main(int argc, char *argv[])
 
 	/* Standard initializations. */
 	initialize_debugging();
+	ggz_intl_init("ggzcards");
 	fd = client_initialize();
 	listen_for_server(TRUE);
 	gtk_init(&argc, &argv);

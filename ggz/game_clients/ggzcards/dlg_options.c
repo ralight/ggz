@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 3431 2002-02-21 02:53:38Z jdorje $
+ * $Id: dlg_options.c 3685 2002-03-25 22:40:22Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Dev Team.
  *
@@ -33,6 +33,9 @@
 #include <gtk/gtk.h>
 
 #include <ggz.h>
+
+#include "ggzintl.h"
+
 #include "client.h"
 
 #include "dlg_options.h"

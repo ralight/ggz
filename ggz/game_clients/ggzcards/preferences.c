@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 3400 2002-02-17 13:10:57Z jdorje $
+ * $Id: preferences.c 3685 2002-03-25 22:40:22Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -32,37 +32,39 @@
 
 #include <ggz.h>		/* libggz */
 
+#include "ggzintl.h"
+
 #include "game.h"
 #include "preferences.h"
 
 PrefType pref_types[] = {
-	{"animation", _("Use animation"),
+	{"animation", N_("Use animation"),
 	 &preferences.animation, TRUE},
 	
-	{"faster_animation", _("Faster animation"),
+	{"faster_animation", N_("Faster animation"),
 	 &preferences.faster_animation, FALSE},
 	
-	{"smoother_animation", _("Smoother animation"),
+	{"smoother_animation", N_("Smoother animation"),
 	 &preferences.smoother_animation, FALSE},
 	
-	{"multiple_animation", _("Multiple (simultaneous) animations"),
+	{"multiple_animation", N_("Multiple (simultaneous) animations"),
 	 &preferences.multiple_animation, FALSE},
 	
 	{"longer_clearing_delay",
-	 _("Have a longer delay before clearing the table"),
+	 N_("Have a longer delay before clearing the table"),
 	 &preferences.longer_clearing_delay, FALSE},
 	
 	{"cardlists",
-	 _("Show graphical cardlists (may not take effect immediately)"),
+	 N_("Show graphical cardlists (may not take effect immediately)"),
 	 &preferences.cardlists, TRUE},
 	
-	{"autostart", _("Show bid choices right on the table"),
+	{"autostart", N_("Show bid choices right on the table"),
 	 &preferences.bid_on_table, FALSE},
 	
-	{"use_default_options", _("Automatically start game"),
+	{"use_default_options", N_("Automatically start game"),
 	 &preferences.autostart, FALSE},
 	
-	{"bid_on_table", _("Always use default options"),
+	{"bid_on_table", N_("Always use default options"),
 	 &preferences.use_default_options, FALSE},
 	
 	{NULL, NULL, NULL, 0}
