@@ -91,7 +91,7 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
           if (host < 0) {
             // First player!
             host = seat;
-            game_request_options(seat);
+            game_request_options(host);
           }
           if (!ggz_seats_open() && cbt_game.map) { 
             // Request setup!
@@ -162,7 +162,7 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
 }
 
 int game_handle_player(int seat) {
-  int fd, op, a, status = CBT_SERVER_OK;
+  int fd, op, a, status = CBT_SERVER_OK, b;
 
   fd = ggz_seats[seat].fd;
 
@@ -174,7 +174,7 @@ int game_handle_player(int seat) {
   switch (op) {
 
     case CBT_MSG_OPTIONS:
-      if (game_get_options(seat) == 0) {
+      if ( (b = game_get_options(seat)) == 0) {
         // Sends options to everyone
         for (a = 0; a < cbt_game.number; a++) {
           if (ggz_seats[a].fd >= 0)
@@ -182,20 +182,28 @@ int game_handle_player(int seat) {
         }
         // Check if must start the game
         if (!ggz_seats_open() && cbt_game.map) {
+          cbt_game.state = CBT_STATE_SETUP;
           game_request_setup(-1);
-          game_start();
+          if (SET(OPT_RANDOM_SETUP))
+            game_start();
         }
-      } else {
+      // b == -2 means that a player tried to cheat
+      // just ignore him
+      } else if (b != -2) {
         // Free memory
-        free(cbt_game.map);
-        for (a = 0; a < cbt_game.number; a++)
-          free(cbt_game.army[a]);
-        free(cbt_game.army);
+        if (cbt_game.map)
+          free(cbt_game.map);
+        for (a = 0; a < cbt_game.number; a++) {
+          if (cbt_game.army && cbt_game.army[a])
+            free(cbt_game.army[a]);
+        }
+        if (cbt_game.army)
+          free(cbt_game.army);
         // Init them again
         game_init();
         // We are at the WAIT turn
         cbt_game.state = CBT_STATE_WAIT;
-        game_request_options(seat);
+        game_request_options(host);
       }
       break;
 
@@ -302,6 +310,7 @@ void game_send_seat(int seat) {
 void game_request_options(int seat) {
   int fd = ggz_seats[seat].fd;
 
+  ggz_debug("Asking player %d for the options", seat);
   if (es_write_int(fd, CBT_REQ_OPTIONS) < 0)
     return;
 
@@ -311,14 +320,35 @@ void game_request_options(int seat) {
 int game_get_options(int seat) {
   int fd = ggz_seats[seat].fd;
   char *optstr = NULL;
+  int a;
   int error;
 
   ggz_debug("Getting options");
 
   if (es_read_string_alloc(fd, &optstr) < 0)
-    return 0;
+    return -1;
 
-  ggz_debug("Len: %d", strlen(optstr));
+  // Check if this player should send the options
+  if (seat != host)
+    return -2;
+
+  ggz_debug("Option string len: %d", strlen(optstr));
+
+  if (*optstr == 0) {
+    ggz_debug("changing host");
+    for (a = 0; a < ggz_seats_num(); a++) {
+      if (ggz_seats[a].fd >= 0 && a != seat) {
+        ggz_debug("host is now %d", a);
+        host = a;
+        break;
+      }
+    }
+    if (a == ggz_seats_num()) {
+      ggz_debug("I give up. Host is now %d", seat);
+      host = seat;
+    }
+    return -1;
+  }
 
   error = combat_options_string_read(optstr, &cbt_game);
 
@@ -345,8 +375,8 @@ void game_send_players() {
   int i, j, fd;
 
   for (j = 0; j < cbt_game.number; j++) {
-    if ( (fd = ggz_seats[j].fd) == -1 ) {
-      ggz_debug("Bot seat\n");
+    if ( (fd = ggz_seats[j].fd) <= -1 ) {
+      ggz_debug("No one here\n");
       continue;
     }
     ggz_debug("Sending player list to player %d", j);

@@ -220,6 +220,9 @@
  *
  *     Just remember that, in fact, we send 3 112 1 4 216 1, as we are sending a
  *     *string*, so it can't have any \0 value (so everything is added 1)
+ *
+ * If that player doesn't want to be the host, he can send a NULL option
+ * string, wich will make the server ask the next player to be the host
  * 	 
  * The server then check for the validity of this options. Things to
  * check:
