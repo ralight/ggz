@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 3186 2002-01-24 11:51:06Z jdorje $
+ * $Id: table.h 3368 2002-02-16 03:06:13Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -51,7 +51,7 @@ typedef struct GGZTable {
 	int index;
 
 	/* State of game: One of GGZ_TABLE_XXXX */
-	char state;
+	GGZTableState state;
 
 	/* Transit status flag */
 	char transit;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3292 2002-02-10 03:54:38Z jdorje $
+ * $Id: table.c 3368 2002-02-16 03:06:13Z bmh $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -23,8 +23,21 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#include "config.h"
 
+#include "ggzd.h"
+#include "datatypes.h"
+#include "protocols.h"
+#include "err_func.h"
+#include "table.h"
+#include "players.h"
+#include "seats.h"
+#include "transit.h"
+#include "room.h"
+#include "hash.h"
+#include "net.h"
+
+#include <ggz_common.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/signal.h>
@@ -39,17 +52,6 @@
 
 #include <ggzdmod.h>
 
-#include <ggzd.h>
-#include <datatypes.h>
-#include <protocols.h>
-#include <err_func.h>
-#include <table.h>
-#include <players.h>
-#include <seats.h>
-#include <transit.h>
-#include <room.h>
-#include <hash.h>
-#include <net.h>
 
 #define GGZ_RESYNC_SEC  0
 #define GGZ_RESYNC_USEC 500000

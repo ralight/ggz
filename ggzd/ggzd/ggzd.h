@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 3297 2002-02-10 07:34:26Z rgade $
+ * $Id: ggzd.h 3368 2002-02-16 03:06:13Z bmh $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -66,14 +66,6 @@ typedef enum {
 	GGZ_REQ_TABLE_LEAVE	= 3,
 } GGZPlayerHandlerStatus;
 
-/* Table state values */
-typedef enum {
-	GGZ_TABLE_ERROR		= -1,
-	GGZ_TABLE_CREATED	= 0,
-	GGZ_TABLE_WAITING	= 1,
-	GGZ_TABLE_PLAYING	= 2,
-	GGZ_TABLE_DONE		= 3,
-} GGZTableState;
 
 /*
  * Configuration options
