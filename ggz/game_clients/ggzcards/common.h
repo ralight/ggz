@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Frontend to GGZCards Client-Common
- * $Id: common.h 3160 2002-01-20 08:50:01Z jdorje $
+ * $Id: common.h 3315 2002-02-11 05:06:59Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -50,7 +50,18 @@ typedef struct {
 typedef struct seat_t {
 	GGZSeatType status;	/**< ggz seating assignment info */
 	char *name;		/**< player's name */
-	card_t table_card;	/**< card on table */
+	
+	/** @brief Player's card on the table.
+	 *
+	 *  This variable is maintained by the core client-common code,
+	 *  and should not be modified by the GUI table code.  It will
+	 *  always hold the card known to be on the table for the
+	 *  player, i.e. basically the same information that the
+	 *  server knows (although with a bit of lag).  Note that this
+	 *  need not correspond with what is actually drawn by the GUI.
+	 */
+	card_t table_card;
+	
 	hand_t hand;		/**< player's hand */
 } seat_t;
 

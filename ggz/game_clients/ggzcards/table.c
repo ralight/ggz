@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3310 2002-02-11 02:17:21Z jdorje $
+ * $Id: table.c 3315 2002-02-11 05:06:59Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -79,7 +79,7 @@ static void draw_text_box(int p);
 static void draw_card_box(int p);
 static void draw_card_areas(int write_to_screen);
 static void table_clear_table(int write_to_screen);
-static void table_card_clicked(int);
+static void table_card_clicked(int card_num);
 
 void table_show_table(int x, int y, int w, int h)
 {
@@ -500,7 +500,7 @@ void table_display_hand(int p, int write_to_screen)
 	int x_outer, y_outer;
 	int cx, cy, cw, ch, cxo, cyo;
 	float ow, oh;
-	card_t table_card = ggzcards.players[p].table_card;
+	card_t table_card = table_cards[p];
 
 #if 0
 	/* It looks like the server violates this, although it's probably a

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 3313 2002-02-11 03:21:07Z jdorje $
+ * $Id: game.h 3315 2002-02-11 05:06:59Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -26,6 +26,7 @@
 #include <gtk/gtk.h>
 
 #include "common.h"
+#include "layout.h"
 
 #ifndef __GAME_H__
 #define __GAME_H__
@@ -48,6 +49,8 @@ extern int table_max_hand_size;
 /* This isn't set to 1 until we start a game; until then we keep up the
    splash screen. */
 extern int game_started;
+
+extern card_t table_cards[MAX_NUM_PLAYERS];
 
 /* 
  * This first group is called by the table and

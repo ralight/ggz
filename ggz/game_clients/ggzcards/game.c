@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3313 2002-02-11 03:21:07Z jdorje $
+ * $Id: game.c 3315 2002-02-11 05:06:59Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -48,6 +48,8 @@ struct prefs preferences;
 
 int table_max_hand_size = 0;
 int game_started = FALSE;
+
+card_t table_cards[MAX_NUM_PLAYERS];
 
 static void text_cardlist_message(const char *mark, int *lengths,
 				  card_t ** cardlist);
@@ -103,10 +105,10 @@ void game_play_card(int card_num)
 
 	status = client_send_play(card);
 
-	/* It's _really_ not our place to put the card out on the table like
-	   this.  But right now we use this information to draw things
-	   properly, so we'd better stick to it for now. */
-	ggzcards.players[player].table_card = card;
+	/* We probably shouldn't put this up here yet, but should wait
+	   until we finish animating.  But the logic of it still needs
+	   to be worked out. */
+	table_cards[player] = card;
 
 	/* Draw the cards, eliminating the card in play */
 	table_display_hand(player, TRUE);
@@ -174,7 +176,14 @@ void game_get_newgame(void)
 
 void game_alert_newgame(void)
 {
+	int p;
+	
 	ggz_debug("main", "Received newgame alert from server.");
+	
+	/* Initialize table_cards to unknown. */
+	for (p = 0; p < MAX_NUM_PLAYERS; p++)
+		table_cards[p] = UNKNOWN_CARD;
+		
 	game_started = TRUE;
 	table_setup();
 	/* do nothing... */
@@ -319,9 +328,12 @@ void game_get_play(int hand)
 void game_alert_badplay(char *err_msg)
 {
 	ggz_debug("main", "Handling badplay alert.");
-
-	/* Restore the cards the way they should be. */
-	ggzcards.players[ggzcards.play_hand].table_card = UNKNOWN_CARD;
+	
+	/* We may have previously placed the card up; now we need
+	   to take it back down. */
+	assert(ggzcards.play_hand >= 0
+	       && ggzcards.play_hand < ggzcards.num_players);
+	table_cards[ggzcards.play_hand] = UNKNOWN_CARD;
 
 	animation_stop(FALSE);
 
@@ -355,6 +367,10 @@ void game_alert_play(int player, card_t card, int pos)
 
 void game_alert_table(void)
 {
+	int p;
+	for (p = 0; p < ggzcards.num_players; p++)
+		table_cards[p] = ggzcards.players[p].table_card;
+		
 	if (game_started) {
 		ggz_debug("main", "Handling table update alert.");
 		table_show_cards(TRUE);
@@ -364,8 +380,13 @@ void game_alert_table(void)
 void game_alert_trick(int player)
 {
 	char *t_str;
+	int p;
 
 	ggz_debug("main", "Handling trick alert; player %d won.", player);
+	
+	/* Clear cards off the table. */
+	for (p = 0; p < MAX_NUM_PLAYERS; p++)
+		table_cards[p] = UNKNOWN_CARD;
 
 	animation_stop(TRUE);
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3312 2002-02-11 03:05:08Z jdorje $
+ * $Id: common.c 3315 2002-02-11 05:06:59Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -657,6 +657,7 @@ static int handle_msg_trick(void)
 		return -1;
 	assert(winner >= 0 && winner < ggzcards.num_players);
 
+	/* Clear all cards off the table. */
 	for (p = 0; p < ggzcards.num_players; p++)
 		ggzcards.players[p].table_card = UNKNOWN_CARD;
 
