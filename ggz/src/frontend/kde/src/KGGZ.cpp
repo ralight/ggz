@@ -399,8 +399,11 @@ void KGGZ::timerEvent(QTimerEvent *e)
 			KGGZDEBUG("delete kggzserver;\n");
 			delete kggzserver;
 			kggzserver = NULL;
-			delete m_sn_server;
-			m_sn_server = NULL;
+			if(m_sn_server)
+			{
+				delete m_sn_server;
+				m_sn_server = NULL;
+			}
 		}
 		emit signalMenu(MENUSIG_DISCONNECT);
 		m_killserver = 0;
@@ -966,6 +969,8 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::protoerror:
 			KGGZDEBUG("protoerror\n");
 			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Protocol error detected!"), KGGZChat::RECEIVE_ADMIN);
+			delete m_sn_server;
+			m_sn_server = NULL;
 			KMessageBox::error(this, i18n("A protocol error (GGZCoreServer::protoerror) occured!"), i18n("Error!"));
 			m_killserver = 1;
 			menuConnect();
