@@ -74,6 +74,11 @@ AC_CHECK_LIB(pthread, pthread_create,
          AC_MSG_ERROR(*** Cannot find pthread.h header); exit),
     AC_MSG_ERROR(*** Cannot find pthread library ); exit)
 
+AC_CHECK_LIB(db, db_appinit,
+    AC_CHECK_HEADER(db.h, ggzd_LIBS="$ggzd_LIBS -ldb",
+      AC_MSG_ERROR(*** Cannot find db.h header); exit),
+    AC_MSG_ERROR(*** Cannot find db library ); exit)
+
 
 dnl Use -Wall if we have gcc.
 dnl ========================

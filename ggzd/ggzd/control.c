@@ -43,6 +43,7 @@
 #include <parse_opt.h>
 #include <motd.h>
 #include <room.h>
+#include <ggzdb.h>
 
 /* Server options */
 Options opt;
@@ -71,6 +72,9 @@ void init_data(void)
 	/* This is not necessary since game_types is in BSS */
 	for (i = 0; i < MAX_GAME_TYPES; i++)
 		game_types.info[i].enabled = 0;
+
+	if(ggzdb_init() < 0)
+		err_msg_exit("*** Database initialization failed");
 }
 
 

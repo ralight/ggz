@@ -33,10 +33,14 @@ ggzd_SOURCES =	chat.c\
 		transit.c \
 		transit.h \
 		hash.c \
-		hash.h
+		hash.h \
+		ggzdb.c \
+		ggzdb.h \
+		ggzdb_db2.c \
+		ggzdb_db2.h
 
 
-ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(top_builddir)/easysock/libeasysock.la 
+ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(top_builddir)/easysock/libeasysock.la
 ggzd_LDFLAGS = -static
 
 ggzdconf_DATA = ggzd.conf ggzd.motd

@@ -23,6 +23,7 @@
 #undef DEBUG_MEM
 #undef GGZDCONFDIR
 #undef GAMEDIR
+#undef DATADIR
 #undef TMPDIR
 #undef PACKAGE_SOURCE_DIR
 #undef _XOPEN_SOURCE
