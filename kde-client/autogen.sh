@@ -62,13 +62,7 @@ fi
 
 
 echo -n "[m4]"
-rm -f $srcdir/acinclude.m4
-if test -f $srcdir/acinclude.ggz; then
-	cat $srcdir/acinclude.ggz >> $srcdir/acinclude.m4;
-fi
-if test -f $srcdir/acinclude.kde; then
-	cat $srcdir/acinclude.kde >> $srcdir/acinclude.m4;
-fi
+cat m4/*.m4 > acinclude.m4
 if test "x$need_libtool" = "x1"; then
 	echo -n "[libtoolize]"
 	(cd $srcdir && libtoolize --force --copy) || { echo "libtoolize failed."; exit; }

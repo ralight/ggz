@@ -62,16 +62,7 @@ fi
 
 
 echo -n "[m4]"
-rm -f $srcdir/acinclude.m4
-if test -f $srcdir/acinclude.ggz; then
-	cat $srcdir/acinclude.ggz >> $srcdir/acinclude.m4;
-fi
-if test -f $srcdir/acinclude.kde; then
-	cat $srcdir/acinclude.kde >> $srcdir/acinclude.m4;
-fi
-if test -f $srcdir/acinclude.gnome; then
-	cat $srcdir/acinclude.gnome >> $srcdir/acinclude.m4;
-fi
+cat m4/*.m4 > acinclude.m4
 if test "x$need_libtool" = "x1"; then
 	echo -n "[libtoolize]"
 	(cd $srcdir && libtoolize --force --copy) || { echo "libtoolize failed."; exit; }
@@ -79,11 +70,15 @@ fi
 echo -n "[aclocal]"
 (cd $srcdir && aclocal) || { echo "aclocal failed."; exit; }
 echo -n "[autoheader]"
-autoheader -l $srcdir || { echo "autoheader failed."; exit; }
+autoheader -I $srcdir || { echo "autoheader failed."; exit; }
 echo -n "[automake]"
 (cd $srcdir && automake --add-missing --gnu 2>/dev/null) || { echo "automake failed."; exit; }
 echo -n "[autoconf]"
-autoconf -l $srcdir $srcdir/configure.in > $srcdir/configure && chmod +x $srcdir/configure || { echo "autoconf failed."; exit; }
+autoconf -I $srcdir $srcdir/configure.in > $srcdir/configure && chmod +x $srcdir/configure || { echo "autoconf failed."; exit; }
+if test -f $srcdir/am_edit; then
+	echo -n "[am_edit]"
+	perl $srcdir/am_edit --foreign-libtool || { echo "am_edit failed."; exit; }
+fi
 echo ""
 
 #conf_flags="--enable-maintainer-mode --enable-compile-warnings" #--enable-iso-c
