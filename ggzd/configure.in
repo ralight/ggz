@@ -90,6 +90,12 @@ AC_CHECK_HEADER(pthread.h,
             AC_MSG_ERROR(*** Cannot find pthread library); exit)),
     AC_MSG_ERROR(*** Cannot find pthread.h header); exit)
 
+dnl Check for libggz
+dnl ================
+AC_CHECK_LIB(ggz, ggz_memory_check,
+    AC_CHECK_HEADER(ggz.h, LDADD="$LDADD -lggz",
+        AC_MSG_ERROR(*** Cannot find ggz.h header)),
+    AC_MSG_ERROR(*** Cannot find libggz ))
 
 dnl Check for expat
 dnl ==============
