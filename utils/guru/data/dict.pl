@@ -13,10 +13,14 @@ $dictdir = "/usr/share/trans";
 
 ###################################################################################
 
+$inputline = <STDIN>;
+chomp($inputline);
+@input = split(/\ /, $inputline);
+
 $letthrough = 0;
-if(($ARGV[1] eq "what") && ($ARGV[2] eq "is")){
-	if($ARGV[3] ne ""){
-		if(($ARGV[4] eq "in") && ($ARGV[5] ne "")){
+if(($input[1] eq "what") && ($input[2] eq "is")){
+	if($input[3] ne ""){
+		if(($input[4] eq "in") && ($input[5] ne "")){
 			$letthrough = 1;
 		}else{
 			print "That\'s a word. Come on, I don\'t know your native language yet.\n";
@@ -26,17 +30,19 @@ if(($ARGV[1] eq "what") && ($ARGV[2] eq "is")){
 	}
 }
 if(!$letthrough){
+	close(STDOUT);
+	sleep(1);
 	exit(0);
 }
 
 $fuzzy = 0;
-if($ARGV[5] eq "fuzzy"){
-	$LANG = $ARGV[6];
+if($input[5] eq "fuzzy"){
+	$LANG = $input[6];
 	$fuzzy = 1;
 }else{
-	$LANG = $ARGV[5];
+	$LANG = $input[5];
 }
-$WORD = $ARGV[3];
+$WORD = $input[3];
 
 # make configurable!
 $FROM = "en";
@@ -49,6 +55,8 @@ if($LANG eq "english"){$LANG = "en";}
 
 if(($LANG ne "de") && ($LANG ne "en") && ($LANG ne "it") && ($LANG ne "pt") && ($LANG ne "es")){
 	print "I\'m so uneducated I only know english, german, spanish, portuguese, italian.\n";
+	close(STDOUT);
+	sleep(1);
 	exit(0);
 }
 
@@ -95,4 +103,6 @@ if($answer){
 }else{
 	print "Sorry, I don't know what a $WORD is.\n";
 }
+close(STDOUT);
+sleep(1);
 

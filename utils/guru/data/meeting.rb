@@ -26,10 +26,14 @@ class GuruMeeting
   def tell
 	print "Planned meetings: ", @notes.join " - "
 	print "\n"
+	$stdout.flush
+	sleep 1
   end
 end
 
-if (ARGV[1] != "meeting")
+input = $stdin.gets.chomp.split(/\ /)
+
+if (input[1] != "meeting")
   exit
 end
 
@@ -44,20 +48,20 @@ end
 
 dump = 0
 
-if ARGV[2] == "add"
-  add = ARGV[3..ARGV.length]
+if input[2] == "add"
+  add = input[3..input.length]
   date = add.join " "
   m.add date
   dump = 1
 end
-if ARGV[2] == "remove"
-  rm = ARGV[3..ARGV.length]
+if input[2] == "remove"
+  rm = input[3..input.length]
   date = rm.join " "
   m.remove date
   dump = 1
 end
 
-if ARGV[2] == nil
+if input[2] == nil
   m.tell
 end
 

@@ -62,25 +62,34 @@ char *const *optlist(char *cmdline, char *options)
 
 void simpleexec(const char *cmdline, const char *options)
 {
-	char *const *opts = optlist(strdup(cmdline), strdup(options));
+	/*char *const *opts = optlist(strdup(cmdline), strdup(options));*/
+	char *const *opts = optlist((char*)cmdline, NULL);
 
 	execvp(cmdline, opts);
 }
 
 char *process(const char *program, Guru *message)
 {
-	int readfd[2], writefd[2];
-	int result1, result2;
+	int fd[2];
+	int result;
 	int pid, i;
-	static char *buffer = NULL;
+	static char *readbuffer = NULL;
+	static char *writebuffer = NULL;
 	time_t start;
 
-	result1 = socketpair(AF_UNIX, SOCK_STREAM, 0, readfd);
-	result2 = socketpair(AF_UNIX, SOCK_STREAM, 0, writefd);
-	if((result1 == -1) || (result2 == -1))
+	result = socketpair(AF_UNIX, SOCK_STREAM, 0, fd);
+	if(result == -1)
 	{
 		return NULL;
 	}
+
+	/* prepare buffers */
+	if(!readbuffer) readbuffer = (char*)malloc(1024);
+	if(!writebuffer) writebuffer = (char*)malloc(1024);
+	for(i = 0; i < 1024; i++)
+		readbuffer[i] = 0;
+	sprintf(writebuffer, "%s\n", message->message);
+	start = time(NULL);
 
 	pid = fork();
 	switch(pid)
@@ -88,33 +97,29 @@ char *process(const char *program, Guru *message)
 		case -1:
 			break;
 		case 0:
-			dup2(readfd[0], 0);
-			dup2(writefd[0], 1);
-			simpleexec(program, strdup(message->message));
+			dup2(fd[0], 0);
+			dup2(fd[0], 1);
+			simpleexec(program, message->message);
 			exit(-1);
 			break;
 		default:
-			fcntl(writefd[1], F_SETFL, O_NONBLOCK);
-			if(!buffer) buffer = (char*)malloc(1024);
-			sprintf(buffer, "%s\n", message->message);
-			write(readfd[1], buffer, strlen(buffer));
-			for(i = 0; i < 1024; i++)
-				buffer[i] = 0;
+			fcntl(fd[1], F_SETFL, O_NONBLOCK);
+			write(fd[1], writebuffer, strlen(writebuffer));
 			printf("==> (%s)\n", message->message);
-			start = time(NULL);
-			i = 0;
-			i = read(writefd[1], buffer, 1024);
+			/*fcntl(fd[1], F_SETFL, O_NONBLOCK);*/
+			i = read(fd[1], readbuffer, 1024);
 if(i != -1) printf("FIRST: %i\n", i);
+			i = -2;
 			while((waitpid(pid, NULL, WNOHANG) == 0) && (time(NULL) - start < MAXDELAY) && (i <= 1))
 			{
-				i = read(writefd[1], buffer, 1024);
+				i = read(fd[1], readbuffer, 1024);
 if(i != -1) printf("NOW: %i\n", i);
 			}
 			printf("<== (%i)\n", i);
 			if(i > 1)
 			{
-				buffer[strlen(buffer) - 1] = 0;
-				return buffer;
+				readbuffer[strlen(readbuffer) - 1] = 0;
+				return readbuffer;
 			}
 			break;
 	}
