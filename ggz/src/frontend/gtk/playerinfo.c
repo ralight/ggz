@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 5918 2004-02-13 07:31:26Z jdorje $
+ * $Id: playerinfo.c 6118 2004-07-16 19:08:50Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -63,7 +63,7 @@ void player_info_create_or_raise(GGZPlayer * player)
 	char *ptype = _("Unknown");
 	int wins, losses, ties, forfeits;
 	int rating, ranking;
-	long highscore;
+	int highscore;
 
 	if (!dialog) {
 		dialog = create_dlg_info();
@@ -189,7 +189,7 @@ void player_info_create_or_raise(GGZPlayer * player)
 		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "highscore");
 		gtk_widget_show(tmp);
 
-		snprintf(text, sizeof(text), "%ld", highscore);
+		snprintf(text, sizeof(text), "%d", highscore);
 
 		gtk_label_set_text(GTK_LABEL(tmp), text);
 	} else {

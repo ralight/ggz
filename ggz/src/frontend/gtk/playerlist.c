@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 5963 2004-02-28 05:05:41Z jdorje $
+ * $Id: playerlist.c 6118 2004-07-16 19:08:50Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -228,8 +228,7 @@ void display_players(void)
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	GdkPixmap *pixmap1 = NULL, *pixmap2 = NULL;
 	GdkBitmap *mask1, *mask2;
-	int wins, losses, ties, forfeits, rating, ranking;
-	long highscore;
+	int wins, losses, ties, forfeits, rating, ranking, highscore;
 	char stats[512];
 
 	/* Retrieve the player list (CList) widget. */
@@ -262,7 +261,7 @@ void display_players(void)
 		if (ggzcore_player_get_ranking(p, &ranking)) {
 			snprintf(stats, sizeof(stats), _("#%d"), ranking);
 		} else if (ggzcore_player_get_highscore(p, &highscore)) {
-			snprintf(stats, sizeof(stats), "%ld", highscore);
+			snprintf(stats, sizeof(stats), "%d", highscore);
 		} else if (ggzcore_player_get_rating(p, &rating)) {
 			snprintf(stats, sizeof(stats), "%d", rating);
 		} else if (ggzcore_player_get_record(p, &wins, &losses,
