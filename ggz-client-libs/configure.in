@@ -153,6 +153,7 @@ AC_OUTPUT([Makefile
 	   man/Makefile
 	   man/ggz-config.6
 	   man/ggz.modules.5
+	   man/ggz_client_h.3
 	   ])
 
 

@@ -1,0 +1,117 @@
+.TH "ggz_client.h" 3 "25 Aug 2001" "GGZMod" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ggz_client.h \- The interface for the ggzmod library used by game clients. 
+.SH SYNOPSIS
+.br
+.PP
+.SS Functions
+
+.in +1c
+.ti -1c
+.RI "int \fBggz_connect\fR (void)"
+.br
+.RI "\fIConnects to GGZ.\fR"
+.ti -1c
+.RI "int \fBggz_disconnect\fR (void)"
+.br
+.RI "\fIDisconnects from GGZ.\fR"
+.ti -1c
+.RI "int \fBggz_get_sock\fR (void)"
+.br
+.RI "\fIReturns the GGZ TCP communications socket.\fR"
+.ti -1c
+.RI "int \fBggz_get_udp_sock\fR (void)"
+.br
+.RI "\fIReturns the GGZ UDP communications socket.\fR"
+.in -1c
+.SH DETAILED DESCRIPTION
+.PP 
+The interface for the ggzmod library used by game clients.
+.PP
+.PP
+ This file contains all libggzmod functions used by game clients to interface with GGZ. Just include \fBggz_client.h\fR and make sure your program is linked with libggzmod. Then use the functions below as appropriate.
+.PP
+Here is an example of how a GTK client may connect: 
+.PP
+.nf
+     int fd;
+
+     // this function reads input from the socket (server) and handles it
+     void game_handle_io(gpointer data, gint source, GdkInputCondition cond) {
+         ...
+     }
+
+     int main(int argc, char** argv) {
+         fd = ggz_connect();          // connect to GGZ
+         if (fd < 0) return -1;
+         gtk_init(&argc, &argv);
+         gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
+         gtk_main();
+         ggz_disconnect();            // disconnect from GGZ
+         return 0;
+     }
+.fi
+.PP
+For more information, see the documentation at http://ggz.sf.net/.
+.PP
+.SH FUNCTION DOCUMENTATION
+.PP 
+.SS int ggz_connect (void)
+.PP
+Connects to GGZ.
+.PP
+.PP
+ This does the physical work of connecting to GGZ. It should be called by the game client upon startup.
+.PP
+\fBReturns: \fR
+.in +1c
+The file descriptor for the TCP communications socket (or -1 on failure). 
+.PP
+\fBSee also: \fR
+.in +1c
+\fBggz_get_sock\fR 
+.PP
+\fB\fBTodo: \fR\fR
+.in +1c
+ Should it just return 0 on success, -1 on failure?  
+.SS int ggz_disconnect (void)
+.PP
+Disconnects from GGZ.
+.PP
+.PP
+ This disconnects from GGZ and destroys all internal data. It should be called by the game client before exiting.
+.PP
+\fBReturns: \fR
+.in +1c
+0 on success; -1 on failure. 
+.SS int ggz_get_sock (void)
+.PP
+Returns the GGZ TCP communications socket.
+.PP
+.PP
+ This returns the file descriptor of the TCP communications socket. The socket can be used for two-way communication to the game server through TCP.
+.PP
+\fBReturns: \fR
+.in +1c
+The FD integer, or -1 on no connection. 
+.SS int ggz_get_udp_sock (void)
+.PP
+Returns the GGZ UDP communications socket.
+.PP
+.PP
+ This returns the file descriptor of the UDP communications socket. The socket can be used for two-way communication to the game server through UDP.
+.PP
+\fBReturns: \fR
+.in +1c
+The FD integer, or -1 on no connection. 
+.PP
+\fB\fBTodo: \fR\fR
+.in +1c
+Is this a good way to access the UDP socket? 
+.PP
+ This functionality is not yet implemented; it will return -1.  
+.SH AUTHOR
+.PP 
+Generated automatically by Doxygen for GGZMod from the source code.
