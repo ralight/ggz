@@ -176,3 +176,7 @@ int GGZGameServer::spectators () {
 #endif
 }
 
+int GGZGameServer::open () {
+	return ggzdmod_count_seats ( ggzdmod, GGZ_SEAT_OPEN );
+}
+

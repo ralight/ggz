@@ -45,6 +45,7 @@ class GGZGameServer {
 		int players();
 		int spectatorfd ( int spectator );
 		int spectators ();
+		int open();
 
 	private:
 		static void handle_state ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
