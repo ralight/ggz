@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Callbacks for the main dialog window
- * $Id: main_cb.c 4889 2002-10-12 20:34:26Z jdorje $
+ * $Id: main_cb.c 5047 2002-10-26 04:54:33Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -27,12 +27,13 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "dlg_about.h"
 #include "dlg_exit.h"
+#include "menus.h"
 
 #include "main_cb.h"
 #include "main_dlg.h"
@@ -54,11 +55,15 @@ on_dlg_main_delete_event               (GtkWidget       *widget,
 }
 
 
-void
-on_exit_menu_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+void game_exit(void)
 {
 	ggz_show_exit_dialog(1);
+}
+
+
+void game_resync(void)
+{
+	assert(FALSE);
 }
 
 
@@ -133,12 +138,3 @@ on_draw_area_button_press_event        (GtkWidget       *widget,
 		display_handle_click_event(event);
 	return TRUE;
 }
-
-
-void
-on_about_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	create_or_raise_dlg_about();
-}
-

@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Chinese Checkers Client
  * Desc: Main dialog code
- * $Id: main_dlg.c 4921 2002-10-14 23:08:40Z jdorje $
+ * $Id: main_dlg.c 5047 2002-10-26 04:54:33Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -36,6 +36,7 @@
 
 #include "dlg_players.h"
 #include "ggzintl.h"
+#include "menus.h"
 
 #include "main_cb.h"
 #include "main_dlg.h"
@@ -43,35 +44,23 @@
 
 static GtkWidget *create_menus(GtkWidget *window)
 {
-	GtkAccelGroup *accel_group;
-	GtkItemFactory *menu;
-	GtkWidget *menu_item;
 	GtkItemFactoryEntry items[] = {
-	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
-	  {_("/Table/Player _list"), "<ctrl>L",
-	   create_or_raise_dlg_players, 0, NULL},
-	  {_("/Table/_Sync with server"), "<ctrl>S", NULL, 0, NULL},
-	  {_("/Table/E_xit"), "<ctrl>X", on_exit_menu_activate, 0, NULL},
-	  {_("/_Options"), NULL, NULL, 0, "<Branch>"},
-	  {_("/Options/_Preferences"), "<ctrl>P", on_preferences_menu_activate,
-	   0, NULL},
-	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
-	  {_("/Help/_About"), "<ctrl>A", on_about_activate, 0, NULL}
+		TABLE_MENU,
+		{_("/_Options"), NULL, NULL, 0, "<Branch>"},
+		{_("/Options/_Preferences"), "<ctrl>P",
+		 on_preferences_menu_activate, 0, NULL},
+		HELP_MENU
 	};
-	const int num = sizeof(items) / sizeof(items[0]);
 
-	accel_group = gtk_accel_group_new();
+	GtkWidget *menubar;
 
-	menu = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
-	gtk_item_factory_create_items(menu, num, items, NULL);
-	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
+	menubar = ggz_create_menus(window,
+				   items,
+				   sizeof(items) / sizeof(items[0]));
 
-	menu_item = gtk_item_factory_get_widget(menu,
-						_("<main>/Table/"
-						  "Sync with server"));
-	gtk_widget_set_sensitive(menu_item, FALSE);
+	set_menu_sensitive(TABLE_SYNC, FALSE);
 
-	return gtk_item_factory_get_widget(menu, "<main>");
+	return menubar;
 }
 
 GtkWidget*
