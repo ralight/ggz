@@ -11,3 +11,7 @@ noinst_HEADERS = ggzcommgen.h
 
 INCLUDES = -I $(top_srcdir)/metaserv/minidom
 
+test:
+	$(top_builddir)/ggzcomm/ggzcommgen --protocol=tictactoe --format=c --task=server
+	$(top_builddir)/ggzcomm/ggzcommgen --protocol=ggzcards --format=c++ --task=client
+

@@ -2,6 +2,7 @@
 #include "minidom.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* Global buffers */
 char *filedecl = NULL;
