@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2845 2001-12-10 03:07:39Z jdorje $
+ * $Id: common.c 2850 2001-12-10 04:16:28Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -124,6 +124,7 @@ static int handle_global_message_text(char *mark)
 	if (es_read_string_alloc(ggzfd, &message) < 0)
 		return -1;
 	table_set_global_text_message(mark, message);
+	free(message);		/* allocated by easysock */
 	return 0;
 }
 
@@ -189,7 +190,7 @@ static int handle_message_global(void)
 
 	op = opcode;
 
-	ggz_debug("core", "Received opcode of type %d.", op);
+	ggz_debug("core", "Received global message opcode of type %d.", op);
 
 	switch (op) {
 	case GL_MESSAGE_TEXT:
@@ -391,9 +392,12 @@ static int handle_req_bid(void)
 	int possible_bids;
 	char **bid_choices;
 
-	if (game.state == STATE_BID)
-		/* TODO: the new bid request should override the old one */
-		return 0;
+	if (game.state == STATE_BID) {
+		/* The new bid request overrides the old one.  But this means 
+		   some messy cleanup is necessary. */
+		ggz_debug("core",
+			  "WARNING: new bid message overriding old one.");
+	}
 
 	/* Determine the number of bidding choices we have */
 	if (es_read_int(ggzfd, &possible_bids) < 0)
@@ -533,7 +537,7 @@ static int handle_msg_play(void)
 		   Fortunately, it's easily solved. */
 		ggz_debug("core",
 			  "Whoa!  We can't find a match for the card.  That's strange.");
-		client_send_sync_request();
+		(void) client_send_sync_request();
 		return 0;
 	}
 
@@ -556,6 +560,8 @@ static int handle_msg_table(void)
 {
 	int p;
 
+	ggz_debug("core", "Handling table message.");
+
 	assert(game.players);
 	for (p = 0; p < game.num_players; p++)
 		if (read_card(ggzfd, &game.players[p].table_card) < 0)
@@ -565,6 +571,7 @@ static int handle_msg_table(void)
 	 */
 
 	table_alert_table();
+
 	return 0;
 }
 
@@ -704,6 +711,7 @@ int client_send_play(card_t card)
 /* A sync request asks for a sync from the server. */
 int client_send_sync_request(void)
 {
+	ggz_debug("core", "Sending sync request to server.");
 	if (write_opcode(ggzfd, REQ_SYNC) < 0) {
 		ggz_debug("core-error", "Couldn't send sync request.");
 		return -1;

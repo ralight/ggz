@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2843 2001-12-10 02:19:53Z jdorje $
+ * $Id: main.c 2850 2001-12-10 04:16:28Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -439,6 +439,7 @@ void table_alert_play(int player, card_t card)
 
 void table_alert_table()
 {
+	ggz_debug("table", "Handling table update alert.");
 	table_show_cards();
 }
 
