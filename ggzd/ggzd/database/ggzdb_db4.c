@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db3 sytle database
- * $Id: ggzdb_db4.c 5664 2003-10-25 12:04:33Z dr_maux $
+ * $Id: ggzdb_db4.c 5665 2003-10-25 12:09:43Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -62,10 +62,10 @@ GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	} else
 		flags = DB_CREATE | DB_INIT_MPOOL | DB_INIT_LOCK | DB_THREAD;
 #if DB_VERSION_MINOR == 1
-	if (db_env_create_4001(&db_e, 0) != 0) {
+	if (db_env_create(&db_e, 0) != 0) {
 		err_sys("db_env_create_4001() failed in _ggzdb_init()");
 #else
-	if (db_env_create_4000(&db_e, 0) != 0) {
+	if (db_env_create(&db_e, 0) != 0) {
 		err_sys("db_env_create_4000() failed in _ggzdb_init()");
 #endif
 		return GGZ_ERROR;
