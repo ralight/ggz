@@ -11,6 +11,10 @@ PlayersAllowed = 3
 PlayersAllowed = 4
 PlayersAllowed = 6
 BotsAllowed = 0
+BotsAllowed = 1
+BotsAllowed = 2
+BotsAllowed = 3
+BotsAllowed = 5
 # Set AllowLeave to 1 if game supports players leaving during gameplay
 AllowLeave = 1
 # ExecutablePath is figured relative to GameDir unless starting with /
