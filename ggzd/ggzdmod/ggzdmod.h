@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2790 2001-12-06 21:06:22Z jdorje $
+ * $Id: ggzdmod.h 2793 2001-12-06 22:51:25Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -47,33 +47,39 @@
  * invoke the appropriate handler (see below), but will never actually
  * read any data.
  *
- * Here is a fairly complete example:
+ * Here is a fairly complete example.  In this game we register a handler
+ * for each of the possible callbacks.  This particular game is played only
+ * when all seats are full; when any seats are empty it must wait (much like
+ * a card or board game).
  * @code
- *     // Game-defined handler function; see below.
- *     void ggz_update(GGZdModEvent event, GGZdMod* mod, void* data);
+ *     // Game-defined handler functions; see below.
+ *     void handle_state_change(GGZdModEvent event, GGZdMod* mod, void* data);
+ *     void handle_player_join(GGZdModEvent event, GGZdMod* mod, void* data);
+ *     void handle_player_leave(GGZdModEvent event, GGZdMod* mod, void* data);
+ *     void handle_player_data(GGZdModEvent event, GGZdMod* mod, void* data);
  *
  *     // Other game-defined functions (not ggz-related).
- *     void handle_state_change(GGZdModState old, GGZdModState new);
- *     void handle_player_join(int player, int socket_fd, char* name, GGZdModSeat type);
- *     void handle_player_leave(int player);
- *     void handle_player_data(int player, int socket_fd);
- *     void game_init(GGZdMod *ggzdmod);
+ *     void game_init(GGZdMod *ggzdmod); // initialize a game
+ *     void game_launch(void);           // handle a game "launch"
+ *     void game_end(void);              // called before the table shuts down
+ *     void resume_playing(void);        // we have enough players to play
+ *     void stop_playing(void);          // we don't have enough players to play
  *
- *     int main() {
+ *     int main()
+ *     {
  *         GGZdMod *mod = ggzdmod_new(GGZ_GAME);
  *         // First we register functions to handle some events.
- *         ggzdmod_set_handler(mod, GGZDMOD_EVENT_STATE,       &ggz_update);
- *         ggzdmod_set_handler(mod, GGZDMOD_EVENT_JOIN,        &ggz_update);
- *         ggzdmod_set_handler(mod, GGZDMOD_EVENT_LEAVE,       &ggz_update);
- *         ggzdmod_set_handler(mod, GGZDMOD_EVENT_PLAYER_DATA, &ggz_update);
+ *         ggzdmod_set_handler(mod, GGZDMOD_EVENT_STATE,       &handle_state_change);
+ *         ggzdmod_set_handler(mod, GGZDMOD_EVENT_JOIN,        &handle_player_join);
+ *         ggzdmod_set_handler(mod, GGZDMOD_EVENT_LEAVE,       &handle_player_leave);
+ *         ggzdmod_set_handler(mod, GGZDMOD_EVENT_PLAYER_DATA, &handle_player_data);
  *
  *         // Do any other game initializations.
  *         game_init(mod);
  *
  *         // Then we must connect to ggzd
- *         if (ggzdmod_connect(mod) < 0) {
+ *         if (ggzdmod_connect(mod) < 0)
  *             exit(-1);
- *         }
  *         (void)ggzdmod_log(mod, "Starting game.");
  *
  *         // ggzdmod_loop does most of the work, dispatching handlers
@@ -81,38 +87,75 @@
  *         (void)ggzdmod_loop(mod);
  *
  *         // At the end, we disconnect and destroy the ggzdmod object.
- *         (void)ggzdmod_log(mod, "Stopping game.");
+ *         (void)ggzdmod_log(mod, "Ending game.");
  *         (void)ggzdmod_disconnect(mod);
  *         ggzdmod_free(mod);
  *     }
  *
- *     void ggz_update(GGZdMod *mod, GGZdModEvent event, void *data) {
- *         int player, socket_fd;
- *         GGZdModState old_state, new_state;
- *         GGZdModSeat seat;
- *         switch (event) {
- *           case GGZDMOD_EVENT_STATE:
- *             old_state = *(GGZdModState*)data;
- *             new_state = ggzdmod_get_state(mod);
- *             handle_state_change(old_state, new_state);
+ *     void handle_state_change(GGZdModEvent event, GGZdMod* mod, void* data)
+ *     {
+ *         GGZdModState old_state = *(GGZdModState*)data;
+ *         GGZdModState new_state = ggzdmod_get_state(mod);
+ *         if (old_state == GGZDMOD_STATE_CREATED)
+ *             // ggzdmod data isn't initialized until it connects with GGZ
+ *             // during the game launch, so some initializations should wait
+ *             // until here.
+ *             game_launch();
+ *         switch (new_state) {
+ *           case GGZDMOD_STATE_WAITING:
+ *             // At this point we've entered the "waiting" state where we
+ *             // aren't actually playing.  This is generally triggered by
+ *             // the game calling ggzdmod_set_state, which happens when
+ *             // a player leaves (down below).  It may also be triggered
+ *             // by GGZ automatically.
+ *             stop_playing();
  *             break;
- *           case GGZDMOD_EVENT_JOIN:
- *             player = *(int*)data;
- *             seat = ggzdmod_get_seat(mod, player);
- *             handle_player_join(player, seat.fd, seat.name, seat.type);
+ *           case GGZDMOD_STATE_PLAYING:
+ *             // At this point we've entered the "playing" state, so we
+ *             // should resume play.  This is generally triggered by
+ *             // the game calling ggzdmod_set_state, which happens when
+ *             // all seats are full (down below).  It may also be
+ *             // triggered by GGZ automatically.
+ *             resume_playing();
  *             break;
- *           case GGZDMOD_EVENT_LEAVE:
- *             player = *(int*)data;
- *             handle_player_leave(player);
+ *           case GGZDMOD_STATE_DONE:
+ *             // at this point ggzdmod_loop will stop looping, so we'd
+ *             // better close up shop fast.  This will only happen
+ *             // automatically if all players leave, but we can force it
+ *             // using ggzdmod_set_state.
+ *             game_end();
  *             break;
- *           case GGZDMOD_EVENT_PLAYER_DATA:
- *             player = *(int*)data;
- *             socket_fd = ggzdmod_get_seat(mod, player).fd;
- *             handle_player_data(player, socket_fd);
- *             break;
- *           default:
- *             // We don't handle the other events.
  *         }
+ *     }
+ *
+ *     void handle_player_join(GGZdModEvent event, GGZdMod* mod, void* data)
+ *     {
+ *         int player = *(int*)data;
+ *         GGZdModSeat seat = ggzdmod_get_seat(mod, player);
+ *
+ *         // ... do other player initializations ...
+ *
+ *         if (ggzdmod_count_seats(mod, GGZ_SEAT_OPEN) == 0)
+ *             // this particular game will only play when all seats are full.
+ *             ggzdmod_set_state(mod, GGZDMOD_STATE_PLAYING);
+ *     }
+ *
+ *     void handle_player_leave(GGZdModEvent event, GGZdMod* mod, void* data)
+ *     {
+ *         int player = *(int*)data;
+ *
+ *         // ... do other player un-initializations ...
+ *
+ *         // this particular game will only play when all seats are full.
+ *         ggzdmod_set_state(mod, GGZDMOD_STATE_WAITING);
+ *     }
+ *
+ *     void handle_player_data(GGZdModEvent event, GGZdMod* mod, void* data)
+ *     {
+ *         int player = *(int*)data;
+ *         int socket_fd = ggzdmod_get_seat(mod, player).fd;
+ *
+ *         // ... read a packet from the socket ...
  *     }
  * @endcode
  *
