@@ -194,6 +194,49 @@ static PyObject *pyggzmod_get_spectator_seat_name(PyObject *self, PyObject *args
 	return Py_BuildValue("s", name);
 }
 
+static PyObject *pyggzmod_autonetwork(PyObject *self, PyObject *args)
+{
+	int networked;
+	int ret, actualret;
+
+	int maxfd;
+	fd_set set;
+	struct timeval tv;
+	int serverfd;
+	int gamefd;
+
+	if(!PyArg_ParseTuple(args, "ii", &networked, &gamefd)) return NULL;
+
+	FD_ZERO(&set);
+
+	serverfd = ggzmod_get_fd(ggzmod);
+
+	FD_SET(serverfd, &set);
+	maxfd = serverfd;
+	if(gamefd >= 0)
+	{
+		FD_SET(gamefd, &set);
+		if(gamefd > maxfd) maxfd = gamefd;
+	}
+
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+
+	ret = select(maxfd + 1, &set, NULL, NULL, &tv);
+
+	actualret = 0;
+	if(ret)
+	{
+		if(gamefd >= 0)
+		{
+			if(FD_ISSET(gamefd, &set)) /*game_handle_io()*/actualret |= 1;
+		}
+		if(FD_ISSET(serverfd, &set)) /*handle_ggz()*/actualret |= 2;
+	}
+
+	return Py_BuildValue("i", actualret);
+}
+
 /* (ggzmod_get_seat) */
 /* (ggzmod_get_spectator_seat) */
 /* (ggzmod_get_player) */
@@ -272,6 +315,7 @@ static PyMethodDef pyggzmod_methods[] =
 	{"connect", pyggzmod_connect, METH_VARARGS},
 	{"disconnect", pyggzmod_disconnect, METH_VARARGS},
 	{"setHandler", pyggzmod_set_handler, METH_VARARGS},
+	{"autonetwork", pyggzmod_autonetwork, METH_VARARGS},
 	{NULL, NULL}
 };
 

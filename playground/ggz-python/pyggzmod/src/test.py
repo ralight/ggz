@@ -31,6 +31,7 @@ ggzmod.setHandler(ggzmod.EVENT_STATE, hook_state)
 
 print ">> launch the game client"
 ggzmod.connect()
+ggzmod.autonetwork(0)
 #ggzmod.mainLoop()
 
 print ">> done."
