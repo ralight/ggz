@@ -71,6 +71,9 @@ class Locale
 				$lang = $far[$i - 1];
 				$language = Locale::languagename($lang);
 				if ($lang != $community_locale_lang) :
+					if (!strstr($_SERVER['PHP_SELF'], $_SERVER['SCRIPT_FILENAME'])) :
+						$f = "../$f";
+					endif;
 					echo "<a href='$f'>$language</a> ";
 				else :
 					echo "$language ";
