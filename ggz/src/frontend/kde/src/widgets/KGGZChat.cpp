@@ -554,9 +554,9 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 			//checkLag(tmp);
 			break;
 		case RECEIVE_PERSONAL:
-			tmp = QString("<font color=#%1><b><i>").arg(color);
+			tmp = QString("<tr><td><font color=#%1><b><i>").arg(color);
 			if(player) tmp += QString(player) + ":&nbsp;</i></b></font><font color=#b0b000><b><i>";
-			tmp += QString(plaintext(msg.latin1())) + QString("</i></b></font><br>");
+			tmp += QString("</td><td>") + QString(plaintext(msg.latin1())) + QString("</i></b></font></td></tr>");
 			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
