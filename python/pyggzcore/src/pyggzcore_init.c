@@ -34,13 +34,87 @@ static GGZHookReturn pyggzcore_cb_game_hook(unsigned int id, void *event_data, v
 /* Global variables                           */
 /**********************************************/
 
-static GGZServer *ggzserver;
-static GGZRoom *ggzroom;
-static GGZGame *ggzgame;
+static GGZServer *ggzserver = NULL;
+static GGZRoom *ggzroom = NULL;
+static GGZGame *ggzgame = NULL;
 
 static PyObject *pyggzcore_cb_server = NULL;
 static PyObject *pyggzcore_cb_room = NULL;
 static PyObject *pyggzcore_cb_game = NULL;
+
+/**********************************************/
+/* Object definitions                         */
+/**********************************************/
+
+staticforward PyTypeObject pyggzcore_ServerType;
+staticforward PyTypeObject pyggzcore_RoomType;
+staticforward PyTypeObject pyggzcore_GameType;
+
+typedef struct
+{
+	PyObject_HEAD
+}
+pyggzcore_ServerObject;
+
+typedef struct
+{
+	PyObject_HEAD
+}
+pyggzcore_RoomObject;
+
+typedef struct
+{
+	PyObject_HEAD
+}
+pyggzcore_GameObject;
+
+static void pyggzcore_delete_server(PyObject *self)
+{
+	ggzcore_server_free(ggzserver);
+	ggzserver = NULL;
+
+	PyObject_Del(self);
+}
+
+static PyTypeObject pyggzcore_ServerType =
+{
+	PyObject_HEAD_INIT(NULL)
+	0,
+	"Server",
+	sizeof(pyggzcore_ServerObject),
+	0,
+	pyggzcore_delete_server,
+};
+
+static void pyggzcore_delete_room(PyObject *self)
+{
+	PyObject_Del(self);
+}
+
+static PyTypeObject pyggzcore_RoomType =
+{
+	PyObject_HEAD_INIT(NULL)
+	0,
+	"Room",
+	sizeof(pyggzcore_RoomObject),
+	0,
+	pyggzcore_delete_room,
+};
+
+static void pyggzcore_delete_game(PyObject *self)
+{
+	PyObject_Del(self);
+}
+
+static PyTypeObject pyggzcore_GameType =
+{
+	PyObject_HEAD_INIT(NULL)
+	0,
+	"Game",
+	sizeof(pyggzcore_GameObject),
+	0,
+	pyggzcore_delete_game,
+};
 
 /**********************************************/
 /* GGZDMod object methods just like in C       */
@@ -51,6 +125,102 @@ static PyObject *pyggzcore_reload(PyObject *self, PyObject *args)
 	if(!PyArg_ParseTuple(args, "")) return NULL;
 	ggzcore_reload();
 	return Py_BuildValue("");
+}
+
+static PyObject *pyggzcore_server_set_hostinfo(PyObject *self, PyObject *args)
+{
+	char *host;
+	int port, use_tls;
+	int ret;
+
+	if(!PyArg_ParseTuple(args, "sii", &host, &port, &use_tls)) return NULL;
+	ret = ggzcore_server_set_hostinfo(ggzserver, host, port, use_tls);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject *pyggzcore_server_set_logininfo(PyObject *self, PyObject *args)
+{
+	char *handle, *password;
+	int type;
+	int ret;
+
+	if(!PyArg_ParseTuple(args, "iss", &type, &handle, &password)) return NULL;
+	ret = ggzcore_server_set_logininfo(ggzserver, type, handle, password);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject *pyggzcore_server_get_state(PyObject *self, PyObject *args)
+{
+	int ret;
+
+	if(!PyArg_ParseTuple(args, "")) return NULL;
+	ret = ggzcore_server_get_state(ggzserver);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject *pyggzcore_server_get_tls(PyObject *self, PyObject *args)
+{
+	int ret;
+
+	if(!PyArg_ParseTuple(args, "")) return NULL;
+	ret = ggzcore_server_get_tls(ggzserver);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject *pyggzcore_server_connect(PyObject *self, PyObject *args)
+{
+	int ret;
+
+	if(!PyArg_ParseTuple(args, "")) return NULL;
+	ret = ggzcore_server_connect(ggzserver);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject *pyggzcore_server_login(PyObject *self, PyObject *args)
+{
+	int ret;
+
+	if(!PyArg_ParseTuple(args, "")) return NULL;
+	ret = ggzcore_server_login(ggzserver);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject *pyggzcore_server_motd(PyObject *self, PyObject *args)
+{
+	int ret;
+
+	if(!PyArg_ParseTuple(args, "")) return NULL;
+	ret = ggzcore_server_motd(ggzserver);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject *pyggzcore_server_logout(PyObject *self, PyObject *args)
+{
+	int ret;
+
+	if(!PyArg_ParseTuple(args, "")) return NULL;
+	ret = ggzcore_server_logout(ggzserver);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject *pyggzcore_server_disconnect(PyObject *self, PyObject *args)
+{
+	int ret;
+
+	if(!PyArg_ParseTuple(args, "")) return NULL;
+	ret = ggzcore_server_disconnect(ggzserver);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject *pyggzcore_server_process(PyObject *self, PyObject *args)
+{
+	int ret;
+
+	if(!PyArg_ParseTuple(args, "")) return NULL;
+	if(ggzcore_server_data_is_pending(ggzserver))
+		ret = ggzcore_server_read_data(ggzserver, ggzcore_server_get_fd(ggzserver));
+	else ret = 0;
+	return Py_BuildValue("i", ret);
 }
 
 static PyObject *pyggzcore_set_handler(PyObject *self, PyObject *args)
@@ -124,12 +294,41 @@ static PyObject *pyggzcore_set_handler(PyObject *self, PyObject *args)
 /* Function lookup table                      */
 /**********************************************/
 
+static PyMethodDef pyggzcore_server_methods[] =
+{
+	{"set_hostinfo", pyggzcore_server_set_hostinfo, METH_VARARGS},
+	{"set_logininfo", pyggzcore_server_set_logininfo, METH_VARARGS},
+	{"get_state", pyggzcore_server_get_state, METH_VARARGS},
+	{"get_tls", pyggzcore_server_get_tls, METH_VARARGS},
+	{"connect", pyggzcore_server_connect, METH_VARARGS},
+	{"login", pyggzcore_server_login, METH_VARARGS},
+	{"motd", pyggzcore_server_motd, METH_VARARGS},
+	{"process", pyggzcore_server_process, METH_VARARGS},
+	{"logout", pyggzcore_server_logout, METH_VARARGS},
+	{"disconnect", pyggzcore_server_disconnect, METH_VARARGS},
+	{NULL, NULL, 0}
+};
+
 static PyMethodDef pyggzcore_methods[] =
 {
 	{"setHandler", pyggzcore_set_handler, METH_VARARGS},
 	{"reload", pyggzcore_reload, METH_VARARGS},
-	{NULL, NULL}
+	{NULL, NULL, 0}
 };
+
+static PyObject *pyggzcore_new_server(PyObject *self, PyObject *args)
+{
+	pyggzcore_ServerObject *server;
+	PyTypeObject type;
+
+//	if(!PyArg_ParseTuple(args, ":new_server")) return NULL;
+
+	type = pyggzcore_ServerType;
+	type.tp_methods = &pyggzcore_server_methods;
+	server = PyObject_New(pyggzcore_ServerObject, &pyggzcore_ServerType);
+
+	return (PyObject*)server;
+}
 
 /**********************************************/
 /* Internal callbacks                         */
@@ -148,7 +347,7 @@ static GGZHookReturn pyggzcore_cb_server_hook(unsigned int id, void *event_data,
 		PyErr_Print();
 		printf("----------------------------\n");
 	}
-	Py_DECREF(arg);
+//	Py_DECREF(arg);
 
 	return GGZ_HOOK_OK;
 }
@@ -196,6 +395,7 @@ static GGZHookReturn pyggzcore_cb_game_hook(unsigned int id, void *event_data, v
 void initggzcore(void)
 {
 	PyObject *core;
+	PyObject *server, *room, *game;
 	GGZOptions opt;
 
 	core = Py_InitModule("ggzcore", pyggzcore_methods);
@@ -263,6 +463,19 @@ void initggzcore(void)
 	PyModule_AddIntConstant(core, "STATE_AT_TABLE", GGZ_STATE_AT_TABLE);
 	PyModule_AddIntConstant(core, "STATE_LEAVING_TABLE", GGZ_STATE_LEAVING_TABLE);
 	PyModule_AddIntConstant(core, "STATE_LOGGING_OUT", GGZ_STATE_LOGGING_OUT);
+
+	/*server = Py_BuildValue("Oi", ggzserver, 0);
+	room = Py_BuildValue("Oi", ggzroom, 0);
+	game = Py_BuildValue("Oi", ggzgame, 0);*/
+
+	server = Py_InitModule("server", pyggzcore_server_methods);
+	/*server = pyggzcore_new_server(core, NULL);
+	printf("%p\n", server);*/
+	PyModule_AddObject(core, "server", server);
+	/*PyModule_AddObject(core, "room", room);
+	PyModule_AddObject(core, "game", game);*/
+
+	ggzserver = ggzcore_server_new();
 
 	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
 	ggzcore_init(opt);
