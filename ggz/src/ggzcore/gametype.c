@@ -138,64 +138,6 @@ int _ggzcore_gametype_list_remove(const unsigned int id)
 
 
 
-unsigned int ggzcore_gametype_get_num(void)
-{
-	return num_gametypes;
-}
-
-
-char* ggzcore_gametype_get_name(const unsigned int id)
-{
-	struct _ggzcore_list_entry *entry;
-	struct _GGZGameType data, *gametype;
-
-	data.id = id;
-	if (!(entry = _ggzcore_list_search(gametype_list, &data)))
-		return NULL;
-
-	gametype = _ggzcore_list_get_data(entry);
-	
-	return gametype->name;
-}
-
-
-char* ggzcore_gametype_get_desc(const unsigned int id)
-{
-	struct _ggzcore_list_entry *entry;
-	struct _GGZGameType data, *gametype;
-
-	data.id = id;
-	if (!(entry = _ggzcore_list_search(gametype_list, &data)))
-		return NULL;
-
-	gametype = _ggzcore_list_get_data(entry);
-	
-	return gametype->desc;
-}
-
-
-char** ggzcore_gametype_get_names(void)
-{
-	int i = 0;
-	char **names = NULL;
-	struct _ggzcore_list_entry *cur;
-	struct _GGZGameType *gametype;
-
-	if (num_gametypes >= 0) {
-		if (!(names = calloc((num_gametypes + 1), sizeof(char*))))
-			ggzcore_error_sys_exit("calloc() failed in gametype_get_names");
-		cur = _ggzcore_list_head(gametype_list);
-		while (cur) {
-			gametype = _ggzcore_list_get_data(cur);
-			names[i++] = gametype->name;
-			cur = _ggzcore_list_next(cur);
-		}
-	}
-				
-	return names;
-}
-
-
 /* Return 0 if equal, -1 greaterthan, 1 lessthan */
 static int _ggzcore_gametype_compare(void* p, void* q)
 {
@@ -258,6 +200,7 @@ static void  _ggzcore_gametype_destroy(void* p)
 }
 
 
+
 static void _ggzcore_gametype_list_print(void)
 {
 	struct _ggzcore_list_entry *cur;
@@ -279,4 +222,97 @@ static void _ggzcore_gametype_print(struct _GGZGameType *gametype)
 	ggzcore_debug(GGZ_DBG_GAMETYPE, "  author:  %s", gametype->author);
 	ggzcore_debug(GGZ_DBG_GAMETYPE, "  url:     %d", gametype->url);
 }
+
+
+
+/* Lookup Functions */
+
+unsigned int ggzcore_gametype_get_num(void)
+{
+	return num_gametypes;
+}
+
+
+char* ggzcore_gametype_get_name(const unsigned int id)
+{
+	struct _ggzcore_list_entry *entry;
+	struct _GGZGameType data, *gametype;
+
+	data.id = id;
+	if (!(entry = _ggzcore_list_search(gametype_list, &data)))
+		return NULL;
+
+	gametype = _ggzcore_list_get_data(entry);
+	
+	return gametype->name;
+}
+
+
+char* ggzcore_gametype_get_author(const unsigned int id)
+{
+	struct _ggzcore_list_entry *entry;
+	struct _GGZGameType data, *gametype;
+
+	data.id = id;
+	if (!(entry = _ggzcore_list_search(gametype_list, &data)))
+		return NULL;
+
+	gametype = _ggzcore_list_get_data(entry);
+	
+	return gametype->author;
+}
+
+
+char* ggzcore_gametype_get_url(const unsigned int id)
+{
+	struct _ggzcore_list_entry *entry;
+	struct _GGZGameType data, *gametype;
+
+	data.id = id;
+	if (!(entry = _ggzcore_list_search(gametype_list, &data)))
+		return NULL;
+
+	gametype = _ggzcore_list_get_data(entry);
+	
+	return gametype->url;
+}
+
+
+char* ggzcore_gametype_get_desc(const unsigned int id)
+{
+	struct _ggzcore_list_entry *entry;
+	struct _GGZGameType data, *gametype;
+
+	data.id = id;
+	if (!(entry = _ggzcore_list_search(gametype_list, &data)))
+		return NULL;
+
+	gametype = _ggzcore_list_get_data(entry);
+	
+	return gametype->desc;
+}
+
+
+char** ggzcore_gametype_get_names(void)
+{
+	int i = 0;
+	char **names = NULL;
+	struct _ggzcore_list_entry *cur;
+	struct _GGZGameType *gametype;
+
+	if (num_gametypes >= 0) {
+		if (!(names = calloc((num_gametypes + 1), sizeof(char*))))
+			ggzcore_error_sys_exit("calloc() failed in gametype_get_names");
+		cur = _ggzcore_list_head(gametype_list);
+		while (cur) {
+			gametype = _ggzcore_list_get_data(cur);
+			names[i++] = gametype->name;
+			cur = _ggzcore_list_next(cur);
+		}
+	}
+				
+	return names;
+}
+
+
 

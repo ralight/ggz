@@ -33,7 +33,7 @@
 #include <net.h>
 #include <state.h>
 #include <server.h>
-
+#include <gametype.h>
 
 
 int ggzcore_init(GGZOptions options)
@@ -57,7 +57,9 @@ int ggzcore_init(GGZOptions options)
 	/* Register internal callbacks for events */
 	_ggzcore_user_register();
 	_ggzcore_server_register();
-	
+
+	/* Setup the gametype linked list */
+	_ggzcore_gametype_list_clear();	
 	return 0;
 }
 

@@ -330,6 +330,7 @@ unsigned int ggzcore_room_get_num(void);
 char* ggzcore_room_get_name(const unsigned int);
 char* ggzcore_room_get_desc(const unsigned int);
 char** ggzcore_room_get_names(void);
+int ggzcore_room_get_gametype(const unsigned int id);
 
 unsigned int ggzcore_player_get_num(void);
 char** ggzcore_player_get_names(void);
@@ -532,7 +533,18 @@ unsigned int ggzcore_table_get_num(void);
 int ggzcore_table_get_seats(int number);
 int ggzcore_table_get_open(int number);
 char *ggzcore_table_get_desc(int number);
-int* ggzcore_table_get_numbers(void);
+int *ggzcore_table_get_numbers(void);
+int ggzcore_table_get_gametype(int number);
+
+
+/* These function are lookups to gametype information. All you need pass
+   is the index number.*/
+unsigned int ggzcore_gametype_get_num(void);
+char* ggzcore_gametype_get_name(const unsigned int id);
+char* ggzcore_gametype_get_author(const unsigned int id);
+char* ggzcore_gametype_get_url(const unsigned int id);
+char* ggzcore_gametype_get_desc(const unsigned int id);
+char** ggzcore_gametype_get_names(void);
 
 #ifdef __cplusplus
 }

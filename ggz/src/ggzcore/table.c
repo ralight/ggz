@@ -229,7 +229,7 @@ static void _ggzcore_table_list_print(void)
 static void _ggzcore_table_print(struct _GGZTable *table)
 {
 	ggzcore_debug(GGZ_DBG_TABLE, "Table number: %d", table->number);
-	ggzcore_debug(GGZ_DBG_TABLE, "Table type: %d\n", table->number);
+	ggzcore_debug(GGZ_DBG_TABLE, "Table type: %d\n", table->type);
 	ggzcore_debug(GGZ_DBG_TABLE, "Table seats: %d\n", table->seats);
 	ggzcore_debug(GGZ_DBG_TABLE, "Table open: %d\n", table->open);
 	ggzcore_debug(GGZ_DBG_TABLE, "Table computers: %d\n", table->computers);
@@ -246,6 +246,24 @@ static void _ggzcore_table_print(struct _GGZTable *table)
 unsigned int ggzcore_table_get_num(void)
 {
 	return num_tables;
+}
+
+int ggzcore_table_get_gametype(int number) 
+{
+        struct _ggzcore_list_entry *cur;
+        struct _GGZTable *table;
+
+        if (num_tables >= 0) {
+                cur = _ggzcore_list_head(table_list);
+                while (cur) {
+                        table = _ggzcore_list_get_data(cur);
+                        if(table->number == number)
+                                return table->type;
+                        cur = _ggzcore_list_next(cur);
+                }
+        }
+                
+	return -1;
 }
 
 int ggzcore_table_get_seats(int number) 

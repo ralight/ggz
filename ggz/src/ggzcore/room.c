@@ -175,6 +175,21 @@ char* ggzcore_room_get_name(const unsigned int id)
 }
 
 
+int ggzcore_room_get_gametype(const unsigned int id)
+{
+	struct _ggzcore_list_entry *entry;
+	struct _GGZRoom data, *room;
+
+	data.id = id;
+	if (!(entry = _ggzcore_list_search(room_list, &data)))
+		return -1;
+
+	room = _ggzcore_list_get_data(entry);
+	
+	return room->game;
+}
+
+
 char* ggzcore_room_get_desc(const unsigned int id)
 {
 	struct _ggzcore_list_entry *entry;
