@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 2001
  * Desc: Preferences dialog
- * $Id: prefs_dlg.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: prefs_dlg.c 6337 2004-11-12 17:10:03Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -175,7 +175,6 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_widget_show(ok_button);
 	gtk_box_pack_start(GTK_BOX(dialog_action_area1), ok_button, FALSE,
 			   FALSE, 0);
-	gtk_widget_set_usize(ok_button, 48, -2);
 	gtk_tooltips_set_tip(tooltips, ok_button,
 			     "Save changes and dismiss preferences dialog",
 			     NULL);
@@ -189,7 +188,6 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_widget_show(apply_button);
 	gtk_box_pack_start(GTK_BOX(dialog_action_area1), apply_button,
 			   FALSE, FALSE, 0);
-	gtk_widget_set_usize(apply_button, 48, -2);
 	gtk_tooltips_set_tip(tooltips, apply_button,
 			     "Save changes, keeping preferences dialog open",
 			     NULL);
@@ -203,7 +201,6 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_widget_show(cancel_button);
 	gtk_box_pack_start(GTK_BOX(dialog_action_area1), cancel_button,
 			   FALSE, FALSE, 0);
-	gtk_widget_set_usize(cancel_button, 48, -2);
 	gtk_tooltips_set_tip(tooltips, cancel_button,
 			     "Cancel changes since the last apply", NULL);
 
