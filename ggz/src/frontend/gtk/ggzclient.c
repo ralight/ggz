@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 5873 2004-02-09 22:11:24Z jdorje $
+ * $Id: ggzclient.c 5875 2004-02-10 01:58:32Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -409,10 +409,14 @@ static GGZHookReturn ggz_chat_fail(GGZRoomEvent id, void* event_data,
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
 				   _("There was an error sending the chat."));
 		break;
+	case E_NO_TABLE:
+		chat_display_local(CHAT_LOCAL_NORMAL, NULL,
+				   _("You're not at a table."));
+		break;
 	default:
 		snprintf(buf, sizeof(buf),
-			 _("Chat failed with uknown error %d."),
-			 error->status);
+			 _("Chat failed: %s."),
+			 error->message);
 		chat_display_local(CHAT_LOCAL_NORMAL, NULL, buf);
 		break;
 	}
