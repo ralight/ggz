@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: table.c 6905 2005-01-26 03:00:49Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -536,10 +536,10 @@ void table_game_join(GGZTable *table, const char *name,
 		/* If player notification failed, they must've logged out.
 		   We have to get them out of the table, but since they've
 		   already joined we have to do this the long way. */
-		struct GGZTableSeat seat = {index: num,
-					    type: GGZ_SEAT_OPEN,
-					    name: "",
-					    fd: -1};
+		struct GGZTableSeat seat = {.index = num,
+					    .type = GGZ_SEAT_OPEN,
+					    .name = "",
+					    .fd = -1};
 
 		dbg_msg(GGZ_DBG_TABLE, "%s logged out during join", name);
 		transit_seat_event(table->room, table->index,
@@ -670,10 +670,10 @@ void table_game_reseat(GGZTable *table,
 		/* If player notification failed, they must've logged out.
 		   We have to get them out of the table, but since they've
 		   already joined we have to do this the long way. */
-		struct GGZTableSeat seat = {index: new_seat,
-					    type: GGZ_SEAT_OPEN,
-					    name: "",
-					    fd: -1};
+		struct GGZTableSeat seat = {.index = new_seat,
+					    .type = GGZ_SEAT_OPEN,
+					    .name = "",
+					    .fd = -1};
 
 		if (op == GGZ_RESEAT_STAND)
 			transit = GGZ_TRANSIT_LEAVE_SPECTATOR;
@@ -747,9 +747,9 @@ void table_game_spectator_join(GGZTable *table, const char *name,
 		/* If player notification failed, they must've logged out.
 		   We have to get them out of the table, but since they've
 		   already joined we have to do this the long way. */
-		struct GGZTableSeat seat = {index: num,
-					    name: "",
-					    fd: -1};
+		struct GGZTableSeat seat = {.index = num,
+					    .name = "",
+					    .fd = -1};
 
 		dbg_msg(GGZ_DBG_TABLE, "%s logged out during spectator join",
 			name);
