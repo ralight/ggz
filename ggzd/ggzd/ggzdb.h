@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: ggzdb.h 5059 2002-10-27 05:15:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -61,17 +61,18 @@ typedef enum {
 	GGZDB_NO_ERROR,		/* All's well */
 	GGZDB_ERR_INIT,		/* Engine not initialized */
 	GGZDB_ERR_DUPKEY,	/* Tried to overwrite on add */
-	GGZDB_ERR_NOTFOUND	/* Couldn't find a record */
+	GGZDB_ERR_NOTFOUND,	/* Couldn't find a record */
+	GGZDB_ERR_DB		/* Uh oh.  A database error. */
 } GGZDBResult;
 
 
 /* Exported functions */
-extern int ggzdb_init(void);
-extern void ggzdb_close(void);
-extern int ggzdb_player_add(ggzdbPlayerEntry *);
-extern int ggzdb_player_update(ggzdbPlayerEntry *);
-extern int ggzdb_player_get(ggzdbPlayerEntry *);
-extern int ggzdb_player_delete(char *handle);
-extern unsigned int ggzdb_player_next_uid(void);
+GGZReturn ggzdb_init(void);
+void ggzdb_close(void);
+GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *);
+GGZDBResult ggzdb_player_update(ggzdbPlayerEntry *);
+GGZDBResult ggzdb_player_get(ggzdbPlayerEntry *);
+/* GGZDBResult ggzdb_player_delete(const char *handle); */
+unsigned int ggzdb_player_next_uid(void);
 
 #endif

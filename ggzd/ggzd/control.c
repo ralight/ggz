@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 4972 2002-10-22 00:11:03Z jdorje $
+ * $Id: control.c 5059 2002-10-27 05:15:00Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -109,7 +109,7 @@ static void init_data(void)
 		pthread_rwlock_init(&game_types[i].lock, NULL);
 	}
 
-	if (ggzdb_init() < 0)
+	if (ggzdb_init() != GGZ_OK)
 		err_msg_exit("*** Database initialization failed");
 
 	hash_initialize();

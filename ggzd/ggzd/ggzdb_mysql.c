@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 03.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_mysql.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: ggzdb_mysql.c 5059 2002-10-27 05:15:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -51,7 +51,7 @@ static pthread_mutex_t mutex;
 
 
 /* Function to initialize the mysql database system */
-int _ggzdb_init(ggzdbConnection connection, int set_standalone)
+GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
 	int rc;
 	char query[4096];
@@ -73,10 +73,9 @@ int _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		"name varchar(255), email varchar(255), lastlogin int8, permissions int8)");
 
 	rc = mysql_query(conn, query);
-	/* Hack. */
-	rc = 0;
 
-	return rc;
+	/* Hack. */
+	return GGZ_OK;
 }
 
 
@@ -103,14 +102,14 @@ void _ggzdb_exit(void)
 
 
 /* Function to initialize the player table */
-int _ggzdb_init_player(char *datadir)
+GGZDBResult _ggzdb_init_player(char *datadir)
 {
-	return 0;
+	return GGZDB_NO_ERROR;
 }
 
 
 /* Function to add a player record */
-int _ggzdb_player_add(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
 	int rc;
 	char query[4096];
@@ -124,17 +123,18 @@ int _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	rc = mysql_query(conn, query);
 	pthread_mutex_unlock(&mutex);
 
-	if(rc)
-	{
-		err_sys("Couldn't add player.");
+	if (rc != 0) {
+		/* FIXME: is this correct?  If not, how do we detect a
+		   duplicate entry - and notify the calling code?  --JDS */
+		return GGZDB_ERR_DUPKEY;
 	}
 
-	return rc;
+	return GGZDB_NO_ERROR;
 }
 
 
 /* Function to retrieve a player record */
-int _ggzdb_player_get(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 {
 	int rc;
 	MYSQL_RES *res;
@@ -149,38 +149,35 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	pthread_mutex_lock(&mutex);
 	rc = mysql_query(conn, query);
 
-	if(!rc)
-	{
+	if (rc != 0) {
 		res = mysql_store_result(conn);
 		pthread_mutex_unlock(&mutex);
-		if(mysql_num_rows(res) == 1)
-		{
+
+		if (mysql_num_rows(res) == 1) {
 			row = mysql_fetch_row(res);
 			strncpy(pe->password, row[0], sizeof(pe->password));
 			strncpy(pe->name, row[1], sizeof(pe->name));
 			strncpy(pe->email, row[2], sizeof(pe->email));
 			pe->last_login = atol(row[3]);
 			pe->perms = atol(row[4]);
+			mysql_free_result(res);
+			return GGZDB_NO_ERROR;
+		} else {
+			/* This is supposed to happen if we look up a
+			   nonexistent player. */
+			mysql_free_result(res);
+			return GGZDB_ERR_NOTFOUND;
 		}
-		else
-		{
-			err_sys("Not exactly one entry found.");
-			rc = GGZDB_ERR_NOTFOUND;
-		}
-		mysql_free_result(res);
-	}
-	else
-	{
+	} else {
 		pthread_mutex_unlock(&mutex);
 		err_sys("Couldn't lookup player.");
+		return GGZDB_ERR_DB;
 	}
-
-	return rc;
 }
 
 
 /* Function to update a player record */
-int _ggzdb_player_update(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 {
 	int rc;
 	char query[4096];
@@ -194,12 +191,12 @@ int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	rc = mysql_query(conn, query);
 	pthread_mutex_unlock(&mutex);
 
-	if(rc)
-	{
+	if(rc) {
 		err_sys("Couldn't update player.");
+		return GGZDB_ERR_DB;
 	}
 
-	return rc;
+	return GGZDB_NO_ERROR;
 }
 
 
@@ -208,26 +205,23 @@ int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 /* All functions below here are NOT THREADSAFE (at least yet) */
 /* All functions below here are NOT THREADSAFE (at least yet) */
 
-int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 {
-	int rc;
+	int result;
 	MYSQL_ROW row;
 	char query[4096];
 
-	if(iterres)
-	{
+	if (iterres) {
 		mysql_free_result(iterres);
 	}
 
 	snprintf(query, sizeof(query), "SELECT "
 		"id, handle, password, name, email, lastlogin, permissions FROM users");
-	rc = mysql_query(conn, query);
+	result = mysql_query(conn, query);
 
-	if(!rc)
-	{
+	if (result == 0) {
 		iterres = mysql_store_result(conn);
-		if(mysql_num_rows(iterres) > 0)
-		{
+		if (mysql_num_rows(iterres) > 0) {
 			row = mysql_fetch_row(iterres);
 			pe->user_id = atoi(row[0]);
 			strncpy(pe->handle, row[1], sizeof(pe->handle));
@@ -236,40 +230,31 @@ int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 			strncpy(pe->email, row[4], sizeof(pe->email));
 			pe->last_login = atol(row[5]);
 			pe->perms = atol(row[6]);
-		}
-		else
-		{
+			itercount = 0;
+			return GGZDB_NO_ERROR;
+		} else {
 			err_sys("No entries found.");
-			rc = GGZDB_ERR_NOTFOUND;
 			mysql_free_result(iterres);
 			iterres = NULL;
+			return GGZDB_NO_ERROR;
 		}
-	}
-	else
-	{
+	} else {
 		err_sys("Couldn't lookup player.");
 		iterres = NULL;
+		return GGZDB_ERR_DB;
 	}
-
-	itercount = 0;
-
-	return rc;
 }
 
 
-int _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 {
-	int rc;
 	MYSQL_ROW row;
 
-	if(!iterres)
-	{
+	if (!iterres) {
 		err_sys_exit("get_next called before get_first, dummy");
 	}
 
-	rc = 0;
-	if(itercount < mysql_num_rows(iterres) - 1)
-	{
+	if(itercount < mysql_num_rows(iterres) - 1) {
 		itercount++;
 		row = mysql_fetch_row(iterres);
 		pe->user_id = atoi(row[0]);
@@ -279,22 +264,21 @@ int _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 		strncpy(pe->email, row[4], sizeof(pe->email));
 		pe->last_login = atol(row[5]);
 		pe->perms = atol(row[6]);
-	}
-	else
-	{
-		rc = GGZDB_ERR_NOTFOUND;
+		return GGZDB_NO_ERROR;
+	} else {
 		mysql_free_result(iterres);
 		iterres = NULL;
+		return GGZDB_ERR_NOTFOUND;
 	}
-
-	return rc;
 }
 
 
 void _ggzdb_player_drop_cursor(void)
 {
-	if(!iterres)
-	{
+	if(!iterres) {
+		/* This isn't an error; since we clear the cursor at the end
+		   of _ggzdb_player_get_next we should expect to end up
+		   here.  --JDS */
 		/*err_sys_exit("drop_cursor called before get_first, dummy");*/
 		return;
 	}

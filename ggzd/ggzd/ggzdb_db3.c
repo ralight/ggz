@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db3 sytle database
- * $Id: ggzdb_db3.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: ggzdb_db3.c 5059 2002-10-27 05:15:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -50,13 +50,9 @@ static DB_ENV *db_e;
 static int standalone = 0;
 
 
-int _ggzdb_player_add(ggzdbPlayerEntry *);
-
-
 /* Function to initialize the db3 database system */
-int _ggzdb_init(ggzdbConnection connection, int set_standalone)
+GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
-	int rc;
 	u_int32_t flags;
 
 	if(set_standalone) {
@@ -64,12 +60,15 @@ int _ggzdb_init(ggzdbConnection connection, int set_standalone)
 		standalone = 1;
 	} else
 		flags = DB_CREATE | DB_INIT_MPOOL | DB_INIT_LOCK | DB_THREAD;
-	if((rc = db_env_create(&db_e, 0)) != 0)
+	if (db_env_create(&db_e, 0) != 0) {
 		err_sys("db_env_create() failed in _ggzdb_init()");
-	else if((rc = db_e->open(db_e, connection.datadir, flags , 0600)) != 0)
+		return GGZ_ERROR;
+	} else if (db_e->open(db_e, connection.datadir, flags , 0600) != 0) {
 		err_sys("db_e->open() failed in _ggzdb_init()");
+		return GGZ_ERROR;
+	}
 
-	return rc;
+	return GGZ_OK;
 }
 
 
@@ -102,9 +101,8 @@ void _ggzdb_exit(void)
 
 
 /* Function to initialize the player table */
-int _ggzdb_init_player(char *datadir)
+GGZDBResult _ggzdb_init_player(char *datadir)
 {
-	int rc;
 	u_int32_t flags;
 	ggzdbPlayerEntry marker;
 
@@ -116,10 +114,7 @@ int _ggzdb_init_player(char *datadir)
 	/* Open the database file */
 	if(db_create(&db_p, db_e, 0) != 0)
 		err_sys_exit("db_create() failed in _ggzdb_init_player()");
-	rc = db_p->open(db_p, "player.db", NULL, DB_BTREE, flags, 0600);
-
-	/* Check for errors */
-	if(rc != 0)
+	if (db_p->open(db_p, "player.db", NULL, DB_BTREE, flags, 0600) != 0)
 		err_sys_exit("db_p->open() failed in _ggzdb_init_player()");
 
 	/* Add a marker entry for our next UID */
@@ -129,17 +124,18 @@ int _ggzdb_init_player(char *datadir)
 #endif
 	strcpy(marker.handle, "&nxtuid&");
 
-	/* FIXME: We really should check for "impossible" failure below */
-	_ggzdb_player_add(&marker);
+	if (_ggzdb_player_add(&marker) != GGZDB_NO_ERROR) {
+		/* FIXME: What to do? */
+	}
 
-	return 0;
+	return GGZDB_NO_ERROR;
 }
 
 
 /* Function to add a player record */
-int _ggzdb_player_add(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
-	int rc;
+	int result;
 	DBT key, data;
 
 	/* Build the two DBT structures */
@@ -151,23 +147,25 @@ int _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	data.size = sizeof(ggzdbPlayerEntry);
 	data.flags = DB_DBT_USERMEM;
 
-	rc = db_p->put(db_p, NULL, &key, &data, DB_NOOVERWRITE);
-	if(rc == DB_KEYEXIST)
-		rc = GGZDB_ERR_DUPKEY;
-	else if(rc != 0)
+	result = db_p->put(db_p, NULL, &key, &data, DB_NOOVERWRITE);
+	if (result == DB_KEYEXIST)
+		return GGZDB_ERR_DUPKEY;
+	else if (result != 0) {
 		err_sys("put failed in _ggzdb_player_add()");
+		return GGZDB_ERR_DB;
+	}
 
 	/* FIXME: We won't have to do this once ggzd can exit */
 	db_p->sync(db_p, 0);
 
-	return rc;
+	return GGZDB_NO_ERROR;
 }
 
 
 /* Function to retrieve a player record */
-int _ggzdb_player_get(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 {
-	int rc;
+	int result;
 	DBT key, data;
 
 	/* Build the two DBT structures */
@@ -179,26 +177,25 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 	data.flags = DB_DBT_MALLOC;
 
 	/* Perform the get */
-	rc = db_p->get(db_p, NULL, &key, &data, 0);
-	if(rc == DB_NOTFOUND)
-		rc = GGZDB_ERR_NOTFOUND;
-	else if(rc != 0)
+	result = db_p->get(db_p, NULL, &key, &data, 0);
+	if (result == DB_NOTFOUND)
+		return GGZDB_ERR_NOTFOUND;
+	else if (result != 0) {
 		err_sys("get failed in _ggzdb_player_get()");
-
-	/* Copy it to the user data buffer */
-	if(rc == 0) {
-		memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
-		free(data.data); /* Allocated by db3? */
+		return GGZDB_ERR_DB;
 	}
 
-	return rc;
+	/* Copy it to the user data buffer */
+	memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
+	free(data.data); /* Allocated by db3? */
+
+	return GGZDB_NO_ERROR;
 }
 
 
 /* Function to update a player record */
-int _ggzdb_player_update(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 {
-	int rc;
 	DBT key, data;
 
 	/* Build the two DBT structures */
@@ -210,14 +207,15 @@ int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 	data.size = sizeof(ggzdbPlayerEntry);
 	data.flags = DB_DBT_USERMEM;
 
-	rc = db_p->put(db_p, NULL, &key, &data, 0);
-	if(rc != 0)
-		err_sys("put failed in _ggzdb_player_add()");
+	if (db_p->put(db_p, NULL, &key, &data, 0) != 0) {
+		err_sys("put failed in _ggzdb_player_update()");
+		return GGZDB_ERR_DB;
+	}
 
 	/* FIXME: We won't have to do this once ggzd can exit */
 	db_p->sync(db_p, 0);
 
-	return rc;
+	return GGZDB_NO_ERROR;
 }
 
 
@@ -246,16 +244,15 @@ unsigned int _ggzdb_player_next_uid(void)
 /* All functions below here are NOT THREADSAFE (at least yet) */
 
 static DBC *db_c = NULL;
-int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 {
-	int rc=0;
 	DBT key, data;
 
-	if(db_c == NULL)
-		if((rc = db_p->cursor(db_p, NULL, &db_c, 0)) != 0) {
-			err_sys("Failed to create db2 cursor");
-			return rc;
-		}
+	if(db_c == NULL
+	   && db_p->cursor(db_p, NULL, &db_c, 0) != 0) {
+		err_sys("Failed to create db2 cursor");
+		return GGZDB_ERR_DB;
+	}
 
 	/* Build the two DBT structures */
 	memset(&key, 0, sizeof(DBT));
@@ -264,20 +261,21 @@ int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	key.size = sizeof(pe->handle);
 	data.size = sizeof(ggzdbPlayerEntry);
 	data.flags = DB_DBT_MALLOC;
-	if((rc = db_c->c_get(db_c, &key, &data, DB_FIRST)) != 0)
+	if(db_c->c_get(db_c, &key, &data, DB_FIRST) != 0) {
 		err_sys("Failed to get DB_FIRST record");
-	else {
-		memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
-		free(data.data); /* Allocated by db3? */
+		return GGZDB_ERR_DB;
 	}
 
-	return rc;
+	memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
+	free(data.data); /* Allocated by db3? */
+
+	return GGZDB_NO_ERROR;
 }
 
 
-int _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 {
-	int rc=0;
+	int result;
 	DBT key, data;
 
 	if(db_c == NULL)
@@ -290,17 +288,18 @@ int _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 	key.size = sizeof(pe->handle);
 	data.size = sizeof(ggzdbPlayerEntry);
 	data.flags = DB_DBT_MALLOC;
-	if((rc = db_c->c_get(db_c, &key, &data, DB_NEXT)) != 0) {
-		if(rc != DB_NOTFOUND)
-			err_sys("Failed to get DB_NEXT record");
-		else
-			rc = GGZDB_ERR_NOTFOUND;
-	} else {
-		memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
-		free(data.data); /* Allocated by db3? */
+	result = db_c->c_get(db_c, &key, &data, DB_NEXT);
+	if (result == DB_NOTFOUND)
+		return GGZDB_ERR_NOTFOUND;
+	else if (result != 0) {
+		err_sys("Failed to get DB_NEXT record");
+		return GGZDB_ERR_DB;
 	}
 
-	return rc;
+	memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
+	free(data.data); /* Allocated by db3? */
+
+	return GGZDB_NO_ERROR;
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/08/2002
  * Desc: Back-end functions for handling database manipulation
- * $Id: ggzdb_proto.h 4480 2002-09-09 03:24:42Z jdorje $
+ * $Id: ggzdb_proto.h 5059 2002-10-27 05:15:00Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -25,7 +25,7 @@
 
 #include "ggzdb.h"
 
-int _ggzdb_init(ggzdbConnection connection, int standalone);
+GGZReturn _ggzdb_init(ggzdbConnection connection, int standalone);
 
 void _ggzdb_close(void);
 
@@ -33,18 +33,65 @@ void _ggzdb_enter(void);
 
 void _ggzdb_exit(void);
 
-int _ggzdb_init_player(char *datadir);
+/** @brief Initialize the database.
+ *
+ *  @return GGZDB_NO_ERROR or GGZDB_ERR_DB
+ */
+GGZDBResult _ggzdb_init_player(char *datadir);
 
-int _ggzdb_player_add(ggzdbPlayerEntry *);
+/** @brief Try to add a player.
+ *
+ *  Attempt to add a new player to the database.  If the player already
+ *  exists, it should return DUPKEY.
+ *  @return GGZDB_NO_ERROR, GGZDB_ERR_DUPKEY, or GGZDB_ERR_DB
+ */
+GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry * player);
 
-int _ggzdb_player_get(ggzdbPlayerEntry *);
+/** @brief Try to retrieve a player by name.
+ *
+ *  This function is given a player name (in the player entry), and should
+ *  retrieve a full entry for the player.  If the player does not exist it
+ *  should return NOTFOUND.
+ *  @return GGZDB_NO_ERROR, GGZDB_ERR_NOTFOUND, or GGZDB_ERR_DB
+ */
+GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry * player);
 
-int _ggzdb_player_update(ggzdbPlayerEntry *);
+/** @brief Update an existing player entry.
+ *
+ *  Update a player's information given the entry structure.  The player
+ *  should already exist in the database, so the function should not fail.
+ *  @return GGZDB_NO_ERROR or GGZDB_ERR_DB
+ */
+GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry * player);
 
-int _ggzdb_player_get_first(ggzdbPlayerEntry *);
+/** @brief Retrieve the *first* player entry in the database.
+ *
+ *  Given an empty player structure, this function should fill it in with
+ *  data for the first player in the DB.  It should create a cursor of some
+ *  sort so that subsequent calls to _ggzdb_player_get_next will "just work"
+ *  and return the rest of the players.
+ *  @return GGZDB_NO_ERROR or GGZDB_ERR_DB
+ *  @todo What if there are no entries?
+ *  @note The function does not have to be threadsafe.
+ */
+GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry * player);
 
-int _ggzdb_player_get_next(ggzdbPlayerEntry *);
+/** @brief Retrieve the *next* player entry in the database.
+ *
+ *  Given an empty player structure, this function should find and fill in the
+ *  next player in the database.  The order is unimportant, but it is
+ *  important that sequentially calling this function (after getting the
+ *  first player with _ggzdb_player_get_first) finds all players.  If there
+ *  are no more players, NOTFOUND should be returned.
+ *  @return GGZDB_NO_ERROR, GGZDB_ERR_NOTFOUND, or GGZDB_ERR_DB
+ *  @note The function does not have to be threadsafe or reentrant.
+ */
+GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry * player);
 
+/** @brief Drop the current cursor used in retrieving all players.
+ *
+ *  This function can drop the cursor used by get_first and get_next.
+ */
 void _ggzdb_player_drop_cursor(void);
 
 unsigned int _ggzdb_player_next_uid(void);

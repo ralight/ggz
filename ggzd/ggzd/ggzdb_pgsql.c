@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: ggzdb_pgsql.c 5059 2002-10-27 05:15:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -151,7 +151,7 @@ static void releaseconnection(PGconn *conn)
 /* Exported functions */
 
 /* Function to initialize the pgsql database system */
-int _ggzdb_init(ggzdbConnection connection, int set_standalone)
+GGZReturn _ggzdb_init(ggzdbConnection connection, int set_standalone)
 {
 	PGconn *conn;
 	PGresult *res;
@@ -168,7 +168,8 @@ int _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	pthread_mutex_init(&mutex, NULL);
 
 	conn = claimconnection();
-	if(!conn) return 1;
+	if (!conn)
+		return GGZ_ERROR;
 
 	/* Hack: Fire-and-forget table initialization. It might already be
 	 * present, or the database user doesn't have the privileges. */
@@ -184,8 +185,7 @@ int _ggzdb_init(ggzdbConnection connection, int set_standalone)
 	releaseconnection(conn);
 
 	/* Hack is here ;) */
-	rc = 0;
-	return rc;
+	return GGZ_OK;
 }
 
 
@@ -222,37 +222,39 @@ void _ggzdb_exit(void)
 
 
 /* Function to initialize the player table */
-int _ggzdb_init_player(char *datadir)
+GGZDBResult _ggzdb_init_player(char *datadir)
 {
 	return 0;
 }
 
 
 /* Function to add a player record */
-int _ggzdb_player_add(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
-	int rc;
+	GGZDBResult rc = GGZDB_NO_ERROR;
 	PGconn *conn;
 	PGresult *res;
 	char query[4096];
 
 	conn = claimconnection();
-
-	if(!conn) rc = 1;
-	else
-	{
-		snprintf(query, sizeof(query), "INSERT INTO users "
-			"(handle, password, name, email, lastlogin, permissions) VALUES "
-			"('%s', '%s', '%s', '%s', %li, %u)",
-			pe->handle, pe->password, pe->name, pe->email, pe->last_login, pe->perms);
-
-		res = PQexec(conn, query);
-
-		rc = !(PQresultStatus(res) == PGRES_COMMAND_OK);
-		PQclear(res);
+	if (!conn) {
+		err_msg("_ggzdb_player_add: couldn't claim connection");
+		return GGZDB_ERR_DB;
 	}
 
-	if(rc) err_sys("Couldn't add player.");
+	snprintf(query, sizeof(query), "INSERT INTO users "
+		 "(handle, password, name, email, lastlogin, permissions) "
+		 "VALUES ('%s', '%s', '%s', '%s', %li, %u)",
+		 pe->handle, pe->password, pe->name, pe->email,
+		 pe->last_login, pe->perms);
+
+	res = PQexec(conn, query);
+
+	/* FIXME: is this correct?  We won't overwrite, or make a duplicate
+	   entry above?  This is *supposed* to fail if we try to.  --JDS */
+	if (PQresultStatus(res) != PGRES_COMMAND_OK)
+		rc = GGZDB_ERR_DUPKEY;
+	PQclear(res);
 
 	releaseconnection(conn);
 
@@ -261,47 +263,45 @@ int _ggzdb_player_add(ggzdbPlayerEntry *pe)
 
 
 /* Function to retrieve a player record */
-int _ggzdb_player_get(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_get(ggzdbPlayerEntry *pe)
 {
-	int rc;
+	GGZDBResult rc;
 	PGconn *conn;
 	PGresult *res;
 	char query[4096];
 
-	res = NULL;
 	conn = claimconnection();
-	if(conn)
-	{
-
-		snprintf(query, sizeof(query), "SELECT "
-			"password, name, email, lastlogin, permissions FROM users WHERE "
-			"handle = '%s'",
-			pe->handle);
-
-		res = PQexec(conn, query);
-
-		rc = !(PQresultStatus(res) == PGRES_TUPLES_OK);
+	if (!conn) {
+		err_msg("_ggzdb_player_add: couldn't claim connection");
+		return GGZDB_ERR_DB;
 	}
-	else rc = 1;
 
-	if(!rc)
-	{
-		if(PQntuples(res) == 1)
-		{
+	snprintf(query, sizeof(query),
+		 "SELECT "
+		 "password, name, email, lastlogin, permissions "
+		 "FROM users WHERE handle = '%s'",
+		 pe->handle);
+
+	res = PQexec(conn, query);
+
+	if (PQresultStatus(res) == PGRES_TUPLES_OK) {
+		if(PQntuples(res) == 1)	{
 			strncpy(pe->password, PQgetvalue(res, 0, 0), sizeof(pe->password));
 			strncpy(pe->name, PQgetvalue(res, 0, 1), sizeof(pe->name));
 			strncpy(pe->email, PQgetvalue(res, 0, 2), sizeof(pe->email));
 			pe->last_login = atol(PQgetvalue(res, 0, 3));
 			pe->perms = atol(PQgetvalue(res, 0, 4));
-		}
-		else
-		{
-			err_sys("Not exactly one entry found.");
+			rc = GGZDB_NO_ERROR;
+		} else	{
+			/* This is supposed to happen when we look up
+			   nonexistent players. */
 			rc = GGZDB_ERR_NOTFOUND;
 		}
+	} else {
+		err_sys("Couldn't lookup player.");
+		rc = GGZDB_ERR_DB;
 	}
-	else err_sys("Couldn't lookup player.");
-	if(res) PQclear(res);
+	PQclear(res);
 
 	releaseconnection(conn);
 
@@ -310,29 +310,33 @@ int _ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 
 /* Function to update a player record */
-int _ggzdb_player_update(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_update(ggzdbPlayerEntry *pe)
 {
-	int rc;
+	GGZDBResult rc = GGZDB_NO_ERROR;
 	PGconn *conn;
 	PGresult *res;
 	char query[4096];
 
-	res = NULL;
 	conn = claimconnection();
-	if(conn)
-	{
-		snprintf(query, sizeof(query), "UPDATE users SET "
-			"password = '%s', name = '%s', email = '%s', lastlogin = %li, permissions = %u WHERE "
-			"handle = '%s'",
-			pe->password, pe->name, pe->email, pe->last_login, pe->perms, pe->handle);
-
-		res = PQexec(conn, query);
-		rc = !(PQresultStatus(res) == PGRES_COMMAND_OK);
-		PQclear(res);
+	if (!conn) {
+		err_msg("_ggzdb_player_update: couldn't claim connection");
+		return GGZDB_ERR_DB;
 	}
-	else rc = 1;
 
-	if(rc) err_sys("Couldn't update player.");
+	snprintf(query, sizeof(query),
+		 "UPDATE users SET "
+		 "password = '%s', name = '%s', email = '%s', "
+		 "lastlogin = %li, permissions = %u WHERE "
+		 "handle = '%s'",
+		 pe->password, pe->name, pe->email, pe->last_login,
+		 pe->perms, pe->handle);
+
+	res = PQexec(conn, query);
+	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+		err_sys("Couldn't update player.");
+		rc = GGZDB_ERR_DB;
+	}
+	PQclear(res);
 
 	releaseconnection(conn);
 
@@ -345,9 +349,9 @@ int _ggzdb_player_update(ggzdbPlayerEntry *pe)
 /* All functions below here are NOT THREADSAFE (at least yet) */
 /* All functions below here are NOT THREADSAFE (at least yet) */
 
-int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 {
-	int rc;
+	GGZDBResult rc;
 	char query[4096];
 	PGconn *conn;
 
@@ -357,42 +361,38 @@ int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 	}
 
 	conn = claimconnection();
+	if (!conn) {
+		err_msg("_ggzdb_player_get_first: couldn't claim connection");
+		return GGZDB_ERR_DB;
+	}
 
-	if(conn)
-	{
-		snprintf(query, sizeof(query), "SELECT "
-			"id, handle, password, name, email, lastlogin, permissions FROM users");
-		iterres = PQexec(conn, query);
+	snprintf(query, sizeof(query),
+		 "SELECT "
+		 "id, handle, password, name, email, lastlogin, permissions "
+		 "FROM users");
+	iterres = PQexec(conn, query);
 
-		rc = !(PQresultStatus(iterres) == PGRES_TUPLES_OK);
-		if(!rc)
-		{
-			if(PQntuples(iterres) > 0)
-			{
-				pe->user_id = atoi(PQgetvalue(iterres, 0, 0));
-				strncpy(pe->handle, PQgetvalue(iterres, 0, 1), sizeof(pe->handle));
-				strncpy(pe->password, PQgetvalue(iterres, 0, 2), sizeof(pe->password));
-				strncpy(pe->name, PQgetvalue(iterres, 0, 3), sizeof(pe->name));
-				strncpy(pe->email, PQgetvalue(iterres, 0, 4), sizeof(pe->email));
-				pe->last_login = atol(PQgetvalue(iterres, 0, 5));
-				pe->perms = atol(PQgetvalue(iterres, 0, 6));
-			}
-			else
-			{
-				err_sys("No entries found.");
-				rc = GGZDB_ERR_NOTFOUND;
-				PQclear(iterres);
-				iterres = NULL;
-			}
-		}
-		else
-		{
-			err_sys("Couldn't lookup player.");
+	if (PQresultStatus(iterres) == PGRES_TUPLES_OK) {
+		if(PQntuples(iterres) > 0) {
+			pe->user_id = atoi(PQgetvalue(iterres, 0, 0));
+			strncpy(pe->handle, PQgetvalue(iterres, 0, 1), sizeof(pe->handle));
+			strncpy(pe->password, PQgetvalue(iterres, 0, 2), sizeof(pe->password));
+			strncpy(pe->name, PQgetvalue(iterres, 0, 3), sizeof(pe->name));
+			strncpy(pe->email, PQgetvalue(iterres, 0, 4), sizeof(pe->email));
+			pe->last_login = atol(PQgetvalue(iterres, 0, 5));
+			pe->perms = atol(PQgetvalue(iterres, 0, 6));
+			rc = GGZDB_NO_ERROR;
+		} else {
 			PQclear(iterres);
 			iterres = NULL;
+			rc = GGZDB_ERR_NOTFOUND;
 		}
+	} else {
+		err_sys("Couldn't lookup player.");
+		PQclear(iterres);
+		iterres = NULL;
+		rc = GGZDB_ERR_DB;
 	}
-	else rc = 1;
 
 	itercount = 0;
 
@@ -402,18 +402,13 @@ int _ggzdb_player_get_first(ggzdbPlayerEntry *pe)
 }
 
 
-int _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
+GGZDBResult _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 {
-	int rc;
-
-	if(!iterres)
-	{
+	if (!iterres) {
 		err_sys_exit("get_next called before get_first, dummy");
 	}
 
-	rc = 0;
-	if(itercount < PQntuples(iterres) - 1)
-	{
+	if (itercount < PQntuples(iterres) - 1) {
 		itercount++;
 		pe->user_id = atoi(PQgetvalue(iterres, itercount, 0));
 		strncpy(pe->handle, PQgetvalue(iterres, itercount, 1), sizeof(pe->handle));
@@ -422,34 +417,35 @@ int _ggzdb_player_get_next(ggzdbPlayerEntry *pe)
 		strncpy(pe->email, PQgetvalue(iterres, itercount, 4), sizeof(pe->email));
 		pe->last_login = atol(PQgetvalue(iterres, itercount, 5));
 		pe->perms = atol(PQgetvalue(iterres, itercount, 6));
-	}
-	else
-	{
-		rc = GGZDB_ERR_NOTFOUND;
+
+		return GGZDB_NO_ERROR;
+	} else {
 		PQclear(iterres);
 		iterres = NULL;
-	}
 
-	return rc;
+		return GGZDB_ERR_NOTFOUND;
+	}
 }
 
 
 void _ggzdb_player_drop_cursor(void)
 {
-	if(!iterres)
-	{
+	if (!iterres) {
+		/* This isn't an error; since we clear the cursor at the end
+		   of _ggzdb_player_get_next we should expect to end up
+		   here.  --JDS */
 		/*err_sys_exit("drop_cursor called before get_first, dummy");*/
 		return;
 	}
 
 	PQclear(iterres);
-	iterres = 0;
+	iterres = NULL;
 }
 
 unsigned int _ggzdb_player_next_uid(void)
 {
 	/* SQL handles id's automatically */
+	/* But does that mean 0 should be returned?  GGZ might need to
+	   know more?  --JDS */
 	return 0;
 }
-
-

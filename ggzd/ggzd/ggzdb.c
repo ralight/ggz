@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions to handle database manipulation
- * $Id: ggzdb.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: ggzdb.c 5059 2002-10-27 05:15:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -48,7 +48,7 @@ static char db_needs_init = 1;
 static char player_needs_init = 1;
 
 /* Internal functions */
-static int ggzdb_player_init(void);
+static GGZDBResult ggzdb_player_init(void);
 static void ggzdb_player_lowercase(ggzdbPlayerEntry *pe, char *orig);
 
 /* Function to initialize the database system */
@@ -59,7 +59,6 @@ int ggzdb_init(void)
 	char vid[7];	/* Space for 123.45 */
 	char version_ok=0;
 	FILE *vfile;
-	int rc;
 	ggzdbConnection connection;
 
 	/* Verify that db version is cool with us */
@@ -88,11 +87,11 @@ int ggzdb_init(void)
 	connection.database = opt.dbname;
 	connection.username = opt.dbusername;
 	connection.password = opt.dbpassword;
-	rc = _ggzdb_init(connection, 0);
-	if(rc == 0)
-		db_needs_init = 0;
+	if (_ggzdb_init(connection, 0) != GGZ_OK)
+		return GGZ_ERROR;
+	db_needs_init = 0;
 
-	return rc;
+	return GGZ_OK;
 }
 
 
@@ -104,9 +103,9 @@ void ggzdb_close(void)
 
 
 /* Function to add a player to the database */
-int ggzdb_player_add(ggzdbPlayerEntry *pe)
+GGZDBResult ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
-	int rc=0;
+	GGZDBResult rc = GGZDB_NO_ERROR;
 	char orig[MAX_USER_NAME_LEN + 1];
 	
 	/* Lowercase player's name for comparison, saving original */
@@ -116,7 +115,7 @@ int ggzdb_player_add(ggzdbPlayerEntry *pe)
 	if(player_needs_init)
 		rc = ggzdb_player_init();
 
-	if(rc == 0)
+	if(rc == GGZDB_NO_ERROR)
 		rc = _ggzdb_player_add(pe);
 
 	/* Restore the original name */
@@ -128,9 +127,9 @@ int ggzdb_player_add(ggzdbPlayerEntry *pe)
 
 
 /* Function to retrieve a player from the database */
-int ggzdb_player_get(ggzdbPlayerEntry *pe)
+GGZDBResult ggzdb_player_get(ggzdbPlayerEntry *pe)
 {
-	int rc=0;
+	GGZDBResult rc = GGZDB_NO_ERROR;
 	char orig[MAX_USER_NAME_LEN + 1];
 
 	/* Lowercase player's name for comparison, saving original */
@@ -142,7 +141,7 @@ int ggzdb_player_get(ggzdbPlayerEntry *pe)
 	if(player_needs_init)
 		rc = ggzdb_player_init();
 
-	if(rc == 0)
+	if(rc == GGZDB_NO_ERROR)
 		rc = _ggzdb_player_get(pe);
 
 	dbg_msg(GGZ_DBG_CONNECTION, "result was %d", rc);
@@ -156,9 +155,9 @@ int ggzdb_player_get(ggzdbPlayerEntry *pe)
 
 
 /* Function to update a player's entry in the database */
-int ggzdb_player_update(ggzdbPlayerEntry *pe)
+GGZDBResult ggzdb_player_update(ggzdbPlayerEntry *pe)
 {
-	int rc=0;
+	GGZDBResult rc = GGZDB_NO_ERROR;
 	char orig[MAX_USER_NAME_LEN + 1];
 
 	/* Lowercase player's name for comparison, saving original */
@@ -168,7 +167,7 @@ int ggzdb_player_update(ggzdbPlayerEntry *pe)
 	if(player_needs_init)
 		rc = ggzdb_player_init();
 
-	if(rc == 0)
+	if(rc == GGZDB_NO_ERROR)
 		rc = _ggzdb_player_update(pe);
 
 	/* Restore the original name */
@@ -190,7 +189,7 @@ unsigned int ggzdb_player_next_uid(void)
 /*** INTERNAL FUNCTIONS ***/
 
 /* Function to initialize player tables if necessary */
-static int ggzdb_player_init(void)
+static GGZDBResult ggzdb_player_init(void)
 {
 	int rc=0;
 
