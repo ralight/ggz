@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 2370 2001-09-05 16:20:00Z jdorje $
+ * $Id: protocol.h 2371 2001-09-05 16:28:44Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -30,7 +30,10 @@
 #ifndef __PROTOCOL_H__
 #define __PROTOCOL_H__
 
-#define PROTOCOL_VERSION 1
+/* We don't need to define/check the protocol version since GGZ does this
+   automatically.  What we may want to do is include capabilities or a minor
+   version number so that slightly different protocols are supported
+   compatibly. */
 
 /* Messages from server */
 typedef enum {
