@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 5491 2003-04-28 06:52:33Z dr_maux $
+ * $Id: output.c 5913 2004-02-11 16:14:22Z josef $
  *
  * Functions for display text/messages
  *
@@ -242,6 +242,7 @@ void output_players(void)
 	GGZRoom *room;
 	GGZPlayer *player;
 	GGZTable *table;
+	GGZPlayerType type;
 
 	room = ggzcore_server_get_cur_room(server);
 	num = ggzcore_room_get_num_players(room);
@@ -250,12 +251,15 @@ void output_players(void)
 	for (i = 0; i < num; i++) {
 		player = ggzcore_room_get_nth_player(room, i);
 		table = ggzcore_player_get_table(player);
-		if (table)
-			output_text(_("-- %s at table %d"),
-				    ggzcore_player_get_name(player),
-				    ggzcore_table_get_id(table));
-		else 
-			output_text(_("-- %s"), ggzcore_player_get_name(player));
+		type = ggzcore_player_get_type(player);
+
+		output_text(_("-- %s %s %s"),
+			ggzcore_player_get_name(player),
+			table ? _("at table %d") : "",
+			type == GGZ_PLAYER_ADMIN ? _("(Administrator)") :
+			((type == GGZ_PLAYER_BOT) ? _("(Bot)") :
+			((type == GGZ_PLAYER_GUEST) ? _("(Guest)") :
+			"")));
 	}
 }
 
