@@ -263,9 +263,9 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 
 	/* Display message in chat area */
 	message = g_strdup_printf(_("You've joined room \"%s\"."), ggzcore_room_get_name(ggzcore_server_get_cur_room(server)));
-	chat_display_message(CHAT_BEEP, "---", message);
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, message);
 	g_free(message);
-	chat_display_message(CHAT_BEEP, "---",  ggzcore_room_get_desc(ggzcore_server_get_cur_room(server)));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL,  ggzcore_room_get_desc(ggzcore_server_get_cur_room(server)));
 
 	/* Check what the current game type is */
 	room = ggzcore_server_get_cur_room(server);
@@ -309,7 +309,7 @@ static GGZHookReturn ggz_logout(GGZServerEvent id, void* event_data, void* user_
 {
 	gdk_input_remove(server_handle);
 	server_handle = -1;
-	chat_display_message(CHAT_BEEP, "---", _("Disconnected from Server."));
+	chat_display_message(CHAT_LOCAL_HIGH, NULL, _("Disconnected from Server."));
 
 	/* set title */
 	gtk_window_set_title (GTK_WINDOW (win_main), "GGZ Gaming Zone");
@@ -350,7 +350,7 @@ static GGZHookReturn ggz_chat_beep(GGZRoomEvent id, void* event_data, void* user
 
 	player = ((char**)(event_data))[0];
 	message = g_strdup_printf(_("You've been beeped by %s."), player);
-	chat_display_message(CHAT_BEEP, "---", message);
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, message);
 	if( ggzcore_conf_read_int("CHAT", "SOUND", TRUE) )
 		gdk_beep();
 
@@ -750,7 +750,7 @@ static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* us
 	gdk_input_remove(server_handle);
 	server_handle = -1;
 	/*ggzcore_server_free(server);*/
-	chat_display_message(CHAT_BEEP, "---", _("Disconnected from Server."));
+	chat_display_message(CHAT_LOCAL_HIGH, NULL, _("Disconnected from Server."));
 
         /* Clear current list of rooms */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");

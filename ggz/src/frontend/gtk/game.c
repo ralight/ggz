@@ -165,8 +165,8 @@ int game_launch(void)
 		return -1;
 	}
 
-	message = g_strdup_printf("Launching Game");
-	chat_display_message(CHAT_BEEP, "---", message);
+	message = g_strdup_printf(_("Launching Game"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, message);
 	g_free(message);
 
 	return 0;
@@ -213,7 +213,7 @@ static void game_register(GGZGame *game)
 static GGZHookReturn game_launched(GGZGameEvent id, void* event_data, 
 				   void* user_data)
 {
-	chat_display_message(CHAT_BEEP, "---", "Launched game");
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Launched game"));
 	
 	fd = ggzcore_game_get_fd(game);
         game_handle = gdk_input_add_full(fd, GDK_INPUT_READ,
@@ -228,7 +228,7 @@ static GGZHookReturn game_launched(GGZGameEvent id, void* event_data,
 static GGZHookReturn game_launch_fail(GGZGameEvent id, void* event_data,
 				      void* user_data)
 {
-	chat_display_message(CHAT_BEEP, "---", "Launched faild");
+	chat_display_message(CHAT_LOCAL_HIGH, NULL, _("Launched faild"));
 
 	return GGZ_HOOK_OK;
 }
@@ -263,7 +263,7 @@ static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_dat
 {
 	GGZRoom *room;
 
-	chat_display_message(CHAT_BEEP, "---", "Game Over");
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Game Over"));
 
 	game_quit();
 	room = ggzcore_server_get_cur_room(server);

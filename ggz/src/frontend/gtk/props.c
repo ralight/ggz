@@ -244,7 +244,7 @@ static void props_update(void)
 	gtk_xtext_refresh(GTK_XTEXT(tmp), 0);
 
 	/* Display a status Message */
-	chat_display_message(CHAT_BEEP, "---", _("Properties Updated"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Properties Updated"));
 
 	/* If the login dialog is open refill the combo box */
 	if(login_dialog != NULL) {

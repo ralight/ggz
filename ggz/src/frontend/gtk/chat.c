@@ -43,7 +43,10 @@
 #include "xtext.h"
 #include "support.h"
 
-void chat_allocate_colors(void);;
+void chat_allocate_colors(void);
+void chat_send_msg(GGZServer *server, gchar *message);
+void chat_send_prvmsg(GGZServer *server, gchar *message);
+void chat_send_beep(GGZServer *server, gchar *message);
 static gchar *chat_get_color(gchar *name, gchar *msg);
 extern GtkWidget *win_main;
 extern GGZServer *server;
@@ -182,10 +185,6 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 			name = g_strdup_printf(">\003%s%s\003<", chat_get_color(player, message), player);
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
-		case CHAT_BEEP:
-			name = g_strdup_printf("%s", player);
-		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
-			break;
 		case CHAT_ANNOUNCE:
 			name = g_strdup_printf("[\003%s%s\003]", chat_get_color(player, message), player);
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
@@ -194,93 +193,113 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 			name = g_strdup_printf("--> %s", player);
 		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
 			break;
+		case CHAT_LOCAL_NORMAL:
+		        gtk_xtext_append_indent(GTK_XTEXT(tmp), "---", 3, message, strlen(message));
+			break;
+		case CHAT_LOCAL_HIGH:
+		        gtk_xtext_append_indent(GTK_XTEXT(tmp), "***", 3, message, strlen(message));
+			break;
 	}
 	g_free(name);
         gtk_xtext_refresh(tmp, 0);
 }
 
 
-/* chat_send_msg() - sends the current text on chat_entry to the server
+/* chat_send() - Sends a chat message to the server
  *
  * Recieves:
- *
- * Returns */
-
-void chat_send_msg(GGZServer *server)
-{
-        GtkEntry *tmp = NULL;
-	GGZRoom *room = ggzcore_server_get_cur_room(server);
-
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
-        if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
-        {
-                /* Send the current text */
-		ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, gtk_entry_get_text(GTK_ENTRY(tmp)));
-        
-                /* Clear the entry box */
-                gtk_entry_set_text(GTK_ENTRY(tmp), "");
-        }
-}
-
-
-/* chat_send_prvmsg() - Sends a privet nessage to a users
- *
- * Recieves:
+ *	gchar	*message	: The text to send to the server as a chat message
  *
  * Returns:
  */
 
-void chat_send_prvmsg(GGZServer *server)
+void chat_send(gchar *message)
+{
+	if(strcmp(message, ""))
+	{
+		if(strncasecmp(message, "/msg", 4) == 0)
+			chat_send_prvmsg(server, message);
+		else if(strncasecmp(message, "/beep", 5) == 0)
+			chat_send_beep(server, message);
+		else if(strncasecmp(message, "/help", 5) == 0)
+			chat_help();
+		else 
+			chat_send_msg(server, message);
+	}
+}
+
+
+/* chat_send_msg() - sends the current text on chat_entry to the server
+ *
+ * Recieves:
+ *	GGZServer *server	: Currently connected server
+ *	gchar *message		: The text to send as a normal message
+ *
+ * Returns:
+ */
+
+void chat_send_msg(GGZServer *server, gchar *message)
 {
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
-        GtkEntry *tmp = NULL;
+
+	/* Send the current text */
+	ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, message);
+}
+
+
+/* chat_send_prvmsg() - Sends a private nessage to a users
+ *
+ * Recieves:
+ *	GGZServer *server	: Currently connected server
+ *	gchar *message		: The text to send as a private message
+ *
+ * Returns:
+ */
+
+void chat_send_prvmsg(GGZServer *server, gchar *message)
+{
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	gchar *name = NULL;
 	gint i;
 
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
-        if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
-        {
-		name = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp))+5);
-		for(i = 0; i < strlen(name); i++)
+	name = g_strdup(message+5);
+	for(i = 0; i < strlen(name); i++)
+	{
+		if(name[i] == ' ')
 		{
-			if(name[i] == ' ')
-			{
-				name[i] = '\0';
-				ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, name, name+1+i);
-				chat_display_message(CHAT_SEND_PRVMSG, name, name+1+i);
-				i = strlen(name)+1;
-			}
+			name[i] = '\0';
+			ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, name, name+1+i);
+			chat_display_message(CHAT_SEND_PRVMSG, name, name+1+i);
+			i = strlen(name)+1;
+			return;
 		}
+	}
 
-                /* Clear the entry box */
-                gtk_entry_set_text(GTK_ENTRY(tmp), "");
-        }
+	/* Shouldn't get here */
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Usage: /msg <username> <message>"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("    Sends a private message to a user on the network."));
 }
+
 
 
 /* chat_send_beep() - Sends a beep to a user
  *
  * Recieves:
+ *	GGZServer *server	: Currently connected server
+ *	gchar *message		: The text to send as a beep message
  *
  * Returns:
  */
 
-void chat_send_beep(GGZServer *server)
+void chat_send_beep(GGZServer *server, gchar *message)
 {
-        GtkEntry *tmp = NULL;
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	char *player;
 
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
-	player = strdup(gtk_entry_get_text(GTK_ENTRY(tmp))+6);
+	player = strdup(message+6);
 	ggzcore_room_chat(room, GGZ_CHAT_BEEP, player, NULL);
 
-        /* Clear the entry box */
-        gtk_entry_set_text(GTK_ENTRY(tmp), "");
-
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
-        gtk_xtext_append_indent(GTK_XTEXT(tmp), "---", 3, _("Beep sent"), 9);
-
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Beep Sent"));
 }
 
 
@@ -288,7 +307,7 @@ void chat_send_beep(GGZServer *server)
  *                enters the room
  *
  * Recieves:
- * gchar	*player	: The players username
+ * 	gchar *player	: The players username
  *
  * Returns:
  */
@@ -334,11 +353,11 @@ void chat_part(gchar *player)
 
 void chat_help(void)
 {
-	chat_display_message(CHAT_BEEP, "---", _("Chat Commands"));
-	chat_display_message(CHAT_BEEP, "---", _("-------------"));
-	chat_display_message(CHAT_BEEP, "---", _("/me <action>"));
-	chat_display_message(CHAT_BEEP, "---", _("/msg <username> <message>"));
-	chat_display_message(CHAT_BEEP, "---", _("/beep <username>"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Chat Commands"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("-------------"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/me <action>"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/msg <username> <message>"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/beep <username>"));
 }
 
 
@@ -524,7 +543,7 @@ void chat_add_friend(gchar *name)
 
 	g_array_append_val(chatinfo.friends, name);
 	out = g_strdup_printf(_("Added %s to your friends list."), name);
-	chat_display_message(CHAT_BEEP, "---", out);
+	chat_display_message(CHAT_LOCAL_NORMAL, "---", out);
 	g_free(out);
 }
 
@@ -550,7 +569,7 @@ void chat_remove_friend(gchar *name)
 		{
 			g_array_remove_index_fast(chatinfo.friends, x);
 			out = g_strdup_printf(_("Removed %s from your friends list."), name);
-			chat_display_message(CHAT_BEEP, "---", out);
+			chat_display_message(CHAT_LOCAL_NORMAL, "---", out);
 			g_free(out);
 			break;
 		}

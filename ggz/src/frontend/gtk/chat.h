@@ -31,17 +31,16 @@
 typedef enum {
 	CHAT_MSG		= 0x0001,
 	CHAT_PRVMSG		= 0x0002,
-	CHAT_BEEP		= 0x0003,
-	CHAT_ANNOUNCE		= 0x0004,
-	CHAT_SEND_PRVMSG	= 0x0005
+	CHAT_ANNOUNCE		= 0x0003,
+	CHAT_SEND_PRVMSG	= 0x0004,
+	CHAT_LOCAL_NORMAL	= 0x0005,
+	CHAT_LOCAL_HIGH		= 0x0006
 } CHATTypes;
 
 void chat_init(void);
 void chat_allocate_colors(void);
 void chat_display_message(CHATTypes id, char *player, char *message);
-void chat_send_msg(GGZServer *server);
-void chat_send_prvmsg(GGZServer *server);
-void chat_send_beep(GGZServer *server);
+void chat_send(gchar *message);
 void chat_enter(gchar *player);
 void chat_part(gchar *player);
 void chat_help(void);

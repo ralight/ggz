@@ -190,7 +190,6 @@ static void
 client_leave_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	/*game_quit();*/
 	ggzcore_room_leave_table(ggzcore_server_get_cur_room(server));
 }
 
@@ -383,14 +382,7 @@ client_chat_entry_activate		(GtkEditable	*editable,
 
 	if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
 	{
-		if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(data)), _("/msg"), 3))
-			chat_send_prvmsg(server);
-		else if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(data)), _("/beep"), 4))
-			chat_send_beep(server);
-		else if(!strncasecmp(gtk_entry_get_text(GTK_ENTRY(data)), _("/help"), 4))
-			chat_help();
-		else
-			chat_send_msg(server);
+		chat_send(gtk_entry_get_text(GTK_ENTRY(tmp)));
 	}
 
 	/* Clear the entry box */
@@ -466,7 +458,17 @@ static void
 client_send_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	chat_send_msg(server);
+	GtkEntry *tmp;
+
+	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
+
+	if (strcmp(gtk_entry_get_text(GTK_ENTRY(tmp)),""))
+	{
+		chat_send(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	}
+
+	/* Clear the entry box */
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
 }
 
 
@@ -851,17 +853,19 @@ client_realize                    (GtkWidget       *widget,
 	tmp2 = gtk_object_get_data(GTK_OBJECT(win_main), "chat_vscrollbar");
 	gtk_range_set_adjustment(GTK_RANGE(tmp2), GTK_XTEXT(tmp)->adj);
 
+	gtk_xtext_refresh(tmp,0);
+
 	/* Print out client information */
 	buf = g_strdup_printf(_("Client Version:\00314 %s"), VERSION);
-	gtk_xtext_append_indent(tmp,"---",3,buf,strlen(buf)); 
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, buf); 
 	g_free(buf);
 	buf = g_strdup_printf(_("GTK+ Version:\00314 %d.%d.%d\n"),
 		gtk_major_version, gtk_minor_version, gtk_micro_version);
-	gtk_xtext_append_indent(tmp,"---",3,buf,strlen(buf));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, buf); 
 	g_free(buf);
 
 #ifdef DEBUG
-	gtk_xtext_append_indent(tmp, "---", 3, _("Compiled with debugging."), 24);
+	char_display_message(CHAT_LOCAL_HIGH, NULL, _("Compiled with debugging."));
 #endif
 
 }
