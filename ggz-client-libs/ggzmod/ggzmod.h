@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 4264 2002-06-22 05:10:28Z bmh $
+ * $Id: ggzmod.h 4340 2002-08-07 06:31:34Z jdorje $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -147,7 +147,7 @@ typedef struct GGZMod GGZMod;
  *  @param data Pointer to additional data for the event.
  *  The additional data will be of the following form:
  *    - GGZMOD_EVENT_STATE: The old state (GGZModState*)
- *    - GGZMOD_EVENT_SERVER: The fd of the server connection
+ *    - GGZMOD_EVENT_SERVER: The fd of the server connection (int*)
  *    - GGZMOD_EVENT_ERROR: An error string (char*)
  */
 typedef void (*GGZModHandler) (GGZMod * mod, GGZModEvent e, void *data);

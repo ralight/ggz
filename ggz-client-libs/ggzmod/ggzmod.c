@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 4264 2002-06-22 05:10:28Z bmh $
+ * $Id: ggzmod.c 4340 2002-08-07 06:31:34Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -543,5 +543,5 @@ void _ggzmod_handle_launch(GGZMod * ggzmod)
 void _ggzmod_handle_server(GGZMod * ggzmod, int fd)
 {
 	ggzmod->server_fd = fd;
-	call_handler(ggzmod, GGZMOD_EVENT_SERVER, (void*)fd);
+	call_handler(ggzmod, GGZMOD_EVENT_SERVER, &fd);
 }
