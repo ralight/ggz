@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.h 6105 2004-07-15 16:43:00Z jdorje $
+ * $Id: ggzmod.h 6106 2004-07-15 18:06:13Z jdorje $
  *
  * This file contains the main interface for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -417,24 +417,46 @@ void ggzmod_request_chat(GGZMod *ggzmod, const char *chat_msg);
 /** @brief Get the player's win-loss record.
  *  @return TRUE if there is a record; FALSE if not or on error.
  */
-int ggzmod_player_get_record(GGZSeat *player,
+int ggzmod_player_get_record(GGZSeat *seat,
 			     int *wins, int *losses,
 			     int *ties, int *forfeits);
 
 /** @brief Get the player's rating.
  *  @return TRUE if there is a rating; FALSE if not or on error.
  */
-int ggzmod_player_get_rating(GGZSeat *player, int *rating);
+int ggzmod_player_get_rating(GGZSeat *seat, int *rating);
 
 /** @brief Get the player's ranking.
  *  @return TRUE if there is a ranking; FALSE if not or on error.
  */
-int ggzmod_player_get_ranking(GGZSeat *player, int *ranking);
+int ggzmod_player_get_ranking(GGZSeat *seat, int *ranking);
 
 /** @brief Get the player's highscore.
  *  @return TRUE if there is a highscore; FALSE if not or on error.
  */
-int ggzmod_player_get_highscore(GGZSeat *player, long *highscore);
+int ggzmod_player_get_highscore(GGZSeat *seat, long *highscore);
+
+/** @brief Get the spectator's win-loss record.
+ *  @return TRUE if there is a record; FALSE if not or on error.
+ */
+int ggzmod_spectator_get_record(GGZSpectatorSeat *seat,
+				int *wins, int *losses,
+				int *ties, int *forfeits);
+
+/** @brief Get the spectator's rating.
+ *  @return TRUE if there is a rating; FALSE if not or on error.
+ */
+int ggzmod_spectator_get_rating(GGZSpectatorSeat *seat, int *rating);
+
+/** @brief Get the spectator's ranking.
+ *  @return TRUE if there is a ranking; FALSE if not or on error.
+ */
+int ggzmod_spectator_get_ranking(GGZSpectatorSeat *seat, int *ranking);
+
+/** @brief Get the spectator's highscore.
+ *  @return TRUE if there is a highscore; FALSE if not or on error.
+ */
+int ggzmod_spectator_get_highscore(GGZSpectatorSeat *seat, long *highscore);
 
 #ifdef __cplusplus
 }

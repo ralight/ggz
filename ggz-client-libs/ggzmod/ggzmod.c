@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6105 2004-07-15 16:43:00Z jdorje $
+ * $Id: ggzmod.c 6106 2004-07-15 18:06:13Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -1039,24 +1039,46 @@ void _ggzmod_handle_server(GGZMod * ggzmod, int fd)
 	call_handler(ggzmod, GGZMOD_EVENT_SERVER, &fd);
 }
 
-int ggzmod_player_get_record(GGZSeat *player,
+int ggzmod_player_get_record(GGZSeat *seat,
 			     int *wins, int *losses,
 			     int *ties, int *forfeits)
 {
-  return 0;
+	return 0;
 }
 
-int ggzmod_player_get_rating(GGZSeat *player, int *rating)
+int ggzmod_player_get_rating(GGZSeat *seat, int *rating)
 {
-  return 0;
+	return 0;
 }
 
-int ggzmod_player_get_ranking(GGZSeat *player, int *ranking)
+int ggzmod_player_get_ranking(GGZSeat *seat, int *ranking)
 {
-  return 0;
+	return 0;
 }
 
-int ggzmod_player_get_highscore(GGZSeat *player, long *highscore)
+int ggzmod_player_get_highscore(GGZSeat *seat, long *highscore)
 {
-  return 0;
+	return 0;
+}
+
+int ggzmod_spectator_get_record(GGZSpectatorSeat *seat,
+				int *wins, int *losses,
+				int *ties, int *forfeits)
+{
+	return 0;
+}
+
+int ggzmod_spectator_get_rating(GGZSpectatorSeat *seat, int *rating)
+{
+	return 0;
+}
+
+int ggzmod_spectator_get_ranking(GGZSpectatorSeat *seat, int *ranking)
+{
+	return 0;
+}
+
+int ggzmod_spectator_get_highscore(GGZSpectatorSeat *seat, long *highscore)
+{
+	return 0;
 }
