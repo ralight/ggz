@@ -82,6 +82,7 @@ AC_CONFIG_FILES([Makefile
 	overview/architecture/Makefile
 	server/Makefile
 	server/database/Makefile
+	server/ggzd/Makefile
 	server/hosting/Makefile
 	server/metaserver/Makefile
 	server/metaserver/pics/Makefile
