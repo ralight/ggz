@@ -7,7 +7,10 @@
 "Josef Spillner"
 
 ;; Version
-"0.0.7"
+"0.0.9"
+
+;; Map graphics
+"hastings.png"
 
 ;; Distribution of knights
 "11            444  "

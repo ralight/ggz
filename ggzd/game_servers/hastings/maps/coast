@@ -1,7 +1,7 @@
 ;; Hastings1066 map file
 
 ;; Title
-"Yorkshire, Stamford Bridge"
+"Harold's return"
 
 ;; Author
 "Josef Spillner"
@@ -10,23 +10,23 @@
 "0.0.9"
 
 ;; Map graphics
-"bayeux.png"
+"haroldsreturn.png"
 
 ;; Distribution of knights
-"11      33     "
-"11 22   45    5"
-"1  2    3    55"
-"0  22    3  4  "
-"00        4 54 "
-"00         34  "
+"00 0       1 11"
+"00 0       1 11"
+"00  0     1  11"
+"00  0     1  11"
+"00 0       1 11"
+"00 0       1 11"
 
 ;; Map of hexagons
-"xxxxxxxxxxx  xx"
-"xxxxxxxxxxx  xx"
-"xxxxxxxxxxx xxx"
-"xxxxxxxxxxx xxx"
-"xxxxxxxxxxx xxx"
+"xxxxxxx   xxxxx"
+"xxxxxxx xxxxxxx"
 "xxxxxxxxxxxxxxx"
+"xxxxxxxxxxxxxxx"
+"xxxxxx xxxxxxxx"
+"xxxxxx xxxxxxxx"
 
 ;; Editor hints
 ;; vim: syntax=lisp
