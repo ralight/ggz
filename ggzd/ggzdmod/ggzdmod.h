@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 3724 2002-04-03 18:01:36Z jdorje $
+ * $Id: ggzdmod.h 3810 2002-04-07 08:28:03Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -196,6 +196,20 @@ extern "C" {
  *  will be started and played at the table, after which it may return
  *  to waiting.  Eventually the table will probably halt and then the
  *  program will exit.
+ *
+ *  More specifically, the game is in the CREATED state when it is first
+ *  executed.  It moves to the WAITING state after GGZ first communicates
+ *  with it.  After this, the game server may use ggzdmod_set_state to
+ *  change between WAITING, PLAYING, and DONE states.  A WAITING game is
+ *  considered waiting for players (or whatever), while a PLAYING game is
+ *  actively being played (this information may be, but currently is not,
+ *  propogated back to GGZ for display purposes).  Once the state is changed
+ *  to DONE, the table is considered dead and will exit shortly
+ *  thereafter (ggzdmod_loop will stop looping, etc.) (see the kill_on_exit
+ *  game option).
+ *
+ *  Each time the game state changes, a GGZDMOD_EVENT_STATE event will be
+ *  propogated to the game server.
  */
 typedef enum {
 	GGZDMOD_STATE_CREATED,	/**< Pre-launch; waiting for ggzdmod */
