@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 4433 2002-09-07 09:39:43Z dr_maux $
+ * $Id: main.c 4441 2002-09-07 18:34:27Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -111,11 +111,11 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 	switch(op) {
 		
 	case TTT_MSG_SEAT:
-		get_seat();
+		receive_seat();
 		break;
 		
 	case TTT_MSG_PLAYERS:
-		get_players();
+		receive_players();
 		game.state = STATE_WAIT;
 		break;
 		
@@ -125,22 +125,22 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 		break;
 		
 	case TTT_RSP_MOVE:
-		get_move_status();
+		receive_move_status();
 		display_board();
 		break;
 		
 	case TTT_MSG_MOVE:
-		get_opponent_move();
+		receive_move();
 		display_board();
 		break;
 		
 	case TTT_SND_SYNC:
-		get_sync();
+		receive_sync();
 		display_board();
 		break;
 		
 	case TTT_MSG_GAMEOVER:
-		get_gameover();
+		receive_gameover();
 		game.state = STATE_DONE;
 		break;
 	}
@@ -148,7 +148,7 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 }		
 
 
-int get_seat(void)
+int receive_seat(void)
 {
 	game_status(_("Getting seat number"));
 
@@ -159,7 +159,7 @@ int get_seat(void)
 }
 
 
-int get_players(void)
+int receive_players(void)
 {
 	int i;
 
@@ -179,27 +179,32 @@ int get_players(void)
 }
 
 
-int get_opponent_move(void)
+/* The server doesn't usually inform us of our move.  But we get told about
+   the opponent's move, and if we're a spectator we get to hear both. */
+int receive_move(void)
 {
 	int move, nummove;
 
 	if(game.num < 0)
-		game_status(_("Receive a move"));
+		game_status(_("Received a move"));
 	else
 		game_status(_("Getting opponent's move"));
 
+	/* nummove is the player who made the move (0 or 1). */
 	if (ggz_read_int(game.fd, &nummove) < 0)
 		return -1;
+
+	/* move is the move (0..8) */
 	if (ggz_read_int(game.fd, &move) < 0)
 		return -1;
 
-	game.board[move] = (game.num == 0 ? 'o' : 'x');	
+	game.board[move] = (nummove == 1 ? 'o' : 'x');	
 
 	return 0;
 }
 
 
-int get_sync(void)
+int receive_sync(void)
 {
 	int i;
 	char turn;
@@ -225,7 +230,7 @@ int get_sync(void)
 }
 
 
-int get_gameover(void)
+int receive_gameover(void)
 {
 	char winner;
 	
@@ -284,7 +289,7 @@ int send_options(void)
 }
 
 
-int get_move_status(void)
+int receive_move_status(void)
 {
 	char status;
 	

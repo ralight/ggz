@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 4/11/00
  * Desc: TTT game functions
- * $Id: game.h 4268 2002-06-22 05:19:13Z bmh $
+ * $Id: game.h 4441 2002-09-07 18:34:27Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -74,12 +74,12 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond);
 void game_init(void);
 
 /* Functions to handle incoming data from server*/
-int get_seat(void);
-int get_players(void);
-int get_move_status(void);
-int get_opponent_move(void);
-int get_sync(void);
-int get_gameover(void);
+int receive_seat(void);
+int receive_players(void);
+int receive_move_status(void);
+int receive_move(void);
+int receive_sync(void);
+int receive_gameover(void);
 
 /* Functions to send data to server */
 int send_options(void);
