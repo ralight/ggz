@@ -446,8 +446,7 @@ struct _GGZTable*  _ggzcore_room_get_table_by_id(struct _GGZRoom *room,
 	if (!room->tables)
 		return NULL;
 
-	_ggzcore_table_init(&table, NULL, NULL, 0, 0, id);
-	
+	_ggzcore_table_set_id(&table, id);
 	entry = _ggzcore_list_search(room->tables, &table);
 
 	/* Couldn't be found */
@@ -506,6 +505,15 @@ void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor)
 void _ggzcore_room_add_player(struct _GGZRoom *room, char *name)
 {
 	struct _GGZPlayer *player;
+
+	ggzcore_debug(GGZ_DBG_ROOM, "Adding player %s", name);
+
+	/* Create the list if it doesn't exist yet */
+	if (!room->players)
+		room->players = _ggzcore_list_create(_ggzcore_player_compare, 
+						    NULL,
+						    _ggzcore_player_destroy, 0);
+
 	
 	/* Default new people in room to no table (-1) */
 	player = _ggzcore_player_new();
@@ -520,22 +528,33 @@ void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name)
 {
 	struct _GGZPlayer player;
 	struct _ggzcore_list_entry *entry;
-	
-	/* Default to no table (-1) */
-	_ggzcore_player_init(&player, name, room, -1);
-	if (!(entry = _ggzcore_list_search(room->players, &player)))
-		return;
-	_ggzcore_list_delete_entry(room->players, entry);
-	room->num_players--;
 
-	_ggzcore_room_event(room, GGZ_ROOM_LEAVE, name);
+	ggzcore_debug(GGZ_DBG_ROOM, "Removing player %s", name);
+
+	/* Only try to delete if the list exists */
+	if (room->players) {	
+		/* Default to no table (-1) */
+		_ggzcore_player_init(&player, name, room, -1);
+		entry = _ggzcore_list_search(room->players, &player);
+		if (entry) {
+			_ggzcore_list_delete_entry(room->players, entry);
+			room->num_players--;
+			_ggzcore_room_event(room, GGZ_ROOM_LEAVE, name);
+		}
+	}
 }
 
 
 void _ggzcore_room_add_table(struct _GGZRoom *room, struct _GGZTable *table)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Adding table %d", 
+	ggzcore_debug(GGZ_DBG_ROOM, "Adding table %d", 
 		      _ggzcore_table_get_id(table));
+
+	/* Create the list if it doesn't exist yet */
+	if (!room->tables)
+		room->tables = _ggzcore_list_create(_ggzcore_table_compare, 
+						    NULL,
+						    _ggzcore_table_destroy, 0);
 
 	_ggzcore_list_insert(room->tables, table);
 	room->num_tables++;
@@ -548,10 +567,11 @@ void _ggzcore_room_remove_table(struct _GGZRoom *room, const unsigned int id)
 	struct _ggzcore_list_entry *entry;
 	struct _GGZTable table;
 
-	ggzcore_debug(GGZ_DBG_SERVER, "Deleting table: %d", id);
+	ggzcore_debug(GGZ_DBG_ROOM, "Deleting table: %d", id);
 
+	/* Only try to delete if the list exists */
 	if (room->tables) {
-		_ggzcore_table_init(&table, NULL, NULL, 0, 0, id);
+		_ggzcore_table_set_id(&table, id);
 		entry = _ggzcore_list_search(room->tables, &table);
 		if (entry) {
 			_ggzcore_list_delete_entry(room->tables, entry);
@@ -573,13 +593,17 @@ void _ggzcore_room_player_join_table(struct _GGZRoom *room,
 	ggzcore_debug(GGZ_DBG_ROOM, "%s joining seat %d at table %d", name, 
 		      seat, id);
 
-	table = _ggzcore_room_get_table_by_id(room, id);
-	_ggzcore_table_add_player(table, name, seat);
+	if (room->tables) {
+		table = _ggzcore_room_get_table_by_id(room, id);
+		_ggzcore_table_add_player(table, name, seat);
+	
+		if (room->players) {
+			player = _ggzcore_room_get_player_by_name(room, name);
+			_ggzcore_player_set_table(player, id);
+		}
 
-	player = _ggzcore_room_get_player_by_name(room, name);
-	_ggzcore_player_set_table(player, id);
-
-	_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
+		_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
+	}
 }
 
 
@@ -594,13 +618,17 @@ void _ggzcore_room_player_leave_table(struct _GGZRoom *room,
 	ggzcore_debug(GGZ_DBG_ROOM, "%s leaving seat %d at table %d", name, 
 		      seat, id);
 
-	table = _ggzcore_room_get_table_by_id(room, id);
-	_ggzcore_table_remove_player(table, name);
+	if (room->tables) {
+		table = _ggzcore_room_get_table_by_id(room, id);
+		_ggzcore_table_remove_player(table, name);
 
-	player = _ggzcore_room_get_player_by_name(room, name);
-	_ggzcore_player_set_table(player, -1);
+		if (room->players) {
+			player = _ggzcore_room_get_player_by_name(room, name);
+			_ggzcore_player_set_table(player, -1);
+		}
 
-	_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
+		_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
+	}
 }
 
 
@@ -610,11 +638,11 @@ void _ggzcore_room_new_table_state(struct _GGZRoom *room, const unsigned int id,
 			
 	ggzcore_debug(GGZ_DBG_ROOM, "Table %d new state %d", id, state);
 		      
-			      
-	table = _ggzcore_room_get_table_by_id(room, id);
-	_ggzcore_table_set_state(table, state);
-	
-	_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
+	if (room->tables) {		      
+		table = _ggzcore_room_get_table_by_id(room, id);
+		_ggzcore_table_set_state(table, state);
+		_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
+	}
 }
 
 

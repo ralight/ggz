@@ -223,6 +223,7 @@ void _ggzcore_table_init(struct _GGZTable *table,
 
 	table->num_seats = num_seats;
 	table->seats = ggzcore_malloc(num_seats * sizeof(struct _GGZSeat));
+	ggzcore_debug(GGZ_DBG_TABLE, "Allocating %d seats", num_seats);
 
 	for (i = 0; i < num_seats; i++) {
 		table->seats[i].type = GGZ_SEAT_OPEN;
@@ -239,7 +240,7 @@ void _ggzcore_table_free(struct _GGZTable *table)
 		ggzcore_free(table->desc);
 
 	if (table->seats) {
-		for (i = 0; i < 0; i++)
+		for (i = 0; i < table->num_seats; i++)
 			if (table->seats[i].name)
 				ggzcore_free(table->seats[i].name);
 		ggzcore_free(table->seats);
