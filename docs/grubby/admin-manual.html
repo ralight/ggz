@@ -1,0 +1,47 @@
+<HTML>
+<HEAD>
+<TITLE>
+The Grubby Admin Manual
+</TITLE>
+</HEAD>
+<BODY BGCOLOR=#DDDDDD TEXT=#000000 LINK=#0000FF ALINK=#0000FF VLINK=#000050>
+
+<FONT SIZE=6>The Grubby Admin Manual</FONT><BR>
+<FONT SIZE=2>Josef Spillner, 2001-08-04</FONT>
+<BR><BR>
+
+<HR>
+<B>Table Of Contents:</B><BR>
+<A HREF="#modnews">News module</A><BR>
+<A HREF="#moddict">Dictionary module</A><BR>
+<HR>
+<BR><BR>
+
+<HR>
+<A NAME="modnews">
+<FONT SIZE=4>News Module</FONT>
+<BR><BR>
+Several news sites offer RDF files which contain all headlines and links to the articles in XML format. Now  when the user
+requests news from one of those sites, the module first fetches the latest RDF file from the target host (needs the perl module
+Net::Telnet installed), and randomly seeks one of the headlines which is to be returned.
+<BR><BR>
+
+<HR>
+<A NAME="moddict">
+<FONT SIZE=4>Dictionary Module</FONT>
+<BR><BR>
+This module is presentated by the perl script "dict.pl", which in turn needs several dictionaries installed, or at least one of them.
+Under Unix, those are mostly under /usr/share/trans/X-Y, where X and Y are lowercase language letters, like "en" for English. The
+dictionary files contain key:value pairs of words. Now when a search is done, the module simply opens the appropriate file and scans
+it. In the case of inverse search, key and value are swapped. The module returns a concatenated string which contains all translations
+it found for the key word.
+<BR><BR>
+
+<HR>
+<FONT SIZE=2>
+This documentation is Copyright (C) 2001 Josef Spillner.<BR>
+Published under the GNU Free Documentation License.<BR>
+</FONT>
+
+</BODY>
+</HTML>
