@@ -824,6 +824,12 @@ void _ggzcore_room_set_table_join_status(struct _GGZRoom *room, int status)
 				    "(or has reserved seats)");
 		break;
 
+	case E_NO_PERMISSION:
+		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
+				    "You don't have enough "
+				    "permissions to join this table.");
+		break;
+
 	default:
 		_ggzcore_room_event(room, GGZ_TABLE_JOIN_FAIL,
 				    "Unknown join failure");
