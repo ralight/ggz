@@ -89,7 +89,7 @@ void display_chat(gchar *name, gchar *msg)
 			chat_print(CHAT_COLOR_SERVER, "---", buf);
 			g_free(buf);
 		}else{
-			buf = g_strdup_printf("%s was been beeped by %s", out, name);
+			buf = g_strdup_printf("%s has been beeped by %s", out, name);
 			chat_print(CHAT_COLOR_SERVER, "---", buf);
 			g_free(buf);
 		}
