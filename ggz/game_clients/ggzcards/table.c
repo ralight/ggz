@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: table.c 6734 2005-01-19 01:58:21Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -340,7 +340,7 @@ static void table_show_player_box(int player, int write_to_screen)
 	const char *message = player_messages[player];
 	int string_y;
 	int max_width = 0;
-	PangoLayout *layout;
+	static PangoLayout *layout = NULL;
 	PangoRectangle rect;
 	GdkGC *gc = table_style->fg_gc[GTK_WIDGET_STATE(table)];
 
@@ -348,7 +348,11 @@ static void table_show_player_box(int player, int write_to_screen)
 
 	assert(table_ready);
 
-	layout = pango_layout_new(gdk_pango_context_get());
+	if (!layout) {
+		/* This variable is static so we only allocate it once. */
+		layout = pango_layout_new(gdk_pango_context_get());
+	}
+
 	pango_layout_set_font_description(layout, table_style->font_desc);
 
 	get_text_box_pos(player, &x, &y);
@@ -428,8 +432,6 @@ static void table_show_player_box(int player, int write_to_screen)
 	if (write_to_screen)
 		table_show_table(x, y, TEXT_BOX_WIDTH - 1,
 				 TEXT_BOX_WIDTH - 1);
-
-	g_object_unref(layout);
 }
 
 /* Display's a player's name on the table. */

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6663 2005-01-14 03:19:43Z jdorje $
+ * $Id: main.c 6734 2005-01-19 01:58:21Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -144,23 +144,23 @@ static void cleanup_debugging(void)
 void listen_for_server(bool listen)
 {
 	static guint server_socket_tag;
-	static bool listening = FALSE;
+	static GIOChannel *channel = NULL;
+	/* Invariant: (channel != NULL) <=> listening */
 
 	ggz_debug(DBG_MAIN, "%s server.",
 		  listen ? "Listening for" : "Ignoring");
 
-	if (listen && !listening) {
+	if (listen && !channel) {
 		int fd = client_get_fd();
-		GIOChannel *channel;
 
 		channel = g_io_channel_unix_new(fd);
 		assert(fd >= 0);
 		server_socket_tag = g_io_add_watch(channel, G_IO_IN,
 						   game_handle_io, NULL);
-		listening = TRUE;
-	} else if (!listen && listening) {
+	} else if (!listen && channel) {
 		g_source_remove(server_socket_tag);
-		listening = FALSE;
+		g_io_channel_unref(channel);
+		channel = NULL;
 	}
 }
 
