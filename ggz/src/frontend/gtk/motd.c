@@ -72,7 +72,7 @@ void motd_print_line(gchar *line)
         GtkWidget *temp_widget;
         GdkColormap *cmap;
         GdkFont *fixed_font;
-        gint color_index=9; /* Black */
+        gint color_index=0; /* Black */
         gint letter;
                         
         /* Make shure the motd window it there */
