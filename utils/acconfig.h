@@ -19,6 +19,7 @@
 #undef DEBUG
 #undef DEBUG_SOCKET
 #undef DEBUG_MEM
+#undef HAVE_LIBSM
 #undef NDEBUG
 #undef PREFIX
     
