@@ -1,0 +1,348 @@
+<?xml version="1.0"?>
+<GTK-Interface>
+
+<project>
+  <name>options_dlg</name>
+  <program_name>options_dlg</program_name>
+  <directory></directory>
+  <source_directory>.</source_directory>
+  <pixmaps_directory>.</pixmaps_directory>
+  <language>C</language>
+  <gnome_support>False</gnome_support>
+  <gettext_support>True</gettext_support>
+  <use_widget_names>True</use_widget_names>
+  <output_main_file>False</output_main_file>
+  <output_support_files>False</output_support_files>
+  <output_build_files>False</output_build_files>
+  <main_source_file>options_dlg.c</main_source_file>
+  <main_header_file>options_dlg.h</main_header_file>
+  <handler_source_file>options_dlg_callback.c</handler_source_file>
+  <handler_header_file>options_dlg_callback.h</handler_header_file>
+  <support_source_file>options_dlg.c</support_source_file>
+  <support_header_file>options_dlg.h</support_header_file>
+</project>
+
+<widget>
+  <class>GtkDialog</class>
+  <name>dialog1</name>
+  <signal>
+    <name>expose_event</name>
+    <handler>update_dialog</handler>
+    <last_modification_time>Sun, 03 Dec 2000 13:40:27 GMT</last_modification_time>
+  </signal>
+  <title>dialog1</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>True</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkVBox</class>
+    <child_name>Dialog:vbox</child_name>
+    <name>dialog-vbox1</name>
+    <homogeneous>False</homogeneous>
+    <spacing>0</spacing>
+
+    <widget>
+      <class>GtkHBox</class>
+      <child_name>Dialog:action_area</child_name>
+      <name>dialog-action_area1</name>
+      <border_width>10</border_width>
+      <homogeneous>True</homogeneous>
+      <spacing>5</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+	<pack>GTK_PACK_END</pack>
+      </child>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>ok_button</name>
+	<width>70</width>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_ok_button_clicked</handler>
+	  <last_modification_time>Sun, 03 Dec 2000 13:40:56 GMT</last_modification_time>
+	</signal>
+	<label>OK</label>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>cancel_button</name>
+	<width>70</width>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_cancel_button_clicked</handler>
+	  <last_modification_time>Sun, 03 Dec 2000 13:41:03 GMT</last_modification_time>
+	</signal>
+	<label>Cancel</label>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkFrame</class>
+      <name>bg_frame</name>
+      <label>Background</label>
+      <label_xalign>0</label_xalign>
+      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkVBox</class>
+	<name>vbox1</name>
+	<homogeneous>False</homogeneous>
+	<spacing>0</spacing>
+
+	<widget>
+	  <class>GtkHBox</class>
+	  <name>hbox5</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <padding>5</padding>
+	    <expand>True</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkRadioButton</class>
+	    <name>color_radio</name>
+	    <can_focus>True</can_focus>
+	    <label>Background color</label>
+	    <active>True</active>
+	    <draw_indicator>True</draw_indicator>
+	    <group>bg_mode</group>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkRadioButton</class>
+	    <name>pixmap_radio</name>
+	    <can_focus>True</can_focus>
+	    <label>Background Pixmap</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	    <group>bg_mode</group>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkHBox</class>
+	  <name>hbox4</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <padding>5</padding>
+	    <expand>True</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>bg_label</name>
+	    <label>Background color: </label>
+	    <justify>GTK_JUSTIFY_CENTER</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkButton</class>
+	    <name>back_button</name>
+	    <width>70</width>
+	    <height>35</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>on_back_button_clicked</handler>
+	      <last_modification_time>Sun, 03 Dec 2000 13:46:56 GMT</last_modification_time>
+	    </signal>
+	    <label></label>
+	    <child>
+	      <padding>50</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkHBox</class>
+	  <name>hbox7</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	  <child>
+	    <padding>5</padding>
+	    <expand>True</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>pixmap_label</name>
+	    <label>Background pixmap:</label>
+	    <justify>GTK_JUSTIFY_CENTER</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkPixmap</class>
+	    <name>pixmap_button</name>
+	    <signal>
+	      <name>button_press_event</name>
+	      <handler>on_pixmap_button_button_press_event</handler>
+	      <last_modification_time>Sun, 03 Dec 2000 13:47:47 GMT</last_modification_time>
+	    </signal>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <build_insensitive>True</build_insensitive>
+	    <child>
+	      <padding>0</padding>
+	      <expand>True</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHBox</class>
+      <name>hbox6</name>
+      <homogeneous>False</homogeneous>
+      <spacing>0</spacing>
+      <child>
+	<padding>5</padding>
+	<expand>True</expand>
+	<fill>False</fill>
+      </child>
+
+      <widget>
+	<class>GtkLabel</class>
+	<name>last_label</name>
+	<label>Last played color :</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>last_button</name>
+	<width>70</width>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_last_button_clicked</handler>
+	  <last_modification_time>Sun, 03 Dec 2000 13:47:06 GMT</last_modification_time>
+	</signal>
+	<label></label>
+	<child>
+	  <padding>50</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+    </widget>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkColorSelectionDialog</class>
+  <name>colorselectiondialog1</name>
+  <border_width>10</border_width>
+  <title>Select Color</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+  <policy>GTK_UPDATE_CONTINUOUS</policy>
+
+  <widget>
+    <class>GtkButton</class>
+    <child_name>ColorSel:ok_button</child_name>
+    <name>ok_button1</name>
+    <can_default>True</can_default>
+    <can_focus>True</can_focus>
+    <label>OK</label>
+  </widget>
+
+  <widget>
+    <class>GtkButton</class>
+    <child_name>ColorSel:cancel_button</child_name>
+    <name>cancel_button1</name>
+    <can_default>True</can_default>
+    <can_focus>True</can_focus>
+    <label>Cancel</label>
+  </widget>
+
+  <widget>
+    <class>GtkButton</class>
+    <child_name>ColorSel:help_button</child_name>
+    <name>help_button1</name>
+    <can_default>True</can_default>
+    <can_focus>True</can_focus>
+    <label>Help</label>
+  </widget>
+</widget>
+
+</GTK-Interface>
