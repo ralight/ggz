@@ -473,6 +473,7 @@ static int table_game_join(int index, int fd, char* transit)
 
 	/* Mark transit as done and signal player*/
 	tables.info[index].transit_flag &= ~GGZ_TRANSIT_JOIN;
+	tables.info[index].transit_flag |= GGZ_TRANSIT_DONE;
 	pthread_cond_broadcast(&tables.info[index].transit_cond);
 	pthread_mutex_unlock(&tables.info[index].transit_lock);
 
@@ -529,6 +530,7 @@ static int table_game_leave(int index, int fd, char* transit)
 
 	/* Mark transit as done and signal player*/
 	tables.info[index].transit_flag &= ~GGZ_TRANSIT_LEAVE;
+	tables.info[index].transit_flag |= GGZ_TRANSIT_DONE;
 	pthread_cond_broadcast(&tables.info[index].transit_cond);
 	pthread_mutex_unlock(&tables.info[index].transit_lock);
 
@@ -714,7 +716,8 @@ int table_launch(int p, TableInfo table, int* t_index)
 	/* Wait for successful launch */
 	pthread_mutex_lock(&tables.info[index].state_lock);
 	while ( (state = tables.info[index].state) == GGZ_TABLE_CREATED) {
-		dbg_msg(GGZ_DBG_TABLE, "Waiting for table %d launch", index);
+		dbg_msg(GGZ_DBG_TABLE, "Player %d waiting for table %d launch",
+			p, index);
 		pthread_cond_wait(&tables.info[index].state_cond,
 				  &tables.info[index].state_lock);
 	}
@@ -768,7 +771,8 @@ int table_join(int p, int index, int* t_fd)
 	/* Wait for join to occur */
 	flag = tables.info[index].transit_flag;
 	while (flag & GGZ_TRANSIT_JOIN) {
-		dbg_msg(GGZ_DBG_TABLE, "Waiting for table %d join", index);
+		dbg_msg(GGZ_DBG_TABLE, "Player %d waiting for table %d join",
+			p, index);
 		pthread_cond_wait(&tables.info[index].transit_cond,
 				  &tables.info[index].transit_lock);
 		flag = tables.info[index].transit_flag;
@@ -781,7 +785,7 @@ int table_join(int p, int index, int* t_fd)
 	pthread_cond_broadcast(&tables.info[index].transit_cond);
 	pthread_mutex_unlock(&tables.info[index].transit_lock);
 	
-	if ((flag & GGZ_TRANSIT_STATUS) != GGZ_TRANSIT_OK)
+	if (!(flag & GGZ_TRANSIT_DONE))
 		return E_JOIN_FAIL;
 
 	*t_fd = fd;
@@ -840,7 +844,8 @@ int table_leave(int p, int index)
 	/* Wait for leave to occur */
 	flag = tables.info[index].transit_flag;
 	while (flag & GGZ_TRANSIT_LEAVE) {
-		dbg_msg(GGZ_DBG_TABLE, "Waiting for table %d leave", index);
+		dbg_msg(GGZ_DBG_TABLE, "Player %d waiting for table %d leave",
+			p, index);
 		pthread_cond_wait(&tables.info[index].transit_cond,
 				  &tables.info[index].transit_lock);
 		flag = tables.info[index].transit_flag;
@@ -851,9 +856,9 @@ int table_leave(int p, int index)
 	pthread_cond_broadcast(&tables.info[index].transit_cond);
 	pthread_mutex_unlock(&tables.info[index].transit_lock);
 	
-	if ((flag & GGZ_TRANSIT_STATUS) != GGZ_TRANSIT_OK)
+	if (!(flag & GGZ_TRANSIT_DONE))
 		return E_LEAVE_FAIL;
-
+	
  	return 0;
 }
 

@@ -1070,7 +1070,10 @@ static int player_table_leave(int p_index, int p_fd)
 	if (status != 0)
 		return GGZ_REQ_FAIL;
 	
-
+	pthread_rwlock_wrlock(&players.lock);
+	players.info[p_index].table_index = -1;
+	pthread_rwlock_unlock(&players.lock);
+	
 	return GGZ_REQ_OK;
 }
 
