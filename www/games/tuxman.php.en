@@ -1,0 +1,50 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Tuxman</b><br>
+Arcade game for one player.
+<br>
+The game client is not a GGZ project but can be used on GGZ.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Tuxman features</i><br>
+<ul>
+<li>SDL game client
+<li>real-time movements
+<li>AI opponents available
+</ul>
+<br>
+
+<i>Tuxman rules</i><br>
+Tuxman is basically an implementation of Pacman.
+You have to munch through each level (room) without being eaten by monsters.
+
+<br><br>
+
+<i>Homepage of Tuxman</i><br>
+<a href="http://dak0r.de/~badwolf/ftpnet/badwolf/tuxman/index.php" target="blank">http://dak0r.de/~badwolf/ftpnet/badwolf/tuxman/index.php</a>
+
+</td><td valign="top">
+
+<i>SDL client:</i><br>
+<img src="pics/tuxman.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

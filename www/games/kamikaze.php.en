@@ -8,6 +8,8 @@
 <b>Kamikaze</b><br>
 Action game for 2-8 players.
 <br>
+The game client and server are not GGZ projects but can be used on GGZ.
+<br>
 
 <table class="inner">
 <tr>
@@ -31,6 +33,11 @@ Various items like Life, Power or Bomb have to be collected. Sometimes, rare ite
 such as flash bomb effects, double speed or the holy grail can be found.
 There are two sorts of walls: Stone walls (which cannot be bombed away) and wood walls.
 And then there are holes in the ground at times, beware!
+
+<br><br>
+
+<i>Homepage of Kamikaze</i><br>
+<a href="http://kamikaze.coolprojects.org/" target="blank">http://kamikaze.coolprojects.org/</a>
 
 </td><td valign="top">
 

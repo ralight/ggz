@@ -1,0 +1,53 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Tuxman</b><br>
+Arkade-Spiel für einen Spieler.
+<br>
+Der Spieleclient gehört nicht zu GGZ, das Spiel kann aber via GGZ gespielt werden.
+<br>
+
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Merkmale von Tuxman</i><br>
+<ul>
+<li>SDL Spiele-Client
+<li>Spielabläufe in Echtzeit
+<li>KI-Gegner verfügbar
+</ul>
+<br>
+
+<i>Regeln von Tuxman</i><br>
+Tuxman ist prinzipiell eine Implementierung von Pacman.
+Man muß versuchen, sich durch jedes Level (jeden Raum) zu fressen, ohne selbst
+den Monstern zum Opfer zu fallen.
+
+<br><br>
+
+<i>Homepage von Tuxman</i><br>
+<a href="http://dak0r.de/~badwolf/ftpnet/badwolf/tuxman/index.php" target="blank">http://dak0r.de/~badwolf/ftpnet/badwolf/tuxman/index.php</a>
+
+</td><td valign="top">
+
+<i>SDL client:</i><br>
+<img src="pics/tuxman.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
