@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulate functions for card games
- * $Id: cards.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: cards.c 2197 2001-08-23 09:34:23Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -112,7 +112,7 @@ void cards_create_deck(deck_type_t which_deck)
 
 	/* Now generate an in-order deck */
 	deck_size = deck_face_cnt * deck_suit_cnt * deck_deck_cnt;
-	gamedeck = (card_t *) alloc(deck_size * sizeof(card_t));
+	gamedeck = alloc(deck_size * sizeof(*gamedeck));
 
 	cardnum = 0;
 	for (deck = 0; deck < deck_deck_cnt; deck++)
@@ -137,7 +137,7 @@ void cards_destroy_deck()
 {
 	if (gamedeck == NULL)
 		ggzdmod_debug("ERROR: SERVER BUG: "
-			  "cards_destroy_deck called on a NULL deck.");
+			      "cards_destroy_deck called on a NULL deck.");
 	free(gamedeck);
 	deck_size = 0;
 	deck_ptr = -1;
@@ -187,7 +187,8 @@ void cards_deal_hand(int handsize, hand_t * hand)
 	}
 
 	if (gamedeck == NULL) {
-		ggzdmod_debug("ERROR: SERVER BUG: " "can't deal from NULL deck.");
+		ggzdmod_debug("ERROR: SERVER BUG: "
+			      "can't deal from NULL deck.");
 		exit(-1);
 	}
 

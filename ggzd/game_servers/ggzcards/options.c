@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: options.c 2197 2001-08-23 09:34:23Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -72,8 +72,7 @@ int options_set()
 
 void set_option(char *key, int value)
 {
-	struct option_t *option =
-		(struct option_t *) alloc(sizeof(struct option_t));
+	struct option_t *option = alloc(sizeof(*option));
 	option->key = key;
 	option->value = value;
 	option->next = optionlist;
@@ -95,19 +94,18 @@ void add_option(char *key, int num, int dflt, ...)
 		if (!strcmp(po->key, key))
 			return;
 
-	po = (struct pending_option_t *)
-		alloc(sizeof(struct pending_option_t));
+	po = alloc(sizeof(*po));
 	po->key = key;
 	po->num = num;
 	po->dflt = dflt;
-	po->choices = (char **) alloc(num * sizeof(char *));
+	po->choices = alloc(num * sizeof(char *));
 
 	va_start(ap, dflt);
 	for (i = 0; i < num; i++) {
 		po->choices[i] = va_arg(ap, char *);
 		if (po->choices[i] == NULL)
 			ggzdmod_debug("ERROR: SERVER BUG: "
-				  "add_option: NULL option choice.");
+				      "add_option: NULL option choice.");
 	}
 	va_end(ap);
 
@@ -196,8 +194,8 @@ void finalize_options()
 						     op->key, op->value);
 		if (optext == NULL) {
 			ggzdmod_debug("ERROR: SERVER BUG: "
-				  "finalize_options: NULL optext returned for option (%s, %d).",
-				  op->key, op->value);
+				      "finalize_options: NULL optext returned for option (%s, %d).",
+				      op->key, op->value);
 			len += snprintf(buf + len, sizeof(buf) - len,
 					"  %s : %d\n", op->key, op->value);
 			opcount++;

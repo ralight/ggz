@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: hearts.c 2197 2001-08-23 09:34:23Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -33,12 +33,13 @@
 static int hearts_is_valid_game();
 static void hearts_init_game();
 static void hearts_get_options();
-static int hearts_handle_option(char* option, int value);
-static char* hearts_get_option_text(char* buf, int bufsz, char* option, int value);
+static int hearts_handle_option(char *option, int value);
+static char *hearts_get_option_text(char *buf, int bufsz, char *option,
+				    int value);
 static int hearts_handle_gameover();
 static void hearts_start_bidding();
 static void hearts_start_playing();
-static char* hearts_verify_play(card_t card);
+static char *hearts_verify_play(card_t card);
 static void hearts_end_trick();
 static void hearts_end_hand();
 
@@ -83,8 +84,8 @@ static void hearts_init_game()
 
 	game.specific = alloc(sizeof(hearts_game_t));
 	set_num_seats(game.num_players);
-	game.trump = -1; /* no trump in hearts */
-	for(p = 0; p < game.num_players; p++) {
+	game.trump = -1;	/* no trump in hearts */
+	for (p = 0; p < game.num_players; p++) {
 		s = p;
 		game.players[p].seat = s;
 		game.seats[s].ggz = &ggz_seats[p];
@@ -102,7 +103,7 @@ static void hearts_get_options()
 	game_get_options();
 }
 
-static int hearts_handle_option(char* option, int value)
+static int hearts_handle_option(char *option, int value)
 {
 	if (!strcmp("jack_diamonds", option))
 		GHEARTS.jack_diamonds = value;
@@ -112,8 +113,9 @@ static int hearts_handle_option(char* option, int value)
 		/* HACK - the deck will already have been made at this point,
 		 * so we need to destroy and recreate it. */
 		seat_t s;
-		GHEARTS.num_decks = value+1;
-		game.deck_type = (value == 0) ? GGZ_DECK_FULL : GGZ_DECK_DOUBLE;
+		GHEARTS.num_decks = value + 1;
+		game.deck_type =
+			(value == 0) ? GGZ_DECK_FULL : GGZ_DECK_DOUBLE;
 		cards_destroy_deck();
 		cards_create_deck(game.deck_type);
 
@@ -123,23 +125,27 @@ static int hearts_handle_option(char* option, int value)
 			if (game.seats[s].hand.cards)
 				free(game.seats[s].hand.cards);
 			game.seats[s].hand.cards =
-				(card_t *) alloc(game.max_hand_length *
-						 sizeof(card_t));
+				alloc(game.max_hand_length * sizeof(card_t));
 		}
 	} else
 		return game_handle_option(option, value);
 	return 0;
 }
 
-static char* hearts_get_option_text(char* buf, int bufsz, char* option, int value)
+static char *hearts_get_option_text(char *buf, int bufsz, char *option,
+				    int value)
 {
 	if (!strcmp("jack_diamonds", option))
-		snprintf(buf, bufsz, "The jack of diamonds rule is %sbeing used.", value ? "" : "not ");
+		snprintf(buf, bufsz,
+			 "The jack of diamonds rule is %sbeing used.",
+			 value ? "" : "not ");
 	else if (!strcmp("no_blood", option))
-		snprintf(buf, bufsz, "%s is allowed on the first trick.", value ? "No blood" : "Blood");
+		snprintf(buf, bufsz, "%s is allowed on the first trick.",
+			 value ? "No blood" : "Blood");
 	else if (!strcmp("num_decks", option)) {
 		if (value > 0)
-			snprintf(buf, bufsz, "%d decks are being used.", value+1);
+			snprintf(buf, bufsz, "%d decks are being used.",
+				 value + 1);
 	} else
 		return game_get_option_text(buf, bufsz, option, value);
 	return buf;
@@ -153,8 +159,8 @@ static int hearts_handle_gameover()
 
 
 	/* in hearts, the low score wins */
-	int lo_score = 100;	
-	for (p=0; p<game.num_players; p++) {
+	int lo_score = 100;
+	for (p = 0; p < game.num_players; p++) {
 		if (game.players[p].score < lo_score) {
 			winner_cnt = 1;
 			winners[0] = p;
@@ -170,7 +176,7 @@ static int hearts_handle_gameover()
 static void hearts_start_bidding()
 {
 	/* there is no bidding phase */
-	set_game_state( WH_STATE_FIRST_TRICK );
+	set_game_state(WH_STATE_FIRST_TRICK);
 }
 
 static void hearts_start_playing()
@@ -182,7 +188,7 @@ static void hearts_start_playing()
 	game.play_total = game.num_players;
 
 	/* we track the points that will be earned this hand. */
-	for (p=0; p<game.num_players; p++)
+	for (p = 0; p < game.num_players; p++)
 		GHEARTS.points_on_hand[p] = 0;
 
 	/* in hearts, the lowest club leads first */
@@ -194,12 +200,14 @@ static void hearts_start_playing()
 
 	/* TODO: what if we're playing with multiple decks? */
 	for (face = 2; face <= ACE_HIGH; face++) {
-		for (p=0; p<game.num_players; p++) {
+		for (p = 0; p < game.num_players; p++) {
 			/* TODO: this only works because the cards are sorted this way */
-			card_t card = game.seats[ game.players[p].seat ].hand.cards[0];
+			card_t card =
+				game.seats[game.players[p].seat].hand.
+				cards[0];
 			if (card.suit == CLUBS && card.face == face)
 				game.leader = p;
-				}
+		}
 		if (game.leader != -1) {
 			GHEARTS.lead_card_face = face;
 			break;
@@ -207,12 +215,12 @@ static void hearts_start_playing()
 	}
 
 	if (game.leader == -1) {
-		ggzdmod_debug("ERROR: SERVER BUG: ""nobody has a club.");
+		ggzdmod_debug("ERROR: SERVER BUG: " "nobody has a club.");
 		game.leader = (game.dealer + 1) % game.num_players;
 	}
 }
 
-static char* hearts_verify_play( card_t card)
+static char *hearts_verify_play(card_t card)
 {
 	seat_t s = game.play_seat;
 
@@ -223,13 +231,17 @@ static char* hearts_verify_play( card_t card)
 	if (game.next_play == game.leader) {
 		/* the low club must lead on the first trick */
 		if (game.trick_count == 0 && game.play_count == 0 &&
-		    (card.suit != CLUBS || card.face != GHEARTS.lead_card_face) )
+		    (card.suit != CLUBS
+		     || card.face != GHEARTS.lead_card_face))
 			return "You must lead the low club.";
 		/* you can't lead *hearts* until they're broken */
 		/* TODO: integrate this with must_break_trump */
-		if (card.suit != HEARTS) return NULL;
-		if (game.trump_broken) return NULL;
-		if (cards_suit_in_hand(&game.seats[s].hand, HEARTS) == game.seats[s].hand.hand_size)
+		if (card.suit != HEARTS)
+			return NULL;
+		if (game.trump_broken)
+			return NULL;
+		if (cards_suit_in_hand(&game.seats[s].hand, HEARTS) ==
+		    game.seats[s].hand.hand_size)
 			/* their entire hand is hearts */
 			return NULL;
 		return "Hearts have not yet been broken.";
@@ -240,13 +252,17 @@ static char* hearts_verify_play( card_t card)
 	 * that's all you have) */
 	if (GHEARTS.no_blood &&
 	    game.trick_count == 0 &&
-	    (card.suit == HEARTS || (card.suit == SPADES && card.face == QUEEN))) {
+	    (card.suit == HEARTS
+	     || (card.suit == SPADES && card.face == QUEEN))) {
 		int i;
 		card_t c;
-		for (i=0; i < game.seats[game.play_seat].hand.hand_size; i++) {
+		for (i = 0; i < game.seats[game.play_seat].hand.hand_size;
+		     i++) {
 			c = game.seats[game.play_seat].hand.cards[i];
-			if (c.suit == HEARTS) continue;
-			if (c.suit == SPADES && c.face == QUEEN) continue;
+			if (c.suit == HEARTS)
+				continue;
+			if (c.suit == SPADES && c.face == QUEEN)
+				continue;
 			return "No blood on the first trick!";
 		}
 	}
@@ -258,15 +274,16 @@ static void hearts_end_trick()
 {
 	player_t p;
 	game_end_trick();
-	for(p=0; p<game.num_players; p++) {
-		card_t card = game.seats[ game.players[p].seat ].table;
+	for (p = 0; p < game.num_players; p++) {
+		card_t card = game.seats[game.players[p].seat].table;
 		int points = 0;
 		if (card.suit == HEARTS)
 			points = 1;
 		if (card.suit == SPADES && card.face == QUEEN)
 			points = 13;
 		/* as an optional rule, the Jack of Diamonds is worth -10 */
-		if (GHEARTS.jack_diamonds && card.suit == DIAMONDS && card.face == JACK)
+		if (GHEARTS.jack_diamonds && card.suit == DIAMONDS
+		    && card.face == JACK)
 			GHEARTS.jack_winner = game.winner;
 
 		if (points > 0) {
@@ -285,7 +302,7 @@ static void hearts_end_hand()
 	int max = 0;
 	char buf[1024];
 
-	for (p=0; p<game.num_players; p++) {
+	for (p = 0; p < game.num_players; p++) {
 		int points = GHEARTS.points_on_hand[p];
 		/* if you take all 26 points you "shoot the moon" and earn -26 instead.
 		 * TODO: option of giving everyone else 26.  It could be handled as a bid... */
@@ -297,12 +314,14 @@ static void hearts_end_hand()
 		game.players[p].score += fullscore;
 
 		if (score == -26) {
-			snprintf(buf, sizeof(buf), "%s shot the moon.", ggz_seats[p].name);
+			snprintf(buf, sizeof(buf), "%s shot the moon.",
+				 ggz_seats[p].name);
 			max = 26;
 		} else if (fullscore > max) {
 			/* only the maximum player's score is written; this is less than ideal. */
 			max = fullscore;
-			snprintf(buf, sizeof(buf), "%s took %d points.", ggz_seats[p].name, fullscore);
+			snprintf(buf, sizeof(buf), "%s took %d points.",
+				 ggz_seats[p].name, fullscore);
 		}
 	}
 	set_global_message("", "%s", buf);

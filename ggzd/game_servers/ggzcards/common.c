@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2193 2001-08-23 08:57:10Z jdorje $
+ * $Id: common.c 2197 2001-08-23 09:34:23Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -1045,9 +1045,8 @@ int handle_bid_event(bid_t bid)
 		game.max_bid_rounds += 10;
 		for (p2 = 0; p2 < game.num_players; p2++) {
 			game.players[p2].allbids =
-				(bid_t *) realloc(game.players[p2].allbids,
-						  game.max_bid_rounds *
-						  sizeof(bid_t));
+				realloc(game.players[p2].allbids,
+					game.max_bid_rounds * sizeof(bid_t));
 			memset(&game.players[p2].
 			       allbids[game.max_bid_rounds - 10], 0,
 			       10 * sizeof(bid_t));
@@ -1086,9 +1085,7 @@ void set_num_seats(int num_seats)
 	game.num_seats = num_seats;
 	if (game.seats != NULL)
 		free(game.seats);
-	game.seats =
-		(struct game_seat_t *) alloc(game.num_seats *
-					     sizeof(struct game_seat_t));
+	game.seats = alloc(game.num_seats * sizeof(*game.seats));
 }
 
 /* init_game
@@ -1147,8 +1144,7 @@ void init_game()
 	/* allocate hands */
 	for (s = 0; s < game.num_seats; s++) {
 		game.seats[s].hand.cards =
-			(card_t *) alloc(game.max_hand_length *
-					 sizeof(card_t));
+			alloc(game.max_hand_length * sizeof(card_t));
 	}
 
 	set_global_message("", "%s", "");
@@ -1199,10 +1195,10 @@ char **alloc_string_array(int num, int len)
 	char **bids;
 	char *bids2;
 	i = num * sizeof(char *);
-	bids = (char **) alloc(i);
+	bids = alloc(i);
 
 	i = len * num * sizeof(char);
-	bids2 = (char *) alloc(i);
+	bids2 = alloc(i);
 
 	for (i = 0; i < num; i++) {
 		bids[i] = bids2;
