@@ -1,11 +1,12 @@
+? game_servers/tictactoe.spectators
 Index: ggzd/datatypes.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzd/datatypes.h,v
 retrieving revision 1.68
-diff -u -3 -p -r1.68 datatypes.h
+diff -u -r1.68 datatypes.h
 --- ggzd/datatypes.h	5 May 2002 00:22:08 -0000	1.68
-+++ ggzd/datatypes.h	20 May 2002 17:21:04 -0000
-@@ -85,10 +85,11 @@ typedef struct GameInfo {
++++ ggzd/datatypes.h	8 Jul 2002 20:38:15 -0000
+@@ -85,10 +85,11 @@
  	char *author;   /* String containing name(s) of author(s) */
  	char *homepage; /* Contains a web address for the game */
  	
@@ -22,10 +23,10 @@ Index: ggzd/net.c
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzd/net.c,v
 retrieving revision 1.57
-diff -u -3 -p -r1.57 net.c
+diff -u -r1.57 net.c
 --- ggzd/net.c	5 May 2002 18:43:52 -0000	1.57
-+++ ggzd/net.c	20 May 2002 17:21:04 -0000
-@@ -121,6 +121,7 @@ static void _net_handle_list(GGZNetIO *n
++++ ggzd/net.c	8 Jul 2002 20:38:18 -0000
+@@ -121,6 +121,7 @@
  static void _net_handle_enter(GGZNetIO *net, GGZXMLElement *element);
  static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *element);
  static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element);
@@ -33,7 +34,7 @@ diff -u -3 -p -r1.57 net.c
  static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element);
  static void _net_handle_launch(GGZNetIO *net, GGZXMLElement *element);
  static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element);
-@@ -139,8 +140,10 @@ static int _net_send_login_anon_status(G
+@@ -139,8 +140,10 @@
  static int _net_send_login_new_status(GGZNetIO *net, char status, char *password);
  static int _net_send_table_status(GGZNetIO *net, GGZTable *table);
  static int _net_send_table_seat(GGZNetIO *net, GGZTable *table, int num);
@@ -44,7 +45,7 @@ diff -u -3 -p -r1.57 net.c
  static int _net_send_line(GGZNetIO *net, char *line, ...)
  			  ggz__attribute((format(printf, 2, 3)));
  
-@@ -386,8 +389,8 @@ int net_send_type(GGZNetIO *net, int ind
+@@ -386,8 +389,8 @@
  		       index, type->name, type->version);
  	_net_send_line(net, "<PROTOCOL ENGINE='%s' VERSION='%s'/>",
  		       type->p_engine, type->p_version);
@@ -55,7 +56,7 @@ diff -u -3 -p -r1.57 net.c
  	
  	if (verbose) {
  		_net_send_line(net, "<ABOUT AUTHOR='%s' URL='%s'/>",
-@@ -572,6 +575,12 @@ int net_send_table_join(GGZNetIO *net, c
+@@ -572,6 +575,12 @@
  }
  
  
@@ -68,7 +69,7 @@ diff -u -3 -p -r1.57 net.c
  int net_send_table_leave(GGZNetIO *net, char status)
  {
  	return _net_send_result(net, "leave", status);
-@@ -650,6 +659,12 @@ int net_send_table_update(GGZNetIO *net,
+@@ -650,6 +659,12 @@
  	case GGZ_UPDATE_SEAT:
  		action = "seat";
  		break;
@@ -81,7 +82,7 @@ diff -u -3 -p -r1.57 net.c
  	default:
  		/* We should never get any other update types */
  		return -1;
-@@ -671,6 +686,10 @@ int net_send_table_update(GGZNetIO *net,
+@@ -671,6 +686,10 @@
  	case GGZ_UPDATE_SEAT:
  		_net_send_table_seat(net, table, seat);
  		break;
@@ -92,7 +93,7 @@ diff -u -3 -p -r1.57 net.c
  	case GGZ_UPDATE_STATE:
  		_net_send_table_status(net, table);
  		break;
-@@ -888,6 +907,8 @@ static GGZXMLElement* _net_new_element(c
+@@ -888,6 +907,8 @@
  		process_func = _net_handle_chat;
  	else if (strcmp(tag, "JOIN") == 0)
  		process_func = _net_handle_join;
@@ -101,7 +102,7 @@ diff -u -3 -p -r1.57 net.c
  	else if (strcmp(tag, "LEAVE") == 0)
  		process_func = _net_handle_leave;
  	else if (strcmp(tag, "LAUNCH") == 0)
-@@ -1241,6 +1262,16 @@ static void _net_handle_join(GGZNetIO *n
+@@ -1241,6 +1262,16 @@
  	}
  }
  
@@ -118,7 +119,7 @@ diff -u -3 -p -r1.57 net.c
  
  /* Functions for <LEAVE> tag */
  static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
-@@ -1561,6 +1592,17 @@ static int _net_send_table_seat(GGZNetIO
+@@ -1561,6 +1592,17 @@
  }
  
  
@@ -136,7 +137,7 @@ diff -u -3 -p -r1.57 net.c
  static int _net_send_table_desc(GGZNetIO *net, GGZTable *table)
  {
  	_net_send_line(net, "<TABLE ID='%d'>", table->index);
-@@ -1612,6 +1654,17 @@ static int _net_send_seat(GGZNetIO *net,
+@@ -1612,6 +1654,17 @@
  	return 0;
  }
  
@@ -158,10 +159,10 @@ Index: ggzd/net.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzd/net.h,v
 retrieving revision 1.19
-diff -u -3 -p -r1.19 net.h
+diff -u -r1.19 net.h
 --- ggzd/net.h	5 May 2002 18:43:52 -0000	1.19
-+++ ggzd/net.h	20 May 2002 17:21:04 -0000
-@@ -86,6 +86,7 @@ int net_send_chat(GGZNetIO *net, unsigne
++++ ggzd/net.h	8 Jul 2002 20:38:18 -0000
+@@ -86,6 +86,7 @@
  int net_send_chat_result(GGZNetIO *net, char status);
  int net_send_table_launch(GGZNetIO *net, char status);
  int net_send_table_join(GGZNetIO *net, char status);
@@ -173,10 +174,10 @@ Index: ggzd/parse_opt.c
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzd/parse_opt.c,v
 retrieving revision 1.87
-diff -u -3 -p -r1.87 parse_opt.c
+diff -u -r1.87 parse_opt.c
 --- ggzd/parse_opt.c	6 May 2002 05:48:44 -0000	1.87
-+++ ggzd/parse_opt.c	20 May 2002 17:21:05 -0000
-@@ -494,6 +494,7 @@ static void parse_game(char *name, char 
++++ ggzd/parse_opt.c	8 Jul 2002 20:38:20 -0000
+@@ -494,6 +494,7 @@
  	game_info->allow_leave = ggz_conf_read_int(ch,"TableOptions","AllowLeave",0);
  	game_info->kill_when_empty =
  		ggz_conf_read_int(ch, "TableOptions", "KillWhenEmpty", 1);
@@ -184,7 +185,7 @@ diff -u -3 -p -r1.87 parse_opt.c
  	ggz_conf_read_list(ch, "TableOptions", "BotsAllowed", &b_count, &b_list);
  	if(b_count != 0) {
  		for(i=0; i<b_count; i++) {
-@@ -520,6 +521,19 @@ static void parse_game(char *name, char 
+@@ -520,6 +521,19 @@
  				continue;
  			}
  			game_info->player_allow_mask |= 1 << (intval - 1);
@@ -208,10 +209,10 @@ Index: ggzd/players.c
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzd/players.c,v
 retrieving revision 1.156
-diff -u -3 -p -r1.156 players.c
+diff -u -r1.156 players.c
 --- ggzd/players.c	5 May 2002 21:51:20 -0000	1.156
-+++ ggzd/players.c	20 May 2002 17:21:05 -0000
-@@ -469,6 +469,33 @@ GGZPlayerHandlerStatus player_table_join
++++ ggzd/players.c	8 Jul 2002 20:38:20 -0000
+@@ -469,6 +469,33 @@
  	return status;
  }
  
@@ -245,7 +246,7 @@ diff -u -3 -p -r1.156 players.c
  
  /* 
   * player_table_leave() handles REQ_TABLE_LEAVE request from the
-@@ -538,6 +565,7 @@ GGZPlayerHandlerStatus player_table_leav
+@@ -538,6 +565,7 @@
  static int player_transit(GGZPlayer* player, char opcode, int index)
  {
  	struct GGZTableSeat seat;
@@ -253,7 +254,7 @@ diff -u -3 -p -r1.156 players.c
  	int status;
  
  	/* Do some quick sanity checking */
-@@ -569,7 +597,28 @@ static int player_transit(GGZPlayer* pla
+@@ -569,7 +597,28 @@
  		pthread_rwlock_wrlock(&player->lock);
  		player->game_fd = -1;
  		pthread_rwlock_unlock(&player->lock);
@@ -287,10 +288,10 @@ Index: ggzd/players.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzd/players.h,v
 retrieving revision 1.31
-diff -u -3 -p -r1.31 players.h
+diff -u -r1.31 players.h
 --- ggzd/players.h	5 May 2002 21:51:20 -0000	1.31
-+++ ggzd/players.h	20 May 2002 17:21:05 -0000
-@@ -98,6 +98,7 @@ int player_chat(GGZPlayer* player, unsig
++++ ggzd/players.h	8 Jul 2002 20:38:20 -0000
+@@ -98,6 +98,7 @@
  GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table);
  GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table);
  GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index);
@@ -302,10 +303,10 @@ Index: ggzd/protocols.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzd/protocols.h,v
 retrieving revision 1.41
-diff -u -3 -p -r1.41 protocols.h
+diff -u -r1.41 protocols.h
 --- ggzd/protocols.h	11 May 2002 16:08:04 -0000	1.41
-+++ ggzd/protocols.h	20 May 2002 17:21:05 -0000
-@@ -46,7 +46,10 @@ typedef enum {
++++ ggzd/protocols.h	8 Jul 2002 20:38:21 -0000
+@@ -46,7 +46,10 @@
  	GGZ_UPDATE_STATE  = 4,
  	GGZ_UPDATE_LAG	  = 5,
  	GGZ_UPDATE_SEAT   = 6,
@@ -321,10 +322,10 @@ Index: ggzd/seats.c
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzd/seats.c,v
 retrieving revision 1.11
-diff -u -3 -p -r1.11 seats.c
+diff -u -r1.11 seats.c
 --- ggzd/seats.c	30 Jan 2002 09:24:30 -0000	1.11
-+++ ggzd/seats.c	20 May 2002 17:21:05 -0000
-@@ -42,6 +42,18 @@ int seats_count(GGZTable* table, GGZSeat
++++ ggzd/seats.c	8 Jul 2002 20:38:21 -0000
+@@ -42,6 +42,18 @@
  }
  
  
@@ -347,10 +348,10 @@ Index: ggzd/seats.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzd/seats.h,v
 retrieving revision 1.11
-diff -u -3 -p -r1.11 seats.h
+diff -u -r1.11 seats.h
 --- ggzd/seats.h	5 May 2002 18:43:52 -0000	1.11
-+++ ggzd/seats.h	20 May 2002 17:21:05 -0000
-@@ -46,6 +46,18 @@ struct GGZTableSeat {
++++ ggzd/seats.h	8 Jul 2002 20:38:21 -0000
+@@ -46,6 +46,18 @@
  	int fd;
  };
  
@@ -369,7 +370,7 @@ diff -u -3 -p -r1.11 seats.h
  #define GGZ_SEATNUM_ANY -1
  
  
-@@ -71,6 +83,13 @@ int seats_num(GGZTable* table);
+@@ -71,6 +83,13 @@
  s *  @return The type of the given seat.
   */
  GGZSeatType seats_type(GGZTable* table, int seat);
@@ -387,10 +388,10 @@ Index: ggzd/table.c
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzd/table.c,v
 retrieving revision 1.101
-diff -u -3 -p -r1.101 table.c
+diff -u -r1.101 table.c
 --- ggzd/table.c	5 May 2002 18:43:52 -0000	1.101
-+++ ggzd/table.c	20 May 2002 17:21:06 -0000
-@@ -64,6 +64,13 @@ struct GGZSeatChange {
++++ ggzd/table.c	8 Jul 2002 20:38:23 -0000
+@@ -64,6 +64,13 @@
  	struct GGZTableSeat seat;
  };
  
@@ -404,7 +405,7 @@ diff -u -3 -p -r1.101 table.c
  /* Server wide data structures*/
  extern struct GameInfo game_types[MAX_GAME_TYPES];
  extern struct GGZState state;
-@@ -82,6 +89,8 @@ static void table_handle_state(GGZdMod *
+@@ -82,6 +89,8 @@
  static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
  static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
  static void table_game_seatchange(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
@@ -413,7 +414,7 @@ diff -u -3 -p -r1.101 table.c
  static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
  static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
  
-@@ -91,7 +100,9 @@ static int   table_update_event_enqueue(
+@@ -91,7 +100,9 @@
  					 unsigned int seat);
  static int   table_seat_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
  				      unsigned int seat);
@@ -424,7 +425,7 @@ diff -u -3 -p -r1.101 table.c
  static int   table_pack(void** data, unsigned char opcode, GGZTable* table);
  static int   table_transit_pack(void** data, unsigned char opcode, 
  				GGZTable* table, char* name, 
-@@ -100,6 +111,8 @@ static GGZEventFuncReturn table_event_ca
+@@ -100,6 +111,8 @@
                                                   void* data);
  static GGZEventFuncReturn table_seat_event_callback(void* target, int size,
  						    void* data);
@@ -433,7 +434,7 @@ diff -u -3 -p -r1.101 table.c
  static GGZEventFuncReturn table_kill_callback(void* target, int size, void* data);
  static int   table_launch_event(char* name, int status, int index);
  static void  table_free(GGZTable* table);
-@@ -131,6 +144,9 @@ GGZTable* table_new(void)
+@@ -131,6 +144,9 @@
  	for (i = 0; i < MAX_TABLE_SIZE; i++)
  		table->seat_types[i] = GGZ_SEAT_NONE;
  
@@ -443,7 +444,7 @@ diff -u -3 -p -r1.101 table.c
  	return table;
  }
  
-@@ -149,6 +165,7 @@ static int table_check(GGZTable* table)
+@@ -149,6 +165,7 @@
  	int i, status = 0;
  	int ai_total = seats_count(table, GGZ_SEAT_BOT);
  	int seat_total = seats_num(table);
@@ -451,7 +452,7 @@ diff -u -3 -p -r1.101 table.c
  	int g_type = table->type;
  	int room_type;
  	
-@@ -188,6 +205,15 @@ static int table_check(GGZTable* table)
+@@ -188,6 +205,15 @@
  		status = E_BAD_OPTIONS;
  	}
  
@@ -467,7 +468,7 @@ diff -u -3 -p -r1.101 table.c
  	dbg_msg(GGZ_DBG_TABLE, "Open Seats : %d", seats_count(table, GGZ_SEAT_OPEN));
  	dbg_msg(GGZ_DBG_TABLE, "Resv.Seats : %d", seats_count(table, GGZ_SEAT_RESERVED));
  	dbg_msg(GGZ_DBG_TABLE, "State      : %d", table->state);
-@@ -354,7 +380,7 @@ static int table_start_game(GGZTable *ta
+@@ -354,7 +380,7 @@
  #endif
  	char **args;
  	char *pwd;
@@ -476,7 +477,7 @@ diff -u -3 -p -r1.101 table.c
  	GGZSeat seat;
  
  	pthread_rwlock_wrlock(&table->lock);
-@@ -381,6 +407,8 @@ static int table_start_game(GGZTable *ta
+@@ -381,6 +407,8 @@
          ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_JOIN, &table_game_join);
          ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LEAVE, &table_game_leave);
          ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_SEAT, &table_game_seatchange);
@@ -485,7 +486,7 @@ diff -u -3 -p -r1.101 table.c
          ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LOG, &table_log);
  	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_ERROR, &table_error);
  	
-@@ -399,6 +427,10 @@ static int table_start_game(GGZTable *ta
+@@ -399,6 +427,10 @@
  			status = 1;
          }
  
@@ -496,7 +497,7 @@ diff -u -3 -p -r1.101 table.c
  	/* And start the game */
  	ggzdmod_set_module(table->ggzdmod, pwd, args);
  	if (ggzdmod_connect(table->ggzdmod) < 0)
-@@ -637,6 +669,125 @@ static void table_game_seatchange(GGZdMo
+@@ -637,6 +669,125 @@
  	pthread_rwlock_unlock(&table->lock);
  }
  
@@ -622,7 +623,7 @@ diff -u -3 -p -r1.101 table.c
  
  static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
  {
-@@ -956,6 +1107,28 @@ int table_find_player(int room, int inde
+@@ -956,6 +1107,28 @@
  	return seat;
  }
  
@@ -651,7 +652,7 @@ diff -u -3 -p -r1.101 table.c
  
  static int table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode)
  {
-@@ -998,7 +1171,7 @@ static int table_seat_event_enqueue(GGZT
+@@ -998,7 +1171,7 @@
  	struct GGZSeatChange *data;
  
  	if ( (data = malloc(sizeof(struct GGZSeatChange))) == NULL)
@@ -660,7 +661,7 @@ diff -u -3 -p -r1.101 table.c
  
  	/* Copy seat data into structure for passing to event */
  	data->seat.index = seat_num;
-@@ -1013,6 +1186,27 @@ static int table_seat_event_enqueue(GGZT
+@@ -1013,6 +1186,27 @@
  	return status;
  }
  
@@ -688,7 +689,7 @@ diff -u -3 -p -r1.101 table.c
  
  static int table_pack(void** data, unsigned char opcode, GGZTable* table)
  {
-@@ -1168,6 +1362,26 @@ static GGZEventFuncReturn table_seat_eve
+@@ -1168,6 +1362,26 @@
  	return GGZ_EVENT_OK;
  }
  
@@ -719,10 +720,10 @@ Index: ggzd/table.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzd/table.h,v
 retrieving revision 1.25
-diff -u -3 -p -r1.25 table.h
+diff -u -r1.25 table.h
 --- ggzd/table.h	5 May 2002 18:43:52 -0000	1.25
-+++ ggzd/table.h	20 May 2002 17:21:06 -0000
-@@ -80,6 +80,9 @@ struct GGZTable {
++++ ggzd/table.h	8 Jul 2002 20:38:23 -0000
+@@ -80,6 +80,9 @@
  	GGZSeatType seat_types[MAX_TABLE_SIZE];
  	char seat_names[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
  
@@ -732,7 +733,7 @@ diff -u -3 -p -r1.25 table.h
  	/* Client-provided description of this table */
  	char desc[MAX_GAME_DESC_LEN + 1];
  
-@@ -111,6 +114,9 @@ int table_search(char* name, int room, i
+@@ -111,6 +114,9 @@
  
  /* Find a player at a table */
  int table_find_player(int room, int index, char *name);
@@ -746,10 +747,10 @@ Index: ggzd/transit.c
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzd/transit.c,v
 retrieving revision 1.38
-diff -u -3 -p -r1.38 transit.c
+diff -u -r1.38 transit.c
 --- ggzd/transit.c	5 May 2002 18:43:52 -0000	1.38
-+++ ggzd/transit.c	20 May 2002 17:21:06 -0000
-@@ -54,6 +54,12 @@ struct GGZSeatEvent {
++++ ggzd/transit.c	8 Jul 2002 20:38:24 -0000
+@@ -54,6 +54,12 @@
  	char caller[MAX_USER_NAME_LEN + 1];
  };
  
@@ -762,7 +763,7 @@ diff -u -3 -p -r1.38 transit.c
  
  /* Local functions for handling transits */
  static GGZEventFuncReturn transit_player_event_callback(void* target,
-@@ -62,17 +68,22 @@ static GGZEventFuncReturn transit_player
+@@ -62,17 +68,22 @@
  static GGZEventFuncReturn transit_seat_event_callback(void* target,
  						      int size,
  						      void* data);
@@ -786,7 +787,7 @@ diff -u -3 -p -r1.38 transit.c
  
  	data->seat = seat;
  	strcpy(data->caller, caller);
-@@ -82,7 +93,22 @@ int transit_seat_event(int room, int ind
+@@ -82,7 +93,22 @@
  	return status;
  }
  
@@ -810,7 +811,7 @@ diff -u -3 -p -r1.38 transit.c
  int transit_player_event(char* name, char opcode, int status, int index)
  {
  	int size;
-@@ -92,7 +118,7 @@ int transit_player_event(char* name, cha
+@@ -92,7 +118,7 @@
  	size = sizeof(char) + sizeof(int);
  	
  	/* We pass back the table index and fd if a join was successful */
@@ -819,7 +820,7 @@ diff -u -3 -p -r1.38 transit.c
  		size += sizeof(int);
  
  	if ( (data = malloc(size)) == NULL)
-@@ -107,7 +133,7 @@ int transit_player_event(char* name, cha
+@@ -107,7 +133,7 @@
  	*(int*)current = status;
  	current += sizeof(int);
  
@@ -828,7 +829,7 @@ diff -u -3 -p -r1.38 transit.c
  		*(int*)current = index;
  		current += sizeof(int);
  	}
-@@ -184,7 +210,70 @@ static GGZEventFuncReturn transit_seat_e
+@@ -184,7 +210,68 @@
  
  	return status;
  }
@@ -874,14 +875,12 @@ diff -u -3 -p -r1.38 transit.c
 +	if (action == GGZ_TRANSIT_JOIN_SPECTATOR && spectator->index == GGZ_SEATNUM_ANY) {
 +		if ( (spectator->index = transit_find_spectator(table, event->caller)) < 0) {
 +			/* Don't care if this fails, we aren't transiting anyway */
-+fprintf(stderr, "XXX transit/ggz_transit_join_spectator\n");
 +			transit_player_event(event->caller, action, E_TABLE_FULL, 0);
 +			return GGZ_EVENT_OK;
 +		}
 +	}
  		
 +	status = transit_send_spectator_to_game(table, event);
-+fprintf(stderr, "XXX transit_send_spectator: %i\n", status);
 +
 +	/* If we sent it successfully, mark this table as in transit */
 +	if (status == 0) {
@@ -899,7 +898,7 @@ diff -u -3 -p -r1.38 transit.c
  
  static GGZEventFuncReturn transit_player_event_callback(void* target,
                                                          int size,
-@@ -204,7 +293,7 @@ static GGZEventFuncReturn transit_player
+@@ -204,7 +291,7 @@
  	status = *(int*)(current);
  	current += sizeof(int);
  
@@ -908,7 +907,7 @@ diff -u -3 -p -r1.38 transit.c
  		index = *(int*)(current);
  		current += sizeof(int);
  	}
-@@ -234,6 +323,17 @@ static GGZEventFuncReturn transit_player
+@@ -234,6 +321,17 @@
  		if (net_send_table_join(player->client->net, (char)status) < 0)
  			return GGZ_EVENT_ERROR;
  		break;
@@ -926,7 +925,7 @@ diff -u -3 -p -r1.38 transit.c
  	case GGZ_TRANSIT_SEAT:
  		if (net_send_update_result(player->client->net, (char)status) < 0)
  			return GGZ_EVENT_ERROR;
-@@ -288,6 +388,49 @@ static int transit_send_seat_to_game(GGZ
+@@ -288,6 +386,47 @@
  	return status;
  }
  
@@ -957,8 +956,6 @@ diff -u -3 -p -r1.38 transit.c
 +	else
 +		spectator.name = NULL;
 +
-+fprintf(stderr, "XXX spectator data: name=%s, num=%i, fd=%i\n", spectator.name, spectator.num, spectator.fd);
-+
 +	if (ggzdmod_set_spectator(table->ggzdmod, &spectator) < 0) {
 +		dbg_msg(GGZ_DBG_TABLE, "ERROR: transit_send_spectator_to_game: failed ggzdmod_set_spectator() call.");
 +		status = -1;
@@ -976,7 +973,7 @@ diff -u -3 -p -r1.38 transit.c
  
  static int transit_find_seat(GGZTable *table, char *name)
  {
-@@ -306,3 +449,19 @@ static int transit_find_seat(GGZTable *t
+@@ -306,3 +445,16 @@
  
  	return -1;
  }
@@ -984,9 +981,6 @@ diff -u -3 -p -r1.38 transit.c
 +static int transit_find_spectator(GGZTable *table, char *name)
 +{
 +	int i, num_spectators = spectators_count(table);
-+
-+fprintf(stderr, "XXX We have %i spectator places, let's find an open one...\n", num_spectators);
-+fprintf(stderr, "XXX First one is: %s\n", table->spectators[0]);
 +
 +	/* If that failed, look for first open spectator. */
 +	for (i = 0; i < num_spectators; i++)
@@ -1000,9 +994,9 @@ Index: ggzd/transit.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzd/transit.h,v
 retrieving revision 1.5
-diff -u -3 -p -r1.5 transit.h
+diff -u -r1.5 transit.h
 --- ggzd/transit.h	5 May 2002 18:43:52 -0000	1.5
-+++ ggzd/transit.h	20 May 2002 17:21:06 -0000
++++ ggzd/transit.h	8 Jul 2002 20:38:24 -0000
 @@ -29,9 +29,12 @@
  #define GGZ_TRANSIT_JOIN   0x01  /* %0000 0001 */
  #define GGZ_TRANSIT_LEAVE  0x02  /* %0000 0010 */
@@ -1019,11 +1013,11 @@ diff -u -3 -p -r1.5 transit.h
 Index: ggzdmod/ggzdmod.c
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzdmod/ggzdmod.c,v
-retrieving revision 1.84
-diff -u -3 -p -r1.84 ggzdmod.c
---- ggzdmod/ggzdmod.c	5 May 2002 00:22:08 -0000	1.84
-+++ ggzdmod/ggzdmod.c	20 May 2002 17:21:07 -0000
-@@ -64,6 +64,7 @@ static void call_handler(GGZdMod *ggzdmo
+retrieving revision 1.85
+diff -u -r1.85 ggzdmod.c
+--- ggzdmod/ggzdmod.c	9 Jun 2002 06:20:58 -0000	1.85
++++ ggzdmod/ggzdmod.c	8 Jul 2002 20:38:27 -0000
+@@ -66,6 +66,7 @@
  static int get_fd_max(GGZdMod * ggzdmod);
  static fd_set get_active_fd_set(GGZdMod * ggzdmod);
  static void _ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats);
@@ -1031,7 +1025,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  static int strings_differ(char *s1, char *s2);
  static void set_state(GGZdMod * ggzdmod, GGZdModState state);
  static int handle_event(GGZdMod * ggzdmod, fd_set read_fds);
-@@ -76,6 +77,12 @@ static int seat_compare(GGZSeat *a, GGZS
+@@ -78,6 +79,12 @@
  static int seat_find_player(GGZSeat *a, GGZSeat *b);
  static void seat_free(GGZSeat *seat);
  
@@ -1044,7 +1038,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  /* Debugging function (see also ggzdmod_check) */
  static void seat_print(GGZdMod * ggzdmod, GGZSeat *seat);
  
-@@ -97,8 +104,8 @@ static void call_handler(GGZdMod * ggzdm
+@@ -99,8 +106,8 @@
  				    event, which);
  		else
  			fprintf(stderr,
@@ -1055,7 +1049,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  	}
  }
  
-@@ -179,6 +186,12 @@ GGZdMod *ggzdmod_new(GGZdModType type)
+@@ -181,6 +188,12 @@
  					 (ggzEntryCreate)seat_copy,
  					 (ggzEntryDestroy)seat_free,
  					 GGZ_LIST_REPLACE_DUPS);
@@ -1068,7 +1062,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  
  	for (i = 0; i < GGZDMOD_NUM_HANDLERS; i++)
  		ggzdmod->handlers[i] = NULL;
-@@ -208,6 +221,8 @@ void ggzdmod_free(GGZdMod * ggzdmod)
+@@ -210,6 +223,8 @@
  	
  	ggz_list_free(ggzdmod->seats);
  	ggzdmod->num_seats = 0;
@@ -1077,7 +1071,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  
  	ggzdmod->type = -1;
  
-@@ -269,6 +284,16 @@ int ggzdmod_get_num_seats(GGZdMod * ggzd
+@@ -271,6 +286,16 @@
  }
  
  
@@ -1094,7 +1088,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  GGZSeat ggzdmod_get_seat(GGZdMod * ggzdmod, int num)
  {
  	GGZSeat seat = {num, GGZ_SEAT_NONE, NULL, -1};
-@@ -283,6 +308,19 @@ GGZSeat ggzdmod_get_seat(GGZdMod * ggzdm
+@@ -285,6 +310,19 @@
  }
  
  
@@ -1114,7 +1108,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  void* ggzdmod_get_gamedata(GGZdMod * ggzdmod)
  {
  	if (!CHECK_GGZDMOD(ggzdmod)) {
-@@ -318,6 +356,30 @@ static void _ggzdmod_set_num_seats(GGZdM
+@@ -320,6 +358,30 @@
  }
  
  
@@ -1145,7 +1139,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  void ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats)
  {
  	/* Check parameters */
-@@ -328,7 +390,18 @@ void ggzdmod_set_num_seats(GGZdMod * ggz
+@@ -330,7 +392,18 @@
  	
  	_ggzdmod_set_num_seats(ggzdmod, num_seats);
  }
@@ -1165,7 +1159,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  void ggzdmod_set_module(GGZdMod * ggzdmod,
                          const char *pwd, char **argv)
  {
-@@ -488,6 +561,77 @@ int ggzdmod_set_seat(GGZdMod * ggzdmod, 
+@@ -490,6 +563,71 @@
  	return _ggzdmod_set_seat(ggzdmod, seat);
  }
  
@@ -1221,21 +1215,15 @@ diff -u -3 -p -r1.84 ggzdmod.c
 +
 +	/* FIXME: check for correctness, (ie. name not NULL for reserved) */
 +
-+fprintf(stderr, "YYY set spectator...\n");
-+
 +	/* If there is already a spectator, return error */
 +	oldspectator = ggzdmod_get_spectator(ggzdmod, spectator->num);
 +	if (oldspectator.name)
 +		return -1;
 +
-+fprintf(stderr, "YYY check for game restriction\n");
-+
 +	if (ggzdmod->type == GGZDMOD_GAME) {
 +		    if(strings_differ(spectator->name, oldspectator.name))
 +			return -1;
 +	}
-+
-+fprintf(stderr, "YYY _set spectator...\n");
 +
 +	return _ggzdmod_set_spectator(ggzdmod, spectator);
 +}
@@ -1243,7 +1231,30 @@ diff -u -3 -p -r1.84 ggzdmod.c
  
  /* This information could be tracked every time  a player
     leaves/joins, but that's not really necessary at this point. */
-@@ -735,7 +879,7 @@ static int send_game_launch(GGZdMod * gg
+@@ -529,6 +667,22 @@
+ }
+ 
+ 
++/* FIXME: Since the spectator list is dynamic, we could return the size */
++int ggzdmod_count_spectators(GGZdMod *ggzdmod)
++{
++	int i, ret = 0;
++	GGZSpectator spectator;
++
++	if(!ggzdmod) return ret;
++	for (i = 0; i < ggzdmod->num_spectators; i++) {
++		spectator = ggzdmod_get_spectator(ggzdmod, i);
++		if(spectator.fd != -1) ret++;
++	}
++
++	return ret;
++}
++
++
+ /* 
+  * Event/Data handling
+  */
+@@ -737,7 +891,7 @@
  	GGZSeat *seat;
  		
  
@@ -1252,7 +1263,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  		_ggzdmod_error(ggzdmod, "Error writing to game");
  		return -1;
  	}
-@@ -970,6 +1114,24 @@ void _ggzdmod_handle_seat_response(GGZdM
+@@ -972,6 +1126,24 @@
  }
  
  
@@ -1277,7 +1288,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  void _ggzdmod_handle_state(GGZdMod * ggzdmod, GGZdModState state)
  {
  	_io_respond_state(ggzdmod->fd);
-@@ -1011,7 +1173,7 @@ void _ggzdmod_handle_log(GGZdMod * ggzdm
+@@ -1013,7 +1185,7 @@
  
  
  /* Game-side event: launch event received from ggzd */
@@ -1286,7 +1297,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  {
  #if 0
  	int bots = 0;
-@@ -1021,15 +1183,16 @@ void _ggzdmod_handle_launch_begin(GGZdMo
+@@ -1023,15 +1195,16 @@
  	randomize_names(bot_names, rand_bot_names, NUM_BOT_NAMES);
  #endif
  
@@ -1307,7 +1318,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  }
  
  
-@@ -1100,17 +1263,17 @@ void _ggzdmod_handle_join(GGZdMod * ggzd
+@@ -1102,17 +1275,17 @@
  	}
  	old_seat = (GGZSeat*)ggz_list_get_data(entry);
  	old_seat = seat_copy(old_seat);
@@ -1328,7 +1339,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  	/* Free old_seat */
  	seat_free(old_seat);
  
-@@ -1139,12 +1302,12 @@ void _ggzdmod_handle_leave(GGZdMod * ggz
+@@ -1141,12 +1314,12 @@
  		               "non-existant player tried to leave.");
  		return;
  	}
@@ -1343,7 +1354,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  	/* Copy seat to old_seat. */
  	old_seat = seat_copy(&seat);
  
-@@ -1174,7 +1337,6 @@ void _ggzdmod_handle_seat(GGZdMod * ggzd
+@@ -1176,7 +1349,6 @@
  	GGZSeat *old_seat;
  	GGZListEntry *entry;
  
@@ -1351,7 +1362,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  	/* Copy current seat to old_seat */
  	entry = ggz_list_search(ggzdmod->seats, &seat);
  	if (!entry) {
-@@ -1185,15 +1347,15 @@ void _ggzdmod_handle_seat(GGZdMod * ggzd
+@@ -1187,15 +1359,15 @@
  	}
  	old_seat = (GGZSeat*)ggz_list_get_data(entry);
  	old_seat = seat_copy(old_seat);
@@ -1370,7 +1381,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  	/* Free old_seat */
  	seat_free(old_seat);
   
-@@ -1201,6 +1363,83 @@ void _ggzdmod_handle_seat(GGZdMod * ggzd
+@@ -1203,6 +1375,83 @@
  		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
  }
  
@@ -1454,7 +1465,7 @@ diff -u -3 -p -r1.84 ggzdmod.c
  
  /* game-side event: game state response received from ggzd */
  void _ggzdmod_handle_state_response(GGZdMod * ggzdmod)
-@@ -1265,6 +1504,50 @@ static void seat_print(GGZdMod * ggzdmod
+@@ -1267,6 +1516,50 @@
  	char *type = ggz_seattype_to_string(seat->type);
  	ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is %s (%s) on %d",
  		    seat->num, type, seat->name, seat->fd);
@@ -1509,10 +1520,10 @@ Index: ggzdmod/ggzdmod.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzdmod/ggzdmod.h,v
 retrieving revision 1.47
-diff -u -3 -p -r1.47 ggzdmod.h
+diff -u -r1.47 ggzdmod.h
 --- ggzdmod/ggzdmod.h	13 May 2002 18:46:16 -0000	1.47
-+++ ggzdmod/ggzdmod.h	20 May 2002 17:21:07 -0000
-@@ -233,23 +233,33 @@ typedef enum {
++++ ggzdmod/ggzdmod.h	8 Jul 2002 20:38:29 -0000
+@@ -233,23 +233,33 @@
  	 *  state (a GGZdModState*) is passed as the event's data.
  	 *  @see GGZdModState */
  	GGZDMOD_EVENT_STATE,
@@ -1551,7 +1562,7 @@ diff -u -3 -p -r1.47 ggzdmod.h
  	/** @brief General seat change
  	 *  This event occurs when a seat change other than a player
  	 *  leave/join happens (which is currently impossible).  The
-@@ -257,27 +267,27 @@ typedef enum {
+@@ -257,27 +267,27 @@
  	 *  seat information will be updated before the event is invoked.
  	 *  @note This is currently unused, but may eventually replace JOIN and LEAVE.
  	 */
@@ -1586,7 +1597,7 @@ diff -u -3 -p -r1.47 ggzdmod.h
  } GGZdModEvent;
  
  /** @brief The "type" of ggzdmod.
-@@ -309,6 +319,8 @@ typedef struct GGZdMod GGZdMod;
+@@ -309,6 +319,8 @@
   *    - GGZDMOD_EVENT_JOIN: The old seat (GGZSeat*)
   *    - GGZDMOD_EVENT_LEAVE: The old seat (GGZSeat*)
   *    - GGZDMOD_EVENT_SEAT: The old seat (GGZSeat*)
@@ -1595,7 +1606,7 @@ diff -u -3 -p -r1.47 ggzdmod.h
   *    - GGZDMOD_EVENT_LOG: The message string (char*)
   *    - GGZDMOD_EVENT_PLAYER_DATA: The player number (int*)
   *    - GGZDMOD_EVENT_ERROR: An error string (char*)
-@@ -326,6 +338,16 @@ typedef struct {
+@@ -326,6 +338,16 @@
  	int fd;			/**< fd to communicate with seat occupant. */
  } GGZSeat;
  
@@ -1612,11 +1623,11 @@ diff -u -3 -p -r1.47 ggzdmod.h
  /* 
   * Creation functions
   */
-@@ -400,12 +422,32 @@ void * ggzdmod_get_gamedata(GGZdMod * gg
+@@ -400,12 +422,32 @@
   *  @todo Allow the table to change the number of seats. */
  void ggzdmod_set_num_seats(GGZdMod * ggzdmod, int num_seats);
  
-+/** @brief Set the number of spectatorss for the table.
++/** @brief Set the maximum number of spectators for the table.
 + *  @param ggzdmod The GGZdMod object.
 + *  @param num_spectators The number of spectators to set.
 + *  @note This will only work for ggzd.
@@ -1629,7 +1640,7 @@ diff -u -3 -p -r1.47 ggzdmod.h
   *  @see ggzdmod_get_gamedata */
  void ggzdmod_set_gamedata(GGZdMod * ggzdmod, void * data);
  
-+/** @brief Get the number of spectators in the game.
++/** @brief Get the maximum number of spectators.
 + *  @return The number of spectators, or -1 on error.
 + *  @note If no connection is present, -1 will be returned.
 + */
@@ -1645,11 +1656,10 @@ diff -u -3 -p -r1.47 ggzdmod.h
  /** @brief Set a handler for the given event.
   *
   *  As described above, GGZdmod uses an event-driven structure.  Each
-@@ -446,6 +488,17 @@ void ggzdmod_set_module(GGZdMod * ggzdmo
-  *  @todo The game should be able to kick a player out of the table.
+@@ -447,18 +489,36 @@
   */
  int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat * seat);
-+
+ 
 +/** @brief Set spectator data.
 + *
 + *  A game server or the ggz server can use this function to set
@@ -1660,17 +1670,38 @@ diff -u -3 -p -r1.47 ggzdmod.h
 + *  @return 0 on success, negative on failure.
 + */
 +int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator * spectator);
- 
++
  /** @brief Count seats of the given type.
   *
+  *  This is a convenience function that counts how many seats
+  *  there are that have the given type.  For instance, giving
+  *  seat_type==GGZ_SEAT_OPEN will count the number of open
+  *  seats.
+- *  @param mod The ggzdmod object.
++ *  @param ggzdmod The ggzdmod object.
+  *  @param seat_type The type of seat to be counted.
+  *  @return The number of seats that match seat_type.
+  *  @note This could go into a wrapper library instead.
+  */
+ int ggzdmod_count_seats(GGZdMod * ggzdmod, GGZSeatType seat_type);
++
++/** @brief Count current number of spectators.
++ *
++ *  @param ggzdmod The ggzdmod object
++ *  @return The number of spectators watching the game
++ */
++int ggzdmod_count_spectators(GGZdMod * ggzdmod);
+ 
+ /* 
+  * Event/Data handling
 Index: ggzdmod/io.c
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzdmod/io.c,v
-retrieving revision 1.10
-diff -u -3 -p -r1.10 io.c
---- ggzdmod/io.c	2 Mar 2002 01:06:30 -0000	1.10
-+++ ggzdmod/io.c	20 May 2002 17:21:07 -0000
-@@ -44,6 +44,10 @@ static int _io_read_req_join(GGZdMod *gg
+retrieving revision 1.11
+diff -u -r1.11 io.c
+--- ggzdmod/io.c	9 Jun 2002 06:20:58 -0000	1.11
++++ ggzdmod/io.c	8 Jul 2002 20:38:29 -0000
+@@ -48,6 +48,10 @@
  static int _io_read_rsp_join(GGZdMod *ggzdmod);
  static int _io_read_req_leave(GGZdMod *ggzdmod);
  static int _io_read_rsp_leave(GGZdMod *ggzdmod);
@@ -1681,7 +1712,7 @@ diff -u -3 -p -r1.10 io.c
  static int _io_read_req_state(GGZdMod *ggzdmod);
  static int _io_read_msg_log(GGZdMod *ggzdmod);
  static int _io_read_req_seat(GGZdMod * ggzdmod);
-@@ -51,10 +55,11 @@ static int _io_read_rsp_seat(GGZdMod *gg
+@@ -55,10 +59,11 @@
  
  
  /* Functions for sending IO messages */
@@ -1695,7 +1726,7 @@ diff -u -3 -p -r1.10 io.c
  		return -1;
  	else
  		return 0;
-@@ -108,6 +113,26 @@ int _io_send_leave(int fd, GGZSeat *seat
+@@ -112,6 +117,26 @@
  		return 0;
  }
  
@@ -1722,7 +1753,7 @@ diff -u -3 -p -r1.10 io.c
  
  int _io_send_state(int fd, GGZdModState state)
  {
-@@ -163,6 +188,24 @@ int _io_respond_leave(int fd, int status
+@@ -167,6 +192,24 @@
  		return 0;
  }
  
@@ -1747,7 +1778,7 @@ diff -u -3 -p -r1.10 io.c
  
  int _io_respond_seat(int fd, int status)
  {
-@@ -202,6 +245,12 @@ int _io_read_data(GGZdMod * ggzdmod)
+@@ -206,6 +249,12 @@
  		case REQ_GAME_SEAT:
  			status = _io_read_req_seat(ggzdmod);
  			break;
@@ -1760,7 +1791,7 @@ diff -u -3 -p -r1.10 io.c
  		case RSP_GAME_STATE:
  			_ggzdmod_handle_state_response(ggzdmod);
  			break;
-@@ -220,6 +269,12 @@ int _io_read_data(GGZdMod * ggzdmod)
+@@ -224,6 +273,12 @@
  		case RSP_GAME_SEAT:
  			status = _io_read_rsp_seat(ggzdmod);
  			break;
@@ -1773,7 +1804,7 @@ diff -u -3 -p -r1.10 io.c
  		case REQ_GAME_STATE:
  			status = _io_read_req_state(ggzdmod);
  			break;
-@@ -259,6 +314,30 @@ static int _io_read_rsp_leave(GGZdMod * 
+@@ -263,6 +318,30 @@
  	return 0;
  }
  
@@ -1804,7 +1835,7 @@ diff -u -3 -p -r1.10 io.c
  
  static int _io_read_rsp_seat(GGZdMod *ggzdmod)
  {
-@@ -304,13 +383,15 @@ static int _io_read_msg_log(GGZdMod * gg
+@@ -308,13 +387,15 @@
  
  static int _io_read_req_launch(GGZdMod * ggzdmod)
  {
@@ -1822,7 +1853,7 @@ diff -u -3 -p -r1.10 io.c
  
  	for (i = 0; i < seats; i++) {
  		/* Reset seat */
-@@ -365,6 +446,34 @@ static int _io_read_req_leave(GGZdMod * 
+@@ -369,6 +450,34 @@
  		return -1;
  
  	_ggzdmod_handle_leave(ggzdmod, name);
@@ -1861,9 +1892,9 @@ Index: ggzdmod/io.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzdmod/io.h,v
 retrieving revision 1.4
-diff -u -3 -p -r1.4 io.h
+diff -u -r1.4 io.h
 --- ggzdmod/io.h	2 Mar 2002 01:06:31 -0000	1.4
-+++ ggzdmod/io.h	20 May 2002 17:21:07 -0000
++++ ggzdmod/io.h	8 Jul 2002 20:38:29 -0000
 @@ -33,10 +33,12 @@
  #include "mod.h"
  
@@ -1878,22 +1909,21 @@ diff -u -3 -p -r1.4 io.h
  int _io_send_state(int fd, GGZdModState state);
  int _io_send_seat(int fd, GGZSeat *seat);
  int _io_send_log(int fd, char *msg);
-@@ -48,5 +50,7 @@ int _io_read_data(GGZdMod * ggzdmod);
+@@ -48,5 +50,7 @@
  int _io_respond_launch(int fd, char status);
  int _io_respond_join(int fd);
  int _io_respond_leave(int fd, int status);
--int _io_respond_seat(int fd, int status);
-+int _io_respond_spectator_seat(int fd, int status);
 +int _io_respond_spectator_join(int fd);
-+int _io_respond_leave(int fd, int status);
++int _io_respond_spectator_leave(int fd, int status);
+ int _io_respond_seat(int fd, int status);
  int _io_respond_state(int fd);
 Index: ggzdmod/mod.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzdmod/mod.h,v
 retrieving revision 1.4
-diff -u -3 -p -r1.4 mod.h
+diff -u -r1.4 mod.h
 --- ggzdmod/mod.h	5 May 2002 00:22:08 -0000	1.4
-+++ ggzdmod/mod.h	20 May 2002 17:21:07 -0000
++++ ggzdmod/mod.h	8 Jul 2002 20:38:29 -0000
 @@ -1,5 +1,5 @@
  /* 
 - * File: io.h
@@ -1910,7 +1940,7 @@ diff -u -3 -p -r1.4 mod.h
  
  /* This is the actual structure, but it's only visible internally. */
  struct GGZdMod {
-@@ -46,7 +46,9 @@ struct GGZdMod {
+@@ -46,7 +46,9 @@
  	int fd;			/* file descriptor */
  	int num_seats;
  	int num_open;
@@ -1920,7 +1950,7 @@ diff -u -3 -p -r1.4 mod.h
  	GGZdModHandler handlers[GGZDMOD_NUM_HANDLERS];
  	void *gamedata;         /* game-specific data */
  
-@@ -64,16 +66,20 @@ void _ggzdmod_error(GGZdMod *ggzdmod, ch
+@@ -64,16 +66,20 @@
  void _ggzdmod_handle_join_response(GGZdMod * ggzdmod, char status);
  void _ggzdmod_handle_leave_response(GGZdMod * ggzdmod, char status);
  void _ggzdmod_handle_seat_response(GGZdMod * ggzdmod, char status);
@@ -1946,10 +1976,10 @@ Index: ggzdmod/protocol.h
 ===================================================================
 RCS file: /cvsroot/ggz/ggzd/ggzdmod/protocol.h,v
 retrieving revision 1.7
-diff -u -3 -p -r1.7 protocol.h
+diff -u -r1.7 protocol.h
 --- ggzdmod/protocol.h	2 Mar 2002 01:06:32 -0000	1.7
-+++ ggzdmod/protocol.h	20 May 2002 17:21:08 -0000
-@@ -55,6 +55,9 @@ typedef enum {
++++ ggzdmod/protocol.h	8 Jul 2002 20:38:29 -0000
+@@ -55,6 +55,9 @@
  	 */
  	RSP_GAME_LEAVE,
  
@@ -1959,7 +1989,7 @@ diff -u -3 -p -r1.7 protocol.h
  	/** @brief Signals the start of a RSP_GAME_SEAT packet.
  	 *
  	 *  The packet is composed of:
-@@ -95,6 +98,7 @@ typedef enum {
+@@ -95,6 +98,7 @@
  	 *  The packet is composed of:
  	 *    - An integer containing MSG_GAME_LAUNCH.
  	 *    - An integer containing the number of seats at the table.
@@ -1967,7 +1997,7 @@ diff -u -3 -p -r1.7 protocol.h
  	 *    - Seat data for every seat at the table:
  	 *      - An integer containing the seat type (GGZSeatType).
  	 *      - If the seat type is GGZ_SEAT_RESERVED, the name of the
-@@ -134,6 +138,9 @@ typedef enum {
+@@ -134,6 +138,9 @@
  	 *  in response.
  	 */
  	REQ_GAME_LEAVE,
