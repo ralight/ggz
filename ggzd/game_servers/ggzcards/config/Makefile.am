@@ -1,21 +1,21 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2189 2001-08-23 07:59:17Z jdorje $
+# $Id: Makefile.am 2324 2001-08-29 07:59:31Z jdorje $
 
 SUBDIRS = .
 
-ggzdgame_DATA = *.dsc
-ggzdroom_DATA = *.room
+#ggzdgame_DATA = *.dsc
+#ggzdroom_DATA = *.room
 
 # Hmmm, does the above work or is the below necessary? --JDS
 
-#ggzdgame_DATA = ggzcards.dsc \
-#		ggzcards-bridge.dsc ggzcards-hearts.dsc \
-#		ggzcards-lapocha.dsc ggzcards-spades.dsc \
-#		ggzcards-suaro.dsc
-#ggzdroom_DATA = ggzcards.room \
-#		ggzcards-bridge.room ggzcards-hearts.room \
-#		ggzcards-lapocha.room ggzcards-spades.room \
-#		ggzcards-suaro.room
+ggzdgame_DATA = ggzcards.dsc \
+		ggzcards-bridge.dsc ggzcards-hearts.dsc \
+		ggzcards-lapocha.dsc ggzcards-spades.dsc \
+		ggzcards-suaro.dsc
+ggzdroom_DATA = ggzcards.room \
+		ggzcards-bridge.room ggzcards-hearts.room \
+		ggzcards-lapocha.room ggzcards-spades.room \
+		ggzcards-suaro.room
 
 EXTRA_DIST = $(ggzdgame_DATA) $(ggzdroom_DATA)
 
