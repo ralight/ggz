@@ -61,6 +61,7 @@ static void chess_ai_init_board(void);
 static void chess_ai_init_movements(void);
 static void chess_ai_init_movementsinverse(void);
 static int chess_ai_find_alphabeta(int color, int from, int to);
+static int chess_ai_moveexceptions(int from, int to);
 
 /*
  * 00 01 02 03 04 05 06 07
@@ -109,7 +110,7 @@ static void chess_ai_init_board(void)
 	chess_ai_table[60][C_FIGURE] = C_KING;
 }
 
-void chess_ai_init_movements(void)
+static void chess_ai_init_movements(void)
 {
 	movements[C_EMPTY][0][C_MOVE] = 0;
 
@@ -119,7 +120,9 @@ void chess_ai_init_movements(void)
 	movements[C_PAWN][1][C_MULTI] = 0;
 	movements[C_PAWN][2][C_MOVE] = 9;
 	movements[C_PAWN][2][C_MULTI] = 0;
-	movements[C_PAWN][3][C_MOVE] = 0;
+	movements[C_PAWN][3][C_MOVE] = 16;
+	movements[C_PAWN][3][C_MULTI] = 0;
+	movements[C_PAWN][4][C_MOVE] = 0;
 
 	movements[C_BISHOP][0][C_MOVE] = 7;
 	movements[C_BISHOP][0][C_MULTI] = 1;
@@ -160,7 +163,7 @@ void chess_ai_init_movements(void)
 	movements[C_KING][2][C_MOVE] = 0;
 }
 
-void chess_ai_init_movementsinverse(void)
+static void chess_ai_init_movementsinverse(void)
 {
 	int i, figure, max;
 
@@ -190,6 +193,39 @@ void chess_ai_init(int color, int depth)
 	chess_ai_init_board();
 	chess_ai_init_movements();
 	chess_ai_init_movementsinverse();
+}
+
+static int chess_ai_moveexceptions(int from, int to)
+{
+	int allowed, newpos;
+	int k, l;
+	int figure;
+
+	figure = chess_ai_table[from][C_FIGURE];
+	allowed = 1;
+
+	if(figure == C_PAWN)
+	{
+		/* RULE exception: pawn moves forward, beats diagonally */
+		if((!(abs(from - to) % 8)) && (chess_ai_table[to][C_FIGURE] != C_EMPTY)) allowed = 0;
+		if((abs(from - to) % 8) && (chess_ai_table[to][C_FIGURE] == C_EMPTY)) allowed = 0;
+		/* RULE exception: pawn can move forward 2 fields only at the beginning */
+		if((abs(from - to) == 16) && (from > 15) && (chess_ai_table[from][C_COLOR] == C_WHITE)) allowed = 0;
+		if((abs(from - to) == 16) && (from < 46) && (chess_ai_table[from][C_COLOR] == C_BLACK)) allowed = 0;
+	}
+	if(figure == C_KING)
+	{
+		/* RULE exception: two kings must never meet each other */
+		for(k = to / 8 - 1; k <= to / 8 + 1; k++)
+			for(l = to % 8 - 1; l <= to % 8 + 1; l++)
+			{
+				newpos = k * 8 + l;
+				if((newpos == from) || (newpos == to)) continue;
+				if(chess_ai_table[newpos][C_FIGURE] == C_KING) allowed = 0;
+			}
+	}
+
+	return allowed;
 }
 
 int chess_ai_move(int from, int to, int force)
@@ -231,12 +267,7 @@ int chess_ai_move(int from, int to, int force)
 			if(abs((pos % 8) - (oldpos % 8)) > 2) break;
 			if(pos == to)
 			{
-				allowed = 1;
-				if(figure == C_PAWN)
-				{
-					if((abs(from - to) == 8) && (chess_ai_table[pos][C_FIGURE] != C_EMPTY)) allowed = 0;
-					if((abs(from - to) != 8) && (chess_ai_table[pos][C_FIGURE] == C_EMPTY)) allowed = 0;
-				}
+				allowed = chess_ai_moveexceptions(from, to);
 				break;
 			}
 		}
@@ -352,11 +383,8 @@ int chess_ai_find(int color, int *from, int *to)
 						if(chess_ai_table[pos][C_COLOR] == C_NONE) break;*/
 						if(chess_ai_table[pos][C_COLOR] == color) break;
 					}
-					if(figure == C_PAWN)
-					{
-						if((abs(i - pos) == 8) && (chess_ai_table[pos][C_FIGURE] != C_EMPTY)) break;
-						if((abs(i - pos) != 8) && (chess_ai_table[pos][C_FIGURE] == C_EMPTY)) break;
-					}
+
+					if(!chess_ai_moveexceptions(i, pos)) continue;
 
 					/*printf("store at %i\n", maxqueue);*/
 					tempqueue[maxqueue][C_FROM] = i;

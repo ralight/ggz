@@ -1,11 +1,15 @@
 Currently unhandled situations in the prover:
 ---------------------------------------------
 
-- two kings can never stand next to each other
+Kings:
+- two kings can never stand next to each other (DONE)
 - if a king is in check, the move must take him out,
   check-mate otherwise
-- pawns can go 2 steps initially
 - rochade, en-passant etc.?
+
+Pawns:
+- pawns can go 2 steps initially (DONE)
+- pawns move forward but beat diagonally (DONE)
 - pawn exchange
 
 
