@@ -4,7 +4,7 @@
  * Project: GGZ Connect The Dots game module
  * Date: 04/27/2000
  * Desc: Main loop
- * $Id: main.c 2649 2001-11-04 17:33:57Z jdorje $
+ * $Id: main.c 2812 2001-12-09 01:52:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -25,27 +25,34 @@
 
 
 #include <sys/types.h>
-#include <unistd.h>
 #include <errno.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-#include "../../ggzdmod/ggz_server.h"
+#include <unistd.h>
 
 #include "game.h"
 
 int main(void)
 {
-
+	/* Init ggz */
+	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &game_handle_ggz_state);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz_join);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz_leave);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player_data);
+	
 	/* Seed the random number generator */
 	srandom((unsigned)time(NULL));
-	game_init();
+	game_init(ggz);
 
-	ggzd_set_handler(GGZ_EVENT_LAUNCH, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_JOIN, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_LEAVE, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
-	(void)ggzd_main_loop();
+	if (ggzdmod_connect(ggz) < 0) {
+		fprintf(stderr, "Couldn't connect to ggz.\n");
+		return -1;
+	}
+	(void)ggzdmod_loop(ggz);
+	(void)ggzdmod_disconnect(ggz);
+	ggzdmod_free(ggz);
 
 	return 0;
 }

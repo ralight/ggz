@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.h 2782 2001-12-06 00:24:12Z jdorje $
+ * $Id: game.h 2812 2001-12-09 01:52:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "../../ggzdmod/ggz_server.h"
+#include "ggzdmod.h"
 
 /* Connect the Dots protocol */
 /* Messages from server */
@@ -73,6 +73,7 @@
 
 /* Data structure for Connect the Dots game */
 struct dots_game_t {
+	GGZdMod *ggz; /* GGZ data object */
 	unsigned char vert_board[MAX_BOARD_WIDTH][MAX_BOARD_HEIGHT-1];
 	unsigned char horz_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT];
 	char owners_board[MAX_BOARD_WIDTH-1][MAX_BOARD_HEIGHT-1];
@@ -89,9 +90,13 @@ extern struct dots_game_t dots_game;
 extern int s_x[2], s_y[2];
 extern int score;
 
-void game_init(void);
-void game_handle_ggz(GGZdModEvent event, void *data);
-void game_handle_player(GGZdModEvent event, void *data);
+void game_init(GGZdMod *ggz);
+
+/* GGZ handlers */
+void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data);
 
 int game_send_seat(int);
 int game_send_players(void);
