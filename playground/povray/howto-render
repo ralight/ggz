@@ -1,0 +1,35 @@
+povray +P +H768 +W1024 +A0.2                  ggz_logo.pov
+povray    +H768 +W1024 +A0.2 +FN16 +Otmp1.png ggz_logo.pov
+
+35: tmp1.png
+44: tmp10.png
+54: tmp20.png
+64: tmp30.png
+74: tmp40.png
+76: tmp42.png
+76: 42
+77: 43
+78: 44
+78: 45
+79: 46
+79: 47
+80: 48
+80: 49
+
+---
+
+0: 50
+1: 51
+30: 80
+
+35/0: 130
+
+---
+
+povray +H480 +W600 +A0.2 +FN16 +Otmp80.png ggz_logo.pov
+
+---
+
+convert -delay 50 tmp*.* movie.mng
+mencoder \*.png -mf on:fps=25 -o output.avi -ovc lavc
+
