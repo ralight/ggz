@@ -94,6 +94,7 @@ GGZ server
 </td><td bgcolor="#ffd000" valign="top">
 Chatbot registration<br>
 Game match reports<br>
+Highscore reports
 </td></tr>
 
 <tr><td bgcolor="#ffd000" valign="top">
@@ -107,7 +108,8 @@ GGZ Client Libs (libggzcore, libggzmod)
 </td><td bgcolor="#ffd000" valign="top">
 Room status information<br>
 Support for game environments<br>
-In-game chat handling
+In-game chat handling<br>
+Statistics information about players and spectators in games
 </td></tr>
 
 <tr><td bgcolor="#ffd000" valign="top">
