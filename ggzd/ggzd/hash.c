@@ -47,7 +47,7 @@ static pthread_rwlock_t hash_list_lock[HASH_NUM_LISTS];
 
 /* Internal functions */
 static unsigned hash_pjw(char *);
-static void hash_player_lowercase(char *orig, char *buf);
+static void hash_player_lowercase(const char *orig, char *buf);
 
 /* Debugging stuff */
 #ifdef DEBUG
@@ -133,7 +133,7 @@ int hash_player_add(char *orig_name, GGZPlayer* player)
 
 
 /* Lookup a player name in the hash and return a pointer to him */
-GGZPlayer* hash_player_lookup(char *orig_name)
+GGZPlayer* hash_player_lookup(const char *orig_name)
 {
 	unsigned hash_num;
 	char name[MAX_USER_NAME_LEN + 1];
@@ -171,7 +171,7 @@ GGZPlayer* hash_player_lookup(char *orig_name)
 
 
 /* Remove a player name from the hash tables */
-void hash_player_delete(char *orig_name)
+void hash_player_delete(const char *orig_name)
 {
 	unsigned hash_num;
 	char name[MAX_USER_NAME_LEN + 1];
@@ -252,14 +252,14 @@ static unsigned hash_pjw(char *name)
 }
 
 
-static void hash_player_lowercase(char *orig, char *buf)
+static void hash_player_lowercase(const char *src, char *dst)
 {
-	char *src, *dest;
+	int i;
 
 	/* Convert name to lowercase for comparisons */
-	for(src=orig, dest=buf; *src!='\0'; src++, dest++)
-		*dest = tolower(*src);
-	*dest = '\0';
+	for(i = 0; src[i] != '\0'; i++)
+		dst[i] = tolower(src[i]);
+	dst[i] = '\0';
 }
 
 

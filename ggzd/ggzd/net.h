@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.h 4823 2002-10-09 06:19:45Z jdorje $
+ * $Id: net.h 4963 2002-10-20 08:07:35Z jdorje $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -92,7 +92,7 @@ GGZReturn net_send_table_launch(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_table_join(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_table_leave(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_player_update(GGZNetIO *net,
-				 unsigned char opcode, char *name);
+				 GGZUpdateOpcode opcode, const char *name);
 GGZReturn net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode,
 			  GGZTable *table, void *seat_data);
 GGZReturn net_send_update_result(GGZNetIO *net, GGZClientReqError status);

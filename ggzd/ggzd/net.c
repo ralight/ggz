@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4943 2002-10-18 02:23:56Z jdorje $
+ * $Id: net.c 4963 2002-10-20 08:07:35Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -604,7 +604,7 @@ GGZReturn net_send_table_leave(GGZNetIO *net, GGZClientReqError status)
 
 
 GGZReturn net_send_player_update(GGZNetIO *net,
-				 unsigned char opcode, char *name)
+				 GGZUpdateOpcode opcode, const char *name)
 {
 	GGZPlayer *player;
 	int room;
@@ -640,6 +640,15 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 		_net_send_line(net, "<UPDATE TYPE='player' ACTION='lag' ROOM='%d'>", room);
 		_net_send_player_lag(net, player);
 		return _net_send_line(net, "</UPDATE>");
+	case GGZ_UPDATE_JOIN:
+	case GGZ_UPDATE_LEAVE:
+	case GGZ_UPDATE_SEAT:
+	case GGZ_UPDATE_STATE:
+	case GGZ_UPDATE_DESC:
+	case GGZ_UPDATE_SPECTATOR_JOIN:
+	case GGZ_UPDATE_SPECTATOR_LEAVE:
+		err_msg("net_send_player: bad opcode");
+		break;
 	}
 	
 	return GGZ_ERROR;

@@ -31,8 +31,8 @@ extern int hash_player_add(char *name, GGZPlayer* player);
 
 /* Return a pointer to the player with name "name".  Note: Returns
    with the player's write-lock acquired */
-extern GGZPlayer* hash_player_lookup(char *name);
-extern void hash_player_delete(char *name);
+extern GGZPlayer* hash_player_lookup(const char *name);
+extern void hash_player_delete(const char *name);
 
 /* Tuning parameter - This should be a prime */
 #define HASH_NUM_LISTS	31
