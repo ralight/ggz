@@ -45,6 +45,8 @@ MainWindow::MainWindow()
 	gamemenu->insertItem(i18n("New game"), game_new);
 	gamemenu->insertSeparator();
 	gamemenu->insertItem(i18n("Information"), game_info);
+	gamemenu->insertItem(i18n("Unit information"), game_unitinfo);
+	gamemenu->insertItem(i18n("Game information"), game_gameinfo);
 	gamemenu->insertItem(i18n("Synchronize"), game_sync);
 	gamemenu->insertSeparator();
 #ifdef HAVE_KNEWSTUFF
@@ -54,6 +56,8 @@ MainWindow::MainWindow()
 	gamemenu->insertItem(i18n("Quit"), game_quit);
 
 	gamemenu->setItemEnabled(game_info, false);
+	gamemenu->setItemEnabled(game_unitinfo, false);
+	gamemenu->setItemEnabled(game_gameinfo, false);
 	gamemenu->setItemEnabled(game_sync, false);
 
 	backgroundmenu = new KPopupMenu(this);
@@ -110,6 +114,12 @@ void MainWindow::slotMenu(int id)
 			break;
 		case game_info:
 			levelInformation();
+			break;
+		case game_unitinfo:
+			unitInformation(m_self);
+			break;
+		case game_gameinfo:
+			gameInformation();
 			break;
 		case game_sync:
 			synchronize();
@@ -168,6 +178,38 @@ void MainWindow::unitInformation(int num)
 {
 	UnitInfo u(num, this);
 	u.exec();
+}
+
+void MainWindow::gameInformation()
+{
+	QString text;
+	int territory1, territory2, soldiers1, soldiers2;
+	Level *l;
+
+	l = map->level();
+	territory1 = 0;
+	territory2 = 0;
+	soldiers1 = 0;
+	soldiers2 = 0;
+	for(int i = 0; i < l->width(); i++)
+		for(int j = 0; j < l->height(); j++)
+		{
+			if(l->cellown(i, j) == -1) continue;
+			if(l->cellown(i, j) % 2 == m_self % 2) territory1++;
+			else territory2++;
+			if(l->cell(i, j) == -1) continue;
+			if(l->cell(i, j) % 2 == m_self % 2) soldiers1++;
+			else soldiers2++;
+		}
+	territory1 = 100 * territory1 / (l->width() * l->height());
+	territory2 = 100 * territory2 / (l->width() * l->height());
+
+	text = i18n("Your alliance has conquered %1 percent of the territory.\n").arg(territory1);
+	text += i18n("The enemy claims %1 percent instead.\n").arg(territory2);
+	text += i18n("You have %1 soldiers to offer.\n").arg(soldiers1);
+	text += i18n("The enemy has %1.\n").arg(soldiers2);
+
+	KMessageBox::information(this, text, i18n("Game information"));
 }
 
 ASYNC MainWindow::newLevel(QString level)
@@ -246,6 +288,8 @@ void MainWindow::levelSelector()
 	{
 		statusBar()->changeItem(i18n("Level: %1").arg(l.level()), status_level);
 		gamemenu->setItemEnabled(game_info, true);
+		gamemenu->setItemEnabled(game_unitinfo, true);
+		gamemenu->setItemEnabled(game_gameinfo, true);
 
 		if(network)
 		{
@@ -256,7 +300,6 @@ void MainWindow::levelSelector()
 		else
 		{
 			m_self = 1;
-			unitInformation(m_self);
 
 			statusBar()->changeItem(i18n("Game started"), status_state);
 			statusBar()->changeItem(i18n("Select a knight"), status_task);
@@ -264,6 +307,9 @@ void MainWindow::levelSelector()
 
 		for(Level *le = m_levels.first(); le; le = m_levels.next())
 			if(le->title() == l.level()) map->setupMap(le);
+
+		if(!network)
+			unitInformation(m_self);
 	}
 }
 
@@ -655,6 +701,8 @@ void MainWindow::aiMove()
 
 		statusBar()->changeItem(i18n("Not playing"), status_level);
 		gamemenu->setItemEnabled(game_info, false);
+		gamemenu->setItemEnabled(game_unitinfo, false);
+		gamemenu->setItemEnabled(game_gameinfo, false);
 		map->setupMap(NULL);
 	}
 }

@@ -36,6 +36,7 @@ class MainWindow : public KMainWindow, public FyrdmanDcop
 		void scanNewLevels();
 		void levelInformation();
 		void unitInformation(int num);
+		void gameInformation();
 
 		void synchronize();
 
@@ -47,6 +48,8 @@ class MainWindow : public KMainWindow, public FyrdmanDcop
 		{
 			game_new,
 			game_info,
+			game_unitinfo,
+			game_gameinfo,
 			game_sync,
 			game_newlevels,
 			game_quit,
