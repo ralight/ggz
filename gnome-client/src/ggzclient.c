@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4253 2002-06-09 23:24:38Z jzaun $
+ * $Id: ggzclient.c 4791 2002-10-03 15:32:26Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -183,7 +183,8 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* us
 
 		/*Update the lists*/
 		tmp = lookup_widget (interface, "entNewProfileName");
-		slProfileNames = g_slist_append (slProfileNames, gtk_entry_get_text (tmp));
+		slProfileNames = g_slist_append (slProfileNames,
+			(char*)gtk_entry_get_text (GTK_ENTRY(tmp)));
 		slProfileUsernames = g_slist_append (slProfileUsernames, ggzcore_server_get_handle (server));
 		slProfileServers = g_slist_append (slProfileServers, g_strdup_printf ("%s:%d", ggzcore_server_get_host (server), ggzcore_server_get_port (server)));
 		slProfilePWDs = g_slist_append (slProfilePWDs, ggzcore_server_get_password(server));
@@ -788,7 +789,7 @@ void display_players(void)
 	
 	/* Clear current list of players */
         tmp = lookup_widget(interface, "trePlayers");
-	stoPlayers = gtk_tree_view_get_model (GTK_TREE_VIEW (tmp));
+	stoPlayers = GTK_LIST_STORE(gtk_tree_view_get_model (GTK_TREE_VIEW (tmp)));
 	gtk_list_store_clear (GTK_LIST_STORE (stoPlayers));
 			
 	/* Display current list of players */
