@@ -4,6 +4,7 @@ set -e
 
 if [ purge = "$1" ]; then
 update-rc.d ggzd remove >/dev/null
+rm -rf /var/ggzd
 fi
 
 #DEBHELPER#
