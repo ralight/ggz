@@ -9,16 +9,14 @@ typedef enum {
 	REQ_GAME_LAUNCH,	/**< sent on game launch */
 	REQ_GAME_JOIN,		/**< sent on player join */
 	REQ_GAME_LEAVE,		/**< sent on player leave */
-	RSP_GAME_OVER,		/**< sent in response to a gameover */
-	RSP_SEAT_CHANGE,	/**< response to REQ_SEAT_CHANGE */
+	RSP_GAME_STATE,		/**< sent in response to a gameover */
 } ControlToTable;
 
 typedef enum {
-	RSP_GAME_LAUNCH,	/**< sent in response to a game launch */
 	RSP_GAME_JOIN,		/**< sent in response to a player join */
 	RSP_GAME_LEAVE,		/**< sent in response to a player leave */
 	MSG_LOG,		/**< a message to log */
-	REQ_GAME_OVER,		/**< sent to tell of a game-over */
+	REQ_GAME_STATE,		/**< sent to tell of a game-over */
 } TableToControl;
 
 typedef enum {
@@ -28,6 +26,13 @@ typedef enum {
 	GGZ_SEAT_NONE = -4,	   /**< This seat does not exist. */
 	GGZ_SEAT_PLAYER = -5	   /**< The seat has a regular player in it. */
 } GGZdModSeat;
+
+typedef enum {
+	GGZ_STATE_CREATED,	/**< Pre-launch; waiting for ggzdmod */
+	GGZ_STATE_WAITING,	/**< Ready and waiting to play. */
+	GGZ_STATE_PLAYING,	/**< Currently playing a game. */
+	GGZ_STATE_DONE		/**< Table halted, prepping to exit. */
+} GGZdModState;
 
 
 int handle_game_launch()
@@ -67,10 +72,9 @@ int handle_game_launch()
 		}
 	}
 
-	es_write_int(fd, RSP_GAME_LAUNCH);
-	es_write_char(fd, 0);
+	es_write_int(fd, REQ_GAME_STATE);
+	es_write_char(fd, GGZ_STATE_WAITING);
 
-	
 	return 0;
 }
 
@@ -121,15 +125,11 @@ int handle_game_leave(void)
 }
 
 
-int handle_game_over()
+int handle_game_state(void)
 {
-	return -1;
-}
+	printf("GGZ Acknowledged state change\n");
 
-
-int handle_seat_change()
-{
-	return -1;
+	return 0;
 }
 
 
@@ -150,19 +150,15 @@ int handle_opcode(int opcode)
 		printf("Received REQ_GAME_LEAVE\n");
 		status = handle_game_leave();
 		break;
-	case RSP_GAME_OVER:
-		printf("Received REQ_GAME_OVER\n");
-		status = handle_game_over();
-		break;
-	case RSP_SEAT_CHANGE:
-		printf("Received REQ_SEAT_CHANGE\n");
-		status = handle_seat_change();
+	case RSP_GAME_STATE:
+		printf("Received RSP_GAME_STATE\n");
+		status = handle_game_state();
 		break;
 	default:
 		printf("Error: received unknown opcode\n");
 	}
 
-	return 0;
+	return status;
 }
 
 int main(void)

@@ -57,7 +57,7 @@ int main (void) {
 	
 	/* Test various accessor functions */
 	mod = ggzdmod_new(GGZDMOD_GGZ);
-	if (ggzdmod_get_state(mod) != GGZ_STATE_CREATED)
+	if (ggzdmod_get_state(mod) != GGZDMOD_STATE_CREATED)
 		printf("-- Error: initial state: %d\n", ggzdmod_get_state(mod));
 	if (ggzdmod_get_fd(mod) != -1)
 		printf("-- Error: nitial fd: %d\n", ggzdmod_get_fd(mod));
@@ -133,7 +133,7 @@ int main (void) {
 	if (ggzdmod_get_gamedata(NULL) != NULL)
 		printf(" -- Error: ggzdmod_get_gamedata(NULL) == %p\n", ggzdmod_get_gamedata(NULL));
 	ggzdmod_set_num_seats(NULL, 8);
-	ggzdmod_set_handler(NULL, GGZ_EVENT_PLAYER_DATA, test_handler);
+	ggzdmod_set_handler(NULL, GGZDMOD_EVENT_PLAYER_DATA, test_handler);
 	ggzdmod_set_module(NULL, test_args);
 	if (ggzdmod_set_seat(NULL, &control[0]) >= 0)
 		printf(" -- Error: ggzdmod_set_seat(NULL, ...) claimed to succeed.\n");

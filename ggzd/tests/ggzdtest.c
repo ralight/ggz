@@ -16,18 +16,27 @@ GGZSeat seats[] = {
 void callback(GGZdMod *mod, GGZdModEvent event, void *data)
 {
 	switch (event) {
-	case GGZ_EVENT_ERROR:
-		printf("GGZ_EVENT_ERROR: %s\n", (char*)data);
+	case GGZDMOD_EVENT_JOIN:
+		printf("GGZDMOD_EVENT_JOIN\n");
 		break;
-	case GGZ_EVENT_JOIN:
-		printf("GGZ_EVENT_JOIN\n");
-		break;
-	case GGZ_EVENT_LEAVE:
-		printf("GGZ_EVENT_LEAVE\n");
+	case GGZDMOD_EVENT_LEAVE:
+		printf("GGZDMOD_EVENT_LEAVE\n");
 		break;
 	default:
 		printf("Yay.  A callback for event %d\n", event);
 	}
+}
+
+
+void handle_log(GGZdMod *mod, GGZdModEvent event, void *data)
+{
+	printf("LOG: %s\n", (char*)data);
+}
+
+
+void handle_error(GGZdMod *mod, GGZdModEvent event, void *data)
+{
+	printf("GGZDMOD_EVENT_ERROR: %s\n", (char*)data);
 }
 
 
@@ -39,24 +48,31 @@ void handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
 
 	prev = *(GGZdModState*)data;
 	cur = ggzdmod_get_state(mod);
-	printf("GGZ_EVENT_STATE: %s->%s\n", states[prev], states[cur]);
+	printf("GGZDMOD_EVENT_STATE: %s->%s\n", states[prev], states[cur]);
 
 	switch (cur) {
-	case GGZ_STATE_WAITING:
+	case GGZDMOD_STATE_WAITING:
 		/* Waiting for players */
 		printf("Game now waiting for players\n");
+		seat.num = 0;
+		seat.type = GGZ_SEAT_PLAYER;
+		seat.name = "Jean Claude";
+		seat.fd = 0;
+		ggzdmod_set_seat(mod, &seat);
+
 		seat.num = 2;
 		seat.type = GGZ_SEAT_PLAYER;
 		seat.name = "Larry";
 		seat.fd = 0;
 		ggzdmod_set_seat(mod, &seat);
+
 		break;
 		
-	case GGZ_STATE_PLAYING:
+	case GGZDMOD_STATE_PLAYING:
 		printf("Game now in progress\n");
 		break;
 
-	case GGZ_STATE_DONE:
+	case GGZDMOD_STATE_DONE:
 		printf("Game over\n");
 		break;
 	default:
@@ -81,15 +97,15 @@ int table_launch(void)
         }
         
         /* Setup handlers for game module events */
-        ggzdmod_set_handler(ggz, GGZ_EVENT_STATE, &handle_state);
-        ggzdmod_set_handler(ggz, GGZ_EVENT_JOIN, &callback);
-        ggzdmod_set_handler(ggz, GGZ_EVENT_LEAVE, &callback);
-        ggzdmod_set_handler(ggz, GGZ_EVENT_LOG, &callback);
-        ggzdmod_set_handler(ggz, GGZ_EVENT_ERROR, &callback);
+        ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &handle_state);
+        ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &callback);
+        ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &callback);
+        ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LOG, &handle_log);
+        ggzdmod_set_handler(ggz, GGZDMOD_EVENT_ERROR, &handle_error);
 	
 	/* Set game module arguments */
 	ggzdmod_set_module(ggz, args);
-
+	
         /* Attempt to launch game */
         if (ggzdmod_connect(ggz) < 0) {
                 /* Error starting up game */
@@ -119,3 +135,4 @@ int main(void)
 	
 	return status;
 }
+
