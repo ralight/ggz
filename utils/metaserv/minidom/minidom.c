@@ -56,7 +56,7 @@ char *minidom_cleanstream(const char *stream)
 	}
 	cs[j] = 0;
 
-	printf("DEBUG: cleanstream: return %s\n", cs);
+	/*printf("DEBUG: cleanstream: return %s\n", cs);*/
 	return cs;
 }
 
@@ -139,8 +139,9 @@ ELE *minidom_makechild(ELE *parent, char *tag)
 }
 
 /* Parses a stream to add its contents to a DOM */
-DOM *minidom_parse(DOM *dom, const char *stream)
+DOM *minidom_parse(const char *stream)
 {
+	DOM *dom;
 	char *cs;
 	int i, mark, lastmark;
 	char *token;
@@ -148,8 +149,13 @@ DOM *minidom_parse(DOM *dom, const char *stream)
 	ELE *ele, *cp;							/* root node and current pointer */
 	int endtag;
 
-	if(!stream) return dom;
+	if(!stream) return NULL;
 	cs = minidom_cleanstream(stream);
+
+	dom = (DOM*)malloc(sizeof(DOM));
+	dom->processed = 0;
+	dom->valid = 0;
+	dom->el = NULL;
 
 	/*ele = (ELE*)malloc(sizeof(ELE));*/		/* memory loss! */
 	/*ele->parent = NULL;
@@ -232,13 +238,9 @@ DOM *minidom_load(const char *file)
 	char buf[1024];
 	char *buffer;
 
-	dom = NULL;
 	f = fopen(file, "r");
 	if(!f) return NULL;
-	dom = (DOM*)malloc(sizeof(DOM));
-	dom->processed = 0;
-	dom->valid = 0;
-	dom->el = NULL;
+
 	buffer = (char*)malloc(1);
 	strcpy(buffer, "");
 	while(fgets(buf, sizeof(buf), f))
@@ -250,7 +252,7 @@ DOM *minidom_load(const char *file)
 	fclose(f);
 
 	/*printf("DEBUG: load: parse %s\n", buffer);*/
-	minidom_parse(dom, buffer);
+	dom = minidom_parse(buffer);
 	free(buffer);
 
 	return dom;
@@ -381,26 +383,5 @@ ELE *MD_query(ELE *parent, const char *name)
 	elelist = MD_querylist(parent, name);
 	if((elelist) && (elelist[0])) return elelist[0];
 	return NULL;
-}
-
-/* Main functions: This is for convenience only. */
-int main(int argc, char *argv[])
-{
-	DOM *dom;
-	ELE *ele;
-	char *file;
-
-	file = "example.xml";
-	if(argc == 2) file = argv[1];
-	dom = minidom_load(file);
-	minidom_dump(dom);
-
-	printf("Query resultset/result[0]/host:\n");
-	ele = MD_query(MD_query(dom->el, "result"), "host");
-	if(ele) printf("Found: %s\n", ele->value);
-
-	minidom_free(dom);
-
-	return 0;
 }
 

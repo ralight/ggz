@@ -4,3 +4,4 @@ Makefile.in
 minidom
 .deps
 .libs
+*.a

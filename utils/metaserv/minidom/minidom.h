@@ -29,6 +29,11 @@ typedef struct dom_t DOM;	/* Domain Object Model */
 typedef struct ele_t ELE;	/* Elements */
 typedef struct att_t ATT;	/* Attributes */
 
+DOM *minidom_load(const char *file);
+DOM *minidom_parse(const char *stream);
+void minidom_dump(DOM *dom);
+void minidom_free(DOM *dom);
+
 ELE *MD_query(ELE *parent, const char *name);
 ELE **MD_querylist(ELE *parent, const char *name);
 

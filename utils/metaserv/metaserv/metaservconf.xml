@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<configuration class="ggz">
+	<connection version="0.0.5pre" preference="50">ggz://jzaun.com:5688</connection>
+	<connection version="0.0.4" preference="100">ggz://ggz.snafu.de:5688</connection>
+	<connection version="0.0.4" preference="100">ggz://ggz.morat.net:5688</connection>
+</configuration>
+

@@ -1,63 +1,204 @@
 #include <stdio.h>
-#include <ggzcore.h>
 #include <stdlib.h>
 #include <string.h>
+#include "minidom.h"
 
 // URI:
-// query://connection/0.0.5pre
+// query://ggz/connection/0.0.5pre
 // Answer:
 // ggz://jzaun.com:5688
+//
+// XML:
+// <?xml version="1.0"><query class="ggz" type="connection">0.0.5pre</query>
+// Answer:
+// <?xml version="1.0"><resultset><result preference="100"><uri>ggz://jzaun.com:5688</uri>..</result></resultset>
 
-#define METASERVDIR "/home/josef"
+DOM *configuration = NULL;
 
-char *metaserv_lookup(const char *category, const char *key)
+char *metaserv_lookup(const char *class, const char *category, const char *key, int xmlformat)
 {
-	static char *ret = NULL;
-	int handler;
+	const char *header = "<?xml version=\"1.0\"?><resultset>";
+	const char *footer = "</resultset>";
+	static char *xmlret = NULL;
+	char *ret, *r;
+	int i, j, valid;
+	ELE **ele;
+	ATT **att;
+	int preference, pref;
+	char tmp[1024];
 
-	if(ret)
+	if((!configuration)
+	|| (!configuration->el)
+	|| (!configuration->valid)
+	|| (!configuration->processed)) return NULL;
+
+	if((!class) || (!category) || (!key)) return NULL;
+
+	att = configuration->el->at;
+	valid = 0;
+	preference = 0;
+	ret = NULL;
+	r = NULL;
+
+	if(xmlret)
 	{
-		free(ret);
-		ret = NULL;
+		free(xmlret);
+		xmlret = NULL;
 	}
-	handler = ggzcore_confio_parse(METASERVDIR "/.ggz/metaserv.rc", GGZ_CONFIO_RDONLY);
-	if(handler < 0) return NULL;
-	ret = ggzcore_confio_read_string(handler, category, key, NULL);
+	if(xmlformat)
+	{
+		xmlret = (char*)malloc(strlen(header) + 1);
+		strcpy(xmlret, header);
+	}
+
+	i = 0;
+	while((att) && (att[i]))
+	{
+		if((!strcmp(att[i]->name, "class"))
+		&& (!strcmp(att[i]->value, class)))
+		{
+			valid = 1;
+		}
+		i++;
+	}
+	if(!valid) return NULL;
+
+	ele = configuration->el->el;
+	i = 0;
+	while((ele) && (ele[i]))
+	{
+		r = NULL;
+		if(!strcmp(ele[i]->name, category))
+		{
+			att = ele[i]->at;
+			j = 0;
+			while((att) && (att[j]))
+			{
+				if((!strcmp(att[j]->name, "version"))
+				&& (!strcmp(att[j]->value, key)))
+				{
+					r = ele[i]->value;
+				}
+				if(!strcmp(att[j]->name, "preference"))
+				{
+					/*printf("RESOLVE: %s\n", att[j]->value);*/
+					pref = atoi(att[j]->value);
+					if((pref == preference) && (rand() % 2)) ret = r;
+					if(pref > preference)
+					{
+						preference = pref;
+						ret = r;
+					}
+					if((xmlformat) && (r))
+					{
+						sprintf(tmp, "<result preference=\"%i\"><uri>%s</uri></result>", preference, r);
+						xmlret = (char*)realloc(xmlret, strlen(xmlret) + strlen(tmp) + 1);
+						strcat(xmlret, tmp);
+					}
+				}
+				j++;
+			}
+		}
+		i++;
+	}
+
+	if(xmlformat)
+	{
+		xmlret = (char*)realloc(xmlret, strlen(xmlret) + strlen(footer) + 1);
+		strcat(xmlret, footer);
+		ret = xmlret;
+	}
+	
+	if(!ret) ret = r;
+	return ret;
+}
+
+char *metaserv_xml(const char *uri)
+{
+	DOM *query;
+	char *ret;
+	char *class, *category;
+	int i;
+
+	ret = NULL;
+	class = NULL;
+	category = NULL;
+	query = minidom_parse(uri);
+	if((!query->valid) || (!query->processed) || (!query->el)
+	|| (!query->el->name) || (strcmp(query->el->name, "query")))
+	{
+		minidom_free(query);
+		return NULL;
+	}
+
+	if((query) && (query->el) && (query->el->value))
+	{
+		i = 0;
+		while((query->el->at) && (query->el->at[i]))
+		{
+			if(!strcmp(query->el->at[i]->name, "class")) class = query->el->at[i]->value;
+			if(!strcmp(query->el->at[i]->name, "type")) category = query->el->at[i]->value;
+			i++;
+		}
+		ret = metaserv_lookup(class, category, query->el->value, 1);
+	}
+
+	minidom_free(query);
 	return ret;
 }
 
 char *metamagic(char *uri)
 {
-	static char *ret = NULL;
+	char *ret;
 	char *token;
-	char *category;
+	char *category, *class;
 
 	if(!uri) return NULL;
-	if(ret)
-	{
-		free(ret);
-		ret = NULL;
-	}
-	if(uri[strlen(uri) - 1] == '\n') uri[strlen(uri) - 1] = 0;
 
-	// query://connection/0.0.5pre
+	if((strlen(uri) > 5) && (!strncmp(uri, "<?xml ", 5)))
+	{
+		ret = metaserv_xml(uri);
+		free(uri);
+		return ret;
+	}
+
+	if(uri[strlen(uri) - 1] == '\n') uri[strlen(uri) - 1] = 0;
+	ret = NULL;
+
+	// query://ggz/connection/0.0.5pre
 	token = strtok(uri, ":/");
-	// query connection 0.0.5pre
+	// query ggz connection 0.0.5pre
 	if(!token) return NULL;
 	if(!strcmp(token, "query"))
 	{
+		token = strtok(NULL, ":/");
+		// ggz connection 0.0.5pre
+		if(!token) return NULL;
+		class = strdup(token);
 		token = strtok(NULL, ":/");
 		// connection 0.0.5pre
 		if(!token) return NULL;
 		category = strdup(token);
 		token = strtok(NULL, ":/");
 		// 0.0.5pre
-		if(token) ret = metaserv_lookup(category, token);
+		if(token) ret = metaserv_lookup(class, category, token, 0);
 		free(category);
+		free(class);
 	}
 	while(token) token = strtok(NULL, ":/");
 
 	return ret;
+}
+
+void metaserv_init()
+{
+	configuration = minidom_load("metaservconf.xml");
+	minidom_dump(configuration);
+}
+
+void metaserv_shutdown()
+{
+	minidom_free(configuration);
 }
 
 int main(int argc, char *argv[])
@@ -65,12 +206,15 @@ int main(int argc, char *argv[])
 	char buffer[1024];
 	char *result;
 
+	metaserv_init();
+
 	while(1)
 	{
 		fgets(buffer, sizeof(buffer), stdin);
 		result = metamagic(strdup(buffer));
 		printf("Got URI: %s\n", result);
 	}
-}
 
+	metaserv_shutdown();
+}
 

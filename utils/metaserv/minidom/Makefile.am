@@ -1,8 +1,11 @@
 SUBDIRS = .
 
-bin_PROGRAMS = minidom
+noinst_LIBRARIES = libminidom.a
+libminidom_a_SOURCES = minidom.c
 
-minidom_SOURCES = minidom.c
+bin_PROGRAMS = minidom
+minidom_SOURCES = main.c
+minidom_LDADD = libminidom.a
 
 #all:
 #	gcc -g -Wall -c minidom.c

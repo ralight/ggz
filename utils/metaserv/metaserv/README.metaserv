@@ -5,7 +5,7 @@ This component should be able to deal with two types of queries.
 The first one is the simple case: one passes an URI, and it returns another URI
 then.
 
-	c->s: query://connection/0.0.5pre
+	c->s: query://ggz/connection/0.0.5pre
 	s->c: ggz://jzaun.com:5688
 
 This implementation returns a NULL pointer if no entry could be found or the
@@ -19,31 +19,30 @@ for that is therefore XML. The advantage is that multiple entries are allowed
 to be returned.
 
 	c->s:	<?xml version="1.0"?>
-			<query type="connection">
+			<query class="ggz" type="connection">
 				0.0.5pre
 			</query>
 	s->c:	<?xml version="1.0"?>
 			<resultset>
 				<result preference="100">
-					<host version="0.0.5pre">
-						jzaun.com
-					</host>
-					<port>
-						5688
-					</port>
+					<uri>
+						ggz://jzaun.com:5688
+					</uri>
 					<location>
 						pennsylvania, us
 					</location>
 				</result>
 			</queryresult>
 
-The meta server does automatically handle both cases. Although right now this
-does also require two different configurations, but this is acceptable.
+The meta server does automatically handle both cases. The configuration has
+been moved from a ggzcore_confio format to an XML-based one, so one can pass
+native DOM subtrees to the client.
 
-A propos configuration: This is mine:
+The configuration file is metaservconf.xml.
 
-josef@athlon500:~$ cat /home/josef/.ggz/metaserv.rc
-[connection]
-0.0.5pre = ggz://jzaun.com:5688
-0.0.4 = ggz://ggz.snafu.de:5688
+In XML, an empty resultset is returned if no entries are found.
+URI-based results are chosen by priority; the entry with the highest priority
+is returned; among equals, one is randomly chosen.
+
+Josef
 
