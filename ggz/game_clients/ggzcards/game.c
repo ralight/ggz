@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2948 2001-12-19 09:34:42Z jdorje $
+ * $Id: game.c 2949 2001-12-19 09:44:56Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -239,7 +239,7 @@ void game_get_bid(int possible_bids, char **bid_choices)
 void game_get_play(int hand)
 {
 #ifdef ANIMATION
-	animation_zip(TRUE);
+	animation_zip();
 #endif /* ANIMATION */
 
 	if (hand == 0)
@@ -269,17 +269,24 @@ void game_alert_badplay(char *err_msg)
 void game_alert_play(int player, card_t card, int pos)
 {
 #ifdef ANIMATION
-	animation_zip(TRUE);
+	/* If this is a card _we_ played, then we'll already be animating,
+	   and we really don't want to stop just to start over. */
+	animation_zip();
+	animation_start(player, card, pos);
+#else /* ANIMATION */
+	table_show_card(player, card);
 #endif /* ANIMATION */
 
+	/* Note, even for cards we played we don't actually remove the
+	   card from our hand until we hear confirmation.  So we need to
+	   redraw the hand in any case. */
 	table_display_hand(player);
-	table_play_card(player, card, pos);
 }
 
 void game_alert_table(void)
 {
 	ggz_debug("table", "Handling table update alert.");
-	table_show_cards();
+	table_show_all_cards();
 }
 
 void game_alert_trick(int player)
@@ -287,7 +294,7 @@ void game_alert_trick(int player)
 	char *t_str;
 
 #ifdef ANIMATION
-	animation_zip(TRUE);
+	animation_zip();
 #endif /* ANIMATION */
 
 	t_str = g_strdup_printf(_("%s won the trick"),

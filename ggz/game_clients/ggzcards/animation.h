@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.h 2939 2001-12-18 20:47:03Z jdorje $
+ * $Id: animation.h 2949 2001-12-19 09:44:56Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -40,6 +40,6 @@ extern int animating;
 void animation_start(int player, card_t card, int card_num);
 gint animation_callback(gpointer ignored);
 void animation_abort(void);
-void animation_zip(gboolean restore);
+void animation_zip(void);
 
 #endif /* ANIMATION */

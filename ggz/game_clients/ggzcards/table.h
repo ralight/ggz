@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.h 2946 2001-12-18 23:59:37Z jdorje $
+ * $Id: table.h 2949 2001-12-19 09:44:56Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -41,10 +41,9 @@ void table_set_tricks(int, int);
 void table_set_score(int, int);
 void table_set_trump(void);
 void table_clear_table(void);
-void table_show_cards(void);
+void table_show_card(int player, card_t card);
+void table_show_all_cards(void);
 void table_redraw(void);
-
-void table_play_card(int p, card_t card, int pos);
 
 void table_show_table(int x, int y, int w, int h);
 void get_card_coordinates(card_t card, int orientation, int *x, int *y);

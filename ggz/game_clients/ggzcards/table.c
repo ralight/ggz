@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2948 2001-12-19 09:34:42Z jdorje $
+ * $Id: table.c 2949 2001-12-19 09:44:56Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -77,8 +77,6 @@ static int selected_card = -1;	/* the card currently selected from the
 				   playing hand */
 
 static void table_card_clicked(int);
-
-static void table_show_card(int, card_t);
 
 void table_show_table(int x, int y, int w, int h)
 {
@@ -285,12 +283,12 @@ void table_redraw(void)
 	draw_card_areas();
 
 #ifdef ANIMATION
-	animation_zip(FALSE);
+	animation_zip();
 #endif /* ANIMATION */
 
 	/* Redisplay any cards on table and in hands */
 	table_display_all_hands();
-	table_show_cards();
+	table_show_all_cards();
 
 	/* There has GOT to be a better way to force the redraw! */
 	gdk_window_hide(table->window);
@@ -521,16 +519,6 @@ void table_display_all_hands(void)
 		table_display_hand(p);
 }
 
-/* Called when a player plays a card on the table. */
-void table_play_card(int p, card_t card, int pos)
-{
-#ifdef ANIMATION
-	animation_start(p, card, pos);
-#else
-	table_show_card(p, card);
-#endif
-}
-
 
 /* Exposed function to clear cards off the table area.  This happens at the
    end of each trick, of course. */
@@ -551,7 +539,7 @@ void table_clear_table(void)
 
 
 /* Exposed function to show one player's cards on the table area. */
-static void table_show_card(int player, card_t card)
+void table_show_card(int player, card_t card)
 {
 	int x, y;
 
@@ -565,7 +553,7 @@ static void table_show_card(int player, card_t card)
 }
 
 /* Exposed function to show all four cards on the table area. */
-void table_show_cards(void)
+void table_show_all_cards(void)
 {
 	int p;
 	for (p = 0; p < ggzcards.num_players; p++)

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 2948 2001-12-19 09:34:42Z jdorje $
+ * $Id: animation.c 2949 2001-12-19 09:44:56Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -57,7 +57,7 @@ void animation_start(int player, card_t card, int card_num)
 	/* We don't currently support animation for more than one player
 	   at a time. */
 	if (animating)
-		animation_zip(TRUE);
+		animation_zip();
 
 	get_card_pos(player, card_num, &start_x, &start_y);
 	get_tablecard_pos(player, &end_x, &end_y);
@@ -162,7 +162,7 @@ void animation_abort(void)
 
 /* Function to zip to the finish of an animation
    sequence so that a new one may be started */
-void animation_zip(gboolean restore)
+void animation_zip(void)
 {
 	if (!animating)
 		return;
@@ -174,7 +174,7 @@ void animation_zip(gboolean restore)
 
 	/* And move the card to it's final resting place */
 	ggzcards.players[anim.player].table_card = anim.card;
-	table_show_cards();
+	table_show_card(anim.player);
 
 	animating = 0;
 }
