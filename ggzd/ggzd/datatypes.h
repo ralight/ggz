@@ -38,6 +38,7 @@
 typedef struct {
 	char *local_conf;
 	char remove_users;
+	char foreground;
 	int user_inact_time;
 	char clear_stats;
 	int stat_clr_time;

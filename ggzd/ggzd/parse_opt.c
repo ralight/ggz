@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 2510 2001-09-27 21:06:07Z rgade $
+ * $Id: parse_opt.c 2520 2001-09-29 15:56:14Z bmh $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -100,6 +100,8 @@ static char **r_list = NULL;
 
 static const struct poptOption args[] = {
 	
+	{"foreground", 'F', POPT_ARG_NONE, &opt.foreground, 0,
+	 "Tells ggzd to run in the foreground"},
 	{"file", 'f', POPT_ARG_STRING, &opt.local_conf, 0, 
 	 "Configuration file", "FILE"},
 	{"log", 'l', POPT_ARG_INT, &log_info.log_types, 0,

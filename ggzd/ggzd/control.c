@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 2446 2001-09-10 23:53:19Z rgade $
+ * $Id: control.c 2520 2001-09-29 15:56:14Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -173,13 +173,13 @@ int main(int argc, const char *argv[])
 
 	logfile_initialize();
 
-#ifndef DEBUG
-	daemon_init();
+	if (!opt.foreground) {
+		daemon_init();
 
-	/* FIXME: use sigaction() */
-	signal(SIGTERM, term_handle);
-	signal(SIGINT, term_handle);
-#endif
+		/* FIXME: use sigaction() */
+		signal(SIGTERM, term_handle);
+		signal(SIGINT, term_handle);
+	}
 	
 	signal(SIGPIPE, SIG_IGN);
 
@@ -239,9 +239,9 @@ int main(int argc, const char *argv[])
 	/* FIXME: do we need to stop all of threads? */
 	ggzdb_close();
 
-#ifndef DEBUG
-	daemon_cleanup();
-#endif
+	if (!opt.foreground) {
+		daemon_cleanup();
+	}
 
 	return 0;
 }
