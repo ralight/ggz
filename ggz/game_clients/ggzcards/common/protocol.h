@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3469 2002-02-25 14:42:22Z jdorje $
+ * $Id: protocol.h 3489 2002-02-27 08:40:53Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -272,6 +272,22 @@ extern char *suit_names[];
 extern char *short_suit_names[];
 extern char *face_names[];
 extern char *short_face_names[];
+
+
+
+/* A hand structure */
+typedef struct hand_t {
+	/* the size of the hand, when it's full.  This may or may not
+	   actually be used (client-side it is currently unused). */
+	int full_hand_size;	
+	
+	/* the current size of the hand (number of cards currently in
+	   the hand. */
+	int hand_size;	
+		
+	/* A variable-sized array containing the cards present. */
+	card_t *cards;		
+} hand_t;
 
 
 /* in different games, bids may have different meanings.  we'll just use this

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 3462 2002-02-25 09:15:28Z jdorje $
+ * $Id: client.c 3489 2002-02-27 08:40:53Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -91,8 +91,8 @@ void client_quit(void)
 	if (close(3) < 0)
 		ggz_error_msg_exit("Couldn't disconnect from ggz.");
 	for (p = 0; p < ggzcards.num_players; p++) {
-		if (ggzcards.players[p].hand.card)
-			ggz_free(ggzcards.players[p].hand.card);
+		if (ggzcards.players[p].hand.cards)
+			ggz_free(ggzcards.players[p].hand.cards);
 		if (ggzcards.players[p].name)
 			ggz_free(ggzcards.players[p].name);
 
@@ -340,9 +340,9 @@ static int handle_msg_players(void)
 		int p;
 		if (ggzcards.players) {
 			for (p = 0; p < ggzcards.num_players; p++)
-				if (ggzcards.players[p].hand.card)
+				if (ggzcards.players[p].hand.cards)
 					ggz_free(ggzcards.players[p].hand.
-						 card);
+						 cards);
 			ggz_free(ggzcards.players);
 		}
 		ggz_debug("core",
@@ -355,7 +355,7 @@ static int handle_msg_players(void)
 			ggzcards.players[p].table_card = UNKNOWN_CARD;
 			ggzcards.players[p].name = NULL;
 			ggzcards.players[p].hand.hand_size = 0;
-			ggzcards.players[p].hand.card = NULL;
+			ggzcards.players[p].hand.cards = NULL;
 		}
 
 		/* this forces reallocating later */
@@ -420,10 +420,10 @@ static void increase_max_hand_size(int max_hand_size)
 	for (p = 0; p < ggzcards.num_players; p++) {
 		/* This reallocates the hand to be larger, but leaves the
 		   unused cards uninitialized.  This should be acceptable. */
-		ggzcards.players[p].hand.card =
-			ggz_realloc(ggzcards.players[p].hand.card,
+		ggzcards.players[p].hand.cards =
+			ggz_realloc(ggzcards.players[p].hand.cards,
 				    game_internal.max_hand_size *
-				    sizeof(*ggzcards.players[p].hand.card));
+				    sizeof(*ggzcards.players[p].hand.cards));
 	}
 }
 
@@ -453,7 +453,7 @@ static int handle_msg_hand(void)
 	hand = &ggzcards.players[player].hand;
 	hand->hand_size = hand_size;
 	for (i = 0; i < hand->hand_size; i++)
-		if (read_card(game_internal.fd, &hand->card[i]) < 0)
+		if (read_card(game_internal.fd, &hand->cards[i]) < 0)
 			return -1;
 
 	ggz_debug("core", "Received hand message for player %d; %d cards.",
@@ -583,7 +583,7 @@ static int match_card(card_t card, hand_t * hand)
 	   cool "squeeze" comment below would no longer apply! */
 	for (tc = hand->hand_size - 1; tc >= 0; tc--) {
 		/* TODO: look for a stronger match */
-		card_t hcard = hand->card[tc];
+		card_t hcard = hand->cards[tc];
 		int tc_matches = 0;
 
 		if ((hcard.deck != -1 && hcard.deck != card.deck) ||
@@ -647,7 +647,7 @@ static int handle_msg_play(void)
 	/* Find the hand the card is to be removed from. */
 	assert(ggzcards.players);
 	hand = &ggzcards.players[p].hand;
-	assert(hand->card);
+	assert(hand->cards);
 
 	/* Find a matching card to remove. */
 	tc = match_card(card, hand);
@@ -668,8 +668,8 @@ static int handle_msg_play(void)
 	   be careful not to go off-by-one and overrun the buffer! */
 	hand->hand_size--;
 	for (c = tc; c < hand->hand_size; c++)
-		hand->card[c] = hand->card[c + 1];
-	hand->card[hand->hand_size] = UNKNOWN_CARD;
+		hand->cards[c] = hand->cards[c + 1];
+	hand->cards[hand->hand_size] = UNKNOWN_CARD;
 
 	/* Update the graphics */
 	game_alert_play(p, card, tc);

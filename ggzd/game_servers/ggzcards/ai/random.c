@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: a "random" AI
- * $Id: random.c 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: random.c 3489 2002-02-27 08:40:53Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -78,5 +78,5 @@ card_t get_play(int play_hand, int *valid_plays)
 	
 	choice = random() % hand->hand_size;
 	
-	return hand->card[choice];
+	return hand->cards[choice];
 }

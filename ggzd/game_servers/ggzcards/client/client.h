@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 3462 2002-02-25 09:15:28Z jdorje $
+ * $Id: client.h 3489 2002-02-27 08:40:53Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -38,14 +38,6 @@
  *  a pile of cards.
  *  @note We are always player 0.  The server will deal with all conversions.
  *  @{ */
-
-/** Hand structure.
- *  @todo Should this be merged into struct seat_t?
- */
-typedef struct {
-	int hand_size;		/**< the number of cards in the hand */
-	card_t *card;		/**< the list of cards */
-} hand_t;
 
 /** Contains all information about a seat at the table. */
 typedef struct seat_t {

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 3436 2002-02-21 08:41:19Z jdorje $
+ * $Id: spades.c 3489 2002-02-27 08:40:53Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -795,7 +795,7 @@ card_t get_play(int play_seat, int *valid_plays)
 	plays = 0;
 	for (i = 0; i < hand->hand_size; i++) {
 		if (valid_plays[i]) {
-			play[plays].card = hand->card[i];
+			play[plays].card = hand->cards[i];
 			Calculate(&play[plays], agg);
 			ggz_debug("ai",
 				  "The %s of %s is calculated as %d / %d.",
@@ -983,10 +983,10 @@ static void Calculate(struct play *play, int agg)
 		n = 13 - libai_cards_played_in_suit(s);
 		for (r = 0; r < hand->hand_size; r++) {
 			if (are_cards_equal
-			    (hand->card[(int) r], UNKNOWN_CARD))
+			    (hand->cards[(int) r], UNKNOWN_CARD))
 				continue;
-			if (hand->card[(int) r].suit == s) {
-				cover++;	/* XXX - does ace cover king? 
+			if (hand->cards[(int) r].suit == s) {
+				cover++;	/* XXX - does ace cover king?
 						 */
 				n--;
 			}
@@ -1076,8 +1076,8 @@ static int SuitMap(int p, char suit)
 	hand_t *hand = &ggzcards.players[p].hand;
 
 	for (i = 0; i < hand->hand_size; i++)
-		if (hand->card[i].suit == suit)
-			map |= 1 << hand->card[i].face;
+		if (hand->cards[i].suit == suit)
+			map |= 1 << hand->cards[i].face;
 
 	return map;
 }

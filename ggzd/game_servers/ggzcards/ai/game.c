@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.c 3457 2002-02-24 19:57:25Z jdorje $
+ * $Id: game.c 3489 2002-02-27 08:40:53Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -118,7 +118,7 @@ void game_alert_badplay(char *err_msg)
 	int i, hand = ggzcards.play_hand;
 	
 	for (i = 0; i < ggzcards.players[hand].hand.hand_size; i++)
-		if (are_cards_equal(ggzcards.players[hand].hand.card[i], play_card)) {
+		if (are_cards_equal(ggzcards.players[hand].hand.cards[i], play_card)) {
 			valid_plays[i] = 0;
 			break;
 		}

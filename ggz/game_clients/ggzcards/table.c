@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3431 2002-02-21 02:53:38Z jdorje $
+ * $Id: table.c 3489 2002-02-27 08:40:53Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -696,7 +696,7 @@ void table_display_hand(int p, int write_to_screen)
 
 	/* Draw the cards */
 	for (i = 0; i < ggzcards.players[p].hand.hand_size; i++) {
-		card_t card = ggzcards.players[p].hand.card[i];
+		card_t card = ggzcards.players[p].hand.cards[i];
 		if (card.face >= 0 && card.face == table_card.face &&
 		    card.suit >= 0 && card.suit == table_card.suit &&
 		    card.deck >= 0 && card.deck == table_card.deck)

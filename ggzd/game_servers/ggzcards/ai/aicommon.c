@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.c 3435 2002-02-21 08:39:57Z jdorje $
+ * $Id: aicommon.c 3489 2002-02-27 08:40:53Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -152,7 +152,7 @@ int libai_is_card_in_hand(int seat, card_t card)
 	/* TODO: avoid cheating! */
 	int i;
 	for (i = 0; i < hand->hand_size; i++)
-		if (are_cards_equal(hand->card[i], card))
+		if (are_cards_equal(hand->cards[i], card))
 			return 1;
 	return 0;
 }
@@ -164,7 +164,7 @@ card_t libai_get_highest_card_in_suit(int seat, char suit)
 	hand_t *hand = &ggzcards.players[seat].hand;
 
 	for (i = 0; i < hand->hand_size; i++) {
-		card_t card = hand->card[i];
+		card_t card = hand->cards[i];
 		if (card.suit == suit && card.face > highest.face)
 			highest = card;
 	}
@@ -205,7 +205,7 @@ int libai_count_suit(int seat, char suit)
 	hand_t *hand = &ggzcards.players[seat].hand;
 	int i, total = 0;
 	for (i = 0; i < hand->hand_size; i++)
-		if (hand->card[i].suit == suit)
+		if (hand->cards[i].suit == suit)
 			total++;
 	return total;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulation routines for card games
- * $Id: cards.h 3485 2002-02-27 07:15:45Z jdorje $
+ * $Id: cards.h 3489 2002-02-27 08:40:53Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -28,14 +28,6 @@
 #ifndef GGZ_CARDS_INCLUDED
 
 #include "protocol.h"		/* contains actual card structures */
-
-/* A hand structure */
-typedef struct hand_t {
-	int full_hand_size;	/* the size of the hand, when it's full */
-	int hand_size;		/* the current size of the hand */
-	card_t *cards;		/* must be allocated; memory leaks will be
-				   rampant! */
-} hand_t;
 
 /* A deck structure.  It's declared in cards.c. */
 typedef struct deck_t deck_t;

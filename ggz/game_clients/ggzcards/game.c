@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3457 2002-02-24 19:57:25Z jdorje $
+ * $Id: game.c 3489 2002-02-27 08:40:53Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -100,7 +100,7 @@ void game_send_options(int option_count, int *options_selection)
 void game_play_card(int card_num)
 {
 	int player = ggzcards.play_hand, status;
-	card_t card = ggzcards.players[player].hand.card[card_num];
+	card_t card = ggzcards.players[player].hand.cards[card_num];
 	
 	assert(player >= 0 && player < ggzcards.num_players);
 
