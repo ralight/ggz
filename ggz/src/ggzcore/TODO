@@ -1,3 +1,5 @@
+- Reimplement net functionality as its own object
+
 - Finish GGZGame and table launching functionality
 
 - Remove the ggzcore_server_get_XXX_names() function
@@ -6,12 +8,9 @@
 
 - Convert to ggzcore_strdup()
 
-
 - Provide a GGZ_AUTOLOAD option to automatically load room and type
   lists (and motd?) upon logging in and the player and table lists
   upon entering a room.
-
-- Reimplement net functionality as its own object
 
 - Allow option for non-blocking socket: to make this easier, the
   protocol could be altered so that each message sends its length in

@@ -29,7 +29,7 @@
 #include "ggzcore.h"
 #include "gametype.h"
 #include "room.h"
-
+#include "state.h"
 
 struct _GGZServer* _ggzcore_server_new(void);
 
@@ -51,6 +51,9 @@ void _ggzcore_server_set_handle(struct _GGZServer *server,
 				const char *handle);
 void _ggzcore_server_set_password(struct _GGZServer *server, 
 				  const char *password);
+
+void _ggzcore_server_set_room(struct _GGZServer *server,
+			      struct _GGZRoom *room);
 
 
 struct _GGZRoom* _ggzcore_server_get_room_by_id(struct _GGZServer *server,
@@ -79,8 +82,32 @@ int _ggzcore_server_join_table(struct _GGZServer *server, const unsigned int num
 
 int _ggzcore_server_leave_table(struct _GGZServer *server);
 
+void _ggzcore_server_net_error(struct _GGZServer *server, char *message);
+
+void _ggzcore_server_protocol_error(struct _GGZServer *server, char *message);
+
 void _ggzcore_server_clear(struct _GGZServer *server);
 
 void _ggzcore_server_free(struct _GGZServer *server);
+
+
+/* Functions for manipulating list of rooms */
+ void _ggzcore_server_init_roomlist(struct _GGZServer *server,
+					  const int num);
+ void _ggzcore_server_free_roomlist(struct _GGZServer *server);
+ void _ggzcore_server_add_room(struct _GGZServer *server, 
+				     struct _GGZRoom *room);
+
+/* Functions for manipulating list of gametypes */
+ void _ggzcore_server_init_typelist(struct _GGZServer *server, 
+					  const int num);
+ void _ggzcore_server_free_typelist(struct _GGZServer *server);
+ void _ggzcore_server_add_type(struct _GGZServer *server, 
+				     struct _GGZGameType *type);
+
+
+ int _ggzcore_server_event_is_valid(GGZServerEvent event);
+ void _ggzcore_server_change_state(GGZServer *server, GGZTransID trans);
+ GGZHookReturn _ggzcore_server_event(GGZServer*, GGZServerEvent, void*);
 
 #endif /* __SERVER_H__ */
