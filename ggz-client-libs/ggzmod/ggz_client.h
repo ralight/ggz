@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZMod library
  * Desc: GGZ game module functions
- * $Id: ggz_client.h 2250 2001-08-25 21:34:55Z jdorje $
+ * $Id: ggz_client.h 2257 2001-08-26 11:01:43Z jdorje $
  *
  * Copyright (C) 2000 GGZ devel team
  *
@@ -29,6 +29,51 @@
  * This file contains all libggzmod functions used by game clients to
  * interface with GGZ.  Just include ggz_client.h and make sure your program
  * is linked with libggzmod.  Then use the functions below as appropriate.
+ *
+ * Under the GGZ model, instead of connecting directly to the game server a
+ * game will connect to the GGZ client using a similar socket.  The GGZ client
+ * and server will then relay packets between the game client and server.  To
+ * the client, everything should look the same except that the method used to
+ * connect is different.
+ *
+ * @verbatim
+ *                                 connect()
+ *                          +--------...-->--------+
+ *                          |                      |
+ *                          |                      V
+ *    ggz_connect()   +-----+------+         +-----+------+   ggzd_connect()
+ *              +---->+ GGZ client |         | GGZ server +<----+
+ *              |     +------------+         +------------+     |
+ *              |              ^                |               |
+ *           +--------+        |                |           +--------+
+ *           |  game  |        |                |           |  game  |
+ *           | client |        +-----...-<------+           | server |
+ *           +--------+                                     +--------+
+ * @endverbatim
+ *
+ * Here is a generic example of how a game should be changed to use GGZ.  Say
+ * the old code looks like this:
+ * @code
+ *     void main() {
+ *         int fd;
+ *
+ *         // your typical connection function
+ *         fd = connect_to_server();
+ *         ...
+ *     }
+ * @endcode
+ * Then your new code might look like this:
+ * @code
+ *     int main() {
+ *         int fd;
+ *
+ *         if (with_ggz) // typically determined by command-line option
+ *             fd = ggz_connect();
+ *         else          // if not using GGZ, use the old method
+ *             fd = connect_to_server();
+ *         ...
+ *     }
+ * @endcode
  *
  * Here is an example of how a GTK client may connect:
  * @code
@@ -74,7 +119,7 @@ int ggz_connect(void);
  * This disconnects from GGZ and destroys all internal data.  It
  * should be called by the game client before exiting.
  *
- * @return 0 on success; -1 on failure.
+ * @return 0 on success, -1 on failure.
  */
 int ggz_disconnect(void);
 

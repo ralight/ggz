@@ -1,4 +1,4 @@
-.TH "ggz_client.h" 3 "25 Aug 2001" "GGZMod" \" -*- nroff -*-
+.TH "ggz_client.h" 3 "26 Aug 2001" "GGZMod" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -32,6 +32,50 @@ The interface for the ggzmod library used by game clients.
 .PP
 .PP
  This file contains all libggzmod functions used by game clients to interface with GGZ. Just include \fBggz_client.h\fR and make sure your program is linked with libggzmod. Then use the functions below as appropriate.
+.PP
+Under the GGZ model, instead of connecting directly to the game server a game will connect to the GGZ client using a similar socket. The GGZ client and server will then relay packets between the game client and server. To the client, everything should look the same except that the method used to connect is different.
+.PP
+.nf
+
+ *                                 connect()
+ *                          +--------...-->--------+
+ *                          |                      |
+ *                          |                      V
+ *    ggz_connect()   +-----+------+         +-----+------+   ggzd_connect()
+ *              +---->+ GGZ client |         | GGZ server +<----+
+ *              |     +------------+         +------------+     |
+ *              |              ^                |               |
+ *           +--------+        |                |           +--------+
+ *           |  game  |        |                |           |  game  |
+ *           | client |        +-----...-<------+           | server |
+ *           +--------+                                     +--------+
+ * 
+.fi
+.PP
+Here is a generic example of how a game should be changed to use GGZ. Say the old code looks like this: 
+.PP
+.nf
+     void main() {
+         int fd;
+
+         // your typical connection function
+         fd = connect_to_server();
+         ...
+     }
+.fi
+ Then your new code might look like this: 
+.PP
+.nf
+     int main() {
+         int fd;
+
+         if (with_ggz) // typically determined by command-line option
+             fd = ggz_connect();
+         else          // if not using GGZ, use the old method
+             fd = connect_to_server();
+         ...
+     }
+.fi
 .PP
 Here is an example of how a GTK client may connect: 
 .PP
@@ -85,7 +129,7 @@ Disconnects from GGZ.
 .PP
 \fBReturns: \fR
 .in +1c
-0 on success; -1 on failure. 
+0 on success, -1 on failure. 
 .SS int ggz_get_sock (void)
 .PP
 Returns the GGZ TCP communications socket.
