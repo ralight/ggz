@@ -40,13 +40,13 @@ void GGZCoreModule::init(const char* game, const char* protocol, const char *eng
 
 void GGZCoreModule::setActive(const unsigned int number)
 {
-	m_module = ggzcore_module_get_nth_by_type(m_game, m_protocol, m_engine, number);
+	m_module = ggzcore_module_get_nth_by_type(m_game, m_engine, m_protocol, number);
 }
 
 unsigned int GGZCoreModule::count()
 {
 	if((!m_game) || (!m_protocol)) return 0;
-	return ggzcore_module_get_num_by_type(m_game, m_protocol, m_engine);
+	return ggzcore_module_get_num_by_type(m_game, m_engine, m_protocol);
 }
 
 int GGZCoreModule::add(const char* game, const char* version, const char* protocol, const char *engine, const char* author, const char* frontend, const char* url, const char* exe_path, const char* icon_path, const char* help_path)
