@@ -38,6 +38,7 @@ Gurucore *guru_module_init()
 
 	core = (Gurucore*)malloc(sizeof(Gurucore));
 
+	core->host = ggzcore_confio_read_string(handler, "preferences", "host", "localhost");
 	core->name = ggzcore_confio_read_string(handler, "preferences", "name", "guru/unnamed");
 	core->owner = ggzcore_confio_read_string(handler, "preferences", "owner", NULL);
 	core->autojoin = ggzcore_confio_read_int(handler, "preferences", "autojoin", 0);

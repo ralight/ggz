@@ -19,6 +19,7 @@ typedef void (*netoutputfunc)(Guru *output);
 
 struct gurucore_t
 {
+	char *host;
 	char *owner;
 	char *name;
 	void *nethandle;
