@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2659 2001-11-04 22:45:53Z bmh $
+ * $Id: ggzdmod.c 2665 2001-11-05 00:11:43Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -261,7 +261,7 @@ void ggzdmod_set_num_seats(GGZdMod * mod, int num_seats)
 
 	/* Initialize new seats (if any) */
 	for (seat = ggzdmod->num_seats; seat < num_seats; seat++) {
-		ggzdmod->seats[seat].num = seat - 1;
+		ggzdmod->seats[seat].num = seat;
 		ggzdmod->seats[seat].type = GGZ_SEAT_OPEN;
 		ggzdmod->seats[seat].name = NULL;
 		ggzdmod->seats[seat].fd = -1;
