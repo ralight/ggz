@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: chat.c 5515 2003-05-09 23:11:58Z dr_maux $
  *
  * This file contains all functions that are chat related.
  *
@@ -385,7 +385,7 @@ void chat_display_local(LocalChatType type,
 
 void chat_send(const gchar *message)
 {
-	int i;
+	unsigned int i;
 
 	if (strcmp(message, "") == 0)
 		return;
@@ -431,7 +431,7 @@ static void chat_send_prvmsg(GGZServer *server, const gchar *message)
 {
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	gchar *line, *name;
-	gint i;
+	guint i;
 
 	line = ggz_strdup(message);
 	
@@ -579,7 +579,7 @@ void chat_part(const gchar *player)
  */
 static void chat_help(GGZServer *server, const gchar *message)
 {
-	int i;
+	unsigned int i;
 
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, _("Chat Commands"));
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, _("-------------"));
@@ -658,7 +658,7 @@ int chat_checkurl(GtkXText *xtext, char *word)
 	}
 	if(dots == 3)
 	{
-		if (inet_addr(word) != -1)
+		if (inet_addr(word) != INADDR_NONE)
 			return WORD_HOST;
 	}
 
@@ -720,7 +720,7 @@ void chat_word_clicked(GtkXText *xtext, char *word,
 /* FIXME: Everything that calls this needs to free the memory */
 static const gchar *chat_get_color(const gchar *name, const gchar *msg)
 {
-	int pos;
+	unsigned int pos;
 	char *srv_handle;
 	int c;
 	static gchar color[16];

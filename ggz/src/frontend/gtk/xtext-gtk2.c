@@ -3371,7 +3371,7 @@ gtk_xtext_recalc_widths (xtext_buffer *buf, int do_str_width)
 int
 gtk_xtext_set_font (GtkXText *xtext, char *name)
 {
-	int i;
+	unsigned int i;
 	unsigned char c;
 
 	if (xtext->font)
