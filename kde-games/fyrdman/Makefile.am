@@ -22,13 +22,15 @@ noinst_HEADERS = \
 INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) $(LIBGGZMOD_INCLUDES)
 
 fyrdman_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS)
-fyrdman_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_GGZ) $(LIB_GGZMOD)
+fyrdman_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(KNEWSTUFF) $(LIB_GGZ) $(LIB_GGZMOD)
 
 AM_CXXFLAGS = -ggdb3
 
 METASOURCES = AUTO
 
 EXTRA_DIST = module.dsc.in
+
+kde_conf_DATA = fyrdmanrc
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force

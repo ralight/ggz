@@ -13,6 +13,7 @@
 #include <kstatusbar.h>
 #include <kmessagebox.h>
 #include <kdebug.h>
+#include <kiconloader.h>
 
 #include <qsocketnotifier.h>
 #include <qdir.h>
@@ -20,6 +21,10 @@
 #include <stdlib.h> // abs
 
 #include "config.h"
+
+#ifdef HAVE_KNEWSTUFF
+#include <knewstuff/downloaddialog.h>
+#endif
 
 MainWindow::MainWindow()
 : KMainWindow()
@@ -39,6 +44,10 @@ MainWindow::MainWindow()
 	gamemenu->insertItem(i18n("Information"), game_info);
 	gamemenu->insertItem(i18n("Synchronize"), game_sync);
 	gamemenu->insertSeparator();
+#ifdef HAVE_KNEWSTUFF
+	gamemenu->insertItem(KGlobal::iconLoader()->loadIcon("knewstuff", KIcon::Small), i18n("Get levels"), game_newlevels);
+	gamemenu->insertSeparator();
+#endif
 	gamemenu->insertItem(i18n("Quit"), game_quit);
 
 	gamemenu->setItemEnabled(game_info, false);
@@ -100,6 +109,11 @@ void MainWindow::slotMenu(int id)
 		case game_sync:
 			synchronize();
 			break;
+#ifdef HAVE_KNEWSTUFF
+		case game_newlevels:
+			KNS::DownloadDialog::open("ggz/fyrdman/level");
+			break;
+#endif
 		case game_quit:
 			if(network) network->shutdown();
 			kapp->quit();

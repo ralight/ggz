@@ -1,7 +1,7 @@
 dnl Configuration for GGZ-KDE-Games
 dnl ===============================
 
-AC_INIT([GGZ KDE games], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-kde-games])
+AC_INIT([GGZ KDE games], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-kde-games])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -17,6 +17,7 @@ AC_ENABLE_SHARED(yes)
 AC_ENABLE_STATIC(no)
 AM_PROG_LIBTOOL
 AC_PATH_KDE
+AC_KNEWSTUFF
 
 dnl KDE-what-have-I-done
 dnl ====================

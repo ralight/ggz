@@ -39,6 +39,7 @@ class MainWindow : public KMainWindow
 			game_new,
 			game_info,
 			game_sync,
+			game_newlevels,
 			game_quit,
 			option_map,
 			option_possession,
