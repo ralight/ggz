@@ -17,5 +17,6 @@ ltmain.sh
 missing
 mkinstalldirs
 stamp-h
+stamp-h1
 stamp-h.in
 acinclude.m4
