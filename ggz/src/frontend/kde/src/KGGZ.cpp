@@ -41,6 +41,7 @@
 #warning You are building the internal browser which sloooows things down :)
 #include "KGGZBrowser.h"
 #endif
+#include "KGGZGrubby.h"
 
 // KDE includes
 #include <kmessagebox.h>
@@ -81,6 +82,7 @@ KGGZ::KGGZ(QWidget *parent = NULL, char *name = NULL)
 	m_browser = NULL;
 #endif
 	m_motd = NULL;
+	m_grubby = NULL;
 
 	setBackgroundColor(QColor(0.0, 0.0, 0.0));
 
@@ -1315,3 +1317,27 @@ void KGGZ::slotLoadLogo()
 
 	delete module;
 }
+
+void KGGZ::menuGrubby()
+{
+	if(m_grubby) delete m_grubby;
+	m_grubby = new KGGZGrubby(NULL, "KGGZGrubby");
+	m_grubby->show();
+	connect(m_grubby, SIGNAL(signalAction(int)), SLOT(slotGrubby(int)));
+}
+
+void KGGZ::slotGrubby(int id)
+{
+	switch(id)
+	{
+		case KGGZGrubby::actionseen:
+			slotChat("grubby have you seen me", NULL, KGGZChat::RECEIVE_CHAT);
+			break;
+		case KGGZGrubby::actionbye:
+			KMessageBox::information(this, i18n("The pleasure has been on my side :)"), "Grubby");
+			break;
+		default:
+			KMessageBox::information(this, i18n("I don't know that command, sorry."), "Error!");
+	}
+}
+

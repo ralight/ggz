@@ -62,6 +62,7 @@ class KGGZSplash;
 #ifdef KGGZ_BROWSER
 class KGGZBrowser;
 #endif
+class KGGZGrubby;
 
 // Here comes KGGZ.
 class KGGZ : public QWidget
@@ -130,6 +131,8 @@ class KGGZ : public QWidget
 		void menuGameInfo();
 		// Change into the given room
 		void menuRoom(int room);
+		// Display the grubby dialog
+		void menuGrubby();
 
 		// Receive connection parameters
 		void slotConnected(const char *host, int port, const char *username, const char *password, int mode, int server);
@@ -137,6 +140,8 @@ class KGGZ : public QWidget
 		void slotChat(char *text, char *player, int mode);
 		// Launch a table
 		void slotLaunch();
+		// Send grubby requests
+		void slotGrubby(int id);
 
 	protected:
 		// Handle resizing
@@ -218,6 +223,8 @@ class KGGZ : public QWidget
 #endif
 		// Message of the day widget
 		KGGZMotd *m_motd;
+		// Grubby dialog
+		KGGZGrubby *m_grubby;
 };
 
 #endif

@@ -307,6 +307,7 @@ void KGGZBase::slotMenu(int id)
 			break;
 		case MENU_GAME_GRUBBY:
 			KGGZDEBUG("Aaaaargh.... ;)\n");
+			kggz->menuGrubby();
 			break;
 		case MENU_GAME_INFO:
 			kggz->menuGameInfo();
