@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 5318 2003-01-12 11:46:24Z dr_maux $
+dnl $Id: configure.in 5321 2003-01-12 11:54:38Z dr_maux $
 
 AC_INIT(configure.in)
 #AC_INIT(acinclude.m4)
@@ -199,6 +199,7 @@ AC_OUTPUT([Makefile
 	   chess/Makefile
 	   chess/module.dsc
 	   chess/libcgc/Makefile
+	   chess/bitmaps/Makefile
 	   po/Makefile
 	   ])
 
