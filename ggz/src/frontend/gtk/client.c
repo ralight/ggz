@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5094 2002-10-29 00:13:04Z jdorje $
+ * $Id: client.c 5095 2002-10-29 00:18:32Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -639,7 +639,6 @@ client_room_clist_event			(GtkWidget	*widget,
 				     &row, &column);
 	if (row < 0 || row >= numrooms)
 		return FALSE;
-	gtk_clist_select_row(GTK_CLIST(clist), row, column);
 
 	single_join = ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE);
 
@@ -659,6 +658,7 @@ client_room_clist_event			(GtkWidget	*widget,
 		} else if (buttonevent->button == 3) {
 			/* Right mouse button */
 			/* Create and display the menu */
+			gtk_clist_select_row(GTK_CLIST(clist), row, column);
 			menu = create_mnu_room(row);
 			gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
 					NULL, buttonevent->button, 0);
@@ -723,7 +723,6 @@ client_player_clist_event			(GtkWidget	*widget,
 					 gpointer	 data)
 {
 	gint row, column;
-	GtkWidget *menu;
 	GdkEventButton* buttonevent = (GdkEventButton*)event;
 	GtkWidget *clist = lookup_widget(win_main, "player_clist");
 
@@ -731,12 +730,10 @@ client_player_clist_event			(GtkWidget	*widget,
 				     buttonevent->x, 
 				     buttonevent->y,
 				     &row, &column);
-	gtk_clist_select_row(GTK_CLIST(clist), row, column);
 	if (row < 0 || row > GTK_CLIST(clist)->rows)
 		return FALSE;
 
-	switch(event->type) { 
-	case GDK_BUTTON_PRESS:
+	if (event->type == GDK_BUTTON_PRESS) {
 		/* Single click */
 		if (buttonevent->button == 3) {
 			/* Right mouse button */
@@ -744,15 +741,13 @@ client_player_clist_event			(GtkWidget	*widget,
 			const char* player = client_get_players_index(row);
 			int is_friend = chat_is_friend(player);
 			int is_ignore = chat_is_ignore(player);
+			GtkWidget *menu;
+			gtk_clist_select_row(GTK_CLIST(clist), row, column);
 			menu = create_mnu_player(row, is_friend, is_ignore);
 
 			gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
 					NULL, buttonevent->button, 0);
 		}
-		break;
-	default:
-		/* Some Other event */
-		break;
 	}
 
 	return FALSE;
