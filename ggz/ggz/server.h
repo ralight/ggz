@@ -59,10 +59,14 @@ typedef struct Server {
 
 void server_profiles_load(void);
 
+void server_profiles_save(void);
+
 void server_list_add(Server* server);
 
 GList* server_get_names(void);
 
 Server* server_get(gchar* name);
+
+void server_list_remove(gchar* name);
 
 #endif
