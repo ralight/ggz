@@ -3,7 +3,7 @@
  * Author: Jason Short
  * Project: GGZ Command-line Client
  * Date: 1/7/02
- * $Id: main.c 5255 2002-11-20 22:34:25Z dr_maux $
+ * $Id: main.c 5278 2002-12-09 13:09:17Z dr_maux $
  *
  * Main program code for ggz-cmd program.
  *
@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/time.h>
 
 #include <ggz.h>
 #include <ggzcore.h>
