@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 5065 2002-10-27 12:49:52Z jdorje $
+ * $Id: common.c 6077 2004-07-11 04:28:48Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -46,8 +46,6 @@
 #include "message.h"
 #include "net.h"
 #include "options.h"
-
-#include "ggz_stats.h"
 
 
 /* Global game variables */
@@ -470,11 +468,7 @@ void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 	   is also sent out in the sync, but there could be a better reason
 	   as well. */
 	net_broadcast_player_list();
-	
-	/* Update stats for this player */
-	if (game.stats)
-		ggzstats_reread(game.stats);
-	
+
 	if (is_join && new_seat.type == GGZ_SEAT_PLAYER) {
 		/* set the age of the player */
 		game.players[player].age = game.player_count;
@@ -621,17 +615,6 @@ void handle_gameover_event(int winner_cnt, player_t * winners)
 	player_t p;
 
 	ggz_debug(DBG_MISC, "Handling gameover event.");
-
-	if (game.rated && game.stats) {
-		int i;
-		/* calculate new player ratings */
-		ggzstats_new_game(game.stats);
-		for (i = 0; i < winner_cnt; i++)
-			ggzstats_set_game_winner(game.stats, winners[i],
-					     1.0 / (double) winner_cnt);
-		if (ggzstats_recalculate_ratings(game.stats) < 0)
-			ggz_error_msg("ERROR: couldn't recalculate ratings.");
-	}
 
 	{
 		int teams[game.num_players];
@@ -832,13 +815,6 @@ void init_game()
 	for (s = 0; s < game.num_seats; s++) {
 		game.seats[s].hand.cards =
 			ggz_malloc(game.max_hand_length * sizeof(card_t));
-	}
-	
-	game.stats = ggzstats_new(game.ggz);
-	if (game.stats && game.num_teams > 0) {
-		ggzstats_set_num_teams(game.stats, game.num_teams);
-		for (p = 0; p < game.num_players; p++)
-			ggzstats_set_team(game.stats, p, game.players[p].team);
 	}
 
 	set_global_message("", "%s", "");
