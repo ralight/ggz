@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2683 2001-11-07 03:37:23Z jdorje $
+ * $Id: ggzdmod.c 2691 2001-11-08 00:39:06Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -451,13 +451,13 @@ static void game_launch(_GGZdMod * ggzdmod)
 		if (es_read_int(ggzdmod->fd, &ggzdmod->seats[i].type) < 0)
 			return;
 		ggzdmod->seats[i].fd = -1;
-		if (ggzdmod->seats[i].type == GGZ_SEAT_RESV
-		    && es_read_string_alloc(ggzdmod->fd,
-					    &name))
-			return;
-		/* This is a hack so that we use libggz memory management for everything. */
-		ggzdmod->seats[i].name = ggz_strdup(name);
-		free(name);
+		if (ggzdmod->seats[i].type == GGZ_SEAT_RESV) {
+			if (es_read_string_alloc(ggzdmod->fd, &name) < 0)
+				return;
+			/* This is a hack so that we use libggz memory management for everything. */
+			ggzdmod->seats[i].name = ggz_strdup(name);
+			free(name);
+		}
 	}
 
 	for (i = 0; i < ggzdmod->num_seats; i++)
