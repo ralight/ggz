@@ -29,7 +29,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <netinet/in.h>
-#include <mcheck.h>
 
 #include <pthread.h>
 #include <errno.h>
@@ -101,11 +100,6 @@ int main(int argc, const char *argv[])
 	struct sockaddr_in addr;
 	int addrlen;
 	
-#ifdef DEBUG
-	/* Debug malloc if MALLOC_TRACE environ variable is set */
-	mtrace();
-#endif
-
 	/* Parse options */
 	parse_args(argc, argv);
 	parse_conf_file();
