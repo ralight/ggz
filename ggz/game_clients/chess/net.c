@@ -37,7 +37,7 @@ extern struct chess_info game_info;
 
 void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
   char op;
-  char args[2];
+  char args[6];
   int a = 0;
   char *names;
 
@@ -89,14 +89,17 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
     case CHESS_MSG_MOVE:
       printf("Got an MSG_MOVE\n");
       /* We got an move! */
-      es_read_char(fd, &args[0]);
+      es_read_string(fd, args, 6);
+      game_update(CHESS_EVENT_MOVE, args);
+      /*
       if (args[0] == -1) 
-        /* Invalid move */
+        /* Invalid move */ /*
         game_update(CHESS_EVENT_MOVE, NULL);
       else {
         es_read_char(fd, &args[1]);
         game_update(CHESS_EVENT_MOVE, args);
       }
+      */
       break;
     case CHESS_MSG_GAMEOVER:
       /* The game is over */
@@ -121,10 +124,13 @@ void net_send_time(int time_option) {
   es_write_int(game_info.fd, time_option);
 }
 
-void net_send_move(char from, char to) {
+void net_send_move(char *move) {
   es_write_char(game_info.fd, CHESS_REQ_MOVE);
+  es_write_string(game_info.fd, move);
+  /*
   es_write_char(game_info.fd, from);
   es_write_char(game_info.fd, to);
+  */
 }
 
 void net_send_draw() {

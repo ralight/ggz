@@ -277,6 +277,93 @@ create_clock_dialog (void)
   return clock_dialog;
 }
 
+
+GtkWidget*
+create_promote_dialog (void)
+{
+  GtkWidget *promote_dialog;
+  GtkWidget *dialog_vbox3;
+  GtkWidget *vbox2;
+  GSList *promote_group = NULL;
+  GtkWidget *queen;
+  GtkWidget *rook;
+  GtkWidget *bishop;
+  GtkWidget *knight;
+  GtkWidget *dialog_action_area3;
+  GtkWidget *ok;
+
+  promote_dialog = gtk_dialog_new ();
+  gtk_object_set_data (GTK_OBJECT (promote_dialog), "promote_dialog", promote_dialog);
+  gtk_window_set_title (GTK_WINDOW (promote_dialog), _("Promote"));
+  gtk_window_set_modal (GTK_WINDOW (promote_dialog), TRUE);
+  gtk_window_set_policy (GTK_WINDOW (promote_dialog), TRUE, TRUE, FALSE);
+
+  dialog_vbox3 = GTK_DIALOG (promote_dialog)->vbox;
+  gtk_object_set_data (GTK_OBJECT (promote_dialog), "dialog_vbox3", dialog_vbox3);
+  gtk_widget_show (dialog_vbox3);
+
+  vbox2 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox2);
+  gtk_object_set_data_full (GTK_OBJECT (promote_dialog), "vbox2", vbox2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox2);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox3), vbox2, TRUE, TRUE, 0);
+
+  queen = gtk_radio_button_new_with_label (promote_group, _("Queen"));
+  promote_group = gtk_radio_button_group (GTK_RADIO_BUTTON (queen));
+  gtk_widget_ref (queen);
+  gtk_object_set_data_full (GTK_OBJECT (promote_dialog), "queen", queen,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (queen);
+  gtk_box_pack_start (GTK_BOX (vbox2), queen, FALSE, FALSE, 0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (queen), TRUE);
+
+  rook = gtk_radio_button_new_with_label (promote_group, _("Rook"));
+  promote_group = gtk_radio_button_group (GTK_RADIO_BUTTON (rook));
+  gtk_widget_ref (rook);
+  gtk_object_set_data_full (GTK_OBJECT (promote_dialog), "rook", rook,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (rook);
+  gtk_box_pack_start (GTK_BOX (vbox2), rook, FALSE, FALSE, 0);
+
+  bishop = gtk_radio_button_new_with_label (promote_group, _("Bishop"));
+  promote_group = gtk_radio_button_group (GTK_RADIO_BUTTON (bishop));
+  gtk_widget_ref (bishop);
+  gtk_object_set_data_full (GTK_OBJECT (promote_dialog), "bishop", bishop,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (bishop);
+  gtk_box_pack_start (GTK_BOX (vbox2), bishop, FALSE, FALSE, 0);
+
+  knight = gtk_radio_button_new_with_label (promote_group, _("Knight"));
+  promote_group = gtk_radio_button_group (GTK_RADIO_BUTTON (knight));
+  gtk_widget_ref (knight);
+  gtk_object_set_data_full (GTK_OBJECT (promote_dialog), "knight", knight,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (knight);
+  gtk_box_pack_start (GTK_BOX (vbox2), knight, FALSE, FALSE, 0);
+
+  dialog_action_area3 = GTK_DIALOG (promote_dialog)->action_area;
+  gtk_object_set_data (GTK_OBJECT (promote_dialog), "dialog_action_area3", dialog_action_area3);
+  gtk_widget_show (dialog_action_area3);
+  gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area3), 10);
+
+  ok = gtk_button_new_with_label (_("Promote"));
+  gtk_widget_ref (ok);
+  gtk_object_set_data_full (GTK_OBJECT (promote_dialog), "ok", ok,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (ok);
+  gtk_box_pack_start (GTK_BOX (dialog_action_area3), ok, FALSE, FALSE, 0);
+
+  gtk_signal_connect (GTK_OBJECT (ok), "clicked",
+                      GTK_SIGNAL_FUNC (promote_piece),
+                      promote_dialog);
+  gtk_signal_connect_object_after (GTK_OBJECT (ok), "clicked",
+                                   GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                                   GTK_OBJECT (promote_dialog));
+
+  return promote_dialog;
+}
+
 /* Callbacks */
 
 void

@@ -24,6 +24,7 @@
 
 GtkWidget* create_draw_dialog (void);
 GtkWidget* create_clock_dialog (void);
+GtkWidget* create_promote_dialog (void);
 
 /* Callbacks */
 

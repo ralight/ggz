@@ -407,4 +407,136 @@ So, do you want do draw the game ?</label>
   </widget>
 </widget>
 
+<widget>
+  <class>GtkDialog</class>
+  <name>promote_dialog</name>
+  <title>Promote</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>True</modal>
+  <allow_shrink>True</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkVBox</class>
+    <child_name>Dialog:vbox</child_name>
+    <name>dialog-vbox3</name>
+    <homogeneous>False</homogeneous>
+    <spacing>0</spacing>
+
+    <widget>
+      <class>GtkHBox</class>
+      <child_name>Dialog:action_area</child_name>
+      <name>dialog-action_area3</name>
+      <border_width>10</border_width>
+      <homogeneous>True</homogeneous>
+      <spacing>5</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+	<pack>GTK_PACK_END</pack>
+      </child>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>ok</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>promote_piece</handler>
+	  <data>promote_dialog</data>
+	  <last_modification_time>Mon, 19 Feb 2001 11:15:26 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>clicked</name>
+	  <handler>gtk_widget_destroy</handler>
+	  <object>promote_dialog</object>
+	  <after>True</after>
+	  <last_modification_time>Mon, 19 Feb 2001 11:15:37 GMT</last_modification_time>
+	</signal>
+	<label>Promote</label>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkVBox</class>
+      <name>vbox2</name>
+      <homogeneous>False</homogeneous>
+      <spacing>0</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkRadioButton</class>
+	<name>queen</name>
+	<can_focus>True</can_focus>
+	<label>Queen</label>
+	<active>True</active>
+	<draw_indicator>True</draw_indicator>
+	<group>promote</group>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkRadioButton</class>
+	<name>rook</name>
+	<can_focus>True</can_focus>
+	<label>Rook</label>
+	<active>False</active>
+	<draw_indicator>True</draw_indicator>
+	<group>promote</group>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkRadioButton</class>
+	<name>bishop</name>
+	<can_focus>True</can_focus>
+	<label>Bishop</label>
+	<active>False</active>
+	<draw_indicator>True</draw_indicator>
+	<group>promote</group>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkRadioButton</class>
+	<name>knight</name>
+	<can_focus>True</can_focus>
+	<label>Knight</label>
+	<active>False</active>
+	<draw_indicator>True</draw_indicator>
+	<group>promote</group>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
+      </widget>
+    </widget>
+  </widget>
+</widget>
+
 </GTK-Interface>

@@ -26,7 +26,7 @@
 void net_send_time(int time_option);
 
 /* Send move to server */
-void net_send_move(char from, char to);
+void net_send_move(char *move);
 
 /* Request draw */
 void net_send_draw();

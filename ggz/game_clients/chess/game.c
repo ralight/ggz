@@ -94,17 +94,13 @@ void game_message(const char *format, ...) {
  * CHESS_EVENT_TIME_REQUEST -> NULL
  * CHESS_EVENT_TIME_OPTION -> time option
  * CHESS_EVENT_START -> NULL
- * CHESS_EVENT_MOVE_END -> arg[0] = (int)FROM_X
- *                         arg[1] = (int)FROM_Y
- *                         arg[2] = (int)TO_X
- *                         arg[3] = (int)TO_Y
- * CHESS_EVENT_MOVE -> arg[0] = (char)FROM
- *                     arg[1] = (char)TO
+ * CHESS_EVENT_MOVE_END -> arg = (str)MOVE
+ * CHESS_EVENT_MOVE -> arg = (str)MOVE
  * CHESS_EVENT_GAMEOVER -> arg[0] = (char)OVER_CODE
  *
  */
 void game_update(int event, void *arg) {
-  char move[5];
+  char move[6];
   int retval = 0;
   switch (event) {
     case CHESS_EVENT_INIT:
@@ -158,7 +154,8 @@ void game_update(int event, void *arg) {
     case CHESS_EVENT_MOVE_END:
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
-      net_send_move( *(int*)arg+(8**((int*)arg+1)), *((int*)arg+2)+(8**((int*)arg+3)));
+      net_send_move(arg);
+      //net_send_move( *(int*)arg+(8**((int*)arg+1)), *((int*)arg+2)+(8**((int*)arg+3)));
       game_message("Sending move to server...");
       break;
     case CHESS_EVENT_MOVE:
@@ -168,11 +165,14 @@ void game_update(int event, void *arg) {
         game_message("Invalid move!");
         break;
       }
+      /*
       move[0] = 65 + ((*(char*)arg)%8);
       move[1] = 49 + ( (*(char*)arg)/8 );
       move[2] = 65 + ((*((char*)arg+1))%8);
       move[3] = 49 + ((*((char*)arg+1))/8);
       move[4] = 0;
+      */
+      strncpy(move, arg, 6);
       game_message("Making move %s", move);
       game_info.check = FALSE;
       retval = cgc_make_move(game, move);

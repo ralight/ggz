@@ -12,10 +12,13 @@
 #include "libcgc/cgc.h"
 #include "main_win.h"
 #include "support.h"
+#include "popup.h"
 
 extern game_t *game;
 
 extern struct chess_info game_info;
+
+extern GtkWidget *main_win;
 
 extern GdkPixmap *board_buf;
 
@@ -133,6 +136,8 @@ on_board_drag_drop                     (GtkWidget       *widget,
                                         gpointer         user_data)
 {
   int arg[4];
+  char move[6];
+  int promote = 0;
 
   arg[0] = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_x"));
   arg[1] = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_y"));
@@ -140,8 +145,30 @@ on_board_drag_drop                     (GtkWidget       *widget,
   arg[2] = x / PIXSIZE;
   arg[3] = y / PIXSIZE;
 
-  if (cgc_valid_move(game, arg[0], arg[1], arg[2], arg[3], 0) == VALID)
-    game_update(CHESS_EVENT_MOVE_END, arg);
+  /* Should we promote ? */
+  if (game_info.seat == 0) {
+    /* We are white ! So we must go from 6 to 7 */
+    if (arg[1] == 6 && arg[3] == 7 && game->board[arg[0]][arg[1]] == W_PAWN)
+      promote = 1;
+  } else {
+    /* We are black ! So we must go from 1 to 0 */
+    if (arg[1] == 1 && arg[3] == 0 && game->board[arg[0]][arg[1]] == B_PAWN)
+      promote = 1;
+  }
+
+  move[0] = 65 + arg[0];
+  move[1] = 49 + arg[1];
+  move[2] = 65 + arg[2];
+  move[3] = 49 + arg[3];
+  move[4] = promote;
+  move[5] = 0;
+
+  if (!promote && cgc_valid_move(game, arg[0], arg[1], arg[2], arg[3], 0) == VALID) {
+    game_update(CHESS_EVENT_MOVE_END, move);
+  } else if (promote) {
+    gtk_object_set_data(GTK_OBJECT(main_win), "promote", g_strdup(move));
+    gtk_widget_show(create_promote_dialog());
+  }
 
   gtk_drag_source_unset(widget);
 

@@ -368,3 +368,37 @@ void board_info_add_move(char *move) {
   gtk_text_insert(GTK_TEXT(move_list), gtk_widget_get_style(move_list)->font, &gtk_widget_get_style(move_list)->black, &gtk_widget_get_style(move_list)->white, text, strlen(text)+1);
   free(text);
 }
+
+void
+promote_piece                          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  GtkWidget *widget;
+  char promote = 0;
+  char *move = gtk_object_get_data(GTK_OBJECT(main_win), "promote");
+  /* It's the queen ? */
+  widget = lookup_widget(user_data, "queen");
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
+    promote = 'Q';
+  /* It's the rook ? */
+  widget = lookup_widget(user_data, "rook");
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
+    promote = 'R';
+  /* It's the bishop ? */
+  widget = lookup_widget(user_data, "bishop");
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
+    promote = 'B';
+  /* It's the knight ? */
+  widget = lookup_widget(user_data, "knight");
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)))
+    promote = 'N';
+
+  /* Ok, update the move */
+  move[4] = promote;
+  move[5] = 0;
+
+  game_update(CHESS_EVENT_MOVE_END, move);
+  free(move);
+
+}
+
