@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2806 2001-12-08 06:20:10Z jdorje $
+ * $Id: ggzdmod.c 2813 2001-12-09 02:23:45Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -85,6 +85,10 @@ static void call_handler(_GGZdMod *mod, GGZdModEvent event, void *data)
 {
 	if (mod->handlers[event])
 		(*mod->handlers[event]) (mod, event, data);
+	else {
+		char *which = mod->type == GGZDMOD_GAME ? "game" : "ggz";
+		ggzdmod_log(mod, "GGZDMOD: unhandled event %d by %s.", event, which);
+	}
 }
 
 
@@ -1011,7 +1015,7 @@ void _ggzdmod_handle_launch_end(_GGZdMod * mod)
 void _ggzdmod_handle_join(_GGZdMod * mod, GGZSeat seat)
 {
 	_ggzdmod_set_seat(mod, &seat);
-	ggzdmod_log(mod, "GGZDMOD: %s on %d in seat %d", seat.name, seat.fd, 
+	ggzdmod_log(mod, "GGZDMOD: %s on fd %d in seat %d", seat.name, seat.fd,
 		    seat.num);
 	
 	call_handler(mod, GGZDMOD_EVENT_JOIN, &seat.num);
