@@ -6,7 +6,7 @@
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
-		GGZ Community Database: Games
+		GGZ Community: Running Games
 		<span class="itemleader"> :: </span>
 		<a name="database"></a>
 	</h1>
