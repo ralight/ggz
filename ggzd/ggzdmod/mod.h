@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 4947 2002-10-18 22:46:42Z jdorje $
+ * $Id: mod.h 4949 2002-10-19 00:34:05Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -38,7 +38,7 @@
 
 /* The number of event handlers there are. */
 /* FIXME: hard-coding this is a sure way to get bugs! */
-#define GGZDMOD_NUM_EVENTS 10
+#define GGZDMOD_NUM_EVENTS (GGZDMOD_EVENT_ERROR + 1)
 
 /* This is the actual structure, but it's only visible internally. */
 struct GGZdMod {
@@ -71,11 +71,8 @@ void _ggzdmod_handle_log(GGZdMod * ggzdmod, char *msg);
 void _ggzdmod_handle_launch_begin(GGZdMod * ggzdmod, int num_seats, int num_spectators);
 void _ggzdmod_handle_launch_seat(GGZdMod * ggzdmod, GGZSeat seat);
 void _ggzdmod_handle_launch_end(GGZdMod * ggzdmod);
-void _ggzdmod_handle_join(GGZdMod * ggzdmod, GGZSeat seat);
-void _ggzdmod_handle_leave(GGZdMod * ggzdmod, char *name);
-void _ggzdmod_handle_seat(GGZdMod * ggzdmod, GGZSeat seat);
-void _ggzdmod_handle_spectator_join(GGZdMod * ggzdmod, GGZSpectator spectator);
-void _ggzdmod_handle_spectator_leave(GGZdMod * ggzdmod, char *name);
+void _ggzdmod_handle_seat(GGZdMod * ggzdmod, GGZSeat *seat);
+void _ggzdmod_handle_spectator_seat(GGZdMod * ggzdmod, GGZSpectator *seat);
 void _ggzdmod_handle_state_response(GGZdMod * ggzdmod);
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 4947 2002-10-18 22:46:42Z jdorje $
+ * $Id: protocol.h 4949 2002-10-19 00:34:05Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -75,53 +75,34 @@ typedef enum {
 	 */
 	MSG_GAME_LAUNCH,
 
-	/** @brief Signals the start of a REQ_GAME_JOIN packet.
-	 *
-	 *  The packet is composed of:
-	 *    - An integer containing REQ_GAME_JOIN.
-	 *    - An integer containing the seat number of the joining
-	 *      player.
-	 *    - An easysock-formatted string contining the player's name.
-	 *    - An easysock-formatted FD containing the FD for the
-	 *      player's client socket.
-	 *  This packet is sent any time a player joins the table.  It
-	 *  gives the table all of the information it needs about the
-	 *  player.  The table should send a RSP_GAME_JOIN packet in
-	 *  response.
-	 */
-	REQ_GAME_JOIN,
-
-	/** @brief Signals the start of a REQ_GAME_LEAVE packet.
-	 *
-	 *  The packet is composed of:
-	 *    - An integer containing REQ_GAME_LEAVE.
-	 *    - An easysock-formatted string contining the player's name.
-	 *  This packet is sent any time a player leaves the table.  The
-	 *  table (GGZdMod-game) is responsible for finding and removing
-	 *  the player.  The table should send a RSP_GAME_LEAVE packet
-	 *  in response.
-	 */
-	REQ_GAME_LEAVE,
-
-	REQ_GAME_SPECTATOR_JOIN,
-	REQ_GAME_SPECTATOR_LEAVE,
-
 	/** @brief Signals the start of a REQ_GAME_SEAT packet.
 	 *
 	 *  The packet is composed of:
-	 *    - An integer containing REQ_GAME_SEAT.
-	 *    - An integer containing the seat number of the joining
-	 *      player.
-	 *    - An easysock-formatted string contining the player's name
-	 *      if the seat is a player or a reservation
+	 *    - An integer containing MSG_GAME_SEAT.
+	 *    - An integer containing the seat number of the changed seat.
+	 *    - An integer containing the GGZ_SEAT_TYPE.
+	 *    - An easysock-formatted string contining the player's name,
+	 *      or "" if the player has no name.
 	 *    - An easysock-formatted FD containing the FD for the
-	 *      player's client socket if the seat is a player
+	 *      player's client socket, IF the seat is a player
 	 *  This packet is sent any time a seat is modified.  It gives
 	 *  the table all of the information it needs about the new
-	 *  seat.  The table should send a RSP_GAME_SEAT packet in
-	 *  response.  
+	 *  seat.
 	 */
-	REQ_GAME_SEAT,
+	MSG_GAME_SEAT,
+
+	/** @brief Signals the start of a MSG_GAME_SPECTATOR_SEAT packet.
+	 *
+	 *  The packet is composed of:
+	 *    - An integer containing MSG_GAME_SPECTATOR_SEAT.
+	 *    - An integer containing the spectator seat number of the
+	 *      changed spectator.
+	 *    - An easysock-formatted string containing the spectator's name,
+	 *      or "" for an empty seat.
+	 *    - An easysock-formatted FD containing thee FD for the
+	 *      spectator's client socket, IF the spectator seat is occupied.
+	 */
+	MSG_GAME_SPECTATOR_SEAT,
 
 	/** @brief Signals the start of a RSP_GAME_STATE packet.
 	 *

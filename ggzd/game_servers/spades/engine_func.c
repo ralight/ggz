@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/30/97
- * $Id: engine_func.c 4947 2002-10-18 22:46:42Z jdorje $
+ * $Id: engine_func.c 4949 2002-10-19 00:34:05Z jdorje $
  *
  * This file contains the support functions for the spades engines.
  *
@@ -192,9 +192,7 @@ void SortHands( Card hands[4][13] ) {
 void GetGameInfo( void ) {
 	
 	int i, j, op, status = 0;
-	int seat;
 	GGZdModState state;
-	char* name;
 	
 	/* FIXME: manual connection to GGZ */
 	gameInfo.ggz_sock = 3;
@@ -221,38 +219,32 @@ void GetGameInfo( void ) {
 	while (open_seats > 0) {
 		ReadIntOrDie(gameInfo.ggz_sock, &op);
 
-		switch(op) {
-		case REQ_GAME_JOIN:
+		if (op == MSG_GAME_SEAT) {
+			int seat;
+			int type;
 			ReadIntOrDie(gameInfo.ggz_sock, &seat);
-			if (gameInfo.playerSock[seat] != SOCK_INVALID) {
-				err_msg("Player joined on invalid seat %d.",
-					seat);
-				/* Not fatal - hopefully. */
-			}
-			readstring(gameInfo.ggz_sock, &gameInfo.players[seat]);
-			ggz_read_fd(gameInfo.ggz_sock, &gameInfo.playerSock[seat]);
-			dbg_msg("%s on %d in seat %d", gameInfo.players[seat]
-				,gameInfo.playerSock[seat], seat);
-			open_seats--;
-			break;
-		case REQ_GAME_LEAVE:
-			readstring(gameInfo.ggz_sock, &name);
-			for (i=0; i<4; i++)
-				if (!strcmp(name, gameInfo.players[i]))
-					break;
-			if (i == 4) {/* Player not found */
-				err_msg("Invalid player %s left game.",
-					name);
-				/* Not a fatal error, hopefully. */
-			} else {
-				gameInfo.playerSock[i] = SOCK_INVALID;
+			ReadIntOrDie(gameInfo.ggz_sock, &type);
+			if (gameInfo.playerSock[seat] >= 0 
+			    || gameInfo.playerSock[seat] == SOCK_COMP)
 				open_seats++;
-				status = 0;
+			readstring(gameInfo.ggz_sock, &gameInfo.players[seat]);
+			if (gameInfo.players[seat][0] == '\0') {
+				free(gameInfo.players[seat]);
+				gameInfo.players[seat] = NULL;
 			}
-			dbg_msg("Removed %s from seat %d",
-				gameInfo.players[i], i);
-			break;
-		}
+			if (type == GGZ_SEAT_PLAYER || type == GGZ_SEAT_BOT)
+				open_seats--;
+			if (type == GGZ_SEAT_PLAYER)
+				ggz_read_fd(gameInfo.ggz_sock,
+					    &gameInfo.playerSock[seat]);
+			else
+				gameInfo.playerSock[seat] = SOCK_INVALID;
+			dbg_msg("%s on %d in seat %d", gameInfo.players[seat],
+				gameInfo.playerSock[seat], seat);
+		} else if (op == RSP_GAME_STATE) {
+			/* Nothing */
+		} else
+			err_msg_exit("Received unknown op %d.", op);
 	}
 
 	/* Tell GGZ that we're playign now */

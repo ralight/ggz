@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 4519 2002-09-11 23:02:30Z jdorje $
+ * $Id: ggzdmod.h 4949 2002-10-19 00:34:05Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -250,6 +250,15 @@ typedef enum {
 	 *  @note This may be dropped in favor of the SEAT event */
 	GGZDMOD_EVENT_LEAVE,
 
+	/** @brief General seat change
+	 *  This event occurs when a seat change other than a player
+	 *  leave/join happens (which is currently impossible).  The
+	 *  old seat (a GGZSeat*) is passed as the event's data.  The
+	 *  seat information will be updated before the event is invoked.
+	 *  @note This is currently unused, but may eventually replace JOIN and LEAVE.
+	 */
+	GGZDMOD_EVENT_SEAT,
+
 	/** @brief A spectator joins the game.
 	 *  The data of the old spectator (GGZSpectator*) is passed as the
 	 *  data for the event.  It can be assumed that the spectator seat
@@ -262,14 +271,11 @@ typedef enum {
 	 *  which is passed as the event data. */
 	GGZDMOD_EVENT_SPECTATOR_LEAVE,
 
-	/** @brief General seat change
-	 *  This event occurs when a seat change other than a player
-	 *  leave/join happens (which is currently impossible).  The
-	 *  old seat (a GGZSeat*) is passed as the event's data.  The
-	 *  seat information will be updated before the event is invoked.
-	 *  @note This is currently unused, but may eventually replace JOIN and LEAVE.
-	 */
-	GGZDMOD_EVENT_SEAT,
+	/** @brief A spectator seat changed.
+	 *  The old spectator data can be obtained via the (GGZSpectator*)
+	 *  which is passed as the event data.  This may someday replace
+	 *  both SPECTATOR_JOIN and SPECTATOR_LEAVE. */
+	GGZDMOD_EVENT_SPECTATOR_SEAT,
 
 	/** @brief Module log request
 	 *  This event occurs when a log request happens.  This will
