@@ -9,6 +9,25 @@
 
 #define BUFSIZE 100
 
+void chat_connect(char *host, int port)
+{
+	net_host(host);
+	net_login("guest34", NULL);
+}
+
+int chat_getserver()
+{
+	char *server;
+	int ret;
+
+	server = (char*)malloc(128);
+	ret = read(0, server, 128);
+	if(ret < 1) return -1;
+	if((ret > 0) && (server[ret - 1] == '\n')) server[ret - 1] = 0;
+	if((ret > 1) && (server[ret - 2] == '\r')) server[ret - 2] = 0;
+	return atoi(server);
+}
+
 char **chat_list(char *buffer)
 {
 	static char **list = NULL;

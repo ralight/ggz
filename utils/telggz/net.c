@@ -33,7 +33,7 @@ void net_login(char *username, char *password)
 	if(password) m_password = strdup(password);
 
 	if(!host) host = "localhost";
-	ggzcore_server_set_hostinfo(server, host, 5688);
+	ggzcore_server_set_hostinfo(server, host, 5688, 0); /*4th argument is for tls*/
 	ggzcore_server_connect(server);
 }
 
@@ -88,6 +88,7 @@ GGZHookReturn net_hook_failure(unsigned int id, void *event_data, void *user_dat
 {
 	printf("TelGGZ: Error! Hook error\n");
 	fflush(NULL);
+	exit(-1);
 
 	return GGZ_HOOK_OK;
 }
