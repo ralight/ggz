@@ -110,7 +110,7 @@ on_board_drag_motion                   (GtkWidget       *widget,
   f_y = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_y"));
   t_x = x / PIXSIZE;
   t_y = y / PIXSIZE;
-  retval = cgc_valid_move(game, f_x, f_y, t_x, t_y);
+  retval = cgc_valid_move(game, f_x, f_y, t_x, t_y, 0);
   if (retval == VALID) {
     game_info.dest_x = t_x;
     game_info.dest_y = t_y;
@@ -140,7 +140,7 @@ on_board_drag_drop                     (GtkWidget       *widget,
   arg[2] = x / PIXSIZE;
   arg[3] = y / PIXSIZE;
 
-  if (cgc_valid_move(game, arg[0], arg[1], arg[2], arg[3]) == VALID)
+  if (cgc_valid_move(game, arg[0], arg[1], arg[2], arg[3], 0) == VALID)
     game_update(CHESS_EVENT_MOVE_END, arg);
 
   gtk_drag_source_unset(widget);
