@@ -1,7 +1,7 @@
 //
 //    Keepalive Control
 //
-//    Copyright (C) 2002 Josef Spillner <dr_maux@users.sourceforge.net>
+//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -31,13 +31,14 @@ int main(int argc, char **argv)
 
 	about = new KAboutData("keepalivecontrol",
 		I18N_NOOP("Keepalive Control"),
-		VERSION,
+		"0.1",
 		I18N_NOOP("Keepalive Server Control Tool"),
 		KAboutData::License_GPL,
-		"Copyright (C) 2002 Josef Spillner",
+		"Copyright (C) 2002, 2003 Josef Spillner",
 		QString::null,
 		"http://ggz.sourceforge.net/games/keepalive/",
-		"dr_maux@users.sourceforge.net");
+		"josef@ggzgamingzone.org");
+	about->addAuthor("Josef Spillner", I18N_NOOP("Development"), "josef@ggzgamingzone.org", "http://mindx.dyndns.org");
 
 	KCmdLineArgs::init(argc, argv, about);
 

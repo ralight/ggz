@@ -1,7 +1,7 @@
 //
 //    Keepalive Control
 //
-//    Copyright (C) 2002 Josef Spillner <dr_maux@users.sourceforge.net>
+//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 #include <qdatastream.h>
 
 Connection::Connection(QWidget *parent, const char *name)
-: QWidget(parent, name)
+: QDialog(parent, name, true)
 {
 	QVBoxLayout *vbox;
 	QHBoxLayout *hbox;
@@ -171,7 +171,7 @@ void Connection::slotInput()
 					KMessageBox::information(this, i18n("Authorization successful."), i18n("Authorization"));
 					sock->disconnect();
 					emit signalLogin(sock);
-					close();
+					accept();
 				}
 				else if(opcode == option_unauthorized)
 				{

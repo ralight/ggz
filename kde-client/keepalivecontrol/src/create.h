@@ -1,7 +1,7 @@
 //
 //    Keepalive Control
 //
-//    Copyright (C) 2002 Josef Spillner <dr_maux@users.sourceforge.net>
+//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -20,11 +20,11 @@
 #ifndef KEEPALIVE_CONTROL_CREATE_H
 #define KEEPALIVE_CONTROL_CREATE_H
 
-#include <qwidget.h>
+#include <qdialog.h>
 
 class QLineEdit;
 
-class Create : public QWidget
+class Create : public QDialog
 {
 	Q_OBJECT
 	public:

@@ -1,7 +1,7 @@
 //
 //    Keepalive Control
 //
-//    Copyright (C) 2002 Josef Spillner <dr_maux@users.sourceforge.net>
+//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -29,8 +29,6 @@ Toplevel::Toplevel()
 : KMainWindow()
 {
 	KPopupMenu *menu_file;
-
-	m_connect = NULL;
 
 	m_app = new App(this);
 	setCentralWidget(m_app);
@@ -61,13 +59,16 @@ void Toplevel::slotMenu(int id)
 			close();
 			break;
 		case menuconnect:
-			if(!m_connect)
-			{
-				m_connect = new Connection();
-				connect(m_connect, SIGNAL(signalLogin(QSocket*)), m_app, SLOT(slotLogin(QSocket*)));
-			}
-			m_connect->show();
+			connection();
 			break;
 	}
+}
+
+void Toplevel::connection()
+{
+	Connection c(this);
+
+	connect(&c, SIGNAL(signalLogin(QSocket*)), m_app, SLOT(slotLogin(QSocket*)));
+	c.exec();
 }
 

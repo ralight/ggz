@@ -1,7 +1,7 @@
 //
 //    Keepalive Control
 //
-//    Copyright (C) 2002 Josef Spillner <dr_maux@users.sourceforge.net>
+//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@ class QSocket;
 class QDataStream;
 class QListViewItem;
 class QPopupMenu;
-class Create;
 
 class App : public QWidget
 {
@@ -58,9 +57,9 @@ class App : public QWidget
 		QSocket *m_sock;
 		QDataStream *s;
 		QPopupMenu *popup;
-		Create *m_create;
 		QListViewItem *commanditem;
 		int commandnumber;
+		QString world;
 };
 
 #endif

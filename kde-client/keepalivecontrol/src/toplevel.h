@@ -1,7 +1,7 @@
 //
 //    Keepalive Control
 //
-//    Copyright (C) 2002 Josef Spillner <dr_maux@users.sourceforge.net>
+//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 #include <kmainwindow.h>
 
 class App;
-class Connection;
 
 class Toplevel : public KMainWindow
 {
@@ -31,6 +30,8 @@ class Toplevel : public KMainWindow
 	public:
 		Toplevel();
 		~Toplevel();
+
+		void connection();
 
 	public slots:
 		void slotMenu(int id);
@@ -43,7 +44,6 @@ class Toplevel : public KMainWindow
 		};
 
 		App *m_app;
-		Connection *m_connect;
 };
 
 #endif

@@ -1,7 +1,7 @@
 //
 //    Keepalive Control
 //
-//    Copyright (C) 2002 Josef Spillner <dr_maux@users.sourceforge.net>
+//    Copyright (C) 2002, 2003 Josef Spillner <josef@ggzgamingzone.org>
 //
 //    This program is free software; you can redistribute it and/or modify
 //    it under the terms of the GNU General Public License as published by
@@ -39,9 +39,10 @@ App::App(QWidget *parent, const char *name)
 	KStandardDirs d;
 
 	popup = NULL;
-	m_create = NULL;
 	commanditem = NULL;
 	commandnumber = -1;
+
+	s = NULL;
 
 	m_list = new KListView(this);
 	m_list->addColumn(i18n("Server content"));
@@ -95,8 +96,8 @@ void App::slotInput()
 	const int command_failure = 12;
 	const int option_worlds = 2;
 	const int option_avatars = 1;
-	const int option_normal = 5;
-	const int option_frozen = 6;
+	//const int option_normal = 5;
+	//const int option_frozen = 6;
 	unsigned char type;
 	unsigned char opcode;
 	short length;
@@ -154,9 +155,9 @@ void App::slotInput()
 				switch(commandnumber)
 				{
 					case menucreate:
-						if((commanditem) && (m_create))
+						if(commanditem)
 						{
-							tmp = new QListViewItem(commanditem, m_create->world());
+							tmp = new QListViewItem(commanditem, world);
 							tmp->setPixmap(0, normalworld);
 						}
 						break;
@@ -233,12 +234,7 @@ void App::slotItem(int id)
 	switch(id)
 	{
 		case menucreate:
-			if(!m_create)
-			{
-				m_create = new Create();
-				connect(m_create, SIGNAL(signalWorld(QString)), SLOT(slotCreate(QString)));
-			}
-			m_create->show();
+			slotCreate(QString::null);
 			break;
 		case menuban:
 			// ???
@@ -283,6 +279,20 @@ void App::slotCreate(QString world)
 	const int type_admin = 16;
 	const int command_createworld = 6;
 	int length;
+	int ret;
+
+	if(!s) return;
+
+	if(world.isNull())
+	{
+		Create c(this);
+		ret = c.exec();
+		if(ret == QDialog::Accepted)
+		{
+			world = c.world();
+		}
+		else return;
+	}
 	
 	length = 6;
 
