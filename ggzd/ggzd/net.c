@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.c 2472 2001-09-14 00:04:35Z bmh $
+ * $Id: net.c 2473 2001-09-14 00:23:14Z bmh $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -545,7 +545,7 @@ int net_send_table_update(GGZNetIO *net, unsigned char opcode, GGZTable *table, 
 
 	switch (opcode) {
 	case GGZ_UPDATE_DELETE:
-		net_send_table(net, table);
+		_net_send_table_status(net, table);
 		break;
 	case GGZ_UPDATE_ADD:
 		net_send_table(net, table);
