@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 05/04/2002 (code moved from control.c)
  * Desc: General utility functions for ggzd
- * $Id: util.c 4501 2002-09-10 06:42:12Z jdorje $
+ * $Id: util.c 4573 2002-09-16 04:28:11Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -36,12 +36,14 @@
 #include "err_func.h"
 #include "util.h"
 
+static GGZReturn make_path(const char* full, mode_t mode);
+
 /*
  * Given a path and a mode, we create the given directory.  This
  * is called only if we've determined the directory doesn't
  * already exist.
  */
-static int make_path(const char* full, mode_t mode)
+static GGZReturn make_path(const char* full, mode_t mode)
 {
 	const char* slash = "/";
 	char *dir, *copy;
@@ -61,10 +63,10 @@ static int make_path(const char* full, mode_t mode)
 		strcat(strcat(path, "/"), dir);
 		if (mkdir(path, mode) < 0
 		    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode)))
-			return -1;
+			return GGZ_ERROR;
 	}
 
-	return 0;
+	return GGZ_OK;
 }
 
 
@@ -84,7 +86,7 @@ void check_path(const char* full_path)
 	if ( (dir = opendir(full_path)) == NULL) {
 		dbg_msg(GGZ_DBG_CONFIGURATION,
 			"Couldn't open %s -- trying to create", full_path);
-		if (make_path(full_path, S_IRWXU) < 0)
+		if (make_path(full_path, S_IRWXU) != GGZ_OK)
 			err_sys_exit("Couldn't create %s", full_path);
 	} else /* Everything eas OK, so close it */
 		closedir(dir);
