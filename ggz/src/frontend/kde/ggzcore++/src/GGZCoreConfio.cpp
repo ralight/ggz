@@ -67,3 +67,10 @@ int GGZCoreConfio::commit()
 {
 	return ggz_conf_commit(m_confio);
 }
+
+void GGZCoreConfio::free(void *ptr)
+{
+	//ggz_free(ptr);
+	_ggz_free(ptr, " * " __FILE__,  __LINE__);
+}
+

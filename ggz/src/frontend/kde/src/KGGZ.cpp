@@ -296,6 +296,7 @@ void KGGZ::menuServerLaunch()
 	}
 
 	result = KGGZCommon::launchProcess("ggzd", process);
+	GGZCoreConfio::free(process);
 
 	switch(result)
 	{

@@ -62,6 +62,9 @@ class GGZCoreConfio
 		/** Commit all write changes. */
 		int commit();
 
+		/** Free allocated memory */
+		static void free(void *ptr);
+
 	private:
 		int m_confio;
 };

@@ -275,9 +275,9 @@ void KGGZConnect::slotLoadProfile(int profile)
 		{
 			if(strcmp(list[j], listentry))
 				profile_select->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/server.png"), list[j]);
-			free(list[j]);
+			GGZCoreConfio::free(list[j]);
 		}
-		if(list) free(list);
+		if(list) GGZCoreConfio::free(list);
 		if(i == 0) modifyServerList(i18n("Default CVS Developer Server"), 1);
 	}
 	else listentry = profile_select->text(profile);
@@ -313,10 +313,10 @@ void KGGZConnect::slotLoadProfile(int profile)
 	slotModes(type);
 
 	// free allocated memory
-	if(host) free(host);
-	if(port) free(port);
-	if(username) free(username);
-	if(password) free(password);
+	if(host) GGZCoreConfio::free(host);
+	if(port) GGZCoreConfio::free(port);
+	if(username) GGZCoreConfio::free(username);
+	if(password) GGZCoreConfio::free(password);
 
 	// get rid of the configuration object
 	delete config;
@@ -477,10 +477,10 @@ void KGGZConnect::modifyServerList(const char *server, int mode)
 	delete config;
 
 	for(int j = 0; j < i; j++)
-		free(list[j]);
+		GGZCoreConfio::free(list[j]);
 	for(int j = 0; j < number; j++)
 		free(list2[j]);
-	if(list) free(list);
+	if(list) GGZCoreConfio::free(list);
 	if(list2) free(list2);
 }
 
