@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 4274 2002-06-23 19:49:15Z dr_maux $
+ * $Id: ggz.h 4346 2002-08-07 16:16:54Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -956,6 +956,19 @@ void ggz_debug_disable(const char *type);
  */
 void ggz_debug(const char *type, const char *fmt, ...)
                ggz__attribute((format(printf, 2, 3)));
+
+/** @brief Log a notice message.
+ *
+ *  This function is nearly identical to ggz_debug, except that if the
+ *  debugging output ends up passed to the debug handler function,
+ *  the priority will be LOG_NOTICE instead of LOG_DEBUG.  This is only
+ *  of interest to a few programs.
+ *  @param type The "type" of debugging (similar to a loglevel).
+ *  @param fmt A printf-style format string
+ *  @see ggz_debug, ggz_debug_set_func
+ */
+void ggz_log(const char *type, const char *fmt, ...)
+             ggz__attribute((format(printf, 2, 3)));
 
 /**
  * @brief Log a syscall error.

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 4145 2002-05-03 07:54:20Z jdorje $
+ * $Id: msg.c 4346 2002-08-07 16:16:54Z jdorje $
  *
  * Debug and error messages
  *
@@ -116,21 +116,34 @@ void ggz_debug_disable(const char *type)
 }
 
 
-void ggz_debug(const char *type, const char *fmt, ...)
+static void debug_doit(int priority,
+                       const char *type, const char *fmt,
+                       va_list ap)
 {
-	va_list ap;
-	const char *prefix;
-  
 	if (debug_enabled) {
 		/* If type list exists, see if type was enabled...*/
 		if (debug_types && ggz_list_search(debug_types, (char*)type)) {
-			prefix = type;
-			
-			va_start(ap, fmt);
-			err_doit(LOG_DEBUG, prefix, fmt, ap, 0);
-			va_end(ap);
+			err_doit(priority, type, fmt, ap, 0);
 		}
 	}
+}
+
+
+void ggz_debug(const char *type, const char *fmt, ...)
+{
+	va_list ap;
+	va_start(ap, fmt);
+	debug_doit(LOG_DEBUG, type, fmt, ap);
+	va_end(ap);
+}
+
+
+void ggz_log(const char *type, const char *fmt, ...)
+{
+	va_list ap;
+	va_start(ap, fmt);
+	debug_doit(LOG_NOTICE, type, fmt, ap);
+	va_end(ap);
 }
 
 
