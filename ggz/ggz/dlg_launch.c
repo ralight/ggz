@@ -790,7 +790,7 @@ void launch_reserved_toggle(GtkWidget* button, GtkWidget *entry)
 {
         if (GTK_TOGGLE_BUTTON(button)->active) {
 		gtk_entry_set_editable (GTK_ENTRY (entry), TRUE);
-		gtk_widget_grab_focus(GTK_ENTRY(entry));
+		gtk_widget_grab_focus(entry);
         }else{
 		gtk_entry_set_text (GTK_ENTRY (entry), "");
 		gtk_entry_set_editable (GTK_ENTRY (entry), FALSE);

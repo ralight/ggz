@@ -550,11 +550,6 @@ void handle_list_tables(int op, int fd)
 		es_read_char(fd, &table.playing);
 		es_read_int(fd, &num);
 		
-		connect_msg("[%s] Type %d\n", opcode_str[op],table.type_index);
-		connect_msg("[%s] Playing %d\n",opcode_str[op], table.playing);
-		connect_msg("[%s] Seats %d\n", opcode_str[op], num);
-		connect_msg("[%s] Desc %s\n", opcode_str[op], table.desc);
-		
 		for (j = 0; j < num; j++) {
 			es_read_int(fd, &table.seats[j]);
 			if (table.seats[j] >= 0
@@ -564,7 +559,13 @@ void handle_list_tables(int op, int fd)
 		for (j = num; j < MAX_TABLE_SIZE; j++)
 			table.seats[j] = GGZ_SEAT_NONE;
 		
-		es_read_string(fd, &table.desc);
+		es_read_string(fd, table.desc);
+
+		connect_msg("[%s] Type: %d\n", opcode_str[op],table.type_index);
+		connect_msg("[%s] Playing: %d\n",opcode_str[op], table.playing);
+		connect_msg("[%s] Seats: %d\n", opcode_str[op], num);
+		connect_msg("[%s] Desc: %s\n", opcode_str[op], table.desc);
+		
 		add_table_list(table);
 	}
 

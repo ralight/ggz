@@ -657,11 +657,6 @@ void ggz_table_select_row_callback(GtkWidget *widget, gint row, gint column,
 
 void ggz_get_game_options(GtkButton * button, gpointer user_data)
 {
-                
-        GtkWidget *temp_widget;
-        GList *combo_items = NULL;
-        int count;
-                
         if (!connection.connected)
                 warn_dlg("Not connected!");
         else {
