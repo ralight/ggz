@@ -272,7 +272,7 @@ GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_d
 	char *player;
 
 	player = (char*)event_data;
-	printf(">> ENTER: %s\n", player);
+	/*printf(">> ENTER: %s\n", player);*/
 	net_internal_queueadd(player, NULL, GURU_ENTER);
 	status = NET_INPUT;
 	return GGZ_HOOK_OK;
@@ -284,7 +284,7 @@ GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_d
 	char *player;
 
 	player = (char*)event_data;
-	printf("<< LEAVE: %s\n", player);
+	/*printf("<< LEAVE: %s\n", player);*/
 	net_internal_queueadd(player, NULL, GURU_LEAVE);
 	status = NET_INPUT;
 	return GGZ_HOOK_OK;
