@@ -14,7 +14,7 @@
 
 /* Net function handlers */
 typedef void (*netconnectfunc)(const char *host, int port, const char *name, const char *guestname);
-typedef void (*netjoinfunc)(int room);
+typedef void (*netjoinfunc)(const char *room);
 typedef int (*netstatusfunc)(void);
 typedef Guru* (*netinputfunc)(void);
 typedef void (*netoutputfunc)(Guru *output);

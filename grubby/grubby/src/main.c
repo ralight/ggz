@@ -20,7 +20,7 @@
 static int admin(Guru *guru, Gurucore *core)
 {
 	int i;
-	int room;
+	char *room;
 	int valid;
 
 	if(!guru) return 0;
@@ -45,7 +45,7 @@ static int admin(Guru *guru, Gurucore *core)
 		case 3:
 			if((!strcmp(guru->list[1], "goto")) && (valid = 1))
 			{
-				room = atoi(guru->list[2]);
+				room = guru->list[2];
 				guru->message = strdup("Yes, I follow, my master.");
 				(core->net_output)(guru);
 				sleep(2);
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 		{0, 0, 0, 0}
 	};
 	int optindex;
-	char opt;
+	int opt;
 
 	while(1)
 	{
