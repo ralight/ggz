@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4700 2002-09-25 16:19:08Z dr_maux $
+#  $Id: Makefile.am 5580 2003-05-11 15:48:23Z dr_maux $
 
 MODULES = chess chinese-checkers combat dots ggzcards hastings lapocha reversi spades tictactoe
 
@@ -23,12 +23,13 @@ messages:
 
 install-data-local:
 	@for i in $(MODULES); do \
-		for j in `cd $$i; ls -1 *.po`; do \
-			country=`echo $$j | cut -d "." -f 1`; \
+		for j in $(top_srcdir)/po/$$i/*.po; do \
+			k=$$(basename $$j); \
+			country=`echo $$k | cut -d "." -f 1`; \
 			dir=$(DESTDIR)$(prefix)/share/locale/$$country/LC_MESSAGES; \
-			echo "installing $$dir/$$i.mo ($$j)"; \
+			echo "installing $$dir/$$i.mo ($$k)"; \
 			install -d $$dir; \
-			$(MSGFMT) -o $$dir/$$i.mo $$i/$$j; \
+			$(MSGFMT) -o $$dir/$$i.mo $$j; \
 		done; \
 	done
 
