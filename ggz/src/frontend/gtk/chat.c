@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 4942 2002-10-18 01:18:38Z jdorje $
+ * $Id: chat.c 4958 2002-10-19 22:57:31Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -215,9 +215,28 @@ void chat_display_server(GGZChatType type,
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
 
 	switch (type) {
+	case GGZ_CHAT_UNKNOWN:
+		/* We should handle the unknown case somehow */
+		if (!message && !sender) {
+			break;
+		} else if (!message) {
+			gchar *m;
+			name = g_strdup_printf("?\003%s%s\003?",
+				       chat_get_color(sender, message),
+				       sender);
+			m = g_strdup_printf(_("You have received an "
+					      "unknown message from %s."),
+					    sender);
+			gtk_xtext_append_indent(GTK_XTEXT(tmp),
+						name, strlen(name),
+						m, strlen(m));
+			g_free(m);
+			g_free(name);
+			break;
+		}
+		/* else fall through */
 	case GGZ_CHAT_NORMAL:
 	case GGZ_CHAT_TABLE:
-	case GGZ_CHAT_NONE: /* We should handle the unknown case somehow */
 		if (!strncasecmp(message, "/me ", 4)) {
 			name = g_strdup_printf("%s %s", sender, message+4);
 			gtk_xtext_append_indent(GTK_XTEXT(tmp), "*",
