@@ -4,7 +4,7 @@ DONE: implement lag display in KGGZ
 DONE: replace current dummy player types with real ones (GGZPlayerType)
 DONE: replace GGZap's UI with GGZap-NG
 - figure out why kio_ggzmeta won't do anything on some URI's
-- finish kcontrol module
+DONE: finish kcontrol module
 DONE: actually implement shadowbridge to do something useful
 - support for local module.dsc files? (-> ggz-config)
 DONE: add icons for the new games

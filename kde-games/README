@@ -1,6 +1,6 @@
-======================================
-The GGZ Gaming Zone - KDE Game Modules
-======================================
+======================================================
+The GGZ Gaming Zone - KDE Game Modules - Release 0.0.5
+======================================================
 
 We are proud to say that there are now some KDE games available
 for the GGZ Gaming Zone. Some of them are just other frontends
@@ -18,15 +18,25 @@ Content of GGZ-KDE-Games:
 		TicTacToe game which is compatible with the Gtk+ version but has
 		pictures instead of symbols. Can also run in stand-alone mode where
 		it has some extra functionality.
+	- Koenig:
+		A chess game client, which is on par with the Gtk+ equivalent.
+	- Muehle:
+		Implements the good old Muehle (Nine men's morris) game.
+		Can also be run standalone.
+	- Keepalive:
+		An experimental game client which implements some newer features.
+		May or may not work for you.
 
 Please read 'INSTALL' if you aren't experienced with the build yet.
 The file README.GGZ does give you additional information.
 
+Have a look at QuickStart.GGZ to learn about the installation process.
+
 If you encounter any bugs, please send them to
-	Josef Spillner, <dr_maux@users.sourceforge.net>,
+	Josef Spillner <dr_maux@users.sourceforge.net>,
 or to the mailing list,
-	ggz-dev@lists.sourceforge.net.
+	<ggz-dev@lists.sourceforge.net>.
 
 Have fun!
-	- The GGZ Gaming Zone Development Team
+	The GGZ Gaming Zone Development Team
 

@@ -1,10 +1,10 @@
 todo for 0.0.5:
-- DONE: fix Krosswater (UI + functionality)
+DONE: fix Krosswater (UI + functionality)
 - merge Bezier stuff with QWeb and use that in Muehle
-- finish Muehle
-- copy Holy Cow-function from KTicTacTux to the server
-- DELAYED: probably import KaBoom and/or Copenhagen
-- DELAYED: have Kickerhuhn here too?
+DONE: finish Muehle
+DONE: copy Holy Cow-function from KTicTacTux to the server
+DELAYED: probably import KaBoom and/or Copenhagen
+DELAYED: have Kickerhuhn here too?
 
 todo for 0.0.6:
 - more more games

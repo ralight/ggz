@@ -1,30 +1,36 @@
-===============================================
-The GGZ Gaming Zone - KDE Frontends and Clients
-===============================================
+===============================================================
+The GGZ Gaming Zone - KDE Frontends and Clients - Version 0.0.5
+===============================================================
 
-Beginning with version 0.0.4, GGZ is also available for our fellow KDE'ers.
-Due to some lack of time most features aren't integrated yet, but this will
-change very soon.
+The KDE frontend applications for the GGZ Gaming Zone have been
+extended a bit.
+However, especially the new parts are not stable yet.
 
 Content of GGZ-KDE:
 	- GGZCore++, a high-level C++ API for handling online games,
-		largely based on the ggzcore C library
+		largely based on the ggzcore C library.
 	- KGGZ, the well-known frontend. It provides a chat and is
 		configurable.
 	- GGZap, a GGZ quick launcher which can put itself into the taskbar.
 	- ModSniff, which searches for GGZ games and puts them into the KDE menus.
+	- KCMGGZ, a set of configuration dialogs for the KDE control center.
+	- KIO_GGZ, a KIO slave to browse GGZ servers.
+	- KIO_GGZMeta, another KIO slave which provides a general interface to meta
+		servers of any kind (including the GGZ meta server).
+	- ShadowBride, a graphical game protocol sniffing tool.
 
 All of them have their own README for more information on them.
 
 Please read 'INSTALL' if you aren't experienced with the build yet.
 For an overall view on the GGZ setup procedures, please consult the file
 README.GGZ.
+Have a look at QuickStart.GGZ to learn about the installation process.
 
 If you encounter any bugs, please send them to
-	Josef Spillner, <dr_maux@users.sourceforge.net>,
+	Josef Spillner <dr_maux@users.sourceforge.net>,
 or to the mailing list,
-	ggz-dev@lists.sourceforge.net.
+	<ggz-dev@lists.sourceforge.net>.
 
 Have fun!
-	- The GGZ Gaming Zone Development Team
+	The GGZ Gaming Zone Development Team
 
