@@ -573,7 +573,7 @@
 
 ;;Should Variable lists be tables?
 (define %always-format-variablelist-as-table%
- #f)
+ #t)
 
 ;;What is the length of the 'Term' in a variablelist?
 (define %default-variablelist-termlength%

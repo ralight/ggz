@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 442 $</revnumber>
-	<date>$Date: 2000-04-20 23:10:35 -0700 (Thu, 20 Apr 2000) $</date>
+	<revnumber>$Revision: 445 $</revnumber>
+	<date>$Date: 2000-04-23 16:30:15 -0700 (Sun, 23 Apr 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -158,14 +158,10 @@
 	</para>
 	<programlisting role="pseudocode">
 	  MSG_SERVER_ID
-	    str: server identification (plus relevant server options)
 
 	  MSG_SERVER_FULL
 
 	  MSG_MOTD
-            int: number of MOTD lines
-            sequence of
-	      str: message of the day line
 
 	  MSG_CHAT
             str: name of user who sent chat
@@ -987,6 +983,7 @@
 	<emphasis>Note:</emphasis> Not all of these options are implemented
 	at this current time.
       </para>
+
       <programlisting role="psuedocode">
 	Options {
 	  str: Name of configuration file specified in --file
@@ -1085,4 +1082,299 @@
       </programlisting>
     </section>
   </chapter>
+
+  <appendix id="appendix"><title>Message Reference</title>
+
+    <para>
+     We now list a complete reference of messages which get
+     passed to and from the GGZ server
+    </para>
+    
+    <section id ="server-to-client"><title>Server to client messages</title>
+      
+      <para>
+	Three types of data are exchanged between the client and the server:
+	<itemizedlist>
+	  <listitem>
+	    <para>char: a 1-byte signed char</para>
+	  </listitem>
+	  <listitem>
+	    <para>int: a 4-byte signed integer in network byte order</para>
+	  </listitem>
+	  <listitem>
+	    <para>
+	      string: a multibyte null-terminated string preceeded by
+	      its length (including null-termination) as an integer.
+	    </para>
+	  </listitem>
+	</itemizedlist>
+      </para>
+
+      <para>
+	Interactions take one of three forms: server messages, client
+	requests, and server responses.  Each interaction is prefaced
+	by an opcode indentifying it (some interactions consist solely
+	of the opcode).  The opcode (stored as an enumerated value) is
+	sent as an int.
+      </para>
+      
+      <refentry id="msg.server.id"><?dbhtml filename="msg_server_id.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>MSG_SERVER_ID</primary>
+	  </indexterm>
+	  <refentrytitle>MSG_SERVER_ID</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>MSG_SERVER_ID</refname>
+	  <refpurpose>Server identification</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">
+                    <parameter>Opcode</parameter>
+                  </entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">
+                    MSG_SERVER_ID
+                  </entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <parameter>Data</parameter>
+		  </entry>
+		  <entry><parameter>Type</parameter></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">serverid</entry>
+		  <entry>string</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>An identifcation message from the server</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><parameter>serverid</parameter></term>
+		<listitem>
+		  <para>
+		    Server identification string (including version number)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      MSG_SERVER_ID is sent from the server to the client upon
+	      a successful connection.  It does not guarantee a
+	      successful login
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="msg.server.full"><?dbhtml filename="msg_server_full.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>MSG_SERVER_FULL</primary>
+	  </indexterm>
+	  <refentrytitle>MSG_SERVER_FULL</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>MSG_SERVER_FULL</refname>
+	  <refpurpose>Server full message</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">
+                    <parameter>Opcode</parameter>
+                  </entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">
+                    MSG_SERVER_FULL
+                  </entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <parameter>Data</parameter>
+		  </entry>
+		  <entry><parameter>Type</parameter></entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Indication that the server cannot accept any logins</para>
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      MSG_SERVER_FULL is sent from the server to the client
+	      upon immediately after <link
+	      linkend="msg.server.id">MSG_SERVER_ID</link> if the
+	      server has reached its maximum number of connected
+	      users.  The connection is then terminated.
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+
+      <refentry id="msg.motd"><?dbhtml filename="msg_motd.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>MSG_MOTD</primary>
+	  </indexterm>
+	  <refentrytitle>MSG_MOTD</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>MSG_MOTD</refname>
+	  <refpurpose>Server Message of the day</refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">
+                    <parameter>Opcode</parameter>
+                  </entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">
+                    MSG_MOTD
+                  </entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <parameter>Data</parameter>
+		  </entry>
+		  <entry><parameter>Type</parameter></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">lines</entry>
+		  <entry>int</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C3">
+		    <emphasis>sequence of</emphasis> lines
+		  </entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">message</entry>
+		  <entry>string</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Message of the day (MOTD) from the Server</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><parameter>lines</parameter></term>
+		<listitem>
+		  <para>
+		    Number of lines in MOTD to follow.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><parameter>message</parameter></term>
+		<listitem>
+		  <para>
+		    A single line of the MOTD
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      MSG_MOTD is sent from the server to the client upon
+	      successful login (ie. after <link
+	      linkend="rsp.login.new">RSP_LOGIN_NEW</link>,<link
+	      linkend="rsp.login.anon">RSP_LOGIN_ANON</link>, or <link
+	      linkend="rsp.login">RSP_LOGIN</link>)
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+      
+      
+    </section>
+    
+    <section id = "server-to-module"><title>Messages from server to game module</title>
+      <para>Messages from server to game module</para>
+    </section>
+    
+  </appendix>
 </book>
+
+
+
+
+
+
+
+
+
+
+
+
+
