@@ -1,7 +1,7 @@
 /*
  * File: dlg_error.c
  * Author: Brent Hendricks
- * Project: NetSpades
+ * Project: GGZ Client
  * Date: 3/24/99
  *
  * This file contains functions for creating and handling the error box
@@ -30,7 +30,6 @@
 
 void DisplayMessage(char *str, gboolean quit)
 {
-
 	GtkWidget *window;
 	GtkWidget *dialog_vbox1;
 	GtkWidget *label1;
@@ -40,7 +39,7 @@ void DisplayMessage(char *str, gboolean quit)
 	GtkWidget *labelBox;
 	GtkWidget *okButton;
 	char message[4096];
-	
+
 	snprintf(message, 4096, "[%d]: %s", getpid(), str);
 
 	window = gtk_dialog_new();
@@ -54,11 +53,11 @@ void DisplayMessage(char *str, gboolean quit)
 
 
 	/* Label widgets */
-	if (quit) {
+	if (quit)
 		label1 = gtk_label_new("An error occurred!");
-	} else {
+	else
 		label1 = gtk_label_new("Please note!");
-	}
+	
 	label2 = gtk_label_new(message);
 
 	gtk_widget_show(label1);
@@ -68,10 +67,10 @@ void DisplayMessage(char *str, gboolean quit)
 	/* Button widgets */
 	okButton = gtk_button_new_with_label("OK");
 
-	if (quit) {
+	if (quit)
 		gtk_signal_connect(GTK_OBJECT(okButton), "clicked",
 				   GTK_SIGNAL_FUNC(Disconnect), NULL);
-	}
+
 	gtk_signal_connect_object(GTK_OBJECT(okButton), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(window));
@@ -107,7 +106,6 @@ void DisplayMessage(char *str, gboolean quit)
 	gtk_widget_show(dialog_action_area1);
 
 	gtk_widget_show(window);
-
 }
 
 

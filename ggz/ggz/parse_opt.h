@@ -1,7 +1,7 @@
 /*
  * File: parse_opt.h
  * Author: Brent Hendricks
- * Project: NetGames
+ * Project: GGZ client
  * Date: 10/29/99
  * Desc: Parse command-line arguments and conf file
  *
@@ -24,7 +24,7 @@
 
 
 /* Parse command-line options */
-void parse_args( int argc, char* argv[]);
+void parse_args(int argc, char *argv[]);
 
 /* Parse options from conf file, but don't overwrite existing options*/
-void parse_conf_file( void );
+void parse_conf_file(void);

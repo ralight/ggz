@@ -1,7 +1,7 @@
 /*
  * File: client_func.c
  * Author: Brent Hendricks
- * Project: NetSpades
+ * Project: GGZ Client
  * Date: 7/31/97
  *
  * This file contains the support functions which do the dirty work of
@@ -55,7 +55,6 @@ extern struct ConnectInfo connection;
 
 int CheckReadInt(int msgsock, int *message)
 {
-
 	int status, success = NET_OK;
 
 	status = es_read_int(msgsock, message);
@@ -76,7 +75,6 @@ int CheckReadInt(int msgsock, int *message)
 
 int CheckReadString(int msgsock, char **message)
 {
-
 	int status, success = NET_OK;
 
 	status = es_read_string_alloc(msgsock, message);
@@ -92,13 +90,11 @@ int CheckReadString(int msgsock, char **message)
 	}
 
 	return success;
-
 }
 
 
 int CheckWriteInt(int msgsock, int message)
 {
-
 	int status, success = NET_OK;
 
 	status = es_write_int(msgsock, message);
@@ -115,7 +111,6 @@ int CheckWriteInt(int msgsock, int message)
 
 int CheckWriteString(int msgsock, char *message)
 {
-
 	int status, success = NET_OK;
 
 	status = es_write_string(msgsock, message);
@@ -138,7 +133,6 @@ void NetClose(void)
 
 RETSIGTYPE die(int sig)
 {
-
 	/* We let our error checker handle broken pipes */
 	if (sig != SIGPIPE) {
 		NetClose();

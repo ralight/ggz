@@ -1,7 +1,7 @@
 /*
  * File: dlg_error.h
  * Author: Brent Hendricks
- * Project: NetSpades
+ * Project: GGZ Client
  * Date: 3/24/99
  *
  * This fils contains functions for creating and handling the error box

@@ -1,7 +1,7 @@
 /*
  * File: main.c
  * Author: Brent Hendricks
- * Project: GGZ
+ * Project: GGZ Client
  * Date: 2/18/00
  *
  * This is the main program body for the GGZ client
@@ -40,19 +40,18 @@ struct Game game;
 GtkWidget *main_win;
 GtkWidget *dlg_login;
 
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-  parse_args(argc, argv);
+	parse_args(argc, argv);
 
-  gtk_init(&argc, &argv);
+	gtk_init(&argc, &argv);
 
-  main_win = create_main_win();
-  gtk_widget_show(main_win);
-  dlg_login = create_dlg_login();
-  gtk_widget_show(dlg_login);
-  
-  gtk_main();
-  return 0;
+	main_win = create_main_win();
+	gtk_widget_show(main_win);
+	dlg_login = create_dlg_login();
+	gtk_widget_show(dlg_login);
+
+	gtk_main();
+	return 0;
 }
-
 

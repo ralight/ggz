@@ -33,34 +33,39 @@
 extern struct ConnectInfo connection;
 
 static const struct poptOption args[] = {
-  {"server", 's', POPT_ARG_STRING, &connection.server,  0, "GGZ server name", 
-   "SERVER"},
-  {"port", 'p', POPT_ARG_INT, &connection.port,  0, "GGZ server port", 
-   "PORT"},  
-  {"name", 'n', POPT_ARG_STRING, &connection.username,  0, "Player name", 
-   "PORT"},
-  {"version",'V', POPT_ARG_NONE,        NULL, 1},
-  POPT_AUTOHELP
-  {NULL, '\0', 0, NULL, 0} /* end the list */
+	
+	{"server", 's', POPT_ARG_STRING, &connection.server, 0,
+	 "GGZ server name", "SERVER"},
+
+	{"port", 'p', POPT_ARG_INT, &connection.port, 0, "GGZ server port",
+	 "PORT"},
+	
+	{"name", 'n', POPT_ARG_STRING, &connection.username, 0,
+	 "Player name", "PORT"},
+	
+	{"version", 'V', POPT_ARG_NONE, NULL, 1},
+	
+	POPT_AUTOHELP {NULL, '\0', 0, NULL, 0}	/* end the list */
 };
 
 /* Parse command-line options */
-void parse_args( int argc, char* argv[]) {
-	
-	poptContext context = poptGetContext( NULL, argc, argv, args, 0);
+void parse_args(int argc, char *argv[])
+{
 	int rc;
-	
-	while( (rc = poptGetNextOpt(context)) != -1 ) {
+	poptContext context = poptGetContext(NULL, argc, argv, args, 0);
+
+	while ((rc = poptGetNextOpt(context)) != -1) {
 		switch (rc) {
-		case 1:  /* Version command */
-			g_print("Gnu Gaming Zone client: version %s\n",VERSION);
+		case 1:	/* Version command */
+			g_print("Gnu Gaming Zone client: version %s\n",
+				VERSION);
 			poptFreeContext(context);
 			exit(0);
 		case POPT_ERROR_NOARG:
 		case POPT_ERROR_BADOPT:
 		case POPT_ERROR_BADNUMBER:
 		case POPT_ERROR_OVERFLOW:
-			g_printerr("%s: %s", poptBadOption(context, 0), 
+			g_printerr("%s: %s", poptBadOption(context, 0),
 				   poptStrerror(rc));
 			poptFreeContext(context);
 			exit(-1);
@@ -69,12 +74,12 @@ void parse_args( int argc, char* argv[]) {
 	}
 	
 	poptFreeContext(context);
-	
 }
 
 
 /* Parse options from conf file, but don't overwrite existing options*/
-void parse_conf_file( void ) {
+void parse_conf_file(void)
+{
 /*	
 	if( opt.local_conf ) {
 	dbg_msg("Reading local conf file : %s", opt.local_conf);

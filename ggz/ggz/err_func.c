@@ -1,7 +1,7 @@
 /*
  * File: err_func.c
  * Author: Brent Hendricks
- * Project: NetGames
+ * Project: GGZ Client
  * Date: 10/11/99
  * Desc: Error functions
  *
@@ -34,97 +34,91 @@
 #include <err_func.h>
 
 
-static void err_doit( int flag, const char* fmt, va_list ap) {
-  
-  char buf[4096];
-  
-  sprintf(buf, "[%d]: ", getpid() );
-  vsprintf(buf+strlen(buf), fmt, ap);
-  if( flag )
-    sprintf(buf+strlen(buf), ": %s", strerror(errno));
-  strcat(buf,"\n");
-  fflush(stdout);
-  fputs(buf, stderr);
-  fflush(NULL);
-  
+static void err_doit(int flag, const char *fmt, va_list ap)
+{
+	char buf[4096];
+
+	sprintf(buf, "[%d]: ", getpid());
+	vsprintf(buf + strlen(buf), fmt, ap);
+	if (flag)
+		sprintf(buf + strlen(buf), ": %s", strerror(errno));
+	strcat(buf, "\n");
+	fflush(stdout);
+	fputs(buf, stderr);
+	fflush(NULL);
 }
 
 
-void err_sys(const char* fmt, ...) {
-  
-  va_list ap;
-  
-  va_start(ap, fmt);
-  err_doit(1, fmt, ap);
-  va_end(ap);
-  
+void err_sys(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	err_doit(1, fmt, ap);
+	va_end(ap);
 }
 
 
-void err_sys_exit(const char* fmt, ...) {
-  
-  va_list ap;
-  
-  va_start(ap, fmt);
-  err_doit(1, fmt, ap);
-  va_end(ap);
-  /*cleanup();*/
-  exit(-1);
+void err_sys_exit(const char *fmt, ...)
+{
+	va_list ap;
 
+	va_start(ap, fmt);
+	err_doit(1, fmt, ap);
+	va_end(ap);
+	/*cleanup(); */
+	exit(-1);
 }
 
 
-void err_msg(const char* fmt, ...) {
-  
-  va_list ap;
-  
-  va_start(ap, fmt);
-  err_doit(0, fmt, ap);
-  va_end(ap);
-  
+void err_msg(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	err_doit(0, fmt, ap);
+	va_end(ap);
 }
 
 
-void err_msg_exit(const char* fmt, ...) {
-  
-  va_list ap;
-  
-  va_start(ap, fmt);
-  err_doit(1, fmt, ap);
-  va_end(ap);
-  /*cleanup();*/
-  exit(-1);
+void err_msg_exit(const char *fmt, ...)
+{
+	va_list ap;
 
+	va_start(ap, fmt);
+	err_doit(1, fmt, ap);
+	va_end(ap);
+	/*cleanup(); */
+	exit(-1);
 }
 
 
-void dbg_msg(const char* fmt, ...) {
+void dbg_msg(const char *fmt, ...)
+{
 #ifdef DEBUG
-  va_list ap;
-  
-  va_start(ap, fmt);
-  err_doit(0, fmt, ap);
-  va_end(ap);
+	va_list ap;
+
+	va_start(ap, fmt);
+	err_doit(0, fmt, ap);
+	va_end(ap);
 #endif
 }
 
 
-void err_sock(const char* err , const EsOpType op,
-	      const EsDataType type) {
-  
-  switch( op ) {
-  case ES_CREATE:
-    err_msg("Error while creating socket: %s\n", err);
-    break;
-  case ES_READ:
-    err_msg("Error while reading from socket: %s\n", err);
-    break;
-  case ES_WRITE:
-    err_msg("Error while writing to socket: %s\n", err);
-    break;
-  case ES_ALLOCATE:
-    err_msg("Error while allocating memory: %s\n", err);
-    break;
-  }
+void err_sock(const char *err, const EsOpType op, const EsDataType type)
+{
+	switch (op) {
+	case ES_CREATE:
+		err_msg("Error while creating socket: %s\n", err);
+		break;
+	case ES_READ:
+		err_msg("Error while reading from socket: %s\n", err);
+		break;
+	case ES_WRITE:
+		err_msg("Error while writing to socket: %s\n", err);
+		break;
+	case ES_ALLOCATE:
+		err_msg("Error while allocating memory: %s\n", err);
+		break;
+	}
 }
-      

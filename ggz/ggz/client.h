@@ -1,7 +1,7 @@
 /*
  * File: client.h
  * Author: Brent Hendricks
- * Project: NetSpades
+ * Project: GGZ Client
  * Date: 7/31/97
  *
  * This rather empty file declares the client function which actually

@@ -1,7 +1,7 @@
 /*
  * File: connect.h
  * Author: Brent Hendricks
- * Project: NetSpades
+ * Project: GGZ Client
  * Date: 1/23/99
  *
  * This fils contains function declarations for connecting with the server

@@ -70,10 +70,10 @@
 
 /* Info about a connection */
 struct ConnectInfo {
-	char* server;
+	char *server;
 	unsigned int port;
-	char* username;
-	char* password;
+	char *username;
+	char *password;
 	unsigned char login_type;
 	int sock;
 	unsigned char connected;
@@ -88,73 +88,72 @@ struct Game {
 	int fd;
 };
 
-	
+
 /* Init function type */
 typedef void (*GameLaunchFunc) (void);
 
 /* Info about a particular type of game*/
 typedef struct {
-  char name[MAX_GAME_NAME_LEN];
-  char version[MAX_GAME_VER_LEN];
-  char desc[MAX_GAME_DESC_LEN];
-  char author[MAX_GAME_AUTH_LEN];
-  char homepage[MAX_GAME_WEB_LEN];
-  unsigned char num_play_allow;
-  unsigned char comp_allow;
-  int options_size;
-  unsigned char enabled;
-  GameLaunchFunc* launch;
-  char path[MAX_PATH_LEN];
+	char name[MAX_GAME_NAME_LEN];
+	char version[MAX_GAME_VER_LEN];
+	char desc[MAX_GAME_DESC_LEN];
+	char author[MAX_GAME_AUTH_LEN];
+	char homepage[MAX_GAME_WEB_LEN];
+	unsigned char num_play_allow;
+	unsigned char comp_allow;
+	int options_size;
+	unsigned char enabled;
+	GameLaunchFunc *launch;
+	char path[MAX_PATH_LEN];
 } GameInfo;
 
 
 /* Array of game-types and their mutex */
 struct GameTypes {
-  GameInfo info[MAX_GAME_TYPES];
-  int count;
+	GameInfo info[MAX_GAME_TYPES];
+	int count;
 };
 
 
 /* Info about a particular game-table */
 typedef struct {
-  int type_index;
-  int num_seats;
-  int num_humans;
-  int open_seats;
-  int num_reserves;
-  unsigned char comp_players;
-  unsigned char playing;
-  int fd_to_game;
-  int pid;
-  int players[8];
-  int reserve[8];
-  int player_fd[8];
-  void* options;
+	int type_index;
+	int num_seats;
+	int num_humans;
+	int open_seats;
+	int num_reserves;
+	unsigned char comp_players;
+	unsigned char playing;
+	int fd_to_game;
+	int pid;
+	int players[8];
+	int reserve[8];
+	int player_fd[8];
+	void *options;
 } TableInfo;
- 
+
 
 /* Array of game-tables, their mutex, and a counter */
 struct GameTables {
-  TableInfo info[MAX_TABLES];
-  int count;
+	TableInfo info[MAX_TABLES];
+	int count;
 };
-  
+
 
 /* Info about a logged-in user */
 typedef struct {
-  int uid;
-  char name[MAX_USER_NAME_LEN+1]; /* Room for \0 */
-  int fd;
-  int table_index;
+	int uid;
+	char name[MAX_USER_NAME_LEN + 1];	/* Room for \0 */
+	int fd;
+	int table_index;
 } UserInfo;
 
 
 /* Array of logged-in users, their mutex, and a counter */
 struct Users {
-  UserInfo info[MAX_USERS];
-  int count;
+	UserInfo info[MAX_USERS];
+	int count;
 };
 
 
 #endif
-

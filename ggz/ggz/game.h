@@ -1,7 +1,7 @@
 /*
  * File: game.h
  * Author: Brent Hendricks
- * Project: GGZ
+ * Project: GGZ Client
  * Date: 2/18/00
  *
  * This fils contains functions for handling individual game client

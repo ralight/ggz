@@ -1,7 +1,7 @@
 /*
  * File: dlg_exit.c
  * Author: Brent Hendricks
- * Project: NetSpades
+ * Project: GGZ Client
  * Date: 1/29/99
  *
  * This file contains functions for creating and handling the 
@@ -35,7 +35,6 @@
 
 void ExitDialog(GtkWidget * widget, gpointer data)
 {
-
 	GtkWidget *window;
 	GtkWidget *dialog_vbox1;
 	GtkWidget *label;
@@ -44,7 +43,6 @@ void ExitDialog(GtkWidget * widget, gpointer data)
 	GtkWidget *labelBox;
 	GtkWidget *exitButton;
 	GtkWidget *cancelButton;
-
 
 	window = gtk_dialog_new();
 	gtk_window_set_title(GTK_WINDOW(window), "Really Exit?");
@@ -105,5 +103,4 @@ void ExitDialog(GtkWidget * widget, gpointer data)
 	gtk_widget_show(dialog_action_area1);
 
 	gtk_widget_show(window);
-
 }
