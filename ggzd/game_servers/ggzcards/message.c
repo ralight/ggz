@@ -213,9 +213,6 @@ char *get_global_message(char *mark)
 
 static void put_global_message(char *mark, char *msg)
 {
-	/* TODO: we just use the first character of the mark
-	 * as an index into an array.  In the long term, we'll need some
-	 * sort of hash instead.  Is there a standard hash library? */
 	global_message_list_t *gml;
 	ggz_debug("Setting global message for '%s'.  Length is %d.", mark,
 		  strlen(msg));

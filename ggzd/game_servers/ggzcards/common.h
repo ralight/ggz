@@ -67,7 +67,7 @@ struct wh_game_t
 	char *rules_url;	/* the URL of where to read the game's rules */
 
 	int initted;		/* has the game been initialized? */
-	player_t host;		/* the host of the table; cannot be an AI *//* TODO: currently it's always player 0 */
+	player_t host;		/* the host of the table; cannot be an AI */
 
 	server_state_t state;	/* the current state of the game (see WH_STATE, above) */
 	server_state_t saved_state;	/* any time while waiting, the state we _would_ be in if we weren't waiting */

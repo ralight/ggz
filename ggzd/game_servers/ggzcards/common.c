@@ -320,13 +320,6 @@ int send_sync(player_t p)
 		if (req_play(game.curr_play, game.play_seat) < 0)
 			status = -1;
 
-	/* request newgame again, if necessary */
-/* TODO: how does the client know it's a duplicate?
-	if (game.state == WH_STATE_NOTPLAYING &&
-	    !game.players[p].ready)
-		req_newgame(p);
-*/
-
 	if (status != 0)
 		ggz_debug("ERROR: send_sync: status is %d.", status);
 	return status;
@@ -528,9 +521,9 @@ int req_newgame(player_t p)
 	int fd, status;
 	fd = ggz_seats[p].fd;
 	if (fd == -1) {
-		ggz_debug("ERROR: req_newgame: fd is -1 for player %d/%s.", p,
-			  ggz_seats[p].name);
-		return -1;	/* TODO: handle AI */
+		ggz_debug("ERROR: " "req_newgame: fd is -1 for player %d/%s.",
+			  p, ggz_seats[p].name);
+		return -1;
 	}
 
 	ggz_debug("Sending out a WH_REQ_NEWGAME to player %d/%s.", p,
@@ -538,9 +531,9 @@ int req_newgame(player_t p)
 	status = es_write_int(fd, WH_REQ_NEWGAME);
 
 	if (status != 0)
-		ggz_debug
-			("ERROR: req_newgame: status is %d for player %d/%s.",
-			 status, p, ggz_seats[p].name);
+		ggz_debug("ERROR: "
+			  "req_newgame: status is %d for player %d/%s.",
+			  status, p, ggz_seats[p].name);
 	return status;
 }
 
@@ -677,9 +670,9 @@ static int try_to_start_game()
 	for (p = 0; p < game.num_players; p++)
 		if (!game.players[p].ready
 		    && ggz_seats[p].assign != GGZ_SEAT_BOT) {
-			/* TODO: should another WH_REQ_NEWGAME be sent, just as a 
-			   reminder? if we do, then the client may not be able to 
-			   determine that it's a duplicate... */
+			/* we could send another REQ_NEWGAME as a reminder,
+			 * but there would be no way for the client to
+			 * know that it was a duplicate. */
 			ggz_debug("Player %d/%s is not ready.", p,
 				  ggz_seats[p].name);
 			ready = 0;
@@ -789,7 +782,7 @@ void next_play(void)
 		for (p = 0; p < game.num_players; p++) {
 			game.players[p].bid.bid = 0;
 			game.players[p].bid_count = 0;
-			set_player_message(p);	/* TODO: are all these player messages really necessary? */
+			set_player_message(p);
 		}
 		game.bid_count = 0;
 
@@ -998,7 +991,7 @@ int handle_play_event(card_t card)
 
 	/* remove the card from the player's hand
 	 * by sliding it to the end. */
-	/* TODO: this is quite ineffecient */
+	/* TODO: this is quite inefficient */
 	for (i = 0; i < hand->hand_size; i++)
 		if (cards_equal(hand->cards[i], card))
 			break;
@@ -1164,7 +1157,7 @@ void init_game()
 	game.last_trick = 1;
 	game.last_hand = 1;
 	game.cumulative_scores = 1;
-	game.bid_history = 1;	/* TODO: _should_ this be enabled by default? */
+	game.bid_history = 1;
 	game.name = game_data[game.which_game].full_name;
 
 	/* now we do all the game-specific initialization... */

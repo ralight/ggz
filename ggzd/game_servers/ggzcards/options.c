@@ -167,7 +167,7 @@ void handle_options()
 		option_count++;
 	}
 
-	options_initted = 1;	/* TODO */
+	options_initted = 1;
 }
 
 void finalize_options()

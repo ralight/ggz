@@ -223,7 +223,6 @@ void game_start_bidding()
  *   however, this has never been tested.  It needs to work pretty
  *   closely with the other bidding functions.
  */
-/* TODO: verify that it will work with and without bots */
 int game_get_bid()
 {
 	ggz_debug("ERROR: SERVER BUG: "
