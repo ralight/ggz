@@ -618,20 +618,20 @@ static void table_remove(int t_index)
 
 	dbg_msg(GGZ_DBG_TABLE, "Removing table %d", t_index);
 
-	/* First get it off the list in chat_room */
+	/* First get it off the list in rooms */
 	room = tables.info[t_index].room;
-	pthread_rwlock_wrlock(&chat_room[room].lock);
-	count = -- chat_room[room].table_count;
-	last = chat_room[room].table_index[count];
-	for(i=0; i<=count; i++)
-		if(chat_room[room].table_index[i] == t_index) {
-			chat_room[room].table_index[i] = last;
+	pthread_rwlock_wrlock(&rooms[room].lock);
+	count = --rooms[room].table_count;
+	last = rooms[room].table_index[count];
+	for (i = 0; i <= count; i++)
+		if (rooms[room].table_index[i] == t_index) {
+			rooms[room].table_index[i] = last;
 			break;
 		}
 	dbg_msg(GGZ_DBG_ROOM, "Room %d table count = %d", room, count);
-	chat_room[room].table_timestamp = time(NULL);
-	chat_room[room].player_timestamp = time(NULL);
-	pthread_rwlock_unlock(&chat_room[room].lock);
+	rooms[room].table_timestamp = time(NULL);
+	rooms[room].player_timestamp = time(NULL);
+	pthread_rwlock_unlock(&rooms[room].lock);
 
 	pthread_rwlock_wrlock(&tables.lock);
 	tables.info[t_index].type_index = -1;

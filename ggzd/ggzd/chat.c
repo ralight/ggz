@@ -32,6 +32,7 @@
 #include <datatypes.h>
 #include <err_func.h>
 #include <event.h>
+#include <room.h>
 #include <ggzd.h>
 #include <protocols.h>
 
@@ -39,7 +40,6 @@
 extern Options opt;
 extern struct Users players;
 extern struct GameTypes game_types;
-extern RoomStruct *chat_room;
 
 
 /* Local functions and callbacks */
@@ -78,23 +78,23 @@ int chat_player_enqueue(char receiver[MAX_USER_NAME_LEN + 1],
 	/* FIXME: needs to be a global hash */
 	
 	/* Search for player name in this room */
-	pthread_rwlock_rdlock(&chat_room[room].lock);
-	for (i = 0; i < chat_room[room].player_count; i++) {
+	pthread_rwlock_rdlock(&rooms[room].lock);
+	for (i = 0; i < rooms[room].player_count; i++) {
 		/* FIXME: */
 		/* Technically we should lock the player in case the name */
 		/* is changing, realistically this can't happen right now */
 		/* anyway, but that could change in the future */
-		rcv_id = chat_room[room].player_index[i];
+		rcv_id = rooms[room].player_index[i];
 		if (!strcmp(receiver, players.info[rcv_id].name))
 			break;
 	}
 	
-	if (i == chat_room[room].player_count) {
+	if (i == rooms[room].player_count) {
 		/* Player not in this room, can't send him the msg */
-		pthread_rwlock_unlock(&chat_room[room].lock);
+		pthread_rwlock_unlock(&rooms[room].lock);
 		return E_USR_LOOKUP;
 	}
-	pthread_rwlock_unlock(&chat_room[room].lock);
+	pthread_rwlock_unlock(&rooms[room].lock);
 
 	/* Pack up chat message */
 	size = chat_pack(&data, opcode, players.info[sender].name, msg);

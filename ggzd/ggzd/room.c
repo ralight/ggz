@@ -45,7 +45,7 @@ extern struct Users players;
 extern struct GameTypes game_types;
 
 /* Decl of server wide chat room structure */
-RoomStruct *chat_room;
+RoomStruct *rooms;
 RoomInfo room_info;
 
 /* Internal use only */
@@ -120,7 +120,7 @@ static int room_list_send(const int p, const int p_fd)
 	/* This is easy if a req_game filter hasn't been specified */
 	if(req_game != -1) {
 		for(i=0; i<room_info.num_rooms; i++)
-			if(req_game == chat_room[i].game_type)
+			if(req_game == rooms[i].game_type)
 				count++;
 	} else
 		count = room_info.num_rooms;
@@ -132,13 +132,13 @@ static int room_list_send(const int p, const int p_fd)
 
 	/* Send off all the room announcements */
 	for(i=0; i<room_info.num_rooms; i++)
-		if(req_game == -1 || req_game == chat_room[i].game_type) {
+		if(req_game == -1 || req_game == rooms[i].game_type) {
 			if(es_write_int(p_fd, i) < 0
-			   || es_write_string(p_fd, chat_room[i].name) < 0
-			   || es_write_int(p_fd, chat_room[i].game_type) < 0)
+			   || es_write_string(p_fd, rooms[i].name) < 0
+			   || es_write_int(p_fd, rooms[i].game_type) < 0)
 				return GGZ_REQ_DISCONNECT;
 			if(verbose
-			   && es_write_string(p_fd, chat_room[i].description)<0)
+			   && es_write_string(p_fd, rooms[i].description)<0)
 				return GGZ_REQ_DISCONNECT;
 		}
 
@@ -155,14 +155,14 @@ void room_initialize(void)
 	room_info.timestamp = time(NULL);
 
 	/* Calloc a big enough array to hold all our first room */
-	if((chat_room = calloc(room_info.num_rooms, sizeof(RoomStruct))) == NULL)
+	if((rooms = calloc(room_info.num_rooms, sizeof(RoomStruct))) == NULL)
 		err_sys_exit("calloc failed in room_initialize_lists()");
 
 	/* Initialize the chat_tail and lock */
-	chat_room[0].event_tail = NULL;
-	pthread_rwlock_init(&chat_room[0].lock, NULL);
+	rooms[0].event_tail = NULL;
+	pthread_rwlock_init(&rooms[0].lock, NULL);
 #ifdef DEBUG
-	chat_room[0].event_head = NULL;
+	rooms[0].event_head = NULL;
 #endif
 }
 
@@ -175,18 +175,18 @@ void room_create_additional(void)
 
 	room_info.num_rooms++;
 
-	/* Realloc the chat_room array */
-	chat_room = realloc(chat_room, room_info.num_rooms * sizeof(RoomStruct));
-	if(chat_room == NULL)
+	/* Realloc the rooms array */
+	rooms = realloc(rooms, room_info.num_rooms * sizeof(RoomStruct));
+	if(rooms == NULL)
 		err_sys_exit("realloc failed in room_create_new()");
 
 	/* Initialize the chat_tail and lock on the new one */
-	chat_room[room_info.num_rooms-1].player_count = 0;
-	chat_room[room_info.num_rooms-1].table_count = 0;
-	chat_room[room_info.num_rooms-1].event_tail = NULL;
-	pthread_rwlock_init(&chat_room[room_info.num_rooms-1].lock, NULL);
+	rooms[room_info.num_rooms-1].player_count = 0;
+	rooms[room_info.num_rooms-1].table_count = 0;
+	rooms[room_info.num_rooms-1].event_tail = NULL;
+	pthread_rwlock_init(&rooms[room_info.num_rooms-1].lock, NULL);
 #ifdef DEBUG
-	chat_room[room_info.num_rooms-1].event_head = NULL;
+	rooms[room_info.num_rooms-1].event_head = NULL;
 #endif
 }
 
@@ -244,20 +244,20 @@ int room_join(const int p_index, const int room, const int fd)
 	/* We ALWAYS lock the lower ordered room first! */
 	if(old_room < room) {
 		if(old_room != -1)
-			pthread_rwlock_wrlock(&chat_room[old_room].lock);
-		pthread_rwlock_wrlock(&chat_room[room].lock);
+			pthread_rwlock_wrlock(&rooms[old_room].lock);
+		pthread_rwlock_wrlock(&rooms[room].lock);
 	} else {
 		if(room != -1)
-			pthread_rwlock_wrlock(&chat_room[room].lock);
-		pthread_rwlock_wrlock(&chat_room[old_room].lock);
+			pthread_rwlock_wrlock(&rooms[room].lock);
+		pthread_rwlock_wrlock(&rooms[old_room].lock);
 	}
 
 	/* Check for room full condition */
 	if(room != -1
-	   && chat_room[room].player_count == chat_room[room].max_players) {
-		pthread_rwlock_unlock(&chat_room[room].lock);
+	   && rooms[room].player_count == rooms[room].max_players) {
+		pthread_rwlock_unlock(&rooms[room].lock);
 		if(old_room != -1)
-			pthread_rwlock_unlock(&chat_room[old_room].lock);
+			pthread_rwlock_unlock(&rooms[old_room].lock);
 		return E_ROOM_FULL;
 	}
 
@@ -265,34 +265,34 @@ int room_join(const int p_index, const int room, const int fd)
 	if(old_room != -1) {
 		if (players.info[p_index].room_events)
 			event_room_flush(p_index);
-		count = -- chat_room[old_room].player_count;
-		last = chat_room[old_room].player_index[count];
+		count = -- rooms[old_room].player_count;
+		last = rooms[old_room].player_index[count];
 		for(i=0; i<=count; i++)
-			if(chat_room[old_room].player_index[i] == p_index) {
-				chat_room[old_room].player_index[i] = last;
+			if(rooms[old_room].player_index[i] == p_index) {
+				rooms[old_room].player_index[i] = last;
 				break;
 			}
 		dbg_msg(GGZ_DBG_ROOM,
 			"Room %d player count = %d", old_room, count);
-		chat_room[old_room].player_timestamp = time(NULL);
+		rooms[old_room].player_timestamp = time(NULL);
 	}
 
 	/* Put them in the new room, and free up the old room */
 	players.info[p_index].room = room;
 	if(old_room != -1)
-		pthread_rwlock_unlock(&chat_room[old_room].lock);
+		pthread_rwlock_unlock(&rooms[old_room].lock);
 
 	/* Adjust the new rooms statistics */
 	if(room != -1) {
-		count = ++ chat_room[room].player_count;
-		chat_room[room].player_index[count-1] = p_index;
+		count = ++ rooms[room].player_count;
+		rooms[room].player_index[count-1] = p_index;
 		dbg_msg(GGZ_DBG_ROOM, "Room %d player count = %d", room, count);
-		chat_room[room].player_timestamp = time(NULL);
+		rooms[room].player_timestamp = time(NULL);
 	}
 
 	/* Finally we can release the other chat room lock */
 	if(room != -1)
-		pthread_rwlock_unlock(&chat_room[room].lock);
+		pthread_rwlock_unlock(&rooms[room].lock);
 
 	room_notify_change(p_index, old_room, room);
 

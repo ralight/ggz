@@ -950,7 +950,7 @@ static void parse_room(char *name, char *dir)
 	else
 		room_create_additional();
 	num = room_info.num_rooms - 1;
-	chat_room[num].game_type = -1;
+	rooms[num].game_type = -1;
 
 	while(fgets(line, 256, roomfile)) {
 		linenum++;
@@ -969,7 +969,7 @@ static void parse_room(char *name, char *dir)
 			if((strval = malloc(strlen(varvalue)+1)) == NULL)
 				err_sys_exit("malloc failed in parse_room()");
 			strcpy(strval, varvalue);
-			chat_room[num].name = strval;
+			rooms[num].name = strval;
 		}
 
 		/*** Description = String ***/
@@ -981,7 +981,7 @@ static void parse_room(char *name, char *dir)
 			if((strval = malloc(strlen(varvalue)+1)) == NULL)
 				err_sys_exit("malloc failed in parse_room()");
 			strcpy(strval, varvalue);
-			chat_room[num].description = strval;
+			rooms[num].description = strval;
 		}
 
 		/*** MaxPlayers = # ***/
@@ -995,7 +995,7 @@ static void parse_room(char *name, char *dir)
 				PARSE_ERR("MaxPlayers value invalid");
 				continue;
 			}
-			chat_room[num].max_players = intval;
+			rooms[num].max_players = intval;
 		}
 
 		/*** MaxTables = # ***/
@@ -1009,7 +1009,7 @@ static void parse_room(char *name, char *dir)
 				PARSE_ERR("MaxTables value invalid");
 				continue;
 			}
-			chat_room[num].max_tables = intval;
+			rooms[num].max_tables = intval;
 		}
 
 		/*** GameType = String ***/
@@ -1022,46 +1022,46 @@ static void parse_room(char *name, char *dir)
 				if(!strcmp(varvalue, game_types.info[i].name))
 					break;
 			if(i != game_types.count)
-				chat_room[num].game_type = i;
+				rooms[num].game_type = i;
 			else
 				PARSE_ERR("Invalid game type specified");
 		}
 	}
 
-	if(chat_room[num].name == NULL) {
+	if(rooms[num].name == NULL) {
 		err_msg("No Name given for room %s", name);
 		if((strval = malloc(5)) == NULL)
 			err_sys_exit("malloc failed in parse_room()");
 		strcpy(strval, "none");
-		chat_room[num].name = strval;
+		rooms[num].name = strval;
 	}
-	if(chat_room[num].description == NULL) {
+	if(rooms[num].description == NULL) {
 		err_msg("No Description given for room %s", name);
 		if((strval = malloc(5)) == NULL)
 			err_sys_exit("malloc failed in parse_room()");
 		strcpy(strval, "none");
-		chat_room[num].description = strval;
+		rooms[num].description = strval;
 	}
-	if(chat_room[num].max_players == 0) {
+	if(rooms[num].max_players == 0) {
 		err_msg("No MaxPlayers given for room %s", name);
-		chat_room[num].max_players = DEFAULT_MAX_ROOM_USERS;
+		rooms[num].max_players = DEFAULT_MAX_ROOM_USERS;
 	}
-	if(chat_room[num].max_tables == 0) {
+	if(rooms[num].max_tables == 0) {
 		err_msg("No MaxTables given for room %s", name);
-		chat_room[num].max_tables = DEFAULT_MAX_ROOM_TABLES;
+		rooms[num].max_tables = DEFAULT_MAX_ROOM_TABLES;
 	}
-	if(chat_room[num].game_type == -1) {
+	if(rooms[num].game_type == -1) {
 		err_msg("No GameType given for room %s", name);
-		chat_room[num].game_type = 0;
+		rooms[num].game_type = 0;
 	}
 
-	chat_room[num].player_index = calloc(chat_room[num].max_players,
+	rooms[num].player_index = calloc(rooms[num].max_players,
 					     sizeof(int));
-	if(chat_room[num].player_index == NULL)
+	if(rooms[num].player_index == NULL)
 		err_sys_exit("calloc failed in parse_room()");
-	chat_room[num].table_index = calloc(chat_room[num].max_tables,
-					    sizeof(int));
-	if(chat_room[num].table_index == NULL)
+	rooms[num].table_index = calloc(rooms[num].max_tables, sizeof(int));
+					
+	if(rooms[num].table_index == NULL)
 		err_sys_exit("calloc failed in parse_room()");
 
 	fclose(roomfile);

@@ -110,25 +110,6 @@ struct GameTables {
 };
 
 
-/* A Room Structure */
-typedef struct {
-	pthread_rwlock_t lock;
-	char *name;
-	char *description;
-	int player_count;
-	int max_players;
-	int table_count;
-	int max_tables;
-	int game_type;
-	time_t player_timestamp;
-	time_t table_timestamp;
-	int *player_index;
-	int *table_index;
-	GGZEvent *event_tail;
-#ifdef DEBUG
-	GGZEvent *event_head;
-#endif
-} RoomStruct;
 
 
 /* Info about a logged-in user */
@@ -192,11 +173,5 @@ typedef struct {
 	unsigned dbg_types;
 #endif
 } LogInfo;
-
-typedef struct {
-	pthread_rwlock_t lock;	/* Not inititalized or used yet */
-	time_t timestamp;
-	int num_rooms;
-} RoomInfo;
 
 #endif

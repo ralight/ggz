@@ -30,14 +30,13 @@
 #include <easysock.h>
 #include <err_func.h>
 #include <event.h>
+#include <room.h>
 #include <datatypes.h>
 #include <protocols.h>
 
 /* Server wide data structures */
 extern Options opt;
 extern struct Users players;
-extern RoomStruct *chat_room;
-extern RoomInfo room_info;
 
 
 /* Local support functions */
@@ -61,11 +60,11 @@ int event_room_enqueue(int room, GGZEventFunc func, unsigned int size,
 	}
 	dbg_msg(GGZ_DBG_LISTS, "Allocated event %p", event);
 
-	pthread_rwlock_wrlock(&chat_room[room].lock);
+	pthread_rwlock_wrlock(&rooms[room].lock);
 
 	/* Check for empty room (event might be last player leaving) */
-	if (chat_room[room].player_count == 0) {
-		pthread_rwlock_unlock(&chat_room[room].lock);
+	if (rooms[room].player_count == 0) {
+		pthread_rwlock_unlock(&rooms[room].lock);
 		free(event);
 		if (data)
 			free(data);
@@ -75,32 +74,32 @@ int event_room_enqueue(int room, GGZEventFunc func, unsigned int size,
 	}
 
 	/* Fill in event structure */
-	event->ref_count = chat_room[room].player_count;
+	event->ref_count = rooms[room].player_count;
 	event->next = NULL;
 	event->size = size;
 	event->data = data;
 	event->handle = func;
 
 	/* Put this event as first for anyone who doesn't have a list now */
-	for (i = 0; i < chat_room[room].player_count; i++) {
-		p_index = chat_room[room].player_index[i];
+	for (i = 0; i < rooms[room].player_count; i++) {
+		p_index = rooms[room].player_index[i];
 		if(players.info[p_index].room_events == NULL)
 			players.info[p_index].room_events = event;
 	}
 
 	/* Finally, add this event to the room list */
-	if (chat_room[room].event_tail)
-		chat_room[room].event_tail->next = event;
-	chat_room[room].event_tail = event;
+	if (rooms[room].event_tail)
+		rooms[room].event_tail->next = event;
+	rooms[room].event_tail = event;
 
 #ifdef DEBUG
-	if (chat_room[room].event_head == NULL)
-		chat_room[room].event_head = event;
+	if (rooms[room].event_head == NULL)
+		rooms[room].event_head = event;
 	if (log_info.dbg_types & GGZ_DBG_LISTS)
 		event_room_spew(room);
 #endif
 
-	pthread_rwlock_unlock(&chat_room[room].lock);
+	pthread_rwlock_unlock(&rooms[room].lock);
 	return 0;
 }
 
@@ -117,14 +116,14 @@ int event_room_handle(int p_index)
 	 */
 	room = players.info[p_index].room;
 
-	pthread_rwlock_rdlock(&chat_room[room].lock);
+	pthread_rwlock_rdlock(&rooms[room].lock);
 	event = players.info[p_index].room_events;
 	/* 
 	 * This player obviously has a reference to the event, so it
 	 * can't be removed out from under us.  We might as well
 	 * release the room lock 
 	 */
-	pthread_rwlock_unlock(&chat_room[room].lock);
+	pthread_rwlock_unlock(&rooms[room].lock);
 
 	while (event) {
 		
@@ -136,17 +135,17 @@ int event_room_handle(int p_index)
 			return -1;
 
 		/* We need the lock now to alter the event list */
-		pthread_rwlock_wrlock(&chat_room[room].lock);
+		pthread_rwlock_wrlock(&rooms[room].lock);
 		
 		/* Update player pointer into list */
 		players.info[p_index].room_events = event->next;
 		
 		/* And add the event to the remove list if necessary */
 		if (--(event->ref_count) == 0) {
-			if (chat_room[room].event_tail == event)
-				chat_room[room].event_tail = NULL;
+			if (rooms[room].event_tail == event)
+				rooms[room].event_tail = NULL;
 #ifdef DEBUG
-			chat_room[room].event_head = event->next;
+			rooms[room].event_head = event->next;
 #endif DEBUG
 			event->next = rm_list;
 			rm_list = event;
@@ -161,7 +160,7 @@ int event_room_handle(int p_index)
 		 * added to remove list (and its next got overwritten)
 		 */
 		event = players.info[p_index].room_events;
-		pthread_rwlock_unlock(&chat_room[room].lock);
+		pthread_rwlock_unlock(&rooms[room].lock);
 	}
 	
 	/* Finally, free the list of events to remove */
@@ -189,10 +188,10 @@ int event_room_flush(int p_index)
 		players.info[p_index].room_events = event->next;
 		if (--(event->ref_count) == 0) {
 			dbg_msg(GGZ_DBG_LISTS, "Removing event %p", event);
-			if (chat_room[room].event_tail == event)
-				chat_room[room].event_tail = NULL;
+			if (rooms[room].event_tail == event)
+				rooms[room].event_tail = NULL;
 #ifdef DEBUG
-			chat_room[room].event_head = event->next;
+			rooms[room].event_head = event->next;
 #endif DEBUG
 			if (event->data)
 				free(event->data);
@@ -345,14 +344,14 @@ static void event_room_spew(int room)
 	GGZEvent *event;
 
 	dbg_msg(GGZ_DBG_LISTS, "------ Event List ------");
-	event = chat_room[room].event_head;
+	event = rooms[room].event_head;
 	dbg_msg(GGZ_DBG_LISTS, "Event head is %p", event);
 	while (event) {
 		dbg_msg(GGZ_DBG_LISTS, "  Chain item %p (%d)",
 			event, event->ref_count);
 		event = event->next;
 	}
-	dbg_msg(GGZ_DBG_LISTS, "Event tail is %p", chat_room[room].event_tail);
+	dbg_msg(GGZ_DBG_LISTS, "Event tail is %p", rooms[room].event_tail);
 	dbg_msg(GGZ_DBG_LISTS, "-----------------------");
 }
 
