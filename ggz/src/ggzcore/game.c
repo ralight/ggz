@@ -37,6 +37,7 @@
 #include <sys/poll.h>
 #include <errno.h>
 #include <ggz.h>
+#include <ggzmod.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -57,6 +58,7 @@ static char* _ggzcore_game_events[] = {
 	"GGZ_GAME_LAUNCH_FAIL",
 	"GGZ_GAME_NEGOTIATED",
 	"GGZ_GAME_NEGOTIATE_FAIL",
+	"GGZ_GAME_PLAYING",
 	"GGZ_GAME_OVER",
 	"GGZ_GAME_IO_ERROR",
 	"GGZ_GAME_PROTO_ERROR"
@@ -71,20 +73,19 @@ static unsigned int _ggzcore_num_events = sizeof(_ggzcore_game_events)/sizeof(_g
  */
 struct _GGZGame {
 
-	/* File descriptor for communication with game process */
-	int fd;
-
-	/* PID of running game process */
-	pid_t pid;
-	
 	/* Pointer to module this game is playing */
 	struct _GGZModule *module;
 
 	/* Room events */
 	struct _GGZHookList *event_hooks[sizeof(_ggzcore_game_events)/sizeof(_ggzcore_game_events[0])];
 
+	/* GGZ Game module connection */
+	GGZMod *client;
+
 };
 
+
+static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event, void *data);
 
 
 /* Publicly exported functions */
@@ -164,19 +165,28 @@ int ggzcore_game_remove_event_hook_id(GGZGame *game,
 }
 
 
-int ggzcore_game_get_fd(GGZGame *game)
+int ggzcore_game_get_control_fd(GGZGame *game)
 {
 	if (game)
-		return _ggzcore_game_get_fd(game);
+		return _ggzcore_game_get_control_fd(game);
 	else
 		return -1;
 }
 
 
-void ggzcore_game_set_fd(GGZGame *game, unsigned int fd)
+int ggzcore_game_read_data(GGZGame *game)
 {
 	if (game)
-		return _ggzcore_game_set_fd(game, fd);
+		return _ggzcore_game_read_data(game);
+	else
+		return -1;
+}   
+
+
+void ggzcore_game_set_server_fd(GGZGame *game, unsigned int fd)
+{
+	if (game)
+		return _ggzcore_game_set_server_fd(game, fd);
 }
 
 
@@ -225,14 +235,50 @@ void _ggzcore_game_init(struct _GGZGame *game, struct _GGZModule *module)
 	int i;
 
      	game->module = module;
-	game->fd = -1;
-	game->pid = -1;
 
 	ggz_debug("GGZCORE:GAME", "Initializing new game");
 
 	/* Setup event hook list */
 	for (i = 0; i < _ggzcore_num_events; i++)
 		game->event_hooks[i] = _ggzcore_hook_list_init(i);
+
+	/* Setup client module connection */
+	game->client = ggzmod_new(GGZMOD_GGZ);
+	ggzmod_set_gamedata(game->client, game);
+	ggzmod_set_handler(game->client, GGZMOD_EVENT_STATE, &_ggzcore_game_handle_state);
+	ggzmod_set_module(game->client, NULL, _ggzcore_module_get_argv(game->module));
+}
+
+
+static void _ggzcore_game_handle_state(GGZMod *mod, GGZModEvent event, void *data)
+{
+	GGZGame* game = ggzmod_get_gamedata(mod);
+	GGZModState cur, prev;
+
+	prev = *(GGZModState*)data;
+	cur = ggzmod_get_state(mod);
+
+	switch (cur) {
+	case GGZMOD_STATE_WAITING:
+		ggz_debug("GGZCORE:GAME", "Game now waiting");
+		_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
+		break;
+
+	case GGZMOD_STATE_PLAYING:
+		ggz_debug("GGZCORE:GAME", "Game now playing");
+		_ggzcore_game_event(game, GGZ_GAME_PLAYING, NULL);
+		break;
+		
+	case GGZMOD_STATE_DONE:
+		ggz_debug("GGZCORE:GAME", "Game now done");
+		_ggzcore_game_event(game, GGZ_GAME_OVER, NULL);
+		break;
+
+	default:
+		ggz_debug("GGZCORE:GAME", "Game now in state %d", cur);
+		break;
+
+	}
 }
 
 
@@ -242,11 +288,8 @@ void _ggzcore_game_free(struct _GGZGame *game)
 
 	ggz_debug("GGZCORE:GAME", "Destroying game object");
 
-	if (game->fd != -1)
-		close(game->fd);
-
-	if (game->pid != -1)
-		kill(game->pid, SIGTERM);
+	ggzmod_disconnect(game->client);
+	ggzmod_free(game->client);
 
 	for (i = 0; i < _ggzcore_num_events; i++)
 		_ggzcore_hook_list_destroy(game->event_hooks[i]);
@@ -281,15 +324,31 @@ int _ggzcore_game_remove_event_hook_id(struct _GGZGame *game,
 }
 
 
-int _ggzcore_game_get_fd(struct _GGZGame *game)
+int _ggzcore_game_get_control_fd(struct _GGZGame *game)
 {
-	return game->fd;
+	return ggzmod_get_fd(game->client);
 }
 
-
-void _ggzcore_game_set_fd(struct _GGZGame *game, int fd)
+int _ggzcore_game_read_data(struct _GGZGame *game)
 {
-	game->fd = fd;
+	int status;
+
+	status = ggzmod_dispatch(game->client);
+	ggz_debug("GGZCORE:GAME", "Result of reading from game: %d", status);
+
+	if (status < 0) {
+		_ggzcore_game_event(game, GGZ_GAME_OVER, NULL);
+		ggzmod_disconnect(game->client);
+	}
+
+	return status;
+}   
+
+
+
+void _ggzcore_game_set_server_fd(struct _GGZGame *game, int fd)
+{
+	ggzmod_set_server_fd(game->client, fd);
 }
 
 
@@ -301,69 +360,21 @@ struct _GGZModule* _ggzcore_game_get_module(struct _GGZGame *game)
 
 int _ggzcore_game_launch(struct _GGZGame *game)
 {
-	pid_t pid;
-	char *path, **argv;
-	struct stat file_status;
-
-	argv = _ggzcore_module_get_argv(game->module);
-	path = _ggzcore_game_get_path(argv);
+	int status;
 
 	ggz_debug("GGZCORE:GAME", "Launching game of %s",
 		      _ggzcore_module_get_name(game->module));
-	ggz_debug("GGZCORE:GAME", "Exec path is %s", path);
 
-	/* Check for existence of game module */
-	if (stat(path, &file_status) < 0) {
-		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL,
-				    strerror(errno));
-		ggz_debug("GGZCORE:GAME", "Bad path: %s", path);
-		ggz_free(path);
-		return -1;
-	}
-
-	/* Fork table process */
-	if ( (pid = fork()) < 0) {
-		ggz_error_sys_exit("fork failed");
-	} else if (pid == 0) {
-		/* child */
-
-		/* NOTE: after we close FD 3, below, we can't send any
-		 * more communications to this FD.  Although this seems
-		 * to be safe with ggzcore_debug right now, I'm not
-		 * going to count on it.  --JDS */
-
-		/* libggzmod expects FD 3 to be the socket's FD */
-		if (game->fd != 3) {
-			if (dup2(game->fd, 3) != 3)
-				exit(-1);
-			if (close(game->fd) < 0)
-				exit(-1);
-		}
-
-
-		/* It's tempting to put this in its own function, but
-		 * since we can't use debugging it wouldn't be safe. */
-		execv(path, argv);
-
-		/* If we get here, exec failed.  Bad news */
-		/* we still can't write debug info here!  But, we could write
-		 * game info to socket 3. */
-		exit(-1);
-	} else {
-		/* parent */
-		ggz_free(path);
-		
-		/* Key info about game */
-		game->pid = pid;
-
-		ggz_debug("GGZCORE:GAME", "Successful launch");
+	if ( (status = ggzmod_connect(game->client)) == 0) {
+		ggz_debug("GGZCORE:GAME", "Launched game module");
 		_ggzcore_game_event(game, GGZ_GAME_LAUNCHED, NULL);
-		/* FIXME: for now, launch and negotiate are one and the same */
-		_ggzcore_game_event(game, GGZ_GAME_NEGOTIATED, NULL);
-		
 	}
-
-	return 0;
+	else {
+		ggz_debug("GGZCORE:GAME", "Failed to connect to game module");
+		_ggzcore_game_event(game, GGZ_GAME_LAUNCH_FAIL, NULL);
+	}
+		
+	return status;
 }
 
 
@@ -411,17 +422,3 @@ static char* _ggzcore_game_get_path(char **argv)
 	return path;
 }
 
-
-RETSIGTYPE _ggzcore_game_dead(int sig)
-{
-  	pid_t pid;
-	int status;
-  
-	pid = waitpid(WAIT_ANY, &status, WNOHANG);
-	if( pid > 0 )
-		ggz_debug("GGZCORE:GAME", "Game module is dead");
-	else if( pid == 0 )
-		ggz_error_sys("No dead children found");
-	else 
-		ggz_error_sys("Waitpid failure");
-}

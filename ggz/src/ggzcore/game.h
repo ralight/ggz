@@ -57,9 +57,10 @@ int _ggzcore_game_data_is_pending(struct _GGZGame *game);
 int _ggzcore_game_read_data(struct _GGZGame *game);
 int _ggzcore_game_write_data(struct _GGZGame *game);
 
-int _ggzcore_game_get_fd(struct _GGZGame *game);
-void _ggzcore_game_set_fd(struct _GGZGame *game, int fd);
+int _ggzcore_game_get_control_fd(struct _GGZGame *game);
 struct _GGZModule* _ggzcore_game_get_module(struct _GGZGame *game);
+
+void _ggzcore_game_set_server_fd(struct _GGZGame *game, int fd);
 
 int _ggzcore_game_launch(struct _GGZGame *game);
 int _ggzcore_game_join(struct _GGZGame *game);

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 4164 2002-05-05 21:13:29Z bmh $
+ * $Id: ggzcore.h 4265 2002-06-22 05:13:14Z bmh $
  *
  * Interface file to be included by client frontends
  *
@@ -28,6 +28,7 @@
 #ifndef __GGZCORE_H__
 #define __GGZCORE_H__
 
+#include <sys/types.h>
 #include <stdarg.h>
 #include <poll.h>
 
@@ -198,6 +199,7 @@ typedef enum {
 	GGZ_GAME_LAUNCH_FAIL,
 	GGZ_GAME_NEGOTIATED,
 	GGZ_GAME_NEGOTIATE_FAIL,
+	GGZ_GAME_PLAYING,
 	GGZ_GAME_OVER,
 	GGZ_GAME_IO_ERROR,
 	GGZ_GAME_PROTO_ERROR,
@@ -865,14 +867,13 @@ int ggzcore_game_remove_event_hook_id(GGZGame *game,
 				      const GGZGameEvent event, 
 				      const unsigned int hook_id);
 
-int  ggzcore_game_get_fd(GGZGame *game);
-void ggzcore_game_set_fd(GGZGame *game, unsigned int fd);
+int  ggzcore_game_get_control_fd(GGZGame *game);
+void ggzcore_game_set_server_fd(GGZGame *game, unsigned int fd);
 GGZModule* ggzcore_game_get_module(GGZGame *game);
-
 
 int ggzcore_game_launch(GGZGame *game);
 int ggzcore_game_join(GGZGame *game);
-			   
+int ggzcore_game_read_data(GGZGame *game);			   
 
 #ifdef __cplusplus
 }
