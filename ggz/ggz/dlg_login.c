@@ -118,7 +118,7 @@ static void login_profile_changed(GtkWidget* entry, gpointer data)
 
 static void login_edit_profiles(GtkWidget* button, gpointer window)
 {
-	create_dlg_props();
+	dlg_props = create_dlg_props();
 	gtk_widget_show(dlg_props);
 
 }

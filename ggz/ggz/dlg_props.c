@@ -25,6 +25,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdio.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -33,6 +34,7 @@
 #include "dlg_props.h"
 #include "ggzrc.h"
 #include "xtext.h"
+#include "server.h"
 #include "support.h"
 
 /* Globals for the props dialog */
@@ -54,6 +56,8 @@ void props_color_type_toggled (GtkButton *button, gpointer user_data);
 void props_fok_button_clicked (GtkButton *button, gpointer user_data);
 void props_fapply_button_clicked (GtkButton *button, gpointer user_data);
 void props_fcancel_button_clicked (GtkButton *button, gpointer user_data);
+void on_profile_list_select_row (GtkWidget *widget, gint row, gint column,
+				 GdkEventButton *event, gpointer data);
 GtkWidget *create_fontselect (void);
 
 
@@ -134,6 +138,59 @@ void props_modify_button_clicked (GtkButton *button, gpointer user_data)
 void props_delete_button_clicked (GtkButton *button, gpointer user_data)
 {
 
+}
+
+void on_profile_list_select_row (GtkWidget *widget, gint row, gint column,
+				 GdkEventButton *event, gpointer data)
+{
+	GtkWidget *tmp;
+	char *profile_name;
+	Server *profile;
+	char *port;
+
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "profile_list");
+	gtk_clist_get_text( GTK_CLIST(tmp), row, column, &profile_name);
+	profile = server_get(profile_name);
+
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
+	if(profile->name != NULL)
+		gtk_entry_set_text( GTK_ENTRY(tmp), profile->name );
+	else
+		gtk_entry_set_text( GTK_ENTRY(tmp), "" );
+
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_server");
+	if(profile->host != NULL)
+		gtk_entry_set_text( GTK_ENTRY(tmp), profile->host );
+	else
+		gtk_entry_set_text( GTK_ENTRY(tmp), "" );
+
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_port");
+	port = g_strdup_printf("%d", profile->port);
+	gtk_entry_set_text( GTK_ENTRY(tmp), port );
+	g_free(port);
+
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_username");
+	if(profile->login != NULL)
+		gtk_entry_set_text( GTK_ENTRY(tmp), profile->login );
+	else
+		gtk_entry_set_text( GTK_ENTRY(tmp), "" );
+
+	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_password");
+	if(profile->password != NULL)
+		gtk_entry_set_text( GTK_ENTRY(tmp), profile->password );
+	else
+		gtk_entry_set_text( GTK_ENTRY(tmp), "" );
+
+	if( profile->type == 0 )
+	{
+		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "radiobutton3");
+		gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON(tmp), TRUE );
+	}
+	if( profile->type == 1 )
+	{
+		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "radiobutton4");
+		gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON(tmp), TRUE );
+	}
 }
 
 void props_Font_button_clicked (GtkButton *button, gpointer user_data)
@@ -219,8 +276,25 @@ void dlg_props_realize (GtkWidget *widget, gpointer user_data)
 {
 	/* Set all options to current settings */
 	GtkWidget *tmp;
+	GList *items = NULL;
+	GList *item;
+	guint x;
+	gchar *entry[1];
 
 	/* Servers Tab */
+	items = server_get_names();
+	if (items != NULL)
+	{
+		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "profile_list");
+		for(x = 0; x != g_list_length(items); x++)
+		{
+			item = g_list_nth( items, x );
+		        entry[0] = g_strdup_printf("%s",
+						   (char*)item->data);
+		        gtk_clist_append(GTK_CLIST(tmp), entry);
+        		g_free(entry[0]);
+		}
+	}
 
 	/* Chat Tab */
         tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "chat_font");
@@ -308,14 +382,18 @@ void props_fcancel_button_clicked (GtkButton *button, gpointer user_data)
 }
 
 
+
 GtkWidget*
 create_dlg_props (void)
 {
+  GtkWidget *dlg_props;
   GtkWidget *dialog_vbox1;
   GtkWidget *vbox1;
   GtkWidget *notebook1;
   GtkWidget *hbox2;
+  GtkWidget *scrolledwindow2;
   GtkWidget *profile_list;
+  GtkWidget *label28;
   GtkWidget *vbuttonbox1;
   GtkWidget *button4;
   GtkWidget *button5;
@@ -430,14 +508,29 @@ create_dlg_props (void)
   gtk_container_add (GTK_CONTAINER (notebook1), hbox2);
   gtk_container_set_border_width (GTK_CONTAINER (hbox2), 5);
 
-  profile_list = gtk_list_new ();
+  scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_ref (scrolledwindow2);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "scrolledwindow2", scrolledwindow2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (scrolledwindow2);
+  gtk_box_pack_start (GTK_BOX (hbox2), scrolledwindow2, TRUE, TRUE, 0);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+  profile_list = gtk_clist_new (1);
   gtk_widget_ref (profile_list);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "profile_list", profile_list,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (profile_list);
-  gtk_box_pack_start (GTK_BOX (hbox2), profile_list, TRUE, TRUE, 0);
-  gtk_widget_set_usize (profile_list, 25, -2);
-  gtk_container_set_border_width (GTK_CONTAINER (profile_list), 10);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow2), profile_list);
+  gtk_clist_set_column_width (GTK_CLIST (profile_list), 0, 80);
+  gtk_clist_column_titles_show (GTK_CLIST (profile_list));
+
+  label28 = gtk_label_new (_("Profiles"));
+  gtk_widget_ref (label28);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label28", label28,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label28);
+  gtk_clist_set_column_widget (GTK_CLIST (profile_list), 0, label28);
 
   vbuttonbox1 = gtk_vbutton_box_new ();
   gtk_widget_ref (vbuttonbox1);
@@ -1059,6 +1152,9 @@ create_dlg_props (void)
 
   gtk_signal_connect (GTK_OBJECT (dlg_props), "realize",
                       GTK_SIGNAL_FUNC (dlg_props_realize),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (profile_list), "select_row",
+                      GTK_SIGNAL_FUNC (on_profile_list_select_row),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (button4), "clicked",
                       GTK_SIGNAL_FUNC (props_add_button_clicked),
