@@ -3,7 +3,7 @@
 
 #include <list>
 
-template<class T> class QList : public list<T>
+template<class T> class QList : public std::list<T>
 {
 	public:
 		QList(){}
@@ -13,7 +13,7 @@ template<class T> class QList : public list<T>
 		T* first() {T* foo; *foo = m_list.front(); return foo;}
 		T* next() {T* bar; *bar = m_list.back(); return bar;}
 	private:
-		list<T> m_list;
+		std::list<T> m_list;
 		bool m_autodelete;
 };
 

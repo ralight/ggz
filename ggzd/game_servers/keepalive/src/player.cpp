@@ -28,6 +28,8 @@
 #include <sys/stat.h>
 #include <iostream>
 
+using namespace std;
+
 // Constructor
 Player::Player(const char *name, int fd)
 {
@@ -66,7 +68,7 @@ char *Player::morph(const char *username, const char *password)
 
 	string graveyard = string(DATADIR) + "/keepalive/";
 	string grave = graveyard + username;
-	f.open(grave.c_str(), _IO_INPUT);
+	f.open(grave.c_str(), /*_IO_INPUT*/ios::in);
 	if(f.is_open())
 	{
 		f >> user;
@@ -111,7 +113,7 @@ void Player::die()
 		return;
 	}
 	string grave = graveyard + m_username;
-	f.open(grave.c_str(), _IO_OUTPUT);
+	f.open(grave.c_str(), /*_IO_OUTPUT*/ios::out);
 	if(f.is_open())
 	{
 		f << "username: " << m_username << endl;

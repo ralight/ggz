@@ -24,18 +24,19 @@
 // System includes
 #include <fstream>
 #include <string>
+#include <iostream>
 
 // Static function to load a qweb
 QWeb *MuehleLoader::loadVariant ( const char *file ) {
-	fstream f;
-	string s;
+	std::fstream f;
+	std::string s;
 	QWeb *web;
 
 	s = GGZDDATADIR;
 	s.append ( "/muehle/" );
 	s.append ( file );
 
-	f.open( s.data(), ios::in );
+	f.open( s.data(), std::ios::in );
 	if ( !f.is_open () ) {
 		return NULL;
 	}

@@ -23,6 +23,8 @@
 #include <cstdlib>
 #include <iostream>
 
+using namespace std;
+
 // Main function: parse arguments and start server
 int main(int argc, char **argv)
 {

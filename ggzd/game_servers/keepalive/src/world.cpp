@@ -61,7 +61,7 @@ void World::addPlayer(const char *name, int fd)
 	// Transmit player list
 	ggz_write_char(p->fd(), op_player);
 	ggz_write_int(p->fd(), m_playerlist.size());
-	for(list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
+	for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 	{
 		ggz_write_string((*it).fd(), (*it).name());
 		ggz_write_int((*it).fd(), (*it).x());
@@ -81,7 +81,7 @@ void World::removePlayer(const char *name)
 	if(p)
 	{
 		std::cout << "Got him" << std::endl;
-		for(list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
+		for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 			if(&(*it) == p)
 			{
 				std::cout << "Erase him" << std::endl;
@@ -96,7 +96,7 @@ void World::removePlayer(const char *name)
 Player *World::getPlayer(const char *name)
 {
 	if(!name) return NULL;
-	for(list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
+	for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 		if(!strcmp((*it).name(), name)) return &(*it);
 	return NULL;
 }
@@ -151,7 +151,7 @@ void World::receive(const char *name, void *data)
 			ggz_read_int(p->fd(), &x);
 			ggz_read_int(p->fd(), &y);
 			p->move(x, y);
-			for(list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
+			for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 			{
 				if(&(*it) == p) continue;
 				ggz_write_char((*it).fd(), op_moved);
@@ -163,7 +163,7 @@ void World::receive(const char *name, void *data)
 		case op_chat:
 			std::cout << "op_chat" << std::endl;
 			ggz_read_string_alloc(p->fd(), &message);
-			for(list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
+			for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 			{
 				if(&(*it) == p) continue;
 				ggz_write_char((*it).fd(), op_chatted);
