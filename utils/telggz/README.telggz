@@ -45,5 +45,11 @@ The file $HOME/.ggz/metaserver.cache must be present and contain at least one
 meta server URI, like ggzmeta://localhost:15689.
 From then one TelGGZ keeps that database up to date automatically.
 
+NEW - invokation:
+As inetd is deprecated (doesn't allow joe user to launch more servers), the
+usage of xinetd is recommended until we've got a better solution. Use
+xinetd.conf and follow the instructions in there for TelGGZ and (optionally)
+the GGZ Meta Server.
+
 Josef
 
