@@ -350,6 +350,12 @@ int game_make_move(int player, int move) {
 		status += game_mark_board(player,-1, 0, x, y);
 		status += game_mark_board(player,-1,-1, x, y);
 
+
+		// Change turn
+		rvr_game.turn*=-1;
+
+		game_update_scores();
+
 	} else
 		status = -1;
 
@@ -367,18 +373,14 @@ int game_make_move(int player, int move) {
 		player*=-1;
 	}
 
-	// Change turn
-	rvr_game.turn*=-1;
-
-	game_update_scores();
-
 	// Check if game is over
-	if (!game_check_over()) {
+	if (status >= 0 && !game_check_over()) {
 
 		// AI play
 		game_play();
 
 	}
+
 
 	// If couldn`t make the move, sends sync to the player
 	if (status < 0)
