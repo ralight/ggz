@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 4534 2002-09-13 02:20:58Z jdorje $
+ * $Id: room.c 4538 2002-09-13 05:11:04Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -45,6 +45,11 @@
 extern Options opt;
 extern struct GGZState state;
 extern struct GameInfo game_types[MAX_GAME_TYPES];
+
+typedef struct {
+	GGZUpdateOpcode opcode;
+	char player[MAX_USER_NAME_LEN + 1];
+} GGZRoomEventData;
 
 /* Decl of server wide chat room structure */
 RoomStruct *rooms;
@@ -302,59 +307,40 @@ int room_join(GGZPlayer* player, const int room)
 /* Notify clients that someone has entered/left the room */
 static void room_notify_change(char* name, const int old, const int new)
 {
-	void* data = NULL;
-	char* current;
-	int size;
-
 	dbg_msg(GGZ_DBG_ROOM, "%s moved from room %d to %d", name, old, new);
 		
-	size = sizeof(char) + strlen(name) + 1;
-	
 	if (old != -1) {
 	/* Send DELETE update to old room */
-		data = ggz_malloc(size);
+		GGZRoomEventData *data = ggz_malloc(sizeof(*data));
 
-		current = (char*)data;
-
-		*(char*)current = GGZ_UPDATE_DELETE; 
-		current += sizeof(char);
-
-		strcpy(current, name);
-		current += (strlen(name) + 1);
+		data->opcode = GGZ_UPDATE_DELETE;
+		strcpy(data->player, name);
 		
 		event_room_enqueue(old, room_event_callback, 
-				   size, data, NULL);
+				   sizeof(*data), data, NULL);
 	}
 
 	/* Send ADD update to new room */
 	if (new != -1) {
-		data = ggz_malloc(size);
+		GGZRoomEventData *data = ggz_malloc(sizeof(*data));
 
-		current = (char*)data;
-
-		*(char*)current = GGZ_UPDATE_ADD;
-		current += sizeof(char);
-
-		strcpy(current, name);
-		current += (strlen(name) + 1);
+		data->opcode = GGZ_UPDATE_ADD;
+		strcpy(data->player, name);
 		
 		event_room_enqueue(new, room_event_callback, 
-				   size, data, NULL);
+				   sizeof(*data), data, NULL);
 	}
 }
 
 
 void room_notify_lag(char *name, int room)
 {
-	char *data;
-	int datalen;
+	GGZRoomEventData *data = ggz_malloc(sizeof(*data));
 
-	datalen = strlen(name) + 2;
-	data = ggz_malloc(datalen);
-	data[0] = GGZ_UPDATE_LAG;
-	strcpy(data+1, name);
+	data->opcode = GGZ_UPDATE_LAG;
+	strcpy(data->player, name);
 	event_room_enqueue(room, room_event_callback,
-			   datalen, data, NULL);
+			   sizeof(*data), data, NULL);
 }
 
 
@@ -363,19 +349,15 @@ static GGZEventFuncReturn room_event_callback(void* target_player,
 					      size_t size, void* data)
 {
 	GGZPlayer *player = target_player;
-	unsigned char opcode;
-	char* current = data;
-	char* name;
-
-	/* Unpack event data */
-	opcode = *(unsigned char*)data;
-	name = current + 1;
+	GGZRoomEventData *event = data;
 
 	/* Don't deliver updates about ourself (except lag) */
-	if (opcode != GGZ_UPDATE_LAG && strcasecmp(name, player->name) == 0)
+	if (event->opcode != GGZ_UPDATE_LAG
+	    && strcasecmp(event->player, player->name) == 0)
 		return GGZ_EVENT_OK;
 
-	if (net_send_player_update(player->client->net, opcode, name) < 0)
+	if (net_send_player_update(player->client->net,
+				   event->opcode, event->player) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
