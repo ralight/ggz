@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 6883 2005-01-24 17:44:11Z jdorje $
+ * $Id: room.c 6891 2005-01-25 01:49:39Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -183,7 +183,7 @@ GGZPlayer *_ggzcore_room_get_player_by_name(GGZRoom * room,
 	if (room->players) {
 		player = _ggzcore_player_new();
 		_ggzcore_player_init(player, name, NULL, -1, 0, 0);
-		entry = ggz_list_search(room->players, &player);
+		entry = ggz_list_search(room->players, player);
 
 		if (entry)
 			found = ggz_list_get_data(entry);
@@ -676,7 +676,7 @@ void _ggzcore_room_remove_player(GGZRoom * room, const char *name,
 	if (room->players) {
 		GGZPlayer *player = _ggzcore_player_new();
 		_ggzcore_player_init(player, name, NULL, -1, 0, 0);
-		entry = ggz_list_search(room->players, &player);
+		entry = ggz_list_search(room->players, player);
 		if (entry) {
 			GGZServer *server = _ggzcore_room_get_server(room);
 
