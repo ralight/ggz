@@ -29,6 +29,7 @@
 #include "server.h"
 #include "output.h"
 #include "loop.h"
+#include "motd.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,6 +50,7 @@ static GGZHookReturn server_enter_ok(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_enter_fail(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_logout(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_state_change(GGZServerEvent id, void*, void*);
+static GGZHookReturn server_motd_loaded(GGZServerEvent id, void* event_data, void* user_data);
 
 static GGZHookReturn server_net_error(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_protocol_error(GGZServerEvent id, void*, void*);
@@ -124,7 +126,8 @@ static void server_register(GGZServer *server)
 				      server_protocol_error);
 	ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE, 
 				      server_state_change);
-
+        ggzcore_server_add_event_hook(server, GGZ_MOTD_LOADED,
+				      server_motd_loaded);
 }
 
 
@@ -178,7 +181,7 @@ static GGZHookReturn server_login_ok(GGZServerEvent id, void* event_data,
 #ifdef DEBUG
 	output_text("--- Logged into to %s.", ggzcore_server_get_host(server));
 #endif
-	ggzcore_server_list_rooms(server, -1, 1);
+//	ggzcore_server_list_rooms(server, -1, 1);
 
 	return GGZ_HOOK_OK;
 }
@@ -352,4 +355,17 @@ static GGZHookReturn server_list_types(GGZServerEvent id, void* event_data, void
 	return GGZ_HOOK_OK;
 }
 
+
+static GGZHookReturn server_motd_loaded(GGZServerEvent id, void* event_data, void* user_data)
+{
+        int i;
+        char **motd;
+
+        motd = event_data;
+
+        for(i = 0; motd[i] != NULL; i++)
+                motd_print_line(motd[i]);
+
+        return GGZ_HOOK_OK;
+}
 

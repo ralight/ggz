@@ -10,6 +10,8 @@ ggz_txt_SOURCES = 	input.c \
 			loop.c \
 			loop.h \
 			main.c \
+			motd.c \
+			motd.h \
 			output.c \
 			output.h \
 			server.c \

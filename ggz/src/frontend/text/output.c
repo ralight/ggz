@@ -78,6 +78,7 @@ void output_display_help(void)
 	output_text("--- /exit                                   Quit GNU Gaming Zone");
 	output_text("--- /desc <room>                            Get description of room <room>");
 	output_text("--- /join <room>                            Join room number <room>");
+	output_text("--- /list players|rooms|tables|types        List the requested information.");
 	output_text("--- /msg <player> <msg>                     Send a msg to a player");
 	output_text("--- /version                                Display the client version");
 	output_text("--- /who                                    List current player in the room");
