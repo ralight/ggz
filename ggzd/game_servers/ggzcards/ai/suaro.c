@@ -4,11 +4,11 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 3339 2002-02-12 05:44:32Z jdorje $
+ * $Id: suaro.c 3347 2002-02-13 04:17:07Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
- * Copyright (C) 2001 GGZ Dev Team.
+ * Copyright (C) 2001-2002 GGZ Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -4,14 +4,14 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 3302 2002-02-10 11:29:38Z jdorje $
+ * $Id: common.h 3347 2002-02-13 04:17:07Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
  * handled within this code.  For specialty handling we call a
  * game-specific function from game.c or games/<game>.c.
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2001-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -4,11 +4,11 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulation routines for card games
- * $Id: cards.h 2969 2001-12-20 18:49:46Z jdorje $
+ * $Id: cards.h 3347 2002-02-13 04:17:07Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

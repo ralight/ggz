@@ -4,14 +4,14 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.h 2707 2001-11-09 02:22:20Z jdorje $
+ * $Id: net.h 3347 2002-02-13 04:17:07Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
  * handled within this code.  For specialty handling we call a
  * game-specific function from game.c or games/<game>.c.
  *
- * Copyright (C) 2001 GGZ Dev Team.
+ * Copyright (C) 2001-2002 GGZ Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

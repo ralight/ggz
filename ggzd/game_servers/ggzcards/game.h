@@ -4,14 +4,14 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 2766 2001-11-28 07:31:42Z jdorje $
+ * $Id: game.h 3347 2002-02-13 04:17:07Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
  * that may be used as defaults.  Each game (in games/) will define its
  * own functions as well.
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

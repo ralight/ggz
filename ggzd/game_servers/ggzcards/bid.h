@@ -4,9 +4,9 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.h 2731 2001-11-13 06:50:06Z jdorje $
+ * $Id: bid.h 3347 2002-02-13 04:17:07Z jdorje $
  *
- * Copyright (C) 2001 Brent Hendricks.
+ * Copyright (C) 2001-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

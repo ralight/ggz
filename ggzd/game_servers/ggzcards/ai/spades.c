@@ -1,10 +1,10 @@
 /* 
  * File: ai/spades.c
- * Author: Brent Hendricks
+ * Author: Brent Hendricks, Jason Short
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 3339 2002-02-12 05:44:32Z jdorje $
+ * $Id: spades.c 3347 2002-02-13 04:17:07Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -19,7 +19,7 @@
  * For some good advice on Spades strategy, see:
  *               http://www.masterspades.com/
  *
- * Copyright (C) 1998 Brent Hendricks.
+ * Copyright (C) 1998-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

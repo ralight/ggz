@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 3302 2002-02-10 11:29:38Z jdorje $
+ * $Id: options.c 3347 2002-02-13 04:17:07Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -17,7 +17,7 @@
  * through the command line to the server, and are handled at game start
  * time.
  *
- * Copyright (C) 2001 Brent Hendricks.
+ * Copyright (C) 2001-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

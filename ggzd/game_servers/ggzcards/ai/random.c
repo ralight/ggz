@@ -4,14 +4,14 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: a "random" AI
- * $Id: random.c 3302 2002-02-10 11:29:38Z jdorje $
+ * $Id: random.c 3347 2002-02-13 04:17:07Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
  * always picking a random move.  At least they'll work with any
  * game!
  *
- * Copyright (C) 1998 Brent Hendricks.
+ * Copyright (C) 2001-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

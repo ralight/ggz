@@ -4,14 +4,14 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3319 2002-02-11 06:43:07Z jdorje $
+ * $Id: protocol.h 3347 2002-02-13 04:17:07Z jdorje $
  *
  * This just contains the communications protocol information.
  *
  * It should be identical between the server and all clients, and
  * the server contains the master copy.
  *
- * Copyright (C) 1999 Brent Hendricks.
+ * Copyright (C) 2001-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

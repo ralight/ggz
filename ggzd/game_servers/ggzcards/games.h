@@ -4,13 +4,13 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 2766 2001-11-28 07:31:42Z jdorje $
+ * $Id: games.h 3347 2002-02-13 04:17:07Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
  * pretty messy.
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2001-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

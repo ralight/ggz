@@ -4,13 +4,13 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 3335 2002-02-12 01:36:47Z jdorje $
+ * $Id: ai.c 3347 2002-02-13 04:17:07Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
  * of AI function sets.  Each game specifies its AI.
  *
- * Copyright (C) 1998 Brent Hendricks.
+ * Copyright (C) 2001-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

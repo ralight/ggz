@@ -1,16 +1,16 @@
 /* 
  * File: main.c
- * Author: Brent Hendricks, Jason Short
+ * Author: Brent Hendricks, Rich Gade, Jason Short
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 3302 2002-02-10 11:29:38Z jdorje $
+ * $Id: main.c 3347 2002-02-13 04:17:07Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
  * for GGZCards.
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

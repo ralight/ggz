@@ -4,11 +4,11 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 2968 2001-12-20 08:25:05Z jdorje $
+ * $Id: types.h 3347 2002-02-13 04:17:07Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
- * Copyright (C) 2001 Brent Hendricks.
+ * Copyright (C) 2001-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

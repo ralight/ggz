@@ -4,9 +4,9 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.h 2733 2001-11-13 09:56:05Z jdorje $
+ * $Id: sueca.h 3347 2002-02-13 04:17:07Z jdorje $
  *
- * Copyright (C) 2001 Ismael Orenstein
+ * Copyright (C) 2001-2002 Ismael Orenstein
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

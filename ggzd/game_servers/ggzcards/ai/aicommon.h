@@ -4,14 +4,14 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.h 3339 2002-02-12 05:44:32Z jdorje $
+ * $Id: aicommon.h 3347 2002-02-13 04:17:07Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
  * always picking a random move.  At least they'll work with any
  * game!
  *
- * Copyright (C) 2001 GGZ Dev Team.
+ * Copyright (C) 2001-2002 GGZ Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
