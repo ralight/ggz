@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 3845 2002-04-07 22:41:05Z jdorje $
+ * $Id: ggzdmod.h 3885 2002-04-10 18:58:25Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -251,9 +251,10 @@ typedef enum {
 	
 	/** @brief General seat change
 	 *  This event occurs when a seat change other than a player
-	 *  leave/join happens.  The player number (an int*) is
-	 *  passed as the event's data.  The seat information will
-	 *  be updated before the event is invoked.
+	 *  leave/join happens (which is currently impossible).  The
+	 *  player number (an int*) is passed as the event's data.  The
+	 *  seat information will be updated before the event is invoked.
+	 *  @note This is currently unused, but may eventually replace JOIN and LEAVE.
 	 *  @todo It is impossible to see the old seat data during the event. */
 	GGZDMOD_EVENT_SEAT,		
 	
@@ -263,7 +264,7 @@ typedef enum {
 	 *  use ggzdmod_log to generate the log. */
 	GGZDMOD_EVENT_LOG,		
 	
-	/** @brief Data avilable from player
+	/** @brief Data available from player
 	 *  This event occurs when there is data ready to be read from
 	 *  one of the player sockets.  The player number (an int*) is
 	 *  passed as the event's data. */
