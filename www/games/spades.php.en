@@ -1,0 +1,46 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>NetSpades</b><br>
+Card game for 4 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>NetSpades features</i><br>
+<ul>
+<li>Gtk+ game client
+<li>AI opponents available
+</ul>
+<br>
+
+<i>NetSpades rules</i><br>
+The first player (game host) is given the privilege to choose the minimum
+bid and the score needed to win a game.
+Each player then selects a bid and submits it.
+This marks the start of the turns, in which all players clock-wise propose
+a card. The one with the highest card and color wins the trick.
+Since the game is named NetSpaces, one can assume that Spades is trump.
+
+</td><td valign="top">
+
+<i>Gtk+ client:</i><br>
+<img src="pics/netspades.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

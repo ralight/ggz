@@ -1,0 +1,54 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Connect The Dots</b><br>
+Board game for 2 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Connect The Dots features</i><br>
+<ul>
+<li>Gtk+ and KDE game clients
+<li>AI opponents available
+<li>supports statistics
+<li>supports game spectators
+</ul>
+<br>
+
+<i>Connect The Dots rules</i><br>
+The first player (game host) selects a suitable horizontal and
+vertical size of the board - the more cells, the longer will the game take.
+
+Following this setup, the game starts, by giving each player the chance
+to mark one edge of any cell. As soon as someone achieves to finish a cell
+(so all 4 edges are marked), this player is allowed to continue until no
+further cell can be marked anymore.
+The game ends if all cells are marked. The winner is the one who got most cells
+to be marked with his colour.
+
+</td><td valign="top">
+
+<i>Gtk+ client:</i><br>
+<img src="pics/dots.png"><br>
+
+<i>KDE client:</i><br>
+<img src="pics/kdots.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

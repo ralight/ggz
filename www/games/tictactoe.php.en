@@ -1,0 +1,51 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>TicTacToe</b><br>
+Board game for 2 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>TicTacToe features</i><br>
+<ul>
+<li>3 game clients available: Gtk+, KDE, SDL/OpenGL
+<li>supports statistics
+<li>supports game spectators
+<li>AI opponent available
+</ul>
+<br>
+
+<i>TicTacToe rules</i><br>
+One player uses the cross, the other one the circle (or similar symbols).
+Then they try to get 3 of their symbols in a row (horizontally, vertically
+or diagonally) by putting a symbol on a free field in each turn.
+
+</td><td valign="top">
+
+<i>Gtk+ client:</i><br>
+<img src="pics/tictactoe.png"><br>
+
+<i>KDE client:</i><br>
+<img src="pics/ktictactux.png"><br>
+
+<i>SDL/OpenGL client:</i><br>
+<img src="pics/ttt3d.png">
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
