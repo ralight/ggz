@@ -368,8 +368,6 @@ void commands_add_message( char *from, char *message )
 		net_send_prvmsg( from, out );
 		sprintf( out, "Hey, you got a message from %s.", support_get_name( from ) );
 		net_send_prvmsg( name, out );
-		free(messages);
-		free(oldmessages);
 	}
 }
 
