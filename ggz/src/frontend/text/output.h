@@ -28,7 +28,7 @@ void output_banner(void);
 
 void output_prompt(int status);
 
-void output_chat(int type, char* player, char* message);
+void output_chat(int type, char* player, char* fmt, ...);
 
 void output_status();
 

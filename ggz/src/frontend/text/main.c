@@ -39,9 +39,9 @@
 /* Termination handler */
 RETSIGTYPE term_handle(int signum)
 {
-        ggzcore_event_process_all();
-        ggzcore_destroy();
-        output_shutdown();
+        ggzcore_event_process_all(); 
+        ggzcore_destroy(); 
+        output_shutdown(); 
 	exit(1);
 }
 
@@ -67,6 +67,9 @@ int main(void)
 	ggzcore_event_connect(GGZ_SERVER_CONNECT_FAIL, server_connect_fail);
 	ggzcore_event_connect(GGZ_SERVER_LOGIN_FAIL, server_login_fail);
 	ggzcore_event_connect(GGZ_SERVER_CHAT_MSG, server_chat_msg);
+	ggzcore_event_connect(GGZ_SERVER_CHAT_ANNOUNCE, server_chat_announce);
+	ggzcore_event_connect(GGZ_SERVER_CHAT_PRVMSG, server_chat_prvmsg);
+	ggzcore_event_connect(GGZ_SERVER_CHAT_BEEP, server_chat_beep);
 	ggzcore_event_connect(GGZ_SERVER_LOGOUT, server_logout);
 
 	output_prompt(1);

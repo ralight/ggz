@@ -26,6 +26,7 @@
 
 #include <config.h>
 #include <ggzcore.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -70,17 +71,26 @@ void output_prompt(int status)
 	fflush(NULL);
 }
 
-void output_chat(int type, char* player, char* message)
+void output_chat(int type, char* player, char* fmt, ...)
 {
+	char message[1024];	/* FIXME: Set to chat length given */
+				/* by server			   */
+	va_list ap;
+	va_start(ap, fmt);
+	vsprintf(message, fmt, ap);
+	va_end(ap);
+
 	fflush(NULL);
 	printf("\e7");
 	if(type == 0)
 	{
 		printf("\e[%d;0f\eD\e[0m\e[37m<%s> %s",window.ws_row-4, player, message);
 	} else if (type == 1) {
-		printf("\e[%d;0f\eD\e[0m\e[37m[%s] %s",window.ws_row-4, player, message);
+		printf("\e[%d;0f\eD\e[0m\e[37m>%s< %s",window.ws_row-4, player, message);
 	} else if (type == 2) {
 		printf("\e[%d;0f\eD\e[0m\e[37m%s  %s",window.ws_row-4, player, message);
+	} else if (type == 3) {
+		printf("\e[%d;0f\eD\e[0m\e[37m[%s] %s",window.ws_row-4, player, message);
 	}
 	printf("\e8");
 	fflush(NULL);

@@ -456,7 +456,7 @@ static void _ggzcore_net_handle_rsp_chat(void)
 
 static void _ggzcore_net_handle_chat(void)
 {
-	char subop;
+	unsigned char subop;
 	char** data;
 
 	if (!(data = calloc(2, sizeof(char*))))
@@ -466,14 +466,27 @@ static void _ggzcore_net_handle_chat(void)
 	    || es_read_string_alloc(ggz_server_sock, &(data[0])) < 0)
 		return;
 
-	if (subop & GGZ_CHAT_M_MESSAGE) {
+	if (subop & GGZ_CHAT_M_MESSAGE) 
 		if (es_read_string_alloc(ggz_server_sock, &(data[1])) < 0)
 			return;
-		/* FIXME: come up with a function to free data */
-		ggzcore_event_trigger(GGZ_SERVER_CHAT_MSG, data, NULL);
+
+	switch(subop)
+	{
+		case GGZ_CHAT_NORMAL:
+			ggzcore_event_trigger(GGZ_SERVER_CHAT_MSG, data, NULL);
+			break;
+		case GGZ_CHAT_ANNOUNCE:
+			ggzcore_event_trigger(GGZ_SERVER_CHAT_ANNOUNCE, data, NULL);
+			break;
+		case GGZ_CHAT_PERSONAL:
+			ggzcore_event_trigger(GGZ_SERVER_CHAT_PRVMSG, data, NULL);
+			break;
+		case GGZ_CHAT_BEEP:
+			ggzcore_event_trigger(GGZ_SERVER_CHAT_BEEP, data, NULL);
+			break;
 	}
-	
-	/* FIXME: Handle other subops */
+
+	/* FIXME: come up with a function to free data */
 }
 
 

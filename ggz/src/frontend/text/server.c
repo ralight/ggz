@@ -31,6 +31,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void server_login_ok(GGZEventID id, void* event_data, void* user_data)
 {
@@ -44,9 +45,37 @@ void server_chat_msg(GGZEventID id, void* event_data, void* user_data)
 
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
-	output_chat(1,player, message);
+	output_chat(0, player, message);
 }
 
+void server_chat_announce(GGZEventID id, void* event_data, void* user_data)
+{
+	char* player;
+	char* message;
+
+	player = ((char**)(event_data))[0];
+	message = ((char**)(event_data))[1];
+	output_chat(3, player, message);
+}
+
+void server_chat_prvmsg(GGZEventID id, void* event_data, void* user_data)
+{
+	char* player;
+	char* message;
+
+	player = ((char**)(event_data))[0];
+	message = ((char**)(event_data))[1];
+	output_chat(1, player, message);
+}
+
+void server_chat_beep(GGZEventID id, void* event_data, void* user_data)
+{
+	char* player;
+
+	player = ((char**)(event_data))[0];
+
+	output_chat(2, "---", "You've been beeped by %s.\007", player);
+}
 
 void server_connect_fail(GGZEventID id, void* event_data, void* user_data)
 {
