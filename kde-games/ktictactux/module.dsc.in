@@ -6,6 +6,6 @@ Frontend = kde
 Homepage = http://mindx.sourceforge.net/
 Name = TicTacToe
 ProtocolEngine = TicTacToe
-ProtocolVersion = 1
+ProtocolVersion = 2-pre1
 Version = 0.0.5
 

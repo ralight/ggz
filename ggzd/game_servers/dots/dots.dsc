@@ -10,7 +10,7 @@ ExecutablePath = ggzd.dots
 
 [Protocol]
 Engine = Dots
-Version = 1
+Version = 2-pre1
 
 [TableOptions]
 AllowLeave = 1

@@ -10,7 +10,7 @@ ExecutablePath = ggzd.lapocha
 
 [Protocol]
 Engine = LaPocha
-Version = 1
+Version = 2-pre1
 
 [TableOptions]
 AllowLeave = 1

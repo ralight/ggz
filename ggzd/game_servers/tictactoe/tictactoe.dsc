@@ -10,7 +10,7 @@ ExecutablePath = ggzd.tictactoe
 
 [Protocol]
 Engine = TicTacToe
-Version = 1
+Version = 2-pre1
 
 [TableOptions]
 AllowLeave = 1

@@ -1,4 +1,4 @@
-# $Id: ggzcards-suaro.dsc 3080 2002-01-12 08:06:23Z jdorje $
+# $Id: ggzcards-suaro.dsc 3244 2002-02-04 07:58:51Z jdorje $
 [GameInfo]
 Author = Jason Short
 Description = GGZ Cards game module for Suaro
@@ -11,7 +11,7 @@ ExecutablePath = ggzd.ggzcards --game=suaro --option=open_hands:0
 
 [Protocol]
 Engine = GGZCards
-Version = devel-4
+Version = devel-5
 
 [TableOptions]
 AllowLeave = 1
