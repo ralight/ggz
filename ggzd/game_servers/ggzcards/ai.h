@@ -1,10 +1,10 @@
-/*
+/* 
  * File: ai.h
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.h 2325 2001-08-29 17:46:27Z jdorje $
+ * $Id: ai.h 2417 2001-09-09 03:26:34Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -32,8 +32,11 @@
 
 #include "types.h"
 
-struct ai_function_pointers
-{
+#ifdef DEBUG
+#  define AI_DEBUG
+#endif /* DEBUG */
+
+struct ai_function_pointers {
 	char *(*get_name) (player_t);
 	void (*start_hand) ();
 	void (*alert_bid) (player_t, bid_t);
@@ -42,14 +45,12 @@ struct ai_function_pointers
 	  card_t(*get_play) (player_t, seat_t);
 };
 
-typedef enum
-{
+typedef enum {
 	GGZ_AI_NONE = -1,
 	GGZ_AI_RANDOM = 0,
 	GGZ_AI_SPADES = 1
 		/* others can be defined */
-}
-ai_type_t;
+} ai_type_t;
 
 /* get a name for an ai player sitting at the given spot */
 const char *ai_get_name(player_t);
@@ -64,5 +65,8 @@ void ai_alert_play(player_t, card_t);
 /* this gets a bid or play from the ai */
 bid_t ai_get_bid(player_t, bid_t *, int);
 card_t ai_get_play(player_t, seat_t);
+
+/* Writes debugging information about the AI (if enabled). */
+void ai_debug(const char *fmt, ...);
 
 #endif /* __AI_H__ */

@@ -1,10 +1,10 @@
-/*
+/* 
  * File: ai.c
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 2325 2001-08-29 17:46:27Z jdorje $
+ * $Id: ai.c 2417 2001-09-09 03:26:34Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -103,4 +103,18 @@ card_t ai_get_play(player_t p, seat_t s)
 		ggz_debug("AI chose invalid play!");
 #endif /* DEBUG */
 	return card;
+}
+
+void ai_debug(const char *fmt, ...)
+{
+#ifdef DEBUG_AI
+	char buf[4096];
+	va_list ap;
+
+	va_start(ap, fmt);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
+	va_end(ap);
+
+	(void) ggzd_debug("AI-DEBUG: %s", buf);
+#endif /* DEBUG_AI */
 }
