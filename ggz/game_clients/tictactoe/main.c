@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: main.c 6333 2004-11-12 02:27:20Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -39,10 +39,7 @@
 #include <ggz_common.h>
 #include <ggzmod.h>
 
-#include "dlg_about.h"
-#include "dlg_chat.h"
-#include "dlg_players.h"
-#include "ggzintl.h"
+#include "ggz_gtk.h"
 
 #include "game.h"
 #include "main_win.h"
@@ -53,10 +50,6 @@ extern GtkWidget *main_win;
 
 /* Global game variables */
 struct game_state_t game;
-
-/* Various event handlers */
-static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data);
-static void handle_ggz(gpointer data, gint source, GdkInputCondition cond);
 
 static void initialize_about_dialog(void);
 
@@ -74,10 +67,6 @@ int main(int argc, char *argv[])
 	display_board();
 
 	init_chat(game.ggzmod);
-	init_player_list(game.ggzmod);
-	ggzmod_connect(game.ggzmod);
-	gdk_input_add(ggzmod_get_fd(game.ggzmod), GDK_INPUT_READ,
-		      handle_ggz, NULL);
 
 	game_status(_("Watching the game..."));
 
@@ -110,31 +99,15 @@ static char get_player_symbol(int player)
 	return player ? 'O' : 'X';
 }
 
-static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
-{
-	ggzmod_dispatch(game.ggzmod);
-}
 
-
-static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e,
-				 void *data)
-{
-	int fd = *(int *)data;
-
-	ggzmod_set_state(game.ggzmod, GGZMOD_STATE_PLAYING);
-	game.fd = fd;
-	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
-}
-
-
-
-void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
+static gboolean game_handle_io(GGZMod * mod)
 {
 	int op;
 
-	if (ggz_read_int(source, &op) < 0) {
-		/* FIXME: do something here... */
-		return;
+	game.fd = ggzmod_get_server_fd(mod);
+
+	if (ggz_read_int(game.fd, &op) < 0) {
+		return FALSE;
 	}
 
 	switch (op) {
@@ -174,6 +147,7 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 		break;
 	}
 
+	return TRUE;
 }
 
 
@@ -294,16 +268,13 @@ int receive_gameover(void)
 void game_init(void)
 {
 	int i;
-	GGZMod *ggzmod;
 
 	for (i = 0; i < 9; i++)
 		game.board[i] = ' ';
 
 	game.state = STATE_INIT;
-	ggzmod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER,
-			   &handle_ggzmod_server);
-	game.ggzmod = ggzmod;
+
+	game.ggzmod = init_ggz_gtk(game_handle_io);
 	game.num = -1;
 }
 

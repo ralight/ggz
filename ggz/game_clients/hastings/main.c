@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: main.c 6333 2004-11-12 02:27:20Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -43,12 +43,10 @@
 #include <ggzmod.h>
 
 /* GTK-games includes */
-#include "dlg_about.h"
-#include "dlg_players.h"
-#include "selector.h"
-#include "ggzintl.h"
+#include "ggz_gtk.h"
 
 /* Hastings includes */
+#include "selector.h"
 #include "game.h"
 #include "main_win.h"
 
@@ -64,21 +62,9 @@ static void initialize_about_dialog(void);
 
 static void get_maps(void);
 
+static gboolean game_handle_io(GGZMod * mod);
+
 static GGZMod *mod;
-
-static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
-{
-	ggzmod_dispatch(mod);
-}
-
-static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
-{
-	int fd = *(int *)data;
-
-	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
-	game.fd = fd;
-	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
-}
 
 /* Main function: connect and set up everything */
 int main(int argc, char *argv[])
@@ -92,15 +78,7 @@ int main(int argc, char *argv[])
 	main_win = create_main_win();
 	gtk_widget_show(main_win);
 
-	mod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER,
-			   &handle_ggzmod_server);
-	init_player_list(mod);
-
-	ggzmod_connect(mod);
-
-	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz,
-		      NULL);
+	mod = init_ggz_gtk(game_handle_io);
 
 	gtk_main();
 
@@ -166,13 +144,14 @@ static void initialize_about_dialog(void)
 }
 
 /* Handle input from Hastings game server */
-void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
+static gboolean game_handle_io(GGZMod * mod)
 {
 	int op;
 
+	game.fd = ggzmod_get_server_fd(mod);
+
 	if (ggz_read_int(game.fd, &op) < 0) {
-		/* FIXME: do something here... */
-		return;
+		return FALSE;
 	}
 
 	/* Distinguish between different server responses */
@@ -213,6 +192,8 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 		game.state = STATE_DONE;
 		break;
 	}
+
+	return TRUE;
 }
 
 static void get_maps(void)

@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Description of game variables
- * $Id: game.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: game.h 6333 2004-11-12 02:27:20Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -202,7 +202,6 @@ extern GdkColor *back_color;
 
 // Setup functions
 void game_init(void);
-void game_handle_io(gpointer data, gint fd, GdkInputCondition cond);
 
 // Get stuff from server
 int get_seat(void);

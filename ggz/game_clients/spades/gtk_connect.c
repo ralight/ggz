@@ -82,7 +82,7 @@ void Disconnect(GtkWidget * widget, gpointer data)
 	case ST_GET_NAMES:
 	case ST_REG_TAUNT:
 		if (spadesHandle) {
-			gdk_input_remove(spadesHandle);
+			g_source_remove(spadesHandle);
 			spadesHandle = 0;
 		}
 	default:
@@ -108,7 +108,8 @@ void PlayOffline(GtkWidget * pBar)
 /**
  * Read data from the Spades server 
  */
-void ReadServerSocket(gpointer data, gint source, GdkInputCondition cond)
+gboolean ReadServerSocket(GIOChannel * channel, GIOCondition cond,
+			  gpointer data)
 {
 
 	Card playedCard;
@@ -228,7 +229,7 @@ void ReadServerSocket(gpointer data, gint source, GdkInputCondition cond)
 			gtk_timeout_add(CLEAR_DELAY,
 					TableClearTimer, NULL);
 			/* Don't accept server input until we've cleared the table */
-			gdk_input_remove(spadesHandle);
+			g_source_remove(spadesHandle);
 		}
 		break;
 
@@ -275,6 +276,8 @@ void ReadServerSocket(gpointer data, gint source, GdkInputCondition cond)
 		}
 		break;
 	}	/* switch( gameState.gameSegment ) */
+
+	return TRUE;
 }
 
 
@@ -299,12 +302,16 @@ void ReadTauntSocket(gpointer data, gint source, GdkInputCondition cond)
  * Timer for clearing table after a trick
  */ static gint TableClearTimer(gpointer data)
 {
+	GIOChannel *channel;
+
 	DisplayTable();
 	UpdateGame();
+
 	/* Don't accept server input until we've cleared the table */
-	spadesHandle =
-	    gdk_input_add(gameState.spadesSock, GDK_INPUT_READ,
-			  ReadServerSocket, NULL);
+
+	channel = g_io_channel_unix_new(gameState.spadesSock);
+	spadesHandle = g_io_add_watch(channel, G_IO_IN,
+				      ReadServerSocket, NULL);
 
 	return FALSE;
 

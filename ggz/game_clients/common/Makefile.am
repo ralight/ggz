@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6257 2004-11-04 22:53:36Z jdorje $
+#  $Id: Makefile.am 6333 2004-11-12 02:27:20Z jdorje $
 
 SUBDIRS = . cardsets
 
@@ -11,5 +11,6 @@ libgtk_games_a_SOURCES =	dlg_about.c	dlg_about.h	\
 				dlg_chat.c	dlg_chat.h	\
 				dlg_exit.c	dlg_exit.h	\
 				dlg_players.c	dlg_players.h	\
+				ggz_gtk.c	ggz_gtk.h	\
 				ggzintl.c	ggzintl.h	\
 				menus.c		menus.h

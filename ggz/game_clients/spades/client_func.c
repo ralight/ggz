@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: client_func.c 6333 2004-11-12 02:27:20Z jdorje $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -74,7 +74,14 @@ static GGZMod *ggzmod = NULL;
 
 /* Event handlers for ggzmod */
 static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data);
-static void handle_ggz(gpointer data, gint source, GdkInputCondition cond);
+
+
+static gboolean handle_ggz(GIOChannel * channel, GIOCondition cond,
+			   gpointer data)
+{
+	return (ggzmod_dispatch(ggzmod) >= 0);
+}
+
 
 int CheckReadInt(int msgsock, int *message)
 {
@@ -164,6 +171,7 @@ int CheckWriteString(int msgsock, const char *message)
 void AppInit(void)
 {
 	int i;
+	GIOChannel *channel;
 
 	gameState.get_opt = FALSE;
 	gameState.gameSegment = ST_GET_ID;
@@ -186,25 +194,21 @@ void AppInit(void)
 	init_player_list(ggzmod);
 	ggzmod_connect(ggzmod);
 
-	spadesHandle = gdk_input_add(ggzmod_get_fd(ggzmod), GDK_INPUT_READ,
-				     handle_ggz, NULL);
+	channel = g_io_channel_unix_new(ggzmod_get_fd(ggzmod));
+	spadesHandle = g_io_add_watch(channel, G_IO_IN, handle_ggz, NULL);
 }
 
 
 static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
 {
 	int fd = *(int *)data;
+	GIOChannel *channel;
 
 	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
 	gameState.spadesSock = fd;
-	spadesHandle =
-	    gdk_input_add(fd, GDK_INPUT_READ, ReadServerSocket, NULL);
-}
-
-
-static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
-{
-	ggzmod_dispatch(ggzmod);
+	channel = g_io_channel_unix_new(fd);
+	spadesHandle = g_io_add_watch(channel, G_IO_IN,
+				      ReadServerSocket, NULL);
 }
 
 
@@ -754,7 +758,7 @@ void UpdateGame(void)
 void NetClose(void)
 {
 	g_printerr("I'm dying 2\n");
-	gdk_input_remove(spadesHandle);
+	g_source_remove(spadesHandle);
 	if (ggzmod_disconnect(ggzmod) < 0)
 		exit(-2);	/* is this the desired behavior? */
 	ggzmod_free(ggzmod);

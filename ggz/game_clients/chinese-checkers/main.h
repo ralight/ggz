@@ -22,4 +22,4 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-extern void main_io_handler(gpointer, gint, GdkInputCondition);
+gboolean main_io_handler(GGZMod * mod);

@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Main loop and supporting logic
- * $Id: main.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: main.c 6333 2004-11-12 02:27:20Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -128,14 +128,14 @@ static void initialize_about_dialog(void)
 }
 
 
-
-void main_io_handler(gpointer data, gint source, GdkInputCondition cond)
+gboolean main_io_handler(GGZMod * mod)
 {
 	int op, status;
 
+	game.fd = ggzmod_get_server_fd(mod);
+
 	if (ggz_read_int(game.fd, &op) < 0) {
-		/* FIXME: do something here... */
-		return;
+		return FALSE;
 	}
 
 	status = 0;
@@ -169,9 +169,10 @@ void main_io_handler(gpointer data, gint source, GdkInputCondition cond)
 
 	if (status < 0) {
 		ggz_error_msg("Ouch!");
-		close(game.fd);
-		exit(1);
+		return FALSE;
 	}
+
+	return TRUE;
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6330 2004-11-11 16:30:21Z jdorje $
+ * $Id: main.c 6333 2004-11-12 02:27:20Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -66,12 +66,14 @@ static const char *font = "fixed";
 int main(int argc, char *argv[])
 {
 	int ggz_fd;
+	GIOChannel *channel;
 
 	/* Standard initializations. */
 	initialize_debugging();
 	ggz_intl_init("ggzcards");
 	ggz_fd = client_initialize();
-	gdk_input_add(ggz_fd, GDK_INPUT_READ, game_handle_ggz, NULL);
+	channel = g_io_channel_unix_new(ggz_fd);
+	g_io_add_watch(channel, G_IO_IN, game_handle_ggz, NULL);
 	gtk_init(&argc, &argv);
 	load_preferences();
 
@@ -149,13 +151,15 @@ void listen_for_server(bool listen)
 
 	if (listen && !listening) {
 		int fd = client_get_fd();
+		GIOChannel *channel;
 
+		channel = g_io_channel_unix_new(fd);
 		assert(fd >= 0);
-		server_socket_tag = gdk_input_add(fd, GDK_INPUT_READ,
-						  game_handle_io, NULL);
+		server_socket_tag = g_io_add_watch(channel, G_IO_IN,
+						   game_handle_io, NULL);
 		listening = TRUE;
 	} else if (!listen && listening) {
-		gdk_input_remove(server_socket_tag);
+		g_source_remove(server_socket_tag);
 		listening = FALSE;
 	}
 }

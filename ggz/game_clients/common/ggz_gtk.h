@@ -1,12 +1,12 @@
 /* 
- * File: dlg_about.h
+ * File: ggz_gtk.h
  * Author: GGZ Development Team
  * Project: GGZ GTK games
- * Date: 10/12/2002
- * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.h 6333 2004-11-12 02:27:20Z jdorje $
+ * Date: 11/11/2004
+ * Desc: GGZ Handlers for GTK games
+ * $Id: ggz_gtk.h 6333 2004-11-12 02:27:20Z jdorje $
  *
- * Copyright (C) 2000-2002 Brent Hendricks.
+ * Copyright (C) 2004 GGZ Development Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,10 +23,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/* Call this function to set the title and content for the
- * about dialog.  Make sure all of the values are translated. */
-void init_dlg_about(const char *title,
-		    const char *header, const char *about);
+#include "dlg_about.h"
+#include "dlg_chat.h"
+#include "ggzintl.h"
+#include "dlg_players.h"
 
-/* Call this function to show the about dialog. */
-void create_or_raise_dlg_about(void);
+GGZMod *init_ggz_gtk(gboolean(*game_handler) (GGZMod * mod));

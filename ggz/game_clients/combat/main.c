@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat client main loop
- * $Id: main.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: main.c 6333 2004-11-12 02:27:20Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -40,6 +40,7 @@
 #include <ggzmod.h>
 
 #include "dlg_about.h"
+#include "ggz_gtk.h"
 
 #include "combat.h"
 #include "game.h"
@@ -65,20 +66,6 @@ static void init_about_dialog(void);
 
 static GGZMod *mod;
 
-static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
-{
-	ggzmod_dispatch(mod);
-}
-
-static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
-{
-	int fd = *(int *)data;
-
-	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
-	cbt_info.fd = fd;
-	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
-}
-
 int main(int argc, char *argv[])
 {
 
@@ -99,14 +86,7 @@ int main(int argc, char *argv[])
 	main_win = create_main_window();
 	gtk_widget_show(main_win);
 
-	mod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER,
-			   &handle_ggzmod_server);
-
-	ggzmod_connect(mod);
-
-	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz,
-		      NULL);
+	mod = init_ggz_gtk(game_handle_io);
 
 	gtk_main();
 

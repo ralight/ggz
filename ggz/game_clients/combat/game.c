@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6330 2004-11-11 16:30:21Z jdorje $
+ * $Id: game.c 6333 2004-11-12 02:27:20Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -101,14 +101,16 @@ char openname[] = "beige";
 // Graphics stuff
 GdkPixmap *cbt_buf;
 
-void game_handle_io(gpointer data, gint fd, GdkInputCondition cond)
+gboolean game_handle_io(GGZMod * mod)
 {
 	int op = -1;
 
+	cbt_info.fd = ggzmod_get_server_fd(mod);
+
 	// Read the fd
-	if (ggz_read_int(fd, &op) < 0) {
+	if (ggz_read_int(cbt_info.fd, &op) < 0) {
 		ggz_error_msg("Couldn't read the game fd");
-		return;
+		return FALSE;
 	}
 
 	ggz_debug("main", "Got message from the server! (%d)", op);
@@ -167,6 +169,8 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond)
 		game_status("Ops! Wrong message: %d", op);
 		break;
 	}
+
+	return TRUE;
 }
 
 void game_start(void)

@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: main.c 6333 2004-11-12 02:27:20Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -39,8 +39,7 @@
 #include <ggzmod.h>
 #include <ggz_common.h>
 
-#include "dlg_about.h"
-#include "dlg_players.h"
+#include "ggz_gtk.h"
 
 #include "game.h"
 #include "support.h"
@@ -60,19 +59,51 @@ static void save_data(void);
 
 static GGZMod *mod;
 
-static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
+static gboolean game_handle_io(GGZMod * mod)
 {
-	ggzmod_dispatch(mod);
+	int op = -1;
+
+	game.fd = ggzmod_get_server_fd(mod);
+
+	// Read the fd
+	if (ggz_read_int(game.fd, &op) < 0) {
+		ggz_error_msg("Couldn't read the game fd");
+		return FALSE;
+	}
+
+	switch (op) {
+	case RVR_MSG_SEAT:
+		get_seat();
+		break;
+	case RVR_MSG_PLAYERS:
+		get_players();
+		game.state = RVR_STATE_WAIT;
+		break;
+	case RVR_MSG_SYNC:
+		get_sync();
+		display_board();
+		break;
+	case RVR_MSG_START:
+		game.state = RVR_STATE_PLAYING;
+		ggz_debug("main", "Game has started");
+		display_board();
+		break;
+	case RVR_MSG_MOVE:
+		get_move();
+		display_board();
+		break;
+	case RVR_MSG_GAMEOVER:
+		get_gameover();
+		game.state = RVR_STATE_DONE;
+		break;
+	default:
+		game_status("Ops! Wrong message: %d", op);
+		break;
+	}
+
+	return TRUE;
 }
 
-static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
-{
-	int fd = *(int *)data;
-
-	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
-	game.fd = fd;
-	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
-}
 
 int main(int argc, char *argv[])
 {
@@ -95,15 +126,7 @@ int main(int argc, char *argv[])
 
 	display_board();
 
-	mod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER,
-			   &handle_ggzmod_server);
-
-	init_player_list(mod);
-	ggzmod_connect(mod);
-
-	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz,
-		      NULL);
+	mod = init_ggz_gtk(game_handle_io);
 
 	gtk_main();
 
@@ -239,50 +262,6 @@ static void initialize_about_dialog(void)
 	init_dlg_about(_("About Reversi"), header, content);
 	g_free(header);
 }
-
-void game_handle_io(gpointer data, gint fd, GdkInputCondition cond)
-{
-	int op = -1;
-
-	// Read the fd
-	if (ggz_read_int(game.fd, &op) < 0) {
-		ggz_error_msg("Couldn't read the game fd");
-		return;
-	}
-
-	switch (op) {
-	case RVR_MSG_SEAT:
-		get_seat();
-		break;
-	case RVR_MSG_PLAYERS:
-		get_players();
-		game.state = RVR_STATE_WAIT;
-		break;
-	case RVR_MSG_SYNC:
-		get_sync();
-		display_board();
-		break;
-	case RVR_MSG_START:
-		game.state = RVR_STATE_PLAYING;
-		ggz_debug("main", "Game has started");
-		display_board();
-		break;
-	case RVR_MSG_MOVE:
-		get_move();
-		display_board();
-		break;
-	case RVR_MSG_GAMEOVER:
-		get_gameover();
-		game.state = RVR_STATE_DONE;
-		break;
-	default:
-		game_status("Ops! Wrong message: %d", op);
-		break;
-	}
-}
-
-
-
 
 void game_init(void)
 {

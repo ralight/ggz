@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Main loop and supporting logic
- * $Id: main.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: main.c 6333 2004-11-12 02:27:20Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -42,6 +42,7 @@
 
 #include "dlg_about.h"
 #include "dlg_players.h"
+#include "ggz_gtk.h"
 
 #include "dlg_main.h"
 #include "dlg_opt.h"
@@ -62,27 +63,13 @@ static void initialize_debugging(void);
 static void cleanup_debugging(void);
 static void initialize_about_dialog(void);
 
-static void game_handle_io(gpointer, gint, GdkInputCondition);
+static gboolean game_handle_io(GGZMod * mod);
 static int get_seat(void);
 static int get_players(void);
 static int get_options(void);
 static int get_move_status(void);
 static int get_gameover_status(void);
 static int get_sync_info(void);
-
-static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
-{
-	ggzmod_dispatch(mod);
-}
-
-static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
-{
-	int fd = *(int *)data;
-
-	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
-	game.fd = fd;
-	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
-}
 
 int main(int argc, char *argv[])
 {
@@ -95,15 +82,7 @@ int main(int argc, char *argv[])
 	gtk_init(&argc, &argv);
 	initialize_about_dialog();
 
-	mod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER,
-			   &handle_ggzmod_server);
-	init_player_list(mod);
-
-	ggzmod_connect(mod);
-
-	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz,
-		      NULL);
+	mod = init_ggz_gtk(game_handle_io);
 
 	filename = g_strdup_printf("%s/.ggz/dots-gtk.rc", getenv("HOME"));
 	conf_handle = ggz_conf_parse(filename,
@@ -188,14 +167,14 @@ char *opstr[] = { "DOTS_MSG_SEAT", "DOTS_MSG_PLAYERS", "DOTS_MSG_MOVE_H",
 	"DOTS_RSP_MOVE", "DOTS_SND_SYNC", "DOTS_MSG_OPTIONS"
 };
 
-static void game_handle_io(gpointer data, gint source,
-			   GdkInputCondition cond)
+static gboolean game_handle_io(GGZMod * mod)
 {
 	int op, status;
 
+	game.fd = ggzmod_get_server_fd(mod);
+
 	if (ggz_read_int(game.fd, &op) < 0) {
-		/* FIXME: do something here... */
-		return;
+		return FALSE;
 	}
 
 	status = 0;
@@ -250,9 +229,10 @@ static void game_handle_io(gpointer data, gint source,
 
 	if (status < 0) {
 		ggz_error_msg("Ouch!");
-		close(game.fd);
-		exit(-1);
+		return FALSE;
 	}
+
+	return TRUE;
 }
 
 

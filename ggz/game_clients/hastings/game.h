@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 9/10/00
  * Desc: Hastings1066 game functions
- * $Id: game.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: game.h 6333 2004-11-12 02:27:20Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -95,7 +95,6 @@ struct hastings_map_t {
 };
 
 /* Setup functions */
-void game_handle_io(gpointer data, gint fd, GdkInputCondition cond);
 void game_init(void);
 
 /* Functions to handle incoming data from server*/

@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game header
- * $Id: game.h 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: game.h 6333 2004-11-12 02:27:20Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -22,6 +22,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#include <ggzmod.h>
 
 // Size of images
 #define PIXSIZE 48
@@ -49,7 +51,7 @@ struct game_info_t {
 };
 
 // Handle IO
-void game_handle_io(gpointer, gint, GdkInputCondition);
+gboolean game_handle_io(GGZMod * mod);
 void game_unit_list_handle(GtkCList * clist, gint row, gint column,
 			   GdkEventButton * event, gpointer user_data);
 

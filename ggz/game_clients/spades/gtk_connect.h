@@ -29,5 +29,6 @@
 void Connect(GtkWidget *);
 void Disconnect(GtkWidget *, gpointer);
 void PlayOffline(GtkWidget *);
-void ReadServerSocket(gpointer, gint, GdkInputCondition);
+gboolean ReadServerSocket(GIOChannel * channel, GIOCondition cond,
+			  gpointer data);
 void ReadTauntSocket(gpointer, gint, GdkInputCondition);

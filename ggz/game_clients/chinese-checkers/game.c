@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: game.c 6333 2004-11-12 02:27:20Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -41,6 +41,7 @@
 #include <ggzmod.h>
 
 #include "dlg_players.h"
+#include "ggz_gtk.h"
 #include "ggzintl.h"
 
 #include "game.h"
@@ -67,20 +68,6 @@ static void get_theme_data(void);
 
 static GGZMod *mod;
 
-static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
-{
-	ggzmod_dispatch(mod);
-}
-
-static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
-{
-	int fd = *(int *)data;
-
-	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
-	game.fd = fd;
-	gdk_input_add(fd, GDK_INPUT_READ, main_io_handler, NULL);
-}
-
 GGZMod *game_mod(void)
 {
 	return mod;
@@ -91,18 +78,8 @@ void game_init(void)
 {
 	char *filename;
 
-	/* Connect to GGZ */
-	mod = ggzmod_new(GGZMOD_GAME);
-	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER,
-			   &handle_ggzmod_server);
-
-	init_player_list(mod);
-
-	ggzmod_connect(mod);
-
-	/* Trap our input from the socket */
-	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz,
-		      NULL);
+	/* Connect to GGZ. */
+	mod = init_ggz_gtk(main_io_handler);
 
 	/* Get our preferences */
 	filename =
