@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2285 2001-08-27 19:53:11Z jdorje $
+ * $Id: ggz_server.h 2291 2001-08-28 03:48:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -89,6 +89,14 @@ ggzd_assign_t ggzd_get_seat_status(int seat);
  *  @todo Is it correct to return a const char*? */
 const char* ggzd_get_player_name(int seat);
 
+/** @brief Set a player's name.
+ *  @param seat The GGZ seat of the player whose name will be set.
+ *  @param name The new name for the player.
+ *  @return 0 on success, -1 on failure.
+ *  @note You may only set the name of an AI player.
+ *  @note This is an experimental function. */
+int ggzd_set_player_name(int seat, char* name);
+
 /** @brief Find the TCP socket file descriptor for a given seat.
  *  @param seat The GGZ seat number of the queried player
  *  @return The file descriptor for the TCP communications socket
@@ -145,9 +153,26 @@ int ggzd_fd_max(void);
  *  and ggzd_read_data will block waiting for data (the default).
  *  @param block 1 for blocking, 0 for not
  *  @todo Brent doesn't want to allow non-blocking or have this function.
- *  @todo This function isn't implemented; there's just this prototype.
+ *  @note This is an experimental function.
  */
 void ggzd_set_blocking(int block);
+
+
+/** @brief Tell ggzdmod the game is over.
+ *
+ *  Call this function when the game is over; that way ggzd_main will
+ *  know to stop looping and your own code can query the gameover.
+ *  @param status The exit status.
+ *  @note This is an experimental function. */
+void ggzd_gameover(int status);
+
+/** @brief Check to see if the game is over.
+ *
+ *  Call this function to find out if the game is over.
+ *  @return 0 for no gameover, 1 for gameover.
+ *  @see ggzd_gameover()
+ *  @note This is an experimental function. */
+int ggzd_get_gameover(void);
 
 
 /** @brief A ggzdmod event.
@@ -226,7 +251,7 @@ int ggzd_disconnect(void);
  *  @return 0 normally, 1 on gameover, -1 on failure
  *  @note This function only covers the GGZ socket, not player sockets.
  *  @see ggzd_set_handler */
-int ggzd_dispatch(void);
+void ggzd_dispatch(void);
 
 /** @brief Read data from all sockets.
  *
@@ -238,14 +263,14 @@ int ggzd_dispatch(void);
  *  @note This function supercedes ggzd_dispatch.
  *  @note This function will check for data on both GGZ and player sockets.
  *  @todo This function may not be a part of the final API */
-int ggzd_read_data(void);
+void ggzd_read_data(void);
 
 /** @brief Connect to GGZ and run the game.
  *
  *  This should do all of the GGZ work necessary for most games.
  *  It repeatedly takes data from GGZD and calls the appropriate
  *  event handler.  It also connects to GGZD.
- *  @return 0 on success, -1 on failure
+ *  @return 0 on success, -1 on connection failure
  *  @note This function will check for data on both GGZ and player sockets.
  *  @note This function supercedes ggzd_read_data, ggzd_dispatch, ggzd_connect, and ggzd_disconnect.
  */

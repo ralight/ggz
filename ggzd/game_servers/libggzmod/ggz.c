@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2283 2001-08-27 19:32:01Z jdorje $
+ * $Id: ggz.c 2291 2001-08-28 03:48:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -62,6 +62,8 @@ struct ggzd_seat_t {
 
 /* Local copies of necessary data */
 static int ggzfd = -1;
+static int gameover = 0;
+static int gameover_status = 0;
 static int num_seats = 0;
 static struct ggzd_seat_t *seat_data = NULL;
 static fd_set active_fd_set; /* set of active file descriptors */
@@ -98,6 +100,18 @@ const char* ggzd_get_player_name(int seat)
 			name = seat_data[seat].name;
 	}
 	return name;
+}
+
+int ggzd_set_player_name(int seat, char* name)
+{
+	if (!name) return -1;
+	if (seat < 0 || seat >= num_seats) return -1;
+
+	/* currently only bots can have their names set */
+	if (seat_data[seat].assign != GGZ_SEAT_BOT) return -1;
+
+	strncpy(seat_data[seat].name, name, MAX_USER_NAME_LEN);
+	return 0;
 }
 
 int ggzd_get_player_socket(int seat)
@@ -138,6 +152,9 @@ int ggzd_connect(void)
 	/* add the main GGZ FD to our FD set */
 	FD_ZERO(&active_fd_set);
 	FD_SET(ggzfd, &active_fd_set);
+
+	/* the game's not over, obviously... */
+	gameover = 0;
 
 	return ggzfd;
 }
@@ -216,7 +233,7 @@ static int ggzdmod_game_launch(void)
 		case GGZ_SEAT_BOT:
 			ggzd_debug("GGZDMOD: Seat %d is a bot", i);
 			/* Set up a default name.  Surely we can do better than "bot", though. */
-			strcpy(seat_data[i].name, "bot");
+			strcpy(seat_data[i].name, "[bot]"); /* TODO: should this be NULL? */
 			break;
 		case GGZ_SEAT_RESV:
 			ggzd_debug("GGZDMOD: Seat %d reserved for %s", i, seat_data[i].name);
@@ -378,8 +395,22 @@ int ggzd_fd_max(void)
 	return max;
 }
 
+
+void ggzd_gameover(int status)
+{
+	ggzd_debug("GGZDMOD: gameover called with status %d.", status);
+	gameover = 1;
+	gameover_status = status;
+}
+
+
+int ggzd_get_gameover(void)
+{
+	return gameover;
+}
+
 /*
- * these implement "chess's way", the event-driven interface
+ * Event-driven interface by Perdig
  */
 
 /* IO: Hold the handlers here */
@@ -398,17 +429,15 @@ void ggzd_set_handler(ggzd_event_t event_id, const GGZDHandler handler)
 	handlers[event_id] = handler;
 }
 
-/* return value:
- *  0 => normal
- *  1 => game over
- *  -1 => error
- */
-int ggzd_dispatch(void)
-{
-        int op, seat, fd, gameover = 0;
 
-	if (es_read_int(ggzfd, &op) < 0)
-		return -1;
+void ggzd_dispatch(void)
+{
+        int op, seat, fd;
+
+	if (es_read_int(ggzfd, &op) < 0) {
+		ggzd_gameover(-1);
+		return;
+	}
 
 	switch (op) {
 		case REQ_GAME_LAUNCH:
@@ -434,26 +463,19 @@ int ggzd_dispatch(void)
 			}
 			break;
 		case RSP_GAME_OVER:
-			gameover = 1;
+			ggzd_gameover(0);
 			if (handlers[GGZ_EVENT_QUIT] != NULL)
 				(*handlers[GGZ_EVENT_QUIT])
 					(GGZ_EVENT_QUIT, NULL);
 			break;
 	}
-
-	return gameover;
 }
 
-/* return value:
- * 0 => normal; game goes on
- * 1 => gameover
- * -1 => error
- */
-int ggzd_read_data(void)
+
+void ggzd_read_data(void)
 {
 	fd_set read_fd_set;
 	int i, fd, status;
-	int gameover = 0;
 
 	read_fd_set = active_fd_set;
 
@@ -466,19 +488,16 @@ int ggzd_read_data(void)
 			&read_fd_set,
 			NULL, NULL, NULL);
 	if (status <= 0) {
-		if (errno == EINTR)
-			return 0;
-		else
-			return -1;
+		if (errno != EINTR)
+			ggzd_gameover(-1);
+		return;
 	}
 
 	status = 0;
 
 	/* Check for message from GGZ server */
-	if (FD_ISSET(ggzfd, &read_fd_set)) {
-		status = ggzd_dispatch();
-		if (status > 0) gameover = 1;
-	}
+	if (FD_ISSET(ggzfd, &read_fd_set))
+		ggzd_dispatch();
 
 	/* Check for message from player */
 	for (i = 0; i < ggzd_seats_num(); i++) {
@@ -492,35 +511,25 @@ int ggzd_read_data(void)
 	}
 
 	/* A "tick" event is sent once each time through the loop */
-	if (handlers[GGZ_EVENT_TICK] != NULL) {
+	if (handlers[GGZ_EVENT_TICK] != NULL)
 		(*handlers[GGZ_EVENT_TICK])(GGZ_EVENT_TICK, NULL);
-	}
-
-	/* we don't return errors right now */
-	return gameover;
 }
+
 
 /* return values as of now (not finalized):
  * 0 => success
  * -1 => can't connect
- * -2 => error during game loop
- * -3 => error during disconnect
  */
 int ggzd_main(void)
 {
-	int status = 0;
-
 	if (ggzd_connect() < 0)
 		return -1;
 
-	while (status == 0)
-		status = ggzd_read_data();
+	do
+		ggzd_read_data();
+	while (!gameover);
 
-	if (status < 0)
-		return -2;
-
-	if (ggzd_disconnect() < 0)
-		return -3;
+	(void)ggzd_disconnect();
 
 	return 0;
 }
