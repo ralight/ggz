@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 5159 2002-11-03 03:18:15Z jdorje $
+ * $Id: dlg_main.c 5955 2004-02-21 08:32:25Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -35,6 +35,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "dlg_chat.h"
 #include "dlg_players.h"
 #include "ggzintl.h"
 #include "menus.h"
@@ -69,6 +70,7 @@ static GtkWidget *create_menus(GtkWidget *window)
 				   sizeof(items) / sizeof(items[0]));
 
 	set_menu_sensitive(_("<main>/Game/Start game"), FALSE);
+	set_menu_sensitive(TABLE_CHAT_WINDOW, TRUE);
 
 	return menubar;
 }
@@ -81,6 +83,7 @@ GtkWidget *create_dlg_main(void)
 	GtkWidget *fixed1;
 	GtkWidget *statusbar1;
 	GtkWidget *messagebar;
+	GtkWidget *chatline;
 
 	dlg_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_name(dlg_main, "dlg_main");
@@ -142,6 +145,15 @@ GtkWidget *create_dlg_main(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(statusbar1);
 	gtk_box_pack_start(GTK_BOX(vbox1), statusbar1, FALSE, FALSE, 0);
+
+	chatline = create_chat_widget();
+	gtk_widget_set_name(chatline, "chat");
+	gtk_widget_ref(chatline);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "chat",
+				 chatline,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show_all(chatline);
+	gtk_box_pack_start(GTK_BOX(vbox1), chatline, FALSE, FALSE, 0);
 
 	(void) gtk_signal_connect(GTK_OBJECT(dlg_main), "delete_event",
 				  GTK_SIGNAL_FUNC(on_dlg_main_delete_event),
