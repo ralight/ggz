@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3329 2002-02-11 12:46:54Z jdorje $
+ * $Id: main.c 3330 2002-02-11 12:47:27Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 	fd = client_initialize();
 	gtk_init(&argc, &argv);
 	access_settings(0);
-	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
+	(void) gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
 
 	/* This shouldn't go here, but I see no better place right now. The
 	   message windows are supposed to use a fixed-width font. */
@@ -199,7 +199,7 @@ void statusbar_message(const char *msg)
 							  "Game Messages");
 	}
 
-	gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
+	(void) gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
 	ggz_debug("table", "Put up statusbar message: '%s'", msg);
 }
 
@@ -219,7 +219,7 @@ void messagebar_message(const char *msg)
 							  "Game Messages");
 	}
 
-	gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
+	(void) gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
 	ggz_debug("table", "Put up messagebar message: '%s'", msg);
 }
 
