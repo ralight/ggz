@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: game.c 2285 2001-08-27 19:53:11Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -82,44 +82,46 @@ void game_init(void)
 
 
 /* Handle event from GGZ server */
-int game_handle_ggz(ggzd_event_t event, void *data)
+void game_handle_ggz(ggzd_event_t event, void *data)
 {
 	switch(event)
 	{
 		case GGZ_EVENT_LAUNCH:
-			return game_update(HASTINGS_EVENT_LAUNCH, NULL);
+			game_update(HASTINGS_EVENT_LAUNCH, NULL);
 			break;
 		case GGZ_EVENT_JOIN:
-			return game_update(HASTINGS_EVENT_JOIN, data);
+			game_update(HASTINGS_EVENT_JOIN, data);
+			break;
 		case GGZ_EVENT_LEAVE:
-			return game_update(HASTINGS_EVENT_LEAVE, data);
+			game_update(HASTINGS_EVENT_LEAVE, data);
+			break;
 		default:
 			ggzd_debug("game_handle_ggz: bad event.");
 	}
-	return 0;
 }
 
 
 /* Handle message from player */
-int game_handle_player(ggzd_event_t event, void *seat_data)
+void game_handle_player(ggzd_event_t event, void *seat_data)
 {
 	int num = *(int*)seat_data;
-	int fd, op, status;
+	int fd, op;
 
 	fd = ggzd_get_player_socket(num);
 
-	if (es_read_int(fd, &op) < 0) return -1;
+	if (fd < 0 || es_read_int(fd, &op) < 0) return;
 
-ggzd_debug("## handle player: %i\n", num);
+	ggzd_debug("## handle player: %i\n", num);
 
 	switch (op)
 	{
 		case HASTINGS_SND_MOVE:
-			if((status = game_handle_move(num)) == 0) game_update(HASTINGS_EVENT_MOVE, NULL);
+			if(game_handle_move(num) == 0)
+				game_update(HASTINGS_EVENT_MOVE, NULL);
 			break;
 		case HASTINGS_REQ_INIT:
 			game_init();
-			status = game_send_sync(num);
+			game_send_sync(num);
 			if (!ggzd_seats_open())
 			{
 				hastings_game.state = HASTINGS_STATE_PLAYING;
@@ -127,15 +129,13 @@ ggzd_debug("## handle player: %i\n", num);
 			}
 			break;
 		case HASTINGS_REQ_SYNC:
-			status = game_send_sync(num);
+			game_send_sync(num);
 			break;
 		default:
 			/* Unrecognized opcode */
-			status = -1;
+			ggzd_debug("ERROR: unrecognized player opcode %d.", op);
 			break;
 	}
-
-	return status;
 }
 
 

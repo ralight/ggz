@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: game.c 2285 2001-08-27 19:53:11Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -48,10 +48,10 @@ void game_init(void)
 
 //FIXME
 /* Handle message from player */
-int game_handle_player(ggzd_event_t event, void *data)
+void game_handle_player(ggzd_event_t event, void *data)
 {
 	int num = *(int*)data; /* player number */
-	int fd, op, status;
+	int fd, op;
 	unsigned char direction;
 
 	ggzd_debug("game_handle_player(%d) called",num);
@@ -61,33 +61,33 @@ int game_handle_player(ggzd_event_t event, void *data)
 	
 	if(es_read_int(fd, &op) < 0)
 	{
+		/* FIXME: an ES error handler function should be registered instead */
 		ggzd_debug("\tPremature exit due to es_read_int(fd, &op) failure");
-		return -1;
+		return;
 	}
 
 	ggzd_debug("\top = %d",op);
 
 	switch(op) {
 		case ESCAPE_SND_MOVE:
-			if((status = game_handle_move(num, &direction)) == 0)
+			if(game_handle_move(num, &direction) == 0)
 				game_update(ESCAPE_EVENT_MOVE, &direction);
 			break;
 		case ESCAPE_REQ_SYNC:
-			status = game_send_sync(num);
+			game_send_sync(num);
 			break;
 		case ESCAPE_SND_OPTIONS:
-			status = game_get_options(num);
+			game_get_options(num);
 			break;
 		case ESCAPE_REQ_NEWGAME:
-			status = game_handle_newgame(num);
+			game_handle_newgame(num);
 			break;
 		default:
-			/* Unrecognized opcode */
-			status = -1;
+			ggzd_debug("Unrecognized player opcode %d.", op);
 			break;
 	}
-	ggzd_debug("\tgame_handle_player() is returning with status = %d",status);
-	return status;
+
+	return;
 }
 
 
@@ -502,17 +502,20 @@ char game_check_win(void)
 }
 
 /* FIXME: there's no reason this should be separate from game_update */
-int ggz_update(ggzd_event_t event, void *data)
+void ggz_update(ggzd_event_t event, void *data)
 {
 	switch (event) {
 		case GGZ_EVENT_LAUNCH:
-			return game_update(ESCAPE_EVENT_LAUNCH, data);
+			game_update(ESCAPE_EVENT_LAUNCH, NULL);
+			break;
 		case GGZ_EVENT_JOIN:
-			return game_update(ESCAPE_EVENT_JOIN, data);
+			game_update(ESCAPE_EVENT_JOIN, data);
+			break;
 		case GGZ_EVENT_LEAVE:
-			return game_update(ESCAPE_EVENT_LEAVE, data);
+			game_update(ESCAPE_EVENT_LEAVE, data);
+			break;
 		default:
-			ggzd_debug("ggz_update: bad event.");
+			ggzd_debug("ggz_update: bad GGZ event %d.", event);
 	}
 }
 

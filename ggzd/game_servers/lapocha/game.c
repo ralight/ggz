@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha game module
  * Date: 06/29/2000
  * Desc: Game functions
- * $Id: game.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: game.c 2285 2001-08-27 19:53:11Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -70,50 +70,51 @@ void game_init(void)
 
 
 /* Handle message from GGZ server */
-int game_handle_ggz(ggzd_event_t event, void* data)
+void game_handle_ggz(ggzd_event_t event, void* data)
 {
 	switch(event) {
 		case GGZ_EVENT_LAUNCH:
-			return game_update(LP_EVENT_LAUNCH, NULL);
+			game_update(LP_EVENT_LAUNCH, NULL);
+			break;
 		case GGZ_EVENT_JOIN:
-			return game_update(LP_EVENT_JOIN, (int*)data);
+			game_update(LP_EVENT_JOIN, (int*)data);
+			break;
 		case GGZ_EVENT_LEAVE:
-			return game_update(LP_EVENT_LEAVE, (int*)data);
-		case GGZ_EVENT_QUIT:
-			return 0;
+			game_update(LP_EVENT_LEAVE, (int*)data);
+			break;
 		default:
 			/* Unrecognized opcode */
-			return -1;
+			ggzd_debug("ERROR: unexpected GGZ event %d.", event);
 	}
 }
 
 
 /* Handle message from player */
-int game_handle_player(ggzd_event_t event, void* data)
+void game_handle_player(ggzd_event_t event, void* data)
 {
 	int num = *(int*)data;
-	int fd, op, status;
+	int fd, op;
 	char bid, card;
 
 	fd = ggzd_get_player_socket(num);
 	
-	if(es_read_int(fd, &op) < 0)
-		return -1;
+	if(fd < 0 || es_read_int(fd, &op) < 0)
+		return;
 
 	switch(op) {
 		case LP_SND_BID:
-			if((status = game_handle_bid(num, &bid)) == 0)
+			if(game_handle_bid(num, &bid) == 0)
 				game_update(LP_EVENT_BID, &bid);
 			break;
 		case LP_SND_PLAY:
-			if((status = game_handle_play(num, &card)) == 0)
+			if(game_handle_play(num, &card) == 0)
 				game_update(LP_EVENT_PLAY, &card);
 			break;
 		case LP_REQ_SYNC:
-			status = game_send_sync(num);
+			game_send_sync(num);
 			break;
 		case LP_SND_TRUMP:
-			if((status = game_receive_trump(num)) == 0)
+			if(game_receive_trump(num) == 0)
 				game_update(LP_EVENT_TRUMP, NULL);
 			break;
 		/*case LP_REQ_NEWGAME:
@@ -123,10 +124,9 @@ int game_handle_player(ggzd_event_t event, void* data)
 			break;*/
 		default:
 			/* Unrecognized opcode */
-			status = -1;
+			ggzd_debug("ERROR: unrecognized player opcode %d.", op);
 			break;
 	}
-	return status;
 }
 
 

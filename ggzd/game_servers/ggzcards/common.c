@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2278 2001-08-27 17:52:23Z jdorje $
+ * $Id: common.c 2285 2001-08-27 19:53:11Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -508,7 +508,7 @@ static char *player_messages[] = { "WH_RSP_NEWGAME", "WH_RSP_OPTIONS",
 };
 
 /* Handle message from player */
-int handle_player_event(ggzd_event_t event, void *data)
+void handle_player_event(ggzd_event_t event, void *data)
 {
 	player_t p = *(int *) data;
 	int fd, op, status = 0;
@@ -517,7 +517,7 @@ int handle_player_event(ggzd_event_t event, void *data)
 	fd = ggzd_get_player_socket(p);
 
 	if (es_read_int(fd, &op) < 0)
-		return -1;
+		return;
 
 	if (op >= 0 && op <= WH_REQ_SYNC)
 		ggzd_debug("Received %d (%s) from player %d/%s.", op,
@@ -585,7 +585,6 @@ int handle_player_event(ggzd_event_t event, void *data)
 		ggzd_debug
 			("ERROR: handle_player: status is %d on message from player %d/%s.",
 			 status, p, ggzd_get_player_name(p));
-	return status;
 }
 
 /* init_ggzcards
@@ -812,13 +811,13 @@ static int determine_host()
  *   this handles a launch event, when ggz connects to our server
  *   for the first time.
  */
-int handle_launch_event(ggzd_event_t event, void *data)
+void handle_launch_event(ggzd_event_t event, void *data)
 {
 	ggzd_debug("Handling a launch event.");
 	if (game.state != WH_STATE_PRELAUNCH) {
 		ggzd_debug("ERROR: "
 			   "state wasn't prelaunch when handling a launch.");
-		return -1;
+		return;
 	}
 
 	/* determine number of players. */
@@ -833,13 +832,13 @@ int handle_launch_event(ggzd_event_t event, void *data)
 
 	set_game_state(WH_STATE_NOTPLAYING);
 	save_game_state();	/* no players are connected yet, so we enter waiting phase */
-	return 0;
+	return;
 }
 
 /* handle_join_event
  *   this handles the event of a player joining.
  */
-int handle_join_event(ggzd_event_t event, void *data)
+void handle_join_event(ggzd_event_t event, void *data)
 {
 	player_t player = *(int *) data;
 	player_t p;
@@ -849,7 +848,7 @@ int handle_join_event(ggzd_event_t event, void *data)
 	if (game.state != WH_STATE_WAITFORPLAYERS) {
 		ggzd_debug("ERROR: SERVER BUG: "
 			   "someone joined while we weren't waiting.");
-		return -1;
+		return;
 	}
 
 	/* get player's name */
@@ -892,27 +891,13 @@ int handle_join_event(ggzd_event_t event, void *data)
 			next_play();
 	}
 
-	return 0;
-}
-
-/* handle_newgame_event
- *   this handles the event of a player responding to a newgame request
- */
-int handle_newgame_event(player_t player)
-{
-	ggzd_debug("Handling a newgame event for player %d/%s.", player,
-		   ggzd_get_player_name(player));
-	game.players[player].ready = 1;
-	if (player == game.host && !options_set())
-		get_options();
-	try_to_start_game();
-	return 0;
+	return;
 }
 
 /* handle_leave_event
  *   this handles the event of a player leaving
  */
-int handle_leave_event(ggzd_event_t event, void *data)
+void handle_leave_event(ggzd_event_t event, void *data)
 {
 	player_t player = *(int *) data;
 	player_t p;
@@ -940,6 +925,20 @@ int handle_leave_event(ggzd_event_t event, void *data)
 	if (ggzd_seats_open() > 0)	/* should be a given... */
 		save_game_state();
 
+	return;
+}
+
+/* handle_newgame_event
+ *   this handles the event of a player responding to a newgame request
+ */
+int handle_newgame_event(player_t player)
+{
+	ggzd_debug("Handling a newgame event for player %d/%s.", player,
+		   ggzd_get_player_name(player));
+	game.players[player].ready = 1;
+	if (player == game.host && !options_set())
+		get_options();
+	try_to_start_game();
 	return 0;
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 2282 2001-08-27 19:02:17Z jdorje $
+ * $Id: game.c 2285 2001-08-27 19:53:11Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -54,7 +54,7 @@ void game_init() {
 }
 
 // Handle server messages
-int game_handle_ggz(ggzd_event_t event, void *data) {
+void game_handle_ggz(ggzd_event_t event, void *data) {
 	switch (event) {
 		case GGZ_EVENT_LAUNCH:
 			// Check if it's the right time to launch the game and if ggz could do taht
@@ -94,17 +94,11 @@ int game_handle_ggz(ggzd_event_t event, void *data) {
 				game_send_players();
 			}
 			break;
-		case GGZ_EVENT_QUIT:
-			// This game is over
-			break;
 		default: /* shouldn't happen */
 			// Problems!
 			ggzd_debug("ERROR: unexpected GGZ event %d being handled.", event);
 			break;
 	}
-
-	return 0;
-
 }
 
 int game_send_seat(int seat) {
@@ -194,38 +188,33 @@ int game_start() {
 }
 
 /* return -1 on error, 1 on gameover */
-int game_handle_player(ggzd_event_t event, void* data) {
+void game_handle_player(ggzd_event_t event, void* data) {
 	int seat = *(int*)data;
-	int fd, op, move, status;
+	int fd, op, move;
 
 	fd = ggzd_get_player_socket(seat);
 
 	if (es_read_int(fd, &op) < 0)
-		return -1;
+		return;
 
 	switch (op) {
 
 		case RVR_REQ_MOVE:
-			status = game_handle_move(seat, &move);
+			game_handle_move(seat, &move);
 			break;
 
 		case RVR_REQ_SYNC:
-			status = game_send_sync(seat);
+			game_send_sync(seat);
 			break;
 
 		case RVR_REQ_AGAIN:
-			status = game_play_again(seat);
+			game_play_again(seat);
 			break;
 
 		default:
-			status = RVR_SERVER_ERROR;
+			ggzd_debug("ERROR: unknown player opcode %d.", op);
 			break;
-
 	}
-
-	if (status < 0) return -1;
-	return 0;
-
 }
 
 int game_handle_move(int seat, int *move) {

@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2283 2001-08-27 19:32:01Z jdorje $
+ * $Id: ggz_server.h 2285 2001-08-27 19:53:11Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -48,7 +48,7 @@
  *
  * Here's the simplest possible example:
  * @code
- *     int ggz_update(ggzd_assign_t event, void* data); // See GGZDHandler
+ *     void ggz_update(ggzd_assign_t event, void* data); // See GGZDHandler
  *
  *     int main() {
  *         // First we register functions to handle some events.
@@ -168,7 +168,7 @@ typedef enum {
  *
  *  Here is an example function showing the most generic use:
  *  @code
- *      int ggz_update(ggzd_event_t event, void *data) {
+ *      void ggz_update(ggzd_event_t event, void *data) {
  *          int player, socket_fd;
  *          switch (event) {
  *            case GGZ_EVENT_LAUNCH:

@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Description of game variables
- * $Id: game.h 2280 2001-08-27 18:29:25Z jdorje $
+ * $Id: game.h 2285 2001-08-27 19:53:11Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -189,9 +189,9 @@ struct rvr_game_t {
 // Intializes game variables
 void game_init();
 // Handle server messages
-int game_handle_ggz(ggzd_event_t, void *);
+void game_handle_ggz(ggzd_event_t event, void *data);
 // Handle player messages
-int game_handle_player(ggzd_event_t, void *);
+void game_handle_player(ggzd_event_t event, void *data);
 // Handle player move
 int game_handle_move(int, int *);
 

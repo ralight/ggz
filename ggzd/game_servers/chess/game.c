@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 2279 2001-08-27 18:01:30Z jdorje $
+ * $Id: game.c 2285 2001-08-27 19:53:11Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -49,18 +49,22 @@ struct timeval cronometer;
  * It's really a hack just to make sure things work out.
  * Note that before ggzdmod was used, this wasn't done
  * either!  --JDS */
-int ggz_update(ggzd_event_t event_id, void *data) {
-  switch(event_id) {
+void ggz_update(ggzd_event_t event, void *data) {
+  switch(event) {
     case GGZ_EVENT_LAUNCH:
-      return game_update(CHESS_EVENT_LAUNCH, NULL);
+      game_update(CHESS_EVENT_LAUNCH, NULL);
+      break;
     case GGZ_EVENT_JOIN:
-      return game_update(CHESS_EVENT_JOIN, data);
+      game_update(CHESS_EVENT_JOIN, data);
+      break;
     case GGZ_EVENT_LEAVE:
-      return game_update(CHESS_EVENT_LEAVE, data);
+      game_update(CHESS_EVENT_LEAVE, data);
+      break;
     case GGZ_EVENT_QUIT:
-      return game_update(CHESS_EVENT_QUIT, NULL);
+      game_update(CHESS_EVENT_QUIT, NULL);
+      break;
     default: /* EVENT_PLAYER and EVENT_TICK not handled */
-      return 0;
+      ggzd_debug("ERROR: unexpected GGZ event %d.", event);
   }
 }
 
@@ -321,7 +325,7 @@ int game_update(int event_id, void *data) {
  *  CHESS_REQ_FLAG   -> Check for the right clock, then trigger EVENT_FLAG
  *  CHESS_REQ_DRAW   -> Check if he hasn't done it yet, then trigger EVENT_DRAW
  *  */
-int game_handle_player(ggzd_event_t id, void *seat_data) {
+void game_handle_player(ggzd_event_t id, void *seat_data) {
   int *seat = seat_data;
   int fd, time;
   char op;
@@ -331,13 +335,13 @@ int game_handle_player(ggzd_event_t id, void *seat_data) {
   /* Is the seat valid? */
   fd = ggzd_get_player_socket(*seat);
   if (fd < 0)
-    return -1;
+    return;
 
   ggzd_debug("Handling player");
 
   /* Get the opcode */
   if (es_read_char(fd, &op) < 0)
-    return -1;
+    return;
 
   ggzd_debug("Received opcode %d", op);
 
@@ -346,19 +350,19 @@ int game_handle_player(ggzd_event_t id, void *seat_data) {
     case CHESS_RSP_TIME:
       ggzd_debug("Player sent a RSP_TIME");
       if (es_read_int(fd, &time) < 0)
-        return -1;
+        return;
       /* Check if this player is the host */
       if (*seat != game_info.host)
-        return 0;
+        return;
       ggzd_debug("Player sent the following time: %d", time);
       /* Is it a valid time ? */
       if ((time >> 24) > 3) {
         game_update(CHESS_EVENT_TIME, NULL);
-        return 0;
+        return;
       }
       if ((time >> 24) > 0 && (time & 0xFFFFFF) <= 0) {
         game_update(CHESS_EVENT_TIME, NULL);
-        return 0;
+        return;
       }
       /* Ok, then trigger the event */
       game_update(CHESS_EVENT_TIME, &time);
@@ -452,7 +456,7 @@ int game_handle_player(ggzd_event_t id, void *seat_data) {
       game_update(CHESS_EVENT_DRAW, &id);
       break;
   }
-  return 0;
+  return;
 }
 
 void game_send_seat(int seat) {
