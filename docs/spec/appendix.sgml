@@ -1284,8 +1284,8 @@
 
 			  <row rowsep="1">
 			    <entry>CODE</entry>
-			    <entry>int</entry>
-			    <entry>0</entry>
+			    <entry>string</entry>
+			    <entry>ok</entry>
 			  </row>
 
 			</tbody>
@@ -1311,7 +1311,14 @@
 	    <term><emphasis role="bold">CODE</emphasis></term>
 	    <listitem>
 	      <para>
-		Result indicator: successful if positive or zero, not successful if negative.  Each error code has a specific meaning, which should be listed here.
+		Result indicator: either 'ok' or an error string.  Errors
+		may include 'usr lookup', 'bad options', 'room full',
+		'table full', table empty', launch fail', 'join fail',
+		'no table', 'leave fail', 'leave forbidden',
+		'already logged in', 'not logged in', 'not in room',
+		'at table', 'in transit', 'no permission', 'bad xml',
+		or 'seat assign fail'.  The client should behave sanely when
+		it receives an unrecognized error.
 	      </para>
 	    </listitem>
 	  </varlistentry>
