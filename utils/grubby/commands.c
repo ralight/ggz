@@ -59,7 +59,7 @@ void owner_commands( char **words, int totalwords )
 	}
 }
 
-void public_commands( char *from, char **words, int totalwords)
+void public_commands( char *from, char **words, int totalwords, char *fullmessage )
 {
 	char out[grubby.chat_length];
 	int i;
@@ -70,41 +70,35 @@ void public_commands( char *from, char **words, int totalwords)
 		{
 			case 2:
 				if( !strcasecmp(words[1], "help") )
+				{
 					show_public_help( from );
+					return;
+				}
 
 				if( !strcasecmp(words[1], "about") )
+				{
 					for(i=0; i<sizeof(about_strings)/sizeof(char *); i++)
 						send_chat_insert_name( from, about_strings[i] );
+					return;
+				}
 				break;
 			case 5:
 				if( !strcasecmp( words[1], "have" ) && !strcasecmp( words[2], "you") &&
 				    !strcasecmp( words[3], "seen" ) )
+				{
 					show_time( from, words[4] );
-
-				if( !strcasecmp( words[1], "my" ) && !strcasecmp( words[2], "name") &&
-				    !strcasecmp( words[3], "is" ) )
-					add_name( from, words[4] );
-
-				break;
-
-			case 6:
-				if( !strcasecmp( words[1], "my" ) && !strcasecmp( words[2], "name") &&
-				    !strcasecmp( words[3], "is" ) )
-				{
-					sprintf( out, "%s %s", words[4], words[5] );
-					add_name( from, out );
-				}
-				break;
-			case 7:
-				if( !strcasecmp( words[1], "my" ) && !strcasecmp( words[2], "name") &&
-				    !strcasecmp( words[3], "is" ) )
-				{
-					sprintf( out, "%s %s %s", words[4], words[5], words[6] );
-					add_name( from, out );
+					return;
 				}
 				break;
 			default:
 				break;
+		}
+
+		sprintf( out, "%s my name is ", grubby.name );
+		if( !strncasecmp( fullmessage, out, strlen( out ) ) )
+		{
+			add_name( from, fullmessage+strlen( out ) );
+			return;
 		}
 	}
 }
@@ -120,7 +114,7 @@ void show_time( char *from, char *name )
 	i = check_known( name );
 	if( i == -1 )
 	{
-		sprintf( out, "Sorry %s, I've never seen %s before.", from, name );
+		sprintf( out, "Sorry %s, I've never seen %s before.", get_name( from ), get_name( name ) );
 		send_msg( from, out );
 		return;
 	}
@@ -128,7 +122,7 @@ void show_time( char *from, char *name )
 	/* Check if they are asking for themself*/
 	if( !strcmp(name, from) )
 	{
-		sprintf( out, "Well %s, I'm looking right at you!.", get_name( name ) );
+		sprintf( out, "Well %s, I'm looking right at you!", get_name( name ) );
 		send_msg( from, out );
 		return;
 	}

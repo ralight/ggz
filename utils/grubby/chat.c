@@ -90,7 +90,7 @@ void handle_chat( char OpCode, char *from, char *message )
 
 	if( !strcmp(grubby.owner, from) )
 		owner_commands( words, word_c );
-	public_commands( from, words, word_c );
+	public_commands( from, words, word_c, out );
 
 	/* check if we are logging */
 	if( grubby.logfile != NULL )
