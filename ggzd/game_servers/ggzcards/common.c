@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2739 2001-11-13 21:39:00Z jdorje $
+ * $Id: common.c 2741 2001-11-13 22:52:40Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -40,7 +40,7 @@
 #include "common.h"
 
 /* Global game variables */
-struct wh_game_t game = { 0 };
+struct game_t game = { 0 };
 
 static const char *get_state_name(server_state_t state)
 {
@@ -79,14 +79,14 @@ static int determine_host(void);
 void set_game_state(server_state_t state)
 {
 	if (game.state == STATE_WAITFORPLAYERS) {
-		/* sometimes an event can happen that changes the state while 
-		   we're waiting for players, for instance a player finishing 
+		/* sometimes an event can happen that changes the state while
+		   we're waiting for players, for instance a player finishing
 		   their bid even though someone's left the game.  In this
 		   case we wish to advance to the next game state while
 		   continuing to wait for players.  However, this should be
-		   handled separately.  Here we just allow for it by
-		   restoring the state if a set_game_state is called while
-		   we're in waiting mode. */
+		   handled separately.  Here we just allow for it by restoring 
+		   the state if a set_game_state is called while we're in
+		   waiting mode. */
 		if (game.saved_state != state)
 			ggzd_debug("ERROR: SERVER BUG: "
 				   "Setting game saved state to %d - %ws.",
@@ -121,8 +121,8 @@ void restore_game_state()
 }
 
 static char *player_messages[] =
-	{ "WH_RSP_NEWGAME", "WH_RSP_OPTIONS", "WH_RSP_PLAY", "WH_RSP_BID",
-	"WH_REQ_SYNC"
+	{ "RSP_NEWGAME", "RSP_OPTIONS", "RSP_PLAY", "RSP_BID",
+	"REQ_SYNC"
 };
 
 /* Handle message from player */
@@ -137,7 +137,7 @@ void handle_player_event(ggzd_event_t event, void *data)
 	if (read_opcode(fd, &op) < 0)
 		return;
 
-	if (op >= 0 && op <= WH_REQ_SYNC)
+	if (op >= 0 && op <= REQ_SYNC)
 		ggzd_debug("Received %d (%s) from player %d/%s.", op,
 			   player_messages[op], p, ggzd_get_player_name(p));
 	else
@@ -146,18 +146,18 @@ void handle_player_event(ggzd_event_t event, void *data)
 			 p, ggzd_get_player_name(p));
 
 	switch (op) {
-	case WH_RSP_NEWGAME:
+	case RSP_NEWGAME:
 		if (game.state == STATE_NOTPLAYING) {
 			status = 0;
 			handle_newgame_event(p);
 		} else {
 			ggzd_debug
-				("SERVER/CLIENT bug?: received WH_RSP_NEWGAME while we were in state %d (%s).",
+				("SERVER/CLIENT bug?: received RSP_NEWGAME while we were in state %d (%s).",
 				 game.state, get_state_name(game.state));
 			status = -1;
 		}
 		break;
-	case WH_RSP_OPTIONS:
+	case RSP_OPTIONS:
 		if (p != game.host) {
 			/* how could this happen? */
 			ggzd_debug
@@ -180,14 +180,14 @@ void handle_player_event(ggzd_event_t event, void *data)
 			}
 		}
 		break;
-	case WH_RSP_BID:
+	case RSP_BID:
 		if ((status = rec_bid(p, &bid)) == 0)
 			handle_bid_event(p, bid);
 		break;
-	case WH_RSP_PLAY:
+	case RSP_PLAY:
 		status = rec_play(p);
 		break;
-	case WH_REQ_SYNC:
+	case REQ_SYNC:
 		status = send_sync(p);
 		break;
 	default:
@@ -211,7 +211,7 @@ void init_ggzcards(int which)
 	srandom((unsigned) time(NULL));
 
 	/* TODO: we should manually initialize pointers to NULL */
-	memset(&game, 0, sizeof(struct wh_game_t));
+	memset(&game, 0, sizeof(struct game_t));
 
 	/* JDS: Note: the game type must have been initialized by here */
 	game.which_game = which;

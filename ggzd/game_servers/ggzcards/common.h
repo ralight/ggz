@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2734 2001-11-13 10:09:16Z jdorje $
+ * $Id: common.h 2741 2001-11-13 22:52:40Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -65,7 +65,7 @@ typedef enum {
 } server_state_t;
 
 /* Data structure for generic trick-taking card game */
-struct wh_game_t {
+struct game_t {
 	/* Game meta-data */
 	game_type_t which_game;	/**< the type of game game */
 	struct game_function_pointers *funcs;	/**< an array of game-specific functions */
@@ -194,7 +194,7 @@ void assign_seat(seat_t s, player_t p);	/* player #p sits in seat #s */
 void empty_seat(seat_t s, char *name);	/* seat s is empty; give it a label */
 
 /* the game structure */
-extern struct wh_game_t game;
+extern struct game_t game;
 
 
 /* accessor functions */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/06/2001
  * Desc: Functions and data for game options system
- * $Id: options.c 2726 2001-11-13 00:05:44Z jdorje $
+ * $Id: options.c 2741 2001-11-13 22:52:40Z jdorje $
  *
  * GGZCards has a rather nifty option system.  Each option has a name as
  * its "key".  Each option has a certain number of possible values, in
@@ -129,7 +129,7 @@ void get_options()
 		ggzd_debug("ERROR: SERVER BUG: " "no connection to host.");
 	} else {
 		struct pending_option_t *po = pending_options;
-		write_opcode(fd, WH_REQ_OPTIONS);
+		write_opcode(fd, REQ_OPTIONS);
 		es_write_int(fd, pending_option_count);
 		for (op = 0; op < pending_option_count; op++) {
 			es_write_int(fd, po->num);

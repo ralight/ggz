@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 2737 2001-11-13 11:28:03Z jdorje $
+ * $Id: net.c 2741 2001-11-13 22:52:40Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -41,7 +41,7 @@
 
 /* Send out player ist to player p */
 /** A player list packet is composed of:
- *    - The WH_MSG_PLAYERS opcode
+ *    - The MSG_PLAYERS opcode
  *    - An integer containing the number of seats
  *    - For each seat, in *relative* ordering to
  *      the player being sent the message:
@@ -61,7 +61,7 @@ int send_player_list(player_t p)
 	ggzd_debug("Sending seat list to player %d/%s (%d seats)", p,
 		   ggzd_get_player_name(p), game.num_seats);
 
-	if (write_opcode(fd, WH_MSG_PLAYERS) < 0 ||
+	if (write_opcode(fd, MSG_PLAYERS) < 0 ||
 	    es_write_int(fd, game.num_seats) < 0)
 		status = -1;
 
@@ -96,7 +96,7 @@ int broadcast_player_list(void)
 /* Send out play for player to _all_ players. Also symbolizes that this play
    is over. */
 /** A play packet is composed of:
- *    - A WH_MSG_PLAY opcode
+ *    - A MSG_PLAY opcode
  *    - A seat that is the relative seat of the player playing
  *    - A card that is the card being played
  */
@@ -110,7 +110,7 @@ int send_play(card_t card, seat_t seat)
 		fd = ggzd_get_player_socket(p);
 		if (fd == -1)	/* don't send to bots */
 			continue;
-		if (write_opcode(fd, WH_MSG_PLAY) < 0
+		if (write_opcode(fd, MSG_PLAY) < 0
 		    || write_seat(fd, CONVERT_SEAT(seat, p)) < 0
 		    || write_card(fd, card) < 0)
 			status = -1;
@@ -124,7 +124,7 @@ int send_play(card_t card, seat_t seat)
 /* Send a gameover to all players. cnt is the number of winners, plist is the
    winner list */
 /** A gameover packet is composed of:
- *    - A WH_MSG_GAMEOVER opcode
+ *    - A MSG_GAMEOVER opcode
  *    - An integer that is the number of winners
  *    - For each winning player:
  *        - A seat that is the relative seat of the player
@@ -153,7 +153,7 @@ int send_gameover(int winner_cnt, player_t * winners)
 		if (fd == -1)
 			continue;
 
-		if (write_opcode(fd, WH_MSG_GAMEOVER) < 0 ||
+		if (write_opcode(fd, MSG_GAMEOVER) < 0 ||
 		    es_write_int(fd, winner_cnt) < 0)
 			status = -1;
 		for (i = 0; i < winner_cnt; i++) {
@@ -184,7 +184,7 @@ int send_table(player_t p)
 		return -1;
 	}
 
-	if (write_opcode(fd, WH_MSG_TABLE) < 0)
+	if (write_opcode(fd, MSG_TABLE) < 0)
 		status = -1;
 	for (s_r = 0; s_r < game.num_seats; s_r++) {
 		s_abs = UNCONVERT_SEAT(s_r, p);
@@ -260,8 +260,7 @@ int send_bid_request(player_t p, int bid_count, bid_t * bids)
 	int fd = ggzd_get_player_socket(p);
 	/* request a bid from the client */
 	if (fd == -1 ||
-	    write_opcode(fd, WH_REQ_BID) < 0 ||
-	    es_write_int(fd, bid_count) < 0)
+	    write_opcode(fd, REQ_BID) < 0 || es_write_int(fd, bid_count) < 0)
 		status = -1;
 	for (i = 0; i < bid_count; i++) {
 		char bid_text[4096];
@@ -296,8 +295,7 @@ int send_play_request(player_t p, seat_t s)
 		int fd = ggzd_get_player_socket(p);
 		if (fd == -1)
 			ggzd_debug("ERROR: SERVER BUG: " "-1 fd in req_play");
-		if (write_opcode(fd, WH_REQ_PLAY) < 0
-		    || write_seat(fd, s_r) < 0)
+		if (write_opcode(fd, REQ_PLAY) < 0 || write_seat(fd, s_r) < 0)
 			return -1;
 	}
 
@@ -310,8 +308,7 @@ int send_badplay(player_t p, char *msg)
 	if (fd == -1)		/* don't send to bots */
 		return 0;
 	set_game_state(STATE_WAIT_FOR_PLAY);
-	if (write_opcode(fd, WH_MSG_BADPLAY) < 0 ||
-	    es_write_string(fd, msg) < 0)
+	if (write_opcode(fd, MSG_BADPLAY) < 0 || es_write_string(fd, msg) < 0)
 		return -1;
 	return 0;
 }
@@ -326,7 +323,7 @@ int send_hand(const player_t p, const seat_t s, int reveal)
 	if (fd == -1)		/* Don't send to a bot */
 		return 0;
 
-	/* We used to refuse to send hands of size 0, but some games may need 
+	/* We used to refuse to send hands of size 0, but some games may need
 	   to do this! */
 	assert(game.state != STATE_NOTPLAYING);
 
@@ -339,7 +336,7 @@ int send_hand(const player_t p, const seat_t s, int reveal)
 		   p, ggzd_get_player_name(p), s, get_seat_name(s),
 		   reveal ? "" : "not ");
 
-	if (write_opcode(fd, WH_MSG_HAND) < 0
+	if (write_opcode(fd, MSG_HAND) < 0
 	    || write_seat(fd, CONVERT_SEAT(s, p)) < 0
 	    || es_write_int(fd, game.seats[s].hand.hand_size) < 0)
 		status = -1;
@@ -378,7 +375,7 @@ int send_trick(player_t winner)
 		if (fd == -1)
 			continue;
 
-		if (write_opcode(fd, WH_MSG_TRICK) < 0 ||
+		if (write_opcode(fd, MSG_TRICK) < 0 ||
 		    write_seat(fd,
 			       CONVERT_SEAT(game.players[winner].seat,
 					    p)) < 0)
@@ -399,9 +396,9 @@ int send_newgame_request(player_t p)
 		return -1;
 	}
 
-	ggzd_debug("Sending out a WH_REQ_NEWGAME to player %d/%s.", p,
+	ggzd_debug("Sending out a REQ_NEWGAME to player %d/%s.", p,
 		   ggzd_get_player_name(p));
-	status = write_opcode(fd, WH_REQ_NEWGAME);
+	status = write_opcode(fd, REQ_NEWGAME);
 
 	if (status != 0)
 		ggzd_debug("ERROR: "
@@ -421,7 +418,7 @@ int send_newgame(void)
 		if (ggzd_get_seat_status(p) == GGZ_SEAT_BOT)
 			continue;
 		fd = ggzd_get_player_socket(p);
-		if (fd == -1 || write_opcode(fd, WH_MSG_NEWGAME) < 0) {
+		if (fd == -1 || write_opcode(fd, MSG_NEWGAME) < 0) {
 			ggzd_debug
 				("ERROR: send_newgame: couldn't send newgame.");
 			return -1;
@@ -455,7 +452,7 @@ int rec_play(player_t p)
 
 	/* Is is this player's turn to play? */
 	if (game.curr_play != p) {
-		/* better to just ignore it; a WH_MSG_BADPLAY requests a new
+		/* better to just ignore it; a MSG_BADPLAY requests a new
 		   play */
 		ggzd_debug
 			("SERVER/CLIENT BUG: player %d/%s played out of turn!?!?",
@@ -512,7 +509,7 @@ void send_global_text_message(player_t p, const char *mark,
 		message = "";	/* this happens sometimes (hmmm, really?
 				   how?) */
 	if (fd < 0
-	    || write_opcode(fd, WH_MESSAGE_GLOBAL) < 0
+	    || write_opcode(fd, MESSAGE_GLOBAL) < 0
 	    || es_write_string(fd, mark) < 0
 	    || write_opcode(fd, GL_MESSAGE_TEXT) < 0
 	    || es_write_string(fd, message) < 0)
@@ -532,7 +529,7 @@ void send_global_cardlist_message(player_t p, const char *mark, int *lengths,
 		return;
 	assert(mark && cardlist && lengths);
 	ggzd_debug("Sending global cardlist message to player %d.", p);
-	if (fd < 0 || write_opcode(fd, WH_MESSAGE_GLOBAL) < 0
+	if (fd < 0 || write_opcode(fd, MESSAGE_GLOBAL) < 0
 	    || es_write_string(fd, mark) < 0
 	    || write_opcode(fd, GL_MESSAGE_CARDLIST) < 0)
 		error++;
