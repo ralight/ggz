@@ -24,34 +24,10 @@
 
 #include "cards.h"
 #include "games.h"
+#include "protocol.h"
 
 #ifndef __COMMON_H__
 #define __COMMON_H__
-
-/* GGZCards protocol */
-/* Messages from server */
-/* TODO: numbers aren't finalized */
-#define WH_REQ_NEWGAME		0
-#define WH_MSG_NEWGAME		1
-#define WH_MSG_GAMEOVER		2
-#define WH_MSG_PLAYERS		3
-#define WH_MSG_HAND     	4
-#define WH_REQ_BID		5
-#define WH_REQ_PLAY     	6
-#define WH_MSG_BADPLAY 		7
-#define WH_MSG_PLAY		8
-#define WH_MSG_TRICK		9
-#define WH_MESSAGE_GLOBAL	10
-#define WH_MESSAGE_PLAYER	11
-#define WH_REQ_OPTIONS		12
-#define WH_MSG_TABLE		13
-
-/* Messages from client */
-#define WH_RSP_NEWGAME		0
-#define WH_RSP_OPTIONS		1
-#define WH_RSP_PLAY		2
-#define WH_RSP_BID		3
-#define WH_REQ_SYNC		4
 
 /* GGZCards server game states */
 #define WH_STATE_PRELAUNCH	-1	/* before the launch happens */

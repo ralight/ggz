@@ -14,7 +14,8 @@ ggzd_ggzcards_SOURCES = ggz.c ggz.h \
 		       common.c common.h \
 		       game.c game.h \
 		       games.c games.h \
-		       protocols.h
+		       protocols.h \
+		       protocol.h
 
 
 ggzd_ggzcards_LDADD = $(LDADD)
