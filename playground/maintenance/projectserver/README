@@ -56,8 +56,12 @@ http: redundancy through mirrors, via anonymous rsync:
       goal: trusted (dynamic) or untrusted (static) mirror
       possible for mantis and rankings, not for webcvs and mailman interface
 ftp:  redundancy through download mirrors, via anonymous rsync:
-      * ftp://ftp.belnet.be/mirrors/ftp.ggzgamingzone.org
-	  * ftp://ftp.sunsite.dk/mirrors/ggzgamingzone
+      * ftp://ftp.belnet.be/mirrors/ftp.ggzgamingzone.org (Belgium)
+	    http://ftp.belnet.be/mirror/ftp.ggzgamingzone.org/
+	  * ftp://ftp.sunsite.dk/mirrors/ggzgamingzone (Denmark)
+	    http://mirrors.sunsite.dk/ggzgamingzone/
+	  * ftp://ftp.ibiblio.org/pub/mirrors/ggzgamingzone (USA)
+	    http://mirrors.ibiblio.org/pub/mirrors/ggzgamingzone/
 mail: is supported by fail-over mx (mail.hostsharing.net)
       mailing lists are write-only!
 live: provides no redundancy
