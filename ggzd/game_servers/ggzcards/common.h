@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4190 2002-05-12 19:48:41Z jdorje $
+ * $Id: common.h 4338 2002-08-05 16:08:38Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -30,6 +30,8 @@
 
 #ifndef __COMMON_H__
 #define __COMMON_H__
+
+/* #define SUPPORT_SPECTATORS */
 
 #include <assert.h>
 
@@ -164,6 +166,9 @@ void set_game_state(server_state_t state);
 void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data);
 void handle_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data);
 void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data);
+#ifdef SUPPORT_SPECTATORS
+void handle_spectator_event(GGZdMod *ggz, GGZdModEvent event, void *data);
+#endif
 
 /* these are internal GGZCards events */
 void handle_newgame_event(player_t p);
@@ -208,10 +213,40 @@ int get_player_socket(int p);
 
 bool seats_full(void);
 
+#ifdef SUPPORT_SPECTATORS
+#define SPECTATOR_TO_PLAYER(spectator) (-1 - (spectator))
+#define PLAYER_TO_SPECTATOR(player) (-1 - (player))
+#endif
+
 /* Support functions.  Should go into a different file. */
 void fatal_error(const char *message);
 
 /* Preliminary i18n macros */
 #define N_(string) (string)
 
+#ifdef SUPPORT_SPECTATORS
+#define allplayers_iterate(p)                               \
+{                                                           \
+	player_t p;                                         \
+	for (p = -ggzdmod_get_max_num_spectators(game.ggz); \
+	     p < game.num_players;                          \
+	     p++)
+#else
+#define allplayers_iterate(p)                               \
+{                                                           \
+	player_t p;                                         \
+	for (p = 0; p < game.num_players; p++)
+#endif
+
+#define allplayers_iterate_end }
+
+#ifdef SUPPORT_SPECTATORS
+#  define IS_REAL_PLAYER(p) ((p) >= 0)
+#  define IS_SPECTATOR(p) ((p) < 0)
+#else
+#  define IS_REAL_PLAYER(p) (1)
+#  define IS_SPECTATOR(p) (0)
+#endif
+
 #endif /* __COMMON_H__ */
+

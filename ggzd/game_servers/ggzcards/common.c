@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4190 2002-05-12 19:48:41Z jdorje $
+ * $Id: common.c 4338 2002-08-05 16:08:38Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -461,7 +461,7 @@ void handle_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 		int new_host = determine_host();
 		if (new_host != game.host) {
 			game.host = new_host;
-			if (game.host >= 0)
+			if (IS_REAL_PLAYER(game.host))
 				set_player_message(game.host);
 			
 			/* This happens when the host leaves the table before choosing
@@ -515,6 +515,34 @@ void handle_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 	
 	ggz_debug(DBG_MISC, "Seat change successful.");
 }
+
+#ifdef SUPPORT_SPECTATORS
+void handle_spectator_event(GGZdMod *ggz, GGZdModEvent event, void *data)
+{
+	GGZSpectator old = *(GGZSpectator*)data;
+	int spectator = old.num;
+	player_t player = SPECTATOR_TO_PLAYER(spectator);
+	GGZSpectator new = ggzdmod_get_spectator(ggz, spectator);
+
+	ggz_debug(DBG_MISC, "Handling a spectator change event for spot %d.",
+		  spectator);
+
+	if (new.name) {
+		/* The spectator is not yet visible to other players; so
+		   his joining does not affect anyone else. */
+
+		/* Send newgame alert, if we're already playing. */
+		if (game.state != STATE_NOTPLAYING)
+			net_send_newgame(player);
+
+		send_sync(player);
+	} else {
+		/* Nothing (?) */
+	}
+
+	ggz_debug(DBG_MISC, "Spectator change successful.");
+}
+#endif
 
 /* This handles the event of a player responding to a newgame request */
 void handle_newgame_event(player_t player)
@@ -573,7 +601,8 @@ void handle_gameover_event(int winner_cnt, player_t * winners)
 void handle_neterror_event(player_t p)
 {	
 	ggz_debug(DBG_MISC, "Network error for player %d.", p);
-	if (get_player_status(p) == GGZ_SEAT_BOT) {
+	if (IS_REAL_PLAYER(p)
+	    && get_player_status(p) == GGZ_SEAT_BOT) {
 		if (game.initted) {
 			/* FIXME: AI players aren't spawned until the game is
 			   initialized.  But we will stil try to send data to
@@ -620,14 +649,17 @@ void send_sync(player_t p)
 	net_send_table(p);
 
 	/* request bid/play again, if necessary */
-	if (game.players[p].bid_data.is_bidding) {
+	if (IS_REAL_PLAYER(p)
+	    && game.players[p].bid_data.is_bidding) {
 		/* We can't call req_bid, because it has side effects (like
 		   changing the game's state). */
 		net_send_bid_request(p,
 		                     game.players[p].bid_data.bid_count,
 		                     game.players[p].bid_data.bids);
 	}
-	if (game.state == STATE_WAIT_FOR_PLAY && game.players[p].is_playing)
+	if (IS_REAL_PLAYER(p)
+	    && game.state == STATE_WAIT_FOR_PLAY
+	    && game.players[p].is_playing)
 		net_send_play_request(p, game.players[p].play_seat);
 		
 	if (p == game.host) {
@@ -642,9 +674,9 @@ void send_sync(player_t p)
 
 void broadcast_sync(void)
 {
-	player_t p;
-	for (p = 0; p < game.num_players; p++)
+	allplayers_iterate(p) {
 		send_sync(p);
+	} allplayers_iterate_end;
 }
 
 void handle_client_sync(player_t p)
@@ -764,7 +796,7 @@ void empty_seat(seat_t s, char *name)
 const char *get_seat_name(seat_t s)
 {
 	player_t p = game.seats[s].player;
-	if (p >= 0)
+	if (IS_REAL_PLAYER(p))
 		return get_player_name(p);
 	if (game.seats[s].name)
 		return game.seats[s].name;
@@ -773,7 +805,7 @@ const char *get_seat_name(seat_t s)
 
 GGZSeatType get_seat_status(seat_t s)
 {
-	if (game.seats[s].player >= 0)
+	if (IS_REAL_PLAYER(game.seats[s].player))
 		return get_player_status(game.seats[s].player);
 	else
 		return GGZ_SEAT_NONE;
@@ -782,12 +814,19 @@ GGZSeatType get_seat_status(seat_t s)
 
 const char* get_player_name(player_t p)
 {
-	GGZSeat seat = ggzdmod_get_seat(game.ggz, p);
+	if (IS_SPECTATOR(p)) {
+#ifdef SUPPORT_SPECTATORS
+		int sp = PLAYER_TO_SPECTATOR(p);
+		return ggzdmod_get_spectator(game.ggz, sp).name;
+#endif
+	} else {
+		GGZSeat seat = ggzdmod_get_seat(game.ggz, p);
 	
-	if (seat.name)
-		return seat.name;
-	if (seat.type == GGZ_SEAT_OPEN)
-		return "Empty Seat";
+		if (seat.name)
+			return seat.name;
+		if (seat.type == GGZ_SEAT_OPEN)
+			return "Empty Seat";
+	}
 	assert(FALSE);
 	return "Unknown Player";
 }
@@ -799,21 +838,25 @@ GGZSeatType get_player_status(player_t p)
 
 int get_player_socket(int p)
 {
-	GGZSeat seat = ggzdmod_get_seat(game.ggz, p);
-	int fd;
-	
-	switch (seat.type) {
-	case GGZ_SEAT_PLAYER:
-		fd = seat.fd;
-		break;
-	case GGZ_SEAT_BOT:
-		fd = game.players[p].fd;
-		break;
-	default:
-		fd = -1;
-		break;
+	if (IS_SPECTATOR(p)) {
+#ifdef SUPPORT_SPECTATORS
+		int sp = PLAYER_TO_SPECTATOR(p);
+		return ggzdmod_get_spectator(game.ggz, sp).fd;
+#endif
+	} else {
+		GGZSeat seat = ggzdmod_get_seat(game.ggz, p);
+
+		switch (seat.type) {
+		case GGZ_SEAT_PLAYER:
+			return seat.fd;
+		case GGZ_SEAT_BOT:
+			return game.players[p].fd;
+		default:
+			return -1;
+		}
 	}
-	return fd;
+	assert(FALSE);
+	return -1;
 }
 
 /* libggz should handle this instead! */

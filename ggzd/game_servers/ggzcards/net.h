@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.h 4177 2002-05-07 02:34:50Z jdorje $
+ * $Id: net.h 4338 2002-08-05 16:08:38Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -32,12 +32,10 @@
 
 /** convert an "absolute" seat number s to the
  * "relative" seat number used by player p */
-#define CONVERT_SEAT(s, p)					\
-	(assert(game.players[(p)].seat >= 0),			\
-	 ((s) - game.players[(p)].seat + game.num_seats) % game.num_seats)
-#define UNCONVERT_SEAT(s_rel, p)				\
-	(assert(game.players[(p)].seat >= 0),			\
-	 (game.players[(p)].seat + (s_rel)) % game.num_seats)
+#define CONVERT_SEAT(s, p) (convert_seat(s, p))
+seat_t convert_seat(seat_t s_abs, player_t p);
+#define UNCONVERT_SEAT(s, p) (unconvert_seat(s, p))
+seat_t unconvert_seat(seat_t s_rel, player_t p);
 
 /* Functions to send packets to the client. */
 

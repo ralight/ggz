@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 4177 2002-05-07 02:34:50Z jdorje $
+ * $Id: net.c 4338 2002-08-05 16:08:38Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -48,12 +48,57 @@
 
 #define NET_ERROR(p) return handle_neterror_event(p)
 
+seat_t convert_seat(seat_t s_abs, player_t p)
+{
+#ifdef SUPPORT_SPECTATORS
+	/* Treat spectators as if they're sitting at seat 0. */
+	if (p < 0)
+		p = 0;
+#endif
+
+	assert(game.players[p].seat >= 0);
+	return (s_abs - game.players[p].seat + game.num_seats)
+	  % game.num_seats;
+}
+
+seat_t unconvert_seat(seat_t s_rel, player_t p)
+{
+#ifdef SUPPORT_SPECTATORS
+	/* Treat spectators as if they're sitting at seat 0. */
+	if (p < 0)
+		p = 0;
+#endif
+
+	assert(game.players[p].seat >= 0);
+	return (game.players[p].seat + s_rel) % game.num_seats;
+}
+
+#ifdef SUPPORT_SPECTATORS
+#define broadcast_iterate(p)                                \
+{                                                           \
+	player_t p;                                         \
+	for (p = -ggzdmod_get_max_num_spectators(game.ggz); \
+	     p < game.num_players;                          \
+	     p++)                                           \
+		if (is_broadcast_seat(p)) {
+#else
+#define broadcast_iterate(p)                                \
+{                                                           \
+	player_t p;                                         \
+	for (p = 0; p < game.num_players; p++)              \
+		if (is_broadcast_seat(p)) {
+#endif
+
+#define broadcast_iterate_end } }
+
+
 /* Return TRUE if this is a seat we should broadcast to,
    FALSE otherwise. */
 static bool is_broadcast_seat(player_t p)
 {
-	return get_player_status(p) == GGZ_SEAT_PLAYER ||
-	       get_player_status(p) == GGZ_SEAT_BOT;
+	return p <= 0 /* for spectators */
+	  || get_player_status(p) == GGZ_SEAT_PLAYER
+	  || get_player_status(p) == GGZ_SEAT_BOT;
 }
 
 
@@ -91,17 +136,14 @@ void net_send_player_list(player_t p)
 
 void net_broadcast_player_list(void)
 {
-	player_t p;
-	
-	for (p = 0; p < game.num_players; p++)
-		if (is_broadcast_seat(p)) {
-			/* Sometimes this means we'll send the list to a player
-			   who's not connected or a bot that hasn't been
-			   spawned yet.  This isn't great.  Note, though, that
-			   we *do* need to send a real player list to bot
-			   players, who may be relying on this information. */
-			net_send_player_list(p);
-		}
+	broadcast_iterate(p) {
+		/* Sometimes this means we'll send the list to a player
+		   who's not connected or a bot that hasn't been
+		   spawned yet.  This isn't great.  Note, though, that
+		   we *do* need to send a real player list to bot
+		   players, who may be relying on this information. */
+		net_send_player_list(p);
+	} broadcast_iterate_end;
 }
 
 void net_send_options_request(player_t p,
@@ -147,11 +189,9 @@ static void net_send_play(player_t p, seat_t player, card_t card)
 
 void net_broadcast_play(seat_t player, card_t card)
 {
-	player_t p;
-	
-	for (p = 0; p < game.num_players; p++)
-		if (is_broadcast_seat(p))
-			net_send_play(p, player, card);
+	broadcast_iterate(p) {
+		net_send_play(p, player, card);
+	} broadcast_iterate_end;
 }
 
 /* Send a gameover to all players. cnt is the number of winners, plist is the
@@ -183,11 +223,9 @@ static void net_send_gameover(player_t p, int winner_cnt, player_t * winners)
 
 void net_broadcast_gameover(int winner_cnt, player_t *winners)
 {
-	player_t p;
-	
-	for (p = 0; p < game.num_players; p++)
-		if (is_broadcast_seat(p))
-			net_send_gameover(p, winner_cnt, winners);
+	broadcast_iterate(p) {
+		net_send_gameover(p, winner_cnt, winners);
+	} broadcast_iterate_end;
 }
 
 /* sends the list of cards on the table, in their relative orderings */
@@ -256,11 +294,9 @@ static void net_send_bid(player_t p, player_t bidder, bid_t bid)
 
 void net_broadcast_bid(player_t bidder, bid_t bid)
 {
-	player_t p;
-	
-	for (p = 0; p < game.num_players; p++)
-		if (is_broadcast_seat(p))
-			net_send_bid(p, bidder, bid);
+	broadcast_iterate(p) {
+		net_send_bid(p, bidder, bid);
+	} broadcast_iterate_end;
 }
 
 /* Request a player p to make a play from a specific seat s's hand */
@@ -348,11 +384,9 @@ static void net_send_trick(player_t p, player_t winner)
 
 void net_broadcast_trick(player_t winner)
 {
-	player_t p;
-
-	for (p = 0; p < game.num_players; p++)
-		if (is_broadcast_seat(p))
-			net_send_trick(p, winner);
+	broadcast_iterate(p) {
+		net_send_trick(p, winner);
+	} broadcast_iterate_end;
 }
 
 void net_send_newgame_request(player_t p)
@@ -376,13 +410,11 @@ void net_send_newgame(player_t p)
 
 void net_broadcast_newgame(void)
 {
-	player_t p;
-
 	ggz_debug(DBG_NET, "Broadcasting a newgame message.");
 
-	for (p = 0; p < game.num_players; p++)
-		if (is_broadcast_seat(p))
-			net_send_newgame(p);
+	broadcast_iterate(p) {
+		net_send_newgame(p);
+	} broadcast_iterate_end;
 }
 
 
@@ -397,11 +429,9 @@ static void net_send_newhand(player_t p)
 
 void net_broadcast_newhand(void)
 {
-	player_t p;
-	
-	for (p = 0; p < game.num_players; p++)
-		if (is_broadcast_seat(p))
-			net_send_newhand(p);
+	broadcast_iterate(p) {
+		net_send_newhand(p);
+	} broadcast_iterate_end;
 }
 
 void net_send_global_text_message(player_t p, const char *mark,
@@ -428,11 +458,9 @@ void net_send_global_text_message(player_t p, const char *mark,
 /* send_global_message_toall sends the truly global message to all players */
 void net_broadcast_global_text_message(const char *mark, const char* message)
 {
-	player_t p;
-	
-	for (p = 0; p < game.num_players; p++)
-		if (is_broadcast_seat(p))
-			net_send_global_text_message(p, mark, message);
+	broadcast_iterate(p) {
+		net_send_global_text_message(p, mark, message);
+	} broadcast_iterate_end;
 }
 
 void net_send_player_text_message(player_t p, seat_t s, const char *message)
