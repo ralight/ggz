@@ -57,9 +57,26 @@ struct _GGZClientState {
 extern struct _GGZClientState _ggzcore_state;
 
 void _ggzcore_state_init(void);
+
+/* _ggzcore_state_destroy() - Cleanup state system
+ *
+ * Receives:
+ *
+ * Returns:
+ */
 void _ggzcore_state_destroy(void);
 
+/* _ggzcore_state_event_is_valid() - Determine whether event is valid given 
+ *                                   current state
+ *
+ * Receives:
+ * GGZEventID id          : ID of event 
+ *
+ * Returns:
+ * 1 if the event is currently valid.  0 otherwise
+ */
 int _ggzcore_state_event_is_valid(GGZEventID id);
+
 void _ggzcore_state_transition(GGZEventID id);
 
 
