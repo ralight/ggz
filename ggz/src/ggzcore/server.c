@@ -336,17 +336,10 @@ GGZRoom* ggzcore_server_get_cur_room(GGZServer *server)
 
 GGZRoom* ggzcore_server_get_nth_room(GGZServer *server, const unsigned int num)
 {
-	int i;
-	struct _ggzcore_list_entry *cur = NULL;
-	
 	if (!server || num >= server->num_rooms)
 		return NULL;
 
-	cur = _ggzcore_list_head(server->room_list);
-	for (i = 0; i < num; i++)
-		cur = _ggzcore_list_next(cur);
-	
-	return _ggzcore_list_get_data(cur);
+	return server->rooms[num];
 }
 
 
@@ -363,7 +356,6 @@ char** ggzcore_server_get_room_names(GGZServer *server)
 {
 	int i = 0;
 	char **names = NULL;
-	struct _ggzcore_list_entry *cur;
 	struct _GGZRoom *room;
 	
 	if (!server)
@@ -371,11 +363,10 @@ char** ggzcore_server_get_room_names(GGZServer *server)
 	
 	if (!(names = calloc((server->num_rooms + 1), sizeof(char*))))
 		ggzcore_error_sys_exit("calloc() failed in ggzcore_server_get_room_names");
-	cur = _ggzcore_list_head(server->room_list);
-	while (cur) {
-		room = _ggzcore_list_get_data(cur);
-		names[i++] = room->name;
-		cur = _ggzcore_list_next(cur);
+
+	for (i = 0; i < server->num_rooms; i++) {
+		room = server->rooms[i];
+		names[i] = _ggzcore_room_get_name(room);
 	}
 	
 	return names;
@@ -395,7 +386,6 @@ char** ggzcore_server_get_gametype_names(GGZServer *server)
 {
 	int i = 0;
 	char **names = NULL;
-	struct _ggzcore_list_entry *cur;
 	struct _GGZGameType *type;
 	
 	if (!server)
@@ -403,7 +393,7 @@ char** ggzcore_server_get_gametype_names(GGZServer *server)
 	
 	if (!(names = calloc((server->num_gametypes + 1), sizeof(char*))))
 		ggzcore_error_sys_exit("calloc() failed in ggzcore_server_get_gametype_names");
-	cur = _ggzcore_list_head(server->room_list);
+
 	for (i = 0; i < server->num_gametypes; i++) {
 		type = server->gametypes[i];
 		names[i] = _ggzcore_gametype_get_name(type);
@@ -681,17 +671,23 @@ static void _ggzcore_server_init(void)
 static void _ggzcore_server_init_roomlist(struct _GGZServer *server,
 					  const int num)
 {
-	server->room_list = _ggzcore_list_create(_ggzcore_room_compare,
-						 _ggzcore_room_copy,
-						 _ggzcore_room_destroy,
-						 0);
 	server->num_rooms = num;
+
+	if (!(server->rooms = calloc(num, sizeof(struct _GGZRoom*))))
+		ggzcore_error_sys_exit("calloc() failed in ggzcore_server_init_roomlist");
+
 }
 
 
 static void _ggzcore_server_free_roomlist(struct _GGZServer *server)
 {
-	_ggzcore_list_destroy(server->room_list);
+	int i;
+
+	for (i = 0; i < server->num_rooms; i++) {
+		_ggzcore_room_free(server->rooms[i]);
+	}
+
+	free(server->rooms);
 	server->num_rooms = 0;
 }
 
@@ -699,7 +695,16 @@ static void _ggzcore_server_free_roomlist(struct _GGZServer *server)
 static void _ggzcore_server_add_room(struct _GGZServer *server, 
 				     struct _GGZRoom *room)
 {
-	_ggzcore_list_insert(server->room_list, room);
+	int i = 0;
+
+	/* Find first open spot and stick it in */
+	while (i < server->num_rooms) {
+		if (server->rooms[i] == NULL) {
+			server->rooms[i] = room;
+			break;
+		}
+		++i;
+	}
 }
 
 
@@ -901,8 +906,6 @@ static void _ggzcore_server_handle_list_rooms(GGZServer *server)
 			free(desc);
 		if (name)
 			free(name);
-		if (room)
-			free(room);
 	}
 	_ggzcore_server_event(server, GGZ_ROOM_LIST, NULL);
 }

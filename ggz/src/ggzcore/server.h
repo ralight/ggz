@@ -58,21 +58,6 @@ struct _GGZServer {
 	/* Current state */
 	GGZStateID state;
 	
-	/* Number of rooms */
-	int num_rooms;
-	
-	/* List of rooms in this server */
-	struct _ggzcore_list *room_list;
-	
-	/* Current room on game server */
-	struct _GGZRoom *room;
-
-	/* Room to which we are transitioning */
-	struct _GGZRoom *new_room;
-
-	/* Room verbosity (need to save) */
-	char room_verbose;
-
 	/* Number of gametypes */
 	int num_gametypes;
 
@@ -81,6 +66,21 @@ struct _GGZServer {
 
 	/* Gametype verbosity (need to save) */
 	char gametype_verbose;
+
+	/* Number of rooms */
+	int num_rooms;
+	
+	/* List of rooms in this server */
+	struct _GGZRoom **rooms;
+	
+	/* Room verbosity (need to save) */
+	char room_verbose;
+
+	/* Current room on game server */
+	struct _GGZRoom *room;
+
+	/* Room to which we are transitioning */
+	struct _GGZRoom *new_room;
 
        	/* Server events */
 	GGZHookList *event_hooks[GGZ_NUM_SERVER_EVENTS];
