@@ -154,7 +154,7 @@ void game_init(void)
 
 int send_options(void)
 {
-	if(es_write_int(game.fd, 2) < 0
+	if(es_write_int(game.fd, DOTS_SND_OPTIONS) < 0
 	   || es_write_char(game.fd, board_width) < 0
 	   || es_write_char(game.fd, board_height) < 0)
 		return -1;

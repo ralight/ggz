@@ -33,6 +33,7 @@
 #define DOTS_RSP_MOVE     6
 #define DOTS_SND_SYNC     7
 #define DOTS_MSG_OPTIONS  8
+#define DOTS_SND_OPTIONS  9
 
 /* Move errors */
 #define DOTS_ERR_STATE   -1
