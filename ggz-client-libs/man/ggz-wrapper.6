@@ -1,0 +1,33 @@
+.TH "ggz-wrapper" "6" "0.0.10" "The GGZ Development Team" "GGZ Gaming Zone"
+.SH "NAME"
+.LP 
+ggz\-wrapper \- GGZ Gaming Zone command line core client
+.SH "SYNOPSIS"
+.LP 
+\fBggz\-wrapper [\-\-gametype\fR \fIGAMENAME\fP] [\fB\-\-user\fR \fINAME\fP] [\fB\-\-destnick\fR \fINAME\fP[
+.SH "DESCRIPTION"
+.LP 
+The ggz-wrapper tool is a small GGZ core client for the command line.
+It does not support chat or display of rooms, tables and players,
+but instead is useful for fast launching of games.
+.LP 
+It currently supports all two-player games, as human against human or
+human against bot.
+.SH "OPTIONS"
+.TP 
+\fB\-\-gametype=\fR\fIGAMENAME\fP
+The name of the game to play, e.g. TicTacToe or Chess.
+This option expects a case-sensitive argument.
+.TP 
+\fB\-\-user=\fR\fINAME\fP
+The name of the player who is running the client.
+.TP 
+\fB\-\-destnick=\fR\fINAME\fP
+The name of the other player. If omitted or empty, the player running the client
+will launch the table (game host). If empty, other player will be the bot.
+If not empty, player will join the table.
+.LP 
+.SH "AUTHORS"
+.LP 
+The GGZ Development Team
+<ggz\-dev@mail.ggzgamingzone.org>
