@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5203 2002-11-04 04:56:43Z jdorje $
+ * $Id: client.c 5468 2003-03-08 05:30:09Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -463,6 +463,8 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 			return TRUE;
 
 		/* Check for matching name */
+		/* FIXME: autocompletion will only work at the end of the
+		   chatline. */
 		name = chat_complete_name(startname, &match);
 		if (name != NULL) {
 			gchar *out;
@@ -477,6 +479,12 @@ client_chat_entry_key_press_event	(GtkWidget	*widget,
 						      match ? " " : "");
 			tmp = gtk_object_get_data(GTK_OBJECT(win_main), "chat_entry");
 			gtk_entry_set_text(GTK_ENTRY(tmp), out);
+
+			/* Set the cursor to the end of the autocompleted
+			   text. Since autocompletion will only work at the
+			   end of the chatline, we can just set it to the
+			   end of the line. */
+			gtk_entry_set_position(GTK_ENTRY(tmp), -1);
 			g_free(out);
 			ggz_free(name);
 			return TRUE;
