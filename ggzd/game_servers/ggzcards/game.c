@@ -748,7 +748,7 @@ int game_handle_bid(int bid_index)
  			break;
 	}
 
-	game_set_player_message(game.next_bid);
+	/* the bid message will be set later on */
 	
 	return 0;	
 }
@@ -1200,7 +1200,6 @@ bid_message_only:
 				if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text);
 			}
 			
-#if 0
 			/* TODO: not sure if this should go here for all games... */
 			if (game.state == WH_STATE_WAIT_FOR_BID &&
 			    p == game.next_bid)
@@ -1208,7 +1207,6 @@ bid_message_only:
 			if (game.state == WH_STATE_WAIT_FOR_PLAY &&
 			    p == game.curr_play)
 				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Waiting for play");
-#endif
 
 			break;
 	}

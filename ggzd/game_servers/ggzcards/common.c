@@ -1087,6 +1087,9 @@ int update(int event, void *data)
 				}
 			}
 
+			/* this is the player that just finished playing */
+			game_set_player_message(game.curr_play);
+
 			/* do next move */
 			next_play();
 			}
@@ -1105,8 +1108,9 @@ int update(int event, void *data)
 
 			/* determine the bid */
 			bid_index = *(int*)data;
+			p = game.next_bid;
 			bid = game.bid_choices[bid_index];
-			game.players[game.next_bid].bid = bid;
+			game.players[p].bid = bid;
 
 			/* handle the bid */
 			ggz_debug("Entering game_handle_bid(%d).", bid_index);
@@ -1122,6 +1126,9 @@ int update(int event, void *data)
 				set_game_state(WH_STATE_NEXT_BID);
 			else
 				ggz_debug("SERVER BUG: handled WH_EVENT_BID while not in WH_STATE_WAIT_FOR_BID.");
+
+			/* this is the player that just finished bidding */
+			game_set_player_message(p);
 
 			if (was_waiting)
 				save_game_state();
