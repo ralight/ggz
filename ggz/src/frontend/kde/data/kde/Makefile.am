@@ -1,3 +1,5 @@
+SUBDIRS = .
+
 KDE_ICON = kggz
 
 apps_DATA = kggz.desktop

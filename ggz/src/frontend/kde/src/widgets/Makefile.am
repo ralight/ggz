@@ -1,3 +1,5 @@
+SUBDIRS = .
+
 noinst_LIBRARIES = libkggzui.a
 
 libkggzui_a_SOURCES = \
@@ -17,7 +19,7 @@ noinst_HEADERS = \
 	KGGZWidgetCommon.h \
 	KGGZAbout.h
 
-INCLUDES = $(all_includes) -I $(top_srcdir)/src
+INCLUDES = $(all_includes) -I $(top_srcdir)/ggz-kde/src
 
 libkggzui_a_METASOURCES = AUTO
 

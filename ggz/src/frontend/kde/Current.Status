@@ -8,6 +8,16 @@ two versions?
 Yes it is. There was no other choice. The current model should give both developers
 and users more flexibility. Please stand by while the rewrite is in progress,
 not everything might work yet.
+
+===============================
+Essential points for GGZ 0.0.4:
+
+- launching/joining works
+- build cleanup, RPM spec
+- minor UI improvements
+- GGZCore++ documentation
+===============================
+
 Here are the docs (- means: yet todo):
 
 main.cpp		=> main.cpp (enhancement)

@@ -25,4 +25,4 @@ include_HEADERS =       GGZCore.h \
 
 lib_LTLIBRARIES =       libggzcorepp.la
 
-libggzcorepp_la_LDFLAGS = -version-info 0:1:0 -lggzcore
+libggzcorepp_la_LDFLAGS = -version-info 0:1:0 @GGZCORE_LDFLAGS@ @LIB_GGZCORE@

@@ -1,7 +1,7 @@
 SUBDIRS = abstract widgets .
 
-ggzcorepp_includes = -I $(top_srcdir)/ggzcore++/src
-ggz_libraries = $(top_srcdir)/ggzcore++/src/libggzcorepp.la
+ggzcorepp_includes = -I $(top_srcdir)/ggz-kde/ggzcore++/src
+ggz_libraries = $(top_srcdir)/ggz-kde/ggzcore++/src/libggzcorepp.la
 
 bin_PROGRAMS = kggz
 
