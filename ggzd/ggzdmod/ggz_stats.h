@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.h 4152 2002-05-05 00:32:02Z jdorje $
+ * $Id: ggz_stats.h 4156 2002-05-05 06:56:47Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -25,13 +25,8 @@
 
 #include "ggzdmod.h"
 
-typedef enum {
-	GGZ_ELO_RATING
-} GGZRatingSystem;
-
-/* Set the rating system; i.e. ELO or Glicko-1. ELO is the easiest to
-   implement. */
-void ggzd_set_rating_system(GGZRatingSystem system);
+/* Debugging type (used by ggz_debug) */
+#define DBG_GGZSTATS "ggz-stats"
 
 /* for display purposes only */
 int ggzd_get_rating(GGZdMod * ggz, int player);

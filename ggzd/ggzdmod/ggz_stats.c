@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.c 4152 2002-05-05 00:32:02Z jdorje $
+ * $Id: ggz_stats.c 4156 2002-05-05 06:56:47Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -40,7 +40,6 @@ static int *ratings = NULL;
 static int teams = 0;
 static int *team_list = NULL;
 static double *winners = NULL;
-static GGZRatingSystem rating_system = GGZ_ELO_RATING;
 
 #define lock_name "ggz-stats-lock"
 #define stats_name "ggz-stats"
@@ -426,8 +425,7 @@ void elo_compute_expectations(GGZdMod * ggz, int num, int *ratings,
 		sum += probs[i];
 	}
 
-	ggzdmod_log(ggz, "GGZDMOD: ELO STATS: "
-		    "Probabilities sum to %f; normalizing.", sum);
+	ggz_debug(DBG_GGZSTATS, "Probabilities sum to %f; normalizing.", sum);
 	for (i = 0; i < num; i++)
 		probs[i] /= sum;
 }
@@ -436,13 +434,6 @@ void elo_compute_expectations(GGZdMod * ggz, int num, int *ratings,
 /* 
  * below here we have the interface functions
  */
-
-
-/* it could be really bad if you changed systems mid-calculation. */
-void ggzd_set_rating_system(GGZRatingSystem system)
-{
-	rating_system = system;
-}
 
 
 int read_ratings(GGZdMod * ggz)
@@ -541,8 +532,7 @@ int write_ratings(GGZdMod * ggz)
 int ggzd_get_rating(GGZdMod * ggz, int player)
 {
 	if (player < 0 || player >= ggzdmod_get_num_seats(ggz)) {
-		ggzdmod_log(ggz, "GGZDMOD: ELO STATS: "
-			    "ggzd_get_rating: invalid player %d.", player);
+		ggz_debug(DBG_GGZSTATS, "ggzd_get_rating: invalid player %d.", player);
 		return 0;
 	}
 
@@ -565,9 +555,8 @@ int ggzd_get_rating(GGZdMod * ggz, int player)
 void ggzd_set_num_teams(GGZdMod * ggz, int num_teams)
 {
 	if (teams < 0 || teams >= ggzdmod_get_num_seats(ggz)) {
-		ggzdmod_log(ggz, "GGZDMOD: ELO STATS: "
-			    "ggzd_set_num_teams: invalid number %d.",
-			    num_teams);
+		ggz_debug(DBG_GGZSTATS, "ggzd_set_num_teams: invalid number %d.",
+		          num_teams);
 		return;
 	}
 	teams = num_teams;
@@ -577,15 +566,13 @@ void ggzd_set_team(GGZdMod * ggz, int player, int team)
 {
 	if (player < 0 || player >= ggzdmod_get_num_seats(ggz) || team < 0
 	    || team >= teams) {
-		ggzdmod_log(ggz, "GGZDMOD: ELO STATS: "
-			    "ggzd_set_team: invalid params %d/%d.", player,
-			    team);
+		ggz_error_msg("ggzd_set_team: invalid params %d/%d.", player, team);
 		return;
 	}
 
 	if (!team_list) {
 		int i, num = ggzdmod_get_num_seats(ggz);
-		team_list = malloc(num * sizeof(*team_list));
+		team_list = ggz_malloc(num * sizeof(*team_list));
 		for (i = 0; i < num; i++)
 			team_list[i] = -1;	/* no team */
 	}
@@ -597,15 +584,14 @@ void ggzd_set_game_winner(GGZdMod * ggz, int player, double score)
 {
 	if (player < 0 || player >= ggzdmod_get_num_seats(ggz) || score < 0.0
 	    || score > 1.0) {
-		ggzdmod_log(ggz, "GGZDMOD: ELO STATS: "
-			    "ggzd_set_game_winner: invalid params %d/%f.",
-			    player, score);
+		ggz_error_msg("ggzd_set_game_winner: invalid params %d/%f.",
+			      player, score);
 		return;
 	}
-
+	
 	if (!winners) {
 		int i, num = ggzdmod_get_num_seats(ggz);
-		winners = malloc(num * sizeof(*winners));
+		winners = ggz_malloc(num * sizeof(*winners));
 		for (i = 0; i < num; i++)
 			winners[i] = 0;	/* not a winner */
 	}
@@ -630,8 +616,7 @@ int ggzd_recalculate_ratings(GGZdMod * ggz)
 
 	/* check to see if all data is initted */
 	if (!winners || !ratings || (teams && !team_list)) {
-		ggzdmod_log(ggz, "GGZDMOD: ELO: ERROR: "
-			    "ggzd_recalculate_ratings: invalid rating data.");
+		ggz_error_msg("ggzd_recalculate_ratings: invalid rating data.");
 		return -1;
 	}
 
@@ -644,26 +629,24 @@ int ggzd_recalculate_ratings(GGZdMod * ggz)
 		team_ratings[team] += ratings[i];
 		team_sizes[team]++;
 		if (team_scores[team] && team_scores[team] != winners[i]) {
-			ggzdmod_log(ggz, "GGZDMOD: ELO: ERROR: "
-				    "ggzd_recalculate_ratings: inconsistent team.");
+			ggz_error_msg("ggzd_recalculate_ratings: inconsistent team.");
 			return -1;
 		}
-		team_scores[team] = winners[i];
+		team_scores[team] += winners[i];
 	}
 	for (i = 0; i < num; i++) {
 		/* the team rating is the average of the individual ratings. */
 		team_ratings[i] /= team_sizes[i];	/* FIXME */
-		ggzdmod_log(ggz,
-			    "GGZDMOD: ELO: " "Team rating for team %d is %d.",
-			    i, team_ratings[i]);
+		ggz_debug(DBG_GGZSTATS, "Team rating for team %d is %d.",
+		          i, team_ratings[i]);
 		sum += team_scores[i];
 	}
 
 	/* Verify there is exactly 1 winner. */
 	if (sum != 1.0) {
 		/* FIXME: rounding error might cause this */
-		ggzdmod_log(ggz, "GGZDMOD: ERROR: winner sums add to %f.",
-			    sum);
+		ggz_error_msg("ggzd_recalculate_rankings: winner sums add to %f.",
+			      sum);
 		return -1;
 	}
 
@@ -673,9 +656,8 @@ int ggzd_recalculate_ratings(GGZdMod * ggz)
 	/* Debugging data */
 	for (i = 0; i < ggzdmod_get_num_seats(ggz); i++) {
 		int team = teams > 0 ? team_list[i] : i;
-		ggzdmod_log(ggz, "GGZDMOD: ELO RATINGS: "
-			    "Player %d has rating %d, expectation %f.", i,
-			    team_ratings[team], team_probs[team]);
+		ggz_debug(DBG_GGZSTATS, "Player %d has rating %d, expectation %f.",
+		          i, team_ratings[team], team_probs[team]);
 	}
 
 	/* Calculate new ratings for all players. */
@@ -694,9 +676,8 @@ int ggzd_recalculate_ratings(GGZdMod * ggz)
 
 		diff = K * (team_scores[team] - team_probs[team]);
 		ratings[i] += (int) (diff + 0.5);
-		ggzdmod_log(ggz, "GGZDMOD: ELO RATING: "
-			    "Player %d has new rating %d (slope %f).", i,
-			    ratings[i], K);
+		ggz_debug(DBG_GGZSTATS, "Player %d has new rating %d (slope %f).",
+		          i, ratings[i], K);
 	}
 	
 	if (write_ratings(ggz) < 0) {
