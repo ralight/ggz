@@ -141,7 +141,7 @@ void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 			break;
 		case GGZDMOD_EVENT_LEAVE:
 //std::cout << "Leave event gives us: " << ((GGZSeat*)data)->name << std::endl;
-			player = ((GGZSeat*)data)->num;
+			//player = ((GGZSeat*)data)->num;
 //std::cout << "Leave event number: " << player << std::endl;
 			//me->hookLeave(&player);
 			me->hookLeave(data);
@@ -153,10 +153,11 @@ void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 			me->hookError(data);
 			break;
 		case GGZDMOD_EVENT_SPECTATOR_JOIN:
-			me->hookSpectatorLeave(data);
+			player = ((GGZSpectator*)data)->num;
+			me->hookSpectatorJoin(&player);
 			break;
 		case GGZDMOD_EVENT_SPECTATOR_LEAVE:
-			me->hookSpectatorJoin(data);
+			me->hookSpectatorLeave(data);
 			break;
 		default:
 			// FIXME: error

@@ -56,6 +56,8 @@ void World::addSpectator(const char *name, int fd)
 	Spectator *s = new Spectator(name, fd);
 	m_spectatorlist.push_back(*s);
 
+	std::cout << "Transmit data to spectator " << name << std::endl;
+
 	// Invite player into the game world
 	ggz_write_char(s->fd(), op_spectator);
 
