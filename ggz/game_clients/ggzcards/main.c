@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2854 2001-12-10 05:46:45Z jdorje $
+ * $Id: main.c 2857 2001-12-10 07:29:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -150,15 +150,25 @@ void table_handle_gameover(int num_winners, int *winners)
 		snprintf(msg, sizeof(msg), _("There was no winner"));
 	else {
 		for (i = 0; i < num_winners; i++) {
-			/* TODO: better grammar */
+			char *fmt;
+			if (i == num_winners - 1)
+				fmt = "%s ";
+			else if (i == num_winners - 2)
+				fmt = "%s and ";	/* not quite perfect
+							   grammar... */
+			else
+				fmt = "%s, ";
 			snprintf(msg + strlen(msg), sizeof(msg) - strlen(msg),
-				 "%s ", game.players[winners[i]].name);
+				 fmt, game.players[winners[i]].name);
 		}
 		snprintf(msg + strlen(msg), sizeof(msg) - strlen(msg),
-			 _("won the game"));
+			 _("won the game."));
 	}
 
-	statusbar_message(msg);
+	/* This hack places this message in place of the global game message. 
+	   It prevents it from being overwritten by the upcoming newgame
+	   request. */
+	messagebar_message(msg);
 }
 
 void statusbar_message(char *msg)
@@ -325,7 +335,7 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 	GtkWidget *dlg, *canvas, *layout, **name_labels;
 	GdkPixmap *image = NULL;
 	int p, i, max_len = 0;
-	int width, height;
+	int width, height, w, h;
 	extern GtkWidget *table;	/* Damn, why can't I figure out
 					   another way to do this? */
 	extern GtkStyle *table_style;	/* And I do it twice!! */
@@ -346,13 +356,11 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 		dlg = new_message_dialog(mark);
 
 		image = gdk_pixmap_new(table->window, width, height, -1);
-		assert(image);
+		gtk_object_set_data(GTK_OBJECT(dlg), "image", image);
 
 		canvas = gtk_pixmap_new(image, NULL);
 		gtk_widget_ref(canvas);
-
 		gtk_object_set_data(GTK_OBJECT(dlg), "canvas", canvas);
-		gtk_object_set_data(GTK_OBJECT(dlg), "image", image);
 
 #if 1
 		layout = gtk_table_new(game.num_players, 2, FALSE);
@@ -384,6 +392,15 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 	canvas = gtk_object_get_data(GTK_OBJECT(dlg), "canvas");
 	name_labels = gtk_object_get_data(GTK_OBJECT(dlg), "names");
 	assert(image && canvas && name_labels);
+
+	gdk_window_get_size(image, &w, &h);
+	if (w != width || h != height) {
+		GdkPixmap *old_image = image;
+		image = gdk_pixmap_new(table->window, width, height, -1);
+		gtk_object_set_data(GTK_OBJECT(dlg), "image", image);
+
+		gdk_pixmap_unref(old_image);
+	}
 
 	/* Redraw image */
 	gdk_draw_rectangle(image,
