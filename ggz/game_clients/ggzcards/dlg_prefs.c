@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 2971 2001-12-21 01:22:05Z jdorje $
+ * $Id: dlg_prefs.c 2972 2001-12-21 01:45:19Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team
  *
@@ -40,6 +40,14 @@ static void on_animation_toggled(GtkToggleButton * togglebutton,
 	ggz_debug("main", "Animation set to %d.", preferences.animation);
 }
 
+static void on_autostart_toggled(GtkToggleButton * togglebutton,
+				 gpointer user_data)
+{
+	preferences.autostart = togglebutton->active;
+
+	ggz_debug("main", "Autostart set to %d.", preferences.animation);
+}
+
 static void on_cardlists_toggled(GtkToggleButton * togglebutton,
 				 gpointer user_data)
 {
@@ -53,8 +61,7 @@ GtkWidget *create_dlg_prefs(void)
 {
 	GtkWidget *dialog;
 	GtkWidget *vbox;
-	GtkWidget *animation_pref_button;
-	GtkWidget *cardlist_pref_button;
+	GtkWidget *button;
 	GtkWidget *action_area;
 	GtkWidget *close_button;
 
@@ -78,38 +85,40 @@ GtkWidget *create_dlg_prefs(void)
 	/*
 	 * Make "animation" button
 	 */
-	animation_pref_button =
-		gtk_check_button_new_with_label(_("Use Animation"));
-	gtk_widget_ref(animation_pref_button);
-	gtk_object_set_data_full(GTK_OBJECT(dialog), "animation_pref_button",
-				 animation_pref_button,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(animation_pref_button);
-	gtk_box_pack_start(GTK_BOX(vbox), animation_pref_button, FALSE, FALSE,
-			   0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(animation_pref_button),
+	button = gtk_check_button_new_with_label(_("Use Animation"));
+	gtk_widget_ref(button);
+	gtk_widget_show(button);
+	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
 				     preferences.animation);
-	gtk_signal_connect(GTK_OBJECT(animation_pref_button), "toggled",
+	gtk_signal_connect(GTK_OBJECT(button), "toggled",
 			   GTK_SIGNAL_FUNC(on_animation_toggled), NULL);
 
 	/*
 	 * Make "cardlists" button
 	 */
-	cardlist_pref_button =
-		gtk_check_button_new_with_label(_
-						("Show Graphical Cardlists"));
-	gtk_widget_ref(cardlist_pref_button);
-	gtk_object_set_data_full(GTK_OBJECT(dialog), "cardlist_pref_button",
-				 cardlist_pref_button,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(cardlist_pref_button);
-	gtk_box_pack_start(GTK_BOX(vbox), cardlist_pref_button, FALSE, FALSE,
-			   0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cardlist_pref_button),
-				     TRUE);
-	gtk_signal_connect(GTK_OBJECT(cardlist_pref_button), "toggled",
+	button = gtk_check_button_new_with_label(_
+						 ("Show Graphical Cardlists"));
+	gtk_widget_ref(button);
+	gtk_widget_show(button);
+	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
+	gtk_signal_connect(GTK_OBJECT(button), "toggled",
 			   GTK_SIGNAL_FUNC(on_cardlists_toggled), NULL);
-	gtk_widget_set_sensitive(cardlist_pref_button, FALSE);
+	gtk_widget_set_sensitive(button, FALSE);	/* not implemented */
+
+	/*
+	 * Make "autostart" button
+	 */
+	button = gtk_check_button_new_with_label(_
+						 ("Automatically start game"));
+	gtk_widget_ref(button);
+	gtk_widget_show(button);
+	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
+				     preferences.autostart);
+	gtk_signal_connect(GTK_OBJECT(button), "toggled",
+			   GTK_SIGNAL_FUNC(on_autostart_toggled), NULL);
 
 	/*
 	 * Get "action area"
