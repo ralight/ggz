@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 4144 2002-05-03 05:45:23Z jdorje $
+dnl $Id: configure.in 4196 2002-05-13 19:03:57Z dr_maux $
 
 AC_INIT(ggzcore/server.c)
 AM_INIT_AUTOMAKE(ggz-client-libs, 0.0.6pre)
@@ -80,16 +80,16 @@ LDADD="$LDADD $LIB_GGZ"
 dnl Check for popt
 dnl ==============
 AC_CHECK_LIB(popt, poptGetNextOpt,
-    AC_CHECK_HEADER(popt.h, LDADD="$LDADD -lpopt",
-        AC_MSG_ERROR(*** Cannot find popt.h header)),
+    [AC_CHECK_HEADER(popt.h, LDADD="$LDADD -lpopt",
+        AC_MSG_ERROR(*** Cannot find popt.h header))],
     AC_MSG_ERROR(*** Cannot find popt library ))
 
 
 dnl Check for expat
 dnl ==============
 AC_CHECK_LIB(expat, XML_ParserCreate,
-    AC_CHECK_HEADER(expat.h, LDADD="$LDADD -lexpat",
-        AC_MSG_ERROR(*** Cannot find expat.h header)),
+    [AC_CHECK_HEADER(expat.h, LDADD="$LDADD -lexpat",
+        AC_MSG_ERROR(*** Cannot find expat.h header))],
     AC_MSG_ERROR(*** Cannot find expat library ))
 
 
