@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2969 2001-12-20 18:49:46Z jdorje $
+ * $Id: common.c 2976 2001-12-21 08:21:05Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -791,7 +791,7 @@ void init_game()
 	/* now we do all the game-specific initialization... */
 	game.funcs->init_game();
 
-	cards_create_deck(game.deck_type);
+	game.deck = cards_create_deck(game.deck_type);
 	if (game.max_hand_length == 0)
 		/* note: problems if hand_length really _is_ 0 */
 		game.max_hand_length =
