@@ -226,12 +226,17 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		for (i = 0; i < count; i++) {
 
 			es_read_int(source, &game_types.info[i].index);
-			es_read_string(source, game_types.info[i].name);
-			es_read_string(source, game_types.info[i].version);
+			es_read_string(source, game_types.info[i].name,
+				       MAX_GAME_NAME_LEN);
+			es_read_string(source, game_types.info[i].version,
+				       MAX_GAME_VER_LEN);
 			es_read_char(source, &game_types.info[i].num_play_allow);
-			es_read_string(source, game_types.info[i].desc);
-			es_read_string(source, game_types.info[i].author);
-			es_read_string(source, game_types.info[i].web);
+			es_read_string(source, game_types.info[i].desc,
+				       MAX_GAME_DESC_LEN);
+			es_read_string(source, game_types.info[i].author,
+				       MAX_GAME_AUTH_LEN);
+			es_read_string(source, game_types.info[i].web,
+				       MAX_GAME_WEB_LEN);
 
 			connect_msg("[%s] Game type %d\n", opcode_str[op], 
 				    game_types.info[i].index);
@@ -261,7 +266,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			color_index++;
 			if ((color_index > 9) || (color_index<0))
 				color_index = 0;
-			es_read_string(source, name);
+			es_read_string(source, name, MAX_USER_NAME_LEN+1);
 			connect_msg("[%s] User %s\n", opcode_str[op], name);
 			es_read_int(source, &num);
 			connect_msg("[%s] Table %d\n", opcode_str[op], num);
@@ -291,7 +296,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		break;
 
 	case MSG_CHAT:
-		es_read_string(source, name);
+		es_read_string(source, name, MAX_USER_NAME_LEN+1);
 		connect_msg("[%s] msg from %s\n", opcode_str[op], name);
 		es_read_string_alloc(source, &message);
 		connect_msg("[%s] %s\n", opcode_str[op], message);
@@ -567,7 +572,8 @@ void handle_list_tables(gint op, gint fd)
 	for (i = 0; i < count; i++) {
 		es_read_int(fd, &tables.info[i].table_index);
 		es_read_int(fd, &tables.info[i].type_index);
-		es_read_string(fd, tables.info[i].desc);
+		es_read_string(fd, tables.info[i].desc,
+			       MAX_GAME_DESC_LEN);
 		es_read_char(fd, &tables.info[i].playing);
 		es_read_int(fd, &num);
 		
@@ -575,7 +581,8 @@ void handle_list_tables(gint op, gint fd)
 			es_read_int(fd, &tables.info[i].seats[j]);
 			if (tables.info[i].seats[j] >= 0
 			    || tables.info[i].seats[j] == GGZ_SEAT_RESV) 
-				es_read_string(fd, &tables.info[i].names[j]);
+				es_read_string(fd, &tables.info[i].names[j],
+					       MAX_USER_NAME_LEN+1);
 		}
 		for (j = num; j < MAX_TABLE_SIZE; j++)
 			tables.info[i].seats[j] = GGZ_SEAT_NONE;
