@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.h 6262 2004-11-05 01:26:49Z jdorje $
+ * $Id: playerlist.h 6275 2004-11-05 22:45:00Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -24,14 +24,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-typedef enum {
-  PLAYER_COLUMN_TYPE,
-  PLAYER_COLUMN_LAG,
-  PLAYER_COLUMN_TABLE,
-  PLAYER_COLUMN_STATS,
-  PLAYER_COLUMN_NAME,
-  PLAYER_COLUMNS
-} PlayerListFields;
+#include <gtk/gtk.h>
 
 void sensitize_player_list(gboolean sensitive);
 void clear_player_list(void);

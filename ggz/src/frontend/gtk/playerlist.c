@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: playerlist.c 6275 2004-11-05 22:45:00Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -28,10 +28,10 @@
 #  include <config.h>
 #endif
 
-#include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
 
+#include <gtk/gtk.h>
 #include <ggzcore.h>
 
 #include "chat.h"
@@ -41,11 +41,14 @@
 #include "server.h"
 #include "support.h"
 
-
-#define PLAYER_LIST_COL_LAG 0
-#define PLAYER_LIST_COL_TABLE 1
-#define PLAYER_LIST_COL_STATS 2
-#define PLAYER_LIST_COL_NAME 3
+enum {
+  PLAYER_COLUMN_TYPE,
+  PLAYER_COLUMN_LAG,
+  PLAYER_COLUMN_TABLE,
+  PLAYER_COLUMN_STATS,
+  PLAYER_COLUMN_NAME,
+  PLAYER_COLUMNS
+};
 
 static void client_player_info_activate(GtkMenuItem * menuitem, gpointer data)
 {
