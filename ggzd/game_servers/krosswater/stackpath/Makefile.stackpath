@@ -1,0 +1,9 @@
+all:
+	g++ -c main.cpp
+	g++ -c pathitem.cpp
+	g++ -c cwpathitem.cpp
+	g++ -o path main.o cwpathitem.o pathitem.o
+
+clean:
+	rm path
+	rm *.o

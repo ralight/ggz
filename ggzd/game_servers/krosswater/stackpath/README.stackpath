@@ -1,0 +1,26 @@
+----------------------------------
+Stackpath version 0.1 - 2001-03-31
+----------------------------------
+Copyright (C) 2001 Josef Spillner
+Published under GNU GPL conditions
+----------------------------------
+
+Stackpath is a little C++ lib which is a somewhat different implementation of a path-finding algorithm.
+Unlike Dijkstra's solution for the "All Pairs Shortest Paths Problem", my implementation differs mainly in two points:
+
+1. You're never guaranteed that the way it returns is the shortest one. However, if there are more than one possibilities
+   to reach the goal from the starting point, the loss is at a maximum only few fields. Sorry I don't have to time currently
+   to calculate the exact values for optimum and worst case scenario.
+
+2. It uses combinatorical explosion. That means if dealing with large maps, your PC may freeze. That's cool :)
+   In later version there will be soft and hard borders for memory usage.
+
+The lib consists of the class "Pathitem" and "CWPathitem", with the latter one being a helper class which is not needed
+in every case (but recommended though).
+The file "main.cpp" is distributed as an example, please have a look at it. It should be fairly self-explanatory (what a word)
+and gives a nice console output.
+
+Josef Spillner
+dr_maux@users.sourceforge.net
+The MindX Open Source Project
+http://mindx.sourceforge.net
