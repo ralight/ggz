@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 4009 2002-04-17 21:22:19Z perdig $
+ * $Id: game.c 4269 2002-06-23 11:33:21Z dr_maux $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -36,6 +36,7 @@
 #include <string.h>
 
 #include <ggz.h>
+#include <ggz_common.h>
 #include <ggzmod.h>
 
 #include "combat.h"

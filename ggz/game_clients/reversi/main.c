@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: main.c 4269 2002-06-23 11:33:21Z dr_maux $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -37,6 +37,7 @@
 
 #include <ggz.h>
 #include <ggzmod.h>
+#include <ggz_common.h>
 
 #include "game.h"
 #include "support.h"
@@ -51,6 +52,22 @@ static void initialize_debugging(void);
 static void cleanup_debugging(void);
 static void load_data(void);
 static void save_data(void);
+
+static GGZMod *mod;
+
+static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
+{
+	ggzmod_dispatch(mod);
+}
+
+static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
+{
+	int fd = (int)data;
+
+	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
+	game.fd = fd;
+	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
+}
 
 int main(int argc, char *argv[]) {
 	
@@ -71,17 +88,20 @@ int main(int argc, char *argv[]) {
 
 	display_board();
 
-	game.fd = ggzmod_connect();
-	if (game.fd < 0) return -1;
+	mod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_STATE, &handle_ggzmod_server);
 
-	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
+	ggzmod_connect(mod);
+
+	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz, NULL);
 
 	gtk_main();
 	
 	save_data();
 
-	if (ggzmod_disconnect() < 0)
+	if (ggzmod_disconnect(mod) < 0)
 		return -2;
+	ggzmod_free(mod);
 		
 	cleanup_debugging();
 	ggz_conf_cleanup();

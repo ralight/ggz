@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
- * $Id: main.c 3657 2002-03-24 17:29:30Z dr_maux $
+ * $Id: main.c 4269 2002-06-23 11:33:21Z dr_maux $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -31,6 +31,7 @@
 #include <stdlib.h>
 
 #include <ggz.h>
+#include <ggz_common.h>
 #include <ggzmod.h>
 
 #include "main_win.h"
@@ -51,6 +52,22 @@ struct chess_info game_info;
 static void initialize_debugging();
 static void cleanup_debugging();
 
+static GGZMod *mod;
+
+static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
+{
+	ggzmod_dispatch(mod);
+}
+
+static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
+{
+	int fd = (int)data;
+
+	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
+	game_info.fd = fd;
+	gdk_input_add(fd, GDK_INPUT_READ, net_handle_input, NULL);
+}
+
 int main(int argc, char *argv[]) {
 	
 	initialize_debugging();
@@ -58,26 +75,31 @@ int main(int argc, char *argv[]) {
 	ggz_intl_init("chess");
 
 	gtk_init(&argc, &argv);
-  add_pixmap_directory(".");
+	add_pixmap_directory(".");
 
 	main_win = create_main_win();
 	gtk_widget_show(main_win);
 
-  game_info.state = CHESS_STATE_INIT;
+	game_info.state = CHESS_STATE_INIT;
 
-  board_init();
-  game_update(CHESS_EVENT_INIT, NULL);
+	board_init();
+	game_update(CHESS_EVENT_INIT, NULL);
 
-	game_info.fd = ggzmod_connect();
+	mod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_STATE, &handle_ggzmod_server);
+
+	ggzmod_connect(mod);
 	if (game_info.fd < 0)
 		return -1;
 
-	gdk_input_add(game_info.fd, GDK_INPUT_READ, net_handle_input, NULL);
+	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz, NULL);
 
 	gtk_main();
 	
-	if (ggzmod_disconnect() < 0)
+	if (ggzmod_disconnect(mod) < 0)
 		return -2;
+	ggzmod_free(mod);
+
 	cleanup_debugging();
 
 	return 0;

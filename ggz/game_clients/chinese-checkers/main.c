@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Main loop and supporting logic
- * $Id: main.c 3704 2002-03-28 07:25:05Z jdorje $
+ * $Id: main.c 4269 2002-06-23 11:33:21Z dr_maux $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -33,6 +33,7 @@
 #include <stdlib.h>
 
 #include <ggz.h>
+#include <ggz_common.h>
 #include <ggzmod.h>
 
 #include "ggzintl.h"
@@ -52,7 +53,6 @@ static int get_move_response(void);
 static int get_gameover_msg(void);
 static int get_sync_data(void);
 
-
 int main(int argc, char *argv[])
 {
 	initialize_debugging();
@@ -64,8 +64,9 @@ int main(int argc, char *argv[])
 
 	gtk_main();
 
-	if (ggzmod_disconnect() < 0)
+	if (ggzmod_disconnect(game_mod()) < 0)
 		return -2;
+	ggzmod_free(game_mod());
 		
 	cleanup_debugging();
 

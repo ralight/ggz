@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 3731 2002-04-04 08:47:54Z dr_maux $
+ * $Id: client_func.c 4269 2002-06-23 11:33:21Z dr_maux $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -44,10 +44,10 @@
 # include <dmalloc.h>
 #endif
 
-#include <ggz.h>		/* libggz */
-
 #include <string.h>		/* For strcpy */
 
+#include <ggz.h>		/* libggz */
+#include <ggz_common.h>
 #include <ggzmod.h>
 
 #include <card.h>
@@ -68,6 +68,12 @@ extern guint spadesHandle;
 
 /* Game options */
 option_t options;
+
+static GGZMod *ggzmod = NULL;
+
+/* Event handlers for ggzmod */
+static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data);
+static void handle_ggz(gpointer data, gint source, GdkInputCondition cond);
 
 int CheckReadInt(int msgsock, int *message)
 {
@@ -173,11 +179,28 @@ void AppInit(void)
 		gameState.players[i] = NULL;
 
 	/* use libggzmod to connect to GGZ.  --JDS */
-	gameState.spadesSock = ggzmod_connect();
-	if (gameState.spadesSock < 0) exit(-1);
+	ggzmod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+	ggzmod_connect(ggzmod);
 
-	spadesHandle = gdk_input_add(gameState.spadesSock, GDK_INPUT_READ,
-				     ReadServerSocket, NULL);
+	spadesHandle = gdk_input_add(ggzmod_get_fd(ggzmod), GDK_INPUT_READ,
+				     handle_ggz, NULL);
+}
+
+
+static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
+{
+	int fd = (int)data;
+
+	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
+	gameState.spadesSock = fd;
+	gdk_input_add(fd, GDK_INPUT_READ, ReadServerSocket, NULL);
+}
+
+
+static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
+{
+	ggzmod_dispatch(ggzmod);
 }
 
 
@@ -724,8 +747,9 @@ void NetClose(void)
 {
 	g_printerr("I'm dying 2\n");
 	gdk_input_remove(spadesHandle);
-	if (ggzmod_disconnect() < 0)
+	if (ggzmod_disconnect(ggzmod) < 0)
 		exit(-2); /* is this the desired behavior? */
+	ggzmod_free(ggzmod);
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.h 3705 2002-03-28 07:32:15Z jdorje $
+ * $Id: game.h 4269 2002-06-23 11:33:21Z dr_maux $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -23,6 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <ggzmod.h>
 
 struct game_t {
 	int fd;
@@ -58,3 +59,5 @@ extern void game_opponent_move(int, int, int, int, int);
 extern void game_handle_sync(int);
 extern void game_update_config(char *, int);
 extern char *get_theme_dir(void);
+extern GGZMod *game_mod(void);
+

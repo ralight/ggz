@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3728 2002-04-04 07:59:26Z dr_maux $
+ * $Id: main.c 4269 2002-06-23 11:33:21Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -37,6 +37,7 @@
 #include <stdlib.h>
 
 #include <ggz.h>
+#include <ggz_common.h>
 #include <ggzmod.h>
 
 #include "ggzintl.h"
@@ -70,6 +71,21 @@ static int get_current_scores(void);
 static int get_trump_status(void);
 static int get_dealer(void);
 
+static GGZMod *mod;
+
+static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
+{
+	ggzmod_dispatch(mod);
+}
+
+static void handle_ggzmod_server(GGZMod *mod, GGZModEvent e, void *data)
+{
+	int fd = (int)data;
+
+	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
+	game.fd = fd;
+	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
+}
 
 int main(int argc, char *argv[])
 {
@@ -78,10 +94,12 @@ int main(int argc, char *argv[])
 
 	ggz_intl_init("lapocha");
 
-	game.fd = ggzmod_connect();
-	if (game.fd < 0) return -1;
+	mod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_STATE, &handle_ggzmod_server);
 
-	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
+	ggzmod_connect(mod);
+
+	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz, NULL);
 
 	dlg_main = create_dlg_main();
 
@@ -92,8 +110,10 @@ int main(int argc, char *argv[])
 
 	gtk_main();
 
-	if (ggzmod_disconnect() < 0)
+	if (ggzmod_disconnect(mod) < 0)
 		return -2;
+	ggzmod_free(mod);
+
 	cleanup_debugging();
 
 	return 0;
