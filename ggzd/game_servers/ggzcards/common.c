@@ -1,10 +1,10 @@
-/*
+/* 
  * File: common.c
  * Author: Jason Short
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2372 2001-09-05 16:44:55Z jdorje $
+ * $Id: common.c 2374 2001-09-05 17:36:52Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -41,13 +41,11 @@
 /* Global game variables */
 struct wh_game_t game = { 0 };
 
-char *game_states[] = { "WH_STATE_PRELAUNCH", "WH_STATE_NOTPLAYING",
-	"WH_STATE_WAITFORPLAYERS",
-	"WH_STATE_NEXT_HAND",
-	"WH_STATE_FIRST_BID", "WH_STATE_NEXT_BID", "WH_STATE_WAIT_FOR_BID",
-	"WH_STATE_FIRST_TRICK", "WH_STATE_NEXT_TRICK", "WH_STATE_NEXT_PLAY",
-	"WH_STATE_WAIT_FOR_PLAY"
-};
+char *game_states[] =
+	{ "WH_STATE_PRELAUNCH", "WH_STATE_NOTPLAYING",
+  "WH_STATE_WAITFORPLAYERS", "WH_STATE_NEXT_HAND", "WH_STATE_FIRST_BID",
+  "WH_STATE_NEXT_BID", "WH_STATE_WAIT_FOR_BID", "WH_STATE_FIRST_TRICK",
+  "WH_STATE_NEXT_TRICK", "WH_STATE_NEXT_PLAY", "WH_STATE_WAIT_FOR_PLAY" };
 
 
 static int try_to_start_game();
@@ -56,11 +54,11 @@ static int determine_host();
 
 void set_game_state(server_state_t state)
 {
-	/* sometimes an event can happen that changes the state while we're waiting 
-	   for players, for instance a player finishing their bid even though 
-	   someone's left the game.  In this case we wish to advance to the next 
-	   game state while continuing to wait for players.  However, this should 
-	   be handled separately. */
+	/* sometimes an event can happen that changes the state while we're
+	   waiting for players, for instance a player finishing their bid
+	   even though someone's left the game.  In this case we wish to
+	   advance to the next game state while continuing to wait for
+	   players.  However, this should be handled separately. */
 	if (game.state == WH_STATE_WAITFORPLAYERS) {
 		if (game.saved_state != state)
 			ggzd_debug("ERROR: SERVER BUG: "
@@ -92,9 +90,7 @@ void restore_game_state()
 	game.state = game.saved_state;
 }
 
-/* send_player_list
- *   Send out player list to player p
- */
+/* Send out player list to player P */
 int send_player_list(player_t p)
 {
 	int fd;
@@ -118,8 +114,8 @@ int send_player_list(player_t p)
 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
 		seat_t s_abs = (s_rel + s) % game.num_seats;
 
-		/* FIXME: is this the correct way to handle things when
-		 * we send out seats before the game has been determined? */
+		/* FIXME: is this the correct way to handle things when we
+		   send out seats before the game has been determined? */
 
 		if (es_write_int(fd, get_seat_status(s_abs)) < 0)
 			status = -1;
@@ -132,10 +128,8 @@ int send_player_list(player_t p)
 	return status;
 }
 
-/* game_send_play
- *   Send out play for player to _all_ players
- *   Also symbolizes that this play is over
- */
+/* Send out play for player to _all_ players. Also symbolizes that this play
+   is over. */
 int send_play(card_t card, seat_t seat)
 {
 	player_t p;
@@ -161,10 +155,8 @@ int send_play(card_t card, seat_t seat)
 	return status;
 }
 
-/* game_send_gameover
- *   game-independent function to send a gameover to all players
- *   cnt is the number of winners, plist is the winner list
- */
+/* game-independent function to send a gameover to all players. cnt is the
+   number of winners, plist is the winner list */
 int send_gameover(int winner_cnt, player_t * winners)
 {
 	player_t p;
@@ -181,7 +173,8 @@ int send_gameover(int winner_cnt, player_t * winners)
 	}
 
 	for (p = 0; p < game.num_players; p++) {
-		/* we reshow the player message to fix up any rating changes. */
+		/* we reshow the player message to fix up any rating changes. 
+		 */
 		set_player_message(p);
 
 		fd = ggzd_get_player_socket(p);
@@ -203,9 +196,7 @@ int send_gameover(int winner_cnt, player_t * winners)
 	return status;
 }
 
-/* send_table
- *   sends the list of cards on the table, in their relative orderings
- */
+/* sends the list of cards on the table, in their relative orderings */
 int send_table(player_t p)
 {
 	int s_r, s_abs, status = 0, fd = ggzd_get_player_socket(p);
@@ -234,10 +225,8 @@ int send_table(player_t p)
 	return status;
 }
 
-/* send_sync()
- *   Send out current game hand, score, etc.
- *   Doesn't use its own protocol, but calls on others
- */
+/* Send out current game hand, score, etc.  Doesn't use its own protocol, but 
+   calls on others */
 int send_sync(player_t p)
 {
 	seat_t s;
@@ -289,10 +278,8 @@ int send_sync_all()
 	return 0;
 }
 
-/* req_play
- *  Game-independent function to request a player to
- *  make a play from a specific seat's hand
- */
+/* Game-independent function to request a player to make a play from a
+   specific seat's hand */
 int req_play(player_t p, seat_t s)
 {
 	int fd = ggzd_get_player_socket(p);
@@ -302,8 +289,8 @@ int req_play(player_t p, seat_t s)
 		("Requesting player %d/%s to play from seat %d/%s's hand.", p,
 		 ggzd_get_player_name(p), s, get_seat_name(s));
 
-	/* although the game_* functions probably track this data
-	 * themselves, we track it here as well just in case. */
+	/* although the game_* functions probably track this data themselves, 
+	   we track it here as well just in case. */
 	game.curr_play = p;
 	game.play_seat = s;
 
@@ -324,10 +311,9 @@ int req_play(player_t p, seat_t s)
 	return 0;
 }
 
-/* rec_play
- * receives a play from the client, and calls update if necessary.
- * NOTE that a return of -1 here indicates a GGZ error, which will disconnect the player
- */
+/* receives a play from the client, and calls update if necessary. NOTE that
+   a return of -1 here indicates a GGZ error, which will disconnect the
+   player */
 int rec_play(player_t p)
 {
 	int fd = ggzd_get_player_socket(p), i;
@@ -350,7 +336,8 @@ int rec_play(player_t p)
 
 	/* Is is this player's turn to play? */
 	if (game.curr_play != p) {
-		/* better to just ignore it; a WH_MSG_BADPLAY requests a new play */
+		/* better to just ignore it; a WH_MSG_BADPLAY requests a new
+		   play */
 		ggzd_debug
 			("SERVER/CLIENT BUG: player %d/%s played out of turn!?!?",
 			 p, ggzd_get_player_name(p));
@@ -376,15 +363,16 @@ int rec_play(player_t p)
 		("We received a play of card (%d %d %d) from player %d/%s.",
 		 card.face, card.suit, card.deck, p, ggzd_get_player_name(p));
 
-	/* we've verified that this card could have physically been played; we still
-	   need to check if it's a legal play
-	   Note, however, that we don't return -1 on an error here.  An error
-	   returned indicates a GGZ error, which is not what happened.  This is just
-	   a player mistake */
+	/* we've verified that this card could have physically been played;
+	   we still need to check if it's a legal play Note, however, that we 
+	   don't return -1 on an error here.  An error returned indicates a
+	   GGZ error, which is not what happened.  This is just a player
+	   mistake */
 	err = game.funcs->verify_play(card);
 	if (err == NULL)
-		/* any AI routine would also call handle_play_event, so the ai
-		 * must also check the validity as above.  This could be changed... */
+		/* any AI routine would also call handle_play_event, so the
+		   ai must also check the validity as above.  This could be
+		   changed... */
 		handle_play_event(card);
 	else
 		send_badplay(p, err);
@@ -404,10 +392,8 @@ void send_badplay(player_t p, char *msg)
 	set_game_state(WH_STATE_WAIT_FOR_PLAY);
 }
 
-/* send_hand
- *   Show a player a hand.  This will reveal the cards in
- *   the hand iff reveal is true.
- */
+/* Show a player a hand.  This will reveal the cards in the hand iff reveal
+   is true. */
 int send_hand(const player_t p, const seat_t s, int reveal)
 {
 	int fd = ggzd_get_player_socket(p);
@@ -456,7 +442,8 @@ void send_trick(player_t winner)
 		   winner, ggzd_get_player_name(winner));
 
 	for (s = 0; s < game.num_seats; s++)
-		/* note: we also clear the table at the beginning of every hand */
+		/* note: we also clear the table at the beginning of every
+		   hand */
 		game.seats[s].table = UNKNOWN_CARD;
 
 	for (p = 0; p < game.num_players; p++) {
@@ -513,9 +500,9 @@ int send_newgame()
 	return 0;
 }
 
-static char *player_messages[] = { "WH_RSP_NEWGAME", "WH_RSP_OPTIONS",
-	"WH_RSP_PLAY", "WH_RSP_BID", "WH_REQ_SYNC"
-};
+static char *player_messages[] =
+	{ "WH_RSP_NEWGAME", "WH_RSP_OPTIONS", "WH_RSP_PLAY", "WH_RSP_BID",
+"WH_REQ_SYNC" };
 
 /* Handle message from player */
 void handle_player_event(ggzd_event_t event, void *data)
@@ -584,9 +571,8 @@ void handle_player_event(ggzd_event_t event, void *data)
 		break;
 	default:
 		/* Unrecognized opcode */
-		ggzd_debug
-			("SERVER/CLIENT BUG: game_handle_player: unrecognized opcode %d.",
-			 op);
+		ggzd_debug("SERVER/CLIENT BUG: "
+			   "game_handle_player: unrecognized opcode %d.", op);
 		status = -1;
 		break;
 	}
@@ -597,10 +583,7 @@ void handle_player_event(ggzd_event_t event, void *data)
 			 status, p, ggzd_get_player_name(p));
 }
 
-/* init_ggzcards
- *   Setup game state and board
- *   also initializes the _type_ of game
- */
+/* Setup game state and board.  Also initializes the _type_ of game. */
 void init_ggzcards(int which)
 {
 	/* Seed the random number generator */
@@ -617,10 +600,8 @@ void init_ggzcards(int which)
 	ggzd_debug("Game initialized as game %d.", game.which_game);
 }
 
-/* try_to_start_game
- *   tries to start a game, requesting information from players where necessary.
- *   returns 1 on successful start.
- */
+/* Tries to start a game, requesting information from players where
+   necessary.  returns 1 on successful start. */
 static int try_to_start_game()
 {
 	player_t p;
@@ -630,8 +611,8 @@ static int try_to_start_game()
 		if (!game.players[p].ready
 		    && ggzd_get_seat_status(p) != GGZ_SEAT_BOT) {
 			/* we could send another REQ_NEWGAME as a reminder,
-			 * but there would be no way for the client to
-			 * know that it was a duplicate. */
+			   but there would be no way for the client to know
+			   that it was a duplicate. */
 			ggzd_debug("Player %d/%s is not ready.", p,
 				   ggzd_get_player_name(p));
 			ready = 0;
@@ -699,7 +680,7 @@ void next_play(void)
 		if (game.funcs->test_for_gameover()) {
 			game.funcs->handle_gameover();
 			set_game_state(WH_STATE_NOTPLAYING);
-			next_play(); /* start a new game */
+			next_play();	/* start a new game */
 			return;
 		}
 
@@ -797,10 +778,8 @@ void next_play(void)
 	return;
 }
 
-/* determine_host
- *   the oldest player becomes the host.  The oldest player is the
- *   one with the youngest "age".
- */
+/* The oldest player becomes the host.  The oldest player is the one with the 
+   youngest "age". */
 static int determine_host()
 {
 	player_t p, host = -1;
@@ -815,10 +794,8 @@ static int determine_host()
 	return host;
 }
 
-/* handle_launch_event
- *   this handles a launch event, when ggz connects to our server
- *   for the first time.
- */
+/* This handles a launch event, when ggz connects to our server for the first 
+   time. */
 void handle_launch_event(ggzd_event_t event, void *data)
 {
 	player_t p;
@@ -842,18 +819,18 @@ void handle_launch_event(ggzd_event_t event, void *data)
 
 	/* we don't yet know the number of seats */
 
-	/* as soon as we know which game we're playing, we should init the game */
+	/* as soon as we know which game we're playing, we should init the
+	   game */
 	if (game.which_game != GGZ_GAME_UNKNOWN)
 		init_game();
 
 	set_game_state(WH_STATE_NOTPLAYING);
-	save_game_state();	/* no players are connected yet, so we enter waiting phase */
+	save_game_state();	/* no players are connected yet, so we enter
+				   waiting phase */
 	return;
 }
 
-/* handle_join_event
- *   this handles the event of a player joining.
- */
+/* This handles the event of a player joining. */
 void handle_join_event(ggzd_event_t event, void *data)
 {
 	player_t player = *(int *) data;
@@ -881,8 +858,8 @@ void handle_join_event(ggzd_event_t event, void *data)
 	game.host = determine_host();
 
 	/* if all seats are occupied, we restore the former state and
-	 * continue playing (below).  The state is restored up here
-	 * so that the sync will be handled correctly. */
+	   continue playing (below).  The state is restored up here so that
+	   the sync will be handled correctly. */
 	if (!ggzd_seats_open())
 		restore_game_state();
 
@@ -894,10 +871,11 @@ void handle_join_event(ggzd_event_t event, void *data)
 		if (p != player)
 			send_player_list(p);
 
+	/* should this be in sync??? */
 	if (game.state != WH_STATE_NOTPLAYING &&
 	    !(game.state == WH_STATE_WAITFORPLAYERS
 	      && game.saved_state == WH_STATE_NOTPLAYING))
-		send_player_message_toall(game.players[p].seat);	/* should this be in sync??? */
+		send_player_message_toall(game.players[p].seat);
 
 	if (player == game.host && game.which_game == GGZ_GAME_UNKNOWN)
 		games_req_gametype();
@@ -906,16 +884,15 @@ void handle_join_event(ggzd_event_t event, void *data)
 		/* (Re)Start game play */
 		if (game.state != WH_STATE_WAIT_FOR_BID
 		    && game.state != WH_STATE_WAIT_FOR_PLAY)
-			/* if we're in one of these two states, we have to wait for a response anyway */
+			/* if we're in one of these two states, we have to
+			   wait for a response anyway */
 			next_play();
 	}
 
 	return;
 }
 
-/* handle_leave_event
- *   this handles the event of a player leaving
- */
+/* This handles the event of a player leaving */
 void handle_leave_event(ggzd_event_t event, void *data)
 {
 	player_t player = *(int *) data, p;
@@ -948,9 +925,7 @@ void handle_leave_event(ggzd_event_t event, void *data)
 	return;
 }
 
-/* handle_newgame_event
- *   this handles the event of a player responding to a newgame request
- */
+/* This handles the event of a player responding to a newgame request */
 int handle_newgame_event(player_t player)
 {
 	ggzd_debug("Handling a newgame event for player %d/%s.", player,
@@ -962,9 +937,7 @@ int handle_newgame_event(player_t player)
 	return 0;
 }
 
-/* handle_play_event
- *   this handles the event of someone playing a card
- */
+/* This handles the event of someone playing a card */
 int handle_play_event(card_t card)
 {
 	int i;
@@ -977,8 +950,7 @@ int handle_play_event(card_t card)
 	/* send the play */
 	send_play(card, game.play_seat);
 
-	/* remove the card from the player's hand
-	 * by sliding it to the end. */
+	/* remove the card from the player's hand by sliding it to the end. */
 	/* TODO: this is quite inefficient */
 	for (i = 0; i < hand->hand_size; i++)
 		if (cards_equal(hand->cards[i], card))
@@ -1036,9 +1008,7 @@ int handle_play_event(card_t card)
 	return 0;
 }
 
-/* handle_bid_event
- *   this handles the event of someone making a bid
- */
+/* This handles the event of someone making a bid */
 int handle_bid_event(bid_t bid)
 {
 	player_t p = game.next_bid;
@@ -1049,8 +1019,9 @@ int handle_bid_event(bid_t bid)
 	ggzd_debug("Handling a bid event.");
 	if (game.state == WH_STATE_WAITFORPLAYERS) {
 		/* if a player left while another player was in the middle of
-		   bidding, this can happen.  The solution is to temporarily return
-		   to playing, handle the bid, and then (below) return to waiting. */
+		   bidding, this can happen.  The solution is to temporarily
+		   return to playing, handle the bid, and then (below) return
+		   to waiting. */
 		restore_game_state();
 		was_waiting = 1;
 	}
@@ -1115,14 +1086,14 @@ void set_num_seats(int num_seats)
 	game.seats = alloc(game.num_seats * sizeof(*game.seats));
 	for (s = 0; s < game.num_seats; s++) {
 		game.seats[s].player = -1;
-		game.seats[s].name = "Unclaimed Seat";	/* TODO: reserved seats */
+		game.seats[s].name = "Unclaimed Seat";	/* TODO: reserved
+							   seats */
 		game.seats[s].pmessage = NULL;
 	}
 }
 
-/* init_game
- *   Initialized a new game type, calling game_init_game for the game-dependant parts
- */
+/* Initialize a new game type, calling game_init_game for the game-dependant
+   parts */
 void init_game()
 {
 	seat_t s;
@@ -1166,7 +1137,9 @@ void init_game()
 
 	/* set the Rules message */
 	if (game.rules_url == NULL)
-		game.rules_url = "http://pagat.com/";	/* Could we just refer people to ggz.sf.net? */
+		/* Could we just refer people to ggz.sf.net? */
+		game.rules_url = "http://pagat.com/";
+
 	set_global_message("Rules",
 			   "You can read the rules of this game at\n%s.",
 			   game.rules_url);
@@ -1179,8 +1152,7 @@ void init_game()
 
 	set_global_message("", "%s", "");
 	/* This is no longer necessary under the put_player_message system
-	   for (s = 0; s < game.num_seats; s++)
-	   game.seats[s].message[0] = 0;
+	   for (s = 0; s < game.num_seats; s++) game.seats[s].message[0] = 0; 
 	 */
 
 	/* set AI names */
@@ -1233,17 +1205,11 @@ ggzd_assign_t get_seat_status(seat_t s)
 }
 
 
-
-
-
-
-/* JDS: these are just helper functions which should be moved to another
-   file */
-
-/* alloc
- *   this helper function checks to see if allocation fails, and also
- *   zeroes all the memory
+/* JDS: these are just helper functions which should be moved to another file
  */
+
+/* this helper function checks to see if allocation fails, and also zeroes
+   all the memory */
 void *alloc(int size)
 {
 	void *ret = malloc(size);
@@ -1256,10 +1222,7 @@ void *alloc(int size)
 	return ret;
 }
 
-/* alloc_char_array, free_char_array
- *   this allocates/frees an array of strings
- *   it really shouldn't go here...
- */
+/* This allocates an array of strings. */
 char **alloc_string_array(int num, int len)
 {
 	int i;
@@ -1278,12 +1241,3 @@ char **alloc_string_array(int num, int len)
 
 	return bids;
 }
-
-/*
-static void free_string_array(char** bids)
-{
-	int i;
-	free(bids[0]);
-	free(bids);
-}
-*/
