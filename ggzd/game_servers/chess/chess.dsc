@@ -1,5 +1,5 @@
 Name = Chess
-Version = 0.0.1
+Version = 0.0.6
 Description = GGZ game module for playing Chess
 Author = Ismael Orenstein
 Homepage = http://ggz.sourceforge.net
