@@ -195,6 +195,7 @@ void KrosswaterServer::getMove()
 void KrosswaterServer::sendRestart()
 {
 	eraseMap();
+
 	for(int i = 0; i < m_numplayers; i++)
 	{
 		GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
@@ -207,27 +208,30 @@ void KrosswaterServer::sendRestart()
 
 }
 
+// Create the map
+void KrosswaterServer::createMap()
+{
+	map_x = 40;
+	map_y = 20;
+
+	map = (int**)malloc(map_x * sizeof(int));
+	for(int i = 0; i < map_x; i++)
+		map[i] = (int*)malloc(map_y * sizeof(int));
+
+	srandom(time(NULL));
+	for(int j = 0; j < map_y; j++)
+		for(int i = 0; i < map_x; i++)
+			map[i][j] = rand() % 2;
+
+	ZONEDEBUG("path >>> create\n");
+	path = new CWPathitem(map_x, map_y, map);
+}
+
 // Broadcast map to joining players
 void KrosswaterServer::sendMap()
 {
 	// Create the map and pass it to Stackpath
-	if(!map)
-	{
-		map_x = 40;
-		map_y = 20;
-
-		map = (int**)malloc(map_x * sizeof(int));
-		for(int i = 0; i < map_x; i++)
-			map[i] = (int*)malloc(map_y * sizeof(int));
-
-		srandom(time(NULL));
-		for(int j = 0; j < map_y; j++)
-			for(int i = 0; i < map_x; i++)
-				map[i][j] = rand() % 2;
-
-		ZONEDEBUG("path >>> create\n");
-		path = new CWPathitem(map_x, map_y, map);
-	}
+	if(!map) createMap();
 
 	// Place all players on the map
 	if((!players) && (path))
@@ -282,6 +286,8 @@ void KrosswaterServer::slotZoneAI()
 	int fromx, fromy, tox, toy;
 	int ret;
 
+	if(!map) createMap();
+
 	do
 	{
 		fromx = rand() % map_x;
@@ -310,6 +316,8 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 	int yl, yr;
 	Pathitem *backtrace;
 	int ret;
+
+	if((!map) || (!path)) return 0;
 
 	map[fromx][fromy] = 0;
 	map[tox][toy] = 1;

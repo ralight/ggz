@@ -50,6 +50,7 @@ class KrosswaterServer : public ZoneGGZModServer
 		void sendRestart();
 		int doMove(int fromx, int fromy, int tox, int toy);
 		void eraseMap();
+		void createMap();
 
 		int m_fd;
 		int map_x, map_y;
