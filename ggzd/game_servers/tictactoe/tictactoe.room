@@ -1,8 +1,8 @@
 [RoomInfo]
 # This is the short name for the room
-Name = TicTacToe
+Name = Tic-Tac-Toe
 # This is the long descriptive name for the room
-Description = Example TicTacToe Room
+Description = Example Tic-Tac-Toe Room
 # The gametype should match up to the Name of an added game
 GameType = TicTacToe
 # These set maximum values for this room
