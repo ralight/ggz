@@ -33,6 +33,8 @@ class MuehleServer : public GGZGameServer {
 		void stateEvent ();
 		void joinEvent ( int player );
 		void leaveEvent ( int player );
+		void spectatorJoinEvent( int spectator );
+		void spectatorLeaveEvent ( int spectator );
 		void dataEvent ( int player );
 		void errorEvent ();
 	private:

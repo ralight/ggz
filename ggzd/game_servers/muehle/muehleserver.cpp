@@ -76,6 +76,18 @@ void MuehleServer::leaveEvent ( int player ) {
 	}
 }
 
+// Spectator join event
+void MuehleServer::spectatorJoinEvent ( int spectator ) {
+	std::cout << "Muehle: spectatorJoinEvent" << std::endl;
+
+	m_net->write ( spectatorfd ( spectator ), "spectator.\n");
+}
+
+// Spectator leave event
+void MuehleServer::spectatorLeaveEvent ( int spectator ) {
+	std::cout << "Muehle: spectatorLeaveEvent" << std::endl;
+}
+
 // Game data event
 void MuehleServer::dataEvent ( int player ) {
 	char data[1024];
@@ -96,6 +108,9 @@ void MuehleServer::dataEvent ( int player ) {
 		m_net->write ( fd ( !player ), data);
 	else if ( !m_valid[ player ] )
 		m_net->write ( fd (player), "invalid.\n");
+
+	for( int i = 0; i < spectators (); i++ )
+		m_net->write ( spectatorfd ( i ), data );
 
 	m_valid[ player ] = 0;
 }
