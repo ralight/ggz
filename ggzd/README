@@ -8,11 +8,6 @@ do our best to make sure it does).  If you are interested in assisting
 with development or in writing server modules for you favorite game,
 please let us know at ggz-dev@lists.sourceforge.net
 
-At this moment, the server supports two game types: spades, and
-tic-tac-toe.  Players can still only login anonymously.  We are
-releasing this so that people can look at the server architecture and
-play with it.  Everything is subject to change.
-
 
 Downloading
 ===========
@@ -20,9 +15,8 @@ You can always download the latest released version of GGZ from our
 homepage at http://ggz.sourceforge.net, or for the absolute bleeding
 edge you can check out the sources via anonymous CVS (instructions are
 at the aforementioned homepage).  You should be aware that the client
-and the server are distributed separately.  The server is distributed
-as ggz_server-X.X.X.tar.gz and the client as ggz_client-X.X.X.tar.gz
-where X.X.X is the version number.  
+and the server are distributed separately.  Please see README.GGZ for
+more details on the other parts of GGZ.
 
 Prior to the 1.0.0 release you can expect that backwards-compatibility
 with previous versions *will be broken* so please make sure you are
@@ -31,49 +25,36 @@ using matching versions of client and server.
 
 Compiling and Installing
 ========================
-You need to have popt, pthreads, and gtk installed in order to compile
-GGZ.  Most developers have these, or at least are capable of
-installing these.  Assuming you are unpacking the sources in a
-directory named ~/sources, you can compile the server with the
-following:
+Before you compile the GGZ server you must have the following
+installed on your system:
+ 
+ - pthreads (comes with most C libraries)
+ - popt (from ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.0.x)
+ - expat (from http://prdownloads.sourceforge.net/expat/)
+ - libdb2 or libdb3 (from http://www.sleepycat.com/update/3.2.9/)
 
+Most developers have these, or at least are capable of installing
+these.  Assuming you are unpacking the sources in a directory named
+~/sources, you can compile the server with the following:
 
 cd ~/sources/ggz_server-X.X.X; configure; make
 
-and similarly for the client:
-
-cd ~/sources/ggz_client-X.X.X; configure; make
-
-where X.X.X is the version number.
-
-If you wish to install the client and server you can do a 'make
-install' in each of the source directories at this point.
-
 For more detailed instructions on comfiguring and installing the
-client and server, please read the INSTALL file in each of the
-respective source directories.
+server, please read the INSTALL file.
 
 
 Running
 =======
-You must have access to a running server for the client to be of any
-use to you.  The server does not have to be running on your machine,
-but we expect that until someone volunteers to run a production server
-full-time, you'll probably be running both the client and ther server
-locally.
-
 If you have already installed the client and server, you may start the
 server simply be running the command 'ggzd' This will start the server
-listening on port of 5688.  Similarly, you may run the client with the
-command 'ggz'
+listening on port of 5688.
 
 If you would like to test the software before installing it, please
 use the following steps:  
 
 - execute a 'make test' in the ggz-server top level source directory
-- run the server with the command 'ggzd/ggzd -f ggzd/ggzd.test'
-- change to the ggz-client source and run the client with the command 
-  'ggz/ggz -f ggzrc.test'
+- run the server with the command './ggzd/ggzd -f ggzd/ggzd.test'
+- Test with one of the GGZ clients
 
 
 Bugs

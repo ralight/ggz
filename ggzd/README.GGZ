@@ -27,9 +27,9 @@ flexibility.  The components are:
 - The libggz library
 
   This is a library of common function calls for client/server
-  communication and utily functions.  It is distributed in source form as
-  libggz-X.X.X.tar.gz, where X.X.X is the version number.  The easysock
-  library has been merged into libggz.
+  communication and utily functions.  It is distributed in source form
+  as libggz-X.X.X.tar.gz, where X.X.X is the version number.  The
+  easysock library has been merged into libggz.
 
 - Common client libraries
 
@@ -174,7 +174,8 @@ A module.dsc file should be formatted as follows:
   Frontend = <fe code>
   Homepage = http://host.domain/location/
   Name = <game name>
-  Protocol = <protocol version>
+  ProtocolEngine = <protocol engine>
+  ProrocolVersion = <protocol version>
   Version = <game module version>
 
 The current <fe code>s which are understood are 'gtk' and 'kde' and
@@ -187,9 +188,9 @@ installed).
 The <game name> should match the game name as used by the ggzd server.
 The actual displayed name for the game will be set by the server.
 
-The <protocol version> must match the protocol version of the game
-module server.  This insures that game clients, which may be of
-different versions will properly work with the game server.
+The prorocol engine and version must match those of the game module
+server.  This insures that game clients, which may be of different
+versions will properly work with the game server.
 
 The <game module version> is used internally to identify which game
 version to be used.  This allows multiple clients to be installed as

@@ -1,7 +1,5 @@
-Todo for 0.0.5:
-- security (prevent running as root)
-
 Todo for 0.0.6:
+- security (prevent running as root)
 - add Skat engine to GGZCards
 - add Escape & Keepalive games
 - Meta server stuff
