@@ -189,8 +189,7 @@ GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
 
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, net_hook_roomenter);
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, net_hook_roomleave);
-	ggzcore_room_add_event_hook(room, GGZ_CHAT, net_hook_chat);
-	ggzcore_room_add_event_hook(room, GGZ_PRVMSG, net_hook_prvmsg);
+	ggzcore_room_add_event_hook(room, GGZ_CHAT_EVENT, net_hook_chat);
 	ggzcore_room_add_event_hook(room, GGZ_PLAYER_LIST, net_hook_players);
 
 	return GGZ_HOOK_OK;
@@ -252,26 +251,29 @@ GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_d
 
 GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 {
-	char *player, *message;
-	int oldsize;
+	GGZChatEventData *chat = event_data;
 
-	player = ((char**)(event_data))[0];
-	message = ((char**)(event_data))[1];
+	if (!chat->sender || !chat->message) {
+		/* TelGGZ is not set up to handle this kind of message */
+		return GGZ_HOOK_OK;
+	}
+
 	if(m_allow)
 	{
 		flush_buffer();
-		printf("[%s]: %s\n", player, message);
+		printf("[%s]: %s\n", chat->sender, chat->message);
 		fflush(NULL);
 	}
 	else
 	{
-		oldsize = (buffer ? strlen(buffer) : 0);
-		buffer = (char*)realloc(buffer, oldsize + strlen(message) + strlen(player) + 6);
+		int oldsize = buffer ? strlen(buffer) : 0;
+		buffer = realloc(buffer, oldsize + strlen(chat->message)
+				 + strlen(chat->sender) + 6);
 		if(oldsize) strcat(buffer, "[");
 		else strcpy(buffer, "[");
-		strcat(buffer, player);
+		strcat(buffer, chat->sender);
 		strcat(buffer, "]: ");
-		strcat(buffer, message);
+		strcat(buffer, chat->message);
 		strcat(buffer, "\n");
 	}
 
