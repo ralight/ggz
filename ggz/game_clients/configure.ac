@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5708 2003-12-06 02:56:30Z jdorje $
+dnl $Id: configure.ac 5709 2003-12-06 05:50:42Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -78,10 +78,11 @@ AC_HEADER_SYS_WAIT
 
 # Check for library functions
 # ===========================
-AC_CHECK_FUNCS([localeconv memset mkdir setlocale socket sqrt strcasecmp \
+AC_CHECK_FUNCS([localeconv memset mkdir setlocale socket strcasecmp \
                 strchr strdup strrchr strstr malloc realloc stat strtod \
-                bzero floor gethostbyname],
+                bzero gethostbyname],
                [], [AC_MSG_ERROR([cannot find required function])])
+AC_CHECK_FUNCS([sqrt floor]) # FIXME: these tests don't pass without -lm !!!
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_FUNC_STAT
