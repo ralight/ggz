@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.c 3908 2002-04-12 07:10:20Z jdorje $
+ * $Id: dlg_about.c 4005 2002-04-17 17:26:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -31,8 +31,6 @@
 
 #include "dlg_about.h"
 #include "game.h"		/* for _( macro only */
-
-#define VERSION "0.0.5"
 
 GtkWidget *create_dlg_about(void)
 {
