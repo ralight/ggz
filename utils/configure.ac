@@ -1,6 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(configure.ac)
+AC_INIT
+AC_CONFIG_SRCDIR([configure.ac])
 AM_INIT_AUTOMAKE(ggz-utils, 0.0.6)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
@@ -146,7 +147,7 @@ if test "x$prefix" = "xNONE"; then
 fi
 AC_DEFINE_UNQUOTED(PREFIX, "$prefix")
 
-AC_OUTPUT(Makefile
+AC_CONFIG_FILES([Makefile
 		cmd-client/Makefile
 		telggz/Makefile
 		metaserv/Makefile
@@ -154,7 +155,8 @@ AC_OUTPUT(Makefile
 		metaserv/metaserv/Makefile
 		motd-editor/Makefile
 		ggzcomm/Makefile
-		man/Makefile)
+		man/Makefile])
+AC_OUTPUT
 
 dnl Output Status
 dnl =============
