@@ -304,7 +304,7 @@ static GGZHookReturn server_list_rooms(GGZServerEvent id, void* event_data, void
 	/* Register callbacks for all rooms */
 	num = ggzcore_server_get_num_rooms(server);
 	for (i = 0; i < num; i++)
-		room_register(ggzcore_server_get_room(server, i));
+		room_register(ggzcore_server_get_nth_room(server, i));
 
 	return GGZ_HOOK_OK;
 }

@@ -197,7 +197,7 @@ static void input_handle_desc(char* line)
 	char* desc;
 	
 	room = atoi(line);
-	desc = ggzcore_room_get_desc(ggzcore_server_get_room(server, room));
+	desc = ggzcore_room_get_desc(ggzcore_server_get_nth_room(server, room));
 	output_text(desc);
 }
 
