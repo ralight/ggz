@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5340 2003-01-22 13:50:38Z dr_maux $
+ * $Id: net.c 5870 2004-02-09 21:34:39Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -680,8 +680,8 @@ GGZReturn net_send_reseat_result(GGZNetIO *net, GGZClientReqError status)
 }
 
 
-GGZReturn net_send_player_update(GGZNetIO *net,
-				 GGZPlayerUpdateType opcode, const char *name)
+GGZReturn net_send_player_update(GGZNetIO *net, GGZPlayerUpdateType opcode,
+				 const char *name, int other_room)
 {
 	GGZPlayer *player;
 	GGZPlayer p2;
@@ -691,7 +691,7 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 	
 	switch (opcode) {
 	case GGZ_PLAYER_UPDATE_DELETE:
-		_net_send_line(net, "<UPDATE TYPE='player' ACTION='delete' ROOM='%d'>", room);
+	  _net_send_line(net, "<UPDATE TYPE='player' ACTION='delete' ROOM='%d' TOROOM='%d'>", room, other_room);
 		_net_send_line(net, "<PLAYER ID='%s'/>", name);
 		return _net_send_line(net, "</UPDATE>");
 
@@ -706,7 +706,7 @@ GGZReturn net_send_player_update(GGZNetIO *net,
 		p2 = *player;
 		pthread_rwlock_unlock(&player->stats_lock);
 		pthread_rwlock_unlock(&player->lock);
-		_net_send_line(net, "<UPDATE TYPE='player' ACTION='add' ROOM='%d'>", room);
+		_net_send_line(net, "<UPDATE TYPE='player' ACTION='add' ROOM='%d' FROMROOM='%d'>", room, other_room);
 		net_send_player(net, &p2);
 		return _net_send_line(net, "</UPDATE>");
 

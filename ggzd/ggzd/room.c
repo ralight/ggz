@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 5085 2002-10-28 07:27:15Z jdorje $
+ * $Id: room.c 5870 2004-02-09 21:34:39Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -52,6 +52,10 @@ extern struct GameInfo game_types[MAX_GAME_TYPES];
 typedef struct {
 	GGZPlayerUpdateType opcode;
 	char player[MAX_USER_NAME_LEN + 1];
+
+	/* Other room specifies the room a player comes from or is going to
+	 * in an ADD or DELETE event.  This info is sent to clients. */
+	int other_room;
 } GGZRoomEventData;
 
 /* Decl of server wide chat room structure */
@@ -359,12 +363,12 @@ static void room_notify_change(char* name, const int old, const int new)
 		
 	if (old != -1) {
 		/* Send DELETE update to old room */
-		room_update_event(name, GGZ_PLAYER_UPDATE_DELETE, old);
+		room_update_event(name, GGZ_PLAYER_UPDATE_DELETE, old, new);
 	}
 
 	if (new != -1) {
 		/* Send ADD update to new room */
-		room_update_event(name, GGZ_PLAYER_UPDATE_ADD, new);
+		room_update_event(name, GGZ_PLAYER_UPDATE_ADD, new, old);
 	}
 }
 
@@ -372,10 +376,11 @@ static void room_notify_change(char* name, const int old, const int new)
 
 GGZReturn room_update_event(const char *player,
 			    GGZPlayerUpdateType update,
-			    int room)
+			    int room, int other_room)
 {
 	GGZRoomEventData *data = ggz_malloc(sizeof(*data));
 	data->opcode = update;
+	data->other_room = other_room;
 	strcpy(data->player, player);
 
 	return event_room_enqueue(room, room_event_callback,
@@ -395,8 +400,8 @@ static GGZEventFuncReturn room_event_callback(void* target_player,
 	    && strcasecmp(event->player, player->name) == 0)
 		return GGZ_EVENT_OK;
 
-	if (net_send_player_update(player->client->net,
-				   event->opcode, event->player) < 0)
+	if (net_send_player_update(player->client->net, event->opcode,
+				   event->player, event->other_room) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;

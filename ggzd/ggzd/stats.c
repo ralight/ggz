@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 5085 2002-10-28 07:27:15Z jdorje $
+ * $Id: stats.c 5870 2004-02-09 21:34:39Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -337,6 +337,6 @@ void report_statistics(int room, int gametype,
 
 		room_update_event(report->names[i],
 				  GGZ_PLAYER_UPDATE_STATS,
-				  room);
+				  room, -1);
 	}
 }
