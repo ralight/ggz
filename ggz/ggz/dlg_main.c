@@ -128,7 +128,7 @@ void ggz_get_tables(GtkMenuItem * menuitem, gpointer user_data)
 {       
         es_write_int(connection.sock, REQ_LIST_TABLES);
         es_write_int(connection.sock, -1);
-	es_write_char(connection.sock, 1);
+	es_write_char(connection.sock, 0);
 }
 
 static void ggz_input_chat_msg(GtkWidget * widget, gpointer user_data)
