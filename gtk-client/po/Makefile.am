@@ -16,14 +16,31 @@ messages:
 		mv .$$j $$j; \
 	done
 
+all-local: translation-stamp
+
+translation-stamp:
+	@for j in $(top_srcdir)/po/*.po; do \
+		echo "convert $$j"; \
+		k=$$(basename $$j); \
+		country=`echo $$k | cut -d "." -f 1`; \
+		$(MSGFMT) -o $$country.mo $$j; \
+	done
+	touch translation-stamp
+
+clean-local:
+	@for j in $(top_srcdir)/po/*.mo; do \
+		rm -f $$j; \
+	done
+	rm -f $(top_srcdir)/po/translation-stamp
+
 install-data-local:
-	for j in $(top_srcdir)/po/*.po; do \
+	@for j in $(top_srcdir)/po/*.mo; do \
 		k=$$(basename $$j); \
 		country=`echo $$k | cut -d "." -f 1`; \
 		dir=$(prefix)/share/locale/$$country/LC_MESSAGES; \
 		echo "installing $$dir/$(CATALOG).mo ($$k)"; \
 		install -d $$dir; \
-		$(MSGFMT) -o $$dir/$(CATALOG).mo $$j; \
+		cp $$j $$dir/$(CATALOG).mo; \
 	done
 
 uninstall-local:
