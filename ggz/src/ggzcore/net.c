@@ -616,70 +616,81 @@ static int _ggzcore_net_read_server_id(struct _GGZNet *net, int *protocol, unsig
 	    || es_read_int(net->fd, size) < 0)
 		status = -1;
 
-	if (status < 0)
-		_ggzcore_net_error(net, "Reading server ID");
-	else
+	if (status == 0)
 		ggzcore_debug(GGZ_DBG_NET, "%s : protocol %d: chat size %d", 
 			      msg, *protocol, *size);
+	else
+		_ggzcore_net_error(net, "Reading server ID");
 	
 	return status;
 }
 
 
-static int _ggzcore_net_read_login_new(struct _GGZNet *net, char *status, char **password)
+static int _ggzcore_net_read_login_new(struct _GGZNet *net, char *login_status, char **password)
 {
-	int checksum = 0;
+	int status = 0, checksum = 0;
 
-	if (es_read_char(net->fd, status) < 0)
-		return -1;
+	if (es_read_char(net->fd, login_status) < 0)
+		status = -1;
 	
-	if (*status == 0 && es_read_string_alloc(net->fd, password) < 0)
-		return -1;
-
-	if (*status == 0 && es_read_int(net->fd, &checksum) < 0)
-		return -1;
+	/* Read rest of data only if login is successful */
+	if (*login_status == 0)  
+		if (es_read_string_alloc(net->fd, password) < 0
+		    || es_read_int(net->fd, &checksum) < 0)
+			status = -1;
 	
-	ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN_NEW from server : %d, %d", 
-		      *status, checksum);
-
-	return 0;
+	if (status == 0)
+		ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN_NEW : %d, %d",
+			      *login_status, checksum);
+	else
+		_ggzcore_net_error(net, "Reading new login");
+		
+	return status;
 }
 
 
-static int _ggzcore_net_read_login(struct _GGZNet *net, char *status, char *res)
+static int _ggzcore_net_read_login(struct _GGZNet *net, char *login_status, char *res)
 {
-	int checksum = 0;
+	int status = 0, checksum = 0;
 
-	if (es_read_char(net->fd, status) < 0)
-		return -1;
+	if (es_read_char(net->fd, login_status) < 0)
+		status = -1;
 	
-	if (*status == 0 && es_read_int(net->fd, &checksum) < 0)
-		return -1;
-	
-	if (*status == 0 && es_read_char(net->fd, res) < 0)
-		return -1;
+	/* Read rest of data only if login is successful */
+	if (*login_status == 0)
+		if (es_read_int(net->fd, &checksum) < 0
+		    || es_read_char(net->fd, res) < 0)
+			status = -1;
 
-	ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN from server : %d, %d, %d", 
-		      *status, checksum, *res);
+	if (status == 0)
+		ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN : %d, %d, %d", 
+			      *login_status, checksum, *res);
+	else
+		_ggzcore_net_error(net, "Reading login");
 
-	return 0;
+	return status;
 }
 
 
-static int _ggzcore_net_read_login_anon(struct _GGZNet *net, char *status)
+static int _ggzcore_net_read_login_anon(struct _GGZNet *net, char *login_status)
 {
-	int checksum = 0;
+	int status = 0, checksum = 0;
 
-	if (es_read_char(net->fd, status) < 0)
-		return -1;
+	if (es_read_char(net->fd, login_status) < 0)
+		status = -1;
 	
-	if (*status == 0 && es_read_int(net->fd, &checksum) < 0)
-		return -1;
+	/* Read rest of data only if login is successful */
+	if (*login_status == 0) 
+		if (es_read_int(net->fd, &checksum) < 0)
+			status = -1;
 	
-	ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN_ANON from server : %d, %d", 
-		      *status, checksum);
-	
-	return 0;
+	if (status == 0)
+		ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN_ANON : %d, %d", 
+			      *login_status, checksum);
+	else
+		_ggzcore_net_error(net, "Reading guest login");
+
+	return status;
 }
 
 
@@ -1020,97 +1031,36 @@ static void _ggzcore_net_handle_server_id(struct _GGZNet *net)
 
 static void _ggzcore_net_handle_login_new(struct _GGZNet *net)
 {
-	char ok, *password;
-	int status;
+	char status, *password;
 
-	status = _ggzcore_net_read_login_new(net, &ok, &password);
+	if (_ggzcore_net_read_login_new(net, &status, &password) == 0) {
 
-	if (status < 0) {
-		_ggzcore_server_net_error(net->server, NULL);
-		return;
-	}
-	
-	ggzcore_debug(GGZ_DBG_SERVER, "Status of login: %d", ok);
-	ggzcore_debug(GGZ_DBG_SERVER, "New password: %s", password);
+		/* Set and then free password if login was successful */
+		if (status == 0) {
+			_ggzcore_server_set_password(net->server, password);
+			free(password);
+		}
 
-	switch (ok) {
-	case 0:
-		_ggzcore_server_set_password(net->server, password);
-		free(password);
-		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_OK);
-		_ggzcore_server_event(net->server, GGZ_LOGGED_IN, NULL);
-		break;
-	case E_ALREADY_LOGGED_IN:
-		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_FAIL);
-		_ggzcore_server_event(net->server, GGZ_LOGIN_FAIL, "Already logged in");
-		break;
-	case E_USR_LOOKUP:
-		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_FAIL);
-		_ggzcore_server_event(net->server, GGZ_LOGIN_FAIL, "Name taken");
-		break;
+		_ggzcore_server_set_login_status(net->server, (int)status);
 	}
 }
 
 
 static void _ggzcore_net_handle_login(struct _GGZNet *net)
 {
-	char ok, reservations;
-	int status;
+	char status, reservations;
 
-	status = _ggzcore_net_read_login(net, &ok, &reservations);
-
-	if (status < 0) {
-		_ggzcore_server_net_error(net->server, NULL);
-		return;
-	}
-	
-	ggzcore_debug(GGZ_DBG_SERVER, "Status of login: %d", ok);
-
-	switch (ok) {
-	case 0:
-		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_OK);
-		_ggzcore_server_event(net->server, GGZ_LOGGED_IN, NULL);
-		break;
-	case E_ALREADY_LOGGED_IN:
-		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_FAIL);
-		_ggzcore_server_event(net->server, GGZ_LOGIN_FAIL, "Already logged in");
-		break;
-	case E_USR_LOOKUP:
-		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_FAIL);
-		_ggzcore_server_event(net->server, GGZ_LOGIN_FAIL, "Name taken");
-		break;
-	}
+	if (_ggzcore_net_read_login(net, &status, &reservations) == 0)
+		_ggzcore_server_set_login_status(net->server, (int)status);
 }
 
 
 static void _ggzcore_net_handle_login_anon(struct _GGZNet *net)
 {
-	char ok;
-	int status;
+	char status;
 
-	status = _ggzcore_net_read_login_anon(net, &ok);
-
-	if (status < 0) {
-		_ggzcore_server_net_error(net->server, NULL);
-		return;
-	}
-	
-	ggzcore_debug(GGZ_DBG_SERVER, "Status of login: %d", ok);
-
-	switch (ok) {
-	case 0:
-		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_OK);
-		_ggzcore_server_event(net->server, GGZ_LOGGED_IN, NULL);
-		break;
-	case E_ALREADY_LOGGED_IN:
-		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_FAIL);
-		_ggzcore_server_event(net->server, GGZ_LOGIN_FAIL, "Already logged in");
-		break;
-	case E_USR_LOOKUP:
-		_ggzcore_server_change_state(net->server, GGZ_TRANS_LOGIN_FAIL);
-		_ggzcore_server_event(net->server, GGZ_LOGIN_FAIL, "Name taken");
-		break;
-	}
+	if (_ggzcore_net_read_login_anon(net, &status) == 0)
+		_ggzcore_server_set_login_status(net->server, (int)status);
 }
 
 

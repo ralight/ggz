@@ -66,6 +66,7 @@ void _ggzcore_server_set_room(struct _GGZServer *server,
 /* functions to pass status of other information to server object */
 void _ggzcore_server_set_negotiate_status(struct _GGZServer *server, 
 					  int status);
+void _ggzcore_server_set_login_status(struct _GGZServer *server, int status);
 
 
 /* functions to perform an action */

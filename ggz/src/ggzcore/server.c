@@ -613,6 +613,27 @@ void _ggzcore_server_set_negotiate_status(struct _GGZServer *server, int status)
 }
 
 
+void _ggzcore_server_set_login_status(struct _GGZServer *server, int status)
+{
+	ggzcore_debug(GGZ_DBG_SERVER, "Status of login: %d", status);
+
+	switch (status) {
+	case 0:
+		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_OK);
+		_ggzcore_server_event(server, GGZ_LOGGED_IN, NULL);
+		break;
+	case E_ALREADY_LOGGED_IN:
+		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_FAIL);
+		_ggzcore_server_event(server, GGZ_LOGIN_FAIL, "Already logged in");
+		break;
+	case E_USR_LOOKUP:
+		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_FAIL);
+		_ggzcore_server_event(server, GGZ_LOGIN_FAIL, "Name taken");
+		break;
+	}
+}
+
+
 void _ggzcore_server_reset(struct _GGZServer *server)
 {
 	int i;
