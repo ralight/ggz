@@ -2,7 +2,7 @@
  * File: xtext-ggz.h
  * Author: Jason Short
  * Project: GGZ GTK Client
- * $Id: xtext-ggz.h 6688 2005-01-15 22:34:24Z oojah $
+ * $Id: xtext-ggz.h 6981 2005-03-11 07:35:03Z jdorje $
  *
  * This file is included from xtext.c to add additional ggz-specific
  * directives.
@@ -55,3 +55,4 @@
 #define USE_XLIB
 #endif
 
+#include <strings.h> /* For strcasecmp */

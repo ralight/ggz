@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 6868 2005-01-24 02:46:43Z jdorje $
+ * $Id: login.c 6981 2005-03-11 07:35:03Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h> /* For strcasecmp */
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>

@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 6884 2005-01-24 17:51:16Z jdorje $
+ * $Id: chat.c 6981 2005-03-11 07:35:03Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h> /* For strcasecmp */
 #include <gtk/gtk.h>
 #include <sys/types.h>
 #ifdef HAVE_SYS_SOCKET_H

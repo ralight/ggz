@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 6908 2005-01-28 04:58:49Z jdorje $
+ * $Id: game.c 6981 2005-03-11 07:35:03Z jdorje $
  *
  * Functions for handling game events
  *
@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h> /* For strcasecmp */
 
 #include <ggzcore.h>
 

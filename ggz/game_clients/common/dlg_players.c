@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 6903 2005-01-25 18:57:38Z jdorje $
+ * $Id: dlg_players.c 6981 2005-03-11 07:35:03Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -30,6 +30,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#include <strings.h> /* For strcasecmp */
 
 #include <gtk/gtk.h>
 

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 6740 2005-01-19 07:46:46Z jdorje $
+ * $Id: playerlist.c 6981 2005-03-11 07:35:03Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <strings.h> /* For strcasecmp */
 
 #include <gtk/gtk.h>
 #include <ggzcore.h>

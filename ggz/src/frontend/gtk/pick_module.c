@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Text Client 
  * Date: 11/5/2002
- * $Id: pick_module.c 6326 2004-11-11 05:24:46Z jdorje $
+ * $Id: pick_module.c 6981 2005-03-11 07:35:03Z jdorje $
  *
  * Dialog window to pick a module for your game
  *
@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
+#include <strings.h> /* For strcasecmp */
 
 #include <ggzcore.h>
 
