@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2814 2001-12-09 05:48:15Z jdorje $
+ * $Id: ggzdmod.c 2815 2001-12-09 05:51:07Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -797,7 +797,9 @@ int ggzdmod_connect(GGZdMod * mod)
 		}
 	}
 	
-	return ggzdmod->fd; /* It sure better be valid at this point! */
+	/* We used to return the GGZdmod file descriptor, we really
+	   don't even want to tempt games to use this socket. */
+	return 0; /* success */
 }
 
 int ggzdmod_disconnect(GGZdMod * mod)
