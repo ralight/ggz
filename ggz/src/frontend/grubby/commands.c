@@ -138,6 +138,14 @@ void public_commands( char *from, char **words, int totalwords, char *fullmessag
 			net_send_msg( fullmessage+strlen( out ) );
 			return;
 		}
+	} else {
+		sprintf( out, "whats a " );
+		if( !strncasecmp( fullmessage, out, strlen( out ) ) )
+		{
+			printf("%s - %s\n",fullmessage+strlen(out),ggzcore_conf_read_string(fullmessage+strlen(out), "INFO", ""));
+			if(ggzcore_conf_read_string(fullmessage+strlen(out), "INFO", "") != "")
+				net_send_prvmsg(from, ggzcore_conf_read_string(fullmessage+strlen(out), "INFO", ""));
+		}
 	}
 }
 

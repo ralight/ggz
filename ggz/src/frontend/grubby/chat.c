@@ -31,7 +31,7 @@ void chat_parse( char *from, char *message )
 	int i, x, word_c, old, size, num_words;
 	char **words;
 	char out[1024];
-	char **badwords;
+	char item[3];
 
 	old = 0;
 
@@ -64,13 +64,16 @@ void chat_parse( char *from, char *message )
 			words[word_c] = message + old;
 			if( ggzcore_conf_read_int("GRUBBYSETTINGS", "LANGCHECK", -1) == 0)
 			{
-				ggzcore_conf_read_list("GRUBBYSETTINGS", "WORDS", &num_words, &badwords);
-				for(x=0; x<num_words; x++)
-					if(!strcasecmp(message + old, badwords[x]))
+				num_words = ggzcore_conf_read_int("BADWORDS", "TOTAL", 0);
+				for(x=1; x<num_words+1; x++)
+				{
+					sprintf(item,"%d",x);
+					if(!strcasecmp(message + old, ggzcore_conf_read_string("BADWORDS", item, "")))
 					{
 						chat_show_bad_lang( from );
 						return;
 					}
+				}
 			}
 			old = i+1;
 			word_c++;
@@ -133,18 +136,19 @@ void chat_show_bad_lang( char *from )
 void chat_chatter()
 {
 	int x, y, num_chatters;
-	char **chatter;
+	char item[4];
 
+	num_chatters = ggzcore_conf_read_int("CHATTERS", "TOTAL", 0);
 	if(ggzcore_conf_read_int("GRUBBYSETTINGS", "DOCHATTER", 1) == 0)
 	{
 		x = 1+(int) (500.0*rand()/(RAND_MAX+1.0));
 		if(x >= 100 && x <= 100)
 		{
-			ggzcore_conf_read_list("GRUBBYSETTINGS", "CHATTER", &num_chatters, &chatter);
 			if(num_chatters>0)
 			{
 				y = 1+(int) ((float)num_chatters*rand()/(RAND_MAX+1.0));
-				net_send_msg(chatter[y-1]);
+				sprintf(item,"%d", y);
+				net_send_msg(ggzcore_conf_read_string("CHATTERS", item, ""));
 			}
 		}
 	}
