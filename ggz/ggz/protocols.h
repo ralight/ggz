@@ -86,6 +86,14 @@ typedef enum {
 	RSP_ROOM_JOIN
 } ControlToUser;
 
+/* Chat subops */					/* PMCCCCCC */
+#define GGZ_CHAT_NORMAL		(unsigned char) 0x40	/* 01000000 */
+#define GGZ_CHAT_ANNOUNCE	(unsigned char) 0x60	/* 01100000 */
+#define GGZ_CHAT_BEEP		(unsigned char) 0x80	/* 10000000 */
+#define GGZ_CHAT_PERSONAL	(unsigned char) 0xC0	/* 11000000 */
+/* Chat subop bitmasks */
+#define GGZ_CHAT_M_MESSAGE	(unsigned char) 0x40	/* X1XXXXXX */
+#define GGZ_CHAT_M_PLAYER	(unsigned char) 0x80	/* 1XXXXXXX */
 
 typedef enum {
 	RSP_GAME_LAUNCH,
@@ -93,13 +101,14 @@ typedef enum {
 	RSP_GAME_LEAVE,
         MSG_LOG,
         MSG_DBG,
-	MSG_GAME_OVER
+	REQ_GAME_OVER
 } TableToControl;
 
 typedef enum {
 	REQ_GAME_LAUNCH,
 	REQ_GAME_JOIN,
-	REQ_GAME_LEAVE
+	REQ_GAME_LEAVE,
+	RSP_GAME_OVER
 } ControlToTable;
 
 #define E_USR_LOOKUP   -1
