@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 4538 2002-09-13 05:11:04Z jdorje $
+ * $Id: room.c 4578 2002-09-16 05:27:04Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -59,7 +59,7 @@ RoomInfo room_info;
 static void room_notify_change(char* name, const int, const int);
 static GGZEventFuncReturn room_event_callback(void* target_player,
 					      size_t size, void* data);
-static int show_server_info(GGZPlayer *player);
+static GGZReturn show_server_info(GGZPlayer *player);
 
 
 /* Handle a REQ_LIST_ROOMS opcode */
@@ -184,8 +184,7 @@ GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room)
 	}
 
 	/* Do the actual room change, and return results */
-	if((result = room_join(player, room)) == GGZ_REQ_DISCONNECT)
-		return result;
+	result = room_join(player, room);
 
 	/* Generate a log entry if room was full */
 	if(result == E_ROOM_FULL) {
@@ -209,10 +208,7 @@ GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room)
 }
 
 
-/* Join a player to a room, returns explanatory code on failure */
-/* FIXME: this may return either a GGZPlayerHandlerStatus or an E_***
-   error code. */
-int room_join(GGZPlayer* player, const int room)
+GGZClientReqError room_join(GGZPlayer* player, const int room)
 {
 	int old_room;
 	int i, count;
@@ -225,14 +221,14 @@ int room_join(GGZPlayer* player, const int room)
 
 	/* Check for valid inputs */
 	if(old_room == room)
-		return GGZ_REQ_OK;
+		return E_OK;
 	if(room > room_info.num_rooms || room < -2)
 		return E_BAD_OPTIONS;
 
 	/* Process queued messages unless they are connecting/disconnecting */
 	if (old_room != -1 && room != -1)
 		if(event_room_handle(player) < 0)
-			return GGZ_REQ_DISCONNECT;
+			return E_BAD_XML; /* ??? */
 
 	/* We ALWAYS lock the lower ordered room first! */
 	if(old_room < room) {
@@ -300,7 +296,7 @@ int room_join(GGZPlayer* player, const int room)
 
 	room_notify_change(name, old_room, room);
 
-	return GGZ_REQ_OK;
+	return E_OK;
 }
 
 
@@ -365,10 +361,10 @@ static GGZEventFuncReturn room_event_callback(void* target_player,
 
 
 /* This is more or less a temporary hack to get some server info on login */
-static int show_server_info(GGZPlayer *player)
+static GGZReturn show_server_info(GGZPlayer *player)
 {
 	int players;
-	int status;
+	GGZReturn status;
 	char msg[128];
 
 	pthread_rwlock_rdlock(&state.lock);
