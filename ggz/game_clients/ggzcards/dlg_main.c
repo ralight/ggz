@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 5044 2002-10-26 04:43:47Z jdorje $
+ * $Id: dlg_main.c 5157 2002-11-03 02:06:42Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -87,6 +87,15 @@ GtkWidget *create_dlg_main(void)
 	gtk_object_set_data(GTK_OBJECT(dlg_main), "dlg_main", dlg_main);
 	gtk_window_set_title(GTK_WINDOW(dlg_main),
 			     _("GGZ Gaming Zone - GGZ Cards"));
+
+	/* Perhaps we should allow the user to resize the window, and scale
+	   the table with it.  As long as that doesn't happen, though, there's
+	   no need whatsoever to change the window size. */
+#ifdef GTK2
+	gtk_window_set_resizable(GTK_WINDOW(dlg_main), FALSE);
+#else
+	gtk_window_set_policy(GTK_WINDOW(dlg_main), FALSE, FALSE, TRUE);
+#endif
 
 	vbox1 = gtk_vbox_new(FALSE, 0);
 	gtk_widget_set_name(vbox1, "vbox1");
