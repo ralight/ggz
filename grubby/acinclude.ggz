@@ -197,12 +197,6 @@ ac_libggz_libraries="$libggz_libdir"
 if test "$ac_libggz_includes" = NO || test "$ac_libggz_libraries" = NO; then
   ac_cv_have_libggz="have_libggz=no"
   ac_libggz_notfound=""
-
-  if test "x$1" = "xignore"; then
-    AC_MSG_WARN([libggz not found. (ignored)])
-  else
-    AC_GGZ_ERROR(libggz, $libggz_incdirs, $libggz_libdirs)
-  fi
 else
   have_libggz="yes"
 fi
@@ -211,7 +205,11 @@ fi
 eval "$ac_cv_have_libggz"
 
 if test "$have_libggz" != yes; then
-  AC_MSG_RESULT([$have_libggz]);
+  if test "x$1" = "xignore"; then
+    AC_MSG_RESULT([$have_libggz (intentionally ignored)])
+  else
+    AC_GGZ_ERROR(libggz, $libggz_incdirs, $libggz_libdirs)
+  fi
 else
   ac_cv_have_libggz="have_libggz=yes \
     ac_libggz_includes=$ac_libggz_includes ac_libggz_libraries=$ac_libggz_libraries"
@@ -288,12 +286,6 @@ ac_ggzcore_libraries="$ggzcore_libdir"
 if test "$ac_ggzcore_includes" = NO || test "$ac_ggzcore_libraries" = NO; then
   ac_cv_have_ggzcore="have_ggzcore=no"
   ac_ggzcore_notfound=""
-
-  if test "x$1" = "xignore"; then
-    AC_MSG_WARN([ggzcore not found. (ignored)])
-  else
-    AC_GGZ_ERROR(ggzcore, $ggzcore_incdirs, $ggzcore_libdirs)
-  fi
 else
   have_ggzcore="yes"
 fi
@@ -302,7 +294,11 @@ fi
 eval "$ac_cv_have_ggzcore"
 
 if test "$have_ggzcore" != yes; then
-  AC_MSG_RESULT([$have_ggzcore]);
+  if test "x$1" = "xignore"; then
+    AC_MSG_RESULT([$have_ggzcore (intentionally ignored)])
+  else
+    AC_GGZ_ERROR(ggzcore, $ggzcore_incdirs, $ggzcore_libdirs)
+  fi
 else
   ac_cv_have_ggzcore="have_ggzcore=yes \
     ac_ggzcore_includes=$ac_ggzcore_includes ac_ggzcore_libraries=$ac_ggzcore_libraries"
@@ -354,8 +350,7 @@ ac_ggz_config="$ggz_config_dir"
 if test "$ac_ggz_config" = NO; then
   ac_cv_have_ggzcore="have_ggz_config=no"
   ac_ggz_config_notfound=""
-
-  AC_MSG_ERROR([ggz-config not found. Please check your installation! ]);
+  have_ggz_config="no"
 else
   have_ggz_config="yes"
 fi
@@ -364,7 +359,11 @@ fi
 eval "$ac_cv_have_ggz_config"
 
 if test "$have_ggz_config" != yes; then
-  AC_MSG_RESULT([$have_ggz_config]);
+  if test "x$1" = "xignore"; then
+    AC_MSG_RESULT([$have_ggz_config (intentionally ignored)])
+  else
+    AC_MSG_ERROR([ggz-config not found. Please check your installation! ])
+  fi
 else
   ac_cv_have_ggz_config="have_ggz_config=yes \
     ac_ggz_config=$ac_ggz_config"
@@ -375,18 +374,19 @@ fi
 
 AC_SUBST(ggz_config)
 
-GGZ_CONFIG="${ggz_config}/ggz-config"
+if test "$have_ggz_config" = yes; then
+	GGZ_CONFIG="${ggz_config}/ggz-config"
+	AC_SUBST(GGZ_CONFIG)
 
-AC_SUBST(GGZ_CONFIG)
-
-ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
-AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${ggzmoduleconfdir}", [Path where the game registry is located])
-ggzexecmoddir=`$GGZ_CONFIG --gamedir`
-AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
-ggzdatadir=`$GGZ_CONFIG --datadir`
-AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should look for their data files])
-packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
+	ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
+	AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${ggzmoduleconfdir}", [Path where the game registry is located])
+	ggzexecmoddir=`$GGZ_CONFIG --gamedir`
+	AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
+	ggzdatadir=`$GGZ_CONFIG --datadir`
+	AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should look for their data files])
+	packagesrcdir=`cd $srcdir && pwd`
+	AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
+fi
 
 AC_SUBST(ggzmoduleconfdir)
 AC_SUBST(ggzexecmoddir)
@@ -447,12 +447,6 @@ ac_ggzmod_libraries="$ggzmod_libdir"
 if test "$ac_ggzmod_includes" = NO || test "$ac_ggzmod_libraries" = NO; then
   ac_cv_have_ggzmod="have_ggzmod=no"
   ac_ggzmod_notfound=""
-
-  if test "x$1" = "xignore"; then
-    AC_MSG_WARN([ggzmod not found. (ignored)])
-  else
-    AC_GGZ_ERROR(ggzmod, $ggzmod_incdirs, $ggzmod_libdirs)
-  fi
 else
   have_ggzmod="yes"
 fi
@@ -461,7 +455,11 @@ fi
 eval "$ac_cv_have_ggzmod"
 
 if test "$have_ggzmod" != yes; then
-  AC_MSG_RESULT([$have_ggzmod]);
+  if test "x$1" = "xignore"; then
+    AC_MSG_RESULT([$have_ggzmod (intentionally ignored)])
+  else
+    AC_GGZ_ERROR(ggzmod, $ggzmod_incdirs, $ggzmod_libdirs)
+  fi
 else
   ac_cv_have_ggzmod="have_ggzmod=yes \
     ac_ggzmod_includes=$ac_ggzmod_includes ac_ggzmod_libraries=$ac_ggzmod_libraries"
@@ -537,12 +535,6 @@ ac_ggzdmod_libraries="$ggzdmod_libdir"
 if test "$ac_ggzdmod_includes" = NO || test "$ac_ggzdmod_libraries" = NO; then
   ac_cv_have_ggzdmod="have_ggzdmod=no"
   ac_ggzdmod_notfound=""
-
-  if test "x$1" = "xignore"; then
-    AC_MSG_WARN([ggzdmod not found. (ignored)])
-  else
-    AC_GGZ_ERROR(ggzdmod, $ggzdmod_incdirs, $ggzdmod_libdirs)
-  fi
 else
   have_ggzdmod="yes"
 fi
@@ -551,7 +543,11 @@ fi
 eval "$ac_cv_have_ggzdmod"
 
 if test "$have_ggzdmod" != yes; then
-  AC_MSG_RESULT([$have_ggzdmod]);
+  if test "x$1" = "xignore"; then
+    AC_MSG_RESULT([$have_ggzdmod (intentionally ignored)])
+  else
+    AC_GGZ_ERROR(ggzdmod, $ggzdmod_incdirs, $ggzdmod_libdirs)
+  fi
 else
   ac_cv_have_ggzdmod="have_ggzdmod=yes \
     ac_ggzdmod_includes=$ac_ggzdmod_includes ac_ggzdmod_libraries=$ac_ggzdmod_libraries"
@@ -606,8 +602,8 @@ AC_CACHE_VAL(ac_cv_have_ggzdconf,
 		fi
 	done
 
-	if test "$ggzd_confdir" = NO; then
-		AC_MSG_ERROR([ggz server configuration not found. Please check your installation! ])
+	if test "x$ggzdconfdir" = "xNONE"; then
+		have_ggzdconf="no"
 	else
 		have_ggzdconf="yes"
 	fi
@@ -616,7 +612,11 @@ AC_CACHE_VAL(ac_cv_have_ggzdconf,
 eval "$ac_cv_have_ggzdconf"
 
 if test "$have_ggzdconf" != yes; then
-	AC_MSG_RESULT([$have_ggzdconf])
+	if test "x$1" = "xignore"; then
+	  AC_MSG_RESULT([$have_ggzdconf (intentionally ignored)])
+	else
+	  AC_MSG_ERROR([GGZ server configuration not found. Please check your installation! ])
+	fi
 else
 	AC_MSG_RESULT([$ggzdconfdir])
 fi
@@ -643,7 +643,11 @@ if test "x$GETTEXT" = "x"; then intl=0; fi
 if test "x$MSGFMT" = "x"; then intl=0; fi
 if test "x$MSGMERGE" = "x"; then intl=0; fi
 if test "$intl" = 0; then
-	AC_ERROR(Internationalization tools missing.)
+  if test "x$1" = "xignore"; then
+    AC_MSG_WARN([Internationalization tools missing. (ignored)])
+  else
+    AC_MSG_ERROR([Internationalization tools missing.])
+  fi
 fi
 
 XGETTEXT=$GETTEXT
