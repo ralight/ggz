@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 6225 2004-10-28 05:48:01Z jdorje $
+ * $Id: dlg_players.c 6269 2004-11-05 09:21:08Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -28,11 +28,24 @@
 #endif
 
 #include <assert.h>
-#include <gtk/gtk.h>
+#include <stdio.h>
 #include <string.h>
+
+#include <gtk/gtk.h>
 
 #include "dlg_players.h"
 #include "ggzintl.h"
+
+typedef enum {
+	PLAYER_COLUMN_SEAT,
+	PLAYER_COLUMN_TYPE,
+	PLAYER_COLUMN_NAME,
+
+	PLAYER_COLUMN_ISSPECTATOR,
+	PLAYER_COLUMN_SEATNUM,
+
+	PLAYER_COLUMNS
+} PlayerColumn;
 
 GGZMod *ggz = NULL;
 
@@ -45,12 +58,12 @@ static PlayerLists *player_lists = NULL;
 static GtkWidget *dlg_players = NULL;
 static int num_entries = 0;
 
-static void update_player_clist(GtkWidget * player_clist);
+static void update_player_list(GtkWidget *tree);
 static void update_player_dialog(void);
 
-static gboolean player_clist_button_event(GtkWidget *widget,
-					  GdkEventButton *event,
-					  gpointer data);
+static gboolean player_list_button_event(GtkWidget *widget,
+					 GdkEventButton *event,
+					 gpointer data);
 
 void update_player_lists(void)
 {
@@ -59,7 +72,7 @@ void update_player_lists(void)
 	update_player_dialog();
 
 	for (list = player_lists; list; list = list->next)
-		update_player_clist(list->this);
+		update_player_list(list->this);
 }
 
 static void handle_ggz_seat_event(GGZMod *ggzmod, GGZModEvent e, void *data)
@@ -77,181 +90,174 @@ void init_player_list(GGZMod *ggzmod)
 	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_STATE, handle_ggz_seat_event);
 }
 
-static void update_player_clist(GtkWidget * player_clist)
+static void update_player_list(GtkWidget *tree)
 {
-	int p;
-	int num;
-	gchar *player[4] = { NULL, NULL, NULL, NULL };
+	int p, num;
+	GtkListStore *store = g_object_get_data(G_OBJECT(tree), "store");
 
 	assert(ggz);
 
-	gtk_clist_freeze(GTK_CLIST(player_clist));
-
-	gtk_clist_clear(GTK_CLIST(player_clist));
+	gtk_list_store_clear(store);
 	num_entries = 0;
 
 	/* Put all players on the list. */
 	num = ggzmod_get_num_seats(ggz);
 	for (p = 0; p < num; p++) {
 		GGZSeat seat = ggzmod_get_seat(ggz, p);
+		GtkTreeIter iter;
+		const gchar *status = NULL, *name = NULL;
+		gchar num[32];
 
-		player[0] = g_strdup_printf("%d", p);
+		gtk_list_store_append(store, &iter);
 
+		snprintf(num, sizeof(num), "%d", p);
 		switch (seat.type) {
 		case GGZ_SEAT_PLAYER:
-			player[1] = _("Occupied");
-			player[2] = ggz_strdup(seat.name);
+			status = _("Occupied");
+			name = seat.name;
 			break;
 		case GGZ_SEAT_OPEN:
-			player[1] = _("Empty");
-			player[2] = ggz_strdup("-");
+			status = _("Empty");
+			name = "-";
 			break;
 		case GGZ_SEAT_BOT:
-			player[1] = _("Bot");
-			player[2] = ggz_strdup(seat.name);
+			status = _("Bot");
+			name = seat.name;
 			break;
 		case GGZ_SEAT_RESERVED:
-			player[1] = _("Reserved");
-			player[2] = ggz_strdup(seat.name);
+			status = _("Reserved");
+			name = seat.name;
 			break;
 		case GGZ_SEAT_NONE:
-			player[1] = _("-");
-			player[2] = ggz_strdup(seat.name);
+			status = _("-");
+			name = seat.name;
 			break;
 		}
 
-		gtk_clist_append(GTK_CLIST(player_clist), player);
-		num_entries++;
+		gtk_list_store_set(store, &iter,
+				   PLAYER_COLUMN_SEAT, num,
+				   PLAYER_COLUMN_ISSPECTATOR, (gboolean)FALSE,
+				   PLAYER_COLUMN_SEATNUM, (gint)p,
+				   PLAYER_COLUMN_TYPE, status,
+				   PLAYER_COLUMN_NAME, name,
+				   -1);
 
-		g_free(player[0]);
-		if (player[2])
-			ggz_free(player[2]);
+		num_entries++;
 	}
 
 	/* Append any spectators to the list */
 	num = ggzmod_get_num_spectator_seats(ggz);
 	for (p = 0; p < num; p++) {
 		GGZSpectatorSeat seat = ggzmod_get_spectator_seat(ggz, p);
+		GtkTreeIter iter;
 
 		if (!seat.name)
 			continue;
 
-		player[0] = "-";
-		player[1] = _("Spectator");
-		player[2] = ggz_strdup(seat.name);
-
-		gtk_clist_append(GTK_CLIST(player_clist), player);
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter,
+				   PLAYER_COLUMN_SEAT, "-",
+				   PLAYER_COLUMN_ISSPECTATOR, (gboolean)TRUE,
+				   PLAYER_COLUMN_SEATNUM, (gint)p,
+				   PLAYER_COLUMN_TYPE, _("Spectator"),
+				   PLAYER_COLUMN_NAME, seat.name,
+				   -1);
 		num_entries++;
-		ggz_free(player[2]);
 	}
-
-	gtk_clist_thaw(GTK_CLIST(player_clist));
 }
 
 static void update_player_dialog(void)
 {
-	GtkWidget *player_clist;
+	GtkWidget *tree;
 
 	if (!dlg_players)
 		return;
 
-	player_clist = gtk_object_get_data(GTK_OBJECT(dlg_players),
-					   "player_clist");
+	tree = g_object_get_data(G_OBJECT(dlg_players), "tree");
 
-	update_player_clist(player_clist);
+	update_player_list(tree);
 }
 
-static GtkWidget *create_player_clist(void)
+static GtkWidget *create_player_list(void)
 {
-	GtkWidget *player_clist;
-	GtkWidget *label;
+	GtkListStore *store;
+	GtkWidget *tree;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	GtkTreeSelection *select;
 
-	player_clist = gtk_clist_new(3);
-	gtk_widget_ref(player_clist);
-	gtk_widget_show(player_clist);
+	assert(PLAYER_COLUMNS == 5);
+	store = gtk_list_store_new(PLAYER_COLUMNS,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   G_TYPE_BOOLEAN,
+				   G_TYPE_INT);
+	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_set_data(G_OBJECT(tree), "store", store);
+	g_object_unref(store);
 
-#if 0
-	gtk_widget_set_sensitive(player_clist, FALSE);
-#endif
-	gtk_clist_column_titles_show(GTK_CLIST(player_clist));
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("#"), renderer,
+				"text", PLAYER_COLUMN_SEAT, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
-	gtk_clist_set_column_width(GTK_CLIST(player_clist), 0, 15);
-	gtk_clist_set_column_width(GTK_CLIST(player_clist), 1, 75);
-	gtk_clist_set_column_width(GTK_CLIST(player_clist), 2, 80);
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Status"),
+				renderer,
+				"text", PLAYER_COLUMN_TYPE, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
-	label = gtk_label_new(_("#"));
-	gtk_widget_ref(label);
-	gtk_object_set_data_full(GTK_OBJECT(player_clist),
-				 "player_num_label", label,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(label);
-	gtk_clist_set_column_widget(GTK_CLIST(player_clist), 0, label);
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Name"), renderer,
+				"text", PLAYER_COLUMN_NAME, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
-	label = gtk_label_new(_("Status"));
-	gtk_widget_ref(label);
-	gtk_object_set_data_full(GTK_OBJECT(player_clist),
-				 "player_num_label", label,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(label);
-	gtk_clist_set_column_widget(GTK_CLIST(player_clist), 1, label);
-
-	label = gtk_label_new(_("Name"));
-	gtk_widget_ref(label);
-	gtk_object_set_data_full(GTK_OBJECT(player_clist),
-				 "player_num_label", label,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(label);
-	gtk_clist_set_column_widget(GTK_CLIST(player_clist), 2, label);
+	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
 
 	/* Set up callbacks */
-	gtk_signal_connect(GTK_OBJECT(player_clist), "button_press_event",
-			   GTK_SIGNAL_FUNC(player_clist_button_event),
-			   player_clist);
+	g_signal_connect(tree, "button-press-event",
+			 GTK_SIGNAL_FUNC(player_list_button_event), NULL);
 
-	update_player_clist(player_clist);
+	update_player_list(tree);
 
-	return player_clist;
+	return tree;
 }
 
 GtkWidget *create_playerlist_widget(void)
 {
 	PlayerLists *list = ggz_malloc(sizeof(*list));
-	list->this = create_player_clist();
+	list->this = create_player_list();
 	list->next = player_lists;
 	player_lists = list;
 
-	(void) gtk_signal_connect(GTK_OBJECT(list->this),
-				  "destroy",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-				  &list->this);
+	g_signal_connect(list->this, "destroy",
+			 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+			 &list->this);
 
 	return list->this;
 }
 
 static GtkWidget *create_dlg_players(void)
 {
-	GtkWidget *dialog;
-	GtkWidget *vbox;
-	GtkWidget *player_clist;
 #if 0
 	GtkWidget *label;
 #endif
-	GtkWidget *action_area;
-	GtkWidget *close_button;
+	GtkWidget *dialog, *vbox, *tree, *action_area, *close_button;
 
 	/* 
 	 * Create outer window.
 	 */
 	dialog = gtk_dialog_new();
-	gtk_object_set_data(GTK_OBJECT(dialog), "dlg_players", dialog);
+	g_object_set_data(G_OBJECT(dialog), "dlg_players", dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Player List"));
-	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
 
 	/* 
 	 * Get vertical box packing widget.
 	 */
 	vbox = GTK_DIALOG(dialog)->vbox;
-	gtk_object_set_data(GTK_OBJECT(dialog), "vbox", vbox);
+	g_object_set_data(G_OBJECT(dialog), "vbox", vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_widget_show(vbox);
 
@@ -262,12 +268,12 @@ static GtkWidget *create_dlg_players(void)
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 #endif
 
-	player_clist = create_player_clist();
-	gtk_object_set_data_full(GTK_OBJECT(dialog),
-				 "player_clist", player_clist,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_box_pack_start(GTK_BOX(vbox), player_clist, FALSE, FALSE, 0);
-
+	tree = create_player_list();
+	gtk_widget_ref(tree);
+	g_object_set_data_full(G_OBJECT(dialog), "tree", tree,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	gtk_box_pack_start(GTK_BOX(vbox), tree, FALSE, FALSE, 0);
+	gtk_widget_show(tree);
 
 	/* 
 	 * Get "action area"
@@ -283,17 +289,15 @@ static GtkWidget *create_dlg_players(void)
 	gtk_widget_show(close_button);
 	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE, FALSE,
 			   0);
-	gtk_widget_set_usize(close_button, 64, -2);
-	(void) gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
-					 GTK_SIGNAL_FUNC(gtk_widget_destroy),
-					 GTK_OBJECT(dialog));
+	g_signal_connect_swapped(close_button, "clicked",
+				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				 dialog);
 
 	/* 
 	 * Set up callbacks
 	 */
-	(void) gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
-					 GTK_SIGNAL_FUNC(gtk_widget_destroy),
-					 GTK_OBJECT(dialog));
+	g_signal_connect(dialog, "delete_event",
+			 GTK_SIGNAL_FUNC(gtk_widget_destroy), NULL);
 
 	/* 
 	 * Done!
@@ -308,11 +312,9 @@ void create_or_raise_dlg_players(void)
 		gdk_window_raise(dlg_players->window);
 	} else {
 		dlg_players = create_dlg_players();
-		(void) gtk_signal_connect(GTK_OBJECT(dlg_players),
-					  "destroy",
-					  GTK_SIGNAL_FUNC
-					  (gtk_widget_destroyed),
-					  &dlg_players);
+		g_signal_connect(dlg_players, "destroy",
+				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+				 &dlg_players);
 		gtk_widget_show(dlg_players);
 	}
 }
@@ -411,13 +413,13 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 		/* FIXME: what about bot/reservation seats? */
 		info = gtk_menu_item_new_with_label(_("Info"));
 		gtk_widget_ref(info);
-		gtk_object_set_data_full(GTK_OBJECT(menu), "info", info,
-					 (GtkDestroyNotify) gtk_widget_unref);
+		g_object_set_data_full(G_OBJECT(menu), "info", info,
+				       (GtkDestroyNotify) gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), info);
 		gtk_widget_set_sensitive(info, FALSE);
-		gtk_signal_connect(GTK_OBJECT(info), "activate",
-				   GTK_SIGNAL_FUNC(player_info_activate),
-				   which);
+		g_signal_connect(info, "activate",
+				 GTK_SIGNAL_FUNC(player_info_activate),
+				 which);
 	}
 
 	if ((sseat && strcasecmp(sseat->name, my_name))
@@ -428,13 +430,13 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 		/* FIXME: you shouldn't be able to boot yourself */
 		boot = gtk_menu_item_new_with_label(_("Boot player"));
 		gtk_widget_ref(boot);
-		gtk_object_set_data_full(GTK_OBJECT(menu), "boot", boot,
-					 (GtkDestroyNotify) gtk_widget_unref);
+		g_object_set_data_full(G_OBJECT(menu), "boot", boot,
+				       (GtkDestroyNotify) gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), boot);
 		// gtk_widget_set_sensitive(boot, FALSE);
-		gtk_signal_connect(GTK_OBJECT(boot), "activate",
-				   GTK_SIGNAL_FUNC(player_boot_activate),
-				   which);
+		g_signal_connect(boot, "activate",
+				 GTK_SIGNAL_FUNC(player_boot_activate),
+				 which);
 	}
 
 	if (seat
@@ -451,13 +453,13 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 
 		sit = gtk_menu_item_new_with_label(label);
 		gtk_widget_ref(sit);
-		gtk_object_set_data_full(GTK_OBJECT(menu), "sit", sit,
-					 (GtkDestroyNotify) gtk_widget_unref);
+		g_object_set_data_full(G_OBJECT(menu), "sit", sit,
+				       (GtkDestroyNotify) gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), sit);
 		// gtk_widget_set_sensitive(sit, FALSE);
-		gtk_signal_connect(GTK_OBJECT(sit), "activate",
-				   GTK_SIGNAL_FUNC(player_sit_activate),
-				   which);
+		g_signal_connect(sit, "activate",
+				 GTK_SIGNAL_FUNC(player_sit_activate),
+				 which);
 	}
 
 	if (seat && (seat->type == GGZ_SEAT_OPEN
@@ -466,12 +468,12 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 
 		bot = gtk_menu_item_new_with_label(_("Play with bot"));
 		gtk_widget_ref(bot);
-		gtk_object_set_data_full(GTK_OBJECT(menu), "bot", bot,
-					 (GtkDestroyNotify) gtk_widget_unref);
+		g_object_set_data_full(G_OBJECT(menu), "bot", bot,
+				       (GtkDestroyNotify) gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), bot);
-		gtk_signal_connect(GTK_OBJECT(bot), "activate",
-				   GTK_SIGNAL_FUNC(player_bot_activate),
-				   which);
+		g_signal_connect(bot, "activate",
+				 GTK_SIGNAL_FUNC(player_bot_activate),
+				 which);
 	}
 
 	if (seat && (seat->type == GGZ_SEAT_BOT
@@ -486,12 +488,12 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 
 		open = gtk_menu_item_new_with_label(label);
 		gtk_widget_ref(open);
-		gtk_object_set_data_full(GTK_OBJECT(menu), "open", open,
-					 (GtkDestroyNotify) gtk_widget_unref);
+		g_object_set_data_full(G_OBJECT(menu), "open", open,
+				       (GtkDestroyNotify) gtk_widget_unref);
 		gtk_container_add(GTK_CONTAINER(menu), open);
-		gtk_signal_connect(GTK_OBJECT(open), "activate",
-				   GTK_SIGNAL_FUNC(player_open_activate),
-				   which);
+		g_signal_connect(open, "activate",
+				 GTK_SIGNAL_FUNC(player_open_activate),
+				 which);
 	}
 
 	gtk_widget_show_all(menu);
@@ -499,53 +501,38 @@ void popup_player_menu(GGZSeat *seat, GGZSpectatorSeat *sseat, guint button)
 	gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL, NULL, button, 0);
 }
 
-static gboolean player_clist_button_event(GtkWidget *widget,
-					  GdkEventButton *buttonevent,
-					  gpointer data)
+static gboolean player_list_button_event(GtkWidget *tree,
+					 GdkEventButton *buttonevent,
+					 gpointer data)
 {
-	GtkWidget *player_clist = data;
+	GtkTreeSelection *select
+	  = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	if (!gtk_tree_selection_get_selected(select, &model, &iter)) {
+		return FALSE;
+	}
 
 	if (buttonevent->button == 3) {
 		/* Right mouse button; create drop-down menu */
-		gint row, col;
-		int spectator;
-		GGZSeat seat;
-		GGZSpectatorSeat sseat;
+		gint seatnum;
+		gboolean is_spectator;
 
-		gtk_clist_get_selection_info(GTK_CLIST(player_clist),
-					     buttonevent->x,
-					     buttonevent->y,
-					     &row, &col);
+		gtk_tree_model_get(model, &iter,
+				   PLAYER_COLUMN_ISSPECTATOR, &is_spectator,
+				   PLAYER_COLUMN_SEATNUM, &seatnum,
+				   -1);
 
-		/* Without this check, we could select a nonexistent row. */
-		if (row < 0 || row >= num_entries)
-			return FALSE;
-
-		gtk_clist_select_row(GTK_CLIST(player_clist), row, 0);
-
-		if (row < ggzmod_get_num_seats(ggz)) {
-			spectator = 0;
-			seat = ggzmod_get_seat(ggz, row);
+		if (is_spectator) {
+			GGZSpectatorSeat sseat;
+			sseat = ggzmod_get_spectator_seat(ggz, seatnum);
+			popup_player_menu(NULL, &sseat, buttonevent->button);
 		} else {
-			gchar *name;
-			int i, num;
-			if (!gtk_clist_get_text(GTK_CLIST(player_clist),
-						row, 2, &name))
-				assert(0);
-			num = ggzmod_get_num_spectator_seats(ggz);
-			for (i = 0; i < num; i++) {
-				sseat = ggzmod_get_spectator_seat(ggz, i);
-				if (!strcasecmp(name, sseat.name))
-					break;
-			}
-			assert(i < num);
-
-			spectator = 1;
+			GGZSeat seat = ggzmod_get_seat(ggz, seatnum);
+			popup_player_menu(&seat, NULL, buttonevent->button);
 		}
 
-		popup_player_menu(spectator ? NULL : &seat,
-				  spectator ? &sseat : NULL,
-				  buttonevent->button);
 		return TRUE;
 	}
 
