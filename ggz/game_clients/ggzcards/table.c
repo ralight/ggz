@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4989 2002-10-22 08:24:34Z jdorje $
+ * $Id: table.c 5158 2002-11-03 03:07:10Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -512,7 +512,7 @@ void table_handle_expose_event(GdkEventExpose * event)
 
 
 /* Check for what card has been clicked and process it */
-void table_handle_cardclick_event(GdkEventButton * event)
+gboolean table_handle_cardclick_event(GdkEventButton * event)
 {
 	/* this function is tricky.  There are lots of different variables: x, 
 	   y, w, h describe the card area itself, including the "selected
@@ -529,7 +529,7 @@ void table_handle_cardclick_event(GdkEventButton * event)
 
 	/* If it's not our turn to play, we don't care. */
 	if (ggzcards.state != STATE_PLAY)
-		return;
+		return FALSE;
 
 	assert(p >= 0 && p < ggzcards.num_players);
 
@@ -562,15 +562,16 @@ void table_handle_cardclick_event(GdkEventButton * event)
 
 	if (which == -1)
 		/* The click wasn't actually on a card. */
-		return;
+		return FALSE;
 
 	/* Handle the click. */
 	table_card_clicked(which);
+	return TRUE;
 }
 
 
 /* Right-clicking on the table can pop up a menu. */
-void table_handle_menuclick_event(GdkEventButton *event)
+gboolean table_handle_menuclick_event(GdkEventButton *event)
 {
 	int p;
 
@@ -593,7 +594,10 @@ void table_handle_menuclick_event(GdkEventButton *event)
 
 		seat = ggzmod_get_seat(client_get_ggzmod(), seat_num);
 		popup_player_menu(&seat, NULL, event->button);
+		return TRUE;
 	}
+
+	return FALSE;
 }
 
 

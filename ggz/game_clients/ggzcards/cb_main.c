@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.c 5042 2002-10-26 04:00:32Z jdorje $
+ * $Id: cb_main.c 5158 2002-11-03 03:07:10Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -92,10 +92,10 @@ gboolean on_fixed1_button_press_event(GtkWidget * widget,
 {
 	if (event->button == 1) {
 		/* Left-clicking selects cards */
-		table_handle_cardclick_event(event);
+		return table_handle_cardclick_event(event);
 	} else if (event->button == 3) {
 		/* Right-clicking may pop up a menu */
-		table_handle_menuclick_event(event);
+		return table_handle_menuclick_event(event);
 	}
 
 	return FALSE;
