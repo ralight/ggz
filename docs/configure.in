@@ -20,8 +20,8 @@ dnl Apply options
 dnl =============
 
 if test "$enable_guides" = yes; then
-	ggzgamedevelopmentguide="ggz-game-development-guide.ps ggz-game-development-guide.html"
-	ggzhostingguide="ggz-hosting-guide.ps ggz-hosting-guide.html"
+	ggzgamedevelopmentguide="ggz-game-development-guide.ps ggz-game-development-guide_toc.html"
+	ggzhostingguide="ggz-hosting-guide.ps ggz-hosting-guide_toc.html"
 fi
 AC_SUBST(ggzgamedevelopmentguide)
 AC_SUBST(ggzhostingguide)
