@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 2965 2001-12-20 03:06:01Z jdorje $
+ * $Id: animation.c 2971 2001-12-21 01:22:05Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -70,7 +70,7 @@ void animation_start(int player, card_t card, int card_num)
 
 	/* If we don't have animation enabled, then we simply never
 	   start an animation. */
-	if (!pref_animation)
+	if (!preferences.animation)
 		return;
 
 	get_card_pos(player, card_num, &start_x, &start_y);

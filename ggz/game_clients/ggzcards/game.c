@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2966 2001-12-20 03:12:45Z jdorje $
+ * $Id: game.c 2971 2001-12-21 01:22:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -42,6 +42,8 @@
 #include "layout.h"
 #include "main.h"
 #include "table.h"
+
+struct prefs preferences = { TRUE, TRUE };
 
 int table_max_hand_size = 0;
 
@@ -308,7 +310,7 @@ void game_alert_play(int player, card_t card, int pos)
 {
 	ggz_debug("main", "Handling play alert for player %d.", player);
 
-	if (pref_animation) {
+	if (preferences.animation) {
 		/* If this is a card _we_ played, then we'll already be animating,
 		   and we really don't want to stop just to start over.  But we
 		   leave that up to animation_start. */
@@ -446,7 +448,7 @@ void game_set_cardlist_message(const char *mark, int *lengths,
 			       card_t ** cardlist)
 {
 	ggz_debug("main", "Received cardlist message for '%s'.", mark);
-	if (pref_cardlists) {
+	if (preferences.cardlists) {
 		/* if pref_cardlists is set, then we make a graphical
 		   cardlist popup dialog. */
 		menubar_cardlist_message(mark, lengths, cardlist);

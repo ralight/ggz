@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.c 2951 2001-12-19 10:35:31Z jdorje $
+ * $Id: cb_main.c 2971 2001-12-21 01:22:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -32,6 +32,7 @@
 #include "cb_main.h"
 #include "dlg_main.h"
 #include "dlg_about.h"
+#include "dlg_prefs.h"
 #include "game.h"
 #include "main.h"
 #include "table.h"
@@ -49,7 +50,19 @@ void on_mnu_sync_activate(GtkMenuItem * menuitem, gpointer user_data)
 
 void on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
+	static GtkWidget *dlg_prefs = NULL;
 
+	if (dlg_prefs != NULL) {
+		gdk_window_show(dlg_prefs->window);
+		gdk_window_raise(dlg_prefs->window);
+	} else {
+		dlg_prefs = create_dlg_prefs();
+		gtk_signal_connect(GTK_OBJECT(dlg_prefs),
+				   "destroy",
+				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+				   &dlg_prefs);
+		gtk_widget_show(dlg_prefs);
+	}
 }
 
 void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data)

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.c 2912 2001-12-17 03:16:36Z jdorje $
+ * $Id: dlg_about.c 2971 2001-12-21 01:22:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -120,14 +120,14 @@ GtkWidget *create_dlg_about(void)
 	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE, FALSE,
 			   0);
 	gtk_widget_set_usize(close_button, 64, -2);
+	gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
+				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				  GTK_OBJECT(dialog));
 
 	/*
 	 * Set up callbacks
 	 */
 	gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				  GTK_OBJECT(dialog));
-	gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(dialog));
 
