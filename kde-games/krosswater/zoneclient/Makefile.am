@@ -2,7 +2,7 @@ SUBDIRS = .
 
 lib_LTLIBRARIES = libzoneclient.la
 
-include_HEADERS = ZoneGGZModUI.h ZoneGGZ.h ZoneProtocols.h
+noinst_HEADERS = ZoneGGZModUI.h ZoneGGZ.h ZoneProtocols.h
 
 INCLUDES = -I$(qt_includes) -I$(kde_includes)
 
