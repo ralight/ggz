@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 4146 2002-05-03 08:07:37Z jdorje $
+ * $Id: hearts.c 4181 2002-05-07 16:50:45Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -133,6 +133,13 @@ static void hearts_get_options(void)
 	add_option("num_decks",
 	           "How many decks should be used?",
 	           1, 0, "Play with two decks");
+	add_option("target_score",
+	           "How many points until the game is over?",
+	           5,
+	           2,
+	           "Game to 10", "Game to 50",
+		   "Game to 100", "Game to 1000",
+	           "Unending game");
 	game_get_options();
 }
 
@@ -162,6 +169,26 @@ static int hearts_handle_option(char *option, int value)
 				ggz_malloc(game.max_hand_length *
 					   sizeof(card_t));
 		}
+	} else if (!strcmp("target_score", option)) {
+   		switch (value) {
+		case 0:
+			game.target_score = 20;
+			break;
+		case 1:
+			game.target_score = 50;
+			break;
+		case 2:
+			game.target_score = 100;
+			break;
+		case 3:
+			game.target_score = 1000;
+			break;
+		case 4:
+			game.target_score = MAX_TARGET_SCORE;
+			break;
+		default:
+			break;
+		}
 	} else
 		return game_handle_option(option, value);
 	return 0;
@@ -181,6 +208,12 @@ static char *hearts_get_option_text(char *buf, int bufsz, char *option,
 		if (value > 0)
 			snprintf(buf, bufsz, "%d decks are being used.",
 				 value + 1);
+	} else if (!strcmp(option, "target_score")) {
+		if (game.target_score == MAX_TARGET_SCORE)
+			snprintf(buf, bufsz, "The game will never end."); 	
+		else
+			snprintf(buf, bufsz, "The game is being played to %d.",
+				 game.target_score);
 	} else
 		return game_get_option_text(buf, bufsz, option, value);
 	return buf;
