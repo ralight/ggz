@@ -51,7 +51,7 @@ class Player
 		else :
 			echo "Gender: (undisclosed)";
 		endif;
-		echo "<br\n>";
+		echo "<br>\n";
 		if ($this->country) :
 			$c = new Country();
 			$countryname = $c->name($this->country);
@@ -60,7 +60,52 @@ class Player
 		else :
 			echo "Country: (undisclosed)";
 		endif;
-		echo "<br\n>";
+		echo "<br>\n";
+	}
+
+	function permissions()
+	{
+		global $id;
+
+		$ggzuser = $this->handle;
+
+		$res = pg_exec($id, "SELECT * FROM permissionmasks WHERE handle = '$ggzuser'");
+		if (($res) && (pg_numrows($res) > 0)) :
+			$admin = pg_result($res, 0, "admin_mask");
+			$anon = pg_result($res, 0, "anon_mask");
+			$normal = pg_result($res, 0, "normal_mask");
+			if ($admin == "t") :
+				$permission = "Administrator";
+			elseif ($normal == "t") :
+				$permission = "Registered player";
+			else :
+				$permission = "Incomplete authority";
+			endif;
+		endif;
+
+		echo "Permissions: $permission<br>\n";
+
+		$res = pg_exec($id, "SELECT * FROM permissions WHERE handle = '$ggzuser'");
+		if (($res) && (pg_numrows($res) > 0)) :
+			$join_table = pg_result($res, 0, "join_table");
+			$launch_table = pg_result($res, 0, "launch_table");
+			$rooms_login = pg_result($res, 0, "rooms_login");
+			$rooms_admin = pg_result($res, 0, "rooms_admin");
+			$chat_announce = pg_result($res, 0, "chat_announce");
+			$chat_bot = pg_result($res, 0, "chat_bot");
+			$no_stats = pg_result($res, 0, "no_stats");
+			$edit_tables = pg_result($res, 0, "edit_tables");
+		endif;
+
+		echo "<br>\n";
+		echo "Can join tables: $join_table<br>\n";
+		echo "Can launch tables: $launch_table<br>\n";
+		echo "Can log into rooms: $rooms_login<br>\n";
+		echo "Room administrator: $rooms_admin<br>\n";
+		echo "Can broadcast chat messages: $chat_announce<br>\n";
+		echo "Is a chatbot: $chat_bot<br>\n";
+		echo "Excluded from statistics: $no_stats<br>\n";
+		echo "Can edit tables: $edit_tables<br>\n";
 	}
 
 	function items()
