@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2624 2001-10-29 03:23:32Z jdorje $
+ * $Id: ggzdmod.h 2632 2001-11-03 05:54:37Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -97,8 +97,6 @@ void ggzdmod_set_seat(GGZdMod * mod, GGZSeat * seat);
 
 /* Event/Data handling */
 int ggzdmod_dispatch(GGZdMod * mod);
-int ggzdmod_io_pending(GGZdMod * mod);
-void ggzdmod_io_read(GGZdMod * mod);
 int ggzdmod_loop(GGZdMod * mod);
 
 /* Control functions */

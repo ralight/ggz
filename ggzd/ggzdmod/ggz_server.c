@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.c 2609 2001-10-24 17:52:35Z jdorje $
+ * $Id: ggz_server.c 2632 2001-11-03 05:54:37Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -152,14 +152,9 @@ void ggzd_dispatch(void)
 	ggzdmod_dispatch(ggzdmod);
 }
 
-int ggzd_io_is_pending(void)
-{
-	return ggzdmod_io_pending(ggzdmod);
-}
-
 void ggzd_io_read_all(void)
 {
-	ggzdmod_io_read(ggzdmod);
+	ggzdmod_dispatch(ggzdmod);
 }
 
 int ggzd_main_loop(void)

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2624 2001-10-29 03:23:32Z jdorje $
+ * $Id: ggzdmod.c 2632 2001-11-03 05:54:37Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -466,7 +466,7 @@ static void ggz_log(_GGZdMod * ggzdmod)
 }
 
 /* Returns -1 on error (?). */
-int ggzdmod_dispatch(GGZdMod * mod)
+static int handle_ggzdmod_data(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
 	int op;
@@ -520,71 +520,59 @@ int ggzdmod_dispatch(GGZdMod * mod)
 	return 0;
 }
 
-/* Checks the ggzdmod FD and all player FD's for pending data; returns TRUE
-   iff there is such data */
-int ggzdmod_io_pending(GGZdMod * mod)
+static int handle_event(_GGZdMod * ggzdmod, fd_set read_fd_set)
 {
-	fd_set read_fd_set;
+	int seat, count = 0;
+
+	if (FD_ISSET(ggzdmod->fd, &read_fd_set)) {
+		handle_ggzdmod_data(ggzdmod);
+		count++;
+	}
+
+	for (seat = 0; seat < ggzdmod->num_seats; seat++) {
+		int fd = ggzdmod->seats[seat].fd;
+		if (fd != -1 && FD_ISSET(fd, &read_fd_set)) {
+			if (ggzdmod->handlers[GGZ_EVENT_PLAYER_DATA] != NULL) {
+				(*ggzdmod->
+				 handlers[GGZ_EVENT_PLAYER_DATA]) (ggzdmod,
+								   GGZ_EVENT_PLAYER_DATA,
+								   &seat);
+			}
+			count++;
+		}
+	}
+	return count;
+}
+
+/* Returns number of events that occured. */
+int ggzdmod_dispatch(GGZdMod * mod)
+{
 	_GGZdMod *ggzdmod = mod;
-	int status;
 	struct timeval timeout;
+	fd_set read_fd_set;
+	int status;
 
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return -1;
 	}
 
 	read_fd_set = ggzdmod->active_fd_set;
-
-	/* is this really portable? */
-	timeout.tv_sec = timeout.tv_usec = 0;
+	timeout.tv_sec = timeout.tv_usec = 0;	/* is this really portable? */
 
 	status = select(ggzdmod_fd_max(ggzdmod) + 1,
 			&read_fd_set, NULL, NULL, &timeout);
+
+	/* FIXME: if you don't have a player event handler registered, this
+	   function may errantly return 0 sometimes when it should have
+	   handled data.  This can be fixed later. */
+
 	if (status <= 0) {
-		/* FIXME: handle error */
+		if (errno == EINTR)
+			return 1;
+		return 0;
 	}
 
-	/* the return value of select indicates the # of FD's with pending
-	   data */
-	return (status > 0);
-}
-
-void ggzdmod_io_read(GGZdMod * mod)
-{
-	fd_set read_fd_set;
-	int seat, status;
-	_GGZdMod *ggzdmod = mod;
-
-	if (!CHECK_GGZDMOD(ggzdmod)) {
-		return;
-	}
-
-	read_fd_set = ggzdmod->active_fd_set;
-
-	/* we have to select so that we can determine what file descriptors
-	   are waiting to be read. */
-	status = select(ggzdmod_fd_max(ggzdmod) + 1,
-			&read_fd_set, NULL, NULL, NULL);
-	if (status <= 0) {
-		if (errno != EINTR) {
-			/* FIXME: handle error */
-		}
-		return;
-	}
-
-	status = 0;
-
-	if (FD_ISSET(ggzdmod->fd, &read_fd_set))
-		ggzdmod_dispatch(ggzdmod);
-
-	for (seat = 0; seat < ggzdmod->num_seats; seat++) {
-		int fd = ggzdmod->seats[seat].fd;
-		if (fd != -1 && FD_ISSET(fd, &read_fd_set)
-		    && ggzdmod->handlers[GGZ_EVENT_PLAYER_DATA] != NULL)
-			(*ggzdmod->handlers[GGZ_EVENT_PLAYER_DATA]) (ggzdmod,
-								     GGZ_EVENT_PLAYER_DATA,
-								     &seat);
-	}
+	return handle_event(ggzdmod, read_fd_set);
 }
 
 /* unlike the old ggzd_main_loop() this one doesn't connect/disconnect. */
@@ -595,7 +583,23 @@ int ggzdmod_loop(GGZdMod * mod)
 		return -1;
 	}
 	while (ggzdmod->state != GGZ_STATE_GAMEOVER) {
-		ggzdmod_io_read(mod);
+		fd_set read_fd_set;
+		int status;
+
+		read_fd_set = ggzdmod->active_fd_set;
+
+		/* we have to select so that we can determine what file
+		   descriptors are waiting to be read. */
+		status = select(ggzdmod_fd_max(ggzdmod) + 1,
+				&read_fd_set, NULL, NULL, NULL);
+		if (status <= 0) {
+			if (errno != EINTR) {
+				/* FIXME: handle error */
+			}
+			continue;
+		}
+
+		(void) handle_event(ggzdmod, read_fd_set);
 	}
 	return 0;		/* should handle errors */
 }
