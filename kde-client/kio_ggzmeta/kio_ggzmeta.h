@@ -24,13 +24,12 @@ class GGZMetaProtocol : public QObject, public KIO::SlaveBase
 		void slotWrite();
 
 	private:
-		void loop();
 		void jobOperator(const KURL& url);
 		void init(const KURL& url);
 		void debug(QString s);
 
 		KIO::UDSEntry entry;
-		QString m_class, m_query;
+		QString m_class, m_query, m_temp;
 		QSocket *m_sock;
 };
 

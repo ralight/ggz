@@ -1,36 +1,46 @@
+// Header files
 #include "kio_ggzmeta.h"
 #include "helper.h"
 
+// KDE includes
 #include <kinstance.h>
 #include <kio/netaccess.h>
 #include <kio/job.h>
 // temp
 #include <fstream>
 
+// Qt includes
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qregexp.h>
 #include <qstringlist.h>
 #include <qdom.h>
 #include <qsocket.h>
-#include <qwidget.h>
 #include <qapplication.h>
 
-GGZMetaProtocol *me;
+// Global QApplication object to be used for events
+QApplication *a;
 
+// Constructor
 GGZMetaProtocol::GGZMetaProtocol(const QCString& pool, const QCString& app)
 : QObject(), SlaveBase("ggzmeta", pool, app)
 {
 	m_sock = NULL;
-	me = this;
+
+	// Official quick hack (tm)
+	int argc = 1;
+	char *argv[2] = {"ggzmeta", NULL};
+	a = new QApplication(argc, argv);
 
 	debug("IO loaded.");
 }
 
+// Destructor
 GGZMetaProtocol::~GGZMetaProtocol()
 {
 }
 
+// Process URI
 void GGZMetaProtocol::jobOperator(const KURL& url)
 {
 	KURL u;
@@ -43,11 +53,13 @@ void GGZMetaProtocol::jobOperator(const KURL& url)
 
 	if(u.host())
 	{
+		// When class is specified, go for it...
 		debug(QString("Class: ") + u.host());
-		work(u.host(),  u.path());
+		work(u.host(), u.path());
 	}
 	else
 	{
+		// ...else just output some information FIXME! Use HTML
 		debug("General information about ggzmeta://");
 		QCString output;
 		mimeType("text/plain");
@@ -58,11 +70,17 @@ void GGZMetaProtocol::jobOperator(const KURL& url)
 	}
 }
 
+// Result slot for async copy operations
 void GGZMetaProtocol::slotResult(KIO::Job *job)
 {
-	debug("job is ready!!");
+	debug(QString("ggz -> slotResult: %1").arg(m_class));
+
+	delegate(m_class, m_temp);
+	// rm(temp); FIXME! KTempFile
+	a->quit();
 }
 
+// Result slot for interactive meta servers
 void GGZMetaProtocol::slotWrite()
 {
 	QString s;
@@ -72,18 +90,17 @@ void GGZMetaProtocol::slotWrite()
 	l = l.split('/', m_query);
 	if(l.count() == 2)
 	{
+		// Recognized valid GGZ meta server URI-style query
 		debug("Write...");
 		s = QString("<?xml version=\"1.0\"><query class=\"%1\" type=\"%2\">%3</query>\n").arg(m_class).arg(*(l.at(0))).arg(*(l.at(1)));
+		debug(QString("Write: %1").arg(s));
 		m_sock->writeBlock(s.latin1(), s.length());
 		m_sock->flush();
 	}
-	else
-	{
-		error(0, "Wrong format!");
-		qApp->exit_loop();
-	}
+	else error(0, "Wrong format!");
 }
 
+// Result slot for meta server answers
 void GGZMetaProtocol::slotRead()
 {
 	QString rdata;
@@ -106,12 +123,35 @@ void GGZMetaProtocol::slotRead()
 			host = *(list.at(0));
 			hostname = *(list.at(1));
 			GGZMetaProtocolHelper::app_file(entry, QString("%1_%2").arg(host).arg(hostname), 1);
+			listEntry(entry, false);
 		}
+		listEntry(entry, true);
+		finished();
 	}
-	else
+	else if(m_class == "netrek")
+	{
+//Server Host                             Port     Ago  Status            Flags
+//--------------------------------------- -------- ---- ----------------- -------
+//-h kirk.hal-pc.org                      -p 2592   17  * Timed out        DR   B
+		while(m_sock->bytesAvailable())
+		{
+			rdata = m_sock->readLine();
+			list = list.split(' ', rdata);
+			if(*(list.at(0)) == "-h")
+			{
+				host = *(list.at(1));
+				GGZMetaProtocolHelper::app_file(entry, QString("%1").arg(host), 1);
+				listEntry(entry, false);
+			}
+		}
+		listEntry(entry, true);
+		finished();
+	}
+	else if(m_class == "ggz")
 	{
 		rdata = m_sock->readLine();
 		rdata.truncate(rdata.length() - 1);
+		debug(QString("Read raw: %1").arg(rdata));
 	 
 		dom.setContent(rdata);
 		node = dom.documentElement().firstChild();
@@ -124,18 +164,20 @@ void GGZMetaProtocol::slotRead()
 				pref = element.attribute("preference", "20");
 				GGZMetaProtocolHelper::app_file(entry, QString("%1_%2").arg(element.text()).arg(pref), 1);
 				listEntry(entry, false);
+				debug(QString("-> entry: %1_%2").arg(element.text()).arg(pref));
 			}
 			node = node.nextSibling();
 		}
 		listEntry(entry, true);
 		finished();
 	}
+	else error(0, "No such class!");
 
 	delete m_sock;
-
-	qApp->exit_loop();
+	a->quit();
 }
 
+// Dispatcher: Select method based on query information
 void GGZMetaProtocol::work(QString queryclass, QString query)
 {
 	m_class = queryclass;
@@ -143,43 +185,59 @@ void GGZMetaProtocol::work(QString queryclass, QString query)
 
 	if(queryclass == "freeciv")
 	{
-		QString tmp;
-		/*xxx*/
-		debug("running kio::job");
-		KIO::Job *job = KIO::copy("http://meta.freeciv.org/metaserver/", "/tmp/freeciv.metaserver");
-		connect(job, SIGNAL(result(KIO::Job)), SLOT(slotResult(KIO::Job)));
-		loop();
-		/*xxx*/
 		debug("** start freeciv download **");
+
+		m_temp = "/tmp/freeciv.metaserver";
+		KIO::Job *job = KIO::copy("http://meta.freeciv.org/metaserver/", m_temp);
+		connect(job, SIGNAL(result(KIO::Job)), SLOT(slotResult(KIO::Job)));
+
+		a->exec();
+
+		/*QString tmp;
 		if(KIO::NetAccess::download("http://meta.freeciv.org/metaserver/", tmp))
 		{
 			delegate(queryclass, tmp);
 			KIO::NetAccess::removeTempFile(tmp);
 		}
-		else error(0, QString("Couldn't process freeciv query: %1").arg(query));
+		else error(0, QString("Couldn't process freeciv query: %1").arg(query));*/
 	}
 	else if(queryclass == "atlantik")
 	{
 		debug("** start atlantik download **");
 
-		QString tmp;
+		m_temp = "/tmp/atlantik.metaserver";
+		KIO::Job *job = KIO::copy("http://gator.monopd.net", m_temp);
+		connect(job, SIGNAL(result(KIO::Job)), SLOT(slotResult(KIO::Job)));
+
+		a->exec();
+
+		/*QString tmp;
 		if(KIO::NetAccess::download("http://gator.monopd.net", tmp))
 		{
 			delegate(queryclass, tmp);
 			KIO::NetAccess::removeTempFile(tmp);
 		}
-		else error(0, QString("Couldn't process atlantik query: %1").arg(query));
+		else error(0, QString("Couldn't process atlantik query: %1").arg(query));*/
 	}
 	else if(queryclass == "crossfire")
 	{
 		m_sock = new QSocket();
 		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
 		m_sock->connectToHost("crossfire.real-time.com", 13326);
+
+		a->exec();
+	}
+	else if(queryclass == "netrek")
+	{
+		m_sock = new QSocket();
+		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
+		m_sock->connectToHost("metaserver.netrek.org", 3521);
+
+		a->exec();
 	}
 	else
 	{
 		// ggz and other non-delegates supported by the GGZ Meta Server directly
-		//error(QString("Unsupported class: %1").arg(queryclass));
 		debug("** ggz meta server **");
 
 		m_sock = new QSocket();
@@ -187,10 +245,11 @@ void GGZMetaProtocol::work(QString queryclass, QString query)
 		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
 		m_sock->connectToHost("localhost", 15689);
 
-		loop();
+		a->exec();
 	}
 }
 
+// Special delegation for some classes
 void GGZMetaProtocol::delegate(QString queryclass, QString url)
 {
 	if(queryclass == "freeciv")
@@ -208,14 +267,10 @@ void GGZMetaProtocol::delegate(QString queryclass, QString url)
 				{
 					QStringList l;
 					l = l.split(QRegExp("<[^>]+>"), s);
-					//QListViewItem *item = new QListViewItem(this);
-					//int i = 0;
 					QString host = *(l.at(0));
 					QString port = *(l.at(2));
 					GGZMetaProtocolHelper::app_file(entry, QString("%1:%2").arg(host).arg(port), 1);
 					listEntry(entry, false);
-					//for(QStringList::Iterator it = l.begin(); it != l.end(); it++, i++);
-						//item->setText(i, (*it));
 				}
 			}
 			listEntry(entry, true);
@@ -235,23 +290,26 @@ void GGZMetaProtocol::delegate(QString queryclass, QString url)
 		finished();
 	}
 	else error(0, QString("Unknown query class: %1").arg(queryclass));
-	qApp->exit_loop();
 }
 
+// Request directory listing
 void GGZMetaProtocol::listDir(const KURL& url)
 {
 	jobOperator(url);
 }
 
+// Request any URI
 void GGZMetaProtocol::get(const KURL& url)
 {
 	jobOperator(url);
 }
 
+// Initialization
 void GGZMetaProtocol::init(const KURL& url)
 {
 }
 
+// Entry point
 extern "C"
 {
 	int kdemain(int argc, char **argv)
@@ -263,22 +321,7 @@ extern "C"
 	}
 }
 
-void qt_enter_modal(QWidget *widget);
-void qt_leave_modal(QWidget *widget);
-
-void GGZMetaProtocol::loop()
-{
-	debug("May the trolls be with you...");
-	QWidget dummy(0, 0, WType_Modal);
-	debug("1 troll");
-	qt_enter_modal(&dummy);
-	debug("2 trolls");
-	qApp->enter_loop();
-	debug("3 trolls");
-	qt_leave_modal(&dummy);
-	debug("4 trolls");
-}
-
+// Temporary debug function
 void GGZMetaProtocol::debug(QString s)
 {
 	ofstream dbg;
