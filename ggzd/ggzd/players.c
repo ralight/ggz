@@ -458,15 +458,17 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	char table_update = 0;
 	char type_update = 0;
 
-	/* Check for player list updates */
-	room = players.info[p].room;
-	pthread_rwlock_rdlock(&chat_room[room].lock);
-	if (difftime(chat_room[room].timestamp, *player_ts) != 0) {
-		*player_ts = chat_room[room].timestamp;
-		user_update = 1;
-		dbg_msg(GGZ_DBG_UPDATE, "Player %d needs player update", p);
+	/* Check for player list updates in our room */
+	if ( (room = players.info[p].room) != -1) {
+		pthread_rwlock_rdlock(&chat_room[room].lock);
+		if (difftime(chat_room[room].timestamp, *player_ts) != 0) {
+			*player_ts = chat_room[room].timestamp;
+			user_update = 1;
+			dbg_msg(GGZ_DBG_UPDATE, "Player %d needs player update"
+				, p);
+		}
+		pthread_rwlock_unlock(&chat_room[room].lock);
 	}
-	pthread_rwlock_unlock(&chat_room[room].lock);
 
 	/* Check for table list updates*/
 	pthread_rwlock_rdlock(&tables.lock);
