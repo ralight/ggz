@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 3218 2002-02-03 04:28:11Z jdorje $
+ * $Id: ggzdmod.h 3365 2002-02-15 07:00:20Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -39,12 +39,13 @@
  * your program is linked with libggzdmod.  Then use the functions below as
  * appropriate.
  *
- * GGZdmod currently provides an event-driven interface.  Data from communication
- * sockets is read in by the library, and a handler function (registered as a
- * callback) is invoked to handle any events.  The calling program should not
- * read/write data from/to the GGZ socket unless it really knows what it is doing.
+ * GGZdmod currently provides an event-driven interface.  Data from
+ * communication sockets is read in by the library, and a handler function
+ * (registered as a callback) is invoked to handle any events.  The calling
+ * program should not read/write data from/to the GGZ socket unless it really
+ * knows what it is doing.
  *
- * Note that this does not apply to the client sockets: ggzdmod provides
+ * That this does not apply to the client sockets: ggzdmod provides
  * one file desriptor for communicating (TCP) to each client.  If data
  * is ready to be read by one of these file descriptors ggzdmod may
  * invoke the appropriate handler (see below), but will never actually
@@ -67,16 +68,20 @@
  *     void game_launch(void);           // handle a game "launch"
  *     void game_end(void);              // called before the table shuts down
  *     void resume_playing(void);        // we have enough players to play
- *     void stop_playing(void);          // we don't have enough players to play
+ *     void stop_playing(void);          // not enough players to play
  *
  *     int main()
  *     {
  *         GGZdMod *ggz = ggzdmod_new(GGZ_GAME);
  *         // First we register functions to handle some events.
- *         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE,       &handle_state_change);
- *         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN,        &handle_player_join);
- *         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE,       &handle_player_leave);
- *         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &handle_player_data);
+ *         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE,
+ *                             &handle_state_change);
+ *         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN,
+ *                             &handle_player_join);
+ *         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE,
+ *                             &handle_player_leave);
+ *         ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA,
+ *                             &handle_player_data);
  *
  *         // Do any other game initializations.  You'll probably want to
  *         // track "ggz" globally.
@@ -85,15 +90,15 @@
  *         // Then we must connect to GGZ
  *         if (ggzdmod_connect(ggz) < 0)
  *             exit(-1);
- *         (void)ggzdmod_log(ggz, "Starting game.");
+ *         (void) ggzdmod_log(ggz, "Starting game.");
  *
  *         // ggzdmod_loop does most of the work, dispatching handlers
  *         // above as necessary.
- *         (void)ggzdmod_loop(ggz);
+ *         (void) ggzdmod_loop(ggz);
  *
  *         // At the end, we disconnect and destroy the ggzdmod object.
- *         (void)ggzdmod_log(ggz, "Ending game.");
- *         (void)ggzdmod_disconnect(ggz);
+ *         (void) ggzdmod_log(ggz, "Ending game.");
+ *         (void) ggzdmod_disconnect(ggz);
  *         ggzdmod_free(ggz);
  *     }
  *
@@ -196,7 +201,7 @@ typedef enum {
 	GGZDMOD_STATE_CREATED,	/**< Pre-launch; waiting for ggzdmod */
 	GGZDMOD_STATE_WAITING,	/**< Ready and waiting to play. */
 	GGZDMOD_STATE_PLAYING,	/**< Currently playing a game. */
-	GGZDMOD_STATE_DONE		/**< Table halted, prepping to exit. */
+	GGZDMOD_STATE_DONE	/**< Table halted, prepping to exit. */
 } GGZdModState;
 
 /** @brief Callback events.
@@ -222,14 +227,14 @@ typedef enum {
  * allowed.
  */
 typedef enum {
-	GGZDMOD_GGZ, /**< Used by the ggz server ("ggzd"). */
-	GGZDMOD_GAME /**< Used by the game server ("table"). */
+	GGZDMOD_GGZ,	/**< Used by the ggz server ("ggzd"). */
+	GGZDMOD_GAME	/**< Used by the game server ("table"). */
 } GGZdModType;
 
 /** @brief A GGZdmod object, used for tracking a ggzd<->table connection.
  *
  * A game server should track a pointer to a GGZdMod object; it contains
- * all the state information for communicating with GGZ.  The ggz server
+ * all the state information for communicating with GGZ.  The GGZ server
  * will track one such object for every game table that is running.
  */
 typedef struct GGZdMod GGZdMod;
