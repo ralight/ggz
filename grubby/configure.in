@@ -38,11 +38,32 @@ changequote([,])dnl
 dnl Module options
 dnl ===========
 if test "$enable_perl" = yes; then
-	foo=1;
+	echo -n "Extra check: perl... "
+
+	AC_MSG_RESULT(not yet supported.)
 fi
 
 if test "$enable_ruby" = yes; then
-	bar=1;
+	echo -n "Extra check: ruby... "
+
+	incs="/usr/local/lib/ruby/1.6/i386-linux /usr/lib/ruby/1.6/i386-linux /usr/local/lib/ruby/1.7/i386-linux"
+	AC_GGZ_FIND_FILE("ruby.h", $incs, ruby_incdir)
+	ruby_includes="$ruby_incdir"
+
+	libs="/usr/local/lib /usr/lib"
+	AC_GGZ_FIND_FILE("libruby.so", $libs, ruby_libdir)
+	ruby_libraries="$ruby_libdir"
+
+	if test "x$ruby_includes" = "xNO" || test "x$ruby_libraries" = "xNO"; then
+		AC_MSG_RESULT(no.)
+	else
+		ruby_includes="-I $ruby_includes"
+		ruby_libraries="-L $ruby_libraries -lruby"
+		AC_MSG_RESULT(ok.)
+		AC_SUBST(ruby_includes)
+		AC_SUBST(ruby_libraries)
+		AC_DEFINE(EMBED_RUBY)
+	fi
 fi
 
 dnl Create files
