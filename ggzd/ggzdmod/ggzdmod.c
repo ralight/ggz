@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 3844 2002-04-07 22:27:57Z jdorje $
+ * $Id: ggzdmod.c 4022 2002-04-19 08:13:17Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -394,8 +394,6 @@ static int strings_differ(char *s1, char *s2)
 
 static int _ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 {
-	GGZSeat oldseat = ggzdmod_get_seat(ggzdmod, seat->num);
-	
 	ggz_debug("GGZDMOD", "Seat %d set to type %d (%s)",
 		  seat->num, seat->type, seat->name);
 
@@ -407,6 +405,7 @@ static int _ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 	/* If we're connected to the game, send a message */
 	if (ggzdmod->type == GGZDMOD_GGZ
 	    && ggzdmod->state != GGZDMOD_STATE_CREATED) {
+		GGZSeat oldseat = ggzdmod_get_seat(ggzdmod, seat->num);
 		
 		/* Detect join case */
 		if ( (oldseat.type == GGZ_SEAT_OPEN
