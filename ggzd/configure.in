@@ -25,7 +25,7 @@ AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by defau
 AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
 AC_ARG_ENABLE(debug-mem,    [  --enable-debug-mem      enable mem debugging ],,enable_debug_mem=no)
 AC_ARG_ENABLE(debug-socket, [  --enable-debug-socket   enable socket debugging ],, enable_debug_socket=no)
-AC_ARG_WITH(tmpdir,         [  --with-tmpdir=PATH      directory for temporary files [default=/tmp/ggzd]], datadir=$withval, tmpdir="/tmp/ggzd")
+AC_ARG_WITH(tmpdir,         [  --with-tmpdir=PATH      directory for temporary files [default=/tmp/ggzd]], tmpdir=$withval, tmpdir="/tmp/ggzd")
 AC_ARG_WITH(database,       [  --with-database=DB      type of database to use: db2], database=$withval, database=db2)
 
 
