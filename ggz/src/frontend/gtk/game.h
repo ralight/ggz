@@ -30,6 +30,8 @@ int game_init(void);
 
 int game_launch(void);
 
+void game_channel_ready(void);
+
 void game_quit(void);
 
 void game_destroy(void);

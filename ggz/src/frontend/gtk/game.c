@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 4166 2002-05-05 21:18:39Z bmh $
+ * $Id: game.c 4267 2002-06-22 05:16:36Z bmh $
  *
  * Functions for handling game events
  *
@@ -30,6 +30,8 @@
 
 #include "game.h"
 #include "chat.h"
+#include "client.h"
+#include "launch.h"
 #include "msgbox.h"
 #include "support.h"
 
@@ -42,15 +44,19 @@
 
 /* Hooks for game events */
 static void game_register(GGZGame *game);
+static void game_process(void);
 static GGZHookReturn game_launched(GGZGameEvent, void*, void*);
 static GGZHookReturn game_launch_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiate_fail(GGZGameEvent, void*, void*);
+static GGZHookReturn game_playing(GGZGameEvent, void*, void*);
 static GGZHookReturn game_over(GGZGameEvent, void *, void*);
 static GGZHookReturn game_delayed_leave(GGZServerEvent, void *, void *);
-
+static void game_input_removed(gpointer data);
 
 GGZGame *game;
+static int fd = -1;
+static gint game_handle;
 
 extern GGZServer *server;
 extern GtkWidget *win_main;
@@ -159,25 +165,32 @@ int game_init(void)
 int game_launch(void)
 {
 	gint status;
-	/*gchar *message;*/
-
+	
 	/* Launch game */
-	status = ggzcore_game_launch(game);
-	if (status < 0) {
+	if ( (status = ggzcore_game_launch(game) < 0)) {
 		msgbox(_("Failed to execute game module.\n Launch aborted."), _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 		game_destroy();
 		return -1;
 	}
-
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Launching game"));
-
+	
 	return 0;
+}
+
+
+void game_channel_ready(void)
+{
+	ggzcore_game_set_server_fd(game, ggzcore_server_get_channel(server));
 }
 
 
 void game_quit(void)
 {
-	game_destroy();
+	if (fd != -1)
+	{
+	        gdk_input_remove(game_handle);
+        	game_handle = -1;
+		fd = -1;
+	}
 }
 
 
@@ -189,12 +202,20 @@ void game_destroy(void)
 }
 
 
+static void game_process(void)
+{
+	if (game)
+		ggzcore_game_read_data(game);
+}
+
+
 static void game_register(GGZGame *game)
 {
 	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCHED, game_launched);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCH_FAIL, game_launch_fail);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED, game_negotiated);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL, game_negotiate_fail);
+	ggzcore_game_add_event_hook(game, GGZ_GAME_PLAYING, game_playing);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_OVER, game_over);
 	/* FIXME: handle IO_ERROR and PROTO_ERROR events */
 }
@@ -205,6 +226,12 @@ static GGZHookReturn game_launched(GGZGameEvent id, void* event_data,
 {
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Launched game"));
 	
+	fd = ggzcore_game_get_control_fd(game);
+        game_handle = gdk_input_add_full(fd, GDK_INPUT_READ,
+					 (GdkInputFunction)game_process,
+					 (gpointer)server,
+					 game_input_removed);
+
 	return GGZ_HOOK_OK;
 }
 
@@ -221,6 +248,9 @@ static GGZHookReturn game_launch_fail(GGZGameEvent id, void* event_data,
 static GGZHookReturn game_negotiated(GGZGameEvent id, void* event_data, 
 				     void* user_data)
 {
+	ggz_debug("game", "Game module ready (creating channel)");
+	ggzcore_server_create_channel(server);
+
 	return GGZ_HOOK_OK;
 }
 
@@ -232,38 +262,57 @@ static GGZHookReturn game_negotiate_fail(GGZGameEvent id, void* event_data,
 }
 
 
+static GGZHookReturn game_playing(GGZGameEvent id, void* event_data, 
+				  void* user_data)
+{
+	ggz_debug("game", "Game module connected to server over game channel");
+	if (launch_in_process())
+		launch_table();
+	else
+		client_join_table();
+	
+	return GGZ_HOOK_OK;
+}
+
+
 static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_data)
 {
 	GGZRoom *room;
 
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Game Over"));
-
 	game_quit();
-	room = ggzcore_server_get_cur_room(server);
-
-	/* If we haven't actually made it to the table yet, register a 
-	   callback for when we do so that we can leave :) */
-	if (ggzcore_server_get_state(server) == GGZ_STATE_LAUNCHING_TABLE ||
-	    ggzcore_server_get_state(server) == GGZ_STATE_JOINING_TABLE)
+	
+	switch (ggzcore_server_get_state(server)) {
+	case GGZ_STATE_AT_TABLE:
+		room = ggzcore_server_get_cur_room(server);
+ 		if (ggzcore_room_leave_table(room, 1) < 0)
+			msgbox(_("Error leaving table"), _("Game Error"), 
+			       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+		break;
+		
+	case GGZ_STATE_LAUNCHING_TABLE:
+	case GGZ_STATE_JOINING_TABLE:
+		/* If we haven't actually made it to the table yet,
+		   register a callback for when we do so that we can
+		   leave :) */
 		ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE, 
 					      game_delayed_leave);
-	else if (ggzcore_room_leave_table(room, 1) < 0)
-		msgbox(_("Error leaving table"),
-		       _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
-
-	game_destroy();
+		break;
+	default:
+		/* We appear to be already gone so we'll silently let it pass...*/
+		ggz_debug("game", "Already gone from table");
+		break;
+	}
+		
 	return GGZ_HOOK_OK;
 }
 
 
 static GGZHookReturn game_delayed_leave(GGZServerEvent event, void *event_data, void *user_data)
 {
-	GGZStateID state_id;
 	GGZRoom *room;
 
-	state_id = ggzcore_server_get_state(server);
-	
-	switch (state_id) {
+	switch (ggzcore_server_get_state(server)) {
 	case GGZ_STATE_AT_TABLE:
 		/* We finally made it to the table, so leave it */
 		room = ggzcore_server_get_cur_room(server);
@@ -290,9 +339,17 @@ static GGZHookReturn game_delayed_leave(GGZServerEvent event, void *event_data, 
 }
 
 
+
+/* GdkDestroyNotify function for server fd */
+static void game_input_removed(gpointer data)
+{
+	game_destroy();
+}
+
+
 int game_play(void)
 {
-	if (game)
+	if(fd != -1)
 		return TRUE;
 	return FALSE;
 }

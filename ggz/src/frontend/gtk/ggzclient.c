@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 4166 2002-05-05 21:18:39Z bmh $
+ * $Id: ggzclient.c 4267 2002-06-22 05:16:36Z bmh $
  *
  * This is the main program body for the GGZ client
  *
@@ -98,7 +98,7 @@ static GGZHookReturn ggz_table_joined(GGZRoomEvent id, void*, void*);
 static GGZHookReturn ggz_table_join_fail(GGZRoomEvent id, void*, void*);
 static GGZHookReturn ggz_table_left(GGZRoomEvent id, void*, void*);
 static GGZHookReturn ggz_table_leave_fail(GGZRoomEvent id, void*, void*);
-static GGZHookReturn ggz_table_data(GGZRoomEvent id, void*, void*);
+
 
 /* One Time Functions */
 static GGZHookReturn ggz_auto_join(GGZServerEvent id, void*, void*);
@@ -193,10 +193,7 @@ static GGZHookReturn ggz_channel_ready(GGZGameEvent id, void* event_data, void* 
 	gdk_input_remove(channel_handle);
 	channel_handle = -1;
 	
-	if (launch_in_process())
-		launch_table();
-	else
-		client_join_table();
+	game_channel_ready();
 	
 	return GGZ_HOOK_OK;
 }
@@ -497,7 +494,7 @@ static GGZHookReturn ggz_state_change(GGZServerEvent id, void* event_data, void*
 	GGZStateID state_id;
 
 	state_id = ggzcore_server_get_state(server);
-	
+
 	switch (state_id) {
 	case GGZ_STATE_OFFLINE:
 		state = _("Offline");

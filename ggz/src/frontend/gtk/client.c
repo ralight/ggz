@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 4166 2002-05-05 21:18:39Z bmh $
+ * $Id: client.c 4267 2002-06-22 05:16:36Z bmh $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -53,7 +53,6 @@
 extern GdkColor colors[];
 GtkWidget *win_main;
 extern GGZServer *server;
-extern GGZGame *game;
 static gint tablerow = -1;
 
 /*
@@ -891,7 +890,14 @@ static void client_start_table_join(void)
 	}
 
 	tablerow = -1;
-	ggzcore_server_create_channel(server);
+
+	/* Initialize a game module */
+	if (game_init() == 0) {
+		if (game_launch() < 0) {
+			msgbox(_("Error launching game module."), _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+			game_destroy();
+		}
+	}
 }
 
 
@@ -899,16 +905,6 @@ void client_join_table(void)
 {
 	GGZRoom *room;
         int table_index, status;
-
-	/* Initialize a game module */
-	if (game_init() < 0)
-		return;
-	
-	ggzcore_game_set_fd(game, ggzcore_server_get_channel(server));
-
-	/* Launch game module */
-	if (game_launch() < 0)
-		return;
 
 	table_index = client_get_table_index(tablerow);
 	

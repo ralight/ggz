@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 4166 2002-05-05 21:18:39Z bmh $
+ * $Id: launch.c 4267 2002-06-22 05:16:36Z bmh $
  *
  * Code for launching games through the GTK client
  *
@@ -46,7 +46,6 @@
 #define MAX_RESERVED_NAME_LEN 16
 
 extern GGZServer *server;
-extern GGZGame *game;
 
 static void launch_fill_defaults(GtkWidget *widget, gpointer data);
 static void launch_seats_changed(GtkWidget *widget, gpointer data);
@@ -62,12 +61,9 @@ static char _launching = 0;
 void launch_create_or_raise(void)
 {
         if (!launch_dialog) {
-		/* Create new game object first */
-		if (game_init() == 0) {
-			/* Dialog for setting table seats */
-			launch_dialog = create_dlg_launch();
-			gtk_widget_show(launch_dialog);
-		}
+		/* Dialog for setting table seats */
+		launch_dialog = create_dlg_launch();
+		gtk_widget_show(launch_dialog);
         }
         else {
 		/* It already exists, so raise it */
@@ -207,11 +203,6 @@ void launch_table(void)
 	gchar *widget_name;
 	
 	_launching = 0;
-	ggzcore_game_set_fd(game, ggzcore_server_get_channel(server));
-
-	/* Initialize a game module */
-	if (game_launch() < 0)
-		return;
 
 	/* Grab the number of seats */
 	tmp = lookup_widget(launch_dialog, "seats_combo");
@@ -297,8 +288,15 @@ static void launch_start_game(GtkWidget *widget, gpointer data)
 		return;
 	}
 
-	_launching = 1;
-	ggzcore_server_create_channel(server);
+	/* Create new game object */
+	if (game_init() == 0) {
+		if (game_launch() < 0) {
+			msgbox(_("Error launching game module."), _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+			game_destroy();
+		}
+		else 
+			_launching = 1;
+	}
 }
 
 
