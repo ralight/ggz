@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 5340 2003-01-22 13:50:38Z dr_maux $
+ * $Id: control.c 5747 2004-01-24 22:18:01Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -228,7 +228,7 @@ int main(int argc, const char *argv[])
 	ggz_tls_init(opt.tls_cert, opt.tls_key, opt.tls_password);
 
 	/* Create SERVER socket on main_port */
-	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, NULL);
+	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, opt.interface);
 	if (main_sock < 0) {
 		fprintf(stderr, "Could not bind to port\n");
 		err_msg_exit("Could not bind to port");

@@ -31,6 +31,8 @@
 # Port option
 #   Uncomment to specify a port other than the default (5688)
 #Port = 5688
+#   It is possible to restrict access to one interface
+#Interface = 127.0.0.1
 
 # List of banned IP addresses
 #   Specify IP addresses to ignore connections from.  There should be

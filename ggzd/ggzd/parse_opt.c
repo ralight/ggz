@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 5340 2003-01-22 13:50:38Z dr_maux $
+ * $Id: parse_opt.c 5747 2004-01-24 22:18:01Z josef $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -239,6 +239,8 @@ static void get_config_options(int ch)
 	if(opt.main_port == 0)
 		opt.main_port = ggz_conf_read_int(ch, "General", "Port",
 						  DEFAULT_GGZD_PORT);
+	opt.interface = ggz_conf_read_string(ch, "General", "Interface",
+					  NULL);
 	opt.admin_name = ggz_conf_read_string(ch, "General", "AdminName",
 					  "<unconfigured>");
 	opt.admin_email = ggz_conf_read_string(ch, "General", "AdminEmail",
