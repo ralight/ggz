@@ -51,7 +51,7 @@
  */
 
 /* Our private functions and vars */
-static _ggzcore_list * file_parser(char *path);
+static _ggzcore_list * file_parser(const char *path);
 static void parse_line(char *line, char **varname, char **varvalue);
 static int section_compare(void *a, void *b);
 static void *section_create(void *data);
@@ -59,7 +59,7 @@ static void section_destroy(void *data);
 static int entry_compare(void *a, void *b);
 static void *entry_create(void *data);
 static void entry_destroy(void *data);
-static char *dup_string(char *src);
+static char *dup_string(const char *src);
 static _ggzcore_confio_file * get_file_data(int handle);
 
 static _ggzcore_list	*file_list=NULL;
@@ -74,8 +74,8 @@ static _ggzcore_list	*file_list=NULL;
  *	  - ptr to a malloc()'ed copy of default if not found
  *	  - ptr to NULL if not found and no default
  */
-char * _ggzcore_confio_read_string(int handle, char *section,
-				   char *key, char *def)
+char * _ggzcore_confio_read_string(int handle, const char *section,
+				   const char *key, const char *def)
 {
 	_ggzcore_confio_file	*f_data;
 	_ggzcore_list_entry	*s_entry, *e_entry;
@@ -87,13 +87,13 @@ char * _ggzcore_confio_read_string(int handle, char *section,
 		goto do_default;
 
 	/* Find the requested [Section] */
-	s_entry = _ggzcore_list_search(f_data->section_list, section);
+	s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
 	if(s_entry == NULL)
 		goto do_default;
 	s_data = _ggzcore_list_get_data(s_entry);
 
 	/* Locate the requested Key */
-	e_srch.key = key;
+	e_srch.key = (char*)key;
 	e_entry = _ggzcore_list_search(s_data->entry_list, &e_srch);
 	if(e_entry == NULL)
 		goto do_default;
@@ -119,7 +119,7 @@ do_default:
  *	Returns:
  *	  - int value from variable, or def if not found
  */
-int _ggzcore_confio_read_int(int handle, char *section, char *key, int def)
+int _ggzcore_confio_read_int(int handle, const char *section, const char *key, int def)
 {
 	char	tmp[20], *tmp2;
 	int	value;
@@ -143,7 +143,7 @@ int _ggzcore_confio_read_int(int handle, char *section, char *key, int def)
  *	  - 0 on success
  *	  - -1 on error
  */
-int _ggzcore_confio_read_list(int handle, char *section, char *key,
+int _ggzcore_confio_read_list(int handle, const char *section, const char *key,
 			      int *argcp, char ***argvp)
 {
 	int	index, rc;
@@ -223,8 +223,8 @@ int _ggzcore_confio_read_list(int handle, char *section, char *key,
  *	  - 0 on no error
  *	  - -1 on error
  */
-int _ggzcore_confio_write_string(int handle, char *section,
-				    char *key, char *value)
+int _ggzcore_confio_write_string(int handle, const char *section,
+				 const char *key, const char *value)
 {
 	_ggzcore_confio_file	*f_data;
 	_ggzcore_list_entry	*s_entry;
@@ -236,21 +236,21 @@ int _ggzcore_confio_write_string(int handle, char *section,
 		return -1;
 
 	/* Find the requested [Section] */
-	s_entry = _ggzcore_list_search(f_data->section_list, section);
+	s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
 	if(s_entry == NULL) {
 		/* We need to create a new [Section] */
-		if(_ggzcore_list_insert(f_data->section_list, section) < 0) {
+		if(_ggzcore_list_insert(f_data->section_list, (void*)section) < 0) {
 			ggzcore_debug(GGZ_DBG_CONF,
 			      "_ggzcore_confio_write_string: insertion error");
 			return -1;
 		}
-		s_entry = _ggzcore_list_search(f_data->section_list, section);
+		s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
 	}
 	s_data = _ggzcore_list_get_data(s_entry);
 
 	/* Insert the new value into the [Section]'s list */
-	e_data.key = key;
-	e_data.value = value;
+	e_data.key = (char*)key;
+	e_data.value = (char*)value;
 	if(_ggzcore_list_insert(s_data->entry_list, &e_data) < 0) {
 		ggzcore_debug(GGZ_DBG_CONF,
 			      "_ggzcore_confio_write_string: insertion error");
@@ -269,7 +269,7 @@ int _ggzcore_confio_write_string(int handle, char *section,
  *	  - 0 on success
  *	  - -1 on failure
  */
-int _ggzcore_confio_write_int(int handle, char *section, char *key, int value)
+int _ggzcore_confio_write_int(int handle, const char *section, const char *key, int value)
 {
 	char	tmp[20];
 
@@ -291,8 +291,8 @@ int _ggzcore_confio_write_int(int handle, char *section, char *key, int value)
  *	  - 0 on success
  *	  - -1 on failure
  */
-int _ggzcore_confio_write_list(int handle, char *section, char *key,
-			       int argc, char **argv)
+int _ggzcore_confio_write_list(int handle, const char *section, 
+			       const char *key, int argc, char **argv)
 {
 	int	i;
 	char	buf[1023];
@@ -333,7 +333,7 @@ int _ggzcore_confio_write_list(int handle, char *section, char *key,
  *	  - 1 if [Section] did not exist (soft error)
  *	  - -1 on failure
  */
-int _ggzcore_confio_remove_section(int handle, char *section)
+int _ggzcore_confio_remove_section(int handle, const char *section)
 {
 	_ggzcore_confio_file	*f_data;
 	_ggzcore_list_entry	*s_entry;
@@ -343,7 +343,7 @@ int _ggzcore_confio_remove_section(int handle, char *section)
 		return -1;
 
 	/* Find the requested [Section] */
-	s_entry = _ggzcore_list_search(f_data->section_list, section);
+	s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
 	if(s_entry == NULL)
 		return 1;
 
@@ -364,7 +364,7 @@ int _ggzcore_confio_remove_section(int handle, char *section)
  *	  - 1 if [Section] or Key did not exist (soft error)
  *	  - -1 on failure
  */
-int _ggzcore_confio_remove_key(int handle, char *section, char *key)
+int _ggzcore_confio_remove_key(int handle, const char *section, const char *key)
 {
 	_ggzcore_confio_file	*f_data;
 	_ggzcore_list_entry	*s_entry, *e_entry;
@@ -376,13 +376,13 @@ int _ggzcore_confio_remove_key(int handle, char *section, char *key)
 		return -1;
 
 	/* Find the requested [Section] */
-	s_entry = _ggzcore_list_search(f_data->section_list, section);
+	s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
 	if(s_entry == NULL)
 		return 1;
 	s_data = _ggzcore_list_get_data(s_entry);
 
 	/* Find the requested Key */
-	e_data.key = key;
+	e_data.key = (char*)key;
 	e_entry = _ggzcore_list_search(s_data->entry_list, &e_data);
 	if(e_entry == NULL)
 		return 1;
@@ -492,7 +492,7 @@ void _ggzcore_confio_cleanup(void)
  *	  - an integer handle which the caller can use to access the variables
  *	  - -1 on failure
  */
-int	_ggzcore_confio_parse(char *path)
+int	_ggzcore_confio_parse(const char *path)
 {
 	static int		next_handle=0;
 
@@ -539,7 +539,7 @@ int	_ggzcore_confio_parse(char *path)
  *	  - ptr to a section list
  *	  - NULL on failure
  */
-static _ggzcore_list * file_parser(char *path)
+static _ggzcore_list * file_parser(const char *path)
 {
 	FILE			*c_file;
 	char			line[1024];
@@ -689,7 +689,7 @@ static void parse_line(char *p, char **varname, char **varvalue)
  *	Returns:
  *	  - ptr to malloc'ed copy of src
  */
-static char *dup_string(char *src)
+static char *dup_string(const char *src)
 {
 	char *dst;
 

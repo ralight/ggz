@@ -391,8 +391,8 @@ void ggzcore_error_msg_exit(const char *fmt, ...);
  *	  -1 on error
  *	  0 on success
  */
-int ggzcore_conf_initialize	(char	*g_path,
-				 char	*u_path);
+int ggzcore_conf_initialize	(const char	*g_path,
+				 const char	*u_path);
 
 /* ggzcore_conf_write_string() - Write a string to the user config file
  *
@@ -404,7 +404,9 @@ int ggzcore_conf_initialize	(char	*g_path,
  * Returns:
  * int : 0 if successful, -1 on error
  */
-int ggzcore_conf_write_string(char *section, char *key, char *value);
+int ggzcore_conf_write_string(const char *section, 
+			      const char *key, 
+			      const char *value);
 
 /* ggzcore_conf_write_int() - Write a integer to the user config file
  *
@@ -416,7 +418,9 @@ int ggzcore_conf_write_string(char *section, char *key, char *value);
  * Returns:
  * int : 0 if successful, -1 on error
  */
-int ggzcore_conf_write_int(char *section, char *key, int value);
+int ggzcore_conf_write_int(const char *section, 
+			   const char *key, 
+			   int value);
 
 /* ggzcore_conf_write_list() - Write a list to the user config file
  *
@@ -429,7 +433,10 @@ int ggzcore_conf_write_int(char *section, char *key, int value);
  * Returns:
  * int : 0 if successful, -1 on error
  */
-int ggzcore_conf_write_list(char *section, char *key, int argc, char **argv);
+int ggzcore_conf_write_list(const char *section, 
+			    const char *key, 
+			    int argc, 
+			    char **argv);
 
 /* ggzcore_conf_read_string() - Read a string from the configuration file(s)
  *
@@ -446,7 +453,9 @@ int ggzcore_conf_write_list(char *section, char *key, int argc, char **argv);
  * Note that the default may be set to NULL, in which case a NULL will be
  * returned if the value could not be found in either configuration file.
  */
-char * ggzcore_conf_read_string(char *section, char *key, char *def);
+char * ggzcore_conf_read_string(const char *section, 
+				const char *key, 
+				const char *def);
 
 /* ggzcore_conf_read_int() - Read a integer from the configuration file(s)
  *
@@ -464,7 +473,7 @@ char * ggzcore_conf_read_string(char *section, char *key, char *def);
  * must know, call ggzcore_conf_read_string with a NULL default value and
  * check for the NULL return.
  */
-int ggzcore_conf_read_int(char *section, char *key, int def);
+int ggzcore_conf_read_int(const char *section, const char *key, int def);
 
 /* ggzcore_conf_read_list() - Read a list from the configuration file(s)
  *
@@ -478,7 +487,10 @@ int ggzcore_conf_read_int(char *section, char *key, int def);
  * Returns:
  * int : 0 if successful, -1 on error
  */
-int ggzcore_conf_read_list(char *section, char *key, int *argcp, char ***argvp);
+int ggzcore_conf_read_list(const char *section, 
+			   const char *key, 
+			   int *argcp, 
+			   char ***argvp);
 
 /* ggzcore_conf_remove_section() - Removes a section from the user config file
  *
@@ -488,7 +500,7 @@ int ggzcore_conf_read_list(char *section, char *key, int *argcp, char ***argvp);
  * Returns:
  * int : 0 if successful, -1 on error, 1 on soft error (section did not exist)
  */
-int ggzcore_conf_remove_section(char *section);
+int ggzcore_conf_remove_section(const char *section);
 
 /* ggzcore_conf_remove_key() - Removes a key entry from the user config file
  *
@@ -499,7 +511,7 @@ int ggzcore_conf_remove_section(char *section);
  * Returns:
  * int : 0 if success, -1 on error, 1 on soft error (section/key didn't exist)
  */
-int ggzcore_conf_remove_key(char *section, char *key);
+int ggzcore_conf_remove_key(const char *section, const char *key);
 
 /* ggzcore_conf_remove_key() - Removes a key entry from the user config file
  *

@@ -53,47 +53,47 @@ typedef struct _ggzcore_confio_entry {
  **** Function prototypes
  ****/
 
-int _ggzcore_confio_parse		(char *path);
+int _ggzcore_confio_parse		(const char *path);
 
 int _ggzcore_confio_commit		(int handle);
 
 void _ggzcore_confio_cleanup		(void);
 
 int _ggzcore_confio_write_string	(int	handle,
-					 char	*section,
-					 char	*key,
-					 char	*value);
+					 const char	*section,
+					 const char	*key,
+					 const char	*value);
 
 int _ggzcore_confio_write_int		(int	handle,
-					 char	*section,
-					 char	*key,
+					 const char	*section,
+					 const char	*key,
 					 int	value);
 
 int _ggzcore_confio_write_list		(int	handle,
-					 char	*section,
-					 char	*key,
+					 const char	*section,
+					 const char	*key,
 					 int	argc,
 					 char	**argv);
 
 char * _ggzcore_confio_read_string	(int	handle,
-					 char	*section,
-					 char	*key,
-					 char	*def);
+					 const char	*section,
+					 const char	*key,
+					 const char	*def);
 
 int _ggzcore_confio_read_int		(int	handle,
-					 char	*section,
-					 char	*key,
+					 const char	*section,
+					 const char	*key,
 					 int	def);
 
 int _ggzcore_confio_read_list		(int	handle,
-					 char	*section,
-					 char	*key,
+					 const char	*section,
+					 const char	*key,
 					 int	*argcp,
 					 char	***argvp);
 
 int _ggzcore_confio_remove_section	(int	handle,
-					 char	*section);
+					 const char	*section);
 
 int _ggzcore_confio_remove_key		(int	handle,
-					 char	*section,
-					 char	*key);
+					 const char	*section,
+					 const char	*key);

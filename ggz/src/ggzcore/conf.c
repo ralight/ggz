@@ -58,7 +58,7 @@ static int g_handle = -1;
 static int u_handle = -1;
 
 /* Private functions */
-int make_path(char *full, mode_t mode);
+int make_path(const char *full, mode_t mode);
 
 
 /* ggzcore_conf_initialize()
@@ -70,7 +70,7 @@ int make_path(char *full, mode_t mode);
  *	  -1 on error
  *	  0 on success
  */
-int ggzcore_conf_initialize(char *g_path, char *u_path)
+int ggzcore_conf_initialize(const char *g_path, const char *u_path)
 {
 	int	t_file;
 
@@ -118,7 +118,7 @@ int ggzcore_conf_initialize(char *g_path, char *u_path)
  *	  -1 on error
  *	  0 on success
  */
-int ggzcore_conf_write_string(char *section, char *key, char *value)
+int ggzcore_conf_write_string(const char *section, const char *key, const char *value)
 {
 	/* Standard error checks */
 	if(section == NULL || key == NULL || value == NULL) {
@@ -141,7 +141,7 @@ int ggzcore_conf_write_string(char *section, char *key, char *value)
  *	  -1 on error
  *	  0 on success
  */
-int ggzcore_conf_write_int(char *section, char *key, int value)
+int ggzcore_conf_write_int(const char *section, const char *key, int value)
 {
 	/* Standard error checks */
 	if(section == NULL || key == NULL) {
@@ -164,7 +164,7 @@ int ggzcore_conf_write_int(char *section, char *key, int value)
  *	  -1 on error
  *	  0 on success
  */
-int ggzcore_conf_write_list(char *section, char *key, int argc, char **argv)
+int ggzcore_conf_write_list(const char *section, const char *key, int argc, char **argv)
 {
 	/* Standard error checks */
 	if(section == NULL || key == NULL) {
@@ -188,7 +188,7 @@ int ggzcore_conf_write_list(char *section, char *key, int argc, char **argv)
  *	  NULL on error
  *	  ptr to string on success
  */
-char * ggzcore_conf_read_string(char *section, char *key, char *def)
+char * ggzcore_conf_read_string(const char *section, const char *key, const char *def)
 {
 	char	*s = NULL;
 
@@ -224,7 +224,7 @@ char * ggzcore_conf_read_string(char *section, char *key, char *def)
  *	  int from config file on success
  *	  default on failure
  */
-int ggzcore_conf_read_int(char *section, char *key, int def)
+int ggzcore_conf_read_int(const char *section, const char *key, int def)
 {
 	char	*s = NULL;
 	int	val;
@@ -270,7 +270,7 @@ int ggzcore_conf_read_int(char *section, char *key, int def)
  *	  -1 on error
  *	  0 on success
  */
-int ggzcore_conf_read_list(char *section, char *key, int *argcp, char ***argvp)
+int ggzcore_conf_read_list(const char *section, const char *key, int *argcp, char ***argvp)
 {
 	int	rc = -1;
 
@@ -305,7 +305,7 @@ int ggzcore_conf_read_list(char *section, char *key, int *argcp, char ***argvp)
  *	  1 if [Section] did not exist (soft error)
  *	  -1 on failure
  */
-int ggzcore_conf_remove_section(char *section)
+int ggzcore_conf_remove_section(const char *section)
 {
 	/* Standard error checks */
 	if(section == NULL) {
@@ -329,7 +329,7 @@ int ggzcore_conf_remove_section(char *section)
  *	  1 if [Section] or Key did not exist (soft error)
  *	  -1 on failure
  */
-int ggzcore_conf_remove_key(char *section, char *key)
+int ggzcore_conf_remove_key(const char *section, const char *key)
 {
 	/* Standard error checks */
 	if(section == NULL || key == NULL) {
@@ -367,7 +367,7 @@ int ggzcore_conf_commit(void)
 /* make_path()
  *	Routine to create all directories needed to build 'path'
  */
-int make_path(char *full, mode_t mode)
+int make_path(const char *full, mode_t mode)
 {
 	char		*copy, *node, *path;
 	struct stat	stats;
