@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
+ * $Id: netxml.c 4420 2002-09-06 19:58:30Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -251,6 +252,9 @@ void _ggzcore_net_set_fd(struct _GGZNet *net, int fd)
 void _ggzcore_net_free(struct _GGZNet *net)
 {
 	GGZXMLElement *element;
+
+	if (net->fd >= 0)
+		_ggzcore_net_disconnect(net);
 	
 	if (net->host)
 		ggz_free(net->host);
