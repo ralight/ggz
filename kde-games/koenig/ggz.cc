@@ -19,33 +19,56 @@
 #include <qsocket.h>
 #include <qstring.h>
 
+#include <kdebug.h>
+
 #include "ggz.h"
 #include "ggz.moc"
 
-#include <stdlib.h>
+GGZ *GGZ::self = NULL;
 
 GGZ::GGZ(void)
 {
-	socket = new QSocket();
+	self = this;
+	mod = NULL;
+	socket = NULL;
+	ctlsocket = NULL;
 }
 
 GGZ::~GGZ(void)
 {
-	if (socket)
+	if(socket)
 		delete socket;
+	if(ctlsocket)
+		delete ctlsocket;
+
+	if (mod)
+	{
+		ggzmod_disconnect(mod);
+		ggzmod_free(mod);
+	}
 	
 	socket = NULL;
+	ctlsocket = NULL;
 }
 
 void GGZ::connect(const QString& name)
 {
 	int fd;
 
-	fd = 3; // ggz_connect();
+	mod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &recvEvent);
+	ggzmod_connect(mod);
+	fd = ggzmod_get_fd(mod);
 
-	socket->setSocket(fd);
-	QObject::connect(socket, SIGNAL(readyRead()), SLOT(recvRawData()));
-	net = new QDataStream(socket);
+	ctlsocket = new QSocket();
+	ctlsocket->setSocket(fd);
+	QObject::connect(ctlsocket, SIGNAL(readyRead()), SLOT(recvControl()));
+}
+
+void GGZ::recvControl()
+{
+kdDebug() << "*** dispatch" << endl;
+	ggzmod_dispatch(mod);
 }
 
 void GGZ::recvRawData()
@@ -54,6 +77,19 @@ void GGZ::recvRawData()
 	{
 		emit recvData();
 	}
+}
+
+void GGZ::recvEvent(GGZMod *mod, GGZModEvent e, void *data)
+{
+kdDebug() << "*** event" << endl;
+
+	self->socket = new QSocket();
+	self->socket->setSocket((int)data);
+
+	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
+
+	QObject::connect(self->socket, SIGNAL(readyRead()), self, SLOT(recvRawData()));
+	self->net = new QDataStream(self->socket);
 }
 
 char *GGZ::getString(void)
@@ -74,7 +110,7 @@ void GGZ::putString(const QString& msg)
 {
 	socket->writeBlock((const char*)(msg.length()), 4);
 	
-	for (int i = 0; i < msg.length(); i++)
+	for(int i = 0; i < msg.length(); i++)
 		socket->putch(msg[i]);
 }
 

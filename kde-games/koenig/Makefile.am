@@ -23,9 +23,10 @@ noinst_HEADERS = \
 	options.h \
 	kexttabctl.h
 
-INCLUDES = -I$(top_srcdir)/koenig/libcgc $(LIBGGZ_INCLUDES) $(all_includes)
+INCLUDES = -I$(top_srcdir)/koenig/libcgc $(LIBGGZ_INCLUDES) $(GGZMOD_INCLUDES) $(all_includes)
 
-koenig_LDADD = $(top_builddir)/koenig/libcgc/libcgc.a $(all_libraries) $(LIB_QT) $(LIB_KDECORE) $(LIB_KDEUI)
+koenig_LDFLAGS = $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS) $(all_libraries)
+koenig_LDADD = $(top_builddir)/koenig/libcgc/libcgc.a $(LIB_GGZ) $(LIB_GGZMOD) $(LIB_QT) $(LIB_KDECORE) $(LIB_KDEUI)
 
 METASOURCES = AUTO
 
