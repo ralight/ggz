@@ -21,13 +21,14 @@ dnl 2001-09-09: include libggz[d]mod support, and rename ac_find_file
 dnl 2001-11-05: backport from copenhagen, and more macros
 dnl 2001-12-16: updated for new ggzmod, imported to gtk-games and gtk-client
 dnl 2002-01-12: include libggz support; imported to ggz-client-libs and ggzd
+dnl 2002-01-18: remove easysock functions; look in prefix dirs for
+dnl             includes and libs
 
 dnl ------------------------------------------------------------------------
 dnl Content of this file:
 dnl ------------------------------------------------------------------------
 dnl AC_GGZ_FIND_FILE - macro for convenience (thanks kde)
 dnl AC_GGZ_LIBGGZ - find the libggz headers and libraries
-dnl AC_GGZ_EASYSOCK(x.y) - find the easysock headers and libraries (new: with version numbers)
 dnl AC_GGZ_GGZCORE - find the ggzcore headers and libraries
 dnl AC_GGZ_GGZCOREPP - find any GGZCore++ installation (TODO)
 dnl AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
@@ -87,13 +88,20 @@ AC_ARG_WITH(libggz-libraries,
 
 AC_CACHE_VAL(ac_cv_have_libggz,
 [
-libggz_incdirs="$ac_libggz_includes /usr/local/include /usr/include"
+if test "x${prefix}" = "xNONE"; then
+   prefix_incdir="${ac_default_prefix}/include"
+   prefix_libdir="${ac_default_prefix}/lib"
+else
+   prefix_incdir="${prefix}/include"
+   prefix_libdir="${prefix}/lib"
+fi
+libggz_incdirs="$ac_libggz_includes $prefix_incdir  /usr/local/include /usr/include"
 libggz_header=ggz.h
 
 AC_GGZ_FIND_FILE($libggz_header, $libggz_incdirs, libggz_incdir)
 ac_libggz_includes="$libggz_incdir"
 
-libggz_libdirs="$ac_libggz_libraries /usr/local/lib /usr/lib"
+libggz_libdirs="$ac_libggz_libraries $prefix_libdir /usr/local/lib /usr/lib"
 
 test=NONE
 libggz_libdir=NONE
@@ -141,121 +149,6 @@ AC_SUBST(LIB_GGZ)
 
 ])
 
-dnl ------------------------------------------------------------------------
-dnl Try to find the easysock headers and libraries.
-dnl $(EASYSOCK_LDFLAGS) will be -L ... (if needed)
-dnl and $(EASYSOCK_INCLUDES) will be -I ... (if needed)
-dnl ------------------------------------------------------------------------
-dnl
-AC_DEFUN(AC_GGZ_EASYSOCK,
-[
-AC_MSG_CHECKING([for GGZ library: easysock])
-
-ac_easysock_includes=NO ac_easysock_libraries=NO
-easysock_libraries=""
-easysock_includes=""
-
-AC_ARG_WITH(easysock-dir,
-    [  --with-easysock-dir=DIR       Easysock installation prefix ],
-    [  ac_easysock_includes="$withval"/include
-       ac_easysock_libraries="$withval"/lib
-    ])
-AC_ARG_WITH(easysock-includes,
-    [  --with-easysock-includes=DIR  where the easysock includes are. ],
-    [  ac_easysock_includes="$withval"
-    ])
-AC_ARG_WITH(easysock-libraries,
-    [  --with-easysock-libraries=DIR where the easysock libs are. ],
-    [  ac_easysock_libraries="$withval"
-    ])
-
-AC_CACHE_VAL(ac_cv_have_easysock,
-[
-easysock_incdirs="$ac_easysock_includes /usr/local/include /usr/include"
-easysock_header=easysock.h
-
-AC_GGZ_FIND_FILE($easysock_header, $easysock_incdirs, easysock_incdir)
-ac_easysock_includes="$easysock_incdir"
-
-easysock_libdirs="$ac_easysock_libraries /usr/local/lib /usr/lib"
-
-test=NONE
-easysock_libdir=NONE
-for dir in $easysock_libdirs; do
-  try="ls -1 $dir/libeasysock.*"
-  if test -n "`$try 2> /dev/null`"; then easysock_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
-done
-
-ac_easysock_libraries="$easysock_libdir"
-
-if test "$ac_easysock_includes" = NO || test "$ac_easysock_libraries" = NO; then
-  ac_cv_have_easysock="have_easysock=no"
-  ac_easysock_notfound=""
-
-  AC_MSG_ERROR([Easysock not found. Please check your installation! ]);
-else
-
-  major=`grep "EASYSOCK_VERSION" $easysock_incdir/easysock.h | cut -d " " -f 3 | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
-  minor=`grep "EASYSOCK_VERSION" $easysock_incdir/easysock.h | cut -d " " -f 3 | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
-  micro=`grep "EASYSOCK_VERSION" $easysock_incdir/easysock.h | cut -d " " -f 3 | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
-  mineasysockversion=ifelse([$1], , 0.3.0, $1)
-  wmajor=`echo $mineasysockversion | cut -d "." -f 1`
-  wminor=`echo $mineasysockversion | cut -d "." -f 2`
-  wmicro=`echo $mineasysockversion | cut -d "." -f 3`
-
-  if test "$wmicro" = ""; then
-    wmicro=0
-  fi
-
-  have_easysock="no"
-  if let "$major > $wmajor"; then
-    have_easysock="yes"
-  else
-    if let "$major == $wmajor && $minor > $wminor"; then
-      have_easysock="yes"
-    else
-      if let "$major == $wmajor && $minor == $wminor && $micro >= $wmicro"; then
-        have_easysock="yes"
-      fi
-    fi
-  fi
-
-  if test "$have_easysock" = "no"; then
-    ac_cv_have_easysock="have_easysock=no"
-    ac_easysock_notfound=""
-    AC_MSG_ERROR([Wrong easysock version - $major.$minor.$micro found, $wmajor.$wminor.$wmicro needed.]);
-  fi
-
-fi
-
-])
-
-eval "$ac_cv_have_easysock"
-
-if test "$have_easysock" != yes; then
-  AC_MSG_RESULT([$have_easysock]);
-else
-  ac_cv_have_easysock="have_easysock=yes \
-    ac_easysock_includes=$ac_easysock_includes ac_easysock_libraries=$ac_easysock_libraries"
-  AC_MSG_RESULT([libraries $ac_easysock_libraries, headers $ac_easysock_includes ($major.$minor.$micro)])
-
-  easysock_libraries="$ac_easysock_libraries"
-  easysock_includes="$ac_easysock_includes"
-fi
-
-AC_SUBST(easysock_libraries)
-AC_SUBST(easysock_includes)
-
-EASYSOCK_INCLUDES="-I$easysock_includes"
-EASYSOCK_LDFLAGS="-L$easysock_libraries"
-
-AC_SUBST(EASYSOCK_INCLUDES)
-AC_SUBST(EASYSOCK_LDFLAGS)
-
-LIB_EASYSOCK='-leasysock'
-AC_SUBST(LIB_EASYSOCK)
-
-])
 
 dnl ------------------------------------------------------------------------
 dnl Try to find the ggzcore headers and libraries.
