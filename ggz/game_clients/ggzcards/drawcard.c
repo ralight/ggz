@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 4034 2002-04-21 06:30:53Z jdorje $
+ * $Id: drawcard.c 4036 2002-04-21 07:53:34Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -206,19 +206,23 @@ static void draw_domino_card(card_t card, int orientation,
 	                               {(2 * h) / 3, h / 2},
 	                               {(2 * h) / 3, (4 * h) / 5} } };
 	int i, j;
+	int show = (card.suit != -1 && card.face != -1);
 	
 	assert(get_card_width0() == 2 * get_card_height0());
 	
 	gdk_draw_rectangle(image,
 	                   table_style->fg_gc[GTK_WIDGET_STATE(table)],
-	                   FALSE,
+	                   !show,
 	                   x, y,
 	                   h, h);
 	gdk_draw_rectangle(image,
 	                   table_style->fg_gc[GTK_WIDGET_STATE(table)],
-	                   FALSE,
+	                   !show,
 	                   x + h + 1, y,
 	                   h, h);
+	
+	if (!show)
+		return;
 	
 	for (i = 0; i < 2; i++) {
 		char num_spots = i ? card.face : card.suit;
