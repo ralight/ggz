@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4109 2002-04-29 06:16:29Z jdorje $
+ * $Id: game.c 4111 2002-04-29 17:00:34Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -254,22 +254,23 @@ void game_alert_newhand(void)
 
 void game_handle_gameover(int num_winners, int *winners)
 {
-	char msg[4096] = "";
+	char msg[1024] = "";
 
 	ggz_debug("main", "Handling gameover from server.");
 
 	/* handle different cases */
 	if (num_winners == 0)
-		snprintf(msg, sizeof(msg), _("There was no winner"));
+		snprintf(msg, sizeof(msg), _("There was no winner."));
 	else {
 		int i;
 		for (i = 0; i < num_winners; i++) {
 			char *fmt;
 			if (i == num_winners - 1)
 				fmt = "%s ";
+			else if (i == 0 && num_winners == 2)
+				fmt = "%s and ";
 			else if (i == num_winners - 2)
-				fmt = "%s and ";	/* not quite perfect
-							   grammar... */
+				fmt = "%s, and ";
 			else
 				fmt = "%s, ";
 			snprintf(msg + strlen(msg), sizeof(msg) - strlen(msg),
