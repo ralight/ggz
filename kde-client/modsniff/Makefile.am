@@ -7,7 +7,7 @@ ggzmodsniff_SOURCES = \
 	modsniff.c \
 	kmodsniff.cpp
 
-ggzmodsniff_LDADD = $(LIB_GGZCORE) $(all_libraries) $(KDE_RPATH) $(LIB_KDEUI)
+ggzmodsniff_LDADD = $(LIB_GGZCORE) $(all_libraries) $(KDE_RPATH) $(LIB_KDEUI) -lqt
 
 CFLAGS = @COMPILEOPTIONS@
 CXXFLAGS = @COMPILEOPTIONS@

@@ -1,0 +1,9 @@
+ggz-kde-client (0.0.4-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Wed, 30 May 2001 12:34:12 +0200
+
+Local variables:
+mode: debian-changelog
+End:

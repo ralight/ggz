@@ -1,0 +1,17 @@
+Source: ggz-kde-client
+Section: games
+Priority: optional
+Maintainer: Josef Spillner <dr_maux@users.sourceforge.net>
+Standards-Version: 3.0.1
+Build-Depends: debhelper
+
+Package: ggz-kde-client
+Architecture: any
+Depends: ${shlibs:Depends}
+Provides: ggz-core-client
+Description: The KDE frontend for GGZ
+ This is the GGZ Gaming Zone frontend intended to be used
+ inside the K Desktop Environment.
+ .
+ This package contains the frontend (KGGZ), as well as some
+ nice tools for KDE online gaming.
