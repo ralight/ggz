@@ -1191,11 +1191,6 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 
 	/* Get table data from tag */
 	type = safe_atoi(ggz_xmlelement_get_attr(element, "GAME"));
-
-	if (!type) {
-		_net_send_result(net, "protocol", E_BAD_OPTIONS);
-		return;
-	}
 		
 	data = ggz_xmlelement_get_data(element);
 	if (data) {
