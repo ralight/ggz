@@ -16,14 +16,14 @@ SHELL = /bin/sh
 
 srcdir = .
 top_srcdir = ../..
-prefix = /usr/local
+prefix = /usr
 exec_prefix = ${prefix}
 
 bindir = ${exec_prefix}/bin
 sbindir = ${exec_prefix}/sbin
 libexecdir = ${exec_prefix}/libexec
 datadir = ${prefix}/share
-sysconfdir = ${prefix}/etc
+sysconfdir = /etc
 sharedstatedir = ${prefix}/com
 localstatedir = ${prefix}/var
 libdir = ${exec_prefix}/lib
@@ -45,7 +45,7 @@ AUTOCONF = autoconf
 AUTOMAKE = automake
 AUTOHEADER = autoheader
 
-INSTALL = /usr/bin/ginstall -c
+INSTALL = /usr/bin/install -c
 INSTALL_PROGRAM = ${INSTALL} $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_SCRIPT = ${INSTALL}
@@ -66,15 +66,15 @@ CC = gcc
 CPP = gcc -E
 DATADIRNAME = share
 DLLTOOL = @DLLTOOL@
-EASYSOCK_INC = -I$(top_srcdir)/easysock
-EASYSOCK_LIB = $(top_builddir)/easysock/libeasysock.a
+EASYSOCK_INC = 
+EASYSOCK_LIB = -leasysock
 FRONTENDDIRS =  text gtk
 GENCAT = 
 GMOFILES =  de.gmo
 GMSGFMT = /usr/bin/msgfmt
-GTK_CFLAGS = -I/usr/local/lib/glib/include -I/usr/local/include -I/usr/X11R6/include
-GTK_CONFIG = /usr/local/bin/gtk-config
-GTK_LIBS = -L/usr/local/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXext -lX11 -lm
+GTK_CFLAGS = -I/usr/lib/glib/include -I/usr/X11R6/include
+GTK_CONFIG = /usr/bin/gtk-config
+GTK_LIBS = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
 GT_NO = 
 GT_YES = #YES#
 INCLUDE_LOCALE_H = #include <locale.h>
@@ -82,13 +82,15 @@ INSTOBJEXT = .mo
 INTLDEPS = 
 INTLLIBS = 
 INTLOBJS = 
+LD = /usr/bin/ld
 LDADD =  -lpopt
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
 MAINT = #
-MAKEINFO = /home/comtec/NEWCVS/ggz-20001105/ggz/missing makeinfo
+MAKEINFO = makeinfo
 MKINSTALLDIRS = ./mkinstalldirs
 MSGFMT = /usr/bin/msgfmt
+NM = /usr/bin/nm -B
 OBJDUMP = @OBJDUMP@
 PACKAGE = ggz_client
 POFILES =  de.po
@@ -97,24 +99,24 @@ RANLIB = ranlib
 USE_INCLUDED_LIBINTL = no
 USE_NLS = yes
 VERSION = 0.0.4pre
-ggzconfdir = /usr/local/etc
-ggzexecmoddir = /usr/local/lib/ggz
+ggzconfdir = /etc
+ggzexecmoddir = /usr/lib/ggz
 l = 
-packagesrcdir = /home/comtec/NEWCVS/ggz-20001105/ggz
+packagesrcdir = /home/jzaun/GGZ/ggz
 
 EXTRA_DIST = hastings.dsc
 
 SUBDIRS = .
 
-INCLUDES = -I/usr/local/lib/glib/include -I/usr/local/include -I/usr/X11R6/include -I$(top_srcdir)/easysock
+INCLUDES = -I/usr/lib/glib/include -I/usr/X11R6/include 
 
 ggzexecmod_PROGRAMS = ggz.hastings
 
 ggz_hastings_SOURCES = game.h 	      main.c 	      main_win.c 	      main_win.h 	      support.c 	      support.h 	      dlg_about.c 	      dlg_about.h 	      frame_ll.xpm 	      frame_lr.xpm 	      frame_ul.xpm 	      frame_ur.xpm 	      mangreen.xpm 	      manyellow.xpm 	      manbue.xpm 	      manred.xpm
 
 
-CFLAGS = -I/usr/local/lib/glib/include -I/usr/local/include -I/usr/X11R6/include -g -O2 -Wall
-ggz_hastings_LDADD = -L/usr/local/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXext -lX11 -lm $(LDADD) $(top_builddir)/easysock/libeasysock.a
+CFLAGS = -I/usr/lib/glib/include -I/usr/X11R6/include -g -O2 -Wall
+ggz_hastings_LDADD = -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm $(LDADD) -leasysock
 ggz_hastings_LDFLAGS = -static
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -123,8 +125,8 @@ PROGRAMS =  $(ggzexecmod_PROGRAMS)
 
 
 DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I../..
-CPPFLAGS =  -I/usr/local/include
-LDFLAGS =  -L/usr/local/lib
+CPPFLAGS =  -I/usr/include
+LDFLAGS =  -L/usr/lib
 LIBS = 
 ggz_hastings_OBJECTS =  main.o main_win.o support.o dlg_about.o
 ggz_hastings_DEPENDENCIES = 
