@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 3177 2002-01-23 05:00:41Z jdorje $
+ * $Id: ggzdmod.c 3204 2002-02-02 00:09:35Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -398,8 +398,11 @@ static int _ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 	if (ggzdmod->type == GGZDMOD_GGZ
 	    && ggzdmod->state != GGZDMOD_STATE_CREATED) {
 		
-		if (oldseat.type == GGZ_SEAT_OPEN 
+		if ( (oldseat.type == GGZ_SEAT_OPEN
+		      || oldseat.type == GGZ_SEAT_RESERVED)
 		    && seat->type == GGZ_SEAT_PLAYER) {
+		        /* We could check the seat name for a reserved seat,
+		           but we trust ggzd to do that instead. */
 			if (_io_send_join(ggzdmod->fd, seat) < 0)
 				_ggzdmod_error(ggzdmod,
 					       "Error writing to game");
