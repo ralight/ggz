@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<ggzcalendar>
+  <series id="ggzworldcup">
+    <organizer>GGZ Gaming Zone Development Team</organizer>
+    <registration>open</registration>
+    <result>none</result>
+    <title>GGZ World Cup</title>
+    <homepage>worldcup.ggzgamingzone.net</homepage>
+  </series>
+  <eventgroup series="ggzwordcup" id="ttt-quarterfinals">
+    <image>http://mindx.dyndns.org/ggz/calendar/logo.png</image>
+    <status>running</status>
+    <title>TicTacToe: Quarter Finals</title>
+    <policy>open</policy>
+  </eventgroup>
+  <event eventgroup="ttt-quarterfinals" id="ttt-quarterfinals-3">
+    <image>http://mindx.dyndns.org/ggz/calendar/tictactoe.png</image>
+    <date>1002395386</date>
+    <location>ggz://ggz.jzaun.com:5688</location>
+    <title>X vs. Y</title>
+    <description>This is an important TTT match.</description>
+    <participants>
+      <participant team="TTT eagles">josef</participant>
+      <participant team="TTT sparrows">enemy</participant>
+    </participants>
+    <scores>
+      <score team="TTT eagles">0</score>
+      <score team="TTT sparrows">1</score>
+    </scores>
+    <status>running</status>
+  </event>
+  <event eventgroup="ttt-quarterfinals" id="ttt-quarterfinals-4">
+    <image>http://mindx.dyndns.org/ggz/calendar/tictactoe.png</image>
+    <date>1002567386</date>
+    <location>ggz://ggz.jzaun.com:5688</location>
+    <title>Z vs. MS</title>
+    <description>Yet another TTT match.</description>
+    <participants>
+      <participant team="TTT penguins">linus</participant>
+      <participant team="TTT criminals">billg</participant>
+    </participants>
+    <scores>
+      <score team="TTT penguins">0</score>
+      <score team="TTT criminals">1</score>
+    </scores>
+    <status>finished</status>
+  </event>
+</ggzcalendar>
+

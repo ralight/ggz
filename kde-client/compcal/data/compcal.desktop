@@ -1,0 +1,14 @@
+[Desktop Entry]
+Exec=compcal
+Icon=compcal
+MimeType=Application
+Name=Competition Calendar
+GenericName=Online games tracker
+Path=
+ServiceTypes=
+SwallowExec=
+SwallowTitle=
+Terminal=false
+TerminalOptions=
+Type=Application
+

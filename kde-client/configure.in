@@ -134,6 +134,10 @@ AC_OUTPUT(Makefile
 	kio_ggzmeta/kioslave/Makefile
 	kcm_ggz/Makefile
 	kcm_ggz/modules/Makefile
+	compcal/Makefile
+	compcal/src/Makefile
+	compcal/src/lib/Makefile
+	compcal/data/Makefile
 	ggz-kde/Makefile
 	ggz-kde/ggzcore++/Makefile
 	ggz-kde/ggzcore++/src/Makefile
