@@ -148,7 +148,7 @@ int ggzcore_table_set_desc(GGZTable *table, const char *desc)
 		if (!(net = _ggzcore_server_get_net(server)))
 			return -1;
 		
-		return _ggzcore_net_send_table_desc_update(net, table);
+		return _ggzcore_net_send_table_desc_update(net, table, desc);
 	}
 
 
@@ -268,7 +268,8 @@ void _ggzcore_table_init(struct _GGZTable *table,
 	table->desc = ggz_strdup(desc);
 
 	table->num_seats = num_seats;
-	table->seats = ggz_malloc(num_seats * sizeof(struct _GGZSeat));
+	if (num_seats)
+		table->seats = ggz_malloc(num_seats * sizeof(struct _GGZSeat));
 	ggzcore_debug(GGZ_DBG_TABLE, "Allocating %d seats", num_seats);
 
 	for (i = 0; i < num_seats; i++) {
@@ -311,16 +312,27 @@ void _ggzcore_table_set_id(struct _GGZTable *table, const int id)
 
 void _ggzcore_table_set_state(struct _GGZTable *table, const GGZTableState state)
 {
+	ggzcore_debug(GGZ_DBG_ROOM, "Table %d new state %d", table->id, state);
 	table->state = state;
+	
+	/* If we're in a room, notify it of a table event */
+	if (table->room)
+		_ggzcore_room_table_event(table->room, GGZ_TABLE_UPDATE, NULL);
 }
 
 
 void _ggzcore_table_set_desc(struct _GGZTable *table, const char *desc)
 {
+	ggzcore_debug(GGZ_DBG_TABLE, "Table %d new desc %d", table->id, desc);
+
 	/* Free previous description */
 	if (table->desc)
 		ggz_free(table->desc);
 	table->desc = ggz_strdup(desc);
+
+	/* If we're in a room, notify it of a table event */
+	if (table->room) 
+		_ggzcore_room_table_event(table->room, GGZ_TABLE_UPDATE, NULL);
 }
 
 
@@ -330,13 +342,28 @@ void _ggzcore_table_set_seat(struct _GGZTable *table,
 			     char* name)
 {
 	/* Set up the new seat. */
-	struct _GGZSeat seat = {index, type, ggz_strdup(name)};
+	struct _GGZSeat seat = {index, type, ggz_strdup(name)}, oldseat;
 	
-	/* Get rid of the old seat. */
-	if (table->seats[index].name)
-		ggz_free(table->seats[index].name);
-	
+	oldseat = table->seats[index];
 	table->seats[index] = seat;
+	
+	/* Check for specific seat changes */
+	if (seat.type == GGZ_SEAT_PLAYER) {
+		ggzcore_debug(GGZ_DBG_TABLE, "%s joining seat %d at table %d",
+			      seat.name, seat.index, table->id);
+		if (table->room)
+			_ggzcore_room_player_set_table(table->room, name, table->id);
+	}
+	else if (oldseat.type == GGZ_SEAT_PLAYER) {
+		ggzcore_debug(GGZ_DBG_ROOM, "%s leaving seat %d at table %d",
+			      oldseat.name, oldseat.index, table->id);
+		if (table->room)
+			_ggzcore_room_player_set_table(table->room, oldseat.name, -1);
+	}
+
+	/* Get rid of the old seat. */
+	if (oldseat.name)
+		ggz_free(oldseat.name);
 }
 
 

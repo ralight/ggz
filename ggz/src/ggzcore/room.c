@@ -629,69 +629,17 @@ void _ggzcore_room_remove_table(struct _GGZRoom *room, const unsigned int id)
 }
 
 
-void _ggzcore_room_player_join_table(struct _GGZRoom *room, 
-				     const unsigned int id,
-				     char *name,
-				     const unsigned int seat)
+void _ggzcore_room_player_set_table(struct _GGZRoom *room, char *name, int table)
 {
-	struct _GGZTable *table;
 	struct _GGZPlayer *player;
-
-	ggzcore_debug(GGZ_DBG_ROOM, "%s joining seat %d at table %d", name, 
-		      seat, id);
-
-	if (room->tables) {
-		table = _ggzcore_room_get_table_by_id(room, id);
-		_ggzcore_table_set_seat(table, seat, GGZ_SEAT_PLAYER, name);
 	
-		if (room->players) {
-			player = _ggzcore_room_get_player_by_name(room, name);
-			if (player) /* make sure they're still in room */
-				_ggzcore_player_set_table(player, id);
-		}
-
-		_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
+	if (room->players) {
+		/* make sure they're still in room */
+		if ( (player = _ggzcore_room_get_player_by_name(room, name)))
+			_ggzcore_player_set_table(player, table);
 	}
-}
-
-
-void _ggzcore_room_player_leave_table(struct _GGZRoom *room, 
-				      const unsigned int id,
-				      char *name,
-				      const unsigned int seat)
-{
-	struct _GGZTable *table;
-	struct _GGZPlayer *player;
-		
-	ggzcore_debug(GGZ_DBG_ROOM, "%s leaving seat %d at table %d", name, 
-		      seat, id);
-
-	if (room->tables) {
-		table = _ggzcore_room_get_table_by_id(room, id);
-		_ggzcore_table_remove_player(table, name);
-
-		if (room->players) {
-			player = _ggzcore_room_get_player_by_name(room, name);
-			if (player) /* make sure they're still in room */
-				_ggzcore_player_set_table(player, -1);
-		}
-
-		_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
-	}
-}
-
-
-void _ggzcore_room_new_table_state(struct _GGZRoom *room, const unsigned int id, GGZTableState state)
-{
-	struct _GGZTable *table;
-			
-	ggzcore_debug(GGZ_DBG_ROOM, "Table %d new state %d", id, state);
-		      
-	if (room->tables) {		      
-		table = _ggzcore_room_get_table_by_id(room, id);
-		_ggzcore_table_set_state(table, state);
-		_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
-	}
+	
+	_ggzcore_room_event(room, GGZ_TABLE_UPDATE, NULL);
 }
 
 
@@ -901,6 +849,12 @@ void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room, int status)
 	}
 }
 					  
+
+void _ggzcore_room_table_event(struct _GGZRoom *room, GGZRoomEvent event, void *data)
+{
+	_ggzcore_room_event(room, event, data);
+}
+
 
 int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
 {

@@ -76,7 +76,7 @@ int _ggzcore_net_send_table_launch(struct _GGZNet *net, struct _GGZTable *table)
 int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num);
 int _ggzcore_net_send_table_leave(struct _GGZNet *net);
 int _ggzcore_net_send_table_seat_update(struct _GGZNet *net, struct _GGZTable *table, struct _GGZSeat *seat);
-int _ggzcore_net_send_table_desc_update(struct _GGZNet *net, struct _GGZTable *table);
+int _ggzcore_net_send_table_desc_update(struct _GGZNet *net, struct _GGZTable *table, const char *desc);
 
 int _ggzcore_net_send_game_data(struct _GGZNet *net, int size, char *buffer);
 

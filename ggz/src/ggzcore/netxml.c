@@ -36,6 +36,7 @@
 #include "gametype.h"
 
 #include <ggz.h>
+#include <ggz_common.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <poll.h>
@@ -531,12 +532,12 @@ int _ggzcore_net_send_table_seat_update(struct _GGZNet *net, struct _GGZTable *t
 
 
 
-int _ggzcore_net_send_table_desc_update(struct _GGZNet *net, struct _GGZTable *table)
+int _ggzcore_net_send_table_desc_update(struct _GGZNet *net, struct _GGZTable *table, const char *desc)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Sending table description update request");
 	_ggzcore_net_send_line(net, "<UPDATE TYPE='table' ROOM='%d'>", _ggzcore_room_get_id(table->room));
 	_ggzcore_net_send_line(net, "<TABLE ID='%d'>", table->id);
-	_ggzcore_net_send_line(net, "<DESC>%s</DESC>", table->desc);
+	_ggzcore_net_send_line(net, "<DESC>%s</DESC>", desc);
 	_ggzcore_net_send_line(net, "</TABLE>");
 	_ggzcore_net_send_line(net, "</UPDATE>");	
 
@@ -1046,81 +1047,96 @@ static void _ggzcore_net_handle_update(GGZNet *net, GGZXMLElement *update)
 	char *name, *action, *type;
 	GGZRoom *room;
 	GGZPlayer *player;
-	GGZTable *table;
+	GGZTable *table, *real_table;
 
-	if (update) {
+	/* Return if there's no tag */
+	if (!update)
+		return;
+	
+	/* Grab update data from tag */
+	type = ggz_xmlelement_get_attr(update, "TYPE");
+	action = ggz_xmlelement_get_attr(update, "ACTION");
+	if (!ggz_xmlelement_get_attr(update, "ROOM"))
+		room_num = -1;
+	else
+		room_num = safe_atoi(ggz_xmlelement_get_attr(update, "ROOM"));
 
-		/* Grab update data from tag */
-		type = ggz_xmlelement_get_attr(update, "TYPE");
-		action = ggz_xmlelement_get_attr(update, "ACTION");
-		if (!ggz_xmlelement_get_attr(update, "ROOM"))
-			room_num = -1;
-		else
-			room_num = safe_atoi(ggz_xmlelement_get_attr(update, "ROOM"));
 
-
-		if (strcmp(type, "room") == 0) {
-			/* FIXME: implement this */
-		}
-		else if (strcmp(type, "game") == 0) {
-			/* FIXME: implement this */
-		}
-		else if (strcmp(type, "player") == 0) {
-			player = ggz_xmlelement_get_data(update);
-			room = _ggzcore_server_get_room_by_id(net->server, room_num);
-
-			if (strcmp(action, "add") == 0)
-				_ggzcore_room_add_player(room, player->name, 
-							 player->type, player->lag);
-			else if (strcmp(action, "delete") == 0)
-				_ggzcore_room_remove_player(room, player->name);
-			else if (strcmp(action, "lag") == 0)
-				/* FIXME: This should be a player "class-based" event */
-				_ggzcore_room_set_player_lag(room, player->name, player->lag);
-			
-			ggz_free(player);
-		}
-		else if (strcmp(type, "table") == 0) {
-			table = ggz_xmlelement_get_data(update);
-			room = _ggzcore_server_get_room_by_id(net->server, room_num);
-			if (strcmp(action, "add") == 0) {
-				_ggzcore_room_add_table(room, table);
-				table = NULL;
-			}
-			else if (strcmp(action, "delete") == 0)
-				_ggzcore_room_remove_table(room, table->id);
-
-			else if (strcmp(action, "join") == 0) {
-				/* FIXME: this is a lousy way of getting this info */
-				seats = _ggzcore_table_get_num_seats(table);
-				for (i = 0; i < seats; i++) {
-					name = _ggzcore_table_get_nth_player_name(table, i);
-					if (name) {
-						_ggzcore_room_player_join_table(room, table->id, name, i);
-						break;
-					}
-				}
-			}
-			else if (strcmp(action, "leave") == 0) {
-				/* FIXME: this is a lousy way of getting this info */
-				seats = _ggzcore_table_get_num_seats(table);
-				for (i = 0; i < seats; i++) {
-					name = _ggzcore_table_get_nth_player_name(table, i);
-					if (name) {
-						_ggzcore_room_player_leave_table(room, table->id, name, i);
-						break;
-					}
-				}
-			}
-			else if (strcmp(action, "status") == 0) {
-				_ggzcore_room_new_table_state(room, table->id, table->state);
-			}
-			
-			if (table)
-				_ggzcore_table_free(table);
-		}
-
+	if (strcmp(type, "room") == 0) {
+		/* FIXME: implement this */
 	}
+	else if (strcmp(type, "game") == 0) {
+		/* FIXME: implement this */
+	}
+	else if (strcmp(type, "player") == 0) {
+		player = ggz_xmlelement_get_data(update);
+		room = _ggzcore_server_get_room_by_id(net->server, room_num);
+
+		if (strcmp(action, "add") == 0)
+			_ggzcore_room_add_player(room, player->name, 
+						 player->type, player->lag);
+		else if (strcmp(action, "delete") == 0)
+			_ggzcore_room_remove_player(room, player->name);
+		else if (strcmp(action, "lag") == 0)
+			/* FIXME: Should be a player "class-based" event */
+			_ggzcore_room_set_player_lag(room, player->name, player->lag);
+			
+		ggz_free(player);
+	}
+	else if (strcmp(type, "table") == 0) {
+		table = ggz_xmlelement_get_data(update);
+		room = _ggzcore_server_get_room_by_id(net->server, room_num);
+		real_table = _ggzcore_room_get_table_by_id(room, table->id);
+
+		if (strcmp(action, "add") == 0) {
+			_ggzcore_room_add_table(room, table);
+			table = NULL;
+		}
+		else if (strcmp(action, "delete") == 0)
+			_ggzcore_room_remove_table(room, table->id);
+
+		else if (strcmp(action, "join") == 0) {
+			/* FIXME: this is a lousy way of getting this info */
+			seats = _ggzcore_table_get_num_seats(table);
+			for (i = 0; i < seats; i++) {
+				name = _ggzcore_table_get_nth_player_name(table, i);
+				if (name) {
+					_ggzcore_table_set_seat(real_table, i,
+								GGZ_SEAT_PLAYER,
+								name);
+					
+					break;
+				}
+			}
+		}
+		else if (strcmp(action, "leave") == 0) {
+			/* FIXME: this is a lousy way of getting this info */
+			seats = _ggzcore_table_get_num_seats(table);
+			for (i = 0; i < seats; i++) {
+				name = _ggzcore_table_get_nth_player_name(table, i);
+				if (name) {
+					_ggzcore_table_set_seat(real_table, i,
+								GGZ_SEAT_OPEN,
+								NULL);
+					
+					break;
+				}
+			}
+		}
+		else if (strcmp(action, "status") == 0) {
+			_ggzcore_table_set_state(real_table, table->state);
+		}
+		else if (strcmp(action, "desc") == 0) {
+			_ggzcore_table_set_desc(real_table, table->desc);
+		}
+		else if (strcmp(action, "seat") == 0) {
+			/* FIXME: _ggzcore_table_set_seat(real_table, seat, type, name);*/
+		}
+			
+		if (table)
+			_ggzcore_table_free(table);
+		}
+
 }
 
 

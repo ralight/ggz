@@ -100,19 +100,11 @@ void _ggzcore_room_add_table(struct _GGZRoom *room, struct _GGZTable *table);
 void _ggzcore_room_remove_table(struct _GGZRoom *room, const unsigned int id);
 
 
-void _ggzcore_room_player_join_table(struct _GGZRoom *room, 
-				     const unsigned int table,
-				     char *player,
-				     const unsigned int seat);
+void _ggzcore_room_player_set_table(struct _GGZRoom *room, char *name, int table);
+				    
+void _ggzcore_room_table_event(struct _GGZRoom *, GGZRoomEvent, void *data);
 
-void _ggzcore_room_player_leave_table(struct _GGZRoom *room, 
-				      const unsigned int table,
-				      char *player,
-				      const unsigned int seat);
 
-void _ggzcore_room_new_table_state(struct _GGZRoom *room,
-				   const unsigned int table,
-				   GGZTableState state);
 
 void _ggzcore_room_add_chat(struct _GGZRoom *room, 
 			    GGZChatOp op, 
@@ -126,6 +118,7 @@ void _ggzcore_room_set_table_join_status(struct _GGZRoom *room,
 					 int status);
 void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room, 
 					  int status);
+
 
 /* Functions for invoking GGZRoom "actions" */
 
