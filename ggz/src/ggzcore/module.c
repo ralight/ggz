@@ -321,7 +321,7 @@ int _ggzcore_module_get_num_by_type(const char *game,
 				    const char *engine,
 				    const char *version)
 {
-	int count, status, i;
+	int count, status, i, numcount;
 	char **ids;
 	struct _GGZModule module;
 
@@ -331,19 +331,20 @@ int _ggzcore_module_get_num_by_type(const char *game,
 	if (status < 0)
 		return 0;
 	
+	numcount = count;
 	for (i = 0; i < count; i++) {
 		_ggzcore_module_read(&module, ids[i]);
 		/* Subtract out modules that aren't the same protocol */
 		if (strcmp(engine, module.prot_engine) != 0
 		    || (version && strcmp(version, module.prot_version) != 0)
 		    /* || game not included in game list */)
-			count--;
+			numcount--;
 	}
 
 	_ggz_free_chars(ids);
 
 
-	return count;
+	return numcount;
 }
 
 
