@@ -690,10 +690,13 @@ static int client_get_table_index(guint row)
 static char *client_get_players_index(guint row)
 {
 	GtkWidget *tmp;
-	char *text;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+	guint8 space;
+	gchar *text = NULL;
 
 	tmp = lookup_widget(win_main, "player_clist");
-	gtk_clist_get_text(GTK_CLIST(tmp), row, 2, &text);
+	gtk_clist_get_pixtext(GTK_CLIST(tmp), row, 2, &text, &space, &pixmap, &mask);
 	
 	return text;
 }

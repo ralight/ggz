@@ -344,7 +344,8 @@ void chat_send_beep(GGZServer *server, gchar *message)
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	char *player;
 
-	player = strdup(message+6);
+	player = g_strstrip(strdup(message+6));
+
 	ggzcore_room_chat(room, GGZ_CHAT_BEEP, player, NULL);
 
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("Beep Sent"));

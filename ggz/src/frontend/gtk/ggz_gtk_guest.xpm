@@ -1,7 +1,6 @@
 /* XPM */
 static char * guest_xpm[] = {
-"10 13 256 2",
-"w+  	c None",
+"10 13 255 2",
 ". 	c #000000",
 "+ 	c #00003F",
 "@ 	c #00007F",
@@ -246,6 +245,7 @@ static char * guest_xpm[] = {
 "t+	c #FFFF3F",
 "u+	c #FFFF7F",
 "v+	c #FFFFC0",
+"w+  	c #FFFFFF",
 "x+	c #FF0000",
 "y+	c #FF003F",
 "z+	c #FF007F",
