@@ -184,7 +184,7 @@ void cards_sort_hand(hand_t *hand)
 {
 	/* sort cards -- this should be in another function
 	 * so it can be done later as well */
-	qsort(hand->cards, hand->hand_size, sizeof(card_t), game_compare_cards);
+	qsort(hand->cards, hand->hand_size, sizeof(card_t), game.funcs->compare_cards);
 }
 
 
@@ -213,7 +213,7 @@ int cards_suit_in_hand(hand_t *hand, char suit)
 	int i, cnt = 0;
 
 	for(i=0; i<hand->hand_size; i++) {
-		card_t card = game_map_card( hand->cards[i] );
+		card_t card = game.funcs->map_card( hand->cards[i] );
 		if( card.suit == suit)
 			cnt++;
 	}

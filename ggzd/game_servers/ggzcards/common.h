@@ -48,6 +48,7 @@ typedef enum {
 /* Data structure for generic trick-taking card game */
 struct wh_game_t {
 	game_type_t which_game;	/* the game; currently defined in cards.h */
+	struct game_function_pointers *funcs;	/* game-specific functions */
 	deck_type_t deck_type;	/* the type of deck used, as defined in cards.h */
 	char* name;		/* the name of the game */
 	char* rules_url;	/* the URL of where to read the game's rules */

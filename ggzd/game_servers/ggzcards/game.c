@@ -36,13 +36,77 @@
 #include "games.h"
 #include "message.h"
 
+
+/* initializing */
+void game_init_game();			/* initialize the game data */
+int game_get_options();			/* determine/request options */
+void game_handle_options();		/* handle options from player */
+
+/* messaging */
+void game_set_player_message(player_t); /* determine and send the player message */
+
+/* bidding */
+int game_get_bid_text(char*, int, bid_t);/* determines the textual string for the bid */
+void game_start_bidding();		/* updates data for the first bid */
+int game_get_bid();			/* gets a bid from next player */
+int game_handle_bid(bid_t);		/* handles a bid from current bidder */
+void game_next_bid();			/* updates data for the next bid */
+
+/* playing */
+void game_start_playing();		/* updates data after the last bid/before the playing starts */
+char* game_verify_play(card_t);		/* verifies the play is legal */
+void game_next_play();			/* sets up for next play */
+void game_get_play(player_t);		/* retreives a play */
+void game_handle_play(card_t);		/* handle a play */
+
+/* each hand */
+int game_deal_hand(void);		/* deal next hand */
+void game_end_trick(void);		/* end-of-trick calculations */
+void game_end_hand(void);		/* end-of-hand calculations */
+
+/* starting/ending games */
+void game_start_game();			/* start a game */
+int game_test_for_gameover();		/* returns TRUE iff gameover */
+int game_handle_gameover();		/* handle a gameover */
+
+/* miscellaneous */
+card_t game_map_card(card_t);
+int game_compare_cards(const void *, const void *);
+int game_send_hand(player_t, seat_t);	/* sends a hand to a player */
+
+struct game_function_pointers game_funcs = {
+	game_init_game,
+	game_get_options,
+	game_handle_options,
+	game_set_player_message,
+	game_get_bid_text,
+	game_start_bidding,
+	game_get_bid,
+	game_handle_bid,
+	game_next_bid,
+	game_start_playing,
+	game_verify_play,
+	game_next_play,
+	game_get_play,
+	game_handle_play,
+	game_deal_hand,
+	game_end_trick,
+	game_end_hand,
+	game_start_game,
+	game_test_for_gameover,
+	game_handle_gameover,
+	game_map_card,
+	game_compare_cards,
+	game_send_hand
+};
+
 /* these should be low, clubs, diamonds, ..., high, but that won't fit in the client window */
 static char* short_suaro_suit_names[6] = {"lo", "C", "D", "H", "S", "hi"};
 static char* long_suaro_suit_names[6] = {"low", "clubs", "diamonds", "hearts", "spades", "high"};
 static char* short_bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
 static char* long_bridge_suit_names[5] = {"clubs", "diamonds", "hearts", "spades", "notrump"};
 
-/* game_map_card
+/* game.funcs->map_card
  *   newly implemented; it should cause one card to behave
  *   as another in just about all situations */
 card_t game_map_card(card_t c)
@@ -70,8 +134,8 @@ card_t game_map_card(card_t c)
  */
 int game_compare_cards(const void *c1, const void *c2)
 {
-	register card_t card1 = game_map_card( *(card_t *)c1 );
-	register card_t card2 = game_map_card( *(card_t *)c2 );
+	register card_t card1 = game.funcs->map_card( *(card_t *)c1 );
+	register card_t card2 = game.funcs->map_card( *(card_t *)c2 );
 	switch (game.which_game) {
 		case GGZ_GAME_BRIDGE:
 			/* in Bridge, the trump suit is always supposed to be shown on the left */
@@ -953,7 +1017,7 @@ char* game_verify_play(card_t card)
 	seat_t s = game.play_seat;
 	int cnt;
 
-	card = game_map_card(card);
+	card = game.funcs->map_card(card);
 
 	/* the game hearts must be handled differently */
 	if (game.which_game == GGZ_GAME_HEARTS &&
@@ -990,7 +1054,7 @@ char* game_verify_play(card_t card)
 	if (card.suit == game.lead_card.suit) return NULL;
 
 	/* not following suit is never allowed */
-	c = game_map_card( game.lead_card );
+	c = game.funcs->map_card( game.lead_card );
 	if ( (cnt = cards_suit_in_hand(&game.seats[s].hand, c.suit)) ) {
 		ggz_debug("Player %d/%s, playing from seat %d/%s, played %s when they have %d of %s.",
 			  game.next_play, ggz_seats[game.next_play].name, s, game.seats[s].ggz->name, suit_names[(int)card.suit], cnt, suit_names[(int)game.lead_card.suit]);
@@ -1010,7 +1074,7 @@ char* game_verify_play(card_t card)
 		hi_trump_played = 0;
 		for (p2=0; p2<game.num_players; p2++) {
 			c = game.seats[ game.players[p2].seat ].table;
-			c = game_map_card( c );
+			c = game.funcs->map_card( c );
 			if(c.suit == game.trump
 			   && c.face > hi_trump_played)
 				hi_trump_played = c.face;
@@ -1389,7 +1453,7 @@ void game_end_trick(void)
 	 * card of the suit lead, or the highest trump if there is trump */
 	for (p=0; p<game.num_players; p++) {
 		card_t card = game.seats[ game.players[p].seat ].table;
-		card = game_map_card( card );
+		card = game.funcs->map_card( card );
 		if ( (card.suit == game.trump && (hi_card.suit != game.trump || hi_card.face < card.face))
 		   || (card.suit == hi_card.suit && card.face > hi_card.face) ) {
 			hi_card = card;

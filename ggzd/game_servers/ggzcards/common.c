@@ -286,7 +286,7 @@ int send_sync(player_t p)
 
 	/* Send out hands */
 	for (s=0; s < game.num_seats; s++)
-		if (game_send_hand(p, s) < 0)
+		if (game.funcs->send_hand(p, s) < 0)
 			status = -1;
 
 	/* Send out table cards */
@@ -353,7 +353,7 @@ int req_play(player_t p, seat_t s)
 
 	set_game_state(WH_STATE_WAIT_FOR_PLAY);
 
-	game_set_player_message(p);
+	game.funcs->set_player_message(p);
 
 	return 0;
 }
@@ -407,7 +407,7 @@ int rec_play( player_t p )
 	 * need to check if it's a legal play */
 	/* Note, however, that we don't return -1 on an error here.  An error returned indicates a GGZ
 	 * error, which is not what happened.  This is just a player mistake */
-	err = game_verify_play(card);
+	err = game.funcs->verify_play(card);
 	if (err == NULL)
 		/* any AI routine would also call handle_play_event, so the ai
 		 * must also check the validity as above.  This could be changed... */
@@ -432,7 +432,7 @@ int req_bid(player_t p, int num, char** bid_choices)
 	if (bid_choices == NULL) {
 		bid_choices = game.bid_texts;
 		for (i=0; i<num; i++)
-			game_get_bid_text(bid_choices[i], game.max_bid_length, game.bid_choices[i]);
+			game.funcs->get_bid_text(bid_choices[i], game.max_bid_length, game.bid_choices[i]);
 	}
 
 	if(fd == -1 ||
@@ -452,7 +452,7 @@ int req_bid(player_t p, int num, char** bid_choices)
 
 	set_game_state( WH_STATE_WAIT_FOR_BID );
 
-	game_set_player_message(p);
+	game.funcs->set_player_message(p);
 
 	if (status != 0)
 		ggz_debug("ERROR: req_bid: status is %d.", status);
@@ -664,7 +664,7 @@ int handle_player(player_t p)
 					int options[game.num_options];
 					rec_options(game.num_options, options);
 					ggz_debug("Entering game_handle_options.");
-					game_handle_options(options);
+					game.funcs->handle_options(options);
 					if (game.options_initted)
 						next_play();
 					else
@@ -726,9 +726,9 @@ int newgame()
 		game.players[p].ready = 0;
 	if (!game.initted)
 		init_game();
-	game_start_game();
+	game.funcs->start_game();
 	for (p=0; p<game.num_players; p++)
-		game_set_player_message(p);
+		game.funcs->set_player_message(p);
 	send_newgame();
 	game.dealer = random() % game.num_players;
 	set_game_state( WH_STATE_NEXT_HAND );
@@ -758,8 +758,8 @@ void next_play(void)
 			break;
 		case WH_STATE_NEXT_HAND:
 			ggz_debug("Next play: dealing a new hand.");
-			if (game_test_for_gameover()) {
-				game_handle_gameover();
+			if (game.funcs->test_for_gameover()) {
+				game.funcs->handle_gameover();
 				cards_destroy_deck();
 				if (game.specific != NULL) free(game.specific);
 				set_game_state( WH_STATE_NOTPLAYING );
@@ -772,14 +772,14 @@ void next_play(void)
 				game.players[p].tricks = 0;
 
 			ggz_debug("Dealing hand %d.", game.hand_num);
-			if(game_deal_hand() < 0)
+			if(game.funcs->deal_hand() < 0)
 				return;
 			ggz_debug("Dealt hand successfully.");
 
 			/* Now send the resulting hands to each player */
 			for(p=0; p<game.num_players; p++)
 				for (s=0; s<game.num_seats; s++)
-					if (game_send_hand(p, s) < 0)
+					if (game.funcs->send_hand(p, s) < 0)
 						ggz_debug("Error: game_send_hand returned -1.");
 
 			set_game_state( WH_STATE_FIRST_BID );
@@ -792,20 +792,20 @@ void next_play(void)
 
 			for (p = 0; p < game.num_players; p++) {
 				game.players[p].bid.bid = 0;
-				game_set_player_message(p); /* TODO: are all these player messages really necessary? */
+				game.funcs->set_player_message(p); /* TODO: are all these player messages really necessary? */
 			}
 			game.bid_count = 0;
 
-			game_start_bidding();
+			game.funcs->start_bidding();
 			next_play(); /* recursion */
 			break;
 		case WH_STATE_NEXT_BID:
 			ggz_debug("Next play: bid %d/%d - player %d/%s.", game.bid_count, game.bid_total, game.next_bid, ggz_seats[game.next_bid].name);
-			game_get_bid();
+			game.funcs->get_bid();
 			break;
 		case WH_STATE_NEXT_PLAY:
 			ggz_debug("Next play: playing %d/%d - player %d/%s.", game.play_count, game.play_total, game.next_play, ggz_seats[game.next_play].name);
-			game_get_play(game.next_play);
+			game.funcs->get_play(game.next_play);
 			break;
 		case WH_STATE_FIRST_TRICK:
 			ggz_debug("Next play: first trick of the hand.");
@@ -817,7 +817,7 @@ void next_play(void)
 			for (s=0; s<game.num_seats; s++)
 				game.seats[s].table = UNKNOWN_CARD;
 
-			game_start_playing();
+			game.funcs->start_playing();
 			set_all_player_messages();
 			game.trump_broken = 0;
 			game.next_play = game.leader;
@@ -920,7 +920,7 @@ int handle_newgame_event(player_t player)
 	ready = 1;
 	ggz_debug("Determining options.");
 	if (player == game.host && !game.options_initted &&
-	    game_get_options() < 0) {
+	    game.funcs->get_options() < 0) {
 		ggz_debug("Error in game_get_options.  Using defaults.");
 		game.options_initted = 1;
 	}
@@ -982,18 +982,18 @@ int handle_play_event(card_t card)
 
 	/* do extra handling */
 	if (card.suit == game.trump) game.trump_broken = 1;
-	game_handle_play(card);
+	game.funcs->handle_play(card);
 
 	/* set up next move */
 	game.play_count++;
-	game_next_play();
+	game.funcs->next_play();
 	if (game.play_count != game.play_total)
 		set_game_state(WH_STATE_NEXT_PLAY);
 	else {
 		/* end of trick */
 		ggz_debug("End of trick; %d/%d.  Scoring it.", game.trick_count, game.trick_total);
 		sleep(1);
-		game_end_trick();
+		game.funcs->end_trick();
 		send_trick(game.winner);
 		game.trick_count++;
 		set_game_state( WH_STATE_NEXT_TRICK );
@@ -1001,7 +1001,7 @@ int handle_play_event(card_t card)
 			/* end of the hand */
 			ggz_debug("End of hand number %d.", game.hand_num);
 			sleep(1);
-			game_end_hand();
+			game.funcs->end_hand();
 			set_all_player_messages();
 			game.dealer = (game.dealer + 1) % game.num_players;
 			game.hand_num++;
@@ -1010,7 +1010,7 @@ int handle_play_event(card_t card)
 	}
 
 	/* this is the player that just finished playing */
-	game_set_player_message(game.curr_play);
+	game.funcs->set_player_message(game.curr_play);
 
 	/* do next move */
 	next_play();
@@ -1038,11 +1038,11 @@ int handle_bid_event(bid_t bid)
 	game.players[p].bid = bid;
 
 	/* handle the bid */
-	game_handle_bid(bid);
+	game.funcs->handle_bid(bid);
 
 	/* set up next move */
 	game.bid_count++;
-	game_next_bid();
+	game.funcs->next_bid();
 	if (game.bid_count == game.bid_total)
 		set_game_state(WH_STATE_FIRST_TRICK);
 	else if (game.state == WH_STATE_WAIT_FOR_BID)
@@ -1051,7 +1051,7 @@ int handle_bid_event(bid_t bid)
 		ggz_debug("SERVER BUG: handle_bid_event: not in WH_STATE_WAIT_FOR_BID.");
 
 	/* this is the player that just finished bidding */
-	game_set_player_message(p);
+	game.funcs->set_player_message(p);
 
 	if (was_waiting)
 		save_game_state();
@@ -1087,6 +1087,9 @@ void init_game()
 		return;
 	}
 
+	/* TODO */
+	game.funcs = &game_funcs;
+
 	init_messages();
 
 	/* default values */
@@ -1096,7 +1099,7 @@ void init_game()
 	game.last_hand = 1;
 
 	/* now we do all the game-specific initialization... */
-	game_init_game();	
+	game.funcs->init_game();	
 
 	cards_create_deck(game.deck_type);
 

@@ -80,7 +80,7 @@ void set_all_player_messages()
 {
 	player_t p;
 	for (p=0; p<game.num_players; p++)
-		game_set_player_message(p);	
+		game.funcs->set_player_message(p);	
 }
 
 /* send_global_message

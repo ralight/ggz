@@ -25,6 +25,40 @@
 #ifndef __GAMES_H__
 #define __GAMES_H__
 
+#include "types.h"
+
+struct game_function_pointers {
+	void	(*init_game)();
+	int	(*get_options)();
+	void	(*handle_options)();
+
+	void	(*set_player_message)(player_t);
+
+	int	(*get_bid_text)(char*, int, bid_t);
+	void	(*start_bidding)();
+	int	(*get_bid)();
+	int	(*handle_bid)(bid_t);
+	void	(*next_bid)();
+
+	void	(*start_playing)();
+	char*	(*verify_play)(card_t);
+	void	(*next_play)();
+	void	(*get_play)();
+	void	(*handle_play)(card_t);
+
+	int	(*deal_hand)();
+	void	(*end_trick)();
+	void	(*end_hand)();
+
+	void	(*start_game)();
+	int	(*test_for_gameover)();
+	int	(*handle_gameover)();
+
+	card_t	(*map_card)(card_t);
+	int	(*compare_cards)(const void *, const void *);
+	int	(*send_hand)(player_t, seat_t);
+};
+
 /* Game types. */
 /* NOTE: because of the way options are handled, these must start at 0 and
  * count up directly.   See games_req_gametype. */
