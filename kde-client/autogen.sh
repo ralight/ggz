@@ -19,11 +19,11 @@ echo -n "[prerequisites]"
 version_check()
 {
 log="$log\t++ Checking for $1,"
-($1 --version >/dev/null 2>&1) || { log="$log not found!\n"; bailout=1; }
+($1 --version >/dev/null 2>&1) || { log="$log not found!\n"; bailout=1; return; }
 vline=`$1 --version | head -1`
 needed="$2"
 
-version=`echo $vline | sed 's/^[a-zA-z\-\.\ ()]*//;s/\([0-9]*\)[a-z]/\1/;s/ .*$//'`
+version=`echo $vline | sed 's/^[A-Za-z\-\.\ ()]*//;s/\([0-9]*\)[a-z]/\1/;s/ .*$//'`
 vmajor="0`echo $version | cut -d . -f 1`"
 vminor="0`echo $version | cut -s -d . -f 2`"
 vmicro="0`echo $version | cut -s -d . -f 3`"
