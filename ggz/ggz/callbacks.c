@@ -47,6 +47,7 @@
 extern GtkWidget *detail_window;
 extern GtkWidget *main_win;
 extern struct ConnectInfo connection;
+extern int selected_table;
 
 void anon_toggled(GtkWidget* button, gpointer window) 
 {
@@ -159,14 +160,9 @@ void cancel_details(GtkButton * button, gpointer user_data)
 
 void join_game(GtkButton * button, gpointer user_data)
 {
-	GtkWidget *table_list;
-
-	table_list = gtk_object_get_data(GTK_OBJECT(main_win), "table_list");
-
-	/* FIXME: Don't hardcode table numnber! */
-	dbg_msg("joining game");
-	es_write_int(connection.sock, REQ_JOIN_GAME);
-	es_write_int(connection.sock, 0);
+		dbg_msg("joining game");
+		es_write_int(connection.sock, REQ_JOIN_GAME);
+		es_write_int(connection.sock, selected_table);
 }
 
 
@@ -226,3 +222,17 @@ void input_chat_msg(GtkWidget * widget, gpointer user_data)
 	
 	gtk_entry_set_text(GTK_ENTRY(user_data), "");
 }
+
+void table_select_row_callback(GtkWidget *widget,
+                                gint row,
+                                gint column,
+                                GdkEventButton *event,
+                                gpointer data)
+{
+	gchar *text;
+
+	gtk_clist_get_text(GTK_CLIST(widget), row, 1, &text);
+	selected_table = atoi(text);
+}
+
+

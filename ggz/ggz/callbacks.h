@@ -54,3 +54,8 @@ void get_tables(GtkMenuItem * menuitem, gpointer user_data);
 
 void input_chat_msg(GtkWidget * editable, gpointer user_data);
 
+void table_select_row_callback(GtkWidget *widget,
+				gint row,
+				gint column,
+				GdkEventButton *event,
+				gpointer data);

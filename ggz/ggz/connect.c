@@ -48,6 +48,8 @@ extern struct ConnectInfo connection;
 extern struct Game game;
 extern GtkWidget *detail_window;
 extern GtkWidget *main_win;
+extern int selected_table;
+
 GtkWidget *detail_window = NULL;
 
 /* Various local handles */
@@ -218,6 +220,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		break;
 
 	case RSP_TABLE_LIST:
+		selected_table = -1;
 		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
 		gtk_clist_clear(GTK_CLIST(tmp));
 		es_read_int(source, &count);
@@ -370,27 +373,28 @@ void add_user_list(gchar * name, gint table)
 void add_table_list(TableInfo table)
 {
 	gpointer tmp;
-	gchar *entry[6];
+	gchar *entry[7];
 
 	if (main_win == NULL)
 		return;
 
-	entry[0] = g_strdup_printf("%d", table.table_index);
-	entry[1] = g_strdup_printf("%s", 
+	entry[0] = "";
+	entry[1] = g_strdup_printf("%d", table.table_index);
+	entry[2] = g_strdup_printf("%s", 
 				   game_types.info[table.type_index].name);
-	entry[2] = g_strdup_printf("%d", table.num_seats);
-	entry[3] = g_strdup_printf("%d", table.open_seats);
-	entry[4] = g_strdup_printf("%d", table.num_humans);
-	entry[5] = "";
+	entry[3] = g_strdup_printf("%d", table.num_seats);
+	entry[4] = g_strdup_printf("%d", table.open_seats);
+	entry[5] = g_strdup_printf("%d", table.num_humans);
+	entry[6] = "";
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
 
 	gtk_clist_append(GTK_CLIST(tmp), entry);
-	g_free(entry[0]);
 	g_free(entry[1]);
 	g_free(entry[2]);
 	g_free(entry[3]);
 	g_free(entry[4]);
+	g_free(entry[5]);
 
 }
 

@@ -403,6 +403,7 @@ create_main_win (void)
   GtkWidget *table_label;
   GtkWidget *table_scroll;
   GtkWidget *table_tree;
+  GtkWidget *label5;
   GtkWidget *label8;
   GtkWidget *label9;
   GtkWidget *label10;
@@ -671,61 +672,72 @@ create_main_win (void)
   gtk_box_pack_start (GTK_BOX (table_box), table_scroll, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (table_scroll), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  table_tree = gtk_ctree_new (10, 0);
+  table_tree = gtk_ctree_new (7,0);
   gtk_widget_ref (table_tree);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "table_tree", table_tree,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table_tree);
   gtk_container_add (GTK_CONTAINER (table_scroll), table_tree);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 0, 80);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 1, 80);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 2, 80);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 3, 80);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 4, 80);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 5, 80);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 0, 10);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 1, 70);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 2, 70);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 3, 70);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 4, 70);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 5, 70);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 6, 1);
   gtk_clist_column_titles_show (GTK_CLIST (table_tree));
+
+  label5 = gtk_label_new (" ");
+  gtk_widget_ref (label5);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "label5", label5,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label5);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 0, label5);
 
   label8 = gtk_label_new ("Table No.");
   gtk_widget_ref (label8);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "label8", label8,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label8);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 0, label8);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 1, label8);
 
   label9 = gtk_label_new ("Game Type");
   gtk_widget_ref (label9);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "label9", label9,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label9);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 1, label9);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 2, label9);
 
   label10 = gtk_label_new ("Seats");
   gtk_widget_ref (label10);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "label10", label10,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label10);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 2, label10);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 3, label10);
 
   label11 = gtk_label_new ("Open Seats");
   gtk_widget_ref (label11);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "label11", label11,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label11);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 3, label11);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 4, label11);
 
   label12 = gtk_label_new ("Humans");
   gtk_widget_ref (label12);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "label12", label12,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label12);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 4, label12);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 5, label12);
 
   label13 = gtk_label_new (" ");
   gtk_widget_ref (label13);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "label13", label13,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label13);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 5, label13);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 6, label13);
+  gtk_signal_connect(GTK_OBJECT (table_tree), "select_row", 
+			GTK_SIGNAL_FUNC(table_select_row_callback),
+			NULL);
 
   h_pane = gtk_hpaned_new ();
   gtk_widget_ref (h_pane);

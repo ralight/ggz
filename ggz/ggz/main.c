@@ -39,6 +39,7 @@ struct ConnectInfo connection;
 struct Game game;
 GtkWidget *main_win;
 GtkWidget *dlg_login;
+int selected_table;
 
 int main(int argc, char *argv[])
 {
