@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6099 2004-07-13 17:03:21Z josef $
+#  $Id: Makefile.am 6478 2004-12-15 00:17:01Z josef $
 
-MODULES = chess chinese-checkers combat dots ggzcards hastings lapocha reversi spades tictactoe
+MODULES = chess chinese-checkers combat dots ggzcards hastings reversi spades tictactoe
 
 SUBDIRS = .
 EXTRA_DIST = $(MODULES) common
