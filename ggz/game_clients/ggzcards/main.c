@@ -342,7 +342,6 @@ void statusbar_message(char *msg)
 
 static void handle_badplay(void)
 {
-	int card;
 	char err_msg[100];
 	int p = game.play_hand;
 
@@ -350,18 +349,18 @@ static void handle_badplay(void)
 		snprintf(err_msg, sizeof(err_msg), _("Bad play: unknown reason.") );
 
 	/* Restore the cards the way they should be */
-	card = game.players[p].hand.in_play_card_num;
-	game.players[p].hand.card[card] = game.players[p].hand.in_play_card_val;
+	game.players[p].table_card = UNKNOWN_CARD;
 #ifdef ANIMATION
 	table_animation_abort();
 #endif /* ANIMATION */
 
-	/* TODO: redraw cards */
+	/* redraw cards */
+	table_display_hand(p);
 
 	game.state = WH_STATE_PLAY;
 	
 	statusbar_message(err_msg);
-	sleep(1); /* TODO: why is this here?  Just a delay? */
+	sleep(1); /* just a delay? */
 }
 
 

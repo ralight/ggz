@@ -489,22 +489,16 @@ static void table_card_clicked(int card)
 {
 	int p = game.play_hand;
 	if(card == game.players[p].hand.selected_card) {
-		card_t c;
 		game.players[p].hand.selected_card = -1;
 
 		/* Start the graphic animation */
 		table_card_play(p, card);
 
-		/* We save these values in case the server rejects the card */
-		c = game.players[p].hand.card[card];
-		game.players[p].hand.in_play_card_num = card;
-		game.players[p].hand.in_play_card_val = game.players[p].hand.card[card];
-
-		/* Now, remove the card from our hand */
-		/* NO, don't remove it from our hand.  We just skip over it when we look at it. */
+		/* We don't remove the card from our hand until we have validation that it's been played.
+		 * Graphically, the table_card is skipped over when drawing the hand. */
 
 		/* Call the game function to notify server of play */
-		game_play_card(c);
+		game_play_card(game.players[p].hand.card[card]);
 	} else {
 		/* Pop the card forward and select it */
 		game.players[p].hand.selected_card = card;
@@ -785,13 +779,16 @@ void table_display_hand(int p)
 
 	/* Draw the cards */
 	for(i=0; i<game.players[p].hand.hand_size; i++) {
+		card_t card = game.players[p].hand.card[i];
+		if ( !memcmp(&card, &game.players[p].table_card, sizeof(card_t)) )
+			continue;
 		x = cx + 0.5 + (i * ow);
 		y = cy + 0.5 + (i * oh);
 		if (i==game.players[p].hand.selected_card) {
 			x += cxo;
 			y += cyo;
 		}
-		draw_card(game.players[p].hand.card[i], orientation(p), x, y);
+		draw_card(card, orientation(p), x, y);
 	}
 
 	/* And refresh the on-screen image for card areas */

@@ -58,8 +58,6 @@ struct hand_t {
 	int hand_size; 							/* the number of cards in the hand */
 	card_t card[MAX_HAND_SIZE]; /* the list of cards */
 	char selected_card;					/* the currently selected (highlighted) card (index) */
-	char in_play_card_num;			/* the currently played card (index) */
-	card_t in_play_card_val; 		/* ""											"" (value) */
 };
 
 extern int hand_read_hand(void);
