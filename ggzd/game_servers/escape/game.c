@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 4487 2002-09-09 04:13:26Z jdorje $
+ * $Id: game.c 5292 2002-12-16 10:38:53Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -28,16 +28,104 @@
 #endif
 
 #include <stdlib.h>
+#include <string.h>
 #include <ggz.h>
 
 #include "game.h"
 
+//#define GGZSTATISTICS
+//#define GGZSPECTATORS
+
+#ifdef GGZSTATISTICS
+#include "ggz_stats.h"
+#endif
+
+/* Data structure for Escape game */
+struct escape_game_t {
+	GGZdMod *ggz; /* GGZ data object */
+	char boardheight;
+	char goalwidth;
+	char wallwidth;
+	int board[MAX_WALLWIDTH*2 + MAX_GOALWIDTH+3][MAX_BOARDHEIGHT+3][10];
+	int x;
+	int y;
+	char state;
+	char turn;
+	unsigned char options[2];
+	unsigned char play_again;
+	int optionsseat;
+};
+
+/* Escape protocol */
+/* Messages from server */
+#define ESCAPE_MSG_SEAT     0
+#define ESCAPE_MSG_PLAYERS  1
+#define ESCAPE_MSG_MOVE     2
+#define ESCAPE_MSG_GAMEOVER 3
+#define ESCAPE_REQ_MOVE     4
+#define ESCAPE_RSP_MOVE     5
+#define ESCAPE_SND_SYNC     6
+#define ESCAPE_MSG_OPTIONS  7
+#define ESCAPE_REQ_OPTIONS  8
+#define ESCAPE_MSG_CHAT     9
+#define ESCAPE_RSP_CHAT    10
+#ifdef GGZSTATISTICS
+#define ESCAPE_SND_STATS    11
+#endif
+
+/* Messages from client */
+#define ESCAPE_SND_MOVE     0
+#define ESCAPE_REQ_SYNC     1
+#define ESCAPE_SND_OPTIONS  2
+#define ESCAPE_REQ_NEWGAME  3
+#ifdef GGZSTATISTICS
+#define ESCAPE_REQ_STATS    4
+#endif
+
+/* Move errors */
+#define ESCAPE_ERR_STATE   -1
+#define ESCAPE_ERR_TURN    -2
+#define ESCAPE_ERR_BOUND   -3
+#define ESCAPE_ERR_FULL    -4
+
+/* Escape game states */
+#define ESCAPE_STATE_INIT        0 /* Table has been started, no players joined */
+#define ESCAPE_STATE_OPTIONS     1 /* Options have been requested */
+#define ESCAPE_STATE_WAITING     2 /* Waiting for all players to join, options have been received */
+#define ESCAPE_STATE_PLAYING     3 /* Playing */
+#define ESCAPE_STATE_DONE        4
+
 /* Global game variables */
 struct escape_game_t escape_game;
 
-/* Private functions */
-static int game_get_options(int);
-static int game_handle_newgame(int);
+/* Network IO functions */
+static int game_send_seat(int seat);
+static int game_send_players(void);
+static int game_send_move(int num, int move);
+static int game_send_sync(int fd);
+#ifdef GGZSTATISTICS
+static int game_send_stats(int num);
+#endif
+static int game_send_gameover(int winner);
+static int game_read_move(int num, int* move);
+
+static int seats_full(void);
+static int seats_empty(void);
+
+static int game_next_move(void);
+static int game_req_move(int num);
+static int game_do_move(int move);
+static int game_bot_move(int me);
+static int game_bot_count_moves(int move);
+static char game_check_move(int num, int move);
+static int game_send_options_request(int fd);
+static int game_send_options(int fd);
+static int game_read_options(int seat);
+//static int game_handle_newgame(int seat);
+static int revdir(int direction);
+
+
+static char game_check_win(void);
 
 
 /* Setup game state and board */
@@ -47,233 +135,269 @@ void game_init(GGZdMod *ggz)
 	escape_game.turn = -1;
 	escape_game.state = ESCAPE_STATE_INIT;
 	escape_game.ggz = ggz;
+	/* Board is set up after the options have been collected */
 }
 
-//FIXME
-/* Handle message from player */
-void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	int num = *(int*)data; /* player number */
-	int fd, op;
-	unsigned char direction;
+	switch(ggzdmod_get_state(ggz)) {
+	case GGZDMOD_STATE_PLAYING:
+		if(escape_game.turn == -1){
+			escape_game.turn = 0;
+			game_next_move();
+		}
+	default:
+		break;
+	}
+}
 
-	ggzdmod_log(escape_game.ggz, "game_handle_player(%d) called",num);
-	ggzdmod_log(escape_game.ggz, "\tnum = %d, escape_game.turn = %d",num, escape_game.turn);
+static int seats_full(void){
+	return ggzdmod_count_seats(escape_game.ggz, GGZ_SEAT_OPEN) == 0
+		&& ggzdmod_count_seats(escape_game.ggz, GGZ_SEAT_RESERVED) == 0;
+}
 
-	fd = ggzdmod_get_seat(escape_game.ggz, num).fd;
-	
-	if(ggz_read_int(fd, &op) < 0)
-	{
-		/* FIXME: an ES error handler function should be registered instead */
-		ggzdmod_log(escape_game.ggz, "\tPremature exit due to ggz_read_int(fd, &op) failure");
+static int seats_empty(void){
+	return ggzdmod_count_seats(escape_game.ggz, GGZ_SEAT_OPEN) == 0
+		&& ggzdmod_count_spectators(escape_game.ggz) == 0;
+}
+
+#ifdef GGZSPECTATORS
+void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, void *data)
+{
+	int i, fd;
+	GGZSpectator *old_spectator = data;
+	GGZSpectator spectator;
+	GGZSeat seat;
+
+	spectator = ggzdmod_get_spectator(ggz, old_spectator->num);
+	fd = spectator.fd;
+
+	if(ggz_write_int(fd, ESCAPE_MSG_PLAYERS) < 0)
 		return;
+	for(i = 0; i < 2; i++){
+		seat = ggzdmod_get_seat(escape_game.ggz, i);
+		if(ggz_write_int(fd, seat.type) < 0)
+			return;
+		if(seat.type != GGZ_SEAT_OPEN
+				&& ggz_write_string(fd, seat.name) < 0)
+			return;
+		if(game_send_sync(seat.fd) < 0)
+			return;
 	}
-
-	ggzdmod_log(escape_game.ggz, "\top = %d",op);
-
-	switch(op) {
-		case ESCAPE_SND_MOVE:
-			if(game_handle_move(num, &direction) == 0)
-				game_update(ESCAPE_EVENT_MOVE, &direction);
-			break;
-		case ESCAPE_REQ_SYNC:
-			game_send_sync(num);
-			break;
-		case ESCAPE_SND_OPTIONS:
-			game_get_options(num);
-			break;
-		case ESCAPE_REQ_NEWGAME:
-			game_handle_newgame(num);
-			break;
-		default:
-			ggzdmod_log(escape_game.ggz, "Unrecognized player opcode %d.", op);
-			break;
-	}
-
-	return;
 }
 
-
-/* Get options from client */
-static int game_get_options(int seat)
+void game_handle_ggz_spectator_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	int fd = ggzdmod_get_seat(escape_game.ggz, seat).fd;
-	int p, q, d;
+	if(seats_empty())
+		ggzdmod_set_state(escape_game.ggz, GGZDMOD_STATE_DONE);
+}
+#endif
 
-	ggzdmod_log(escape_game.ggz, "game_get_options(%d)", seat);
+/* Callback for ggzdmod JOIN, LEAVE and SEAT events */
+void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, void *data)
+{
+	GGZdModState new_state;
+	GGZSeat *old_seat = data;
+	GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
 
-	if(ggz_read_char(fd, &escape_game.boardheight) < 0
-	   || ggz_read_char(fd, &escape_game.wallwidth) < 0
-	   || ggz_read_char(fd, &escape_game.goalwidth) < 0)
-		return -1;
+	if(seats_full()){
+		if(escape_game.state == ESCAPE_STATE_WAITING){
+			escape_game.state = ESCAPE_STATE_PLAYING;
+			new_state = GGZDMOD_STATE_PLAYING;
+		}else{
+			new_state = GGZDMOD_STATE_WAITING;
+		}
+	}else if (seats_empty())
+		new_state = GGZDMOD_STATE_DONE;
+	else
+		new_state = GGZDMOD_STATE_WAITING;
 
-	// FIXME - add bounds checking to ensure eg. escape_game.boardheight isn't larger than MAXBOARDHEIGHT
-
-	ggzdmod_log(escape_game.ggz, "\tOptions recieved ok\n\tboardheight=%d\n\twallwidth=%d\n\tgoalwidth=%d",escape_game.boardheight, escape_game.wallwidth, escape_game.goalwidth);
-
-	for(p = 0;p<=escape_game.wallwidth * 2 + escape_game.goalwidth+1;p++){
-		for(q = 0;q<=escape_game.boardheight+1;q++){
-			for(d = 0;d<10;d++){
-				escape_game.board[p][q][d] = dtEmpty;
-            	}
+	if(new_seat.type == GGZ_SEAT_PLAYER) {
+		game_send_players();
+		game_send_seat(new_seat.num);
+		/* If we're continuing a game, send sync to new player */
+		if(escape_game.turn != -1){
+			game_send_options(new_seat.fd);
+			game_send_sync(new_seat.fd);
+		}else if(escape_game.state == ESCAPE_STATE_INIT && event == GGZDMOD_EVENT_JOIN){
+			game_send_options_request(new_seat.fd);
+			escape_game.state = ESCAPE_STATE_OPTIONS;
+		}else{
+			if(escape_game.state == ESCAPE_STATE_WAITING){
+				game_send_options(new_seat.fd);
+			}
 		}
 	}
 
-    	for(p = 0;p<=escape_game.wallwidth * 2 + escape_game.goalwidth+1;p++){
-      	escape_game.board[p][0][4] = dtBlocked;
-        	escape_game.board[p][0][7] = dtBlocked;
-        	escape_game.board[p][0][8] = dtBlocked;
-        	escape_game.board[p][0][9] = dtBlocked;
-        	escape_game.board[p][0][6] = dtBlocked;
-
-        	escape_game.board[p][escape_game.boardheight+1][4] = dtBlocked;
-        	escape_game.board[p][escape_game.boardheight+1][1] = dtBlocked;
-        	escape_game.board[p][escape_game.boardheight+1][2] = dtBlocked;
-        	escape_game.board[p][escape_game.boardheight+1][3] = dtBlocked;
-        	escape_game.board[p][escape_game.boardheight+1][6] = dtBlocked;
-	}
-
-	for(q = 0;q<=escape_game.boardheight+1;q++){
-        	escape_game.board[0][q][1] = dtBlocked;
-        	escape_game.board[0][q][4] = dtBlocked;
-        	escape_game.board[0][q][7] = dtBlocked;
-        	escape_game.board[0][q][8] = dtBlocked;
-        	escape_game.board[0][q][2] = dtBlocked;
-
-        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth+1][q][8] = dtBlocked;
-        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth+1][q][9] = dtBlocked;
-        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth+1][q][6] = dtBlocked;
-        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth+1][q][3] = dtBlocked;
-        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth+1][q][2] = dtBlocked;
-	}
-
-	escape_game.x = (escape_game.goalwidth + 2 * escape_game.wallwidth - 1)/2 +1;
-	escape_game.y = escape_game.boardheight/2;
-	return game_update(ESCAPE_EVENT_OPTIONS, NULL);
+	ggzdmod_set_state(escape_game.ggz, new_state);
 }
 
-
-/* Send out options */
-int game_send_options(int seat)
+/* Handle message from player */
+void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	int fd = ggzdmod_get_seat(escape_game.ggz, seat).fd;
+	int num = *(int*)data;
+	int fd, op, move;
+	GGZSeat seat;
 
-	ggzdmod_log(escape_game.ggz, "game_send_options(%d)",seat);
+	seat = ggzdmod_get_seat(ggz, num);
+	fd = seat.fd;
 
-	if(ggz_write_int(fd, ESCAPE_MSG_OPTIONS) < 0
-	   || ggz_write_char(fd, escape_game.boardheight) < 0
-	   || ggz_write_char(fd, escape_game.goalwidth) < 0
-	   || ggz_write_char(fd, escape_game.wallwidth) < 0)
-		return -1;
+	if(ggz_read_int(fd, &op) < 0)
+		return;
 
-	ggzdmod_log(escape_game.ggz, "\tOptions sent ok with\n\tboardheight=%d\n\tgoalwidth=%d\n\twallwidth=%d\n",escape_game.boardheight, escape_game.goalwidth, escape_game.wallwidth);
-
-	return 0;
-}
-
-
-/* Send a request for client to set options */
-static int game_send_options_request(int seat)
-{
-	int fd = ggzdmod_get_seat(escape_game.ggz, seat).fd;
+	switch(op){
 	
-	ggzdmod_log(escape_game.ggz, "game_send_options_request(%d)",seat);
+	case ESCAPE_SND_MOVE:
+		if (game_read_move(num, &move) == 0)
+			game_do_move(move);
+		break;
 
-	if(ggz_write_int(fd, ESCAPE_REQ_OPTIONS) < 0)
-		return -1;
+	case ESCAPE_REQ_SYNC:
+		game_send_sync(fd);
+		break;
 
-	ggzdmod_log(escape_game.ggz, "\tESCAPE_REQ_OPTIONS sent ok");
-	return 0;
+	case ESCAPE_SND_OPTIONS:
+		game_read_options(num);
+		break;
+
+	case ESCAPE_REQ_NEWGAME:
+//		game_handle_newgame(num);
+		break;
+
+#ifdef GGZSTATISTICS
+	case ESCAPE_REQ_STATS:
+		game_send_stats(num);
+		break;
+#endif
+	default:
+		ggzdmod_log(ggz, "Unrecognised player opcode %d.", op);
+	}
 }
 
+#ifdef GGZSPECTATORS
+/* handle message from spectator */
+void game_handle_ggz_spectator(GGZdMod *ggz, GGZdModEvent event, void *data)
+{
+	int num = *(int*)data;
+	int fd, op;
+	GGZSeat seat;
+
+	seat = ggzdmod_get_seat(ggz, num);
+	fd = seat.fd;
+
+	if(ggz_read_int(fd, &op) < 0)
+		return;
+
+	switch(op){
+	case ESCAPE_REQ_SYNC:
+		game_send_sync(fd);
+		break;
+	default:
+		ggzdmod_log(ggz, "Unrecognised spectator opcode %d.", op);
+	}
+}
+#endif
 
 /* Send out seat assignment */
-int game_send_seat(int seat)
+static int game_send_seat(int num)
 {
-	int fd = ggzdmod_get_seat(escape_game.ggz, seat).fd;
+	GGZSeat seat;
+	
+	seat = ggzdmod_get_seat(escape_game.ggz, num);
+	ggzdmod_log(escape_game.ggz, "Sending player %d's seat num", num);
 
-	ggzdmod_log(escape_game.ggz, "Sending player %d`s seat num", seat);
-
-	if(ggz_write_int(fd, ESCAPE_MSG_SEAT) < 0
-	   || ggz_write_int(fd, seat) < 0)
-		return -1;
-
-	ggzdmod_log(escape_game.ggz, "\tESCAPE_ESCAPE_MSG_SEAT sent ok with seat=%d", seat);
+	if(ggz_write_int(seat.fd, ESCAPE_MSG_SEAT) < 0
+		|| ggz_write_int(seat.fd, num) < 0)
+			return -1;
 
 	return 0;
 }
-
 
 /* Send out player list to everybody */
-int game_send_players(void)
+static int game_send_players(void)
 {
 	int i, j, fd;
-	
-	ggzdmod_log(escape_game.ggz, "game_send_players()");
+	GGZSeat seat;
 
-	for(j=0; j<2; j++) {
-		if((fd = ggzdmod_get_seat(escape_game.ggz, j).fd) == -1)
-			continue;
+	for(j = 0; j < 2; j++){
+		seat = ggzdmod_get_seat(escape_game.ggz, j);
+		fd = seat.fd;
+		
+		if (fd != -1) {
+			ggzdmod_log(escape_game.ggz, "Sending playerlist to player %d", j);
 
-		ggzdmod_log(escape_game.ggz, "\tSending player list to player %d", j);
-
-		if(ggz_write_int(fd, ESCAPE_MSG_PLAYERS) < 0)
-			return -1;
-	
-		for(i=0; i<2; i++) {
-			GGZSeat seat = ggzdmod_get_seat(escape_game.ggz, i);
-			if(ggz_write_int(fd, seat.type) < 0)
+			if(ggz_write_int(fd, ESCAPE_MSG_PLAYERS) < 0)
 				return -1;
-			if(seat.type != GGZ_SEAT_OPEN
-			    /* FIXME: seat.name can be NULL! */
-			    && ggz_write_string(fd, seat.name) < 0)
-				return -1;
+
+			for(i = 0; i < 2; i++){
+				seat = ggzdmod_get_seat(escape_game.ggz, i);
+				if (ggz_write_int(fd, seat.type) < 0)
+					return -1;
+				if (seat.type != GGZ_SEAT_OPEN
+				   && ggz_write_string(fd, seat.name) < 0)
+					return -1;
+			}
 		}
 	}
-	ggzdmod_log(escape_game.ggz, "\tgame_send_players() returning ok");
 	return 0;
 }
 
-
-/* Send out move for player: num */
-int game_send_move(int num, int event, char direction)
+/* Send outmove for player: num */
+static int game_send_move(int num, int direction)
 {
-	int fd = ggzdmod_get_seat(escape_game.ggz, escape_game.opponent).fd;
-	/* int i; */
+	int opponent = (num + 1) % 2;
+	GGZSeat seat = ggzdmod_get_seat(escape_game.ggz, opponent);
 
-	ggzdmod_log(escape_game.ggz, "game_send_move(%d, %d, %d)",num, event, direction);	
-
-	/* If player is a computer, don't need to send */
-	if(fd == -1)
-		return 0;
-
-	ggzdmod_log(escape_game.ggz, "\tSending player %d`s move to player %d",
-		   num, escape_game.opponent);
-
-	if(ggz_write_int(fd, ESCAPE_MSG_MOVE) < 0
-	   || ggz_write_char(fd, direction) < 0){
-		ggzdmod_log(escape_game.ggz, "\tgame_send_move() returning -1");
-		return -1;
+	/* If player is a computer we don't need to send */
+	if (seat.fd != -1){
+		ggzdmod_log(escape_game.ggz, "Sending player %d's move to player %d", num, opponent);
+		
+		if(ggz_write_int(seat.fd, ESCAPE_MSG_MOVE) < 0
+		   || ggz_write_int(seat.fd, direction) < 0)
+			return -1;
 	}
-	
-	ggzdmod_log(escape_game.ggz, "\tgame_send_move() returning 0");
 	return 0;
 }
 
-// FIXME - incomplete (should send x, y)
+#ifdef GGZSTATISTICS
+/* Send game statistics */
+static int game_send_stats(int num)
+{
+	int wins, losses, ties;
+	GGZStats *stats;
+	GGZSeat seat;
+
+	seat = ggzdmod_get_seat(escape_game.ggz, num);
+
+	ggzdmod_log(escape_game.ggz, "Handling statistics for player %d", num);
+
+	stats = ggzstats_new(escape_game.ggz);
+	ggzstats_get_record(stats, num, &wins, &losses, &ties);
+	ggzstats_free(stats);
+
+	if(ggz_write_int(seat.fd, ESCAPE_SND_STATS) < 0
+		|| ggz_write_int(seat.fd, wins) < 0
+		|| ggz_write_int(seat.fd, losses) < 0
+	   || ggz_write_int(seat.fd, ties) < 0)
+		return -1;
+	return 0;
+}
+#endif
+
 /* Send out board layout */
-int game_send_sync(int num)
-{	
-	int fd = ggzdmod_get_seat(escape_game.ggz, num).fd;
+static int game_send_sync(int fd)
+{
 	int p, q, d;
 
-	ggzdmod_log(escape_game.ggz, "Handling sync for player %d", num);
+	ggzdmod_log(escape_game.ggz, "Handling sync for fd %d", fd);
 
 	if(ggz_write_int(fd, ESCAPE_SND_SYNC) < 0
 	   || ggz_write_char(fd, escape_game.boardheight) < 0
 	   || ggz_write_char(fd, escape_game.goalwidth) < 0
 	   || ggz_write_char(fd, escape_game.wallwidth) < 0
-	   || ggz_write_char(fd, escape_game.turn) < 0)
+	   || ggz_write_char(fd, escape_game.turn) < 0
+	   || ggz_write_int(fd, escape_game.x) < 0
+	   || ggz_write_int(fd, escape_game.y) < 0)
 		return -1;
 
 	for(p=0; p<escape_game.goalwidth+escape_game.wallwidth*2; p++)
@@ -281,197 +405,421 @@ int game_send_sync(int num)
 			for(d=1; d<10; d++)
 				if(ggz_write_char(fd, escape_game.board[p][q][d]) < 0)
 					return -1;
-	return 0;
+
+	return 0;		
 }
-	
 
-/* Send out game-over message */
-int game_send_gameover(char winner)
+/* Send out game over message */
+static int game_send_gameover(int winner)
 {
-	int i, fd;
-	
-	for(i=0; i<2; i++) {
-		if((fd = ggzdmod_get_seat(escape_game.ggz, i).fd) == -1)
-			continue;
+	int i;
+	GGZSeat seat;
+#ifdef GGZSPECTATORS
+	GGZSpectator spectator;
+#endif
 
-		ggzdmod_log(escape_game.ggz, "Sending game-over to player %d", i);
+#ifdef GGZSTATISTICS
+	GGZStats *stats;
 
-		if(ggz_write_int(fd, ESCAPE_MSG_GAMEOVER) < 0
-		    || ggz_write_char(fd, winner) < 0)
-			return -1;
+	stats = ggzstats_new(escape_game.ggz);
+	if(winner < 2) {
+		ggzstats_set_game_winner(stats, winner, 1.0);
+		ggzstats_set_game_winner(stats, (winner + 1) % 2, 0.0);
+	} else if(winner == 2){
+		/* Draw */
+		ggzstats_set_game_winner(stats, 0, 0.5);
+		ggzstats_set_game_winner(stats, 1, 0.5);
+	} else {
+		/* One player "commited suicide" */
+		ggzstats_set_game_winner(stats, (winner - 3), 0.5);
+		ggzstats_set_game_winner(stats, ((winner - 3) + 1) % 2, -0.5);
 	}
+	ggzstats_recalculate_ratings(stats);
+	ggzstats_free(stats);
+#endif
+
+	for(i = 0; i < 2; i++){
+		seat = ggzdmod_get_seat(escape_game.ggz, i);
+		if (seat.fd != -1){
+			ggzdmod_log(escape_game.ggz, "sending game-over to player %d", i);
+
+			if(ggz_write_int(seat.fd, ESCAPE_MSG_GAMEOVER) < 0
+			   || ggz_write_char(seat.fd, winner) < 0)
+				return -1;
+		}
+	}
+
+#ifdef GGZSPECTATORS
+	for(i = 0; i < ggzdmod_get_max_num_spectators(escape_game.ggz); i++)
+	{
+		spectator = ggzdmod_get_spectator(escape_game.ggz, i);
+		if(spectator.fd < 0) continue;
+		ggz_write_int(spectator.fd, ESCAPE_MSG_GAMEOVER);
+		ggz_write_char(spectator.fd, winner);
+	}
+#endif
+
 	return 0;
 }
 
-//FIXME - ai
-/* Do the next move*/
-int game_move(void)
+/* Read incoming move from player */
+static int game_read_move(int num, int* move)
 {
-	int num = escape_game.turn;
-	/* unsigned char dir, x, y; */
+	GGZSeat seat = ggzdmod_get_seat(escape_game.ggz, num);
+	char status;
 
-//	if(ggzd_get_seat_status(num) == GGZ_SEAT_BOT) {
-//		dir = ai_move(&x, &y);
-//		if(dir == 0)
-//			/* FIXME: These will cause recursion on score */
-//			game_update(ESCAPE_EVENT_MOVE_V, &x, &y);
-//		else
-//			game_update(DOTS_EVENT_MOVE_H, &x, &y);
-//	} else
+	ggzdmod_log(escape_game.ggz, "Handling move for player %d", num);
+	if (ggz_read_int(seat.fd, move) < 0)
+		return -1;
+
+	/* Check validity of move */
+	status = game_check_move(num, *move);
+
+	/* Send back move status */
+	if (ggz_write_int(seat.fd, ESCAPE_RSP_MOVE) < 0
+	   || ggz_write_char(seat.fd, status) < 0
+	   || ggz_write_int(seat.fd, *move) < 0)
+		return -1;
+
+	if( (status == -3 || status == -4)
+	   && game_req_move(num) < 0)
+		return -1;
+
+	if(status != 0)
+		return 1;
+
+	return 0;
+}
+
+/* Do the next move */
+static int game_next_move(void)
+{
+	int move, num = escape_game.turn;
+	GGZSeat seat = ggzdmod_get_seat(escape_game.ggz, num);
+
+	if(seat.type == GGZ_SEAT_BOT){
+		move = game_bot_move(num);
+		game_do_move(move);
+	}else
 		game_req_move(num);
 
 	return 0;
 }
 
-
+/* FIXME - maybe make client thinner by sending valid moves with ESCAPE_REQ_MOVE */
 /* Request move from current player */
-int game_req_move(int num)
+static int game_req_move(int num)
 {
-	int fd = ggzdmod_get_seat(escape_game.ggz, num).fd;
+	GGZSeat seat = ggzdmod_get_seat(escape_game.ggz, num);
 
-	ggzdmod_log(escape_game.ggz, "game_req_move(num = %d)", num);
+	ggzdmod_log(escape_game.ggz, "Requesting move from player %d on %d", num, seat.fd);
 
-	if(ggz_write_int(fd, ESCAPE_REQ_MOVE) < 0){
-		ggzdmod_log(escape_game.ggz, "\tgame_req_move() returning -1");
+	if(ggz_write_int(seat.fd, ESCAPE_REQ_MOVE) < 0){
+		ggzdmod_log(escape_game.ggz, "Error requesting move from player %d", num);
 		return -1;
 	}
 
-	ggzdmod_log(escape_game.ggz, "\tgame_req_move() returning 0");
 	return 0;
 }
 
-
-//FIXME
-/* Handle incoming move from player */
-int game_handle_move(int num, unsigned char *direction)
+static int game_do_move(int move)
 {
-	int fd = ggzdmod_get_seat(escape_game.ggz, num).fd;
+	/* Only called if move is valid */
+	char victor;
 	int i;
 	int newx, newy;
-	char status=0;
-	/* int count=0; */
-	
-	ggzdmod_log(escape_game.ggz, "Handling move for player %d", num);
-	if(ggz_read_char(fd, direction) < 0)
+	int repeatmove = 0;
+#ifdef GGZSPECTATORS
+	int fd;
+#endif
+
+	/* FIXME: we should not return on a network error within this
+		function - that will fubar the whole game since the turn won't
+		be incremented. --JDS */
+
+	if (ggzdmod_get_state(escape_game.ggz) != GGZDMOD_STATE_PLAYING)
 		return -1;
 
+	ggzdmod_log(escape_game.ggz, "Player %d moving in direction %d", escape_game.turn, move);
 
-	/* We make a note who our opponent is, easier on the update func */
-	escape_game.opponent = 1 - num;
-	ggzdmod_log(escape_game.ggz, "\tescape_game.opponent = %d", escape_game.opponent);
-	escape_game.repeatmove=0;
+	switch(move){
 
-	if(escape_game.board[escape_game.x][escape_game.y][*direction]!=dtEmpty)
-		status = ESCAPE_ERR_FULL;
-	else {
-		switch(*direction){
-			case 7: //northwest
-				newx = escape_game.x - 1;
-				newy = escape_game.y - 1;
-				break;
-			case 8: //north
-				newx = escape_game.x;
-            		newy = escape_game.y - 1;
-				break;
-        		case 9: //northeast
-            		newx = escape_game.x + 1;
-            		newy = escape_game.y - 1;
-				break;
-        		case 6: //east
-            		newx = escape_game.x + 1;
-				newy = escape_game.y;
-				break;
-        		case 3: //southeast
-            		newx = escape_game.x + 1;
-            		newy = escape_game.y + 1;
-				break;
-        		case 2: //south
-				newx = escape_game.x;
-            		newy = escape_game.y + 1;
-				break;
-        		case 1: //southwest
-            		newx = escape_game.x - 1;
-            		newy = escape_game.y + 1;
-				break;
-        		case 4: //west
-            		newx = escape_game.x - 1;
-				newy = escape_game.y;
-				break;
-			default:
-				ggzdmod_log(escape_game.ggz, "ERROR: game_handle_move: wrong direction %d.", *direction);
-				newx = escape_game.x;
-				newy = escape_game.y;
-		}
-		if((newx<0)||(newy<0)||(newx>escape_game.wallwidth*2+escape_game.goalwidth)||(newy>escape_game.boardheight))
-			status = ESCAPE_ERR_BOUND;
-		else {
-			for(i=1; i<10; i++)
+	case 7: //northwest
+		newx = escape_game.x - 1;
+		newy = escape_game.y - 1;
+		break;
+	case 8: //north
+		newx = escape_game.x;
+		newy = escape_game.y - 1;
+		break;
+	case 9: //northeast
+       	newx = escape_game.x + 1;
+       	newy = escape_game.y - 1;
+		break;
+      case 6: //east
+      	newx = escape_game.x + 1;
+		newy = escape_game.y;
+		break;
+      case 3: //southeast
+      	newx = escape_game.x + 1;
+            newy = escape_game.y + 1;
+		break;
+	case 2: //south
+		newx = escape_game.x;
+		newy = escape_game.y + 1;
+		break;
+	case 1: //southwest
+		newx = escape_game.x - 1;
+		newy = escape_game.y + 1;
+		break;
+	case 4: //west
+		newx = escape_game.x - 1;
+		newy = escape_game.y;
+		break;
+	default:
+		ggzdmod_log(escape_game.ggz, "ERROR: game_handle_move: wrong direction %d.", move);
+		newx = escape_game.x;
+		newy = escape_game.y;
+	}
+
+	if((newx<0)||(newy<0)||(newx>escape_game.wallwidth*2+escape_game.goalwidth)||(newy>escape_game.boardheight)||(newx==escape_game.x && newy==escape_game.y)){
+//		status = ESCAPE_ERR_BOUND;
+	}else {
+		for(i=1; i<10; i++){
+			if((escape_game.board[newx][newy][i]!=dtEmpty)&&(escape_game.board[newx][newy][i]!=dtCorner))
 			{
-				if((escape_game.board[newx][newy][i]!=dtEmpty)&&
-						(!((newx==1)&&(newy==1)&&(i==7))||
-						((newx==1)&&(newy==escape_game.boardheight)&&(i==1))||
-						((newx==escape_game.goalwidth+escape_game.wallwidth*2)&&(newy==1)&&(i==9))||
-						((newx==escape_game.goalwidth+escape_game.wallwidth*2)&&(newy==escape_game.boardheight)&&(i==3))))
-				{
-					// give new move
-					escape_game.repeatmove=1;
-				}
-			}		
-			if(num%2){
-				escape_game.board[escape_game.x][escape_game.y][*direction]=dtPlayer1;
-				escape_game.board[newx][newy][revdir(*direction)]=dtPlayer1;
-			}else{
-				escape_game.board[escape_game.x][escape_game.y][*direction]=dtPlayer2;
-				escape_game.board[newx][newy][revdir(*direction)]=dtPlayer2;
+				// give new move
+				repeatmove=1;
 			}
-			escape_game.x = newx;
-			escape_game.y = newy;
-			status = 0;
+		}		
+
+		if(escape_game.turn % 2){
+			escape_game.board[escape_game.x][escape_game.y][move]=dtPlayer1;
+			escape_game.board[newx][newy][revdir(move)]=dtPlayer1;
+		}else{
+			escape_game.board[escape_game.x][escape_game.y][move]=dtPlayer2;
+			escape_game.board[newx][newy][revdir(move)]=dtPlayer2;
 		}
+		escape_game.x = newx;
+		escape_game.y = newy;
 	}
 
 
-	/* Send back move status */
-	if(ggz_write_int(fd, ESCAPE_RSP_MOVE) < 0
-	    || ggz_write_char(fd, status) < 0
-	    || ggz_write_char(fd, *direction) < 0)
-		return -1;
+	game_send_move(escape_game.turn, move);
 
-	/* If move simply invalid, ask for resubmit */
-	if((status == -3 || status == -4)
-	     && game_req_move(num) < 0)
-		return -1;
+#ifdef GGZSPECTATORS
+	for(i=0; i < ggzdmod_get_max_num_spectators(escape_game.ggz); i++){
+		fd = (ggzdmod_get_spectator(escape_game.ggz, i)).fd;
+		if(fd < 0) continue;
+		ggz_write_int(fd, ESCAPE_MSG_MOVE);
+		ggz_write_int(fd, move);
+	}
+#endif
 
-	if(status < 0)
-		return 1;
-	
-	if(!escape_game.repeatmove){ // move on to next player
-		ggzdmod_log(escape_game.ggz, "\tmove on to next player");
-		escape_game.turn = 1 - escape_game.turn;
+	if((victor = game_check_win()) < 0){
+		if(repeatmove == 0)
+			escape_game.turn = (escape_game.turn + 1) % 2;
+		
+		game_next_move();
 	}else{
-		ggzdmod_log(escape_game.ggz, "\tdon`t move on to next player");
+		game_send_gameover(victor);
+		/* Notify GGZ server of game over */
+		ggzdmod_set_state(escape_game.ggz, GGZDMOD_STATE_DONE);
 	}
+
 	return 0;
 }
 
-#if 0
-/* Do bot moves */
-int game_bot_move(void)
+/* Count the number of available if bot moves in a particular direction */
+static int game_bot_count_moves(int move)
 {
+	int count = 0;
 	int i;
-	
-	for(i = 0; i < 9; i++)
-		if (dots_game.board[i] == -1)
-			return i;
+	int newx, newy;
 
-	return -1;
+	switch(move){
+
+	case 7: //northwest
+		newx = escape_game.x - 1;
+		newy = escape_game.y - 1;
+		break;
+	case 8: //north
+		newx = escape_game.x;
+		newy = escape_game.y - 1;
+		break;
+	case 9: //northeast
+       		newx = escape_game.x + 1;
+       		newy = escape_game.y - 1;
+		break;
+      	case 6: //east
+      		newx = escape_game.x + 1;
+		newy = escape_game.y;
+		break;
+      	case 3: //southeast
+      		newx = escape_game.x + 1;
+            	newy = escape_game.y + 1;
+		break;
+	case 2: //south
+		newx = escape_game.x;
+		newy = escape_game.y + 1;
+		break;
+	case 1: //southwest
+		newx = escape_game.x - 1;
+		newy = escape_game.y + 1;
+		break;
+	case 4: //west
+		newx = escape_game.x - 1;
+		newy = escape_game.y;
+		break;
+	default:
+		return 0;
+	}
+
+	for(i=1; i < 10; i++){
+		if(escape_game.board[newx][newy][i] == dtEmpty && i != 5)
+			count++;
+	}
+	return count;
 }
-#endif
+
+/* FIXME - write proper AI! */
+/* Do bot moves */
+static int game_bot_move(int me)
+{
+	int moves[10];
+	int i;
+	int tiemove=-1;
+	int freecount=0;
+	int botmove;
+
+	for(i=1; i < 10; i++){
+		moves[i] = escape_game.board[escape_game.x][escape_game.y][i];
+		if(game_bot_count_moves(i)==0){
+			moves[i]=dtTieMove; /* If we move here then the game will be tied */
+			tiemove = i; /* Set tiemove so we can use it if there is no other choice */
+		}
+		if(moves[i]==dtEmpty && i!=5)
+			freecount++;
+	}
+	moves[5] = dtBlocked;
+	if(!freecount)
+		return tiemove;
 
 
-//FIXME
+	if(random() % 3){ /* Do a proper type move */
+		if(me == 0){ /* Player 1 - moving up */
+			if(moves[8]==dtEmpty)
+				return 8;
+
+			if(moves[9]==dtEmpty)
+				return 9;
+
+			if(moves[7]==dtEmpty)
+				return 7;
+
+			if(moves[4]==dtEmpty)
+				return 4;
+
+			if(moves[6]==dtEmpty)
+				return 6;
+
+			do{
+				botmove = (random() % 9) +1;
+			}while(moves[botmove]!=dtEmpty);
+		}else{
+			if(moves[2]==dtEmpty)
+				return 2;
+
+			if(moves[1]==dtEmpty)
+				return 1;
+
+			if(moves[3]==dtEmpty)
+				return 3;
+	
+			if(moves[4]==dtEmpty)
+				return 4;
+	
+			if(moves[6]==dtEmpty)
+				return 6;
+	
+			do{
+				botmove = (random() % 9) + 1;
+			}while(moves[botmove]!=dtEmpty);
+		}
+	}else{
+		do{
+			botmove = (random() % 9) + 1;
+		}while(moves[botmove]!=dtEmpty);
+	}
+	return botmove;
+}
+
+/* Check for valid move */
+static char game_check_move(int num, int move)
+{
+	int newx, newy;
+
+	/* Check for correct state */
+	if(ggzdmod_get_state(escape_game.ggz) != GGZDMOD_STATE_PLAYING)
+		return ESCAPE_ERR_STATE;
+
+	/* Check for correct turn */
+	if(num != escape_game.turn)
+		return ESCAPE_ERR_TURN;
+
+	/* Check for out of bounds move */
+	switch(move){
+
+	case 7: //northwest
+		newx = escape_game.x - 1;
+		newy = escape_game.y - 1;
+		break;
+	case 8: //north
+		newx = escape_game.x;
+		newy = escape_game.y - 1;
+		break;
+	case 9: //northeast
+		newx = escape_game.x + 1;
+     		newy = escape_game.y - 1;
+		break;
+	case 6: //east
+     		newx = escape_game.x + 1;
+		newy = escape_game.y;
+		break;
+      	case 3: //southeast
+      		newx = escape_game.x + 1;
+      		newy = escape_game.y + 1;
+		break;
+      	case 2: //south
+		newx = escape_game.x;
+      		newy = escape_game.y + 1;
+		break;
+      	case 1: //southwest
+     	 	newx = escape_game.x - 1;
+      		newy = escape_game.y + 1;
+		break;
+	case 4: //west
+      		newx = escape_game.x - 1;
+		newy = escape_game.y;
+		break;
+	default:
+		ggzdmod_log(escape_game.ggz, "ERROR: game_handle_move: wrong direction %d.", move);
+		newx = escape_game.x;
+		newy = escape_game.y;
+	}
+	if((newx<0)||(newy<0)||(newx>escape_game.wallwidth*2+escape_game.goalwidth)||(newy>escape_game.boardheight)||(newx==escape_game.x && newy==escape_game.y))
+		return ESCAPE_ERR_BOUND;
+
+	/* Check for duplicated or blocked move */
+	if(escape_game.board[escape_game.x][escape_game.y][move] != dtEmpty)
+		return ESCAPE_ERR_FULL;
+
+	return 0;
+}
+
+/* FIXME - add "suicide" type of win with winner = 3, 4 */
 /* Check for a win */
-char game_check_win(void)
+static char game_check_win(void)
 {
 	int i;
 	int count=0;
@@ -506,151 +854,122 @@ char game_check_win(void)
 	return -1;
 }
 
-/* FIXME: there's no reason this should be separate from game_update */
-/* You're better off with one function per event; it'd be better IMO
-   to move the event information from game_update into these
-   functions.  --JDS */
-void ggz_update_state(GGZdMod *ggz, GGZdModEvent event, void *data)
+/* Send a request for client to set options */
+static int game_send_options_request(int fd)
 {
-	GGZdModState old_state = *(GGZdModState*)data;
-	if (old_state == GGZDMOD_STATE_CREATED)
-		game_update(ESCAPE_EVENT_LAUNCH, NULL);
-}
+	ggzdmod_log(escape_game.ggz, "Sending options request to fd %d",fd);
 
+	if(ggz_write_int(fd, ESCAPE_REQ_OPTIONS) < 0)
+		return -1;
 
-void ggz_update_join(GGZdMod *ggz, GGZdModEvent event, void *data)
-{
-	int player = ((GGZSeat*)data)->num;
-	game_update(ESCAPE_EVENT_JOIN, &player);
-}
-
-void ggz_update_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
-{
-	int player = ((GGZSeat*)data)->num;
-	game_update(ESCAPE_EVENT_LEAVE, &player);
-}
-
-static int seats_full(void)
-{
-	return ggzdmod_count_seats(escape_game.ggz, GGZ_SEAT_OPEN)
-		+ ggzdmod_count_seats(escape_game.ggz, GGZ_SEAT_RESERVED) == 0;
-}
-
-/* Update game state */
-int game_update(int event, void *d1)
-{
-	int seat;
-	char direction;
-	char victor;
-	static int first_join=1;
-	
-	ggzdmod_log(escape_game.ggz, "game_update(%d, ) entered",event);
-
-	switch(event) {
-		case ESCAPE_EVENT_LAUNCH:
-			ggzdmod_log(escape_game.ggz, "\tESCAPE_EVENT_LAUNCH");
-			if(escape_game.state != ESCAPE_STATE_INIT)
-				return -1;
-			escape_game.state = ESCAPE_STATE_OPTIONS;
-			ggzdmod_log(escape_game.ggz, "\tescape_game.state = ESCAPE_STATE_OPTIONS");
-			escape_game.repeatmove = 0;
-			break;
-		case ESCAPE_EVENT_OPTIONS:
-			ggzdmod_log(escape_game.ggz, "\tESCAPE_EVENT_OPTIONS");
-			if(escape_game.state != ESCAPE_STATE_OPTIONS)
-				return -1;
-			escape_game.state = ESCAPE_STATE_WAIT;
-			ggzdmod_log(escape_game.ggz, "\tescape_game.state = ESCAPE_STATE_WAIT");
-			
-			/* Send the options to anyone waiting for them */
-			for(seat=0; seat<2; seat++)
-				if(ggzdmod_get_seat(escape_game.ggz, seat).type == GGZ_SEAT_PLAYER)
-					game_send_options(seat);
-
-			ggzdmod_log(escape_game.ggz, "\tOptions sent to players");
-			/* Start the game if we are ready to */
-			if(escape_game.play_again != 1 && seats_full()) {
-				escape_game.turn = 0;
-				escape_game.state = ESCAPE_STATE_PLAYING;
-				ggzdmod_log(escape_game.ggz, "\tescape_game.state = ESCAPE_STATE_PLAYING");
-				game_move();
-			}
-			break;
-		case ESCAPE_EVENT_JOIN:
-			ggzdmod_log(escape_game.ggz, "\tESCAPE_EVENT_JOIN");
-			if(escape_game.state != ESCAPE_STATE_WAIT
-			   && escape_game.state != ESCAPE_STATE_OPTIONS)
-				return -1;
-
-			/* Send out seat assignments and player list */
-			seat = *(int*)d1;
-			game_send_seat(seat);
-			ggzdmod_log(escape_game.ggz, "\tgame_send_seat(%d)",seat);
-			game_send_players();
-
-			/* The first joining client gets asked to set options */
-			if(escape_game.state == ESCAPE_STATE_OPTIONS) {
-				if(first_join) {
-					if(game_send_options_request(seat) < 0)
-						return -1;
-					ggzdmod_log(escape_game.ggz, "\tgame_send_options_request(%d)",seat);
-					first_join = 0;
-				}
-				return 0;
-			}
-
-			/* If options are already set, we can proceed */
-			game_send_options(seat);
-			ggzdmod_log(escape_game.ggz, "\tgame_send_options(%d)",seat);
-			if(seats_full()) {
-				if(escape_game.turn == -1){
-					escape_game.turn = 0;
-					ggzdmod_log(escape_game.ggz, "\tescape_game.turn = 0");
-				}else{
-					ggzdmod_log(escape_game.ggz, "\tgame_send_sync(%d)",seat);
-					game_send_sync(seat);
-				}
-				escape_game.state = ESCAPE_STATE_PLAYING;
-				ggzdmod_log(escape_game.ggz, "\tescape_game.state = ESCAPE_STATE_PLAYING");
-				
-				game_move();
-			}
-			break;
-		case ESCAPE_EVENT_LEAVE:
-			ggzdmod_log(escape_game.ggz, "\tESCAPE_EVENT_LEAVE\n\tgame_send_players()");
-			game_send_players();
-			if(escape_game.state == ESCAPE_STATE_PLAYING){
-				escape_game.state = ESCAPE_STATE_WAIT;
-				ggzdmod_log(escape_game.ggz, "\tescape_game.state = ESCAPE_STATE_WAIT");
-			}
-			break;
-		case ESCAPE_EVENT_MOVE:
-			ggzdmod_log(escape_game.ggz, "\tESCAPE_EVENT_MOVE");
-
-			if(escape_game.state != ESCAPE_STATE_PLAYING)
-				return -1;
-		
-			direction = *(char*)d1;
-			ggzdmod_log(escape_game.ggz, "\tgame_send_move(%d, %d, %d)",escape_game.turn, event, direction);
-			game_send_move(escape_game.turn, event, direction);
-		
-			if((victor = game_check_win()) < 0) {
-				/* Request next move */
-				ggzdmod_log(escape_game.ggz, "\tgame_move()");
-				game_move();
-			} else {
-				/* We have a winner */
-				escape_game.state = ESCAPE_STATE_DONE;
-				game_send_gameover(victor);
-				game_init(escape_game.ggz);
-				escape_game.play_again = 0;
-			}
-			break;
-	}
-	ggzdmod_log(escape_game.ggz, "\tgame_update() returning 0");
+	escape_game.state = ESCAPE_STATE_OPTIONS;
 	return 0;
 }
 
+/* Send out options */
+static int game_send_options(int fd)
+{
+	ggzdmod_log(escape_game.ggz, "game_send_options(%d)",fd);
+
+	if(fd < 0)
+		return -1;
+	
+	if(ggz_write_int(fd, ESCAPE_MSG_OPTIONS) < 0
+	   || ggz_write_char(fd, escape_game.boardheight) < 0
+	   || ggz_write_char(fd, escape_game.goalwidth) < 0
+	   || ggz_write_char(fd, escape_game.wallwidth) < 0)
+		return -1;
+
+	ggzdmod_log(escape_game.ggz, "Options sent ok with");
+	ggzdmod_log(escape_game.ggz, "\tboardheight=%d", escape_game.boardheight);
+	ggzdmod_log(escape_game.ggz, "\tgoalwidth=%d", escape_game.goalwidth);
+	ggzdmod_log(escape_game.ggz, "\twallwidth=%d", escape_game.wallwidth);
+
+	return 0;
+}
+
+/* Get options from client */
+static int game_read_options(int seat)
+{
+	int fd = ggzdmod_get_seat(escape_game.ggz, seat).fd;
+	int p, q, d;
+
+	ggzdmod_log(escape_game.ggz, "game_get_options(%d)", seat);
+
+	if(ggz_read_char(fd, &escape_game.boardheight) < 0
+	   || ggz_read_char(fd, &escape_game.goalwidth) < 0
+	   || ggz_read_char(fd, &escape_game.wallwidth) < 0)
+		return -1;
+
+	// FIXME - add bounds checking to ensure eg. escape_game.boardheight isn't larger than MAXBOARDHEIGHT
+
+	ggzdmod_log(escape_game.ggz, "Options recieved ok");
+	ggzdmod_log(escape_game.ggz, "\tboardheight=%d", escape_game.boardheight);
+	ggzdmod_log(escape_game.ggz, "\tgoalwidth=%d", escape_game.goalwidth);
+	ggzdmod_log(escape_game.ggz, "\twallwidth=%d", escape_game.wallwidth);
+
+	/* Mark everything as empty */
+	for(p = 0;p<=escape_game.wallwidth * 2 + escape_game.goalwidth+1;p++){
+		for(q = 0;q<=escape_game.boardheight+1;q++){
+			for(d = 0;d<10;d++){
+				escape_game.board[p][q][d] = dtEmpty;
+        	    	}
+		}
+	}
+
+    	for(p = 0;p<=escape_game.wallwidth * 2 + escape_game.goalwidth+1;p++){
+		/* Mark top wall as blocked */
+      		escape_game.board[p][0][4] = dtBlocked;
+        	escape_game.board[p][0][7] = dtBlocked;
+        	escape_game.board[p][0][8] = dtBlocked;
+        	escape_game.board[p][0][9] = dtBlocked;
+        	escape_game.board[p][0][6] = dtBlocked;
+
+		/* Mark bottom wall as blocked */
+        	escape_game.board[p][(int)escape_game.boardheight][4] = dtBlocked;
+        	escape_game.board[p][(int)escape_game.boardheight][1] = dtBlocked;
+        	escape_game.board[p][(int)escape_game.boardheight][2] = dtBlocked;
+        	escape_game.board[p][(int)escape_game.boardheight][3] = dtBlocked;
+        	escape_game.board[p][(int)escape_game.boardheight][6] = dtBlocked;
+	}
+
+	for(q = 0;q<=escape_game.boardheight+1;q++){
+		/* Mark left hand side wall as blocked */
+        	escape_game.board[0][q][1] = dtBlocked;
+        	escape_game.board[0][q][4] = dtBlocked;
+        	escape_game.board[0][q][7] = dtBlocked;
+        	escape_game.board[0][q][8] = dtBlocked;
+        	escape_game.board[0][q][2] = dtBlocked;
+
+		/* Mark right hand side wall as blocked */
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][8] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][9] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][6] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][3] = dtBlocked;
+        	escape_game.board[escape_game.wallwidth * 2 + escape_game.goalwidth][q][2] = dtBlocked;
+	}
+
+	escape_game.board[1][1][7] = dtCorner;
+	escape_game.board[1][escape_game.boardheight - 1][1] = dtCorner;
+	escape_game.board[escape_game.goalwidth + 2 * escape_game.wallwidth - 1][1][9] = dtCorner;
+	escape_game.board[escape_game.goalwidth + 2 * escape_game.wallwidth - 1][escape_game.boardheight - 1][3] = dtCorner;
+
+	escape_game.x = (escape_game.goalwidth + 2 * escape_game.wallwidth - 1)/2 + 1;
+	escape_game.y = escape_game.boardheight/2;
+
+	//game_send_options(0);
+	game_send_options(ggzdmod_get_seat(escape_game.ggz, 1-seat).fd);
+	
+	if(seats_full()){
+		escape_game.state = ESCAPE_STATE_PLAYING;
+		ggzdmod_set_state(escape_game.ggz, GGZDMOD_STATE_PLAYING);
+	}else{
+		escape_game.state = ESCAPE_STATE_WAITING;
+		ggzdmod_set_state(escape_game.ggz, GGZDMOD_STATE_WAITING);
+	}
+	return 0;
+}
+#if 0
 static int game_handle_newgame(int seat)
 {
 	int status = 0;
@@ -674,14 +993,14 @@ static int game_handle_newgame(int seat)
 	   && seats_full()) {
 		escape_game.turn = 0;
 		escape_game.state = ESCAPE_STATE_PLAYING;
-		escape_game.repeatmove = 0;
+		repeatmove = 0;
 		game_move();
 	}
 
 	return status;
 }
-
-unsigned char revdir(unsigned char direction)
+#endif
+static int revdir(int direction)
 {
 	switch(direction)
 	{
@@ -713,3 +1032,4 @@ unsigned char revdir(unsigned char direction)
 	ggzdmod_log(escape_game.ggz, "ERROR: revdir: invalid direction %d.", direction);
 	return 1;
 }
+

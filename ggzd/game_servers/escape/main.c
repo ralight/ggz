@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 22/06/2001
  * Desc: Main loop
- * $Id: main.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: main.c 5292 2002-12-16 10:38:53Z oojah $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,6 +27,7 @@
 #  include <config.h>			/* Site-specific config */
 #endif
 
+#include <ggzdmod.h>
 #include <sys/types.h>
 #include <errno.h>
 #include <stdio.h>
@@ -40,13 +41,19 @@ int main(void)
 {
 	/* First, initialize GGZ data. */
 	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &ggz_update_state);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &ggz_update_join);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &ggz_update_leave);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player_data);
-	
+
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &game_handle_ggz_state);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz_seat);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz_seat);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_ggz_player);
+#ifdef GGZSPECTATORS
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_DATA, &game_handle_ggz_spectator);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_JOIN,&game_handle_ggz_spectator_join);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_LEAVE, &game_handle_ggz_spectator_leave);
+#endif
+
 	/* Seed the random number generator */
-	srandom((unsigned)time(NULL));
+//	srandom((unsigned)time(NULL));
 	game_init(ggz);
 
 	/* Connect to GGZ server; main loop */

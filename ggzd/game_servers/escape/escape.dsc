@@ -1,4 +1,4 @@
-# $Id: escape.dsc 4548 2002-09-13 16:19:50Z jdorje $
+# $Id: escape.dsc 5292 2002-12-16 10:38:53Z oojah $
 
 [GameInfo]
 Author = Roger Light
@@ -16,5 +16,5 @@ Version = 2-pre1
 
 [TableOptions]
 AllowLeave = 1
-#BotsAllowed = 
+BotsAllowed = 1
 PlayersAllowed = 2
