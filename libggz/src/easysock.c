@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 6978 2005-03-11 07:11:26Z jdorje $
+ * $Id: easysock.c 7078 2005-04-03 17:24:02Z josef $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -150,42 +150,98 @@ int ggz_init_network(void)
 }
 
 
+static int es_bind(const char *host, int port)
+{
+	int sockfd, n;
+	const int on = 1;
+	struct addrinfo hints, *res, *ressave;
+	char serv[30];
+
+	snprintf(serv, sizeof(serv), "%d", (unsigned int)port);
+
+	bzero(&hints, sizeof(struct addrinfo));
+	hints.ai_flags = AI_PASSIVE;
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+
+	if ((n = getaddrinfo(host, serv, &hints, &res)) != 0) {
+		if (_err_func)
+			(*_err_func) (gai_strerror(n), GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
+		return -1;
+	}
+
+	ressave = res;
+
+	do {
+		sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+		if (sockfd < 0)
+			continue;
+
+		setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (void*)&on, sizeof(on));
+
+		if (bind(sockfd, res->ai_addr, res->ai_addrlen) == 0)
+			break;
+
+		close(sockfd);
+
+	} while ( (res = res->ai_next) != NULL);
+
+	freeaddrinfo(ressave);
+
+	return(sockfd);
+}
+
+
+static int es_connect(const char *host, int port)
+{
+	int sockfd, n;
+	struct addrinfo hints, *res, *ressave;
+	char serv[30];
+
+	snprintf(serv, sizeof(serv), "%d", (unsigned int)port);
+
+	bzero(&hints, sizeof(struct addrinfo));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+
+	if ((n = getaddrinfo(host, serv, &hints, &res)) != 0) {
+		if (_err_func)
+			(*_err_func) (gai_strerror(n), GGZ_IO_CREATE, 0, GGZ_DATA_NONE);
+		return -1;
+	}
+
+	ressave = res;
+
+	do {
+		sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+		if (sockfd < 0)
+			continue;
+		if (connect(sockfd,res->ai_addr,res->ai_addrlen) == 0)
+			break;
+
+		close(sockfd);
+
+	} while ( (res = res->ai_next) != NULL);
+
+	freeaddrinfo(ressave);
+
+	return(sockfd);
+}
+
+
 int ggz_make_socket(const GGZSockType type, const unsigned short port, 
 		   const char *server)
 {
-	int sock;
-	const int on = 1;
-	struct sockaddr_in name;
-	struct hostent *hp;
+	int sock = -1;
 
-	if (ggz_init_network() < 0){ /* Just in case. */
+	if (ggz_init_network() < 0) { /* Just in case. */
 		return -1;
 	}
-
-	if ( (sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
-		if (_err_func)
-			(*_err_func) (strerror(errno), GGZ_IO_CREATE, -1, GGZ_DATA_NONE);
-		return -1;
-	}
-
-	name.sin_family = AF_INET;
-	name.sin_port = htons(port);
 
 	switch (type) {
 
 	case GGZ_SOCK_SERVER:
-		if(server) {
-#ifdef HAVE_INET_PTON
-			inet_pton(AF_INET, server, &name.sin_addr.s_addr);
-#else
-			name.sin_addr.s_addr = inet_addr(server);
-#endif
-		} else {
-			name.sin_addr.s_addr = htonl(INADDR_ANY);
-		}
-		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void*)&on, 
-			       sizeof(on)) < 0
-		    || bind(sock, (SA *)&name, sizeof(name)) < 0) {
+		if( (sock = es_bind(server, port)) < 0) {
 			if (_err_func)
 				(*_err_func) (strerror(errno), GGZ_IO_CREATE, 
 					      sock, GGZ_DATA_NONE);
@@ -194,15 +250,7 @@ int ggz_make_socket(const GGZSockType type, const unsigned short port,
 		break;
 
 	case GGZ_SOCK_CLIENT:
-		if ( (hp = gethostbyname(server)) == NULL) {
-			if (_err_func)
-				(*_err_func) ("Lookup failure", GGZ_IO_CREATE, 
-					      sock, GGZ_DATA_NONE);
-			return -2;
-		}
-		memcpy(&name.sin_addr, hp->h_addr, hp->h_length);
-		if (connect(sock, (SA *)&name, sizeof(name)) < 0) {
-			if (_err_func)
+		if( (sock = es_connect(server, port)) < 0) {
 				(*_err_func) (strerror(errno), GGZ_IO_CREATE, 
 					      sock, GGZ_DATA_NONE);
 			return -1;
