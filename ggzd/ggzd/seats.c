@@ -49,11 +49,11 @@ int seats_num(TableInfo table)
 }
 
 
-int seats_comp(TableInfo table)
+int seats_bot(TableInfo table)
 {
 	int i, count = 0;
 	for (i = 0; i < MAX_TABLE_SIZE; i++)
-		if (table.seats[i] == GGZ_SEAT_COMP)
+		if (table.seats[i] == GGZ_SEAT_BOT)
 			count++;
 	return count;
 }

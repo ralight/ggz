@@ -26,6 +26,6 @@
 
 int seats_open(TableInfo table);
 int seats_num(TableInfo table);
-int seats_comp(TableInfo table);
+int seats_bot(TableInfo table);
 int seats_reserved(TableInfo table);
 int seats_human(TableInfo table);

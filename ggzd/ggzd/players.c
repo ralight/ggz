@@ -983,7 +983,7 @@ static int player_list_tables(int p_index, int fd)
 			switch(my_tables[i].seats[j]) {
 
 			case GGZ_SEAT_OPEN:
-			case GGZ_SEAT_COMP:
+			case GGZ_SEAT_BOT:
 				continue;  /* no name for these */
 			case GGZ_SEAT_RESV:
 				uid = my_tables[i].reserve[j];
@@ -1096,22 +1096,6 @@ static int read_name(int sock, char name[MAX_USER_NAME_LEN + 1])
 }
 
 
-/* Count computer players based on mask */
-int num_comp_play(unsigned char mask)
-{
-
-	int i, count = 0;
-
-	for (i = 0; i < 8; i++) {
-		count += (mask / 128);
-		mask = (mask << 1);
-	}
-
-	return count;
-
-}
-
-
 /* FIXME: move to type.c */
 int type_match_table(int type, int num)
 {
@@ -1135,3 +1119,4 @@ int player_motd(int p_index, int fd)
 
 	return GGZ_REQ_OK;
 }
+

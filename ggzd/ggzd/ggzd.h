@@ -99,7 +99,7 @@
 
 /* Special seat assignment values */
 #define GGZ_SEAT_OPEN   -1
-#define GGZ_SEAT_COMP   -2
+#define GGZ_SEAT_BOT    -2
 #define GGZ_SEAT_RESV   -3
 #define GGZ_SEAT_NONE   -4
 

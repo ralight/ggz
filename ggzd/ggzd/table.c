@@ -77,7 +77,7 @@ static int table_check(int p_index, TableInfo table)
 	dbg_msg(GGZ_DBG_TABLE, "Player %d launching table of type %d", p_index,
 		table.type_index);
 	dbg_msg(GGZ_DBG_TABLE, "Num_seats  : %d", seats_num(table));
-	dbg_msg(GGZ_DBG_TABLE, "AI Players : %d", seats_comp(table));
+	dbg_msg(GGZ_DBG_TABLE, "AI Players : %d", seats_bot(table));
 	dbg_msg(GGZ_DBG_TABLE, "Open_seats : %d", seats_open(table));
 	dbg_msg(GGZ_DBG_TABLE, "Num_reserve: %d", seats_reserved(table));
 	dbg_msg(GGZ_DBG_TABLE, "State    : %d", table.state);
@@ -87,7 +87,7 @@ static int table_check(int p_index, TableInfo table)
 		case GGZ_SEAT_OPEN:
 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: open", i);
 			break;
-		case GGZ_SEAT_COMP:
+		case GGZ_SEAT_BOT:
 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: computer", i);
 			break;
 		case GGZ_SEAT_RESV:
@@ -258,7 +258,7 @@ static int table_send_opt(int t_index)
 		switch(tables.info[t_index].seats[i]) {
 
 		case GGZ_SEAT_OPEN:
-		case GGZ_SEAT_COMP:
+		case GGZ_SEAT_BOT:
 			break;  /* no name for these */
 		case GGZ_SEAT_RESV:
 			uid = tables.info[t_index].reserve[i];
