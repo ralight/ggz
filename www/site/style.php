@@ -14,8 +14,6 @@
 	background-color: #eeeeee;
 	background-image: url(/pics/site/bar.png);
 	background-repeat: no-repeat;
-	/*font-weight: bold;*/
-	/*text-align: center;*/
 	border-width: 1px;
 	border-color: #000000;
 	border-style: solid;
@@ -25,11 +23,7 @@
 }
 .inner td {
 	background-color: #eeeeee;
-	/*background-image: url(/pics/site/bar.png);*/
 	background-repeat: no-repeat;
-	/*font-weight: bold;*/
-	/*text-align: center;*/
-	/*border-width: 1px;*/
 	border-color: #000000;
 	border-style: solid;
 
@@ -48,8 +42,6 @@
 	background-color: #eeeeee;
 	background-image: url(/pics/site/bar.png);
 	background-repeat: no-repeat;
-	/*font-weight: bold;*/
-	/*text-align: center;*/
 	border-width: 1px;
 	border-color: #000000;
 	border-style: solid;

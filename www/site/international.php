@@ -2,10 +2,29 @@
 
 function country($lang)
 {
+	$langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+	$langs = str_replace(" ", "", $langs);
+	$langs = preg_replace("/;[^,]*/", "", $langs);
+	$ar = split(",", $langs);
+
+	foreach ($ar as $l)
+	{
+		if($lang == $l) break;
+		if(($lang == "en") && ($l == "en-us")) $lang = "en-us";
+		if(($lang == "en") && ($l == "en-ca")) $lang = "en-ca";
+		if(($lang == "pt") && ($l == "pt-br")) $lang = "pt-br";
+		if(($lang == "de") && ($l == "de-ch")) $lang = "de-ch";
+		if(($lang == "de") && ($l == "de-at")) $lang = "de-at";
+	}
+
 	switch($lang)
 	{
 		case "en": return "gb"; break;
+		case "en-us": return "us"; break;
+		case "en-ca": return "ca"; break;
 		case "pt-br": return "br"; break;
+		case "de-ch": return "ch"; break;
+		case "de-at": return "at"; break;
 		default: return $lang;
 	}
 }
@@ -27,6 +46,7 @@ $dir = substr($dir, 0, $i);
 $d = opendir($dir);
 while($f = readdir($d))
 {
+	if(substr($f, strlen($f) - 4, 4) == ".php") continue;
 	if(substr($f, 0, strlen("$file.")) == "$file.") :
 		$far = explode(".", $f);
 		$i = 0;

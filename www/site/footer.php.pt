@@ -11,7 +11,7 @@ include("international.php");
 |
 <a href="/about.php">Sobre o GGZ Gaming Zone</a>
 |
-<a href="http://ggz.sourceforge.net">Homepage velho</a>
+<a href="/network.php">Servidores/Rede</a>
 |
 <a href="/contact.php">Contato</a>
 </font>

@@ -9,9 +9,9 @@ International
 include("international.php");
 ?>
 |
-<a href="/about.php">Über die GGZ Gaming Zone</a>
+<a href="/about.php">Ãœber die GGZ Gaming Zone</a>
 |
-<a href="http://ggz.sourceforge.net">Alte Homepage</a>
+<a href="/network.php">Server/Netzwerk</a>
 |
 <a href="/contact.php">Kontakt</a>
 </font>

@@ -1,12 +1,21 @@
 <?php
 
 $lang = "en";
-$ar = split(", ", $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+$langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+$langs = str_replace(" ", "", $langs);
+$langs = preg_replace("/;[^,]*/", "", $langs);
+$ar = split(",", $langs);
 
 foreach ($ar as $l)
 {
 	if(file_exists($_SERVER['DOCUMENT_ROOT'] . "/site/footer.php.$l")) :
 		$lang = $l;
+		break;
+	endif;
+
+	$lmajor = preg_replace("/-.*/", "", $l);
+	if(file_exists($_SERVER['DOCUMENT_ROOT'] . "/site/header.php.$lmajor")) :
+		$lang = $lmajor;
 		break;
 	endif;
 }

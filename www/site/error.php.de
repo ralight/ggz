@@ -1,15 +1,15 @@
-<? include_once("/var/www/ggz/www/site/header.php"); ?>
+<? include_once($_SERVER['DOCUMENT_ROOT'] . "/site/header.php"); ?>
 
 Die angeforderte Seite konnte leider nicht gefunden werden :(
 <br>
 <?php
 if ($_SERVER['HTTP_REFERER']) :
-	echo "<a href='", $_SERVER['HTTP_REFERER'], "'>Zurück</a>\n";
+	echo "<a href='", $_SERVER['HTTP_REFERER'], "'>ZurÃ¼ck</a>\n";
 else :
-	echo "<a href='/'>Zurück zur Startseite</a>\n";
+	echo "<a href='/'>ZurÃ¼ck zur Startseite</a>\n";
 endif;
 ?>
 <br>
 
-<? include_once("/var/www/ggz/www/site/footer.php"); ?>
+<? include_once($_SERVER['DOCUMENT_ROOT'] . "/site/footer.php"); ?>
 

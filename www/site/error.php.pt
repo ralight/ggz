@@ -1,12 +1,12 @@
 <? include_once($_SERVER['DOCUMENT_ROOT'] . "/site/header.php"); ?>
 
-The page you requested could not been found :(
+Esta página não existe.
 <br>
 <?php
 if ($_SERVER['HTTP_REFERER']) :
-	echo "<a href='", $_SERVER['HTTP_REFERER'], "'>Go back</a>\n";
+	echo "<a href='", $_SERVER['HTTP_REFERER'], "'>Voltar</a>\n";
 else :
-	echo "<a href='/'>Go to the start page</a>\n";
+	echo "<a href='/'>Voltar para capa</a>\n";
 endif;
 ?>
 <br>
