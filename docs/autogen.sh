@@ -23,8 +23,7 @@ log="$log\t++ Checking for $1,"
 vline=`$1 --version | head -1`
 needed="$2"
 
-version=`echo $vline | sed 's/^[A-Za-z\-\.\ ()]*//;s/\([0-9]*\)[a-z]/\1/;s/ .*$//'`
-version=`echo $version | sed 's/\-[A-Za-z0-9]*//'`
+version=`echo $vline | perl -e "\\$_ = <STDIN>; \\$_ =~ m/(\d[\.\d]+)/; print \\$1"`
 vmajor="0`echo $version | cut -d . -f 1`"
 vminor="0`echo $version | cut -s -d . -f 2`"
 vmicro="0`echo $version | cut -s -d . -f 3`"
@@ -38,8 +37,10 @@ elif [ $vmajor -eq $nmajor ] && [ $vminor -lt $nminor ]; then old=1;
 elif [ $vmajor -eq $nmajor ] && [ $vminor -eq $nminor ] && [ $vmicro -lt $nmicro ]; then old=1;
 fi
 
-vversion=`echo "$vmajor.$vminor.$vmicro" | perl -e "\\$_ = <STDIN>; \\$_ =~ s/(^|\.)0(\d+)/\\$1\\$2/g; print"`
-nversion=`echo "$nmajor.$nminor.$nmicro" | perl -e "\\$_ = <STDIN>; \\$_ =~ s/(^|\.)0(\d+)/\\$1\\$2/g; print"`
+vall="$vmajor.$vminor.$vmicro"
+nall="$nmajor.$nminor.$nmicro"
+vversion=`echo $vall | perl -e "\\$_ = <STDIN>; \\$_ =~ s/(^|\.)0(\d+)/\\$1\\$2/g; print"`
+nversion=`echo $nall | perl -e "\\$_ = <STDIN>; \\$_ =~ s/(^|\.)0(\d+)/\\$1\\$2/g; print"`
 
 log="$log need $nversion, found $vversion -"
 if test $old = "1"; then
