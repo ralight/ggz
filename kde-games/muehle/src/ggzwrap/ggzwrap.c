@@ -28,11 +28,13 @@
 #include <errno.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <netinet/in.h>
 
 /* Global variables */
 int fdin = -1;
 int fdout = -1;
 char *exec = NULL;
+int convert = 0;
 
 /* Execute a program with the given argument vector */
 void simpleexec(const char *argvec)
@@ -64,11 +66,12 @@ void simpleexec(const char *argvec)
 }
 
 /* Launch a child program and reassign some fd's */
-void startup(int fdin, int fdout, const char *exec)
+void startup(int fdin, int fdout, const char *exec, int convert)
 {
 	int fd[2];
 	int res;
 	char buffer[1024];
+	int len;
 
 	if(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == -1)
 	{
@@ -109,8 +112,16 @@ void startup(int fdin, int fdout, const char *exec)
 				else if(res > 0)
 				{
 					/*printf("(%i) %s\n", res, buffer);*/
-					fprintf(stderr, ">> %i bytes child -> server\n", res);
-					write(3, buffer, res);
+					buffer[res] = 0;
+					fprintf(stderr, ">> %i bytes child -> server: %s <<\n", res, buffer);
+					if(!convert)
+						write(3, buffer, res);
+					else
+					{
+						len = htonl(res + 1);
+						write(3, &len, sizeof(int));
+						write(3, buffer, res + 1);
+					}
 				}
 
 				/* Handle server messages */
@@ -123,8 +134,16 @@ void startup(int fdin, int fdout, const char *exec)
 				else if(res > 0)
 				{
 					/*printf("[%i] %s\n", res, buffer);*/
-					fprintf(stderr, ">> %i bytes server -> child\n", res);
-					write(fd[1], buffer, res);
+					buffer[res] = 0;
+					fprintf(stderr, ">> %i bytes server -> child: %s <<\n", res, buffer);
+					if(!convert)
+						write(fd[1], buffer, res);
+					else
+					{
+						len = 0;
+						write(fd[1], buffer + sizeof(int), res - sizeof(int));
+						write(fd[1], &len, 1);
+					}
 				}
 			}
 			break;
@@ -148,6 +167,7 @@ int main(int argc, char *argv[])
 		{"exec", required_argument, 0, 'e'},
 		{"fdin", required_argument, 0, 'i'},
 		{"fdout", required_argument, 0, 'o'},
+		{"convert", no_argument, 0, 'c'},
 		{"help", no_argument, 0, 'h'},
 		{0, 0, 0, 0}
 	};
@@ -157,7 +177,7 @@ int main(int argc, char *argv[])
 	/* Parse all options */
 	while(1)
 	{
-		opt = getopt_long(argc, argv, "he:i:o:", options, &optindex);
+		opt = getopt_long(argc, argv, "che:i:o:", options, &optindex);
 		if(opt == -1) break;
 		switch(opt)
 		{
@@ -170,6 +190,9 @@ int main(int argc, char *argv[])
 			case 'o':
 				fdout = atoi(optarg);
 				break;
+			case 'c':
+				convert = 1;
+				break;
 			case 'h':
 				printf("GGZWrap - generic GGZ game client/server wrapper\n");
 				printf("Copyright (C) 2002 Josef Spillner, dr_maux@users.sourceforge.net\n");
@@ -179,6 +202,7 @@ int main(int argc, char *argv[])
 				printf("[-e | --exec  <program>] - Execute this program\n");
 				printf("[-i | --fdin  <fd>     ] - Input file descriptor\n");
 				printf("[-o | --fdout <fd>     ] - Output file descriptor\n");
+				printf("[-c | --convert        ] - Apply easysock-style string conversion\n");
 				exit(0);
 		}
 	}
@@ -194,7 +218,7 @@ int main(int argc, char *argv[])
 	signal(SIGCHLD, sighandler);
 
 	/* Try to launch the child program */
-	startup(fdin, fdout, exec);
+	startup(fdin, fdout, exec, convert);
 
 	return 0;
 }
