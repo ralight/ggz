@@ -353,7 +353,7 @@ int req_play(player_t p, seat_t s)
 
 	set_game_state(WH_STATE_WAIT_FOR_PLAY);
 
-	game.funcs->set_player_message(p);
+	set_player_message(p);
 
 	return 0;
 }
@@ -452,7 +452,7 @@ int req_bid(player_t p, int num, char** bid_choices)
 
 	set_game_state( WH_STATE_WAIT_FOR_BID );
 
-	game.funcs->set_player_message(p);
+	set_player_message(p);
 
 	if (status != 0)
 		ggz_debug("ERROR: req_bid: status is %d.", status);
@@ -723,7 +723,7 @@ int newgame()
 		init_game();
 	game.funcs->start_game();
 	for (p=0; p<game.num_players; p++)
-		game.funcs->set_player_message(p);
+		set_player_message(p);
 	send_newgame();
 	game.dealer = random() % game.num_players;
 	set_game_state( WH_STATE_NEXT_HAND );
@@ -787,7 +787,7 @@ void next_play(void)
 
 			for (p = 0; p < game.num_players; p++) {
 				game.players[p].bid.bid = 0;
-				game.funcs->set_player_message(p); /* TODO: are all these player messages really necessary? */
+				set_player_message(p); /* TODO: are all these player messages really necessary? */
 			}
 			game.bid_count = 0;
 
@@ -887,7 +887,7 @@ int handle_join_event(player_t player)
 
 	if (game.state != WH_STATE_NOTPLAYING &&
 	    !(game.state == WH_STATE_WAITFORPLAYERS && game.saved_state == WH_STATE_NOTPLAYING))
-		send_player_message_toall(player); /* should this be in sync??? */
+		send_player_message_toall(game.players[p].seat); /* should this be in sync??? */
 
 	if (player == game.host && game.which_game == GGZ_GAME_UNKNOWN)
 		games_req_gametype();
@@ -1009,7 +1009,7 @@ int handle_play_event(card_t card)
 	}
 
 	/* this is the player that just finished playing */
-	game.funcs->set_player_message(game.curr_play);
+	set_player_message(game.curr_play);
 
 	/* do next move */
 	next_play();
@@ -1050,7 +1050,7 @@ int handle_bid_event(bid_t bid)
 		ggz_debug("SERVER BUG: handle_bid_event: not in WH_STATE_WAIT_FOR_BID.");
 
 	/* this is the player that just finished bidding */
-	game.funcs->set_player_message(p);
+	set_player_message(p);
 
 	if (was_waiting)
 		save_game_state();

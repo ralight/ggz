@@ -304,8 +304,6 @@ static void bridge_set_player_message(player_t p)
 		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding...");	
 	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
 		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing...");
-
-	send_player_message_toall(p);
 }
 
 static void bridge_end_trick()
@@ -313,7 +311,7 @@ static void bridge_end_trick()
 	game_end_trick();
 
 	/* update teammate's info as well */
-	game_set_player_message((game.winner+2)%4);
+	set_player_message((game.winner+2)%4);
 	
 }
 

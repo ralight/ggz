@@ -27,6 +27,7 @@ extern void init_messages();
 
 extern void send_player_message(seat_t, player_t);
 extern void send_player_message_toall(seat_t);
+extern void set_player_message(player_t p);
 extern void set_all_player_messages();
 
 extern void send_global_message(char*, player_t);

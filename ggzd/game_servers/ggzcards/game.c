@@ -765,8 +765,6 @@ void game_set_player_message(player_t p)
 #undef REGULAR_BID_MESSAGE
 #undef REGULAR_BIDDING_MESSAGE
 #undef REGULAR_PLAYING_MESSAGE
-
-	send_player_message_toall(s);
 }
 
 /* game_end_trick
@@ -814,13 +812,13 @@ void game_end_trick(void)
 	game.players[hi_player].tricks++;
 	game.leader = game.winner = hi_player;
 
-	game_set_player_message(hi_player);
+	set_player_message(hi_player);
 
 	/* update teammate's info, if necessary */
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
 			/* update teammate's info as well */
-			game_set_player_message((game.winner+2)%4);
+			set_player_message((game.winner+2)%4);
 			break;
 		case GGZ_GAME_LAPOCHA:
 		default:

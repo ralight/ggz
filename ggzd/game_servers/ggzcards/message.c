@@ -76,6 +76,12 @@ void send_player_message_toall(seat_t s)
 		send_player_message(s, p);
 }
 
+void set_player_message(player_t p)
+{
+	game.funcs->set_player_message(p);
+	send_player_message_toall( game.players[p].seat );
+}
+
 void set_all_player_messages()
 {
 	player_t p;

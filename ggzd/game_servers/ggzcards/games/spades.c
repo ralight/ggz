@@ -215,8 +215,6 @@ static void spades_set_player_message(player_t p)
 		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding..."); /* "Waiting for bid" won't fit */	
 	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
 		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing..."); /* "Waiting for play" won't fit */;
-
-	send_player_message_toall(s);
 }
 
 static void spades_end_trick()

@@ -388,7 +388,6 @@ static void suaro_set_player_message(player_t p)
 			game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
 			if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text);
 	}
-	send_player_message_toall(s);
 }
 
 static void suaro_end_trick()
@@ -423,6 +422,5 @@ static void suaro_end_trick()
 	game.players[hi_player].tricks++;
 	game.leader = game.winner = hi_player;
 
-	game_set_player_message(hi_player);		
-
+	set_player_message(hi_player);		
 }
