@@ -40,7 +40,7 @@ char * ggz_xml_unescape(char *str)
 {
 	char *new;
 	char *p, *q;
-	int len = 0;
+	size_t len = 0;
 
 	if(str == NULL)
 		return NULL;
@@ -99,7 +99,7 @@ char * ggz_xml_escape(char *str)
 {
 	char *new;
 	char *p, *q;
-	int len = 0;
+	size_t len = 0;
 
 	if(str == NULL)
 		return NULL;
