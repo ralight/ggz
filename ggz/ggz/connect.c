@@ -202,32 +202,6 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			warn_dlg("Must be in room to launch table");
 			break;
 		case 0:
-			connection.playing = TRUE;
-			break;
-		}
-		break;
-
-	case RSP_TABLE_JOIN:
-		es_read_char(source, &status);
-		connect_msg("[%s] %d\n", opcode_str[op], status);
-		switch (status) {
-		case 0:
-			connection.playing = TRUE;
-			launch_game(selected_type,0);
-			break;
-		case E_NOT_IN_ROOM:
-			warn_dlg("Must be in room to join table");
-			break;
-		case E_TABLE_EMPTY: 
-			warn_dlg("No table selected to join.");
-			break;
-		case E_TABLE_FULL:
-			warn_dlg("Sorry, The table is full.");
-			break;
-		}
-		
-		/* Should put in function call which checks state */
-		if (status < 0) {
 			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
@@ -242,6 +216,45 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
 			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+
+			connection.playing = TRUE;
+			break;
+		}
+		break;
+
+	case RSP_TABLE_JOIN:
+		es_read_char(source, &status);
+		connect_msg("[%s] %d\n", opcode_str[op], status);
+		switch (status) {
+		case 0:
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+
+			connection.playing = TRUE;
+			launch_game(selected_type,0);
+
+			break;
+		case E_NOT_IN_ROOM:
+			warn_dlg("Must be in room to join table");
+			break;
+		case E_TABLE_EMPTY: 
+			warn_dlg("No table selected to join.");
+			break;
+		case E_TABLE_FULL:
+			warn_dlg("Sorry, The table is full.");
+			break;
 		}
 		
 		break;
@@ -265,6 +278,25 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			warn_dlg("Can't leave table during game");
 			break;
 		}
+
+		/* Should put in function call which checks state */
+		if (status == 0) {
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+			tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "launch1");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+			tmp = gtk_object_get_data(GTK_OBJECT(mnu_tables), "join1");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+		}
+
 		break;
 
 	case RSP_LOGOUT:
