@@ -158,21 +158,30 @@ static void rankings_connect(const char *host, const char *dbname, const char *u
 }
 
 /* Calculate rankings per game and write them back */
-static void rankings_calculate(const char *game, const char *mode)
+static void rankings_calculate(const char *game, const char *mode, const char *types)
 {
-	PGresult *res;
+	PGresult *res, *res2;
 	char query[256];
-	int i;
+	int i, rank;
+	char *handle;
+	int considered;
+
+	if(types)
+	{
+		snprintf(query, sizeof(query), "UPDATE stats SET ranking = 0 WHERE game = '%s'",
+			game);
+		res = PQexec(conn, query);
+	}
 
 	if((!strcmp(mode, "highscore")) || (!strcmp(mode, "rating")))
 	{
-		snprintf(query, sizeof(query), "SELECT id FROM stats WHERE game = '%s' ORDER BY %s DESC",
+		snprintf(query, sizeof(query), "SELECT id, handle FROM stats WHERE game = '%s' ORDER BY %s DESC",
 			game, mode);
 	}
 	else if(!strcmp(mode, "wins/losses"))
 	{
 		snprintf(query, sizeof(query),
-			"SELECT id FROM stats WHERE game = '%s' GROUP BY id ORDER BY SUM(wins - losses) DESC",
+			"SELECT id, handle FROM stats WHERE game = '%s' GROUP BY id, handle ORDER BY SUM(wins - losses) DESC",
 			game);
 	}
 	else return;
@@ -181,17 +190,57 @@ static void rankings_calculate(const char *game, const char *mode)
 	if(PQresultStatus(res) == PGRES_TUPLES_OK)
 	{
 		printf("  - %i players\n", PQntuples(res));
+		rank = 1;
 		for(i = 0; i < PQntuples(res); i++)
 		{
+			handle = PQgetvalue(res, i, 1);
+
+			if(types)
+			{
+				considered = 0;
+
+				if((strstr(types, "registered")) || (strstr(types, "guest")))
+				{
+					if(!strstr(handle, "|AI"))
+					{
+						snprintf(query, sizeof(query),
+							"SELECT handle FROM users WHERE handle = '%s'",
+							handle);
+						res2 = PQexec(conn, query);
+						if(PQresultStatus(res2) == PGRES_TUPLES_OK)
+						{
+							if(strstr(types, "registered"))
+								if(PQntuples(res2) == 1) considered = 1;
+							if(strstr(types, "guest"))
+								if(PQntuples(res2) == 0) considered = 1;
+						}
+						PQclear(res2);
+					}
+				}
+				if(strstr(types, "bot"))
+				{
+					if(strstr(handle, "|AI")) considered = 1;
+				}
+			}
+			else considered = 1;
+
+			if(!considered) continue;
+
 			snprintf(query, sizeof(query), "UPDATE stats SET ranking = %i WHERE id = %s",
 				i + 1, PQgetvalue(res, i, 0));
 			PQexec(conn, query);
+
+			rank++;
 		}
+		if(types)
+			printf("  - considered %i players\n", rank - 1);
 	}
+	else printf("* Error: Could not read statistics entries for game %s.\n", game);
+	PQclear(res);
 }
 
 /* Iterate over all games for further calculation */
-static void rankings_recalculate_all(void)
+static void rankings_recalculate_all(const char *types)
 {
 	PGresult *res;
 	int i;
@@ -204,12 +253,14 @@ static void rankings_recalculate_all(void)
 		newentries = atoi(PQgetvalue(res, 0, 0));
 	else
 		newentries = -1;
+	PQclear(res);
 
 	res = PQexec(conn, "SELECT COUNT(id) FROM stats");
 	if(PQresultStatus(res) == PGRES_TUPLES_OK)
 		allentries = atoi(PQgetvalue(res, 0, 0));
 	else
 		allentries = -1;
+	PQclear(res);
 
 	if(newentries == 0)
 	{
@@ -218,6 +269,7 @@ static void rankings_recalculate_all(void)
 		/*exit(0);*/
 	}
 	else printf("== Calculate %i players, including %i new players.\n", allentries, newentries);
+	printf("== Calculation types: %s.\n", types);
 
 	res = PQexec(conn, "SELECT DISTINCT game FROM stats");
 	if(PQresultStatus(res) == PGRES_TUPLES_OK)
@@ -230,9 +282,10 @@ static void rankings_recalculate_all(void)
 			if(!mode)
 				printf("* Error: game %s doesn't support statistics.\n", game);
 			else
-				rankings_calculate(game, mode);
+				rankings_calculate(game, mode, types);
 		}
-	}                                                                         
+	}
+	PQclear(res);
 
 	printf("== All rankings calculated.\n");
 }
@@ -242,16 +295,17 @@ int main(int argc, char *argv[])
 {
 	int c, optindex;
 	int help;
-	char *host, *name, *user, *password, *dscpath;
+	char *host, *name, *user, *password, *dscpath, *types;
 	int ret;
 	struct option options[] =
 	{
-		{"host", 1, 0, 0},
-		{"user", 1, 0, 0},
-		{"name", 1, 0, 0},
-		{"password", 1, 0, 0},
-		{"dscpath", 1, 0, 0},
-		{"help", 0, 0, 0},
+		{"host", 1, 0, 'h'},
+		{"user", 1, 0, 'u'},
+		{"name", 1, 0, 'n'},
+		{"password", 1, 0, 'p'},
+		{"dscpath", 1, 0, 'd'},
+		{"types", 1, 0, 't'},
+		{"help", 0, 0, '?'},
 		{0, 0, 0, 0}
 	};
 
@@ -261,10 +315,11 @@ int main(int argc, char *argv[])
 	user = NULL;
 	password = NULL;
 	dscpath = NULL;
+	types = NULL;
 
 	while(1)
 	{
-		c = getopt_long(argc, argv, "h:n:u:p:d:?", options, &optindex);
+		c = getopt_long(argc, argv, "h:n:u:p:d:t:?", options, &optindex);
 		if(c == -1) break;
 
 		switch(c)
@@ -283,6 +338,9 @@ int main(int argc, char *argv[])
 				break;
 			case 'd':
 				dscpath = optarg;
+				break;
+			case 't':
+				types = optarg;
 				break;
 			case '?':
 				help = 1;
@@ -305,6 +363,7 @@ int main(int argc, char *argv[])
 #ifdef WITH_GGZ
 		printf("[-d | --dscpath <path>      ] Game server description directory\n");
 #endif
+		printf("[-t | --types <type,type,..>] Consider only selected player types (guest, bot, registered)\n");
 		printf("[-? | --help                ] This help screen\n");
 		printf("\n");
 		return 0;
@@ -315,7 +374,7 @@ int main(int argc, char *argv[])
 	else printf("== Error: game descriptions could not be loaded, using internal copy.\n");
 
 	rankings_connect(host, name, user, password);
-	if(conn) rankings_recalculate_all();
+	if(conn) rankings_recalculate_all(types);
 	else
 	{
 		fprintf(stderr, "Error: Connection to database failed.\n");
