@@ -35,10 +35,7 @@ class GGZCoreRoom
 			/* Note, these events are linked to the real ggzcore values since they MUST match. */
 			playerlist = GGZ_PLAYER_LIST,
 			tablelist = GGZ_TABLE_LIST,
-			chatnormal = GGZ_CHAT,
-			chatannounce = GGZ_ANNOUNCE,
-			chatprivate = GGZ_PRVMSG,
-			chatbeep = GGZ_BEEP,
+			chatevent = GGZ_CHAT_EVENT,
 			enter = GGZ_ROOM_ENTER,
 			leave = GGZ_ROOM_LEAVE,
 			tableupdate = GGZ_TABLE_UPDATE,
