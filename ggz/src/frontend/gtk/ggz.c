@@ -147,7 +147,12 @@ void ggz_list_players(GGZEventID id, void* event_data, void* user_data)
 	for (i = 0; names[i]; i++)
 	{
 		player[0] = g_strdup(" ");
-		player[1] = g_strdup(" ");
+		if(ggzcore_player_get_table(names[i]) == -1)
+			player[1] = g_strdup("--");
+		else if(ggzcore_player_get_table(names[i]) == -2)
+			player[1] = g_strdup("??");
+		else
+			player[1] = g_strdup_printf("%d", ggzcore_player_get_table(names[i]));
 		player[2] = g_strdup(names[i]);
 		gtk_clist_append(GTK_CLIST(tmp), player);
 		g_free(player[0]);
