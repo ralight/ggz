@@ -199,11 +199,14 @@ void meta_sync()
 	strcat(query, "/.ggz/metaserver.cache");
 
 	f = fopen(query, "w");
-	for(k = 0; k < metaservercount; k++)
+	if(f)
 	{
-		fprintf(f, "%s\n", metaservers[k]);
+		for(k = 0; k < metaservercount; k++)
+		{
+			fprintf(f, "%s\n", metaservers[k]);
+		}
+		fclose(f);
 	}
-	fclose(f);
 }
 
 void meta_free(ServerGGZ **server)
