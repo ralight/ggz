@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 4702 2002-09-25 19:38:01Z jdorje $
+ * $Id: control.c 4732 2002-09-26 12:58:04Z dr_maux $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -205,8 +205,12 @@ int main(int argc, const char *argv[])
 	signal(SIGPIPE, SIG_IGN);
 
 	/* Create SERVER socket on main_port */
-	main_sock = ggz_make_socket_or_die(GGZ_SOCK_SERVER, opt.main_port, NULL);
-	
+	main_sock = ggz_make_socket(GGZ_SOCK_SERVER, opt.main_port, NULL);
+	if (main_sock < 0) {
+		fprintf(stderr, "Could not bind to port\n");
+		err_msg_exit("Could not bind to port");
+	}
+
 	/* Make socket non-blocking */
 	if ( (flags = fcntl(main_sock, F_GETFL, 0)) < 0)
 		err_sys_exit("F_GETFL error");
