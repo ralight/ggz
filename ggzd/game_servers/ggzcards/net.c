@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 4470 2002-09-08 20:38:36Z jdorje $
+ * $Id: net.c 4471 2002-09-08 21:18:54Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -387,6 +387,8 @@ void net_broadcast_trick(player_t winner)
 void net_send_newgame_request(player_t p)
 {
 	int fd = get_player_socket(p);
+
+	assert(get_player_status(p) == GGZ_SEAT_PLAYER);
 
 	ggz_debug(DBG_NET, "Sending out a REQ_NEWGAME to player %d/%s.", p,
 		    get_player_name(p));

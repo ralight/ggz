@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 4339 2002-08-06 01:32:22Z jdorje $
+ * $Id: bid.c 4471 2002-09-08 21:18:54Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -139,6 +139,10 @@ void handle_client_bid(player_t p, int bid_choice)
 {
 	bid_data_t *bid_data = &game.players[p].bid_data;
 	bid_t bid;
+
+	/* Only players and bots can bid. */
+	if (!IS_REAL_PLAYER(p))
+		return;
 
 	/* Is this a valid bid? */
 	if (!game.players[p].bid_data.is_bidding) {

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4469 2002-09-08 20:26:23Z jdorje $
+ * $Id: common.h 4471 2002-09-08 21:18:54Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -161,10 +161,17 @@ const char *get_state_name(server_state_t state);
 void set_game_state(server_state_t state);
 
 /* these are GGZ communication events that we must handle */
-void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data);
-void handle_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data);
-void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data);
-void handle_spectator_event(GGZdMod *ggz, GGZdModEvent event, void *data);
+void handle_ggz_state_event(GGZdMod * ggz, GGZdModEvent event, void *data);
+void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data);
+void handle_ggz_spectator_seat_event(GGZdMod *ggz,
+				     GGZdModEvent event, void *data);
+void handle_ggz_player_data_event(GGZdMod * ggz,
+				  GGZdModEvent event, void *data);
+void handle_ggz_spectator_data_event(GGZdMod *ggz,
+				     GGZdModEvent event, void *data);
+
+/* Handle a player/spectator data event. */
+void handle_player_data_event(player_t p);
 
 /* these are internal GGZCards events */
 void handle_newgame_event(player_t p);

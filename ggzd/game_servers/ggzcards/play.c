@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 4146 2002-05-03 08:07:37Z jdorje $
+ * $Id: play.c 4471 2002-09-08 21:18:54Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -88,6 +88,10 @@ void handle_client_play(player_t p, card_t card)
 	hand_t *hand;
 	int i;
 	char *err;
+
+	/* Only players and bots can play. */
+	if (!IS_REAL_PLAYER(p))
+		return;
 
 	/* Is is this player's turn to play? */
 	if (!game.players[p].is_playing) {

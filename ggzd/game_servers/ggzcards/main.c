@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 4469 2002-09-08 20:26:23Z jdorje $
+ * $Id: main.c 4471 2002-09-08 21:18:54Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -128,21 +128,23 @@ int main(int argc, char **argv)
 
 	/* Initialize GGZ structures. */
 	ggz = ggzdmod_new(GGZDMOD_GAME);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &handle_state_event);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &handle_seat_event);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &handle_seat_event);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SEAT, &handle_seat_event);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &handle_ggz_state_event);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &handle_ggz_seat_event);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &handle_ggz_seat_event);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SEAT, &handle_ggz_seat_event);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_JOIN,
-			    &handle_spectator_event);
+			    &handle_ggz_spectator_seat_event);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_LEAVE,
-			    &handle_spectator_event);
+			    &handle_ggz_spectator_seat_event);
 #if 0
 	/* This is excluded because it's taken care of separately by the
 	   specialized main loop that ggzcards uses.  Normally we'd register
 	   this function so that ggzdmod could monitor the player sockets and
 	   call it if necessary, but instead we do that manually. */
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA,
-			    &handle_player_event);
+			    &handle_ggz_player_data_event);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_DATA,
+			    &handle_ggz_spectator_data_event);
 #endif
 
 	/* set up easysock functions to be called on error/exit */
@@ -218,7 +220,7 @@ static void main_loop(GGZdMod * ggz)
 	do {
 		/* this is a whole lot of unnecessary code... */
 		fd_set fd_set;
-		int max_fd = ggzdmod_get_fd(ggz), p, status;
+		int max_fd = ggzdmod_get_fd(ggz), status;
 
 		FD_ZERO(&fd_set);
 		FD_SET(max_fd, &fd_set);
@@ -227,7 +229,7 @@ static void main_loop(GGZdMod * ggz)
 		   includes the main GGZ connection, a connection for each
 		   player (including bots), plus a stderr connection for bots.
 		 */
-		for (p = 0; p < game.num_players; p++) {
+		allplayers_iterate(p) {
 			int fd = get_player_socket(p);
 			if (fd >= 0) {
 				max_fd = MAX(max_fd, fd);
@@ -245,7 +247,7 @@ static void main_loop(GGZdMod * ggz)
 				}
 			}
 #endif /* DEBUG */
-		}
+		} allplayers_iterate_end;
 
 		status = select(max_fd + 1, &fd_set, NULL, NULL, NULL);
 
@@ -259,16 +261,18 @@ static void main_loop(GGZdMod * ggz)
 			ggzdmod_dispatch(ggz);
 
 		/* Check each FD for activity */
-		for (p = 0; p < game.num_players; p++) {
+		allplayers_iterate(p) {
 			int fd = get_player_socket(p);
 
 			/* This is the player's communication socket.  Note
 			   that AI players will have such a socket too, since
 			   they are run as client-like programs. */
-			if (fd >= 0 && FD_ISSET(fd, &fd_set))
-				handle_player_event(ggz,
-						    GGZDMOD_EVENT_PLAYER_DATA,
-						    &p);
+			if (fd >= 0 && FD_ISSET(fd, &fd_set)) {
+				/* Note - this handles spectator data too,
+				   but the spectator is given a player
+				   number. */
+				handle_player_data_event(p);
+			}
 
 #ifdef DEBUG
 			/* The AI can send output to stderr; this is read by
@@ -279,7 +283,7 @@ static void main_loop(GGZdMod * ggz)
 					handle_ai_stderr(p);
 			}
 #endif /* DEBUG */
-		}
+		} allplayers_iterate_end;
 	} while (ggzdmod_get_state(ggz) < GGZDMOD_STATE_DONE);
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4469 2002-09-08 20:26:23Z jdorje $
+ * $Id: common.c 4471 2002-09-08 21:18:54Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -109,10 +109,25 @@ void set_game_state(server_state_t state)
 	game.state = state;
 }
 
-/* Handle message from player */
-void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
+/* Handle message from player.  */
+void handle_ggz_player_data_event(GGZdMod * ggz,
+				  GGZdModEvent event, void *data)
 {
 	player_t p = *(int *) data;
+	handle_player_data_event(p);
+}
+
+/* Handle message from spectator */
+void handle_ggz_spectator_data_event(GGZdMod *ggz,
+				     GGZdModEvent event, void *data)
+{
+	int spectator = *(int *) data;
+	handle_player_data_event(SPECTATOR_TO_PLAYER(spectator));
+}
+
+/* Handle message from player/spectator. */
+void handle_player_data_event(player_t p)
+{
 	net_read_player_data(p);
 }
 
@@ -210,10 +225,16 @@ void next_move(void)
 	case STATE_NOTPLAYING:
 		ggz_debug(DBG_MISC, "Next play: trying to start a game.");
 		players_iterate(p) {
-			game.players[p].ready = 0;
+			if (get_player_status(p) == GGZ_SEAT_PLAYER)
+				game.players[p].ready = FALSE;
+			else {
+				assert(get_player_status(p) == GGZ_SEAT_BOT);
+				game.players[p].ready = TRUE;
+			}
 		} players_iterate_end;
 		players_iterate(p) {
-			net_send_newgame_request(p);
+			if (get_player_status(p) == GGZ_SEAT_PLAYER)
+				net_send_newgame_request(p);
 		} players_iterate_end;
 		break;
 	case STATE_NEXT_HAND:
@@ -381,7 +402,7 @@ static void handle_done_event(void)
 }
 
 /* This handles a state change event, when the table changes state. */
-void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data)
+void handle_ggz_state_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 {
 	GGZdModState old_state = *(GGZdModState*)data;
 	GGZdModState new_state = ggzdmod_get_state(ggz);
@@ -413,7 +434,7 @@ void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data)
    a player join or a player leave.  Eventually, other types of seat
    changes will be possible (although these are not yet tested).  A lot
    of the work is the same for any kind of seat change, though. */
-void handle_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
+void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 	GGZSeat old_seat = *(GGZSeat*)data;
 	player_t player = old_seat.num, p;
@@ -519,7 +540,8 @@ void handle_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 	ggz_debug(DBG_MISC, "Seat change successful.");
 }
 
-void handle_spectator_event(GGZdMod *ggz, GGZdModEvent event, void *data)
+void handle_ggz_spectator_seat_event(GGZdMod *ggz,
+				     GGZdModEvent event, void *data)
 {
 	GGZSpectator old = *(GGZSpectator*)data;
 	int spectator = old.num;
@@ -621,8 +643,15 @@ void handle_client_language(player_t p, const char* lang)
 
 void handle_client_newgame(player_t p)
 {
-	if (game.state == STATE_NOTPLAYING && seats_full())
-		handle_newgame_event(p);
+	/* Don't need newgames from spectators or bots. */
+	if (get_player_status(p) != GGZ_SEAT_PLAYER)
+		return;
+
+	/* Make sure we're waiting for a newgame. */
+	if (game.state != STATE_NOTPLAYING || !seats_full())
+		return;
+
+	handle_newgame_event(p);
 }
 
 /* Send out current game hand, score, etc.  Doesn't use its own protocol, but
