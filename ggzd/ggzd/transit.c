@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4429 2002-09-07 07:21:45Z dr_maux $
+ * $Id: transit.c 4435 2002-09-07 13:11:21Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -307,6 +307,16 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 		pthread_rwlock_unlock(&player->lock);
 		
 		if (net_send_table_leave(player->client->net, (char)status) < 0)
+			return GGZ_EVENT_ERROR;
+		break;
+	case GGZ_TRANSIT_LEAVE_SPECTATOR:
+		pthread_rwlock_wrlock(&player->lock);
+		player->transit = 0;
+		if (status == 0)
+			player->table = -1;
+		pthread_rwlock_unlock(&player->lock);
+		
+		if (net_send_table_leave_spectator(player->client->net, (char)status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 
