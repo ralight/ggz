@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 5049 2002-10-26 05:42:56Z jdorje $
+ * $Id: chat.c 5171 2002-11-03 19:17:37Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -334,7 +334,7 @@ void chat_display_local(LocalChatType type,
  * Returns:
  */
 
-void chat_send(gchar *message)
+void chat_send(const gchar *message)
 {
 	int i;
 
@@ -476,7 +476,7 @@ static void chat_send_beep(GGZServer *server, const gchar *message)
  * Returns:
  */
 
-void chat_enter(gchar *player)
+void chat_enter(const gchar *player)
 {
         GtkEntry *tmp = NULL;
 
@@ -497,7 +497,7 @@ void chat_enter(gchar *player)
  * Returns:
  */
 
-void chat_part(gchar *player)
+void chat_part(const gchar *player)
 {
         GtkEntry *tmp = NULL;
 
@@ -700,7 +700,7 @@ static const gchar *chat_get_color(const gchar *name, const gchar *msg)
  * Returns:
  */
 
-void chat_add_friend(gchar *name, gint display)
+void chat_add_friend(const gchar *name, gint display)
 {
 	gchar *out;
 	char *name_copy;
@@ -724,7 +724,7 @@ void chat_add_friend(gchar *name, gint display)
  * Returns:
  */
 
-void chat_remove_friend(gchar *name)
+void chat_remove_friend(const gchar *name)
 {
 	int i;
 	char *p;
@@ -755,7 +755,7 @@ void chat_remove_friend(gchar *name)
  * Returns:
  */
 
-void chat_add_ignore(gchar *name, gint display)
+void chat_add_ignore(const gchar *name, gint display)
 {
 	gchar *out;
 	char *name_copy;
@@ -780,7 +780,7 @@ void chat_add_ignore(gchar *name, gint display)
  * Returns:
  */
 
-void chat_remove_ignore(gchar *name)
+void chat_remove_ignore(const gchar *name)
 {
 	int i;
 	char *p;
@@ -898,7 +898,7 @@ static void chat_list_ignore(GGZServer *server, const gchar *message)
  * 	gchar*		: matched name (allocated with ggz_malloc), or NULL
  */
 
-gchar *chat_complete_name(gchar *name, int *perfect)
+gchar *chat_complete_name(const gchar *name, int *perfect)
 {
 	gchar *returnname = NULL;
 	int matches = 0;
