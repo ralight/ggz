@@ -20,3 +20,12 @@ install-data-local:
 		$(MSGFMT) -o $$dir/grubby.mo $$j; \
 	done;
 
+uninstall-local:
+	for j in $(top_srcdir)/grubby/po/*.po; do \
+		k=$$(basename $$j); \
+		country=`echo $$k | cut -d "." -f 1`; \
+		dir=$(DESTDIR)$(prefix)/share/locale/$$country/LC_MESSAGES; \
+		rm -f $$dir/grubby.mo; \
+	done;
+
+
