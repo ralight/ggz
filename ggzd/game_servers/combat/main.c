@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game server main loop
- * $Id: main.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: main.c 6899 2005-01-25 08:59:25Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>	/* Site-specific config */
 #endif
 
 #include <errno.h>
@@ -39,19 +39,23 @@ int main(void)
 {
 	/* Initialize GGZ. */
 	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &game_handle_ggz_state);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz_join);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz_leave);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player_data);
-	
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE,
+			    &game_handle_ggz_state);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN,
+			    &game_handle_ggz_join);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE,
+			    &game_handle_ggz_leave);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA,
+			    &game_handle_player_data);
+
 	/* Initializes game variables */
 	game_init(ggz);
 
 	/* Connect to GGZ server; main loop */
 	if (ggzdmod_connect(ggz) < 0)
 		return -1;
-	(void) ggzdmod_loop(ggz);
-	(void) ggzdmod_disconnect(ggz);
+	(void)ggzdmod_loop(ggz);
+	(void)ggzdmod_disconnect(ggz);
 	ggzdmod_free(ggz);
 
 	return 0;

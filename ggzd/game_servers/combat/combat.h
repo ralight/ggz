@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Common (client/server) description of game protocol/structures
- * $Id: combat.h 2811 2001-12-09 01:19:38Z jdorje $
+ * $Id: combat.h 6899 2005-01-25 08:59:25Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -369,9 +369,9 @@
  */
 
 // Terrain codes
-#define T_OPEN 0x00   // 0000
-#define T_NULL 0x01   // 0001
-#define T_LAKE 0x02   // 0010
+#define T_OPEN 0x00	// 0000
+#define T_NULL 0x01	// 0001
+#define T_LAKE 0x02	// 0010
 
 // Unit codes
 #define U_FLAG			 0x00	// 0000
@@ -387,12 +387,12 @@
 #define U_GENERAL		 0x0A	// 1010
 #define U_MARSHALL	 0x0B	// 1011
 #define U_UNKNOWN    0x0C	// 1100
-#define U_EMPTY      0x0F // 1111 
+#define U_EMPTY      0x0F	// 1111
 
 // Options codes
-#define O_NAME       0x01 // Name of the map
-#define O_BIN1       0x02 // Binary options pack 1
-#define O_BIN2       0x03 // Binary options pack 2
+#define O_NAME       0x01	// Name of the map
+#define O_BIN1       0x02	// Binary options pack 1
+#define O_BIN2       0x03	// Binary options pack 2
 
 // Binary options code
 #define OPT_OPEN_MAP         (1<<0)
@@ -439,7 +439,7 @@
 #define NEXT(X,Y) (X >= (Y-1) ? 0 : X+1)
 
 // Game states
-#define CBT_STATE_NULL -1 // When he doesn't know his state
+#define CBT_STATE_NULL -1	// When he doesn't know his state
 #define CBT_STATE_INIT 0
 #define CBT_STATE_WAIT 1
 #define CBT_STATE_SETUP 2
@@ -497,22 +497,22 @@
 
 // Tile struct
 typedef struct tile_struct {
-  unsigned char type;
-  unsigned char unit;
+	unsigned char type;
+	unsigned char unit;
 } tile;
 
 // Game struct
 typedef struct combat_game_struct {
-  GGZdMod *ggz;
-  tile *map;
-  char width;
-  char height;
-  char **army;
-  char *name;
-  int state;
-  int turn;
-  int number;
-  unsigned long int options;
+	GGZdMod *ggz;
+	tile *map;
+	char width;
+	char height;
+	char **army;
+	char *name;
+	int state;
+	int turn;
+	int number;
+	unsigned long int options;
 } combat_game;
 
 // Commom functions
