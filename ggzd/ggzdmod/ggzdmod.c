@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2639 2001-11-03 19:47:39Z bmh $
+ * $Id: ggzdmod.c 2640 2001-11-03 22:29:06Z bmh $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -64,6 +64,8 @@ typedef struct _GGZdMod {
 	GGZdModHandler handlers[GGZDMOD_NUM_HANDLERS];
 
 	int pid;		/* ggz-side only */
+	char **argv;            /* command-line arguments for launching module */
+
 	/* etc. */
 } _GGZdMod;
 
@@ -106,6 +108,7 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 	ggzdmod->type = type;
 	ggzdmod->state = GGZ_STATE_CREATED;
 	ggzdmod->fd = -1;
+	ggzdmod->pid = -1;
 	ggzdmod->seats = NULL;
 	for (i = 0; i < GGZDMOD_NUM_HANDLERS; i++)
 		ggzdmod->handlers[i] = NULL;
@@ -118,7 +121,9 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 /* Frees (deletes) a ggzdmod object */
 void ggzdmod_free(GGZdMod * mod)
 {
+	int i;
 	_GGZdMod *ggzdmod = mod;
+
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return;
 	}
@@ -127,6 +132,13 @@ void ggzdmod_free(GGZdMod * mod)
 	ggzdmod->type = -1;
 	if (ggzdmod->seats)
 		ggz_free(ggzdmod->seats);
+
+	if (ggzdmod->argv) {
+		for (i = 0; ggzdmod->argv[i]; i++)
+			if (ggzdmod->argv[i])
+				ggz_free(ggzdmod->argv[i]);
+		ggz_free(ggzdmod->argv);
+	}
 
 	/* Free the object */
 	ggz_free(ggzdmod);
@@ -214,6 +226,28 @@ void ggzdmod_set_num_seats(GGZdMod * mod, int num_seats)
 	}
 	ggzdmod->num_seats = num_seats;
 }
+
+
+void ggzdmod_set_module(GGZdMod * mod, char **argv)
+{
+	_GGZdMod *ggzdmod = mod;
+	int i;
+
+	/* Check parameters */
+	if (!CHECK_GGZDMOD(ggzdmod) || !argv || !argv[1]) {
+		return;		/* not very useful */
+	}
+
+	/* Count the number of args so we now how much to allocate */
+	for (i = 0; argv[i]; i++) {}
+	
+	ggzdmod->argv = ggz_malloc(sizeof(char*)*(i+1));
+	
+	for (i = 0; argv[i]; i++) 
+		ggzdmod->argv[i] = argv[i];
+	
+}
+
 
 void ggzdmod_set_handler(GGZdMod * mod, GGZdModEvent e, GGZdModHandler func)
 {
@@ -658,137 +692,148 @@ static int send_game_launch(_GGZdMod * ggzdmod)
 
 /* Forks the game.  A negative return value indicates a serious error. */
 /* No locking should be necessary within this function. */
-static int game_fork(_GGZdMod * ggzdmod, char **argv)
+static int game_fork(_GGZdMod * mod)
 {
-	int argc = 0, pid;
-	int sfd[2];		/* socketpair */
+	int pid;
+	int fd_pair[2];		/* socketpair */
 
-	if (argv == NULL)
-		return -1;
-	while (argv[argc] != NULL)
-		argc++;
-	if (argc < 1)		/* First argument: the executable */
+	/* If there are no args, we don't know what to run! */
+	if (mod->argv == NULL || mod->argv[0] == NULL)
 		return -1;
 
-	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, sfd) < 0)
+	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
 		ggz_error_sys_exit("socketpair failed");
 
-	if ((pid = fork()) < 0)
+	if ( (pid = fork()) < 0)
 		ggz_error_sys_exit("fork failed");
 	else if (pid == 0) {
 		/* child */
-		close(sfd[0]);
+		close(fd_pair[0]);
 
 		/* debugging message??? */
 
-		if (sfd[1] != 3) {
+		/* Now we copy one end of the socketpair to fd 3 */
+		if (fd_pair[1] != 3) {
 			/* We'd like to send an error message if either of
 			   these fail, but we can't.  --JDS */
-			if (dup2(sfd[1], 3) != 3 || close(sfd[1]) < 0)
-				exit(-1);
+			if (dup2(fd_pair[1], 3) != 3 || close(fd_pair[1]) < 0)
+				ggz_error_sys_exit("dup failed");
 		}
 
 		/* FIXME: Close all other fd's? */
 		/* FIXME: Not necessary to close other fd's if we use
 		   CLOSE_ON_EXEC */
-		execv(argv[0], argv);	/* run game */
 
-		exit(-1);	/* we still can't send error messages */
+		/* FIXME: can we call ggzdmod_log() from here? */
+		execv(mod->argv[0], mod->argv);	/* run game */
+
+		/* We should never get here.  If we do, it's an eror */
+		ggz_error_sys_exit("exec failed");	/* we still can't send error messages */
 	} else {
 		/* parent */
-		close(sfd[1]);
+		close(fd_pair[1]);
 
-		ggzdmod->fd = sfd[0];
-		ggzdmod->pid = pid;
+		mod->fd = fd_pair[0];
+		mod->pid = pid;
 		/* That's all! */
 	}
 	return 0;
 }
 
-/* Launches a game.  A negative return value indicates a serious error. */
-int ggzdmod_launch_game(GGZdMod * mod, char **args)
-{
-	_GGZdMod *ggzdmod = mod;
-	if (!CHECK_GGZDMOD(ggzdmod) || args == NULL
-	    || ggzdmod->type != GGZDMOD_GGZ)
-		return -1;
-
-	/* TODO: not implemented */
-	/* This needs to allocate everything, launch the actual program, then 
-	   call send_game_launch to tell the game to start. */
-	abort();
-	if (game_fork(ggzdmod, args) < 0 || send_game_launch(ggzdmod) < 0)
-		return -1;
-	return -1;
-}
-
-/* 
- * module specific actions
- */
 
 int ggzdmod_connect(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
-	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GAME) {
-		return -1;
-	}
-	ggzdmod->fd = 3;
-
-	if (ggzdmod_log(ggzdmod, "GGZDMOD: Connecting to GGZ server.") < 0) {
-		ggzdmod->fd = -1;
+	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return -1;
 	}
 
-	/* We maintain active_fd_set as the set of active file descriptors. */
-	FD_ZERO(&ggzdmod->active_fd_set);
-	FD_SET(ggzdmod->fd, &ggzdmod->active_fd_set);
-
-	return ggzdmod->fd;
+	/* For the ggz side, we fork the game and then send the launch message */
+	if (ggzdmod->type == GGZDMOD_GGZ) {
+		if (game_fork(ggzdmod) < 0 || send_game_launch(ggzdmod) < 0) {
+			return -1;
+		}
+		else 
+			return 0;
+	}
+	/* For client the game side we setup the fd */
+	else {
+		ggzdmod->fd = 3;
+		
+		if (ggzdmod_log(ggzdmod, "GGZDMOD: Connecting to GGZ server.") < 0) {
+			ggzdmod->fd = -1;
+			return -1;
+		}
+		
+		/* We maintain active_fd_set as the set of active file descriptors. */
+		FD_ZERO(&ggzdmod->active_fd_set);
+		FD_SET(ggzdmod->fd, &ggzdmod->active_fd_set);
+		
+		return ggzdmod->fd;
+	}
 }
+
 
 int ggzdmod_disconnect(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
 	int response, p;
-	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GAME) {
+	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return -1;
 	}
 
-	/* first send a gameover message (request) */
-	if (es_write_int(ggzdmod->fd, REQ_GAME_OVER) < 0)
-		return -1;
-
-	/* The server will send a message in response; we should wait for it. 
-	 */
-	if (es_read_int(ggzdmod->fd, &response) < 0)
-		return -1;
-	if (response != RSP_GAME_OVER) {
-		/* what else can we do? */
-		ggzdmod_log(ggzdmod,
-			    "GGZDMOD: ERROR: "
-			    "Got %d response while waiting for RSP_GAME_OVER.",
-			    response);
+	/* For the ggz side, we kill the game server and close the socket */
+	if (ggzdmod->type = GGZMOD_GGZ) {
+		/* Make sure game server is dead */
+		if (ggzdmod->pid > 0)
+			kill(ggzdmodpid, SIGINT);
+		close(ggzdmod->fd);
+		/* FIXME: what other cleanups should we do? */
 	}
-
-	ggzdmod_log(ggzdmod, "GGZDMOD: Disconnected from GGZ server.");
-
-	/* close all file descriptors */
-	for (p = 0; p < ggzdmod->num_seats; p++)
-		if (ggzdmod->seats[p].fd != -1) {
-			close(ggzdmod->seats[p].fd);
-			ggzdmod->seats[p].fd = -1;
+	/* For client the game side we send a game over message */
+	else {
+		
+		/* first send a gameover message (request) */
+		if (es_write_int(ggzdmod->fd, REQ_GAME_OVER) < 0)
+			return -1;
+		
+		/* The server will send a message in response; we should wait for it. 
+		 */
+		if (es_read_int(ggzdmod->fd, &response) < 0)
+			return -1;
+		if (response != RSP_GAME_OVER) {
+			/* what else can we do? */
+			ggzdmod_log(ggzdmod,
+				    "GGZDMOD: ERROR: "
+				    "Got %d response while waiting for RSP_GAME_OVER.",
+				    response);
 		}
-
-	/* Clean up the ggzdmod object.  In theory it could now reconnect for 
-	   a new game. */
-	close(ggzdmod->fd);
-	ggzdmod->fd = -1;
-	FD_ZERO(&ggzdmod->active_fd_set);
-	free(ggzdmod->seats);
-	ggzdmod->seats = NULL;
+		
+		ggzdmod_log(ggzdmod, "GGZDMOD: Disconnected from GGZ server.");
+		
+		/* close all file descriptors */
+		for (p = 0; p < ggzdmod->num_seats; p++)
+			if (ggzdmod->seats[p].fd != -1) {
+				close(ggzdmod->seats[p].fd);
+				ggzdmod->seats[p].fd = -1;
+			}
+		
+		/* Clean up the ggzdmod object.  In theory it could now reconnect for 
+		   a new game. */
+		close(ggzdmod->fd);
+		ggzdmod->fd = -1;
+		FD_ZERO(&ggzdmod->active_fd_set);
+		free(ggzdmod->seats);
+		ggzdmod->seats = NULL;
+	}
 
 	return 0;
 }
+
+
+/* 
+ * module specific actions
+ */
 
 int ggzdmod_log(GGZdMod * mod, char *fmt, ...)
 {

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2639 2001-11-03 19:47:39Z bmh $
+ * $Id: ggzdmod.h 2640 2001-11-03 22:29:06Z bmh $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -66,6 +66,10 @@
  *
  * For more information, see the documentation at http://ggz.sf.net/.
  */
+
+
+#ifndef __GGZDMOD_H__
+#define __GGZDMOD_H__
 
 
 /** @brief Seat status values.
@@ -216,6 +220,10 @@ void ggzdmod_set_num_seats(GGZdMod * mod, int num_seats);
 /** @brief Set a handler for the given event. */
 void ggzdmod_set_handler(GGZdMod * mod, GGZdModEvent e, GGZdModHandler func);
 
+/** @brief Set the module executable and it's arguments 
+ *  @note It should not be called by the table, only ggzd. */
+void ggzdmod_set_module(GGZdMod * mod, char **args);
+
 /** @brief Set seat data.
  *  @note The seat parameter contains the seat number.
  *  @todo This interface is unwieldy.
@@ -254,25 +262,10 @@ int ggzdmod_loop(GGZdMod * mod);
  *  @note ggzd should be able to request this as well. */
 int ggzdmod_halt_table(GGZdMod * mod);
 
-/* 
- * ggzd specific actions
- */
-
-/** @brief Launch the game.
- *
- *  This function does the work of connecting ggz<->table and
- *  synchronizing ggzdmod information between them.
- *  @note It should not be called by the table, only ggzd. */
-int ggzdmod_launch_game(GGZdMod * mod, char **args);
-
-/* 
- * module specific actions
- */
-
 /** @brief Connect to ggz
  *
  *  This function makes the physical connection to ggz.
- *  @note It should not be called by ggzd, only the table. */
+ */
 int ggzdmod_connect(GGZdMod * mod);
 
 /** @brief Disconnect from ggz
@@ -281,8 +274,13 @@ int ggzdmod_connect(GGZdMod * mod);
  *  @note It should not be called by ggzd, only the table. */
 int ggzdmod_disconnect(GGZdMod * mod);
 
+
+
 /** @brief Log data
  *
  *  This function sends the specified string (printf-style) to
  *  ggzd to be logged. */
 int ggzdmod_log(GGZdMod * mod, char *fmt, ...);
+
+
+#endif /* __GGZDMOD_H__ */
