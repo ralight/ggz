@@ -33,3 +33,6 @@ INCLUDES = $(ggzcorepp_includes) $(all_includes) -I $(top_srcdir)/ggz-kde/src -I
 libkggzui_a_METASOURCES = AUTO
 
 DISTCLEANFILES = $(libkggzui_a_METASOURCES)
+
+messages:
+	$(XGETTEXT) $(libkggzui_a_SOURCES) -C -ki18n -kI18N_NOOP -o $(top_srcdir)/ggz-kde/po/kggz.pot

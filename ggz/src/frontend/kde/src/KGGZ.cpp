@@ -1033,16 +1033,19 @@ void KGGZ::menuView(int viewtype)
 	{
 		case VIEW_CHAT:
 			m_workspace->widgetChat()->show();
+			m_workspace->widgetLogo()->show();
 			m_workspace->widgetTables()->show();
 			m_workspace->widgetUsers()->show();
 			break;
 		case VIEW_USERS:
 			m_workspace->widgetChat()->hide();
 			m_workspace->widgetTables()->hide();
+			m_workspace->widgetLogo()->hide();
 			m_workspace->widgetUsers()->show();
 			break;
 		case VIEW_TABLES:
 			m_workspace->widgetChat()->hide();
+			m_workspace->widgetLogo()->hide();
 			m_workspace->widgetTables()->show();
 			m_workspace->widgetUsers()->hide();
 			break;

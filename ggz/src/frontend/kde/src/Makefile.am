@@ -26,3 +26,10 @@ kggz_LDFLAGS = -ggdb3
 LDADD = $(ggz_libraries) $(all_libraries) $(KDE_RPATH) $(LIB_KDEUI) -L widgets -lkggzui -L abstract -lkggzabstract @BROWSERLIB@
 
 DISTCLEANFILES = $(kggz_METASOURCES)
+
+#POFILES = $(top_srcdir)/ggz-kde/po/kggz.pot
+#KDE_LANG = de pt_BR
+
+messages:
+	$(XGETTEXT) $(kggz_SOURCES) -C -ki18n -kI18N_NOOP -s -j -o $(top_srcdir)/ggz-kde/po/kggz.pot
+	

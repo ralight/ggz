@@ -1,0 +1,10 @@
+ggz-kde-client for Debian
+----------------------
+
+This package is part of the GGZ Gaming Zone.
+It contains everything which is included in the kde-client/ directory
+within the GGZ CVS repository.
+The current build options are:
+	./configure --enable-browser
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>, Sun, 29 Apr 2001 14:36:13 +0200

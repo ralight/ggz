@@ -66,8 +66,8 @@ KGGZBase::KGGZBase(char *name)
 	m_menu_game->insertSeparator();
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_LAUNCH), i18n("&Launch new game"), MENU_GAME_LAUNCH);
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_JOIN), i18n("&Join game"), MENU_GAME_JOIN);
-	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_UPDATE), i18n("&Update from FTP"), MENU_GAME_UPDATE);
-	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_NEWS), i18n("&GGZ News"), MENU_GAME_NEWS);
+	//m_menu_game->insertItem(kggzGetIcon(MENU_GAME_UPDATE), i18n("&Update from FTP"), MENU_GAME_UPDATE);
+	//m_menu_game->insertItem(kggzGetIcon(MENU_GAME_NEWS), i18n("&GGZ News"), MENU_GAME_NEWS);
 	m_menu_game->insertSeparator();
 	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_GRUBBY), i18n("&Grubby"), MENU_GAME_GRUBBY);
 	m_menu_game->setEnabled(FALSE);
@@ -75,12 +75,12 @@ KGGZBase::KGGZBase(char *name)
 	m_menu_preferences = new KPopupMenu(this, "menu_preferences");
 	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_SETTINGS), i18n("Se&ttings"), MENU_PREFERENCES_SETTINGS);
 	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_PLAYERINFO), i18n("&Player information"), MENU_PREFERENCES_PLAYERINFO);
-	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_HOSTS), i18n("Ga&me servers"), MENU_PREFERENCES_HOSTS);
-	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_FTP), i18n("&FTP servers"), MENU_PREFERENCES_FTP);
+	//m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_HOSTS), i18n("Ga&me servers"), MENU_PREFERENCES_HOSTS);
+	//m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_FTP), i18n("&FTP servers"), MENU_PREFERENCES_FTP);
 	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_GAMES), i18n("&Games"), MENU_PREFERENCES_GAMES);
-	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_THEMES), i18n("Th&emes"), MENU_PREFERENCES_THEMES);
-	m_menu_preferences->insertSeparator();
-	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_PREFERENCES), i18n("&All Preferences"), MENU_PREFERENCES_PREFERENCES);
+	//m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_THEMES), i18n("Th&emes"), MENU_PREFERENCES_THEMES);
+	//m_menu_preferences->insertSeparator();
+	//m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_PREFERENCES), i18n("&All Preferences"), MENU_PREFERENCES_PREFERENCES);
 
 	menu_help = helpMenu(NULL, FALSE);
 	menu_help->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/ggz.png"), i18n("About the GGZ Gaming Zone"), 99, 5);
@@ -91,6 +91,7 @@ KGGZBase::KGGZBase(char *name)
 	m_menu->insertItem(i18n("&Client"), m_menu_client);
 	m_menu->insertItem(i18n("&Rooms"), m_menu_rooms);
 	m_menu->insertItem(i18n("&Game"), m_menu_game);
+	m_menu->insertItem(i18n("&Preferences"), m_menu_preferences);
 	m_menu->insertItem(i18n("&Help"), menu_help);
 
 	connect(m_menu_ggz, SIGNAL(activated(int)), SLOT(slotMenu(int)));
@@ -160,6 +161,9 @@ QIconSet KGGZBase::kggzGetIcon(int menuid)
 			break;
 		case MENU_CLIENT_HELP:
 			icon = "browser.png";
+			break;
+		case MENU_GAME_INFO:
+			icon = "info.png";
 			break;
 		case MENU_GAME_LAUNCH:
 			icon = "launch.png";
