@@ -1,5 +1,6 @@
 # Chess description file
-[Chess]
+[ModuleInfo]
+Name = Chess
 Author = Ismael Orenstein
 Version = 0.0.6
 Protocol = 0.0.6
