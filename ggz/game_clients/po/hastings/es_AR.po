@@ -16,7 +16,6 @@ msgstr ""
 "X-Generator: KBabel 0.9.2alpha\n"
 
 #: ../hastings/dlg_about.c:81
-#, fuzzy
 msgid ""
 "Authors:\n"
 "        Gtk+ Client:\n"
@@ -36,33 +35,33 @@ msgstr ""
 "            Josef Spillner        <dr_maux@users.sourceforge.net>\n"
 "\n"
 "Sitio Web:\n"
-"        http://mindx.sourceforge.net/"
+"        http://ggz.sourceforge.net/games/hastings/"
 
 #: ../hastings/dlg_yesno.c:60
 msgid "Question"
-msgstr ""
+msgstr "Pregunta"
 
 #: ../hastings/dlg_yesno.c:87
 msgid "Yes"
-msgstr ""
+msgstr "Si"
 
 #: ../hastings/dlg_yesno.c:95
 msgid "No"
 msgstr ""
 
 #: ../hastings/main.c:134
-#, fuzzy, c-format
+#, c-format
 msgid "Your move: select a knight (you are %s on the %s team)."
-msgstr "Tu jugada: selecciona un cavallare (tu nmero %d)"
+msgstr "Tu jugada: selecciona un cavallo (vos sos %s en el equipo %s)"
 
 #: ../hastings/main.c:162
 msgid "Getting seat number"
-msgstr "Obteniendo nmero de lugar"
+msgstr "Obteniendo numero de lugar"
 
 #: ../hastings/main.c:166
 #, c-format
 msgid "Received seat number: %i"
-msgstr "Nmero de lugar recivido: %i"
+msgstr "Numero de lugar recivido: %i"
 
 #: ../hastings/main.c:179
 msgid "Getting player names"
@@ -75,7 +74,7 @@ msgstr "Jugador %d es: %s"
 
 #: ../hastings/main.c:198
 msgid "Your turn will be soon... have a look at the map in the meantime."
-msgstr "Pronto ser tu turno... mientras tanto mira el mapa"
+msgstr "Pronto va a ser tu turno... mientras tanto mira el mapa"
 
 #: ../hastings/main.c:206
 msgid "Getting opponent's move"
@@ -83,11 +82,11 @@ msgstr "Obteniendo jugada del oponente"
 
 #: ../hastings/main.c:228
 msgid "Requesting synchronization"
-msgstr "Pidiendo sincronizacin"
+msgstr "Pidiendo sincronizacion"
 
 #: ../hastings/main.c:241
 msgid "Getting re-sync"
-msgstr "Obteniendo re-sincronizacin"
+msgstr "Obteniendo re-sincronizacion"
 
 #: ../hastings/main.c:245
 #, c-format
@@ -96,7 +95,7 @@ msgstr "El jugador %d tiene el turno"
 
 #: ../hastings/main.c:261
 msgid "Sync completed"
-msgstr "Sincronizacin completada"
+msgstr "Sincronizacion completada"
 
 #: ../hastings/main.c:271
 msgid "Game over"
@@ -109,7 +108,7 @@ msgstr "El jugador %d es el ganador"
 
 #: ../hastings/main.c:291
 msgid "Requesting game initialization"
-msgstr "Pidiendo inicializacin del juego"
+msgstr "Pidiendo inicializacion del juego"
 
 #: ../hastings/main.c:299
 #, c-format
@@ -122,15 +121,15 @@ msgstr "Mi estado: Estoy esperando (Jugadores robots)"
 
 #: ../hastings/main.c:332
 msgid "Server not ready!!"
-msgstr "El servidor no esta listo "
+msgstr "El servidor no esta listo!!"
 
 #: ../hastings/main.c:335
 msgid "Not my turn !!"
-msgstr "No es mi turno"
+msgstr "No es mi turno!!"
 
 #: ../hastings/main.c:338
 msgid "Move out of bounds"
-msgstr "Movimento fuera de lmite"
+msgstr "Movimento fuera de limite"
 
 #: ../hastings/main.c:341
 msgid "Nothing to move (erm?)"
@@ -151,25 +150,24 @@ msgstr "Argh!! Deberas jugar al Batalla Naval para ese proposito!"
 #: ../hastings/main.c:353
 #, c-format
 msgid "Moved knight from %i/%i to %i/%i"
-msgstr "Cavallero modido de %i/%i hacia %i/%i"
+msgstr "Cavallero movido de %i/%i hacia %i/%i"
 
 #: ../hastings/main_win.c:374
 msgid "Not my turn yet"
-msgstr "Todava no es mi turno"
+msgstr "Todavia no es mi turno"
 
 #: ../hastings/main_win.c:398
 msgid "Looking for submarines? They aren't invented yet (it's 1066)."
-msgstr "Buscando submarinos? Todava no estan inventados (Es el ao 1066)"
+msgstr "Buscando submarinos? Todavia no estan inventados (Es el anio 1066)"
 
 #: ../hastings/main_win.c:403
 msgid "I can't see anyone here. Can you?"
 msgstr "No puedo ver ms aca. Vos podes?"
 
 #: ../hastings/main_win.c:408
-#, fuzzy, c-format
+#, c-format
 msgid "Don't cheat! That's not yours! You are %s on the %s team."
-msgstr ""
-"No hagas trampa! Es no es tuyo. Vos tenes el nmero %i, y este es  el %i"
+msgstr "No hagas trampa! Eso no es tuyo. Vos sos %s en el equito %s."
 
 #: ../hastings/main_win.c:416
 msgid "Where shall I go?"
@@ -202,7 +200,7 @@ msgstr "_Acerca"
 #: ../hastings/support.c:118
 #, c-format
 msgid "Couldn't find pixmap file: %s"
-msgstr "No se encontr el pixmap: %s"
+msgstr "No se encontro el pixmap: %s"
 
 #: ../hastings/support.c:127
 #, c-format
@@ -211,28 +209,29 @@ msgstr "Error cargando el pixmap: %s"
 
 #: ../common/dlg_exit.c:50
 msgid "Are you sure you want to exit?"
-msgstr ""
+msgstr "Seguro que queres salir?"
 
 #: ../common/dlg_exit.c:52
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
 msgstr ""
+"Seguro que queres salir?\n"
+"No vas a poder volver a entrar"
 
 #: ../common/dlg_exit.c:57
 msgid "Really Exit?"
-msgstr ""
+msgstr "Seguro queres salir?"
 
 #: ../common/dlg_exit.c:66
-#, fuzzy
 msgid "Exit"
-msgstr "Sal_ir"
+msgstr "Salir"
 
 #: ../common/dlg_exit.c:67
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: ../common/ggzintl.c:41
-#, fuzzy, c-format
+#, c-format
 msgid "nls enabled: %s"
-msgstr "nls habilitado\n"
+msgstr "nls habilitado: %s"
