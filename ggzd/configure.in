@@ -320,6 +320,7 @@ AC_OUTPUT([Makefile
 		game_servers/muehle/variants/Makefile
 		game_servers/keepalive/Makefile
 		game_servers/keepalive/src/Makefile
+		game_servers/keepalive/ggzsh/Makefile
 		man/Makefile
 		tests/Makefile
 	   ])
