@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 4046 2002-04-22 00:04:41Z jdorje $
+ * $Id: game.h 4057 2002-04-23 05:38:53Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -39,21 +39,22 @@
  */
 typedef struct {
 	/* Animation prefs */
-	int animation;
-	int faster_animation;
-	int smoother_animation;
-	int multiple_animation;
-	int longer_clearing_delay;
+	bool animation;
+	bool faster_animation;
+	bool smoother_animation;
+	bool multiple_animation;
+	bool longer_clearing_delay;
 	
 	/* Game interface prefs */
-	int cardlists;
-	int bid_on_table;
-	int bidding_tooltips;
+	bool single_click_play;
+	bool cardlists;
+	bool bid_on_table;
+	bool bidding_tooltips;
 	
 	/* Meta-game interface prefs */
-	int autostart;
-	int use_default_options;
-	int confirm_exit;
+	bool autostart;
+	bool use_default_options;
+	bool confirm_exit;
 } Preferences;
 
 /* Our set of preferences.  See above. */

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4048 2002-04-22 17:19:04Z jdorje $
+ * $Id: table.c 4057 2002-04-23 05:38:53Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -569,9 +569,9 @@ static void table_card_clicked(int card_num)
 {
 	ggz_debug("table", "table_card_clicked: Card %d clicked.", card_num);
 
-	if (card_num == selected_card) {
-		/* If you click on the already selected card,
-		   it gets played. */
+	if (card_num == selected_card || preferences.single_click_play) {
+		/* If you click on the already selected card, it gets played.
+		   There's also an option so that you need only click once. */
 		selected_card = -1;
 		game_play_card(card_num);
 	} else {

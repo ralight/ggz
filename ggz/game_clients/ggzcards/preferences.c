@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 3701 2002-03-28 03:22:32Z jdorje $
+ * $Id: preferences.c 4057 2002-04-23 05:38:53Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -82,6 +82,15 @@ PrefType pref_types[] = {
 	    "(depending on the game) still be visible in the "
 	    "\"Last Trick\" selection of the \"Messages\" menu."),
 	 &preferences.longer_clearing_delay,
+	 FALSE},
+	
+	{"single_click_play",
+	 N_("Single-click cards to play them"),
+	 N_("Normally, you must click a card twice to play it (once "
+	    "to select it and again to commit to the play).  With "
+	    "this option, the card is played immediately when you "
+	    "click it."),
+	 &preferences.single_click_play,
 	 FALSE},
 	
 	{"cardlists",
