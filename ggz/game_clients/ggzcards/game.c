@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2959 2001-12-19 23:12:47Z jdorje $
+ * $Id: game.c 2960 2001-12-19 23:35:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -48,18 +48,23 @@ int table_max_hand_size = 0;
 
 void game_init(void)
 {
-	ggz_debug("table", "Entering game_init().");
+	ggz_debug("main", "Entering game_init().");
 	statusbar_message(_("Waiting for server"));
 }
 
 void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
+	ggz_debug("main", "Received data froms server.");
 	client_handle_server();
 }
 
 void game_send_bid(int bid)
 {
-	int status = client_send_bid(bid);
+	int status;
+
+	ggz_debug("main", "Sending bid %d to server.", bid);
+
+	status = client_send_bid(bid);
 
 	statusbar_message(_("Sending bid to server"));
 
@@ -68,7 +73,11 @@ void game_send_bid(int bid)
 
 void game_send_options(int option_count, int *options_selection)
 {
-	int status = client_send_options(option_count, options_selection);
+	int status;
+
+	ggz_debug("main", "Sending options to server.");
+
+	status = client_send_options(option_count, options_selection);
 
 	statusbar_message(_("Sending options to server"));
 
@@ -84,7 +93,7 @@ void game_play_card(int card_num)
 	int player = ggzcards.play_hand, status;
 	card_t card = ggzcards.players[player].hand.card[card_num];
 
-	ggz_debug("main", "Playing card number %d.", card_num);
+	ggz_debug("main", "Sending play of card %d to server.", card_num);
 
 	status = client_send_play(card);
 
@@ -110,7 +119,11 @@ void game_play_card(int card_num)
 void game_send_newgame(void)
 {
 	GtkWidget *menu;
-	int status = client_send_newgame();
+	int status;
+
+	ggz_debug("main", "Sending newgame to server.");
+
+	status = client_send_newgame();
 
 	menu = gtk_object_get_data(GTK_OBJECT(dlg_main), "mnu_startgame");
 	assert(menu);
@@ -123,6 +136,7 @@ void game_send_newgame(void)
 
 void game_request_sync(void)
 {
+	ggz_debug("main", "Requesting sync from server.");
 #ifdef ANIMATION
 	animation_stop(TRUE);
 #endif
@@ -140,17 +154,22 @@ void game_get_newgame(void)
 		gtk_object_get_data(GTK_OBJECT(dlg_main), "mnu_startgame");
 	gtk_widget_set_sensitive(menu, TRUE);
 
+	ggz_debug("main", "Handling newgame request from server.");
+
 	statusbar_message(_("Select \"Start Game\" to begin the game."));
 }
 
 void game_alert_newgame(void)
 {
+	ggz_debug("main", "Received newgame alert from server.");
 	/* do nothing... */
 }
 
 void game_handle_gameover(int num_winners, int *winners)
 {
 	char msg[4096] = "";
+
+	ggz_debug("main", "Handling gameover from server.");
 
 	/* handle different cases */
 	if (num_winners == 0)
@@ -182,6 +201,9 @@ void game_handle_gameover(int num_winners, int *winners)
 void game_alert_player(int player, GGZSeatType status, const char *name)
 {
 	char *temp = NULL;
+
+	ggz_debug("main", "Handling player update for player %d.", player);
+
 	switch (status) {
 	case GGZ_SEAT_PLAYER:
 		/* This assumes we can't have a smooth transition from one
@@ -210,12 +232,13 @@ void game_alert_player(int player, GGZSeatType status, const char *name)
 
 void game_setup_table(void)
 {
+	ggz_debug("main", "Setting up table.");
 	table_setup();
 }
 
 void game_alert_hand_size(int max_hand_size)
 {
-	table_max_hand_size = max_hand_size;
+	ggz_debug("main", "Table max hand size upped to %d.", max_hand_size);
 
 	do {
 		/* the inner table must be at least large enough. So, if it's
@@ -225,17 +248,23 @@ void game_alert_hand_size(int max_hand_size)
 		get_fulltable_size(&w1, &h1);
 		if (w1 > w && h1 > h)
 			break;
-		table_max_hand_size++;
+		max_hand_size++;
 	} while (1);
+
+	table_max_hand_size = MAX(table_max_hand_size, max_hand_size);
 }
 
 void game_display_hand(int player)
 {
+	ggz_debug("main", "Hand display for player %d needed.", player);
+
 	table_display_hand(player);
 }
 
 void game_get_bid(int possible_bids, char **bid_choices)
 {
+	ggz_debug("main", "Handling bid request; %d choices.", possible_bids);
+
 	dlg_bid_display(possible_bids, bid_choices);
 
 	/* This is a hack since sometimes the table would get overdrawn at
@@ -247,6 +276,8 @@ void game_get_bid(int possible_bids, char **bid_choices)
 
 void game_get_play(int hand)
 {
+	ggz_debug("main", "Handle play request.");
+
 	if (hand == 0)
 		statusbar_message(_("Your turn to play a card"));
 	else {
@@ -260,6 +291,8 @@ void game_get_play(int hand)
 
 void game_alert_badplay(char *err_msg)
 {
+	ggz_debug("main", "Handling badplay alert.");
+
 #ifdef ANIMATION
 	animation_stop(FALSE);
 #endif /* ANIMATION */
@@ -273,6 +306,8 @@ void game_alert_badplay(char *err_msg)
 
 void game_alert_play(int player, card_t card, int pos)
 {
+	ggz_debug("main", "Handling play alert for player %d.", player);
+
 #ifdef ANIMATION
 	/* If this is a card _we_ played, then we'll already be animating,
 	   and we really don't want to stop just to start over.  But we
@@ -290,13 +325,15 @@ void game_alert_play(int player, card_t card, int pos)
 
 void game_alert_table(void)
 {
-	ggz_debug("table", "Handling table update alert.");
+	ggz_debug("main", "Handling table update alert.");
 	table_show_all_cards();
 }
 
 void game_alert_trick(int player)
 {
 	char *t_str;
+
+	ggz_debug("main", "Handling trick alert; player %d won.", player);
 
 #ifdef ANIMATION
 	animation_stop(TRUE);
@@ -316,6 +353,8 @@ void game_alert_trick(int player)
 int game_get_options(int option_cnt, int *choice_cnt, int *defaults,
 		     char ***option_choices)
 {
+	ggz_debug("main", "Handling option request.");
+
 	dlg_option_display(option_cnt, choice_cnt, defaults, option_choices);
 
 	statusbar_message(_("Please select options."));
@@ -326,7 +365,7 @@ int game_get_options(int option_cnt, int *choice_cnt, int *defaults,
 /* Displays a global message (any global message). */
 void game_set_text_message(const char *mark, const char *message)
 {
-	ggz_debug("table", "Received message '%s'/'%s'.", mark, message);
+	ggz_debug("main", "Received text message for '%s'.", mark);
 #if 0
 	if (!table_initialized)
 		return;
@@ -346,12 +385,12 @@ void game_set_text_message(const char *mark, const char *message)
 		   access. */
 		menubar_text_message(mark, message);
 	}
-	ggz_debug("table", "Handled message.");
 }
 
 void game_set_cardlist_message(const char *mark, int *lengths,
 			       card_t ** cardlist)
 {
+	ggz_debug("main", "Received cardlist message for '%s'.", mark);
 #if 0
 	int p, i;
 	char buf[4096] = "";
@@ -413,10 +452,12 @@ void game_set_cardlist_message(const char *mark, int *lengths,
 /* Displays a player's message on the table. */
 void game_set_player_message(int player, const char *message)
 {
+	ggz_debug("main", "Received player message for %d.", player);
 	table_set_player_message(player, message);
 }
 
 int game_handle_game_message(int fd, int game, int size)
 {
+	ggz_debug("main", "Received game message for game %d.", game);
 	return 0;
 }

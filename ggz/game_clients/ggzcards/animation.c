@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 2959 2001-12-19 23:12:47Z jdorje $
+ * $Id: animation.c 2960 2001-12-19 23:35:52Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -119,7 +119,7 @@ gint animation_callback(gpointer ignored)
 	new_y = anim.cur_y + anim.step_y;
 	if (abs(new_y - anim.dest_y) < 2)
 		new_y = anim.dest_y;
-		
+
 	animation_delete();
 
 	/* Draw our new card position */
@@ -151,7 +151,7 @@ gint animation_callback(gpointer ignored)
 void animation_stop(int success)
 {
 	ggz_debug("animation", "Stopping animation (%d).", success);
-	
+
 	if (!animating)
 		return;
 
