@@ -76,6 +76,39 @@ int ggzcore_room_get_gametype(GGZRoom *room)
 	return _ggzcore_room_get_game(room);
 }
 
+
+int ggzcore_room_get_num_players(GGZRoom *room)
+{
+	if (!room)
+		return -1;
+
+	return _ggzcore_room_get_num_players(room);
+}
+
+
+char** ggzcore_room_get_player_names(GGZRoom *room)
+{
+	int i = 0;
+	char **names = NULL;
+	struct _ggzcore_list_entry *cur;
+	struct _GGZPlayer *player;
+	
+	if (!room)
+		return NULL;
+	
+	if (!(names = calloc((room->num_players + 1), sizeof(char*))))
+		ggzcore_error_sys_exit("calloc() failed in ggzcore_room_get_player_names");
+	cur = _ggzcore_list_head(room->players);
+	while (cur) {
+		player = _ggzcore_list_get_data(cur);
+		names[i++] = _ggzcore_player_get_name(player);
+		cur = _ggzcore_list_next(cur);
+	}
+	
+	return names;
+}
+
+
 /* Functions for attaching hooks to GGZRoom events */
 int ggzcore_room_add_event_hook(GGZRoom *room,
 				const GGZRoomEvent event, 
@@ -120,6 +153,17 @@ int ggzcore_room_remove_event_hook_id(GGZRoom *room,
 		return -1;
 
 	return _ggzcore_hook_remove_id(room->event_hooks[event], hook_id);
+}
+
+void ggzcore_room_list_players(GGZRoom *room)
+{
+	_ggzcore_room_list_players(room);
+}
+
+
+void ggzcore_room_list_tables(GGZRoom *room)
+{
+
 }
 
 
@@ -237,15 +281,87 @@ char* _ggzcore_room_get_desc(struct _GGZRoom *room)
 }
 
 
-void _ggzcore_room_add_player(struct _GGZRoom *room, 
-			      struct _GGZPlayer *player) {}
+unsigned int _ggzcore_room_get_num_players(struct _GGZRoom *room)
+{
+	return room->num_players;
+}
 
-void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name) {}
+
+void _ggzcore_room_set_player_list(struct _GGZRoom *room,
+				   unsigned int count,
+				   struct _ggzcore_list *list)
+{
+	/* Get rid of old list */
+	_ggzcore_list_destroy(room->players);
+
+	room->num_players = count;
+	room->players = list;
+
+	_ggzcore_room_event(room, GGZ_PLAYER_LIST, NULL);
+}
+
+
+void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor)
+{
+	room->monitor = monitor;
+
+	/* If turning off monitoring, clear lists */
+	if (!monitor) {
+		room->num_players = 0;
+		_ggzcore_list_destroy(room->players);
+		room->players = NULL;
+
+		room->num_tables = 0;
+		_ggzcore_list_destroy(room->tables);
+		room->tables = NULL;
+	}
+}
+
+
+void _ggzcore_room_add_player(struct _GGZRoom *room, char *name)
+{
+	struct _GGZPlayer player;
+	
+	/* Default new people in room to no table (-1) */
+	_ggzcore_player_init(&player, name, -1);
+	_ggzcore_list_insert(room->players, &player);
+	room->num_players++;
+	_ggzcore_room_event(room, GGZ_ROOM_ENTER, name);
+}
+			      
+
+void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name)
+{
+	struct _GGZPlayer player;
+	struct _ggzcore_list_entry *entry;
+	
+	/* Default new people in room to no table (-1) */
+	_ggzcore_player_init(&player, name, -1);
+	if (!(entry = _ggzcore_list_search(room->players, &player)))
+		return;
+	_ggzcore_list_delete_entry(room->players, entry);
+	room->num_players--;
+
+	_ggzcore_room_event(room, GGZ_ROOM_LEAVE, name);
+}
+
 
 void _ggzcore_room_add_table(struct _GGZRoom *room, 
 			     struct _GGZTable *table) {}
 
 void _ggzcore_room_remove_table(struct _GGZRoom *room, int index) {}
+
+
+void _ggzcore_room_list_players(struct _GGZRoom *room)
+{
+	_ggzcore_server_list_players(room->server);
+}
+
+
+void _ggzcore_room_list_tables(struct _GGZRoom *room)
+{
+	_ggzcore_server_list_tables(room->server);
+}
 
 
 void _ggzcore_room_add_chat(struct _GGZRoom *room, GGZChatOp op, char *name,

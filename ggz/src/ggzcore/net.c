@@ -163,6 +163,18 @@ int _ggzcore_net_send_list_players(const unsigned int fd)
 }
 
 
+int _ggzcore_net_send_list_tables(const unsigned int fd, const int type, const char global)
+{	
+	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_TABLES");	
+	if (es_write_int(fd, REQ_LIST_TABLES) < 0
+	    || es_write_int(fd, type) < 0
+	    || es_write_char(fd, global) < 0)
+		return -1;
+
+	return 0;
+}
+
+
 int _ggzcore_net_send_chat(const unsigned int fd, 
 			   const GGZChatOp op, 
 			   const char* player, 
@@ -340,30 +352,24 @@ int _ggzcore_net_read_room_join(const unsigned int fd, char *status)
 	return 0;
 }
 		
-#if 0
-static void _ggzcore_net_read_list_players(const unsigned int fd)
+
+int _ggzcore_net_read_num_players(const unsigned int fd, int *num)
 {
-	int i, num, table;
-	char name[256];
-	
-	if (es_read_int(fd, &num) < 0)
-		return;
-
-	_ggzcore_player_list_clear();
-
-	for (i = 0; i < num; i++) {
-		if (es_read_string(fd, name, sizeof(name)) < 0
-		    || es_read_int(fd, &table) < 0)
-			return;
-		
-		_ggzcore_player_list_add(name, table);
-		ggzcore_debug(GGZ_DBG_NET, "%s at table %d", name, table);
-	}
-	
-	/* FIXME: read in information and actually pass back to client */
-	ggzcore_event_enqueue(GGZ_SERVER_LIST_PLAYERS, NULL, NULL);
+	return es_read_int(fd, num);
 }
-#endif
+
+
+int _ggzcore_net_read_player(const unsigned int fd, char **name, int *table)
+{
+	if (es_read_string_alloc(fd, name) < 0
+	    || es_read_int(fd, table) < 0)
+		return -1;
+
+	ggzcore_debug(GGZ_DBG_NET, "Player %s at table %d", *name, *table);
+
+	return 0;
+}
+
 
 int _ggzcore_net_read_rsp_chat(const unsigned int fd, char *status)
 {
@@ -386,8 +392,7 @@ int _ggzcore_net_read_chat(const unsigned int fd, GGZChatOp *op, char **name,
 	    || es_read_string_alloc(fd, name) < 0)
 		return -1;
 	
-	ggzcore_debug(GGZ_DBG_SERVER, "opcode = %d", opcode);	
-
+	ggzcore_debug(GGZ_DBG_NET, "Chat opcode = %d", opcode);	
 	*op = opcode;
 
 	if (opcode & GGZ_CHAT_M_MESSAGE) 
@@ -398,35 +403,19 @@ int _ggzcore_net_read_chat(const unsigned int fd, GGZChatOp *op, char **name,
 }
 
 
-int _ggzcore_net_read_update_players(const unsigned int fd)
+int _ggzcore_net_read_update_players(const unsigned int fd, GGZUpdateOp *op,
+				     char **name)
 {
-	char subop;
-	char *name;
-	
-	if (es_read_char(fd, &subop) < 0
-	    || es_read_string_alloc(fd, &name) < 0)
+	unsigned char opcode;
+
+	if (es_read_char(fd, &opcode) < 0
+	    || es_read_string_alloc(fd, name) < 0)
 		return -1;
 
+	ggzcore_debug(GGZ_DBG_NET, "Update opcode = %d", opcode);
+	*op = opcode;
+
 	return 0;
-
-#if 0
-	switch ((GGZUpdateOp)subop) {
-	case GGZ_UPDATE_DELETE:
-		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s left", name);
-		ggzcore_event_enqueue(GGZ_SERVER_ROOM_LEAVE, name, free);
-		_ggzcore_player_list_remove(name);
-		break;
-
-	case GGZ_UPDATE_ADD:
-		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s enter", name);
-		ggzcore_event_enqueue(GGZ_SERVER_ROOM_ENTER, name, free);
-		_ggzcore_player_list_add(name, -1);
-		break;
-	default:
-		/* FIXME: handle invalid opcode? */
-	}
-#endif 
-
 }
 
 
@@ -506,7 +495,7 @@ int _ggzcore_net_read_update_tables(const unsigned int fd)
 		break;
 	}
 
-	ggzcore_event_enqueue(GGZ_SERVER_LIST_PLAYERS, NULL, NULL);
+	/*ggzcore_event_enqueue(GGZ_SERVER_LIST_PLAYERS, NULL, NULL);*/
 	ggzcore_event_enqueue(GGZ_SERVER_TABLE_UPDATE, NULL, NULL);
 
 	return 0;

@@ -46,6 +46,89 @@ static void* _ggzcore_player_create(void* p);
 static void  _ggzcore_player_destroy(void* p);
 
 
+/* Publicly exported functions */
+
+unsigned int ggzcore_player_get_num(void)
+{
+	return num_players;
+}
+
+
+char** ggzcore_player_get_names(void)
+{
+	int i = 0;
+	char **names = NULL;
+	struct _ggzcore_list_entry *cur;
+	struct _GGZPlayer *player;
+
+	if (num_players >= 0) {
+		if (!(names = calloc((num_players + 1), sizeof(char*))))
+			ggzcore_error_sys_exit("calloc() failed in player_get_names");
+		cur = _ggzcore_list_head(player_list);
+		while (cur) {
+			player = _ggzcore_list_get_data(cur);
+			names[i++] = player->name;
+			cur = _ggzcore_list_next(cur);
+		}
+	}
+				
+	return names;
+}
+
+
+int ggzcore_player_get_table(char *name)
+{
+	struct _ggzcore_list_entry *cur;
+	struct _GGZPlayer *player;
+
+	if (num_players >= 0) {
+		cur = _ggzcore_list_head(player_list);
+		while (cur) {
+			player = _ggzcore_list_get_data(cur);
+			if(!strcmp(player->name, name))
+				return player->table;
+			cur = _ggzcore_list_next(cur);
+		}
+	}
+
+	/* This *should* never happen */
+	return -2;
+}
+
+
+/* 
+ * Internal library functions (prototypes in player.h) 
+ * NOTE:All of these functions assume valid inputs!
+ */
+
+struct _ggzcore_list* _ggzcore_player_list_new(void)
+{
+	return _ggzcore_list_create(_ggzcore_player_compare,
+				    _ggzcore_player_create,
+				    _ggzcore_player_destroy,
+				    0);
+}
+
+void _ggzcore_player_init(struct _GGZPlayer *player, const char* name, 
+			  const int table)
+{
+	player->name = strdup(name);
+	player->table = table;
+}
+
+
+char* _ggzcore_player_get_name(struct _GGZPlayer *player)
+{
+	return player->name;
+}
+
+
+int _ggzcore_player_get_table(struct _GGZPlayer *player)
+{
+	return player->table;
+}
+
+#if 0
 void _ggzcore_player_list_clear(void)
 {
 	if (player_list)
@@ -115,54 +198,9 @@ int _ggzcore_player_list_replace(const char* name, const int table)
 
 	return 0;
 }
+#endif
 
-
-unsigned int ggzcore_player_get_num(void)
-{
-	return num_players;
-}
-
-
-char** ggzcore_player_get_names(void)
-{
-	int i = 0;
-	char **names = NULL;
-	struct _ggzcore_list_entry *cur;
-	struct _GGZPlayer *player;
-
-	if (num_players >= 0) {
-		if (!(names = calloc((num_players + 1), sizeof(char*))))
-			ggzcore_error_sys_exit("calloc() failed in player_get_names");
-		cur = _ggzcore_list_head(player_list);
-		while (cur) {
-			player = _ggzcore_list_get_data(cur);
-			names[i++] = player->name;
-			cur = _ggzcore_list_next(cur);
-		}
-	}
-				
-	return names;
-}
-
-
-int ggzcore_player_get_table(char *name)
-{
-	struct _ggzcore_list_entry *cur;
-	struct _GGZPlayer *player;
-
-	if (num_players >= 0) {
-		cur = _ggzcore_list_head(player_list);
-		while (cur) {
-			player = _ggzcore_list_get_data(cur);
-			if(!strcmp(player->name, name))
-				return player->table;
-			cur = _ggzcore_list_next(cur);
-		}
-	}
-
-	/* This *should* never happen */
-	return -2;
-}
+/* Static functions internal to this file */
 
 
 static int _ggzcore_player_compare(void* p, void* q)

@@ -96,7 +96,6 @@ static GGZStateID _server_room_join_fail_states[] = {
 	GGZ_STATE_BETWEEN_ROOMS,
 	-1          
 };
-#endif
 
 static GGZStateID _server_list_players_states[] = {
 	GGZ_STATE_IN_ROOM,       
@@ -106,7 +105,6 @@ static GGZStateID _server_list_players_states[] = {
 	-1          
 };
 
-#if 0
 static GGZStateID _server_chat_states[] = {
 	GGZ_STATE_IN_ROOM,       
 	GGZ_STATE_JOINING_TABLE, 
@@ -178,7 +176,6 @@ static GGZStateID _server_error_states[] = {
 	GGZ_STATE_LOGGING_OUT,   
 	-1          
 };                      
-#endif
 
 static GGZStateID _server_room_enter_states[] = {
 	GGZ_STATE_IN_ROOM,       
@@ -196,6 +193,7 @@ static GGZStateID _server_room_leave_states[] = {
 	-1          
 };                        
 
+#endif
 static GGZStateID _server_table_update_states[] = {
 	GGZ_STATE_ONLINE,        
 	GGZ_STATE_LOGGING_IN,    
@@ -276,6 +274,7 @@ static GGZStateID _user_list_tables_states[] = {
 	-1          
 };                  
 
+#if 0
 static GGZStateID _user_list_players_states[] = {
 	GGZ_STATE_IN_ROOM,       
 	GGZ_STATE_JOINING_TABLE, 
@@ -284,7 +283,6 @@ static GGZStateID _user_list_players_states[] = {
 	-1          
 };                 
 
-#if 0
 static GGZStateID _user_chat_states[] = {
 	GGZ_STATE_IN_ROOM,       
 	GGZ_STATE_JOINING_TABLE, 
@@ -337,18 +335,6 @@ static GGZStateID _user_logout_states[] = {
 /* Array of all GGZ events */
 static struct _GGZEvent _ggz_events[] = {
 
-	{GGZ_SERVER_LIST_PLAYERS,   
-	 "server_list_players",               
-	 _server_list_players_states},
-
-	{GGZ_SERVER_ROOM_ENTER,     
-	 "server_room_enter",                        
-	 _server_room_enter_states},
-	
-	{GGZ_SERVER_ROOM_LEAVE,     
-	 "server_room_leave",                        
-	 _server_room_leave_states},
-
 	{GGZ_SERVER_TABLE_UPDATE,
 	 "server_table_update",
 	 _server_table_update_states},
@@ -360,10 +346,6 @@ static struct _GGZEvent _ggz_events[] = {
 	{GGZ_USER_LIST_TABLES,      
 	 "user_list_tables",                  
 	 _user_list_tables_states},
-
-	{GGZ_USER_LIST_PLAYERS,     
-	 "user_list_players",                 
-	 _user_list_players_states},
 
 	{GGZ_USER_MOTD,             
 	 "user_motd",                         

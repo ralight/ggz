@@ -47,6 +47,9 @@ int _ggzcore_net_send_list_rooms(const unsigned int fd,
 int _ggzcore_net_send_join_room(const unsigned int fd, 
 				const int room);
 int _ggzcore_net_send_list_players(const unsigned int fd);
+int _ggzcore_net_send_list_tables(const unsigned int fd, 
+				  const int type, 
+				  const char global);
 int _ggzcore_net_send_chat(const unsigned int fd, 
 			   const GGZChatOp op,
 			   const char* player, 
@@ -66,11 +69,15 @@ int _ggzcore_net_read_room(const unsigned int fd,
 			   int *game,
 			   char **desc);
 int _ggzcore_net_read_room_join(const unsigned int fd, char *status);
+int _ggzcore_net_read_num_players(const unsigned int fd, int *num);
+int _ggzcore_net_read_player(const unsigned int fd, char **name, int *table);
 int _ggzcore_net_read_chat(const unsigned int fd, 
 			   GGZChatOp *op, 
 			   char **name, 
 			   char **msg);
-int _ggzcore_net_read_update_players(const unsigned int fd);
+int _ggzcore_net_read_update_players(const unsigned int fd, 
+				     GGZUpdateOp *op,
+				     char **name);
 int _ggzcore_net_read_update_tables(const unsigned int fd);
 int _ggzcore_net_read_rsp_chat(const unsigned int fd, char *status);
 

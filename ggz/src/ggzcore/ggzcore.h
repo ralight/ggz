@@ -265,12 +265,15 @@ int ggzcore_room_remove_event_hook_id(GGZRoom *room,
 				      const unsigned int hook_id);
 
 /* Functions for querying a GGZRoom object for information */
-int   ggzcore_room_get_num(GGZRoom *room);
-char* ggzcore_room_get_name(GGZRoom *room);
-char* ggzcore_room_get_desc(GGZRoom *room);
-int   ggzcore_room_get_gametype(GGZRoom *room);
+int    ggzcore_room_get_num(GGZRoom *room);
+char*  ggzcore_room_get_name(GGZRoom *room);
+char*  ggzcore_room_get_desc(GGZRoom *room);
+int    ggzcore_room_get_gametype(GGZRoom *room);
+int    ggzcore_room_get_num_players(GGZRoom *room);
+char** ggzcore_room_get_player_names(GGZRoom *room);
 
-
+void ggzcore_room_list_players(GGZRoom *room);
+void ggzcore_room_list_tables(GGZRoom *room);
 void ggzcore_room_chat(GGZRoom *room,
 		       const GGZChatOp opcode,
 		       const char *player,
@@ -287,13 +290,9 @@ typedef enum {
 
 /* IDs for all GGZ events */
 typedef enum {
-	GGZ_SERVER_LIST_PLAYERS,
-	GGZ_SERVER_ROOM_ENTER,
-	GGZ_SERVER_ROOM_LEAVE,
 	GGZ_SERVER_TABLE_UPDATE,
 	GGZ_USER_LIST_TYPES,
 	GGZ_USER_LIST_TABLES,
-	GGZ_USER_LIST_PLAYERS,
 	GGZ_USER_MOTD,
 } GGZEventID;
 
@@ -403,11 +402,6 @@ int ggzcore_event_process_all(void);
  */
 int ggzcore_event_enqueue(const GGZEventID id, void *data, 
 			  const GGZDestroyFunc func);
-
-
-unsigned int ggzcore_player_get_num(void);
-char** ggzcore_player_get_names(void);
-int ggzcore_player_get_table(char *name);
 
 
 /* ggzcore_error_sys()

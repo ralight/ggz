@@ -82,6 +82,11 @@ struct _GGZServer {
 
 };
 
+
+void _ggzcore_server_list_players(GGZServer *server);
+
+void _ggzcore_server_list_tables(GGZServer *server);
+
 void _ggzcore_server_chat(GGZServer *server, 
 			  const GGZChatOp opcode,
 			  const char *player,

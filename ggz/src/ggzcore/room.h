@@ -35,13 +35,15 @@
 #define GGZ_NUM_ROOM_EVENTS 8
 
 /*
- * The GGZRoom struct manages information about a particular room that
- * the user is "in" or monitoring
+ * The GGZRoom struct manages information about a particular 
  */
 struct _GGZRoom {
 
 	/* Server which this room is on */
 	struct _GGZServer *server;
+
+	/* Monitoring flag */
+	char monitor;
 
 	/* Room ID (index) */
 	unsigned int id;
@@ -55,8 +57,14 @@ struct _GGZRoom {
 	/* Room description */
 	char *desc;
 
+	/* Number of player */
+	unsigned int num_players;
+
 	/* List of players in the room */
 	struct _ggzcore_list *players;
+
+	/* Number of tables */
+	unsigned int num_tables;
 
 	/* List of tables in the room */
 	struct _ggzcore_list *tables;
@@ -101,10 +109,15 @@ unsigned int       _ggzcore_room_get_num(struct _GGZRoom *room);
 char*              _ggzcore_room_get_name(struct _GGZRoom *room);
 unsigned int       _ggzcore_room_get_game(struct _GGZRoom *room); 
 char*              _ggzcore_room_get_desc(struct _GGZRoom *room);
+unsigned int       _ggzcore_room_get_num_players(struct _GGZRoom *room);
 
+void _ggzcore_room_set_player_list(struct _GGZRoom *room,
+				   unsigned int count,
+				   struct _ggzcore_list *list);
 
-void _ggzcore_room_add_player(struct _GGZRoom *room, 
-			      struct _GGZPlayer *player);
+void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor);
+
+void _ggzcore_room_add_player(struct _GGZRoom *room, char *name);
 
 void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name);
 
@@ -117,6 +130,10 @@ void _ggzcore_room_add_chat(struct _GGZRoom *room,
 			    GGZChatOp op, 
 			    char *name,
 			    char *msg);
+
+void _ggzcore_room_list_players(struct _GGZRoom *room);
+
+void _ggzcore_room_list_tables(struct _GGZRoom *room);
 
 void _ggzcore_room_chat(struct _GGZRoom *room,
 			const GGZChatOp opcode,

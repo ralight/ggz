@@ -27,6 +27,8 @@
 #ifndef __PLAYER_H_
 #define __PLAYER_H_
 
+#include "lists.h"
+
 /* 
  * The Player structure is meant to be a node in a linked list of
  * the players in the current room .
@@ -41,6 +43,17 @@ struct _GGZPlayer {
 };
 
 
+struct _ggzcore_list* _ggzcore_player_list_new(void);
+
+void _ggzcore_player_init(struct _GGZPlayer *player, 
+			  const char* name, 
+			  const int table);
+
+char* _ggzcore_player_get_name(struct _GGZPlayer *player);
+
+int _ggzcore_player_get_table(struct _GGZPlayer *player);
+
+#if 0
 void _ggzcore_player_list_clear(void);
 
 int _ggzcore_player_list_add(const char* name, const int table);
@@ -48,6 +61,7 @@ int _ggzcore_player_list_add(const char* name, const int table);
 int _ggzcore_player_list_remove(const char* name);
 
 int _ggzcore_player_list_replace(const char* name, const int table);
+#endif 
 
 
 #endif /* __PLAYER_H_ */

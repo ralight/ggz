@@ -32,6 +32,7 @@
 #include "net.h"
 #include "errno.h"
 #include "lists.h"
+#include "player.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -552,7 +553,24 @@ int ggzcore_server_write_data(GGZServer *server)
 	return 0;
 }
 
-/* Internal library functions (prototypes in room.h) */
+
+/* Internal library functions (prototypes in server.h) */
+
+void _ggzcore_server_list_players(GGZServer *server)
+{
+	int status;
+
+	status = _ggzcore_net_send_list_players(server->fd);
+}
+
+
+void _ggzcore_server_list_tables(GGZServer *server)
+{
+	int status;
+
+	status = _ggzcore_net_send_list_tables(server->fd, -1, 0);
+}
+
 
 void _ggzcore_server_chat(GGZServer *server, 
 			  const GGZChatOp opcode,
@@ -744,6 +762,8 @@ static void _ggzcore_server_handle_list_rooms(GGZServer *server)
 			free(desc);
 		if (name)
 			free(name);
+		if (room)
+			free(room);
 	}
 	_ggzcore_server_event(server, GGZ_ROOM_LIST, NULL);
 }
@@ -761,6 +781,10 @@ static void _ggzcore_server_handle_room_join(GGZServer *server)
 
 	switch (status) {
 	case 0:
+		/* Stop monitoring old room and start monitoring new one */
+		if (server->room)
+			_ggzcore_room_set_monitor(server->room, 0);
+		_ggzcore_room_set_monitor(server->new_room, 1);
 		server->room = server->new_room;
 		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_OK);
 		_ggzcore_server_event(server, GGZ_ENTERED, NULL);
@@ -788,12 +812,6 @@ static void _ggzcore_server_handle_room_join(GGZServer *server)
 		break;
 	}
 
-#if 0
-	/* Get list of tables */
-        es_write_int(fd, REQ_LIST_TABLES);
-        es_write_int(fd, -1);
-        es_write_char(fd, 0);
-#endif
 }
 
 
@@ -816,18 +834,72 @@ static void _ggzcore_server_handle_chat(GGZServer *server)
 }
 
 
-static void _ggzcore_server_handle_list_players(GGZServer *server){}
+static void _ggzcore_server_handle_list_players(GGZServer *server)
+{
+	int i, num, table, status;
+	char *name;
+	struct _ggzcore_list *players;
+	struct _GGZPlayer player;
+
+	/* FIXME: Clear existing list (if any) 
+	   _ggzcore_player_list_clear();*/
+	players = _ggzcore_player_list_new();
+	
+	status = _ggzcore_net_read_num_players(server->fd, &num);
+	/* FIXME: handle errors */
+	ggzcore_debug(GGZ_DBG_SERVER, "Server sending %d players", num);
+
+
+	for (i = 0; i < num; i++) {
+		status = _ggzcore_net_read_player(server->fd, &name, &table);
+		_ggzcore_player_init(&player, name, table);
+		_ggzcore_list_insert(players, &player);
+		
+		if (name)
+			free(name);
+	}
+
+	_ggzcore_room_set_player_list(server->room, num, players);
+}
+
+
+static void _ggzcore_server_handle_update_players(GGZServer *server)
+{
+	GGZUpdateOp op;
+	char *name;
+	int status;
+	GGZRoom *room;
+
+	/* Use current room (until server tells which one update is for) */
+	room = server->room;
+
+	status = _ggzcore_net_read_update_players(server->fd, &op, &name);
+	/* FIXME: handler errors */
+
+	switch (op) {
+	case GGZ_UPDATE_DELETE:
+		ggzcore_debug(GGZ_DBG_SERVER, "UPDATE_PLAYER: %s left", name);
+		_ggzcore_room_remove_player(room, name);
+		break;
+
+	case GGZ_UPDATE_ADD:
+		ggzcore_debug(GGZ_DBG_SERVER, "UPDATE_PLAYER: %s enter", name);
+		_ggzcore_room_add_player(room, name);
+		break;
+	default:
+		/* FIXME: handle invalid opcode? */
+	}
+	
+	if (name)
+		free(name);
+}
+
+
 static void _ggzcore_server_handle_list_tables(GGZServer *server){}
 static void _ggzcore_server_handle_list_types(GGZServer *server){}
 
 
 /* completely bogus functions to avoid messiness */
-static void _ggzcore_server_handle_update_players(GGZServer *server)
-{
-	_ggzcore_net_read_update_players(server->fd);
-	ggzcore_event_process_all();
-}
-
 static void _ggzcore_server_handle_update_tables(GGZServer *server)
 {
 	_ggzcore_net_read_update_tables(server->fd);

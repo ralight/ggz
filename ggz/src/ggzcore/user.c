@@ -36,7 +36,6 @@
 #include <string.h>
 
 /* Hooks */
-static GGZHookReturn _ggzcore_user_list_players(GGZEventID, void*, void*);
 static GGZHookReturn _ggzcore_user_motd(GGZEventID, void*, void*);
 
 
@@ -48,27 +47,7 @@ static GGZHookReturn _ggzcore_user_motd(GGZEventID, void*, void*);
  */
 void _ggzcore_user_register(void)
 {
-	ggzcore_event_add_hook(GGZ_USER_LIST_PLAYERS, 
-				   _ggzcore_user_list_players);
 	ggzcore_event_add_hook(GGZ_USER_MOTD, _ggzcore_user_motd);
-}
-
-
-/* _ggzcore_user_list_players() - Hook for user player-list request
- *
- * Receives:
- * GGZEventID id    : ID code of triggered event
- * void* event_data : Event-specific data
- * void* user_data  : "User" data
- *
- * Returns:
- */
-static GGZHookReturn _ggzcore_user_list_players(GGZEventID id, void* event_data, void* user_data)
-{
-	ggzcore_debug(GGZ_DBG_USER, "Executing user_list_players");
-	_ggzcore_net_send_list_players(-1);
-
-	return GGZ_HOOK_OK;
 }
 
 
