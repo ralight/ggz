@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2356 2001-09-04 19:30:07Z jdorje $
+ * $Id: ggz.c 2357 2001-09-04 20:22:55Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -454,8 +454,10 @@ int ggzd_seats_human(void)
 }
 
 
-int ggzd_fd_max(void)
+static int ggzd_fd_max(void)
 {
+	/* FIXME: why not just track this regularly instead of
+	 * recalculating it each time? */
 	int i, max = ggzfd;
 	
 	for (i = 0; i < ggzd_seats_num(); i++)

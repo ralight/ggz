@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2356 2001-09-04 19:30:07Z jdorje $
+ * $Id: ggz_server.h 2357 2001-09-04 20:22:55Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -153,11 +153,6 @@ int ggzd_seats_reserved(void);
  *  @note This is the number of seats whose status is GGZ_SEAT_PLAYER
  *  @todo Is this function necessary? */
 int ggzd_seats_human(void);
-
-/** @brief Get ggzdmod's highest FD.
- *  @return The highest file descriptor used by ggzd.
- *  @todo Is this function necessary? */
-int ggzd_fd_max(void);
 
 
 /** @brief Tell ggzdmod the game is over.
