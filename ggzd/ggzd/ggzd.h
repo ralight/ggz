@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 3079 2002-01-12 06:26:11Z jdorje $
+ * $Id: ggzd.h 3262 2002-02-06 20:36:53Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -52,23 +52,29 @@
 #define GGZ_ALLOW_EIGHT   (1 << 7)
 
 /* Specical game type values */
-#define GGZ_TYPE_ALL  -1
-#define GGZ_TYPE_RES  -2
-#define GGZ_TYPE_OPEN -3
+typedef enum {
+	GGZ_TYPE_ALL	= -1,
+	GGZ_TYPE_RES	= -2,
+	GGZ_TYPE_OPEN	= -3,
+} GGZTableFilter;
 
 /* Player Handler return values */
-#define GGZ_REQ_OK           0
-#define GGZ_REQ_DISCONNECT  -1
-#define GGZ_REQ_FAIL         1
-#define GGZ_REQ_TABLE_JOIN   2
-#define GGZ_REQ_TABLE_LEAVE  3
+typedef enum {
+	GGZ_REQ_OK		= 0,
+	GGZ_REQ_DISCONNECT	= -1,
+	GGZ_REQ_FAIL		= 1,
+	GGZ_REQ_TABLE_JOIN	= 2,
+	GGZ_REQ_TABLE_LEAVE	= 3,
+} GGZPlayerHandlerStatus;
 
 /* Table state values */
-#define GGZ_TABLE_ERROR     -1
-#define GGZ_TABLE_CREATED    0
-#define GGZ_TABLE_WAITING    1
-#define GGZ_TABLE_PLAYING    2
-#define GGZ_TABLE_DONE       3
+typedef enum {
+	GGZ_TABLE_ERROR		= -1,
+	GGZ_TABLE_CREATED	= 0,
+	GGZ_TABLE_WAITING	= 1,
+	GGZ_TABLE_PLAYING	= 2,
+	GGZ_TABLE_DONE		= 3,
+} GGZTableState;
 
 /*
  * Configuration options
