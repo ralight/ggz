@@ -81,7 +81,8 @@ Gurucore *guru_module_init()
 			exit;
 		}
 		if(((core->i18n_init = dlsym(core->i18nhandle, "guru_i18n_initialize")) == NULL)
-		|| ((core->i18n_translate = dlsym(core->i18nhandle, "guru_i18n_translate")) == NULL))
+		|| ((core->i18n_translate = dlsym(core->i18nhandle, "guru_i18n_translate")) == NULL)
+		|| ((core->i18n_check = dlsym(core->i18nhandle, "guru_i18n_check")) == NULL))
 		{
 			printf("ERROR: Couldn't find i18n functions\n");
 			exit(-1);
@@ -287,7 +288,7 @@ Guru *guru_module_work(Guru *message, int priority)
 			if(savemsg) free(moresave); /* EH?! */
 			if((ret) && (ret->message))
 			{
-				printf("Debug: got %s\n", ret->message);
+				/*printf("Debug: got %s\n", ret->message);*/
 				/*sleep(strlen(g.message) / 7);*/
 				free(savemsg);
 				return ret;

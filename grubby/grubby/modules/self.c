@@ -19,16 +19,18 @@ void gurumod_init()
 Guru *gurumod_exec(Guru *message)
 {
 	int i;
+	char buffer[1024];
 	
 	i = 0;
 	while((message->list) && (message->list[i]))
 	{
 		if((i == 1) && (!strcasecmp(message->list[i], "about")))
 		{
-			message->message = _("I'm Grubby, your favorite chat bot!\n"
+			sprintf(buffer, _("I'm %s, your favorite chat bot!\n"
 					"I'm here to answer your question, and learn more about you.\n"
 					"You may type 'grubby help' to get to know what I understand.\n"
-					"Have fun :-)");
+					"Have fun :-)"), message->guru);
+			message->message = buffer;
 			message->type = GURU_PRIVMSG;
 			return message;
 		}
@@ -49,5 +51,4 @@ Guru *gurumod_exec(Guru *message)
 	}
 	return NULL;
 }
-
 

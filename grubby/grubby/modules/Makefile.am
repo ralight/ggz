@@ -22,8 +22,8 @@ libgurumod_badword_la_LDFLAGS = $(GGZCORE_LDFLAGS)
 
 libgurumod_self_la_SOURCES = self.c
 
-libgurumod_people_la_SOURCES = people.c player.c
-libgurumod_people_la_LIBADD = $(LIB_GGZCORE)
+libgurumod_people_la_SOURCES = people.c
+libgurumod_people_la_LIBADD = $(LIB_GGZCORE) $(top_srcdir)/grubby/src/libguru_player.la
 libgurumod_people_la_LDFLAGS = $(GGZCORE_LDFLAGS)
 #libgurumod_people_la_SOURCES = people.c ../src/player.o <-- new automake supports that!
 

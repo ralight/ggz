@@ -15,6 +15,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "config.h"
+#include "player.h"
 
 /* Initializes the i18n subsystem */
 void guru_i18n_initialize()
@@ -22,8 +23,6 @@ void guru_i18n_initialize()
 	bindtextdomain("guru", PREFIX "/share/locale");
 	textdomain("guru");
 	setlocale(LC_ALL, "");
-
-	guru_i18n_setlanguage("de"); /* FIXME: get player info */
 }
 
 /* Sets the language to the given locale code */
@@ -35,27 +34,75 @@ void guru_i18n_setlanguage(const char *language)
 	++_nl_msg_cat_cntr;
 }
 
+void setlanguage(char *player, char *language)
+{
+	Player *p;
+
+	p = guru_player_lookup(player);
+	if(p)
+	{
+		printf("||||| %s is from %s |||||\n", player, language);
+		p->language = language;
+		guru_player_save(p);
+	}
+}
+
+/* Check whether player says his language */
+void guru_i18n_check(char *player, char *message)
+{
+	char *token;
+	int i, c;
+
+	message = strdup(message);
+	token = strtok(message, " .,:");
+	i = 0;
+	c = 0;
+	while(token)
+	{
+		if((i == 1) && (!strcasecmp(token, "i"))) c++;
+		if((i == 2) && (!strcasecmp(token, "am"))) c++;
+		if((i == 3) && (!strcasecmp(token, "from"))) c++;
+		if((i == 4) && (c == 3)) setlanguage(player, token);
+		i++;
+		token = strtok(NULL, " .,:");
+	}
+	free(message);
+}
+
 /* Translate a message or set of messages */
-char *guru_i18n_translate(char *messageset)
+char *guru_i18n_translate(char *player, char *messageset)
 {
 	char *token;
 	char *message;
 	static char *ret = NULL;
 	int i;
 	char *dup;
+	Player *p;
 
 	if(!messageset) return NULL;
+	messageset = strdup(messageset); /* FIXME: eeek! this bug is not normal! */
+
+printf("--trans1: %s, %s\n", player, messageset);
+	if(player)
+	{
+		p = guru_player_lookup(player);
+		if((!p) || (!p->language))
+		{
+			return messageset;
+		}
+		else guru_i18n_setlanguage(p->language);
+	}
+printf("--trans2: %s, %s\n", player, messageset);
+
 	if(ret)
 	{
 		free(ret);
 		ret = NULL;
 	}
 
-printf("STRTOK: '%s'\n", messageset);
 	dup = strdup(messageset);
 	messageset = dup;
 	token = strtok(messageset, "\n");
-printf("STRTOK DONE.\n");
 	i = 0;
 	while(token)
 	{

@@ -23,8 +23,11 @@ void guru_i18n_initialize();
 /* Sets the language to the given locale code */
 void guru_i18n_setlanguage(const char *language);
 
+/* Check whether player says his language */
+void guru_i18n_check(char *player, char *message);
+
 /* Translate a message or set of messages */
-char *guru_i18n_translate(char *messageset);
+char *guru_i18n_translate(char *player, char *messageset);
 
 #endif
 

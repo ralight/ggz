@@ -23,6 +23,7 @@ struct guru_t
 	int type;
 	char **list;
 	int priority;
+	char *guru;
 };
 
 typedef struct guru_t Guru;

@@ -20,7 +20,8 @@ typedef void (*netoutputfunc)(Guru *output);
 typedef void (*netlogfunc)(const char *logfile);
 
 typedef void (*i18ninitfunc)();
-typedef char* (*i18ntransfunc)(char *message);
+typedef char* (*i18ntransfunc)(char *player, char *messageset);
+typedef void (*i18ncheckfunc)(char *player, char *message);
 
 struct gurucore_t
 {
@@ -40,6 +41,7 @@ struct gurucore_t
 	netlogfunc net_log;
 	i18ninitfunc i18n_init;
 	i18ntransfunc i18n_translate;
+	i18ncheckfunc i18n_check;
 };
 
 typedef struct gurucore_t Gurucore;

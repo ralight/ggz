@@ -26,14 +26,14 @@ int admin(Guru *guru, Gurucore *core)
 	i = 0;
 	while((guru->list) && (guru->list[i])) i++;
 
-	printf("*** Admin: got request: %i words\n", i);
+	/*printf("*** Admin: got request: %i words\n", i);*/
 	switch(i)
 	{
 		case 3:
 			if(!strcmp(guru->list[1], "goto"))
 			{
 				room = atoi(guru->list[2]);
-				printf("*** Admin: Goto room %i\n", room);
+				/*printf("*** Admin: Goto room %i\n", room);*/
 				guru->message = strdup("Yes, I follow, my master.");
 				(core->net_output)(guru);
 				sleep(2);
@@ -42,7 +42,7 @@ int admin(Guru *guru, Gurucore *core)
 			}
 			if(!strcmp(guru->list[1], "logging"))
 			{
-				printf("*** Admin: Logging %s\n", guru->list[2]);
+				/*printf("*** Admin: Logging %s\n", guru->list[2]);*/
 				if(!strcmp(guru->list[2], "off")) (core->net_log)(NULL);
 				else (core->net_log)(core->logfile);
 				guru->message = strdup("Toggled logging.");
@@ -89,15 +89,17 @@ int main(int argc, char *argv[])
 				break;
 			case NET_INPUT:
 				guru = (core->net_input)();
+				guru->guru = core->name;
 				/*printf("Received: %s\n", guru->message);*/
 				if(!admin(guru, core))
 				{
+					if(core->i18n_check) (core->i18n_check)(guru->player, guru->message);
 					guru = guru_work(guru);
 					if(guru)
 					{
-						printf("Answer is: %s\n", guru->message);
-						if(core->i18n_translate) guru->message = (core->i18n_translate)(guru->message);
-						printf("Translated-Answer is: %s\n", guru->message);
+						/*printf("Answer is: %s\n", guru->message);*/
+						if(core->i18n_translate) guru->message = (core->i18n_translate)(guru->player, guru->message);
+						/*printf("Translated-Answer is: %s\n", guru->message);*/
 						(core->net_output)(guru);
 					}
 				}

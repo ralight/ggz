@@ -29,6 +29,8 @@ Guru *gurumod_exec(Guru *message)
 	Player *p;
 	static char *info = NULL;
 	int firsttime;
+	time_t t;
+	char *ts;
 
 	if(!info) info = (char*)malloc(1024);
 
@@ -52,14 +54,28 @@ Guru *gurumod_exec(Guru *message)
 		{
 			if(!firsttime)
 			{
-				strcpy(info, "Nice to see you here again, ");
-				strcat(info, message->player);
+				switch(rand() % 3)
+				{
+					case 0:
+						strcpy(info, "Nice to see you here again, ");
+						strcat(info, message->player);
+						break;
+					case 1:
+						strcpy(info, message->player);
+						strcpy(info, ": Great you come here!");
+						break;
+					default:
+						return NULL;
+						break;
+				}
 			}
 			else
 			{
 				strcpy(info, "Hi ");
 				strcat(info, message->player);
-				strcat(info, ", I'm guru. I have never seen you before here. Type 'guru help' to change this :)");
+				strcat(info, ", I'm ");
+				strcat(info, message->guru);
+				strcat(info, ". I have never seen you before here.\nType 'guru help' to change this :)");
 			}
 			message->message = info;
 			message->type = GURU_CHAT;
@@ -124,7 +140,7 @@ Guru *gurumod_exec(Guru *message)
 			if(realname) p->realname = realname;
 			if(contact) p->contact = contact;
 			guru_player_save(p);
-			message->message = "OK, registered your information";
+			message->message = "OK, registered your information.";
 			message->type = GURU_PRIVMSG;
 			return message;
 		}
@@ -140,7 +156,9 @@ Guru *gurumod_exec(Guru *message)
 			{
 				realname = (p->realname ? p->realname : "unknown");
 				contact = (p->contact ? p->contact : "unknown");
+printf("DEBUG: name=%s, contact=%s\n", realname, contact);
 				sprintf(info, "Name: %s, Contact: %s", realname, contact);
+printf("DEBUG2: %s\n", info);
 				message->message = info;
 			}
 			else message->message = "Sorry, I don't know who this is.";
@@ -153,13 +171,22 @@ Guru *gurumod_exec(Guru *message)
 		&& (!strcmp(message->list[2], "you"))
 		&& (!strcmp(message->list[3], "seen")))
 		{
-			p = guru_player_lookup(message->list[4]);
-			if(p)
+			if(!strcmp(message->player, message->list[4]))
 			{
-				sprintf(info, "Yeah, he was here at %i", p->lastseen);
-				message->message = info;
+				message->message = "I'm looking right at you now :)";
 			}
-			else message->message = "Nope, never seen this guy here.";
+			else
+			{
+				p = guru_player_lookup(message->list[4]);
+				if(p)
+				{
+					t = p->lastseen;
+					ts = ctime(&t);
+					sprintf(info, "Yeah, he was here at %s", ts);
+					message->message = info;
+				}
+				else message->message = "Nope, never seen this guy here.";
+			}
 			return message;
 		}
 	}

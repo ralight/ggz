@@ -6,4 +6,5 @@ Makefile.in
 .libs
 *.la
 *.lo
+player.c
 
