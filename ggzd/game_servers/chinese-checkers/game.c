@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 01/01/2001
  * Desc: Game functions
- * $Id: game.c 4026 2002-04-20 21:57:36Z jdorje $
+ * $Id: game.c 5034 2002-10-25 23:56:41Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -27,8 +27,10 @@
 #  include <config.h>			/* Site-specific config */
 #endif
 
+#include <assert.h>
 #include <stdlib.h>
 #include <unistd.h>
+
 #include <ggz.h>
 
 #include "game.h"
@@ -57,24 +59,63 @@ void game_init(GGZdMod *ggz)
 void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 	GGZdModState old_state = *(GGZdModState*)data;
-	if (old_state == GGZDMOD_STATE_CREATED)
-		game_update(CC_EVENT_LAUNCH, NULL, NULL, NULL, NULL);
+	GGZdModState new_state = ggzdmod_get_state(ggz);
+
+	if (old_state == GGZDMOD_STATE_CREATED) {
+		assert(game.state == CC_STATE_INIT);
+		game_setup_board();
+	}
+
+	if (new_state == GGZDMOD_STATE_WAITING) {
+		game.state = CC_STATE_WAIT;
+	} else if (new_state == GGZDMOD_STATE_PLAYING) {
+		if(game.turn == -1)
+			game.turn = 0;
+
+		game.state = CC_STATE_PLAYING;
+		game_move();
+	}
+}
+
+
+static int seats_full(void)
+{
+	/* This calculation is a bit inefficient, but that's OK */
+	return ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN) == 0
+		&& ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0;
+}
+
+
+static int seats_empty(void)
+{
+	/* This calculation is a bit inefficient, but that's OK */
+	return ggzdmod_count_seats(game.ggz, GGZ_SEAT_PLAYER) == 0
+		&& ggzdmod_count_spectators(game.ggz) == 0;
 }
 
 
 /* Handle message from GGZ server */
-void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	int player = ((GGZSeat*)data)->num;
-	game_update(CC_EVENT_JOIN, &player, NULL, NULL, NULL);
-}
+	GGZSeat *old_seat = data;
+	GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
+	GGZdModState new_state;
 
+	if (seats_full())
+		new_state = GGZDMOD_STATE_PLAYING;
+	else if (seats_empty())
+		new_state = GGZDMOD_STATE_DONE;
+	else
+		new_state = GGZDMOD_STATE_WAITING;
 
-/* Handle message from GGZ server */
-void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
-{
-	int player = ((GGZSeat*)data)->num;
-	game_update(CC_EVENT_LEAVE, &player, NULL, NULL, NULL);
+	if (new_seat.type == GGZ_SEAT_PLAYER)
+		game_send_seat(new_seat.num);
+	game_send_players();
+
+	if (new_state == GGZDMOD_STATE_PLAYING && game.turn != -1)
+		game_send_sync(new_seat.num);
+
+	ggzdmod_set_state(ggz, new_state);
 }
 
 
@@ -93,7 +134,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 	switch(op) {
 		case CC_SND_MOVE:
 			if((status = game_handle_move(num, &ro, &co, &rd, &cd)) == 0)
-				game_update(CC_EVENT_MOVE, &ro, &co, &rd, &cd);
+				game_make_move(ro, co, rd, cd);
 			break;
 		case CC_REQ_SYNC:
 			status = game_send_sync(num);
@@ -228,14 +269,14 @@ int game_send_gameover(char winner)
 int game_move(void)
 {
 	int num = game.turn;
-	unsigned char ro, co, rd, cd;
 
 	if(num == 0)
 		game.turn_count++;
 
 	if(ggzdmod_get_seat(game.ggz, num).type == GGZ_SEAT_BOT) {
+		unsigned char ro, co, rd, cd;
 		ai_move(&ro, &co, &rd, &cd);
-		game_update(CC_EVENT_MOVE, &ro, &co, &rd, &cd);
+		game_make_move(ro, co, rd, cd);
 	} else
 		game_req_move(num);
 
@@ -319,78 +360,27 @@ int game_handle_move(int num, unsigned char *ro, unsigned char *co,
 }
 
 
-static int seats_full(void)
-{
-	return ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN)
-		+ ggzdmod_count_seats(game.ggz, GGZ_SEAT_RESERVED) == 0;
-}
-
-
 /* Update game state */
-int game_update(int event, void *d1, void *d2, void *d3, void *d4)
+int game_make_move(char ro, char co, char rd, char cd)
 {
-	int seat;
-	char ro, co, rd, cd;
 	char victor;
-	
-	switch(event) {
-		case CC_EVENT_LAUNCH:
-			if(game.state != CC_STATE_INIT)
-				return -1;
-			game_setup_board();
-			game.state = CC_STATE_WAIT;
-			break;
-		case CC_EVENT_JOIN:
-			if(game.state != CC_STATE_WAIT)
-				return -1;
 
-			/* Send out seat assignments and player list */
-			seat = *(int*)d1;
-			game_send_seat(seat);
-			game_send_players();
+	if(game.state != CC_STATE_PLAYING)
+		return -1;
 
-			/* If there are no empty seats, start the game. */
-			if(seats_full()) {
-				if(game.turn == -1)
-					game.turn = 0;
-				else
-					game_send_sync(seat);
-			
-				ggzdmod_set_state(game.ggz, GGZDMOD_STATE_PLAYING);
-				game.state = CC_STATE_PLAYING;
-				game_move();
-			}
-			break;
-		case CC_EVENT_LEAVE:
-			game_send_players();
-			if(game.state == CC_STATE_PLAYING)
-				game.state = CC_STATE_WAIT;
-			ggzdmod_set_state(game.ggz, GGZDMOD_STATE_WAITING);
-			break;
-		case CC_EVENT_MOVE:
-			if(game.state != CC_STATE_PLAYING)
-				return -1;
-		
-			ro = *(char*)d1;
-			co = *(char*)d2;
-			rd = *(char*)d3;
-			cd = *(char*)d4;
+	game_send_move(game.turn, ro, co, rd, cd);
 
-			game_send_move(game.turn, ro, co, rd, cd);
-
-			if((victor = game_check_win()) < 0) {
-				/* Request next move */
-				game.turn = (game.turn + 1) % ggzdmod_get_num_seats(game.ggz);
-				game_move();
-			} else {
-				/* We have a winner */
-				ggzdmod_set_state(game.ggz, GGZDMOD_STATE_WAITING);
-				game.state = CC_STATE_DONE;
-				game_init(game.ggz);
-				game_send_gameover(victor);
-				game.play_again = 0;
-			}
-			break;
+	if((victor = game_check_win()) < 0) {
+		/* Request next move */
+		game.turn = (game.turn + 1) % ggzdmod_get_num_seats(game.ggz);
+		game_move();
+	} else {
+		/* We have a winner */
+		ggzdmod_set_state(game.ggz, GGZDMOD_STATE_WAITING);
+		game.state = CC_STATE_DONE;
+		game_init(game.ggz);
+		game_send_gameover(victor);
+		game.play_again = 0;
 	}
 	
 	return 0;

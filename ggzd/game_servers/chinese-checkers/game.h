@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 01/01/2001
  * Desc: Game functions
- * $Id: game.h 2807 2001-12-08 21:14:29Z jdorje $
+ * $Id: game.h 5034 2002-10-25 23:56:41Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -53,13 +53,6 @@
 #define CC_STATE_PLAYING	2
 #define CC_STATE_DONE		3
 
-/* Chinese Checkers game events */
-#define CC_EVENT_LAUNCH	0
-#define CC_EVENT_JOIN	1
-#define CC_EVENT_LEAVE	2
-#define CC_EVENT_MOVE	3
-
-
 /* Data structure for Chinese Checkers game */
 struct game_t {
 	GGZdMod *ggz; /* GGZ data */
@@ -76,8 +69,7 @@ void game_init(GGZdMod *ggz);
 
 /* GGZ event handler functions */
 void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data);
-void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data);
-void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, void *data);
 void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data);
 
 int game_send_seat(int);
@@ -95,4 +87,4 @@ int game_bot_move(void);
 char game_check_move(int, int);
 char game_check_win(void);
 
-int game_update(int, void *, void *, void *, void *);
+int game_make_move(char ro, char co, char rd, char cd);
