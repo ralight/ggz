@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 4405 2002-09-04 18:50:29Z dr_maux $
+ * $Id: client.c 4438 2002-09-07 13:36:55Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -971,10 +971,7 @@ void client_join_table(void)
 	
 	room = ggzcore_server_get_cur_room(server);
 	assert(spectating >= 0);
-	if (spectating)
-		status = ggzcore_room_join_table_spectator(room, table_index);
-	else
-		status = ggzcore_room_join_table(room, table_index);
+	status = ggzcore_room_join_table(room, table_index, spectating);
 	
 	if (status < 0) {
 		msgbox(_("Failed to join table.\n Join aborted."), _("Join Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
