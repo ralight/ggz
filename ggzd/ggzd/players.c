@@ -182,7 +182,7 @@ static void* player_new(void *arg_ptr)
 	players.count++;
 	pthread_rwlock_unlock(&players.lock);
 
-	dbg_msg("New player %d connected", i);
+	dbg_msg(GGZ_DBG_CONNECTION, "New player %d connected", i);
 	
 	player_loop(i, sock);
 	player_remove(i);
@@ -251,14 +251,16 @@ static void player_loop(int p_index, int p_fd)
 			switch (status) {
 			case GGZ_REQ_TABLE_JOIN:
 				/* Player launched or joined a game */
-				dbg_msg("Player %d now in game", p_index);
+				dbg_msg(GGZ_DBG_TABLE, "Player %d now in game",
+					p_index);
 				pthread_rwlock_wrlock(&players.lock);
 				players.info[p_index].playing = 1;
 				pthread_rwlock_unlock(&players.lock);
 				FD_SET(t_fd, &active_fd_set);
 				break;
 			case GGZ_REQ_TABLE_LEAVE:
-				dbg_msg("Player %d game-over [user]", p_index);
+				dbg_msg(GGZ_DBG_TABLE,
+					"Player %d game-over [user]", p_index);
 				game_over = 1;
 				break;
 			case GGZ_REQ_OK:
@@ -269,17 +271,20 @@ static void player_loop(int p_index, int p_fd)
 		/* Check for data from table */
 		if (t_fd != -1  && FD_ISSET(t_fd, &read_fd_set)) {
 			if ( (status = player_msg_to_sized(t_fd, p_fd)) <= 0) {
-				dbg_msg("Player %d game-over [game]", p_index);
+				dbg_msg(GGZ_DBG_TABLE,
+					"Player %d game-over [game]", p_index);
 				game_over = 1;
 			}
 			else 
-				dbg_msg("Game to User: %d bytes", status);
+				dbg_msg(GGZ_DBG_TABLE,
+					"Game to User: %d bytes", status);
 		}
 
 		/* Clean up after either player or table ends game,
 		   but don't try to do both */
 		if (game_over && t_fd != -1) {
-			dbg_msg("Cleaning up player %d's game", p_index);
+			dbg_msg(GGZ_DBG_TABLE, "Cleaning up player %d's game",
+				p_index);
 			close(t_fd);
 			FD_CLR(t_fd, &active_fd_set);
 			t_fd = -1;
@@ -357,7 +362,7 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		if (status <= 0)
 			status = GGZ_REQ_TABLE_LEAVE;
 		else 
-			dbg_msg("User to Game: %d bytes", status);
+			dbg_msg(GGZ_DBG_TABLE,"User to Game: %d bytes", status);
 		break;
 			
 	case REQ_CHAT:
@@ -372,7 +377,8 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 	case REQ_USER_STAT:
 	case REQ_TABLE_LEAVE:
 	default:
-		dbg_msg("Player %d (uid: %d) requested unimplemented op %d",
+		dbg_msg(GGZ_DBG_PROTOCOL,
+			"Player %d (uid: %d) requested unimplemented op %d",
 			p_index, players.info[p_index].uid, op);
 		status = player_send_error(p_index, p_fd);
 	}
@@ -389,7 +395,7 @@ static void player_remove(int p_index)
 {
 	int fd;
 	
-	dbg_msg("Removing player %d (uid: %d)", p_index, 
+	dbg_msg(GGZ_DBG_CONNECTION, "Removing player %d (uid: %d)", p_index, 
 		players.info[p_index].uid);
 	pthread_rwlock_wrlock(&players.lock);
 	fd = players.info[p_index].fd;
@@ -422,7 +428,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	if (difftime(players.timestamp, *player_ts) != 0 ) {
 		*player_ts = players.timestamp;
 		user_update = 1;
-		dbg_msg("Player %d needs player list update", p);
+		dbg_msg(GGZ_DBG_UPDATE,"Player %d needs player list update", p);
 	}
 	pthread_rwlock_unlock(&players.lock);
 
@@ -431,7 +437,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	if (difftime(tables.timestamp, *table_ts) != 0 ) {
 		*table_ts = tables.timestamp;
 		table_update = 1;
-		dbg_msg("Player %d needs table list update", p);
+		dbg_msg(GGZ_DBG_UPDATE, "Player %d needs table list update", p);
 	}
 	pthread_rwlock_unlock(&tables.lock);
 
@@ -440,7 +446,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	if (difftime(game_types.timestamp, *type_ts) != 0 ) {
 		*type_ts = game_types.timestamp;
 		type_update = 1;
-		dbg_msg("Player %d needs type list update", p);
+		dbg_msg(GGZ_DBG_UPDATE, "Player %d needs type list update", p);
 	}
 	pthread_rwlock_unlock(&game_types.lock);
 
@@ -480,7 +486,7 @@ static int player_login_new(int p)
 	/*FIXME: needs rewitten in style of player_table_launch */
 	char name[MAX_USER_NAME_LEN + 1];
 
-	dbg_msg("Creating new login for player %d", p);
+	dbg_msg(GGZ_DBG_CONNECTION, "Creating new login for player %d", p);
 
 	if (read_name(players.info[p].fd, name) < 0)
 		return (-1);
@@ -506,7 +512,7 @@ static int player_login_new(int p)
 		return -1;
 	}
 
-	dbg_msg("Successful new login of %s: UID = %d",
+	dbg_msg(GGZ_DBG_CONNECTION, "Successful new login of %s: UID = %d",
 		players.info[p].name, players.info[p].uid);
 
 	return 0;
@@ -529,7 +535,7 @@ static int player_login_anon(int p, int fd)
 	char *ip_addr, *hostname;
 	int i;
 
-	dbg_msg("Creating anonymous login for player %d", p);
+	dbg_msg(GGZ_DBG_CONNECTION,"Creating anonymous login for player %d", p);
 	
 	if (read_name(fd, name) < 0)
 		return (-1);
@@ -544,7 +550,8 @@ static int player_login_anon(int p, int fd)
 
 	/* FIXME: need to check vs. database too */
 	if (i != MAX_USERS) {
-		dbg_msg("Unsuccessful anonymous login of %s", name);
+		dbg_msg(GGZ_DBG_CONNECTION,
+			"Unsuccessful anonymous login of %s", name);
 		if (es_write_int(fd, RSP_LOGIN_ANON) < 0
 		    || es_write_char(fd, -1) < 0)
 			return -1;
@@ -570,7 +577,7 @@ static int player_login_anon(int p, int fd)
 		return -1;
 	}
 
-	dbg_msg("Successful anonymous login of %s", name);
+	dbg_msg(GGZ_DBG_CONNECTION, "Successful anonymous login of %s", name);
 
 	if(hostname)
 		log_msg(GGZ_LOG_CONNECTION_INFO,
@@ -594,7 +601,7 @@ static int player_login_anon(int p, int fd)
  */
 static int player_logout(int p, int fd)
 {
-	dbg_msg("Handling logout for player %d", p);
+	dbg_msg(GGZ_DBG_CONNECTION, "Handling logout for player %d", p);
 	
 	/* FIXME: Saving of stats and other things */
 	if (es_write_int(fd, RSP_LOGOUT) < 0 
@@ -638,7 +645,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	void *options;
 	char name[MAX_USER_NAME_LEN + 1];
 
-	dbg_msg("Handling table launch for player %d", p_index);
+	dbg_msg(GGZ_DBG_TABLE, "Handling table launch for player %d", p_index);
 
 	if (es_read_int(p_fd, &table.type_index) < 0
 	    || es_read_string(p_fd, table.desc) < 0
@@ -737,7 +744,8 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	case E_TABLE_FULL:
 	case E_BAD_OPTIONS:
 		free(options);
-		dbg_msg("Player %d's table launch failed with err %d",
+		dbg_msg(GGZ_DBG_TABLE,
+			"Player %d's table launch failed with err %d",
 			p_index, status);
 		break;
 	case 0:		/* Everything OK */
@@ -778,11 +786,12 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 	int i, t_index, fds[2];
 	int status = 0;
 
-	dbg_msg("Handling table join for player %d", p_index);
+	dbg_msg(GGZ_DBG_TABLE, "Handling table join for player %d", p_index);
 	if (es_read_int(p_fd, &t_index) < 0)
 		return -1;
 	
-	dbg_msg("Player %d attempting to join table %d", p_index, t_index);
+	dbg_msg(GGZ_DBG_TABLE,
+		"Player %d attempting to join table %d", p_index, t_index);
 
 	pthread_rwlock_wrlock(&tables.lock);
 	if (tables.info[t_index].type_index == -1) {
@@ -801,7 +810,8 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 				socketpair(PF_UNIX, SOCK_STREAM, 0, fds);
 				tables.info[t_index].player_fd[i] = fds[0];
 				*t_fd = fds[1];
-				dbg_msg("Player %d in seat %d", p_index, i);
+				dbg_msg(GGZ_DBG_TABLE,
+					"Player %d in seat %d", p_index, i);
 				break;
 			}
 
@@ -825,7 +835,8 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 	case E_TABLE_EMPTY:
 	case E_TABLE_FULL:
 	case E_BAD_OPTIONS:
-		dbg_msg("Player %d's table join failed with err %d",
+		dbg_msg(GGZ_DBG_TABLE,
+			"Player %d's table join failed with err %d",
 			p_index, status);
 		break;
 	case 0:		/* Everything OK */
@@ -848,7 +859,8 @@ static int player_list_players(int p_index, int fd)
 	int i, count = 0;
 	UserInfo info[MAX_USERS];
 
-	dbg_msg("Handling player list request for player %d", p_index);
+	dbg_msg(GGZ_DBG_UPDATE,
+		"Handling player list request for player %d", p_index);
 
 	pthread_rwlock_rdlock(&players.lock);
 	for (i = 0; (i < MAX_USERS && count < players.count); i++)
@@ -1022,7 +1034,7 @@ static int player_chat(int p_index, int p_fd)
 	char msg[MAX_CHAT_LEN + 1];
 	int status;
 
-	dbg_msg("Handling chat for player %d", p_index);
+	dbg_msg(GGZ_DBG_CHAT, "Handling chat for player %d", p_index);
 
 	if (es_read_string_alloc(p_fd, &tmp) < 0)
 		return(-1);

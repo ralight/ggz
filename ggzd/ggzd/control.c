@@ -106,9 +106,9 @@ int main(int argc, const char *argv[])
 	parse_conf_file();
 	logfile_initialize();
 	
-	dbg_msg("Conf file: %s", opt.local_conf);
-	dbg_msg("Log level: %0X", log_info.log_types);
-	dbg_msg("Main Port: %d", opt.main_port);
+	dbg_msg(GGZ_DBG_CONFIGURATION, "Conf file: %s", opt.local_conf);
+	dbg_msg(GGZ_DBG_CONFIGURATION, "Log level: %0X", log_info.log_types);
+	dbg_msg(GGZ_DBG_CONFIGURATION, "Main Port: %d", opt.main_port);
 	
 	init_data();
 	parse_game_files();

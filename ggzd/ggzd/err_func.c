@@ -45,7 +45,7 @@ LogInfo log_info = { 0, 0,
 		       | GGZ_DBGOPT_USE_SYSLOG ),
 		     NULL, NULL, 0
 #ifdef DEBUG
-		   , NULL, NULL, -1
+		   , NULL, NULL, 0
 #endif
 };
 
@@ -190,13 +190,14 @@ void err_msg_exit(const char *fmt, ...)
 }
 
 
-void dbg_msg(const char *fmt, ...)
+void dbg_msg(const unsigned dbg_type, const char *fmt, ...)
 {
 #ifdef DEBUG
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(0, LOG_DEBUG, fmt, ap);
+	if(dbg_type & log_info.dbg_types)
+		err_doit(0, LOG_DEBUG, fmt, ap);
 	va_end(ap);
 #endif
 }
@@ -258,7 +259,8 @@ int logfile_set_facility(char *facstr)
 
 	if(fac >= 0) {
 		log_info.syslog_facility = fac;
-		dbg_msg("syslogd facility set to %s", facstr);
+		dbg_msg(GGZ_DBG_CONFIGURATION,
+			"syslogd facility set to %s", facstr);
 	}
 
 	return fac;
@@ -289,8 +291,6 @@ void logfile_initialize(void)
 
 #ifdef DEBUG
 	/* Setup the debug logfile */
-	if(log_info.dbg_level < 0)
-		log_info.dbg_level = 0;
 	if(log_info.dbg_fname) {
 		if(strcmp("syslogd", log_info.dbg_fname)) {
 			log_info.dbgfile = log_open_logfile(log_info.dbg_fname);
@@ -312,7 +312,7 @@ void logfile_initialize(void)
 #endif
 
 	log_info.log_initialized = 1;
-	dbg_msg("Logfiles initialized");
+	dbg_msg(GGZ_DBG_CONFIGURATION, "Logfiles initialized");
 }
 
 

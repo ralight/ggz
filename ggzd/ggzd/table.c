@@ -63,28 +63,29 @@ int table_check(int p_index, TableInfo table)
 
 	int i;
 
-	dbg_msg("Player %d launching table of type %d", p_index,
+	dbg_msg(GGZ_DBG_TABLE, "Player %d launching table of type %d", p_index,
 		table.type_index);
-	dbg_msg("Num_seats  : %d", seats_num(table));
-	dbg_msg("AI Players : %d", seats_comp(table));
-	dbg_msg("Open_seats : %d", seats_open(table));
-	dbg_msg("Num_reserve: %d", seats_reserved(table));
-	dbg_msg("Playing    : %d", table.playing);
-	dbg_msg("Control fd : %d", table.fd_to_game);
+	dbg_msg(GGZ_DBG_TABLE, "Num_seats  : %d", seats_num(table));
+	dbg_msg(GGZ_DBG_TABLE, "AI Players : %d", seats_comp(table));
+	dbg_msg(GGZ_DBG_TABLE, "Open_seats : %d", seats_open(table));
+	dbg_msg(GGZ_DBG_TABLE, "Num_reserve: %d", seats_reserved(table));
+	dbg_msg(GGZ_DBG_TABLE, "Playing    : %d", table.playing);
+	dbg_msg(GGZ_DBG_TABLE, "Control fd : %d", table.fd_to_game);
 	for (i = 0; i < seats_num(table); i++)
 		switch (table.seats[i]) {
 		case GGZ_SEAT_OPEN:
-			dbg_msg("Seat[%d]: open", i);
+			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: open", i);
 			break;
 		case GGZ_SEAT_COMP:
-			dbg_msg("Seat[%d]: computer", i);
+			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: computer", i);
 			break;
 		case GGZ_SEAT_RESV:
-			dbg_msg("Seat[%d]: reserved for %d", i,
+			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: reserved for %d", i,
 				table.reserve[i]);
 			break;
 		default:
-			dbg_msg("Seat[%d]: player %d, fd of %d", i,
+			dbg_msg(GGZ_DBG_TABLE,
+				"Seat[%d]: player %d, fd of %d", i,
 				table.seats[i], table.player_fd[i]);
 		}
 
@@ -139,12 +140,13 @@ static void* table_new(void *index_ptr)
 		err_sys_exit("pthread_detach error");
 	}
 
-	dbg_msg("Table %d thread detached", t_index);
+	dbg_msg(GGZ_DBG_PROCESS, "Table %d thread detached", t_index);
 
 	/* Wait for enough players to join */
 	pthread_mutex_lock(&tables.info[t_index].seats_lock);
 	while (seats_open(tables.info[t_index]) > 0) {
-		dbg_msg("Table %d waiting for seats to fill", t_index);
+		dbg_msg(GGZ_DBG_TABLE,
+			"Table %d waiting for seats to fill", t_index);
 		pthread_cond_wait(&tables.info[t_index].seats_cond,
 				  &tables.info[t_index].seats_lock);
 	}
@@ -229,7 +231,7 @@ static void table_fork(int t_index)
 
 static void table_run_game(int t_index, char *path)
 {
-	dbg_msg("Process forked.  Game running");
+	dbg_msg(GGZ_DBG_PROCESS, "Process forked.  Game running");
 
 	/* FIXME: Close all other fd's and kill threads? */
 	execv(path, NULL);
@@ -336,7 +338,8 @@ static int table_handle(int request, int index, int fd)
 		break;
 
 	default:
-		dbg_msg("Table %d requested unimplemented op %d", index,
+		dbg_msg(GGZ_DBG_PROTOCOL,
+			"Table %d requested unimplemented op %d", index,
 			op);
 		status = -1;
 	}
@@ -348,7 +351,7 @@ static int table_handle(int request, int index, int fd)
 
 static void table_remove(int t_index)
 {
-	dbg_msg("Removing table %d", t_index);
+	dbg_msg(GGZ_DBG_TABLE, "Removing table %d", t_index);
 
 	pthread_rwlock_wrlock(&tables.lock);
 	tables.info[t_index].type_index = -1;
@@ -366,7 +369,8 @@ static int table_game_over(int index, int fd)
 
 	int i, num, p_index, won, lost;
 
-	dbg_msg("Handling game-over message from table %d", index);
+	dbg_msg(GGZ_DBG_TABLE,
+		"Handling game-over message from table %d", index);
 
 	/* Read number of statistics */
 	if (es_read_int(fd, &num) < 0)

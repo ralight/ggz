@@ -54,6 +54,7 @@ static void parse_cleanup_add_ignore_list(void);
 static void parse_game(char *);
 static int parse_dselect(struct dirent *);
 static unsigned parse_log_types(char *, int);
+static unsigned parse_dbg_types(char *, int);
 
 /* Module local variables for parsing */
 static char *varname;
@@ -115,7 +116,8 @@ void parse_conf_file(void)
 
 	if (opt.local_conf) {
 		if((configfile=fopen(opt.local_conf,"r"))) {
-			dbg_msg("Reading local conf file : %s", opt.local_conf);
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Reading local conf file : %s", opt.local_conf);
 			parse_file(configfile);
 		} else
 			err_msg("WARNING:  Local conf file not found!");
@@ -127,7 +129,8 @@ void parse_conf_file(void)
 		strcat(tempstr, "/ggzd.conf"); /* change the malloc() above! */
 
 		if((configfile=fopen(tempstr,"r"))) {
-			dbg_msg("Reading global conf file : %s", tempstr);
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Reading global conf file : %s", tempstr);
 			parse_file(configfile);
 		} else
 			err_msg("WARNING:  No configuration file loaded!");
@@ -165,7 +168,8 @@ static void parse_file(FILE *configfile)
 		parse_line(line);
 		if(varname == NULL)
 			continue; /* Blank line or comment */
-		dbg_msg("  found '%s, %s'", varname, varvalue);
+		dbg_msg(GGZ_DBG_CONFIGURATION, "  found '%s, %s'",
+			varname, varvalue);
 
 		/* Apply the configuration line, oh to be able to do */
 		/* a case construct with strings :)                  */
@@ -291,7 +295,7 @@ static void parse_file(FILE *configfile)
 			continue;
 		 }
 
-		/*** LOGTYPE = List ***/
+		/*** LOGTYPES = List ***/
 		if(!strcmp(varname, "logtypes")) {
 			if(varvalue == NULL) {
 				PARSE_ERR("Warning: no LogTypes specified");
@@ -319,23 +323,17 @@ static void parse_file(FILE *configfile)
 #endif
 		 }
 		
-		/*** DEBUGLEVEL = X ***/
-		if(!strcmp(varname, "debuglevel")) {
+		/*** DEBUGTYPES = List ***/
+		if(!strcmp(varname, "debugtypes")) {
 #ifndef DEBUG
 			PARSE_ERR("Debugging not enabled");
 			continue;
 #else
 			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
+				PARSE_ERR("Warning: no DebugTypes specified");
 				continue;
 			}
-			intval = atoi(varvalue);
-			if(intval < 0) {
-				PARSE_ERR("Invalid DebugLevel specified");
-				continue;
-			}
-			if(log_info.dbg_level == -1)
-				log_info.dbg_level = intval;
+			log_info.dbg_types |= parse_dbg_types(varvalue,linenum);
 			continue;
 #endif
 		}
@@ -431,12 +429,12 @@ static void parse_file(FILE *configfile)
 	  AddIgnoreStruct *AI = add_ignore_list;
 	  if(AI) {
 	    if(add_all_games == 'T')
-	      dbg_msg("Game ignore list:");
+	      dbg_msg(GGZ_DBG_CONFIGURATION, "Game ignore list:");
 	    else
-	      dbg_msg("Game add list:");
+	      dbg_msg(GGZ_DBG_CONFIGURATION, "Game add list:");
 	    while(AI)
 	    {
-	      dbg_msg("  %s", AI->name);
+	      dbg_msg(GGZ_DBG_CONFIGURATION, "  %s", AI->name);
 	      AI = AI->next;
 	    }
 	  }
@@ -456,7 +454,7 @@ void parse_game_files(void)
 
 	if(add_all_games == 'F') {
 		/* Go through all games explicitly included in the add list */
-		dbg_msg("Adding games in add list");
+		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding games in add list");
 		game = add_ignore_list;
 		while(game) {
 			parse_game(game->name);
@@ -464,7 +462,8 @@ void parse_game_files(void)
 		}
 	} else {
 		/* Scan for all .dsc files in the game_dir */
-		dbg_msg("Addding all games in %s", opt.game_dir);
+		dbg_msg(GGZ_DBG_CONFIGURATION,
+			"Addding all games in %s", opt.game_dir);
 		num_games = scandir(opt.game_dir, &namelist, parse_dselect, 0);
 		for(i=0; i<num_games; i++) {
 			/* Make a temporary copy of the name w/o .dsc */
@@ -488,7 +487,8 @@ void parse_game_files(void)
 			if(addit)
 				parse_game(name);
 			else
-				dbg_msg("Ignoring game %s", name);
+				dbg_msg(GGZ_DBG_CONFIGURATION,
+					"Ignoring game %s", name);
 
 			free(name);
 		}
@@ -522,7 +522,7 @@ static void parse_game(char *name)
 		return;
 	}
 
-	dbg_msg("Adding game %s from %s", name, fname);
+	dbg_msg(GGZ_DBG_CONFIGURATION, "Adding game %s from %s", name, fname);
 
 	/* Allocate a game_info struct for this game and default to enabled */
 	if((game_info = malloc(sizeof(GameInfo))) == NULL)
@@ -535,7 +535,8 @@ static void parse_game(char *name)
 		parse_line(line);
 		if(varname == NULL)
 			continue; /* Blank line or comment */
-		dbg_msg("  found '%s, %s'", varname, varvalue);
+		dbg_msg(GGZ_DBG_CONFIGURATION, "  found '%s, %s'",
+			varname, varvalue);
 
 		/*** Name = String ***/
 		if(!strcmp(varname, "name")) {
@@ -766,14 +767,93 @@ static unsigned parse_log_types(char *var, int linenum)
 		*e = '\0';
 
 		/* Now 's' points to a log type */
-		if(!strcmp(s, "notices")) {
-			dbg_msg("Notices added to log types");
+		/* This stuff should be built into a table */
+		if(!strcmp(s, "all")) {
+			dbg_msg(GGZ_DBG_CONFIGURATION, "All log types enabled");
+			types |= GGZ_LOG_ALL;
+		} else if(!strcmp(s, "notices")) {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Notices added to log types");
 			types |= GGZ_LOG_NOTICE;
 		} else if(!strcmp(s, "connections")) {
-			dbg_msg("Connection Info added to log types");
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Connection Info added to log types");
 			types |= GGZ_LOG_CONNECTION_INFO;
 		} else
 			PARSE_ERR("Invalid log type specified");
+
+		s = e+1;
+	}
+
+	return types;
+}
+
+
+/* Parse the debugging types into an unsigned int bitfield */
+static unsigned parse_dbg_types(char *var, int linenum)
+{
+	char *s, *e;
+	unsigned types=0;
+	int lasttime=0;
+
+	s = var;
+	while(*s != '\0' && !lasttime) {
+		/* Skip over whitespace and commas */
+		while((*s == ' ' || *s == '\t' || *s == ',') && *s != '\0')
+			s++;
+		if(*s == '\0')
+			break;
+		/* Find the end of the type specifier */
+		e = s;
+		while(*e != ' ' && *e != '\t' && *e != ',' && *e != '\0') {
+			*e = tolower(*e);
+			e++;
+		}
+		if(*e == '\0')
+			lasttime++;
+		/* Plop a NIL on the end */
+		*e = '\0';
+
+		/* Now 's' points to a log type */
+		/* This stuff should be built into a table */
+		if(!strcmp(s, "all")) {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"All debug types enabled");
+			types |= GGZ_DBG_ALL;
+		} else if(!strcmp(s, "configuration")) {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Configuration added to debug types");
+			types |= GGZ_DBG_CONFIGURATION;
+		} else if(!strcmp(s, "process")) {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Process added to debug types");
+			types |= GGZ_DBG_PROCESS;
+		} else if(!strcmp(s, "connection")) {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Connection added to debug types");
+			types |= GGZ_DBG_CONNECTION;
+		} else if(!strcmp(s, "chat")) {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Chat added to debug types");
+			types |= GGZ_DBG_CHAT;
+		} else if(!strcmp(s, "table")) {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Table added to debug types");
+			types |= GGZ_DBG_TABLE;
+		} else if(!strcmp(s, "protocol")) {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Protocol added to debug types");
+			types |= GGZ_DBG_PROTOCOL;
+		} else if(!strcmp(s, "update")) {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Update added to debug types");
+			types |= GGZ_DBG_UPDATE;
+		} else if(!strcmp(s, "misc")) {
+			dbg_msg(GGZ_DBG_CONFIGURATION,
+				"Update added to debug types");
+			types |= GGZ_DBG_MISC;
+		} else
+			PARSE_ERR("Invalid debug type specified");
 
 		s = e+1;
 	}

@@ -158,7 +158,7 @@ void chat_get(int c_index, char* name, char* chat)
 
 static void chat_remove(int c_index)
 {
-	dbg_msg("Removing chat %d", c_index);
+	dbg_msg(GGZ_DBG_CHAT, "Removing chat %d", c_index);
 	chats.info[c_index].p_index = -1;
 	chats.info[c_index].unread_count = 0;
 	chats.count--;
@@ -187,21 +187,23 @@ static void chat_status(void)
 {
 	int i, j;
 	
-	dbg_msg("*** Chat status ***", chats.count);
-	dbg_msg("%d chats in buffer", chats.count);
+	dbg_msg(GGZ_DBG_CHAT, "*** Chat status ***", chats.count);
+	dbg_msg(GGZ_DBG_CHAT, "%d chats in buffer", chats.count);
 	for (i = 0; i < MAX_CHAT_BUFFER; i++) {
 		if (chats.info[i].p_index != -1 ) {
-			dbg_msg("[%s] : %s", chats.info[i].p_name, 
+			dbg_msg(GGZ_DBG_CHAT,"[%s] : %s", chats.info[i].p_name, 
 				chats.info[i].msg);
-			dbg_msg("Unread by %d", chats.info[i].unread_count);
+			dbg_msg(GGZ_DBG_CHAT, "Unread by %d",
+				chats.info[i].unread_count);
 			for (j = 0; j < MAX_USERS; j++) 
 				if (chats.info[i].unread[j])
-					dbg_msg("Unread by player %d", j);
+					dbg_msg(GGZ_DBG_CHAT,
+						"Unread by player %d", j);
 			
 		}
 	}
 	for (i = 0; i < MAX_USERS; i++)
 		if ( (j = chats.player_unread_count[i]) > 0)
-			dbg_msg("Player %d has %d unread", i, j);
+			dbg_msg(GGZ_DBG_CHAT, "Player %d has %d unread", i, j);
 }	
 	

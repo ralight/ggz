@@ -173,7 +173,7 @@ typedef struct {
 #ifdef DEBUG
 	char *dbg_fname;			/* cleanup() */
 	FILE *dbgfile;
-	int dbg_level;
+	unsigned dbg_types;
 #endif
 } LogInfo;
 

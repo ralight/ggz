@@ -30,6 +30,18 @@
 #define GGZ_LOG_ALWAYS		(unsigned) 0x0000
 #define GGZ_LOG_NOTICE		(unsigned) 0x0001
 #define GGZ_LOG_CONNECTION_INFO	(unsigned) 0x0002
+#define GGZ_LOG_ALL		(unsigned) 0xFFFF
+
+/* Debug levels for dbg_msg */
+#define GGZ_DBG_CONFIGURATION	(unsigned) 0x0001
+#define GGZ_DBG_PROCESS		(unsigned) 0x0002
+#define GGZ_DBG_CONNECTION	(unsigned) 0x0004
+#define GGZ_DBG_CHAT		(unsigned) 0x0008
+#define GGZ_DBG_TABLE		(unsigned) 0x0010
+#define GGZ_DBG_PROTOCOL	(unsigned) 0x0020
+#define GGZ_DBG_UPDATE		(unsigned) 0x0040
+#define GGZ_DBG_MISC		(unsigned) 0x0080
+#define GGZ_DBG_ALL		(unsigned) 0xFFFF
 
 /* Logging options */
 #define GGZ_LOGOPT_INC_PID	(unsigned) 0x0001
@@ -53,7 +65,7 @@ void err_msg(const char *fmt, ...);
 void err_sys(const char *fmt, ...);
 void err_msg_exit(const char *fmt, ...);
 void err_sys_exit(const char *fmt, ...);
-void dbg_msg(const char *fmt, ...);
+void dbg_msg(const unsigned, const char *fmt, ...);
 
 
 /*

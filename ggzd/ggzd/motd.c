@@ -94,7 +94,7 @@ void motd_read_file(void)
 	motd_info.motd_lines = lines;
 
 	fclose(motd_file);
-	dbg_msg("Read MOTD file, %d lines", lines);
+	dbg_msg(GGZ_DBG_CONFIGURATION, "Read MOTD file, %d lines", lines);
 
 	/* Initialize stuff that is constant as long as the server is up */
 
