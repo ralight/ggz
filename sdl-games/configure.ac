@@ -1,11 +1,11 @@
 dnl Configuration for GGZ-SDL-Games
 dnl ===============================
 
-AC_INIT(configure.ac)
-AC_CANONICAL_SYSTEM
-AC_ARG_PROGRAM
-AM_INIT_AUTOMAKE(ggz-sdl-games, 0.0.8pre)
-AM_CONFIG_HEADER(config.h)
+AC_INIT([GGZ SDL games], [0.0.8pre], [ggz-dev@lists.sourceforge.net], [ggz-sdl-games])
+AC_CONFIG_SRCDIR([configure.ac])
+AC_CONFIG_HEADERS([config.h])
+AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE
 
 dnl Basic checks
 dnl ============
@@ -83,11 +83,12 @@ AC_GGZ_CONFIG
 dnl Create Makefiles
 dnl ================
 
-AC_OUTPUT(Makefile
+AC_CONFIG_FILES([Makefile
 	geekgame/Makefile
 	geekgame/module.dsc
 	ttt3d/Makefile
-	ttt3d/module.dsc)
+	ttt3d/module.dsc])
+AC_OUTPUT
 
 dnl Report success
 dnl ==============
