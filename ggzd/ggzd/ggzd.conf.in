@@ -172,6 +172,16 @@ MOTD = ggzd.motd
 # Miscellaneous Options
 ############################################################################
 
+[Miscellaneous]
+
+# Default Lag Class Definitions
+#   Times are in msec
+#PingFrequency = 10
+#LagClass1 = 500
+#LagClass2 = 1000
+#LagClass3 = 2000
+#LagClass4 = 5000
+
 # Client hostname lookups (Not Implemented)
 #   Should the server do hostname lookups on the client's IP address?
 #   (1=yes, 0=no)  Default is 0, even though the lookup is done in the

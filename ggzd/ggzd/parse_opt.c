@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 2520 2001-09-29 15:56:14Z bmh $
+ * $Id: parse_opt.c 2622 2001-10-28 23:36:54Z rgade $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -314,6 +314,13 @@ static void get_config_options(int ch)
 		log_info.options &= ~GGZ_LOGOPT_INC_GAMETYPE;
 	else
 		log_info.options |= GGZ_LOGOPT_INC_GAMETYPE;
+
+	/* Miscellaneous */
+	opt.ping_freq = conf_read_int(ch, "Miscellaneous", "LagFrequency", 10);
+	opt.lag_class[0] = conf_read_int(ch, "Miscellaneous","LagClass1", 500);
+	opt.lag_class[1] = conf_read_int(ch, "Miscellaneous","LagClass2", 1000);
+	opt.lag_class[2] = conf_read_int(ch, "Miscellaneous","LagClass3", 2000);
+	opt.lag_class[3] = conf_read_int(ch, "Miscellaneous","LagClass4", 5000);
 
 	conf_cleanup();
 }

@@ -50,6 +50,8 @@ typedef struct {
 	char *admin_name;	/* cleanup() */
 	char *admin_email;	/* cleanup() */
 	int perform_lookups;
+	int ping_freq;
+	int lag_class[4];
 } Options;
 
 

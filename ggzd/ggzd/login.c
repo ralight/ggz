@@ -172,6 +172,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 	strncpy(player->name, name, MAX_USER_NAME_LEN + 1);
 	ip_addr = player->addr;
 	player->login_time = (long) time(NULL);
+	player->next_ping = time(NULL) + 5;
 	pthread_rwlock_unlock(&player->lock);
 	
 	/* Notify user of success and give them their password (if new) */
