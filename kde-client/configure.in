@@ -107,6 +107,8 @@ AC_OUTPUT(Makefile
 	shadowbridge/pics/Makefile
 	modsniff/Makefile
 	ggzap/Makefile
+	kio_ggz/Makefile
+	kio_ggz/kioslave/Makefile
 	kcm_ggz/Makefile
 	kcm_ggz/modules/Makefile
 	ggz-kde/Makefile
