@@ -13,6 +13,9 @@
 // KDE includes
 #include <kmainwindow.h>
 
+// Forward declarations
+class KPopupMenu;
+
 // The game window
 class KTicTacTuxWin : public KMainWindow
 {
@@ -28,7 +31,9 @@ class KTicTacTuxWin : public KMainWindow
 		enum MenuEntries
 		{
 			menusync,
-			menuquit
+			menuquit,
+			menuthemenew,
+			menuthemeclassic
 		};
 
 	public slots:
@@ -40,6 +45,8 @@ class KTicTacTuxWin : public KMainWindow
 	private:
 		// The game itself
 		KTicTacTux *m_tux;
+		// The menus;
+		KPopupMenu *mgame, *mtheme;
 };
 
 #endif

@@ -384,14 +384,22 @@ void KTicTacTux::drawBoard()
 		switch(proto->board[i % 3][i / 3])
 		{
 			case proto->player:
-				frame[i % 3][i / 3]->setBackgroundPixmap(QPixmap(GGZDATADIR "/ktictactux/tux.png"));
+				frame[i % 3][i / 3]->setBackgroundPixmap(QPixmap(QString("%1/ktictactux/%2").arg(GGZDATADIR).arg(m_t1)));
 				break;
 			case proto->opponent:
-				frame[i % 3][i / 3]->setBackgroundPixmap(QPixmap(GGZDATADIR "/ktictactux/merlin.png"));
+				frame[i % 3][i / 3]->setBackgroundPixmap(QPixmap(QString("%1/ktictactux/%2").arg(GGZDATADIR).arg(m_t2)));
 				break;
 			default:
 				frame[i % 3][i / 3]->setBackgroundPixmap(NULL);
 		}
 	}
+}
+
+// Sets the theme
+void KTicTacTux::setTheme(QString t1, QString t2)
+{
+	m_t1 = t1;
+	m_t2 = t2;
+	drawBoard();
 }
 

@@ -35,6 +35,8 @@ class KTicTacTux : public QWidget
 		~KTicTacTux();
 		// Set opponent type
 		void setOpponent(int type);
+		// Sets the theme
+		void setTheme(QString t1, QString t2);
 		// Set up the game
 		void init();
 
@@ -90,6 +92,8 @@ class KTicTacTux : public QWidget
 		int m_opponent;
 		// Internal protocol class
 		KTicTacTuxProto *proto;
+		// Theme image placeholders
+		QString m_t1, m_t2;
 };
 
 #endif
