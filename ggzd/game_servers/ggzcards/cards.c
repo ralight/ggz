@@ -60,7 +60,7 @@ void cards_create_deck(deck_type_t which_deck)
 	char suaro_deck_faces[] = {8, 9, 10, JACK, QUEEN, KING, ACE_HIGH};
 	char euchre_deck_faces[] = {9, 10, JACK, QUEEN, KING, ACE_HIGH};
 	char skat_deck_faces[] = {7, 8, 9, 10, JACK, QUEEN, KING, ACE_HIGH};
-	char sueca_deck_faces[] = {2, 3, 4, 5, 6, QUEEN, JACK, KING, 7, ACE_HIGH};
+	char sueca_deck_faces[] = {2, 3, 4, 5, 6, 7, JACK, QUEEN, KING, ACE_HIGH};
 
 	deck_faces = std_deck_faces;
 	deck_suits = std_deck_suits;

@@ -97,11 +97,6 @@ static void sueca_init_game()
   game.ai_type = GGZ_AI_RANDOM;
   /* Use the SUECA deck */
   game.deck_type = GGZ_DECK_SUECA;
-  /* Everyone starts with 0 points in hand */
-  GSUECA.points_on_hand[0] = 0;
-  GSUECA.points_on_hand[1] = 0;
-  GSUECA.points_on_hand[2] = 0;
-  GSUECA.points_on_hand[3] = 0;
 
 }
 
@@ -172,7 +167,8 @@ static void sueca_end_trick()
 	}
   GSUECA.points_on_hand[game.winner] += points;
 
-  set_all_player_messages();
+  set_player_message(game.winner);
+  set_player_message( (game.winner+2) % 4 );
 
 }
 
