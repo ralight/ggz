@@ -1219,11 +1219,6 @@ void game_end_trick(void)
 					GHEARTS.points_on_hand[hi_player] += 13;
 			}
 			break;
-		case GGZ_GAME_BRIDGE:
-		case GGZ_GAME_SPADES:
-			/* update teammate's info as well */
-			game_set_player_message((hi_player+2)%4);
-			break;
 		case GGZ_GAME_LAPOCHA:		
 		default:
 			/* no additional scoring is necessary */
@@ -1234,6 +1229,20 @@ void game_end_trick(void)
 	game.leader = game.winner = hi_player;
 
 	game_set_player_message(hi_player);
+
+	/* update teammate's info, if necessary */
+	switch (game.which_game) {
+		case GGZ_GAME_BRIDGE:
+		case GGZ_GAME_SPADES:
+			/* update teammate's info as well */
+			game_set_player_message((hi_player+2)%4);
+			break;
+		case GGZ_GAME_SUARO:
+		case GGZ_GAME_HEARTS:
+		case GGZ_GAME_LAPOCHA:
+		default:
+			break;
+	}
 }
 
 
