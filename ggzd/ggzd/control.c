@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 4732 2002-09-26 12:58:04Z dr_maux $
+ * $Id: control.c 4743 2002-09-26 21:11:22Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -133,6 +133,8 @@ static void cleanup_data(void)
 	data_free(opt.tmp_dir);
 	data_free(opt.conf_dir);
 	data_free(opt.data_dir);
+	if (opt.motd_file)
+		data_free(opt.motd_file);
 	data_free(opt.admin_name);
 	data_free(opt.admin_email);
 	data_free(opt.server_name);
@@ -183,6 +185,7 @@ int main(int argc, const char *argv[])
        	/* Parse options */
 	parse_args(argc, argv);
 	parse_conf_file();
+	motd_read_file(opt.motd_file);
 	
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Conf file: %s", opt.local_conf);
 	dbg_msg(GGZ_DBG_CONFIGURATION, "Log level: %0X", log_info.log_types);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 4702 2002-09-25 19:38:01Z jdorje $
+ * $Id: datatypes.h 4743 2002-09-26 21:11:22Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -51,6 +51,7 @@ typedef struct {
 	char *tmp_dir;		/* cleanup() */
 	char *conf_dir;		/* cleanup() */
 	char *data_dir;		/* cleanup() */
+	char *motd_file;	/* cleanup() */
 	char *admin_name;	/* cleanup() */
 	char *admin_email;	/* cleanup() */
 	char *server_name;	/* cleanup() */
