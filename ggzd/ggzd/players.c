@@ -49,6 +49,7 @@
 #include <motd.h>
 #include <room.h>
 #include <chat.h>
+#include <hash.h>
 
 
 /* Timeout for server resync */
@@ -417,6 +418,10 @@ static void player_remove(int p_index)
 {
 	int fd;
 
+	/* Take their name off the hash list */
+	/* FIXME: Should use read lock eventually */
+	hash_player_delete(players.info[p_index].name);
+
 	pthread_rwlock_wrlock(&players.lock);
 	dbg_msg(GGZ_DBG_CONNECTION, "Removing player %d (uid: %d)", p_index, 
 		players.info[p_index].uid);
@@ -519,7 +524,7 @@ static int player_login_anon(int p, int fd)
 {
 	char name[MAX_USER_NAME_LEN + 1];
 	char *ip_addr, *hostname;
-	int i;
+	int name_ok;
 
 	/* Read this first to get it out of the socket */
 	if (read_name(fd, name) < 0)
@@ -537,16 +542,11 @@ static int player_login_anon(int p, int fd)
 	
 	dbg_msg(GGZ_DBG_CONNECTION, "Creating guest login for player %d", p);
 		
-	/* Check name for uniqueness */
-	pthread_rwlock_rdlock(&players.lock);
-	for (i = 0; i < MAX_USERS; i++)
-		if (players.info[i].fd != -1 
-		    && !(strcmp(name, players.info[i].name)))
-			break;
-	pthread_rwlock_unlock(&players.lock);
+	/* Add the player name to the hash table */
+	name_ok = hash_player_add(name, p);
 
 	/* FIXME: need to check vs. database too */
-	if (i != MAX_USERS) {
+	if (!name_ok) {
 		dbg_msg(GGZ_DBG_CONNECTION,
 			"Unsuccessful anonymous login of %s", name);
 		if (es_write_int(fd, RSP_LOGIN_ANON) < 0
