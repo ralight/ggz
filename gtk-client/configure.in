@@ -29,6 +29,7 @@ dnl Compiling Options
 dnl =================
 AC_ARG_ENABLE(debug,           [  --enable-debug          Enable debugging ],, enable_debug=no)
 AC_ARG_ENABLE(debug-gdb,       [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
+AC_ARG_ENABLE(gettext,         [  --disable-gettext       disable gettext  ], enable_gettext=no, enable_gettext=yes)
 
 
 dnl Check for header files
@@ -44,6 +45,14 @@ dnl   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME
 dnl else
 dnl   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
 dnl fi
+
+$subdirs = "ggz-gtk po"
+if test "$enable_gettext" = yes; then
+	CFLAGS="$CFLAGS -DENABLE_NLS"
+	allsubdirs="$subdirs po"
+else
+	allsubdirs="$subdirs"
+fi
 
 dnl Check for typedefs, structures, and compiler characteristics
 dnl ============================================================
@@ -91,12 +100,13 @@ fi
 dnl Various dirs
 dnl ============
 
-
-
+SUBDIRS=$allsubdirs
 AC_SUBST(LDADD)
+AC_SUBST(SUBDIRS)
 
 AC_OUTPUT([Makefile 
 	   ggz-gtk/Makefile
+	   po/Makefile
 	   man/Makefile
 	   ])
 
@@ -113,3 +123,4 @@ echo ""
 echo "When complete, su to root and type \"make install\" to"
 echo "install the software."
 echo ""
+
