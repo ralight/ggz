@@ -128,6 +128,7 @@ typedef struct suaro_game_t {
 #define EUCHRE ( *(euchre_game_t *)(game.specific) )
 typedef struct euchre_game_t {
 	player_t maker;		/* just like the declarer */
+	int dealer_gets_card;	/* does the dealer get the up-card? */
 	card_t up_card;		/* the "up-card" */
 	int alone;		/* is the dealer going alone? */
 	int suit;		/* the suit of trump (TODO: is this necessary?) */
@@ -178,6 +179,7 @@ extern int game_test_for_gameover();		/* returns TRUE iff gameover */
 extern int game_handle_gameover();		/* handle a gameover */
 
 /* miscellaneous */
+extern card_t game_map_card(card_t);
 extern int game_compare_cards(const void *, const void *);
 extern int game_send_hand(player_t, seat_t);	/* sends a hand to a player */
 

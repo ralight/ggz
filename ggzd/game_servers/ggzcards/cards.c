@@ -212,9 +212,11 @@ int cards_suit_in_hand(hand_t *hand, char suit)
 {
 	int i, cnt = 0;
 
-	for(i=0; i<hand->hand_size; i++)
-		if(hand->cards[i].suit == suit)
+	for(i=0; i<hand->hand_size; i++) {
+		card_t card = game_map_card( hand->cards[i] );
+		if( card.suit == suit)
 			cnt++;
+	}
 
 	return cnt;
 }

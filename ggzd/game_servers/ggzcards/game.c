@@ -41,6 +41,25 @@ static char* long_suaro_suit_names[6] = {"low", "clubs", "diamonds", "hearts", "
 static char* short_bridge_suit_names[5] = {"C", "D", "H", "S", "NT"};
 static char* long_bridge_suit_names[5] = {"clubs", "diamonds", "hearts", "spades", "notrump"};
 
+/* game_map_card
+ *   newly implemented; it should cause one card to behave
+ *   as another in just about all situations */
+card_t game_map_card(card_t c)
+{
+	switch (game.which_game) {
+		case GGZ_GAME_EUCHRE:
+			if (c.face == JACK && c.suit == 3-game.trump) {
+				c.suit = game.trump;
+				c.face = ACE_HIGH+1;
+			} else if (c.face == JACK && c.suit == game.trump)
+				c.face = ACE_HIGH+2;
+		case GGZ_GAME_SKAT:
+			/* TODO */
+		default:
+			break;
+	}
+	return c;
+}
 
 
 /* game_compare_cards
@@ -50,30 +69,9 @@ static char* long_bridge_suit_names[5] = {"clubs", "diamonds", "hearts", "spades
  */
 int game_compare_cards(const void *c1, const void *c2)
 {
-	register card_t card1 = *(card_t *)c1;
-	register card_t card2 = *(card_t *)c2;
+	register card_t card1 = game_map_card( *(card_t *)c1 );
+	register card_t card2 = game_map_card( *(card_t *)c2 );
 	switch (game.which_game) {
-		case GGZ_GAME_SKAT:
-			/* TODO: we've got to do a lot more here, since the ordering changes
-			 * quite a bit depending on what the bid is! */
-			if (card1.suit == card2.suit) {
-				/* Skat cards go 7-Ace, but the ordering is 7, 8, 9, J, Q, K, 10, A */
-				static char ordering[8] = {7, 8, 9, 13, 10, 11, 12, 14};
-				char o1 = ordering[card1.face-7];
-				char o2 = ordering[card2.face-7];
-				if (o1 < o2) return -1;
-				if (o2 > o1) return 1;
-				return 0;
-			}			
-			goto normal_sorting;
-		case GGZ_GAME_EUCHRE:
-			/* ordering of cards in Euchre is crazy.  This is just
-			 * a start */
-			if (card1.face == JACK && card1.suit == 3-game.trump)
-				card1.suit = game.trump;
-			if (card2.face == JACK && card2.suit == 3-game.trump)
-				card2.suit = game.trump;
-			goto normal_sorting;
 		case GGZ_GAME_BRIDGE:
 			/* in Bridge, the trump suit is always supposed to be shown on the left */
 			if (card1.suit == game.trump && card2.suit != game.trump)
@@ -82,7 +80,6 @@ int game_compare_cards(const void *c1, const void *c2)
 				return 1;
 			/* fall through */
 		default:
-normal_sorting:
 			if (card1.suit < card2.suit) return -1;
 			if (card1.suit > card2.suit) return 1;
 			if (card1.face < card2.face) return -1;
@@ -850,6 +847,7 @@ normal_order:
 void game_start_playing(void)
 {
 	player_t p;
+	seat_t s;
 	char face;
 
 	game.trick_total = game.hand_size;
@@ -861,8 +859,14 @@ void game_start_playing(void)
 			break;
 		case GGZ_GAME_EUCHRE:
 			/* maker is set in game_handle_bid */
-			set_global_message("", "Trump is %s.", suit_names[(int)game.trump]);
+			set_global_message("", "%s is the maker in %s.", ggz_seats[EUCHRE.maker].name, suit_names[(int)game.trump]);
 			game.leader = (game.dealer + 1) % game.num_players;
+			/* resort/resend hand - this should probably be a function in itself... */
+			for(s=0; s<game.num_seats; s++) {
+				cards_sort_hand( &game.seats[ s ].hand );
+				for (p=0; p<game.num_players; p++)
+					game_send_hand(p, s);
+			}
 			break;
 		case GGZ_GAME_BRIDGE:
 			/* declarer is set in game_handle_bid */
@@ -948,6 +952,8 @@ char* game_verify_play(card_t card)
 	seat_t s = game.play_seat;
 	int cnt;
 
+	card = game_map_card(card);
+
 	/* the game hearts must be handled differently */
 	if (game.which_game == GGZ_GAME_HEARTS &&
 	    game.next_play == game.leader) {
@@ -983,7 +989,8 @@ char* game_verify_play(card_t card)
 	if (card.suit == game.lead_card.suit) return NULL;
 
 	/* not following suit is never allowed */
-	if ( (cnt = cards_suit_in_hand(&game.seats[s].hand, game.lead_card.suit)) ) {
+	c = game_map_card( game.lead_card );
+	if ( (cnt = cards_suit_in_hand(&game.seats[s].hand, c.suit)) ) {
 		ggz_debug("Player %d/%s, playing from seat %d/%s, played %s when they have %d of %s.",
 			  game.next_play, ggz_seats[game.next_play].name, s, game.seats[s].ggz->name, suit_names[(int)card.suit], cnt, suit_names[(int)game.lead_card.suit]);
 		return "You must follow suit.";
@@ -1002,6 +1009,7 @@ char* game_verify_play(card_t card)
 		hi_trump_played = 0;
 		for (p2=0; p2<game.num_players; p2++) {
 			c = game.seats[ game.players[p2].seat ].table;
+			c = game_map_card( c );
 			if(c.suit == game.trump
 			   && c.face > hi_trump_played)
 				hi_trump_played = c.face;
@@ -1261,18 +1269,38 @@ void game_set_player_message(player_t p)
 	 * i.e. every time the player is affected, and on some game state changes.  Much
 	 * of this is handled by the game-independent code */
 
+	/* did I mention this was really ugly?  It could be much worse... */
+#define REGULAR_SCORE_MESSAGE	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d\n", game.players[p].score)
+#define REGULAR_TRICKS_MESSAGE	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY) \
+					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks)
+#define REGULAR_BID_MESSAGE	if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) { \
+					char bid_text[game.max_bid_length]; \
+					game_get_bid_text(bid_text, game.max_bid_length, game.players[p].bid); \
+					if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text); \
+				}
+#define REGULAR_BIDDING_MESSAGE	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid) \
+					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding...") /* "Waiting for bid" won't fit */	
+#define REGULAR_PLAYING_MESSAGE	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play) \
+					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing...") /* "Waiting for play" won't fit */
+#define REGULAR_ACTION_MESSAGES REGULAR_BIDDING_MESSAGE; REGULAR_PLAYING_MESSAGE
+
 	/* anyway, it's really ugly, but I don't see a better way... */
 
 	switch (game.which_game) {
 		case GGZ_GAME_EUCHRE:
-			if (p == game.dealer)
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dealer\n");
-			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
+			REGULAR_SCORE_MESSAGE;
+			if (game.state == WH_STATE_FIRST_BID || game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
+				if (p == game.dealer)
+					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dealer\n");
+			} else
 				if (p == EUCHRE.maker)
 					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "maker\n");
-			}
-			goto normal_message;
+			if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
+				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks + game.players[(p+2)%4].tricks);
+			REGULAR_ACTION_MESSAGES;
+			break;
 		case GGZ_GAME_BRIDGE:
+			REGULAR_SCORE_MESSAGE;
 			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
 				/* TODO: declarer and dummy really shouldn't be at the top */
 				if (p == BRIDGE.declarer)
@@ -1280,23 +1308,33 @@ void game_set_player_message(player_t p)
 				if (p == BRIDGE.dummy)
 					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dummy\n");
 			}
-			goto normal_message;
+			REGULAR_TRICKS_MESSAGE;
+			REGULAR_BID_MESSAGE;
+			REGULAR_ACTION_MESSAGES;
+			break;
 		case GGZ_GAME_SUARO:
+			REGULAR_SCORE_MESSAGE;
+			if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
+				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks);
 			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
-				/* TODO: declarer really shouldn't be at the top */
 				if (p == SUARO.declarer)
 					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "declarer\n");
 				if (p == 1-SUARO.declarer)
 					len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "defender\n");
 			}
-			goto normal_message;
+			REGULAR_BID_MESSAGE;
+			break;
 		case GGZ_GAME_LAPOCHA:
+			REGULAR_SCORE_MESSAGE;
 			if (p == game.dealer)
 				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "dealer\n");
 			if (game.state >= WH_STATE_FIRST_TRICK && game.state <= WH_STATE_WAIT_FOR_PLAY) {
 				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Contract: %d\n", (int)game.players[p].bid.bid);
 			}
-			goto normal_message;
+			REGULAR_TRICKS_MESSAGE;
+			REGULAR_BID_MESSAGE;
+			REGULAR_ACTION_MESSAGES;
+			break;
 		case GGZ_GAME_SPADES:
 			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d (%d)\n", game.players[p].score, GSPADES.bags[p%2]);
 			if (game.state != WH_STATE_NEXT_BID && game.state != WH_STATE_WAIT_FOR_BID) {
@@ -1311,30 +1349,24 @@ void game_set_player_message(player_t p)
 					game.players[p].tricks, game.players[p].tricks + game.players[(p+2)%4].tricks);
 
 			}
-			goto bid_message_only;
+			REGULAR_BID_MESSAGE;
+			REGULAR_ACTION_MESSAGES;
+			break;
 		case GGZ_GAME_HEARTS:
 		default:
-normal_message:
-			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d\n", game.players[p].score);
-			if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks);
-bid_message_only:
-			if (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID) {
-				char bid_text[game.max_bid_length];
-				game_get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
-				if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text);
-			}
-			
-			/* TODO: not sure if this should go here for all games... */
-			if (game.state == WH_STATE_WAIT_FOR_BID &&
-			    p == game.next_bid)
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding..."); /* "Waiting for bid" won't fit */
-			if (game.state == WH_STATE_WAIT_FOR_PLAY &&
-			    p == game.curr_play)
-				len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing..."); /* "Waiting for play" won't fit */
-
+			REGULAR_SCORE_MESSAGE;
+			REGULAR_TRICKS_MESSAGE;
+			REGULAR_BID_MESSAGE;
+			REGULAR_BIDDING_MESSAGE;
+			REGULAR_PLAYING_MESSAGE;
 			break;
 	}
+
+#undef REGULAR_SCORE_MESSAGE
+#undef REGULAR_TRICKS_MESSAGE
+#undef REGULAR_BID_MESSAGE
+#undef REGULAR_BIDDING_MESSAGE
+#undef REGULAR_PLAYING_MESSAGE
 
 	send_player_message_toall(s);
 }
@@ -1356,6 +1388,7 @@ void game_end_trick(void)
 	 * card of the suit lead, or the highest trump if there is trump */
 	for (p=0; p<game.num_players; p++) {
 		card_t card = game.seats[ game.players[p].seat ].table;
+		card = game_map_card( card );
 		if ( (card.suit == game.trump && (hi_card.suit != game.trump || hi_card.face < card.face))
 		   || (card.suit == hi_card.suit && card.face > hi_card.face) ) {
 			hi_card = card;
