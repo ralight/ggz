@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3487 2002-02-27 07:29:13Z jdorje $
+ * $Id: common.c 3488 2002-02-27 08:14:31Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -693,7 +693,7 @@ int handle_play_event(player_t p, card_t card)
 	/* do extra handling */
 	if (card.suit == game.trump)
 		game.trump_broken = TRUE;
-	game.funcs->handle_play(card);
+	game.funcs->handle_play(p, s, card);
 	
 	for (p2 = 0, still_playing = 0; p2 < game.num_players; p2++)
 		if (game.players[p2].is_playing)

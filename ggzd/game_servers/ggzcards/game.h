@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 3487 2002-02-27 07:29:13Z jdorje $
+ * $Id: game.h 3488 2002-02-27 08:14:31Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -230,10 +230,12 @@ void game_get_play(player_t p);
  *  appropriate.  It will remove the card from the hand, of course.  It will
  *  put the card on the table, and reset the player's message.
  *
- *  @todo The function should be told who has played, and from where.
+ *  @param p The player who played.
+ *  @param s The seat they played from.
+ *  @param c The card that was played.
  *  @see bridge_handle_play
  */
-void game_handle_play(card_t c);
+void game_handle_play(player_t p, seat_t s, card_t c);
 
 /** @brief Deal a hand.
  *

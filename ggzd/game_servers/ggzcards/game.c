@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 3487 2002-02-27 07:29:13Z jdorje $
+ * $Id: game.c 3488 2002-02-27 08:14:31Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -317,7 +317,7 @@ void game_get_play(player_t p)
    game-independent code; all that needs to be done here is anything
    game-specific (e.g. revealing the dummy hand after the first lead in
    Bridge). */
-void game_handle_play(card_t c)
+void game_handle_play(player_t p, seat_t s, card_t c)
 {
 	/* nothing needs to be done... */
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 3483 2002-02-27 05:00:13Z jdorje $
+ * $Id: bridge.c 3488 2002-02-27 08:14:31Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -48,7 +48,7 @@ static void bridge_handle_bid(player_t p, bid_t bid);
 static void bridge_next_bid(void);
 static void bridge_start_playing(void);
 static void bridge_get_play(player_t p);
-static void bridge_handle_play(card_t card);
+static void bridge_handle_play(player_t p, seat_t s, card_t card);
 static int bridge_test_for_gameover(void);
 static int bridge_send_hand(player_t p, seat_t s);
 static int bridge_get_bid_text(char *buf, size_t buf_len, bid_t bid);
@@ -261,18 +261,18 @@ static void bridge_get_play(player_t p)
 		game_get_play(p);
 }
 
-static void bridge_handle_play(card_t card)
+static void bridge_handle_play(player_t p, seat_t s, card_t card)
 {
 	if (game.play_count == 0 && game.trick_count == 0) {
 		/* after the first play of the hand, we reveal the dummy's
 		   hand to everyone */
-		player_t p;
+		player_t p2;
 		seat_t dummy_seat = game.players[BRIDGE.dummy].seat;
 		cards_sort_hand(&game.seats[dummy_seat].hand);
 		BRIDGE.dummy_revealed = 1;
-		for (p = 0; p < game.num_players; p++) {
-			/* if (p == BRIDGE.dummy) continue; */
-			(void) game.funcs->send_hand(p, dummy_seat);
+		for (p2 = 0; p2 < game.num_players; p2++) {
+			/* if (p2 == BRIDGE.dummy) continue; */
+			(void) game.funcs->send_hand(p2, dummy_seat);
 		}
 	}
 }
