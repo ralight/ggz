@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: types.c 6288 2004-11-06 17:32:23Z jdorje $
+ * $Id: types.c 6290 2004-11-06 18:10:55Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user.
@@ -28,6 +28,7 @@
 #  include <config.h>			/* Site-specific config */
 #endif
 
+#include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -43,17 +44,49 @@
 #include "server.h"
 #include "support.h"
 
+enum {
+	TYPE_COLUMN_NAME,
+	TYPE_COLUMN_AUTHOR,
+	TYPE_COLUMN_WEB,
+	TYPE_COLUMN_DESC,
+	TYPE_COLUMNS
+};
+
 static GtkWidget *types_dialog;
 static GtkWidget* create_dlg_types(void);
 
-#if 0 /* currently unused */
-static gboolean types_clist_events(GtkWidget *widget, GdkEvent *event,
-				   gpointer data);
-static void types_upgrade(GtkMenuItem *menuitem, gpointer data);
-static void types_URL(GtkMenuItem *menuitem, gpointer data);
-#endif
-static void types_filter_button(GtkWidget *widget, gpointer data);
+static void update_dlg_types(void)
+{
+	GtkWidget *tree = lookup_widget(types_dialog, "types_list");
+	GtkTreeModel *store = gtk_tree_view_get_model(GTK_TREE_VIEW(tree));
+	int i, num;
 
+	gtk_list_store_clear(GTK_LIST_STORE(store));
+	num = ggzcore_server_get_num_gametypes(server);
+	for (i = 0; i < num; i++) {
+		GGZGameType *gt = ggzcore_server_get_nth_gametype(server, i);
+		GtkTreeIter iter;
+		GtkWidget *tmp, *menu, *menuitem;
+		const gchar *name = ggzcore_gametype_get_name(gt);
+		const gchar *author = ggzcore_gametype_get_author(gt);
+		const gchar *url = ggzcore_gametype_get_url(gt);
+		const gchar *desc = ggzcore_gametype_get_desc(gt);
+		
+		gtk_list_store_append(GTK_LIST_STORE(store), &iter);
+		gtk_list_store_set(GTK_LIST_STORE(store), &iter,
+				   TYPE_COLUMN_NAME, name,
+				   TYPE_COLUMN_AUTHOR, author,
+				   TYPE_COLUMN_WEB, url,
+				   TYPE_COLUMN_DESC, desc,
+				   -1);
+
+		tmp = lookup_widget(types_dialog, "filter_optionmenu");
+		menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(tmp));
+		menuitem = gtk_menu_item_new_with_label(name);
+		gtk_menu_append(GTK_MENU(menu), menuitem);
+		gtk_widget_show(menuitem);
+	}
+}
 
 /* types_create_or_raise() - Displays the dialog or updates current dialog
  *                          with game list
@@ -67,48 +100,25 @@ void types_create_or_raise(void)
 {
 	GtkWidget *tmp, *menu;
 	GtkWidget  *menuitem;
-	gchar *gtype[6];
-	gint x;
-	GGZGameType *gt;
 
 	if (!types_dialog) {
 		types_dialog = create_dlg_types();
+		update_dlg_types();
 
 		tmp = lookup_widget(types_dialog, "filter_optionmenu");
 		menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(tmp));
 		menuitem = gtk_menu_item_new_with_label("None");
 		gtk_menu_append(GTK_MENU(menu), menuitem);
 		gtk_widget_show(menuitem);
-		for(x=0; x<ggzcore_server_get_num_gametypes(server); x++)
-		{
-			gt = ggzcore_server_get_nth_gametype(server, x);
-			gtype[0] = g_strdup(ggzcore_gametype_get_name(gt));
-			gtype[1] = g_strdup(ggzcore_gametype_get_author(gt));
-			gtype[2] = g_strdup(ggzcore_gametype_get_url(gt));
-			gtype[3] = g_strdup(ggzcore_gametype_get_desc(gt));
-			tmp = lookup_widget(types_dialog, "types_clist");
-			gtk_clist_append(GTK_CLIST(tmp), gtype);
-			g_free(gtype[0]);
-			g_free(gtype[1]);
-			g_free(gtype[2]);
-			g_free(gtype[3]);
-
-			tmp = lookup_widget(types_dialog, "filter_optionmenu");
-			menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(tmp));
-			menuitem = gtk_menu_item_new_with_label(ggzcore_gametype_get_name(gt));
-			gtk_menu_append(GTK_MENU(menu), menuitem);
-			gtk_widget_show(menuitem);
-		}
 
 		gtk_widget_show(types_dialog);
-	}
-	else {
+	} else {
 		gdk_window_raise(types_dialog->window);
 	}
 }
 
 #if 0 /* currently unused */
-static gboolean types_clist_events(GtkWidget *widget, GdkEvent *event, gpointer data)
+static gboolean types_list_events(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 
 	return FALSE;
@@ -137,7 +147,59 @@ static void types_filter_button(GtkWidget *widget, gpointer data)
 
 
 
+static GtkWidget *tree_new(GtkWidget *parent)
+{
+	GtkListStore *store;
+	GtkWidget *tree;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	GtkTreeSelection *select;
 
+	assert(TYPE_COLUMNS == 4);
+	store = gtk_list_store_new(TYPE_COLUMNS,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING,
+				   G_TYPE_STRING);
+	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Name"), renderer,
+				"text", TYPE_COLUMN_NAME, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Description"),
+							  renderer,
+				"text", TYPE_COLUMN_DESC, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Web Address"),
+							  renderer,
+				"text", TYPE_COLUMN_WEB, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Author"),
+							  renderer,
+				"text", TYPE_COLUMN_AUTHOR, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	gtk_widget_ref(tree);
+	g_object_set_data_full(G_OBJECT(parent), "types_list",
+			       tree,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data(G_OBJECT(parent), "table_list_store", store);
+	gtk_widget_show(tree);
+	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
+
+	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+
+	return tree;
+}
 
 
 GtkWidget *create_dlg_types (void)
@@ -145,11 +207,7 @@ GtkWidget *create_dlg_types (void)
   GtkWidget *dlg_types;
   GtkWidget *vbox;
   GtkWidget *scrolledwindow;
-  GtkWidget *types_clist;
-  GtkWidget *label6;
-  GtkWidget *label7;
-  GtkWidget *label8;
-  GtkWidget *label9;
+  GtkWidget *types_list;
   GtkWidget *toolbar1;
   GtkWidget *filter_label;
   GtkWidget *filter_optionmenu;
@@ -177,45 +235,8 @@ GtkWidget *create_dlg_types (void)
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow),
 				 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  types_clist = gtk_clist_new (4);
-  gtk_widget_ref (types_clist);
-  g_object_set_data_full(G_OBJECT (dlg_types), "types_clist", types_clist,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (types_clist);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow), types_clist);
-  gtk_clist_set_column_width (GTK_CLIST (types_clist), 0, 74);
-  gtk_clist_set_column_width (GTK_CLIST (types_clist), 1, 88);
-  gtk_clist_set_column_width (GTK_CLIST (types_clist), 2, 175);
-  gtk_clist_set_column_width (GTK_CLIST (types_clist), 3, 80);
-  gtk_clist_column_titles_show (GTK_CLIST (types_clist));
-
-  label6 = gtk_label_new (_("Name"));
-  gtk_widget_ref (label6);
-  g_object_set_data_full(G_OBJECT (dlg_types), "label6", label6,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label6);
-  gtk_clist_set_column_widget (GTK_CLIST (types_clist), 0, label6);
-
-  label7 = gtk_label_new (_("Author"));
-  gtk_widget_ref (label7);
-  g_object_set_data_full(G_OBJECT (dlg_types), "label7", label7,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label7);
-  gtk_clist_set_column_widget (GTK_CLIST (types_clist), 1, label7);
-
-  label8 = gtk_label_new (_("Web Address"));
-  gtk_widget_ref (label8);
-  g_object_set_data_full(G_OBJECT (dlg_types), "label8", label8,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label8);
-  gtk_clist_set_column_widget (GTK_CLIST (types_clist), 2, label8);
-
-  label9 = gtk_label_new (_("Description"));
-  gtk_widget_ref (label9);
-  g_object_set_data_full(G_OBJECT (dlg_types), "label9", label9,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label9);
-  gtk_clist_set_column_widget (GTK_CLIST (types_clist), 3, label9);
+  types_list = tree_new(dlg_types);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow), types_list);
 
   toolbar1 = gtk_toolbar_new();
   gtk_widget_ref (toolbar1);

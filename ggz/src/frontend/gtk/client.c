@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 6279 2004-11-06 03:15:23Z jdorje $
+ * $Id: client.c 6290 2004-11-06 18:10:55Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -790,12 +790,12 @@ create_win_main (void)
   GtkWidget *client_hpaned;
   GtkWidget *lists_vbox;
   GtkWidget *room_scrolledwindow;
-  GtkWidget *room_clist;
+  GtkWidget *room_list;
   GtkWidget *player_scrolledwindow;
   GtkWidget *player_tree;
   GtkWidget *table_vpaned;
   GtkWidget *scrolledwindow3;
-  GtkWidget *table_clist;
+  GtkWidget *table_list;
   GtkWidget *chat_vbox;
   GtkWidget *chatdisplay_hbox;
   GtkWidget *chat_frame;
@@ -1351,8 +1351,8 @@ create_win_main (void)
   gtk_box_pack_start (GTK_BOX (lists_vbox), room_scrolledwindow, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (room_scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  room_clist = create_room_list(win_main);
-  gtk_container_add (GTK_CONTAINER (room_scrolledwindow), room_clist);
+  room_list = create_room_list(win_main);
+  gtk_container_add (GTK_CONTAINER (room_scrolledwindow), room_list);
 
   player_scrolledwindow = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (player_scrolledwindow);
@@ -1382,8 +1382,8 @@ create_win_main (void)
   gtk_paned_pack1 (GTK_PANED (table_vpaned), scrolledwindow3, FALSE, TRUE);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow3), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  table_clist = create_table_list(win_main);
-  gtk_container_add(GTK_CONTAINER(scrolledwindow3), table_clist);
+  table_list = create_table_list(win_main);
+  gtk_container_add(GTK_CONTAINER(scrolledwindow3), table_list);
 
   chat_vbox = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (chat_vbox);
