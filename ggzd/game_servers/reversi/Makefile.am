@@ -1,4 +1,5 @@
 ## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 2280 2001-08-27 18:29:25Z jdorje $
 
 EXTRA_DIST = reversi.dsc reversi.room
 
@@ -9,15 +10,14 @@ ggzdgame_DATA = reversi.dsc
 ggzdroom_DATA = reversi.room
 
 
-ggzd_reversi_SOURCES = ggz.c \
-		         ggz.h \
-		         main.c \
-						 game.c \
-						 game.h \
-		         protocols.h
+ggzd_reversi_SOURCES = 	main.c \
+			game.c \
+			game.h
 
 
-ggzd_reversi_LDADD = $(LDADD) -leasysock
+ggzd_reversi_LDADD = $(LDADD) -leasysock ../libggzmod/libggzdmod.a
+
+ggzd_reversi_DEPENDENCIES = ../libggzmod/libggzdmod.a
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

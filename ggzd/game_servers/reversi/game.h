@@ -4,6 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Description of game variables
+ * $Id: game.h 2280 2001-08-27 18:29:25Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -124,6 +125,8 @@
  *
  * Luckily that's all, this protocol is perfect and it shouldn't be modified anymore. Or so I hope. :) */
 
+#include "../libggzmod/ggz_server.h"
+
 // Reversi protocol
 // The numbers aren't on order, because I used the same constants from TicTacToe - simplify testing
 #define RVR_MSG_SEAT 0
@@ -186,9 +189,9 @@ struct rvr_game_t {
 // Intializes game variables
 void game_init();
 // Handle server messages
-int game_handle_ggz(int, int *);
+int game_handle_ggz(ggzd_event_t, void *);
 // Handle player messages
-int game_handle_player(int);
+int game_handle_player(ggzd_event_t, void *);
 // Handle player move
 int game_handle_move(int, int *);
 
