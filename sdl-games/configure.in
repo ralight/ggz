@@ -35,6 +35,11 @@ AC_CHECK_LIB(SDL_ttf, TTF_Init,
         AC_MSG_ERROR(*** Cannot find SDL/SDL_ttf.h header); exit)],
     AC_MSG_ERROR(*** Cannot find SDL_ttf library ); exit)
 
+AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio,
+    [AC_CHECK_HEADER(SDL/SDL_mixer.h, ,
+        AC_MSG_ERROR(*** Cannot find SDL/SDL_mixer.h header); exit)],
+    AC_MSG_ERROR(*** Cannot find SDL_mixer library ); exit)
+
 AC_CHECK_LIB(GL, glRotatef,
     [AC_CHECK_HEADER(GL/gl.h, ,
         AC_MSG_ERROR(*** Cannot find GL/gl.h header); exit)],
