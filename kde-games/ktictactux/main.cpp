@@ -47,6 +47,7 @@ int main(int argc, char **argv)
 		ktictactuxwin->enableNetwork(true);
 		ktictactuxwin->tux()->setOpponent(PLAYER_NETWORK);
 	}
+	else ktictactuxwin->tux()->setOpponent(PLAYER_AI);
 	ktictactuxwin->tux()->init();
 
 	a.setMainWidget(ktictactuxwin);

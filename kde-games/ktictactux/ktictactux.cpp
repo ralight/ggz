@@ -63,13 +63,10 @@ KTicTacTux::KTicTacTux(QWidget *parent, const char *name)
 	//m_firstid = frame[0][0]->winId();
 	m_turn = 0;
 
-	m_opponent = PLAYER_AI;
-
 	m_score_opp = 0;
 	m_score_you = 0;
 
 	proto = new KTicTacTuxProto(this);
-	proto->num = 0;
 }
 
 // Destructor
@@ -352,6 +349,7 @@ void KTicTacTux::setOpponent(int type)
 	m_opponent = type;
 	if(m_opponent == PLAYER_NETWORK)
 		emit signalScore(i18n("Network game"));
+	else proto->num = 0;
 	emit signalStatus(i18n("Waiting for opponent!"));
 }
 
