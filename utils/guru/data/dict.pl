@@ -28,26 +28,41 @@ if($ARGV[5] eq "fuzzy"){
 }
 $WORD = $ARGV[3];
 
-if(($LANG ne "german") && ($LANG ne "english")){
-	print "I\'m so uneducated I only know english and german.\n";
+# make configurable!
+$FROM = "en";
+
+if($LANG eq "german"){$LANG = "de";}
+if($LANG eq "italian"){$LANG = "it";}
+if($LANG eq "spanish"){$LANG = "es";}
+if($LANG eq "portuguese"){$LANG = "pt";}
+if($LANG eq "english"){$LANG = "en";}
+
+if(($LANG ne "de") && ($LANG ne "en") && ($LANG ne "it") && ($LANG ne "pt") && ($LANG ne "es")){
+	print "I\'m so uneducated I only know english, german, spanish, portuguese, italian.\n";
 	exit(0);
 }
 
 $reverse = 1;
-$from = "en";
-if($LANG eq "english"){
-	$to = "en";
-	$from = "de";
+if($LANG eq "en"){
+	$FROM = "de";
 	$reverse = 0;
 }
-if($LANG eq "german"){
-	$to = "de";
+if($LANG eq "de"){
+}
+if($LANG eq "pt"){
+	$reverse = 0;
+}
+if($LANG eq "it"){
+	$reverse = 0;
+}
+if($LANG eq "es"){
+	$reverse = 0;
 }
 
 if($reverse){
-	$file = "$to-$from";
+	$file = "$LANG-$FROM";
 }else{
-	$file = "$from-$to";
+	$file = "$FROM-$LANG";
 }
 
 open(FILE, "/usr/share/trans/$file");
