@@ -4,6 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
+ * $Id: game.c 2297 2001-08-28 04:38:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -24,11 +25,11 @@
 
 #include <stdlib.h>
 
-#include <ggz.h>
-#include <game.h>
-#include <protocols.h>
 #include <easysock.h>
-#include <ai.h>
+#include "../libggzmod/ggz_server.h"
+
+#include "game.h"
+#include "ai.h"
 
 /* Global game variables */
 struct dots_game_t dots_game;
@@ -61,54 +62,40 @@ void game_init(void)
 
 
 /* Handle message from GGZ server */
-int game_handle_ggz(int ggz_fd, int* p_fd)
+void game_handle_ggz(ggzd_event_t event, void *data)
 {
-	int op, seat, status = -1;
-
-	if(es_read_int(ggz_fd, &op) < 0)
-		return -1;
-
-	switch(op) {
-		case REQ_GAME_LAUNCH:
-			if(ggz_game_launch() == 0)
-				status = game_update(DOTS_EVENT_LAUNCH,
-						     NULL, NULL);
+	switch (event) {
+		case GGZ_EVENT_LAUNCH:
+			game_update(DOTS_EVENT_LAUNCH,
+				NULL, NULL);
 			break;
-		case REQ_GAME_JOIN:
-			if(ggz_player_join(&seat, p_fd) == 0) {
-				status = game_update(DOTS_EVENT_JOIN, &seat,
-						     NULL);
-				status = 1;
-			}
+		case GGZ_EVENT_JOIN:
+			game_update(DOTS_EVENT_JOIN,
+				(int*)data, NULL);
 			break;
-		case REQ_GAME_LEAVE:
-			if((status = ggz_player_leave(&seat, p_fd)) == 0) {
-				game_update(DOTS_EVENT_LEAVE, &seat, NULL);
-				status = 2;
-			}
-			break;
-		case RSP_GAME_OVER:
-			status = 3; /* Signal safe to exit */
+		case GGZ_EVENT_LEAVE:
+			game_update(DOTS_EVENT_LEAVE,
+				(int*)data, NULL);
 			break;
 		default:
 			/* Unrecognized opcode */
-			status = -1;
+			ggzd_debug("Unexpected GGZ event %d.", event);
 			break;
 	}
-	return status;
 }
 
 
 /* Handle message from player */
-int game_handle_player(int num)
+void game_handle_player(ggzd_event_t event, void *data)
 {
+	int num = *(int*)data;
 	int fd, op, status;
 	unsigned char x, y;
 
-	fd = ggz_seats[num].fd;
+	fd = ggzd_get_player_socket(num);
 	
 	if(es_read_int(fd, &op) < 0)
-		return -1;
+		return; /* FIXME: error --JDS */
 
 	switch(op) {
 		case DOTS_SND_MOVE_V:
@@ -133,14 +120,14 @@ int game_handle_player(int num)
 			status = -1;
 			break;
 	}
-	return status;
+	/* FIXME: handle status --JDS */
 }
 
 
 /* Get options from client */
 static int game_get_options(int seat)
 {
-	int fd = ggz_seats[seat].fd;
+	int fd = ggzd_get_player_socket(seat);
 
 	if(es_read_char(fd, &dots_game.board_width) < 0
 	   || es_read_char(fd, &dots_game.board_height) < 0)
@@ -153,7 +140,7 @@ static int game_get_options(int seat)
 /* Send out options */
 int game_send_options(int seat)
 {
-	int fd = ggz_seats[seat].fd;
+	int fd = ggzd_get_player_socket(seat);
 
 	if(es_write_int(fd, DOTS_MSG_OPTIONS) < 0
 	   || es_write_char(fd, dots_game.board_width) < 0
@@ -166,7 +153,7 @@ int game_send_options(int seat)
 /* Send a request for client to set options */
 int game_send_options_request(int seat)
 {
-	int fd = ggz_seats[seat].fd;
+	int fd = ggzd_get_player_socket(seat);
 
 	if(es_write_int(fd, DOTS_REQ_OPTIONS) < 0)
 		return -1;
@@ -177,9 +164,9 @@ int game_send_options_request(int seat)
 /* Send out seat assignment */
 int game_send_seat(int seat)
 {
-	int fd = ggz_seats[seat].fd;
+	int fd = ggzd_get_player_socket(seat);
 
-	ggz_debug("Sending player %d's seat num", seat);
+	ggzd_debug("Sending player %d's seat num", seat);
 
 	if(es_write_int(fd, DOTS_MSG_SEAT) < 0
 	   || es_write_int(fd, seat) < 0)
@@ -195,19 +182,19 @@ int game_send_players(void)
 	int i, j, fd;
 	
 	for(j=0; j<2; j++) {
-		if((fd = ggz_seats[j].fd) == -1)
+		if((fd = ggzd_get_player_socket(j)) == -1)
 			continue;
 
-		ggz_debug("Sending player list to player %d", j);
+		ggzd_debug("Sending player list to player %d", j);
 
 		if(es_write_int(fd, DOTS_MSG_PLAYERS) < 0)
 			return -1;
 	
 		for(i=0; i<2; i++) {
-			if(es_write_int(fd, ggz_seats[i].assign) < 0)
+			if(es_write_int(fd, ggzd_get_seat_status(i)) < 0)
 				return -1;
-			if(ggz_seats[i].assign != GGZ_SEAT_OPEN
-			    && es_write_string(fd, ggz_seats[i].name) < 0) 
+			if(ggzd_get_seat_status(i) != GGZ_SEAT_OPEN
+			    && es_write_string(fd, ggzd_get_player_name(i)) < 0)
 				return -1;
 		}
 	}
@@ -218,7 +205,7 @@ int game_send_players(void)
 /* Send out move for player: num */
 int game_send_move(int num, int event, char x, char y)
 {
-	int fd = ggz_seats[dots_game.opponent].fd;
+	int fd = ggzd_get_player_socket(dots_game.opponent);
 	int i;
 	int msg;
 	
@@ -226,7 +213,7 @@ int game_send_move(int num, int event, char x, char y)
 	if(fd == -1)
 		return 0;
 
-	ggz_debug("Sending player %d's move to player %d",
+	ggzd_debug("Sending player %d's move to player %d",
 		   num, dots_game.opponent);
 
 	if(event == DOTS_EVENT_MOVE_H)
@@ -252,9 +239,9 @@ int game_send_move(int num, int event, char x, char y)
 /* Send out board layout */
 int game_send_sync(int num)
 {	
-	int i, j, fd = ggz_seats[num].fd;
+	int i, j, fd = ggzd_get_player_socket(num);
 
-	ggz_debug("Handling sync for player %d", num);
+	ggzd_debug("Handling sync for player %d", num);
 
 	if(es_write_int(fd, DOTS_SND_SYNC) < 0
 	   || es_write_char(fd, dots_game.turn) < 0
@@ -285,10 +272,10 @@ int game_send_gameover(char winner)
 	int i, fd;
 	
 	for(i=0; i<2; i++) {
-		if((fd = ggz_seats[i].fd) == -1)
+		if((fd = ggzd_get_player_socket(i)) == -1)
 			continue;
 
-		ggz_debug("Sending game-over to player %d", i);
+		ggzd_debug("Sending game-over to player %d", i);
 
 		if(es_write_int(fd, DOTS_MSG_GAMEOVER) < 0
 		    || es_write_char(fd, winner) < 0)
@@ -304,7 +291,7 @@ int game_move(void)
 	int num = dots_game.turn;
 	unsigned char dir, x, y;
 
-	if(ggz_seats[num].assign == GGZ_SEAT_BOT) {
+	if(ggzd_get_seat_status(num) == GGZ_SEAT_BOT) {
 		dir = ai_move(&x, &y);
 		if(dir == 0)
 			/* FIXME: These will cause recursion on score */
@@ -321,7 +308,7 @@ int game_move(void)
 /* Request move from current player */
 int game_req_move(int num)
 {
-	int fd = ggz_seats[num].fd;
+	int fd = ggzd_get_player_socket(num);
 
 	if(es_write_int(fd, DOTS_REQ_MOVE) < 0)
 		return -1;
@@ -333,11 +320,11 @@ int game_req_move(int num)
 /* Handle incoming move from player */
 int game_handle_move(int num, int dir, unsigned char *x, unsigned char *y)
 {
-	int fd = ggz_seats[num].fd;
+	int fd = ggzd_get_player_socket(num);
 	int i;
 	char status;
 	
-	ggz_debug("Handling move for player %d", num);
+	ggzd_debug("Handling move for player %d", num);
 	if(es_read_char(fd, x) < 0)
 		return -1;
 	if(es_read_char(fd, y) < 0)
@@ -487,11 +474,11 @@ int game_update(int event, void *d1, void *d2)
 
 			/* Send the options to anyone waitng for them */
 			for(seat=0; seat<2; seat++)
-				if(ggz_seats[seat].assign == GGZ_SEAT_PLAYER)
+				if(ggzd_get_seat_status(seat) == GGZ_SEAT_PLAYER)
 					game_send_options(seat);
 
 			/* Start the game if we are ready to */
-			if(!ggz_seats_open() && dots_game.play_again != 1) {
+			if(!ggzd_seats_open() && dots_game.play_again != 1) {
 				dots_game.turn = 0;
 				dots_game.state = DOTS_STATE_PLAYING;
 				game_move();
@@ -519,10 +506,10 @@ int game_update(int event, void *d1, void *d2)
 
 			/* If options are already set, we can proceed */
 			game_send_options(seat);
-			if(!ggz_seats_open()) {
+			if(!ggzd_seats_open()) {
 				if(dots_game.turn == -1)
 					dots_game.turn = 0;
-				else 
+				else
 					game_send_sync(seat);
 			
 				dots_game.state = DOTS_STATE_PLAYING;
@@ -574,12 +561,12 @@ static int game_handle_newgame(int seat)
 	dots_game.play_again++;
 
 	/* Simulate that the bot wants to play another game */
-	if(ggz_seats[(seat+1)%2].assign == GGZ_SEAT_BOT)
+	if(ggzd_get_seat_status((seat+1)%2) == GGZ_SEAT_BOT)
 		dots_game.play_again++;
 
 	/* Issue the game start if second answer comes */
 	/* and options are already setup to go */
-	if(!ggz_seats_open() && dots_game.state == DOTS_STATE_WAIT
+	if(!ggzd_seats_open() && dots_game.state == DOTS_STATE_WAIT
 	   && dots_game.play_again == 2) {
 		dots_game.turn = 0;
 		dots_game.state = DOTS_STATE_PLAYING;

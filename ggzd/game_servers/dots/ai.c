@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots AI module
  * Date: 05/11/2000
  * Desc: Artificial Intelligence for CtD
- * $Id: ai.c 2263 2001-08-26 21:30:10Z jdorje $
+ * $Id: ai.c 2297 2001-08-28 04:38:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -24,11 +24,9 @@
  */
 
 #include <stdlib.h>
-
-#include <ggz.h>
-#include <game.h>
-#include <protocols.h>
 #include <string.h>
+
+#include "game.h"
 
 /* Global game variables */
 struct dots_game_t dots_game;
@@ -50,20 +48,20 @@ unsigned char ai_move(unsigned char *x, unsigned char *y)
 	char dir;
 
 	/* Find a score first */
-	ggz_debug("AI: Looking for a score");
+	ggzd_debug("AI: Looking for a score");
 	dir = ai_find_scoring_line(x, y);
 
 	/* If that fails... */
 	if(dir == -1) {
 		/* Find a safe move */
-		ggz_debug("AI: Looking for a safe move");
+		ggzd_debug("AI: Looking for a safe move");
 		dir = ai_find_safe_line(x, y);
 	}
 
 	/* If we have no safe moves... */
 	if(dir == -1) {
 		/* Find the one that gives the least squares away */
-		ggz_debug("AI: Looking for least painful move");
+		ggzd_debug("AI: Looking for least painful move");
 		dir = ai_find_best_giveaway(x, y);
 	}
 
@@ -318,7 +316,7 @@ static unsigned char ai_lookahead(unsigned char dir,
 	memcpy(dots_game.horz_board, hb_backup, sizeof(hb_backup));
 
 	/* Return the number of squares we would give away with this move */
-	ggz_debug("AI: Considered %s move at %d, %d (%d squares)",
+	ggzd_debug("AI: Considered %s move at %d, %d (%d squares)",
 		  dir == 0 ? "vertical" : "horizontal", x, y, squares);
 	return squares;
 }
@@ -357,7 +355,7 @@ static void ai_handle_move(int dir, unsigned char *x, unsigned char *y)
 {
 	int num = dots_game.turn;
 
-	ggz_debug("Handling AI move");
+	ggzd_debug("Handling AI move");
 
 	score = 0;
 
