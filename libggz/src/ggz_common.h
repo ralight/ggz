@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 3113 2002-01-14 07:04:06Z jdorje $
+ * $Id: ggz_common.h 3227 2002-02-03 19:19:15Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -40,11 +40,11 @@ extern "C" {
  * use in game clients is completely optional.
  */
 typedef enum {
-	GGZ_SEAT_OPEN = -1,	   /**< The seat is open (unoccupied). */
-	GGZ_SEAT_BOT = -2,	   /**< The seat has a bot (AI) in it. */
-	GGZ_SEAT_RESERVED = -3,	   /**< The seat is reserved for a player. */
-	GGZ_SEAT_NONE = -4,	   /**< This seat does not exist. */
-	GGZ_SEAT_PLAYER = -5	   /**< The seat has a regular player in it. */
+	GGZ_SEAT_NONE,		/**< This seat does not exist. */
+	GGZ_SEAT_OPEN,		/**< The seat is open (unoccupied). */
+	GGZ_SEAT_BOT,		/**< The seat has a bot (AI) in it. */
+	GGZ_SEAT_PLAYER,	/**< The seat has a regular player in it. */
+	GGZ_SEAT_RESERVED,	/**< The seat is reserved for a player. */
 } GGZSeatType;
 
 /** @brief Get a string identifier for the GGZSeatType.
