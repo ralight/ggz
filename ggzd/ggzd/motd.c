@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 4742 2002-09-26 21:04:07Z jdorje $
+ * $Id: motd.c 4846 2002-10-10 17:18:44Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -166,7 +166,7 @@ void motd_read_file(const char *file)
 	lines = 0;
 	while((line = ggz_read_line(motd_file))) {
 		if(lines == alloc_lines) {
-			alloc_lines += 10;
+			alloc_lines *= 2;
 			motd_info.motd_text = ggz_realloc(motd_info.motd_text,
 						alloc_lines * sizeof(char *));
 		}
