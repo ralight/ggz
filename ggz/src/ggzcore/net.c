@@ -1452,7 +1452,7 @@ static void _ggzcore_net_handle_rsp_game(struct _GGZNet *net)
 {
 	unsigned int size;
 	int status;
-	char buffer[4096];
+	char buffer[4096 + sizeof(size)];
 	char *buf_offset;
 	struct _GGZRoom *room;
 
