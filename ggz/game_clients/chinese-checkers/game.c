@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.c 6264 2004-11-05 06:15:15Z jdorje $
+ * $Id: game.c 6265 2004-11-05 06:20:47Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -90,7 +90,6 @@ GGZMod *game_mod(void)
 void game_init(void)
 {
 	char *filename;
-	int i, j;
 
 	/* Connect to GGZ */
 	mod = ggzmod_new(GGZMOD_GAME);
@@ -123,10 +122,6 @@ void game_init(void)
 			exit(1);
 		}
 	}
-
-	for (i = 0; i < ROWS; i++)
-		for (i = 0; i < COLS; i++)
-			game.board[i][j] = BOARD_NONE;
 
 	/* Setup the board array */
 	game_zap_board();
