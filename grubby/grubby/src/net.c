@@ -160,6 +160,11 @@ int net_status(void)
 
 	fd = ggzcore_server_get_fd(server);
 
+	if (fd < 0) {
+		fprintf(stderr, "Could not connect to server.\n");
+		exit(EXIT_FAILURE);
+	}
+
 	FD_ZERO(&set);
 	FD_SET(fd, &set);
 
