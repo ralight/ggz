@@ -2,7 +2,6 @@
 # Copyright (C) 2004 Josef Spillner
 # Josef Spillner <josef@ggzgamingzone.org>, 2004.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.9\n"

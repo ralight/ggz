@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-15 01:09+0100\n"
+"POT-Creation-Date: 2004-12-21 18:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,97 +16,161 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../common/dlg_chat.c:159
+#: ../../common/dlg_chat.c:159
 msgid "Player Chat"
 msgstr ""
 
-#: ../common/dlg_exit.c:56
+#: ../../common/dlg_exit.c:56
 msgid "Are you sure you want to exit?"
 msgstr ""
 
-#: ../common/dlg_exit.c:58
+#: ../../common/dlg_exit.c:58
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
 msgstr ""
 
-#: ../common/dlg_exit.c:62 ../common/dlg_exit.c:67
+#: ../../common/dlg_exit.c:62 ../../common/dlg_exit.c:67
 msgid "Really Exit?"
 msgstr ""
 
-#: ../common/dlg_players.c:120
+#: ../../common/dlg_players.c:120
 msgid "Occupied"
 msgstr ""
 
-#: ../common/dlg_players.c:124
+#: ../../common/dlg_players.c:124
 msgid "Empty"
 msgstr ""
 
-#: ../common/dlg_players.c:128
+#: ../../common/dlg_players.c:128
 msgid "Bot"
 msgstr ""
 
-#: ../common/dlg_players.c:132
+#: ../../common/dlg_players.c:132
 msgid "Reserved"
 msgstr ""
 
-#: ../common/dlg_players.c:136
+#: ../../common/dlg_players.c:136
 msgid "-"
 msgstr ""
 
-#: ../common/dlg_players.c:166
+#: ../../common/dlg_players.c:166
 msgid "Spectator"
 msgstr ""
 
-#: ../common/dlg_players.c:203
+#: ../../common/dlg_players.c:203
 msgid "#"
 msgstr ""
 
-#: ../common/dlg_players.c:210
+#: ../../common/dlg_players.c:210
 msgid "Status"
 msgstr ""
 
-#: ../common/dlg_players.c:219
+#: ../../common/dlg_players.c:219
 msgid "Name"
 msgstr ""
 
-#: ../common/dlg_players.c:261
+#: ../../common/dlg_players.c:261
 msgid "Player List"
 msgstr ""
 
-#: ../common/dlg_players.c:276
+#: ../../common/dlg_players.c:276
 msgid "List of players:"
 msgstr ""
 
-#: ../common/dlg_players.c:410
+#: ../../common/dlg_players.c:410
 msgid "Info"
 msgstr ""
 
-#: ../common/dlg_players.c:428
+#: ../../common/dlg_players.c:428
 msgid "Boot player"
 msgstr ""
 
-#: ../common/dlg_players.c:448
+#: ../../common/dlg_players.c:448
 msgid "Sit here"
 msgstr ""
 
-#: ../common/dlg_players.c:450
+#: ../../common/dlg_players.c:450
 msgid "Move here"
 msgstr ""
 
-#: ../common/dlg_players.c:468
+#: ../../common/dlg_players.c:468
 msgid "Play with bot"
 msgstr ""
 
-#: ../common/dlg_players.c:485
+#: ../../common/dlg_players.c:485
 msgid "Drop reservation"
 msgstr ""
 
-#: ../common/dlg_players.c:487
+#: ../../common/dlg_players.c:487
 msgid "Remove bot"
 msgstr ""
 
-#: ../common/ggzintl.c:44
+#: ../../common/ggzintl.c:47
 #, c-format
 msgid "nls enabled: %s"
+msgstr ""
+
+#: ../../common/menus.h:37
+msgid "/_Table"
+msgstr ""
+
+#: ../../common/menus.h:38
+msgid "/Table/Player _list"
+msgstr ""
+
+#: ../../common/menus.h:40
+msgid "/Table/Chat _window"
+msgstr ""
+
+#: ../../common/menus.h:42 ../../common/menus.h:57
+msgid "/Table/Sit down"
+msgstr ""
+
+#: ../../common/menus.h:43 ../../common/menus.h:58
+msgid "/Table/Stand up"
+msgstr ""
+
+#: ../../common/menus.h:44
+msgid "/Table/_Sync with server"
+msgstr ""
+
+#: ../../common/menus.h:45
+msgid "/Table/E_xit"
+msgstr ""
+
+#: ../../common/menus.h:54
+msgid "/Table"
+msgstr ""
+
+#: ../../common/menus.h:55
+msgid "/Table/Player list"
+msgstr ""
+
+#: ../../common/menus.h:56
+msgid "/Table/Chat window"
+msgstr ""
+
+#: ../../common/menus.h:59
+msgid "/Table/Sync with server"
+msgstr ""
+
+#: ../../common/menus.h:60
+msgid "/Table/Exit"
+msgstr ""
+
+#: ../../common/menus.h:63
+msgid "/_Help"
+msgstr ""
+
+#: ../../common/menus.h:64
+msgid "/Help/_About"
+msgstr ""
+
+#: ../../common/menus.h:66
+msgid "/Help"
+msgstr ""
+
+#: ../../common/menus.h:67
+msgid "/Help/About"
 msgstr ""

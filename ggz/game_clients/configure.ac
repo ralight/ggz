@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6428 2004-11-28 00:55:14Z josef $
+dnl $Id: configure.ac 6545 2004-12-21 17:17:17Z josef $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -94,7 +94,7 @@ AM_WITH_NLS
 if test "${prefix}" = "NONE"; then
 	prefix=${ac_default_prefix}
 fi
-AC_DEFINE_UNQUOTED([LOCALEDIR], ["{prefix}/share/locale"],
+AC_DEFINE_UNQUOTED([LOCALEDIR], ["${prefix}/share/locale"],
 		   [The location to put message catalogs])
 
 dnl Check for typedefs, structures, and compiler characteristics
@@ -140,7 +140,7 @@ dnl ============
 SUBDIRS=$allsubdirs
 
 AC_SUBST(LDADD)
-AC_SUBST(subdirs)
+#AC_SUBST(subdirs)
 AC_SUBST(SUBDIRS)
 
 AC_CONFIG_FILES([Makefile 
@@ -175,6 +175,16 @@ AC_CONFIG_FILES([Makefile
 	   chess/libcgc/Makefile
 	   chess/bitmaps/Makefile
 	   po/Makefile
+	   po/chess/Makefile
+	   po/chinese-checkers/Makefile
+	   po/combat/Makefile
+	   po/common/Makefile
+	   po/dots/Makefile
+	   po/ggzcards/Makefile
+	   po/hastings/Makefile
+	   po/reversi/Makefile
+	   po/spades/Makefile
+	   po/tictactoe/Makefile
 	   ])
 AC_OUTPUT
 
