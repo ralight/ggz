@@ -5,7 +5,7 @@
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
  *
- * Copyright (C) 1999 Brent Hendricks.
+ * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,29 +37,23 @@
 #include <err_func.h>
 #include <motd.h>
 #include <room.h>
+#include <conf.h>
 
 /* Stuff from control.c we need access to */
 extern Options opt;
 extern struct GGZState state;
 extern struct GameInfo game_types[MAX_GAME_TYPES];
 
-/* Structure for Add/Ignore Games list */
-typedef struct AddIgnore {
-  char *name;
-  struct AddIgnore *next;
-} AddIgnoreStruct;
 
 /* Private file parsing functions */
-static void parse_file(FILE *);
+static void get_config_options(int);
 static void parse_line(char *);
-static AddIgnoreStruct *parse_put_add_ignore_list(char *, AddIgnoreStruct *);
-static AddIgnoreStruct *parse_cleanup_add_ignore_list(AddIgnoreStruct *);
 static void parse_game(char *, char *);
 static void parse_room(char *, char *);
 static int parse_gselect(struct dirent *);
 static int parse_rselect(struct dirent *);
-static unsigned parse_log_types(char *, int);
-static unsigned parse_dbg_types(char *, int);
+static unsigned parse_log_types(int, char **);
+static unsigned parse_dbg_types(int, char **);
 
 /* Log types name lookup tables*/
 struct LogTypes {
@@ -91,10 +85,12 @@ static int num_dbg_types = sizeof(dbg_types) / sizeof(dbg_types[0]);
 /* Module local variables for parsing */
 static char *varname;
 static char *varvalue;
-static AddIgnoreStruct *add_ignore_games = NULL;
-static char add_all_games = 't';
-static AddIgnoreStruct *add_ignore_rooms = NULL;
-static char add_all_rooms = 't';
+
+/* Game and room lists */
+static int g_count = 0;
+static char **g_list = NULL;
+static int r_count = 0;
+static char **r_list = NULL;
 
 /* Convience macro for parse_file(), parse_game() */
 #define PARSE_ERR(s)  err_msg("Config file: %s, line %d", s, linenum)
@@ -157,14 +153,14 @@ void parse_args(int argc, const char *argv[])
 /* Parse options from conf file, but don't overwrite existing options*/
 void parse_conf_file(void)
 {
-	FILE *configfile;
 	char *tempstr;
+	int c_handle = -1;
 
+	/* Use conf_parse on an approrpriate configuration file */
 	if (opt.local_conf) {
-		if((configfile=fopen(opt.local_conf,"r"))) {
+		if((c_handle = conf_parse(opt.local_conf, CONF_RDONLY)) >= 0) {
 			dbg_msg(GGZ_DBG_CONFIGURATION,
 				"Reading local conf file : %s", opt.local_conf);
-			parse_file(configfile);
 		} else
 			err_msg("WARNING:  Local conf file not found!");
 	} else {
@@ -174,15 +170,18 @@ void parse_conf_file(void)
 		strcpy(tempstr, GGZDCONFDIR);  /* If this changes be sure to */
 		strcat(tempstr, "/ggzd.conf"); /* change the malloc() above! */
 
-		if((configfile=fopen(tempstr,"r"))) {
+		if((c_handle = conf_parse(tempstr, CONF_RDONLY)) >= 0) {
 			dbg_msg(GGZ_DBG_CONFIGURATION,
 				"Reading global conf file : %s", tempstr);
-			parse_file(configfile);
 		} else
 			err_msg("WARNING:  No configuration file loaded!");
 
 		free(tempstr);
 	}
+
+	/* Get options from the file */
+	if(c_handle >= 0)
+		get_config_options(c_handle);
 
 	/* Add any defaults which were not config'ed */
 
@@ -240,419 +239,89 @@ void parse_conf_file(void)
 
 
 /* Parse the pre-openend configuration file, close the file when done */
-static void parse_file(FILE *configfile)
+static void get_config_options(int ch)
 {
-	char line[256];		/* Lines longer than 256 are trunced */
 	int intval;
 	char *strval;
-	int linenum = 0;
+	char **t_list;
+	int t_count = 0;
 
-	while(fgets(line, 256, configfile)) {
-		linenum++;
-		parse_line(line);
-		if(varname == NULL)
-			continue; /* Blank line or comment */
-		dbg_msg(GGZ_DBG_CONFIGURATION, "  found '%s, %s'",
-			varname, varvalue);
+	/* [General] */
+	if(opt.main_port == 0)
+		opt.main_port = conf_read_int(ch, "General", "Port", 5688);
+	opt.admin_name = conf_read_string(ch, "General", "AdminName", NULL);
+	opt.admin_email = conf_read_string(ch, "General", "AdminEmail", NULL);
 
-		/* Apply the configuration line, oh to be able to do */
-		/* a case construct with strings :)                  */
+	/* [Directories] */
+	opt.game_dir = conf_read_string(ch, "Directories", "GameDir", NULL);
+	opt.conf_dir = conf_read_string(ch, "Directories", "ConfDir", NULL);
+	opt.data_dir = conf_read_string(ch, "Directories", "DataDir", NULL);
 
-		/*** Port = X ***/
-		if(!strcmp(varname, "port")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			intval = atoi(varvalue);
-			if(intval < 1024 || intval > 32767) {
-				PARSE_ERR("Invalid port number");
-				continue;
-			}
-			if(opt.main_port == 0)
-				opt.main_port = intval;
-			continue;
-		}
-
-		/*** GameDir = DIR ***/
-		if(!strcmp(varname, "gamedir")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if((strval = malloc(strlen(varvalue)+1)) == NULL)
-				err_sys_exit("parse_file: malloc error");
-			strcpy(strval, varvalue);
-			opt.game_dir = strval;
-			continue;
-		 }
-
-		/*** ConfDir = DIR ***/
-		if(!strcmp(varname, "confdir")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if((strval = malloc(strlen(varvalue)+1)) == NULL)
-				err_sys_exit("parse_file: malloc error");
-			strcpy(strval, varvalue);
-			opt.conf_dir = strval;
-			continue;
-		 }
-
-		/*** DataDir = DIR ***/
-		if(!strcmp(varname, "datadir")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if((strval = malloc(strlen(varvalue)+1)) == NULL)
-				err_sys_exit("parse_file: malloc error");
-			strcpy(strval, varvalue);
-			opt.data_dir = strval;
-			continue;
-		 }
-
-#if 0
-		/*** TmpDir = DIR ***/
-		if(!strcmp(varname, "tmpdir")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if((strval = malloc(strlen(varvalue)+1)) == NULL)
-				err_sys_exit("parse_file: malloc error");
-			strcpy(strval, varvalue);
-			opt.tmp_dir = strval;
-			continue;
-		 }
-#endif
-
-		/*** AddAllGames ***/
-		if(!strcmp(varname, "addallgames")) {
-			if(add_all_games == 'F')
-				PARSE_ERR("AddAllGames after AddGame ignored");
-			else
-				add_all_games = 'T';
-			continue;
-		}
-
-		/*** AddGame = GAME ***/
-		if(!strcmp(varname, "addgame")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if(add_all_games == 'T')
-				PARSE_ERR("AddGame after AddAllGames ignored");
-			else {
-				add_all_games = 'F';
-				add_ignore_games =
-					parse_put_add_ignore_list(varvalue,
-							 add_ignore_games);
-			}
-			continue;
-		}
-
-		/*** IgnoreGame = GAME ***/
-		if(!strcmp(varname, "ignoregame")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if(add_all_games == 'F')
-				PARSE_ERR("IgnoreGame after AddGame ignored");
-			else {
-				add_all_games = 'T';
-				add_ignore_games =
-					parse_put_add_ignore_list(varvalue,
-							add_ignore_games);
-			}
-			continue;
-		}
-
-		/*** AddAllRooms ***/
-		if(!strcmp(varname, "addallrooms")) {
-			if(add_all_rooms == 'F')
-				PARSE_ERR("AddAllRooms after AddRoom ignored");
-			else
-				add_all_rooms = 'T';
-			continue;
-		}
-
-		/*** AddRoom = ROOM ***/
-		if(!strcmp(varname, "addroom")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if(add_all_rooms == 'T')
-				PARSE_ERR("AddRoom after AddAllRooms ignored");
-			else {
-				add_all_rooms = 'F';
-				add_ignore_rooms =
-					parse_put_add_ignore_list(varvalue,
-							 add_ignore_rooms);
-			}
-			continue;
-		}
-
-		/*** IgnoreRoom = ROOM ***/
-		if(!strcmp(varname, "ignoreroom")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if(add_all_rooms == 'F')
-				PARSE_ERR("IgnoreRoom after AddRoom ignored");
-			else {
-				add_all_rooms = 'T';
-				add_ignore_rooms =
-					parse_put_add_ignore_list(varvalue,
-							add_ignore_rooms);
-			}
-			continue;
-		}
-
-		/*** MOTD = filename ***/
-		if(!strcmp(varname, "motd")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if((strval = malloc(strlen(varvalue)+1)) == NULL)
-				err_sys_exit("parse_file: malloc error");
-			strcpy(strval, varvalue);
-			motd_info.motd_file = strval;
-			motd_info.use_motd = 1;
-			continue;
-		 }
-		
-		/*** AdminName = string ***/
-		if(!strcmp(varname, "adminname")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if((strval = malloc(strlen(varvalue)+1)) == NULL)
-				err_sys_exit("parse_file: malloc error");
-			strcpy(strval, varvalue);
-			opt.admin_name = strval;
-			continue;
-		 }
-		
-		/*** AdminEmail = string ***/
-		if(!strcmp(varname, "adminemail")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if((strval = malloc(strlen(varvalue)+1)) == NULL)
-				err_sys_exit("parse_file: malloc error");
-			strcpy(strval, varvalue);
-			opt.admin_email = strval;
-			continue;
-		 }
-
-		/*** LOGFILE = filename ***/
-		if(!strcmp(varname, "logfile")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if((strval = malloc(strlen(varvalue)+1)) == NULL)
-				err_sys_exit("parse_file: malloc error");
-			strcpy(strval, varvalue);
-			log_info.log_fname = strval;
-			continue;
-		 }
-
-		/*** LOGTYPES = List ***/
-		if(!strcmp(varname, "logtypes")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Warning: no LogTypes specified");
-				continue;
-			}
-			log_info.log_types |= parse_log_types(varvalue,linenum);
-			continue;
-		}
-
-		/*** DEBUGFILE = filename ***/
-		if(!strcmp(varname, "debugfile")) {
-#ifndef DEBUG
-			PARSE_ERR("Debugging not enabled");
-			continue;
-#else
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if((strval = malloc(strlen(varvalue)+1)) == NULL)
-				err_sys_exit("parse_file: malloc error");
-			strcpy(strval, varvalue);
-			log_info.dbg_fname = strval;
-			continue;
-#endif
-		 }
-		
-		/*** DEBUGTYPES = List ***/
-		if(!strcmp(varname, "debugtypes")) {
-#ifndef DEBUG
-			PARSE_ERR("Debugging not enabled");
-			continue;
-#else
-			if(log_info.popt_dbg)	/* Don't overwrite popt's */
-				continue;	/* --debug=X stuff        */
-			if(varvalue == NULL) {
-				PARSE_ERR("Warning: no DebugTypes specified");
-				continue;
-			}
-			log_info.dbg_types |= parse_dbg_types(varvalue,linenum);
-			continue;
-#endif
-		}
-
-		/*** FACILITY = string ***/
-		if(!strcmp(varname, "facility")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			if(logfile_set_facility(varvalue) < 0)
-				PARSE_ERR("Invalid syslogd facility name");
-			continue;
-		 }
-
-		/*** PIDINLOGS = 0,1 ***/
-		if(!strcmp(varname, "pidinlogs")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			intval = atoi(varvalue);
-			if(intval == 0)
-				log_info.options &= ~GGZ_LOGOPT_INC_PID;
-			else if(intval == 1)
-				log_info.options |= GGZ_LOGOPT_INC_PID;
-			else
-				PARSE_ERR("Invalid value for PIDInLogs");
-			continue;
-		}
-
-		/*** THREADLOGS = 0,1 ***/
-		if(!strcmp(varname, "threadlogs")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			intval = atoi(varvalue);
-			if(intval == 0)
-				log_info.options &= ~GGZ_LOGOPT_THREAD_LOGS;
-			else if(intval == 1)
-				log_info.options |= GGZ_LOGOPT_THREAD_LOGS;
-			else
-				PARSE_ERR("Invalid value for ThreadLogs");
-			continue;
-		}
-
-		/*** HOSTNAMELOOKUP = 0,1 ***/
-		if(!strcmp(varname, "hostnamelookup")) {
-#if 0
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			intval = atoi(varvalue);
-			if(intval < 0 || intval > 1) {
-				PARSE_ERR("Invalid value for HostnameLookup");
-				continue;
-			}
-			opt.perform_lookups = intval;
-			continue;
-#else /*1*/
-			PARSE_ERR("HostnameLookup is disabled");
-			continue;
-#endif
-		}
-
-		/*** TIMEINLOGS = 0,1 ***/
-		if(!strcmp(varname, "timeinlogs")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			intval = atoi(varvalue);
-			if(intval == 0)
-				log_info.options &= ~GGZ_LOGOPT_INC_TIME;
-			else if(intval == 1)
-				log_info.options |= GGZ_LOGOPT_INC_TIME;
-			else
-				PARSE_ERR("Invalid value for TimeInLogs");
-			continue;
-		}
-
-		/*** GAMETYPEINLOGS = 0,1 ***/
-		if(!strcmp(varname, "gametypeinlogs")) {
-			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
-				continue;
-			}
-			intval = atoi(varvalue);
-			if(intval == 0)
-				log_info.options &= ~GGZ_LOGOPT_INC_GAMETYPE;
-			else if(intval == 1)
-				log_info.options |= GGZ_LOGOPT_INC_GAMETYPE;
-			else
-				PARSE_ERR("Invalid value for GameTypeInLogs");
-			continue;
-		}
-
-		/*** INVALID VARIABLE ***/
-		PARSE_ERR("Syntax error");
+	/* [Games] */
+	conf_read_list(ch, "Games", "GameList", &g_count, &g_list);
+	if(g_count == 0) {
+		conf_read_list(ch, "Games", "IgnoredGames", &g_count, &g_list);
+		g_count *= -1;
+	}
+	conf_read_list(ch, "Games", "RoomList", &r_count, &r_list);
+	if(r_count == 0) {
+		conf_read_list(ch, "Games", "IgnoredRooms", &r_count, &r_list);
+		r_count *= -1;
 	}
 
+	/* [Files] */
+	motd_info.motd_file = conf_read_string(ch, "Files", "MOTD", NULL);
+	if(motd_info.motd_file != NULL)
+		motd_info.use_motd = 1;
 
-	fclose(configfile);
-
+	/* [Logs] */
+	log_info.log_fname = conf_read_string(ch, "Logs", "LogFile", NULL);
+	conf_read_list(ch, "Logs", "LogTypes", &t_count, &t_list);
+	if(t_count > 0)
+		log_info.log_types |= parse_log_types(t_count, t_list);
 #ifdef DEBUG
-	{
-	  AddIgnoreStruct *AI = add_ignore_games;
-	  if(AI) {
-	    if(add_all_games == 'T')
-	      dbg_msg(GGZ_DBG_CONFIGURATION, "Game ignore list:");
-	    else
-	      dbg_msg(GGZ_DBG_CONFIGURATION, "Game add list:");
-	    while(AI)
-	    {
-	      dbg_msg(GGZ_DBG_CONFIGURATION, "  %s", AI->name);
-	      AI = AI->next;
-	    }
-	  }
-	  AI = add_ignore_rooms;
-	  if(AI) {
-	    if(add_all_rooms == 'T')
-	      dbg_msg(GGZ_DBG_CONFIGURATION, "Room ignore list:");
-	    else
-	      dbg_msg(GGZ_DBG_CONFIGURATION, "Room add list:");
-	    while(AI)
-	    {
-	      dbg_msg(GGZ_DBG_CONFIGURATION, "  %s", AI->name);
-	      AI = AI->next;
-	    }
-	  }
-	}
+	log_info.dbg_fname = conf_read_string(ch, "Logs", "DebugFile", NULL);
+	t_count = 0;
+	conf_read_list(ch, "Logs", "DebugTypes", &t_count, &t_list);
+	if(t_count > 0)
+		log_info.dbg_types |= parse_dbg_types(t_count, t_list);
 #endif /*DEBUG*/
+	strval = conf_read_string(ch, "Logs", "Facility", NULL);
+	if(strval)
+		if(logfile_set_facility(strval) < 0)
+			err_msg("Configuration: Invalid syslogd facility");
+	intval = conf_read_int(ch, "Logs", "PIDInLogs", 1);
+	if(intval == 0)
+		log_info.options &= ~GGZ_LOGOPT_INC_PID;
+	else
+		log_info.options |= GGZ_LOGOPT_INC_PID;
+	intval = conf_read_int(ch, "Logs", "ThreadLogs", 0);
+	if(intval == 0)
+		log_info.options &= ~GGZ_LOGOPT_THREAD_LOGS;
+	else
+		log_info.options |= GGZ_LOGOPT_THREAD_LOGS;
+	intval = conf_read_int(ch, "Logs", "TimeInLogs", 0);
+	if(intval == 0)
+		log_info.options &= ~GGZ_LOGOPT_INC_TIME;
+	else
+		log_info.options |= GGZ_LOGOPT_INC_TIME;
+	intval = conf_read_int(ch, "Logs", "GameTypeInLogs", 1);
+	if(intval == 0)
+		log_info.options &= ~GGZ_LOGOPT_INC_GAMETYPE;
+	else
+		log_info.options |= GGZ_LOGOPT_INC_GAMETYPE;
+
+	conf_cleanup();
 }
 
 
 /* Main entry point for parsing the game files */
 void parse_game_files(void)
 {
-	AddIgnoreStruct *game;
 	struct dirent **namelist;
 	char *name;
 	char *dir;
-	int num_games, i;
+	int num_games, i, j;
 	int addit;
 
 	/* Setup our directory to "conf_dir/games/" */
@@ -661,14 +330,11 @@ void parse_game_files(void)
 	strcpy(dir, opt.conf_dir);
 	strcat(dir, "/games/");
 
-	if(add_all_games == 'F') {
+	if(g_count > 0) {
 		/* Go through all games explicitly included in the add list */
 		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding games in add list");
-		game = add_ignore_games;
-		while(game) {
-			parse_game(game->name, dir);
-			game = game->next;
-		}
+		for(i=0; i<g_count; i++)
+			parse_game(g_list[i], dir);
 	} else {
 		/* Scan for all .dsc files in the dir */
 		dbg_msg(GGZ_DBG_CONFIGURATION, "Addding all games in %s", dir);
@@ -679,16 +345,13 @@ void parse_game_files(void)
 			       err_sys_exit("malloc error in parse_game_files");
 			strcpy(name, namelist[i]->d_name);
 			name[strlen(name)-4] = '\0';
+
 			/* Check to see if this game is on the ignore list */
-			game = add_ignore_games;
-			addit = 1;
-			while(game) {
-				if(strncmp(name,game->name,strlen(game->name)))
-					game = game->next;
-				else {
-					addit=0;
+			addit=1;
+			for(j=0; j>g_count; j--) {
+				if(!strcmp(name, g_list[0-j]))
+					addit = 0;
 					break;
-				}
 			}
 
 			/* Add it if it's not on the ignore list */
@@ -703,7 +366,8 @@ void parse_game_files(void)
 	}
 
 	free(dir);
-	add_ignore_games = parse_cleanup_add_ignore_list(add_ignore_games);
+
+	/* FIXME - Cleanup g_list */
 }
 
 
@@ -899,11 +563,10 @@ static void parse_game(char *name, char *dir)
 /* Main entry point for parsing the room files */
 void parse_room_files(void)
 {
-	AddIgnoreStruct *room;
 	struct dirent **namelist;
 	char *dir;
 	char *name;
-	int num_rooms, i;
+	int num_rooms, i, j;
 	int addit;
 
 	/* Setup our directory to "conf_dir/rooms/" */
@@ -914,16 +577,13 @@ void parse_room_files(void)
 
 	parse_room("entry", dir);
 
-	if(add_all_rooms == 'F') {
+	if(r_count > 0) {
 		/* Go through all rooms explicitly included in the add list */
 		dbg_msg(GGZ_DBG_CONFIGURATION, "Adding rooms in add list");
-		room = add_ignore_rooms;
-		while(room) {
-			/* Don't readd the entry room */
-			if(strcmp(room->name, "entry"))
-				parse_room(room->name, dir);
-			room = room->next;
-		}
+		for(i=0; i<r_count; i++)
+			/* Add everything, but don't readd entry room */
+			if(strcmp(r_list[i], "entry"))
+				parse_room(r_list[i], dir);
 	} else {
 		/* Scan for all .room files in dir */
 		dbg_msg(GGZ_DBG_CONFIGURATION, "Addding all rooms in %s", dir);
@@ -938,15 +598,11 @@ void parse_room_files(void)
 			if(!strcmp(name, "entry"))
 				continue;
 			/* Check to see if this game is on the ignore list */
-			room = add_ignore_rooms;
-			addit = 1;
-			while(room) {
-				if(strncmp(name,room->name,strlen(room->name)))
-					room = room->next;
-				else {
-					addit=0;
+			addit=1;
+			for(j=0; j>r_count; j--) {
+				if(!strcmp(name, r_list[0-j]))
+					addit = 0;
 					break;
-				}
 			}
 
 			/* Add it if it's not on the ignore list */
@@ -961,11 +617,12 @@ void parse_room_files(void)
 	}
 
 	free(dir);
-	add_ignore_rooms = parse_cleanup_add_ignore_list(add_ignore_rooms);
 
 	/* At this point, we should have at least one working room */
 	if(room_info.num_rooms == 0)
 		err_msg_exit("No rooms defined, ggzd unusable");
+
+	/* FIXME - Cleanup r_list */
 }
 
 
@@ -1174,39 +831,6 @@ static void parse_line(char *p)
 }
 
 
-/* Put a string onto the Add/Ignore list */
-static AddIgnoreStruct *parse_put_add_ignore_list(char *s, AddIgnoreStruct *old)
-{
-	AddIgnoreStruct *new_listitem;
-	char *newstring;
-
-	if((new_listitem=malloc(sizeof(AddIgnoreStruct))) == NULL)
-		err_sys_exit("malloc error in parse_put_add_ignore_list()");
-	if((newstring=malloc(strlen(s)+1)) == NULL)
-		err_sys_exit("malloc error in parse_put_add_ignore_list()");
-
-	strcpy(newstring, s);
-	new_listitem->name = newstring;
-	new_listitem->next = old;
-	return new_listitem;
-}
-
-
-/* Cleanup the Add/Ignore list after we are finished */
-static AddIgnoreStruct *parse_cleanup_add_ignore_list(AddIgnoreStruct *start)
-{
-	AddIgnoreStruct *temp;
-
-	while((temp = start)) {
-		free(start->name);
-		start = start->next;
-		free(temp);
-	}
-
-	return start;
-}
-
-
 /* Return 1 if filename matches our pattern (ends in '.dsc') */
 static int parse_gselect(struct dirent *dent)
 {
@@ -1222,92 +846,50 @@ static int parse_rselect(struct dirent *dent)
 
 
 /* Parse the logging types into an unsigned int bitfield */
-static unsigned parse_log_types(char *var, int linenum)
+static unsigned parse_log_types(int num, char **entry)
 {
-	char *s, *e;
 	unsigned types=0;
-	int lasttime=0;
-	int i;
+	int i, j;
 
-	s = var;
-	while(*s != '\0' && !lasttime) {
-		/* Skip over whitespace and commas */
-		while((*s == ' ' || *s == '\t' || *s == ',') && *s != '\0')
-			s++;
-		if(*s == '\0')
-			break;
-		/* Find the end of the type specifier */
-		e = s;
-		while(*e != ' ' && *e != '\t' && *e != ',' && *e != '\0') {
-			*e = tolower(*e);
-			e++;
-		}
-		if(*e == '\0')
-			lasttime++;
-		/* Plop a NIL on the end */
-		*e = '\0';
-
-		/* Now 's' points to a log type */
-		for(i = 0; i<num_log_types; i++)
-			if(!strcmp(s, log_types[i].name))
+	for(i=0; i<num; i++) {
+		for(j=0; j<num_log_types; j++)
+			if(!strcasecmp(entry[i], log_types[j].name))
 				break;
-
-		if(i == num_log_types)
-			PARSE_ERR("Invalid log type specified");
+		if(j == num_log_types)
+			err_msg("Config: Invalid log type '%s' specified",
+				entry[i]);
 		else {
 			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"%s added to log types", log_types[i].name);
-			types |= log_types[i].type;
+				"%s added to log types", log_types[j].name);
+			types |= log_types[j].type;
 		}
-
-		s = e+1;
 	}
 
 	return types;
+	/* FIXME - Cleanup the ENTRY array */
 }
 
 
 /* Parse the debugging types into an unsigned int bitfield */
-static unsigned parse_dbg_types(char *var, int linenum)
+static unsigned parse_dbg_types(int num, char **entry)
 {
-	char *s, *e;
 	unsigned types=0;
-	int lasttime=0;
-	int i;
+	int i, j;
 
-	s = var;
-	while(*s != '\0' && !lasttime) {
-		/* Skip over whitespace and commas */
-		while((*s == ' ' || *s == '\t' || *s == ',') && *s != '\0')
-			s++;
-		if(*s == '\0')
-			break;
-		/* Find the end of the type specifier */
-		e = s;
-		while(*e != ' ' && *e != '\t' && *e != ',' && *e != '\0') {
-			*e = tolower(*e);
-			e++;
-		}
-		if(*e == '\0')
-			lasttime++;
-		/* Plop a NIL on the end */
-		*e = '\0';
-
-		/* Now 's' points to a log type */
-		for(i = 0; i<num_dbg_types; i++)
-			if(!strcmp(s, dbg_types[i].name))
+	for(i=0; i<num; i++) {
+		for(j=0; j<num_dbg_types; j++)
+			if(!strcasecmp(entry[i], dbg_types[j].name))
 				break;
-
-		if(i == num_dbg_types)
-			PARSE_ERR("Invalid debug type specified");
+		if(j == num_dbg_types)
+			err_msg("Config: Invalid debug type '%s' specified",
+				entry[i]);
 		else {
 			dbg_msg(GGZ_DBG_CONFIGURATION,
-				"%s added to debug types", dbg_types[i].name);
-			types |= dbg_types[i].type;
+				"%s added to debug types", dbg_types[j].name);
+			types |= dbg_types[j].type;
 		}
-
-		s = e+1;
 	}
 
 	return types;
+	/* FIXME - Cleanup the ENTRY array */
 }

@@ -14,6 +14,8 @@
 # General Server Options
 ############################################################################
 
+[General]
+
 # Server name (Not Implemented)
 #   This is the server name as reported to clients
 #server = Honest Harry's GGZ Server
@@ -49,6 +51,8 @@
 # Logging Options
 ############################################################################
 
+[Logs]
+
 # Logfile
 #   Logfile can be either a filename, or 'syslogd'
 #   syslogd is the default
@@ -56,12 +60,11 @@
 
 # Log types
 #   The types of logging which the server performs to the logfile
-#   Default is to log errors.  Types can be specified on multiple lines
-#   or separated by whitespace and commas.
+#   Default is to log errors.  Types should be separated by a space.
 #   Valid types:  All
 #                 Notices
 #                 Connections
-LogTypes = Notices, Connections
+LogTypes = Notices Connections
 
 # Debug logfile
 #   Logfile can be either a filename, or 'syslogd'
@@ -118,6 +121,8 @@ DebugTypes = All
 # Directory and File Options
 ############################################################################
 
+[Directories]
+
 # Configuration directory
 #   This is where the server looks for game and room description files
 #ConfDir = @ggzdconfdir@
@@ -130,37 +135,38 @@ DebugTypes = All
 #   This is where the server can find the game server modules
 #GameDir = @ggzdexecmoddir@
 
+[Files]
+
 # MOTD File
 #   File in ConfDir containing MOTD to be sent to clients.  If the
 #   file doesn't exist, no message of the day will be sent.
-motd = ggzd.motd
+MOTD = ggzd.motd
 
 ############################################################################
 # Game Options
 ############################################################################
 
+[Games]
+
 # List of Games
-#   One AddGame line should be present for each game server present in the
-#   GameDir.  Default if no AddGame lines exist is to AddAllGames
-#addgame = tictactoe
-#AddGame = spades
-AddAllGames
+#   A list of all games to be included.  If not present then the default is
+#   to add all games which can be found.
+#GameList = spades
 
 # List of Ignored Games
-#   Only valid if AddAllGames is in effect.  One IgnoreGame line should be
-#   be present for each game that is NOT to be loaded.
-#IgnoreGame = tictactoe
+#   If no GameList is specified, this entry can be used to specify a list
+#   of games which are to be skipped.
+#IgnoredGames = tictactoe
 
 # List of Rooms
-#   One AddRoom line should be present for each game room to be created.
-#   Default if no AddRoom lines exist is to load all .room files.
-#AddRoom = ggzd_casual
-AddAllRooms
+#   A list of all rooms to be included.  If not present then the default is
+#   to add all rooms which can be found.
+#RoomList = ggzd_casual
 
 # List of Ignored Rooms
-#   Only valid if AddAllRooms is in effect.  One IgnoreRoom line should be
-#   be present for each room that is NOT to be loaded.
-#IgnoreRoom = ggzd_competitive
+#   If no RoomList is specified, this entry can be used to specify a list
+#   of rooms which are to be skipped.
+#IgnoredRooms = ggzd_competitive
 
 ############################################################################
 # Miscellaneous Options
