@@ -1,4 +1,4 @@
-# $Id: ggzcards.dsc 2296 2001-08-28 04:33:14Z rgade $
+# $Id: ggzcards.dsc 2412 2001-09-09 02:04:55Z jdorje $
 [GameInfo]
 Author = Jason Short, Rich Gade
 Description = GGZ Cards game module
@@ -12,7 +12,7 @@ ExecutablePath = ggzd.ggzcards
 
 [Protocol]
 Engine = GGZCards
-Version = 1
+Version = devel-1
 
 [TableOptions]
 AllowLeave = 1
