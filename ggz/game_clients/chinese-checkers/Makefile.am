@@ -29,5 +29,5 @@ ggz_ccheckers_SOURCES = display.c	display.h	\
 			prefs_cb.c	prefs_cb.h
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_ccheckers_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ $(top_builddir)/src/ggzcore/libggzcore.a
+ggz_ccheckers_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ $(top_builddir)/src/ggzcore/libggzcore.la
 

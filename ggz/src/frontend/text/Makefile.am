@@ -1,7 +1,7 @@
 
 SUBDIRS = .
 
-INCLUDES = -I$(top_srcdir)/src/ggzcore @EASYSOCK_INC@
+INCLUDES = -I$(top_srcdir)/src/ggzcore
 
 bin_PROGRAMS = ggz-txt
 
@@ -21,4 +21,5 @@ ggz_txt_SOURCES = 	game.c \
 			state.c \
 			state.h 
 
-ggz_txt_LDADD = $(top_builddir)/src/ggzcore/libggzcore.a @EASYSOCK_LIB@
+ggz_txt_LDADD = $(top_builddir)/src/ggzcore/libggzcore.la
+

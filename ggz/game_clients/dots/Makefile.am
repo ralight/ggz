@@ -31,5 +31,5 @@ ggz_dots_SOURCES = \
 	cb_pref.c cb_pref.h
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_dots_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ $(top_builddir)/src/ggzcore/libggzcore.a
+ggz_dots_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ $(top_builddir)/src/ggzcore/libggzcore.la
 

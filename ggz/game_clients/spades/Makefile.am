@@ -4,7 +4,7 @@ EXTRA_DIST = spades.dsc
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@ @EASYSOCK_INC@ 
+INCLUDES = @GTK_CFLAGS@
 
 ggzexecmod_PROGRAMS = ggz.spades
 
@@ -47,7 +47,7 @@ ggz_spades_SOURCES = card.c \
 
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_spades_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@
+ggz_spades_LDADD = @GTK_LIBS@ $(LDADD)
 
 install-data-local:
 	@$(NORMAL_INSTALL)

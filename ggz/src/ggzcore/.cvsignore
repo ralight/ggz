@@ -3,4 +3,5 @@
 Makefile
 Makefile.in
 ggz-config
-libggzcore.a
+*.lo
+libggzcore.la

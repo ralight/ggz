@@ -30,4 +30,4 @@ ggz_reversi_SOURCES = game.h \
 	white.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_reversi_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ $(top_builddir)/src/ggzcore/libggzcore.a
+ggz_reversi_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ $(top_builddir)/src/ggzcore/libggzcore.la

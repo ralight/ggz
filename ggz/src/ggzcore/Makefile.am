@@ -4,15 +4,21 @@ SUBDIRS = .
 INCLUDES = @EASYSOCK_INC@
 
 bin_PROGRAMS = ggz-config
-ggz_config_LDADD = libggzcore.a $(LDADD)
+ggz_config_LDADD = libggzcore.la $(LDADD)
 ggz_config_SOURCES = ggz-config.c
 sysconf_DATA = ggz.modules
 
-noinst_LIBRARIES = libggzcore.a
-
 EXTRA_DIST = $(sysconf_DATA)
 
-libggzcore_a_SOURCES =	conf.c \
+lib_LTLIBRARIES = libggzcore.la
+
+include_HEADERS = ggzcore.h
+
+libggzcore_la_LIBADD = @LDADD@ @EASYSOCK_LIB@
+
+libggzcore_la_LDFLAGS = -version-info 0:0:0
+
+libggzcore_la_SOURCES =	conf.c \
 			conf.h \
 			confio.c \
 			confio.h \
@@ -21,7 +27,6 @@ libggzcore_a_SOURCES =	conf.c \
 			game.h \
 		      	gametype.c \
 		      	gametype.h \
-			ggzcore.h \
 			hook.c \
 			hook.h \
 			lists.c \

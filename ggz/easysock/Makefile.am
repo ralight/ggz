@@ -1,7 +1,13 @@
 
 SUBDIRS = .
 
-noinst_LIBRARIES = libeasysock.a
+noinst_LTLIBRARIES = libeasysock.la
 
-libeasysock_a_SOURCES = easysock.c easysock.h 
+libeasysock_la_SOURCES = easysock.c easysock.h 
+
+libeasysock_la_LIBADD = @LDADD@
+
+libeasysock_la_LDFLAGS = -version-info 1:0:1
+
+
 

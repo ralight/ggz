@@ -1,9 +1,6 @@
-- Reimplement net functionality as its own object
+- Finish up redoing net handler functions
 
-- Finish GGZGame and table launching functionality (specifically the
-  TABLE_LAUNCH events and stuff)
-
-- Fix the player/table pointing problem
+- Fix the player/table pointing problem (is this done?)
 
 - Convert to ggzcore_strdup()
 

@@ -36,4 +36,4 @@ ggz_combat_SOURCES = combat.h \
 				game.c
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_combat_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ $(top_builddir)/src/ggzcore/libggzcore.a
+ggz_combat_LDADD = @GTK_LIBS@ $(LDADD) @EASYSOCK_LIB@ $(top_builddir)/src/ggzcore/libggzcore.la

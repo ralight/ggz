@@ -103,7 +103,7 @@ dnl ===============================================
 if test "$with_included_easysock" = yes; then
     SUBDIRS="$SUBDIRS easysock"
     EASYSOCK_INC="-I\$(top_srcdir)/easysock"
-    EASYSOCK_LIB="\$(top_builddir)/easysock/libeasysock.a"
+    EASYSOCK_LIB="\$(top_builddir)/easysock/libeasysock.la"
 
 
 dnl Check for PF_LOCAL/PF_UNIX

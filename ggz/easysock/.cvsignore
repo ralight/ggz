@@ -1,4 +1,7 @@
 .deps
+.libs
 Makefile
 Makefile.in
+easysock.lo
 libeasysock.a
+libeasysock.la
