@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 2768 2001-12-01 06:51:06Z bmh $
+ * $Id: table.h 3078 2002-01-12 06:19:00Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -77,7 +77,7 @@ typedef struct GGZTable {
 	char reserve[MAX_TABLE_SIZE][MAX_USER_NAME_LEN + 1];
 
 	/* Client-provided description of this table */
-	char desc[MAX_GAME_DESC_LEN + 1];
+	char *desc;
 
 	/* Name of player who launched (owns?) the table */
 	char owner[MAX_USER_NAME_LEN + 1];

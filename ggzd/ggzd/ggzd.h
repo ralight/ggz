@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 3077 2002-01-12 06:12:25Z jdorje $
+ * $Id: ggzd.h 3078 2002-01-12 06:19:00Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -30,7 +30,6 @@
 /* Server limits */
 #define MAX_USER_NAME_LEN 16
 #define MAX_GAME_PROTOCOL_LEN 16
-#define MAX_GAME_DESC_LEN 512
 #define MAX_GAME_AUTH_LEN 32
 #define MAX_GAME_WEB_LEN  128
 #define MAX_PATH_LEN 256
