@@ -17,8 +17,9 @@
 /* defined by automake */
 
 #undef DEBUG
+#undef GGZDATADIR
 #undef PACKAGE_LOCALE_DIR
-    
+
 
 /* Leave that blank line there!!  Autoheader needs it.
    If you're adding to this file, keep in mind:
