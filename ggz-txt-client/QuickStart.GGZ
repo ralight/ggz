@@ -1,23 +1,23 @@
 The GGZ Gaming Zone - Client Setup
 ==================================
 
-Installation Requirements
--------------------------
+Installation Requirements for the release 0.0.5
+-----------------------------------------------
 The GGZ Gaming Zone client is built from three separate packages
 (these may be available as an integrated package in the future), upon
 which any number of game clients may be installed.  It is important
 that each package be built and installed in the proper sequence in
 order that all library dependencies are properly resolved.  In other
-words, build and install the easysock package before building the
+words, build and install the libggz package before building the
 ggz-client-libs.  The reason things are packaged this way is that
-easysock, and the ggz-client-libs will change very rarely once they
+libggz, and the ggz-client-libs will change very rarely once they
 have stabilized; so we will be able to release a new version of a
 client or game module without requiring every subsystem to be replaced
 anew.
 
 If you are missing a package, they are freely downloadable in source
-format (as well as precompiled packages for RedHat and Debian Linux)
-from:
+format (as well as precompiled packages for RedHat-based systems and
+Debian GNU/Linux) from:
 
 http://ggz.sourceforge.net/
 
@@ -44,7 +44,7 @@ General Installation Guidelines
 -------------------------------
 
 Client packages should be installed in this order:
-   easysock
+   libggz
    ggz-client-libs
    xxx-client (where xxx is the user interface the client supports)
 
@@ -58,28 +58,30 @@ For most packages, the installation is as simple as:
 make
 make install (as root)
 
-For the easysock, ggz-client-libs and kde-client you may need to update
+For the libggz, ggz-client-libs and kde-client you may need to update
 the shared library cache, eg:
 
 ldconfig /usr/local/lib  (as root, and assuming --prefix was not specified)
 
 Note that the installation defaults to the /usr/local hierarchy. If
-you prefer to install it under the /usr, add 
+you prefer to install it under the /usr, add
 
 --prefix=/usr --sysconfdir=/etc
 
 to all of the configure scripts below.
+The source packages are relocatable, which means you can also install them
+inside your home directory, in case you don't have system-wide permission.
 
 Step by step instructions follow.  For more detailed installation
 instructions, please read the INSTALL file that accompanies each of
 the packages.
 
 
-Installing easysock
--------------------
+Installing libggz
+-----------------
 
-Unpack the easysock sources.  They should extract into a directory
-named easysock-X.X.X.  Enter that directory and run the following
+Unpack the libggz sources.  They should extract into a directory
+named libggz-X.X.X.  Enter that directory and run the following
 commands: 
 
 ./configure
@@ -87,8 +89,8 @@ make
 make install (as root)
 
 
-This will install the easysock library under /usr/local.  You may also
-need to run ldconfig as root on some systems.
+This will install the libggz library under /usr/local.  You may also
+need to run ldconfig (as root) on some systems.
 
 
 Installing ggz-client-libs
@@ -107,15 +109,16 @@ the following commands:
 make
 make install (as root)
 
-This will install the GGZ client libraries under /usr/local.  You may
-also need to run ldconfig as root on some systems.
+This will install the GGZ client libraries and the ggz-config tool under
+/usr/local.  You may also need to run ldconfig as root on some systems.
 
 
 Gtk Client Installation
 -----------------------
 
 The Gtk+ client requires that the Gtk+ libraries 1.2.X be installed.
-These can be downloaded from http://www.gtk.org
+These can be downloaded from http://www.gtk.org.
+We recommend the latest stable version, 1.2.10.
 
 Unpack the ggz-gtk-client sources.  They should extract into a
 directory named ggz-gtk-client-X.X.X.  Enter that directory and run
@@ -131,13 +134,14 @@ This will install the gtk client under /usr/local.
 KDE Client Installation
 -----------------------
 
-The KDE client requires that the KDE libraries 2.1.X be installed.
-These can be downloaded from http://www.kde.org
+The KDE client requires that the KDE libraries 2.X be installed.
+These can be downloaded from http://www.kde.org.
+We recommend the latest stable version, 2.2.2.
+As KDE depends on Qt, you will need Qt version >= 2.2 (2.3.1 is recommended).
 
 Unpack the ggz-kde-client sources.  They should extract into a
 directory named ggz-kde-client-X.X.X.  Enter that directory and run
 the following commands:
-
 
 Typical Installation:
 ./configure
@@ -176,8 +180,9 @@ Troubleshooting/Tips
    ggz-client-libs - this will save you from recompiling all of the clients
    and games.
 
-2) Both easysock and ggz-client-libs require you to run ldconfig after
+2) Both libggz and ggz-client-libs require you to run ldconfig after
    installing!
+   The same applies to the kde-client package.
 
 3) Always use the 'make (un)install' script to add or remove a game client.
    This insures that the ggz-config program will update ggz.modules to note
@@ -185,9 +190,9 @@ Troubleshooting/Tips
 
 4) If you can't launch a game, execute this command to view the ggz.module
    file that is being used by the programs:
-      more `ggz-config --configdir`/ggz.modules
+      less `ggz-config --configdir`/ggz.modules
    You can then see if the game you are attempting to run is even present
-   in the *GameList*
+   in the *Engines* list in the [Games] section.
 
 5) Do not manually edit the ggz.modules file unless you are quite certain
    that you know what you are doing.  This file is meant to be completely
@@ -201,8 +206,18 @@ Troubleshooting/Tips
    list is also available here.
 
 7) Once you have everything compiled you need a server to connect to!  There
-   is a permanent server installed at ggz.morat.net on port 5688.  Check the
+   is a permanent server installed at ggz.morat.net (U.S.) on port 5688, and
+   at ggz.snafu.de (Germany) on the same port.  Check the
    FAQ on our webpage (http://ggz.sourceforge.net) for any other permanent
    servers that may get setup.
 
+8) If you are getting weird errors during the compilations, make sure you have
+   the correct version of each build tool.
+   The following are known to cause problems:
+		libtool < 1.4
+		autoconf 2.53
+		automake 1.5d or 1.6
+   The recommended compiler is gcc 2.95, although later versions (including
+   3.0.x) should work as well.
+   On non-GNU systems, use gmake rather than make.
 
