@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 4856 2002-10-10 20:55:19Z jdorje $
+ * $Id: netxml.c 4940 2002-10-17 21:23:47Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -46,7 +46,7 @@
 #include <expat.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/fcntl.h>
+#include <fcntl.h>
 
 /* For convenience */
 #define XML_BUFFSIZE 8192
