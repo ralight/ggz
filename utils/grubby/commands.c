@@ -75,7 +75,6 @@ void public_commands( char *from, char **words, int totalwords, char *fullmessag
 	char out[1024];
 	int i;
 
-	if(words[0][strlen(words[0]) - 1] == ':') words[0][strlen(words[0]) - 1] = 0;
 	if(!strcasecmp(words[0], grubby.name))
 	{
 		switch( totalwords )

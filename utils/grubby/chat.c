@@ -35,6 +35,19 @@ void chat_parse( char *from, char *message )
 	int langcheck, totalbadwords;
 
 	old = 0;
+	size = strlen(message);
+	printf("%s\n", message);
+	for( i=0; i<size; i++)
+	{
+		if( message[i] == ':' || message[i] == ',' )
+		{
+			for( x=i; x < size; x++)
+			{
+				message[x] = message[x+1];
+			}
+		}
+	}
+	printf("%s\n", message);
 
 	strncpy(out, message, 1024);
 
