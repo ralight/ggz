@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4148 2002-05-03 20:39:12Z dr_maux $
+# $Id: Makefile.am 4150 2002-05-04 23:46:47Z jdorje $
 
 SUBDIRS = .
 
@@ -50,7 +50,8 @@ ggzd_SOURCES =	chat.c\
 		login.c \
 		login.h \
 		perms.h \
-		perms.c 
+		perms.c \
+		util.c util.h
 
 
 INCLUDES = -I$(top_srcdir)/ggzdmod $(LIBGGZ_INCLUDES)

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 4139 2002-05-03 03:17:08Z bmh $
+ * $Id: control.c 4150 2002-05-04 23:46:47Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -27,19 +27,15 @@
 #include <config.h>		/* Site specific config */
 
 #include <sys/time.h>
-#include <sys/types.h>
 #include <sys/socket.h>
-#include <sys/stat.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include <signal.h>
-#include <string.h>
 #include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
-#include <dirent.h>
 #include <fcntl.h>
 #include <ggz.h>
 
@@ -55,6 +51,7 @@
 #include <daemon.h>
 #include <hash.h>
 #include "client.h"
+#include "util.h"
 
 
 /* Server options */
@@ -71,64 +68,6 @@ static sig_atomic_t term_signal;
 static RETSIGTYPE term_handle(int signum)
 {
 	term_signal = 1;
-}
-
-
-/*
- * Given a path and a mode, we create the given directory.  This
- * is called only if we've determined the directory doesn't
- * already exist.
- */
-static int make_path(const char* full, mode_t mode)
-{
-	const char* slash = "/";
-	char* copy, *dir, *path;
-	struct stat stats;
-
-	copy = strdup(full);
-
-	/* FIXME: check validity */
-	if ( (path = calloc(sizeof(char), strlen(full)+1)) == NULL)
-		err_sys_exit("malloc failed in make_path");
-	
-	/* Skip preceding / */
-	if (copy[0] == '/')
-		copy++;
-
-	while ((dir = strsep(&copy, slash))) {
-		strcat(strcat(path, "/"), dir);
-		if (mkdir(path, mode) < 0
-		    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
-			free(path);
-			free(copy);
-			return -1;
-		}
-	}
-
-	return 0;
-}
-
-
-/*
- * Given a path for a directory, we check to see if that directory
- * exists.  If it doesn't, we create it.
- *
- * This is functionally similar to "mkdir -p".
- */
-static void check_path(const char* full_path)
-{
-	/* This could be done with system("mkdir -p $(full_path)"),
-	   but we'd have to check to see if -p was supported, etc.
-	   And it doesn't appear any library functions will do this... */
-	DIR* dir;
-	
-	if ( (dir = opendir(full_path)) == NULL) {
-		dbg_msg(GGZ_DBG_CONFIGURATION,
-			"Couldn't open %s -- trying to create", full_path);
-		if (make_path(full_path, S_IRWXU) < 0)
-			err_sys_exit("Couldn't create %s", full_path);
-	} else /* Everything eas OK, so close it */
-		closedir(dir);
 }
 
 
