@@ -37,7 +37,5 @@ void idle(void);
 void reshape(int width, int height);
 void init(void);
 
-#define DATADIR "/usr/local/share/ggz/ttt3d"
-
 #endif
 

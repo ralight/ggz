@@ -25,6 +25,8 @@
 #include <string.h>
 #include <SDL/SDL.h>
 
+#include "config.h"
+
 #define texture_none 0
 #define texture_board 1
 #define texture_lines 2
@@ -344,9 +346,9 @@ void init(void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glEnable(GL_TEXTURE_2D);
-	textureloader(DATADIR "/board.bmp", 64, 64, texture_board);
-	textureloader(DATADIR "/lines.bmp", 64, 64, texture_lines);
-	textureloader(DATADIR "/cursor.bmp", 64, 64, texture_cursor);
-	textureloader(DATADIR "/figure.bmp", 32, 32, texture_figure);
+	textureloader(GGZDATADIR "/ttt3d/board.bmp", 64, 64, texture_board);
+	textureloader(GGZDATADIR "/ttt3d/lines.bmp", 64, 64, texture_lines);
+	textureloader(GGZDATADIR "/ttt3d/cursor.bmp", 64, 64, texture_cursor);
+	textureloader(GGZDATADIR "/ttt3d/figure.bmp", 32, 32, texture_figure);
 }
 
