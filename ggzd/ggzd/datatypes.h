@@ -100,7 +100,7 @@ typedef struct {
 struct Users {
 	UserInfo info[MAX_USERS];
 	int count;
-	pthread_rwlock_t lock;
+	pthread_rwlock_t mainlock;
 };
 
 

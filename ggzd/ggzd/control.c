@@ -64,7 +64,7 @@ void init_data(void)
 
 	pthread_rwlock_init(&game_types.lock, NULL);
 	pthread_rwlock_init(&tables.lock, NULL);
-	pthread_rwlock_init(&players.lock, NULL);
+	pthread_rwlock_init(&players.mainlock, NULL);
 
 	for (i = 0; i < MAX_USERS; i++)
 		players.info[i].fd = -1;

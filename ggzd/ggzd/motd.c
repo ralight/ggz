@@ -292,9 +292,9 @@ static char *motd_get_time(char *time_str, int sz_time_str)
 /* Setup a string showing the number of users online */
 static char *motd_get_users(char *users_str, int sz_users_str)
 {
-	pthread_rwlock_rdlock(&players.lock);
+	pthread_rwlock_rdlock(&players.mainlock);
 	snprintf(users_str, sz_users_str, "%d", players.count);
-	pthread_rwlock_unlock(&players.lock);
+	pthread_rwlock_unlock(&players.mainlock);
 
 	return users_str;
 }

@@ -1015,9 +1015,9 @@ static int table_event_callback(int p_index, int size, void* data)
 			default: /* must be a player index */
 				p = info.seats[i];
 				/* FIXME: Race condition */
-				pthread_rwlock_rdlock(&players.lock);
+				pthread_rwlock_rdlock(&players.info[p].lock);
 				strcpy(player, players.info[p].name);
-				pthread_rwlock_unlock(&players.lock);
+				pthread_rwlock_unlock(&players.info[p].lock);
 			}
 
 			if (es_write_string(fd, player) < 0)
@@ -1031,9 +1031,9 @@ static int table_event_callback(int p_index, int size, void* data)
 		current += sizeof(int);
 		seat = *(int*)current;
 
-		pthread_rwlock_rdlock(&players.lock);
+		pthread_rwlock_rdlock(&players.info[p].lock);
 		strcpy(player, players.info[p].name);
-		pthread_rwlock_unlock(&players.lock);
+		pthread_rwlock_unlock(&players.info[p].lock);
 		dbg_msg(GGZ_DBG_UPDATE, 
 			"Player %d sees player %d %s seat %d at table %d", 
 			p_index, p, 

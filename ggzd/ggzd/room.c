@@ -345,9 +345,9 @@ static int room_event_callback(int p_index, int size, void* data)
 	if (p_index == player)
 		return 0;
 	
-	pthread_rwlock_rdlock(&players.lock);
+	pthread_rwlock_rdlock(&players.info[player].lock);
 	strcpy(name, players.info[player].name);
-	pthread_rwlock_unlock(&players.lock);
+	pthread_rwlock_unlock(&players.info[player].lock);
 
 	if (es_write_int(fd, MSG_UPDATE_PLAYERS) < 0
 	    || es_write_char(fd, opcode) < 0

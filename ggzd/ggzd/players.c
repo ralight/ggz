@@ -164,9 +164,9 @@ static void* player_new(void *arg_ptr)
 	    || es_write_int(sock, MAX_CHAT_LEN) < 0)
 		pthread_exit(NULL);
 
-	pthread_rwlock_wrlock(&players.lock);
+	pthread_rwlock_wrlock(&players.mainlock);
 	if (players.count == MAX_USERS) {
-		pthread_rwlock_unlock(&players.lock);
+		pthread_rwlock_unlock(&players.mainlock);
 		es_write_int(sock, MSG_SERVER_FULL);
 		close(sock);
 		pthread_exit(NULL);
@@ -180,6 +180,8 @@ static void* player_new(void *arg_ptr)
 	/* Initialize player data */
 	pthread_rwlock_init(&players.info[i].lock, NULL);
 	players.info[i].fd = sock;
+	players.count++;
+	pthread_rwlock_unlock(&players.mainlock);
 	players.info[i].table_index = -1;
 	players.info[i].uid = GGZ_UID_NONE;
 	players.info[i].pid = pthread_self();
@@ -187,12 +189,10 @@ static void* player_new(void *arg_ptr)
 	inet_ntop(AF_INET, &addr.sin_addr, players.info[i].ip_addr,
 		  sizeof(players.info[i].ip_addr));
 	players.info[i].hostname = hostname;
-	players.count++;
 	players.info[i].room = -1;
 	players.info[i].room_events = NULL;
 	players.info[i].my_events_head = NULL;
 	players.info[i].my_events_tail = NULL;
-	pthread_rwlock_unlock(&players.lock);
 
 	dbg_msg(GGZ_DBG_CONNECTION, "New player %d connected", i);
 	
@@ -293,9 +293,9 @@ static void player_loop(int p_index, int p_fd)
 			close(t_fd);
 			FD_CLR(t_fd, &active_fd_set);
 			t_fd = -1;
-			pthread_rwlock_wrlock(&players.lock);
+			pthread_rwlock_wrlock(&players.info[p_index].lock);
 			players.info[p_index].table_index = -1;
-			pthread_rwlock_unlock(&players.lock);
+			pthread_rwlock_unlock(&players.info[p_index].lock);
 			/* FIXME: update time stamp in room */
 			game_over = 0;
 		}
@@ -431,16 +431,17 @@ static void player_remove(int p_index)
 	/* FIXME: Should use read lock eventually */
 	hash_player_delete(players.info[p_index].name);
 
-	pthread_rwlock_wrlock(&players.lock);
 	dbg_msg(GGZ_DBG_CONNECTION, "Removing player %d (uid: %d)", p_index, 
 		players.info[p_index].uid);
 	log_msg(GGZ_LOG_CONNECTION_INFO, "%s disconnected from server",
 		players.info[p_index].name);
+
 	fd = players.info[p_index].fd;
+	pthread_rwlock_wrlock(&players.mainlock);
 	players.info[p_index].fd = -1;
 	players.count--;
+	pthread_rwlock_unlock(&players.mainlock);
 
-	pthread_rwlock_unlock(&players.lock);
 	if (players.info[p_index].room != -1) {
 		room_join(p_index, -1, fd);
 		/*room_dequeue_personal(p_index);*/
@@ -544,12 +545,12 @@ static int player_login_normal(int p, int fd)
 	}
 
 	/* Setup the player's information */
-	pthread_rwlock_wrlock(&players.lock);
+	pthread_rwlock_wrlock(&players.info[p].lock);
 	players.info[p].uid = p;
 	strncpy(players.info[p].name, name, MAX_USER_NAME_LEN + 1);
 	ip_addr = players.info[p].ip_addr;
 	hostname = players.info[p].hostname;
-	pthread_rwlock_unlock(&players.lock);
+	pthread_rwlock_unlock(&players.info[p].lock);
 
 	/* Notify user of success */
 	if (es_write_int(fd, RSP_LOGIN) < 0 
@@ -647,12 +648,12 @@ static int player_login_new(int p, int fd)
 	}
 
 	/* Setup the player's information */
-	pthread_rwlock_wrlock(&players.lock);
+	pthread_rwlock_wrlock(&players.info[p].lock);
 	players.info[p].uid = p;
 	strncpy(players.info[p].name, name, MAX_USER_NAME_LEN + 1);
 	ip_addr = players.info[p].ip_addr;
 	hostname = players.info[p].hostname;
-	pthread_rwlock_unlock(&players.lock);
+	pthread_rwlock_unlock(&players.info[p].lock);
 
 	/* Notify user of success and give them their password */
 	if (es_write_int(fd, RSP_LOGIN_NEW) < 0 
@@ -754,12 +755,12 @@ static int player_login_anon(int p, int fd)
 		return GGZ_REQ_FAIL;
 	}
 
-	pthread_rwlock_wrlock(&players.lock);
+	pthread_rwlock_wrlock(&players.info[p].lock);
 	players.info[p].uid = GGZ_UID_ANON;
 	strncpy(players.info[p].name, name, MAX_USER_NAME_LEN + 1);
 	ip_addr = players.info[p].ip_addr;
 	hostname = players.info[p].hostname;
-	pthread_rwlock_unlock(&players.lock);
+	pthread_rwlock_unlock(&players.info[p].lock);
 
 	if (es_write_int(fd, RSP_LOGIN_ANON) < 0
 	    || es_write_char(fd, 0) < 0
@@ -956,9 +957,9 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	if (status != 0)
 		return GGZ_REQ_FAIL;
 	
-	pthread_rwlock_wrlock(&players.lock);
+	pthread_rwlock_wrlock(&players.info[p_index].lock);
 	players.info[p_index].table_index = t_index;
-	pthread_rwlock_unlock(&players.lock);
+	pthread_rwlock_unlock(&players.info[p_index].lock);
 
 	return GGZ_REQ_OK;
 }
@@ -1019,9 +1020,9 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 	if (status != 0)
 		return GGZ_REQ_FAIL;
 	
-	pthread_rwlock_wrlock(&players.lock);
+	pthread_rwlock_wrlock(&players.info[p_index].lock);
 	players.info[p_index].table_index = t_index;
-	pthread_rwlock_unlock(&players.lock);
+	pthread_rwlock_unlock(&players.info[p_index].lock);
 
 	return GGZ_REQ_OK;
 }
@@ -1034,9 +1035,9 @@ static int player_table_leave(int p_index, int p_fd)
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table leave for player %d", p_index);
 
-	pthread_rwlock_rdlock(&players.lock);
+	pthread_rwlock_rdlock(&players.info[p_index].lock);
 	t_index = players.info[p_index].table_index;
-	pthread_rwlock_unlock(&players.lock);
+	pthread_rwlock_unlock(&players.info[p_index].lock);
 
 	/* Now that we've cleared the socket, check if at table */
 	if (t_index < 0) {
@@ -1070,9 +1071,9 @@ static int player_table_leave(int p_index, int p_fd)
 	if (status != 0)
 		return GGZ_REQ_FAIL;
 	
-	pthread_rwlock_wrlock(&players.lock);
+	pthread_rwlock_wrlock(&players.info[p_index].lock);
 	players.info[p_index].table_index = -1;
-	pthread_rwlock_unlock(&players.lock);
+	pthread_rwlock_unlock(&players.info[p_index].lock);
 	
 	return GGZ_REQ_OK;
 }
@@ -1080,53 +1081,57 @@ static int player_table_leave(int p_index, int p_fd)
 
 static int player_list_players(int p_index, int fd)
 {
-	int i, count, room;
-	UserInfo info[MAX_USERS];
-	int *p_list;
+	int i, count, room, p;
+	UserInfo* info;
 
 	dbg_msg(GGZ_DBG_UPDATE,
 		"Handling player list request for player %d", p_index);
 
- 	/* Don't send list if they're not in a room */
- 	if (players.info[p_index].room == -1) {
+	/* Don't send list if they're not in a room */
+	if (players.info[p_index].room == -1) {
 		dbg_msg(GGZ_DBG_UPDATE, 
 			"Player %d requested player list from room -1",
 			p_index);
- 		if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
- 		    || es_write_int(fd, E_NOT_IN_ROOM) < 0)
- 			return GGZ_REQ_DISCONNECT;
- 		return GGZ_REQ_FAIL;
- 	}
+		if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
+		    || es_write_int(fd, E_NOT_IN_ROOM) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
 
-	pthread_rwlock_rdlock(&players.lock);
-	memcpy(info, players.info, sizeof(info));
+	/* Grab room number */
+	pthread_rwlock_rdlock(&players.info[p_index].lock);
 	room = players.info[p_index].room;
-	pthread_rwlock_unlock(&players.lock);
-	
+	pthread_rwlock_unlock(&players.info[p_index].lock);
+
 	pthread_rwlock_rdlock(&rooms[room].lock);
 	count = rooms[room].player_count;
-	if ( (p_list = calloc(count, sizeof(int))) == NULL) {
+	if ( (info = calloc(count, sizeof(UserInfo))) == NULL) {
 		pthread_rwlock_unlock(&rooms[room].lock);
 		err_sys_exit("calloc error in player_list_players()");
 	}
-	memcpy(p_list, rooms[room].player_index, count*sizeof(int));
+	for (i = 0; i < count; i++) {
+		p = rooms[room].player_index[i];
+		pthread_rwlock_rdlock(&players.info[p].lock);
+		info[i] = players.info[p];
+		pthread_rwlock_unlock(&players.info[p].lock);
+	}
 	pthread_rwlock_unlock(&rooms[room].lock);
 
 	if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
 	    || es_write_int(fd, count) < 0) {
-		free(p_list);
+		free(info);
 		return GGZ_REQ_DISCONNECT;
 	}
 
 	for (i = 0; i < count; i++) {
-		if (es_write_string(fd, info[p_list[i]].name) < 0
-		    || es_write_int(fd, info[p_list[i]].table_index) < 0) {
-			free(p_list);
+		if (es_write_string(fd, info[i].name) < 0
+		    || es_write_int(fd, info[i].table_index) < 0) {
+			free(info);
 			return GGZ_REQ_DISCONNECT;
 		}
 	}
 
-	free(p_list);
+	free(info);
 	return GGZ_REQ_OK;
 }
 
@@ -1314,9 +1319,9 @@ static int player_list_tables_room(const int fd, const int room, const int type)
 				default: /* must be a player index */
 					p_index = my_tables[i].seats[j];
 					/* FIXME: Race condition */
-					pthread_rwlock_rdlock(&players.lock);
+					pthread_rwlock_rdlock(&players.info[p_index].lock);
 					name=strdup(players.info[p_index].name);
-					pthread_rwlock_unlock(&players.lock);
+					pthread_rwlock_unlock(&players.info[p_index].lock);
 			}
 
 			if (es_write_string(fd, name) < 0) {
@@ -1385,9 +1390,9 @@ static int player_list_tables_global(const int fd, const int type)
 				default: /* must be a player index */
 					index = my_tables[i].seats[j];
 					/* FIXME: Race condition */
-					pthread_rwlock_rdlock(&players.lock);
+					pthread_rwlock_rdlock(&players.info[index].lock);
 					strcpy(name, players.info[index].name);
-					pthread_rwlock_unlock(&players.lock);
+					pthread_rwlock_unlock(&players.info[index].lock);
 			}
 
 			if (es_write_string(fd, name) < 0)

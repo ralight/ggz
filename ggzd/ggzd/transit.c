@@ -121,9 +121,9 @@ static int transit_join(int index, int t_fd)
 	tables.info[index].transit_fd = fd[1];
 	p = tables.info[index].transit;
 
-	pthread_rwlock_rdlock(&players.lock);
+	pthread_rwlock_rdlock(&players.info[p].lock);
 	strcpy(name, players.info[p].name);
-	pthread_rwlock_unlock(&players.lock);
+	pthread_rwlock_unlock(&players.info[p].lock);
 
 	/* Send MSG_TABLE_JOIN to table */
 	if (es_write_int(t_fd, REQ_GAME_JOIN) < 0
@@ -166,9 +166,9 @@ static int transit_leave(int index, int t_fd)
 
 	tables.info[index].transit_seat = i;
 
-	pthread_rwlock_rdlock(&players.lock);
+	pthread_rwlock_rdlock(&players.info[p].lock);
 	strcpy(name, players.info[p].name);
-	pthread_rwlock_unlock(&players.lock);
+	pthread_rwlock_unlock(&players.info[p].lock);
 	
 	/* Send MSG_TABLE_LEAVE to table */
 	if (es_write_int(t_fd, REQ_GAME_LEAVE) < 0
