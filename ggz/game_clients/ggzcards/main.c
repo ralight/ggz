@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2873 2001-12-11 06:23:29Z jdorje $
+ * $Id: main.c 2890 2001-12-13 14:26:54Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -50,22 +50,17 @@
 
 GtkWidget *dlg_main = NULL;
 
+static void initialize_debugging(void);
+static void cleanup_debugging(void);
+
 int main(int argc, char *argv[])
 {
 	int fd;
-#ifdef DEBUG
-	const char *debugging_types[] = { "main", "table", NULL };
-#else
-	const char *debugging_types[] = { NULL };
-#endif
 
-	ggz_debug_init(debugging_types, NULL);
-	ggz_debug("main", "Starting GGZCards client.");
-
+	/* Standard initializations. */
+	initialize_debugging();
 	gtk_init(&argc, &argv);
-
 	fd = client_initialize();
-
 	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
 
 	/* This shouldn't go here, but I see no better place right now. The
@@ -74,21 +69,40 @@ int main(int argc, char *argv[])
 	fixed_font_style->fontset_name =
 		"-*-fixed-medium-r-normal--14-*-*-*-*-*-*-*,*-r-*";
 
+	/* Now some more initializations... */
 	dlg_main = create_dlg_main();
-
 	gtk_widget_show(dlg_main);
-
 	table_initialize();
 	game_init();
 
+	/* Now run... */
 	gtk_main();
 
+	/* Now clean up and shut down. */
 	client_quit();
+	cleanup_debugging();
+	return 0;
+}
 
+static void initialize_debugging(void)
+{
+#ifdef DEBUG
+	const char *debugging_types[] = { "main", "table", NULL };
+#else
+	const char *debugging_types[] = { NULL };
+#endif
+	char *file_name =
+		g_strdup_printf("%s/.ggz/ggzcards-gtk.debug", getenv("HOME"));
+	ggz_debug_init(debugging_types, file_name);
+	g_free(file_name);
+
+	ggz_debug("main", "Starting GGZCards client.");
+}
+
+static void cleanup_debugging(void)
+{
 	ggz_debug("main", "Shutting down GGZCards client.");
 	ggz_debug_cleanup(GGZ_CHECK_MEM);
-
-	return 0;
 }
 
 void table_get_newgame(void)
