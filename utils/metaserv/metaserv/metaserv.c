@@ -46,7 +46,7 @@ static int daemonport = 0;
 static int verbosity = 0;
 pthread_mutex_t mutex;
 
-void metaserv_cache()
+static void metaserv_cache()
 {
 	char tmp[1024];
 
@@ -60,6 +60,38 @@ void metaserv_cache()
 		chmod(cachefile, S_IRUSR);
 		/*minidom_dumpfile(configuration, cachefile);*/
 	}
+}
+
+static char *xml_strdup(const char *s)
+{
+	char *s2 = NULL;
+	int i;
+	int j = 0;
+
+	if(!s) return s2;
+
+	s2 = (char*)malloc(j + 1);
+	s2[j] = 0;
+	j++;
+	for(i = 0; i < strlen(s); i++)
+	{
+		if((s[i] == '&') && ((i > strlen(s) - 5) || (strncmp(s + i, "&amp;", 5))))
+		{
+			s2 = (char*)realloc(s2, j + 5);
+			strcpy(s2 + j - 1, "&amp;");
+			s2[j + 4] = 0;
+			j += 5;
+		}
+		else
+		{
+			s2 = (char*)realloc(s2, j + 1);
+			s2[j - 1] = s[i];
+			s2[j] = 0;
+			j++;
+		}
+	}
+
+	return s2;
 }
 
 static char *metaserv_lookup(const char *class, const char *category, const char *delta, const char *key, int xmlformat)
@@ -457,7 +489,7 @@ static char *metaserv_update(const char *class, const char *category, const char
 				ele->at = att;
 				ele->elnum = 0;
 				ele->atnum = atnum;
-				ele->value = strdup(uri);
+				ele->value = xml_strdup(uri);
 
 				/* add updated data to the meta server */
 				ele2->elnum++;
@@ -630,8 +662,8 @@ static char *metaserv_xml(const char *uri)
 						if(!strcmp(name, "version"))
 							att[atnum - 1]->name = strdup("ggzmeta:version");
 						else
-							att[atnum - 1]->name = strdup(name);
-						att[atnum - 1]->value = strdup(query->el->el[i]->value);
+							att[atnum - 1]->name = xml_strdup(name);
+						att[atnum - 1]->value = xml_strdup(query->el->el[i]->value);
 						att[atnum] = NULL;
 						/*printf("Got: %s/%s\n", name, query->el->el[i]->value);*/
 					}
@@ -955,6 +987,8 @@ int main(int argc, char *argv[])
 	}
 
 	if(!daemonport) daemonport = METASERV_PORT;
+
+	if((verbosity) && (!logfile)) logfile = "stdout";
 
 	metaserv_init(config);
 
