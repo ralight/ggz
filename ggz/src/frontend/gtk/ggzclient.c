@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 5202 2002-11-04 04:05:28Z jdorje $
+ * $Id: ggzclient.c 5486 2003-03-29 20:54:01Z dr_maux $
  *
  * This is the main program body for the GGZ client
  *
@@ -162,8 +162,8 @@ static GGZHookReturn ggz_connect_fail(GGZServerEvent id, void* event_data, void*
 {
 	gchar* msg;
 
-	msg = g_strdup_printf("Error connecting to server: %s", (char*)event_data);
-	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	msg = g_strdup_printf(_("Error connecting to server: %s"), (char*)event_data);
+	msgbox(msg, _("Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
 
 	login_connect_failed();
@@ -217,8 +217,8 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* us
 	/* If this was a first-time login, get the password from the server */
 	if (ggzcore_server_get_type(server) == GGZ_LOGIN_NEW) {
 		password = ggzcore_server_get_password(server);
-		message = g_strdup_printf("Your new password is %s", password);
-		msgbox(message, "New password", MSGBOX_OKONLY, MSGBOX_INFO, 
+		message = g_strdup_printf(_("Your new password is %s"), password);
+		msgbox(message, _("New password"), MSGBOX_OKONLY, MSGBOX_INFO, 
 		       MSGBOX_NORMAL);
 		g_free(message);
 	}
@@ -350,8 +350,8 @@ static GGZHookReturn ggz_entered_fail(GGZServerEvent id, void* event_data, void*
 {
 	gchar* msg;
 
-	msg = g_strdup_printf("Error joining room: %s", (char*)event_data);
-	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	msg = g_strdup_printf(_("Error joining room: %s"), (char*)event_data);
+	msgbox(msg, _("Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
 	
 	return GGZ_HOOK_OK;
@@ -462,7 +462,7 @@ void ggz_sensitivity_init(void)
 	
 	/* Set the room label to current room */
 	tmp = lookup_widget(win_main, "Current_room_label");
-	gtk_label_set_text(GTK_LABEL(tmp), "Current Room:");
+	gtk_label_set_text(GTK_LABEL(tmp), _("Current Room:"));
 }
 
 static GGZHookReturn ggz_motd_loaded(GGZServerEvent id, void* event_data, void* user_data)
@@ -825,8 +825,8 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void*
 	
 	/* SHould we clear the list of rooms/players/tables? */
 
-	msg = g_strdup_printf("Server error: %s", (char*)event_data);
-	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	msg = g_strdup_printf(_("Server error: %s"), (char*)event_data);
+	msgbox(msg, _("Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
 
 	return GGZ_HOOK_OK;
@@ -882,8 +882,8 @@ static GGZHookReturn ggz_table_launch_fail(GGZRoomEvent id, void* event_data, vo
 {
 	gchar* msg;
 
-	msg = g_strdup_printf("Error launching table: %s", (char*)event_data);
-	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	msg = g_strdup_printf(_("Error launching table: %s"), (char*)event_data);
+	msgbox(msg, _("Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
 
 	game_quit();
@@ -910,8 +910,8 @@ static GGZHookReturn ggz_table_join_fail(GGZRoomEvent id, void* event_data, void
 {
 	gchar* msg;
 
-	msg = g_strdup_printf("Error joining table: %s", (char*)event_data);
-	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	msg = g_strdup_printf(_("Error joining table: %s"), (char*)event_data);
+	msgbox(msg, _("Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
 
 	game_quit();
@@ -957,8 +957,8 @@ static GGZHookReturn ggz_table_leave_fail(GGZRoomEvent id, void* event_data, voi
 {
 	gchar* msg;
 
-	msg = g_strdup_printf("Error leaving table: %s", (char*)event_data);
-	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	msg = g_strdup_printf(_("Error leaving table: %s"), (char*)event_data);
+	msgbox(msg, _("Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	g_free(msg);
 
 	return GGZ_HOOK_OK;
