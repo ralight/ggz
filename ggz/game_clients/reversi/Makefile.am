@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4722 2002-09-26 11:13:59Z dr_maux $
+#  $Id: Makefile.am 4890 2002-10-12 20:42:19Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -17,7 +17,6 @@ uninstall-local:
 ggzexecmod_PROGRAMS = ggz.reversi
 
 ggz_reversi_SOURCES = \
-	about_dlg.c	about_dlg.h \
 	game.h \
 	main.c \
 	main_win.c \

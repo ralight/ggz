@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 4488 2002-09-09 04:32:04Z jdorje $
+ * $Id: main_win.c 4890 2002-10-12 20:42:19Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -39,6 +39,7 @@
 
 #include <ggz.h>
 
+#include "dlg_about.h"
 #include "dlg_exit.h"
 
 #include <game.h>
@@ -47,8 +48,6 @@
 #include <black.xpm>
 #include <dot.xpm>
 #include <white.xpm>
-
-#include "about_dlg.h"
 
 
 /* Pixmaps */
@@ -291,8 +290,7 @@ static void game_exit(GtkMenuItem *menuitem, gpointer user_data)
 
 static void game_about(GtkMenuItem *menuitem, gpointer user_data)
 {
-  GtkWidget *dialog = create_about_dialog();
-  gtk_widget_show_all(dialog);
+	create_or_raise_dlg_about();
 }
 
 

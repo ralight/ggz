@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 4488 2002-09-09 04:32:04Z jdorje $
+ * $Id: main.c 4890 2002-10-12 20:42:19Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -39,6 +39,8 @@
 #include <ggzmod.h>
 #include <ggz_common.h>
 
+#include "dlg_about.h"
+
 #include "game.h"
 #include "support.h"
 
@@ -50,6 +52,8 @@ struct game_state_t game;
 
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
+static void initialize_about_dialog(void);
+
 static void load_data(void);
 static void save_data(void);
 
@@ -76,6 +80,7 @@ int main(int argc, char *argv[]) {
 	load_data();	/* This must come before create_main_win() */
 
 	gtk_init(&argc, &argv);
+	initialize_about_dialog();
 	add_pixmap_directory(".");
 
 	main_win = create_main_win();
@@ -201,6 +206,28 @@ static void cleanup_debugging(void)
 #else
 	ggz_debug_cleanup(GGZ_CHECK_NONE);
 #endif
+}
+
+static void initialize_about_dialog(void)
+{
+	const char *content =
+	  _("Authors:\n"
+	    "        Gtk+ Client:"
+	    "\n"
+	    "            Ismael Orenstein <perdig@linuxbr.com.br>\n"
+	    "\n"
+	    "        Game Server:\n"
+	    "            Ismael Orenstein <perdig@linuxbr.com.br>\n"
+	    "\n        Based on Dots code by:\n"
+	    "            Rich Gade <rgade@users.sourceforge.net>\n"
+	    "\n"
+	    "Website:\n"
+	    "        http://ggz.sourceforge.net/");
+	  char *header;
+	header = g_strdup_printf(_("GGZ Gaming Zone\n"
+				   "Reversi Version %s"), VERSION);
+	init_dlg_about(_("About Reversi"), header, content);
+	g_free(header);
 }
 
 void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
