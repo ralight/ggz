@@ -1,0 +1,9 @@
+# This is the short name for the room
+Name = Connect The Dots
+# This is the long descriptive name for the room
+Description = Example Connect The Dots Room
+# The gametype should match up to the Name of an added game
+GameType = Dots
+# These set maximum values for this room
+MaxPlayers = 150
+MaxTables = 45

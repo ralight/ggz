@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = spades tictactoe
+SUBDIRS = spades tictactoe dots
 
 
 test:test-recursive
