@@ -710,7 +710,7 @@ static void client_join_room(guint room)
 static void client_join_table(void)
 {
 	GGZRoom *room;
-        int table_index;
+        int table_index, status;
 
 	/* Make sure a table is selected */
 	if (tablerow == -1) {
@@ -734,7 +734,13 @@ static void client_join_table(void)
 	table_index = client_get_table_index(tablerow);
 
 	room = ggzcore_server_get_cur_room(server);
-	ggzcore_room_join_table(room, table_index);
+	status = ggzcore_room_join_table(room, table_index);
+	
+	if (status < 0) {
+		msgbox(_("Failed to join table.\n Join aborted."), _("Join Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		game_destroy();
+	}
+	
 	tablerow = -1;
 }
 

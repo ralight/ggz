@@ -61,10 +61,18 @@ int game_init(void)
 	GGZRoom *room;
 	GGZGameType *gt;
 	GGZModule *module;
+	
 
 	/* Make sure we aren't already in a game */
 	if (game) {
 		msgbox(_("You can only play one game at a time."),
+		       _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+		return -1;
+	}
+	
+	/* Make sure we're actually in a room and not already at a table */
+	if (ggzcore_server_get_state(server) != GGZ_STATE_IN_ROOM) {
+		msgbox(_("You're still at a table."),
 		       _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 		return -1;
 	}

@@ -190,7 +190,7 @@ static void launch_start_game(GtkWidget *widget, gpointer data)
 	GGZRoom *room;
 	GGZTable *table;
 	GGZGameType *gt;
-	gint x, seats;
+	gint x, seats, status;
 	gchar *widget_name;
 
 	/* Initialize a game module */
@@ -217,8 +217,13 @@ static void launch_start_game(GtkWidget *widget, gpointer data)
 			ggzcore_table_add_bot(table, NULL, x);
 	}
 
-	ggzcore_room_launch_table(room, table);
+	status = ggzcore_room_launch_table(room, table);
 	ggzcore_table_free(table);
+
+	if (status < 0) {
+		msgbox(_("Failed to launch table.\n Launch aborted."), _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+		game_destroy();
+	}
 
 	gtk_widget_destroy(launch_dialog);
 }
