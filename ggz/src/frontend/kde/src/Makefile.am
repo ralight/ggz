@@ -26,7 +26,7 @@ INCLUDES = $(ggzcorepp_includes) -I widgets -I abstract $(all_includes) -I widge
 
 kggz_METASOURCES = AUTO
 
-CXXFLAGS = @COMPILEOPTIONS@ $(EASYSOCK_INCLUDES) $(GGZCORE_INCLUDES)
+CXXFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)
 
 kggz_LDFLAGS = -ggdb3
 LDADD = $(ggz_libraries) $(all_libraries) $(KDE_RPATH) $(LIB_KDEUI) widgets/libkggzui.a abstract/libkggzabstract.a @BROWSERLIB@ -lqt

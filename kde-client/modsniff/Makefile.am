@@ -7,8 +7,7 @@ ggzmodsniff_SOURCES = \
 	modsniff.c \
 	kmodsniff.cpp
 
-easysock_rpath = -rpath $(easysock_libraries)
-ggzmodsniff_LDFLAGS = $(easysock_rpath)
+ggzmodsniff_LDFLAGS =
 ggzmodsniff_LDADD = $(GGZCORE_LDFLAGS) $(LIB_GGZCORE) $(all_libraries) $(KDE_RPATH) $(LIB_KDEUI) -lqt
 
 CFLAGS = @COMPILEOPTIONS@ $(GGZCORE_INCLUDES)

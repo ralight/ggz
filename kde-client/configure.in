@@ -34,7 +34,6 @@ dnl Check for easysock and ggzcore
 dnl ==============================
 
 AC_GGZ_LIBGGZ
-AC_GGZ_EASYSOCK(0.3)
 AC_GGZ_GGZCORE
 
 if test "$enable_ggzcorepp" = yes; then
