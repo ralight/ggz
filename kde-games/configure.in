@@ -4,14 +4,14 @@ dnl ===============================
 AC_INIT(acinclude.m4)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
-AM_INIT_AUTOMAKE(ggz-kde-games,0.0.5)
+AM_INIT_AUTOMAKE(ggz-kde-games,0.0.6pre)
 AM_CONFIG_HEADER(config.h)
 
 dnl Check for Qt and KDE
 dnl ====================
 
 #KDE_SET_PREFIX
-KDE_USE_QT(2)
+KDE_USE_QT(3)
 AC_CHECK_COMPILERS
 AC_ENABLE_SHARED(yes)
 AC_ENABLE_STATIC(no)
@@ -26,6 +26,12 @@ dnl ==========================
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD
 AC_GGZ_CONFIG
+
+dnl Be a bit more strict
+dnl ====================
+
+CXXFLAGS="$CXXFLAGS -DKDE_NO_COMPAT -DQT_NO_COMPAT"
+AC_SUBST(CXXFLAGS)
 
 dnl Create Makefiles
 dnl ================
