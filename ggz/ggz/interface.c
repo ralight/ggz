@@ -286,10 +286,10 @@ create_dlg_login (void)
                       GTK_SIGNAL_FUNC (anon_toggled),
                       dlg_login);
   gtk_signal_connect (GTK_OBJECT (connect_button), "clicked",
-                      GTK_SIGNAL_FUNC (InputOptions),
+                      GTK_SIGNAL_FUNC (input_options),
                       dlg_login);
   gtk_signal_connect (GTK_OBJECT (connect_button), "clicked",
-                      GTK_SIGNAL_FUNC (StartSession),
+                      GTK_SIGNAL_FUNC (start_session),
                       dlg_login);
   gtk_signal_connect_object (GTK_OBJECT (cancel_button), "clicked",
                              GTK_SIGNAL_FUNC (gtk_widget_destroy),

@@ -47,39 +47,43 @@ extern struct ConnectInfo connection;
 extern struct Game game;
 extern GtkWidget *detail_window;
 extern GtkWidget *main_win;
-static struct GameTypes game_types;
+GtkWidget *detail_window = NULL;
 
 /* Various local handles */
 static guint sock_handle;
+static struct GameTypes game_types;
 static void server_sync();
 static void connect_msg(const char *, ...);
 static void add_user_list(gchar * name, gint table);
-static void add_table_list(gint TableNum, TableInfo Table);
+static void add_table_list(TableInfo table);
 static int anon_login(void);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
 static void display_chat(char *name, char *msg);
 
-GtkWidget *tmpWidget;
-
 #ifdef DEBUG
-char *user_msg[18] = { "MSG_SERVER_ID",
-		       "MSG_SERVER_FULL",
-		       "RSP_NEW_LOGIN",
-		       "RSP_LOGIN",
-		       "RSP_ANON_LOGIN",
-		       "RSP_MOTD",
-		       "RSP_LOGOUT",
-		       "RSP_USER_LIST",
-		       "RSP_PREF_CHANGE",
-		       "RSP_REMOVE_USER",
-		       "RSP_GAME_TYPES",
-		       "RSP_TABLE_LIST",
-		       "RSP_TABLE_OPTIONS",
-		       "RSP_LAUNCH_GAME",
-		       "RSP_JOIN_GAME",
-		       "RSP_USER_STAT",
-		       "RSP_CHAT",
-		       "RSP_ERROR"
+char *opcode_str[23] = { "MSG_SERVER_ID",
+			 "MSG_SERVER_FULL",
+			 "MSG_CHAT",
+			 "MSG_USERS_UPDATE",
+			 "MSG_TYPES_UPDATE",
+			 "MSG_TABLES_UPDATE",
+			 "RSP_NEW_LOGIN",
+			 "RSP_LOGIN",
+			 "RSP_ANON_LOGIN",
+			 "RSP_MOTD",
+			 "RSP_LOGOUT",
+			 "RSP_USER_LIST",
+			 "RSP_PREF_CHANGE",
+			 "RSP_REMOVE_USER",
+			 "RSP_GAME_TYPES",
+			 "RSP_TABLE_LIST",
+			 "RSP_TABLE_OPTIONS",
+			 "RSP_LAUNCH_GAME",
+			 "RSP_JOIN_GAME",
+			 "RSP_USER_STAT",
+			 "RSP_GAME",
+			 "RSP_CHAT",
+			 "RSP_ERROR"
 };
 #endif
 
@@ -119,21 +123,20 @@ void Disconnect(GtkWidget * widget, gpointer data)
  */
 void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 {
+	gpointer tmp;
 	char *message;
 	char name[9];
-	int op, size, status;
-	int checksum, ibyte;
-	int count, i, j;
-	char byte;
+	char status;
+	int num, op, size, checksum, count, i, j;
 	char buf[4096];
-	TableInfo Table;
+	TableInfo tmp_table;
 
-	CheckReadInt(source, (int *) &op);
+	CheckReadInt(source, &op);
 	
 	switch (op) {
 	case MSG_SERVER_ID:
 		CheckReadString(source, &message);
-		connect_msg("[MSG_SERVER_ID] %s\n", message);
+		connect_msg("[%s] %s\n", opcode_str[op], message);
 		switch (connection.login_type) {
 		case 0:	/*Normal login */
 		case 2:	/*First time login */
@@ -142,135 +145,127 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		}
 		break;
 
+	case MSG_SERVER_FULL:
+		break;
+
 	case RSP_ANON_LOGIN:
-		read(source, &byte, 1);
-		connect_msg("[RSP_ANON_LOGIN] %d\n", byte);
-		if (byte < 0) {
+		es_read_char(source, &status);
+		connect_msg("[%s] %d\n", opcode_str[op], status);
+		if (status < 0) {
 			Disconnect(NULL, NULL);
 			return;
 		}
 		CheckReadInt(source, &checksum);
-		connect_msg("[RSP_ANON_LOGIN] Checksum = %d\n", checksum);
+		connect_msg("[%s] Checksum = %d\n", opcode_str[op], checksum);
 		server_sync();
 		break;
 
 	case RSP_LAUNCH_GAME:
-		read(source, &byte, 1);
-		connect_msg("[RSP_LAUNCH_GAME] %d\n", byte);
-		if (byte < 0) {
+		es_read_char(source, &status);
+		connect_msg("[%s] %d\n", opcode_str[op], status);
+		if (status < 0) {
+			/* FIXME: Don't really need to disconnect */
 			Disconnect(NULL, NULL);
 			return;
 		}
-		connection.playing = 1;
+		connection.playing = TRUE;
 		break;
 
 	case RSP_JOIN_GAME:
-		read(source, &byte, 1);
-		connect_msg("[RSP_JOIN_GAME] %d\n", byte);
-		if (byte < 0) {
+		es_read_char(source, &status);
+		connect_msg("[%s] %d\n", opcode_str[op], status);
+		if (status < 0) {
+			/* FIXME: Don't really need to disconnect */
 			Disconnect(NULL, NULL);
 			return;
 		}
-		connection.playing = 1;
+		connection.playing = TRUE;
 		break;
 
 	case RSP_LOGOUT:
-		read(source, &byte, 1);
-		connect_msg("[RSP_LOGOUT] %d\n", byte);
+		es_read_char(source, &status);
+		connect_msg("[%s] %d\n", opcode_str[op], status);
 		Disconnect(NULL, NULL);
 		break;
 
 	case RSP_GAME_TYPES:
-		es_read_int(source, &ibyte);
-		count = ibyte;
+		es_read_int(source, &count);
 		game_types.count = count;
-		connect_msg("[RSP_GAME_TYPES] List Count %d\n", count);
-		for (i = 1; i <= count; i++) {
-			es_read_int(source, &ibyte);
+		connect_msg("[%s] List Count %d\n", opcode_str[op], count);
+		for (i = 0; i < count; i++) {
 
-			es_read_string(source,
-				       game_types.info[ibyte].name);
-			es_read_string(source,
-				       game_types.info[ibyte].version);
-			es_read_string(source,
-				       game_types.info[ibyte].desc);
-			es_read_string(source,
-				       game_types.info[ibyte].author);
-			es_read_string(source,
-				       game_types.info[ibyte].homepage);
+			es_read_int(source, &game_types.info[i].index);
+			es_read_string(source, game_types.info[i].name);
+			es_read_string(source, game_types.info[i].version);
+			es_read_string(source, game_types.info[i].desc);
+			es_read_string(source, game_types.info[i].author);
+			es_read_string(source, game_types.info[i].web);
 
-			connect_msg("[RSP_GAME_TYPES] %s\n",
-				    game_types.info[ibyte].name);
-			connect_msg("[RSP_GAME_TYPES] %s\n",
-				    game_types.info[ibyte].version);
-			connect_msg("[RSP_GAME_TYPES] %s\n",
-				    game_types.info[ibyte].desc);
-			connect_msg("[RSP_GAME_TYPES] %s\n",
-				    game_types.info[ibyte].author);
-			connect_msg("[RSP_GAME_TYPES] %s\n",
-				    game_types.info[ibyte].homepage);
+			connect_msg("[%s] Game type %d\n", opcode_str[op], 
+				    game_types.info[i].index);
+			connect_msg("[%s] %s\n", opcode_str[op], 
+				    game_types.info[i].name);
+			connect_msg("[%s] %s\n", opcode_str[op], 
+				    game_types.info[i].version);
+			connect_msg("[%s] %s\n", opcode_str[op], 
+				    game_types.info[i].desc);
+			connect_msg("[%s] %s\n", opcode_str[op], 
+				    game_types.info[i].author);
+			connect_msg("[%s] %s\n", opcode_str[op], 
+				    game_types.info[i].web);
 		}
 		break;
 
 	case RSP_TABLE_LIST:
-		tmpWidget =
-			GTK_WIDGET(gtk_object_get_data
-				   (GTK_OBJECT(main_win), "table_tree"));
-		gtk_clist_clear(GTK_CLIST(tmpWidget));
-		es_read_int(source, &ibyte);
-		count = ibyte;
-		connect_msg("[RSP_TABLE_LIST] Table List Count %d\n",
+		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
+		gtk_clist_clear(GTK_CLIST(tmp));
+		es_read_int(source, &count);
+		connect_msg("[%s] Table List Count %d\n", opcode_str[op],
 			    count);
 		for (i = 1; i <= count; i++) {
-			es_read_int(source, &ibyte);
-			es_read_int(source, &ibyte);
-			Table.type_index = ibyte;
-			es_read_char(source, &byte);
-			Table.playing = byte;
-			es_read_int(source, &ibyte);
-			Table.num_seats = ibyte;
-			es_read_int(source, &ibyte);
-			Table.open_seats = ibyte;
-			es_read_int(source, &ibyte);
-			Table.num_humans = ibyte;
+			es_read_int(source, &tmp_table.table_index);
+			es_read_int(source, &tmp_table.type_index);
+			es_read_char(source, &tmp_table.playing);
+			es_read_int(source, &tmp_table.num_seats);
+			es_read_int(source, &tmp_table.open_seats);
+			es_read_int(source, &tmp_table.num_humans);
+			
+			connect_msg("[%s] Type %d\n", opcode_str[op],
+				    tmp_table.type_index);
+			connect_msg("[%s] Playing %d\n",opcode_str[op],
+				    tmp_table.playing);
+			connect_msg("[%s] Seats %d\n", opcode_str[op],
+				    tmp_table.num_seats);
+			connect_msg("[%s] Open %d\n", opcode_str[op],
+				    tmp_table.open_seats);
+			connect_msg("[%s] Names Count %d\n", opcode_str[op],
+				    tmp_table.num_humans);
 
-			connect_msg("[RSP_TABLE_LIST] Type %d\n",
-				    Table.type_index);
-			connect_msg("[RSP_TABLE_LIST] Playing %d\n",
-				    Table.playing);
-			connect_msg("[RSP_TABLE_LIST] Seats %d\n",
-				    Table.num_seats);
-			connect_msg("[RSP_TABLE_LIST] Open %d\n",
-				    Table.open_seats);
-			for (j = 1; j <= Table.num_humans; j++) {
+			for (j = 1; j <= tmp_table.num_humans; j++) {
 				CheckReadString(source, &message);
 			}
-			connect_msg("[RSP_TABLE_LIST] Names Count %d\n",
-				    Table.num_humans);
-			add_table_list(i, Table);
+
+			add_table_list(tmp_table);
 		}
 		break;
 
 	case RSP_USER_LIST:
-		tmpWidget =
-			GTK_WIDGET(gtk_object_get_data
-				   (GTK_OBJECT(main_win), "player_list"));
-		gtk_clist_clear(GTK_CLIST(tmpWidget));
-		CheckReadInt(source, &ibyte);
-		count = ibyte;
-		connect_msg("[RSP_USER_LIST] User List Count %d\n", count);
-		for (i = 1; i <= count; i++) {
-			CheckReadString(source, &message);
-			connect_msg("[RSP_USER_LIST] User %s\n", message);
-			CheckReadInt(source, &ibyte);
-			connect_msg("[RSP_USER_LIST] Table %d\n", ibyte);
-			add_user_list(message, ibyte);
+		tmp = gtk_object_get_data(GTK_OBJECT(main_win), "player_list");
+		gtk_clist_clear(GTK_CLIST(tmp));
+		CheckReadInt(source, &count);
+		connect_msg("[%s] User List Count %d\n", opcode_str[op], count);
+		for (i = 0; i < count; i++) {
+			es_read_string(source, name);
+			connect_msg("[%s] User %s\n", opcode_str[op], name);
+			CheckReadInt(source, &num);
+			connect_msg("[%s] Table %d\n", opcode_str[op], num);
+			add_user_list(name, num);
 		}
 		break;
 
 	case RSP_GAME:
 		es_read_int(source, &size);
-		connect_msg("[RSP_GAME] %d bytes\n", size);
+		connect_msg("[%s] %d bytes\n", opcode_str[op], size);
 		es_readn(source, buf, size);
 		status = es_writen(game.fd, buf, size);
 		if (status <= 0) {	/* Game over */
@@ -281,39 +276,35 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		break;
 
 	case RSP_CHAT:
-		es_read_char(source, &byte);
-		connect_msg("[RSP_CHAT] %d\n", byte);
+		es_read_char(source, &status);
+		connect_msg("[%s] %d\n", opcode_str[op], status);
 		break;
 
 	case MSG_CHAT:
 		es_read_string(source, name);
-		connect_msg("[MSG_CHAT] msg from %s\n", name);
+		connect_msg("[%s] msg from %s\n", opcode_str[op], name);
 		es_read_string_alloc(source, &message);
-		connect_msg("[MSG_CHAT] %s\n", message);
+		connect_msg("[%s] %s\n", opcode_str[op], message);
 		display_chat(name, message);
 		g_free(message);
 		break;
 
-	case MSG_SERVER_FULL:
-	case RSP_NEW_LOGIN:
-
 	case RSP_LOGIN:
-		read(source, &byte, 1);
-		connect_msg("[RSP_LOGIN] %d\n", byte);
+		es_read_char(source, &status);
+		connect_msg("[%s] %d\n", opcode_str[op], status);
 		CheckWriteInt(connection.sock, REQ_USER_LIST);
 		break;
-	case RSP_MOTD:
 
+	case RSP_NEW_LOGIN:
+	case RSP_MOTD:
 	case RSP_PREF_CHANGE:
 	case RSP_REMOVE_USER:
 	case RSP_TABLE_OPTIONS:
 	case RSP_USER_STAT:
 	case RSP_ERROR:
 		break;
-	defaut:
-		break;
-	}
 
+	}
 }
 
 
@@ -321,79 +312,70 @@ void connect_msg(const char *format, ...)
 {
 	va_list ap;
 	char *message;
+	gpointer tmp;
 
+	/* If we're not displaying details then don't bother */
 	if (detail_window == NULL)
 		return;
-
+	
 	va_start(ap, format);
 	message = g_strdup_vprintf(format, ap);
 	va_end(ap);
 
 
-	tmpWidget =
-	    GTK_WIDGET(gtk_object_get_data
-		       (GTK_OBJECT(detail_window), "text"));
-	gtk_text_insert(GTK_TEXT(tmpWidget), NULL, NULL,
-			NULL, message, -1);
-
+	tmp = gtk_object_get_data(GTK_OBJECT(detail_window), "text");
+	gtk_text_insert(GTK_TEXT(tmp), NULL, NULL, NULL, message, -1);
+	
 	g_free(message);
-
-
 }
 
 
 void add_user_list(gchar * name, gint table)
 {
-	gchar *entry[2];
+	gpointer tmp;
+	gchar* entry[2];
+	
 	if (main_win == NULL)
 		return;
-
-
-	tmpWidget =
-	    GTK_WIDGET(gtk_object_get_data
-		       (GTK_OBJECT(main_win), "player_list"));
+	
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "player_list");
 
 	entry[0] = name;
-	if (table == -1) {
+	if (table == -1)
 		entry[1] = "none";
-	} else {
+	else 
 		entry[1] = g_strdup_printf("%d", table);
-	}
 
-	gtk_clist_append(GTK_CLIST(tmpWidget), entry);
+	gtk_clist_append(GTK_CLIST(tmp), entry);
 
-	if (table == -1) {
-	} else {
+	if (table != -1)
 		g_free(entry[1]);
-	}
 }
 
 
-void add_table_list(gint TableNum, TableInfo Table)
+void add_table_list(TableInfo table)
 {
+	gpointer tmp;
 	gchar *entry[10];
+
 	if (main_win == NULL)
 		return;
 
-	entry[0] = g_strdup_printf("%d", TableNum - 1);
-
-	entry[1] =
-	    g_strdup_printf("%s", game_types.info[Table.type_index].name);
-	entry[2] = g_strdup_printf("%d", Table.num_seats);
-	entry[3] = g_strdup_printf("%d", Table.open_seats);
-	entry[4] = g_strdup_printf("%d", Table.num_humans);
+	entry[0] = g_strdup_printf("%d", table.table_index);
+	entry[1] = g_strdup_printf("%s", 
+				   game_types.info[table.type_index].name);
+	entry[2] = g_strdup_printf("%d", table.num_seats);
+	entry[3] = g_strdup_printf("%d", table.open_seats);
+	entry[4] = g_strdup_printf("%d", table.num_humans);
 	entry[5] = "";
 	entry[6] = "";
 	entry[7] = "";
 	entry[8] = "";
 	entry[9] = "";
 
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
 
-	tmpWidget =
-	    GTK_WIDGET(gtk_object_get_data
-		       (GTK_OBJECT(main_win), "table_tree"));
-
-	gtk_clist_append(GTK_CLIST(tmpWidget), entry);
+	gtk_clist_append(GTK_CLIST(tmp), entry);
 	g_free(entry[0]);
 	g_free(entry[1]);
 	g_free(entry[2]);
@@ -427,13 +409,11 @@ static void server_sync()
 static void display_chat(char *name, char *msg)
 {
 	char *buf;
-	GtkWidget *tmp;
+	gpointer tmp;
 
-	tmp = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(main_win),
-					     "chat_text"));
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 	buf = g_strdup_printf("[ %s ] %s\n", name, msg);
 	/* FIXME: colors for different users */
-
 	gtk_text_insert(GTK_TEXT(tmp), NULL, NULL, NULL, buf, -1);
 	g_free(buf);
 }

@@ -98,13 +98,8 @@ typedef struct {
 	char version[MAX_GAME_VER_LEN];
 	char desc[MAX_GAME_DESC_LEN];
 	char author[MAX_GAME_AUTH_LEN];
-	char homepage[MAX_GAME_WEB_LEN];
-	unsigned char num_play_allow;
-	unsigned char comp_allow;
-	int options_size;
-	unsigned char enabled;
-	GameLaunchFunc *launch;
-	char path[MAX_PATH_LEN];
+	char web[MAX_GAME_WEB_LEN];
+	int index;
 } GameInfo;
 
 
@@ -117,19 +112,14 @@ struct GameTypes {
 
 /* Info about a particular game-table */
 typedef struct {
+	int table_index;
 	int type_index;
 	int num_seats;
 	int num_humans;
 	int open_seats;
-	int num_reserves;
 	unsigned char comp_players;
 	unsigned char playing;
-	int fd_to_game;
-	int pid;
 	int players[8];
-	int reserve[8];
-	int player_fd[8];
-	void *options;
 } TableInfo;
 
 

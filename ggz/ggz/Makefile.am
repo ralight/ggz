@@ -12,6 +12,7 @@ ggz_SOURCES = 	main.c \
 		client_func.c \
 		connect.c \
 	   	connect.h \
+		datatypes.h \
 		dlg_error.c \
 		dlg_error.h \
 		dlg_exit.c \
@@ -22,7 +23,6 @@ ggz_SOURCES = 	main.c \
 		game.h \
 		interface.c \
 		interface.h \
-		options.h \
 		parse_opt.c \
 		parse_opt.h \
 		protocols.h \

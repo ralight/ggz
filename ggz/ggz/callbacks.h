@@ -28,9 +28,13 @@
 
 void anon_toggled(GtkWidget * widget, gpointer user_data);
 
-void InputOptions(GtkButton * button, gpointer user_data);
+void fill_defaults(GtkWidget * widget, gpointer user_data);
 
-void StartSession(GtkButton * button, gpointer user_data);
+void input_options(GtkButton * button, gpointer user_data);
+
+void input_chat_msg(GtkWidget * editable, gpointer user_data);
+
+void start_session(GtkButton * button, gpointer user_data);
 
 void show_details(GtkButton * button, gpointer user_data);
 
@@ -47,8 +51,6 @@ void get_types(GtkMenuItem * menuitem, gpointer user_data);
 void get_players(GtkMenuItem * menuitem, gpointer user_data);
 
 void get_tables(GtkMenuItem * menuitem, gpointer user_data);
-
-void fill_defaults(GtkWidget * widget, gpointer user_data);
 
 void input_chat_msg(GtkWidget * editable, gpointer user_data);
 
