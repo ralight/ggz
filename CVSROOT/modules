@@ -25,34 +25,40 @@
 # can be useful for creating a module that consists of many directories
 # spread out over the entire source repository.
 
-easysock     easysock 
-ggzd	     ggzd
+# Web pages
+www          www
 
-# Old client module
-ggz             -s DEPRECATED ggz
+# The main server
+ggzd	     ggzd
 
 # Frontend specific games
 gtk-games       ggz/game_clients
 kde-games       kde-games
+sdl-games       sdl-games
 
 # Frontends (and such)
 ggz-gtk         -s INTERNAL ggz/src/frontend/gtk
 ggz-kde         -s INTERNAL ggz/src/frontend/kde
 ggz-txt		-s INTERNAL ggz/src/frontend/text
-ggz-grubby      ggz/src/frontend/grubby
 
 # Clients
 txt-client ggz-txt-client &ggz-txt
 gtk-client gtk-client &ggz-gtk
 kde-client kde-client &ggz-kde
-ggzgnome	ggzgnome &macros &intl
+gnome-client gnome-client
+grubby       grubby
 
 # Libs
 ggzcore         -s INTERNAL ggz/src/ggzcore
 ggz-client-libs ggz-client-libs &ggzcore
 libggz		libggz
 
+# Old stuff
+ggzgnome	ggzgnome &macros &intl
+ggz-grubby      ggz/src/frontend/grubby
+ggz             -s DEPRECATED ggz
+easysock     easysock 
+
 # Meta-module for pulling gtk client together
 ggz-gtk-all     ggz-gtk-all &easysock &ggzcore &ggz-gtk &gtk-games
-
 
