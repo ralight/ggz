@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 5486 2003-03-29 20:54:01Z dr_maux $
+ * $Id: ggzclient.c 5873 2004-02-09 22:11:24Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -427,27 +427,25 @@ static GGZHookReturn ggz_list_players(GGZRoomEvent id, void* event_data, void* u
 	return GGZ_HOOK_OK;
 }
 
-static GGZHookReturn ggz_room_enter(GGZRoomEvent id, void* event_data, void* user_data)
+static GGZHookReturn ggz_room_enter(GGZRoomEvent id,\
+				    void* event_data, void* user_data)
 {
-	gchar *player;
+	GGZRoomChangeEventData *data = event_data;
 
 	display_players();
-	player = g_strdup(event_data);
-	chat_enter(event_data);
-	g_free(player);
+	chat_enter(data->player_name, data->from_room);
 
 	return GGZ_HOOK_OK;
 }
 
 
-static GGZHookReturn ggz_room_leave(GGZRoomEvent id, void* event_data, void* user_data)
+static GGZHookReturn ggz_room_leave(GGZRoomEvent id,
+				    void* event_data, void* user_data)
 {
-	gchar *player;
+	GGZRoomChangeEventData *data = event_data;
 
 	display_players();
-	player = g_strdup(event_data);
-	chat_part(event_data);
-	g_free(player);
+	chat_part(data->player_name, data->to_room);
 
 	return GGZ_HOOK_OK;
 }

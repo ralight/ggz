@@ -2,7 +2,7 @@
  * File: chat.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.h 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: chat.h 5873 2004-02-09 22:11:24Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -47,8 +47,8 @@ void chat_display_server(GGZChatType type,
 void chat_display_local(LocalChatType type,
 			const char *player, const char *message);
 void chat_send(const gchar *message);
-void chat_enter(const gchar *player);
-void chat_part(const gchar *player);
+void chat_enter(const gchar *player, int from_room);
+void chat_part(const gchar *player, int to_room);
 int chat_checkurl(GtkXText *xtext, char *word);
 void chat_word_clicked(GtkXText *xtext, char *word,
 	GdkEventButton *event);

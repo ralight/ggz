@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 5515 2003-05-09 23:11:58Z dr_maux $
+ * $Id: chat.c 5873 2004-02-09 22:11:24Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -521,24 +521,40 @@ static void chat_send_beep(GGZServer *server, const gchar *message)
  *
  * Recieves:
  * 	gchar *player	: The players username
+ *      int from_room   : the room the player is coming from (or -1/-2)
  *
  * Returns:
  */
 
-void chat_enter(const gchar *player)
+void chat_enter(const gchar *player, int from_room)
 {
         GtkEntry *tmp = NULL;
 
         if( !ggzcore_conf_read_int("CHAT", "IGNORE", FALSE) )
         {
+		char message[256];
+		GGZRoom *room = ggzcore_server_get_nth_room(server, from_room);
+
+		if (from_room == -1) {
+			/* Just entering server. */
+			snprintf(message, sizeof(message),
+				 _("%s (logged on)"), player);
+		} else if (room) {
+			snprintf(message, sizeof(message),
+				 "%s (from %s)", player,
+				 ggzcore_room_get_name(room));
+		} else {
+			/* No data. */
+			snprintf(message, sizeof(message), "%s", player);
+		}
+
 	        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
 #ifdef GTK2
 		gtk_xtext_append_indent(GTK_XTEXT(tmp)->buffer,
-					"-->", 3,
-					(char*)player, strlen(player));
+					"-->", 3, message, strlen(message));
 #else
         	gtk_xtext_append_indent(GTK_XTEXT(tmp),
-					"-->", 3, player, strlen(player));
+					"-->", 3, message, strlen(message));
 #endif
 	}
 }
@@ -549,24 +565,40 @@ void chat_enter(const gchar *player)
  *
  * Recieves:
  * gchar	*player	: The players username
+ * int          to_room : The room the player is going to (or -1/-2)
  *
  * Returns:
  */
 
-void chat_part(const gchar *player)
+void chat_part(const gchar *player, int to_room)
 {
         GtkEntry *tmp = NULL;
 
         if( !ggzcore_conf_read_int("CHAT", "IGNORE", FALSE) )
         {
+		char message[256];
+		GGZRoom *room = ggzcore_server_get_nth_room(server, to_room);
+
+		if (to_room == -1) {
+			/* Leaving server. */
+			snprintf(message, sizeof(message),
+				 _("%s (logged off)"), player);
+		} else if (room) {
+			snprintf(message, sizeof(message),
+				 "%s (to %s)", player,
+				 ggzcore_room_get_name(room));
+		} else {
+			/* No data. */
+			snprintf(message, sizeof(message), "%s", player);
+		}
+
 	        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
 #ifdef GTK2
 		gtk_xtext_append_indent(GTK_XTEXT(tmp)->buffer,
-					"<--", 3,
-					(char*)player, strlen(player));
+					"<--", 3, message, strlen(message));
 #else
         	gtk_xtext_append_indent(GTK_XTEXT(tmp),
-					"<--", 3, player, strlen(player));
+					"<--", 3, message, strlen(message));
 #endif
 	}
 }
