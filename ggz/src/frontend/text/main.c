@@ -67,7 +67,7 @@ char* string_cat(char *s1, char *s2)
 
 int main(void)
 {
-	char *g_path, *u_path;
+	char *g_path, *u_path, *debugfile;
 	GGZOptions opt;
 	struct pollfd fd[1] = {{STDIN_FILENO, POLLIN, 0}};
 
@@ -84,10 +84,13 @@ int main(void)
 	free(g_path);
 	free(u_path);
 
-	opt.debug_file = ggzcore_conf_read_string("Debug", "File", "/tmp/ggz-text.debug");
+	debugfile = ggzcore_conf_read_string("Debug", "File", "/tmp/ggz-text.debug");
+	opt.debug_file = malloc((strlen(debugfile)+10)*sizeof(char*));
+	sprintf(opt.debug_file, "%s.%d", debugfile, getpid());
 	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_POLL); 
 
 	ggzcore_init(opt);
+	free(opt.debug_file);
 
 	/* Register for callbacks */
 	server_register();
