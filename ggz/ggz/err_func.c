@@ -40,7 +40,10 @@ static void err_doit(gint flag, const gchar *fmt, va_list ap)
 {
 	gchar buf[4096];
 
+#ifdef DEBUG
 	sprintf(buf, "[%d]: ", getpid());
+#endif
+
 	vsprintf(buf + strlen(buf), fmt, ap);
 	if (flag)
 		sprintf(buf + strlen(buf), ": %s", strerror(errno));

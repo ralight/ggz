@@ -42,7 +42,9 @@ void msg_dlg(gchar *str, gboolean quit)
 	GtkWidget *okButton;
 	gchar* message;
 
+#ifdef DEBUG
 	message = g_strdup_printf("[%d]: %s", getpid(), str);
+#endif
 
 	window = gtk_dialog_new();
 	if (quit) {
