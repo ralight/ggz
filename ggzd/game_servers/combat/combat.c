@@ -314,57 +314,69 @@ int combat_options_check(combat_game *_game) {
   return 0;
 }
 
-char *combat_options_describe(combat_game *_game) {
+#define DESC(TXT) do { \
+                    strcat(retstr, TXT); \
+                    if(short_desc) \
+                      strcat(retstr, ", "); \
+                    else \
+                      strcat(retstr, "\n"); \
+                  } while (0)
+
+char *combat_options_describe(combat_game *_game, int short_desc) {
   char *retstr;
   char temp[32];
   int a, tot = 0;
   retstr = (char *)malloc(sizeof(char) * 1024);
   strcpy(retstr, "");
-  if (_game->name) {
-    strcat(retstr, "Map: ");
-    strcat(retstr, _game->name);
-    strcat(retstr, "\n");
+  if (!short_desc) {
+    if (_game->name) {
+      strcat(retstr, "Map: ");
+      strcat(retstr, _game->name);
+      strcat(retstr, "\n");
+    }
+    sprintf(temp, "Size: %d x %d\n", _game->width, _game->height);
+    strcat(retstr, temp);
+    for (a = 0; a < 12; a++)
+      tot += ARMY(_game, a);
+    sprintf(temp, "%d units\n", tot);
+    strcat(retstr, temp);
+    if (_game->options)
+      strcat(retstr, "Options:\n");
   }
-  sprintf(temp, "Size: %d x %d\n", _game->width, _game->height);
-  strcat(retstr, temp);
-  for (a = 0; a < 12; a++)
-    tot += ARMY(_game, a);
-  sprintf(temp, "%d units\n", tot);
-  strcat(retstr, temp);
-  if (_game->options)
-    strcat(retstr, "Options:\n");
   if (_game->options & OPT_OPEN_MAP)
-    strcat(retstr, "Open map\n");
+    DESC("Open map");
   if (_game->options & OPT_ONE_TIME_BOMB)
-    strcat(retstr, "One time bomb\n");
+    DESC("One time bomb");
   if (_game->options & OPT_TERRORIST_SPY)
-    strcat(retstr, "Terrorist spy\n");
+    DESC("Terrorist spy");
   if (_game->options & OPT_MOVING_BOMB)
-    strcat(retstr, "Moving bombs\n");
+    DESC("Moving bombs");
   if (_game->options & OPT_SUPER_SCOUT)
-    strcat(retstr, "Super scout\n");
+    DESC("Super scout");
   if (_game->options & OPT_MOVING_FLAG)
-    strcat(retstr, "Moving flags\n");
+    DESC("Moving flags");
   if (_game->options & OPT_RANDOM_OUTCOME)
-    strcat(retstr, "Random outcome of attacks\n");
+    DESC("Random outcome of attacks");
   if (_game->options & OPT_ALLOW_DIAGONAL)
-    strcat(retstr, "Allow diagonal moves\n");
+    DESC("Allow diagonal moves");
   if (_game->options & OPT_UNKNOWN_VICTOR)
-    strcat(retstr, "Unknown victor\n");
+    DESC("Unknown victor");
   if (_game->options & OPT_SILENT_DEFENSE)
-    strcat(retstr, "Silent deffense\n");
+    DESC("Silent deffense");
   if (_game->options & OPT_SILENT_OFFENSE)
-    strcat(retstr, "Silent offense\n");
+    DESC("Silent offense");
   if (_game->options & OPT_RANDOM_SETUP)
-    strcat(retstr, "Random setup\n");
+    DESC("Random setup");
   if (_game->options & OPT_SF_SERGEANT)
-    strcat(retstr, "Special forces sergeant\n");
+    DESC("Special forces sergeant");
   if (_game->options & OPT_RUSH_ATTACK)
-    strcat(retstr, "Rush attack\n");
+    DESC("Rush attack");
   if (_game->options & OPT_HIDE_UNIT_LIST)
-    strcat(retstr, "Hide enemy unit list\n");
+    DESC("Hide enemy unit list");
   if (_game->options & OPT_SHOW_ENEMY_UNITS)
-    strcat(retstr, "Remember enemy units\n");
+    DESC("Remember enemy units");
+  if (short_desc)
+    retstr[strlen(retstr)-2] = 0;
 
   return retstr;
 }

@@ -518,5 +518,5 @@ unsigned char *combat_options_string_write(combat_game *, int for_hash);
 int combat_options_string_read(unsigned char *optstr, combat_game *);
 int combat_check_move(combat_game *, int, int);
 int combat_options_check(combat_game *);
-char *combat_options_describe(combat_game *);
+char *combat_options_describe(combat_game *, int short_desc);
 void combat_random_setup(combat_game *, int player);
