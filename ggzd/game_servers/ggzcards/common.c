@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2861 2001-12-10 20:28:44Z jdorje $
+ * $Id: common.c 2869 2001-12-10 23:21:45Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -540,10 +540,12 @@ static void set_player_name(player_t p, const char *name)
 		/* s might be -1 if seats aren't assigned yet. */
 		if (s >= 0)
 			game.seats[s].name = name;
-	} else
+	} else {
 		ggzdmod_log(game.ggz,
 			    "ERROR: SERVER BUG: "
 			    "Failed player name change!");
+		game.seats[s].name = NULL;
+	}
 }
 
 /* This handles the event of a player leaving */
