@@ -79,6 +79,7 @@ Guru *gurumod_exec(Guru *message)
 #endif
 
 	if(!scriptlist) return NULL;
+	if(!message->message) return NULL;
 
 	for(i = 0; scriptlist[i]; i++)
 	{
