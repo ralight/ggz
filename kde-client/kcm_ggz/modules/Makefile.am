@@ -2,7 +2,7 @@ SUBDIRS = .
 
 KSTUFF = $(all_libraries) $(KDE_PLUGIN) $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT)
 
-lib_LTLIBRARIES = libkcm_ggz_default.la libkcm_ggz_metaserver.la libkcm_ggz_drs.la libkcm_ggz_ggzd.la
+lib_LTLIBRARIES = libkcm_ggz_default.la libkcm_ggz_metaserver.la libkcm_ggz_drs.la libkcm_ggz_ggzd.la libkcm_ggz_games.la
 
 libkcm_ggz_default_la_SOURCES = kcm_ggz_default.cpp
 libkcm_ggz_default_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
@@ -22,9 +22,15 @@ libkcm_ggz_ggzd_la_SOURCES = kcm_ggz_ggzd.cpp
 libkcm_ggz_ggzd_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
 libkcm_ggz_ggzd_la_METASOURCES = kcm_ggz_ggzd.moc
 
+libkcm_ggz_games_la_SOURCES = kcm_ggz_games.cpp
+libkcm_ggz_games_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
+libkcm_ggz_games_la_METASOURCES = kcm_ggz_games.moc
+
 INCLUDES = -I$(qt_includes) -I$(kde_includes) -I$(top_srcdir)/kcm_ggz
 LDFLAGS = $(KSTUFF)
 
-noinst_HEADERS = kcm_ggz_pane.h kcm_ggz_default.h kcm_ggz_metaserver.h
+noinst_HEADERS = kcm_ggz_default.h kcm_ggz_metaserver.h kcm_ggz_drs.h kcm_ggz_ggzd.h kcm_ggz_games.h
 
+gamedir = $(kde_datadir)/kggz/kcmggz/icons
+game_DATA = game.png
 

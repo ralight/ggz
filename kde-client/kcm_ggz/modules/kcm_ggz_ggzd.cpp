@@ -95,10 +95,10 @@ void KCMGGZGgzd::add(QString category, QString key)
 			break;
 		}
 	}
-	if(!cat) cat = new KListViewItem(view, category);
+	if(!cat) cat = new QListViewItem(view, category);
 
 	value = "0x00";
 
-	item = new KListViewItem(cat, key, value);
+	item = new QListViewItem(cat, key, value);
 }
 
