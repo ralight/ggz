@@ -167,7 +167,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 dnl Which progs to compile
 dnl ======================
 
-SUBDIRS="ggzd easysock"
+SUBDIRS="easysock ggzd"
 
 if test "$games" = yes; then
     SUBDIRS="$SUBDIRS game_servers"
