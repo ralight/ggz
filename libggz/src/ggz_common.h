@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 4955 2002-10-19 22:19:29Z jdorje $
+ * $Id: ggz_common.h 5053 2002-10-26 22:28:26Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -95,6 +95,24 @@ typedef enum {
 	GGZ_CHAT_TABLE
 } GGZChatType;
 
+/** @brief A leave type.
+ *
+ *  When a player leaves a table, this is a possible reason for the leave.
+ */
+typedef enum {
+	/** A normal leave - at user request. */
+	GGZ_LEAVE_NORMAL,
+
+	/** The player has been booted from the table. */
+	GGZ_LEAVE_BOOT,
+
+	/** The game is over; the server exited normally. */
+	GGZ_LEAVE_GAMEOVER,
+
+	/** There was an error in the game server and it was terminated. */
+	GGZ_LEAVE_GAMEERROR
+} GGZLeaveType;
+
 
 /** @brief Get a string identifier for the GGZSeatType.
  *
@@ -136,6 +154,26 @@ const char *ggz_chattype_to_string(GGZChatType type);
  *  @note This is the inverse of ggz_chattype_to_string.
  */
 GGZChatType ggz_string_to_chattype(const char *type_str);
+
+/** @brief Get a GGZLeaveType for the given string identifier.
+ *
+ *  This returns a pointer to a static string describing the given chat
+ *  opcode.  It is useful for text-based communications protocols and
+ *  debugging output.
+ *  @param op The GGZLeaveType, which determines thee string returned.
+ *  @note This is the inverse of ggz_string_to_leavetype.
+ */
+const char *ggz_leavetype_to_string(GGZLeaveType type);
+
+/** @brief Get a GGZLeaveType for the given string identifier.
+ *
+ *  This returns a GGZLeaveType that is associated with the given string
+ *  description.
+ *  @param type_str A string describing a GGZLeaveType.
+ *  @note If the op_str cannot be parsed GGZ_LEAVE_GAMEERROR will be returned.
+ *  @note This is the inverse of ggz_leavetype_to_string.
+ */
+GGZLeaveType ggz_string_to_leavetype(const char *type_str);
 
 
 /** @brief Convert a string to a boolean.
@@ -202,7 +240,8 @@ int ggz_numberlist_get_max(GGZNumberList *list);
 
 /* Error opcodes. */
 typedef enum {
-	E_OK = 0, /* No error */
+	E_NO_STATUS	    = 1, /* internal placeholder; a statusless event */
+	E_OK		    = 0, /* No error */
 	E_USR_LOOKUP	    = -1,
 	E_BAD_OPTIONS	    = -2,
 	E_ROOM_FULL	    = -3,

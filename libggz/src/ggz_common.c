@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 4955 2002-10-19 22:19:29Z jdorje $
+ * $Id: ggz_common.c 5053 2002-10-26 22:28:26Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -113,6 +113,41 @@ GGZChatType ggz_string_to_chattype(const char *type_str)
 		return GGZ_CHAT_TABLE;
 
 	return GGZ_CHAT_UNKNOWN;
+}
+
+const char *ggz_leavetype_to_string(GGZLeaveType type)
+{
+	switch (type) {
+	case GGZ_LEAVE_NORMAL:
+		return "normal";
+	case GGZ_LEAVE_BOOT:
+		return "boot";
+	case GGZ_LEAVE_GAMEOVER:
+		return "gameover";
+	case GGZ_LEAVE_GAMEERROR:
+		return "gameerror";
+	}
+
+	ggz_error_msg("ggz_leavetype_to_string: "
+		      "invalid leavetype %d given.", type);
+	return ""; /* ? */
+}
+
+GGZLeaveType ggz_string_to_leavetype(const char *type_str)
+{
+	if (!type_str)
+		return GGZ_LEAVE_GAMEERROR;
+
+	if (!strcasecmp(type_str, "normal"))
+		return GGZ_LEAVE_NORMAL;
+	else if (!strcasecmp(type_str, "boot"))
+		return GGZ_LEAVE_BOOT;
+	else if (!strcasecmp(type_str, "gameover"))
+		return GGZ_LEAVE_GAMEOVER;
+	else if (!strcasecmp(type_str, "gameerror"))
+		return GGZ_LEAVE_GAMEERROR;
+
+	return GGZ_LEAVE_GAMEERROR;
 }
 
 char *bool_to_str(int bool_val)
