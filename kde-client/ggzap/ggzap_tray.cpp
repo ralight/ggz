@@ -5,9 +5,12 @@
 #include <kpopupmenu.h>
 
 #include <qpixmap.h>
+#include <qmovie.h>
 
 #include "config.h"
 #include <iostream>
+
+#include <stdio.h> /*tmp*/
 
 GGZapTray::GGZapTray(QWidget *parent, const char *name)
 : KSystemTray(parent, name)
@@ -47,7 +50,7 @@ void GGZapTray::contextMenuAboutToShow(KPopupMenu *menu)
 void GGZapTray::slotLaunch(int gameid)
 {
 	emit signalLaunch(m_game->name(gameid), m_game->frontend(gameid));
-	slotMenu(menulaunch);
+	//slotMenu(menulaunch);
 }
 
 void GGZapTray::slotMenu(int id)
@@ -55,13 +58,17 @@ void GGZapTray::slotMenu(int id)
 	switch(id)
 	{
 		case menulaunch:
+printf("==LAUNCH\n");
 			contextMenu()->removeItem(menulaunch);
 			contextMenu()->insertItem(i18n("Cancel game"), menucancel, 3);
+			setMovie(QMovie(KGGZ_DIRECTORY "/ggzap/trayradar.mng"));
 			break;
 		case menucancel:
+printf("CANCEL\n");
 			emit signalCancel();
 			contextMenu()->removeItem(menucancel);
 			contextMenu()->insertItem(i18n("Launch a game"), m_menu, menulaunch, 3);
+			setPixmap(QPixmap(KGGZ_DIRECTORY "/ggzap/tray.png"));
 			break;
 		case menuconfigure:
 			break;

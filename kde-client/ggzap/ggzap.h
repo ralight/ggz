@@ -19,6 +19,9 @@ class GGZap : public QWidget
 
 		void launch();
 
+	signals:
+		void signalMenu(int id);
+
 	public slots:
 		void slotState(int state);
 		void slotLaunch(char *name, char *frontend);
@@ -33,6 +36,7 @@ class GGZap : public QWidget
 		
 		QLabel *m_connect, *m_login, *m_room, *m_wait, *m_start;
 		GGZapHandler *m_handler;
+		int m_autolaunch;
 };
 
 #endif

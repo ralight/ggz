@@ -3,36 +3,23 @@
 #include "GGZCoreModule.h"
 #include "GGZCoreGametype.h"
 
+#include <string.h>
+
 #include <iostream>
 
 GGZapHandler::GGZapHandler()
 : QObject()
 {
-	m_server = new GGZCoreServer();
+	m_server = NULL;
 	m_room = NULL;
 	m_game = NULL;
 	m_frontendtype = NULL;
 	m_modulename = NULL;
-
-	attachServerCallbacks();
 }
 
 GGZapHandler::~GGZapHandler()
 {
-	if(m_game)
-	{
-		detachGameCallbacks();
-		delete m_game;
-	}
-	if(m_room)
-	{
-		detachRoomCallbacks();
-		delete m_room;
-	}
-
 	shutdown();
-	detachServerCallbacks();
-	delete m_server;
 }
 
 void GGZapHandler::init()
@@ -41,6 +28,9 @@ void GGZapHandler::init()
 
 	if(!m_modulename) return;
 
+	m_server = new GGZCoreServer();
+	attachServerCallbacks();
+
 	m_server->setHost("localhost", 5688);
 	result = m_server->connect();
 	if(result == -1) emit signalState(connectfail);
@@ -48,7 +38,31 @@ void GGZapHandler::init()
 
 void GGZapHandler::shutdown()
 {
-	m_server->logout();
+	if(m_server)
+	{
+		m_server->logout();
+		process();
+	}
+	if(m_game)
+	{
+		detachGameCallbacks();
+		delete m_game;
+		m_game = NULL;
+	}
+	if(m_room)
+	{
+		detachRoomCallbacks();
+		delete m_room;
+		m_room = NULL;
+	}
+	if(m_server)
+	{
+		detachServerCallbacks();
+		delete m_server;
+		m_server = NULL;
+	}
+	m_modulename = NULL;
+	m_frontendtype = NULL;
 }
 
 void GGZapHandler::setModule(const char *modulename)
@@ -63,6 +77,8 @@ void GGZapHandler::setFrontend(const char *frontendtype)
 
 void GGZapHandler::process()
 {
+//cout << "." << endl;
+	if(!m_server) return;
 	if(m_server->dataPending()) m_server->dataRead();
 }
 
@@ -158,6 +174,7 @@ void GGZapHandler::hookRoomActive(unsigned int id)
 	char *name;
 	int join;
 	int ret;
+	int count;
 
 	switch(id)
 	{
@@ -176,18 +193,20 @@ void GGZapHandler::hookRoomActive(unsigned int id)
 				for(int j = 0; j < table->countSeats(); j++)
 					if(table->playerType(j) == GGZ_SEAT_OPEN) join = i;
 			}
-			if(join != -1) m_room->joinTable(join);
-			else
-			{
+			//if(join != -1) m_room->joinTable(join);
+			//else
+			//{
 				// launch table and wait...
-				gametype = m_room->gametype();
-				table = new GGZCoreTable();
-				table->init(gametype->gametype(), "foobar", 2);
-				ret = m_room->launchTable(table->table());
-				delete table;
-				if(ret >= 0) emit signalState(waiting);
-				else emit signalState(startfail);
-			}
+				// NO: better wait for race condition?
+				//gametype = m_room->gametype();
+				//table = new GGZCoreTable();
+				//table->init(gametype->gametype(), "foobar", 2);
+				//ret = m_room->launchTable(table->table());
+				//delete table;
+				//if(ret >= 0) emit signalState(waiting);
+				//else emit signalState(startfail);
+			//}
+			emit signalState(waiting);
 			break;
 		case GGZCoreRoom::enter:
 			// recognize victims here :-) But... is this important?
@@ -196,10 +215,19 @@ void GGZapHandler::hookRoomActive(unsigned int id)
 			module = new GGZCoreModule();
 			gametype = m_room->gametype();
 			module->init(gametype->name(), gametype->protocol());
-			if(!module->count()) emit signalState(startfail);
+			count = module->count();
+			if(!count) emit signalState(startfail);
 			else
 			{
 				module->setActive(0);
+				if(m_frontendtype)
+				{
+					for(int i = 0; i < count; i++)
+					{
+						module->setActive(i);
+						if(!strcmp(m_frontendtype, module->frontend())) break;
+					}
+				}
 				m_game = new GGZCoreGame();
 				m_game->init(module->module());
 				attachGameCallbacks();
@@ -333,3 +361,4 @@ void GGZapHandler::detachGameCallbacks()
 	m_game->removeHook(GGZCoreGame::ioerror, &GGZapHandler::hookGame);
 	m_game->removeHook(GGZCoreGame::protoerror, &GGZapHandler::hookGame);
 }
+

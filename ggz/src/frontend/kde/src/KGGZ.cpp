@@ -170,9 +170,9 @@ void KGGZ::slotConnected(const char *host, int port, const char *username, const
 {
 	int result;
 
-	KGGZDEBUGF("KGGZ::slotConnect()\n");
-	delete m_connect;
-	m_connect = NULL;
+	KGGZDEBUGF("KGGZ::slotConnected()\n");
+	/*delete m_connect;
+	m_connect = NULL;*/
 
 	if(server)
 	{
@@ -203,6 +203,7 @@ void KGGZ::slotConnected(const char *host, int port, const char *username, const
 			delete kggzserver;
 			kggzserver = NULL;
 			KMessageBox::error(this, i18n("Attempt to connect refused!"), "Error!");
+			menuConnect();
 		}
 		return;
 	}
@@ -292,9 +293,14 @@ void KGGZ::menuServerKill()
 
 void KGGZ::menuConnect()
 {
-	if(!m_connect) m_connect = new KGGZConnect(NULL, "connect");
+KGGZDEBUG("releasecritical: menuconnect is: %i\n", m_connect);
+	if(!m_connect)
+	{
+		m_connect = new KGGZConnect(NULL, "connect");
+		connect(m_connect, SIGNAL(signalConnect(const char*, int, const char*, const char*, int, int)),
+			SLOT(slotConnected(const char*, int, const char*, const char*, int, int)));
+	}
 	m_connect->show();
-	connect(m_connect, SIGNAL(signalConnect(const char*, int, const char*, const char*, int, int)), SLOT(slotConnected(const char*, int, const char*, const char*, int, int)));
 }
 
 void KGGZ::dispatch_free(char *var, const char *description)
@@ -679,25 +685,40 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			// possibly ggzcore bug:
 			// state has not been updated yet here
 			while(!kggzserver->isOnline()) kggzserver->dataRead();
+KGGZDEBUG("releasecritical: a1\n");
 			kggzserver->setLogin(m_save_loginmode, m_save_username, m_save_password);
+KGGZDEBUG("releasecritical: a2\n");
 			result = kggzserver->login();
+KGGZDEBUG("releasecritical: a3\n");
 			if(result == -1)
 			{
+KGGZDEBUG("releasecritical: a4\n");
 				detachServerCallbacks();
+KGGZDEBUG("releasecritical: a5\n");
 				delete kggzserver;
+KGGZDEBUG("releasecritical: a6\n");
 				kggzserver = NULL;
+KGGZDEBUG("releasecritical: a7\n");
 				KMessageBox::error(this, i18n("Attempt to login refused!"), "Error!");
+KGGZDEBUG("releasecritical: a8\n");
 				menuConnect();
+KGGZDEBUG("releasecritical: a9\n");
 				return;
 			}
 			break;
 		case GGZCoreServer::connectfail:
 			KGGZDEBUG("connectfail\n");
+KGGZDEBUG("releasecritical: b1\n");
 			detachServerCallbacks();
+KGGZDEBUG("releasecritical: b2\n");
 			delete kggzserver;
+KGGZDEBUG("releasecritical: b3\n");
 			kggzserver = NULL;
+KGGZDEBUG("releasecritical: b4\n");
 			KMessageBox::error(this, i18n("Couldn't connect to server!"), "Error!");
+KGGZDEBUG("releasecritical: b5\n");
 			menuConnect();
+KGGZDEBUG("releasecritical: b6\n");
 			break;
 		case GGZCoreServer::negotiated:
 			KGGZDEBUG("negotiated\n");
@@ -710,17 +731,22 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			emit signalMenu(MENUSIG_LOGIN);
 			buffer.sprintf(i18n("KGGZ - [logged in as %s@%s:%i]"), m_save_username, m_save_host, m_save_port);
 			emit signalCaption(buffer);
+			menuView(VIEW_CHAT);
 			if(m_save_loginmode == GGZCoreServer::firsttime)
 			{
 				KGGZDEBUG("First time login!\n");
 				buffer.sprintf(i18n("You are welcome as a new GGZ Gaming Zone player.\n"
 					"Your personal password is: %s"), kggzserver->password());
 				KMessageBox::information(this, buffer, "Information");
+				//if(m_motd) m_motd->show();
 			}
-			menuView(VIEW_CHAT);
+KGGZDEBUG("releasecritical: c0\n");
 			buffer.sprintf(i18n("Logged in as %s"), m_save_username);
+KGGZDEBUG("releasecritical: c1: %s\n", buffer.latin1());
 			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetChat()->receive(NULL, i18n("Please join a room to start!"), KGGZChat::RECEIVE_ADMIN);
+KGGZDEBUG("releasecritical: c2\n");
+			if((m_save_loginmode == GGZCoreServer::firsttime) && (m_motd)) m_motd->raise();
 			break;
 		case GGZCoreServer::loginfail:
 			KGGZDEBUG("loginfail\n");

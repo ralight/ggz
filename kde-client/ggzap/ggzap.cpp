@@ -10,6 +10,7 @@
 #include <qpixmap.h>
 
 #include <stdlib.h>
+#include <stdio.h> /*temp*/
 
 #include "config.h"
 
@@ -22,6 +23,7 @@ GGZap::GGZap(QWidget *parent, const char *name)
 	GGZapTray *tray;
 
 	tray = new GGZapTray(this, "GGZapTray");
+	m_autolaunch = 0;
 
 	frame = new QFrame(this);
 	frame->setFixedSize(64, 64);
@@ -48,8 +50,9 @@ GGZap::GGZap(QWidget *parent, const char *name)
 	connect(m_handler, SIGNAL(signalState(int)), SLOT(slotState(int)));
 	connect(tray, SIGNAL(signalLaunch(char*, char*)), SLOT(slotLaunch(char*, char*)));
 	connect(tray, SIGNAL(signalCancel()), SLOT(slotCancel()));
+	connect(this, SIGNAL(signalMenu(int)), tray, SLOT(slotMenu(int)));
 
-	startTimer(500);
+	startTimer(150);
 
 	resize(250, 100);
 	setCaption(i18n("GGZ Quick Launcher"));
@@ -69,6 +72,7 @@ void GGZap::timerEvent(QTimerEvent *e)
 void GGZap::setModule(const char *modulename)
 {
 	m_handler->setModule(modulename);
+	m_autolaunch = 1;
 }
 
 void GGZap::setFrontend(const char *frontendtype)
@@ -107,12 +111,16 @@ void GGZap::slotCancel()
 
 void GGZap::launch()
 {
+	if(!m_autolaunch) return;
 	fat(m_connect);
 	m_handler->init();
+	emit signalMenu(GGZapTray::menulaunch);
+printf("GGZap::launch() has emitted\n");
 }
 
 void GGZap::slotState(int state)
 {
+printf("GGZap::slotState(%i)\n", state);
 	switch(state)
 	{
 		case GGZapHandler::connected:
@@ -120,21 +128,24 @@ void GGZap::slotState(int state)
 			break;
 		case GGZapHandler::connectfail:
 			KMessageBox::information(this, "Could not connect to server!", "Error!");
-			exit(-1);
+			slotCancel();
+			emit signalMenu(GGZapTray::menucancel);
 			break;
 		case GGZapHandler::loggedin:
 			fat(m_room);
 			break;
 		case GGZapHandler::loginfail:
 			KMessageBox::information(this, "Couldn't login!\nPlease use your registered user name.", "Error!");
-			exit(-1);
+			slotCancel();
+			emit signalMenu(GGZapTray::menucancel);
 			break;
 		case GGZapHandler::joinedroom:
 			fat(m_wait);
 			break;
 		case GGZapHandler::joinroomfail:
 			KMessageBox::information(this, "Could not join the room!\nMaybe this game type isn't supported on the server?", "Error!");
-			exit(-1);
+			slotCancel();
+			emit signalMenu(GGZapTray::menucancel);
 			break;
 		case GGZapHandler::waiting:
 			fat(m_wait);
@@ -145,6 +156,7 @@ void GGZap::slotState(int state)
 		case GGZapHandler::startfail:
 			KMessageBox::information(this, "Could not start the game!\nPlease make sure you have it installed.", "Error!");
 			slotCancel();
+			emit signalMenu(GGZapTray::menucancel);
 			break;
 	}
 }

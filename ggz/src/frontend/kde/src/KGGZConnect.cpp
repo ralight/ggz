@@ -251,11 +251,11 @@ void KGGZConnect::slotLoadProfile(int profile)
 
 	// read values for selected server
 	KGGZDEBUG("slotLoadProfile: read values in %s...\n", listentry);
-	host = config->read(listentry, "Host", "213.73.91.24");
+	host = config->read(listentry, "Host", "ggz.snafu.de");
 	port = config->read(listentry, "Port", "5688");
 	username = config->read(listentry, "Login", "zocker");
 	password = config->read(listentry, "Password", "");
-	type = config->read(listentry, "Type", 0);
+	type = config->read(listentry, "Type", 1);
 
 	// put values into fields
 	KGGZDEBUG("slotLoadProfile: set text...\n");
@@ -288,7 +288,9 @@ void KGGZConnect::slotLoadProfile(int profile)
 void KGGZConnect::slotAccept()
 {
 	slotSaveProfile();
+	close();
 	emit signalConnect(input_host->text().latin1(), atoi(input_port->text().latin1()), input_name->text().latin1(), input_password->text().latin1(), m_loginmode, option_server->isChecked());
+	//close();
 }
 
 void KGGZConnect::slotModes(int loginmode)

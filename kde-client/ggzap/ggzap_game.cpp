@@ -1,6 +1,9 @@
 #include "ggzap_game.h"
 
 #include <string.h>
+#ifndef strdup
+#define strdup(x) strcpy(((char*)malloc(strlen(x) + 1)), x)
+#endif
 #include <stdlib.h>
 #include <dirent.h>
 #include <stdio.h>
@@ -74,7 +77,7 @@ void GGZapGame::autoscan()
 	dp = opendir(dir);
 	if(dp)
 	{
-		while(ep = readdir(dp))
+		while((ep = readdir(dp)) != 0)
 		{
 			if(!fnmatch("*.desktop", ep->d_name, FNM_NOESCAPE))
 			{
