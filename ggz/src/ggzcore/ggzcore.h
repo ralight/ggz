@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5567 2003-05-11 09:21:50Z dr_maux $
+ * $Id: ggzcore.h 5754 2004-01-27 18:11:10Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -108,6 +108,10 @@ typedef struct _GGZOptions {
  */
 int ggzcore_init(GGZOptions options);
 
+
+/** ggzcore_reload() - Reload game module database
+ */
+void ggzcore_reload(void);
 
 /** ggzcore_destroy() - Cleanup function for ggzcore lib.
  */
