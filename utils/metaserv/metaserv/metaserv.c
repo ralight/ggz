@@ -414,7 +414,7 @@ static char *metaserv_update(const char *class, const char *category, const char
 	char *ret;
 	char tmp[1024];
 	char *status;
-	ELE *ele, *ele2;
+	ELE *ele, *ele2, *ele3;
 	char *att2;
 	int i;
 #ifdef METASERV_OPTIMIZED
@@ -509,14 +509,33 @@ static char *metaserv_update(const char *class, const char *category, const char
 			else if(!strcmp(mode, "delete"))
 			{
 				/* remove XML element */
-				free(ele2);
-				ele2 = NULL;
+				i = 0;
+				while((ele2->el) && (ele2->el[i]))
+				{
+					ele3 = ele2->el[i];
+					if(!strcmp(ele3->name, "connection"))
+					{
+						if((ele3->value) && (!strcmp(ele3->value, uri)))
+						{
+							free(ele3);
+							/*ele3 = NULL;*/
+							ele2->el[i] = NULL;
+							for(j = i + 1; ele2->el[j]; j++)
+							{
+								ele2->el[j - 1] = ele2->el[j];
+								ele2->el[j] = NULL;
+							}
 
-				metaserv_peers(NULL);
+							metaserv_peers(NULL);
 
-				/* dump new configuration */
-				metaserv_cache();
-				/*minidom_dump(configuration);*/
+							/* dump new configuration */
+							metaserv_cache();
+							/*minidom_dump(configuration);*/
+							break;
+						}
+					}
+					i++;
+				}
 			}
 			else status = "wrong";
 		}
@@ -832,6 +851,7 @@ static int metaserv_work(int fd, int session)
 					logline("[%i] No result", session);
 				}
 				fflush(stream);
+				//fclose(stream);
 			}
 			else logline("[%i] Broken pipe", session);
 		}
