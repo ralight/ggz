@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 5053 2002-10-26 22:28:26Z jdorje $
+ * $Id: ggz_common.h 5104 2002-10-29 11:29:45Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -259,8 +259,29 @@ typedef enum {
 	E_IN_TRANSIT	    = -15,
 	E_NO_PERMISSION	    = -16,
 	E_BAD_XML	    = -17,
-	E_SEAT_ASSIGN_FAIL  = -18
+	E_SEAT_ASSIGN_FAIL  = -18,
+	E_UNKNOWN           = -19
 } GGZClientReqError;
+
+/** @brief Get a string identifier for the GGZClientReqError.
+ *
+ *  This returns a pointer to a static string describing the given status.
+ *  It is useful for text-based communications protocols and debugging
+ *  output.
+ *  @param err The GGZClientReqError, which determines the string returned.
+ *  @note This is the inverse of ggz_string_to_error.
+ */
+const char *ggz_error_to_string(GGZClientReqError err);
+
+/** @brief Get a GGZClientReqError for the given string identifier.
+ *
+ *  This returns a GGZClientLeaveType that is associated with the given string
+ *  description.
+ *  @param err_str A string describing a GGZClientReqEerror.
+ *  @note If the err_str cannot be parsed E_UNKNOWN will be returned.
+ *  @note This is the inverse of ggz_error_to_string.
+ */
+GGZClientReqError ggz_string_to_error(const char *err_str);
 
 
 #ifdef __cplusplus

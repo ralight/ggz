@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 5053 2002-10-26 22:28:26Z jdorje $
+ * $Id: ggz_common.c 5104 2002-10-29 11:29:45Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -173,4 +173,106 @@ int str_to_bool(const char *str, int dflt)
 		return 0;
 
 	return dflt;
+}
+
+const char *ggz_error_to_string(GGZClientReqError err)
+{
+	switch (err) {
+	case E_OK:
+		return "ok";
+	case E_USR_LOOKUP:
+		return "usr lookup";
+	case E_BAD_OPTIONS:
+		return "bad options";
+	case E_ROOM_FULL:
+		return "room full";
+	case E_TABLE_FULL:
+		return "table full";
+	case E_TABLE_EMPTY:
+		return "table empty";
+	case E_LAUNCH_FAIL:
+		return "launch fail";
+	case E_JOIN_FAIL:
+		return "join fail";
+	case E_NO_TABLE:
+		return "no table";
+	case E_LEAVE_FAIL:
+		return "leave fail";
+	case E_LEAVE_FORBIDDEN:
+		return "leave forbidden";
+	case E_ALREADY_LOGGED_IN:
+		return "already logged_in";
+	case E_NOT_LOGGED_IN
+		: return "not logged in";
+	case E_NOT_IN_ROOM:
+		return "not in room";
+	case E_AT_TABLE:
+		return "at table";
+	case E_IN_TRANSIT:
+		return "in transit";
+	case E_NO_PERMISSION:
+		return "no permission";
+	case E_BAD_XML:
+		return "bad xml";
+	case E_SEAT_ASSIGN_FAIL:
+		return "seat assign fail";
+	case E_NO_STATUS:
+	case E_UNKNOWN:
+		break;
+	}
+
+	ggz_error_msg("ggz_error_to_string: invalid error %d given.", err);
+	return "[unknown]";
+}
+
+GGZClientReqError ggz_string_to_error(const char *str)
+{
+	if (!str)
+		return E_OK;
+
+	if (!strcasecmp(str, "ok"))
+		return E_OK;
+	if (!strcasecmp(str, "0")) {
+		/* This provides a tiny bit of backwards compatability.
+		   It should go away eventually. */
+		return E_OK;
+	}
+	if (!strcasecmp(str, "usr lookup"))
+		return E_USR_LOOKUP;
+	if (!strcasecmp(str, "bad options"))
+		return E_BAD_OPTIONS;
+	if (!strcasecmp(str, "room full"))
+		return E_ROOM_FULL;
+	if (!strcasecmp(str, "table full"))
+		return E_TABLE_FULL;
+	if (!strcasecmp(str, "table empty"))
+		return E_TABLE_EMPTY;
+	if (!strcasecmp(str, "launch fail"))
+		return E_LAUNCH_FAIL;
+	if (!strcasecmp(str, "join fail"))
+		return E_JOIN_FAIL;
+	if (!strcasecmp(str, "no table"))
+		return E_NO_TABLE;
+	if (!strcasecmp(str, "leave fail"))
+		return E_LEAVE_FAIL;
+	if (!strcasecmp(str, "leave forbidden"))
+		return E_LEAVE_FORBIDDEN;
+	if (!strcasecmp(str, "already logged in"))
+		return E_ALREADY_LOGGED_IN;
+	if (!strcasecmp(str, "not logged in"))
+		return E_NOT_LOGGED_IN;
+	if (!strcasecmp(str, "not in room"))
+		return E_NOT_IN_ROOM;
+	if (!strcasecmp(str, "at table"))
+		return E_AT_TABLE;
+	if (!strcasecmp(str, "in transit"))
+		return E_IN_TRANSIT;
+	if (!strcasecmp(str, "no permission"))
+		return E_NO_PERMISSION;
+	if (!strcasecmp(str, "bad xml"))
+		return E_BAD_XML;
+	if (!strcasecmp(str, "seat assign fail"))
+		return E_SEAT_ASSIGN_FAIL;
+
+	return E_UNKNOWN;
 }
