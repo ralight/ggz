@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 6889 2005-01-25 01:24:10Z jdorje $
+ * $Id: ggzdmod.c 6890 2005-01-25 01:29:38Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -335,10 +335,10 @@ int ggzdmod_get_max_num_spectators(GGZdMod * ggzdmod)
 
 GGZSeat ggzdmod_get_seat(GGZdMod * ggzdmod, int num)
 {
-	GGZSeat seat = {num: num,
-			type: GGZ_SEAT_NONE,
-			name: NULL,
-			fd: -1};
+	GGZSeat seat = {.num = num,
+			.type = GGZ_SEAT_NONE,
+			.name = NULL,
+			.fd = -1};
 	GGZListEntry *entry;
 
 	if (CHECK_GGZDMOD(ggzdmod) && num >= 0 && num < ggzdmod->num_seats) {
@@ -352,7 +352,7 @@ GGZSeat ggzdmod_get_seat(GGZdMod * ggzdmod, int num)
 
 GGZSpectator ggzdmod_get_spectator(GGZdMod * ggzdmod, int num)
 {
-	GGZSpectator spectator = {num: num, name: NULL, fd: -1};
+	GGZSpectator spectator = {.num = num, .name = NULL, .fd = -1};
 	GGZListEntry *entry;
 
 	if (CHECK_GGZDMOD(ggzdmod)
@@ -383,15 +383,15 @@ static void _ggzdmod_set_num_seats(GGZdMod *ggzdmod, int num_seats)
 	if (num_seats > old_num) {
 		/* Initialize new seats */
 		for (i = old_num; i < num_seats; i++) {
-			GGZSeat seat = {num: i,
-					type: GGZ_SEAT_OPEN,
-					name: NULL,
-					fd: -1};
+			GGZSeat seat = {.num = i,
+					.type = GGZ_SEAT_OPEN,
+					.name = NULL,
+					.fd = -1};
 			ggz_list_insert(ggzdmod->seats, &seat);
 		}
 	} else if (num_seats < old_num) {
 		GGZListEntry *entry;
-		GGZSeat seat = {num: num_seats};
+		GGZSeat seat = {.num = num_seats};
 
 		/* Delete extra seats (FIXME: UNTESTED) */
 		entry = ggz_list_search(ggzdmod->seats, &seat);
@@ -689,31 +689,31 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 	name = ggz_strdup(name);
 
 	if (was_spectator) {
-		GGZSpectator s = {num: old_seat,
-				  name: NULL,
-				  fd: -1};
+		GGZSpectator s = {.num = old_seat,
+				  .name = NULL,
+				  .fd = -1};
 		if (_ggzdmod_set_spectator(ggzdmod, &s) < 0)
 			_ggzdmod_error(ggzdmod, "ggzdmod_reseat failed");
 	} else {
-		GGZSeat s = {num: old_seat,
-			     name: NULL,
-			     type: GGZ_SEAT_OPEN,
-			     fd: -1};
+		GGZSeat s = {.num = old_seat,
+			     .name = NULL,
+			     .type = GGZ_SEAT_OPEN,
+			     .fd = -1};
 		if (_ggzdmod_set_seat(ggzdmod, &s) < 0)
 			_ggzdmod_error(ggzdmod, "ggzdmod_reseat failed");
 	}
 
 	if (is_spectator) {
-		GGZSpectator s = {num: new_seat,
-				  name: name,
-				  fd: -1};
+		GGZSpectator s = {.num = new_seat,
+				  .name = name,
+				  .fd = -1};
 		if (_ggzdmod_set_spectator(ggzdmod, &s) < 0)
 			_ggzdmod_error(ggzdmod, "ggzdmod_reseat failed");
 	} else {
-		GGZSeat s = {num: new_seat,
-			     name: name,
-			     type: GGZ_SEAT_PLAYER,
-			     fd: -1};
+		GGZSeat s = {.num = new_seat,
+			     .name = name,
+			     .type = GGZ_SEAT_PLAYER,
+			     .fd = -1};
 		if (_ggzdmod_set_seat(ggzdmod, &s) < 0)
 			_ggzdmod_error(ggzdmod, "ggzdmod_reseat failed");
 	}
@@ -1425,9 +1425,9 @@ void _ggzdmod_handle_reseat(GGZdMod * ggzdmod,
 
 	/* Change the old seat, and dup the previous value */
 	if (was_spectator) {
-		GGZSpectator s = {num: old_seat,
-				  name: NULL,
-				  fd: -1};
+		GGZSpectator s = {.num = old_seat,
+				  .name = NULL,
+				  .fd = -1};
 		GGZSpectator *old;
 
 		/* We have to manually pull off the FD to prevent it
@@ -1443,10 +1443,10 @@ void _ggzdmod_handle_reseat(GGZdMod * ggzdmod,
 		_ggzdmod_set_spectator(ggzdmod, &s);
 		old_event = GGZDMOD_EVENT_SPECTATOR_LEAVE;
 	} else {
-		GGZSeat s = {num: old_seat,
-			     name: NULL,
-			     type: GGZ_SEAT_OPEN,
-			     fd: -1};
+		GGZSeat s = {.num = old_seat,
+			     .name = NULL,
+			     .type = GGZ_SEAT_OPEN,
+			     .fd = -1};
 		GGZSeat *old;
 
 		/* We have to manually pull of the FD to prevent it
@@ -1465,19 +1465,19 @@ void _ggzdmod_handle_reseat(GGZdMod * ggzdmod,
 
 	/* Change the new seat, and dup the preevious value */
 	if (is_spectator) {
-		GGZSpectator s = {num: new_seat,
-				  name: name,
-				  fd: fd};
+		GGZSpectator s = {.num = new_seat,
+				  .name = name,
+				  .fd = fd};
 		GGZSpectator old = ggzdmod_get_spectator(ggzdmod, new_seat);
 
 		new_old = spectator_copy(&old);
 		_ggzdmod_set_spectator(ggzdmod, &s);
 		new_event = GGZDMOD_EVENT_SPECTATOR_JOIN;
 	} else {
-		GGZSeat s = {num: new_seat,
-			     name: name,
-			     type: GGZ_SEAT_PLAYER,
-			     fd: fd};
+		GGZSeat s = {.num = new_seat,
+			     .name = name,
+			     .type = GGZ_SEAT_PLAYER,
+			     .fd = fd};
 		GGZSeat old = ggzdmod_get_seat(ggzdmod, new_seat);
 
 		new_old = seat_copy(&old);
@@ -1729,12 +1729,12 @@ void _ggzdmod_handle_report(GGZdMod * ggzdmod,
 			    int num_players, char **names, GGZSeatType *types,
 			    int *teams, GGZGameResult *results, int *scores)
 {
-	GGZdModGameReportData data = {num_players: num_players,
-				      names: names,
-				      types: types,
-				      teams: teams,
-				      results: results,
-				      scores: scores};
+	GGZdModGameReportData data = {.num_players = num_players,
+				      .names = names,
+				      .types = types,
+				      .teams = teams,
+				      .results = results,
+				      .scores = scores};
 	call_handler(ggzdmod, GGZDMOD_EVENT_GAMEREPORT, &data);
 }
 
