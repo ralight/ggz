@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = spades tictactoe dots lapocha reversi combat hastings \
+SUBDIRS = libggzmod spades tictactoe dots lapocha reversi combat hastings \
 	  chinese-checkers chess krosswater ggzcards escape
 
 
