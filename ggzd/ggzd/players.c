@@ -682,7 +682,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	dbg_msg(GGZ_DBG_TABLE, "Handling table launch for player %d", p_index);
 
 	if (es_read_int(p_fd, &table.type_index) < 0
-	    || es_read_string(p_fd, table.desc) < 0
+	    || es_read_string(p_fd, table.desc, (MAX_GAME_DESC_LEN + 1)) < 0
 	    || es_read_int(p_fd, &seats) < 0)
 		return GGZ_REQ_DISCONNECT;
 
