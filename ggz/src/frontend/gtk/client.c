@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 3613 2002-03-21 18:23:13Z jdorje $
+ * $Id: client.c 3621 2002-03-23 04:02:29Z bmh $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1037,6 +1037,16 @@ static void client_tables_size_request(GtkWidget *widget, gpointer data)
 }
 
 
+void client_clear_tables(void)
+{
+	GtkWidget *tmp;
+	
+	tmp = lookup_widget(win_main, "table_clist");
+	gtk_clist_freeze(GTK_CLIST(tmp));
+	gtk_clist_clear(GTK_CLIST(tmp));
+	gtk_clist_thaw(GTK_CLIST(tmp));
+	tablerow = -1;
+}
 
 
 GtkWidget*
@@ -2029,6 +2039,7 @@ create_win_main (void)
 
   return win_main;
 }
+
 
 GtkWidget*
 create_mnu_table (void)

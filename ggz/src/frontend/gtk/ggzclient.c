@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 3563 2002-03-16 01:47:33Z jdorje $
+ * $Id: ggzclient.c 3621 2002-03-23 04:02:29Z bmh $
  *
  * This is the main program body for the GGZ client
  *
@@ -255,8 +255,12 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	/* Clear the player list */
 	/* We do this here so that on slower links people
 	 * don't think all the old people are in the old room */
+	/* FIXME: this should be move to client_clear_players() */
 	tmp = lookup_widget(win_main, "player_clist");
 	gtk_clist_clear(GTK_CLIST(tmp));
+
+	/* Clear table list */
+	client_clear_tables();
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
@@ -924,6 +928,9 @@ void display_tables(void)
 	GGZRoom *room;
 	GGZTable *t = NULL;
 
+	/* Clear the table */
+	client_clear_tables();
+
 	/* Retrieve the list. */
 	tmp = lookup_widget(win_main, "table_clist");
 	
@@ -931,9 +938,6 @@ void display_tables(void)
 	 * until we "thaw" it later. */
 	gtk_clist_freeze(GTK_CLIST(tmp));
 	
-	/* clear the list */
-	gtk_clist_clear(GTK_CLIST(tmp));
-
 	room = ggzcore_server_get_cur_room(server);
 
 	/* Display current list of players
