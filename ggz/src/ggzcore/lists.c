@@ -189,6 +189,7 @@ int _ggzcore_list_insert(_ggzcore_list *list, void *data)
 				list->tail = new;
 			if(list->destroy_func)
 				(*list->destroy_func) (p->data);
+			ggzcore_free(p);
 			rc = 1;
 		} else {
 			/* Slightly easier, just insert a new value */
