@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4023 2002-04-20 04:23:11Z jdorje $
+ * $Id: ggzdmod.c 4050 2002-04-22 19:02:02Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -455,22 +455,26 @@ int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 	
 	/* If there is no such seat, return error */
 	oldseat = ggzdmod_get_seat(ggzdmod, seat->num);
-	if (oldseat.type == GGZ_SEAT_NONE) {
+	if (oldseat.type == GGZ_SEAT_NONE)
 		return -1;
-	} 
 	
 	if (ggzdmod->type == GGZDMOD_GAME) {
-		/* we allow changing the fd if the old one was -1.  Note
+		/* The game is not currently allowed to change the type
+		   of the seat, but is allowed to change the name and
+		   FD for bot players only.  This information is not
+		   transmitted back to ggzd. */
+		if (seat->type != oldseat.type)
+			return -1;
+			
+		/* we allow changing the fd for bot players.  Note
 		   this will cause the FD to be monitored by ggzdmod-game,
 		   and a GGZDMOD_EVENT_PLAYER_DATA may then be generated
 		   for it. */
-		if ( (oldseat.fd != -1 && seat->fd != oldseat.fd)
-		     || seat->type != oldseat.type)
+		if (oldseat.type != GGZ_SEAT_BOT
+		    && seat->fd != oldseat.fd)
 			return -1;
 
-		/* For now, we allow games to change the names of Bot players,
-		   but that's it.  This information is _not_ transmitted back
-		   to ggzd (yet). */
+		/* we allow games to change the names of Bot players. */
 		if (oldseat.type != GGZ_SEAT_BOT
 		    && strings_differ(seat->name, oldseat.name))
 			return -1;
