@@ -1,4 +1,4 @@
-/* $Id: dlg_main.c 2696 2001-11-08 10:09:24Z jdorje $ */
+/* $Id: dlg_main.c 2740 2001-11-13 22:19:42Z jdorje $ */
 /* 
  * File: dlg_main.c
  * Author: Rich Gade
@@ -46,6 +46,7 @@ GtkWidget *create_dlg_main(void)
 	GtkWidget *vbox1;
 	GtkWidget *menubar1;
 	GtkWidget *mnu_game;
+	GtkWidget *mnu_sync;
 	GtkWidget *mnu_game_menu;
 	GtkAccelGroup *mnu_game_menu_accels;
 	GtkWidget *mnu_exit;
@@ -111,6 +112,15 @@ GtkWidget *create_dlg_main(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(mnu_exit);
 	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_exit);
+
+	mnu_sync = gtk_menu_item_new_with_label(_("Sync"));
+	gtk_widget_set_name(mnu_sync, "mnu_sync");
+	gtk_widget_ref(mnu_sync);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_sync", mnu_sync,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(mnu_sync);
+	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_sync);
+
 
 	mnu_edit = gtk_menu_item_new_with_label(_("Edit"));
 	gtk_widget_set_name(mnu_edit, "mnu_edit");
@@ -217,6 +227,8 @@ GtkWidget *create_dlg_main(void)
 			   GTK_SIGNAL_FUNC(on_dlg_main_delete_event), NULL);
 	gtk_signal_connect(GTK_OBJECT(mnu_exit), "activate",
 			   GTK_SIGNAL_FUNC(on_mnu_exit_activate), NULL);
+	gtk_signal_connect(GTK_OBJECT(mnu_sync), "activate",
+			   GTK_SIGNAL_FUNC(on_mnu_sync_activate), NULL);
 	gtk_signal_connect(GTK_OBJECT(mnu_preferences), "activate",
 			   GTK_SIGNAL_FUNC(on_mnu_preferences_activate),
 			   NULL);

@@ -1,4 +1,4 @@
-/* $Id: common.h 2621 2001-10-28 09:50:30Z jdorje $ */
+/* $Id: common.h 2740 2001-11-13 22:19:42Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -94,16 +94,16 @@ extern struct game_t game;
   * initializes all internal data and makes the connection to the GGZ
   * client.
   * @return The file descriptor that is used to communicate with the server. */
-int client_initialize();
+int client_initialize(void);
 
 /** This function should be called on any input from the server fd.  It
  *  will do all the rest of the work, and call one of the callbacks if
  *  necessary.
  *  @see Callbacks */
-int client_handle_server();
+int client_handle_server(void);
 
 /** This function should be called just before the client exits. */
-void client_quit();
+void client_quit(void);
 
 /** @} end of Setup */
 
@@ -128,7 +128,7 @@ void client_debug(const char *fmt, ...);
 
 /** Handles a newgame request by calling client_send_newgame when
  *  ready (you may wish to ask the user first). */
-extern void table_get_newgame();
+extern void table_get_newgame(void);
 
 /** Handles a gameover message.
   * @param num_winners The number of players who won the game (0 or more)
@@ -143,7 +143,7 @@ extern void table_alert_player_name(int player, const char *name);
 /** Currently this "sets up the table".  It's called when the number
  *  of players or the max hand size changes.
  *  @todo This should be handled differently. */
-extern void table_setup();
+extern void table_setup(void);
 
 /** Alerts the table to the maximum hand size.  There will never be more
  *  than this many cards in a hand (unless we send another alert). */
@@ -179,7 +179,7 @@ extern void table_alert_play(int player, card_t card);
 /** Called when we're informaed of the table cards.  The information
  *  itself resides in the player structures; all the frontend has to
  *  do is redraw the cards. */
-extern void table_alert_table();
+extern void table_alert_table(void);
 
 /** Called when we're informed of a trick being over.  All game
  *  information wil be updated; the frontend will have to clear
@@ -239,7 +239,7 @@ extern void table_set_player_message(int player, const char *msg);
 /** Sends a simple newgame response.
  *  @return 0 on success, -1 on failure.
  *  @see table_get_newgame */
-int client_send_newgame();
+int client_send_newgame(void);
 
 /** Sends a bid response.
  *  @param bid The index of the bid chosen.
@@ -262,7 +262,7 @@ int client_send_play(card_t card);
 
 /** Sends a request for a sync.
  *  @return 0 on success, -1 on failure. */
-int client_send_sync_request();
+int client_send_sync_request(void);
 
 /** @} end of Responses */
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request Gtk fixed dialog
- * $Id: dlg_bid.c 2700 2001-11-08 21:20:22Z jdorje $
+ * $Id: dlg_bid.c 2740 2001-11-13 22:19:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -143,7 +143,8 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 		int x, y;
 		button = gtk_button_new_with_label(bid_choices[i]);
 
-		/* trickery - we don't pass a pointer to the data but the data itself */
+		/* trickery - we don't pass a pointer to the data but the
+		   data itself */
 		gtk_signal_connect(GTK_OBJECT(button), "clicked",
 				   GTK_SIGNAL_FUNC(dlg_bid_clicked),
 				   GINT_TO_POINTER(i));

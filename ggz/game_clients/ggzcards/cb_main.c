@@ -1,4 +1,4 @@
-/* $Id: cb_main.c 2696 2001-11-08 10:09:24Z jdorje $ */
+/* $Id: cb_main.c 2740 2001-11-13 22:19:42Z jdorje $ */
 /* 
  * File: cb_main.c
  * Author: Rich Gade
@@ -38,6 +38,12 @@
 void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
 	gtk_main_quit();
+}
+
+
+void on_mnu_sync_activate(GtkMenuItem * menuitem, gpointer user_data)
+{
+	(void) client_send_sync_request();
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2621 2001-10-28 09:50:30Z jdorje $
+ * $Id: common.c 2740 2001-11-13 22:19:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -173,7 +173,7 @@ static int handle_global_message_block(char *mark)
 
 /* a message_global message tells you one "global message", which is
    displayed by the client. */
-static int handle_message_global()
+static int handle_message_global(void)
 {
 	int opcode, status = 0;
 	message_type_t op;
@@ -207,7 +207,7 @@ static int handle_message_global()
 
 /* A message_player message tells you one "player message", which is
    displayed by the client. */
-static int handle_message_player()
+static int handle_message_player(void)
 {
 	int p;
 	char *message;
@@ -226,7 +226,7 @@ static int handle_message_player()
 
 
 /* A gameover message tells you the game is over, and who won. */
-static int handle_msg_gameover()
+static int handle_msg_gameover(void)
 {
 	int num_winners, i, *winners = NULL;
 
@@ -254,7 +254,7 @@ static int handle_msg_gameover()
 
 /* A players message tells you all the players (well, seats really) at the
    table. */
-static int handle_msg_players()
+static int handle_msg_players(void)
 {
 	int i, p, numplayers, different;
 	char *t_name;
@@ -312,7 +312,7 @@ static int handle_msg_players()
 
 
 /* A hand message tells you all the cards in one player's hand. */
-static int handle_msg_hand()
+static int handle_msg_hand(void)
 {
 	int i, player;
 	struct hand_t *hand;
@@ -375,7 +375,7 @@ static int handle_msg_hand()
 
 
 /* A bid request asks you to pick from a given list of bids. */
-static int handle_req_bid()
+static int handle_req_bid(void)
 {
 	int i;
 	int possible_bids;
@@ -413,7 +413,7 @@ static int handle_req_bid()
 
 /* A play request asks you to play a card from any hand (most likely your
    own). */
-static int handle_req_play()
+static int handle_req_play(void)
 {
 	/* Determine which hand we're supposed to be playing from. */
 	if (read_seat(ggzfd, &game.play_hand) < 0)
@@ -542,7 +542,7 @@ static int handle_msg_play(void)
 
 /* A table message tells you all the cards on the table.  Each player only
    gets one card. */
-static int handle_msg_table()
+static int handle_msg_table(void)
 {
 	int p;
 
@@ -560,7 +560,7 @@ static int handle_msg_table()
 
 
 /* A trick message tells you about the end of a trick (and who won). */
-static int handle_msg_trick()
+static int handle_msg_trick(void)
 {
 	int p;
 
@@ -579,7 +579,7 @@ static int handle_msg_trick()
 /* An options request asks you to pick a set of options.  Each "option" gives 
    a list of choices so that you pick one choice for each option.  An option
    with only one choice is a special case: a boolean option. */
-static int handle_req_options()
+static int handle_req_options(void)
 {
 	int i, j;
 	int option_cnt;		/* the number of options */
@@ -635,7 +635,7 @@ static int handle_req_options()
 
 
 /* A newgame message tells the server to start a new game. */
-int client_send_newgame()
+int client_send_newgame(void)
 {
 	if (write_opcode(ggzfd, WH_RSP_NEWGAME) < 0)
 		return -1;
@@ -683,7 +683,7 @@ int client_send_play(card_t card)
 
 
 /* A sync request asks for a sync from the server. */
-int client_send_sync_request()
+int client_send_sync_request(void)
 {
 	if (write_opcode(ggzfd, WH_REQ_SYNC) < 0)
 		return -1;
@@ -692,7 +692,7 @@ int client_send_sync_request()
 
 
 /* This function handles any input from the server. */
-int client_handle_server()
+int client_handle_server(void)
 {
 	int op, status = -1;
 
