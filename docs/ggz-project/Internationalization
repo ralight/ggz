@@ -26,6 +26,10 @@ are then recognized automatically.
 The games may have different concepts of adding gettext support - right now the
 TicTacToe and Hastings games show how that can easily be done via ggzintl.c.
 
+GGZ-Gtk-Client: This core client has its translation files under po/. The
+process is nearly the same as with GGZ-Gtk-Games, but it is already sufficient
+to copy a .po file in there. Very easy.
+
 Documentation: Feel free to translate as you like - we will be thankful for
 every bit! Especially for docs which have yet to be written ;)
 
