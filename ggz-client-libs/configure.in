@@ -58,8 +58,7 @@ dnl Check for GGZ Requirements
 dnl ==============
 
 AC_GGZ_LIBGGZ
-AC_GGZ_EASYSOCK(0.3)
-LDADD="$LDADD $LIB_EASYSOCK $LIB_GGZ"
+LDADD="$LDADD $LIB_GGZ"
 
 
 dnl Check for popt

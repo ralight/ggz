@@ -35,7 +35,6 @@
 #include "table.h"
 #include "gametype.h"
 
-#include <easysock.h>
 #include <ggz.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -280,7 +279,7 @@ void _ggzcore_net_free(struct _GGZNet *net)
 int _ggzcore_net_connect(struct _GGZNet *net)
 {
 	ggzcore_debug(GGZ_DBG_NET, "Connecting to %s:%d", net->host, net->port);
-	net->fd = es_make_socket(ES_CLIENT, net->port, net->host);
+	net->fd = ggz_make_socket(GGZ_SOCK_CLIENT, net->port, net->host);
 	
 	if (net->fd >= 0)
 		return 0;  /* success */

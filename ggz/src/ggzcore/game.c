@@ -40,7 +40,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <easysock.h>
 #include <stdio.h>
 #include <signal.h>
 
@@ -475,7 +474,7 @@ int _ggzcore_game_send_data(struct _GGZGame *game, char *buffer)
 	size = *(int*)buffer;
 	buf_offset = buffer + sizeof(size);
 
-	if (es_writen(game->fd, buf_offset, size) < 0) {
+	if (ggz_writen(game->fd, buf_offset, size) < 0) {
 		/* FIXME: game error */
 		return -1;
 	}
