@@ -26,6 +26,7 @@
 #ifndef _GGZ_TYPES
 #define _GGZ_TYPES
 
+#include <stdio.h>
 #include <pthread.h>
 #include <time.h>
 
@@ -34,8 +35,6 @@
 /* Datatypes for server options*/
 typedef struct {
 	char *local_conf;
-	int log_level;
-	char *log_file;
 	char remove_users;
 	int user_inact_time;
 	char clear_stats;
@@ -158,6 +157,22 @@ typedef struct {
 	char *cputype;
 	char *port;
 } MOTDInfo;
+
+/* Logfile info */
+typedef struct {
+	int log_initialized;
+	int syslog_facility;
+	char *log_fname;
+	FILE *logfile;
+	int log_level;
+	int log_use_syslog;
+#ifdef DEBUG
+	char *dbg_fname;
+	FILE *dbgfile;
+	int dbg_level;
+	int dbg_use_syslog;
+#endif
+} LogInfo;
 
 #endif
 

@@ -67,7 +67,7 @@ static const struct poptOption args[] = {
 	
 	{"file", 'f', POPT_ARG_STRING, &opt.local_conf, 0, 
 	 "Configuration file", "FILE"},
-	{"log", 'l', POPT_ARG_INT, &opt.log_level, 0,
+	{"log", 'l', POPT_ARG_INT, &log_info.log_level, 0,
 	 "Verbosity of logging", "LEVEL"},
 	{"port", 'p', POPT_ARG_INT, &opt.main_port, 0,
 	 "GGZ port number", "PORT"},
@@ -278,7 +278,84 @@ static void parse_file(FILE *configfile)
 			opt.admin_email = strval;
 			continue;
 		 }
+
+		/*** LOGFILE = filename ***/
+		if(!strcmp(varname, "logfile")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if((strval = malloc(strlen(varvalue)+1)) == NULL)
+				err_sys_exit("parse_file: malloc error");
+			strcpy(strval, varvalue);
+			log_info.log_fname = strval;
+			continue;
+		 }
+
+		/*** LOGLEVEL = X ***/
+		if(!strcmp(varname, "loglevel")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			intval = atoi(varvalue);
+			if(intval < 0) {
+				PARSE_ERR("Invalid LogLevel specified");
+				continue;
+			}
+			if(log_info.log_level == 0)
+				log_info.log_level = intval;
+			continue;
+		}
+
+		/*** DEBUGFILE = filename ***/
+		if(!strcmp(varname, "debugfile")) {
+#ifndef DEBUG
+			PARSE_ERR("Debugging not enabled");
+#else
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if((strval = malloc(strlen(varvalue)+1)) == NULL)
+				err_sys_exit("parse_file: malloc error");
+			strcpy(strval, varvalue);
+			log_info.dbg_fname = strval;
+			continue;
+#endif
+		 }
 		
+		/*** DEBUGLEVEL = X ***/
+		if(!strcmp(varname, "debuglevel")) {
+#ifndef DEBUG
+			PARSE_ERR("Debugging not enabled");
+#else
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			intval = atoi(varvalue);
+			if(intval < 0) {
+				PARSE_ERR("Invalid DebugLevel specified");
+				continue;
+			}
+			if(log_info.dbg_level == 0)
+				log_info.dbg_level = intval;
+			continue;
+#endif
+		}
+
+		/*** FACILITY = string ***/
+		if(!strcmp(varname, "facility")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if(logfile_set_facility(varvalue) < 0)
+				PARSE_ERR("Invalid syslogd facility name");
+			continue;
+		 }
+
 		/*** INVALID VARIABLE ***/
 		PARSE_ERR("Syntax error");
 	}

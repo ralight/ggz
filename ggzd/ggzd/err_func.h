@@ -53,3 +53,12 @@ void dbg_msg(const char *fmt, ...);
  * Error fprinting function for easysock lib
  */
 void err_sock(const char *, const EsOpType, const EsDataType);
+
+/* Logfile info */
+extern LogInfo log_info;
+
+/* Set the syslogd facility */
+extern int logfile_set_facility(char *);
+
+/* Initialize the log files */
+extern void logfile_initialize(void);

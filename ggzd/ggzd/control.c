@@ -151,9 +151,10 @@ int main(int argc, char *argv[])
 	/* Parse options */
 	parse_args(argc, argv);
 	parse_conf_file();
+	logfile_initialize();
 
 	dbg_msg("Conf file: %s", opt.local_conf);
-	dbg_msg("Log level: %d", opt.log_level);
+	dbg_msg("Log level: %d", log_info.log_level);
 	dbg_msg("Main Port: %d", opt.main_port);
 
 #ifndef DEBUG
