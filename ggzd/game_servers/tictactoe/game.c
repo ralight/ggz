@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: game.c 7016 2005-03-18 15:34:52Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -39,6 +39,9 @@
 /* System header files */
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include <time.h>
+#include <stdarg.h>
 
 /* GGZ utility functions */
 #include <ggz.h>
@@ -54,6 +57,8 @@
 #define GGZGAMERESUME /* do not undefine */
 /* The game supports AI players */
 #define GGZBOTPLAYERS /* do not undefine */
+/* The game supports savegames */
+#define GGZSAVEDGAMES /* do not undefine */
 
 /* Data structure for Tic-Tac-Toe-Game */
 struct ttt_game_t {
@@ -62,6 +67,7 @@ struct ttt_game_t {
 	char state;
 	char turn;
 	char move_count;
+	FILE *savegame;
 };
 
 /* Tic-Tac-Toe protocol */
@@ -124,6 +130,9 @@ static int game_do_move(int move);
 static void game_rotate_board(char b[9]);
 static char game_check_move(int num, int move);
 static char game_check_win(void);
+#ifdef GGZSAVEDGAMES
+static void game_save(char *fmt, ...);
+#endif
 
 
 /* Setup game state and board */
@@ -135,6 +144,7 @@ void game_init(GGZdMod *ggzdmod)
 	ttt_game.move_count = 0;
 	for (i = 0; i < 9; i++)
 		ttt_game.board[i] = -1;
+	ttt_game.savegame = NULL;
 		
 	/* Setup GGZ game module */
 	ttt_game.ggz = ggzdmod;
@@ -145,7 +155,7 @@ void game_init(GGZdMod *ggzdmod)
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE,
 	                    &game_handle_ggz_seat);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SEAT,
-			    &game_handle_ggz_seat);
+	                    &game_handle_ggz_seat);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA,
 	                    &game_handle_ggz_player);
 #ifdef GGZSPECTATORS
@@ -170,6 +180,14 @@ static void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event,
 		if (ttt_game.turn == -1)
 			ttt_game.turn = 0;
 		
+#ifdef GGZSAVEDGAMES
+		if(ttt_game.turn == 0) {
+			game_save("players options 3 3");
+			game_save("players start %i", time(NULL));
+		} else {
+			game_save("players continue %i", time(NULL));
+		}
+#endif
 		game_next_move();
 	default:
 		break;
@@ -258,6 +276,15 @@ static void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event,
 			game_send_sync(new_seat.fd);
 #endif
 	}
+
+#ifdef GGZSAVEDGAMES
+	if ((old_seat->type == GGZ_SEAT_PLAYER) || (old_seat->type == GGZ_SEAT_BOT)) {
+		game_save("player%i leave %s", old_seat->num + 1, old_seat->name);
+	}
+	if ((new_seat.type == GGZ_SEAT_PLAYER) || (new_seat.type == GGZ_SEAT_BOT)) {
+		game_save("player%i join %s", new_seat.num + 1, new_seat.name);
+	}
+#endif
 
 	ggzdmod_set_state(ttt_game.ggz, new_state);
 }
@@ -446,6 +473,13 @@ static int game_send_gameover(int winner)
 	}
 #endif
 
+#ifdef GGZSAVEDGAMES
+	game_save("%s %s %i",
+		(winner == 2 ? "players" : (winner == 0 ? "player1" : "player2")),
+		(winner == 2 ? "tie" : "winner"),
+		time(NULL));
+#endif
+
 	return 0;
 }
 
@@ -544,6 +578,10 @@ static int game_do_move(int move)
 		    || ggz_write_int(fd, move) < 0)
 			return -1;
 	}
+#endif
+
+#ifdef GGZSAVEDGAMES
+	game_save("player%i move %i %i", ttt_game.turn + 1, move / 3, move % 3);
 #endif
 	
 	if ( (victor = game_check_win()) < 0) {
@@ -834,4 +872,31 @@ static void game_rotate_board(char b[9])
 		for (j = 0; j < 3; j++)
 			b[3*i+j] = tmp[3*(2-j)+i];
 }
+
+
+#ifdef GGZSAVEDGAMES
+static void game_save(char *fmt, ...)
+{
+	int fd;
+	char *template;
+	char buffer[1024];
+
+	if(!ttt_game.savegame) {
+		template = strdup(DATADIR "/gamedata/TicTacToe/savegame.XXXXXX");
+		fd = mkstemp(template);
+		free(template);
+		if(fd < 0) return;
+		ttt_game.savegame = fdopen(fd, "w");
+		if(!ttt_game.savegame) return;
+	}
+
+	va_list ap;
+	va_start(ap, fmt);
+	vsnprintf(buffer, sizeof(buffer), fmt, ap);
+	va_end(ap);
+
+	fprintf(ttt_game.savegame, "%s\n", buffer);
+	fflush(ttt_game.savegame);
+}
+#endif
 
