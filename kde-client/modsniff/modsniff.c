@@ -1,4 +1,4 @@
-#include <ggzcore.h>
+#include <ggz.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,7 +46,7 @@ int modsniff_init(void)
 	modulefile = modsniff_modulefile();
 	if(!modulefile) return -1;
 	
-	handle = ggzcore_confio_parse(modulefile, GGZ_CONFIO_RDONLY);
+	handle = ggz_conf_parse(modulefile, GGZ_CONF_RDONLY);
 	if(handle == -1)
 	{
 		printf("ERROR: Couldn't open configuration file: %s.\n", modulefile);
@@ -71,7 +71,7 @@ GGZModuleEntry *modsniff_list(void)
 	listcount = 0;
 
 printf("modsniff: get list\n");	
-	ret = ggzcore_confio_read_list(handle, "Games", "*GameList*", &modulecount, &modulelist);
+	ret = ggz_conf_read_list(handle, "Games", "*GameList*", &modulecount, &modulelist);
 	if(ret == -1)
 	{
 		printf("ERROR: Couldn't read games list.\n");
@@ -80,11 +80,11 @@ printf("modsniff: get list\n");
 
 	for(i = 0; i < modulecount; i++)
 	{
-		ret = ggzcore_confio_read_list(handle, "Games", modulelist[i], &fecount, &felist);
+		ret = ggz_conf_read_list(handle, "Games", modulelist[i], &fecount, &felist);
 		if(ret == -1) continue;
 		for(j = 0; j < fecount; j++)
 		{
-			fe = ggzcore_confio_read_string(handle, felist[j], "Frontend", "unknown");
+			fe = ggz_conf_read_string(handle, felist[j], "Frontend", "unknown");
 			listcount++;
 			list = (GGZModuleEntry*)realloc(list, sizeof(GGZModuleEntry) * (listcount + 1));
 			list[listcount].name = NULL;
