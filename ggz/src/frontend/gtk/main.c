@@ -57,7 +57,7 @@ int main (int argc, char *argv[])
 	} else {
 		opt.debug_file = g_strdup(ggzcore_conf_read_string("DEBUG", "FILE", "/tmp/ggz-gtk.debug"));
 	}
-	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_POLL);
+	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_POLL & ~GGZ_DBG_MEMDETAIL);
 	ggzcore_init(opt);
 	free(opt.debug_file);
 	server_profiles_load();
