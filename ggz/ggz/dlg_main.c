@@ -368,7 +368,7 @@ static void ggz_realize(GtkWidget* widget, gpointer data)
 	gtk_xtext_set_palette (GTK_XTEXT(tmp), colors);
 	tmp->auto_indent = ggzrc_read_int("CHAT","AutoIndent",TRUE);
 	tmp->wordwrap = ggzrc_read_int("CHAT","WordWrap",TRUE);
-	tmp->max_auto_indent = 50;
+	tmp->max_auto_indent = 200;
 	tmp->time_stamp = ggzrc_read_int("CHAT","Timestamp",FALSE);
 	gtk_xtext_refresh(tmp);
 
@@ -381,15 +381,15 @@ static void ggz_realize(GtkWidget* widget, gpointer data)
 	g_free(buf);
 
 	gtk_xtext_append_indent(tmp,"---",3,"Options:", 8);
-#ifdef DEBUG
-	gtk_xtext_append_indent(tmp,"---",3,"  Debug", 7);
+#ifndef DEBUG
+	gtk_xtext_append_indent(tmp,"---",3,"  Debug: \00314No ", 15);
 #else
-	gtk_xtext_append_indent(tmp,"---",3,"  No Debug", 10);
+	gtk_xtext_append_indent(tmp,"---",3,"  Debug: \00314Yes", 15);
 #endif
-#ifdef DEBUG_SOCKET
-	gtk_xtext_append_indent(tmp,"---",3,"  Socket Debug", 14);
+#ifndef SOCKET_DEBUG
+		gtk_xtext_append_indent(tmp,"---",3,"  Socket Debug: \00314No ", 22);
 #else
-	gtk_xtext_append_indent(tmp,"---",3,"  No Socket Debug", 17);
+		gtk_xtext_append_indent(tmp,"---",3,"  Socket Debug: \00314Yes", 22);
 #endif
 }
 
