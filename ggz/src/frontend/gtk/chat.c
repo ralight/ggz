@@ -47,28 +47,29 @@ extern GtkWidget *win_main;
 extern GGZServer *server;
 
 /* Aray of GdkColors currently used for chat and MOTD */
+/* They are all non-ditherable and as such should look the same everywhere */
 GdkColor colors[] =
 {
-        {0, 0x0000, 0x0000, 0x0000},          /* 0   black			*/
-        {0, 0xFFFF, 0xFFFF, 0x3333},          /* 1   yellow			*/
-        {0, 0xCCCC, 0x0000, 0x0000},          /* 2   red			*/
-        {0, 0x6666, 0x9999, 0x0000},          /* 3   green			*/
-        {0, 0xCCCC, 0x3333, 0xCCCC},          /* 4   purple			*/
-        {0, 0x9999, 0x3333, 0x3333},          /* 5   brown			*/
-        {0, 0x0000, 0x6666, 0xFFFF},          /* 6   blue			*/
-        {0, 0xFFFF, 0x9999, 0x3333},          /* 7   orange			*/
-        {0, 0x6666, 0xCCCC, 0xCCCC},          /* 8   grey			*/
-        {0, 0x6666, 0xCCCC, 0xFFFF},          /* 9   ?????			*/
-        {0, 0x9999, 0x3333, 0xFFFF},          /* 10  ?????			*/
-        {0, 0x9999, 0x0000, 0x6666},          /* 11  ?????			*/
-        {0, 0x3333, 0x0000, 0x6666},          /* 12  ?????			*/
-        {0, 0x9999, 0x3333, 0x3333},          /* 13  ?????			*/
-        {0, 0x3333, 0x6666, 0xFFFF},          /* 14  ?????			*/
-        {0, 0xFFFF, 0x6666, 0x9999},          /* 15  ?????			*/
-        {0, 0xCCCC, 0xCCCC, 0x3333},          /* 16  ?????			*/
-        {0, 0x6666, 0xFFFF, 0xCCCC},          /* 17  ?????			*/
-        {0, 0x0000, 0x0000, 0x0000},          /* 18  foreground (black)       */
-        {0, 0xFFFF, 0xFFFF, 0xFFFF}           /* 19  background (white)       */
+        {0, 0x0000, 0x0000, 0x0000},          /* 0   Black			*/
+        {0, 0xFFFF, 0xFFFF, 0x3333},          /* 1   Dark Goldenrod		*/
+        {0, 0xCCCC, 0x0000, 0x0000},          /* 2   Orange Red 3		*/
+        {0, 0x6666, 0x9999, 0x0000},          /* 3   Olive Drab			*/
+        {0, 0xCCCC, 0x3333, 0xCCCC},          /* 4   Medium Orchid		*/
+        {0, 0x9999, 0x3333, 0x3333},          /* 5   Indian Red 4		*/
+        {0, 0x0000, 0x6666, 0xFFFF},          /* 6   Royal Blue 2		*/
+        {0, 0xFFFF, 0x9999, 0x3333},          /* 7   Tan 1			*/
+        {0, 0x6666, 0xCCCC, 0xCCCC},          /* 8   Dark Slate Grey 3		*/
+        {0, 0x6666, 0xCCCC, 0xFFFF},          /* 9   Cadet Blue			*/
+        {0, 0x9999, 0x3333, 0xFFFF},          /* 10  Purple 2			*/
+        {0, 0x9999, 0x0000, 0x6666},          /* 11  Violet Red 4		*/
+        {0, 0x3333, 0x0000, 0x6666},          /* 12  Dark Blue			*/
+        {0, 0x9999, 0x3333, 0x3333},          /* 13  Indian Red			*/
+        {0, 0x3333, 0x6666, 0xFFFF},          /* 14  Blue			*/
+        {0, 0xFFFF, 0x6666, 0x9999},          /* 15  Pale Violet Red		*/
+        {0, 0xCCCC, 0xCCCC, 0x3333},          /* 16  Yellow 3			*/
+        {0, 0x6666, 0xFFFF, 0xCCCC},          /* 17  Aquamarine 2		*/
+        {0, 0x0000, 0x0000, 0x0000},          /* 18  foreground (Black)		*/
+        {0, 0xFFFF, 0xFFFF, 0xFFFF}           /* 19  background (White)		*/
 };
 
 
