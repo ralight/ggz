@@ -44,12 +44,18 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qpainter.h>
+#include <qtimer.h>
+#include <qframe.h>
 
 KGGZAbout::KGGZAbout(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
 	QVBoxLayout *vbox;
 	QPushButton *ok;
+
+	m_font = QFont("helvetica", 16);
+	m_font.setStyleHint(QFont::Serif);
+	m_repaint = 0;
 
 	m_frame = new QFrame(this);
 	m_frame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
@@ -65,9 +71,8 @@ KGGZAbout::KGGZAbout(QWidget *parent, const char *name)
 
 	startTimer(70);
 
-	setFixedSize(350, 250);
+	m_frame->setMinimumSize(400, 250);
 	setCaption(i18n("About the GGZ Gaming Zone"));
-	show();
 }
 
 KGGZAbout::~KGGZAbout()
@@ -76,49 +81,96 @@ KGGZAbout::~KGGZAbout()
 
 void KGGZAbout::timerEvent(QTimerEvent *e)
 {
-	paintEvent(NULL);
+	repaint();
+}
+
+void KGGZAbout::resizeEvent(QResizeEvent *e)
+{
+	m_font.setPointSize(width() / 20);
+	m_repaint = 1;
+	repaint();
+}
+
+QString KGGZAbout::measure(QString s)
+{
+	QFontMetrics m(m_font);
+	while(m.width(s) > m_frame->width() - 20)
+	{
+		m_font.setPointSize(m_font.pointSize() - 1);
+		m = QFontMetrics(m_font);
+		m_repaint = 1;
+	}
+	return s;
 }
 
 void KGGZAbout::paintEvent(QPaintEvent *e)
 {
 	QPainter p;
-	QFont font;
 	static int x = 50;
 	static int x2 = 100;
+	QFont font;
+	const QPixmap *pix;
+	int h;
+	int w, w2;
+	const QString developers = "Brian Cox - Brent Hendricks - Doug Hudson -	Rich Gade - Ismael Orenstein - Dan Papasian - "
+		"Ricardo Quesada - Jason Short - Josef Spillner - Justin Zaun - and many supporters...";
 
-	font = QFont("helvetica", 18);
-	font.setStyleHint(QFont::Serif);
+	pix = new QPixmap(m_frame->width(), m_frame->height());
 
-	p.begin(m_frame);
-	p.fillRect(0, 110, 350, 70, QBrush(QColor(100, 0, 0)));
-	p.setFont(font);
-	p.setPen(QColor(255, 255, 255));
-	p.drawText(10, 25, "The GGZ Gaming Zone");
-	p.drawLine(10, 30, 330, 30);
-	p.drawLine(10, 32, 330, 32);
-	font.setPointSize(10);
-	p.setFont(font);
-	p.drawText(10, 45, i18n("Free Software shall dominate all Online Games!"));
-	p.drawText(10, 65, i18n("The GGZ Gaming Zone is a collaboration between several people who"));
-	p.drawText(10, 77, i18n("try to make public online game services available for free -"));
-	p.drawText(10, 89, i18n("including source code and professional help for both gamers and"));
-	p.drawText(10, 101, i18n("game developers. GGZ is available for many platforms and toolkits."));
-	p.drawText(10, 185, i18n("Homepage: http://ggz.sourceforge.net"));
+	p.begin(pix);
+	p.fillRect(0, 0, m_frame->width(), m_frame->height(), QBrush(QColor(100, 0, 0)));
+
 	font.setPointSize(50);
 	font.setWeight(QFont::Black);
 	p.setFont(font);
 	p.setPen(QColor(130, 0, 0));
-	p.drawText(x, 160, "GGZ Gaming Zone " KGGZVERSION);
+	p.drawText(x, m_frame->height() - m_font.pointSize() * 2 - 20, "GGZ Gaming Zone " KGGZVERSION);
+	QFontMetrics m(font);
+	w = m.width("GGZ Gaming Zone" KGGZVERSION);
+	if(x < -w) x = w;
+
 	font.setPointSize(10);
 	font.setWeight(QFont::Normal);
 	p.setFont(font);
 	p.setPen(QColor(210, 50, 50));
-	p.drawText(x2, 160, "Brian Cox - Brent Hendricks - Doug Hudson - Rich Gade - Ismael Orenstein - Dan Papasian - "
-		"Ricardo Quesada - Josef Spillner - Justin Zaun - and many supporters...");
+	p.drawText(x2, m_frame->height() - m_font.pointSize() * 2 - 20, developers);
+	QFontMetrics m2(font);
+	w2 = m2.width(developers);
+	if(x2 < -w2) x2 = w2;
+
+	font = QFont("helvetica", 18);
+	font.setStyleHint(QFont::Serif);
+	p.setFont(font);
+	p.setPen(QColor(255, 255, 255));
+	p.drawText(10, 25, measure(i18n("The GGZ Gaming Zone")));
+	p.drawLine(10, 30, 330, 30);
+	p.drawLine(10, 32, 330, 32);
+
+	p.setFont(m_font);
+	h = m_font.pointSize() + 5;
+	p.drawText(10, 35 + h * 1, measure(i18n("Free Software shall dominate all Online Games!")));
+	p.drawText(10, 35 + h * 2, measure(i18n("The GGZ Gaming Zone is a collaboration between several people who")));
+	p.drawText(10, 35 + h * 3, measure(i18n("try to make public online game services available for free -")));
+	p.drawText(10, 35 + h * 4, measure(i18n("including source code and professional help for both gamers and")));
+	p.drawText(10, 35 + h * 5, measure(i18n("game developers. GGZ is available for many platforms and toolkits.")));
+	p.drawText(10, m_frame->height() - m_font.pointSize() - 10, measure(i18n("Homepage: http://ggz.sourceforge.net")));
+
 	p.end();
+
 	x--;
 	x2 -= 3;
-	if(x < -530) x = 350;
-	if(x2 < -770) x2 = 350;
+
+	if(m_repaint)
+	{
+		m_repaint = 0;
+		repaint();
+	}
+	else
+	{
+		m_frame->setBackgroundPixmap(*pix);
+		show();
+	}
+
+	delete pix;
 }
 

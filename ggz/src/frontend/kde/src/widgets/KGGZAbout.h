@@ -36,8 +36,9 @@
 
 // Qt includes
 #include <qwidget.h>
-#include <qtimer.h>
-#include <qframe.h>
+
+// Forward declarations
+class QFrame;
 
 // Show an animated about dialog
 class KGGZAbout : public QWidget
@@ -54,10 +55,18 @@ class KGGZAbout : public QWidget
 		void timerEvent(QTimerEvent *e);
 		// Let the menu handle drawing on its own
 		void paintEvent(QPaintEvent *e);
+		// Handle window resize events
+		void resizeEvent(QResizeEvent *e);
 
 	private:
+		// Internal string length measurement
+		QString measure(QString s);
 		// The animation frame
 		QFrame *m_frame;
+		// Flag which indicates the need for a repaint
+		int m_repaint;
+		// The dynamically adjusted font and its size
+		QFont m_font;
 };
 
 #endif
