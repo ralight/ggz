@@ -596,6 +596,7 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 			KGGZDEBUG("over\n");
 			m_gamefd = -1;
 			eventLeaveTable(1);
+			m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreGame::ioerror:
 			KGGZDEBUG("ioerror\n");
