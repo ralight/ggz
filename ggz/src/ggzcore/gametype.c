@@ -115,6 +115,15 @@ int ggzcore_gametype_get_max_bots(GGZGameType *type)
 }
 
 
+int ggzcore_gametype_get_spectators_allowed(GGZGameType *type)
+{
+	if (!type)
+		return 0;
+
+	return _ggzcore_gametype_get_spectators_allowed(type);
+}
+
+
 /* Verify that a paticular number of players/bots is valid */
 int ggzcore_gametype_num_players_is_valid(GGZGameType *type, unsigned int num)
 {
@@ -153,15 +162,17 @@ void _ggzcore_gametype_init(struct _GGZGameType *gametype,
 			    const char* version,
 			    const char* prot_engine,
 			    const char* prot_version,
-			    const GGZAllowed allow_players, 
-			    const GGZAllowed allow_bots,  
+			    const GGZAllowed allow_players,
+			    const GGZAllowed allow_bots,
+				const unsigned int spectators_allowed,
 			    const char* desc,
-			    const char* author, 
+			    const char* author,
 			    const char *url)
 {
 	gametype->id = id;
 	gametype->allow_players = allow_players;
 	gametype->allow_bots = allow_bots;
+	gametype->spectators_allowed = spectators_allowed;
 	
 	gametype->name = ggz_strdup(name);
 	gametype->version = ggz_strdup(version);
@@ -273,6 +284,12 @@ unsigned int _ggzcore_gametype_get_max_bots(struct _GGZGameType *type)
 }
 
 
+unsigned int _ggzcore_gametype_get_spectators_allowed(struct _GGZGameType *type)
+{
+	return type->spectators_allowed;
+}
+
+
 /* Verify that a paticular number of players/bots is valid */
 unsigned int _ggzcore_gametype_num_players_is_valid(struct _GGZGameType *type, unsigned int num)
 {
@@ -321,8 +338,8 @@ void* _ggzcore_gametype_create(void* p)
 
 	_ggzcore_gametype_init(new, src->id, src->name, src->version,
 			       src->prot_engine, src->prot_version,
-			       src->allow_players, src->allow_bots, src->desc,
-			       src->author, src->url);
+			       src->allow_players, src->allow_bots, src->spectators_allowed,
+				   src->desc, src->author, src->url);
 	
 	return (void*)new;
 }

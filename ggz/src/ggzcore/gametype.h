@@ -69,6 +69,9 @@ struct _GGZGameType {
 
 	/* Bitmask of alowable numbers of bots */
 	GGZAllowed allow_bots;
+
+	/* Whether spectators are allowed or not */
+	unsigned int spectators_allowed;
 	
 	/* ID of this game on the server */
 	unsigned int id;
@@ -85,8 +88,9 @@ void _ggzcore_gametype_init(struct _GGZGameType *gametype,
 			    const char* version,
 			    const char* prot_engine,
 			    const char* prot_version,
-			    const GGZAllowed allow_players, 
-			    const GGZAllowed allow_bots,  
+			    const GGZAllowed allow_players,
+			    const GGZAllowed allow_bots,
+				unsigned int spectators_allowed,
 			    const char* desc,
 			    const char* author, 
 			    const char *url);
@@ -112,6 +116,7 @@ char*  _ggzcore_gametype_get_desc(struct _GGZGameType *type);
 /* Return the maximum number of allowed players/bots */
 unsigned int _ggzcore_gametype_get_max_players(struct _GGZGameType *type);
 unsigned int _ggzcore_gametype_get_max_bots(struct _GGZGameType *type);
+unsigned int _ggzcore_gametype_get_spectators_allowed(struct _GGZGameType *type);
 
 /* Verify that a paticular number of players/bots is valid */
 unsigned int _ggzcore_gametype_num_players_is_valid(struct _GGZGameType *type, unsigned int num);

@@ -285,6 +285,15 @@ int ggzcore_room_join_table(GGZRoom *room, const unsigned int num)
 }
 
 
+int ggzcore_room_join_table_spectator(GGZRoom *room, const unsigned int num)
+{
+	if (room && room->server)
+		return _ggzcore_room_join_table_spectator(room, num);
+	else
+		return -1;
+}
+
+
 int ggzcore_room_leave_table(GGZRoom *room, int force)
 {
 	if (room && room->server)
@@ -882,6 +891,28 @@ int _ggzcore_room_join_table(struct _GGZRoom *room, const unsigned int num)
 
 	net = _ggzcore_server_get_net(room->server);
 	status = _ggzcore_net_send_table_join(net, num);
+
+	if (status == 0)
+		_ggzcore_server_set_table_joining(room->server);
+	
+	return status;
+}
+
+
+int _ggzcore_room_join_table_spectator(struct _GGZRoom *room, const unsigned int num)
+{
+	int status;
+	struct _GGZNet *net;
+
+	/* Make sure we're actually in a room (FIXME: should probably
+           make sure we're in *this* room) and not already playing a
+           game */
+	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_IN_ROOM)
+		return -1;
+
+
+	net = _ggzcore_server_get_net(room->server);
+	status = _ggzcore_net_send_table_join_spectator(net, num);
 
 	if (status == 0)
 		_ggzcore_server_set_table_joining(room->server);

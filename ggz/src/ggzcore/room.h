@@ -134,6 +134,7 @@ int _ggzcore_room_chat(struct _GGZRoom *room,
 
 int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table);
 int _ggzcore_room_join_table(struct _GGZRoom *room, const unsigned int num);
+int _ggzcore_room_join_table_spectator(struct _GGZRoom *room, const unsigned int num);
 int _ggzcore_room_leave_table(struct _GGZRoom *room, int force);
 
 int  _ggzcore_room_send_game_data(struct _GGZRoom *room, char *buffer);
