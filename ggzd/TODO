@@ -1,12 +1,10 @@
 For 0.0.2
 =========
-- Finalize layout
-- Put Unix domain sockets in /var/run according to FHS
 - Wait for existence of socket before running game module
-
 
 For 0.0.3
 =========
+- Put Unix domain sockets in /var/run according to FHS
 - Improve updates system
 - List error codes and add to protocol
 - table chat

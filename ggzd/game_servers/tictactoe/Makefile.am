@@ -18,3 +18,9 @@ tictactoe_SOURCES = ggz.c \
 
 tictactoe_LDADD = $(LDADD) $(top_builddir)/easysock/libeasysock.la 
 tictactoe_LDFLAGS = -static
+
+test:
+	-cp $(ggzdmod_PROGRAMS) $(top_builddir)/test
+	-cp $(ggzdgame_DATA) $(top_builddir)/test/games
+	-cp $(ggzdroom_DATA) $(top_builddir)/test/rooms
+

@@ -1,4 +1,6 @@
 ggzd
+ggzd.conf
+ggzd.test
 Makefile
 Makefile.in
 .deps

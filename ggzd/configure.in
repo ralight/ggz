@@ -169,10 +169,12 @@ AC_SUBST(ggzdconfdir)
 AC_SUBST(ggzdroomdir)
 AC_SUBST(ggzdgamedir)
 AC_SUBST(ggzdmoddir)
+AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([Makefile 
            ggzd/Makefile 
 	   ggzd/ggzd.conf
+	   ggzd/ggzd.test
 	   doc/Makefile
 	   game_servers/Makefile
 	   game_servers/spades/Makefile
@@ -182,20 +184,16 @@ AC_OUTPUT([Makefile
 
 dnl Status Output
 dnl =============
+echo "*** GGZD will be built with the following debugging flags: $DFLAGS"
+echo "***"
+echo "*** To compile and install server:"
+echo "***"
+echo "***'make install'"
+echo "***"
+echo "*** To compile and test server locally without installing:"
+echo "***"
+echo "*** 'make test; cd ggzd; ./ggzd -f ggzd.test'"
 echo ""
-echo "*** Programs will be built with the following debugging flags: $DFLAGS"
-echo ""
-echo "WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!"
-echo ""
-echo "You may now compile ggzd with 'make', but do *NOT* attempt to 'make install'"
-echo "You *MUST* run ggzd from the directory in which it was compiled, like this:"
-echo ""
-echo "cd ggzd; ./ggzd -p7626"
-echo ""
-echo "This will start the ggzd server listening on port 7626"
-echo "Future versions will be able to be run from any directory"
-echo ""
-echo "WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!"
 
 
 

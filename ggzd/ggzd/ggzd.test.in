@@ -1,0 +1,11 @@
+# GGZ conf file for testing in builddir.  Do *not* use this file as a
+# system-wide configuration for ggz.  Use ggzd.conf instead 
+
+LogFile = @packagesrcdir@/ggzd.log
+LogTypes = Notices, Connections
+DebugFile = @packagesrcdir@/ggzd.debug
+DebugTypes = Process, Connection, Table, Protocol, Update, Misc, Room, Lists
+ConfDir = @packagesrcdir@/test
+GameDir = @packagesrcdir@/test
+AddAllGames
+AddAllRooms

@@ -34,3 +34,5 @@ ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(top_builddir)/easysock/libeasysock.la
 ggzd_LDFLAGS = -static
 
 ggzdconf_DATA = ggzd.conf
+
+test:
