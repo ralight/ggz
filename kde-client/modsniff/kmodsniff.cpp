@@ -1,36 +1,28 @@
+// Modsniff includes
 #include "kmodsniff.h"
 #include "modsniff.h"
 
-#ifdef __STRICT_ANSI__
-#ifndef __USE_BSD
-#define __USE_BSD
-#include <sys/stat.h>
-#endif
-#ifndef strdup
-#define strdup(x) strcpy(((char*)malloc(strlen(x) + 1)), x)
-#endif
-#endif
-
+// KDE includes
 #include <klocale.h>
+#include <kstddirs.h>
 
+// Qt includes
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qstringlist.h>
+#include <qfile.h>
+#include <qdir.h>
+#include <qpushbutton.h>
+#include <qmultilineedit.h>
+#include <qtextstream.h>
 
-#include <fstream>
+// System includes
 #include <stdlib.h>
-#include <cstdio>
-#include <sys/types.h>
-#include <dirent.h>
-#include <fnmatch.h>
-#include <sys/stat.h>
 #include <string.h>
-#include <iostream>
-
-#define DIRPERM (S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
 
 using namespace std;
 
-KModSniff::KModSniff(QWidget *parent, char *name)
+KModSniff::KModSniff(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	QVBoxLayout *vbox;
@@ -60,7 +52,7 @@ KModSniff::KModSniff(QWidget *parent, char *name)
 	connect(m_search, SIGNAL(clicked()), SLOT(slotSearch()));
 
 	resize(400, 200);
-	setCaption("GGZ ModSniffer");
+	setCaption("GGZ Module Sniffer");
 	show();
 }
 
@@ -104,16 +96,18 @@ void KModSniff::slotSearch()
 	m_search->setEnabled(TRUE);
 }
 
-void KModSniff::addModule(char *modulename, char *frontend)
+void KModSniff::addModule(const char *modulename, const char *frontend)
 {
-	ofstream mod;
-	char modfile[1024];
+	QString filename, modfile;
 
-	sprintf(modfile, "%s/.kde/share/applnk/Games/ggz/games/%s.%s.desktop", getenv("HOME"), modulename, frontend);
-	mod.open(modfile);
-	if(!mod.is_open()) return;
+	filename = QString("Games/ggz/games/%1.%2.desktop").arg(modulename).arg(frontend);
+	modfile = locateLocal("apps", filename);
 
-	mod << "[Desktop Entry]" << endl
+	QFile mod(modfile);
+	if(!mod.open(IO_ReadWrite)) return;
+
+	QTextStream mts(&mod);
+	mts << "[Desktop Entry]" << endl
 		<< "Comment=" << endl
 		<< "Exec=ggzap --module " << modulename << " --frontend " << frontend << endl
 		<< "Icon=ggzquick.png" << endl
@@ -136,95 +130,45 @@ GGZModuleEntry *KModSniff::installedModules()
 {
 	GGZModuleEntry *list, *bak;
 	int listcount, i;
-	DIR *dp;
-	struct dirent *ep;
-	char moddir[1024];
-	char modfile[1024];
-	struct stat buf;
-	char *token, *token2;
-	char *frontend;
-	FILE *f;
-	char buffer[512];
+	KStandardDirs d;
+	QString moddir;
+	QStringList bufferlist, buffer;
+	QDir dir;
 
 	list = NULL;
 	bak = NULL;
 	listcount = 0;
 
-	sprintf(moddir, "%s/.kde/share/applnk/Games/ggz/games", getenv("HOME"));
-	stat(moddir, &buf);
-	if((buf.st_mode & S_IFDIR) == 0)
-	{
-		sprintf(moddir, "%s/.kde", getenv("HOME"));
-		mkdir(moddir, DIRPERM);
-		strcat(moddir, "/share");
-		mkdir(moddir, DIRPERM);
-		strcat(moddir, "/applnk");
-		mkdir(moddir, DIRPERM);
-		strcat(moddir, "/Games");
-		mkdir(moddir, DIRPERM);
-		strcat(moddir, "/ggz");
-		mkdir(moddir, DIRPERM);
-		strcat(moddir, "/games");
-		mkdir(moddir, DIRPERM);
-	}
+	QString path = "Games/ggz/games";
 
-	for(int k = 0; k < 2; k++)
+	moddir = locateLocal("apps", path);
+	if(!d.exists(moddir + "/.modsniff_info"))
+		locateLocal("apps", path + "/.modsniff_info");
+
+	dir = QDir(moddir, "*.desktop");
+	bufferlist = dir.entryList();
+	listcount = bufferlist.count();
+	if(listcount > 0)
 	{
 		i = 0;
-		dp = opendir(moddir);
-		if(dp)
+		list = (GGZModuleEntry*)malloc((listcount + 1) * sizeof(GGZModuleEntry));
+		list[listcount].name = NULL;
+		list[listcount].frontend = NULL;
+
+		for(QStringList::Iterator it = bufferlist.begin(); it != bufferlist.end(); it++)
 		{
-			while((ep = readdir(dp)) != 0)
+			buffer = buffer.split(".", (*it));
+			if(buffer.count() > 2)
 			{
-				if(!fnmatch("*.desktop", ep->d_name, FNM_NOESCAPE))
-				{
-					if(k == 0) listcount++;
-					else if(i <= listcount)
-					{
-						token = strtok(ep->d_name, ".");
-						frontend = strtok(NULL, ".");
-						if(token)
-						{
-							strcpy(modfile, moddir);
-							strcat(modfile, "/");
-							strcat(modfile, ep->d_name);
-							strcat(modfile, ".");
-							strcat(modfile, frontend);
-							strcat(modfile, ".desktop");
-							f = fopen(modfile, "r");
-							if(f)
-							{
-								while(fgets(buffer, sizeof(buffer), f))
-								{
-									buffer[strlen(buffer) - 1] = 0;
-									if(strncmp(buffer, "Exec", 4) == 0)
-									{
-										token2 = strtok(buffer, " ");
-										while(token2)
-										{
-											if(strcmp(token2, "--frontend") == 0) frontend = strdup(strtok(NULL, " "));
-											token2 = strtok(NULL, " ");
-										}
-									}
-								}
-							}
-							else frontend = "unknown";
-							list[i].name =(char*)malloc(strlen(token) + 1);
-							strcpy(list[i].name, strdup(token));
-							list[i].frontend = frontend;
-						}
-						while(token) token = strtok(NULL, ".");
-					}
-					i++;
-				}
+				list[i].name = strdup((*(buffer.at(0))).latin1());
+				list[i].frontend = strdup((*(buffer.at(1))).latin1());
 			}
-			closedir(dp);
-		}
-		if(k == 0)
-		{
-			list = (GGZModuleEntry*)malloc((listcount + 1) * sizeof(GGZModuleEntry));
-			list[listcount].name = NULL;
-			list[listcount].frontend = NULL;
+			else
+			{
+				list[i].frontend = NULL;
+				list[i].name = NULL;
+			}
+			i++;
 		}
 	}
 

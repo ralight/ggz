@@ -1,10 +1,16 @@
+/* GGZ includes */
 #include <ggz.h>
 
+/* System includes */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+/* Modsniff includes */
 #include "modsniff.h"
+
+/* Configuration */
+#include "config.h"
 
 static int handle = -1;
 static GGZModuleEntry *list = NULL;
@@ -35,8 +41,8 @@ char *modsniff_modulefile(void)
 {
 	char *path;
 
-	path = modsniff_moduletest("/usr/local/etc");
-	if(!path) path = modsniff_moduletest("/usr/etc");
+	path = modsniff_moduletest(PREFIX "/etc");
+	if(!path) path = modsniff_moduletest("/usr/local/etc");
 	if(!path) path = modsniff_moduletest("/etc");
 
 	return path;
