@@ -40,6 +40,7 @@ static GtkWidget *draw_area = NULL;
 static GtkWidget *statusbar;
 static guint sb_context;
 static GtkStyle *draw_area_style;
+static GdkPixmap *board_img;
 static GdkPixmap *board_buf;
 static GdkPixmap *hole_pixmap;
 static GdkBitmap *hole_mask;
@@ -97,11 +98,21 @@ int display_init(void)
 						  "Game Messages");
 
 	/* Create a pixmap buffer from our xpm */
-	board_buf = display_load_pixmap(draw_area->window, NULL,
+	board_img = display_load_pixmap(draw_area->window, NULL,
 					NULL,
 					"board.xpm");
-	if(board_buf == NULL)
+	if(board_img == NULL)
 		return -1;
+	board_buf = gdk_pixmap_new(draw_area->window,
+				   draw_area->allocation.width,
+				   draw_area->allocation.height,
+				   -1);
+	gdk_draw_pixmap(board_buf,
+			draw_area_style->fg_gc[GTK_WIDGET_STATE(draw_area)],
+			board_img,
+			0, 0,
+			0, 0,
+			400, 400);
 
 	/* Convert the rest of our xpms to masked pixmaps */
 	hole_gc = gdk_gc_new(draw_area->window);
@@ -232,6 +243,12 @@ static void display_draw_holes(void)
 			gdk_gc_set_clip_origin(hole_gc, x, y);
 			gdk_gc_set_clip_mask(hole_gc, hole_mask);
 
+			gdk_draw_pixmap(board_buf,
+				draw_area_style->fg_gc[GTK_WIDGET_STATE(draw_area)],
+				board_img,
+				x, y,
+				x, y,
+				12, 12);
 			gdk_draw_rectangle(board_buf,
 					   hole_gc,
 					   TRUE,
