@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(agrue/agrue.c)
-AM_INIT_AUTOMAKE(ggz-utils, 0.0.4)
+AM_INIT_AUTOMAKE(ggz-utils, 0.0.5pre)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
@@ -10,6 +10,7 @@ dnl =====================
 AC_ARG_ENABLE(agrue,  [  --disable-agrue        Don't build AGRUE],, enable_agrue=yes)
 AC_ARG_ENABLE(grubby, [  --disable-grubby       Don't build GRUBBY],, enable_grubby=yes)
 AC_ARG_ENABLE(gensec, [  --disable-gensec       Don't build GenSecure],, enable_gensec=yes)
+AC_ARG_ENABLE(guru,   [  --disable-guru         Dont' build Guru],, enable_guru=yes)
 AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by default)],, enable_debug=yes)
 
 
@@ -21,6 +22,7 @@ AC_PROG_INSTALL
 AC_PROG_CPP
 AM_PROG_CC_STDC
 AC_PROG_MAKE_SET
+AM_PROG_LIBTOOL
 
 dnl Check for header files
 dnl ======================
@@ -117,6 +119,10 @@ if test "$enable_gensec" = yes; then
 	SUBDIRS="$SUBDIRS gensecure"
 fi
 
+if test "$enable_guru" = yes; then
+	SUBDIRS="$SUBDIRS guru"
+fi
+
 AC_SUBST(LDADD)
 AC_SUBST(grubby_LIBS)
 AC_SUBST(SUBDIRS)
@@ -127,5 +133,8 @@ AC_OUTPUT(Makefile
 		gensecure/Makefile
 		gensecure/io/Makefile
 		gensecure/src/Makefile
+		guru/Makefile
+		guru/src/Makefile
+		guru/modules/Makefile
 		man/Makefile)
 
