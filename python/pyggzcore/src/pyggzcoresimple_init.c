@@ -26,9 +26,9 @@
 /* Function prototypes                        */
 /**********************************************/
 
-static GGZHookReturn pyggzcoresimple_cb_server_hook(unsigned int id, void *event_data, void *user_data);
-static GGZHookReturn pyggzcoresimple_cb_room_hook(unsigned int id, void *event_data, void *user_data);
-static GGZHookReturn pyggzcoresimple_cb_game_hook(unsigned int id, void *event_data, void *user_data);
+static GGZHookReturn pyggzcoresimple_cb_server_hook(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn pyggzcoresimple_cb_room_hook(unsigned int id, const void *event_data, const void *user_data);
+static GGZHookReturn pyggzcoresimple_cb_game_hook(unsigned int id, const void *event_data, const void *user_data);
 
 static void pyggzcoresimple_set_handler_game(void);
 static PyObject *pyggzcoresimple_new_game(PyObject *self, PyObject *args);
@@ -632,7 +632,7 @@ static PyObject *pyggzcoresimple_new_game(PyObject *self, PyObject *args)
 /* Internal callbacks                         */
 /**********************************************/
 
-static GGZHookReturn pyggzcoresimple_cb_server_hook(unsigned int id, void *event_data, void *user_data)
+static GGZHookReturn pyggzcoresimple_cb_server_hook(unsigned int id, const void *event_data, const void *user_data)
 {
 	PyObject *arg, *res;
 	PyObject *element;
@@ -748,7 +748,7 @@ static const char *playertype_to_string(GGZPlayerType t)
 	return NULL;
 }
 
-static GGZHookReturn pyggzcoresimple_cb_room_hook(unsigned int id, void *event_data, void *user_data)
+static GGZHookReturn pyggzcoresimple_cb_room_hook(unsigned int id, const void *event_data, const void *user_data)
 {
 	PyObject *arg, *res;
 	PyObject *list, *element;
@@ -851,7 +851,7 @@ static GGZHookReturn pyggzcoresimple_cb_room_hook(unsigned int id, void *event_d
 	return GGZ_HOOK_OK;
 }
 
-static GGZHookReturn pyggzcoresimple_cb_game_hook(unsigned int id, void *event_data, void *user_data)
+static GGZHookReturn pyggzcoresimple_cb_game_hook(unsigned int id, const void *event_data, const void *user_data)
 {
 	PyObject *arg, *res;
 	char *str;
