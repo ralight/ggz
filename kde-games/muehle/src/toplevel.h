@@ -2,6 +2,7 @@
 #define TOPLEVEL_H
 
 #include <kmainwindow.h>
+#include <qstringlist.h>
 
 class Board;
 
@@ -13,13 +14,12 @@ class Toplevel : public KMainWindow
 		~Toplevel();
 		enum MenuItems
 		{
-			menugamenew,
-			menugamequit,
-			menuplayerremis,
-			menuplayerloose,
-			menutheme1,
-			menutheme2,
-			menutheme3
+			menugamenew = 1,
+			menugamequit = 2,
+			menuplayerremis = 3,
+			menuplayerloose = 4,
+			menuthemes = 100,
+			menuvariants = 200
 		};
 
 	public slots:
@@ -27,6 +27,7 @@ class Toplevel : public KMainWindow
 
 	private:
 		Board *board;
+		QStringList themelist, variantslist;
 };
 
 #endif

@@ -1,2 +1,2 @@
-SUBDIRS = src pics doc
+SUBDIRS = src pics doc variants
 

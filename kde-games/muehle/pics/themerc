@@ -1,0 +1,9 @@
+[Themes]
+Themes=standard,alt
+
+[standard]
+Name=Standard Theme
+
+[alt]
+Name=Alternative Theme
+

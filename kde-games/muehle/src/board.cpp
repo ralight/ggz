@@ -8,6 +8,10 @@
 #include "net.h"
 #include <qimage.h>
 #include "qwebpath.h"
+#include <kstddirs.h>
+#include <qfile.h>
+#include <qregexp.h>
+#include <qtextstream.h>
 
 Board::Board(QWidget *parent, const char *name)
 : QWidget(parent, name)
@@ -16,45 +20,51 @@ Board::Board(QWidget *parent, const char *name)
 	net->output("KDE Muehle Game");
 
 	//setBackgroundPixmap(QPixmap("../pics/bg.png"));
-	bg = new QPixmap("../pics/bg.png");
+	//bg = new QPixmap("../pics/bg.png");
+	bg = NULL;
+	black = NULL;
+	white = NULL;
+	setTheme("standard");
 
-	web = new QWeb();
+	web = NULL;
+	setVariant("classic");
+
 	// connections outer ring
-	web->addPeer(QPoint(10, 10), QPoint(50, 10));
+	/*web->addPeer(QPoint(10, 10), QPoint(50, 10));
 	web->addPeer(QPoint(50, 10), QPoint(90, 10));
 	web->addPeer(QPoint(90, 10), QPoint(90, 50));
 	web->addPeer(QPoint(90, 50), QPoint(90, 90));
 	web->addPeer(QPoint(90, 90), QPoint(50, 90));
 	web->addPeer(QPoint(50, 90), QPoint(10, 90));
 	web->addPeer(QPoint(10, 90), QPoint(10, 50));
-	web->addPeer(QPoint(10, 50), QPoint(10, 10));
+	web->addPeer(QPoint(10, 50), QPoint(10, 10));*/
 	// connections middle ring
-	web->addPeer(QPoint(20, 20), QPoint(50, 20));
+	/*web->addPeer(QPoint(20, 20), QPoint(50, 20));
 	web->addPeer(QPoint(50, 20), QPoint(80, 20));
 	web->addPeer(QPoint(80, 20), QPoint(80, 50));
 	web->addPeer(QPoint(80, 50), QPoint(80, 80));
 	web->addPeer(QPoint(80, 80), QPoint(50, 80));
 	web->addPeer(QPoint(50, 80), QPoint(20, 80));
 	web->addPeer(QPoint(20, 80), QPoint(20, 50));
-	web->addPeer(QPoint(20, 50), QPoint(20, 20));
+	web->addPeer(QPoint(20, 50), QPoint(20, 20));*/
 	// connections inner ring
-	web->addPeer(QPoint(30, 30), QPoint(50, 30));
+	/*web->addPeer(QPoint(30, 30), QPoint(50, 30));
 	web->addPeer(QPoint(50, 30), QPoint(70, 30));
 	web->addPeer(QPoint(70, 30), QPoint(70, 50));
 	web->addPeer(QPoint(70, 50), QPoint(70, 70));
 	web->addPeer(QPoint(70, 70), QPoint(50, 70));
 	web->addPeer(QPoint(50, 70), QPoint(30, 70));
 	web->addPeer(QPoint(30, 70), QPoint(30, 50));
-	web->addPeer(QPoint(30, 50), QPoint(30, 30));
+	web->addPeer(QPoint(30, 50), QPoint(30, 30));*/
 	// connections transring
-	web->addPeer(QPoint(10, 50), QPoint(20, 50));
+	/*web->addPeer(QPoint(10, 50), QPoint(20, 50));
 	web->addPeer(QPoint(20, 50), QPoint(30, 50));
 	web->addPeer(QPoint(70, 50), QPoint(80, 50));
 	web->addPeer(QPoint(80, 50), QPoint(90, 50));
 	web->addPeer(QPoint(50, 10), QPoint(50, 20));
 	web->addPeer(QPoint(50, 20), QPoint(50, 30));
 	web->addPeer(QPoint(50, 70), QPoint(50, 80));
-	web->addPeer(QPoint(50, 80), QPoint(50, 90));
+	web->addPeer(QPoint(50, 80), QPoint(50, 90));*/
 
 	stonelist.setAutoDelete(true);
 }
@@ -80,13 +90,10 @@ void Board::paintStone(QPixmap *tmp, QPainter *p, int x, int y, int owner)
 	QRgb rgba, rgba2;
 	int r2, g2, b2;
 
-	QPixmap black("../pics/black.png");
-	QPixmap white("../pics/white.png");
-
 	if((owner == Stone::white) || (owner == Stone::whiteactive) || (owner == Stone::whitemuehle))
-		pix = white;
+		pix = *white;
 	if((owner == Stone::black) || (owner == Stone::blackactive) || (owner == Stone::blackmuehle))
-		pix = black;
+		pix = *black;
 
 	if((owner == Stone::whiteactive) || (owner == Stone::blackactive)
 	|| (owner == Stone::whitemuehle) || (owner == Stone::blackmuehle))
@@ -283,5 +290,58 @@ void Board::remis()
 void Board::loose()
 {
 	net->output("loose.");
+}
+
+void Board::setTheme(QString theme)
+{
+	KStandardDirs d;
+	if(bg) delete bg;
+	if(black) delete black;
+	if(white) delete white;
+	bg = new QPixmap(d.findResource("data", QString("muehle/themes/%1/bg.png").arg(theme)));
+	black = new QPixmap(d.findResource("data", QString("muehle/themes/%1/black.png").arg(theme)));
+	white = new QPixmap(d.findResource("data", QString("muehle/themes/%1/white.png").arg(theme)));
+
+	repaint();
+}
+
+void Board::setVariant(QString variant)
+{
+	KStandardDirs d;
+	QString s;
+	int x1, y1, x2, y2;
+
+	stonelist.clear();
+	if(web) delete web;
+	web = new QWeb();
+
+	s = d.findResource("data", QString("muehle/%1").arg(variant));
+	kdDebug(12101) << "Load variant: " << variant << endl;
+
+	QFile f(s);
+	f.open(IO_ReadOnly);
+	QTextStream t(&f);
+	while(!t.eof())
+	{
+		s = t.readLine();
+		// Format: "(x1, y1), (x2, y2)\n"
+		if(s.startsWith("("))
+		{
+			s.replace(QRegExp("("), "");
+			s.replace(QRegExp(")"), "");
+			s.replace(QRegExp(" "), "");
+			//s.remove(s.length() - 1, 1);
+			// Format is now: "x1,y1,x2,y2"
+			QStringList list = QStringList::split(",", s);
+			x1 = list[0].toInt();
+			y1 = list[1].toInt();
+			x2 = list[2].toInt();
+			y2 = list[3].toInt();
+			web->addPeer(QPoint(x1, y1), QPoint(x2, y2));
+			kdDebug(12101) << "web->addPeer(QPoint(" << x1 << ", " << y1 << "), QPoint(" << x2 << ", " << y2 << "));" << endl;
+		}
+	}
+	f.close();
+	web->setScale(width() / 100.0);
 }
 

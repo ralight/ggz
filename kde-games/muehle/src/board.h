@@ -19,6 +19,8 @@ class Board : public QWidget
 		void init();
 		void remis();
 		void loose();
+		void setTheme(QString theme);
+		void setVariant(QString variant);
 
 	protected:
 		void paintEvent(QPaintEvent *e);
@@ -31,6 +33,7 @@ class Board : public QWidget
 		QList<Stone> stonelist;
 		QWeb *web;
 		QPixmap *bg;
+		QPixmap *black, *white;
 		Net *net;
 };
 
