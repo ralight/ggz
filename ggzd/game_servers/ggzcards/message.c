@@ -192,10 +192,10 @@ void send_last_hand()
 		hand = &game.seats[s].hand;
 		hand->hand_size = hand->full_hand_size;
 		cards_sort_hand( hand );
-		bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "%s:   ", game.seats[s].ggz->name);
+		bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "%17s: ", game.seats[s].ggz->name);
 		for (c=0; c<hand->hand_size; c++) {
 			card_t card = hand->cards[c];
-			bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "%s%s ",
+			bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "%2s%s ",
 				short_face_names[(int)card.face], short_suit_names[(int)card.suit]);
 		}
 		bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "\n");
@@ -218,7 +218,7 @@ void send_last_trick()
 		p = (game.leader + p_r) % game.num_players;
 		card = game.seats[ game.players[p].seat ].table;
 		msg_len += snprintf(message+msg_len, sizeof(message)-msg_len,
-				"%s - %s of %s\n",
+				"%17s - %s of %s\n",
 				ggz_seats[p].name,
 				face_names[(int)card.face],
 				suit_names[(int)card.suit]
