@@ -1,11 +1,12 @@
 dnl Configuration for GGZ-KDE-Games
 dnl ===============================
 
-AC_INIT(configure.ac)
-AC_CANONICAL_SYSTEM
+AC_INIT
+AC_CONFIG_SRCDIR([configure.ac])
+AC_CANONICAL_TARGET([])
 AC_ARG_PROGRAM
 AM_INIT_AUTOMAKE(ggz-kde-games, 0.0.7pre)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 
 dnl Check for Qt and KDE
 dnl ====================
@@ -42,7 +43,7 @@ AC_SUBST(CXXFLAGS)
 dnl Create Makefiles
 dnl ================
 
-AC_OUTPUT(Makefile
+AC_CONFIG_FILES([Makefile
 	KReversi/Makefile
 	KReversi/module.dsc
 	KReversi/pixmaps/Makefile
@@ -90,7 +91,8 @@ AC_OUTPUT(Makefile
 	fyrdman/module.dsc
 	fyrdman/data/Makefile
 	fyrdman/data/fyrdman.desktop
-	lib/Makefile)
+	lib/Makefile])
+AC_OUTPUT
 
 dnl Report success
 dnl ==============
