@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2940 2001-12-18 22:17:50Z jdorje $
+ * $Id: table.c 2941 2001-12-18 22:29:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -287,10 +287,7 @@ void table_redraw(void)
 	draw_card_areas();
 
 #ifdef ANIMATION
-	/* If there's an animation in progress, zip it */
-	if (animating)
-		animation_zip(FALSE);
-	assert(!animating);
+	animation_zip(FALSE);
 #endif /* ANIMATION */
 
 	/* Redisplay any cards on table and in hands */

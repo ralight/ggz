@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 2939 2001-12-18 20:47:03Z jdorje $
+ * $Id: animation.c 2941 2001-12-18 22:29:24Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -155,15 +155,17 @@ void animation_abort(void)
    sequence so that a new one may be started */
 void animation_zip(gboolean restore)
 {
+	if (!animating)
+		return;
+
 	/* First, kill off the animation callback */
-	if (animating) {
-		gtk_timeout_remove(anim.cb_tag);
-		animating = 0;
-	}
+	gtk_timeout_remove(anim.cb_tag);
 
 	/* And move the card to it's final resting place */
 	ggzcards.players[anim.player].table_card = anim.card;
 	table_show_cards();
+
+	animating = 0;
 }
 
 #endif /* ANIMATION */
