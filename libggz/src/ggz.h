@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 3690 2002-03-26 09:15:10Z jdorje $
+ * $Id: ggz.h 3712 2002-03-28 20:19:48Z jdorje $
  * 
  * Header file for ggz componenets lib
  *
@@ -33,9 +33,14 @@
 extern "C" {
 #endif
 
-/* Under gcc, we use the __attribute__ macro to check variadic arguments,
-   for instance to printf-style functions.  Other compilers may be able
-   to do something similar.  Great for debugging. */
+/** @brief Allow easy use of GCC's "attribute" macro for debugging.
+ *
+ * Under gcc, we use the __attribute__ macro to check variadic arguments,
+ * for instance to printf-style functions.  Other compilers may be able
+ * to do something similar, but this is generally unnecessary since it's
+ * only realy purpose is to give warning messages when the developer compiles
+ * the code.
+ */
 #ifdef __GNUC__
 #  define ggz__attribute(att)  __attribute__(att)
 #else
@@ -847,20 +852,61 @@ unsigned int ggz_set_io_alloc_limit(const unsigned int limit);
  * 
  * Returns socket fd or -1 on error
  ***************************************************************************/
+
+/** @brief A socket type.
+ *
+ *  These socket types are used by ggz_make_socket and friends to decide
+ *  what actions are necessary in making a connection.
+ */
 typedef enum {
-	GGZ_SOCK_SERVER,
-	GGZ_SOCK_CLIENT
+	GGZ_SOCK_SERVER, /**< Just listen on a particular port. */
+	GGZ_SOCK_CLIENT  /**< Connect to a particular port of a server. */
 } GGZSockType;
-	
+
+/** @brief Make a socket connection.
+ *
+ *  This function makes a TCP socket connection.
+ *    - For a server socket, we'll just listen on the given port an accept
+ *      the first connection that is made there.
+ *    - For a client socket, we'll connect to a server that is (hopefully)
+ *      listening at the given port and hostname.
+ *
+ *  @param type The type of socket (server or client).
+ *  @param port The port to listen/connect to.
+ *  @param server The server hostname, for client sockets.
+ *  @return 0 on success, -1 on error.
+ */
 int ggz_make_socket(const GGZSockType type, 
 		    const unsigned short port, 
 		    const char *server);
 
+/** @brief Make a socket connection, exiting on error.
+ *
+ *  Aside from the error condition, this is identical to ggz_make_socket.
+ */
 int ggz_make_socket_or_die(const GGZSockType type,
 			   const unsigned short port, 
 			   const char *server);
 
+/** @brief Connect to a unix domain socket.
+ *
+ *  This function connects to a unix domain socket, a socket associated with
+ *  a file on the VFS.
+ *    - For a server socket, we unlink the socket file first and then
+ *      create it.
+ *    - For a client socket, we connect to a pre-existing socket file.
+ *
+ *  @param type The type of socket (server or client).
+ *  @param name The name of the socket file.
+ *  @return The socket FD on success, -1 on error.
+ *  @note When possible, this should not be used.  Use socketpair() instead.
+ */
 int ggz_make_unix_socket(const GGZSockType type, const char* name);
+
+/** @brief Connect to a unix domain socket, exiting on error.
+ *
+ *  Aside from the error condition, this is identical to ggz_make_unix_socket.
+ */
 int ggz_make_unix_socket_or_die(const GGZSockType type, const char* name);
 
 
