@@ -40,7 +40,6 @@ static void spades_get_options();
 static int spades_handle_option(char* option, int value);
 static char* spades_get_option_text(char* buf, int bufsz, char* option, int value);
 static int spades_get_bid();
-static int spades_deal_hand();
 static int spades_get_bid_text(char* buf, int buf_len, bid_t bid);
 static void spades_set_player_message(player_t p);
 static void spades_end_trick();
@@ -63,7 +62,7 @@ struct game_function_pointers spades_funcs = {
 	game_next_play,
 	game_get_play,
 	game_handle_play,
-	spades_deal_hand,
+	game_deal_hand,
 	spades_end_trick,
 	spades_end_hand,
 	game_start_game,
@@ -174,17 +173,6 @@ static int spades_get_bid()
 	/* TODO: other specialty bids */
 
 	return req_bid(game.next_bid, index, NULL);
-}
-
-static int spades_deal_hand()
-{
-	seat_t s;
-
-	game.hand_size = cards_deck_size() / game.num_players;
-	/* in a regular deal, we just deal out hand_size cards to everyone */
-	for (s = 0; s < game.num_seats; s++)
-		cards_deal_hand(game.hand_size, &game.seats[s].hand);
-	return 0;
 }
 
 static int spades_get_bid_text(char* buf, int buf_len, bid_t bid)
