@@ -44,6 +44,8 @@ void login_set_login (GtkWidget *login)
 	gtk_widget_hide(tmp);
 	tmp = lookup_widget(login, "btnNewCancel");
 	gtk_widget_hide(tmp);
+	tmp = lookup_widget(login, "btnNewAdvanced");
+	gtk_widget_hide(tmp);
 	tmp = lookup_widget(login, "lblNewInfo");
 	gtk_widget_hide(tmp);
 	
@@ -210,6 +212,8 @@ void login_set_new (GtkWidget *login)
 	gtk_widget_show(tmp);
 	tmp = lookup_widget(login, "btnNewCancel");
 	gtk_widget_show(tmp);
+	tmp = lookup_widget(login, "btnNewAdvanced");
+	gtk_widget_show(tmp);
 	tmp = lookup_widget(login, "lblNewInfo");
 	gtk_widget_show(tmp);
 
@@ -261,6 +265,8 @@ void login_set_chat (GtkWidget *login)
 	tmp = lookup_widget(login, "btnNewCreate");
 	gtk_widget_hide(tmp);
 	tmp = lookup_widget(login, "btnNewCancel");
+	gtk_widget_hide(tmp);
+	tmp = lookup_widget(login, "btnNewAdvanced");
 	gtk_widget_hide(tmp);
 	tmp = lookup_widget(login, "lblNewInfo");
 	gtk_widget_hide(tmp);
@@ -387,6 +393,7 @@ create_login (void)
   GtkWidget *hbNewLogin;
   GtkWidget *btnNewCreate;
   GtkWidget *btnNewCancel;
+  GtkWidget *btnNewAdvanced;
   GtkWidget *lblNewInfo;
   GSList *hbLogin_group = NULL;
   GtkWidget *btnGuest;
@@ -716,6 +723,15 @@ create_login (void)
   gtk_box_pack_start (GTK_BOX (hbNewLogin), btnNewCancel, FALSE, FALSE, 0);
   gtk_widget_set_usize (btnNewCancel, 80, -2);
 
+  btnNewAdvanced = gtk_button_new_with_mnemonic (_("A_DVANCED"));
+  gtk_widget_set_name (btnNewAdvanced, "btnNewAdvanced");
+  gtk_widget_ref (btnNewAdvanced);
+  gtk_object_set_data_full (GTK_OBJECT (window), "btnNewAdvanced", btnNewAdvanced,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (btnNewAdvanced);
+  gtk_fixed_put (GTK_FIXED (fixMain), btnNewAdvanced, 490, 369);
+  gtk_widget_set_usize (btnNewCancel, 90, -2);
+
   stoPlayers = gtk_list_store_new (3, G_TYPE_UINT, G_TYPE_STRING, G_TYPE_STRING);
   trePlayers = gtk_tree_view_new_with_model (GTK_TREE_MODEL (stoPlayers));
   gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (trePlayers), TRUE);
@@ -992,7 +1008,7 @@ create_login (void)
                       GTK_SIGNAL_FUNC (on_btnLogin_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (btnNew), "clicked",
-                      GTK_SIGNAL_FUNC (on_btnNew_clicked),
+                      GTK_SIGNAL_FUNC (on_btnProfiles_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (btnQuit), "clicked",
                       GTK_SIGNAL_FUNC (gtk_main_quit),
@@ -1035,6 +1051,9 @@ create_login (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (btnNewCancel), "clicked",
                       GTK_SIGNAL_FUNC (on_btnNewCancel_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (btnNewAdvanced), "clicked",
+                      GTK_SIGNAL_FUNC (on_btnNewAdvanced_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (entNewProfileName), "changed",
 		      GTK_SIGNAL_FUNC (on_entLogin_changed),

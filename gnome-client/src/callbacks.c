@@ -13,6 +13,7 @@
 #include "support.h"
 #include "xtext.h"
 #include "chat.h"
+#include "profilesi.h"
 
 extern GtkWidget* interface;
 extern GdkColor colors[];
@@ -150,7 +151,7 @@ on_btnLogin_clicked                    (GtkButton       *button,
 
 
 void
-on_btnNew_clicked                      (GtkButton       *button,
+on_btnProfiles_clicked                      (GtkButton       *button,
                                         gpointer         user_data)
 {
 	login_set_new(interface);
@@ -191,6 +192,50 @@ on_btnNewCancel_clicked                      (GtkButton       *button,
                                         gpointer         user_data)
 {
 	login_set_login(interface);
+}
+
+
+void
+on_btnNewAdvanced_clicked                      (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *winProfile;
+	GtkWidget *tmp;
+	GtkTreeModel *stoProfiles;
+	GtkTreeIter iter;
+	gint intProfiles;
+	GSList *slProfiles = NULL;
+	gint curItem;
+	gint x;
+
+	winProfile = create_winProfiles ();
+	gtk_widget_show(winProfile);
+
+	/*Clear and re-fill the profile list*/
+	tmp = lookup_widget(winProfile, "treProfiles");
+	stoProfiles = gtk_tree_view_get_model (GTK_TREE_VIEW (tmp));
+	gtk_list_store_clear (GTK_LIST_STORE (stoProfiles));
+	
+	intProfiles = gconf_client_get_int (config, "/schemas/apps/ggz-gnome/profiles/total", NULL);
+	slProfiles = gconf_client_get_list (config, "/schemas/apps/ggz-gnome/profiles/profiles",  GCONF_VALUE_STRING, NULL);
+	if (g_slist_length (slProfiles) != intProfiles)
+	{
+		/* Something is wrong */
+		g_print(_("There has been a problem loading your profiles.\n"));
+		gconf_client_set_int (config, "/schemas/apps/ggz-gnome/profiles/total", 0, NULL);
+		gconf_client_set_list (config, "/schemas/apps/ggz-gnome/profiles/profiles",  GCONF_VALUE_STRING, NULL, NULL);
+		
+	} else {
+		for (x = 0; x < intProfiles; x++)
+		{
+			gtk_list_store_append (GTK_LIST_STORE(stoProfiles),
+					       &iter);
+			gtk_list_store_set (GTK_LIST_STORE(stoProfiles),
+					    &iter, 0,
+					    g_slist_nth_data (slProfiles, x), 
+					    -1);
+		}
+	}
 }
 
 

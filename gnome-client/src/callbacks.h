@@ -19,7 +19,7 @@ on_btnLogin_clicked                    (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_btnNew_clicked                      (GtkButton       *button,
+on_btnProfiles_clicked                      (GtkButton       *button,
                                         gpointer         user_data);
 
 void
@@ -28,6 +28,10 @@ on_btnNewCreate_clicked                      (GtkButton       *button,
 
 void
 on_btnNewCancel_clicked                      (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_btnNewAdvanced_clicked                      (GtkButton       *button,
                                         gpointer         user_data);
 
 void

@@ -19,6 +19,8 @@ ggz_gnome_SOURCES = \
 	xtext.c xtext.h \
 	login.c login.h \
 	ggzclient.c ggzient.h \
+	profilesi.c profilesi.h \
+	profilesc.c profilesc.h \
 	chat.c chat.h
 
 ggz_gnome_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(LDADD) $(GGZ_LIBS) \
