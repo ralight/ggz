@@ -19,9 +19,9 @@
 #include "krosswater_server.h"
 
 // System includes
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/time.h>
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 
 // Stackpath includes
@@ -32,8 +32,9 @@
 #include <ggzdmod.h>
 
 // Gives a console output of the map
-void printpath(int width, int height, int **field)
+static void printpath(int width, int height, int **field)
 {
+	return;
 	for(int j = 0; j < height; j++)
 	{
 		for(int i = 0; i < width; i++)
@@ -303,7 +304,7 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 
 	if(backtrace)
 	{
-		cout << "## Found the path (" << backtrace->x() << ", " << backtrace->y() << ") !!! Doing backtrace..." << endl;
+		//cout << "## Found the path (" << backtrace->x() << ", " << backtrace->y() << ") !!! Doing backtrace..." << endl;
 
 		// prepare for backtrace broadcast
 		for(int i = 0; i < m_numplayers; i++)
@@ -318,7 +319,7 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 		do
 		{
 			// send everyone the good message
-			cout << backtrace->x() << "," << backtrace->y() << endl;
+			//cout << backtrace->x() << "," << backtrace->y() << endl;
 			for(int i = 0; i < m_numplayers; i++)
 			{
 				GGZSeat seat = ggzdmod_get_seat(ggzdmod, i);
@@ -345,7 +346,7 @@ int KrosswaterServer::doMove(int fromx, int fromy, int tox, int toy)
 	}
 	else
 	{
-		cout << "## Ooops, no way found :(" << endl;
+		//cout << "## Ooops, no way found :(" << endl;
 		ret = 0;
 	}
 
