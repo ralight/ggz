@@ -508,8 +508,8 @@ void _ggzcore_confio_cleanup(void)
 	while(f_entry) {
 		f_data = _ggzcore_list_get_data(f_entry);
 		_ggzcore_list_destroy(f_data->section_list);
-		free(f_data->path);
-		free(f_data);
+		ggzcore_free(f_data->path);
+		ggzcore_free(f_data);
 		f_entry = _ggzcore_list_next(f_entry);
 	}
 
@@ -590,10 +590,8 @@ int	ggzcore_confio_parse(const char *path, const unsigned char options)
 		return -1;
 
 	/* Build our file list data entry */
-	file_data = malloc(sizeof(_ggzcore_confio_file));
-	if(!file_data)
-		ggzcore_error_sys_exit("malloc failed: ggzcore_confio_parse");
-	file_data->path = dup_string(path);
+	file_data = ggzcore_malloc(sizeof(_ggzcore_confio_file));
+	file_data->path = ggzcore_strdup(path);
 	file_data->handle = next_handle;
 	file_data->writeable = opt_rdwr;
 	file_data->section_list = section_list;
@@ -646,8 +644,7 @@ static _ggzcore_list * file_parser(const char *path)
 	}
 
 	/* Setup some temp storage to use */
-	if((e_data = malloc(sizeof(_ggzcore_confio_entry))) == NULL)
-		ggzcore_error_sys_exit("malloc failed: file_parser");
+	e_data = ggzcore_malloc(sizeof(_ggzcore_confio_entry));
 
 	/* Read individual lines and pass them off to be parsed */
 	while(fgets(line, 1024, c_file)) {
@@ -687,7 +684,7 @@ static _ggzcore_list * file_parser(const char *path)
 	}
 
 	/* Cleanup after ourselves */
-	free(e_data);
+	ggzcore_free(e_data);
 	fclose(c_file);
 
 	return s_list;
@@ -830,18 +827,17 @@ static void *section_create(void *data)
 	/* is not expected to be the full struct, but just the name str  */
 	_ggzcore_confio_section	*dst;
 
-	if((dst = malloc(sizeof(_ggzcore_confio_section))) == NULL)
-		ggzcore_error_sys_exit("malloc failed: section_create");
+	dst = ggzcore_malloc(sizeof(_ggzcore_confio_section));
 
 	/* Copy the section name and create an entry list */
-	dst->name = dup_string(data);
+	dst->name = ggzcore_strdup(data);
 	dst->entry_list = _ggzcore_list_create(entry_compare,
 					       entry_create,
 					       entry_destroy,
 					       _GGZCORE_LIST_REPLACE_DUPS);
 	if(!dst->entry_list) {
-		free(dst->name);
-		free(dst);
+		ggzcore_free(dst->name);
+		ggzcore_free(dst);
 		dst = NULL;
 	}
 
@@ -853,9 +849,9 @@ static void section_destroy(void *data)
 	_ggzcore_confio_section	*s_data;
 
 	s_data = data;
-	free(s_data->name);
+	ggzcore_free(s_data->name);
 	_ggzcore_list_destroy(s_data->entry_list);
-	free(s_data);
+	ggzcore_free(s_data);
 }
 
 
@@ -876,12 +872,11 @@ static void *entry_create(void *data)
 	_ggzcore_confio_entry	*src, *dst;
 
 	src = data;
-	if((dst = malloc(sizeof(_ggzcore_confio_entry))) == NULL)
-		ggzcore_error_sys_exit("malloc failed: entry_create");
+	dst = ggzcore_malloc(sizeof(_ggzcore_confio_entry));
 
 	/* Copy the key and value data */
-	dst->key = dup_string(src->key);
-	dst->value = dup_string(src->value);
+	dst->key = ggzcore_strdup(src->key);
+	dst->value = ggzcore_strdup(src->value);
 
 	return dst;
 }
@@ -891,9 +886,9 @@ static void entry_destroy(void *data)
 	_ggzcore_confio_entry	*e_data;
 
 	e_data = data;
-	free(e_data->key);
-	free(e_data->value);
-	free(e_data);
+	ggzcore_free(e_data->key);
+	ggzcore_free(e_data->value);
+	ggzcore_free(e_data);
 }
 
 /* make_path()
@@ -906,10 +901,8 @@ int make_path(const char *full, mode_t mode)
 
 	copy = strdup(full);
 
-	/* FIXME: check validity */
 	/* Allocate and zero memory for path */
-	if((path = calloc(strlen(full)+1, sizeof(char))) == NULL)
-		ggzcore_error_sys_exit("malloc failed in make_path");
+	path = ggzcore_malloc(strlen(full)+1);
  
 	/* Skip preceding / */
 	if (copy[0] == '/')
@@ -921,8 +914,8 @@ int make_path(const char *full, mode_t mode)
 			strcat(strcat(path, "/"), node);
 			if (mkdir(path, mode) < 0
 			    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
-				free(path);
-				free(copy);
+				ggzcore_free(path);
+				ggzcore_free(copy);
 				
 				return -1;
 			}
