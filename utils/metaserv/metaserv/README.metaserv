@@ -32,13 +32,14 @@ to be returned.
 						pennsylvania, us
 					</location>
 				</result>
-			</queryresult>
+			</resultset>
 
 The meta server does automatically handle both cases. The configuration has
 been moved from a ggzcore_confio format to an XML-based one, so one can pass
 native DOM subtrees to the client.
 
 The configuration file is metaservconf.xml.
+Metaserv should be installed on port "ggzm" (15689), to be invoked by inetd.
 
 In XML, an empty resultset is returned if no entries are found.
 URI-based results are chosen by priority; the entry with the highest priority

@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "minidom.h"
+
+#define METASERVDIR "/usr/local/share/metaserv"
 
 // URI:
 // query://ggz/connection/0.0.5pre
@@ -39,6 +42,8 @@ char *metaserv_lookup(const char *class, const char *category, const char *key, 
 	preference = 0;
 	ret = NULL;
 	r = NULL;
+
+	srand(time(NULL));
 
 	if(xmlret)
 	{
@@ -79,9 +84,8 @@ char *metaserv_lookup(const char *class, const char *category, const char *key, 
 				{
 					r = ele[i]->value;
 				}
-				if(!strcmp(att[j]->name, "preference"))
+				if((r) && (!strcmp(att[j]->name, "preference")))
 				{
-					/*printf("RESOLVE: %s\n", att[j]->value);*/
 					pref = atoi(att[j]->value);
 					if((pref == preference) && (rand() % 2)) ret = r;
 					if(pref > preference)
@@ -163,6 +167,7 @@ char *metamagic(char *uri)
 	}
 
 	if(uri[strlen(uri) - 1] == '\n') uri[strlen(uri) - 1] = 0;
+	if(uri[strlen(uri) - 1] == '\r') uri[strlen(uri) - 1] = 0;
 	ret = NULL;
 
 	// query://ggz/connection/0.0.5pre
@@ -186,14 +191,16 @@ char *metamagic(char *uri)
 		free(class);
 	}
 	while(token) token = strtok(NULL, ":/");
+	free(uri);
 
 	return ret;
 }
 
 void metaserv_init()
 {
-	configuration = minidom_load("metaservconf.xml");
-	minidom_dump(configuration);
+	configuration = minidom_load(METASERVDIR "/metaservconf.xml");
+	/*minidom_dump(configuration);
+	fflush(NULL);*/
 }
 
 void metaserv_shutdown()
@@ -208,13 +215,13 @@ int main(int argc, char *argv[])
 
 	metaserv_init();
 
-	while(1)
-	{
-		fgets(buffer, sizeof(buffer), stdin);
-		result = metamagic(strdup(buffer));
-		printf("Got URI: %s\n", result);
-	}
+	fgets(buffer, sizeof(buffer), stdin);
+	result = metamagic(strdup(buffer));
+	if(result) printf("%s\n", result);
+	else printf("\n");
+	fflush(NULL);
 
 	metaserv_shutdown();
+	return 0;
 }
 

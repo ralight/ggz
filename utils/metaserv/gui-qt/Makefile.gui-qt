@@ -1,0 +1,15 @@
+INC = -I/usr/local/qt/include
+LIB = -L/usr/local/qt/lib -lqt
+
+all:
+	moc -o qmetagui.moc.cpp qmetagui.h
+	g++ -c qmetagui.moc.cpp $(INC)
+	g++ -c qmetagui.cpp $(INC)
+	g++ -c main.cpp $(INC)
+	g++ -o metagui qmetagui.o qmetagui.moc.o main.o $(LIB)
+
+clean:
+	rm -f metagui
+	rm -f *.o
+	rm -f *.moc.cpp
+

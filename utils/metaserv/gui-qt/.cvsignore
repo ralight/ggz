@@ -1,0 +1,4 @@
+metagui
+*.o
+*.moc.cpp
+

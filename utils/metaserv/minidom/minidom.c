@@ -245,13 +245,19 @@ DOM *minidom_load(const char *file)
 	strcpy(buffer, "");
 	while(fgets(buf, sizeof(buf), f))
 	{
-		buffer = (char*)realloc(buffer, strlen(buffer) + strlen(buf));
-		/*buf[strlen(buf) - 1] = 0;*/
-		strcat(buffer, buf);
+		if(strlen(buf) > 0)
+		{
+			/*printf("Got: %s\n", buf);*/
+			buffer = (char*)realloc(buffer, strlen(buffer) + strlen(buf) + 1);
+			/*buf[strlen(buf) - 1] = 0;*/
+			/*printf("Add: %s", buf);*/
+			strcat(buffer, buf);
+		}
 	}
 	fclose(f);
 
-	/*printf("DEBUG: load: parse %s\n", buffer);*/
+	/*printf("DEBUG: ready!\n");
+	printf("DEBUG: load: parse %s\n", buffer);*/
 	dom = minidom_parse(buffer);
 	free(buffer);
 
