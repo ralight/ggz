@@ -5,3 +5,13 @@ config.log
 autom4te.cache
 Makefile.in
 Makefile
+stamp-h1
+stamp-h.in
+stamp-h
+mkinstalldirs
+config.rpath
+config.h.in
+config.h
+config.cache
+aclocal.m4
+

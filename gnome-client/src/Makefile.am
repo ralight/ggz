@@ -3,7 +3,9 @@
 INCLUDES = \
 	-I$(top_srcdir)/intl \
 	$(GNOME_INCLUDEDIR) \
-	$(GGZ_CFLAGS)
+	$(GGZ_CFLAGS) \
+	$(LIBGGZ_INCLUDES) \
+	$(GGZCORE_INCLUDES)
 
 bin_PROGRAMS = ggz-gnome
 
@@ -19,5 +21,7 @@ ggz_gnome_SOURCES = \
 	ggzclient.c ggzient.h \
 	chat.c chat.h
 
-ggz_gnome_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(LDADD) $(GGZ_LIBS) 
+ggz_gnome_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(LDADD) $(GGZ_LIBS) \
+	$(LIB_GGZ) $(LIB_GGZCORE)
+ggz_gnome_LDFLAGS = $(LIBGGZ_LDFLAGS) $(GGZCORE_LDFLAGS)
 
