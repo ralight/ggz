@@ -43,6 +43,8 @@ class KCCWin : public KMainWindow
 		void enableNetwork(bool enabled);
 		// Display score
 		void score();
+		// Load themes
+		void loadThemes();
 
 	public slots:
 		// Receive a status message from the game
@@ -57,12 +59,20 @@ class KCCWin : public KMainWindow
 		void slotGameOver();
 
 	private:
+		// install a theme
+		void newTheme(QString theme);
+		// check for new themes
+		void scanNewThemes();
+
 		// The game itself
 		KCC *m_kcc;
-		// The menus;
-		KPopupMenu *mgame;
+		// The menus
+		KPopupMenu *mgame, *mtheme;
 		// Game network status
 		bool m_networked;
+		// Themes
+		QMap<int, QString> m_themetypes;
+		QMap<int, QString> m_themenames;
 };
 
 #endif

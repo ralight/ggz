@@ -7,6 +7,9 @@
 // KCC includes
 #include "kccwin.h"
 
+// Configuration
+#include "config.h"
+
 // KDE includes
 #include <kpopupmenu.h>
 #include <kmenubar.h>
@@ -19,6 +22,7 @@
 #include <kstandarddirs.h>
 #include <kdebug.h>
 #include <kiconloader.h>
+#include <kprocess.h>
 
 #ifdef HAVE_KNEWSTUFF
 #include <knewstuff/downloaddialog.h>
@@ -32,11 +36,6 @@
 KCCWin::KCCWin(QWidget *parent, const char *name)
 : KMainWindow(parent, name)
 {
-	KStandardDirs d;
-
-	m_kcc = new KCC(this);
-	setCentralWidget(m_kcc);
-
 	m_networked = false;
 
 	mgame = new KPopupMenu(this);
@@ -49,29 +48,30 @@ KCCWin::KCCWin(QWidget *parent, const char *name)
 #endif
 	mgame->insertItem(KGlobal::iconLoader()->loadIcon("exit", KIcon::Small), i18n("Quit"), menuquit);
 
-	//mtheme = new KPopupMenu(this);
-	//mtheme->insertItem(i18n("KDE/Gnome"), menuthemenew);
-	//mtheme->insertItem(i18n("Tux/Kandalf (classic)"), menuthemeclassic);
-	//mtheme->insertItem(i18n("Symbols"), menuthemesymbols);
+	mtheme = new KPopupMenu(this);
 
 	menuBar()->insertItem(i18n("Game"), mgame);
-	//menuBar()->insertItem(i18n("Theme"), mtheme);
+	menuBar()->insertItem(i18n("Theme"), mtheme);
 	menuBar()->insertItem(i18n("Help"), helpMenu());
 
 	statusBar()->insertItem(i18n("Status"), 1, 1);
 	statusBar()->insertItem(i18n("Game with the AI"), 2, 1);
+
+	loadThemes();
+
+	m_kcc = new KCC(this);
+	setCentralWidget(m_kcc);
 
 	connect(m_kcc, SIGNAL(signalStatus(const QString &)), SLOT(slotStatus(const QString &)));
 	connect(m_kcc, SIGNAL(signalScore(const QString &)), SLOT(slotScore(const QString &)));
 	connect(m_kcc, SIGNAL(signalNetworkScore(int, int)), SLOT(slotNetworkScore(int, int)));
 	connect(m_kcc, SIGNAL(signalGameOver()), SLOT(slotGameOver()));
 	connect(mgame, SIGNAL(activated(int)), SLOT(slotMenu(int)));
-	//connect(mtheme, SIGNAL(activated(int)), SLOT(slotMenu(int)));
+	connect(mtheme, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 
 	enableNetwork(false);
 
 	setCaption(i18n("Chinese Checkers"));
-	//resize(400, 450);
 	setFixedSize(400, 400);
 	show();
 }
@@ -79,6 +79,83 @@ KCCWin::KCCWin(QWidget *parent, const char *name)
 // Destructor
 KCCWin::~KCCWin()
 {
+}
+
+// install new theme
+void KCCWin::newTheme(QString theme)
+{
+	KProcess proc;
+	proc << "tar";
+	proc << "-C" << QString(QDir::home().path() + "%1").arg("/.ggz/games/kcc").latin1();
+	proc << "-xvzf" << theme.latin1();
+	proc.start(KProcess::Block);
+}
+
+void KCCWin::scanNewThemes()
+{
+	KStandardDirs d;
+	QString basedir = d.findResource("data", "kcc/");
+	QDir dir(basedir);
+	QStringList s = dir.entryList();
+	for(QStringList::iterator it = s.begin(); it != s.end(); it++)
+	{
+		if(((*it) == ".") || ((*it) == "..")) continue;
+		newTheme(basedir + "/" + (*it));
+	}
+
+	mtheme->clear();
+	loadThemes();
+}
+
+// Read in all themes
+void KCCWin::loadThemes()
+{
+	KStandardDirs d;
+	QString type;
+	int index = menuthemes;
+	int valid;
+
+	d.addResourceDir("data", GGZDATADIR);
+	d.addResourceDir("data", QDir::home().path() + "/.ggz/games");
+
+	// Recursively scan all data directories
+	kdDebug() << "loadThemes" << endl;
+	QStringList list(d.findDirs("data", "kcc"));
+	for(QStringList::iterator it = list.begin(); it != list.end(); it++)
+	{
+		kdDebug() << "Scan dir: " << (*it) << endl;
+		valid = 0;
+		type = QString::null;
+		QDir dir((*it));
+		QStringList dirs = dir.entryList(QDir::Dirs);
+		for(QStringList::iterator it2 = dirs.begin(); it2 != dirs.end(); it2++)
+		{
+			kdDebug() << "Check theme dir: " << (*it2) << endl;
+			QDir dir2((*it) + (*it2));
+			QStringList entries = dir2.entryList(QDir::Files);
+			for(QStringList::iterator it3 = entries.begin(); it3 != entries.end(); it3++)
+			{
+				if((*it3) == "board.xpm")
+				{
+					valid++;
+					type = "xpm";
+				}
+				if((*it3) == "board.png")
+				{
+					valid++;
+					type = "png";
+				}
+			}
+			if(valid)
+			{
+				kdDebug() << "Insert " << (*it) + (*it2) << " type " << type << endl;
+				mtheme->insertItem(dir2.dirName(), index);
+				m_themenames[index] = (*it) + (*it2);
+				m_themetypes[index] = type;
+				index++;
+			}
+		}
+	}
 }
 
 // Display the game status
@@ -118,12 +195,18 @@ void KCCWin::slotMenu(int id)
 			d.mkdir(QDir::home().path() + "/.ggz");
 			d.mkdir(QDir::home().path() + "/.ggz/games");
 			d.mkdir(QDir::home().path() + "/.ggz/games/kcc");
-			KNS::DownloadDialog::open("kcc/theme");
+			KNS::DownloadDialog::open("ccheckers/theme");
+			scanNewThemes();
 			break;
 #endif
 		case menuquit:
 			close();
 			break;
+	}
+
+	if(id >= menuthemes)
+	{
+		m_kcc->setTheme(m_themenames[id], m_themetypes[id]);
 	}
 }
 

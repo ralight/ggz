@@ -7,15 +7,12 @@
 #ifndef KCC_H
 #define KCC_H
 
-// KDE includes
-#include <qwidget.h>
-
 // KCC includes
-#include "config.h"
 #include "kccproto.h"
 
 // Qt includes
 #include <qevent.h>
+#include <qwidget.h>
 
 // Player setup
 #define PLAYER_NONE    0
@@ -44,6 +41,10 @@ class KCC : public QWidget
 		void statistics();
 		// Network operation
 		void network();
+		// Theme change
+		void setTheme(QString theme, QString themetype);
+		// Parent central widget
+		QWidget *widget();
 
 	public slots:
 		// Evaluate user input
@@ -69,12 +70,15 @@ class KCC : public QWidget
 		void mousePressEvent(QMouseEvent *e);
 		void mouseReleaseEvent(QMouseEvent *e);
 		void mouseMoveEvent(QMouseEvent *e);
+		void paintEvent(QPaintEvent *e);
+
+	private slots:
+		// XXX hack!
+		void slotSizefix();
+		// Wait for player input
+		void slotYourMove();
 
 	private:
-		// Wait for bot or network input
-		void opponentTurn();
-		// Wait for player input
-		void yourTurn();
 		// Get player type
 		int getPlayer(int seat);
 		// Activate next player or bot
@@ -85,6 +89,8 @@ class KCC : public QWidget
 		void announce(QString str);
 		// Show all assigned fields
 		void drawBoard();
+		// Toggle external board
+		void toggleBoard();
 
 		// Movement helper methods
 		QPoint newPoint(const QPoint& current, int direction);
@@ -115,7 +121,7 @@ class KCC : public QWidget
 		// Internal protocol class
 		KCCProto *proto;
 		// Current theme
-		QString m_theme;
+		QString m_theme, m_themetype;
 
 		// Mouse moving
 		int m_mx, m_my, m_moved;
@@ -123,6 +129,9 @@ class KCC : public QWidget
 		int m_fx, m_fy, m_tx, m_ty, m_ax, m_ay;
 		// Move steps
 		QValueList<QPoint> m_waypoints;
+
+		// Fake parent
+		QWidget *m_parent, *m_parentmain;
 };
 
 #endif

@@ -13,6 +13,7 @@
 #include <kconfig.h>
 #include <kapplication.h>
 #include <kdebug.h>
+#include <kmainwindow.h>
 
 // Qt includes
 #include <qlayout.h>
@@ -26,10 +27,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// KCC includes
+#include "config.h"
+
 // Cons... Konstructor :-)
 KCC::KCC(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WRepaintNoErase)
 {
+	m_parent = parent;
+	m_parentmain = NULL;
+
 	m_fx = -1;
 	m_turn = 0;
 	m_opponent = PLAYER_NONE;
@@ -42,13 +49,13 @@ KCC::KCC(QWidget *parent, const char *name)
 	m_score_opp = 0;
 	m_score_you = 0;
 
-	m_theme = "default";
+	m_theme = QString("%1/kcc/default").arg(GGZDATADIR);
+	m_themetype = "png";
 
 	proto = new KCCProto(this);
 
 	setFixedSize(400, 400);
-	drawBoard();
-	show(); // only for external
+	toggleBoard();
 }
 
 // Destructor
@@ -58,20 +65,30 @@ KCC::~KCC()
 	delete proto;
 }
 
+void KCC::setTheme(QString theme, QString type)
+{
+	m_theme = theme;
+	m_themetype = type;
+	toggleBoard();
+}
+
 // Evaluate your turn (after click)
 void KCC::slotSelected(QWidget *widget)
 {
 }
 
 // Prepare your turn
-void KCC::yourTurn()
+void KCC::slotYourMove()
 {
+	m_waypoints.clear();
+	update();
+
 	emit signalStatus(i18n("Your turn"));
 	proto->state = KCCProto::statemove;
 }
 
 // Handle the opponent's turn
-void KCC::opponentTurn()
+void KCC::slotOpponentMove()
 {
 	bool result;
 	QPoint p;
@@ -92,9 +109,6 @@ void KCC::opponentTurn()
 					{
 						kdDebug() << "ai moved from " << i << "/" << j <<
 							" to " << m_ax << "/" << m_ay << endl;
-						/*tmp = proto->board[m_fx][m_fy];
-						proto->board[m_fx][m_fy] = m_turn + 2;
-						proto->board[i][j] = tmp;*/
 						tmp = proto->board[i][j];
 						proto->board[m_ax][m_ay] = tmp;
 						proto->board[i][j] = 1;
@@ -133,7 +147,10 @@ void KCC::getNextTurn()
 	if(proto->max)
 		m_turn = (++m_turn) % proto->max;
 
-	if(m_turn == proto->num) yourTurn();
+	if(m_turn == proto->num)
+	{
+		QTimer::singleShot(2000, this, SLOT(slotYourMove()));
+	}
 	else
 	{
 		emit signalStatus(i18n("Opponent's turn"));
@@ -143,12 +160,6 @@ void KCC::getNextTurn()
 	}
 
 	drawBoard();
-}
-
-// Delayed opponent move
-void KCC::slotOpponentMove()
-{
-	opponentTurn();
 }
 
 // Check for game over, and show dialogs
@@ -253,7 +264,7 @@ void KCC::init()
 		if(!proto->max) proto->max = 6;
 		proto->num = 0;
 		m_turn = proto->num;
-		yourTurn();
+		slotYourMove();
 	}
 }
 
@@ -380,17 +391,19 @@ void KCC::drawBoard()
 	QPainter p;
 	QPoint p1, p2;
 
-	QPixmap b(QString("%1/kcc/%2/board.png").arg(GGZDATADIR).arg(m_theme));
-	p.begin(&b);
+kdDebug() << "drawBoard()!" << endl;
+
+	QPixmap pix(*(erasePixmap()));
+	p.begin(&pix);
 
 	QMap<int, QString> points;
-	points[0] = "hole.png";
-	points[1] = "red.png";
-	points[2] = "blue.png";
-	points[3] = "green.png";
-	points[4] = "yellow.png";
-	points[5] = "cyan.png";
-	points[6] = "purple.png";
+	points[0] = "hole";
+	points[1] = "red";
+	points[2] = "blue";
+	points[3] = "green";
+	points[4] = "yellow";
+	points[5] = "cyan";
+	points[6] = "purple";
 
 	if(proto->state != KCCProto::statenone)
 		for(int j = 0; j < 17; j++)
@@ -399,7 +412,7 @@ void KCC::drawBoard()
 				int pn = proto->board[i][j];
 				if(pn)
 				{
-					QString point = QString("%1/kcc/%2/%3").arg(GGZDATADIR).arg(m_theme).arg(points[pn - 1]);
+					QString point = QString("%1/%2.%3").arg(m_theme).arg(points[pn - 1]).arg(m_themetype);
 					p.drawPixmap(i * 22 + 40 + (j % 2) * 11, j * 19 + 44, QPixmap(point));
 				}
 			}
@@ -414,12 +427,6 @@ void KCC::drawBoard()
 		for(; it != m_waypoints.end(); it++)
 		{
 			p2 = (*it);
-/*kdDebug() << "<line> "
-	<< p2.x() * 22 + 40 + (p2.y() % 2) * 11 + 10 << " "
-	<< p2.y() * 19 + 44 + 10 << " "
-	<< p1.x() * 22 + 40 + (p1.y() % 2) * 11 + 10 << " "
-	<< p1.y() * 19 + 44 + 10
-	<< endl;*/
 			p.drawLine(p2.x() * 22 + 40 + (p2.y() % 2) * 11 + 5,
 				p2.y() * 19 + 44 + 5,
 				p1.x() * 22 + 40 + (p1.y() % 2) * 11 + 5,
@@ -429,16 +436,72 @@ void KCC::drawBoard()
 	}
 
 	p.end();
-	setErasePixmap(b);
-	//setPaletteBackgroundPixmap(b);
 
-	QBitmap mask(QString("%1/kcc/%2/mask.png").arg(GGZDATADIR).arg(m_theme));
+	p.begin(this);
+	p.drawPixmap(0, 0, pix);
+	p.end();
+}
+
+// Toggles the game board
+void KCC::toggleBoard()
+{
+	QPixmap b(QString("%1/board.%2").arg(m_theme).arg(m_themetype));
+	QBitmap mask(QString("%1/mask.%2").arg(m_theme).arg(m_themetype));
+	QPixmap bgmain(QString("%1/main.%2").arg(m_theme).arg(m_themetype));
+
+kdDebug() << "toggleBoard()!" << endl;
+
 	if(!mask.isNull())
 	{
-		setMask(mask);
-		reparent(NULL, WStyle_Customize | WRepaintNoErase, QPoint(0, 0), true);
+		if(parentWidget())
+		{
+			reparent(NULL, WStyle_Customize | WRepaintNoErase, QPoint(0, 0), true);
+		}
+		if(!m_parentmain)
+		{
+			m_parentmain = new QWidget(m_parent);
+			static_cast<KMainWindow*>(m_parent)->setCentralWidget(m_parentmain);
+		}
+		m_parentmain->setErasePixmap(bgmain);
+		m_parentmain->setFixedSize(bgmain.width(), bgmain.height());
+		m_parent->setFixedSize(bgmain.width(), bgmain.height());
 	}
-	repaint();
+	else
+	{
+		if(m_parentmain)
+		{
+			reparent(m_parent, WStyle_Customize | WRepaintNoErase, QPoint(0, 0), true);
+			static_cast<KMainWindow*>(m_parent)->setCentralWidget(this);
+			delete m_parentmain;
+			m_parentmain = NULL;
+		}
+		m_parent->setFixedSize(b.width(), b.height());
+	}
+
+	setFixedSize(b.width(), b.height());
+	setErasePixmap(b);
+	if(!mask.isNull()) setMask(mask);
+
+	QTimer::singleShot(1000, this, SLOT(slotSizefix()));
+}
+
+QWidget *KCC::widget()
+{
+	if(m_parentmain) return m_parentmain;
+	return this;
+}
+
+void KCC::slotSizefix()
+{
+kdDebug() << "sizefix " << QString("%1/main.%2").arg(m_theme).arg(m_themetype) << endl;
+	if(m_parentmain)
+			m_parent->setFixedSize(m_parentmain->width(), m_parentmain->height());
+	static_cast<KMainWindow*>(m_parent)->setCentralWidget(widget());
+}
+
+void KCC::paintEvent(QPaintEvent *e)
+{
+	drawBoard();
 }
 
 // Evaluate network control input
@@ -565,6 +628,8 @@ kdDebug() << " " << (*it).x() << "/" << (*it).y() << endl;*/
 
 void KCC::mouseMoveEvent(QMouseEvent *e)
 {
+	if(!m_parentmain) return;
+
 	if((m_mx != -1) && (m_my != -1))
 	{
 		move(e->globalX() - m_mx, e->globalY() - m_my);
