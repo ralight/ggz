@@ -118,6 +118,7 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 void game_init(void)
 {
 	int i, j;
+	GtkWidget *l1, *l2;
 
 	for(i=0; i<MAX_BOARD_WIDTH; i++)
 		for(j=0; j<MAX_BOARD_HEIGHT-1; j++)
@@ -126,9 +127,15 @@ void game_init(void)
 		for(j=0; j<MAX_BOARD_HEIGHT; j++)
 			horz_board[i][j] = 0;
 	game.state = DOTS_STATE_INIT;
+	game.score[0] = 0;
+	game.score[1] = 0;
 
 	/* Setup the main board now */
 	main_win = create_dlg_main();
+	l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
+	l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
+	gtk_label_set_text(GTK_LABEL(l1), "No Score");
+	gtk_label_set_text(GTK_LABEL(l2), "No Score");
 	gtk_widget_show(main_win);
 	board_init(0, 0);
 
@@ -197,14 +204,24 @@ static int get_seat(void)
 static int get_players(void)
 {
 	int i;
+	GtkWidget *frame[2];
+	char *temp;
+
+	frame[0] = gtk_object_get_data(GTK_OBJECT(main_win), "frame_left");
+	frame[1] = gtk_object_get_data(GTK_OBJECT(main_win), "frame_right");
 
 	for(i=0; i<2; i++) {
 		if(es_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
-		if(game.seats[i] != GGZ_SEAT_OPEN)
+		if(game.seats[i] != GGZ_SEAT_OPEN) {
 			if(es_read_string(game.fd, (char*)&game.names[i], 9) <0)
 				return -1;
+			temp = g_strdup_printf(" %s ", game.names[i]);
+			gtk_frame_set_label(GTK_FRAME(frame[i]), game.names[i]);
+			g_free(temp);
+		}
 	}
+
 	return 0;
 }
 
@@ -215,8 +232,8 @@ static int get_move_status(void)
 
 	if(es_read_char(game.fd, &status) < 0)
 		return -1;
-	if(status != 0)
-		fprintf(stderr, "Move status = %d, client broken!\n", status);
+	if(status < 0)
+		fprintf(stderr, "Client cheater!\n");
 
 	return (int)status;
 }

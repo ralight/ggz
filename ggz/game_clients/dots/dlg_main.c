@@ -41,11 +41,11 @@ create_dlg_main (void)
   GtkWidget *mnu_about;
   GtkWidget *board;
   GtkWidget *hbox1;
-  GtkWidget *frame1;
+  GtkWidget *frame_left;
   GtkWidget *hbox2;
   GtkWidget *p1b;
   GtkWidget *lbl_score0;
-  GtkWidget *frame2;
+  GtkWidget *frame_right;
   GtkWidget *hbox3;
   GtkWidget *p2b;
   GtkWidget *lbl_score1;
@@ -196,20 +196,20 @@ create_dlg_main (void)
   gtk_widget_show (hbox1);
   gtk_box_pack_start (GTK_BOX (vbox), hbox1, TRUE, TRUE, 0);
 
-  frame1 = gtk_frame_new ("You");
-  gtk_widget_ref (frame1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "frame1", frame1,
+  frame_left = gtk_frame_new ("You");
+  gtk_widget_ref (frame_left);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "frame_left", frame_left,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (frame1);
-  gtk_box_pack_start (GTK_BOX (hbox1), frame1, TRUE, TRUE, 0);
-  gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_ETCHED_OUT);
+  gtk_widget_show (frame_left);
+  gtk_box_pack_start (GTK_BOX (hbox1), frame_left, TRUE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame_left), GTK_SHADOW_ETCHED_OUT);
 
   hbox2 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox2);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "hbox2", hbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox2);
-  gtk_container_add (GTK_CONTAINER (frame1), hbox2);
+  gtk_container_add (GTK_CONTAINER (frame_left), hbox2);
 
   p1b = gtk_drawing_area_new ();
   gtk_widget_ref (p1b);
@@ -228,20 +228,20 @@ create_dlg_main (void)
   gtk_widget_show (lbl_score0);
   gtk_box_pack_start (GTK_BOX (hbox2), lbl_score0, FALSE, FALSE, 0);
 
-  frame2 = gtk_frame_new ("Opponent");
-  gtk_widget_ref (frame2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "frame2", frame2,
+  frame_right = gtk_frame_new ("Opponent");
+  gtk_widget_ref (frame_right);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "frame_right", frame_right,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (frame2);
-  gtk_box_pack_start (GTK_BOX (hbox1), frame2, TRUE, TRUE, 0);
-  gtk_frame_set_shadow_type (GTK_FRAME (frame2), GTK_SHADOW_ETCHED_OUT);
+  gtk_widget_show (frame_right);
+  gtk_box_pack_start (GTK_BOX (hbox1), frame_right, TRUE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame_right), GTK_SHADOW_ETCHED_OUT);
 
   hbox3 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox3);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "hbox3", hbox3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox3);
-  gtk_container_add (GTK_CONTAINER (frame2), hbox3);
+  gtk_container_add (GTK_CONTAINER (frame_right), hbox3);
 
   p2b = gtk_drawing_area_new ();
   gtk_widget_ref (p2b);

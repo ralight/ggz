@@ -12,6 +12,7 @@ struct game_t {
 	int me;
 	int opponent;
 	int seats[2];
+	int score[2];
 	char names[2][9];
 	char state;
 	int move;

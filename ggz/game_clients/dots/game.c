@@ -234,6 +234,8 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 gint8 board_move(guint8 dir, guint8 x, guint8 y)
 {
 	gint8 result=0;
+	GtkWidget *l1, *l2;
+	char *text;
 
 	if(dir == 0) {
 		/* A vertical move */
@@ -278,6 +280,18 @@ gint8 board_move(guint8 dir, guint8 x, guint8 y)
 			}
 	}
 
+	if(result > 0) {
+                game.score[game.move] += result;
+                l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
+                l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
+                text = g_strdup_printf("Score = %d", game.score[0]);
+                gtk_label_set_text(GTK_LABEL(l1), text);
+                g_free(text);
+                text = g_strdup_printf("Score = %d", game.score[1]);
+                gtk_label_set_text(GTK_LABEL(l2), text);
+                g_free(text);
+	}
+
 	return result;
 }
 
@@ -288,6 +302,8 @@ gint8 board_opponent_move(guint8 dir)
 	guchar x, y;
 	guint16 x1, y1, x2, y2;
 	GdkRectangle update_rect;
+	GtkWidget *l1, *l2;
+	char *text;
 
 	if(es_read_char(game.fd, &x) < 0
 	   || es_read_char(game.fd, &y) < 0)
@@ -356,6 +372,18 @@ gint8 board_opponent_move(guint8 dir)
 				board_fill_square(x, y);
 				result++;
 			}
+	}
+
+	if(result > 0) {
+                game.score[game.move] += result;
+                l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
+                l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
+                text = g_strdup_printf("Score = %d", game.score[0]);
+                gtk_label_set_text(GTK_LABEL(l1), text);
+                g_free(text);
+                text = g_strdup_printf("Score = %d", game.score[1]);
+                gtk_label_set_text(GTK_LABEL(l2), text);
+                g_free(text);
 	}
 
 	return 0;
