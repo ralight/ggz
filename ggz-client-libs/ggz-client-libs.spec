@@ -50,8 +50,13 @@ PATH="$PATH:/sbin" ldconfig
 /usr/lib/libggzcore.so.0
 /usr/lib/libggzcore.so.0.0.0
 /usr/include/ggzcore.h
+/usr/man/man5/ggz.modules.5.gz
+/usr/man/man6/ggz-config.6.gz
 
 %changelog
+* Sun Jun 17 2001 Rich Gade <rgade@users.sourceforge.net>
+- Added manual pages
+
 * Wed Mar 28 2001 Rich Gade <rgade@users.sourceforge.net>
 - Corrected spec file to properly install libggzcore as shared
 

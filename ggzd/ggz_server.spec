@@ -18,6 +18,9 @@ the Internet and play network games.  Currently, the following game servers
 are included with GGZ:
   - Spades		- Connect the Dots
   - Tic-Tac-Toe		- La Pocha
+  - Chinese Checkers	- Chess
+  - Combat		- Hastings
+  - Krosswater		- Reversi
 
 %prep
 %setup
@@ -29,6 +32,12 @@ make
 %install
 make DESTDIR=$RPM_BUILD_ROOT install
 
+%post
+PATH="$PATH:/sbin" ldconfig
+
+%postun
+PATH="$PATH:/sbin" ldconfig
+
 %files
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog HACKING INSTALL NEWS README TODO doc
@@ -37,21 +46,44 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %config /etc/ggzd/ggzd.conf
 %config /etc/ggzd/ggzd.motd
 %dir /etc/ggzd/games
+%config /etc/ggzd/games/ccheckers.dsc
+%config /etc/ggzd/games/chess.dsc
+%config /etc/ggzd/games/combat.dsc
+%config /etc/ggzd/games/dots.dsc
+%config /etc/ggzd/games/hastings.dsc
+%config /etc/ggzd/games/krosswater.dsc
+%config /etc/ggzd/games/lapocha.dsc
+%config /etc/ggzd/games/reversi.dsc
 %config /etc/ggzd/games/spades.dsc
 %config /etc/ggzd/games/tictactoe.dsc
-%config /etc/ggzd/games/dots.dsc
-%config /etc/ggzd/games/lapocha.dsc
+
 %dir /etc/ggzd/rooms
+%config /etc/ggzd/rooms/ccheckers.room
+%config /etc/ggzd/rooms/chess.room
+%config /etc/ggzd/rooms/combat.room
+%config /etc/ggzd/rooms/dots.room
+%config /etc/ggzd/rooms/hastings.room
+%config /etc/ggzd/rooms/krosswater.room
+%config /etc/ggzd/rooms/lapocha.room
+%config /etc/ggzd/rooms/reversi.room
 %config /etc/ggzd/rooms/spades.room
 %config /etc/ggzd/rooms/tictactoe.room
-%config /etc/ggzd/rooms/dots.room
-%config /etc/ggzd/rooms/lapocha.room
 
 /usr/bin/ggzd
 /usr/lib/ggzd
+/usr/lib/libzoneserver.a
+/usr/lib/libzoneserver.la
+/usr/lib/libzoneserver.so
+/usr/lib/libzoneserver.so.0
+/usr/lib/libzoneserver.so.0.0.1
+
+/usr/man/man6/ggzd.6.gz
 
 %changelog
-* Thu Jun 31 2001 Brent Hendricks <bmh@users.sourceforge.net>
+* Sun Jun 17 2001 Rich Gade <rgade@users.sourceforge.net>
+- Added files necessary for 0.0.4
+
+* Thu May 31 2001 Brent Hendricks <bmh@users.sourceforge.net>
 - Updated for release 0.0.4
 
 * Thu Aug 31 2000 Rich Gade <rgade@users.sourceforge.net>

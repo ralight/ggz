@@ -34,6 +34,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog INSTALL NEWS README TODO
 
 /usr/bin/ggz-gtk
+/usr/man/man6/ggz-gtk.6.gz
 
 %changelog
 * Sun Apr 22 2001 Rich Gade <rgade@users.sourceforge.net>

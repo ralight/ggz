@@ -42,6 +42,8 @@ PATH="$PATH:/sbin" ldconfig
 %doc AUTHORS COPYING ChangeLog INSTALL NEWS README
 
 /usr/bin/kggz
+/usr/bin/ggzap
+/usr/bin/ggzmodsniff
 
 /usr/include/GGZCore.h
 /usr/include/GGZCoreCommon.h
@@ -60,12 +62,24 @@ PATH="$PATH:/sbin" ldconfig
 /usr/lib/libggzcorepp.so.0
 /usr/lib/libggzcorepp.so.0.0.1
 
-/usr/share/applnk/Games/kggz.desktop
+/usr/share/applnk/Games/ggz/games
+/usr/share/applnk/Games/ggz/ggzmodsniff.desktop
+/usr/share/applnk/Games/ggz/kggz.desktop
 
 /usr/share/apps/kggz
 
+/usr/share/icons/locolor/16x16/apps/ggz.png
+/usr/share/icons/locolor/16x16/apps/ggzap.png
+/usr/share/icons/locolor/16x16/apps/ggzmodsniff.png
+/usr/share/icons/locolor/16x16/apps/ggzquick.png
 /usr/share/icons/locolor/16x16/apps/kggz.png
+/usr/share/icons/locolor/32x32/apps/ggzmodsniff.png
 /usr/share/icons/locolor/32x32/apps/kggz.png
+
+/usr/share/locale/de/LC_MESSAGES/kggz.mo
+/usr/share/locale/es/LC_MESSAGES/kggz.mo
+/usr/share/locale/fr/LC_MESSAGES/kggz.mo
+/usr/share/locale/pt_BR/LC_MESSAGES/kggz.mo
 
 %changelog
 * Fri Apr 27 2001 Rich Gade <rgade@users.sourceforge.net>
