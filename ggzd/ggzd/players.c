@@ -674,6 +674,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	unsigned int size;
 	int status = 0;
 	int seats;
+	int room;
 	void *options = NULL;
 	char name[MAX_USER_NAME_LEN + 1];
 
@@ -717,7 +718,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	}
 
 	/* Now that we've cleared the socket, check if in a room */
-	if (players.info[p_index].room == -1) {
+	if ( (room = players.info[p_index].room) == -1) {
 		if (options)
 			free(options);
 		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
@@ -725,8 +726,30 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
-	
+
+	/* Don't allow multiple table launches */
+	if (players.info[p_index].table_index != -1) {
+		if (options)
+			free(options);
+		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
+		    || es_write_char(p_fd, E_LAUNCH_FAIL) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
+	/* Make sure type index matches */
+	/* FIXME: Do we need a room lock here? */
+	if (table.type_index != chat_room[room].game_type) {
+		if (options)
+			free(options);
+		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
+		    || es_write_char(p_fd, E_NOT_IN_ROOM) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
 	/* Fill remaining parameters */
+	table.room = players.info[p_index].room;
 	table.state = GGZ_TABLE_CREATED;
 	table.transit_flag = GGZ_TRANSIT_CLR;
 	table.pid = -1;
@@ -988,16 +1011,17 @@ static int player_list_types(int p_index, int fd)
 static int player_list_tables(int p_index, int fd)
 {
 
-	int i, j, type, index, uid;
-	int count = 0;
+	int i, j, type, index, uid, room, count = 0;
 	char name[MAX_USER_NAME_LEN + 1];
+	char global;
 	TableInfo my_tables[MAX_TABLES];
 	int indices[MAX_TABLES];
 
 	dbg_msg(GGZ_DBG_UPDATE,
 		"Handling table list request for player %d", p_index);	
 
-	if (es_read_int(fd, &type) < 0)
+	if (es_read_int(fd, &type) < 0
+	    || es_read_char(fd, &global) < 0)
 		return GGZ_REQ_DISCONNECT;
 
  	/* Don't send list if they're not logged in */
@@ -1007,12 +1031,15 @@ static int player_list_tables(int p_index, int fd)
  			return GGZ_REQ_DISCONNECT;
  		return GGZ_REQ_FAIL;
  	}
- 	  	
+
+	room = players.info[p_index].room;
+	
 	/* Copy tables of interest to local list */
 	pthread_rwlock_rdlock(&tables.lock);
 	for (i = 0; (i < MAX_TABLES && count < tables.count); i++) {
 		if (tables.info[i].type_index != -1 
-		    && type_match_table(type, i)) {
+		    && type_match_table(type, i)
+		    && (global || tables.info[i].room == room)) {
 			my_tables[count] = tables.info[i];
 			indices[count++] = i;
 		}
@@ -1024,7 +1051,8 @@ static int player_list_tables(int p_index, int fd)
 		return GGZ_REQ_DISCONNECT;
 
 	for (i = 0; i < count; i++) {
-		if (es_write_int(fd, indices[i]) < 0
+		if (es_write_int(fd, my_tables[i].room) < 0
+		    || es_write_int(fd, indices[i]) < 0
 		    || es_write_int(fd, my_tables[i].type_index) < 0
 		    || es_write_string(fd, my_tables[i].desc) < 0
 		    || es_write_char(fd, my_tables[i].state) < 0

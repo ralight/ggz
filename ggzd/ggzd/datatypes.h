@@ -81,6 +81,7 @@ struct GameTypes {
 /* Info about a particular game-table */
 typedef struct {
 	int type_index;
+	int room;
 	char state;
 	pthread_cond_t state_cond;
 	pthread_mutex_t state_lock;
