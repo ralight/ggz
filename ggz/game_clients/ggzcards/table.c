@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2692 2001-11-08 01:05:23Z jdorje $
+ * $Id: table.c 2695 2001-11-08 09:41:54Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -56,7 +56,7 @@
 GtkRcStyle *fixed_font_style = NULL;
 
 /* Table data */
-static GtkWidget *table;	/* widget containing the whole table */
+GtkWidget *table;		/* widget containing the whole table */
 static GtkStyle *table_style;	/* Style for the table */
 static GdkPixmap *table_buf = NULL;	/* backing store for the table */
 
@@ -89,7 +89,6 @@ static void table_card_clicked(int);
 static void table_card_play(int p, int card);
 
 static void table_show_card(int, card_t);
-static void draw_card(card_t, int, int, int);
 
 #ifdef ANIMATION
 static gint table_animation_callback(gpointer);
@@ -154,7 +153,7 @@ static void draw_splash_screen(void)
 			   TRUE, 0, 0, get_table_width(), get_table_height());
 	draw_card(card, 0,
 		  (get_table_width() - CARDWIDTH) / 2,
-		  (get_table_height() - CARDHEIGHT) / 2);
+		  (get_table_height() - CARDHEIGHT) / 2, table_buf);
 	table_show_table(0, 0, get_table_width(), get_table_height());
 }
 
@@ -298,13 +297,14 @@ void table_set_global_text_message(const char *mark, const char *message)
 	} else {
 		/* Other messages get displayed in a special window with menu
 		   access. */
-		menubar_message(mark, message);
+		menubar_text_message(mark, message);
 	}
 }
 
 void table_set_global_cardlist_message(const char *mark, int *lengths,
 				       card_t ** cardlist)
 {
+#if 0
 	int p, i;
 	char buf[4096] = "";
 	int maxlen = 0, namewidth = 0;
@@ -357,6 +357,9 @@ void table_set_global_cardlist_message(const char *mark, int *lengths,
 	}
 
 	table_set_global_text_message(mark, buf);
+#else
+	menubar_cardlist_message(mark, lengths, cardlist);
+#endif
 }
 
 /* Handle a redraw of necessary items when a Gtk style change is signaled. */
@@ -531,15 +534,13 @@ static void get_card_coordinates(card_t card, int orientation,	/* 0 to 3 */
 }
 
 /* Draws the given card at the given location with the given orientation. */
-static void draw_card(card_t card, int orientation, int x, int y)
+void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image)
 {
 	int width, height;
 	int xc = 0, yc = 0;
 	int show = (card.suit != -1 && card.face != -1);
 
 	assert(orientation >= 0 && orientation < 4);
-	assert(x >= 0 && x < get_table_width() && y >= 0
-	       && y < get_table_height());
 
 	/* First find the width/height the card will need at this
 	   orientation. */
@@ -558,7 +559,7 @@ static void draw_card(card_t card, int orientation, int x, int y)
 		xc = xy[orientation][0];
 		yc = xy[orientation][1];
 	}
-	gdk_draw_pixmap(table_buf,
+	gdk_draw_pixmap(image,
 			table_style->fg_gc[GTK_WIDGET_STATE(table)],
 			show ? card_fronts[orientation] :
 			card_backs[orientation], xc, yc, x, y, width, height);
@@ -752,7 +753,7 @@ void table_display_hand(int p)
 			x += cxo;
 			y += cyo;
 		}
-		draw_card(card, orientation(p), x, y);
+		draw_card(card, orientation(p), x, y, table_buf);
 	}
 
 	/* And refresh the on-screen image for card areas */
@@ -806,7 +807,7 @@ static void table_show_card(int player, card_t card)
 
 	get_tablecard_pos(player, &x, &y);
 
-	draw_card(card, 0, x, y);
+	draw_card(card, 0, x, y, table_buf);
 	table_show_table(x, y, CARDWIDTH, CARDHEIGHT);
 }
 

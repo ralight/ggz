@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2694 2001-11-08 08:25:23Z jdorje $
+ * $Id: main.c 2695 2001-11-08 09:41:54Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -46,6 +46,7 @@
 #include "table.h"
 #include "game.h"
 #include "hand.h"
+#include "layout.h"
 
 GtkWidget *dlg_main = NULL;
 
@@ -190,48 +191,93 @@ void on_mnu_messages_activate(GtkMenuItem * menuitem, gpointer user_data)
 	gdk_window_raise(dlg->window);
 }
 
-void menubar_message(const char *mark, const char *msg)
+static void verify_msg_menu(void)
 {
-	GtkWidget *menu_item, *dlg, *label, *vbox, *ok_button;
-
-	assert(msg && mark);
-
 	if (msg_menu == NULL) {
 		msg_menu =
 			gtk_object_get_data(GTK_OBJECT(dlg_main),
 					    "mnu_messages_menu");
 		assert(msg_menu);
 	}
+}
 
+static GtkWidget *get_message_dialog(const char *mark)
+{
+	GtkWidget *menu_item, *dlg;
+
+	menu_item = gtk_object_get_data(GTK_OBJECT(dlg_main), mark);
+	if (!menu_item)
+		return NULL;
+
+	dlg = gtk_object_get_data(GTK_OBJECT(msg_menu), mark);
+	assert(dlg);
+	return dlg;
+}
+
+static GtkWidget *new_message_dialog(const char *mark)
+{
+	GtkWidget *menu_item, *dlg, *ok_button;
+
+	client_debug("Making new thingy for mark %s.", mark);
+	menu_item = gtk_menu_item_new_with_label(mark);
+	gtk_widget_set_name(menu_item, mark);
+	gtk_widget_ref(menu_item);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_main), mark,
+				 menu_item,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(menu_item);
+
+	gtk_container_add(GTK_CONTAINER(msg_menu), menu_item);
+	gtk_signal_connect(GTK_OBJECT(menu_item), "activate",
+			   GTK_SIGNAL_FUNC(on_mnu_messages_activate),
+			   (gpointer) g_strdup(mark));
+
+	dlg = gtk_dialog_new();
+	gtk_widget_ref(dlg);
+	gtk_object_set_data(GTK_OBJECT(msg_menu), mark, dlg);
+	/* gtk_object_set_data (GTK_OBJECT (dlg), "dlg_messages", dlg_about); 
+	 */
+	gtk_window_set_title(GTK_WINDOW(dlg), mark);
+	GTK_WINDOW(dlg)->type = GTK_WINDOW_DIALOG;
+	gtk_window_set_policy(GTK_WINDOW(dlg), TRUE, TRUE, FALSE);
+
+
+	ok_button = gtk_button_new_with_label("OK");
+	gtk_widget_ref(ok_button);
+	gtk_object_set_data_full(GTK_OBJECT(dlg), "ok_button",
+				 ok_button,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(ok_button);
+	gtk_widget_set_usize(ok_button, 64, -2);
+	gtk_signal_connect_object(GTK_OBJECT(ok_button), "clicked",
+				  GTK_SIGNAL_FUNC(gtk_widget_hide),
+				  GTK_OBJECT(dlg));
+
+	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->action_area),
+			  ok_button);
+
+	gtk_signal_connect_object(GTK_OBJECT(dlg), "delete_event",
+				  GTK_SIGNAL_FUNC(gtk_widget_hide),
+				  GTK_OBJECT(dlg));
+
+	return dlg;
+}
+
+void menubar_text_message(const char *mark, const char *msg)
+{
 	/* the first time a global message is received, we make a dialog
 	   window for it. each time it is changed, we simply go into the
 	   window and change the label. the window isn't shown until it's
 	   activated by the menu item (above), and it's not destroyed when
 	   it's closed - just hidden. */
+	GtkWidget *dlg, *label, *vbox;
 
-	menu_item = gtk_object_get_data(GTK_OBJECT(dlg_main), mark);
-	if (menu_item == NULL) {
-		client_debug("Making new thingy for mark %s.", mark);
-		menu_item = gtk_menu_item_new_with_label(mark);
-		gtk_widget_set_name(menu_item, mark);
-		gtk_widget_ref(menu_item);
-		gtk_object_set_data_full(GTK_OBJECT(dlg_main), mark,
-					 menu_item,
-					 (GtkDestroyNotify) gtk_widget_unref);
-		gtk_widget_show(menu_item);
-		gtk_container_add(GTK_CONTAINER(msg_menu), menu_item);
-		gtk_signal_connect(GTK_OBJECT(menu_item), "activate",
-				   GTK_SIGNAL_FUNC(on_mnu_messages_activate),
-				   (gpointer) g_strdup(mark));
+	verify_msg_menu();
+	assert(msg && mark);
 
-		dlg = gtk_dialog_new();
-		gtk_widget_ref(dlg);
-		gtk_object_set_data(GTK_OBJECT(msg_menu), mark, dlg);
-		/* gtk_object_set_data (GTK_OBJECT (dlg), "dlg_messages",
-		   dlg_about); */
-		gtk_window_set_title(GTK_WINDOW(dlg), mark);
-		GTK_WINDOW(dlg)->type = GTK_WINDOW_DIALOG;
-		gtk_window_set_policy(GTK_WINDOW(dlg), TRUE, TRUE, FALSE);
+	dlg = get_message_dialog(mark);
+	if (dlg == NULL) {
+		dlg = new_message_dialog(mark);
 
 		vbox = GTK_DIALOG(dlg)->vbox;
 		gtk_widget_show(vbox);
@@ -246,34 +292,71 @@ void menubar_message(const char *mark, const char *msg)
 		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox),
 				  label);
 
-		ok_button = gtk_button_new_with_label("OK");
-		gtk_widget_ref(ok_button);
-		gtk_object_set_data_full(GTK_OBJECT(dlg), "ok_button",
-					 ok_button,
-					 (GtkDestroyNotify) gtk_widget_unref);
-		gtk_widget_show(ok_button);
-		gtk_widget_set_usize(ok_button, 64, -2);
-
-		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->action_area),
-				  ok_button);
-
-		gtk_signal_connect_object(GTK_OBJECT(dlg), "delete_event",
-					  GTK_SIGNAL_FUNC(gtk_widget_hide),
-					  GTK_OBJECT(dlg));
-		gtk_signal_connect_object(GTK_OBJECT(ok_button), "clicked",
-					  GTK_SIGNAL_FUNC(gtk_widget_hide),
-					  GTK_OBJECT(dlg));
-
 		gtk_widget_modify_style(label, fixed_font_style);
 
 		/* in theory, the window *can't* be destroyed. */
 	} else {
-		dlg = gtk_object_get_data(GTK_OBJECT(msg_menu), mark);
-		assert(dlg);
 		label = gtk_object_get_data(GTK_OBJECT(dlg), "label");
 		assert(label);
 		gtk_label_set_text(GTK_LABEL(label), msg);
 	}
+}
+
+void menubar_cardlist_message(const char *mark, int *lengths,
+			      card_t ** cardlist)
+{
+	GtkWidget *dlg, *canvas;
+	GdkPixmap *image = NULL;
+	int p, i, max_len = 0;
+	extern GtkWidget *table;	/* Damn, why can't I figure out
+					   another way to do this? */
+
+	verify_msg_menu();
+
+	dlg = get_message_dialog(mark);
+	if (!dlg) {
+		int width, height;
+
+		for (p = 0; p < game.num_players; p++)
+			if (lengths[p] > max_len)
+				max_len = lengths[p];
+		assert(max_len > 0);
+
+		height = CARDHEIGHT * game.num_players;
+		width = CARDWIDTH + (max_len - 1) * CARDWIDTH / 4;
+
+		dlg = new_message_dialog(mark);
+
+		image = gdk_pixmap_new(table->window, width, height, -1);
+		assert(image);
+
+		canvas = gtk_pixmap_new(image, NULL);
+		gtk_widget_ref(canvas);
+		gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox),
+				  canvas);
+
+		gtk_object_set_data(GTK_OBJECT(dlg), "canvas", canvas);
+		gtk_object_set_data(GTK_OBJECT(dlg), "image", image);
+	}
+
+	/* Retrieve data.  If the cardlist maxlength has changed, we're in
+	   trouble. */
+	image = gtk_object_get_data(GTK_OBJECT(dlg), "image");
+	canvas = gtk_object_get_data(GTK_OBJECT(dlg), "canvas");
+	assert(image && canvas);
+
+	/* Redraw image */
+	for (p = 0; p < game.num_players; p++)
+		for (i = 0; i < lengths[p]; i++) {
+			draw_card(cardlist[p][i], 0, i * CARDWIDTH / 4,
+				  p * CARDHEIGHT, image);
+		}
+
+
+	/* Update widget. Ugly. */
+	gtk_pixmap_set(GTK_PIXMAP(canvas), image, NULL);
+	gtk_widget_hide(canvas);
+	gtk_widget_show(canvas);
 }
 
 
