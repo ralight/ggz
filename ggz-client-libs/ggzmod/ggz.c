@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 2062 2001-07-22 05:40:30Z jdorje $	*/
+/*	$Id: ggz.c 2063 2001-07-22 05:51:36Z jdorje $	*/
 /*
  * Copyright (C) 2000 GGZ devel team
  *
@@ -53,8 +53,8 @@ int ggz_client_connect(void)
 	}
 	
 	/* Connect to Unix domain socket */
-	snprintf(fd_name, sizeof(fd_name)-1, "/tmp/%s.%d", name, getpid());
-	fd_name[sizeof(fd_name)-1]=0;
+	snprintf(fd_name, sizeof(fd_name), "/tmp/%s.%d", name, getpid());
+	/* FIXME: if this string is cut short, the game will just hang -- JDS */
 
 	if ( (fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) {
 		perror("ggz_connect:");
