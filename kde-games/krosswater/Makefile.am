@@ -35,3 +35,15 @@ krosswater_client_LDADD = zoneclient/libzoneclient.la $(UI) -leasysock
 DISTCLEANFILES = $(krosswater_client_METASOURCES)
 
 # AUTOMAKE_OPTIONS = foreign
+
+install-data-local:
+@$(NORMAL_INSTALL)
+	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
+	-$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/krosswater/gfx
+	-cp -r *.png $(DESTDIR)$(ggzdatadir)/krosswater/gfx/
+
+uninstall:
+	@$(NORMAL_UNINSTALL)
+	-$(GGZ_CONFIG) --remove --fromfile=module.dsc
+	-rm -rf $(DESTDIR)$(ggzdatadir)/krosswater/
+
