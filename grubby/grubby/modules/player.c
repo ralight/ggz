@@ -100,11 +100,11 @@ Player *guru_player_lookup(const char *name)
 	if(!name) return NULL;
 
 	/* Try to find player in cache */
-printf("LISTSIZE = %i\n", listsize);
+	/*printf("LISTSIZE = %i\n", listsize);*/
 	for(i = 0; i < listsize; i++)
 		if((list[i]->name) && (!strcmp(list[i]->name, name)))
 		{
-printf("FOUND player at %i with %s\n", list[i], list[i]->language);
+			/*printf("FOUND player at %i with %s\n", list[i], list[i]->language);*/
 			if(dup) return duplicate(list[i]);
 			return list[i];
 		}

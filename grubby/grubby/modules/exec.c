@@ -13,7 +13,7 @@
 #include <sys/socket.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <ggzcore.h>
+#include <ggz.h>
 #include <fcntl.h>
 #include <time.h>
 #include "exec.h"
@@ -176,15 +176,15 @@ void gurumod_init()
 	path = (char*)malloc(strlen(home) + strlen(EXECCONF) + 1);
 	strcpy(path, home);
 	strcat(path, EXECCONF);
-	handle = ggzcore_confio_parse(path, GGZ_CONFIO_RDONLY);
+	handle = ggz_conf_parse(path, GGZ_CONF_RDONLY);
 	free(path);
 	if(handle < 0) return;
-	ret = ggzcore_confio_read_list(handle, "programs", "programs", &count, &aliaslist);
+	ret = ggz_conf_read_list(handle, "programs", "programs", &count, &aliaslist);
 	printf("[ ");
 	num = 1;
 	for(i = 0; i < count; i++)
 	{
-		program = ggzcore_confio_read_string(handle, "programs", aliaslist[i], NULL);
+		program = ggz_conf_read_string(handle, "programs", aliaslist[i], NULL);
 		if(program)
 		{
 			programlist = (char**)realloc(programlist, ++num * sizeof(char*));

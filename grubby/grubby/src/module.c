@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ggzcore.h>
+#include <ggz.h>
 
 /* Defines */
 #define GRUBBYCONF "/.ggz/grubby.rc"
@@ -47,23 +47,23 @@ Gurucore *guru_module_init()
 	path = (char*)malloc(strlen(home) + strlen(GRUBBYCONF) + 1);
 	strcpy(path, home);
 	strcat(path, GRUBBYCONF);
-	handler = ggzcore_confio_parse(path, GGZ_CONFIO_RDONLY);
+	handler = ggz_conf_parse(path, GGZ_CONF_RDONLY);
 	free(path);
 	if(handler < 0) return NULL;
 
 	/* Load main option into grubby's core */
 	core = (Gurucore*)malloc(sizeof(Gurucore));
-	core->host = ggzcore_confio_read_string(handler, "preferences", "host", "localhost");
-	core->name = ggzcore_confio_read_string(handler, "preferences", "name", "grubby/unnamed");
+	core->host = ggz_conf_read_string(handler, "preferences", "host", "localhost");
+	core->name = ggz_conf_read_string(handler, "preferences", "name", "grubby/unnamed");
 	core->guestname = (char*)malloc(strlen(core->name) + 4);
 	strcpy(core->guestname, core->name);
 	strcat(core->guestname, "(G)");
-	core->owner = ggzcore_confio_read_string(handler, "preferences", "owner", NULL);
-	core->autojoin = ggzcore_confio_read_int(handler, "preferences", "autojoin", 0);
-	core->logfile = ggzcore_confio_read_string(handler, "preferences", "logfile", NULL);
+	core->owner = ggz_conf_read_string(handler, "preferences", "owner", NULL);
+	core->autojoin = ggz_conf_read_int(handler, "preferences", "autojoin", 0);
+	core->logfile = ggz_conf_read_string(handler, "preferences", "logfile", NULL);
 
 	/* Preload libraries shared among multiple plugins */
-	module = ggzcore_confio_read_string(handler, "guru", "player", NULL);
+	module = ggz_conf_read_string(handler, "guru", "player", NULL);
 	if(module)
 	{
 		printf("Loading core module PLAYER: %s... ", module);
@@ -77,7 +77,7 @@ Gurucore *guru_module_init()
 	}
 
 	/* Load net plugin */
-	module = ggzcore_confio_read_string(handler, "guru", "net", NULL);
+	module = ggz_conf_read_string(handler, "guru", "net", NULL);
 	printf("Loading core module NET: %s... ", module);
 	fflush(NULL);
 	if((!module) || ((core->nethandle = dlopen(module, RTLD_NOW)) == NULL))
@@ -101,7 +101,7 @@ Gurucore *guru_module_init()
 	core->i18n_init = NULL;
 	core->i18n_translate = NULL;
 	core->i18n_check = NULL;
-	module = ggzcore_confio_read_string(handler, "guru", "i18n", NULL);
+	module = ggz_conf_read_string(handler, "guru", "i18n", NULL);
 	if(module)
 	{
 		printf("Loading core module I18N: %s... ", module);
@@ -122,7 +122,7 @@ Gurucore *guru_module_init()
 	}
 
 	/* Add all specified generic plugins */
-	ret = ggzcore_confio_read_list(handler, "guru", "modules", &count, &list);
+	ret = ggz_conf_read_list(handler, "guru", "modules", &count, &list);
 	if(ret >= 0)
 	{
 		for(i = 0; i < count; i++)
@@ -143,7 +143,7 @@ int guru_module_add(const char *modulealias)
 
 	/* Find appropriate shared library first */
 	if(!modulealias) return 0;
-	modulename = ggzcore_confio_read_string(handler, "modules", modulealias, NULL);
+	modulename = ggz_conf_read_string(handler, "modules", modulealias, NULL);
 	printf("Loading module: %s... ", modulename);
 	fflush(NULL);
 

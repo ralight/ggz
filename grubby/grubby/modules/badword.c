@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include "gurumod.h"
 #include "i18n.h"
-#include <ggzcore.h>
+#include <ggz.h>
 
 /* Configuration file for bad words */
 #define BADWORDCONF "/.ggz/grubby/modbadword.rc"
@@ -31,10 +31,10 @@ void gurumod_init()
 	path = (char*)malloc(strlen(home) + strlen(BADWORDCONF) + 1);
 	strcpy(path, home);
 	strcat(path, BADWORDCONF);
-	handle = ggzcore_confio_parse(path, GGZ_CONFIO_RDONLY);
+	handle = ggz_conf_parse(path, GGZ_CONF_RDONLY);
 	free(path);
 	if(handle < 0) return;
-	ret = ggzcore_confio_read_list(handle, "badwords", "badwords", &count, &badwordlist);
+	ret = ggz_conf_read_list(handle, "badwords", "badwords", &count, &badwordlist);
 
 	printf("[ ");
 	for(i = 0; i < count; i++)
