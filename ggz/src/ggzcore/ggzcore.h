@@ -3,10 +3,11 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
+ * $Id: ggzcore.h 3111 2002-01-14 05:53:06Z jdorje $
  *
  * Interface file to be included by client frontends
  *
- * Copyright (C) 2000, 2001 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +31,7 @@
 #include <stdarg.h>
 #include <poll.h>
 
-#include <ggz_client.h>
+#include <ggz_common.h>
 
 /** @file ggzcore.h
  *  @brief The interface for the ggzcore library used by GGZ clients

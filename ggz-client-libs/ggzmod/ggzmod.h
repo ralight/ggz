@@ -3,7 +3,10 @@
  * Author: GGZ Development Team
  * Project: GGZMod library
  * Desc: GGZ game client module functions
- * $Id: ggzmod.h 3107 2002-01-13 23:41:19Z jdorje $
+ * $Id: ggzmod.h 3111 2002-01-14 05:53:06Z jdorje $
+ *
+ * This contains basic functions that can be used by game client programs
+ * so that they can interface as a GGZ module.
  *
  * Copyright (C) 2000-2002 GGZ Development Team
  *
@@ -99,7 +102,7 @@
 #ifndef __GGZ_CLIENT_GGZ_H
 #define __GGZ_CLIENT_GGZ_H
 
-#include <ggz_client.h>
+#include <ggz_common.h>
 
 /**
  * @brief Connects to GGZ.

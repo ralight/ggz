@@ -1,3 +1,5 @@
+## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 3111 2002-01-14 05:53:06Z jdorje $
 
 SUBDIRS = .
 
@@ -15,7 +17,7 @@ lib_LTLIBRARIES = libggzcore.la
 # ggz_client isn't directly tied to ggzcore; it's used by ggzcore and
 # ggzmod.  But since they're both in the same library, I've just placed
 # it here for now - it can be moved later.
-include_HEADERS = ggzcore.h ggz_client.h
+include_HEADERS = ggzcore.h
 
 libggzcore_la_LIBADD = @LDADD@
 
@@ -29,7 +31,6 @@ libggzcore_la_SOURCES =	conf.c \
 		      	gametype.c \
 		      	gametype.h \
 		      	ggzcore.h \
-		      	ggz_client.h \
 			hook.c \
 			hook.h \
 			module.c \
