@@ -43,3 +43,26 @@ GGZ Gaming Zone
 
 <br>
 
+<?php
+
+function outdated($lang = "en")
+{
+	$file = $_SERVER['REQUEST_URI'];
+	if(substr($file, -4, 4) == ".php") $file = "$file.$lang";
+	else $file = substr($file, 0, -2) . "$lang";
+
+	echo "<table class='pane' width='100%'>\n";
+	echo "<tr>\n";
+	echo "<td>\n";
+	echo "<font size='3'>\n";
+	echo "<font color='#ff0000'>Achtung:</font>\n";
+	echo "Eine neuere Version dieser Datei ist in der Originalsprache verfügbar.\n";
+	echo "<a href='$file'>Neue Version ansehen</a>.\n";
+	echo "</font>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
+}
+
+?>
+
