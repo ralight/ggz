@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 5086 2002-10-28 07:29:41Z jdorje $
+ * $Id: io.c 5139 2002-11-02 06:40:33Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -46,6 +46,9 @@
 static int _io_read_req_state(GGZdMod *ggzdmod);
 static int _io_read_msg_log(GGZdMod *ggzdmod);
 static int _io_read_msg_report(GGZdMod *ggzdmod);
+static int _io_read_req_boot(GGZdMod *ggzdmod);
+static int _io_read_req_bot(GGZdMod *ggzdmod);
+static int _io_read_req_open(GGZdMod *ggzdmod);
 
 static int _io_read_req_launch(GGZdMod *ggzdmod);
 static int _io_read_msg_seat_change(GGZdMod * ggzdmod);
@@ -179,6 +182,30 @@ int _io_send_game_report(int fd, int num_players,
 	return 0;
 }
 
+int _io_send_req_boot(int fd, const char *name)
+{
+	if (ggz_write_int(fd, REQ_BOOT) < 0
+	    || ggz_write_string(fd, name) < 0)
+		return -1;
+	return 0;
+}
+
+int _io_send_req_bot(int fd, int seat_num)
+{
+	if (ggz_write_int(fd, REQ_BOT) < 0
+	    || ggz_write_int(fd, seat_num) < 0)
+		return -1;
+	return 0;
+}
+
+int _io_send_req_open(int fd, int seat_num)
+{
+	if (ggz_write_int(fd, REQ_OPEN) < 0
+	    || ggz_write_int(fd, seat_num) < 0)
+		return -1;
+	return 0;
+}
+
 
 int _io_respond_state(int fd)
 {
@@ -216,6 +243,12 @@ int _io_read_data(GGZdMod * ggzdmod)
 			return _io_read_msg_log(ggzdmod);
 		case MSG_GAME_REPORT:
 			return _io_read_msg_report(ggzdmod);
+		case REQ_BOOT:
+			return _io_read_req_boot(ggzdmod);
+		case REQ_BOT:
+			return _io_read_req_bot(ggzdmod);
+		case REQ_OPEN:
+			return _io_read_req_open(ggzdmod);
 		}
 	}
 
@@ -293,6 +326,38 @@ static int _io_read_msg_report(GGZdMod *ggzdmod)
 				ggz_free(names[p]);
 	}
 
+	return 0;
+}
+
+
+static int _io_read_req_boot(GGZdMod *ggzdmod)
+{
+	char *name;
+
+	if (ggz_read_string_alloc(ggzdmod->fd, &name) < 0)
+		return -1;
+	_ggzdmod_handle_boot_request(ggzdmod, name);
+	ggz_free(name);
+	return 0;
+}
+
+
+static int _io_read_req_bot(GGZdMod *ggzdmod)
+{
+	int seat_num;
+	if (ggz_read_int(ggzdmod->fd, &seat_num) < 0)
+		return -1;
+	_ggzdmod_handle_bot_request(ggzdmod, seat_num);
+	return 0;
+}
+
+
+static int _io_read_req_open(GGZdMod *ggzdmod)
+{
+	int seat_num;
+	if (ggz_read_int(ggzdmod->fd, &seat_num) < 0)
+		return -1;
+	_ggzdmod_handle_open_request(ggzdmod, seat_num);
 	return 0;
 }
 

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 5086 2002-10-28 07:29:41Z jdorje $
+ * $Id: ggzdmod.c 5139 2002-11-02 06:40:33Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1645,6 +1645,24 @@ void ggzdmod_report_game(GGZdMod *ggzdmod,
 }
 
 
+void ggzdmod_request_boot(GGZdMod * ggzdmod, const char *name)
+{
+	_io_send_req_boot(ggzdmod->fd, name);
+}
+
+
+void ggzdmod_request_bot(GGZdMod * ggzdmod, int seat_num)
+{
+	_io_send_req_bot(ggzdmod->fd, seat_num);
+}
+
+
+void ggzdmod_request_open(GGZdMod * ggzdmod, int seat_num)
+{
+	_io_send_req_open(ggzdmod->fd, seat_num);
+}
+
+
 void _ggzdmod_handle_report(GGZdMod * ggzdmod,
 			    int num_players, char **names, GGZSeatType *types,
 			    int *teams, GGZGameResult *results)
@@ -1655,4 +1673,22 @@ void _ggzdmod_handle_report(GGZdMod * ggzdmod,
 				      teams: teams,
 				      results: results};
 	call_handler(ggzdmod, GGZDMOD_EVENT_GAMEREPORT, &data);
+}
+
+
+void _ggzdmod_handle_boot_request(GGZdMod *ggzdmod, char *name)
+{
+	call_handler(ggzdmod, GGZDMOD_EVENT_REQ_BOOT, name);
+}
+
+
+void _ggzdmod_handle_bot_request(GGZdMod *ggzdmod, int seat_num)
+{
+	call_handler(ggzdmod, GGZDMOD_EVENT_REQ_BOT, &seat_num);
+}
+
+
+void _ggzdmod_handle_open_request(GGZdMod *ggzdmod, int seat_num)
+{
+	call_handler(ggzdmod, GGZDMOD_EVENT_REQ_OPEN, &seat_num);
 }

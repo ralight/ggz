@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocol.h 5061 2002-10-27 12:44:22Z jdorje $
+ * $Id: protocol.h 5139 2002-11-02 06:40:33Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -53,6 +53,10 @@ typedef enum {
 	 *  The server will send a RSP_GAME_STATE packet in response.
 	 */
 	REQ_GAME_STATE,
+
+	REQ_BOOT,
+	REQ_BOT,
+	REQ_OPEN,
 
 	MSG_GAME_REPORT
 } TableToControl;
