@@ -107,18 +107,18 @@ AC_CHECK_FUNCS([memset mkdir strdup strerror malloc stat poll])
 AC_REPLACE_FUNCS([strsep])
 
 AC_CHECK_FUNC(socket, ,
-    AC_CHECK_LIB(socket, socket,
-	AC_CHECK_HEADER(sys/socket.h, LDADD="-lsocket",
-	    AC_MSG_ERROR(*** Cannot find socket headers ); exit ),
-	AC_MSG_ERROR(*** Cannot find socket library ); exit ))
+    [AC_CHECK_LIB(socket, socket,
+	[AC_CHECK_HEADER(sys/socket.h, LDADD="-lsocket",
+	    AC_MSG_ERROR(*** Cannot find socket headers ); exit )],
+	AC_MSG_ERROR(*** Cannot find socket library ); exit )])
 
 AC_CHECK_FUNC(gethostbyname, ,
-    AC_CHECK_LIB(nsl, gethostbyname, LDADD="$LDADD -lnsl",
-	AC_MSG_ERROR(*** Cannot find nsl library ); exit ))
+    [AC_CHECK_LIB(nsl, gethostbyname, LDADD="$LDADD -lnsl",
+	AC_MSG_ERROR(*** Cannot find nsl library ); exit )])
 
 AC_CHECK_FUNC(inet_ntoa, ,
-    AC_CHECK_LIB(nsl, inet_ntoa, LDADD="$LDADD -lnsl",
-	AC_MSG_ERROR(*** Cannot find nsl library ); exit ))
+    [AC_CHECK_LIB(nsl, inet_ntoa, LDADD="$LDADD -lnsl",
+	AC_MSG_ERROR(*** Cannot find nsl library ); exit )])
 
 
 dnl Use -Wall if we have gcc.
