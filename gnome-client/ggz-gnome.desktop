@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=GGZ
+Comment=GGZ Gaming Zone client
+Exec=ggz-gnome
+Icon=xchat.png
+Terminal=0
+Type=Application
