@@ -1,4 +1,4 @@
-/*	$Id: ggz.c 2188 2001-08-23 07:13:00Z jdorje $	*/
+/*	$Id: ggz.c 2192 2001-08-23 08:50:43Z jdorje $	*/
 /*
  * File: ggz.c
  * Author: Brent Hendricks
@@ -319,7 +319,7 @@ void ggzdmod_set_handler(int event_id, const GGZHandler handler)
  * -2 => error during game
  * -3 => error during disconnect
  */
-int ggzdmod_main(char* game_name)
+int ggzdmod_main(void)
 {
 	char game_over = 0;
 	int i, fd, status, ggz_sock, fd_max, op, seat;
