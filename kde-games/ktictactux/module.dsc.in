@@ -1,0 +1,9 @@
+# KTicTacTux description file
+[ModuleInfo]
+Author = Josef Spillner
+CommandLine = @ggzexecmoddir@/ktictactux_client --ggz
+Frontend = kde
+Homepage = http://mindx.sourceforge.net/
+Name = TicTacToe
+Protocol = 0.0.4
+Version = 0.0.4

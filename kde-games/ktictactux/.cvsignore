@@ -1,0 +1,7 @@
+Makefile
+Makefile.in
+.deps
+.libs
+ktictactux_client
+ktictactux_client_meta_unload*
+*.o

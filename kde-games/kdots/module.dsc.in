@@ -1,0 +1,9 @@
+# KDots description file
+[ModuleInfo]
+Author = Josef Spillner
+CommandLine = @ggzexecmoddir@/kdots_client
+Frontend = kde
+Homepage = http://mindx.sourceforge.net/
+Name = KDots
+Protocol = 0.0.4
+Version = 0.0.4

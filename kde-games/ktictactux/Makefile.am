@@ -1,0 +1,31 @@
+SUBDIRS =
+
+bindir = $(ggzexecmoddir)
+
+bin_PROGRAMS = ktictactux_client
+
+ktictactux_client_SOURCES = \
+	main.cpp \
+	ktictactux.cpp \
+	ktictactuxproto.cpp \
+	qwhiteframe.cpp
+
+noinst_HEADERS = \
+	ktictactux.h \
+	ktictactuxproto.h \
+	qwhiteframe.h
+
+INCLUDES = $(EASYSOCK_INCLUDES) $(all_includes)
+
+ktictactux_client_LDADD = $(all_libraries) -lqt -lkdeui -lkdecore $(EASYSOCK_LDFLAGS) $(LIB_EASYSOCK)
+
+METASOURCES = AUTO
+
+EXTRA_DIST = module.dsc.in
+
+install-data-local:
+	-$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/ktictactux
+	-cp -r *.png $(DESTDIR)$(ggzdatadir)/ktictactux/
+
+uninstall-local:
+	-rm -rf $(DESTDIR)$(ggzdatadir)/ktictactux
