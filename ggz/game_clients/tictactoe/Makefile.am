@@ -1,12 +1,14 @@
 ## Process this file with automake to produce Makefile.in
 
+EXTRA_DIST = ttt.dsc
+
 SUBDIRS = .
 
 INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/easysock
 
-bin_PROGRAMS = ttt
+ggzmod_PROGRAMS = ggz.ttt
 
-ttt_SOURCES = game.h \
+ggz_ttt_SOURCES = game.h \
 	      main.c \
 	      main_win.c \
 	      main_win.h \
@@ -14,8 +16,8 @@ ttt_SOURCES = game.h \
 	      support.h
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ttt_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/easysock/libeasysock.la 
-ttt_LDFLAGS = -static
+ggz_ttt_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/easysock/libeasysock.la 
+ggz_ttt_LDFLAGS = -static
 
 
 

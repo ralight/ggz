@@ -309,18 +309,18 @@ void ggz_room_changed(GtkWidget* widget, gpointer data)
 	gtk_widget_grab_focus(tmp);
 }
 
+
 void ggz_about(GtkWidget* widget, gpointer data)
 {
+	GtkWidget *dlg_about;
 	GtkWidget *tmp;
-
+	
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "about");
 	gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
 
 	dlg_about = create_dlg_about();
-	gtk_widget_show(GTK_WIDGET(dlg_about));
+	gtk_widget_show(dlg_about);
 }
-
-
 
 
 GtkWidget*

@@ -117,13 +117,13 @@ int ggzrc_initialize(void)
 	rc_hash = g_hash_table_new(g_str_hash, g_str_equal);
 
 	/* Open and parse the main ggz.rc file */
-	tempstr = g_strconcat(SYSCONFDIR, "/ggz.rc", NULL);
+	tempstr = g_strconcat(GGZCONFDIR, "/ggz.rc", NULL);
 	if((rc_file = fopen(tempstr, "r"))) {
 		dbg_msg("ggzrc: Reading %s", tempstr);
 		ggzrc_load_rc(rc_file);
 		status = 0;
 	} else
-		dbg_msg("ggzrc: Unable to open %s/ggz.rc", SYSCONFDIR);
+		dbg_msg("ggzrc: Unable to open %s/ggz.rc", GGZCONFDIR);
 	g_free(tempstr);
 
 	/* Open and parse the ~/.ggzrc file */

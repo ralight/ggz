@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+EXTRA_DIST = ggzrc.test.in
+
 SUBDIRS = .
 
 INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/easysock

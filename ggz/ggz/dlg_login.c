@@ -356,7 +356,7 @@ void login_fill_defaults(GtkWidget * win, gpointer user_data)
                 gtk_entry_set_text(GTK_ENTRY(tmp), port);
         }
         else
-                gtk_entry_set_text(GTK_ENTRY(tmp), "7626");
+                gtk_entry_set_text(GTK_ENTRY(tmp), "5688");
 
         tmp = gtk_object_get_data(GTK_OBJECT(win), "anon_radio");
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);

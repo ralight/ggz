@@ -1,12 +1,14 @@
 ## Process this file with automake to produce Makefile.in
 
+EXTRA_DIST = spades.dsc
+
 SUBDIRS = .
 
 INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/easysock
 
-bin_PROGRAMS = gspades
+ggzmod_PROGRAMS = ggz.spades
 
-gspades_SOURCES = card.c \
+ggz_spades_SOURCES = card.c \
                     card.h \
 		    client_main.c \
 		    client_func.c \
@@ -45,6 +47,6 @@ gspades_SOURCES = card.c \
 
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-gspades_LDADD = @GTK_LIBS@ $(LDADD)
+ggz_spades_LDADD = @GTK_LIBS@ $(LDADD)
 
 

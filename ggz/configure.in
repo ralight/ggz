@@ -8,9 +8,9 @@ AM_MAINTAINER_MODE
 
 dnl Compiling Options
 dnl =====================
-AC_ARG_ENABLE(server, [  --disable-games         Don't build NetGames games], games=$enableval, games=yes)
-AC_ARG_ENABLE(client, [  --disable-client        Don't build NetGames clients], client=$enableval, client=yes)
-AC_ARG_ENABLE(debug,  [  --enable-debug          enable debugging ],, enable_debug=no)
+AC_ARG_ENABLE(client, [  --disable-client        Don't build NetGames clients],, enable_client=yes)
+AC_ARG_ENABLE(games,  [  --disable-games         Don't build NetGames games],, enable_games=yes)
+AC_ARG_ENABLE(debug,  [  --enable-debug          Enable debugging ],, enable_debug=no)
 AC_ARG_ENABLE(debug-gdb,    [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
 AC_ARG_ENABLE(debug-mem,    [  --enable-debug-mem      enable mem debugging ],,enable_debug_mem=no)
 AC_ARG_ENABLE(debug-socket, [  --enable-debug-socket   enable socket debugging ],, enable_debug_socket=no)
@@ -67,27 +67,10 @@ AC_CHECK_LIB(popt, poptGetNextOpt,
         AC_MSG_ERROR(*** Cannot find popt.h header); exit),
     AC_MSG_ERROR(*** Cannot find popt library ); exit)
     
-dnl AC_CHECK_LIB(pthread, pthread_create,
-dnl    AC_CHECK_HEADER(pthread.h, LDADD="$LDADD -lpthread" 
-dnl         CFLAGS="$CFLAGS -D_REENTRANT"
-dnl         AC_DEFINE(_XOPEN_SOURCE, 500),
-dnl         AC_MSG_ERROR(*** Cannot find pthread.h header); exit),
-dnl    AC_MSG_ERROR(*** Cannot find pthread library ); exit)
-
-
-    
-dnl Check for client libs
-dnl =====================
-if test "$client" = yes; then
-   AM_PATH_GTK(1.2.0, ,
-       AC_MSG_WARN(*** GTK client will not be built: GTK not found);
-       client=no)
-fi
-
-
-LIBS=$tmp_LIBS
+AM_PATH_GTK(1.2.0, ,AC_MSG_ERROR(*** Client needs GTK: GTK not found);exit)
 
 dnl Use -Wall if we have gcc.
+dnl =========================
 changequote(,)dnl
 if test "x$GCC" = "xyes"; then
   case " $CFLAGS " in
@@ -96,6 +79,7 @@ if test "x$GCC" = "xyes"; then
   esac
 fi
 changequote([,])dnl
+
 
 dnl Debug modes
 dnl ===========
@@ -122,30 +106,35 @@ fi
 
 dnl Various dirs
 dnl ============
-
 if test "x${sysconfdir}" = 'x${prefix}/etc'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(SYSCONFDIR, "${ac_default_prefix}/etc")
+    ggzconfdir="${ac_default_prefix}/etc"  
   else
-    AC_DEFINE_UNQUOTED(SYSCONFDIR, "${prefix}/etc")
+    ggzconfdir="${prefix}/etc"
   fi
 else
-  AC_DEFINE_UNQUOTED(SYSCONFDIR, "${sysconfdir}")
+  ggzconfdir="${sysconfdir}"
 fi
+AC_DEFINE_UNQUOTED(GGZCONFDIR, "${ggzconfdir}")
 
-if test "x${datadir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+
+if test "x${libdir}" = 'x${exec_prefix}/lib'; then
+  if test "x${exec_prefix}" = "xNONE"; then
+    if test "x${prefix}" = "xNONE"; then
+      ggzmoddir="${ac_default_prefix}/lib/ggz"
+    else
+      ggzmoddir="${prefix}/lib/ggz"
+    fi
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+    ggzmoddir="${exec_prefix}/lib/ggz"
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
+  ggzmoddir="${libdir}/ggz"
 fi
+AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzmoddir}")
 
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
-
 
 
 dnl Which progs to compile
@@ -153,19 +142,22 @@ dnl ======================
 
 SUBDIRS="easysock"
 
-if test "$games" = yes; then
-    SUBDIRS="$SUBDIRS game_clients"
-fi
-if test "$client" = yes; then
+if test "$enable_client" = yes; then
     SUBDIRS="$SUBDIRS ggz"
 fi
+if test "$enable_games" = yes; then
+    SUBDIRS="$SUBDIRS game_clients"
+fi
 
-AC_SUBST(PROGS)
 AC_SUBST(LDADD)
 AC_SUBST(SUBDIRS)
+AC_SUBST(ggzconfdir)
+AC_SUBST(ggzmoddir)
+AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([Makefile 
 	   ggz/Makefile
+	   ggz/ggzrc.test
 	   game_clients/Makefile
 	   game_clients/spades/Makefile
 	   game_clients/tictactoe/Makefile	
@@ -174,20 +166,13 @@ AC_OUTPUT([Makefile
 
 dnl Status Output
 dnl =============
+echo "*** GGZ will be built with the following debugging flags: $DFLAGS"
+echo "***"
+echo "*** To compile and install client:"
+echo "***"
+echo "***'make install'"
+echo "***"
+echo "*** To compile and test client locally without installing:"
+echo "***"
+echo "*** 'make; cd ggz; ./ggz -f ggzrc.test'"
 echo ""
-echo "*** The following programs will be built: $PROGS"
-echo "*** with the following debugging flags: $DFLAGS"
-echo ""
-echo "WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!"
-echo ""
-echo "You may now compile ggz with 'make', but do *NOT* attempt to 'make install'"
-echo "You *MUST* run ggz from the directory in which it was compiled, like this:"
-echo ""
-echo "cd ggz; ./ggz"
-echo ""
-echo "This will start the ggz client"
-echo "Future versions will be able to be run from any directory"
-echo ""
-echo "WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!"
-
-

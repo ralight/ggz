@@ -43,6 +43,7 @@
 #include "protocols.h"
 #include "err_func.h"
 #include "seats.h"
+#include "ggzrc.h"
 
 /* Global data structures */
 extern GtkWidget *dlg_launch;
@@ -67,27 +68,34 @@ void launch_game(gint type, gchar launch)
 	gint sock, fd;
 	gchar* game_name;
 	gchar* path;
+	gchar* full_path;
 	GdkInputFunction callback;
 
-	/* FIXME: Don't hardcode paths */
-	if (type == 0) 
-		path = g_strdup("../game_clients/spades/gspades");
-	else
-		path = g_strdup("../game_clients/tictactoe/ttt");
-		
-	game_name = g_strdup(game_types.info[type].name);
-	
 	if (launch)
 		dbg_msg("Launching game");
 	else
 		dbg_msg("Joining game");
+	
+	game_name = g_strdup(game_types.info[type].name);
+	if ( (path = ggzrc_read_string(game_name, "Path", NULL)) == NULL)
+		return;
+	
+	dbg_msg("path from config file is : %s", path);
+	
+	if (g_path_is_absolute(path))
+		full_path = path;
+	else {
+		full_path = g_strdup_printf("%s/%s", GAMEDIR, path);
+		g_free(path);
+	}
+	dbg_msg("full game module path is : %s", full_path);
 	
 	/* Fork table process */
 	if ( (pid = fork()) < 0) {
 		err_dlg("fork failed");
 		return;
 	} else if (pid == 0) {
-		run_game(type, launch, path);
+		run_game(type, launch, full_path);
 		err_dlg("exec failed");
 		return;
 	} else {
@@ -117,7 +125,7 @@ void launch_game(gint type, gchar launch)
 	}
 
 	g_free(game_name);
-	g_free(path);
+	g_free(full_path);
 }
 
 

@@ -9,12 +9,12 @@
 
 
 /* Globals for this dialog */
-GtkWidget *dlg_about;
 extern GtkWidget *main_win;
 
 
 /* Local Functions */
 static void about_close(GtkWidget* widget, gpointer data);
+
 
 void about_close(GtkWidget* widget, gpointer data)
 {
@@ -23,9 +23,8 @@ void about_close(GtkWidget* widget, gpointer data)
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "about");
         gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
 
-	gtk_widget_destroy(dlg_about);
+	gtk_widget_destroy(widget);
 }
-
 
 
 GtkWidget*
@@ -37,7 +36,7 @@ create_dlg_about (void)
   GtkWidget *label1;
   GtkWidget *label2;
   GtkWidget *dialog_action_area1;
-  GtkWidget *hbox1;
+  GtkWidget *button_box;
   GtkWidget *ok_button;
 
   dlg_about = gtk_dialog_new ();
@@ -57,14 +56,14 @@ create_dlg_about (void)
   gtk_widget_show (vbox1);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, FALSE, FALSE, 0);
 
-  label1 = gtk_label_new ("GNU-Gaming Zone");
+  label1 = gtk_label_new ("GNU Gaming Zone");
   gtk_widget_ref (label1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label1);
   gtk_box_pack_start (GTK_BOX (vbox1), label1, FALSE, FALSE, 8);
 
-  label2 = gtk_label_new ("Authors:\n\t\tGTK+ Version\n\t\t\t\t\t\t\t\tRich Gade\t\t\t\t\t\t\t\t\t(rgade@crown.net)\n\t\t\t\t\t\t\t\tBrent Henricks\t\t(brentmh@rice.edu)\n\t\t\t\t\t\t\t\tJustin Zaun\t\t\t\t\t\t\t(jzaun@telerama.com)\n\n\t\tWindows Version\n\t\t\t\t\t\t\t\tDoug Hudson\t\t\t(hudson2@pilot.msu.edu)\n\nWebsite:\n\t\t\t\t\t\t\t\tggz.sourceforge.net\n");
+  label2 = gtk_label_new ("Authors:\n\t\tGTK+ Version\n\t\t\t\t\t\t\t\tRich Gade\t\t\t\t\t\t\t\t\t(rgade@users.sourceforge.net)\n\t\t\t\t\t\t\t\tBrent Hendricks\t\t(bmh@users.sourceforge.net)\n\t\t\t\t\t\t\t\tJustin Zaun\t\t\t\t\t\t\t(jzaun@users.sourceforge.net)\n\n\t\tWindows Version\n\t\t\t\t\t\t\t\tDoug Hudson\t\t\t(djh@users.sourceforge.net)\n\nWebsite:\n\t\t\t\t\t\t\t\thttp://ggz.sourceforge.net\n");
   gtk_widget_ref (label2);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "label2", label2,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -78,28 +77,28 @@ create_dlg_about (void)
   gtk_widget_show (dialog_action_area1);
   gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 10);
 
-  hbox1 = gtk_hbox_new (TRUE, 0);
-  gtk_widget_ref (hbox1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_about), "hbox1", hbox1,
+  button_box = gtk_hbutton_box_new ();
+  gtk_widget_ref (button_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_about), "button_box", button_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox1);
-  gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbox1, TRUE, TRUE, 0);
+  gtk_widget_show (button_box);
+  gtk_box_pack_start (GTK_BOX (dialog_action_area1), button_box, TRUE, TRUE, 0);
 
   ok_button = gtk_button_new_with_label ("OK");
   gtk_widget_ref (ok_button);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "ok_button", ok_button,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (ok_button);
-  gtk_box_pack_start (GTK_BOX (hbox1), ok_button, FALSE, FALSE, 0);
-  gtk_widget_set_usize (ok_button, 47, -2);
+  gtk_container_add (GTK_CONTAINER (button_box), ok_button);
   GTK_WIDGET_SET_FLAGS (ok_button, GTK_CAN_DEFAULT);
 
-  gtk_signal_connect (GTK_OBJECT (ok_button), "clicked",
-                      GTK_SIGNAL_FUNC (about_close),
-                      NULL);
+  gtk_signal_connect_object (GTK_OBJECT (dlg_about), "delete_event",
+                             GTK_SIGNAL_FUNC (about_close),
+                             GTK_OBJECT (dlg_about));
+  gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
+                             GTK_SIGNAL_FUNC (about_close),
+                             GTK_OBJECT (dlg_about));
 
-  gtk_widget_grab_focus (ok_button);
-  gtk_widget_grab_default (ok_button);
   return dlg_about;
 }
 
