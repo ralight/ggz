@@ -75,6 +75,7 @@ static GGZHookReturn room_table_data(GGZRoomEvent id, void*, void*);
 
 GGZServer *server;
 static int fd;
+static int first_room_list = 0;
 
 extern GGZGame *game;
 
@@ -218,6 +219,8 @@ static GGZHookReturn server_login_ok(GGZServerEvent id, void* event_data,
 #ifdef DEBUG
 	output_text("--- Logged into to %s.", ggzcore_server_get_host(server));
 #endif
+
+	first_room_list = 1;
 	ggzcore_server_list_rooms(server, -1, 1);
 
 	return GGZ_HOOK_OK;
@@ -247,6 +250,13 @@ static GGZHookReturn server_enter_ok(GGZServerEvent id, void* event_data,
 #if 0
 	ggzcore_event_enqueue(GGZ_USER_LIST_ROOMS, NULL, NULL);
 #endif
+
+                room = ggzcore_server_get_cur_room(server);
+                if (ggzcore_room_get_num_players(room) > 0) {
+                        output_players();
+                }
+                else /* Get list from server */
+                        ggzcore_room_list_players(room);
 
 	return GGZ_HOOK_OK;
 }
@@ -443,12 +453,10 @@ static GGZHookReturn server_list_rooms(GGZServerEvent id, void* event_data, void
 {
 	int i, num;
 	
-	if(ggzcore_server_get_state(server) == GGZ_STATE_LOGGED_IN)
-	{
-		ggzcore_server_join_room(server, 0);
-	}else{
+	if(first_room_list == 1)
+		first_room_list = 0;
+	else
 		output_rooms();
-	}
 
 	/* Register callbacks for all rooms */
 	num = ggzcore_server_get_num_rooms(server);
