@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3309 2002-02-11 01:29:04Z jdorje $
+ * $Id: table.c 3310 2002-02-11 02:17:21Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -304,29 +304,21 @@ void table_redraw(void)
 {
 	ggz_debug("table", "Redrawing table. ");
 	if (table_ready) {
-		int p;
+		/* Complete (zip) any animation in process */
 		animation_stop(TRUE);
 
+		/* I really don't know why these are necessary... */
 		gtk_widget_grab_focus(dlg_main);
-
 		table_style = gtk_widget_get_style(table);
 		
+		/* Redraw everything to the buffer */
 		table_clear_table(FALSE);
 		draw_card_areas(FALSE);
-
-		/* Redisplay any cards on table and in hands */
 		table_display_all_hands(FALSE);
 		table_show_cards(FALSE);
 
+		/* Then draw the whole buffer to the window */
 		table_show_table(0, 0, get_table_width(), get_table_height());
-
-#if 0
-		/* These sometimes get overwritten by the redraw above. */		
-		for (p = 0; p < ggzcards.num_players; p++) {
-			gtk_widget_queue_draw(l_name[p]);
-			gtk_widget_queue_draw(label[p]);
-		}
-#endif
 		
 		/* There has GOT to be a better way to force the redraw! */
 		gdk_window_hide(table->window);
