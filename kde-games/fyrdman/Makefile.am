@@ -8,14 +8,16 @@ fyrdman_SOURCES = \
 	map.cpp \
 	levelselector.cpp \
 	network.cpp \
-	level.cpp
+	level.cpp \
+	unitinfo.cpp
 
 noinst_HEADERS = \
 	mainwindow.h \
 	map.h \
 	levelselector.h \
 	network.h \
-	level.h
+	level.h \
+	unitinfo.h
 
 INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) $(LIBGGZMOD_INCLUDES)
 

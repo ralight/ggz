@@ -281,18 +281,7 @@ void Map::setupMap(Level *level)
 					if(x % 2) c = QColor(0, 0, 255);
 					else c = QColor(255, 0, 0);
 					p.fillRect(xpos + angle + 1, ypos + 2 * angle + 1, fwidth - 2 * angle - 2, 2, QBrush(c));
-					if(x == 0) c = QColor(255, 0, 0);
-					else if(x == 1) c = QColor(0, 255, 0);
-					else if(x == 2) c = QColor(0, 0, 255);
-					else if(x == 3) c = QColor(0, 255, 255);
-					else if(x == 4) c = QColor(255, 255, 0);
-					else if(x == 5) c = QColor(255, 0, 255);
-					else if(x == 6) c = QColor(0, 128, 0);
-					else if(x == 7) c = QColor(255, 128, 255);
-					else if(x == 8) c = QColor(0, 128, 255);
-					else if(x == 9) c = QColor(255, 128, 0);
-					else if(x == 10) c = QColor(128, 128, 0);
-					else if(x == 11) c = QColor(0, 128, 128);
+					c = Map::colour(x);
 					p.fillRect(xpos + angle + 1, ypos + 2 * angle + 4, fwidth - 2 * angle - 2, 2, QBrush(c));
 				}
 			}
@@ -301,6 +290,27 @@ void Map::setupMap(Level *level)
 	}
 
 	setBackgroundPixmap(pix2);
+}
+
+QColor Map::colour(int player)
+{
+	QColor c;
+	int x = player;
+
+	if(x == 0) c = QColor(255, 0, 0);
+	else if(x == 1) c = QColor(0, 255, 0);
+	else if(x == 2) c = QColor(0, 0, 255);
+	else if(x == 3) c = QColor(0, 255, 255);
+	else if(x == 4) c = QColor(255, 255, 0);
+	else if(x == 5) c = QColor(255, 0, 255);
+	else if(x == 6) c = QColor(0, 128, 0);
+	else if(x == 7) c = QColor(255, 128, 255);
+	else if(x == 8) c = QColor(0, 128, 255);
+	else if(x == 9) c = QColor(255, 128, 0);
+	else if(x == 10) c = QColor(128, 128, 0);
+	else if(x == 11) c = QColor(0, 128, 128);
+
+	return c;
 }
 
 void Map::setMap(bool map)
@@ -341,6 +351,7 @@ void Map::move(int x, int y, int x2, int y2)
 		m_level->setCell(x, y, -1);
 		m_level->setCell(x2, y2, tmp);
 		setupMap(m_level);
+		repaint();
 	}
 }
 

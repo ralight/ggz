@@ -12,7 +12,7 @@ class LevelSelector : public QDialog
 {
 	Q_OBJECT
 	public:
-		LevelSelector(QWidget *parent = NULL, const char *name = NULL);
+		LevelSelector(bool ro, QWidget *parent = NULL, const char *name = NULL);
 		~LevelSelector();
 
 		void addLevel(Level *level);

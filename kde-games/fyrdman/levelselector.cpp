@@ -8,7 +8,7 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 
-LevelSelector::LevelSelector(QWidget *parent, const char *name)
+LevelSelector::LevelSelector(bool ro, QWidget *parent, const char *name)
 : QDialog(parent, name, true)
 {
 	QVBoxLayout *lay;
@@ -16,25 +16,30 @@ LevelSelector::LevelSelector(QWidget *parent, const char *name)
 	QPushButton *ok, *cancel;
 
 	combo = new QComboBox(this);
+	//if(ro) combo->setReadOnly(true);
 
 	desc = new QTextEdit(this);
 	desc->setReadOnly(true);
 
-	ok = new QPushButton(i18n("Play"), this);
-	cancel = new QPushButton(i18n("Cancel"), this);
+	if(!ro) ok = new QPushButton(i18n("Play"), this);
+	else ok = new QPushButton(i18n("Close"), this);
+	if(!ro) cancel = new QPushButton(i18n("Cancel"), this);
+	else cancel = NULL;
 
 	lay = new QVBoxLayout(this, 5);
 	lay->add(combo);
 	lay->add(desc);
 	lay2 = new QHBoxLayout(lay, 5);
 	lay2->add(ok);
-	lay2->add(cancel);
+	if(!ro) lay2->add(cancel);
 
-	connect(ok, SIGNAL(clicked()), SLOT(accept()));
-	connect(cancel, SIGNAL(clicked()), SLOT(reject()));
+	if(!ro) connect(ok, SIGNAL(clicked()), SLOT(accept()));
+	else connect(ok, SIGNAL(clicked()), SLOT(close()));
+	if(!ro) connect(cancel, SIGNAL(clicked()), SLOT(reject()));
 	connect(combo, SIGNAL(activated(int)), SLOT(slotActivated(int)));
 
-	setCaption(i18n("Select a level"));
+	if(!ro) setCaption(i18n("Select a level"));
+	else setCaption(i18n("Level information"));
 }
 
 LevelSelector::~LevelSelector()

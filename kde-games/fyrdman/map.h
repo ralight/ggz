@@ -23,6 +23,8 @@ class Map : public QWidget
 
 		void move(int x, int y, int x2, int y2);
 
+		static QColor colour(int player);
+
 	signals:
 		void signalMove(int x, int y, int x2, int y2);
 

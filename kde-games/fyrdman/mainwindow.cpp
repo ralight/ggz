@@ -4,6 +4,7 @@
 #include "levelselector.h"
 #include "network.h"
 #include "level.h"
+#include "unitinfo.h"
 
 #include <kmenubar.h>
 #include <klocale.h>
@@ -40,6 +41,7 @@ MainWindow::MainWindow()
 	gamemenu->insertSeparator();
 	gamemenu->insertItem(i18n("Quit"), game_quit);
 
+	gamemenu->setItemEnabled(game_info, false);
 	gamemenu->setItemEnabled(game_sync, false);
 
 	backgroundmenu = new KPopupMenu(this);
@@ -93,6 +95,7 @@ void MainWindow::slotMenu(int id)
 			levelSelector();
 			break;
 		case game_info:
+			levelInformation();
 			break;
 		case game_sync:
 			synchronize();
@@ -129,12 +132,27 @@ void MainWindow::slotMenu(int id)
 	}
 }
 
+void MainWindow::levelInformation()
+{
+	if(!map->level()) return;
+
+	LevelSelector l(true, this);
+	l.addLevel(map->level());
+	l.exec();
+}
+
+void MainWindow::unitInformation(int num)
+{
+	UnitInfo u(num, this);
+	u.exec();
+}
+
 void MainWindow::levelSelector()
 {
 	int ret;
 	int count;
 
-	LevelSelector l(this);
+	LevelSelector l(false, this);
 	if(network)
 	{
 		ggz_read_int(network->fd(), &count);
@@ -172,6 +190,8 @@ void MainWindow::levelSelector()
 	if(ret == QDialog::Accepted)
 	{
 		statusBar()->changeItem(i18n("Level: %1").arg(l.level()), status_level);
+		gamemenu->setItemEnabled(game_info, true);
+
 		if(network)
 		{
 			ggz_write_int(network->fd(), Network::sndmap);
@@ -181,6 +201,8 @@ void MainWindow::levelSelector()
 		else
 		{
 			m_self = 1;
+			unitInformation(m_self);
+
 			statusBar()->changeItem(i18n("Game started"), status_state);
 			statusBar()->changeItem(i18n("Select a knight"), status_task);
 		}
@@ -236,6 +258,8 @@ void MainWindow::slotData()
 		case Network::msgseat:
 			ggz_read_int(network->fd(), &seat);
 			kdDebug() << "-> Seat: " << seat << endl;
+
+			unitInformation(seat);
 			break;
 		case Network::msgplayers:
 			ggz_read_int(network->fd(), &playernum);
@@ -337,6 +361,8 @@ void MainWindow::slotData()
 
 void MainWindow::slotMove(int x, int y, int x2, int y2)
 {
+	bool ret;
+
 	m_movex = x;
 	m_movey = y;
 	m_movex2 = x2;
@@ -357,12 +383,20 @@ void MainWindow::slotMove(int x, int y, int x2, int y2)
 		statusBar()->changeItem(i18n("Calculating..."), status_task);
 
 		statusBar()->changeItem(i18n("Checking move..."), status_state);
-		checkMove(m_self);
-		statusBar()->changeItem(i18n("Move checked"), status_state);
+		ret = checkMove(m_self);
 
-		statusBar()->changeItem(i18n("Moving AI..."), status_state);
-		aiMove();
-		statusBar()->changeItem(i18n("AI moved"), status_state);
+		if(ret)
+		{
+			statusBar()->changeItem(i18n("Move checked"), status_state);
+
+			statusBar()->changeItem(i18n("Moving AI..."), status_state);
+			aiMove();
+			statusBar()->changeItem(i18n("AI moved"), status_state);
+		}
+		else
+		{
+			statusBar()->changeItem(i18n("Invalid move"), status_state);
+		}
 
 		statusBar()->changeItem(i18n("Select a knight"), status_task);
 	}

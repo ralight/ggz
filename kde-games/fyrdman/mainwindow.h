@@ -26,6 +26,9 @@ class MainWindow : public KMainWindow
 
 	private:
 		void levelSelector();
+		void levelInformation();
+		void unitInformation(int num);
+
 		void synchronize();
 
 		bool checkMove(int self);
