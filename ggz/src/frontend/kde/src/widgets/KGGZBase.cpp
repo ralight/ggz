@@ -161,6 +161,11 @@ KGGZBase::~KGGZBase()
 	konfig.writeEntry("height", height());
 }
 
+void KGGZBase::autoconnect(QString uri)
+{
+	kggz->autoconnect(uri);
+}
+
 QIconSet KGGZBase::kggzGetIcon(int menuid)
 {
 	const char *icon = NULL;

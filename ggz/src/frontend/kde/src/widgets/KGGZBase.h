@@ -56,6 +56,8 @@ class KGGZBase : public KMainWindow
 		KGGZBase();
 		// Destructor
 		~KGGZBase();
+		// Connect to an URI
+		void autoconnect(QString uri);
 
 	public slots:
 		// Handle a specific menu item activated by the user
