@@ -1,0 +1,18 @@
+=============================
+The GGZ Gaming Zone -  libggz
+=============================
+
+This is the GGZ base library libggz, used by the GGZ Gaming Zone server
+(ggzd), the ggzcore library and other components.
+
+Please read 'INSTALL' if you aren't experienced with the build yet.
+For an overall view on the GGZ setup procedures, please consult the file
+README.GGZ.
+Have a look at QuickStart.GGZ to learn about the installation process.
+
+If you encounter any bugs, please send them to the mailing list,
+	<ggz-dev@lists.sourceforge.net>.
+
+Have fun!
+	The GGZ Gaming Zone Development Team
+
