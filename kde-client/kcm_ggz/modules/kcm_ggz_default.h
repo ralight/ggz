@@ -13,7 +13,7 @@ class KCMGGZDefault : public KCMGGZPane
 		~KCMGGZDefault();
 		void load();
 		void save();
-		const char *caption();
+		QString caption();
 
 	signals:
 		void signalChanged();

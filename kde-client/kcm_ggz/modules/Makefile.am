@@ -32,5 +32,5 @@ LDFLAGS = $(KSTUFF)
 noinst_HEADERS = kcm_ggz_default.h kcm_ggz_metaserver.h kcm_ggz_drs.h kcm_ggz_ggzd.h kcm_ggz_games.h
 
 gamedir = $(kde_datadir)/kggz/kcmggz/icons
-game_DATA = game.png
+game_DATA = game.png game_kde.png game_gnome.png gear.png
 

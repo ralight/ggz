@@ -4,6 +4,7 @@
 #include "kcm_ggz_pane.h"
 
 class KListView;
+class QLineEdit;
 
 class KCMGGZGgzd : public KCMGGZPane
 {
@@ -13,15 +14,21 @@ class KCMGGZGgzd : public KCMGGZPane
 		~KCMGGZGgzd();
 		void load();
 		void save();
-		const char *caption();
+		QString caption();
 
 	signals:
 		void signalChanged();
 
 	private:
-		void add(QString category, QString key);
+		void add(QString category, QString key, QString def);
 
+	private slots:
+		void reload();
+
+	private:
 		KListView *view;
+		QLineEdit *locator;
+		int m_firsttime;
 };
 
 #endif

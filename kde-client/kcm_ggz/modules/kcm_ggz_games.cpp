@@ -79,7 +79,7 @@ void KCMGGZGames::save()
 {
 }
 
-const char *KCMGGZGames::caption()
+QString KCMGGZGames::caption()
 {
 	return i18n("Available games");
 }
@@ -96,6 +96,7 @@ void KCMGGZGames::add(QString location, QString name, QString frontend, QString 
 {
 	QListViewItem *loc, *item;
 	QString value;
+	QString pixname;
 
 	loc = NULL;
 	for(QListViewItem *i = view->firstChild(); i; i = i->nextSibling())
@@ -122,7 +123,11 @@ void KCMGGZGames::add(QString location, QString name, QString frontend, QString 
 	item->setOpen(true);
 
 	item = new QListViewItem(item, frontend, version, protocol, homepage, authors);
-	item->setPixmap(0, QPixmap(QString(KGGZ_DIRECTORY) + "/kcmggz/icons/game.png"));
+
+	pixname = "game.png";
+	if((frontend == "gtk") || (frontend == "gnome")) pixname = "game_gnome.png";
+	if((frontend == "qt") || (frontend == "kde")) pixname = "game_kde.png";
+	item->setPixmap(0, QPixmap(QString(KGGZ_DIRECTORY) + "/kcmggz/icons/" + pixname));
 }
 
 void KCMGGZGames::slotSelected(QListViewItem *item, const QPoint& point, int column)
@@ -146,10 +151,12 @@ void KCMGGZGames::slotUpdate()
 
 void KCMGGZGames::slotActivated(int index)
 {
+	if(!view->currentItem()) return;
+
 	switch(index)
 	{
 		case menuhomepage:
-			kapp->invokeBrowser("http://ggz.sourceforge.net");
+			kapp->invokeBrowser(view->currentItem()->text(3));
 			break;
 		case menuinformation:
 			break;

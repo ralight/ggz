@@ -202,7 +202,7 @@ void KCMGGZMetaserver::save()
 {
 }
 
-const char *KCMGGZMetaserver::caption()
+QString KCMGGZMetaserver::caption()
 {
 	return i18n("Servers");
 }

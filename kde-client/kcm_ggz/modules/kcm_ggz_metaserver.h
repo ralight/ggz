@@ -16,7 +16,7 @@ class KCMGGZMetaserver : public KCMGGZPane
 		~KCMGGZMetaserver();
 		void load();
 		void save();
-		const char *caption();
+		QString caption();
 
 	public slots:
 		void slotDelete();

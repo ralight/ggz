@@ -15,7 +15,7 @@ class KCMGGZGames : public KCMGGZPane
 		~KCMGGZGames();
 		void load();
 		void save();
-		const char *caption();
+		QString caption();
 		enum MenuEntries
 		{
 			menuhomepage,

@@ -19,7 +19,7 @@ void KCMGGZDRS::save()
 {
 }
 
-const char *KCMGGZDRS::caption()
+QString KCMGGZDRS::caption()
 {
 	return "DRS System";
 }

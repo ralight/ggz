@@ -6,6 +6,9 @@
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qgroupbox.h>
+#include <qpixmap.h>
+
+#include "config.h"
 
 KCMGGZDefault::KCMGGZDefault(QWidget *parent, const char *name)
 : KCMGGZPane(parent, name)
@@ -13,9 +16,11 @@ KCMGGZDefault::KCMGGZDefault(QWidget *parent, const char *name)
 	QLabel *label_server, *label_username;
 	QLabel *label_explanation;
 	QVBoxLayout *vbox, *vbox2;
+	QHBoxLayout *hbox;
 	QGroupBox *box;
+	QWidget *gear;
 
-	box = new QGroupBox("General", this);
+	box = new QGroupBox(i18n("General"), this);
 	box->setFixedHeight(150);
 	box->setMinimumWidth(400);
 	box->move(10, 10);
@@ -35,6 +40,10 @@ KCMGGZDefault::KCMGGZDefault(QWidget *parent, const char *name)
 		this);
 	label_explanation->setBackgroundColor(QColor(255, 200, 0));
 
+	gear = new QWidget(this);
+	gear->setFixedSize(200, 212);
+	gear->setBackgroundPixmap(QPixmap(QString(KGGZ_DIRECTORY) + "/kcmggz/icons/gear.png"));
+
 	vbox = new QVBoxLayout(box, 15);
 	vbox->add(label_server);
 	vbox->add(m_server);
@@ -42,6 +51,10 @@ KCMGGZDefault::KCMGGZDefault(QWidget *parent, const char *name)
 	vbox->add(m_username);
 
 	vbox2 = new QVBoxLayout(this, 15);
+	hbox = new QHBoxLayout(vbox2, 5);
+	hbox->add(gear);
+	hbox->addStretch(1);
+	vbox2->addStretch(1);
 	vbox2->add(label_explanation);
 	vbox2->add(box);
 
@@ -65,7 +78,7 @@ void KCMGGZDefault::save()
 {
 }
 
-const char *KCMGGZDefault::caption()
+QString KCMGGZDefault::caption()
 {
 	return i18n("Default Settings");
 }
