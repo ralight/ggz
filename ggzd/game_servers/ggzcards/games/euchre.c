@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2703 2001-11-09 01:35:30Z jdorje $
+ * $Id: euchre.c 2704 2001-11-09 01:44:56Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -126,14 +126,14 @@ static int euchre_get_bid(void)
 		char suit;
 
 		/* The dealer (8th and last bid) is not allowed to pass a
-		   second time.  (I'm not sure if this is correct.) */
-		if (game.bid_count != 7)
+		   second time (if we're playing "screw the dealer", that is. 
+		 */
+		if (!EUCHRE.screw_the_dealer || game.bid_count != 7)
 			add_sbid(0, 0, EUCHRE_PASS);
 		for (suit = 0; suit < 4; suit++)
 			add_sbid(0, suit, EUCHRE_TAKE_SUIT);
 		return req_bid(game.next_bid);
 	}
-	/* TODO: dealer's last bid */
 }
 
 static void euchre_handle_bid(bid_t bid)
@@ -145,7 +145,7 @@ static void euchre_handle_bid(bid_t bid)
 		EUCHRE.maker = game.next_bid;
 		game.trump = bid.sbid.suit;
 	}
-	/* bidding is ended automatically by game_next_bid */
+	/* bidding is ended automatically by euchre_next_bid */
 }
 
 static void euchre_next_bid(void)
@@ -153,6 +153,8 @@ static void euchre_next_bid(void)
 	if (EUCHRE.maker >= 0)
 		game.bid_total = game.bid_count;
 	else if (game.bid_count == 8) {
+		/* This should only happen if we aren't playing "screw the
+		   dealer". */
 		set_global_message("", "s", "Everyone passed; redealing.");
 		set_game_state(WH_STATE_NEXT_HAND);
 	} else
@@ -166,6 +168,7 @@ static void euchre_start_playing(void)
 
 	game_start_playing();
 
+	assert(EUCHRE.maker >= 0);
 	/* maker is set in game_handle_bid */
 	set_global_message("", "%s is the maker in %s.",
 			   ggzd_get_player_name(EUCHRE.maker),
