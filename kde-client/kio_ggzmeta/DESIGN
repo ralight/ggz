@@ -1,0 +1,41 @@
+
+ The GGZ Meta Server IO Slave
+ ============================
+
+ This io slave does not only support GGZ meta servers, but also others; it is
+ therefore a generic layer between any game-related application and meta
+ servers of any kind.
+
+ 0) Invokation
+ Just call ggzmeta:/ to get a list of currently supported meta servers and
+ other instructions.
+
+ 1) GGZ Meta Servers
+ Although sending an XML query, the format resembles the GGZ Meta Server URI
+ format: ggzmeta://ggz/connection/0.0.5pre
+ Please note that especially GGZ Core Clients should support --host, --port and
+ --username arguments. I don't know about --password, as this is insecure.
+
+ 2) Registered Delegates
+ Every meta server who has his own protocol must be a) coded into this io slave
+ and b) registered as delegate in order to force the ggzmeta:// protocol to not
+ use the GGZ Meta Server.
+ The list of delegates does currently only consist of 'freeciv' and 'atlantik'
+ (non-GGZ version).
+
+ 3) FreeCiv
+ Just issue something like ggzmeta://freeciv/ to get a list of current
+ connections.
+ This delegate simply reads http://meta.freeciv.org/metaserver/ and parses it
+ efficiently using Qt classes.
+ If you click on such a file, it runs:
+ civclient --server=$host --port=$port --autoconnect
+
+ 4) Atlantik
+ In a similar fashion, ggzmeta://atlantik/ retrieves all Atlantik games, using
+ the well-known XML format.
+ IMO Atlantik doesn't support a host and port argument yet, so this should be
+ fixed.
+
+ Josef
+

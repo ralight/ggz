@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<!DOCTYPE part PUBLIC "-//KDE//DTD DocBook XML V4.1-Based Variant V1.0//EN" "dtd/kdex.dtd" [
+<!ENTITY kio-ggzmeta SYSTEM "ggzmeta.docbook">
+<!ENTITY % addindex "IGNORE">
+<!ENTITY % English "INCLUDE" > <!-- change language only here -->
+]>
+
+<part lang="&language;">
+<title>IO-Slaves</title>
+&kio-ggzmeta;
+
+</part>
+
