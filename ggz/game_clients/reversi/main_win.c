@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 4899 2002-10-13 04:16:30Z jdorje $
+ * $Id: main_win.c 4919 2002-10-14 22:41:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -41,6 +41,7 @@
 
 #include "dlg_about.h"
 #include "dlg_exit.h"
+#include "dlg_players.h"
 
 #include <game.h>
 #include <support.h>
@@ -408,9 +409,11 @@ static GtkWidget *create_menus(GtkWidget *window)
 	GtkAccelGroup *accel_group;
 	GtkItemFactory *menu;
 	GtkItemFactoryEntry items[] = {
-	  {_("/_File"), NULL, NULL, 0, "<Branch>"},
-	  {_("/File/_Sync with server"), "<ctrl>S", game_resync, 0, NULL},
-	  {_("/File/E_xit"), "<ctrl>Q", game_exit, 0, NULL},
+	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
+	  {_("/Table/Player _list"), "<ctrl>L",
+	   create_or_raise_dlg_players, 0, NULL},
+	  {_("/Table/_Sync with server"), "<ctrl>S", game_resync, 0, NULL},
+	  {_("/Table/E_xit"), "<ctrl>X", game_exit, 0, NULL},
 	  {_("/_Options"), NULL, NULL, 0, "<Branch>"},
 	  {_("/Options/_Preferences"), "<ctrl>P", game_get_options,
 	   0, NULL},

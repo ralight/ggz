@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 4890 2002-10-12 20:42:19Z jdorje $
+ * $Id: main.c 4919 2002-10-14 22:41:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -40,6 +40,7 @@
 #include <ggz_common.h>
 
 #include "dlg_about.h"
+#include "dlg_players.h"
 
 #include "game.h"
 #include "support.h"
@@ -96,6 +97,7 @@ int main(int argc, char *argv[]) {
 	mod = ggzmod_new(GGZMOD_GAME);
 	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
 
+	init_player_list(mod);
 	ggzmod_connect(mod);
 
 	gdk_input_add(ggzmod_get_fd(mod), GDK_INPUT_READ, handle_ggz, NULL);
