@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: playerinfo.c 5918 2004-02-13 07:31:26Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -87,7 +87,8 @@ void player_info_create_or_raise(GGZPlayer * player)
 
 	tmp = gtk_object_get_data(GTK_OBJECT(dialog), "type");
 	switch (ggzcore_player_get_type(player)) {
-	case GGZ_PLAYER_NONE:
+	case GGZ_PLAYER_UNKNOWN:
+		ptype = _("Unknown");
 		break;
 	case GGZ_PLAYER_NORMAL:
 		ptype = _("Registered");
@@ -97,6 +98,9 @@ void player_info_create_or_raise(GGZPlayer * player)
 		break;
 	case GGZ_PLAYER_ADMIN:
 		ptype = _("Administrator");
+		break;
+	case GGZ_PLAYER_BOT:
+		ptype = _("Bot");
 		break;
 	}
 	gtk_label_set_text(GTK_LABEL(tmp), ptype);

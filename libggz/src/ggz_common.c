@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 5355 2003-02-04 00:53:21Z jdorje $
+ * $Id: ggz_common.c 5918 2004-02-13 07:31:26Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -154,6 +154,45 @@ GGZLeaveType ggz_string_to_leavetype(const char *type_str)
 		return GGZ_LEAVE_GAMEERROR;
 
 	return GGZ_LEAVE_GAMEERROR;
+}
+
+const char *ggz_playertype_to_string(GGZPlayerType type)
+{
+	switch (type) {
+	case GGZ_PLAYER_GUEST:
+		return "guest";
+	case GGZ_PLAYER_NORMAL:
+		return "normal";
+	case GGZ_PLAYER_ADMIN:
+		return "admin";
+	case GGZ_PLAYER_BOT:
+		return "bot";
+	case GGZ_PLAYER_UNKNOWN:
+		return "unknown";
+	}
+
+	ggz_error_msg("ggz_playertype_to_string: "
+		      "invalid playertype %d given.", type);
+	return "unknown"; /* ? */
+}
+
+GGZPlayerType ggz_string_to_playertype(const char *type_str)
+{
+	if (!type_str) {
+		return GGZ_PLAYER_UNKNOWN;
+	}
+
+	if (strcasecmp(type_str, "normal") == 0) {
+		return GGZ_PLAYER_NORMAL;
+	} else if (strcasecmp(type_str, "guest") == 0) {
+		return GGZ_PLAYER_GUEST;
+	} else if (strcasecmp(type_str, "admin") == 0) {
+		return GGZ_PLAYER_ADMIN;
+	} else if (strcasecmp(type_str, "bot") == 0) {
+		return GGZ_PLAYER_BOT;
+	}
+
+	return GGZ_PLAYER_UNKNOWN; /* ? */
 }
 
 char *bool_to_str(int bool_val)

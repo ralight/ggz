@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 5274 2002-12-07 05:50:49Z jdorje $
+ * $Id: ggz_common.h 5918 2004-02-13 07:31:26Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -113,6 +113,26 @@ typedef enum {
 	GGZ_LEAVE_GAMEERROR
 } GGZLeaveType;
 
+/** @brief A player type.
+ *
+ *  The server will tell the client the type of each player.
+ */
+typedef enum {
+	/** A normal player is registered but has no special permission. */
+	GGZ_PLAYER_NORMAL,
+
+	/** A guest player is not registered. */
+	GGZ_PLAYER_GUEST,
+
+	/* An admin player is registered and has some special permissions. */
+	GGZ_PLAYER_ADMIN,
+
+	/* A bot is a special type of player. */
+	GGZ_PLAYER_BOT,
+
+	/* This is an unknown type of player. */
+	GGZ_PLAYER_UNKNOWN
+} GGZPlayerType;
 
 /** @brief Get a string identifier for the GGZSeatType.
  *
@@ -174,6 +194,25 @@ const char *ggz_leavetype_to_string(GGZLeaveType type);
  *  @note This is the inverse of ggz_leavetype_to_string.
  */
 GGZLeaveType ggz_string_to_leavetype(const char *type_str);
+
+/** @brief Get a GGZPlayerType for the given string identifier.
+ *
+ *  This returns a pointer to a static string describing the given player
+ *  type.  It is useful for text-based communications protocols and
+ *  debugging output.
+ *  @param type the GGZPlayerType, which determines the string returned.
+ *  @note This is the inverse of ggz_string_to_playertype. */
+const char *ggz_playertype_to_string(GGZPlayerType type);
+
+/** @brief Get a GGZPlayerType for the given string identifier.
+ *
+ *  This returns a GGZPlayerType that is associated with the given string
+ *  description.
+ *  @param type_str A string describing a GGZPlayerType.
+ *  @note If the type_str cannot be parsed GGZ_PLAYER_GUEST will be returned.
+ *  @note This is the inverse of ggz_playertype_to_string.
+ */
+GGZPlayerType ggz_string_to_playertype(const char *type_str);
 
 
 /** @brief Convert a string to a boolean.

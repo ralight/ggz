@@ -35,7 +35,7 @@ class GGZCorePlayer
 		 * Available player types */
 		enum PlayerTypes
 		{
-			none = GGZ_PLAYER_NONE,
+			unknown = GGZ_PLAYER_UNKNOWN,
 			normal = GGZ_PLAYER_NORMAL,
 			guest = GGZ_PLAYER_GUEST,
 			admin = GGZ_PLAYER_ADMIN,

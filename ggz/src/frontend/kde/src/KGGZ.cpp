@@ -598,7 +598,7 @@ void KGGZ::listPlayers()
 KGGZDEBUG("assign bot!!!!\n");
 				type = KGGZUsers::assignbot;
 				break;
-			case GGZCorePlayer::none:
+			case GGZCorePlayer::unknown:
 			default:
 				type = KGGZUsers::assignbanned;
 				break;

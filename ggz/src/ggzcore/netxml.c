@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5910 2004-02-11 13:54:34Z josef $
+ * $Id: netxml.c 5918 2004-02-13 07:31:26Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1695,16 +1695,7 @@ static void _ggzcore_net_handle_player(GGZNet *net, GGZXMLElement *element)
 	lag = str_to_int(ATTR(element, "LAG"), 0);
 
 	/* Set player's type */
-	if (!str_type || strcasecmp(str_type, "guest") == 0)
-		type = GGZ_PLAYER_GUEST;
-	else if (strcasecmp(str_type, "normal") == 0)
-		type = GGZ_PLAYER_NORMAL;
-	else if (strcasecmp(str_type, "admin") == 0)
-		type = GGZ_PLAYER_ADMIN;
-	else if (strcasecmp(str_type, "bot") == 0)
-		type = GGZ_PLAYER_BOT;
-	else
-		type = GGZ_PLAYER_GUEST;
+	type = ggz_string_to_playertype(str_type);
 
 	/* Set up GGZPlayer object */
 	ggz_player = _ggzcore_player_new();

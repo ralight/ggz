@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5906 2004-02-11 13:16:25Z josef $
+ * $Id: net.c 5918 2004-02-13 07:31:26Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -481,28 +481,9 @@ static void _net_get_player_stats_string(GGZPlayer *player,
 
 GGZReturn net_send_player(GGZNetIO *net, GGZPlayer *player)
 {
-	GGZPlayerType type;
-	char *type_desc = "**none**";
+	GGZPlayerType type = player_get_type(player);
+	const char *type_desc = ggz_playertype_to_string(type);
 	char stats[512];
-	
-	type = player_get_type(player);
-
-	switch (type) {
-	case GGZ_PLAYER_NORMAL:
-		type_desc = "normal";
-		break;
-	case GGZ_PLAYER_GUEST:
-		type_desc = "guest";
-		break;
-	case GGZ_PLAYER_ADMIN:
-		type_desc = "admin";
-		break;
-	case GGZ_PLAYER_BOT:
-		type_desc = "bot";
-		break;
-	case GGZ_PLAYER_NONE:
-		break;
-	}
 
 	_net_get_player_stats_string(player, stats, sizeof(stats));
 
