@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/23/99
- * $Id: gtk_play.c 6334 2004-11-12 02:49:43Z jdorje $
+ * $Id: gtk_play.c 6340 2004-11-12 17:31:36Z jdorje $
  *
  * This fils contains functions for creating and handling the playing area
  *
@@ -83,10 +83,6 @@ void CreatePlayArea(void)
 	playArea->tallys[1] = gtk_label_new("");
 	playArea->tallys[2] = gtk_label_new("");
 	playArea->tallys[3] = gtk_label_new("");
-	/*gtk_widget_set_usize( playArea->tallys[0], 125, -1);
-	   gtk_widget_set_usize( playArea->tallys[1], 125, -1);
-	   gtk_widget_set_usize( playArea->tallys[2], 125, -1);
-	   gtk_widget_set_usize( playArea->tallys[3], 125, -1); */
 	hBar1 = gtk_hseparator_new();
 	hBar2 = gtk_hseparator_new();
 	hBar3 = gtk_hseparator_new();

@@ -129,10 +129,6 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(inputs.playerTog3),
 				     (options.bitOpt & MSK_COMP_3));
 
-	gtk_widget_set_usize(inputs.playerTog1, 59, -1);
-	gtk_widget_set_usize(inputs.playerTog2, 59, -1);
-	gtk_widget_set_usize(inputs.playerTog3, 59, -1);
-
 	gtk_widget_show(inputs.playerTog1);
 	gtk_widget_show(inputs.playerTog2);
 	gtk_widget_show(inputs.playerTog3);
@@ -171,7 +167,6 @@ void OptionsDialog(GtkWidget * widget, gpointer data)
 			 GTK_SIGNAL_FUNC(NilToggled), NULL);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(inputs.nilBids),
 				     (options.bitOpt & MSK_NILS));
-	gtk_widget_set_usize(inputs.nilBids, 28, -1);
 
 #if 0
 	gtk_widget_show(inputs.nilBids);
