@@ -4,6 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 22/06/2001
  * Desc: Main loop
+ * $Id: main.c 2204 2001-08-23 21:11:51Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -40,10 +41,7 @@ int main(void)
 	fd_set active_fd_set, read_fd_set;
 	
 	/* Initialize ggz */
-	if (ggz_server_init("Escape") < 0)
-		return -1;
-	
-	if ( (ggz_sock = ggz_server_connect()) < 0)
+	if ( (ggz_sock = ggzdmod_connect()) < 0)
 		return -1;
 
 	/* Seed the random number generator */
@@ -56,7 +54,7 @@ int main(void)
 	while(!game_over) {
 		
 		read_fd_set = active_fd_set;
-		fd_max = ggz_fd_max();
+		fd_max = ggzdmod_fd_max();
 		
 		status = select((fd_max+1), &read_fd_set, NULL, NULL, NULL);
 		
@@ -93,7 +91,7 @@ int main(void)
 		}
 
 		/* Check for message from player */
-		for (i = 0; i < ggz_seats_num(); i++) {
+		for (i = 0; i < ggzdmod_seats_num(); i++) {
 			fd = ggz_seats[i].fd;
 			if (fd != -1 && FD_ISSET(fd, &read_fd_set)) {
 				status = game_handle_player(i);
@@ -103,7 +101,7 @@ int main(void)
 		}
 	}
 
-	ggz_server_quit();
+	(void)ggzdmod_disconnect();
 	return 0;
 }
 
