@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 6322 2004-11-11 03:35:12Z jdorje $
+ * $Id: props.c 6326 2004-11-11 05:24:46Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -345,11 +345,11 @@ void dlg_props_realize(GtkWidget *widget, gpointer user_data)
 
 	/* Browser */
 	tmp = lookup_widget((props_dialog), "browser_entry");
-	gtk_entry_set_editable(GTK_ENTRY(tmp), TRUE);
+	gtk_editable_set_editable(GTK_EDITABLE(tmp), TRUE);
 	old = ggzcore_conf_read_string("OPTIONS", "BROWSER", "None");
 	gtk_entry_set_text(GTK_ENTRY(tmp), old);
 	ggz_free(old);
-	gtk_entry_set_editable(GTK_ENTRY(tmp), FALSE);
+	gtk_editable_set_editable(GTK_EDITABLE(tmp), FALSE);
 
 	/* MOTD */
 	old = ggzcore_conf_read_string("OPTIONS", "MOTD", "ALL");
@@ -961,7 +961,8 @@ create_dlg_props (void)
   gtk_label_set_justify (GTK_LABEL (profile_label), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (profile_label), 1, 0.5);
 
-  profile_entry = gtk_entry_new_with_max_length (256);
+  profile_entry = gtk_entry_new();
+  gtk_entry_set_max_length(GTK_ENTRY(profile_entry), 256);
   gtk_widget_ref (profile_entry);
   g_object_set_data_full(G_OBJECT (dlg_props), "profile_entry", profile_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -984,7 +985,8 @@ create_dlg_props (void)
   gtk_label_set_justify (GTK_LABEL (server_label), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (server_label), 1, 0.5);
 
-  server_entry = gtk_entry_new_with_max_length (256);
+  server_entry = gtk_entry_new();
+  gtk_entry_set_max_length(GTK_ENTRY(server_entry), 256);
   gtk_widget_ref (server_entry);
   g_object_set_data_full(G_OBJECT (dlg_props), "server_entry", server_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -999,7 +1001,8 @@ create_dlg_props (void)
   gtk_box_pack_start (GTK_BOX (server_box), port_label, FALSE, TRUE, 2);
   gtk_misc_set_alignment (GTK_MISC (port_label), 1, 0.5);
 
-  port_entry = gtk_entry_new_with_max_length (6);
+  port_entry = gtk_entry_new();
+  gtk_entry_set_max_length(GTK_ENTRY(port_entry), 6);
   gtk_widget_ref (port_entry);
   g_object_set_data_full(G_OBJECT (dlg_props), "port_entry", port_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1036,7 +1039,8 @@ create_dlg_props (void)
   gtk_label_set_justify (GTK_LABEL (username_label), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (username_label), 1, 0.5);
 
-  username_entry = gtk_entry_new_with_max_length (16);
+  username_entry = gtk_entry_new();
+  gtk_entry_set_max_length(GTK_ENTRY(username_entry), 16);
   gtk_widget_ref (username_entry);
   g_object_set_data_full(G_OBJECT (dlg_props), "username_entry", username_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1100,7 +1104,7 @@ create_dlg_props (void)
   gtk_container_set_border_width (GTK_CONTAINER (radio_box), 15);
 
   normal_radio = gtk_radio_button_new_with_label (login_type_group, _("Normal Login"));
-  login_type_group = gtk_radio_button_group (GTK_RADIO_BUTTON (normal_radio));
+  login_type_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON (normal_radio));
   gtk_widget_ref (normal_radio);
   g_object_set_data_full(G_OBJECT (dlg_props), "normal_radio", normal_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1109,7 +1113,7 @@ create_dlg_props (void)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (normal_radio), TRUE);
 
   guest_radio = gtk_radio_button_new_with_label (login_type_group, _("Guest Login"));
-  login_type_group = gtk_radio_button_group (GTK_RADIO_BUTTON (guest_radio));
+  login_type_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON (guest_radio));
   gtk_widget_ref (guest_radio);
   g_object_set_data_full(G_OBJECT (dlg_props), "guest_radio", guest_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1182,7 +1186,7 @@ create_dlg_props (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (chat_font);
   gtk_box_pack_start (GTK_BOX (hbox8), chat_font, TRUE, TRUE, 5);
-  gtk_entry_set_editable (GTK_ENTRY (chat_font), FALSE);
+  gtk_editable_set_editable(GTK_EDITABLE(chat_font), FALSE);
 
 #ifdef GTK_STOCK_EDIT
   Font_button = gtk_button_new_from_stock(GTK_STOCK_EDIT);
@@ -1369,7 +1373,7 @@ create_dlg_props (void)
   gtk_misc_set_alignment (GTK_MISC (label24), 1, 0.5);
 
   black_radio = gtk_radio_button_new_with_label (Chat_Color_group, _("Black Background"));
-  Chat_Color_group = gtk_radio_button_group (GTK_RADIO_BUTTON (black_radio));
+  Chat_Color_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON (black_radio));
   gtk_widget_ref (black_radio);
   g_object_set_data_full(G_OBJECT (dlg_props), "black_radio", black_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1379,7 +1383,7 @@ create_dlg_props (void)
                     (GtkAttachOptions) (0), 15, 0);
 
   white_radio = gtk_radio_button_new_with_label (Chat_Color_group, _("White Background"));
-  Chat_Color_group = gtk_radio_button_group (GTK_RADIO_BUTTON (white_radio));
+  Chat_Color_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON (white_radio));
   gtk_widget_ref (white_radio);
   g_object_set_data_full(G_OBJECT (dlg_props), "white_radio", white_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1609,7 +1613,7 @@ create_dlg_props (void)
   g_object_set_data_full(G_OBJECT (dlg_props), "browser_entry", browser_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (browser_entry);
-  gtk_entry_set_editable (GTK_ENTRY (browser_entry), FALSE);
+  gtk_editable_set_editable(GTK_EDITABLE(browser_entry), FALSE);
   gtk_entry_set_text (GTK_ENTRY (browser_entry), _("Galeon - New"));
 
   click_checkbutton = gtk_check_button_new_with_label (_("Single Click Room Entry"));
@@ -1650,7 +1654,7 @@ create_dlg_props (void)
   gtk_container_add (GTK_CONTAINER (frame2), table2);
 
   motd_all_radio = gtk_radio_button_new_with_label (motd_group, _("Display All"));
-  motd_group = gtk_radio_button_group (GTK_RADIO_BUTTON (motd_all_radio));
+  motd_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON (motd_all_radio));
   gtk_widget_ref (motd_all_radio);
   g_object_set_data_full(G_OBJECT (dlg_props), "motd_all_radio", motd_all_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1660,7 +1664,7 @@ create_dlg_props (void)
                     (GtkAttachOptions) (0), 0, 0);
 
   motd_new_radio = gtk_radio_button_new_with_label (motd_group, _("Display New"));
-  motd_group = gtk_radio_button_group (GTK_RADIO_BUTTON (motd_new_radio));
+  motd_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON (motd_new_radio));
   gtk_widget_ref (motd_new_radio);
   g_object_set_data_full(G_OBJECT (dlg_props), "motd_new_radio", motd_new_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1670,7 +1674,7 @@ create_dlg_props (void)
                     (GtkAttachOptions) (0), 0, 0);
 
   motd_important_radio = gtk_radio_button_new_with_label (motd_group, _("Display Important"));
-  motd_group = gtk_radio_button_group (GTK_RADIO_BUTTON (motd_important_radio));
+  motd_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON (motd_important_radio));
   gtk_widget_ref (motd_important_radio);
   g_object_set_data_full(G_OBJECT (dlg_props), "motd_important_radio", motd_important_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1680,7 +1684,7 @@ create_dlg_props (void)
                     (GtkAttachOptions) (0), 0, 0);
 
   motd_none_radio = gtk_radio_button_new_with_label (motd_group, _("Display None"));
-  motd_group = gtk_radio_button_group (GTK_RADIO_BUTTON (motd_none_radio));
+  motd_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON (motd_none_radio));
   gtk_widget_ref (motd_none_radio);
   g_object_set_data_full(G_OBJECT (dlg_props), "motd_none_radio", motd_none_radio,
                             (GtkDestroyNotify) gtk_widget_unref);

@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 6321 2004-11-11 03:29:34Z jdorje $
+ * $Id: client.c 6326 2004-11-11 05:24:46Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1026,8 +1026,6 @@ create_win_main (void)
   gtk_container_add (GTK_CONTAINER (view_menu), room_toggle);
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (room_toggle),
 				  TRUE);
-  gtk_check_menu_item_set_show_toggle(GTK_CHECK_MENU_ITEM(room_toggle),
-				      TRUE);
 
   player_toggle = gtk_check_menu_item_new_with_label("");
   tmp_key = gtk_label_parse_uline(GTK_LABEL(GTK_BIN(player_toggle)->child),
@@ -1039,8 +1037,6 @@ create_win_main (void)
   gtk_widget_show (player_toggle);
   gtk_container_add (GTK_CONTAINER (view_menu), player_toggle);
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM (player_toggle), TRUE);
-  gtk_check_menu_item_set_show_toggle(GTK_CHECK_MENU_ITEM(player_toggle),
-				      TRUE);
 
   separator8 = gtk_menu_item_new ();
   gtk_widget_ref (separator8);
@@ -1302,7 +1298,6 @@ create_win_main (void)
   gtk_widget_show (client_hpaned);
   gtk_box_pack_start (GTK_BOX (client_hbox), client_hpaned, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (client_hpaned), 3);
-  gtk_paned_set_gutter_size (GTK_PANED (client_hpaned), 10);
   gtk_paned_set_position (GTK_PANED (client_hpaned), 220);
 
   lists_vbox = gtk_vbox_new (FALSE, 0);
@@ -1340,7 +1335,6 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table_vpaned);
   gtk_paned_pack2 (GTK_PANED (client_hpaned), table_vpaned, TRUE, TRUE);
-  gtk_paned_set_gutter_size (GTK_PANED (table_vpaned), 10);
   gtk_paned_set_position (GTK_PANED (table_vpaned), 125);
 
   scrolledwindow3 = gtk_scrolled_window_new (NULL, NULL);
@@ -1425,7 +1419,6 @@ create_win_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (chat_hbuttonbox);
   gtk_box_pack_start (GTK_BOX (newchat_hbox), chat_hbuttonbox, FALSE, FALSE, 0);
-  gtk_button_box_set_spacing (GTK_BUTTON_BOX (chat_hbuttonbox), 0);
 
   send_button = stockbutton_new(GTK_STOCK_EXECUTE, _("Send"));
   gtk_widget_ref (send_button);

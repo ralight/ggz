@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 6322 2004-11-11 03:35:12Z jdorje $
+ * $Id: login.c 6326 2004-11-11 05:24:46Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -109,7 +109,7 @@ void login_failed(GGZErrorEventData *error)
 	gtk_widget_set_sensitive(tmp, TRUE);
 
 	tmp = lookup_widget(login_dialog, "top_panel");
-	gtk_notebook_set_page(GTK_NOTEBOOK(tmp), 1);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(tmp), 1);
 	
 	tmp = lookup_widget(login_dialog, "profile_frame");
 	gtk_frame_set_label(GTK_FRAME(tmp), _("Sorry!"));
@@ -598,7 +598,7 @@ create_dlg_login (void)
   g_object_set_data_full(G_OBJECT (dlg_login), "profile_entry", profile_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (profile_entry);
-  gtk_entry_set_editable (GTK_ENTRY (profile_entry), FALSE);
+  gtk_editable_set_editable(GTK_EDITABLE(profile_entry), FALSE);
 
   profile_button_box = gtk_hbutton_box_new ();
   gtk_widget_ref (profile_button_box);
@@ -631,7 +631,8 @@ create_dlg_login (void)
   gtk_box_pack_start (GTK_BOX (server_box), server_label, FALSE, TRUE, 0);
   gtk_misc_set_alignment (GTK_MISC (server_label), 1, 0.5);
 
-  host_entry = gtk_entry_new_with_max_length (256);
+  host_entry = gtk_entry_new();
+  gtk_entry_set_max_length(GTK_ENTRY(host_entry), 256);
   gtk_widget_ref (host_entry);
   g_object_set_data_full(G_OBJECT (dlg_login), "host_entry", host_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -647,7 +648,8 @@ create_dlg_login (void)
   gtk_box_pack_start (GTK_BOX (server_box), port_label, FALSE, TRUE, 2);
   gtk_misc_set_alignment (GTK_MISC (port_label), 1, 0.5);
 
-  port_entry = gtk_entry_new_with_max_length (5);
+  port_entry = gtk_entry_new();
+  gtk_entry_set_max_length(GTK_ENTRY(port_entry), 5);
   gtk_widget_ref (port_entry);
   g_object_set_data_full(G_OBJECT (dlg_login), "port_entry", port_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -699,7 +701,8 @@ create_dlg_login (void)
   gtk_box_pack_start (GTK_BOX (username_box), user_label, TRUE, TRUE, 0);
   gtk_misc_set_alignment (GTK_MISC (user_label), 1, 0.5);
 
-  name_entry = gtk_entry_new_with_max_length (16);
+  name_entry = gtk_entry_new();
+  gtk_entry_set_max_length(GTK_ENTRY(name_entry), 16);
   gtk_widget_ref (name_entry);
   g_object_set_data_full(G_OBJECT (dlg_login), "name_entry", name_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -737,7 +740,7 @@ create_dlg_login (void)
   gtk_box_pack_start (GTK_BOX (login_box), radio_box, FALSE, FALSE, 0);
 
   normal_radio = gtk_radio_button_new_with_label (login_type_group, _("Normal Login"));
-  login_type_group = gtk_radio_button_group (GTK_RADIO_BUTTON (normal_radio));
+  login_type_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON (normal_radio));
   gtk_widget_ref (normal_radio);
   g_object_set_data_full(G_OBJECT (dlg_login), "normal_radio", normal_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -746,7 +749,7 @@ create_dlg_login (void)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (normal_radio), TRUE);
 
   guest_radio = gtk_radio_button_new_with_label (login_type_group, _("Guest Login"));
-  login_type_group = gtk_radio_button_group (GTK_RADIO_BUTTON (guest_radio));
+  login_type_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON (guest_radio));
   gtk_widget_ref (guest_radio);
   g_object_set_data_full(G_OBJECT (dlg_login), "guest_radio", guest_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -754,7 +757,7 @@ create_dlg_login (void)
   gtk_box_pack_start (GTK_BOX (radio_box), guest_radio, TRUE, TRUE, 0);
 
   first_radio = gtk_radio_button_new_with_label (login_type_group, _("First-time Login"));
-  login_type_group = gtk_radio_button_group (GTK_RADIO_BUTTON (first_radio));
+  login_type_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON (first_radio));
   gtk_widget_ref (first_radio);
   g_object_set_data_full(G_OBJECT (dlg_login), "first_radio", first_radio,
                             (GtkDestroyNotify) gtk_widget_unref);

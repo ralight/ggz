@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 6282 2004-11-06 04:22:21Z jdorje $
+ * $Id: playerlist.c 6326 2004-11-11 05:24:46Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -124,8 +124,6 @@ static GtkWidget *create_mnu_player(char *name, gboolean is_friend,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(friends);
 	gtk_container_add(GTK_CONTAINER(mnu_player), friends);
-	gtk_check_menu_item_set_show_toggle(GTK_CHECK_MENU_ITEM(friends),
-					    TRUE);
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(friends),
 				       is_friend);
 
@@ -135,8 +133,6 @@ static GtkWidget *create_mnu_player(char *name, gboolean is_friend,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(ignore);
 	gtk_container_add(GTK_CONTAINER(mnu_player), ignore);
-	gtk_check_menu_item_set_show_toggle(GTK_CHECK_MENU_ITEM(ignore),
-					    TRUE);
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(ignore),
 				       is_ignore);
 

@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 6322 2004-11-11 03:35:12Z jdorje $
+ * $Id: launch.c 6326 2004-11-11 05:24:46Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -576,7 +576,7 @@ GtkWidget *create_dlg_launch(void)
 		seats[i].bot = gtk_radio_button_new_with_label(seats[i].group,
 							       _("Computer"));
 		seats[i].group =
-			gtk_radio_button_group(GTK_RADIO_BUTTON
+			gtk_radio_button_get_group(GTK_RADIO_BUTTON
 					       (seats[i].bot));
 		gtk_widget_ref(seats[i].bot);
 		sprintf(text, "seat%d_bot", i + 1);
@@ -591,7 +591,7 @@ GtkWidget *create_dlg_launch(void)
 			gtk_radio_button_new_with_label(seats[i].group,
 							_("Open"));
 		seats[i].group =
-			gtk_radio_button_group(GTK_RADIO_BUTTON
+			gtk_radio_button_get_group(GTK_RADIO_BUTTON
 					       (seats[i].open));
 		gtk_widget_ref(seats[i].open);
 		sprintf(text, "seat%d_open", i + 1);
@@ -606,7 +606,7 @@ GtkWidget *create_dlg_launch(void)
 			gtk_radio_button_new_with_label(seats[i].group,
 							_("Reserved for"));
 		seats[i].group =
-			gtk_radio_button_group(GTK_RADIO_BUTTON
+			gtk_radio_button_get_group(GTK_RADIO_BUTTON
 					       (seats[i].resv));
 		gtk_widget_ref(seats[i].resv);
 		sprintf(text, "seat%d_resv", i + 1);
@@ -619,8 +619,9 @@ GtkWidget *create_dlg_launch(void)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(seats[i].resv),
 					     TRUE);
 
-		seats[i].name =
-			gtk_entry_new_with_max_length(MAX_RESERVED_NAME_LEN);
+		seats[i].name = gtk_entry_new();
+		gtk_entry_set_max_length(GTK_ENTRY(seats[i].name),
+					 MAX_RESERVED_NAME_LEN);
 		gtk_widget_ref(seats[i].name);
 		sprintf(text, "seat%d_name", i + 1);
 		g_object_set_data_full(G_OBJECT(dlg_launch), text,

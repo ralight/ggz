@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Text Client 
  * Date: 11/5/2002
- * $Id: pick_module.c 6322 2004-11-11 03:35:12Z jdorje $
+ * $Id: pick_module.c 6326 2004-11-11 05:24:46Z jdorje $
  *
  * Dialog window to pick a module for your game
  *
@@ -99,7 +99,7 @@ static GtkWidget *create_pick_module_dlg(GGZModule **modules, int *modulenumbers
 		snprintf(text, sizeof(text), "%s (%s)", name, fe);
 
 		frontend = gtk_radio_button_new_with_label(group, text);
-		group = gtk_radio_button_group(GTK_RADIO_BUTTON(frontend));
+		group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(frontend));
 		gtk_widget_ref(frontend);
 		g_object_set_data_full(G_OBJECT(pick_module_dlg),
 					 fe,
