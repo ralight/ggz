@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.h 6762 2005-01-20 07:31:47Z jdorje $
+ * $Id: room.h 6868 2005-01-24 02:46:43Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -120,7 +120,7 @@ void _ggzcore_room_free(struct _GGZRoom *room);
 int _ggzcore_room_add_event_hook_full(struct _GGZRoom *room,
 				      const GGZRoomEvent event, 
 				      const GGZHookFunc func,
-				      void *data);
+				      const void *data);
 
 int _ggzcore_room_remove_event_hook(struct _GGZRoom *room,
 				    const GGZRoomEvent event, 

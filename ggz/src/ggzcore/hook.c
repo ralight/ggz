@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/01/00
- * $Id: hook.c 5942 2004-02-16 17:07:31Z jdorje $
+ * $Id: hook.c 6868 2005-01-24 02:46:43Z jdorje $
  *
  * This is the code for handling hook functions
  *
@@ -101,7 +101,7 @@ int _ggzcore_hook_add(GGZHookList* list, const GGZHookFunc func)
  */
 int _ggzcore_hook_add_full(GGZHookList* list, 
 			   const GGZHookFunc func,
-			   void* user_data)
+			   const void *user_data)
 {
 	struct _GGZHook *hook, *cur, *next;
 	

@@ -22,4 +22,4 @@
  */
 
 void motd_create_or_raise(void);
-void motd_print_line(gchar *line);
+void motd_print_line(const gchar * line);

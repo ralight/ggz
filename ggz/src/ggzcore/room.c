@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 6762 2005-01-20 07:31:47Z jdorje $
+ * $Id: room.c 6868 2005-01-24 02:46:43Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -305,7 +305,8 @@ int ggzcore_room_add_event_hook(GGZRoom *room, const GGZRoomEvent event, const G
 }
 
 
-int ggzcore_room_add_event_hook_full(GGZRoom *room, const GGZRoomEvent event, const GGZHookFunc func, void *data)
+int ggzcore_room_add_event_hook_full(GGZRoom *room, const GGZRoomEvent event,
+				     const GGZHookFunc func, const void *data)
 {
 	if (room && func  && _ggzcore_room_event_is_valid(event))
 		return _ggzcore_room_add_event_hook_full(room, event, func, data);
@@ -1085,7 +1086,7 @@ int _ggzcore_room_leave_table(GGZRoom *room, int force)
 int _ggzcore_room_add_event_hook_full(GGZRoom *room,
 				      const GGZRoomEvent event, 
 				      const GGZHookFunc func,
-				      void *data)
+				      const void *data)
 {
 	return _ggzcore_hook_add_full(room->event_hooks[event], func, data);
 }

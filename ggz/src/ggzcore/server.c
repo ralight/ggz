@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 6866 2005-01-24 01:39:48Z jdorje $
+ * $Id: server.c 6868 2005-01-24 02:46:43Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -172,7 +172,7 @@ int ggzcore_server_add_event_hook(GGZServer *server,
 int ggzcore_server_add_event_hook_full(GGZServer *server,
 				       const GGZServerEvent event, 
 				       const GGZHookFunc func,
-				       void *data)
+				       const void *data)
 {
 	if (!server || !_ggzcore_server_event_is_valid(event))
 		return -1;

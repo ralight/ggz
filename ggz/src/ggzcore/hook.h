@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/01/00
- * $Id: hook.h 4941 2002-10-17 23:56:16Z jdorje $
+ * $Id: hook.h 6868 2005-01-24 02:46:43Z jdorje $
  *
  * This is the code for handling hook functions
  * 
@@ -41,7 +41,7 @@ struct _GGZHook {
 	GGZHookFunc func;
 	
 	/* Pointer to user data */
-	void* user_data;
+	const void* user_data;
 	
 	/* Pointer to next GGZHook */
 	struct _GGZHook* next;
@@ -88,8 +88,9 @@ GGZHookList* _ggzcore_hook_list_init(const unsigned int id);
  * int : id for this callback 
  */
 int _ggzcore_hook_add(GGZHookList* list, const GGZHookFunc func);
-int _ggzcore_hook_add_full(GGZHookList* list, const GGZHookFunc func, void* data);
-			   
+int _ggzcore_hook_add_full(GGZHookList* list,
+			   const GGZHookFunc func, const void *data);
+
 			   
 /* _ggzcore_hook_remove()     - Remove specific hook from a list
  * _ggzcore_hook_remove_id()  - Remove specific hook from a list

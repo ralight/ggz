@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 6866 2005-01-24 01:39:48Z jdorje $
+ * $Id: game.c 6868 2005-01-24 02:46:43Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -179,7 +179,7 @@ int ggzcore_game_add_event_hook(GGZGame *game,
 int ggzcore_game_add_event_hook_full(GGZGame *game,
 				     const GGZGameEvent event, 
 				     const GGZHookFunc func,
-				     void *data)
+				     const void *data)
 {
 	if (game && _ggzcore_game_event_is_valid(event)
 	    && game->event_hooks[event])
@@ -587,7 +587,7 @@ int _ggzcore_game_get_table_id(GGZGame *game)
 int _ggzcore_game_add_event_hook_full(struct _GGZGame *game,
 				      const GGZGameEvent event, 
 				      const GGZHookFunc func,
-				      void *data)
+				      const void *data)
 {
 	return _ggzcore_hook_add_full(game->event_hooks[event], func, data);
 }

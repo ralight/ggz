@@ -2,7 +2,7 @@
  * File: motd.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: motd.c 6383 2004-11-16 03:48:55Z jdorje $
+ * $Id: motd.c 6868 2005-01-24 02:46:43Z jdorje $
  *
  * Copyright (C) 2000 Justin Zaun.
  *
@@ -68,7 +68,7 @@ void motd_create_or_raise(void)
 }
 
 
-void motd_print_line(gchar * line)
+void motd_print_line(const gchar * line)
 {
 	gchar *out = NULL;
 	gint lindex = 0;

@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6866 2005-01-24 01:39:48Z jdorje $
+ * $Id: ggzcore.h 6868 2005-01-24 02:46:43Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -128,8 +128,8 @@ typedef enum {
 
 /** GGZ Event hook function type, used as a vallback for events */
 typedef GGZHookReturn (*GGZHookFunc)(unsigned int id, 
-				     void* event_data, 
-				     void* user_data);
+				     const void* event_data, 
+				     const void* user_data);
 
 /** @brief GGZ object destroy function type
  *
@@ -627,7 +627,7 @@ int ggzcore_server_add_event_hook(GGZServer *server,
 int ggzcore_server_add_event_hook_full(GGZServer *server,
 				       const GGZServerEvent event, 
 				       const GGZHookFunc func,
-				       void *data);
+				       const void *data);
 
 /** @brief Remove a single hook function from an event's hook list.
  *
@@ -997,7 +997,7 @@ int ggzcore_room_add_event_hook(GGZRoom *room,
 int ggzcore_room_add_event_hook_full(GGZRoom *room,
 				     const GGZRoomEvent event, 
 				     const GGZHookFunc func,
-				     void *data);
+				     const void *data);
 
 /** @brief Remove a hook from an event.
  *
@@ -1478,7 +1478,7 @@ int ggzcore_game_add_event_hook(GGZGame *game,
 int ggzcore_game_add_event_hook_full(GGZGame *game,
 				     const GGZGameEvent event, 
 				     const GGZHookFunc func,
-				     void *data);
+				     const void *data);
 
 /** @brief Remove a hook from a game event.
  *  @see ggzcore_server_remove_event_hook

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.h 6762 2005-01-20 07:31:47Z jdorje $
+ * $Id: game.h 6868 2005-01-24 02:46:43Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -55,7 +55,7 @@ int _ggzcore_game_get_table_id(GGZGame *game);
 int _ggzcore_game_add_event_hook_full(struct _GGZGame *game,
 				      const GGZGameEvent event, 
 				      const GGZHookFunc func,
-				      void *data);
+				      const void *data);
 
 /* Functions for removing hooks from struct _GGZGame events */
 int _ggzcore_game_remove_event_hook(struct _GGZGame *game,
