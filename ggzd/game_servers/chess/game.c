@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 6748 2005-01-20 00:23:37Z jdorje $
+ * $Id: game.c 6749 2005-01-20 00:29:18Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -218,25 +218,25 @@ static int game_update(int event_id, void *data)
       game_info.state = CHESS_STATE_PLAYING;
       break;
     case CHESS_EVENT_MOVE:
-      printf("** got move!\n");
+      ggz_debug(DEBUG_GAME, "** got move!\n");
       /* Check for state */
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
-      printf("** handle move!\n");
+      ggz_debug(DEBUG_GAME, "** handle move!\n");
       ggzdmod_log(game_info.ggz, "Move: %s", (char *)data);
       /* Try to make the move via cgc */
       if ( !data || (st = cgc_make_move(game, (char *)data)) < 0) {
-        printf("** cgc: not valid (%p): %d!\n", data, st);
+        ggz_debug(DEBUG_GAME, "** cgc: not valid (%p): %d!\n", data, st);
         ggzdmod_log(game_info.ggz, "CGC status: %d", st);
         game_send_move(NULL, 0);
         break;
       }
-      printf("** move is valid!\n");
+      ggz_debug(DEBUG_GAME, "** move is valid!\n");
       from = ((char*)data)[0] - 65 + (((char*)data)[1] - 49) * 8;
       to = ((char*)data)[2] - 65 + (((char*)data)[3] - 49) * 8;
-      printf("** ai: execute %i->%i\n", from, to);
+      ggz_debug(DEBUG_GAME, "** ai: execute %i->%i\n", from, to);
       ret = chess_ai_move(from, to, 1);
-      printf("** ai: executed with result %i\n", ret);
+      ggz_debug(DEBUG_GAME, "** ai: executed with result %i\n", ret);
       chess_ai_output();
 
       /* Move was valid */
@@ -293,16 +293,16 @@ static int game_update(int event_id, void *data)
         game_update(CHESS_EVENT_DRAW, &st);
       }
       game_info.turn++;
-      printf("** move was: %i/%i %i/%i\n",
+      ggz_debug(DEBUG_GAME, "** move was: %i/%i %i/%i\n",
         ((char*)data)[0] - 65, ((char*)data)[1] - 49,
         ((char*)data)[2] - 65, ((char*)data)[3] - 49);
-      printf("** next turn!\n");
+      ggz_debug(DEBUG_GAME, "** next turn!\n");
 
       if ((ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_BOT) == 1)
       && (game_info.turn % 2)) {
-        printf("** now move chess bot!\n");
+        ggz_debug(DEBUG_GAME, "** now move chess bot!\n");
         ret = chess_ai_find(C_BLACK, &from, &to);
-        printf("** would move from %i to %i! (valid: %i)\n", from, to, ret);
+        ggz_debug(DEBUG_GAME, "** would move from %i to %i! (valid: %i)\n", from, to, ret);
         botmove[0] = from % 8 + 'A';
         botmove[1] = from / 8 + '1';
         botmove[2] = to % 8 + 'A';
@@ -310,7 +310,7 @@ static int game_update(int event_id, void *data)
         botmove[4] = 0;
         botmove[5] = 0;
         data = &botmove;
-        printf("** that would be: %i/%i %i/%i\n",
+        ggz_debug(DEBUG_GAME, "** that would be: %i/%i %i/%i\n",
           ((char*)data)[0] - 65, ((char*)data)[1] - 49,
           ((char*)data)[2] - 65, ((char*)data)[3] - 49);
         game_update(CHESS_EVENT_MOVE, data);

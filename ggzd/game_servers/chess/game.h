@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Header file for game functions
- * $Id: game.h 6742 2005-01-19 22:02:44Z jdorje $
+ * $Id: game.h 6749 2005-01-20 00:29:18Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -24,6 +24,9 @@
  */
 
 #include "ggzdmod.h"
+
+#define DEBUG_GAME "chess"
+#define DEBUG_AI "ai"
 
 /* Translate a GGZ event into a chess event --JDS */
 void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data);

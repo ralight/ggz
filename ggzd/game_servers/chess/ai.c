@@ -20,7 +20,9 @@
 /* Header files */
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "ai.h"
+#include "game.h"
 
 /* Constant definitions */
 #define C_EMPTY 0
@@ -178,12 +180,12 @@ static void chess_ai_init_movementsinverse(void)
 		if(figure == C_PAWN) continue;
 
 		for(max = 0; movements[figure][max][C_MOVE]; max++);
-		/*printf("#moves: %i\n", max);*/
+		/*ggz_debug(DEBUG_AI, "#moves: %i\n", max);*/
 		for(i = max; i >= 0; i--)
 		{
 			movements[figure][i + max][C_MOVE] = -movements[figure][i][C_MOVE];
 			movements[figure][i + max][C_MULTI] = movements[figure][i][C_MULTI];
-			/*printf("figure %i: move %i to %i\n", figure, i, i + max);*/
+			/*ggz_debug(DEBUG_AI, "figure %i: move %i to %i\n", figure, i, i + max);*/
 		}
 	}
 }
@@ -290,18 +292,18 @@ static void chess_ai_take(int color, int figure, int takeback)
 {
 	int i, j;
 
-/*printf("**TAKE** COLOR %i FIGURE %i TAKEBACK %i\n", color, figure, takeback);*/
+/*ggz_debug(DEBUG_AI, "**TAKE** COLOR %i FIGURE %i TAKEBACK %i\n", color, figure, takeback);*/
 	for(i = 0; chess_ai_taken[i][C_FIGURE] != C_EMPTY; i++)
 	{
 		if((takeback) && (chess_ai_taken[i][C_FIGURE] == figure) && (chess_ai_taken[i][C_COLOR] == color))
 		{
-/*printf("**TAKE** remove at %i\n", i);*/
+/*ggz_debug(DEBUG_AI, "**TAKE** remove at %i\n", i);*/
 			for(j = i + 1; chess_ai_taken[j][C_FIGURE] != C_EMPTY; j++)
 			{
 				chess_ai_taken[j - 1][C_FIGURE] = chess_ai_taken[j][C_FIGURE];
 				chess_ai_taken[j - 1][C_COLOR] = chess_ai_taken[j][C_COLOR];
 			}
-/*printf("**TAKE** empty at %i\n", j - 1);*/
+/*ggz_debug(DEBUG_AI, "**TAKE** empty at %i\n", j - 1);*/
 			chess_ai_taken[j - 1][C_FIGURE] = C_EMPTY;
 			chess_ai_taken[j - 1][C_COLOR] = C_NONE;
 			break;
@@ -309,7 +311,7 @@ static void chess_ai_take(int color, int figure, int takeback)
 	}
 	if(!takeback)
 	{
-/*printf("**TAKE** insert at %i\n", i);*/
+/*ggz_debug(DEBUG_AI, "**TAKE** insert at %i\n", i);*/
 		chess_ai_taken[i][C_FIGURE] = figure;
 		chess_ai_taken[i][C_COLOR] = color;
 	}
@@ -340,7 +342,7 @@ int chess_ai_exchange(int pos, int *figure)
 		{
 			oldfigure = tmpfigure;
 			value = chess_ai_value(oldfigure);
-/*printf("take-consider: figure %i has higher value %i\n", oldfigure, value);*/
+/*ggz_debug(DEBUG_AI, "take-consider: figure %i has higher value %i\n", oldfigure, value);*/
 		}
 	}
 	if(oldfigure == C_PAWN) return 0;
@@ -409,7 +411,7 @@ int chess_ai_move(int from, int to, int force)
 
 	for(i = 0; movements[figure][i][C_MOVE]; i++)
 	{
-		/*printf("figure %i: movement %i\n", figure, i);*/
+		/*ggz_debug(DEBUG_AI, "figure %i: movement %i\n", figure, i);*/
 		max = 1;
 		if(movements[figure][i][C_MULTI]) max = 8;
 		pos = from;
@@ -417,7 +419,7 @@ int chess_ai_move(int from, int to, int force)
 		{
 			oldpos = pos;
 			pos = from + movements[figure][i][C_MOVE] * factor * j;
-			/*printf("try out %i->%i\n", from, pos);*/
+			/*ggz_debug(DEBUG_AI, "try out %i->%i\n", from, pos);*/
 			if((pos < 0) || (pos > 63)) break;
 			if(chess_ai_table[pos][C_FIGURE] != C_EMPTY)
 			{
@@ -471,14 +473,14 @@ static int chess_ai_find_alphabeta(int color, int from, int to)
 	if(val > chess_ai_queue[chess_ai_queuepos][C_VALUE])
 	{
 		chess_ai_queue[chess_ai_queuepos][C_VALUE] = val;
-		/*printf("in level %i, val is altered to %i (moves:", chess_ai_queuepos, val);
+		/*ggz_debug(DEBUG_AI, "in level %i, val is altered to %i (moves:", chess_ai_queuepos, val);
 		for(i = 0; i < chess_ai_queuepos + 1; i++)
-			printf(" %i->%i", chess_ai_queue[i][C_FROM], chess_ai_queue[i][C_TO]);
-		printf(")\n");*/
+			ggz_debug(DEBUG_AI, " %i->%i", chess_ai_queue[i][C_FROM], chess_ai_queue[i][C_TO]);
+		ggz_debug(DEBUG_AI, ")\n");*/
 		for(i = chess_ai_queuepos + 1; i < chess_ai_depth; i++)
 			chess_ai_queue[i][C_VALUE] = 0;
 	}
-	/*printf("++ (%i) %i->%i\n", chess_ai_queuepos, from, to);*/
+	/*ggz_debug(DEBUG_AI, "++ (%i) %i->%i\n", chess_ai_queuepos, from, to);*/
 	chess_ai_queuepos++;
 
 	return 1;
@@ -521,10 +523,10 @@ int chess_ai_find(int color, int *from, int *to)
 		&& (chess_ai_table[i][C_COLOR] == color))
 		{
 			figure = chess_ai_table[i][C_FIGURE];
-			/*printf("=== figure <%i>: at %i\n", figure, i);*/
+			/*ggz_debug(DEBUG_AI, "=== figure <%i>: at %i\n", figure, i);*/
 			for(j = 0; movements[figure][j][C_MOVE]; j++)
 			{
-				/*printf("movement %i\n", j);*/
+				/*ggz_debug(DEBUG_AI, "movement %i\n", j);*/
 				max = 1;
 				if(movements[figure][j][C_MULTI]) max = 8;
 				pos = i;
@@ -533,7 +535,7 @@ int chess_ai_find(int color, int *from, int *to)
 					oldpos = pos;
 					pos = i + movements[figure][j][C_MOVE] * factor * k;
 
-					/*printf("try out %i->%i\n", i, pos);*/
+					/*ggz_debug(DEBUG_AI, "try out %i->%i\n", i, pos);*/
 					if(abs((pos % 8) - (oldpos % 8)) > 2) break;
 					if((pos < 0) || (pos > 63)) break;
 					if(chess_ai_table[pos][C_FIGURE] != C_EMPTY)
@@ -545,13 +547,13 @@ int chess_ai_find(int color, int *from, int *to)
 
 					if(!chess_ai_moveexceptions(i, pos)) continue;
 
-					/*printf("store at %i\n", maxqueue);*/
+					/*ggz_debug(DEBUG_AI, "store at %i\n", maxqueue);*/
 					tempqueue[maxqueue][C_FROM] = i;
 					tempqueue[maxqueue][C_TO] = pos;
 					maxqueue++;
 					if(maxqueue == MAX_ITERATIONS)
 					{
-						printf("Warning: reached limit of %i iterations!\n", MAX_ITERATIONS);
+						ggz_debug(DEBUG_AI, "Warning: reached limit of %i iterations!\n", MAX_ITERATIONS);
 						break;
 					}
 					if(chess_ai_table[pos][C_FIGURE] != C_EMPTY)
@@ -563,19 +565,19 @@ int chess_ai_find(int color, int *from, int *to)
 		if(maxqueue == MAX_ITERATIONS) break;
 	}
 
-	/*printf("---- OK, run %i parallel iterations\n", maxqueue);*/
+	/*ggz_debug(DEBUG_AI, "---- OK, run %i parallel iterations\n", maxqueue);*/
 	for(queuepos = 0; queuepos < maxqueue; queuepos++)
 	{
 		frompos = tempqueue[queuepos][C_FROM];
 		topos = tempqueue[queuepos][C_TO];
 		figure = chess_ai_table[frompos][C_FIGURE];
 
-		/*printf("alphabeta (<%i>) (%i->%i)!\n", figure, frompos, topos);*/
+		/*ggz_debug(DEBUG_AI, "alphabeta (<%i>) (%i->%i)!\n", figure, frompos, topos);*/
 		ret = chess_ai_find_alphabeta(color, frompos, topos);
 
 		if(!ret)
 		{
-			/*printf("(iteration %i) looped %i recursions\n", queuepos, chess_ai_queuepos);*/
+			/*ggz_debug(DEBUG_AI, "(iteration %i) looped %i recursions\n", queuepos, chess_ai_queuepos);*/
 			break;
 		}
 		else
@@ -583,7 +585,7 @@ int chess_ai_find(int color, int *from, int *to)
 			if(color == C_WHITE) nextcolor = C_BLACK;
 			else nextcolor = C_WHITE;
 
-			/*printf("(iteration %i) recursion level %i\n", queuepos, chess_ai_queuepos);*/
+			/*ggz_debug(DEBUG_AI, "(iteration %i) recursion level %i\n", queuepos, chess_ai_queuepos);*/
 			if(chess_ai_queuepos < chess_ai_depth)
 				chess_ai_find(nextcolor, NULL, NULL);
 
@@ -593,9 +595,9 @@ int chess_ai_find(int color, int *from, int *to)
 			chess_ai_table[frompos][C_COLOR] = chess_ai_table[topos][C_COLOR];
 			chess_ai_table[topos][C_FIGURE] = chess_ai_queue[chess_ai_queuepos - 1][C_ORIGFIGURE];
 			chess_ai_table[topos][C_COLOR] = chess_ai_queue[chess_ai_queuepos - 1][C_ORIGCOLOR];
-			/*printf("-- (%i) %i<-%i\n", chess_ai_queuepos - 1, frompos, topos);*/
+			/*ggz_debug(DEBUG_AI, "-- (%i) %i<-%i\n", chess_ai_queuepos - 1, frompos, topos);*/
 			chess_ai_queuepos--;
-			/*printf("(iteration %i) back to recursion level %i\n", queuepos, chess_ai_queuepos);*/
+			/*ggz_debug(DEBUG_AI, "(iteration %i) back to recursion level %i\n", queuepos, chess_ai_queuepos);*/
 		}
 
 		if((from) && (to))
@@ -603,7 +605,7 @@ int chess_ai_find(int color, int *from, int *to)
 			movevalue = 0;
 			for(i = 0; i < chess_ai_depth; i++)
 				movevalue += chess_ai_queue[i][C_VALUE] * (((i + 1) % 2) * 2 - 1);
-			/*printf("iteration (%i: %i->%i) %i\n", queuepos, tempqueue[queuepos][C_FROM], tempqueue[queuepos][C_TO], movevalue);*/
+			/*ggz_debug(DEBUG_AI, "iteration (%i: %i->%i) %i\n", queuepos, tempqueue[queuepos][C_FROM], tempqueue[queuepos][C_TO], movevalue);*/
 			tempqueue[queuepos][C_VALUE] = movevalue;
 			for(i = 0; i < MAX_RECURSIONS; i++)
 				chess_ai_queue[i][C_VALUE] = 0;
@@ -624,7 +626,7 @@ int chess_ai_find(int color, int *from, int *to)
 				best_value = tempqueue[queuepos][C_VALUE];
 			}
 		}
-		/*printf("result: %i for %i->%i\n", best_value, best_from, best_to);*/
+		/*ggz_debug(DEBUG_AI, "result: %i for %i->%i\n", best_value, best_from, best_to);*/
 		*from = best_from;
 		*to = best_to;
 		return 1;
@@ -638,7 +640,7 @@ void chess_ai_output(void)
 	int i;
 	char c;
 
-	printf("---------------\n");
+	ggz_debug(DEBUG_AI, "---------------\n");
 	for(i = 0; i < 64; i++)
 	{
 		c = ' ';
@@ -663,10 +665,10 @@ void chess_ai_output(void)
 				c = '$';
 				break;
 		}
-		printf("%c ", c);
-		if((i + 1) % 8 == 0) printf("\n");
+		ggz_debug(DEBUG_AI, "%c ", c);
+		if((i + 1) % 8 == 0) ggz_debug(DEBUG_AI, "\n");
 	}
-	printf("---------------\n");
+	ggz_debug(DEBUG_AI, "---------------\n");
 	fflush(NULL);
 }
 
