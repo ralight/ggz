@@ -27,6 +27,8 @@
 #ifndef __TABLE_H_
 #define __TABLE_H_
 
+#include <ggz_common.h>
+
 #include "gametype.h"
 #include "ggzcore.h"
 
@@ -53,7 +55,7 @@ struct _GGZTable {
 	char *desc;        
 
         /* Table state */
-        char state;
+        GGZTableState state;
 
         /* Total seats */
         unsigned int num_seats;
@@ -75,7 +77,7 @@ void _ggzcore_table_init(struct _GGZTable *table,
 void _ggzcore_table_free(struct _GGZTable *table);
 
 void _ggzcore_table_set_id(struct _GGZTable *table, const int id);
-void _ggzcore_table_set_state(struct _GGZTable *table, const char state);
+void _ggzcore_table_set_state(struct _GGZTable *table, const GGZTableState state);
 
 /** @brief Change a seat value.
  *
@@ -92,7 +94,7 @@ int _ggzcore_table_remove_player(struct _GGZTable *table, char *name);
 int                   _ggzcore_table_get_id(struct _GGZTable *table);
 struct _GGZGameType*  _ggzcore_table_get_type(struct _GGZTable *table);
 char*                 _ggzcore_table_get_desc(struct _GGZTable *table);
-char                  _ggzcore_table_get_state(struct _GGZTable *table);
+GGZTableState         _ggzcore_table_get_state(struct _GGZTable *table);
 int                   _ggzcore_table_get_num_seats(struct _GGZTable *table);
 int                   _ggzcore_table_get_seat_count(struct _GGZTable *table, GGZSeatType type);
 

@@ -30,6 +30,7 @@
 #include "ggzcore.h"
 
 #include <ggz.h>
+#include <ggz_common.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -130,7 +131,7 @@ char* ggzcore_table_get_desc(GGZTable *table)
 }
 
 
-char ggzcore_table_get_state(GGZTable *table)
+GGZTableState ggzcore_table_get_state(GGZTable *table)
 {
 	if (table)
 		return _ggzcore_table_get_state(table);
@@ -239,7 +240,7 @@ void _ggzcore_table_set_id(struct _GGZTable *table, const int id)
 }
 
 
-void _ggzcore_table_set_state(struct _GGZTable *table, const char state)
+void _ggzcore_table_set_state(struct _GGZTable *table, const GGZTableState state)
 {
 	table->state = state;
 }
@@ -297,7 +298,7 @@ char* _ggzcore_table_get_desc(struct _GGZTable *table)
 }
 
 
-char _ggzcore_table_get_state(struct _GGZTable *table)
+GGZTableState _ggzcore_table_get_state(struct _GGZTable *table)
 {
 	return table->state;
 }

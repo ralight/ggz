@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 3270 2002-02-08 20:32:25Z jdorje $
+ * $Id: ggzcore.h 3370 2002-02-16 03:08:59Z bmh $
  *
  * Interface file to be included by client frontends
  *
@@ -635,11 +635,11 @@ int ggzcore_table_set_seat(GGZTable *table,
 			   char *name);
 int ggzcore_table_remove_player(GGZTable *table, char *name);
 
-int          ggzcore_table_get_id(GGZTable *table);
-GGZGameType* ggzcore_table_get_type(GGZTable *table);
-char*        ggzcore_table_get_desc(GGZTable *table);
-char         ggzcore_table_get_state(GGZTable *table);
-int          ggzcore_table_get_num_seats(GGZTable *table);
+int           ggzcore_table_get_id(GGZTable *table);
+GGZGameType*  ggzcore_table_get_type(GGZTable *table);
+char*         ggzcore_table_get_desc(GGZTable *table);
+GGZTableState ggzcore_table_get_state(GGZTable *table);
+int           ggzcore_table_get_num_seats(GGZTable *table);
 
 /** @brief Count the seats of the given type.
  *
