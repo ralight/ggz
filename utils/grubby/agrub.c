@@ -77,6 +77,7 @@ char *help_strings[] = {
 	"    %s: My email is <email>",
 	"    %s: My url is <URL>",
 	"    %s: My info is <info about yourself>",
+	"    %s: My birthday is <MM-DD-YYYY>",
 	"    %s: Have you seen <name>",
 	"    %s: Tell <name> <A message>",
 	"    %s: Whois <name>"
