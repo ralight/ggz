@@ -191,9 +191,10 @@ int es_make_unix_socket(const EsSockType type, const char* name)
 	}
 
 	
-	bzero(&addr, sizeof(addr));
+	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_LOCAL;
-	strcpy(addr.sun_path, name);
+	/* Copy in filename up to the limit, leaving room for \0 term. */
+	strncpy(addr.sun_path, name, (sizeof(addr.sun_path) - 1));
 
 	switch(type) {
 
