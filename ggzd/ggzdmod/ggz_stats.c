@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.c 2821 2001-12-09 07:57:00Z jdorje $
+ * $Id: ggz_stats.c 4131 2002-05-02 04:29:21Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -23,8 +23,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "ggzdmod.h"
 #include "ggz_stats.h"
@@ -39,6 +44,7 @@ static int teams = 0;
 static int *team_list = NULL;
 static double *winners = NULL;
 static GGZRatingSystem rating_system = GGZ_ELO_RATING;
+static const char *module = NULL;
 
 /* FIXME: this table is about the ugliest thing ever.  It holds the CDF's of
    the normalized normal distribution. */
@@ -346,7 +352,7 @@ static double ztable[301] = {
 	0.5
 };
 
-/* Looks like ELO uses a standard deviation or 200. */
+/* Looks like ELO uses a standard deviation of 200. */
 #define STD_DEV (double)200.0
 #define INCR (double)(1.0 / 100.0)
 
@@ -440,6 +446,111 @@ void ggzd_set_rating_system(GGZRatingSystem system)
 }
 
 
+int read_ratings(GGZdMod * ggz)
+{
+	int num = ggzdmod_get_num_seats(ggz);
+	char fname[128], lockname[128];
+	int player;
+	int handle;
+	
+	if (!module)
+		return -1;
+		
+	/* FIXME: use database */
+		
+	snprintf(lockname, sizeof(lockname), "stats-lock-%s", module);
+	while (mkdir(lockname, S_IRWXU) < 0) {
+		fprintf(stderr, "Couldn't access stats lock.");
+		sleep(1);
+	}
+	
+	snprintf(fname, sizeof(fname), "stats-%s", module);
+	handle = ggz_conf_parse(fname, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
+	if (handle < 0) {
+		if (rmdir(lockname) < 0)
+			assert(0);
+		return -1;
+	}
+
+	for (player = 0; player < num; player++) {
+		GGZSeat seat = ggzdmod_get_seat(ggz, player);
+		char player_name[128];
+		
+		if (seat.type != GGZ_SEAT_PLAYER &&
+		    seat.type != GGZ_SEAT_BOT)
+			continue;
+		
+		if (seat.type == GGZ_SEAT_PLAYER)
+			snprintf(player_name, sizeof(player_name), "%s", seat.name);
+		else
+			snprintf(player_name, sizeof(player_name), "%s(AI)(%d)",
+			         seat.name, seat.num);
+			
+		ratings[player] = ggz_conf_read_int(handle, "ratings",
+		                                    player_name,
+		                                    1500);
+	}
+	
+	ggz_conf_cleanup(); /* Hope nobody else is using this! */
+		
+	if (rmdir(lockname) < 0)
+		assert(0);
+		
+	return 0;
+}
+
+int write_ratings(GGZdMod * ggz)
+{
+	int num = ggzdmod_get_num_seats(ggz);
+	char fname[128], lockname[128];
+	int handle;
+	int player;
+	
+	if (!module)
+		return -1;
+		
+	/* FIXME: use database */
+		
+	snprintf(lockname, sizeof(lockname), "stats-lock-%s", module);
+	while (mkdir(lockname, S_IRWXU) < 0) {
+		fprintf(stderr, "Couldn't access stats lock.");
+		sleep(1);
+	}	
+	
+	snprintf(fname, sizeof(fname), "stats-%s", module);
+	handle = ggz_conf_parse(fname, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
+	if (handle < 0) {
+		if (rmdir(lockname) < 0)
+			assert(0);
+		return -1;
+	}
+
+	for (player = 0; player < num; player++) {
+		GGZSeat seat = ggzdmod_get_seat(ggz, player);
+		char player_name[128];
+		
+		if (seat.type != GGZ_SEAT_PLAYER &&
+		    seat.type != GGZ_SEAT_BOT)
+			continue;
+		
+		if (seat.type == GGZ_SEAT_PLAYER)
+			snprintf(player_name, sizeof(player_name), "%s", seat.name);
+		else
+			snprintf(player_name, sizeof(player_name), "%s(AI)(%d)",
+			         seat.name, seat.num);
+			
+		ggz_conf_write_int(handle, "ratings", player_name, ratings[player]);
+	}
+	
+	ggz_conf_commit(handle);
+	ggz_conf_cleanup(); /* Hope nobody else is using this! */
+		
+	if (rmdir(lockname) < 0)
+		assert(0);
+		
+	return 0;
+}
+
 int ggzd_get_rating(GGZdMod * ggz, int player)
 {
 	if (player < 0 || player >= ggzdmod_get_num_seats(ggz)) {
@@ -453,12 +564,12 @@ int ggzd_get_rating(GGZdMod * ggz, int player)
 	   1500 at the start of each table. Not sure how this will work with
 	   people joining/leaving the table... */
 	if (!ratings) {
-		int i, num = ggzdmod_get_num_seats(ggz);
-		ratings = malloc(num * sizeof(*ratings));
-		/* just to be interesting, we'll start with slightly
-		   arbitrary ratings. */
-		for (i = 0; i < num; i++)
-			ratings[i] = 1500 + rand() % 600;
+		ratings = ggz_malloc(ggzdmod_get_num_seats(ggz) * sizeof(*ratings));
+		if (read_ratings(ggz) < 0) {
+			ggz_free(ratings);
+			ratings = NULL; /* We may try again later...ugh. */
+			return -1; /* ? */
+		}
 	}
 
 	return ratings[player];
@@ -600,9 +711,18 @@ int ggzd_recalculate_ratings(GGZdMod * ggz)
 			    "Player %d has new rating %d (slope %f).", i,
 			    ratings[i], K);
 	}
+	
+	if (write_ratings(ggz) < 0) {
+	
+	}
 
 	/* re-init the winners */
 	memset(winners, 0, num * sizeof(*winners));
 
 	return 0;		/* success */
+}
+
+void ggzd_set_module(const char* module_name)
+{
+	module = module_name;
 }
