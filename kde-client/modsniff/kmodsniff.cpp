@@ -111,11 +111,11 @@ void KModSniff::addModule(char *modulename, char *frontend)
 	if(!mod.is_open()) return;
 
 	mod << "[Desktop Entry]" << endl
-		<< "Comment[de]=" << endl
+		<< "Comment=" << endl
 		<< "Exec=ggzap --module " << modulename << " --frontend " << frontend << endl
 		<< "Icon=ggzquick.png" << endl
 		<< "MimeType=" << endl
-		<< "Name[de]=" << modulename << " (" << frontend << ")" << endl
+		<< "Name=" << modulename << " (" << frontend << ")" << endl
 		<< "Path=" << endl
 		<< "ServiceTypes=" << endl
 		<< "SwallowExec=" << endl
