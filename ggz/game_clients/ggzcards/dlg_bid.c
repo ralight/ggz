@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 2852 2001-12-10 04:57:56Z jdorje $
+ * $Id: dlg_bid.c 2854 2001-12-10 05:46:45Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -67,7 +67,7 @@ static gint dlg_bid_delete(GtkWidget * widget, gpointer data)
 }
 
 /* displays a popup window from which the user can choose their bid */
-void dlg_bid_display(int possible_bids, char **bid_choices)
+static void dlg_bid_display(int possible_bids, char **bid_choices)
 {
 	GtkWidget *table;
 	GtkWidget *button;
@@ -114,4 +114,10 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 
 	gtk_widget_show(table);
 	gtk_widget_show(window);
+}
+
+void table_get_bid(int possible_bids, char **bid_choices)
+{
+	dlg_bid_display(possible_bids, bid_choices);
+	statusbar_message(_("Your turn to bid"));
 }

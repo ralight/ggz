@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2850 2001-12-10 04:16:28Z jdorje $
+ * $Id: main.c 2854 2001-12-10 05:46:45Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -159,12 +159,6 @@ void table_handle_gameover(int num_winners, int *winners)
 	}
 
 	statusbar_message(msg);
-}
-
-void table_get_bid(int possible_bids, char **bid_choices)
-{
-	dlg_bid_display(possible_bids, bid_choices);
-	statusbar_message(_("Your turn to bid"));
 }
 
 void statusbar_message(char *msg)

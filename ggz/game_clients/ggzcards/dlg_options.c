@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 2853 2001-12-10 05:18:58Z jdorje $
+ * $Id: dlg_options.c 2854 2001-12-10 05:46:45Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -27,6 +27,7 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <string.h>
 
 #include <gtk/gtk.h>
@@ -43,6 +44,23 @@ static GtkWidget *window = NULL;
 static int option_count;
 static int *options_selected;
 
+/* encode_option_selection and decode_option_selection do some hackish
+   trickery so that we can encode the option selection within a gpointer to
+   pass to the callback function. */
+static gpointer encode_option_selection(gint option, gint choice)
+{
+	gint selection = (option << 8) | choice;
+	assert(selection < 256 && option < 256);
+	return GINT_TO_POINTER(selection);
+}
+
+static void decode_option_selection(gpointer selection, gint * option,
+				    gint * choice)
+{
+	*option = GPOINTER_TO_INT(selection) >> 8;
+	*choice = GPOINTER_TO_INT(selection) & 255;
+}
+
 static void destroy_options_selection(void)
 {
 	if (window != NULL) {
@@ -56,10 +74,10 @@ static void destroy_options_selection(void)
 	}
 }
 
-void dlg_option_checked(GtkWidget * widget, gpointer data)
+static void dlg_option_checked(GtkWidget * widget, gpointer data)
 {
-	gint option = GPOINTER_TO_INT(data) >> 8;	/* uber-trickery */
-	gint choice = GPOINTER_TO_INT(data) & 255;
+	gint option, choice;
+	decode_option_selection(data, &option, &choice);
 
 	if (GTK_TOGGLE_BUTTON(widget)->active) {
 		ggz_debug("table", "Boolean option %d/%d selected.", option,
@@ -74,8 +92,8 @@ void dlg_option_checked(GtkWidget * widget, gpointer data)
 
 static void dlg_option_toggled(GtkWidget * widget, gpointer data)
 {
-	gint option = GPOINTER_TO_INT(data) >> 8;
-	gint choice = GPOINTER_TO_INT(data) & 255;
+	gint option, choice;
+	decode_option_selection(data, &option, &choice);
 
 	if (GTK_TOGGLE_BUTTON(widget)->active) {
 		ggz_debug("table", "Multiple-choice option %d/%d selected.",
@@ -118,34 +136,36 @@ static void dlg_option_display(int option_cnt, int *option_sizes,
 	for (i = 0; i < option_cnt; i++) {
 		GtkWidget *subbox = NULL;
 		if (option_sizes[i] == 1) {
-			subbox = gtk_check_button_new_with_label(options[i]
-								 [0]);
+			gpointer user_data = encode_option_selection(i, 1);
+			char *choice = options[i][0];
+			subbox = gtk_check_button_new_with_label(choice);
+
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
 						     (subbox),
 						     options_selected[i]);
 			gtk_signal_connect(GTK_OBJECT(subbox), "toggled",
 					   GTK_SIGNAL_FUNC
-					   (dlg_option_checked),
-					   GINT_TO_POINTER((i << 8) | 1)
-					   /* super-hack */ );
+					   (dlg_option_checked), user_data);
 		} else {
 			GSList *group = NULL;
 			GtkWidget *active_radio = NULL;
 			subbox = gtk_vbox_new(FALSE, 0);
+			assert(option_sizes[i] <= 255);
 			for (j = 0; j < option_sizes[i]; j++) {
 				GtkWidget *radio;
+				gpointer user_data =
+					encode_option_selection(i, j);
+				char *choice = options[i][j];
+
 				radio = gtk_radio_button_new_with_label(group,
-									options
-									[i]
-									[j]);
+									choice);
 				group = gtk_radio_button_group
 					(GTK_RADIO_BUTTON(radio));
 				gtk_signal_connect(GTK_OBJECT(radio),
 						   "toggled",
 						   GTK_SIGNAL_FUNC
 						   (dlg_option_toggled),
-						   GINT_TO_POINTER((i << 8) |
-								   j));
+						   user_data);
 
 				gtk_box_pack_start(GTK_BOX(subbox), radio,
 						   FALSE, FALSE, 0);
