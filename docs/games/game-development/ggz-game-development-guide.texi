@@ -214,7 +214,7 @@ The GGZ games Geekgame and TicTacToe 3D have been written using SDL.
 The games Escape/SDL and PyKamikaze are using the Python wrapper for SDL called
 Pygame, available at @url{http://www.pygame.org}.
 Python games also need to use a wrapper for the ggzmod and ggzdmod libraries,
-which exist as pyggzmod and pyggzdmod.
+which exist as pyggzmod and pyggzdmod in the ggz-python package.
 
 @subsection Others
 
