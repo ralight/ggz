@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.h 2812 2001-12-09 01:52:00Z jdorje $
+ * $Id: game.h 4653 2002-09-22 17:20:00Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -22,6 +22,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifndef DOTS_GAME_H
+#define DOTS_GAME_H
 
 #include "ggzdmod.h"
 
@@ -97,10 +100,15 @@ void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data);
 void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data);
 void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data);
 void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_spectator_data(GGZdMod *ggz, GGZdModEvent event, void *data);
 
 int game_send_seat(int);
+int game_send_seat_spectators(int);
 int game_send_players(void);
+int game_send_players_spectators(void);
 int game_send_move(int, int, char, char);
+int game_send_move_spectators(int, int, char, char);
 int game_send_sync(int);
 int game_send_options(int);
 int game_send_gameover(char);
@@ -114,3 +122,6 @@ char game_check_move(int, int);
 char game_check_win(void);
 
 int game_update(int, void *, void *);
+
+#endif
+

@@ -4,7 +4,7 @@
  * Project: GGZ Connect The Dots game module
  * Date: 04/27/2000
  * Desc: Main loop
- * $Id: main.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: main.c 4653 2002-09-22 17:20:00Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -44,7 +44,9 @@ int main(void)
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz_join);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz_leave);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player_data);
-	
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_JOIN, &game_handle_ggz_spectator_join);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SPECTATOR_DATA, &game_handle_spectator_data);
+
 	/* Seed the random number generator */
 	srandom((unsigned)time(NULL));
 	game_init(ggz);

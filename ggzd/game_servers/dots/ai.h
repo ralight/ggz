@@ -22,4 +22,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef DOTS_AI_H
+#define DOTS_AI_H
+
 extern unsigned char ai_move(unsigned char *, unsigned char *);
+
+#endif
+

@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 4483 2002-09-09 04:05:28Z jdorje $
+ * $Id: game.c 4653 2002-09-22 17:20:00Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -80,6 +80,22 @@ void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 	game_update(DOTS_EVENT_JOIN, &player, NULL);
 }
 
+void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, void *data)
+{
+	int spectator = *(int*)data;
+	int fd = ggzdmod_get_spectator(dots_game.ggz, spectator).fd;
+
+	game_send_seat_spectators(fd);
+
+	/* Sync - but only if the game is already running */
+	if(dots_game.state == DOTS_STATE_PLAYING)
+	{
+		game_send_players_spectators();
+		game_send_options(fd);
+		game_send_sync(fd);
+	}
+}
+
 void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
 	int player = ((GGZSeat*)data)->num;
@@ -109,7 +125,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data)
 				game_update(DOTS_EVENT_MOVE_H, &x, &y);
 			break;
 		case DOTS_REQ_SYNC:
-			status = game_send_sync(num);
+			status = game_send_sync(fd);
 			break;
 		case DOTS_SND_OPTIONS:
 			status = game_get_options(num);
@@ -119,6 +135,36 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data)
 			break;
 		default:
 			/* Unrecognized opcode */
+			status = -1;
+			break;
+	}
+	/* FIXME: handle status --JDS */
+}
+
+
+/* Handle message from spectator */
+void game_handle_spectator_data(GGZdMod *ggz, GGZdModEvent event, void *data)
+{
+	int num = *(int*)data;
+	int fd, op, status;
+
+	fd = ggzdmod_get_spectator(dots_game.ggz, num).fd;
+	
+	if(ggz_read_int(fd, &op) < 0)
+		return;
+
+	switch(op) {
+		case DOTS_SND_MOVE_V:
+		case DOTS_SND_MOVE_H:
+		case DOTS_REQ_NEWGAME:
+		case DOTS_SND_OPTIONS:
+			/* Discard (should never happen anyway) */
+			break;
+		case DOTS_REQ_SYNC:
+			status = game_send_sync(fd);
+			break;
+		default:
+			/* Unrecognized opcode; discard? */
 			status = -1;
 			break;
 	}
@@ -140,10 +186,8 @@ static int game_get_options(int seat)
 
 
 /* Send out options */
-int game_send_options(int seat)
+int game_send_options(int fd)
 {
-	int fd = ggzdmod_get_seat(dots_game.ggz, seat).fd;
-
 	if(ggz_write_int(fd, DOTS_MSG_OPTIONS) < 0
 	   || ggz_write_char(fd, dots_game.board_width) < 0
 	   || ggz_write_char(fd, dots_game.board_height) < 0)
@@ -178,6 +222,17 @@ int game_send_seat(int seat)
 }
 
 
+/* Send out seat assignment to spectators */
+int game_send_seat_spectators(int fd)
+{
+	if(ggz_write_int(fd, DOTS_MSG_SEAT) < 0
+	   || ggz_write_int(fd, -1) < 0)
+		return -1;
+
+	return 0;
+}
+
+
 /* Send out player list to everybody */
 int game_send_players(void)
 {
@@ -202,6 +257,34 @@ int game_send_players(void)
 				return -1;
 		}
 	}
+
+	return 0;
+}
+
+int game_send_players_spectators(void)
+{
+	int i, j, fd;
+
+	/* 'Everybody' might include spectators */
+	for(j = 0; j < ggzdmod_get_max_num_spectators(dots_game.ggz); j++)
+	{
+		fd = ggzdmod_get_spectator(dots_game.ggz, j).fd;
+		if(fd < 0) continue;
+
+		if(ggz_write_int(fd, DOTS_MSG_PLAYERS) < 0)
+			return -1;
+
+		for(i=0; i<2; i++) {
+			GGZSeat seat = ggzdmod_get_seat(dots_game.ggz, i);
+			if(ggz_write_int(fd, seat.type) < 0)
+				return -1;
+			if(seat.type != GGZ_SEAT_OPEN
+			    /* FIXME: seat.name can be NULL! */
+			    && ggz_write_string(fd, seat.name) < 0)
+				return -1;
+		}
+	}
+
 	return 0;
 }
 
@@ -240,12 +323,45 @@ int game_send_move(int num, int event, char x, char y)
 }
 
 
-/* Send out board layout */
-int game_send_sync(int num)
-{	
-	int i, j, fd = ggzdmod_get_seat(dots_game.ggz, num).fd;
+/* Send out move to all spectators */
+int game_send_move_spectators(int num, int event, char x, char y)
+{
+	int i, j;
+	int msg;
+	int fd;
 
-	ggzdmod_log(dots_game.ggz, "Handling sync for player %d", num);
+	if(event == DOTS_EVENT_MOVE_H)
+		msg = DOTS_MSG_MOVE_H;
+	else
+		msg = DOTS_MSG_MOVE_V;
+
+	for(j = 0; j < ggzdmod_get_max_num_spectators(dots_game.ggz); j++)
+	{
+		fd = ggzdmod_get_spectator(dots_game.ggz, j).fd;
+		if(fd < 0) continue;
+
+		if(ggz_write_int(fd, msg) < 0
+		   || ggz_write_char(fd, x) < 0
+		   || ggz_write_char(fd, y) < 0
+		   || ggz_write_char(fd, score) < 0)
+			return -1;
+		for(i=0; i<score; i++) {
+			if(ggz_write_char(fd, s_x[i]) < 0
+			   || ggz_write_char(fd, s_y[i]) < 0)
+				return -1;
+		}
+	}
+	
+	return 0;
+}
+
+
+/* Send out board layout */
+int game_send_sync(int fd)
+{	
+	int i, j;
+
+	ggzdmod_log(dots_game.ggz, "Handling sync for player/spectator with fd %d", fd);
 
 	if(ggz_write_int(fd, DOTS_SND_SYNC) < 0
 	   || ggz_write_char(fd, dots_game.turn) < 0
@@ -467,7 +583,7 @@ static int seats_full(void)
 /* Update game state */
 int game_update(int event, void *d1, void *d2)
 {
-	int seat;
+	int seat, fd, spectator;
 	char x, y;
 	char victor;
 	static int first_join=1;
@@ -486,7 +602,18 @@ int game_update(int event, void *d1, void *d2)
 			/* Send the options to anyone waitng for them */
 			for(seat=0; seat<2; seat++)
 				if(ggzdmod_get_seat(dots_game.ggz, seat).type == GGZ_SEAT_PLAYER)
-					game_send_options(seat);
+				{
+					fd = ggzdmod_get_seat(dots_game.ggz, seat).fd;
+					game_send_options(fd);
+				}
+
+			/* This includes early spectators as well */
+			for(spectator = 0; spectator < ggzdmod_get_max_num_spectators(dots_game.ggz); spectator++)
+			{
+				fd = ggzdmod_get_spectator(dots_game.ggz, spectator).fd;
+				if(fd < 0) continue;
+				game_send_options(fd);
+			}
 
 			/* Start the game if we are ready to */
 			if(dots_game.play_again != 1 && seats_full()) {
@@ -504,6 +631,7 @@ int game_update(int event, void *d1, void *d2)
 			seat = *(int*)d1;
 			game_send_seat(seat);
 			game_send_players();
+			game_send_players_spectators();
 
 			/* The first joining client gets asked to set options */
 			if(dots_game.state == DOTS_STATE_OPTIONS) {
@@ -516,12 +644,13 @@ int game_update(int event, void *d1, void *d2)
 			}
 
 			/* If options are already set, we can proceed */
-			game_send_options(seat);
+			fd = ggzdmod_get_seat(dots_game.ggz, seat).fd;
+			game_send_options(fd);
 			if(seats_full()) {
 				if(dots_game.turn == -1)
 					dots_game.turn = 0;
 				else
-					game_send_sync(seat);
+					game_send_sync(fd);
 			
 				dots_game.state = DOTS_STATE_PLAYING;
 				game_move();
@@ -529,6 +658,7 @@ int game_update(int event, void *d1, void *d2)
 			break;
 		case DOTS_EVENT_LEAVE:
 			game_send_players();
+			game_send_players_spectators();
 			if(dots_game.state == DOTS_STATE_PLAYING)
 				dots_game.state = DOTS_STATE_WAIT;
 			break;
@@ -541,7 +671,8 @@ int game_update(int event, void *d1, void *d2)
 			y = *(char*)d2;
 
 			game_send_move(dots_game.turn, event, x, y);
-		
+			game_send_move_spectators(dots_game.turn, event, x, y);
+	
 			if((victor = game_check_win()) < 0) {
 				/* Request next move */
 				game_move();

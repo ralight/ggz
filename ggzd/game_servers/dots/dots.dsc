@@ -1,4 +1,4 @@
-# $Id: dots.dsc 4548 2002-09-13 16:19:50Z jdorje $
+# $Id: dots.dsc 4653 2002-09-22 17:20:00Z dr_maux $
 
 [GameInfo]
 Author = Rich Gade
@@ -16,5 +16,6 @@ Version = 2
 
 [TableOptions]
 AllowLeave = 1
+AllowSpectators = 0
 BotsAllowed = 1
 PlayersAllowed = 2
