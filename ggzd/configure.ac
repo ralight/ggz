@@ -1,9 +1,9 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5703 2003-12-05 00:57:56Z jdorje $
+dnl $Id: configure.ac 5719 2003-12-18 11:17:10Z dr_maux $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
-AM_INIT_AUTOMAKE(ggz-server, 0.0.7)
+AM_INIT_AUTOMAKE(ggz-server, 0.0.8pre)
 AM_CONFIG_HEADER([config.h])
 AM_MAINTAINER_MODE
 
@@ -131,7 +131,7 @@ dnl ===============
 AC_CHECK_LIB([expat], [XML_ParserCreate], [ggzd_LIBS="$ggzd_LIBS -lexpat"],
              [AC_MSG_ERROR([cannot find expat library])])
 AC_CHECK_HEADER([expat.h], [],
-                [AC_MSG_ERROR([cannot find expat.h header])]),
+                [AC_MSG_ERROR([cannot find expat.h header])])
 
 dnl Check database libs
 dnl ===================
