@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 5924 2004-02-14 22:14:26Z jdorje $
+ * $Id: table.h 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -103,25 +103,25 @@ struct GGZTable* table_new(void);
 void table_free(GGZTable* table);
 
 /* Launch a table */
-GGZClientReqError table_launch(struct GGZTable *table, char* name);
+GGZClientReqError table_launch(struct GGZTable *table, const char *name);
 
 /* Change table description of running table */
 void table_set_desc(struct GGZTable *table, const char *desc);
 
 /* Call to have a player join the table.  Only the table thread can call
    this function. */
-void table_game_join(GGZTable *table, char *name,
+void table_game_join(GGZTable *table, const char *name,
 		     GGZJoinType reason, int num);
 
 /* Call to have a player join the table.  Only the table thread can call
    this function. */
-void table_game_leave(GGZTable *table, char *name,
+void table_game_leave(GGZTable *table, const char *name,
 		      GGZLeaveType reason, int num);
 
 /* Call to have a player change seats at a table.  Only the table thread
    can call this function. */
 void table_game_reseat(GGZTable *table, GGZReseatType op,
-		       char *name,
+		       const char *name,
 		       int old_seat, int new_seat);
 
 /* Call this function to change a non-player seat to a new type.  Only
@@ -130,26 +130,26 @@ void table_game_seatchange(GGZTable *table, GGZSeatType type, int num);
 
 /* Call to have a player join the table as spectator.  Only the table
    thread can call this function. */
-void table_game_spectator_join(GGZTable *table, char *name,
+void table_game_spectator_join(GGZTable *table, const char *name,
 			       GGZJoinType reason, int num);
 
 /* Call to have a player leave the table as a spectator.  Only the table
    thread can call this function. */
-void table_game_spectator_leave(GGZTable *table, char *name,
+void table_game_spectator_leave(GGZTable *table, const char *name,
 				GGZLeaveType reason, int num);
 
 /* Kill the table */
-GGZClientReqError table_kill(int room, int index, char *name);
+GGZClientReqError table_kill(int room, int index, const char *name);
 
 /* Search for tables */
-int table_search(char* name, int room, int type, char global, 
+int table_search(const char *name, int room, int type, bool global, 
 		 struct GGZTable*** tables);
 
 /* Find a player at a table */
-int table_find_player(int room, int index, char *name);
+int table_find_player(int room, int index, const char *name);
 
 /* Find a spectator */
-int table_find_spectator(int room, int index, char *name);
+int table_find_spectator(int room, int index, const char *name);
 
 
 /*

@@ -38,14 +38,15 @@ typedef enum {
 } GGZTransitType;
 
 #if 0
-GGZReturn transit_table_event(int room, int index, char opcode, char* name);
+GGZReturn transit_table_event(int room, int index, char opcode,
+			      const char *name);
 #endif
 
 GGZReturn transit_seat_event(int room_index, int table_index,
 			     GGZTransitType transit,
-			     struct GGZTableSeat seat, char *caller,
+			     struct GGZTableSeat seat, const char *caller,
 			     int reason);
 
-GGZReturn transit_player_event(char* name, GGZTransitType opcode,
+GGZReturn transit_player_event(const char* name, GGZTransitType opcode,
 			       GGZClientReqError status,
-			       char *caller, int reason, int index);
+			       const char *caller, int reason, int index);

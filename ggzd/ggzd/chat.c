@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 5901 2004-02-11 03:19:44Z jdorje $
+ * $Id: chat.c 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -63,7 +63,7 @@ static GGZEventFuncReturn chat_table_event_callback(void *target, size_t size,
 
 /* Queue up a chat for the room */
 GGZClientReqError chat_room_enqueue(int room, GGZChatType type,
-				    GGZPlayer* sender, char *msg)
+				    GGZPlayer *sender, const char *msg)
 {
 	GGZChatEventData *data;
 	int i, rooms;
@@ -123,43 +123,55 @@ GGZClientReqError chat_table_enqueue(int room, int table, GGZChatType type,
 }
 
 
-/* Queue up a chat for a player */
-GGZClientReqError chat_player_enqueue(char* receiver, GGZChatType type, 
-				      GGZPlayer* sender, char *msg)
+/* Queue up a chat for a player.  The sender's thread is the caller. */
+GGZClientReqError chat_player_enqueue(const char* receiver, GGZChatType type, 
+				      GGZPlayer* sender, const char *msg)
 
 {
-	GGZPlayer* rcvr = NULL;
+	GGZPlayer* rcvr;
 	GGZChatEventData *data;
+	bool at_table;
 
-	if(receiver == NULL)
+	if (receiver == NULL) {
 		return E_BAD_OPTIONS;
-
-	/* Don't allow personal chat from a player at a table */
-	pthread_rwlock_rdlock(&sender->lock);
-	if (sender->table != -1) {
-		pthread_rwlock_unlock(&sender->lock);
-		return E_AT_TABLE;
 	}
+
+	pthread_rwlock_rdlock(&sender->lock);
+	at_table = (sender->table != -1);
 	pthread_rwlock_unlock(&sender->lock);	
 
-	/* Find target player.  Returns with player write-locked */
-	if ( (rcvr = hash_player_lookup(receiver)) == NULL )
-		return E_USR_LOOKUP;
-	
-	/* Don't allow personal chat to a player at a table */
-	if (rcvr->table != -1) {
-		pthread_rwlock_unlock(&rcvr->lock);
+	/* Don't allow personal chat from a player at a table */
+	if (at_table){
 		return E_AT_TABLE;
 	}
+
+	/* Find target player.  Returns with player write-locked */
+	rcvr = hash_player_lookup(receiver);
+
+	if (rcvr == NULL) {
+		return E_USR_LOOKUP;
+	}
+
+	/* Don't allow personal chat to a player at a table */
+	at_table = (rcvr->table != -1);
+
+	/* FIXME: we release the lock only to acquire it again in
+	   event_player_enqueue.  This is inefficient. */
 	pthread_rwlock_unlock(&rcvr->lock);
 
-	/* Pack up chat message */
+	if (at_table) {
+		return E_AT_TABLE;
+	}
+
+	/* Pack up chat message.  Sender->name won't change so no lock
+	 * is needed. */
 	data = chat_pack(type, sender->name, msg);
 	
 	/* Queue chat event for individual player */
 	if (event_player_enqueue(receiver, chat_event_callback,
-				 sizeof(*data), data, chat_free) != GGZ_OK)
-		return E_USR_LOOKUP; /* FIXME: is this correct? */
+				 sizeof(*data), data, chat_free) != GGZ_OK) {
+		return E_USR_LOOKUP;
+	}
 
 	return E_OK;
 }
@@ -191,7 +203,8 @@ static void chat_free(void* event_data)
 }
 
 
-/* Event callback for delivering chat to player */
+/* Event callback for delivering chat to player.  This is called by the
+   target player's thread when it wakes up to receive events. */
 static GGZEventFuncReturn chat_event_callback(void* target, size_t size,
 					      void* event_data)
 {
@@ -259,7 +272,7 @@ static GGZEventFuncReturn chat_table_event_callback(void *target, size_t size,
 
 /* This is more or less a temporary hack for show_server_info() - room.c */
 /* Although this could be a useful function for other uses. */
-GGZReturn chat_server_2_player(char *name, char *msg)
+GGZReturn chat_server_2_player(const char *name, const char *msg)
 {
 	if (name) {
 		/* Queue chat event for individual player */

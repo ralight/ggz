@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/08/2000
  * Desc: Functions for handling the player name hash tables
- * $Id: hash.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: hash.c 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -49,7 +49,7 @@ static pthread_rwlock_t hash_list_lock[HASH_NUM_LISTS];
 
 
 /* Internal functions */
-static unsigned hash_pjw(char *);
+static unsigned hash_pjw(const char *name);
 static void hash_player_lowercase(const char *orig, char *buf);
 
 /* Debugging stuff */
@@ -76,11 +76,11 @@ void hash_initialize(void)
 
 
 /* Adds a player name to the appropriate hash list */
-int hash_player_add(char *orig_name, GGZPlayer* player)
+int hash_player_add(const char *orig_name, GGZPlayer* player)
 {
 	unsigned hash_num;
 	HashList *hl;
-	int not_exist=1;
+	bool not_exist = true;
 	char name[MAX_USER_NAME_LEN + 1];
 
 	/* Lowercase player names for hashing */
@@ -93,15 +93,15 @@ int hash_player_add(char *orig_name, GGZPlayer* player)
 	pthread_rwlock_wrlock(&hash_list_lock[hash_num]);
 	hl = hash_list[hash_num];
 	while(hl) {
-		if(!strcmp(name, hl->name)) {
-			not_exist = 0;
+		if (strcasecmp(name, hl->name) == 0) {
+			not_exist = false;
 			break;
 		}
 		hl = hl->next;
 	}
 
 	/* If it doesn't exist, we can add it */
-	if(not_exist) {
+	if (not_exist) {
 		/* Allocate space for hash entry and name */
 		hl = ggz_malloc(sizeof(HashList));
 		hl->name = ggz_strdup(name);
@@ -156,7 +156,7 @@ GGZPlayer* hash_player_lookup(const char *orig_name)
 	pthread_rwlock_rdlock(&hash_list_lock[hash_num]);
 	hl = hash_list[hash_num];
 	while(hl) {
-		if(!strcmp(name, hl->name)) {
+		if (strcasecmp(name, hl->name) == 0) {
 			player = hl->player;
 			break;
 		}
@@ -191,7 +191,7 @@ void hash_player_delete(const char *orig_name)
 	hp = NULL;
 	hl = hash_list[hash_num];
 	while(hl) {
-		if(!strcmp(name, hl->name)) {
+		if (strcasecmp(name, hl->name) == 0) {
 			break;
 		}
 		hp = hl;
@@ -240,7 +240,7 @@ void hash_player_delete(const char *orig_name)
 #define SEVENTY_FIVE_PERCENT	((int) (NBITS * .75))
 #define TWELVE_PERCENT		((int) (NBITS * .125))
 #define HIGH_BITS		( ~( (unsigned) (~0) >> TWELVE_PERCENT))
-static unsigned hash_pjw(char *name)
+static unsigned hash_pjw(const char *name)
 {
 	unsigned h=0;
 	unsigned g;
@@ -255,6 +255,8 @@ static unsigned hash_pjw(char *name)
 }
 
 
+/* Lower-case a player's name so that it can be case-insensitive.
+ * FIXME: this probably isn't necessary since we use strcasecmp. */
 static void hash_player_lowercase(const char *src, char *dst)
 {
 	int i;

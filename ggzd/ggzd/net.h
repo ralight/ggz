@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 8/27/01
  * Desc: Functions for handling network IO
- * $Id: net.h 5923 2004-02-14 21:12:29Z jdorje $
+ * $Id: net.h 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 1999-2001 Brent Hendricks.
  *
@@ -54,23 +54,23 @@ void net_disconnect(GGZNetIO* net);
 void net_free(GGZNetIO* net);
 
 /* Functions to send data to the client */
-GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name, bool use_tls);
-GGZReturn net_send_server_full(GGZNetIO *net, char *srv_name);
+GGZReturn net_send_serverid(GGZNetIO *net, const char *srv_name, bool use_tls);
+GGZReturn net_send_server_full(GGZNetIO *net, const char *srv_name);
 GGZReturn net_send_login(GGZNetIO *net, GGZLoginType type,
-			 GGZClientReqError status, char *password);
+			 GGZClientReqError status, const char *password);
 GGZReturn net_send_motd(GGZNetIO *net);
 GGZReturn net_send_motd_error(GGZNetIO *net, GGZClientReqError status);
 
 GGZReturn net_send_room_list_error(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_room_list_count(GGZNetIO *net, int count);
 GGZReturn net_send_room(GGZNetIO *net, int index,
-			RoomStruct *room, char verbose);
+			RoomStruct *room, bool verbose);
 GGZReturn net_send_room_list_end(GGZNetIO *net);
 
 GGZReturn net_send_type_list_error(GGZNetIO *net, GGZClientReqError status);
 GGZReturn net_send_type_list_count(GGZNetIO *net, int count);
 GGZReturn net_send_type(GGZNetIO *net, int index,
-			GameInfo *type, char verbose);
+			GameInfo *type, bool verbose);
 GGZReturn net_send_type_list_end(GGZNetIO *net);
 
 GGZReturn net_send_player_list_error(GGZNetIO *net, GGZClientReqError status);

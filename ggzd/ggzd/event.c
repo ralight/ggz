@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 5901 2004-02-11 03:19:44Z jdorje $
+ * $Id: event.c 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -263,8 +263,8 @@ GGZReturn event_room_flush(GGZPlayer* player)
 
 
 /* Place an event into the player-specific event queue */
-GGZReturn event_player_enqueue(char* name, GGZEventFunc func,
-			 size_t size, void* data, GGZEventDataFree free)
+GGZReturn event_player_enqueue(const char* name, GGZEventFunc func,
+			       size_t size, void* data, GGZEventDataFree free)
 			 
 {
 	GGZEvent *event;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 09/08/2002
  * Desc: Back-end functions for handling database manipulation
- * $Id: ggzdb_proto.h 5327 2003-01-12 14:44:15Z dr_maux $
+ * $Id: ggzdb_proto.h 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -37,7 +37,7 @@ void _ggzdb_exit(void);
  *
  *  @return GGZDB_NO_ERROR or GGZDB_ERR_DB
  */
-GGZDBResult _ggzdb_init_player(char *datadir);
+GGZDBResult _ggzdb_init_player(const char *datadir);
 
 /** @brief Try to add a player.
  *

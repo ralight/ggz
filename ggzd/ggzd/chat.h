@@ -30,15 +30,15 @@
 
 /* Queue up chat message for room consumption */
 GGZClientReqError chat_room_enqueue(int room, GGZChatType type,
-				    GGZPlayer* sender, char *msg);
+				    GGZPlayer* sender, const char *msg);
 
 /* Queue up chat message for table consumption */
 GGZClientReqError chat_table_enqueue(int room, int table, GGZChatType type,
 				     GGZPlayer *sender, const char *msg);
 
 /* Queue up a chat to a specific player */
-GGZClientReqError chat_player_enqueue(char* receiver, GGZChatType type, 
-				      GGZPlayer* sender, char *msg);
+GGZClientReqError chat_player_enqueue(const char *receiver, GGZChatType type, 
+				      GGZPlayer *sender, const char *msg);
 
 /* Queue up a server announcement to a specific player's chat window */
-GGZReturn chat_server_2_player(char *player_name, char *msg);
+GGZReturn chat_server_2_player(const char *player_name, const char *msg);

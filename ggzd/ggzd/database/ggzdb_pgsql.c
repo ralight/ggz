@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 5422 2003-02-16 16:16:58Z dr_maux $
+ * $Id: ggzdb_pgsql.c 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -277,9 +277,9 @@ void _ggzdb_exit(void)
 
 
 /* Function to initialize the player table */
-GGZDBResult _ggzdb_init_player(char *datadir)
+GGZDBResult _ggzdb_init_player(const char *datadir)
 {
-	return 0;
+	return GGZDB_NO_ERROR;
 }
 
 

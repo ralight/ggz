@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 5924 2004-02-14 22:14:26Z jdorje $
+ * $Id: transit.c 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -84,9 +84,8 @@ static int transit_find_available_seat(GGZTable *table, char *name);
 static int transit_find_available_spectator(GGZTable *table, char *name);
 
 
-GGZReturn transit_seat_event(int room, int index,
-			     GGZTransitType transit,
-			     struct GGZTableSeat seat, char *caller,
+GGZReturn transit_seat_event(int room, int index, GGZTransitType transit,
+			     struct GGZTableSeat seat, const char *caller,
 			     int reason)
 {
 	GGZSeatEventData *data = ggz_malloc(sizeof(*data));
@@ -101,9 +100,9 @@ GGZReturn transit_seat_event(int room, int index,
 }
 
 
-GGZReturn transit_player_event(char* name, GGZTransitType opcode,
+GGZReturn transit_player_event(const char *name, GGZTransitType opcode,
 			       GGZClientReqError status,
-			       char *caller, int reason, int index)
+			       const char *caller, int reason, int index)
 {
 	GGZPlayerTransitEventData* data = ggz_malloc(sizeof(*data));
 

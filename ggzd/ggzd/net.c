@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5924 2004-02-14 22:14:26Z jdorje $
+ * $Id: net.c 5928 2004-02-15 02:43:16Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -65,7 +65,7 @@ struct _GGZNetIO {
 	int fd;
 
 	/* Flag to indicate we're in a parse call */
-	char parsing;
+	bool parsing;
 
 	/* XML Parser */
 	XML_Parser parser;
@@ -81,7 +81,7 @@ struct _GGZNetIO {
 
 	/* Flag whether we've a tag on this round of parsing */
 	/* This element, coupled with the byte counter helps us prevent DoS */
-	char tag_seen;
+	bool tag_seen;
 };
 
 
@@ -95,8 +95,8 @@ typedef struct _GGZTableData {
 /* Seat data structure */
 typedef struct _GGZSeatData {
 	int index;
-	char *type; 
-	char *name;
+	const char *type; 
+	const char *name;
 } GGZSeatData;
 
 
@@ -108,10 +108,12 @@ typedef struct _GGZAuthData {
 
 
 /* Callbacks for XML parser */
-static void _net_parse_start_tag(void *, const char*, const char **);
+static void _net_parse_start_tag(void * data, const char *el,
+				 const char **attr);
 static void _net_parse_end_tag(void *data, const char *el);
 static void _net_parse_text(void *data, const char *text, int len);
-static GGZXMLElement* _net_new_element(char *tag, char **attrs);
+static GGZXMLElement* _net_new_element(const char *tag,
+				       const char * const * attrs);
 
 /* Handler functions for various tags */
 static void _net_handle_session(GGZNetIO *net, GGZXMLElement *session);
@@ -147,7 +149,7 @@ static GGZReturn _net_send_login_anon_status(GGZNetIO *net,
 					     GGZClientReqError status);
 static GGZReturn _net_send_login_new_status(GGZNetIO *net,
 					    GGZClientReqError status,
-					    char *password);
+					    const char *password);
 static GGZReturn _net_send_table_status(GGZNetIO *net, GGZTable *table);
 static GGZReturn _net_send_table_seat(GGZNetIO *net, GGZTable *table,
 				      GGZTableSeat *seat);
@@ -169,7 +171,7 @@ static void _net_authdata_free(GGZAuthData *data);
 static void _net_auth_set_name(GGZXMLElement *login, char *name);
 static void _net_auth_set_password(GGZXMLElement *login, char *password);
 static void _net_table_add_seat(GGZXMLElement*, GGZSeatData*);
-static void _net_table_set_desc(GGZXMLElement*, char*);
+static void _net_table_set_desc(GGZXMLElement*, const char*);
 static GGZTableData* _net_tabledata_new(void);
 static void _net_tabledata_free(GGZTableData*);
 static void* _net_seat_copy(void *data);
@@ -189,9 +191,9 @@ GGZNetIO* net_new(int fd, GGZClient *client)
 	net->fd = fd;
 	net->client = client;
 	net->dump_file = -1;
-	net->parsing = 0;
+	net->parsing = false;
 	net->byte_count = 0;
-	net->tag_seen = 0;
+	net->tag_seen = false;
 
         /* Init parser */
         if (!(net->parser = XML_ParserCreate(NULL)))
@@ -281,12 +283,10 @@ void net_free(GGZNetIO *net)
 
 /* net_send_XXX() functions for sending messages to the client */
 
-GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name, bool use_tls)
+GGZReturn net_send_serverid(GGZNetIO *net, const char *srv_name, bool use_tls)
 {
-	char *xml_srv_name;
+	char *xml_srv_name = ggz_xml_escape(srv_name);
 	GGZReturn status;
-
-	xml_srv_name = ggz_xml_escape(srv_name);
 
 	_net_send_line(net, "<SESSION>");
 	_net_send_line(net, "<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' "
@@ -302,7 +302,7 @@ GGZReturn net_send_serverid(GGZNetIO *net, char *srv_name, bool use_tls)
 }
  
 
-GGZReturn net_send_server_full(GGZNetIO *net, char *srv_name)
+GGZReturn net_send_server_full(GGZNetIO *net, const char *srv_name)
 {
 	char *xml_srv_name;
 	GGZReturn status;
@@ -321,7 +321,7 @@ GGZReturn net_send_server_full(GGZNetIO *net, char *srv_name)
 
 
 GGZReturn net_send_login(GGZNetIO *net, GGZLoginType type,
-			 GGZClientReqError status, char *password)
+			 GGZClientReqError status, const char *password)
 {
 	switch (type) {
 	case GGZ_LOGIN:
@@ -379,7 +379,7 @@ GGZReturn net_send_room_list_count(GGZNetIO *net, int count)
 
 
 GGZReturn net_send_room(GGZNetIO *net, int index,
-			RoomStruct *room, char verbose)
+			RoomStruct *room, bool verbose)
 {
 	_net_send_line(net, "<ROOM ID='%d' NAME='%s' GAME='%d' PLAYERS='%d'>",
 		       index, room->name, room->game_type,
@@ -411,7 +411,8 @@ GGZReturn net_send_type_list_count(GGZNetIO *net, int count)
 }
 
 
-GGZReturn net_send_type(GGZNetIO *net, int index, GameInfo *type, char verbose)
+GGZReturn net_send_type(GGZNetIO *net, int index,
+			GameInfo *type, bool verbose)
 {
 	char *players = ggz_numberlist_write(&type->player_allow_list);
 	char *bots = ggz_numberlist_write(&type->bot_allow_list);
@@ -899,7 +900,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 		return GGZ_REQ_OK;
 
 	/* Set flag in case we get called recursively */
-	net->parsing = 1;
+	net->parsing = true;
 
 	/* Get a buffer to hold the data */
 	if (!(buf = XML_GetBuffer(net->parser, BUFFSIZE)))
@@ -911,7 +912,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 		/* If it's a non-blocking socket and there isn't data,
                    we get EAGAIN.  It's safe to just return */
 		if (errno == EAGAIN) {
-			net->parsing = 0;
+			net->parsing = false;
 			return GGZ_REQ_OK;
 		}
 
@@ -942,7 +943,7 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 	/* If we saw any tags clear the byte counter, otherwise increment it*/
 	if (net->tag_seen) {
 		net->byte_count = 0;
-		net->tag_seen = 0;
+		net->tag_seen = false;
 	}
 	else {
 		net->byte_count += len;
@@ -957,14 +958,15 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 	   
 
 	/* Clear the flag now that we've completed this round of parsing */
-	net->parsing = 0;
+	net->parsing = false;
 
 	return (done ? GGZ_REQ_DISCONNECT: GGZ_REQ_OK);
 }
 
 
 /********** Callbacks for XML parser **********/
-static void _net_parse_start_tag(void *data, const char *el, const char **attr)
+static void _net_parse_start_tag(void *data, const char *el,
+				 const char **attr)
 {
 	GGZNetIO *net = (GGZNetIO*)data;
 	GGZXMLElement *element;
@@ -972,13 +974,13 @@ static void _net_parse_start_tag(void *data, const char *el, const char **attr)
 	dbg_msg(GGZ_DBG_XML, "New %s element", el);
 	
 	/* Create new element object */
-	element = _net_new_element((char*)el, (char**)attr);
+	element = _net_new_element(el, attr);
 
 	/* Put element on stack so we can process its children */
 	ggz_stack_push(net->stack, element);
 
 	/* Mark that we've seen a tag */
-	net->tag_seen = 1;
+	net->tag_seen = true;
 }
 
 
@@ -999,7 +1001,7 @@ static void _net_parse_end_tag(void *data, const char *el)
 	ggz_xmlelement_free(element);
 
 	/* Mark that we've seen a tag */
-	net->tag_seen = 1;
+	net->tag_seen = true;
 }
 
 
@@ -1019,7 +1021,8 @@ static void _net_dump_data(GGZNetIO *net, char *data, int size)
 		write(net->dump_file, data, size);
 }
 
-static GGZXMLElement* _net_new_element(char *tag, char **attrs)
+static GGZXMLElement* _net_new_element(const char *tag,
+				       const char * const *attrs)
 {
 	void (*process_func)();
 
@@ -1081,7 +1084,7 @@ static void _net_handle_session(GGZNetIO *net, GGZXMLElement *element)
 /* Functions for <CHANNEL> tag */
 static void _net_handle_channel(GGZNetIO *net, GGZXMLElement *element)
 {
-	char *id;
+	const char *id;
 
 	if (!element) return;
 
@@ -1108,7 +1111,7 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *element)
 {
 	GGZLoginType login_type;
 	GGZAuthData *auth;	
-	char *type;
+	const char *type;
 
 	if (!element) return;
 
@@ -1216,7 +1219,7 @@ static void _net_authdata_free(GGZAuthData *data)
 static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element)
 {
 	char *name;
-	char *parent_tag;
+	const char *parent_tag;
 	GGZXMLElement *parent;
 
 	if (!element) return;
@@ -1244,7 +1247,7 @@ static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element)
 static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element)
 {
 	char *password;
-	char *parent_tag;
+	const char *parent_tag;
 	GGZXMLElement *parent;
 
 	if (!element) return;
@@ -1271,7 +1274,7 @@ static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element)
 /* Functions for <UPDATE> tag */
 static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 {
-	char *type, *action, *room;
+	const char *type, *action, *room;
 
 	if (!update) return;
 	if (!check_playerconn(net, "update")) return;
@@ -1362,7 +1365,7 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 /* Functions for <LIST> tag */
 static void _net_handle_list(GGZNetIO *net, GGZXMLElement *element)
 {
-	char *type;
+	const char *type;
 	int verbose;
 	
 	if (!element) return;
@@ -1407,7 +1410,7 @@ static void _net_handle_enter(GGZNetIO *net, GGZXMLElement *enter)
 /* Functions for <CHAT> tag */
 static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *element)
 {
-	char *type_str, *to, *msg;
+	const char *type_str, *to, *msg;
         GGZChatType type;
 		
 	if (!element) return;
@@ -1467,7 +1470,7 @@ static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
 /* Functions for <RESEAT> tag */
 static void _net_handle_reseat(GGZNetIO *net, GGZXMLElement *element)
 {
-	char *action;
+	const char *action;
 	int seat_num;
 	GGZReseatType type;
 
@@ -1527,7 +1530,7 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	GGZTable *table, *old_data;
 	GGZTableData *data;
 	GGZSeatData *seat;
-	char *desc = NULL, *parent_tag;
+	const char *desc = NULL, *parent_tag;
 	GGZList *seats = NULL;
 	GGZListEntry *entry;
 	GGZXMLElement *parent;
@@ -1660,7 +1663,7 @@ static void _net_table_add_seat(GGZXMLElement *table, GGZSeatData *seat)
 }
 
 
-static void _net_table_set_desc(GGZXMLElement *table, char *desc)
+static void _net_table_set_desc(GGZXMLElement *table, const char *desc)
 {
 	struct _GGZTableData *data = ggz_xmlelement_get_data(table);
 
@@ -1708,7 +1711,7 @@ static void _net_handle_seat(GGZNetIO *net, GGZXMLElement *element)
 {
 	struct _GGZSeatData seat;
 	GGZXMLElement *parent;
-	char *parent_tag;
+	const char *parent_tag;
 
 	/* Get parent off top of stack */
 	parent = ggz_stack_top(net->stack);
@@ -1765,7 +1768,7 @@ static void _net_seat_free(GGZSeatData *seat)
 static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element)
 {
 	char *desc = NULL;
-	char *parent_tag;
+	const char *parent_tag;
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
@@ -1940,7 +1943,7 @@ static GGZReturn _net_send_login_anon_status(GGZNetIO *net,
 
 static GGZReturn _net_send_login_new_status(GGZNetIO *net,
 					    GGZClientReqError status,
-					    char *password)
+					    const char *password)
 {
 	/* Try to send login status */
 	_net_send_line(net, "<RESULT ACTION='login' CODE='%s'>",

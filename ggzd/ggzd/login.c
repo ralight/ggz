@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 5923 2004-02-14 21:12:29Z jdorje $
+ * $Id: login.c 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -47,7 +47,7 @@
 static void login_generate_password(char *pw);
 static GGZReturn login_add_user(ggzdbPlayerEntry *entry,
 				char *name, char *password);
-static bool is_valid_username(char *);
+static bool is_valid_username(const char *name);
 
 
 /*
@@ -61,8 +61,8 @@ static bool is_valid_username(char *);
  *  int: game type checksum (if success)
  *  chr: reservation flag (if success)
  */
-GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
-                                    char *name, char *password)
+GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
+                                    char *name, const char *password)
 {
 	char *ip_addr;
 	bool name_ok;
@@ -247,21 +247,25 @@ static GGZReturn login_add_user(ggzdbPlayerEntry *db_entry,
 
 
 /* This routine validates the username request */
-static bool is_valid_username(char *name)
+static bool is_valid_username(const char *name)
 {
-	char *p;
+	const char *p;
 
 	/* "<none>" is invalid */
-	if(!strcmp(name, "<none>"))
+	if (strcasecmp(name, "<none>") == 0) {
 		return false;
+	}
 
 	/* Nothing less than a space and no extended ASCII */
 	/* & - can mess with M$ Windows labels, etc */
 	/* % - can screw up log and debug's printf()s */
 	/* \ - can screw up log and debug's printf()s */
-	for(p=name; *p!='\0'; p++)
-		if(*p < 33 || *p == '%' || *p == '&' || *p == '\\' || *p > 126)
+	for (p = name; *p != '\0'; p++) {
+		if (*p < 33 || *p == '%' || *p == '&' || *p == '\\'
+		    || *p > 126) {
 			return false;
+		}
+	}
 
 	return true;
 }

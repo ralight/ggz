@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 5923 2004-02-14 21:12:29Z jdorje $
+ * $Id: datatypes.h 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -37,7 +37,7 @@
 
 /* Datatypes for server options*/
 typedef struct {
-	char *local_conf;
+	const char *local_conf;
 #if 0
 	bool remove_users;
 #endif
@@ -46,29 +46,29 @@ typedef struct {
 	char clear_stats;
 	int stat_clr_time;
 	int main_port;
-	char *interface;
-	char *game_dir;		/* cleanup() */
-	char *tmp_dir;		/* cleanup() */
-	char *conf_dir;		/* cleanup() */
-	char *data_dir;		/* cleanup() */
-	char *motd_file;	/* cleanup() */
-	char *admin_name;	/* cleanup() */
-	char *admin_email;	/* cleanup() */
-	char *server_name;	/* cleanup() */
+	const char *interface;
+	const char *game_dir;
+	const char *tmp_dir;
+	const char *conf_dir;
+	const char *data_dir;
+	const char *motd_file;
+	const char *admin_name;
+	const char *admin_email;
+	const char *server_name;
 	bool perform_lookups;
 	int ping_freq;
 	int lag_class[4];
 	int room_update_freq;
-	char *dbhost;
-	char *dbname;
-	char *dbusername;
-	char *dbpassword;
-	char *dbhashing;
+	const char *dbhost;
+	const char *dbname;
+	const char *dbusername;
+	const char *dbpassword;
+	const char *dbhashing;
 	bool tls_use;
-	char *tls_key;
-	char *tls_cert;
-	char *tls_password;
-	char *dump_file;
+	const char *tls_key;
+	const char *tls_cert;
+	const char *tls_password;
+	const char *dump_file;
 } Options;
 
 

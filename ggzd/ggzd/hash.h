@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/08/2000
  * Desc: Functions for handling the player name hash tables
- * $Id: hash.h 5903 2004-02-11 03:27:12Z jdorje $
+ * $Id: hash.h 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -28,7 +28,7 @@
 
 /* Exported functions */
 void hash_initialize(void);
-int hash_player_add(char *name, GGZPlayer* player);
+int hash_player_add(const char *name, GGZPlayer* player);
 
 /* Return a pointer to the player with name "name".  Note: Returns
    with the player's write-lock acquired */

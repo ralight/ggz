@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/8/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.h 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: event.h 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -89,7 +89,7 @@ GGZReturn event_room_flush(GGZPlayer* player);
  *
  * Note: memory pointed to by data MUST be dynamcially allocated
  */
-GGZReturn event_player_enqueue(char* name, GGZEventFunc func,
+GGZReturn event_player_enqueue(const char* name, GGZEventFunc func,
 			       size_t size, void* data, GGZEventDataFree free);
 			 
 /*

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02/05/2000
  * Desc: Handle message of the day functions
- * $Id: motd.c 5923 2004-02-14 21:12:29Z jdorje $
+ * $Id: motd.c 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -214,7 +214,7 @@ char *motd_get_line(int index)
 	char *in = motd_info.motd_text[index];
 	char *outline;
 	int sz_outline;
-	char *p;
+	const char *p;
 	int outindex = 0;
 	char str[32];
 

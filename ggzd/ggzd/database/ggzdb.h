@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 06/11/2000
  * Desc: Front-end functions for handling database manipulation
- * $Id: ggzdb.h 5922 2004-02-14 19:32:53Z jdorje $
+ * $Id: ggzdb.h 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -49,12 +49,12 @@ typedef struct {
 
 /* Connection information */
 typedef struct {
-	char *datadir;
-	char *host;
-	char *database;
-	char *username;
-	char *password;
-	char *hashing;
+	const char *datadir;
+	const char *host;
+	const char *database;
+	const char *username;
+	const char *password;
+	const char *hashing;
 } ggzdbConnection;
 
 typedef struct {

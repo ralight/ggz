@@ -3,7 +3,7 @@
  *  Copyright (C) 1996 Thomas Koenig
  *
  *  Modified 6/24/00 by Brent Hendricks for use with the GGZ project.
- *  $Id: daemon.c 5901 2004-02-11 03:19:44Z jdorje $
+ *  $Id: daemon.c 5928 2004-02-15 02:43:16Z jdorje $
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -51,8 +51,9 @@ static GGZReturn lock_fd(int fd)
 	if (fcntl(fd, F_SETLK, &lock) < 0) {
 		err_sys("failed fcntl call");
 		return GGZ_ERROR;
-	} else
+	} else {
 		return GGZ_OK;
+	}
 }
 
 
@@ -62,7 +63,7 @@ void daemon_init(void)
 	mode_t old_umask;
 	int fd;
 	FILE *fp;
-	char pid_filename[] = "ggzd.pid";
+	const char pid_filename[] = "ggzd.pid";
 	char pid_file[strlen(opt.data_dir) + strlen(pid_filename) + 2];
 
 	if ((pid = fork()) < 0)
@@ -139,7 +140,7 @@ void daemon_init(void)
 
 void daemon_cleanup()
 {
-	char pid_filename[] = "ggzd.pid";
+	const char pid_filename[] = "ggzd.pid";
 	char pid_file[strlen(opt.data_dir) + strlen(pid_filename) + 2];
 
 	/* Form absolute path of pid file */

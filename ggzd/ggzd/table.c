@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5924 2004-02-14 22:14:26Z jdorje $
+ * $Id: table.c 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -511,7 +511,7 @@ static void table_loop(GGZTable* table)
  * table_game_join handles the RSP_GAME_JOIN from the table
  * Note: table->transit_name contains allocated mem on entry
  */
-void table_game_join(GGZTable *table, char *name,
+void table_game_join(GGZTable *table, const char *name,
 		     GGZJoinType reason, int num)
 {
 #if 0
@@ -579,7 +579,7 @@ void table_game_join(GGZTable *table, char *name,
 /*
  * table_game_leave handles the RSP_GAME_LEAVE from the table
  */
-void table_game_leave(GGZTable *table, char *caller,
+void table_game_leave(GGZTable *table, const char *caller,
 		      GGZLeaveType reason, int num)
 {
 	bool empty;
@@ -623,7 +623,7 @@ void table_game_leave(GGZTable *table, char *caller,
 
 void table_game_reseat(GGZTable *table,
 		       GGZReseatType op,
-		       char *name,
+		       const char *name,
 		       int old_seat, int new_seat)
 {
 	int empty = 0;
@@ -727,7 +727,7 @@ void table_game_seatchange(GGZTable *table, GGZSeatType type, int num)
  * table_game_spectator_join handles the RSP_GAME_JOIN_SPECTATOR from the table
  * Note: table->transit_name contains allocated mem on entry
  */
-void table_game_spectator_join(GGZTable *table, char *name,
+void table_game_spectator_join(GGZTable *table, const char *name,
 			       GGZJoinType reason, int num)
 {
 	dbg_msg(GGZ_DBG_TABLE,
@@ -770,7 +770,7 @@ void table_game_spectator_join(GGZTable *table, char *name,
 /*
  * table_game_leave handles the RSP_GAME_LEAVE_SPECTATOR from the table
  */
-void table_game_spectator_leave(GGZTable *table, char *caller,
+void table_game_spectator_leave(GGZTable *table, const char *caller,
 				GGZLeaveType reason, int num)
 {
 	char player[MAX_USER_NAME_LEN + 1];
@@ -995,7 +995,7 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 		is_spectator = true;
 		for (seat_num = 0; seat_num < table->max_num_spectators;
 		     seat_num++) {
-			if (strcmp(table->spectators[seat_num], name) == 0)
+			if (strcasecmp(table->spectators[seat_num], name) == 0)
 				break;
 		}
 		if (seat_num == table->max_num_spectators)
@@ -1216,7 +1216,7 @@ static void table_remove(GGZTable* table)
 
 
 /* FIXME: redo using events to notify player */
-GGZClientReqError table_launch(GGZTable *table, char* name)
+GGZClientReqError table_launch(GGZTable *table, const char *name)
 {
 	/* Fill in the table owner */
 	strcpy(table->owner, name);	
@@ -1251,7 +1251,7 @@ void table_set_desc(GGZTable *table, const char *desc)
 
 
 /* Kill the table */
-GGZClientReqError table_kill(int room, int index, char *name)
+GGZClientReqError table_kill(int room, int index, const char *name)
 {
 	char *data;
 
@@ -1286,7 +1286,7 @@ static GGZEventFuncReturn table_kill_callback(void* target, size_t size,
 					      
 
 /* Search for tables */
-int table_search(char* name, int room, int type, char global, 
+int table_search(const char *name, int room, int type, bool global, 
 		 GGZTable*** tables)
 {
 	GGZTable* t;
@@ -1360,7 +1360,7 @@ int table_search(char* name, int room, int type, char global,
 
 
 /* Find a player at a table */
-int table_find_player(int room, int index, char *name)
+int table_find_player(int room, int index, const char *name)
 {
 	int i, seats, seat = -1;
 	GGZTable *table;
@@ -1382,7 +1382,7 @@ int table_find_player(int room, int index, char *name)
 }
 
 /* Find a player at a table */
-int table_find_spectator(int room, int index, char *name)
+int table_find_spectator(int room, int index, const char *name)
 {
 	int i, spectator = -1;
 	GGZTable *table;

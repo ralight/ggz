@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5927 2004-02-15 02:29:47Z jdorje $
+ * $Id: players.c 5928 2004-02-15 02:43:16Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -140,14 +140,14 @@ void player_logout(GGZPlayer* player)
 {
 	long connect_time;
 	int hours, mins, secs;
-	int anon = 0;
+	bool anon = false;
 
 	pthread_rwlock_rdlock(&player->lock);
 	/* There's no need to remove them if they aren't "here" */
-	if(strcmp(player->name, "<none>")) {
+	if (strcasecmp(player->name, "<none>") != 0) {
 		connect_time = (long)time(NULL) - player->login_time;
 		if(player->login_status == GGZ_LOGIN_ANON)
-			anon = 1;
+			anon = true;
 		pthread_rwlock_unlock(&player->lock);
 
 		/* Take their name off the hash list */
@@ -203,7 +203,7 @@ void player_logout(GGZPlayer* player)
  */
 GGZReturn player_updates(GGZPlayer* player)
 {
-	int changed = 0;
+	bool changed = false;
 
 	/* There's a bit of a problem here: because the room events will all
 	   be in order, and the player events will all be in order, but
@@ -233,7 +233,7 @@ GGZReturn player_updates(GGZPlayer* player)
 		       && player_get_time_since_ping(player) >=
 		             opt.lag_class[player->lag_class - 1]) {
 			player->lag_class++;
-			changed = 1;
+			changed = true;
 		}
 		
 		if (changed)
@@ -432,7 +432,7 @@ static GGZTable *check_table_perms(GGZPlayer *player,
 		return table;
 	}
 
-	if (strcmp(table->owner, player->name) != 0) {
+	if (strcasecmp(table->owner, player->name) != 0) {
 		pthread_rwlock_unlock(&table->lock);
 		dbg_msg(GGZ_DBG_TABLE, "%s tried to modify bad table",
 			player->name);
@@ -1245,7 +1245,7 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 
 
 GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
-				   char *target, char *msg)
+				   const char *target, const char *msg)
 {
 	int target_room=-1;	/* FIXME - this should come from net.c if we */
 				/* are going to support per-room announce... */
