@@ -272,6 +272,7 @@ AC_OUTPUT([Makefile
 	   game_clients/hastings/Makefile
 	   game_clients/chinese-checkers/Makefile
      game_clients/chess/Makefile
+     game_clients/chess/libcgc/Makefile
 	   intl/Makefile
 	   po/Makefile.in
 	   ])
