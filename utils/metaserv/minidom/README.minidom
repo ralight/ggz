@@ -7,7 +7,8 @@ It's only intention is to parse very simple XML documents and let you iterate
 over their content.
 
 
-<?xml version="1.0"?>			-> automatically recognized and skipped during pre-parse
+<?xml version="1.0"?>			-> automatically recognized and skipped during pre-parse (excluding encoding etc.)
+<!DOCTYPE whatever>				-> handled like a regular tag...
 	<firsttoplevel>
 	<foobar>					-> spaces, tabs, newlines are removed
 		blah					-> content of the element
@@ -20,7 +21,9 @@ over their content.
 	</notme>
 	</firsttoplevel>
 
-	<secondtoplevel/>			-> NOT supported yet: multiple top level entries
+	<secondtoplevel/>			-> NOT supported: multiple top level entries
+
+	<thirdlevel  moo = "cow" /> -> NOT supported: baldy formatted XML
 
 </foobar>
 

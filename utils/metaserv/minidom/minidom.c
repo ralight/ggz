@@ -141,7 +141,11 @@ ELE *minidom_makechild(ELE *parent, char *tag)
 			{
 				att = (ATT*)malloc(sizeof(ATT));
 				pos = strpos(token, '=');
-				if(pos == -1) att->name = strdup(token);
+				if(pos == -1)
+				{
+					att->name = strdup(token);
+					att->value = NULL;
+				}
 				else
 				{
 					att->name = (char*)malloc(pos + 1);
@@ -338,7 +342,10 @@ void minidom_internal_dump(ELE *ele)
 	i = 0;
 	while((ele->at) && (ele->at[i]))
 	{
-		printf(" %s=\"%s\"", ele->at[i]->name, ele->at[i]->value);
+		if(ele->at[i]->value)
+			printf(" %s=\"%s\"", ele->at[i]->name, ele->at[i]->value);
+		else
+			printf(" %s", ele->at[i]->name);
 		i++;
 	}
 
