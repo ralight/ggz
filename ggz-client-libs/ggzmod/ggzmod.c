@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6683 2005-01-15 04:40:06Z jdorje $
+ * $Id: ggzmod.c 6723 2005-01-18 00:51:15Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -1171,6 +1171,7 @@ void _ggzmod_handle_state(GGZMod * ggzmod, GGZModState state)
 	   and they can only change it if the state is currently
 	   WAITING or PLAYING. */
 	switch (state) {
+	case GGZMOD_STATE_CREATED:
 	case GGZMOD_STATE_WAITING:
 	case GGZMOD_STATE_PLAYING:
 	case GGZMOD_STATE_DONE:
@@ -1187,13 +1188,12 @@ void _ggzmod_handle_state(GGZMod * ggzmod, GGZModState state)
 		   separately change states when the launch packet
 		   is sent. */
 		_ggzmod_set_state(ggzmod, state);
-		break;
-	default:
-		_ggzmod_error(ggzmod,
-			       "Game requested incorrect state value");
+		return;
 	}
-	
-	/* Is this right? has the gameover happened yet? */   
+	_ggzmod_error(ggzmod,
+		      "Game requested incorrect state value");
+
+	/* Is this right? has the gameover happened yet? */
 }
 
 void _ggzmod_handle_stand_request(GGZMod *ggzmod)
