@@ -83,6 +83,25 @@ dnl ===================
 if test "$database" = mysql; then
    dnl test for mySQL database
    AC_MSG_WARN(*** MySQL not supprted yet, defaulting to libdb2)
+elif test "$database" = db3; then
+    db3_style=-1
+    AC_CHECK_LIB(db, db_env_create,
+        AC_CHECK_HEADER(db.h, db3_style=0,
+            AC_MSG_ERROR(*** Cannot find db.h header); exit),
+        AC_MSG_WARN(*** Cannot find db library, trying -ldb3 ))
+     if test "$db3_style" = -1; then
+         AC_CHECK_LIB(db3, db_env_create,
+             AC_CHECK_HEADER(db3/db.h, db3_style=1,
+                 AC_MSG_ERROR(*** Cannot find db3/db.h header); exit),
+             AC_MSG_ERROR(*** Cannot find db3 library ); exit)
+     fi
+ 
+     if test "$db3_style" = 0; then
+         ggzd_LIBS="$ggzd_LIBS -ldb"
+     else
+         ggzd_LIBS="$ggzd_LIBS -ldb3"
+         AC_DEFINE(DB3_IN_DIR)
+     fi
 else 
     database=db2
     db2_style=-1

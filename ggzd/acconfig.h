@@ -27,6 +27,7 @@
 #undef _BSD_SOURCE
 #undef _XOPEN_SOURCE
 #undef DB2_IN_DIR
+#undef DB3_IN_DIR
     
 
 /* Leave that blank line there!!  Autoheader needs it.

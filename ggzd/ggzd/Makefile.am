@@ -2,7 +2,7 @@
 
 SUBDIRS = .
 
-DB_SOURCES = ggzdb_db2.c
+DB_SOURCES = ggzdb_@database@.c
 DB_OBJECTS = ggzdb_@database@.o
 
 EXTRA_DIST = ggzd.conf.in ggzd.test.in ggzd.motd $(DB_SOURCES)
