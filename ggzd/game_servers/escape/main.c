@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 22/06/2001
  * Desc: Main loop
- * $Id: main.c 2818 2001-12-09 06:43:08Z jdorje $
+ * $Id: main.c 2922 2001-12-17 22:27:22Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -46,13 +46,11 @@ int main(void)
 	srandom((unsigned)time(NULL));
 	game_init(ggz);
 
-	/* Now connect to GGZ and run the game! */
-	if (ggzdmod_connect(ggz) < 0) {
-		fprintf(stderr, "Couldn't connect to ggz!\n");
+	/* Connect to GGZ server; main loop */
+	if (ggzdmod_connect(ggz) < 0)
 		return -1;
-	}
-	(void)ggzdmod_loop(ggz);
-	(void)ggzdmod_disconnect(ggz);
+	(void) ggzdmod_loop(ggz);
+	(void) ggzdmod_disconnect(ggz);
 	ggzdmod_free(ggz);
 
 	return 0;

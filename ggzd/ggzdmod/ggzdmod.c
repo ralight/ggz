@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2915 2001-12-17 06:34:38Z jdorje $
+ * $Id: ggzdmod.c 2922 2001-12-17 22:27:22Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -805,6 +805,14 @@ int ggzdmod_connect(GGZdMod * mod)
 		
 		if (ggzdmod_log(ggzdmod, "GGZDMOD: Connecting to GGZ server.") < 0) {
 			ggzdmod->fd = -1;
+			/* I'm not entirely sure if we _should_ be printing
+			   this stuff here, but it certainly is convenient
+			   to not have to do it for every game. */
+			fprintf(stderr, "\nCouldn't connect to GGZ!\n\n"
+					"Most likely this occurred because you ran\n"
+					"the server from the command line.  Instead\n"
+					"you should connect to a GGZ server and\n"
+					"launch a game through the client.\n\n");
 			return -1;
 		}
 	}

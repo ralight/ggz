@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha game module
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2805 2001-12-08 05:26:33Z jdorje $
+ * $Id: main.c 2922 2001-12-17 22:27:22Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -48,9 +48,11 @@ int main(void)
 	srandom((unsigned)time(NULL));
 	game_init(ggz);
 
-	(void)ggzdmod_connect(ggz);
-	(void)ggzdmod_loop(ggz);
-	(void)ggzdmod_disconnect(ggz);
+	/* Connect to GGZ server; main loop */
+	if (ggzdmod_connect(ggz) < 0)
+		return -1;
+	(void) ggzdmod_loop(ggz);
+	(void) ggzdmod_disconnect(ggz);
 	ggzdmod_free(ggz);
 
 	return 0;

@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: main loop for the server
- * $Id: main.c 2804 2001-12-07 23:11:21Z jdorje $
+ * $Id: main.c 2922 2001-12-17 22:27:22Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -30,21 +30,23 @@
 #include <unistd.h>
 
 int main(void) {
-	GGZdMod *ggzdmod = ggzdmod_new(GGZDMOD_GAME);
+	GGZdMod *ggz= ggzdmod_new(GGZDMOD_GAME);
 
 	/* game_init is called at the start of _each_ game, so we must do
 	   ggz stuff here. */
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE, &game_handle_ggz_state);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_JOIN, &game_handle_ggz_join);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, &game_handle_ggz_leave);
-	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &game_handle_ggz_state);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &game_handle_ggz_join);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &game_handle_ggz_leave);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
 	
-	game_init(ggzdmod);
-	
-	(void)ggzdmod_connect(ggzdmod);
-	(void)ggzdmod_loop(ggzdmod);
-	(void)ggzdmod_disconnect(ggzdmod);
-	ggzdmod_free(ggzdmod);
+	game_init(ggz);
+
+	/* Connect to GGZ server; main loop */
+	if (ggzdmod_connect(ggz) < 0)
+		return -1;
+	(void) ggzdmod_loop(ggz);
+	(void) ggzdmod_disconnect(ggz);
+	ggzdmod_free(ggz);
 
 	return 0;
 }

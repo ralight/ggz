@@ -35,20 +35,15 @@
 int main(void)
 {
 	/* ggzdmod initializations */
-	GGZdMod *ggzdmod = ggzdmod_new(GGZDMOD_GAME);
-	game_init(ggzdmod);
-	
-	if (ggzdmod_connect(ggzdmod) < 0) {
-		fprintf(stderr, "Could not connect to ggz server.\n");
-		ggzdmod_free(ggzdmod);
+	GGZdMod *ggz = ggzdmod_new(GGZDMOD_GAME);
+	game_init(ggz);
+
+	/* Connect to GGZ server; main loop */
+	if (ggzdmod_connect(ggz) < 0)
 		return -1;
-	}
-	
-	(void)ggzdmod_log(ggzdmod, "Starting game of Tic-Tac-Toe");
-	(void)ggzdmod_loop(ggzdmod);
-	(void)ggzdmod_log(ggzdmod, "Ending game of Tic-Tac-Toe");
-	(void)ggzdmod_disconnect(ggzdmod);
-	ggzdmod_free(ggzdmod);
+	(void) ggzdmod_loop(ggz);
+	(void) ggzdmod_disconnect(ggz);
+	ggzdmod_free(ggz);
 	
 	return 0;
 }

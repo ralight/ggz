@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game server main loop
- * $Id: main.c 2811 2001-12-09 01:19:38Z jdorje $
+ * $Id: main.c 2922 2001-12-17 22:27:22Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -43,12 +43,11 @@ int main(void)
 	/* Initializes game variables */
 	game_init(ggz);
 
-	if (ggzdmod_connect(ggz) < 0) {
-		fprintf(stderr, "Couldn't connect to ggz.\n");
+	/* Connect to GGZ server; main loop */
+	if (ggzdmod_connect(ggz) < 0)
 		return -1;
-	}
-	(void)ggzdmod_loop(ggz);
-	(void)ggzdmod_disconnect(ggz);
+	(void) ggzdmod_loop(ggz);
+	(void) ggzdmod_disconnect(ggz);
 	ggzdmod_free(ggz);
 
 	return 0;
