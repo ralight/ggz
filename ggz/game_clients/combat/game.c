@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 3392 2002-02-17 09:29:11Z jdorje $
+ * $Id: game.c 4007 2002-04-17 21:09:48Z perdig $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -219,11 +219,12 @@ int game_get_options() {
   char *title;
   GtkWidget *widget = lookup_widget(main_win, "mainarea");
 
-  /* FIXME: when do we ggz_free this string?  --JDS */
   if (ggz_read_string_alloc(cbt_info.fd, &optstr) < 0)
     return -1;
 
   a = combat_options_string_read(optstr, &cbt_game);
+  /* Free the String (thanks Jason!) */
+  ggz_free(optstr);
   if (a > 0)
     game_message("Please note: \nThis client couldn't recognize %d options sent by the server.\nThe game may have unexpected behavior.\nYou should update your client at %s", a, GAME_WEBPAGE);
 
@@ -590,7 +591,11 @@ int game_get_players() {
         return -1;
 
       if (cbt_info.seats[i] != GGZ_SEAT_OPEN) {
-        /* FIXME: when do we ggz_free this string?  --JDS */
+        /* Get new name */
+        if (cbt_info.names[i]) {
+          ggz_free(cbt_info.names[i]);
+          cbt_info.names[i] = NULL;
+        }
         if (ggz_read_string_alloc(cbt_info.fd, &cbt_info.names[i]) < 0)
           return -1;
         game_status("Player %d named: %s", i, cbt_info.names[i]);
@@ -1011,7 +1016,6 @@ void game_get_sync() {
   char *syncstr;
   int a, len;
 
-  /* FIXME: when do we ggz_free this string?  --JDS */
   if (ggz_read_string_alloc(cbt_info.fd, &syncstr) < 0)
     return;
 
@@ -1035,6 +1039,8 @@ void game_get_sync() {
 
   if (syncstr[len] != 0)
     game_status("Error: Wrong sync string");
+
+  ggz_free(syncstr);
 
   return;
 

@@ -85,14 +85,11 @@ unsigned char *combat_options_string_write(combat_game *_game, int for_hash) {
 	return optstr;
 }
 
-int combat_options_string_read(unsigned char *_optstr, combat_game *_game) {
+int combat_options_string_read(unsigned char *optstr, combat_game *_game) {
 	int a, b;
-	int len = strlen(_optstr);
+	int len = strlen(optstr);
   int retval = 0;
-  unsigned char *optstr;
   // Copy the string from the parameter
-  optstr = (char *)malloc((len+1) * sizeof(char));
-  strncpy(optstr, _optstr, len+1);
 	// Removes one from all the string, to return the zeroes
 	for (a = 0; a < len; a++)
 		optstr[a]--;
