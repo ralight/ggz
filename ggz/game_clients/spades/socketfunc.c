@@ -33,9 +33,18 @@
 #include <ggz.h>	/* libggz */
 
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
+#ifdef HAVE_NETINET_IN_H
+#  include <netinet/in.h>
+#endif
+#ifdef HAVE_NETDB_H
+#  include <netdb.h>
+#endif
+#ifdef HAVE_WINSOCK_H
+#  include <winsock.h>
+#endif
+#ifdef HAVE_SYS_SOCKET_H
+#  include <sys/socket.h>
+#endif
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>

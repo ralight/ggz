@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 6333 2004-11-12 02:27:20Z jdorje $
+ * $Id: client_func.c 6670 2005-01-14 03:48:51Z jdorje $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -31,21 +31,21 @@
 
 #include <config.h>	/* Site config data */
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <gtk/gtk.h>
-#include <unistd.h>	/* For getopt et. al */
-#include <stdlib.h>	/* For exit, atoi */
 #include <signal.h>	/* For signal */
-#include <sys/wait.h>
+#include <stdlib.h>	/* For exit, atoi */
+#include <string.h>	/* For strcpy */
+#include <sys/types.h>
+#include <unistd.h>	/* For getopt et. al */
+
+#ifdef HAVE_SYS_WAIT_H
+#  include <sys/wait.h>
+#endif
 
 #ifdef DEBUG_MEM
 # include <dmalloc.h>
 #endif
 
-#include <string.h>	/* For strcpy */
-
+#include <gtk/gtk.h>
 #include <ggz.h>	/* libggz */
 #include <ggz_common.h>
 #include <ggzmod.h>
@@ -769,10 +769,14 @@ RETSIGTYPE die(int sig)
 {
 
 	/* We let our error checker handle broken pipes */
+#ifdef SIGPIPE
 	if (sig != SIGPIPE) {
+#endif
 		NetClose();
 		DisplayCleanup();
 		signal(sig, SIG_DFL);	/* Reset old signal handler */
 		raise(sig);	/* Re-send signal so other cleanup gets done */
+#ifdef SIGPIPE
 	}
+#endif
 }

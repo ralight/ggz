@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_main.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: client_main.c 6670 2005-01-14 03:48:51Z jdorje $
  *
  * This file contains the client function which is responsible for
  * handling the particulars of playing spades on the client side.  I
@@ -68,7 +68,9 @@ int main(int argc, char *argv[])
 
 	/* Arrange interrupts to terminate */
 	signal(SIGINT, die);
+#ifdef SIGPIPE
 	signal(SIGPIPE, die);
+#endif
 
 	AppInit();
 
