@@ -1,5 +1,5 @@
-/* $Id: hand.h 2073 2001-07-23 07:47:48Z jdorje $ */
-/*
+/* $Id: hand.h 2545 2001-10-08 23:09:23Z jdorje $ */
+/* 
  * File: hand.h
  * Author: Rich Gade
  * Project: GGZCards Client
@@ -27,5 +27,7 @@
 
 #ifndef __HAND_H
 #define __HAND_H
+
+extern int table_max_hand_size;
 
 #endif /* __HAND_H */

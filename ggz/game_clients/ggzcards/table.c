@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2475 2001-09-14 07:18:43Z jdorje $
+ * $Id: table.c 2545 2001-10-08 23:09:23Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -208,7 +208,7 @@ void table_initialize(void)
 /* Setup all table data that's not initialized by table_initialize.  This may 
    be called multiple times (for instance, to resize the table), and it's not 
    called until the server tells us how big the table must be. */
-void table_setup()
+void table_setup(void)
 {
 	int x, y, p;
 
@@ -217,7 +217,7 @@ void table_setup()
 	   work.  The problem is that before you choose what game you're
 	   playing, the server doesn't know how many seats there are so it
 	   just tells us 0 - even if there are players already connected. */
-	if (game.num_players == 0 || game.max_hand_size == 0)
+	if (game.num_players == 0 || table_max_hand_size == 0)
 		return;
 
 	client_debug("Setting up table." "  Width and height are %d."
@@ -260,7 +260,7 @@ void table_setup()
 	}
 
 	/* Display the buffer */
-	if (game.num_players > 0 && game.max_hand_size > 0)
+	if (game.num_players > 0 && table_max_hand_size > 0)
 		table_show_table(0, 0, get_table_width(), get_table_height());
 
 	selected_card = -1;

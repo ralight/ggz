@@ -1,5 +1,5 @@
-/* $Id: hand.c 2073 2001-07-23 07:47:48Z jdorje $ */
-/*
+/* $Id: hand.c 2545 2001-10-08 23:09:23Z jdorje $ */
+/* 
  * File: hand.c
  * Author: Rich Gade
  * Project: GGZCards Client
@@ -27,26 +27,22 @@
 #  include <config.h>
 #endif
 
-#include <gtk/gtk.h>
-#include <stdio.h>
-
-#include <easysock.h>
-
-#include "common.h"
-
-#include "game.h"
-#include "table.h"
-#include "hand.h"
 #include "layout.h"
 
-int table_verify_hand_size()
+int table_max_hand_size = 0;
+
+void table_alert_hand_size(int max_hand_size)
 {
-	/* the inner table must be at least large enough.
-	 * So, if it's not we make the hand sizes larger. */
-	int x, y, w, h, w1, h1;
-	get_table_dim(&x, &y, &w, &h);
-	get_fulltable_size(&w1, &h1);
-	if (w1 > w && h1 > h)
-		return 1;
-	return 0;
+	table_max_hand_size = max_hand_size;
+
+	do {
+		/* the inner table must be at least large enough. So, if it's 
+		   not we make the hand sizes larger. */
+		int x, y, w, h, w1, h1;
+		get_table_dim(&x, &y, &w, &h);
+		get_fulltable_size(&w1, &h1);
+		if (w1 > w && h1 > h)
+			break;
+		table_max_hand_size++;
+	} while (1);
 }

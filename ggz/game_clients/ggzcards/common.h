@@ -1,4 +1,4 @@
-/* $Id: common.h 2475 2001-09-14 07:18:43Z jdorje $ */
+/* $Id: common.h 2545 2001-10-08 23:09:23Z jdorje $ */
 /* 
  * File: common.h
  * Author: Jason Short
@@ -77,7 +77,6 @@ struct game_t {
 	seat_t *players;	/**< Data about each player */
 	client_state_t state;	/**< The state the game is in */
 	int play_hand;		/**< The hand we're currently playing from */
-	int max_hand_size;	/**< The maximum number of cards in a hand */
 };
 
 /** This is the game structure that contains all the common information
@@ -146,10 +145,9 @@ extern void table_alert_player_name(int player, const char *name);
  *  @todo This should be handled differently. */
 extern void table_setup();
 
-/** Currently this determines whether the max hand size is large enough.
- *  @return 1 if hand size is large enough, 0 if it's too small.
- *  @todo This should be handled differently. */
-extern int table_verify_hand_size();
+/** Alerts the table to the maximum hand size.  There will never be more
+ *  than this many cards in a hand (unless we send another alert). */
+extern void table_alert_hand_size(int max_hand_size);
 
 /** Called when the hand is changed; the frontend should draw/update it.
  *  @param player The player number of the player whose hand has changed. */

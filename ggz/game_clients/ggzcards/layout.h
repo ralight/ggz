@@ -1,4 +1,4 @@
-/* $Id: layout.h 2380 2001-09-06 02:26:21Z jdorje $ */
+/* $Id: layout.h 2545 2001-10-08 23:09:23Z jdorje $ */
 /* 
  * File: layout.h
  * Author: Jason Short, Rich Gade
@@ -34,8 +34,8 @@
 #define XWIDTH		5
 
 /* #define WINDOW_WIDTH 469 */
-/* more cards will fit if you just change game.max_hand_size */
-#define HAND_WIDTH 	( (game.max_hand_size+3) * (CARDWIDTH/4.0) + 0.5 )
+/* more cards will fit if you just change table_max_hand_size */
+#define HAND_WIDTH 	( (table_max_hand_size+3) * (CARDWIDTH/4.0) + 0.5 )
 #define TEXT_WIDTH	CARDHEIGHT
 
 #define CARD_BOX_WIDTH	(HAND_WIDTH + 2*XWIDTH)

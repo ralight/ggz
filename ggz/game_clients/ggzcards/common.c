@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2415 2001-09-09 02:54:18Z jdorje $
+ * $Id: common.c 2545 2001-10-08 23:09:23Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -42,6 +42,7 @@ static int handle_message_global();
 static int handle_message_player();
 
 static int ggzfd = -1;
+static int game_max_hand_size = 0;
 
 struct game_t game = { 0 };
 
@@ -212,7 +213,7 @@ static int handle_msg_players()
 		client_debug("get_players: (re)allocating game.players.");
 		game.players = malloc(numplayers * sizeof(*game.players));
 		memset(game.players, 0, numplayers * sizeof(*game.players));
-		game.max_hand_size = 0;	/* this forces reallocating later */
+		game_max_hand_size = 0;	/* this forces reallocating later */
 	}
 
 	/* TODO: support for changing the number of players */
@@ -258,7 +259,7 @@ static int handle_msg_hand()
 	hand = &game.players[player].hand;
 
 	/* Zap our current hand */
-	for (i = 0; i < game.max_hand_size; i++)
+	for (i = 0; i < game_max_hand_size; i++)
 		hand->card[i] = UNKNOWN_CARD;
 
 	/* Find out how many cards in this hand */
@@ -266,17 +267,15 @@ static int handle_msg_hand()
 		return -1;
 
 	/* Reallocate hand structures, if necessary */
-	if (hand->hand_size > game.max_hand_size) {
+	if (hand->hand_size > game_max_hand_size) {
 		int p;
 		client_debug("Expanding max_hand_size to allow for %d cards"
 			     " (previously max was %d).", hand->hand_size,
-			     game.max_hand_size);
-		game.max_hand_size = hand->hand_size;
+			     game_max_hand_size);
+		game_max_hand_size = hand->hand_size;
 
-		/* TODO: this shouldn't be handled like this.  Rather, the
-		   table should maintain it's own max_hand_size separately. */
-		while (!table_verify_hand_size())
-			game.max_hand_size++;
+		/* Let the table know how big a hand might be. */
+		table_alert_hand_size(game_max_hand_size);
 
 		for (p = 0; p < game.num_players; p++) {
 			/* TODO: figure out how this code could even fail at
@@ -287,7 +286,7 @@ static int handle_msg_hand()
 			/* if (game.players[p].hand.card != NULL)
 			   free(game.players[p].hand.card); */
 			game.players[p].hand.card =
-				malloc(game.max_hand_size *
+				malloc(game_max_hand_size *
 				       sizeof(*game.players[p].hand.card));
 			if (!game.players[p].hand.card)
 				return -1;
