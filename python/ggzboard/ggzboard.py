@@ -269,6 +269,7 @@ class GGZBoard:
 		inputallowed = 1
 		if self.ggzmode:
 				inputallowed = 0
+				#game.toggleplayer() # FIXME: reversi specific? (player is black originally)
 
 		(posx, posy) = pygame.mouse.get_pos()
 
@@ -284,6 +285,12 @@ class GGZBoard:
 				else:
 					if net.allowed() != inputallowed:
 						inputallowed = net.allowed()
+						updatescreen = 1
+					move = net.netmove()
+					if move:
+						(frompos, topos) = move
+						game.toggleplayer()
+						game.domove(frompos, topos)
 						updatescreen = 1
 
 			pygame.event.pump()
@@ -343,6 +350,7 @@ class GGZBoard:
 								if self.ggzmode:
 									net.domove(None, (x, y))
 								else:
+									game.toggleplayer()
 									game.domove(None, (x, y))
 									aiturn = 1
 						else:
@@ -358,6 +366,7 @@ class GGZBoard:
 							if self.ggzmode:
 								net.domove(frompos, topos)
 							else:
+								game.toggleplayer()
 								game.domove(frompos, topos)
 								aiturn = 1
 
@@ -409,6 +418,7 @@ class GGZBoard:
 				(ret, frompos, topos) = game.aimove()
 				print "RET(find)", ret
 				if ret:
+					game.toggleplayer()
 					game.domove(frompos, topos)
 
 				updatescreen = 1

@@ -8,8 +8,8 @@ import random
 
 class Game:
 	def __init__(self):
-		self.width = 16
-		self.height = 16
+		self.width = 8
+		self.height = 8
 		self.swaptiles = 0
 		self.autoscaletiles = 1
 		self.setonly = 1
@@ -18,10 +18,10 @@ class Game:
 		self.board = (None)
 		self.board = resize(self.board, (self.width, self.height))
 
-		self.board[7][7] = ("piece", "w")
-		self.board[7][8] = ("piece", "b")
-		self.board[8][7] = ("piece", "b")
-		self.board[8][8] = ("piece", "w")
+		self.board[3][3] = ("piece", "b")
+		self.board[3][4] = ("piece", "w")
+		self.board[4][3] = ("piece", "w")
+		self.board[4][4] = ("piece", "b")
 
 		self.isover = 0
 		self.lastmove = ""
@@ -74,7 +74,7 @@ class Game:
 		if valid:
 			print "TRYMOVE", topos
 			ret = 1
-			self.lastmove = "w"
+#			self.lastmove = "w"
 		return ret
 
 	def aimove(self):
@@ -93,8 +93,8 @@ class Game:
 							value = 1
 		if ret == 0:
 			self.isover = 1
-		else:
-			self.lastmove = "b"
+#		else:
+#			self.lastmove = "b"
 		return (ret, None, topos)
 
 	def domove(self, frompos, topos):
@@ -148,6 +148,12 @@ class Game:
 
 	def over(self):
 		return self.isover
+
+	def toggleplayer(self):
+		if self.lastmove == "w":
+			self.lastmove = "b"
+		else:
+			self.lastmove = "w"
 
 ggzboardgame = Game()
 

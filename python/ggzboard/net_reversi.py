@@ -60,10 +60,16 @@ class NetworkBase:
 		if len(opstr) < 4:
 			self.errorcode = 1
 			return 0
-		op = ord(opstr[0]) * 256 * 256 * 256
-		op += ord(opstr[1]) * 256 * 256
-		op += ord(opstr[2]) * 256
-		op += ord(opstr[3])
+		c1 = ord(opstr[0])
+		c2 = ord(opstr[1])
+		c3 = ord(opstr[2])
+		c4 = ord(opstr[3])
+		op = c1 * 256 * 256 * 256
+		op += c2 * 256 * 256
+		op += c3 * 256
+		op += c4
+		if op >= 2**31:
+			op -= 2**32
 		return op
 
 	def getchar(self):
@@ -85,10 +91,10 @@ class NetworkBase:
 
 	def sendbyte(self, byte):
 		nbyte = socket.htonl(byte)
-		c1 = (nbyte >> 0) & 0xFF
-		c2 = (nbyte >> 8) & 0xFF
-		c3 = (nbyte >> 16) & 0xFF
-		c4 = (nbyte >> 24) & 0xFF
+		c1 = (nbyte >> 24) & 0xFF
+		c2 = (nbyte >> 16) & 0xFF
+		c3 = (nbyte >> 8) & 0xFF
+		c4 = (nbyte >> 0) & 0xFF
 		self.sock.send(chr(c1))
 		self.sock.send(chr(c2))
 		self.sock.send(chr(c3))
@@ -125,6 +131,8 @@ class Network(NetworkBase, NetworkInfo):
 		self.ERROR_WRONGTURN = -2
 		self.ERROR_CANTMOVE = -3
 
+		self.movequeue = []
+
 	def network(self):
 		print "network!"
 
@@ -146,9 +154,14 @@ class Network(NetworkBase, NetworkInfo):
 			print "- move"
 			move = self.getbyte()
 			print " + move", move
-			# ...
+			# FIXME: error handling...
+			if move > 0:
+				topos = (move % 8, move / 8)
+				self.movequeue.append((None, topos))
 		elif op == self.MSG_GAMEOVER:
 			print "- gameover"
+			winner = self.getbyte()
+			print " + winner", winner
 #		elif op == self.REQ_MOVE:
 #			print "- req move"
 		elif op == self.MSG_START:
@@ -156,10 +169,10 @@ class Network(NetworkBase, NetworkInfo):
 			self.inputallowed = 1
 		elif op == self.MSG_SYNC:
 			print "- sync"
-		elif op == self.REQ_SYNC:
-			print "- req sync"
-		elif op == self.REQ_AGAIN:
-			print "- req again"
+#		elif op == self.REQ_SYNC:
+#			print "- req sync"
+#		elif op == self.REQ_AGAIN:
+#			print "- req again"
 		else:
 			print "- unknown opcode"
 			self.errorcode = 1
@@ -167,8 +180,16 @@ class Network(NetworkBase, NetworkInfo):
 	def domove(self, frompos, topos):
 		self.sendbyte(self.REQ_MOVE)
 		(x, y) = topos
-		toposval = y * 16 + x
+		toposval = y * 8 + x
 		self.sendbyte(toposval)
+		print "*** SENT", toposval
+
+	def netmove(self):
+		if len(self.movequeue) == 0:
+			return None
+		else:
+			move = self.movequeue.pop(0)
+			return move
 
 ggzboardnet = Network()
 
