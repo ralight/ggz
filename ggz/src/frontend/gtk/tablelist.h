@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.h 5198 2002-11-04 01:47:47Z jdorje $
+ * $Id: tablelist.h 6278 2004-11-06 00:16:45Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -24,17 +24,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/* Update the table list. */
-void display_tables(void);
-
 /* Clear the table list. */
-void clear_tables(void);
+void clear_table_list(void);
 
-/* Return the currently selected row, or -1. */
-int get_selected_table_row(void);
+void sensitize_table_list(gboolean sensitive);
 
-/* Return the ID of the currently selected table, or -1. */
-int get_selected_table_id(void);
+/* Return the currently selected table, or NULL. */
+GGZTable *get_selected_table(void);
+
+/* Update the table list. */
+void update_table_list(void);
 
 /* Create the table list.  Pass it the main window. */
 GtkWidget *create_table_list(GtkWidget * window);

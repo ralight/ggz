@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: tablelist.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: tablelist.c 6278 2004-11-06 00:16:45Z jdorje $
  * 
  * List of tables in the current room
  * 
@@ -38,32 +38,8 @@
 #include "server.h"
 #include "support.h"
 
-static int client_get_table_index(guint row);
-#if 0
-static GtkWidget *create_mnu_table(void);
-#endif
-
-static void client_table_clist_select_row(GtkCList * clist, gint row,
-					  gint column, GdkEvent * event,
-					  gpointer data);
-static void client_table_clist_click_column(GtkCList * clist, gint column,
-					    gpointer data);
-static gboolean client_table_event(GtkWidget * widget, GdkEvent * event,
-				   gpointer data);
-
-
-
 static gint numtables;
 static gint table_selection_id = -1;
-
-static void
-client_table_clist_select_row(GtkCList * clist,
-			      gint row,
-			      gint column, GdkEvent * event, gpointer data)
-{
-	table_selection_id = client_get_table_index(row);
-}
-
 
 static int client_get_table_index(guint row)
 {
@@ -79,31 +55,28 @@ static int client_get_table_index(guint row)
 }
 
 
-static void
-client_table_clist_click_column(GtkCList * clist, gint column, gpointer data)
+static void client_table_clist_select_row(GtkCList *clist, gint row,
+					  gint column, GdkEvent *event,
+					  gpointer data)
 {
+	table_selection_id = client_get_table_index(row);
 }
 
 
-static gboolean
-client_table_event(GtkWidget * widget, GdkEvent * event, gpointer data)
+static void client_table_clist_click_column(GtkCList *clist,
+					    gint column, gpointer data)
+{
+
+}
+
+
+static gboolean client_table_event(GtkWidget *widget, GdkEvent *event,
+				   gpointer data)
 {
 	/* Check to see if the event was a mouse button press */
 	if (event->type == GDK_2BUTTON_PRESS)
 		client_start_table_join();
 	return FALSE;
-}
-
-
-static int client_find_table_by_id(int table_id)
-{
-	int i;
-
-	for (i = 0; i < numtables; i++)
-		if (client_get_table_index(i) == table_id)
-			return i;
-
-	return -1;
 }
 
 
@@ -164,19 +137,14 @@ static GtkWidget *create_mnu_table(void)
 }
 #endif
 
-int get_selected_table_row(void)
+GGZTable *get_selected_table(void)
 {
-	return client_find_table_by_id(table_selection_id);
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	return ggzcore_room_get_table_by_id(room, table_selection_id);
 }
 
 
-int get_selected_table_id(void)
-{
-	return table_selection_id;
-}
-
-
-void clear_tables(void)
+void clear_table_list(void)
 {
 	GtkWidget *tmp;
 
@@ -188,8 +156,13 @@ void clear_tables(void)
 	table_selection_id = -1;
 }
 
+void sensitize_table_list(gboolean sensitive)
+{
+	GtkWidget *tmp = lookup_widget(win_main, "table_clist");
+	gtk_widget_set_sensitive(tmp, sensitive);
+}
 
-void display_tables(void)
+void update_table_list(void)
 {
 	GtkWidget *tmp;
 	gchar *table[4] = { NULL, NULL, NULL, NULL };

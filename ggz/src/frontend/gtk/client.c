@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 6277 2004-11-05 23:38:34Z jdorje $
+ * $Id: client.c 6278 2004-11-06 00:16:45Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -103,7 +103,6 @@ static void client_chat_entry_activate(GtkEditable *editable, gpointer data);
 gboolean client_chat_entry_key_press_event(GtkWidget *widget, 
 					   GdkEventKey *event, gpointer data);
 static void client_send_button_clicked(GtkButton *button, gpointer data);
-static int client_get_table_open(guint row);
 static void client_start_table_watch(void);
 static void client_tables_size_request(GtkWidget *widget, gpointer data);
 
@@ -123,19 +122,13 @@ static void
 client_disconnect_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	GtkCList *tmp;
-
 	if (ggzcore_server_logout(server) < 0)
 		ggz_error_msg("Error logging out in "
 		              "client_disconnect_activate");
 
 	clear_room_list();
-
-	/* Clear current list of tables */
-        tmp = g_object_get_data(G_OBJECT(win_main), "table_clist");
-        gtk_clist_clear(GTK_CLIST(tmp));
-
 	clear_player_list();
+	clear_table_list();
 
 	/*ggz_sensitivity_init();*/
 }
@@ -335,18 +328,13 @@ static void
 client_disconnect_button_clicked	(GtkButton	*button,
 					 gpointer	 data)
 {
-	GtkCList *tmp;
-
 	if (ggzcore_server_logout(server) < 0)
 		ggz_error_msg("Error logging out in "
 		              "client_disconnect_button_clicked");
 
 	clear_room_list();
 	clear_player_list();
-
-	/* Clear current list of tables */
-        tmp = g_object_get_data(G_OBJECT(win_main), "table_clist");
-        gtk_clist_clear(GTK_CLIST(tmp));
+	clear_table_list();
 
 	/*ggz_sensitivity_init();*/
 }
@@ -559,29 +547,12 @@ client_exit_button_clicked		(GtkButton	*button,
 }
 
 
-static int client_get_table_open(guint row)
-{
-	GtkWidget *tmp;
-	char *text;
-
-	tmp = lookup_widget(win_main, "table_clist");
-	gtk_clist_get_text(GTK_CLIST(tmp), row, 1, &text);
-
-	if(text[0] == '0')
-	{
-		return FALSE;
-	} else {
-		return TRUE;
-	}
-}
-
-
 void client_start_table_join(void)
 {
-	int tablerow = get_selected_table_row();
+	GGZTable *table = get_selected_table();
 
 	/* Make sure a table is selected */
-	if (tablerow == -1) {
+	if (!table) {
 		msgbox("You must highlight a table before you can join it.", 
 		       "Error Joining", MSGBOX_OKONLY, MSGBOX_INFO, 
 		       MSGBOX_NORMAL);
@@ -590,7 +561,8 @@ void client_start_table_join(void)
 
 	/* Make sure we select a proper table */
 	/* Make sure table has open seats */
-	if (!client_get_table_open(tablerow)) {
+	if (ggzcore_table_get_seat_count(table, GGZ_SEAT_OPEN)
+	    + ggzcore_table_get_seat_count(table, GGZ_SEAT_RESERVED) == 0) {
 		msgbox("That table is full.", "Error Joining",
 		       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);	
 		return;
@@ -609,10 +581,10 @@ void client_start_table_join(void)
 
 static void client_start_table_watch(void)
 {
-	int tablerow = get_selected_table_row();
+	GGZTable *table = get_selected_table();
 
 	/* Make sure a table is selected */
-	if (tablerow == -1) {
+	if (!table) {
 		msgbox(_("You must highlight a table before "
 			 "you can watch it."), 
 		       _("Error Spectating"), MSGBOX_OKONLY, MSGBOX_INFO, 
@@ -649,10 +621,11 @@ void client_join_table(void)
 {
 	GGZRoom *room;
         int status;
+	GGZTable *table = get_selected_table();
 
 	room = ggzcore_server_get_cur_room(server);
 	assert(spectating >= 0);
-	status = ggzcore_room_join_table(room, get_selected_table_id(),
+	status = ggzcore_room_join_table(room, ggzcore_table_get_id(table),
 					 spectating);
 	
 	if (status < 0) {

@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 6277 2004-11-05 23:38:34Z jdorje $
+ * $Id: ggzclient.c 6278 2004-11-06 00:16:45Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -295,9 +295,7 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	/* We do this here so that on slower links people
 	 * don't think all the old people are in the old room */
 	clear_player_list();
-
-	/* Clear table list */
-	clear_tables();
+	clear_table_list();
 
 	/* Get player list */
 	/* FIXME: Player list should use the ggz update system*/
@@ -612,11 +610,8 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		
 		/* Client area */
 		sensitize_room_list(FALSE);
-
 		sensitize_player_list(FALSE);
-
-		tmp = lookup_widget(win_main, "table_clist");
-		gtk_widget_set_sensitive(tmp, FALSE);
+		sensitize_table_list(FALSE);
 
 		tmp = lookup_widget(win_main, "chat_entry");
 		gtk_widget_set_sensitive(tmp, FALSE);
@@ -705,15 +700,12 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 
 		/* Client area */
 		sensitize_room_list(TRUE);
-
 		sensitize_player_list(TRUE);
-		
-		tmp = lookup_widget(win_main, "table_clist");
-		gtk_widget_set_sensitive(tmp, TRUE);
-		
+		sensitize_table_list(TRUE);
+
 		tmp = lookup_widget(win_main, "chat_entry");
 		gtk_widget_set_sensitive(tmp, TRUE);
-		
+
 		tmp = lookup_widget(win_main, "send_button");
 		gtk_widget_set_sensitive(tmp, TRUE);
 		break;
@@ -808,11 +800,8 @@ static GGZHookReturn ggz_state_sensitivity(GGZServerEvent id, void* event_data, 
 		
 		/* Client area */
 		sensitize_room_list(FALSE);
-
 		sensitize_player_list(FALSE);
-
-		tmp = lookup_widget(win_main, "table_clist");
-		gtk_widget_set_sensitive(tmp, FALSE);
+		sensitize_table_list(FALSE);
 
 		tmp = lookup_widget(win_main, "chat_entry");
 		gtk_widget_set_sensitive(tmp, FALSE);
@@ -848,18 +837,13 @@ static GGZHookReturn ggz_server_error(GGZServerEvent id, void* event_data, void*
 
 static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* user_data)
 {
-	GtkWidget *tmp;
-	
 	ggz_debug("connection", "Net error.");
 
 	server_disconnect();
 
 	clear_room_list();
 	clear_player_list();
-
-        /* Clear current list of tables */
-        tmp = g_object_get_data(G_OBJECT(win_main), "table_clist");
-        gtk_clist_clear(GTK_CLIST(tmp));
+	clear_table_list();
 
 	return GGZ_HOOK_OK;
 }
@@ -867,14 +851,14 @@ static GGZHookReturn ggz_net_error(GGZServerEvent id, void* event_data, void* us
 
 static GGZHookReturn ggz_list_tables(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	display_tables();
+	update_table_list();
 	return GGZ_HOOK_OK;
 }
 
 
 static GGZHookReturn ggz_table_update(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	display_tables();
+	update_table_list();
 	update_player_list();
 	return GGZ_HOOK_OK;
 }
