@@ -113,9 +113,16 @@ void GGZScriptingHost::executeMethod(const char *methodstring)
 
 		// Lookup method
 		pxFunc = PyDict_GetItemString(pxDict, function);
-		if(!pxFunc && PyCallable_Check(pxFunc))
+		if(!pxFunc)
 		{
 			std::cerr << "Cannot find function '" << function << "'" << std::endl;
+			free(function);
+			return;
+		}
+
+		if(!PyCallable_Check(pxFunc))
+		{
+			std::cerr << "Cannot call function '" << function << "'" << std::endl;
 			free(function);
 			return;
 		}
