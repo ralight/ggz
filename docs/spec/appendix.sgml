@@ -121,7 +121,7 @@
 
 		  <row rowsep="0">
 		    <entry namest="C1" nameend="C3">
-		      &lt;PING/&gt;
+		      &lt;PING ID='_id_'/&gt;
 		    </entry>
 		  </row>
 
@@ -132,7 +132,9 @@
 		  </row>
 
 		  <row rowsep="1">
-		    <entry namest="C1" nameend="C3">No data</entry>
+                    <entry>ID</entry>
+                    <entry>string</entry>
+                    <entry>1h3k5lmfs</entry>
 		  </row>
 
 		</tbody>
@@ -143,6 +145,20 @@
     <refsect1>
       <title>Description</title>
       <para>Periodically sent request</para>
+
+      <refsect2>
+        <title>Message Data</title>
+        <variablelist>
+          <varlistentry>
+            <term><emphasis role="bold">ID</emphasis></term>
+            <listitem>
+              <para>
+                Unique identifier for this ping; it is sent back in the pong.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect2>
 
       <refsect2>
 	<title>Usage</title>
@@ -1567,7 +1583,9 @@
 		  </row>
 
 		  <row rowsep="1">
-		    <entry namest="C1" nameend="C3">No data</entry>
+                    <entry>ID</entry>
+                    <entry>string</entry>
+                    <entry>1h3k5lmfs</entry>
 		  </row>
 
 		</tbody>
@@ -1578,6 +1596,21 @@
     <refsect1>
       <title>Description</title>
       <para>Response to lag measurement challenge</para>
+
+      <refsect2>
+        <title>Message Data</title>
+        <variablelist>
+          <varlistentry>
+            <term><emphasis role="bold">ID</emphasis></term>
+            <listitem>
+              <para>
+                Unique identifier for this pong - the same string that was
+                sent in the ping.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect2>
 
       <refsect2>
 	<title>Usage</title>
