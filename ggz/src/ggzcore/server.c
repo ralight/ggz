@@ -946,11 +946,9 @@ static void _ggzcore_server_handle_list_types(GGZServer *server)
 	_ggzcore_server_init_typelist(server, num);
 
 	for(i = 0; i < num; i++) {
-		if (!(type = calloc(1, sizeof(struct _GGZGameType))))
-			ggzcore_error_sys_exit("malloc() failed in ggzcore_gametype_new");
+		type = _ggzcore_gametype_new();
 		status = _ggzcore_net_read_type(server->fd, type);
 		/* FIXME: handle errors */
-		
 		
 		_ggzcore_server_add_type(server, type);
 	}

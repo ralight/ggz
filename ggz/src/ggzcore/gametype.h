@@ -69,17 +69,10 @@ struct _GGZGameType {
 };
 
 
-/* Create a new gametype with the given properties */
-struct _GGZGameType* _ggzcore_gametype_new(const unsigned int id, 
-					   const char* name, 
-					   const char* version,
-					   const GGZAllowed allow_players, 
-					   const GGZAllowed allow_bots,  
-					   const char* desc,
-					   const char* author, 
-					   const char *url);
+/* Create a new gametype object */
+struct _GGZGameType* _ggzcore_gametype_new(void);
 
-/* Initialize an existing gametype with the given properties */
+/* Initialize a gametype with the given properties */
 void _ggzcore_gametype_init(struct _GGZGameType *gametype,
 			    const unsigned int id,
 			    const char* name, 
@@ -105,19 +98,9 @@ char*  _ggzcore_gametype_get_url(struct _GGZGameType *type);
 char*  _ggzcore_gametype_get_desc(struct _GGZGameType *type);
 
 
-#if 0
-void _ggzcore_gametype_list_clear(void);
-
-int _ggzcore_gametype_list_add(const unsigned int id, const char* name, const char* game,
-                           const unsigned int players, const int bots,  const char* desc,
-                           const char* author, const char *url);
-
-int _ggzcore_gametype_list_remove(const unsigned int id);
-
-int _ggzcore_gametype_list_replace(const unsigned int id, const char* name, 
-			       const unsigned int game, const char* desc);
-
-#endif
-
+/* Utility functions used by _ggzcore_list */
+int   _ggzcore_gametype_compare(void* p, void* q);
+void* _ggzcore_gametype_create(void* p);
+void  _ggzcore_gametype_destroy(void* p);
 
 #endif /*__GAMETYPE_H_*/

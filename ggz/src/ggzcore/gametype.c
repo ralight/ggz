@@ -33,14 +33,6 @@
 #include <string.h>
 
 
-/* Utility functions used by _ggzcore_list */
-#if 0
-static int   _ggzcore_gametype_compare(void* p, void* q);
-static void* _ggzcore_gametype_create(void* p);
-static void  _ggzcore_gametype_destroy(void* p);
-#endif
-
-
 /* Publicly exported functions */
 
 char* ggzcore_gametype_get_name(GGZGameType *type)
@@ -81,24 +73,13 @@ char* ggzcore_gametype_get_desc(GGZGameType *type)
 
 /* Internal library functions (prototypes in gametype.h) */
 
-struct _GGZGameType* _ggzcore_gametype_new(const unsigned int id, 
-					   const char* name, 
-					   const char* version,
-					   const GGZAllowed allow_players, 
-					   const GGZAllowed allow_bots,  
-					   const char* desc,
-					   const char* author, 
-					   const char *url)
+struct _GGZGameType* _ggzcore_gametype_new(void)
 {
 	struct _GGZGameType *gametype;
 
-	/* Allocate and zero space for GGZGameType object */
-	if (!(gametype = calloc(1, sizeof(struct _GGZGameType))))
-		ggzcore_error_sys_exit("malloc() failed in ggzcore_gametype_new");
+	gametype = ggzcore_malloc(sizeof(struct _GGZGameType));
 	
-	_ggzcore_gametype_init(gametype, id, name, version, allow_players,
-			       allow_bots, desc, author, url);
-
+	/* FIXME: any fields we should fill in defaults? */
 	return gametype;
 }
 
@@ -114,13 +95,19 @@ void _ggzcore_gametype_init(struct _GGZGameType *gametype,
 			    const char *url)
 {
 	gametype->id = id;
-	gametype->name = strdup(name);
-	gametype->version = strdup(version);
 	gametype->allow_players = allow_players;
 	gametype->allow_bots = allow_bots;
-	gametype->desc = strdup(desc);
-	gametype->author = strdup(author);
-	gametype->url = strdup(url);
+	
+	if (name)
+		gametype->name = strdup(name);
+	if (version)
+		gametype->version = strdup(version);
+	if (desc)
+		gametype->desc = strdup(desc);
+	if (author)
+		gametype->author = strdup(author);
+	if (url)
+		gametype->url = strdup(url);
 }
 
 
@@ -137,7 +124,7 @@ void _ggzcore_gametype_free(struct _GGZGameType *type)
 	if (type->url)
 		free(type->url);
 
-	free(type);
+	ggzcore_free(type);
 }
 
 
@@ -177,71 +164,8 @@ char*  _ggzcore_gametype_get_desc(struct _GGZGameType *type)
 }
 
 
-#if 0
-void _ggzcore_gametype_list_clear(void)
-{
-	if (gametype_list)
-		_ggzcore_list_destroy(gametype_list);
-	
-	gametype_list = _ggzcore_list_create(_ggzcore_gametype_compare,
-					 _ggzcore_gametype_create,
-					 _ggzcore_gametype_destroy,
-					 0);
-	num_gametypes = 0;
-}
-
-
-int _ggzcore_gametype_list_add(const unsigned int id, const char* name, const char* game,
-			   const unsigned int players, const int bots,  const char* desc,
-			   const char* author, const char *url)
-{
-	int status;
-	struct _GGZGameType gametype;
-
-	ggzcore_debug(GGZ_DBG_GAMETYPE, "Adding gametype %d to gametype list", id);
-	
-	gametype.id = id;
-	gametype.name = (char*)name;
-	gametype.game = (char*)game;
-	gametype.players = players;
-	gametype.bots = bots;
-	gametype.desc = (char*)desc;
-	gametype.author = (char*)author;
-	gametype.url = (char*)url;
-
-	if ( (status = _ggzcore_list_insert(gametype_list, (void*)&gametype)) == 0)
-		num_gametypes++;
-	_ggzcore_gametype_list_print();
-
-	return status;
-}
-
-
-int _ggzcore_gametype_list_remove(const unsigned int id)
-{
-	struct _ggzcore_list_entry *entry;
-	struct _GGZGameType gametype;
-
-	ggzcore_debug(GGZ_DBG_GAMETYPE, "Removing game type %d from gametype list", id);
-	
-	gametype.id = id;
-	if (!(entry = _ggzcore_list_search(gametype_list, &gametype)))
-		return -1;
-
-	_ggzcore_list_delete_entry(gametype_list, entry);
-	num_gametypes--;
-
-	_ggzcore_gametype_list_print();
-
-	return 0;
-}
-#endif
-
-/* Private functions internal to this file */
-
-#if 0
 /* Return 0 if equal, -1 greaterthan, 1 lessthan */
-static int _ggzcore_gametype_compare(void* p, void* q)
+int _ggzcore_gametype_compare(void* p, void* q)
 {
         if(((struct _GGZGameType*)p)->id == ((struct _GGZGameType*)q)->id)
                 return 0;
@@ -254,40 +178,28 @@ static int _ggzcore_gametype_compare(void* p, void* q)
 }
 
 
-static void* _ggzcore_gametype_create(void* p)
+void* _ggzcore_gametype_create(void* p)
 {
 	struct _GGZGameType *new, *src = p;
 
-	if (!(new = malloc(sizeof(struct _GGZGameType))))
-		ggzcore_error_sys_exit("malloc failed in gametype_create");
+	new = _ggzcore_gametype_new();
 
-	new->id = src->id;
-	new->name = strdup(src->name);
-	new->version = strdup(src->version);
-	new->allow_players = src->allow_players;
-	new->allow_bots = src->allow_bots;
-	if (src->desc)
-		new->desc = strdup(src->desc);
-	else
-		new->desc = NULL;
-	if (src->author)
-		new->author = strdup(src->author);
-	else
-		new->author = NULL;
-	if (src->url)
-		new->url = strdup(src->url);
-	else
-		new->url = NULL;
-
+	_ggzcore_gametype_init(new, src->id, src->name, src->version,
+			       src->allow_players, src->allow_bots, src->desc,
+			       src->author, src->url);
+	
 	return (void*)new;
 }
 
 
-static void  _ggzcore_gametype_destroy(void* p)
+void  _ggzcore_gametype_destroy(void* p)
 {
 	_ggzcore_gametype_free(p);
 }
-#endif
+
+
+/* Private functions internal to this file */
+
 
 
 
