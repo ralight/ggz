@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 3112 2002-01-14 05:57:40Z jdorje $
+ * $Id: ggzdmod.h 3218 2002-02-03 04:28:11Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -447,6 +447,18 @@ int ggzdmod_disconnect(GGZdMod * ggzdmod);
  */
 int ggzdmod_log(GGZdMod * ggzdmod, char *fmt, ...)
 		ggz__attribute((format(printf, 2, 3)));
+		
+		
+/** @brief Log all information about the ggzdmod.
+ *
+ *  This is a debugging function that will log all available
+ *  information about the GGZdMod object.  It uses ggzdmod_log
+ *  for logging.
+ *
+ *  @param ggzdmod The GGZdMod object.
+ *  @return void; errors in ggzdmod_log are ignored.
+ */
+void ggzdmod_check(GGZdMod *ggzdmod);
 
 #ifdef __cplusplus
 }

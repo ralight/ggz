@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 3217 2002-02-03 04:11:20Z jdorje $
+ * $Id: ggzdmod.c 3218 2002-02-03 04:28:11Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1189,4 +1189,35 @@ static void seat_free(GGZSeat *seat)
 		ggz_free(seat->name);
 
 	ggz_free(seat);
+}
+
+
+void ggzdmod_check(GGZdMod *ggzdmod)
+{
+	GGZListEntry *entry;
+	if (!CHECK_GGZDMOD(ggzdmod))
+		return;
+		
+	ggzdmod_log(ggzdmod, "--- GGZDMOD CHECK ---");
+	ggzdmod_log(ggzdmod, "    TYPE: %s",
+		    ggzdmod->type == GGZDMOD_GAME ? "GGZDMOD_GAME" :
+		    ggzdmod->type == GGZDMOD_GGZ ?  "GGZDMOD_GGZ"  :
+		    "UNKNOWN");
+	ggzdmod_log(ggzdmod, "    FD: %d.", ggzdmod->fd);
+
+	for (entry = ggz_list_head(ggzdmod->seats);
+	     entry != NULL;
+	     entry = ggz_list_next(entry)) {
+		
+		GGZSeat *seat = ggz_list_get_data(entry);
+	
+		ggzdmod_log(ggzdmod, "    Seat %d | type=%s | name=%s | fd=%d",
+			    seat->num,
+			    ggz_seattype_to_string(seat->type),
+			    seat->name ? seat->name : "<none>",
+			    seat->fd);
+		
+	}
+	
+	ggzdmod_log(ggzdmod, "--- GGZDMOD CHECK COMPLETE ---");
 }
