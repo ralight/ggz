@@ -89,7 +89,7 @@ void ReversiProtocol::readBuffer() {
       }
       break;
     default:
-      if (next > 0 && sock->bytesAvailable() >= next) {
+      if (next > 0 && (signed int)sock->bytesAvailable() >= next) {
         arg = malloc(next);
         if (sock->readBlock((char *)arg, next) < 1)
           return;
