@@ -27,9 +27,9 @@ msgid "Watch your language please!"
 msgstr "Achte mal auf deine Wortwahl, Freundchen!"
 
 #: ../modules/extra.c:89
-#, fuzzy, c-format
+#, c-format
 msgid "Hi %s"
-msgstr "Hallo "
+msgstr "Hallo %s"
 
 #: ../modules/extra.c:113
 msgid "funny eh?"
