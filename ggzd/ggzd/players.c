@@ -86,6 +86,9 @@ static int   player_send_error(int p_index, int fd);
 static int   player_motd(int p_index, int fd);
 static int player_list_tables_room(const int, const int, const int);
 static int player_list_tables_global(const int, const int);
+static int player_queue_personal(const int, const unsigned char,
+				 const char *, char *);
+static int player_send_personal(const int, const int);
 
 /* Utility functions: Should either get renamed or moved */
 static int read_name(int, char[MAX_USER_NAME_LEN]);
@@ -509,7 +512,10 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	if (players.info[p].room != -1
 	    && (room_send_chat(p, fd) < 0))
 		return GGZ_REQ_DISCONNECT;
-	
+	if (players.info[p].personal_head
+	    && (player_send_personal(p, fd) < 0))
+		return GGZ_REQ_DISCONNECT;
+
 	return GGZ_REQ_OK;
 }
 
@@ -1373,14 +1379,18 @@ static int player_chat(int p_index, int p_fd)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
-		
-	
+
 	switch(subop) {
 		case GGZ_CHAT_NORMAL:
 			dbg_msg(GGZ_DBG_CHAT, "Player %d sends %s",
 					      p_index, msg);
 			status = room_emit(players.info[p_index].room,
 					   p_index, msg);
+			break;
+		case GGZ_CHAT_BEEP:
+		case GGZ_CHAT_PERSONAL:
+			status = player_queue_personal(p_index, subop,
+						       t_player, msg);
 			break;
 		default:
 			dbg_msg(GGZ_DBG_PROTOCOL,
@@ -1389,11 +1399,12 @@ static int player_chat(int p_index, int p_fd)
 			status = E_BAD_OPTIONS;
 	}
 
-	if (es_write_int(p_fd, RSP_CHAT) < 0
+	if(es_write_int(p_fd, RSP_CHAT) < 0
 	    || es_write_char(p_fd, status) < 0)
 		return GGZ_REQ_DISCONNECT;
 
-	return status;
+	/* Don't return the chat error code */
+	return 0;
 }
 
 
@@ -1458,3 +1469,92 @@ int player_motd(int p_index, int fd)
 	return GGZ_REQ_OK;
 }
 
+
+static int player_queue_personal(const int p_index, const unsigned char subop,
+				 const char *t_player, char *msg)
+{
+	int room, t_pidx=0, i;
+	ChatItemStruct *new_chat;
+
+	room = players.info[p_index].room;
+
+	/* Search for player name in this room */
+	pthread_rwlock_rdlock(&chat_room[room].lock);
+	for(i=0; i<chat_room[room].player_count; i++) {
+		/* FIXME: */
+		/* Technically we should lock the player in case the name */
+		/* is changing, realistically this can't happen right now */
+		/* anyway, but that could change in the future */
+		t_pidx = chat_room[room].player_index[i];
+		if(!strcmp(t_player, players.info[t_pidx].name))
+			break;
+	}
+
+	if(i == chat_room[room].player_count) {
+		/* Player not in this room, can't send him the msg */
+		pthread_rwlock_unlock(&chat_room[room].lock);
+		if(msg)
+			free(msg);
+		return E_USR_LOOKUP;
+	}
+	pthread_rwlock_unlock(&chat_room[room].lock);
+
+	/* Setup the chat item */
+	if((new_chat = malloc(sizeof(ChatItemStruct))) == NULL) {
+		if(msg)
+			free(msg);
+		err_sys_exit("malloc failed in player_queue_personal()");
+	}
+	dbg_msg(GGZ_DBG_LISTS, "Allocated personal chat %p", new_chat);
+	if((new_chat->chat_sender =malloc(strlen(players.info[p_index].name+1)))
+	   == NULL) {
+		free(new_chat);
+		if(msg)
+			free(msg);
+		err_sys_exit("malloc failed in palyer_queue_personal()");
+	}
+	strcpy(new_chat->chat_sender, players.info[p_index].name);
+	new_chat->chat_msg = msg;
+	new_chat->reference_count = subop;     /*Ref_count is otherwise unused*/
+
+	/* Now lock the target user and add this to their queue */
+	pthread_rwlock_wrlock(&players.lock);
+	new_chat->next = players.info[t_pidx].personal_head;
+	players.info[t_pidx].personal_head = new_chat;
+	pthread_rwlock_unlock(&players.lock);
+
+	return 0;
+}
+
+
+static int player_send_personal(const int p_index, const int fd)
+{
+	unsigned char subop;
+	ChatItemStruct *cur_chat, *t_chat;
+	int status = 0;
+
+	pthread_rwlock_rdlock(&players.lock);
+	cur_chat = players.info[p_index].personal_head;
+	players.info[p_index].personal_head = NULL;
+	pthread_rwlock_unlock(&players.lock);
+
+	while(cur_chat != NULL) {
+		subop = cur_chat->reference_count;
+		if(status == 0 && (es_write_int(fd, MSG_CHAT) < 0
+		   || es_write_char(fd, subop) < 0
+		   || es_write_string(fd, cur_chat->chat_sender) < 0))
+			status = GGZ_REQ_DISCONNECT;
+		if(subop & GGZ_CHAT_M_MESSAGE
+		   && status == 0
+		   && es_write_string(fd, cur_chat->chat_msg) < 0)
+			status = GGZ_REQ_DISCONNECT;
+		free(cur_chat->chat_sender);
+		if(cur_chat->chat_msg)
+			free(cur_chat->chat_msg);
+		t_chat = cur_chat;
+		cur_chat = cur_chat->next;
+		free(t_chat);
+	}
+
+	return status;
+}
