@@ -10,7 +10,7 @@ Architecture: any
 Section: games
 Depends: ${shlibs:Depends}
 Provides: ggz-core-client
-Suggests: ggz-gtk-games (= ${Source-Version}), ggz-kde-games (= ${Source-Version})
+Suggests: ggz-gtk-games (>= 0.0.5-1), ggz-kde-games (>= 0.0.5-1)
 Description: Gtk+/Gnome frontend for the GGZ Gaming Zone
  This is one of the two graphical core clients currently
  available. It is able to handle a chat, many different
