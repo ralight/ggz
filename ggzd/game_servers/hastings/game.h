@@ -5,6 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/10/00
  * Desc: Game functions
+ * $Id: game.h 2244 2001-08-25 15:21:40Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -22,6 +23,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#include "../libggzmod/ggz_server.h"
 
 
 /* Hastings protocol */
@@ -79,8 +82,8 @@ struct hastings_game_t {
 };
 
 void game_init(void);
-int game_handle_ggz(int ggz_fd, int* p_fd);
-int game_handle_player(int num);
+int game_handle_ggz(ggzd_event_t event, void *data);
+int game_handle_player(ggzd_event_t event, void *seat_data);
 
 int game_send_seat(int seat);
 int game_send_players(void);
