@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 6405 2004-11-17 12:48:05Z josef $
+ * $Id: stats.c 6511 2004-12-17 17:06:35Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -59,7 +59,7 @@ GGZReturn stats_lookup(ggzdbPlayerGameStats *stats)
 
 		stats->rating = 1500.0;
 
-		stats->ranking = 1; /* ? */
+		stats->ranking = 0;
 
 		/* This could come from the .dsc file. */
 		stats->highest_score = 0;
