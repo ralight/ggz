@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5102 2002-10-29 09:42:34Z jdorje $
+ * $Id: netxml.c 5105 2002-10-29 11:30:57Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -927,14 +927,14 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 {
 	GGZRoom *room;
 	char *action;
-	int code;
+	GGZClientReqError code;
 	void *data;
 	char *message;
 
 	if (result) {
 		
 		action = ATTR(result, "ACTION");
-		code = str_to_int(ATTR(result, "CODE"), E_OK);
+		code = ggz_string_to_error(ATTR(result, "CODE"));
 		data = ggz_xmlelement_get_data(result);
 		
 		ggz_debug(GGZCORE_DBG_NET, "Result of %s was %d", action, 
@@ -975,6 +975,9 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *result)
 				break;
 			case E_NO_PERMISSION:
 				_ggzcore_server_event(net->server, GGZ_CHAT_FAIL, "Prohibited");
+				break;
+			default:
+				_ggzcore_server_event(net->server, GGZ_CHAT_FAIL, "Unknown error");
 				break;
 			}
 		}
