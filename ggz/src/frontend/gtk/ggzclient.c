@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 3191 2002-01-24 23:08:05Z jzaun $
+ * $Id: ggzclient.c 3194 2002-01-30 07:09:13Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -945,7 +945,9 @@ void display_players(void)
 {
 	GtkWidget *tmp;
 	gint i, num;
-	gchar *player[4] = {malloc (17), malloc (17), malloc (17), malloc (17)} ;
+	/* Some of the fields of the clist receive pixmaps
+	 * instead, and are therefore set to NULL. */
+	gchar *player[4] = {NULL, NULL, NULL, NULL} ;
 	gchar *path = NULL;
 	GGZPlayer *p;
 	GGZTable *table;
