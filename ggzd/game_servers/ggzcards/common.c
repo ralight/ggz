@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2976 2001-12-21 08:21:05Z jdorje $
+ * $Id: common.c 3070 2002-01-12 01:34:30Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -525,8 +525,8 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 			   wait for a response anyway */
 			next_play();
 	}
-
-	return;
+	
+	ggzdmod_log(game.ggz, "Player join successful.");
 }
 
 /* This sets not only the player name, but the name for the player's seat if
@@ -538,7 +538,11 @@ static void set_player_name(player_t p, const char *name)
 	player_seat.name = (char *) name;	/* discard const */
 	ggzdmod_log(game.ggz, "Changing player %d (type %d)'s name to %s.", p,
 		    player_seat.type, name);
-	if (ggzdmod_set_seat(game.ggz, &player_seat) >= 0) {
+	if (
+#if 1
+	    0 &&
+#endif
+	    ggzdmod_set_seat(game.ggz, &player_seat) >= 0) {
 		/* s might be -1 if seats aren't assigned yet. */
 		if (s >= 0)
 			game.seats[s].name = name;
@@ -580,12 +584,10 @@ void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	set_player_message(player);
 
 	/* save old state and enter waiting phase */
-	if (ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN) > 0)	/* should be
-								   a given... 
-								 */
-		save_game_state();
-
-	return;
+	assert(ggzdmod_count_seats(game.ggz, GGZ_SEAT_OPEN) > 0);
+	save_game_state();
+	
+	ggzdmod_log(game.ggz, "Player leave successful.");
 }
 
 /* This handles the event of a player responding to a newgame request */
