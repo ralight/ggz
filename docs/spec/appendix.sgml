@@ -784,9 +784,11 @@
 	    <term><emphasis role="bold">ACTION</emphasis></term>
 	    <listitem>
 	      <para>
-		Action to do. Can be either 'add' or 'delete' for players,
-		and 'join' or 'status' for tables.
-		For 'room' and 'game' updates, 'add' and 'delete' are possible.
+		Action to do. Can be 'add', 'delete', 'lag', or
+		'stats' for players;
+		'add', 'delete', 'join', 'leave', 'status', 'desc', or 'seat'
+		for tables.
+		For 'room' and 'game' updates, 'add' and'delete' are possible.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -848,38 +850,77 @@
 
 		  <row rowsep="0">
 		    <entry namest="C1" nameend="C3">
-		      &lt;PLAYER ID="id" TYPE="type" TABLE="table" LAG="lag"/&gt;
+		      &lt;PLAYER ID='id' TYPE='type' TABLE='table'
+		      LAG='lag' WINS='wins' LOSSES='losses' TIES='ties'
+		      FORFEITS='forfeits' RATING='rating' RANKING='rating'
+		      HIGHSCORE='highscore'/&gt;
 		    </entry>
 		  </row>
 
 		  <row rowsep="1">
-		    <entry><emphasis role="bold">Data</emphasis></entry>
-		    <entry><emphasis role="bold">Type</emphasis></entry>
-		    <entry><emphasis role="bold">Example</emphasis></entry>
+			<entry><emphasis role="bold">Data</emphasis></entry>
+			<entry><emphasis role="bold">Type</emphasis></entry>
+			<entry><emphasis role="bold">Example</emphasis></entry>
 		  </row>
 
 		  <row rowsep="1">
-		    <entry>ID</entry>
-		    <entry>string</entry>
+			<entry>ID</entry>
+			<entry>string</entry>
 			<entry>Grubby</entry>
 		  </row>
 
 		  <row rowsep="1">
-		    <entry>TYPE</entry>
-		    <entry>string</entry>
+			<entry>TYPE</entry>
+			<entry>string</entry>
 			<entry>guest</entry>
 		  </row>
 
 		  <row rowsep="1">
-		    <entry>TABLE</entry>
-		    <entry>int</entry>
+			<entry>TABLE</entry>
+			<entry>int</entry>
 			<entry>-1</entry>
 		  </row>
 
 		  <row rowsep="1">
-		    <entry>LAG</entry>
-		    <entry>int</entry>
+			<entry>LAG</entry>
+			<entry>int</entry>
 			<entry>1</entry>
+		  </row>
+
+		  <row rowsep="1">
+			<entry>WINS</entry>
+			<entry>int</entry>
+			<entry>7</entry>
+		  </row>
+
+		  <row rowsep="1">
+			<entry>LOSSES</entry>
+			<entry>int</entry>
+			<entry>3</entry>
+		  </row>
+
+		  <row rowsep="1">
+			<entry>TIES</entry>
+			<entry>int</entry>
+			<entry>1</entry>
+		  </row>
+
+		  <row rowsep="1">
+			<entry>RATING</entry>
+			<entry>int</entry>
+			<entry>1500</entry>
+		  </row>
+
+		  <row rowsep="1">
+			<entry>RANKING</entry>
+			<entry>int</entry>
+			<entry>3</entry>
+		  </row>
+
+		  <row rowsep="1">
+			<entry>HIGHSCORE</entry>
+			<entry>long</entry>
+			<entry>49807</entry>
 		  </row>
 
 		</tbody>
@@ -915,8 +956,8 @@
 	    <term><emphasis role="bold">TABLE</emphasis></term>
 	    <listitem>
 	      <para>
-		ID number of table at which player is "sitting" or -1
-		if the player is not at a table.
+		ID number of table at which player is "sitting"; -1
+		or not present if the player is not at a table.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -929,6 +970,76 @@
 	      </para>
 	    </listitem>
 	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">WINS</emphasis></term>
+	    <listitem>
+	      <para>
+		The number of wins the player has.  This will be a
+		non-negative integer, if present.  It will not be present
+		if the player has no stats of this type (for whatever
+		reason).  WINS, LOSSES, TIES, and FORFEITS will all be
+		either present or not present (as a group).
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">LOSSES</emphasis></term>
+	    <listitem>
+	      <para>
+		The number of losses the player has - a non-negative
+		integer.  See WINS.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">TIES</emphasis></term>
+	    <listitem>
+	      <para>
+		The number of ties the player has - a non-negative
+		integer.  See WINS.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">FORFEITS</emphasis></term>
+	    <listitem>
+	      <para>
+		The number of forfeits (abandoned games) the player has -
+		a non-negative integer.  See WINS.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">RATING</emphasis></term>
+	    <listitem>
+	      <para>
+		If present, it represents the player's rating.  This is
+		generally done on an ELO scale, although the parameters may
+		differ from those used for Chess.  It will not be given if
+		the player has no rating.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">RANKING</emphasis></term>
+	    <listitem>
+	      <para>
+		If present, provides the absolute ranking of the player.
+		This will be a positive integer.  It will not be given if
+		the player has no ranking.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">HIGHSCORE</emphasis></term>
+	    <listitem>
+	      <para>
+		If present, provides the highest score the player has
+		achieved at the current game.  It will not be given if
+		there is no available highscore for this player.
+	      </para>
+	    </listitem>
+	  </varlistentry>
 	</variablelist>
       </refsect2>
 
@@ -938,6 +1049,12 @@
 	  The PLAYER is contained in a list sent from the server to the client
 	  in response to
 	  <link linkend="req.list">LIST</link> request tag of type 'player'.
+	  It may also be contained within the
+	  <link linkend="msg.update">UPDATE</link> tag send from the server
+	  when player information changes.  If sent as part of a LIST then
+	  the information will be complete - and any omissions are
+	  intentional.  If sent as part of an UPDATE then only some
+	  attributes will be present.
 	</para>
       </refsect2>
     </refsect1>
@@ -1212,7 +1329,11 @@
 	  <link linkend="req.table.join">JOIN</link>,
 	  <link linkend="req.table.leave">LEAVE</link>,
 	  <link linkend="req.chat">CHAT</link> and
-	  <link linkend="req.login">LOGIN</link> requests.
+	  <link linkend="req.login">LOGIN</link> requests.  Note that in
+	  some of these cases (e.g. LIST) the response to the request will be
+	  contained within the RESULT, whereas in others it will not.  The
+	  logic on which is which is reasonable, but nonetheless the lack of 
+	  consistency may be confusing.
 	</para>
       </refsect2>
     </refsect1>
@@ -1375,7 +1496,7 @@
 	    <listitem>
 	      <para>
 		Type of chat message, which can be one of "normal",
-		"beep" and "private"
+		"announce", "beep", "private", or "table".
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1910,7 +2031,7 @@
 
 		  <row rowsep="0">
 		    <entry namest="C1" nameend="C3">
-			  &lt;CHAT TYPE="type" TO="to"&gt;
+			  &lt;CHAT TYPE='type' TO='to'&gt;
 			   &lt;![CDATA[...]]&gt;
 			  &lt;/CHAT&gt;
 			</entry>
@@ -1931,7 +2052,7 @@
 		  <row rowsep="1">
 		    <entry>TO</entry>
 		    <entry>string</entry>
-		    <entry>player name</entry>
+		    <entry>josef</entry>
 		  </row>
 
 		</tbody>
@@ -1949,7 +2070,8 @@
 	    <term><emphasis role="bold">TYPE</emphasis></term>
 	    <listitem>
 	      <para>
-		Chat type. Can be one of "normal", "beep", "private".
+		Chat type. Can be one of "normal", "announce", "beep",
+		"private", or "table".
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1958,8 +2080,10 @@
 	    <listitem>
 	      <para>
 		Name of player who will receive message.
-		This attribute is needed for beep and private messages
-		only, but not for normal chat.
+		This attribute is needed for 'beep' and 'private' messages,
+		but not for 'normal', 'announce', or 'table'.  The client
+		should behave sanely if this contains incorrect data or is
+		not present.
 	      </para>
 	    </listitem>
 	  </varlistentry>
