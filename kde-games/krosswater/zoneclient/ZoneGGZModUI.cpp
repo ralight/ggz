@@ -1,0 +1,240 @@
+// Header file
+#include "ZoneGGZModUI.h"
+
+// GGZ includes
+#include "easysock.h"
+
+// System includes
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+// Constructor
+ZoneGGZModUI::ZoneGGZModUI(QWidget *parent, char *name = NULL)
+: QWidget(parent, name)
+{
+	for(int i = 0; i < 16; i++)
+	{
+		strcpy(ZonePlayers[i], "");
+		ZoneSeats[i] = -1;
+	}
+	ZoneSeat = -1;
+	ZonePlayernum = -1;
+	m_ready = 0;
+	m_turn = 0;
+}
+
+// Destructor
+ZoneGGZModUI::~ZoneGGZModUI()
+{
+}
+
+// private: create socket, connect to fd
+int ZoneGGZModUI::zoneCreateFd(char *modulename)
+{
+	char *zone_name;
+        struct sockaddr_un addr;
+	int len;
+
+	len = strlen(modulename) + strlen(TMPDIR) + 16;
+	if((zone_name = (char*)malloc(len)) == NULL)
+	{
+		ZONEERROR("couldn't allocate zone_name\n");
+		return -1;
+	}
+	sprintf(zone_name, "%s/%s.%d", TMPDIR, modulename, getpid());
+
+	ZONEDEBUG("Listen on: %s\n", zone_name);
+
+	if((zone_fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
+	{
+		ZONEERROR("couldn't create socket\n");
+		return -1;
+	}
+
+	bzero(&addr, sizeof(addr));
+	addr.sun_family = AF_LOCAL;
+	strcpy(addr.sun_path, zone_name);
+	free(zone_name);
+
+	if(::connect(zone_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+	{
+		ZONEERROR("couldn't connect\n");
+		return -1;
+	}
+
+	return 0;
+}
+
+// public: register game module
+void ZoneGGZModUI::ZoneRegister(char *modulename)
+{
+
+	if(zoneCreateFd(modulename) == -1)
+	{
+		ZONEERROR("couldn't create socket\n");
+		return;
+	}
+
+	zone_sn = new QSocketNotifier(zone_fd, QSocketNotifier::Read);
+	connect(zone_sn, SIGNAL(activated(int)), SLOT(slotZoneInput()));
+
+	setCaption(modulename);
+}
+
+// private: get standard input from network
+void ZoneGGZModUI::slotZoneInput()
+{
+	int op;
+
+	if (es_read_int(zone_fd, &op) < 0)
+	{
+		ZONEERROR("couldn't read op\n");
+		return;
+	}
+
+	ZONEDEBUG("** motherobject (RAW) received: %i\n", op);
+
+	switch(op)
+	{
+		case ZoneGGZ::seat:
+			ZONEDEBUG("--> zoneGetSeats()\n");
+			zoneGetSeats();
+			break;
+		case ZoneGGZ::players:
+			ZONEDEBUG("--> zoneGetPlayers()\n");
+			zoneGetPlayers();
+			break;
+		case ZoneGGZ::rules:
+			ZONEDEBUG("--> zoneGetRules()\n");
+			zoneGetRules();
+			break;
+		case ZoneGGZ::turn:
+			ZONEDEBUG("--> zoneCallTurn()\n");
+			zoneCallTurn();
+			break;
+		case ZoneGGZ::turnover:
+			ZONEDEBUG("--> zoneCallTurnOver()\n");
+			zoneCallTurnOver();
+			break;
+		case ZoneGGZ::over:
+			ZONEDEBUG("--> zoneCallOver()\n");
+			zoneCallOver();
+			break;
+		case ZoneGGZ::invalid:
+			ZONEDEBUG("--> zoneCallInvalid()\n");
+			zoneCallInvalid();
+			break;
+		default:
+			emit signalZoneInput(op);
+	}
+}
+
+// private: receive player's seat
+void ZoneGGZModUI::zoneGetSeats()
+{
+	if(es_read_int(zone_fd, &ZoneSeat) < 0)
+	{
+		ZONEERROR("couldn't read ZoneSeat\n");
+		return;
+	}
+	ZONEDEBUG("** received seat: %i\n", ZoneSeat);
+}
+
+// private: get all player and bot names and seat assignments
+void ZoneGGZModUI::zoneGetPlayers()
+{
+	if (es_read_int(zone_fd, &ZonePlayernum) < 0)
+	{
+		ZONEERROR("couldn't read ZonePlayernum\n");
+		return;
+	}
+	ZONEDEBUG("** received playernum: %i\n", ZonePlayernum);
+
+	m_ready = 1;
+	m_players = 0;
+	for(int i = 0; i < ZonePlayernum; i++)
+	{
+		if (es_read_int(zone_fd, &ZoneSeats[i]) < 0)
+		{
+			ZONEERROR("couldn't read ZoneSeats[]\n");
+			return;
+		}
+		ZONEDEBUG("** received ZoneSeats[i]: %i\n", ZoneSeats[i]);
+
+		if(ZoneSeats[i] != ZONE_SEAT_OPEN)
+		{
+			if (es_read_string(zone_fd, (char*)&ZonePlayers[i], 17) < 0)
+			{
+				ZONEERROR("couldn't read ZonePlayers[]\n");
+				return;
+			}
+			ZONEDEBUG("** received player: %s\n", ZonePlayers[i]);
+			m_players++;
+		}
+		else m_ready = 0;
+	}
+}
+
+// private: receive rules
+void ZoneGGZModUI::zoneGetRules()
+{
+	if(es_read_int(zone_fd, &ZoneRules) < 0)
+	{
+		ZONEERROR("couldn't read ZoneRules\n");
+		return;
+	}
+	if(es_read_int(zone_fd, &ZoneMaxplayers) < 0)
+	{
+		ZONEERROR("couldn't read ZoneMaxplayers\n");
+		return;
+	}
+	ZONEDEBUG("** received rules: %i\n", ZoneRules);
+	ZONEDEBUG("** received maxplayers: %i\n", ZoneMaxplayers);
+	if(m_ready) emit signalZoneReady();
+	if(ZoneRules == ZoneGGZ::realtime) m_turn = 1;
+}
+
+int ZoneGGZModUI::fd()
+{
+	return zone_fd;
+}
+
+void ZoneGGZModUI::zoneCallTurn()
+{
+	m_turn = 1;
+	emit signalZoneTurn();
+}
+
+void ZoneGGZModUI::zoneCallTurnOver()
+{
+	m_turn = 0;
+	emit signalZoneTurnOver();
+}
+
+void ZoneGGZModUI::zoneCallOver()
+{
+	emit signalZoneOver();
+}
+
+int ZoneGGZModUI::zoneTurn()
+{
+	return m_turn;
+}
+
+void ZoneGGZModUI::zoneCallInvalid()
+{
+	emit signalZoneInvalid();
+}
+
+int ZoneGGZModUI::zoneMe()
+{
+	return ZoneSeat;
+}
+
+int ZoneGGZModUI::zonePlayers()
+{
+	return m_players;
+}
