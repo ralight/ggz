@@ -253,7 +253,7 @@ int ggzcore_event_remove(const GGZEventID id, const unsigned int callback_id)
 	struct _GGZCallback *cur, *prev = NULL;
 
 	cur = ggz_events[id].callbacks;
-	while (cur && cur->id != id) {
+	while (cur && cur->id != callback_id) {
 		prev = cur;
 		cur = cur->next;
 	}
@@ -262,14 +262,14 @@ int ggzcore_event_remove(const GGZEventID id, const unsigned int callback_id)
 	if (!cur) {
 		ggzcore_debug(GGZ_DBG_EVENT, 
 			      "Can't find callback %d to remove from event %s",
-			      id, ggz_events[id].name);
+			      callback_id, ggz_events[id].name);
 		return -1;
 	}
 	else {
 		ggzcore_debug(GGZ_DBG_EVENT, 
-			      "Removing callback %d from event %s", id, 
-			      ggz_events[id].name);
-
+			      "Removing callback %d from event %s", 
+			      callback_id, ggz_events[id].name);
+		
 		/* Special case if it was first in the list */
 		if (!prev)
 			ggz_events[id].callbacks = cur->next;
