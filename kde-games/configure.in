@@ -46,6 +46,9 @@ AC_OUTPUT(Makefile
 	KReversi/Makefile
 	KReversi/module.dsc
 	KReversi/pixmaps/Makefile
+	KReversi/pixmaps/blend/Makefile
+	KReversi/pixmaps/default/Makefile
+	KReversi/pixmaps/gtk-client/Makefile
 	krosswater/Makefile
 	krosswater/module.dsc
 	krosswater/zoneclient/Makefile
