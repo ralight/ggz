@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3595 2002-03-17 00:14:56Z jdorje $
+ * $Id: common.c 3743 2002-04-05 05:40:22Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -146,11 +146,6 @@ void restore_game_state()
 	game.state = game.saved_state;
 }
 
-static char *player_messages[] =
-	{ "RSP_NEWGAME", "RSP_OPTIONS", "RSP_PLAY", "RSP_BID",
-	"REQ_SYNC"
-};
-
 /* Handle message from player */
 void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 {
@@ -164,13 +159,8 @@ void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	if (read_opcode(fd, (int*)&op) < 0)
 		return;
 
-	if (op >= 0 && op <= REQ_SYNC)
-		ggzdmod_log(game.ggz, "Received %d (%s) from player %d/%s.",
-			    op, player_messages[op], p, get_player_name(p));
-	else
-		ggzdmod_log(game.ggz,
-			    "Received unknown message %d from player %d/%s.",
-			    op, p, get_player_name(p));
+	ggzdmod_log(game.ggz, "Received %d (%s) from player %d/%s.",
+	            op, get_client_opcode_name(op), p, get_player_name(p));
 
 	switch (op) {
 	case MSG_LANGUAGE:
