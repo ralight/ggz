@@ -72,3 +72,94 @@ void combat_options_string_read(char *optstr, combat_game *_game, int num_player
 		printf("Unsuported option! (%d)\n", *optstr);
 }
 
+int combat_check_move(combat_game *_game, int from, int to) {
+	int f_s, f_u, t_s, t_u, t_t;
+	int x1, x2, y1, y2, dx, dy, dir = 0;
+	int a;
+
+	// Check range
+	if (from < 0 || from >= _game->width*_game->height || to < 0 || to >= _game->width*_game->height)
+		return CBT_ERROR_OUTRANGE;
+
+	// Gets seat and unit
+	f_s = GET_OWNER(_game->map[from].unit);
+	f_u = LAST(_game->map[from].unit);
+	t_s = GET_OWNER(_game->map[to].unit);
+	t_u = LAST(_game->map[to].unit);
+	t_t = LAST(_game->map[to].type);
+
+	/* Checks ownership */
+
+	// Checks if the f_s is of the current player
+	if (f_s != _game->turn)
+		return CBT_ERROR_WRONGTURN;
+
+	// Checks if the TO units belongs to the current player
+	if (t_s == _game->turn)
+		return CBT_ERROR_SUICIDAL;
+
+	/* Checks units */
+
+	// Checks if the FROM unit is a moving one 
+	// (!= BOMB, != FLAG)
+	if (f_u <= U_BOMB)
+		return CBT_ERROR_NOTMOVING;
+
+	/* Checks terrain */
+
+	// Checks if the TO terrain is empty
+	if (t_t != T_OPEN)
+		return CBT_ERROR_NOTOPEN;
+
+	/* Now checks the validity of the movement */
+
+	// Gets positions
+	x1 = X(from, _game->width);
+	x2 = X(to, _game->width);
+	y1 = Y(from, _game->width);
+	y2 = Y(to, _game->width);
+
+	dx = x2 - x1;
+	dy = y2 - y1;
+
+	// Checks if it is a move
+	if (from == to)
+		return CBT_ERROR_MOVE_NOMOVE;
+
+	// Checks if its not a diagonal move
+	if (abs(dx) > 0 && abs(dy) > 0)
+		return CBT_ERROR_MOVE_DIAGONAL;
+
+	// Checks if it has distance 1
+	if (f_u != U_SCOUT && abs(dx + dy) != 1)
+		return CBT_ERROR_MOVE_BIGMOVE;
+	else if (f_u == U_SCOUT) {
+		// Normalizes the vectors
+		if (dx != 0)
+			dir = dx/abs(dx);
+		if (dy != 0)
+			dir = dy/abs(dy) * _game->width;
+		// Checks what exists between the FROM and the TO
+		for (a = from + dir; a != to; a += dir) {
+			if (LAST(_game->map[a].type) != T_OPEN || LAST(_game->map[a].unit) != U_EMPTY)
+				return CBT_ERROR_MOVE_SCOUT;
+		}
+		// Check if he is moving >1 and attacking at the same time
+		if (abs(dx+dy) != 1 && t_u != U_EMPTY)
+			return CBT_ERROR_MOVE_SCOUT;
+	}
+
+	// Now error until now! Then its ok!
+	
+	if (t_u == U_EMPTY)
+		return CBT_CHECK_MOVE;		
+
+	if (t_u != U_EMPTY)
+		return CBT_CHECK_ATTACK;
+
+	// This really shouldn't happen!!!!
+	return CBT_ERROR_CRAZY;
+
+}
+	
+

@@ -415,84 +415,26 @@ void game_send_move_error(int seat, int error) {
 int game_get_move(int seat) {
 	int from, to;
 	int fd = ggz_seats[seat].fd;
+	int a;
 
 	if (es_read_int(fd, &from) < 0 || es_read_int(fd, &to) )
 		return CBT_ERROR_SOCKET;
 
-	// Check if they are on the range
-	if (from < 0 || from >= cbt_game.width*cbt_game.height || to < 0 || to >= cbt_game.width*cbt_game.height)
-		return CBT_ERROR_OUTRANGE;
-
-	ggz_debug("Seat: %d\tOwner: %d\n", seat, GET_OWNER(cbt_game.map[from].unit));
-	// Check if the FROM belongs to the current player
-	if (GET_OWNER(cbt_game.map[from].unit) != seat) {
-		ggz_debug("Owner: %d, Seat: %d", GET_OWNER(cbt_game.map[from].unit), seat);
-		return CBT_ERROR_INVALIDMOVE;
-	}
-
-	ggz_debug("Turn: %d");
-	if (seat != cbt_game.turn)
-		return CBT_ERROR_WRONGTURN;
-
-	// Check if the FROM unit is a moving one
-	// (!= BOMB, != FLAG)
-	if (LAST(cbt_game.map[from].unit) <= U_BOMB)
-		return CBT_ERROR_NOTMOVING;
-
-	// Check if the TO doesn't belong to the current player
-	if (GET_OWNER(cbt_game.map[to].unit) == seat)
-		return CBT_ERROR_SUICIDAL;
-
-	// Check if the TO is empty (not lake || null)
-	if (LAST(cbt_game.map[to].type) != T_OPEN)
-		return CBT_ERROR_NOTOPEN;
+	a = combat_check_move(&cbt_game, from, to);
 
 	// Now checks if its a attack or a move
-	if (LAST(cbt_game.map[to].unit) == U_EMPTY)
+	if (a == CBT_CHECK_MOVE)
 		return game_handle_move(seat, from, to);
 
-	if (GET_OWNER(cbt_game.map[to].unit) != seat && LAST(cbt_game.map[to].unit) != U_EMPTY)
+	if (a == CBT_CHECK_ATTACK)
 		return game_handle_attack(seat, from, to);
 
-	return CBT_ERROR_CRAZY;
+	// An error ocurred
+	return a;
 }
 
 int game_handle_move(int seat, int from, int to) {
-	int fd, a, x1, x2, y1, y2, dx, dy, dir = 0;
-
-	x1 = X(from, cbt_game.width);
-	x2 = X(to, cbt_game.width);
-	y1 = Y(from, cbt_game.width);
-	y2 = Y(to, cbt_game.width);
-
-	// Check if its not a diagonal one
-	if (x1 != x2 && y1 != y2) {
-		MOVE_ERROR("diagonal move");
-		return CBT_ERROR_INVALIDMOVE;
-	}
-
-	dx = x2 - x1;
-	dy = y2 - y1;
-
-	// Check if only of distance 1
-	if (LAST(cbt_game.map[from].unit) != U_SCOUT && abs(dx + dy) != 1) {
-		MOVE_ERROR("distance > 1 and not a scout");
-		return CBT_ERROR_INVALIDMOVE;
-	} else if (LAST(cbt_game.map[from].unit) == U_SCOUT) {
-		// It is a scout!
-		// Checks everything between
-		if (dx != 0)
-			dir = dx/abs(dx);
-		if (dy != 0)
-			dir = dy/abs(dy) * cbt_game.width;
-		for (a = from; a != to; a += dir) {
-			if (a != from && (LAST(cbt_game.map[a].type) != T_OPEN ||
-					LAST(cbt_game.map[a].unit) != U_EMPTY)) {
-				MOVE_ERROR("invalid scout move");
-				return CBT_ERROR_INVALIDMOVE;
-			}
-		}
-	}
+	int fd, a;
 
 	// Makes the move!
 	cbt_game.map[to].unit = OWNER(seat) + LAST(cbt_game.map[from].unit);
@@ -513,52 +455,13 @@ int game_handle_move(int seat, int from, int to) {
 }
 	
 	
-int game_handle_attack(int seat, int from, int to) {
-	int fd, a, x1, x2, y1, y2, dx, dy, t_u, f_u, seat2, dir = 0;
+int game_handle_attack(int f_s, int from, int to) {
+	int fd, a, t_u, f_u, t_s;
 
-	x1 = X(from, cbt_game.width);
-	x2 = X(to, cbt_game.width);
-	y1 = Y(from, cbt_game.width);
-	y2 = Y(to, cbt_game.width);
-
-	// Check if its not a diagonal one
-	if (x1 != x2 && y1 != y2) {
-		MOVE_ERROR("diagonal move");
-		return CBT_ERROR_INVALIDMOVE;
-	}
-
-	dx = x2 - x1;
-	dy = y2 - y1;
-
-	// Check if only of distance 1
-	if (LAST(cbt_game.map[from].unit) != U_SCOUT && abs(dx + dy) != 1) {
-		MOVE_ERROR("dist > 1 and not a scout");
-		return CBT_ERROR_INVALIDMOVE;
-	} else if (LAST(cbt_game.map[from].unit) == U_SCOUT) {
-		// It is a scout!
-		// Checks everything between
-		if (dx != 0)
-			dir = dx/abs(dx);
-		if (dy != 0)
-			dir = dy/abs(dy) * cbt_game.width;
-		for (a = from; a != to; a += dir) {
-			if (a != from && (LAST(cbt_game.map[a].type) != T_OPEN ||
-					LAST(cbt_game.map[a].unit) != U_EMPTY)) {
-				MOVE_ERROR("invaolid scout attack");
-				return CBT_ERROR_INVALIDMOVE;
-			}
-		}
-		// Sanity check (can't move and attack at the same time!)
-		if (abs(dx+dy) != 1 && LAST(cbt_game.map[to].unit) != U_EMPTY) {
-			MOVE_ERROR("super scout?");
-			return  CBT_ERROR_INVALIDMOVE;
-		}
-	}
-
-	// Makes the move!
-	t_u = LAST(cbt_game.map[to].unit);
-	seat2 = GET_OWNER(cbt_game.map[to].unit);
+	// Gets variables
 	f_u = LAST(cbt_game.map[from].unit);
+	t_u = LAST(cbt_game.map[to].unit);
+	t_s = GET_OWNER(cbt_game.map[to].unit);
 
 	switch (t_u) {
 		case U_FLAG:
@@ -600,27 +503,26 @@ int game_handle_attack(int seat, int from, int to) {
 				t_u *= -1;
 			break;
 		default:
-			MOVE_ERROR("peaceful attack");
-			return CBT_ERROR_INVALIDMOVE;
+			return CBT_ERROR_CRAZY;
 	}
 
 	// Now do the tough work
 	if (f_u < 0 && t_u >= 0) {
 		// The from unit won!
 		cbt_game.map[from].unit = U_EMPTY;
-		cbt_game.map[to].unit = OWNER(seat) - f_u;
-		cbt_game.army[seat2][t_u]--;
+		cbt_game.map[to].unit = OWNER(f_s) - f_u;
+		cbt_game.army[t_s][t_u]--;
 	} else if (f_u >= 0 && t_u < 0) {
 		// The to unit won!
 		cbt_game.map[from].unit = U_EMPTY;
-		cbt_game.map[to].unit = OWNER(seat2) - t_u;
-		cbt_game.army[seat][f_u]--;
+		cbt_game.map[to].unit = OWNER(t_s) - t_u;
+		cbt_game.army[f_s][f_u]--;
 	} else if (f_u < 0 && t_u < 0) {
 		// Both won (or lost, whatever!)
 		cbt_game.map[from].unit = U_EMPTY;
 		cbt_game.map[to].unit = U_EMPTY;
-		cbt_game.army[seat][-f_u]--;
-		cbt_game.army[seat2][-t_u]--;
+		cbt_game.army[f_s][-f_u]--;
+		cbt_game.army[t_s][-t_u]--;
 	} else {
 		ggz_debug("Problems in the attack logic!");
 		return CBT_ERROR_CRAZY;

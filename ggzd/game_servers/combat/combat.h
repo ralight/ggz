@@ -314,6 +314,8 @@
 #define CBT_REQ_SYNC 11
 #define CBT_MSG_SYNC 12
 
+/* CHECK MOVE RETURN VALUES */
+
 // Error messages
 #define CBT_ERROR_SOCKET -1
 #define CBT_ERROR_OUTRANGE -2
@@ -322,7 +324,16 @@
 #define CBT_ERROR_NOTOPEN -5
 #define CBT_ERROR_CRAZY -6
 #define CBT_ERROR_NOTMOVING -7
-#define CBT_ERROR_INVALIDMOVE -8
+
+// Invalid move errors
+#define CBT_ERROR_MOVE_NOMOVE -8
+#define CBT_ERROR_MOVE_DIAGONAL -9
+#define CBT_ERROR_MOVE_BIGMOVE -10
+#define CBT_ERROR_MOVE_SCOUT -11
+
+// Ok messages
+#define CBT_CHECK_MOVE 1
+#define CBT_CHECK_ATTACK 2
 
 
 
@@ -346,3 +357,4 @@ typedef struct combat_game_struct {
 // Commom functions
 char *combat_options_string_write(char *, combat_game *);
 void combat_options_string_read(char *, combat_game *, int);
+int combat_check_move(combat_game *, int, int);
