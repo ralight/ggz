@@ -379,7 +379,8 @@ if test "$TLS_TYPE" = no; then
   else
     AC_MSG_WARN([No TLS implementation found - using 'no'!])
   fi
-  AC_DEFINE_UNQUOTED(GGZ_TLS_NONE)
+  AC_DEFINE_UNQUOTED([GGZ_TLS_NONE], 1,
+		     [Define if no TLS is to be used])
 fi
 
 

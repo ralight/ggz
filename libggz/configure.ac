@@ -39,51 +39,63 @@ dnl Check for PF_LOCAL/PF_UNIX
 dnl ==========================
 AC_MSG_CHECKING([for PF_LOCAL])
 AC_EGREP_CPP(PF_LOCAL, [ #include <sys/socket.h>
-                 PF_LOCAL ], AC_MSG_RESULT(no) 
+                 PF_LOCAL ], [AC_MSG_RESULT(no) 
 			     AC_MSG_CHECKING([for PF_UNIX])
 			     AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
 				          PF_UNIX ], AC_MSG_RESULT(no)
-				                     AC_MSG_ERROR(*** Cannot PF_LOCAL or PF_UNIX),
+				                     AC_MSG_ERROR([*** Cannot PF_LOCAL or PF_UNIX]),
                                           AC_MSG_RESULT(yes)
-					  AC_DEFINE(PF_LOCAL, PF_UNIX)
-			                  AC_DEFINE(AF_LOCAL, AF_UNIX)), 
+					  AC_DEFINE([PF_LOCAL], PF_UNIX,
+						    [PF_UNIX is available])
+			                  AC_DEFINE([AF_LOCAL], AF_UNIX,
+						    [AF_UNIX is available]))], 
              AC_MSG_RESULT(yes))
 
 
 dnl Check for SUN_LEN
 dnl =================
 AC_MSG_CHECKING([for SUN_LEN])
-AC_TRY_LINK([
-    #include<sys/types.h>
-    #include<sys/un.h>], 
+AC_TRY_LINK([#include<sys/types.h>
+	     #include<sys/un.h>
+	    ],
     [struct sockaddr_un su; int i = SUN_LEN(&su);], 
-    AC_MSG_RESULT(yes)
-    AC_DEFINE(HAVE_SUN_LEN), AC_MSG_RESULT(no))
+    [AC_MSG_RESULT(yes)
+     AC_DEFINE([HAVE_SUN_LEN], 1, [Define if the SUN_LEN macro exists])],
+    AC_MSG_RESULT(no))
 
 
 dnl Check for msghdr member msg_controllen
 dnl ======================================
-AC_EGREP_HEADER(msg_controllen, sys/socket.h, AC_DEFINE(HAVE_MSGHDR_MSG_CONTROL)
+AC_EGREP_HEADER(msg_controllen, sys/socket.h,
+		AC_DEFINE([HAVE_MSGHDR_MSG_CONTROL], 1,
+			  [Define if msghdr has a msg_controllen member])
 			AC_MSG_CHECKING([for CMSG_ALIGN])
 			AC_TRY_LINK([#include<sys/types.h>
 						#include<sys/socket.h>],
 				[int i = CMSG_ALIGN(0);], 
 				AC_MSG_RESULT(yes)
-				AC_DEFINE(HAVE_CMSG_ALIGN), AC_MSG_RESULT(no))
+				AC_DEFINE([HAVE_CMSG_ALIGN], 1,
+					  [Define if CMSG_ALIGN is available]),
+				AC_MSG_RESULT(no))
 
 			AC_MSG_CHECKING([for CMSG_LEN])
 			AC_TRY_LINK([#include<sys/types.h>
 						#include<sys/socket.h>],
 				[int i = CMSG_LEN(0);], 
 				AC_MSG_RESULT(yes)
-				AC_DEFINE(HAVE_CMSG_LEN), AC_MSG_RESULT(no))
+				AC_DEFINE([HAVE_CMSG_LEN], 1,
+					  [Define if CMSG_LEN is available]),
+				AC_MSG_RESULT(no))
 
 			AC_MSG_CHECKING([for CMSG_SPACE])
 			AC_TRY_LINK([#include<sys/types.h>
-						#include<sys/socket.h>],
+				     #include<sys/socket.h>
+				    ],
 				[int i = CMSG_SPACE(0);], 
 				AC_MSG_RESULT(yes)
-				AC_DEFINE(HAVE_CMSG_SPACE), AC_MSG_RESULT(no))
+				AC_DEFINE([HAVE_CMSG_SPACE], 1,
+					  [Define if CMSG_SPACE is available]),
+				AC_MSG_RESULT(no))
 )
 				       
 
@@ -125,16 +137,21 @@ dnl Encryption library: libgcrypt
 dnl =============================
 SRCSUBDIRS="."
 if test "$enable_gcrypt" = yes; then
-	AC_CHECK_LIB(gcrypt, gcry_check_version,
-		[
-			AC_CHECK_HEADER(gcrypt.h,
-				[
-					AC_DEFINE_UNQUOTED(USE_GCRYPT, 1)
-					LDADD="$LDADD -lgcrypt"
-				],
-				[AC_MSG_WARN([*** No gcrypt-dev found - compiling without encryption support])])
-		],
-		[AC_MSG_WARN([*** No gcrypt found - compiling without encryption support])])
+  AC_CHECK_LIB(gcrypt, gcry_check_version,
+    [
+      AC_CHECK_HEADER(gcrypt.h,
+        [
+          AC_DEFINE_UNQUOTED([USE_GCRYPT], 1,
+                             [Define if you have the gcryp lib])
+          LDADD="$LDADD -lgcrypt"
+	],
+	[
+          AC_MSG_WARN([*** No gcrypt-dev found - compiling without encryption support])
+        ])
+    ],
+    [
+      AC_MSG_WARN([*** No gcrypt found - compiling without encryption support])
+    ])
 fi
 
 dnl Encryption: TLS library
@@ -159,10 +176,10 @@ dnl ===========
 dnl This defines either DEBUG or NDEBUG.  We could provide a third option
 dnl where neither are defined.
 if test "$enable_debug" = yes; then
-    AC_DEFINE(DEBUG)
+    AC_DEFINE([DEBUG], 1, [Define to enable debugging])
     DFLAGS="DEBUG"
 else
-    AC_DEFINE(NDEBUG)
+    AC_DEFINE([NDEBUG], 1, [Define to disable debugging])
     DFLAGS="NDEBUG"
 fi
 
