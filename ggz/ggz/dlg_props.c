@@ -42,6 +42,8 @@
 GtkWidget *dlg_props;
 GtkWidget *dlg_props_font;
 extern GtkWidget *main_win;
+extern GtkWidget* dlg_login;
+
 
 /* Local callbacks for properties dialog */
 static void props_profiles_reload(void);
@@ -498,9 +500,16 @@ static void props_update(void)
 {
 	GtkWidget *tmp;
 	GdkFont *font;
+	GList* items;
 
 	/* Servers Tab */
 	server_profiles_save();
+
+	/* If the login dialog is open refill the combo box */
+	tmp = lookup_widget(dlg_login, "profile_combo");
+	items = server_get_name_list();
+	if (tmp && items) 
+		gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
 
 	/* Chat Tab */
         tmp = lookup_widget(dlg_props, "chat_font");
