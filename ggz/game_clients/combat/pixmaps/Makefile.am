@@ -1,9 +1,8 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4660 2002-09-23 07:54:17Z jdorje $
+#  $Id: Makefile.am 4666 2002-09-23 12:33:57Z jdorje $
 
 SUBDIRS = .
 
-# We can't use wildcards (*) here because it will break "make dist"!
 default_DATA =	default/bomb.xpm	\
 		default/captain.xpm	\
 		default/colonel.xpm	\
@@ -16,6 +15,8 @@ default_DATA =	default/bomb.xpm	\
 		default/scout.xpm	\
 		default/sergeant.xpm	\
 		default/spy.xpm
+
+# $(DESTDIR) prepended automatically
 defaultdir = $(ggzdatadir)/combat/pixmaps/default
 
 EXTRA_DIST = $(default_DATA)

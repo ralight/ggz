@@ -1,10 +1,13 @@
+## Process this file with automake to produce Makefile.in
+#  $Id: Makefile.am 4666 2002-09-23 12:33:57Z jdorje $
+
 SUBDIRS = .
 
 XGETTEXT = xgettext
 MSGMERGE = msgmerge
 MSGFMT = msgfmt
 
-MODULES = hastings tictactoe dots chess combat ggzcards reversi chinese-checkers lapocha spades
+MODULES = chess chinese-checkers combat dots ggzcards hastings lapocha reversi spades tictactoe
 
 messages:
 	@for i in $(MODULES); do \
@@ -20,7 +23,7 @@ install-data-local:
 	@for i in $(MODULES); do \
 		for j in `cd $$i; ls -1 *.po`; do \
 			country=`echo $$j | cut -d "." -f 1`; \
-			dir=$(prefix)/share/locale/$$country/LC_MESSAGES; \
+			dir=$(DESTDIR)$(prefix)/share/locale/$$country/LC_MESSAGES; \
 			echo "installing $$dir/$$i.mo ($$j)"; \
 			install -d $$dir; \
 			$(MSGFMT) -o $$dir/$$i.mo $$i/$$j; \

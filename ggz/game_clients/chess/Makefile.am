@@ -1,40 +1,44 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3631 2002-03-23 20:02:30Z jdorje $
-
-EXTRA_DIST = module.dsc.in bitmaps/*.xpm
+#  $Id: Makefile.am 4666 2002-09-23 12:33:57Z jdorje $
 
 SUBDIRS = libcgc .
 
-INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/common
+INCLUDES = -I$(top_srcdir)/common
+CFLAGS = @GTK_CFLAGS@ @CFLAGS@
+
+EXTRA_DIST = module.dsc.in
 
 install-data-local:
-	@$(NORMAL_INSTALL)
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
 
-uninstall:
-	@$(NORMAL_UNINSTALL)
-	-$(GGZ_CONFIG) --remove --modfile=module.dsc
-
+uninstall-local:
+	-$(GGZ_CONFIG) -D --remove --modfile=module.dsc
 
 ggzexecmod_PROGRAMS = ggz.chess
 
-ggz_chess_SOURCES = main_win.c \
-                    main_win.h \
-                    support.c \
-                    support.h \
-                    callbacks.c \
-                    callbacks.h \
-                    chess.h \
-                    board.c \
-                    board.h \
-                    game.c \
-                    game.h \
-                    net.c \
-                    net.h \
-                    popup.c \
-                    popup.h \
-                    main.c
+ggz_chess_SOURCES =				\
+		board.c		board.h		\
+		callbacks.c	callbacks.h	\
+		chess.h				\
+		game.c		game.h		\
+		main.c				\
+		main_win.c	main_win.h	\
+		net.c		net.h		\
+		popup.c		popup.h		\
+		support.c	support.h	\
+						\
+		bitmaps/bishop_b.xpm		\
+		bitmaps/bishop_w.xpm		\
+		bitmaps/king_b.xpm		\
+		bitmaps/king_w.xpm		\
+		bitmaps/knight_b.xpm		\
+		bitmaps/knight_w.xpm		\
+		bitmaps/pawn_b.xpm		\
+		bitmaps/pawn_w.xpm		\
+		bitmaps/queen_b.xpm		\
+		bitmaps/queen_w.xpm		\
+		bitmaps/rook_b.xpm		\
+		bitmaps/rook_w.xpm
 
-CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_chess_LDADD = @GTK_LIBS@ $(LDADD) libcgc/libcgc.a \
-		  $(top_builddir)/common/libgtk-games.a
+			$(top_builddir)/common/libgtk-games.a

@@ -1,22 +1,20 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 4064 2002-04-23 19:58:44Z jdorje $
+# $Id: Makefile.am 4666 2002-09-23 12:33:57Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
 SUBDIRS = common client .
 
-INCLUDES = @GTK_CFLAGS@ \
-	   -I$(top_srcdir)/common/ \
-	   -I$(top_srcdir)/ggzcards/common \
-	   -I$(top_srcdir)/ggzcards/client
+INCLUDES =	-I$(top_srcdir)/common/ \
+		-I$(top_srcdir)/ggzcards/common \
+		-I$(top_srcdir)/ggzcards/client
+CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 
 install-data-local:
-	@$(NORMAL_INSTALL)
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
 
-uninstall:
-	@$(NORMAL_UNINSTALL)
-	-$(GGZ_CONFIG) --remove --modfile=module.dsc
+uninstall-local:
+	-$(GGZ_CONFIG) -D --remove --modfile=module.dsc
 
 ggzexecmod_PROGRAMS = ggz.ggzcards
 
@@ -39,8 +37,6 @@ ggz_ggzcards_SOURCES = \
 	table.c table.h \
 	cards-b1.xpm cards-b2.xpm cards-b3.xpm cards-b4.xpm \
 	cards-1.xpm cards-2.xpm cards-3.xpm cards-4.xpm
-
-CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 
 # NOTE: it is necessary to LDADD the libraries twice to get things to work...
 ggz_ggzcards_LDADD = @GTK_LIBS@ $(LDADD) \
