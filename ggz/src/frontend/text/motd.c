@@ -39,7 +39,7 @@ void motd_print_line(char *line)
         char outline[1024];
         int lindex=0;
         int oindex=0;                          
-        int color_index=9; /* Black */
+        int color_index=0; /* Black */
         int letter;
                         
         while(line[lindex] != '\0')
@@ -54,7 +54,18 @@ void motd_print_line(char *line)
                                 if ((letter>=0) && (letter<=9))
                                 {
                                         color_index=atoi(&line[lindex]);
-					if (color_index == 1)
+					if (color_index == 0)
+					{
+						out[oindex] = '\e';
+						out[oindex+1] = '[';
+						out[oindex+2] = '0';
+						out[oindex+3] = 'm';
+						out[oindex+4] = '\e';
+						out[oindex+5] = '[';
+						out[oindex+6] = '3';
+						out[oindex+7] = '7';
+						out[oindex+8] = 'm';
+					} else if (color_index == 1)
 					{
 						out[oindex] = '\e';
 						out[oindex+1] = '[';
@@ -162,10 +173,7 @@ void motd_print_line(char *line)
         }
 	/* Remove the \n as we addone in output_text */
         out[oindex-1]='\0';
-//        gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
-//                        &colors[color_index], NULL, out, -1);
 	output_text(out);
-
 }
 
 
