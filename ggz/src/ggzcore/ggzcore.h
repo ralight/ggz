@@ -42,17 +42,34 @@ typedef enum {
 } GGZOptionFlags;
 
 
+/* Debugging categories */
+typedef enum {
+	GGZ_DBG_EVENT     = 0x00000001,
+	GGZ_DBG_NET       = 0x00000002,
+	GGZ_DBG_USER      = 0x00000004,
+	GGZ_DBG_SERVER    = 0x00000008,
+	GGZ_DBG_CONF      = 0x00000010,
+	GGZ_DBG_POLL      = 0x00000020,
+	GGZ_DBG_STATE     = 0x00000040,
+	GGZ_DBG_PLAYER    = 0x00000080,
+	GGZ_DBG_ROOM      = 0x00000100,
+	GGZ_DBG_TABLE     = 0x00000200,
+	GGZ_DBG_GAMETYPE  = 0x00000400,
+	GGZ_DBG_ALL       = 0xFFFFFFFF
+} GGZDebugLevel;
+
+
 /* Options structure for ggzcore library */
 typedef struct _GGZOptions {
 	
 	/* Option flags */
 	GGZOptionFlags flags;
 
-	/* Global config file */
-	char* global_conf;
+	/* Debugging file */
+	char* debug_file;
 
-	/* User config file */
-	char* user_conf;
+	/* Debugging levels */
+	GGZDebugLevel debug_levels;
 
 } GGZOptions;
 
@@ -336,23 +353,6 @@ char** ggzcore_player_get_names(void);
 int ggzcore_player_get_table(char *name);
 
 
-/* Debugging categories */
-typedef enum {
-	GGZ_DBG_EVENT     = 0x00000001,
-	GGZ_DBG_NET       = 0x00000002,
-	GGZ_DBG_USER      = 0x00000004,
-	GGZ_DBG_SERVER    = 0x00000008,
-	GGZ_DBG_CONF      = 0x00000010,
-	GGZ_DBG_POLL      = 0x00000020,
-	GGZ_DBG_STATE     = 0x00000040,
-	GGZ_DBG_PLAYER    = 0x00000080,
-	GGZ_DBG_ROOM      = 0x00000100,
-	GGZ_DBG_TABLE     = 0x00000200,
-	GGZ_DBG_GAMETYPE  = 0x00000400,
-	GGZ_DBG_ALL       = 0xFFFFFFFF
-} GGZDebugLevel;
-
-
 void ggzcore_debug(const GGZDebugLevel level, const char *fmt, ...);
 
 void ggzcore_error_sys(const char *fmt, ...);
@@ -363,6 +363,18 @@ void ggzcore_error_msg(const char *fmt, ...);
 
 void ggzcore_error_msg_exit(const char *fmt, ...);
 
+
+/* ggzcore_conf_initialize()
+ *	Opens the global and/or user configuration files for the frontend.
+ *	Either g_path or u_path can be NULL if the file is not to be used.
+ *	The user config file will be created if it does not exist.
+ *
+ *	Returns:
+ *	  -1 on error
+ *	  0 on success
+ */
+int ggzcore_conf_initialize	(char	*g_path,
+				 char	*u_path);
 
 /* ggzcore_conf_write_string() - Write a string to the user config file
  *

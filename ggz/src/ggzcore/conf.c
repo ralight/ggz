@@ -70,7 +70,7 @@ int make_path(char *full, mode_t mode);
  *	  -1 on error
  *	  0 on success
  */
-int _ggzcore_conf_initialize(char *g_path, char *u_path)
+int ggzcore_conf_initialize(char *g_path, char *u_path)
 {
 	int	t_file;
 

@@ -38,18 +38,20 @@
 
 int ggzcore_init(GGZOptions options)
 {
+	/*
 	if (options.flags & GGZ_OPT_PARSER) {
 		ggzcore_debug(GGZ_DBG_CONF, "Parsing global conf file: %s", 
 			      options.global_conf);
 		ggzcore_debug(GGZ_DBG_CONF, "Parsing user conf file: %s", 
 			      options.user_conf);
-		_ggzcore_conf_initialize(options.global_conf, options.user_conf);
-	}
+		ggzcore_conf_initialize(options.global_conf, options.user_conf);
+		}*/
+	
 
 
 	/* Initialize various systems */
 	/* FIXME: Get filename and levels from conf file */
-	_ggzcore_debug_init((GGZ_DBG_ALL & ~GGZ_DBG_POLL), "/tmp/ggz.debug");
+	_ggzcore_debug_init(options.debug_levels, options.debug_file);
 	_ggzcore_state_init();
 	_ggzcore_event_init();
 	_ggzcore_net_init();
