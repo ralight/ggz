@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/15/01
- * $Id: memory.c 5355 2003-02-04 00:53:21Z jdorje $
+ * $Id: memory.c 5843 2004-02-08 08:06:50Z jdorje $
  *
  * This is the code for handling memory allocation for ggzcore
  *
@@ -30,7 +30,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+#ifndef NO_THREADING
 #include <pthread.h>
+#endif
 
 #include "ggz.h"
 
@@ -50,13 +52,25 @@ typedef struct _memptr {
 
 static struct _memptr	*alloc = NULL;
 
-#define SET_LOCK 1
-#define GOT_LOCK 2
-static pthread_mutex_t	mut = PTHREAD_MUTEX_INITIALIZER;
+enum lock_status {
+  NEED_LOCK, HAVE_LOCK
+};
 
+/* Some platforms don't have pthread or good threading.  In this case we
+ * assume the program won't be threaded.  This must be specifically
+ * enabled in configure. */
+#ifndef NO_THREADING
+static pthread_mutex_t	mut = PTHREAD_MUTEX_INITIALIZER;
+# define LOCK() pthread_mutex_lock(&mut)
+# define UNLOCK() pthread_mutex_unlock(&mut)
+#else
+# define LOCK() (void)0
+# define UNLOCK() (void) 0
+#endif
 
 static void * _ggz_allocate(const unsigned int size,
-                            const char *tag, int line, int lock)
+                            const char *tag, int line,
+			    enum lock_status lock)
 {
 	struct _memptr *newmem;
 
@@ -73,12 +87,14 @@ static void * _ggz_allocate(const unsigned int size,
 	newmem->size = size;
 
 	/* Put this at the head of the list */
-	if(lock == SET_LOCK)
-		pthread_mutex_lock(&mut);
+	if (lock == NEED_LOCK) {
+		LOCK();
+	}
 	newmem->next = alloc;
 	alloc = newmem;
-	if(lock == SET_LOCK)
-		pthread_mutex_unlock(&mut);
+	if (lock == NEED_LOCK) {
+		UNLOCK();
+	}
 
 	_ggz_debug("MEMDETAIL", "%d bytes allocated at %p from %s/%d",
 		   size, newmem->ptr, tag, line);
@@ -101,7 +117,7 @@ void * _ggz_malloc(const size_t size, const char *tag, int line)
 	}
 
 	/* Get a chunk of memory */
-	new = _ggz_allocate(size, tag, line, SET_LOCK);
+	new = _ggz_allocate(size, tag, line, NEED_LOCK);
 
 	/* Clear the memory to zilcho */
 	memset(new, 0, size);
@@ -129,7 +145,7 @@ void * _ggz_realloc(const void *ptr, const size_t size,
 		return _ggz_malloc(size, tag, line);
 
 	/* Search through allocated memory for this chunk */
-	pthread_mutex_lock(&mut);
+	LOCK();
 	targetmem = alloc;
 	while(targetmem != NULL && ptr != targetmem->ptr) {
 		targetmem = targetmem->next;
@@ -137,14 +153,14 @@ void * _ggz_realloc(const void *ptr, const size_t size,
 
 	/* This memory was never allocated via ggz */
 	if(targetmem == NULL) {
-		pthread_mutex_unlock(&mut);
+		UNLOCK();
 		ggz_error_msg("Memory reallocation <%p> failure: %s/%d",
 			       ptr, tag, line);
 		return NULL;
 	}
 
 	/* Try to allocate our memory */
-	new = _ggz_allocate(size, tag, line, GOT_LOCK);
+	new = _ggz_allocate(size, tag, line, HAVE_LOCK);
 
 	/* Copy the old to the new */
 	if(size > targetmem->size) {
@@ -154,7 +170,7 @@ void * _ggz_realloc(const void *ptr, const size_t size,
 		       size-targetmem->size);
 	} else
 		memcpy(new, targetmem->ptr, size);
-	pthread_mutex_unlock(&mut);
+	UNLOCK();
 
 	_ggz_debug("MEMDETAIL",
 		   "Reallocated %d bytes at %p to %d bytes from %s/%d",
@@ -178,7 +194,7 @@ int _ggz_free(const void *ptr, const char *tag, int line)
 
 	/* Search through allocated memory for this chunk */
 	prev = NULL;
-	pthread_mutex_lock(&mut);
+	LOCK();
 	targetmem = alloc;
 	while(targetmem != NULL && ptr != targetmem->ptr) {
 		prev = targetmem;
@@ -187,7 +203,7 @@ int _ggz_free(const void *ptr, const char *tag, int line)
 
 	/* This memory was never allocated via ggz */
 	if(targetmem == NULL) {
-		pthread_mutex_unlock(&mut);
+		UNLOCK();
 		ggz_error_msg("Memory deallocation <%p> failure: %s/%d",
 			       ptr, tag, line);
 		return -1;
@@ -199,7 +215,7 @@ int _ggz_free(const void *ptr, const char *tag, int line)
 	else
 		prev->next = targetmem->next;
 	oldsize = targetmem->size;
-	pthread_mutex_unlock(&mut);
+	UNLOCK();
 
 	_ggz_debug("MEMDETAIL", "%d bytes deallocated at %p from %s/%d",
 		   oldsize, ptr, tag, line);
@@ -217,7 +233,7 @@ int ggz_memory_check(void)
 
 	_ggz_msg("*** Memory Leak Check ***");
 
-	pthread_mutex_lock(&mut);
+	LOCK();
 	if(alloc != NULL) {
 		memptr = alloc;
 		while(memptr != NULL) {
@@ -231,8 +247,8 @@ int ggz_memory_check(void)
 	}
 	else
 		_ggz_msg("All clean!");
-	pthread_mutex_unlock(&mut);
-	
+	UNLOCK();
+
 	_ggz_msg("*** End Memory Leak Check ***");
 
 	return flag;
@@ -259,7 +275,7 @@ char * _ggz_strdup(const char *src, const char *tag, int line)
 		   "Allocating memory for length %d string from %s/%d",
 		   len+1, tag, line);
 
-	new = _ggz_allocate(len+1, tag, line, SET_LOCK);
+	new = _ggz_allocate(len+1, tag, line, NEED_LOCK);
 
 	memcpy(new, src, len+1);
 
