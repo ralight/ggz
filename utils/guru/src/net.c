@@ -1,11 +1,14 @@
 #include "net.h"
 #include <ggzcore.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* Globals */
 int status = NET_NOOP;
 GGZServer *server = NULL;
 GGZRoom *room = NULL;
+Guru **queue = NULL;
+int queuelen = 1;
 
 /* Prototypes */
 GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data);
@@ -13,8 +16,12 @@ GGZHookReturn net_hook_login(unsigned int id, void *event_data, void *user_data)
 GGZHookReturn net_hook_roomlist(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data);
 GGZHookReturn net_hook_fail(unsigned int id, void *event_data, void *user_data);
+GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_data);
+GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_data);
+GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data);
+GGZHookReturn net_hook_prvmsg(unsigned int id, void *event_data, void *user_data);
 
-void net_init()
+void net_internal_init()
 {
 	GGZOptions opt;
 	int ret;
@@ -25,9 +32,27 @@ void net_init()
 	ret = ggzcore_init(opt);
 }
 
+void net_internal_queueadd(const char *player, const char *message, int type)
+{
+	Guru *guru;
+
+	guru = (Guru*)malloc(sizeof(Guru));
+	guru->type = type;
+	if(player) guru->player = strdup(player);
+	else guru->player = NULL;
+	if(message) guru->message = strdup(message);
+	else guru->message = NULL;
+	guru->list = NULL;
+
+	queuelen++;
+	queue = (Guru**)realloc(queue, sizeof(Guru*) * queuelen);
+	queue[queuelen - 2] = guru;
+	queue[queuelen - 1] = NULL;
+}
+
 void net_connect(const char *host, int port)
 {
-	net_init();
+	net_internal_init();
 
 	server = ggzcore_server_new();
 
@@ -61,7 +86,28 @@ int net_status()
 	ret = status;
 	if(status == NET_GOTREADY) status = NET_NOOP;
 	if(status == NET_LOGIN) status = NET_NOOP;
+	if(status == NET_INPUT) status = NET_NOOP;
 	return ret;
+}
+
+Guru *net_input()
+{
+	if(queue)
+	{
+		return queue[queuelen - 2];
+	}
+	return NULL;
+}
+
+void net_output(Guru *output)
+{
+	if(!room) return;
+	switch(output->type)
+	{
+		case GURU_CHAT:
+			ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, output->message);
+			break;
+	}
 }
 
 GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data)
@@ -91,6 +137,13 @@ GGZHookReturn net_hook_roomlist(unsigned int id, void *event_data, void *user_da
 
 GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
 {
+	room = ggzcore_server_get_cur_room(server);
+
+	ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, net_hook_roomenter);
+	ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, net_hook_roomleave);
+	ggzcore_room_add_event_hook(room, GGZ_CHAT, net_hook_chat);
+	ggzcore_room_add_event_hook(room, GGZ_PRVMSG, net_hook_prvmsg);
+
 	status = NET_GOTREADY;
 	return GGZ_HOOK_OK;
 }
@@ -98,6 +151,37 @@ GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
 GGZHookReturn net_hook_fail(unsigned int id, void *event_data, void *user_data)
 {
 	status = NET_ERROR;
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_roomenter(unsigned int id, void *event_data, void *user_data)
+{
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_data)
+{
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
+{
+	char *player, *message;
+
+	player = ((char**)(event_data))[0];
+	message = ((char**)(event_data))[1];
+
+	if(strcmp(player, "grubby"))
+	{
+		net_internal_queueadd(player, message, GURU_CHAT);
+		status = NET_INPUT;
+	}
+
+	return GGZ_HOOK_OK;
+}
+
+GGZHookReturn net_hook_prvmsg(unsigned int id, void *event_data, void *user_data)
+{
 	return GGZ_HOOK_OK;
 }
 

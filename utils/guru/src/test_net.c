@@ -3,6 +3,8 @@
 
 int main(int argc, char *argv[])
 {
+	Guru *guru;
+
 	net_connect("localhost", 5688);
 	while(1)
 	{
@@ -18,6 +20,11 @@ int main(int argc, char *argv[])
 				break;
 			case NET_GOTREADY:
 				printf("Ready.\n");
+				break;
+			case NET_INPUT:
+				guru = net_input();
+				printf("Received: %s\n", guru->message);
+				net_output(guru);
 				break;
 		}
 	}
