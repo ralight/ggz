@@ -701,17 +701,20 @@ static int table_log(GGZTable* table, char debug)
 			else
 				pcts++;
 		}
-	if((msg = malloc(strlen(prescan) + pcts + 1)) == NULL)
-		err_sys_exit("malloc failed");
-	for(p=prescan,m=msg; *p!='\0'; p++,m++) {
-		if(*p == '%') {
-			*m++ = '%';
-			if(*++p != '%')
+	if(pcts > 0) {
+		if((msg = malloc(strlen(prescan) + pcts + 1)) == NULL)
+			err_sys_exit("malloc failed");
+		for(p=prescan,m=msg; *p!='\0'; p++,m++) {
+			if(*p == '%') {
 				*m++ = '%';
+				if(*++p != '%')
+					*m++ = '%';
+			}
+			*m = *p;
 		}
 		*m = *p;
-	}
-	*m = *p;
+	} else
+		msg = prescan;
 
 	if (log_info.options & GGZ_LOGOPT_INC_GAMETYPE) {
 		pthread_rwlock_rdlock(&table->lock);
@@ -739,7 +742,8 @@ static int table_log(GGZTable* table, char debug)
 			snprintf(buf, (len - 1), "(%s) ", name);
 		
 		strncat(buf, msg, (len - 1));
-		free(msg);
+		if(msg != prescan)
+			free(msg);
 		msg = buf;
 	}
 	
@@ -748,7 +752,8 @@ static int table_log(GGZTable* table, char debug)
 	else
 		log_msg(level, msg);
 
-	free(msg);
+	if(msg != prescan)
+		free(msg);
 	free(prescan);
 	
 	return 0;
