@@ -90,6 +90,7 @@ typedef struct {
 	char clear_stats;
 	int stat_clr_time;
 	int main_port;
+	char *game_dir;		/* CLEANUP CANDIDATE - should get free()'d */
 } Options;
 
 

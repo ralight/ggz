@@ -118,12 +118,15 @@ void parse_conf_file(void)
 }
 
 
+/* Convience macro for parse_file() */
+#define PARSE_ERR(s)  err_msg("Config file: %s, line %d", s, linenum)
 
 /* Parse the pre-openend configuration file, close the file when done */
 static void parse_file(FILE *configfile)
 {
 	char line[256];		/* Lines longer than 256 are trunced */
 	int intval;
+	char *strval;
 	int linenum = 0;
 
 	while(fgets(line, 256, configfile)) {
@@ -139,14 +142,12 @@ static void parse_file(FILE *configfile)
 		/*** PORT = X ***/
 		if(!strcmp(varname, "port")) {
 			if(varvalue == NULL) {
-				err_msg("Config file syntax error, line %d",
-					linenum);
+				PARSE_ERR("Syntax error");
 				continue;
 			}
 			intval = atoi(varvalue);
 			if(intval < 1024 || intval > 32767) {
-				err_msg("Invalid port number, line %d",
-					linenum);
+				PARSE_ERR("Invalid port number");
 				continue;
 			}
 			if(opt.main_port == 0)
@@ -155,8 +156,21 @@ static void parse_file(FILE *configfile)
 		}
 		/*** END PORT = X ***/
 
+		/*** GAMEDIR = DIR ***/
+		if(!strcmp(varname, "gamedir")) {
+			if(varvalue == NULL) {
+				PARSE_ERR("Syntax error");
+				continue;
+			}
+			if((strval = malloc(strlen(varvalue)+1)) == NULL)
+				err_sys_exit("parse_file: malloc error");
+			strcpy(strval, varvalue);
+			opt.game_dir = strval;
+		 }
+		/*** END GAMEDIR = DIR ***/
+
 		/*** INVALID VARIABLE ***/
-		err_msg("Config file syntax error, line %d", linenum);
+		PARSE_ERR("Syntax error");
 	}
 
 	fclose(configfile);
