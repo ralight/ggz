@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 4915 2002-10-14 22:08:49Z jdorje $
+ * $Id: game.c 4934 2002-10-16 23:59:26Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -347,7 +347,8 @@ void _ggzcore_game_set_table(GGZGame *game, int room_num, int table_num)
 	assert(_ggzcore_room_get_id(room) == room_num);
 
 	game->table_num = table_num;
-	table = ggzcore_room_get_nth_table(room, table_num);
+	table = _ggzcore_room_get_table_by_id(room, table_num);
+	assert(table && ggzcore_table_get_id(table) == table_num);
 
 	num_seats = _ggzcore_table_get_num_seats(table);
 	for (i = 0; i < num_seats; i++) {
