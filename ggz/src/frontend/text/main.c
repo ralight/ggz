@@ -63,7 +63,7 @@ static char* string_cat(char *s1, char *s2)
 	return new;
 }
 
-#if 0
+#if DEBUG
 static void init_debug(void)
 {
 	char *default_file, *debug_file;
@@ -83,7 +83,7 @@ static void init_debug(void)
 	ggz_free(debug_file);
 	ggz_free(default_file);
 }
-#endif
+#endif /* DEBUG */
 
 int main(int argc, char *argv[])
 {
