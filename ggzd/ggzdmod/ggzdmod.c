@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2641 2001-11-03 23:03:17Z jdorje $
+ * $Id: ggzdmod.c 2643 2001-11-04 00:17:24Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -60,12 +60,12 @@ typedef struct _GGZdMod {
 	GGZdModType type;	/* ggz-end or game-end */
 	GGZdModState state;	/* the state of the game */
 	int fd;			/* file descriptor */
-	fd_set active_fd_set;	/* set of active file descriptors */
 	int num_seats;
 	GGZSeat *seats;
 	GGZdModHandler handlers[GGZDMOD_NUM_HANDLERS];
 
-	pid_t pid;		/* ggz-side only */
+	/* ggz-only data */
+	pid_t pid;		/* process ID of table */
 	char **argv;            /* command-line arguments for launching module */
 
 	/* etc. */
@@ -77,15 +77,32 @@ typedef struct _GGZdMod {
  */
 
 /* Returns the highest-numbered FD used by ggzdmod. */
-static int ggzdmod_fd_max(_GGZdMod * ggzdmod)
+static int get_fd_max(_GGZdMod * ggzdmod)
 {
 	int max = ggzdmod->fd, seat;
 
-	for (seat = 0; seat < ggzdmod->num_seats; seat++)
-		if (ggzdmod->seats[seat].fd > max)
-			max = ggzdmod->seats[seat].fd;
+	/* If we don't have a player data handler set
+	   up, we won't monitor the player data handlers. */
+	if (ggzdmod->handlers[GGZ_EVENT_PLAYER_DATA])
+		for (seat = 0; seat < ggzdmod->num_seats; seat++)
+			if (ggzdmod->seats[seat].fd > max)
+				max = ggzdmod->seats[seat].fd;
 
 	return max;
+}
+
+static fd_set get_active_fd_set(_GGZdMod *ggzdmod)
+{
+	fd_set active_fd_set;
+	
+	FD_ZERO(&active_fd_set);
+	FD_SET(ggzdmod->fd, &active_fd_set);
+	if (ggzdmod->handlers[GGZ_EVENT_PLAYER_DATA]) {
+		int i;
+		for (i=0; i<ggzdmod->num_seats; i++)
+			FD_SET(ggzdmod->seats[i].fd, &active_fd_set);
+	}
+	return active_fd_set;
 }
 
 
@@ -110,10 +127,12 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 	ggzdmod->type = type;
 	ggzdmod->state = GGZ_STATE_CREATED;
 	ggzdmod->fd = -1;
-	ggzdmod->pid = -1;
 	ggzdmod->seats = NULL;
 	for (i = 0; i < GGZDMOD_NUM_HANDLERS; i++)
 		ggzdmod->handlers[i] = NULL;
+
+	ggzdmod->pid = -1;
+	ggzdmod->argv = NULL;
 	/* Put any other necessary initialization here.  All fields should be
 	   initialized. */
 
@@ -129,6 +148,8 @@ void ggzdmod_free(GGZdMod * mod)
 	if (!CHECK_GGZDMOD(ggzdmod)) {
 		return;
 	}
+	
+	/* FIXME: disconnect if we're connected. */
 
 	/* Free any fields the object contains */
 	ggzdmod->type = -1;
@@ -166,7 +187,7 @@ GGZdModType ggzdmod_get_type(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod)) {
-		return 0;	/* not very useful */
+		return -1;	/* not very useful */
 	}
 	return ggzdmod->type;
 }
@@ -176,7 +197,7 @@ GGZdModState ggzdmod_get_state(GGZdMod * mod)
 {
 	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod)) {
-		return 0;	/* not very useful */
+		return -1;	/* not very useful */
 	}
 	return ggzdmod->state;
 }
@@ -236,18 +257,17 @@ void ggzdmod_set_module(GGZdMod * mod, char **argv)
 	int i;
 
 	/* Check parameters */
-	if (!CHECK_GGZDMOD(ggzdmod) || !argv || !argv[1]) {
+	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GGZ || !argv || !argv[1]) {
 		return;		/* not very useful */
 	}
 
-	/* Count the number of args so we now how much to allocate */
+	/* Count the number of args so we know how much to allocate */
 	for (i = 0; argv[i]; i++) {}
 	
 	ggzdmod->argv = ggz_malloc(sizeof(char*)*(i+1));
 	
 	for (i = 0; argv[i]; i++) 
 		ggzdmod->argv[i] = argv[i];
-	
 }
 
 
@@ -401,8 +421,6 @@ static void game_join(_GGZdMod * ggzdmod)
 	ggzdmod_log(ggzdmod, "%s on %d in seat %d", ggzdmod->seats[seat].name,
 		    ggzdmod->seats[seat].fd, seat);
 
-	FD_SET(ggzdmod->seats[seat].fd, &ggzdmod->active_fd_set);
-
 	if (ggzdmod->handlers[GGZ_EVENT_JOIN] != NULL)
 		(*ggzdmod->handlers[GGZ_EVENT_JOIN]) (ggzdmod, GGZ_EVENT_JOIN,
 						      &seat);
@@ -425,12 +443,10 @@ static void game_leave(_GGZdMod * ggzdmod)
 	if (seat == ggzdmod->num_seats)	/* player not found */
 		status = -1;
 	else {
-		FD_CLR(ggzdmod->seats[seat].fd, &ggzdmod->active_fd_set);
 		ggzdmod->seats[seat].fd = -1;
 		free(ggzdmod->seats[seat].name);
 		ggzdmod->seats[seat].name = NULL;
 		ggzdmod->seats[seat].type = GGZ_SEAT_OPEN;
-		status = 0;
 		ggzdmod_log(ggzdmod, "Removed %s from seat %d",
 			    ggzdmod->seats[seat].name, seat);
 	}
@@ -595,10 +611,10 @@ int ggzdmod_dispatch(GGZdMod * mod)
 		return -1;
 	}
 
-	read_fd_set = ggzdmod->active_fd_set;
+	read_fd_set = get_active_fd_set(ggzdmod);
 	timeout.tv_sec = timeout.tv_usec = 0;	/* is this really portable? */
 
-	status = select(ggzdmod_fd_max(ggzdmod) + 1,
+	status = select(get_fd_max(ggzdmod) + 1,
 			&read_fd_set, NULL, NULL, &timeout);
 
 	/* FIXME: if you don't have a player event handler registered, this
@@ -625,11 +641,11 @@ int ggzdmod_loop(GGZdMod * mod)
 		fd_set read_fd_set;
 		int status;
 
-		read_fd_set = ggzdmod->active_fd_set;
+		read_fd_set = get_active_fd_set(ggzdmod);
 
 		/* we have to select so that we can determine what file
 		   descriptors are waiting to be read. */
-		status = select(ggzdmod_fd_max(ggzdmod) + 1,
+		status = select(get_fd_max(ggzdmod) + 1,
 				&read_fd_set, NULL, NULL, NULL);
 		if (status <= 0) {
 			if (errno != EINTR) {
@@ -737,6 +753,9 @@ static int game_fork(_GGZdMod * mod)
 
 		mod->fd = fd_pair[0];
 		mod->pid = pid;
+		
+		/* FIXME: should we delete the argv arguments? */
+		
 		/* That's all! */
 	}
 	return 0;
@@ -767,10 +786,6 @@ int ggzdmod_connect(GGZdMod * mod)
 			return -1;
 		}
 		
-		/* We maintain active_fd_set as the set of active file descriptors. */
-		FD_ZERO(&ggzdmod->active_fd_set);
-		FD_SET(ggzdmod->fd, &ggzdmod->active_fd_set);
-		
 		return ggzdmod->fd;
 	}
 }
@@ -789,7 +804,9 @@ int ggzdmod_disconnect(GGZdMod * mod)
 		/* Make sure game server is dead */
 		if (ggzdmod->pid > 0)
 			kill(ggzdmod->pid, SIGINT);
+		ggzdmod->pid = -1;
 		close(ggzdmod->fd);
+		/* FIXME: should we wait() to get an exit status?? */
 		/* FIXME: what other cleanups should we do? */
 	}
 	/* For client the game side we send a game over message */
@@ -824,7 +841,6 @@ int ggzdmod_disconnect(GGZdMod * mod)
 		   a new game. */
 		close(ggzdmod->fd);
 		ggzdmod->fd = -1;
-		FD_ZERO(&ggzdmod->active_fd_set);
 		free(ggzdmod->seats);
 		ggzdmod->seats = NULL;
 	}
