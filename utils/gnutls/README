@@ -1,0 +1,13 @@
+A set of patches to enable GnuTLS usage.  These patches will probably be
+very difficult to apply except to a CVS snapshot from Saturday, Jan 9 of
+around 11:00 PM.
+
+The file tls.c should be copied into the libggz sources directory.
+
+This was written using version 0.3.4 of GnuTLS, other versions may require
+changes since the library is under current development.
+
+You will of course need GnuTLS (which requires libgcrypt) to compile this.
+
+ftp://ftp.gnutls.org/pub/gnutls/
+ftp://ftp.gnupg.org/pub/gcrypt/alpha/libgcrypt/

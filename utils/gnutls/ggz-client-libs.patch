@@ -1,0 +1,49 @@
+? ggz-client-libs/ggzmod/ggz.lo
+Index: ggz-client-libs/ggzcore/netxml.c
+===================================================================
+RCS file: /cvsroot/ggz/ggz/src/ggzcore/netxml.c,v
+retrieving revision 1.22
+diff -r1.22 netxml.c
+170a171
+> static void _ggzcore_net_negotiate_tls(GGZNet *net);
+293a295
+> 	ggz_tls_disable_fd(net->fd);
+599c601
+< 	if ( (len = read(net->fd, buf, XML_BUFFSIZE)) < 0) {
+---
+> 	if ( (len = ggz_tls_read(net->fd, buf, XML_BUFFSIZE)) < 0) {
+750c752
+< 	char *name, *id, *status;
+---
+> 	char *name, *id, *status, *tls;
+757a760
+> 		tls = ggz_xmlelement_get_attr(server, "TLS_SUPPORT");
+764a768
+> 
+769a774,777
+> 			/* If TLS is enabled set it up */
+> 			if(!strcmp(tls, "yes") && ggz_tls_support_query())
+> 				_ggzcore_net_negotiate_tls(net);
+> 
+773a782
+> 
+1655a1665,1675
+> /* Send a TLS_START notice and negotiate the handshake */
+> static void _ggzcore_net_negotiate_tls(GGZNet *net)
+> {
+> 	_ggzcore_net_send_line(net, "<TLS_START/>");
+> 
+> 	/* This should return a status one day to tell client if */
+> 	/* the handshake failed for some reason */
+> 	ggz_tls_enable_fd(net->fd, GGZ_TLS_CLIENT);
+> }
+> 
+> 
+1665c1685
+< 	return write(net->fd, buf, strlen(buf));
+---
+> 	return ggz_tls_write(net->fd, buf, strlen(buf));
+1677c1697
+< 	return write(net->fd, buf, strlen(buf));
+---
+> 	return ggz_tls_write(net->fd, buf, strlen(buf));
