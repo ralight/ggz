@@ -1,0 +1,219 @@
+#!/usr/bin/env python
+
+import pygame
+import pygame.image
+from pygame.locals import *
+from Numeric import *
+import ggzmod
+import socket
+import sys
+import time
+import random
+
+def ai((blobpos, trail)):
+	time.sleep(2)
+
+	(bx, by, bplayer) = blobpos
+
+	found = 0
+	tries = 0
+	while not found and tries < 100:
+		tries += 1
+		x = random.randint(bx - 1, bx + 1)
+		y = random.randint(by - 1, by + 1)
+		if x != bx and y != by:
+			found = 1
+			if x < 0 or y < 0 or x > 8 or y > 11:
+				found = 0
+			for t in trail:
+				(tx, ty, tplayer) = t
+				if tx == x and ty == y:
+					if tx != bx and ty != by:
+						found = 0
+
+	if tries < 100:
+		blobpos = (x, y, 1 - bplayer)
+		trail.append(blobpos)
+
+	return (blobpos, trail)
+
+def main():
+	""" Pygame setup """
+
+	pygame.init()
+	pygame.display.set_caption("Escape/SDL")
+
+	screen = pygame.display.set_mode((640, 480), DOUBLEBUF)
+
+	pygame.mouse.set_visible(0)
+
+	surface = pygame.Surface((640, 480), 0, 24)
+
+	""" Game board background """
+
+	for i in range(0, 240):
+		x = sin(i / 15.0) * 20
+		surface.fill(((255 - i) / 2, 0, i / 2), ((10, i * 2), (400 + x, 1)))
+
+	""" Menu """
+
+	for i in range(0, 480):
+		x = sin(i / 30.0) * 20
+		surface.fill((165, 140, 0), ((400 + x + 10, i), (2, 1)))
+		surface.fill((195, 160, 0), ((400 + x + 12, i), (2, 1)))
+		surface.fill((225, 180, 0), ((400 + x + 14, i), (2, 1)))
+		surface.fill((255, 200, 0), ((400 + x + 16, i), (639 - (400 + x + 16) - 10, 1)))
+
+		surface.fill((165, 140, 0), ((0, i), (10, 1)))
+		surface.fill((165, 140, 0), ((628, i), (10, 1)))
+
+	""" Menu captions """
+
+	font = pygame.font.Font(None, 44)
+	escape = font.render("ESCAPE", 1, (165, 140, 0))
+	sdl = font.render("SDL", 1, (165, 140, 0))
+	font2 = pygame.font.Font(None, 70)
+	slash = font2.render("/", 1, (165, 140, 0))
+
+	surface.blit(escape, (420, 100))
+	surface.blit(sdl, (550, 130))
+	surface.blit(slash, (540, 105))
+
+	font3 = pygame.font.Font(None, 30)
+	player1 = font3.render("josef", 1, (165, 140, 0))
+	vs = font3.render("vs.", 1, (165, 140, 0))
+	player2 = font3.render("opponent", 1, (165, 140, 0))
+
+	surface.blit(player1, (610 - player1.get_width(), 285))
+	surface.blit(vs, (610 - vs.get_width(), 315))
+	surface.blit(player2, (610 - player2.get_width(), 345))
+
+	""" Points on the game board """
+
+	stone = pygame.Surface((16, 16))
+	for j in range(0, 16):
+		x = sin(j / 5.0) * 8
+		stone.fill((255, 255, 255), ((8 - x, j), (2 * x, 1)))
+	stone.set_alpha(30, RLEACCEL)
+
+	blob = pygame.Surface((32, 32))
+	for j in range(0, 32):
+		x = sin(j / 10.0) * 16
+		blob.fill((255, 255, 255), ((16 - x, j), (2 * x, 1)))
+	blob.set_alpha(30, RLEACCEL)
+
+	for j in range(1, 10):
+		for i in range(1, 8):
+			surface.blit(stone, (i * 40 + 30, j * 40 + 30))
+
+	""" Frame around points """
+
+	vline = pygame.Surface((8, 400))
+	vline.fill((255, 255, 255))
+	vline.set_alpha(30, RLEACCEL)
+
+	hline = pygame.Surface((150, 8))
+	hline.fill((255, 255, 255))
+	hline.set_alpha(30, RLEACCEL)
+
+	surface.blit(vline, (30, 38))
+	surface.blit(vline, (360, 38))
+
+	surface.blit(hline, (30, 38))
+	surface.blit(hline, (368 - 150, 38))
+	surface.blit(hline, (30, 430))
+	surface.blit(hline, (368 - 150, 430))
+
+	""" Main loop """
+
+	ggzmode = 0
+	madeturn = 0
+	aierror = 0
+	gameover = 0
+
+	mouse = stone
+	pressed = 0
+
+	blobpos = (4, 5, -1)
+	trail = [blobpos]
+
+	pygame.event.clear()
+
+	while 1:
+		pygame.event.pump()
+
+		keyinput = pygame.key.get_pressed()
+
+		if keyinput[K_ESCAPE] or pygame.event.peek(QUIT):
+			break
+
+		(b1, b2, b3) = pygame.mouse.get_pressed()
+		if b1 and not pressed and not madeturn:
+			(x, y) = pygame.mouse.get_pos()
+			x = (x - 30 + 20) / 40
+			y = (y - 30 + 20) / 40
+			if x >= 0 and x < 9 and y >= 0 and y < 11:
+				(x2, y2, player) = blobpos
+				if (abs(x - x2) == 1 and abs(y - y2) <= 1) or (abs(x - x2) <= 1 and abs(y - y2) == 1):
+					blobpos = (x, y, 0)
+					trail.append(blobpos)
+					madeturn = 1
+			pressed = 1
+
+		if not b1 and pressed:
+			pressed = 0
+
+		screen.blit(surface, (0, 0))
+
+		x = -1
+		for t in trail:
+			if x > -1:
+				(x2, y2, player) = t
+				p1 = (x * 40 + 30 + 8, y * 40 + 30 + 8)
+				p2 = (x2 * 40 + 30 + 8, y2 * 40 + 30 + 8)
+				p = [p1, p2]
+				if player == 1:
+					color = (255, 0, 0)
+				else:
+					color = (0, 0, 255)
+				pygame.draw.lines(screen, color, 0, p, 5)
+				x = x2
+				y = y2
+			(x, y, player) = t
+
+		(x, y, player) = blobpos
+		screen.blit(blob, (x * 40 + 30 - 8, y * 40 + 30 - 8))
+
+		screen.blit(mouse, pygame.mouse.get_pos())
+
+		if (y == 0 and x == 4) or (y == 10 and x == 4):
+			font4 = pygame.font.Font(None, 24)
+			if y == 0:
+				waiting = font4.render("Game over, you lost", 1, (165, 140, 0))
+			else:
+				waiting = font4.render("Game over, you won", 1, (165, 140, 0))
+			screen.blit(waiting, (610 - waiting.get_width(), 400))
+			gameover = 1
+			madeturn = 1
+
+		if madeturn and not gameover:
+			font4 = pygame.font.Font(None, 24)
+			if aierror:
+				waiting = font4.render("AI error, game over", 1, (165, 140, 0))
+			else:
+				waiting = font4.render("Waiting for opponent", 1, (165, 140, 0))
+			screen.blit(waiting, (610 - waiting.get_width(), 400))
+
+		pygame.display.flip()
+
+		if not ggzmode and madeturn and not aierror and not gameover:
+			origpos = blobpos
+			(blobpos, trail) = ai((blobpos, trail))
+			if origpos != blobpos:
+				madeturn = 0
+			else:
+				aierror = 1
+
+if __name__ == "__main__":
+		main()
+
