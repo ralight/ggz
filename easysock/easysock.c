@@ -406,6 +406,9 @@ int es_read_string(const int sock, char *message)
 		return -1;
 	} 
 	
+	/* Guarantee string is NULL terminated */
+	message[size] = '\0';
+
 	_debug("Received \"%s\" : string\n", message);
 	return 0;
 }
@@ -451,6 +454,9 @@ int es_read_string_alloc(const int sock, char **message)
 			(*_err_func) ("fd closed", ES_READ, ES_STRING);
 		return -1;
 	} 
+
+	/* Guarantee string is NULL terminated */
+	message[size] = '\0';
 
 	_debug("Received \"%s\" : string\n", *message);
 	return 0;
