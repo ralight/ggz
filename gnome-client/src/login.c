@@ -35,7 +35,7 @@ void login_start_session(gchar *host, gint port,
 	if(server != NULL)
 		ggzcore_server_free(server);
 	server = ggzcore_server_new();
-	ggzcore_server_set_hostinfo(server, host, port);
+	ggzcore_server_set_hostinfo(server, host, port, FALSE);
 	ggzcore_server_set_logininfo(server, type, username, password);
 
 	/* Setup callbacks on server */
