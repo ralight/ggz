@@ -13,7 +13,8 @@ import os, pwd
 
 import rsvgsdl
 
-from module_reversi import Game
+from module_hnefatafl import Game
+#from module_reversi import Game
 #from module_chess import Game
 #from module_checkers import Game
 
@@ -21,8 +22,8 @@ class Conf:
 	def __init__(self):
 		self.alpha = 120
 		self.background = "sunset.jpg"
-		self.cellwidth = 30 #50
-		self.cellheight = 30 #50
+		self.cellwidth = 50
+		self.cellheight = 50
 		self.cellspace = 0 #10
 		self.marginwidth = 20
 		self.marginheight = 100
