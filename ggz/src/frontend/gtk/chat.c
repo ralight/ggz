@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 5873 2004-02-09 22:11:24Z jdorje $
+ * $Id: chat.c 5874 2004-02-10 01:48:49Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -228,9 +228,9 @@ void chat_display_server(GGZChatType type,
 					      "unknown message from %s."),
 					    sender);
 #ifdef GTK2
-			gtk_xtext_append_indent(GTK_XTEXT(tmp)->buffer,
+			gtk_xtext_append_indent(tmp->buffer,
 #else
-			gtk_xtext_append_indent(GTK_XTEXT(tmp),
+			gtk_xtext_append_indent(tmp,
 #endif
 						name, strlen(name),
 						m, strlen(m));
@@ -244,9 +244,9 @@ void chat_display_server(GGZChatType type,
 		if (!strncasecmp(message, "/me ", 4)) {
 			name = g_strdup_printf("%s %s", sender, message+4);
 #ifdef GTK2
-			gtk_xtext_append_indent(GTK_XTEXT(tmp)->buffer,
+			gtk_xtext_append_indent(tmp->buffer,
 #else
-			gtk_xtext_append_indent(GTK_XTEXT(tmp),
+			gtk_xtext_append_indent(tmp,
 #endif
 						"*", 1, name, strlen(name));
 			g_free(name);
@@ -264,12 +264,12 @@ void chat_display_server(GGZChatType type,
 					       sender,
 					       bracketr);
 #ifdef GTK2
-			gtk_xtext_append_indent(GTK_XTEXT(tmp)->buffer,
+			gtk_xtext_append_indent(tmp->buffer,
 						name, strlen(name),
 						(char*)message,
 						strlen(message));
 #else
-			gtk_xtext_append_indent(GTK_XTEXT(tmp),
+			gtk_xtext_append_indent(tmp,
 						name, strlen(name),
 						message, strlen(message));
 #endif
@@ -288,11 +288,11 @@ void chat_display_server(GGZChatType type,
 				       chat_get_color(sender, message),
 				       sender);
 #ifdef GTK2
-		gtk_xtext_append_indent(GTK_XTEXT(tmp)->buffer,
+		gtk_xtext_append_indent(tmp->buffer,
 					name, strlen(name),
 					(char*)message, strlen(message));
 #else
-		gtk_xtext_append_indent(GTK_XTEXT(tmp),
+		gtk_xtext_append_indent(tmp,
 					name, strlen(name),
 					message, strlen(message));
 #endif
@@ -303,11 +303,11 @@ void chat_display_server(GGZChatType type,
 				       chat_get_color(sender, message),
 				       sender);
 #ifdef GTK2
-		gtk_xtext_append_indent(GTK_XTEXT(tmp)->buffer,
+		gtk_xtext_append_indent(tmp->buffer,
 					name, strlen(name),
 					(char*)message, strlen(message));
 #else
-		gtk_xtext_append_indent(GTK_XTEXT(tmp),
+		gtk_xtext_append_indent(tmp,
 					name, strlen(name),
 					message, strlen(message));
 #endif
@@ -337,11 +337,11 @@ void chat_display_local(LocalChatType type,
 	case CHAT_SEND_PERSONAL:
 		name = g_strdup_printf("--> %s", target);
 #ifdef GTK2
-		gtk_xtext_append_indent(GTK_XTEXT(tmp)->buffer,
+		gtk_xtext_append_indent(tmp->buffer,
 					name, strlen(name),
 					(char*)message, strlen(message));
 #else
-		gtk_xtext_append_indent(GTK_XTEXT(tmp),
+		gtk_xtext_append_indent(tmp,
 					name, strlen(name),
 					message, strlen(message));
 #endif
@@ -349,22 +349,22 @@ void chat_display_local(LocalChatType type,
 		break;
 	case CHAT_LOCAL_NORMAL:
 #ifdef GTK2
-		gtk_xtext_append_indent(GTK_XTEXT(tmp)->buffer,
+		gtk_xtext_append_indent(tmp->buffer,
 					"---", 3,
 					(char*)message, strlen(message));
 #else
-		gtk_xtext_append_indent(GTK_XTEXT(tmp),
+		gtk_xtext_append_indent(tmp,
 					"---", 3,
 					message, strlen(message));
 #endif
 		break;
 	case CHAT_LOCAL_HIGH:
 #ifdef GTK2
-		gtk_xtext_append_indent(GTK_XTEXT(tmp)->buffer,
+		gtk_xtext_append_indent(tmp->buffer,
 					"***", 3,
 					(char*)message, strlen(message));
 #else
-		gtk_xtext_append_indent(GTK_XTEXT(tmp),
+		gtk_xtext_append_indent(tmp,
 					"***", 3,
 					message, strlen(message));
 #endif
@@ -528,7 +528,7 @@ static void chat_send_beep(GGZServer *server, const gchar *message)
 
 void chat_enter(const gchar *player, int from_room)
 {
-        GtkEntry *tmp = NULL;
+        GtkXText *tmp = NULL;
 
         if( !ggzcore_conf_read_int("CHAT", "IGNORE", FALSE) )
         {
@@ -550,10 +550,10 @@ void chat_enter(const gchar *player, int from_room)
 
 	        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
 #ifdef GTK2
-		gtk_xtext_append_indent(GTK_XTEXT(tmp)->buffer,
+		gtk_xtext_append_indent(tmp->buffer,
 					"-->", 3, message, strlen(message));
 #else
-        	gtk_xtext_append_indent(GTK_XTEXT(tmp),
+        	gtk_xtext_append_indent(tmp,
 					"-->", 3, message, strlen(message));
 #endif
 	}
@@ -572,7 +572,7 @@ void chat_enter(const gchar *player, int from_room)
 
 void chat_part(const gchar *player, int to_room)
 {
-        GtkEntry *tmp = NULL;
+        GtkXText *tmp = NULL;
 
         if( !ggzcore_conf_read_int("CHAT", "IGNORE", FALSE) )
         {
@@ -594,10 +594,10 @@ void chat_part(const gchar *player, int to_room)
 
 	        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
 #ifdef GTK2
-		gtk_xtext_append_indent(GTK_XTEXT(tmp)->buffer,
+		gtk_xtext_append_indent(tmp->buffer,
 					"<--", 3, message, strlen(message));
 #else
-        	gtk_xtext_append_indent(GTK_XTEXT(tmp),
+        	gtk_xtext_append_indent(tmp,
 					"<--", 3, message, strlen(message));
 #endif
 	}

@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5706 2003-12-06 02:06:19Z jdorje $
+ * $Id: client.c 5874 2004-02-10 01:48:49Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -860,14 +860,14 @@ client_realize                    (GtkWidget       *widget,
 	font_str = ggzcore_conf_read_string("CHAT", "FONT", DEFAULT_FONT);
 	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
 #ifdef GTK2
-	gtk_xtext_set_font(GTK_XTEXT(tmp), font_str);
+	gtk_xtext_set_font(tmp, font_str);
 #else
 	font = gdk_font_load(font_str);
-	gtk_xtext_set_font(GTK_XTEXT(tmp), font, 0);
+	gtk_xtext_set_font(tmp, font, 0);
 #endif
 	ggz_free(font_str);
 
-	gtk_xtext_set_palette (GTK_XTEXT(tmp), colors); 
+	gtk_xtext_set_palette(tmp, colors); 
 	tmp->auto_indent = ggzcore_conf_read_int("CHAT", "AUTO_INDENT", TRUE);
 	tmp->wordwrap = ggzcore_conf_read_int("CHAT", "WORD_WRAP", TRUE);
 	tmp->max_auto_indent = 200;
@@ -890,7 +890,7 @@ client_realize                    (GtkWidget       *widget,
 
 	/* Initialize the scroll bar */
 	tmp2 = gtk_object_get_data(GTK_OBJECT(win_main), "chat_vscrollbar");
-	gtk_range_set_adjustment(GTK_RANGE(tmp2), GTK_XTEXT(tmp)->adj);
+	gtk_range_set_adjustment(GTK_RANGE(tmp2), tmp->adj);
 
 	gtk_xtext_refresh(tmp,0);
 

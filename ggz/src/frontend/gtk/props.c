@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 5203 2002-11-04 04:56:43Z jdorje $
+ * $Id: props.c 5874 2004-02-10 01:48:49Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -89,6 +89,7 @@ void props_create_or_raise(void)
 static void props_update(void)
 {
 	GtkWidget *tmp;
+	GtkXText *xtext = (GtkXText *)lookup_widget(win_main, "xtext_custom");
 #ifndef GTK2
 	GdkFont *font;
 #endif
@@ -202,26 +203,24 @@ static void props_update(void)
 
 	/* Set XText font */
 	tmp = lookup_widget((props_dialog), "chat_font");
-	tmp = lookup_widget((win_main), "xtext_custom");
+
 #ifdef GTK2
-	gtk_xtext_set_font(GTK_XTEXT(tmp),
-			   (char*)gtk_entry_get_text(GTK_ENTRY(tmp)));
+	gtk_xtext_set_font((GtkXText *)xtext,
+			   (char*)gtk_entry_get_text(GTK_ENTRY(xtext)));
 #else
-	font = gdk_font_load(gtk_entry_get_text(GTK_ENTRY(tmp)));
-	gtk_xtext_set_font(GTK_XTEXT(tmp), font, 0);
+	font = gdk_font_load(gtk_entry_get_text(GTK_ENTRY(xtext)));
+	gtk_xtext_set_font(GTK_XTEXT(xtext), font, 0);
 #endif
 
 	/* Auto-Indent */
 	tmp = lookup_widget((props_dialog), "indent_check");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 	{
-		tmp = lookup_widget((win_main), "xtext_custom");
-		GTK_XTEXT(tmp)->auto_indent = TRUE;
+		xtext->auto_indent = TRUE;
 	}else{
-		tmp = lookup_widget((win_main), "xtext_custom");
-		GTK_XTEXT(tmp)->auto_indent = FALSE;
+		xtext->auto_indent = FALSE;
 #ifndef GTK2 /* ??? */
-		GTK_XTEXT(tmp)->indent = 0;
+		xtext->indent = 0;
 #endif
 	}
 
@@ -229,33 +228,28 @@ static void props_update(void)
 	tmp = lookup_widget((props_dialog), "timestamp_check");
 	if (GTK_TOGGLE_BUTTON(tmp)->active)
 	{
-		tmp = lookup_widget((win_main), "xtext_custom");
 #ifdef GTK2
-		gtk_xtext_set_time_stamp(GTK_XTEXT(tmp)->buffer, TRUE);
+		gtk_xtext_set_time_stamp(xtext->buffer, TRUE);
 #else
-		GTK_XTEXT(tmp)->time_stamp = TRUE;
+		xtext->time_stamp = TRUE;
 #endif
-		/* GTK_XTEXT(tmp)->indent = GTK_XTEXT(tmp)->indent + GTK_XTEXT(tmp)->stamp_width; */
+#if 0 /* Disabled */
+		xtext->indent = xtext->indent + xtext->stamp_width;
+#endif /* 0 */
 	}else{
-		tmp = lookup_widget((win_main), "xtext_custom");
 #ifdef GTK2
-		gtk_xtext_set_time_stamp(GTK_XTEXT(tmp)->buffer, FALSE);
+		gtk_xtext_set_time_stamp(xtext->buffer, FALSE);
 #else
-		GTK_XTEXT(tmp)->time_stamp = FALSE;
+		xtext->time_stamp = FALSE;
 #endif
-		/* GTK_XTEXT(tmp)->indent = GTK_XTEXT(tmp)->indent - GTK_XTEXT(tmp)->stamp_width; */
+#if 0 /* Disabled */
+		xtext->indent = xtext->indent - xtext->stamp_width;
+#endif /* 0 */
 	}
 
 	/* Word Wrap */
 	tmp = lookup_widget((props_dialog), "wrap_check");
-	if (GTK_TOGGLE_BUTTON(tmp)->active)
-	{
-		tmp = lookup_widget((win_main), "xtext_custom");
-		GTK_XTEXT(tmp)->wordwrap = TRUE;
-	}else{
-		tmp = lookup_widget((win_main), "xtext_custom");
-		GTK_XTEXT(tmp)->wordwrap = FALSE;
-	}
+	xtext->wordwrap = GTK_TOGGLE_BUTTON(tmp)->active;
 
 	/* Background Color */
 	tmp = lookup_widget((props_dialog), "white_radio");
@@ -267,12 +261,10 @@ static void props_update(void)
 		colors[18] = ColorWhite;
 		colors[19] = ColorBlack;
 	}
-	tmp = lookup_widget((win_main), "xtext_custom");
-	gtk_xtext_set_palette(GTK_XTEXT(tmp), colors);
+	gtk_xtext_set_palette(xtext, colors);
 
 	/* Refresh XText to make changed take affect */
-	tmp = lookup_widget((win_main), "xtext_custom");
-	gtk_xtext_refresh(GTK_XTEXT(tmp), 0);
+	gtk_xtext_refresh(xtext, 0);
 
 	/* Display a status Message */
 	chat_display_local(CHAT_LOCAL_NORMAL, NULL, _("Properties Updated"));
