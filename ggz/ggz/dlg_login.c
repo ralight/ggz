@@ -431,7 +431,9 @@ void login_start_session(GtkButton * button, gpointer window)
 void login_show_details(GtkButton * button, gpointer user_data)
 {
         detail_window = create_dlg_details();
+	gtk_widget_set_sensitive(GTK_WIDGET(button),FALSE);
         gtk_widget_show(detail_window);
+	
 }
 
 void login_ok()
