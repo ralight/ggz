@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
- * $Id: main.c 4491 2002-09-09 04:51:32Z jdorje $
+ * $Id: main.c 4896 2002-10-12 23:06:58Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -34,14 +34,15 @@
 #include <ggz_common.h>
 #include <ggzmod.h>
 
+#include "dlg_about.h"
+#include "ggzintl.h"
+
 #include "main_win.h"
 #include "support.h"
 #include "chess.h"
 #include "board.h"
 #include "game.h"
 #include "net.h"
-
-#include "ggzintl.h"
 
 /* main window widget */
 GtkWidget *main_win;
@@ -51,6 +52,7 @@ struct chess_info game_info;
 
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
+static void initialize_about_dialog(void);
 
 static GGZMod *mod;
 
@@ -76,6 +78,7 @@ int main(int argc, char *argv[]) {
 	ggz_intl_init("chess");
 
 	gtk_init(&argc, &argv);
+	initialize_about_dialog();
 	add_pixmap_directory(".");
 
 	main_win = create_main_win();
@@ -139,4 +142,16 @@ static void cleanup_debugging(void)
 #else
 	ggz_debug_cleanup(GGZ_CHECK_NONE);
 #endif
+}
+
+static void initialize_about_dialog(void)
+{
+  char *header;
+  header = g_strdup_printf(_("GGZ Gaming Zone\n"
+			     "Chess Version %s"), VERSION);
+  init_dlg_about(_("About Chess"), header,
+		 _("Copyright (C) 2001 Ismael Orenstein.\n"
+		   "\n"
+		   "Website: http://ggz.sourceforge.net/"));
+  g_free(header);
 }
