@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -14,6 +16,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <getopt.h>
+#include <pthread.h>
 
 #include "minidom.h"
 
@@ -30,9 +33,13 @@
 /* Optimized code is much faster, but not so readable */
 #define METASERV_OPTIMIZED 1
 
+/* Server port */
+#define METASERV_PORT 15689
+
 /* Global variables */
 static DOM *configuration = NULL;
 char *logfile = NULL;
+static char *cachefile = NULL;
 
 static char *metaserv_lookup(const char *class, const char *category, const char *key, int xmlformat)
 {
@@ -666,10 +673,19 @@ static char *metamagic(const char *rawuri)
 static void metaserv_init(const char *configfile)
 {
 	log("Initialization");
-	if(!configfile) configfile = METASERV_DIR "/metaservconf.xml";
-	log("Using configuration: %s", configfile);
-	configuration = minidom_load(configfile);
-	if(!configuration) log("Configuration invalid!");
+	if(cachefile)
+	{
+		configuration = minidom_load(cachefile);
+		if(configuration) log("Using cachefile: %s", cachefile);
+		else log("Cache not present, will be created");
+	}
+	if(!configuration)
+	{
+		if(!configfile) configfile = METASERV_DIR "/metaservconf.xml";
+		log("Using configuration: %s", configfile);
+		configuration = minidom_load(configfile);
+		if(!configuration) log("Configuration invalid!");
+	}
 }
 
 static void metaserv_shutdown()
@@ -678,41 +694,113 @@ static void metaserv_shutdown()
 	minidom_free(configuration);
 }
 
-static int metaserv_work()
+static int metaserv_work(int fd)
 {
 	char buffer[1024];
 	char *result;
+	int ret;
+	FILE *stream;
 
 	log("Enter main loop");
 	while(1)
 	{
-		result = fgets(buffer, sizeof(buffer), stdin);
-		if(result)
+		ret = read(fd, buffer, sizeof(buffer));
+		if(ret > 0)
 		{
-			buffer[strlen(buffer) - 1] = 0;
+			buffer[ret - 1] = 0;
 			log("Request: buffer=%s", buffer);
 			result = metamagic(buffer);
 
+			stream = fdopen(fd, "w");
 			if(result)
 			{
-				printf("%s\n", result);
+				fprintf(stream, "%s\n", result);
 				log("Result: result=%s", result);
 			}
 			else
 			{
-				printf("\n");
+				fprintf(stream, "\n");
 				log("No result");
 			}
-			fflush(NULL);
+			fflush(stream);
 		}
-		else
-		{
-			log("Disconnection");
-			exit(0);
-		}
+		else return 0;
 	}
 
 	return 1;
+}
+
+static void *metaserv_worker(void *arg)
+{
+	int fd;
+	struct sockaddr_in peername;
+	socklen_t namelen;
+	int ret;
+	struct hostent host, *hp;
+	int herr;
+	char tmp[1024];
+
+	fd = *(int*)arg;
+	free(arg);
+
+	namelen = sizeof(struct sockaddr_in);
+	getpeername(fd, (struct sockaddr*)&peername, &namelen);
+	ret = gethostbyaddr_r(&peername.sin_addr, sizeof(struct in_addr), AF_INET, &host, tmp, 1024, &hp, &herr);
+	if(!ret) snprintf(tmp, sizeof(tmp), host.h_name);
+	else snprintf(tmp, sizeof(tmp), "(unknown)");
+	log("Accepted connection from %s", tmp);
+	metaserv_work(fd);
+	log("Disconnection from %s", tmp);
+
+	if(cachefile)
+	{
+		log("Caching configuration to %s", cachefile);
+
+		snprintf(tmp, sizeof(tmp), "/tmp/metaservdump-%i-%li", fd, time(NULL));
+		unlink(tmp);
+		minidom_dumpfile(configuration, tmp);
+		rename(tmp, cachefile);
+		chmod(cachefile, S_IRUSR);
+	}
+
+	return NULL;
+}
+
+static void metaserv_daemon()
+{
+	int sock;
+	struct sockaddr_in name;
+	int on;
+	int ret;
+	int fd;
+	pthread_t thread;
+	int *arg;
+
+	sock = socket(PF_INET, SOCK_STREAM, 0);
+	if(sock < 0) return;
+
+	name.sin_family = AF_INET;
+	name.sin_port = htons(METASERV_PORT);
+	name.sin_addr.s_addr = htonl(INADDR_ANY);
+
+	on = 1;
+	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void*)&on, sizeof(on));
+
+	ret = bind(sock, (struct sockaddr*)&name, sizeof(name));
+	if(ret < 0) return;
+
+	ret = listen(sock, 1);
+	if(ret < 0) return;
+
+	while(1)
+	{
+		fd = accept(sock, NULL, NULL);
+		if(fd < 0) continue;
+
+		arg = (int*)malloc(sizeof(int));
+		*arg = fd;
+		pthread_create(&thread, NULL, metaserv_worker, arg);
+	}
 }
 
 int main(int argc, char *argv[])
@@ -721,9 +809,12 @@ int main(int argc, char *argv[])
 	char *config = NULL;
 	int optindex;
 	int opt;
+	int daemonmode = 0;
 	struct option options[] =
 	{
 		{"configuration", required_argument, 0, 'c'},
+		{"cache", required_argument, 0, 'C'},
+		{"daemon", no_argument, 0, 'd'},
 		{"help", no_argument, 0, 'h'},
 		{"version", no_argument, 0, 'v'},
 		{"logfile", required_argument, 0, 'l'},
@@ -732,12 +823,18 @@ int main(int argc, char *argv[])
 
 	while(1)
 	{
-		opt = getopt_long(argc, argv, "c:hl:v", options, &optindex);
+		opt = getopt_long(argc, argv, "c:C:dhl:v", options, &optindex);
 		if(opt == -1) break;
 		switch(opt)
 		{
 			case 'c':
 				config = optarg;
+				break;
+			case 'C':
+				cachefile = optarg;
+				break;
+			case 'd':
+				daemonmode = 1;
 				break;
 			case 'h':
 				printf("The GGZ Gaming Zone Meta Server\n");
@@ -746,6 +843,8 @@ int main(int argc, char *argv[])
 				printf("Published under GNU GPL conditions\n\n");
 				printf("Available options:\n");
 				printf("[-c | --configuration]: Use this configuration file\n");
+				printf("[-C | --cache        ]: Use this cache file\n]");
+				printf("[-d | --daemon       ]: Run in daemon mode\n");
 				printf("[-h | --help         ]: Show this help\n");
 				printf("[-v | --version      ]: Display version number\n");
 				printf("[-l | --logfile      ]: Log events into this file\n");
@@ -765,7 +864,14 @@ int main(int argc, char *argv[])
 	}
 
 	metaserv_init(config);
-	ret = metaserv_work();
+
+	if(!daemonmode)
+	{
+		ret = metaserv_work(STDIN_FILENO);
+		log("Disconnection");
+	}
+	else metaserv_daemon();
+
 	metaserv_shutdown();
 
 	return 0;

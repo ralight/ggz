@@ -298,12 +298,14 @@ DOM *minidom_load(const char *file)
 	return dom;
 }
 
-void minidom_internal_dump(ELE *ele);		/* forward decl */
+void minidom_internal_dump(ELE *ele, FILE *file);	/* forward decl */
 
 /* Dump out the DOM in XML format */
 /* FIXME: return a char* and print this if dump is needed */
-void minidom_dump(DOM *dom)
+void minidom_dumpfile(DOM *dom, const char *file)
 {
+	FILE *myfile;
+
 	if(!dom) return;
 	if(!dom->processed)
 	{
@@ -320,10 +322,21 @@ void minidom_dump(DOM *dom)
 		printf("ERROR: DOM is empty!\n");	/* is this really an error? */
 		return;
 	}
-	minidom_internal_dump(dom->el);
+	if(file)
+	{
+		myfile = fopen(file, "w");
+	}
+	else myfile = stdout;
+	minidom_internal_dump(dom->el, myfile);
+	if(file) fclose(myfile);
 }
 
-void minidom_internal_dump(ELE *ele)
+void minidom_dump(DOM *dom)
+{
+	minidom_dumpfile(dom, NULL);
+}
+
+void minidom_internal_dump(ELE *ele, FILE *file)
 {
 	int i;
 	static int indent = 0;
@@ -333,44 +346,44 @@ void minidom_internal_dump(ELE *ele)
 	if(!start)
 	{
 		start = 1;
-		printf("<?xml version=\"1.0\"?>\n");
+		fprintf(file, "<?xml version=\"1.0\"?>\n");
 	}
 	indent++;
 	for(i = 0; i < (indent - 1) * 2; i++)
-		printf("  ");
-	printf("<%s", ele->name);
+		fprintf(file, "  ");
+	fprintf(file, "<%s", ele->name);
 
 	i = 0;
 	while((ele->at) && (ele->at[i]))
 	{
 		if(ele->at[i]->value)
-			printf(" %s=\"%s\"", ele->at[i]->name, ele->at[i]->value);
+			fprintf(file, " %s=\"%s\"", ele->at[i]->name, ele->at[i]->value);
 		else
-			printf(" %s", ele->at[i]->name);
+			fprintf(file, " %s", ele->at[i]->name);
 		i++;
 	}
 
-	if((!ele->value) && (!ele->el)) printf("/");
-	printf(">\n");
+	if((!ele->value) && (!ele->el)) fprintf(file, "/");
+	fprintf(file, ">\n");
 	if(ele->value)
 	{
 		for(i = 0; i < (indent - 1) * 2; i++)
-			printf("  ");
-		printf("  %s\n", ele->value);
+			fprintf(file, "  ");
+		fprintf(file, "  %s\n", ele->value);
 	}
 
 	i = 0;
 	while((ele->el) && (ele->el[i]))
 	{
-		minidom_internal_dump(ele->el[i]);
+		minidom_internal_dump(ele->el[i], file);
 		i++;
 	}
 
 	if((ele->value) || (ele->el))
 	{
 		for(i = 0; i < (indent -1) * 2; i++)
-			printf("  ");
-		printf("</%s>\n", ele->name);
+			fprintf(file, "  ");
+		fprintf(file, "</%s>\n", ele->name);
 	}
 	indent--;
 }

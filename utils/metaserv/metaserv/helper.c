@@ -18,10 +18,18 @@ void log(const char *fmt, ...)
 	time_t t;
 	char *ct;
 	va_list ap;
+	int closefile = 0;
 
 	if(!logfile) return;
 
-	f = fopen(logfile, "a");
+	if(!strcmp(logfile, "stdout")) f = stdout;
+	else if(!strcmp(logfile, "stderr")) f = stderr;
+	else
+	{
+		f = fopen(logfile, "a");
+		closefile = 1;
+	}
+
 	if(f)
 	{
 		t = time(NULL);
@@ -33,7 +41,7 @@ void log(const char *fmt, ...)
 		vfprintf(f, fmt, ap);
 		va_end(ap);
 		fprintf(f, "\n");
-		fclose(f);
+		if(closefile) fclose(f);
 	}
 }
 

@@ -42,6 +42,7 @@ typedef struct att_t ATT;	/* Attributes */
 DOM *minidom_load(const char *file);
 DOM *minidom_parse(const char *stream);
 void minidom_dump(DOM *dom);
+void minidom_dumpfile(DOM *dom, const char *file);
 void minidom_free(DOM *dom);
 
 ELE *MD_query(ELE *parent, const char *name);
