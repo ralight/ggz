@@ -52,20 +52,20 @@ AC_DEFUN([AC_GGZ_DATABASE_DB3],
 
 	dnl Check for include files
 
-	AC_CHECK_HEADER(db3/db.h,
-	[
-		db3inc="db3/db.h"
-		database=db3
-		AC_DEFINE([DB3_IN_DIR], 1, [Define if the db3 libs and headers are under db3/])
-	],
-	[])
-
 	AC_CHECK_HEADER(db.h,
 	[
 		db3inc="db.h"
 		database=db3
 	],
-	[])
+	[
+		AC_CHECK_HEADER(db3/db.h,
+		[
+			db3inc="db3/db.h"
+			database=db3
+			AC_DEFINE([DB3_IN_DIR], 1, [Define if the db3 libs and headers are under db3/])
+		],
+		[])
+	])
 
 	if test "$database" = "db3" && test "$db3inc" = ""; then
 		AC_MSG_ERROR([cannot configure db3 (db3-dev needed)])
@@ -193,20 +193,20 @@ AC_DEFUN([AC_GGZ_DATABASE_DB4],
 
 	dnl Check for include files
 
-	AC_CHECK_HEADER(db4/db.h,
-	[
-		db4inc="db4/db.h"
-		database=db4
-		AC_DEFINE([DB4_IN_DIR], 1, [Define if the db4 libs and headers are under db4/])
-	],
-	[])
-
 	AC_CHECK_HEADER(db.h,
 	[
 		db4inc="db.h"
 		database=db4
 	],
-	[])
+	[
+		AC_CHECK_HEADER(db4/db.h,
+		[
+			db4inc="db4/db.h"
+			database=db4
+			AC_DEFINE([DB4_IN_DIR], 1, [Define if the db4 libs and headers are under db4/])
+		],
+		[])
+	])
 
 	if test "$database" = "db4" && test "$db4inc" = ""; then
 		AC_MSG_ERROR([cannot configure db4 (db4-dev needed)])
@@ -246,25 +246,25 @@ AC_DEFUN([AC_GGZ_DATABASE_DB2],
 	fi
 
 	if test "$database" = "db2" && test "$db2lib" = ""; then
-		AC_MSG_ERROR([cannot configure db3 (libdb2 needed)])
+		AC_MSG_ERROR([cannot configure db2 (libdb2 needed)])
 	fi
 
 	dnl Check for include files
 
-	AC_CHECK_HEADER(db2/db.h,
-	[
-		db4inc="db2/db.h"
-		database=db2
-		AC_DEFINE([DB2_IN_DIR], 1, [Define if the db2 libs and headers are under db2/])
-	],
-	[])
-
 	AC_CHECK_HEADER(db.h,
 	[
-		db2inc="db.h"
+		db4inc="db.h"
 		database=db2
 	],
-	[])
+	[
+		AC_CHECK_HEADER(db2/db.h,
+		[
+			db2inc="db2/db.h"
+			database=db2
+			AC_DEFINE([DB2_IN_DIR], 1, [Define if the db2 libs and headers are under db2/])
+		],
+		[])
+	])
 
 	if test "$database" = "db2" && test "$db2inc" = ""; then
 		AC_MSG_ERROR([cannot configure db2 (db2-dev needed)])
