@@ -186,7 +186,7 @@ bool Level::loadFromFile(const char *filename)
 	/* More sanity checks */
 	if(state != state_map) quality = quality_error;
 	if((x != mapx) || (y != mapy)) quality = quality_error;
-	if(!ggz_strcmp(m_version, "0.0.9")) quality = quality_bad;
+	if(ggz_strcmp(m_version, "0.0.9")) quality = quality_error;
 	m_height = y;
 	m_width = x;
 
