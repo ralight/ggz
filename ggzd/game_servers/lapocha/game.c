@@ -648,6 +648,7 @@ static int game_send_hand(int seat)
 	ggz_debug("Sending player %d their hand", seat);
 
 	if(es_write_int(fd, LP_MSG_HAND) < 0
+	   || es_write_char(fd, game.dealer) < 0
 	   || es_write_char(fd, game.hand[seat].hand_size) < 0)
 		return -1;
 

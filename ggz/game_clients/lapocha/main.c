@@ -62,6 +62,7 @@ static int get_opponent_play(void);
 static int get_trick_winner(void);
 static int get_current_scores(void);
 static int get_trump_status(void);
+static int get_dealer(void);
 
 
 int main(int argc, char *argv[])
@@ -141,7 +142,9 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 		case LP_MSG_HAND:
 			game.trump_suit = -1;
 			table_set_trump();
-			status = hand_read_hand();
+			status = get_dealer();
+			if(status == 0)
+				status = hand_read_hand();
 			break;
 		case LP_REQ_BID:
 			for(i=0; i<4; i++)
@@ -311,6 +314,7 @@ static int get_bid_status(void)
 		table_set_bid(game.me, game.bid[game.me]);
 		statusbar_message("Your bid was accepted");
 		game.state = LP_STATE_WAIT;
+		table_set_bidder(game.me);
 	} else if(status == LP_ERR_INVALID) {
 		dlg_bid_display(hand.hand_size);
 		statusbar_message("Invalid bid, please resubmit");
@@ -356,6 +360,8 @@ static int get_player_bid(void)
 	t_str = g_strdup_printf("%s bid %d", game.names[num], game.bid[num]);
 	statusbar_message(t_str);
 	g_free(t_str);
+
+	table_set_bidder(cnum);
 
 	return 0;
 }
@@ -471,6 +477,17 @@ static int get_current_scores(void)
 			return -1;
 		table_set_score(i, game.score[i]);
 	}
+
+	return 0;
+}
+
+
+static int get_dealer(void)
+{
+	if(es_read_char(game.fd, &game.dealer) < 0)
+		return -1;
+	else
+		table_set_dealer();
 
 	return 0;
 }

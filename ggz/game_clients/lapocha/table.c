@@ -763,6 +763,57 @@ void table_set_name(int p, char *name)
 }
 
 
+/* table_set_dealer()
+ *   Notes the dealer's position with a (D) on the screen and first bidder
+ *   with a (B) - might as well take care of that here too
+ */
+void table_set_dealer(void)
+{
+	int i;
+	char *name_temp;
+
+	for(i=0; i<4; i++) {
+		if(i == game.dealer)
+			name_temp = g_strdup_printf("%s (D)", game.names[i]);
+		else if(i == (game.dealer + 1) % 4)
+			name_temp = g_strdup_printf("%s (B)", game.names[i]);
+		else
+			name_temp = g_strdup(game.names[i]);
+		gtk_label_set_text(GTK_LABEL(l_name[SEAT_POS(i)]), name_temp);
+		g_free(name_temp);
+	}
+}
+
+
+/* table_set_bidder()
+ *   Notes the current bidder with a (B) on the screen, and clears
+ *   the previous bidder's flag.  Note that the (int bidder) argument
+ *   is the seat of the PREVIOUS bidder (response from MSG_BID).
+ */
+void table_set_bidder(int bidder)
+{
+	int seat;
+	char *name_temp;
+
+	/* Clear previous bidder flag */
+	gtk_label_set_text(GTK_LABEL(l_name[SEAT_POS(bidder)]),
+			   game.names[bidder]);
+
+	/* If last bid was by dealer, then we are done bidding */
+	if(bidder == game.dealer)
+		return;
+
+	/* Set current bidder flag */
+	seat = (bidder + 1) % 4;
+	if(seat == game.dealer)
+		name_temp = g_strdup_printf("%s (DB)", game.names[seat]);
+	else
+		name_temp = g_strdup_printf("%s (B)", game.names[seat]);
+	gtk_label_set_text(GTK_LABEL(l_name[SEAT_POS(seat)]), name_temp);
+	g_free(name_temp);
+}
+
+
 /* table_set_bid()
  *   Exposed function to set bid on display
  */
