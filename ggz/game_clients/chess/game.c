@@ -53,13 +53,17 @@ void game_init() {
   game_info.seconds[1] = 0;
   game_info.turn = 0;
   game_info.check = FALSE;
-  bzero(game_info.name[0], 18);
-  bzero(game_info.name[1], 18);
+	strcpy(game_info.name[0], "White");
+	strcpy(game_info.name[1], "Black");
 }
 
+/* FIXME: Create a game_popup
 void game_popup(const char *format, ...) {
   game_message(format);
 }
+*/
+
+#define game_popup game_message
 
 void game_message(const char *format, ...) {
   int id;
@@ -124,9 +128,11 @@ void game_update(int event, void *arg) {
       /* Update the game info structure */
       game_info.assign[0] = *(char *)arg;
       game_info.assign[1] = *(char *)(arg+20);
-      strcpy(game_info.name[0], (char *)(arg+1));
-      strcpy(game_info.name[1], (char *)(arg+21));
-      game_message("White is %s and Black is %s", game_info.name[0], game_info.name[1]);
+			if (game_info.assign[0] != GGZ_SEAT_OPEN)
+				strcpy(game_info.name[0], (char *)(arg+1));
+			if (game_info.assign[1] != GGZ_SEAT_OPEN)
+				strcpy(game_info.name[1], (char *)(arg+21));
+			board_info_update();
       free(arg);
       break;
     case CHESS_EVENT_TIME_REQUEST:
@@ -138,10 +144,10 @@ void game_update(int event, void *arg) {
     case CHESS_EVENT_TIME_OPTION:
       if (game_info.state != CHESS_STATE_WAIT)
         break;
-      game_info.clock_type = *(int*)arg >> 24;
-      game_info.seconds[0] = *(int*)arg & 0xFFFFFF;
-      game_info.seconds[1] = *(int*)arg & 0xFFFFFF;
-      game_popup("Clock type is %d and time is %d\n", game_info.clock_type, game_info.seconds[0]);
+      game_info.clock_type = (*((int*)arg)) >> 24;
+      game_info.seconds[0] = (*((int*)arg)) & 0xFFFFFF;
+      game_info.seconds[1] = (*((int*)arg)) & 0xFFFFFF;
+      game_popup("Clock type is %d and time is %d", game_info.clock_type, game_info.seconds[0]);
       break;
     case CHESS_EVENT_START:
       if (game_info.state != CHESS_STATE_WAIT)
@@ -179,6 +185,7 @@ void game_update(int event, void *arg) {
         }
       }
       game_info.turn++;
+			board_info_update();
       board_draw();
       break;
     case CHESS_EVENT_GAMEOVER:

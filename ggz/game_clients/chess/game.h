@@ -22,6 +22,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#define GGZ_SEAT_OPEN -1
+
 void game_init();
 void game_message(const char *, ...);
 void game_popup(const char *, ...);

@@ -37,7 +37,11 @@ create_main_win (void)
   GtkWidget *board;
   GtkWidget *vpaned1;
   GtkWidget *vbox2;
+  GtkWidget *hbox2;
+  GtkWidget *white_arrow;
   GtkWidget *white_time;
+  GtkWidget *hbox3;
+  GtkWidget *black_arrow;
   GtkWidget *black_time;
   GtkWidget *vbox3;
   GtkWidget *last_moves_label;
@@ -147,19 +151,53 @@ create_main_win (void)
   gtk_widget_show (vbox2);
   gtk_paned_pack1 (GTK_PANED (vpaned1), vbox2, FALSE, FALSE);
 
+  hbox2 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox2);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "hbox2", hbox2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox2);
+  gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, FALSE, 0);
+
+  white_arrow = gtk_arrow_new (GTK_ARROW_RIGHT, GTK_SHADOW_IN);
+  gtk_widget_ref (white_arrow);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "white_arrow", white_arrow,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (white_arrow);
+  gtk_box_pack_start (GTK_BOX (hbox2), white_arrow, FALSE, FALSE, 0);
+
   white_time = gtk_label_new (_("White -> 99:99"));
   gtk_widget_ref (white_time);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "white_time", white_time,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (white_time);
-  gtk_box_pack_start (GTK_BOX (vbox2), white_time, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox2), white_time, TRUE, TRUE, 0);
+  gtk_label_set_justify (GTK_LABEL (white_time), GTK_JUSTIFY_RIGHT);
+  gtk_misc_set_alignment (GTK_MISC (white_time), 1, 0.5);
+  gtk_misc_set_padding (GTK_MISC (white_time), 10, 0);
+
+  hbox3 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox3);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "hbox3", hbox3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox3);
+  gtk_box_pack_start (GTK_BOX (vbox2), hbox3, TRUE, TRUE, 0);
+
+  black_arrow = gtk_arrow_new (GTK_ARROW_RIGHT, GTK_SHADOW_IN);
+  gtk_widget_ref (black_arrow);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "black_arrow", black_arrow,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (black_arrow);
+  gtk_box_pack_start (GTK_BOX (hbox3), black_arrow, FALSE, FALSE, 0);
 
   black_time = gtk_label_new (_("Black -> 99:99"));
   gtk_widget_ref (black_time);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "black_time", black_time,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (black_time);
-  gtk_box_pack_start (GTK_BOX (vbox2), black_time, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox3), black_time, TRUE, TRUE, 0);
+  gtk_label_set_justify (GTK_LABEL (black_time), GTK_JUSTIFY_RIGHT);
+  gtk_misc_set_alignment (GTK_MISC (black_time), 1, 0.5);
+  gtk_misc_set_padding (GTK_MISC (black_time), 10, 0);
 
   vbox3 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox3);

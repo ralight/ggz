@@ -38,7 +38,7 @@ extern struct chess_info game_info;
 void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
   char op;
   char args[2];
-  int a;
+  int a = 0;
   char *names;
 
   /* Get the opcode */

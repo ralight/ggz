@@ -118,7 +118,82 @@ void board_init() {
   game_info.src_y = -1;
   game_info.dest_x = -1;
   game_info.dest_y = -1;
+
+	/* Setup the player info */
+	board_info_init();
 }
+
+void board_info_init() {
+	GtkWidget *black, *white;
+	GtkWidget *black_arrow, *white_arrow;
+	GdkColor color;
+	GtkStyle *style;
+	int j;
+
+	black = lookup_widget(main_win, "black_time");
+	white = lookup_widget(main_win, "white_time");
+	black_arrow = lookup_widget(main_win, "black_arrow");
+	white_arrow = lookup_widget(main_win, "white_arrow");
+
+
+	/* Black label */
+	style = gtk_style_copy(gtk_widget_get_style(main_win));
+	for (j=0; j<5; j++) {
+		style->fg[j] = gtk_widget_get_style(main_win)->black;
+		style->bg[j] = gtk_widget_get_style(main_win)->black;
+	}
+	style->font = gdk_font_load("-*-*-bold-r-normal-*-14-*");
+	gtk_widget_set_style(black, style);
+	/* Arrows */
+	gtk_widget_set_style(black_arrow, style);
+	gtk_widget_set_style(white_arrow, style);
+
+	/* White label */
+	style = gtk_style_copy(gtk_widget_get_style(main_win));
+	gdk_color_parse("rgb:88/88/88", &color);
+	gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), &color, FALSE, TRUE);
+	for (j=0; j<5; j++) {
+		/*
+		style->fg[j] = gtk_widget_get_style(main_win)->white;
+		style->bg[j] = gtk_widget_get_style(main_win)->white;
+		*/
+		style->fg[j] = color;
+		style->bg[j] = color;
+	}
+	style->font = gdk_font_load("-*-*-bold-r-normal-*-14-*");
+	gtk_widget_set_style(white, style);
+
+}
+
+void board_info_update() {
+	GtkWidget *black, *white;
+	char text[32];
+
+	black = lookup_widget(main_win, "black_time");
+	white = lookup_widget(main_win, "white_time");
+
+	/* Set the white text */
+	sprintf(text, "%s -> %02d:%02d", game_info.name[0], game_info.seconds[0]/60, game_info.seconds[0]%60);
+	gtk_label_set_text(GTK_LABEL(white), text);
+
+	/* Set the black text */
+	sprintf(text, "%s -> %02d:%02d", game_info.name[1], game_info.seconds[1]/60, game_info.seconds[1]%60);
+	gtk_label_set_text(GTK_LABEL(black), text);
+
+	/* Get the arrows to set the current turn */
+	black = lookup_widget(main_win, "black_arrow");
+	white = lookup_widget(main_win, "white_arrow");
+	gtk_widget_hide(black);
+	gtk_widget_hide(white);
+	if (game_info.turn % 2)
+		gtk_widget_show(black);
+	else
+		gtk_widget_show(white);
+
+}
+
+	
+
 
 void board_dnd_init() {
   GtkWidget *board;
