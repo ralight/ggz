@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4139 2002-05-03 03:17:08Z bmh $
+ * $Id: net.c 4140 2002-05-03 03:49:09Z bmh $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -115,6 +115,7 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs);
 
 /* Handler functions for various tags */
 static void _net_handle_session(GGZNetIO *net, GGZXMLElement *session);
+static void _net_handle_channel(GGZNetIO *net, GGZXMLElement *channel);
 static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login);
 static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element);
@@ -826,10 +827,6 @@ GGZPlayerHandlerStatus net_read_data(GGZNetIO *net)
 	/* Clear the flag now that we've completed this round of parsing */
 	net->parsing = 0;
 
-	/* Mark done if the session is over */
-	if (net->done)
-		done = 1;
-	
 	return (done ? GGZ_REQ_DISCONNECT: GGZ_REQ_OK);
 }
 
@@ -898,6 +895,8 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 		process_func = _net_handle_session;
 	else if (strcmp(tag, "LOGIN") == 0)
 		process_func = _net_handle_login;
+	else if (strcmp(tag, "CHANNEL") == 0)
+		process_func = _net_handle_channel;
 	else if (strcmp(tag, "NAME") == 0)
 		process_func = _net_handle_name;
 	else if (strcmp(tag, "PASSWORD") == 0)
@@ -938,8 +937,33 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 /* Functions for <SESSION> tag */
 static void _net_handle_session(GGZNetIO *net, GGZXMLElement *session)
 {
-	logout_player(net->client->data);
-	net->done = 1;
+	if (net->client->type == GGZ_CLIENT_PLAYER)
+		logout_player(net->client->data);
+	client_end_session(net->client);
+}
+
+
+/* Functions for <CHANNEL> tag */
+static void _net_handle_channel(GGZNetIO *net, GGZXMLElement *channel)
+{
+	char *id;
+
+	if (channel) {
+		/* Grab table ID from tag */
+		id = ggz_xmlelement_get_attr(channel, "ID");
+
+		/* It's an error if they didn't send an ID string */
+		if (!id) {
+			_net_send_result(net, "channel", E_BAD_OPTIONS);
+			return;
+		}
+
+		/* FIXME: Do validity checking on the channel ID here */
+
+		/* FIXME: perhaps lookup table and point net->client->data at it */
+		
+		client_set_type(net->client, GGZ_CLIENT_CHANNEL);
+	}
 }
 
 
@@ -987,9 +1011,9 @@ static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login)
 			net_send_login(net, login_type, E_ALREADY_LOGGED_IN, NULL);
 		}
 		else {
-			net->client->data = player_new(net->client);
+			client_set_type(net->client, GGZ_CLIENT_PLAYER);
 			login_player(login_type, net->client->data, auth->name, auth->password);
-			net->client->type = GGZ_CLIENT_PLAYER;
+			
 			/* FIXME: this is a hack so that the player loop will start */
 			client_end_session(net->client);
 		}

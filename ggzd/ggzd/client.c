@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 4139 2002-05-03 03:17:08Z bmh $
+ * $Id: client.c 4140 2002-05-03 03:49:09Z bmh $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -246,17 +246,49 @@ static void client_loop(GGZClient* client)
 		
 	} /* for(;;) */
 
-	dbg_msg(GGZ_DBG_CONNECTION, "Client loop finished");
+	dbg_msg(GGZ_DBG_CONNECTION, "Generic client loop finished");
+
+	/* If we left the loop for a failure, return now */
+	if (status != GGZ_REQ_OK)
+		return;
 
 	/* FIXME: eventually we will expand the client loop to have the functionality of the player loop 
 	   so we don't need to do this. */
-	if (status == GGZ_REQ_OK && client->type == GGZ_CLIENT_PLAYER) {
+	switch (client->type) {
+
+	case GGZ_CLIENT_PLAYER:
+		dbg_msg(GGZ_DBG_CONNECTION, "Starting player loop");
+		client->session_over = 0;
 		player_loop(client->data);
 		player_remove(client->data);
 		free(client->data);
+		break;
+		
+	case GGZ_CLIENT_CHANNEL:
+		dbg_msg(GGZ_DBG_CONNECTION, "Forming direct game connection");
+		break;
+
+	default:
+		break;
 	}
 
 	return;
+}
+
+
+void client_set_type(GGZClient *client, GGZClientType type)
+{
+	client->type = type;
+	switch (type) {
+	case GGZ_CLIENT_PLAYER:
+		client->data = player_new(client);
+		break;
+	case GGZ_CLIENT_CHANNEL:
+		/* FIXME: do something here */
+		break;
+	default:
+		break;
+	}
 }
 
 

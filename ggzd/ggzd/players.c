@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4139 2002-05-03 03:17:08Z bmh $
+ * $Id: players.c 4140 2002-05-03 03:49:09Z bmh $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -138,7 +138,7 @@ void player_loop(GGZPlayer* player)
 	FD_ZERO(&active_fd_set);
 	FD_SET(p_fd, &active_fd_set);
 	
-	for (;;) {
+	while (!player->client->session_over) {
 		/* Process private events */
 		if ( (status = player_updates(player)) < 0)
 			break;
