@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2943 2001-12-18 23:10:24Z jdorje $
+ * $Id: game.c 2948 2001-12-19 09:34:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -75,11 +75,31 @@ void game_send_options(int option_count, int *options_selection)
 }
 
 
-void game_play_card(card_t card)
+/* Move the selected card out toward the playing area.  We don't actually put
+   it *on* the table until we hear confirmation from the server that the play
+   is valid. */
+void game_play_card(int card_num)
 {
-	int status = client_send_play(card);
+	int player = ggzcards.play_hand, status;
+	card_t card = ggzcards.players[player].hand.card[card_num];
+
+	status = client_send_play(card);
+
+	ggzcards.players[player].table_card = card;
+
+	/* Draw the cards, eliminating the card in play */
+	table_display_hand(player);
+
+	/* We don't remove the card from our hand until we have
+	   validation that it's been played. Graphically, the
+	   table_card is skipped over when drawing the hand. */
 
 	statusbar_message(_("Sending play to server"));
+
+#ifdef ANIMATION
+	/* Setup and trigger the card animation */
+	animation_start(player, card, card_num);
+#endif /* ANIMATION */
 
 	assert(status == 0);
 }

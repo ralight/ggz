@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2946 2001-12-18 23:59:37Z jdorje $
+ * $Id: table.c 2948 2001-12-19 09:34:42Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -77,7 +77,6 @@ static int selected_card = -1;	/* the card currently selected from the
 				   playing hand */
 
 static void table_card_clicked(int);
-static void table_card_play(int p, int card_num, card_t card);
 
 static void table_show_card(int, card_t);
 
@@ -375,29 +374,17 @@ void table_handle_click_event(GdkEventButton * event)
    if it is already selected. */
 static void table_card_clicked(int card_num)
 {
-	int p = ggzcards.play_hand;
-
 	ggz_debug("table", "table_card_clicked: Card %d clicked.", card_num);
 
 	if (card_num == selected_card) {
-		card_t card = ggzcards.players[p].hand.card[card_num];
 		/* If you click on the already selected card, it gets played.
 		 */
 		selected_card = -1;
-
-		/* Start the graphic animation */
-		table_card_play(p, card_num, card);
-
-		/* We don't remove the card from our hand until we have
-		   validation that it's been played. Graphically, the
-		   table_card is skipped over when drawing the hand. */
-
-		/* Call the game function to notify server of play */
-		game_play_card(card);
+		game_play_card(card_num);
 	} else {
 		/* Pop the card forward and select it */
 		selected_card = card_num;
-		table_display_hand(p);
+		table_display_hand(ggzcards.play_hand);
 	}
 }
 
@@ -473,29 +460,6 @@ void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image)
 			table_style->fg_gc[GTK_WIDGET_STATE(table)],
 			show ? card_fronts[orientation] :
 			card_backs[orientation], xc, yc, x, y, width, height);
-}
-
-/* Move the selected card out toward the playing area.  We don't actually put
-   it *on* the table until we hear confirmation from the server that the play
-   is valid. */
-static void table_card_play(int p, int card_num, card_t card)
-{
-	ggz_debug("table", "table_card_play(%d, %d) called.", p, card_num);
-
-	ggzcards.players[p].table_card = card;
-
-	/* Draw the cards, eliminating the card in play */
-	table_display_hand(p);
-
-	/* And refresh the on-screen image */
-	table_show_table(TEXT_BOX_WIDTH + XWIDTH,
-			 get_table_height() - TEXT_BOX_WIDTH - 2 * XWIDTH,
-			 CARD_BOX_WIDTH, CARDHEIGHT);
-
-#ifdef ANIMATION
-	/* Setup and trigger the card animation */
-	animation_start(p, card, card_num);
-#endif /* ANIMATION */
 }
 
 /* Exposed function to show one player's hand. */
