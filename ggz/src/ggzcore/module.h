@@ -60,6 +60,13 @@ struct _GGZModule {
 
 int _ggzcore_module_setup(void);
 unsigned int _ggzcore_module_get_num(void);
+
+/* Returns how many modules support this game and protocol */
+int _ggzcore_module_get_num_by_type(const char *game, const char *protocol);
+
+/* Returns n-th module that supports this game and protocol */
+struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game, const char *protocol, const unsigned int num);
+
 int _ggzcore_module_launch(struct _GGZModule *module);
 void _ggzcore_module_cleanup(void);
 

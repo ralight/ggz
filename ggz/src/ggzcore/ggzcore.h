@@ -74,6 +74,7 @@ typedef enum {
 	GGZ_DBG_MEMORY    = 0x00002000,
 	GGZ_DBG_MEMDETAIL = 0x00004000,
 	GGZ_DBG_MODULE    = 0x00008000,
+	GGZ_DBG_GAME      = 0x00010000,
 	GGZ_DBG_ALL       = 0xFFFFFFFF
 } GGZDebugLevel;
 
@@ -171,6 +172,12 @@ typedef enum {
 
 
 typedef enum {
+	GGZ_LAUNCHED,
+	GGZ_GAME_READY,
+} GGZGameEvent;
+
+
+typedef enum {
 	GGZ_STATE_OFFLINE,
 	GGZ_STATE_CONNECTING,
 	GGZ_STATE_ONLINE,
@@ -201,6 +208,7 @@ typedef struct _GGZPlayer   GGZPlayer;
 typedef struct _GGZTable    GGZTable;
 typedef struct _GGZGameType GGZGameType;
 typedef struct _GGZModule   GGZModule;
+typedef struct _GGZGame     GGZGame;
 
 /* Function for allocating and initializing new GGZServer object */
 GGZServer* ggzcore_server_new(void);
@@ -344,6 +352,7 @@ char*        ggzcore_table_get_desc(GGZTable *table);
 
 /* These function are lookups to gametype information. */
 char*  ggzcore_gametype_get_name(GGZGameType *type);
+char*  ggzcore_gametype_get_protocol(GGZGameType *type);
 char*  ggzcore_gametype_get_version(GGZGameType *type);
 char*  ggzcore_gametype_get_author(GGZGameType *type);
 char*  ggzcore_gametype_get_url(GGZGameType *type);
@@ -580,11 +589,14 @@ int ggzcore_module_add(const char *game,
 		       
 
 
-/*This returns a dynamically allocated array of module IDs for the
-  version of the game specified, or NULL if there are no modules
-  registered for that game/version.  The last element in the array is
-  the flag value -1.*/
-GGZModule** ggzcore_module_get_by_type(const char *game, const char *version);
+/* Returns how many modules support this game and protocol */
+int ggzcore_module_get_num_by_type(const char *game, const char *protocol);
+
+/* Returns n-th module that supports this game and protocol */
+GGZModule* ggzcore_module_get_nth_by_type(const char *game, 
+					  const char *protocol, 
+					  const unsigned int num);
+
 
 
 /* This attempts to launch the specified module and returns 0 is
@@ -605,6 +617,36 @@ char* ggzcore_module_get_url(GGZModule *module);
 char* ggzcore_module_get_path(GGZModule *module);
 char* ggzcore_module_get_icon_path(GGZModule *module);
 char* ggzcore_module_get_help_path(GGZModule *module);
+
+
+GGZGame* ggzcore_game_new(void);
+int ggzcore_game_init(GGZGame *game, GGZModule *module);
+void ggzcore_game_free(GGZGame *game);
+
+/* Functions for attaching hooks to GGZGame events */
+int ggzcore_game_add_event_hook(GGZGame *game,
+				const GGZGameEvent event, 
+				const GGZHookFunc func);
+
+int ggzcore_game_add_event_hook_full(GGZGame *game,
+				     const GGZGameEvent event, 
+				     const GGZHookFunc func,
+				     void *data);
+
+/* Functions for removing hooks from GGZGame events */
+int ggzcore_game_remove_event_hook(GGZGame *game,
+				   const GGZGameEvent event, 
+				   const GGZHookFunc func);
+
+int ggzcore_game_remove_event_hook_id(GGZGame *game,
+				      const GGZGameEvent event, 
+				      const unsigned int hook_id);
+
+int        ggzcore_game_get_fd(GGZGame *game);
+GGZModule* ggzcore_game_get_module(GGZGame *game);
+
+int ggzcore_game_launch(GGZGame *game);
+int ggzcore_game_join(GGZGame *game);
 
 
 #ifdef __cplusplus

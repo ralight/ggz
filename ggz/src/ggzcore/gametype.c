@@ -52,6 +52,23 @@ char* ggzcore_gametype_get_author(GGZGameType *type)
 	return _ggzcore_gametype_get_author(type);
 }
 
+char*  ggzcore_gametype_get_protocol(GGZGameType *type)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_protocol(type);
+}
+
+
+char*  ggzcore_gametype_get_version(GGZGameType *type)
+{
+	if (!type)
+		return NULL;
+
+	return _ggzcore_gametype_get_version(type);
+}
+
 
 char* ggzcore_gametype_get_url(GGZGameType *type)
 {
@@ -100,8 +117,11 @@ void _ggzcore_gametype_init(struct _GGZGameType *gametype,
 	
 	if (name)
 		gametype->name = strdup(name);
-	if (version)
+	if (version) {
 		gametype->version = strdup(version);
+		/* FIXME: use actual protocol */
+		gametype->protocol = strdup(version);
+	}
 	if (desc)
 		gametype->desc = strdup(desc);
 	if (author)
@@ -115,6 +135,8 @@ void _ggzcore_gametype_free(struct _GGZGameType *type)
 {
 	if (type->name)
 		free(type->name);
+	if (type->protocol)
+		free(type->protocol);
 	if (type->version)
 		free(type->version);
 	if (type->desc)
@@ -137,6 +159,12 @@ unsigned int _ggzcore_gametype_get_id(struct _GGZGameType *type)
 char*  _ggzcore_gametype_get_name(struct _GGZGameType *type)
 {
 	return type->name;
+}
+
+
+char*  _ggzcore_gametype_get_protocol(struct _GGZGameType *type)
+{
+	return type->protocol;
 }
 
 

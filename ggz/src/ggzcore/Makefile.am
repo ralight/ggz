@@ -14,6 +14,8 @@ libggzcore_a_SOURCES =	conf.c \
 			confio.c \
 			confio.h \
 		      	init.c \
+			game.c \
+			game.h \
 		      	gametype.c \
 		      	gametype.h \
 			ggzcore.h \

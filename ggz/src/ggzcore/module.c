@@ -23,10 +23,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
-#include <confio.h>
-#include <module.h>
-#include <msg.h>
+#include "config.h"
+#include "confio.h"
+#include "module.h"
+#include "msg.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -60,6 +60,7 @@ static void _ggzcore_module_print(struct _GGZModule*);
 static void _ggzcore_module_list_print(void);
 /* Utility functions used by _ggzcore_list */
 static int   _ggzcore_module_compare(void* p, void* q);
+static int   _ggzcore_module_match_version(void *p, void *q);
 static void* _ggzcore_module_create(void* p);
 static void  _ggzcore_module_destroy(void* p);
 
@@ -74,6 +75,26 @@ unsigned int ggzcore_module_get_num(void)
 }
 
 
+/* Returns how many modules support this game and protocol */
+int ggzcore_module_get_num_by_type(const char *game, const char *protocol)
+{
+	if (!game || !protocol)
+		return -1;
+
+	return _ggzcore_module_get_num_by_type(game, protocol);
+}
+
+
+/* Returns n-th module that supports this game and protocol */
+GGZModule* ggzcore_module_get_nth_by_type(const char *game, const char *protocol, const unsigned int num)
+{
+	if (!game || !protocol)
+		return NULL;
+
+	return _ggzcore_module_get_nth_by_type(game, protocol, num);
+}
+
+
 /* This adds a local module to the list.  It returns 0 if successful or
    -1 on failure. */
 int ggzcore_module_add(const char *game,
@@ -85,16 +106,6 @@ int ggzcore_module_add(const char *game,
 		       const char *exe_path,
 		       const char *icon_path,
 		       const char *help_path);
-
-
-/*This returns a dynamically allocated array of GGZModules for the
-  version of the game specified, or NULL if there are no modules
-  registered for that game/version.  The last element in the array is
-  the flag value -1.*/
-GGZModule** ggzcore_module_get_by_type(const char *game, const char *version)
-{
-	return NULL;
-}
 
 
 /* This attempts to launch the specified module and returns 0 is
@@ -269,6 +280,32 @@ int _ggzcore_module_setup(void)
 unsigned int _ggzcore_module_get_num(void)
 {
 	return num_modules;
+}
+
+
+int _ggzcore_module_get_num_by_type(const char *game, const char *protocol)
+{
+	/* FIXME: need to calcluate this ! */
+	return 1;
+}
+
+
+/* FIXME: do this right */
+struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game, const char *protocol, const unsigned int num)
+{
+	_ggzcore_list_entry *entry;
+	struct _GGZModule mod;
+
+	mod.game = game;
+	mod.protocol = protocol;
+
+	entry = _ggzcore_list_search_alt(module_list, &mod, _ggzcore_module_match_version);
+	if (!entry) {
+		ggzcore_debug(GGZ_DBG_MODULE, "Couldn't find module");
+		return NULL;
+	}
+
+	return _ggzcore_list_get_data(entry);
 }
 
 
@@ -492,6 +529,22 @@ static void _ggzcore_module_list_print(void)
 static int _ggzcore_module_compare(void* p, void* q)
 {
 	return 1;
+}
+
+
+static int _ggzcore_module_match_version(void *p, void *q)
+{
+	int compare;
+
+	struct _GGZModule *pmod = (struct _GGZModule*)p;
+	struct _GGZModule *qmod = (struct _GGZModule*)q;
+
+	compare = strcmp(pmod->game, qmod->game);
+
+	if (compare != 0)
+		return compare;
+	else
+		return strcmp(pmod->protocol, qmod->protocol);
 }
 
 

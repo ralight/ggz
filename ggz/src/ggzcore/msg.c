@@ -104,6 +104,9 @@ void ggzcore_debug(GGZDebugLevel level, const char *fmt, ...)
 		case GGZ_DBG_MODULE:
 			prefix = "MODULE";
 			break;
+		case GGZ_DBG_GAME:
+			prefix = "GAME";
+			break;
 		default:
 			prefix = "DEBUG";
 			break;
