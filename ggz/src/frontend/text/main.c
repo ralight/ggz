@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 5393 2003-02-04 19:42:17Z dr_maux $
+ * $Id: main.c 5485 2003-03-29 20:39:38Z dr_maux $
  *
  * Main loop
  *
@@ -143,8 +143,8 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	if(optindex < argc) {
-		autouri = argv[argc - 1];
+	if(optind < argc) {
+		autouri = argv[optind];
 	}
 
 	output_init(opt_reverse);
