@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2986 2001-12-23 00:47:37Z jdorje $
+ * $Id: table.c 2987 2001-12-23 02:11:02Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -70,7 +70,6 @@ GtkWidget *l_name[MAX_NUM_PLAYERS] = { NULL };	/* player names */
 static GtkWidget *label[MAX_NUM_PLAYERS] = { NULL };	/* player labels */
 
 /* static GtkWidget *msglabel = NULL; *//* global label; put in place of old l_trump */
-static gboolean table_initialized = FALSE;
 static gboolean table_ready = FALSE;
 
 static int selected_card = -1;	/* the card currently selected from the
@@ -129,8 +128,11 @@ static void draw_splash_screen(void)
 {
 	card_t card = { ACE_HIGH, SPADES, 0 };
 
-	table_buf = gdk_pixmap_new(table->window,
-				   get_table_width(), get_table_height(), -1);
+	ggz_debug("table", "Drawing splash screen.");
+
+	assert(table_buf);
+	assert(ggzcards.num_players == 0);
+
 	gdk_draw_rectangle(table_buf,
 			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
 			   TRUE, 0, 0, get_table_width(), get_table_height());
@@ -145,14 +147,16 @@ static void draw_splash_screen(void)
 void table_initialize(void)
 {
 	GdkBitmap *mask;
-
 	gchar **xpm_fronts[4] =
 		{ cards_xpm, cards_2_xpm, cards_3_xpm, cards_4_xpm };
 	gchar **xpm_backs[4] =
 		{ cards_b1_xpm, cards_b2_xpm, cards_b3_xpm, cards_b4_xpm };
 	int i;
+	static int call_count = 0;
 
-	assert(!table_initialized);
+	/* Just a sanity check; we don't want to call this function twice. */
+	assert(call_count == 0);
+	call_count++;
 
 	/* This starts our drawing code */
 	table = gtk_object_get_data(GTK_OBJECT(dlg_main), "fixed1");
@@ -178,13 +182,12 @@ void table_initialize(void)
 				  i);
 	}
 
-
-	if (ggzcards.num_players > 0)
-		game_setup_table();
-	else
-		draw_splash_screen();
-
-	table_initialized = TRUE;
+	assert(table->window);
+	assert(get_table_width() > 0 && get_table_height > 0);
+	table_buf = gdk_pixmap_new(table->window,
+				   get_table_width(), get_table_height(), -1);
+	assert(table_buf);
+	draw_splash_screen();
 }
 
 /* Setup all table data that's not initialized by table_initialize.  This may
@@ -208,6 +211,7 @@ void table_setup(void)
 	/* We may need to resize the table */
 	gtk_widget_set_usize(table, get_table_width(), get_table_height());
 
+	/* And resize the table buffer... */
 	gdk_pixmap_unref(table_buf);
 	table_buf = gdk_pixmap_new(table->window,
 				   get_table_width(), get_table_height(), -1);
@@ -273,24 +277,26 @@ void table_set_player_message(int player, const char *message)
    is signaled. */
 void table_redraw(void)
 {
-	if (!table_initialized)
-		return;
+	if (table_ready) {
+		animation_stop(TRUE);
 
-	animation_stop(TRUE);
+		gtk_widget_grab_focus(dlg_main);
 
-	gtk_widget_grab_focus(dlg_main);
+		table_style = gtk_widget_get_style(table);
 
-	table_style = gtk_widget_get_style(table);
+		draw_card_areas();
 
-	draw_card_areas();
+		/* Redisplay any cards on table and in hands */
+		table_display_all_hands();
+		table_show_cards();
 
-	/* Redisplay any cards on table and in hands */
-	table_display_all_hands();
-	table_show_cards();
-
-	/* There has GOT to be a better way to force the redraw! */
-	gdk_window_hide(table->window);
-	gdk_window_show(table->window);
+		/* There has GOT to be a better way to force the redraw! */
+		gdk_window_hide(table->window);
+		gdk_window_show(table->window);
+	} else {		/* not if (table_ready) */
+		if (table_buf)
+			draw_splash_screen();
+	}
 }
 
 
