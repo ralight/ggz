@@ -1,0 +1,135 @@
+/*
+ * File: err_func.c
+ * Author: Brent Hendricks
+ * Project: GGZ Server
+ * Date: 10/11/99
+ * Desc: Error functions
+ *
+ * Copyright (C) 1999 Brent Hendricks.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+ */
+
+#include <config.h>
+
+#include <stdio.h>
+#include <stdarg.h>
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
+
+#include <easysock.h>
+#include <err_func.h>
+
+
+static void err_doit(int flag, const char *fmt, va_list ap)
+{
+
+	char buf[4096];
+
+	/*sprintf(buf, "[%d]: ", getpid());*/
+        vsprintf(buf, fmt, ap);
+	if (flag)
+		sprintf(buf + strlen(buf), ": %s", strerror(errno));
+	/*strcat(buf, "\n");
+	 fflush(stdout);*/
+	fputs(buf, stderr);
+	fflush(NULL);
+
+}
+
+
+void err_sys(const char *fmt, ...)
+{
+
+	va_list ap;
+
+	va_start(ap, fmt);
+	err_doit(1, fmt, ap);
+	va_end(ap);
+
+}
+
+
+void err_sys_exit(const char *fmt, ...)
+{
+
+	va_list ap;
+
+	va_start(ap, fmt);
+	err_doit(1, fmt, ap);
+	va_end(ap);
+	/*cleanup(); */
+	exit(-1);
+
+}
+
+
+void err_msg(const char *fmt, ...)
+{
+
+	va_list ap;
+
+	va_start(ap, fmt);
+	err_doit(0, fmt, ap);
+	va_end(ap);
+
+}
+
+
+void err_msg_exit(const char *fmt, ...)
+{
+
+	va_list ap;
+
+	va_start(ap, fmt);
+	err_doit(1, fmt, ap);
+	va_end(ap);
+	/*cleanup(); */
+	exit(-1);
+
+}
+
+
+void dbg_msg(const char *fmt, ...)
+{
+#ifdef DEBUG
+	va_list ap;
+
+	va_start(ap, fmt);
+	err_doit(0, fmt, ap);
+	va_end(ap);
+#endif
+}
+
+
+void err_sock(const char *err, const EsOpType op, const EsDataType type)
+{
+
+	switch (op) {
+	case ES_CREATE:
+		err_msg("Error while creating socket: %s\n", err);
+		break;
+	case ES_READ:
+		err_msg("Error while reading from socket: %s\n", err);
+		break;
+	case ES_WRITE:
+		err_msg("Error while writing to socket: %s\n", err);
+		break;
+	case ES_ALLOCATE:
+		err_msg("Error while allocating memory: %s\n", err);
+		break;
+	}
+}

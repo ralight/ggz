@@ -59,12 +59,12 @@ inline void ReadIntOrDie( int msgsock, int* message ) {
   status = readint( msgsock, message );
   
   if( status < 0 ) {
-    fprintf( stderr, "[%d]: Network error receiving int\n", getpid() );
+    dbg_msg( "[%d]: Network error receiving int\n", getpid() );
     svNetClose();
     Quit(-1);
   }
   else if( status == 0 ) {
-    fprintf( stderr, "[%d]: Error: socket closed\n", getpid() );
+    dbg_msg( "[%d]: Error: socket closed\n", getpid() );
     svNetClose();
     Quit(-1);
   }
@@ -78,7 +78,7 @@ inline void WriteIntOrDie( int msgsock, int message ) {
   status = writeint( msgsock, message );
   
   if( status <= 0 ) {
-    fprintf( stderr, "[%d]: Network error sending int\n", getpid() );
+    dbg_msg( "[%d]: Network error sending int\n", getpid() );
     svNetClose();
     Quit(-1);
   }
@@ -202,7 +202,7 @@ void GetGameInfo( void ) {
     readstring( STDIN_FILENO, &gameInfo.players[i] );
     ReadIntOrDie( STDIN_FILENO, &gameInfo.playerSock[i] );
     gameInfo.clientPids[i] = 0;
-    fprintf(stderr, "[%d]: Player %d has fd %d and name %s\n", getpid(), i,
+    dbg_msg( "[%d]: Player %d has fd %d and name %s\n", getpid(), i,
 	    gameInfo.playerSock[i], gameInfo.players[i]);
   }
   
@@ -218,13 +218,13 @@ void GetGameInfo( void ) {
   for (i=0; i<4; i++) {
     if( gameInfo.playerSock[i] == SOCK_COMP ) 
       continue;
-    fprintf( stderr, "[%d]: Sending info to %s\n", getpid(), gameInfo.players[i] );
+    dbg_msg( "[%d]: Sending info to %s\n", getpid(), gameInfo.players[i] );
     WriteIntOrDie( gameInfo.playerSock[i], gameInfo.gameNum );
     WriteIntOrDie( gameInfo.playerSock[i], i );
     WriteIntOrDie( gameInfo.playerSock[i], gameInfo.gamePid );
     for(j=0; j<4; j++) {
       if( writestring( gameInfo.playerSock[i], gameInfo.players[j] ) < 0 ) {
-	fprintf( stderr, "[%d]: Network error sending string\n", getpid() );
+	dbg_msg( "[%d]: Network error sending string\n", getpid() );
 	svNetClose();
 	Quit(-1);
       }
@@ -234,13 +234,13 @@ void GetGameInfo( void ) {
     
     if( status == i ) {
       if( log )
-	  fprintf( stderr, "[%d]: %s received player list\n", getpid(), 
+	  dbg_msg( "[%d]: %s received player list\n", getpid(), 
 		 gameInfo.players[i] );
     }
     else {
       svNetClose();
       if( log )
-	fprintf( stderr, "[%d]: Error: player %d returned %d\n", getpid(), i, 
+	dbg_msg( "[%d]: Error: player %d returned %d\n", getpid(), i, 
 		 status);
       Quit(-1);
     }
@@ -253,21 +253,21 @@ int ReadOptions( void ) {
   int slots, status = -1;
   unsigned char ai_mask;
   
-  fprintf( stderr, "[%d]: Reading options from server\n", getpid() );
+  dbg_msg( "[%d]: Reading options from server\n", getpid() );
 
   /*  if( readint(0, &(gameInfo.opt.bitOpt) ) < 0 ) {
-      fprintf( stderr, "[%d]: Error reading bitOpt\n", getpid() );
+      dbg_msg( "[%d]: Error reading bitOpt\n", getpid() );
       } else if( readint(0, &(gameInfo.opt.endGame) ) < 0 ) { 
-      fprintf( stderr, "[%d]: Error reading endGame\n", getpid() );
+      dbg_msg( "[%d]: Error reading endGame\n", getpid() );
       } else if( readint(0, &(gameInfo.opt.minBid) ) < 0 ) { 
-      fprintf( stderr, "[%d]: Error reading minBid\n", getpid() );
+      dbg_msg( "[%d]: Error reading minBid\n", getpid() );
       }*/
   if( (status = read(STDIN_FILENO, &gameInfo.opt, 12)) < 0 ) 
-    fprintf( stderr, "[%d]: Error reading options\n", getpid() );
+    dbg_msg( "[%d]: Error reading options\n", getpid() );
   else if( readint(STDIN_FILENO, &slots ) < 0 ) 
-    fprintf( stderr, "[%d]: Error reading number of slots", getpid() );
+    dbg_msg( "[%d]: Error reading number of slots", getpid() );
   else if( read(STDIN_FILENO, &ai_mask, 1 ) < 0 ) 
-    fprintf( stderr, "[%d]: Error reading ai_mask", getpid() );
+    dbg_msg( "[%d]: Error reading ai_mask", getpid() );
   else {
     status = 0;
     gameInfo.num_humans = slots - num_comp_play(ai_mask);
@@ -284,41 +284,41 @@ int ReadOptions( void ) {
       gameInfo.players[3] = "Curly";
     }
 #ifdef DEBUG
-    fprintf(stderr, "[%d]: bitOpt: %d, endGame: %d, minBid: %d, numPlay: %d\n", 
+    dbg_msg( "[%d]: bitOpt: %d, endGame: %d, minBid: %d, numPlay: %d\n", 
 	    getpid(), gameInfo.opt.bitOpt, gameInfo.opt.endGame, 
 	    gameInfo.opt.minBid, gameInfo.num_humans);
 #endif
     if( log ) {
       switch( gameInfo.opt.bitOpt & MSK_GAME ) {
       case GAME_SPADES: 
-	fprintf( stderr, "[%d]: Game choice is spades\n", getpid() );
-	fprintf( stderr, "[%d]: Game ends at %d points\n", getpid(), gameInfo.opt.endGame);
-	fprintf(stderr,  "[%d]: Minimum bid of %d\n", getpid(), gameInfo.opt.minBid);
+	dbg_msg( "[%d]: Game choice is spades\n", getpid() );
+	dbg_msg( "[%d]: Game ends at %d points\n", getpid(), gameInfo.opt.endGame);
+	dbg_msg(  "[%d]: Minimum bid of %d\n", getpid(), gameInfo.opt.minBid);
 	if( (gameInfo.opt.bitOpt & MSK_NILS) ) {
-	  fprintf(stderr,  "[%d]: Nil bids allowed\n", getpid() );
+	  dbg_msg(  "[%d]: Nil bids allowed\n", getpid() );
 	}
 	else {
-	  fprintf(stderr,  "[%d]: Nil bids prohibited\n", getpid() );
+	  dbg_msg(  "[%d]: Nil bids prohibited\n", getpid() );
 	}
 	if( (gameInfo.opt.bitOpt & MSK_BAGS) ) {
-	  fprintf(stderr,  "[%d]: Penalty imposed for 10 bags\n", getpid() );
+	  dbg_msg(  "[%d]: Penalty imposed for 10 bags\n", getpid() );
 	}
 	else {
-	  fprintf(stderr,  "[%d]: No penalty for bags\n", getpid() );
+	  dbg_msg(  "[%d]: No penalty for bags\n", getpid() );
 	}
 	break;
       case GAME_HEARTS: 
-	fprintf(stderr,  "[%d]: Game choice is hearts\n", getpid() );
+	dbg_msg(  "[%d]: Game choice is hearts\n", getpid() );
 	break;
       }
       if( gameInfo.opt.bitOpt & MSK_COMP_1 ) {
-	fprintf(stderr,  "[%d]: Player 1 is a computer player\n", getpid() );
+	dbg_msg(  "[%d]: Player 1 is a computer player\n", getpid() );
       }
       if( gameInfo.opt.bitOpt & MSK_COMP_2 ) {
-	fprintf(stderr,  "[%d]: Player 2 is a computer player\n", getpid() );
+	dbg_msg(  "[%d]: Player 2 is a computer player\n", getpid() );
       }
       if( gameInfo.opt.bitOpt & MSK_COMP_3 ) {
-	fprintf(stderr,  "[%d]: Player 3 is a computer player\n", getpid() );
+	dbg_msg(  "[%d]: Player 3 is a computer player\n", getpid() );
       }
     }
   }
@@ -341,11 +341,11 @@ void SendHands( Card hands[4][13] ) {
 
     if( status == i ) {
       if( log )
-	  fprintf(stderr,  "[%d]: %s received hand\n", getpid(), gameInfo.players[i] );
+	  dbg_msg(  "[%d]: %s received hand\n", getpid(), gameInfo.players[i] );
     }
     else {
       if( log )
-	  fprintf(stderr,  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
+	  dbg_msg(  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
       svNetClose();
       Quit(-1);
     }
@@ -363,11 +363,11 @@ void SendLead( int lead ) {
     ReadIntOrDie( gameInfo.playerSock[i], &status );
     if( status == i ) {
       if( log )
-	  fprintf(stderr,  "[%d]: %s received lead\n", getpid(), gameInfo.players[i] );
+	  dbg_msg(  "[%d]: %s received lead\n", getpid(), gameInfo.players[i] );
     }
     else {
       if( log )
-	  fprintf(stderr,  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
+	  dbg_msg(  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
       svNetClose();
       Quit(-1);
     }
@@ -399,7 +399,7 @@ void GetAndSendBids(int lead, int bids[4], int kneels[4], Card hands[4][13]) {
       
       if( bid < -1 || bid > 13 ) {
 	if( log )
-	    fprintf(stderr,  "[%d]: Invalid bid received for %s\n", getpid(),
+	    dbg_msg(  "[%d]: Invalid bid received for %s\n", getpid(),
 		   gameInfo.players[curPlayer] );
 	bidStatus = -1;
       }
@@ -408,7 +408,7 @@ void GetAndSendBids(int lead, int bids[4], int kneels[4], Card hands[4][13]) {
 			 (bid > 0 && (bid+bids[(lead+i-2)%4] < gameInfo.opt.minBid )))) {
 	
 	if( log )
-	    fprintf(stderr,  "[%d]: Bid below min received for %s\n", getpid(),
+	    dbg_msg(  "[%d]: Bid below min received for %s\n", getpid(),
 		   gameInfo.players[curPlayer] );
 	bidStatus = -2;
       }
@@ -419,13 +419,13 @@ void GetAndSendBids(int lead, int bids[4], int kneels[4], Card hands[4][13]) {
     
     if ( bid == BID_NIL) {
       if( log )
-	  fprintf(stderr,  "[%d]: Player %d bid nil\n", getpid(), curPlayer );
+	  dbg_msg(  "[%d]: Player %d bid nil\n", getpid(), curPlayer );
       kneels[curPlayer] = 1;
       bids[curPlayer] = 0;
     }
     else {
       if( log )
-	  fprintf(stderr,  "[%d]: Bid of %d received for %s\n", getpid(), bid,
+	  dbg_msg(  "[%d]: Bid of %d received for %s\n", getpid(), bid,
 		  gameInfo.players[curPlayer] );
       kneels[curPlayer] = 0;
       bids[curPlayer] = bid;
@@ -446,12 +446,12 @@ void SendBid( int bid, int player ) {
       ReadIntOrDie( gameInfo.playerSock[i], &status );
       if( status == i ) {
 	if( log )
-	    fprintf(stderr,  "[%d]: %s received %s's bid\n", getpid(), 
+	    dbg_msg(  "[%d]: %s received %s's bid\n", getpid(), 
 		   gameInfo.players[i], gameInfo.players[player] );
       }
       else {
 	if( log )
-	    fprintf(stderr,  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
+	    dbg_msg(  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
 	svNetClose();
 	Quit(-1);
       }
@@ -496,7 +496,7 @@ void GetAndSendTricks( int lead, Card hands[4][13], Card trick[4],
       if( playedCard == BLANK_CARD ) {
 	badCard = -1;
 	if( log )
-	  fprintf(stderr,  "[%d]: %s tried to replay a card\n", getpid(),
+	  dbg_msg(  "[%d]: %s tried to replay a card\n", getpid(),
 		  gameInfo.players[curPlayer] );
       }
       else if( curPlayer == lead ) { /* good card led */
@@ -507,10 +507,10 @@ void GetAndSendTricks( int lead, Card hands[4][13], Card trick[4],
 	  if( card_suit_char(hands[curPlayer][j]) == leadSuit ) {
 	    badCard = -2;
 	    if( log ) {
-	      fprintf(stderr,  "[%d]: %s tried to renege with the %s\n", getpid(),
+	      dbg_msg(  "[%d]: %s tried to renege with the %s\n", getpid(),
 		      gameInfo.players[curPlayer], 
 		      card_name(playedCard,LONG_NAME) );
-	      fprintf(stderr,  "[%d]: - %s still in %dth in hand\n", getpid(),
+	      dbg_msg(  "[%d]: - %s still in %dth in hand\n", getpid(),
 		      card_name(hands[curPlayer][j],LONG_NAME), j);
 	    }
 	    break;
@@ -541,11 +541,11 @@ void PlayCard(int num, int index, Card hands[4][13], Card trick[4], int lead,
 
   if( log ) {
     if( num == lead) {
-      fprintf(stderr,  "[%d]: %s led the %s\n", getpid(), gameInfo.players[num],
+      dbg_msg(  "[%d]: %s led the %s\n", getpid(), gameInfo.players[num],
 	      card_name(card,LONG_NAME) );
     }
     else {
-      fprintf(stderr,  "[%d]: %s played the %s\n", getpid(), gameInfo.players[num],
+      dbg_msg(  "[%d]: %s played the %s\n", getpid(), gameInfo.players[num],
 	      card_name(card,LONG_NAME) );
     }
   }
@@ -625,12 +625,12 @@ void SendTrick( Card play, int player ) {
       ReadIntOrDie( gameInfo.playerSock[i], &status );
       if( status == i ) {
 	if( log )
-	    fprintf(stderr,  "[%d]: %s received %s's play\n", getpid(), 
+	    dbg_msg(  "[%d]: %s received %s's play\n", getpid(), 
 		   gameInfo.players[i], gameInfo.players[player] );
       }
       else {
 	if( log )
-	    fprintf(stderr,  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
+	    dbg_msg(  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
 	svNetClose();
 	Quit(-1);
       }
@@ -648,7 +648,7 @@ int CalcTrickWin( int lead, Card trick[4] ) {
       win = i;
   }
   if( log )
-      fprintf(stderr,  "[%d]: %s won the trick\n", getpid(), gameInfo.players[win] );
+      dbg_msg(  "[%d]: %s won the trick\n", getpid(), gameInfo.players[win] );
   
   return win;
 }
@@ -684,12 +684,12 @@ void SendTallys( int winner, int tally[4] ) {
     ReadIntOrDie( gameInfo.playerSock[i], &status );
     if( status == i ) {
       if( log )
-	  fprintf(stderr,  "[%d]: %s received tally update\n", getpid(), 
+	  dbg_msg(  "[%d]: %s received tally update\n", getpid(), 
 		 gameInfo.players[i] );
     }
     else {
       if( log )
-	  fprintf(stderr,  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
+	  dbg_msg(  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
       svNetClose();
       Quit(-1);
     }
@@ -725,25 +725,25 @@ int UpdateScores( int tally[4], int bids[4], int scores[2], int kneels[4],
   /*Check for kneeling*/
   for( i=0; i<4; i++) {
     if( log )
-	fprintf(stderr,  "[%d]: Checking for Player %d nil bids\n", getpid(), i);
+	dbg_msg(  "[%d]: Checking for Player %d nil bids\n", getpid(), i);
     if( kneels[i] == 1 ) {
       if( log )
-	  fprintf(stderr,  "[%d]: Player %d bid nil -", getpid(), i);
+	  dbg_msg(  "[%d]: Player %d bid nil -", getpid(), i);
       if( tally[i] == 0 ) {
 	if( log )
-	    fprintf(stderr,  "and made it.\n" );
+	    dbg_msg(  "and made it.\n" );
 	scores[ (i%2) ]+=100;
       }
       else {
 	if( log )
-	    fprintf(stderr,  "and lost it.\n" );
+	    dbg_msg(  "and lost it.\n" );
 	scores[ (i%2) ]-=100;
       }
     }
   }
 
   if( log )
-      fprintf(stderr,  "[%d]: Team 0: %d\tTeam 1: %d\n", getpid(), scores[0], scores[1]);
+      dbg_msg(  "[%d]: Team 0: %d\tTeam 1: %d\n", getpid(), scores[0], scores[1]);
 
   return ( (scores[0] >= gameInfo.opt.endGame || scores[1] >= gameInfo.opt.endGame)
 	  && scores[0] != scores[1] );
@@ -778,11 +778,11 @@ void SendScores( int scores[2] ) {
     ReadIntOrDie( gameInfo.playerSock[i], &status );
     if( status == i ) {
       if( log )
-	  fprintf(stderr,  "[%d]: %s received Scores\n", getpid(), gameInfo.players[i]);
+	  dbg_msg(  "[%d]: %s received Scores\n", getpid(), gameInfo.players[i]);
     }
     else {
       if( log )
-	  fprintf(stderr,  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
+	  dbg_msg(  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
       svNetClose();
       Quit(-1);
     }
@@ -797,7 +797,7 @@ int QueryNewGame( void ) {
   /* Non-zero value for again means play again*/
   ReadIntOrDie( gameInfo.playerSock[0], &again );
   if( log )
-      fprintf(stderr,  "[%d]: Play again: %d\n", getpid(), again );
+      dbg_msg(  "[%d]: Play again: %d\n", getpid(), again );
   WriteIntOrDie( gameInfo.playerSock[0], 0 );
   
   
@@ -808,11 +808,11 @@ int QueryNewGame( void ) {
     ReadIntOrDie( gameInfo.playerSock[i], &status );
     if( status == i ) {
       if( log )
-	  fprintf(stderr,  "[%d]: %s received New Game Status\n", getpid(), gameInfo.players[i] );
+	  dbg_msg(  "[%d]: %s received New Game Status\n", getpid(), gameInfo.players[i] );
     }
     else {
       if( log )
-	  fprintf(stderr,  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
+	  dbg_msg(  "[%d]: Error: player %d returned %d\n", getpid(), i, status);
       svNetClose();
       Quit(-1);
     }
@@ -844,7 +844,7 @@ RETSIGTYPE termination_handler(int signum) {
     Quit(-1);
     break;
   default:
-    fprintf(stderr, "[%d]: Closing sockets for game %d\n", getpid(), gameInfo.gameNum );
+    dbg_msg( "[%d]: Closing sockets for game %d\n", getpid(), gameInfo.gameNum );
     svNetClose();
     raise(signum);
   }

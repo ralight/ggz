@@ -56,7 +56,7 @@ int main( int argc, char* argv[] ) {
   signal (SIGINT, termination_handler);
   signal (SIGPIPE, termination_handler);
 
-  fprintf(stderr,"Spades game running\n");
+  dbg_msg("Spades game running\n");
   
   GetGameInfo();
   

@@ -95,12 +95,12 @@ int writestring( int msgsock, const char* message ) {
   if( status <= 0 ) {
     status = -1;
 #ifdef DEBUG_SOCKET
-    fprintf( stderr, "[%d]: Error sending string size\n" );
+    dbg_msg( "[%d]: Error sending string size\n" );
 #endif
   }
   else {
 #ifdef DEBUG_SOCKET
-    fprintf( stderr, "[%d]: Sending \"%d\" : %d bytes \n", getpid(), size,
+    dbg_msg( "[%d]: Sending \"%d\" : %d bytes \n", getpid(), size,
 	    status );
 #endif
     
@@ -109,12 +109,12 @@ int writestring( int msgsock, const char* message ) {
     if( status <= 0 ) {
       status = -1;
 #ifdef DEBUG_SOCKET
-      fprintf( stderr, "[%d]: Error sending string\n" );
+      dbg_msg( "[%d]: Error sending string\n" );
 #endif
     }
 #ifdef DEBUG_SOCKET
     else {
-      fprintf( stderr, "[%d]: Sending \"%s\" : %d bytes \n", getpid(), message,
+      dbg_msg( "[%d]: Sending \"%s\" : %d bytes \n", getpid(), message,
 	      status );
     }
 #endif
@@ -139,24 +139,24 @@ int readstring( int msgsock, char** message ) {
 
   if( status < 0 ) {
 #ifdef DEBUG_SOCKET
-    fprintf( stderr, "[%d]: Error receiving string size\n", getpid() );
+    dbg_msg( "[%d]: Error receiving string size\n", getpid() );
 #endif
   }
   else if( status == 0 ) {
 #ifdef DEBUG_SOCKET
-    fprintf( stderr, "[%d]: Warning: fd is closed\n", getpid() );
+    dbg_msg( "[%d]: Warning: fd is closed\n", getpid() );
 #endif
   }
   else {
 #ifdef DEBUG_SOCKET
-    fprintf( stderr, "[%d]: Received \"%d\" : %d bytes \n", getpid(), size,
+    dbg_msg( "[%d]: Received \"%d\" : %d bytes \n", getpid(), size,
 	    status );
 #endif
   
     *message = (char*)malloc( size*sizeof(char) );
 
     if( *message == NULL ) {
-      fprintf( stderr, "[%d]: Error: Not enough memory\n", getpid() );
+      dbg_msg( "[%d]: Error: Not enough memory\n", getpid() );
       status = -1;
     }
     else { 
@@ -165,13 +165,13 @@ int readstring( int msgsock, char** message ) {
 
 #ifdef DEBUG_SOCKET
       if( status < 0 ) {
-	fprintf( stderr, "[%d]: Error receiving string\n", getpid() );
+	dbg_msg( "[%d]: Error receiving string\n", getpid() );
       }
       else if( status == 0 ) {
-	fprintf( stderr, "[%d]: Warning: fd is closed\n", getpid() );
+	dbg_msg( "[%d]: Warning: fd is closed\n", getpid() );
       }
       else {
-	fprintf( stderr, "[%d]: Received \"%s\" : %d bytes \n", getpid(), *message,
+	dbg_msg( "[%d]: Received \"%s\" : %d bytes \n", getpid(), *message,
 		status );
       }
 #endif
@@ -196,12 +196,12 @@ int writeint( int msgsock, const int message ) {
   if( status <= 0 ) {
     status = -1;
 #ifdef DEBUG_SOCKET
-    fprintf( stderr, "[%d]: Error sending int\n", getpid() );
+    dbg_msg( "[%d]: Error sending int\n", getpid() );
 #endif
   }
 #ifdef DEBUG_SOCKET
   else {
-    fprintf( stderr, "[%d]: Sending \"%d\" : %d bytes \n", getpid(), message, 
+    dbg_msg( "[%d]: Sending \"%d\" : %d bytes \n", getpid(), message, 
 	    status );
   }
 #endif
@@ -224,13 +224,13 @@ int readint( int msgsock, int* message ) {
 
 #ifdef DEBUG_SOCKET
   if( status < 0 ) {
-    fprintf( stderr, "[%d]: Error receiving int\n", getpid() );
+    dbg_msg( "[%d]: Error receiving int\n", getpid() );
   }
   else if( status == 0 ) {
-    fprintf( stderr, "[%d]: Warning: fd is closed\n", getpid() );
+    dbg_msg( "[%d]: Warning: fd is closed\n", getpid() );
   }
   else {
-    fprintf( stderr, "[%d]: Received \"%d\" : %d bytes \n", getpid(), *message, 
+    dbg_msg( "[%d]: Received \"%d\" : %d bytes \n", getpid(), *message, 
 	    status );
   }
 #endif
