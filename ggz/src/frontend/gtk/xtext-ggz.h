@@ -2,7 +2,7 @@
  * File: xtext-ggz.h
  * Author: Jason Short
  * Project: GGZ GTK Client
- * $Id: xtext-ggz.h 6687 2005-01-15 22:19:10Z jdorje $
+ * $Id: xtext-ggz.h 6688 2005-01-15 22:34:24Z oojah $
  *
  * This file is included from xtext.c to add additional ggz-specific
  * directives.
@@ -51,5 +51,7 @@
 #endif
 
 #undef XCHAT
+#ifndef WIN32
 #define USE_XLIB
+#endif
 
