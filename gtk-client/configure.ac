@@ -1,9 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5368 2003-02-04 08:53:23Z jdorje $
+dnl $Id: configure.ac 5369 2003-02-04 08:56:24Z jdorje $
 
-AC_INIT(configure.ac)
+AC_INIT
+AC_CONFIG_SRCDIR([configure.ac])
 AM_INIT_AUTOMAKE(ggz-gtk-client, 0.0.7pre)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
 dnl Check for standard build environment
@@ -154,11 +155,12 @@ AC_SUBST(LDADD)
 AC_SUBST(SUBDIRS)
 AC_SUBST(ggzdatadir)
 
-AC_OUTPUT([Makefile 
+AC_CONFIG_FILES([Makefile 
 	   ggz-gtk/Makefile
 	   po/Makefile
 	   man/Makefile
 	   ])
+AC_OUTPUT
 
 
 dnl Status Output
