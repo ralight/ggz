@@ -196,7 +196,7 @@ void err_msg_exit(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(1, LOG_CRIT, fmt, ap);
+	err_doit(0, LOG_CRIT, fmt, ap);
 	va_end(ap);
 	/*cleanup(); */
 	exit(-1);
