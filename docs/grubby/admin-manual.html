@@ -9,7 +9,8 @@ The Grubby Admin Manual
 <FONT SIZE=6>The Grubby Admin Manual</FONT><BR>
 <FONT SIZE=2>Josef Spillner, 2001-10-12</FONT><BR>
 <FONT SIZE=2>Updated 2002-08-18</FONT><BR>
-<FONT SIZE=2>Updated 2002-11-04</FONT>
+<FONT SIZE=2>Updated 2002-11-04</FONT><BR>
+<FONT SIZE=2>Updated 2003-09-28</FONT>
 <BR><BR>
 
 <HR>
@@ -25,6 +26,7 @@ The Grubby Admin Manual
 <A HREF="#moddict">* Dictionary module (modexec)</A><BR>
 <A HREF="#modmeeting">* Meeting module (modexec)</A><BR>
 <A HREF="#modtrans">* Translation module (modexec)</A><BR>
+<A HREF="#modgames">* Games module</A><BR>
 <HR>
 <BR><BR>
 
@@ -58,6 +60,8 @@ The core module 'net' can be setup appropriately:
 </UL>
 For autojoining a room upon login, a number must be given for GGZ (e.g. 0),
 while IRC expects a channel (e.g. #ggz).
+The implementation netggz.so does not only provide chat, but also gaming
+features, which are ignored by the other implementations.
 <BR><BR>
 
 <HR>
@@ -150,8 +154,17 @@ sentences into its cache (~/.ggz/grubby/google).
 <BR><BR>
 
 <HR>
+<A NAME="modgames">
+<FONT SIZE=3>Games Module</FONT>
+<BR><BR>
+Grubby has the ability to launch game clients which have no GUI when
+commanded to do so. Those games are registered like normal GGZ game clients,
+except that their frontend is set to 'guru'.
+<BR><BR>
+
+<HR>
 <FONT SIZE=2>
-This documentation is Copyright (C) 2001, 2002 Josef Spillner.<BR>
+This documentation is Copyright (C) 2001 - 2003 Josef Spillner.<BR>
 Published under the GNU Free Documentation License.<BR>
 </FONT>
 
