@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 3174 2002-01-21 08:09:42Z jdorje $
+dnl $Id: configure.in 3243 2002-02-04 07:56:40Z jdorje $
 
 dnl AC_INIT(configure.in)
 AC_INIT(acinclude.m4)
@@ -105,9 +105,8 @@ dnl ==========================
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD
 AC_GGZ_CONFIG
-AC_GGZ_GGZCORE
 
-LDADD="$LDADD $LIB_GGZMOD $LIB_GGZCORE $LIB_GGZ"
+LDADD="$LDADD $LIB_GGZMOD $LIB_GGZ"
 
 dnl Use -Wall if we have gcc.
 dnl =========================
