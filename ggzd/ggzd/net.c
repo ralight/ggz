@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4819 2002-10-08 23:32:22Z jdorje $
+ * $Id: net.c 4822 2002-10-09 06:17:54Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1239,18 +1239,18 @@ static void _net_handle_enter(GGZNetIO *net, GGZXMLElement *enter)
 /* Functions for <CHAT> tag */
 static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *chat)
 {
-	char *type, *to, *msg;
-	unsigned char op = 0;
+	char *type_str, *to, *msg;
+        GGZChatType type;
 		
 	if (chat) {
 
 		/* Grab chat data from tag */
-		type = ggz_xmlelement_get_attr(chat, "TYPE");
+		type_str = ggz_xmlelement_get_attr(chat, "TYPE");
 		to = ggz_xmlelement_get_attr(chat, "TO");
 		msg = ggz_xmlelement_get_text(chat);
 
 		/* TYPE is required */
-		if (!type) {
+		if (!type_str) {
 			_net_send_result(net, "chat", E_BAD_OPTIONS);
 			return;
 		}
@@ -1258,14 +1258,14 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *chat)
 		if (!check_playerconn(net, "chat")) return;
 
 		/* FIXME: error checking on these? */
-		op = ggz_string_to_chattype(type);
+		type = ggz_string_to_chattype(type_str);
 
-		if (op == GGZ_CHAT_NONE) {
+		if (type == GGZ_CHAT_NONE) {
 			_net_send_result(net, "chat", E_BAD_OPTIONS);
 			return;
 		}
 
-		player_chat(net->client->data, op, to, msg);
+		player_chat(net->client->data, type, to, msg);
 	}
 }
 

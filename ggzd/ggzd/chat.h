@@ -29,11 +29,11 @@
 
 
 /* Queue up chat message for room consumption */
-GGZClientReqError chat_room_enqueue(int room, unsigned char opcode,
+GGZClientReqError chat_room_enqueue(int room, GGZChatType type,
 				    GGZPlayer* sender, char *msg);
 
 /* Queue up a chat to a specific player */
-GGZClientReqError chat_player_enqueue(char* receiver, unsigned char opcode, 
+GGZClientReqError chat_player_enqueue(char* receiver, GGZChatType type, 
 				      GGZPlayer* sender, char *msg);
 
 /* Queue up a server announcement to a specific player's chat window */

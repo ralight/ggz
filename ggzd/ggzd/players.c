@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4687 2002-09-24 19:01:54Z jdorje $
+ * $Id: players.c 4822 2002-10-09 06:17:54Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -945,7 +945,7 @@ GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,
 }
 
 
-GGZPlayerHandlerStatus player_chat(GGZPlayer* player, unsigned char subop,
+GGZPlayerHandlerStatus player_chat(GGZPlayer* player, GGZChatType type,
 				   char *target, char *msg)
 {
 	int target_room=-1;	/* FIXME - this should come from net.c if we */
@@ -963,23 +963,23 @@ GGZPlayerHandlerStatus player_chat(GGZPlayer* player, unsigned char subop,
 			return GGZ_REQ_DISCONNECT;
 	}
 	
-	/* Parse subop */
-	switch (subop) {
+	/* Parse type */
+	switch (type) {
 	case GGZ_CHAT_NORMAL:
 		dbg_msg(GGZ_DBG_CHAT, "%s sends %s", player->name, msg);
-		status = chat_room_enqueue(player->room, subop, player, msg);
+		status = chat_room_enqueue(player->room, type, player, msg);
 		break;
 	case GGZ_CHAT_BEEP:
 	case GGZ_CHAT_PERSONAL:
-		status = chat_player_enqueue(target, subop, player, msg);
+		status = chat_player_enqueue(target, type, player, msg);
 		break;
 	case GGZ_CHAT_ANNOUNCE:
 		dbg_msg(GGZ_DBG_CHAT, "%s announces %s", player->name, msg);
-		status = chat_room_enqueue(target_room, subop, player, msg);
+		status = chat_room_enqueue(target_room, type, player, msg);
 		break;
 	default:
-		dbg_msg(GGZ_DBG_PROTOCOL, "%s sent invalid chat subop %d", 
-			player->name, subop);
+		dbg_msg(GGZ_DBG_PROTOCOL, "%s sent invalid chat type %d", 
+			player->name, type);
 		status = E_BAD_OPTIONS;
 	}
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 4688 2002-09-24 21:41:16Z jdorje $
+ * $Id: chat.c 4822 2002-10-09 06:17:54Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -49,20 +49,20 @@ extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 /* Local data type */
 typedef struct {
-	unsigned char opcode;
+	GGZChatType type;
 	char *sender;
 	char *message;
 } GGZChatEventData;
 
 /* Local functions and callbacks */
-static GGZChatEventData *chat_pack(unsigned char opcode,
+static GGZChatEventData *chat_pack(GGZChatType type,
 				   char *sender, char *message);
 static void chat_free(void *event_data);
 static GGZEventFuncReturn chat_event_callback(void* target, size_t size,
                                               void* event_data);
 
 /* Queue up a chat for the room */
-GGZClientReqError chat_room_enqueue(int room, unsigned char opcode,
+GGZClientReqError chat_room_enqueue(int room, GGZChatType type,
 				    GGZPlayer* sender, char *msg)
 {
 	GGZChatEventData *data;
@@ -76,7 +76,7 @@ GGZClientReqError chat_room_enqueue(int room, unsigned char opcode,
 		rooms = room_get_num_rooms();
 		for(i=0; i<rooms; i++) {
 			GGZClientReqError result;
-			result = chat_room_enqueue(i, opcode, sender, msg);
+			result = chat_room_enqueue(i, type, sender, msg);
 			if (result != E_OK)
 				status = result;
 		}
@@ -84,7 +84,7 @@ GGZClientReqError chat_room_enqueue(int room, unsigned char opcode,
 	}
 
 	/* Pack up chat message */
-	data = chat_pack(opcode, sender->name, msg);
+	data = chat_pack(type, sender->name, msg);
 
 	if (event_room_enqueue(room, chat_event_callback,
 			       sizeof(*data), data, chat_free) != GGZ_OK)
@@ -95,7 +95,7 @@ GGZClientReqError chat_room_enqueue(int room, unsigned char opcode,
 
 
 /* Queue up a chat for a player */
-GGZClientReqError chat_player_enqueue(char* receiver, unsigned char opcode, 
+GGZClientReqError chat_player_enqueue(char* receiver, GGZChatType type, 
 				      GGZPlayer* sender, char *msg)
 
 {
@@ -125,7 +125,7 @@ GGZClientReqError chat_player_enqueue(char* receiver, unsigned char opcode,
 	pthread_rwlock_unlock(&rcvr->lock);
 
 	/* Pack up chat message */
-	data = chat_pack(opcode, sender->name, msg);
+	data = chat_pack(type, sender->name, msg);
 	
 	/* Queue chat event for individual player */
 	if (event_player_enqueue(receiver, chat_event_callback,
@@ -137,13 +137,13 @@ GGZClientReqError chat_player_enqueue(char* receiver, unsigned char opcode,
 
 
 /* Return packaged chat message in dynamically allocated memory */
-static GGZChatEventData *chat_pack(unsigned char opcode,
+static GGZChatEventData *chat_pack(GGZChatType type,
 				   char* sender, char* msg)
 {
 	GGZChatEventData *data;
 
 	data = ggz_malloc(sizeof(*data));
-	data->opcode = opcode;
+	data->type = type;
 	data->sender = ggz_strdup(sender);
 	data->message = ggz_strdup(msg);
 	return data;
@@ -169,10 +169,11 @@ static GGZEventFuncReturn chat_event_callback(void* target, size_t size,
 	GGZPlayer* player = (GGZPlayer*)target;
 	GGZChatEventData *data = event_data;
 
-	dbg_msg(GGZ_DBG_CHAT, "%s chat opcode: %d, sender: %s, msg: %s",
-		player->name, data->opcode, data->sender, data->message);
+	dbg_msg(GGZ_DBG_CHAT, "%s chat opcode: %s, sender: %s, msg: %s",
+		player->name, ggz_chattype_to_string(data->type),
+		data->sender, data->message);
 
-	if (net_send_chat(player->client->net, data->opcode,
+	if (net_send_chat(player->client->net, data->type,
 			  data->sender, data->message) < 0)
 		return GGZ_EVENT_ERROR;
 		
