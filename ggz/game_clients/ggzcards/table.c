@@ -257,8 +257,8 @@ void table_setup()
 
 void table_set_player_message(int p, char* message)
 {
-	/* TODO: is any more necessary??? */
-	gtk_label_set_text(GTK_LABEL(label[p]), message);
+	if (label[p] != NULL)
+		gtk_label_set_text(GTK_LABEL(label[p]), message);
 }
 
 void table_set_message(char* mark, char* message)
@@ -632,7 +632,8 @@ void table_animation_zip(gboolean restore)
  */
 void table_set_name(int p, char *name)
 {
-	gtk_label_set_text(GTK_LABEL(l_name[p]), name);
+	if (l_name[p] != NULL)
+		gtk_label_set_text(GTK_LABEL(l_name[p]), name);
 }
 
 
