@@ -6,3 +6,8 @@
 	<?php include("intro.php"); ?>
 	<?php player_intro(); ?>
 	</div>
+	<div class="text">
+	If you want to find certain players from your country, or with
+	similar skills, or high rankings in some game, check out the
+	<a href="playerfinder.php">player finder</a>.
+	</div>

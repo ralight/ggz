@@ -45,7 +45,6 @@ endif;
 <tr><td>Photo:</td><td><input type='text' name='user_photo' value='<?php echo $photo; ?>'></td></tr>
 <tr><td>Blog feed URL:</td><td><input type='text' name='user_blogfeed' value='<?php echo $blogfeed; ?>'></td></tr>
 <tr><td>Gender:</td><td>
-	<!-- <input type='text' name='user_gender' value='<?php echo $gender; ?>'> -->
 	<select name='user_gender'>
 <?php
 include("genderlist.php");
@@ -56,7 +55,6 @@ $g->listall();
 	</select>
 </td></tr>
 <tr><td>Country:</td><td>
-	<!-- <input type='text' name='user_country' value='<?php echo $country; ?>'> -->
 	<select name='user_country'>
 <?php
 include("countrylist.php");
