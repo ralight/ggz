@@ -40,24 +40,48 @@
 #include "dlg_main.h"
 #include "support.h"
 
+static GtkWidget *create_menus(GtkWidget *window)
+{
+	GtkAccelGroup *accel_group;
+	GtkItemFactory *menu;
+	GtkWidget *menu_item;
+	GtkItemFactoryEntry items[] = {
+	  {_("/_File"), NULL, NULL, 0, "<Branch>"},
+	  {_("/File/_Sync with server"), "<ctrl>S", NULL, 0, NULL},
+	  {_("/File/E_xit"), "<ctrl>Q", on_mnu_exit_activate, 0, NULL},
+	  {_("/_Options"), NULL, NULL, 0, "<Branch>"},
+	  {_("/Options/_Preferences"), "<ctrl>P",
+	   on_mnu_preferences_activate, 0, NULL},
+	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
+	  {_("/Help/_About"), "<ctrl>A", on_mnu_about_activate, 0, NULL}
+	};
+	const int num = sizeof(items) / sizeof(items[0]);
+
+	accel_group = gtk_accel_group_new();
+
+	menu = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
+	gtk_item_factory_create_items(menu, num, items, NULL);
+	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
+
+	menu_item = gtk_item_factory_get_widget(menu,
+						_("<main>/File/"
+						  "Sync with server"));
+	gtk_widget_set_sensitive(menu_item, FALSE);
+
+	menu_item = gtk_item_factory_get_widget(menu,
+						_("<main>/Options/"
+						  "Preferences"));
+	gtk_widget_set_sensitive(menu_item, FALSE);
+
+	return gtk_item_factory_get_widget(menu, "<main>");
+}
+
 GtkWidget*
 create_dlg_main (void)
 {
   GtkWidget *dlg_main;
   GtkWidget *vbox1;
-  GtkWidget *menubar1;
-  GtkWidget *mnu_game;
-  GtkWidget *mnu_game_menu;
-  GtkAccelGroup *mnu_game_menu_accels;
-  GtkWidget *mnu_exit;
-  GtkWidget *mnu_edit;
-  GtkWidget *mnu_edit_menu;
-  GtkAccelGroup *mnu_edit_menu_accels;
-  GtkWidget *mnu_preferences;
-  GtkWidget *mnu_help;
-  GtkWidget *mnu_help_menu;
-  GtkAccelGroup *mnu_help_menu_accels;
-  GtkWidget *mnu_about;
+  GtkWidget *menubar;
   GtkWidget *fixed1;
   GtkWidget *statusbar1;
 
@@ -74,85 +98,13 @@ create_dlg_main (void)
   gtk_widget_show (vbox1);
   gtk_container_add (GTK_CONTAINER (dlg_main), vbox1);
 
-  menubar1 = gtk_menu_bar_new ();
-  gtk_widget_set_name (menubar1, "menubar1");
-  gtk_widget_ref (menubar1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "menubar1", menubar1,
+  menubar = create_menus(dlg_main);
+  gtk_widget_set_name (menubar, "menubar");
+  gtk_widget_ref (menubar);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "menubar", menubar,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (menubar1);
-  gtk_box_pack_start (GTK_BOX (vbox1), menubar1, FALSE, FALSE, 0);
-
-  mnu_game = gtk_menu_item_new_with_label (_("Game"));
-  gtk_widget_set_name (mnu_game, "mnu_game");
-  gtk_widget_ref (mnu_game);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_game", mnu_game,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (mnu_game);
-  gtk_container_add (GTK_CONTAINER (menubar1), mnu_game);
-
-  mnu_game_menu = gtk_menu_new ();
-  gtk_widget_set_name (mnu_game_menu, "mnu_game_menu");
-  gtk_widget_ref (mnu_game_menu);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_game_menu", mnu_game_menu,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (mnu_game), mnu_game_menu);
-  mnu_game_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_game_menu));
-
-  mnu_exit = gtk_menu_item_new_with_label (_("Exit"));
-  gtk_widget_set_name (mnu_exit, "mnu_exit");
-  gtk_widget_ref (mnu_exit);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_exit", mnu_exit,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (mnu_exit);
-  gtk_container_add (GTK_CONTAINER (mnu_game_menu), mnu_exit);
-
-  mnu_edit = gtk_menu_item_new_with_label (_("Edit"));
-  gtk_widget_set_name (mnu_edit, "mnu_edit");
-  gtk_widget_ref (mnu_edit);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_edit", mnu_edit,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (mnu_edit);
-  gtk_container_add (GTK_CONTAINER (menubar1), mnu_edit);
-
-  mnu_edit_menu = gtk_menu_new ();
-  gtk_widget_set_name (mnu_edit_menu, "mnu_edit_menu");
-  gtk_widget_ref (mnu_edit_menu);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_edit_menu", mnu_edit_menu,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (mnu_edit), mnu_edit_menu);
-  mnu_edit_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_edit_menu));
-
-  mnu_preferences = gtk_menu_item_new_with_label (_("Preferences"));
-  gtk_widget_set_name (mnu_preferences, "mnu_preferences");
-  gtk_widget_ref (mnu_preferences);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_preferences", mnu_preferences,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (mnu_preferences);
-  gtk_container_add (GTK_CONTAINER (mnu_edit_menu), mnu_preferences);
-
-  mnu_help = gtk_menu_item_new_with_label (_("Help"));
-  gtk_widget_set_name (mnu_help, "mnu_help");
-  gtk_widget_ref (mnu_help);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_help", mnu_help,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (mnu_help);
-  gtk_container_add (GTK_CONTAINER (menubar1), mnu_help);
-
-  mnu_help_menu = gtk_menu_new ();
-  gtk_widget_set_name (mnu_help_menu, "mnu_help_menu");
-  gtk_widget_ref (mnu_help_menu);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_help_menu", mnu_help_menu,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (mnu_help), mnu_help_menu);
-  mnu_help_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_help_menu));
-
-  mnu_about = gtk_menu_item_new_with_label (_("About"));
-  gtk_widget_set_name (mnu_about, "mnu_about");
-  gtk_widget_ref (mnu_about);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_main), "mnu_about", mnu_about,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (mnu_about);
-  gtk_container_add (GTK_CONTAINER (mnu_help_menu), mnu_about);
+  gtk_widget_show (menubar);
+  gtk_box_pack_start (GTK_BOX (vbox1), menubar, FALSE, FALSE, 0);
 
   fixed1 = gtk_fixed_new ();
   gtk_widget_set_name (fixed1, "fixed1");
@@ -173,15 +125,6 @@ create_dlg_main (void)
 
   gtk_signal_connect (GTK_OBJECT (dlg_main), "delete_event",
                       GTK_SIGNAL_FUNC (on_dlg_main_delete_event),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (mnu_exit), "activate",
-                      GTK_SIGNAL_FUNC (on_mnu_exit_activate),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (mnu_preferences), "activate",
-                      GTK_SIGNAL_FUNC (on_mnu_preferences_activate),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (mnu_about), "activate",
-                      GTK_SIGNAL_FUNC (on_mnu_about_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (fixed1), "button_press_event",
                       GTK_SIGNAL_FUNC (on_fixed1_button_press_event),

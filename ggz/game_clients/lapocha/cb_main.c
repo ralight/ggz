@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Callbacks for La Pocha main Gtk window
- * $Id: cb_main.c 4888 2002-10-12 20:20:55Z jdorje $
+ * $Id: cb_main.c 4901 2002-10-13 05:23:01Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -27,6 +27,7 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <gtk/gtk.h>
 
 #include "dlg_about.h"
@@ -60,7 +61,7 @@ void
 on_mnu_preferences_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+	assert(0);
 }
 
 
