@@ -44,14 +44,15 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <errno.h>
+#include <unistd.h>
 
-#include <easysock.h>
+#include "easysock.h"
 
 #define SA struct sockaddr  
 
 static es_err_func _err_func = NULL;
 static es_exit_func _exit_func = exit;
-static es_alloc_limit = 32768;
+static unsigned int es_alloc_limit = 32768;
 
 static void _debug(const char *fmt, ...)
 {
@@ -147,7 +148,7 @@ int es_make_socket(const EsSockType type, const unsigned short port,
 	case ES_CLIENT:
 		if ( (hp = gethostbyname(server)) == NULL) {
 			if (_err_func)
-				(*_err_func) (strerror(errno), ES_CREATE, 
+				(*_err_func) ("Lookup failure", ES_CREATE, 
 					      ES_NONE);
 			return -1;
 			break;
@@ -458,7 +459,8 @@ int es_read_string_alloc(const int sock, char **message)
 	if (size > es_alloc_limit) {
 		_debug("Error: Easysock allocation limit exceeded\n");
 		if (_err_func)
-			(*_err_func) (strerror(errno), ES_ALLOCATE, ES_STRING);
+			(*_err_func) ("Allocation limit exceeded", ES_ALLOCATE,
+				      ES_STRING);
 		return -1;
 	}
 	
