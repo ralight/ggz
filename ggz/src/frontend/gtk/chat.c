@@ -65,7 +65,7 @@ GdkColor colors[] =
         {0, 0x3333, 0x0000, 0x6666},          /* 12  Dark Blue			*/
         {0, 0x9999, 0x3333, 0x3333},          /* 13  Indian Red			*/
         {0, 0x3333, 0x6666, 0xFFFF},          /* 14  Blue			*/
-        {0, 0xFFFF, 0x6666, 0x9999},          /* 15  Pale Violet Red		*/
+        {0, 0x6666, 0xCCCC, 0xFFFF},          /* 15  Pale Violet Red		*/
         {0, 0xCCCC, 0xCCCC, 0x3333},          /* 16  Yellow 3			*/
         {0, 0x6666, 0xFFFF, 0xCCCC},          /* 17  Aquamarine 2		*/
         {0, 0xFFFF, 0xFFFF, 0xFFFF},          /* 18  forebround (White)		*/
@@ -464,7 +464,11 @@ gchar *chat_get_color(gchar *name)
 		} else if(ggzcore_conf_read_int("CHAT", "FULL_COLOR", FALSE)) {
 			asc = (gint)name[0];
 			x = div(asc, 16); /* Don't use black as a color */
-			return g_strdup_printf("%d", x.rem + 1);
+			if (x.rem == 15) {x.rem--;}
+			if(x.rem > 9)
+				return g_strdup_printf("%d", x.rem + 1);
+			else
+				return g_strdup_printf("0%d", x.rem + 1);
 		}
 	}
 
