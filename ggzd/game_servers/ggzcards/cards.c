@@ -63,12 +63,12 @@ void cards_create_deck(deck_type_t which_deck)
 	char std_deck_suits[] = { CLUBS, DIAMONDS, HEARTS, SPADES };
 	char std_deck_decks[] = { 0 };
 
-	char double_deck_decks[] = {0, 1};
-	char lap_deck_faces[] =
-		{ 2, 3, 4, 5, 6, 10, JACK, QUEEN, KING, ACE_HIGH };
+	char double_deck_decks[] = { 0, 1 };
+	char skat_deck_faces[] = { 7, 8, 9, 10, JACK, QUEEN, KING, ACE_HIGH };
 	char suaro_deck_faces[] = { 8, 9, 10, JACK, QUEEN, KING, ACE_HIGH };
 	char euchre_deck_faces[] = { 9, 10, JACK, QUEEN, KING, ACE_HIGH };
-	char skat_deck_faces[] = { 7, 8, 9, 10, JACK, QUEEN, KING, ACE_HIGH };
+	char lap_deck_faces[] =
+		{ 2, 3, 4, 5, 6, 10, JACK, QUEEN, KING, ACE_HIGH };
 	char sueca_deck_faces[] =
 		{ 2, 3, 4, 5, 6, 7, JACK, QUEEN, KING, ACE_HIGH };
 

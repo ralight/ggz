@@ -68,13 +68,13 @@ hand_t;
  * and cards.c should be able to handle them. */
 typedef enum deck_type_t
 {
-	GGZ_DECK_FULL,		/* all 52 cards */
+	GGZ_DECK_FULL,		/* normal deck; all 52 cards */
 	GGZ_DECK_DOUBLE,	/* double deck; 104 cards */
-	GGZ_DECK_LAPOCHA,	/* missing 10, 9, 8 */
+	GGZ_DECK_SKAT,		/* A-7 in each suit */
 	GGZ_DECK_SUARO,		/* A-8 in each suit */
 	GGZ_DECK_EUCHRE,	/* A-9 in each suit */
-	GGZ_DECK_SKAT,		/* A-7 in each suit */
-	GGZ_DECK_SUECA,		/* A,7,K,J,Q,6,5,4,3,2 */
+	GGZ_DECK_LAPOCHA,	/* missing 9, 8, 7 */
+	GGZ_DECK_SUECA,		/* missing 10, 9, 8 */
 }
 deck_type_t;
 
