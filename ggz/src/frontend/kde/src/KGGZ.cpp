@@ -49,6 +49,8 @@
 // KDE includes
 #include <kmessagebox.h>
 #include <klocale.h>
+#include <kurl.h>
+#include <krandomsequence.h>
 
 // Qt includes
 #include <qiconview.h>
@@ -157,6 +159,33 @@ KGGZ::~KGGZ()
 	dispatcher();
 
 	exit(0);
+}
+
+void KGGZ::autoconnect(QString uri)
+{
+	QString user, password;
+	int mode;
+	KRandomSequence seq;
+	KURL url(uri);
+
+	if(url.protocol() != "ggz") return;
+
+	if(m_connect) m_connect->hide();
+
+	if(url.hasUser()) user = url.user();
+	else user = "guest-" + QString("%1").arg(seq.getLong(10000));
+	if(url.hasPass())
+	{
+		password = url.pass();
+		mode = GGZCoreServer::normal;
+	}
+	else
+	{
+		password = "";
+		mode = GGZCoreServer::guest;
+	}
+
+	slotConnected(url.host().latin1(), (url.port() ? url.port() : 5688), user.latin1(), password.latin1(), mode);
 }
 
 void KGGZ::resizeEvent(QResizeEvent *e)

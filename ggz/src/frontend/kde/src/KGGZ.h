@@ -82,6 +82,8 @@ class KGGZ : public QWidget
 		KGGZ(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KGGZ();
+		// Connect to an URI
+		void autoconnect(QString uri);
 
 		// Receive events of these types
 		enum Collectortypes

@@ -46,6 +46,12 @@ int main(int argc, char **argv)
 {
 	KGGZBase *kggzbase;
 	KAboutData *aboutData;
+	KCmdLineArgs *args;
+	static const KCmdLineOptions op[] =
+	{
+		{"+[uri]", I18N_NOOP("Connection URI like ggz://user@ggzhost.com:5688"), 0},
+		{0, 0, 0}
+	};
 
 	// this is shown in the About dialog
 	aboutData = new KAboutData("kggz",
@@ -70,14 +76,24 @@ int main(int argc, char **argv)
 	aboutData->addCredit("Dan Papasian", I18N_NOOP("(GGZ team)"), "bugg@users.sourceforge.net", "http://ggz.sourceforge.net");
 	aboutData->addCredit("Ricardo Quesada", I18N_NOOP("(GGZ team)"), "riq@core-sdi.com", "http://teg.sourceforge.net");
 	aboutData->addCredit("Jason Short", I18N_NOOP("(GGZ team)"), "jshort@devon.dhs.org", "http://ggz.sourceforge.net");
+	aboutData->setTranslator("TRANSLATOR-NAME", "TRANSLATOR-EMAIL");
 
 	// process command line options
 	KCmdLineArgs::init(argc, argv, aboutData);
+	KCmdLineArgs::addCmdLineOptions(op);
+	args = KCmdLineArgs::parsedArgs();
 
 	// some people don't like references, but I do
 	KApplication a;
 	kggzbase = new KGGZBase();
 	a.setMainWidget(kggzbase);
+
+	// open default URI
+	if(args->count())
+	{
+		kggzbase->autoconnect(args->arg(0));
+	}
+
 	return a.exec();
 }
 
