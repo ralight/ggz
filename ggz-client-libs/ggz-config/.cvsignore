@@ -1,7 +1,5 @@
 .deps
 .libs
+ggz-config
 Makefile
 Makefile.in
-*.lo
-libggzcore.la
-api

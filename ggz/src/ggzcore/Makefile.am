@@ -1,12 +1,7 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5818 2004-02-07 09:52:52Z josef $
+# $Id: Makefile.am 5943 2004-02-16 17:20:34Z jdorje $
 
 SUBDIRS = .
-
-bin_PROGRAMS = ggz-config
-
-ggz_config_LDADD = libggzcore.la @LDADD@
-ggz_config_SOURCES = ggz-config.c
 
 EXTRA_DIST = Doxyfile
 

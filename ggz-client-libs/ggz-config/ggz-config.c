@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 5790 2004-02-05 10:46:53Z josef $
+ * $Id: ggz-config.c 5943 2004-02-16 17:20:34Z jdorje $
  *
  * Configuration query and module install program.
  *
