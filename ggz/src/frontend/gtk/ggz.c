@@ -46,6 +46,7 @@ extern GGZServer *server;
 extern GGZGame *game;
 
 gint numrooms;
+gint numtables;
 
 void display_tables(void);
 void display_players(void);
@@ -868,7 +869,8 @@ void display_tables(void)
 		return GGZ_HOOK_OK;*/
 
 	
-	for (i = 0; i < ggzcore_room_get_num_tables(room); i++) {
+	numtables = ggzcore_room_get_num_tables(room);
+	for (i = 0; i < numtables; i++) {
 
 		t = ggzcore_room_get_nth_table(room, i);
 		num   = ggzcore_table_get_id(t);

@@ -30,5 +30,6 @@
 void ggz_event_init(GGZServer *Server);
 void ggz_sensitivity_init(void);
 extern gint numrooms;
+extern gint numtables;
 
 #endif

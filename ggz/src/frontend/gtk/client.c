@@ -720,27 +720,31 @@ static void client_join_table(void)
 		return;
 	}
 
-	/* Make sure table has open seats */
-	if (client_get_table_open(tablerow) == FALSE) {
-		msgbox("That table is full.", "Error Joining",
-			MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);	
-		return;
+	/* Make sure we select a proper table */
+	if(tablerow <= numtables)
+	{
+		/* Make sure table has open seats */
+		if (client_get_table_open(tablerow) == FALSE) {
+			msgbox("That table is full.", "Error Joining",
+				MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);	
+			return;
+		}
+
+		/* Initialize a game module */
+		if (game_init() < 0 || game_launch() < 0)
+			return;
+
+		table_index = client_get_table_index(tablerow);
+
+		room = ggzcore_server_get_cur_room(server);
+		status = ggzcore_room_join_table(room, table_index);
+	
+		if (status < 0) {
+			msgbox(_("Failed to join table.\n Join aborted."), _("Join Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+			game_destroy();
+		}
 	}
 
-	/* Initialize a game module */
-	if (game_init() < 0 || game_launch() < 0)
-		return;
-
-	table_index = client_get_table_index(tablerow);
-
-	room = ggzcore_server_get_cur_room(server);
-	status = ggzcore_room_join_table(room, table_index);
-	
-	if (status < 0) {
-		msgbox(_("Failed to join table.\n Join aborted."), _("Join Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
-		game_destroy();
-	}
-	
 	tablerow = -1;
 }
 
