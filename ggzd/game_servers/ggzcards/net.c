@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 4471 2002-09-08 21:18:54Z jdorje $
+ * $Id: net.c 4988 2002-10-22 08:23:04Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -123,8 +123,9 @@ void net_send_player_list(player_t p)
 	   desirable to finesse data by sending the player list instead. */
 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
 		seat_t s_abs = UNCONVERT_SEAT(s_rel, p);
-		if (ggz_write_int(fd, get_seat_status(s_abs)) < 0 ||
-		    ggz_write_string(fd, get_seat_name(s_abs)) < 0)
+		if (ggz_write_int(fd, get_seat_status(s_abs)) < 0
+		    || ggz_write_string(fd, get_seat_name(s_abs)) < 0
+		    || ggz_write_int(fd, game.seats[s_abs].player) < 0)
 			NET_ERROR(p);
 	}
 }
