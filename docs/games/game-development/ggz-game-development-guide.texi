@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-game-development-guide.info
-@settitle The GGZ Gaming Zone 0.0.7 - Game Development Guide
+@settitle The GGZ Gaming Zone 0.0.8 - Game Development Guide
 @setchapternewpage odd
 @c %**end of header
 
@@ -15,7 +15,7 @@ Copyright (C) 2002, 2003 Josef Spillner
 @c Frontpage
 @titlepage
 @title The GGZ Game Development Guide
-@subtitle Development of games for the GGZ Gaming Zone 0.0.7
+@subtitle Development of games for the GGZ Gaming Zone 0.0.8
 @author GGZ Development Team
 
 @c Copyright page
@@ -33,7 +33,7 @@ Published under the GNU Free Documentation License.
 This file is the info format of the GGZ Gaming Zone Game Development Guide, which is
 also available in postscript and HTML format.
 It describes how to develop game clients and servers which run over GGZ.
-See http://ggz.sourceforge.net/docs/ for the latest edition.
+See http://www.ggzgamingzone.org/docs/ for the latest edition.
 @end ifinfo
 
 @menu
@@ -211,14 +211,16 @@ T.E.G. is an example for a Gnome game.
 SDL is a proven toolkit for game development, with tons of games already
 available. See @url{http://www.libsdl.org} for a list of them.
 The GGZ games Geekgame and TicTacToe 3D have been written using SDL.
+The games Escape/SDL and PyKamikaze are using the Python wrapper for SDL called
+Pygame, available at @url{http://www.pygame.org}.
+Python games also need to use a wrapper for the ggzmod and ggzdmod libraries,
+which exist as pyggzmod and pyggzdmod.
 
 @subsection Others
 
 It does really not matter which toolkit one chooses. Therefore, Mesa3D (an
-OpenGL implementation), PLib, GLUT, Pygame and others are worth to have a look
+OpenGL implementation), PLib, GLUT, ClanLib and others are worth to have a look
 at.
-For Pygame, a python wrapper for ggzmod, named pyggzmod, does exist in the
-GGZ Playground CVS module.
 
 @node Game Servers, Programming Details, Game Clients, Top
 @chapter Game Servers
@@ -254,7 +256,7 @@ The states in which a game server can be are:
 
 In order to ease game development, the ggzdmod library has been written, which
 comes with extensive documentation.
-See @url{http://ggz.sourceforge.net/api/ggzdmod/html/ggzdmod_8h.html} for the
+See @url{http://www.ggzgamingzone.org/docs/api/ggzdmod/html/ggzdmod_8h.html} for the
 online documentation, which is also available as man page (man 3 ggzdmod.h).
 
 @section The server base library: libggzdmod
@@ -363,10 +365,11 @@ GGZGameServer, and reimplement all of its protected event methods.
 @subsection Python Development
 
 There is a python wrapper for ggzdmod: pyggzdmod.
+It is available as part of the ggz-python package.
 
 @subsection Ruby Development
 
-There is a ruby wrapper for ggzdmod: ruggzdmod.
+There is a ruby wrapper for ggzdmod in development: ruggzdmod.
 In the future, the GGZ server will also be available as a complete ruby
 implementation, which will come with a native game server interface.
 
@@ -376,7 +379,7 @@ implementation, which will come with a native game server interface.
 
 @section General purpose wrappers
 
-GGZ from version 0.0.6 on is providing two wrappers which make life easier for game
+GGZ from version 0.0.6 on has been providing two wrappers which make life easier for game
 developers. Either of these wrappers replaces a game of choice, while the game
 itself is kept to be launched by the wrapper then.
 
@@ -468,6 +471,27 @@ n << "hello all";
 
 // Reset to normal behaviour
 n << MNet::peer;
+@end verbatim
+
+@subsection Network (Python)
+
+The Network class as used in Kamikaze and Escape/SDL is sitting on top of both
+the Python Socket module and the ggzmod wrapper.
+
+@verbatim
+# Build network object
+net = Network()
+
+# query events
+ret = net.autonetwork()
+if (ret & 1):
+    serverevent()
+if (ret & 2):
+    gameevent()
+
+# send/receive data
+opcode = net.getchar()
+net.sendbyte(999)
 @end verbatim
 
 @section Configuration

@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-hosting-guide.info
-@settitle The GGZ Gaming Zone 0.0.7 - Hosting Guide
+@settitle The GGZ Gaming Zone 0.0.8 - Hosting Guide
 @setchapternewpage odd
 @c %**end of header
 
@@ -18,7 +18,7 @@ Copyright (C) 2001 - 2003 Josef Spillner
 
 @c Frontpage
 @titlepage
-@title The GGZ Gaming Zone 0.0.7 - Hosting Guide
+@title The GGZ Gaming Zone 0.0.8 - Hosting Guide
 @subtitle Instructions and Recommendations for Server Hosters
 @author GGZ Development Team
 
@@ -37,7 +37,7 @@ Published under the GNU Free Documentation License.
 This file is the info format of the GGZ Gaming Zone Hosting Guide, which is
 also available in postscript and HTML format.
 It describes how to setup a GGZ server and how to configure and maintain it.
-See http://ggz.sourceforge.net/docs/ for the latest edition.
+See http://www.ggzgamingzone.org/docs/ for the latest edition.
 @end ifinfo
 
 @menu
@@ -91,7 +91,7 @@ section about the game Keepalive below.
 
 @section Overview
 
-This describes a typical setup for GGZ 0.0.7.
+This describes a typical setup for GGZ 0.0.8.
 All following versions will certainly require other tools or other versions of
 the present one, but the main concept hasn't changed for a while.
 Before installing GGZ on a server, make sure that the following conditions are
@@ -386,7 +386,7 @@ with different protocols.
 
 Each game has its homepage on:
 
-@url{http://ggz.sourceforge.net/games/<gamename>}
+@url{http://www.ggzgamingzone.org/games/<gamename>}
 
 @section Server-side game storage
 
@@ -423,7 +423,7 @@ A Connect the Dots server for GGZ.
 
 @subsection Escape
 
-The escape server serves the Windows game client Escape, see
+The escape server serves the Windows game client Escape and its SDL port, see
 @url{http://wggz.sourceforge.net} for details.
 
 @subsection GGZCards
@@ -487,7 +487,7 @@ should include all of them to give their players a better choice.
 
 @section Availability
 
-See @url{http://ggz.sourceforge.net/sections.php?op=viewarticle&artid=12} to
+See @url{http://www.ggzgamingzone.org/games.php} to
 view the list of external games. There are already patched convenience tarballs
 available at:
 
@@ -772,7 +772,7 @@ can be filled with either a file name or a virtual file name such as stderr.
 
 @appendix Local GGZ server installation
 
-These instructions apply to a vanilla 0.0.7 installation if one doesn't have
+These instructions apply to a vanilla 0.0.8 installation if one doesn't have
 system privileges.
 You may have to modify some details though.
 
@@ -781,12 +781,12 @@ cd ~
 mkdir localsys
 mkdir localsys/usr
 mkdir localsys/etc
-mkdir ggz-0.0.7
-cd ggz-0.0.7
+mkdir ggz-0.0.8
+cd ggz-0.0.8
 export CVSROOT=:pserver:anonymous \
 	@cvs.ggz.sourceforge.net:/cvsroot/ggz
 cvs login
-cvs -z3 co -rggz-0-0-7-branch libggz ggzd
+cvs -z3 co -rggz-0-0-8-branch libggz ggzd
 cd libggz
 ./autogen.sh --prefix=$HOME/localsys/usr
 make
