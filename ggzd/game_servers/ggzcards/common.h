@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4181 2002-05-07 16:50:45Z jdorje $
+ * $Id: common.h 4190 2002-05-12 19:48:41Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -162,8 +162,7 @@ void set_game_state(server_state_t state);
 
 /* these are GGZ communication events that we must handle */
 void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data);
-void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data);
-void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data);
+void handle_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data);
 void handle_player_event(GGZdMod * ggz, GGZdModEvent event, void *data);
 
 /* these are internal GGZCards events */

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 4178 2002-05-07 08:06:48Z jdorje $
+ * $Id: main.c 4190 2002-05-12 19:48:41Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -129,8 +129,9 @@ int main(int argc, char **argv)
 	/* Initialize GGZ structures. */
 	ggz = ggzdmod_new(GGZDMOD_GAME);
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_STATE, &handle_state_event);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &handle_join_event);
-	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &handle_leave_event);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_JOIN, &handle_seat_event);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_LEAVE, &handle_seat_event);
+	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_SEAT, &handle_seat_event);
 #if 0
 	/* This is excluded because it's taken care of separately by the
 	   specialized main loop that ggzcards uses.  Normally we'd register

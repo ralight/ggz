@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4179 2002-05-07 08:58:43Z jdorje $
+ * $Id: common.c 4190 2002-05-12 19:48:41Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -406,56 +406,102 @@ void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	/* Otherwise do nothing (yet...) */
 }
 
-/* This handles the event of a player joining. */
-void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
+/* This monolithic function handles any change to a seat.  It might be
+   a player join or a player leave.  Eventually, other types of seat
+   changes will be possible (although these are not yet tested).  A lot
+   of the work is the same for any kind of seat change, though. */
+void handle_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	player_t player = ((GGZSeat*)data)->num;
-	seat_t seat = game.players[player].seat;
+	GGZSeat old_seat = *(GGZSeat*)data;
+	player_t player = old_seat.num, p;
+	/* seat_t seat = game.players[player].seat; */
+	GGZSeat new_seat = ggzdmod_get_seat(game.ggz, player);
+	bool is_join = (new_seat.type == GGZ_SEAT_PLAYER
+	                || new_seat.type == GGZ_SEAT_BOT)
+	               && (old_seat.type != new_seat.type
+	                   || strcmp(old_seat.name, new_seat.name));
+	bool is_leave = old_seat.type == GGZ_SEAT_PLAYER
+	                && (new_seat.type != old_seat.type
+	                    || strcmp(old_seat.name, new_seat.name));
+	GGZdModState new_state;
 
 	/* There's a big problem here since if the players join/leave before
 	   the game type is set, we won't know the seat number of the player
 	   - it'll be -1.  We thus have to special-case that entirely. */
-
-	ggz_debug(DBG_MISC,
-		    "Handling a join event for player %d (seat %d).", player,
-		    seat);
-		
-	/* Update stats for this player */
-	if (game.stats)
-		ggzstats_reread(game.stats);
-
-	/* set the age of the player */
-	game.players[player].age = game.player_count;
-	game.player_count++;
-	game.host = determine_host();
-
-	/* if all seats are occupied, we restore the former state and
-	   continue playing (below).  The state is restored up here so that
-	   the sync will be handled correctly. */
-	if (seats_full())
-		ggzdmod_set_state(ggz, GGZDMOD_STATE_PLAYING);
-		
-	/* If we're already playing, we should send the client a NEWGAME
-	   alert - although it's not really a NEWGAME but a game in
-	   progress. */
-	if (game.state != STATE_NOTPLAYING) {
-		assert(game.state != STATE_PRELAUNCH);
-		net_send_newgame(player);
-	}
-
-	/* Send all table info to joiner.  This will also make any new
-	   options requests, if necessary. */
-	send_sync(player);
+	
+	ggz_debug(DBG_MISC, "Handling a seat-change event for player %d.",
+	          player);
 
 	/* We send player list to everyone.  This used to skip over the
 	   player joining.  I think it only did that because the player list
 	   is also sent out in the sync, but there could be a better reason
 	   as well. */
 	net_broadcast_player_list();
+	
+	/* Update stats for this player */
+	if (game.stats)
+		ggzstats_reread(game.stats);
+	
+	if (is_join && new_seat.type == GGZ_SEAT_PLAYER) {
+		/* set the age of the player */
+		game.players[player].age = game.player_count;
+		game.player_count++;
+	} else
+		game.players[player].age = -1;
+		
+	/* If we're already playing, we should send the client a NEWGAME
+	   alert - although it's not really a NEWGAME but a game in
+	   progress. */
+	if (is_join && game.state != STATE_NOTPLAYING) {
+		assert(game.state != STATE_PRELAUNCH);
+		net_send_newgame(player);
+	}
+	
+	if (is_join || is_leave) {
+		int new_host = determine_host();
+		if (new_host != game.host) {
+			game.host = new_host;
+			if (game.host >= 0)
+				set_player_message(game.host);
+			
+			/* This happens when the host leaves the table before choosing
+			   a game.  Now the new host must choose.  We don't have this
+			   problem when choosing game options because the host leaving
+			   will delay the start of the game anyway. */
+			if (game.data == NULL)
+				request_client_gametype();
+		}
+	}
+	
+	/* If someone leaves, we must abort the game-starting process. */
+	if (is_leave)
+		for (p = 0; p < game.num_players; p++)
+			game.players[p].ready = FALSE;
+	
+	/* Figure out what state to move to.  The state is changed up here
+	   so that the sync and other actions (below) are handled correctly. */
+	if (seats_full()) {
+		/* If all seats are full, start playing. */
+		new_state = GGZDMOD_STATE_PLAYING;
+	} else {
+		if (ggzdmod_count_seats(game.ggz, GGZ_SEAT_PLAYER) == 0) {
+			/* If all seats are empty, the table is done. */
+			new_state = GGZDMOD_STATE_DONE;
+		} else {
+			/* If some seats are empty, wait for them to fill. */
+			new_state = GGZDMOD_STATE_WAITING;
+		}
+	}
+	if (ggzdmod_set_state(game.ggz, new_state) < 0)
+		assert(FALSE);
+	
+	/* Send all table info to joiner.  This will also make any new
+	   options requests, if necessary. */
+	send_sync(player);
 
-	if (seat >= 0 &&	/* see above comment about seat==-1 */
-	    game.state != STATE_NOTPLAYING)
-		send_player_message_toall(seat);
+	/* get rid of old player message.  This used to call
+	   send_player_message_toall(); I'm not sure what the difference is. */
+	set_player_message(player);
 
 	if (seats_full()
 	    && game.data != NULL) {
@@ -463,62 +509,11 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 		if (game.state != STATE_WAIT_FOR_BID
 		    && game.state != STATE_WAIT_FOR_PLAY)
 			/* if we're in one of these two states, we have to
-			   wait for a response anyway */
+			   wait for a response anyway. */
 			next_move();
 	}
 	
-	ggz_debug(DBG_MISC, "Player join successful.");
-}
-
-/* This handles the event of a player leaving */
-void handle_leave_event(GGZdMod * ggz, GGZdModEvent event, void *data)
-{
-	player_t player = ((GGZSeat*)data)->num;
-	seat_t seat = game.players[player].seat;
-	GGZdModState new_state;
-	player_t p;
-
-	ggz_debug(DBG_MISC,
-		    "Handling a leave event for player %d (seat %d).", player,
-		    seat);
-
-	/* There's a big problem here since if the players join/leave before
-	   the game type is set, we won't know the seat number of the player
-	   - it'll be -1.  We thus have to special-case that entirely. */
-
-	/* send new seat data */
-	net_broadcast_player_list();
-	
-	for (p = 0; p < game.num_players; p++)
-		game.players[p].ready = FALSE;
-
-	/* reset player's age; find new host */
-	game.players[player].age = -1;
-	if (game.host == player) {
-		game.host = determine_host();
-		if (game.host >= 0)
-			set_player_message(game.host);
-			
-		/* This happens when the host leaves the table before choosing
-		   a game.  Now the new host must choose. */
-		if (game.data == NULL)
-			request_client_gametype();		
-	}
-
-	/* get rid of old player message */
-	set_player_message(player);
-	
-	/* Figure out what state to move to. */
-	if (ggzdmod_count_seats(game.ggz, GGZ_SEAT_PLAYER) == 0)
-		new_state = GGZDMOD_STATE_DONE;
-	else
-		new_state = GGZDMOD_STATE_WAITING;
-		
-	/* Change the table (and hence game) state. */
-	if (ggzdmod_set_state(game.ggz, new_state) < 0)
-		assert(FALSE);
-	
-	ggz_debug(DBG_MISC, "Player leave successful.");
+	ggz_debug(DBG_MISC, "Seat change successful.");
 }
 
 /* This handles the event of a player responding to a newgame request */
