@@ -73,7 +73,7 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 		guru->message = strdup(message);
 		guru->list = NULL;
 		listtoken = strdup(message);
-		token = strtok(listtoken, " ,./:-?!\'");
+		token = strtok(listtoken, " ,./:?!\'");
 		i = 0;
 		while(token)
 		{
@@ -82,7 +82,7 @@ static void net_internal_queueadd(const char *player, const char *message, int t
 			strcpy(guru->list[i], token);
 			guru->list[i + 1] = NULL;
 			i++;
-			token = strtok(NULL, " ,./:-?!\'");
+			token = strtok(NULL, " ,./:?!\'");
 		}
 		free(listtoken);
 	}
