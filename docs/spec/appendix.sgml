@@ -961,7 +961,7 @@
 			  <tbody>
 
 			    <row rowsep="0">
-			      <entry>
+			      <entry namest="C1" nameend="C3">
 				    &lt;TABLE ID="id" GAME="game" STATUS="status" SEATS="seats"&gt;
 					  &lt;DESC&gt;desc&lt;/DESC&gt;
 					  &lt;SEAT NUM="num" TYPE="type"&gt;player&lt;/SEAT&gt;
@@ -1204,13 +1204,15 @@
 	  response to
 	  <link linkend="req.list">LIST</link>,
 	  <link linkend="req.enter">ENTER</link>,
+	  <link linkend="req.table.launch">LAUNCH</link>,
+	  <link linkend="req.table.join">JOIN</link>,
+	  <link linkend="req.table.leave">LEAVE</link>,
 	  <link linkend="req.chat">CHAT</link> and
 	  <link linkend="req.login">LOGIN</link> requests.
 	</para>
       </refsect2>
     </refsect1>
   </refentry>
-
 
   <refentry id="rsp.list"><?dbhtml filename="rsp_list.html">
     <refmeta>
@@ -1301,162 +1303,6 @@
 	  <link linkend="rsp.list.player">PLAYER</link> or
 	  <link linkend="msg.game">GAME</link> or
 	  <link linkend="msg.room">ROOM</link> entries.
-	</para>
-      </refsect2>
-    </refsect1>
-  </refentry>
-
-  <refentry id="rsp.table.join"><?dbhtml filename="rsp_table_join.html">
-    <refmeta>
-      <indexterm>
-	<primary>RSP_TABLE_JOIN</primary>
-      </indexterm>
-      <refentrytitle>RSP_TABLE_JOIN</refentrytitle>
-    </refmeta>
-
-    <refnamediv>
-      <refname>RSP_TABLE_JOIN</refname>
-      <refpurpose>Server response to request to join table</refpurpose>
-    </refnamediv>
-
-    <refsynopsisdiv><title>Synopsis</title>
-      <informaltable>
-	<tgroup cols="3">
-	  <colspec colnum="1" colname="C1" align="left">
-	    <colspec colnum="2" colname="C2">
-	      <colspec colnum="3" colname="C3">
-		<tbody>
-
-		  <row rowsep="0">
-		    <entry namest="C1" nameend="C2">
-		      <emphasis role="bold">Opcode</emphasis>
-		    </entry>
-		    <entry>22</entry>
-		  </row>
-
-		  <row rowsep="0">
-		    <entry namest="C1" nameend="C3">RSP_TABLE_JOIN</entry>
-		  </row>
-
-		  <row rowsep="1">
-		    <entry namest="C1" nameend="C2">
-		      <emphasis role="bold">Data</emphasis>
-		    </entry>
-		    <entry><emphasis role="bold">Type</emphasis></entry>
-		  </row>
-
-		  <row rowsep="1">
-		    <entry namest="C1" nameend="C2">status</entry>
-		    <entry>char</entry>
-		  </row>
-
-		</tbody>
-	</tgroup>
-      </informaltable>
-    </refsynopsisdiv>
-
-    <refsect1>
-      <title>Description</title>
-      <para>Server response to player request to join table</para>
-      <refsect2>
-	<title>Message Data</title>
-	<variablelist>
-	  <varlistentry>
-	    <term><emphasis role="bold">status</emphasis></term>
-	    <listitem>
-	      <para>
-		status of join request (zero if successful,
-		negative on error)
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	</variablelist>
-      </refsect2>
-
-      <refsect2>
-	<title>Usage</title>
-	<para>
-	  RSP_TABLE_JOIN is sent from the server to client in response
-	  to a table join request via
-	  <link linkend="req.table.join">REQ_TABLE_JOIN</link>.  
-	</para>
-      </refsect2>
-    </refsect1>
-  </refentry>
-
-  <refentry id="rsp.table.leave"><?dbhtml filename="rsp_table_leave.html">
-    <refmeta>
-      <indexterm>
-	<primary>RSP_TABLE_LEAVE</primary>
-      </indexterm>
-      <refentrytitle>RSP_TABLE_LEAVE</refentrytitle>
-    </refmeta>
-
-    <refnamediv>
-      <refname>RSP_TABLE_LEAVE</refname>
-      <refpurpose>Server response to table leave request</refpurpose>
-    </refnamediv>
-
-    <refsynopsisdiv><title>Synopsis</title>
-      <informaltable>
-	<tgroup cols="3">
-	  <colspec colnum="1" colname="C1" align="left">
-	    <colspec colnum="2" colname="C2">
-	      <colspec colnum="3" colname="C3">
-		<tbody>
-
-		  <row rowsep="0">
-		    <entry namest="C1" nameend="C2">
-		      <emphasis role="bold">Opcode</emphasis>
-		    </entry>
-		    <entry>23</entry>
-		  </row>
-
-		  <row rowsep="0">
-		    <entry namest="C1" nameend="C3">RSP_TABLE_LEAVE</entry>
-		  </row>
-
-		  <row rowsep="1">
-		    <entry namest="C1" nameend="C2">
-		      <emphasis role="bold">Data</emphasis>
-		    </entry>
-		    <entry><emphasis role="bold">Type</emphasis></entry>
-		  </row>
-
-		  <row rowsep="1">
-		    <entry namest="C1" nameend="C2">status</entry>
-		    <entry>char</entry>
-		  </row>
-
-		</tbody>
-	</tgroup>
-      </informaltable>
-    </refsynopsisdiv>
-
-    <refsect1>
-      <title>Description</title>
-      <para>Server response to player request to leave tablet</para>
-      <refsect2>
-	<title>Message Data</title>
-	<variablelist>
-	  <varlistentry>
-	    <term><emphasis role="bold">status</emphasis></term>
-	    <listitem>
-	      <para>
-		status of logout request (zero if successful,
-		negative on error)
-	      </para>
-	    </listitem>
-	  </varlistentry>
-	</variablelist>
-      </refsect2>
-
-      <refsect2>
-	<title>Usage</title>
-	<para>
-	  RSP_TABLE_LEAVE is sent from the server to client in response
-	  to a table leave request via
-	  <link linkend="req.table.leave">REQ_TABLE_LEAVE</link>.  
 	</para>
       </refsect2>
     </refsect1>
@@ -1824,7 +1670,7 @@
       <indexterm>
 	<primary>LAUNCH</primary>
       </indexterm>
-      <refentrytitle>AUNCH</refentrytitle>
+      <refentrytitle>LAUNCH</refentrytitle>
     </refmeta>
 
     <refnamediv>
@@ -1872,8 +1718,9 @@
 	  The LAUNCH tag request a table to be launched in the current room.
 	  Therefore, each LAUNCH request contains one tag of type
 	  <link linkend="rsp.list.table">TABLE</link>.
-	  The server will respond with an
-	  <link linkend="msg.update">UPDATE</link> upon success.
+	  The server will respond with a
+	  <link linkend="rsp.result">RESULT</link> tag, followed by an
+	  <link linkend="msg.update">UPDATE</link> of type 'table' upon success.
 	</para>
       </refsect2>
     </refsect1>
@@ -1882,14 +1729,14 @@
   <refentry id="req.table.join"><?dbhtml filename="req_table_join.html">
     <refmeta>
       <indexterm>
-	<primary>REQ_TABLE_JOIN</primary>
+	<primary>JOIN</primary>
       </indexterm>
-      <refentrytitle>REQ_TABLE_JOIN</refentrytitle>
+      <refentrytitle>JOIN</refentrytitle>
     </refmeta>
 
     <refnamediv>
-      <refname>REQ_TABLE_JOIN</refname>
-      <refpurpose>Server response to request to join table</refpurpose>
+      <refname>JOIN</refname>
+      <refpurpose>Client request to join a table</refpurpose>
     </refnamediv>
 
     <refsynopsisdiv><title>Synopsis</title>
@@ -1901,26 +1748,27 @@
 		<tbody>
 
 		  <row rowsep="0">
-		    <entry namest="C1" nameend="C2">
-		      <emphasis role="bold">Opcode</emphasis>
-		    </entry>
-		    <entry>13</entry>
-		  </row>
-
-		  <row rowsep="0">
-		    <entry namest="C1" nameend="C3">REQ_TABLE_JOIN</entry>
+		    <entry namest="C1" nameend="C3">
+			  &lt;JOIN TABLE="table" SPECTATOR="spectator"&gt;
+			</entry>
 		  </row>
 
 		  <row rowsep="1">
-		    <entry namest="C1" nameend="C2">
-		      <emphasis role="bold">Data</emphasis>
-		    </entry>
+		    <entry><emphasis role="bold">Data</emphasis></entry>
 		    <entry><emphasis role="bold">Type</emphasis></entry>
+			<entry><emphasis role="bold">Example</emphasis></entry>
 		  </row>
 
 		  <row rowsep="1">
-		    <entry namest="C1" nameend="C2">table</entry>
+		    <entry>TABLE</entry>
 		    <entry>int</entry>
+			<entry>0</entry>
+		  </row>
+
+		  <row rowsep="1">
+		    <entry>SPECTATOR</entry>
+		    <entry>boolstring</entry>
+			<entry>true</entry>
 		  </row>
 
 		</tbody>
@@ -1935,10 +1783,19 @@
 	<title>Message Data</title>
 	<variablelist>
 	  <varlistentry>
-	    <term><emphasis role="bold">table</emphasis></term>
+	    <term><emphasis role="bold">TABLE</emphasis></term>
 	    <listitem>
 	      <para>
-		table ID of table the player wishes to join
+		The identifier of table the player wishes to join
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><emphasis role="bold">SPECTATOR</emphasis></term>
+	    <listitem>
+	      <para>
+		Whether to join as spectator (when true) or not
+		(when false or omitted).
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -1948,9 +1805,10 @@
       <refsect2>
 	<title>Usage</title>
 	<para>
-	  REQ_TABLE_JOIN is sent from client to the server to
-	  request a table join.  The server will respond with
-	  <link linkend="rsp.table.join">RSP_TABLE_JOIN</link>.
+	  JOIN is sent from client to the server to
+	  request a table join. The server will respond with
+	  <link linkend="rsp.result">RESULT</link>, followed by an
+	  <link linkend="msg.update">UPDATE</link> of type 'table'.
 	</para>
       </refsect2>
     </refsect1>
@@ -1959,13 +1817,13 @@
   <refentry id="req.table.leave"><?dbhtml filename="req_table_leave.html">
     <refmeta>
       <indexterm>
-	<primary>REQ_TABLE_LEAVE</primary>
+	<primary>LEAVE</primary>
       </indexterm>
-      <refentrytitle>REQ_TABLE_LEAVE</refentrytitle>
+      <refentrytitle>LEAVE</refentrytitle>
     </refmeta>
 
     <refnamediv>
-      <refname>REQ_TABLE_LEAVE</refname>
+      <refname>LEAVE</refname>
       <refpurpose>Client request to leave table</refpurpose>
     </refnamediv>
 
@@ -1978,14 +1836,15 @@
 		<tbody>
 
 		  <row rowsep="0">
-		    <entry namest="C1" nameend="C2">
-		      <emphasis role="bold">Opcode</emphasis>
-		    </entry>
-		    <entry>14</entry>
+		    <entry namest="C1" nameend="C3">
+			  &lt;LEAVE FORCE="force"&gt;
+			</entry>
 		  </row>
 
-		  <row rowsep="0">
-		    <entry namest="C1" nameend="C3">REQ_TABLE_LEAVE</entry>
+		  <row rowsep="1">
+		    <entry>FORCE</entry>
+		    <entry>boolstring</entry>
+			<entry>false</entry>
 		  </row>
 
 		</tbody>
@@ -1997,11 +1856,27 @@
       <title>Description</title>
       <para>Server response to player request to leave tablet</para>
       <refsect2>
+	<title>Message Data</title>
+	<variablelist>
+	  <varlistentry>
+	    <term><emphasis role="bold">FORCE</emphasis></term>
+	    <listitem>
+	      <para>
+		Force leaving the table even though the game doesn't support it.
+		The game would then be cancelled.
+		For spectators, this flag is ignored.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </refsect2>
+
+      <refsect2>
 	<title>Usage</title>
 	<para>
-	  REQ_TABLE_LEAVE is sent from the client to the server to
-	  request a table leave.  The server will respons with
-	  <link linkend="rsp.table.leave">RSP_TABLE_LEAVE</link>.
+	  LEAVE is sent from the client to the server to
+	  request a table leave.  The server will respons with a
+	  <link linkend="rsp.result">RESULT</link> message.
 	</para>
       </refsect2>
     </refsect1>
@@ -2248,7 +2123,4 @@
 
 </section>
 
-<section id = "server-to-module"><title>Messages from server to game module</title>
-  <para>Messages from server to game module</para>
-</section>
 

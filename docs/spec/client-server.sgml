@@ -83,8 +83,8 @@
       <para>
 	Although it is not explicitly disallowed by the server,
 	clients are discouraged from allowing players to logout while
-	at a game table. The client should send the appropriate <link
-	linkend="req.table.leave">REQ_TABLE_LEAVE</link> first.
+	at a game table. The client should send the appropriate
+	<link linkend="req.table.leave">LEAVE</link> request first.
       </para>
     </warning>
   </para>
@@ -283,17 +283,17 @@
   <title>Table Management</title>
 
   <para>
-    In order to play a game with other players logged into GGZ, a
-    player must be at a table.  This is accomplished via one of two
-    interactions: 
+    In order to play or watch a game with other players logged into GGZ, a
+    player must be at a table. This is accomplished via one of two
+    interactions:
 
     <itemizedlist>
       <listitem>
 	<para>
-	  To join a player to an existing table, the client should
-	  send <link linkend="req.table.join">REQ_TABLE_JOIN</link>.
-	  The server will respond with <link
-	  linkend="rsp.table.join">RSP_TABLE_JOIN</link>, notifying
+	  To join a player or spectator to an existing table, the client should
+	  send <link linkend="req.table.join">JOIN</link>.
+	  The server will respond with
+	  <link linkend="rsp.result">RESULT</link>, notifying
 	  the client if the attempt to join was successful.
 	</para>
       </listitem>
@@ -303,7 +303,7 @@
 	  To launch a new table, clients must send the
 	  <link linkend="req.table.launch">LAUNCH</link> tag.
 	  The server will respond with
-	  <link linkend="msg.update">UPDATE</link>,
+	  <link linkend="rsp.result">RESULT</link>,
 	  notifying the client of the status of the table launch.
 	</para>
       </listitem>
@@ -313,8 +313,8 @@
       <para>
 	Currently the server will automatically attempt to join the
 	the player to the newly launched table.  The result of this
-	join will be sent to the client via a <link
-	linkend="rsp.table.join">RSP_TABLE_JOIN</link>, even though
+	join will be sent to the client via a
+	<link linkend="rsp.result">RESULT</link>, even though
 	the client did not explicitly request a join.  This behaviour
 	may change in future version of the server
 	</para>
@@ -325,10 +325,12 @@
     At the end of a game session, the server will automatically remove
     all players from the table.  Should a player wish to leave a table
     before the completion of the game, however, the client may send a
-    <link linkend="req.table.leave">REQ_TABLE_LEAVE</link>.  The
-    server will then send back <link
-    linkend="rsp.table.leave">RSP_TABLE_LEAVE</link>.  Note that not
-    all game types will support leaving in mid-game.
+    <link linkend="req.table.leave">LEAVE</link>.
+	The server will then send back
+	<link linkend="rsp.result">RESULT</link>.
+	Note that not all game types will support leaving in mid-game.
+	Such games can be left when passing the 'force' parameter, however
+	it ends for all other players then, too.
   </para>
 
 </section>
@@ -347,20 +349,20 @@
       <listitem>
 	<para>
 	  When a player wishes to send a chat message, the client
-	  should send a <link linkend="req.chat">REQ_CHAT</link>.
+	  should send a <link linkend="req.chat">CHAT</link>.
 	  Different types of chat messages are distinguished by the
 	  <link linkend="chat-subopcodes">chat sub-opcodes</link> The
 	  server will respond with the status of the chat operation
-	  via <link linkend="rsp.chat">RSP_CHAT</link>
+	  via <link linkend="rsp.chat">CHAT</link>
 	</para>
       </listitem>
 
       <listitem>
 	<para>
 	  When a player receives a chat message from another player,
-	  the server will send <link
-	  linkend="rsp.chat">MSG_CHAT</link> to the client.  The <link
-	  linkend="chat-subopcodes">chat sub-opcodes</link>
+	  the server will send
+	  <link linkend="rsp.chat">CHAT</link> to the client.  The
+	  <link linkend="chat-subopcodes">chat sub-opcodes</link>
 	  distinguish between the various chat operations
 	</para>
       </listitem>

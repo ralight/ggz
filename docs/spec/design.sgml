@@ -3,6 +3,7 @@
 <!ENTITY client-server SYSTEM "client-server.sgml">
 <!ENTITY overview SYSTEM "overview.sgml">
 <!ENTITY appendix SYSTEM "appendix.sgml">
+<!ENTITY appendix2 SYSTEM "modules.sgml">
 
 <!ENTITY ggz "GGZ Gaming Zone">
 <!ENTITY protonum "7">
@@ -28,8 +29,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 4503 $</revnumber>
-	<date>$Date: 2002-09-10 10:44:17 -0700 (Tue, 10 Sep 2002) $</date>
+	<revnumber>$Revision: 4512 $</revnumber>
+	<date>$Date: 2002-09-10 23:55:41 -0700 (Tue, 10 Sep 2002) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -87,6 +88,7 @@
   <appendix id="appendix">
     <title>Protocol Reference</title>
     &appendix;
+	&appendix2;
   </appendix>
 
 </book>
