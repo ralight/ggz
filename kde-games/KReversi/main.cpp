@@ -72,28 +72,6 @@ int main(int argc, char *argv[])
     return a.exec();
 }
 
-int ggz_connect(char *name) {
-  /*char fd_name[30];*/
-  int sock;
-  /*struct sockaddr_un addr;*/
- 
-  /* Connect to Unix domain socket */
-  /*sprintf(fd_name, "/tmp/%s.%d", name, getpid());
- 
-  if ( (sock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
-    exit(-1);
- 
-  bzero(&addr, sizeof(addr));
-  addr.sun_family = AF_LOCAL;
-  strcpy(addr.sun_path, fd_name);
- 
-  if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-    exit(-1);*/
-
-  sock = 3;
-  return sock;
-}
-
 int select_dirs(const struct dirent *d)
 {
   int ok=0;
@@ -109,3 +87,4 @@ int select_dirs(const struct dirent *d)
     return 1;
   return 0;
 }
+

@@ -16,33 +16,36 @@
  ***************************************************************************/
 
 #include "reversiprotocol.h"
+#include "network.h"
+
 #include <stdlib.h>
 #include <netinet/in.h>
 
-#include <ggzmod.h>
 #include <ggz_common.h>
 
-int ggz_connect(char *name);
-
 ReversiProtocol::ReversiProtocol() {
-  sock = new QSocket();
-  sock->setSocket( ggz_connect("Reversi") );
-
   args.setAutoDelete( true );
 
   next = INT;
 
-  connect( sock, SIGNAL(readyRead()), this, SLOT(readBuffer()) );
+  sock = NULL;
+  network = new Network();
+  connect(network, SIGNAL(signalData()), SLOT(readBuffer()));
+  network->doconnect();
 };
 
 ReversiProtocol::~ReversiProtocol() {
   /* Clean up the buffer */
-  readBuffer();
+  //readBuffer();
+  delete network;
 };
 
 void ReversiProtocol::readBuffer() {
   void *arg = NULL;
   int *a;
+  if(!sock) {
+	sock = network->socket();
+  }
   int old_size = sock->bytesAvailable();
   switch (next) {
     case CHAR:

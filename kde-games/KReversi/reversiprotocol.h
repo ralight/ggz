@@ -49,6 +49,8 @@
   *@author Ismael Orenstein
   */
 
+class Network;
+
 class ReversiProtocol : public QObject {
 Q_OBJECT
 public:
@@ -60,6 +62,7 @@ public:
 private:
   int next;
   QSocket *sock;
+  Network *network;
   QPtrList<void> args;
   void handleNewArg();
 signals:

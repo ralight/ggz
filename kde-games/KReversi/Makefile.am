@@ -1,11 +1,11 @@
-SUBDIRS = . pixmaps
+SUBDIRS = pixmaps
 
 ggzexecmod_PROGRAMS = ggz.kreversi
 
-ggz_kreversi_LDFLAGS = $(all_libraries)
-ggz_kreversi_LDADD = $(LIB_QT) $(LIB_KDECORE) $(LIB_KDEUI)
+ggz_kreversi_LDFLAGS = $(GGZMOD_LDFLAGS) $(all_libraries)
+ggz_kreversi_LDADD = $(LIB_GGZMOD) $(LIB_QT) $(LIB_KDECORE) $(LIB_KDEUI)
 
-INCLUDES = $(all_includes)
+INCLUDES = $(GGZMOD_INCLUDES) $(all_includes)
 
 ggz_kreversi_METASOURCES = AUTO
 
@@ -13,7 +13,8 @@ ggz_kreversi_SOURCES = \
 	main.cpp\
 	reversiprotocol.cpp\
 	reversiview.cpp\
-	kreversi.cpp
+	kreversi.cpp \
+	network.cpp
 
 EXTRA_DIST = \
 	ggz.kreversiui.rc
@@ -21,7 +22,8 @@ EXTRA_DIST = \
 noinst_HEADERS = \
 	reversiprotocol.h\
 	reversiview.h\
-	kreversi.h
+	kreversi.h \
+	network.h
 
 rcdir = $(kde_datadir)/ggz.kreversi
 rc_DATA = ggz.kreversiui.rc
