@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 3744 2002-04-05 05:54:12Z jdorje $
+ * $Id: login.c 4115 2002-04-29 22:47:18Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -70,6 +70,12 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login as %d",
 	        player, type);
+	
+	/* Sanity safety feature: don't send on any names longer than the
+	   code expects.  The code *should* be able to deal with it if
+	   this does happen, but currently it *can't*.  --JDS */
+	if (strlen(name) > MAX_USER_NAME_LEN)
+		name[MAX_USER_NAME_LEN] = 0;
 
 	/* Can't login twice */
 	if (player->uid != GGZ_UID_NONE) {
@@ -95,7 +101,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 	name_ok = 1;
 	
 	/* Check guest names vs. the database */
-	strcpy(db_pe.handle, name);
+	snprintf(db_pe.handle, sizeof(db_pe.handle), "%s", name);
 	db_status = ggzdb_player_get(&db_pe);
 	if(type == GGZ_LOGIN_GUEST && db_status != GGZDB_ERR_NOTFOUND) {
 		dbg_msg(GGZ_DBG_CONNECTION,
