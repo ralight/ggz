@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.h 2820 2001-12-09 07:38:20Z jdorje $
+ * $Id: game.h 2824 2001-12-09 10:00:41Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "../../ggzdmod/ggz_server.h"
+#include "ggzdmod.h"
 
 
 /* Hastings protocol */
@@ -95,7 +95,7 @@ int game_send_gameover(char winner);
 int game_move(void);
 int game_req_move(int num);
 int game_handle_move(int num);
-void game_bot_move(int num);
+void game_bot_move(int me);
 
 char game_check_move(int num, int enemyallowed);
 char game_check_win(void);

@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 2823 2001-12-09 08:16:26Z jdorje $
+ * $Id: game.c 2824 2001-12-09 10:00:41Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -25,6 +25,7 @@
  */
 
 /* System includes */
+#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -110,7 +111,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 	int num = *(int*)seat_data;
 	int fd, op;
 
-	fd = ggzd_get_player_socket(num);
+	fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
 
 	if (fd < 0 || es_read_int(fd, &op) < 0) return;
 
@@ -145,7 +146,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 /* Send out seat assignment */
 int game_send_seat(int seat)
 {
-	int fd = ggzd_get_player_socket(seat);
+	int fd = ggzdmod_get_seat(hastings_game.ggz, seat).fd;
 
 	ggzdmod_log(hastings_game.ggz, "Sending player %d's seat num\n", seat);
 
@@ -168,9 +169,9 @@ int game_send_players(void)
 	{
 		hastings_game.players[j] = 1;
 
-		if((fd = ggzd_get_player_socket(j)) == -1)
+		if((fd = ggzdmod_get_seat(hastings_game.ggz, j).fd) == -1)
 		{
-			ggzdmod_log(hastings_game.ggz, "Player %i is a unassigned (%i).\n", j, ggzd_get_seat_status(j));
+			ggzdmod_log(hastings_game.ggz, "Player %i is a unassigned (%i).\n", j, ggzdmod_get_seat(hastings_game.ggz, j).type);
 			/*assignment: -1 is unassigned player, -2 is unassigned bot*/
 			continue;
 		}
@@ -182,8 +183,13 @@ int game_send_players(void)
 
 		for(i = 0; i < hastings_game.playernum; i++)
 		{
-			if(es_write_int(fd, ggzd_get_player_socket(i)) < 0) return -1;
-			if((ggzd_get_player_socket(i) != GGZ_SEAT_OPEN) && (es_write_string(fd, ggzd_get_player_name(i)) < 0)) return -1;
+			GGZSeat seat = ggzdmod_get_seat(hastings_game.ggz, i);
+			if(es_write_int(fd, seat.type) < 0) return -1;
+			if(seat.type != GGZ_SEAT_OPEN) {
+				assert(seat.name);
+				if(es_write_string(fd, seat.name) < 0)
+					return -1;
+			}
 		}
 	}
 	return 0;
@@ -199,7 +205,7 @@ int game_send_move(int num)
 	{
 		if(i != num)
 		{
-			fd = ggzd_get_player_socket(i);
+			fd = ggzdmod_get_seat(hastings_game.ggz, i).fd;
 
 			/* If player is a computer, don't need to send */
 			if (fd == -1) return 0;
@@ -223,7 +229,7 @@ int game_send_move(int num)
 /* Send out board layout */
 int game_send_sync(int num)
 {
-	int i, j, fd = ggzd_get_player_socket(num);
+	int i, j, fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
 
 	ggzdmod_log(hastings_game.ggz, "Handling sync for player %d\n", num);
 
@@ -252,7 +258,7 @@ int game_send_gameover(char winner)
 	int i, fd;
 
 	for (i = 0; i < hastings_game.playernum; i++) {
-		if ( (fd = ggzd_get_player_socket(i)) == -1)
+		if ( (fd = ggzdmod_get_seat(hastings_game.ggz, i).fd) == -1)
 			continue;
 
 		ggzdmod_log(hastings_game.ggz, "Sending game-over to player %d\n", i);
@@ -270,13 +276,17 @@ int game_send_gameover(char winner)
 int game_move(void)
 {
 	int num = hastings_game.turn;
+	
+	ggzdmod_log(hastings_game.ggz, "game_move() called when it is player %d's turn.", num);
 
-	if (ggzd_get_seat_status(num) == GGZ_SEAT_BOT)
+	if (ggzdmod_get_seat(hastings_game.ggz, num).type == GGZ_SEAT_BOT)
 	{
 		game_bot_move(num);
 		game_update(HASTINGS_EVENT_MOVE, NULL);
+	} else  {
+		int worked = game_req_move(num);
+		assert(worked >= 0);
 	}
-	else game_req_move(num);
 
 	return 0;
 }
@@ -285,9 +295,13 @@ int game_move(void)
 /* Request move from current player */
 int game_req_move(int num)
 {
-	int fd = ggzd_get_player_socket(num);
+	int fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
+	
+	ggzdmod_log(hastings_game.ggz, "Requesting move from player %d.", num);
+	assert(fd >= 0);
 
-	if (es_write_int(fd, HASTINGS_REQ_MOVE) < 0) return -1;
+	if (es_write_int(fd, HASTINGS_REQ_MOVE) < 0)
+		return -1;
 
 	return 0;
 }
@@ -296,7 +310,7 @@ int game_req_move(int num)
 /* Handle incoming move from player */
 int game_handle_move(int num)
 {
-	int fd = ggzd_get_player_socket(num);
+	int fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
 	char status;
 
 	ggzdmod_log(hastings_game.ggz, "Handling move for player %d\n", num);
@@ -444,6 +458,8 @@ void game_bot_move(int me)
 
 	int i, j;
 	int moved;
+	
+	ggzdmod_log(hastings_game.ggz, "Getting bot's move for player %d.", me);
 
 	moved = 0;
 	
@@ -569,6 +585,7 @@ ggzdmod_log(hastings_game.ggz, "## post-join\n");
 			/* Notify GGZ server of game over */
 			/*ggz_done();*/ /* TODO: is this safe? */
 		}
+		ggzdmod_log(hastings_game.ggz, "## post-move\n");
 		break;
 	}
 

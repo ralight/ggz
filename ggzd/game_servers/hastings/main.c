@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 2001-01-08
  * Desc: Main loop
- * $Id: main.c 2820 2001-12-09 07:38:20Z jdorje $
+ * $Id: main.c 2824 2001-12-09 10:00:41Z jdorje $
  *
  * Copyright (C) Josef Spillner
  *
@@ -41,7 +41,6 @@ int main(void)
 	ggzdmod_set_handler(ggz, GGZDMOD_EVENT_PLAYER_DATA, &game_handle_player);
 
 	game_init(ggz);
-	ggzdmod = ggz; /* FIXME -- uses ggz_server.h */
 	
 	if (ggzdmod_connect(ggz) < 0) {
 		fprintf(stderr, "Couldn't connect to GGZ!\n");
