@@ -2,12 +2,12 @@
  * File: main.c
  * Author: Jason Short
  * Project: GGZ Command-line Client
- * Date: 1/7/01
- * $Id: main.c 3012 2002-01-08 10:03:00Z jdorje $
+ * Date: 1/7/02
+ * $Id: main.c 3013 2002-01-08 10:04:17Z jdorje $
  *
  * Main program code for ggz-cmd program.
  *
- * Copyright (C) 2001 GGZ Development Team.
+ * Copyright (C) 2002 GGZ Development Team.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
