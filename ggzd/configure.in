@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 4230 2002-05-23 20:28:07Z dr_maux $
+dnl $Id: configure.in 4233 2002-05-25 21:46:38Z dr_maux $
 
 AC_INIT(ggzd/control.c)
 AM_INIT_AUTOMAKE(ggz-server, 0.0.6pre)
@@ -88,7 +88,7 @@ AC_CHECK_HEADER(pthread.h,
         ggzd_LIBS="$ggzd_LIBS -lpthread"
     CFLAGS="$CFLAGS -D_REENTRANT",
     [AC_CHECK_LIB(c_r, pthread_create,
-        [ggzd_LIBS="$ggzd_LIBS -lpthread"
+        [ggzd_LIBS="$ggzd_LIBS -pthread"
         CFLAGS="$CFLAGS -D_THREAD_SAFE"],
             AC_MSG_ERROR(*** Cannot find pthread library); exit)])],
     AC_MSG_ERROR(*** Cannot find pthread.h header); exit)
