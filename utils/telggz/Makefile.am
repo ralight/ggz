@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3769 2002-04-06 08:02:03Z jdorje $
+# $Id: Makefile.am 3882 2002-04-10 14:01:02Z dr_maux $
 
 SUBDIRS = .
 
@@ -14,4 +14,4 @@ telggz_LDADD = $(LDADD) \
                $(LIB_GGZCORE) \
                $(top_builddir)/metaserv/minidom/libminidom.a
 
-INCLUDES = -I/usr/local/include -I$(top_srcdir)/metaserv/minidom
+INCLUDES = -I$(top_srcdir)/metaserv/minidom $(GGZCORE_INCLUDES)
