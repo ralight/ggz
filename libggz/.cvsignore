@@ -20,3 +20,4 @@ ltmain.sh
 build-stamp
 doxygen
 doc
+stamp-h1
