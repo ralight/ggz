@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 3111 2002-01-14 05:53:06Z jdorje $
+ * $Id: ggzcore.h 3179 2002-01-23 17:54:47Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -114,7 +114,10 @@ typedef GGZHookReturn (*GGZHookFunc)(unsigned int id,
 				     void* event_data, 
 				     void* user_data);
 
-/** GGZ object destroy function type */
+/** @brief GGZ object destroy function type
+ *
+ *  @todo This is not currently used.
+ */
 typedef void (*GGZDestroyFunc)(void* data);
 
 
@@ -325,34 +328,131 @@ int ggzcore_server_add_event_hook_full(GGZServer *server,
 				       const GGZHookFunc func,
 				       void *data);
 
-/* Functions for removing hooks from GGZServer events */
+/** @brief Remove a single hook function from an event's hook list.
+ *
+ *  @param server The GGZ server object.
+ *  @param event The server event the hook is associated with.
+ *  @param func The function to be removed from the hook list.
+ *  @return 0 on success (hook removed); -1 on failure (no hook removed)
+ *  @note At most one copy of the function will be removed.
+ *  @see ggzcore_server_remove_event_hook_id
+ */
 int ggzcore_server_remove_event_hook(GGZServer *server,
 				     const GGZServerEvent event, 
 				     const GGZHookFunc func);
 
+/** @brief Remove a hook function with given ID from the event's hook list.
+ *
+ *  @param server The GGZ server object.
+ *  @param event The server event the hook is associated with.
+ *  @param hook_id The ID of the hook event.
+ *  @return 0 on success (hook removed); -1 on failure (no hook removed)
+ *  @note The hook ID is given by ggzcore_server_add_event_hook
+ */
 int ggzcore_server_remove_event_hook_id(GGZServer *server,
 					const GGZServerEvent event, 
 					const unsigned int hook_id);
 
-/* Functions for setting GGZServer data */
+/*
+ * Functions for setting GGZServer data
+ */
+
+/** @brief Set host info for connecting to the server.
+ *
+ *  Call this function to set host info for the GGZ server
+ *  before trying to connect to it.
+ *
+ *  @param server The GGZ server object.
+ *  @param host A string containing the hostname.
+ *  @param port The port to connect to.
+ *  @return 0 on success, -1 on error.
+ *  @note Should never fail when given valid input.
+ *  @see ggzcore_server_connect
+ */
 int ggzcore_server_set_hostinfo(GGZServer *server, 
 				const char *host, 
 				const unsigned int port);
 
+/** @brief Set login info for logging in to the server.
+ *
+ *  Call this function to set login info for the GGZ server
+ *  before trying to login.
+ *
+ *  @param server The GGZ server object.
+ *  @param type The type of login to attempt.
+ *  @param handle The username to use with the server.
+ *  @param password The password to use (may be NULL with some login types).
+ *  @return 0 on success, -1 on error.
+ */
 int ggzcore_server_set_logininfo(GGZServer *server, 
 				 const GGZLoginType type, 
 				 const char *handle, 
 				 const char *password);
+				
 int ggzcore_server_log_session(GGZServer *server, const char *filename);
 
 
-/* Functions for querying a GGZServer object for information */
+/*
+ * Functions for querying a GGZServer object for information
+ */
+
+/** @brief Get the hostname of the server.
+ *
+ *  @param server The GGZ server object.
+ *  @return A string containing the host name, or NULL on error.
+ *  @see ggzcore_server_set_hostinfo
+ */
 char*        ggzcore_server_get_host(GGZServer *server);
+
+/** @brief Get the port of the server.
+ *
+ *  @param server The GGZ server object.
+ *  @return The port number of the server, or -1 on error.
+ *  @see ggzcore_server_set_hostinfo
+ */
 int          ggzcore_server_get_port(GGZServer *server);
+
+/** @brief Get the login type being used for this server.
+ *
+ *  @param server The GGZ server object.
+ *  @return The login type set for the server, or -1 on error.
+ *  @see ggzcore_server_set_logininfo
+ */
 GGZLoginType ggzcore_server_get_type(GGZServer *server);
+
+/** @brief Get the handle being used for this server.
+ *
+ *  @param server The GGZ server object.
+ *  @return A string containing the handle, or NULL on error.
+ *  @see ggzcore_server_set_logininfo
+ */
 char*        ggzcore_server_get_handle(GGZServer *server);
+
+/** @brief Get the password being used for this server.
+ *
+ *  @param server The GGZ server object.
+ *  @return A string containing the password, or NULL on error.
+ *  @see ggzcore_server_set_logininfo
+ */
 char*        ggzcore_server_get_password(GGZServer *server);
+
+/** @brief Get the socket used for connection with the server.
+ *
+ *  This returns the file descriptor of the primary socket for
+ *  the TCP connection to the server.  All GGZ data goes across
+ *  this socket.
+ *
+ *  @param server The GGZ server object.
+ *  @return The file descriptor of the connection socket.
+ *  @see ggzcore_server_connect
+ */
 int          ggzcore_server_get_fd(GGZServer *server);
+
+/** @brief Get the state of the server connection.
+ *
+ *  @param server The GGZ server object.
+ *  @return The state of the connection, or -1 on error.
+ */
 GGZStateID   ggzcore_server_get_state(GGZServer *server);
 
 /** @brief Return the number of rooms on the server, or -1 on error.
@@ -381,8 +481,45 @@ int ggzcore_server_is_logged_in(GGZServer *server);
 int ggzcore_server_is_in_room(GGZServer *server);
 int ggzcore_server_is_at_table(GGZServer *server);
 
-/* GGZ Server Actions */
+/*
+ * GGZ Server Actions
+ */
+
+/** @brief Connect to the server.
+ *
+ *  Call this function to initially connect to a GGZ server.  Connection
+ *  info is set using the ggzcore_server_set_hostinfo function.
+ *
+ *  The function is asynchronous and will return very quickly.  After
+ *  the connection is (hopefully) established we will receive either
+ *  a GGZ_CONNECTED or GGZ_CONNECT_FAIL server event.  If the
+ *  connection succeeds, negotiations with the GGZ server will begin
+ *  automatically.  Once this is complete, we will receive either a
+ *  GGZ_NEGOTIATED or GGZ_NEGOTIATE_FAIL event.
+ *
+ *  @param server The GGZ server object.
+ *  @return 0 on success, -1 on failure.
+ *  @note On success a GGZ_CONNECTED event will be generated.
+ *  @note On failure a GGZ_CONNECT_FAIL event may or may not be generated.
+ */
 int ggzcore_server_connect(GGZServer *server);
+
+/** @brief Log in to the server.
+ *
+ *  Call this function to log in to the server once a connection
+ *  has been established.  Typically you must first connect to the
+ *  server, then wait to receive the GGZ_CONNECTED and GGZ_NEGOTIATED
+ *  events before attempting to log in.  Login info is set using the
+ *  ggzcore_server_set_logininfo function.
+ *
+ *  The function is asynchronous and will return immediately.  After the
+ *  login request is sent, we will wait to receive either a
+ *  GGZ_LOGGED_IN or GGZ_LOGIN_FAIL server event.
+ *
+ *  @param server The GGZ server object.
+ *  @return 0 on success, -1 on failure.
+ *  @note On failure no events will be generated.
+ */
 int ggzcore_server_login(GGZServer *server);
 int ggzcore_server_motd(GGZServer *server);
 int ggzcore_server_list_rooms(GGZServer *server, const int type, const char verbose);
