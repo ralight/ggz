@@ -4,7 +4,7 @@ dnl ===============================
 AC_INIT(configure.in)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
-AM_INIT_AUTOMAKE(ggz-kde-games, 0.0.6)
+AM_INIT_AUTOMAKE(ggz-kde-games, 0.0.7pre)
 AM_CONFIG_HEADER(config.h)
 
 dnl Check for Qt and KDE
@@ -87,8 +87,7 @@ AC_OUTPUT(Makefile
 	fyrdman/module.dsc
 	fyrdman/data/Makefile
 	fyrdman/data/fyrdman.desktop
-	lib/Makefile
-	lib/test/Makefile)
+	lib/Makefile)
 
 dnl Report success
 dnl ==============
