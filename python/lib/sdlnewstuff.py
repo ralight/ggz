@@ -19,7 +19,7 @@ def nulltranslation(str):
 	return str
 
 try:
-	t = gettext.translation("sdlnewstuff", "/usr/share/locale")
+	t = gettext.translation("ggzpython", "/usr/local/share/locale")
 	_ = t.ugettext
 except:
 	_ = nulltranslation
@@ -151,7 +151,6 @@ def rect(surface, color, x1, y1, w, h, bgcolor):
 	surface.fill(color, ((x1, y1 + h), (w, 1)))
 	surface.fill(color, ((x1 + w, y1), (1, h)))
 
-
 def menurender(surface, stufflist, highlighted, conf):
 	titlefont = pygame.font.SysFont("Vera Sans", 24)
 	font = pygame.font.SysFont("Vera Sans", 12)
@@ -160,6 +159,8 @@ def menurender(surface, stufflist, highlighted, conf):
 
 	i = 10
 	c = 0
+	if highlighted > 5:
+		i -= (highlighted - 5) * 80
 	oldprovider = ""
 	for s in stufflist:
 		if s.provider is not oldprovider:
@@ -184,14 +185,14 @@ def menurender(surface, stufflist, highlighted, conf):
 		f = font.render(s.summary, 1, conf.color_foreground)
 		surface.blit(f, (780 - f.get_width(), i + 15))
 		if not s.status:
-			s.status = "not installed"
-		if s.status == "installed":
-			f = font.render(_(s.status), 1, conf.color_foreground)
+			s.status = _("not installed")
+		if s.status == _("installed"):
+			f = font.render(s.status, 1, conf.color_foreground)
 			surface.blit(f, (780 - f.get_width(), i + 45))
 		else:
 			f = font.render(s.payload, 1, conf.color_foreground)
 			surface.blit(f, (780 - f.get_width(), i + 30))
-			f = font.render(_(s.status), 1, conf.color_action)
+			f = font.render(s.status, 1, conf.color_action)
 			surface.blit(f, (780 - f.get_width(), i + 45))
 
 		i += 80
@@ -234,7 +235,7 @@ def gethotnewstuff(gamename):
 
 		for s in stufflist:
 			if s.name + "::" + s.version + "\n" in lines:
-				s.status = "installed"
+				s.status = _("installed")
 	except:
 		pass
 
@@ -289,9 +290,9 @@ def gethotnewstuff(gamename):
 
 		""" Logics """
 
-		if install >= 0:
+		if install >= 0 and len(stufflist) > 0:
 			s = stufflist[install]
-			if s.status is not "installed":
+			if s.status is not _("installed"):
 				try:
 					(filename, data) = urllib.urlretrieve(s.payload)
 					if conf.installdir:
@@ -308,9 +309,9 @@ def gethotnewstuff(gamename):
 					f.write(s.name + "::" + s.version + "\n")
 					f.close()
 
-					s.status = "installed"
+					s.status = _("installed")
 				except:
-					s.status = "error"
+					s.status = _("error")
 					
 				install = -1
 				updatescreen = 1
