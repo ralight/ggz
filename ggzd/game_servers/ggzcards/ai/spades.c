@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2437 2001-09-10 06:37:19Z jdorje $
+ * $Id: spades.c 2438 2001-09-10 07:00:12Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -745,11 +745,14 @@ static void Calculate(int num, struct play *play)
 
 	/* Card's rank is its likelihood of taking this trick if the card is
 	   higher than the highest current card. */
+	/* NOTE: we also calculate our partner's chance of winning with an
+	   already-played card, so we must consider that case as well. */
+	/* FIXME: there's still a bug here.  Sometimes we'll trump in on our
+	   partner's aces! */
 	if (high < 0
 	    || ((play->card.suit == SPADES && high_card.suit != SPADES)
 		|| (play->card.suit == high_card.suit
-		    && play->card.face > high_card.face))
-	    /* || play->card == trick[high] */
+		    && play->card.face >= high_card.face))
 		) {
 		count = sCount = 0;
 		if (!cards_equal(game.seats[(num + 1) % 4].table, UNKNOWN_CARD)) {	/* we're
@@ -1287,7 +1290,7 @@ static int PlayNormal(int p)
 {
 
 	int i, chosen = -1, n, r, s /* , tmp */ ;
-	struct play pCard;
+	struct play pCard;	/* partner's card */
 	/* int pmap[4], omap[4]; */
 	player_t pard = (p + 2) % 4;
 
@@ -1299,13 +1302,12 @@ static int PlayNormal(int p)
 	if (high == pard) {
 		pCard.card = game.seats[pard].table;
 		Calculate(p, &pCard);
+		ai_debug("Pard is winning with %d of %s; chance of winning trick is %d.", pCard.card.face, suit_names[(int) pCard.card.suit], pCard.trick);
 	} else
 		pCard.trick = pCard.future = -1;
 
-	/* 
-	 * For normal play, our aggression level determines the desire we
-	 * have to take this trick.
-	 */
+	/* For normal play, our aggression level determines the desire we
+	   have to take this trick. */
 	if (lastTrick && pCard.trick >= 100)
 		return PlayNil(p);
 	if (agg == 0) {
@@ -1316,14 +1318,11 @@ static int PlayNormal(int p)
 			return PlayNil(p);
 	}
 
-	/* 
-	 * If our aggression is zero then we're here because our pard is pro'ly
-	 * gonna win this trick -- win it for him instead with our highest and
-	 * bestest card.
-	 *
-	 * For any other aggression, find the card that can win the trick but
-	 * has the lowest future value.
-	 */
+	/* If our aggression is zero then we're here because our pard is
+	   pro'ly gonna win this trick -- win it for him instead with our
+	   highest and bestest card. */
+	/* For any other aggression, find the card that can win the trick but
+	   * has the lowest future value. */
 	for (i = 0; i < plays; i++) {
 		if (agg > 0 && (play[i].future > play[i].trick ||
 				(play[i].future == play[i].trick
