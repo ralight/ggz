@@ -8,7 +8,7 @@ noinst_HEADERS = wwwget.h proto.h
 INCLUDES = $(SDL_CFLAGS) $(GGZ_INCLUDES) $(GGZMOD_INCLUDES)
 
 geekdir = $(ggzdatadir)/geekgame
-geek_DATA = bot.png one.png zero.png icon.png \
+geek_DATA = bot.png one.png zero.png icon.png default.png \
 			1979rg__.ttf dark2.ttf
 
 EXTRA_DIST = protocol-description module.dsc

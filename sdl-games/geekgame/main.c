@@ -390,6 +390,7 @@ void playnoise()
 #ifdef HAVE_SOUND
 	if(chunk)
 	{
+		Mix_Volume(-1, 50);
 		chunkchannel = Mix_PlayChannel(-1, chunk, 0);
 	}
 #endif
@@ -434,15 +435,20 @@ void screen_intro()
 			{
 				wwwget(playerimage, DATA_LOCAL "tmp.png");
 				image = IMG_Load(DATA_LOCAL "tmp.png");
-			}
-			else image = IMG_Load(DATA_GLOBAL "bot.png");
+				if(!image) image = IMG_Load(DATA_GLOBAL "default.png");
+			} else image = NULL;
+
+			if(!image) image = IMG_Load(DATA_GLOBAL "bot.png");
 
 			rect.x = 20 + i * 150;
 			rect.y = 450;
-			SDL_BlitSurface(image, NULL, screen, &rect);
-			SDL_UpdateRect(screen, rect.x, rect.y, image->w, image->h);
+			if(image)
+			{
+				SDL_BlitSurface(image, NULL, screen, &rect);
+				SDL_UpdateRect(screen, rect.x, rect.y, image->w, image->h);
 
-			drawbox(rect.x, rect.y, image->w, image->h, screen, 255, 0);
+				drawbox(rect.x, rect.y, image->w, image->h, screen, 255, 0);
+			}
 		}
 	}
 
