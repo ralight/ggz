@@ -14,7 +14,7 @@ function stats_players($id, $lookup)
 		$ranking = pg_result($res, $i, "ranking");
 		$highscore = pg_result($res, $i, "highscore");
 
-		echo "<img src='icons/games/$game.png' width=16 height=16>\n";
+		echo "<img src='ggzicons/games/$game.png' width=16 height=16>\n";
 		echo "<a href='$SCRIPT_NAME?lookup=$game&type=game'>$game</a>:<br>\n";
 		echo "$lookup achieved <b>$wins</b> wins, <b>$losses</b> losses, <b>$ties</b> ties, <b>$forfeits</b> forfeits.<br>\n";
 		echo "His/her rating is <b>$rating</b> (ranking him/her <b>$ranking</b> th place),\n";
@@ -49,7 +49,7 @@ function stats_games($id, $lookup)
 			$pic = "you.png";
 		endif;
 
-		echo "<img src='icons/players/$pic' width=16 height=16>\n";
+		echo "<img src='ggzicons/players/$pic' width=16 height=16>\n";
 		echo "<a href='$SCRIPT_NAME?lookup=$handle&type=player'>$handlecaption</a>\n";
 		echo "achieved <b>$wins</b> wins, <b>$losses</b> losses, <b>$ties</b> ties, <b>$forfeits</b> forfeits.<br>\n";
 		echo "His/her rating is <b>$rating</b> (ranking him/her <b>$ranking</b> th place),\n";

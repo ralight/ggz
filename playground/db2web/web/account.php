@@ -1,9 +1,11 @@
 <?php
 
-$id = pg_connect("host=mindx.dyndns.org dbname=ggz user=ggzd password=ggzd");
+$id = pg_connect("host=localhost dbname=ggz user=ggzd password=ggzd");
 
 $input_user = $_POST["input_user"];
 $input_pass = $_POST["input_pass"];
+$input_realname = $_POST["input_realname"];
+$input_email = $_POST["input_email"];
 
 function hex_decode($s)
 {
@@ -23,7 +25,20 @@ if (($input_user) && ($input_pass)) :
 
 	$res = pg_exec($id, "SELECT * FROM users WHERE handle = '$input_user' AND password = '$md5pass'");
 	if (($res) && (pg_numrows($res) == 1)) :
-		setcookie("ggzuser", "$input_user");
+		if (!$register) :
+			// login success
+			setcookie("ggzuser", "$input_user");
+		else :
+			// registration failed
+		endif;
+	else :
+		if (!$register) :
+			// login failed
+		else :
+			// registration success
+			$res = pg_exec($id, "INSERT INTO users (handle, password, permissions, name, email) " .
+				"VALUES ('$input_user', '$md5pass', 7, '$input_realname', '$input_email')");
+		endif;
 	endif;
 else :
 	setcookie("ggzuser");
