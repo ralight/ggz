@@ -5,6 +5,7 @@
  * Date: 09/17/2000
  * Desc: Functions to filter input and send the events to game.c and send stuff
  * out to the server
+ * $Id: net.c 2877 2001-12-11 07:18:13Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -23,15 +24,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "game.h"
-#include "chess.h"
-#include <easysock.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
 
-#define GGZ_SEAT_OPEN -1
+#include <easysock.h>
+#include <ggz_client.h>
+
+#include "game.h"
+#include "chess.h"
 
 extern struct chess_info game_info;
 

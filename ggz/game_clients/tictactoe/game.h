@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 4/11/00
  * Desc: TTT game functions
- * $Id: game.h 2246 2001-08-25 15:42:06Z jdorje $
+ * $Id: game.h 2877 2001-12-11 07:18:13Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -43,9 +43,6 @@
 /* Messages from client */
 #define TTT_SND_MOVE     0
 #define TTT_REQ_SYNC     1
-
-/* GGZ define */
-#define GGZ_SEAT_OPEN   -1
 
 /* ttt client game states */
 #define STATE_INIT       0

@@ -4,6 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Routines to manipulate the CtD board
+ * $Id: game.h 2877 2001-12-11 07:18:13Z jdorje $
  *
  * Copyright (C) 2000, 2001 Brent Hendricks.
  *
@@ -62,9 +63,6 @@
 #define DOTS_EVENT_LEAVE       2
 #define DOTS_EVENT_MOVE_H      3
 #define DOTS_EVENT_MOVE_V      4
-
-/* GGZ define */
-#define GGZ_SEAT_OPEN	       -1
 
 
 /* Exposed variables */

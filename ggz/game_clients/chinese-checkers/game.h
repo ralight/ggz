@@ -23,9 +23,6 @@
  */
 
 
-#define GGZ_SEAT_OPEN	-1
-
-
 struct game_t {
 	int fd;
 	int me;

@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 9/10/00
  * Desc: Hastings1066 game functions
- * $Id: game.h 2246 2001-08-25 15:42:06Z jdorje $
+ * $Id: game.h 2877 2001-12-11 07:18:13Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -48,9 +48,6 @@
 #define HASTINGS_SND_MOVE     0
 #define HASTINGS_REQ_SYNC     1
 #define HASTINGS_REQ_INIT     2
-
-/* GGZ define */
-#define GGZ_SEAT_OPEN   -1
 
 /* Hastings client game states */
 #define STATE_INIT       0

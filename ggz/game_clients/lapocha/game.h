@@ -103,6 +103,3 @@ extern void game_handle_table_click(char);
 #define LP_EVENT_LEAVE       2
 #define LP_EVENT_MOVE_H      3
 #define LP_EVENT_MOVE_V      4
-
-/* GGZ define */
-#define GGZ_SEAT_OPEN	       -1

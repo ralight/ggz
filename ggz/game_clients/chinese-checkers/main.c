@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Main loop and supporting logic
- * $Id: main.c 2248 2001-08-25 20:13:38Z jdorje $
+ * $Id: main.c 2877 2001-12-11 07:18:13Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -31,6 +31,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+
+#include <ggz_client.h>
 
 #include "main.h"
 #include "game.h"
