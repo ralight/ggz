@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5693 2003-12-04 07:15:41Z jdorje $
+dnl $Id: configure.ac 5702 2003-12-04 23:59:31Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -312,18 +312,6 @@ fi
 if test "$database" = yes; then
   AC_MSG_ERROR([*** No usable database library found.  See above messages for more.])
 fi
-
-dnl Use -Wall if we have gcc.
-dnl ========================
-changequote(,)dnl
-if test "x$GCC" = "xyes"; then
-  case " $CFLAGS " in
-  *[\ \	]-Wall[\ \	]*) ;;
-  *) CFLAGS="$CFLAGS -Wall" ;
-     CXXFLAGS="$CXXFLAGS -Wall" ;;
-  esac
-fi
-changequote([,])dnl
 
 
 dnl Debug modes

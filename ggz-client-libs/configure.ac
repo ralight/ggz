@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5699 2003-12-04 22:58:27Z jdorje $
+dnl $Id: configure.ac 5702 2003-12-04 23:59:31Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -93,18 +93,6 @@ AC_CHECK_LIB(expat, XML_ParserCreate, [LIBEXPAT="-lexpat"],
 AC_CHECK_HEADER(expat.h, [],
                 [AC_MSG_ERROR(cannot find expat.h header)]),
 AC_SUBST(LIBEXPAT)
-
-
-# Use -Wall if we have gcc.
-# =========================
-changequote(,)dnl
-if test "x$GCC" = "xyes"; then
-  case " $CFLAGS " in
-  *[\ \	]-Wall[\ \	]*) ;;
-  *) CFLAGS="$CFLAGS -Wall" ;;
-  esac
-fi
-changequote([,])dnl
 
 
 # Debug modes
