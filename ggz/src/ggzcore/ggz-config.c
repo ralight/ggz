@@ -454,6 +454,7 @@ static int install_module(void)
 }
 
 
+#if 0 /* unused */
 static int query(char *name, char *text, int def)
 {
 	char buf[3];
@@ -471,6 +472,7 @@ static int query(char *name, char *text, int def)
 
 	return def;
 }
+#endif
 
 
 char *reqd_keys[] = { "Author", "Frontend", "Name", "ProtocolEngine",
