@@ -2,11 +2,11 @@
 
 Summary: Server software for the GGZ Gaming Zone
 Name: ggz-server
-Version: 0.0.5pre
+Version: 0.0.5
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz-server-0.0.5pre.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz-server-0.0.5.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: GGZ Dev Team <ggz-dev@lists.sourceforge.net>
@@ -22,6 +22,7 @@ are packaged with GGZ:
   - Combat		- Hastings
   - Krosswater		- Reversi
   - GGZ Cards		- Escape
+  - Keepalive		- Muehle
 
 %prep
 %setup
@@ -51,7 +52,6 @@ PATH="$PATH:/sbin" ldconfig
 %config /etc/ggzd/games/chess.dsc
 %config /etc/ggzd/games/combat.dsc
 %config /etc/ggzd/games/dots.dsc
-%config /etc/ggzd/games/escape.dsc
 %config /etc/ggzd/games/ggzcards.dsc
 %config /etc/ggzd/games/ggzcards-bridge.dsc
 %config /etc/ggzd/games/ggzcards-hearts.dsc
@@ -61,6 +61,7 @@ PATH="$PATH:/sbin" ldconfig
 %config /etc/ggzd/games/hastings.dsc
 %config /etc/ggzd/games/krosswater.dsc
 %config /etc/ggzd/games/lapocha.dsc
+%config /etc/ggzd/games/muehle.dsc
 %config /etc/ggzd/games/reversi.dsc
 %config /etc/ggzd/games/spades.dsc
 %config /etc/ggzd/games/tictactoe.dsc
@@ -71,7 +72,6 @@ PATH="$PATH:/sbin" ldconfig
 %config /etc/ggzd/rooms/combat.room
 %config /etc/ggzd/rooms/dots.room
 %config /etc/ggzd/rooms/entry.room
-%config /etc/ggzd/rooms/escape.room
 %config /etc/ggzd/rooms/ggzcards.room
 %config /etc/ggzd/rooms/ggzcards-bridge.room
 %config /etc/ggzd/rooms/ggzcards-hearts.room
@@ -81,30 +81,36 @@ PATH="$PATH:/sbin" ldconfig
 %config /etc/ggzd/rooms/hastings.room
 %config /etc/ggzd/rooms/krosswater.room
 %config /etc/ggzd/rooms/lapocha.room
+%config /etc/ggzd/rooms/muehle.room
 %config /etc/ggzd/rooms/reversi.room
 %config /etc/ggzd/rooms/spades.room
 %config /etc/ggzd/rooms/tictactoe.room
 
 /usr/bin/ggzd
+/usr/bin/ggzduedit
+
 /usr/lib/ggzd
 
-# the versioning information here needs to be fixed before 0.0.5
 /usr/lib/libggzdmod.a
 /usr/lib/libggzdmod.la
 /usr/lib/libggzdmod.so
 /usr/lib/libggzdmod.so.0
 /usr/lib/libggzdmod.so.0.0.0
 
-# the libzoneserver is a different (and out-of-date) variant of libggzdmod.
 /usr/lib/libzoneserver.a
 /usr/lib/libzoneserver.la
 /usr/lib/libzoneserver.so
 /usr/lib/libzoneserver.so.0
 /usr/lib/libzoneserver.so.0.0.1
 
+/usr/man/man3/ggzdmod.h.3.gz
 /usr/man/man6/ggzd.6.gz
+/usr/man/man6/ggzduedit.6.gz
 
 %changelog
+* Fri Apr 12 2002 Rich Gade <rgade@users.sourceforge.net>
+- Updated for 0.0.5 release
+
 * Wed Sep 12 2001 Jason Short <jdorje@users.sourceforge.net>
 - Updated files and miscellany for 0.0.5pre
 
