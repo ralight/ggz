@@ -99,6 +99,9 @@ extern void set_game_state(char);
 /* GGZ define */
 #define GGZ_SEAT_OPEN		-1
 
+/* substitutes for snprintf.
+ * Returns the number of characters put into the buffer. */
+extern int ggz_snprintf(char*, int, char *, ...);
 void ggz_debug(const char *fmt, ...);
 
 /* preliminary internationalization macros */

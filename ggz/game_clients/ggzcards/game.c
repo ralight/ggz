@@ -26,6 +26,7 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
 
@@ -89,14 +90,34 @@ void set_game_state(char state)
 void ggz_debug(const char *fmt, ...)
 {
 #ifdef DEBUG
-	char buf[4096];
+	char buf[512];
 	va_list ap;
 
 	va_start(ap, fmt);
-        vsprintf(buf, fmt, ap);
+        vsnprintf(buf, sizeof(buf), fmt, ap);
 	fprintf(stderr, "DEBUG: %s\n", buf);
 	va_end(ap);
 #endif /* DEBUG */
 }
 
+int ggz_snprintf(char* buf, int buf_sz, char *fmt, ...)
+{
+	int result;
+	va_list ap;
 
+	assert( buf );
+	assert( buf_sz > 0 );
+	assert( fmt );
+
+	va_start(ap, fmt);
+	result = vsnprintf(buf, buf_sz, fmt, ap);
+	va_end(ap);
+
+	if (result == -1 || result >= buf_sz) {
+		/* on failure, snprintf will return either -1 or the number of
+		 * butes that would have been written */
+		ggz_debug("Buffer overrun in snprintf.  String is %s.", buf);
+		return buf_sz-1;
+	}
+	return result;
+}

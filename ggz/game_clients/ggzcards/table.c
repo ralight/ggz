@@ -219,7 +219,7 @@ void table_set_message(char* mark, char* message)
 	else if (!strcmp(mark, "game")) {
 		/* this is the game's name; we just adjust the title bar */
 		char title[50];
-		snprintf(title, sizeof(title), "GGZ Gaming Zone - %s", message);
+		ggz_snprintf(title, sizeof(title), "GGZ Gaming Zone - %s", message);
 		gtk_window_set_title (GTK_WINDOW (dlg_main), title);
 	} else
 		ggz_debug("SERVER/CLIENT BUG: unknown global message mark '%s' is '%s'.", mark, message);

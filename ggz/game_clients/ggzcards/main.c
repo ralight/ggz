@@ -96,7 +96,7 @@ static void ggz_connect(void)
 	struct sockaddr_un addr;
 
 	/* Connect to Unix domain socket */
-	sprintf(fd_name, "/tmp/GGZCards.%d", getpid());
+	ggz_snprintf(fd_name, sizeof(fd_name), "/tmp/GGZCards.%d", getpid());
 
 	if((game.fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) {
 		ggz_debug("ggz_connect(): no socket.  exit(-1).");
@@ -160,7 +160,7 @@ static int handle_req_play()
 		statusbar_message( _("Your turn to play a card") );
 	else {
 		char buf[100];
-		snprintf(buf, sizeof(buf), _("Your turn to play a card from %s's hand."), game.players[game.play_hand].name);
+		ggz_snprintf(buf, sizeof(buf), _("Your turn to play a card from %s's hand."), game.players[game.play_hand].name);
 		statusbar_message( buf );
 	}
 	return 0;	
@@ -319,15 +319,15 @@ static int get_gameover_status(void)
 
 	/* handle different cases */	
 	if (num_winners == 0)
-		snprintf(msg, sizeof(msg), _("There was no winner") );
+		ggz_snprintf(msg, sizeof(msg), _("There was no winner") );
 	else {
    	for(; num_winners; num_winners--) {
 			if (es_read_int(game.fd, &winner) < 0)
 				return -1;
 			/* TODO: better grammar */
-			mlen+=snprintf(msg+mlen, 100-mlen, "%s ", game.players[winner].name);		
+			mlen += ggz_snprintf(msg+mlen, 100-mlen, "%s ", game.players[winner].name);		
 		}
-		snprintf(msg+mlen, 100-mlen, _("won the game") );
+		ggz_snprintf(msg+mlen, 100-mlen, _("won the game") );
 	}
 	
 	statusbar_message(msg);
@@ -357,7 +357,7 @@ static void handle_badplay(void)
 	int p = game.play_hand;
 
 	if(es_read_string(game.fd, err_msg, sizeof(err_msg)) < 0)
-		snprintf(err_msg, sizeof(err_msg), _("Bad play: unknown reason.") );
+		ggz_snprintf(err_msg, sizeof(err_msg), _("Bad play: unknown reason.") );
 
 	/* Restore the cards the way they should be */
 	game.players[p].table_card = UNKNOWN_CARD;
