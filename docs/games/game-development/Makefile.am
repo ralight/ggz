@@ -11,6 +11,9 @@ doc_DATA = games.html
 %_toc.html: %.texi
 	texi2html -split_node $<
 
+%.txt: %.texi
+	$(top_srcdir)/texi2text.pl $< > $@
+
 clean-local:
 	-rm -f ggz-*.html
 

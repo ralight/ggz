@@ -16,7 +16,7 @@ Copyright (C) 2002 Josef Spillner
 @titlepage
 @title The GGZ Game Development Guide
 @subtitle Development of games for the GGZ Gaming Zone 0.0.6
-@author Josef Spillner
+@author GGZ Development Team
 
 @c Copyright page
 @page
@@ -230,8 +230,11 @@ dedicated file descriptor. There are different event types:
 @itemize @bullet
 @item STATE: indicates that the state has changed (see below)
 @item JOIN: a player has joined the game
-@item LEAVE: a player has left the game
+@item LEAVE: player has left the game
+@item SPECTATOR_JOIN: a spectator came to watch the game
+@item SPECTATOR_LEAVE: spectator went away
 @item PLAYER_DATA: one of the players (clients) sent some data
+@item SPECTATOR_DATA: data sent from random spectators
 @end itemize
 
 The states in which a game server can be are:
@@ -314,6 +317,7 @@ AllowLeave = <0/1>
 BotsAllowed = <0 [1 [2 ...]]>
 PlayersAllowed = <1 [2 [3 ...]]>
 KillWhenEmpty = <0/1>
+AllowSpectators = <0/1>
 @end verbatim
 
 The room file (<name>.room) has the following format:
