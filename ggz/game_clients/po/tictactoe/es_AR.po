@@ -17,11 +17,11 @@ msgstr ""
 
 #: ../tictactoe/main.c:98
 msgid "Your move"
-msgstr "T movida"
+msgstr "Tu movida"
 
 #: ../tictactoe/main.c:127
 msgid "Getting seat number"
-msgstr "Obteniendo nmero de lugar"
+msgstr "Obteniendo numero de lugar"
 
 #: ../tictactoe/main.c:140
 msgid "Getting player names"
@@ -33,7 +33,7 @@ msgstr "Obteniendo jugada del oponente"
 
 #: ../tictactoe/main.c:177
 msgid "Getting re-sync"
-msgstr "Obteniendo re-sincronizacin"
+msgstr "Obteniendo re-sincronizacion"
 
 #: ../tictactoe/main.c:182
 #, c-format
@@ -47,7 +47,7 @@ msgstr "Se ley un %d"
 
 #: ../tictactoe/main.c:192
 msgid "Sync completed"
-msgstr "Sincronizacin completada"
+msgstr "Sincronizacion completa"
 
 #: ../tictactoe/main.c:201
 msgid "Game over"
@@ -73,15 +73,15 @@ msgstr "Enviando opciones NULL"
 
 #: ../tictactoe/main.c:259
 msgid "Server not ready!!"
-msgstr "El servidor no esta listo "
+msgstr "El servidor no esta listo!!"
 
 #: ../tictactoe/main.c:262
 msgid "Not my turn !!"
-msgstr "No es mi turno"
+msgstr "No es mi turno!!"
 
 #: ../tictactoe/main.c:265
 msgid "Move out of bounds"
-msgstr "Movimento fuera de lmite"
+msgstr "Movimento fuera de limite"
 
 #: ../tictactoe/main.c:268
 msgid "Space already occupied"
@@ -127,28 +127,29 @@ msgstr "Error cargando el pixmap: %s"
 
 #: ../common/dlg_exit.c:50
 msgid "Are you sure you want to exit?"
-msgstr ""
+msgstr "Seguro que queres salir?"
 
 #: ../common/dlg_exit.c:52
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
 msgstr ""
+"Seguro que queres salir?\n"
+"No vas a poder volver a entrar"
 
 #: ../common/dlg_exit.c:57
 msgid "Really Exit?"
-msgstr ""
+msgstr "Seguro queres salir?"
 
 #: ../common/dlg_exit.c:66
-#, fuzzy
 msgid "Exit"
-msgstr "Sal_ir"
+msgstr "Salir"
 
 #: ../common/dlg_exit.c:67
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: ../common/ggzintl.c:41
 #, c-format
 msgid "nls enabled: %s"
-msgstr ""
+msgstr "nls habilitado: %s"
