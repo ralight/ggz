@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3288 2002-02-10 01:51:11Z jdorje $
+ * $Id: common.c 3301 2002-02-10 11:10:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,6 +23,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -30,7 +34,6 @@
 #include <string.h>
 #include <unistd.h>		/* for close() */
 
-#include <config.h>
 #include <ggz.h>
 
 #include "common.h"
