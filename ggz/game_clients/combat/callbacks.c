@@ -39,8 +39,11 @@ on_mainarea_expose_event               (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 
-	gdk_draw_pixmap( widget->window, widget->style->fg_gc[GTK_WIDGET_STATE(widget)], cbt_buf, event->area.x, event->area.y, event->area.x, event->area.y,
-			event->area.width, event->area.height);
+	if (cbt_buf)
+		gdk_draw_pixmap( widget->window, 
+				widget->style->fg_gc[GTK_WIDGET_STATE(widget)], cbt_buf, 
+				event->area.x, event->area.y, event->area.x, event->area.y,
+				event->area.width, event->area.height);
 
   return FALSE;
 }

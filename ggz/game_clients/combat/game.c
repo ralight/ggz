@@ -58,13 +58,15 @@ GdkGC *tile_gc;
 #define PIXMAPS 12 // (May have more: Lakes, Unknown units, etc)
 
 // Name of units
-static char unitname[12][36] = {"Flag", "Bomb", "Spy", "Scout", "Miner", "Sergeant", "Lieutenant", "Captain", "Major", "Colonel", "General", "Marshall"};
+char unitname[12][36] = {"Flag", "Bomb", "Spy", "Scout", "Miner", "Sergeant", "Lieutenant", "Captain", "Major", "Colonel", "General", "Marshall"};
+// Number of units
+int unitdefault[12] = {1, 6, 1, 8, 5, 4, 4, 4, 3, 2, 1, 1};
 // File names
-static char filename[12][36] = {"flag.xpm", "bomb.xpm", "spy.xpm", "scout.xpm", "miner.xpm", "sergeant.xpm", "lieutenant.xpm", "captain.xpm", "major.xpm", "colonel.xpm", "general.xpm", "marshall.xpm"};
+char filename[12][36] = {"flag.xpm", "bomb.xpm", "spy.xpm", "scout.xpm", "miner.xpm", "sergeant.xpm", "lieutenant.xpm", "captain.xpm", "major.xpm", "colonel.xpm", "general.xpm", "marshall.xpm"};
 // Color names
-static char colorname[2][36] = {"RGB:FF/00/00", "RGB:00/00/FF"};
-static char lakename[] = {"RGB:00/55/00"};
-static char openname[] = {"RGB:DC/DC/A0"};
+char colorname[2][36] = {"RGB:FF/00/00", "RGB:00/00/FF"};
+char lakename[] = {"RGB:00/55/00"};
+char openname[] = {"RGB:DC/DC/A0"};
 
 // Graphics stuff
 GdkPixmap* cbt_buf;
@@ -280,11 +282,21 @@ int game_ask_options() {
 int game_get_options() {
 	char *optstr = NULL;
 	int a;
+	int old_width = cbt_game.width;
+	int old_height = cbt_game.height;
+	GtkWidget *widget = lookup_widget(main_win, "mainarea");
 
 	if (es_read_string_alloc(cbt_info.fd, &optstr) < 0)
 		return -1;
 
 	combat_options_string_read(optstr, &cbt_game, cbt_info.number);
+
+	if (old_width != cbt_game.width || old_height != cbt_game.height) {
+		gdk_pixmap_unref(cbt_buf);
+		cbt_buf = NULL;
+		gtk_widget_set_usize(widget, cbt_game.width * (PIXSIZE+1)+1,
+																 cbt_game.height * (PIXSIZE+1)+1);
+	}
 
 	for (a = 0; a < cbt_info.number; a++)
 		game_update_unit_list(a);
@@ -1050,6 +1062,7 @@ void game_request_sync() {
 int game_send_options(GtkWidget *options_dialog) {
 	combat_game _game;
 	int a;
+	int *army_data;
 	char *map_data;
 	char *game_str = NULL;
 
@@ -1082,21 +1095,14 @@ int game_send_options(GtkWidget *options_dialog) {
 		}
 	}
 
-	// Default army for now
+	// Gets army data
 	_game.army = (char **)calloc(1, sizeof(char *));
 	_game.army[0] = (char *)calloc(12, sizeof(char));
-	_game.army[0][U_FLAG] = 1;
-	_game.army[0][U_BOMB] = 6;
-	_game.army[0][U_SPY] = 1;
-	_game.army[0][U_SCOUT] = 8;
-	_game.army[0][U_MINER] = 5;
-	_game.army[0][U_SERGEANT] = 4;
-	_game.army[0][U_LIEUTENANT] = 4;
-	_game.army[0][U_CAPTAIN] = 4;
-	_game.army[0][U_MAJOR] = 3;
-	_game.army[0][U_COLONEL] = 2;
-	_game.army[0][U_GENERAL] = 1;
-	_game.army[0][U_MARSHALL] = 1;
+	army_data = gtk_object_get_data(GTK_OBJECT(options_dialog), "army_data");
+	for (a = 0; a < 12; a++) {
+		printf("%s: %d\n", unitname[a], army_data[a]);
+		_game.army[0][a] = army_data[a];
+	}
 
 	game_str = combat_options_string_write(game_str, &_game);
 

@@ -18,6 +18,10 @@ extern GdkColor lake_color;
 extern GdkColor open_color;
 extern GdkColor *player_colors;
 
+extern int unitdefault[12];
+extern char unitname[12][36];
+
+static const char spin_name[12][8] = {"spin_F", "spin_B", "spin_1", "spin_2", "spin_3", "spin_4", "spin_5", "spin_6", "spin_7", "spin_8", "spin_9", "spin_10"};
 
 GtkWidget*
 create_dlg_options (void)
@@ -43,8 +47,7 @@ create_dlg_options (void)
   GtkWidget *player_1;
   GtkWidget *player_2;
   GtkWidget *label3;
-  GtkWidget *hbox4;
-  GtkWidget *label8;
+  GtkWidget *army_hbox;
   GtkWidget *label4;
   GtkWidget *sorry;
   GtkWidget *label5;
@@ -52,6 +55,13 @@ create_dlg_options (void)
   GtkWidget *hbuttonbox2;
   GtkWidget *ok_button;
   GtkWidget *cancel_button;
+	GtkWidget *unit_label[12];
+	GtkWidget *unit_spin[12];
+	GtkObject *unit_spin_adj[12];
+	GtkWidget *unit_label_box;
+	GtkWidget *unit_spin_box;
+	GtkWidget *unit_dummy_box;
+	int i;
 
   dlg_options = gtk_dialog_new ();
   gtk_widget_set_name (dlg_options, "dlg_options");
@@ -216,21 +226,13 @@ create_dlg_options (void)
   gtk_widget_show (label3);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 0), label3);
 
-  hbox4 = gtk_hbox_new (TRUE, 0);
-  gtk_widget_set_name (hbox4, "hbox4");
-  gtk_widget_ref (hbox4);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "hbox4", hbox4,
+  army_hbox = gtk_hbox_new (FALSE, 0);
+  gtk_widget_set_name (army_hbox, "army_hbox");
+  gtk_widget_ref (army_hbox);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "army_hbox", army_hbox,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox4);
-  gtk_container_add (GTK_CONTAINER (notebook1), hbox4);
-
-  label8 = gtk_label_new (_("No army options yet. sorry"));
-  gtk_widget_set_name (label8, "label8");
-  gtk_widget_ref (label8);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_options), "label8", label8,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label8);
-  gtk_box_pack_start (GTK_BOX (hbox4), label8, FALSE, FALSE, 0);
+  gtk_widget_show (army_hbox);
+  gtk_container_add (GTK_CONTAINER (notebook1), army_hbox);
 
   label4 = gtk_label_new (_("Army"));
   gtk_widget_set_name (label4, "label4");
@@ -289,6 +291,33 @@ create_dlg_options (void)
   gtk_widget_set_sensitive (cancel_button, FALSE);
   GTK_WIDGET_SET_FLAGS (cancel_button, GTK_CAN_DEFAULT);
 
+	// Create the army setup stuff
+	unit_label_box = gtk_vbox_new (TRUE, 0);
+	gtk_widget_show (unit_label_box);
+	unit_spin_box = gtk_vbox_new (TRUE, 0);
+	gtk_widget_show (unit_spin_box);
+	unit_dummy_box = gtk_vbox_new (TRUE, 0);
+  //gtk_container_add (GTK_CONTAINER (army_hbox), unit_label_box);
+	//gtk_container_add (GTK_CONTAINER (army_hbox), unit_spin_box);
+	gtk_box_pack_start (GTK_BOX (army_hbox), unit_label_box, FALSE, FALSE, 10);
+	gtk_box_pack_start (GTK_BOX (army_hbox), unit_spin_box, TRUE, TRUE, 10);
+	gtk_box_pack_start (GTK_BOX (army_hbox), unit_dummy_box, TRUE, TRUE, 20);
+	for (i = 0; i < 12; i++) {
+		unit_label[i] = gtk_label_new (unitname[i]);
+  	gtk_widget_show (unit_label[i]);
+  	gtk_box_pack_start (GTK_BOX (unit_label_box), unit_label[i], FALSE, FALSE, 0);
+  	unit_spin_adj[i] = gtk_adjustment_new (unitdefault[i], 0, 100, 1, 10, 10);
+  	unit_spin[i] = gtk_spin_button_new (GTK_ADJUSTMENT (unit_spin_adj[i]), 1, 0);
+		gtk_widget_set_name (unit_spin[i], spin_name[i]);
+		gtk_widget_ref(unit_spin[i]);
+		gtk_object_set_data_full (GTK_OBJECT (dlg_options), spin_name[i], unit_spin[i],
+															(GtkDestroyNotify) gtk_widget_unref);
+		gtk_box_pack_start (GTK_BOX (unit_spin_box), unit_spin[i], TRUE, FALSE, 0);
+		gtk_widget_show (unit_spin[i]);
+		gtk_signal_connect_object(GTK_OBJECT (unit_spin[i]), "changed",
+											 GTK_SIGNAL_FUNC (dlg_options_update), GTK_OBJECT (dlg_options));
+	}
+
 	gtk_signal_connect(GTK_OBJECT (mini_board), "expose_event",
 										 GTK_SIGNAL_FUNC (mini_board_expose), dlg_options);
 	gtk_signal_connect(GTK_OBJECT (mini_board), "configure_event",
@@ -312,6 +341,9 @@ create_dlg_options (void)
 
 void dlg_options_update(GtkWidget *dlg_options) {
 	GtkWidget *width, *height;
+	GtkWidget *unit_spin;
+	int *army_data = NULL;
+	int a;
 	int width_v, height_v;
 
 	// Gets width / height
@@ -319,10 +351,22 @@ void dlg_options_update(GtkWidget *dlg_options) {
 	height = lookup_widget(dlg_options, "height");
 	width_v = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(width));
 	height_v = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(height));
+
+	// Try to get old army data
+	army_data = gtk_object_get_data(GTK_OBJECT(dlg_options), "army_data");
+	if (!army_data)
+		army_data = (int *)malloc(sizeof(int) * 12);
+
+	// Gets army data
+	for (a = 0; a < 12; a++) {
+		unit_spin = gtk_object_get_data(GTK_OBJECT(dlg_options), spin_name[a]);
+		army_data[a] = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(unit_spin));
+	}
 	
 	// Sets data
 	gtk_object_set_data(GTK_OBJECT(dlg_options), "width_v", GINT_TO_POINTER(width_v));
 	gtk_object_set_data(GTK_OBJECT(dlg_options), "height_v", GINT_TO_POINTER(height_v));
+	gtk_object_set_data(GTK_OBJECT(dlg_options), "army_data", army_data);
 
 }
 
@@ -333,7 +377,9 @@ gboolean mini_board_expose               (GtkWidget       *widget, GdkEventExpos
 }
 
 gboolean mini_board_configure            (GtkWidget       *widget, GdkEventConfigure *event, gpointer         user_data) {
-	init_mini_board(user_data);
+	char *map_data = gtk_object_get_data(GTK_OBJECT(user_data), "map_data");
+	if (!map_data)
+		init_mini_board(user_data);
 	return 1;
 }
 
