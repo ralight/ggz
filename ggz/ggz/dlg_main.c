@@ -36,6 +36,7 @@ void ggz_table_select_row_callback(GtkWidget *widget, gint row, gint column,
 				   GdkEventButton *event, gpointer data);
 void ggz_get_game_options(GtkButton * button, gpointer user_data);
 
+
 GtkWidget*
 create_main_win (void)
 {
@@ -43,21 +44,34 @@ create_main_win (void)
   GtkWidget *main_box;
   GtkWidget *menu_bar;
   guint tmp_key;
+  GtkWidget *ggz1;
+  GtkWidget *ggz1_menu;
+  GtkAccelGroup *ggz1_menu_accels;
+  GtkWidget *connect2;
+  GtkWidget *disconnect1;
+  GtkWidget *separator4;
+  GtkWidget *login1;
+  GtkWidget *logout1;
+  GtkWidget *separator3;
+  GtkWidget *exit1;
   GtkWidget *game_menu;
   GtkWidget *game_menu_menu;
   GtkAccelGroup *game_menu_menu_accels;
   GtkWidget *new_game2;
   GtkWidget *join_game1;
-  GtkWidget *separator1;
-  GtkWidget *logout1;
-  GtkWidget *separator2;
-  GtkWidget *exit1;
+  GtkWidget *edit1;
+  GtkWidget *edit1_menu;
+  GtkAccelGroup *edit1_menu_accels;
+  GtkWidget *properties1;
   GtkWidget *view_menu;
   GtkWidget *view_menu_menu;
   GtkAccelGroup *view_menu_menu_accels;
   GtkWidget *game_types1;
-  GtkWidget *players1;
-  GtkWidget *tables1;
+  GtkWidget *motd1;
+  GtkWidget *help1;
+  GtkWidget *help1_menu;
+  GtkAccelGroup *help1_menu_accels;
+  GtkWidget *about1;
   GtkWidget *toolbar;
   GtkWidget *launch_button;
   GtkWidget *join_button;
@@ -70,13 +84,13 @@ create_main_win (void)
   GtkWidget *table_label;
   GtkWidget *table_scroll;
   GtkWidget *table_tree;
-  GtkWidget *label5;
-  GtkWidget *label8;
-  GtkWidget *label9;
-  GtkWidget *label10;
-  GtkWidget *label11;
-  GtkWidget *label12;
-  GtkWidget *label13;
+  GtkWidget *label47;
+  GtkWidget *label48;
+  GtkWidget *label49;
+  GtkWidget *label50;
+  GtkWidget *label51;
+  GtkWidget *label52;
+  GtkWidget *label53;
   GtkWidget *h_pane;
   GtkWidget *player_box;
   GtkWidget *player_label;
@@ -85,6 +99,10 @@ create_main_win (void)
   GtkWidget *label6;
   GtkWidget *label7;
   GtkWidget *chat_box;
+  GtkWidget *hbox16;
+  GtkWidget *label54;
+  GtkWidget *game_room;
+  GtkWidget *combo_entry2;
   GtkWidget *chat_scroll;
   GtkWidget *chat_text;
   GtkWidget *chat_separator;
@@ -99,9 +117,9 @@ create_main_win (void)
 
   main_win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (main_win), "main_win", main_win);
+  gtk_widget_set_usize (main_win, 580, -2);
   gtk_window_set_title (GTK_WINDOW (main_win), "Gnu Gaming Zone");
   gtk_window_set_default_size (GTK_WINDOW (main_win), 500, 450);
-  gtk_window_set_policy (GTK_WINDOW (main_win), TRUE, TRUE, FALSE);
 
   main_box = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (main_box);
@@ -117,9 +135,107 @@ create_main_win (void)
   gtk_widget_show (menu_bar);
   gtk_box_pack_start (GTK_BOX (main_box), menu_bar, FALSE, FALSE, 0);
 
+  ggz1 = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (ggz1)->child),
+                                   "_GGZ");
+  gtk_widget_add_accelerator (ggz1, "activate_item", accel_group,
+                              tmp_key, GDK_MOD1_MASK, 0);
+  gtk_widget_ref (ggz1);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "ggz1", ggz1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (ggz1);
+  gtk_container_add (GTK_CONTAINER (menu_bar), ggz1);
+
+  ggz1_menu = gtk_menu_new ();
+  gtk_widget_ref (ggz1_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "ggz1_menu", ggz1_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (ggz1), ggz1_menu);
+  ggz1_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (ggz1_menu));
+
+  connect2 = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (connect2)->child),
+                                   "_Connect");
+  gtk_widget_add_accelerator (connect2, "activate_item", ggz1_menu_accels,
+                              tmp_key, 0, 0);
+  gtk_widget_ref (connect2);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "connect2", connect2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (connect2);
+  gtk_container_add (GTK_CONTAINER (ggz1_menu), connect2);
+  gtk_widget_add_accelerator (connect2, "activate", accel_group,
+                              GDK_C, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
+
+  disconnect1 = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (disconnect1)->child),
+                                   "_Disconnect");
+  gtk_widget_add_accelerator (disconnect1, "activate_item", ggz1_menu_accels,
+                              tmp_key, 0, 0);
+  gtk_widget_ref (disconnect1);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "disconnect1", disconnect1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (disconnect1);
+  gtk_container_add (GTK_CONTAINER (ggz1_menu), disconnect1);
+  gtk_widget_add_accelerator (disconnect1, "activate", accel_group,
+                              GDK_D, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
+
+  separator4 = gtk_menu_item_new ();
+  gtk_widget_ref (separator4);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "separator4", separator4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (separator4);
+  gtk_container_add (GTK_CONTAINER (ggz1_menu), separator4);
+  gtk_widget_set_sensitive (separator4, FALSE);
+
+  login1 = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (login1)->child),
+                                   "_Login");
+  gtk_widget_add_accelerator (login1, "activate_item", ggz1_menu_accels,
+                              tmp_key, 0, 0);
+  gtk_widget_ref (login1);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "login1", login1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (login1);
+  gtk_container_add (GTK_CONTAINER (ggz1_menu), login1);
+
+  logout1 = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (logout1)->child),
+                                   "L_ogout");
+  gtk_widget_add_accelerator (logout1, "activate_item", ggz1_menu_accels,
+                              tmp_key, 0, 0);
+  gtk_widget_ref (logout1);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "logout1", logout1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (logout1);
+  gtk_container_add (GTK_CONTAINER (ggz1_menu), logout1);
+
+  separator3 = gtk_menu_item_new ();
+  gtk_widget_ref (separator3);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "separator3", separator3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (separator3);
+  gtk_container_add (GTK_CONTAINER (ggz1_menu), separator3);
+  gtk_widget_set_sensitive (separator3, FALSE);
+
+  exit1 = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (exit1)->child),
+                                   "E_xit");
+  gtk_widget_add_accelerator (exit1, "activate_item", ggz1_menu_accels,
+                              tmp_key, 0, 0);
+  gtk_widget_ref (exit1);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "exit1", exit1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (exit1);
+  gtk_container_add (GTK_CONTAINER (ggz1_menu), exit1);
+  gtk_widget_add_accelerator (exit1, "activate", accel_group,
+                              GDK_X, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
+
   game_menu = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (game_menu)->child),
-                                   "_Game");
+                                   "G_ame");
   gtk_widget_add_accelerator (game_menu, "activate_item", accel_group,
                               tmp_key, GDK_MOD1_MASK, 0);
   gtk_widget_ref (game_menu);
@@ -145,6 +261,9 @@ create_main_win (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_game2);
   gtk_container_add (GTK_CONTAINER (game_menu_menu), new_game2);
+  gtk_widget_add_accelerator (new_game2, "activate", accel_group,
+                              GDK_L, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
 
   join_game1 = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (join_game1)->child),
@@ -157,43 +276,30 @@ create_main_win (void)
   gtk_widget_show (join_game1);
   gtk_container_add (GTK_CONTAINER (game_menu_menu), join_game1);
 
-  separator1 = gtk_menu_item_new ();
-  gtk_widget_ref (separator1);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "separator1", separator1,
+  edit1 = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (edit1)->child),
+                                   "_Edit");
+  gtk_widget_add_accelerator (edit1, "activate_item", accel_group,
+                              tmp_key, GDK_MOD1_MASK, 0);
+  gtk_widget_ref (edit1);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "edit1", edit1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (separator1);
-  gtk_container_add (GTK_CONTAINER (game_menu_menu), separator1);
-  gtk_widget_set_sensitive (separator1, FALSE);
+  gtk_widget_show (edit1);
+  gtk_container_add (GTK_CONTAINER (menu_bar), edit1);
 
-  logout1 = gtk_menu_item_new_with_label ("");
-  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (logout1)->child),
-                                   "L_ogout");
-  gtk_widget_add_accelerator (logout1, "activate_item", game_menu_menu_accels,
-                              tmp_key, 0, 0);
-  gtk_widget_ref (logout1);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "logout1", logout1,
+  edit1_menu = gtk_menu_new ();
+  gtk_widget_ref (edit1_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "edit1_menu", edit1_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (logout1);
-  gtk_container_add (GTK_CONTAINER (game_menu_menu), logout1);
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (edit1), edit1_menu);
+  edit1_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (edit1_menu));
 
-  separator2 = gtk_menu_item_new ();
-  gtk_widget_ref (separator2);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "separator2", separator2,
+  properties1 = gtk_menu_item_new_with_label ("Properties");
+  gtk_widget_ref (properties1);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "properties1", properties1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (separator2);
-  gtk_container_add (GTK_CONTAINER (game_menu_menu), separator2);
-  gtk_widget_set_sensitive (separator2, FALSE);
-
-  exit1 = gtk_menu_item_new_with_label ("");
-  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (exit1)->child),
-                                   "E_xit");
-  gtk_widget_add_accelerator (exit1, "activate_item", game_menu_menu_accels,
-                              tmp_key, 0, 0);
-  gtk_widget_ref (exit1);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "exit1", exit1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (exit1);
-  gtk_container_add (GTK_CONTAINER (game_menu_menu), exit1);
+  gtk_widget_show (properties1);
+  gtk_container_add (GTK_CONTAINER (edit1_menu), properties1);
 
   view_menu = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (view_menu)->child),
@@ -213,26 +319,56 @@ create_main_win (void)
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (view_menu), view_menu_menu);
   view_menu_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (view_menu_menu));
 
-  game_types1 = gtk_menu_item_new_with_label ("Game Types");
+  game_types1 = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (game_types1)->child),
+                                   "Game _Types");
+  gtk_widget_add_accelerator (game_types1, "activate_item", view_menu_menu_accels,
+                              tmp_key, 0, 0);
   gtk_widget_ref (game_types1);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "game_types1", game_types1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (game_types1);
   gtk_container_add (GTK_CONTAINER (view_menu_menu), game_types1);
 
-  players1 = gtk_menu_item_new_with_label ("Players");
-  gtk_widget_ref (players1);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "players1", players1,
+  motd1 = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (motd1)->child),
+                                   "_MOTD");
+  gtk_widget_add_accelerator (motd1, "activate_item", view_menu_menu_accels,
+                              tmp_key, 0, 0);
+  gtk_widget_ref (motd1);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "motd1", motd1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (players1);
-  gtk_container_add (GTK_CONTAINER (view_menu_menu), players1);
+  gtk_widget_show (motd1);
+  gtk_container_add (GTK_CONTAINER (view_menu_menu), motd1);
 
-  tables1 = gtk_menu_item_new_with_label ("Tables");
-  gtk_widget_ref (tables1);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "tables1", tables1,
+  help1 = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (help1)->child),
+                                   "_Help");
+  gtk_widget_add_accelerator (help1, "activate_item", accel_group,
+                              tmp_key, GDK_MOD1_MASK, 0);
+  gtk_widget_ref (help1);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "help1", help1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (tables1);
-  gtk_container_add (GTK_CONTAINER (view_menu_menu), tables1);
+  gtk_widget_show (help1);
+  gtk_container_add (GTK_CONTAINER (menu_bar), help1);
+
+  help1_menu = gtk_menu_new ();
+  gtk_widget_ref (help1_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "help1_menu", help1_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (help1), help1_menu);
+  help1_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (help1_menu));
+
+  about1 = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (about1)->child),
+                                   "_About");
+  gtk_widget_add_accelerator (about1, "activate_item", help1_menu_accels,
+                              tmp_key, 0, 0);
+  gtk_widget_ref (about1);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "about1", about1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (about1);
+  gtk_container_add (GTK_CONTAINER (help1_menu), about1);
 
   toolbar = gtk_toolbar_new (GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_TEXT);
   gtk_widget_ref (toolbar);
@@ -322,7 +458,7 @@ create_main_win (void)
   gtk_object_set_data_full (GTK_OBJECT (main_win), "table_box", table_box,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table_box);
-  gtk_container_add (GTK_CONTAINER (v_pane), table_box);
+  gtk_paned_pack1 (GTK_PANED (v_pane), table_box, FALSE, TRUE);
 
   table_label = gtk_label_new ("Game Tables");
   gtk_widget_ref (table_label);
@@ -339,79 +475,76 @@ create_main_win (void)
   gtk_box_pack_start (GTK_BOX (table_box), table_scroll, TRUE, TRUE, 0);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (table_scroll), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  table_tree = gtk_ctree_new (7,0);
+  table_tree = gtk_clist_new (7);
   gtk_widget_ref (table_tree);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "table_tree", table_tree,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table_tree);
   gtk_container_add (GTK_CONTAINER (table_scroll), table_tree);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 0, 10);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 1, 70);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 2, 70);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 3, 70);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 4, 70);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 5, 70);
-  gtk_clist_set_column_width (GTK_CLIST (table_tree), 6, 1);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 0, 12);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 1, 64);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 2, 80);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 3, 52);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 4, 72);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 5, 60);
+  gtk_clist_set_column_width (GTK_CLIST (table_tree), 6, 162);
   gtk_clist_column_titles_show (GTK_CLIST (table_tree));
 
-  label5 = gtk_label_new (" ");
-  gtk_widget_ref (label5);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "label5", label5,
+  label47 = gtk_label_new (" ");
+  gtk_widget_ref (label47);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "label47", label47,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label5);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 0, label5);
+  gtk_widget_show (label47);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 0, label47);
 
-  label8 = gtk_label_new ("Table No.");
-  gtk_widget_ref (label8);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "label8", label8,
+  label48 = gtk_label_new ("Table No.");
+  gtk_widget_ref (label48);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "label48", label48,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label8);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 1, label8);
+  gtk_widget_show (label48);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 1, label48);
 
-  label9 = gtk_label_new ("Game Type");
-  gtk_widget_ref (label9);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "label9", label9,
+  label49 = gtk_label_new ("Game Type");
+  gtk_widget_ref (label49);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "label49", label49,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label9);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 2, label9);
+  gtk_widget_show (label49);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 2, label49);
 
-  label10 = gtk_label_new ("Seats");
-  gtk_widget_ref (label10);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "label10", label10,
+  label50 = gtk_label_new ("Seats");
+  gtk_widget_ref (label50);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "label50", label50,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label10);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 3, label10);
+  gtk_widget_show (label50);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 3, label50);
 
-  label11 = gtk_label_new ("Open Seats");
-  gtk_widget_ref (label11);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "label11", label11,
+  label51 = gtk_label_new ("Open Seats");
+  gtk_widget_ref (label51);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "label51", label51,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label11);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 4, label11);
+  gtk_widget_show (label51);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 4, label51);
 
-  label12 = gtk_label_new ("Humans");
-  gtk_widget_ref (label12);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "label12", label12,
+  label52 = gtk_label_new ("Humans");
+  gtk_widget_ref (label52);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "label52", label52,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label12);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 5, label12);
+  gtk_widget_show (label52);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 5, label52);
 
-  label13 = gtk_label_new ("Description");
-  gtk_widget_ref (label13);
-  gtk_object_set_data_full (GTK_OBJECT (main_win), "label13", label13,
+  label53 = gtk_label_new ("Description");
+  gtk_widget_ref (label53);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "label53", label53,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label13);
-  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 6, label13);
-  gtk_signal_connect(GTK_OBJECT (table_tree), "select_row", 
-			GTK_SIGNAL_FUNC(ggz_table_select_row_callback),
-			NULL);
+  gtk_widget_show (label53);
+  gtk_clist_set_column_widget (GTK_CLIST (table_tree), 6, label53);
 
   h_pane = gtk_hpaned_new ();
   gtk_widget_ref (h_pane);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "h_pane", h_pane,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (h_pane);
-  gtk_container_add (GTK_CONTAINER (v_pane), h_pane);
+  gtk_paned_pack2 (GTK_PANED (v_pane), h_pane, TRUE, TRUE);
   gtk_container_set_border_width (GTK_CONTAINER (h_pane), 5);
   gtk_paned_set_gutter_size (GTK_PANED (h_pane), 10);
   gtk_paned_set_position (GTK_PANED (h_pane), 160);
@@ -421,7 +554,7 @@ create_main_win (void)
   gtk_object_set_data_full (GTK_OBJECT (main_win), "player_box", player_box,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (player_box);
-  gtk_container_add (GTK_CONTAINER (h_pane), player_box);
+  gtk_paned_pack1 (GTK_PANED (h_pane), player_box, FALSE, TRUE);
 
   player_label = gtk_label_new ("Players");
   gtk_widget_ref (player_label);
@@ -445,7 +578,7 @@ create_main_win (void)
   gtk_widget_show (player_list);
   gtk_container_add (GTK_CONTAINER (player_scroll), player_list);
   gtk_clist_set_column_width (GTK_CLIST (player_list), 0, 80);
-  gtk_clist_set_column_width (GTK_CLIST (player_list), 1, 50);
+  gtk_clist_set_column_width (GTK_CLIST (player_list), 1, 48);
   gtk_clist_column_titles_show (GTK_CLIST (player_list));
 
   label6 = gtk_label_new ("Name");
@@ -467,8 +600,36 @@ create_main_win (void)
   gtk_object_set_data_full (GTK_OBJECT (main_win), "chat_box", chat_box,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (chat_box);
-  gtk_container_add (GTK_CONTAINER (h_pane), chat_box);
+  gtk_paned_pack2 (GTK_PANED (h_pane), chat_box, TRUE, FALSE);
+  gtk_widget_set_usize (chat_box, -2, 280);
   gtk_container_set_border_width (GTK_CONTAINER (chat_box), 5);
+
+  hbox16 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox16);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "hbox16", hbox16,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox16);
+  gtk_box_pack_start (GTK_BOX (chat_box), hbox16, FALSE, FALSE, 0);
+
+  label54 = gtk_label_new ("Current Room  ");
+  gtk_widget_ref (label54);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "label54", label54,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label54);
+  gtk_box_pack_start (GTK_BOX (hbox16), label54, FALSE, FALSE, 0);
+
+  game_room = gtk_combo_new ();
+  gtk_widget_ref (game_room);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "game_room", game_room,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (game_room);
+  gtk_box_pack_start (GTK_BOX (hbox16), game_room, TRUE, TRUE, 0);
+
+  combo_entry2 = GTK_COMBO (game_room)->entry;
+  gtk_widget_ref (combo_entry2);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "combo_entry2", combo_entry2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (combo_entry2);
 
   chat_scroll = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (chat_scroll);
@@ -480,13 +641,12 @@ create_main_win (void)
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (chat_scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
   chat_text = gtk_text_new (NULL, NULL);
-  gtk_text_set_word_wrap( GTK_TEXT(chat_text), TRUE);
   gtk_widget_ref (chat_text);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "chat_text", chat_text,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (chat_text);
   gtk_container_add (GTK_CONTAINER (chat_scroll), chat_text);
-  gtk_widget_set_usize (chat_text, 100, 146);
+  gtk_widget_set_usize (chat_text, 100, 132);
 
   chat_separator = gtk_hseparator_new ();
   gtk_widget_ref (chat_separator);
@@ -531,6 +691,9 @@ create_main_win (void)
   gtk_box_pack_end (GTK_BOX (main_box), statusbar, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (statusbar), 5);
 
+  gtk_signal_connect(GTK_OBJECT (table_tree), "select_row",
+                        GTK_SIGNAL_FUNC(ggz_table_select_row_callback),
+                        NULL);
   gtk_signal_connect (GTK_OBJECT (main_win), "delete_event",
                       GTK_SIGNAL_FUNC (exit_dlg),
                       NULL);
@@ -551,12 +714,6 @@ create_main_win (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (game_types1), "activate",
                       GTK_SIGNAL_FUNC (ggz_get_types),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (players1), "activate",
-                      GTK_SIGNAL_FUNC (ggz_get_players),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (tables1), "activate",
-                      GTK_SIGNAL_FUNC (ggz_get_tables),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (launch_button), "clicked",
                       GTK_SIGNAL_FUNC (ggz_get_game_options),
