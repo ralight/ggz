@@ -141,31 +141,30 @@ void output_chat(ChatTypes type, char *player, char *message)
 
 void output_rooms(void)
 {
-	int i;
-	char** names = NULL;
+	int i, num;
+	GGZRoom *room;
 
-	if (!(names = ggzcore_server_get_room_names(server)))
-		return;  
-
-	for (i = 0; names[i]; i++)
-		output_text("-- Room %d : %s", i, names[i]);
-
-	free(names);
+	num = ggzcore_server_get_num_rooms(server);
+	
+	for (i = 0; i < num; i++) {
+		room = ggzcore_server_get_nth_room(server, i);
+		output_text("-- Room %d : %s", i, ggzcore_room_get_name(room));
+	}
 }
 
 
 void output_types(void)
 {
-	int i;
-	char** names = NULL;
+	int i, num;
+	GGZGameType *type;
 
-	if (!(names = ggzcore_server_get_gametype_names(server)))
-		return;  
-
-	for (i = 0; names[i]; i++)
-		output_text("-- Gametype %d : %s", i, names[i]);
-
-	free(names);
+	num = ggzcore_server_get_num_gametypes(server);
+	
+	for (i = 0; i < num; i++) {
+		type = ggzcore_server_get_nth_gametype(server, i);
+		output_text("-- Gametype %d : %s", i, 
+			    ggzcore_gametype_get_name(type));
+	}
 }
 
 
