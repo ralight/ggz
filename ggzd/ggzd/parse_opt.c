@@ -33,6 +33,7 @@
 
 #include <datatypes.h>
 #include <err_func.h>
+#include <motd.h>
 
 /* Stuff from control.c we need access to */
 extern Options opt;
@@ -145,6 +146,10 @@ void parse_conf_file(void)
 	/* If no main_port, default it to 1174 */
 	if(!opt.main_port)
 		opt.main_port = 1174;
+
+	/* If the motd option is present, pre-read the file */
+	if(motd_info.motd_file)
+		motd_read_file();
 }
 
 
@@ -243,10 +248,9 @@ static void parse_file(FILE *configfile)
 			if((strval = malloc(strlen(varvalue)+1)) == NULL)
 				err_sys_exit("parse_file: malloc error");
 			strcpy(strval, varvalue);
-			opt.motd_file = strval;
+			motd_info.motd_file = strval;
 			continue;
 		 }
-
 		
 		/*** INVALID VARIABLE ***/
 		PARSE_ERR("Syntax error");
