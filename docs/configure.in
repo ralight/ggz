@@ -19,6 +19,8 @@ AC_OUTPUT(Makefile
 	games/Makefile
 	games/hastings/Makefile
 	games/external-games/Makefile
+	ggz-project/Makefile
+	coreclients/Makefile
 	spec/Makefile)
 
 dnl Report success

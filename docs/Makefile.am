@@ -1,1 +1,1 @@
-SUBDIRS = games spec ggz-project
+SUBDIRS = games spec ggz-project coreclients
