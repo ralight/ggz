@@ -774,12 +774,14 @@ void game_get_attack() {
 		cbt_game.map[to].unit = OWNER(cbt_game.turn) - f_u;
 		cbt_game.army[seat2][t_u]--;
 		game_update_unit_list(seat2);
+		game_status("A %s attacked a %s and won", unitname[-f_u], unitname[t_u]);
 	} else if (f_u >= 0 && t_u < 0) {
 		// The to unit won!
 		cbt_game.map[from].unit = U_EMPTY;
 		cbt_game.map[to].unit = OWNER(seat2) - t_u;
 		cbt_game.army[cbt_game.turn][f_u]--;
 		game_update_unit_list(cbt_game.turn);
+		game_status("A %s tried to attack a %s and lost", unitname[f_u], unitname[-t_u]);
 	} else if (f_u < 0 && t_u < 0) {
 		// Both won (or lost, whatever!)
 		cbt_game.map[from].unit = U_EMPTY;
@@ -788,6 +790,7 @@ void game_get_attack() {
 		cbt_game.army[seat2][-t_u]--;
 		game_update_unit_list(cbt_game.turn);
 		game_update_unit_list(seat2);
+		game_status("Two %s died", unitname[-f_u]);
 	} else {
 		game_status("Problems in the attack logic!");
 	}
