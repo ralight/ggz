@@ -69,6 +69,9 @@ fi
 if test -f $srcdir/acinclude.kde; then
 	cat $srcdir/acinclude.kde >> $srcdir/acinclude.m4;
 fi
+if test -f $srcdir/acinclude.gnome; then
+	cat $srcdir/acinclude.gnome >> $srcdir/acinclude.m4;
+fi
 if test "x$need_libtool" = "x1"; then
 	echo -n "[libtoolize]"
 	(cd $srcdir && libtoolize --force --copy) || { echo "libtoolize failed."; exit; }
