@@ -89,14 +89,12 @@ void * _ggzcore_malloc(const unsigned int size, char *tag, int line)
 
 void * _ggzcore_realloc(const void *ptr, const unsigned size,char *tag,int line)
 {
-	struct _memptr *prev, *targetmem;
+	struct _memptr *targetmem;
 	void *new;
 
 	/* Search through allocated memory for this chunk */
-	prev = NULL;
 	targetmem = alloc;
 	while(targetmem != NULL && ptr != targetmem->ptr) {
-		prev = targetmem;
 		targetmem = targetmem->next;
 	}
 
@@ -114,10 +112,13 @@ void * _ggzcore_realloc(const void *ptr, const unsigned size,char *tag,int line)
 	new = _ggzcore_allocate(size, tag, line);
 
 	/* Copy the old to the new */
-	memcpy(new, targetmem->ptr, targetmem->size);
+	if(size > targetmem->size) {
+		memcpy(new, targetmem->ptr, targetmem->size);
+		/* And zero out the rest of the block */
+		memset(new+targetmem->size, 0, size-targetmem->size);
+	} else
+		memcpy(new, targetmem->ptr, size);
 
-	/* And zero out the rest of the block */
-	memset(new+targetmem->size, 0, size-targetmem->size);
 
 	/* And free the old chunk */
 	_ggzcore_free(targetmem->ptr, tag, line);
