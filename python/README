@@ -12,11 +12,22 @@ Content of GGZ-Python:
 	- PyGGZMod, python wrapper for the ggzmod library (game clients)
 	- PyGGZdMod, python wrapper for the ggzdmod library (game servers)
 	- PyGGZCore, simplified python wrapper for ggzcore (core clients)
+	- PyGGZChess, python wrapper for ggzchess library
+	- PyRsvgSDL, python wrapper for rsvg library (not part of GGZ)
+
 	- Dresden, a simple single-player pygame-based game
 	- Escape/SDL, port of the Windows game Escape to pygame + ggz-python,
 	  which also works in single-player mode against the AI
-	- Xadrez Chines, a chinese chess game client, server and AI module
-	- Vibora, fullscreen core client
+	- Xadrez Chinês, a chinese chess game client, server and AI module
+	- Goserver, a GGZ-enabled gnugo program, and Goclient, a CGoBan wrapper
+	- GGZBoard, generic board game framework
+	  - Go (client, network)
+	  - Chess (client, ai, network)
+	  - Reversi (client, ai, network)
+	  - Checkers (client, ai, network, server)
+	  - Hnefatafl (client, ai, network, server)
+
+	- Víbora, fullscreen core client
 
 All of them have their own README for more information on them.
 
