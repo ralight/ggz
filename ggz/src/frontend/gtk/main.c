@@ -31,6 +31,7 @@
 #include "about.h"
 #include "chat.h"
 #include "client.h"
+#include "first.h"
 #include "ggz.h"
 #include "license.h"
 #include "login.h"
@@ -60,16 +61,20 @@ int main (int argc, char *argv[])
 	ggzcore_init(opt);
 	free(opt.debug_file);
 	server_profiles_load();
-//	ggz_event_init();
-//	ggz_state_init();
 	
 	gtk_init(&argc, &argv);
 	chat_allocate_colors();
 
-	win_main = create_win_main();
-	ggz_sensitivity_init();
-	gtk_widget_show(win_main);
-	login_create_or_raise();
+	if (ggzcore_conf_read_int("INIT", "FIRST", 0) == 0 ||
+	    strcmp(ggzcore_conf_read_string("INIT", "VERSION", VERSION), VERSION) !=0 )
+	{
+		first_create_or_raise();
+	} else {
+		win_main = create_win_main();
+		ggz_sensitivity_init();
+		gtk_widget_show(win_main);
+		login_create_or_raise();
+	}
 
 	gtk_main();
 

@@ -1,5 +1,5 @@
 /*
- * File: ggz.h
+ * File: first.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
  *
@@ -22,13 +22,5 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifndef _GGZ_
-#define _GGZ_
 
-#include "ggzcore.h"
-
-void ggz_event_init(GGZServer *Server);
-void ggz_state_init(void);
-void ggz_sensitivity_init(void);
-
-#endif
+void first_create_or_raise(void);

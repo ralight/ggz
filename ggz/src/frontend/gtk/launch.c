@@ -49,12 +49,10 @@ void launch_create_or_raise(void)
 	GtkWidget *tmp;
 	gchar *text;
 	GGZRoom *room;
-	int game;
 	GGZGameType *gt;
 
 	room  = ggzcore_server_get_cur_room(server);
-	game = ggzcore_room_get_gametype(room);
-	gt = ggzcore_server_get_nth_gametype(server, game);
+	gt = ggzcore_room_get_gametype(room);
 
         if (!launch_dialog) {
                 launch_dialog = create_dlg_launch();
