@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 4818 2002-10-08 22:58:00Z jdorje $
+ * $Id: chat.c 4820 2002-10-09 01:04:39Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -768,8 +768,10 @@ void chat_list_friend(void)
 {
 	int i;
 
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, "People currently your friends");
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, "-----------------------------");
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL,
+			     _("People currently your friends"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL,
+			     "-----------------------------");
 	for(i=0; i<friend_count; i++)
 		chat_display_message(CHAT_LOCAL_NORMAL, NULL,
 			g_array_index(chatinfo.friends, char *, i));
@@ -780,8 +782,10 @@ void chat_list_ignore(void)
 {
 	int i;
 
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, "People your currently ignoring");
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, "------------------------------");
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL,
+			     _("People you're currently ignoring"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL,
+			     "------------------------------");
 	for(i=0; i<ignore_count; i++)
 		chat_display_message(CHAT_LOCAL_NORMAL, NULL,
 			g_array_index(chatinfo.ignore, char *, i));
