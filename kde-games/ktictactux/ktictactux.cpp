@@ -445,10 +445,10 @@ void KTicTacTux::drawBoard()
 		switch(proto->board[i % 3][i / 3])
 		{
 			case proto->player:
-				frame[i % 3][i / 3]->setPaletteBackgroundPixmap(QPixmap(/*QString("%1/ktictactux/%2").arg(GGZDATADIR).arg(*/m_t1/*)*/));
+				frame[i % 3][i / 3]->setPaletteBackgroundPixmap(QPixmap(m_t1));
 				break;
 			case proto->opponent:
-				frame[i % 3][i / 3]->setPaletteBackgroundPixmap(QPixmap(/*QString("%1/ktictactux/%2").arg(GGZDATADIR).arg(*/m_t2/*)*/));
+				frame[i % 3][i / 3]->setPaletteBackgroundPixmap(QPixmap(m_t2));
 				break;
 			default:
 				frame[i % 3][i / 3]->setPaletteBackgroundPixmap(NULL);
