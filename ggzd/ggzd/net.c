@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5001 2002-10-22 20:23:12Z jdorje $
+ * $Id: net.c 5003 2002-10-22 23:58:53Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -133,7 +133,7 @@ static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
 
 /* Utility functions */
-static int safe_atoi(char *string);
+static int str_to_int(const char *str, int dflt);
 static int check_playerconn(GGZNetIO *net, const char *type);
 static void _net_dump_data(struct _GGZNetIO *net, char *data, int size);
 static GGZReturn _net_send_result(GGZNetIO *net, const char *action,
@@ -939,97 +939,94 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 
 
 /* Functions for <SESSION> tag */
-static void _net_handle_session(GGZNetIO *net, GGZXMLElement *session)
+static void _net_handle_session(GGZNetIO *net, GGZXMLElement *element)
 {
 	client_end_session(net->client);
-	net_send_logout(net, 0);
+	net_send_logout(net, E_OK);
 }
 
 
 /* Functions for <CHANNEL> tag */
-static void _net_handle_channel(GGZNetIO *net, GGZXMLElement *channel)
+static void _net_handle_channel(GGZNetIO *net, GGZXMLElement *element)
 {
 	char *id;
 
-	if (channel) {
-		/* Grab table ID from tag */
-		id = ggz_xmlelement_get_attr(channel, "ID");
+	if (!element) return;
 
-		/* It's an error if they didn't send an ID string */
-		if (!id) {
-			_net_send_result(net, "channel", E_BAD_OPTIONS);
-			return;
-		}
+	/* Grab table ID from tag */
+	id = ggz_xmlelement_get_attr(element, "ID");
 
-		/* FIXME: Do validity checking on the channel ID here */
-
-		/* FIXME: perhaps lookup table and point net->client->data at it */
-		
-		client_set_type(net->client, GGZ_CLIENT_CHANNEL);
-		net->client->data = ggz_strdup(id);
+	/* It's an error if they didn't send an ID string */
+	if (!id) {
+		_net_send_result(net, "channel", E_BAD_OPTIONS);
+		return;
 	}
+
+	/* FIXME: Do validity checking on the channel ID here */
+
+	/* FIXME: perhaps lookup table and point net->client->data at it */
+
+	client_set_type(net->client, GGZ_CLIENT_CHANNEL);
+	net->client->data = ggz_strdup(id);
 }
 
 
 /* Functions for <LOGIN> tag */
-static void _net_handle_login(GGZNetIO *net, GGZXMLElement *login)
+static void _net_handle_login(GGZNetIO *net, GGZXMLElement *element)
 {
 	GGZLoginType login_type;
 	GGZAuthData *auth;	
 	char *type;
 
+	if (!element) return;
 
-	if (login) {
-		type = ggz_xmlelement_get_attr(login, "TYPE");
-
-		/* If they didn't send TYPE, it's an error */
-		if (!type) {
-			_net_send_result(net, "login", E_BAD_OPTIONS);
-			return;
-		}
-
-		if (strcasecmp(type, "normal") == 0)
-			login_type = GGZ_LOGIN;
-		else if (strcasecmp(type, "guest") == 0)
-			login_type = GGZ_LOGIN_GUEST;
-		else if (strcasecmp(type, "first") == 0)
-			login_type = GGZ_LOGIN_NEW;
-		else {
-			_net_send_result(net, "login", E_BAD_OPTIONS);
-			return;
-		}
-		
-		auth = ggz_xmlelement_get_data(login);
-		
+	auth = ggz_xmlelement_get_data(element);
+	if (!auth) {
 		/* It's an error if they didn't send the right data */
-		if (!auth || !auth->name
-		    || (!auth->password && login_type == GGZ_LOGIN)) {
-			_net_send_result(net, "login", E_BAD_OPTIONS);
-			return;
-		}
-		
-		/* Can't login twice */
-		if (net->client->data) {
-			dbg_msg(GGZ_DBG_CONNECTION, "Client from %s attempted to log in again", 
-				net->client->addr);
-			net_send_login(net, login_type, E_ALREADY_LOGGED_IN, NULL);
-		}
-		else {
-			client_set_type(net->client, GGZ_CLIENT_PLAYER);
-			login_player(login_type, net->client->data, auth->name, auth->password);
-		}
-
-		/* Free up any resources we allocated */
-		_net_authdata_free(auth);
+		_net_send_result(net, "login", E_BAD_OPTIONS);
+		return;
 	}
+
+	type = ggz_xmlelement_get_attr(element, "TYPE");
+	if (type && strcasecmp(type, "normal") == 0)
+		login_type = GGZ_LOGIN;
+	else if (type && strcasecmp(type, "guest") == 0)
+		login_type = GGZ_LOGIN_GUEST;
+	else if (type && strcasecmp(type, "first") == 0)
+		login_type = GGZ_LOGIN_NEW;
+	else {
+		/* If they didn't send a valid TYPE, it's an error */
+		_net_send_result(net, "login", E_BAD_OPTIONS);
+		_net_authdata_free(auth);
+		return;
+	}
+
+	if (!auth->name
+	    || (!auth->password && login_type == GGZ_LOGIN)) {
+		_net_send_result(net, "login", E_BAD_OPTIONS);
+		_net_authdata_free(auth);
+		return;
+	}
+
+	/* Can't login twice */
+	if (net->client->data) {
+		net_send_login(net, login_type, E_ALREADY_LOGGED_IN, NULL);
+		_net_authdata_free(auth);
+		return;
+	}
+
+	client_set_type(net->client, GGZ_CLIENT_PLAYER);
+	login_player(login_type, net->client->data,
+		     auth->name, auth->password);
+
+	/* Free up any resources we allocated */
+	_net_authdata_free(auth);
 }
 
 
 static GGZAuthData* _net_authdata_new(void)
 {
-	GGZAuthData *data;
-
-	data = ggz_malloc(sizeof(GGZAuthData));
+	GGZAuthData *data = ggz_malloc(sizeof(GGZAuthData));
 	
 	data->name = NULL;
 	data->password = NULL;
@@ -1040,16 +1037,15 @@ static GGZAuthData* _net_authdata_new(void)
 
 static void _net_auth_set_name(GGZXMLElement *auth, char *name)
 {
-	 GGZAuthData *data;
-	
-	data = ggz_xmlelement_get_data(auth);
+	GGZAuthData *data = ggz_xmlelement_get_data(auth);
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
 		data = _net_authdata_new();
 		ggz_xmlelement_set_data(auth, data);
 	}
-	
+
+	if (data->name) ggz_free(data->name); /* duplicate */
 	data->name = name;
 }
 
@@ -1065,20 +1061,21 @@ static void _net_auth_set_password(GGZXMLElement *auth, char *password)
 		data = _net_authdata_new();
 		ggz_xmlelement_set_data(auth, data);
 	}
-	
+
+	if (data->password) ggz_free(data->password); /* duplicate */
 	data->password = password;
 }
 
 
 static void _net_authdata_free(GGZAuthData *data)
 {
-	if (data) {
-		if (data->name)
-			ggz_free(data->name);
-		if (data->password)
-			ggz_free(data->password);
-		ggz_free(data);
-	}
+	if (!data) return;
+
+	if (data->name)
+		ggz_free(data->name);
+	if (data->password)
+		ggz_free(data->password);
+	ggz_free(data);
 }
 
 
@@ -1089,24 +1086,24 @@ static void _net_handle_name(GGZNetIO *net, GGZXMLElement *element)
 	char *parent_tag;
 	GGZXMLElement *parent;
 
+	if (!element) return;
+
 	/* Get parent off top of stack */
 	parent = ggz_stack_top(net->stack);
-
-	/* If there are no elements above us, it's protocol error */
 	if (!parent) {
+		/* If there are no elements above us, it's a protocol error */
 		_net_send_result(net, "protocol", E_BAD_OPTIONS);
 		return;
 	}
 
-	if (element) {
-		name = ggz_strdup(ggz_xmlelement_get_text(element));
-		parent_tag = ggz_xmlelement_get_tag(parent);
-		
-		if (strcasecmp(parent_tag, "LOGIN") == 0)
-			_net_auth_set_name(parent, name);
-		else 
-			_net_send_result(net, "protocol", E_BAD_OPTIONS);
+	parent_tag = ggz_xmlelement_get_tag(parent);
+	if (strcasecmp(parent_tag, "LOGIN") != 0) {
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
 	}
+
+	name = ggz_strdup(ggz_xmlelement_get_text(element));
+	_net_auth_set_name(parent, name);
 }
 
 
@@ -1117,24 +1114,24 @@ static void _net_handle_password(GGZNetIO *net, GGZXMLElement *element)
 	char *parent_tag;
 	GGZXMLElement *parent;
 
+	if (!element) return;
+
 	/* Get parent off top of stack */
 	parent = ggz_stack_top(net->stack);
-
-	/* If there are no elements above us, it's protocol error */
 	if (!parent) {
+		/* If there are no elements above us, it's a protocol error */
 		_net_send_result(net, "protocol", E_BAD_OPTIONS);
 		return;
 	}
 
-	if (element) {
-		password = ggz_strdup(ggz_xmlelement_get_text(element));
-		parent_tag = ggz_xmlelement_get_tag(parent);
-		
-		if (strcasecmp(parent_tag, "LOGIN") == 0)
-			_net_auth_set_password(parent, password);
-		else 
-			_net_send_result(net, "protocol", E_BAD_OPTIONS);
+	parent_tag = ggz_xmlelement_get_tag(parent);
+	if (strcasecmp(parent_tag, "LOGIN") != 0) {
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
 	}
+
+	password = ggz_strdup(ggz_xmlelement_get_text(element));
+	_net_auth_set_password(parent, password);
 }
 
 
@@ -1143,21 +1140,13 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 {
 	char *type, *action, *room;
 
-	if (!update)
-		return;
-
-	/* Make sure player is logged in. */
-	if (!check_playerconn(net, "protocol")) return;
+	if (!update) return;
+	if (!check_playerconn(net, "update")) return;
 
 	/* Grab update data from tag */
 	type = ggz_xmlelement_get_attr(update, "TYPE");
 	action = ggz_xmlelement_get_attr(update, "ACTION");
 	room = ggz_xmlelement_get_attr(update, "ROOM");
-
-	if (!type || !action) {
-		_net_send_result(net, "update", E_BAD_OPTIONS);
-		return;
-	}
 
 	if (strcasecmp(type, "player") == 0) {
 		GGZPlayer *player = ggz_xmlelement_get_data(update);
@@ -1167,6 +1156,7 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 		}
 
 		/* FIXME: update password and other data */
+		_net_send_result(net, "update", E_BAD_OPTIONS);
 	} else if (strcasecmp(type, "table") == 0) {
 		GGZTable *table = ggz_xmlelement_get_data(update);
 		if (!table) {
@@ -1174,9 +1164,14 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 			return;
 		}
 
+		if (!type || !action) {
+			_net_send_result(net, "update", E_BAD_OPTIONS);
+			table_free(table);
+			return;
+		}
+
 		/* If room was specified, override default current room */
-		if (room)
-			table->room = safe_atoi(room);
+		table->room = str_to_int(room, table->room);
 
 		if (!strcasecmp(action, "desc")) {
 			player_table_desc_update(net->client->data,
@@ -1185,6 +1180,7 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 						 table->desc);
 		} else if (!strcasecmp(action, "seat")) {
 			int i;
+			int handled = 0;
 			for (i = 0; i < table->num_seats; i++) {
 				GGZTableSeat seat;
 				if (table->seat_types[i] == GGZ_SEAT_NONE)
@@ -1197,9 +1193,15 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 							 table->room,
 							 table->index,
 							 &seat);
+				handled = 1;
+			}
+			if (!handled) {
+				_net_send_result(net, "update",
+						 E_BAD_OPTIONS);
 			}
 		} else if (!strcasecmp(action, "boot")) {
 			int i;
+			int handled = 0;
 			for (i = 0; i < table->num_seats; i++) {
 				if (table->seat_types[i] == GGZ_SEAT_NONE
 				    || !table->seat_names[i][0])
@@ -1208,47 +1210,51 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 							 table->room,
 							 table->index,
 							 table->seat_names[i]);
+				handled = 1;
+			}
+			if (!handled) {
+				_net_send_result(net, "update",
+						 E_BAD_OPTIONS);
 			}
 		} else {
 			_net_send_result(net, "update", E_BAD_OPTIONS);
 		}
+
+		table_free(table);
 	} else
 		_net_send_result(net, "update", E_BAD_OPTIONS);
 }
 
 
 /* Functions for <LIST> tag */
-static void _net_handle_list(GGZNetIO *net, GGZXMLElement *list)
+static void _net_handle_list(GGZNetIO *net, GGZXMLElement *element)
 {
 	char *type;
-	char verbose = 0;
+	int verbose;
 	
-	if (list) {
-		type = ggz_xmlelement_get_attr(list, "TYPE");
-		
-		if (!type) {
-			_net_send_result(net, "list", E_BAD_OPTIONS);
-			return;
-		}
-		
-		if (!check_playerconn(net, "list")) return;
+	if (!element) return;
+	if (!check_playerconn(net, "list")) return;
 
-		if (str_to_bool(ggz_xmlelement_get_attr(list, "FULL"), 0))
-			verbose = 1;
-		
-		if (strcasecmp(type, "game") == 0)
-			player_list_types(net->client->data, verbose);
-		else if (strcasecmp(type, "room") == 0)
-			/* FIXME: Currently send all types */
-			room_list_send(net->client->data, -1, verbose);
-		else if (strcasecmp(type, "player") == 0)
-			player_list_players(net->client->data);
-		else if (strcasecmp(type, "table") == 0)
-			/* FIXME: Currently send all local types */
-			player_list_tables(net->client->data, GGZ_TYPE_ALL, 0);
-		else
-			_net_send_result(net, "protocol", E_BAD_OPTIONS);
+	type = ggz_xmlelement_get_attr(element, "TYPE");
+	if (!type) {
+		_net_send_result(net, "list", E_BAD_OPTIONS);
+		return;
 	}
+
+	verbose = str_to_bool(ggz_xmlelement_get_attr(element, "FULL"), 0);
+
+	if (strcasecmp(type, "game") == 0)
+		player_list_types(net->client->data, verbose);
+	else if (strcasecmp(type, "room") == 0)
+		/* FIXME: Currently send all types */
+		room_list_send(net->client->data, -1, verbose);
+	else if (strcasecmp(type, "player") == 0)
+		player_list_players(net->client->data);
+	else if (strcasecmp(type, "table") == 0)
+		/* FIXME: Currently send all local types */
+		player_list_tables(net->client->data, GGZ_TYPE_ALL, 0);
+	else
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
 }
 
 
@@ -1257,78 +1263,73 @@ static void _net_handle_enter(GGZNetIO *net, GGZXMLElement *enter)
 {
 	int room;
 
-	if (enter) {
-		if (!check_playerconn(net, "enter")) return;
+	if (!enter) return;
+	if (!check_playerconn(net, "enter")) return;
 
-		room = safe_atoi(ggz_xmlelement_get_attr(enter, "ROOM"));
-		room_handle_join(net->client->data, room);
-	}
+	room = str_to_int(ggz_xmlelement_get_attr(enter, "ROOM"), -1);
+	room_handle_join(net->client->data, room);
 }
 
 
 /* Functions for <CHAT> tag */
-static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *chat)
+static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *element)
 {
 	char *type_str, *to, *msg;
         GGZChatType type;
 		
-	if (chat) {
+	if (!element) return;
+	if (!check_playerconn(net, "chat")) return;
 
-		/* Grab chat data from tag */
-		type_str = ggz_xmlelement_get_attr(chat, "TYPE");
-		to = ggz_xmlelement_get_attr(chat, "TO");
-		msg = ggz_xmlelement_get_text(chat);
+	/* Grab chat data from tag */
+	type_str = ggz_xmlelement_get_attr(element, "TYPE");
+	to = ggz_xmlelement_get_attr(element, "TO");
+	msg = ggz_xmlelement_get_text(element);
 
-		/* TYPE is required */
-		if (!type_str) {
-			_net_send_result(net, "chat", E_BAD_OPTIONS);
-			return;
-		}
-
-		if (!check_playerconn(net, "chat")) return;
-
-		/* FIXME: error checking on these? */
-		type = ggz_string_to_chattype(type_str);
-
-		player_chat(net->client->data, type, to, msg);
+	/* TYPE is required */
+	if (!type_str) {
+		_net_send_result(net, "chat", E_BAD_OPTIONS);
+		return;
 	}
+
+	/* FIXME: error checking on these? */
+	type = ggz_string_to_chattype(type_str);
+
+	player_chat(net->client->data, type, to, msg);
 }
 
 
 /* Functions for <JOIN> tag */
 static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element)
 {
-	if (element) {
-		int table = safe_atoi(ggz_xmlelement_get_attr(element,
-							      "TABLE"));
-		int spectator =
-			str_to_bool(ggz_xmlelement_get_attr(element,
-							    "SPECTATOR"), 0);
+	int table, spectator;
 
-		if (!check_playerconn(net, "join")) return;
+	if (!element) return;
+	if (!check_playerconn(net, "join")) return;
 
-		if (spectator)
-			player_table_join_spectator(net->client->data, table);
-		else
-			player_table_join(net->client->data, table);
-	}
+	table = str_to_int(ggz_xmlelement_get_attr(element, "TABLE"), -1);
+	spectator = str_to_bool(ggz_xmlelement_get_attr(element,
+							"SPECTATOR"), 0);
+
+	if (spectator)
+		player_table_join_spectator(net->client->data, table);
+	else
+		player_table_join(net->client->data, table);
 }
 
 
 /* Functions for <LEAVE> tag */
 static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
 {
-	if (element) {
-		int force = str_to_bool(ggz_xmlelement_get_attr(element,
-								"FORCE"), 0);
-		int spectator =
-			str_to_bool(ggz_xmlelement_get_attr(element,
-							    "SPECTATOR"), 0);
+	int force, spectator;
 
-		if (!check_playerconn(net, "leave")) return;
+	if (!element) return;
+	if (!check_playerconn(net, "leave")) return;
 
-		player_table_leave(net->client->data, spectator, force);
-	}
+	force = str_to_bool(ggz_xmlelement_get_attr(element, "FORCE"), 0);
+	spectator = str_to_bool(ggz_xmlelement_get_attr(element,
+							"SPECTATOR"), 0);
+
+	player_table_leave(net->client->data, spectator, force);
 }
 
 
@@ -1337,68 +1338,68 @@ static void _net_handle_launch(GGZNetIO *net, GGZXMLElement *element)
 {
 	GGZTable *table;
 
-	if (element) {
-		table = ggz_xmlelement_get_data(element);
-		if (!table) {
-			_net_send_result(net, "launch", E_BAD_OPTIONS);
-			return;
-		}
+	if (!element) return;
 
-		if (!check_playerconn(net, "launch")) return;
-
-		player_table_launch(net->client->data, table);
+	table = ggz_xmlelement_get_data(element);
+	if (!table) {
+		_net_send_result(net, "launch", E_BAD_OPTIONS);
+		return;
 	}
+
+	if (!check_playerconn(net, "launch")) {
+		table_free(table);
+		return;
+	}
+
+	player_table_launch(net->client->data, table);
+
+	/* Note: we don't have to free the table; the launch just uses it. */
 }
 
 
 /* Functions for <TABLE> tag */
 static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 {
-	int type, index, num_seats, db_status;
-	GGZTable *table;
+	int num_seats;
+	GGZTable *table, *old_data;
 	GGZTableData *data;
 	GGZSeatData *seat;
-	char *desc = NULL;
+	char *desc = NULL, *parent_tag;
 	GGZList *seats = NULL;
 	GGZListEntry *entry;
-	char *parent_tag;
 	GGZXMLElement *parent;
-	ggzdbPlayerEntry player;
 
-	parent = ggz_stack_top(net->stack);
-	
-	if (!parent) {
-		_net_send_result(net, "protocol", E_BAD_OPTIONS);
-		return;
-	}
+	if (!element) return;
 
-	/* Get table data from tag */
-	type = safe_atoi(ggz_xmlelement_get_attr(element, "GAME"));
-
-	/* For updates, they might have specified the ID and room */
-	index = safe_atoi(ggz_xmlelement_get_attr(element, "ID"));
-
-	/* Read the number of seats. */
-	num_seats = safe_atoi(ggz_xmlelement_get_attr(element, "SEATS"));
-		
 	data = ggz_xmlelement_get_data(element);
 	if (data) {
 		desc = data->desc;
 		seats = data->seats;
 	}
 
+	parent = ggz_stack_top(net->stack);
+	if (!parent) {
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		_net_tabledata_free(data);
+		return;
+	}
+
 	parent_tag = ggz_xmlelement_get_tag(parent);
  	if (strcasecmp(parent_tag, "LAUNCH") != 0
 	    && strcasecmp(parent_tag, "UPDATE") != 0 ) {
-		if (data) _net_tabledata_free(data);
+		_net_tabledata_free(data);
 		_net_send_result(net, "protocol", E_BAD_OPTIONS);
 		return;
 	}
 
 	/* Create and init new table */
 	table = table_new();
-	table->index = index;
-	table->type = type;
+
+	/* Get table data from tags */
+	table->index = str_to_int(ggz_xmlelement_get_attr(element, "ID"), -1);
+	table->type = str_to_int(ggz_xmlelement_get_attr(element, "GAME"), -1);
+	num_seats = str_to_int(ggz_xmlelement_get_attr(element, "SEATS"), 0);
+
 #ifdef UNLIMITED_SEATS
 	if (num_seats > 0) {
 		int i;
@@ -1417,14 +1418,16 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 
 	/* If room was specified, use it, otherwise use players current room */
 	table->room = player_get_room(net->client->data);
-	
+
 	if (desc)
 		snprintf(table->desc, sizeof(table->desc), "%s", desc);
-	
+
 	/* Add seats */
-	entry = ggz_list_head(seats);
-	while (entry) {
+	for (entry = ggz_list_head(seats);
+	     entry;
+	     entry = ggz_list_next(entry)) {
 		GGZSeatType seat_type;
+		ggzdbPlayerEntry player;
 
 		seat = ggz_list_get_data(entry);
 		seat_type = ggz_string_to_seattype(seat->type);
@@ -1436,8 +1439,8 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 		    seat->index >= MAX_TABLE_SIZE
 #endif
 		    ) {
-			err_msg("Client launched game with invalid seat %d.",
-				seat->index);
+			/* We treat this as an error -
+			   we could just skip the seat instead */
 			if (data) _net_tabledata_free(data);
 			table_free(table);
 			return;
@@ -1451,22 +1454,24 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 		case GGZ_SEAT_RESERVED:
 			/* We verify that this is a real,
 			   registered player name. */
+			/* FIXME: This should be done elsewhere. */
 			snprintf(player.handle, MAX_USER_NAME_LEN+1,
 				 "%s", seat->name ? seat->name : "");
-			db_status = ggzdb_player_get(&player);
-			if (db_status == 0) {
-				strcpy(table->seat_names[seat->index],
-				       seat->name);
-			} else {
+			if (ggzdb_player_get(&player) != 0) {
 				/* This is some kind of error...but for now we
 				   just cover it up. */
-				dbg_msg(GGZ_DBG_TABLE, "Invalid name '%s' sent for reserved seat.  Changing it to an open seat.", seat->name);
+				dbg_msg(GGZ_DBG_TABLE,
+					"Invalid name '%s' sent for reserved "
+					"seat.  Changing it to an open seat.",
+					seat->name);
 				seat_type = GGZ_SEAT_OPEN;
 			}
+			strcpy(table->seat_names[seat->index], seat->name);
 			break;
 		case GGZ_SEAT_PLAYER:
-			/* A bad client might send this...how should
-			   we deal with it? */
+			/* This is valid for an UPDATE but not a LAUNCH.
+			   We don't check it here but leave it up to
+			   the code that uses it. */
 			if (!seat->name)
 				seat_type = GGZ_SEAT_NONE;
 			else
@@ -1475,24 +1480,21 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 			break;
 		}
 		table->seat_types[seat->index] = seat_type;
-		
-		entry = ggz_list_next(entry);
 	}
 
-	/* FIXME: what if there are multiple <TABLE> tags? */
+	old_data = ggz_xmlelement_get_data(parent);
+	if (old_data)
+		table_free(old_data);
 	ggz_xmlelement_set_data(parent, table);	
 
-	if (data)
-		_net_tabledata_free(data);
+	_net_tabledata_free(data);
 }
 
 
 static void _net_table_add_seat(GGZXMLElement *table, GGZSeatData *seat)
 {
-	struct _GGZTableData *data;
-	
-	data = ggz_xmlelement_get_data(table);
-	
+	struct _GGZTableData *data = ggz_xmlelement_get_data(table);
+
 	/* If data doesn't already exist, create it */
 	if (!data) {
 		data = _net_tabledata_new();
@@ -1505,9 +1507,7 @@ static void _net_table_add_seat(GGZXMLElement *table, GGZSeatData *seat)
 
 static void _net_table_set_desc(GGZXMLElement *table, char *desc)
 {
-	struct _GGZTableData *data;
-	
-	data = ggz_xmlelement_get_data(table);
+	struct _GGZTableData *data = ggz_xmlelement_get_data(table);
 
 	/* If data doesn't already exist, create it */
 	if (!data) {
@@ -1522,29 +1522,27 @@ static void _net_table_set_desc(GGZXMLElement *table, char *desc)
 
 static GGZTableData* _net_tabledata_new(void)
 {
-	struct _GGZTableData *data;
+	struct _GGZTableData *data = ggz_malloc(sizeof(*data));
 
-	data = ggz_malloc(sizeof(struct _GGZTableData));
-	
 	data->desc = NULL;
 	data->seats = ggz_list_create(NULL, 
 				  _net_seat_copy, 
 				  (ggzEntryDestroy)_net_seat_free, 
 				  GGZ_LIST_ALLOW_DUPS);
-	
+
 	return data;
 }
 
 
 static void _net_tabledata_free(GGZTableData *data)
 {
-	if (data) {
-		if (data->desc)
-			ggz_free(data->desc);
-		if (data->seats)
-			ggz_list_free(data->seats);
-		ggz_free(data);
-	}
+	if (!data) return;
+
+	if (data->desc)
+		ggz_free(data->desc);
+	if (data->seats)
+		ggz_list_free(data->seats);
+	ggz_free(data);
 }
 
 
@@ -1555,6 +1553,7 @@ static void _net_handle_seat(GGZNetIO *net, GGZXMLElement *element)
 {
 	struct _GGZSeatData seat;
 	GGZXMLElement *parent;
+	char *parent_tag;
 
 	/* Get parent off top of stack */
 	parent = ggz_stack_top(net->stack);
@@ -1563,46 +1562,46 @@ static void _net_handle_seat(GGZNetIO *net, GGZXMLElement *element)
 		return;
 	}
 
-	if (strcasecmp(parent->tag, "TABLE") != 0) {
+	parent_tag = ggz_xmlelement_get_tag(parent);
+	if (strcasecmp(parent_tag, "TABLE") != 0) {
 		_net_send_result(net, "protocol", E_BAD_OPTIONS);
 		return;
 	}
 
-	if (element) {
-		/* Get seat information out of tag */
-		seat.index = safe_atoi(ggz_xmlelement_get_attr(element, "NUM"));
-		seat.type = ggz_xmlelement_get_attr(element, "TYPE");
-		seat.name = ggz_xmlelement_get_text(element);
-		_net_table_add_seat(parent, &seat);
-	}
+	if (!element) return;
+
+	/* Get seat information out of tag */
+	seat.index = str_to_int(ggz_xmlelement_get_attr(element, "NUM"), -1);
+	seat.type = ggz_xmlelement_get_attr(element, "TYPE");
+	seat.name = ggz_xmlelement_get_text(element);
+
+	_net_table_add_seat(parent, &seat);
 }
 
 
 static void* _net_seat_copy(void *data)
 {
-	struct _GGZSeatData *seat1, *seat2;
+	struct _GGZSeatData *old_seat = data, *new_seat;
 
-	seat1 = (GGZSeatData*)data;
+	new_seat = ggz_malloc(sizeof(*new_seat));
 
-	seat2 = ggz_malloc(sizeof(struct _GGZSeatData));
+	new_seat->index = old_seat->index;
+	new_seat->type = ggz_strdup(old_seat->type);
+	new_seat->name = ggz_strdup(old_seat->name);
 
-	seat2->index = seat1->index;
-	seat2->type = ggz_strdup(seat1->type);
-	seat2->name = ggz_strdup(seat1->name);
-
-	return seat2;
+	return new_seat;
 }
 
 
 static void _net_seat_free(GGZSeatData *seat)
 {
-	if (seat) {
-		if (seat->type)
-			ggz_free(seat->type);
-		if (seat->name)
-			ggz_free(seat->name);
-		ggz_free(seat);
-	}
+	if (!seat) return;
+
+	if (seat->type)
+		ggz_free(seat->type);
+	if (seat->name)
+		ggz_free(seat->name);
+	ggz_free(seat);
 }
 
 
@@ -1621,15 +1620,17 @@ static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element)
 		return;
 	}
 
-	if (element) {
-		desc = ggz_xmlelement_get_text(element);
-		parent_tag = ggz_xmlelement_get_tag(parent);
-		
-		if (strcasecmp(parent_tag, "TABLE") == 0)
-			_net_table_set_desc(parent, desc);
-		else
-			_net_send_result(net, "protocol", E_BAD_OPTIONS);
+	parent_tag = ggz_xmlelement_get_tag(parent);
+	if (strcasecmp(parent_tag, "TABLE") != 0) {
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
 	}
+
+	if (!element) return;
+
+	desc = ggz_xmlelement_get_text(element);
+
+	_net_table_set_desc(parent, desc);
 }
 
 
@@ -1651,29 +1652,30 @@ static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *data)
 
 /************ Utility/Convenience functions *******************/
 
-static int safe_atoi(char *string)
+static int str_to_int(const char *str, int dflt)
 {
-	if (!string)
-		return 0;
-	else
-		return atoi(string);
+	int val;
+
+	if (!str || sscanf(str, "%d", &val) < 1)
+		return dflt;
+
+	return val;
 }
 
 
 static int check_playerconn(GGZNetIO *net, const char *type)
 {
-	if (!net->client->data) {
-		/* This should only be caused by a malicious client. */
-		dbg_msg(GGZ_DBG_CONNECTION,
-			"Client requested %s before login.", type);
+	if (net->client->data)
+		return 1;
 
-		/* FIXME: maybe we should just disconnect them. */
-		_net_send_result(net, type, E_NOT_LOGGED_IN);
+	/* This should only be caused by a malicious client. */
+	dbg_msg(GGZ_DBG_CONNECTION,
+		"Client requested %s before login.", type);
 
-		return 0;
-	}
+	/* FIXME: maybe we should just disconnect them. */
+	_net_send_result(net, type, E_NOT_LOGGED_IN);
 
-	return 1;
+	return 0;
 }
 
 
