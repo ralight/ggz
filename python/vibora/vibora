@@ -612,6 +612,7 @@ def main(host):
 
 	switchto_room = -1
 	switchto_table = -1
+	launch_table = 0
 	current_room = 0
 
 	maxline = (screen_resolution[1] - 50 - 100) / 20
@@ -661,6 +662,9 @@ def main(host):
 					if line == maxline - 1:
 						if current_room != 0:
 							switchto_room = 0
+					if line == maxline - 2:
+						if current_room != 0:
+							launch_table = 1
 
 				((rx, ry), (rx2, ry2)) = roomscrolluprect
 				if x > rx and x < rx2 and y > ry and y < ry2:
@@ -716,6 +720,12 @@ def main(host):
 			chatoutput.append(_("* Joining table ") + str(switchto_table))
 			ggzcoresimple.room.join(switchto_table)
 			switchto_table = -1
+			bg_dirty = 1
+
+		if launch_table == 1:
+			chatoutput.append(_("* Launching table "))
+			ggzcoresimple.room.launch()
+			launch_table = 0
 			bg_dirty = 1
 
 		if bg_dirty:
