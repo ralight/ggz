@@ -58,10 +58,11 @@ int game_init(void)
 	gchar *message;
 	gchar *name;
 	gchar *protocol;
-	gint num;
+	gchar *frontend;
+	guint num, i;
 	GGZRoom *room;
 	GGZGameType *gt;
-	GGZModule *module;
+	GGZModule *module = NULL;
 	
 
 	/* Make sure we aren't already in a game */
@@ -107,8 +108,33 @@ int game_init(void)
 		return -1;
 	}
 
+	/* If there's only one choice, use it regardless of frontend */
+	if (num == 1)
+		module = ggzcore_module_get_nth_by_type(name, protocol, 0);
+
+
 	/* FIXME: if num > 1, popup a dialog and let the user choose */
-	module = ggzcore_module_get_nth_by_type(name, protocol, 0);
+	if (num > 1) {
+		g_print("%s v %s had %d modules\n", name, protocol, num);
+		for (i = 0; i < num; i++) {
+			module = ggzcore_module_get_nth_by_type(name, protocol, i);
+			frontend = ggzcore_module_get_frontend(module);
+			g_print("Module %d by %s frontend %s..", i,
+				ggzcore_module_get_author(module),
+				frontend);
+
+			if (strcmp("gtk", frontend) == 0) {
+				g_print("match\n");
+				break;
+			}
+			else {
+				g_print("not ours\n");
+				module = NULL;
+			}
+		}
+	}
+			
+
 	if (!module) {
 		msgbox(_("No modules defined for this game.\nLaunch aborted."), _("Launch Error"), MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 		return -1;
