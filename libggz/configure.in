@@ -18,12 +18,14 @@ else
    LDFLAGS="$LDFLAGS -L${prefix}/lib"
 fi
 
+# Checks for programs.
 AC_PROG_CC
 AC_ISC_POSIX
 AC_PROG_INSTALL
+AC_PROG_LN_S
 AC_PROG_CPP
 AM_PROG_CC_STDC
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 AC_PROG_MAKE_SET
 
 
@@ -36,23 +38,18 @@ dnl Check for header files
 dnl ======================
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS(sys/time.h unistd.h)
+AC_CHECK_HEADERS([errno.h fcntl.h stdlib.h string.h unistd.h])
 
 dnl Check for typedefs, structures, and compiler characteristics
 dnl ============================================================
 AC_C_CONST
-AC_TYPE_SIZE_T
-AC_TYPE_SIGNAL
-AC_HEADER_TIME
-AC_EGREP_CPP(WAIT_ANY, [ #include <sys/wait.h>
-		 WAIT_ANY ], AC_MSG_WARN(*** Cannot find WAIT_ANY, defining our own )
-	         AC_DEFINE(WAIT_ANY, (pid_t)-1))
-
+AC_TYPE_MODE_T
 
 dnl Check for library functions
 dnl ===========================
-AC_CHECK_FUNC(poll)
-
+dnl AC_FUNC_MALLOC
+dnl AC_FUNC_STAT
+AC_CHECK_FUNCS([memset mkdir strdup strerror malloc stat poll])
 
 
 dnl Use -Wall if we have gcc.
@@ -79,54 +76,7 @@ if test "$enable_debug_gdb" = yes; then
 fi
 
 
-dnl Various dirs
-dnl ============
-if test "x${sysconfdir}" = 'x${prefix}/etc'; then
-  if test "x${prefix}" = "xNONE"; then
-    ggzconfdir="${ac_default_prefix}/etc"  
-  else
-    ggzconfdir="${prefix}/etc"
-  fi
-else
-  ggzconfdir="${sysconfdir}"
-fi
-AC_DEFINE_UNQUOTED(GGZCONFDIR, "${ggzconfdir}")
-
-
-if test "x${libdir}" = 'x${exec_prefix}/lib'; then
-  if test "x${exec_prefix}" = "xNONE"; then
-    if test "x${prefix}" = "xNONE"; then
-      ggzexecmoddir="${ac_default_prefix}/lib/ggz"
-    else
-      ggzexecmoddir="${prefix}/lib/ggz"
-    fi
-  else
-    ggzexecmoddir="${exec_prefix}/lib/ggz"
-  fi
-else
-  ggzexecmoddir="${libdir}/ggz"
-fi
-AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}")
-
-
-if test "x${datadir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
-    ggzdatadir="${ac_default_prefix}/share/ggz"
-  else
-    ggzdatadir="${prefix}/share/ggz"
-  fi
-else
-  ggzdatadir="${datadir}/ggz"
-fi
-AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}")
-
-packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
-
 AC_SUBST(LDADD)
-AC_SUBST(ggzconfdir)
-AC_SUBST(ggzdatadir)
-AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([Makefile 
 	   src/Makefile
@@ -144,6 +94,6 @@ echo "-------------------------"
 echo "At the prompt type \"make\" to"
 echo "compile libggz"
 echo ""
-echo "When complete, su to root"
-echo "and type \"make install\" to"
-echo "install the client software."
+echo "When complete, type \"make install\""
+echo "to install the library.  You may"
+echo "need to perform this step as root."
