@@ -198,12 +198,12 @@ void QCw::mousePressEvent(QMouseEvent *e)
 			emit signalMove(m_x, m_y, x, y);
 	}
 
-	paintEvent(NULL);
+	repaint();
 }
 
 void QCw::timerEvent(QTimerEvent *e)
 {
-	paintEvent(NULL);
+	repaint();
 }
 
 void QCw::setStone(int x, int y, int value)
