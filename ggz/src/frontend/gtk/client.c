@@ -107,7 +107,7 @@ static void client_send_button_clicked(GtkButton *button, gpointer data);
 static void client_info_activate(GtkMenuItem *menuitem, gpointer data);
 static int client_get_table_index(guint row);
 static int client_get_table_open(guint row);
-				 
+static void client_join_room(guint room);				 
 
 
 static void
@@ -165,7 +165,7 @@ static void
 client_join_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	ggzcore_server_join_room(server, popup_row);
+	client_join_room(popup_row);
 }
 
 
@@ -603,7 +603,7 @@ client_room_clist_event			(GtkWidget	*widget,
 {
 	GtkWidget *menu, *tmp;
 	gint row, column;
-	
+
 	/* Check to see if the event was a mouse button press */
 	if( event->type == GDK_BUTTON_PRESS )
 	{
@@ -638,7 +638,7 @@ client_room_clist_event			(GtkWidget	*widget,
 							     &row, &column);
 				gtk_clist_select_row(GTK_CLIST(tmp), row, column);
 
-				ggzcore_server_join_room(server, row);
+				client_join_room(row);
 				return TRUE; 
 			}
 		}
@@ -655,11 +655,10 @@ client_room_clist_event			(GtkWidget	*widget,
 						     &row, &column);
 			gtk_clist_select_row(GTK_CLIST(tmp), row, column);
 
-			ggzcore_server_join_room(server, row);
-			return TRUE; 
+			client_join_room(row);
+			return FALSE; 
 		}
 	}
-
 	return FALSE;
 }
 
@@ -713,6 +712,7 @@ client_room_clist_select_row		(GtkCList       *clist,
                                          GdkEvent       *event,
                                          gpointer        data)
 {
+	/*g_print("Selected row: %d\n", row);*/
 }
 
 
@@ -744,6 +744,63 @@ static int client_get_table_open(guint row)
 	} else {
 		return TRUE;
 	}
+}
+
+
+static void client_join_room(guint room)
+{
+	gchar *err_msg = NULL;
+	gint singleclick, status = -1;
+	GtkWidget *tmp;
+
+	switch (ggzcore_server_get_state(server)) {
+	case GGZ_STATE_OFFLINE:
+	case GGZ_STATE_CONNECTING:
+	case GGZ_STATE_ONLINE:
+	case GGZ_STATE_LOGGING_IN:
+	case GGZ_STATE_LOGGING_OUT:
+		err_msg = _("You can't join a room, you're not logged int");
+		break;
+	case GGZ_STATE_BETWEEN_ROOMS:
+	case GGZ_STATE_ENTERING_ROOM:
+		err_msg = _("You're already in between rooms");
+		break;
+	case GGZ_STATE_JOINING_TABLE:
+	case GGZ_STATE_AT_TABLE:
+	case GGZ_STATE_LEAVING_TABLE:
+		err_msg = _("You can't switch rooms while playing a game");
+		break;
+	case GGZ_STATE_IN_ROOM:
+	case GGZ_STATE_LOGGED_IN:
+		status = 0;
+		break;
+	default:
+		err_msg = _("Unknown error");
+		status = -1;
+	}
+
+	if (status == 0) {
+		if (ggzcore_server_join_room(server, room) == 0) {
+
+			/* Only desensitize with single click, dues to
+                           some weird bug that freezes the mouse if we
+                           doubleclick and then desensitize */
+			singleclick = ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE);
+			if (singleclick) {
+				/* Set roomlist insensitive */
+				tmp = lookup_widget(win_main, "room_clist");
+				gtk_widget_set_sensitive(tmp, FALSE);
+			}
+			return;
+		}
+		else {
+			err_msg = _("Error joining room");
+		}
+	}
+
+	/* If we get here, there was an error */
+	msgbox(err_msg, _("Error joining room"), MSGBOX_OKONLY, MSGBOX_STOP, 
+	       MSGBOX_NORMAL);
 }
 
 
