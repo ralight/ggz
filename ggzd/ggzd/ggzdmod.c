@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 8/28/01
  * Desc: GGZD game module functions
- * $Id: ggzdmod.c 2313 2001-08-29 03:55:39Z jdorje $
+ * $Id: ggzdmod.c 2321 2001-08-29 07:01:30Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -79,7 +79,7 @@ int ggzdmod_req_gameleave(int fd, char *name)
 
 int ggzdmod_dispatch(int fd, void *data)
 {
-	int status = 0, opcode, num, player, won, lost, i;
+	int status = 0, opcode;
 	char stat;
 	TableToControl op;
 
@@ -107,16 +107,6 @@ int ggzdmod_dispatch(int fd, void *data)
 		break;
 
 	case REQ_GAME_OVER:
-		/* Read number of statistics */
-		if (es_read_int(fd, &num) < 0)
-			return -1;
-		for (i = 0; i < num; i++) {
-			if (es_read_int(fd, &player) < 0
-			    || es_read_int(fd, &won) < 0
-			    || es_read_int(fd, &lost) < 0)
-				return -1;
-			/* FIXME: Do something with these statistics */
-		}
 		table_game_over(data);
 		/* Send response back to game server, allowing termination */
 		(void) ggzdmod_rsp_gameover(fd);
