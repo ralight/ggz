@@ -124,6 +124,7 @@ typedef struct {
 	unsigned char playing;
 	int seats[MAX_TABLE_SIZE];
 	char names[MAX_USER_NAME_LEN + 1];
+	char desc[1024];
 } TableInfo;
 
 

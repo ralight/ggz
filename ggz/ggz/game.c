@@ -119,6 +119,7 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 	int i,count;
 	int launch_game_type=0;
 	int launch_num_seats=0;
+	char *launch_game_desc;
 	char name[MAX_USER_NAME_LEN+1];
 
 	/* Get game type to play */
@@ -136,6 +137,10 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
         launch_num_seats = atoi(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(temp_widget)->entry)));
 	dbg_msg("handle_options: Get Num Seats %d",launch_num_seats);
 
+	/* Get game description */
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_launch), "entry20");
+	launch_game_desc = g_strdup_printf("%s", gtk_entry_get_text(GTK_ENTRY(temp_widget)));
+
 	dbg_msg("Getting options from game client");
 
 	es_read_int(source, &size);
@@ -150,6 +155,10 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 	/* Game type index */
 	es_write_int(connection.sock, launch_game_type);
 	dbg_msg("Sending Game Type %d",launch_game_type);
+	/* Sending game description */
+	es_write_string(connection.sock, launch_game_desc);
+	dbg_msg("Sending desc: %s\n",launch_game_desc);
+	g_free(launch_game_desc);
 	/* Number of seats */
 	es_write_int(connection.sock, launch_num_seats);
 	dbg_msg("Sending Num Seats %d",launch_num_seats);

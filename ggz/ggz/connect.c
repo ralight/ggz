@@ -395,7 +395,7 @@ void add_table_list(TableInfo table)
 	entry[3] = g_strdup_printf("%d", seats_num(table));
 	entry[4] = g_strdup_printf("%d", seats_open(table));
 	entry[5] = g_strdup_printf("%d", seats_human(table));
-	entry[6] = "";
+	entry[6] = g_strdup_printf("%s", table.desc);
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "table_tree");
 
@@ -405,6 +405,7 @@ void add_table_list(TableInfo table)
 	g_free(entry[3]);
 	g_free(entry[4]);
 	g_free(entry[5]);
+	g_free(entry[6]);
 
 }
 
@@ -551,6 +552,7 @@ void handle_list_tables(int op, int fd)
 		connect_msg("[%s] Type %d\n", opcode_str[op],table.type_index);
 		connect_msg("[%s] Playing %d\n",opcode_str[op], table.playing);
 		connect_msg("[%s] Seats %d\n", opcode_str[op], num);
+		connect_msg("[%s] Desc %s\n", opcode_str[op], table.desc);
 		
 		for (j = 0; j < num; j++) {
 			es_read_int(fd, &table.seats[j]);
@@ -561,6 +563,7 @@ void handle_list_tables(int op, int fd)
 		for (j = num; j < MAX_TABLE_SIZE; j++)
 			table.seats[j] = GGZ_SEAT_NONE;
 		
+		es_read_string(fd, &table.desc);
 		add_table_list(table);
 	}
 

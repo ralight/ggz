@@ -27,6 +27,7 @@ void launch_seat_show(int i, char show);
 int max_allowed_players(unsigned char mask);
 void launch_reserved_toggle(GtkWidget* button, GtkWidget *entry);
 
+
 GtkWidget*
 create_dlgLaunch (void)
 {
@@ -102,6 +103,9 @@ create_dlgLaunch (void)
   GtkWidget *radiobutton23;
   GtkWidget *radiobutton24;
   GtkWidget *entry19;
+  GtkWidget *hbox15;
+  GtkWidget *label46;
+  GtkWidget *entry20;
   GtkWidget *hbox12;
   GtkWidget *hbuttonbox2;
   GtkWidget *button4;
@@ -587,6 +591,27 @@ create_dlgLaunch (void)
   gtk_box_pack_start (GTK_BOX (hbox11), entry19, TRUE, TRUE, 0);
   gtk_entry_set_editable (GTK_ENTRY (entry19), FALSE);
 
+  hbox15 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox15);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "hbox15", hbox15,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox15);
+  gtk_box_pack_start (GTK_BOX (vbox4), hbox15, TRUE, TRUE, 5);
+
+  label46 = gtk_label_new ("Game Description   ");
+  gtk_widget_ref (label46);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "label46", label46,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label46);
+  gtk_box_pack_start (GTK_BOX (hbox15), label46, FALSE, FALSE, 0);
+
+  entry20 = gtk_entry_new ();
+  gtk_widget_ref (entry20);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "entry20", entry20,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (entry20);
+  gtk_box_pack_start (GTK_BOX (hbox15), entry20, TRUE, TRUE, 0);
+
   hbox12 = GTK_DIALOG (dlg_launch)->action_area;
   gtk_object_set_data (GTK_OBJECT (dlg_launch), "hbox12", hbox12);
   gtk_widget_show (hbox12);
@@ -614,6 +639,7 @@ create_dlgLaunch (void)
   gtk_widget_show (button5);
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), button5);
   GTK_WIDGET_SET_FLAGS (button5, GTK_CAN_DEFAULT);
+
 
   gtk_signal_connect_object (GTK_OBJECT (button5), "clicked",
                              GTK_SIGNAL_FUNC (gtk_widget_destroy),

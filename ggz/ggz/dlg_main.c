@@ -396,7 +396,7 @@ create_main_win (void)
   gtk_widget_show (label12);
   gtk_clist_set_column_widget (GTK_CLIST (table_tree), 5, label12);
 
-  label13 = gtk_label_new (" ");
+  label13 = gtk_label_new ("Description");
   gtk_widget_ref (label13);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "label13", label13,
                             (GtkDestroyNotify) gtk_widget_unref);
