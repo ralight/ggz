@@ -50,8 +50,9 @@ int _ggzdb_init(char *datadir)
 	memset(&db_i, 0, sizeof(db_i));
 	memset(&db_e, 0, sizeof(db_e));
 
-	rc = db_appinit(datadir, NULL, &db_e, DB_CREATE);
-	if(rc < 0)
+	rc = db_appinit(datadir, NULL, &db_e,
+			DB_CREATE | DB_INIT_LOCK | DB_THREAD);
+	if(rc != 0)
 		err_sys("db_appinit() failed in _ggzdb_init()");
 
 	return rc;
@@ -64,11 +65,11 @@ int _ggzdb_init_player(char *datadir)
 	int rc;
 
 	/* Open the database file */
-	rc = db_open("player.db", DB_BTREE, DB_CREATE, 0600,
+	rc = db_open("player.db", DB_BTREE, DB_CREATE | DB_THREAD, 0600,
 		     &db_e, &db_i, &db_p);
 
 	/* Check for errors */
-	if(rc < 0)
+	if(rc != 0)
 		err_sys_exit("dbopen() failed in _ggzdb_init_player()");
 
 	return 0;
@@ -88,15 +89,47 @@ int _ggzdb_player_add(ggzdbPlayerEntry *pe)
 	key.size = strlen(pe->handle);
 	data.data = pe;
 	data.size = sizeof(ggzdbPlayerEntry);
+	data.flags = DB_DBT_USERMEM;
 
 	rc = db_p->put(db_p, NULL, &key, &data, DB_NOOVERWRITE);
 	if(rc == DB_KEYEXIST)
 		rc = GGZDB_ERR_DUPKEY;
-	else if(rc < 0)
-		err_sys("put failed in _ggzdb_add_player()");
+	else if(rc != 0)
+		err_sys("put failed in _ggzdb_player_add()");
 
 	/* FIXME: We won't have to do this once ggzd can exit */
 	db_p->sync(db_p, 0);
+
+	return rc;
+}
+
+
+/* Function to retrieve a player record */
+int _ggzdb_player_get(ggzdbPlayerEntry *pe)
+{
+	int rc;
+	DBT key, data;
+
+	/* Build the two DBT structures */
+	memset(&key, 0, sizeof(DBT));
+	memset(&data, 0, sizeof(DBT));
+	key.data = pe->handle;
+	key.size = strlen(pe->handle);
+	data.size = sizeof(ggzdbPlayerEntry);
+	data.flags = DB_DBT_MALLOC;
+
+	/* Perform the get */
+	rc = db_p->get(db_p, NULL, &key, &data, 0);
+	if(rc == DB_NOTFOUND)
+		rc = GGZDB_ERR_NOTFOUND;
+	else if(rc != 0)
+		err_sys("get failed in _ggzdb_player_get()");
+
+	/* Copy it to the user data buffer */
+	memcpy(pe, data.data, sizeof(ggzdbPlayerEntry));
+
+	/* Free db2's copy */
+	free(data.data);
 
 	return rc;
 }

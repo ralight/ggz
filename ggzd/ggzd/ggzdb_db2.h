@@ -26,6 +26,7 @@
 extern int _ggzdb_init(char *datadir);
 extern int _ggzdb_init_player(char *datadir);
 extern int _ggzdb_player_add(ggzdbPlayerEntry *);
+extern int _ggzdb_player_get(ggzdbPlayerEntry *);
 
 /* Use these to define any code which MUST be called upon entry/exit
  * from the database code. 
@@ -34,5 +35,10 @@ extern int _ggzdb_player_add(ggzdbPlayerEntry *);
  * private to the back-end.  One way around this would be to have them call
  * a back-end function.
  */
-#define DB_ENTER	pthread_rwlock_wrlock(&db_thread_lock)
-#define DB_EXIT		pthread_rwlock_unlock(&db_thread_lock)
+
+/* Normally this would be used for setting locks, but db2 doesn't require them
+ * #define DB_ENTER	pthread_rwlock_wrlock(&db_thread_lock)
+ * #define DB_EXIT		pthread_rwlock_unlock(&db_thread_lock)
+ */
+#define DB_ENTER
+#define DB_EXIT

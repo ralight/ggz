@@ -40,6 +40,7 @@ typedef struct ggzdbPlayerEntry {
 /* Error codes */
 #define GGZDB_ERR_INIT		1	/* Engine not initialized */
 #define GGZDB_ERR_DUPKEY	2	/* Tried to overwrite on add */
+#define GGZDB_ERR_NOTFOUND	3	/* Couldn't find a record */
 
 
 /* Exported functions */
@@ -47,5 +48,5 @@ extern int ggzdb_init(void);
 extern void ggzdb_close(void);
 extern int ggzdb_player_add(ggzdbPlayerEntry *);
 extern int ggzdb_player_update(ggzdbPlayerEntry *);
-extern int ggzdb_player_get(char *handle, ggzdbPlayerEntry *);
+extern int ggzdb_player_get(ggzdbPlayerEntry *);
 extern int ggzdb_player_delete(char *handle);

@@ -76,6 +76,7 @@ static int   player_msg_from_sized(int fd_in, int fd_out);
 static int   player_chat(int p_index, int p_fd);
 static int   player_login_anon(int p, int fd);
 static int   player_login_new(int p_index, int fd);
+static int   player_login_normal(int p_index, int fd);
 static int   player_logout(int p, int fd);
 static int   player_table_launch(int p_index, int p_fd, int *t_fd);
 static int   player_table_join(int p_index, int p_fd, int *t_fd);
@@ -339,6 +340,9 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		break;
 
 	case REQ_LOGIN:
+		status = player_login_normal(p_index, p_fd);
+		break;
+
 	case REQ_LOGIN_ANON:
 		status = player_login_anon(p_index, p_fd);
 		break;
@@ -467,6 +471,119 @@ static int player_updates(int p, int fd)
 
 
 /*
+ * player_login_normal implements the following exchange:
+ * 
+ * REQ_LOGIN
+ *  str: login name
+ *  str: password
+ * RSP_NEW_LOGIN
+ *  chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
+ *  int: game type checksum (if success)
+ *  chr: reservation flag (if success)
+ */
+static int player_login_normal(int p, int fd)
+{
+	char name[MAX_USER_NAME_LEN + 1];
+	char password[17];
+	ggzdbPlayerEntry db_pe;
+	char *ip_addr, *hostname;
+	int name_ok, rc;
+
+	dbg_msg(GGZ_DBG_CONNECTION, "Player %d attempting login", p);
+
+	if (read_name(fd, name) < 0)
+		return GGZ_REQ_DISCONNECT;
+	if(es_read_string(fd, password, 17) < 0)
+		return GGZ_REQ_DISCONNECT;
+
+	/* Can't login twice */
+	if (players.info[p].uid != GGZ_UID_NONE) {
+		dbg_msg(GGZ_DBG_CONNECTION, 
+			"Player %d attempted to log in again", p);
+		if (es_write_int(fd, RSP_LOGIN) < 0
+		    || es_write_char(fd, E_ALREADY_LOGGED_IN) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
+	/* Add the player name to the hash table */
+	name_ok = hash_player_add(name, p);
+	if (!name_ok) {
+		dbg_msg(GGZ_DBG_CONNECTION,
+			"Unsuccessful new login of %s", name);
+		if (es_write_int(fd, RSP_LOGIN) < 0
+		    || es_write_char(fd, E_ALREADY_LOGGED_IN) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
+	/* Lookup the player in the database so we can verify the password */
+	strcpy(db_pe.handle, name);
+	rc = ggzdb_player_get(&db_pe);
+
+	/* If they aren't found, return an error */
+	if(rc == GGZDB_ERR_NOTFOUND) {
+		hash_player_delete(name);
+		dbg_msg(GGZ_DBG_CONNECTION,
+			"Unsuccessful login of %s - no account", name);
+		if (es_write_int(fd, RSP_LOGIN) < 0
+		    || es_write_char(fd, E_USR_LOOKUP) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
+	/* They were found, so verify the password */
+	if(strcmp(db_pe.password, password)) {
+		hash_player_delete(name);
+		dbg_msg(GGZ_DBG_CONNECTION,
+			"Unsuccessful login of %s - bad password", name);
+		if (es_write_int(fd, RSP_LOGIN) < 0
+		    || es_write_char(fd, E_USR_LOOKUP) < 0)
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
+	}
+
+	/* Setup the player's information */
+	pthread_rwlock_wrlock(&players.lock);
+	players.info[p].uid = p;
+	strncpy(players.info[p].name, name, MAX_USER_NAME_LEN + 1);
+	ip_addr = players.info[p].ip_addr;
+	hostname = players.info[p].hostname;
+	pthread_rwlock_unlock(&players.lock);
+
+	/* Notify user of success */
+	if (es_write_int(fd, RSP_LOGIN) < 0 
+	    || es_write_char(fd, 0) < 0 
+	    || es_write_int(fd, 265) < 0
+	    || es_write_char(fd, 0) < 0) {
+		player_remove(p);
+		return GGZ_REQ_DISCONNECT;
+	}
+
+	/* Send off the Message Of The Day */
+	if (motd_info.use_motd
+	    && (es_write_int(fd, MSG_MOTD) < 0
+		|| motd_send_motd(fd) < 0)) {
+		player_remove(p);
+		return GGZ_REQ_DISCONNECT;
+	}
+
+	dbg_msg(GGZ_DBG_CONNECTION, "Successful login of %s", name);
+
+	/* Log the connection */
+	if(hostname)
+		log_msg(GGZ_LOG_CONNECTION_INFO,
+			"Player %s logged in from %s (%s)",
+			name, hostname, ip_addr);
+	else
+		log_msg(GGZ_LOG_CONNECTION_INFO,
+			"Player %s logged in from %s", name, ip_addr);
+
+	return GGZ_REQ_OK;
+}
+
+
+/*
  * player_login_new implements the following exchange:
  * 
  * REQ_NEW_LOGIN
@@ -554,6 +671,8 @@ static int player_login_new(int p, int fd)
 		return GGZ_REQ_DISCONNECT;
 	}
 
+	dbg_msg(GGZ_DBG_CONNECTION, "Successful new login of %s", name);
+
 	/* Log the connection */
 	if(hostname)
 		log_msg(GGZ_LOG_CONNECTION_INFO,
@@ -589,6 +708,8 @@ static int player_login_anon(int p, int fd)
 	char name[MAX_USER_NAME_LEN + 1];
 	char *ip_addr, *hostname;
 	int name_ok;
+	ggzdbPlayerEntry db_pe;
+	int rc;
 
 	/* Read this first to get it out of the socket */
 	if (read_name(fd, name) < 0)
@@ -606,10 +727,17 @@ static int player_login_anon(int p, int fd)
 	
 	dbg_msg(GGZ_DBG_CONNECTION, "Creating guest login for player %d", p);
 
-	/* Add the player name to the hash table */
-	name_ok = hash_player_add(name, p);
+	/* Check the name vs. the database */
+	name_ok = 1;
+	strcpy(db_pe.handle, name);
+	rc = ggzdb_player_get(&db_pe);
+	if(rc != GGZDB_ERR_NOTFOUND)
+		name_ok = 0;
 
-	/* FIXME: need to check vs. database too */
+	/* Add the player name to the hash table */
+	if(name_ok)
+		name_ok = hash_player_add(name, p);
+
 	if (!name_ok) {
 		dbg_msg(GGZ_DBG_CONNECTION,
 			"Unsuccessful anonymous login of %s", name);

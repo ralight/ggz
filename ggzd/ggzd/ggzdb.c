@@ -79,6 +79,23 @@ int ggzdb_player_add(ggzdbPlayerEntry *pe)
 }
 
 
+/* Function to retrieve a player from the database */
+int ggzdb_player_get(ggzdbPlayerEntry *pe)
+{
+	int rc=0;
+
+	DB_ENTER;
+	if(player_needs_init)
+		rc = ggzdb_player_init();
+
+	if(rc == 0)
+		rc = _ggzdb_player_get(pe);
+
+	DB_EXIT;
+	return rc;
+}
+
+
 /*** INTERNAL FUNCTIONS ***/
 
 /* Function to initialize player tables if necessary */
