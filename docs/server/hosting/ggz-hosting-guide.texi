@@ -82,9 +82,8 @@ players have left the game.
 Permanent game servers are a variant of this: for example, role-play games do
 often only consist of one process which never ends, and players may join and
 leave whenever they wish.
-GGZ does now (experimentally) support permanent game servers too; see the
-section about the game Keepalive below. This might however be subject to
-change for 0.0.6.
+GGZ does now support permanent game servers too; see the
+section about the game Keepalive below.
 
 @node Installation, Databases, Game Servers, Top
 @chapter Installation
@@ -120,7 +119,7 @@ Memory is normally not an issue, even old server hardware with only 32 MB of
 RAM should be sufficient. The same goes for the CPU - a GGZ server with less
 than 100 people on it can be handled by any Pentium-class or better CPU.
 Network bandwidth is difficult to estimate, as each game requires a different
-amount of it. But the GGZ development server, connected by 56k, handles a few
+amount of it. But the GGZ development server, once connected by 56k, handled a few
 players and games at the same time quite well, so there's no need for high
 bandwidth under normal circumstances.
 More detailed calculations, including real-time games and measurement/control
@@ -135,7 +134,7 @@ server, and 'ggz-game-servers' including many game servers, should follow.
 Both need the library package 'libggzdmod' as well.
 When installing from source, all of those can be found in the 'ggzd' CVS
 module.
-Upon installation, quite some files and directories are created under the
+Upon installation, lots of files and directories are created under the
 chosen prefix (usually /usr/local when installing from source and /usr
 otherwise):
 
@@ -240,7 +239,8 @@ use the data in them.
 The libdb databases are stored in ggzd's variable datadir (usually
 /var/ggzd), whereas SQL databases can even be located on other hosts.
 To set them up, make sure ggzd has support for them compiled in (using
---with-database=mysql or pgsql), and setup the following values in ggzd.conf:
+--with-database=mysql or pgsql), and setup the following values in ggzd.conf
+within the [General] section:
 
 @itemize
 @item DatabaseHost
@@ -248,6 +248,62 @@ To set them up, make sure ggzd has support for them compiled in (using
 @item DatabaseUsername
 @item DatabasePassword
 @end itemize
+
+@section MySQL setup
+
+To be done.
+
+@section PostgreSQL setup
+
+When using PostgreSQL, a dedicated GGZ user and database has to be created.
+From PostgreSQL 7.3 on, the following commands should be used:
+
+@verbatim
+		psql template1
+		CREATE USER ggzd PASSWORD 'ggzd';
+		CREATE DATABASE ggz OWNER ggzd;
+@end verbatim
+
+For versions below 7.3, things are more difficult, especially since the
+table cannot be created automatically. Thus, the following applies:
+
+@verbatim
+		psql template1
+		CREATE USER ggzd;
+		CREATE DATABASE ggz;
+		\q
+		psql ggz
+		CREATE TABLE users (
+			id serial NOT NULL,
+			handle varchar(256) NOT NULL,
+			password varchar(256),
+			name varchar(256),
+			email varchar(256),
+			lastlogin int8,
+			permissions int8
+		);
+		GRANT ALL ON users TO ggzd;
+		GRANT ALL ON users_id_seq TO ggzd;
+@end verbatim
+
+You can speed up the table with an index, like:
+
+@verbatim
+		CREATE index xhandle ON users (handle);
+@end verbatim
+
+Make sure the connection can be established. When the database is running on a
+remote server, it must accept internet connections (startup option -i), and
+allow the remote access, which could be granted using the following entry in
+data/pg_hba.conf:
+
+@verbatim
+	host ggz 192.168.0.2 255.255.255.255 crypt
+@end verbatim
+
+Please refer to the PostgreSQL documentation for tuning and security advice.
+The above information is only meant as a quick setup, not as complete
+documentation.
 
 @section Format
 
@@ -293,7 +349,7 @@ the server start something went wrong.
 
 @subsection Kamikaze
 
-This game server is not part of GGZ yet, but will be from version 0.0.6 on.
+This game server is not part of GGZ yet, but will be from version 0.0.7 on.
 
 @subsection Chess
 
@@ -311,8 +367,7 @@ This is the server for the strategy game Combat.
 
 @subsection Copenhagen
 
-The Copenhagen server is not part of GGZ 0.0.5 because it is not stable enough
-yet. It will be present in the next version.
+The Copenhagen server was not part of GGZ 0.0.5 because it was not stable enough.
 You can however install it from source, which is available from MindX CVS:
 @url{http://mindx.sourceforge.net}
 
@@ -370,7 +425,7 @@ Game server for the reversi game.
 @subsection TicTacToe
 
 The easiest game, which does therefore serve as an example for beginners in GGZ
-game development. 
+game development.
 
 @node External Games, Other GGZ Servers, Internal Games, Top
 @chapter External Games
@@ -391,8 +446,10 @@ view the list of external games. There are already patched convenience tarballs
 available at:
 
 @url{http://teg.sf.net/teg-0.9.3-ggz.tar.gz}
+(Note: The current version 0.10.1 has GGZ support included.)
 
 @url{http://teg.sf.net/gbatnav-1.0.4pre.tar.gz}
+(Note: The current version 1.0.4 has GGZ support included.)
 
 @url{http://teg.sf.net/xtux-ggz.tar.gz}
 
@@ -601,7 +658,7 @@ tools.
 @itemize @bullet
 @item @url{ggz://jzaun.com} (USA, developers, medium connection)
 @item @url{ggz://ggz.snafu.de} (Germany, fast connection)
-@item @url{ggz://ggz.morat.net} (USA, fast connection)
+@item @url{ggz://ggz.morat.net} (USA, fast connection) (Currently not available)
 @item @url{ggz://ggz.homeip.net} (Argentina, medium connection)
 @item @url{ggz://mindx.dyndns.org} (Germany, medium connection)
 @end itemize
