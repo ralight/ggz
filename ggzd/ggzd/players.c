@@ -63,16 +63,16 @@ static void  player_remove(int p_index);
 static int   player_updates(int p_index, int p_fd, time_t*, time_t*, time_t*);
 static int   player_msg_to_sized(int fd_in, int fd_out);
 static int   player_msg_from_sized(int fd_in, int fd_out);
-static int   player_send_chat(int p_index, char* name, char* chat);
+static int   player_send_chat(int p_index, int fd, char* name, char* chat);
 static int   player_chat(int p_index, int p_fd);
-static int   player_login_anon(int index);
+static int   player_login_anon(int p, int fd);
 static int   player_login_new(int p_index);
-static int   player_logout(int p_index);
+static int   player_logout(int p, int fd);
 static int   player_table_launch(int p_index, int p_fd, int *t_fd);
 static int   player_table_join(int p_index, int p_fd, int *t_fd);
-static int   player_list_players(int p_index);
-static int   player_list_types(int p_index);
-static int   player_list_tables(int p_index);
+static int   player_list_players(int p_index, int fd);
+static int   player_list_types(int p_index, int fd);
+static int   player_list_tables(int p_index, int fd);
 
 /* Utility functions: Should either get renamed or moved */
 static int read_name(int, char[MAX_USER_NAME_LEN]);
@@ -134,15 +134,19 @@ static void* player_new(void *sock_ptr)
 
 	/* Skip over occupied seats */
 	for (i = 0; i < MAX_USERS; i++)
-		if (players.info[i].fd < 0) {
-			players.info[i].fd = sock;
+		if (players.info[i].fd < 0)
 			break;
-		}
 	
+	/* Initialize player data */
+	players.info[i].fd = sock;
+	players.info[i].table_index = -1;
+	players.info[i].uid = NG_UID_NONE;
+	players.info[i].playing = 0;
 	players.info[i].pid = pthread_self();
+	strcpy(players.info[i].name, "(none)");
 	players.count++;
 	pthread_rwlock_unlock(&players.lock);
-
+	
 	dbg_msg("New player %d connected", i);
 	player_loop(i, sock);
 	
@@ -213,7 +217,9 @@ static void player_loop(int p_index, int p_fd)
 			case NG_HANDLE_GAME_START:
 				/* Player launched or joined a game */
 				dbg_msg("Player %d now in game", p_index);
+				pthread_rwlock_wrlock(&players.lock);
 				players.info[p_index].playing = 1;
+				pthread_rwlock_unlock(&players.lock);
 				FD_SET(t_fd, &active_fd_set);
 				break;
 			case NG_HANDLE_GAME_OVER:
@@ -237,14 +243,15 @@ static void player_loop(int p_index, int p_fd)
 
 		/* Clean up after either player or table ends game,
 		   but don't try to do both */
-		if (game_over && players.info[p_index].playing) {
+		if (game_over && t_fd != -1) {
 			dbg_msg("Cleaning up player %d's game", p_index);
-			players.info[p_index].playing = 0;
 			close(t_fd);
 			FD_CLR(t_fd, &active_fd_set);
 			t_fd = -1;
 			pthread_rwlock_wrlock(&players.lock);
+			players.info[p_index].playing = 0;
 			players.info[p_index].table_index = -1;
+			players.timestamp = time(NULL);
 			pthread_rwlock_unlock(&players.lock);
 			game_over = 0;
 		}
@@ -274,15 +281,15 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 {
 
 	int status;
-	UserToControl op = (UserToControl) request;
+	UserToControl op = (UserToControl)request;
 
 	switch (op) {
 	case REQ_LOGIN_ANON:
-		status = player_login_anon(p_index);
+		status = player_login_anon(p_index, p_fd);
 		break;
 
 	case REQ_LOGOUT:
-		player_logout(p_index);
+		player_logout(p_index, p_fd);
 		status = NG_HANDLE_LOGOUT;
 		break;
 
@@ -299,15 +306,15 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		break;
 
 	case REQ_LIST_PLAYERS:
-		status = player_list_players(p_index);
+		status = player_list_players(p_index, p_fd);
 		break;
 
 	case REQ_LIST_TYPES:
-		status = player_list_types(p_index);
+		status = player_list_types(p_index, p_fd);
 		break;
 
 	case REQ_LIST_TABLES:
-		status = player_list_tables(p_index);
+		status = player_list_tables(p_index, p_fd);
 		break;
 
 	case REQ_GAME:
@@ -340,21 +347,16 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 
 
 /*
- * remove_player accepts a player index number and then proceeds to
+ * player_remove accepts a player index number and then proceeds to
  * remove that player from the list
  */
 static void player_remove(int p_index)
 {
-
 	int fd;
 	
-	dbg_msg("Removing player %d (uid: %d)", p_index,
+	dbg_msg("Removing player %d (uid: %d)", p_index, 
 		players.info[p_index].uid);
 	pthread_rwlock_wrlock(&players.lock);
-	players.info[p_index].uid = NG_UID_NONE;
-	players.info[p_index].name[0] = '\0';
-	players.info[p_index].table_index = -1;
-	players.info[p_index].playing = 0;
 	fd = players.info[p_index].fd;
 	players.info[p_index].fd = -1;
 	players.count--;
@@ -385,7 +387,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	if (difftime(players.timestamp, *player_ts) != 0 ) {
 		*player_ts = players.timestamp;
 		user_update = 1;
-		dbg_msg("Player list updated");
+		dbg_msg("Player %d needs player list update", p);
 	}
 	pthread_rwlock_unlock(&players.lock);
 
@@ -394,7 +396,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	if (difftime(tables.timestamp, *table_ts) != 0 ) {
 		*table_ts = tables.timestamp;
 		table_update = 1;
-		dbg_msg("Table list updated");
+		dbg_msg("Player %d needs table list update", p);
 	}
 	pthread_rwlock_unlock(&tables.lock);
 
@@ -403,7 +405,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	if (difftime(game_types.timestamp, *type_ts) != 0 ) {
 		*type_ts = game_types.timestamp;
 		type_update = 1;
-		dbg_msg("Type list updated");
+		dbg_msg("Player %d needs type list update");
 	}
 	pthread_rwlock_unlock(&game_types.lock);
 
@@ -419,7 +421,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 		if (chat_check_unread(p, i)) {
 			chat_get(i, player, chat);
 			chat_mark_read(p, i);
-			if (FAIL(player_send_chat(p, player, chat)))
+			if (FAIL(player_send_chat(p, fd, player, chat)))
 				return(-1);
 			count--;
 		}
@@ -471,14 +473,22 @@ static int player_login_new(int p)
 }
 
 
-static int player_login_anon(int p)
+/*
+ * player_login_anon implements the following exchange:
+ * 
+ * REQ_LOGIN_ANON
+ *  str: login name
+ * RSP_LOGIN_ANON
+ *  chr: success flag (0 for success, -1 invalid name, -2 duplicate name)
+ *  int: game type checksum (if success)
+ */
+static int player_login_anon(int p, int fd)
 {
-
 	char name[MAX_USER_NAME_LEN + 1];
 
 	dbg_msg("Creating anonymous login for player %d", p);
-
-	if (FAIL(read_name(players.info[p].fd, name)))
+	
+	if (FAIL(read_name(fd, name)))
 		return (-1);
 
 	/* FIXME: Check validity/uniqueness of name */
@@ -488,27 +498,33 @@ static int player_login_anon(int p)
 	players.timestamp = time(NULL);
 	pthread_rwlock_unlock(&players.lock);
 
-	if (FAIL(es_write_int(players.info[p].fd, RSP_LOGIN_ANON)) ||
-	    FAIL(es_write_char(players.info[p].fd, 0)) ||
-	    FAIL(es_write_int(players.info[p].fd, 265)))
+	if (FAIL(es_write_int(fd, RSP_LOGIN_ANON)) 
+	    || FAIL(es_write_char(fd, 0)) 
+	    || FAIL(es_write_int(fd, 265)))
 		return (-1);
 
-	dbg_msg("Successful anonymous login of %s", players.info[p].name);
-
+	dbg_msg("Successful anonymous login of %s", name);
+	
 	return 0;
 }
 
 
-static int player_logout(int p)
+/*
+ * player_logout implements the following exchange:
+ * 
+ * REQ_LOGOUT
+ *  str: login name
+ * RSP_LOGOUT
+ *  chr: success flag (0 for success, -1 for error )
+ */
+static int player_logout(int p, int fd)
 {
-
 	dbg_msg("Handling logout for player %d", p);
-
+	
 	/* FIXME: Saving of stats and other things */
-	if (FAIL(es_write_int(players.info[p].fd, RSP_LOGOUT)) ||
-	    FAIL(es_write_char(players.info[p].fd, 0)))
+	if (FAIL(es_write_int(fd, RSP_LOGOUT)) || FAIL(es_write_char(fd, 0)))
 		return -1;
-
+	
 	return 0;
 }
 
@@ -516,7 +532,7 @@ static int player_logout(int p)
 /*
  * player_table_launch implements the following exchange:
  *
- * REQ_LAUNCH_GAME
+ * REQ_TABLE_LAUNCH
  *  int: game type index
  *  int: number of players
  *  chr: computer players (2^num)
@@ -525,7 +541,7 @@ static int player_logout(int p)
  *    str: login name for reservation
  *  int: size of options struct
  *  struct: game options
- * RSP_LAUNCH_GAME
+ * RSP_TABLE_LAUNCH
  *  chr: success flag (0 for success, negative values for various failures)
  * 
  * returns 0 if successful, -1 on error.  If successful, returns table
@@ -533,7 +549,6 @@ static int player_logout(int p)
  */
 static int player_table_launch(int p_index, int p_fd, int *t_fd)
 {
-
 	TableInfo table;
 	int i, size, t_index = -1;
 	int status = 0;
@@ -543,10 +558,10 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 
 	dbg_msg("Handling table launch for player %d", p_index);
 
-	if (FAIL(es_read_int(p_fd, &(table.type_index))) ||
-	    FAIL(es_read_int(p_fd, &(table.num_seats))) ||
-	    FAIL(es_read_char(p_fd, &(table.comp_players))) ||
-	    FAIL(es_read_int(p_fd, &table.num_reserves)))
+	if (FAIL(es_read_int(p_fd, &(table.type_index))) 
+	    || FAIL(es_read_int(p_fd, &(table.num_seats))) 
+	    || FAIL(es_read_char(p_fd, &(table.comp_players))) 
+	    || FAIL(es_read_int(p_fd, &table.num_reserves)))
 		return -1;
 
 	/* Read in reservations */
@@ -604,11 +619,11 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 			status = E_ROOM_FULL;
 		} else {
 			for (i = 0; i < MAX_TABLES; i++)
-				if (tables.info[i].type_index < 0) {
-					tables.info[i] = table;
+				if (tables.info[i].type_index < 0)
 					break;
-				}
+
 			t_index = i;
+			tables.info[t_index] = table;
 			tables.count++;
 			tables.timestamp = time(NULL);
 			pthread_rwlock_unlock(&tables.lock);
@@ -620,12 +635,19 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 		status = E_LAUNCH_FAIL;
 
 	/* Return status */
-	if (FAIL(es_write_int(p_fd, RSP_TABLE_LAUNCH)) ||
-	    FAIL(es_write_char(p_fd, (char) status)))
+	if (FAIL(es_write_int(p_fd, RSP_TABLE_LAUNCH)) 
+	    || FAIL(es_write_char(p_fd, (char) status)))
 		status = E_RESPOND_FAIL;
 
 	/* Cleanup if something failed */
 	switch (status) {
+	case E_RESPOND_FAIL:
+		/* 
+		 *  FIXME: lots to do here since table thread was launched 
+		 *  perhaps just remove user from table and let table die 
+		 * on it's own.
+		 */
+		break;
 	case E_LAUNCH_FAIL:
 		pthread_rwlock_wrlock(&tables.lock);
 		tables.info[t_index].pid = -1;
@@ -651,6 +673,24 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 }
 
 
+/*
+ * player_table_join implements the following exchange:
+ *
+ * REQ_TABLE_JOIN
+ *  int: game type index
+ *  int: number of players
+ *  chr: computer players (2^num)
+ *  int: number of reservations (possibly 0)
+ *  sequence of
+ *    str: login name for reservation
+ *  int: size of options struct
+ *  struct: game options
+ * RSP_TABLE_JOIN
+ *  chr: success flag (0 for success, negative values for various failures)
+ * 
+ * returns 0 if successful, -1 on error.  If successful, returns table
+ * fd by reference
+ */
 /* FIXME: Some day we'll worry about reservations. Not today*/
 static int player_table_join(int p_index, int p_fd, int *t_fd)
 {
@@ -722,15 +762,12 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 }
 
 
-static int player_list_players(int p_index)
+static int player_list_players(int p_index, int fd)
 {
-
-	int i, fd, count;
+	int i, count;
 	UserInfo info[MAX_USERS];
 
-
-	dbg_msg("Handling user list request for player %d", p_index);
-	fd = players.info[p_index].fd;
+	dbg_msg("Handling player list request for player %d", p_index);
 
 	pthread_rwlock_rdlock(&players.lock);
 	count = players.count;
@@ -738,12 +775,13 @@ static int player_list_players(int p_index)
 		info[i] = players.info[i];
 	pthread_rwlock_unlock(&players.lock);
 
-	if (FAIL(es_write_int(fd, RSP_LIST_PLAYERS)) ||
-	    FAIL(es_write_int(fd, count))) return (-1);
+	if (FAIL(es_write_int(fd, RSP_LIST_PLAYERS)) 
+	    || FAIL(es_write_int(fd, count))) 
+		return (-1);
 
 	for (i = 0; i < count; i++) {
-		if (FAIL(es_write_string(fd, info[i].name)) ||
-		    FAIL(es_write_int(fd, info[i].table_index)))
+		if (FAIL(es_write_string(fd, info[i].name)) 
+		    || FAIL(es_write_int(fd, info[i].table_index)))
 			return (-1);
 	}
 
@@ -751,15 +789,12 @@ static int player_list_players(int p_index)
 }
 
 
-static int player_list_types(int p_index)
+static int player_list_types(int p_index, int fd)
 {
-
 	char verbose;
-	int i, fd, count;
+	int i, count;
 
 	GameInfo info[MAX_GAME_TYPES];
-
-	fd = players.info[p_index].fd;
 
 	if (FAIL(es_read_char(fd, &verbose)))
 		return (-1);
@@ -770,19 +805,20 @@ static int player_list_types(int p_index)
 		info[i] = game_types.info[i];
 	pthread_rwlock_unlock(&game_types.lock);
 
-	if (FAIL(es_write_int(fd, RSP_LIST_TYPES)) ||
-	    FAIL(es_write_int(fd, count))) return (-1);
+	if (FAIL(es_write_int(fd, RSP_LIST_TYPES)) 
+	    || FAIL(es_write_int(fd, count))) 
+		return (-1);
 
 	for (i = 0; i < count; i++) {
-		if (FAIL(es_write_int(fd, i)) ||
-		    FAIL(es_write_string(fd, info[i].name)) ||
-		    FAIL(es_write_string(fd, info[i].version)))
+		if (FAIL(es_write_int(fd, i)) 
+		    || FAIL(es_write_string(fd, info[i].name)) 
+		    || FAIL(es_write_string(fd, info[i].version)))
 			return (-1);
 		if (!verbose)
 			continue;
-		if (FAIL(es_write_string(fd, info[i].desc)) ||
-		    FAIL(es_write_string(fd, info[i].author)) ||
-		    FAIL(es_write_string(fd, info[i].homepage)))
+		if (FAIL(es_write_string(fd, info[i].desc)) 
+		    || FAIL(es_write_string(fd, info[i].author)) 
+		    || FAIL(es_write_string(fd, info[i].homepage)))
 			return (-1);
 	}
 
@@ -790,25 +826,23 @@ static int player_list_types(int p_index)
 }
 
 
-static int player_list_tables(int p_index)
+static int player_list_tables(int p_index, int fd)
 {
 
-	int i, j, fd, type, player_num, seated_humans;
+	int i, j, type, player_num, seated_humans;
 	int count = 0;
 	char name[MAX_USER_NAME_LEN + 1];
 
 	TableInfo my_tables[MAX_TABLES];
 	int indices[MAX_TABLES];
 	
-	fd = players.info[p_index].fd;
-
 	if (FAIL(es_read_int(fd, &type)))
 		return (-1);
 
 	/* Copy tables of interest to local list */
 	pthread_rwlock_rdlock(&tables.lock);
 	for (i = 0; i < MAX_TABLES; i++) {
-		if (tables.info[i].type_index != -1
+		if (tables.info[i].type_index != -1 
 		    && type_match_table(type, i)) {
 			my_tables[count] = tables.info[i];
 			indices[count++] = i;
@@ -874,14 +908,11 @@ static int player_msg_from_sized(int in, int out)
 }
 
 
-static int player_send_chat(int p_index, char* name, char* msg) 
+static int player_send_chat(int p_index, int fd, char* name, char* msg) 
 {
-	int fd;
-	
-	fd = players.info[p_index].fd;	
-	if (FAIL(es_write_int(fd, MSG_CHAT)) ||
-	    FAIL(es_write_string(fd, name)) ||
-	    FAIL(es_write_string(fd, msg)))
+	if (FAIL(es_write_int(fd, MSG_CHAT)) 
+	    || FAIL(es_write_string(fd, name)) 
+	    || FAIL(es_write_string(fd, msg)))
 		return(-1);
 	
 	return 0;
@@ -902,10 +933,10 @@ static int player_chat(int p_index, int p_fd)
 	strncpy(msg, tmp, MAX_CHAT_LEN);
 	free(tmp);
 	msg[MAX_CHAT_LEN] = '\0';  /* Make sure strings are null-terminated */
-	status = chat_add(p_index, msg);
+	status = chat_add(p_index, players.info[p_index].name, msg);
 
-	if (FAIL(es_write_int(p_fd, RSP_CHAT)) ||
-	    FAIL(es_write_char(p_fd, status))) 
+	if (FAIL(es_write_int(p_fd, RSP_CHAT)) 
+	    || FAIL(es_write_char(p_fd, status))) 
 		return (-1);
 
 	return 0;

@@ -61,16 +61,13 @@ void init_data(void)
 	pthread_rwlock_init(&tables.lock, NULL);
 	pthread_rwlock_init(&players.lock, NULL);
 
-	for (i = 0; i < MAX_USERS; i++) {
+	for (i = 0; i < MAX_USERS; i++)
 		players.info[i].fd = -1;
-		players.info[i].table_index = -1;
-		players.info[i].uid = NG_UID_NONE;
-	}
 
-	for (i = 0; i < MAX_TABLES; i++) {
+	for (i = 0; i < MAX_TABLES; i++)
 		tables.info[i].type_index = -1;
-	}
-
+	
+	
 	/* FIXME: Temporary hack.  This info should be loaded from a file
 	 * or something
 	 */
@@ -80,24 +77,21 @@ void init_data(void)
 		"NetSpades is a multiuser networked spades game",
 		MAX_GAME_DESC_LEN);
 	strncpy(spades.author, "Brent Hendricks", MAX_GAME_AUTH_LEN);
-	strncpy(spades.homepage, "http://www.ece.rice.edu/~brentmh/spades", MAX_GAME_WEB_LEN);
+	strncpy(spades.homepage, "http://www.ece.rice.edu/~brentmh/spades", 
+		MAX_GAME_WEB_LEN);
 	spades.num_play_allow = (char) (PLAY_ALLOW_FOUR);
 	spades.comp_allow =
-	    (char) (COMP_ALLOW_ZERO | COMP_ALLOW_ONE | COMP_ALLOW_TWO |
-		    COMP_ALLOW_THREE);
+		(char) (COMP_ALLOW_ZERO | COMP_ALLOW_ONE | COMP_ALLOW_TWO |
+			COMP_ALLOW_THREE);
 	spades.options_size = 12;
 	spades.enabled = 1;
 	spades.launch = NULL;
-	strncpy(spades.path, "../game_servers/spades/spades",
-		MAX_PATH_LEN);
+	strncpy(spades.path, "../game_servers/spades/spades", MAX_PATH_LEN);
 
-	pthread_rwlock_wrlock(&game_types.lock);
 	game_types.info[0] = spades;
 	game_types.count++;
-	pthread_rwlock_unlock(&game_types.lock);
 
 	chat_init();
-
 }
 
 
