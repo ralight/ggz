@@ -39,8 +39,8 @@ int main(int argc, char **argv)
 		{0, 0, 0}
 	};
 
-	about = new KAboutData("Krosswater",
-		"krosswater",
+	about = new KAboutData("krosswater",
+		I18N_NOOP("Krosswater"),
 		"0.0.6",
 		I18N_NOOP("GGZ version of Cross The Water"),
 		KAboutData::License_GPL,
