@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 5163 2002-11-03 07:06:55Z jdorje $
+ * $Id: game.h 5970 2004-03-14 00:29:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -45,8 +45,6 @@
 typedef struct {
 	/* Animation prefs */
 	bool animation;
-	bool faster_animation;
-	bool smoother_animation;
 	bool multiple_animation;
 	bool longer_clearing_delay;
 #ifdef DEBUG

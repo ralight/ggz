@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 5162 2002-11-03 06:31:19Z jdorje $
+ * $Id: preferences.c 5970 2004-03-14 00:29:47Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -47,6 +47,9 @@ PrefType pref_types[] = {
 	 &preferences.animation,
 	 TRUE},
 
+	/* These options are no longer used.  Now all animations have 250ms
+	   duration and maximum possible smoothness. */
+#if 0
 	{"faster_animation",
 	 N_("Faster animation"),
 	 N_("If this is selected, the animation will happen faster.  The "
@@ -62,6 +65,7 @@ PrefType pref_types[] = {
 	    "look smoother, but may not work well on slower computers."),
 	 &preferences.smoother_animation,
 	 TRUE},
+#endif
 
 	{"multiple_animation",
 	 N_("Multiple (simultaneous) animations"),

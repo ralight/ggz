@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 5666 2003-10-25 12:25:52Z dr_maux $
+ * $Id: animation.c 5970 2004-03-14 00:29:47Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -30,6 +30,8 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>		/* for memset */
+#include <sys/time.h>
+#include <time.h>
 
 #include <ggz.h>
 
@@ -41,11 +43,8 @@
 #include "table.h"
 
 
-/* The number of frames in an animation sequence. */
-#define FRAMES		(preferences.smoother_animation ? 50 : 15)
-
 /* Intended duration of an animation sequence, in milliseconds. */
-#define DURATION	(preferences.faster_animation ? 50 : 500)
+#define DURATION	250
 
 /* The delay before clearing cards off of the table (milliseconds). */
 #ifdef DEBUG
@@ -74,7 +73,7 @@ static struct {
 	int dest_x, dest_y;
 
 	int cur_x, cur_y;
-	int cur_frame;		/* 0..FRAMES */
+	struct timeval start_time;
 } anim[MAX_NUM_PLAYERS];
 
 static gint start_offtable_animation(gpointer winner);
@@ -235,12 +234,12 @@ int animation_start(int player, card_t card, int card_num, int destination)
 	anim[player].dest_y = dest_y;
 	anim[player].cur_x = start_x;
 	anim[player].cur_y = start_y;
-	anim[player].cur_frame = 0;
+	gettimeofday(&anim[player].start_time, NULL);
 
-	if (!animating)
+	if (!animating) {
 		/* This sets up our timeout callback */
-		anim_tag = gtk_timeout_add(DURATION / FRAMES,
-					   animation_callback, NULL);
+		anim_tag = gtk_timeout_add(0, animation_callback, NULL);
+	}
 
 	animating = TRUE;
 
@@ -310,28 +309,28 @@ static gint animation_callback(gpointer ignored)
 {
 	int continuations = 0;
 	int player;
-
 	int min_x = get_table_width(), min_y = get_table_height();
 	int max_x = 0, max_y = 0;
+	struct timeval curr_time;
 
 	assert(animating);
+	gettimeofday(&curr_time, NULL);
 
-	/* 
-	 * First we draw the table onto the animation buffer, then we draw
-	 * all the cards onto the animation buffer, then we draw the
-	 * animation buffer to the window.
-	 */
-
-	/* Draw over the old animation and surrounding areas.  It's not really 
-	   necessary to redraw the _whole thing_, but it's certainly easier. */
-	table_draw_table(anim_buf, 0, 0, get_table_width(),
-			 get_table_height());
-
+	/* First determine the areas that need to be overwritten up. */
 	for (player = 0; player < ggzcards.num_players; player++) {
+		const double total_time = (double)DURATION / 1000.0;
+		double mytime;
+		struct timeval start_time;
+
 		if (!anim[player].animating)
 			continue;
 
-		anim[player].cur_frame++;
+		start_time = anim[player].start_time;
+
+		mytime = curr_time.tv_sec - start_time.tv_sec;
+		mytime += (double)(curr_time.tv_usec
+				   - start_time.tv_usec) / 1000000.0;
+		mytime = MIN(mytime, total_time);
 
 		/* Make sure we draw over the old position. */
 		min_x = MIN(min_x, anim[player].cur_x);
@@ -340,12 +339,14 @@ static gint animation_callback(gpointer ignored)
 		max_y = MAX(max_y, anim[player].cur_y + CARDHEIGHT);
 
 		/* Calculate our new position */
-		anim[player].cur_x = anim[player].start_x +
-			(anim[player].dest_x - anim[player].start_x)
-			* anim[player].cur_frame / FRAMES;
-		anim[player].cur_y = anim[player].start_y +
-			(anim[player].dest_y - anim[player].start_y)
-			* anim[player].cur_frame / FRAMES;
+		anim[player].cur_x
+		  = anim[player].start_x
+		    + (anim[player].dest_x - anim[player].start_x)
+		    * (mytime / total_time);
+		anim[player].cur_y
+		  = anim[player].start_y
+		    + (anim[player].dest_y - anim[player].start_y)
+		    * (mytime / total_time);
 
 		/* Make sure we draw over the new position, too... */
 		min_x = MIN(min_x, anim[player].cur_x);
@@ -357,7 +358,7 @@ static gint animation_callback(gpointer ignored)
 		   card "for real" (if applicable).  Note that FRAMES might
 		   change mid-animation, so we must be careful with this
 		   check. */
-		if (anim[player].cur_frame >= FRAMES) {
+		if (mytime >= total_time) {
 			anim[player].animating = FALSE;
 
 			if (anim[player].destination < 0) {
@@ -372,13 +373,21 @@ static gint animation_callback(gpointer ignored)
 			}
 		} else
 			continuations++;
+	}
+
+	/* Draw the background for the animation. */
+	table_draw_table(anim_buf,
+			 min_x, min_y, max_x - min_x, max_y - min_y);
+
+	/* Now draw the cards for each player being animated. */
+	for (player = 0; player < ggzcards.num_players; player++) {
+		if (!anim[player].animating)
+			continue;
 
 		/* Draw our new card position to the animation buffer */
 		draw_card(anim[player].card, 0,
 			  anim[player].cur_x, anim[player].cur_y, anim_buf);
 	}
-
-
 
 	/* Now draw from the animation buffer to the screen.  This could
 	   probably be done more easily if we just drew the _whole screen_,
@@ -388,7 +397,6 @@ static gint animation_callback(gpointer ignored)
 			anim_buf,
 			min_x, min_y,
 			min_x, min_y, max_x - min_x, max_y - min_y);
-
 
 	animating = (continuations > 0);
 
