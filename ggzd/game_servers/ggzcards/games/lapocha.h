@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.h 2733 2001-11-13 09:56:05Z jdorje $
+ * $Id: lapocha.h 2865 2001-12-10 21:26:03Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -30,3 +30,13 @@
 typedef struct lapocha_game_t {
 	int bid_sum;		/* what the sum of the bids is */
 } lapocha_game_t;
+
+/* Each of these opcodes is used for a GAME_MESSAGE_GAME.  The opcode is sent 
+   as a 1-byte char. */
+enum {
+	/* Requests a trump bid.  No extra data. */
+	LAP_REQ_TRUMP,
+
+	/* Requests a normal bid.  No extra data. */
+	LAP_REQ_BID,
+};

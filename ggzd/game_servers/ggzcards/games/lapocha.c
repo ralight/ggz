@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 2834 2001-12-09 22:12:57Z jdorje $
+ * $Id: lapocha.c 2865 2001-12-10 21:26:03Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -23,6 +23,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <easysock.h>
+
 #include "common.h"
 
 #include "lapocha.h"
@@ -39,6 +41,10 @@ static int lapocha_deal_hand(void);
 static int lapocha_get_bid_text(char *buf, size_t buf_len, bid_t bid);
 static void lapocha_set_player_message(player_t p);
 static void lapocha_end_hand(void);
+
+/* these send lapocha-specific game messages. */
+static int lap_send_trump_request(player_t p);
+static int lap_send_bid_request(player_t p);
 
 struct game_function_pointers lapocha_funcs = {
 	lapocha_is_valid_game,
@@ -143,6 +149,7 @@ static int lapocha_get_bid(void)
 			char suit;
 			for (suit = 0; suit < 4; suit++)
 				add_sbid(0, suit, LAPOCHA_TRUMP);
+			(void) lap_send_trump_request(game.dealer);
 			return req_bid(game.dealer);
 		}
 	} else {		/* get a player's numerical bid */
@@ -155,6 +162,7 @@ static int lapocha_get_bid(void)
 				continue;
 			add_sbid(i, 0, 0);
 		}
+		(void) lap_send_bid_request(game.next_bid);
 		return req_bid(game.next_bid);
 	}
 	return 0;
@@ -254,4 +262,31 @@ static void lapocha_end_hand(void)
 	set_global_message("", "No trump set.");	/* TODO: give
 							   information about
 							   previous hand */
+}
+
+
+/* What follows are game-specific extensions.  They can be ignored for most
+   games. */
+
+/* these send lapocha-specific game messages. */
+static int lap_send_trump_request(player_t p)
+{
+	int fd = get_player_socket(p);
+	if (write_opcode(fd, MESSAGE_GAME) < 0 || write_opcode(fd, GAME_MESSAGE_GAME) < 0 || es_write_int(fd, GGZ_GAME_LAPOCHA) < 0 || es_write_int(fd, 1) < 0 ||	/* data 
+																					   length 
+																					 */
+	    es_write_char(fd, LAP_REQ_TRUMP) < 0)
+		return -1;
+	return 0;
+}
+
+static int lap_send_bid_request(player_t p)
+{
+	int fd = get_player_socket(p);
+	if (write_opcode(fd, MESSAGE_GAME) < 0 || write_opcode(fd, GAME_MESSAGE_GAME) < 0 || es_write_int(fd, GGZ_GAME_LAPOCHA) < 0 || es_write_int(fd, 1) < 0 ||	/* data 
+																					   length 
+																					 */
+	    es_write_char(fd, LAP_REQ_BID) < 0)
+		return -1;
+	return 0;
 }
