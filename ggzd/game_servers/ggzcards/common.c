@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3749 2002-04-05 07:49:23Z jdorje $
+ * $Id: common.c 3750 2002-04-05 07:51:47Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -457,7 +457,9 @@ static void handle_launch_event(void)
 		game.players[p].team = -1;
 		game.players[p].allbids = NULL;
 		game.players[p].fd = -1;
+#ifdef DEBUG
 		game.players[p].err_fd = -1;
+#endif
 		game.players[p].pid = -1;
 	}
 
