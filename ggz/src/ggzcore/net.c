@@ -41,6 +41,7 @@
 
 /* Handlers for various server commands */
 static void _ggzcore_net_handle_server_id(void);
+static void _ggzcore_net_handle_login(void);
 static void _ggzcore_net_handle_login_anon(void);
 static void _ggzcore_net_handle_motd(void);
 static void _ggzcore_net_handle_logout(void);
@@ -86,7 +87,7 @@ static struct _GGZServerMsg ggz_server_msgs[] = {
 	{MSG_UPDATE_ROOMS,   "msg_update_rooms", NULL},
 	{MSG_ERROR,          "msg_error", NULL},
 	{RSP_LOGIN_NEW,      "rsp_login_new", NULL},
-	{RSP_LOGIN,          "rsp_login", NULL},
+	{RSP_LOGIN,          "rsp_login", _ggzcore_net_handle_login},
 	{RSP_LOGIN_ANON,     "rsp_login_anon", _ggzcore_net_handle_login_anon},
 	{RSP_LOGOUT,         "rsp_logout", _ggzcore_net_handle_logout},
 	{RSP_PREF_CHANGE,    "rsp_pref_change", NULL},
@@ -224,18 +225,20 @@ int _ggzcore_net_process(void)
 void _ggzcore_net_send_login(GGZLoginType type, const char* login, 
 			     const char* pass)
 {
-	ggzcore_debug(GGZ_DBG_NET, "Executing net login");
 	switch (type) {
 	case GGZ_LOGIN:
+		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN");
 		if (es_write_int(ggz_server_sock, REQ_LOGIN) == 0
 		    && es_write_string(ggz_server_sock, login) == 0)
 			es_write_string(ggz_server_sock, pass);
 		break;
 	case GGZ_LOGIN_GUEST:
+		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_GUEST");
 		if (es_write_int(ggz_server_sock, REQ_LOGIN_ANON) == 0)
 			es_write_string(ggz_server_sock, login);
 		break;
 	case GGZ_LOGIN_NEW:
+		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_NEW");
 		if (es_write_int(ggz_server_sock, REQ_LOGIN_NEW) == 0)
 			es_write_string(ggz_server_sock, login);
 		break;
@@ -351,6 +354,37 @@ static void _ggzcore_net_handle_server_id(void)
 	}
 }
 
+static void _ggzcore_net_handle_login(void)
+{
+	char status, reservations;
+	int checksum;
+
+	if (es_read_char(ggz_server_sock, &status) < 0)
+		return;
+	
+	if (status == 0 && es_read_int(ggz_server_sock, &checksum) < 0)
+		return;
+	
+	if (es_read_char(ggz_server_sock, &reservations) < 0)
+		return;
+
+	ggzcore_debug(GGZ_DBG_NET, "RSP_LOGIN from server : %d, %d", 
+		      status, checksum);
+	
+	switch (status) {
+	case 0:
+		ggzcore_event_enqueue(GGZ_SERVER_LOGIN, NULL, NULL);
+		break;
+	case E_ALREADY_LOGGED_IN:
+		ggzcore_event_enqueue(GGZ_SERVER_LOGIN_FAIL, 
+				      "Already logged in", NULL);
+		break;
+	case E_USR_LOOKUP:
+		ggzcore_event_enqueue(GGZ_SERVER_LOGIN_FAIL, 
+				      "Name taken", NULL);
+		break;
+	}
+}
 
 static void _ggzcore_net_handle_login_anon(void)
 {

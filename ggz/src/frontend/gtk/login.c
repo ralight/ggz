@@ -221,8 +221,19 @@ login_start_session                    (GtkButton       *button,
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "name_entry");
 	profile->login = gtk_entry_get_text(GTK_ENTRY(tmp));
 
-	/* FIXME: handle other login types */
-	profile->type = GGZ_LOGIN_GUEST;
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "normal_radio");
+	if(GTK_TOGGLE_BUTTON (tmp)->active)
+	{
+		profile->type = GGZ_LOGIN;
+		tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "pass_entry");
+		profile->password = gtk_entry_get_text(GTK_ENTRY(tmp));
+	}
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "guest_radio");
+	if(GTK_TOGGLE_BUTTON (tmp)->active)
+		profile->type = GGZ_LOGIN_GUEST;
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "first_radio");
+	if(GTK_TOGGLE_BUTTON (tmp)->active)
+		profile->type = GGZ_LOGIN_NEW;
 
 	if(ggzcore_state_is_online()) {
 		/* Set login_reconnect as a callback for GGZ_SERVER_LOGOUT */
@@ -262,8 +273,19 @@ login_relogin                          (GtkButton       *button,
 	tmp = lookup_widget(login_dialog, "name_entry");
 	profile->login = gtk_entry_get_text(GTK_ENTRY(tmp));
 
-	/* FIXME: handle other login types */
-	profile->type = GGZ_LOGIN_GUEST;
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "normal_radio");
+	if(GTK_TOGGLE_BUTTON (tmp)->active)
+	{
+		profile->type = GGZ_LOGIN;
+		tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "pass_entry");
+		profile->password = gtk_entry_get_text(GTK_ENTRY(tmp));
+	}
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "guest_radio");
+	if(GTK_TOGGLE_BUTTON (tmp)->active)
+		profile->type = GGZ_LOGIN_GUEST;
+	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "first_radio");
+	if(GTK_TOGGLE_BUTTON (tmp)->active)
+		profile->type = GGZ_LOGIN_NEW;
 
 	/* FIXME: provide a destroy function that frees the appropriate mem */
 	ggzcore_event_enqueue(GGZ_USER_LOGIN, profile, NULL);
