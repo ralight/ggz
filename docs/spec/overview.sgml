@@ -32,7 +32,7 @@
 	<imagedata fileref="images/server_arch.eps" format="eps">
       </imageobject>
       <imageobject>
-	<imagedata fileref="server_arch.gif" format="gif" scale="50">
+	<imagedata fileref="server_arch.jpg" format="jpeg" scale="50">
       </imageobject>
       <textobject>
 	<para>Server Architecture</para>
