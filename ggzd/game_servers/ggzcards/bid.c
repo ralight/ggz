@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 3142 2002-01-19 08:28:37Z bmh $
+ * $Id: bid.c 3302 2002-02-10 11:29:38Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -23,7 +23,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-130
  */
 
-#include <config.h>		/* Site-specific config */
+#ifdef HAVE_CONFIG_H
+#  include <config.h>			/* Site-specific config */
+#endif
 
 #include <stdlib.h>
 #include <ggz.h>
