@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6174 2004-09-04 07:05:09Z jdorje $
+dnl $Id: configure.ac 6494 2004-12-15 21:17:08Z josef $
 
 AC_INIT([GGZ client libraries], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -170,6 +170,7 @@ AC_CONFIG_FILES([Makefile
 	   ggzcore/Makefile
 	   ggzmod/Makefile
 	   ggz-config/Makefile
+	   ggz-wrapper/Makefile
 	   man/Makefile
 	   man/ggz-config.6
 	   man/ggz.modules.5
