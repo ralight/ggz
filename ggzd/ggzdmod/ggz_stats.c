@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 9/4/01
  * Desc: GGZ game module stat functions
- * $Id: ggz_stats.c 4182 2002-05-07 16:51:35Z jdorje $
+ * $Id: ggz_stats.c 4204 2002-05-15 21:32:16Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -52,8 +52,28 @@ struct GGZStats {
 #define lock_name "ggz-stats-lock"
 #define stats_name "ggz-stats"
 
+static void lock_stats(void)
+{
+	while (mkdir(lock_name, S_IRWXU) < 0) {
+		ggz_debug(DBG_GGZSTATS, "Waiting to acquire lock.");
+		/* Someone else is using it.  Just poll until we can
+		   get the lock (ugly!). */
+		sleep(1);
+	}
+	ggz_debug(DBG_GGZSTATS, "Acquired stats lock.");
+}
 
-int read_stats(GGZStats * stats)
+static void unlock_stats(void)
+{
+	if (rmdir(lock_name) < 0) {
+		ggz_error_sys("Couldn't remove stats lock.");
+		assert(0);
+	}
+	ggz_debug(DBG_GGZSTATS, "Released stats lock.");
+}
+
+
+static int read_stats(GGZStats * stats)
 {
 	int num = stats->num_players, player, handle;
 
@@ -61,12 +81,6 @@ int read_stats(GGZStats * stats)
 
 	/* FIXME: use database */
 	ggz_debug(DBG_GGZSTATS, "Reading stats data for %d players.", num);
-
-	while (mkdir(lock_name, S_IRWXU) < 0) {
-		ggz_error_sys("Couldn't access lock "
-			      "while reading ggz_stats data.");
-		sleep(1);
-	}
 
 	handle = ggz_conf_parse(stats_name, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 	if (handle < 0) {
@@ -107,16 +121,10 @@ int read_stats(GGZStats * stats)
 
 	ggz_conf_cleanup();	/* Hope nobody else is using this! */
 
-	if (rmdir(lock_name) < 0) {
-		ggz_error_sys("Couldn't remove lock "
-			      "while reading ggz_stats data.");
-		assert(0);
-	}
-
 	return 0;
 }
 
-int write_stats(GGZStats * stats)
+static int write_stats(GGZStats * stats)
 {
 	int num = stats->num_players, handle, player;
 
@@ -124,12 +132,6 @@ int write_stats(GGZStats * stats)
 
 	/* FIXME: use database */
 	ggz_debug(DBG_GGZSTATS, "Writing stats for %d players.", num);
-
-	while (mkdir(lock_name, S_IRWXU) < 0) {
-		ggz_error_sys("Couldn't access lock "
-			      "while writing ggz_stats data.");
-		sleep(1);
-	}
 
 	handle = ggz_conf_parse(stats_name, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 	if (handle < 0) {
@@ -171,12 +173,6 @@ int write_stats(GGZStats * stats)
 	ggz_conf_commit(handle);
 	ggz_conf_cleanup();	/* Hope nobody else is using this! */
 
-	if (rmdir(lock_name) < 0) {
-		ggz_error_sys("Couldn't remove lock "
-			      "while writing ggz_stats data.");
-		assert(0);
-	}
-
 	return 0;
 }
 
@@ -184,6 +180,7 @@ GGZStats *ggzstats_new(GGZdMod * ggzdmod)
 {
 	GGZStats *stats;
 	int num_players = ggzdmod_get_num_seats(ggzdmod);
+	int status;
 	
 	if (!ggzdmod) {
 		ggz_error_msg("ggzstats_new: " "invalid param");
@@ -202,8 +199,11 @@ GGZStats *ggzstats_new(GGZdMod * ggzdmod)
 	stats->ties = ggz_malloc(num_players * sizeof(*stats->ties));
 	stats->ratings = ggz_malloc(num_players * sizeof(*stats->ratings));
 
-	if (read_stats(stats) < 0) {
-		ggz_error_msg("ggzstats_new: " "couldn't read stats!!");
+	lock_stats();
+	status = read_stats(stats);
+	unlock_stats();
+	
+	if (status < 0) {
 		ggzstats_free(stats);
 		return NULL;
 	}
@@ -233,6 +233,8 @@ void ggzstats_free(GGZStats * stats)
 
 int ggzstats_reread(GGZStats * stats)
 {
+	int status;
+	
 	if (!stats) {
 		ggz_error_msg("ggzstats_reread: " "invalid param");
 		return -1;
@@ -240,10 +242,12 @@ int ggzstats_reread(GGZStats * stats)
 
 	ggz_debug(DBG_GGZSTATS, "Re-reading stats.");
 
-	if (read_stats(stats) < 0) {
-		ggz_error_msg("ggzstats_reread: " "couldn't read stats!!");
-		return -1;
-	}
+	lock_stats();
+	status = read_stats(stats);
+	unlock_stats();
+	
+	if (status < 0)
+		return -2;
 	return 0;
 }
 
@@ -351,7 +355,6 @@ int ggzstats_recalculate_ratings(GGZStats * stats)
 	int num_players = ggzdmod_get_num_seats(stats->ggz);
 	int num_teams = stats->teams > 0 ? stats->teams : num_players;
 	float sum = 0;
-
 	float team_scores[num_teams];
 	float team_ratings[num_teams];
 	int team_sizes[num_teams];
@@ -365,6 +368,12 @@ int ggzstats_recalculate_ratings(GGZStats * stats)
 	}
 	
 	ggz_debug(DBG_GGZSTATS, "Recalculating ratings.");
+	
+	lock_stats();
+	if (read_stats(stats) < 0) {
+		unlock_stats();
+		return -2;
+	}
 
 	/* first lets initialize the team arrays */
 	for (i = 0; i < num_teams; i++) {
@@ -392,7 +401,7 @@ int ggzstats_recalculate_ratings(GGZStats * stats)
 		/* FIXME: rounding error might cause this */
 		ggz_error_msg("ggzstats_recalculate_ratings: "
 			      "winner sums add to %f.", sum);
-		return -1;
+		return -3;
 	}
 
 	elo_recalculate_ratings(num_players, stats->ratings, player_teams,
@@ -408,9 +417,12 @@ int ggzstats_recalculate_ratings(GGZStats * stats)
 			stats->ties[i]++;
 	}
 
-	if (write_stats(stats) < 0)
-		ggz_error_msg("ggzstats_recalculate_ratings: "
-			      "couldn't write stats!!");
+	if (write_stats(stats) < 0) {
+		unlock_stats();
+		return -4;
+	}
+			
+	unlock_stats();
 
 	return 0;		/* success */
 }

@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 5/07/2002 (moved from ggz_stats.c)
  * Desc: GGZ game module stat functions - ELO ratings
- * $Id: elo.h 4182 2002-05-07 16:51:35Z jdorje $
+ * $Id: elo.h 4204 2002-05-15 21:32:16Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/** Recaulate player rankings based on an ELO system, given a set of teams
+/** Recalculate player rankings based on an ELO system, given a set of teams
  *  with pre-averaged rankings.
  *
  *  @param num_players The number of players involved.
