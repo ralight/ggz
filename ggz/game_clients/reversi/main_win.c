@@ -140,9 +140,8 @@ gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 
 void game_resync(GtkMenuItem *menuitem, gpointer user_data)
 {
-/*
-*/
-	
+	// Request sync from the server
+	request_sync();
 }
 
 

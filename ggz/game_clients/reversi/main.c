@@ -77,9 +77,8 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 			game.state = RVR_STATE_WAIT;
 			break;
 		case RVR_MSG_SYNC:
-			// FIXME
-			//get_sync();
-			//display_board();
+			get_sync();
+			display_board();
 			break;
 		case RVR_MSG_START:
 			game.state = RVR_STATE_PLAYING;
@@ -217,8 +216,6 @@ int get_move() {
 // make the move
 void game_make_move(int player, int move) {
 	int x = X(move), y = Y(move);
-	int status = 0;
-	int a, fd;
 
 	// Make the move
 	game.board[move] = player;
@@ -272,4 +269,40 @@ void send_my_move(int move) {
 		return;
 	}
 	printf("Sent move: %d\n", move);
+}
+
+int request_sync() {
+	if (es_write_int(game.fd, RVR_REQ_SYNC) < 0) {
+		// Not that someone would check this return value, but...
+		return -1;
+	} else {
+		game_status("Requesting sync from the server");
+	}
+	return 0;
+}
+		
+int get_sync() {
+	char fboard[64];
+	char fturn;
+	int i;
+	if (es_read_char(game.fd, &fturn) < 0)
+		return -1;
+	for (i = 0; i < 64; i++) {
+		if (es_read_char(game.fd, &fboard[i]) < 0)
+			return -1;
+	}
+	// Ok, everything worked well!
+	// Some sanity tests
+	if (fturn > -2 && fturn < 2) {
+		if (game.turn != fturn)
+			game_status("You have been synchronized");
+		game.turn = fturn;
+	}
+	for (i = 0; i < 64; i++) {
+		if (fboard[i] != game.board[i])
+			game_status("You have been synchoronized");
+	 	if (fboard[i] == BLACK || fboard[i] == WHITE || fboard[i] == EMPTY)
+			game.board[i] = fboard[i];
+	} 
+	return 0;
 }
