@@ -30,7 +30,6 @@
 /* Information about all rooms */
 typedef struct {
 	pthread_rwlock_t lock;	/* Not inititalized or used yet */
-	time_t timestamp;
 	int num_rooms;
 } RoomInfo;
 
@@ -49,8 +48,6 @@ typedef struct {
 	int table_count;
 	int max_tables;
 	int game_type;
-	time_t player_timestamp;
-	time_t table_timestamp;
 	int *player_index;
 	int *table_index;
 	GGZEvent *event_tail;

@@ -27,7 +27,6 @@
 #include <pthread.h>
 #include <string.h>
 #include <stdlib.h>
-#include <time.h>
 
 #include <easysock.h>
 #include <ggzd.h>
@@ -152,7 +151,6 @@ void room_initialize(void)
 	dbg_msg(GGZ_DBG_ROOM, "Initializing room array");
 
 	room_info.num_rooms=1;
-	room_info.timestamp = time(NULL);
 
 	/* Calloc a big enough array to hold all our first room */
 	if((rooms = calloc(room_info.num_rooms, sizeof(RoomStruct))) == NULL)
@@ -274,7 +272,6 @@ int room_join(const int p_index, const int room, const int fd)
 			}
 		dbg_msg(GGZ_DBG_ROOM,
 			"Room %d player count = %d", old_room, count);
-		rooms[old_room].player_timestamp = time(NULL);
 	}
 
 	/* Put them in the new room, and free up the old room */
@@ -287,7 +284,6 @@ int room_join(const int p_index, const int room, const int fd)
 		count = ++ rooms[room].player_count;
 		rooms[room].player_index[count-1] = p_index;
 		dbg_msg(GGZ_DBG_ROOM, "Room %d player count = %d", room, count);
-		rooms[room].player_timestamp = time(NULL);
 	}
 
 	/* Finally we can release the other chat room lock */
@@ -300,7 +296,7 @@ int room_join(const int p_index, const int room, const int fd)
 }
 
 
-/* Notifies clients that someone has entered/left the room */
+/* Notify clients that someone has entered/left the room */
 static void room_notify_change(const int p, const int old, const int new)
 {
 	void* data = NULL;
@@ -311,20 +307,19 @@ static void room_notify_change(const int p, const int old, const int new)
 
 	size = sizeof(int) + sizeof(char);
 	
-	/* FIXME: Use appropriate update opcode */
-	if(old != -1) {
-		/* Pack up room-leave message */
+	/* Send DELETE update to old room */
+	if (old != -1) {
 		data = malloc(size);
-		*(char*)data = 0; /* 0 == leave */
-		*(int*)(data + 1) = p; 
-
+		*(char*)data = GGZ_UPDATE_DELETE; 
+		*(int*)(data + sizeof(char)) = p; 
+		
 		event_room_enqueue(old, room_event_callback, size, data);
 	}
 
-	if(new != -1) {
-		/* Pack up room-join message */
+	/* Send ADD update to new room */
+	if (new != -1) {
 		data = malloc(size);
-		*(char*)data = 1; /* 1 == join */
+		*(char*)data = GGZ_UPDATE_ADD;
 		*(int*)(data + sizeof(char)) = p; 
 		
 		event_room_enqueue(new, room_event_callback, size, data);
@@ -336,18 +331,21 @@ static void room_notify_change(const int p, const int old, const int new)
 static int room_event_callback(int p_index, int size, void* data)
 {
 	unsigned char opcode;
-	int player;
-	int room = players.info[p_index].room;
+	int status, player, fd, room;
+
+	room = players.info[p_index].room;
+	fd = players.info[p_index].fd;
 
 	/* Unpack event data */
 	opcode = *(unsigned char*)data;
 	player = *(int*)(data + sizeof(char));
 
-	/* FIXME: Use appropriate MSG_UPDATE */
-	if (opcode)
+	if (opcode == GGZ_UPDATE_ADD)
 		chat_room_enqueue(room, GGZ_CHAT_NORMAL, player, "/SjoinS");
 	else
 		chat_room_enqueue(room, GGZ_CHAT_NORMAL, player, "/SpartS");
+	
+	status = es_write_int(fd, MSG_UPDATE_PLAYERS);
 
-	return 0;
+	return status;
 }

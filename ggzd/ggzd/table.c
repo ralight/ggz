@@ -69,6 +69,9 @@ static int   table_log(int index, int fd, char debug);
 static int   table_game_launch(int index, int fd);
 static int   table_game_join(int index, int fd, char* transit);
 static int   table_game_leave(int index, int fd, char* transit);
+static int   table_event_enqueue(unsigned int table, unsigned char opcode);
+static int   table_pack(void** data, unsigned char opcode, unsigned int table);
+static int   table_event_callback(int p_index, int size, void* data);
 
 
 /*
@@ -403,6 +406,8 @@ static int table_game_launch(int index, int fd)
 	    || es_read_char(fd, &status) < 0
 	    || status < 0)
 		return -1;
+	
+	table_event_enqueue(index, GGZ_UPDATE_ADD);
 
 	pthread_rwlock_wrlock(&tables.lock);
 	tables.info[index].state = GGZ_TABLE_LAUNCHED;
@@ -455,8 +460,8 @@ static int table_game_join(int index, int fd, char* transit)
 			dbg_msg(GGZ_DBG_TABLE, "Table %d full now", index);
 			tables.info[index].state = GGZ_TABLE_PLAYING;
 		}
-		tables.timestamp = time(NULL);
 		pthread_rwlock_unlock(&tables.lock);
+		table_event_enqueue(index, GGZ_UPDATE_JOIN);
 	}
 
 	/* Mark transit as done and signal player*/
@@ -510,10 +515,9 @@ static int table_game_leave(int index, int fd, char* transit)
 				index);
 			ret_val = -1;
 		}
-		else 
-			tables.timestamp = time(NULL);
-
+		
 		pthread_rwlock_unlock(&tables.lock);
+		table_event_enqueue(index, GGZ_UPDATE_LEAVE);
 	}
 
 	/* Mark transit as done and signal player*/
@@ -629,16 +633,14 @@ static void table_remove(int t_index)
 			break;
 		}
 	dbg_msg(GGZ_DBG_ROOM, "Room %d table count = %d", room, count);
-	rooms[room].table_timestamp = time(NULL);
-	rooms[room].player_timestamp = time(NULL);
 	pthread_rwlock_unlock(&rooms[room].lock);
 
 	pthread_rwlock_wrlock(&tables.lock);
 	tables.info[t_index].type_index = -1;
 	tables.info[t_index].state = GGZ_TABLE_ERROR;
 	tables.count--;
-	tables.timestamp = time(NULL);
 	pthread_rwlock_unlock(&tables.lock);
+	table_event_enqueue(t_index, GGZ_UPDATE_DELETE);
 
 	/* Signal anyone waiting for this table, do we need to do this? */
 	pthread_mutex_lock(&tables.info[t_index].state_lock);
@@ -679,7 +681,6 @@ int table_launch(int p, TableInfo table, int* t_index)
 	index = i;
 	tables.info[index] = table;
 	tables.count++;
-	tables.timestamp = time(NULL);
 	pthread_rwlock_unlock(&tables.lock);
 
 	/* Attempt to do launch of table-controller */
@@ -835,5 +836,78 @@ int table_leave(int p, int index)
 }
 
 
+static int table_event_enqueue(unsigned int table, unsigned char opcode)
+{
+	void* data = NULL;
+	int size, status, room;
 
+	room = tables.info[table].room;
+	
+	/* Pack up table update data */
+	size = table_pack(&data, opcode, table);
+
+	/* Queue table event for whole room */
+	status = event_room_enqueue(room, table_event_callback, size, data);
+	
+	return status;
+}
+
+
+static int table_pack(void** data, unsigned char opcode, unsigned int table)
+{
+	int size;
+	char* current;
+
+	size = sizeof(int) + sizeof(char);
+	
+	if ( (*data = malloc(size)) == NULL)
+		err_sys_exit("malloc failed in table_pack");
+	
+	current = (char*)*data;
+	
+	*(unsigned char*)current = opcode;
+	current += sizeof(char);
+
+	*(unsigned int*)current = table;
+
+	return size;
+}
+
+
+/* Event callback for delivering table-update to a player */
+static int table_event_callback(int p_index, int size, void* data)
+{
+	unsigned char opcode;
+	int status, table, fd;
+
+	fd = players.info[p_index].fd;
+
+	/* Unpack event data */
+	opcode = *(unsigned char*)data;
+	table = *(int*)(data + sizeof(char));
+
+	switch (opcode) {
+	case GGZ_UPDATE_DELETE:
+		dbg_msg(GGZ_DBG_UPDATE, "Player %d sees table %d deleted",
+			p_index, table);
+		break;
+	case GGZ_UPDATE_ADD:
+		dbg_msg(GGZ_DBG_UPDATE, "Player %d sees table %d added",
+			p_index, table);
+		break;
+	case GGZ_UPDATE_LEAVE:
+		dbg_msg(GGZ_DBG_UPDATE, "Player %d sees someone left table %d",
+			p_index, table);
+		break;
+	case GGZ_UPDATE_JOIN:
+		dbg_msg(GGZ_DBG_UPDATE, 
+			"Player %d sees someone joined table %d",
+			p_index, table);
+		break;
+	}
+	
+	status = es_write_int(fd, MSG_UPDATE_TABLES);
+
+	return status;
+}
 

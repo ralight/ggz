@@ -37,7 +37,6 @@
 #include <string.h>
 #include <pthread.h>
 #include <errno.h>
-#include <time.h>
 
 #include <easysock.h>
 #include <ggzd.h>
@@ -69,8 +68,7 @@ static void* player_new(void * sock_ptr);
 static void  player_loop(int p_index, int p_fd);
 static int   player_handle(int op, int p_index, int p_fd, int * t_fd);
 static void  player_remove(int p_index);
-static int   player_updates(int p_index, int p_fd,
-			    time_t*, time_t*, time_t*, time_t*);
+static int   player_updates(int p_index, int p_fd);
 static int   player_msg_to_sized(int fd_in, int fd_out);
 static int   player_msg_from_sized(int fd_in, int fd_out);
 static int   player_chat(int p_index, int p_fd);
@@ -212,24 +210,15 @@ static void player_loop(int p_index, int p_fd)
 	char game_over = 0;
 	fd_set active_fd_set, read_fd_set;
 	struct timeval timer;
-	/* Update timestamps */
-	time_t player_ts;
-	time_t table_ts;
-	time_t type_ts;
-	time_t room_ts;
 
 	/* Start off listening only to player */
 	p_fd = players.info[p_index].fd;
 	FD_ZERO(&active_fd_set);
 	FD_SET(p_fd, &active_fd_set);
 
-	/* Initialize timestamps */
-	player_ts = table_ts = type_ts = room_ts = time(NULL);
-
 	for (;;) {
 		/* Send updated info if need be */
-		if (player_updates(p_index, p_fd, &player_ts, &table_ts, 
-				   &type_ts, &room_ts) < 0)
+		if (player_updates(p_index, p_fd) < 0)
 			break;
 		
 		read_fd_set = active_fd_set;
@@ -302,7 +291,6 @@ static void player_loop(int p_index, int p_fd)
 			t_fd = -1;
 			pthread_rwlock_wrlock(&players.lock);
 			players.info[p_index].table_index = -1;
-			players.timestamp = time(NULL);
 			pthread_rwlock_unlock(&players.lock);
 			/* FIXME: update time stamp in room */
 			game_over = 0;
@@ -437,7 +425,6 @@ static void player_remove(int p_index)
 	fd = players.info[p_index].fd;
 	players.info[p_index].fd = -1;
 	players.count--;
-	players.timestamp = time(NULL);
 
 	pthread_rwlock_unlock(&players.lock);
 	if (players.info[p_index].room != -1) {
@@ -453,63 +440,12 @@ static void player_remove(int p_index)
  * player_updates checks any updates (player/table/type) lists
  * or chats which need to be sent to the player, and sends them
  */
-static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts, 
-			  time_t* type_ts, time_t* room_ts) {
-	int room;
-	char user_update = 0;
-	char table_update = 0;
-	char type_update = 0;
-	char room_update = 0;
-
+static int player_updates(int p, int fd)
+{
 	/* Don't send updates to people who aren't logged in */
  	if (players.info[p].uid == GGZ_UID_NONE)
  		return GGZ_REQ_FAIL;
 
-	if ( (room = players.info[p].room) != -1) {
-		/* Check for player list updates in our room */
-		pthread_rwlock_rdlock(&rooms[room].lock);
-		if (difftime(rooms[room].player_timestamp, *player_ts) !=0){
-			*player_ts = rooms[room].player_timestamp;
-			user_update = 1;
-			dbg_msg(GGZ_DBG_UPDATE,
-				"Player %d needs player update", p);
-		}
-
-		/* Check for table list updates in our room */
-		if (difftime(rooms[room].table_timestamp, *table_ts) != 0) {
-			*table_ts = rooms[room].table_timestamp;
-			table_update = 1;
-			dbg_msg(GGZ_DBG_UPDATE,
-				"Player %d needs table update", p);
-		}
-		pthread_rwlock_unlock(&rooms[room].lock);
-	}
-
-	/* Check for room list update */
-	/* pthread_rwlock_rdlock(&room_info.lock); */
-	if(difftime(room_info.timestamp, *room_ts) != 0) {
-		*room_ts = room_info.timestamp;
-		room_update = 1;
-		dbg_msg(GGZ_DBG_UPDATE, "Player %d needs room update", p);
-	}
-	/* pthread_rwlock_unlock(&room_info.lock); */
-
-	/* Check for game type list updates*/
-	pthread_rwlock_rdlock(&game_types.lock);
-	if (difftime(game_types.timestamp, *type_ts) != 0 ) {
-		*type_ts = game_types.timestamp;
-		type_update = 1;
-		dbg_msg(GGZ_DBG_UPDATE, "Player %d needs type update", p);
-	}
-	pthread_rwlock_unlock(&game_types.lock);
-
-	/* Send out proper update messages */
-	if ((user_update && es_write_int(fd, MSG_UPDATE_PLAYERS) < 0)
-	    || (type_update && es_write_int(fd, MSG_UPDATE_TYPES) < 0)
-	    || (table_update && es_write_int(fd, MSG_UPDATE_TABLES) < 0)
-	    || (room_update && es_write_int(fd, MSG_UPDATE_ROOMS) < 0))
-		return GGZ_REQ_DISCONNECT;
-	
 	/* Process events from queue */
 	if (players.info[p].room != -1 && event_room_handle(p) < 0)
 		return GGZ_REQ_DISCONNECT;
@@ -622,7 +558,6 @@ static int player_login_anon(int p, int fd)
 	pthread_rwlock_wrlock(&players.lock);
 	players.info[p].uid = GGZ_UID_ANON;
 	strncpy(players.info[p].name, name, MAX_USER_NAME_LEN + 1);
-	players.timestamp = time(NULL);
 	ip_addr = players.info[p].ip_addr;
 	hostname = players.info[p].hostname;
 	pthread_rwlock_unlock(&players.lock);
@@ -798,8 +733,6 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 		rooms[table.room].table_index[count-1] = t_index;
 		dbg_msg(GGZ_DBG_ROOM,
 			"Room %d table count = %d", table.room, count);
-		rooms[table.room].table_timestamp = time(NULL);
-		rooms[table.room].player_timestamp = time(NULL);
 		pthread_rwlock_unlock(&rooms[table.room].lock);
 
 		/* Join newly created table */
@@ -826,7 +759,6 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	
 	pthread_rwlock_wrlock(&players.lock);
 	players.info[p_index].table_index = t_index;
-	players.timestamp = time(NULL);
 	pthread_rwlock_unlock(&players.lock);
 
 	return GGZ_REQ_OK;
@@ -848,7 +780,6 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 {
 	int t_index;
 	int status = 0;
-	int room;
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table join for player %d", p_index);
 	if (es_read_int(p_fd, &t_index) < 0)
@@ -891,17 +822,7 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 	
 	pthread_rwlock_wrlock(&players.lock);
 	players.info[p_index].table_index = t_index;
-	players.timestamp = time(NULL);
 	pthread_rwlock_unlock(&players.lock);
-
-	/* Update notifications */
-	pthread_rwlock_rdlock(&tables.lock);
-	room = tables.info[t_index].room;
-	pthread_rwlock_unlock(&tables.lock);
-	pthread_rwlock_wrlock(&rooms[room].lock);
-	rooms[room].table_timestamp = time(NULL);
-	rooms[room].player_timestamp = time(NULL);
-	pthread_rwlock_unlock(&rooms[room].lock);
 
 	return GGZ_REQ_OK;
 }
@@ -911,7 +832,6 @@ static int player_table_leave(int p_index, int p_fd)
 {
 	int t_index;
 	int status = 0;
-	int room;
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table leave for player %d", p_index);
 
@@ -951,19 +871,6 @@ static int player_table_leave(int p_index, int p_fd)
 	if (status != 0)
 		return GGZ_REQ_FAIL;
 	
-	/* Update notifications */
-	pthread_rwlock_rdlock(&tables.lock);
-	room = tables.info[t_index].room;
-	pthread_rwlock_unlock(&tables.lock);
-	pthread_rwlock_wrlock(&rooms[room].lock);
-	rooms[room].table_timestamp = time(NULL);
-	rooms[room].player_timestamp = time(NULL);
-	pthread_rwlock_unlock(&rooms[room].lock);
-
-	pthread_rwlock_wrlock(&players.lock);
-	players.info[p_index].table_index = -1;
-	players.timestamp = time(NULL);
-	pthread_rwlock_unlock(&players.lock);
 
 	return GGZ_REQ_OK;
 }

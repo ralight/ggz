@@ -28,7 +28,6 @@
 
 #include <stdio.h>
 #include <pthread.h>
-#include <time.h>
 
 #include <ggzd.h>
 #include <event.h>
@@ -76,7 +75,6 @@ struct GameTypes {
 	GameInfo info[MAX_GAME_TYPES];
 	int count;
 	pthread_rwlock_t lock;
-	time_t timestamp;
 };
 
 
@@ -106,7 +104,6 @@ struct GameTables {
 	TableInfo info[MAX_TABLES];
 	int count;
 	pthread_rwlock_t lock;
-	time_t timestamp;
 };
 
 
@@ -134,7 +131,6 @@ struct Users {
 	UserInfo info[MAX_USERS];
 	int count;
 	pthread_rwlock_t lock;
-	time_t timestamp;
 };
 
 

@@ -97,6 +97,12 @@ typedef enum {
 #define GGZ_CHAT_M_MESSAGE	(unsigned char) 0x40	/* X1XXXXXX */
 #define GGZ_CHAT_M_PLAYER	(unsigned char) 0x80	/* 1XXXXXXX */
 
+/* Update opcodes */
+#define GGZ_UPDATE_DELETE 0
+#define GGZ_UPDATE_ADD    1
+#define GGZ_UPDATE_LEAVE  2
+#define GGZ_UPDATE_JOIN   3
+
 typedef enum {
 	RSP_GAME_LAUNCH,
 	RSP_GAME_JOIN,
