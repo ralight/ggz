@@ -44,6 +44,8 @@ TopLevel::TopLevel(const char *name)
 	chessBoard = NULL;
 	game = NULL;
 
+	warnings = false;
+
 	//KStdAction::openNew(this, SLOT(newGame()), actionCollection()); // don't handle standalone games yet
 	KStdAction::close(this, SLOT(closeGame()), actionCollection());
 	KStdAction::quit(this, SLOT(close()), actionCollection());
@@ -143,7 +145,8 @@ void TopLevel::slotTime(int timeoption, int time)
 void TopLevel::slotMessage(QString msg)
 {
 	tab2->insertItem(msg);
-	//KMessageBox::information(this, QString("The server said:\n") + msg, "Message from chess server"); // FIXME: OPTIONAL!
+	if(warnings) KMessageBox::information(this,
+		QString(i18n("The server said:\n")) + msg, i18n("Message from chess server"));
 	tab2->ensureCurrentVisible();
 	ctl->showTab(0);
 }
@@ -193,6 +196,7 @@ void TopLevel::slotDoMove(int x, int y, int x2, int y2)
 
 void TopLevel::slotWarnmessages()
 {
+	warnings = !warnings;
 }
 
 void TopLevel::slotBoardframe()

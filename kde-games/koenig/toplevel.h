@@ -69,6 +69,8 @@ private:
 	KListBox *tab2;
 	KListView *tab3;
 	KExtTabCtl *ctl;
+
+	bool warnings;
 };
 
 #endif

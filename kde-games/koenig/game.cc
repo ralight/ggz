@@ -85,7 +85,8 @@ void Game::handleNetInput(void)
 			if (chessInfo.version != PROTOCOL_VERSION)
 			{
 				kdDebug(12101) << "Incompatible version. The game may not run as expected" << endl;
-				emit signalMessage(i18n("Incompatible protocol version!"));
+				emit signalMessage(i18n("Incompatible protocol version: %1 versus %2!").arg(
+					chessInfo.version).arg(PROTOCOL_VERSION));
 			}
 
 			emit signalStart(chessInfo.seat);

@@ -178,8 +178,9 @@ void ChessBoard::dropEvent(QDropEvent *e)
 
 	if ((((board[dragStart.x()][dragStart.y()]) % 2) != ((board[x][y]) % 2)) || (board[x][y] == 0))
 	{
-		board[x][y] = board[dragStart.x()][dragStart.y()];
-		board[dragStart.x()][dragStart.y()] = 0;
+		// Only accept moves from the network
+		//board[x][y] = board[dragStart.x()][dragStart.y()];
+		//board[dragStart.x()][dragStart.y()] = 0;
 
 		int cellSize = width() / 8;
 		repaint(dragStart.x() * cellSize, dragStart.y() * cellSize, cellSize, cellSize, false);
