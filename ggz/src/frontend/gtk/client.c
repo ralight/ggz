@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5063 2002-10-27 12:46:52Z jdorje $
+ * $Id: client.c 5084 2002-10-28 06:05:04Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -35,8 +35,10 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <ggzcore.h>
-#include <ggz.h> /* For list functions */
+#include <stdio.h>
 #include <stdlib.h>
+
+#include <ggz.h> /* For list functions */
 
 #include "about.h"
 #include "client.h"
@@ -1219,7 +1221,9 @@ void display_players(void)
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	GdkPixmap *pixmap1 = NULL, *pixmap2 = NULL;
 	GdkBitmap *mask1, *mask2;
-	int wins, losses, ties;
+	int wins, losses, ties, forfeits, rating, ranking;
+	long highscore;
+	char stats[512];
 	
 	/* Retrieve the player list (CList) widget. */
 	tmp = lookup_widget(win_main, "player_clist");
@@ -1245,19 +1249,32 @@ void display_players(void)
 		else
 			player[1] = g_strdup_printf("%d", ggzcore_table_get_id(table));
 
-		ggzcore_player_get_record(p, &wins, &losses, &ties);
-		if (wins >= 0) {
+		if (ggzcore_player_get_ranking(p, &ranking)) {
+			snprintf(stats, sizeof(stats),
+				 _("#%d"), ranking);
+		} else if (ggzcore_player_get_highscore(p, &highscore)) {
+			snprintf(stats, sizeof(stats),
+				 "%ld", highscore);
+		} else if (ggzcore_player_get_rating(p, &rating)) {
+			snprintf(stats, sizeof(stats),
+				 "%d", rating);
+		} else if (ggzcore_player_get_record(p, &wins, &losses,
+					      &ties, &forfeits)) {
+			snprintf(stats, sizeof(stats),
+				 "%d-%d", wins, losses);
 			if (ties > 0) {
-				player[2] = g_strdup_printf(_("%d-%d-%d"),
-							    wins,
-							    losses,
-							    ties);
-			} else {
-				player[2] = g_strdup_printf(_("%d-%d"),
-							    wins, losses);
+				snprintf(stats + strlen(stats),
+					 sizeof(stats) - strlen(stats),
+					 "-%d", ties);
+			}
+			if (forfeits > 0) {
+				snprintf(stats + strlen(stats),
+					 sizeof(stats) - strlen(stats),
+					 " (%d)", forfeits);
 			}
 		} else
-			player[2] = g_strdup("");
+			snprintf(stats, sizeof(stats), "%s", "");;
+		player[2] = stats;
 
 		player[3] = g_strdup(ggzcore_player_get_name(p));
 		
@@ -1309,10 +1326,9 @@ void display_players(void)
 			g_free(path);
 		}
 		
-		/* Note player[2] is used right above, so these calls
+		/* Note player[3] is used right above, so these calls
 		   have to come way down here. */
 		g_free(player[1]);
-		g_free(player[2]);
 		g_free(player[3]);
 	}
 	
