@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 5057 2002-10-27 01:04:35Z jdorje $
+ * $Id: transit.c 5058 2002-10-27 01:30:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -106,7 +106,7 @@ GGZReturn transit_seat_event(int room, int index,
 
 GGZReturn transit_player_event(char* name, GGZTransitType opcode,
 			       GGZClientReqError status,
-			       int reason, int index)
+			       char *caller, int reason, int index)
 {
 	GGZPlayerTransitEventData* data = ggz_malloc(sizeof(*data));
 
@@ -114,6 +114,7 @@ GGZReturn transit_player_event(char* name, GGZTransitType opcode,
 	data->status = status;
 	data->table_index = index;
 	data->reason = reason;
+	strcpy(data->caller, caller);
 	
 	return event_player_enqueue(name, transit_player_event_callback, 
 				    sizeof(*data), data, NULL);
@@ -158,7 +159,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 		/* Notify player that transit failed */
 		/* Don't care if this fails, we aren't transiting anyway */
 		transit_player_event(event->caller, event->transit,
-				     E_BAD_OPTIONS, -1, 0);
+				     E_BAD_OPTIONS, event->caller, -1, 0);
 		return GGZ_EVENT_OK;
 	}
 
@@ -175,7 +176,8 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 			/* Don't care if this fails,
 			   we aren't transiting anyway */
 			transit_player_event(event->caller, event->transit,
-					     E_TABLE_FULL, -1, 0);
+					     E_TABLE_FULL, event->caller,
+					     -1, 0);
 			return GGZ_EVENT_OK;
 		}
 	}
@@ -184,7 +186,8 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 				      event) != GGZ_OK) {
 		/* Otherwise send an error message back to the player */
 		transit_player_event(event->caller, event->transit,
-				     E_SEAT_ASSIGN_FAIL, -1, 0);
+				     E_SEAT_ASSIGN_FAIL,
+				     event->caller, -1, 0);
 		return GGZ_EVENT_ERROR;
 	}
 

@@ -48,4 +48,4 @@ GGZReturn transit_seat_event(int room_index, int table_index,
 
 GGZReturn transit_player_event(char* name, GGZTransitType opcode,
 			       GGZClientReqError status,
-			       int reason, int index);
+			       char *caller, int reason, int index);

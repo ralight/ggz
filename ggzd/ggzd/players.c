@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5055 2002-10-26 22:48:07Z jdorje $
+ * $Id: players.c 5058 2002-10-27 01:30:52Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -76,6 +76,7 @@ pthread_key_t player_key;
 /* Local functions for handling players */
 static GGZClientReqError player_transit(GGZPlayer* player,
 					GGZTransitType opcode,
+					char *caller,
 					const int table_index,
 					const int seat_index,
 					int reason);
@@ -170,7 +171,7 @@ void player_logout(GGZPlayer* player)
 	/* FIXME: is this the correct way to do it? */
 	/* Note: GGZ_TRANSIT_LEAVE should work for spectators too. */
 	if (player->room >= 0 && player->table >= 0)
-		player_transit(player, GGZ_TRANSIT_LEAVE,
+		player_transit(player, GGZ_TRANSIT_LEAVE, player->name,
 			       player->table, -1, GGZ_LEAVE_NORMAL);
 
 	/* Remove us from room, so we get no new events */
@@ -386,7 +387,7 @@ GGZEventFuncReturn player_launch_callback(void* target, size_t size,
 	
 	/* Automatically join newly created table */
 	if (event->status == 0)
-		player_transit(player, GGZ_TRANSIT_JOIN,
+		player_transit(player, GGZ_TRANSIT_JOIN, player->name,
 			       event->table_index, -1, GGZ_JOIN_LAUNCH);
 
 	/* Return status to client */
@@ -544,6 +545,7 @@ GGZPlayerHandlerStatus player_table_boot_update(GGZPlayer *player,
 	pthread_rwlock_unlock(&them->lock);
 	/* FIXME: player lock is lost... */
 	status = player_transit(them, GGZ_TRANSIT_LEAVE,
+				player->name,
 				table_id, -1, GGZ_LEAVE_BOOT);
 
 	if (status != E_OK) {
@@ -592,6 +594,7 @@ GGZPlayerHandlerStatus player_table_join(GGZPlayer* player,
 		status = E_NO_PERMISSION;
 	else /* Send a join event to the table */
 		status = player_transit(player, GGZ_TRANSIT_JOIN,
+					player->name,
 					table_index, seat_num,
 					GGZ_JOIN_REQUEST);
 
@@ -623,6 +626,7 @@ GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index)
 		status = E_NO_PERMISSION;
 	else /* Send a join event to the table */
 		status = player_transit(player, GGZ_TRANSIT_JOIN_SPECTATOR,
+					player->name,
 					index, -1, GGZ_JOIN_REQUEST);
 
 	/* Return any immediate failures to client*/
@@ -722,7 +726,7 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
 			status = E_LEAVE_FORBIDDEN;
 	} else { 
 		/* All clear: send leave event to table */
-		status = player_transit(player, transit,
+		status = player_transit(player, transit, player->name,
 					player->table, -1, GGZ_LEAVE_NORMAL);
 	}
 
@@ -793,7 +797,7 @@ GGZPlayerHandlerStatus player_table_reseat(GGZPlayer *player,
 	else if (!allow)
 		status = E_LEAVE_FORBIDDEN;
 	else
-		status = player_transit(player, action,
+		status = player_transit(player, action, player->name,
 					player->table, seat_num, -1);
 
 	/* Return any immediate failures to client*/
@@ -860,6 +864,7 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 	else 
 		/* All clear: send leave event to table */
 		status = player_transit(player, GGZ_TRANSIT_LEAVE_SPECTATOR,
+					player->name,
 					player->table, GGZ_LEAVE_NORMAL);
 
 	/* Return any immediate failures to client*/
@@ -902,6 +907,7 @@ static void find_player_at_table(GGZPlayer *player,
 
 static GGZClientReqError player_transit(GGZPlayer* player,
 					GGZTransitType opcode,
+					char *caller,
 					const int table_index,
 					const int seat_index,
 					int reason)
@@ -957,7 +963,7 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 		seat.fd = -1;
 
 		status = transit_seat_event(player->room, table_index,
-					    opcode, seat, player->name,
+					    opcode, seat, caller,
 					    reason);
 		break;
 	case GGZ_TRANSIT_JOIN:
@@ -971,7 +977,8 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 		strcpy(seat.name, player->name);
 		
 		status = transit_seat_event(player->room, table_index,
-					    opcode, seat, player->name,
+					    opcode, seat,
+					    caller,
 					    reason);
 		/* Now that channel fd has been sent, rest it here */
 		pthread_rwlock_wrlock(&player->lock);
@@ -985,7 +992,7 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 		strcpy(seat.name, player->name);
 
 		status = transit_seat_event(player->room, table_index,
-					    opcode, seat, player->name,
+					    opcode, seat, caller,
 					    reason);
 		/* Now that channel fd has been sent, rest it here */
 		pthread_rwlock_wrlock(&player->lock);
@@ -1034,7 +1041,7 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 		strcpy(seat.name, player->name);
 
 		status = transit_seat_event(player->room, table_index,
-					    opcode, seat, player->name, -1);
+					    opcode, seat, caller, -1);
 		break;
 	case GGZ_TRANSIT_SEAT:
 		err_msg("player_transit: shouldn't have TRANSIT_SEAT.");
