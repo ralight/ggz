@@ -1,0 +1,15 @@
+# $Id: ggzcards-sueca.room 4113 2002-04-29 18:20:36Z jdorje $
+[RoomInfo]
+
+# This is the short name for the room
+Name = GGZ Cards - Sueca
+
+# This is the long descriptive name for the room
+Description = GGZ Cards - Sueca room
+
+# The gametype should match up to the Name of an added game
+GameType = GGZCards-Sueca
+
+# These set maximum values for this room
+MaxPlayers = 150
+MaxTables = 45
