@@ -29,4 +29,4 @@ int seats_num(GGZTable* table);
 int seats_bot(GGZTable* table);
 int seats_reserved(GGZTable* table);
 int seats_human(GGZTable* table);
-int seats_type(GGZTable* table, int seat);
+GGZSeatType seats_type(GGZTable* table, int seat);

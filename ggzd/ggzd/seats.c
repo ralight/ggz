@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/3/00
  * Desc: Support functions for table seats
- * $Id: seats.c 3108 2002-01-14 00:06:53Z jdorje $
+ * $Id: seats.c 3181 2002-01-24 04:08:08Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -87,7 +87,7 @@ int seats_human(GGZTable* table)
 }
 
 
-int seats_type(GGZTable* table, int seat)
+GGZSeatType seats_type(GGZTable* table, int seat)
 {
 	if (strcmp(table->seats[seat], "<none>") == 0)
 		return GGZ_SEAT_NONE;

@@ -1474,7 +1474,7 @@ int _net_send_table_status(GGZNetIO *net, GGZTable *table)
 
 int _net_send_seat(GGZNetIO *net, GGZTable *table, int num)
 {
-	int type = seats_type(table, num);
+	GGZSeatType type = seats_type(table, num);
 	char *type_str = ggz_seattype_to_string(type);
 	char *name = NULL;
 
