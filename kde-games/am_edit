@@ -1822,29 +1822,29 @@ sub make_meta_classes ()
 	}
   	$mocs .= $ui_mocs;
 	if ($mocs) {
-	    print STDOUT "==> mocs=[".$mocs."]\n" if ($verbose);
-	    my $sourcename = $program."_meta_unload";
-	    my $ext = ($program =~ /_la$/) ? ".lo" : ".o";
-	    my $srcfile = $sourcename.".$cxxsuffix";
-	    my $objfile = $sourcename.$ext;
-	    $moc_class_headers .= " $srcfile";
-	    my $appl;
-	    $appl  = "$srcfile: $mocs\n";
-	    $appl .= "\t\@echo 'creating $srcfile'\n";
-	    $appl .= "\t\@-rm -f $srcfile\n";
-	    $appl .= "\t\@echo 'static const char * _metalist_$program\[\] = {' > $srcfile\n";
-	    $appl .= "\t\@cat $mocs | grep 'char.*className' | ";
-	    $appl .=  "sed -e 's/.*[^A-Za-z0-9_:]\\([A-Za-z0-9_:]*\\)::className.*\$\$/\\\"\\1\\\",/' | sort | uniq >> $srcfile\n";
-	    $appl .= "\t\@echo '0};' >> $srcfile\n";
-	    $appl .= "\t\@echo '#include <kunload.h>' >> $srcfile\n";
-	    $appl .= "\t\@echo '_UNLOAD($program)' >> $srcfile\n";
-		$appl .= "\n";
+	    #print STDOUT "==> mocs=[".$mocs."]\n" if ($verbose);
+	    #my $sourcename = $program."_meta_unload";
+	    #my $ext = ($program =~ /_la$/) ? ".lo" : ".o";
+	    #my $srcfile = $sourcename.".$cxxsuffix";
+	    #my $objfile = $sourcename.$ext;
+	    #$moc_class_headers .= " $srcfile";
+	    #my $appl;
+	    #$appl  = "$srcfile: $mocs\n";
+	    #$appl .= "\t\@echo 'creating $srcfile'\n";
+	    #$appl .= "\t\@-rm -f $srcfile\n";
+	    #$appl .= "\t\@echo 'static const char * _metalist_$program\[\] = {' > $srcfile\n";
+	    #$appl .= "\t\@cat $mocs | grep 'char.*className' | ";
+	    #$appl .=  "sed -e 's/.*[^A-Za-z0-9_:]\\([A-Za-z0-9_:]*\\)::className.*\$\$/\\\"\\1\\\",/' | sort | uniq >> $srcfile\n";
+	    #$appl .= "\t\@echo '0};' >> $srcfile\n";
+	    #$appl .= "\t\@echo '#include <kunload.h>' >> $srcfile\n";
+	    #$appl .= "\t\@echo '_UNLOAD($program)' >> $srcfile\n";
+		#$appl .= "\n";
 	    
-	    $realObjs{$program} .= " \034" . $objfile . " ";
-	    $sources{$program} .= " $srcfile";
-            $sources_changed{$program} = 1;
-            $dep_files .= " \$(DEPDIR)/$sourcename.P";
-	    appendLines ($appl);
+	    #$realObjs{$program} .= " \034" . $objfile . " ";
+	    #$sources{$program} .= " $srcfile";
+        #    $sources_changed{$program} = 1;
+        #    $dep_files .= " \$(DEPDIR)/$sourcename.P";
+	    #appendLines ($appl);
 	}
 	print STDOUT "\n" if $verbose;
     }
@@ -1863,7 +1863,7 @@ sub updateMakefile ()
     open (FILEOUT, "> $makefile")
                         || die "Could not create $makefile: $!\n";
 
-    print FILEOUT "\# $progId - " . '$Revision: 1481 $ '  . "\n";
+    print FILEOUT "\# $progId - " . '$Revision: 1527 $ '  . "\n";
     $MakefileData =~ s/\034/\\\n/g;    # Restore continuation lines
     print FILEOUT $MakefileData;
     close FILEOUT;
