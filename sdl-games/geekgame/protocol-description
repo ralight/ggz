@@ -1,3 +1,6 @@
+protocol description
+--------------------
+
 upon player join:
 
 	server sends greeting + version number
@@ -15,7 +18,7 @@ upon player join:
 		[string] "hans"
 		[string] "http://www.thisisme.com/me.png"
 
-when all players have joined
+when all players have joined (and game mode is selected)
 
 	server broadcasts game start
 		op_newgame
@@ -23,5 +26,43 @@ when all players have joined
 		op_turn
 		[int] 0
 
+	client sends move
+		op_move
+		[int] 10
+		[int] 7
 
+	server broadcasts move and scoring
+		op_moved
+		[int] 0
+		[int] 10
+		[int] 7
+		op_score
+		[int] 0
+		[int] 1
+
+	finally, one player will win
+		op_winner
+		[int] 0
+		op_gamestop
+
+
+game modes
+----------
+-> server greeting determines capabilities
+-> client lets host player select one
+
+e.g "geekgame" -> modes "easy", "matrix", "havoc", "hax0r"
+easy -> achieve a sum of zero either horizontally or vertically
+ (range: 0 to 20)
+matrix -> sum of row and column (multiplied by 2) must be 42
+ (range: 0 to 60)
+havoc -> numbers under cursor are binary coded, quotient must be 4
+ (range: 4 to 128)
+hax0r -> numbers under cursor bars must contain same number of 1's
+ (range: 0 to 7)
+
+-> this ensures backward compatibility
+-> for each achieved goal, a player gets one level point,
+   while the others loose one (down to zero)
+-> game ends when one player has 10 level points
 

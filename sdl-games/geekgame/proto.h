@@ -8,6 +8,7 @@
 #define OP_GAMEEND 104
 
 #define OP_PRESENTATION 200
+#define OP_RULESET 201
 
 #endif
 

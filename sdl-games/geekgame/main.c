@@ -27,6 +27,8 @@
 #define MATCH_SERVER "geekgame"
 #define MATCH_VERSION 1
 
+#define MAX_PLAYERS 5
+
 /* Global variables */
 static GGZMod *mod = NULL;
 static char *playerimage = NULL;
@@ -34,6 +36,8 @@ static int modfd;
 static int ggzmode = 0;
 static SDL_Surface *screen, *image;
 static TTF_Font *font = NULL;
+
+char scores[MAX_PLAYERS];
 
 /* Prototypes */
 int startgame(void);
@@ -316,6 +320,26 @@ void addplayer(const char *picture)
 	counter++;
 }
 
+void rendermode(int x, int y, const char *mode)
+{
+	SDL_Surface *text;
+	SDL_Rect rect;
+
+	SDL_Color green = {0x3F, 0xFF, 0x5F, 0};
+
+	text = TTF_RenderText_Solid(font, mode, green);
+	if(text)
+	{
+		rect.x = x;
+		rect.y = y;
+		rect.h = text->h;
+		rect.w = text->w;
+		SDL_BlitSurface(text, NULL, screen, &rect);
+		SDL_FreeSurface(text);
+		SDL_UpdateRect(screen, rect.x, rect.y, rect.w, rect.h);
+	}
+}
+
 void renderscore(int x, int y, int sum)
 {
 	char score[8];
@@ -356,6 +380,8 @@ int startgame(void)
 	int sum;
 	int players;
 	int turn;
+	int playmode;
+	int winner;
 
 	SDL_Init(SDL_INIT_VIDEO);
 
@@ -374,15 +400,22 @@ int startgame(void)
 
 	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 24, 0);
 
-	players = 4;
+	players = MAX_PLAYERS;
+	for(i = 0; i < players; i++)
+		scores[i] = 0;
 
 	drawturn(screen, players, -1);
+
+	rendermode(22, 24, "easy");
+	rendermode(22, 54, "matrix");
+	rendermode(22, 84, "havoc");
+	rendermode(22, 114, "hax0r");
 
 	if(!ggzmode)
 	{
 		for(i = 0; i < players; i++)
 		{
-			sleep(1);
+			SDL_Delay(100);
 	
 			if(!i)
 			{
@@ -400,6 +433,61 @@ int startgame(void)
 		}
 	}
 
+	x = 20;
+	y = 20;
+
+	dimmer = 250;
+	dimminc = -1;
+
+	escape = 0;
+	playmode = -1;
+	while(!escape)
+	{
+		while(SDL_PollEvent(&event))
+		{
+			switch(event.type)
+			{
+				case SDL_KEYDOWN:
+					keystate = SDL_GetKeyState(NULL);
+					if(keystate[SDLK_ESCAPE]) escape = 1;
+					if(keystate[SDLK_DOWN])
+					{
+						if(y <= 15 + 3 * 30)
+						{
+							drawbox(x, y, 150, 20, screen, 0, 1);
+							y += 30;
+						}
+					}
+					if(keystate[SDLK_UP])
+					{
+						if(y >= 15 + 1 * 30)
+						{
+							drawbox(x, y, 150, 20, screen, 0, 1);
+							y -= 30;
+						}
+					}
+					if(keystate[SDLK_RETURN])
+					{
+						escape = 1;
+						playmode = (y - 20) / 30;
+					}
+					break;
+			}
+		}
+
+		drawbox(x, y, 150, 20, screen, dimmer, 1);
+
+		dimmer = dimmer + dimminc * 3;
+		if((dimmer <= 150) || (dimmer >= 250)) dimminc = -dimminc;
+
+		SDL_Delay(50);
+	}
+	if(playmode < 0)
+	{
+		SDL_Quit();
+		return 0;
+	}
+
 	turn = 0;
 	drawturn(screen, players, 0);
 
@@ -414,9 +502,7 @@ int startgame(void)
 	}
 
 	calc = 0;
-
-	dimmer = 250;
-	dimminc = -1;
+	winner = 0;
 
 	x = 50;
 	y = 50;
@@ -507,7 +593,13 @@ int startgame(void)
 				sum += array[i][j];
 			renderscore(680, y + 10, sum);
 
-			drawlevel(turn, 5);
+			scores[turn]++;
+			if(scores[turn] == 10)
+			{
+				escape = 1;
+				winner = turn;
+			}
+			drawlevel(turn, scores[turn]);
 
 			turn = (turn + 1) % players;
 			drawturn(screen, players, turn);
@@ -516,6 +608,11 @@ int startgame(void)
 		SDL_Delay(50);
 
 		if(ggzmode) ggz_network();
+	}
+
+	if(winner)
+	{
+		/* ... */
 	}
 
 	SDL_Quit();
