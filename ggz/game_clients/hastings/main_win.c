@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 5251 2002-11-17 16:57:55Z dr_maux $
+ * $Id: main_win.c 6245 2004-11-03 22:00:55Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -53,19 +53,6 @@
 #include "dlg_yesno.h"
 #include "ggzintl.h"
 
-/* Pixmap files */
-#include <newmanred.xpm>
-#include <newmangreen.xpm>
-#include <newmanblue.xpm>
-#include <newmanyellow.xpm>
-#include <frame_ul.xpm>
-#include <frame_ur.xpm>
-#include <frame_ll.xpm>
-#include <frame_lr.xpm>
-#include <frame_black.xpm>
-#include /*<bayeux.xpm>*/<map.xpm>
-#include <shadow.xpm>
-
 /* GGZ includes */
 #include <ggz.h>	/* libggz */
 
@@ -74,22 +61,16 @@
 /* Unit pictures */
 /* Red is 0, blue is 1, green is 2, yellow is 3.
    This corresponds to player_colors[] in main.c! */
-GdkPixmap* man_pix[4];
-GdkPixmap* frame_ll_pix;
-GdkPixmap* frame_lr_pix;
-GdkPixmap* frame_ul_pix;
-GdkPixmap* frame_ur_pix;
-GdkPixmap* frame_black_pix;
-GdkPixmap* shadow_pix;
-
-/* Transparency mask */
-GdkGC* man_gc[4];
-GdkBitmap* man_mask[4];
-GdkGC* shadow_gc;
-GdkBitmap* shadow_mask;
+GdkPixbuf *man_pix[4];
+GdkPixbuf* frame_ll_pix;
+GdkPixbuf* frame_lr_pix;
+GdkPixbuf* frame_ul_pix;
+GdkPixbuf* frame_ur_pix;
+GdkPixbuf* frame_black_pix;
+GdkPixbuf* shadow_pix;
 
 /* Map picture */
-GdkPixmap* map_pix;
+GdkPixbuf* map_pix;
 
 /* Buffer for the map */
 GdkPixmap* hastings_buf;
@@ -130,20 +111,27 @@ void game_status( const char* format, ... )
 
 }
 
+static void draw(GdkPixbuf *image, int x, int y, int w, int h)
+{
+	GtkStyle *style = gtk_widget_get_style(main_win);
+	GtkWidget *tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
+	GdkGC *gc = style->fg_gc[GTK_WIDGET_STATE(tmp)];
+
+	gdk_pixbuf_render_to_drawable(image, hastings_buf, gc,
+				      0, 0, x, y, w, h,
+				      GDK_RGB_DITHER_NONE, 0, 0);
+}
+
 /* Draw a frame around a knight */
 static void highlight(int col, int row, int widgetstate)
 {
-	GtkStyle* style;
-	int offsetx, offsety;
+	int offsetx = 75 - row % 2 * 45 + col * 90;
+	int offsety = 30 + row * 25;
 
-	style = gtk_widget_get_style(main_win);
-	offsetx = 75 - row % 2 * 45 + col * 90;
-	offsety = 30 + row * 25;
-
-	gdk_draw_pixmap(hastings_buf, style->fg_gc[widgetstate], frame_ul_pix, 0, 0, offsetx - 16, offsety - 16, 5, 5);
-	gdk_draw_pixmap(hastings_buf, style->fg_gc[widgetstate], frame_ur_pix, 0, 0, offsetx + 11, offsety - 16, 5, 5);
-	gdk_draw_pixmap(hastings_buf, style->fg_gc[widgetstate], frame_ll_pix, 0, 0, offsetx - 16, offsety + 11, 5, 5);
-	gdk_draw_pixmap(hastings_buf, style->fg_gc[widgetstate], frame_lr_pix, 0, 0, offsetx + 11, offsety + 11, 5, 5);
+	draw(frame_ul_pix, offsetx - 16, offsety - 16, 5, 5);
+	draw(frame_ur_pix, offsetx + 11, offsety - 16, 5, 5);
+	draw(frame_ll_pix, offsetx - 16, offsety + 11, 5, 5);
+	draw(frame_lr_pix, offsetx + 11, offsety + 11, 5, 5);
 }
 
 #ifdef USE_SHADOW
@@ -197,15 +185,11 @@ static void hexagon(GtkWidget *widget, int offsetx, int offsety)
 void display_board(void)
 {
 	int i, j;
-	GtkWidget* tmp;
-	GtkStyle* style;
+	GtkWidget* tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
 	int offsetx, offsety;
 
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
-	style = gtk_widget_get_style(main_win);
-
 	/* map background */
-	gdk_draw_pixmap(hastings_buf, tmp->style->black_gc, map_pix, 0, 0, 0, 0, 510, 510);
+	draw(map_pix, 0, 0, 510, 510);
 
 	/* hexagons */
 	for(j = 0; j < 19; j++)
@@ -222,29 +206,23 @@ void display_board(void)
 			if(game.board[i][j] > -1)
 			{
 				/* draw mask */
-				gdk_gc_set_ts_origin(man_gc[game.board[i][j] / 2], offsetx - 16, offsety - 16);
-				gdk_gc_set_clip_origin(man_gc[game.board[i][j] / 2], offsetx - 16, offsety - 16);
-				gdk_gc_set_clip_mask(man_gc[game.board[i][j] / 2], man_mask[game.board[i][j] % 4]);
-				gdk_draw_rectangle(hastings_buf, man_gc[game.board[i][j] / 2], TRUE, offsetx - 16, offsety - 16, 32, 32);
+				draw(man_pix[game.board[i][j] / 2],
+				     offsetx - 16, offsety - 16, 32, 32);
 
 				/* which nation is the knight of? */
-				/*gdk_draw_pixmap(hastings_buf, style->fg_gc[GTK_WIDGET_STATE(tmp)],
-							man_pix[game.board[i][j] % 4], 0, 0, offsetx - 16, offsety - 16, 32, 32);*/
 
 				/* Black team */
-				if(game.board[i][j] % 2)
-				{
-					gdk_draw_pixmap(hastings_buf, style->fg_gc[GTK_WIDGET_STATE(tmp)],
-						frame_black_pix, 0, 0, offsetx + 10, offsety + 10, 5, 5);
+				if (game.board[i][j] % 2) {
+					draw(frame_black_pix,
+					     offsetx + 10, offsety + 10,
+					     5, 5);
 				}
 
 				/* Draw a shadow for own knights */
-				if(game.board[i][j] == game.self)
-				{
-					gdk_gc_set_ts_origin(shadow_gc, offsetx - 16, offsety - 16);
-					gdk_gc_set_clip_origin(shadow_gc, offsetx - 16, offsety - 16);
-					gdk_gc_set_clip_mask(shadow_gc, shadow_mask);
-					gdk_draw_rectangle(hastings_buf, shadow_gc, TRUE, offsetx - 16, offsety - 16, 32, 32);
+				if(game.board[i][j] == game.self) {
+					draw(shadow_pix,
+					     offsetx - 16, offsety - 16,
+					     32, 32);
 #ifdef USE_SHADOW
 					shadow(i, j, GTK_WIDGET_STATE(tmp));
 #endif
@@ -262,53 +240,45 @@ void display_board(void)
 	gtk_widget_draw(tmp, NULL);
 }
 
+static GdkPixbuf *load_pixmap(const char *name)
+{
+	char *fullpath;
+	GdkPixbuf *image;
+	GError *error = NULL;
+
+	fullpath = g_strdup_printf("%s/hastings/pixmaps/%s.png",
+				   GGZDATADIR, name);
+	image = gdk_pixbuf_new_from_file(fullpath, &error);
+	if(image == NULL)
+		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
+	g_free(fullpath);
+
+	return image;
+}
+
 /* Load pixmap files */
 static void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 {
 	GtkStyle* style;
-	GdkBitmap* mask;
-	int i;
 
 	/* now for the pixmap from gdk */
 	style = gtk_widget_get_style(main_win);
 
-	man_pix[0] = gdk_pixmap_create_from_xpm_d(main_win->window,
-		&man_mask[0], &style->bg[GTK_STATE_NORMAL], (gchar**)newmanred_xpm);
-	man_pix[1] = gdk_pixmap_create_from_xpm_d(main_win->window,
-		&man_mask[1], &style->bg[GTK_STATE_NORMAL], (gchar**)newmanblue_xpm);
-	man_pix[2] = gdk_pixmap_create_from_xpm_d(main_win->window,
-		&man_mask[2], &style->bg[GTK_STATE_NORMAL], (gchar**)newmangreen_xpm);
-	man_pix[3] = gdk_pixmap_create_from_xpm_d(main_win->window,
-		&man_mask[3], &style->bg[GTK_STATE_NORMAL], (gchar**)newmanyellow_xpm);
+	man_pix[0] = load_pixmap("newmanred");
+	man_pix[1] = load_pixmap("newmanblue");
+	man_pix[2] = load_pixmap("newmangreen");
+	man_pix[3] = load_pixmap("newmanyellow");
 
-	for(i = 0; i < 4; i++)
-	{
-		man_gc[i] = gdk_gc_new(main_win->window);
-		gdk_gc_set_fill(man_gc[i], GDK_TILED);
-		gdk_gc_set_tile(man_gc[i], man_pix[i]);
-	}
+	shadow_pix = load_pixmap("shadow");
 
-	shadow_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
-		&shadow_mask, &style->bg[GTK_STATE_NORMAL], (gchar**)shadow_xpm);
+	frame_ul_pix = load_pixmap("frame_ul");
+	frame_ur_pix = load_pixmap("frame_ur");
+ 	frame_ll_pix = load_pixmap("frame_ll");
+	frame_lr_pix = load_pixmap("frame_lr");
 
-	shadow_gc = gdk_gc_new(main_win->window);
-	gdk_gc_set_fill(shadow_gc, GDK_TILED);
-	gdk_gc_set_tile(shadow_gc, shadow_pix);
+	frame_black_pix = load_pixmap("frame_black");
 
-	frame_ul_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
-		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_ul_xpm);
-	frame_ur_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
-		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_ur_xpm);
- 	frame_ll_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
-		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_ll_xpm);
-	frame_lr_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
-		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_lr_xpm);
-
-	frame_black_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
-		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)frame_black_xpm);
-
-	map_pix = gdk_pixmap_create_from_xpm_d(main_win->window,
-		&mask, &style->bg[GTK_STATE_NORMAL], (gchar**)map_xpm/*bayeux_xpm*/);
+	map_pix = load_pixmap("map");
 }
 
 /* Quit the game */

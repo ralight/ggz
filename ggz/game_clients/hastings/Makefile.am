@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5663 2003-10-09 08:27:50Z jdorje $
+#  $Id: Makefile.am 6245 2004-11-03 22:00:55Z jdorje $
 
-SUBDIRS = .
+SUBDIRS = . pixmaps
 
 INCLUDES = -I$(top_srcdir)/common/ $(GGZMOD_INCLUDES) $(LIBGGZ_INCLUDES) \
 		@GTK_CFLAGS@
@@ -22,18 +22,7 @@ ggz_hastings_SOURCES = \
 	main.c \
 	main_win.c main_win.h \
 	support.c support.h \
-	selector.c selector.h \
-	frame_black.xpm \
-	frame_ll.xpm \
-	frame_lr.xpm \
-	frame_ul.xpm \
-	frame_ur.xpm \
-	map.xpm bayeux.xpm haroldsreturn.xpm \
-	newmanblue.xpm \
-	newmanyellow.xpm \
-	newmangreen.xpm \
-	newmanred.xpm \
-	shadow.xpm
+	selector.c selector.h
 
 ggz_hastings_LDADD =	@GTK_LIBS@ @INTLLIBS@ $(LDADD)		\
 			$(top_builddir)/common/libgtk-games.a	\

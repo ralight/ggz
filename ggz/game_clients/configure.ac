@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6239 2004-11-03 19:00:41Z jdorje $
+dnl $Id: configure.ac 6245 2004-11-03 22:00:55Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -154,6 +154,7 @@ AC_CONFIG_FILES([Makefile
 	   combat/maps/Makefile
 	   hastings/Makefile
 	   hastings/module.dsc
+	   hastings/pixmaps/Makefile
 	   chinese-checkers/Makefile
 	   chinese-checkers/module.dsc
 	   chinese-checkers/pixmaps/Makefile
