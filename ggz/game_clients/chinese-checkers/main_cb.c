@@ -4,8 +4,9 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Callbacks for the main dialog window
+ * $Id: main_cb.c 3706 2002-03-28 07:37:30Z jdorje $
  *
- * Copyright (C) 2001 Richard Gade.
+ * Copyright (C) 2001-2002 Richard Gade.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +31,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "dlg_exit.h"
+
 #include "main_cb.h"
 #include "main_dlg.h"
 #include "prefs_dlg.h"
@@ -46,8 +49,8 @@ on_dlg_main_delete_event               (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-	gtk_main_quit();
-	return FALSE;
+	ggz_show_exit_dialog(1);
+	return TRUE;
 }
 
 
@@ -55,7 +58,7 @@ void
 on_exit_menu_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	gtk_main_quit();
+	ggz_show_exit_dialog(1);
 }
 
 
