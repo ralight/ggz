@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3185 2002-01-24 10:59:56Z jdorje $
+ * $Id: transit.c 3188 2002-01-24 12:30:11Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -258,6 +258,9 @@ static int transit_player_event_callback(void* target, int size, void* data)
 
 /*
  * transit_join sends REQ_GAME_JOIN to table
+ *
+ * Returns 0 on success, -1 on failure (in which case the
+ * player should be sent an failure notice).
  */
 static int transit_send_join_to_game(GGZTable* table, char* name)
 {
@@ -268,11 +271,19 @@ static int transit_send_join_to_game(GGZTable* table, char* name)
 		table->index, table->room);
 		
 	/* Find my seat or unoccupied one */
-	/* FIXME: look for reserved seat */
 	seats = seats_num(table);
+	
+	/* First look for my (reserved) seat. */
 	for (i = 0; i < seats; i++)
-		if (seats_type(table, i) == GGZ_SEAT_OPEN)
+		if (seats_type(table, i) == GGZ_SEAT_RESERVED
+		    && !strcmp(table->seat_names[i], name))
 			break;
+			
+	/* If that failed, look for any open seat. */
+	if (i == seats)
+		for (i = 0; i < seats; i++)
+			if (seats_type(table, i) == GGZ_SEAT_OPEN)
+				break;
 	
 	/* Ack! Fatal error...this should never happen */
 	if (i == seats)
