@@ -59,7 +59,7 @@ GdkColor colors[] =
         {0, 0, 0xcccc, 0xcccc},         /* 7   aqua                     */
         {0, 0, 0, 0xcccc},              /* 8   blue markBack            */
         {0, 0, 0, 0},                   /* 9   black                    */
-        {0, 0xcccc, 0xcccc, 0xcccc},    /* 10  white                    */
+        {0, 0xcccc, 0xffff, 0xcccc},    /* 10  ?????                    */
         {0, 0xffff, 0xffff, 0},         /* 11  yellow                   */
         {0, 0, 0xffff, 0},              /* 12  green                    */
         {0, 0, 0xffff, 0xffff},         /* 13  light aqua               */
@@ -421,6 +421,9 @@ void chat_word_clicked(GtkXText *xtext, char *word,
 
 gchar *chat_get_color(gchar *name)
 {
+	gint asc;
+	div_t x;
+
 	if(!ggzcore_conf_read_int("CHAT", "COLOR", TRUE))
 	{
 		/* Dont use color */
@@ -441,7 +444,9 @@ gchar *chat_get_color(gchar *name)
 			else
 				return g_strdup_printf("0%d", ggzcore_conf_read_int("CHAT", "O_COLOR", 2));
 		} else if(ggzcore_conf_read_int("CHAT", "FULL_COLOR", FALSE)) {
-			
+			asc = (gint)name[0];
+			x = div(asc, 17);
+			return g_strdup_printf("%d", x.rem);
 		}
 	}
 
