@@ -35,7 +35,7 @@
 #include <stdlib.h>
 
 
-#define LINE_LENGTH 80
+#define LINE_LENGTH 160
 
 static void input_handle_connect(char* line);
 static void input_handle_list(char* line);
@@ -69,7 +69,9 @@ int input_command(short events)
 			command = strsep(&current, delim);
 			command++;
 			
-			output_chat(2, "---", "Command is %s", command);
+#ifdef DEBUG
+			output_text("--- Command is %s", command);
+#endif
 			
 			if (strcmp(command, "connect") == 0) {
 				input_handle_connect(current);

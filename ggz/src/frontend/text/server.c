@@ -35,7 +35,7 @@
 
 void server_login_ok(GGZEventID id, void* event_data, void* user_data)
 {
-	output_chat(2,"---", "Connected");
+	output_text("--- Connected to %s.", ggzcore_state_get_profile_host());
 }
 
 void server_chat_msg(GGZEventID id, void* event_data, void* user_data)
@@ -45,7 +45,7 @@ void server_chat_msg(GGZEventID id, void* event_data, void* user_data)
 
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
-	output_chat(0, player, message);
+	output_chat(CHAT_MSG, player, message);
 }
 
 void server_chat_announce(GGZEventID id, void* event_data, void* user_data)
@@ -55,7 +55,7 @@ void server_chat_announce(GGZEventID id, void* event_data, void* user_data)
 
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
-	output_chat(3, player, message);
+	output_chat(CHAT_ANNOUNCE, player, message);
 }
 
 void server_chat_prvmsg(GGZEventID id, void* event_data, void* user_data)
@@ -65,7 +65,7 @@ void server_chat_prvmsg(GGZEventID id, void* event_data, void* user_data)
 
 	player = ((char**)(event_data))[0];
 	message = ((char**)(event_data))[1];
-	output_chat(1, player, message);
+	output_chat(CHAT_PRVMSG, player, message);
 }
 
 void server_chat_beep(GGZEventID id, void* event_data, void* user_data)
@@ -74,18 +74,18 @@ void server_chat_beep(GGZEventID id, void* event_data, void* user_data)
 
 	player = ((char**)(event_data))[0];
 
-	output_chat(2, "---", "You've been beeped by %s.\007", player);
+	output_text("--- You've been beeped by %s.\007", player);
 }
 
 void server_connect_fail(GGZEventID id, void* event_data, void* user_data)
 {
-	output_chat(2,"---", "Connection failed");
+	output_text("--- Connection failed!");
 }
 
 
 void server_login_fail(GGZEventID id, void* event_data, void* user_data)
 {
-	output_chat(2,"---", "Connection failed");
+	output_text("--- Connection failed!");
 
 	/* For the time being disconnect at not to confuse us */
 	ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
@@ -94,6 +94,6 @@ void server_login_fail(GGZEventID id, void* event_data, void* user_data)
 
 void server_logout(GGZEventID id, void* event_data, void* user_data)
 {
-	output_chat(2,"---", "Disconnected");
+	output_text("--- Disconnected");
 }
 

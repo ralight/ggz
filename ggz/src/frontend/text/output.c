@@ -37,17 +37,23 @@
 static struct winsize window;
 static int tty_des;
 
+void output_goto(int row, int col);	/* Goto's <r>,<c> on the screen this is	*/
+					/* a dangerious function if not	used	*/
+					/* properly!				*/
+					/* Make sure to save your current	*/
+					/* position and restore it when done, 	*/
+					/* unless ABSOLUTLY sure!		*/
 
 void output_display_help(void)
 {
-	output_chat(2, "---", "GNU Gaming Zone -- Help");
-	output_chat(2, "---", "-----------------------");
-	output_chat(2, "---", " ");
-	output_chat(2, "---", "/connect <server>    Connect to a GGZ server");
-	output_chat(2, "---", "/disconnect          Disconnect from server");
-	output_chat(2, "---", "/join <room>         Join room number <room>");
-	output_chat(2, "---", "/beep <player>       Beep player <player>");
-	output_chat(2, "---", "/msg <player> <msg>  Send a msg to a player");
+	output_text("--- GNU Gaming Zone -- Help");
+	output_text("--- -----------------------");
+	output_text("---");
+	output_text("--- /connect <server>    Connect to a GGZ server");
+	output_text("--- /disconnect          Disconnect from server");
+	output_text("--- /join <room>         Join room number <room>");
+	output_text("--- /beep <player>       Beep player <player>");
+	output_text("--- /msg <player> <msg>  Send a msg to a player");
 }
 
 void output_banner(void)
@@ -63,18 +69,27 @@ void output_banner(void)
 void output_prompt(int status)
 {
 	fflush(NULL);
-	printf("\e[%d;0f\e[2K",window.ws_row);
+	output_goto(window.ws_row, 0);
+	printf("\e[2K");
 	if (status == 1)
-		printf("\e[%d;0f\e[2K\e[1m\e[37mGGZ\e[30m>\e[0m\e[36m ",window.ws_row-1);
-	else
-		printf("\e[%d;0f\e[1m\e[37mGGZ\e[30m>\e[0m\e[36m ",window.ws_row-1);
+	{
+		output_goto(window.ws_row - 1, 0);
+		printf("\e[2K%sGGZ%s>%s ",
+			COLOR_BRIGHT_WHITE, COLOR_GREY,
+			COLOR_WHITE);
+	} else {
+		output_goto(window.ws_row - 1, 0);
+		printf("%sGGZ%s>%s ",
+			COLOR_BRIGHT_WHITE, COLOR_GREY,
+			COLOR_WHITE);
+	}
 	fflush(NULL);
 }
 
-void output_chat(int type, char* player, char* fmt, ...)
+void output_text(char* fmt, ...)
 {
-	char message[1024];	/* FIXME: Set to chat length given */
-				/* by server			   */
+	char message [1024];	/* FIXME: Make me dynamic */
+
 	va_list ap;
 	va_start(ap, fmt);
 	vsprintf(message, fmt, ap);
@@ -82,18 +97,26 @@ void output_chat(int type, char* player, char* fmt, ...)
 
 	fflush(NULL);
 	printf("\e7");
-	if(type == 0)
-	{
-		printf("\e[%d;0f\eD\e[0m\e[37m<%s> %s",window.ws_row-4, player, message);
-	} else if (type == 1) {
-		printf("\e[%d;0f\eD\e[0m\e[37m>%s< %s",window.ws_row-4, player, message);
-	} else if (type == 2) {
-		printf("\e[%d;0f\eD\e[0m\e[37m%s  %s",window.ws_row-4, player, message);
-	} else if (type == 3) {
-		printf("\e[%d;0f\eD\e[0m\e[37m[%s] %s",window.ws_row-4, player, message);
-	}
+	output_goto(window.ws_row - 4, 0);
+	printf("\eD%s%s", message, COLOR_BLUE);
 	printf("\e8");
 	fflush(NULL);
+}
+
+void output_chat(int type, char *player, char *message)
+{
+	switch(type)
+	{
+		case CHAT_MSG:
+			output_text("<%s> %s", player, message);
+			break;
+		case CHAT_PRVMSG:
+			output_text(">%s< %s", player, message);
+			break;
+		case CHAT_ANNOUNCE:
+			output_text("[%s] %s", player, message);
+			break;
+	}
 }
 
 void output_status()
@@ -101,11 +124,14 @@ void output_status()
 	int num;
 	time_t now;		/* time */
 	char *currenttime;	/* String formatted time */
+	char displaytime[9];	/* What we display */
 	char *user = NULL, *server = NULL, *room = NULL;
+	char currentstatus[10] = "Offline";
 	
 	if (ggzcore_state_is_online()) {
 		user = ggzcore_state_get_profile_login();
 		server = ggzcore_state_get_profile_host();
+		strcpy(currentstatus, "Online");
 	}
 	
 	if (ggzcore_state_is_in_room())
@@ -113,32 +139,78 @@ void output_status()
 	
 	now = time(NULL);
 
-	num = window.ws_col - 8;
 	if(server)
 		num=num-strlen(server);
 	
 	fflush(NULL);
-	printf("\e7");
+	printf("\e7"); /* Save cursor */
 	if(user)
-		printf("\e[%d;0f\e[1m\e[37mU\e[32msername:\e[K \e[36m%s", window.ws_row-3, user);
-	else
-		printf("\e[%d;0f\e[1m\e[37mU\e[32msername:\e[K ", window.ws_row-3);
+	{
+		output_goto(window.ws_row - 3, 0);
+		printf("%sU%ssername:\e[K %s%s",
+			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN,
+			COLOR_BRIGHT_PINK, user);
+	} else {
+		output_goto(window.ws_row - 3, 0);
+		printf("%sU%ssername:\e[K ",
+			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN);
+	}
+	
 	if(server)
-		printf("\e[%d;%df\e[1m\e[37mS\e[32merver:\e[K \e[36m%s", window.ws_row-3, num, server);
-	else
-		printf("\e[%d;%df\e[1m\e[37mS\e[32merver:\e[K ", window.ws_row-3, num);
-	if(room)
-		printf("\e[%d;0f\e[1m\e[37mR\e[32moom:\e[K \e[36m%s", window.ws_row-2, room);
-	else
-		printf("\e[%d;0f\e[1m\e[37mR\e[32moom:\e[K ", window.ws_row-2);
+	{
+		output_goto(window.ws_row - 3, 28);
+		printf("%sS%server:\e[K %s%s",
+			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN,
+			COLOR_BRIGHT_PINK, server);
+	} else {
+		output_goto(window.ws_row - 3, 28);
+		printf("%sS%server:\e[K",
+			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN);
+	}
+
+	output_goto(window.ws_row - 3, window.ws_col - 19);
+	printf("%sS%status:\e[K %s%s",
+		COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN,
+		COLOR_BRIGHT_PINK, currentstatus);
+	
+	if (ggzcore_state_is_in_room())
+	{
+		output_goto(window.ws_row - 2, 0);
+		printf("%sR%soom:\e[K %s%d - %s",
+			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN,
+			COLOR_BRIGHT_PINK, ggzcore_state_get_room(),
+			room);
+	} else {
+		output_goto(window.ws_row - 2, 0);
+		printf("%sR%soom:\e[K",
+			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN);
+	}
 
 	currenttime = strdup(ctime(&now));
 	currenttime[strlen(currenttime)-1] = '\0';
-	printf("\e[%d;%df\e[1m\e[37mT\e[32mime:\e[K \e[36m%s", window.ws_row-2, window.ws_col-strlen(currenttime)-6, currenttime);
-
-	printf("\e8");
+	displaytime[0] = currenttime[11];
+	displaytime[1] = currenttime[12];
+	displaytime[2] = ':';
+	displaytime[3] = currenttime[14];
+	displaytime[4] = currenttime[15];
+	displaytime[5] = ':';
+	displaytime[6] = currenttime[17];
+	displaytime[7] = currenttime[18];
+	displaytime[8] = '\0';
 	free(currenttime);
+
+	output_goto(window.ws_row - 2, window.ws_col - 19);
+	printf("%sT%sime:\e[K %s%s",
+			COLOR_BRIGHT_WHITE, COLOR_BRIGHT_GREEN,
+			COLOR_BRIGHT_PINK, displaytime);
+
+	printf("\e8"); /* Restore cursor */
 	fflush(NULL);
+}
+
+void output_goto(int row, int col)
+{
+	printf("\e[%d;%df", row, col);
 }
 
 void output_init(void)
