@@ -1,11 +1,3 @@
-<div id="pagehead">
-	<div style="float:left">
-	<img src="/images/pagelogo.png" alt="Community logo">
-	</div>
-	<div style="margin-top: 8px">
-	<h1>GGZ Community</h1>
-	<h2>Das Spieleportal basierend auf Freier Software</h2>
-	</div>
 	<div class="menubar">
 		<div class="menu">
 			<a href="/" class="menuitem" title="Startseite">Start</a>
@@ -51,8 +43,3 @@
 			</div>
 		</div>
 	</div>
-	<div class="adblock">
-		#pagehead .adblock
-		<img src="" alt="#pagehead .adblock img">
-	</div>
-</div>

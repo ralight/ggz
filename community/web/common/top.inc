@@ -10,7 +10,7 @@ Locale::detect();
 </head>
 
 <body>
-<?php Locale::includefile("navbar.inc"); ?>
+<?php include("navbar.php"); ?>
 
 <div id="mainandacknowledgements">
 
