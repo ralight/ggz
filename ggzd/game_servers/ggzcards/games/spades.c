@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 2341 2001-09-02 08:49:07Z jdorje $
+ * $Id: spades.c 2363 2001-09-05 05:14:15Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -315,7 +315,7 @@ static void spades_end_trick()
 {
 	game_end_trick();
 	/* update teammate's info as well */
-	game_set_player_message((game.winner + 2) % 4);
+	set_player_message((game.winner + 2) % 4);
 }
 
 static void spades_end_hand()
