@@ -1,0 +1,51 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Widelands</b><br>
+Strategy game for 2-8 players.
+<br>
+The game client is not a GGZ project but can be used on GGZ.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Widelands features</i><br>
+<ul>
+<li>SDL game client
+<li>client-side server
+<li>can act as GGZ core client
+</ul>
+<br>
+
+<i>Widelands rules</i><br>
+In Widelands, the player leads a tribe from a single headquarter
+to a prosporous nation. Construction, expansion, economy and battles
+are the main elements of this game.
+
+<br><br>
+
+<i>Homepage of Widelands</i><br>
+<a href="http://widelands.sourceforge.net/" target="blank">http://widelands.sourceforge.net/</a>
+
+</td><td valign="top">
+
+<i>SDL client:</i><br>
+<img src="/games/pics/widelands.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
