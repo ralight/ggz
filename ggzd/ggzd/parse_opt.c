@@ -128,7 +128,7 @@ void parse_args(int argc, const char *argv[])
 	while ((rc = poptGetNextOpt(context)) != -1) {
 		switch (rc) {
 		case 1:	/* Version command */
-			printf("Gnu Gaming Zone server: version %s\n", 
+			printf("GGZ Gaming Zone server: version %s\n", 
 			       VERSION);
 			poptFreeContext(context);
 			exit(0);

@@ -125,7 +125,7 @@ gint main(gint argc, gchar *argv[])
 	parse_args(argc, argv);
 	if(ggzrc_initialize(local_conf_fname) != 0) {
 		fprintf(stderr, _("ERROR: No valid configuration file loaded\n"));
-		fprintf(stderr, _("Gnu Gaming Zone can not continue\n"));
+		fprintf(stderr, _("GGZ Gaming Zone can not continue\n"));
 		exit(1);
 	}
 	

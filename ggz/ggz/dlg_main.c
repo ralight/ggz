@@ -113,7 +113,7 @@ void ggz_update_title(void)
 		profile = g_strdup_printf(" %s ", gtk_entry_get_text(GTK_ENTRY(tmp)));
 	}
 
-	new_title = g_strdup_printf(_("Gnu Gaming Zone - [%s]"), profile);
+	new_title = g_strdup_printf(_("GGZ Gaming Zone - [%s]"), profile);
 	tmp = lookup_widget(main_win, "main_win");
 	gtk_window_set_title (GTK_WINDOW (tmp), new_title);
 	g_free(profile);
@@ -703,7 +703,7 @@ create_main_win (void)
   main_win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (main_win), "main_win", main_win);
   gtk_widget_set_usize (main_win, 602, -2);
-  gtk_window_set_title (GTK_WINDOW (main_win), _("Gnu Gaming Zone"));
+  gtk_window_set_title (GTK_WINDOW (main_win), _("GGZ Gaming Zone"));
   gtk_window_set_default_size (GTK_WINDOW (main_win), 500, 450);
 
   main_box = gtk_vbox_new (FALSE, 0);

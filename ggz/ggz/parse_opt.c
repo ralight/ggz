@@ -61,7 +61,7 @@ void parse_args(gint argc, gchar *argv[])
 	while ((rc = poptGetNextOpt(context)) != -1) {
 		switch (rc) {
 		case 1:	/* Version command */
-			g_print("Gnu Gaming Zone client: version %s\n",
+			g_print("GGZ Gaming Zone client: version %s\n",
 				VERSION);
 			poptFreeContext(context);
 			exit(0);

@@ -1,3 +1,15 @@
+After much discussion, the project team has decided on a name change. Given
+that we are not planning on becoming an "official" Gnu project in the
+foreseeable future, we are dropping the "Gnu" from "Gaming Zone" and changing
+our name to the "GGZ Gaming Zone". The core project is and will remain under
+the GPL/LGPL license, we just don't feel that being "official" is in our best
+interests at this time. The software isn't changing one bit, just the name.
+
+Note that it will be a while until the name change takes effect in all
+subprojects, on the web page, etc... 
+
+---------
+
 Announcing the release of The Gnu Gaming Zone v0.0.3!
 
 The Gnu Gaming Zone (GGZ) is a an open-sourced Internet gaming center.

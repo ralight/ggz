@@ -45,7 +45,7 @@ static void dlg_about_realize(GtkWidget* widget, gpointer data)
 	GtkWidget *tmp;
 	gchar* title;
 
-	title = g_strdup_printf(_("Gnu Gaming Zone Client version %s"), 
+	title = g_strdup_printf(_("GGZ Gaming Zone Client version %s"), 
 				VERSION);
 	tmp = lookup_widget(dlg_about, "title_label");
 	gtk_label_set_text(GTK_LABEL(tmp), title);
