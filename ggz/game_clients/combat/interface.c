@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Interface code
- * $Id: interface.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: interface.c 6342 2004-11-12 17:42:38Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -127,7 +127,7 @@ GtkWidget *create_main_window(void)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(mainarea);
 	gtk_box_pack_start(GTK_BOX(hbox), mainarea, FALSE, FALSE, 0);
-	gtk_widget_set_usize(mainarea, 491, 500);
+	gtk_widget_set_size_request(mainarea, 491, 500);
 	gtk_widget_set_events(mainarea, GDK_BUTTON_PRESS_MASK);
 
 	vseparator1 = gtk_vseparator_new();
@@ -138,7 +138,6 @@ GtkWidget *create_main_window(void)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(vseparator1);
 	gtk_box_pack_start(GTK_BOX(hbox), vseparator1, FALSE, FALSE, 7);
-	gtk_widget_set_usize(vseparator1, 2, -2);
 
 	player_box = gtk_vbox_new(FALSE, 0);
 	gtk_widget_set_name(player_box, "player_box");
@@ -148,7 +147,6 @@ GtkWidget *create_main_window(void)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(player_box);
 	gtk_box_pack_start(GTK_BOX(hbox), player_box, TRUE, TRUE, 0);
-	gtk_widget_set_usize(player_box, 180, -2);
 
 	send_setup = gtk_button_new_with_label("");
 	send_setup_key =
@@ -190,7 +188,6 @@ GtkWidget *create_main_window(void)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(current_turn);
 	gtk_box_pack_start(GTK_BOX(hbox2), current_turn, FALSE, FALSE, 0);
-	gtk_widget_set_usize(current_turn, 120, -2);
 
 	g_signal_connect(GTK_OBJECT(main_window), "delete_event",
 			 GTK_SIGNAL_FUNC(main_window_exit), NULL);

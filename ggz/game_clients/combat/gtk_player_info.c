@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 10/14/2000
  * Desc: Player info widget
- * $Id: gtk_player_info.c 6334 2004-11-12 02:49:43Z jdorje $
+ * $Id: gtk_player_info.c 6342 2004-11-12 17:42:38Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -64,7 +64,6 @@ GtkWidget *gtk_player_info_new(GtkWidget * parent, char *name, int seat)
 	gtk_widget_show(player_name);
 	gtk_box_pack_start(GTK_BOX(player_info), player_name, FALSE, FALSE,
 			   0);
-	gtk_widget_set_usize(player_name, 70, -2);
 
 	/* Color of label */
 	label_style = gtk_style_new();
@@ -91,18 +90,10 @@ GtkWidget *gtk_player_info_new(GtkWidget * parent, char *name, int seat)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(unit_list);
 	gtk_container_add(GTK_CONTAINER(unit_view), unit_list);
-	gtk_widget_set_usize(unit_list, 150, -2);
 	gtk_clist_set_column_width(GTK_CLIST(unit_list), 0, 50);
 	gtk_clist_set_column_width(GTK_CLIST(unit_list), 1, 55);
 	gtk_clist_set_column_width(GTK_CLIST(unit_list), 2, 45);
 	gtk_clist_column_titles_show(GTK_CLIST(unit_list));
-
-	// Ugly hack
-	/*
-	   gtk_widget_set_usize(unit_list, 150, 300);
-	   gtk_widget_set_usize(unit_list, 150, 240);
-	   gtk_widget_set_usize(unit_list, 150, -2);
-	 */
 
 	// Collums
 	name_lbl = gtk_label_new("Name");

@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Options dialog
- * $Id: dlg_options.c 6335 2004-11-12 04:40:58Z jdorje $
+ * $Id: dlg_options.c 6342 2004-11-12 17:42:38Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -180,7 +180,7 @@ GtkWidget *create_dlg_options(int number)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(mini_board);
 	gtk_box_pack_start(GTK_BOX(hbox3), mini_board, TRUE, TRUE, 0);
-	gtk_widget_set_usize(mini_board, 240, 240);
+	gtk_widget_set_size_request(mini_board, 300, 300);
 	gtk_widget_set_events(mini_board, GDK_BUTTON_PRESS_MASK);
 
 	vbox1 = gtk_vbox_new(FALSE, 0);
@@ -799,7 +799,6 @@ GtkWidget *create_dlg_options(int number)
 	gtk_widget_show(scrolledwindow1);
 	gtk_box_pack_start(GTK_BOX(hbox5), scrolledwindow1, FALSE, FALSE,
 			   0);
-	gtk_widget_set_usize(scrolledwindow1, 163, -2);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW
 				       (scrolledwindow1),
 				       GTK_POLICY_AUTOMATIC,
@@ -851,7 +850,6 @@ GtkWidget *create_dlg_options(int number)
 	gtk_table_attach(GTK_TABLE(table2), preview_board, 1, 2, 1, 2,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-	//gtk_widget_set_usize (preview_board, 100, 100);
 
 	preview_label = gtk_label_new("Preview\nData");
 	gtk_label_set_line_wrap(GTK_LABEL(preview_label), TRUE);
@@ -876,7 +874,6 @@ GtkWidget *create_dlg_options(int number)
 	gtk_table_attach(GTK_TABLE(table2), preview_options_scroll, 0, 3,
 			 2, 3, (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
 			 (GtkAttachOptions) (GTK_SHRINK | GTK_FILL), 0, 0);
-	gtk_widget_set_usize(preview_options_scroll, -1, 30);
 
 	preview_options =
 	    gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
@@ -1408,7 +1405,6 @@ GtkWidget *create_dlg_save(void)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(map_name);
 	gtk_box_pack_start(GTK_BOX(hbox6), map_name, TRUE, TRUE, 5);
-	gtk_widget_set_usize(map_name, 158, 19);
 
 	dialog_action_area3 = GTK_DIALOG(dlg_save)->action_area;
 	gtk_widget_set_name(dialog_action_area3, "dialog_action_area3");

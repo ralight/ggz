@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6335 2004-11-12 04:40:58Z jdorje $
+ * $Id: game.c 6342 2004-11-12 17:42:38Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -266,9 +266,11 @@ int game_get_options(void)
 	if (old_width != cbt_game.width || old_height != cbt_game.height) {
 		g_object_unref(cbt_buf);
 		cbt_buf = NULL;
-		gtk_widget_set_usize(widget,
-				     cbt_game.width * (PIXSIZE + 1) + 1,
-				     cbt_game.height * (PIXSIZE + 1) + 1);
+		gtk_widget_set_size_request(widget,
+					    cbt_game.width * (PIXSIZE +
+							      1) + 1,
+					    cbt_game.height * (PIXSIZE +
+							       1) + 1);
 	}
 
 	for (a = 0; a < cbt_game.number; a++)
