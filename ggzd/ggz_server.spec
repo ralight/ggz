@@ -2,11 +2,11 @@
 
 Summary: Server software for the Gnu Gaming Zone
 Name: ggz_server
-Version: 0.0.3pre
+Version: 0.0.3
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz_server-0.0.2.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz_server-0.0.3.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: Rich Gade <rgade@users.sourceforge.net>
@@ -16,14 +16,14 @@ BuildRoot: /var/tmp/%{name}-buildroot
 The Gnu Gaming Zone server allows other computers to connect to yours via
 the Internet and play network games.  Currently, the following game servers
 are included with GGZ:
-  - Spades
-  - Tic Tac Toe
+  - Spades		- Connect the Dots
+  - Tic-Tac-Toe		- La Pocha
 
 %prep
 %setup
 
 %build
-./configure --prefix=/usr --sysconfdir=/etc
+./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var/lib
 make
 
 %install
@@ -39,14 +39,24 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %dir /etc/ggzd/games
 %config /etc/ggzd/games/spades.dsc
 %config /etc/ggzd/games/tictactoe.dsc
+%config /etc/ggzd/games/dots.dsc
+%config /etc/ggzd/games/lapocha.dsc
 %dir /etc/ggzd/rooms
 %config /etc/ggzd/rooms/spades.room
 %config /etc/ggzd/rooms/tictactoe.room
+%config /etc/ggzd/rooms/dots.room
+%config /etc/ggzd/rooms/lapocha.room
 
 /usr/bin/ggzd
 /usr/lib/ggzd
 
 %changelog
+* Thu Aug 31 2000 Rich Gade <rgade@users.sourceforge.net>
+- Updated for release 0.0.3
+
+* Mon Aug 21 2000 Rich Gade <rgade@usrs.sourceforge.net>
+- Updated for version 0.0.3pre
+
 * Mon Apr 24 2000 Brent Hendricks <bmh@users.sourceforge.net>
 - Removed easysock files from list
 

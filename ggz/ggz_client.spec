@@ -2,11 +2,11 @@
 
 Summary: Client software for the Gnu Gaming Zone
 Name: ggz_client
-Version: 0.0.3pre
+Version: 0.0.3
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz_client-0.0.2.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz_client-0.0.3.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: Rich Gade <rgade@users.sourceforge.net>
@@ -16,8 +16,8 @@ BuildRoot: /var/tmp/%{name}-buildroot
 The Gnu Gaming Zone client allows you to connect to a GGZ server via the
 Internet and play network games.  Currently the following games are included
 with GGZ:
-  - Spades
-  - Tic Tac Toe
+  - Spades		- Connect the Dots
+  - Tic-Tac-Toe		- La Pocha
 
 %prep
 %setup
@@ -28,6 +28,10 @@ make
 
 %install
 make DESTDIR=$RPM_BUILD_ROOT install
+# Blasted po subdir makefile doesn't support DESTDIR, so we'll have to
+# install message catalogs manually until further notice :(
+mkdir -p $RPM_BUILD_ROOT/usr/share/locale/de/LC_MESSAGES
+cp po/de.gmo $RPM_BUILD_ROOT/usr/share/locale/de/LC_MESSAGES/ggz_client.mo
 
 %files
 %defattr(-,root,root)
@@ -37,9 +41,16 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 /usr/bin/ggz
 /usr/lib/ggz
+/usr/share/locale/de/LC_MESSAGES/ggz_client.mo
 
 %changelog
 %changelog
+* Thu Aug 31 2000 Rich Gade <rgade@users.sourceforge.net>
+- Updated for release 0.0.3
+
+* Mon Aug 21 2000 Rich Gade <rgade@users.sourceforge.net>
+- Updated for version 0.0.3pre
+
 * Mon Apr 24 2000 Brent Hendricks <bmh@users.sourceforge.net>
 - Removed easysock files from list
 
