@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.c 2649 2001-11-04 17:33:57Z jdorje $
+ * $Id: ggz_server.c 2654 2001-11-04 22:04:28Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -39,46 +39,33 @@ GGZdModState ggzd_get_state(void)
 
 ggzd_assign_t ggzd_get_seat_status(int seat)
 {
-	GGZSeat *myseat = ggzdmod_get_seat(ggzdmod, seat);
-	if (!myseat)
-		return GGZ_SEAT_NONE;
-	return myseat->type;
+	return ggzdmod_get_seat(ggzdmod, seat).type;
 }
 
 int ggzd_set_seat_status(int seat, ggzd_assign_t status)
 {
-	GGZSeat *myseat = ggzdmod_get_seat(ggzdmod, seat);
-	if (!myseat)
-		return -1;
-	myseat->type = status;
+	GGZSeat myseat = ggzdmod_get_seat(ggzdmod, seat);
+	myseat.type = status;
+	ggzdmod_set_seat(ggzdmod, &myseat);
 	return 0;
 }
 
 const char *ggzd_get_player_name(int seat)
 {
-	GGZSeat *myseat = ggzdmod_get_seat(ggzdmod, seat);
-	if (!myseat)
-		return NULL;
-	return myseat->name;
+	return ggzdmod_get_seat(ggzdmod, seat).name;
 }
 
 int ggzd_set_player_name(int seat, char *name)
 {
-	GGZSeat *myseat = ggzdmod_get_seat(ggzdmod, seat);
-	if (!myseat)
-		return -1;
-	if (myseat->name)
-		free(myseat->name);
-	myseat->name = strdup(name);
+	GGZSeat myseat = ggzdmod_get_seat(ggzdmod, seat);
+	myseat.name = name;
+	ggzdmod_set_seat(ggzdmod, &myseat);
 	return 0;
 }
 
 int ggzd_get_player_socket(int seat)
 {
-	GGZSeat *myseat = ggzdmod_get_seat(ggzdmod, seat);
-	if (!myseat)
-		return -1;
-	return myseat->fd;
+	return ggzdmod_get_seat(ggzdmod, seat).fd;
 }
 
 int ggzd_debug(const char *fmt, ...)
@@ -102,8 +89,7 @@ int ggzd_get_seat_count(ggzd_assign_t status)
 {
 	int i, count = 0;
 	for (i = 0; i < ggzdmod_get_num_seats(ggzdmod); i++)
-		if (ggzdmod_get_seat(ggzdmod, i) &&
-		    ggzdmod_get_seat(ggzdmod, i)->type == status)
+		if (ggzd_get_seat_status(i) == status)
 			count++;
 	return count;
 }

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2653 2001-11-04 21:56:47Z jdorje $
+ * $Id: ggzdmod.c 2654 2001-11-04 22:04:28Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -220,13 +220,15 @@ int ggzdmod_get_num_seats(GGZdMod * mod)
 
 /* FIXME: this allows direct manipulation of the seat data by the user
    program.  It would be very bad if they did that. */
-GGZSeat *ggzdmod_get_seat(GGZdMod * mod, int seat)
+GGZSeat ggzdmod_get_seat(GGZdMod * mod, int seat)
 {
 	_GGZdMod *ggzdmod = mod;
 	if (!CHECK_GGZDMOD(ggzdmod) || seat < 0 || seat >= ggzdmod->num_seats) {
-		return NULL;
+		GGZSeat dummy;
+		dummy.type = GGZ_SEAT_NONE, dummy.fd = -1, dummy.num = seat, dummy.name = NULL;
+		return dummy;
 	}
-	return &ggzdmod->seats[seat];
+	return ggzdmod->seats[seat];
 }
 
 
