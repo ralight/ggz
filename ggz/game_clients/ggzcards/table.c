@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4093 2002-04-27 22:02:50Z jdorje $
+ * $Id: table.c 4133 2002-05-02 06:48:59Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -408,7 +408,6 @@ static void table_show_player_box(int player, int write_to_screen)
 			gdk_string_extents(font, next, &dummy, &dummy,
 		        	           &width, &dummy, &dummy);
 			max_width = MAX(max_width, width);
-			printf("Width is %d for '%s'.\n", width, next);
 			
 			gdk_draw_string(table_buf, font,
 				table_style->fg_gc[GTK_WIDGET_STATE(table)],
