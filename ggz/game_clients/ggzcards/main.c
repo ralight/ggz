@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 6386 2004-11-16 05:47:51Z jdorje $
+ * $Id: main.c 6450 2004-12-11 21:57:47Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -222,6 +222,7 @@ void statusbar_message(const char *msg)
 						 "Game Messages");
 	}
 
+	(void)gtk_statusbar_pop(GTK_STATUSBAR(sb), sb_context);
 	(void)gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
 	ggz_debug(DBG_TABLE, "Put up statusbar message: '%s'", msg);
 }
@@ -242,6 +243,7 @@ void messagebar_message(const char *msg)
 						 "Game Messages");
 	}
 
+	(void)gtk_statusbar_pop(GTK_STATUSBAR(sb), sb_context);
 	(void)gtk_statusbar_push(GTK_STATUSBAR(sb), sb_context, msg);
 	ggz_debug(DBG_TABLE, "Put up messagebar message: '%s'", msg);
 }
