@@ -73,6 +73,8 @@ esac
 
 echo "Creating autoconf KDE and GGZ macros..."
 cp acinclude.kde acinclude.m4
+# SuSE sucks here
+chmod +w acinclude.m4
 cat acinclude.ggz >> acinclude.m4
 
 for coin in `find $srcdir -name configure.in -print`
