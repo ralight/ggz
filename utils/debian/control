@@ -1,13 +1,13 @@
 Source: ggz-utils
-Section: games
+Section: net
 Priority: optional
 Maintainer: Josef Spillner <dr_maux@users.sourceforge.net>
 Standards-Version: 3.5.2
-Build-Depends: debhelper (>> 3.0.0), autoconf, automake, libtool
+Build-Depends: debhelper (>> 3.0.0), autoconf, automake, libtool, libggzcore-dev (>= 0.0.5-1), libc6-dev (>= 2.2.1-1), gettext
 
 Package: ggz-utils
 Architecture: any
-Section: games
+Section: net
 Depends: ${shlibs:Depends}
 Suggests: ggz-core-client
 Description: GGZ Gaming Zone Utilies

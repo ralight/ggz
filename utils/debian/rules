@@ -12,6 +12,7 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
+	test -f configure || NOCONFIGURE=yes ./autogen.sh
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man
 	# Add here commands to compile the package.
 	#$(MAKE)
@@ -22,6 +23,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
+	rm -f motd-editor/config.cache
 
 	# Add here commands to clean up after the build process.
 	-$(MAKE) distclean
