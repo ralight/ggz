@@ -1,0 +1,190 @@
+There are several miscellaneous functions that we use in several
+places (or would like to use in several places).  To prevent code
+duplication, I'm proposing that we create a general purpose GGZ
+library (libggz) that would be of use to clients, servers, and maybe
+even game modules.  
+
+It would be its own CVS module and would be required for
+compiling/running the server, ggzcore, and anything else that depends
+on it.  For those of you who object to adding another library
+dependency, I'd be willing to fold easysock into libggz so that the
+lib count stays exactly the same :)
+
+The functions fall into 4 classes: memory management, conffile
+parsinf, data structures, and XML parsing.
+
+Here is my proposed API:
+
+
+/* Memory Handling
+ *
+ * (these are currently in our ggzcore, but they're so useful I'm having
+ * trouble progarmming on the server without them!)
+ */
+
+void * _ggz_malloc(const unsigned int, char *, int);
+void * _ggz_realloc(const void *, const unsigned int, char *, int);
+int _ggz_free(const void *, char *, int);
+char * _ggz_strdup(const char *, char *, int);
+#define ggz_malloc(x)	_ggz_malloc(x, __FUNCTION__ " in " \
+						   __FILE__, __LINE__)
+#define ggz_realloc(x,y)	_ggz_realloc(x, y, __FUNCTION__ " in " \
+						       __FILE__, __LINE__)
+#define ggz_free(x)		_ggz_free(x, __FUNCTION__ " in " \
+						 __FILE__,  __LINE__)
+#define ggz_strdup(x)	_ggz_strdup(x, __FUNCTION__ " in " \
+
+int ggz_memory_check(void);
+
+
+/* Config file parsing
+ *
+ * (currently exists in server and ggzcore )
+ *
+ */
+#define CONF_RDONLY	((unsigned char) 0x01)
+#define CONF_RDWR	((unsigned char) 0x02)
+#define CONF_CREATE	((unsigned char) 0x04)
+
+int ggz_conf_initialize	(const char	*g_path,
+			 const char	*u_path);
+void ggz_conf_cleanup (void);
+
+int ggz_conf_parse		(const char *path,
+			 const unsigned char options);
+int ggz_conf_commit		(int handle);
+int ggz_conf_write_string	(int	handle,
+			 const char	*section,
+			 const char	*key,
+			 const char	*value);
+int ggz_conf_write_int	(int	handle,
+			 const char	*section,
+			 const char	*key,
+			 int	value);
+int ggz_conf_write_list	(int	handle,
+			 const char	*section,
+			 const char	*key,
+			 int	argc,
+			 char	**argv);
+char * ggz_conf_read_string	(int	handle,
+			 const char	*section,
+			 const char	*key,
+			 const char	*def);
+int ggz_conf_read_int	(int	handle,
+			 const char	*section,
+			 const char	*key,
+			 int	def);
+int ggz_conf_read_list	(int	handle,
+			 const char	*section,
+			 const char	*key,
+			 int	*argcp,
+			 char	***argvp);
+int ggz_conf_remove_section	(int	handle,
+			 const char	*section);
+int ggz_conf_remove_key	(int	handle,
+			 const char	*section,
+			 const char	*key);
+
+
+
+/* Data structures
+ * (currently found in ggzcore and on the server)
+ */
+
+/* List functions */
+typedef int	(*_ggzEntryCompare)	(void *a, void *b);
+typedef	void *	(*_ggzEntryCreate)	(void *data);
+typedef	void	(*_ggzEntryDestroy)	(void *data);
+
+typedef struct _GGZList {
+	struct GGZListEntry	*head, *tail;
+	ggzEntryCompare		compare_func;
+	ggzEntryCreate		create_func;
+	ggzEntryDestroy		destroy_func;
+	int			options;
+	int			entries;
+} GGZList;
+
+typedef struct _GGZListEntry {
+	void				*data;
+	struct GGZListEntry	*next, *prev;
+} GGZListEntry;
+
+
+GGZList *ggz_list_create (ggzEntryCompare compare_func,
+			   ggzEntryCreate create_func,
+			   ggzEntryDestroy destroy_func,
+			   int options);
+
+int ggz_list_insert		(GGZList *list, void *data);
+GGZListEntry *ggz_list_head	(GGZList *list);
+GGZListEntry *ggz_list_tail	(GGZList *list);
+GGZListEntry *ggz_list_next  	(GGZListEntry *entry);
+GGZListEntry *ggz_list_prev	(GGZListEntry *entry);
+void *ggz_list_get_data		(GGZListEntry *entry);
+GGZListEntry *ggz_list_search	(GGZList *list, void *data);
+GGZListEntry *ggz_list_search_alt(GGZList *list, void *data,
+				  ggzEntryCompare compare_func);
+
+void ggz_list_delete_entry	(GGZList *list, GGZListEntry *entry);
+void ggz_list_destroy		(GGZList *list);
+int ggz_list_count		(GGZList *list);
+
+
+/* String list functions */
+int ggz_list_compare_str	(void *a, void *b);
+void * ggz_list_create_str	(void *data);
+void ggz_list_destroy_str	(void *data);
+
+/* Stacks */
+typedef struct ggz_list GGZStack;
+
+GGZStack* ggz_stack_new(void);
+void ggz_stack_push(GGZStack*, void*);
+void* ggz_stack_pop(GGZStack*);
+void* ggz_stack_top(GGZStack*);
+void ggz_stack_free(GGZStack*);
+
+
+/* XML parsing 
+ * 
+ * (currently used on client and server)
+ */
+
+struct _GGZXMLElement {
+	
+	/* The name of the tag */
+	char *tag;
+
+	/* Text content */
+	char *text;
+
+	/* Tag attributes */
+	_ggzcore_list *attributes;
+	
+	/* Extra data associated with tag (usually gleaned from children) */
+	void *data;
+
+	/* Function to free allocated memory */
+	void (*free)();
+
+	/* Function to process tag */
+	void (*process)();
+};
+
+
+typedef struct _GGZXMLElement GGZXMLElement;
+
+GGZXMLElement* ggz_xmlelement_new(char *tag, char **attrs, void (*process)(), void (*free)());
+void ggz_xmlelement_init(GGZXMLElement *element, char *tag, char **attrs, void (*process)(), void (*free)());
+
+void ggz_xmlelement_set_data(GGZXMLElement*, void *data);
+
+char* ggz_xmlelement_get_tag(GGZXMLElement*);
+char* ggz_xmlelement_get_attr(GGZXMLElement *element, char *attr);
+void* ggz_xmlelement_get_data(GGZXMLElement*);
+char* ggz_xmlelement_get_text(GGZXMLElement*);
+void ggz_xmlelement_add_text(GGZXMLElement*, const char *text, int len);
+
+void ggz_xmlelement_free(GGZXMLElement*);
+

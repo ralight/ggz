@@ -1,0 +1,20 @@
+
+SUBDIRS = .
+
+lib_LTLIBRARIES = libggz.la
+
+include_HEADERS = ggz.h
+
+libggz_la_LIBADD = @LDADD@
+
+libggz_la_LDFLAGS = -version-info 0:0:0
+
+libggz_la_SOURCES =	conf.c \
+			confio.h \
+			confio.c \
+		   	list.c \
+		   	memory.c \
+			msg.c \
+			msg.h \
+		   	stack.c \
+		   	xmlelement.c
