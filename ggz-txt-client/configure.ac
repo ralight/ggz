@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5790 2004-02-05 10:46:53Z josef $
+dnl $Id: configure.ac 5999 2004-05-17 14:21:31Z josef $
 
 AC_INIT([GGZ text client], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [ggz-txt-client])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -29,6 +29,7 @@ AC_GGZ_INTL
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD
 AC_GGZ_GGZCORE
+AC_GGZ_CONFIG
 
 dnl Check for header files
 dnl ======================
@@ -106,6 +107,8 @@ AC_SUBST(LDADD)
 
 AC_CONFIG_FILES([Makefile
 		ggz-txt/Makefile
+		tttxt/Makefile
+		tttxt/module.dsc
 		man/Makefile
 		po/Makefile
 	   ])
