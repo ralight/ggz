@@ -113,17 +113,19 @@ unsigned char _ggzcore_state_event_isvalid(GGZEventID id)
 		break;
 
 	case GGZ_STATE_ONLINE:
-		valid = (id == GGZ_USER_LOGIN || id == GGZ_USER_LOGOUT);
+		valid = (id == GGZ_USER_LOGIN || id == GGZ_USER_LOGOUT
+			 || id == GGZ_USER_MOTD);
 		break;
 
 	case GGZ_STATE_LOGGED_IN:
-		valid = (id == GGZ_USER_LOGOUT || id == GGZ_USER_JOIN_ROOM);
+		valid = (id == GGZ_USER_LOGOUT || id == GGZ_USER_JOIN_ROOM
+			 || id == GGZ_USER_MOTD);
 		break;
 
 	case GGZ_STATE_IN_ROOM:
 		valid = (id == GGZ_USER_LOGOUT || id == GGZ_USER_JOIN_ROOM
 			 || id == GGZ_USER_CHAT || id == GGZ_USER_CHAT_PRVMSG
-			 || id == GGZ_USER_CHAT_BEEP);
+			 || id == GGZ_USER_CHAT_BEEP || id == GGZ_USER_MOTD);
 		break;
 		
 	default:
