@@ -198,6 +198,7 @@ AC_CONFIG_FILES([Makefile
 	po/modsniff/Makefile
 	po/kcm_ggz/Makefile
 	po/compcal/Makefile
+	po/kgrubby/Makefile
 	])
 AC_OUTPUT
 
