@@ -48,7 +48,7 @@ char* game_states[] = {"WH_STATE_PRELAUNCH", "WH_STATE_NOTPLAYING", "WH_STATE_WA
 
 
 static int try_to_start_game();
-static int newgame();
+static void newgame();
 
 void set_game_state(server_state_t state)
 {
@@ -724,7 +724,7 @@ static int try_to_start_game()
 }
 
 /* start a new game! */
-static int newgame()
+static void newgame()
 {
 	player_t p;
 

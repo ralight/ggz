@@ -261,7 +261,7 @@ static int bridge_send_hand(player_t p, seat_t s)
 	    && BRIDGE.dummy_revealed)
 		return send_hand(p, s, 1);
 
-	game_send_hand(p, s);
+	return game_send_hand(p, s);
 }
 
 static int bridge_get_bid_text(char* buf, int buf_len, bid_t bid)
