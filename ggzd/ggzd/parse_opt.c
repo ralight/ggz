@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3071 2002-01-12 02:00:40Z jdorje $
+ * $Id: parse_opt.c 3072 2002-01-12 02:18:47Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -498,7 +498,7 @@ static void parse_game(char *name, char *dir)
 	if(b_count != 0) {
 		for(i=0; i<b_count; i++) {
 			intval = atoi(b_list[i]);
-			if(intval < 0 || intval > 8) {
+			if(intval < 0 || intval > MAX_TABLE_SIZE) {
 				err_msg("BotsAllowed has invalid value [%s]",
 					name);
 				continue;
@@ -514,7 +514,7 @@ static void parse_game(char *name, char *dir)
 	if(b_count != 0) {
 		for(i=0; i<b_count; i++) {
 			intval = atoi(b_list[i]);
-			if(intval < 1 || intval > 8) {
+			if(intval < 1 || intval > MAX_TABLE_SIZE) {
 				err_msg("PlayersAllowed has invalid value");
 				continue;
 			}
