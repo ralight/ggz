@@ -1,0 +1,22 @@
+# GGZ Server game description file for FreeCiv
+
+[GameInfo]
+Author = See http://www.freeciv.org/people.phtml
+Description = FreeCiv strategy game
+Homepage = http://www.freeciv.org/
+Name = FreeCiv
+Version = @VERSION@
+
+[LaunchInfo]
+ExecutablePath = @prefix@/bin/civserver
+
+[Protocol]
+Engine = Freeciv
+Version = @MAJOR_VERSION@.@MINOR_VERSION@
+
+[TableOptions]
+AllowLeave = 1
+BotsAllowed = 1..30
+PlayersAllowed = 1..30
+KillWhenEmpty = 0
+AllowSpectators = 1
