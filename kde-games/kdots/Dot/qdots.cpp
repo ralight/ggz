@@ -118,8 +118,10 @@ void QDots::mousePressEvent(QMouseEvent *e)
 	//y = (y * (m_rows + 2)) / m_rows;
 	//cout << "recalc(1) at " << x << ", " << y << endl;
 
-	success = vSetBorderValue(x, y, 1);
-	if(success) emit signalTurn(m_lastx, m_lasty, m_lastdirection);
+	// These two lines are essential for non-GGZ mode!!!
+	//success = vSetBorderValue(x, y, 1);
+	//if(success) emit signalTurn(m_lastx, m_lasty, m_lastdirection);
+	emit signalTurn(m_lastx, m_lasty, m_lastdirection);
 
 	paintEvent(NULL);
 }
