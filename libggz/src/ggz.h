@@ -2,6 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
+ * $Id: ggz.h 3467 2002-02-25 13:53:31Z jdorje $
  * 
  * Header file for ggz componenets lib
  *
@@ -715,10 +716,16 @@ void ggz_free_file_struct(GGZFile *file);
  * @defgroup easysock Easysock IO
  * 
  * Simple functions for reading/writing binary data across file descriptors.
- * @note To enable debugging output, enable GGZ debugging type "easysock".
  *
  * @{
  */
+
+/** @brief ggz_debug debugging type for Easysock debugging.
+ *
+ *  To enable socket debugging, add this to the list of debugging types.
+ *  @see ggz_debug_enable
+ */
+#define GGZ_SOCKET_DEBUG "socket"
 
 /****************************************************************************
  * Error function
