@@ -62,6 +62,7 @@ struct ttt_game_t {
 	char board[9];
 	char state;
 	char turn;
+	char move_count;
 };
 
 void game_init(void);

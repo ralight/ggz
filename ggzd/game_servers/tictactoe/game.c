@@ -37,6 +37,7 @@ void game_init(void)
 	int i;
 	
 	ttt_game.turn = 0;
+	ttt_game.move_count = 0;
 	ttt_game.state = TTT_STATE_INIT;
 	for (i = 0; i < 9; i++)
 		ttt_game.board[i] = -1;
@@ -248,9 +249,11 @@ int game_handle_move(int num, int* move)
 		return -1;
 
 	/* Check validity of move */
-	if ( (status = game_check_move(num, *move)) == 0)
+	if ( (status = game_check_move(num, *move)) == 0) {
 		ttt_game.board[*move] = (char)num;
-	
+		ttt_game.move_count++;
+	}
+
 	/* Send back move status */
 	if (es_write_int(fd, TTT_RSP_MOVE) < 0
 	    || es_write_char(fd, status))
@@ -338,6 +341,9 @@ char game_check_win(void)
 		return ttt_game.board[2];
 
 	/* No one won yet */
+	if (ttt_game.move_count == 9)
+		return 2;  /* Cat's game */
+
 	return -1;
 }
 
