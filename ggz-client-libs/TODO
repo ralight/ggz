@@ -1,28 +1,13 @@
-For v0.0.4
-==========
-Massive Client rewrite 
-More games 
-Game help 
-
-
-For v0.0.5
-==========
+First beta release: 0.1.0 
+=========================
 Dynamic port/fd/creation 
 8+ player games 
 Non turn-based game support (requires above two) 
-Libraries for game writers 
-Keep_alive added to protocol 
-Lag meter added to protocol 
-Query server for game options 
-
-
-First beta release: 0.1.0 
-=========================
-Player eservations
 Working Gnome client 
 10 games 
 Finalize protocol opcodes 
 Bug hunt (kill em all!) 
+Query server for game options 
 
 
 First stable release: 1.0.0
