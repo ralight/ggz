@@ -29,8 +29,8 @@
 #include <unistd.h>
 
 // Prototypes
-static void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
-static void hook_data(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
+static void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, const void *data);
+static void hook_data(GGZdMod *ggzdmod, GGZdModEvent event, const void *data);
 
 // Global self object
 Keepalive *me;
@@ -84,23 +84,25 @@ void Keepalive::loop()
 }
 
 // Handler for game data
-void Keepalive::hookData(void *data)
+void Keepalive::hookData(const void *data)
 {
 	char *name;
+	const int *num_ptr = (const int *)data;
+	int num = *num_ptr;
 
-	name = ggzdmod_get_seat(ggzdmod, *(int*)data).name;
-	m_world->receive(name, data);
+	name = ggzdmod_get_seat(ggzdmod, num).name;
+	m_world->receive(name, &num);
 }
 
 // Handler for joining players
-void Keepalive::hookJoin(void *data)
+void Keepalive::hookJoin(const void *data)
 {
 	GGZSeat seat = ggzdmod_get_seat(ggzdmod, *(int*)data);
 	m_world->addPlayer(seat.name, seat.fd);
 }
 
 // Handler for leaving players
-void Keepalive::hookLeave(void *data)
+void Keepalive::hookLeave(const void *data)
 {
 	GGZSeat seat = *(GGZSeat*)data;
 	m_world->removePlayer(seat.name);
@@ -108,36 +110,38 @@ void Keepalive::hookLeave(void *data)
 
 #ifdef GGZSPECTATORS
 // Handler for joining spectators
-void Keepalive::hookSpectatorJoin(void *data)
+void Keepalive::hookSpectatorJoin(const void *data)
 {
 	GGZSpectator spectator = ggzdmod_get_spectator(ggzdmod, *(int*)data);
 	m_world->addSpectator(spectator.name, spectator.fd);
 }
 
 // Handler for leaving spectators
-void Keepalive::hookSpectatorLeave(void *data)
+void Keepalive::hookSpectatorLeave(const void *data)
 {
 	GGZSpectator spectator = *(GGZSpectator*)data;
 	m_world->removeSpectator(spectator.name);
 }
 
 // Handler for spectator data
-void Keepalive::hookSpectatorData(void *data)
+void Keepalive::hookSpectatorData(const void *data)
 {
 	char *name;
+	const int *num_ptr = (const int *)data;
+	int num = *num_ptr;
 
-	name = ggzdmod_get_spectator(ggzdmod, *(int*)data).name;
-	m_world->receive(name, data);
+	name = ggzdmod_get_spectator(ggzdmod, num).name;
+	m_world->receive(name, &num);
 }
 #endif
 
 // Handler for state changes
-void Keepalive::hookState(void *data)
+void Keepalive::hookState(const void *data)
 {
 }
 
 // Handler for errors
-void Keepalive::hookError(void *data)
+void Keepalive::hookError(const void *data)
 {
 	close(ggzdmod_get_fd(ggzdmod));
 	m_valid = 0;
@@ -145,13 +149,13 @@ void Keepalive::hookError(void *data)
 }
 
 // Handler for logging events
-void Keepalive::hookLog(void *data)
+void Keepalive::hookLog(const void *data)
 {
 	std::cout << "(log) " << (char*)data << std::endl;
 }
 
 // Callback for events
-void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
+void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, const void *data)
 {
 	int player;
 
@@ -197,7 +201,7 @@ void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 }
 
 // Callback for game data
-void hook_data(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
+void hook_data(GGZdMod *ggzdmod, GGZdModEvent event, const void *data)
 {
 	if(!me->m_valid) return;
 

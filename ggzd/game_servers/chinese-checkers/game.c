@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 01/01/2001
  * Desc: Game functions
- * $Id: game.c 6107 2004-07-15 18:58:18Z jdorje $
+ * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -56,12 +56,12 @@ void game_init(GGZdMod *ggz)
 
 
 /* Handle message from GGZ server */
-void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
-	GGZdModState old_state = *(GGZdModState*)data;
+	const GGZdModState *old_state = data;
 	GGZdModState new_state = ggzdmod_get_state(ggz);
 
-	if (old_state == GGZDMOD_STATE_CREATED) {
+	if (*old_state == GGZDMOD_STATE_CREATED) {
 		assert(game.state == CC_STATE_INIT);
 		game_setup_board();
 	}
@@ -95,9 +95,9 @@ static int seats_empty(void)
 
 
 /* Handle message from GGZ server */
-void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
-	GGZSeat *old_seat = data;
+	const GGZSeat *old_seat = data;
 	GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
 	GGZdModState new_state;
 
@@ -120,9 +120,10 @@ void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 
 /* Handle message from player */
-void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_player(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
-	int num = *(int*)data;
+	const int *num_ptr = data;
+	const int num = *num_ptr;
 	int fd, op, status;
 	unsigned char ro, co, rd, cd;
 

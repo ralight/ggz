@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 6580 2005-01-02 11:26:32Z josef $
+ * $Id: stats.c 6892 2005-01-25 04:09:21Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -74,7 +74,7 @@ GGZReturn stats_lookup(ggzdbPlayerGameStats *stats)
 }
 
 static void calculate_records(ggzdbPlayerGameStats *stats,
-			      GGZdModGameReportData *report)
+			      const GGZdModGameReportData *report)
 {
 	int i;
 
@@ -99,7 +99,7 @@ static void calculate_records(ggzdbPlayerGameStats *stats,
 }
 
 static void calculate_ratings(ggzdbPlayerGameStats *stats,
-			      GGZdModGameReportData *report,
+			      const GGZdModGameReportData *report,
 			      const int num_teams)
 {
 	const int num_players = report->num_players;
@@ -192,7 +192,7 @@ static void calculate_ratings(ggzdbPlayerGameStats *stats,
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 static void calculate_highscores(ggzdbPlayerGameStats *stats,
-				 GGZdModGameReportData *report)
+				 const GGZdModGameReportData *report)
 {
 	int i;
 
@@ -202,7 +202,7 @@ static void calculate_highscores(ggzdbPlayerGameStats *stats,
 	}
 }
 
-static int fill_in_teams(GGZdModGameReportData *report)
+static int fill_in_teams(const GGZdModGameReportData *report)
 {
 	int i;
 	int max_team = -1;
@@ -224,7 +224,7 @@ static int fill_in_teams(GGZdModGameReportData *report)
 }
 
 void report_statistics(int room, int gametype,
-		       GGZdModGameReportData *report)
+		       const GGZdModGameReportData *report)
 {
 	int i, num_teams;
 	char game_name[MAX_GAME_NAME_LEN + 1];

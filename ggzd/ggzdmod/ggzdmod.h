@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 6832 2005-01-23 10:39:33Z jdorje $
+ * $Id: ggzdmod.h 6892 2005-01-25 04:09:21Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -58,9 +58,12 @@
  *
  * @code
  *     // Game-defined handler functions for GGZ events; see below.
- *     void handle_state_change(GGZdMod* ggz, GGZdModEvent event, void* data);
- *     void handle_player_seat(GGZdMod* ggz, GGZdModEvent event, void* data);
- *     void handle_player_data(GGZdMod* ggz, GGZdModEvent event, void* data);
+ *     void handle_state_change(GGZdMod* ggz, GGZdModEvent event,
+ *                              const void *data);
+ *     void handle_player_seat(GGZdMod* ggz, GGZdModEvent event,
+ *                             const void *data);
+ *     void handle_player_data(GGZdMod* ggz, GGZdModEvent event,
+ *                             const void *data);
  *
  *     // Other game-defined functions (not ggz-related).
  *     void game_init(GGZdMod *ggz); // initialize a game
@@ -103,11 +106,12 @@
  *         ggzdmod_free(ggz);
  *     }
  *
- *     void handle_state_change(GGZdMod* ggz, GGZdModEvent event, void* data)
+ *     void handle_state_change(GGZdMod* ggz, GGZdModEvent event,
+ *                              const void *data)
  *     {
- *         GGZdModState old_state = *(GGZdModState*)data;
+ *         const GGZdModState *old_state = data;
  *         GGZdModState new_state = ggzdmod_get_state(ggz);
- *         if (old_state == GGZDMOD_STATE_CREATED)
+ *         if (*old_state == GGZDMOD_STATE_CREATED)
  *             // ggzdmod data isn't initialized until it connects with GGZ
  *             // during the game launch, so some initializations should wait
  *             // until here.
@@ -139,9 +143,10 @@
  *         }
  *     }
  *
- *     void handle_player_seat(GGZdMod* ggz, GGZdModEvent event, void* data)
+ *     void handle_player_seat(GGZdMod* ggz, GGZdModEvent event,
+ *                             const void *data)
  *     {
- *       GGZSeat *old_seat = data;
+ *       const GGZSeat *old_seat = data;
  *       GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
  *
  *       if (new_seat.type == GGZ_SEAT_PLAYER
@@ -169,10 +174,11 @@
  *       }
  *     }
  *
- *     void handle_player_data(GGZdMod* ggz, GGZdModEvent event, void* data)
+ *     void handle_player_data(GGZdMod* ggz, GGZdModEvent event,
+ *                             const void *data)
  *     {
- *         int player = *(int*)data;
- *         int socket_fd = ggzdmod_get_seat(ggz, player).fd;
+ *         const int *player = data;
+ *         int socket_fd = ggzdmod_get_seat(ggz, *player).fd;
  *
  *         // ... read a packet from the socket ...
  *     }
@@ -345,7 +351,7 @@ typedef struct GGZdMod GGZdMod;
  *
  *  A function of this type will be called to handle a ggzdmod event.
  *  @param mod The ggzdmod state object.
- *  @param e The event that has occured.
+ *  @param event The event that has occured.
  *  @param data Pointer to additional data for the event.
  *  The additional data will be of the following form:
  *    - GGZDMOD_EVENT_STATE: The old state (GGZdModState*)
@@ -359,7 +365,8 @@ typedef struct GGZdMod GGZdMod;
  *    - GGZDMOD_EVENT_SPECTATOR_DATA: The spectator number (int*)
  *    - GGZDMOD_EVENT_ERROR: An error string (char*)
  */
-typedef void (*GGZdModHandler) (GGZdMod * mod, GGZdModEvent e, void *data);
+typedef void (*GGZdModHandler) (GGZdMod * mod, GGZdModEvent event,
+				const void *data);
 
 /** @brief A seat at a GGZ game table.
  *

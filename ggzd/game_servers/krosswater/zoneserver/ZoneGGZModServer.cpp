@@ -97,7 +97,7 @@ int ZoneGGZModServer::zoneMainLoop()
 }
 
 // Handle updates for the game server
-int ZoneGGZModServer::game_update(int event, void* data)
+int ZoneGGZModServer::game_update(int event, const void* data)
 {
 	int seat;
 
@@ -342,7 +342,8 @@ int ZoneGGZModServer::zoneTurn()
 }
 
 // Callback for events
-void ZoneGGZModServer::hook_event(GGZdMod *ggzdmod, GGZdModEvent event, void* data)
+void ZoneGGZModServer::hook_event(GGZdMod *ggzdmod, GGZdModEvent event,
+				  const void* data)
 {
 	switch(event)
 	{
@@ -377,7 +378,8 @@ void ZoneGGZModServer::hook_event(GGZdMod *ggzdmod, GGZdModEvent event, void* da
 }
 
 // Callback for game data
-void ZoneGGZModServer::hook_data(GGZdMod *ggzdmod, GGZdModEvent event, void* data)
+void ZoneGGZModServer::hook_data(GGZdMod *ggzdmod, GGZdModEvent event,
+				 const void* data)
 {
 	self->slotZoneInput(ggzdmod_get_seat(ggzdmod, *(int*)data).fd, 0);
 }

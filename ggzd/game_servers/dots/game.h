@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.h 4653 2002-09-22 17:20:00Z dr_maux $
+ * $Id: game.h 6892 2005-01-25 04:09:21Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -96,12 +96,18 @@ extern int score;
 void game_init(GGZdMod *ggz);
 
 /* GGZ handlers */
-void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data);
-void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data);
-void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data);
-void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data);
-void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, void *data);
-void game_handle_spectator_data(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_ggz_state(GGZdMod *ggz,
+			   GGZdModEvent event, const void *data);
+void game_handle_ggz_join(GGZdMod *ggz,
+			  GGZdModEvent event, const void *data);
+void game_handle_ggz_leave(GGZdMod *ggz,
+			   GGZdModEvent event, const void *data);
+void game_handle_player_data(GGZdMod *ggz,
+			     GGZdModEvent event, const void *data);
+void game_handle_ggz_spectator_join(GGZdMod *ggz,
+				    GGZdModEvent event, const void *data);
+void game_handle_spectator_data(GGZdMod *ggz,
+				GGZdModEvent event, const void *data);
 
 int game_send_seat(int);
 int game_send_seat_spectators(int);
@@ -121,7 +127,7 @@ int game_bot_move(void);
 char game_check_move(int, int);
 char game_check_win(void);
 
-int game_update(int, void *, void *);
+int game_update(int, const void *, void *);
 
 #endif
 

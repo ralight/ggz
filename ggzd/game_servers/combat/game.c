@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat server functions
- * $Id: game.c 4482 2002-09-09 04:03:31Z jdorje $
+ * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -79,11 +79,11 @@ static void game_handle_launch(void)
 }
 
 /* This handles a "state" event from GGZ. */
-void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
-  GGZdModState old_state = *(GGZdModState*)data;
+  const GGZdModState *old_state = data;
 
-  if (old_state == GGZDMOD_STATE_CREATED)
+  if (*old_state == GGZDMOD_STATE_CREATED)
     game_handle_launch();
 
   /* State changes between waiting/playing/done are handled by us
@@ -98,8 +98,10 @@ static int seats_full(void)
 }
 
 /* This handles a player "join" event from GGZ. */
-void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data) {
-  int seat = ((GGZSeat*)data)->num;
+void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, const void *data)
+{
+  const GGZSeat *old_seat = data;
+  const int seat = old_seat->num;
 
   game_send_seat(seat);
   game_send_players();
@@ -137,9 +139,11 @@ void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data) {
 }
 
 /* This handles a player "leave" event from GGZ. */
-void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data) {
+void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, const void *data)
+{
   /* User left */
-  int seat = ((GGZSeat*)data)->num, a, done = 0;
+  const GGZSeat *old_seat = data;
+  int seat = old_seat->num, a, done = 0;
 
   ggzdmod_log(cbt_game.ggz, "Leaving player %d at state %d", seat, cbt_game.state);
   game_send_players();
@@ -168,8 +172,11 @@ void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data) {
   }
 }
 
-void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data) {
-  int seat = *(int*)data;
+void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event,
+			     const void *data)
+{
+  const int *seat_ptr = data;
+  const int seat = *seat_ptr;
   int fd, op, a, status = CBT_SERVER_OK, b;
 
   fd = ggzdmod_get_seat(cbt_game.ggz, seat).fd;

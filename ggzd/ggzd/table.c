@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 6729 2005-01-18 18:23:46Z jdorje $
+ * $Id: table.c 6892 2005-01-25 04:09:21Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -79,19 +79,21 @@ static void  table_loop(GGZTable* table);
 static void  table_remove(GGZTable* table);
 
 /* Handlers for ggzdmod events */
-static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data);
-static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
+static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
+			       const void *data);
+static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, const void *data);
 static void table_game_report(GGZdMod *ggzdmod, GGZdModEvent event,
-			      void *data);
+			      const void *data);
 static void table_game_req_num_seats(GGZdMod *ggzdmod, GGZdModEvent event,
-				     void *data);
+				     const void *data);
 static void table_game_req_boot(GGZdMod *ggzdmod, GGZdModEvent event,
-				void *data);
+				const void *data);
 static void table_game_req_bot(GGZdMod *ggzdmod, GGZdModEvent event,
-			       void *data);
+			       const void *data);
 static void table_game_req_open(GGZdMod *ggzdmod, GGZdModEvent event,
-				void *data);
-static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
+				const void *data);
+static void table_error(GGZdMod *ggzdmod, GGZdModEvent event,
+			const void *data);
 
 static GGZReturn table_event_enqueue(GGZTable* table,
 				     GGZTableUpdateType opcode);
@@ -801,10 +803,13 @@ void table_game_spectator_leave(GGZTable *table, const char *caller,
 }
 
 
-static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
+static void table_handle_state(GGZdMod *mod, GGZdModEvent event,
+			       const void *data)
 {
 	GGZTable* table = ggzdmod_get_gamedata(mod);
-	/* GGZdModState prev = *(GGZdModState*)data; */
+#if 0
+	const GGZdModState *prev = data;
+#endif
 	GGZdModState cur = ggzdmod_get_state(mod);
 
 	switch (cur) {
@@ -859,11 +864,11 @@ static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
 }
 
 
-static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
+static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, const void *data)
 {
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	int type;
-	char *game_name, *msg = data;
+	const char *game_name, *msg = data;
 
 	if (log_info.options & GGZ_LOGOPT_INC_GAMETYPE) {
 		pthread_rwlock_rdlock(&table->lock);
@@ -887,10 +892,10 @@ static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 
 
 static void table_game_report(GGZdMod *ggzdmod,
-			      GGZdModEvent event, void *data)
+			      GGZdModEvent event, const void *data)
 {
 	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
-	GGZdModGameReportData *report = data;
+	const GGZdModGameReportData *report = data;
 
 	report_statistics(table->room, table->type, report);
 }
@@ -908,10 +913,11 @@ static void table_change_num_seats(GGZTable *table, int num_seats)
 
 
 static void table_game_req_num_seats(GGZdMod *ggzdmod, GGZdModEvent event,
-				     void *data)
+				     const void *data)
 {
 	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);	
-	int num_seats = *(int*)data;
+	const int *num_seats_ptr = data;
+	const int num_seats = *num_seats_ptr;
 	int old_seats = table->num_seats;
 	int seat;
 
@@ -967,10 +973,10 @@ static void table_game_req_num_seats(GGZdMod *ggzdmod, GGZdModEvent event,
 
 
 static void table_game_req_boot(GGZdMod *ggzdmod,
-				GGZdModEvent event, void *data)
+				GGZdModEvent event, const void *data)
 {
 	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
-	char *name = data;
+	const char *name = data;
 	int seat_num;
 	bool is_spectator = false, found = true;
 	int len = strlen(name);
@@ -1051,10 +1057,11 @@ static void table_game_req_boot(GGZdMod *ggzdmod,
 
 
 static void table_game_req_bot(GGZdMod *ggzdmod,
-			       GGZdModEvent event, void *data)
+			       GGZdModEvent event, const void *data)
 {
 	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
-	int seat_num = *(int*)data;
+	const int *seat_num_ptr = data;
+	const int seat_num = *seat_num_ptr;
 	GGZSeat seat;
 
 	/* FIXME: this code overlaps with the leaving code in transit.c */
@@ -1088,10 +1095,11 @@ static void table_game_req_bot(GGZdMod *ggzdmod,
 
 
 static void table_game_req_open(GGZdMod *ggzdmod,
-				GGZdModEvent event, void *data)
+				GGZdModEvent event, const void *data)
 {
 	GGZTable *table = ggzdmod_get_gamedata(ggzdmod);
-	int seat_num = *(int*)data;
+	const int *seat_num_ptr = data;
+	const int seat_num = *seat_num_ptr;
 	GGZSeat seat;
 
 	/* FIXME: this code overlaps with the leaving code in transit.c */
@@ -1125,7 +1133,8 @@ static void table_game_req_open(GGZdMod *ggzdmod,
 }
 
 
-static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
+static void table_error(GGZdMod *ggzdmod,
+			GGZdModEvent event, const void *data)
 {
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	

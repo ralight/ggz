@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 6107 2004-07-15 18:58:18Z jdorje $
+ * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -65,25 +65,26 @@ void game_init(GGZdMod *ggz)
 
 
 /* Handle message from GGZ server */
-void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
-	GGZdModState old_state = *(GGZdModState*)data;
+	const GGZdModState *old_state = data;
 	
-	if (old_state == GGZDMOD_STATE_CREATED)
+	if (*old_state == GGZDMOD_STATE_CREATED)
 		game_update(DOTS_EVENT_LAUNCH, NULL, NULL);
 }
 
 
-void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
-	int player = ((GGZSeat*)data)->num;
-	game_update(DOTS_EVENT_JOIN, &player, NULL);
+	const GGZSeat *old_seat = data;
+	game_update(DOTS_EVENT_JOIN, &old_seat->num, NULL);
 }
 
-void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_spectator_join(GGZdMod *ggz,
+				    GGZdModEvent event, const void *data)
 {
-	int spectator = *(int*)data;
-	int fd = ggzdmod_get_spectator(dots_game.ggz, spectator).fd;
+	const int *spectator = data;
+	int fd = ggzdmod_get_spectator(dots_game.ggz, *spectator).fd;
 
 	game_send_seat_spectators(fd);
 
@@ -96,17 +97,20 @@ void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, void *data
 	}
 }
 
-void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
-	int player = ((GGZSeat*)data)->num;
-	game_update(DOTS_EVENT_LEAVE, &player, NULL);
+	const GGZSeat *old_seat = data;
+
+	game_update(DOTS_EVENT_LEAVE, &old_seat->num, NULL);
 }
 
 
 /* Handle message from player */
-void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_player_data(GGZdMod *ggz,
+			     GGZdModEvent event, const void *data)
 {
-	int num = *(int*)data;
+	const int *num_ptr = data;
+	const int num = *num_ptr;
 	int fd, op, status;
 	unsigned char x, y;
 
@@ -143,7 +147,7 @@ void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 
 /* Handle message from spectator */
-void game_handle_spectator_data(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_spectator_data(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
 	int num = *(int*)data;
 	int fd, op, status;
@@ -591,7 +595,7 @@ static int seats_full(void)
 
 
 /* Update game state */
-int game_update(int event, void *d1, void *d2)
+int game_update(int event, const void *d1, void *d2)
 {
 	int seat, fd, spectator;
 	char x, y;

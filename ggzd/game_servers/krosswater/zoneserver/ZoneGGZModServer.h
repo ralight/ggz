@@ -45,10 +45,12 @@ class ZoneGGZModServer
 		int game_send_seat(int seat);
 		int game_send_players();
 		void game_send_rules();
-		int game_update(int event, void* data);
+		int game_update(int event, const void* data);
 
-		static void hook_event(GGZdMod *ggzdmod, GGZdModEvent event, void* data);
-		static void hook_data(GGZdMod *ggzdmod, GGZdModEvent event, void* data);
+		static void hook_event(GGZdMod *ggzdmod, GGZdModEvent event,
+				       const void* data);
+		static void hook_data(GGZdMod *ggzdmod, GGZdModEvent event,
+				      const void* data);
 
 		int m_gamemode;
 		int* m_players;

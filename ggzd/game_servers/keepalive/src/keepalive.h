@@ -30,15 +30,15 @@ class Keepalive
 		Keepalive();
 		~Keepalive();
 		void loop();
-		void hookData(void *data);
-		void hookJoin(void *data);
-		void hookLeave(void *data);
-		void hookSpectatorJoin(void *data);
-		void hookSpectatorLeave(void *data);
-		void hookSpectatorData(void *data);
-		void hookState(void *data);
-		void hookError(void *data);
-		void hookLog(void *data);
+		void hookData(const void *data);
+		void hookJoin(const void *data);
+		void hookLeave(const void *data);
+		void hookSpectatorJoin(const void *data);
+		void hookSpectatorLeave(const void *data);
+		void hookSpectatorData(const void *data);
+		void hookState(const void *data);
+		void hookError(const void *data);
+		void hookLog(const void *data);
 
 		int m_valid;
 

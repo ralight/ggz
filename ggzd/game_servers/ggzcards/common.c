@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 6107 2004-07-15 18:58:18Z jdorje $
+ * $Id: common.c 6892 2005-01-25 04:09:21Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -111,18 +111,18 @@ void set_game_state(server_state_t state)
 
 /* Handle message from player.  */
 void handle_ggz_player_data_event(GGZdMod * ggz,
-				  GGZdModEvent event, void *data)
+				  GGZdModEvent event, const void *data)
 {
-	player_t p = *(int *) data;
-	handle_player_data_event(p);
+	const int *player = data;
+	handle_player_data_event(*player);
 }
 
 /* Handle message from spectator */
 void handle_ggz_spectator_data_event(GGZdMod *ggz,
-				     GGZdModEvent event, void *data)
+				     GGZdModEvent event, const void *data)
 {
-	int spectator = *(int *) data;
-	handle_player_data_event(SPECTATOR_TO_PLAYER(spectator));
+	const int *spectator = data;
+	handle_player_data_event(SPECTATOR_TO_PLAYER(*spectator));
 }
 
 /* Handle message from player/spectator. */
@@ -402,12 +402,13 @@ static void handle_done_event(void)
 }
 
 /* This handles a state change event, when the table changes state. */
-void handle_ggz_state_event(GGZdMod * ggz, GGZdModEvent event, void *data)
+void handle_ggz_state_event(GGZdMod * ggz,
+			    GGZdModEvent event, const void *data)
 {
-	GGZdModState old_state = *(GGZdModState*)data;
+	const GGZdModState *old_state = data;
 	GGZdModState new_state = ggzdmod_get_state(ggz);
 	
-	if (old_state == GGZDMOD_STATE_CREATED) {
+	if (*old_state == GGZDMOD_STATE_CREATED) {
 		assert(new_state == GGZDMOD_STATE_WAITING);
 		handle_launch_event();
 	}
@@ -434,20 +435,20 @@ void handle_ggz_state_event(GGZdMod * ggz, GGZdModEvent event, void *data)
    a player join or a player leave.  Eventually, other types of seat
    changes will be possible (although these are not yet tested).  A lot
    of the work is the same for any kind of seat change, though. */
-void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
+void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
-	GGZSeat old_seat = *(GGZSeat*)data;
-	player_t player = old_seat.num, p;
+	const GGZSeat *old_seat = data;
+	player_t player = old_seat->num, p;
 	/* seat_t seat = game.players[player].seat; */
 	GGZSeat new_seat = ggzdmod_get_seat(game.ggz, player);
 	bool is_join = (new_seat.type == GGZ_SEAT_PLAYER
 	                || new_seat.type == GGZ_SEAT_BOT)
-	               && (old_seat.type != new_seat.type
-	                   || strcmp(old_seat.name, new_seat.name));
-	bool is_leave = (old_seat.type == GGZ_SEAT_PLAYER
-			 || old_seat.type == GGZ_SEAT_BOT)
-	                && (new_seat.type != old_seat.type
-	                    || strcmp(old_seat.name, new_seat.name));
+	               && (old_seat->type != new_seat.type
+	                   || strcmp(old_seat->name, new_seat.name));
+	bool is_leave = (old_seat->type == GGZ_SEAT_PLAYER
+			 || old_seat->type == GGZ_SEAT_BOT)
+	                && (new_seat.type != old_seat->type
+	                    || strcmp(old_seat->name, new_seat.name));
 	GGZdModState new_state;
 
 	/* There's a big problem here since if the players join/leave before
@@ -458,7 +459,7 @@ void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 	          player);
 
 	/* Start or stop any AI on the seat.  This needs to be done first. */
-	if (is_leave && old_seat.type == GGZ_SEAT_BOT)
+	if (is_leave && old_seat->type == GGZ_SEAT_BOT)
 		stop_ai(player);
 	if (is_join && new_seat.type == GGZ_SEAT_BOT)
 		start_ai(player, game.ai_module);
@@ -544,7 +545,7 @@ void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 }
 
 void handle_ggz_spectator_seat_event(GGZdMod *ggz,
-				     GGZdModEvent event, void *data)
+				     GGZdModEvent event, const void *data)
 {
 	GGZSpectator old = *(GGZSpectator*)data;
 	int spectator = old.num;

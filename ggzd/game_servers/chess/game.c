@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 6775 2005-01-20 23:06:34Z josef $
+ * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -51,7 +51,7 @@ static void game_restart_chronometer(void);
 static int game_read_chronometer(void);
 
 /* All the important stuff happens here */
-static int game_update(int event_id, void *data);
+static int game_update(int event_id, const void *data);
 
 /* Send MSG_SEAT to the player */
 static void game_send_seat(int seat);
@@ -85,11 +85,13 @@ static void game_send_draw(int seat);
 #define OUT_OF_TIME(a) (game_info.seconds[a] <= 0)
 
 /* Translates a GGZ state event into a chess game event. */
-void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data) {
-  GGZdModState old_state = *(GGZdModState*)data;
+void game_handle_ggz_state(GGZdMod *ggz,
+			   GGZdModEvent event, const void *data)
+{
+  const GGZdModState *old_state = data;
   GGZdModState new_state = ggzdmod_get_state(ggz);
 
-  if (old_state == GGZDMOD_STATE_CREATED)
+  if (*old_state == GGZDMOD_STATE_CREATED)
     game_update(CHESS_EVENT_LAUNCH, NULL);
 
   if (new_state == GGZDMOD_STATE_DONE);
@@ -97,15 +99,19 @@ void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data) {
 }
 
 /* Translates a GGZ join event into a chess game event. */
-void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data) {
-  int player = ((GGZSeat*)data)->num;
-  game_update(CHESS_EVENT_JOIN, &player);
+void game_handle_ggz_join(GGZdMod *ggz,
+			  GGZdModEvent event, const void *data) {
+  const GGZSeat *old_seat = data;
+
+  game_update(CHESS_EVENT_JOIN, &old_seat->num);
 }
 
 /* Translates a GGZ leave event into a chess game event. */
-void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data) {
-  int player = ((GGZSeat*)data)->num;
-  game_update(CHESS_EVENT_LEAVE, &player);
+void game_handle_ggz_leave(GGZdMod *ggz,
+			   GGZdModEvent event, const void *data) {
+  const GGZSeat *old_seat = data;
+
+  game_update(CHESS_EVENT_LEAVE, &old_seat->num);
 }
 
 static int seats_full(void)
@@ -130,7 +136,7 @@ static int seats_full(void)
  *  CHESS_EVENT_FLAG: (int)time until now for move
  *  CHESS_EVENT_DRAW: (int)What to add to the draw char
  *  CHESS_EVENT_START: NULL */
-static int game_update(int event_id, void *data)
+static int game_update(int event_id, const void *data)
 {
   int time, st;
   int from, to;
@@ -433,8 +439,10 @@ static int game_update(int event_id, void *data)
  *  CHESS_REQ_FLAG   -> Check for the right clock, then trigger EVENT_FLAG
  *  CHESS_REQ_DRAW   -> Check if he hasn't done it yet, then trigger EVENT_DRAW
  *  */
-void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id, void *seat_data) {
-  int *seat = (int*)seat_data;
+void game_handle_player_data(GGZdMod *ggz, GGZdModEvent id,
+			     const void *seat_data)
+{
+  const int *seat = seat_data;
   int fd, time;
   char op;
   void *data;

@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 6193 2004-10-16 15:59:57Z josef $
+ * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -221,7 +221,7 @@ void game_init(GGZdMod *ggz)
 
 
 /* Handle event from GGZ server */
-void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
 	int player;
 
@@ -261,12 +261,13 @@ static int seats_full(void)
 
 
 /* Handle message from player */
-void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
+void game_handle_player(GGZdMod *ggz, GGZdModEvent event,
+			const void *seat_data)
 {
-	int num;
+	const int *num_ptr = seat_data;
+	int num = *num_ptr;
 	int fd, op;
 
-	num = *(int*)seat_data;
 	fd = ggzdmod_get_seat(hastings_game.ggz, num).fd;
 
 	if (fd < 0 || ggz_read_int(fd, &op) < 0) return;
@@ -277,7 +278,7 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 	{
 		case HASTINGS_SND_MOVE:
 			if(game_handle_move(num) == 0)
-				game_update(HASTINGS_EVENT_MOVE, seat_data);
+				game_update(HASTINGS_EVENT_MOVE, &num);
 			break;
 		case HASTINGS_SND_MAP:
 			if(hastings_game.state == HASTINGS_STATE_WAITFORMAP)
@@ -310,7 +311,8 @@ void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *seat_data)
 
 
 /* Handle message from player */
-void game_handle_spectator(GGZdMod *ggz, GGZdModEvent event, void *spectator_data)
+void game_handle_spectator(GGZdMod *ggz, GGZdModEvent event,
+			   const void *spectator_data)
 {
 	int num;
 	int fd, op;

@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6107 2004-07-15 18:58:18Z jdorje $
+ * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -59,9 +59,12 @@ void game_init(GGZdMod *ggzdmod) {
 }
 
 // Handle server messages
-void game_handle_ggz_state(GGZdMod* ggz, GGZdModEvent event, void *data) {
-	GGZdModState old_state = *(GGZdModState*)data;
+void game_handle_ggz_state(GGZdMod* ggz, GGZdModEvent event,
+			   const void *data)
+{
 	GGZdModState new_state = ggzdmod_get_state(ggz);
+	const GGZdModState *old_state_ptr = data;
+	const GGZdModState old_state = *old_state_ptr;
 	
 	// Check if it's the right time to launch the game and if ggz could do taht
 	if (old_state == GGZDMOD_STATE_CREATED) {
@@ -103,8 +106,10 @@ static int seats_empty(void)
 }
 
 
-void game_handle_ggz_seat(GGZdMod* ggz, GGZdModEvent event, void *data) {
-	GGZSeat *old_seat = data;
+void game_handle_ggz_seat(GGZdMod* ggz, GGZdModEvent event,
+			  const void *data)
+{
+	const GGZSeat *old_seat = data;
 	GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
 	GGZdModState new_state;
 
@@ -218,8 +223,10 @@ int game_start(void) {
 }
 
 /* return -1 on error, 1 on gameover */
-void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void* data) {
-	int seat = *(int*)data;
+void game_handle_player(GGZdMod *ggz, GGZdModEvent event, const void *data)
+{
+	const int *seat_ptr = data;
+	const int seat = *seat_ptr;
 	int op, move;
 	int fd = ggzdmod_get_seat(ggz, seat).fd;
 

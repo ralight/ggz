@@ -111,54 +111,54 @@ void GGZGameServer::errorEvent () {
 }
 
 // Callback for the state hook
-void GGZGameServer::handle_state ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
+void GGZGameServer::handle_state ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
 	std::cout << "GGZGameServer: stateEvent" << std::endl;
 	self->stateEvent ();
 }
 
 // Callback for the player join hook
-void GGZGameServer::handle_join ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
+void GGZGameServer::handle_join ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
 	int player = ((GGZSeat*)data)->num;
 	std::cout << "GGZGameServer: joinEvent" << std::endl;
 	self->joinEvent ( player );
 }
 
 // Callback for the player leave hook
-void GGZGameServer::handle_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
+void GGZGameServer::handle_leave ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
 	int player = ((GGZSeat*)data)->num;
 	std::cout << "GGZGameServer: leaveEvent" << std::endl;
 	self->leaveEvent ( player );
 }
 
 // Callback for the game data hook
-void GGZGameServer::handle_data ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
+void GGZGameServer::handle_data ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
 	std::cout << "GGZGameServer: dataEvent" << std::endl;
 	self->dataEvent ( *(int* ) data);
 }
 
 // Callback for the error handling hook
-void GGZGameServer::handle_error ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
+void GGZGameServer::handle_error ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
 	std::cout << "GGZGameServer: errorEvent" << std::endl;
 	self->errorEvent ();
 }
 
 #ifdef GGZSPECTATORS
 // Callback for the spectator join hook
-void GGZGameServer::handle_spectator_join ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
+void GGZGameServer::handle_spectator_join ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
 	int spectator = ((GGZSpectator*)data)->num;
 	std::cout << "GGZGameServer: spectatorJoinEvent" << std::endl;
 	self->spectatorJoinEvent ( spectator );
 }
 
 // Callback for the spectator leave hook
-void GGZGameServer::handle_spectator_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
+void GGZGameServer::handle_spectator_leave ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
 	int spectator = ((GGZSpectator*)data)->num;
 	std::cout << "GGZGameServer: spectatorLeaveEvent" << std::endl;
 	self->spectatorLeaveEvent ( spectator );
 }
 
 // Callback for the spectator data hook
-void GGZGameServer::handle_spectator_data ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
+void GGZGameServer::handle_spectator_data ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data ) {
 	int spectator = ((GGZSpectator*)data)->num;
 	std::cout << "GGZGameServer: spectatorDataEvent" << std::endl;
 	self->spectatorDataEvent ( spectator );

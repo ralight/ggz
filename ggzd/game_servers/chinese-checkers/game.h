@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 01/01/2001
  * Desc: Game functions
- * $Id: game.h 5034 2002-10-25 23:56:41Z jdorje $
+ * $Id: game.h 6892 2005-01-25 04:09:21Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -68,9 +68,9 @@ extern struct game_t game;
 void game_init(GGZdMod *ggz);
 
 /* GGZ event handler functions */
-void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data);
-void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, void *data);
-void game_handle_player(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, const void *data);
+void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, const void *data);
+void game_handle_player(GGZdMod *ggz, GGZdModEvent event, const void *data);
 
 int game_send_seat(int);
 int game_send_players(void);

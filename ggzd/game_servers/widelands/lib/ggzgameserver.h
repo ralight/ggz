@@ -52,15 +52,15 @@ class GGZGameServer {
 		int open();
 
 	private:
-		static void handle_state ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_join  ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_data  ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_error ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
+		static void handle_state ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
+		static void handle_join  ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
+		static void handle_leave ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
+		static void handle_data  ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
+		static void handle_error ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
 #ifdef GGZSPECTATORS
-		static void handle_spectator_join  ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_spectator_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
-		static void handle_spectator_data ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
+		static void handle_spectator_join  ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
+		static void handle_spectator_leave ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
+		static void handle_spectator_data ( GGZdMod* ggzdmod, GGZdModEvent event, const void *data );
 #endif
 		int m_connected;
 };

@@ -4,7 +4,7 @@
  * Project: GGZ ConnectX game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 6107 2004-07-15 18:58:18Z jdorje $
+ * $Id: game.c 6892 2005-01-25 04:09:21Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -119,7 +119,7 @@ void game_init(GGZdMod *ggz)
 	/* Board is set up after the options have been collected */
 }
 
-void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
 	switch(ggzdmod_get_state(ggz)) {
 	case GGZDMOD_STATE_PLAYING:
@@ -143,10 +143,10 @@ static int seats_empty(void){
 }
 
 #ifdef GGZSPECTATORS
-void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
 	int i, fd;
-	GGZSpectator *old_spectator = data;
+	const GGZSpectator *old_spectator = data;
 	GGZSpectator spectator;
 	GGZSeat seat;
 
@@ -167,7 +167,7 @@ void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, void *data
 	}
 }
 
-void game_handle_ggz_spectator_leave(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_spectator_leave(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
 	if(seats_empty())
 		ggzdmod_set_state(connectx_game.ggz, GGZDMOD_STATE_DONE);
@@ -175,10 +175,10 @@ void game_handle_ggz_spectator_leave(GGZdMod *ggz, GGZdModEvent event, void *dat
 #endif
 
 /* Callback for ggzdmod JOIN, LEAVE and SEAT events */
-void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
 	GGZdModState new_state;
-	GGZSeat *old_seat = data;
+	const GGZSeat *old_seat = data;
 	GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
 
 	if(seats_full()){
@@ -214,7 +214,7 @@ void game_handle_ggz_seat(GGZdMod *ggz, GGZdModEvent event, void *data)
 }
 
 /* Handle message from player */
-void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
 	int num = *(int*)data;
 	int fd, op, move;
@@ -252,7 +252,7 @@ void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 #ifdef GGZSPECTATORS
 /* handle message from spectator */
-void game_handle_ggz_spectator(GGZdMod *ggz, GGZdModEvent event, void *data)
+void game_handle_ggz_spectator(GGZdMod *ggz, GGZdModEvent event, const void *data)
 {
 	int num = *(int*)data;
 	int fd, op;

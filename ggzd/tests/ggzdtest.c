@@ -15,7 +15,7 @@ GGZSeat seats[] = {
 	{3, GGZ_SEAT_RESERVED, "Junior", -1}
 };
 
-static void callback(GGZdMod *mod, GGZdModEvent event, void *data)
+static void callback(GGZdMod *mod, GGZdModEvent event, const void *data)
 {
 	switch (event) {
 	case GGZDMOD_EVENT_JOIN:
@@ -30,20 +30,20 @@ static void callback(GGZdMod *mod, GGZdModEvent event, void *data)
 }
 
 
-static void handle_log(GGZdMod *mod, GGZdModEvent event, void *data)
+static void handle_log(GGZdMod *mod, GGZdModEvent event, const void *data)
 {
 	printf("LOG: %s\n", (char*)data);
 }
 
 
-static void handle_error(GGZdMod *mod, GGZdModEvent event, void *data)
+static void handle_error(GGZdMod *mod, GGZdModEvent event, const void *data)
 {
 	printf("GGZDMOD_EVENT_ERROR: %s\n", (char*)data);
 	abort();
 }
 
 
-static void handle_state(GGZdMod *mod, GGZdModEvent event, void *data)
+static void handle_state(GGZdMod *mod, GGZdModEvent event, const void *data)
 {
 	GGZdModState cur, prev;
 	GGZSeat seat;

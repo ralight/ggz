@@ -13,7 +13,7 @@ static int seatcmp(GGZSeat seat1, GGZSeat seat2);
 static int safe_strcmp(char *str1, char *str2);
 static int compare_seats(GGZdMod *mod, int num, GGZSeat *seats);
 
-static void test_handler(GGZdMod *mod, GGZdModEvent e, void *data) { }
+static void test_handler(GGZdMod *mod, GGZdModEvent e, const void *data) { }
 
 char* test_args[] = {"Arg1", "Arg2", NULL};
 
