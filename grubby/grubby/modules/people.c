@@ -59,7 +59,7 @@ Guru *gurumod_exec(Guru *message)
 		{
 			if(!firsttime)
 			{
-				switch(rand() % 3)
+				switch(rand() % 9)
 				{
 					case 0:
 						strcpy(info, "Nice to see you here again, ");
@@ -91,7 +91,7 @@ Guru *gurumod_exec(Guru *message)
 		if(message->type == GURU_LEAVE)
 		{
 			/* Send best wishes to leaving players */
-			switch(rand() % 10)
+			switch(rand() % 30)
 			{
 				case 0:
 					strcpy(info, "See you later, ");
