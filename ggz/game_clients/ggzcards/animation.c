@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 3609 2002-03-21 11:10:29Z dr_maux $
+ * $Id: animation.c 4027 2002-04-21 01:36:44Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -34,6 +34,7 @@
 #include <ggz.h>
 
 #include "animation.h"
+#include "drawcard.h"
 #include "game.h"
 #include "layout.h"
 #include "main.h"

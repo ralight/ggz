@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3609 2002-03-21 11:10:29Z dr_maux $
+ * $Id: table.c 4027 2002-04-21 01:36:44Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -41,20 +41,11 @@
 #include "dlg_bid.h"
 #include "dlg_main.h"
 #include "dlg_players.h"
+#include "drawcard.h"
 #include "game.h"
 #include "layout.h"
 #include "main.h"
 #include "table.h"
-
-#include "cards-1.xpm"
-#include "cards-2.xpm"
-#include "cards-3.xpm"
-#include "cards-4.xpm"
-
-#include "cards-b1.xpm"
-#include "cards-b2.xpm"
-#include "cards-b3.xpm"
-#include "cards-b4.xpm"
 
 GtkRcStyle *fixed_font_style = NULL;
 
@@ -68,11 +59,6 @@ static GtkWidget *player_list = NULL;
 
 static const char* player_names[MAX_NUM_PLAYERS] = {NULL};
 static const char* player_messages[MAX_NUM_PLAYERS] = {NULL};
-
-
-/* Card front pictures for each of the 4 orientations */
-GdkPixmap *card_fronts[4];
-static GdkPixmap *card_backs[4];
 
 static gboolean table_ready = FALSE;
 
@@ -188,12 +174,6 @@ static void draw_splash_screen(void)
    immediately upon startup. */
 void table_initialize(void)
 {
-	GdkBitmap *mask;
-	gchar **xpm_fronts[4] =
-		{ cards_xpm, cards_2_xpm, cards_3_xpm, cards_4_xpm };
-	gchar **xpm_backs[4] =
-		{ cards_b1_xpm, cards_b2_xpm, cards_b3_xpm, cards_b4_xpm };
-	int i;
 	static int call_count = 0;
 
 	/* Just a sanity check; we don't want to call this function twice. */
@@ -206,26 +186,8 @@ void table_initialize(void)
 	table = gtk_object_get_data(GTK_OBJECT(dlg_main), "fixed1");
 	table_style = gtk_widget_get_style(table);
 	gtk_widget_show(table);
-
-	/* build pixmaps from the xpms */
-	for (i = 0; i < 4 /* 4 orientations */ ; i++) {
-		card_fronts[i] =
-			gdk_pixmap_create_from_xpm_d(table->window, &mask,
-						     &table_style->
-						     bg[GTK_STATE_NORMAL],
-						     (gchar **)
-						     xpm_fronts[i]);
-		card_backs[i] =
-			gdk_pixmap_create_from_xpm_d(table->window, &mask,
-						     &table_style->
-						     bg[GTK_STATE_NORMAL],
-						     (gchar **) xpm_backs[i]);
-		if (!card_fronts[i] || !card_backs[i])
-			ggz_debug("table", "ERROR: "
-				  "couldn't load card pixmaps "
-				  "for orientation %d.",
-				  i);
-	}
+	
+	load_card_data();
 	
 	table_drawing_area = gtk_drawing_area_new();
 	gtk_drawing_area_size(GTK_DRAWING_AREA(table_drawing_area),
@@ -595,86 +557,6 @@ static void table_card_clicked(int card_num)
 		selected_card = card_num;
 		table_display_hand(ggzcards.play_hand, TRUE);
 	}
-}
-
-/* Returns the coordinates of the card out of the XPM file. */
-void get_card_coordinates(card_t card, int orientation, int *x, int *y)
-{
-	int xc = 0, yc = 0;
-	int xp, yp;
-	int height = (orientation % 2 == 0) ? CARDHEIGHT : CARDWIDTH;
-	int width = (orientation % 2 == 0) ? CARDWIDTH : CARDHEIGHT;
-	
-	/* We don't care about the deck, but the rest had better
-	   be accurate. */
-	assert(card.face >= ACE_LOW && card.face <= ACE_HIGH
-	       && card.suit >= CLUBS && card.suit <= SPADES
-	       && orientation >= 0 && orientation < 4);
-
-	/* This hack converts the "face" value of the card into the 0-12
-	   range. */
-	yp = card.face;
-	if (yp == ACE_HIGH)
-		yp = ACE_LOW;
-	yp--;
-
-	xp = card.suit;
-
-	/* y is measured from the top; x from the left.  This just rotates
-	   the grid as necessary. */
-	switch (orientation) {
-	case 0:
-		xc = xp;
-		yc = yp;
-		break;
-	case 1:
-		xc = 13 - yp - 1;
-		yc = xp;
-		break;
-	case 2:		/* just mirror everything */
-		xc = 4 - xp - 1;
-		yc = 13 - yp - 1;
-		break;
-	case 3:
-		xc = yp;
-		yc = 4 - xp - 1;
-		break;
-	}
-
-	*x = xc * width;
-	*y = yc * height;
-}
-
-/* Draws the given card at the given location with the given orientation. */
-void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image)
-{
-	int width, height;
-	int xc = 0, yc = 0;
-	int show = (card.suit != -1 && card.face != -1);
-
-	assert(orientation >= 0 && orientation < 4);
-
-	/* First find the width/height the card will need at this
-	   orientation. */
-	get_card_size(orientation, &width, &height);
-
-	if (show)
-		get_card_coordinates(card, orientation, &xc, &yc);
-	else {
-		/* based on there being 4 different backs */
-		/* TODO: do different decks differently */
-		int xy[4][2] =
-			{ {2 * CARDWIDTH, 0},
-			  {0, 2 * CARDWIDTH},
-			  {CARDWIDTH, 0},
-			  {0, CARDWIDTH} };
-		xc = xy[orientation][0];
-		yc = xy[orientation][1];
-	}
-	gdk_draw_pixmap(image,
-			table_style->fg_gc[GTK_WIDGET_STATE(table)],
-			show ? card_fronts[orientation] :
-			card_backs[orientation], xc, yc, x, y, width, height);
 }
 
 /* Exposed function to show one player's hand. */

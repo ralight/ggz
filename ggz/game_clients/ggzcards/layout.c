@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 3470 2002-02-26 00:35:54Z jdorje $
+ * $Id: layout.c 4027 2002-04-21 01:36:44Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -34,6 +34,7 @@
 #include "client.h"
 
 #include "game.h"
+#include "drawcard.h"
 #include "layout.h"
 
 static void bottom_box4(int *x, int *y)
@@ -333,25 +334,5 @@ void get_card_offset(int p, float *w, float *h)
 		ggz_debug("table",
 			  "CLIENT BUG: get_card_size: unknown orientation %d.",
 			  orientation(p));
-	}
-}
-
-void get_card_size(int orientation, int *w, int *h)
-{
-	switch (orientation) {
-	case 0:
-	case 2:
-		*w = CARDWIDTH;
-		*h = CARDHEIGHT;
-		break;
-	case 1:
-	case 3:
-		*w = CARDHEIGHT;
-		*h = CARDWIDTH;
-		break;
-	default:
-		ggz_debug("table",
-			  "CLIENT BUG: get_card_size: unknown orientation %d.",
-			  orientation);
 	}
 }

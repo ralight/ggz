@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3685 2002-03-25 22:40:22Z jdorje $
+ * $Id: main.c 4027 2002-04-21 01:36:44Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -44,6 +44,7 @@
 #include "animation.h"
 #include "dlg_main.h"
 #include "dlg_bid.h"
+#include "drawcard.h"
 #include "game.h"
 #include "layout.h"
 #include "main.h"

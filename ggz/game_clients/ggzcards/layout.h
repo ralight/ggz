@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.h 3470 2002-02-26 00:35:54Z jdorje $
+ * $Id: layout.h 4027 2002-04-21 01:36:44Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -25,13 +25,6 @@
 
 /* no more than 6 players will work */
 #define MAX_NUM_PLAYERS 6
-
-/* The following would be hell to change */
-#define CARDWIDTH	71
-#define CARDHEIGHT	96
-
-/* This is the minimum amount of the card that must be visible. */
-#define CARD_VISIBILITY ((float)CARDWIDTH / 4.0)
 
 /* an interesting check of the code is to make this really big */
 #define XWIDTH		10
@@ -63,4 +56,3 @@ void get_inner_card_area_pos(int p, int *x, int *y);
 void get_card_pos(int p, int card_num, int *x, int *y);
 
 void get_card_offset(int p, float *w, float *h);
-void get_card_size(int orientation, int *w, int *h);

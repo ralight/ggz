@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.h 3609 2002-03-21 11:10:29Z dr_maux $
+ * $Id: table.h 4027 2002-04-21 01:36:44Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -22,6 +22,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#ifndef __TABLE_H__
+#define __TABLE_H__
+
+#include "gtk/gtk.h"
 
 extern GtkRcStyle *fixed_font_style;
 extern GtkWidget *table;	/* widget containing the whole table */
@@ -58,8 +63,7 @@ void table_draw_table(GdkPixmap *pixmap, int x, int y, int w, int h);
 /* Draw the given portion of the table onto the screen. */
 void table_show_table(int x, int y, int w, int h);
 
-void get_card_coordinates(card_t card, int orientation, int *x, int *y);
-void draw_card(card_t card, int orientation, int x, int y, GdkPixmap * image);
-
 void table_set_name(int player, const char *name);
 void table_set_player_message(int player, const char *name);
+
+#endif /* __TABLE_H__ */
