@@ -67,7 +67,8 @@ class Board : public QWidget
 		{
 			colornone,
 			colorwhite,
-			colorblack
+			colorblack,
+			colorspectator
 		};
 		enum Phases
 		{

@@ -83,10 +83,12 @@ void Board::init()
 {
 	emit signalStatus(i18n("Starting new game."));
 
+	m_turn = 1;
+	m_take = 0;
+	m_repaint = 1;
+
 	stonelist.clear();
 	repaint();
-
-	m_turn = 1;
 }
 
 // Check network
@@ -137,10 +139,15 @@ void Board::paintStone(QPixmap *tmp, QPainter *p, int x, int y, int owner)
 				b = (int)(b / 2.0);
 				im.setPixel(i, j, qRgba(r, g, b, a));
 			}
+
 		pix.convertFromImage(im);
 	}
 
-	p->drawPixmap(x, y, pix);
+	im = pix.convertToImage();
+	im = im.smoothScale(height() / 10, width() / 10);
+	pix.convertFromImage(im);
+
+	p->drawPixmap(x - pix.width() / 2, y - pix.height() / 2, pix);
 }
 
 // draw board with all stones
@@ -172,8 +179,8 @@ void Board::paintEvent(QPaintEvent *e)
 
 	float x = web->scale();
 	for(Stone *s = stonelist.first(); s; s = stonelist.next())
-		paintStone(&tmp, &p, (int)(x * s->x() - white->width() / 2),
-			(int)(x * s->y() - white->height() / 2), s->owner());
+		paintStone(&tmp, &p, (int)(x * s->x()),
+			(int)(x * s->y()), s->owner());
 
 	p.end();
 
@@ -599,7 +606,13 @@ void Board::slotInput()
 	s = net->input();
 	kdDebug(12101) << "Board input: " << s << endl;
 
-	if((s == "white.") && (m_color == colornone))
+	if ((s == "spectator.") && (m_color == colornone))
+	{
+		m_color = colorspectator;
+		m_turn = 0;
+		signalStatus(i18n("Game spectator"));
+	}
+	else if((s == "white.") && (m_color == colornone))
 	{
 		m_color = colorwhite;
 		KMessageBox::information(this, i18n("Your turn, you play with the white stones."), i18n("Server message"));
@@ -655,6 +668,12 @@ void Board::slotInput()
 						stone->assign(Stone::white);
 						m_whitestones--;
 					}
+					else if(m_color == colorspectator)
+					{
+						// FIXME: toggle between black and white
+						stone->assign(Stone::white);
+						m_whitestones--;
+					}
 					stonelist.append(stone);
 					updateStatus();
 
@@ -670,7 +689,7 @@ void Board::slotInput()
 					m_repaint = 1;
 					repaint();
 				}
-				if(!m_wait)
+				if((!m_wait) && (m_color != colorspectator))
 				{
 					m_turn = 1;
 					emit signalStatus(i18n("Your turn"));

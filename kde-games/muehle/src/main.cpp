@@ -44,6 +44,7 @@ int main(int argc, char **argv)
 		"http://ggz.sourceforge.net/games/muehle/",
 		"dr_maux@users.sourceforge.net");
 	about->addAuthor("Josef Spillner", "Programming", "dr_maux@users.sourceforge.net");
+	about->setTranslator("TRANSLATOR-NAME", "TRANSLATOR-EMAIL");
 
 	KCmdLineArgs::init(argc, argv, about);
 	KCmdLineArgs::addCmdLineOptions(op);
