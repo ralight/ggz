@@ -33,12 +33,15 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond);
 static void game_init(void);
 static int get_seat(void);
 static int get_players(void);
-static int get_play_status(void);
 static int get_gameover_status(void);
 static int get_sync_info(void);
 static int get_bid_status(void);
 static int get_player_bid(void);
 static int get_trump_suit(void);
+static int get_play_status(void);
+static int get_opponent_play(void);
+static int get_trick_winner(void);
+static int get_current_scores(void);
 
 
 int main(int argc, char *argv[])
@@ -85,12 +88,13 @@ char *opstr[] = { "LP_MSG_SEAT",    "LP_MSG_PLAYERS",    "LP_MSG_GAMEOVER",
 		  "LP_MSG_HAND",    "LP_REQ_BID",        "LP_RSP_BID",
                   "LP_MSG_BID",     "LP_REQ_PLAY",       "LP_RSP_PLAY",
                   "LP_MSG_PLAY",    "LP_SND_SYNC",       "LP_MSG_TRUMP",
-		  "LP_REQ_TRUMP" };
+		  "LP_REQ_TRUMP",   "LP_MSG_TRICK",      "LP_MSG_SCORES" };
 #endif
 
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
 	int op, status;
+	int i;
 
 	if(es_read_int(game.fd, &op) < 0) {
 		/* FIXME: do something here... */
@@ -117,6 +121,8 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			status = hand_read_hand();
 			break;
 		case LP_REQ_BID:
+			for(i=0; i<4; i++)
+				game.tricks[i] = 0;
 			game.state = LP_STATE_BID;
 			dlg_bid_display(hand.hand_size);
 			status = 0;
@@ -128,12 +134,26 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			status = get_player_bid();
 			break;
 		case LP_REQ_PLAY:
+			if(game.state == LP_STATE_ANIM)
+				table_animation_zip();
 			game.state = LP_STATE_PLAY;
 			statusbar_message("Your turn to play a card");
 			status = 0;
 			break;
+		case LP_RSP_PLAY:
+			status = get_play_status();
+			break;
+		case LP_MSG_PLAY:
+			status = get_opponent_play();
+			break;
 		case LP_MSG_TRUMP:
 			status = get_trump_suit();
+			break;
+		case LP_MSG_TRICK:
+			status = get_trick_winner();
+			break;
+		case LP_MSG_SCORES:
+			status = get_current_scores();
 			break;
 		default:
 			fprintf(stderr, "Unknown opcode received %d\n", op);
@@ -196,17 +216,6 @@ static int get_players(void)
 	game.got_players++;
 
 	return 0;
-}
-
-
-static int get_play_status(void)
-{
-	char status;
-
-	if(es_read_char(game.fd, &status) < 0)
-		return -1;
-
-	return (int)status;
 }
 
 
@@ -300,5 +309,104 @@ static int get_trump_suit(void)
 
 	game.trump_suit = trump;
 	table_set_trump();
+	return 0;
+}
+
+
+static int get_play_status(void)
+{
+	char status;
+	char *msg;
+	int card;
+
+	if(es_read_char(game.fd, &status) < 0)
+		return -1;
+
+	if(status == 0)
+		statusbar_message("Waiting for next play");
+	else {
+		/* Restore the cards the way they should be */
+		card = hand.in_play_card_num;
+		hand.card[card] = hand.in_play_card_val;
+		table_animation_abort();
+
+		switch((int)status) {
+			case LP_ERR_FOLLOW_SUIT:
+				msg = "You must follow the led suit";
+				game.state = LP_STATE_PLAY;
+				break;
+			case LP_ERR_MUST_TRUMP:
+				msg = "You must play a trump card";
+				game.state = LP_STATE_PLAY;
+				break;
+			case LP_ERR_TURN:
+				msg = "Wait for your turn to play";
+				game.state = LP_STATE_WAIT;
+				break;
+			case LP_ERR_INVALID:
+			default:
+				/* Should resynch at this point */
+				/* but we return -1 below for now */
+				game.state = LP_STATE_WAIT;
+				msg = "Internal error, ack puke";
+				break;
+		}
+		statusbar_message(msg);
+	}
+
+	if(status == LP_ERR_INVALID)
+		return -1;
+
+	return 0;
+}
+
+
+static int get_opponent_play(void)
+{
+	char p_num, card;
+
+	if(es_read_char(game.fd, &p_num) < 0
+	   || es_read_char(game.fd, &card) < 0)
+		return -1;
+
+	if(game.state == LP_STATE_ANIM)
+		table_animation_zip();
+
+	table_animation_opponent(p_num, card);
+
+	return 0;
+}
+
+
+static int get_trick_winner(void)
+{
+	char p_num;
+	char *t_str;
+
+	if(es_read_char(game.fd, &p_num) < 0)
+		return -1;
+
+	table_set_tricks(p_num, ++game.tricks[(int)p_num]);
+
+	t_str = g_strdup_printf("%s won the trick", game.names[(int)p_num]);
+	statusbar_message(t_str);
+	g_free(t_str);
+
+	table_clear_table();
+
+	return 0;
+}
+
+
+static int get_current_scores(void)
+{
+	int i;
+
+	for(i=0; i<4; i++) {
+		if(es_read_int(game.fd, &game.score[i]) < 0)
+			return -1;
+		table_set_score(i, game.score[i]);
+	}
+
 	return 0;
 }

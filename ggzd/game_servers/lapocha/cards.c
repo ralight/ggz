@@ -18,10 +18,13 @@ void cards_shuffle_deck(char type)
 	char *deck_cards, *deck_suits;
 	char *c, *s;
 	int card, card_value, suit_value;
-	char *std_cards = "A234567890JQK";
-	char *std_suits = "CDHS";
 	int i, j;
 	char temp;
+
+	/* Changing the following two is not as simple as it looks */
+	/* all other functions will need updating appropriately    */
+	char *std_cards = "A234567890JQK";
+	char *std_suits = "CDHS";
 
 	/* First set the deck parameters up */
 	switch(type) {
@@ -125,4 +128,56 @@ char cards_cut_for_trump(void)
 	trump = deck[card] / 13;
 
 	return trump;
+}
+
+
+/* cards_suit_in_hand?
+ *   This checks to see if a suit is contained in a hand
+ */
+char cards_suit_in_hand(struct hand_t *hand, char suit)
+{
+	int i;
+
+	for(i=0; i<hand->hand_size; i++) {
+		if(hand->card[i] != -1
+		   && hand->card[i]/13 == suit)
+			return 1;
+	}
+
+	return 0;
+}
+
+
+/* cards_highest_in_suit
+ *   This checks a hand for the highest card value in the requested suit
+ *   it returns the numeric value of the card (1-13)
+ */
+char cards_highest_in_suit(struct hand_t *hand, char suit)
+{
+	int i;
+	char hi_card = 0;
+
+	for(i=0; i<hand->hand_size; i++) {
+		if(hand->card[i] != -1
+		   && hand->card[i]/13 == suit
+		   && card_value(hand->card[i]) > hi_card)
+			hi_card = card_value(hand->card[i]);
+	}
+
+	return hi_card;
+}
+
+
+/* card_value
+ *   Simply returns the value of a card from 1-13, wrapping Ace high
+ */
+char card_value(char card)
+{
+	char val;
+
+	val = card % 4;
+	if((card+1) % 13 == 0)
+		val += 13;
+
+	return val;
 }

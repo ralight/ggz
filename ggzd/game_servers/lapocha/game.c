@@ -23,6 +23,7 @@
  */
 
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <easysock.h>
 
@@ -50,6 +51,8 @@ static int game_update(int event, void *data);
 static int game_generate_next_hand(void);
 static int game_send_hand(int);
 static int game_send_trump(int);
+static void game_score_trick(void);
+static void game_score_hand(void);
 
 
 /* Setup game state and board */
@@ -212,7 +215,6 @@ static int game_send_play(char card)
 			   game.turn, i);
 		if(es_write_int(fd, LP_MSG_PLAY) < 0
 		   || es_write_char(fd, game.turn) < 0
-	/* TODO: Send card value, not number */
 		   || es_write_char(fd, card) < 0)
 			return -1;
 	}
@@ -264,7 +266,7 @@ static int game_send_gameover(char winner)
 /* Do the next play */
 static void game_play(void)
 {
-	int card;
+	int i;
 
 	switch(game.state) {
 		case LP_STATE_NEW_HAND:
@@ -273,6 +275,9 @@ static void game_play(void)
 			game.state = LP_STATE_BIDDING;
 			game.bid_now = (game.dealer + 1) % 4;
 			game.bid_count = 0;
+			game.bid_total = 0;
+			for(i=0; i<4; i++)
+				game.tricks[i] = 0;
 			game_req_bid();
 			break;
 		case LP_STATE_BIDDING:
@@ -280,9 +285,27 @@ static void game_play(void)
 				game_req_bid();
 			else {
 				game.turn = (game.dealer + 1) % 4;
+				game.leader = game.turn;
+				game.tricks_left = game.hand[0].hand_size;
+				for(i=0; i<4; i++)
+					game.table[i] = -1;
 				game.state = LP_STATE_PLAYING;
 				game_req_play();
 			}
+			break;
+		case LP_STATE_PLAYING:
+			if(game.turn == game.leader) {
+				sleep(1);
+				game_score_trick();
+				if(game.tricks_left == 0) {
+					sleep(1);
+					game_score_hand();
+					game_play();	/* A minor recursion */
+						/* as state will = NEW_HAND  */
+				} else
+					game_req_play();
+			} else
+				game_req_play();
 			break;
 	}
 
@@ -327,7 +350,6 @@ static int game_handle_bid(int num, char *bid)
 {
 	int fd = ggz_seats[num].fd;
 	char status = 0;
-	int total_bid;
 
 	ggz_debug("Handling bid from player %d", num);
 	if(es_read_char(fd, bid) < 0)
@@ -351,6 +373,9 @@ static int game_handle_bid(int num, char *bid)
 	   || es_write_char(fd, status) < 0)
 		return -1;
 
+	if(status == 0)
+		game.bid[num] = *bid;
+
 	return (int)status;
 }
 
@@ -360,30 +385,66 @@ static int game_handle_play(int num, char *card)
 {
 	int fd = ggz_seats[num].fd;
 	char status;
+	char card_num, c;
+	char hi_trump, hi_trump_played;
+	int i;
 	
 	ggz_debug("Handling play for player %d", num);
-	if(es_read_char(fd, card) < 0)
+	if(es_read_char(fd, &card_num) < 0)
 		return -1;
 
-	/* TODO: Valid play? */
+	/* Look up the card's value */
+	*card = game.hand[num].card[(int)card_num];
+
+	/* Check for a valid play */
 	status = 0;
+	if(game.turn != num)
+		status = LP_ERR_TURN;
+	else if(*card == -1)
+		status = LP_ERR_INVALID;
+	else if(game.turn != game.leader) {
+		/* This is not the leader, so validate */
+		if((*card/13) != game.led_suit) {
+			/* Player didn't follow suit ... */
+			if(cards_suit_in_hand(&game.hand[num], game.led_suit))
+				/* Player could have followed suit */
+				status = LP_ERR_FOLLOW_SUIT;
+			else if((*card/13) != game.trump) {
+				/* This is where things get weird, the */
+				/* player doesn't have led suit, and   */
+				/* he didn't trump.  But he MUST trump */
+				/* IF he has a trump card higher than  */
+				/* any trump card on the table.  YEEK! */
+				hi_trump= cards_highest_in_suit(&game.hand[num],
+								 game.trump);
+				hi_trump_played = 0;
+				for(i=0; i<4; i++) {
+					c = game.table[i];
+					if(c != -1
+					   && (c / 13) == game.trump
+					   && card_value(c) > hi_trump_played)
+						hi_trump_played = card_value(c);
+				}
+				if(hi_trump > hi_trump_played)
+					status = LP_ERR_MUST_TRUMP;
+			}
+		}
+	}
 
 	/* Send back play status */
 	if(es_write_int(fd, LP_RSP_PLAY) < 0
 	    || es_write_char(fd, status))
 		return -1;
 
-	/* If move simply invalid, ask for resubmit */
-	if((status == LP_ERR_INVALID)
-	     && game_req_play() < 0)
-		return -1;
+	/* Move the card onto the table */
+	if(status == 0) {
+		game.hand[num].card[(int)card_num] = -1;
+		game.table[num] = *card;
+		if(num == game.leader)
+			game.led_suit = *card/13;
+	}
 
-	if(status < 0)
-		return 1;
-	
-	game.turn = (game.turn + 1) % 4;
-
-	return 0;
+	return status;
 }
 
 
@@ -431,10 +492,9 @@ static int game_update(int event, void *data)
 		case LP_EVENT_PLAY:
 			card = *(char*)data;
 			game_send_play(card);
-		
-			/* TODO: End of hand?  End of game? */
 
 			/* Request next move */
+			game.turn = (game.turn + 1) % 4;
 			game_play();
 			break;
 		case LP_EVENT_BID:
@@ -530,4 +590,86 @@ static int game_send_trump(int seat)
 	if(es_write_int(fd, LP_MSG_TRUMP) < 0
 	   || es_write_char(fd, game.trump) < 0)
 		return -1;
+
+	return 0;
+}
+
+
+/* Figure who won the trick and announce */
+static void game_score_trick(void)
+{
+	int i, hi_card, hi_player, trumped;
+	int fd;
+
+	hi_card = hi_player = -1;
+	if(game.led_suit == game.trump)
+		trumped = 1;
+	else
+		trumped = 0;
+	for(i=0; i<4; i++) {
+		if(!trumped
+		   && game.table[i]/13 == game.led_suit
+		   && card_value(game.table[i]) > hi_card) {
+			hi_card = card_value(game.table[i]);
+			hi_player = i;
+		} else if(!trumped && game.table[i]/13 == game.trump) {
+			hi_card = card_value(game.table[i]);
+			hi_player = i;
+			trumped++;
+		} else if(game.table[i]/13 == game.trump
+			  && card_value(game.table[i]) > hi_card) {
+				hi_card = card_value(game.table[i]);
+				hi_player = i;
+		}
+	}
+
+	game.tricks[hi_player]++;
+	game.turn = game.leader = hi_player;
+	game.tricks_left--;
+
+	for(i=0; i<4; i++) {
+		game.table[i] = -1;
+
+		if((fd = ggz_seats[i].fd) == -1)
+			continue;
+
+		ggz_debug("Sending trick result to player %d", i);
+
+		if(es_write_int(fd, LP_MSG_TRICK) == 0)
+			es_write_char(fd, (char)hi_player);
+	}
+}
+
+
+/* Calculate scores for this hand and announce */
+void game_score_hand(void)
+{
+	int i, fd;
+
+	for(i=0; i<4; i++) {
+		ggz_debug("Player %d got %d tricks on a bid of %d", i,
+			  game.tricks[i], game.bid[i]);
+		if(game.tricks[i] == game.bid[i])
+			game.score[i] += 10 + (5 * game.bid[i]);
+		else
+			game.score[i] -= 5 * game.bid[i];
+	}
+
+	game.dealer = (4 + game.dealer - 1) % 4;
+	game.hand_num++;
+	game.state = LP_STATE_NEW_HAND;
+
+	for(i=0; i<4; i++) {
+		if((fd = ggz_seats[i].fd) == -1)
+			continue;
+
+		ggz_debug("Sending scores to player %d", i);
+
+		if(es_write_int(fd, LP_MSG_SCORES) < 0
+		   || es_write_int(fd, game.score[0]) < 0
+		   || es_write_int(fd, game.score[1]) < 0
+		   || es_write_int(fd, game.score[2]) < 0
+		   || es_write_int(fd, game.score[3]) < 0)
+			;
+	}
 }

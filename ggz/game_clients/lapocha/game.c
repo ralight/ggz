@@ -20,3 +20,12 @@ void game_send_bid(int bid)
 
 	statusbar_message("Sending bid to server");
 }
+
+
+void game_play_card(int card)
+{
+	es_write_int(game.fd, LP_SND_PLAY);
+	es_write_char(game.fd, (char)card);
+
+	statusbar_message("Sending play to server");
+}

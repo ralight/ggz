@@ -41,11 +41,15 @@
 #define LP_SND_SYNC     10
 #define LP_MSG_TRUMP	11
 #define LP_REQ_TRUMP	12
+#define LP_MSG_TRICK	13
+#define LP_MSG_SCORES	14
 
 /* Play errors */
-#define LP_ERR_STATE   -2
-#define LP_ERR_TURN    -3
-#define LP_ERR_INVALID -4
+#define LP_ERR_STATE       -2
+#define LP_ERR_TURN        -3
+#define LP_ERR_INVALID     -4
+#define LP_ERR_FOLLOW_SUIT -5
+#define LP_ERR_MUST_TRUMP  -6
 
 /* Messages from client */
 #define LP_SND_PLAY     0
@@ -74,6 +78,9 @@ struct lp_game_t {
 	char state;
 	int turn;
 	int dealer;
+	int leader;
+	char led_suit;
+	char table[4];
 	int hand_num;
 	int score[4];
 	struct hand_t hand[4];
@@ -81,6 +88,8 @@ struct lp_game_t {
 	int bid_count;
 	int bid_total;
 	int bid[4];
+	int tricks[4];
+	int tricks_left;
 	char trump;
 };
 

@@ -4,6 +4,7 @@ struct game_t {
 	int seats[4];
 	int score[4];
 	int bid[4];
+	int tricks[4];
 	int num_cards[4];
 	char names[4][17];
 	char state;
@@ -14,6 +15,7 @@ struct game_t {
 extern struct game_t game;
 
 extern void game_send_bid(int);
+extern void game_play_card(int);
 
 /* LaPocha protocol */
 /* Messages from server */
@@ -30,11 +32,15 @@ extern void game_send_bid(int);
 #define LP_SND_SYNC     10
 #define LP_MSG_TRUMP	11
 #define LP_REQ_TRUMP	12
+#define LP_MSG_TRICK	13
+#define LP_MSG_SCORES	14
 
 /* Play errors */
-#define LP_ERR_STATE   -2
-#define LP_ERR_TURN    -3
-#define LP_ERR_INVALID -4
+#define LP_ERR_STATE       -2
+#define LP_ERR_TURN        -3
+#define LP_ERR_INVALID     -4
+#define LP_ERR_FOLLOW_SUIT -5
+#define LP_ERR_MUST_TRUMP  -6
 
 /* Messages from client */
 #define LP_SND_PLAY     0
