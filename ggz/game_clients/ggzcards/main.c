@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 5044 2002-10-26 04:43:47Z jdorje $
+ * $Id: main.c 5125 2002-10-30 23:32:58Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -60,8 +60,11 @@ static void initialize_debugging(void);
 static void cleanup_debugging(void);
 static void init_about_dialog(void);
 
-static char *font = "-*-fixed-medium-r-normal--14-*-*-*-*-*-*-*,*-r-*";
-
+#ifdef GTK2
+static const char *font = "fixed";
+#else
+static const char *font = "-*-fixed-medium-r-normal--14-*-*-*-*-*-*-*,*-r-*";
+#endif
 
 int main(int argc, char *argv[])
 {
