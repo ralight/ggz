@@ -22,14 +22,40 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <libcgc/cgc.h>
 #include "game.h"
+#include "chess.h"
 
-game_t *game;
+/* Game info struct */
+extern struct chess_info game_info;
+
+game_t *game = NULL;
 
 void game_init() {
   /* Init the libcgc structures */
   game = cgc_create_game();
   cgc_join_game(game, WHITE);
   cgc_join_game(game, BLACK);
+}
+
+void game_message(char *msg) {
+  printf(msg);
+}
+
+/* Events:
+ * CHESS_EVENT_SEAT -> arg[0] = (char)SEAT
+ *                     arg[1] = (char)VERSION
+ */
+void game_update(int event, void *arg) {
+  switch (event) {
+    case CHESS_EVENT_SEAT:
+      /* Update the game info structure */
+      game_info.seat = ((char *)arg)[0];
+      game_info.version = ((char *)arg)[1];
+      if (game_info.version != PROTOCOL_VERSION)
+        game_message("Incompatible version. The game may not run as expected");
+      break;
+  }
 }

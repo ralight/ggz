@@ -28,7 +28,7 @@ on_board_configure_event               (GtkWidget       *widget,
   if (!board_buf)
     board_buf = gdk_pixmap_new( widget->window, PIXSIZE*8, PIXSIZE*8, -1);
 
-  board_draw_bg();
+  board_draw();
 
   return TRUE;
 }

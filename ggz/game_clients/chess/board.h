@@ -24,21 +24,26 @@
 
 /* definitions used here */
 #define BISHOP_B 0
-#define BISHOP_W 1
-#define KING_B 2
-#define KING_W 3
-#define KNIGHT_B 4
-#define KNIGHT_W 5
-#define PAWN_B 6
-#define PAWN_W 7
-#define QUEEN_B 8
-#define QUEEN_W 9
-#define ROOK_B 10
+#define KING_B 1
+#define KNIGHT_B 2
+#define PAWN_B 3
+#define QUEEN_B 4
+#define ROOK_B 5
+#define BISHOP_W 6
+#define KING_W 7
+#define KNIGHT_W 8
+#define PAWN_W 9
+#define QUEEN_W 10
 #define ROOK_W 11
 #define PIXSIZE 64
 
-#define LOAD_BITMAP(bitmap, data) ( pieces[bitmap] = gdk_bitmap_create_from_data(main_win->window, data, PIXSIZE, PIXSIZE) )
+#define LOAD_BITMAP(bitmap, data) ( pieces[bitmap] = gdk_pixmap_create_from_xpm_d(main_win->window, &pieces_mask[bitmap], NULL, data) )
 
 /* Load the bitmaps */
 void board_init();
+
+/* Draw stuff */
+void board_draw();
 void board_draw_bg();
+void board_draw_pieces();
+void board_draw_piece(int piece, int x, int y);

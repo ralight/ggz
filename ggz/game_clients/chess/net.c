@@ -23,9 +23,31 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include "game.h"
+#include "chess.h"
+#include <easysock.h>
+#include <stdio.h>
 #include <gtk/gtk.h>
 
 void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
-  // FIXME: Do something !
+  char op;
+  char args[2];
+
+  /* Get the opcode */
+  if (es_read_char(fd, &op) < 0)
+    return;
+
+  printf("Received opcode %d\n", op);
+
+  switch (op) {
+    case CHESS_MSG_SEAT:
+      /* args[0] holds the seat */
+      es_read_char(fd, &args[0]);
+      /* args[1] holds version */
+      es_read_char(fd, &args[1]);
+      /* Issue a EVENT_SEAT */
+      game_update(CHESS_EVENT_SEAT, args);
+      break;
+  }
 
 }

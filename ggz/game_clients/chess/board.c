@@ -24,27 +24,30 @@
  */
 
 #include "board.h"
+#include "game.h"
+#include "libcgc/cgc.h"
 #include "support.h"
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
 /* Include images */
-#include "bitmaps/bishop_b.xbm"
-#include "bitmaps/bishop_w.xbm"
-#include "bitmaps/king_b.xbm"
-#include "bitmaps/king_w.xbm"
-#include "bitmaps/knight_b.xbm"
-#include "bitmaps/knight_w.xbm"
-#include "bitmaps/pawn_b.xbm"
-#include "bitmaps/pawn_w.xbm"
-#include "bitmaps/queen_b.xbm"
-#include "bitmaps/queen_w.xbm"
-#include "bitmaps/rook_b.xbm"
-#include "bitmaps/rook_w.xbm"
+#include "bitmaps/bishop_b.xpm"
+#include "bitmaps/bishop_w.xpm"
+#include "bitmaps/king_b.xpm"
+#include "bitmaps/king_w.xpm"
+#include "bitmaps/knight_b.xpm"
+#include "bitmaps/knight_w.xpm"
+#include "bitmaps/pawn_b.xpm"
+#include "bitmaps/pawn_w.xpm"
+#include "bitmaps/queen_b.xpm"
+#include "bitmaps/queen_w.xpm"
+#include "bitmaps/rook_b.xpm"
+#include "bitmaps/rook_w.xpm"
 
 /* Graphics declarations */
-GdkBitmap **pieces = NULL;
-GdkGC *pieces_gc = NULL;
+GdkPixmap **pieces = NULL;
+GdkBitmap **pieces_mask = NULL;
+GdkGC *piece_gc = NULL;
 GdkGC *light_gc = NULL;
 GdkGC *dark_gc = NULL;
 GdkColor bg_color[2];
@@ -53,27 +56,30 @@ GdkPixmap *board_buf = NULL;
 /* Main window */
 extern GtkWidget *main_win;
 
+/* Game */
+extern game_t *game;
+
 void board_init() {
   if (pieces)
     return;
   /* Load images */
-  pieces = (GdkBitmap **)malloc(12 * sizeof(GdkBitmap *));
-  LOAD_BITMAP(BISHOP_B, BISHOP_B_bits);
-  LOAD_BITMAP(BISHOP_W, BISHOP_W_bits);
-  LOAD_BITMAP(KING_B, KING_B_bits);
-  LOAD_BITMAP(KING_W, KING_W_bits);
-  LOAD_BITMAP(KNIGHT_B, KNIGHT_B_bits);
-  LOAD_BITMAP(KNIGHT_W, KNIGHT_W_bits);
-  LOAD_BITMAP(PAWN_B, PAWN_B_bits);
-  LOAD_BITMAP(PAWN_W, PAWN_W_bits);
-  LOAD_BITMAP(QUEEN_B, QUEEN_B_bits);
-  LOAD_BITMAP(QUEEN_W, QUEEN_W_bits);
-  LOAD_BITMAP(ROOK_B, ROOK_B_bits);
-  LOAD_BITMAP(ROOK_W, ROOK_W_bits);
+  pieces = (GdkPixmap **)malloc(12 * sizeof(GdkPixmap *));
+  pieces_mask = (GdkBitmap **)malloc(12 * sizeof(GdkBitmap *));
+  LOAD_BITMAP(BISHOP_B, bishop_b_xpm);
+  LOAD_BITMAP(BISHOP_W, bishop_w_xpm);
+  LOAD_BITMAP(KING_B, king_b_xpm);
+  LOAD_BITMAP(KING_W, king_w_xpm);
+  LOAD_BITMAP(KNIGHT_B, knight_b_xpm);
+  LOAD_BITMAP(KNIGHT_W, knight_w_xpm);
+  LOAD_BITMAP(PAWN_B, pawn_b_xpm);
+  LOAD_BITMAP(PAWN_W, pawn_w_xpm);
+  LOAD_BITMAP(QUEEN_B, queen_b_xpm);
+  LOAD_BITMAP(QUEEN_W, queen_w_xpm);
+  LOAD_BITMAP(ROOK_B, rook_b_xpm);
+  LOAD_BITMAP(ROOK_W, rook_w_xpm);
   /* Init the GC */
-  pieces_gc = gdk_gc_new(main_win->window);
-  gdk_gc_set_fill(pieces_gc, GDK_STIPPLED);
-  gdk_gc_set_foreground(pieces_gc, &gtk_widget_get_style(main_win)->black);
+  piece_gc = gdk_gc_new(main_win->window);
+  gdk_gc_set_fill(piece_gc, GDK_TILED);
   /* Colors */
   gdk_color_parse("rgb:C8/B5/72", &bg_color[0]);
   gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), &bg_color[0], TRUE, TRUE);
@@ -90,6 +96,14 @@ void board_init() {
   gdk_gc_set_background(dark_gc, &bg_color[1]);
 }
 
+void board_draw() {
+  board_draw_bg();
+  board_draw_pieces();
+
+  gtk_widget_draw(lookup_widget(main_win, "board"), NULL);
+}
+  
+
 void board_draw_bg() {
   int i, j;
   if (!pieces)
@@ -99,10 +113,10 @@ void board_draw_bg() {
   /* Draw squares */
   for (i = 0; i < 8; i++) {
     for (j = 0; j < 8; j++) {
-      /* i+j even -> light
-       * i+j odd  -> dark */
+      /* i+j even -> dark
+       * i+j odd  -> light */
       gdk_draw_rectangle(board_buf,
-          ( (i+j)%2==0 ? light_gc : dark_gc ),
+          ( (i+j)%2==0 ? dark_gc : light_gc),
           TRUE,
           i*PIXSIZE, j*PIXSIZE,
           PIXSIZE, PIXSIZE);
@@ -122,6 +136,67 @@ void board_draw_bg() {
         8*PIXSIZE, i*PIXSIZE);
   }
 
-  gtk_widget_draw(lookup_widget(main_win, "board"), NULL);
-  
 }
+
+void board_draw_pieces() {
+  int x, y;
+
+  if (!game)
+    game_init();
+
+  for (x = 0; x < 8; x++) {
+    for (y = 0; y < 8; y++) {
+      switch(game->board[x][y]) {
+        case W_PAWN:
+          board_draw_piece(PAWN_W, x, y);
+          break;
+        case W_ROOK:
+          board_draw_piece(ROOK_W, x, y);
+          break;
+        case W_KNIGHT:
+          board_draw_piece(KNIGHT_W, x, y);
+          break;
+        case W_BISHOP:
+          board_draw_piece(BISHOP_W, x, y);
+          break;
+        case W_QUEEN:
+          board_draw_piece(QUEEN_W, x, y);
+          break;
+        case W_KING:
+          board_draw_piece(KING_W, x, y);
+          break;
+         case B_PAWN:
+          board_draw_piece(PAWN_B, x, y);
+          break;
+        case B_ROOK:
+          board_draw_piece(ROOK_B, x, y);
+          break;
+        case B_KNIGHT:
+          board_draw_piece(KNIGHT_B, x, y);
+          break;
+        case B_BISHOP:
+          board_draw_piece(BISHOP_B, x, y);
+          break;
+        case B_KING:
+          board_draw_piece(KING_B, x, y);
+          break;
+        case B_QUEEN:
+          board_draw_piece(QUEEN_B, x, y);
+          break;
+      }
+    }
+  }
+
+}
+
+void board_draw_piece(int piece, int x, int y) {
+
+  gdk_gc_set_tile(piece_gc, pieces[piece]);
+  gdk_gc_set_ts_origin(piece_gc, x*PIXSIZE, y*PIXSIZE);
+  gdk_gc_set_clip_origin(piece_gc, x*PIXSIZE, y*PIXSIZE);
+  gdk_gc_set_clip_mask(piece_gc, pieces_mask[piece]);
+
+  gdk_draw_rectangle(board_buf, piece_gc, TRUE, x*PIXSIZE, y*PIXSIZE, 
+                     PIXSIZE, PIXSIZE);
+}
+

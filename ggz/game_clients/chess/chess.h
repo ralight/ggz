@@ -167,4 +167,8 @@ struct chess_info {
   int turn;
   /* Game fd */
   int fd;
+  /* Current seat */
+  char seat;
+  /* Server's protocol version */
+  char version;
 };

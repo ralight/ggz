@@ -23,3 +23,5 @@
  */
 
 void game_init();
+void game_message(char *);
+void game_update(int event, void *arg);
