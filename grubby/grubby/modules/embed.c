@@ -135,6 +135,12 @@ Guru *gurumod_exec(Guru *message)
 #ifdef EMBED_PERL
 	char *answerstring;
 	int tmpval;
+	char *statement;
+#endif
+#ifdef EMBED_PYTHON
+	PyObject *pName, *pModule, *pValue;
+	PyMethodDef methods[] = {{NULL, NULL}};
+	FILE *f;
 #endif
 
 	if(!scriptlist) return NULL;
@@ -185,10 +191,13 @@ Guru *gurumod_exec(Guru *message)
 #ifdef EMBED_PERL
 			if(type == TYPE_PERL)
 			{
-				char *argv[] = {script, NULL};
+				char *argv[] = {"modembed", script, NULL};
 				perl_parse(my_perl, NULL, 2, argv, (char**)NULL);
-				/*set_sv("answer", message->message)*/
+				statement = (char*)malloc(strlen(message->message) + 100);
+				sprintf(statement, "$answer = \"%s\"", message->message);
+				eval_pv(statement, TRUE);
 				perl_run(my_perl);
+				free(statement);
 
 				answerstring = SvPV(get_sv("answer", FALSE), tmpval);
 				if(answerstring)
@@ -202,8 +211,20 @@ Guru *gurumod_exec(Guru *message)
 #ifdef EMBED_PYTHON
 			if(type == TYPE_PYTHON)
 			{
-				char *argv[] = {script, NULL};
-				Py_Main(2, argv);
+				pName = PyString_FromString(script);
+
+				pModule = Py_InitModule("grubby", methods);
+				pValue = Py_BuildValue("s", message->message);
+				PyModule_AddObject(pModule, "answer", pValue);
+				pxDict = PyModule_GetDict(pModule);
+
+				f = fopen(script, "r");
+				PyRun_SimpleFile(f, script);
+				fclose(f);
+
+				pValue = PyDict_GetItemString(pxDict, "answer");
+				message->message = PyString_AsString(pValue);
+				return message;
 			}
 #endif
 		}
