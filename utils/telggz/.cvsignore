@@ -1,0 +1,6 @@
+Makefile
+Makefile.in
+*.o
+telggz
+.deps
+.libs

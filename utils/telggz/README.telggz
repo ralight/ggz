@@ -1,0 +1,44 @@
+TelGGZ
+Server-side GGZ telnet wrapper
+------------------------------
+
+This little tool allows people from everywhere on the world
+to log into a GGZ server and chat with people, even if there is no GGZ core
+client available.
+As all the magic takes place on the server side, e.g. the login name of the
+player is not known, the commands are similar, but not quite the same as for
+ggz-txt:
+
+$ telnet server.org 15688 <- easy to remember :-)
+> /login <nickname> [<password>]
+Login OK.
+> /join <room>
+Joined room 3.
+...
+> /msg foo Bin ich schon drin?
+Message sent to foo.
+[foo]: What's up
+...
+
+Before one starts to write one should simply press Enter once so that all incoming
+data is hold back in order to not confuse the player, as opposed to what is
+known from several irc clients. It is then prepended to the next input data.
+
+The installation of TelGGZ requires the ggzcore library which is normally not
+installed on the server side. It is also advisable to set up entries in the
+system daemon configuration files - telggz is normally invoked with inetd or
+similar:
+
+/etc/services:
+ggz         5688/tcp            # GGZ Gaming Zone
+ggzt       15688/tcp            # GGZ Gaming Zone telnet wrapper
+
+/etc/inetd.conf:
+ggzt stream tcp nowait games /usr/local/bin/telggz
+
+To make TelGGZ accessible from the web, simply use:
+<A HREF="telnet://server:port">Instant Access Now</A><BR>
+An example for this is on my student homepage www.maux.de.
+
+Josef
+
