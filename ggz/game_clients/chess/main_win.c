@@ -161,6 +161,12 @@ create_main_win (void)
   gtk_widget_show (statusbar);
   gtk_box_pack_start (GTK_BOX (vbox1), statusbar, FALSE, FALSE, 0);
 
+  gtk_signal_connect (GTK_OBJECT (main_win), "destroy_event",
+                      GTK_SIGNAL_FUNC (gtk_main_quit),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (main_win), "delete_event",
+                      GTK_SIGNAL_FUNC (gtk_main_quit),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (exit), "activate",
                       GTK_SIGNAL_FUNC (on_exit_activate),
                       NULL);
@@ -173,9 +179,15 @@ create_main_win (void)
   gtk_signal_connect (GTK_OBJECT (board), "button_press_event",
                       GTK_SIGNAL_FUNC (on_board_button_press_event),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (board), "drag_drop",
-                      GTK_SIGNAL_FUNC (on_board_drag_drop),
+  gtk_signal_connect (GTK_OBJECT (board), "drag_begin",
+                      GTK_SIGNAL_FUNC (on_board_drag_begin),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (board), "drag_motion",
+                      GTK_SIGNAL_FUNC (on_board_drag_motion),
+                      NULL);
+  gtk_signal_connect_after (GTK_OBJECT (board), "drag_drop",
+                            GTK_SIGNAL_FUNC (on_board_drag_drop),
+                            NULL);
 
   return main_win;
 }

@@ -27,17 +27,23 @@
 #include "chess.h"
 #include <easysock.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <gtk/gtk.h>
+
+#define GGZ_SEAT_OPEN -1
+
+extern struct chess_info game_info;
 
 void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
   char op;
   char args[2];
+  int a;
+  char *names;
 
   /* Get the opcode */
   if (es_read_char(fd, &op) < 0)
     return;
-
-  printf("Received opcode %d\n", op);
 
   switch (op) {
     case CHESS_MSG_SEAT:
@@ -47,7 +53,47 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
       es_read_char(fd, &args[1]);
       /* Issue a EVENT_SEAT */
       game_update(CHESS_EVENT_SEAT, args);
+      printf("Received MSG_SEAT\n");
+      break;
+    case CHESS_MSG_PLAYERS:
+      names = (char *)malloc(40 * sizeof(char));
+      bzero(names, 40);
+      /* Get first code */
+      es_read_char(fd, &names[0]);
+      if (names[0] != GGZ_SEAT_OPEN)
+        es_read_string(fd, names+1, 17);
+      /* Get second code */
+      es_read_char(fd, &names[20]);
+      if (names[20] != GGZ_SEAT_OPEN)
+        es_read_string(fd, names+21, 17);
+      /* Issue an event */
+      game_update(CHESS_EVENT_PLAYERS, names);
+      printf("Got an MSG_PLAYERS\n");
+      break;
+    case CHESS_REQ_TIME:
+      /* The server is requesting my time option */
+      game_update(CHESS_EVENT_TIME_REQUEST, NULL);
+      printf("Got an REQ_TIME\n");
+      break;
+    case CHESS_RSP_TIME:
+      /* The server is sending the time option */
+      es_read_int(fd, &a);
+      game_update(CHESS_EVENT_TIME_OPTION, &a);
+      printf("Got an RSP_TIME\n");
+      break;
+    case CHESS_MSG_START:
+      /* We should start the game now */
+      game_update(CHESS_EVENT_START, NULL);
+      printf("Got an MSG_START\n");
+      break;
+    default:
+      printf("Unknown opcode: %d\n", op);
       break;
   }
 
+}
+
+void net_send_time(int time_option) {
+  es_write_char(game_info.fd, CHESS_RSP_TIME);
+  es_write_int(game_info.fd, time_option);
 }

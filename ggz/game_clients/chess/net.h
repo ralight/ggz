@@ -22,6 +22,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+/* Send time option to server */
+void net_send_time(int time_option);
+
 /* All server input will pass through here
  * Then we will filter it and send to game_update */
 void net_handle_input(gpointer data, int fd, GdkInputCondition cond);

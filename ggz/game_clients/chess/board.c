@@ -23,12 +23,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <gtk/gtk.h>
 #include "board.h"
 #include "game.h"
 #include "libcgc/cgc.h"
 #include "support.h"
-#include <stdlib.h>
-#include <gtk/gtk.h>
+#include "chess.h"
 
 /* Include images */
 #include "bitmaps/bishop_b.xpm"
@@ -58,6 +60,9 @@ extern GtkWidget *main_win;
 
 /* Game */
 extern game_t *game;
+
+/* dnd stuff */
+GtkTargetEntry *target;
 
 void board_init() {
   if (pieces)
@@ -94,6 +99,24 @@ void board_init() {
   gdk_gc_set_fill(dark_gc, GDK_SOLID);
   gdk_gc_set_foreground(dark_gc, &bg_color[1]);
   gdk_gc_set_background(dark_gc, &bg_color[1]);
+
+  /* Setup the drag and drop */
+  board_dnd_init();
+}
+
+void board_dnd_init() {
+  GtkWidget *board;
+  target = (GtkTargetEntry *)malloc(sizeof(GtkTargetEntry));
+
+  board = lookup_widget(main_win, "board");
+
+  target->target = (char *)malloc(sizeof(char) * 6);
+  strcpy(target->target, "board");
+  target->flags = GTK_TARGET_SAME_WIDGET;
+  target->info = 233;
+
+  gtk_drag_dest_set(board, GTK_DEST_DEFAULT_ALL, target, 1, GDK_ACTION_MOVE);
+
 }
 
 void board_draw() {
@@ -142,54 +165,50 @@ void board_draw_pieces() {
   int x, y;
 
   if (!game)
-    game_init();
+    game_update(CHESS_EVENT_INIT, NULL);
 
   for (x = 0; x < 8; x++) {
     for (y = 0; y < 8; y++) {
-      switch(game->board[x][y]) {
-        case W_PAWN:
-          board_draw_piece(PAWN_W, x, y);
-          break;
-        case W_ROOK:
-          board_draw_piece(ROOK_W, x, y);
-          break;
-        case W_KNIGHT:
-          board_draw_piece(KNIGHT_W, x, y);
-          break;
-        case W_BISHOP:
-          board_draw_piece(BISHOP_W, x, y);
-          break;
-        case W_QUEEN:
-          board_draw_piece(QUEEN_W, x, y);
-          break;
-        case W_KING:
-          board_draw_piece(KING_W, x, y);
-          break;
-         case B_PAWN:
-          board_draw_piece(PAWN_B, x, y);
-          break;
-        case B_ROOK:
-          board_draw_piece(ROOK_B, x, y);
-          break;
-        case B_KNIGHT:
-          board_draw_piece(KNIGHT_B, x, y);
-          break;
-        case B_BISHOP:
-          board_draw_piece(BISHOP_B, x, y);
-          break;
-        case B_KING:
-          board_draw_piece(KING_B, x, y);
-          break;
-        case B_QUEEN:
-          board_draw_piece(QUEEN_B, x, y);
-          break;
-      }
+      board_draw_piece(board_translate(game->board[x][y]), x, y);
     }
   }
 
 }
 
+int board_translate(int cgc_val) {
+  switch(cgc_val) {
+    case W_PAWN:
+      return PAWN_W;
+    case W_ROOK:
+      return ROOK_W;
+    case W_KNIGHT:
+      return KNIGHT_W;
+    case W_BISHOP:
+      return BISHOP_W;
+    case W_QUEEN:
+      return QUEEN_W;
+    case W_KING:
+      return KING_W;
+     case B_PAWN:
+      return PAWN_B;
+    case B_ROOK:
+      return ROOK_B;
+    case B_KNIGHT:
+      return KNIGHT_B;
+    case B_BISHOP:
+      return BISHOP_B;
+    case B_KING:
+      return KING_B;
+    case B_QUEEN:
+      return QUEEN_B;
+  }
+  return -1;
+}
+
 void board_draw_piece(int piece, int x, int y) {
+
+  if (piece < 0)
+    return;
 
   gdk_gc_set_tile(piece_gc, pieces[piece]);
   gdk_gc_set_ts_origin(piece_gc, x*PIXSIZE, y*PIXSIZE);
@@ -200,3 +219,11 @@ void board_draw_piece(int piece, int x, int y) {
                      PIXSIZE, PIXSIZE);
 }
 
+void board_dnd_highlight( int x, int y, GdkDragContext *drag_context) {
+  int piece = board_translate(game->board[x][y]);
+  printf("highlighting %d %d, piece: %d\n", x, y, piece);
+  gdk_pixmap_ref(pieces[piece]);
+  gdk_bitmap_ref(pieces_mask[piece]);
+  gtk_drag_set_icon_pixmap(drag_context, gtk_widget_get_colormap(main_win),
+      pieces[piece], pieces_mask[piece], 5, 5);
+}

@@ -29,14 +29,13 @@
  * CHESS_STATE_INIT
  * CHESS_STATE_WAIT
  * CHESS_STATE_PLAYING
- * CHESS_STATE_PLAYING_MOVING
  * CHESS_STATE_DONE
  *
  * And we should have the following events
+ * CHESS_EVENT_INIT
  * CHESS_EVENT_SEAT
  * CHESS_EVENT_PLAYERS
  * CHESS_EVENT_QUIT
- * CHESS_EVENT_MOVE_START
  * CHESS_EVENT_MOVE_END
  * CHESS_EVENT_MOVE
  * CHESS_EVENT_TIME_REQUEST
@@ -52,7 +51,8 @@
  *
  * CHESS_STATE_INIT
  * 
- *  Load the bitmaps, configure the pixmap buffers, connect to the game server
+ *  Load the bitmaps, configure the pixmap buffers, connect to the game server.
+ *  Issue an CHESS_EVENT_INIT and go to WAIT state
  *
  * CHESS_STATE_WAIT
  *
@@ -61,12 +61,6 @@
  * CHESS_STATE_PLAYING
  *
  *  Play the game. Receive UPDATE_TIME, REQUEST_UPDATE, GAMOEVER, etc events.
- *  Go to PLAYING_MOVING with a MOVE_START
- *
- * CHESS_STATE_PLAYING_MOVING
- *
- *  Used when dragging a piece. Longs until a MOVE_END event occur (when it
- *  will check the move and send it to the server)
  *
  * CHESS_STATE_DONE
  *
@@ -77,7 +71,6 @@
  * CHESS_EVENT_SEAT           -> When we receive a MSG_SEAT
  * CHESS_EVENT_PLAYERS        -> When we receive a MSG_PLAYERS
  * CHESS_EVENT_QUIT           -> When the user exits the game
- * CHESS_EVENT_MOVE_START     -> When the user starts dragging a piece
  * CHESS_EVENT_MOVE_END       -> When the user finishes dragging a piece
  * CHESS_EVENT_MOVE           -> When the server sends us a move
  * CHESS_EVENT_TIME_REQUEST   -> When we receive a REQ_TIME (ie, the server is
@@ -98,17 +91,16 @@
 #define CHESS_STATE_WAIT 1
 #define CHESS_STATE_PLAYING 2
 #define CHESS_STATE_DONE 3
-#define CHESS_STATE_PLAYING_MOVING 4
 
 /* Definition of events */
 #define CHESS_EVENT_SEAT 0
 #define CHESS_EVENT_PLAYERS 1
 #define CHESS_EVENT_QUIT 2
-#define CHESS_EVENT_MOVE_START 3
+#define CHESS_EVENT_INIT 3
 #define CHESS_EVENT_MOVE_END 4
 #define CHESS_EVENT_MOVE 5
 #define CHESS_EVENT_TIME_REQUEST 6
-#define CHESS_EVENT_TIMEOPTION 7
+#define CHESS_EVENT_TIME_OPTION 7
 #define CHESS_EVENT_GAMEOVER 8
 #define CHESS_EVENT_START 9
 #define CHESS_EVENT_UPDATE_TIME 10
@@ -171,4 +163,7 @@ struct chess_info {
   char seat;
   /* Server's protocol version */
   char version;
+  /* Hold information about the players */
+  char assign[2];
+  char name[2][18];
 };

@@ -47,8 +47,10 @@ int main(int argc, char *argv[]) {
 	main_win = create_main_win();
 	gtk_widget_show(main_win);
 
+  game_info.state = CHESS_STATE_INIT;
+
   board_init();
-  game_init();
+  game_update(CHESS_EVENT_INIT, NULL);
 
 	game_info.fd = ggz_connect("Chess");
 

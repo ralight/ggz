@@ -42,6 +42,13 @@
 /* Load the bitmaps */
 void board_init();
 
+/* translate between the cgc piece value and the game piece value */
+int board_translate();
+
+/* dnd stuff */
+void board_dnd_init();
+void board_dnd_highlight( int x, int y, GdkDragContext *drag_context );
+
 /* Draw stuff */
 void board_draw();
 void board_draw_bg();
