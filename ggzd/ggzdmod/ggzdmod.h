@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 4403 2002-09-04 18:48:34Z dr_maux $
+ * $Id: ggzdmod.h 4442 2002-09-07 19:47:27Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -442,10 +442,16 @@ void ggzdmod_set_num_spectators(GGZdMod * ggzdmod, int num_spectators);
 void ggzdmod_set_gamedata(GGZdMod * ggzdmod, void * data);
 
 /** @brief Get the maximum number of spectators.
- *  @return The number of spectators, or -1 on error.
+ *  This function returns the maximum number of spectator seats available.  A
+ *  game can use this to iterate over the spectator seats to look for
+ *  spectators occupying them.  Since spectators may come and go at any point
+ *  and there is no theoretical limit on the number of spectators, you should
+ *  consider this value to be dynamic and call this function again each time
+ *  you're looking for spectators.
+ *  @return The number of available spectator seats, or -1 on error.
  *  @note If no connection is present, -1 will be returned.
  */
-int ggzdmod_get_num_spectators(GGZdMod *ggzdmod);
+int ggzdmod_get_max_num_spectators(GGZdMod *ggzdmod);
 
 /** @brief Get a spectator's data.
  *  @param ggzdmod The GGZdMod object.

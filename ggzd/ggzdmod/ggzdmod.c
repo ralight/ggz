@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4432 2002-09-07 09:13:46Z dr_maux $
+ * $Id: ggzdmod.c 4442 2002-09-07 19:47:27Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -218,7 +218,7 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 					(ggzEntryDestroy)spectator_free,
 					GGZ_LIST_REPLACE_DUPS);
 	ggzdmod->num_seats = 0;
-	ggzdmod->num_spectators = 0;
+	ggzdmod->max_num_spectators = 0;
 
 	for (i = 0; i < GGZDMOD_NUM_HANDLERS; i++)
 		ggzdmod->handlers[i] = NULL;
@@ -249,7 +249,7 @@ void ggzdmod_free(GGZdMod * ggzdmod)
 	ggz_list_free(ggzdmod->seats);
 	ggzdmod->num_seats = 0;
 	ggz_list_free(ggzdmod->spectators);
-	ggzdmod->num_spectators = 0;
+	ggzdmod->max_num_spectators = 0;
 
 	ggzdmod->type = -1;
 
@@ -311,13 +311,13 @@ int ggzdmod_get_num_seats(GGZdMod * ggzdmod)
 }
 
 
-int ggzdmod_get_num_spectators(GGZdMod * ggzdmod)
+int ggzdmod_get_max_num_spectators(GGZdMod * ggzdmod)
 {
 	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->fd < 0) {
 		return -1;
 	}
 
-	return ggzdmod->num_spectators;
+	return ggzdmod->max_num_spectators;
 }
 
 
@@ -340,7 +340,9 @@ GGZSpectator ggzdmod_get_spectator(GGZdMod * ggzdmod, int num)
 	GGZSpectator spectator = {num, NULL, -1};
 	GGZListEntry *entry;
 
-	if (CHECK_GGZDMOD(ggzdmod) && num >= 0 && num < ggzdmod->num_spectators) {
+	if (CHECK_GGZDMOD(ggzdmod)
+	    && num >= 0
+	    && num < ggzdmod->max_num_spectators) {
 		if ((entry = ggz_list_search(ggzdmod->spectators, &spectator)))
 			spectator = *(GGZSpectator*)ggz_list_get_data(entry);
 	}
@@ -388,7 +390,7 @@ static void _ggzdmod_set_num_spectators(GGZdMod *ggzdmod, int num_spectators)
 	GGZSpectator spectator;
 	int i, old_num;
 
-	old_num = ggzdmod->num_spectators;
+	old_num = ggzdmod->max_num_spectators;
 	
 	/* See the appropriate seat function */
 	if (num_spectators > old_num) {
@@ -403,7 +405,7 @@ static void _ggzdmod_set_num_spectators(GGZdMod *ggzdmod, int num_spectators)
 		/* FIXME: delete extra spectators */
 	}
 	
-	ggzdmod->num_spectators = num_spectators;
+	ggzdmod->max_num_spectators = num_spectators;
 }
 
 
@@ -634,7 +636,7 @@ int ggzdmod_set_spectator(GGZdMod * ggzdmod, GGZSpectator *spectator)
 	GGZSpectator oldspectator;
 
 	if (!CHECK_GGZDMOD(ggzdmod) || !spectator || spectator->num < 0
-	    || spectator->num >= ggzdmod->num_spectators) {
+	    || spectator->num >= ggzdmod->max_num_spectators) {
 		return -2;		
 	}
 
@@ -699,8 +701,8 @@ int ggzdmod_count_spectators(GGZdMod *ggzdmod)
 	int i, ret = 0;
 	GGZSpectator spectator;
 
-	if(!ggzdmod) return ret;
-	for (i = 0; i < ggzdmod->num_spectators; i++) {
+	if (!ggzdmod) return ret;
+	for (i = 0; i < ggzdmod->max_num_spectators; i++) {
 		spectator = ggzdmod_get_spectator(ggzdmod, i);
 		if(spectator.fd != -1) ret++;
 	}
@@ -935,7 +937,8 @@ static int send_game_launch(GGZdMod * ggzdmod)
 	GGZSeat *seat;
 		
 
-	if (_io_send_launch(ggzdmod->fd, ggzdmod->num_seats, ggzdmod->num_spectators) < 0) {
+	if (_io_send_launch(ggzdmod->fd, ggzdmod->num_seats,
+			    ggzdmod->max_num_spectators) < 0) {
 		_ggzdmod_error(ggzdmod, "Error writing to game");
 		return -1;
 	}

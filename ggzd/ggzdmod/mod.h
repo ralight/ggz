@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: mod.h 4403 2002-09-04 18:48:34Z dr_maux $
+ * $Id: mod.h 4442 2002-09-07 19:47:27Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -46,7 +46,7 @@ struct GGZdMod {
 	int fd;			/* file descriptor */
 	int num_seats;
 	int num_open;
-	int num_spectators;
+	int max_num_spectators;
 	GGZList *seats;
 	GGZList *spectators;
 	GGZdModHandler handlers[GGZDMOD_NUM_HANDLERS];
