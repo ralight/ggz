@@ -61,7 +61,7 @@ void chat_init(void)
 }
 
 
-int chat_add(int p_index, char* msg) 
+int chat_add(int p_index, char* name, char* msg) 
 {
 	int i;
 	
@@ -75,9 +75,7 @@ int chat_add(int p_index, char* msg)
 	for (i = 0; i < MAX_CHAT_BUFFER; i++)
 		if (chats.info[i].p_index == -1) {
 			chats.info[i].p_index = p_index;
-			/* FIXME: Do we need player.lock here? */
-			strcpy(chats.info[i].p_name, 
-			       players.info[p_index].name);
+			strcpy(chats.info[i].p_name, name);
 			strcpy(chats.info[i].msg, msg);
 			chat_mark_all_unread(i);
 			break;
@@ -158,13 +156,15 @@ static void chat_mark_all_unread(int c_index)
 	int i;
 	
 	/* FIXME: Currently marks chat for all logged-in users */
+	pthread_rwlock_rdlock(&players.lock);
 	for (i = 0; i < MAX_USERS; i++) {
-		if (players.info[i].uid != NG_UID_NONE ) {
+		if (players.info[i].fd != -1) {
 			chats.info[c_index].unread[i] = 1;
 			chats.info[c_index].unread_count++;
 			chats.player_unread_count[i]++;
 		}
 	}
+	pthread_rwlock_unlock(&players.lock);
 }
 
 
