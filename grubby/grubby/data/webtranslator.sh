@@ -1,6 +1,9 @@
 #!/bin/sh
 # Ripped from debianforum.de (thanks chimera)
 # http://212.184.215.215/~feltel/debianforum/viewtopic.php?t=292
+#
+# Example:
+# grubby translate de-en Dies ist ein sinnloser Satz
 
 dir=~/.ggz/grubby/google
 
@@ -12,14 +15,20 @@ fi
 
 touch $dir/translations
 
-if ( test -z "$1" ) || ( test -z "$2" ) || ( test -z "$3" ) || ( test -z "$4" )
+read input
+i1=`echo $input | cut -d " " -f 1`
+i2=`echo $input | cut -d " " -f 2`
+i3=`echo $input | cut -d " " -f 3`
+i4=`echo $input | cut -d " " -f 4-`
+
+if ( test -z "$i1" ) || ( test -z "$i2" ) || ( test -z "$i3" ) || ( test -z "$i4" )
 then
   exit
 else
-  trans=$2
-  lang=`echo $4 | tr '-' '|'` 
-  ausdruck=`echo $3 | tr " " "+"` 
-  if ( test ! "$2" = "translate" )
+  trans=$i2
+  lang=`echo $i3 | tr '-' '|'` 
+  ausdruck=`echo $i4 | tr " " "+"` 
+  if ( test ! "$i2" = "translate" )
   then
     exit
   fi
