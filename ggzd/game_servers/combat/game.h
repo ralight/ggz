@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: server specific header file
- * $Id: game.h 2782 2001-12-06 00:24:12Z jdorje $
+ * $Id: game.h 2811 2001-12-09 01:19:38Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "../../ggzdmod/ggz_server.h"
+#include "ggzdmod.h"
 
 #define CBT_SERVER_ERROR -1
 #define CBT_SERVER_OK 0
@@ -34,11 +34,13 @@
 #define MOVE_ERROR(STR) ggz_debug("MOVE ERROR: seat %d (%d-%d): %s", seat, from, to, STR);
 
 // Init stuff
-void game_init();
+void game_init(GGZdMod *ggz);
 
 /* Handles the protocol (GGZ event handler functions) */
-void game_handle_ggz(GGZdModEvent event, void *data);
-void game_handle_player(GGZdModEvent event, void *data);
+void game_handle_ggz_state(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_ggz_leave(GGZdMod *ggz, GGZdModEvent event, void *data);
+void game_handle_player_data(GGZdMod *ggz, GGZdModEvent event, void *data);
 
 // Game logic
 int game_handle_move(int, int, int);

@@ -4,6 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Common (client/server) description of game protocol/structures
+ * $Id: combat.h 2811 2001-12-09 01:19:38Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -21,6 +22,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+#include "ggzdmod.h"
 
 #define PROTOCOL_VERSION 10
 
@@ -363,7 +366,7 @@
  * TODO: Add PLAY_AGAIN feature
  * TODO: More options are always good
  * TODO: Multiplayer considerations
-*/
+ */
 
 // Terrain codes
 #define T_OPEN 0x00   // 0000
@@ -500,6 +503,7 @@ typedef struct tile_struct {
 
 // Game struct
 typedef struct combat_game_struct {
+  GGZdMod *ggz;
   tile *map;
   char width;
   char height;
