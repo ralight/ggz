@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KGGZ 0.0.4\n"
-"POT-Creation-Date: 2001-05-07 22:11+0200\n"
+"POT-Creation-Date: 2001-06-02 01:06+0200\n"
 "PO-Revision-Date: 2001-02-02 19:26+0100\n"
 "Last-Translator: Sebastian Roth <sebbi@claranet.de>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: KGGZBase.cpp:371
+#: KGGZBase.cpp:409
 #, fuzzy
 msgid "  Connected  "
 msgstr "Verbunden"
@@ -23,107 +23,117 @@ msgstr "Verbunden"
 msgid "  Loading...  "
 msgstr ""
 
+#: KGGZ.cpp:1437 KGGZBase.cpp:68
+#, fuzzy
+msgid "  No room selected  "
+msgstr "Verbunden"
+
 #: KGGZBase.cpp:66
 #, fuzzy
 msgid "  Not connected  "
 msgstr "Verbunden"
 
-#: KGGZBase.cpp:162
+#: KGGZBase.cpp:167
 #, fuzzy
 msgid "  Ready for connection.  "
 msgstr "Warte auf Verbindung..."
 
-#: KGGZBase.cpp:376
+#: KGGZ.cpp:754
+msgid "  Room: "
+msgstr ""
+
+#: KGGZBase.cpp:414
 msgid "  State: "
 msgstr ""
 
-#: KGGZLaunch.cpp:152
+#: KGGZLaunch.cpp:165
 msgid " (out of "
 msgstr ""
 
-#: KGGZ.cpp:569
+#: KGGZ.cpp:574
 msgid " enters the room."
 msgstr ""
 
-#: KGGZ.cpp:576
+#: KGGZ.cpp:583
 msgid " has left the room."
 msgstr ""
 
-#: KGGZBase.cpp:86
+#: KGGZChat.cpp:280
+msgid "%1 -- MARK --"
+msgstr ""
+
+#: KGGZBase.cpp:87
 msgid "&Available tables"
 msgstr "&Verfügbare Plätze"
 
-#: KGGZBase.cpp:85
+#: KGGZBase.cpp:105
+#, fuzzy
+msgid "&Cancel game"
+msgstr "Staret ein neues Spiel"
+
+#: KGGZBase.cpp:86
 msgid "&Chat"
 msgstr "&Chat"
 
-#: KGGZBase.cpp:125
+#: KGGZBase.cpp:130
 msgid "&Client"
 msgstr "&Client"
 
-#: KGGZBase.cpp:72
+#: KGGZBase.cpp:73
 msgid "&Connect"
 msgstr "&Verbinde"
 
-#: KGGZBase.cpp:73
+#: KGGZBase.cpp:74
 msgid "&Disconnect"
 msgstr "&Trenne Verbindung"
 
-#: KGGZBase.cpp:127
+#: KGGZBase.cpp:366
 #, fuzzy
 msgid "&Game"
 msgstr "&Spiele"
 
-#: KGGZBase.cpp:114
-msgid "&Games"
-msgstr "&Spiele"
-
-#: KGGZBase.cpp:106
+#: KGGZBase.cpp:109
 msgid "&Grubby"
 msgstr "&Grubby "
 
-#: KGGZBase.cpp:129
+#: KGGZBase.cpp:132
 msgid "&Help"
 msgstr "&Hilfe"
 
-#: KGGZBase.cpp:99
+#: KGGZBase.cpp:101
 #, fuzzy
 msgid "&Information"
 msgstr "&Spieler Information"
 
-#: KGGZBase.cpp:102
+#: KGGZBase.cpp:104
 msgid "&Join game"
 msgstr "&Trete Spiel bei"
 
-#: KGGZBase.cpp:101
+#: KGGZBase.cpp:103
 msgid "&Launch new game"
 msgstr "&Starte neues Spiel"
 
-#: KGGZBase.cpp:87
+#: KGGZBase.cpp:88
 msgid "&List of players"
 msgstr "&Spielerliste"
 
-#: KGGZBase.cpp:111
-msgid "&Player information"
-msgstr "&Spieler Information"
-
-#: KGGZBase.cpp:128
+#: KGGZBase.cpp:131
 msgid "&Preferences"
 msgstr "&Einstellungen"
 
-#: KGGZBase.cpp:78
+#: KGGZBase.cpp:79
 msgid "&Quit"
 msgstr "&Ende"
 
-#: KGGZBase.cpp:126
+#: KGGZBase.cpp:359
 msgid "&Rooms"
 msgstr "&Räume"
 
-#: KGGZBase.cpp:84
+#: KGGZBase.cpp:85
 msgid "&Startup Screen"
 msgstr "&Startbildschirm"
 
-#: KGGZBase.cpp:89
+#: KGGZBase.cpp:90
 msgid "&Web Browser"
 msgstr "&Web Browser"
 
@@ -132,58 +142,63 @@ msgstr "&Web Browser"
 msgid "(GGZ team)"
 msgstr "(GGZ team)"
 
-#: KGGZLaunch.cpp:270
+#: KGGZLaunch.cpp:307
 msgid "(unused)"
 msgstr ""
 
-#: KGGZChat.cpp:255
-msgid "/beep &lt;name&gt; - Makes name's computer beep"
-msgstr "/beep &lt;name&gt; - Erzeugt einen Computer-Beep"
-
-#: KGGZChat.cpp:256
-msgid "/help - This help screen (also /?)"
-msgstr "/help - Dieser Hilfebildschirm (auch /?)"
-
-#: KGGZChat.cpp:258
-msgid "/join &lt;room no&gt; - Join a room"
-msgstr "/join &lt;room no&gt; - Einem Raum beitreten "
-
-#: KGGZChat.cpp:253
-msgid "/lag - Test connection speed"
-msgstr "/lag - Test der Verbindungsgeschwindigkeit "
-
-#: KGGZChat.cpp:259
-msgid "/list - List room names"
-msgstr "/list - Die Namen der RÃ¤ume anzeigen"
-
-#: KGGZChat.cpp:254
-msgid "/local &lt;information&gt; - l10n operation"
-msgstr "/local &lt;information&gt; - l10n Operation"
-
-#: KGGZChat.cpp:252
-msgid "/me &lt;msg&gt; - Special messages"
+#: KGGZChat.cpp:250
+#, fuzzy
+msgid "/away &lt;message&gt; - show a goodbye message."
 msgstr "/me &lt;msg&gt; - Spezielle Nachrichten"
 
-#: KGGZChat.cpp:260
-msgid "/who - List player names in room"
-msgstr "/who - Zeigt die Spiler-Namen in einem Raum an"
+#: KGGZChat.cpp:247
+#, fuzzy
+msgid "/beep &lt;player&gt; - send player a beep."
+msgstr "/beep &lt;name&gt; - Erzeugt einen Computer-Beep"
 
-#: KGGZBase.cpp:120
+#: KGGZChat.cpp:248
+#, fuzzy
+msgid "/help - this screen."
+msgstr "/help - Dieser Hilfebildschirm (auch /?)"
+
+#: KGGZChat.cpp:249
+msgid "/mark - mark a time stamp."
+msgstr ""
+
+#: KGGZChat.cpp:245
+#, fuzzy
+msgid "/me &lt;msg&gt; - sends an emphasized phrase."
+msgstr "/me &lt;msg&gt; - Spezielle Nachrichten"
+
+#: KGGZChat.cpp:283
+msgid "/me is going to leave (%1)"
+msgstr ""
+
+#: KGGZChat.cpp:246
+#, fuzzy
+msgid "/msg &lt;player&gt; &lt;message&gt; - sends a private message."
+msgstr "/me &lt;msg&gt; - Spezielle Nachrichten"
+
+#: KGGZPrefEnv.cpp:64
+msgid "<b>Global Settings</b>"
+msgstr ""
+
+#: KGGZAbout.cpp:69 KGGZBase.cpp:125
 #, fuzzy
 msgid "About the GGZ Gaming Zone"
 msgstr "KGGZ - Der KDE-Client für die GGZ Gaming Zone"
 
-#: KGGZChat.cpp:257
-msgid "Additional:"
-msgstr "Weitere:"
+#: KGGZGrubby.cpp:75
+msgid "Add this to the alert words:"
+msgstr ""
 
-#: KGGZ.cpp:264
+#: KGGZ.cpp:272
 msgid "An error occured! Sure it runs? Sure you don't need to be root?"
 msgstr ""
 "Ein Fehler ist aufgetreten! Bist du sicher das es läuft? Bist du auch "
 "sicher hier nicht root sein zu müssen?"
 
-#: KGGZ.cpp:196
+#: KGGZ.cpp:204
 msgid "Attempt to connect refused!"
 msgstr ""
 
@@ -191,12 +206,17 @@ msgstr ""
 msgid "Attempt to login refused!"
 msgstr ""
 
-#: KGGZ.cpp:1232
+#: KGGZ.cpp:1288
 #, fuzzy
 msgid "Author: "
 msgstr "Autor"
 
-#: KGGZLaunch.cpp:267
+#: KGGZChat.cpp:269
+#, c-format
+msgid "Beeped Player %1."
+msgstr ""
+
+#: KGGZLaunch.cpp:304
 msgid "Bot"
 msgstr ""
 
@@ -208,11 +228,11 @@ msgstr "Abbrechen"
 msgid "Connect to server"
 msgstr "Verbinde zum Server"
 
-#: KGGZ.cpp:245
+#: KGGZ.cpp:253
 msgid "Could not start ggzd!"
 msgstr "Konnte ggzd nicht starten"
 
-#: KGGZ.cpp:267
+#: KGGZ.cpp:275
 msgid "Could only kill server via sigkill!"
 msgstr "Kann den Server nur noch mit sigkill killen!"
 
@@ -221,8 +241,12 @@ msgstr "Kann den Server nur noch mit sigkill killen!"
 msgid "Couldn't connect to server!"
 msgstr "Konnte nicht zum Server verbinden"
 
-#: KGGZ.cpp:1024
+#: KGGZ.cpp:1054
 msgid "Couldn't launch game!"
+msgstr ""
+
+#: KGGZPrefEnv.cpp:68
+msgid "Default ggzd host for GGZap"
 msgstr ""
 
 #: KGGZConnect.cpp:220 KGGZConnect.cpp:245
@@ -233,20 +257,24 @@ msgstr "Voreingestellter Server"
 msgid "Delete"
 msgstr ""
 
-#: KGGZ.cpp:1229
+#: KGGZ.cpp:1285
 #, fuzzy
 msgid "Description: "
 msgstr "Beschreibung:"
 
-#: KGGZ.cpp:806
+#: KGGZGrubby.cpp:74
+msgid "Do you have any messages for me?"
+msgstr ""
+
+#: KGGZ.cpp:788
 msgid "ERROR: Chat error detected!"
 msgstr ""
 
-#: KGGZ.cpp:611
+#: KGGZ.cpp:619
 msgid "ERROR: Couldn't join table!"
 msgstr ""
 
-#: KGGZ.cpp:597
+#: KGGZ.cpp:605
 msgid "ERROR: Couldn't launch table!"
 msgstr ""
 
@@ -254,49 +282,58 @@ msgstr ""
 msgid "ERROR: Couldn't leave table!"
 msgstr ""
 
-#: KGGZ.cpp:794
+#: KGGZ.cpp:776
 msgid "ERROR: Network error detected!"
 msgstr ""
 
-#: KGGZ.cpp:499
+#: KGGZ.cpp:496
 msgid "ERROR: Network error!"
 msgstr ""
 
-#: KGGZ.cpp:802
+#: KGGZ.cpp:784
 msgid "ERROR: Protocol error detected!"
 msgstr ""
 
-#: KGGZ.cpp:503
+#: KGGZ.cpp:500
 msgid "ERROR: Protocol error!"
 msgstr ""
 
-#: KGGZChat.cpp:70
+#: KGGZChat.cpp:71
 msgid "Enter your message here:"
 msgstr "Gib deine Nachricht hier ein:"
 
-#: KGGZ.cpp:758
+#: KGGZ.cpp:751
 #, c-format
 msgid "Entered room %s"
 msgstr ""
 
-#: KGGZ.cpp:264 KGGZ.cpp:267
+#: KGGZ.cpp:272 KGGZ.cpp:275
 msgid "Error!"
 msgstr "&Fehler!"
 
-#: KGGZChat.cpp:295
+#: KGGZChat.cpp:286
 msgid "Error! Unknown command! Try /help instead."
 msgstr "Achtung! Unbekanntes Kommando! Probier /help."
 
-#: KGGZ.cpp:1102
+#: KGGZ.cpp:1136
 msgid "Failed launching the requested table!"
 msgstr ""
 
-#: KGGZBase.cpp:124
+#: KGGZAbout.cpp:101
+msgid "Free Software shall dominate all Online Games!"
+msgstr ""
+
+#: KGGZSelector.cpp:66
+#, fuzzy
+msgid "Frontend Selection"
+msgstr "OberflÃ¤che"
+
+#: KGGZBase.cpp:129
 #, fuzzy
 msgid "GG&Z"
 msgstr "&GGZ"
 
-#: KGGZ.cpp:233
+#: KGGZ.cpp:241
 msgid ""
 "GGZ Gaming Zone server not found.\n"
 "Please get it from http://ggz.sourceforge.net.\n"
@@ -304,26 +341,51 @@ msgid ""
 "See help for details.\n"
 msgstr ""
 
-#: KGGZ.cpp:1245
+#: KGGZ.cpp:1301
 #, fuzzy
 msgid "Game Type Information"
 msgstr "Spieler Information"
 
-#: KGGZLaunch.cpp:76
+#: KGGZLaunch.cpp:78
 #, fuzzy
 msgid "Game description:"
 msgstr "Beschreibung:"
 
-#: KGGZ.cpp:480 KGGZ.cpp:624
+#: KGGZ.cpp:1418
 #, fuzzy
 msgid "Game over"
 msgstr "&Spiel-Server"
+
+#: KGGZPrefEnv.cpp:87
+#, fuzzy
+msgid "Global Settings"
+msgstr "Einstellungen"
+
+#: KGGZGrubby.cpp:63
+msgid "Go!"
+msgstr ""
+
+#: KGGZGrubby.cpp:73
+msgid "Have you seen ..."
+msgstr ""
+
+#: KGGZAbout.cpp:106
+msgid "Homepage: http://ggz.sourceforge.net"
+msgstr ""
+
+#: KGGZ.cpp:1387
+msgid "I don't know that command, sorry."
+msgstr ""
+
+#: KGGZGrubby.cpp:76
+msgid "I need help!"
+msgstr ""
 
 #: KGGZInput.cpp:51
 msgid "Identifier"
 msgstr ""
 
-#: KGGZ.cpp:604
+#: KGGZ.cpp:612
 #, fuzzy
 msgid "Joined table"
 msgstr "&Trete Spiel bei"
@@ -336,7 +398,7 @@ msgstr "KDE2-Portierung des Clients"
 msgid "KGGZ"
 msgstr "KGGZ"
 
-#: KGGZChat.cpp:250
+#: KGGZChat.cpp:243
 msgid "KGGZ - The KDE client for the GGZ Gaming Zone"
 msgstr "KGGZ - Der KDE-Client für die GGZ Gaming Zone"
 
@@ -350,17 +412,17 @@ msgstr ""
 msgid "KGGZ is a frontend for the GGZ Gaming Zone"
 msgstr "KGGZ - Der KDE-Client für die GGZ Gaming Zone"
 
-#: KGGZLaunch.cpp:100
+#: KGGZLaunch.cpp:102
 #, fuzzy
 msgid "Launch a game"
 msgstr "Staret ein neues Spiel"
 
-#: KGGZ.cpp:452
+#: KGGZ.cpp:464
 #, fuzzy
 msgid "Launched game"
 msgstr "Staret ein neues Spiel"
 
-#: KGGZ.cpp:591
+#: KGGZ.cpp:599
 #, fuzzy
 msgid "Launched table"
 msgstr "Staret ein neues Spiel"
@@ -370,7 +432,7 @@ msgstr "Staret ein neues Spiel"
 msgid "Left table"
 msgstr "Aktueller Status"
 
-#: KGGZChat.cpp:251
+#: KGGZChat.cpp:244
 msgid "List of available commands:"
 msgstr "Liste der verfügbaren Kommandos:"
 
@@ -387,7 +449,7 @@ msgstr "Einloggen als:"
 msgid "Logged in as %s"
 msgstr "Einloggen als Benutzer:"
 
-#: KGGZ.cpp:767
+#: KGGZ.cpp:763
 msgid "Logged out"
 msgstr ""
 
@@ -400,7 +462,7 @@ msgstr "Einloggen als Benutzer:"
 msgid "Message Of The Day (MOTD)"
 msgstr "Meldung des Tages (MOTD)"
 
-#: KGGZ.cpp:1226
+#: KGGZ.cpp:1282
 #, fuzzy
 msgid "Name: "
 msgstr "Name"
@@ -410,7 +472,7 @@ msgstr "Name"
 msgid "New Profiles"
 msgstr "Server-Profile"
 
-#: KGGZBase.cpp:275
+#: KGGZBase.cpp:283
 #, fuzzy
 msgid "Not connected"
 msgstr "Verbunden"
@@ -419,15 +481,19 @@ msgstr "Verbunden"
 msgid "Not playing"
 msgstr ""
 
-#: KGGZLaunch.cpp:152
+#: KGGZLaunch.cpp:165
 msgid "Number of player: "
 msgstr ""
 
-#: KGGZLaunch.cpp:261
+#: KGGZLaunch.cpp:298
 msgid "Open"
 msgstr ""
 
-#: KGGZLaunch.cpp:70
+#: KGGZPrefEnv.cpp:67
+msgid "Path to ggzd"
+msgstr ""
+
+#: KGGZLaunch.cpp:72
 #, fuzzy
 msgid "Player"
 msgstr "Spieler"
@@ -440,7 +506,7 @@ msgstr "Spieler"
 msgid "Playing open source online games world-wide."
 msgstr ""
 
-#: KGGZ.cpp:1211
+#: KGGZ.cpp:1267 KGGZ.cpp:1354
 msgid "Please join a room first."
 msgstr ""
 
@@ -448,41 +514,54 @@ msgstr ""
 msgid "Please join a room to start!"
 msgstr ""
 
-#: KGGZ.cpp:1190
+#: KGGZ.cpp:1246
 msgid "Please select a table to join!"
+msgstr ""
+
+#: KGGZGrubby.cpp:101
+msgid "Please select who is grubby, and start a query!"
+msgstr ""
+
+#: KGGZPrefEnv.cpp:65
+msgid "Please specify some environment variables here."
 msgstr ""
 
 #: KGGZConnect.cpp:79
 msgid "Port:"
 msgstr "Port:"
 
-#: KGGZ.cpp:1238
+#: KGGZ.cpp:1294
 msgid "Protocol: "
 msgstr ""
 
-#: KGGZChat.cpp:85
+#: KGGZGrubby.cpp:64
+#, fuzzy
+msgid "Quit"
+msgstr "&Ende"
+
+#: KGGZChat.cpp:86
 msgid "Ready for connection..."
 msgstr "Warte auf Verbindung..."
 
-#: KGGZLaunch.cpp:264
+#: KGGZLaunch.cpp:301
 #, fuzzy
 msgid "Reserved"
 msgstr "Reserviert:"
 
-#: KGGZ.cpp:763
+#: KGGZ.cpp:759
 msgid "Room join error"
 msgstr ""
 
-#: KGGZBase.cpp:110
+#: KGGZBase.cpp:115
 #, fuzzy
 msgid "Se&ttings"
 msgstr "Einstellungen"
 
-#: KGGZLaunch.cpp:69
+#: KGGZLaunch.cpp:71
 msgid "Seat"
 msgstr ""
 
-#: KGGZLaunch.cpp:75
+#: KGGZLaunch.cpp:77
 #, fuzzy
 msgid "Seat assignments:"
 msgstr "Team Anweisung"
@@ -491,15 +570,20 @@ msgstr "Team Anweisung"
 msgid "Selecting from more than 15 games."
 msgstr ""
 
+#: KGGZChat.cpp:262
+#, c-format
+msgid "Sent message to %1."
+msgstr ""
+
 #: KGGZConnect.cpp:78
 msgid "Server host:"
 msgstr "Server host:"
 
-#: KGGZ.cpp:1004
+#: KGGZ.cpp:1001
 msgid "Sorry, no modules found for this game."
 msgstr ""
 
-#: KGGZ.cpp:763
+#: KGGZ.cpp:759
 msgid "Sorry, you cannot change the room while playing!"
 msgstr ""
 
@@ -507,11 +591,11 @@ msgstr ""
 msgid "Start ggzd server locally"
 msgstr "Starte den ggzd-Server lokal"
 
-#: KGGZBase.cpp:75
+#: KGGZBase.cpp:76
 msgid "Start server"
 msgstr "Starte Server"
 
-#: KGGZBase.cpp:76
+#: KGGZBase.cpp:77
 msgid "Stop server"
 msgstr "Beende Server"
 
@@ -519,32 +603,45 @@ msgstr "Beende Server"
 msgid "Table"
 msgstr "Status"
 
-#: KGGZChat.cpp:215
-#, fuzzy, c-format
-msgid "Temperature: %3.1f�F, %3.1f�C, %3.1f�R %3.1f�K"
-msgstr "Temperatur: %3.1f°F, %3.1f°C, %3.1f°R %3.1f°K"
+#: KGGZGrubby.cpp:77
+msgid "Tell me something about you"
+msgstr ""
 
-#: KGGZ.cpp:248
+#: KGGZGrubby.cpp:78
+msgid "Thanks for taking the time!"
+msgstr ""
+
+#: KGGZAbout.cpp:102
+msgid "The GGZ Gaming Zone is a collaboration between several people who"
+msgstr ""
+
+#: KGGZ.cpp:256
 msgid "The ggzd server is already running!"
 msgstr "Der ggzd-Server ist schon aktiv!"
 
-#: KGGZ.cpp:1241
-msgid "URL: "
+#: KGGZ.cpp:1384
+msgid "The pleasure has been on my side :)"
 msgstr ""
 
-#: KGGZChat.cpp:217
+#: KGGZSelector.cpp:53
 msgid ""
-"Usage of local: /local &lt;number&gt; &lt;unit&gt;, with unit being one of "
-"C, R, K, F"
+"This game has multiple frontends.\n"
+"Select your favorite one."
 msgstr ""
-"Lokale Nutzung: /local &lt;number&gt; &lt;unit&gt;, mit einer Einheit von C, "
-"R, K, F"
+
+#: KGGZGrubby.cpp:80
+msgid "This is grubby:"
+msgstr ""
+
+#: KGGZ.cpp:1297
+msgid "URL: "
+msgstr ""
 
 #: KGGZConnect.cpp:81
 msgid "Use password:"
 msgstr "Password benutzen:"
 
-#: KGGZ.cpp:1235
+#: KGGZ.cpp:1291
 #, fuzzy
 msgid "Version: "
 msgstr "Version"
@@ -556,17 +653,30 @@ msgid ""
 "Your personal password is: %s"
 msgstr ""
 
-#: KGGZ.cpp:1157
+#: KGGZ.cpp:1202
 msgid "You cannot launch a game outside a room!"
+msgstr ""
+
+#: KGGZ.cpp:569
+#, c-format
+msgid "You have been beeped by %1."
 msgstr ""
 
 #: main.cpp:55
 msgid "Your most desired KDE network games launcher and chat system."
 msgstr "Dein bester KDE Netzwerk-Spiele Starter mit Chat-System"
 
+#: KGGZAbout.cpp:105
+msgid "game developers. GGZ is available for many platforms and toolkits."
+msgstr ""
+
 #: KGGZConnect.cpp:100
 msgid "guest"
 msgstr "Gast"
+
+#: KGGZAbout.cpp:104
+msgid "including source code and professional help for both gamers and"
+msgstr ""
 
 #: KGGZConnect.cpp:99
 msgid "normal"
@@ -576,9 +686,48 @@ msgstr "normal"
 msgid "starter"
 msgstr "Starter"
 
-#: KGGZLaunch.cpp:273
+#: KGGZAbout.cpp:103
+msgid "try to make public online game services available for free -"
+msgstr ""
+
+#: KGGZLaunch.cpp:310
 msgid "unknown"
 msgstr ""
+
+#~ msgid "&Games"
+#~ msgstr "&Spiele"
+
+#~ msgid "&Player information"
+#~ msgstr "&Spieler Information"
+
+#~ msgid "/join &lt;room no&gt; - Join a room"
+#~ msgstr "/join &lt;room no&gt; - Einem Raum beitreten "
+
+#~ msgid "/lag - Test connection speed"
+#~ msgstr "/lag - Test der Verbindungsgeschwindigkeit "
+
+#~ msgid "/list - List room names"
+#~ msgstr "/list - Die Namen der RÃ¤ume anzeigen"
+
+#~ msgid "/local &lt;information&gt; - l10n operation"
+#~ msgstr "/local &lt;information&gt; - l10n Operation"
+
+#~ msgid "/who - List player names in room"
+#~ msgstr "/who - Zeigt die Spiler-Namen in einem Raum an"
+
+#~ msgid "Additional:"
+#~ msgstr "Weitere:"
+
+#, fuzzy
+#~ msgid "Temperature: %3.1f�F, %3.1f�C, %3.1f�R %3.1f�K"
+#~ msgstr "Temperatur: %3.1f°F, %3.1f°C, %3.1f°R %3.1f°K"
+
+#~ msgid ""
+#~ "Usage of local: /local &lt;number&gt; &lt;unit&gt;, with unit being one of "
+#~ "C, R, K, F"
+#~ msgstr ""
+#~ "Lokale Nutzung: /local &lt;number&gt; &lt;unit&gt;, mit einer Einheit von C, "
+#~ "R, K, F"
 
 #~ msgid "The ggz protocol is not implemented yet."
 #~ msgstr "Das GGZ-Protokoll wurde noch nicht implementiert."
@@ -626,9 +775,6 @@ msgstr ""
 
 #~ msgid "Icon"
 #~ msgstr "Symbol"
-
-#~ msgid "Frontend"
-#~ msgstr "OberflÃ¤che"
 
 #~ msgid "Homepage"
 #~ msgstr "Homepage"
@@ -707,9 +853,6 @@ msgstr ""
 
 #~ msgid "FTP Server profiles"
 #~ msgstr "FTP-Server Profile"
-
-#~ msgid "Settings"
-#~ msgstr "Einstellungen"
 
 #~ msgid "Games"
 #~ msgstr "Spiele"
