@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2803 2001-12-07 22:16:36Z bmh $
+ * $Id: table.c 2816 2001-12-09 06:06:41Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -385,7 +385,10 @@ static int table_start_game(GGZTable *table)
 	/* And start the game */
 	ggzdmod_set_module(table->ggzdmod, args);	
 
-	ggzdmod_connect(table->ggzdmod);
+	if (ggzdmod_connect(table->ggzdmod) < 0) {
+		/* FIXME: we _need_ to handle this error!  It could
+		   happen very easily! */
+	}
 
 	/* Free arguments */
 	for (i = 0; i < n_args + 1; i++)
@@ -548,8 +551,8 @@ static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 
 	/* FIXME: is this the right thing to do???
 	   Maybe we should let the game do it by calling ggzdmod_halt_()*/
-	if (empty) 
-		ggzdmod_disconnect(ggzdmod);
+	if (empty)
+		(void)ggzdmod_disconnect(ggzdmod);
 }
 
 
@@ -679,7 +682,7 @@ static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 	dbg_msg(GGZ_DBG_TABLE, "GAME ERROR: %s", (char*)data);
 
 	/* FIXME: instead, we should set state to done, once this is supported*/
-	ggzdmod_disconnect(ggzdmod);
+	(void)ggzdmod_disconnect(ggzdmod);
 }
 
 
@@ -689,7 +692,7 @@ static void table_remove(GGZTable* table)
 	int room, count, index, i;
 
 	/* Disconnect from the game server */
-	ggzdmod_disconnect(table->ggzdmod);
+	(void)ggzdmod_disconnect(table->ggzdmod);
 
 	/* First get it off the list in rooms */
 	room = table->room;
