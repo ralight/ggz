@@ -50,6 +50,9 @@ static GGZHookReturn server_enter_fail(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_logout(GGZServerEvent id, void*, void*);
 static GGZHookReturn server_state_change(GGZServerEvent id, void*, void*);
 
+static GGZHookReturn server_net_error(GGZServerEvent id, void*, void*);
+static GGZHookReturn server_protocol_error(GGZServerEvent id, void*, void*);
+
 static GGZHookReturn room_chat_msg(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_chat_prvmsg(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_chat_beep(GGZRoomEvent id, void*, void*);
@@ -57,6 +60,8 @@ static GGZHookReturn room_chat_announce(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_list_players(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_enter(GGZRoomEvent id, void*, void*);
 static GGZHookReturn room_leave(GGZRoomEvent id, void*, void*);
+
+
 
 GGZServer *server;
 static int fd;
@@ -113,6 +118,10 @@ static void server_register(GGZServer *server)
 				      server_enter_fail);
 	ggzcore_server_add_event_hook(server, GGZ_LOGOUT, 
 				      server_logout);
+	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR, 
+				      server_net_error);
+	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR, 
+				      server_protocol_error);
 	ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE, 
 				      server_state_change);
 
@@ -223,6 +232,30 @@ static GGZHookReturn server_logout(GGZServerEvent id, void* event_data, void* us
 {
 #ifdef DEBUG
 	output_text("--- Disconnected");
+#endif
+	loop_remove_fd(fd);
+
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn server_net_error(GGZServerEvent id, void* event_data, 
+				      void* user_data)
+{
+#ifdef DEBUG
+	output_text("--- Network error: disconnected");
+#endif
+	loop_remove_fd(fd);
+
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn server_protocol_error(GGZServerEvent id, void* event_data,
+					   void* user_data)
+{
+#ifdef DEBUG
+	output_text("--- Server error: %s disconnected", event_data);
 #endif
 	loop_remove_fd(fd);
 
