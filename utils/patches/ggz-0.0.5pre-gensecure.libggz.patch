@@ -1,0 +1,1348 @@
+diff -Nur libggz/Makefile.am libggz.tls/Makefile.am
+--- libggz/Makefile.am	Mon Oct 22 02:24:19 2001
++++ libggz.tls/Makefile.am	Mon Nov  5 23:51:20 2001
+@@ -1,4 +1,4 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+-SUBDIRS = src
++SUBDIRS = src gensecure
+ 
+diff -Nur libggz/configure.in libggz.tls/configure.in
+--- libggz/configure.in	Tue Oct 23 06:12:02 2001
++++ libggz.tls/configure.in	Mon Nov  5 23:54:05 2001
+@@ -52,7 +52,10 @@
+ dnl Check for library functions
+ dnl ===========================
+ AC_CHECK_FUNC(poll)
+-
++AC_PATH_SSL
++if test "$have_ssl" = "yes"; then
++  CFLAGS="$CFLAGS -DHAVE_OPENSSL"
++fi
+ 
+ 
+ dnl Use -Wall if we have gcc.
+diff -Nur libggz/gensecure/.cvsignore libggz.tls/gensecure/.cvsignore
+--- libggz/gensecure/.cvsignore	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/.cvsignore	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,2 @@
++Makefile
++Makefile.in
+diff -Nur libggz/gensecure/CVS/Entries libggz.tls/gensecure/CVS/Entries
+--- libggz/gensecure/CVS/Entries	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/CVS/Entries	Mon Nov  5 23:43:53 2001
+@@ -0,0 +1,9 @@
++/.cvsignore/1.1/Sun Jun 24 19:01:31 2001//
++/GGZ-TLS/1.1/Sun Jun 24 19:01:31 2001//
++/Makefile.am/1.1/Sun Jun 24 19:01:31 2001//
++/Preparation/1.1/Sun Jun 24 19:01:31 2001//
++/README.gensecure/1.1/Sun Jun 24 19:01:31 2001//
++/TODO/1.1/Sun Jun 24 19:01:31 2001//
++/example.cert/1.1/Sun Jun 24 19:01:31 2001//
++D/io////
++D/src////
+diff -Nur libggz/gensecure/CVS/Repository libggz.tls/gensecure/CVS/Repository
+--- libggz/gensecure/CVS/Repository	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/CVS/Repository	Mon Nov  5 23:43:53 2001
+@@ -0,0 +1 @@
++utils/gensecure
+diff -Nur libggz/gensecure/CVS/Root libggz.tls/gensecure/CVS/Root
+--- libggz/gensecure/CVS/Root	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/CVS/Root	Mon Nov  5 23:43:53 2001
+@@ -0,0 +1 @@
++:pserver:anonymous@cvs.ggz.sourceforge.net:/cvsroot/ggz
+diff -Nur libggz/gensecure/GGZ-TLS libggz.tls/gensecure/GGZ-TLS
+--- libggz/gensecure/GGZ-TLS	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/GGZ-TLS	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,29 @@
++The GGZ Gaming Zone should provide encryption and data integrity one day.
++In particular, the following scenarios are possible.
++('-' means no TLS necessary, 'o' means recommended, 'x' means necessary)
++
++Area            | Client | Server
++----------------+--------+-------
++Connection      |   -    |   o
++Normal chat     |   -    |   -
++Private chat    |   -    |   o
++Game spectator  |   -    |   -
++Game player     |   o    |   o
++Registered game |   x    |   x
++
++Please note that if the authentication is only on the server side,
++only the encryption effect counts, not the authentication itself.
++
++As there are many situations where the encryption is useful (i.e.
++when the password is given to a freshly registered player), it is
++strongly recommended that the GGZ server (ggzd) is preconfigured
++with TLS support, once available.
++The client doesn't need to have a certificate, but in order to
++verify the player for global highscores or similar, we should
++consider a policy which enforces this here too. However, this is
++currently not possible because most players do probably not know
++how to issue a certificate request, and we lack a CA infrastructure.
++So please consider client authentication as an option for the future.
++
++Josef
++
+diff -Nur libggz/gensecure/Makefile.am libggz.tls/gensecure/Makefile.am
+--- libggz/gensecure/Makefile.am	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/Makefile.am	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,2 @@
++SUBDIRS = io src
++
+diff -Nur libggz/gensecure/Preparation libggz.tls/gensecure/Preparation
+--- libggz/gensecure/Preparation	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/Preparation	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,43 @@
++I assume you are basically familiar with the concept of PKI
++(Public Key Infrastructure). If you're not, don't worry,
++this guide will hopefully lead to a proper configured environment.
++
++1. Install OpenSSL and SSLeay. (http://www.openssl.org)
++2. Make sure you've got the development files installed, too
++   (normally under /usr/local/ssl/include/openssl).
++3. Create a Certificate Authority (CA) self-signed certificate,
++   and create a certificate request for your "server" (virtually),
++   to be signed by the CA.
++4. Install all files appropriately, maybe change the locations is
++   src/configuration.h.
++5. Compile, without installation. Run genserver and genclient locally.
++
++For point 3, you could use this little script. However, it depends on
++how your openssl.cnf is installed.
++Copy this script into your $SSLDIR and execute it.
++
++#!/bin/sh
++#
++# GGZ Gaming Zone
++# Transport Layer Security Configuration
++ 
++echo "Prepare environment (* CA *)"
++echo "============================"
++mkdir private/crl
++mkdir private/newcerts
++echo "01" > private/serial
++touch private/index.txt
++
++echo "Create self-signed CA certificate (* CA *)"
++echo "=========================================="
++./bin/openssl req -new -x509 -keyout private/cakey.pem -out private/cacert.pem
++
++echo "Create a certificate request (* Server *)"
++echo "========================================="
++./bin/openssl req -new -keyout certs/newkey.pem -out certs/newreq.pem -days 365
++
++echo "Signing the request (* CA* )"
++echo "============================"
++cat certs/newreq.pem certs/newkey.pem > certs/new.pem
++./bin/openssl ca -out certs/newcert.pem -infiles certs/new.pem
++rm certs/new.pem
+diff -Nur libggz/gensecure/README.gensecure libggz.tls/gensecure/README.gensecure
+--- libggz/gensecure/README.gensecure	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/README.gensecure	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,21 @@
++In order to enhance the GGZ Gaming Zone with Transport Layer Security,
++a bit of preparation is needed.
++For that purpose I've written the GenSecure example server and client.
++As a reference I used the SSLeay tutorial, and the OpenSSL man pages.
++
++Please have a look at:            If you want:
++---------------------------------------------------------------------
++Preparation                       Test the gensecure example
++GGZ-TLS                           Know my plans for GGZ
++example.cert                      Look how a certificate might look like
++io/                               Test non-blocking IO
++src/                              Build the generic server and client
++
++To test gensecure: run genserver -notls and genclient -notls to switch off
++TLS first. Do a "ngrep -d lo" to play script kid on your localhost device.
++You can type stuff in the client, and "quit" lets it exit (and the server
++accepts a new connection then).
++Run server and client without -notls then. Doh! The script kid has lost :-)
++
++Josef
++
+diff -Nur libggz/gensecure/TODO libggz.tls/gensecure/TODO
+--- libggz/gensecure/TODO	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/TODO	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,5 @@
++- undefined behaviour if client wants SSL but server doesn't provide it
++- the other way around too I guess
++- configure ciphers in use to exclude patent issues
++- more documentation
++
+diff -Nur libggz/gensecure/example.cert libggz.tls/gensecure/example.cert
+--- libggz/gensecure/example.cert	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/example.cert	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,69 @@
++Certificate:
++    Data:
++        Version: 3 (0x2)
++        Serial Number: 1 (0x1)
++        Signature Algorithm: md5WithRSAEncryption
++        Issuer: C=DE, ST=Saxony, L=Dresden, O=GGZ Gaming Zone, OU=Certificate Authority, CN=Josef Spillner/Email=dr_maux@users.sourceforge.net
++        Validity
++            Not Before: Jun 24 14:47:35 2001 GMT
++            Not After : Jun 24 14:47:35 2002 GMT
++        Subject: C=DE, ST=Saxony, O=GGZ Gaming Zone, OU=Europe One, CN=Josef Spillner/Email=dr_maux@users.sourceforge.net
++        Subject Public Key Info:
++            Public Key Algorithm: rsaEncryption
++            RSA Public Key: (1024 bit)
++                Modulus (1024 bit):
++                    00:c8:a4:22:ce:5f:5f:36:7b:0c:c0:0d:83:4f:55:
++                    df:50:89:66:c7:b0:15:61:d1:33:33:ff:b4:ce:95:
++                    d3:9c:95:31:08:a9:9a:53:ed:b3:af:2d:8d:83:25:
++                    29:90:92:88:1a:50:aa:78:2a:23:67:da:bf:d0:87:
++                    d2:10:fe:cc:50:33:77:c1:1d:28:06:40:34:54:ce:
++                    6c:98:b5:b0:57:83:2e:d0:1b:f4:d9:28:44:2d:62:
++                    61:8e:a4:30:33:a2:0a:b6:fe:df:1d:c3:70:1a:28:
++                    b3:2b:a5:e4:be:c8:22:e8:5e:6d:61:5d:2c:23:12:
++                    48:51:e3:21:21:9a:72:74:03
++                Exponent: 65537 (0x10001)
++        X509v3 extensions:
++            X509v3 Basic Constraints: 
++                CA:FALSE
++            Netscape Comment: 
++                GGZ Gaming Zone Certificate
++            X509v3 Subject Key Identifier: 
++                3C:14:7F:5E:9F:EC:E4:3D:C1:B9:99:27:6C:BC:4F:D9:8E:86:8D:0E
++            X509v3 Authority Key Identifier: 
++                keyid:6A:C4:65:DD:1A:61:AC:B7:0B:49:7C:74:CB:3B:0B:4D:73:AF:FB:8F
++                DirName:/C=DE/ST=Saxony/L=Dresden/O=GGZ Gaming Zone/OU=Certificate Authority/CN=Josef Spillner/Email=dr_maux@users.sourceforge.net
++                serial:00
++
++    Signature Algorithm: md5WithRSAEncryption
++        8f:5c:2f:e7:1e:98:0b:13:c2:97:a0:d6:5a:60:c7:c9:87:fc:
++        b6:87:23:8f:ac:0f:f5:29:fd:1b:33:34:fd:8b:79:61:aa:00:
++        5d:34:93:50:6d:24:50:dc:1e:8b:57:fd:20:26:4b:36:0d:49:
++        28:1a:19:ce:c9:2f:82:fd:3c:f7:aa:17:d6:a0:fb:2e:21:5d:
++        52:8e:a7:01:f7:7e:b3:b5:8e:e9:23:7a:aa:c6:52:4a:a3:e8:
++        bc:66:ea:56:4f:a9:7d:5d:d7:51:76:88:96:5a:6e:94:a5:08:
++        30:6d:9b:62:1f:e8:3e:aa:c8:38:f2:34:13:dd:7f:b2:15:d3:
++        48:bb
++-----BEGIN CERTIFICATE-----
++MIID+jCCA2OgAwIBAgIBATANBgkqhkiG9w0BAQQFADCBsTELMAkGA1UEBhMCREUx
++DzANBgNVBAgTBlNheG9ueTEQMA4GA1UEBxMHRHJlc2RlbjEYMBYGA1UEChMPR0da
++IEdhbWluZyBab25lMR4wHAYDVQQLExVDZXJ0aWZpY2F0ZSBBdXRob3JpdHkxFzAV
++BgNVBAMTDkpvc2VmIFNwaWxsbmVyMSwwKgYJKoZIhvcNAQkBFh1kcl9tYXV4QHVz
++ZXJzLnNvdXJjZWZvcmdlLm5ldDAeFw0wMTA2MjQxNDQ3MzVaFw0wMjA2MjQxNDQ3
++MzVaMIGUMQswCQYDVQQGEwJERTEPMA0GA1UECBMGU2F4b255MRgwFgYDVQQKEw9H
++R1ogR2FtaW5nIFpvbmUxEzARBgNVBAsTCkV1cm9wZSBPbmUxFzAVBgNVBAMTDkpv
++c2VmIFNwaWxsbmVyMSwwKgYJKoZIhvcNAQkBFh1kcl9tYXV4QHVzZXJzLnNvdXJj
++ZWZvcmdlLm5ldDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAyKQizl9fNnsM
++wA2DT1XfUIlmx7AVYdEzM/+0zpXTnJUxCKmaU+2zry2NgyUpkJKIGlCqeCojZ9q/
++0IfSEP7MUDN3wR0oBkA0VM5smLWwV4Mu0Bv02ShELWJhjqQwM6IKtv7fHcNwGiiz
++K6Xkvsgi6F5tYV0sIxJIUeMhIZpydAMCAwEAAaOCATswggE3MAkGA1UdEwQCMAAw
++KgYJYIZIAYb4QgENBB0WG0dHWiBHYW1pbmcgWm9uZSBDZXJ0aWZpY2F0ZTAdBgNV
++HQ4EFgQUPBR/Xp/s5D3BuZknbLxP2Y6GjQ4wgd4GA1UdIwSB1jCB04AUasRl3Rph
++rLcLSXx0yzsLTXOv+4+hgbekgbQwgbExCzAJBgNVBAYTAkRFMQ8wDQYDVQQIEwZT
++YXhvbnkxEDAOBgNVBAcTB0RyZXNkZW4xGDAWBgNVBAoTD0dHWiBHYW1pbmcgWm9u
++ZTEeMBwGA1UECxMVQ2VydGlmaWNhdGUgQXV0aG9yaXR5MRcwFQYDVQQDEw5Kb3Nl
++ZiBTcGlsbG5lcjEsMCoGCSqGSIb3DQEJARYdZHJfbWF1eEB1c2Vycy5zb3VyY2Vm
++b3JnZS5uZXSCAQAwDQYJKoZIhvcNAQEEBQADgYEAj1wv5x6YCxPCl6DWWmDHyYf8
++tocjj6wP9Sn9GzM0/Yt5YaoAXTSTUG0kUNwei1f9ICZLNg1JKBoZzskvgv0896oX
++1qD7LiFdUo6nAfd+s7WO6SN6qsZSSqPovGbqVk+pfV3XUXaIllpulKUIMG2bYh/o
++PqrIOPI0E91/shXTSLs=
++-----END CERTIFICATE-----
+diff -Nur libggz/gensecure/io/.cvsignore libggz.tls/gensecure/io/.cvsignore
+--- libggz/gensecure/io/.cvsignore	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/io/.cvsignore	Mon Nov  5 23:43:53 2001
+@@ -0,0 +1,6 @@
++Makefile
++Makefile.in
++*.o
++io_nonblock
++.deps
++.libs
+diff -Nur libggz/gensecure/io/CVS/Entries libggz.tls/gensecure/io/CVS/Entries
+--- libggz/gensecure/io/CVS/Entries	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/io/CVS/Entries	Mon Nov  5 23:43:53 2001
+@@ -0,0 +1,4 @@
++/.cvsignore/1.2/Tue Sep  4 18:41:01 2001//
++/Makefile.am/1.1/Sun Jun 24 19:01:31 2001//
++/main.c/1.1/Sun Jun 24 19:01:31 2001//
++D
+diff -Nur libggz/gensecure/io/CVS/Repository libggz.tls/gensecure/io/CVS/Repository
+--- libggz/gensecure/io/CVS/Repository	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/io/CVS/Repository	Mon Nov  5 23:43:53 2001
+@@ -0,0 +1 @@
++utils/gensecure/io
+diff -Nur libggz/gensecure/io/CVS/Root libggz.tls/gensecure/io/CVS/Root
+--- libggz/gensecure/io/CVS/Root	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/io/CVS/Root	Mon Nov  5 23:43:53 2001
+@@ -0,0 +1 @@
++:pserver:anonymous@cvs.ggz.sourceforge.net:/cvsroot/ggz
+diff -Nur libggz/gensecure/io/Makefile.am libggz.tls/gensecure/io/Makefile.am
+--- libggz/gensecure/io/Makefile.am	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/io/Makefile.am	Mon Nov  5 23:43:53 2001
+@@ -0,0 +1,9 @@
++SUBDIRS = .
++
++bin_PROGRAMS = io_nonblock
++
++io_nonblock_SOURCES = main.c
++
++LDFLAGS =
++CFLAGS =
++LDADD =
+diff -Nur libggz/gensecure/io/main.c libggz.tls/gensecure/io/main.c
+--- libggz/gensecure/io/main.c	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/io/main.c	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,39 @@
++/* Test non-blocking input while displaying annoying stuff */
++
++#include <stdio.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <errno.h>
++#include <string.h>
++
++int main(int argc, char *argv[])
++{
++	char buffer[12];
++	int num;
++	int i;
++
++	i = 0;
++	fcntl(0, F_SETFL, O_NONBLOCK);
++	for(;;)
++	{
++		num = read(0, buffer, sizeof(buffer));
++		if(num > 0)
++		{
++			buffer[num - 1] = 0;
++			printf("got: %s\n", buffer);
++			if(!strcasecmp(buffer, "quit")) exit(0);
++		}
++		else if (num < 0)
++		{
++			if(errno != EAGAIN)
++			{
++				printf("ERROR!\n");
++				exit(-1);
++			}
++		}
++		i++;
++		if(!(i % 500000)) printf("--wait\n");
++	}
++	return 0;
++}
++
+diff -Nur libggz/gensecure/src/.cvsignore libggz.tls/gensecure/src/.cvsignore
+--- libggz/gensecure/src/.cvsignore	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/.cvsignore	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,10 @@
++Makefile
++Makefile.in
++*.o
++genserver
++genclient
++.deps
++.libs
++*.la
++*.lo
++
+diff -Nur libggz/gensecure/src/CVS/Entries libggz.tls/gensecure/src/CVS/Entries
+--- libggz/gensecure/src/CVS/Entries	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/CVS/Entries	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,13 @@
++/.cvsignore/1.3/Sun Oct 14 00:11:33 2001//
++/Makefile.am/1.3/Sun Oct 14 21:16:54 2001//
++/client.c/1.4/Sun Oct 14 22:15:40 2001//
++/configuration.h/1.2/Sun Oct  7 18:02:18 2001//
++/gensecure.h/1.1/Sun Oct 14 00:11:33 2001//
++/gensocket.c/1.2/Sun Oct 14 00:10:46 2001//
++/gensocket.h/1.1/Sun Jun 24 19:01:31 2001//
++/list.c/1.1/Sun Oct 14 21:18:06 2001//
++/list.h/1.1/Sun Oct 14 21:18:06 2001//
++/server.c/1.4/Sun Oct 14 22:15:40 2001//
++/tls.c/1.6/Sun Oct 14 22:15:40 2001//
++/tls.h/1.4/Sun Oct 14 21:16:54 2001//
++D
+diff -Nur libggz/gensecure/src/CVS/Repository libggz.tls/gensecure/src/CVS/Repository
+--- libggz/gensecure/src/CVS/Repository	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/CVS/Repository	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1 @@
++utils/gensecure/src
+diff -Nur libggz/gensecure/src/CVS/Root libggz.tls/gensecure/src/CVS/Root
+--- libggz/gensecure/src/CVS/Root	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/CVS/Root	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1 @@
++:pserver:anonymous@cvs.ggz.sourceforge.net:/cvsroot/ggz
+diff -Nur libggz/gensecure/src/Makefile.am libggz.tls/gensecure/src/Makefile.am
+--- libggz/gensecure/src/Makefile.am	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/Makefile.am	Mon Nov  5 23:44:57 2001
+@@ -0,0 +1,20 @@
++SUBDIRS = .
++
++bin_PROGRAMS = genserver genclient
++lib_LTLIBRARIES = libgensecure.la
++
++libgensecure_la_SOURCES = tls.c list.c
++
++INCLUDES = $(SSL_INCLUDES)
++LDFLAGS = $(SSL_LDFLAGS)
++libgensecure_la_LIBADD = $(LIB_SSL)
++
++genclient_SOURCES = client.c gensocket.c
++genclient_LDADD = libgensecure.la
++
++genserver_SOURCES = server.c gensocket.c
++genserver_LDADD = libgensecure.la
++
++include_HEADERS = gensecure.h
++noinst_HEADERS = tls.h list.h
++
+diff -Nur libggz/gensecure/src/client.c libggz.tls/gensecure/src/client.c
+--- libggz/gensecure/src/client.c	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/client.c	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,76 @@
++/**************************************************************************
++GenSecure - a generic client/server example of TLS support for a connection
++(C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
++Published under GNU GPL conditions
++***************************************************************************/
++
++/* client: an example client for gensecure. */
++
++#include <stdio.h>
++#include <string.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include "gensocket.h"
++#include "tls.h"
++#include "configuration.h"
++
++/* Macros to be used as BIO emulation */
++/*#define INPUT(x, y) (tls_active(socket_fd()) ? tls_read(socket_fd(), x, y) : input(x, y))
++#define OUTPUT(x) (tls_active(socket_fd()) ? tls_write(socket_fd(), x, strlen(x)) : output(x))*/
++#define INPUT(x, y) tls_read(socket_fd(), x, y)
++#define OUTPUT(x) tls_write(socket_fd(), x, strlen(x))
++
++int main(int argc, char *argv[])
++{
++	char tmpbuf[4096];
++	int bytes;
++	int tls_req;
++
++	tls_req = 1;
++	if((argc == 2) && (!strcmp(argv[1], "-notls"))) tls_req = 0;
++
++	printf("> Starting generic client...\n");
++
++	socket_connect(GENSECURE_HOST, GENSECURE_PORT);
++	printf("Generic client: connected\n");
++
++	if(tls_req)
++	{
++		printf("> Securing connection...\n");
++		tls_start(socket_fd(), TLS_CLIENT, /*TLS_NOVERIFY*/ TLS_NOVERIFY);
++	}
++
++	printf("> Client in working state.\n");
++	if(tls_active(socket_fd())) printf("> TLS IN USE.\n");
++
++	fcntl(0, F_SETFL, O_NONBLOCK);
++	fcntl(socket_fd(), F_SETFL, O_NONBLOCK);
++
++	for(;;)
++	{
++		bytes = INPUT(tmpbuf, sizeof(tmpbuf));
++		if(bytes > 0)
++		{
++			if(!strcmp(tmpbuf, "Bye."))
++			{
++				OUTPUT("Quitting.");
++				tls_finish(socket_fd());
++				socket_close();
++				break;
++			}
++			printf("Received: %s\n", tmpbuf);
++		}
++		
++		bytes = read(0, tmpbuf, sizeof(tmpbuf));
++		if(bytes > 0)
++		{
++			tmpbuf[bytes - 1] = 0;
++			OUTPUT(tmpbuf);
++		}
++	}
++
++	printf("> Client quit.\n");
++
++	return 0;
++}
++
+diff -Nur libggz/gensecure/src/configuration.h libggz.tls/gensecure/src/configuration.h
+--- libggz/gensecure/src/configuration.h	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/configuration.h	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,30 @@
++/**************************************************************************
++GenSecure - a generic client/server example of TLS support for a connection
++(C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
++Published under GNU GPL conditions
++***************************************************************************/
++
++/* configuration: Default configuration for the gensecure example. */
++
++#ifndef CONFIGURATION_H
++#define CONFIGURATION_H
++
++/* Client connects to this host */
++#define GENSECURE_HOST "localhost"
++
++/* Port to be used be client and server */
++#define GENSECURE_PORT 9998
++
++/* Location of the server PEM certificate */
++//#define GENSECURE_CERTIFICATE "/usr/local/ssl/certs/server.cert"
++#define GENSECURE_CERTIFICATE "/usr/local/ssl/certs/openssl-example.pem"
++
++/* Location of the server private key */
++//#define GENSECURE_KEY "/usr/local/ssl/certs/server.key"
++#define GENSECURE_KEY "/usr/local/ssl/certs/openssl-example.pem"
++
++/* Password used to decrypt private key */
++#define GENSECURE_PASSWORD "ggz rocks more"
++
++#endif
++
+diff -Nur libggz/gensecure/src/gensecure.h libggz.tls/gensecure/src/gensecure.h
+--- libggz/gensecure/src/gensecure.h	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/gensecure.h	Mon Nov  5 23:46:46 2001
+@@ -0,0 +1,41 @@
++/**************************************************************************
++GenSecure - a generic client/server example of TLS support for a connection
++(C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
++Published under GNU GPL conditions
++***************************************************************************/
++
++#ifndef GENSECURE_H
++#define GENSECURE_H
++
++#ifdef HAVE_OPENSSL
++#include <openssl/ssl.h>
++#endif
++
++/* Mode of connection (for tls_start) */
++#define TLS_SERVER 1
++#define TLS_CLIENT 2
++
++/* Verification modes */
++#define TLS_NOVERIFY 1
++#define TLS_VERIFY 2
++
++/* Make sure callback exists */
++#ifndef HAVE_OPENSSL
++typedef int pem_password_cb(char *buf, int size, int rwflag, void *userdata);
++#endif
++
++/* Server only: prepare the environment */
++void tls_prepare(const char *cert, const char *key, pem_password_cb *callback);
++/* Secure an already existing connection */
++void tls_start(int fd, int mode, int verify);
++/* Bring connection in an insecure state again */
++void tls_finish(int fd);
++/* Return whether TLS is active or not */
++int tls_active(int fd);
++/* Read some bytes (secure) */
++int tls_read(int fd, char *buffer, int size);
++/* Write some bytes (secure) */
++int tls_write(int fd, const char *s, int size);
++
++#endif
++
+diff -Nur libggz/gensecure/src/gensocket.c libggz.tls/gensecure/src/gensocket.c
+--- libggz/gensecure/src/gensocket.c	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/gensocket.c	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,185 @@
++/**************************************************************************
++GenSecure - a generic client/server example of TLS support for a connection
++(C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
++Published under GNU GPL conditions
++***************************************************************************/
++ 
++/* gensocket: generic socket and connection functions */
++
++#include "gensocket.h"
++#include <stdio.h>
++#include <netdb.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <arpa/inet.h>
++#include <errno.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <errno.h>
++#include <string.h>
++
++/* The socket used by server and client */
++int _socket;
++/* Connection file descriptor */
++int _accept;
++/* Saved port */
++int _port;
++
++void socket_error(int quit, const char *file, int line)
++{
++	printf("*** ERROR! ***\n");
++	printf("(%s)\n", strerror(errno));
++	printf("(in %s, line %i)\n", file, line);
++	printf("**************\n");
++	if(quit) exit(-1);
++}
++
++int socket_create_arg(const char *protocol)
++{
++	struct protoent *proto;
++	int sock;
++
++	proto = getprotobyname(protocol);
++	endprotoent();
++	if(proto == NULL)
++	{
++		printf("tcp not supported!\n");
++		GENSOCKERROR(1);
++	}
++	printf("OK: The tcp number is: %i\n", proto->p_proto);
++	sock = socket(AF_INET, SOCK_STREAM, proto->p_proto);
++	if(sock == -1)
++	{
++		printf("Couldn't create socket...\n");
++		GENSOCKERROR(1);
++	}
++	printf("OK: Socket is %i\n", sock);
++
++	_socket = sock;
++	return sock;
++}
++
++int socket_accept(int port)
++{
++	int binder;
++	int newport;
++	struct sockaddr_in sa;
++
++	if(port != _port)
++	{
++		socket_create_arg("tcp");
++
++		_port = port;
++		sa.sin_family = AF_INET;
++		sa.sin_addr.s_addr = htonl(INADDR_ANY);
++		sa.sin_port = htons(port);
++		binder = bind(_socket, (const struct sockaddr*)&sa, sizeof(sa));
++		if(binder != 0)
++		{
++			printf("Couldn't bind...\n");
++			GENSOCKERROR(1);
++		}
++		newport = ntohs(sa.sin_port);
++		printf("OK: Right now we are connected to port %i!\n", newport);
++	}
++
++	_accept = socket_read_arg(_socket);
++	return _accept;
++}
++
++int socket_connect(const char *host, int port)
++{
++	struct sockaddr_in sa;
++	struct hostent *name;
++
++	socket_create_arg("tcp");
++
++	sa.sin_family = AF_INET;
++	sa.sin_port = htons(port);
++
++	name = gethostbyname(host);
++	if(!name)
++	{
++		printf("Host not found!\n");
++		GENSOCKERROR(1);
++	}
++	memcpy(&sa.sin_addr, name->h_addr, name->h_length);
++	_accept = connect(_socket, (const struct sockaddr*)&sa, sizeof(sa));
++	if(_accept != 0)
++	{
++		printf("Connect invoked error!\n");
++		GENSOCKERROR(1);
++	}
++	printf("OK: Right now we are connected to host %s, port %i!\n", host, port);
++
++	_accept = _socket;
++	return _accept;
++}
++
++int socket_read_arg(int sock)
++{
++	struct sockaddr_in newsa;
++	int *size_accept;
++	int in, in_accept;
++
++	in = listen(sock, 4);
++	if(in == -1)
++	{
++		printf("Error while listening!\n");
++		GENSOCKERROR(1);
++	}
++	if(in == 0)
++	{
++		newsa.sin_family = AF_INET;
++		newsa.sin_addr.s_addr = htonl(INADDR_ANY);
++		newsa.sin_port = 7025;
++		size_accept = (int*)sizeof(newsa);
++		in_accept = accept(sock, (struct sockaddr*)&newsa, size_accept);
++		if(in_accept == -1)
++		{
++			printf("Accept invoked error!\n");
++			GENSOCKERROR(1);
++		}
++		return in_accept;
++	}
++	return -1;
++}
++
++void socket_close()
++{
++	socket_close_arg(_accept);
++}
++
++void socket_close_arg(int in_accept)
++{
++	close(in_accept);
++}
++
++int output(const char *s)
++{
++	printf("(debug: write %s)\n", s);
++	return write(_accept, s, strlen(s) + 1);
++}
++
++int input(char *buffer, int size)
++{
++	ssize_t ret;
++
++	ret = read(_accept, buffer, size);
++	if(ret == -1)
++	{
++		if(errno != EAGAIN)
++		{
++			printf("An error occured while reading fd %i!\n", _accept);
++			GENSOCKERROR(1);
++		}
++	}
++	if(ret > 0) buffer[strlen(buffer)] = 0;
++	return ret;
++	/*printf("(debug: read %s)\n", buffer);*/
++}
++
++int socket_fd()
++{
++	return _accept;
++}
+diff -Nur libggz/gensecure/src/gensocket.h libggz.tls/gensecure/src/gensocket.h
+--- libggz/gensecure/src/gensocket.h	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/gensocket.h	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,40 @@
++/**************************************************************************
++GenSecure - a generic client/server example of TLS support for a connection
++(C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
++Published under GNU GPL conditions
++***************************************************************************/
++
++/* gensocket: generic socket and connection functions */
++
++#ifndef GENSOCKET_H
++#define GENSOCKET_H
++
++#include <sys/types.h>
++
++/* Server only: open a connection on the specified port */
++int socket_accept(int port);
++/* Client only: connect to the given location */
++int socket_connect(const char *host, int port);
++/* Finish a connection */
++void socket_close();
++/* Write some bytes */
++int output(const char *s);
++/* Read some bytes */
++int input(char *buffer, int size);
++
++/* Internal: create a socket */
++int socket_create_arg(const char *protocol);
++/* Internal: wait for socket to come ready */
++int socket_read_arg(int sock);
++/* Internal: close socket */
++void socket_close_arg(int in_accept);
++/* Internal: display an error and quit if requested */
++void socket_error(int quit, const char *file, int line);
++
++/* Return the active file descriptor */
++int socket_fd();
++
++#define GENSOCKERROR(x) socket_error(x, __FILE__, __LINE__)
++
++#endif
++
+diff -Nur libggz/gensecure/src/list.c libggz.tls/gensecure/src/list.c
+--- libggz/gensecure/src/list.c	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/list.c	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,87 @@
++#include "list.h"
++
++/* Global variables */
++TLSList *list = NULL;
++TLSList *head = NULL;
++TLSList *el;
++
++/* Add a pair to the list */
++void tls_list_add(int fd, SSL *tls, int active)
++{
++	el = (TLSList*)malloc(sizeof(TLSList));
++	el->fd = fd;
++	el->tls = tls;
++	el->active = active;
++	el->next = NULL;
++	if(head)
++	{
++		head->next = el;
++		el->last = head;
++	}
++	else el->last = NULL;
++	head = el;
++	if(!list) list = el;
++}
++
++/* Remove a pair dynamically from the list */
++void tls_list_remove(int fd)
++{
++	el = list;
++	while(el)
++	{
++		if(el->fd == fd)
++		{
++			if(el->next)
++			{
++				if(el->last)
++				{
++					el->last->next = el->next;
++					el->next->last = el->last;
++				}
++				else
++				{
++					el->next->last = NULL;
++					list = el->next;
++				}
++			}
++			else if(el->last)
++			{
++				el->last->next = NULL;
++				head = el->last;
++			}
++			else
++			{
++				list = NULL;
++				head = NULL;
++			}
++			free(el);
++			return;
++		}
++		else el = el->next;
++	}
++}
++
++/* Try to find a pair, or return NULL */
++SSL *tls_list_get(int fd)
++{
++	el = list;
++	while(el)
++	{
++		if(el->fd == fd) return el->tls;
++		el = el->next;
++	}
++	return NULL;
++}
++
++/* Return whether a connection object is active */
++int tls_list_active(int fd)
++{
++	el = list;
++	while(el)
++	{
++		if(el->fd == fd) return el->active;
++		el = el->next;
++	}
++	return -1;
++}
++
+diff -Nur libggz/gensecure/src/list.h libggz.tls/gensecure/src/list.h
+--- libggz/gensecure/src/list.h	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/list.h	Tue Nov  6 00:01:18 2001
+@@ -0,0 +1,29 @@
++#ifndef TLS_LIST_H
++#define TLS_LIST_H
++
++#ifdef HAVE_OPENSSL
++#include <openssl/ssl.h>
++#else
++#define SSL void
++#endif
++
++/* Structure for mapping on fd's */
++struct tls_list_t
++{
++	SSL *tls;
++	int fd;
++	struct tls_list_t *last;
++	struct tls_list_t *next;
++	int active;
++};
++
++typedef struct tls_list_t TLSList;
++
++/* Functions which handle a list of mappings */
++void tls_list_add(int fd, SSL *tls, int active);
++void tls_list_remove(int fd);
++SSL *tls_list_get(int fd);
++int tls_list_active(int fd);
++
++#endif
++
+diff -Nur libggz/gensecure/src/server.c libggz.tls/gensecure/src/server.c
+--- libggz/gensecure/src/server.c	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/server.c	Mon Nov  5 23:43:54 2001
+@@ -0,0 +1,79 @@
++/**************************************************************************
++GenSecure - a generic client/server example of TLS support for a connection
++(C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
++Published under GNU GPL conditions
++***************************************************************************/
++
++/* server: an example server for gensecure. */
++
++#include <stdio.h>
++#include <string.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include "gensocket.h"
++#include "tls.h"
++#include "configuration.h"
++
++/* Macros to be used as BIO emulation */
++/*#define INPUT(x, y) (tls_active(socket_fd()) ? tls_read(socket_fd(), x, y) : input(x, y))
++#define OUTPUT(x) (tls_active(socket_fd()) ? tls_write(socket_fd(), x, strlen(x)) : output(x))*/
++#define INPUT(x, y) tls_read(socket_fd(), x, y)
++#define OUTPUT(x) tls_write(socket_fd(), x, strlen(x))
++
++int passwordcallback(char *buf, int size, int rwflag, void *userdata)
++{
++	strncpy(buf, GENSECURE_PASSWORD, size);
++	return strlen(GENSECURE_PASSWORD);
++}
++
++int main(int argc, char *argv[])
++{
++	char tmpbuf[4096];
++	int bytes;
++	int tls_req;
++
++	tls_req = 1;
++	if((argc == 2) && (!strcmp(argv[1], "-notls"))) tls_req = 0;
++
++	printf("> Starting generic server...\n");
++
++	while(1)
++	{
++		socket_accept(GENSECURE_PORT);
++		printf("Generic server: waiting for input\n");
++
++		if(tls_req)
++		{
++			printf("> Securing connection...\n");
++			tls_prepare(GENSECURE_CERTIFICATE, GENSECURE_KEY, passwordcallback);
++			/*tls_prepare(NULL, NULL, NULL);*/
++			tls_start(socket_fd(), TLS_SERVER, TLS_NOVERIFY);
++		}
++
++		printf("> Server in working state.\n");
++		if(tls_active(socket_fd())) printf("> TLS IN USE.\n");
++
++		fcntl(socket_fd(), F_SETFL, O_NONBLOCK);
++
++		for(;;)
++		{
++			bytes = INPUT(tmpbuf, sizeof(tmpbuf));
++			if(bytes > 0)
++			{
++				if(!strcmp(tmpbuf, "quit"))
++				{
++					OUTPUT("Bye.");
++					tls_finish(socket_fd());
++					/*socket_close();*/
++					break;
++				}
++				printf("Received: %s\n", tmpbuf);
++			}
++		}
++	}
++
++	printf("> Server quit.\n");
++	
++	return 0;
++}
++
+diff -Nur libggz/gensecure/src/tls.c libggz.tls/gensecure/src/tls.c
+--- libggz/gensecure/src/tls.c	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/tls.c	Mon Nov  5 23:59:28 2001
+@@ -0,0 +1,312 @@
++/**************************************************************************
++GenSecure - a generic client/server example of TLS support for a connection
++(C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
++Published under GNU GPL conditions
++***************************************************************************/
++ 
++/* tls: transparent Transport Layer Security functions */
++
++#include "tls.h"
++#include "list.h"
++#include <stdio.h>
++#include <string.h>
++#ifdef HAVE_OPENSSL
++#include <openssl/err.h>
++#endif
++#include <unistd.h>
++
++#ifdef HAVE_OPENSSL
++/* The control structure for TLS */
++SSL_CTX *_tlsctx = NULL;
++#endif
++
++/* Flag to indicate a correct state flow */
++int _state = 0;
++/* The registered callback to decrypt the private key (may be NULL) */
++pem_password_cb *_callback = NULL;
++/* Location of the certificate */
++char *_cert = NULL;
++/* Location of the private key */
++char *_key = NULL;
++
++/* Not everything in OpenSSL is well documented... */
++#define OPENSSLCHECK(x)
++
++void tls_error(const char *error, const char *file, int line)
++{
++	printf("*** ERROR! ***\n");
++	printf("(TLS: %s)\n", error);
++	printf("(in %s, line %i)\n", file, line);
++	printf("**************\n");
++	_state = 0;
++}
++
++char *tls_exterror(SSL *_tls, int ret)
++{
++#ifdef HAVE_OPENSSL
++	switch(SSL_get_error(_tls, ret))
++	{
++		case SSL_ERROR_NONE:
++			return "SSL_ERROR_NONE";
++			break;
++		case SSL_ERROR_ZERO_RETURN:
++			return "SSL_ERROR_ZERO_RETURN";
++			break;
++		case SSL_ERROR_WANT_READ:
++			return "SSL_ERROR_WANT_READ";
++			break;
++		case SSL_ERROR_WANT_WRITE:
++			return "SSL_ERROR_WANT_WRITE";
++			break;
++		case SSL_ERROR_WANT_X509_LOOKUP:
++			return "SSL_ERROR_WANT_X509_LOOKUP";
++			break;
++		case SSL_ERROR_SYSCALL:
++			return "SSL_ERROR_SYSCALL";
++			break;
++		case SSL_ERROR_SSL:
++			return "SSL_ERROR_SSL";
++			break;
++	}
++	return NULL;
++#else
++	return NULL;
++#endif
++}
++
++void tls_prepare(const char *cert, const char *key, pem_password_cb *callback)
++{
++	_callback = callback;
++	_cert = (char*)cert;
++	_key = (char*)key;
++}
++
++int tls_verify(int preverify_ok, X509_STORE_CTX *ctx)
++{
++	printf("### VERIFY CALLBACK: %i ###\n", preverify_ok);
++	preverify_ok = 1;
++	return preverify_ok;
++}
++
++void tls_init(int verify)
++{
++#ifdef HAVE_OPENSSL
++	SSL_load_error_strings();
++	SSL_library_init();
++
++	_tlsctx = SSL_CTX_new(TLSv1_method());
++	if(!_tlsctx) TLSERROR("Couldn't create TLS object.\n");
++	else
++	{
++		OPENSSLCHECK(SSL_CTX_set_quiet_shutdown(_tlsctx, 1));
++		OPENSSLCHECK(SSL_CTX_set_info_callback(_tlsctx, NULL));
++		OPENSSLCHECK(SSL_CTX_load_verify_locations(ctx, CAfile, CApath));
++		OPENSSLCHECK(SSL_CTX_set_default_verify_paths());
++		if(verify == TLS_VERIFY) SSL_CTX_set_verify(_tlsctx, SSL_VERIFY_PEER, tls_verify);
++		else SSL_CTX_set_verify(_tlsctx, SSL_VERIFY_NONE, NULL);
++	}
++#endif
++}
++
++void tls_start(int fd, int mode, int verify)
++{
++#ifdef HAVE_OPENSSL
++	int ret, ret2;
++	STACK_OF(SSL_CIPHER) *stack;
++	SSL_CIPHER *cipher;
++	int bits;
++	char *cipherlist;
++	SSL *_tls;
++	int _tls_active;
++
++	_state = 1;
++	_tls_active = 0;
++	if((mode != TLS_CLIENT) && (mode != TLS_SERVER))
++	{
++		TLSERROR("Wrong mode.");
++		return;
++	}
++
++	if(!_tlsctx) tls_init(verify);
++		
++	_tls = SSL_new(_tlsctx);
++	if(_tls)
++	{
++		/*cipherlist = strdup(SSL_get_cipher_list(_tls, 0));*/
++		cipherlist = NULL;
++		stack = SSL_get_ciphers(_tls);
++		while((cipher = (SSL_CIPHER*)sk_pop(stack)) != NULL)
++		{
++			printf("* Cipher: %s\n", SSL_CIPHER_get_name(cipher));
++			printf("  Bits: %i\n", SSL_CIPHER_get_bits(cipher, &bits));
++			printf("  Used bits: %i\n", bits);
++			printf("  Version: %s\n", SSL_CIPHER_get_version(cipher));
++			printf("  Description: %s\n", SSL_CIPHER_description(cipher, NULL, 0));
++			if(cipherlist)
++			{
++				cipherlist = (char*)realloc(cipherlist, (strlen(cipherlist) + 1) + strlen(SSL_CIPHER_get_name(cipher)) + 1);
++				strcat(cipherlist, ":");
++				strcat(cipherlist, SSL_CIPHER_get_name(cipher));
++			}
++			else
++			{
++				cipherlist = (char*)malloc(strlen(SSL_CIPHER_get_name(cipher)) + 1);
++				strcpy(cipherlist, SSL_CIPHER_get_name(cipher));
++			}
++		}
++		printf("Available ciphers: %s\n", cipherlist);
++		/*ret = SSL_set_cipher_list(_tls, "EDH-RSA-DES-CBC3-SHA");*/
++		ret = SSL_set_cipher_list(_tls, cipherlist);
++		if(!ret) TLSERROR("Cipher selection failed.");
++		ret = SSL_set_fd(_tls, fd);
++		if(!ret) TLSERROR("Assignment to connection failed.");
++		else
++		{
++			SSL_set_read_ahead(_tls, 1);
++			if(mode == TLS_SERVER)
++			{
++				tls_certkey(_tls);
++				if(_state)
++				{
++					SSL_set_accept_state(_tls);
++					ret = SSL_accept(_tls);
++				}
++			}
++			else
++			{
++				SSL_set_connect_state(_tls);
++				ret = SSL_connect(_tls);
++			}
++			if((ret != 1) || (!_state))
++			{
++				printf("Ret: %i, State: %i\n", ret, _state);
++				TLSERROR("Handshake failed.");
++				ret2 = ERR_get_error();
++				printf("EXT: %s\n%s\n%s\n%s\n%s\n", tls_exterror(_tls, ret), ERR_error_string(ret2, NULL),
++					ERR_lib_error_string(ret2), ERR_func_error_string(ret2), ERR_reason_error_string(ret2));
++			}
++			else
++			{
++				printf(">>>>> Handshake successful.\n");
++				if((mode == TLS_SERVER) || (verify == TLS_NOVERIFY)) _tls_active = 1;
++				else
++				{
++					printf(">>>>> Client side, thus checking Certificate.\n");
++					printf("Negotiated cipher: %s\n", SSL_get_cipher(_tls));
++					printf("Shared ciphers: %s\n", SSL_get_shared_ciphers(_tls, NULL, 0));
++					if(SSL_get_peer_certificate(_tls))
++					{
++						if(SSL_get_verify_result(_tls) == X509_V_OK)
++						{
++							_tls_active = 1;
++						}
++						else
++						{
++							printf("Error code: %li\n", SSL_get_verify_result(_tls));
++							TLSERROR("Invalid certificate, or certificate is not self-signed.");
++						}
++					}
++					else TLSERROR("Couldn't get certificate.");
++				}
++			}
++			tls_list_add(fd, _tls, _tls_active);
++		}
++	}
++#endif
++}
++
++void tls_certkey(SSL *_tls)
++{
++#ifdef HAVE_OPENSSL
++	int ret;
++
++	if(!_tls)
++	{
++		TLSERROR("Certificate cannot be loaded.");
++		return;
++	}
++
++	if((!_key) || (!_cert) || (!_callback))
++	{
++		printf("WARNING: certificates are disabled!\n");
++		return;
++	}
++
++	/*PEM_set_getkey_callback(tls_keycallback);*/
++	SSL_CTX_set_default_passwd_cb(_tlsctx, _callback);
++
++	ret = SSL_use_RSAPrivateKey_file(_tls, _key, SSL_FILETYPE_PEM);
++	if(ret != 1) TLSERROR("Error loading TLS PEM private key.");
++	ret = SSL_use_certificate_file(_tls, _cert, SSL_FILETYPE_PEM);
++	if(ret != 1) TLSERROR("Error loading TLS PEM certificate.");
++	ret = SSL_check_private_key(_tls);
++	if(!ret) TLSERROR("Private key doesn't match certificate public key.");
++	printf("*** certificate loaded ***\n");
++#endif
++}
++
++void tls_finish(int fd)
++{
++	SSL *handler;
++
++	handler = tls_list_get(fd);
++	if(handler)
++	{
++#ifdef HAVE_OPENSSL
++		SSL_shutdown(handler);
++		SSL_free(handler);
++#endif
++		tls_list_remove(fd);
++	}
++	/*if(_tlsctx) SSL_CTX_free(_tlsctx);*/ /*only if refcount == 0*/
++	/*ERR_free_strings();*/
++	/*_state = 1;*/
++}
++
++int tls_read(int fd, char *buffer, int size)
++{
++#ifdef HAVE_OPENSSL
++	SSL *handler;
++	int ret;
++
++	printf("<< %s\n", buffer);
++	handler = tls_list_get(fd);
++	if(!handler)
++	{
++		/*TLSERROR("Given fd is not secure.");*/
++		return read(fd, buffer, size);
++	}
++	ret = SSL_read(handler, buffer, size);
++	if(ret <= 0) printf("SSL read error (%i) on fd %i!\n", ret, fd);
++	return ret;
++#else
++	return read(fd, buffer, size);
++#endif
++}
++
++int tls_write(int fd, const char *s, int size)
++{
++#ifdef HAVE_OPENSSL
++	SSL *handler;
++	int ret;
++
++	printf(">> %s\n", s);
++	handler = tls_list_get(fd);
++	if(!handler)
++	{
++		/*TLSERROR("Given fd is not secure.");*/
++		return write(fd, s, size);
++	}
++	ret = SSL_write(handler, s, size);
++	if(ret <= 0) printf("SSL write error (%i) on fd %i!\n", ret, fd);
++	return ret;
++#else
++	return write(fd, s, size);
++#endif
++}
++
++int tls_active(int fd)
++{
++	return tls_list_active(fd);
++}
++
+diff -Nur libggz/gensecure/src/tls.h libggz.tls/gensecure/src/tls.h
+--- libggz/gensecure/src/tls.h	Thu Jan  1 01:00:00 1970
++++ libggz.tls/gensecure/src/tls.h	Mon Nov  5 23:48:25 2001
+@@ -0,0 +1,34 @@
++/**************************************************************************
++GenSecure - a generic client/server example of TLS support for a connection
++(C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
++Published under GNU GPL conditions
++***************************************************************************/
++
++/* tls: transparent Transport Layer Security functions */
++
++#ifndef TLS_H
++#define TLS_H
++
++#include "gensecure.h"
++
++#ifndef HAVE_OPENSSL
++#define X509_STORE_CTX void
++#define SSL void
++#endif
++
++/* Internal: verify a received certificate */
++int tls_verify(int preverify_ok, X509_STORE_CTX *ctx);
++
++/* Internal: display an error */
++void tls_error(const char *error, const char *file, int line);
++/* Internal: initialize the environment */
++void tls_certkey();
++/* Internal: give out TLS errors */
++char *tls_exterror(SSL *_tls, int ret);
++/* Internal: initialize context */
++void tls_init(int verify);
++
++#define TLSERROR(x) tls_error(x, __FILE__, __LINE__)
++
++#endif
++
