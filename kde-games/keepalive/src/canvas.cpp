@@ -37,7 +37,9 @@
 #include <iostream>
 #include <cstdlib>
 
+// Useful definitions
 #define KEEPALIVE_DIR GGZDATADIR "/keepalive"
+#define absf(x) (x < 0 ? -x : x)
 
 // Constructor: build empty canvas
 Canvas::Canvas(QWidget *parent, const char *name)
@@ -45,6 +47,7 @@ Canvas::Canvas(QWidget *parent, const char *name)
 {
 	m_dev = NULL;
 	m_net = NULL;
+	m_network = NULL;
 
 	setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/grass.png"));
 
@@ -85,9 +88,12 @@ void Canvas::load()
 // Initialize the network
 void Canvas::init()
 {
-	m_network = new Network();
-	connect(m_network, SIGNAL(signalData()), SLOT(slotInput()));
-	m_network->doconnect();
+	if(!m_network)
+	{
+		m_network = new Network();
+		connect(m_network, SIGNAL(signalData()), SLOT(slotInput()));
+		m_network->doconnect();
+	}
 }
 
 // Receive game data from server
@@ -99,6 +105,8 @@ void Canvas::slotInput()
 	int count;
 	char *name, *message;
 	QCanvasSprite *sprite;
+	QCanvasPixmapArray *ar;
+	UnitFactory *f;
 
 	if(!m_net)
 	{
@@ -119,7 +127,10 @@ void Canvas::slotInput()
 		case op_init:
 			*m_net >> x >> y;
 			std::cout << "Move to " << x << "/" << y << std::endl;
-			m_player = new QCanvasSprite(new QCanvasPixmapArray(KEEPALIVE_DIR "/man.png", 1), this);
+			f = new UnitFactory();
+			ar = f->load("peasant");
+			delete f;
+			m_player = new QCanvasSprite(/*new QCanvasPixmapArray(KEEPALIVE_DIR "/man.png", 1)*/ar, this);
 			m_player->move(x, y);
 			m_player->show();
 			break;
@@ -189,17 +200,37 @@ void Canvas::slotInput()
 void Canvas::move(int x, int y)
 {
 	int vx, vy;
+	int offset;
+	const int tol = 20;
+	/*float diffx, diffy;*/
 
 	if(m_spectator) return;
 
 	if(!m_net) return;
 
-	std::cout << "key-1" << std::endl;
 	if(!(x || y)) return;
-	std::cout << "key-2" << std::endl;
 
 	vx = (int)(m_player->x() + x * 3);
 	vy = (int)(m_player->y() + y * 3);
+
+	/*if((diffx < -tol) && (diffy < -tol)) offset = 7;
+	if((diffx < -tol) && (diffy > tol)) offset = 5;
+	if((diffx > tol) && (diffy > tol)) offset = 3; 
+	if((diffx > tol) && (diffy < -tol)) offset = 1;
+
+	if((absf(diffx) <= tol) && (diffy < -tol)) offset = 0;
+	if((diffx < -tol) && (absf(diffy) <= tol)) offset = 6;
+	if((absf(diffx) <= tol) && (diffy > tol)) offset = 4;
+	if((diffx > tol) && (absf(diffy) <= tol)) offset = 2;*/
+
+	offset = 0;
+	if((!x) && (y > 0)) offset = 4;
+	if((!x) && (y < 0)) offset = 0;
+	if((!y) && (x > 0)) offset = 2;
+	if((!y) && (x < 0)) offset = 6;
+
+	m_player->setFrame(((m_player->frame() & 0xF8) + offset + 8) % 40);
+
 	if((vx >= 0)
 	&& (vy >= 0)
 	&& (vx < width() - 32)
@@ -214,14 +245,15 @@ void Canvas::move(int x, int y)
 // Log into the game server
 void Canvas::login(QString username, QString password)
 {
-std::cout << "login-0" << std::endl;
-
 	if(m_spectator) return;
-std::cout << "login-1" << std::endl;
 
-	if(!m_net) init();
+	if(!m_net)
+	{
+		//init();
+		m_dev = new QSocketDevice(m_network->fd(), QSocketDevice::Stream);
+		m_net = new QDataStream(m_dev);
+	}
 
-std::cout << "login-2" << std::endl;
 	*m_net << (Q_INT8)op_login << username.latin1() << password.latin1();
 }
 

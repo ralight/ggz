@@ -29,6 +29,7 @@
 #include <qpushbutton.h>
 #include <qbitmap.h>
 
+// Useful definitions
 #define KEEPALIVE_DIR GGZDATADIR "/keepalive"
 
 // Constructor: show mask to query username/password

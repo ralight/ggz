@@ -24,6 +24,7 @@
 #include "canvas.h"
 #include "chatbox.h"
 #include "animdialog.h"
+#include "intro.h"
 
 // KDE includes
 #include <klocale.h>
@@ -49,27 +50,32 @@ Win::Win(QWidget *parent, const char *name)
 	m_world->hide();
 	m_login = new Login(this);
 	m_login->setFocus();
+	m_login->hide();
 	chatbox = NULL;
 	m_anim = NULL;
+	m_intro = new Intro(this);
+	m_intro->setFocus();
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(m_world);
 	vbox->add(m_login);
+	vbox->add(m_intro);
 
 	connect(m_login, SIGNAL(signalLogin(QString, QString)),
 		SLOT(slotLogin(QString, QString)));
+	connect(m_intro, SIGNAL(signalLogin(QString, QString)),
+		SLOT(slotLogin(QString, QString)));
+
 	connect(m_canvas, SIGNAL(signalLoggedin(QString)),
 		SLOT(slotLoggedin(QString)));
 	connect(m_canvas, SIGNAL(signalUnit(QCanvasPixmapArray*)),
 		SLOT(slotUnit(QCanvasPixmapArray*)));
 
 	setEraseColor(QColor(0, 0, 0));
-	//setFocusPolicy(StrongFocus);
 
 	m_canvas->load();
 
-	//setFixedSize(400, 300);
-	resize(500, 400);
+	resize(m_intro->width(), m_intro->height());
 	setCaption(i18n("Keepalive: Login"));
 	show();
 }
@@ -95,6 +101,7 @@ void Win::slotLoggedin(QString name)
 {
 	setCaption(QString(i18n("Keepalive: Logged in as %1")).arg(name));
 	m_login->hide();
+	m_intro->hide();
 	m_world->show();
 	m_world->setFocusPolicy(StrongFocus);
 	m_world->setFocus();

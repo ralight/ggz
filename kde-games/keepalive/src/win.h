@@ -28,6 +28,7 @@ class Canvas;
 class Chatbox;
 class QCanvasPixmapArray;
 class AnimDialog;
+class Intro;
 
 // The top level window
 class Win : public QWidget
@@ -52,6 +53,7 @@ class Win : public QWidget
 		Canvas *m_canvas;
 		Chatbox *chatbox;
 		AnimDialog *m_anim;
+		Intro *m_intro;
 };
 
 #endif
