@@ -53,12 +53,20 @@ GtkWidget *dlg_login;
 /* Local callbacks which no other file will call */
 static void login_fill_defaults(GtkWidget* win, gpointer data);
 static void login_normal_toggled(GtkWidget* button, gpointer window);
+static void login_guest_toggled(GtkWidget* button, gpointer window);
+static void login_first_toggled(GtkWidget* button, gpointer window);
 static void login_edit_profiles(GtkWidget* button, gpointer window);
 static void login_start_session(GtkWidget* button, gpointer window);
 static void login_show_details(GtkWidget* button, gpointer data);
 static void login_profile_changed(GtkWidget* entry, gpointer data);
+static void login_entry_changed(GtkWidget* entry, gpointer window);
 static void login_set_entries(Server server);
 static void login_get_entries(GtkWidget* button, gpointer window);
+
+
+
+static char profile_override = 0;
+static char entries_override = 0;
 
 
 
@@ -78,14 +86,16 @@ static void login_fill_defaults(GtkWidget* win, gpointer data)
 	if ( (items = server_get_name_list())) {
 		gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
 	}
-	else {
-		login_set_entries(client.server);
+	else 
 		/* 
 		 * Disable combo if there are no profiles.  This is a
 		 * workaround for a Gtk bug when combo's are empty
 		 */
 		gtk_widget_set_sensitive(tmp, FALSE);
-	}
+	
+	/* Override with the current selected profile */
+	if (items == NULL || client.server.name != NULL)
+		login_set_entries(client.server);
 }
 
 
@@ -101,9 +111,51 @@ static void login_normal_toggled(GtkWidget* button, gpointer window)
 }
 
 
+static void login_guest_toggled(GtkWidget* button, gpointer window)
+{ 
+	GtkWidget* tmp;
+
+	/* Ignore changes if we're overriding */
+	if (entries_override) {
+		return;
+	}
+
+	tmp = lookup_widget(dlg_login, "profile_entry");
+
+	/* Don't allow profile "changed" callback to occur */
+	profile_override = 1;
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+	profile_override = 0;
+
+}
+
+static void login_first_toggled(GtkWidget* button, gpointer window)
+{ 
+	GtkWidget* tmp;
+
+	/* Ignore changes if we're overriding */
+	if (entries_override) {
+		return;
+	}
+
+	tmp = lookup_widget(dlg_login, "profile_entry");
+
+	/* Don't allow profile "changed" callback to occur */
+	profile_override = 1;
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+	profile_override = 0;
+
+}
+
+
 static void login_profile_changed(GtkWidget* entry, gpointer data)
 {
 	Server* server = NULL;
+
+	/* Ignore changes if we're overriding */
+	if (profile_override) {
+		return;
+	}
 
 	server = server_get(gtk_entry_get_text(GTK_ENTRY(entry)));
 	if (!server) {
@@ -111,8 +163,25 @@ static void login_profile_changed(GtkWidget* entry, gpointer data)
 		return;
 	}
 
-	dbg_msg("Profile changed to %s", server->name);
 	login_set_entries(*server);
+}
+
+
+static void login_entry_changed(GtkWidget* entry, gpointer data)
+{
+	GtkWidget* tmp;
+
+	/* Ignore changes if we're overriding */
+	if (entries_override) {
+		return;
+	}
+
+	tmp = lookup_widget(dlg_login, "profile_entry");
+
+	/* Don't allow profile "changed" callback to occur */
+	profile_override = 1;
+	gtk_entry_set_text(GTK_ENTRY(tmp), "");
+	profile_override = 0;
 }
 
 
@@ -134,6 +203,16 @@ static void login_set_entries(Server server)
 	GtkWidget* tmp;
 	gchar* port;
 
+        tmp = lookup_widget(dlg_login, "profile_entry");
+	/* Set profile override so "changed" callbacks don't go */
+	profile_override = 1;
+	if (server.name)
+		gtk_entry_set_text(GTK_ENTRY(tmp), server.name);
+	profile_override = 0;
+
+	/* Set entries override so their "changed" callbacks don't go */
+	entries_override = 1;
+	
         tmp = lookup_widget(dlg_login, "host_entry");
 	gtk_entry_set_text(GTK_ENTRY(tmp), server.host);
 
@@ -164,6 +243,9 @@ static void login_set_entries(Server server)
 		tmp = lookup_widget(dlg_login, "pass_entry");
 		gtk_entry_set_text(GTK_ENTRY(tmp), server.password);
 	}
+
+	/* Clear entries override so their "changed" callbacks can go */
+	entries_override = 0;
 }
 
 
@@ -171,6 +253,9 @@ static void login_set_entries(Server server)
 static void login_get_entries(GtkWidget* button, gpointer window)
 {
         gpointer tmp;
+
+        tmp = lookup_widget(window, "profile_entry");
+        client.server.name = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
 
         tmp = lookup_widget(window, "name_entry");
         client.server.login = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
@@ -196,6 +281,7 @@ static void login_get_entries(GtkWidget* button, gpointer window)
         if (GTK_TOGGLE_BUTTON(tmp)->active)
                 client.server.type = GGZ_LOGIN_NEW;
 }
+
 
 
 /* Launch game session */
@@ -407,6 +493,7 @@ void login_online()
 
 }
 
+
 GtkWidget*
 create_dlg_login (void)
 {
@@ -576,7 +663,7 @@ create_dlg_login (void)
   gtk_widget_show (port_entry);
   gtk_box_pack_start (GTK_BOX (server_box), port_entry, FALSE, FALSE, 0);
   gtk_widget_set_usize (port_entry, 50, -2);
-  gtk_entry_set_text (GTK_ENTRY (port_entry), _("88888"));
+  gtk_entry_set_text (GTK_ENTRY (port_entry), _("5688"));
 
   msg_label = gtk_label_new ("");
   gtk_widget_ref (msg_label);
@@ -737,9 +824,24 @@ create_dlg_login (void)
   gtk_signal_connect (GTK_OBJECT (edit_profiles_button), "clicked",
                       GTK_SIGNAL_FUNC (login_edit_profiles),
                       dlg_login);
+  gtk_signal_connect (GTK_OBJECT (host_entry), "changed",
+                      GTK_SIGNAL_FUNC (login_entry_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (name_entry), "changed",
+                      GTK_SIGNAL_FUNC (login_entry_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (pass_entry), "changed",
+                      GTK_SIGNAL_FUNC (login_entry_changed),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (normal_radio), "toggled",
                       GTK_SIGNAL_FUNC (login_normal_toggled),
                       dlg_login);
+  gtk_signal_connect (GTK_OBJECT (guest_radio), "toggled",
+                      GTK_SIGNAL_FUNC (login_guest_toggled),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (first_radio), "toggled",
+                      GTK_SIGNAL_FUNC (login_first_toggled),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (connect_button), "clicked",
                       GTK_SIGNAL_FUNC (login_get_entries),
                       dlg_login);

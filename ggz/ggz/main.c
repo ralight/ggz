@@ -86,6 +86,15 @@ GdkColor colors[] =
 
 void init_client(void)
 {
+	/* If the user specifies something on the command line, give it a
+	   name */
+	if (client.server.host 
+	    || client.server.login
+	    || (client.server.port != 0)) {
+		
+		client.server.name = "";
+	}	
+
 	if (!client.server.host)
 		client.server.host = g_strdup("localhost");
 	
@@ -97,7 +106,6 @@ void init_client(void)
 	
 	if (!client.server.login)
 		client.server.login = g_strdup(g_get_user_name());
-	
 	
 	client.new_room = -1;
 	client.cur_room = -3;
