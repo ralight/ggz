@@ -45,7 +45,7 @@ char names[2][17];
 #define TTT_SND_MOVE     0
 #define TTT_REQ_SYNC     1
 
-void game_handle_io()
+static void game_handle_io(void)
 {
 	int op, i;
 	int nummove, move;
