@@ -122,12 +122,9 @@ This will install the GGZ client libraries and the ggz-config tool under
 Gtk Client Installation
 -----------------------
 
-The Gtk+ client requires that the Gtk+ libraries 1.2.X or 2.X be
+The Gtk+ client requires that the Gtk+ libraries 2.X be
 installed. These can be downloaded from http://www.gtk.org.
-We recommend the latest stable version, 1.2.10 or 2.2.4.
-Support for the 2.X series has just been added and might not always
-work correctly yet, it will however be the preferred toolkit in
-the future.
+We recommend the latest stable version.
 
 Unpack the ggz-gtk-client sources.  They should extract into a
 directory named ggz-gtk-client-X.X.X.  Enter that directory and run

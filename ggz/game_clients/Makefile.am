@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5698 2003-12-04 08:22:11Z jdorje $
+#  $Id: Makefile.am 6224 2004-10-28 05:37:56Z jdorje $
 
 SUBDIRS = @SUBDIRS@
 EXTRA_DIST = package README.GGZ QuickStart.GGZ \
@@ -8,7 +8,6 @@ EXTRA_DIST = package README.GGZ QuickStart.GGZ \
 		m4/ggz-debug.m4	\
 		m4/glibc21.m4	\
 		m4/gtk-2.0.m4	\
-		m4/gtk.m4	\
 		m4/iconv.m4	\
 		m4/lcmessage.m4	\
 		m4/locale.m4	\

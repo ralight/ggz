@@ -4,8 +4,8 @@ The GGZ Gaming Zone - GTK+ Game Modules
 
 GGZ Gaming Zone GTK+ Game Modules provide the game executables,
 graphics, and data for a number of popular (and unique) network games.
-These games are coded for either the GTK+ 1.2 user interface or version
-2.0 of GTK+, but many of them are also available for KDE.
+These games are coded for version 2.X of GTK+, but many of them are also
+available using different graphical interfaces.
 
 This version of the GTK+ Game Modules (0.0.9) requires version 0.0.9
 of the ggz-client-libs.
