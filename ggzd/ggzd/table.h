@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 4497 2002-09-09 10:28:33Z jdorje $
+ * $Id: table.h 4517 2002-09-11 19:40:32Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -100,6 +100,9 @@ struct GGZTable {
 
 /* Create a new table object */
 struct GGZTable* table_new(void);
+
+/* Destroy a table object */
+void table_free(GGZTable* table);
 
 /* Launch a table */
 int table_launch(struct GGZTable *table, char* name);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4516 2002-09-11 17:00:30Z jdorje $
+ * $Id: net.c 4517 2002-09-11 19:40:32Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -1358,7 +1358,15 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 		desc = data->desc;
 		seats = data->seats;
 	}
-	
+
+	parent_tag = ggz_xmlelement_get_tag(parent);
+ 	if (strcasecmp(parent_tag, "LAUNCH") != 0
+	    && strcasecmp(parent_tag, "UPDATE") != 0 ) {
+		if (data) _net_tabledata_free(data);
+		_net_send_result(net, "protocol", E_BAD_OPTIONS);
+		return;
+	}
+
 	/* Create and init new table */
 	table = table_new();
 	table->index = index;
@@ -1374,9 +1382,17 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	entry = ggz_list_head(seats);
 	while (entry) {
 		GGZSeatType seat_type;
-		
+
 		seat = ggz_list_get_data(entry);
 		seat_type = ggz_string_to_seattype(seat->type);
+
+		if (seat->index < 0 || seat->index >= MAX_TABLE_SIZE) {
+			err_msg("Client launched game with invalid seat %d.",
+				seat->index);
+			if (data) _net_tabledata_free(data);
+			table_free(table);
+			return;
+		}
 
 		switch (seat_type) {
 		case GGZ_SEAT_OPEN:		
@@ -1411,14 +1427,9 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 		entry = ggz_list_next(entry);
 	}
 
-	parent_tag = ggz_xmlelement_get_tag(parent);
- 	if (strcasecmp(parent_tag, "LAUNCH") == 0
-	    || strcasecmp(parent_tag, "UPDATE") == 0 ) {
-		ggz_xmlelement_set_data(parent, table);
-	}
-	else
-		_net_send_result(net, "protocol", E_BAD_OPTIONS);
-	
+	/* FIXME: what if there are multiple <TABLE> tags? */
+	ggz_xmlelement_set_data(parent, table);	
+
 	if (data)
 		_net_tabledata_free(data);
 }
@@ -1451,8 +1462,9 @@ static void _net_table_set_desc(GGZXMLElement *table, char *desc)
 		data = _net_tabledata_new();
 		ggz_xmlelement_set_data(table, data);
 	}
-	
-	data->desc = desc;
+
+	if (data->desc) ggz_free(data->desc);
+	data->desc = safe_strdup(desc);
 }
 
 
@@ -1558,8 +1570,7 @@ static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element)
 	}
 
 	if (element) {
-		if (ggz_xmlelement_get_text(element))
-			desc = safe_strdup(ggz_xmlelement_get_text(element));
+		desc = ggz_xmlelement_get_text(element);
 		parent_tag = ggz_xmlelement_get_tag(parent);
 		
 		if (strcasecmp(parent_tag, "TABLE") == 0)

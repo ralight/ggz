@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4508 2002-09-11 03:48:41Z jdorje $
+ * $Id: table.c 4517 2002-09-11 19:40:32Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -115,7 +115,6 @@ static GGZEventFuncReturn table_seat_event_callback(void* target, int size,
 						    void* data);*/
 static GGZEventFuncReturn table_kill_callback(void* target, int size, void* data);
 static int   table_launch_event(char* name, int status, int index);
-static void  table_free(GGZTable* table);
 
 static int   type_match_table(int type, GGZTable* table);
 
@@ -1414,7 +1413,7 @@ static int table_launch_event(char* name, int status, int index)
 
 
 /* Free dynamically allocated memory associated with a table*/
-static void table_free(GGZTable* table)
+void table_free(GGZTable* table)
 {
 #if 0
 	int i;
