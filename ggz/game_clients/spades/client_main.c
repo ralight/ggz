@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 	else
 		DisplayInit();
 
-
+	
 	/*DisplayInit();
 	  DisplayStatusLine( "Welcome to Gnu Gaming Zone Spades %s", VERSION );
 	*/

@@ -94,6 +94,7 @@ struct Game {
 	pid_t pid;
 	guint type;
 	gint fd;
+	gchar* fd_name;
 };
 
 

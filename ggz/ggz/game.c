@@ -56,7 +56,7 @@ extern struct Rooms room_info;
 /* Local data */
 static guint game_handle;
 
-static void run_game(gint type, gchar flag, gint fd);
+static void run_game(gint type, gchar flag, gchar* path);
 static void handle_game(gpointer data, gint source, GdkInputCondition cond);
 static void handle_options(gpointer data, gint source, GdkInputCondition cond);
 
@@ -64,56 +64,68 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond);
 void launch_game(gint type, gchar launch)
 {
 	pid_t pid;
-	gint fd[2];
+	gint sock, fd;
+	gchar* game_name;
+	gchar* path;
 	GdkInputFunction callback;
 
-	/* Create socketpair for communication */
-	socketpair(PF_UNIX, SOCK_STREAM, 0, fd);
-
+	/* FIXME: Don't hardcode spades */
+	path = g_strdup("../game_clients/spades/gspades");
+	game_name = g_strdup(game_types.info[type].name);
+	
 	if (launch)
 		dbg_msg("Launching game");
 	else
 		dbg_msg("Joining game");
 	
 	/* Fork table process */
-	if ((pid = fork()) < 0) {
+	if ( (pid = fork()) < 0) {
 		err_dlg("fork failed");
 		return;
 	} else if (pid == 0) {
-		run_game(type, launch, fd[0]);
+		run_game(type, launch, path);
 		err_dlg("exec failed");
 		return;
 	} else {
-		/* Close the remote ends of the socket pairs */
-		close(fd[0]);
+		/* Create Unix doamin socket for communication*/
+		game.fd_name = g_strdup_printf("/tmp/%s.%d", game_name, pid);
+		sock = es_make_unix_socket(ES_SERVER, game.fd_name);
+		/* FIXME: need to check validity of fd */
+
+		if (listen(sock, 1) < 0)
+			err_sys_exit("listen falied");
+
+		if ( (fd = accept(sock, NULL, NULL)) < 0)
+			err_sys_exit("accpet failed");
+		
+		/* Key info about game */
+		game.type = type;
 		game.pid = pid;
-		game.fd = fd[1];
+		game.fd = fd;
+
 		if (launch)
 			callback = handle_options;
 		else
 			callback = handle_game;
 		
-		game_handle = gdk_input_add(fd[1], GDK_INPUT_READ, 
+		game_handle = gdk_input_add(fd, GDK_INPUT_READ, 
 					    *callback, NULL);
 	}
+
+	g_free(game_name);
+	g_free(path);
 }
 
 
-static void run_game(gint type, gchar flag, gint fd)
+static void run_game(gint type, gchar flag, gchar* path)
 {
 	dbg_msg("Process forked.  Game running");
 
-	dup2(fd, STDIN_FILENO);
-	dup2(fd, STDOUT_FILENO);
-	close(fd);
-
-	/* FIXME: Don't hardcode client game */
-	/* FIXME: Maybe pass through pipe, rather than cmd-line? */
+	/* FIXME: Maybe pass over sock, rather than cmd-line? */
 	if (flag)
-		execl("../game_clients/spades/gspades", "gspades", "-o",
-		      NULL);
+		execl(path, g_basename(path), "-o", NULL);
 	else
-		execl("../game_clients/spades/gspades", "gspades", NULL);
+		execl(path, g_basename(path), NULL);
 }
 
 
@@ -122,7 +134,6 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 	gint i, size, seats;
 	void *options;
 	TableInfo table;
-	gchar name[MAX_USER_NAME_LEN+1];
 
 	/* Get table launch info */
 	launch_get_table(&table);
@@ -132,10 +143,10 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 
 	dbg_msg("Getting options from game client");
 	es_read_int(source, &size);
-	if ( (options = malloc(size)) == NULL)
+	if (size && (options = malloc(size)) == NULL)
 		err_sys_exit("malloc falied");
 	es_readn(source, options, size);
-
+	
 	/* Send launch game request to server */
 	es_write_int(connection.sock, REQ_TABLE_LAUNCH);
 	es_write_int(connection.sock, table.type_index);
@@ -144,11 +155,13 @@ static void handle_options(gpointer data, gint source, GdkInputCondition cond)
 	for (i = 0; i < seats; i++) {
 		es_write_int(connection.sock, table.seats[i]);
 		if (table.seats[i] == GGZ_SEAT_RESV)
-			es_write_string(connection.sock, name);
+			es_write_string(connection.sock, table.names[i]);
 	}
 	es_write_int(connection.sock, size);
-        es_writen(connection.sock, options, size);
-        free(options);
+	if (size) {
+		es_writen(connection.sock, options, size);
+		free(options);
+	}
 
 	/* Go ahead and destroy dlg_launch now (it's been hiding) */
         gtk_widget_destroy(dlg_launch);
@@ -193,7 +206,9 @@ int game_over(void)
 	}
 	if (game.pid)
 		kill(game.pid, SIGINT);
-	
+	unlink(game.fd_name);
+			
+	/* FIXME: should be in a function based on state somewhere */
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch");
         gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");

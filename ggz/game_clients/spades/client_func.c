@@ -30,6 +30,9 @@
 
 #include <config.h>		/* Site config data */
 
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/un.h>
 #include <gtk/gtk.h>
 #include <unistd.h>		/* For getopt et. al */
 #include <stdio.h>		/* For fprintf */
@@ -148,13 +151,12 @@ int CheckWriteString(int msgsock, char *message)
 void AppInit(void)
 {
 	int i;
-
+	char fd_name[21];
+        struct sockaddr_un addr;
+		
 	gameState.get_opt = FALSE;
-	gameState.spadesSock = STDIN_FILENO;
 	gameState.gameSegment = ST_GET_GAME;
-	spadesHandle = gdk_input_add(STDIN_FILENO, GDK_INPUT_READ, 
-				     ReadServerSocket, NULL);
-	
+
 	options.endGame = 100;
 	options.minBid = 3;
 	options.bitOpt = GAME_SPADES | MSK_NILS | MSK_BAGS | MSK_COMP_1
@@ -166,6 +168,23 @@ void AppInit(void)
 	for (i = 0; i < 4; i++)
 		gameState.players[i] = NULL;
 
+
+	/* Connect to Unix domain socket */
+	sprintf(fd_name, "/tmp/NetSpades.%d", getpid());
+
+	if ( (gameState.spadesSock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
+		exit(-1);
+
+	bzero(&addr, sizeof(addr));
+	addr.sun_family = AF_LOCAL;
+	strcpy(addr.sun_path, fd_name);
+
+	if (connect(gameState.spadesSock, (struct sockaddr *)&addr,
+		    sizeof(addr)) < 0)
+		exit(-1);
+
+	spadesHandle = gdk_input_add(gameState.spadesSock, GDK_INPUT_READ, 
+				     ReadServerSocket, NULL);
 }
 
 

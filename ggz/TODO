@@ -1,21 +1,14 @@
-- Neads Done
+- Needs Done
 * Done
 
 
 For 0.0.2
 =========
-
-* Add new dialog for specifying number of seats at table, computer players,
-and reservations.  Something with rows where each row represents a seat, and
-then have radio buttons for: open, reserved, or computer.  This should be
-part of the ggz client, not the game_client.  The game_client should only
-worry about options for itself.
-
-- IRC stile actions in the chat  ex.  /me says hello
+- IRC style actions in the chat (eg.  /me says hello)
 * Connect button in menu and toolbar
 * MOTD item under view menu
 - config file code
-- configurible font size in chat and MOTD
+- configurable font size in chat and MOTD
 - config dialog
 * make /beep not print to the terminal
 * Connect menu on far left (Connect, Disconnect, Login, Logout, Exit)
