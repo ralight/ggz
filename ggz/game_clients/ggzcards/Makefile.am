@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2382 2001-09-07 07:55:42Z jdorje $
+# $Id: Makefile.am 2387 2001-09-07 09:55:05Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
@@ -32,7 +32,8 @@ ggz_ggzcards_SOURCES = \
 	cards-b1.xpm cards-b2.xpm cards-b3.xpm cards-b4.xpm \
 	cards-1.xpm cards-2.xpm cards-3.xpm cards-4.xpm \
 	\
-	common.c common.h
+	common.c common.h \
+	protocol.c protocol.h
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_ggzcards_LDADD = @GTK_LIBS@ $(LDADD)

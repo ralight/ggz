@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2379 2001-09-05 23:52:11Z jdorje $
+ * $Id: common.c 2387 2001-09-07 09:55:05Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -44,26 +44,6 @@ static int handle_message_player();
 static int ggzfd = -1;
 
 struct game_t game = { 0 };
-
-
-static int es_read_card(int fd, card_t * card)
-{
-	if (es_read_char(fd, &card->face) < 0 ||
-	    es_read_char(fd, &card->suit) < 0 ||
-	    es_read_char(fd, &card->deck) < 0)
-		return -1;
-	return 0;
-}
-
-
-static int es_write_card(int fd, card_t card)
-{
-	if (es_write_char(fd, card.face) < 0 ||
-	    es_write_char(fd, card.suit) < 0 ||
-	    es_write_char(fd, card.deck) < 0)
-		return -1;
-	return 0;
-}
 
 
 int client_initialize(void)
