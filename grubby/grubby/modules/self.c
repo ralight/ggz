@@ -29,7 +29,7 @@ Guru *gurumod_exec(Guru *message)
 		/* Let grubby tell about himself */
 		if((i == 1) && (!strcasecmp(message->list[i], "about")))
 		{
-			sprintf(buffer, _("I'm %s, your favorite chat bot!\n"
+			snprintf(buffer, 1024, _("I'm %s, your favorite chat bot!\n"
 					"I'm here to answer your question, and learn more about you.\n"
 					"You may type '%s help ' to get to know what I understand.\n"
 					"Have fun :-)"), message->guru, message->guru);
@@ -55,6 +55,7 @@ Guru *gurumod_exec(Guru *message)
 		}
 		i++;
 	}
+
 	return NULL;
 }
 

@@ -6,19 +6,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-10-13 23:30+0200\n"
+"POT-Creation-Date: 2002-03-02 15:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
-"Content-Transfer-Encoding: ENCODING\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: ../modules/badword.c:96
+#: ../modules/badword.c:97
 msgid " is a dirty evil bastard."
 msgstr ""
 
-#: ../modules/badword.c:104
+#: ../modules/badword.c:105
 msgid "Watch your language please!"
 msgstr ""
 
@@ -30,12 +30,75 @@ msgstr ""
 msgid "You're too curious - I don't know everything."
 msgstr ""
 
+#: ../modules/people.c:65
+msgid "Nice to see you here again, "
+msgstr ""
+
+#: ../modules/people.c:70
+msgid ": Great you come here!"
+msgstr ""
+
+#: ../modules/people.c:79
+msgid "Hi "
+msgstr ""
+
+#: ../modules/people.c:81
+msgid ", I'm "
+msgstr ""
+
+#: ../modules/people.c:83
+msgid ""
+". I have never seen you before here.\n"
+"Type '"
+msgstr ""
+
+#: ../modules/people.c:85
+msgid " help' to change this :)"
+msgstr ""
+
+#: ../modules/people.c:97
+msgid "See you later, "
+msgstr ""
+
+#: ../modules/people.c:102
+msgid "Have a nice rest."
+msgstr ""
+
+#: ../modules/people.c:106
+msgid ": Don't stay away too long."
+msgstr ""
+
+#: ../modules/people.c:110
+msgid "Eh, why has he gone?"
+msgstr ""
+
+#: ../modules/people.c:152
+msgid "OK, registered your information."
+msgstr ""
+
+#: ../modules/people.c:172
+msgid "Sorry, I don't know who this is."
+msgstr ""
+
+#: ../modules/people.c:185
+msgid "I'm looking right at you now :)"
+msgstr ""
+
+#: ../modules/people.c:194
+#, c-format
+msgid "Yeah, he was here at %s"
+msgstr ""
+
+#: ../modules/people.c:197
+msgid "Nope, never seen this guy here."
+msgstr ""
+
 #: ../modules/self.c:32
 #, c-format
 msgid ""
 "I'm %s, your favorite chat bot!\n"
 "I'm here to answer your question, and learn more about you.\n"
-"You may type 'grubby help' to get to know what I understand.\n"
+"You may type '%s help ' to get to know what I understand.\n"
 "Have fun :-)"
 msgstr ""
 
@@ -48,14 +111,19 @@ msgid ""
 "who is <nick>: request information about nick\n"
 "have you seen <nick>: ask me when I last saw nick\n"
 "my (email | pager) is <contact>: register contact information\n"
+"<nick> is from <countrycode>: register language\n"
 "my name is <fullname>: register you as fullname"
 msgstr ""
 
-#: ../src/module.c:226
+#: ../src/i18n.c:71
+msgid "Your language has been registered."
+msgstr ""
+
+#: ../src/module.c:256
 msgid "List of available modules:"
 msgstr ""
 
-#: ../src/module.c:227
+#: ../src/module.c:257
 msgid "No modules loaded at all."
 msgstr ""
 

@@ -17,6 +17,7 @@ grubby have you seen someone
 #include <stdlib.h>
 #include "gurumod.h"
 #include "player.h"
+#include "i18n.h"
 #include <time.h>
 
 /* Dummy init function */
@@ -25,7 +26,6 @@ void gurumod_init()
 }
 
 /* Handle all requests related to known people */
-/* FIXME: problem with whois */
 Guru *gurumod_exec(Guru *message)
 {
 	int i, j;
@@ -62,12 +62,12 @@ Guru *gurumod_exec(Guru *message)
 				switch(rand() % 9)
 				{
 					case 0:
-						strcpy(info, "Nice to see you here again, ");
+						strcpy(info, _("Nice to see you here again, "));
 						strcat(info, message->player);
 						break;
 					case 1:
 						strcpy(info, message->player);
-						strcat(info, ": Great you come here!");
+						strcat(info, _(": Great you come here!"));
 						break;
 					default:
 						return NULL;
@@ -76,13 +76,13 @@ Guru *gurumod_exec(Guru *message)
 			}
 			else
 			{
-				strcpy(info, "Hi ");
+				strcpy(info, _("Hi "));
 				strcat(info, message->player);
-				strcat(info, ", I'm ");
+				strcat(info, _(", I'm "));
 				strcat(info, message->guru);
-				strcat(info, ". I have never seen you before here.\nType '");
+				strcat(info, _(". I have never seen you before here.\nType '"));
 				strcat(info, message->guru);
-				strcat(info, " help' to change this :)");
+				strcat(info, _(" help' to change this :)"));
 			}
 			message->message = info;
 			message->type = GURU_CHAT;
@@ -94,20 +94,20 @@ Guru *gurumod_exec(Guru *message)
 			switch(rand() % 30)
 			{
 				case 0:
-					strcpy(info, "See you later, ");
+					strcpy(info, _("See you later, "));
 					strcat(info, message->player);
 					message->message = info;
 					break;
 				case 1:
-					message->message = "Have a nice rest.";
+					message->message = _("Have a nice rest.");
 					break;
 				case 2:
 					strcpy(info, message->player);
-					strcat(info, ": Don't stay away too long.");
+					strcat(info, _(": Don't stay away too long."));
 					message->message = info;
 					break;
 				case 3:
-					message->message = "Eh, why has he gone?";
+					message->message = _("Eh, why has he gone?");
 					break;
 				default:
 					message->message = NULL;
@@ -130,7 +130,7 @@ Guru *gurumod_exec(Guru *message)
 			contact = NULL;
 			strcpy(info, message->list[4]);
 			j = 5;
-			while(message->list[j])
+			while((message->list[j]) && (j < 15))
 			{
 				strcat(info, " ");
 				strcat(info, message->list[j]);
@@ -149,7 +149,7 @@ Guru *gurumod_exec(Guru *message)
 			if(realname) p->realname = realname;
 			if(contact) p->contact = contact;
 			guru_player_save(p);
-			message->message = "OK, registered your information.";
+			message->message = _("OK, registered your information.");
 			message->type = GURU_PRIVMSG;
 			return message;
 		}
@@ -166,24 +166,23 @@ Guru *gurumod_exec(Guru *message)
 			{
 				realname = (p->realname ? p->realname : "unknown");
 				contact = (p->contact ? p->contact : "unknown");
-printf("DEBUG: name=%s, contact=%s\n", realname, contact);
 				sprintf(info, "Name: %s, Contact: %s", realname, contact);
-printf("DEBUG2: %s\n", info);
 				message->message = info;
 			}
-			else message->message = "Sorry, I don't know who this is.";
+			else message->message = _("Sorry, I don't know who this is.");
 			return message;
 		}
 	}
 	if(i == 5)
 	{
+		/* Lookup the date when this player was seen the last time */
 		if((!strcmp(message->list[1], "have"))
 		&& (!strcmp(message->list[2], "you"))
 		&& (!strcmp(message->list[3], "seen")))
 		{
 			if(!strcmp(message->player, message->list[4]))
 			{
-				message->message = "I'm looking right at you now :)";
+				message->message = _("I'm looking right at you now :)");
 			}
 			else
 			{
@@ -192,10 +191,10 @@ printf("DEBUG2: %s\n", info);
 				{
 					t = p->lastseen;
 					ts = ctime(&t);
-					sprintf(info, "Yeah, he was here at %s", ts);
+					sprintf(info, _("Yeah, he was here at %s"), ts);
 					message->message = info;
 				}
-				else message->message = "Nope, never seen this guy here.";
+				else message->message = _("Nope, never seen this guy here.");
 			}
 			return message;
 		}

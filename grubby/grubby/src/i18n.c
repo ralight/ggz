@@ -47,12 +47,15 @@ void setlanguage(char *player, char *language)
 }
 
 /* Check whether player says his language */
-void guru_i18n_check(char *player, char *message)
+char *guru_i18n_check(char *player, char *message)
 {
 	char *token;
 	int i, c;
+	char *ret;
 
-	if(!message) return;
+	if(!message) return NULL;
+
+	ret = NULL;
 	message = strdup(message);
 	token = strtok(message, " .,:");
 	i = 0;
@@ -62,11 +65,17 @@ void guru_i18n_check(char *player, char *message)
 		if((i == 1) && (!strcasecmp(token, "i"))) c++;
 		if((i == 2) && (!strcasecmp(token, "am"))) c++;
 		if((i == 3) && (!strcasecmp(token, "from"))) c++;
-		if((i == 4) && (c == 3)) setlanguage(player, token);
+		if((i == 4) && (c == 3))
+		{
+			setlanguage(player, token);
+			ret = _("Your language has been registered.");
+		}
 		i++;
 		token = strtok(NULL, " .,:");
 	}
 	free(message);
+
+	return ret;
 }
 
 /* Translate a message or set of messages */

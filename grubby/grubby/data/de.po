@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-10-13 23:30+0200\n"
+"POT-Creation-Date: 2002-03-02 15:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,11 +14,11 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: ../modules/badword.c:96
+#: ../modules/badword.c:97
 msgid " is a dirty evil bastard."
 msgstr " ist ein dummes Ding."
 
-#: ../modules/badword.c:104
+#: ../modules/badword.c:105
 msgid "Watch your language please!"
 msgstr "Achte mal auf deine Wortwahl, Freundchen!"
 
@@ -30,20 +30,86 @@ msgstr "OK, habe das gelernt."
 msgid "You're too curious - I don't know everything."
 msgstr "Du bist zu neugierig - ich weiss doch nicht alles."
 
+#: ../modules/people.c:65
+msgid "Nice to see you here again, "
+msgstr "SchÃ¶n dich wieder hier zu sehen, "
+
+#: ../modules/people.c:70
+msgid ": Great you come here!"
+msgstr ": Gut daÃŸ du hier bist!"
+
+#: ../modules/people.c:79
+msgid "Hi "
+msgstr "Hallo "
+
+#: ../modules/people.c:81
+msgid ", I'm "
+msgstr ", ich bin "
+
+#: ../modules/people.c:83
+msgid ""
+". I have never seen you before here.\n"
+"Type '"
+msgstr ""
+". Ich hab dich hier noch nie gesehen.\n"
+"Gib '"
+
+#: ../modules/people.c:85
+msgid " help' to change this :)"
+msgstr "' ein um das zu Ã¤Bndern :)"
+
+#: ../modules/people.c:97
+msgid "See you later, "
+msgstr "Bis spÃ¤Bter, "
+
+#: ../modules/people.c:102
+msgid "Have a nice rest."
+msgstr "Man sieht sich."
+
+#: ../modules/people.c:106
+msgid ": Don't stay away too long."
+msgstr ": Bleib nicht zu lange weg."
+
+#: ../modules/people.c:110
+msgid "Eh, why has he gone?"
+msgstr "Hm, warum ist er gegangen?"
+
+#: ../modules/people.c:152
+msgid "OK, registered your information."
+msgstr "OK, diese Information wurde gespeichert."
+
+#: ../modules/people.c:172
+msgid "Sorry, I don't know who this is."
+msgstr "Tut mir leid, ich weiÃŸOBn nicht wer das ist."
+
+#: ../modules/people.c:185
+msgid "I'm looking right at you now :)"
+msgstr "Ich schaue dich gerade an :)"
+
+#: ../modules/people.c:194
+#, c-format
+msgid "Yeah, he was here at %s"
+msgstr "Ja, er war am %s hier"
+
+#: ../modules/people.c:197
+msgid "Nope, never seen this guy here."
+msgstr "Habe ihn noch nie hier gesehen."
+
 #: ../modules/self.c:32
+#, fuzzy, c-format
 msgid ""
 "I'm %s, your favorite chat bot!\n"
 "I'm here to answer your question, and learn more about you.\n"
-"You may type 'grubby help' to get to know what I understand.\n"
+"You may type '%s help ' to get to know what I understand.\n"
 "Have fun :-)"
 msgstr ""
 "Ich bin %s, dein Lieblings-Chatbot!\n"
-"Ich bin hier um deine Fragen zu beantworten, und mehr über dich zu "
-"erfahren.\n"
+"Ich bin hier um deine Fragen zu beantworten, und mehr über dich zu erfahren.\n"
 "Gib 'grubby help' ein um zu sehen was ich verstehe.\n"
-"Hab viel Spaß :-)"
+"Hab viel SpaÃŸOC :-)"
 
 #: ../modules/self.c:44
+#, fuzzy
 msgid ""
 "This is the list of public commands I understand:\n"
 "about: let me tell about myself\n"
@@ -52,24 +118,29 @@ msgid ""
 "who is <nick>: request information about nick\n"
 "have you seen <nick>: ask me when I last saw nick\n"
 "my (email | pager) is <contact>: register contact information\n"
+"<nick> is from <countrycode>: register language\n"
 "my name is <fullname>: register you as fullname"
 msgstr ""
 "Dies ist die Liste der Kommandos die ich verstehe:\n"
-"about: lass mich über mich selbst erzählen\n"
-"do i have any messages: ich überbringe dir Botschaften\n"
-"tell <nick> <nachricht>: Überbringe eine Botschaft an nick\n"
-"who is <nick>: Zeige Informationen über nick an\n"
+"about: lass mich Ã¼Cber mich selbst erzzÃ¤Chlen\n"
+"do i have any messages: ich Ã¼Bberbringe dir Botschaften\n"
+"tell <nick> <nachricht>: Ã¼Bberbringe eine Botschaft an nick\n"
+"who is <nick>: Zeige Informationen Ã¼Bber nick an\n"
 "have you seen <nick>: Frag mich wann ich nick zum letzten Mal gesehen habe.\n"
 "my (email | sms) is <kontakt>: Registriere Kontaktinformationen\n"
 "my name is <voller_name>: Registriere mich mit vollem Namen"
 
-#: ../src/module.c:226
-msgid "List of available modules:"
-msgstr "Liste der verfügbaren Module:"
+#: ../src/i18n.c:71
+msgid "Your language has been registered."
+msgstr "Deine Sprache wurde registriert."
 
-#: ../src/module.c:227
+#: ../src/module.c:256
+msgid "List of available modules:"
+msgstr "Liste der verfÃ¼OBgbaren Module:"
+
+#: ../src/module.c:257
 msgid "No modules loaded at all."
-msgstr "Überhapt keine Module geladen."
+msgstr "Ã¼OBerhapt keine Module geladen."
 
 #: dict.pl:28
 msgid "That's a word. Come on, I don't know your native language yet."
@@ -88,7 +159,7 @@ msgstr ""
 
 #: dict.pl:106
 msgid "Sorry, I don't know what a $WORD is."
-msgstr "Sorry, ich weiß nicht was ein $WORD ist."
+msgstr "Sorry, ich weiÃŸOB nicht was ein $WORD ist."
 
 #: rdf.pl:28
 msgid "From what news source my friend?"
@@ -96,8 +167,8 @@ msgstr "Von welcher News-Quelle mein Freund?"
 
 #: rdf.pl:29
 msgid "Available are: slashdot, register, happypenguin, heise"
-msgstr "Verfügbar sind: slashdot, register, happypenguin, heise"
+msgstr "VerfÃ¼Bgbar sind: slashdot, register, happypenguin, heise"
 
 #: rdf.pl:65
 msgid "News source not available."
-msgstr "News-Quelle ist nicht verfügbar."
+msgstr "News-Quelle ist nicht verfÃ¼Agbar."

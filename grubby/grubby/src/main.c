@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
 	Gurucore *core;
 	Guru *guru;
 	char *opthost = NULL, *optname = NULL, *optdatadir = NULL;
+	char *input;
 
 	/* Recognize command line arguments */
 	struct option options[] =
@@ -170,12 +171,26 @@ int main(int argc, char *argv[])
 				if(!admin(guru, core))
 				{
 					/* If message is valid, try to translate it first */
-					if(core->i18n_check) (core->i18n_check)(guru->player, guru->message);
-					guru = guru_work(guru);
-					if(guru)
+					input = NULL;
+					if(core->i18n_check)
 					{
-						if(core->i18n_translate) guru->message = (core->i18n_translate)(guru->player, guru->message);
-						(core->net_output)(guru);
+						input = (core->i18n_check)(guru->player, guru->message);
+						if(input)
+						{
+							free(guru->message);
+							guru->message = input;
+							guru->message = (core->i18n_translate)(guru->player, guru->message);
+							(core->net_output)(guru);
+						}
+					}
+					if(!input)
+					{
+						guru = guru_work(guru);
+						if(guru)
+						{
+							if(core->i18n_translate) guru->message = (core->i18n_translate)(guru->player, guru->message);
+							(core->net_output)(guru);
+						}
 					}
 				}
 				break;
