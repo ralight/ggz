@@ -958,8 +958,7 @@ int update(int event, void *data)
 			/* TODO: for now we assume 4 seats, which is all that is supported by the client.
 			 * However, this is a big issue with the multi-game capability.  We may not
 			 * know what game we're playing until later. */
-			game.num_seats = 4;
-			game.seats = (struct game_seat_t *)alloc(game.num_seats * sizeof(struct game_seat_t));
+			set_num_seats(4);
 
 			/* as soon as we know which game we're playing, we should init the game */
 			if (game.which_game != GGZ_GAME_UNKNOWN)
@@ -1150,4 +1149,15 @@ void set_all_player_messages()
 	for (p=0; p<game.num_players; p++)
 		game_set_player_message(p);	
 }
+
+void set_num_seats(int num_seats)
+{
+	ggz_debug("Setting number of seats to %d.", num_seats);
+	game.num_seats = num_seats;
+	if (game.seats != NULL)
+		free(game.seats);
+	game.seats = (struct game_seat_t *)alloc(game.num_seats * sizeof(struct game_seat_t));
+}
+
+
 

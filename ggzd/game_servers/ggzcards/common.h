@@ -220,6 +220,8 @@ extern void init_game(int which); /* pass in the name of the game */
 extern int handle_ggz(int, int *);
 extern int handle_player(player_t);
 
+extern void set_num_seats(int num_seats);
+
 /* the game structure */
 extern struct wh_game_t game;
 

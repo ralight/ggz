@@ -142,18 +142,13 @@ void game_init_game()
 
 	cards_create_deck(game.which_game);
 
-	/* TODO: see TODO by other game.seats allocation */
-	if (game.num_seats != 4) {
-		game.num_seats = 4; /* default value */
-		game.seats = (struct game_seat_t *)alloc(game.num_seats * sizeof(struct game_seat_t));
-	}
-
 	/* second round of game-specific initialization */
 	switch (game.which_game) {
 		case GGZ_GAME_SUARO:
 			{
 			static struct ggz_seat_t ggz[2] = { {GGZ_SEAT_NONE, "Kitty", -1},
 							    {GGZ_SEAT_NONE, "Key Card", -1} };
+			set_num_seats(4);
 			game.seats[0].ggz = &ggz_seats[0];
 			game.players[0].seat = 0;
 			game.seats[2].ggz = &ggz_seats[1];
@@ -174,6 +169,7 @@ void game_init_game()
 			}
 			break;
 		case GGZ_GAME_LAPOCHA:
+			set_num_seats(4);
 			for(p = 0; p < game.num_players; p++) {
 				s = p;
 				game.players[p].seat = s;
@@ -186,6 +182,7 @@ void game_init_game()
 			game.name = "La Pocha";
 			break;
 		case GGZ_GAME_BRIDGE:
+			set_num_seats(4);
 			for(p = 0; p < game.num_players; p++) {
 				s = p;
 				game.players[p].seat = s;
@@ -202,6 +199,7 @@ void game_init_game()
 			BRIDGE.declarer = -1;
 			break;
 		case GGZ_GAME_SPADES:
+			set_num_seats(4);
 			for(p = 0; p < game.num_players; p++) {
 				s = p;
 				game.players[p].seat = s;
@@ -219,6 +217,7 @@ void game_init_game()
 			game.name = "Spades";
 			break;
 		case GGZ_GAME_HEARTS:
+			set_num_seats(game.num_players);
 			game.trump = -1; /* no trump in hearts */
 			for(p = 0; p < game.num_players; p++) {
 				s = p;
