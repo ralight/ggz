@@ -291,27 +291,56 @@ unsigned int _ggzcore_module_get_num(void)
 
 int _ggzcore_module_get_num_by_type(const char *game, const char *protocol)
 {
-	/* FIXME: need to calcluate this ! */
-	return 1;
+	int count, status, i;
+	char **ids;
+	struct _GGZModule module;
+
+	/* Get total count for this game (regardless of version) */
+	status = ggzcore_confio_read_list(mod_handle, "Games", game,
+					  &count, &ids);
+	if (status < 0)
+		return 0;
+	
+	for (i = 0; i < count; i++) {
+		_ggzcore_module_read(&module, ids[i]);
+		/* Subtract out modules that aren't the same version */
+		if (strcmp(protocol, module.protocol) != 0)
+			count--;
+	}
+
+
+	return count;
 }
 
 
 /* FIXME: do this right */
 struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game, const char *protocol, const unsigned int num)
 {
-	_ggzcore_list_entry *entry;
-	struct _GGZModule mod;
+	int i, total, status, count;
+	char **ids;
+	struct _GGZModule *module;
 
-	mod.game = (char*)game;
-	mod.protocol = (char*)protocol;
-
-	entry = _ggzcore_list_search_alt(module_list, &mod, _ggzcore_module_match_version);
-	if (!entry) {
-		ggzcore_debug(GGZ_DBG_MODULE, "Couldn't find module");
+	status = ggzcore_confio_read_list(mod_handle, "Games", game,
+					  &total, &ids);
+	if (status < 0)
 		return NULL;
-	}
 
-	return _ggzcore_list_get_data(entry);
+	if (num >= total)
+		return NULL;
+	
+	count = 0;
+	for (i = 0; i < total; i++) {
+		module = _ggzcore_module_new();
+		_ggzcore_module_read(module, ids[i]);
+		if (strcmp(protocol, module->protocol) == 0) {
+			if (count++ == num)
+				return module;
+		}
+	}
+	
+	/* If we get here it wasn't found */
+
+	return NULL;
 }
 
 
