@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3404 2002-02-17 15:16:39Z jdorje $
+ * $Id: game.c 3405 2002-02-17 16:51:28Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -188,6 +188,8 @@ void game_alert_newgame(void)
 	for (p = 0; p < MAX_NUM_PLAYERS; p++)
 		table_cards[p] = UNKNOWN_CARD;
 		
+	table_hide_player_list();
+		
 	game_started = TRUE;
 	table_setup();
 	/* do nothing... */
@@ -219,6 +221,8 @@ void game_handle_gameover(int num_winners, int *winners)
 		snprintf(msg + strlen(msg), sizeof(msg) - strlen(msg),
 			 _("won the game."));
 	}
+	
+	table_show_player_list();
 
 	/* This hack places this message in place of the global game message.
 	   It prevents it from being overwritten by the upcoming newgame
@@ -234,6 +238,7 @@ void game_alert_player(int player, GGZSeatType status, const char *name)
 
 	if (player_dialog != NULL)
 		update_player_dialog(player_dialog);
+	table_update_player_list();
 
 	switch (status) {
 	case GGZ_SEAT_PLAYER:

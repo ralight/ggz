@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.h 3380 2002-02-17 07:47:26Z jdorje $
+ * $Id: table.h 3405 2002-02-17 16:51:28Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -30,6 +30,10 @@ extern GdkPixmap *card_fronts[4];
 
 void table_initialize(void);
 void table_setup(void);
+
+void table_show_player_list(void);
+void table_hide_player_list(void);
+void table_update_player_list(void);
 
 /* Call this function before exiting, to clean up everything. */
 void table_cleanup(void);

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3402 2002-02-17 15:14:57Z jdorje $
+ * $Id: table.c 3405 2002-02-17 16:51:28Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -37,12 +37,13 @@
 #include "common.h"
 
 #include "animation.h"
-#include "main.h"
-#include "game.h"
-#include "table.h"
-#include "layout.h"
 #include "dlg_bid.h"
 #include "dlg_main.h"
+#include "dlg_players.h"
+#include "game.h"
+#include "layout.h"
+#include "main.h"
+#include "table.h"
 
 #include "cards-1.xpm"
 #include "cards-2.xpm"
@@ -57,9 +58,11 @@
 GtkRcStyle *fixed_font_style = NULL;
 
 /* Table data */
-GtkWidget *table;		/* widget containing the whole table */
+GtkWidget *table = NULL;		/* widget containing the whole table */
 GtkStyle *table_style;		/* Style for the table */
 static GdkPixmap *table_buf = NULL;	/* backing store for the table */
+
+static GtkWidget *player_list = NULL;
 
 static const char* player_names[MAX_NUM_PLAYERS] = {NULL};
 static const char* player_messages[MAX_NUM_PLAYERS] = {NULL};
@@ -153,7 +156,9 @@ static void table_clear_table(int write_to_screen)
 /* Draws a "splash screen" that is shown before the game is initialized. */
 static void draw_splash_screen(void)
 {
+#if 0
 	card_t card = { ACE_HIGH, SPADES, 0 };
+#endif
 
 	ggz_debug("table", "Drawing splash screen.");
 
@@ -161,9 +166,14 @@ static void draw_splash_screen(void)
 	assert(table_buf);
 
 	table_clear_table(FALSE);
+	
+#if 0
+	/* This is temporarily disabled until I can figure out how
+	   to get it to work with the player list. */
 	draw_card(card, 0,
 		  (get_table_width() - CARDWIDTH) / 2,
 		  (get_table_height() - CARDHEIGHT) / 2, table_buf);
+#endif
 		
 	table_show_table(0, 0, get_table_width(), get_table_height());
 }
@@ -219,6 +229,8 @@ void table_initialize(void)
 	
 	/* Redraw and display the table. */
 	table_redraw();
+	
+	table_show_player_list();
 }
 
 /* Setup all table data that's not initialized by table_initialize.  This may
@@ -269,6 +281,51 @@ void table_setup(void)
 
 	/* Redraw and display the table. */
 	table_redraw();
+}
+
+
+void table_show_player_list(void)
+{
+	assert(table != NULL);
+	
+	if (player_list == NULL) {
+		player_list = create_player_clist();
+		/* This positioning is just an approximation.  I'd like
+		   to center it automatically, but that doesn't seem
+		   to work for some reason... */
+		gtk_fixed_put(GTK_FIXED(table), player_list, 60, 60);
+	}
+	
+	gtk_widget_show_all(player_list);
+	
+	if (table_ready) {
+		int tw = table->allocation.width;
+		int th = table->allocation.height;
+	
+		int mw = player_list->allocation.width;
+		int mh = player_list->allocation.height;
+	
+		int x = tw / 2 - mw / 2;
+		int y = th / 2 - mh / 2;
+	
+		gtk_fixed_move(GTK_FIXED(table), player_list, x, y);
+	}
+	
+	/* Yeah, the drawing tends to get erased by this clist... */
+	table_redraw();
+}
+
+
+void table_hide_player_list(void)
+{
+	assert(player_list);
+	gtk_widget_hide(player_list);
+}
+
+void table_update_player_list(void)
+{
+	if (player_list)
+		update_player_clist(player_list);
 }
 
 
