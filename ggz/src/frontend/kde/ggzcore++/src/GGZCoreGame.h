@@ -83,7 +83,7 @@ class GGZCoreGame
 		/*int join();*/
 		/**
 		 * Join as spectator. */
-		int joinSpectator();
+		/*int joinSpectator();*/
 
 		/**
 		 * Send other data. */
