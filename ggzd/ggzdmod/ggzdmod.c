@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4476 2002-09-09 00:55:17Z jdorje $
+ * $Id: ggzdmod.c 4477 2002-09-09 01:44:56Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1358,7 +1358,7 @@ void _ggzdmod_handle_join(GGZdMod * ggzdmod, GGZSeat seat)
 /* game-side event: player leave received from ggzd */
 void _ggzdmod_handle_leave(GGZdMod * ggzdmod, char *name)
 {
-	char status = -1;
+	char status = 0;
 	GGZListEntry *entry;
 	GGZSeat seat;
 	GGZSeat *old_seat;
@@ -1372,30 +1372,31 @@ void _ggzdmod_handle_leave(GGZdMod * ggzdmod, char *name)
 		_ggzdmod_error(ggzdmod,
 		               "GGZDMOD: Error: "
 		               "non-existant player tried to leave.");
-		return;
+		status = -1;
 	}
 
-	status = 0;
-	seat = *(GGZSeat*)ggz_list_get_data(entry);
-	ggzdmod_log(ggzdmod, "GGZDMOD: Removed %s from seat %d",
-	           seat.name, seat.num);
+	if (status >= 0) {
+		seat = *(GGZSeat*)ggz_list_get_data(entry);
+		ggzdmod_log(ggzdmod, "GGZDMOD: Removed %s from seat %d",
+			    seat.name, seat.num);
 
-	/* Copy seat to old_seat. */
-	old_seat = seat_copy(&seat);
+		/* Copy seat to old_seat. */
+		old_seat = seat_copy(&seat);
 
-	/* Reset seat to open state, and reinsert into list */
-	seat.fd = -1;
-	seat.name = NULL;
-	seat.type = GGZ_SEAT_OPEN;
-	ggz_list_insert(ggzdmod->seats, &seat);
+		/* Reset seat to open state, and reinsert into list */
+		seat.fd = -1;
+		seat.name = NULL;
+		seat.type = GGZ_SEAT_OPEN;
+		ggz_list_insert(ggzdmod->seats, &seat);
 
-	/* Invoke the handler.  Most games will want to change their
-	   status to WAITING at this point, but we leave that entirely
-	   up to them (via ggzdmod_set_state()). */
-	call_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, old_seat);
+		/* Invoke the handler.  Most games will want to change their
+		   status to WAITING at this point, but we leave that entirely
+		   up to them (via ggzdmod_set_state()). */
+		call_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, old_seat);
 
-	/* Delete old_seat */
-	seat_free(old_seat);
+		/* Delete old_seat */
+		seat_free(old_seat);
+	}
 
 	if (_io_respond_leave(ggzdmod->fd, status) < 0)
 		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
@@ -1475,10 +1476,9 @@ void _ggzdmod_handle_spectator_join(GGZdMod * ggzdmod, GGZSpectator spectator)
 /* game-side event: spectator leave received from ggzd */
 void _ggzdmod_handle_spectator_leave(GGZdMod * ggzdmod, char *name)
 {
-	char status = -1;
+	char status = 0;
 	GGZListEntry *entry;
 	GGZSpectator spectator;
-	GGZSpectator *old_seat;
 
 	/* Set spectator name, and see if we find anybody who matches */
 	spectator.name = name;
@@ -1489,27 +1489,29 @@ void _ggzdmod_handle_spectator_leave(GGZdMod * ggzdmod, char *name)
 		_ggzdmod_error(ggzdmod,
 		               "GGZDMOD: Error: "
 		               "non-existant spectator tried to leave.");
-		return;
+		status = -1;
 	}
 
-	status = 0;
-	spectator = *(GGZSpectator*)ggz_list_get_data(entry);
-	ggzdmod_log(ggzdmod, "GGZDMOD: Removed %s from spectator seat %d",
-	           spectator.name, spectator.num);
+	if (status >= 0) {
+		GGZSpectator *oldspectator = ggz_list_get_data(entry);
 
-	/* Copy seat to old_seat. */
-	old_seat = spectator_copy(&spectator);
+		/* Make a copy of the old seat. */
+		oldspectator = spectator_copy(oldspectator);
 
-	/* Reset seat to open state, and reinsert into list */
-	spectator.fd = -1;
-	spectator.name = NULL;
-	ggz_list_insert(ggzdmod->spectators, &spectator);
+		ggzdmod_log(ggzdmod,
+			    "GGZDMOD: Removed %s from spectator seat %d",
+			    oldspectator->name, oldspectator->num);
 
-	/* Invoke the handler. */
-	call_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, old_seat);
+		/* Delete the spectator entry from the list. */
+		ggz_list_delete_entry(ggzdmod->spectators, entry);
 
-	/* Delete old_seat */
-	spectator_free(old_seat);
+		/* Invoke the handler. */
+		call_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE,
+			     oldspectator);
+
+		/* Delete the copy. */
+		spectator_free(oldspectator);
+	}
 
 	if (_io_respond_spectator_leave(ggzdmod->fd, status) < 0)
 		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
