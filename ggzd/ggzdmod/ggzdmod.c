@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2779 2001-12-05 23:08:40Z jdorje $
+ * $Id: ggzdmod.c 2786 2001-12-06 09:07:04Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -722,11 +722,10 @@ int ggzdmod_connect(GGZdMod * mod)
 		if (send_game_launch(ggzdmod) < 0) {
 			_ggzdmod_error(ggzdmod, "Error sending launch to game");
 			/* FIXME: this might result in a forked but unused table. */
+			/* FIXME: it might also result in a ggzdmod with
+			   initialized but wrong data in it. */
 			return -1;
 		}
-		
-		return 0;
-		
 	} else {
 		/* For the game side we setup the fd */
 		ggzdmod->fd = 3;
@@ -735,9 +734,9 @@ int ggzdmod_connect(GGZdMod * mod)
 			ggzdmod->fd = -1;
 			return -1;
 		}
-		
-		return ggzdmod->fd;
 	}
+	
+	return ggzdmod->fd; /* It sure better be valid at this point! */
 }
 
 int ggzdmod_disconnect(GGZdMod * mod)
