@@ -27,6 +27,17 @@
     <data>&amp;about_dialog</data>
     <last_modification_time>Sun, 05 Nov 2000 06:16:14 GMT</last_modification_time>
   </signal>
+  <signal>
+    <name>realize</name>
+    <handler>about_realize</handler>
+    <last_modification_time>Tue, 20 Mar 2001 22:56:13 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>expose_event</name>
+    <handler>about_update</handler>
+    <data>NULL</data>
+    <last_modification_time>Thu, 22 Mar 2001 23:49:38 GMT</last_modification_time>
+  </signal>
   <title>About</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -78,9 +89,8 @@
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>gtk_widget_destroy</handler>
-	    <object>dlg_about</object>
-	    <last_modification_time>Sun, 05 Nov 2000 06:15:30 GMT</last_modification_time>
+	    <handler>about_ok</handler>
+	    <last_modification_time>Tue, 20 Mar 2001 23:06:25 GMT</last_modification_time>
 	  </signal>
 	  <label>OK</label>
 	</widget>
@@ -88,84 +98,19 @@
     </widget>
 
     <widget>
-      <class>GtkVBox</class>
-      <name>vbox1</name>
-      <border_width>10</border_width>
-      <homogeneous>False</homogeneous>
-      <spacing>0</spacing>
+      <class>Custom</class>
+      <name>background</name>
+      <width>250</width>
+      <height>300</height>
+      <creation_function>about_background_add</creation_function>
+      <int1>0</int1>
+      <int2>0</int2>
+      <last_modification_time>Tue, 20 Mar 2001 03:29:35 GMT</last_modification_time>
       <child>
 	<padding>0</padding>
 	<expand>False</expand>
 	<fill>False</fill>
       </child>
-
-      <widget>
-	<class>GtkLabel</class>
-	<name>title_label</name>
-	<label>GGZ Gaming Zone
-GTK+ Client</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-	<child>
-	  <padding>8</padding>
-	  <expand>False</expand>
-	  <fill>False</fill>
-	</child>
-      </widget>
-
-      <widget>
-	<class>GtkLabel</class>
-	<name>label4</name>
-	<label>(C) 1999, 2000, 2001</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-	<child>
-	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>False</fill>
-	</child>
-      </widget>
-
-      <widget>
-	<class>GtkLabel</class>
-	<name>label2</name>
-	<label>Authors:
-     GTK+ Version
-          Brian Cox             (bcox@users.sourceforge.net)
-          Rich Gade             (rgade@users.sourceforge.net)
-          Brent Hendricks   (bmh@users.sourceforge.net)
-          Justin Zaun	           (jzaun@users.sourceforge.net)
-
-     Windows Version
-          Doug Hudson        (djh@users.sourceforge.net)
-
-     KDE2 Version
-          Josef Spillner
-
-Website:
-     http://ggz.sourceforge.net
-</label>
-	<justify>GTK_JUSTIFY_LEFT</justify>
-	<wrap>False</wrap>
-	<xalign>0.25</xalign>
-	<yalign>5.21541e-08</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-	<focus_target>ok_button</focus_target>
-	<child>
-	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>False</fill>
-	</child>
-      </widget>
     </widget>
   </widget>
 </widget>
