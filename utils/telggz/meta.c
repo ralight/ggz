@@ -1,7 +1,27 @@
-/* Include files */
+/*
+ * TelGGZ - The GGZ Gaming Zone Telnet Wrapper
+ * Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/* Header files */
 #include "meta.h"
 #include "minidom.h"
+
+/* System includes */
 #include <stdlib.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -12,16 +32,13 @@
 #include <string.h>
 
 /* Definitions */
-
 #define PROTO_TCP 6
 
-/* Globals */
-
+/* Global variables */
 char **metaservers;
 int metaservercount;
 
 /* Prototypes */
-
 char *meta_query_internal(int fd, const char *text);
 int meta_connect_internal(const char *hostname, int port);
 char *meta_uri_host_internal(const char *uri);
@@ -85,7 +102,6 @@ ServerGGZ **meta_query(const char *version)
 			s = meta_query_internal(fd, query);
 			if(s)
 			{
-				/*printf(">> %s\n", s);*/
 				dom = minidom_parse(s);
 				if((dom) && (dom->processed) && (dom->valid))
 				{
@@ -142,7 +158,6 @@ void meta_sync()
 	{
 		host = meta_uri_host_internal(metaservers[j]);
 		port = meta_uri_port_internal(metaservers[j]);
-		/*printf("Connect to: %s:%i [%i]\n", host, port, j);*/
 		fd = meta_connect_internal(host, port);
 		if(fd >= 0)
 		{
@@ -150,7 +165,6 @@ void meta_sync()
 			s = meta_query_internal(fd, query);
 			if(s)
 			{
-				/*printf(">> %s\n", s);*/
 				dom = minidom_parse(s);
 				if((dom) && (dom->processed) && (dom->valid))
 				{

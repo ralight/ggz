@@ -1,9 +1,31 @@
+/*
+ * TelGGZ - The GGZ Gaming Zone Telnet Wrapper
+ * Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/* Header files */
 #include "net.h"
 
+/* System includes */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
+/* Global variables */
 GGZServer *server = NULL;
 GGZRoom *room = NULL;
 char *m_username = NULL;
@@ -11,6 +33,8 @@ char *m_password = NULL;
 char *buffer = NULL;
 int m_allow = 1;
 char *host = NULL;
+
+/* Functions */
 
 void net_init()
 {
@@ -23,9 +47,12 @@ void net_init()
 	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST, net_hook_roomlist);
 	ggzcore_server_add_event_hook(server, GGZ_ENTERED, net_hook_enter);
 	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, net_hook_failure);
+	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR, net_hook_failure);
+	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR, net_hook_failure);
+	ggzcore_server_add_event_hook(server, GGZ_CHAT_FAIL, net_hook_failure);
 }
 
-void net_login(char *username, char *password)
+void net_login(const char *username, const char *password)
 {
 	if(room) return;
 
@@ -34,16 +61,16 @@ void net_login(char *username, char *password)
 
 	if(!host) host = "localhost";
 	ggzcore_server_set_hostinfo(server, host, 5688/*, 0*/); /*4th argument is for tls*/
+	printf("Logging in as %s...\n", m_username);
+	fflush(NULL);
 	ggzcore_server_connect(server);
 }
 
 void net_process()
 {
 	if(server)
-	{
 		if(ggzcore_server_data_is_pending(server))
 			ggzcore_server_read_data(server);
-	}
 }
 
 void net_send(char *buffer)
@@ -58,13 +85,13 @@ void net_allow(int allow)
 	m_allow = allow;
 }
 
-void net_host(char *hostname)
+void net_host(const char *hostname)
 {
 	if(room) return;
 
 	if(host) free(host);
 	host = strdup(hostname);
-	printf("TelGGZ: Host is now %s\n", hostname);
+	printf("TelGGZ: Host is now %s.\n", hostname);
 	fflush(NULL);
 }
 
@@ -73,10 +100,49 @@ void net_join(int roomnum)
 	if(room) ggzcore_server_join_room(server, roomnum);
 }
 
+void net_list()
+{
+	int i;
+	GGZRoom *room;
+
+	for(i = 0; i < ggzcore_server_get_num_rooms(server); i++)
+	{
+		room = ggzcore_server_get_nth_room(server, i);
+		printf("%3i: %s\n", i, ggzcore_room_get_name(room));
+	}
+	fflush(NULL);
+}
+
+void net_who()
+{
+	if(!room)
+	{
+		printf("Not in a room yet.\n");
+		fflush(NULL);
+		return;
+	}
+
+	ggzcore_room_list_players(room);
+}
+
+GGZHookReturn net_hook_players(unsigned int id, void *event_data, void *user_data)
+{
+	GGZPlayer *player;
+	int i;
+
+	for(i = 0; i < ggzcore_room_get_num_players(room); i++)
+	{
+		player = ggzcore_room_get_nth_player(room, i);
+		printf(" * %s\n", ggzcore_player_get_name(player));
+	}
+	fflush(NULL);
+
+	return GGZ_HOOK_OK;
+}
+
 GGZHookReturn net_hook_connect(unsigned int id, void *event_data, void *user_data)
 {
-	/*nasty ggzcore bug?*/
-	while(!ggzcore_server_is_online(server)) ggzcore_server_read_data(server); 
+	while(!ggzcore_server_is_online(server)) ggzcore_server_read_data(server);
 
 	ggzcore_server_set_logininfo(server, GGZ_LOGIN_GUEST, m_username, m_password);
 	ggzcore_server_login(server);
@@ -121,6 +187,7 @@ GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, net_hook_roomleave);
 	ggzcore_room_add_event_hook(room, GGZ_CHAT, net_hook_chat);
 	ggzcore_room_add_event_hook(room, GGZ_PRVMSG, net_hook_prvmsg);
+	ggzcore_room_add_event_hook(room, GGZ_PLAYER_LIST, net_hook_players);
 
 	return GGZ_HOOK_OK;
 }

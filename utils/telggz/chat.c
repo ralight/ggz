@@ -1,5 +1,26 @@
+/*
+ * TelGGZ - The GGZ Gaming Zone Telnet Wrapper
+ * Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/* Header files */
 #include "net.h"
 
+/* System includes */
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdlib.h>
@@ -7,25 +28,47 @@
 #include <unistd.h>
 #include <string.h>
 
+/* Definitions */
 #define BUFSIZE 100
 
-void chat_connect(char *host, int port)
+/* Functions */
+
+void chat_connect(const char *host, int port, const char *username, const char *password)
 {
+	net_init();
 	net_host(host);
-	net_login("guest34", NULL);
+	net_login(username, password);
+}
+
+char *chat_input()
+{
+	char *s;
+	int ret;
+
+	s = (char*)malloc(128);
+	ret = read(0, s, 128);
+	if(ret < 1) return NULL;
+	if((ret > 0) && (s[ret - 1] == '\n')) s[ret - 1] = 0;
+	if((ret > 1) && (s[ret - 2] == '\r')) s[ret - 2] = 0;
+	return s;
 }
 
 int chat_getserver()
 {
-	char *server;
-	int ret;
+	char *s;
+	s = chat_input();
+	if(!s) return -1;
+	return atoi(s);
+}
 
-	server = (char*)malloc(128);
-	ret = read(0, server, 128);
-	if(ret < 1) return -1;
-	if((ret > 0) && (server[ret - 1] == '\n')) server[ret - 1] = 0;
-	if((ret > 1) && (server[ret - 2] == '\r')) server[ret - 2] = 0;
-	return atoi(server);
+char *chat_getusername()
+{
+	return chat_input();
+}
+
+char *chat_getpassword()
+{
+	return chat_input();
 }
 
 char **chat_list(char *buffer)
@@ -66,10 +109,9 @@ void chat_loop()
 	char buffer[BUFSIZE];
 	int ret;
 	char **list;
+	int unknown;
 
 	fcntl(0, F_SETFL, O_NONBLOCK);
-
-	net_init();
 
 	while(1)
 	{
@@ -88,14 +130,12 @@ void chat_loop()
 				list = chat_list(buffer);
 				if((list) && (list[0]))
 				{
-					if(!strcmp(list[0], "/login"))
-					{
-						if(list[1]) net_login(list[1], list[2]);
-					}
+					unknown = 1;
 					if((!strcmp(list[0], "/quit"))
 					|| (!strcmp(list[0], "/exit")))
 					{
 						exit(0);
+						unknown = 0;
 					}
 					if((!strcmp(list[0], "/help"))
 					|| (!strcmp(list[0], "/?")))
@@ -105,23 +145,41 @@ void chat_loop()
 						printf("Published under GNU GPL conditions\n");
 						printf("\n");
 						printf("Available commands:\n");
-						printf("/host <hostname> - Connect to the given host (default: localhost)\n");
-						printf("/login <nick> [<password>] - Log into the selected server\n");
 						printf("/join <roomid> - Join the room with the given id\n");
+						printf("/list - Show all rooms\n");
+						printf("/who - Show all players\n");
 						printf("/help - This dialog (also /?)\n");
 						printf("/quit - Quit the chat (also /exit)\n");
 						printf("\n");
 						printf("Before starting to enter a line, press Enter once to prevent your line\n");
 						printf("from being overwritten.\n");
 						fflush(NULL);
+						unknown = 0;
+					}
+					if(!strcmp(list[0], "/list"))
+					{
+						net_list();
+						unknown = 0;
+					}
+					if(!strcmp(list[0], "/who"))
+					{
+						net_who();
+						unknown = 0;
 					}
 					if(!strcmp(list[0], "/join"))
 					{
 						if(list[1]) net_join(atoi(list[1]));
+						else
+						{
+							printf("Wrong arguments,\n");
+							fflush(NULL);
+						}
+						unknown = 0;
 					}
-					if(!strcmp(list[0], "/host"))
+					if(unknown)
 					{
-						if(list[1]) net_host(list[1]);
+						printf("Unknown command!\n");
+						fflush(NULL);
 					}
 				}
 			}
