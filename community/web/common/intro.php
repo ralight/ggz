@@ -25,7 +25,9 @@ function player_intro()
 		$count = $database->result($res, $i, "count");
 		$player = $database->result($res, $i, "handle");
 
-		echo "<img src='/db/ggzicons/players/player.png' width=16 height=16>\n";
+		$p = new Player($player);
+		$p->icon();
+
 		echo "The most active player is <a href='/db/players/?lookup=$player'>$player</a> with $count games played.";
 	endif;
 }
