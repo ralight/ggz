@@ -24,6 +24,7 @@ class GGZMetaProtocol : public QObject, public KIO::SlaveBase
 		void slotResult(KIO::Job *job);
 		void slotRead();
 		void slotWrite();
+		void slotError(int errorcode);
 
 	private:
 		void jobOperator(const KURL& url);
@@ -33,6 +34,7 @@ class GGZMetaProtocol : public QObject, public KIO::SlaveBase
 		KIO::UDSEntry entry;
 		QString m_class, m_query, m_temp;
 		QSocket *m_sock;
+		int m_result;
 };
 
 #endif

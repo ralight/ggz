@@ -3,7 +3,7 @@
 #include "helper.h"
 
 // KDE includes
-#include <kinstance.h>
+#include <kapplication.h>
 #include <kio/netaccess.h>
 #include <kio/job.h>
 // temp
@@ -20,21 +20,11 @@
 
 using namespace std;
 
-// Global QApplication object to be used for events
-QApplication *a;
-
 // Constructor
 GGZMetaProtocol::GGZMetaProtocol(const QCString& pool, const QCString& app)
 : QObject(), SlaveBase("ggzmeta", pool, app)
 {
 	m_sock = NULL;
-
-	// Official quick hack (tm)
-	int argc = 1;
-	char *argv[2] = {"ggzmeta", NULL};
-	a = new QApplication(argc, argv);
-
-	debug("IO loaded.");
 }
 
 // Destructor
@@ -57,6 +47,7 @@ void GGZMetaProtocol::jobOperator(const KURL& url)
 	{
 		// When class is specified, go for it...
 		debug(QString("Class: ") + u.host());
+		if(u.path() == "/") u.setPath("");
 		work(u.host(), u.path());
 	}
 	else
@@ -64,9 +55,9 @@ void GGZMetaProtocol::jobOperator(const KURL& url)
 		// ...else just output some information FIXME! Use HTML
 		debug("General information about ggzmeta://");
 		QCString output;
-		mimeType("text/plain");
-		output.sprintf("This is the GGZ Gaming Zone Meta Server IO Slave.\n"
-			"See http://ggz.sourceforge.net/metaserver/ for more details.\n");
+		mimeType("text/html");
+		output.sprintf("<b>This is the GGZ Gaming Zone Meta Server IO Slave.\n"
+			"See http://ggz.sourceforge.net/metaserver/ for more details.\n</b>");
 		data(output);
 		finished();
 	}
@@ -75,11 +66,11 @@ void GGZMetaProtocol::jobOperator(const KURL& url)
 // Result slot for async copy operations
 void GGZMetaProtocol::slotResult(KIO::Job *job)
 {
+	debug("** result **");
 	debug(QString("ggz -> slotResult: %1").arg(m_class));
 
 	delegate(m_class, m_temp);
 	// rm(temp); FIXME! KTempFile
-	a->quit();
 }
 
 // Result slot for interactive meta servers
@@ -89,6 +80,7 @@ void GGZMetaProtocol::slotWrite()
 	QStringList l;
 
 	debug("ggz -> slotWrite()");
+
 	l = l.split('/', m_query);
 	if(l.count() == 2)
 	{
@@ -176,7 +168,41 @@ void GGZMetaProtocol::slotRead()
 	else error(0, "No such class!");
 
 	delete m_sock;
-	a->quit();
+}
+
+void GGZMetaProtocol::slotError(int errorcode)
+{
+	QString errorstring;
+
+	debug("ggz -> slotError");
+
+	qApp->exit_loop();
+
+	switch(errorcode)
+	{
+		case QSocket::ErrConnectionRefused:
+			errorstring = "Connection refused";
+			break;
+		case QSocket::ErrHostNotFound:
+			errorstring = "Host not found";
+			break;
+		case QSocket::ErrSocketRead:
+			errorstring = "Socket read failure";
+			break;
+		default:
+			errorstring = "Unknown error";
+	}
+
+	debug(QString("An error occured: %1.").arg(errorstring));
+//	error(0, QString("An error occured: %1.").arg(errorstring));
+
+	QCString output;
+	mimeType("text/html");
+	output.sprintf(QString("<b>An error occured: %1.</b>").arg(errorstring));
+	data(output);
+	finished();
+
+	m_result = 1;
 }
 
 // Dispatcher: Select method based on query information
@@ -187,21 +213,42 @@ void GGZMetaProtocol::work(QString queryclass, QString query)
 
 	if(queryclass == "freeciv")
 	{
-		debug("** start freeciv download **");
-
-		m_temp = "/tmp/freeciv.metaserver";
+		/*m_temp = "/tmp/freeciv.metaserver";
+		debug("** build the job **");
 		KIO::Job *job = KIO::copy("http://meta.freeciv.org/metaserver/", m_temp);
+		debug("** do the connection **");
 		connect(job, SIGNAL(result(KIO::Job)), SLOT(slotResult(KIO::Job)));
+		debug("** ready **");*/
 
-		a->exec();
-
-		/*QString tmp;
-		if(KIO::NetAccess::download("http://meta.freeciv.org/metaserver/", tmp))
+		if(m_query.isEmpty())
 		{
-			delegate(queryclass, tmp);
-			KIO::NetAccess::removeTempFile(tmp);
+			debug("** start freeciv download **");
+			QString tmp;
+			if(KIO::NetAccess::download("http://meta.freeciv.org/metaserver/", tmp))
+			{
+				debug("** download finished, goto delegate **");
+				delegate(queryclass, tmp);
+				KIO::NetAccess::removeTempFile(tmp);
+			}
+			else error(0, QString("Couldn't process freeciv query: %1").arg(query));
+			debug("** download finished and processed **");
 		}
-		else error(0, QString("Couldn't process freeciv query: %1").arg(query));*/
+		else
+		{
+			debug("** request URI: " + m_query + " **");
+
+			QCString output;
+			mimeType("application/x-desktop");
+			output.sprintf("[Desktop Entry]\n"
+				"Comment=Freeciv Game\n"
+				"Exec=civclient\n"
+				"Icon=freeciv\n"
+				"MimeType=Application\n"
+				"Name=Freeciv\n"
+				"Type=Application\n");
+			data(output);
+			finished();
+		}
 	}
 	else if(queryclass == "atlantik")
 	{
@@ -210,8 +257,6 @@ void GGZMetaProtocol::work(QString queryclass, QString query)
 		m_temp = "/tmp/atlantik.metaserver";
 		KIO::Job *job = KIO::copy("http://gator.monopd.net", m_temp);
 		connect(job, SIGNAL(result(KIO::Job)), SLOT(slotResult(KIO::Job)));
-
-		a->exec();
 
 		/*QString tmp;
 		if(KIO::NetAccess::download("http://gator.monopd.net", tmp))
@@ -228,18 +273,14 @@ void GGZMetaProtocol::work(QString queryclass, QString query)
 		m_temp = "/tmp/dopewars.metaserver";
 		KIO::Job *job = KIO::copy("http://dopewars.sourceforge.net/metaserver.php?getlist=2", m_temp);
 		connect(job, SIGNAL(result(KIO::Job)), SLOT(slotResult(KIO::Job)));
-
-		a->exec();
 	}
 	else if(queryclass == "crossfire")
 	{
-		if((m_query.isEmpty()) || (m_query == "/"))
+		if(m_query.isEmpty())
 		{
 			m_sock = new QSocket();
 			connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
 			m_sock->connectToHost("crossfire.real-time.com", 13326);
-
-			a->exec();
 		}
 		else
 		{
@@ -258,13 +299,11 @@ void GGZMetaProtocol::work(QString queryclass, QString query)
 	}
 	else if(queryclass == "netrek")
 	{
-		if((m_query.isEmpty()) || (m_query == "/"))
+		if(m_query.isEmpty())
 		{
 			m_sock = new QSocket();
 			connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
 			m_sock->connectToHost("metaserver.netrek.org", 3521);
-
-			a->exec();
 		}
 		else
 		{
@@ -281,7 +320,7 @@ void GGZMetaProtocol::work(QString queryclass, QString query)
 			finished();
 		}
 	}
-	else
+	else if(queryclass == "ggz")
 	{
 		// ggz and other non-delegates supported by the GGZ Meta Server directly
 		debug("** ggz meta server **");
@@ -289,9 +328,16 @@ void GGZMetaProtocol::work(QString queryclass, QString query)
 		m_sock = new QSocket();
 		connect(m_sock, SIGNAL(connected()), SLOT(slotWrite()));
 		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
+		connect(m_sock, SIGNAL(error(int)), SLOT(slotError(int)));
 		m_sock->connectToHost("localhost", 15689);
-
-		a->exec();
+		m_result = 0;
+		qApp->enter_loop();
+		while(!m_result);
+		error(0, QString("An error occured: %1.").arg("blah"));
+	}
+	else
+	{
+		error(0, QString("Unsupported meta server class: %1").arg(queryclass));
 	}
 }
 
@@ -410,7 +456,7 @@ extern "C"
 {
 	int kdemain(int argc, char **argv)
 	{
-		KInstance instance("kio_ggzmeta");
+		KApplication app(argc, argv, "kio_ggzmeta", false, true);
 		GGZMetaProtocol slave(argv[2], argv[3]);
 		slave.dispatchLoop();
 		return 0;
