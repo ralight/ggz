@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5406 2003-02-15 01:41:20Z jdorje $
+ * $Id: table.c 5720 2003-12-19 17:24:38Z dr_maux $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -590,11 +590,10 @@ void table_game_join(GGZTable *table, char *name,
 		}
 	}
 #endif
-
-	dbg_msg(GGZ_DBG_TABLE, 
-		"%s in seat %d at table %d of room %d",
-		name, num,
-		table->index, table->room);
+	log_msg(GGZ_LOG_TABLES,
+		"TABLE_JOIN - %s joined seat %d at table %d of room %s in game of %s",
+		name, num, table->index, rooms[table->room].name,
+		game_types[rooms[table->room].game_type].name);
 }
 
 
@@ -612,10 +611,11 @@ void table_game_leave(GGZTable *table, char *caller,
 		table->index, table->room);
 
 	/* Vacate seat */
-	dbg_msg(GGZ_DBG_TABLE, 
-		"%s left seat %d at table %d of room %d",
-		player, num, table->index, table->room);
-
+	log_msg(GGZ_LOG_TABLES,
+		"TABLE_LEAVE - %s left seat %d at table %d of room %s in game of %s",
+		player, num, table->index, rooms[table->room].name,
+		game_types[rooms[table->room].game_type].name);
+	
 	pthread_rwlock_wrlock(&table->lock);
 	table->seat_types[num] = GGZ_SEAT_OPEN;
 	pthread_rwlock_unlock(&table->lock);
