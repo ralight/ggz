@@ -1,0 +1,10 @@
+xtext.c and xtext.h was taken from xchat-2.0.7.  I then made the following
+modifications:
+
+ - Rename to xtext-gtk2 (both .c and .h files).
+ - Include config.h
+ - Change #include to xtext-gtk2.h.
+ - Remove XCHAT #definition.
+ - Initialize some variables to avoid compiler warning.
+
+$Id: xtext.README 6381 2004-11-16 00:54:28Z jdorje $

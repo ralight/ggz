@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6367 2004-11-14 13:59:03Z jdorje $
+#  $Id: Makefile.am 6381 2004-11-16 00:54:28Z jdorje $
 
 SUBDIRS = .
 
@@ -73,4 +73,4 @@ ggz_gtk_LDADD = @GTK_LIBS@ $(LDADD) @LIBS@ @INTLLIBS@ \
 		$(LIB_GGZCORE) $(LIB_GGZMOD) $(LIB_GGZ)
 ggz_gtk_LDFLAGS = $(GGZCORE_LDFLAGS) $(GGZMOD_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
-EXTRA_DIST = $(ggzdata_DATA)
+EXTRA_DIST = $(ggzdata_DATA) xtext.README
