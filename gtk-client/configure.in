@@ -46,7 +46,7 @@ dnl else
 dnl   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
 dnl fi
 
-$subdirs = "ggz-gtk po"
+subdirs="ggz-gtk po"
 if test "$enable_gettext" = yes; then
 	CFLAGS="$CFLAGS -DENABLE_NLS"
 	allsubdirs="$subdirs po"
