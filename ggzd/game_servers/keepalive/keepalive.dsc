@@ -16,6 +16,6 @@ Version = 1
 AllowLeave = 1
 BotsAllowed = 0
 PlayersAllowed = 1 2 3 4 5 6 7 8
-SpectatorsAllowed = *
+SpectatorsAllowed = 1 2 3 4 5 6 7
 KillWhenEmpty = 0
 
