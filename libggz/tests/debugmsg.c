@@ -3,51 +3,57 @@
 
 #include <ggz.h>
 
-int main(void) 
+int debug_suite(char *filename)
 {
 	char *foolist[] = {"foo", "bar", NULL};
 
-	printf("-- Pre-init testing --\n");
-	ggz_debug(NULL, "Testing ggz_debug with NULL type");
-	ggz_debug("foo", "Testing ggz_debug with level foo");
-
-	ggz_error_msg("Testing ggz_error_msg");
-	ggz_error_sys("Testing ggz_error_sys (no errno)");
+	printf("-- Testing before init --\n");
+	ggz_debug(NULL, "Error: this should not appear");
+	ggz_debug("foo", "Error: this should not appear");
+	ggz_error_msg("Success: ggz_error_msg");
+	ggz_error_sys("Success: ggz_error_sys (no errno)");
 	errno = EIO;
-	ggz_error_sys("Testing ggz_error_sys (errno EIO)");
+	ggz_error_sys("Success: Testing ggz_error_sys (errno EIO)");
 
-	printf("\n-- NULL init/cleanup --\n");
-	ggz_debug_init(NULL, NULL);
-	ggz_debug_debug();
-	ggz_debug_cleanup();
-	ggz_debug_debug();
-
-	printf("\n-- NULL init/test foo/cleanup\n");
-	ggz_debug_init(NULL, NULL);
-	ggz_debug("foo", "Testing foo before enabling (shouldn't see this)");
+	printf("\n-- Testing with file %s and no initial types specified\n", filename);
+	ggz_debug_init(NULL, filename);
+	ggz_debug("foo", "Error: Debugging with type foo before enabling (this should not appear)");
 	ggz_debug_enable("foo");
-	ggz_debug_debug();
-	ggz_debug("foo", "Testing foo after enabling (should see this)");
+	ggz_debug("foo", "Success: Debugging with type foo after enabling");
 	ggz_debug_disable("foo");
-	ggz_debug_debug();
-	ggz_debug("foo", "Testing foo after disabling (shouldn't see this)");
-	ggz_debug_cleanup();
+	ggz_debug("foo", "Error: Debugging with type foo after disabling (should not appear)");
+	ggz_debug_cleanup(GGZ_CHECK_NONE);
+
+	printf("-- Testing post cleanup --\n");
+	ggz_debug(NULL, "Error: this should not appear");
+	ggz_debug("foo", "Error: this should not appear");
+	ggz_error_msg("Success: ggz_error_msg");
+	ggz_error_sys("Success: ggz_error_sys (no errno)");
+	errno = EIO;
+	ggz_error_sys("Success: Testing ggz_error_sys (errno EIO)");
 	
-	printf("\n-- foo init/test foo, bar/cleanup\n");
-	ggz_debug_init((const char**)foolist, NULL);
-	ggz_debug_debug();
-	ggz_debug("foo", "Testing foo (should see this)");
-	ggz_debug("bar", "Testing bar (should see this)");
-	ggz_debug("baz", "Testing baz (should not this)");
-	ggz_debug_cleanup();
+	printf("\n-- Testing with file %s and foo,bar initial types\n", filename);
+	ggz_debug_init((const char**)foolist, filename);
+	ggz_debug("foo", "Success: Debugging with type foo");
+	ggz_debug("bar", "Success: Debugging with type bar");
+	ggz_debug("baz", "Error: Debugging with type baz (should not appear )");
+	ggz_debug_disable("foo");
+	ggz_debug("foo", "Error: Debugging with type foo after disabling (should not appear)");
+	ggz_debug_enable("qux");
+	ggz_debug("qux", "Success: Debugging with type qux after enabling");
 	
-	printf("\n-- foo init to testfile\n");
-	ggz_debug_init((const char**)foolist, "testfile");
-	ggz_debug("foo", "Testing foo (should see this)");
-	ggz_debug("bar", "Testing bar (should see this)");
-	ggz_debug("baz", "Testing baz (should not this)");
-	ggz_debug_cleanup();
-	
-	ggz_memory_check();
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+
 	return 0;
 }
+
+
+int main(void) 
+{
+	debug_suite(NULL);
+	debug_suite("debug.log");
+
+	return 0;
+}
+
+
