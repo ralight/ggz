@@ -1,8 +1,8 @@
-EXTRA_DIST = default/*.png
+EXTRA_DIST = default/*.png blend/*.png
 
 SUBDIRS = .
 
-data = default
+data = default blend
 
 install-data-local:
 	for p in $(data); do \

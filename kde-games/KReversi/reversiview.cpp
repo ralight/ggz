@@ -42,20 +42,14 @@ void ReversiDisc::advance( int stage ) {
 
 /* Reversi View */
 
-ReversiView::ReversiView(QWidget * parent, const char * name, WFlags f) : QCanvasView(0, parent, name, f) {
-	canvas = new QCanvas( QPixmap::QPixmap(GGZDATADIR "/kreversi/pixmaps/default/tiles.png"), 8, 8, 50, 50 );
-  /*
-	canvas->setTile( 3, 3, 1 );
-	canvas->setTile( 4, 4, 1 );
-	canvas->setTile( 3, 4, 2 );
-	canvas->setTile( 4, 3, 2 );
-  */
+ReversiView::ReversiView(QString theme, QWidget * parent, const char * name, WFlags f) : QCanvasView(0, parent, name, f) {
+  
+  /* Create canvas */
+  canvas = new QCanvas( 50*8, 50*8 );
 	setCanvas(canvas);
   
-//  QString theme = GGZDATADIR;
-//  theme += "/kreversi/pixmaps/default/disc0000.png";
-
-  disc_img = new QCanvasPixmapArray( GGZDATADIR "/kreversi/pixmaps/default/disc%1.png", 20 );
+  /* Load pixmaps */
+  loadTheme( theme, false );
 //  debug(theme);
 
   /* Add the initial four discs */
@@ -76,6 +70,43 @@ ReversiView::ReversiView(QWidget * parent, const char * name, WFlags f) : QCanva
 
 
 }
+
+void ReversiView::loadTheme( QString theme, bool keep ) {
+  ReversiDisc *d;
+  int board[8][8];
+  int x, y;
+  
+  /* Load images */
+  QPixmap tile_img(GGZDATADIR "/kreversi/pixmaps/" + theme + "/tiles.png");
+  disc_img = new QCanvasPixmapArray( GGZDATADIR "/kreversi/pixmaps/" + theme + "/disc%1.png", 20 );
+
+  /* Load tiles */
+  
+  if (keep) {
+    for (x = 0; x < 8; x++) {
+      for (y = 0; y < 8; y++) {
+        board[x][y] = canvas->tile(x, y);
+      }
+    }
+  }
+
+  /* Set images */
+  canvas->setTiles( tile_img, 8, 8, 50, 50 );
+  if (keep) {
+    for (x = 0; x < 8; x++) {
+      for (y = 0; y < 8; y++) {
+        canvas->setTile( x, y, board[x][y] );
+      }
+    }
+  }
+
+  for (d = discs.first(); d; d = discs.next())
+    d->setSequence( disc_img );
+
+  canvas->update();
+
+}
+
 
 void ReversiView::updateBoard(char board[8][8]) {
   int x, y;

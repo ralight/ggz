@@ -1,0 +1,40 @@
+*** KReversi Theme Howto ***
+
+To add a theme to KReversi is very easy. You need to:
+
+1) Create a directory with your theme name in the pixmaps/ subdirectory
+
+2) Edit pixmaps/Makefile.am and change the part that reads:
+	---------------------------------------
+	| EXTRA_DIST = default/*.png blend/*.png
+  |
+	| SUBDIRS = .
+  |
+	| data = default blend
+
+	To
+
+	---------------------------------------
+	| EXTRA_DIST = default/*.png blend/*.png YOURTHEME/*.png
+  |
+	| SUBDIRS = .
+  |
+	| data = default blend YOURTHEME
+
+	In short: Add yourtheme/*.png to EXTRA_DIST and YOURTHEME to data
+
+3) Add your theme files to the pixmaps/YOURTHEME directory. They should be named the following way:
+
+	tiles.png -> Background, Last played tile and Possible play image
+	disc0000.png -> Static image for the player1 disc
+	disc0019.png -> Static image for the player2 disc
+	disc0001.png~disc0018.png -> Images showing the animation, from the player1 to the player2 disc.
+
+	The disc images should be 50x50 pngs. Transparency is allowed.
+	The tiles.png image is a 150x50 png. The first 50x50 tile is the background. The following 50x50 tile is the last played tile, and the last 50x50 tile is the possible play. These images should not be transparent!
+
+4) After adding the files, run ./autogen.sh and then "make install"
+
+5) Your theme should now be available in the "Select theme" menu.
+
+For more information, take a look at the default theme.

@@ -15,17 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <config.h>
 #include "reversiview.h"
 #include "reversiprotocol.h"
 #include "kreversi.h"
 #include <klocale.h>
+#include <kconfig.h>
 #include <kaction.h>
 #include <kmessagebox.h>
+#include <dirent.h>
 #include <kstdaction.h>
 
 #define T2S(a) (a==BLACK?0:1)
 #define S2T(a) (a==0?BLACK:WHITE)
 #define BOARD(x,y) ( (x<0||y<0||x>=8||y>=8)?OPEN:board[x][y] )
+
+int select_dirs(const struct dirent *d);
 
 KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name)
 {
@@ -37,7 +42,11 @@ KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name
   KStdAction::quit (kapp, SLOT(closeAllWindows()), actionCollection());
   requestSyncAct = new KAction(i18n("&Request sync"), 0, this, SLOT(requestSync()), actionCollection(), "requestSync");
   playAgainAct = new KAction(i18n("Play again"), 0, this, SLOT(playAgain()), actionCollection(), "playAgain");
+  themes = new KActionMenu(i18n("Select theme"), actionCollection(), "themes");
+  scanThemeDir();
   createGUI();
+  // Now lets search for themes !
+
 
   // Create the status bar
   statusBar()->insertItem(i18n("Wait..."), 1, 1);
@@ -48,7 +57,7 @@ KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name
   initGame();
 
 	// Create the view
-	view = new ReversiView(this);
+	view = new ReversiView(kapp->config()->readEntry("Default", "default"), this);
   for (x = 0; x < 8; x++) {
     for (y = 0; y < 8; y++) {
       mboard[x][y] = board[x][y];
@@ -80,6 +89,41 @@ KReversi::KReversi(QWidget *parent, const char *name) : KMainWindow(parent, name
   connect( view, SIGNAL(playerMove(int, int)), this, SLOT(playerMoveSlot(int, int)) );
 
 
+}
+
+void KReversi::scanThemeDir() {
+  struct dirent **namelist;
+  KRadioAction *theme_act;
+  QString default_theme;
+  int i;
+
+  QString theme_dir(GGZDATADIR "/kreversi/pixmaps");
+  /* Set the config group for the desired theme */
+  kapp->config()->setGroup("Themes");
+  default_theme = kapp->config()->readEntry("Default", "default");
+
+  theme_num = scandir(theme_dir, &namelist, select_dirs, alphasort);
+  for (i = 0; i < theme_num; i++) {
+    theme_act = new KRadioAction(namelist[i]->d_name, 0, this, SLOT(changeTheme()), actionCollection(), namelist[i]->d_name);
+    theme_act->setExclusiveGroup("theme_group");
+    theme_list.append( theme_act );
+    themes->insert( theme_act );
+    if (default_theme == namelist[i]->d_name)
+      theme_act->setChecked(true);
+  }
+
+}
+
+void KReversi::changeTheme() {
+  KRadioAction *theme_act;
+  for (theme_act = theme_list.first(); theme_act; theme_act = theme_list.next()) {
+    if (theme_act->isChecked()) {
+      view->loadTheme(theme_act->name());
+      kapp->config()->setGroup("Themes");
+      kapp->config()->writeEntry("Default", theme_act->name());
+      kapp->config()->sync();
+    }
+  }
 }
 
 KReversi::~KReversi()

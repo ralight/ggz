@@ -54,8 +54,9 @@ public:
 class ReversiView : public QCanvasView {
   Q_OBJECT
 public: 
-	ReversiView(QWidget * parent=0, const char * name=0, WFlags f=0);
+	ReversiView(QString theme = "default", QWidget * parent=0, const char * name=0, WFlags f=0);
 	~ReversiView();
+  void loadTheme( QString theme, bool keep = true );
 signals:
   void playerMove(int x, int y);
 public:

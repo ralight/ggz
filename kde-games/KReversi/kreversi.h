@@ -26,7 +26,9 @@
 #include <kmainwindow.h>
 #include <qcanvas.h>
 #include <kstatusbar.h>
-#include "qlayout.h"
+#include <kaction.h>
+#include <qstringlist.h>
+#include <qlayout.h>
 
 class ReversiView;
 class ReversiProtocol;
@@ -67,6 +69,10 @@ private: // Private attributes
   /** Actions: */
   KAction *requestSyncAct;
   KAction *playAgainAct;
+  KActionMenu *themes;
+  /** Themes */
+  int theme_num;
+  QList<KRadioAction> theme_list;
   /** Init the board */
   void initGame();
   /** do a move */
@@ -77,11 +83,15 @@ private: // Private attributes
   void maskBoard(int player, char board[8][8]);
   /** Check for validity */
   bool checkValid(int player, int mx, int my, int dx, int dy);
+  /** Search for themes */
+  void scanThemeDir();
 protected slots: // Protected slots
   /** Tells the player that the game is over */
   void gameoverSlot(int winner);
   /** Tell the player that the game has started */
   void startSlot();
+  /** Change the current theme */
+  void changeTheme();
   /** Tells the player who is his oponnent */
   void playersSlot(char *_name1, char *_name2);
   /** Tell the player what is his color */

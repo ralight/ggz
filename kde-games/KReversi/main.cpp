@@ -18,15 +18,19 @@
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
+#include <qstring.h>
 #include <sys/un.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <stdio.h>
+#include <dirent.h>
 #include <unistd.h>
+#include <config.h>
 
 #include "kreversi.h"
 
-static const char *VERSION = I18N_NOOP("0.0.1");
+static const char *REV_VERSION = I18N_NOOP("0.0.1");
 
 static const char *description =
 	I18N_NOOP("KDE client for GGZ's Reversi game module");
@@ -43,7 +47,7 @@ int main(int argc, char *argv[])
 {
 
   KAboutData aboutData( "ggz.kreversi", I18N_NOOP("KGGZReversi"),
-    VERSION, description, KAboutData::License_GPL,
+    REV_VERSION, description, KAboutData::License_GPL,
     "(c) 2001, Ismael Orenstein", 0, 0, "perdig@linuxbr.com.br");
   aboutData.addAuthor("Ismael Orenstein",0, "perdig@linuxbr.com.br");
   KCmdLineArgs::init( argc, argv, &aboutData );
@@ -76,4 +80,20 @@ int ggz_connect(char *name) {
     exit(-1);
  
   return sock;
+}
+
+int select_dirs(const struct dirent *d)
+{
+  int ok=0;
+  struct stat buf;
+  QString pathname(GGZDATADIR "/kreversi/pixmaps/");
+  pathname += d->d_name;
+  if(stat(pathname, &buf) == -1)
+    perror(pathname);
+  if(S_ISDIR(buf.st_mode))
+    ok = 1;
+ 
+  if(ok && d->d_name[0] != '.')
+    return 1;
+  return 0;
 }
