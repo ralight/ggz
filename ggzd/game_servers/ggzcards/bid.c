@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 2735 2001-11-13 10:19:24Z jdorje $
+ * $Id: bid.c 2823 2001-12-09 08:16:26Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -71,12 +71,13 @@ int req_bid(player_t p)
 {
 	bid_data_t *bid_data = &game.players[p].bid_data;
 
-	ggzd_debug("Requesting a bid from player %d/%s; %d choices", p,
-		   ggzd_get_player_name(p), bid_data->bid_count);
+	ggzdmod_log(game.ggz,
+		    "Requesting a bid from player %d/%s; %d choices", p,
+		    ggzd_get_player_name(p), bid_data->bid_count);
 
 	if (bid_data->is_bidding)
-		ggzd_debug("ERROR: req_bid: "
-			   "requesting a bid from a player who's already bidding!");
+		ggzdmod_log(game.ggz, "ERROR: req_bid: "
+			    "requesting a bid from a player who's already bidding!");
 	bid_data->is_bidding = 1;
 
 	set_player_message(p);
@@ -103,14 +104,14 @@ int request_all_bids(void)
 	int status = 0;
 	bid_t *bids;
 
-	ggzd_debug("Requesting bids from some/all players.");
+	ggzdmod_log(game.ggz, "Requesting bids from some/all players.");
 
 	/* Mark all players as bidding. */
 	for (p = 0; p < game.num_players; p++)
 		if (game.players[p].bid_data.bid_count > 0) {
 			if (game.players[p].bid_data.is_bidding)
-				ggzd_debug("ERROR: req_bid: "
-					   "requesting a bid from a player who's already bidding!");
+				ggzdmod_log(game.ggz, "ERROR: req_bid: "
+					    "requesting a bid from a player who's already bidding!");
 			game.players[p].bid_data.is_bidding = 1;
 			set_player_message(p);
 		}
@@ -143,7 +144,7 @@ int request_all_bids(void)
 		    && ggzd_get_seat_status(p) == GGZ_SEAT_BOT)
 			handle_bid_event(p, bids[p]);
 
-	/* OK, we're done.  We return now, and continue to wait for responses 
+	/* OK, we're done.  We return now, and continue to wait for responses
 	   from non-AI players. There's still a potential problem because as
 	   soon as a player bids, that bid will generally become visible to
 	   everyone.  It might be better to "hide" players' bids until
@@ -167,14 +168,15 @@ int rec_bid(player_t p, bid_t * bid)
 
 	/* Is this a valid bid? */
 	if (!game.players[p].bid_data.is_bidding) {
-		/* Most likely, the client sent a bid when it wasn't supposed 
+		/* Most likely, the client sent a bid when it wasn't supposed
 		   to.  Of course, a smart client won't do this. */
-		ggzd_debug("Received out-of-turn bid from player %d/%s.",
-			   p, ggzd_get_player_name(p));
+		ggzdmod_log(game.ggz,
+			    "Received out-of-turn bid from player %d/%s.", p,
+			    ggzd_get_player_name(p));
 	} else if (bid_data->bid_count == 0) {
 		/* This is probably an error/bug in ggzcards-server. */
-		ggzd_debug
-			("ERROR: rec_bid: we don't know what the choices are!");
+		ggzdmod_log(game.ggz,
+			    "ERROR: rec_bid: we don't know what the choices are!");
 		return -1;
 	}
 
@@ -185,7 +187,7 @@ int rec_bid(player_t p, bid_t * bid)
 	*bid = bid_data->bids[index];
 
 	/* Success! */
-	ggzd_debug("Received bid choice %d from player %d/%s",
-		   index, p, ggzd_get_player_name(p));
+	ggzdmod_log(game.ggz, "Received bid choice %d from player %d/%s",
+		    index, p, ggzd_get_player_name(p));
 	return 0;
 }

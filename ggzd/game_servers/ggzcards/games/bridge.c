@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 2766 2001-11-28 07:31:42Z jdorje $
+ * $Id: bridge.c 2823 2001-12-09 08:16:26Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -171,9 +171,9 @@ static void bridge_handle_bid(player_t p, bid_t bid)
 {
 	assert(game.next_bid == p);
 	/* closely based on the Suaro code */
-	ggzd_debug("The bid chosen is %d %s %d.", bid.sbid.val,
-		   short_bridge_suit_names[(int) bid.sbid.suit],
-		   bid.sbid.spec);
+	ggzdmod_log(game.ggz, "The bid chosen is %d %s %d.", bid.sbid.val,
+		    short_bridge_suit_names[(int) bid.sbid.suit],
+		    bid.sbid.spec);
 
 	if (bid.sbid.spec == BRIDGE_PASS) {
 		BRIDGE.pass_count++;
@@ -192,9 +192,9 @@ static void bridge_handle_bid(player_t p, bid_t bid)
 		BRIDGE.declarer = BRIDGE.opener[p % 2][BRIDGE.contract_suit];
 		BRIDGE.dummy = (BRIDGE.declarer + 2) % 4;
 
-		ggzd_debug("Setting bridge contract to %d %s.",
-			   BRIDGE.contract,
-			   long_bridge_suit_names[BRIDGE.contract_suit]);
+		ggzdmod_log(game.ggz, "Setting bridge contract to %d %s.",
+			    BRIDGE.contract,
+			    long_bridge_suit_names[BRIDGE.contract_suit]);
 		if (bid.sbid.suit != BRIDGE_NOTRUMP)
 			game.trump = bid.sbid.suit;
 		else
@@ -208,13 +208,14 @@ static void bridge_next_bid(void)
 	if (BRIDGE.pass_count == 4) {
 		/* done bidding */
 		if (BRIDGE.contract == 0) {
-			ggzd_debug("Four passes; redealing hand.");
+			ggzdmod_log(game.ggz, "Four passes; redealing hand.");
 			set_global_message("", "%s",
 					   "Everyone passed; redealing.");
 			set_game_state(STATE_NEXT_HAND);	/* redeal
 								   hand */
 		} else {
-			ggzd_debug("Three passes; bidding is over.");
+			ggzdmod_log(game.ggz,
+				    "Three passes; bidding is over.");
 			game.bid_total = game.bid_count;
 			/* contract was determined in game_handle_bid */
 		}
@@ -387,8 +388,8 @@ static void bridge_end_hand(void)
 	tricks = game.players[BRIDGE.declarer].tricks +
 		game.players[BRIDGE.dummy].tricks - 6;
 
-	ggzd_debug("Contract was %d.  Declarer made %d.", BRIDGE.contract,
-		   tricks);
+	ggzdmod_log(game.ggz, "Contract was %d.  Declarer made %d.",
+		    BRIDGE.contract, tricks);
 
 	winning_team =
 		(tricks >=

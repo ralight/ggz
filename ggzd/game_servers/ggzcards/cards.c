@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulate functions for card games
- * $Id: cards.c 2772 2001-12-02 02:39:48Z jdorje $
+ * $Id: cards.c 2823 2001-12-09 08:16:26Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -106,7 +106,7 @@ void cards_create_deck(deck_type_t which_deck)
 		/* use a full 52-card deck */
 		break;
 	default:
-		ggzd_debug("Unknown deck %d.", which_deck);
+		ggzdmod_log(game.ggz, "Unknown deck %d.", which_deck);
 	}
 
 	/* Now generate an in-order deck */
@@ -124,7 +124,7 @@ void cards_create_deck(deck_type_t which_deck)
 				cardnum++;
 			}
 
-	ggzd_debug("Built a deck of size %d.", deck_size);
+	ggzdmod_log(game.ggz, "Built a deck of size %d.", deck_size);
 }
 
 int cards_deck_size()
@@ -135,8 +135,8 @@ int cards_deck_size()
 void cards_destroy_deck()
 {
 	if (gamedeck == NULL)
-		ggzd_debug("ERROR: SERVER BUG: "
-			   "cards_destroy_deck called on a NULL deck.");
+		ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
+			    "cards_destroy_deck called on a NULL deck.");
 	ggz_free(gamedeck);
 	deck_size = 0;
 	deck_ptr = -1;
@@ -148,7 +148,7 @@ void cards_shuffle_deck()
 	card_t temp;
 	int i, j;
 
-	ggzd_debug("Shuffling deck.");
+	ggzdmod_log(game.ggz, "Shuffling deck.");
 
 	/* Now we can randomize the deck order */
 	/* Go through the deck, card by card */
@@ -173,7 +173,7 @@ void cards_deal_hand(int handsize, hand_t * hand)
 	int c;
 	card_t card;
 
-	ggzd_debug("\tDealing out a hand of size %d.", handsize);
+	ggzdmod_log(game.ggz, "\tDealing out a hand of size %d.", handsize);
 
 	if (hand == NULL)
 		fatal_error("BUG: can't deal NULL hand.");

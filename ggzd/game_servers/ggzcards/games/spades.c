@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 2766 2001-11-28 07:31:42Z jdorje $
+ * $Id: spades.c 2823 2001-12-09 08:16:26Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -341,8 +341,8 @@ static void spades_end_hand(void)
 			}
 		} else
 			score = -10 * bid;
-		ggzd_debug("Team %d bid %d, took %d, earned %d.", (int) p,
-			   bid, tricks, score);
+		ggzdmod_log(game.ggz, "Team %d bid %d, took %d, earned %d.",
+			    (int) p, bid, tricks, score);
 		game.players[p].score += score;
 		game.players[p + 2].score += score;
 	}
@@ -351,8 +351,9 @@ static void spades_end_hand(void)
 			int score =
 				(game.players[p].tricks ==
 				 0 ? GSPADES.nil_value : -GSPADES.nil_value);
-			ggzd_debug("Player %d/%s earned %d for going nil.",
-				   p, ggzd_get_player_name(p), score);
+			ggzdmod_log(game.ggz,
+				    "Player %d/%s earned %d for going nil.",
+				    p, ggzd_get_player_name(p), score);
 			game.players[p].score += score;
 			game.players[(p + 2) % 4].score += score;
 		}
@@ -361,8 +362,9 @@ static void spades_end_hand(void)
 				(game.players[p].tricks == 0 ?
 				 GSPADES.double_nil_value :
 				 -GSPADES.double_nil_value);
-			ggzd_debug("Player %d/%s earned %d for double nil.",
-				   p, ggzd_get_player_name(p), score);
+			ggzdmod_log(game.ggz,
+				    "Player %d/%s earned %d for double nil.",
+				    p, ggzd_get_player_name(p), score);
 			game.players[p].score += score;
 			game.players[(p + 2) % 4].score += score;
 		}

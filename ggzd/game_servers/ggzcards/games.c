@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.c 2772 2001-12-02 02:39:48Z jdorje $
+ * $Id: games.c 2823 2001-12-09 08:16:26Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -93,7 +93,7 @@ int games_get_gametype(char *text)
 
 	/* NOTE: we may not yet be connected to the ggz server, in which case 
 	   this won't work. */
-	ggzd_debug("Unknown game for '%s'.", text);
+	ggzdmod_log(game.ggz, "Unknown game for '%s'.", text);
 	return GGZ_GAME_UNKNOWN;
 }
 
@@ -102,9 +102,9 @@ void games_handle_gametype(int option)
 	game.which_game = game_types[option];
 
 	if (game.which_game < 0 || game.which_game >= NUM_GAMES) {
-		ggzd_debug
-			("SERVER/CLIENT error: bad game type %d selected; using %d instead.",
-			 game.which_game, game_types[0]);
+		ggzdmod_log(game.ggz,
+			    "SERVER/CLIENT error: bad game type %d selected; using %d instead.",
+			    game.which_game, game_types[0]);
 		game.which_game = game_types[0];
 	}
 }
@@ -129,7 +129,8 @@ int games_req_gametype()
 	int status = 0;
 
 	if (fd == -1) {
-		ggzd_debug("ERROR: SERVER BUG: " "nonexistent host.");
+		ggzdmod_log(game.ggz,
+			    "ERROR: SERVER BUG: " "nonexistent host.");
 		return -1;
 	}
 
@@ -144,8 +145,8 @@ int games_req_gametype()
 		fatal_error("BUG: games_req_gametype: no valid games.");
 
 	if (cnt == 1) {
-		ggzd_debug("Just one valid game: choosing %d.",
-			   game_types[0]);
+		ggzdmod_log(game.ggz, "Just one valid game: choosing %d.",
+			    game_types[0]);
 		game.which_game = game_types[0];
 		init_game();
 		(void) send_sync_all();
@@ -153,8 +154,7 @@ int games_req_gametype()
 	}
 
 	if (write_opcode(fd, REQ_OPTIONS) < 0 || es_write_int(fd, 1) < 0 ||	/* 1
-										   option 
-										 */
+										   option */
 	    es_write_int(fd, cnt) < 0 ||	/* cnt choices */
 	    es_write_int(fd, 0) < 0)	/* default is 0 */
 		status = -1;
@@ -164,7 +164,8 @@ int games_req_gametype()
 			status = -1;
 
 	if (status != 0)
-		ggzd_debug("ERROR: games_req_gametype: status is %d.",
-			   status);
+		ggzdmod_log(game.ggz,
+			    "ERROR: games_req_gametype: status is %d.",
+			    status);
 	return status;
 }

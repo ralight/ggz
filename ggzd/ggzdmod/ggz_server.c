@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.c 2820 2001-12-09 07:38:20Z jdorje $
+ * $Id: ggz_server.c 2823 2001-12-09 08:16:26Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -38,16 +38,4 @@ int ggzd_set_player_name(int seat, char *name)
 	myseat.name = name;
 	ggzdmod_set_seat(ggzdmod, &myseat);
 	return 0;
-}
-
-int ggzd_debug(const char *fmt, ...)
-{
-	char buffer[4096];
-	va_list ap;
-
-	va_start(ap, fmt);
-	vsnprintf(buffer, sizeof(buffer), fmt, ap);
-	va_end(ap);
-
-	return ggzdmod_log(ggzdmod, "%s", buffer);
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 2734 2001-11-13 10:09:16Z jdorje $
+ * $Id: ai.c 2823 2001-12-09 08:16:26Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -143,6 +143,7 @@ void ai_debug(const char *fmt, ...)
 
 	pname = ggzd_get_player_name(player);
 
-	(void) ggzd_debug("AI-DEBUG: %s: %s: %s", mode, pname, buf);
+	(void) ggzdmod_log(game.ggz, "AI-DEBUG: %s: %s: %s", mode, pname,
+			   buf);
 #endif /* AI_DEBUG */
 }

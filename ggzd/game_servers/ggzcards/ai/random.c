@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: a "random" AI
- * $Id: random.c 2732 2001-11-13 06:56:14Z jdorje $
+ * $Id: random.c 2823 2001-12-09 08:16:26Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -101,6 +101,6 @@ static card_t get_play(player_t p, seat_t s)
 		choices[choice] = choices[max - 1];
 	}
 
-	ggzd_debug("RANDOM-AI: get_play: " "no valid play found.");
+	ggzdmod_log(game.ggz, "RANDOM-AI: get_play: " "no valid play found.");
 	return UNKNOWN_CARD;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.c 2772 2001-12-02 02:39:48Z jdorje $
+ * $Id: game.c 2823 2001-12-09 08:16:26Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -82,9 +82,9 @@ int game_is_valid_game(void)
    players can both be used intelligently. */
 void game_init_game(void)
 {
-	ggzd_debug("ERROR: SERVER BUG: "
-		   "game_launch not implemented for game %d.",
-		   game.which_game);
+	ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
+		    "game_launch not implemented for game %d.",
+		    game.which_game);
 }
 
 
@@ -111,8 +111,7 @@ int game_handle_option(char *option, int value)
 }
 
 
-/* This function finds descriptive text for the current setting of an option. 
- */
+/* This function finds descriptive text for the current setting of an option. */
 char *game_get_option_text(char *buf, int bufsz, char *option, int value)
 {
 	if (!strcmp("open_hands", option))
@@ -140,7 +139,7 @@ void game_set_player_message(player_t p)
 	   multiple units of data */
 
 	/* Note that this way depends on this function being called at the
-	   proper times - every time the player is affected, and on some game 
+	   proper times - every time the player is affected, and on some game
 	   state changes.  Much of this is handled by the game-independent
 	   code */
 
@@ -169,16 +168,16 @@ int game_get_bid_text(char *buf, size_t buf_len, bid_t bid)
    this function is called.  - This function can change the phase; for
    instance you can skip bidding by jumping right to the first trick (e.g.
    hearts).  - After this, we'll just keep requesting bids until we're done.
-   - For each bid, game_get_bid is called to request the bid from the client. 
+   - For each bid, game_get_bid is called to request the bid from the client.
    Once the bid is returned, game_hand_bid is called to handle it.
    game_next_bid is called after this to prepare for the next bid.  - There
    are two game values: game.bid_count and game.bid_total. bid_count tracks
    the number of bids that have happened.  bid_total is used to check the
-   total number of bids that _should_ have happened; if bid_count ever equals 
+   total number of bids that _should_ have happened; if bid_count ever equals
    bid_total then the bidding will be automatically ended.  (note: I'm
    thinking of getting rid of bid_total since it's only used by spades.) -
-   Aside from this, your own game data should be used to track what's going
-   on with the bidding. */
+   Aside from this, your own game data should be used to track what's going on 
+   with the bidding. */
 void game_start_bidding(void)
 {
 	/* by default, all players bid once */
@@ -192,8 +191,8 @@ void game_start_bidding(void)
    pretty closely with the other bidding functions. */
 int game_get_bid(void)
 {
-	ggzd_debug("ERROR: SERVER BUG: "
-		   "game_get_bid called for unimplemented game.");
+	ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
+		    "game_get_bid called for unimplemented game.");
 	return -1;
 }
 
@@ -223,9 +222,8 @@ void game_next_bid(void)
 
 
 /* Called between the bidding and playing sequences.  A lot of stuff is done
-   automatically at this point, all we have to do is any game-specific stuff. 
-   This means figuring out who leads, writing out any contract messages, etc. 
- */
+   automatically at this point, all we have to do is any game-specific stuff.
+   This means figuring out who leads, writing out any contract messages, etc. */
 void game_start_playing(void)
 {
 	game.trick_total = game.hand_size;
@@ -236,7 +234,7 @@ void game_start_playing(void)
 
 
 /* Here we verify that the play is legal; returning NULL if it is and an
-   error message otherwise.  The error message must be statically declared!!! 
+   error message otherwise.  The error message must be statically declared!!!
    Note that we've already checked that the play is legal _in general_, here
    we only check that it's legal _for this game_. Except for games that have
    special rules (outside of those covered by game.must_overtrump and
@@ -294,7 +292,7 @@ char *game_verify_play(card_t card)
 				hi_trump_played = c.face;
 		}
 
-		/* the play is invalid if they had a higher trump than any on 
+		/* the play is invalid if they had a higher trump than any on
 		   the table AND they didn't play a higher trump than any on
 		   the table */
 		if (hi_trump > hi_trump_played
@@ -309,7 +307,7 @@ char *game_verify_play(card_t card)
 
 
 /* Sets up for the next play note that game.play_count has already been
-   incremented.  As with bidding, we track the play_count and play_total. For 
+   incremented.  As with bidding, we track the play_count and play_total. For
    most games, you can just say game.play_total = 4 up above so that we'll
    automatically get 4 plays on each hand. */
 void game_next_play(void)
@@ -388,8 +386,9 @@ void game_end_trick(void)
 /* Calculate scores for this hand and announce. */
 void game_end_hand(void)
 {
-	ggzd_debug("SERVER not implemented: game_end_hand for game %d.",
-		   game.which_game);
+	ggzdmod_log(game.ggz,
+		    "SERVER not implemented: game_end_hand for game %d.",
+		    game.which_game);
 }
 
 
