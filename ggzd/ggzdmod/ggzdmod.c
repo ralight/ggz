@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4983 2002-10-22 04:27:46Z jdorje $
+ * $Id: ggzdmod.c 4985 2002-10-22 05:13:37Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1189,9 +1189,10 @@ void _ggzdmod_handle_launch_seat(GGZdMod * ggzdmod, GGZSeat seat)
 		break;
 
 	case GGZ_SEAT_BOT:
-		seat.name = ggz_strdup("AI");
-#if 0		
+		/* Eventually ggzd may give us AI player names.  In the
+		   meantime there's just a placeholder. */
 		seat.name = "AI";
+#if 0		
 		len = strlen(rand_bot_names[bots]) + 4;
 		seat.name = ggz_malloc(len);
 
@@ -1238,6 +1239,10 @@ void _ggzdmod_handle_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 	GGZSeat old = ggzdmod_get_seat(ggzdmod, seat->num);
 	GGZSeat *old_seat = seat_copy(&old);
 	GGZdModEvent event;
+
+	/* Tag on AI name.  See _ggzdmod_handle_launch_seat. */
+	if (seat->type == GGZ_SEAT_BOT && !seat->name)
+		seat->name = ggz_strdup("AI");
 
 	/* Place the new seat into the list */
 	_ggzdmod_set_seat(ggzdmod, seat);
