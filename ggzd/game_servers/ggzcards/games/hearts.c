@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Hearts
- * $Id: hearts.c 3490 2002-02-27 08:57:33Z jdorje $
+ * $Id: hearts.c 3579 2002-03-16 16:27:49Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -96,6 +96,8 @@ static void hearts_init_game(void)
 
 	game.trump = -1;	/* no trump in hearts */
 	game.target_score = 100;
+	
+	game.rules_url = "http://pagat.com/reverse/hearts.html";
 
 	GHEARTS.no_blood = 1;
 }

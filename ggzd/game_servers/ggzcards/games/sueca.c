@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 3495 2002-02-27 13:02:23Z jdorje $
+ * $Id: sueca.c 3579 2002-03-16 16:27:49Z jdorje $
  *
  * Copyright (C) 2001-2002 Ismael Orenstein
  *
@@ -103,7 +103,6 @@ static void sueca_init_game(void)
 	game.deck_type = GGZ_DECK_SUECA;
 	/* Point to the game rules */
 	game.rules_url = "http://www.pagat.com/aceten/sueca.html";
-
 }
 
 static void sueca_start_bidding(void)

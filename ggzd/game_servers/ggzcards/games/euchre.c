@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 3570 2002-03-16 06:36:32Z jdorje $
+ * $Id: euchre.c 3579 2002-03-16 16:27:49Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -123,6 +123,8 @@ static void euchre_init_game(void)
 	game.max_hand_length = 5;
 	game.target_score = 10;
 	game.trump = -1;
+	
+	game.rules_url = "http://pagat.com/euchre/euchre.html";
 
 	/* Game-specific data */
 	game.specific = ggz_malloc(sizeof(euchre_game_t));

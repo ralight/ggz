@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 3576 2002-03-16 16:12:19Z jdorje $
+ * $Id: bridge.c 3579 2002-03-16 16:27:49Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -127,6 +127,7 @@ static void bridge_init_game(void)
 	}
 
 	game.cumulative_scores = 0;
+	game.rules_url = "http://pagat.com/boston/bridge.html";
 
 	/* TODO: for now we won't use bridge scoring */
 	BRIDGE.declarer = -1;

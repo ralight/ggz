@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 3570 2002-03-16 06:36:32Z jdorje $
+ * $Id: spades.c 3579 2002-03-16 16:27:49Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -126,6 +126,8 @@ static void spades_init_game(void)
 	game.trump = SPADES;
 	
 	game.ai_type = "spades";
+	
+	game.rules_url = "http://pagat.com/boston/spades.html";
 
 	GSPADES.nil_value = 100;
 	GSPADES.nil_tricks_count = 1;
