@@ -61,7 +61,6 @@ create_dlgMOTD (void)
   gtk_box_pack_start (GTK_BOX (vbox1), btnOK, FALSE, FALSE, 0);
 
   gtk_widget_grab_focus (btnOK);
-  gtk_widget_grab_default (btnOK);
 
   gtk_signal_connect (GTK_OBJECT (btnOK), "clicked",
                       GTK_SIGNAL_FUNC (motd_ok),
