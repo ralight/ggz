@@ -22,6 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -37,19 +38,26 @@
 extern struct game_function_pointers suaro_funcs;
 
 /* These names are sent to the client when options are requested.  They're different
- * from what's sent to the client as the game name later */
-struct game_info game_data[7] = {
-		{"Suaro", &suaro_funcs},
-		{"Spades", &game_funcs},
-		{"Hearts", &game_funcs},
-		{"Bridge", &game_funcs},
-		{"La Pocha", &game_funcs},
-		{"Euchre", &game_funcs},
-		{"Rook", &game_funcs} };
+ * from what's sent to the client as the game name later.  They MUST
+ * correspond in ordering to the enumeration defined in games.h.  Finally, the
+ * text name should be all lower-case and without any whitespace. */
+struct game_info game_data[] = {
+		{"suaro", &suaro_funcs},
+		{"spades", &game_funcs},
+		{"hearts", &game_funcs},
+		{"bridge", &game_funcs},
+		{"lapocha", &game_funcs},
+		{"euchre", &game_funcs},
+		{"rook", &game_funcs} };
+
+
+
+
+const int num_games = sizeof(game_data) / sizeof(struct game_info);
 
 /* these aren't *quite* worthy of being in the game struct */
 /* static int game_type_cnt; */
-int game_types[GGZ_NUM_GAMES];	/* possible types of games; used for option requests */
+static int game_types[sizeof(game_data) / sizeof(struct game_info)];	/* possible types of games; used for option requests */
 
 /* games_get_gametype
  *   determines which game the text corresponds to.  If the --game=<game> parameter
@@ -59,13 +67,26 @@ int games_get_gametype(char* text)
 {
 	int i;
 
-	for (i=0; i<GGZ_NUM_GAMES; i++)
+	for (i=0; i < strlen(text); i++)
+		text[i] = tolower( text[i] );
+
+	for (i = 0; i < num_games; i++)
 		if (!strcmp(text, game_data[i].name))
 			return i;
 
 	/* NOTE: we may not yet be connected to the ggz server, in which case this won't work. */
 	ggz_debug("Unknown game for '%s'.", text);
 	return GGZ_GAME_UNKNOWN;
+}
+
+void games_handle_gametype(int option)
+{
+	game.which_game = game_types[option];
+
+	if (game.which_game < 0 || game.which_game >= num_games) {
+		ggz_debug("SERVER/CLIENT error: bad game type %d selected; using %d instead.", game.which_game, game_types[0]);
+		game.which_game = game_types[0];
+	}
 }
 
 
@@ -110,7 +131,7 @@ int games_req_gametype()
 		return -1;
 	}
 
-	for (i=0; i < GGZ_NUM_GAMES; i++) {
+	for (i=0; i < num_games; i++) {
 		if (games_valid_game(i)) {
 			game_types[cnt] = i;
 			cnt++;

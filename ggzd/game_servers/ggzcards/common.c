@@ -648,12 +648,7 @@ int handle_player(player_t p)
 				if (game.which_game == GGZ_GAME_UNKNOWN) {
 					int option;
 					rec_options(1, &option);
-					game.which_game = game_types[option];
-
-					if (game.which_game < 0 || game.which_game >= GGZ_NUM_GAMES) {
-						ggz_debug("SERVER/CLIENT error: bad game type %d selected; using %d instead.", game.which_game, game_types[0]);
-						game.which_game = game_types[0];
-					}
+					games_handle_gametype(option);
 
 					init_game();
 					send_sync_all();

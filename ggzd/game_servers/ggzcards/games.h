@@ -87,14 +87,12 @@ typedef enum game_type_t {
 	GGZ_GAME_SKAT = 7
 } game_type_t;
 
-/* this MUST correspond to the numbers above */
 extern struct game_info game_data[];
 
-#define GGZ_NUM_GAMES		8	/* the _number_ of valid games */
-
-extern int game_types[];
+extern const int num_games;	/* the _number_ of valid games */
 
 extern int games_get_gametype(char*);	/* which game is this? */
+extern void games_handle_gametype(int);	/* set the game */
 extern int games_req_gametype();	/* what do you want to play today? */
 extern int games_valid_game(int);	/* is the game valid? */
 
