@@ -38,8 +38,8 @@
 #include "support.h"
 #include "config.h"
 
-#define DEFAULTINSTALLEDDIR GAMEDIR "/combat/pixmaps/default/"
-#define DEFAULTSOURCEDIR PACKAGE_SOURCE_DIR "/game_clients/combat/pixmaps/default"
+#define DEFAULTINSTALLEDDIR GGZDATADIR "/combat/pixmaps/default/"
+#define DEFAULTSOURCEDIR PACKAGE_SOURCE_DIR "/combat/pixmaps/default"
 
 // GGZ connect
 void ggz_connect();

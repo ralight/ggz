@@ -36,7 +36,7 @@
 #include "combat.h"
 #include "map.h"
 
-#define GLOBAL_MAPS GAMEDIR "/combat/maps"
+#define GLOBAL_MAPS GGZDATADIR "/combat/maps"
 
 void game_message(const char *format, ... );
 

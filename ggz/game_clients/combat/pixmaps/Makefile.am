@@ -6,9 +6,9 @@ data = default
 
 install-data-local:
 	for p in $(data); do \
-		$(mkinstalldirs) $(DESTDIR)$(ggzexecmoddir)/combat/pixmaps/$$p ;\
-		cp -r $$p/*.xpm $(DESTDIR)$(ggzexecmoddir)/combat/pixmaps/$$p ;\
+		$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/combat/pixmaps/$$p ;\
+		cp -r $$p/*.xpm $(DESTDIR)$(ggzdatadir)/combat/pixmaps/$$p ;\
 	done
 
 uninstall-local:
-	rm -rv $(ggzexecmoddir)/combat/pixmaps
+	rm -rv $(ggzdatadir)/combat/pixmaps
