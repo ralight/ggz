@@ -1,0 +1,245 @@
+Index: ggzcore/game.c
+===================================================================
+RCS file: /cvs/ggz/src/ggzcore/game.c,v
+retrieving revision 1.33
+diff -u -r1.33 game.c
+--- ggzcore/game.c	22 Mar 2004 17:05:08 -0000	1.33
++++ ggzcore/game.c	7 Jan 2005 22:13:24 -0000
+@@ -140,12 +140,15 @@
+ int ggzcore_game_init(GGZGame *game, GGZServer *server, GGZModule *module)
+ {
+ 	if (!game
+-	    || !module
+ 	    || !server
+ 	    || !_ggzcore_server_get_cur_room(server)
+ 	    || _ggzcore_server_get_cur_game(server))
+ 		return -1;
+ 
++	if (!module
++	    && !_ggzcore_module_is_embedded())
++		return -1;
++
+ 	_ggzcore_game_init(game, server, module);
+ 	
+ 	return 0;
+@@ -246,7 +249,7 @@
+ 
+ int ggzcore_game_launch(GGZGame *game)
+ {
+-	if (game && game->module)
++	if (game && (game->module || _ggzcore_module_is_embedded()))
+ 		return _ggzcore_game_launch(game);
+ 	else
+ 		return -1;
+@@ -313,11 +316,13 @@
+ 	ggzmod_set_transaction_handler(game->client,
+ 				       GGZMOD_TRANSACTION_CHAT,
+ 				       _ggzcore_game_handle_chat);
+-	ggzmod_set_module(game->client, NULL,
+-			  _ggzcore_module_get_argv(game->module));
+ 	ggzmod_set_player(game->client,
+ 			  _ggzcore_server_get_handle(server),
+ 			  0, -1);
++
++	if (!_ggzcore_module_is_embedded())
++		ggzmod_set_module(game->client, NULL,
++				  _ggzcore_module_get_argv(game->module));
+ }
+ 
+ 
+@@ -642,7 +647,10 @@
+ {
+ 	int status;
+ 
+-	ggz_debug(GGZCORE_DBG_GAME, "Launching game of %s",
++	if (_ggzcore_module_is_embedded())
++		ggz_debug(GGZCORE_DBG_GAME, "Launching embedded game");
++	else
++		ggz_debug(GGZCORE_DBG_GAME, "Launching game of %s",
+ 		      _ggzcore_module_get_name(game->module));
+ 
+ 	if ( (status = ggzmod_connect(game->client)) == 0) {
+Index: ggzcore/ggzcore.h
+===================================================================
+RCS file: /cvs/ggz/src/ggzcore/ggzcore.h,v
+retrieving revision 1.131
+diff -u -r1.131 ggzcore.h
+--- ggzcore/ggzcore.h	15 Dec 2004 17:51:58 -0000	1.131
++++ ggzcore/ggzcore.h	7 Jan 2005 22:13:24 -0000
+@@ -86,7 +86,8 @@
+ typedef enum {
+ 	GGZ_OPT_PARSER      = 0x0001,   /* %0000 0000 */
+ 	GGZ_OPT_MODULES     = 0x0002,   /* %0000 0010 */
+-	GGZ_OPT_THREADED_IO = 0x0004    /* %0000 0100 */
++	GGZ_OPT_THREADED_IO = 0x0004,   /* %0000 0100 */
++	GGZ_OPT_EMBEDDED    = 0x0008    /* %0000 1000 */
+ } GGZOptionFlags;
+ 
+ 
+Index: ggzcore/init.c
+===================================================================
+RCS file: /cvs/ggz/src/ggzcore/init.c,v
+retrieving revision 1.26
+diff -u -r1.26 init.c
+--- ggzcore/init.c	27 Jan 2004 18:11:10 -0000	1.26
++++ ggzcore/init.c	7 Jan 2005 22:13:24 -0000
+@@ -56,6 +56,9 @@
+ 	if (options.flags & GGZ_OPT_MODULES)
+ 		_ggzcore_module_setup();
+ 
++	if (options.flags & GGZ_OPT_EMBEDDED)
++		_ggzcore_module_embedded();
++
+ 	return 0;
+ }
+ 
+Index: ggzcore/module.c
+===================================================================
+RCS file: /cvs/ggz/src/ggzcore/module.c,v
+retrieving revision 1.26
+diff -u -r1.26 module.c
+--- ggzcore/module.c	22 Mar 2004 17:05:09 -0000	1.26
++++ ggzcore/module.c	7 Jan 2005 22:13:24 -0000
+@@ -43,6 +43,7 @@
+ static GGZList *module_list;
+ static unsigned int num_modules;
+ static int mod_handle = -1;
++static int embedded_module = 0;
+ 
+ /* static internal functions */
+ static struct _GGZModule* _ggzcore_module_new(void);
+@@ -324,6 +325,18 @@
+ unsigned int _ggzcore_module_get_num(void)
+ {
+ 	return num_modules;
++}
++
++
++void _ggzcore_module_embedded(void)
++{
++	embedded_module = 1;
++}
++
++
++int _ggzcore_module_is_embedded(void)
++{
++	return embedded_module;
+ }
+ 
+ 
+Index: ggzcore/module.h
+===================================================================
+RCS file: /cvs/ggz/src/ggzcore/module.h,v
+retrieving revision 1.6
+diff -u -r1.6 module.h
+--- ggzcore/module.h	22 Mar 2004 17:05:09 -0000	1.6
++++ ggzcore/module.h	7 Jan 2005 22:13:24 -0000
+@@ -69,6 +69,9 @@
+ int _ggzcore_module_setup(void);
+ unsigned int _ggzcore_module_get_num(void);
+ 
++void _ggzcore_module_embedded(void);
++int _ggzcore_module_is_embedded(void);
++
+ /* Returns how many modules support this game and protocol */
+ int _ggzcore_module_get_num_by_type(const char *game, 
+ 				    const char *engine,
+Index: ggzmod/ggzmod.c
+===================================================================
+RCS file: /cvs/ggz-client-libs/ggzmod/ggzmod.c,v
+retrieving revision 1.23
+diff -u -r1.23 ggzmod.c
+--- ggzmod/ggzmod.c	12 Nov 2004 00:14:36 -0000	1.23
++++ ggzmod/ggzmod.c	7 Jan 2005 22:13:24 -0000
+@@ -74,6 +74,7 @@
+ static void _ggzmod_set_state(GGZMod * ggzmod, GGZModState state);
+ static int send_game_launch(GGZMod * ggzmod);
+ static int game_fork(GGZMod * ggzmod);
++static int game_embedded(GGZMod * ggzmod);
+ 
+ /* Functions for manipulating seats */
+ static GGZSeat* seat_copy(GGZSeat *orig);
+@@ -674,9 +675,17 @@
+ 	if (ggzmod->type == GGZMOD_GGZ) {
+ 		/* For the ggz side, we fork the game and then send the launch message */
+ 		
+-		if (game_fork(ggzmod) < 0) {
+-			_ggzmod_error(ggzmod, "Error: table fork failed");
+-			return -1;
++		if (ggzmod->argv) {
++			if (game_fork(ggzmod) < 0) {
++				_ggzmod_error(ggzmod, "Error: table fork failed");
++				return -1;
++			}
++		} else {
++			ggz_debug("GGZMOD", "Running embedded game (no fork)");
++			if (game_embedded(ggzmod) < 0) {
++				_ggzmod_error(ggzmod, "Error: embedded table failed");
++				return -1;
++			}
+ 		}
+ 		
+ 		if (send_game_launch(ggzmod) < 0) {
+@@ -982,6 +991,62 @@
+ 	CloseHandle(pi.hThread);
+ 	ggzmod->process = pi.hProcess;
+ #endif
++#ifndef HAVE_SOCKETPAIR
++	/* FIXME: we need to select, with a maximum timeout. */
++	/* FIXME: this is insecure; it should be restricted to local
++	 * connections. */
++	sock2 = accept(sock, NULL, NULL);
++	if (sock2 < 0) {
++		ggz_error_sys("Listening to socket failed.");
++		return -1;
++	}
++	closesocket(sock);
++	ggzmod->fd = sock2;
++#endif
++	return 0;
++}
++
++
++/* Similar to game_fork(), but runs the game embedded */
++static int game_embedded(GGZMod * ggzmod)
++{
++#ifdef HAVE_SOCKETPAIR
++	int fd_pair[2];		/* socketpair */
++#else
++	int sock, sock2, port;
++	char buf[100];
++#endif
++
++#ifdef HAVE_SOCKETPAIR
++	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
++		ggz_error_sys_exit("socketpair failed");
++#else
++	/* Winsock implementation: see ggzmod_connect. */
++	port = 5898;
++	do {
++		port++;
++		sock = ggz_make_socket(GGZ_SOCK_SERVER, port, NULL);
++	} while (sock < 0 && port < 7000);
++	if (sock < 0) {
++		ggz_error_msg("Could not bind socket.");
++		return -1;
++	}
++	if (listen(sock, 1) < 0) {
++		ggz_error_msg("Could not listen on socket.");
++		return -1;
++	}
++#endif
++
++	if (fd_pair[1] != 3) {
++		/* We'd like to send an error message if either of
++		   these fail, but we can't.  --JDS */
++		if (dup2(fd_pair[1], 3) != 3 || close(fd_pair[1]) < 0)
++			ggz_error_sys_exit("dup failed");
++	}
++
++	ggzmod->fd = fd_pair[0];
++	/*ggzmod->pid = pid;*/ /* FIXME: use -1 for embedded ggzcore? getpid()? */
++
+ #ifndef HAVE_SOCKETPAIR
+ 	/* FIXME: we need to select, with a maximum timeout. */
+ 	/* FIXME: this is insecure; it should be restricted to local

@@ -1,20 +1,31 @@
 This directory contains patches which should be tested and fixed so they can
 be merged with the sources.
 
-Gensecure patches:
-ggz-0.0.5pre-gensecure.ggz-client-libs.patch
-ggz-0.0.5pre-gensecure.ggzd.patch
-ggz-0.0.5pre-gensecure.libggz.patch
+Current patches
+---------------
 
-Those are of 2001-11-06 and provide TLS for client and server.
+Embedding ggzcore into game clients:
+ ggz-client-libs.embedded.diff
+ widelands.embedded.diff
+
+Old patches (just to keep it in memory)
+---------------------------------------
+
+Gensecure patches:
+ ggz-0.0.5pre-gensecure.ggz-client-libs.patch
+ ggz-0.0.5pre-gensecure.ggzd.patch
+ ggz-0.0.5pre-gensecure.libggz.patch
+
+ Those are of 2001-11-06 and provide TLS for client and server.
 
 Spectators patches:
-ggz-0.0.5pre-spectators.ggz-cliens-libs.patch
-ggz-0.0.5pre-spectators.ggzd.patch
-ggz-0.0.5pre-spectators.libggz.patch
+ ggz-0.0.5pre-spectators.ggz-cliens-libs.patch
+ ggz-0.0.5pre-spectators.ggzd.patch
+ ggz-0.0.5pre-spectators.libggz.patch
 
-Being created on 2002-01-14, they are _NOT_ tested, and miss some
-functionality like ggzdmod support.
+ Being created on 2002-01-14, they are _NOT_ tested, and miss some
+ functionality like ggzdmod support.
 
-Josef
+GGZ support for Tuxman:
+ ggz.tuxman.diff
 
