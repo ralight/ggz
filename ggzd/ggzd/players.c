@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4582 2002-09-16 06:07:30Z jdorje $
+ * $Id: players.c 4585 2002-09-16 06:53:40Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -277,7 +277,8 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 	if(perms_check(player, PERMS_LAUNCH_TABLE) == PERMS_DENY) {
 		dbg_msg(GGZ_DBG_TABLE, "%s insufficient perms to launch",
 			player->name);
-		if(net_send_table_launch(player->client->net, E_NO_PERMISSION) < 0)
+		if(net_send_table_launch(player->client->net,
+					 E_NO_PERMISSION) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -336,7 +337,7 @@ GGZPlayerHandlerStatus player_table_launch(GGZPlayer* player, GGZTable *table)
 		player->launching = 1;
 		pthread_rwlock_unlock(&player->lock);
 	} else {
-		if (net_send_table_launch(player->client->net, (char)status) < 0)
+		if (net_send_table_launch(player->client->net, status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -364,8 +365,7 @@ GGZEventFuncReturn player_launch_callback(void* target, size_t size,
 		player_transit(player, GGZ_TRANSIT_JOIN, event->table_index);
 
 	/* Return status to client */
-	if (net_send_table_launch(player->client->net,
-				  (char)event->status) < 0)
+	if (net_send_table_launch(player->client->net, event->status) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
@@ -389,7 +389,8 @@ GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
 	if (strcmp(owner, player->name) != 0) {
 		dbg_msg(GGZ_DBG_TABLE, "%s tried to modify table owned by %s",
 			player->name, owner);
-		if(net_send_update_result(player->client->net, E_NO_PERMISSION) < 0)
+		if(net_send_update_result(player->client->net,
+					  E_NO_PERMISSION) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -419,7 +420,7 @@ GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table)
 
 	/* Return any immediate failures to client*/
 	if (status != E_OK) {
-		if (net_send_update_result(player->client->net, (char)status) < 0)
+		if (net_send_update_result(player->client->net, status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -463,7 +464,7 @@ GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index)
 
 	/* Return any immediate failures to client*/
 	if (status != E_OK) {
-		if (net_send_table_join(player->client->net, (char)status) < 0)
+		if (net_send_table_join(player->client->net, status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -491,7 +492,7 @@ GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index)
 
 	/* Return any immediate failures to client*/
 	if (status != E_OK) {
-		if (net_send_table_join(player->client->net, (char)status) < 0)
+		if (net_send_table_join(player->client->net, status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -586,8 +587,7 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player,
 
 	/* Return any immediate failures to client*/
 	if (status != E_OK) {
-		if (net_send_table_leave(player->client->net,
-					 (char)status) < 0)
+		if (net_send_table_leave(player->client->net, status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -648,9 +648,8 @@ GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
 					player->table);
 
 	/* Return any immediate failures to client*/
-	if (status < 0) {
-		if (net_send_table_leave(player->client->net,
-					 (char)status) < 0)
+	if (status != E_OK) {
+		if (net_send_table_leave(player->client->net, status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		status = GGZ_REQ_FAIL;
 	}
@@ -787,7 +786,8 @@ GGZPlayerHandlerStatus player_list_players(GGZPlayer* player)
 	if (player->room == -1) {
 		dbg_msg(GGZ_DBG_UPDATE, "%s requested player list in room -1",
 			player->name);
-		if (net_send_player_list_error(player->client->net, E_NOT_IN_ROOM) < 0)
+		if (net_send_player_list_error(player->client->net,
+					       E_NOT_IN_ROOM) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -843,7 +843,8 @@ GGZPlayerHandlerStatus player_list_types(GGZPlayer* player, char verbose)
  	if (player->login_status == GGZ_LOGIN_NONE) {
 		dbg_msg(GGZ_DBG_UPDATE, "%s requested type list before login",
 			player->name);
-		if (net_send_type_list_error(player->client->net, E_NOT_LOGGED_IN) < 0)
+		if (net_send_type_list_error(player->client->net,
+					     E_NOT_LOGGED_IN) < 0)
  			return GGZ_REQ_DISCONNECT;
  		return GGZ_REQ_FAIL;
  	}
@@ -933,7 +934,7 @@ GGZPlayerHandlerStatus player_chat(GGZPlayer* player, unsigned char subop,
 {
 	int target_room=-1;	/* FIXME - this should come from net.c if we */
 				/* are going to support per-room announce... */
-	int status;
+	GGZClientReqError status;
 
 	dbg_msg(GGZ_DBG_CHAT, "Handling chat for %s", player->name);
 	
@@ -986,7 +987,8 @@ GGZPlayerHandlerStatus player_motd(GGZPlayer* player)
  	if (player->login_status == GGZ_LOGIN_NONE) {
 		dbg_msg(GGZ_DBG_CHAT, "%s requested motd before logging in",
 			player->name);
-		if (net_send_motd_error(player->client->net, E_NOT_LOGGED_IN) < 0)
+		if (net_send_motd_error(player->client->net,
+					E_NOT_LOGGED_IN) < 0)
  			return GGZ_REQ_DISCONNECT;
  		return GGZ_REQ_FAIL;
  	}

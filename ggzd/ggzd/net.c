@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4539 2002-09-13 05:14:21Z jdorje $
+ * $Id: net.c 4585 2002-09-16 06:53:40Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -137,10 +137,14 @@ static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
 static int safe_atoi(char *string);
 static int check_playerconn(GGZNetIO *net, const char *type);
 static void _net_dump_data(struct _GGZNetIO *net, char *data, int size);
-static int _net_send_result(GGZNetIO *net, const char *action, char code);
-static int _net_send_login_normal_status(GGZNetIO *net, char status);
-static int _net_send_login_anon_status(GGZNetIO *net, char status);
-static int _net_send_login_new_status(GGZNetIO *net, char status, char *password);
+static int _net_send_result(GGZNetIO *net, const char *action,
+			    GGZClientReqError code);
+static int _net_send_login_normal_status(GGZNetIO *net,
+					 GGZClientReqError status);
+static int _net_send_login_anon_status(GGZNetIO *net,
+				       GGZClientReqError status);
+static int _net_send_login_new_status(GGZNetIO *net, GGZClientReqError status,
+				      char *password);
 static int _net_send_table_status(GGZNetIO *net, GGZTable *table);
 static int _net_send_table_seat(GGZNetIO *net, GGZTable *table,
 				GGZTableSeat *seat);
@@ -295,7 +299,8 @@ int net_send_server_full(GGZNetIO *net, char *srv_name)
 }
 
 
-int net_send_login(GGZNetIO *net, GGZLoginType type, char status, char *password)
+int net_send_login(GGZNetIO *net, GGZLoginType type,
+		   GGZClientReqError status, char *password)
 {
 	switch (type) {
 	case GGZ_LOGIN:
@@ -333,13 +338,13 @@ int net_send_motd(GGZNetIO *net)
 }
 
 
-int net_send_motd_error(GGZNetIO *net, char status)
+int net_send_motd_error(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "motd", status);
 }
 
 
-int net_send_room_list_error(GGZNetIO *net, char status)
+int net_send_room_list_error(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "list", status);
 }
@@ -373,7 +378,7 @@ int net_send_room_list_end(GGZNetIO *net)
 }
 
 
-int net_send_type_list_error(GGZNetIO *net, char status)
+int net_send_type_list_error(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "list", status);
 }
@@ -420,7 +425,7 @@ int net_send_type_list_end(GGZNetIO *net)
 	return 0;
 }
 
-int net_send_player_list_error(GGZNetIO *net, char status)
+int net_send_player_list_error(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "list", status);
 }
@@ -486,7 +491,7 @@ int net_send_player_list_end(GGZNetIO *net)
 }
 
 
-int net_send_table_list_error(GGZNetIO *net, char status)
+int net_send_table_list_error(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "list", status);
 }
@@ -544,7 +549,7 @@ int net_send_table_list_end(GGZNetIO *net)
 }
 
 
-int net_send_room_join(GGZNetIO *net, char status)
+int net_send_room_join(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "enter", status);
 }
@@ -581,25 +586,25 @@ int net_send_chat(GGZNetIO *net, unsigned char opcode, char *name, char *msg)
 }
 
 
-int net_send_chat_result(GGZNetIO *net, char status)
+int net_send_chat_result(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "chat", status);
 }
 
 
-int net_send_table_launch(GGZNetIO *net, char status)
+int net_send_table_launch(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "launch", status);
 }
 
 
-int net_send_table_join(GGZNetIO *net, char status)
+int net_send_table_join(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "join", status);
 }
 
 
-int net_send_table_leave(GGZNetIO *net, char status)
+int net_send_table_leave(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "leave", status);
 }
@@ -726,13 +731,13 @@ int net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode,
 }
 
 
-int net_send_update_result(GGZNetIO *net, char status)
+int net_send_update_result(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "update", status);
 }
 
 
-int net_send_logout(GGZNetIO *net, char status)
+int net_send_logout(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_line(net, "</SESSION>");
 }
@@ -1733,26 +1738,29 @@ static int _net_send_spectator(GGZNetIO *net, GGZTableSpectator *spectator)
 	return 0;
 }
 
-static int _net_send_result(GGZNetIO *net, const char *action, char code)
+static int _net_send_result(GGZNetIO *net, const char *action,
+			    GGZClientReqError code)
 {
 	return _net_send_line(net, "<RESULT ACTION='%s' CODE='%d'/>",
 			      action, code);
 }
 
 
-static int _net_send_login_normal_status(GGZNetIO *net, char status)
+static int _net_send_login_normal_status(GGZNetIO *net,
+					 GGZClientReqError status)
 {
 	return _net_send_result(net, "login", status);
 }
 
 
-static int _net_send_login_anon_status(GGZNetIO *net, char status)
+static int _net_send_login_anon_status(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "login", status);
 }
 
 
-static int _net_send_login_new_status(GGZNetIO *net, char status, char *password)
+static int _net_send_login_new_status(GGZNetIO *net,
+				      GGZClientReqError status, char *password)
 {
 	/* Try to send login status */
 	_net_send_line(net, "<RESULT ACTION='login' CODE='%d'>", status);

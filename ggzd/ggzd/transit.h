@@ -45,4 +45,4 @@ GGZReturn transit_spectator_event(int room, int index,
 				  char *caller);
 
 GGZReturn transit_player_event(char* name, GGZTransitType opcode,
-			       int status, int index);
+			       GGZClientReqError status, int index);

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 4572 2002-09-16 04:26:07Z jdorje $
+ * $Id: table.h 4585 2002-09-16 06:53:40Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -151,7 +151,7 @@ struct GGZTable* table_lookup(int room, int index);
 
 /* Packaging for a table launch event */
 typedef struct {
-	int status;
+	GGZClientReqError status;
 	int table_index;
 } GGZLaunchEventData;
 

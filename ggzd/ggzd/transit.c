@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4559 2002-09-13 18:26:37Z jdorje $
+ * $Id: transit.c 4585 2002-09-16 06:53:40Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -55,7 +55,7 @@ typedef struct{
 } GGZSeatEventData;
 typedef struct {
 	GGZTransitType opcode;
-	int status;
+	GGZClientReqError status;
 	int table_index; /* Only for certain operations */
 } GGZPlayerTransitEventData;
 
@@ -115,7 +115,7 @@ GGZReturn transit_spectator_event(int room, int index,
 }
 
 GGZReturn transit_player_event(char* name, GGZTransitType opcode,
-			       int status, int index)
+			       GGZClientReqError status, int index)
 {
 	GGZPlayerTransitEventData* data = ggz_malloc(sizeof(*data));
 
@@ -283,7 +283,7 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 		pthread_rwlock_unlock(&player->lock);
 		
 		if (net_send_table_leave(player->client->net,
-					 (char)data->status) < 0)
+					 data->status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 
@@ -297,13 +297,13 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 		pthread_rwlock_unlock(&player->lock);
 
 		if (net_send_table_join(player->client->net,
-					(char)data->status) < 0)
+					data->status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 
 	case GGZ_TRANSIT_SEAT:
 		if (net_send_update_result(player->client->net,
-					   (char)data->status) < 0)
+					   data->status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 	}
