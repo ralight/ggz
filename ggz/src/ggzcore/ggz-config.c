@@ -91,7 +91,7 @@ static const struct poptOption args[] = {
 };
 
 
-int load_modfile(void)
+static int load_modfile(void)
 {
 	int from;
 	int status = 1;
@@ -163,7 +163,7 @@ int load_modfile(void)
 }
 
 
-int purge_engine_name(int global)
+static int purge_engine_name(int global)
 {
 	int items;
 	char **engine_list;
@@ -190,7 +190,7 @@ int purge_engine_name(int global)
 }
 
 
-char *new_engine_id(int global)
+static char *new_engine_id(int global)
 {
 	char **engine_list, **engine_id_list;
 	int engines, ids;
@@ -217,7 +217,7 @@ char *new_engine_id(int global)
 }
 
 
-char *get_engine_id(int global)
+static char *get_engine_id(int global)
 {
 	int items;
 	char **engine_list;
@@ -259,7 +259,7 @@ char *get_engine_id(int global)
 }
 
 
-void purge_engine_id(int global, char *engine_id)
+static void purge_engine_id(int global, char *engine_id)
 {
 	int items;
 	char **engine_list;
@@ -286,7 +286,7 @@ void purge_engine_id(int global, char *engine_id)
 }
 
 
-int open_conffile(void)
+static int open_conffile(void)
 {
 	char	*global_pathname;
 	char	*global_filename = "ggz.modules";
@@ -326,7 +326,7 @@ int open_conffile(void)
 }
 
 
-int remove_module(void)
+static int remove_module(void)
 {
 	char	*engine_id;
 	int	global, rc;
@@ -359,7 +359,7 @@ int remove_module(void)
 }
 
 
-int install_module(void)
+static int install_module(void)
 {
 	char	*engine_id;
 	int	global, rc;
@@ -454,7 +454,7 @@ int install_module(void)
 }
 
 
-int query(char *name, char *text, int def)
+static int query(char *name, char *text, int def)
 {
 	char buf[3];
 
@@ -478,7 +478,7 @@ char *reqd_keys[] = { "Author", "Frontend", "Name", "ProtocolEngine",
 #define N_REQD_KEYS	6
 
 
-int check_module_file(void)
+static int check_module_file(void)
 {
 	int	global;
 	int	rc;
