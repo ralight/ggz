@@ -253,7 +253,7 @@ void Canvas::domove(int x, int y)
 {
 	int vx, vy;
 	int offset;
-	const int tol = 20;
+	/*const int tol = 20;*/
 	/*float diffx, diffy;*/
 
 	if(m_spectator) return;

@@ -140,7 +140,7 @@ void Intro::timerEvent(QTimerEvent *e)
 
 void Intro::drawalllogin()
 {
-	int titleinc;
+	int titleinc = 0;
 	QPixmap pix;
 	KConfig *conf;
 	QStringList avatarnames, avatartypes;
@@ -324,7 +324,7 @@ void Intro::drawallblack()
 
 void Intro::drawallavatar()
 {
-	int titleinc;
+	int titleinc = 0;
 	QPixmap pix;
 	QStringList avatarnames, avatartypes, avatarscores;
 	KConfig *conf;
@@ -519,7 +519,7 @@ void Intro::drawallavatar2()
 
 void Intro::drawallscores()
 {
-	int titleinc;
+	int titleinc = 0;
 	QPixmap pix;
 
 	if(transition == none) return;
@@ -573,7 +573,7 @@ void Intro::drawallscores()
 
 void Intro::drawall()
 {
-	int titleinc;
+	int titleinc = 0;
 
 	if(transition == none) return;
 
@@ -640,8 +640,8 @@ void Intro::draw(QImage image, QImage bm, int posx, int posy, int blend)
 {
 	QRgb rgba;
 	int r, g, b, a;
-	int r2, g2, b2, a2;
-	int r3, g3, b3, a3;
+	int r2, g2, b2;
+	int r3, g3, b3;
 
 	for(int j = 0; j < image.height(); j++)
 		for(int i = 0; i < image.width(); i++)
