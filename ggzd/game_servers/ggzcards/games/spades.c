@@ -146,7 +146,7 @@ static void spades_handle_options(int* options)
 
 static int spades_get_bid()
 {
-	int status = 0, index=0, i;
+	int index=0, i;
 	bid_t partners_bid = game.players[ (game.next_bid + 2) % 4].bid;
 	bid_t bid;
 	bid.bid = 0;
@@ -168,8 +168,7 @@ static int spades_get_bid()
 
 	/* TODO: other specialty bids */
 
-	status = req_bid(game.next_bid, index, NULL);
-	return status;
+	return req_bid(game.next_bid, index, NULL);
 }
 
 static int spades_deal_hand()
@@ -187,7 +186,6 @@ static int spades_get_bid_text(char* buf, int buf_len, bid_t bid)
 {
 	if (bid.sbid.spec == SPADES_NIL) return snprintf(buf, buf_len, "Nil");
 	return snprintf(buf, buf_len, "%d", (int)bid.sbid.val);
-
 }
 
 static void spades_set_player_message(player_t p)
@@ -219,7 +217,6 @@ static void spades_set_player_message(player_t p)
 		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing..."); /* "Waiting for play" won't fit */;
 
 	send_player_message_toall(s);
-	
 }
 
 static void spades_end_trick()
