@@ -57,10 +57,10 @@ int _ggzdb_init(char *datadir, int set_standalone)
 	memset(&db_e, 0, sizeof(db_e));
 
 	if(set_standalone) {
-		flags = DB_INIT_LOCK;
+		flags = DB_INIT_MPOOL | DB_INIT_LOCK;
 		standalone = 1;
 	} else
-		flags = DB_CREATE | DB_INIT_LOCK | DB_THREAD;
+		flags = DB_CREATE | DB_INIT_LOCK | DB_THREAD | DB_INIT_MPOOL;
 	rc = db_appinit(datadir, NULL, &db_e, flags);
 	if(rc != 0)
 		err_sys("db_appinit() failed in _ggzdb_init()");
