@@ -2,7 +2,7 @@
 
 SUBDIRS = ggz-gtk $(GAIMPLUGIN) man po
 
-EXTRA_DIST = TODO README.GGZ QuickStart.GGZ \
+EXTRA_DIST = TODO README.GGZ QuickStart.GGZ ggz-gtk.desktop \
 		m4/gettext.m4	\
 		m4/ggz.m4	\
 		m4/ggz-debug.m4	\
@@ -13,3 +13,6 @@ EXTRA_DIST = TODO README.GGZ QuickStart.GGZ \
 		m4/locale.m4	\
 		m4/progtest.m4 \
 		m4/gaim.m4
+
+desktopdir = $(datadir)/applications
+desktop_DATA = ggz-gtk.desktop

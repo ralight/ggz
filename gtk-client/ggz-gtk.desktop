@@ -1,0 +1,16 @@
+[Desktop Entry]
+Name=ggz-gtk
+GenericName=Gtk+ internet gaming center
+GenericName[de]=Internet-Spielezentrum (Gtk+)
+GenericName[fr]=Centre de jeux d'internet (Gtk+)
+GenericName[pt]=Centro de jogos em rede (Gtk+)
+Comment=GGZ Core Client
+Comment[de]=GGZ-Core-Client
+Comment[fr]=Core Client GGZ
+Comment[pt]=Cliente núcleo do GGZ
+
+Type=Application
+Exec=ggz-gtk
+Icon=
+Terminal=false
+Categories=X-GGZ;Network;ConsoleOnly;
