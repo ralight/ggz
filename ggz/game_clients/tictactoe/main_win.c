@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 5039 2002-10-26 03:49:54Z jdorje $
+ * $Id: main_win.c 5041 2002-10-26 03:59:41Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -147,23 +147,16 @@ static gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data
 }
 
 
-static void game_resync(void)
+void game_resync(void)
 {
 	assert(FALSE);
 }
 
 
-static void game_exit(GtkMenuItem *menuitem, gpointer user_data)
+void game_exit(void)
 {
 	/* FIXME: should call an "are you sure dialog" */
 	gtk_main_quit();
-
-}
-
-
-static void game_about(GtkMenuItem *menuitem, gpointer user_data)
-{
-	create_or_raise_dlg_about();
 }
 
 
