@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 4543 2002-09-13 06:49:00Z jdorje $
+ * $Id: table.h 4572 2002-09-16 04:26:07Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -115,13 +115,13 @@ struct GGZTable* table_new(void);
 void table_free(GGZTable* table);
 
 /* Launch a table */
-int table_launch(struct GGZTable *table, char* name);
+GGZClientReqError table_launch(struct GGZTable *table, char* name);
 
 /* Change table description of running table */
 void table_set_desc(struct GGZTable *table, char *desc);
 
 /* Kill the table */
-int table_kill(int room, int index, char *name);
+GGZClientReqError table_kill(int room, int index, char *name);
 
 /* Search for tables */
 int table_search(char* name, int room, int type, char global, 

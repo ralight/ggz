@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4559 2002-09-13 18:26:37Z jdorje $
+ * $Id: table.c 4572 2002-09-16 04:26:07Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -87,10 +87,10 @@ extern Options opt;
 
 /* Local functions for handling tables */
 static GGZTable *table_copy(GGZTable *table);
-static int   table_check(GGZTable* table);
-static int   table_handler_launch(GGZTable* table);
+static GGZReturn table_check(GGZTable* table);
+static GGZReturn table_handler_launch(GGZTable* table);
 static void* table_new_thread(void *index_ptr);
-static int   table_start_game(GGZTable *table);
+static GGZReturn table_start_game(GGZTable *table);
 static void  table_loop(GGZTable* table);
 static void  table_remove(GGZTable* table);
 
@@ -104,14 +104,18 @@ static void table_game_spectator_leave(GGZdMod *ggzdmod, GGZdModEvent event, voi
 static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 
-static int   table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode);
-static int   table_update_event_enqueue(GGZTable* table,
-					GGZUpdateOpcode opcode, char* name,
-					 unsigned int seat);
-static int   table_seat_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
-				      unsigned int seat);
-/*static int   table_spectator_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
-				      unsigned int spectator);*/
+static GGZReturn table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode);
+static GGZReturn table_update_event_enqueue(GGZTable* table,
+					    GGZUpdateOpcode opcode, char* name,
+					    unsigned int seat);
+static GGZReturn table_seat_event_enqueue(GGZTable* table,
+					  GGZUpdateOpcode opcode,
+					  unsigned int seat);
+#if 0
+static GGZReturn table_spectator_event_enqueue(GGZTable* table,
+					       GGZUpdateOpcode opcode,
+					       unsigned int spectator);
+#endif
 			      
 static void table_event_data_free(void* data);
 static GGZEventFuncReturn table_event_callback(void* target, size_t size,
@@ -125,7 +129,7 @@ static GGZEventFuncReturn table_spectator_event_callback(void* target,
 #endif
 static GGZEventFuncReturn table_kill_callback(void* target, size_t size,
 					      void* data);
-static int   table_launch_event(char* name, int status, int index);
+static GGZReturn table_launch_event(char* name, int status, int index);
 
 static int   type_match_table(int type, GGZTable* table);
 
@@ -225,15 +229,11 @@ static GGZTable *table_copy(GGZTable *table)
 
 /*
  * table_check() - Logs seating assignments to debug and verifies
- * their validity
- *
- *
- * Returns:  0 on success
- *           E_BAD_OPTIONS if invalid 
+ * their validity.  Returns GGZ_ERROR if the table is invalid.
  */
-static int table_check(GGZTable* table)
+static GGZReturn table_check(GGZTable* table)
 {
-	int i, status = 0;
+	int i, status = GGZ_OK;
 	int ai_total = seats_count(table, GGZ_SEAT_BOT);
 	int seat_total = seats_num(table);
 	int spectator_total = spectators_count(table);
@@ -252,7 +252,7 @@ static int table_check(GGZTable* table)
 		dbg_msg(GGZ_DBG_TABLE, 
 			"Launching table of type %d in room %d (invalid)", 
 			g_type, table->room);
-		return E_BAD_OPTIONS;
+		return GGZ_ERROR;
 	}
 
 	/* FIXME: should technically lock game_types */
@@ -262,7 +262,7 @@ static int table_check(GGZTable* table)
 		dbg_msg(GGZ_DBG_TABLE, "Seats  : %d (accept)", seat_total);
 	else {
 		dbg_msg(GGZ_DBG_TABLE, "Seats  : %d (invalid)", seat_total);
-		status = E_BAD_OPTIONS;
+		status = GGZ_ERROR;
 	}
 	
 	if(ai_total == 0
@@ -271,14 +271,14 @@ static int table_check(GGZTable* table)
 		dbg_msg(GGZ_DBG_TABLE, "Bots   : %d (accept)", ai_total);
 	else {
 		dbg_msg(GGZ_DBG_TABLE, "Bots   : %d (invalid)", ai_total);
-		status = E_BAD_OPTIONS;
+		status = GGZ_ERROR;
 	}
 
 	if (game_types[g_type].allow_spectators)
 		dbg_msg(GGZ_DBG_TABLE, "Spectators: %d", spectator_total);
 	else {
 		if (spectator_total > 0)
-			status = E_BAD_OPTIONS;
+			status = GGZ_ERROR;
 		dbg_msg(GGZ_DBG_TABLE, "Spectators not supported.");
 	}
 
@@ -310,7 +310,7 @@ static int table_check(GGZTable* table)
 			break;
 		default:
 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: **invalid**", i);
-			status = E_BAD_OPTIONS;
+			status = GGZ_ERROR;
 			break;
 		}
 	}
@@ -325,7 +325,7 @@ static int table_check(GGZTable* table)
  * returns 0 if successful, or a non-zero error if the thread 
  * cannot be created
  */
-int table_handler_launch(GGZTable* table)
+static GGZReturn table_handler_launch(GGZTable* table)
 {
 	pthread_t thread;
 	GGZTable **index_ptr;
@@ -335,10 +335,12 @@ int table_handler_launch(GGZTable* table)
 	index_ptr = ggz_malloc(sizeof(*index_ptr));
 	*index_ptr = table;
 	status = pthread_create(&thread, NULL, table_new_thread, index_ptr);
-	if (status != 0)
+	if (status != 0) {
 		ggz_free(index_ptr);
+		return GGZ_ERROR;
+	}
 
-	return status;
+	return GGZ_OK;
 }
 
 
@@ -412,7 +414,7 @@ static void* table_new_thread(void *index_ptr)
 	pthread_rwlock_unlock(&game_types[table->type].lock);
 
 	/* Let the game begin...*/
-	if (table_start_game(table) == 0) {
+	if (table_start_game(table) == GGZ_OK) {
 		log_msg(GGZ_LOG_TABLES,
 			"TABLE_START - %s started a new game of %s in %s",
 			table->owner, gname, rname);
@@ -434,19 +436,21 @@ static void* table_new_thread(void *index_ptr)
 	table_remove(table);
 	table_free(table);
 
-	return (NULL);
+	return NULL;
 }
 
 
 /* Create and start game module */
-static int table_start_game(GGZTable *table)
+/* FIXME: this function needs better error handling. */
+static GGZReturn table_start_game(GGZTable *table)
 {
 #if 0
 	char *args[] = {"logmod", NULL};
 #endif
 	char **args;
 	char *pwd;
-	int type, i, num_seats, status = 0;
+	int type, i, num_seats;
+	GGZReturn status = GGZ_OK;
 	GGZSeat seat;
 
 	pthread_rwlock_wrlock(&table->lock);
@@ -455,7 +459,7 @@ static int table_start_game(GGZTable *table)
 
 	/* Some weird error in creating the module */
 	if (!table->ggzdmod)
-		return -1;
+		return GGZ_ERROR;
 
 	/* Build our argument list */
 	type = table->type;
@@ -490,13 +494,13 @@ static int table_start_game(GGZTable *table)
 			seat.name = NULL;
 		seat.fd = -1;
 		if (ggzdmod_set_seat(table->ggzdmod, &seat) < 0)
-			status = 1;
+			status = GGZ_ERROR;
         }
 
 	/* And start the game */
 	ggzdmod_set_module(table->ggzdmod, pwd, args);
 	if (ggzdmod_connect(table->ggzdmod) < 0)
-		status = -1;
+		status = GGZ_ERROR;
 
 	return status;
 }
@@ -676,7 +680,8 @@ static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
  * table_game_seatchange handles the RSP_GAME_SEAT from the table
  * Note: table->transit_name contains allocated mem on entry
  */
-static void table_game_seatchange(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
+static void table_game_seatchange(GGZdMod *ggzdmod,
+				  GGZdModEvent event, void *data)
 {
 	GGZSeat seat;
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
@@ -737,7 +742,8 @@ static void table_game_seatchange(GGZdMod *ggzdmod, GGZdModEvent event, void *da
  * table_game_spectator_join handles the RSP_GAME_JOIN_SPECTATOR from the table
  * Note: table->transit_name contains allocated mem on entry
  */
-static void table_game_spectator_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
+static void table_game_spectator_join(GGZdMod *ggzdmod,
+				      GGZdModEvent event, void *data)
 {
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	char* name;
@@ -797,7 +803,8 @@ static void table_game_spectator_join(GGZdMod *ggzdmod, GGZdModEvent event, void
 /*
  * table_game_leave handles the RSP_GAME_LEAVE_SPECTATOR from the table
  */
-static void table_game_spectator_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
+static void table_game_spectator_leave(GGZdMod *ggzdmod,
+				       GGZdModEvent event, void *data)
 {
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	char* name;
@@ -1007,24 +1014,24 @@ static void table_remove(GGZTable* table)
 
 
 /* FIXME: redo using events to notify player */
-int table_launch(GGZTable *table, char* name)
+GGZClientReqError table_launch(GGZTable *table, char* name)
 {
 	/* Fill in the table owner */
 	strcpy(table->owner, name);	
 	
 	/* Check validity of table info */
-	if (table_check(table) < 0) {
+	if (table_check(table) != GGZ_OK) {
 		table_free(table);
 		return E_BAD_OPTIONS;
 	}
 
 	/* Attempt to do launch of table-controller */
-	if (table_handler_launch(table) != 0) {
+	if (table_handler_launch(table) != GGZ_OK) {
 		table_free(table);
 		return E_LAUNCH_FAIL;
 	}
 	
-	return 0;
+	return E_OK;
 }
 
 
@@ -1042,7 +1049,7 @@ void table_set_desc(GGZTable *table, char *desc)
 
 
 /* Kill the table */
-int table_kill(int room, int index, char *name)
+GGZClientReqError table_kill(int room, int index, char *name)
 {
 	char *data;
 
@@ -1194,9 +1201,9 @@ int table_find_spectator(int room, int index, char *name)
 }
 
 
-static int table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode)
+static GGZReturn table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode)
 {
-	int status, room = table->room;
+	int room = table->room;
 	GGZTableEventData *data = ggz_malloc(sizeof(*data));
 
 	/* Pack data */
@@ -1206,18 +1213,17 @@ static int table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode)
 	pthread_rwlock_unlock(&table->lock);
 	
 	/* Queue table event for whole room */
-	status = event_room_enqueue(room, table_event_callback,
-				    sizeof(*data), data,
-				    table_event_data_free);
-	
-	return status;
+	return event_room_enqueue(room, table_event_callback,
+				  sizeof(*data), data,
+				  table_event_data_free);
 }
 
 
-static int table_update_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
-				       char* name, unsigned int seat)
+static GGZReturn table_update_event_enqueue(GGZTable* table,
+					    GGZUpdateOpcode opcode,
+					    char* name, unsigned int seat)
 {
-	int status, room = table->room;
+	int room = table->room;
 	GGZTableEventData *data = ggz_malloc(sizeof(*data));
 
 	/* Pack up table update data */
@@ -1229,18 +1235,16 @@ static int table_update_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
 	data->seat = seat;
 
 	/* Queue table event for whole room */
-	status = event_room_enqueue(room, table_event_callback,
-				    sizeof(*data), data,
-				    table_event_data_free);
-
-	return status;
+	return event_room_enqueue(room, table_event_callback,
+				  sizeof(*data), data,
+				  table_event_data_free);
 }
 
 
-static int table_seat_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode,
-				    unsigned int seat_num)
+static GGZReturn table_seat_event_enqueue(GGZTable *table,
+					  GGZUpdateOpcode opcode,
+					  unsigned int seat_num)
 {
-	int status;
 	GGZSeatChangeEventData *data;
 
 	data = ggz_malloc(sizeof(*data));
@@ -1253,17 +1257,15 @@ static int table_seat_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode,
 	data->num_seats = seats_num(table);
 
 	/* Queue table event for whole room */
-	status = event_room_enqueue(table->room, table_seat_event_callback,
-				    sizeof(*data), data, NULL);
-	
-	return status;
+	return event_room_enqueue(table->room, table_seat_event_callback,
+				  sizeof(*data), data, NULL);
 }
 
 #if 0
-static int table_spectator_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode,
+static GGZReturn table_spectator_event_enqueue(GGZTable *table,
+					       GGZUpdateOpcode opcode,
 	unsigned int spectator_num)
 {
-	int status;
 	struct GGZSpectatorChange *data;
 
 	data = ggz_malloc(sizeof(struct GGZSpectatorChange));
@@ -1275,9 +1277,8 @@ static int table_spectator_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode
 	data->num_spectators = spectators_count(table);
 
 	/* Queue table event for whole room */
-	status = event_room_enqueue(table->room, table_spectator_event_callback, sizeof(data), data);
-	
-	return status;
+	return event_room_enqueue(table->room, table_spectator_event_callback,
+				  sizeof(data), data);
 }
 #endif
 
@@ -1407,7 +1408,7 @@ static GGZEventFuncReturn table_spectator_event_callback(void* target,
 }
 #endif
 
-static int table_launch_event(char* name, int status, int index)
+static GGZReturn table_launch_event(char* name, int status, int index)
 {
 	GGZLaunchEventData *data = ggz_malloc(sizeof(*data));
 
