@@ -600,6 +600,9 @@ static int get_trick_winner(void)
 	statusbar_message(t_str);
 	g_free(t_str);
 
+	/* TODO: make this sleep optional (a preference) */
+	sleep(1);
+
 	table_clear_table();
 
 	return 0;
