@@ -17,12 +17,12 @@ noinst_HEADERS = \
 	ktictactuxproto.h \
 	qwhiteframe.h
 
-INCLUDES = $(all_includes) $(EASYSOCK_INCLUDES)
+INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES)
 
 #UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
-#ktictactux_client_LDFLAGS = -rpath $(easysock_libraries)
-ktictactux_client_LDFLAGS = $(all_libraries) $(EASYSOCK_LDFLAGS)
-ktictactux_client_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_EASYSOCK)
+#ktictactux_client_LDFLAGS = -rpath
+ktictactux_client_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS)
+ktictactux_client_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_GGZ)
 
 METASOURCES = AUTO
 

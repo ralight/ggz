@@ -8,7 +8,7 @@
 #include "ktictactuxproto.h"
 
 // GGZ includes
-#include <easysock.h>
+#include <ggz.h>
 
 // System includes
 #include <sys/types.h>
@@ -57,14 +57,14 @@ int KTicTacTuxProto::getOp()
 {
 	int op;
 
-	es_read_int(fd, &op);
+	ggz_read_int(fd, &op);
 	return op;
 }
 
 // Get one's own seat number
 int KTicTacTuxProto::getSeat()
 {
-	es_read_int(fd, &num);
+	ggz_read_int(fd, &num);
 }
 
 // Receive the player names
@@ -72,8 +72,8 @@ int KTicTacTuxProto::getPlayers()
 {
 	for(int i = 0; i < 2; i++)
 	{
-		es_read_int(fd, &seats[i]);
-		if(seats[i] != -1) es_read_string(fd, (char*)&names[i], 17);
+		ggz_read_int(fd, &seats[i]);
+		if(seats[i] != -1) ggz_read_string(fd, (char*)&names[i], 17);
 	}
 }
 
@@ -82,7 +82,7 @@ int KTicTacTuxProto::getMoveStatus()
 {
 	char status;
 
-	es_read_char(fd, &status);
+	ggz_read_char(fd, &status);
 
 	if(status == 0) board[move % 3][move / 3] = player;
 }
@@ -92,7 +92,7 @@ int KTicTacTuxProto::getOpponentMove()
 {
 	int move;
 
-	es_read_int(fd, &move);
+	ggz_read_int(fd, &move);
 	board[move % 3][move / 3] = opponent;
 }
 
@@ -101,10 +101,10 @@ int KTicTacTuxProto::getSync()
 {
 	char space;
 
-	es_read_char(fd, &turn);
+	ggz_read_char(fd, &turn);
 	for(int i = 0; i < 9; i++)
 	{
-		es_read_char(fd, &space);
+		ggz_read_char(fd, &space);
 		if(space >= 0) board[i % 3][i / 3] = space + 1;
 	}
 }
@@ -112,25 +112,25 @@ int KTicTacTuxProto::getSync()
 // Read the winner over the network
 int KTicTacTuxProto::getGameOver()
 {
-	es_read_char(fd, &winner);
+	ggz_read_char(fd, &winner);
 }
 
 // Send the options
 int KTicTacTuxProto::sendOptions()
 {
-	es_write_int(fd, 0);
+	ggz_write_int(fd, 0);
 }
 
 // Send the own move, to be approved
 int KTicTacTuxProto::sendMyMove()
 {
-	es_write_int(fd, sndmove);
-	es_write_int(fd, move);
+	ggz_write_int(fd, sndmove);
+	ggz_write_int(fd, move);
 }
 
 // Synchronize game
 void KTicTacTuxProto::sendSync()
 {
-	es_write_int(fd, reqsync);
+	ggz_write_int(fd, reqsync);
 }
 
