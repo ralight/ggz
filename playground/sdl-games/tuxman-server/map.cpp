@@ -27,6 +27,8 @@ Map::Map()
 	field = NULL;
 	m_width = 0;
 	m_height = 0;
+	m_pacmans = 0;
+	m_monsters = 0;
 }
 
 Map::~Map()
@@ -36,7 +38,7 @@ Map::~Map()
 	delete field;
 }
 
-void Map::load(const char *file)
+bool Map::load(const char *file)
 {
 	char c;
 	std::fstream f;
@@ -60,17 +62,29 @@ void Map::load(const char *file)
 					field[hy][i] = tile_none;
 			}
 			if(c == '#') field[hy][hx] = tile_wall;
-			else if(c == 'M') field[hy][hx] = tile_monster;
-			else if(c == 'B') field[hy][hx] = tile_bomb;
+			else if(c == 'O')
+			{
+				field[hy][hx] = tile_pacman;
+				m_pacmans++;
+			}
+			else if(c == 'M')
+			{
+				field[hy][hx] = tile_monster;
+				m_monsters++;
+			}
+			else if(c == 'B') field[hy][hx] = tile_bonus;
 			else if(c == 'S') field[hy][hx] = tile_stop;
 			else if(c == 'X') field[hy][hx] = tile_cross;
 			else if(c == 'L') field[hy][hx] = tile_life;
+			else if(c == '.') field[hy][hx] = tile_food;
 			else if(c == '\n') hx = -1;
 			hx++;
 			if(hx > m_width) m_width = hx;
 		}
 		f.close();
 	}
+	else return false;
+	return true;
 }
 
 void Map::setTile(int x, int y, int type)
@@ -95,11 +109,23 @@ int Map::height()
 
 void Map::dump()
 {
+	std::cout << "Map has " << monsters() << " monsters and "
+		<< pacmans() << " pacmans" << std::endl;
 	for(int j = 0; j < m_height; j++)
 	{
 		for(int i = 0; i < m_width; i++)
 			std::cout << (int)field[j][i];
 		std::cout << std::endl << std::flush;
 	}
+}
+
+int Map::monsters()
+{
+	return m_monsters;
+}
+
+int Map::pacmans()
+{
+	return m_pacmans;
 }
 

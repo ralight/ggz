@@ -25,11 +25,16 @@ class Map
 	public:
 		Map();
 		~Map();
-		void load(const char *file);
+		bool load(const char *file);
+
 		void setTile(int x, int y, int type);
 		int tile(int x, int y);
+
 		int width();
 		int height();
+		int monsters();
+		int pacmans();
+
 		void dump();
 
 		enum Tiles
@@ -37,15 +42,18 @@ class Map
 			tile_none,
 			tile_wall,
 			tile_monster,
-			tile_bomb,
+			tile_bonus,
 			tile_stop,
 			tile_kill,
 			tile_cross,
-			tile_life
+			tile_life,
+			tile_food,
+			tile_pacman
 		};
 
 	private:
 		int m_width, m_height;
+		int m_monsters, m_pacmans;
 		int **field;
 };
 

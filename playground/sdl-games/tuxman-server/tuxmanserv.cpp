@@ -21,6 +21,7 @@
 #include "net.h"
 #include "proto.h"
 #include "pacman.h"
+#include "map.h"
 
 // GGZ includes
 #include <ggz.h>
@@ -77,6 +78,7 @@ void TuxmanServer::dataEvent(int player)
 	int opcode;
 	char *map;
 	int move;
+	int oldx, oldy;
 
 	std::cout << "Tuxman: dataEvent" << std::endl;
 
@@ -87,40 +89,72 @@ void TuxmanServer::dataEvent(int player)
 	{
 		case map_selected:
 			*net >> &map;
+			startGame(TUXMANDATA "/level9.pac");
+			//startGame(map); // discard map choice for now :)
 			ggz_free(map);
-			*net << event_start;
 			break;
 		case map_move:
 			*net >> &move;
 			std::cout << "got move: " << move << std::endl;
+			oldx = pac->x();
+			oldy = pac->y();
 			switch(move)
 			{
 				case move_up:
 					pac->move(pac->x(), pac->y() - 1);
+					*net << map_pacman << oldx << oldy << move_up;
 					break;
 				case move_down:
 					pac->move(pac->x(), pac->y() + 1);
+					*net << map_pacman << oldx << oldy << move_down;
 					break;
 				case move_left:
 					pac->move(pac->x() - 1, pac->y());
+					*net << map_pacman << oldx << oldy << move_left;
 					break;
 				case move_right:
 					pac->move(pac->x() + 1, pac->y());
+					*net << map_pacman << oldx << oldy << move_right;
 					break;
 				default:
-					*net << map_event << event_error;
+					*net << map_event << event_error << error_net;
 					close(fd(player));
 			}
 			break;
 		default:
-			*net << map_event << event_error;
+			*net << map_event << event_error << error_net;
 			close(fd(player));
 	}
+}
+
+void TuxmanServer::idleEvent()
+{
+	std::cout << "(idle)" << std::endl;
 }
 
 // Error handling event
 void TuxmanServer::errorEvent()
 {
 	std::cout << "Tuxman: errorEvent" << std::endl;
+}
+
+void TuxmanServer::startGame(const char *mapfile)
+{
+	bool success;
+
+	Map map;
+	success = map.load(mapfile);
+	if(success)
+	{
+		std::cout << "loading map " << mapfile << " ok" << std::endl;
+		map.dump();
+		*net << map_event << event_start;
+	}
+	else
+	{
+		std::cout << "loading map " << mapfile << " failed" << std::endl;
+		*net << map_event << event_error << error_map;
+		//close(fd(player));
+	}
 }
 

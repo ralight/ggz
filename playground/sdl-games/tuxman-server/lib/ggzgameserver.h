@@ -31,9 +31,10 @@ class GGZGameServer {
 	public:
 		GGZGameServer ();
 		virtual ~GGZGameServer ();
-		void connect ();
+		void connect ( bool async );
 
 	protected:
+		virtual void idleEvent ();
 		virtual void stateEvent ();
 		virtual void joinEvent  ( int player );
 		virtual void leaveEvent ( int player );

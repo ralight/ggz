@@ -56,14 +56,20 @@ GGZGameServer::~GGZGameServer () {
 }
 
 // Connect to the GGZ main server
-void GGZGameServer::connect () {
+void GGZGameServer::connect ( bool async ) {
 	int ret = ggzdmod_connect ( ggzdmod );
 	if ( ret < 0 ) {
 		std::cout << "GGZGameServer: Error: Couldn't connect" << std::endl;
 		return;
 	}
 	m_connected = 1;
-	(void) ggzdmod_loop ( ggzdmod );
+	if(async) {
+		while ( ggzdmod_dispatch ( ggzdmod ) != -1 ) {
+			idleEvent();
+		}
+	} else {
+		(void) ggzdmod_loop ( ggzdmod );
+	}
 }
 
 // Virtual state change hook
@@ -76,6 +82,10 @@ void GGZGameServer::joinEvent ( int player ) {
 
 // Virtual player leave hook
 void GGZGameServer::leaveEvent ( int player ) {
+}
+
+// Virtuel player special hook: idle method
+void GGZGameServer::idleEvent () {
 }
 
 #ifdef GGZSPECTATORS

@@ -27,6 +27,7 @@
 // Forward declaration
 class Net;
 class Pacman;
+class Map;
 
 // Muehle server object
 class TuxmanServer : public GGZGameServer
@@ -38,10 +39,14 @@ class TuxmanServer : public GGZGameServer
 		void leaveEvent( int player);
 		void dataEvent(int player);
 		void errorEvent();
+		void idleEvent();
 
 	private:
+		void startGame(const char *mapfile);
+
 		Net *net;
 		Pacman *pac;
+		Map *map;
 		bool join_lock;
 };
 

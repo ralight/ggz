@@ -26,6 +26,7 @@ enum Opcodes
 	map_name = 101,
 	map_monster = 102,
 	map_event = 103,
+	map_pacman = 104,
 
 	// client to server
 	map_selected = 120,
@@ -36,6 +37,13 @@ enum Events
 {
 	event_error = 1,
 	event_start = 2
+};
+
+enum Errors
+{
+	error_undef = 1,
+	error_net = 2,
+	error_map = 3,
 };
 
 enum Moves
