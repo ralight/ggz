@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2647 2001-11-04 03:50:54Z jdorje $
+# $Id: Makefile.am 2658 2001-11-04 22:40:41Z bmh $
 
 SUBDIRS = .
 
@@ -20,6 +20,7 @@ libggzdmod_a_SOURCES =  ggzdmod.h ggzdmod.c \
 
 # This compiles for installation as a shared lib for external servers
 lib_LTLIBRARIES = libggzdmod.la
+libggzdmod_la_LIBADD = @LDADD@
 libggzdmod_la_SOURCES = ggzdmod.h ggzdmod.c \
 	                protocol.h \
 	           	ggz_server.h ggz_server.c \
