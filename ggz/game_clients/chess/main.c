@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
- * $Id: main.c 3391 2002-02-17 09:17:14Z jdorje $
+ * $Id: main.c 3657 2002-03-24 17:29:30Z dr_maux $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -40,6 +40,8 @@
 #include "game.h"
 #include "net.h"
 
+#include "ggzintl.h"
+
 /* main window widget */
 GtkWidget *main_win;
 
@@ -52,6 +54,9 @@ static void cleanup_debugging();
 int main(int argc, char *argv[]) {
 	
 	initialize_debugging();
+
+	ggz_intl_init("chess");
+
 	gtk_init(&argc, &argv);
   add_pixmap_directory(".");
 
