@@ -320,7 +320,8 @@ static GGZHookReturn room_chat_beep(GGZRoomEvent id, void* event_data, void* use
 
 	player = ((char**)(event_data))[0];
 
-	output_text("--- You've been beeped by %s.\007", player);
+	output_text("--- You've been beeped by %s.", player);
+	printf("\007");
 	return GGZ_HOOK_OK;
 }
 
