@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 3255 2002-02-05 21:06:24Z jdorje $
+ * $Id: game.c 3638 2002-03-23 21:17:47Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -206,6 +206,7 @@ int game_send_players(void)
 int game_send_move(int num)
 {
 	int i, fd;
+	int status = 0;
 
 	for(i = 0; i < hastings_game.playernum; i++)
 	{
@@ -214,7 +215,7 @@ int game_send_move(int num)
 			fd = ggzdmod_get_seat(hastings_game.ggz, i).fd;
 
 			/* If player is a computer, don't need to send */
-			if (fd == -1) return 0;
+			if (fd == -1) continue;
 
 			ggzdmod_log(hastings_game.ggz, "Sending player %d's move to player %d\n", num, i);
 
@@ -224,11 +225,11 @@ int game_send_move(int num)
 			    || ggz_write_int(fd, hastings_game.move_src_y) < 0
 			    || ggz_write_int(fd, hastings_game.move_dst_x) < 0
 			    || ggz_write_int(fd, hastings_game.move_dst_y) < 0)
-				return -1;
+				status = -1;
 		}
 	}
 
-	return 0;
+	return status;
 }
 
 
