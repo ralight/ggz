@@ -28,7 +28,6 @@
 
 #include <ggz.h> /* libggz */
 
-#include <easysock.h>
 #include <datatypes.h>
 
 /* Log levels for log_msg */
@@ -109,7 +108,7 @@ void dbg_msg(const unsigned, const char *fmt, ...)
 /*
  * Error fprinting function for easysock lib
  */
-void err_sock(const char *, const EsOpType, const EsDataType);
+void err_sock(const char *, const GGZIOType, const GGZDataType);
 
 /* Logfile info */
 extern LogInfo log_info;

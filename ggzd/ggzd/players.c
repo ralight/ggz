@@ -41,8 +41,8 @@
 #include <pthread.h>
 #include <errno.h>
 #include <ctype.h>
+#include <ggz.h>
 
-#include <easysock.h>
 #include <ggzd.h>
 #include <datatypes.h>
 #include <players.h>
@@ -846,7 +846,7 @@ int player_msg_from_sized(GGZPlayer* p, int size, char *buf)
 		return GGZ_REQ_FAIL;
 	}
 	
-	if (es_writen(p->game_fd, buf, size) < 0) {
+	if (ggz_writen(p->game_fd, buf, size) < 0) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Error writing to %s's game ", 
 			p->name);
 		player_transit(p, GGZ_TRANSIT_LEAVE, p->table);

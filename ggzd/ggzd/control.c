@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 2536 2001-10-04 23:44:50Z rgade $
+ * $Id: control.c 3139 2002-01-19 08:07:46Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -41,8 +41,8 @@
 #include <time.h>
 #include <dirent.h>
 #include <fcntl.h>
+#include <ggz.h>
 
-#include <easysock.h>
 #include <ggzd.h>
 #include <datatypes.h>
 #include <err_func.h>
@@ -185,7 +185,7 @@ int main(int argc, const char *argv[])
 	signal(SIGPIPE, SIG_IGN);
 
 	/* Create SERVER socket on main_port */
-	main_sock = es_make_socket_or_die(ES_SERVER, opt.main_port, NULL);
+	main_sock = ggz_make_socket_or_die(GGZ_SOCK_SERVER, opt.main_port, NULL);
 	
 	/* Make socket non-blocking */
 	if ( (flags = fcntl(main_sock, F_GETFL, 0)) < 0)

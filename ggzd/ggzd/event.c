@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 2627 2001-10-29 04:25:16Z rgade $
+ * $Id: event.c 3139 2002-01-19 08:07:46Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -29,7 +29,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include <easysock.h>
 #include <err_func.h>
 #include <event.h>
 #include <room.h>

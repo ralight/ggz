@@ -330,7 +330,7 @@ int net_send_room_list_error(GGZNetIO *net, char status)
 
 int net_send_room_list_count(GGZNetIO *net, int count)
 {
-	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>", 0);
+	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
 	_net_send_line(net, "<LIST TYPE='room'>");
 	return 0;
 }
@@ -364,7 +364,7 @@ int net_send_type_list_error(GGZNetIO *net, char status)
 
 int net_send_type_list_count(GGZNetIO *net, int count)
 {
-	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>", 0);
+	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
 	_net_send_line(net, "<LIST TYPE='game'>");
 	return 0;
 }
@@ -408,7 +408,7 @@ int net_send_player_list_count(GGZNetIO *net, int count)
 
 	room = player_get_room(net->player);
 	
-	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>", 0);
+	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
 	_net_send_line(net, "<LIST TYPE='player' ROOM='%d'>", room);
 	return 0;
 }
@@ -474,7 +474,7 @@ int net_send_table_list_count(GGZNetIO *net, int count)
 
 	room = player_get_room(net->player);
 
-	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>", 0);
+	_net_send_line(net, "<RESULT ACTION='list' CODE='0'>");
 	_net_send_line(net, "<LIST TYPE='table' ROOM='%d'>", room);
 	return 0;
 }

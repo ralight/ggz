@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 2536 2001-10-04 23:44:50Z rgade $
+ * $Id: err_func.c 3139 2002-01-19 08:07:46Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -38,7 +38,6 @@
 
 #include <ggzd.h>
 #include <datatypes.h>
-#include <easysock.h>
 #include <err_func.h>
 
 /* Logfile info */
@@ -252,20 +251,20 @@ void log_msg(const unsigned log_type, const char *fmt, ...)
 }
 
 
-void err_sock(const char *err, const EsOpType op, const EsDataType type)
+void err_sock(const char *err, const GGZIOType op, const GGZDataType type)
 {
 
 	switch (op) {
-	case ES_CREATE:
+	case GGZ_IO_CREATE:
 		err_msg("Error while creating socket: %s\n", err);
 		break;
-	case ES_READ:
+	case GGZ_IO_READ:
 		err_msg("Error while reading from socket: %s\n", err);
 		break;
-	case ES_WRITE:
+	case GGZ_IO_WRITE:
 		err_msg("Error while writing to socket: %s\n", err);
 		break;
-	case ES_ALLOCATE:
+	case GGZ_IO_ALLOCATE:
 		err_msg("Error while allocating memory: %s\n", err);
 		break;
 	}

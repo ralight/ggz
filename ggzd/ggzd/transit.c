@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 2768 2001-12-01 06:51:06Z bmh $
+ * $Id: transit.c 3139 2002-01-19 08:07:46Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -39,7 +39,6 @@
 #include <protocols.h>
 #include <err_func.h>
 #include <transit.h>
-#include <easysock.h>
 #include <seats.h>
 #include <event.h>
 #include <net.h>
