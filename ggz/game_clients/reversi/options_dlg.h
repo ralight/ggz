@@ -3,7 +3,7 @@
  */
 
 GtkWidget* create_options_dialog (GdkColor *, GdkColor *);
-GtkWidget* create_colorselectiondialog (void);
+GtkWidget* create_colorselectiondialog (GdkColor *);
 
 void
 on_back_button_clicked                 (GtkButton       *button,

@@ -208,14 +208,20 @@ create_options_dialog (GdkColor *_back_color, GdkColor *_last_color)
 }
 
 GtkWidget*
-create_colorselectiondialog (void)
+create_colorselectiondialog (GdkColor *col)
 {
   GtkWidget *colorselectiondialog1;
   GtkWidget *ok_button1;
   GtkWidget *cancel_button1;
   GtkWidget *help_button1;
+  gdouble color[3];
+  color[0] = col->red / 65535.0;
+  color[1] = col->green / 65535.0;
+  color[2] = col->blue / 65535.0;
 
   colorselectiondialog1 = gtk_color_selection_dialog_new (("Select Color"));
+  printf("RGB: %f %f %f\n", color[0], color[1], color[2]);
+  gtk_color_selection_set_color(GTK_COLOR_SELECTION(GTK_COLOR_SELECTION_DIALOG(colorselectiondialog1)->colorsel), color);
   gtk_widget_set_name (colorselectiondialog1, "colorselectiondialog1");
   gtk_object_set_data (GTK_OBJECT (colorselectiondialog1), "colorselectiondialog1", colorselectiondialog1);
   gtk_container_set_border_width (GTK_CONTAINER (colorselectiondialog1), 10);
@@ -251,7 +257,8 @@ on_back_button_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
   GtkWidget *ok;
-  color_sel = create_colorselectiondialog();
+  GdkColor *col = gtk_object_get_data(GTK_OBJECT(button), "color");
+  color_sel = create_colorselectiondialog(col);
   ok = lookup_widget(color_sel, "ok_button1");
   gtk_signal_connect_while_alive( GTK_OBJECT(ok), "clicked",
                       GTK_SIGNAL_FUNC(prepare_data), "back_button", GTK_OBJECT(color_sel));
@@ -294,7 +301,8 @@ on_last_button_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
   GtkWidget *ok;
-  color_sel = create_colorselectiondialog();
+  GdkColor *col = gtk_object_get_data(GTK_OBJECT(button), "color");
+  color_sel = create_colorselectiondialog(col);
   ok = lookup_widget(color_sel, "ok_button1");
   gtk_signal_connect_while_alive( GTK_OBJECT(ok), "clicked",
                       GTK_SIGNAL_FUNC(prepare_data), "last_button", GTK_OBJECT(color_sel));
