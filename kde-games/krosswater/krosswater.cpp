@@ -49,9 +49,8 @@ using namespace std;
 Krosswater::Krosswater(QWidget *parent, const char *name)
 : ZoneGGZModUI(parent, name)
 {
-	QVBoxLayout *vbox; //, *vbox2;
+	QVBoxLayout *vbox;
 	DlgPerson *dlgperson;
-	KMenuBar *menu;
 	KPopupMenu *menu_game, *menu_help;
 	QWidget *dummy;
 
@@ -63,27 +62,20 @@ Krosswater::Krosswater(QWidget *parent, const char *name)
 	dummy->setFixedHeight(20);
 
 	m_statusframe = new QFrame(this);
-	//m_statusframe->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	m_statusframe->setFixedHeight(25);
 	m_statusframe->setBackgroundPixmap(QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
-	//m_status = new QLabel("", statusframe);
-	//m_status->setBackgroundPixmap(QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
-	//m_status->setFixedSize(300, 20);
 	showStatus(i18n("Uninitialized"));
-	//vbox2 = new QVBoxLayout(statusframe, 2);
-	//vbox2->add(m_status);
 
 	menu_game = new KPopupMenu(this);
-	menu_game->insertItem("Quit", this, SLOT(slotMenuQuit()));
+	menu_game->insertItem(i18n("Quit"), this, SLOT(slotMenuQuit()));
 
 	menu_help = new KPopupMenu(this);
-	menu_help->insertItem("About", this, SLOT(slotMenuAbout()));
-	menu_help->insertItem("Help", this, SLOT(slotMenuHelp()));
+	menu_help->insertItem(i18n("About"), this, SLOT(slotMenuAbout()));
+	menu_help->insertItem(i18n("Help"), this, SLOT(slotMenuHelp()));
 
-	menu = new KMenuBar(this);
-	menu->insertItem("Game", menu_game);
-	menu->insertSeparator();
-	menu->insertItem("Help", menu_help);
+	menuBar()->insertItem(i18n("Game"), menu_game);
+	menuBar()->insertSeparator();
+	menuBar()->insertItem(i18n("Help"), menu_help);
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(dummy);
@@ -106,8 +98,6 @@ Krosswater::Krosswater(QWidget *parent, const char *name)
 	setBackgroundPixmap(QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
 	setCaption("Krosswater - Cross the Water!");
 	setFixedSize(700, 370);
-
-	cout << "Krosswater: ready!" << endl;
 }
 
 // Destructor
@@ -115,24 +105,23 @@ Krosswater::~Krosswater()
 {
 }
 
+// Handle protocol error
+void Krosswater::protoError()
+{
+	KMessageBox::error(this, i18n("A protocol error has been detected. Aborting the game."), i18n("Client message"));
+	close();
+}
+
 // Initialization after character selection
 void Krosswater::slotSelected(int person)
 {
 	m_selectedperson = person;
-	cout << "zonePlayers: " << zonePlayers() << endl;
-	cout << "ZoneMaxplayers: " << ZoneMaxplayers << endl;
-	cout << "ZoneGameplayers: " << ZoneGamePlayers << endl;
-	cout << "Person: " << person << endl;
-	if(zonePlayers() == ZoneGamePlayers) showStatus(("Game started"));
-	else showStatus(("Waiting for other players..."));
-
-	/*for(int i = 0; i < zonePlayers(); i++)
-	{
-		if(i == zoneMe()) person = m_selectedperson;
-		else person = (m_selectedperson + 1) % 3;
-		if(qcw) qcw->setPlayerPixmap(i, person);
-		cout << "qcw->setPlayer " << person << " - " << m_selectedperson<< endl;
-	}*/
+	//cout << "zonePlayers: " << zonePlayers() << endl;
+	//cout << "ZoneMaxplayers: " << ZoneMaxplayers << endl;
+	//cout << "ZoneGameplayers: " << ZoneGamePlayers << endl;
+	//cout << "Person: " << person << endl;
+	if(zonePlayers() == ZoneGamePlayers) showStatus(i18n("Game started"));
+	else showStatus(i18n("Waiting for other players..."));
 
 	show();
 }
@@ -140,12 +129,9 @@ void Krosswater::slotSelected(int person)
 // Send a move
 void Krosswater::slotMove(int fromx, int fromy, int tox, int toy)
 {
-	cout << "Move from " << fromx << ", " << fromy << endl;
-	cout << "to " << tox << ", " << toy << endl;
-
 	if(!zoneTurn())
 	{
-		KMessageBox::information(this, "Not your turn yet.", "Client message");
+		KMessageBox::sorry(this, i18n("Not your turn yet."), i18n("Client message"));
 		return;
 	}
 
@@ -162,7 +148,7 @@ void Krosswater::slotMove(int fromx, int fromy, int tox, int toy)
 	|| (ggz_write_int(fd(), tox) < 0)
 	|| (ggz_write_int(fd(), toy) < 0))
 	{
-		printf("error in protocol (3)\n");
+		protoError();
 	}
 }
 
@@ -173,49 +159,46 @@ void Krosswater::slotZoneInput(int op)
 	int maxplayers;
 	int person;
 
-	printf("CHILD: slotZoneInput() -> Type: %i\n", op);
-
 	showStatus(i18n("Receiving..."));
 
 	if(op == proto_map_respond)
 	{
-		cout << "Map response!" << endl;
 		if((ggz_read_int(fd(), &x) < 0)
 		|| (ggz_read_int(fd(), &y) < 0))
 		{
-			printf("error in protocol (6)\n");
+			protoError();
 			return;
 		}
-		cout << "Size: " << x << ", " << y << endl;
+		//cout << "Size: " << x << ", " << y << endl;
 		qcw->setSize(x, y);
 		for(int j = 0; j < y; j++)
 			for(int i = 0; i < x; i++)
 			{
 				if(ggz_read_int(fd(), &value) < 0)
 				{
-					printf("error in protocol (7)\n");
+					protoError();
 					return;
 				}
 				qcw->setStone(i, j, value);
 			}
 		if(ggz_read_int(fd(), &maxplayers) < 0)
 		{
-			printf("error in protocol (6n)\n");
+			protoError();
 			return;
 		}
-		cout << "players: " << maxplayers << endl;
+		//cout << "players: " << maxplayers << endl;
 		qcw->resetPlayers();
 		for(int i = 0; i < maxplayers; i++)
 		{
 			if((ggz_read_int(fd(), &x) < 0)
 			|| (ggz_read_int(fd(), &y) < 0))
 			{
-				printf("error in protocol (6m)\n");
+				protoError();
 				return;
 			}
 			if(i < ZoneGamePlayers)
 			{
-				cout << "Player found: " << x << ", " << y << endl;
+				//cout << "Player found: " << x << ", " << y << endl;
 				qcw->addPlayer(x, y);
 
 				if(i == zoneMe()) person = m_selectedperson;
@@ -224,35 +207,33 @@ void Krosswater::slotZoneInput(int op)
 			}
 		}
 	}
-
-	if(op == proto_move_broadcast)
+	else if(op == proto_move_broadcast)
 	{
 		slotZoneBroadcast();
 	}
-
-	if(op == proto_map_backtrace)
+	else if(op == proto_map_backtrace)
 	{
 		x = 0;
 		if(ggz_read_int(fd(), &person) < 0)
 		{
-			printf("error in protocol (9+)\n");
+			protoError();
 			return;
 		}
 		while(x != -1)
 		{
 			if(ggz_read_int(fd(), &x) < 0)
 			{
-				printf("error in protocol (9)\n");
+				protoError();
 				return;
 			}
 			if(x != -1)
 			{
 				if(ggz_read_int(fd(), &y) < 0)
 				{
-					printf("error in protocol (9n)\n");
+					protoError();
 					return;
 				}
-				cout << "backtrace: << " << x << " << " << y << endl;
+				//cout << "backtrace: << " << x << " << " << y << endl;
 				qcw->setStone(x, y, 3);
 			}
 		}
@@ -265,34 +246,21 @@ void Krosswater::slotZoneInput(int op)
 		else m_again->setResult(i18n("Sorry, but you lost the game."));
 		m_again->show();
 	}
+	else protoError();
 }
 
 // Send ready status over the network
 void Krosswater::slotZoneReady()
 {
-	printf("CHILD: slotZoneReady()\n");
-
 	showStatus(i18n("Send map"));
 
-	/*if(ggz_write_int(fd(), proto_helloworld) < 0)
-	{
-		printf("error in protocol 1\n");
-	}
-	if(ggz_write_string(fd(), "Hello World.") < 0)
-	{
-		printf("error in protocol 2\n");
-	}*/
 	if(ggz_write_int(fd(), proto_map) < 0)
-	{
-		printf("error in protocol 1b\n");
-	}
-	printf("CHILD: sent thingies...\n");
+		protoError();
 }
 
 // Inidicate that it's the player's turn
 void Krosswater::slotZoneTurn()
 {
-	cout << "SLOT: Turn!" << endl;
 	showStatus(i18n("Your turn"));
 }
 
@@ -301,21 +269,18 @@ void Krosswater::slotZoneOver()
 {
 	showStatus(i18n("Game over"));
 
-	KMessageBox::information(this, "The game is over!", "Server message");
-	// fooo
+	KMessageBox::information(this, i18n("The game is over!"), i18n("Server message"));
 }
 
 // Indicate an invalid move
 void Krosswater::slotZoneInvalid()
 {
-	KMessageBox::information(this, "Invalid move!", "Server message");
+	KMessageBox::sorry(this, i18n("Invalid move!"), i18n("Server message"));
 }
 
 // Finish a turn
 void Krosswater::slotZoneTurnOver()
 {
-	cout << "Apply move from " << m_fromx << ", " << m_fromy << endl;
-	cout << "to " << m_tox << ", " << m_toy << endl;
 	qcw->setStone(m_fromx, m_fromy, 0);
 	qcw->setStone(m_tox, m_toy, 1);
 }
@@ -347,8 +312,6 @@ void Krosswater::showStatus(QString state)
 {
 	QPainter p;
 
-	//m_status->clear();
-
 	m_statusframe->erase();
 
 	p.begin(m_statusframe);
@@ -358,7 +321,6 @@ void Krosswater::showStatus(QString state)
 	p.end();
 
 	m_currentstate = state;
-	//printf("State: %s\n", state);
 }
 
 // Draw the map
@@ -379,11 +341,10 @@ void Krosswater::slotZoneBroadcast()
 	|| (ggz_read_int(fd(), &tox) < 0)
 	|| (ggz_read_int(fd(), &toy) < 0))
 	{
-		cout << "Error in protocol (5b)" << endl;
+		protoError();
 		return;
 	}
 
-	cout << "Got move: " << fromx << ", " << fromy << " -> " << tox << ", " << toy << endl;
 	qcw->setStoneState(fromx, fromy, -1);
 	qcw->repaint();
 	sleep(1);
@@ -403,6 +364,6 @@ void Krosswater::slotZoneBroadcast()
 void Krosswater::slotAgain()
 {
 	m_again->close();
-	cout << "Requested another game!" << endl;
+	//cout << "Requested another game!" << endl;
 }
 

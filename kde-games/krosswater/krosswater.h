@@ -67,6 +67,7 @@ class Krosswater : public ZoneGGZModUI
 
 	private:
 		void showStatus(QString state);
+		void protoError();
 
 		QCw* qcw;
 		int m_fromx, m_fromy, m_tox, m_toy;

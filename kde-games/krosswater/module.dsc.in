@@ -1,7 +1,7 @@
 # Krosswater description file
 [ModuleInfo]
 Author = Josef Spillner
-CommandLine = @ggzexecmoddir@/krosswater_client --ggz
+CommandLine = @ggzexecmoddir@/krosswater_client --ggz --icon @prefix@/share/icons/hicolor/32x32/apps/krosswater.png
 Frontend = kde
 Homepage = http://mindx.sourceforge.net/
 Name = Krosswater

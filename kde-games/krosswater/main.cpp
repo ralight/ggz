@@ -39,10 +39,8 @@ int main(int argc, char **argv)
 		{0, 0, 0}
 	};
 
-	cout << "Krosswater: starting" << endl;
-
-	about = new KAboutData("krosswater",
-		"Krosswater",
+	about = new KAboutData("Krosswater",
+		"krosswater",
 		"0.0.1",
 		I18N_NOOP("GGZ version of Cross The Water"),
 		KAboutData::License_GPL,
@@ -60,8 +58,6 @@ int main(int argc, char **argv)
 		cout << "Sorry, this game does only work in GGZ mode so far." << endl;
 		exit(-1);
 	}
-
-	cout << "Krosswater: loading application" << endl;
 
 	KApplication a;
 	krosswater = new Krosswater(NULL, "Krosswater");

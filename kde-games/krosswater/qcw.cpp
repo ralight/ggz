@@ -24,8 +24,8 @@
 #include <qpixmap.h>
 
 // System includes
-#include <stdlib.h>
-#include <time.h>
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 
 // Configuration includes
@@ -54,7 +54,7 @@ QCw::~QCw()
 
 void QCw::resetPlayers()
 {
-	cout << "QCW:: Remove all players" << endl;
+	//cout << "QCW:: Remove all players" << endl;
 	m_numplayers = 0;
 	for(int i = 0; i < 4; i++)
 		m_players[i][2] = -1;
@@ -178,7 +178,7 @@ void QCw::mousePressEvent(QMouseEvent *e)
 
 	x = e->x() / 20;
 	y = e->y() / 20;
-	cout << "Clicked on " << x << ", " << y << endl;
+	//cout << "Clicked on " << x << ", " << y << endl;
 
 	if(!m_board) return;
 
@@ -226,13 +226,13 @@ void QCw::addPlayer(int x, int y)
 	m_players[m_numplayers][0] = x;
 	m_players[m_numplayers][1] = y;
 	m_numplayers++;
-	cout << "QCW: setPlayer at " << x << ", " << y << endl;
+	//cout << "QCW: setPlayer at " << x << ", " << y << endl;
 }
 
 void QCw::setPlayerPixmap(int player, int pixmap)
 {
 	if((player < 0) || (player > m_numplayers)) return;
 	m_players[player][2] = pixmap;
-	cout << "QCW: setPlayerPixmap for " << player << endl;
+	//cout << "QCW: setPlayerPixmap for " << player << endl;
 }
 
