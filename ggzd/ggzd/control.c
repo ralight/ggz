@@ -74,7 +74,7 @@ void init_data(void)
 
 	/* Initialize chat room information */
 	/* For now, we just dump a 1 into num_rooms */
-	opt.num_rooms = 1;
+	opt.num_rooms = 2;
 	room_initialize_lists();
 }
 

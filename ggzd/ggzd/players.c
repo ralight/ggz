@@ -423,16 +423,18 @@ static void player_remove(int p_index)
 	players.info[p_index].fd = -1;
 	players.count--;
 	players.timestamp = time(NULL);
-	if(players.info[p_index].room == -1)
+	if(players.info[p_index].room == -1) {
 		chat_mark_all_read(p_index);
-	else {
+		pthread_rwlock_unlock(&players.lock);
+	} else {
 		room = players.info[p_index].room;
 		pthread_rwlock_wrlock(&chat_room[room].lock);
 		room_dequeue_chat(p_index);
 		pthread_rwlock_unlock(&chat_room[room].lock);
 		room_dequeue_personal(p_index);
+		pthread_rwlock_unlock(&players.lock);
+		room_join(p_index, -1);
 	}
-	pthread_rwlock_unlock(&players.lock);
 
 	close(fd);
 }
@@ -620,7 +622,9 @@ static int player_login_anon(int p, int fd)
 	else
 		log_msg(GGZ_LOG_CONNECTION_INFO,
 			"Anonymous player %s logged in from %s", name, ip_addr);
-	
+
+	room_join(p, 0);
+
 	return 0;
 }
 
@@ -1066,7 +1070,7 @@ static int player_chat(int p_index, int p_fd)
 
 		if(strlen(msg) > 6) {
 			room = atoi(msg+6);
-			if(room > -2 && room < opt.num_rooms) {
+			if(room >= 0  && room < opt.num_rooms) {
 				room_join(p_index, room);
 			}
 		}
@@ -1159,7 +1163,7 @@ int player_handle_chat_enqueue(int p_index, int p_fd)
 	if(!strncmp(msg, "/join", 5)) {
 		if(strlen(msg) > 6) {
 			room = atoi(msg+6);
-			if(room > -2 && room < opt.num_rooms)
+			if(room >= 0 && room < opt.num_rooms)
 				room_join(p_index, room);
 		}
 		free(msg);

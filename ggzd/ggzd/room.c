@@ -119,7 +119,7 @@ int room_join(const int p_index, const int room)
 		pthread_rwlock_unlock(&chat_room[room].lock);
 	pthread_rwlock_unlock(&players.lock);
 
-	/*room_notify_change(p_index, old_room, room);*/
+	room_notify_change(p_index, old_room, room);
 
 	return 0;
 }
@@ -164,11 +164,23 @@ int room_emit(const int room, const int sender, char *msg)
 	pthread_rwlock_wrlock(&players.lock);
 	pthread_rwlock_wrlock(&chat_room[room].lock);
 
+	/*Let's not assume anyone is here (might be player exiting empty room)*/
+	if(chat_room[room].player_count == 0) {
+		pthread_rwlock_unlock(&players.lock);
+		pthread_rwlock_unlock(&chat_room[room].lock);
+		free(new_chat);
+		free(msg);
+		dbg_msg(GGZ_DBG_LISTS,
+			"Deallocated chat %p (empty room)", new_chat);
+		return 0;
+	}
+
 	/* Nab the player's name while we've got lock */
 	if((new_chat->chat_sender = malloc(strlen(players.info[sender].name)+1))
 	   == NULL) {
 		pthread_rwlock_unlock(&players.lock);
 		pthread_rwlock_unlock(&chat_room[room].lock);
+		free(new_chat);
 		free(msg);
 		err_sys_exit("malloc failed in room_emit()");
 	}
