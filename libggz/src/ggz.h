@@ -133,7 +133,7 @@ void * _ggz_realloc(const void *, const unsigned int, char *, int);
  * @param  char * string describing the calling function 
  * @param int linenumber 
  * 
- * @return 
+ * @return 0 on success, -1 on error
 */
 int _ggz_free(const void *, char *, int);
 
@@ -156,16 +156,16 @@ char * _ggz_strdup(const char *, char *, int);
  * Check memory allocated against memory freed and display any discrepencies
  * 
  * 
- * @return 
+ * @return 0 if no allocated memory remains, -1 otherwise
  */
 int ggz_memory_check(void);
 
 /** @} */
 
 
-
 /**
  * @defgroup conf Configuration file parsing
+ *
  * Configuration file routines to store and retrieve values.
  * Configuration file parsing begins by calling ggz_conf_parse() to open
  * a config file.  The file can be created automatically if GGZ_CONF_CREATE
@@ -350,7 +350,7 @@ int ggz_conf_read_list	(int	handle,
 			 char	***argvp);
 
 /**
- * This will remove an entire section and all it's associated keys from
+ * This will remove an entire section and all its associated keys from
  * a configuration file.
  * @param handle A valid handle returned by ggz_conf_parse()
  * @param section A string section name to remove
@@ -369,8 +369,8 @@ int ggz_conf_remove_section	(int	handle,
 int ggz_conf_remove_key	(int	handle,
 			 const char	*section,
 			 const char	*key);
+			
 /** @} */
-
 
 
 /**
@@ -378,8 +378,30 @@ int ggz_conf_remove_key	(int	handle,
  * 
  * @{
  */
+
+/** @brief A function type to compare two entries in a GGZList.
+ *
+ *  @param a An arbitrary element in the GGZList.
+ *  @param b An arbitrary element in the GGZList.
+ *  @return Negative if a < b; 0 if a == b; positive if a > b.
+ */
 typedef int	(*ggzEntryCompare)	(void *a, void *b);
+
+/** @brief A function type to create an entry in a GGZList.
+ *
+ *  A function of this type will be called on an element when
+ *  it is first inserted into a GGZList.
+ *  @param data The data given to the list for insertion.
+ *  @return The actual inserted value.
+ */
 typedef	void *	(*ggzEntryCreate)	(void *data);
+
+/** @brief A function type to destroy an entry in a GGZList.
+ *
+ *  A function of this type will be called on an element when
+ *  it is removed from a GGZList.
+ *  @param data The entry being removed.
+ */
 typedef	void	(*ggzEntryDestroy)	(void *data);
 
 
@@ -429,13 +451,16 @@ int ggz_list_count		(GGZList *list);
 int ggz_list_compare_str	(void *a, void *b);
 void * ggz_list_create_str	(void *data);
 void ggz_list_destroy_str	(void *data);
+
 /** @} */
 
+
 /**
- * @defgroup stcak Stacks 
+ * @defgroup stack Stacks
  *
  * @{
  */
+
 typedef struct _GGZList GGZStack;
 
 GGZStack* ggz_stack_new(void);
@@ -443,7 +468,9 @@ void ggz_stack_push(GGZStack*, void*);
 void* ggz_stack_pop(GGZStack*);
 void* ggz_stack_top(GGZStack*);
 void ggz_stack_free(GGZStack*);
+
 /** @} */
+
 
 /**
  * @defgroup xml XML parsing 
@@ -489,6 +516,7 @@ char* ggz_xmlelement_get_text(GGZXMLElement*);
 void ggz_xmlelement_add_text(GGZXMLElement*, const char *text, int len);
 
 void ggz_xmlelement_free(GGZXMLElement*);
+
 /** @} */
 
 
@@ -498,9 +526,14 @@ void ggz_xmlelement_free(GGZXMLElement*);
  * Functions for debugging and error messages
  * @{
  */
+
+/** @brief What memory checks should we do?
+ *
+ *  @see ggz_debug_cleanup
+ */
 typedef enum {
-	GGZ_CHECK_NONE = 0x00,
-	GGZ_CHECK_MEM = 0x01
+	GGZ_CHECK_NONE = 0x00, /**< No checks. */
+	GGZ_CHECK_MEM = 0x01   /**< Memory (leak) checks. */
 } GGZCheckType;
 
 /**
@@ -544,12 +577,49 @@ void ggz_debug_disable(const char *type);
  */
 void ggz_debug(const char *type, const char *fmt, ...)
                ggz__attribute((format(printf, 2, 3)));
+
+/**
+ * @brief Log a syscall error.
+ *
+ * This logs an error message in a similar manner to ggz_debug's debug
+ * logging.  However, the logging is done regardless of whether
+ * debugging is enabled or what debugging types are set.  errno and
+ * strerror are also used to create a more useful message.
+ * @param fmt A printf-style format string
+ * @see ggz_debug
+ */
 void ggz_error_sys(const char *fmt, ...)
                    ggz__attribute((format(printf, 1, 2)));
+
+/**
+ * @brief Log a fatal syscall error.
+ *
+ * This logs an error message just like ggz_error_sys, and also
+ * exits the program.
+ * @param fmt A printf-style format string
+ */
 void ggz_error_sys_exit(const char *fmt, ...)
                         ggz__attribute((format(printf, 1, 2)));
+
+/**
+ * @brief Log an error message.
+ *
+ * This logs an error message in a similar manner to ggz_debug's debug
+ * logging.  However, the logging is done regardless of whether
+ * debugging is enabled or what debugging types are set.
+ * @param fmt A printf-style format string
+ * @note This is equivalent to ggz_debug(NULL, ...) with debugging enabled.
+ */
 void ggz_error_msg(const char *fmt, ...)
                    ggz__attribute((format(printf, 1, 2)));
+
+/**
+ * @brief Log a fatal error message.
+ *
+ * This logs an error message just like ggz_error_msg, and also
+ * exits the program.
+ * @param fmt A printf-style format string
+ */
 void ggz_error_msg_exit(const char *fmt, ...)
                         ggz__attribute((format(printf, 1, 2)));
 
@@ -562,7 +632,9 @@ void ggz_error_msg_exit(const char *fmt, ...)
  * @param check A mask of things to check.
  */
 void ggz_debug_cleanup(GGZCheckType check);
+
 /** @} */
+
 
 /**
  * @defgroup misc Miscellaneous convenience functions
@@ -581,6 +653,7 @@ void ggz_debug_cleanup(GGZCheckType check);
  * is returned.
  */
 char * ggz_xml_escape(char *str);
+
 /**
  * Restore escaped XML characters into a text string.
  * @param str The string to decode
@@ -615,6 +688,7 @@ typedef struct _GGZFile GGZFile;
  * cleanup this struct using ggz_free_file_struct().
  */
 GGZFile * ggz_get_file_struct(int fdes);
+
 /**
  * Read a line of arbitrary length from a file
  * @param file A GGZFile structure allocated via ggz_get_file_struct()
@@ -624,6 +698,7 @@ GGZFile * ggz_get_file_struct(int fdes);
  * expected to later free this memory using ggz_free().
  */
 char * ggz_read_line(GGZFile *file);
+
 /**
  * Deallocate a file structure allocated via ggz_get_file_struct()
  * @param file A GGZFile structure allocated via ggz_get_file_struct()
@@ -633,6 +708,7 @@ char * ggz_read_line(GGZFile *file);
 void ggz_free_file_struct(GGZFile *file);
 
 /** @} */
+
 
 /**
  * @defgroup easysock Easysock IO
@@ -684,19 +760,29 @@ int ggz_set_io_error_func(ggzIOError func);
 ggzIOError ggz_remove_io_error_func(void);
 
 
-/****************************************************************************
- * Exit function
+/** @brief An exit function type.
  *
- * Any of the *_or_die() functions will call the set exit function
- * if there is an error.  If there is no set function, exit() will be 
- * called.
- * 
- * Upon removal, the old exit function is returned.
- *
- ***************************************************************************/
-typedef void (*ggzIOExit) (int);
+ *  This function type will be called to exit the program.
+ *  @param status The exit value.
+ */
+typedef void (*ggzIOExit) (int status);
 
+/** @brief Set the ggz/easysock exit function.
+ *
+ *  Any of the *_or_die() functions will call the set exit function if there
+ *  is an error.  If there is no set function, exit() will be called.
+ *  @param func The newly set exit function.
+ *  @return 0
+ *  @todo Shouldn't this return a void?
+ */
 int ggz_set_io_exit_func(ggzIOExit func);
+
+/** @brief Remove the ggz/easysock exit function.
+ *
+ *  This removes the existing exit function, if one is set.  exit() will
+ *  then be called to exit the program.
+ *  @return The old exit function (or NULL if none).
+ */
 ggzIOExit ggz_remove_io_exit_func(void);
 
 

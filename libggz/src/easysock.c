@@ -92,7 +92,7 @@ int ggz_set_io_exit_func(ggzIOExit func)
 }
 
 
-ggzIOExit ggz_remove_exit_func(void)
+ggzIOExit ggz_remove_io_exit_func(void)
 {
 	ggzIOExit old = _exit_func;
 	_exit_func = exit;
