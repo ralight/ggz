@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 7012 2005-03-18 10:40:40Z josef $
+ * $Id: server.c 7015 2005-03-18 14:12:55Z josef $
  *
  * Functions for handling server events
  *
@@ -360,7 +360,8 @@ static GGZHookReturn room_list_tables(GGZRoomEvent id,
 static GGZHookReturn room_enter(GGZRoomEvent id, const void *event_data,
 				const void *user_data)
 {
-	const char *player = event_data;
+	const GGZRoomChangeEventData *data = event_data;
+	const char *player = data->player_name;
 
 	output_text(_("--> %s entered the room."), player);
 	return GGZ_HOOK_OK;
@@ -370,7 +371,8 @@ static GGZHookReturn room_enter(GGZRoomEvent id, const void *event_data,
 static GGZHookReturn room_leave(GGZRoomEvent id, const void *event_data,
 				const void *user_data)
 {
-	const char *player = event_data;
+	const GGZRoomChangeEventData *data = event_data;
+	const char *player = data->player_name;
 
 	output_text(_("<-- %s left the room."), player);
 	return GGZ_HOOK_OK;
