@@ -71,6 +71,7 @@ extern void set_game_state(char);
 #define WH_MESSAGE_GLOBAL	10
 #define WH_MESSAGE_PLAYER	11
 #define WH_REQ_OPTIONS		12
+#define WH_MSG_TABLE		13
 
 /* Messages from client */
 #define WH_RSP_NEWGAME		0

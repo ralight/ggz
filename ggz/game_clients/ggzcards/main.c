@@ -55,6 +55,7 @@ static int get_players(void);
 static int get_gameover_status(void);
 static void handle_badplay(void);
 static int handle_play(void);
+static int handle_msg_table(void);
 static int get_trick_winner(void);
 
 
@@ -167,7 +168,7 @@ char *opstr[] = { "WH_REQ_NEWGAME", "WH_MSG_NEWGAME",  "WH_MSG_GAMEOVER",
 		  "WH_MSG_PLAYERS", "WH_MSG_HAND",
 		  "WH_REQ_BID",	    "WH_REQ_PLAY",     "WH_MSG_BADPLAY",
 		  "WH_MSG_PLAY",    "WH_MSG_TRICK",    "WH_MESSAGE_GLOBAL",
-		  "WH_MESSAGE_PLAYER", "WH_REQ_OPTIONS" };
+		  "WH_MESSAGE_PLAYER", "WH_REQ_OPTIONS", "WH_MSG_TABLE" };
 
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
@@ -216,6 +217,9 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			break;
 		case WH_MSG_PLAY:
 			status = handle_play();
+			break;
+		case WH_MSG_TABLE:
+			status = handle_msg_table();
 			break;
 		case WH_MSG_TRICK:
 			status = get_trick_winner();
@@ -419,6 +423,21 @@ static int handle_play(void)
 
 	return 0;
 }
+
+static int handle_msg_table(void)
+{
+	int p, status=0;
+
+	for (p=0; p<game.num_players; p++)
+		if (es_read_card(game.fd, &game.players[p].table_card) < 0)
+			status = -1;
+
+	/* TODO: verify that the table cards have been removed from the hands */
+
+	table_show_cards();
+}
+
+
 
 /* get_trick_winner
  *   handles the end of a trick
