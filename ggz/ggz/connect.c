@@ -132,7 +132,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	char buf[4096];
 	TableInfo tmp_table;
 
-	es_read_int(source, &op);
+        if (FAIL(es_read_int(source, &op)))
+                return;
 	
 	switch (op) {
 	case MSG_SERVER_ID:
@@ -180,12 +181,12 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			launch_game(0,0);
 		} else {
 			switch (status){
-				case -5: 
-					warn_dlg("No table selected to join.");
-					break;
-				case -4:
-					warn_dlg("Sorry, The table is full.");
-					break;
+			case -5: 
+				warn_dlg("No table selected to join.");
+				break;
+			case -4:
+				warn_dlg("Sorry, The table is full.");
+				break;
 			}
 		}
 		break;
@@ -308,10 +309,12 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		connect_msg("[%s]\n", opcode_str[op]);
 		get_players(NULL, NULL);
 		break;
+
 	case MSG_TYPES_UPDATE:
 		connect_msg("[%s]\n", opcode_str[op]);
 		get_types(NULL, NULL);
 		break;
+
 	case MSG_TABLES_UPDATE:
 		connect_msg("[%s]\n", opcode_str[op]);
 		get_tables(NULL, NULL);
