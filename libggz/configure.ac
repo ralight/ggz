@@ -97,7 +97,7 @@ AC_EGREP_HEADER(msg_controllen, sys/socket.h,
 					  [Define if CMSG_SPACE is available]),
 				AC_MSG_RESULT(no))
 )
-				       
+
 
 dnl Check for library functions
 dnl ===========================
@@ -155,6 +155,7 @@ if test "$enable_gcrypt" = yes; then
 fi
 
 dnl Encryption: TLS library
+dnl =======================
 AC_GGZ_TLS
 LDADD="$LDADD $GGZTLS_LDFLAGS $GGZTLS_LIB"
 CFLAGS="$CFLAGS $GGZTLS_INCLUDES"
@@ -190,6 +191,7 @@ echo ""
 echo "Options"
 echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
+echo "    Memory Debugging...$enable_debug_mem"
 echo "    Encryption support.$enable_gcrypt"
 if test "$enable_gcrypt" = yes; then
 	echo "      TLS library support: $TLS_TYPE"
