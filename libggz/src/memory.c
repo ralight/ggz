@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/15/01
- * $Id: memory.c 3714 2002-03-28 20:42:04Z jdorje $
+ * $Id: memory.c 4937 2002-10-17 21:01:01Z jdorje $
  *
  * This is the code for handling memory allocation for ggzcore
  *
@@ -147,7 +147,8 @@ void * _ggz_realloc(const void *ptr, const size_t size,
 	if(size > targetmem->size) {
 		memcpy(new, targetmem->ptr, targetmem->size);
 		/* And zero out the rest of the block */
-		memset(new+targetmem->size, 0, size-targetmem->size);
+		memset((char*)new + targetmem->size, 0,
+		       size-targetmem->size);
 	} else
 		memcpy(new, targetmem->ptr, size);
 	pthread_mutex_unlock(&mut);
