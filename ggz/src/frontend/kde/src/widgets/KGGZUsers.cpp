@@ -217,7 +217,7 @@ QListViewItem *KGGZUsers::table(int i)
 		return NULL;
 	}
 
-	foo.sprintf("Table: %i", i);
+	foo = i18n("Table: %1").arg(i);
 	while(tmp)
 	{
 		if(tmp->text(0) == foo) return tmp;
