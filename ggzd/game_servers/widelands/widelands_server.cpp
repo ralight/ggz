@@ -35,6 +35,7 @@
 WidelandsServer::WidelandsServer()
 : GGZGameServer()
 {
+	std::cout << "WidelandsServer: launched!" << std::endl;
 	m_ip = NULL;
 }
 
