@@ -13,6 +13,16 @@ GGZ Gaming Zone Mailing Lists (mail.ggzgamingzone.org)
 </tr></table>
 <br><br>
 
+<?php
+if ($_SERVER['HTTPS'] != "on") :
+	$host = $_SERVER['HTTP_HOST'];
+	$requesturi = $_SERVER['REQUEST_URI'];
+	echo "&gt;&gt; You might want to enable TLS for secure browsing.<br>\n";
+	echo "&gt;&gt; <a href='https://$host$requesturi'>https://$host$requesturi</a><br>\n";
+	echo "<br>\n";
+endif;
+?>
+
 This is the GGZ Gaming Zone mail server.<br>
 <a href="/cgi-bin/mailman/listinfo">Subscription pages</a><br>
 <a href="/hypermail/">Mailing list archives</a> (requires authorization: nospam:nospam)<br>
