@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3247 2002-02-05 02:33:42Z jdorje $
+ * $Id: table.c 3290 2002-02-10 03:43:48Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -156,15 +156,19 @@ static int table_check(GGZTable* table)
 
 	/* FIXME: should technically lock game_types */
 	/* Display and verify total seats and bot seats */
-	if(game_types[g_type].player_allow_mask & allow_bits[seat_total])
+	if(seat_total >= 0
+	   && seat_total <= MAX_TABLE_SIZE
+	   && game_types[g_type].player_allow_mask & allow_bits[seat_total])
 		dbg_msg(GGZ_DBG_TABLE, "Seats  : %d (accept)", seat_total);
 	else {
 		dbg_msg(GGZ_DBG_TABLE, "Seats  : %d (invalid)", seat_total);
 		status = E_BAD_OPTIONS;
 	}
 	
-	if(game_types[g_type].bot_allow_mask & allow_bits[ai_total]
-	   || ai_total == 0)
+	if(ai_total == 0
+	   || (ai_total > 0
+	       && ai_total <= MAX_TABLE_SIZE
+	       && game_types[g_type].bot_allow_mask & allow_bits[ai_total]))
 		dbg_msg(GGZ_DBG_TABLE, "Bots   : %d (accept)", ai_total);
 	else {
 		dbg_msg(GGZ_DBG_TABLE, "Bots   : %d (invalid)", ai_total);
