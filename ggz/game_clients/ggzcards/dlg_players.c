@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 3404 2002-02-17 15:16:39Z jdorje $
+ * $Id: dlg_players.c 3406 2002-02-17 16:59:31Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -61,10 +61,10 @@ void update_player_clist(GtkWidget *player_clist)
 			player[1] = _("Reserved");
 			player[2] = name;
 			break;
-		default:
-			assert(0);
-			player[1] = "";
-			player[2] = "";
+		case GGZ_SEAT_NONE:
+			player[1] = _("-");
+			player[2] = name;
+			break;
 		}
 
 		gtk_clist_append(GTK_CLIST(player_clist), player);
