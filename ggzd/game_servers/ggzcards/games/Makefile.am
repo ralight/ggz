@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3880 2002-04-10 13:53:51Z dr_maux $
+# $Id: Makefile.am 4041 2002-04-21 21:22:18Z jdorje $
 
 SUBDIRS = .
 
@@ -21,6 +21,7 @@ libgames_a_DEPENDENCIES = $(top_builddir)/game_servers/ggzcards/common/libcommon
 
 libgames_a_SOURCES =	bridge.c bridge.h	\
 			euchre.c euchre.h	\
+			fortytwo.c fortytwo.h	\
 			hearts.c hearts.h	\
 			lapocha.c lapocha.h	\
 			spades.c spades.h	\
