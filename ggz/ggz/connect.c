@@ -164,6 +164,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	gchar *message;
 	gchar name[9];
 	gchar status;
+	gint i_status;
 	guchar  subop;
 	gint num, op, size, checksum, count, i;
 	gchar buf[4096];
@@ -411,8 +412,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_read_int(source, &size);
 		connect_msg("[%s] %d bytes\n", opcode_str[op], size);
 		es_readn(source, buf, size);
-		status = es_writen(game.fd, buf, size);
-		if (status <= 0) {	/* Game over */
+		i_status = es_writen(game.fd, buf, size);
+		if (i_status <= 0) {	/* Game over */
 			dbg_msg("Game is over");
 			connection.playing = 0;
 			close(game.fd);
