@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 4887 2002-10-12 20:13:51Z jdorje $
+ * $Id: main.c 4923 2002-10-14 23:18:21Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -44,6 +44,7 @@
 
 /* GTK-games includes */
 #include "dlg_about.h"
+#include "dlg_players.h"
 #include "ggzintl.h"
 
 /* Hastings includes */
@@ -90,6 +91,7 @@ int main(int argc, char* argv[])
 
 	mod = ggzmod_new(GGZMOD_GAME);
 	ggzmod_set_handler(mod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+	init_player_list(mod);
 
 	ggzmod_connect(mod);
 

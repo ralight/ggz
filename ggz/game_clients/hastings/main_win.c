@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 4900 2002-10-13 04:22:57Z jdorje $
+ * $Id: main_win.c 4923 2002-10-14 23:18:21Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -42,6 +42,7 @@
 
 /* Gtk-games files */
 #include "dlg_exit.h"
+#include "dlg_players.h"
 
 /* Hastings files */
 #include "main_win.h"
@@ -425,9 +426,11 @@ static GtkWidget *create_menus(GtkWidget *window)
 	GtkAccelGroup *accel_group;
 	GtkItemFactory *menu;
 	GtkItemFactoryEntry items[] = {
-	  {_("/_File"), NULL, NULL, 0, "<Branch>"},
-	  {_("/File/_Sync with server"), "<ctrl>S", game_resync, 0, NULL},
-	  {_("/File/E_xit"), "<ctrl>Q", game_exit, 0, NULL},
+	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
+	  {_("/Table/Player _list"), "<ctrl>L",
+	   create_or_raise_dlg_players, 0, NULL},
+	  {_("/Table/_Sync with server"), "<ctrl>S", game_resync, 0, NULL},
+	  {_("/Table/E_xit"), "<ctrl>X", game_exit, 0, NULL},
 	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
 	  {_("/Help/_About"), "<ctrl>A", game_about, 0, NULL}
 	};
