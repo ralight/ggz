@@ -701,22 +701,30 @@ int metaserv_work()
 	log("Enter main loop");
 	while(1)
 	{
-		fgets(buffer, sizeof(buffer), stdin);
-		buffer[strlen(buffer) - 1] = 0;
-		log("Request: buffer=%s", buffer);
-		result = metamagic(buffer);
-
+		result = fgets(buffer, sizeof(buffer), stdin);
 		if(result)
 		{
-			printf("%s\n", result);
-			log("Result: result=%s", result);
+			buffer[strlen(buffer) - 1] = 0;
+			log("Request: buffer=%s", buffer);
+			result = metamagic(buffer);
+
+			if(result)
+			{
+				printf("%s\n", result);
+				log("Result: result=%s", result);
+			}
+			else
+			{
+				printf("\n");
+				log("No result");
+			}
+			fflush(NULL);
 		}
 		else
 		{
-			printf("\n");
-			log("No result");
+			log("Disconnection.");
+			exit(0);
 		}
-		fflush(NULL);
 	}
 
 	return 1;
