@@ -8,5 +8,6 @@ public:
 	KGGZ_Preferences(QWidget *parent, char *name);
 	~KGGZ_Preferences();
 protected slots:
-	void action(QListViewItem *item, const QPoint &point, int column);
+	void slotAction(QListViewItem *item, const QPoint &point, int column);
+	void slotDefault();
 };

@@ -172,9 +172,9 @@ void KGGZ_Chatwidget::send()
 				}
 				op1 = (char*)malloc(512);
 				if(kelvin != 0.0)
-					sprintf(op1, "Temperature: %3.1f°F, %3.1f°C, %3.1f°R %3.1f°K", fahrenheit, celsius, reaumour, kelvin);
+					sprintf(op1, i18n("Temperature: %3.1f°F, %3.1f°C, %3.1f°R %3.1f°K"), fahrenheit, celsius, reaumour, kelvin);
 				else
-					sprintf(op1, "Usage of local: /local &lt;number&gt; &lt;unit&gt;, with unit being one of C, R, K, F");
+					sprintf(op1, i18n("Usage of local: /local &lt;number&gt; &lt;unit&gt;, with unit being one of C, R, K, F"));
 			}
 		}
                 if(strcmp(commands, "/join") == 0)
@@ -447,18 +447,56 @@ void KGGZ_Chatwidget::timerEvent(QTimerEvent *e)
 	}
 	localbuf[j] = 0;
 	printf("Debug(4): |%s|\n", localbuf);
-	output->setText(output->text() + localbuf + QString("<br>"));
+	output->setText(output->text() + localbuf + QString("<br>\n"));
 	output->setContentsPos(0, 32767);
 	sprintf(m_buffer, "");
+	logChat();
 }
 
-/* receive normal chat messages */ /* TODO: bold text on own messages */
+/* log chat messages */
+// FIXME: only when user has logging enabled
+// FIXME 2: only log new text, not the whole widget
+// FIXME 3: append, with date
+void KGGZ_Chatwidget::logChat()
+{
+	FILE *f;
+	char s[512];
+	char *str;
+
+	strcpy(s, getenv("HOME"));
+	strcat(s, "/.ggz/kggzlog.html");
+
+	str = (char*)malloc(strlen(output->text()) + 1);
+	strcpy(str, output->text());
+
+	f = fopen(s, "w");
+	if(f)
+	{
+		fprintf(f, str);
+		fclose(f);
+	}
+
+	free(str);
+}
+
+/* receive normal chat messages */
 void KGGZ_Chatwidget::receive(char *player, char *message)
 {
 	/* avoid long lines... */
 	if(strlen(m_buffer) > 0) strcat(m_buffer, "<br>");
 	/* assign new content to buffer */
 	sprintf(m_buftmp, "<font color=#0000ff>%s:&nbsp;&nbsp;</font>", player);
+	strcat(m_buffer, m_buftmp);
+	sprintf(m_buftmp, "%s", plaintext(message));
+	strcat(m_buffer, m_buftmp);
+}
+
+void KGGZ_Chatwidget::receiveown(char *player, char *message)
+{
+	/* avoid long lines... */
+	if(strlen(m_buffer) > 0) strcat(m_buffer, "<br>");
+	/* assign new content to buffer */
+	sprintf(m_buftmp, "<font color=#0000ff><b>%s</b>:&nbsp;&nbsp;</font>", player);
 	strcat(m_buffer, m_buftmp);
 	sprintf(m_buftmp, "%s", plaintext(message));
 	strcat(m_buffer, m_buftmp);

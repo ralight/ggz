@@ -5,6 +5,8 @@
 #include <qlistbox.h>
 #include <qlabel.h>
 
+#include <klocale.h>
+
 KGGZ_Teams::KGGZ_Teams(QWidget *parent, char *name)
 {
 	QHBoxLayout *hbox;
@@ -43,7 +45,7 @@ KGGZ_Teams::KGGZ_Teams(QWidget *parent, char *name)
 	connect(done, SIGNAL(clicked()), SLOT(done()));
 
 	setFixedSize(300, 150);
-	setCaption("Team Assignments");
+	setCaption(i18n("Team Assignments"));
 	show();
 }
 

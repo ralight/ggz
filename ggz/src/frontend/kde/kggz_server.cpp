@@ -11,6 +11,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <X11/Xlib.h>
+#include <kapp.h>
+#ifdef USE_SERVER
+#include <dirent.h>
+#include <unistd.h>
+#include <signal.h>
+#endif
 
 int m_connected;
 int m_running;
@@ -19,6 +26,7 @@ int m_userslist;
 
 char memsavehost[1024];
 char memsaveusername[1024];
+char memsavepassword[1024];
 
 void KGGZ_Server::init()
 {
@@ -68,10 +76,10 @@ void KGGZ_Server::shutdown()
 	if (!m_running) return;
 	m_running = FALSE;
 	ggzcore_event_poll(NULL, 0, 0);
-	//ggzcore_destroy();
+	//ggzcore_destroy(); // that brought up an error
 }
 
-void KGGZ_Server::connect(const char *host, int port, const char *username)
+void KGGZ_Server::connect(const char *host, int port, const char *username, const char *password, int loginmode)
 {
 	GGZProfile *profile;
 
@@ -84,9 +92,12 @@ void KGGZ_Server::connect(const char *host, int port, const char *username)
 	//profile->host = strdup(host);		// !!! MEMORY LEAK?!
 	strcpy(memsavehost, host);
 	strcpy(memsaveusername, username);
+	strcpy(memsavepassword, password);
 	profile->host = memsavehost;
 	profile->login = memsaveusername;
 	profile->port = port;
+	profile->type = (GGZLoginType)loginmode; // compilers aren't smart enough
+	profile->password = memsavepassword;
 	//profile->login = strdup(username);
 	printf("*pre-connect\n");
 	ggzcore_event_enqueue(GGZ_USER_LOGIN, profile, NULL);
@@ -107,6 +118,109 @@ void KGGZ_Server::changeRoom(int room)
 {
 	ggzcore_event_enqueue(GGZ_USER_JOIN_ROOM, (void*)room, NULL);
 }
+
+#ifdef USE_SERVER
+// findprocess:
+// find a unix system process by the given name
+// returns pid if process already runs, 0 otherwise; and -1 on error
+int KGGZ_Server::findProcess(char *cmdline)
+{
+	DIR *d;
+	struct dirent *e;
+	FILE *f;
+	char dir[512];
+	int ret;
+	char cmd[256];
+
+	d = opendir("/proc/");
+	if(d == NULL) return -1;
+	ret = 0;
+	while((!ret) && (e = readdir(d)))
+	{
+		strcpy(dir, "/proc/");
+		strcat(dir, e->d_name);
+		strcat(dir, "/cmdline");
+		f = fopen(dir, "r");
+		if(f != NULL)
+		{
+			fscanf(f, "%s", &cmd);
+			if(strcmp(cmd, cmdline) == 0) ret = atoi(e->d_name);
+			fclose(f);
+		}
+	}
+	closedir(d);
+	return ret;
+}
+
+// launches the ggzd server
+// returns -1 on error, -2 if already running, child pid else
+int KGGZ_Server::launchServer()
+{
+	int result;
+	const char *ggzd = "ggzd";
+	char *const ggzdarg[] = {"ggzd", NULL};
+
+	printf("Starting GGZD...\n");
+	if(findProcess("ggzd") > 0)
+	{
+		printf("GGZd already running!\n");
+		return -2;
+	}
+	result = fork();
+	if(result == -1) /* external validation */
+	{
+		printf("Undefined error!\n");
+	}
+	else if(result == 0)
+	{
+		result = execvp(ggzd, ggzdarg);
+		printf("execvp-Result: %s\n", result);
+	}
+	else
+	{
+		// parent process; sleep a while to allow server to startup
+		while(findProcess("ggzd") == 0)
+			sleep(1);
+	}
+	return result;
+}
+
+// tries to kill all running ggzd processes
+// sends sigterm first, like the kill(1) command
+// returns -1 on failure, 1 on success, and 0 if only a sigkill was successful
+int KGGZ_Server::killServer()
+{
+	pid_t pid;
+	int ret;
+	int counter;
+	int sigterm;
+
+	pid = 1;
+	counter = 0;
+	sigterm = 1;
+	printf("Going to kill ggzd...\n");
+	while(pid > 0)
+	{
+		pid = findProcess("ggzd");
+		if(pid > 0)
+		{
+			printf("Found one (%i) ;)\n", pid);
+			ret = kill(pid, SIGTERM);
+			printf("SIGTERM-Ret is: %i\n", ret);
+			if(ret != 0)
+			{
+				printf("Thou bastard, don't want? I'll show you...\n");
+				ret = kill(pid, SIGTERM);
+				printf("SIGKILL-Ret is: %i\n", ret);
+				sigterm = 0;
+			}
+			counter++;
+		}
+	}
+	if(counter) return sigterm;
+	return -1;
+}
+#endif
 
 void KGGZ_Server::server_login_ok(GGZEventID id, void *event_data, void *user_data)
 {
@@ -164,7 +278,10 @@ void KGGZ_Server::server_chat_msg(GGZEventID id, void *event_data, void *user_da
 	if((c[0] == '/') && (c[1] == 'm') && (c[2] == 'e') && (c[3] == ' '))
 		KGGZ_Chatwidget::inforeceive(player, message);
 	else
-		KGGZ_Chatwidget::receive(player, message);
+		if(strcmp(player, ggzcore_state_get_profile_login()) == 0)
+			KGGZ_Chatwidget::receiveown(player, message);
+		else
+			KGGZ_Chatwidget::receive(player, message);
 }
 
 void KGGZ_Server::server_chat_prvmsg(GGZEventID id, void *event_data, void *user_data)
@@ -176,7 +293,7 @@ void KGGZ_Server::server_chat_beep(GGZEventID id, void *event_data, void *user_d
 {
 	printf("!! (6)\n");
 	KGGZ_Chatwidget::adminreceive(QString("You have been beeped!"));
-	printf("\006");
+	XBell(kapp->getDisplay(), 100);
 }
 
 void KGGZ_Server::server_chat_announce(GGZEventID id, void *event_data, void *user_data)
@@ -208,12 +325,24 @@ void KGGZ_Server::server_chat_fail(GGZEventID id, void *event_data, void *user_d
 
 void KGGZ_Server::server_room_enter(GGZEventID id, void *event_data, void *user_data)
 {
+	static char *player = NULL;
+
+	if(player) free(player);
+	player = strdup((char*)event_data);
 	printf("!! (11)\n");
+	KGGZ_Users::add(player);
+	KGGZ_Chatwidget::adminreceive(QString(player) + QString(" enters the room."));
 }
 
 void KGGZ_Server::server_room_leave(GGZEventID id, void *event_data, void *user_data)
 {
+	static char *player = NULL;
+
+	if(player) free(player);
+	player = strdup((char*)event_data);
 	printf("!! (12)\n");
+	KGGZ_Users::remove(player);
+	KGGZ_Chatwidget::adminreceive(QString(player) + QString(" leaves the room."));
 }
 
 void KGGZ_Server::server_room_join(GGZEventID id, void *event_data, void *user_data)
@@ -292,7 +421,7 @@ void showstatus(int id)
 			currentstatus = "--> Room";
 			user = ggzcore_state_get_profile_login();
 			KGGZ_Chatwidget::adminreceive(QString(user) + QString(" enters the room."));
-			KGGZ_Users::add(user);
+			//KGGZ_Users::add(user); - this is not good, it causes a doubled entry
 			break;
 		case GGZ_STATE_IN_ROOM:
 			currentstatus = "Chatting";

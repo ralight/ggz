@@ -15,6 +15,9 @@ protected slots:
 	void edit();
 	void modes(int id);
 	void invoke();
+	void slotLoadProfile(int profile);
+private:
+	int m_loginmode;
 };
 
 #endif

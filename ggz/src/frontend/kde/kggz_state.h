@@ -15,7 +15,7 @@ Q_OBJECT
 public:
 	KGGZ_State(QWidget *parent, char *name);
 	~KGGZ_State();
-	void showState(char *state);
+	void showState(const char *state);
 	static void changedState(GGZStateID id, void *state_data, void *user_data);
 	static char *getState(GGZStateID state);
 	static void registerStates();

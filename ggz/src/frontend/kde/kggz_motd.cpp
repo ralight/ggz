@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <klocale.h>
 
 QTextBrowser *edit;
 char buf[16384];
@@ -23,7 +24,7 @@ KGGZ_Motd::KGGZ_Motd(QWidget *parent, char *name)
 
 	connect(button, SIGNAL(clicked()), SLOT(close()));
 
-	setCaption("MOTD");
+	setCaption(i18n("Message Of The Day (MOTD)"));
 	setFixedSize(320, 400);
 
 	show();

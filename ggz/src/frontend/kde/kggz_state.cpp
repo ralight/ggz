@@ -11,15 +11,22 @@ KGGZ_State::KGGZ_State(QWidget *parent, char *name)
 : QWidget(parent, name)
 {
 	QHBoxLayout *hbox;
-	QWidget *statebox;
+	QWidget *statebox, *sysbox;
+	QLabel *labelsys;
 
 	hbox = new QHBoxLayout(this, 5);
 
+	labelsys = new QLabel("Sys", this);
 	label = new QLabel("", this);
 	statebox = new QWidget(this);
-	statebox->setFixedSize(20, 20);
+	statebox->setFixedSize(10, 20);
 	statebox->setBackgroundColor(QColor(255, 255, 0));
+	sysbox = new QWidget(this);
+	sysbox->setFixedSize(10, 20);
+	sysbox->setBackgroundColor(QColor(255, 0, 0));
 
+	hbox->add(sysbox);
+	hbox->add(labelsys);
 	hbox->add(statebox);
 	hbox->add(label);
 
@@ -30,9 +37,9 @@ KGGZ_State::~KGGZ_State()
 {
 }
 
-void KGGZ_State::showState(char *state)
+void KGGZ_State::showState(const char *state)
 {
-	label->setText(state);
+	label->setText(QString("Net: ") + state);
 }
 
 void KGGZ_State::registerStates()

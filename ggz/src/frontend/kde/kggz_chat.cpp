@@ -1,5 +1,6 @@
 #include "kggz_chat.h"
 #include <qlayout.h>
+#include <klocale.h>
 
 KGGZ_Chat::KGGZ_Chat(QWidget *parent, char *name)
 : QWidget(parent, name)
@@ -17,7 +18,7 @@ KGGZ_Chat::KGGZ_Chat(QWidget *parent, char *name)
 
 	state = new KGGZ_State(this, "state");
 	state->setFixedSize(200, 30);
-	state->showState("Connected");
+	state->showState(i18n("Connected"));
 
 	vbox1 = new QVBoxLayout(this, 0);
 	vbox1->add(tables);

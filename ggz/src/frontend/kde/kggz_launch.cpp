@@ -4,6 +4,7 @@
 #include <qpushbutton.h>
 #include <qlineedit.h>
 #include <qslider.h>
+#include <klocale.h>
 
 KGGZ_Launch::KGGZ_Launch(QWidget *parent, char *name)
 : QWidget(parent, name)
@@ -17,15 +18,15 @@ KGGZ_Launch::KGGZ_Launch(QWidget *parent, char *name)
 	QLabel *label_open, *label_reserved, *label_ai;
 	QSlider *slider_open, *slider_reserved, *slider_ai;
 
-	label_type = new QLabel("Game type:", this);
-	label_description = new QLabel("Description:", this);
+	label_type = new QLabel(i18n("Game type:"), this);
+	label_description = new QLabel(i18n("Description:"), this);
 
 	input_type = new QLineEdit(this);
 	input_description = new QLineEdit(this);
 
-	label_open = new QLabel("Open seats:", this);
-	label_reserved = new QLabel("Reserved:", this);
-	label_ai = new QLabel("AI players:", this);
+	label_open = new QLabel(i18n("Open seats:"), this);
+	label_reserved = new QLabel(i18n("Reserved:"), this);
+	label_ai = new QLabel(i18n("AI players:"), this);
 
 	count_open = new QLabel("0", this);
 	count_reserved = new QLabel("0", this);
@@ -39,7 +40,7 @@ KGGZ_Launch::KGGZ_Launch(QWidget *parent, char *name)
 	slider_ai->setOrientation(QSlider::Horizontal);
 
 	button_ok = new QPushButton("OK", this);
-	button_cancel = new QPushButton("Cancel", this);
+	button_cancel = new QPushButton(i18n("Cancel"), this);
 
 	vbox1 = new QVBoxLayout(this, 5);
 
@@ -77,7 +78,7 @@ KGGZ_Launch::KGGZ_Launch(QWidget *parent, char *name)
 	connect(slider_reserved, SIGNAL(valueChanged(int)), SLOT(setReservedSeats(int)));
 	connect(slider_ai, SIGNAL(valueChanged(int)), SLOT(setAISeats(int)));
 
-	setCaption("Launch new game");
+	setCaption(i18n("Launch new game"));
 	resize(300, 200);
 }
 

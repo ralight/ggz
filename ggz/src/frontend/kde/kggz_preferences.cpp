@@ -1,6 +1,8 @@
 #include "kggz_preferences.h"
 #include "kggz_settings.h"
-#include "kggz_profiles.h"
+#include "kggz_playerinfo.h"
+#include "kggz_hosts.h"
+#include "kggz_ftp.h"
 #include "kggz_games.h"
 #include <qpushbutton.h>
 #include <qlayout.h>
@@ -9,7 +11,9 @@
 
 QWidget *dummy;
 KGGZ_Settings *settings;
-KGGZ_Profiles *profiles;
+KGGZ_Playerinfo *playerinfo;
+KGGZ_Hosts *hosts;
+KGGZ_Ftp *ftp;
 KGGZ_Games *games;
 QLabel *preferences_label;
 
@@ -24,13 +28,15 @@ KGGZ_Preferences::KGGZ_Preferences(QWidget *parent, char *name)
 
 	preferences_list = new QListView(this);
 	preferences_list->addColumn(i18n("Preferences"));
-	preferences_list->insertItem(new QListViewItem(preferences_list, i18n("Server profiles")));
+	preferences_list->insertItem(new QListViewItem(preferences_list, i18n("Game Server profiles")));
+	preferences_list->insertItem(new QListViewItem(preferences_list, i18n("FTP Server profiles")));
 	preferences_list->insertItem(new QListViewItem(preferences_list, i18n("Settings")));
+	preferences_list->insertItem(new QListViewItem(preferences_list, i18n("Player information")));
 	preferences_list->insertItem(new QListViewItem(preferences_list, i18n("Games")));
 	preferences_list->setRootIsDecorated(TRUE);
 	preferences_list->setFixedWidth(100);
 
-	preferences_label = new QLabel(i18n("<font size=+1><b><i><font color=#0000ff>Preferences</font></i></b></font>"), this);
+	preferences_label = new QLabel("", this);
 
 	button_ok = new QPushButton("OK", this);
 
@@ -44,8 +50,14 @@ KGGZ_Preferences::KGGZ_Preferences(QWidget *parent, char *name)
 	settings = new KGGZ_Settings(this, NULL);
 	settings->hide();
 
-	profiles = new KGGZ_Profiles(this, NULL);
-	profiles->hide();
+	playerinfo = new KGGZ_Playerinfo(this, NULL);
+	playerinfo->hide();
+
+	hosts = new KGGZ_Hosts(this, NULL);
+	hosts->hide();
+
+	ftp = new KGGZ_Ftp(this, NULL);
+	ftp->hide();
 
 	games = new KGGZ_Games(this, NULL);
 	games->hide();
@@ -60,30 +72,66 @@ KGGZ_Preferences::KGGZ_Preferences(QWidget *parent, char *name)
 	vbox3->add(preferences_label);
 	vbox3->add(dummy);
 	vbox3->add(settings);
-	vbox3->add(profiles);
+	vbox3->add(playerinfo);
+	vbox3->add(hosts);
+	vbox3->add(ftp);
 	vbox3->add(games);
 
 	connect(button_ok, SIGNAL(clicked()), SLOT(close()));
 	connect(preferences_list, SIGNAL(clicked(QListViewItem *, const QPoint&, int)),
-		SLOT(action(QListViewItem *, const QPoint&, int)));
+		SLOT(slotAction(QListViewItem *, const QPoint&, int)));
+
+	slotDefault();
 
 	resize(500, 300);
-	setCaption("Preferences");
+	setCaption(i18n("Preferences"));
 }
 
 KGGZ_Preferences::~KGGZ_Preferences()
 {
 }
 
-void KGGZ_Preferences::action(QListViewItem *item, const QPoint &point, int column)
+void KGGZ_Preferences::slotDefault()
 {
+	preferences_label->setText("<font size=+1><b><i><font color=#0000ff>" + i18n("Preferences") + "</font></i></b></font>");
+	dummy->show();
+}
+
+void KGGZ_Preferences::slotAction(QListViewItem *item, const QPoint &point, int column)
+{
+	int dummycounter;
+
 	if(item == NULL) return;
 	preferences_label->setText("<font size=+1><b><i><font color=#0000ff>" + item->text(0) + "</font></i></b></font>");
 	dummy->hide();
 	settings->hide();
-	profiles->hide();
+	playerinfo->hide();
+	hosts->hide();
+	ftp->hide();
 	games->hide();
-	if(strcmp(item->text(0), i18n("Settings")) == 0) settings->show();
-	if(strcmp(item->text(0), i18n("Server profiles")) == 0) profiles->show();
-	if(strcmp(item->text(0), i18n("Games")) == 0) games->show();
+	if(strcmp(item->text(0), i18n("Settings")) == 0)
+	{
+		settings->show();
+		connect(settings, SIGNAL(signalClosed()), SLOT(slotDefault()));
+	}
+	if(strcmp(item->text(0), i18n("Player information")) == 0)
+	{
+		playerinfo->show();
+		connect(playerinfo, SIGNAL(signalClosed()), SLOT(slotDefault()));
+	}
+	if(strcmp(item->text(0), i18n("Game Server profiles")) == 0)
+	{
+		hosts->show();
+		connect(hosts, SIGNAL(signalClosed()), SLOT(slotDefault()));
+	}
+	if(strcmp(item->text(0), i18n("FTP Server profiles")) == 0)
+	{
+		ftp->show();
+		connect(ftp, SIGNAL(signalClosed()), SLOT(slotDefault()));
+	}
+	if(strcmp(item->text(0), i18n("Games")) == 0)
+	{
+		games->show();
+		/*connect(games, SIGNAL(ready()), dummy, SIGNAL(show()));*/
+	}
 }

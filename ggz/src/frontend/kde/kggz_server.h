@@ -10,12 +10,22 @@
 class KGGZ_Server
 {
 public:
+	/* server control functions */
         static void init();
 	static void shutdown();
-	static void connect(const char *host, int port, const char *username);
+	static void connect(const char *host, int port, const char *username, const char *password, int loginmode);
 	static void disconnect();
 	static void loop();
+#ifdef USE_SERVER
+	static int launchServer();
+	static int killServer();
+#endif
+
+	/* user functions */
 	static void changeRoom(int room);
+#ifdef USE_SERVER
+	static int findProcess(char *cmdline);
+#endif
 
 	/* Callbacks */
 	static void server_connect(GGZEventID id, void *event_data, void *user_data);

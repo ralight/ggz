@@ -11,6 +11,7 @@ public:
 	KGGZ_Users(QWidget *parent, char *name);
 	~KGGZ_Users();
 	static void add(char *name);
+	static void remove(char *name);
 protected:
 	void timerEvent(QTimerEvent *e);
 };

@@ -33,7 +33,7 @@ void KGGZ_RoomsMenu::add(char *name)
 	//tmpmenu = new KPopupMenu(NULL, NULL);
 	//tmpmenu->insertItem(QString("Play ") + QString(name));
 	//KGGZ::menuRooms()->insertItem(name, tmpmenu, KGGZ::MENU_ROOMS_SLOTS + x);
-	KGGZ::menuRooms()->insertItem(name, KGGZ::MENU_ROOMS_SLOTS + x);
+	KGGZ::menuRooms()->insertItem(KGGZ::getIcon(KGGZ::MENU_ROOMS_SLOTS /*+ x*/), name, KGGZ::MENU_ROOMS_SLOTS + x); // +x later...
 	x++;
 	//connect(tmpmenu, SIGNAL(activated(int)), this, SLOT(handleMenu(int)));
 	//KGGZ::menuRooms()->insertItem(name, new KPopupMenu("sample game 2", KGGZ::menuRooms(), NULL), KGGZ::MENU_ROOMS_SLOTS);
