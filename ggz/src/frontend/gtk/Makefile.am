@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6389 2004-11-16 06:42:10Z jdorje $
+#  $Id: Makefile.am 6391 2004-11-16 07:15:24Z jdorje $
 
 SUBDIRS = .
 
@@ -12,12 +12,12 @@ ggzdata_DATA =		about_bg.png		\
 			ggz_gtk_admin.png 	\
 			ggz_gtk_guest.png 	\
 			ggz_gtk_registered.png	\
-			ggz_gtk_lag0.png 	\
-			ggz_gtk_lag1.png 	\
-			ggz_gtk_lag2.png	\
-			ggz_gtk_lag3.png	\
-			ggz_gtk_lag4.png	\
-			ggz_gtk_lag5.png
+			ggz_gtk_lag0.svg 	\
+			ggz_gtk_lag1.svg 	\
+			ggz_gtk_lag2.svg	\
+			ggz_gtk_lag3.svg	\
+			ggz_gtk_lag4.svg	\
+			ggz_gtk_lag5.svg
 
 ggz_gtk_SOURCES =	main.c \
 			about.c \
