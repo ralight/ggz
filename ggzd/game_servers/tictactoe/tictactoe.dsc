@@ -16,3 +16,5 @@ Version = 2
 AllowLeave = 1
 BotsAllowed = 0 1
 PlayersAllowed = 2
+AllowSpectators = 1
+

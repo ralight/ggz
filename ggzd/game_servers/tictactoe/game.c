@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Game functions
- * $Id: game.c 4356 2002-08-10 19:03:07Z dr_maux $
+ * $Id: game.c 4387 2002-08-22 07:05:06Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -91,6 +91,8 @@ static void game_handle_ggz_spectator_join(GGZdMod *ggz,
                                  GGZdModEvent event, void *data);
 static void game_handle_ggz_spectator_leave(GGZdMod *ggz,
                                   GGZdModEvent event, void *data);
+static void game_handle_ggz_spectator(GGZdMod *ggz,
+                                   GGZdModEvent event, void *data);
 #endif
 static void game_handle_ggz_player(GGZdMod *ggz,
                                    GGZdModEvent event, void *data);
@@ -99,7 +101,7 @@ static void game_handle_ggz_player(GGZdMod *ggz,
 static int game_send_seat(int seat);
 static int game_send_players(void);
 static int game_send_move(int num, int move);
-static int game_send_sync(int num);
+static int game_send_sync(int fd);
 #ifdef GGZSTATISTICS
 static int game_send_stats(int num);
 #endif
@@ -139,6 +141,8 @@ void game_init(GGZdMod *ggzdmod)
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA,
 	                    &game_handle_ggz_player);
 #ifdef GGZSPECTATORS
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_DATA,
+	                    &game_handle_ggz_spectator);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN,
 	                    &game_handle_ggz_spectator_join);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE,
@@ -173,29 +177,30 @@ static int seats_full(void)
 #ifdef GGZSPECTATORS
 static void game_handle_ggz_spectator_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	int i;
+	int i, fd;
 	GGZSeat seat;
 	GGZSpectator spectator;
-	
-	spectator = ggzdmod_get_spectator(ggz, *(int*)data);
 
-	if (ggz_write_int(spectator.fd, TTT_MSG_PLAYERS) < 0)
+	spectator = ggzdmod_get_spectator(ggz, *(int*)data);
+	fd = spectator.fd;
+
+	if (ggz_write_int(fd, TTT_MSG_PLAYERS) < 0)
 		return;
 	for (i = 0; i < 2; i++) {
 		seat = ggzdmod_get_seat(ttt_game.ggz, i);
-		if (ggz_write_int(spectator.fd, seat.type) < 0)
+		if (ggz_write_int(fd, seat.type) < 0)
 			return;
 		if (seat.type != GGZ_SEAT_OPEN
-		    && ggz_write_string(spectator.fd, seat.name) < 0)
+		    && ggz_write_string(fd, seat.name) < 0)
 			return;
 	}
 
-	if (ggz_write_int(spectator.fd, TTT_SND_SYNC) < 0
-	|| ggz_write_char(spectator.fd, ttt_game.turn) < 0)
+	if (ggz_write_int(fd, TTT_SND_SYNC) < 0
+	|| ggz_write_char(fd, ttt_game.turn) < 0)
 		return;
 	
 	for (i = 0; i < 9; i++)
-		if (ggz_write_char(spectator.fd, ttt_game.board[i]) < 0)
+		if (ggz_write_char(fd, ttt_game.board[i]) < 0)
 			return;
 }
 
@@ -207,10 +212,11 @@ static void game_handle_ggz_spectator_leave(GGZdMod *ggz, GGZdModEvent event, vo
 /* Callback for GGZDMOD_EVENT_JOIN */
 static void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 {
-	int seat = ((GGZSeat*)data)->num;
+	int num = ((GGZSeat*)data)->num;
+	GGZSeat seat = ggzdmod_get_seat(ggz, num);
 
 	/* Send the info to our players */
-	game_send_seat(seat);
+	game_send_seat(num);
 	game_send_players();
 	
 	/* We start playing only when there are no open seats. */
@@ -218,7 +224,7 @@ static void game_handle_ggz_join(GGZdMod *ggz, GGZdModEvent event, void *data)
 
 		/* If we're continuing a game, send sync to new player */
 		if (ttt_game.turn != -1)
-			game_send_sync(seat);
+			game_send_sync(seat.fd);
 		
 		ggzdmod_set_state(ttt_game.ggz, GGZDMOD_STATE_PLAYING);
 	}
@@ -261,7 +267,7 @@ static void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 			game_do_move(move);
 		break;
 	case TTT_REQ_SYNC:
-		game_send_sync(num);
+		game_send_sync(fd);
 		break;
 #ifdef GGZSTATISTICS
 	case TTT_REQ_STATS:
@@ -273,6 +279,27 @@ static void game_handle_ggz_player(GGZdMod *ggz, GGZdModEvent event, void *data)
 	}
 }
 
+/* Handle message from spectator */
+static void game_handle_ggz_spectator(GGZdMod *ggz, GGZdModEvent event, void *data)
+{
+	int num = *(int*)data;
+	int fd, op;
+	GGZSpectator spectator;
+
+	spectator = ggzdmod_get_spectator(ggz, num);
+	fd = spectator.fd;
+	
+	if (ggz_read_int(fd, &op) < 0)
+		return;
+
+	switch (op) {
+	case TTT_REQ_SYNC:
+		game_send_sync(fd);
+		break;
+	default:
+		ggzdmod_log(ggz, "Unrecognized spectator opcode %d.", op);
+	}
+}
 
 /* Send out seat assignment */
 static int game_send_seat(int num)
@@ -348,10 +375,10 @@ static int game_send_stats(int num)
 	int wins, losses, ties;
 	GGZStats *stats;
 	GGZSeat seat;
-	
-	ggzdmod_log(ttt_game.ggz, "Handling statistics for player %d", num);
 
 	seat = ggzdmod_get_seat(ttt_game.ggz, num);
+	
+	ggzdmod_log(ttt_game.ggz, "Handling statistics for player %d", num);
 
 	stats = ggzstats_new(ttt_game.ggz);
 	ggzstats_get_record(stats, num, &wins, &losses, &ties);
@@ -368,19 +395,18 @@ static int game_send_stats(int num)
 
 
 /* Send out board layout */
-static int game_send_sync(int num)
+static int game_send_sync(int fd)
 {	
 	int i;
-	GGZSeat seat = ggzdmod_get_seat(ttt_game.ggz, num);
 
-	ggzdmod_log(ttt_game.ggz, "Handling sync for player %d", num);
+	ggzdmod_log(ttt_game.ggz, "Handling sync for fd %d", fd);
 
-	if (ggz_write_int(seat.fd, TTT_SND_SYNC) < 0
-	    || ggz_write_char(seat.fd, ttt_game.turn) < 0)
+	if (ggz_write_int(fd, TTT_SND_SYNC) < 0
+	    || ggz_write_char(fd, ttt_game.turn) < 0)
 		return -1;
 	
 	for (i = 0; i < 9; i++)
-		if (ggz_write_char(seat.fd, ttt_game.board[i]) < 0)
+		if (ggz_write_char(fd, ttt_game.board[i]) < 0)
 			return -1;
 		
 	return 0;
