@@ -700,15 +700,25 @@ int ggz_set_io_exit_func(ggzIOExit func);
 ggzIOExit ggz_remove_io_exit_func(void);
 
 
-/****************************************************************************
- * Getting/Setting the limit on memory allocation
- * 
- * limit    : limit (in bytes) to allow on ggz_read_XXX_alloc() calls
- * 
- * Upon setting the limit, the old value is returned
+/** @brief Get libggz's limit on memory allocation.
  *
- ***************************************************************************/
+ *  @return The limit (in bytes) to allow on ggz_read_XXX_alloc() calls.
+ *  @see ggz_set_io_alloc_limit
+ */
 unsigned int ggz_get_io_alloc_limit(void);
+
+/** @brief Set libggz's limit on memory allocation.
+ *
+ *  In functions of the form ggz_read_XXX_alloc(), libggz will itself
+ *  allocate memory for the XXX object that is being read in.  This
+ *  presents an obvious security concern, so we limit the amount of
+ *  memory that can be allocated.  The default value is 32,767 bytes,
+ *  but it can be changed by calling this function.
+ *
+ *  @param limit The new limit (in bytes) to allow on alloc-style calls.
+ *  @return The previous limit.
+ *  @see ggz_get_io_alloc_limit
+ */
 unsigned int ggz_set_io_alloc_limit(const unsigned int limit);
 
 
@@ -738,17 +748,44 @@ int ggz_make_unix_socket(const GGZSockType type, const char* name);
 int ggz_make_unix_socket_or_die(const GGZSockType type, const char* name);
 
 
-/****************************************************************************
- * Reading/Writing a single char.
- * 
- * sock  :  socket fd
- * data  :  single char for write.  pointer to char for read
- * 
- * Returns 0 if successful, -1 on error.
- ***************************************************************************/
+/** @brief Write a character value to the given socket.
+ *
+ *  This function will write a single character to the socket.  The
+ *  character will be readable at the other end with ggz_read_char.
+ *
+ *  @param sock The socket file descriptor to write to.
+ *  @param data A single character to write.
+ *  @return 0 on success, -1 on error.
+ */
 int ggz_write_char(const int sock, const char data);
+
+/** @brief Write a character value to the given socket, exiting on error.
+ *
+ *  @param sock The socket file descriptor to write to.
+ *  @param data A single character to write.
+ *  @note Aside from error handling, this is identical to ggz_write_char.
+ */
 void ggz_write_char_or_die(const int sock, const char data);
+
+/** @brief Read a character value from the given socket.
+ *
+ *  This function will read a single character (as written by
+ *  ggz_write_char) from a socket.  It places the value into the
+ *  character pointed to.
+ *
+ *  @param sock The socket file descriptor to read from.
+ *  @param data A pointer to a single character.
+ *  @return 0 on success, -1 on error
+ */
 int ggz_read_char(const int sock, char *data);
+
+
+/** @brief Read a character value from the given socket, exiting on error.
+ *
+ *  @param sock The socket file descriptor to read from.
+ *  @param data A pointer to a single character.
+ *  @note Aside from error handling, this is identical to ggz_read_char.
+ */
 void ggz_read_char_or_die(const int sock, char *data);
 
 
