@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
-//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4                //
-//    Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net      //
+//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.5pre             //
+//    Copyright (C) 2000 - 2002 Josef Spillner - dr_maux@users.sourceforge.net     //
 //    The MindX Open Source Project - http://mindx.sourceforge.net                 //
 //    Published under GNU GPL conditions - view COPYING for details                //
 //                                                                                 //
@@ -227,21 +227,6 @@ int KGGZCommon::killProcess(const char* process)
 	}
 	if(counter) return sigterm;
 	return -3;
-}
-
-const char* KGGZCommon::append(const char* string1, const char* string2)
-{
-	char* tmp;
-
-	tmp = (char*)malloc(strlen(string1) + strlen(string2) + 1);
-	strcpy(tmp, string1);
-	strcat(tmp, string2);
-
-	return (const char*)tmp;
-}
-
-void KGGZCommon::clear()
-{
 }
 
 int KGGZCommon::kggzdebugdummy(const char *x, ...)

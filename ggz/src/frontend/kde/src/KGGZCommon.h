@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////
 //                                                                                 //
-//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4                //
-//    Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net      //
+//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.5pre             //
+//    Copyright (C) 2000 - 2002 Josef Spillner - dr_maux@users.sourceforge.net     //
 //    The MindX Open Source Project - http://mindx.sourceforge.net                 //
 //    Published under GNU GPL conditions - view COPYING for details                //
 //                                                                                 //
@@ -102,8 +102,6 @@ class KGGZCommon
 		static int launchProcess(const char* process, char* processpath);
 		static int killProcess(const char* process);
 		static int findProcess(const char* cmdline);
-		static const char* append(const char* string1, const char* string2);
-		static void clear();
 		static int kggzdebugdummy(const char *x, ...);
 };
 
