@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 	KCmdLineArgs::init(argc, argv, &about);
 
 	KApplication a;
-	kcmggz = new KCMGGZ(NULL, "kcmggz");
+	kcmggz = new KCMGGZ(NULL, NULL, "kcmggz");
 	a.setMainWidget(kcmggz);
 	kcmggz->show();
 	kcmggz->resize(500, 500);

@@ -5,6 +5,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
+#include <kaboutdata.h>
 
 #include <qlayout.h>
 #include <qdir.h>
@@ -16,8 +17,8 @@
 
 typedef KCMGGZPane* (*panefunc)(QWidget *parent = NULL, const char *name = NULL);
 
-KCMGGZ::KCMGGZ(QWidget *parent, const char *name)
-: KCModule(parent, name)
+KCMGGZ::KCMGGZ(KInstance *instance, QWidget *parent, const char *name)
+: KCModule(instance, parent, name)
 {
 	KStandardDirs d;
 	QVBoxLayout *vbox;
@@ -98,7 +99,9 @@ extern "C"
 {
 	KCModule *create_ggz(QWidget *parent = NULL, const char *name = NULL)
 	{
-		return new KCMGGZ(parent, name);
+		KInstance *instance;
+		instance = new KInstance("kcmggz");
+		return new KCMGGZ(instance, parent, name);
 	}
 }
 
@@ -115,5 +118,21 @@ QString KCMGGZ::quickHelp()
 				" some default data can be entered here which takes then precedence.<p>"
 				" Please take a look at <a href='http://ggz.sourceforge.net'>ggz.sourceforge.net</a>"
 				" if you want to learn more.");
+}
+
+const KAboutData *KCMGGZ::aboutData()
+{
+	KAboutData *about;
+
+	about = new KAboutData("kcmggz",
+		I18N_NOOP("GGZ Gaming Zone Configuration"),
+		QString::null,
+		QString::null,
+		KAboutData::License_GPL,
+		I18N_NOOP("Copyright (C) 2002, 2003 Josef Spillner"));
+
+	about->addAuthor("Josef Spillner", QString::null, "josef@ggzgamingzone.org");
+
+	return about;
 }
 

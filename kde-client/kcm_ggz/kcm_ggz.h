@@ -10,12 +10,14 @@ class KCMGGZ : public KCModule
 {
 	Q_OBJECT
 	public:
-		KCMGGZ(QWidget *parent = NULL, const char *name = NULL);
+		KCMGGZ(KInstance *instance = NULL, QWidget *parent = NULL, const char *name = NULL);
 		~KCMGGZ();
 		void load();
 		void save();
 		void defaults();
+
 		QString quickHelp();
+		const KAboutData *aboutData();
 
 	public slots:
 		void slotChanged();
