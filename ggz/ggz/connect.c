@@ -209,7 +209,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		if (status < 0) {
 			login_bad_name();
 			warn_dlg("That username is already in usage,\n or not permitted on this server.\n\nPlease choose a different name");
-
+			
 			return;
 		}
 		es_read_int(source, &checksum);
@@ -217,11 +217,12 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		login_online();
 		connect_msg("[%s] Checksum = %d\n", opcode_str[op], checksum);
 
-		/* Get Rooms */
+		/* Get Room and type lists */
                 es_write_int(connection.sock, REQ_LIST_ROOMS);
                 es_write_int(connection.sock, -1);
                 es_write_char(connection.sock, 1);
-		/*server_sync();*/
+		es_write_int(connection.sock, REQ_LIST_TYPES);
+		es_write_char(connection.sock, 1);
 		break;
 
 	case RSP_TABLE_LAUNCH:
@@ -476,6 +477,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case MSG_UPDATE_TABLES:
 		connect_msg("[%s]\n", opcode_str[op]);
 		ggz_get_tables(NULL, NULL);
+		/* FIXME: won't need this once new update protocol in place */
+		ggz_get_players(NULL, NULL);
 		break;
 
 	case MSG_UPDATE_ROOMS:
@@ -538,6 +541,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			break;
 		case 0:
 			connection.cur_room = connection.new_room;
+			ggz_get_players(NULL, NULL);
+			ggz_get_tables(NULL, NULL);
 			break;
 		}
 
