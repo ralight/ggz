@@ -621,7 +621,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	dbg_msg("Handling table launch for player %d", p_index);
 
 	if (FAIL(es_read_int(p_fd, &table.type_index))
-	    || FAIL(es_read_string(p_fd, &table.desc))
+	    || FAIL(es_read_string(p_fd, table.desc))
 	    || FAIL(es_read_int(p_fd, &seats)))
 		return -1;
 
