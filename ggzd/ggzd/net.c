@@ -162,7 +162,7 @@ GGZNetIO* net_new(int fd, GGZPlayer *player)
 	net->done = 0;
 
         /* Init parser */
-        if (!(net->parser = XML_ParserCreate("UTF-8")))
+        if (!(net->parser = XML_ParserCreate(NULL)))
                 err_sys_exit("Couldn't allocate memory for XML parser");
 
         /* Setup handlers for tags */
