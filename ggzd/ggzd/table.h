@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.h 5009 2002-10-23 18:10:38Z jdorje $
+ * $Id: table.h 5055 2002-10-26 22:48:07Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -116,11 +116,13 @@ void table_set_desc(struct GGZTable *table, const char *desc);
 
 /* Call to have a player join the table.  Only the table thread can call
    this function. */
-void table_game_join(GGZTable *table, char *name, int num);
+void table_game_join(GGZTable *table, char *name,
+		     GGZJoinType reason, int num);
 
 /* Call to have a player join the table.  Only the table thread can call
    this function. */
-void table_game_leave(GGZTable *table, char *name, int num);
+void table_game_leave(GGZTable *table, char *name,
+		      GGZLeaveType reason, int num);
 
 /* Call to have a player change seats at a table.  Only the table thread
    can call this function. */
@@ -134,11 +136,13 @@ void table_game_seatchange(GGZTable *table, GGZSeatType type, int num);
 
 /* Call to have a player join the table as spectator.  Only the table
    thread can call this function. */
-void table_game_spectator_join(GGZTable *table, char *name, int num);
+void table_game_spectator_join(GGZTable *table, char *name,
+			       GGZJoinType reason, int num);
 
 /* Call to have a player leave the table as a spectator.  Only the table
    thread can call this function. */
-void table_game_spectator_leave(GGZTable *table, char *name, int num);
+void table_game_spectator_leave(GGZTable *table, char *name,
+				GGZLeaveType reason, int num);
 
 /* Kill the table */
 GGZClientReqError table_kill(int room, int index, char *name);

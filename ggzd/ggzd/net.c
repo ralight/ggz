@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5051 2002-10-26 07:43:26Z jdorje $
+ * $Id: net.c 5055 2002-10-26 22:48:07Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -590,13 +590,39 @@ GGZReturn net_send_table_launch(GGZNetIO *net, GGZClientReqError status)
 }
 
 
-GGZReturn net_send_table_join(GGZNetIO *net, GGZClientReqError status)
+GGZReturn net_send_table_join(GGZNetIO *net,
+			      int is_spectator,
+			      const unsigned int table_index)
+{
+	return _net_send_line(net,
+			      "<JOIN TABLE='%d' SPECTATOR='%s'/>",
+			      table_index, bool_to_str(is_spectator));
+}
+
+
+GGZReturn net_send_table_join_result(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "join", status);
 }
 
 
-GGZReturn net_send_table_leave(GGZNetIO *net, GGZClientReqError status)
+GGZReturn net_send_table_leave(GGZNetIO *net, GGZLeaveType reason,
+			       const char *player)
+{
+	const char *reason_str = ggz_leavetype_to_string(reason);
+
+	if (player) {
+		/* For a BOOT, the player is the person who booted them. */
+		return _net_send_line(net,
+				      "<LEAVE REASON='%s' PLAYER='%s'/>",
+				      reason_str, player);
+	} else
+		return _net_send_line(net, "<LEAVE REASON='%s'/>",
+				      reason_str);
+}
+
+
+GGZReturn net_send_table_leave_result(GGZNetIO *net, GGZClientReqError status)
 {
 	return _net_send_result(net, "leave", status);
 }

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 5009 2002-10-23 18:10:38Z jdorje $
+ * $Id: transit.c 5055 2002-10-26 22:48:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -56,12 +56,15 @@ typedef struct{
 	GGZTransitType transit;
 	struct GGZTableSeat seat;
 	char caller[MAX_USER_NAME_LEN + 1];
+	int reason; /* only for LEAVE/JOIN transits */
 } GGZSeatEventData;
 
 
 typedef struct {
 	GGZTransitType opcode;
 	GGZClientReqError status;
+	int reason; /* Only for LEAVE/JOIN transits */
+	char caller[MAX_USER_NAME_LEN + 1]; /* only for some ops */
 	int table_index; /* Only for certain operations */
 } GGZPlayerTransitEventData;
 
@@ -86,12 +89,14 @@ static int transit_find_available_spectator(GGZTable *table, char *name);
 
 GGZReturn transit_seat_event(int room, int index,
 			     GGZTransitType transit,
-			     struct GGZTableSeat seat, char *caller)
+			     struct GGZTableSeat seat, char *caller,
+			     int reason)
 {
 	GGZSeatEventData *data = ggz_malloc(sizeof(*data));
 
 	data->transit = transit;
 	data->seat = seat;
+	data->reason = reason;
 	strcpy(data->caller, caller);
 	
 	return event_table_enqueue(room, index, transit_seat_event_callback,
@@ -100,18 +105,14 @@ GGZReturn transit_seat_event(int room, int index,
 
 
 GGZReturn transit_player_event(char* name, GGZTransitType opcode,
-			       GGZClientReqError status, int index)
+			       GGZClientReqError status,
+			       int reason, int index)
 {
 	GGZPlayerTransitEventData* data = ggz_malloc(sizeof(*data));
 
 	data->opcode = opcode;
 	data->status = status;
-	if (status == 0
-	    && (opcode == GGZ_TRANSIT_JOIN
-		|| opcode == GGZ_TRANSIT_JOIN_SPECTATOR))
-		data->table_index = index;
-	else
-		data->table_index = -1;
+	data->table_index = index;
 	
 	return event_player_enqueue(name, transit_player_event_callback, 
 				    sizeof(*data), data, NULL);
@@ -156,7 +157,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 		/* Notify player that transit failed */
 		/* Don't care if this fails, we aren't transiting anyway */
 		transit_player_event(event->caller, event->transit,
-				     E_BAD_OPTIONS, 0);
+				     E_BAD_OPTIONS, -1, 0);
 		return GGZ_EVENT_OK;
 	}
 
@@ -173,7 +174,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 			/* Don't care if this fails,
 			   we aren't transiting anyway */
 			transit_player_event(event->caller, event->transit,
-					     E_TABLE_FULL, 0);
+					     E_TABLE_FULL, -1, 0);
 			return GGZ_EVENT_OK;
 		}
 	}
@@ -182,7 +183,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 				      event) != GGZ_OK) {
 		/* Otherwise send an error message back to the player */
 		transit_player_event(event->caller, event->transit,
-				     E_SEAT_ASSIGN_FAIL, 0);
+				     E_SEAT_ASSIGN_FAIL, -1, 0);
 		return GGZ_EVENT_ERROR;
 	}
 
@@ -205,32 +206,48 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 	case GGZ_TRANSIT_LEAVE_SPECTATOR:
 		pthread_rwlock_wrlock(&player->lock);
 		player->transit = 0;
-		if (data->status == 0)
+		if (data->status == E_OK || data->status == E_NO_STATUS)
 			player->table = -1;
 		pthread_rwlock_unlock(&player->lock);
 		
-		if (net_send_table_leave(player->client->net,
-					 data->status) < 0)
+		if (data->status != E_NO_STATUS
+		    && net_send_table_leave_result(player->client->net,
+						   data->status) != GGZ_OK)
 			return GGZ_EVENT_ERROR;
+		if (data->status == E_NO_STATUS || data->status == E_OK) {
+			char *rplayer = NULL;
+			if (data->reason == GGZ_LEAVE_BOOT)
+				rplayer = data->caller;
+			if (net_send_table_leave(player->client->net,
+						 data->reason,
+						 rplayer) != GGZ_OK)
+				return GGZ_EVENT_ERROR;
+		}
 		break;
 
 	case GGZ_TRANSIT_JOIN:
 	case GGZ_TRANSIT_JOIN_SPECTATOR:
 		pthread_rwlock_wrlock(&player->lock);
 		player->transit = 0;
-		if (data->status == 0) {
+		if (data->status == E_OK || data->status == E_NO_STATUS) {
 			player->table = data->table_index;
 		}
 		pthread_rwlock_unlock(&player->lock);
 
-		if (net_send_table_join(player->client->net,
-					data->status) < 0)
+		if (data->status != E_NO_STATUS
+		    && net_send_table_join_result(player->client->net,
+					       data->status) != GGZ_OK)
+			return GGZ_EVENT_ERROR;
+		if ((data->status == E_NO_STATUS || data->status == E_OK)
+		    && net_send_table_join(player->client->net,
+					   data->opcode != GGZ_TRANSIT_JOIN,
+					   data->table_index) != GGZ_OK)
 			return GGZ_EVENT_ERROR;
 		break;
 
 	case GGZ_TRANSIT_SEAT:
 		if (net_send_update_result(player->client->net,
-					   data->status) < 0)
+					   data->status) != GGZ_OK)
 			return GGZ_EVENT_ERROR;
 		break;
 	case GGZ_TRANSIT_SIT:
@@ -238,7 +255,7 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 	case GGZ_TRANSIT_MOVE:
 		player->transit = 0;
 		if (net_send_reseat_result(player->client->net,
-					   data->status) < 0)
+					   data->status) != GGZ_OK)
 			return GGZ_EVENT_ERROR;
 		break;
 	}
@@ -328,10 +345,12 @@ static GGZReturn transit_send_seat_to_game(GGZTable* table,
 	/* Next, set it internally. */
 	switch (action) {
 	case GGZ_TRANSIT_JOIN:
-		table_game_join(table, event->caller, seat.num);
+		table_game_join(table, event->caller,
+				event->reason, seat.num);
 		break;
 	case GGZ_TRANSIT_LEAVE:
-		table_game_leave(table, event->caller, seat.num);
+		table_game_leave(table, event->caller,
+				 event->reason, seat.num);
 		break;
 	case GGZ_TRANSIT_SEAT:
 		table_game_seatchange(table, seat.type, seat.num);
@@ -352,10 +371,12 @@ static GGZReturn transit_send_seat_to_game(GGZTable* table,
 				  old_seat, event->seat.index);
 		break;
 	case GGZ_TRANSIT_JOIN_SPECTATOR:
-		table_game_spectator_join(table, event->caller, sseat.num);
+		table_game_spectator_join(table, event->caller,
+					  event->reason, sseat.num);
 		break;
 	case GGZ_TRANSIT_LEAVE_SPECTATOR:
-		table_game_spectator_leave(table, event->caller, sseat.num);
+		table_game_spectator_leave(table, event->caller,
+					   event->reason, sseat.num);
 		break;
 	}
 	

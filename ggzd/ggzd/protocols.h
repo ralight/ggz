@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 5009 2002-10-23 18:10:38Z jdorje $
+ * $Id: protocols.h 5055 2002-10-26 22:48:07Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -56,5 +56,10 @@ typedef enum {
 	GGZ_RESEAT_STAND,
 	GGZ_RESEAT_MOVE
 } GGZReseatType;
+
+typedef enum {
+	GGZ_JOIN_LAUNCH,
+	GGZ_JOIN_REQUEST
+} GGZJoinType;
 
 #endif /*_GGZ_PROTOCOL_H*/

@@ -43,7 +43,9 @@ GGZReturn transit_table_event(int room, int index, char opcode, char* name);
 
 GGZReturn transit_seat_event(int room_index, int table_index,
 			     GGZTransitType transit,
-			     struct GGZTableSeat seat, char *caller);
+			     struct GGZTableSeat seat, char *caller,
+			     int reason);
 
 GGZReturn transit_player_event(char* name, GGZTransitType opcode,
-			       GGZClientReqError status, int index);
+			       GGZClientReqError status,
+			       int reason, int index);

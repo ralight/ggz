@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5051 2002-10-26 07:43:26Z jdorje $
+ * $Id: table.c 5055 2002-10-26 22:48:07Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -523,7 +523,8 @@ static void table_loop(GGZTable* table)
  * table_game_join handles the RSP_GAME_JOIN from the table
  * Note: table->transit_name contains allocated mem on entry
  */
-void table_game_join(GGZTable *table, char *name, int num)
+void table_game_join(GGZTable *table, char *name,
+		     GGZJoinType reason, int num)
 {
 #if 0
 	int i;
@@ -539,7 +540,9 @@ void table_game_join(GGZTable *table, char *name, int num)
 	pthread_rwlock_unlock(&table->lock);
 
 	if (transit_player_event(name, GGZ_TRANSIT_JOIN,
-				 0,  table->index) != GGZ_OK) {
+				 reason == GGZ_JOIN_REQUEST ? E_OK
+				 : E_NO_STATUS,
+				 reason, table->index) != GGZ_OK) {
 		/* If player notification failed, they must've logged out.
 		   We have to get them out of the table, but since they've
 		   already joined we have to do this the long way. */
@@ -550,7 +553,8 @@ void table_game_join(GGZTable *table, char *name, int num)
 
 		dbg_msg(GGZ_DBG_TABLE, "%s logged out during join", name);
 		transit_seat_event(table->room, table->index,
-				   GGZ_TRANSIT_LEAVE, seat, name);
+				   GGZ_TRANSIT_LEAVE, seat, name,
+				   GGZ_LEAVE_GAMEERROR);
 		return;
 	}
 
@@ -588,7 +592,8 @@ void table_game_join(GGZTable *table, char *name, int num)
 /*
  * table_game_leave handles the RSP_GAME_LEAVE from the table
  */
-void table_game_leave(GGZTable *table, char *name, int num)
+void table_game_leave(GGZTable *table, char *name,
+		      GGZLeaveType reason, int num)
 {
 	char empty;
 
@@ -612,7 +617,8 @@ void table_game_leave(GGZTable *table, char *name, int num)
 
 	/* Notify player.  We don't care if this fails; that just means
 	   the player logged out in the meantime. */
-	transit_player_event(name, GGZ_TRANSIT_LEAVE, E_OK, 0);
+	transit_player_event(name, GGZ_TRANSIT_LEAVE, E_OK,
+			     reason, 0);
 
 	/* Notify everyone in the room about the change. */
 	table_update_event_enqueue(table, GGZ_TABLE_UPDATE_LEAVE,
@@ -669,7 +675,7 @@ void table_game_reseat(GGZTable *table,
 			table->index, table->room);
 
 	if (transit_player_event(name, transit,
-				 0, table->index) != GGZ_OK) {
+				 E_OK, -1, table->index) != GGZ_OK) {
 		/* If player notification failed, they must've logged out.
 		   We have to get them out of the table, but since they've
 		   already joined we have to do this the long way. */
@@ -685,7 +691,8 @@ void table_game_reseat(GGZTable *table,
 
 		dbg_msg(GGZ_DBG_TABLE, "%s logged out during reseat", name);
 		transit_seat_event(table->room, table->index,
-				   transit, seat, name);
+				   transit, seat, name,
+				   GGZ_LEAVE_GAMEERROR);
 		return;
 	}
 
@@ -731,7 +738,8 @@ void table_game_seatchange(GGZTable *table, GGZSeatType type, int num)
  * table_game_spectator_join handles the RSP_GAME_JOIN_SPECTATOR from the table
  * Note: table->transit_name contains allocated mem on entry
  */
-void table_game_spectator_join(GGZTable *table, char *name, int num)
+void table_game_spectator_join(GGZTable *table, char *name,
+			       GGZJoinType reason, int num)
 {
 	dbg_msg(GGZ_DBG_TABLE,
 		"Table %d in room %d responded to spectator join", 
@@ -743,7 +751,7 @@ void table_game_spectator_join(GGZTable *table, char *name, int num)
 	pthread_rwlock_unlock(&table->lock);
 
 	if (transit_player_event(name, GGZ_TRANSIT_JOIN_SPECTATOR,
-				 E_OK, table->index) != GGZ_OK) {
+				 E_OK, reason, table->index) != GGZ_OK) {
 		/* If player notification failed, they must've logged out.
 		   We have to get them out of the table, but since they've
 		   already joined we have to do this the long way. */
@@ -756,7 +764,7 @@ void table_game_spectator_join(GGZTable *table, char *name, int num)
 
 		transit_seat_event(table->room, table->index,
 				   GGZ_TRANSIT_LEAVE_SPECTATOR,
-				   seat, name);
+				   seat, name, GGZ_LEAVE_GAMEERROR);
 		return;
 	}
 
@@ -772,7 +780,8 @@ void table_game_spectator_join(GGZTable *table, char *name, int num)
 /*
  * table_game_leave handles the RSP_GAME_LEAVE_SPECTATOR from the table
  */
-void table_game_spectator_leave(GGZTable *table, char *name, int num)
+void table_game_spectator_leave(GGZTable *table, char *name,
+				GGZLeaveType reason, int num)
 {
 	dbg_msg(GGZ_DBG_TABLE,
 		"Table %d in room %d responded to spectator leave", 
@@ -791,7 +800,7 @@ void table_game_spectator_leave(GGZTable *table, char *name, int num)
 	/* Notify player.  We don't care if this fails; that just means
 	   the player logged out in the meantime. */
 	transit_player_event(name, GGZ_TRANSIT_LEAVE_SPECTATOR,
-			     E_OK, table->index);
+			     E_OK, reason,  table->index);
 
 	/* Notify everyone in the room about the change. */
 	table_update_event_enqueue(table, GGZ_TABLE_UPDATE_SPECTATOR_LEAVE,
@@ -929,7 +938,8 @@ static void table_remove(GGZTable* table)
 						   GGZ_TABLE_UPDATE_LEAVE, 
 						   table->seat_names[i], i);
 			transit_player_event(table->seat_names[i],
-					     GGZ_TRANSIT_LEAVE, 0, 0);
+					     GGZ_TRANSIT_LEAVE, E_OK,
+					     GGZ_LEAVE_GAMEOVER, index);
 		}
 	}
 
@@ -941,7 +951,7 @@ static void table_remove(GGZTable* table)
 				table->spectators[i], i);
 			transit_player_event(table->spectators[i],
 					     GGZ_TRANSIT_LEAVE_SPECTATOR,
-					     0, 0);
+					     E_OK, GGZ_LEAVE_GAMEOVER, index);
 		}
 	}
 
