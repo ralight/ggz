@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.c 2386 2001-09-07 09:45:15Z jdorje $
+ * $Id: protocol.c 2403 2001-09-08 22:47:40Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -34,7 +34,7 @@
 
 #include "protocol.h"
 
-int es_read_card(int fd, card_t * card)
+int read_card(int fd, card_t * card)
 {
 	if (es_read_char(fd, &card->face) < 0 ||
 	    es_read_char(fd, &card->suit) < 0 ||
@@ -43,7 +43,7 @@ int es_read_card(int fd, card_t * card)
 	return 0;
 }
 
-int es_write_card(int fd, card_t card)
+int write_card(int fd, card_t card)
 {
 	if (es_write_char(fd, card.face) < 0 ||
 	    es_write_char(fd, card.suit) < 0 ||

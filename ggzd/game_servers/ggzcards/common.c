@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2401 2001-09-08 18:41:49Z jdorje $
+ * $Id: common.c 2403 2001-09-08 22:47:40Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -41,11 +41,11 @@
 /* Global game variables */
 struct wh_game_t game = { 0 };
 
-char *game_states[] =
-	{ "WH_STATE_PRELAUNCH", "WH_STATE_NOTPLAYING",
-  "WH_STATE_WAITFORPLAYERS", "WH_STATE_NEXT_HAND", "WH_STATE_FIRST_BID",
-  "WH_STATE_NEXT_BID", "WH_STATE_WAIT_FOR_BID", "WH_STATE_FIRST_TRICK",
-  "WH_STATE_NEXT_TRICK", "WH_STATE_NEXT_PLAY", "WH_STATE_WAIT_FOR_PLAY" };
+char *game_states[] = { "WH_STATE_PRELAUNCH", "WH_STATE_NOTPLAYING",
+	"WH_STATE_WAITFORPLAYERS", "WH_STATE_NEXT_HAND", "WH_STATE_FIRST_BID",
+	"WH_STATE_NEXT_BID", "WH_STATE_WAIT_FOR_BID", "WH_STATE_FIRST_TRICK",
+	"WH_STATE_NEXT_TRICK", "WH_STATE_NEXT_PLAY", "WH_STATE_WAIT_FOR_PLAY"
+};
 
 
 static int try_to_start_game();
@@ -144,7 +144,7 @@ int send_play(card_t card, seat_t seat)
 			continue;
 		if (es_write_int(fd, WH_MSG_PLAY) < 0
 		    || es_write_int(fd, CONVERT_SEAT(seat, p)) < 0
-		    || es_write_card(fd, card) < 0)
+		    || write_card(fd, card) < 0)
 			status = -1;
 	}
 
@@ -214,7 +214,7 @@ int send_table(player_t p)
 		status = -1;
 	for (s_r = 0; s_r < game.num_seats; s_r++) {
 		s_abs = (game.players[p].seat + s_r) % game.num_seats;
-		if (es_write_card(fd, game.seats[s_abs].table) < 0)
+		if (write_card(fd, game.seats[s_abs].table) < 0)
 			status = -1;
 	}
 
@@ -321,7 +321,7 @@ int rec_play(player_t p)
 	char *err;
 
 	/* read the card played */
-	if (es_read_card(fd, &card) < 0)
+	if (read_card(fd, &card) < 0)
 		return -1;
 
 	/* are we waiting for a play? */
@@ -421,7 +421,7 @@ int send_hand(const player_t p, const seat_t s, int reveal)
 			card = game.seats[s].hand.cards[i];
 		else
 			card = UNKNOWN_CARD;
-		if (es_write_card(fd, card) < 0)
+		if (write_card(fd, card) < 0)
 			status = -1;
 	}
 
@@ -500,7 +500,8 @@ int send_newgame()
 
 static char *player_messages[] =
 	{ "WH_RSP_NEWGAME", "WH_RSP_OPTIONS", "WH_RSP_PLAY", "WH_RSP_BID",
-"WH_REQ_SYNC" };
+	"WH_REQ_SYNC"
+};
 
 /* Handle message from player */
 void handle_player_event(ggzd_event_t event, void *data)
@@ -1203,8 +1204,7 @@ ggzd_assign_t get_seat_status(seat_t s)
 }
 
 
-/* JDS: these are just helper functions which should be moved to another file
- */
+/* JDS: these are just helper functions which should be moved to another file */
 
 /* this helper function checks to see if allocation fails, and also zeroes
    all the memory */
