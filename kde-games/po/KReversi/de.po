@@ -1,14 +1,15 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Deusche Übersetzung von kreversi.
+# Copyright (C) 2002 Sebastian Roth
+# Sebastian Roth <xsebbi@gmx.de>, 2002.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-26 02:28+0200\n"
+"Project-Id-Version: 0.0.9\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-13 17:44+0200\n"
 "PO-Revision-Date: 2002-04-10 17:42GMT\n"
 "Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
-"Language-Team:  <de@li.org>\n"
+"Language-Team: <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -65,14 +66,12 @@ msgstr ""
 "im Menue \"Spiel|Nochmal spielen\" starten"
 
 #: ../../KReversi/kreversi.cpp:206
-#, fuzzy
 msgid ""
 "Do you want to play again? If you select \"No\" now, you can request a new "
 "game by selecting the \"Game|Play again\" menu"
 msgstr ""
-"Moechtest du nochmal spielen?\n"
-"\n"
-"Wenn du \"nein\" auswaehlst, kannst du ein neues Spiel\n"
+"Moechtest du nochmal spielen? "
+"Wenn du \"nein\" auswaehlst, kannst du ein neues Spiel"
 "im Menue \"Spiel|Nochmal spielen\" starten"
 
 #: ../../KReversi/kreversi.cpp:177 ../../KReversi/kreversi.cpp:178
@@ -102,6 +101,14 @@ msgstr "Waehle Thema aus"
 #: ../../KReversi/kreversi.cpp:347 ../../KReversi/kreversi.cpp:348
 msgid "Syncing game!"
 msgstr "Synchronisiere Spiel!"
+
+#: ../../KReversi/main.cpp:56
+msgid "TRANSLATOR-EMAIL"
+msgstr "xsebbi@gmx.de"
+
+#: ../../KReversi/main.cpp:56
+msgid "TRANSLATOR-NAME"
+msgstr "Sebastian Roth"
 
 #: ../../KReversi/kreversi.cpp:201 ../../KReversi/kreversi.cpp:202
 msgid "That game was a draw"

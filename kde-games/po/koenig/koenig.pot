@@ -1,12 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-24 17:05+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-13 17:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,35 +16,36 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../../koenig/game.cc:224
+#: ../../koenig/game.cc:224 ../../koenig/game.cc:253
 msgid "%1: from %2/%3 to %4/%5"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:70
+#: ../../koenig/toplevel.cc:70 ../../koenig/toplevel.cc:74
 msgid "(Koenig launched)"
 msgstr ""
 
-#: ../../koenig/game.cc:49 ../../koenig/game.cc:224
+#: ../../koenig/game.cc:49 ../../koenig/game.cc:224 ../../koenig/game.cc:50
+#: ../../koenig/game.cc:253
 msgid "Black"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:53
+#: ../../koenig/toplevel.cc:53 ../../koenig/toplevel.cc:57
 msgid "Call flag"
 msgstr ""
 
-#: ../../koenig/board.cc:101
+#: ../../koenig/board.cc:101 ../../koenig/board.cc:102
 msgid "Chess Board - Black"
 msgstr ""
 
-#: ../../koenig/board.cc:103
+#: ../../koenig/board.cc:103 ../../koenig/board.cc:104
 msgid "Chess Board - No color assigned yet"
 msgstr ""
 
-#: ../../koenig/board.cc:99
+#: ../../koenig/board.cc:99 ../../koenig/board.cc:100
 msgid "Chess Board - White"
 msgstr ""
 
-#: ../../koenig/boardcontainer.cc:40
+#: ../../koenig/boardcontainer.cc:40 ../../koenig/boardcontainer.cc:41
 msgid "Chess Board - inactive"
 msgstr ""
 
@@ -54,39 +57,39 @@ msgstr ""
 msgid "Client clock"
 msgstr ""
 
-#: ../../koenig/game.cc:303
+#: ../../koenig/game.cc:303 ../../koenig/game.cc:331
 msgid "Clock: Error - unexpected type."
 msgstr ""
 
-#: ../../koenig/game.cc:291
+#: ../../koenig/game.cc:291 ../../koenig/game.cc:319
 msgid "Clock: client-side."
 msgstr ""
 
-#: ../../koenig/game.cc:287
+#: ../../koenig/game.cc:287 ../../koenig/game.cc:315
 msgid "Clock: no limit."
 msgstr ""
 
-#: ../../koenig/game.cc:299
+#: ../../koenig/game.cc:299 ../../koenig/game.cc:327
 msgid "Clock: server-side with lag."
 msgstr ""
 
-#: ../../koenig/game.cc:295
+#: ../../koenig/game.cc:295 ../../koenig/game.cc:323
 msgid "Clock: server-side."
 msgstr ""
 
-#: ../../koenig/toplevel.cc:82
+#: ../../koenig/toplevel.cc:82 ../../koenig/toplevel.cc:86
 msgid "Control Panel"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:57
+#: ../../koenig/toplevel.cc:57 ../../koenig/toplevel.cc:61
 msgid "Display board frame"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:211
+#: ../../koenig/toplevel.cc:211 ../../koenig/toplevel.cc:220
 msgid "Do you really want to quit?"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:180
+#: ../../koenig/toplevel.cc:180 ../../koenig/toplevel.cc:185
 msgid "Draw requested"
 msgstr ""
 
@@ -94,15 +97,15 @@ msgstr ""
 msgid "GGZ Chess Frontend for KDE"
 msgstr ""
 
-#: ../../koenig/game.cc:236
+#: ../../koenig/game.cc:236 ../../koenig/game.cc:264
 msgid "Game over! Reason: "
 msgstr ""
 
-#: ../../koenig/game.cc:141
+#: ../../koenig/game.cc:141 ../../koenig/game.cc:149
 msgid "Game: started."
 msgstr ""
 
-#: ../../koenig/toplevel.cc:78
+#: ../../koenig/toplevel.cc:78 ../../koenig/toplevel.cc:82
 msgid "Highscores"
 msgstr ""
 
@@ -114,23 +117,31 @@ msgstr ""
 msgid "Incompatible protocol version!"
 msgstr ""
 
-#: ../../koenig/game.cc:166
+#: ../../koenig/game.cc:88
+msgid "Incompatible protocol version: %1 versus %2!"
+msgstr ""
+
+#: ../../koenig/game.cc:166 ../../koenig/game.cc:195
 msgid "Invalid move - try again!"
 msgstr ""
 
-#: ../../koenig/game.cc:198
+#: ../../koenig/game.cc:198 ../../koenig/game.cc:227
 msgid "Invalid network opcode!"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:73
+#: ../../koenig/toplevel.cc:73 ../../koenig/toplevel.cc:77
 msgid "Koenig Highscores"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:74
+#: ../../koenig/toplevel.cc:74 ../../koenig/toplevel.cc:78
 msgid "Local scores"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:76
+#: ../../koenig/toplevel.cc:149
+msgid "Message from chess server"
+msgstr ""
+
+#: ../../koenig/toplevel.cc:76 ../../koenig/toplevel.cc:80
 msgid "Messages"
 msgstr ""
 
@@ -138,11 +149,11 @@ msgstr ""
 msgid "Minutes:"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:77
+#: ../../koenig/toplevel.cc:77 ../../koenig/toplevel.cc:81
 msgid "Moves"
 msgstr ""
 
-#: ../../koenig/game.cc:162
+#: ../../koenig/game.cc:162 ../../koenig/game.cc:189
 msgid "Net: from %1/%2 to %3/%4"
 msgstr ""
 
@@ -151,26 +162,35 @@ msgid "No clock"
 msgstr ""
 
 #: ../../koenig/options.cc:81 ../../koenig/toplevel.cc:110
+#: ../../koenig/toplevel.cc:114
 msgid "Options"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:49
+#: ../../koenig/toplevel.cc:49 ../../koenig/toplevel.cc:53
 msgid "Quit"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:211
+#: ../../koenig/toplevel.cc:211 ../../koenig/toplevel.cc:220
 msgid "Quit game"
 msgstr ""
 
-#: ../../koenig/game.cc:112
+#: ../../koenig/game.cc:110
+msgid "Received both player names: %1 and %2"
+msgstr ""
+
+#: ../../koenig/game.cc:112 ../../koenig/game.cc:120
 msgid "Received clock request."
+msgstr ""
+
+#: ../../koenig/game.cc:107
+msgid "Received first player name: %1"
 msgstr ""
 
 #: ../../koenig/game.cc:103
 msgid "Received player names."
 msgstr ""
 
-#: ../../koenig/game.cc:82
+#: ../../koenig/game.cc:82 ../../koenig/game.cc:83
 msgid "Received seat."
 msgstr ""
 
@@ -178,11 +198,11 @@ msgstr ""
 msgid "Request GGZ game explicitely"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:54
+#: ../../koenig/toplevel.cc:54 ../../koenig/toplevel.cc:58
 msgid "Request draw"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:52
+#: ../../koenig/toplevel.cc:52 ../../koenig/toplevel.cc:56
 msgid "Request sync"
 msgstr ""
 
@@ -202,19 +222,19 @@ msgstr ""
 msgid "Server clock"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:60
+#: ../../koenig/toplevel.cc:60 ../../koenig/toplevel.cc:64
 msgid "Show chess board"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:59
+#: ../../koenig/toplevel.cc:59 ../../koenig/toplevel.cc:63
 msgid "Show move table"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:50
+#: ../../koenig/toplevel.cc:50 ../../koenig/toplevel.cc:54
 msgid "Show moves"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:56
+#: ../../koenig/toplevel.cc:56 ../../koenig/toplevel.cc:60
 msgid "Show warnings as message boxes"
 msgstr ""
 
@@ -222,70 +242,83 @@ msgstr ""
 msgid "Submit settings"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:180
+#: ../../koenig/main.cc:47
+msgid "TRANSLATOR-EMAIL"
+msgstr ""
+
+#: ../../koenig/main.cc:47
+msgid "TRANSLATOR-NAME"
+msgstr ""
+
+#: ../../koenig/toplevel.cc:180 ../../koenig/toplevel.cc:185
 msgid "The other player requests a draw. Do you agree?"
+msgstr ""
+
+#: ../../koenig/toplevel.cc:149
+msgid "The server said:\n"
 msgstr ""
 
 #: ../../koenig/main.cc:41
 msgid "This game is part of the GGZ Gaming Zone."
 msgstr ""
 
-#: ../../koenig/game.cc:48 ../../koenig/game.cc:224
+#: ../../koenig/game.cc:48 ../../koenig/game.cc:224 ../../koenig/game.cc:49
+#: ../../koenig/game.cc:253
 msgid "White"
 msgstr ""
 
-#: ../../koenig/toplevel.cc:75
+#: ../../koenig/toplevel.cc:75 ../../koenig/toplevel.cc:79
 msgid "Worldwide"
 msgstr ""
 
-#: ../../koenig/game.cc:240
+#: ../../koenig/game.cc:240 ../../koenig/game.cc:268
 msgid "both players agreed on a draw"
 msgstr ""
 
-#: ../../koenig/game.cc:252
+#: ../../koenig/game.cc:252 ../../koenig/game.cc:280
 msgid "maximum movecount reached"
 msgstr ""
 
-#: ../../koenig/game.cc:249
+#: ../../koenig/game.cc:249 ../../koenig/game.cc:277
 msgid "not enough material"
 msgstr ""
 
-#: ../../koenig/game.cc:270
+#: ../../koenig/game.cc:270 ../../koenig/game.cc:298
 msgid "player 1 has resigned"
 msgstr ""
 
-#: ../../koenig/game.cc:273
+#: ../../koenig/game.cc:273 ../../koenig/game.cc:301
 msgid "player 1 has run out of time"
 msgstr ""
 
-#: ../../koenig/game.cc:258
+#: ../../koenig/game.cc:258 ../../koenig/game.cc:286
 msgid "player 1 wins by a mate"
 msgstr ""
 
-#: ../../koenig/game.cc:261
+#: ../../koenig/game.cc:261 ../../koenig/game.cc:289
 msgid "player 2 has resigned"
 msgstr ""
 
-#: ../../koenig/game.cc:264
+#: ../../koenig/game.cc:264 ../../koenig/game.cc:292
 msgid "player 2 has run out of time"
 msgstr ""
 
-#: ../../koenig/game.cc:267
+#: ../../koenig/game.cc:267 ../../koenig/game.cc:295
 msgid "player 2 wins by a mate"
 msgstr ""
 
-#: ../../koenig/game.cc:243
+#: ../../koenig/game.cc:243 ../../koenig/game.cc:271
 msgid "stalemate"
 msgstr ""
 
-#: ../../koenig/game.cc:255
+#: ../../koenig/game.cc:255 ../../koenig/game.cc:283
 msgid "time over and no material left"
 msgstr ""
 
-#: ../../koenig/game.cc:246
+#: ../../koenig/game.cc:246 ../../koenig/game.cc:274
 msgid "too much repetition of positions"
 msgstr ""
 
-#: ../../koenig/game.cc:276
+#: ../../koenig/game.cc:276 ../../koenig/game.cc:304
 msgid "unknown reason"
 msgstr ""

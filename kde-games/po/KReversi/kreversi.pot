@@ -7,7 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-09-26 02:28+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-13 17:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,6 +94,14 @@ msgstr ""
 
 #: ../../KReversi/kreversi.cpp:347 ../../KReversi/kreversi.cpp:348
 msgid "Syncing game!"
+msgstr ""
+
+#: ../../KReversi/main.cpp:56
+msgid "TRANSLATOR-EMAIL"
+msgstr ""
+
+#: ../../KReversi/main.cpp:56
+msgid "TRANSLATOR-NAME"
 msgstr ""
 
 #: ../../KReversi/kreversi.cpp:201 ../../KReversi/kreversi.cpp:202
