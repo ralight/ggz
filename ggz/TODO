@@ -1,54 +1,47 @@
-- Needs Done
-* Done
-
-For 0.0.2
-=========
-- put version in About box
-- IRC style actions in the chat (eg.  /me says hello)
-* Connect button in menu and toolbar
-* MOTD item under view menu
-* config file code
-* make /beep not print to the terminal
-* Connect menu on far left (Connect, Disconnect, Login, Logout, Exit)
-* Help menu on far right (About)
-* Game menu (Launch, Join, Leave)
-* View menu (Game types, MOTD)
-* double-click a game joins it
-* Room support for chat
-
-For 0.0.3
-=========
-- chat autoscroll off
-- configurable font size in chat and MOTD
-- config dialog
-- Save last server/port/username between sessions
-- Server "Profiles" (last 5 servers/logins)
-- crypt() passwords ??
-- configurible colors (3-4 color themes, light, dark, laptop, wacked out, etc.)
-- user-customizable toolbar
-* Right-click pop-up for tables (join/launch, options, players)
-- Right-click pop-up for players
-- log chats to file
-
-For 0.0.4
-=========
-
-- user buildable color themes.
-- background images for chat, table, and player areas
-- Icons for toolbar/menus
-
-medium run
+For v0.0.4
 ==========
-- Implement a standalone or offline client.  This could actually be very
-simple.  It would have to have access to both the game_server and
-game_client programs.  Then it could create a socketpair() and fork
-processes for those two, dup'ing as necessary so that the game_client and
-game_server talk directly to each other without an intermediary.  The main
-client would still have to relay options via stdin/stdout the way ggzd does
-now.
+Massive Client rewrite 
+More games 
+Game help 
 
-- compile time GNOME support option
 
-long run
-========
-- banner add above status bar (compile time option - on, off)
+For v0.0.5
+==========
+Dynamic port/fd/creation 
+8+ player games 
+Non turn-based game support (requires above two) 
+Libraries for game writers 
+Keep_alive added to protocol 
+Lag meter added to protocol 
+Query server for game options 
+
+
+First beta release: 0.1.0 
+=========================
+Player eservations
+Working Gnome client 
+10 games 
+Finalize protocol opcodes 
+Bug hunt (kill em all!) 
+
+
+First stable release: 1.0.0
+===========================
+15 games (some realtime, ie at least one) 
+Full options in games 
+Fully tested games QT client
+Player permissions/capabilities 
+Admin tool(s) 
+Full win95 support 
+Free-BSD, other *nix support (tested) 
+Player statistics Team/ladder support
+Multiple implementations of user database (SQL/libdb)
+
+
+1.2.X 
+=====
+Inter server communications 
+Meta server 
+Web server statistics in ggzd 
+Game spectators
+Supprt banner ads(?)

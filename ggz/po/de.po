@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-08-25 23:57+0200\n"
+"POT-Creation-Date: 2000-08-25 17:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -184,8 +184,8 @@ msgid "Could not connect"
 msgstr "Konnte nicht verbinden!"
 
 #: ggz/dlg_login.c:374
-#, c-format
-msgid "GTK+ Version:14 %d.%d.%d\n"
+#, fuzzy, c-format
+msgid "GTK+ Version:14 %d.%d.%d\n"
 msgstr "GTK+ Version:14 %d.%d.%d\n"
 
 #: ggz/dlg_login.c:380 ggz/dlg_main.c:493
@@ -193,19 +193,23 @@ msgid "Options:"
 msgstr "Optionen:"
 
 #: ggz/dlg_login.c:382 ggz/dlg_main.c:495
-msgid "  Debug: 14No "
+#, fuzzy
+msgid "  Debug: 14No "
 msgstr "  Debug: 14Nein "
 
 #: ggz/dlg_login.c:384 ggz/dlg_main.c:497
-msgid "  Debug: 14Yes"
+#, fuzzy
+msgid "  Debug: 14Yes"
 msgstr "  Debug: 14Ja"
 
 #: ggz/dlg_login.c:387 ggz/dlg_main.c:500
-msgid "  Socket Debug: 14No "
+#, fuzzy
+msgid "  Socket Debug: 14No "
 msgstr "  Socket Debug: 14Nein"
 
 #: ggz/dlg_login.c:389 ggz/dlg_main.c:502
-msgid "  Socket Debug: 14Yes"
+#, fuzzy
+msgid "  Socket Debug: 14Yes"
 msgstr "  Socket Debug: 14Ja"
 
 #: ggz/dlg_login.c:391
