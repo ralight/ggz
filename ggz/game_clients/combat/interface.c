@@ -106,7 +106,7 @@ create_main_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (mainarea);
   gtk_box_pack_start (GTK_BOX (hbox), mainarea, FALSE, FALSE, 0);
-  gtk_widget_set_usize (mainarea, 490, 490);
+  gtk_widget_set_usize (mainarea, 491, 491);
 
   vseparator1 = gtk_vseparator_new ();
   gtk_widget_set_name (vseparator1, "vseparator1");

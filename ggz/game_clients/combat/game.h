@@ -28,6 +28,9 @@
 // Size of images
 #define PIXSIZE 48
 
+// Max number of players
+#define MAX_PLAYERS 2
+
 
 // Game information
 struct game_info_t {
@@ -49,10 +52,12 @@ int game_ask_options();
 
 // Init variables
 void game_init();
+void game_init_board();
 
 // Draw stuff
 void game_draw_bg();
 void game_draw_board();
+void game_draw_tile(int, int, int, int);
 void game_add_player_info(int);
 void game_update_unit_list(int);
 

@@ -19,8 +19,8 @@ on_main_window_configure_event         (GtkWidget       *widget,
                                         gpointer         user_data)
 {
 	if (!cbt_buf)
-		cbt_buf = gdk_pixmap_new( widget->window, cbt_game.width * PIXSIZE,
-														  cbt_game.height * PIXSIZE,
+		cbt_buf = gdk_pixmap_new( widget->window, cbt_game.width * (PIXSIZE+1)+1,
+														  cbt_game.height * (PIXSIZE+1)+1,
 															-1);
 	game_draw_bg();
 	game_draw_board();

@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
+#include <gdk/gdk.h>
 #include "game.h"
 #include "combat.h"
 
@@ -33,6 +34,12 @@ GtkWidget *main_win;
 GtkWidget **player_list = NULL;
 struct game_info_t cbt_info;
 combat_game cbt_game;
+
+// Images
+GdkPixmap *tiles[12];
+GdkColor *player_colors;
+GdkGC *player_gc;
+
 
 // Name of units
 static char unitname[12][36] = {"Flag", "Bomb", "Spy", "Scout", "Miner", "Sergeant", "Lieutenant", "Captain", "Major", "Colonel", "General", "Marshall"};
@@ -55,12 +62,15 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 	switch (op) {
 		case CBT_MSG_SEAT:
 			game_get_seat();
+			game_init_board();
+			game_draw_board();
 			break;
 		case CBT_REQ_OPTIONS:
 			game_ask_options();
 			break;
 		case CBT_MSG_OPTIONS:
 			game_get_options();
+			game_draw_board();
 			break;
 		default:
 			game_status("Ops! Wrong message: %d", op);
@@ -163,26 +173,111 @@ void game_init() {
 	cbt_game.height = 10;
 	cbt_game.army = NULL;
 	cbt_game.state = CBT_STATE_INIT;
+
+	// Init that value
+	tiles[0] = NULL;
+}
+
+void game_init_board() {
+	int a;
+	GdkColormap *sys_colormap;
+
+	printf("Initializing board\n");
+
+	// TODO: Get this information from a tileset file
+
+	// Loads colors
+	player_colors = (GdkColor *)calloc(cbt_info.number, sizeof(GdkColor));
+	sys_colormap = gdk_colormap_get_system();
+	gdk_color_parse("RGB:FF/00/00", &player_colors[0]);
+	gdk_color_parse("RGB:00/00/FF", &player_colors[1]);
+	for (a = 0; a < cbt_info.number; a++)
+		gdk_colormap_alloc_color(sys_colormap, &player_colors[a], FALSE, TRUE);
+	
+	// Loads pixmaps
+	tiles[U_FLAG] = gdk_pixmap_create_from_xpm(main_win->window, NULL,
+							&player_colors[cbt_info.seat], "tiles/default/flag.xpm");
+	tiles[U_BOMB] = gdk_pixmap_create_from_xpm(main_win->window, NULL,
+							&player_colors[cbt_info.seat], "tiles/default/bomb.xpm");
+	tiles[U_SPY] = gdk_pixmap_create_from_xpm(main_win->window, NULL,
+							&player_colors[cbt_info.seat], "tiles/default/spy.xpm");
+	tiles[U_SCOUT] = gdk_pixmap_create_from_xpm(main_win->window, NULL,
+							&player_colors[cbt_info.seat], "tiles/default/scout.xpm");
+	tiles[U_MINER] = gdk_pixmap_create_from_xpm(main_win->window, NULL,
+							&player_colors[cbt_info.seat], "tiles/default/miner.xpm");
+	tiles[U_SERGEANT] = gdk_pixmap_create_from_xpm(main_win->window, NULL,
+							&player_colors[cbt_info.seat], "tiles/default/sergeant.xpm");
+	tiles[U_LIEUTENANT] = gdk_pixmap_create_from_xpm(main_win->window, NULL,
+							&player_colors[cbt_info.seat], "tiles/default/lieutenant.xpm");
+	tiles[U_CAPTAIN] = gdk_pixmap_create_from_xpm(main_win->window, NULL,
+							&player_colors[cbt_info.seat], "tiles/default/captain.xpm");
+	tiles[U_MAJOR] = gdk_pixmap_create_from_xpm(main_win->window, NULL,
+							&player_colors[cbt_info.seat], "tiles/default/major.xpm");
+	tiles[U_COLONEL] = gdk_pixmap_create_from_xpm(main_win->window, NULL,
+							&player_colors[cbt_info.seat], "tiles/default/colonel.xpm");
+	tiles[U_GENERAL] = gdk_pixmap_create_from_xpm(main_win->window, NULL,
+							&player_colors[cbt_info.seat], "tiles/default/general.xpm");
+	tiles[U_MARSHALL] = gdk_pixmap_create_from_xpm(main_win->window, NULL,
+							&player_colors[cbt_info.seat], "tiles/default/marshall.xpm");
+
+	// Loads GC
+	player_gc = gdk_gc_new(main_win->window);
+
+	if (!tiles[U_FLAG])
+		printf("Couldn't load images!\n");
+
+	printf("Board initialized\n");
+
 }
 
 void game_draw_bg() {
 	int i;
 
 	gdk_draw_rectangle( cbt_buf,
-			main_win->style->mid_gc[GTK_WIDGET_STATE(main_win)], TRUE, 0, 0, PIXSIZE*cbt_game.width, PIXSIZE*cbt_game.height);
+			main_win->style->mid_gc[GTK_WIDGET_STATE(main_win)], TRUE, 0, 0, (PIXSIZE+1)*cbt_game.width+1, (PIXSIZE+1)*cbt_game.height+1);
 
 	for (i = 1; i < cbt_game.width; i++) {
 		gdk_draw_line(cbt_buf, main_win->style->black_gc,
-				i*PIXSIZE, 0, i*PIXSIZE, PIXSIZE*cbt_game.height);
+				i*(PIXSIZE+1), 0, i*(PIXSIZE+1), (PIXSIZE+1)*cbt_game.height+1);
 	}
 	for (i = 1; i < cbt_game.height; i++) {
 		gdk_draw_line(cbt_buf, main_win->style->black_gc,
-				0, i*PIXSIZE, PIXSIZE*cbt_game.width, i*PIXSIZE);;
+				0, i*(PIXSIZE+1), (PIXSIZE+1)*cbt_game.width+1, i*(PIXSIZE+1));;
 	}
+}
+
+void game_draw_tile(int x, int y, int tile, int player) {
+
+		// Drawns bounding rectangle (so that if the tile is smaller then PIXSIZE
+		// it doesnt look so bad
+		gdk_gc_set_foreground(player_gc, &player_colors[player]);
+		gdk_draw_rectangle( cbt_buf,
+				player_gc,
+				TRUE,
+				x*(PIXSIZE+1)+1, y*(PIXSIZE+1)+1,
+				PIXSIZE, PIXSIZE);
+
+		// Draws the image, if it is known
+		if (tile != U_UNKNOWN && tile < 13)
+			gdk_draw_pixmap( cbt_buf,
+					main_win->style->fg_gc[GTK_WIDGET_STATE(main_win)],
+					tiles[tile],
+					0, 0,
+					x*(PIXSIZE+1)+1, y*(PIXSIZE+1)+1,
+					PIXSIZE, PIXSIZE );
+
 }
 	
 
 void game_draw_board() {
+	int a;
+
+
+	printf("Drawing board!\n");
+	// Test
+	for (a = 0; a < cbt_game.width * cbt_game.height; a++)
+		game_draw_tile(a%cbt_game.width, a/cbt_game.width, a%13, cbt_info.seat);
+
 }
 
 void game_add_player_info(int number) {
