@@ -26,6 +26,7 @@
 
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <unistd.h>
 #include <pthread.h>
 
 #include <ggzd.h>
@@ -71,6 +72,8 @@ int transit_handle(int index, int fd)
 	
 	/* Signal failure immediately */
 	if (status < 0) {
+		/* It's not ever going to get recevied so we mark flag*/
+		tables.info[index].transit_flag |= GGZ_TRANSIT_RECV;
 		tables.info[index].transit_flag |= GGZ_TRANSIT_ERR;
 		pthread_cond_broadcast(&tables.info[index].transit_cond);
 		pthread_mutex_unlock(&tables.info[index].transit_lock);
