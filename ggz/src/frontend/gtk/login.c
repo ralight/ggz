@@ -260,6 +260,7 @@ static void login_start_session(void)
 {
 	GtkWidget *tmp;
 	char *host = NULL, *login = NULL, *password = NULL;
+	char *sessiondump;
 	int port;
 	GGZLoginType type = GGZ_LOGIN_GUEST;
 
@@ -304,6 +305,10 @@ static void login_start_session(void)
 	server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, host, port);
 	ggzcore_server_set_logininfo(server, type, login, password);
+	
+	/* Log server communications to file */
+	sessiondump = ggzcore_conf_read_string("Debug", "SessionLog", NULL);
+	ggzcore_server_log_session(server, sessiondump);
 
 	/* Save as last profile */
 	tmp = lookup_widget(login_dialog, "profile_entry");
