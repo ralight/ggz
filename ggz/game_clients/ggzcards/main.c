@@ -37,7 +37,6 @@
 
 #include <easysock.h>
 
-#include "support.h"
 #include "main.h"
 #include "dlg_main.h"
 #include "dlg_bid.h"

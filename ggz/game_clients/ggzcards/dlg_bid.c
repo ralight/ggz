@@ -38,7 +38,6 @@
 
 #include "cb_bid.h"
 #include "dlg_bid.h"
-#include "support.h"
 #include "main.h"
 #include "game.h"
 

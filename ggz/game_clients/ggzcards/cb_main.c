@@ -31,7 +31,6 @@
 #include "cb_main.h"
 #include "dlg_main.h"
 #include "dlg_about.h"
-#include "support.h"
 #include "table.h"
 
 

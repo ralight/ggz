@@ -35,7 +35,6 @@
 #include <gtk/gtk.h>
 
 #include "dlg_about.h"
-#include "support.h"
 
 GtkWidget*
 create_dlg_about (void)

@@ -36,7 +36,6 @@
 
 #include "cb_main.h"
 #include "dlg_main.h"
-#include "support.h"
 #include "layout.h"
 #include "table.h"
 
