@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 6898 2005-01-25 08:56:44Z jdorje $
+ * $Id: game.c 7024 2005-03-19 13:25:19Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -32,8 +32,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <ggz.h>
-
-#include <stdio.h> // test
+#include <stdarg.h>
+#include <stdio.h>
+#include <time.h>
+#include <string.h>
 
 #include "chess.h"
 #include "game.h"
@@ -46,6 +48,11 @@ struct chess_info game_info;
 /* Chronometer
  * Use to store the time of the current play */
 struct timeval chronometer;
+/* Savegame file */
+static FILE *savegame;
+/* Moves table */
+/*static char moves[1000][6];
+static int currentmove;*/
 
 static void game_restart_chronometer(void);
 static int game_read_chronometer(void);
@@ -79,6 +86,9 @@ static void game_send_gameover(char code);
 
 /* Send REQ_DRAW */
 static void game_send_draw(int seat);
+
+/* PGN savegame function */
+static void game_save(char *fmt, ...);
 
 
 /* Lazy way of doing things */
@@ -644,7 +654,6 @@ static void game_send_time(int seat)
   if (ggz_write_char(fd, CHESS_RSP_TIME) < 0
       || ggz_write_int(fd, (clock_type << 24) + (sec & 0xFFFFFF)))
     return;
-
 }
 
 static void game_send_start(void)
@@ -690,10 +699,7 @@ static void game_send_move(char *move, int time)
     /* Send time, if not error */
     if (game_info.clock_type && move)
       ggz_write_int(fd, time);
-
   }
-
-
 }
 
 static void game_send_update(void)
@@ -716,12 +722,17 @@ static void game_send_gameover(char code)
   int fd, a;
   GGZGameResult results[2];
   int winner = (code == CHESS_GAMEOVER_WIN_1_MATE) ? 0 : 1;
+  char *event, *site, *date, *round, *white, *black, *result;
+  time_t t;
+  move_t move;
+  int movecount, i;
 
   /* Report results to GGZ. */
   results[winner] = GGZ_GAME_WIN;
   results[1 - winner] = GGZ_GAME_LOSS;
   ggzdmod_report_game(game_info.ggz, NULL, results, NULL);
 
+  /* Notify players */
   for (a = 0; a < 2; a++) {
     fd = ggzdmod_get_seat(game_info.ggz, a).fd;
 
@@ -730,6 +741,48 @@ static void game_send_gameover(char code)
 
     ggz_write_char(fd, CHESS_MSG_GAMEOVER);
     ggz_write_char(fd, code);
+  }
+
+  /* Write PGN savegame headers */
+  event = "some game...";
+  site = "GGZ";
+  date = (char*)ggz_malloc(32);
+  strftime(date, sizeof(date), "Y.m.d", localtime(&t));
+  round = "1";
+  white = ggz_strdup(ggzdmod_get_seat(game_info.ggz, 0).name);
+  black = ggz_strdup(ggzdmod_get_seat(game_info.ggz, 1).name);
+  result = ggz_malloc(8);
+  if(winner == 0) strncpy(result, "1-0", sizeof(result));
+  else strncpy(result, "0-1", sizeof(result));
+  /* '1-0' '1/2-1/2' '0-1' '*' */
+
+  game_save("[Event \"%s\"]", event);
+  game_save("[Site \"%s\"]", site);
+  game_save("[Date \"%s\"]", date);
+  game_save("[Round \"%s\"]", round);
+  game_save("[White \"%s\"]", white);
+  game_save("[Black \"%s\"]", black);
+  game_save("[Result \"%s\"]", result);
+  game_save("");
+
+  ggz_free(date);
+  ggz_free(result);
+  ggz_free(black);
+  ggz_free(white);
+
+  /* Write PGN savegame moves */
+  /* TODO: keep track of moves */
+  movecount = game->hmcount;
+  printf(">>> total %i moves", movecount);
+  for(i = 0; i < movecount; i++) {
+    move = game->movelist[i];
+    printf(">>> move %i: %i/%i %i/%i", i, move.fs, move.fd, move.rs, move.rd);
+  }
+
+  /* Finish savegame */
+  if (savegame) {
+    fclose(savegame);
+    savegame = NULL;
   }
 }
 
@@ -742,3 +795,28 @@ static void game_send_draw(int seat)
 
   ggz_write_char(fd, CHESS_REQ_DRAW);
 }
+
+static void game_save(char *fmt, ...)
+{
+  int fd;
+  char *savegamepath;
+  char buffer[1024];
+
+  if(!savegame) {
+    savegamepath = ggz_strdup(DATADIR "/gamedata/Chess/savegame.XXXXXX.pgn");
+    fd = mkstemp(savegamepath);
+    ggz_free(savegamepath);
+    if(fd < 0) return;
+    savegame = fdopen(fd, "w");
+    if(!savegame) return;
+  }
+
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, ap);
+  va_end(ap);
+
+  fprintf(savegame, "%s\n", buffer);
+  fflush(savegame);
+}
+
