@@ -690,10 +690,7 @@ static void _ggzcore_server_init_roomlist(struct _GGZServer *server,
 					  const int num)
 {
 	server->num_rooms = num;
-
-	if (!(server->rooms = calloc(num, sizeof(struct _GGZRoom*))))
-		ggzcore_error_sys_exit("calloc() failed in ggzcore_server_init_roomlist");
-
+	server->rooms = ggzcore_malloc(num * sizeof(struct _GGZRoom*));
 }
 
 
@@ -705,7 +702,7 @@ static void _ggzcore_server_free_roomlist(struct _GGZServer *server)
 		_ggzcore_room_free(server->rooms[i]);
 	}
 
-	free(server->rooms);
+	ggzcore_free(server->rooms);
 	server->num_rooms = 0;
 }
 
@@ -730,9 +727,7 @@ static void _ggzcore_server_init_typelist(struct _GGZServer *server,
 					  const int num)
 {
 	server->num_gametypes = num;
-
-	if (!(server->gametypes = calloc(num, sizeof(struct _GGZGameTypes*))))
-		ggzcore_error_sys_exit("calloc() failed in ggzcore_server_init_gametype_list");
+	server->gametypes = ggzcore_malloc(num * sizeof(struct _GGZGameType*));
 }
 
 
@@ -744,7 +739,7 @@ static void _ggzcore_server_free_typelist(struct _GGZServer *server)
 		_ggzcore_gametype_free(server->gametypes[i]);
 	}
 
-	free(server->gametypes);
+	ggzcore_free(server->gametypes);
 	server->num_gametypes = 0;
 }
 
