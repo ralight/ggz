@@ -2,7 +2,7 @@
 //
 // Dots
 // C++ Class Set for Connect the Dots games
-// Copyright (C) 2001 Josef Spillner
+// Copyright (C) 2001, 2002 Josef Spillner
 // dr_maux@users.sourceforge.net
 // The MindX Open Source Project
 // http://mindx.sourceforge.net/games/kdots/
@@ -10,8 +10,6 @@
 ///////////////////////////////////////////////////////////////
 
 #include "vdots.h"
-
-#include <iostream>
 
 VDots::VDots()
 : Dots()
@@ -66,3 +64,4 @@ int VDots::vSetBorderValue(int x, int y, int side)
 	m_lastdirection = direction;
 	return setBorderValue(dx, dy, direction, side, 0);
 }
+

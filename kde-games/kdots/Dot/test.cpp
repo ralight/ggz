@@ -2,7 +2,7 @@
 //
 // Dots
 // C++ Class Set for Connect the Dots games
-// Copyright (C) 2001 Josef Spillner
+// Copyright (C) 2001, 2002 Josef Spillner
 // dr_maux@users.sourceforge.net
 // The MindX Open Source Project
 // http://mindx.sourceforge.net/games/kdots/
@@ -13,9 +13,11 @@
 
 #include <iostream>
 
+using namespace std;
+
 Dots *dots;
 
-void main()
+int main(int argc, char **argv)
 {
 	int val;
 
@@ -26,10 +28,10 @@ void main()
 	dots->resizeBoard(10, 10);
 
 	cout << "Influencing" << endl;
-	dots->setBorderValue(0, 0, Dots::right, 1);
-	dots->setBorderValue(0, 0, Dots::down, 1);
-	dots->setBorderValue(1, 1, Dots::up, 1);
-	dots->setBorderValue(0, 1, Dots::right, 1);
+	dots->setBorderValue(0, 0, Dots::right, 1, 1);
+	dots->setBorderValue(0, 0, Dots::down, 1, 1);
+	dots->setBorderValue(1, 1, Dots::up, 1, 1);
+	dots->setBorderValue(0, 1, Dots::right, 1, 1);
 
 	cout << "Counting fields" << endl;
 	val = dots->count(1);
@@ -40,3 +42,4 @@ void main()
 
 	cout << "Ready" << endl;
 }
+

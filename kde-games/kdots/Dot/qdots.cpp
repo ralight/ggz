@@ -2,7 +2,7 @@
 //
 // Dots
 // C++ Class Set for Connect the Dots games
-// Copyright (C) 2001 Josef Spillner
+// Copyright (C) 2001, 2002 Josef Spillner
 // dr_maux@users.sourceforge.net
 // The MindX Open Source Project
 // http://mindx.sourceforge.net/games/kdots/
@@ -36,8 +36,6 @@ QDots::QDots(QWidget* parent = 0, char* name = 0)
 	m_shadow = NULL;
 	m_shadowlines = NULL;
 
-	//setBackgroundColor(Qt::blue);
-	//setBackgroundPixmap(QPixmap(GGZDATADIR "/kdots/dragon.png"));
 	bgpix = new QPixmap(GGZDATADIR "/kdots/dragon.png");
 	grayscale(bgpix);
 	bgimg = new QImage(bgpix->convertToImage());
@@ -181,7 +179,6 @@ void QDots::paintEvent(QPaintEvent *e)
 						fgimg->setPixel(i * tilewidth + x, j * tileheight + y, qRgb(0, 0, bluepart));
 					}
 				p.begin(bgpix);
-				//p.drawImage(0, 0, *fgimg, 0, 0, width(), height());
 				p.drawImage(i * tilewidth, j * tileheight, *fgimg, i * tilewidth, j * tileheight, tilewidth, tileheight);
 				p.end();
 				updatescreen = 1;

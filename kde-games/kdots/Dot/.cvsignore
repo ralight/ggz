@@ -5,3 +5,5 @@ Makefile.in
 .deps
 *.moc.cpp
 libdot_a_meta_unload*
+testdots
+

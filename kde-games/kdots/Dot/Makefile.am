@@ -7,11 +7,13 @@ libdot_a_SOURCES = \
 	vdots.cpp \
 	qdots.cpp
 
-#libdot_a_LIBADD = $(all_libraries)
-
 INCLUDES = -I$(qt_includes) -I$(kde_includes)
 
 libdot_a_METASOURCES = AUTO
 
 DISTCLEANFILES = $(libdot_a_METASOURCES)
+
+test:
+	-g++ -Wall -c test.cpp
+	-g++ -o testdots test.o libdot.a
 

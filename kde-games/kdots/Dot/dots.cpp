@@ -2,7 +2,7 @@
 //
 // Dots
 // C++ Class Set for Connect the Dots games
-// Copyright (C) 2001 Josef Spillner
+// Copyright (C) 2001, 2002 Josef Spillner
 // dr_maux@users.sourceforge.net
 // The MindX Open Source Project
 // http://mindx.sourceforge.net/games/kdots/
@@ -13,8 +13,6 @@
 
 #include <stdlib.h>
 #include <iostream>
-
-#include <stdio.h>
 
 using namespace std;
 
