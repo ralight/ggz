@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 5113 2002-10-30 08:43:24Z jdorje $
+ * $Id: client_func.c 6292 2004-11-07 05:45:19Z jdorje $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -366,7 +366,7 @@ int GetPlayerId(void)
 		    && CheckWriteInt(gameState.spadesSock,
 				     options.endGame) == NET_OK
 		    && CheckWriteInt(gameState.spadesSock,
-				     options.minBid) == NET_OK))) {
+				     options.minBid) == NET_OK)) {
 
 		status = CheckWriteInt(gameState.spadesSock, getpid());
 
