@@ -733,7 +733,7 @@ static GGZList * file_parser(const char *path)
 
 	/* Cleanup after ourselves */
 	free(e_data);
-	ggz_free(c_struct);
+	ggz_free_file_struct(c_struct);
 	close(c_file);
 
 	return s_list;

@@ -604,9 +604,9 @@ typedef struct _GGZFile GGZFile;
  * Setup a file structure to use with ggz_read_line()
  * @param fdes A preopened integer file descriptor to read from
  * @return A pointer to a dynamically allocated GGZFile structure
- * @note The dyanmic memory is allocated using ggz_malloc() and the caller is
- * expected to later free this memory using ggz_free().  The user MUST have
- * opened the requested file for reading before using this function.
+ * @note The user MUST have  opened the requested file for reading before
+ * using this function.  When finished using ggz_read_line, the user should
+ * cleanup this struct using ggz_free_file_struct().
  */
 GGZFile * ggz_get_file_struct(int fdes);
 /**
@@ -618,6 +618,13 @@ GGZFile * ggz_get_file_struct(int fdes);
  * expected to later free this memory using ggz_free().
  */
 char * ggz_read_line(GGZFile *file);
+/**
+ * Deallocate a file structure allocated via ggz_get_file_struct()
+ * @param file A GGZFile structure allocated via ggz_get_file_struct()
+ * @note The caller is expected to close the I/O file before or after
+ * freeing the file structure.
+ */
+void ggz_free_file_struct(GGZFile *file);
 
 /** @} */
 

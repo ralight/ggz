@@ -238,3 +238,10 @@ static char * _fill_buffer(char *low_byte, GGZFile *file)
 
 	return low_byte;
 }
+
+
+void ggz_free_file_struct(GGZFile *file)
+{
+	ggz_free(file->buf);
+	ggz_free(file);
+}
