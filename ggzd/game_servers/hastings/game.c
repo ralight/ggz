@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 3638 2002-03-23 21:17:47Z jdorje $
+ * $Id: game.c 3665 2002-03-24 21:55:44Z dr_maux $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -372,10 +372,6 @@ char game_check_move(int num, int enemyallowed)
 	if((hastings_game.move_dst_x - hastings_game.move_src_x == 1)
 	&& (abs(hastings_game.move_dst_y - hastings_game.move_src_y) > 1))
 		return HASTINGS_ERR_DIST;
-	if((hastings_game.move_dst_x - hastings_game.move_src_x == -1)
-	&& (hastings_game.move_dst_y - hastings_game.move_src_y == 1)
-	&& (!(hastings_game.move_src_y % 2)))
-		return HASTINGS_ERR_DIST;
 	if((hastings_game.move_dst_y - hastings_game.move_src_y == 0)
 	&& (abs(hastings_game.move_dst_x - hastings_game.move_src_x) > 0))
 		return HASTINGS_ERR_DIST;
@@ -384,9 +380,19 @@ char game_check_move(int num, int enemyallowed)
 	if((abs(hastings_game.move_dst_y - hastings_game.move_src_y) == 2)
 	&& (abs(hastings_game.move_dst_x - hastings_game.move_src_x) > 0))
 		return HASTINGS_ERR_DIST;
+
+	/* prevent more strange jumps */
 	if((hastings_game.move_dst_y - hastings_game.move_src_y == -1)
 	&& (hastings_game.move_dst_x - hastings_game.move_src_x == -1)
 	&& (!(hastings_game.move_src_y % 2)))
+		return HASTINGS_ERR_DIST;
+	if((hastings_game.move_dst_x - hastings_game.move_src_x == -1)
+	&& (hastings_game.move_dst_y - hastings_game.move_src_y == 1)
+	&& (!(hastings_game.move_src_y % 2)))
+		return HASTINGS_ERR_DIST;
+	if((hastings_game.move_dst_x - hastings_game.move_src_x == 1)
+	&& (hastings_game.move_dst_y - hastings_game.move_src_y == -1)
+	&& (hastings_game.move_src_y % 2))
 		return HASTINGS_ERR_DIST;
 
 	/* Check for moving from empty field (should not be possible ?!) */
