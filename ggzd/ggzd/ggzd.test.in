@@ -8,7 +8,7 @@ DataDir = @packagesrcdir@/test
 
 [Logs]
 LogFile = @packagesrcdir@/ggzd.log
-LogTypes = Notices Connections
+LogTypes = All
 DebugFile = @packagesrcdir@/ggzd.debug
 DebugTypes = Process Connection Table Protocol Update Misc Room
 

@@ -155,6 +155,7 @@ void room_create_additional(void)
 int room_handle_join(GGZPlayer* player, int room)
 {
 	int result;
+	char *rname;
 	
 	/* Check for silliness from the user */
 	if (player->table != -1 || player->launching) {
@@ -178,6 +179,17 @@ int room_handle_join(GGZPlayer* player, int room)
 	/* Do the actual room change, and return results */
 	if((result = room_join(player, room)) == GGZ_REQ_DISCONNECT)
 		return result;
+
+	/* Generate a log entry if room was full */
+	if(result == E_ROOM_FULL) {
+		pthread_rwlock_rdlock(&rooms[room].lock);
+		rname = strdup(rooms[room].name);
+		pthread_rwlock_unlock(&rooms[room].lock);
+		log_msg(GGZ_LOG_NOTICE,
+			"ROOM_FULL - %s rejected entry to %s",
+			player->name, rname);
+		free(rname);
+	}
 
 	if (net_send_room_join(player->net, result) < 0)
 		return GGZ_REQ_DISCONNECT;

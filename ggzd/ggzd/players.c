@@ -168,6 +168,9 @@ static void* player_new(void *arg_ptr)
 		pthread_rwlock_unlock(&state.lock);
 		net_send_server_full(player->net);
 		close(sock);
+		log_msg(GGZ_LOG_NOTICE,
+			"SERVER_FULL - Rejected connection from %s",
+			player->addr);
 		pthread_exit(NULL);
 	}
 	state.players++;

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2398 2001-09-08 03:31:04Z bmh $
+ * $Id: table.c 2491 2001-09-17 07:00:59Z rgade $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -207,6 +207,7 @@ static void* table_new(void *index_ptr)
 {
 	GGZTable* table;
 	int i, status, count;
+	char *rname;
 
 	table = *((GGZTable**)index_ptr);
 	free(index_ptr);
@@ -224,6 +225,9 @@ static void* table_new(void *index_ptr)
 	pthread_rwlock_wrlock(&state.lock);
 	if (state.tables == MAX_TABLES) {
 		pthread_rwlock_unlock(&state.lock);
+		log_msg(GGZ_LOG_NOTICE,
+			"SERVER_FULL - %s could not create a new table",
+			table->owner);
 		table_launch_event(table->owner, E_ROOM_FULL, 0);
 		return NULL;
 	}
@@ -234,7 +238,12 @@ static void* table_new(void *index_ptr)
 	/* Setup an entry in the rooms */
 	pthread_rwlock_wrlock(&rooms[table->room].lock);
 	if (rooms[table->room].table_count == rooms[table->room].max_tables) {
+		rname = strdup(rooms[table->room].name);
 		pthread_rwlock_unlock(&rooms[table->room].lock);
+		log_msg(GGZ_LOG_NOTICE,
+			"ROOM_FULL - %s could not create table in %s",
+			table->owner, rname);
+		free(rname);
 		table_launch_event(table->owner, E_ROOM_FULL, 0);
 		return NULL;
 	}
@@ -273,6 +282,12 @@ static void table_fork(GGZTable* table)
 	int n_args;
 	int i;
 	int type, sfd[2];
+	char *rname, *gname;
+
+	/* Get room name for logs */
+	pthread_rwlock_rdlock(&rooms[table->room].lock);
+	rname = strdup(rooms[table->room].name);
+	pthread_rwlock_unlock(&rooms[table->room].lock);
 
 	/* Get path for game server */
 	type = table->type;
@@ -291,6 +306,7 @@ static void table_fork(GGZTable* table)
 			err_sys_exit("malloc failure in table_fork()");
 		strcpy(args[i+1], game_types[type].args[i]);
 	}
+	gname = strdup(game_types[type].name);
 	pthread_rwlock_unlock(&game_types[type].lock);
 
 	/* Set up socket pair for ggz<->game communication */
@@ -340,10 +356,20 @@ static void table_fork(GGZTable* table)
 		for(i=0; i < n_args + 1; i++)
 			free(args[i]);
 		free(args);
+
+		log_msg(GGZ_LOG_TABLES,
+			"TABLE_START - %s started a new game of %s in %s",
+			table->owner, gname, rname);
+		free(rname);
 		
 		if (table_send_opt(table) == 0)
 			table_loop(table);
-		
+
+		log_msg(GGZ_LOG_TABLES,
+			"TABLE_END - Game of %s started by %s has ended",
+			gname, table->owner);
+		free(gname);
+
 		/* Make sure game server is dead */
 		kill(pid, SIGINT);
 		close(table->ggzdmod->fd);

@@ -132,6 +132,8 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 
 		/* Check password */
 		if (login_check_password(&db_pe, lc_name, password) < 0) {
+			log_msg(GGZ_LOG_SECURITY, "BADPWD from %s for %s",
+				player->addr, name);
 			hash_player_delete(lc_name);
 			if (net_send_login(player->net, type, E_USR_LOOKUP, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
@@ -144,7 +146,6 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 		if (ggzdb_player_update(&db_pe) != 0)
 			err_msg("Player database update failed (%s)", name);
 		login_type = " registered player";
-
 	}
 	else if (type == GGZ_LOGIN_NEW) {
 		/* At this point, we know the name is not currently in
@@ -155,6 +156,8 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 				return GGZ_REQ_DISCONNECT;
 			return GGZ_REQ_FAIL;
 		}
+		log_msg(GGZ_LOG_SECURITY, "NEWACCT from %s for %s",
+			player->addr, name);
 		login_type = " newly registered player";
 	} else
 		login_type = "n anonymous player";

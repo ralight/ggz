@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 2446 2001-09-10 23:53:19Z rgade $
+ * $Id: parse_opt.c 2491 2001-09-17 07:00:59Z rgade $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -63,7 +63,9 @@ struct LogTypes {
 static const struct LogTypes log_types[] = {
 	{ "all",		GGZ_LOG_ALL },
 	{ "notices",		GGZ_LOG_NOTICE },
-	{ "connections",	GGZ_LOG_CONNECTION_INFO }
+	{ "connections",	GGZ_LOG_CONNECTION_INFO },
+	{ "security",		GGZ_LOG_SECURITY },
+	{ "tables",		GGZ_LOG_TABLES }
 };
 static int num_log_types = sizeof(log_types) / sizeof(log_types[0]);
 static struct LogTypes dbg_types[] = {

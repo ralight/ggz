@@ -33,6 +33,8 @@
 #define GGZ_LOG_ALWAYS		(unsigned) 0x00000000
 #define GGZ_LOG_NOTICE		(unsigned) 0x00000001
 #define GGZ_LOG_CONNECTION_INFO	(unsigned) 0x00000002
+#define GGZ_LOG_SECURITY	(unsigned) 0x00000004
+#define GGZ_LOG_TABLES		(unsigned) 0x00000008
 #define GGZ_LOG_ALL		(unsigned) 0xFFFFFFFF
 
 /* Debug levels for dbg_msg */
