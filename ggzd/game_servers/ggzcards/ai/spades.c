@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 3374 2002-02-16 10:28:52Z jdorje $
+ * $Id: spades.c 3375 2002-02-16 13:20:55Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -459,22 +459,50 @@ static char find_final_bid(player_t num, int points)
 	int prob;		/* for rounding */
 	char bid_val;
 	bid_t pard = game.players[(num + 2) % 4].bid;
+	bid_t lopp = game.players[(num + 1) % 4].bid;
+	bid_t ropp = game.players[(num + 3) % 4].bid;
+	int total;
 
 	/* --------------- NORMAL BIDS ----------------- */
 	/* Okay, divide points by 100 and that's our bid. */
 	switch (game.bid_count) {
 	case 0:
-		prob = 40;
+		prob = 50;
 		break;
 	case 1:
-		prob = 30;
+		prob = 40;
 		break;
 	case 2:
-		prob = 20;
+		prob = 30;
 		break;
 	case 3:
-		/* FIXME: we should take other players bids into account. */
-		prob = 50;
+		prob = 60;
+
+		/* We attempt to balance the bid toward 10/11.  This could be 
+		   dangerous... */
+		bid_val = (points + prob) / 100;
+		total = bid_val + lopp.sbid.val + pard.sbid.val +
+			ropp.sbid.val;
+
+		if (total < 8) {
+			prob += 120;
+		} else if (total == 8) {
+			prob += 90;
+		} else if (total == 9) {
+			prob += 70;
+		} else if (total == 10) {
+			prob += 20;
+		}
+
+		if (total > 13) {
+			/* Reduce a 14+ bid to 13. */
+			prob = 1300 - points;
+		} else if (total == 13) {
+			prob -= 70;
+		} else if (total == 12) {
+			prob -= 30;
+		}
+
 		break;
 	default:
 		assert(0);
