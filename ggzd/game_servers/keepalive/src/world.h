@@ -30,10 +30,14 @@ class World
 	public:
 		World();
 		~World();
+
 		void addPlayer(const char *name, int fd);
+		void removePlayer(const char *name);
 		Player *getPlayer(const char *name);
+
 		int width();
 		int height();
+
 		void receive(const char *name, void *data);
 
 	private:

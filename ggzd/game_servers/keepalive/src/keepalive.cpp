@@ -88,6 +88,8 @@ void Keepalive::hookJoin(void *data)
 // Handler for leaving players
 void Keepalive::hookLeave(void *data)
 {
+	GGZSeat seat = ggzdmod_get_seat(ggzdmod, *(int*)data);
+	m_world->removePlayer(seat.name);
 }
 
 // HAndler for state changes

@@ -73,6 +73,22 @@ void World::addPlayer(const char *name, int fd)
 	std::cout << "Ready with transmitting" << endl;
 }
 
+// Suspend a player's operation until he joins again
+void World::removePlayer(const char *name)
+{
+	Player *p = getPlayer(name);
+	if(p)
+	{
+		for(list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
+			if(&(*it) == p)
+			{
+				m_playerlist.erase(it);
+				//delete p;
+				return;
+			}
+	}
+}
+
 // Return a player from the list
 Player *World::getPlayer(const char *name)
 {
@@ -115,8 +131,15 @@ void World::receive(const char *name, void *data)
 			es_read_string(p->fd(), username, 32);
 			es_read_string(p->fd(), password, 32);
 			pname = p->morph(username, password);
-			es_write_char(p->fd(), op_name);
-			es_write_string(p->fd(), pname);
+			if(pname)
+			{
+				es_write_char(p->fd(), op_name);
+				es_write_string(p->fd(), pname);
+			}
+			else
+			{
+				es_write_char(p->fd(), op_loginfailed);
+			}
 			break;
 		case op_move:
 			es_read_int(p->fd(), &x);

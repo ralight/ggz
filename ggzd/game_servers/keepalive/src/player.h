@@ -26,15 +26,18 @@ class Player
 		~Player();
 		void move(int x, int y);
 		char *morph(const char *username, const char *password);
+		void die();
 		int x();
 		int y();
 		int fd();
 		char *name();
+		char *username();
 
 	private:
 		int m_x, m_y, m_fd;
 		char *m_name;
 		char *m_username;
+		char *m_password;
 };
 
 #endif

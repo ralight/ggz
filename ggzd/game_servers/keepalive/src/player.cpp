@@ -22,6 +22,10 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <fstream>
+#include <string>
+#include "config.h"
+#include <sys/stat.h>
 
 // Constructor
 Player::Player(const char *name, int fd)
@@ -31,12 +35,16 @@ Player::Player(const char *name, int fd)
 	m_x = 0;
 	m_y = 0;
 	m_username = NULL;
+	m_password = NULL;
 }
 
 // Destructor
 Player::~Player()
 {
+	die();
+
 	if(m_username) free(m_username);
+	if(m_password) free(m_password);
 	free(m_name);
 }
 
@@ -50,8 +58,61 @@ void Player::move(int x, int y)
 // Load an identity or create a new one
 char *Player::morph(const char *username, const char *password)
 {
-	m_username = strdup(username);
+	fstream f;
+	string user, pass;
+
+	string graveyard = string(DATADIR) + "/keepalive/";
+	string grave = graveyard + username;
+	f.open(grave.c_str(), _IO_INPUT);
+	if(f.is_open())
+	{
+		f >> user;
+		f >> pass;
+		f >> m_x;
+		f >> m_y;
+		f.close();
+		if(pass != password)
+		{
+			return NULL;
+		}
+		else
+		{
+			m_username = strdup(user.c_str());
+			m_password = strdup(pass.c_str());
+			m_x = 0;
+			m_y = 0;
+		}
+	}
+	else
+	{
+		m_username = strdup(username);
+		m_password = strdup(password);
+		m_x = 0;
+		m_y = 0;
+	}
 	return m_username;
+}
+
+// Put the player into the graveyard
+void Player::die()
+{
+	fstream f;
+
+	string graveyard = string(DATADIR) + "/keepalive/";
+	if(mkdir(graveyard.c_str(), S_IRWXU))
+	{
+		return;
+	}
+	string grave = graveyard + m_username;
+	f.open(grave.c_str(), _IO_OUTPUT);
+	if(f.is_open())
+	{
+		f << "username: " << m_username << endl;
+		f << "password: " << m_password << endl;
+		f << "x: " << m_x << endl;
+		f << "y: " << m_y << endl;
+		f.close();
+	}
 }
 
 // Return x coordinate
@@ -78,4 +139,9 @@ char *Player::name()
 	return m_name;
 }
 
+// Return player's username
+char *Player::username()
+{
+	return m_username;
+}
 

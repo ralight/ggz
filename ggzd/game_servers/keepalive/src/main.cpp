@@ -63,13 +63,11 @@ int main(int argc, char **argv)
 		}
 	}
 
-#if GGZD_IS_FIXED_AND_USES_COMMAND_LINE_INSTEAD_OF_EXECUTABLE_PATH
 	if(!ggzmode)
 	{
 		cout << "Only GGZ mode is currently supported." << endl;
 		exit(-1);
 	}
-#endif
 
 	k = new Keepalive();
 	k->loop();
