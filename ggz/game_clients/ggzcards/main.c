@@ -63,8 +63,6 @@ int main(int argc, char *argv[])
 {
 	ggz_debug("Launching.");
 
-	game.max_hand_size = 13; /* TODO: this should be 0, initialized by the server */
-
 	gtk_init(&argc, &argv);
 	ggz_debug("gtk_init completed.");
 
@@ -273,13 +271,16 @@ static int get_players(void)
 	/* we may need to allocate memory for the players */
 	different = (game.num_players != numplayers);
 	if (different) {
-		/* TODO: free if necessary */
+		if (game.players) {
+			for (p=0; p<game.num_players; p++)
+				if (game.players[p].hand.card)
+					g_free(game.players[p].hand.card);
+			g_free(game.players);
+		}
 		ggz_debug("get_players: (re)allocating game.players.");
   		game.players = (struct seat_t *)g_malloc(numplayers * sizeof(struct seat_t));
 		bzero(game.players, numplayers * sizeof(struct seat_t));
-		for (p=0; p<numplayers; p++)
-			/* TODO: this should be initted when we actually read the data from the server */
-			game.players[p].hand.card = (card_t *)g_malloc(game.max_hand_size * sizeof(card_t));
+		game.max_hand_size = 0; /* this forces reallocating later */
 	}
 
 	for(i = 0; i < numplayers; i++) {

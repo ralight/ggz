@@ -44,9 +44,12 @@ int hand_read_hand(void)
 	int p;
 	struct hand_t *hand;
 
+	assert(game.players);
+
 	/* first read the player whose hand it is */
 	if (es_read_int(game.fd, &p) < 0)
 		return -1;
+	assert(p >= 0 && p < game.num_players);
 	hand = &game.players[p].hand;
 
 	ggz_debug("     Reading the hand of player %d.", p);
@@ -62,8 +65,16 @@ int hand_read_hand(void)
 		return -1;
 
 	if (hand->hand_size > game.max_hand_size) {
-		ggz_debug("CLIENT BUG: can't handle hands with more than %d cards.", game.max_hand_size);
-		return -1;
+		int p;
+		ggz_debug("Expanding max_hand_size to allow for %d cards (previously max was %d).", hand->hand_size, game.max_hand_size);
+		game.max_hand_size = hand->hand_size;
+		if (game.max_hand_size < 13) game.max_hand_size = 13;
+		for (p = 0; p<game.num_players; p++) {
+			if (game.players[p].hand.card)
+				g_free(game.players[p].hand.card);
+			game.players[p].hand.card = (card_t *)g_malloc(game.max_hand_size * sizeof(card_t));
+		}
+		table_setup();
 	}
 
 	ggz_debug("     Read hand_size as %d.", game.players[p].hand.hand_size);

@@ -37,6 +37,7 @@
 #include "layout.h"
 #include "hand.h"
 #include "dlg_bid.h"
+#include "dlg_main.h"
 
 #include "cards-1.xpm"
 #include "cards-2.xpm"
@@ -55,9 +56,9 @@ static GdkPixmap *card_fronts[4];
 static GdkPixmap *card_backs[4];
 static GtkStyle *f1_style;
 static GtkWidget *f1;
-static GtkWidget *l_name[4] = {0};
-static GtkWidget *label[4] = {0}; /* player labels; put in place of old bid/tricks/score */
-static GtkWidget *msglabel = {0}; /* global label; put in place of old l_trump */
+static GtkWidget *l_name[MAX_NUM_PLAYERS] = {NULL};
+static GtkWidget *label[MAX_NUM_PLAYERS] = {NULL}; /* player labels; put in place of old bid/tricks/score */
+static GtkWidget *msglabel = NULL; /* global label; put in place of old l_trump */
 static gboolean table_initialized = FALSE;
 
 #ifdef ANIMATION
@@ -186,11 +187,15 @@ void table_initialize(void)
 	table_initialized = TRUE;
 }
 
-#include "dlg_main.h"
-
 void table_setup()
 {
 	int x, y, p;
+
+	/* TODO: we really _have_ to draw something before this point, since
+	 * the player needs to see who's playing.  However, for now this will
+	 * work */
+	if (game.num_players == 0 || game.max_hand_size == 0)
+		return;
 
 	ggz_debug("Setting up table.  Width and height are %d.  %d players.", get_table_width(), game.num_players);
 
@@ -204,15 +209,15 @@ void table_setup()
 
 	draw_card_areas();
 
-	/* Display the buffer */
-	table_show_table(0, 0, get_table_width(), get_table_height());	
-
-
 	/* Add text labels to display */
 	for (p = 0; p < game.num_players; p++) {
 		get_text_box_pos(p, &x, &y);
 
 		/* Name entries */
+		if (l_name[p]) {
+			gtk_widget_hide(l_name[p]);
+			gtk_widget_destroy(l_name[p]);
+		}
 		l_name[p] = gtk_label_new(game.players[p].name);
 		gtk_fixed_put(GTK_FIXED(f1), l_name[p], x+3, y+1);
 		gtk_widget_set_usize(l_name[p], TEXT_BOX_WIDTH - 6, -1);
@@ -220,6 +225,10 @@ void table_setup()
 
 		/* TODO: hack: inserted 4 players here since we haven't gotten
 		 * the actual data yet */
+		if (label[p]) {
+			gtk_widget_hide(label[p]);
+			gtk_widget_destroy(label[p]);
+		}
 		label[p] = gtk_label_new(game.players[p].message);
 		gtk_fixed_put(GTK_FIXED(f1), label[p], x+3, y+20);
 		gtk_widget_set_usize(label[p], TEXT_BOX_WIDTH - 6, -1);
@@ -229,6 +238,11 @@ void table_setup()
 
 	/* Current trump entry */
 	/* TODO: put this position into an list */
+	if (msglabel) {
+		gtk_widget_hide(msglabel);
+		gtk_widget_destroy(msglabel);
+	}
+
 	msglabel = gtk_label_new(NULL);
 	x = TEXT_BOX_WIDTH + 2 * XWIDTH;
 	y = TEXT_BOX_WIDTH + CARD_BOX_WIDTH + 2* XWIDTH - 20;
@@ -236,6 +250,10 @@ void table_setup()
 	gtk_label_set_justify(GTK_LABEL(msglabel), GTK_JUSTIFY_LEFT);
 	/* gtk_widget_set_usize(msglabel, TEXT_BOX_WIDTH-6, -1); */
 	gtk_widget_show(msglabel);
+
+	/* Display the buffer */
+	if (game.num_players >0 && game.max_hand_size > 0)
+		table_show_table(0, 0, get_table_width(), get_table_height());
 }
 
 void table_set_player_message(int p, char* message)
@@ -246,6 +264,7 @@ void table_set_player_message(int p, char* message)
 
 void table_set_message(char* mark, char* message)
 {
+	assert(table_initialized);
 	if (!*mark)
 		/* this is the "global" message */
 		gtk_label_set_text(GTK_LABEL(msglabel), message);
