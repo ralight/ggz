@@ -1,0 +1,141 @@
+<? include_once("../../site/header.php"); ?>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="index.php">GGZ 0.0.10 Release:</a>
+|
+Announcement
+|
+<a href="changes.php">Changelog</a>
+|
+<a href="download.php">Download</a>
+|
+<a href="installation.php">Installation</a>
+|
+<a href="credits.php">Credits</a>
+|
+<a href="https://www.ggzcommunity.org/">Go play!</a>
+</font>
+</td>
+</tr>
+</table>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+<b>GGZ 0.0.10 Release Announcement</b><br>
+<br>
+<i>About the GGZ Gaming Zone</i><br>
+The GGZ Gaming Zone (GGZ) is an open-sourced Internet gaming center.
+Similar to other online gaming sites, players from all over the world can
+login and sit at tables where they can play their favorite games and chat
+with other players. GGZ supports multiple rooms with varying skill levels,
+and records your statistics so you can see how you match up against other
+players.
+19 game servers (plus 8 GGZCards engines) and 27 game clients (plus
+5 GGZBoard games) are available in total, as well as 6 independent game
+projects which provide GGZ support.
+<br><br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>About the GGZ 0.0.10 release</i><br>
+Again, a lot of new features are available:
+<ul>
+<li>Plugins for IM clients (Gaim, Kopete) to play some games
+<li>SVG graphics in several Gtk+, KDE and SDL games
+<li>Better support for themes and additional levels
+<li>"Get Hot New Stuff" integration for KDE and SDL/Python game clients
+<li>Zeroconf support for KGGZ and the server (ggzd)
+<li>Advanced statistics, including room, guest player and bots options
+<li>GGZBoard, a board game framework for SDL games written in Python
+</ul>
+The documentation set has been extended again.
+As usual, i18n and build system updates were made.
+See below for details regarding all the changes.
+Translators can find information on the newly created
+<a href="http://dev.ggzgamingzone.org/i18n/">Internationalization pages</a>.
+<br><br>
+There are some <a href="/screenshots/0.0.10/">new screenshots</a> showing
+off with the changes.
+<br><br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Availability</i><br>
+Please refer to the <a href="download.php">download page</a> for information
+on source code and binary packages.
+<br><br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Changes</i><br>
+The <a href="changes.php">changelog page</a> has an authorative list
+of what has changed since the previous version.
+<br><br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Meeting places</i><br>
+Gamers can select among many game servers. Some of them are already
+predefined in the client software. KGGZ users can choose to be connected
+automatically to the right server.<br>
+
+<ul>
+<li>live.ggzgamingzone.org (0.0.10 fast)
+</ul>
+
+The online ranking system can be found at
+<a href="https://www.ggzcommunity.org/">GGZ Community</a>.
+It shows player and game statistics and currently running games.
+Players can found teams, organize tournaments, upload/download additional game data,
+write articles and blog entries.
+<br><br>
+
+Developers can find additional resources in our developer area:
+<a href="http://dev.ggzgamingzone.org/">http://dev.ggzgamingzone.org</a>.
+You'll find there information about the roadmap, mailing lists,
+CVS access and much more.
+<br><br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+
+<i>Documentation</i><br>
+Extensive documentation has been made available for this release.<br>
+Please refer to the <a href="/docs.php">documentation overview page</a>.
+<br><br>
+
+Of course, our
+<a href="/software.php">game descriptions</a> and
+other continuing efforts are also available.
+
+<br><br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>The GGZ Gaming Zone Development Team</i><br>
+Please have a look at the
+<a href="credits.php">credits page</a>
+to find out who made GGZ possible.
+<br><br>
+</td></tr>
+
+</table>
+
+<? include_once("../../site/footer.php"); ?>

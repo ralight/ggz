@@ -1,0 +1,174 @@
+<? include_once("../../site/header.php"); ?>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="index.php">GGZ 0.0.10 Release:</a>
+|
+<a href="release.php">Announcement</a>
+|
+Changelog
+|
+<a href="download.php">Download</a>
+|
+<a href="installation.php">Installation</a>
+|
+<a href="credits.php">Credits</a>
+|
+<a href="https://www.ggzcommunity.org/">Go play!</a>
+</font>
+</td>
+</tr>
+</table>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Comprehensive overview about the GGZ Gaming Zone 0.0.10 Release (Changes)</i>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+KDE Client
+</td><td bgcolor="#ffd000" valign="top">
+Kopete plugin for playing games on GGZ<br>
+French translation for several applications<br>
+LAN game connections via Zeroconf<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Gtk+ Client
+</td><td bgcolor="#ffd000" valign="top">
+Gaim plugin for playing games on GGZ<br>
+Swedish translation<br>
+Usage of SVG and Gtk+ stock icons<br>
+Gtk+ 2.x code cleanups<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GNOME Client
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+KDE Games
+</td><td bgcolor="#ffd000" valign="top">
+KCC: Theme integration (including Chinese Checkers (Gtk+) themes)<br>
+Koenig: Theme integration (including Knights themes)<br>
+GHNS support for KCC, Muehle, KTicTacTux, Fyrdman, Koenig<br>
+SVG support for Koenig<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Gtk+ Games
+</td><td bgcolor="#ffd000" valign="top">
+SVG support for Chess, TicTacToe, Reversi<br>
+LaPocha client removed for it is contained in GGZCards<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+SDL Games
+</td><td bgcolor="#ffd000" valign="top">
+3D intro screen for Geekgame<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ server
+</td><td bgcolor="#ffd000" valign="top">
+Zeroconf publication<br>
+Track per-room statistics with policy on guest and bot players<br>
+Support for DB 4.3<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ Base Library (libggz)
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+GGZ Client Libs (libggzcore, libggzmod)
+</td><td bgcolor="#ffd000" valign="top">
+Minimal command line core client (ggz-wrapper)<br>
+Embedded mode for ggzcore (for use in game clients)<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Game servers
+</td><td bgcolor="#ffd000" valign="top">
+Improved chess AI<br>
+LaPocha server removed for it is contained in GGZCards<br>
+New game server: Widelands<br>
+Statistics for krosswater<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Grubby
+</td><td bgcolor="#ffd000" valign="top">
+Chatbot registration support<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Text client
+</td><td bgcolor="#ffd000" valign="top">
+Server and room player count display<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Utilities
+</td><td bgcolor="#ffd000" valign="top">
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Documentation
+</td><td bgcolor="#ffd000" valign="top">
+Database schema graphics and description<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Python stuff
+</td><td bgcolor="#ffd000" valign="top">
+SDLNewStuff, a GHNS client library<br>
+GHNS support for Xadrez Chinês<br>
+GGZBoard, a new framework for board game clients<br>
+New game client: Chess for GGZBoard<br>
+New game client: Reversi for GGZBoard<br>
+New game client: Checkers for GGZBoard<br>
+New game client: Hnefatafl for GGZBoard<br>
+New game client: Go for GGZBoard<br>
+New game server: Checkers<br>
+New game server: Hnefatafl<br>
+SVG library wrapper (pyrsvgsdl)<br>
+Víbora: ability to launch games<br>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Community Web Interface
+</td><td bgcolor="#ffd000" valign="top">
+New package, contains the former rankings and tournament pages<br>
+Forum (phpBB) integration<br>
+GHNS interface (Hotstuff) integration<br>
+Blog aggregator (Planet) integration<br>
+OOP base classes to access GGZ databases<br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Goals for 0.0.11</i><br>
+Nothing has been decided yet. Some ideas were floating around:
+<ul>
+<li>more flexible tournaments, like Football-style (8-4-2-2) or Chess-style (8/8-4/4-2/2)
+<li>support standard Chess and Go protocols and savegames
+<li>Registered and trainable AI players
+<li>Ludo support for GGZBoard (already started in CVS)
+<li>Updated Freeciv support (already started in CVS)
+</ul>
+There is a Playground CVS module where very unstable development takes place.
+Every game and game-related developer is encouraged to use this module.
+<br><br>
+</td></tr>
+
+</table>
+
+<? include_once("../../site/footer.php"); ?>

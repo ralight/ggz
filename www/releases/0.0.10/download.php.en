@@ -1,0 +1,173 @@
+<? include_once("../../site/header.php"); ?>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="index.php">GGZ 0.0.10 Release:</a>
+|
+<a href="release.php">Announcement</a>
+|
+<a href="changes.php">Changelog</a>
+|
+Download
+|
+<a href="installation.php">Installation</a>
+|
+<a href="credits.php">Credits</a>
+|
+<a href="https://www.ggzcommunity.org/">Go play!</a>
+</font>
+</td>
+</tr>
+</table>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+<b>GGZ 0.0.10 Downloads</b><br>
+<br>
+<i>Source code release</i><br>
+The GGZ Gaming Zone project releases its components as source code, which
+can be downloaded here.
+These components have mostly been developed on GNU/Linux systems.
+They should however compile and run on many similar operating systems.
+<br><br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Distributors</i><br>
+A number of distributors provide GGZ packages, either in the base
+distribution, or as contributions. These packages will certainly be updated
+in the near future. Please always use the latest version; bug the distributor
+if necessary.
+<ul>
+<li><a href="http://lunar-linux.org/?q=node/view/7">Lunar Linux</a>
+<li><a href="http://sorcerer.wox.org/grimoire/grimoire.html.gz">Sorcerer</a>
+<li><a href="http://packages.gentoo.org/search/?sstring=ggz">Gentoo</a>
+
+<li><a href="http://packages.debian.org/cgi-bin/search_packages.pl?keywords=GGZ&searchon=all&version=all&release=all">Debian</a> (outdated)
+<li><a href="http://slackpacks.tchelinux.com.br">Slackware</a> (outdated)
+<li><a href="http://codex.sourcemage.org/listing.html">SourceMage</a> (outdated)
+<li><a href="http://rpms.mandrakeclub.com/linux/rpm2html/search.php?query=ggz&submit=Search+...&arch=">Mandrake</a> (outdated)
+<li><a href="http://fink.sourceforge.net/pdb/search.php?s=ggz">Fink</a> (outdated)
+
+<li><a href="http://www.archlinux.org/packages.php?s_repo=all&s_category=all&s_keyword=ggz&s_lastupdate=&pp=50">ArchLinux</a> (only libs)
+<li><a href="http://www.freshports.org/search.php?query=ggz&search=go&num=10&stype=name&method=match&deleted=excludedeleted&start=1&casesensitivity=caseinsensitive">FreeBSD</a> (only libs)
+</ul>
+Distributors and packagers are encouraged to subscribe to the
+<a href="https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo">ggz-servers list</a>,
+as release pre-announcements are sent there.
+Users and other interested people should definitely subscribe to the low-traffic
+<a href="https://mail.ggzgamingzone.org/cgi-bin/mailman/listinfo">ggz-announce list</a>.
+<br><br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Source code packages</i>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Main repository <img src="/pics/site/flags/flag-us.png"> USA:<br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/">http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/</a><br>
+<a href="ftp://ftp.ggzgamingzone.org/pub/ggz/0.0.10/">ftp://ftp.ggzgamingzone.org/pub/ggz/0.0.10/</a>
+<br><br>
+Make sure to check the source file integrity using the
+<br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/MD5SUMS">MD5 hash sums</a>
+and their
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/MD5SUMS.asc">digital signature</a>
+<br>
+of the <a href="http://pgp.mit.edu:11371/pks/lookup?search=0xC4ED463C&op=index">GGZ Hostmaster Key</a>.
+</td><td bgcolor="#ffd000" valign="top">
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/libggz-0.0.10.tar.gz">libggz-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-client-libs-0.0.10.tar.gz">ggz-client-libs-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-server-0.0.10.tar.gz">ggz-server-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-txt-client-0.0.10.tar.gz">ggz-txt-client-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-gtk-client-0.0.10.tar.gz">ggz-gtk-client-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-kde-client-0.0.10.tar.gz">ggz-kde-client-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-gnome-client-0.0.10.tar.gz">ggz-gnome-client-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-gtk-games-0.0.10.tar.gz">ggz-gtk-games-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-kde-games-0.0.10.tar.gz">ggz-kde-games-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-sdl-games-0.0.10.tar.gz">ggz-sdl-games-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-python-0.0.10.tar.gz">ggz-python-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-utils-0.0.10.tar.gz">ggz-utils-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-grubby-0.0.10.tar.gz">ggz-grubby-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-docs-0.0.10.tar.gz">ggz-docs-0.0.10.tar.gz</a><br>
+<a href="http://ftp.ggzgamingzone.org/pub/ggz/0.0.10/ggz-community-0.0.10.tar.gz">ggz-community-0.0.10.tar.gz</a>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Mirror <img src="/pics/site/flags/flag-de.png"> Germany:<br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/">http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/</a>
+<br><br>
+Make sure to check the source file integrity using the
+<br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/MD5SUMS">MD5 hash sums</a>
+and their
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/MD5SUMS.asc">digital signature</a>
+<br>
+of the <a href="http://pgp.mit.edu:11371/pks/lookup?search=0xC4ED463C&op=index">GGZ Hostmaster Key</a>.
+</td><td bgcolor="#ffd000" valign="top">
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/libggz-0.0.10.tar.gz">libggz-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-client-libs-0.0.10.tar.gz">ggz-client-libs-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-server-0.0.10.tar.gz">ggz-server-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-txt-client-0.0.10.tar.gz">ggz-txt-client-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-gtk-client-0.0.10.tar.gz">ggz-gtk-client-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-kde-client-0.0.10.tar.gz">ggz-kde-client-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-gnome-client-0.0.10.tar.gz">ggz-gnome-client-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-gtk-games-0.0.10.tar.gz">ggz-gtk-games-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-kde-games-0.0.10.tar.gz">ggz-kde-games-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-sdl-games-0.0.10.tar.gz">ggz-sdl-games-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-python-0.0.10.tar.gz">ggz-python-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-utils-0.0.10.tar.gz">ggz-utils-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-grubby-0.0.10.tar.gz">ggz-grubby-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-docs-0.0.10.tar.gz">ggz-docs-0.0.10.tar.gz</a><br>
+<a href="http://ftp.de.ggzgamingzone.org/pub/ggz/0.0.10/ggz-community-0.0.10.tar.gz">ggz-community-0.0.10.tar.gz</a>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Mirror <img src="/pics/site/flags/flag-fr.png"> France:<br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/">http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/</a>
+<br><br>
+Make sure to check the source file integrity using the
+<br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/MD5SUMS">MD5 hash sums</a>
+and their
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/MD5SUMS.asc">digital signature</a>
+<br>
+of the <a href="http://pgp.mit.edu:11371/pks/lookup?search=0xC4ED463C&op=index">GGZ Hostmaster Key</a>.
+</td><td bgcolor="#ffd000" valign="top">
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/libggz-0.0.10.tar.gz">libggz-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-client-libs-0.0.10.tar.gz">ggz-client-libs-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-server-0.0.10.tar.gz">ggz-server-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-txt-client-0.0.10.tar.gz">ggz-txt-client-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-gtk-client-0.0.10.tar.gz">ggz-gtk-client-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-kde-client-0.0.10.tar.gz">ggz-kde-client-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-gnome-client-0.0.10.tar.gz">ggz-gnome-client-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-gtk-games-0.0.10.tar.gz">ggz-gtk-games-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-kde-games-0.0.10.tar.gz">ggz-kde-games-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-sdl-games-0.0.10.tar.gz">ggz-sdl-games-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-python-0.0.10.tar.gz">ggz-python-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-utils-0.0.10.tar.gz">ggz-utils-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-grubby-0.0.10.tar.gz">ggz-grubby-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-docs-0.0.10.tar.gz">ggz-docs-0.0.10.tar.gz</a><br>
+<a href="http://ftp.fr.ggzgamingzone.org/pub/ggz/0.0.10/ggz-community-0.0.10.tar.gz">ggz-community-0.0.10.tar.gz</a>
+</td></tr>
+
+<tr><td bgcolor="#ffd000" valign="top">
+Mirrors?
+</td><td bgcolor="#ffd000" valign="top">
+Please write a mail to the
+<a href="mailto:webmaster@ggzgamingzone.org">webmaster</a>
+if you are kind enough to provide a download mirror.
+</td></tr>
+
+</table>
+
+<? include_once("../../site/footer.php"); ?>

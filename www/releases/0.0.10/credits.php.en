@@ -1,0 +1,99 @@
+<? include_once("../../site/header.php"); ?>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+<a href="index.php">GGZ 0.0.10 Release:</a>
+|
+<a href="release.php">Announcement</a>
+|
+<a href="changes.php">Changelog</a>
+|
+<a href="download.php">Download</a>
+|
+<a href="installation.php">Installation</a>
+|
+Credits
+|
+<a href="https://www.ggzcommunity.org/">Go play!</a>
+</font>
+</td>
+</tr>
+</table>
+
+<table class="content" width="100%">
+<tr>
+<td colspan="2">
+<font size="3">
+<b>GGZ 0.0.10 Credits</b><br>
+<br>
+<i>Who are the GGZ developers?</i><br>
+GGZ is developed by an international team, with no strict schedule,
+but a common goal.
+Everybody is invited to join the GGZ team.
+Information on joining can be found in the
+<a href="http://dev.ggzgamingzone.org/">developer area</a>.
+<br><br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Current team</i><br>
+Pierre Hugues Husson [phh]<br>
+Roger Light [oojah]<br>
+Kettil Säther [senko]<br>
+Jason Dorje Short [jdorje]<br>
+Josef Spillner [josef]<br>
+<br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Previous developers</i><br>
+Rich Gade [rgade]<br>
+Brent Hendricks [crouton]<br>
+Doug Hudson [djh]<br>
+Tobias König [tokoe82]<br>
+Ismael Orenstein [perdig]<br>
+Dan Papasian [bugg]<br>
+Ricardo Quesada [riq]<br>
+Justin Zaun [jzaun]<br>
+<br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>General credits</i><br>
+Brian Cox [sealion]<br>
+Rodney Dawes [dobey]<br>
+Bryan Duff [duffologus]<br>
+Christian Perle [povaddict]<br>
+Michael Rohrer [lionman]<br>
+Sebastian Roth [sebbi]<br>
+Stephen Zander<br>
+LavaDevil94 [Lycanthrope37]<br>
+ha shao<br>
+#kde-devel, #kde.de<br>
+#pygame<br>
+All GGZ supporters, packagers and distributors<br>
+Widelands developers<br>
+<br>
+</td></tr>
+
+<tr>
+<td colspan="2">
+<font size="3">
+<i>Server hosting sponsors</i><br>
+SourceForge (ggz.sourceforge.net), 01/2000-02/2004<br>
+Inter.net Germany (ggz.snafu.de), 06/2001-06/2003<br>
+Internet24 (ggzgamingzone.org), 01/2003-03/2004<br>
+<br>
+</td></tr>
+
+</table>
+
+<? include_once("../../site/footer.php"); ?>
