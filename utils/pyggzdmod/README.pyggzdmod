@@ -1,0 +1,25 @@
+About PyGGZDMod
+==============
+
+PyGGZDMod is the python wrapper for the libggzdmod library, which is used by
+most GGZ Gaming Zone game servers.
+Its functionality includes setting up the connection, informing the server
+about player join/leave events, and querying the seat usage.
+Also some kind of database support will be provided, it's currently being
+developed for the C library, for game statistics and such.
+
+To install PyGGZDMod:
+python setup.py build
+python setup.py install (needs root access)
+
+For library documentation please refer to the C header file ggz_server.h.
+
+This is the content of PyGGZDMod:
+src/ - module source and test file (test.py)
+civil/ - preliminary civil support
+tictactoe/ - Upcoming GGZ TicTacToe server (drop-in replacement)
+
+Thanks to #pygame for the improved setup file.
+
+Josef
+

@@ -1,0 +1,13 @@
+[RoomInfo]
+# This is the short name for the room
+Name = Civil
+# This is the long descriptive name for the room
+Description = History-Based Realtime Strategy Game
+# The gametype should match up to the Name of an added game
+GameType = Civil
+# These set maximum values for this room
+MaxPlayers = 100
+MaxTables = 20
+# Room category
+Category = Experimental Games
+
