@@ -22,8 +22,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 518 $</revnumber>
-	<date>$Date: 2000-05-13 22:15:51 -0700 (Sat, 13 May 2000) $</date>
+	<revnumber>$Revision: 523 $</revnumber>
+	<date>$Date: 2000-05-14 20:33:00 -0700 (Sun, 14 May 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -153,7 +153,7 @@
       <section id="server-messages"><title>Server Messages</title>
 
 	<para>
-	  These messages are received from the server withouy being
+	  These messages are received from the server without being
 	  directly requested by the client.  They are used by the
 	  server to pass necessary information to the client.
 	</para>
@@ -2100,6 +2100,123 @@
 	</refsect1>
       </refentry>
 
+      <refentry id="rsp.list.players"><?dbhtml filename="rsp_list_players.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>RSP_LIST_PLAYERS</primary>
+	  </indexterm>
+	  <refentrytitle>RSP_LIST_PLAYERS</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>RSP_LIST_PLAYERS</refname>
+	  <refpurpose>
+	    Server response to request for list of players in room.
+	  </refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C2">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		  <entry>15</entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">
+                    RSP_LIST_PLAYERS
+                  </entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">players</entry>
+		  <entry>int</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C3">
+		    <emphasis>sequence of</emphasis> players
+		  </entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">name</entry>
+		  <entry>string</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">table</entry>
+		  <entry>int</entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para>Server response to request for list of players in
+	  current room</para>
+	  <refsect2>
+	    <title>Message Data</title>
+	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">players</emphasis></term>
+		<listitem>
+		  <para>
+		    Number of players in room, or -1 on error
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">name</emphasis></term>
+		<listitem>
+		  <para>
+		    Player name
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">table</emphasis></term>
+		<listitem>
+		  <para>
+		    Index of table at which player is "sitting" or -1
+		    if the player is not at a table.
+		  </para>
+		</listitem>
+	      </varlistentry>
+	    </variablelist>
+	  </refsect2>
+	  
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      MSG_MOTD is sent from the server to the client upon
+	      successful login (ie. after <link
+	      linkend="rsp.login.new">RSP_LOGIN_NEW</link>,<link
+	      linkend="rsp.login.anon">RSP_LOGIN_ANON</link>, or <link
+	      linkend="rsp.login">RSP_LOGIN</link>)
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
+      
     </section>
     
     <section id ="client-to-server"><title>Client to server messages</title>
