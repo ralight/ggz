@@ -1,0 +1,156 @@
+? client-libs/stats.diff
+? client-libs/win32.diff
+? client-libs/ggzcore/highscore.diff
+? ggzd/destdir.diff
+? gtk-client/combo.diff
+? gtk-client/ggz-gtk/channel.xml
+? gtk-client/ggz-gtk/patch.diff
+? gtk-games/channel.xml
+? kde-client/channel.xml
+? kde-client/ggz-kde/ggzcore++/src/GGZCoreModule.loT
+? kde-client/ggz-kde/ggzcore++/src/GGZCoreServer.loT
+? kde-client/kio_ggz/kio_ggz.loT
+? txt-client/win32.diff
+Index: ggzd/ggzd/net.c
+===================================================================
+RCS file: /var/lib/cvs/ggzd/ggzd/net.c,v
+retrieving revision 1.116
+diff -u -r1.116 net.c
+--- ggzd/ggzd/net.c	23 Jan 2005 23:28:03 -0000	1.116
++++ ggzd/ggzd/net.c	24 Jan 2005 20:19:02 -0000
+@@ -1646,6 +1646,10 @@
+ 				strcpy(table->seat_names[seat->index],
+ 				       seat->name);
+ 			break;
++		case GGZ_SEAT_ABANDONED:
++			/* Clients can't do this. */
++			seat_type = GGZ_SEAT_NONE;
++			break;
+ 		}
+ 		table->seat_types[seat->index] = seat_type;
+ 	}
+@@ -1902,6 +1906,7 @@
+ 	switch (seat->type) {
+ 	case GGZ_SEAT_RESERVED:
+ 	case GGZ_SEAT_PLAYER:
++	case GGZ_SEAT_ABANDONED:
+ 		name = seat->name;
+ 		break;
+ 	case GGZ_SEAT_OPEN:
+Index: ggzd/ggzdmod/ggzdmod.c
+===================================================================
+RCS file: /var/lib/cvs/ggzd/ggzdmod/ggzdmod.c,v
+retrieving revision 1.118
+diff -u -r1.118 ggzdmod.c
+--- ggzd/ggzdmod/ggzdmod.c	24 Jan 2005 20:15:57 -0000	1.118
++++ ggzd/ggzdmod/ggzdmod.c	24 Jan 2005 20:19:02 -0000
+@@ -1350,6 +1350,7 @@
+ 		break;
+ 	case GGZ_SEAT_NONE:
+ 	case GGZ_SEAT_PLAYER:
++	case GGZ_SEAT_ABANDONED:
+ 		break;
+ 	}
+ 
+Index: ggzd/tests/basic.c
+===================================================================
+RCS file: /var/lib/cvs/ggzd/tests/basic.c,v
+retrieving revision 1.13
+diff -u -r1.13 basic.c
+--- ggzd/tests/basic.c	28 Oct 2002 01:50:20 -0000	1.13
++++ ggzd/tests/basic.c	24 Jan 2005 20:19:02 -0000
+@@ -194,6 +194,8 @@
+ 		return "None";
+ 	case GGZ_SEAT_PLAYER: 
+ 		return "Player";
++	case GGZ_SEAT_ABANDONED:
++		return "Abandoned";
+ 	}
+ 
+ 	return "**Error**";
+Index: ggzd/tests/logmod.c
+===================================================================
+RCS file: /var/lib/cvs/ggzd/tests/logmod.c,v
+retrieving revision 1.10
+diff -u -r1.10 logmod.c
+--- ggzd/tests/logmod.c	11 Sep 2002 02:22:46 -0000	1.10
++++ ggzd/tests/logmod.c	24 Jan 2005 20:19:02 -0000
+@@ -61,7 +61,9 @@
+ 		case GGZ_SEAT_PLAYER:
+ 			printf("Received player seat\n");
+ 			break;
+-
++		case GGZ_SEAT_ABANDONED:
++			printf("Received abandoned seat\n");
++			break;
+ 		}	
+ 		if (type == GGZ_SEAT_RESERVED
+ 		    && ggz_read_string(fd, name, 1024) < 0) {
+Index: gtk-games/common/dlg_players.c
+===================================================================
+RCS file: /var/lib/cvs/ggz/game_clients/common/dlg_players.c,v
+retrieving revision 1.17
+diff -u -r1.17 dlg_players.c
+--- gtk-games/common/dlg_players.c	16 Nov 2004 05:20:59 -0000	1.17
++++ gtk-games/common/dlg_players.c	24 Jan 2005 20:19:03 -0000
+@@ -132,6 +132,10 @@
+ 			status = _("Reserved");
+ 			name = seat.name;
+ 			break;
++		case GGZ_SEAT_ABANDONED:
++			status = _("Abandoned");
++			name = seat.name;
++			break;
+ 		case GGZ_SEAT_NONE:
+ 			status = _("-");
+ 			name = seat.name;
+Index: libggz/src/ggz_common.c
+===================================================================
+RCS file: /var/lib/cvs/libggz/src/ggz_common.c,v
+retrieving revision 1.14
+diff -u -r1.14 ggz_common.c
+--- libggz/src/ggz_common.c	24 Jan 2005 06:03:21 -0000	1.14
++++ libggz/src/ggz_common.c	24 Jan 2005 20:19:04 -0000
+@@ -41,6 +41,7 @@
+ #define BOT_SEAT_NAME "bot"
+ #define PLAYER_SEAT_NAME "player"
+ #define RESERVED_SEAT_NAME "reserved"
++#define ABANDONED_SEAT_NAME "abandoned"
+ #define NONE_SEAT_NAME "none"
+ 
+ const char *ggz_seattype_to_string(GGZSeatType type)
+@@ -54,6 +55,8 @@
+ 		return RESERVED_SEAT_NAME;
+ 	case GGZ_SEAT_PLAYER:
+ 		return PLAYER_SEAT_NAME;
++	case GGZ_SEAT_ABANDONED:
++		return ABANDONED_SEAT_NAME;
+ 	case GGZ_SEAT_NONE:
+ 		return NONE_SEAT_NAME;
+ 	}
+@@ -79,6 +82,8 @@
+ 		return GGZ_SEAT_RESERVED;
+ 	else if (strcasecmp(type_str, PLAYER_SEAT_NAME) == 0)
+ 		return GGZ_SEAT_PLAYER;
++	else if (strcasecmp(type_str, ABANDONED_SEAT_NAME) == 0)
++		return GGZ_SEAT_ABANDONED;
+ 
+ 	return GGZ_SEAT_NONE;
+ }
+Index: libggz/src/ggz_common.h
+===================================================================
+RCS file: /var/lib/cvs/libggz/src/ggz_common.h,v
+retrieving revision 1.22
+diff -u -r1.22 ggz_common.h
+--- libggz/src/ggz_common.h	20 Jan 2005 05:51:06 -0000	1.22
++++ libggz/src/ggz_common.h	24 Jan 2005 20:19:04 -0000
+@@ -44,7 +44,8 @@
+ 	GGZ_SEAT_OPEN,		/**< The seat is open (unoccupied). */
+ 	GGZ_SEAT_BOT,		/**< The seat has a bot (AI) in it. */
+ 	GGZ_SEAT_PLAYER,	/**< The seat has a regular player in it. */
+-	GGZ_SEAT_RESERVED	/**< The seat is reserved for a player. */
++	GGZ_SEAT_RESERVED,	/**< The seat is reserved for a player. */
++	GGZ_SEAT_ABANDONED	/**< The seat is abandoned by a player. */
+ } GGZSeatType;
+ 
+ 
