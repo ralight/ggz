@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 6965 2005-03-10 10:36:49Z josef $
+ * $Id: ggz.h 6969 2005-03-10 12:27:03Z josef $
  * 
  * Header file for ggz components lib
  *
@@ -720,26 +720,24 @@ void ggz_list_destroy_str	(void *data);
 /**
  * @defgroup stack Stacks
  *
- * Data Structures and functions for manipulating stacks
+ * Data Structures and functions for manipulating stacks.
  *
  * @{
  */
 
-/** @brief Simple implementation of stacks using ::GGZList
- *
+/** @brief Simple implementation of stacks using ::GGZList.
  */
 typedef struct _GGZList GGZStack;
 
 
-
-/** @brief Create a new stack
+/** @brief Create a new stack.
  *
  * @return Pointer to a newly allocated ::GGZStack object
  */
 GGZStack* ggz_stack_new(void);
 
 
-/** @brief Push a data item onto the top of the stack
+/** @brief Push a data item onto the top of the stack.
  *
  * @param stack Pointer to a ::GGZStack
  * @param data Pointer to data to insert onto stack
@@ -747,7 +745,7 @@ GGZStack* ggz_stack_new(void);
 void ggz_stack_push(GGZStack *stack, void *data);
 
 
-/** @brief Pop the top item off of the stack
+/** @brief Pop the top item off of the stack.
  *
  * @param stack Pointer to a ::GGZStack
  * @return Pointer to the data item on the top of the stack
@@ -755,7 +753,7 @@ void ggz_stack_push(GGZStack *stack, void *data);
 void* ggz_stack_pop(GGZStack *stack);
 
 
-/** @brief Get the top item on the stack without popping it
+/** @brief Get the top item on the stack without popping it.
  *
  * @param stack Pointer to a ::GGZList
  * @return Pointer to the data item currently in to of the stack
@@ -763,9 +761,9 @@ void* ggz_stack_pop(GGZStack *stack);
 void* ggz_stack_top(GGZStack *stack);
 
 
-/** @brief Free the stack
+/** @brief Free the stack.
  *
- * @note This does not free the data stored in the stack
+ * @note This does not free the data stored in the stack.
  *
  * @param stack Pointer to a ::GGZStack
  */
@@ -776,7 +774,7 @@ void ggz_stack_free(GGZStack *stack);
 
 /**
  * @defgroup xml XML parsing 
- * 
+ *
  * Utility functions for doing simple XML parsing.  These can be used
  * with streaming XML parsers, and don't have the overhead of a full
  * DOM tree.  ::GGZXMLElement represents a single element, along with
@@ -787,11 +785,11 @@ void ggz_stack_free(GGZStack *stack);
  *
  * @{ */
 
-/** @brief Object representing a single XML element
+/** @brief Object representing a single XML element.
  *
  *  Except for "process", do not access these members directly.
  *  Instead use the provided accessor functions.  "process" is meant
- *  to be inovked as a method on instances of GGZXMLElement.
+ *  to be invoked as a method on instances of GGZXMLElement.
  */
 struct _GGZXMLElement {
 	
@@ -804,12 +802,12 @@ struct _GGZXMLElement {
 };
 
 
-/** @brief Object representing a single XML element
+/** @brief Object representing a single XML element.
  */
 typedef struct _GGZXMLElement GGZXMLElement;
 
 
-/** @brief Create a new ::GGZXMLElement element 
+/** @brief Create a new ::GGZXMLElement element.
  *
  * @param tag The name of the XML element (tag)
  * @param attrs NULL terminated array of attributes/values.  These must alternate: attribute1, value1, attribute2, value2, etc.
@@ -824,9 +822,9 @@ GGZXMLElement* ggz_xmlelement_new(const char *tag, const char * const *attrs,
 				  void (*process)(), void (*free)());
 
 
-/** @brief Initialize a ::GGZXMLElement
+/** @brief Initialize a ::GGZXMLElement.
  *
- * @param element Pointer to a ::GGZXMLElemtn to initialize
+ * @param element Pointer to a ::GGZXMLElement to initialize
  * @param tag The name of the XML element (tag)
  * @param attrs NULL terminated array of attributes/values.  These must alternate: attribute1, value1, attribute2, value2, etc.
  * @param process User-defined function for processing XML elements
@@ -841,7 +839,7 @@ void ggz_xmlelement_init(GGZXMLElement *element, const char *tag,
 			 void (*process)(), void (*free)());
 
 
-/** @brief Set ancillary data on a ::GGZXMLElement object
+/** @brief Set ancillary data on a ::GGZXMLElement object.
  *
  * Associate some extra data with an XML element.
  * 
@@ -852,7 +850,7 @@ void ggz_xmlelement_init(GGZXMLElement *element, const char *tag,
 void ggz_xmlelement_set_data(GGZXMLElement *element, void *data);
 
 
-/** @brief Get an XML element's name
+/** @brief Get an XML element's name.
  *
  * @param element Pointer to an XML element
  * @return The element's name
@@ -860,17 +858,17 @@ void ggz_xmlelement_set_data(GGZXMLElement *element, void *data);
 const char *ggz_xmlelement_get_tag(GGZXMLElement *element);
 
 
-/** @brief Get the value of an attribute on XML element
+/** @brief Get the value of an attribute on XML element.
  *
  * @param element Pointer to an XML element
- * @param attr An attribute name 
+ * @param attr An attribute name
  * @return The value of the attribute, or NULL is there is no such
  * attribute present 
  */
 const char *ggz_xmlelement_get_attr(GGZXMLElement *element, const char *attr);
 
 
-/** @brief Get the user-supplied data associated with an XML element
+/** @brief Get the user-supplied data associated with an XML element.
  *
  * @param element Pointer to an XML element
  * @return Pointer to the user-supplied data
@@ -878,7 +876,7 @@ const char *ggz_xmlelement_get_attr(GGZXMLElement *element, const char *attr);
 void* ggz_xmlelement_get_data(GGZXMLElement *element);
 
 
-/** @brief Get an XML element's content text
+/** @brief Get an XML element's content text.
  *
  * @param element Pointer to an XML element
  * @return The text content of the element
@@ -886,16 +884,16 @@ void* ggz_xmlelement_get_data(GGZXMLElement *element);
 char* ggz_xmlelement_get_text(GGZXMLElement *element);
 
 
-/** @brief Append a string to the element's content text
+/** @brief Append a string to the element's content text.
  *
  * @param element Pointer to an XML element
  * @param text String to append
- * @param len The string's length
+ * @param len The string's length, in bytes
  */
 void ggz_xmlelement_add_text(GGZXMLElement *element, const char *text, int len);
 
 
-/** @brief Free the memory associated with an XML element
+/** @brief Free the memory associated with an XML element.
  *
  * @param element Pointer to an XML element
  */
@@ -907,7 +905,7 @@ void ggz_xmlelement_free(GGZXMLElement *element);
 /**
  * @defgroup debug Debug/error logging
  * 
- * Functions for debugging and error messages
+ * Functions for debugging and error messages.
  * @{
  */
 
@@ -928,8 +926,8 @@ typedef enum {
  *  (no trailing newline will be appended).
  *
  *  @see ggz_debug_set_func
- *  @param priority The priority of the log, i.e. LOG_DEBUG; see syslog().
- *  @param msg The debugging output message.
+ *  @param priority The priority of the log, i.e. LOG_DEBUG; see syslog()
+ *  @param msg The debugging output message
  *  @note If your program is threaded, this function must be threadsafe.
  */
 typedef void (*GGZDebugHandlerFunc)(int priority, const char *msg);
@@ -938,8 +936,8 @@ typedef void (*GGZDebugHandlerFunc)(int priority, const char *msg);
  * @brief Initialize and configure debugging for the program.
  * 
  * This should be called early in the program to set up the debugging routines.
- * @param types A null-terminated list of arbitrary string debugging "types".
- * @param file A file to write debugging output to, or NULL for none.
+ * @param types A null-terminated list of arbitrary string debugging "types"
+ * @param file A file to write debugging output to, or NULL for none
  * @see ggz_debug
  */
 void ggz_debug_init(const char **types, const char* file);
@@ -951,8 +949,8 @@ void ggz_debug_init(const char **types, const char* file);
  *  function will be called to handle debugging output, overriding any
  *  file that had previously been specified.
  *
- *  @param func The new debug handler function.
- *  @return The previous debug handler function.
+ *  @param func The new debug handler function
+ *  @return The previous debug handler function
  *  @note This function is not threadsafe (re-entrant).
  */
 GGZDebugHandlerFunc ggz_debug_set_func(GGZDebugHandlerFunc func);
@@ -960,8 +958,8 @@ GGZDebugHandlerFunc ggz_debug_set_func(GGZDebugHandlerFunc func);
 /**
  * @brief Enable a specific type of debugging.
  *
- * Any ggz_debug calls that use that type will then be logged.
- * @param type The "type" of debugging to enable.
+ * Any ggz_debug() calls that use that type will then be logged.
+ * @param type The "type" of debugging to enable
  * @see ggz_debug
  */
 void ggz_debug_enable(const char *type);
@@ -969,9 +967,9 @@ void ggz_debug_enable(const char *type);
 /**
  * @brief Disable a specific type of debugging.
  *
- * Any ggz_debug calls that use the given type of debugging will then not be
+ * Any ggz_debug() calls that use the given type of debugging will then not be
  * logged.
- * @param type The "type" of debugging to disable.
+ * @param type The "type" of debugging to disable
  * @see ggz_debug
  */
 void ggz_debug_disable(const char *type);
@@ -982,7 +980,7 @@ void ggz_debug_disable(const char *type);
  * This function takes a debugging "type" as well as a printf-style list of
  * arguments.  It assembles the debugging message (printf-style) and logs it
  * if the given type of debugging is enabled.
- * @param type The "type" of debugging (similar to a loglevel).
+ * @param type The "type" of debugging (similar to a loglevel)
  * @param fmt A printf-style format string
  * @see ggz_debug_enable, ggz_debug_disable
  */
@@ -991,11 +989,11 @@ void ggz_debug(const char *type, const char *fmt, ...)
 
 /** @brief Log a notice message.
  *
- *  This function is nearly identical to ggz_debug, except that if the
+ *  This function is nearly identical to ggz_debug(), except that if the
  *  debugging output ends up passed to the debug handler function,
  *  the priority will be LOG_NOTICE instead of LOG_DEBUG.  This is only
  *  of interest to a few programs.
- *  @param type The "type" of debugging (similar to a loglevel).
+ *  @param type The "type" of debugging (similar to a loglevel)
  *  @param fmt A printf-style format string
  *  @see ggz_debug, ggz_debug_set_func
  */
@@ -1005,7 +1003,7 @@ void ggz_log(const char *type, const char *fmt, ...)
 /**
  * @brief Log a syscall error.
  *
- * This logs an error message in a similar manner to ggz_debug's debug
+ * This logs an error message in a similar manner to ggz_debug()'s debug
  * logging.  However, the logging is done regardless of whether
  * debugging is enabled or what debugging types are set.  errno and
  * strerror are also used to create a more useful message.
@@ -1018,7 +1016,7 @@ void ggz_error_sys(const char *fmt, ...)
 /**
  * @brief Log a fatal syscall error.
  *
- * This logs an error message just like ggz_error_sys, and also
+ * This logs an error message just like ggz_error_sys(), and also
  * exits the program.
  * @param fmt A printf-style format string
  */
@@ -1029,7 +1027,7 @@ void ggz_error_sys_exit(const char *fmt, ...)
 /**
  * @brief Log an error message.
  *
- * This logs an error message in a similar manner to ggz_debug's debug
+ * This logs an error message in a similar manner to ggz_debug()'s debug
  * logging.  However, the logging is done regardless of whether
  * debugging is enabled or what debugging types are set.
  * @param fmt A printf-style format string
@@ -1041,7 +1039,7 @@ void ggz_error_msg(const char *fmt, ...)
 /**
  * @brief Log a fatal error message.
  *
- * This logs an error message just like ggz_error_msg, and also
+ * This logs an error message just like ggz_error_msg(), and also
  * exits the program.
  * @param fmt A printf-style format string
  */
@@ -1055,7 +1053,7 @@ void ggz_error_msg_exit(const char *fmt, ...)
  * This function should be called right before the program exits.  It cleans
  * up all of the debugging state data, including writing out the memory check
  * data (if enabled) and closing the debugging file (if enabled).
- * @param check A mask of things to check.
+ * @param check A mask of things to check
  */
 void ggz_debug_cleanup(GGZCheckType check);
 
@@ -1072,8 +1070,8 @@ void ggz_debug_cleanup(GGZCheckType check);
  * Escape XML characters in a text string.
  * @param str The string to encode
  * @return A pointer to a dynamically allocated string with XML characters
- * replaced with ampersand tags, or NULL on error.
- * @note The dyanmic memory is allocated using ggz_malloc() and the caller is
+ * replaced with ampersand tags, or NULL on error
+ * @note The dynamic memory is allocated using ggz_malloc() and the caller is
  * expected to later free this memory using ggz_free().  If the original string
  * did not contain any characters which required escaping a ggz_strdup() copy
  * is returned.
@@ -1084,7 +1082,7 @@ char * ggz_xml_escape(const char *str);
  * Restore escaped XML characters into a text string.
  * @param str The string to decode
  * @return A pointer to a dynamically allocated string with XML ampersand tags
- * replaced with their normal ASCII characters, or NULL on error.
+ * replaced with their normal ASCII characters, or NULL on error
  * @note The dyanmic memory is allocated using ggz_malloc() and the caller is
  * expected to later free this memory using ggz_free().  If the original string
  * did not contain any characters which required decoding, a ggz_strdup() copy
@@ -1092,33 +1090,33 @@ char * ggz_xml_escape(const char *str);
  */
 char * ggz_xml_unescape(const char *str);
 
-/** @brief Structure used internally by ggz_read_line()
+/** @brief Structure used internally by ggz_read_line().
  */
 typedef struct _GGZFile GGZFile;
 
 /**
- * Setup a file structure to use with ggz_read_line()
+ * Setup a file structure to use with ggz_read_line().
  * @param fdes A preopened integer file descriptor to read from
- * @return A pointer to a dynamically allocated GGZFile structure
- * @note The user MUST have  opened the requested file for reading before
- * using this function.  When finished using ggz_read_line, the user should
+ * @return A pointer to a dynamically allocated ::GGZFile structure
+ * @note The user MUST have opened the requested file for reading before
+ * using this function.  When finished using ggz_read_line(), the user should
  * cleanup this struct using ggz_free_file_struct().
  */
 GGZFile * ggz_get_file_struct(int fdes);
 
 /**
- * Read a line of arbitrary length from a file
- * @param file A GGZFile structure allocated via ggz_get_file_struct()
+ * Read a line of arbitrary length from a file.
+ * @param file A ::GGZFile structure allocated via ggz_get_file_struct()
  * @return A NULL terminated line from the file of arbitrary length or
- * NULL at end of file.
- * @note The dyanmic memory is allocated using ggz_malloc() and the caller is
+ * NULL at end of file
+ * @note The dynamic memory is allocated using ggz_malloc() and the caller is
  * expected to later free this memory using ggz_free().
  */
 char * ggz_read_line(GGZFile *file);
 
 /**
- * Deallocate a file structure allocated via ggz_get_file_struct()
- * @param file A GGZFile structure allocated via ggz_get_file_struct()
+ * Deallocate a file structure allocated via ggz_get_file_struct().
+ * @param file A ::GGZFile structure allocated via ggz_get_file_struct()
  * @note The caller is expected to close the I/O file before or after
  * freeing the file structure.
  */
@@ -1126,13 +1124,15 @@ void ggz_free_file_struct(GGZFile *file);
 
 
 /**
- * String comparison function that is safe with NULLs
+ * String comparison function that is safe with NULLs.
  * @param s1 First string to compare
  * @param s2 Second string to compare
  * @return An integer less than, equal to, or greater than zero if s1
  * is found, respectively, to be less than, to match, or be greater
- * than s2.  NULL in considered to be less than any non-NULL string
- * and equal to itself */
+ * than s2
+ * @note NULL in considered to be less than any non-NULL string and
+ * equal to itself
+ */
 int ggz_strcmp(const char *s1, const char *s2);
 
 
