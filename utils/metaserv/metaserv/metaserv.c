@@ -215,9 +215,13 @@ static char *metaserv_lookup(const char *class, const char *category, const char
 						j++;
 						continue;
 					}
-					xmlret = (char*)realloc(xmlret, strlen(xmlret) + strlen(att[j]->name) * 2 + 5 + strlen(att[j]->value) + 1);
-					snprintf(tmp, sizeof(tmp), "<%s>%s</%s>", att[j]->name, att[j]->value, att[j]->name);
-					strcat(xmlret, tmp);
+					if(att[j]->value)
+					{
+						xmlret = (char*)realloc(xmlret, strlen(xmlret) + strlen(att[j]->name) * 2 + 5 + strlen(att[j]->value) + 1);
+						snprintf(tmp, sizeof(tmp), "<%s>%s</%s>", att[j]->name, att[j]->value, att[j]->name);
+						strcat(xmlret, tmp);
+					}
+					else logline("ALERT: key=%s without value", att[j]->name);
 					j++;
 				}
 
