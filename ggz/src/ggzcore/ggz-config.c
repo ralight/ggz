@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <popt.h>
+#include <stdlib.h>
 
 #include "config.h"
 #include "ggzcore.h"
@@ -43,6 +44,8 @@ static char *modui = NULL;
 static char *modproto = NULL;
 static char *modauthor = NULL;
 static char *modurl = NULL;
+static char *modicon = NULL;
+static char *modhelp = NULL;
 static int modforce = 0;
 static int install_mod = 0;
 static int remove_mod = 0;
@@ -73,6 +76,10 @@ static const struct poptOption args[] = {
 	 "[INSTALL] (RQD) - homepage to find the module", "URL"},
 	{"modversion",	'\0',	POPT_ARG_STRING,	&modversion,	0,
 	 "[INSTALL] (RQD) - set the module version", "VERSION"},
+	{"modicon",	'\0',	POPT_ARG_STRING,	&modicon,	0,
+	 "[INSTALL] (OPT) - set path to module icon", "FILENAME"},
+	{"modhelp",	'\0',	POPT_ARG_STRING,	&modhelp,	0,
+	 "[INSTALL] (OPT) - set path to main help file", "FILENAME"},
 
 	{"force",	'\0',	POPT_ARG_NONE,	&modforce,	0,
 	 "[INSTALL] (OPT) - overwrite an existing module"},
@@ -104,6 +111,32 @@ int purge_module_name(int global)
 		ggzcore_confio_remove_key(global, "Games", "GameList");
 
 	return 0;
+}
+
+
+char *new_module_id(int global)
+{
+	char **name_list, **mod_list;
+	int names, mods;
+	int hi=0, t;
+	int i, j;
+	static char new_id[10];
+
+	ggzcore_confio_read_list(global, "Games", "GameList",&names,&name_list);
+
+	for(i=0; i<names; i++) {
+		ggzcore_confio_read_list(global, "Games", name_list[i],
+						 &mods, &mod_list);
+		for(j=0; j<mods; j++) {
+			t = atoi(mod_list[j] + 1);
+			if(t > hi)
+				hi = t;
+		}
+	}
+
+	snprintf(new_id, 10, "g%d", hi+1);
+
+	return new_id;
 }
 
 
@@ -199,7 +232,7 @@ int open_conffile(void)
 
 int remove_module(void)
 {
-	char	*temp, *module_id;
+	char	*module_id;
 	int	global, rc;
 
 	if((global = open_conffile()) < 0)
@@ -232,26 +265,78 @@ int remove_module(void)
 
 int install_module(void)
 {
-	char	*temp;
+	char	*module_id;
 	int	global, rc;
+	char	*mod_list, *game_list;
+	char	bigstr[1024];
 
 	if((global = open_conffile()) < 0)
 		return global;
 
+	module_id = get_module_id(global);
 	if(!modforce) {
-		temp = ggzcore_confio_read_string(global, modname, "Version", NULL);
-		if(temp != NULL) {
+		if(module_id != NULL) {
 			fprintf(stderr, "Cannot overwrite existing module\n");
 			_ggzcore_confio_cleanup();
 			return -1;
 		}
 	}
 
-	rc = ggzcore_confio_write_string(global, modname, "Version", modversion);
-	rc |= ggzcore_confio_write_string(global, modname, "Path", modexec);
-	rc |= ggzcore_confio_commit(global);
-	if(rc != 0)
+	if(module_id == NULL) {
+		module_id = new_module_id(global);
+		modforce = 0;
+	}
+
+	rc = ggzcore_confio_write_string(global, module_id, "Name", modname);
+	if(rc == 0) {
+		ggzcore_confio_write_string(global, module_id,
+					    "Protocol", modproto);
+		ggzcore_confio_write_string(global, module_id,
+					    "Frontend", modui);
+		ggzcore_confio_write_string(global, module_id,
+					    "Version", modversion);
+		ggzcore_confio_write_string(global, module_id,
+					    "Author", modauthor);
+		ggzcore_confio_write_string(global, module_id,
+					    "ExecPath", modexec);
+		ggzcore_confio_write_string(global, module_id,
+					    "Homepage", modurl);
+		if(modicon)
+			ggzcore_confio_write_string(global, module_id,
+						    "IconPath", modicon);
+		if(modhelp)
+			ggzcore_confio_write_string(global, module_id,
+						    "HelpPath", modhelp);
+
+		mod_list = ggzcore_confio_read_string(global, "Games",
+						      modname, NULL);
+		if(mod_list == NULL && !modforce) {
+			ggzcore_confio_write_string(global, "Games",
+						    modname, module_id);
+			game_list = ggzcore_confio_read_string(global, "Games",
+						    "GameList", NULL);
+			if(game_list == NULL)
+				ggzcore_confio_write_string(global, "Games",
+						    "GameList", modname);
+			else {
+				snprintf(bigstr, 1024, "%s %s",
+					 game_list, modname);
+				ggzcore_confio_write_string(global, "Games",
+						    "GameList", bigstr);
+			}
+		} else if(!modforce) {
+			snprintf(bigstr, 1024, "%s %s", mod_list, module_id);
+			ggzcore_confio_write_string(global, "Games",
+					    	modname, bigstr);
+		}
+
+		rc = ggzcore_confio_commit(global);
+	}
+
+	if(rc != 0) {
+		fprintf(stderr, "ggz.modules configuration may be corrupt\n");
 		fprintf(stderr, "Module installation failed, see documentation");
+	}
 
 	_ggzcore_confio_cleanup();
 
