@@ -140,7 +140,6 @@ typedef struct {
 	int uid;
 	char name[MAX_USER_NAME_LEN + 1];	/* Room for \0 */
 	int fd;
-	char state;
 	pthread_t pid;
 	int table_index;
 	char ip_addr[16];

@@ -78,12 +78,6 @@
 #define GGZ_TABLE_PLAYING    2
 #define GGZ_TABLE_DONE       3
 
-/* Player state values */
-#define GGZ_USER_CONNECTED -1
-#define GGZ_USER_LOGGED_IN  0
-#define GGZ_USER_IN_ROOM    1
-#define GGZ_USER_PLAYING    2
-
 /* Table joining values */
 #define GGZ_TRANSIT_DIR    0x80
 #define GGZ_TRANSIT_JOIN   0x80
