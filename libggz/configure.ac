@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5857 2004-02-09 00:02:31Z jdorje $
+dnl $Id: configure.ac 5858 2004-02-09 00:34:29Z jdorje $
 
 AC_INIT([GGZ common libraries], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -37,7 +37,7 @@ AC_ARG_ENABLE([threading],
 # ======================
 AC_CHECK_HEADERS([fcntl.h sys/param.h], [],
                  [AC_MSG_ERROR([cannot find required header file])])
-AC_CHECK_HEADERS([arpa/inet.h netdb.h netinet/in.h sys/socket.h \
+AC_CHECK_HEADERS([arpa/inet.h netdb.h netinet/in.h sys/shm.h sys/socket.h \
                   sys/uio.h sys/un.h sys/wait.h winsock.h])
 
 
@@ -169,12 +169,14 @@ AC_EGREP_HEADER(msg_controllen, sys/socket.h,
 AC_CHECK_LIB(socket, socket, [LDADD="$LDADD -lsocket"])
 AC_CHECK_LIB(nsl, gethostbyname, [LDADD="$LDADD -lnsl"])
 
-AC_CHECK_FUNCS([gethostbyname getpagesize memmove memset mkdir socket \
+AC_CHECK_FUNCS([getpagesize memmove memset mkdir \
                 stat strcasecmp strerror strstr], [],
                [AC_MSG_ERROR([cannot find required function])])
+AC_CHECK_FUNCS([gethostbyname socket]) # These fail; dunno why
 AC_CHECK_FUNCS([alarm getuid inet_pton strtok strtok_r])
 AC_FUNC_FORK
-AC_FUNC_MALLOC
+# We don't support AC_FUNC_MALLOC yet.  Don't try to malloc(0).  See manual.
+#AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 AC_FUNC_REALLOC
 AC_FUNC_STAT

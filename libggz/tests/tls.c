@@ -6,18 +6,39 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
+#ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
+#endif
+#ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
+#endif
 /*#include <sys/mman.h>*/
+#ifdef HAVE_SYS_SHM_H
 #include <sys/shm.h>
+#endif
 #include <sys/stat.h>
+#ifndef NO_THREADING
 #include <pthread.h>
+#endif
 #include <signal.h>
 #include <stdlib.h>
 /*#include <fcntl.h>*/
 #include <errno.h>
 
 #include <ggz.h>
+
+#ifdef GGZ_TLS_NONE
+
+/* Don't bother with the test. */
+int main(int argc, char *argv[])
+{
+	printf("Cannot run test on this platform.\n");
+	return 0;
+}
+
+#else
+
+/* This test needs more autoconf help. */
 
 static char buffer[1024], buffer2[1024];
 static int shmid;
@@ -138,3 +159,4 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
+#endif
