@@ -1,4 +1,4 @@
-SUBDIRS = ggz-kde modsniff ggzap
+SUBDIRS = ggz-kde modsniff ggzap shadowbridge
 
 EXTRA_DIST = README.GGZ QuickStart.GGZ
 

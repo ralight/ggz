@@ -70,8 +70,8 @@ if test "$enable_ggzfinal" = yes; then
 	fi
 fi
 
-AC_DEFINE_UNQUOTED(KGGZ_DIRECTORY, "${kde_datadir_c}/kggz")
-dnl AC_DEFINE_UNQUOTED(KGGZ_BROWSER, ${kggzbrowservar})
+#AC_DEFINE_UNQUOTED(KGGZ_DIRECTORY, "${kde_datadir}/kggz")
+AC_DEFINE_UNQUOTED(KGGZ_DIRECTORY, "${prefix}/share/apps/kggz")
 
 AC_SUBST(SUBDIRS)
 AC_SUBST(COMPILEOPTIONS)
@@ -82,6 +82,8 @@ dnl Create Makefiles
 dnl ================
 
 AC_OUTPUT(Makefile
+	shadowbridge/Makefile
+	shadowbridge/pics/Makefile
 	modsniff/Makefile
 	ggzap/Makefile
 	ggz-kde/Makefile
