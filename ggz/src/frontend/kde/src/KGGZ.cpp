@@ -110,6 +110,7 @@ KGGZ::KGGZ(QWidget *parent, const char *name)
 	KGGZDEBUG("Initializing GGZCore...\n");
 	m_core = new GGZCore();
 	result = m_core->init(GGZCore::parser | GGZCore::modules, /*"/tmp/kggz.debug"*/NULL, GGZCore::all); // make a debug log configurable!
+	KGGZCommon::clear();
 	if(result == -1)
 	{
 		KGGZDEBUG("Critical: Could not initialize ggzcore!\n");
@@ -224,7 +225,8 @@ void KGGZ::slotConnectedStart()
 	kggzserver = new GGZCoreServer();
 	attachServerCallbacks();
 /* FIXME: ggzcore++ */
-ggzcore_server_log_session(kggzserver->server(), "/tmp/kggz-xml.log");
+ggzcore_server_log_session(kggzserver->server(), KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.xml-log"));
+KGGZCommon::clear();
 
 	kggzserver->setHost(m_save_host, m_save_port);
 	KGGZDEBUG("connect now!\n");
