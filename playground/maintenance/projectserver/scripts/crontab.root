@@ -1,2 +1,10 @@
 * * * * * /usr/bin/python /usr/lib/mailman/cron/qrunner
 
+#0 2 * * * /usr/lib/cgi-bin/awstats.pl -config=ggzcommunity.org >/dev/null
+0 2 * * * /usr/lib/cgi-bin/awstats.pl -config=ggzgamingzone.org >/dev/null
+
+0 3 * * * /root/listgraphs/produce-graphs.sh >/dev/null
+
+#10 */4 * * * /root/install-planets.sh
+20 5 * * * /root/install-dev.sh
+

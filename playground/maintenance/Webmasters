@@ -32,6 +32,9 @@ The menus are clever about using a common language (like en) if a browser only
 supports a region-specific language (like en-us). The content is not, as it is
 apache's task to find the correct page.
 
+The flags are shown on the bottom navigation bar if a page is available in a
+language. They do not indicate the currently used browser language.
+
 Maintenance
 -----------
 The script missingtranslation.pl should be called from time to time,
@@ -54,5 +57,5 @@ TODO
 
 Credits
 -------
-The flag icons are taked from the KDE project.
+The flag icons are taken from the KDE project.
 

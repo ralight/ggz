@@ -4,7 +4,7 @@ HTTP Structure:
 ggz                (redirect to www)
   +-www            (from www)
   |   +-games
-  |   +-admin
+  |   +-backend
   |   +-clients
   |   +-docs
   |   |   +-api    (generated)
@@ -18,6 +18,8 @@ ggz                (redirect to www)
   |   +-site
   |   +-utils
   +-dev            (content from www/dev)
+  | +-i18n
+  | +-art
   +-mail
     +-pipermail    (current archives, generated)
 	+-hypermail    (old archives, generated)
@@ -25,16 +27,20 @@ ggz                (redirect to www)
   +-bugs
     +-mantis       (external, only conf)
   +-live
-  +-rankings       (from playground/db2web)
-  +-pub
-    +-ggz
-	  +-<versions>
+  +-rankings       (deprecated, from playground/db2web)
+  +-ftp
+    +-pub
+      +-ggz
+      | +-<versions>
+      +-contrib
+      +-data       (hotstuff repository)
 
 Services (may be on different physical machines):
 
 http: htdig mail search (on mail)
       mailman subscription and archives (on mail)
       webcvs access (on cvs)
+	  lxr access (on cvs)
 mail: address forwards and project mailing lists
       ggz-announce, ggz-dev, ggz-cvs, ggz-bugs, ggz-servers
 live: permanent ggz server and database
@@ -44,13 +50,19 @@ cvs:  cvs server
 
 Redundancy:
 
-http: provides no redundancy
+http: redundancy through mirrors, via anonymous rsync:
+      * de.ggzgamingzone.org (www, ftp)
+      * fr.ggzgamingzone.org (www, ftp)
       goal: trusted (dynamic) or untrusted (static) mirror
       possible for mantis and rankings, not for webcvs and mailman interface
+ftp:  redundancy through download mirrors, via anonymous rsync:
+      * ftp://ftp.belnet.be/mirrors/ftp.ggzgamingzone.org
+	  * ftp://ftp.sunsite.dk/mirrors/ggzgamingzone
 mail: is supported by fail-over mx (mail.hostsharing.net)
       mailing lists are write-only!
-live: is supported by alternative server (uk.ggzgamingzone.org)
-      uses another database!
+live: provides no redundancy
+      could be supported by alternative server (...)
+      would use another database!
 bugs: provices no redundancy
       goal: not needed
 cvs:  provides no redundancy

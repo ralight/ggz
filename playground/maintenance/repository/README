@@ -1,0 +1,20 @@
+Operations executed on current CVS HEAD:
+
+dynamic.sh:
+ Script which calls create-ggzpots.sh and statistics-ggzpos.sh
+
+create-ggzpots.sh:
+ Tarball with all *.pot file for download
+
+statistics-art.sh:
+ What kind of graphics and how many of each do we have?
+
+statistics-ggzpos.sh:
+ How many catalogs are translated for each language?
+
+statistics-webpages.sh:
+ How many webpages are translated?
+
+The generated files are then installed into the dev/ section of the
+webpage, and used by the PHP scripts to display some statistics.
+

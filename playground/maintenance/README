@@ -1,6 +1,14 @@
+GGZ Gaming Zone Maintenance Scripts
+===================================
+
+The scripts included herein are used in production mode on the GGZ
+server, or intended to be used in relation to GGZ maintenance.
+
 debian-depgraph.sh:
- Generates an image which explains all the dependencies
- between GGZ packages.
+ For release dudes.
+ Generates an image which explains all the dependencies between GGZ packages.
+ This image is then made available via the documentation web site.
+ It is now more or less obsolete because of the architecture overview docs.
 
 makedist.sh:
  For release dudes.
@@ -10,7 +18,16 @@ missingtranslation.pl:
  For webmasters.
  See file Webmasters.
 
+getggz.sh:
+ For users.
+ Downloads a set of GGZ client or server packages and installs them locally.
+ Is always available from ftp://ftp.ggzgamingzone.org/pub/contrib/getggz.sh.
+
 projectserver/:
+ For hostmasters.
+ Comes with separate documentation.
+
+repository/:
  For hostmasters.
  Comes with separate documentation.
 
