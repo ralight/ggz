@@ -1,10 +1,11 @@
 ## Process this file with automake to produce Makefile.in
+# $Id: Makefile.am 3708 2002-03-28 08:14:12Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@
+INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/common/
 
 install-data-local:
 	@$(NORMAL_INSTALL)
@@ -31,5 +32,5 @@ ggz_lapocha_SOURCES = \
 	cards.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_lapocha_LDADD = @GTK_LIBS@ $(LDADD)
+ggz_lapocha_LDADD = @GTK_LIBS@ $(top_builddir)/common/libgtk-games.a $(LDADD)
 

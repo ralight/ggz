@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Callbacks for La Pocha main Gtk window
- * $Id: cb_main.c 3556 2002-03-15 14:41:08Z jdorje $
+ * $Id: cb_main.c 3708 2002-03-28 08:14:12Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -29,18 +29,31 @@
 
 #include <gtk/gtk.h>
 
+#include "dlg_exit.h"
+
 #include "cb_main.h"
 #include "dlg_main.h"
 #include "dlg_about.h"
+#include "game.h"
 #include "support.h"
 #include "table.h"
 
+
+static void try_to_quit(void)
+{
+	if (game.state == LP_STATE_INIT ||
+	    game.state == LP_STATE_WAIT ||
+	    game.state == LP_STATE_DONE)
+		gtk_main_quit();
+	else
+		ggz_show_exit_dialog(1);
+}
 
 void
 on_mnu_exit_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	gtk_main_quit();
+	try_to_quit();
 }
 
 
@@ -77,9 +90,9 @@ on_dlg_main_delete_event               (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data)
 {
-	gtk_main_quit();
+	try_to_quit();
 
-	return FALSE;
+	return TRUE;
 }
 
 
