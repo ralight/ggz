@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: 0.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-03-22 01:03+0100\n"
-"PO-Revision-Date: 1004-03-21 16:08+0400\n"
+"PO-Revision-Date: 2004-11-13 00:55+0100\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -136,24 +136,25 @@ msgstr "Habe ihn noch nie hier gesehen."
 
 #: ../modules/programming.c:33
 msgid "Java? You don't know _my_ skills!"
-msgstr ""
+msgstr "Java? Du weißt gar nicht, was _ich_ alles kann!"
 
 #: ../modules/programming.c:35
 msgid "I though Basic is for beginners only. You must be childish."
-msgstr ""
+msgstr "Ich dachte immer, Basic ist nur was für Kinder. Du mußt ja kindisch sein."
 
 #: ../modules/programming.c:37
 msgid "Don't talk about C. It's so crappy, nobody used it. .NET rulez."
-msgstr ""
+msgstr "Sprich nicht über C - est ist einfach nur schrecklich. .NET ist das einzig Wahre!"
 
 #: ../modules/programming.c:39
 msgid ""
 "Oh, I've learned that at school. However, it sucks when compared to Prolog."
 msgstr ""
+"Oh, das habe ich in der Schule gelernt. Aber es kommt nicht annähernd an Prolog ran."
 
 #: ../modules/programming.c:41
 msgid "Yeah, perl. I hate write-only languages."
-msgstr ""
+msgstr "Jaja, Perl. Ich hasse write-only-Sprachen."
 
 #: ../modules/self.c:100
 #, c-format

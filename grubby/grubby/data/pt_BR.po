@@ -1,4 +1,4 @@
-# Tradução dos dados de Grubby para Português Brasileiro
+# Tradução dos dados de Grubby para o Português Brasileiro
 # Copyright (C) 2004 Josef Spillner
 # This file is distributed under the same license as the ggz-grubby package.
 # Josef Spillner <josef@ggzgamingzone.org>, 2004.
@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: 0.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-03-22 01:03+0100\n"
-"PO-Revision-Date: 1004-03-21 16:08+0400\n"
+"PO-Revision-Date: 2004-11-14 00:38+0100\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Português Brasileiro <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,11 +22,11 @@ msgstr " é louco."
 
 #: ../modules/badword.c:101
 msgid "You aren't any better, bugger."
-msgstr "Você é não melhor, miserável."
+msgstr "Você não é melhor, miserável."
 
 #: ../modules/badword.c:106
 msgid "Watch your language please!"
-msgstr "Amigo, não usa estas palavras."
+msgstr "Amigo, não use estas palavras."
 
 #: ../modules/extra.c:114
 #, c-format
@@ -35,7 +35,7 @@ msgstr "Oi %s"
 
 #: ../modules/extra.c:138
 msgid "funny eh?"
-msgstr "é cómico?"
+msgstr "é cómico, ne?"
 
 #: ../modules/extra.c:142
 msgid "hehe"
@@ -55,11 +55,11 @@ msgstr "Bom, aprendei."
 
 #: ../modules/learning.c:127
 msgid "You're too curious - I don't know everything."
-msgstr "Você é curioso de mais - eu não sei tudo."
+msgstr "Você é curioso demais - eu não sei tudo."
 
 #: ../modules/people.c:66
 msgid "Nice to see you here again, "
-msgstr "Sou alegre de ver você de novo, "
+msgstr "Estou alegre de ver você de novo, "
 
 #: ../modules/people.c:71
 msgid ": Great you come here!"
@@ -67,7 +67,7 @@ msgstr ": Beleza!"
 
 #: ../modules/people.c:80
 msgid "Hi "
-msgstr "Alõ "
+msgstr "Olá "
 
 #: ../modules/people.c:82
 msgid ", I'm "
@@ -78,7 +78,7 @@ msgid ""
 ". I have never seen you before here.\n"
 "Type '"
 msgstr ""
-". Eu ainda não vi você aqui.\n"
+". Eu nunca vi você aqui.\n"
 "Aperte '"
 
 #: ../modules/people.c:86
@@ -91,7 +91,7 @@ msgstr "Até-mais, "
 
 #: ../modules/people.c:103
 msgid "Have a nice rest."
-msgstr "Fica bom."
+msgstr "Fique bom."
 
 #: ../modules/people.c:107
 msgid ": Don't stay away too long."
@@ -99,11 +99,11 @@ msgstr ": Volte logo."
 
 #: ../modules/people.c:111
 msgid "Eh, why has he gone?"
-msgstr "Hm, por que ele voltou?"
+msgstr "Hm, por quê ele saiu?"
 
 #: ../modules/people.c:157
 msgid "OK, registered your information."
-msgstr "Bom, salvei as suas informaçãos."
+msgstr "Bom, salvei as suas informações."
 
 #: ../modules/people.c:176
 msgid "Name"
@@ -115,15 +115,15 @@ msgstr "Contato"
 
 #: ../modules/people.c:176
 msgid "Language"
-msgstr "Linguagem"
+msgstr "Lingua"
 
 #: ../modules/people.c:179
 msgid "Sorry, I don't know who this is."
-msgstr "Desculpe, não conhesco."
+msgstr "Desculpe, não conheço o cara."
 
 #: ../modules/people.c:192
 msgid "I'm looking right at you now :)"
-msgstr "Esta pessoa é você :)"
+msgstr "Esta pessoa é você mesmo :)"
 
 #: ../modules/people.c:201
 #, c-format
@@ -132,28 +132,29 @@ msgstr "Sim, ele esteve aqui as %s"
 
 #: ../modules/people.c:204
 msgid "Nope, never seen this guy here."
-msgstr "Nunca encontrei ele aqui."
+msgstr "Nunca encontrei-o aqui."
 
 #: ../modules/programming.c:33
 msgid "Java? You don't know _my_ skills!"
-msgstr ""
+msgstr "Java? Você não sabe nada sobre o _meu_ poder."
 
 #: ../modules/programming.c:35
 msgid "I though Basic is for beginners only. You must be childish."
-msgstr ""
+msgstr "Eu sempre achei que o Basic é coisa das bixos. Você deve ser louco."
 
 #: ../modules/programming.c:37
 msgid "Don't talk about C. It's so crappy, nobody used it. .NET rulez."
-msgstr ""
+msgstr "Não fale sobre C, cara. É tão merda... ninguém vai usar. O .NET é ótimo."
 
 #: ../modules/programming.c:39
 msgid ""
 "Oh, I've learned that at school. However, it sucks when compared to Prolog."
 msgstr ""
+"Tá... aprendei na escola. Mas é nada em comparação com o Prolog."
 
 #: ../modules/programming.c:41
 msgid "Yeah, perl. I hate write-only languages."
-msgstr ""
+msgstr "Bah, Perl. Odeio as linguas para só escrever, nem ler."
 
 #: ../modules/self.c:100
 #, c-format
@@ -170,7 +171,7 @@ msgstr ""
 
 #: ../modules/self.c:112
 msgid "This is the list of public commands I understand:\n"
-msgstr "Esta é a lista das ordems que eu conheco:\n"
+msgstr "Esta é a lista das ordens que eu conheço:\n"
 
 #: ../modules/self.c:133
 msgid "about: let me tell about myself\n"
@@ -194,11 +195,11 @@ msgstr "tell <nick> <mensagem>: salvo mensagem para jogador nick\n"
 
 #: ../modules/self.c:150
 msgid "who is <nick>: request information about nick\n"
-msgstr "who is <nick>: mostro informaçãos sobre nick\n"
+msgstr "who is <nick>: mostro informações sobre nick\n"
 
 #: ../modules/self.c:152
 msgid "have you seen <nick>: ask me when I last saw nick\n"
-msgstr "have you seen <nick>: pergunte-me quando eu vi nick\n"
+msgstr "have you seen <nick>: me pergunte quando eu vi nick\n"
 
 #: ../modules/self.c:154
 msgid "my (email | pager) is <contact>: register contact information\n"
@@ -218,15 +219,15 @@ msgstr "<coisa> is <texto>: Vou aprender uma coisa\n"
 
 #: ../modules/self.c:165
 msgid "what is <thing>: Get information about a fact\n"
-msgstr "what is <coisa>: Receba informaçãos sobre uma coise\n"
+msgstr "what is <coisa>: Receba informações sobre uma coisa\n"
 
 #: ../modules/self.c:171
 msgid "i am from <countrycode>: register language\n"
-msgstr "i am from <countrycode>: Salvo a sua linguagem\n"
+msgstr "i am from <countrycode>: Salvo a sua lingua\n"
 
 #: ../modules/self.c:188
 msgid "No uptime information found."
-msgstr "Não achei as informaçãos sobre o uptime."
+msgstr "Não achei as informações sobre o uptime."
 
 #: ../modules/self.c:191
 #, c-format
@@ -235,11 +236,11 @@ msgstr "Eu estive aqui por %i horas e %i minutos."
 
 #: ../src/i18n.c:100
 msgid "Your language has been registered."
-msgstr "Gravei a sua linguagem."
+msgstr "Gravei a sua lingua."
 
 #: ../src/main.c:53
 msgid "Yes, I follow, my master."
-msgstr "Sim, de acordo, o mestre."
+msgstr "Sim, de acordo, o meu mestre."
 
 #: ../src/main.c:63
 msgid "Toggled logging."
@@ -247,39 +248,39 @@ msgstr "Logging comutando."
 
 #: ../src/module.c:259
 msgid "List of available modules:"
-msgstr "Lista dos mõdulos:"
+msgstr "Lista dos módulos:"
 
 #: ../src/module.c:260
 msgid "No modules loaded at all."
-msgstr "Nenhum mõdulo é ativo."
+msgstr "Nenhum módulo está ativado."
 
 #: ../src/module.c:330
 msgid "Module added."
-msgstr "Acrescentei o mõdulo."
+msgstr "Acrescentei o módulo."
 
 #: ../src/module.c:331
 msgid "Error: Could not add module."
-msgstr "Erro: Não pude acrescentar o mõdulo."
+msgstr "Erro: Não pude acrescentar o módulo."
 
 #: ../src/module.c:335
 msgid "Module removed."
-msgstr "Afastei o mõdulo."
+msgstr "Afastei o módulo."
 
 #: ../src/module.c:336
 msgid "Error: Could not remove module."
-msgstr "Erro: Não pude afastar o mõdulo."
+msgstr "Erro: Não pude afastar o módulo."
 
 #: ../src/module.c:341
 msgid "Module reloaded."
-msgstr "Acrescentei os mõdulos de novo."
+msgstr "Acrescentei os módulos de novo."
 
 #: ../src/module.c:342
 msgid "Error: Could not reload module."
-msgstr "Erro: Não pude acrescentar os mõdulos de novo."
+msgstr "Erro: Não pude acrescentar os módulos de novo."
 
 #: ../src/module.c:345
 msgid "Only my owner can change the module setup."
-msgstr "Somente o meu possuidor pode mudar o configuração."
+msgstr "Somente o meu possuidor pode mudar a configuração."
 
 #: ../../games/guru-chess/main.c:113
 msgid "This pawn move was great!"
@@ -291,7 +292,7 @@ msgstr "Acho que ele joga bem."
 
 #: dict.pl:31
 msgid "That's a word. Come on, I don't know your native language yet."
-msgstr "Isto é uma palavra. Eu ainda não sei o sua linguagem."
+msgstr "Isto é uma palavra. Eu ainda não sei a sua lingua."
 
 #: dict.pl:34
 msgid "What is what dude?"
@@ -320,5 +321,5 @@ msgstr "Tenho: slashdot, register, happypenguin, heise, worldforge"
 
 #: rdf.pl:74
 msgid "News source not available."
-msgstr "Fonte da novidade não accessível."
+msgstr "Fonte da novidade não está acessível."
 
