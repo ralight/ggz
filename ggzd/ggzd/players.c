@@ -336,6 +336,7 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 {
 	int status;
 	UserToControl op = (UserToControl)request;
+	char *junk_str;
 
 	switch (op) {
 	case REQ_LOGIN_ANON:
@@ -378,6 +379,7 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		break;
 
 	case REQ_LIST_ROOMS:
+	case REQ_ROOM_JOIN:
 		status = room_handle_request(request, p_index, p_fd);
 		break;
 
@@ -391,14 +393,17 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 		break;
 			
 	case REQ_CHAT:
-		pthread_rwlock_rdlock(&players.lock);
+		/* No lock needed, no one can change our room but us */
 		if(players.info[p_index].room == -1) {
-			pthread_rwlock_unlock(&players.lock);
-			status = player_chat(p_index, p_fd);
-		} else {
-			pthread_rwlock_unlock(&players.lock);
+			if(es_read_string_alloc(p_fd, &junk_str) < 0
+			   || es_write_int(p_fd, RSP_CHAT) < 0
+			   || es_write_char(p_fd, -1) < 0)
+				status = -1;
+			else
+				status = 0;
+			free(junk_str);
+		} else
 			status = player_handle_chat_enqueue(p_index, p_fd);
-		}
 		break;
 
 	case REQ_MOTD:
@@ -440,10 +445,8 @@ static void player_remove(int p_index)
 	players.count--;
 	players.timestamp = time(NULL);
 
-	if (players.info[p_index].room == -1) {
-		chat_mark_all_read(p_index);
-		pthread_rwlock_unlock(&players.lock);
-	} else {
+	pthread_rwlock_unlock(&players.lock);
+	if (players.info[p_index].room != -1) {
 		pthread_rwlock_unlock(&players.lock);
 		room_join(p_index, -1);
 		/*room_dequeue_personal(p_index);*/
@@ -501,20 +504,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 		return GGZ_REQ_DISCONNECT;
 	
 	/* Send any unread chats */
-	pthread_rwlock_rdlock(&players.lock);
-	if(players.info[p].room == -1) {
-		pthread_rwlock_unlock(&players.lock);
-		count = chat_check_num_unread(p);
-		for (i = 0; (i < MAX_CHAT_BUFFER && count > 0) ; i++)
-			if (chat_check_unread(p, i)) {
-				chat_get(i, player, chat);
-				chat_mark_read(p, i);
-				if (player_send_chat(p, fd, player, chat) < 0)
-					return(-1);
-				count--;
-			}
-	} else {
-		pthread_rwlock_unlock(&players.lock);
+	if(players.info[p].room != -1) {
 		if(room_send_chat(p) < 0)
 			return -1;
 	}
@@ -642,8 +632,6 @@ static int player_login_anon(int p, int fd)
 	else
 		log_msg(GGZ_LOG_CONNECTION_INFO,
 			"Anonymous player %s logged in from %s", name, ip_addr);
-
-	room_join(p, 0);
 
 	return 0;
 }
@@ -1183,22 +1171,7 @@ int player_handle_chat_enqueue(int p_index, int p_fd)
 
 	dbg_msg(GGZ_DBG_CHAT, "(message is) %s", msg);
 
-	/* Garish hack for now to change rooms */
-	if(!strncmp(msg, "/join", 5)) {
-		if(strlen(msg) > 6) {
-			room = atoi(msg+6);
-			if(room >= 0 && room < opt.num_rooms)
-				room_join(p_index, room);
-		}
-		free(msg);
-
-		/* We always tell them it worked, because we are antisocial */
-		status = 0;
-	} else if(!strncmp(msg, "/msg", 4)) {
-		status = room_pemit(room, p_index, msg);
-	} else {
-		status = room_emit(room, p_index, msg);
-	}
+	status = room_emit(room, p_index, msg);
 
 	if (es_write_int(p_fd, RSP_CHAT) < 0
 	    || es_write_char(p_fd, status) < 0)

@@ -49,6 +49,7 @@ static void room_spew_chat_room(const int);
 static void room_notify_change(const int, const int, const int);
 static void room_dequeue_chat(const int p);
 static int room_list_send(const int p_fd);
+static int room_handle_join(const int, const int);
 
 
 /* Handle opcodes from player_handle() */
@@ -59,6 +60,9 @@ int room_handle_request(const int request, const int p, const int p_fd)
 	switch(request) {
 		case REQ_LIST_ROOMS:
 			status = room_list_send(p_fd);
+			break;
+		case REQ_ROOM_JOIN:
+			status = room_handle_join(p, p_fd);
 			break;
 		default:
 			/* player_handle() sent us an invalid opcode	*/
@@ -170,6 +174,35 @@ void room_create_additional(void)
 #ifdef DEBUG
 	chat_room[opt.num_rooms-1].chat_head = NULL;
 #endif
+}
+
+
+/* Handle the REQ_ROOM_JOIN opcode */
+int room_handle_join(const int p_index, const int p_fd)
+{
+	int room, result;
+
+	/* Get the user's room request */
+	if(es_read_int(p_fd, &room) < 0)
+		return -1;
+
+	/* Send a RSP_ROOM_JOIN */
+	if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0)
+		return -1;
+
+	/* Check for silliness from the user */
+	if(room > opt.num_rooms || room < 0)
+		if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
+		   || es_write_char(p_fd, E_BAD_OPTIONS) < 0)
+			return -1;
+
+	/* Do the actual room change, and return results */
+	result = room_join(p_index, room);
+	if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
+	   || es_write_char(p_fd, result) < 0)
+		return -1;
+
+	return 0;
 }
 
 

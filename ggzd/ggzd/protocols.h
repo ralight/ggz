@@ -44,7 +44,9 @@ typedef enum {
 
 	REQ_GAME,
 	REQ_CHAT,
-        REQ_MOTD
+        REQ_MOTD,
+
+	REQ_ROOM_JOIN
 } UserToControl;
 
 
@@ -78,7 +80,9 @@ typedef enum {
 
 	RSP_GAME,
 	RSP_CHAT,
-        RSP_MOTD
+        RSP_MOTD,
+
+	RSP_ROOM_JOIN
 } ControlToUser;
 
 
