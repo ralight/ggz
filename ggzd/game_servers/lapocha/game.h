@@ -101,5 +101,7 @@ struct lp_game_t {
 extern struct lp_game_t game;
 
 extern void game_init(void);
-extern int game_handle_ggz(int, int *);
-extern int game_handle_player(int);
+
+/* GGZ handler functions */
+extern int game_handle_ggz(int, void *);
+extern int game_handle_player(int, void*);

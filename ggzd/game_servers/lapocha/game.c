@@ -70,45 +70,28 @@ void game_init(void)
 
 
 /* Handle message from GGZ server */
-int game_handle_ggz(int ggz_fd, int* p_fd)
+int game_handle_ggz(int event, void* data)
 {
-	int op, seat, status = -1;
-
-	if(es_read_int(ggz_fd, &op) < 0)
-		return -1;
-
-	switch(op) {
-		case REQ_GAME_LAUNCH:
-			if(ggzdmod_game_launch() == 0)
-				status = game_update(LP_EVENT_LAUNCH, NULL);
-			break;
-		case REQ_GAME_JOIN:
-			if(ggzdmod_player_join(&seat, p_fd) == 0) {
-				status = game_update(LP_EVENT_JOIN, &seat);
-				status = 1;
-			}
-			break;
-		case REQ_GAME_LEAVE:
-			if((status = ggzdmod_player_leave(&seat, p_fd)) == 0) {
-				game_update(LP_EVENT_LEAVE, &seat);
-				status = 2;
-			}
-			break;
-		case RSP_GAME_OVER:
-			status = 3; /* Signal safe to exit */
-			break;
+	switch(event) {
+		case GGZ_EVENT_LAUNCH:
+			return game_update(LP_EVENT_LAUNCH, NULL);
+		case GGZ_EVENT_JOIN:
+			return game_update(LP_EVENT_JOIN, (int*)data);
+		case GGZ_EVENT_LEAVE:
+			return game_update(LP_EVENT_LEAVE, (int*)data);
+		case GGZ_EVENT_QUIT:
+			return 0;
 		default:
 			/* Unrecognized opcode */
-			status = -1;
-			break;
+			return -1;
 	}
-	return status;
 }
 
 
 /* Handle message from player */
-int game_handle_player(int num)
+int game_handle_player(int event, void* data)
 {
+	int num = *(int*)data;
 	int fd, op, status;
 	char bid, card;
 

@@ -35,70 +35,22 @@
 
 int main(void)
 {
-	char game_over = 0;
-	int i, fd, ggz_sock, fd_max, status;
-	fd_set active_fd_set, read_fd_set;
-	
-	if ( (ggz_sock = ggzdmod_connect()) < 0)
-		return -1;
-
 	/* Seed the random number generator */
 	srandom((unsigned)time(NULL));
-	
-	FD_ZERO(&active_fd_set);
-	FD_SET(ggz_sock, &active_fd_set);
 
 	game_init();
-	while(!game_over) {
-		
-		read_fd_set = active_fd_set;
-		fd_max = ggzdmod_fd_max();
-		
-		status = select((fd_max+1), &read_fd_set, NULL, NULL, NULL);
-		
-		if (status <= 0) {
-			if (errno == EINTR)
-				continue;
-			else
-				return -1;
-		}
 
-		/* Check for message from GGZ server */
-		if (FD_ISSET(ggz_sock, &read_fd_set)) {
-			status = game_handle_ggz(ggz_sock, &fd);
-			switch (status) {
-				
-			case -1:  /* Big error!! */
-				return -1;
-				
-			case 0: /* All ok, how boring! */
-				break;
+	/* FIXME: game_handle_ggz is useless; it just calls
+	 * another function right away.  That other function
+	 * should be the handler instead. --JDS */
+	ggzdmod_set_handler(GGZ_EVENT_LAUNCH, &game_handle_ggz);
+	ggzdmod_set_handler(GGZ_EVENT_JOIN, &game_handle_ggz);
+	ggzdmod_set_handler(GGZ_EVENT_LEAVE, &game_handle_ggz);
+	ggzdmod_set_handler(GGZ_EVENT_QUIT, &game_handle_ggz);
+	ggzdmod_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
 
-			case 1: /* A player joined */
-				FD_SET(fd, &active_fd_set);
-				break;
-				
-			case 2: /* A player left */
-				FD_CLR(fd, &active_fd_set);
-				break;
-				
-			case 3: /*Safe to exit */
-				game_over = 1;
-				break;
-			}
-		}
+	if (ggzdmod_main() < 0)
+		return -1;
 
-		/* Check for message from player */
-		for (i = 0; i < ggzdmod_seats_num(); i++) {
-			fd = ggz_seats[i].fd;
-			if (fd != -1 && FD_ISSET(fd, &read_fd_set)) {
-				status = game_handle_player(i);
-				if (status == -1)
-					FD_CLR(fd, &active_fd_set);
-			}
-		}
-	}
-
-	(void)ggzdmod_disconnect();
 	return 0;
 }
