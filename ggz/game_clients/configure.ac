@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6245 2004-11-03 22:00:55Z jdorje $
+dnl $Id: configure.ac 6254 2004-11-04 17:05:31Z josef $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -9,7 +9,7 @@ if test -r $srcdir/package; then
 fi
 
 DEFAULT_PACKAGE="ggz-gtk-games"
-DEFAULT_VERSION="0.0.9"
+DEFAULT_VERSION="0.0.10pre"
 DEFAULT_SUBDIRS="chess chinese-checkers combat dots ggzcards hastings reversi spades tictactoe"
 
 dnl If an override is present, use it
@@ -116,6 +116,9 @@ RSVG_CFLAGS=`$PKG_CONFIG librsvg-2.0 --cflags`
 AC_SUBST(RSVG_CFLAGS)
 RSVG_LIBS=`$PKG_CONFIG librsvg-2.0 --libs`
 AC_SUBST(RSVG_LIBS)
+if test "x$RSVG_CFLAGS" = "x" || test "x$RSVG_LIBS" = "x"; then
+	AC_MSG_ERROR([*** SVG libraries (rsvg) not found])
+fi
 
 dnl Debug modes
 dnl ===========
