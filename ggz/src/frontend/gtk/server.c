@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Client
  * Date: 6/19/00
- * $Id: server.c 5197 2002-11-04 00:31:34Z jdorje $
+ * $Id: server.c 5204 2002-11-04 05:38:41Z jdorje $
  *
  * This file contains functions for handling server client profiles
  *
@@ -216,15 +216,14 @@ static void server_list_print(void)
 
 static void server_print(gpointer server, gpointer data)
 {
-#ifdef DEBUG
-	g_print("Profile name: %s\n", ((Server*)server)->name);
-        g_print("  Host %s:%d\n", ((Server*)server)->host, 
-                ((Server*)server)->port);
-        g_print("  Login type: %d\n", ((Server*)server)->type);
-        g_print("  Login: %s\n", ((Server*)server)->login);
+	ggz_debug("servers", "Profile name: %s\n", ((Server*)server)->name);
+        ggz_debug("servers", "  Host %s:%d\n", ((Server*)server)->host, 
+		  ((Server*)server)->port);
+        ggz_debug("servers", "  Login type: %d\n", ((Server*)server)->type);
+        ggz_debug("servers", "  Login: %s\n", ((Server*)server)->login);
         if (((Server*)server)->type == GGZ_LOGIN)
-                g_print("  Password: %s\n", ((Server*)server)->password);
-#endif
+                ggz_debug("servers",
+			  "  Password: %s\n", ((Server*)server)->password);
 }
 
 
