@@ -67,8 +67,8 @@ int main(int argc, char *argv[])
 
 	/* This could be the default values. But we code in C here. */
 	opt.flags = GGZ_OPT_MODULES | GGZ_OPT_PARSER;
-	opt.debug_file = NULL;
-	opt.debug_levels = 0;
+	/*opt.debug_file = NULL;
+	opt.debug_levels = 0;*/
 
 	/* We just announce us the the world. */
 	if(gethostname(hostname, sizeof(hostname))) strcpy(hostname, "[unknown]");
