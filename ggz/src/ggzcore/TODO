@@ -1,19 +1,19 @@
 - redo GGZTable to store actual seat information, not open/bots/etc.
 
+- Finish GGZGame and table launching functionality
+
 - finish up room object: table lists updates
 
 - Remove the ggzcore_server_get_XXX_names() function
 
 - Fix the player/table pointing problem
 
-- Implement ggzcore_strdup() to use ggzcore_malloc() and return NULL
-  if passed NULL (instead of segfaulting)
+- Convert to ggzcore_strdup()
+
 
 - Provide a GGZ_AUTOLOAD option to automatically load room and type
   lists (and motd?) upon logging in and the player and table lists
   upon entering a room.
-
-- Implement GGZGame to handle forking/communication game process
 
 - Reimplement net functionality as its own object
 
