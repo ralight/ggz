@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6588 2005-01-05 18:00:09Z josef $
+dnl $Id: configure.ac 6658 2005-01-14 02:42:11Z jdorje $
 
 AC_INIT([GGZ server], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-server])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -48,6 +48,7 @@ AC_GGZ_LIBGGZ
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h netdb.h netinet/in.h \
                   sys/time.h syslog.h termios.h], [],
                  [AC_MSG_ERROR([cannot find required header file])])
+AC_CHECK_HEADERS([stdint.h])
 AC_HEADER_STDBOOL # FIXME: need header file support
 AC_HEADER_TIME
 
@@ -59,6 +60,7 @@ AC_TYPE_SIZE_T
 AC_TYPE_SIGNAL
 AC_TYPE_MODE_T
 AC_STRUCT_TM
+AC_CHECK_TYPES([uint8_t])
 
 # Check for PF_LOCAL/PF_UNIX
 # ==========================
