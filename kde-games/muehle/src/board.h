@@ -88,6 +88,8 @@ class Board : public QWidget
 		int m_wait;
 		int m_whitescore, m_blackscore;
 		int m_whitestones, m_blackstones;
+		int m_repaint;
+		int m_width, m_height;
 };
 
 #endif

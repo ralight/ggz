@@ -66,6 +66,8 @@ Board::Board(QWidget *parent, const char *name)
 	setVariant("classic");
 
 	stonelist.setAutoDelete(true);
+
+	m_repaint = 0;
 }
 
 // Destructor
@@ -146,20 +148,30 @@ void Board::paintEvent(QPaintEvent *e)
 {
 	QExtPainter p;
 	QPixmap tmp;
+	int smaller;
+
+	if(width() != height())
+	{
+		smaller = width();
+		if(height() < smaller) smaller = height();
+		resize(smaller, smaller);
+		return;
+	}
 
 	if(!web) return;
+	if(!m_repaint) return;
 
-	//bg->resize(width(), height());
+	m_repaint = 0;
+
 	tmp.resize(width(), height());
 	p.begin(&tmp);
 	p.setPen(QPen(QColor(0, 0, 0), 3));
-	p.drawTiledPixmap(0, 0, width(), height(), *bg);
 
+	p.drawTiledPixmap(0, 0, width(), height(), *bg);
 	p.drawWeb(*web);
 
 	float x = web->scale();
 	for(Stone *s = stonelist.first(); s; s = stonelist.next())
-		//p.drawPixmap(x * s->x() - 32, x * s->y() - 32, (s->owner() ? black : white));
 		paintStone(&tmp, &p, (int)(x * s->x() - white->width() / 2),
 			(int)(x * s->y() - white->height() / 2), s->owner());
 
@@ -171,18 +183,10 @@ void Board::paintEvent(QPaintEvent *e)
 // Resize the board properly
 void Board::resizeEvent(QResizeEvent *e)
 {
-	int smaller;
-
-	if(width() != height())
+	if(width() == height())	
 	{
-		smaller = width();
-		if(height() < smaller) smaller = height();
-		resize(smaller, smaller);
-	}
-	else
-	{
+		m_repaint = 1;
 		move((parentWidget()->width() - width()) / 2, (parentWidget()->height() - height()) / 2);
-		repaint();
 		if(web) web->setScale(width() / 100.0);
 	}
 }
@@ -211,6 +215,7 @@ void Board::mousePressEvent(QMouseEvent *e)
 		KMessageBox::sorry(this, i18n("This game has already finished."), i18n("Client message"));
 		return;
 	}
+	m_repaint = 1;
 
 	// Translate coordinates into qweb representation
 	x = (int)(e->x() / web->scale());
@@ -350,8 +355,6 @@ void Board::mousePressEvent(QMouseEvent *e)
 			}
 			else
 			{
-				// FIXME: this is a pseudo win situation
-				//emit signalEnd();
 				if(m_phase == phaseset)
 				{
 					m_phase = phasemove;
@@ -373,7 +376,6 @@ void Board::check(int x, int y, Stone *stone)
 	int xrow, yrow, xrows, yrows;
 	int color;
 
-kdDebug(12101) << "scen 1.2" << endl;
 	// Check for turn-win situation (muehle)
 	xrow = x;
 	yrow = y;
@@ -381,7 +383,6 @@ kdDebug(12101) << "scen 1.2" << endl;
 	yrows = 0;
 	pointlist = web->pointlist();
 	QWebPoint *xp;
-kdDebug(12101) << "scen 1.2.5" << endl;
 	for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
 		if((p->point().x() == x) && (p->point().y() == y)) xp = p;
 	peerlist = xp->peerlist();
@@ -393,7 +394,6 @@ kdDebug(12101) << "scen 1.2.5" << endl;
 	path = new QWebPath(web, xp);
 	path->create(2);
 	pointlist = path->pathlist();
-
 
 	// Look for longest stones-in-a-row
 	for(QWebPoint *p = pointlist.first(); p; p = pointlist.next())
@@ -428,7 +428,6 @@ kdDebug(12101) << "scen 1.2.5" << endl;
 	// Muehle!
 	if((xrows == 3) || (yrows == 3))
 	{
-		/*KMessageBox::information(this, i18n("You have won the game!"), i18n("Client message"));*/
 		if(((m_color == colorwhite) && (stone->owner() == Stone::whitemuehle))
 		|| ((m_color == colorblack) && (stone->owner() == Stone::blackmuehle)))
 		{
@@ -445,20 +444,6 @@ kdDebug(12101) << "scen 1.2.5" << endl;
 			kdDebug(12101) << "GIVE" << endl;
 		}
 
-		/*if(stone->owner() == Stone::whitemuehle)
-		{
-			if(m_color == colorwhite)
-				emit signalScore(i18n("White"), Toplevel::statusplayer, ++m_whitescore, m_whitestones);
-			else
-				emit signalScore(i18n("White"), Toplevel::statusopponent, ++m_whitescore, m_whitestones);
-		}
-		else
-		{
-			if(m_color == colorwhite)
-				emit signalScore(i18n("Black"), Toplevel::statusopponent, ++m_blackscore, m_blackstones);
-			else
-				emit signalScore(i18n("Black"), Toplevel::statusplayer, ++m_blackscore, m_blackstones);
-		}*/
 		if(stone->owner() == Stone::whitemuehle) m_whitescore++;
 		else if(stone->owner() == Stone::blackmuehle) m_blackscore++;
 
@@ -475,6 +460,7 @@ kdDebug(12101) << "scen 1.2.5" << endl;
 
 	delete path;
 
+	m_repaint = 1;
 	repaint();
 }
 
@@ -505,6 +491,7 @@ void Board::setTheme(const QString &theme)
 
 	parentWidget()->setBackgroundPixmap(*bg);
 
+	m_repaint = 1;
 	repaint();
 }
 
@@ -674,6 +661,7 @@ void Board::slotInput()
 							stonelist.remove(stone);
 					m_wait = 0;
 					resetStones();
+					m_repaint = 1;
 					repaint();
 				}
 				if(!m_wait)

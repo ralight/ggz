@@ -29,6 +29,9 @@
 #include <kdebug.h>
 #include <klocale.h>
 
+// Qt includes
+#include <qlayout.h>
+
 // Configuration includes
 #include "config.h"
 
@@ -40,6 +43,8 @@ Toplevel::Toplevel()
 	int counter;
 	KStandardDirs d;
 	QString s;
+	QWidget *root;
+	QVBoxLayout *vbox;
 
 	menu_game = new KPopupMenu(this);
 	menu_game->insertItem(i18n("Start new game"), menugamenew);
@@ -90,8 +95,12 @@ Toplevel::Toplevel()
 	statusBar()->insertItem("", statusopponent, 2);
 	statusBar()->insertItem(i18n("Welcome to Muehle."), statushint, 2);
 
-	board = new Board(this);
-	setCentralWidget(board);
+	root = new QWidget(this);
+	board = new Board(root);
+	vbox = new QVBoxLayout(root);
+	vbox->add(board);
+
+	setCentralWidget(root);
 	show();
 
 	connect(menu_game, SIGNAL(activated(int)), SLOT(slotMenu(int)));
