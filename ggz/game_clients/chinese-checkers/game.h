@@ -51,3 +51,4 @@ extern void game_init_board(void);
 extern void game_handle_click_event(int, int);
 extern void game_notify_our_turn(void);
 extern void game_opponent_move(int, int, int, int, int);
+extern void game_handle_sync(int);

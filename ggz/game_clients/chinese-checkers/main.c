@@ -44,6 +44,7 @@ static int get_players(void);
 static int get_opponent_move(void);
 static int get_move_response(void);
 static int get_gameover_msg(void);
+static int get_sync_data(void);
 
 
 int main(int argc, char *argv[])
@@ -81,6 +82,9 @@ void main_io_handler(gpointer data, gint source, GdkInputCondition cond)
 		case CC_MSG_GAMEOVER:
 			status = get_gameover_msg();
 			break;
+		case CC_MSG_SYNC:
+			status = get_sync_data();
+			break;
 		case CC_REQ_MOVE:
 			game_notify_our_turn();
 			break;
@@ -115,20 +119,36 @@ static int get_seat(void)
 
 static int get_players(void)
 {
-	int i;
+	int i, old;
+	static int firsttime=1;
+	char *tmp;
 
 	if(es_read_int(game.fd, &game.players) < 0)
 		return -1;
 	for(i=0; i<game.players; i++) {
+		old = game.seats[i];
 		if(es_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
 		if(game.seats[i] != GGZ_SEAT_OPEN) {
 			if(es_read_string(game.fd, (char*)&game.names[i], 17)<0)
 				return -1;
 			display_set_name(i, game.names[i]);
+			if(old == GGZ_SEAT_OPEN && !firsttime) {
+				tmp = g_strdup_printf("%s joined the table",
+						      game.names[i]);
+				display_statusbar(tmp);
+				g_free(tmp);
+			}
+		} else if(old != GGZ_SEAT_OPEN && !firsttime) {
+			tmp = g_strdup_printf("%s left the table",
+					      game.names[i]);
+			display_statusbar(tmp);	
+			g_free(tmp);
+			display_set_name(i, "empty");
 		}
 	}
 
+	firsttime = 0;
 	game.got_players++;
 
 	return 0;
@@ -160,10 +180,22 @@ static int get_move_response(void)
 	if(es_read_char(game.fd, &status) < 0)
 		return -1;
 
-	if(status == 0)
-		display_statusbar("Move accepted, waiting for opponents");
+	switch(status) {
+		case 0:
+			display_statusbar("Move accepted, waiting for opponents");
+			break;
+		case CC_ERR_STATE:
+			display_statusbar("Cannot accept move until table is full");
+			es_write_int(game.fd, CC_REQ_SYNC);
+			game.my_turn = 0;
+			break;
+		default:
+			fprintf(stderr, "Err, CC_RSP_MOVE = %d\n", (int)status);
+			return status;
+			break;
+	}
 
-	return status;
+	return 0;
 }
 
 
@@ -183,6 +215,21 @@ static int get_gameover_msg(void)
 	display_statusbar(msg);
 	if(winner != game.me)
 		g_free(msg);
+
+	return 0;
+}
+
+
+static int get_sync_data(void)
+{
+	int i, j;
+
+	for(i=0; i<17; i++)
+		for(j=0; j<25; j++)
+			if(es_read_char(game.fd, &game.board[i][j]) < 0)
+				return -1;
+
+	display_refresh_board();
 
 	return 0;
 }
