@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulation routines for card games
- * $Id: cards.h 2190 2001-08-23 08:06:05Z jdorje $
+ * $Id: cards.h 2386 2001-09-07 09:45:15Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -27,31 +27,7 @@
 
 #ifndef GGZ_CARDS_INCLUDED
 
-/* a card */
-typedef struct card_t
-{
-#define UNKNOWN_FACE -1
-#define JACK 11
-#define QUEEN 12
-#define KING 13
-#define ACE_HIGH 14
-#define ACE_LOW 1
-#define JOKER1 0
-#define JOKER2 1
-	char face;		/* -1: unknown, 1-13: A-K, 14: A
-				 *                for "none" suit, 0-1 are jokers */
-#define UNKNOWN_SUIT -1
-#define CLUBS 0
-#define DIAMONDS 1
-#define HEARTS 2
-#define SPADES 3
-#define NO_SUIT 4
-	char suit;		/* -1: unknown, 0-3: clubs-spades; 4: none */
-#define UNKNOWN_DECK -1
-	char deck;		/* -1: unknown, 0+: the deck number */
-}
-card_t;
-#define UNKNOWN_CARD (card_t){-1, -1, -1}
+#include "protocol.h" /* contains actual card structures */
 
 extern char *suit_names[];
 extern char *short_suit_names[];
@@ -94,9 +70,6 @@ int cards_suit_in_hand(hand_t *, char);
 char cards_highest_in_suit(hand_t *, char);
 
 int cards_equal(card_t, card_t);
-
-int es_read_card(int, card_t *);
-int es_write_card(int, card_t);
 
 #define GGZ_CARDS_INCLUDED
 #endif /*GGZ_CARDS_INCLUDED */

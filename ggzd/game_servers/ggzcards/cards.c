@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulate functions for card games
- * $Id: cards.c 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: cards.c 2386 2001-09-07 09:45:15Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -283,25 +283,4 @@ int cards_equal(card_t c1, card_t c2)
 	/* not to take any chances with filler space... */
 	return (c1.face == c2.face && c1.suit == c2.suit
 		&& c1.deck == c2.deck);
-}
-
-/* none of this should go here, but that's okay for now */
-#include "easysock.h"
-
-int es_read_card(int fd, card_t * card)
-{
-	if (es_read_char(fd, &card->face) < 0
-	    || es_read_char(fd, &card->suit) < 0
-	    || es_read_char(fd, &card->deck) < 0)
-		return -1;
-	return 0;
-}
-
-int es_write_card(int fd, card_t card)
-{
-	if (es_write_char(fd, card.face) < 0
-	    || es_write_char(fd, card.suit) < 0
-	    || es_write_char(fd, card.deck) < 0)
-		return -1;
-	return 0;
 }

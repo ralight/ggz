@@ -1,12 +1,15 @@
 /* 
  * File: protocol.h
  * Author: Jason Short
- * Project: GGZCards Server
+ * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 2371 2001-09-05 16:28:44Z jdorje $
+ * $Id: protocol.h 2386 2001-09-07 09:45:15Z jdorje $
  *
  * This just contains the communications protocol information.
+ *
+ * It should be identical between the server and all clients, and
+ * the server contains the master copy.
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -25,10 +28,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-/* this file should be identical between client and server */
+/* NOTE: This file should only be changed in the server. */
 
 #ifndef __PROTOCOL_H__
 #define __PROTOCOL_H__
+
+
+/* 
+ * Protocol opcodes
+ */
 
 /* We don't need to define/check the protocol version since GGZ does this
    automatically.  What we may want to do is include capabilities or a minor
@@ -61,5 +69,70 @@ typedef enum {
 	WH_RSP_BID,
 	WH_REQ_SYNC
 } client_msg_t;
+
+
+/* 
+ * Card structure - must be the same between server and client
+ */
+
+/** Regular values for card faces.
+ *  @note Values 2-10 have their face value.
+ *  @see card_t::face */
+enum card_face_enum {
+	UNKNOWN_FACE = -1,	/**< An unknown face on a card */
+	JACK = 11,		/**< A "jack" card face */
+	QUEEN = 12,		/**< A "queen" card face */
+	KING = 13,		/**< A "king" card face */
+	ACE_HIGH = 14,		/**< An "ace" (high) card face */
+	ACE_LOW = 1,		/**< An "ace" (low) card face */
+	JOKER1 = 0,		/**< A "joker 1" card face */
+	JOKER2 = 1		/**< A "joker 2" card face */
+};
+
+/** Regular values for card suits.
+ *  @see card_t::suit */
+enum card_suit_enum {
+	UNKNOWN_SUIT = -1,	/**< An unknown suit of a card */
+	CLUBS = 0,		/**< The clubs (lowest) suit */
+	DIAMONDS = 1,		/**< The diamonds (second) suit */
+	HEARTS = 2,		/**< The hearts (third) suit */
+	SPADES = 3,		/**< The spades (highest) suit */
+	NO_SUIT = 4		/**< A no-suit used for jokers, etc. */
+};
+
+/** Regular values for card decks.
+ *  @note Values 0+ are used for normal known decks.
+ *  @see card_t::deck */
+enum card_deck_enum {
+	UNKNOWN_DECK = -1	/**< An unknown deck of a card */
+};
+
+/** A card. */
+typedef struct card_t {
+	/** The face of the card.
+	 *  @see card_face_enum */
+	char face;
+	/** The suit of the card.
+	 *  @see card_suit_enum */
+	char suit;
+	/** The deck number of the card.
+	 *  @see card_deck_enum */
+	char deck;
+} card_t;
+
+/** An entirely unknown card. */
+#define UNKNOWN_CARD (card_t){-1, -1, -1}
+
+/** @brief An easysock wrapper to read a card from the socket.
+ *  @param fd The file descriptor from which to read the card.
+ *  @param card A pointer to the card data.
+ *  @return 0 on success, -1 on failure. */
+int es_read_card(int fd, card_t * card);
+
+/** @brief An easysock wrapper to write a card to the socket.
+ *  @param fd The file desciptor to which to write the card.
+ *  @param card The card to be written.
+ *  @return 0 on success, -1 on failure. */
+int es_write_card(int fd, card_t card);
 
 #endif /* __PROTOCOL_H__ */
