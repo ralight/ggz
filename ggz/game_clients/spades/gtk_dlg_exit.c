@@ -52,7 +52,8 @@ void ExitDialog(GtkWidget * widget, gpointer data)
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
 
 	/* Label widgets */
-	label = gtk_label_new("Exit: Are you sure?");
+	label = gtk_label_new("Are you sure you want to exit?\n"
+	                      "You will not be able to rejoin.");
 	gtk_widget_show(label);
 
 
