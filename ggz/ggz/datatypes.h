@@ -155,6 +155,7 @@ typedef struct {
 	char *name;
 	char *desc;
 	int game_type;
+	int num;
 } RoomInfo;
 
 struct Rooms {

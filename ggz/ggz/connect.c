@@ -310,9 +310,11 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		{
 			room_info.info = calloc(count, sizeof(RoomInfo));
 			for (i = 0; i < count; i++) {
+				es_read_int(source, &room_info.info[i].num);
 				es_read_string_alloc(source, &room_info.info[i].name);
 				es_read_int(source, &room_info.info[i].game_type);
 				es_read_string_alloc(source, &room_info.info[i].desc);
+				connect_msg("[%s] Room Num. %d\n", opcode_str[op], room_info.info[i].num);
 				connect_msg("[%s] Room Name %s\n", opcode_str[op], room_info.info[i].name);
 				connect_msg("[%s] Room Game %d\n", opcode_str[op], room_info.info[i].game_type);
 				connect_msg("[%s] Room Desc %s\n", opcode_str[op], room_info.info[i].desc);
