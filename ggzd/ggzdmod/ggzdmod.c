@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 3206 2002-02-02 07:33:45Z bmh $
+ * $Id: ggzdmod.c 3217 2002-02-03 04:11:20Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1181,7 +1181,10 @@ static int seat_find_player(GGZSeat *a, GGZSeat *b)
 static void seat_free(GGZSeat *seat)
 {
 	if (seat->fd != -1)
-		close(seat->fd);
+		if (close(seat->fd) < 0) {
+			/* We can't properly log this, so... */
+			fprintf(stderr, "ERROR in seat_free: close failed.");
+		}
 	if (seat->name)
 		ggz_free(seat->name);
 
