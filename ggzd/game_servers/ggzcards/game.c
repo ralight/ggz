@@ -96,7 +96,6 @@ int game_compare_cards(card_t card1, card_t card2)
 void game_init_game()
 {
 	ggz_debug("SERVER BUG: game_launch not implemented for game %d.", game.which_game);
-	game.name = "(Unknown)";
 }
 
 /* game_get_options

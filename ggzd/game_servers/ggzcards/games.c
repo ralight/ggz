@@ -53,13 +53,12 @@ extern struct game_function_pointers euchre_funcs;
  * correspond in ordering to the enumeration defined in games.h.  Finally, the
  * text name should be all lower-case and without any whitespace. */
 struct game_info game_data[] = {
-		{"suaro", &suaro_funcs},
-		{"spades", &spades_funcs},
-		{"hearts", &hearts_funcs},
-		{"bridge", &bridge_funcs},
-		{"lapocha", &lapocha_funcs},
-		{"euchre", &euchre_funcs},
-		{"rook", &game_funcs} };
+		{"suaro", "Suaro", &suaro_funcs},
+		{"spades", "Spades", &spades_funcs},
+		{"hearts", "Hearts", &hearts_funcs},
+		{"bridge", "Bridge", &bridge_funcs},
+		{"lapocha", "La Pocha", &lapocha_funcs},
+		{"euchre", "Euchre", &euchre_funcs} };
 
 
 /* END of game data */
@@ -170,7 +169,7 @@ int games_req_gametype()
 	    es_write_int(fd, 0) < 0) /* default is 0 */
 		status = -1;
 	for (i=0; i<cnt; i++)
-		if (es_write_string(fd, game_data[game_types[i]].name) < 0)
+		if (es_write_string(fd, game_data[game_types[i]].full_name) < 0)
 			status = -1;
 
 	if (status != 0)

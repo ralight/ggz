@@ -98,7 +98,6 @@ static void euchre_init_game()
 	game.max_bid_length = 20; /* TODO */
 	game.max_hand_length = 5;
 	game.target_score = 10;
-	game.name = "Euchre";
 	EUCHRE.maker = -1;
 	game.trump = -1;
 }

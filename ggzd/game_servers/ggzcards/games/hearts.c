@@ -85,7 +85,6 @@ static void hearts_init_game()
 	game.max_bid_choices = 0;
 	game.max_bid_length = 0;
 	game.target_score = 100;
-	game.name = "Hearts";
 
 	GHEARTS.no_blood = 1;
 }

@@ -68,6 +68,7 @@ struct game_function_pointers {
 
 struct game_info {
 	char* name;
+	char* full_name;
 	struct game_function_pointers *funcs;
 };
 

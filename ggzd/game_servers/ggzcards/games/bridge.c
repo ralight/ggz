@@ -106,7 +106,6 @@ static void bridge_init_game()
 	 * longest possible bid: "redouble" = 9 */
 	game.max_bid_choices = 37;
 	game.max_bid_length = 9;
-	game.name = "Bridge";
 
 	/* TODO: for now we won't use bridge scoring */
 	BRIDGE.declarer = -1;

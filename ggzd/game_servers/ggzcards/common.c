@@ -1139,6 +1139,7 @@ void init_game()
 	game.last_trick = 1;
 	game.last_hand = 1;
 	game.cumulative_scores = 1;
+	game.name = game_data[game.which_game].full_name;
 
 	/* now we do all the game-specific initialization... */
 	game.funcs->init_game();	

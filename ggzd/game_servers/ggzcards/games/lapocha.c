@@ -87,7 +87,6 @@ static void lapocha_init_game()
 	game.max_bid_length = 4;
 	game.max_hand_length = 10;
 	game.must_overtrump = 1;	/* in La Pocha, you *must* overtrump if you can */
-	game.name = "La Pocha";
 }
 
 static int lapocha_handle_gameover()

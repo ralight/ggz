@@ -91,7 +91,6 @@ static void spades_init_game()
 	GSPADES.nil_value = 100;
 	game.trump = SPADES;
 	game.ai_type = GGZ_AI_SPADES;
-	game.name = "Spades";
 }
 
 static void spades_get_options()
