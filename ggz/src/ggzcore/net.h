@@ -71,13 +71,7 @@ int _ggzcore_net_send_chat(struct _GGZNet *net,
 			   const char* player, 
 			   const char* msg); 
 
-int _ggzcore_net_send_table_launch(struct _GGZNet *net,
-				   const int type,
-				   char *desc,
-				   const int num_seats);
-int _ggzcore_net_send_seat(struct _GGZNet *net, 
-			   GGZSeatType seat, 
-			   char *name);
+int _ggzcore_net_send_table_launch(struct _GGZNet *net, struct _GGZTable *table);
 int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num);
 int _ggzcore_net_send_table_leave(struct _GGZNet *net);
 

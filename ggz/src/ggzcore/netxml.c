@@ -50,8 +50,7 @@
 #include <sys/fcntl.h>
 
 /* For convenience */
-#define BUFFSIZE 8192
-
+#define XML_BUFFSIZE 8192
 
 
 /* GGZNet structure for handling the network connection to the server */
@@ -122,11 +121,10 @@ typedef struct _GGZSeatData {
 } GGZSeatData;
 
 /* Callbacks for XML parser */
-static void _net_parse_start_tag(void *, const char*, const char **);
-static void _net_parse_end_tag(void *data, const char *el);
-static void _net_parse_text(void *data, const char *text, int len);
+static void _ggzcore_net_parse_start_tag(void *, const char*, const char **);
+static void _ggzcore_net_parse_end_tag(void *data, const char *el);
+static void _ggzcore_net_parse_text(void *data, const char *text, int len);
 static GGZXMLElement* _ggzcore_net_new_element(char *tag, char **attrs);
-
 
 /* Handler functions for various tags */
 static void _ggzcore_net_handle_server(GGZNet*, GGZXMLElement*);
@@ -165,9 +163,12 @@ static void _ggzcore_net_seat_free(GGZSeatData*);
 static void _ggzcore_net_error(struct _GGZNet *net, char* message);
 
 /* Dump network data to debugging file */
-static void _net_dump_data(struct _GGZNet *net, char *data, int size);
+static void _ggzcore_net_dump_data(struct _GGZNet *net, char *data, int size);
 
 /* Utility functions */
+static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZTable *table, int num);
+static int _ggzcore_net_send_line(GGZNet *net, char *line, ...);
+static int _ggzcore_net_send_string(GGZNet *net, char *fmt, ...);
 static int safe_atoi(char *string);
 
 
@@ -200,9 +201,10 @@ void _ggzcore_net_init(struct _GGZNet *net, struct _GGZServer *server, const cha
 		ggzcore_error_sys_exit("Couldn't allocate memory for XML parser");
 
 	/* Setup handlers for tags */
-	XML_SetElementHandler(net->parser, _net_parse_start_tag, 
-			      _net_parse_end_tag);
-	XML_SetCharacterDataHandler(net->parser, _net_parse_text);
+	XML_SetElementHandler(net->parser, 
+			      _ggzcore_net_parse_start_tag, 
+			      _ggzcore_net_parse_end_tag);
+	XML_SetCharacterDataHandler(net->parser, _ggzcore_net_parse_text);
 	XML_SetUserData(net->parser, net);
 
 	/* Initialize stack for messages */
@@ -253,11 +255,17 @@ void _ggzcore_net_set_fd(struct _GGZNet *net, int fd)
 
 void _ggzcore_net_free(struct _GGZNet *net)
 {
+	GGZXMLElement *element;
+	
 	if (net->host)
 		ggzcore_free(net->host);
 
-	if (net->stack)
+	/* Clear elements off stack and free it */
+	if (net->stack) {
+		while ( (element = _ggzcore_stack_pop(net->stack))) 
+			_ggzcore_xmlelement_free(element);
 		_ggzcore_stack_free(net->stack);
+	}
 
 	if (net->parser)
 		XML_ParserFree(net->parser);
@@ -291,36 +299,33 @@ void _ggzcore_net_disconnect(struct _GGZNet *net)
 
 int _ggzcore_net_send_login(struct _GGZNet *net)
 {
-	GGZLoginType type;
-	char *handle, *password;
+	GGZLoginType login_type;
+	char *type, *handle, *password;
 	int status = 0;
 
-	type = _ggzcore_server_get_type(net->server);
+	login_type = _ggzcore_server_get_type(net->server);
 	handle = _ggzcore_server_get_handle(net->server);
 	password = _ggzcore_server_get_password(net->server);
 	
-	switch (type) {
+	switch (login_type) {
 	case GGZ_LOGIN:
-		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN");
-		if (es_write_int(net->fd, REQ_LOGIN) < 0
-		    || es_write_string(net->fd, handle) < 0
-		    || es_write_string(net->fd, password) < 0)
-			status = -1;
-		break;
-	case GGZ_LOGIN_GUEST:
-		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_GUEST");
-		if (es_write_int(net->fd, REQ_LOGIN_ANON) < 0
-		    || es_write_string(net->fd, handle) < 0)
-			status = -1;
+		type = "normal";
 		break;
 	case GGZ_LOGIN_NEW:
-		ggzcore_debug(GGZ_DBG_NET, "Executing net login: GGZ_LOGIN_NEW");
-		if (es_write_int(net->fd, REQ_LOGIN_NEW) < 0
-		    || es_write_string(net->fd, handle) < 0)
-			status = -1;
+		type = "first";
 		break;
+	case GGZ_LOGIN_GUEST:
+	default:
+		type = "guest";
 	}
 	
+	_ggzcore_net_send_line(net, "<SESSION>");
+	_ggzcore_net_send_line(net, "<LOGIN TYPE='%s'>", type);
+	_ggzcore_net_send_line(net, "<NAME>%s</NAME>", handle);
+	if (login_type == GGZ_LOGIN)
+		_ggzcore_net_send_line(net, "<PASSWORD>%s</PASSWORD>", password);
+	_ggzcore_net_send_line(net, "</LOGIN>");
+
 	if (status < 0)
 		_ggzcore_net_error(net, "Sending login");
 
@@ -332,10 +337,8 @@ int _ggzcore_net_send_motd(struct _GGZNet *net)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_MOTD");	
-	status = es_write_int(net->fd, REQ_MOTD);
-	if (status < 0)
-		_ggzcore_net_error(net, "Sending motd request");
+	ggzcore_debug(GGZ_DBG_NET, "Sending MOTD request");	
+	_ggzcore_net_send_line(net, "<MOTD/>");
 
 	return status;
 }
@@ -344,16 +347,17 @@ int _ggzcore_net_send_motd(struct _GGZNet *net)
 int _ggzcore_net_send_list_types(struct _GGZNet *net, const char verbose)
 {
 	int status = 0;
+	char *full;
 
 	net->gametype_verbose = verbose;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_TYPES");	
-	if (es_write_int(net->fd, REQ_LIST_TYPES) < 0
-	    || es_write_char(net->fd, verbose) < 0)
-		status = -1;
-
-	if (status < 0)
-		_ggzcore_net_error(net, "Sending typelist request");
+	ggzcore_debug(GGZ_DBG_NET, "Sending gametype list request");	
+	if (verbose)
+		full = "true";
+	else
+		full = "false";
+	
+	_ggzcore_net_send_line(net, "<LIST TYPE='game' FULL='%s'/>", full);
 
 	return status;
 }
@@ -362,17 +366,16 @@ int _ggzcore_net_send_list_types(struct _GGZNet *net, const char verbose)
 int _ggzcore_net_send_list_rooms(struct _GGZNet *net, const int type, const char verbose)
 {	
 	int status = 0;
+	char *full;
 	
 	net->room_verbose = verbose;
-
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_ROOMS");	
-	if (es_write_int(net->fd, REQ_LIST_ROOMS) < 0
-	    || es_write_int(net->fd, type) < 0
-	    || es_write_char(net->fd, verbose) < 0)
-		status = -1;
-
-	if (status < 0)
-		_ggzcore_net_error(net, "Sending roomlist request");
+	ggzcore_debug(GGZ_DBG_NET, "Sending room list request");	
+	if (verbose)
+		full = "true";
+	else
+		full = "false";
+	
+	_ggzcore_net_send_line(net, "<LIST TYPE='room' FULL='%s'/>", full);
 
 	return status;
 }
@@ -384,17 +387,12 @@ int _ggzcore_net_send_join_room(struct _GGZNet *net, const unsigned int id)
 	struct _GGZRoom *room;
 
 	room = _ggzcore_server_get_room_by_id(net->server, id);
-
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_ROOM_JOIN");	
-	if (es_write_int(net->fd, REQ_ROOM_JOIN) < 0
-	    || es_write_int(net->fd, id) < 0)
-		status = -1;
+	net->new_room = room;
 	
-	if (status < 0)
-		_ggzcore_net_error(net, "Sending room join request");
-	else 
-		net->new_room = room;
+	ggzcore_debug(GGZ_DBG_NET, "Sending room join request");	
 
+	_ggzcore_net_send_line(net, "<ENTER ROOM='%d'/>", id);
+	
 	return status;
 }
 
@@ -403,10 +401,8 @@ int _ggzcore_net_send_list_players(struct _GGZNet *net)
 {	
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_PLAYERS");	
-	status = es_write_int(net->fd, REQ_LIST_PLAYERS);
-	if (status < 0)
-		_ggzcore_net_error(net, "Sending playerlist request");
+	ggzcore_debug(GGZ_DBG_NET, "Sending player list request");
+	_ggzcore_net_send_line(net, "<LIST TYPE='player'/>");
 
 	return status;
 }
@@ -416,15 +412,9 @@ int _ggzcore_net_send_list_tables(struct _GGZNet *net, const int type, const cha
 {	
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LIST_TABLES");	
-	if (es_write_int(net->fd, REQ_LIST_TABLES) < 0
-	    || es_write_int(net->fd, type) < 0
-	    || es_write_char(net->fd, global) < 0)
-		status = -1;
-
-	if (status < 0)
-		_ggzcore_net_error(net, "Sending tablelist request");
-
+	ggzcore_debug(GGZ_DBG_NET, "Sending table list request");
+	_ggzcore_net_send_line(net, "<LIST TYPE='table'/>");
+	
 	return status;
 }
 
@@ -432,71 +422,90 @@ int _ggzcore_net_send_list_tables(struct _GGZNet *net, const int type, const cha
 int _ggzcore_net_send_chat(struct _GGZNet *net, const GGZChatOp op, const char* player, const char* msg)
 {
 	int status = 0;
-	char msg_buf[net->chat_size];
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_CHAT");	
-	if (es_write_int(net->fd, REQ_CHAT) < 0
-	    || es_write_char(net->fd, op) < 0)
-		status = -1;
-	
-	if (status == 0 && (op & GGZ_CHAT_M_PLAYER))
-		status = es_write_string(net->fd, player);
-
-	/* We don't want to send messages longer than the server will accept.
-	 * TODO: We may want to split it up into segments to send?  -- JDS */
-	snprintf(msg_buf, sizeof(msg_buf), "%s", msg);
-	
-	if (status == 0 && (op & GGZ_CHAT_M_MESSAGE))
-		status = es_write_string(net->fd, msg_buf);
-	
-	if (status < 0)
-		_ggzcore_net_error(net, "Sending chat");
-
-	return status;
-}
+	ggzcore_debug(GGZ_DBG_NET, "Sending chat");	
 
 
-int _ggzcore_net_send_table_launch(struct _GGZNet *net, const int type, char *desc, const int num_seats)
-{
-	int status = 0;
-	
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_LAUNCH");
-	if (es_write_int(net->fd, REQ_TABLE_LAUNCH) < 0
-	    || es_write_int(net->fd, type) < 0
-	    || es_write_string(net->fd, desc) < 0
-	    || es_write_int(net->fd, num_seats) < 0)
-		status = -1;
+	/* FIXME: We need to handle the case where the chat is longer than
+	   the server's allowed chat size */
 
-	if (status < 0)
-		_ggzcore_net_error(net, "Sending table launch");
+	switch (op) {
+	case GGZ_CHAT_NORMAL:
+		_ggzcore_net_send_line(net, "<CHAT TYPE='normal'><![CDATA[%s]]></CHAT>", msg);
+		break;
+	case GGZ_CHAT_ANNOUNCE:
+		_ggzcore_net_send_line(net, "<CHAT TYPE='announce'><![CDATA[%s]]></CHAT>", msg);
+		break;
+	case GGZ_CHAT_BEEP:
+		_ggzcore_net_send_line(net, "<CHAT TYPE='beep' TO='%s'/>", player);
+		break;
+	case GGZ_CHAT_PERSONAL:
+		_ggzcore_net_send_line(net, "<CHAT TYPE='private' TO='%s'><![CDATA[%s]]></CHAT>", player, msg);
+		break;
+	}
 
 	return status;
 }
 
 
-int _ggzcore_net_send_seat(struct _GGZNet *net, GGZSeatType seat, char *name)
+int _ggzcore_net_send_table_launch(struct _GGZNet *net, struct _GGZTable *table)
+{
+	int i, type, num_seats, status = 0;
+	char *desc;
+	
+	ggzcore_debug(GGZ_DBG_NET, "Sending table launch request");
+		
+	type = _ggzcore_gametype_get_id(_ggzcore_table_get_type(table));
+	desc = _ggzcore_table_get_desc(table);
+	num_seats = _ggzcore_table_get_num_seats(table);
+
+	_ggzcore_net_send_line(net, "<LAUNCH>");
+	_ggzcore_net_send_line(net, "<TABLE GAME='%d' SEATS='%d'>", type, num_seats);
+	if (desc)
+		_ggzcore_net_send_line(net, "<DESC>%s</DESC>", desc);
+	
+	for (i = 0; i < num_seats; i++)
+		_ggzcore_net_send_table_seat(net, table, i);
+	
+	_ggzcore_net_send_line(net, "</TABLE>");
+	_ggzcore_net_send_line(net, "</LAUNCH>");
+
+	return status;
+}
+
+
+static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZTable *table, int num)
 {
 	int status = 0;
+	char *name, *type = NULL;
+	GGZSeatType seat;
 
 	ggzcore_debug(GGZ_DBG_NET, "Sending seat info");
-	status = es_write_int(net->fd, seat);
 	
-	if (status > 0) {
-		switch (seat) {
-		case GGZ_SEAT_PLAYER:
-		case GGZ_SEAT_RESERVED:
-			status = es_write_string(net->fd, name);
-			break;
-		case GGZ_SEAT_BOT:
-			break;
-		default:
-			break;
-		}
+	seat = _ggzcore_table_get_nth_player_type(table, num);
+	name = _ggzcore_table_get_nth_player_name(table, num);
+
+	switch (seat) {
+	case GGZ_SEAT_OPEN:
+		type = "open";
+		break;
+	case GGZ_SEAT_BOT:
+		type = "bot";
+		break;
+	case GGZ_SEAT_RESERVED:
+		type = "reserved";
+		break;
+	default:
+		type = "none";
 	}
 	
-	if (status < 0)
-		_ggzcore_net_error(net, "Sending seat info");
-
+	if (name)
+		_ggzcore_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'>%s</SEAT>", 
+			       num, type, name);
+	else
+		_ggzcore_net_send_line(net, "<SEAT NUM='%d' TYPE='%s'/>", 
+			       num, type);
+	
 	return status;
 }
 
@@ -505,13 +514,8 @@ int _ggzcore_net_send_table_join(struct _GGZNet *net, const unsigned int num)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_JOIN");
-	if (es_write_int(net->fd, REQ_TABLE_JOIN) < 0
-	    || es_write_int(net->fd, num) < 0)
-		status = -1;
-
-	if (status < 0)
-		_ggzcore_net_error(net, "Sending table join");
+	ggzcore_debug(GGZ_DBG_NET, "Sending table join request");
+	_ggzcore_net_send_line(net, "<JOIN TABLE='%d'/>", num);
 
 	return status;
 }
@@ -521,27 +525,27 @@ int _ggzcore_net_send_table_leave(struct _GGZNet *net)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_TABLE_LEAVE");
-	status = es_write_int(net->fd, REQ_TABLE_LEAVE);
-	if (status < 0)
-		_ggzcore_net_error(net, "Sending table leave");
+	ggzcore_debug(GGZ_DBG_NET, "Sending table leave request");
+	_ggzcore_net_send_line(net, "<LEAVE FORCE='false'/>");
 
 	return status;
 }
 
 
-int _ggzcore_net_send_game_data(struct _GGZNet *net, int size, char *buffer)
+int _ggzcore_net_send_game_data(struct _GGZNet *net, int size, char *data)
 {
-	int status = 0;
+	int i, status = 0;
+	char buf[5];
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_GAME: %d bytes from game", size);
-	if (es_write_int(net->fd, REQ_GAME) < 0
-	    || es_write_int(net->fd, size) < 0
-	    || es_writen(net->fd, buffer, size) < 0)
-		status = -1;
+	ggzcore_debug(GGZ_DBG_NET, "Sending game data: %d bytes", size);
 
-	if (status < 0)
-		_ggzcore_net_error(net, "Sending game data");
+	_ggzcore_net_send_string(net, "<DATA SIZE='%d'><![CDATA[", size);
+	buf[0] = '\0';
+	for (i = 0; i < size; i++) {
+		sprintf(buf, "%d ", data[i]);
+		write(net->fd, buf, strlen(buf));
+	}
+	_ggzcore_net_send_string(net, "]]></DATA>");
 
 	return status;
 }
@@ -551,8 +555,8 @@ int _ggzcore_net_send_logout(struct _GGZNet *net)
 {
 	int status = 0;
 
-	ggzcore_debug(GGZ_DBG_NET, "Sending REQ_LOGOUT");	
-	status = es_write_int(net->fd, REQ_LOGOUT);
+	ggzcore_debug(GGZ_DBG_NET, "Sending LOGOUT");	
+	_ggzcore_net_send_line(net, "</SESSION>");
 
 	if (status < 0)
 		_ggzcore_net_error(net, "Sending logout request");
@@ -599,11 +603,11 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 	net->parsing = 1;
 
 	/* Get a buffer to hold the data */
-	if (!(buf = XML_GetBuffer(net->parser, BUFFSIZE)))
+	if (!(buf = XML_GetBuffer(net->parser, XML_BUFFSIZE)))
 		ggzcore_error_sys_exit("Couldn't allocate buffer");
 
 	/* Read in data from socket */
-	if ( (len = read(net->fd, buf, BUFFSIZE)) < 0) {
+	if ( (len = read(net->fd, buf, XML_BUFFSIZE)) < 0) {
 		
 		/* If it's a non-blocking socket and there isn't data,
                    we get EAGAIN.  It's safe to just return */
@@ -614,7 +618,7 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 		_ggzcore_net_error(net, "Reading data from server");
 	}
 
-	_net_dump_data(net, buf, len);
+	_ggzcore_net_dump_data(net, buf, len);
 	
 	/* If len == 0 then we've reached EOF */
 	done = (len == 0);
@@ -623,10 +627,10 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 		_ggzcore_server_set_logout_status(net->server, 1);
 	}
 	if (!XML_ParseBuffer(net->parser, len, done)) {
-		fprintf(stderr, "Parse error at line %d, column %d:\n%s\n",
-			XML_GetCurrentLineNumber(net->parser),
-			XML_GetCurrentColumnNumber(net->parser),
-			XML_ErrorString(XML_GetErrorCode(net->parser)));
+		ggzcore_debug(GGZ_DBG_XML, "Parse error at line %d, col %d:%s",
+			      XML_GetCurrentLineNumber(net->parser),
+			      XML_GetCurrentColumnNumber(net->parser),
+			      XML_ErrorString(XML_GetErrorCode(net->parser)));
 		_ggzcore_server_protocol_error(net->server, "Bad XML from server");
 	}
 	
@@ -636,8 +640,8 @@ int _ggzcore_net_read_data(struct _GGZNet *net)
 }
 
 
-/********** Callback for XML parser **********/
-static void _net_parse_start_tag(void *data, const char *el, const char **attr)
+/********** Callbacks for XML parser **********/
+static void _ggzcore_net_parse_start_tag(void *data, const char *el, const char **attr)
 {
 	struct _GGZNet *net = (struct _GGZNet*)data;
 	GGZStack *stack = net->stack;
@@ -653,7 +657,7 @@ static void _net_parse_start_tag(void *data, const char *el, const char **attr)
 }
 
 
-static void _net_parse_end_tag(void *data, const char *el)
+static void _ggzcore_net_parse_end_tag(void *data, const char *el)
 {
 	GGZXMLElement *element;
 	struct _GGZNet *net = (struct _GGZNet*)data;
@@ -673,7 +677,7 @@ static void _net_parse_end_tag(void *data, const char *el)
 }
 
 
-static void _net_parse_text(void *data, const char *text, int len) 
+static void _ggzcore_net_parse_text(void *data, const char *text, int len) 
 {
 	struct _GGZNet *net = (struct _GGZNet*)data;
 	GGZStack *stack = net->stack;
@@ -692,7 +696,7 @@ static void _ggzcore_net_error(struct _GGZNet *net, char* message)
 }
 
 
-static void _net_dump_data(struct _GGZNet *net, char *data, int size)
+static void _ggzcore_net_dump_data(struct _GGZNet *net, char *data, int size)
 {
 	if (net->dump_file > 0)
 		write(net->dump_file, data, size);
@@ -1605,6 +1609,31 @@ static void _ggzcore_net_handle_data(GGZNet *net, GGZXMLElement *data)
 
 		_ggzcore_room_recv_game_data(room, buffer);
 	}
+}
+
+
+static int _ggzcore_net_send_line(GGZNet *net, char *line, ...)
+{
+	char buf[4096];
+	va_list ap;
+
+	va_start(ap, line);
+	vsprintf(buf, line, ap);
+	va_end(ap);
+	strcat(buf, "\n");
+	return write(net->fd, buf, strlen(buf));
+}
+
+
+static int _ggzcore_net_send_string(GGZNet *net, char *fmt, ...)
+{
+	char buf[4096];
+	va_list ap;
+
+	va_start(ap, fmt);
+	vsprintf(buf, fmt, ap);
+	va_end(ap);
+	return write(net->fd, buf, strlen(buf));
 }
 
 

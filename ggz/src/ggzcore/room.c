@@ -839,9 +839,7 @@ void _ggzcore_room_set_table_leave_status(struct _GGZRoom *room, int status)
 int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
 {
 	struct _GGZNet *net;
-	int i, type_id, num_seats, status;
-	char *desc, *name;
-	GGZSeatType seat;
+	int status;
 
 	/* Make sure we're actually in a room (FIXME: should probably
            make sure we're in *this* room) and not already playing a
@@ -850,21 +848,8 @@ int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
 		return -1;
 
 	net = _ggzcore_server_get_net(room->server);
-	type_id = _ggzcore_gametype_get_id(_ggzcore_table_get_type(table));
-	desc = _ggzcore_table_get_desc(table);
-	num_seats = _ggzcore_table_get_num_seats(table);
-
-	status = _ggzcore_net_send_table_launch(net, type_id, desc, num_seats);
+	status = _ggzcore_net_send_table_launch(net, table);
 	
-	if (status == 0)
-		for (i = 0; i < num_seats; i++) {
-			seat = _ggzcore_table_get_nth_player_type(table, i);
-			name = _ggzcore_table_get_nth_player_name(table, i);
-			status = _ggzcore_net_send_seat(net, seat, name);
-			if (status < 0)
-				break;
-		}
-
 	if (status == 0)
 		_ggzcore_server_set_table_launching(room->server);
 	
