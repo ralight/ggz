@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 02.05.2002
  * Desc: Back-end functions for handling the postgresql style database
- * $Id: ggzdb_pgsql.c 6405 2004-11-17 12:48:05Z josef $
+ * $Id: ggzdb_pgsql.c 6581 2005-01-02 11:29:36Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -314,6 +314,12 @@ GGZDBResult _ggzdb_player_add(ggzdbPlayerEntry *pe)
 		 "VALUES ('%s', '%s', '%s', '%s', %li, %u)",
 		 pe->handle, pe->password, pe->name, pe->email,
 		 pe->last_login, pe->perms);
+
+	res = PQexec(conn, query);
+
+	snprintf(query, sizeof(query), "DELETE FROM stats "
+		 "WHERE handle = '%s'",
+		 pe->handle);
 
 	res = PQexec(conn, query);
 
