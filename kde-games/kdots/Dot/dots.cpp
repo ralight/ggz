@@ -16,6 +16,8 @@
 
 #include <stdio.h>
 
+using namespace std;
+
 Dots::Dots()
 {
 	m_field = NULL;
