@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2598 2001-10-23 22:34:55Z jdorje $
+ * $Id: ggzdmod.c 2599 2001-10-24 00:36:12Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -42,13 +42,6 @@
 #include "../game_servers/libggzmod/ggz_protocols.h"	/* FIXME */
 
 #include "ggzdmod.h"
-
-
-/* debug level for ggzdmod_log() */
-/* Moved out of ggz_server.h since it's not used outside the library.
-   Imported from ggzd; make sure it stays consistent! A better alternative
-   would be to #include ../../ggzd/err_func.h --JDS */
-#define GGZ_DBG_TABLE	(unsigned) 0x00000010
 
 #define CHECK_GGZDMOD(ggzdmod)                             \
 	(ggzdmod && ggzdmod->magic == MAGIC_VALUE && (ggzdmod->type == GGZDMOD_GGZ || ggzdmod->type==GGZDMOD_GAME))
@@ -487,10 +480,9 @@ int ggzdmod_dispatch(GGZdMod * mod)
 		case REQ_GAME_OVER:
 			ggz_req_gameover(ggzdmod);
 		case MSG_LOG:
-		case MSG_DBG:
 			ggz_log(ggzdmod);
 		case REQ_SEAT_CHANGE:
-		case MSG_STATS:
+			/* case MSG_STATS: */
 		default:
 			break;
 		}

@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2534 2001-10-04 07:50:05Z jdorje $
+ * $Id: ggz.c 2599 2001-10-24 00:36:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -48,7 +48,6 @@
  * Imported from ggzd; make sure it stays consistent!
  * A better alternative would be to #include ../../ggzd/err_func.h
  * --JDS */
-#define GGZ_DBG_TABLE	(unsigned) 0x00000010
 
 /* The maximum length of a player name.  Does not include trailing \0. */
 #define MAX_USER_NAME_LEN 16
@@ -383,8 +382,7 @@ int ggzd_debug(const char *fmt, ...)
 	va_end(ap);
 
 	if (ggzfd >= 0) {
-		if (es_write_int(ggzfd, MSG_DBG) < 0 ||
-		    es_write_int(ggzfd, GGZ_DBG_TABLE) < 0 ||
+		if (es_write_int(ggzfd, MSG_LOG) < 0 ||
 		    es_write_string(ggzfd, buf) < 0)
 			status = -1;
 	} else {

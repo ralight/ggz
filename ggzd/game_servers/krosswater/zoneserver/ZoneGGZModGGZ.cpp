@@ -153,8 +153,7 @@ void ZoneGGZModGGZ::ggz_debug(const char *fmt, ...)
 
 	va_start(ap, fmt);
         vsnprintf(buf, sizeof(buf), fmt, ap);
-	es_write_int(fd, MSG_DBG);
-	es_write_int(fd, GGZ_DBG_TABLE);
+	es_write_int(fd, MSG_LOG);
 	es_write_string(fd, buf);
 	va_end(ap);
 }

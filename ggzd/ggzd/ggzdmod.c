@@ -1,10 +1,10 @@
-/*
+/* 
  * File: ggzdmod.c
  * Author: GGZ Dev Team
  * Project: GGZ
  * Date: 8/28/01
  * Desc: GGZD game module functions
- * $Id: ggzdmod.c 2331 2001-08-31 21:58:33Z jdorje $
+ * $Id: ggzdmod.c 2599 2001-10-24 00:36:12Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -29,6 +29,11 @@
 #include "../game_servers/libggzmod/ggz_protocols.h"
 
 #include "ggzdmod.h"
+
+/* Really we should #include "err_func.h", but that doesn't work for some
+   reason. --JDS */
+#define GGZ_DBG_TABLE		(unsigned) 0x00000010
+#define GGZ_DBG_PROTOCOL	(unsigned) 0x00000020
 
 GGZdmod *ggzdmod_new(int fd, void *table_data)
 {
@@ -100,16 +105,15 @@ int ggzdmod_player_leave(GGZdmod * ggzdmod, char *name)
 	return 0;
 }
 
-int ggzdmod_handle_log(GGZdmod * ggzdmod, char debug)
+int ggzdmod_handle_log(GGZdmod * ggzdmod)
 {
 	char *msg;
-	int level, status;
+	int status;
 
-	if (es_read_int(ggzdmod->fd, &level) < 0 ||
-	    es_read_string_alloc(ggzdmod->fd, &msg) < 0)
+	if (es_read_string_alloc(ggzdmod->fd, &msg) < 0)
 		return -1;
 
-	status = table_log(ggzdmod, msg, level, debug);
+	status = table_log(ggzdmod, msg, GGZ_DBG_TABLE, 1);
 	free(msg);
 	return status;
 }
@@ -169,17 +173,15 @@ int ggzdmod_dispatch(GGZdmod * ggzdmod)
 		break;
 
 	case MSG_LOG:
-	case MSG_DBG:
-		status = ggzdmod_handle_log(ggzdmod, op == MSG_DBG);
+		status = ggzdmod_handle_log(ggzdmod);
 		break;
 
 	case REQ_SEAT_CHANGE:
 		status = ggzdmod_handle_seat_change(ggzdmod);
 		break;
 
-	case MSG_STATS:
+		/* case MSG_STATS: */
 	default:
-#define GGZ_DBG_PROTOCOL	(unsigned) 0x00000020
 		dbg_msg(GGZ_DBG_PROTOCOL, "Table sent unimplemented op %d",
 			op);
 		status = -1;

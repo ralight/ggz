@@ -100,7 +100,6 @@ typedef enum {
 	RSP_GAME_JOIN,
 	RSP_GAME_LEAVE,
         MSG_LOG,
-        MSG_DBG,
 	REQ_GAME_OVER
 } TableToControl;
 
