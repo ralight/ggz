@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2273 2001-08-27 06:48:01Z jdorje $
+ * $Id: main.c 2278 2001-08-27 17:52:23Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -27,13 +27,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <easysock.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <errno.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
+
+#include <easysock.h>
 
 #include "common.h"
 
@@ -77,11 +73,14 @@ static char *get_option(const char *option_name, char **argv, int *i,
 				(*i)++;
 				opt = argv[*i];
 				if (strlen(opt) == 0) {
-/*	  ggzd_debug(stderr, _("Empty argument for \"%s\".\n", option_name); */
+					ggzd_debug
+						("Empty argument for \"%s\".\n",
+						 option_name);
 					exit(1);
 				}
 			} else {
-/*	ggzd_debug(stderr, _("Missing argument for \"%s\".\n"), option_name); */
+				ggzd_debug("Missing argument for \"%s\".\n",
+					   option_name);
 				exit(1);
 			}
 		}
@@ -120,6 +119,7 @@ int main(int argc, char **argv)
 	/* read options */
 	for (i = 1; i < argc; i++) {
 		char *option;
+		ggzd_debug("Reading option %s.", argv[i]);
 		if ((option = get_option("--game", argv, &i, argc)) != NULL) {
 			which_game = games_get_gametype(option);
 			ggzd_debug("which_game set to %d.", which_game);
@@ -143,8 +143,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-	/* Seed the random number generator */
-	srandom((unsigned) time(NULL));
+	init_ggzcards(which_game);
 
 	/* set up handlers */
 	ggzd_set_handler(GGZ_EVENT_LAUNCH, &handle_launch_event);

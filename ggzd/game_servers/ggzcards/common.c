@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2276 2001-08-27 10:29:46Z jdorje $
+ * $Id: common.c 2278 2001-08-27 17:52:23Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -30,6 +30,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 #include <easysock.h>
@@ -593,6 +594,10 @@ int handle_player_event(ggzd_event_t event, void *data)
  */
 void init_ggzcards(int which)
 {
+	/* Seed the random number generator */
+	srandom((unsigned) time(NULL));
+
+	/* TODO: we should manually initialize pointers to NULL */
 	memset(&game, 0, sizeof(struct wh_game_t));
 
 	/* JDS: Note: the game type must have been initialized by here */
