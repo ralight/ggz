@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 5997 2004-05-17 14:20:01Z josef $
+ * $Id: main.c 6449 2004-12-11 21:26:50Z jdorje $
  *
  * Main loop
  *
@@ -48,6 +48,7 @@
 #include <readline/history.h>
 #endif
 
+#include <locale.h>
 #include <libintl.h>
 #define _(x) gettext(x)
 
