@@ -56,6 +56,34 @@ languages, preferably in HTML format, which tells all about the main
 focus of GGZ, e.g. the games, the chat and so on. This could then placed
 as a link on the various international news sites.
 
+Translation table
+-----------------
+
+This table should eventually be complete.
+
+ggz-txt:      src: en de
+              man: en
+grubby:       src: en de
+              man: en de
+              mod: en de
+docs:         doc: en (de)
+gtk-games:    src: en de (es_AR) (pt_BR)
+              man: en
+kde-games:    src: en de
+              man: en
+gtk-client:   src: en de
+              man: en
+kde-client:   src: en de
+              man: en
+gnome-client: src: en de
+              man: -
+sdl-games:    src: en
+              man: -
+ggzd:         src: en
+              man: en
+utils:        src: en
+              man: en
+
 Need advice?
 ------------
 
@@ -66,4 +94,5 @@ Josef
 written: 2001-06-02
 updated: 2001-09-09
 updated: 2002-03-20
+updated: 2003-04-28
 

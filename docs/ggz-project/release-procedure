@@ -32,7 +32,7 @@ Directly before release
 [] update toplevel ChangeLog files with CVS history
    cvs2cl --accum --usermap usertable-for-changelog
 [] inform distributors
-   (currently: Debian, Gentoo, Slackware, SourceMage)
+   (currently: Debian, Gentoo, Slackware, SourceMage, Arch Linux, Lunar Linux, Mandrake)
 [] update permanent stable game servers
    Currently, this is ggz.snafu.de.
    Also, the metaserver should contain an entry for the previous version,
