@@ -6,7 +6,7 @@ Version: 0.0.4
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz-kde-client-0.0.4pre6.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz-kde-client-0.0.4.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: Rich Gade <rgade@users.sourceforge.net>
