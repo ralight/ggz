@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6427 2004-11-28 00:51:41Z josef $
+dnl $Id: configure.ac 6496 2004-12-15 22:01:41Z josef $
 
 AC_INIT([GGZ Gtk+ client], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -15,6 +15,7 @@ AC_ISC_POSIX
 AC_PROG_INSTALL
 AM_PROG_CC_STDC
 AC_PROG_MAKE_SET
+AM_PROG_LIBTOOL
 
 
 dnl Check for GGZ Requirements
@@ -24,6 +25,11 @@ AC_GGZ_GGZCORE
 AC_GGZ_GGZMOD
 AC_GGZ_LIBGGZ
 AC_GGZ_INTL
+
+
+dnl Gaim plugin check
+dnl =================
+AC_GAIM
 
 
 dnl Check for header files
@@ -103,6 +109,7 @@ AC_SUBST(ggzdatadir)
 
 AC_CONFIG_FILES([Makefile 
 	   ggz-gtk/Makefile
+	   gaim-plugin/Makefile
 	   po/Makefile
 	   man/Makefile
 	   ])
@@ -116,6 +123,8 @@ echo "Options"
 echo "    General Debugging..$enable_debug"
 echo "    GDB Debugging......$enable_debug_gdb"
 echo "    Dmalloc Debugging..$enable_debug_mem"
+echo ""
+echo "    Gaim plugin........$have_gaim"
 echo ""
 echo "At the prompt type \"make\" to compile the GGZ gtk client"
 echo ""

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = ggz-gtk man po
+SUBDIRS = ggz-gtk $(GAIMPLUGIN) man po
 
 EXTRA_DIST = TODO README.GGZ QuickStart.GGZ \
 		m4/gettext.m4	\
