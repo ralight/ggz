@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 4550 2002-09-13 17:19:22Z jdorje $
+ * $Id: ggz_common.h 4607 2002-09-17 18:11:43Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -145,10 +145,6 @@ int ggz_numberlist_get_max(GGZNumberList *list);
 
 /* Changing anything below may require bumping up the protocol version.
  * Experiment at your own risk. */
-
-/* Chat subop bitmasks */
-#define GGZ_CHAT_M_MESSAGE	(unsigned char) 0x40	/* X1XXXXXX */
-#define GGZ_CHAT_M_PLAYER	(unsigned char) 0x80	/* 1XXXXXXX */
 
 /* Error opcodes. */
 typedef enum {
