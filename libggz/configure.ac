@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5838 2004-02-08 04:34:49Z jdorje $
+dnl $Id: configure.ac 5839 2004-02-08 05:09:25Z jdorje $
 
 AC_INIT([GGZ common libraries], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -31,9 +31,10 @@ AC_ARG_WITH([gcrypt],
 
 # Check for header files
 # ======================
-AC_CHECK_HEADERS([fcntl.h netdb.h netinet/in.h sys/param.h sys/socket.h \
-                  syslog.h sys/wait.h], [],
+AC_CHECK_HEADERS([fcntl.h syslog.h sys/param.h sys/wait.h], [],
                  [AC_MSG_ERROR([cannot find required header file])])
+AC_CHECK_HEADERS([arpa/inet.h netdb.h netinet/in.h sys/socket.h \
+                  sys/uio.h sys/un.h winsock.h])
 AC_HEADER_SYS_WAIT
 
 

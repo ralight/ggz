@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 5745 2004-01-24 22:12:23Z josef $
+ * $Id: easysock.c 5839 2004-02-08 05:09:25Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -34,14 +34,29 @@
 #endif
 
 #include <sys/types.h>
+#ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
-#include <sys/un.h>
+#endif
+#ifdef HAVE_SYS_UIO_H
 #include <sys/uio.h>
+#endif
+#ifdef HAVE_SYS_UN_H
+#include <sys/un.h>
+#endif
 #include <sys/param.h>
+#ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
-
+#endif
+#ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
+#endif
+#ifdef HAVE_NETDB_H
 #include <netdb.h>
+#endif
+#ifdef HAVE_WINSOCK_H
+#include "winsock.h"
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
