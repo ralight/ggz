@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 5972 2004-03-22 17:05:09Z josef $
+ * $Id: ggzcore.h 6116 2004-07-16 19:07:48Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -1073,7 +1073,7 @@ int ggzcore_player_get_ranking(GGZPlayer *player, int *ranking);
 /** @brief Get the player's highscore.
  *  @return TRUE if there is a highscore; FALSE if not or on error.
  */
-int ggzcore_player_get_highscore(GGZPlayer *player, long *highscore);
+int ggzcore_player_get_highscore(GGZPlayer *player, int *highscore);
 
 
 /** @brief Create a new table object.

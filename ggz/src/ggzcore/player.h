@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.h 5083 2002-10-28 06:03:05Z jdorje $
+ * $Id: player.h 6116 2004-07-16 19:07:48Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -64,8 +64,8 @@ struct _GGZPlayer {
 	int ranking;
 
 	/* Player's highest score */
-#define NO_HIGHSCORE 0
-	long highscore;
+#define NO_HIGHSCORE -1
+	int highscore;
 };
 
 
@@ -105,7 +105,7 @@ int _ggzcore_player_get_record(GGZPlayer *player,
 			       int *ties, int *forfeits);
 int _ggzcore_player_get_rating(GGZPlayer *player, int *rating);
 int _ggzcore_player_get_ranking(GGZPlayer *player, int *ranking);
-int _ggzcore_player_get_highscore(GGZPlayer *player, long *highscore);
+int _ggzcore_player_get_highscore(GGZPlayer *player, int *highscore);
 
 /* Utility functions used by _ggzcore_list */
 int   _ggzcore_player_compare(void* p, void* q);

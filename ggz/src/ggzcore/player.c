@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: player.c 5083 2002-10-28 06:03:05Z jdorje $
+ * $Id: player.c 6116 2004-07-16 19:07:48Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -99,7 +99,7 @@ int ggzcore_player_get_ranking(GGZPlayer *player, int *ranking)
 	return _ggzcore_player_get_ranking(player, ranking);
 }
 
-int ggzcore_player_get_highscore(GGZPlayer *player, long *highscore)
+int ggzcore_player_get_highscore(GGZPlayer *player, int *highscore)
 {
 	if (!player || !highscore)
 		return 0;
@@ -264,8 +264,7 @@ int _ggzcore_player_get_ranking(GGZPlayer *player,
 }
 
 
-int _ggzcore_player_get_highscore(GGZPlayer *player,
-				  long *highscore)
+int _ggzcore_player_get_highscore(GGZPlayer *player, int *highscore)
 {
 	if (player->highscore == NO_HIGHSCORE)
 		return 0;
