@@ -4,7 +4,10 @@
  * Project: GGZ GTK Games
  * Date: 2/20/2004 (moved from GGZCards)
  * Desc: Create the "Chat" Gtk dialog
- * $Id: dlg_chat.c 5951 2004-02-21 06:03:45Z jdorje $
+ * $Id: dlg_chat.c 5952 2004-02-21 06:43:11Z jdorje $
+ *
+ * This file implements a chat widget.  Much of the code is taken from
+ * Freeciv's chat widget, written by Vasco Alexandre da Silva Costa.
  *
  * Copyright (C) 2004 GGZ Development Team
  *
@@ -37,7 +40,10 @@
 
 
 typedef struct chatwidgets {
-	GtkWidget *this;
+	GtkWidget *text;
+#ifndef GTK2
+	GtkWidget *scrollbar;
+#endif
 	struct chatwidgets *next;
 } ChatWidgets;
 
@@ -49,27 +55,39 @@ static void handle_ggz_chat_event(GGZMod *ggzmod, GGZModEvent e, void *data)
 {
 	GGZChat *chat = data;
 	ChatWidgets *list;
+	char message[1024];
+#ifdef GTK2
 	GtkTextBuffer *buf;
 	GtkTextIter i;
 	GtkTextMark *mark;
-	char message[1024];
-
+#endif
 	snprintf(message, sizeof(message), "\n%s : %s",
 		 chat->player, chat->message);
 
 	for (list = chats; list; list = list->next) {
-		if (!list->this) continue;
+		if (!list->text) continue;
 
-		buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(list->this));
+#ifdef GTK2
+		buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(list->text));
 		gtk_text_buffer_get_end_iter(buf, &i);
 		gtk_text_buffer_insert(buf, &i, message, -1);
 
 		/* have to use a mark, or this won't work properly */
 		gtk_text_buffer_get_end_iter(buf, &i);
 		mark = gtk_text_buffer_create_mark(buf, NULL, &i, FALSE);
-		gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW(list->this),
+		gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW(list->text),
 						   mark);
 		gtk_text_buffer_delete_mark(buf, mark);
+#else
+		gtk_text_freeze(GTK_TEXT(list->text));
+		gtk_text_insert(GTK_TEXT(list->text),
+				NULL, NULL, NULL, message, -1);
+		gtk_text_thaw(GTK_TEXT(list->text));
+
+		/* move the scrollbar forward by a ridiculous amount */
+		gtk_range_default_vmotion(GTK_RANGE(list->scrollbar),
+					  0, 10000);
+#endif
 	}
 }
 
@@ -92,11 +110,18 @@ static void inputline_return(GtkEntry *w, gpointer data)
 
 GtkWidget *create_chat_widget(void)
 {
-	GtkWidget *vbox, *sw, *text, *inputline;
+	GtkWidget *vbox, *text, *inputline;
 	ChatWidgets *list;
+#ifdef GTK2
+	GtkWidget *sw;
+#else
+	GtkWidget *hbox, *text_scrollbar;
+	GtkStyle *text_style;
+#endif
 
 	vbox = gtk_vbox_new(FALSE, 0);
 
+#ifdef GTK2
 	/* Create a scrolled window for the chat lines. */
 	sw = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(sw),
@@ -117,23 +142,55 @@ GtkWidget *create_chat_widget(void)
   
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
 	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(text), 5);
+#else
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+
+	text = gtk_text_new(NULL, NULL);
+	gtk_box_pack_start(GTK_BOX(hbox), text, TRUE, TRUE, 0);
+	gtk_widget_set_usize(text, -1, 50);
+
+	gtk_text_set_editable(GTK_TEXT(text), FALSE);
+	gtk_text_set_word_wrap(GTK_TEXT(text), 1);
+
+	/* hack to make insensitive text readable */
+	text_style = gtk_style_copy(text->style);
+	text_style->base[GTK_STATE_INSENSITIVE]
+		= text_style->base[GTK_STATE_NORMAL];
+	text_style->text[GTK_STATE_INSENSITIVE]
+		= text_style->text[GTK_STATE_NORMAL];
+	gtk_widget_set_style(text, text_style);
+
+	text_scrollbar = gtk_vscrollbar_new(GTK_TEXT(text)->vadj);
+	gtk_box_pack_start(GTK_BOX(hbox), text_scrollbar, FALSE, FALSE, 0);
+#endif
 
 	/* Text entry widget. */
 	inputline = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(vbox), inputline, FALSE, FALSE, 3);
 
-	g_signal_connect(inputline, "activate",
-			 G_CALLBACK(inputline_return), NULL);
-
 	gtk_widget_show_all(vbox);
 
 	list = ggz_malloc(sizeof(*list));
 	list->next = chats;
-	list->this = text;
+	list->text = text;
+#ifndef GTK2
+	list->scrollbar = text_scrollbar;
+#endif
 	chats = list;
+
+#ifdef GTK2
+	g_signal_connect(inputline, "activate",
+			 G_CALLBACK(inputline_return), NULL);
+#else
+	gtk_signal_connect(GTK_OBJECT(inputline), "activate",
+			   GTK_SIGNAL_FUNC(inputline_return), NULL);
+
+#endif
+
 	(void) gtk_signal_connect(GTK_OBJECT(vbox), "destroy",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-				  &list->this);
+				  &list->text);
 
 	return vbox;
 }
