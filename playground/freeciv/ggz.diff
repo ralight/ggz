@@ -1,151 +1,97 @@
-? data/civclient.dsc.in
-? data/civserver.dsc.in
-? data/civserver.room
-? m4/ggz.m4
-Index: acconfig.old
-===================================================================
-RCS file: /home/freeciv/CVS/freeciv/acconfig.old,v
-retrieving revision 1.4
-diff -u -r1.4 acconfig.old
---- acconfig.old	2003/01/13 21:24:05	1.4
-+++ acconfig.old	2003/03/22 16:15:54
-@@ -28,6 +28,8 @@
- #undef VERSION_STRING
- #undef DEBUG
- #undef NDEBUG
-+#undef GGZ_CLIENT
-+#undef GGZ_SERVER
- #undef HAVE_LIBICE
- #undef HAVE_LIBSM
- #undef HAVE_LIBX11
+? gprof
 Index: configure.ac
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/configure.ac,v
-retrieving revision 1.40
-diff -u -r1.40 configure.ac
---- configure.ac	2003/03/07 04:54:59	1.40
-+++ configure.ac	2003/03/22 16:15:55
-@@ -28,6 +28,8 @@
- dnl  AC_DEFINE_UNQUOTED(PACKAGE, $PACKAGE, [Package name])
- dnl  AC_DEFINE_UNQUOTED(VERSION, $VERSION, [Version number])
- dnl  AC_SUBST(VERSION)
+retrieving revision 1.91
+diff -u -r1.91 configure.ac
+--- configure.ac	20 Jan 2005 00:00:12 -0000	1.91
++++ configure.ac	22 Jan 2005 01:34:52 -0000
+@@ -33,6 +33,8 @@
+ AC_DEFINE_UNQUOTED(VERSION_STRING, "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}${VERSION_LABEL}", [Version string])
+ AC_DEFINE_UNQUOTED(IS_DEVEL_VERSION, $IS_DEVEL_VERSION, [Is this a devel version])
+ AC_DEFINE_UNQUOTED(IS_BETA_VERSION, $IS_BETA_VERSION, [Is this a beta veersion])
 +AC_SUBST(MAJOR_VERSION)
 +AC_SUBST(MINOR_VERSION)
  
- AC_DEFINE_UNQUOTED(MAJOR_VERSION, $MAJOR_VERSION, [Major version])
- AC_DEFINE_UNQUOTED(MINOR_VERSION, $MINOR_VERSION, [Minor version])
-@@ -270,6 +272,22 @@
+ dnl Initialize automake stuff
+ AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
+@@ -287,6 +289,25 @@
     fi
  fi
  
 +dnl Check for GGZ
 +AC_GGZ_INIT
 +AC_GGZ_LIBGGZ([try_ggz="yes"], [try_ggz="no"])
-+if test x"$try_ggz" = "xyes"; then
-+  AC_GGZ_GGZMOD([AC_GGZ_CONFIG([ggz_client="yes"], ignore)], ignore)
-+  AC_GGZ_GGZDMOD([ggz_server="yes"], ignore)
++if test "$try_ggz" = "yes"; then
++  AC_GGZ_GGZMOD([AC_GGZ_CONFIG([ggz_client="yes"], [ggz_client="no"])],
++                [ggz_client="no"])
++  AC_GGZ_GGZDMOD([ggz_server="yes"], [ggz_server="no"])
 +fi
-+if test x"$ggz_server" = "xyes"; then
++if test "$ggz_server" = "yes"; then
 +  GGZ_SERVER_FILES="civserver.dsc civserver.room"
-+  AC_DEFINE(GGZ_SERVER, [], [Server support for GGZ])
++  AC_DEFINE(GGZ_SERVER, 1, [Server support for GGZ])
 +fi
-+if test x"$ggz_client" = "xyes"; then
++if test "$ggz_client" = "yes"; then
 +  GGZ_CLIENT_FILES="civclient.dsc"
-+  AC_DEFINE(GGZ_CLIENT, [], [Client support for GGZ])
++  AC_DEFINE(GGZ_CLIENT, 1, [Client support for GGZ])
 +fi
++AM_CONDITIONAL(GGZ_CLIENT, test "$ggz_client" = "yes")
++AM_CONDITIONAL(GGZ_SERVER, test "$ggz_server" = "yes")
 +
  dnl BeOS-specific settings
  if test x`$UNAME -s` = xBeOS ; then
    AC_DEFINE(SOCKET_ZERO_ISNT_STDIN, 1, [BeOS-specific setting])
-@@ -687,6 +705,8 @@
+@@ -647,6 +668,8 @@
  
  AC_CONFIG_FILES([Makefile
            data/Makefile 
 +          data/civserver.dsc
 +          data/civclient.dsc
+ 	  data/flags/Makefile
  	  data/misc/Makefile 
- 	  data/trident/Makefile 
- 	  data/isotrident/Makefile 
-Index: configure.in
-===================================================================
-RCS file: /home/freeciv/CVS/freeciv/configure.in,v
-retrieving revision 1.216
-diff -u -r1.216 configure.in
---- configure.in	2003/03/03 23:06:38	1.216
-+++ configure.in	2003/03/22 16:15:56
-@@ -269,6 +269,22 @@
-    fi
- fi
- 
-+dnl Check for GGZ
-+AC_GGZ_INIT
-+AC_GGZ_LIBGGZ([try_ggz="yes"], [try_ggz="no"])
-+if test x"$try_ggz" = "xyes"; then
-+  AC_GGZ_GGZMOD([AC_GGZ_GGZCONFIG([ggz_server="yes"], ignore)], ignore)
-+  AC_GGZ_GGZDMOD([AC_GGZ_SERVER([ggz_server="yes"], ignore)], ignore)
-+fi
-+if test x"$ggz_server" = "xyes"; then
-+  GGZ_SERVER_FILES="civserver.dsc civserver.room"
-+  AC_DEFINE(GGZ_SERVER, [], [Server support for GGZ])
-+fi
-+if test x"$ggz_client" = "xyes"; then
-+  GGZ_CLIENT_FILES="civclient.dsc"
-+  AC_DEFINE(GGZ_CLIENT, [], [Client support for GGZ])
-+fi
-+
- dnl BeOS-specific settings
- if test x`$UNAME -s` = xBeOS ; then
-   AC_DEFINE(SOCKET_ZERO_ISNT_STDIN)
-@@ -674,6 +690,8 @@
- 
- AC_OUTPUT(Makefile
-           data/Makefile 
-+          data/civserver.dsc
-+          data/civclient.dsc
- 	  data/misc/Makefile 
- 	  data/isotrident/Makefile 
  	  data/trident/Makefile 
 Index: client/Makefile.am
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/client/Makefile.am,v
-retrieving revision 1.48
-diff -u -r1.48 Makefile.am
---- client/Makefile.am	2003/02/23 14:11:14	1.48
-+++ client/Makefile.am	2003/03/22 16:15:57
-@@ -129,7 +129,7 @@
+retrieving revision 1.61
+diff -u -r1.61 Makefile.am
+--- client/Makefile.am	24 Sep 2004 15:33:31 -0000	1.61
++++ client/Makefile.am	22 Jan 2005 01:34:52 -0000
+@@ -138,7 +138,7 @@
  
  bin_PROGRAMS = civclient
  
--INCLUDES = -I$(srcdir)/include -I$(top_srcdir)/common -I$(top_srcdir)/common/aicore -I../intl -I$(srcdir)/agents @SOUND_CFLAGS@
-+INCLUDES = -I$(srcdir)/include -I$(top_srcdir)/common -I$(top_srcdir)/common/aicore -I../intl -I$(srcdir)/agents @SOUND_CFLAGS@ @LIBGGZ_INCLUDES@ @GGZMOD_INCLUDES@
+-AM_CPPFLAGS = -I$(top_srcdir)/utility -I$(srcdir)/include -I$(top_srcdir)/common -I$(top_srcdir)/common/aicore -I../intl -I$(srcdir)/agents @SOUND_CFLAGS@
++AM_CPPFLAGS = -I$(top_srcdir)/utility -I$(srcdir)/include -I$(top_srcdir)/common -I$(top_srcdir)/common/aicore -I../intl -I$(srcdir)/agents @SOUND_CFLAGS@ @LIBGGZ_INCLUDES@ @GGZMOD_INCLUDES@
  
  ## Above, note -I../intl instead of -I$(top_srdir/intl) is deliberate.
  
-@@ -182,4 +182,4 @@
- civclient_LDADD        = @gui_sources@/libguiclient.a \
- 	../common/libcivcommon.a @INTLLIBS@ @gui_sources@/libguiclient.a \
- 	../common/libcivcommon.a @CLIENT_LIBS@ ../common/aicore/libaicore.a agents/libagents.a \
--	@CLIENT_LIBS@ @SOUND_LIBS@
-+	@CLIENT_LIBS@ @SOUND_LIBS@ @LIB_GGZMOD@ @GGZMOD_LDFLAGS@
+@@ -192,7 +192,7 @@
+ 	audio_none.c    \
+ 	audio_none.h
+ 
+-civclient_LDFLAGS = @CLIENT_LDFLAGS@
++civclient_LDFLAGS = @CLIENT_LDFLAGS@ @GGZMOD_LDFLAGS@
+ fc_civclient_libs =	../utility/libcivutility.a	\
+ 			$(LIBFTWL)			\
+ 			../common/libcivcommon.a	\
+@@ -201,7 +201,7 @@
+ 		 	@gui_sources@/libguiclient.a
+ civclient_DEPENDENCIES = $(fc_civclient_libs)
+ civclient_LDADD        = $(fc_civclient_libs) $(fc_civclient_libs) \
+-	@INTLLIBS@ @CLIENT_LIBS@ @SOUND_LIBS@
++	@INTLLIBS@ @CLIENT_LIBS@ @SOUND_LIBS@ @LIB_GGZMOD@
+ desktopfiledir = $(prefix)/share/applications
+ desktopfile_DATA = \
+ 	freeciv.desktop
 Index: client/civclient.c
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/client/civclient.c,v
-retrieving revision 1.164
-diff -u -r1.164 civclient.c
---- client/civclient.c	2003/02/22 13:22:32	1.164
-+++ client/civclient.c	2003/03/22 16:15:59
-@@ -32,6 +32,10 @@
- #include <winsock.h>
- #endif
- 
-+#ifdef GGZ_CLIENT
-+#include <ggzmod.h>
-+#endif
-+
- #include "capstr.h"
- #include "fcintl.h"
- #include "game.h"
-@@ -86,6 +90,7 @@
+retrieving revision 1.211
+diff -u -r1.211 civclient.c
+--- client/civclient.c	21 Jan 2005 00:00:45 -0000	1.211
++++ client/civclient.c	22 Jan 2005 01:34:52 -0000
+@@ -84,6 +84,7 @@
  char metaserver[512] = "\0";
  int  server_port = -1;
  bool auto_connect = FALSE; /* TRUE = skip "Connect to Freeciv Server" dialog */
@@ -153,46 +99,35 @@ diff -u -r1.164 civclient.c
  
  static enum client_states client_state = CLIENT_BOOT_STATE;
  
-@@ -147,6 +152,9 @@
-     fprintf(stderr, _("  -S, --Sound FILE\tRead sound tags from FILE\n"));
-     fprintf(stderr, _("  -t, --tiles FILE\t"
- 		      "Use data file FILE.tilespec for tiles\n"));
+@@ -199,6 +200,9 @@
+       fc_fprintf(stderr,
+ 		 _("  -d, --debug NUM\tSet debug log level (0 to 3)\n"));
+ #endif
 +#ifdef GGZ_CLIENT
-+    fprintf(stderr, _("  -g, --ggz\t\tEnable GGZ mode\n"));
++      fc_fprintf(stderr, _("  -g,  --ggz\t\tEnable GGZ mode\n"));
 +#endif
-     fprintf(stderr, _("  -v, --version\t\tPrint the version number\n"));
-     fprintf(stderr, _("      --\t\t"
- 		      "Pass any following options to the UI.\n"
-@@ -182,6 +190,10 @@
-       sz_strlcpy(tile_set_name, option);
-    else if (is_option("--", argv[i])) {
-      ui_separator = TRUE;
+       fc_fprintf(stderr,
+ 		 _("  -h, --help\t\tPrint a summary of the options\n"));
+       fc_fprintf(stderr, _("  -l, --log FILE\tUse FILE as logfile "
+@@ -270,6 +274,10 @@
+     } else if ((option = get_option_malloc("--tiles", argv, &i, argc))) {
+       sz_strlcpy(tileset_name, option);
+       free(option);
 +#ifdef GGZ_CLIENT
-+   } else if (is_option("--ggz", argv[i])) {
-+     with_ggz = TRUE;
++    } else if (is_option("--ggz", argv[i])) {
++      with_ggz = TRUE;
 +#endif
-    } else { 
-       fprintf(stderr, _("Unrecognized option: \"%s\"\n"), argv[i]);
-       exit(EXIT_FAILURE);
-@@ -707,7 +719,9 @@
- 	auto_connect = FALSE;	/* don't try this again */
-       }
+     } else if (is_option("--", argv[i])) {
+       ui_separator = TRUE;
      } else {
--      gui_server_connect();
-+      if (!with_ggz) {
-+	gui_server_connect();
-+      }
-     }
-   }
-   update_turn_done_button_state();
 Index: client/civclient.h
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/client/civclient.h,v
-retrieving revision 1.26
-diff -u -r1.26 civclient.h
---- client/civclient.h	2003/01/05 20:51:36	1.26
-+++ client/civclient.h	2003/03/22 16:15:59
-@@ -46,6 +46,7 @@
+retrieving revision 1.38
+diff -u -r1.38 civclient.h
+--- client/civclient.h	12 Dec 2004 03:44:47 -0000	1.38
++++ client/civclient.h	22 Jan 2005 01:34:52 -0000
+@@ -49,6 +49,7 @@
  extern char metaserver[512];
  extern int  server_port;
  extern bool auto_connect;
@@ -203,53 +138,62 @@ diff -u -r1.26 civclient.h
 Index: client/clinet.c
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/client/clinet.c,v
-retrieving revision 1.80
-diff -u -r1.80 clinet.c
---- client/clinet.c	2003/03/05 08:56:07	1.80
-+++ client/clinet.c	2003/03/22 16:16:00
-@@ -56,6 +56,10 @@
- #include <sys/utsname.h>
+retrieving revision 1.109
+diff -u -r1.109 clinet.c
+--- client/clinet.c	25 Nov 2004 05:39:59 -0000	1.109
++++ client/clinet.c	22 Jan 2005 01:34:52 -0000
+@@ -58,6 +58,10 @@
+ #include <winsock.h>
  #endif
  
 +#ifdef GGZ_CLIENT
-+#include <ggzmod.h>
++#  include <ggzmod.h>
 +#endif
 +
  #include "capstr.h"
+ #include "dataio.h"
  #include "fcintl.h"
- #include "game.h"
-@@ -177,18 +181,34 @@
- int try_to_connect(char *user_name, char *errbuf, int errbufsize)
+@@ -184,6 +188,9 @@
+ int try_to_connect(const char *username, char *errbuf, int errbufsize)
  {
-   struct packet_req_join_game req;
--
--  if ((aconnection.sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
--    (void) mystrlcpy(errbuf, mystrerror(errno), errbufsize);
--    return -1;
--  }
--
--  if (connect(aconnection.sock, (struct sockaddr *) &server_addr,
--      sizeof(server_addr)) == -1) {
--    (void) mystrlcpy(errbuf, mystrerror(errno), errbufsize);
--    my_closesocket(aconnection.sock);
--    aconnection.sock = -1;
--    return errno;
+   struct packet_server_join_req req;
 +#ifdef GGZ_CLIENT
 +  GGZMod *mod;
 +#endif
-+
+ 
+   /* connection in progress? wait. */
+   if (aconnection.used) {
+@@ -191,20 +198,33 @@
+     return -1;
+   }
+   
+-  if ((aconnection.sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+-    (void) mystrlcpy(errbuf, mystrerror(), errbufsize);
+-    return -1;
+-  }
 +  if (!with_ggz) {
 +    if ((aconnection.sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-+      (void) mystrlcpy(errbuf, mystrerror(errno), errbufsize);
++      (void) mystrlcpy(errbuf, mystrerror(), errbufsize);
 +      return -1;
 +    }
-+
-+    if (connect(aconnection.sock, (struct sockaddr *) &server_addr,
+ 
+-  if (connect(aconnection.sock, &server_addr.sockaddr,
+-      sizeof(server_addr)) == -1) {
+-    (void) mystrlcpy(errbuf, mystrerror(), errbufsize);
+-    my_closesocket(aconnection.sock);
+-    aconnection.sock = -1;
++    if (connect(aconnection.sock, &server_addr.sockaddr,
 +		sizeof(server_addr)) == -1) {
-+      (void) mystrlcpy(errbuf, mystrerror(errno), errbufsize);
++      (void) mystrlcpy(errbuf, mystrerror(), errbufsize);
 +      my_closesocket(aconnection.sock);
 +      aconnection.sock = -1;
+ #ifdef WIN32_NATIVE
+-    return -1;
++      return -1;
+ #else
+-    return errno;
 +      return errno;
++#endif
 +    }
 +  } else {
 +#ifdef GGZ_CLIENT
@@ -261,18 +205,18 @@ diff -u -r1.80 clinet.c
 +			" in ggz mode!\n"));
 +      exit(EXIT_FAILURE);
 +    }
-+#endif
+ #endif
    }
  
-   if (aconnection.buffer) {
 Index: data/.cvsignore
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/data/.cvsignore,v
-retrieving revision 1.3
-diff -u -r1.3 .cvsignore
---- data/.cvsignore	2002/04/13 13:59:27	1.3
-+++ data/.cvsignore	2003/03/22 16:16:01
-@@ -1,3 +1,5 @@
+retrieving revision 1.4
+diff -u -r1.4 .cvsignore
+--- data/.cvsignore	4 Oct 2004 17:33:08 -0000	1.4
++++ data/.cvsignore	22 Jan 2005 01:34:52 -0000
+@@ -1,4 +1,6 @@
+ Freeciv
  Makefile
  Makefile.in
 +civserver.dsc
@@ -281,41 +225,929 @@ diff -u -r1.3 .cvsignore
 Index: data/Makefile.am
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/data/Makefile.am,v
-retrieving revision 1.23
-diff -u -r1.23 Makefile.am
---- data/Makefile.am	2002/08/12 20:03:10	1.23
-+++ data/Makefile.am	2003/03/22 16:16:01
-@@ -9,7 +9,10 @@
- 	trident_shields.tilespec	\
- 	helpdata.txt	\
- 	civ1.serv	\
--	civ2.serv
-+	civ2.serv	\
+retrieving revision 1.27
+diff -u -r1.27 Makefile.am
+--- data/Makefile.am	20 Oct 2004 03:45:19 -0000	1.27
++++ data/Makefile.am	22 Jan 2005 01:34:53 -0000
+@@ -36,6 +36,9 @@
+ 	Freeciv	\
+ 	freeciv.rc	\
+ 	freeciv.rc-2.0	\
 +	civserver.dsc.in	\
++	civclient.dsc.in	\
 +	civserver.room		\
-+	civclient.dsc.in
+ 	isophex.tilespec	\
+ 	isotrident.tilespec \
+ 	trident.tilespec	\
+@@ -58,3 +61,19 @@
+ endif
  
- EXTRA_DIST = $(pkgdata_DATA)
- 
+ SUBDIRS = $(CLIENTDATADIRS) $(SERVERDATADIRS)
++
++if GGZ_CLIENT
++install-data-local:
++	$(GGZ_CONFIG) -D --install --modfile=civclient.dsc --force
++
++uninstall-local:
++	$(GGZ_CONFIG) -D --remove --modfile=civclient.dsc
++endif
++
++if GGZ_SERVER
++ggzroom_DATA = civserver.room
++ggzroomdir = ${prefix}/etc/ggzd/rooms/
++
++ggzgame_DATA = civserver.dsc
++ggzgamedir = ${prefix}/etc/ggzd/games/
++endif
+Index: data/civclient.dsc.in
+===================================================================
+RCS file: data/civclient.dsc.in
+diff -N data/civclient.dsc.in
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ data/civclient.dsc.in	22 Jan 2005 01:34:53 -0000
+@@ -0,0 +1,11 @@
++# GGZ client game description file for Freeciv
++
++[ModuleInfo]
++Author = See http://www.freeciv.org/people.phtml
++CommandLine = @prefix@/bin/civclient
++Frontend = any
++Homepage = http://www.freeciv.org/
++Name = Freeciv
++ProtocolEngine = Freeciv
++ProtocolVersion = @MAJOR_VERSION@.@MINOR_VERSION@
++Version = @VERSION@
+Index: data/civserver.dsc.in
+===================================================================
+RCS file: data/civserver.dsc.in
+diff -N data/civserver.dsc.in
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ data/civserver.dsc.in	22 Jan 2005 01:34:53 -0000
+@@ -0,0 +1,22 @@
++# GGZ Server game description file for Freeciv
++
++[GameInfo]
++Author = See http://www.freeciv.org/people.phtml
++Description = Freeciv strategy game
++Homepage = http://www.freeciv.org/
++Name = Freeciv
++Version = @VERSION@
++
++[LaunchInfo]
++ExecutablePath = @prefix@/bin/civserver
++
++[Protocol]
++Engine = Freeciv
++Version = @MAJOR_VERSION@.@MINOR_VERSION@
++
++[TableOptions]
++AllowLeave = 1
++BotsAllowed = 1..30
++PlayersAllowed = 1..30
++KillWhenEmpty = 0
++AllowSpectators = 1
+Index: data/civserver.room
+===================================================================
+RCS file: data/civserver.room
+diff -N data/civserver.room
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ data/civserver.room	22 Jan 2005 01:34:53 -0000
+@@ -0,0 +1,16 @@
++# GGZ Server room description file for Freeciv
++[RoomInfo]
++
++# This is the short name for the room
++Name = Freeciv
++
++# This is the long descriptive name for the room.  Make sure it's updated
++# when new games are added.
++Description = Freeciv multiplayer strategy game
++
++# The gametype should match up to the Name of an added game
++GameType = Freeciv
++
++# These set maximum values for this room
++MaxPlayers = 150
++MaxTables = 45
+Index: m4/ggz.m4
+===================================================================
+RCS file: m4/ggz.m4
+diff -N m4/ggz.m4
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ m4/ggz.m4	22 Jan 2005 01:34:53 -0000
+@@ -0,0 +1,792 @@
++dnl ======================================
++dnl GGZ Gaming Zone - Configuration Macros
++dnl ======================================
++dnl
++dnl Copyright (C) 2001 - 2004 Josef Spillner, josef@ggzgamingzone.org
++dnl This file has heavily been inspired by KDE's acinclude :)
++dnl It is published under the conditions of the GNU General Public License.
++dnl
++dnl ======================================
++dnl
++dnl This file is common to most GGZ modules, and should be kept in sync
++dnl between them all.  The master copy resides with libggz.
++dnl Currently the following modules use it:
++dnl   kde-games, kde-client, gtk-games, gtk-client, utils, grubby,
++dnl   ggz-client-libs, ggzd, gnome-client, txt-client
++dnl See /docs/ggz-project/buildsystem for documentation.
++dnl
++dnl ======================================
++dnl
++dnl History:
++dnl   See the CVS log for a full history.
++dnl
++dnl ------------------------------------------------------------------------
++dnl Content of this file:
++dnl ------------------------------------------------------------------------
++dnl AC_GGZ_LIBGGZ - find the libggz headers and libraries
++dnl AC_GGZ_GGZCORE - find the ggzcore headers and libraries
++dnl AC_GGZ_CONFIG - find the ggz-config tool and set up configuration
++dnl AC_GGZ_GGZMOD - find the ggzmod library
++dnl AC_GGZ_GGZDMOD - find the ggzdmod library
++dnl AC_GGZ_SERVER - set up game and room path for ggzd game servers
++dnl AC_GGZ_INTL - ensure proper i18n tools installation
++dnl
++dnl Each macro takes two arguments:
++dnl   1.  Action-if-found (or empty for no action).
++dnl   2.  Action-if-not-found (or empty for error, or "ignore" to ignore).
++dnl ------------------------------------------------------------------------
++dnl Internal functions:
++dnl ------------------------------------------------------------------------
++dnl AC_GGZ_INIT - initialization
++dnl AC_GGZ_ERROR - user-friendly error messages
++dnl AC_GGZ_FIND_FILE - macro for convenience (thanks kde)
++dnl AC_GGZ_REMOVEDUPS - eliminate duplicate list elements
++dnl
++
++dnl ------------------------------------------------------------------------
++dnl Find a directory containing a single file
++dnl Synopsis: AC_GGZ_FIND_FILE(file, directorylist, <returnvar>)
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN([AC_GGZ_FIND_FILE],
++[
++$3=NO
++for i in $2;
++do
++  for j in $1;
++  do
++    echo "configure: __oline__: $i/$j" >&AC_FD_CC
++    if test -r "$i/$j"; then
++      echo "taking that" >&AC_FD_CC
++      $3=$i
++      break 2
++    fi
++  done
++done
++])
++
++dnl ------------------------------------------------------------------------
++dnl Remove duplicate entries in a list, and remove all NO's
++dnl Synopsis: AC_GGZ_REMOVEDUPS(list, <returnlist>)
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN([AC_GGZ_REMOVEDUPS],
++[
++ret=""
++for i in $1; do
++  add=yes
++  for j in $ret; do
++    if test "x$i" = "x$j"; then
++      add=no
++    fi
++  done
++  if test "x$i" = "xNO"; then
++    add=no
++  fi
++  if test "x$add" = "xyes"; then
++  ret="$ret $i"
++  fi
++done
++$2=$ret
++])
++
++dnl ------------------------------------------------------------------------
++dnl User-friendly error messages
++dnl Synopsis: AC_GGZ_ERROR(libraryname, headerdirlist, libdirlist)
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN([AC_GGZ_ERROR],
++[
++  AC_MSG_WARN([no
++  The library '$1' does not seem to be installed correctly.
++  Headers searched in: $2
++  Libraries searched in: $3
++  Please read QuickStart.GGZ in order to fix this.
++  ])
++  exit 1
++])
++
++dnl ------------------------------------------------------------------------
++dnl Initialization, common values and such
++dnl Synopsis: AC_GGZ_INIT([export], [defaults])
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN([AC_GGZ_INIT],
++[
++if test "x${prefix}" = "xNONE"; then
++   ac_ggz_prefix_incdir="${ac_default_prefix}/include"
++   ac_ggz_prefix_libdir="${ac_default_prefix}/lib"
++   ac_ggz_prefix_bindir="${ac_default_prefix}/bin"
++   ac_ggz_prefix_etcdir="${ac_default_prefix}/etc"
++else
++   ac_ggz_prefix_incdir="${prefix}/include"
++   ac_ggz_prefix_libdir="${prefix}/lib"
++   ac_ggz_prefix_bindir="${prefix}/bin"
++   ac_ggz_prefix_etcdir="${prefix}/etc"
++fi
++ac_ggz_stdinc="$ac_ggz_prefix_incdir"
++ac_ggz_stdlib="$ac_ggz_prefix_libdir"
++ac_ggz_stdbin="$ac_ggz_prefix_bindir"
++ac_ggz_stdetc="$ac_ggz_prefix_etcdir"
++if test "x$1" = "xdefaults" || test "x$2" = "xdefaults"; then
++  ac_ggz_stdinc="$ac_ggz_stdinc /usr/local/include /usr/include"
++  ac_ggz_stdlib="$ac_ggz_stdlib /usr/local/lib /usr/lib"
++  ac_ggz_stdbin="$ac_ggz_stdbin /usr/local/bin /usr/bin"
++  ac_ggz_stdetc="$ac_ggz_stdetc/ggzd /usr/local/etc/ggzd /etc/ggzd"
++fi
++if test "x$1" = "xexport" || test "x$2" = "xexport"; then
++  CPPFLAGS="$CPPFLAGS -isystem${ac_ggz_prefix_incdir}"
++  LDFLAGS="$LDFLAGS -L${ac_ggz_prefix_libdir}"
++fi
++
++save_cflags=$CFLAGS
++save_cxxflags=$CXXFLAGS
++CFLAGS="-Wall -Werror"
++AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
++	[[void signedness(void){char c;if(c==-1)c=0;}]])],
++	[],
++	[save_cflags="$save_cflags -fsigned-char"
++	 save_cxxflags="$save_cxxflags -fsigned-char"])
++CFLAGS=$save_cflags
++CXXFLAGS=$save_cxxflags
++])
++
++dnl ------------------------------------------------------------------------
++dnl Try to find the libggz headers and libraries.
++dnl $(LIBGGZ_LDFLAGS) will be -L ... (if needed)
++dnl and $(LIBGGZ_INCLUDES) will be -I ... (if needed)
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN([AC_GGZ_LIBGGZ],
++[
++AC_MSG_CHECKING([for GGZ library: libggz])
++
++ac_libggz_includes=NO ac_libggz_libraries=NO
++libggz_libraries=""
++libggz_includes=""
++
++AC_ARG_WITH(libggz-dir,
++    AC_HELP_STRING([--with-libggz-dir=DIR],[libggz installation prefix]),
++    [  ac_libggz_includes="$withval"/include
++       ac_libggz_libraries="$withval"/lib
++    ])
++AC_ARG_WITH(libggz-includes,
++    AC_HELP_STRING([--with-libggz-includes=DIR],
++                   [where the libggz includes are]),
++    [  ac_libggz_includes="$withval"
++    ])
++AC_ARG_WITH(libggz-libraries,
++    AC_HELP_STRING([--with-libggz-libraries=DIR],[where the libggz libs are]),
++    [  ac_libggz_libraries="$withval"
++    ])
++
++AC_CACHE_VAL(ac_cv_have_libggz,
++[
++libggz_incdirs="$ac_libggz_includes $ac_ggz_stdinc"
++AC_GGZ_REMOVEDUPS($libggz_incdirs, libggz_incdirs)
++libggz_header=ggz.h
++
++AC_GGZ_FIND_FILE($libggz_header, $libggz_incdirs, libggz_incdir)
++ac_libggz_includes="$libggz_incdir"
++
++libggz_libdirs="$ac_libggz_libraries $ac_ggz_stdlib"
++AC_GGZ_REMOVEDUPS($libggz_libdirs, libggz_libdirs)
++
++test=NONE
++libggz_libdir=NONE
++for dir in $libggz_libdirs; do
++  try="ls -1 $dir/libggz.so"
++  if test -n "`$try 2> /dev/null`"; then libggz_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
++done
++
++ac_libggz_libraries="$libggz_libdir"
++
++if test "$ac_libggz_includes" = NO || test "$ac_libggz_libraries" = NO; then
++  ac_cv_have_libggz="have_libggz=no"
++  ac_libggz_notfound=""
++else
++  have_libggz="yes"
++fi
++])
++
++eval "$ac_cv_have_libggz"
++
++if test "$have_libggz" != yes; then
++  if test "x$2" = "xignore"; then
++    AC_MSG_RESULT([$have_libggz (ignored)])
++  else
++    AC_MSG_RESULT([$have_libggz])
++    if test "x$2" = "x"; then
++      AC_GGZ_ERROR(libggz, $libggz_incdirs, $libggz_libdirs)
++    fi
++
++    # perform actions given by argument 2.
++    $2
++  fi
++else
++  ac_cv_have_libggz="have_libggz=yes \
++    ac_libggz_includes=$ac_libggz_includes ac_libggz_libraries=$ac_libggz_libraries"
++  AC_MSG_RESULT([$have_libggz (libraries $ac_libggz_libraries, headers $ac_libggz_includes)])
++
++  libggz_libraries="$ac_libggz_libraries"
++  libggz_includes="$ac_libggz_includes"
++
++  AC_SUBST(libggz_libraries)
++  AC_SUBST(libggz_includes)
++
++  LIBGGZ_INCLUDES="-isystem $libggz_includes"
++  LIBGGZ_LDFLAGS="-L$libggz_libraries"
++
++  AC_SUBST(LIBGGZ_INCLUDES)
++  AC_SUBST(LIBGGZ_LDFLAGS)
++
++  LIB_GGZ='-lggz'
++  AC_SUBST(LIB_GGZ)
++
++  # perform actions given by argument 1.
++  $1
++fi
++
++])
++
++
++dnl ------------------------------------------------------------------------
++dnl Try to find the ggzcore headers and libraries.
++dnl $(GGZCORE_LDFLAGS) will be -L ... (if needed)
++dnl and $(GGZCORE_INCLUDES) will be -I ... (if needed)
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN([AC_GGZ_GGZCORE],
++[
++AC_MSG_CHECKING([for GGZ library: ggzcore])
++
++ac_ggzcore_includes=NO ac_ggzcore_libraries=NO
++ggzcore_libraries=""
++ggzcore_includes=""
++
++AC_ARG_WITH(ggzcore-dir,
++    AC_HELP_STRING([--with-ggzcore-dir=DIR],[ggzcore installation prefix]),
++    [  ac_ggzcore_includes="$withval"/include
++       ac_ggzcore_libraries="$withval"/lib
++    ])
++AC_ARG_WITH(ggzcore-includes,
++    AC_HELP_STRING([--with-ggzcore-includes=DIR],
++                   [where the ggzcore includes are]),
++    [  ac_ggzcore_includes="$withval"
++    ])
++AC_ARG_WITH(ggzcore-libraries,
++    AC_HELP_STRING([--with-ggzcore-libraries=DIR],
++                   [where the ggzcore libs are]),
++    [  ac_ggzcore_libraries="$withval"
++    ])
++
++AC_CACHE_VAL(ac_cv_have_ggzcore,
++[
++ggzcore_incdirs="$ac_ggzcore_includes $ac_ggz_stdinc"
++AC_GGZ_REMOVEDUPS($ggzcore_incdirs, ggzcore_incdirs)
++ggzcore_header=ggzcore.h
++
++AC_GGZ_FIND_FILE($ggzcore_header, $ggzcore_incdirs, ggzcore_incdir)
++ac_ggzcore_includes="$ggzcore_incdir"
++
++ggzcore_libdirs="$ac_ggzcore_libraries $ac_ggz_stdlib"
++AC_GGZ_REMOVEDUPS($ggzcore_libdirs, ggzcore_libdirs)
++
++test=NONE
++ggzcore_libdir=NONE
++for dir in $ggzcore_libdirs; do
++  try="ls -1 $dir/libggzcore.so"
++  if test -n "`$try 2> /dev/null`"; then ggzcore_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
++done
++
++ac_ggzcore_libraries="$ggzcore_libdir"
++
++if test "$ac_ggzcore_includes" = NO || test "$ac_ggzcore_libraries" = NO; then
++  ac_cv_have_ggzcore="have_ggzcore=no"
++  ac_ggzcore_notfound=""
++else
++  have_ggzcore="yes"
++fi
++])
++
++eval "$ac_cv_have_ggzcore"
++
++if test "$have_ggzcore" != yes; then
++  if test "x$2" = "xignore"; then
++    AC_MSG_RESULT([$have_ggzcore (intentionally ignored)])
++  else
++    AC_MSG_RESULT([$have_ggzcore])
++    if test "x$2" = "x"; then
++      AC_GGZ_ERROR(ggzcore, $ggzcore_incdirs, $ggzcore_libdirs)
++    fi
++
++    # Perform actions given by argument 2.
++    $2
++  fi
++else
++  ac_cv_have_ggzcore="have_ggzcore=yes \
++    ac_ggzcore_includes=$ac_ggzcore_includes ac_ggzcore_libraries=$ac_ggzcore_libraries"
++  AC_MSG_RESULT([$have_ggzcore (libraries $ac_ggzcore_libraries, headers $ac_ggzcore_includes)])
++
++  ggzcore_libraries="$ac_ggzcore_libraries"
++  ggzcore_includes="$ac_ggzcore_includes"
++
++  AC_SUBST(ggzcore_libraries)
++  AC_SUBST(ggzcore_includes)
++
++  GGZCORE_INCLUDES="-isystem $ggzcore_includes"
++  GGZCORE_LDFLAGS="-L$ggzcore_libraries"
++
++  AC_SUBST(GGZCORE_INCLUDES)
++  AC_SUBST(GGZCORE_LDFLAGS)
++
++  LIB_GGZCORE='-lggzcore'
++  AC_SUBST(LIB_GGZCORE)
++
++  # Perform actions given by argument 1.
++  $1
++fi
++
++])
++
++dnl ------------------------------------------------------------------------
++dnl Try to find the ggz-config binary.
++dnl Sets GGZ_CONFIG to the path/name of the program.
++dnl Sets also: ggz_gamedir, ggz_datadir etc.
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN([AC_GGZ_CONFIG],
++[
++AC_MSG_CHECKING([for GGZ configuration tool: ggz-config])
++
++ac_ggz_config=NO
++ggz_config=""
++
++AC_ARG_WITH(ggzconfig,
++    AC_HELP_STRING([--with-ggzconfig=DIR],[path to ggz-config]),
++    [  ac_ggz_config="$withval"
++    ])
++
++AC_CACHE_VAL(ac_cv_have_ggzconfig,
++[
++ggz_config_dirs="$ac_ggz_config $ac_ggz_stdbin"
++
++AC_GGZ_FIND_FILE(ggz-config, $ggz_config_dirs, ggz_config_dir)
++ac_ggz_config="$ggz_config_dir"
++
++if test "$ac_ggz_config" = NO; then
++  ac_cv_have_ggzcore="have_ggz_config=no"
++  ac_ggz_config_notfound=""
++  have_ggz_config="no"
++else
++  have_ggz_config="yes"
++fi
++])
++
++eval "$ac_cv_have_ggz_config"
++
++if test "$have_ggz_config" != yes; then
++  if test "x$2" = "xignore"; then
++    AC_MSG_RESULT([$have_ggz_config (intentionally ignored)])
++  else
++    AC_MSG_RESULT([$have_ggz_config])
++    if test "x$2" = "x"; then
++      AC_MSG_ERROR([ggz-config not found. Please check your installation! ])
++    fi
++
++    # Perform actions given by argument 2.
++    $2
++  fi
++else
++  ac_cv_have_ggz_config="have_ggz_config=yes \
++    ac_ggz_config=$ac_ggz_config"
++  AC_MSG_RESULT([$ac_ggz_config/ggz-config])
++
++  ggz_config="$ac_ggz_config"
++
++  AC_SUBST(ggz_config)
++
++  GGZ_CONFIG="${ggz_config}/ggz-config"
++  AC_SUBST(GGZ_CONFIG)
++
++  ggzmoduleconfdir=`$GGZ_CONFIG --configdir`
++  AC_DEFINE_UNQUOTED(GGZMODULECONFDIR, "${ggzmoduleconfdir}", [Path where the game registry is located])
++  ggzexecmoddir=`$GGZ_CONFIG --gamedir`
++  AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzexecmoddir}", [Path where to install the games])
++  ggzdatadir=`$GGZ_CONFIG --datadir`
++  AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}", [Path where the games should look for their data files])
++  packagesrcdir=`cd $srcdir && pwd`
++  AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Path where the source is located])
++
++  AC_SUBST(ggzmoduleconfdir)
++  AC_SUBST(ggzexecmoddir)
++  AC_SUBST(ggzdatadir)
++  AC_SUBST(packagesrcdir)
++
++  # Perform actions given by argument 1.
++  $1
++fi
++
++])
++
++dnl ------------------------------------------------------------------------
++dnl Try to find the ggzmod headers and libraries.
++dnl $(GGZMOD_LDFLAGS) will be -L ... (if needed)
++dnl and $(GGZMOD_INCLUDES) will be -I ... (if needed)
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN([AC_GGZ_GGZMOD],
++[
++AC_MSG_CHECKING([for GGZ library: ggzmod])
++
++ac_ggzmod_includes=NO ac_ggzmod_libraries=NO
++ggzmod_libraries=""
++ggzmod_includes=""
++
++AC_ARG_WITH(ggzmod-dir,
++    AC_HELP_STRING([--with-ggzmod-dir=DIR],[ggzmod installation prefix]),
++    [  ac_ggzmod_includes="$withval"/include
++       ac_ggzmod_libraries="$withval"/lib
++    ])
++AC_ARG_WITH(ggzmod-includes,
++    AC_HELP_STRING([--with-ggzmod-includes=DIR],
++                   [where the ggzmod includes are]),
++    [  ac_ggzmod_includes="$withval"
++    ])
++AC_ARG_WITH(ggzmod-libraries,
++    AC_HELP_STRING([--with-ggzmod-libraries=DIR],
++                   [where the ggzmod libs are]),
++    [  ac_ggzmod_libraries="$withval"
++    ])
++
++AC_CACHE_VAL(ac_cv_have_ggzmod,
++[
++ggzmod_incdirs="$ac_ggzmod_includes $ac_ggz_stdinc"
++AC_GGZ_REMOVEDUPS($ggzmod_incdirs, ggzmod_incdirs)
++ggzmod_header=ggzmod.h
++
++AC_GGZ_FIND_FILE($ggzmod_header, $ggzmod_incdirs, ggzmod_incdir)
++ac_ggzmod_includes="$ggzmod_incdir"
++
++ggzmod_libdirs="$ac_ggzmod_libraries $ac_ggz_stdlib"
++AC_GGZ_REMOVEDUPS($ggzmod_libdirs, ggzmod_libdirs)
++
++test=NONE
++ggzmod_libdir=NONE
++for dir in $ggzmod_libdirs; do
++  try="ls -1 $dir/libggzmod.so"
++  if test -n "`$try 2> /dev/null`"; then ggzmod_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
++done
++
++ac_ggzmod_libraries="$ggzmod_libdir"
++
++if test "$ac_ggzmod_includes" = NO || test "$ac_ggzmod_libraries" = NO; then
++  ac_cv_have_ggzmod="have_ggzmod=no"
++  ac_ggzmod_notfound=""
++else
++  have_ggzmod="yes"
++fi
++])
++
++eval "$ac_cv_have_ggzmod"
++
++if test "$have_ggzmod" != yes; then
++  if test "x$2" = "xignore"; then
++    AC_MSG_RESULT([$have_ggzmod (intentionally ignored)])
++  else
++    AC_MSG_RESULT([$have_ggzmod])
++    if test "x$2" = "x"; then
++      AC_GGZ_ERROR(ggzmod, $ggzmod_incdirs, $ggzmod_libdirs)
++    fi
++
++    # Perform actions given by argument 2.
++    $2
++  fi
++else
++  ac_cv_have_ggzmod="have_ggzmod=yes \
++    ac_ggzmod_includes=$ac_ggzmod_includes ac_ggzmod_libraries=$ac_ggzmod_libraries"
++  AC_MSG_RESULT([$have_ggzmod (libraries $ac_ggzmod_libraries, headers $ac_ggzmod_includes)])
++
++  ggzmod_libraries="$ac_ggzmod_libraries"
++  ggzmod_includes="$ac_ggzmod_includes"
++
++  AC_SUBST(ggzmod_libraries)
++  AC_SUBST(ggzmod_includes)
++
++  GGZMOD_INCLUDES="-isystem $ggzmod_includes"
++  GGZMOD_LDFLAGS="-L$ggzmod_libraries"
++
++  AC_SUBST(GGZMOD_INCLUDES)
++  AC_SUBST(GGZMOD_LDFLAGS)
++
++  LIB_GGZMOD='-lggzmod'
++  AC_SUBST(LIB_GGZMOD)
++
++  # Perform actions given by argument 1.
++  $1
++fi
++
++])
++
++dnl ------------------------------------------------------------------------
++dnl Try to find the ggzdmod headers and libraries.
++dnl $(GGZDMOD_LDFLAGS) will be -L ... (if needed)
++dnl and $(GGZDMOD_INCLUDES) will be -I ... (if needed)
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN([AC_GGZ_GGZDMOD],
++[
++AC_MSG_CHECKING([for GGZ library: ggzdmod])
++
++ac_ggzdmod_includes=NO ac_ggzdmod_libraries=NO
++ggzdmod_libraries=""
++ggzdmod_includes=""
++
++AC_ARG_WITH(ggzdmod-dir,
++    AC_HELP_STRING([--with-ggzdmod-dir=DIR], [ggzdmod installation prefix]),
++    [  ac_ggzdmod_includes="$withval"/include
++       ac_ggzdmod_libraries="$withval"/lib
++    ])
++AC_ARG_WITH(ggzdmod-includes,
++    AC_HELP_STRING([--with-ggzdmod-includes=DIR], 
++                   [where the ggzdmod includes are]),
++    [  ac_ggzdmod_includes="$withval"
++    ])
++AC_ARG_WITH(ggzdmod-libraries,
++    AC_HELP_STRING([--with-ggzdmod-libraries=DIR],
++                   [where the ggzdmod libs are]),
++    [  ac_ggzdmod_libraries="$withval"
++    ])
++
++AC_CACHE_VAL(ac_cv_have_ggzdmod,
++[
++ggzdmod_incdirs="$ac_ggzdmod_includes $ac_ggz_stdinc"
++AC_GGZ_REMOVEDUPS($ggzdmod_incdirs, ggzdmod_incdirs)
++ggzdmod_header=ggzdmod.h
++
++AC_GGZ_FIND_FILE($ggzdmod_header, $ggzdmod_incdirs, ggzdmod_incdir)
++ac_ggzdmod_includes="$ggzdmod_incdir"
++
++ggzdmod_libdirs="$ac_ggzdmod_libraries $ac_ggz_stdlib"
++AC_GGZ_REMOVEDUPS($ggzdmod_libdirs, ggzdmod_libdirs)
++
++test=NONE
++ggzdmod_libdir=NONE
++for dir in $ggzdmod_libdirs; do
++  try="ls -1 $dir/libggzdmod.so"
++  if test -n "`$try 2> /dev/null`"; then ggzdmod_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
++done
++
++ac_ggzdmod_libraries="$ggzdmod_libdir"
++
++if test "$ac_ggzdmod_includes" = NO || test "$ac_ggzdmod_libraries" = NO; then
++  ac_cv_have_ggzdmod="have_ggzdmod=no"
++  ac_ggzdmod_notfound=""
++else
++  have_ggzdmod="yes"
++fi
++])
++
++eval "$ac_cv_have_ggzdmod"
++
++if test "$have_ggzdmod" != yes; then
++  if test "x$2" = "xignore"; then
++    AC_MSG_RESULT([$have_ggzdmod (intentionally ignored)])
++  else
++    AC_MSG_RESULT([$have_ggzdmod])
++    if test "x$2" = "x"; then
++      AC_GGZ_ERROR(ggzdmod, $ggzdmod_incdirs, $ggzdmod_libdirs)
++    fi
++
++    # Perform actions given by argument 2.
++    $2
++  fi
++else
++  ac_cv_have_ggzdmod="have_ggzdmod=yes \
++    ac_ggzdmod_includes=$ac_ggzdmod_includes ac_ggzdmod_libraries=$ac_ggzdmod_libraries"
++  AC_MSG_RESULT([$have_ggzdmod (libraries $ac_ggzdmod_libraries, headers $ac_ggzdmod_includes)])
++
++  ggzdmod_libraries="$ac_ggzdmod_libraries"
++  ggzdmod_includes="$ac_ggzdmod_includes"
++
++  AC_SUBST(ggzdmod_libraries)
++  AC_SUBST(ggzdmod_includes)
++
++  GGZDMOD_INCLUDES="-isystem $ggzdmod_includes"
++  GGZDMOD_LDFLAGS="-L$ggzdmod_libraries"
++
++  AC_SUBST(GGZDMOD_INCLUDES)
++  AC_SUBST(GGZDMOD_LDFLAGS)
++
++  LIB_GGZDMOD='-lggzdmod'
++  AC_SUBST(LIB_GGZDMOD)
++
++  # Perform actions given by argument 1.
++  $1
++fi
++
++])
++
++dnl ------------------------------------------------------------------------
++dnl Setup the game server configuration.
++dnl Sets ggzdconfdir (ggzd configuration).
++dnl Sets ggzddatadir (for game server data).
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN([AC_GGZ_SERVER],
++[
++AC_MSG_CHECKING([for GGZ server: ggzd])
++AC_ARG_WITH(ggzd-confdir,
++    AC_HELP_STRING([--with-ggzd-confdir=DIR], [directory for room/game data]),
++[ ac_ggzd_confdir="$withval"
++])
++
++AC_CACHE_VAL(ac_cv_have_ggzdconf,
++[
++	if test "x$1" = "xforce"; then
++		if test "x$ac_ggzd_confdir" = "x"; then
++			ggzdconfdirs="$ac_ggz_stdetc"
++		else
++			ggzdconfdirs="$ac_ggzd_confdir"
++		fi
++	else
++		ggzdconfdirs="$ac_ggzd_confdir $ac_ggz_stdetc"
++	fi
++
++	ggzdconfdir=NONE
++	for dir in $ggzdconfdirs; do
++		if test -n "`ls -d $dir/rooms 2> /dev/null`"; then
++			if test -n "`ls -d $dir/rooms 2> /dev/null`"; then
++				ggzdconfdir=$dir; break;
++			else
++				echo "tried $dir" >&AC_FD_CC;
++			fi
++		else
++			echo "tried $dir" >&AC_FD_CC;
++		fi
++	done
++
++	if test "x$ggzdconfdir" = "xNONE"; then
++		have_ggzdconf="no"
++	else
++		have_ggzdconf="yes"
++	fi
++])
++
++eval "$ac_cv_have_ggzdconf"
++
++if test "$have_ggzdconf" != yes; then
++	if test "x$2" = "xignore"; then
++	  AC_MSG_RESULT([$have_ggzdconf (intentionally ignored)])
++	elif test "x$2" = "xforce"; then
++	  if test "x$ac_ggzd_confdir" = "x"; then
++	    ggzdconfdir="\${prefix}/etc/ggzd"
++	  else
++	    ggzdconfdir=$ac_ggzd_confdir
++	  fi
++	  AC_MSG_RESULT([$have_ggzdconf (but forced to ${ggzdconfdir})])
++	else
++	  AC_MSG_RESULT([$have_ggzdconf])
++      if test "x$2" = "x"; then
++	    AC_MSG_ERROR([GGZ server configuration not found. Please check your installation! ])
++      fi
++
++	  # Perform actions given by argument 2.
++	  $2
++	fi
++else
++	prefixed=0
++	if test "x${prefix}" != "xNONE" && test "x${prefix}" != "x${ac_default_prefix}"; then
++		prefixed=1
++	fi
++	if test "x$ggzconfdir" != "x${prefix}/etc/ggzd" && test "x$prefixed" = "x1"; then
++		AC_MSG_RESULT([$have_ggzdconf ($ggzdconfdir, but using ${prefix}/etc/ggzd nevertheless)])
++		ggzdconfdir="\${prefix}/etc/ggzd"
++	else
++		AC_MSG_RESULT([$have_ggzdconf ($ggzdconfdir)])
++	fi
++fi
++
++if test "$have_ggzdconf" = yes || test "x$2" = "xforce"; then
++	AC_SUBST(ggzdconfdir)
++
++	ggzddatadir=${prefix}/share/${PACKAGE}
++	AC_DEFINE_UNQUOTED(GGZDDATADIR, "${ggzddatadir}", [Game server data directory])
++	AC_SUBST(ggzddatadir)
++
++	if test "x${libdir}" = 'x${exec_prefix}/lib'; then
++	  if test "x${exec_prefix}" = "xNONE"; then
++	    if test "x${prefix}" = "xNONE"; then
++	      ggzdexecmoddir="\${ac_default_prefix}/lib/ggzd"
++		  ggzdexecmodpath="${ac_default_prefix}/lib/ggzd"
++	    else
++	      ggzdexecmoddir="\${prefix}/lib/ggzd"
++		  ggzdexecmodpath="${prefix}/lib/ggzd"
++	    fi
++	  else
++	    ggzdexecmoddir="\${exec_prefix}/lib/ggzd"
++		ggzdexecmodpath="${exec_prefix}/lib/ggzd"
++	  fi
++	else
++	  ggzdexecmoddir="\${libdir}/ggzd"
++	  ggzdexecmodpath="${libdir}/ggzd"
++	fi
++	AC_SUBST(ggzdexecmoddir)
++	AC_SUBST(ggzdexecmodpath)
++
++	# Perform actions given by argument 1.
++	$1
++fi
++
++])
++
++dnl ------------------------------------------------------------------------
++dnl Find internationalization tools
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN([AC_GGZ_INTL],
++[
++AC_PATH_PROG(GETTEXT, xgettext)
++AC_PATH_PROG(MSGFMT, msgfmt)
++AC_PATH_PROG(MSGMERGE, msgmerge)
++
++intl=1
++if test "x$GETTEXT" = "x"; then intl=0; fi
++if test "x$MSGFMT" = "x"; then intl=0; fi
++if test "x$MSGMERGE" = "x"; then intl=0; fi
++AM_ICONV
++LIBS="$LIBICONV $LIBS"
++AC_CHECK_LIB(intl, gettext, [LIBS="-lintl $LIBS"])
++AC_CHECK_FUNCS([gettext ngettext], [], [intl=0])
++AC_CHECK_HEADERS([libintl.h locale.h])
++if test "$intl" = 0; then
++  if test "x$2" = "xignore"; then
++    AC_MSG_WARN([Internationalization tools missing. (ignored)])
++  else
++    AC_MSG_RESULT([Internationalization tools missing.])
++    if test "x$2" = "x"; then
++      AC_MSG_ERROR([Internationalization tools missing.])
++    fi
++
++    # Perform actions given by argument 2.
++    $2
++  fi
++else
++  AC_MSG_RESULT([Internationalization tools found.])
++
++  XGETTEXT=$GETTEXT
++  GMSGFMT=$MSGFMT
++
++  AC_SUBST(XGETTEXT)
++  AC_SUBST(GETTEXT)
++  AC_SUBST(GMSGFMT)
++  AC_SUBST(MSGFMT)
++  AC_SUBST(MSGMERGE)
++
++  AC_DEFINE(ENABLE_NLS, 1, [Define if NLS is enabled])
++
++  # Perform actions given by argument 1.
++  $1
++fi
++
++])
 Index: server/Makefile.am
 ===================================================================
 RCS file: /home/freeciv/CVS/freeciv/server/Makefile.am,v
-retrieving revision 1.25
-diff -u -r1.25 Makefile.am
---- server/Makefile.am	2003/03/11 17:59:27	1.25
-+++ server/Makefile.am	2003/03/22 16:16:08
-@@ -2,7 +2,7 @@
+retrieving revision 1.40
+diff -u -r1.40 Makefile.am
+--- server/Makefile.am	31 Oct 2004 22:32:33 -0000	1.40
++++ server/Makefile.am	22 Jan 2005 01:34:53 -0000
+@@ -4,7 +4,7 @@
  
  bin_PROGRAMS = civserver
  noinst_LIBRARIES = libcivserver.a
--INCLUDES = -I$(srcdir)/../common -I$(srcdir)/../ai -I../intl -I$(top_srcdir)/common/aicore
-+INCLUDES = -I$(srcdir)/../common -I$(srcdir)/../ai -I../intl -I$(top_srcdir)/common/aicore @GGZDMOD_INCLUDES@
+-AM_CPPFLAGS = -I$(top_srcdir)/utility -I$(srcdir)/../common -I$(srcdir)/../ai -I../intl -I$(top_srcdir)/common/aicore -I$(srcdir)/userdb -I$(srcdir)/generator
++AM_CPPFLAGS = -I$(top_srcdir)/utility -I$(srcdir)/../common -I$(srcdir)/../ai -I../intl -I$(top_srcdir)/common/aicore -I$(srcdir)/userdb -I$(srcdir)/generator @GGZDMOD_INCLUDES@
+ 
  
  ## Above, note -I../intl instead of -I$(top_srdir/intl) is deliberate.
+@@ -86,5 +86,5 @@
+       ../utility/libcivutility.a ../common/libcivcommon.a ../ai/libcivai.a \
+       ../utility/libcivutility.a ./libcivserver.a ../utility/libcivutility.a \
+       ../common/aicore/libaicore.a ./generator/libgenerator.a \
+-      $(USER_DB_LIB) $(SERVER_LIBS)
++      $(USER_DB_LIB) $(SERVER_LIBS) @LIB_GGZDMOD@ @GGZDMOD_LDFLAGS@
  
-@@ -70,4 +70,4 @@
- 
- 
- civserver_DEPENDENCIES = ../common/libcivcommon.a ../ai/libcivai.a ./libcivserver.a ../common/aicore/libaicore.a
--civserver_LDADD        = ../common/libcivcommon.a ../ai/libcivai.a ./libcivserver.a @INTLLIBS@ ../common/libcivcommon.a ../ai/libcivai.a ./libcivserver.a ../common/aicore/libaicore.a $(SERVER_LIBS)
-+civserver_LDADD        = ../common/libcivcommon.a ../ai/libcivai.a ./libcivserver.a @INTLLIBS@ ../common/libcivcommon.a ../ai/libcivai.a ./libcivserver.a ../common/aicore/libaicore.a $(SERVER_LIBS) @GGZDMOD_LDFLAGS@ @LIB_GGZDMOD@

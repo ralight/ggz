@@ -1,30 +1,7 @@
-How to apply the patch to freeciv:
-----------------------------------
-
-0. Make sure you're using the latest CVS version.
-
-   # civserver --version
-   should have -devel appended
-
-1. Change to the freeciv source directory.
-
-   # cd /path/to/freeciv
-
-2. Apply the patch
-
-   # patch -p0 < /path/to/playground/freeciv/ggz.diff
-
-3. Add missing files
-
-   # cp /path/to/playground/freeciv/civ* data/
-   # cp /path/to/ggzd/m4/ggz.m4 m4/
-
-4. Re-run the whole shebang
-
-   # ./autogen.sh
-   # make
-
-
 The file freeciv_with_ggz.0.2.0.patch contains a working patch
-for Freeciv 1.12.0 by Riq. It should be updated for 1.14.x.
+for Freeciv 1.12.0 and GGZ 0.0.2 by Riq.
 
+The file ggz.diff contains an up-to-date GGZ patch (currently for Freeciv 2.0,
+GGZ 0.0.10).  However it is incomplete.
+
+Simply apply the patch using "patch", rerun autogen.sh, make and install.
