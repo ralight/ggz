@@ -48,7 +48,8 @@ typedef struct card_t {
 } card_t;
 #define UNKNOWN_CARD (card_t){-1, -1, -1}
 
-extern char* suit_names[4];
+extern char* suit_names[];
+extern char* face_names[];
 
 /* A hand structure */
 typedef struct hand_t {
