@@ -67,6 +67,7 @@ struct wh_game_t {
 	int target_score;	/* after someone reaches this score, the game is over (if used) */
 	int last_trick;		/* should the last trick be sent to all the players? */
 	int last_hand;		/* should the last hand be sent to all the players? */
+	int cumulative_scores;	/* should the cumulative score be sent to all the players? */
 
 	int open_hands;		/* are we playing with open hands? */
 

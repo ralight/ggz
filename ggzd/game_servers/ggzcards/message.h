@@ -39,3 +39,5 @@ extern char* get_global_message(char*);
 /* the following are automated messages */
 extern void send_last_hand();
 extern void send_last_trick();
+extern void init_cumulative_scores();
+extern void update_cumulative_scores();

@@ -135,6 +135,8 @@ void send_all_global_messages(player_t p)
 		send_global_message("Last Trick", p);
 	if (game.last_hand)
 		send_global_message("Previous Hand", p);
+	if (game.cumulative_scores)
+		send_global_message("Scores", p);
 }
 
 /* set_global_message
@@ -227,5 +229,78 @@ void send_last_trick()
 	}
 
 	set_global_message("Last Trick", "%s", message);
+}
+
+static int** cumulative_scores = NULL;
+static int c_score_count = 0;
+static int c_score_size = 0;
+
+static void send_cumulative_scores()
+{
+	char buf[4096];
+	int buf_len = 0, r;
+	player_t p;
+	int widths[game.num_players];
+
+	if (!game.cumulative_scores) return;
+
+	for (p=0; p<game.num_players; p++) {
+		buf_len += snprintf(buf + buf_len, sizeof(buf)-buf_len, "%s%s",
+				ggz_seats[p].name, p == game.num_players-1 ? "" : " ");
+		widths[p] = strlen(ggz_seats[p].name);
+		if (widths[p] < 4) widths[p] = 4;
+	}
+	buf_len += snprintf(buf+buf_len, sizeof(buf)-buf_len, "\n");
+
+	for (r=0; r<c_score_count; r++) {
+		for (p=0; p<game.num_players; p++) {
+			/* this overcomplicated bit of hackery is
+			 * intended to center the score under the name.
+			 * Unfortunately, it assumes the number isn't longer
+			 * than 3 characters. */
+			int extra = widths[p]-3;
+			buf_len += snprintf(buf+buf_len, sizeof(buf)-buf_len,
+				"%*s%3d%*s%s", extra/2,
+				"", cumulative_scores[r][p], (extra+1)/2, "",
+				p == game.num_players-1 ? "" : " ");
+		}
+		buf_len += snprintf(buf+buf_len, sizeof(buf)-buf_len, "\n");
+	}
+
+	set_global_message("Scores", "%s", buf);	
+}
+
+void init_cumulative_scores()
+{
+	if (!game.cumulative_scores) return;
+	if (cumulative_scores != NULL) {
+		/* TODO: free data */
+	}
+	c_score_count = c_score_size = 0;
+
+	send_cumulative_scores();
+}
+
+/* add on this hand's scores */
+void update_cumulative_scores()
+{
+	player_t p;
+
+	if (!game.cumulative_scores) return;
+	c_score_count++;
+	if (c_score_count > c_score_size) {
+		c_score_size += 10;
+		cumulative_scores = realloc(cumulative_scores, sizeof(int*));
+		if (cumulative_scores == NULL) {
+			ggz_debug("ERROR: update_cumulative_scores: NULL realloc.");
+			exit( -1 );
+		}
+	}
+	cumulative_scores[ c_score_count-1 ] = (int*)alloc(game.num_players * sizeof(int));
+	
+	for (p=0; p<game.num_players; p++)
+		cumulative_scores[c_score_count-1][p] = game.players[p].score;
+
+	send_cumulative_scores();
 }
 

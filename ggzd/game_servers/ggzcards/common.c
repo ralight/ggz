@@ -742,6 +742,7 @@ static void newgame()
 	if (!game.initted)
 		init_game();
 	game.funcs->start_game();
+	init_cumulative_scores();
 	for (p=0; p<game.num_players; p++)
 		set_player_message(p);
 	send_newgame();
@@ -1040,6 +1041,7 @@ int handle_play_event(card_t card)
 			sleep(1);
 			game.funcs->end_hand();
 			set_all_player_messages();
+			update_cumulative_scores();
 			game.dealer = (game.dealer + 1) % game.num_players;
 			game.hand_num++;
 			set_game_state( WH_STATE_NEXT_HAND );
@@ -1136,6 +1138,7 @@ void init_game()
 	game.deck_type = GGZ_DECK_FULL;
 	game.last_trick = 1;
 	game.last_hand = 1;
+	game.cumulative_scores = 1;
 
 	/* now we do all the game-specific initialization... */
 	game.funcs->init_game();	
