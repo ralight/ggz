@@ -36,6 +36,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#ifdef HAVE_WINSOCK_H
+#  include <winsock.h>
+#endif
+
 #include <gnutls.h>
 
 #include "ggz.h"
@@ -183,8 +187,13 @@ size_t ggz_tls_write(int fd, void *ptr, size_t n)
 {
 	if(check_fd(fd))
 		return gnutls_write(state[fd], ptr, n);
-	else
+	else {
+#ifdef HAVE_WINSOCK_H
+		return send(fd, ptr, n, 0);
+#else
 		return write(fd, ptr, n);
+#endif
+	}
 }
 
 
@@ -192,8 +201,13 @@ size_t ggz_tls_read(int fd, void *ptr, size_t n)
 {
 	if(check_fd(fd))
 		return gnutls_read(state[fd], ptr, n);
-	else
+	else {
+#ifdef HAVE_WINSOCK_H
+		return recv(fd, ptr, n, 0);
+#else
 		return read(fd, ptr, n);
+#endif
+	}
 }
 
 #endif

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 6125 2004-07-17 00:58:43Z josef $
+ * $Id: easysock.c 6657 2005-01-14 02:29:52Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -54,7 +54,7 @@
 #include <netdb.h>
 #endif
 #ifdef HAVE_WINSOCK_H
-#include "winsock.h"
+#include <winsock.h>
 #endif
 
 #include <stdio.h>
@@ -529,7 +529,12 @@ int ggz_writen(const int sock, const void *vptr, size_t n)
 	ptr = vptr;
 	nleft = n;
 	while (nleft > 0) {
-		if ((nwritten = write(sock, ptr, nleft)) <= 0) {
+#ifdef HAVE_WINSOCK_H
+		nwritten = send(sock, ptr, nleft, 0);
+#else
+		nwritten = write(sock, ptr, nleft);
+#endif
+		if (nwritten <= 0) {
 			if (errno == EINTR)
 				nwritten = 0;	/* and call write() again */
 			else
@@ -555,7 +560,12 @@ int ggz_readn(const int sock, void *vptr, size_t n)
 	ptr = vptr;
 	nleft = n;
 	while (nleft > 0) {
-		if ((nread = read(sock, ptr, nleft)) < 0) {
+#ifdef HAVE_WINSOCK_H
+		nread = recv(sock, ptr, nleft, 0);
+#else
+		nread = read(sock, ptr, nleft);
+#endif
+		if (nread < 0) {
 			if (errno == EINTR)
 				nread = 0;	/* and call read() again */
 			else

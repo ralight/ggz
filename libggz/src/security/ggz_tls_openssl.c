@@ -10,12 +10,16 @@ Published under GNU GPL conditions
 #ifdef GGZ_TLS_OPENSSL
 
 /* Include files */
-#include "ggz.h"
 #include <stdio.h>
 #include <string.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <unistd.h>
+#ifdef HAVE_WINSOCK_H
+#  include <winsock.h>
+#endif
+
+#include "ggz.h"
 
 /* The control structure for TLS */
 static SSL_CTX *_tlsctx = NULL;
@@ -313,7 +317,11 @@ size_t ggz_tls_read(int fd, void *buffer, size_t size)
 	if(!entry)
 	{
 		/*TLSERROR("Given fd is not secure.");*/
+#ifdef HAVE_WINSOCK_H
+		return recv(fd, buffer, size, 0);
+#else
 		return read(fd, buffer, size);
+#endif
 	}
 	handler = entry->tls;
 	ret = SSL_read(handler, buffer, size);
@@ -358,7 +366,11 @@ size_t ggz_tls_write(int fd, void *s, size_t size)
 	if(!entry)
 	{
 		/*TLSERROR("Given fd is not secure.");*/
+#ifdef HAVE_WINSOCK_H
+		return send(fd, s, size, 0);
+#else
 		return write(fd, s, size);
+#endif
 	}
 	handler = entry->tls;
 	ret = SSL_write(handler, s, size);
