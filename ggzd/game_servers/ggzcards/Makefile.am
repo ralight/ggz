@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2453 2001-09-11 19:20:55Z jdorje $
+# $Id: Makefile.am 2647 2001-11-04 03:50:54Z jdorje $
 
 SUBDIRS = config games ai .
 
@@ -23,10 +23,10 @@ ggzd_ggzcards_SOURCES = ai.c ai.h \
 			\
 			protocol.c protocol.h
 
-ggzd_ggzcards_DEPENDENCIES = games/libgames.a ai/libai.a $(top_builddir)/game_servers/libggzmod/libggzdmod.a
+ggzd_ggzcards_DEPENDENCIES = games/libgames.a ai/libai.a $(top_builddir)/ggzdmod/libggzdmod.a
 
 
-ggzd_ggzcards_LDADD = $(LDADD) games/libgames.a ai/libai.a $(top_builddir)/game_servers/libggzmod/libggzdmod.a
+ggzd_ggzcards_LDADD = $(LDADD) games/libgames.a ai/libai.a $(top_builddir)/ggzdmod/libggzdmod.a
 
 test: test-recursive
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulate functions for card games
- * $Id: cards.c 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: cards.c 2647 2001-11-04 03:50:54Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -46,9 +46,9 @@ char *short_face_names[15] =
 	"K", "A"
 };
 
-/* cards_create_deck() set up the deck of the given type This is more
-   complex than might seem necessary, but allows a game-designer to very
-   easily invent new card deck types by merely setting the params */
+/* cards_create_deck() set up the deck of the given type This is more complex 
+   than might seem necessary, but allows a game-designer to very easily
+   invent new card deck types by merely setting the params */
 void cards_create_deck(deck_type_t which_deck)
 {
 	int face, suit, deck;
