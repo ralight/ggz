@@ -43,6 +43,10 @@ private: // Private attributes
 protected: // Protected methods
   /** Used when the mouse is pressed */
   void contentsMousePressEvent(QMouseEvent *e);
+  /** List of discs */
+  QList<QCanvasSprite> discs;
+  /** discs image */
+  QCanvasPixmapArray *disc_img;
 };
 
 #endif

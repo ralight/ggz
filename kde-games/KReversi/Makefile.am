@@ -45,6 +45,8 @@ EXTRA_DIST = \
 rcdir = $(kde_datadir)/ggz.kreversi
 rc_DATA = ggz.kreversiui.rc
 
+SUBDIRS = . pixmaps
+
 install-data-local:
 	@$(NORMAL_INSTALL)
 	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force

@@ -170,8 +170,10 @@ void KReversi::doMove(int move) {
   int mx, my;
   if (move == RVR_ERROR_INVALIDMOVE || move == RVR_ERROR_WRONGTURN)
     return;
-  if (move == RVR_ERROR_CANTMOVE)
+  if (move == RVR_ERROR_CANTMOVE) {
     turn=-turn;
+    return;
+  }
   mx = move % 8;
   my = move / 8;
   board[mx][my] = turn;
