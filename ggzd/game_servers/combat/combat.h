@@ -44,26 +44,49 @@
  * Sends to the joining player his seat, the number of players
  * and the protocol version
  * 		[ s --> 1c : CBT_MSG_SEAT (int)SEAT (int)PLAYERS (int)PROTOCOL_VERSION ]
- * If this is the first player to join the table, it requests the
- * game options from him.
- * 		[ s --> 1c : CBT_REQ_OPTIONS ]
- * If the options are already set, he sends the options to the player
- * 		[ s --> 1c : CBT_MSG_OPTIONS (string)OPTIONS_STRING ]
  * Then he sends the player list to all the players
  * 		[ s --> nc : CBT_MSG_PLAYERS (PLAYER_LIST) ]
- * If there are no more open seats and the options are all set, 
- * it starts the game (requests all the players to set up their units)
- * 		[ s --> nc : CBT_REQ_SETUP ]
- * If the game has already started, it sends:
- * 		[ s --> 1c : CBT_MSG_SYNC (int)TURN (str)SYNC_STR ]
+ * If the options are already set, he sends the options to the player
+ * 		[ s --> 1c : CBT_MSG_OPTIONS (string)OPTIONS_STRING ]
+ * It now depends on the current state:
+ *  CBT_STATE_WAIT:
+ *      If this is the first player to join the table, it requests the
+ *      game options from him.
+ * 		  [ s --> 1c : CBT_REQ_OPTIONS ]
+ *      If there are no more open seats and the options are all set, 
+ *      it starts the game (requests all the players to set up their units)
+ * 		  [ s --> nc : CBT_REQ_SETUP ]
+ *  CBT_STATE_SETUP:
+ *      It tells the player that we are at SETUP state
+ *      [ s --> 1c : CBT_REQ_SETUP ]
+ *  CBT_STATE_PLAYING:
+ *      It tells the player what are the units
+ *  		[ s --> 1c : CBT_MSG_SYNC (int)TURN (str)SYNC_STR ]
+ *  		Also tells the player that we are already playing
+ *  		[ s --> 1c : CBT_MSG_START ]
+ *  CBT_STATE_DONE:
+ *      Tells the player what are the units
+ *  		[ s --> 1c : CBT_MSG_SYNC (int)TURN (str)SYNC_STR ]
+ *  		Also tells the player who won
+ *    	[ s --> nc : CBT_MSG_GAMEOVER (int)WINNER ]
  *
  * ### g --> s : REQ_GAME_LEAVE ###
  *
  * ggz_player_leave
  * Sends the player list
  * 		[ s --> nc : CBT_MSG_PLAYERS (PLAYER_LIST) ]
- * The clients always stops the game when he receives a player list,
- * and starts waiting for a CBT_MSG_START.
+ * The client should always stop the game if it's already playing and he
+ * receives a player list
+ * Now it depends on the current state
+ * CBT_STATE_WAIT:
+ *  If this player is the host, discard him as host.
+ *  Make the next player as host
+ *  If he isn't the host, then just wait until all the players join
+ * CBT_STATE_SETUP:
+ *  If this player has already setup his units, discard them.
+ *  Else, just wait
+ * CBT_STATE_PLAYING:
+ *  Wait for another player
  *
  * ### s <-- 1c: CBT_MSG_OPTIONS (string)OPTIONS_STRING ###
  *

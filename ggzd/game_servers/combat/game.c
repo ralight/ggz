@@ -34,7 +34,10 @@
 combat_game cbt_game;
 
 // Who is the host?
-int host = -1;
+static int host = -1;
+
+// How many have done setup?
+static int done_setup = 0;
 
 
 void game_init() {
@@ -47,7 +50,7 @@ void game_init() {
 }
 	
 int game_handle_ggz(int ggz_fd, int *p_fd) {
-	int op, seat, status = CBT_SERVER_ERROR;
+	int op, done = 0, a, seat, status = CBT_SERVER_ERROR;
 
 	if (es_read_int(ggz_fd, &op) < 0)
 		return CBT_SERVER_ERROR;
@@ -63,32 +66,72 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
 			status = CBT_SERVER_OK;
 			break;
 		case REQ_GAME_JOIN:
-			if (cbt_game.state == CBT_STATE_WAIT && ggz_player_join(&seat, p_fd) == 0) {
-				game_send_seat(seat);
-				ggz_debug("Human seats: %d\n", ggz_seats_human());
-				if (host < 0) {
-					// First player!
-					host = seat;
-					game_request_options(seat);
-				}
-				if (cbt_game.map) // Options already setup
-					game_send_options(seat);
-				game_send_players();
-				if (!ggz_seats_open() && cbt_game.map) { 
-					// Request setup!
-					cbt_game.state = CBT_STATE_SETUP;
-					game_request_setup(-1);
-				}
+      if (ggz_player_join(&seat, p_fd) != 0) {
+        status = CBT_SERVER_JOIN;
+        break;
+      }
+      game_send_seat(seat);
+      game_send_players();
+      if (cbt_game.map) // Options already setup
+        game_send_options(seat);
+      ggz_debug("Joining player %d at state %d", seat, cbt_game.state);
+      switch (cbt_game.state) {
+        case CBT_STATE_WAIT:
+          if (host < 0) {
+            // First player!
+            host = seat;
+            game_request_options(seat);
+          }
+          if (!ggz_seats_open() && cbt_game.map) { 
+            // Request setup!
+            cbt_game.state = CBT_STATE_SETUP;
+            game_request_setup(-1);
+          }
+          break;
+        case CBT_STATE_SETUP:
+          game_request_setup(seat);
+          break;
+        case CBT_STATE_PLAYING:
+          game_send_sync(seat, 0);
+          game_start();
+          break;
+        case CBT_STATE_DONE:
+          game_send_sync(seat, 1);
+          // Ugly hack, but why to create another variable?
+          game_send_gameover(done_setup);
+          break;
 			}
 			status = CBT_SERVER_JOIN;
 			break;
 		case REQ_GAME_LEAVE:
 			// User left
-			if (ggz_player_leave(&seat, p_fd) == 0) {
-				if (cbt_game.state == CBT_STATE_PLAYING || cbt_game.state == CBT_STATE_SETUP)
-					cbt_game.state = CBT_STATE_WAIT;
-				game_send_players();
-			}
+			if (ggz_player_leave(&seat, p_fd) != 0) {
+        status = CBT_SERVER_LEFT;
+        break;
+      }
+      switch (cbt_game.state) {
+        case CBT_STATE_WAIT:
+          if (host == seat) {
+            for (a = 0; a < ggz_seats_num(); a++) {
+              if (ggz_seats[a].fd >= 0) {
+                host = a;
+                break;
+              }
+            }
+            game_request_options(host);
+          }
+          break;
+        case CBT_STATE_SETUP:
+          for (a = 0; a < cbt_game.width*cbt_game.height; a++) {
+            if (GET_OWNER(cbt_game.map[a].unit) == seat && LAST(cbt_game.map[a].unit) != U_EMPTY) {
+              cbt_game.map[a].unit = U_EMPTY;
+              done = 1;
+            }
+          }
+          if (done)
+            done_setup--;
+          break;
+      }
 			status = CBT_SERVER_LEFT;
 			break;
 		case RSP_GAME_OVER:
@@ -333,7 +376,6 @@ void game_request_setup(int seat) {
 int game_get_setup(int seat) {
 	int a, b = 0;
 	int used[12];
-	static int done_setup = 0;
 	int msg_size;
 	int fd = ggz_seats[seat].fd;
 	char *setup;
@@ -593,4 +635,6 @@ void game_send_gameover(int winner) {
 	}
 
 	cbt_game.state = CBT_STATE_DONE;
+  // Ugly hack, but why to create another variable?
+  done_setup = winner;
 }
