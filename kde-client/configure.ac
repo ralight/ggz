@@ -159,7 +159,6 @@ AC_CONFIG_FILES([Makefile
 	kgrubby/data/Makefile
 	shadowbridge/Makefile
 	shadowbridge/pics/Makefile
-	modsniff/Makefile
 	ggzap/Makefile
 	kio_ggz/Makefile
 	kio_ggz/kioslave/Makefile
@@ -195,7 +194,6 @@ AC_CONFIG_FILES([Makefile
 	po/Makefile
 	po/ggzap/Makefile
 	po/shadowbridge/Makefile
-	po/modsniff/Makefile
 	po/kcm_ggz/Makefile
 	po/compcal/Makefile
 	po/kgrubby/Makefile

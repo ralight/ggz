@@ -12,12 +12,14 @@ Content of GGZ-KDE:
 	- KGGZ, the well-known frontend. It provides a chat and is
 		configurable.
 	- GGZap, a GGZ quick launcher which can put itself into the taskbar.
-	- ModSniff, which searches for GGZ games and puts them into the KDE menus.
 	- KCMGGZ, a set of configuration dialogs for the KDE control center.
 	- KIO_GGZ, a KIO slave to browse GGZ servers.
 	- KIO_GGZMeta, another KIO slave which provides a general interface to meta
 		servers of any kind (including the GGZ meta server).
 	- ShadowBride, a graphical game protocol sniffing tool.
+	- Keepalive Control, utility to administer Keepalive servers
+	- Competition Calendar, a viewer for game schedules and results
+	- KGrubby, a graphical configuration tool for grubby, the chatbot
 
 All of them have their own README for more information on them.
 
