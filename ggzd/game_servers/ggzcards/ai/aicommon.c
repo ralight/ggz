@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.c 3425 2002-02-20 03:45:35Z jdorje $
+ * $Id: aicommon.c 3429 2002-02-21 02:09:24Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -39,32 +39,42 @@
 
 #include "aicommon.h"
 
+/* FIXME: this whole thing assumes 4 seats and a standard deck.  But
+   rewriting it to be general might be more trouble than its worth... */
+
 static int played[4];		/* bitmask of played cards for each suit */
 static int playcount[4][4];	/* how many cards each player has played from 
 				   each suit */
 static int suits[4][4];		/* information about what each of the 4
 				   players might hold in each of the 4 suits */
-				
+
 static int leader = -1;
 static int tricks[4];
 
 void ailib_start_hand(void)
 {
+	int p, suit, face;
+
 	/* reset cards played */
 	memset(played, 0, 4 * sizeof(int));
 	memset(playcount, 0, 4 * 4 * sizeof(int));
-	
+
 	memset(tricks, 0, 4 * sizeof(int));
 	leader = -1;
 
 	/* anyone _could_ have any card */
-	memset(suits, 255, 4 * 4 * sizeof(int));
+	for (p = 0; p < 4; p++)
+		for (suit = 0; suit < 4; suit++) {
+			suits[p][suit] = 0;
+			for (face = 2; face <= ACE_HIGH; face++)
+				suits[p][suit] |= 1 << face;
+		}
 }
 
 void ailib_alert_trick(int p)
 {
 	leader = -1;
-	tricks[p]++;		
+	tricks[p]++;
 }
 
 void ailib_alert_bid(int p, bid_t bid)
@@ -77,10 +87,10 @@ void ailib_alert_play(int p, card_t play)
 	/* there's a lot of information we can track from players' plays */
 	card_t lead;
 	int p2;
-	
+
 	if (leader < 0)
 		leader = p;
-	
+
 	lead = ggzcards.players[leader].table_card;
 
 	/* remember which cards have been played. */
@@ -102,8 +112,6 @@ void ailib_our_play(int play_hand)
 	if (leader < 0)
 		leader = play_hand;
 }
-
-
 
 int get_tricks(int player)
 {
@@ -140,7 +148,7 @@ int libai_might_player_have_card(int p, card_t card)
 int libai_is_card_in_hand(int seat, card_t card)
 {
 	hand_t *hand = &ggzcards.players[seat].hand;
-	
+
 	/* TODO: avoid cheating! */
 	int i;
 	for (i = 0; i < hand->hand_size; i++)
@@ -177,11 +185,11 @@ int libai_is_highest_in_suit(card_t card)
 int libai_cards_played_in_suit(char suit)
 {
 	/* This assumes we use exactly 2-ACE_HIGH */
-	int n = 13;
+	int n = 0;
 	char face;
 	for (face = 2; face <= ACE_HIGH; face++)
 		if (libai_is_card_played(suit, face))
-			n--;
+			n++;
 	return n;
 }
 

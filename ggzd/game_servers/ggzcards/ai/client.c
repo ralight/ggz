@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 3426 2002-02-20 03:51:03Z jdorje $
+ * $Id: client.c 3429 2002-02-21 02:09:24Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -67,10 +67,6 @@ int client_initialize(void)
 	   remember that the internal client-common variables are always kept 
 	   separate from the GUI variables, so there should be no confusion
 	   there. And all of the easysock-allocated variables are labelled. */
-#ifdef DEBUG
-	ggz_debug_enable("core");
-#endif
-	ggz_debug_enable("core-error");
 	
 	srandom((unsigned) time(NULL));
 
