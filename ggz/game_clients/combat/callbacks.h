@@ -47,8 +47,12 @@ on_mainarea_button_press_event         (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
-callback_sendbutton_set_enabled (gboolean mode);
+callback_widget_set_enabled (char *name, gboolean mode);
 
 void
 on_send_setup_clicked                  (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_request_sync_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data);

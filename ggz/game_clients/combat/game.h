@@ -61,12 +61,14 @@ int game_get_players();
 void game_get_move();
 void game_get_attack();
 void game_get_gameover();
+void game_get_sync();
 
 // Get info from the player
 int game_ask_options();
 void game_handle_setup(int);
 void game_handle_move(int);
 void game_send_setup();
+void game_request_sync();
 
 // Init variables
 void game_init();
@@ -82,6 +84,7 @@ void game_add_player_info(int);
 void game_update_unit_list(int);
 void game_update_player_name(int);
 void game_status(const char *format, ... );
+void game_message(const char *format, ... );
 void game_change_turn();
 
 // Player info widget

@@ -75,6 +75,30 @@
 	  </widget>
 	</widget>
       </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>game</name>
+	<label>_Game</label>
+	<right_justify>False</right_justify>
+
+	<widget>
+	  <class>GtkMenu</class>
+	  <name>game_menu</name>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>request_sync</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_request_sync_activate</handler>
+	      <last_modification_time>Thu, 26 Oct 2000 22:26:23 GMT</last_modification_time>
+	    </signal>
+	    <label>_Request Sync</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+	</widget>
+      </widget>
     </widget>
 
     <widget>

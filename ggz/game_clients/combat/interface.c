@@ -29,6 +29,10 @@ create_main_window (void)
   GtkWidget *file_menu_menu;
   GtkAccelGroup *file_menu_menu_accels;
   GtkWidget *exit_menu;
+  GtkWidget *game;
+  GtkWidget *game_menu;
+  GtkAccelGroup *game_menu_accels;
+  GtkWidget *request_sync;
   GtkWidget *hbox;
   GtkWidget *mainarea;
   GtkWidget *vseparator1;
@@ -94,6 +98,38 @@ create_main_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (exit_menu);
   gtk_container_add (GTK_CONTAINER (file_menu_menu), exit_menu);
+
+  game = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (game)->child),
+                                   _("_Game"));
+  gtk_widget_add_accelerator (game, "activate_item", accel_group,
+                              tmp_key, GDK_MOD1_MASK, 0);
+  gtk_widget_set_name (game, "game");
+  gtk_widget_ref (game);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "game", game,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (game);
+  gtk_container_add (GTK_CONTAINER (menubar), game);
+
+  game_menu = gtk_menu_new ();
+  gtk_widget_set_name (game_menu, "game_menu");
+  gtk_widget_ref (game_menu);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "game_menu", game_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (game), game_menu);
+  game_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (game_menu));
+
+  request_sync = gtk_menu_item_new_with_label ("");
+  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (request_sync)->child),
+                                   _("_Request Sync"));
+  gtk_widget_add_accelerator (request_sync, "activate_item", game_menu_accels,
+                              tmp_key, 0, 0);
+  gtk_widget_set_name (request_sync, "request_sync");
+  gtk_widget_ref (request_sync);
+  gtk_object_set_data_full (GTK_OBJECT (main_window), "request_sync", request_sync,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (request_sync);
+  gtk_container_add (GTK_CONTAINER (game_menu), request_sync);
 
   hbox = gtk_hbox_new (FALSE, 0);
   gtk_widget_set_name (hbox, "hbox");
@@ -176,6 +212,9 @@ create_main_window (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (exit_menu), "activate",
                       GTK_SIGNAL_FUNC (on_exit_menu_activate),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (request_sync), "activate",
+                      GTK_SIGNAL_FUNC (on_request_sync_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (mainarea), "expose_event",
                       GTK_SIGNAL_FUNC (on_mainarea_expose_event),

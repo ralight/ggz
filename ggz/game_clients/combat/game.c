@@ -80,6 +80,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 			game_get_seat();
 			game_init_board();
 			game_draw_board();
+			callback_widget_set_enabled("request_sync", 2);
 			break;
 		case CBT_MSG_PLAYERS:
 			game_get_players();
@@ -93,10 +94,12 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 			break;
 		case CBT_REQ_SETUP:
 			cbt_game.state = CBT_STATE_SETUP;
-			callback_sendbutton_set_enabled(TRUE);
+			callback_widget_set_enabled("send_setup", TRUE);
 			break;
 		case CBT_MSG_START:
 			game_start();
+			callback_widget_set_enabled("send_setup", FALSE);
+			callback_widget_set_enabled("request_sync", 3);
 			break;
 		case CBT_MSG_MOVE:
 			game_get_move();
@@ -105,6 +108,13 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 		case CBT_MSG_ATTACK:
 			game_get_attack();
 			game_draw_board();
+			break;
+		case CBT_MSG_SYNC:
+			game_get_sync();
+			game_draw_board();
+			// Little ugly hack to display the righ turn
+			cbt_game.turn--;
+			game_change_turn();
 			break;
 		case CBT_MSG_GAMEOVER:
 			game_get_gameover();
@@ -125,7 +135,6 @@ void game_start() {
 	game_update_unit_list(cbt_info.seat);
 
 	cbt_game.state = CBT_STATE_PLAYING;
-	callback_sendbutton_set_enabled(FALSE);
 	cbt_info.current = -1;
 	game_draw_bg();
 	game_draw_board();
@@ -150,6 +159,9 @@ int game_get_seat() {
 		return -1;
 
 	// TODO: Compare the client and the server version
+	if (cbt_info.version != PROTOCOL_VERSION)
+		game_message("Your client is using Combat protocol %d, while the server uses protocol %d. You may run into problems", PROTOCOL_VERSION, cbt_info.version);
+
 	game_status("Getting init information\nSeat: %d\tPlayers: %d\tVersion: %d\n", cbt_info.seat, cbt_info.number, cbt_info.version);
 
 	cbt_game.state = CBT_STATE_WAIT;
@@ -169,8 +181,7 @@ int game_ask_options() {
 	combat_game _game;
 	char *game_str = NULL;
 	int a;
-	// Default game
-	game_status("Using mini game options\n");
+	/* Default game  */
 	_game.width = 10;
 	_game.height = 10;
 	_game.map = (tile *)calloc(_game.width * _game.height, sizeof(tile));
@@ -210,6 +221,40 @@ int game_ask_options() {
 	_game.army[0][U_COLONEL] = 2;
 	_game.army[0][U_GENERAL] = 1;
 	_game.army[0][U_MARSHALL] = 1;
+
+	/* Mini Game
+	_game.width = 4;
+	_game.height = 4;
+	_game.map = (tile *)calloc(_game.width * _game.height, sizeof(tile));
+	_game.army = (char **)calloc(1, sizeof(char *));
+	_game.army[0] = (char *)calloc(12, sizeof(char));
+	for (a = 0; a < 4; a++) {
+		_game.map[a].type = OWNER(0) + T_OPEN;
+		_game.map[a+12].type = OWNER(1) + T_OPEN;
+	}
+
+	for (a = 5; a < 12; a++) {
+		_game.map[a].type = T_OPEN;
+	}
+
+	_game.map[CART(2,2,4)].type  = T_LAKE;
+	_game.map[CART(3,3,4)].type  = T_LAKE;
+
+	// FIXME: Delete this
+	printf("Writing army data\n");
+
+	_game.army[0][U_FLAG] = 1;
+	_game.army[0][U_BOMB] = 0;
+	_game.army[0][U_SPY] = 0;
+	_game.army[0][U_SCOUT] = 1;
+	_game.army[0][U_MINER] = 1;
+	_game.army[0][U_SERGEANT] = 0;
+	_game.army[0][U_LIEUTENANT] = 0;
+	_game.army[0][U_CAPTAIN] = 0;
+	_game.army[0][U_MAJOR] = 0;
+	_game.army[0][U_COLONEL] = 0;
+	_game.army[0][U_GENERAL] = 0;
+	_game.army[0][U_MARSHALL] = 1; */
 	
 	game_status("Sending options string to server");
 
@@ -724,7 +769,7 @@ void game_send_setup() {
 	free(setup);
 
 	// Hide the button
-	callback_sendbutton_set_enabled(FALSE);
+	callback_widget_set_enabled("send_setup", FALSE);
 	// Update the state (NULL state)
 	cbt_game.state = CBT_STATE_NULL;
 
@@ -810,4 +855,82 @@ void game_get_gameover() {
 
 	game_status("Game is over! Winner: %s", cbt_info.names[winner]);
 	cbt_game.state = CBT_STATE_DONE;
+}
+
+/* Function to open a dialog box displaying the message provided. */
+
+void game_message( const char *format, ... ) {
+	va_list ap;
+	char* message;
+
+	GtkWidget *dialog, *label, *ok_button;
+
+	// Create the messages
+	va_start( ap, format);
+	message = g_strdup_vprintf(format, ap);
+	va_end(ap);
+				      
+	/* Create the widgets */
+	
+	dialog = gtk_dialog_new();
+  label = gtk_label_new (message);
+	ok_button = gtk_button_new_with_label("OK");
+
+	gtk_label_set_line_wrap( GTK_LABEL(label), TRUE );
+			 
+  /* Ensure that the dialog box is destroyed when
+	 * the user clicks ok. */
+ 
+  gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
+											  		 GTK_SIGNAL_FUNC (gtk_widget_destroy), GTK_OBJECT(dialog));
+
+	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area),
+									   ok_button);
+
+  /* Add the label, and show everything
+	 * we've added to the dialog. */
+
+	 gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->vbox),
+										  label);
+	 gtk_widget_show_all (dialog);
+
+}
+
+void game_get_sync() {
+	char *syncstr;
+	int a, len;
+
+	if (es_read_string_alloc(cbt_info.fd, &syncstr) < 0)
+		return;
+
+	len = strlen(syncstr);
+
+	for ( a = 0; a < len; a++)
+		syncstr[a]--;
+
+	// Gets current turn
+	cbt_game.turn = syncstr[0];
+
+	// Gets current state
+	cbt_game.state = syncstr[1];
+
+	// Gets map data
+	for (a = 0; a < cbt_game.width*cbt_game.height; a++) {
+		cbt_game.map[a].unit = syncstr[a+2];
+	}
+
+	// TODO: Recalculate the number of units
+
+	if (syncstr[len] != 0)
+		game_status("Error: Wrong sync string");
+
+	return;
+
+}
+	
+void game_request_sync() {
+	if (es_write_int(cbt_info.fd, CBT_REQ_SYNC) < 0)
+		return;
+
+	return;
 }
