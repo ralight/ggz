@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 4859 2002-10-10 21:18:29Z jdorje $
+ * $Id: output.c 4864 2002-10-11 16:57:48Z jdorje $
  *
  * Functions for display text/messages
  *
@@ -131,10 +131,10 @@ void output_text(char* fmt, ...)
 
 	/* Shift everything in the buffer up */
 	if (chat[MAX_LINES])
-		free(chat[MAX_LINES]);
+		ggz_free(chat[MAX_LINES]);
 	for (x = MAX_LINES; x > 0; x--)
 		chat[x] = chat[x-1];
-	chat[0] = strdup(message);
+	chat[0] = ggz_strdup(message);
 
 	output_draw_text();
 
@@ -342,7 +342,7 @@ void output_status(void)
 		printf("\e[K");
 	}
 
-	currenttime = strdup(ctime(&now));
+	currenttime = ggz_strdup(ctime(&now));
 	currenttime[strlen(currenttime)-1] = '\0';
 	displaytime[0] = currenttime[11];
 	displaytime[1] = currenttime[12];
@@ -353,7 +353,7 @@ void output_status(void)
 	displaytime[6] = currenttime[17];
 	displaytime[7] = currenttime[18];
 	displaytime[8] = '\0';
-	free(currenttime);
+	ggz_free(currenttime);
 
 	output_goto(window.ws_row - 2, window.ws_col - 19);
 	output_label("Time");
@@ -397,7 +397,7 @@ void output_init(int reverse)
 	fflush(NULL);
 
 	/* Initilize and zero chat memmory */
-	chat = calloc((MAX_LINES+1), sizeof(char*));
+	chat = ggz_malloc((MAX_LINES + 1) * sizeof(char*));
 }
 
 void output_resize(void)
