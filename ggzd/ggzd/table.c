@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4456 2002-09-08 01:59:41Z jdorje $
+ * $Id: table.c 4467 2002-09-08 19:41:59Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -882,7 +882,7 @@ static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 static void table_remove(GGZTable* table)
 {
 	int room, count, index, i;
-	int num_spectators = spectator_seats_num(table);
+	int num_spectators;
 
 	/* Disconnect from the game server */
 	(void)ggzdmod_disconnect(table->ggzdmod);
@@ -901,15 +901,6 @@ static void table_remove(GGZTable* table)
 
 	dbg_msg(GGZ_DBG_ROOM, "Room %d table count now = %d", room, count);
 
-	pthread_rwlock_wrlock(&state.lock);
-	state.tables--;
-	pthread_rwlock_unlock(&state.lock);
-
-	pthread_rwlock_wrlock(&table->lock);
-	table->type = -1;
-	table->state = GGZ_TABLE_ERROR;
-	pthread_rwlock_unlock(&table->lock);
-
 	/* Send out table-leave messages for remaining players */
 	for (i = 0; i < seats_num(table); i++) {
 		if (seats_type(table, i) == GGZ_SEAT_PLAYER) {
@@ -921,7 +912,7 @@ static void table_remove(GGZTable* table)
 	}
 
 	/* And send them out for spectators also */
-	/* Note - we must record num_spectators before we destroy the table. */
+	num_spectators = spectator_seats_num(table);
 	for (i = 0; i < num_spectators; i++) {
 		if (table->spectators[i][0] != '\0') {
 			table_update_event_enqueue(table,
@@ -932,6 +923,18 @@ static void table_remove(GGZTable* table)
 					     0, 0);
 		}
 	}
+
+	/* This effectively destroys the table, and so should come AFTER the
+	   players are removed (otherwise the spectator removal, in particular,
+	   will be broken. */
+	pthread_rwlock_wrlock(&state.lock);
+	state.tables--;
+	pthread_rwlock_unlock(&state.lock);
+
+	pthread_rwlock_wrlock(&table->lock);
+	table->type = -1;
+	table->state = GGZ_TABLE_ERROR;
+	pthread_rwlock_unlock(&table->lock);
 
 	table_event_enqueue(table, GGZ_UPDATE_DELETE);
 
