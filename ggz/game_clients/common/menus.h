@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/25/2002
  * Desc: Main window menus
- * $Id: menus.h 5038 2002-10-26 03:48:52Z jdorje $
+ * $Id: menus.h 5040 2002-10-26 03:58:33Z jdorje $
  *
  * The point of this file is to help games to achieve a consistent look
  * and feel in their menus.  The TABLE_MENU and HELP_MENU should be used
@@ -29,6 +29,7 @@
  */
 
 #include "ggzintl.h"
+#include "dlg_about.h"
 #include "dlg_players.h"
 
 #define TABLE_MENU \
@@ -39,6 +40,10 @@
 	{_("/Table/Stand up"), NULL, do_stand, 0, NULL}, \
 	{_("/Table/_Sync with server"), "<ctrl>S", game_resync, 0, NULL}, \
 	{_("/Table/E_xit"), "<ctrl>X", game_exit, 0, NULL}
+
+/* These functions should be defined in the game's code. */
+void game_resync(void);
+void game_exit(void);
 
 /* These macro string values can be used to access items in the menu.  If a
    menu item is renamed, it'll be easily updated here. */
@@ -51,7 +56,7 @@
 
 #define HELP_MENU \
 	{_("/_Help"), NULL, NULL, 0, "<LastBranch>"}, \
-	{_("/Help/_About"), "<ctrl>A", game_about, 0, NULL}
+	{_("/Help/_About"), "<ctrl>A", create_or_raise_dlg_about, 0, NULL}
 
 #define HELP _("/Help")
 #define HELP_ABOUT _("/Help/About")
