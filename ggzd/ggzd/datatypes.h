@@ -98,7 +98,6 @@ typedef struct {
 	int stat_clr_time;
 	int main_port;
 	char *game_dir;		/* CLEANUP CANDIDATE - should get free()'d */
-	char *motd_file;	/* Ditto */
 } Options;
 
 
@@ -200,6 +199,14 @@ typedef struct {
 	int uid;
 } ReserveInfo;
 
+
+/* MOTD info */
+typedef struct {
+	char *motd_file;
+	char use_motd;
+	int motd_lines;
+	char *motd_text[15];
+} MOTDInfo;
 
 #endif
 
