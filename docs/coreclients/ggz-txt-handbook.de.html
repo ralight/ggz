@@ -1,0 +1,62 @@
+<html>
+<head>
+<title>
+GGZ Text-Client Handbuch
+</title>
+</head>
+<body>
+
+<h3>GGZ Text-Client Handbuch</h3>
+
+<i>Geschrieben für GGZ 0.0.9</i>
+<br>
+<i>Josef Spillner &lt;josef@ggzgamingzone.org&gt;</i>
+
+<h4>Kommandozeilenoptionen und Argumente</h4>
+<p>
+Die folgenden Optionen werden unterstützt:
+<ul>
+<li>--reverse (-r): Nutzt ein alternatives Farbschema, welches besonders für
+Konsolenprogramme mit weißem Hintergrund nützlich ist
+<li>--version (-v): Zeigt die Versionsinformationen an und beendet sich
+<li>--help (-h): Zeigt den Hilfebildschirm an und beendet sich
+</ul>
+Das einzige unterstützte Argument ist eine gültige GGZ-URI, zu der sich
+das Programm verbindet. Das Format ist: ggz://[nutzer@]hostname[:port].
+Beispiele dafür sind also:
+<pre>
+ggz://irgendein.ggz.server
+ggz://ich@irgendein.anderer.ggz.server:5688
+</pre>
+</p>
+
+<h4>Startskript</h4>
+<p>
+Ein Startskript kann erstellt werden, um automatisch beim Programmstart
+Befehle auszuführen. Beispielsweise kann der Nutzer sich damit schon
+zu einem Server verbinden und einen Raum betreten, ohne dass die Kommandos
+dafür jedes Mal von Hand eingegeben werden müssen.
+</p>
+<p>
+Die Position dieses Skriptes ist ~/.ggz/ggz-txt.startup.
+Das oben angegebene Beispiel sieht dann etwa so aus:
+<pre>
+/connect irgendein.ggz.server
+/join room 1
+/list types
+Hallo, ich bin's!
+</pre>
+</p>
+
+<h4>Spiele spielen</h4>
+<p>
+Der Text-Core-Client kann wie jeder andere verwendet werden, um zu spielen.
+Wenn er in einer Textkonsole läuft (kein X11, also $DISPLAY nicht gesetzt),
+kann er nur Textkonsolenspiele ausführen, an selbigen existiert momentan
+nur ein TicTacToe-Spiel.
+Wenn er in einer X11-Umgebung läuft, können wesentlich mehr Spiele ausgeführt
+werden.
+</p>
+
+</body>
+</html>

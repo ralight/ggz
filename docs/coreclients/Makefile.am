@@ -1,6 +1,7 @@
 docdir = $(GGZDOCDIR)/coreclients
 doc_DATA = \
 	ggz-txt-handbook.html \
+	ggz-txt-handbook.de.html \
 	coreclients.html \
 	ggzcore_server.png \
 	ggzcore_room.png \
