@@ -1,6 +1,40 @@
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4                //
+//    Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net      //
+//    The MindX Open Source Project - http://mindx.sourceforge.net                 //
+//    Published under GNU GPL conditions - view COPYING for details                //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    This program is free software; you can redistribute it and/or modify         //
+//    it under the terms of the GNU General Public License as published by         //
+//    the Free Software Foundation; either version 2 of the License, or            //
+//    (at your option) any later version.                                          //
+//                                                                                 //
+//    This program is distributed in the hope that it will be useful,              //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of               //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                //
+//    GNU General Public License for more details.                                 //
+//                                                                                 //
+//    You should have received a copy of the GNU General Public License            //
+//    along with this program; if not, write to the Free Software                  //
+//    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+// KGGZBase: handle the main window, status and menu bar. This is the application. //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
 #ifndef KGGZ_BASE_H
 #define KGGZ_BASE_H
 
+// KGGZ includes
 #include "KGGZ.h"
 #include "KGGZAbout.h"
 
@@ -13,24 +47,35 @@
 // Qt includes
 #include <qiconset.h>
 
+// This class represents the visible main window of KGGZ.
 class KGGZBase : public KTMainWindow
 {
 	Q_OBJECT
 	public:
+		// Constructor
 		KGGZBase(char *name = NULL);
+		// Destructor
 		~KGGZBase();
 
 	public slots:
+		// Handle a specific menu item activated by the user
 		void slotMenu(int id);
+		// Create the "About GGZ" window and show it
 		void slotAboutGGZ();
+		// Receive a dis/enable event from the KGGZ object
 		void slotMenuSignal(int signal);
+		// Receive a room to be added to the menu
 		void slotRoom(char *roomname);
-		void slotCaption(char *caption);
+		// Receive the caption dynamically from KGGZ
+		void slotCaption(const char *caption);
+		// Display the state in the status bar
 		void slotState(int state);
 
 	private:
+		// assign an icon to a menu item
 		QIconSet kggzGetIcon(int menuid);
 
+		// All menus visible in the main window's menu bar
 		enum MenuItems
 		{
 			MENU_GGZ_TEST,
@@ -64,11 +109,17 @@ class KGGZBase : public KTMainWindow
 			MENU_ROOMS_SLOTS // MENU_ROOMS_SLOTS _must_ be the last element
 		};
 
+		// The menu bar
 		KMenuBar *m_menu;
+		// The KGGZ object
 		KGGZ *kggz;
+		// "About GGZ" dialog
 		KGGZAbout *m_about;
+		// All available menus (except help)
 		KPopupMenu *m_menu_client, *m_menu_rooms, *m_menu_ggz, *m_menu_game, *m_menu_preferences;
+		// The number of available rooms on a server
 		int m_rooms;
+		// KDE specific Configuration
 		KSimpleConfig *konfig;
 };
 

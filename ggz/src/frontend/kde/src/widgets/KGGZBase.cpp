@@ -1,7 +1,40 @@
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4                //
+//    Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net      //
+//    The MindX Open Source Project - http://mindx.sourceforge.net                 //
+//    Published under GNU GPL conditions - view COPYING for details                //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    This program is free software; you can redistribute it and/or modify         //
+//    it under the terms of the GNU General Public License as published by         //
+//    the Free Software Foundation; either version 2 of the License, or            //
+//    (at your option) any later version.                                          //
+//                                                                                 //
+//    This program is distributed in the hope that it will be useful,              //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of               //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                //
+//    GNU General Public License for more details.                                 //
+//                                                                                 //
+//    You should have received a copy of the GNU General Public License            //
+//    along with this program; if not, write to the Free Software                  //
+//    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+// KGGZBase: handle the main window, status and menu bar. This is the application. //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
 // Header file
 #include "KGGZBase.h"
 
-// Abstract KGGZ includes
+// KGGZ includes
 #include "KGGZCommon.h"
 
 // KDE includes
@@ -29,8 +62,8 @@ KGGZBase::KGGZBase(char *name)
 
 	m_menu = new KMenuBar(this);
 	enableStatusBar();
-	statusBar()->insertItem(i18n("Not connected"), 1);
-	statusBar()->insertItem(i18n("Loading..."), 2);
+	statusBar()->insertItem(i18n("  Not connected  "), 1);
+	statusBar()->insertItem(i18n("  Loading...  "), 2);
 
         kggz = new KGGZ(this, "kggz");
 
@@ -100,7 +133,7 @@ KGGZBase::KGGZBase(char *name)
 	connect(m_menu_game, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(kggz, SIGNAL(signalMenu(int)), SLOT(slotMenuSignal(int)));
 	connect(kggz, SIGNAL(signalRoom(char*)), SLOT(slotRoom(char*)));
-	connect(kggz, SIGNAL(signalCaption(char*)), SLOT(slotCaption(char*)));
+	connect(kggz, SIGNAL(signalCaption(const char*)), SLOT(slotCaption(const char*)));
 	connect(kggz, SIGNAL(signalState(int)), SLOT(slotState(int)));
 
 	setView(kggz);
@@ -111,7 +144,7 @@ KGGZBase::KGGZBase(char *name)
 
 	kggz->menuView(KGGZ::VIEW_SPLASH);
 
-	statusBar()->changeItem(i18n("Ready for connection."), 2);
+	statusBar()->changeItem(i18n("  Ready for connection.  "), 2);
 
 	KGGZDEBUGF("KGGZBase::KGGZBase() done\n");
 }
@@ -317,13 +350,13 @@ void KGGZBase::slotRoom(char *roomname)
 	m_rooms++;
 }
 
-void KGGZBase::slotCaption(char *caption)
+void KGGZBase::slotCaption(const char *caption)
 {
 	setCaption(caption);
-	statusBar()->changeItem(i18n("Connected"), 1);
+	statusBar()->changeItem(i18n("  Connected  "), 1);
 }
 
 void KGGZBase::slotState(int state)
 {
-	statusBar()->changeItem(i18n("State: ") + KGGZCommon::state((GGZStateID)state), 2);
+	statusBar()->changeItem(i18n("  State: ") + KGGZCommon::state((GGZStateID)state) + "  ", 2);
 }

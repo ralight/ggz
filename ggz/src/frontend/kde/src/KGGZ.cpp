@@ -1,7 +1,40 @@
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4                //
+//    Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net      //
+//    The MindX Open Source Project - http://mindx.sourceforge.net                 //
+//    Published under GNU GPL conditions - view COPYING for details                //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    This program is free software; you can redistribute it and/or modify         //
+//    it under the terms of the GNU General Public License as published by         //
+//    the Free Software Foundation; either version 2 of the License, or            //
+//    (at your option) any later version.                                          //
+//                                                                                 //
+//    This program is distributed in the hope that it will be useful,              //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of               //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                //
+//    GNU General Public License for more details.                                 //
+//                                                                                 //
+//    You should have received a copy of the GNU General Public License            //
+//    along with this program; if not, write to the Free Software                  //
+//    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+// KGGZ: The main GGZ Gaming Zone object. Controls servers, rooms and games/rooms. //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
 // Header file
 #include "KGGZ.h"
 
-// KGGZ classes
+// KGGZ includes
 #include "KGGZWorkspace.h"
 #include "KGGZSplash.h"
 #ifdef KGGZ_BROWSER
@@ -22,7 +55,7 @@
 #include <iostream.h>
 #include <stdlib.h>
 
-// GGZCore++ functions
+// GGZCore++ includes
 #include "GGZCoreConfio.h"
 #include "GGZCoreTable.h"
 #include "GGZCoreModule.h"
@@ -101,7 +134,7 @@ KGGZ::KGGZ(QWidget *parent = NULL, char *name = NULL)
 	vbox->add(m_workspace);
 
         // VERY DANGEROUS !!!
-	startTimer(30);
+	startTimer(40);
 
 	KGGZDEBUGF("KGGZ::KGGZ() ready\n");
 }
@@ -334,6 +367,7 @@ void KGGZ::listTables()
 	}
 	m_workspace->widgetTables()->reset();
 	number = kggzroom->countTables();
+	KGGZDEBUG("## Found %i tables\n", number);
 	for(int i = 0; i < number; i++)
 	{
 		m_workspace->widgetUsers()->addTable(i);
@@ -344,7 +378,8 @@ void KGGZ::listTables()
 		for(int j = 0; j < tableseats; j++)
 		{
 			KGGZDEBUG(" ** table %i, seat %i: player type is %i\n", i, j, table->playerType(j));
-			
+			KGGZDEBUG(" ** table %i: state is %i\n", i, table->state());
+
 			switch(table->playerType(j))
 			{
 				case GGZ_SEAT_OPEN:
@@ -412,6 +447,7 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 	{
 		case GGZCoreGame::launched:
 			KGGZDEBUG("launched\n");
+			m_workspace->widgetChat()->receive(NULL, i18n("Launched game"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreGame::launchfail:
 			KGGZDEBUG("launchfail\n");
@@ -439,6 +475,7 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreGame::over:
 			KGGZDEBUG("over\n");
+			m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
 			if(!kggzgame)
 			{
 				KGGZDEBUG("Now I'm confused: What do they want from me?\n");
@@ -447,14 +484,21 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 			detachGameCallbacks();
 			delete kggzgame;
 			kggzgame = NULL;
+			if(kggzserver->state() == GGZ_STATE_AT_TABLE)
+			{
+				KGGZDEBUG("**** Still at table-> leaving now!\n");
+				kggzroom->leaveTable();
+			}
 			listPlayers();
 			listTables();
 			break;
 		case GGZCoreGame::ioerror:
 			KGGZDEBUG("ioerror\n");
+			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Network error!"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreGame::protoerror:
 			KGGZDEBUG("protoerror\n");
+			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Protocol error!"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		default:
 			KGGZDEBUG("unknown!\n");
@@ -465,7 +509,8 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 void KGGZ::roomCollector(unsigned int id, void* data)
 {
 	char *chatsender = NULL, *chatmessage = NULL;
-	char buffer[1024];
+	//char buffer[1024];
+	QString buffer;
 
 	switch(id)
 	{
@@ -518,16 +563,18 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::enter:
 			KGGZDEBUG("enter\n");
-			strcpy(buffer, (char*)data);
-			strcat(buffer, i18n(" enters the room."));
-			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
+			buffer.append((char*)data);
+			buffer.append(i18n(" enters the room."));
+			m_workspace->widgetChat()->receive(NULL, buffer.latin1(), KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->add((char*)data);
 			break;
 		case GGZCoreRoom::leave:
 			KGGZDEBUG("leave\n");
-			strcpy(buffer, (char*)data);
-			strcat(buffer, i18n(" has left the room."));
-			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
+			buffer.append((char*)data);
+			buffer.append(i18n(" has left the room."));
+			//strcpy(buffer, (char*)data);
+			//strcat(buffer, i18n(" has left the room."));
+			m_workspace->widgetChat()->receive(NULL, buffer.latin1(), KGGZChat::RECEIVE_ADMIN);
 			m_workspace->widgetUsers()->remove((char*)data);
 			break;
 		case GGZCoreRoom::tableupdate:
@@ -545,7 +592,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::tablelaunchfail:
 			KGGZDEBUG("tablelaunchfail\n");
-			KMessageBox::information(this, "Couldn't launch table!", "Error!");
+			KMessageBox::information(this, i18n("ERROR: Couldn't launch table!"), "Error!");
 			listPlayers();
 			listTables();
 			break;
@@ -559,18 +606,28 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::tablejoinfail:
 			KGGZDEBUG("tablejoinfail\n");
-			KMessageBox::information(this, "Couldn't join table!", "Error");
+			KMessageBox::information(this, i18n("ERROR: Couldn't join table!"), "Error");
 			listPlayers();
 			listTables();
 			break;
 		case GGZCoreRoom::tableleft:
 			KGGZDEBUG("tableleft\n");
 			//m_workspace->widgetUsers()->removeall();
+			if(kggzgame)
+			{
+				KGGZDEBUG("SHALL I QUIT THE GAME HERE??? Yes!\n");
+				detachGameCallbacks();
+				delete kggzgame;
+				kggzgame = NULL;
+				m_workspace->widgetChat()->receive(NULL, i18n("Game over"), KGGZChat::RECEIVE_ADMIN);
+			}
 			listPlayers();
 			listTables();
+			m_workspace->widgetChat()->receive(NULL, i18n("Left table"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreRoom::tableleavefail:
 			KGGZDEBUG("tableleavefail\n");
+			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Couldn't leave table!"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreRoom::tabledata:
 			KGGZDEBUG("tabledata\n");
@@ -595,7 +652,8 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 void KGGZ::serverCollector(unsigned int id, void* data)
 {
 	int result;
-	char buffer[1024];
+	//char buffer[1024];
+	QString buffer;
 
 	switch(id)
 	{
@@ -633,16 +691,19 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::loggedin:
 			KGGZDEBUG("loggedin\n");
 			emit signalMenu(MENUSIG_LOGIN);
-			sprintf(buffer, i18n("KGGZ - [logged in as %s@%s:%i]"), m_save_username, m_save_host, m_save_port);
+			buffer.sprintf(i18n("KGGZ - [logged in as %s@%s:%i]"), m_save_username, m_save_host, m_save_port);
 			emit signalCaption(buffer);
 			if(m_save_loginmode == GGZCoreServer::firsttime)
 			{
 				KGGZDEBUG("First time login!\n");
-				sprintf(buffer, i18n("You are welcome as a new GGZ Gaming Zone player.\n"
+				buffer.sprintf(i18n("You are welcome as a new GGZ Gaming Zone player.\n"
 					"Your personal password is: %s"), kggzserver->password());
 				KMessageBox::information(this, buffer, "Information");
 			}
 			menuView(VIEW_CHAT);
+			buffer.sprintf(i18n("Logged in as %s"), m_save_username);
+			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
+			m_workspace->widgetChat()->receive(NULL, i18n("Please join a room to start!"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreServer::loginfail:
 			KGGZDEBUG("loginfail\n");
@@ -674,7 +735,6 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			KGGZDEBUG("typelist\n");
 			break;
 		case GGZCoreServer::entered:
-			m_workspace->widgetChat()->receive(NULL, i18n("Entered room"), KGGZChat::RECEIVE_ADMIN);
 			KGGZDEBUG("entered\n");
 			KGGZDEBUG("==> creating room object\n");
 			m_lock = 1;
@@ -693,6 +753,8 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			kggzroom->listPlayers();
 			kggzroom->listTables(-1, 0);
 			slotLoadLogo();
+			buffer.sprintf(i18n("Entered room %s"), kggzroom->name());
+			m_workspace->widgetChat()->receive(NULL, buffer, KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreServer::enterfail:
 			KGGZDEBUG("enterfail\n");
@@ -709,6 +771,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 				m_workspace->widgetUsers()->removeall();
 				m_workspace->widgetTables()->reset();
 				m_workspace->widgetChat()->shutdown();
+				m_workspace->widgetLogo()->shutdown();
 			}
 			detachServerCallbacks();
 			delete kggzserver;
@@ -719,13 +782,15 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::neterror:
 			KGGZDEBUG("neterror\n");
-			m_workspace->widgetChat()->receive(NULL, i18n("Network error detected!"), KGGZChat::RECEIVE_ADMIN);
+			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Network error detected!"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreServer::protoerror:
 			KGGZDEBUG("protoerror\n");
+			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Protocol error detected!"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreServer::chatfail:
 			KGGZDEBUG("chatfail\n");
+			m_workspace->widgetChat()->receive(NULL, i18n("ERROR: Chat error detected!"), KGGZChat::RECEIVE_ADMIN);
 			break;
 		case GGZCoreServer::statechange:
 			KGGZDEBUG("statechange\n");
@@ -1118,7 +1183,8 @@ void KGGZ::menuGameJoin()
 void KGGZ::menuGameInfo()
 {
 	GGZCoreGametype *gametype;
-	char buffer[2048];
+	//char buffer[2048];
+	QString buffer;
 
 	if(!kggzserver)
 	{
@@ -1143,23 +1209,23 @@ void KGGZ::menuGameInfo()
 	KGGZDEBUG("URL: %s\n", gametype->url());
 	KGGZDEBUG("Description: %s\n", gametype->description());
 	KGGZDEBUG("Protocol: %s\n", gametype->protocol());
-	strcpy(buffer, i18n("Name: "));
-	strcat(buffer, gametype->name());
-	strcat(buffer, "\n");
-	strcat(buffer, i18n("Description: "));
-	strcat(buffer, gametype->description());
-	strcat(buffer, "\n");
-	strcat(buffer, i18n("Author: "));
-	strcat(buffer, gametype->author());
-	strcat(buffer, "\n");
-	strcat(buffer, i18n("Version: "));
-	strcat(buffer, gametype->version());
-	strcat(buffer, "\n");
-	strcat(buffer, i18n("Protocol: "));
-	strcat(buffer, gametype->protocol());
-	strcat(buffer, "\n");
-	strcat(buffer, i18n("URL: "));
-	strcat(buffer, gametype->url());
+	buffer.append(i18n("Name: "));
+	buffer.append(gametype->name());
+	buffer.append("\n");
+	buffer.append(i18n("Description: "));
+	buffer.append(gametype->description());
+	buffer.append("\n");
+	buffer.append(i18n("Author: "));
+	buffer.append(gametype->author());
+	buffer.append("\n");
+	buffer.append(i18n("Version: "));
+	buffer.append(gametype->version());
+	buffer.append("\n");
+	buffer.append(i18n("Protocol: "));
+	buffer.append(gametype->protocol());
+	buffer.append("\n");
+	buffer.append(i18n("URL: "));
+	buffer.append(gametype->url());
 	//sprintf(buffer, "Name: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nProtocol: %s\nURL: %s",
 	//	gametype->name(), gametype->description(), gametype->author(), gametype->version(), gametype->protocol(), gametype->url());
 	KMessageBox::information(this, buffer, i18n("Game Type Information"));

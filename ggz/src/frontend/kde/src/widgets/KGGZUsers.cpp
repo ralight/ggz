@@ -1,30 +1,54 @@
-/////////////////////////////////////////////////////////////////////////////
-//                                                                         //
-// KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4           //
-// Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net //
-// The MindX Open Source Project - http://mindx.sourceforge.net            //
-// Published under GNU GPL conditions - view COPYING for details           //
-//                                                                         //
-/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4                //
+//    Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net      //
+//    The MindX Open Source Project - http://mindx.sourceforge.net                 //
+//    Published under GNU GPL conditions - view COPYING for details                //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
 
-// Header definition
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    This program is free software; you can redistribute it and/or modify         //
+//    it under the terms of the GNU General Public License as published by         //
+//    the Free Software Foundation; either version 2 of the License, or            //
+//    (at your option) any later version.                                          //
+//                                                                                 //
+//    This program is distributed in the hope that it will be useful,              //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of               //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                //
+//    GNU General Public License for more details.                                 //
+//                                                                                 //
+//    You should have received a copy of the GNU General Public License            //
+//    along with this program; if not, write to the Free Software                  //
+//    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+// KGGZUsers: Display all users in the current room, and place them on the tables. //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+// Header file
 #include "KGGZUsers.h"
+
+// KGGZ includes
+#include "KGGZCommon.h"
+
+// KDE includes
+#include <klocale.h>
 
 // System includes
 #include <string.h>
 #include <stdio.h>
 
-// KDE includes
-#include <klocale.h>
-
-// Configuration
-#include "KGGZWidgetCommon.h"
-
 // static members
 //QListViewItem *KGGZUsers::itemmain;
 
 // Constructor
-KGGZUsers::KGGZUsers(QWidget *parent, char *name)
+KGGZUsers::KGGZUsers(QWidget *parent = NULL, char *name = NULL)
 : QListView(parent, name)
 {
 	itemmain = new QListViewItem(this, i18n("Not playing"));
@@ -135,12 +159,13 @@ void KGGZUsers::removeall()
 
 void KGGZUsers::addTable(int i)
 {
-	char foo[128];
+	//char foo[128];
 	QListViewItem *tmp;
+	QString foo;
 
 	KGGZDEBUG("USER CONTROL: ===========> add table %i\n", i);
 	KGGZDEBUG("KGGZUsers::addTable(%i)\n", i);
-	sprintf(foo, "Table: %i", i);
+	foo.sprintf("Table: %i", i);
 	tmp = new QListViewItem(this, foo);
 	insertItem(tmp);
 	tmp->setOpen(TRUE);
@@ -149,11 +174,12 @@ void KGGZUsers::addTable(int i)
 void KGGZUsers::addTablePlayer(int i, char *name)
 {
 	QListViewItem *tmp, *tmp2;
-	char foo[128];
+	//char foo[128];
+	QString foo;
 
 	KGGZDEBUG("USER CONTROL: ===========> add player %s into table %i\n", name, i);
 	KGGZDEBUG("KGGZUsers::addTablePlayer(%i, %s)\n", i, name);
-	sprintf(foo, "%s-%i", name, i);
+	foo.sprintf("%s-%i", name, i);
 	remove(name);
 
 	tmp2 = table(i);
@@ -170,7 +196,8 @@ void KGGZUsers::addTablePlayer(int i, char *name)
 QListViewItem *KGGZUsers::table(int i)
 {
 	QListViewItem *tmp;
-	char foo[128];
+	//char foo[128];
+	QString foo;
 
 	KGGZDEBUG("KGGZUsers::table(%i)\n", i);
 	tmp = firstChild();
@@ -181,12 +208,12 @@ QListViewItem *KGGZUsers::table(int i)
 	}
 
 	KGGZDEBUG("Scanning table...\n");
-	sprintf(foo, "Table: %i", i);
+	foo.sprintf("Table: %i", i);
 	KGGZDEBUG("Compare: %s\n", tmp->text(0).latin1());
-	KGGZDEBUG("To: %s\n", foo);
+	KGGZDEBUG("To: %s\n", foo.latin1());
 	while(tmp)
 	{
-		if(strcmp(tmp->text(0).latin1(), foo) == 0) return tmp;
+		if(tmp->text(0) == foo) return tmp;
 		KGGZDEBUG("Now or never: get next item!\n");
 		if(tmp == NULL) KGGZDEBUG("ALERT!!!! isNull()!!!\n");
 		//tmp = tmp->itemBelow();

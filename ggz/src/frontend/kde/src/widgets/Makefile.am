@@ -22,7 +22,6 @@ noinst_HEADERS = \
 	KGGZUsers.h \
 	KGGZTables.h \
 	KGGZWorkspace.h \
-	KGGZWidgetCommon.h \
 	KGGZAbout.h \
 	KGGZSplash.h \
 	KGGZLogo.h \

@@ -1,15 +1,45 @@
-// Class declaration
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4                //
+//    Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net      //
+//    The MindX Open Source Project - http://mindx.sourceforge.net                 //
+//    Published under GNU GPL conditions - view COPYING for details                //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    This program is free software; you can redistribute it and/or modify         //
+//    it under the terms of the GNU General Public License as published by         //
+//    the Free Software Foundation; either version 2 of the License, or            //
+//    (at your option) any later version.                                          //
+//                                                                                 //
+//    This program is distributed in the hope that it will be useful,              //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of               //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                //
+//    GNU General Public License for more details.                                 //
+//                                                                                 //
+//    You should have received a copy of the GNU General Public License            //
+//    along with this program; if not, write to the Free Software                  //
+//    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+// KGGZConnect: Display a connection dialog which allows in-place server addition. //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+// Header file
 #include "KGGZConnect.h"
+
+// KGGZ includes
+#include "KGGZCommon.h"
 
 // KDE classes
 #include <kmessagebox.h>
 #include <klocale.h>
-
-// GGZ includes
-#include <GGZCoreConfio.h>
-
-// KGGZ includes
-#include "KGGZCommon.h"
 
 // Qt classes
 #include <qlayout.h>
@@ -22,8 +52,11 @@
 #include <stdio.h>
 #include <unistd.h>
 
+// GGZCore++ includes
+#include "GGZCoreConfio.h"
+
 /* Constructor: set up a small dialog for connections; provide server profile list */
-KGGZConnect::KGGZConnect(QWidget *parent, char *name)
+KGGZConnect::KGGZConnect(QWidget *parent = NULL, char *name = NULL)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
 	QVBoxLayout *vbox1;

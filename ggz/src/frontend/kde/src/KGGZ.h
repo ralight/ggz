@@ -1,22 +1,54 @@
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4                //
+//    Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net      //
+//    The MindX Open Source Project - http://mindx.sourceforge.net                 //
+//    Published under GNU GPL conditions - view COPYING for details                //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    This program is free software; you can redistribute it and/or modify         //
+//    it under the terms of the GNU General Public License as published by         //
+//    the Free Software Foundation; either version 2 of the License, or            //
+//    (at your option) any later version.                                          //
+//                                                                                 //
+//    This program is distributed in the hope that it will be useful,              //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of               //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                //
+//    GNU General Public License for more details.                                 //
+//                                                                                 //
+//    You should have received a copy of the GNU General Public License            //
+//    along with this program; if not, write to the Free Software                  //
+//    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+// KGGZ: The main GGZ Gaming Zone object. Controls servers, rooms and games/rooms. //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
 #ifndef KGGZ_H
 #define KGGZ_H
 
+// KGGZ includes
+#include "KGGZCommon.h"
+#include "KGGZCallback.h"
+#include "KGGZLaunch.h"
+#include "KGGZConnect.h"
+#include "KGGZMotd.h"
+
+// KDE includes
 #include <kpopupmenu.h>
 
 // Qt includes
 #include <qevent.h>
 #include <qwidget.h>
 
-// Abstract KGGZ includes
-#include "KGGZCommon.h"
-#include "KGGZCallback.h"
-
-// KGGZ includes
-#include "KGGZLaunch.h"
-#include "KGGZConnect.h"
-#include "KGGZMotd.h"
-
-// GGZCore++
+// GGZCore++ includes
 #include "GGZCore.h"
 #include "GGZCoreConf.h"
 #include "GGZCoreServer.h"
@@ -31,13 +63,17 @@ class KGGZSplash;
 class KGGZBrowser;
 #endif
 
+// Here comes KGGZ.
 class KGGZ : public QWidget
 {
 	Q_OBJECT
 	public:
+		// Constructor
 		KGGZ(QWidget *parent = NULL, char *name = NULL);
+		// Destructor
 		~KGGZ();
 
+		// Receive events of these types
 		enum Collectortypes
 		{
 			COLLECTOR_ROOM,
@@ -45,6 +81,7 @@ class KGGZ : public QWidget
 			COLLECTOR_GAME
 		};
 
+		// Pre-configures view modes
 		enum Viewtypes
 		{
 			VIEW_CHAT,
@@ -54,6 +91,7 @@ class KGGZ : public QWidget
 			VIEW_BROWSER
 		};
 
+		// Signals received from the KGGZBase object
 		enum Menusignals
 		{
 			MENUSIG_DISCONNECT,
@@ -64,70 +102,121 @@ class KGGZ : public QWidget
 		};
 
 	signals:
+		// Emitted to dis/enable menu items
 		void signalMenu(int signal);
+		// Emitted to announce new room
 		void signalRoom(char *roomname);
-		void signalCaption(char *caption);
+		// Emitted to change window caption
+		void signalCaption(const char *caption);
+		// Emitted if connection state changes
 		void signalState(int state);
 
 	public slots:
-		void slotConnected(const char *host, int port, const char *username, const char *password, int mode, int server);
-
+		// Connect to a game server
 		void menuConnect();
+		// Disconnect again
 		void menuDisconnect();
+		// Run a server on localhost
 		void menuServerLaunch();
+		// Shutdown local server
 		void menuServerKill();
+		// Change the view of the workspace
 		void menuView(int viewtype);
+		// Launch a game at a table
 		void menuGameLaunch();
+		// Join a running game
 		void menuGameJoin();
+		// Display game type information
 		void menuGameInfo();
+		// Change into the given room
 		void menuRoom(int room);
 
+		// Receive connection parameters
+		void slotConnected(const char *host, int port, const char *username, const char *password, int mode, int server);
+		// Receive chat message
 		void slotChat(char *text);
+		// Launch a table
 		void slotLaunch();
 
 	protected:
+		// Handle resizing
 		void resizeEvent(QResizeEvent *e);
+		// Timer for slightly delayed input from sockets
 		void timerEvent(QTimerEvent *e);
+
+		// catch server atoms
 		void serverCollector(unsigned int id, void* data);
+		// catch room atoms
 		void roomCollector(unsigned int id, void* data);
+		// catch game atoms
 		void gameCollector(unsigned int id, void* data);
+		// catch all types of atoms and distribute them
 		static GGZHookReturn hookOpenCollector(unsigned int id, void* event_data, void* user_data);
 
 	private:
+		// ensure that KGGZ is in a proper state
 		void dispatcher();
+		// free allocated memory
 		void dispatch_free(char *var, char *description);
+		// delete created objects
 		void dispatch_delete(void *object, char *description);
 
+		// set up room callbacks
 		void attachRoomCallbacks();
+		// remove room callbacks
 		void detachRoomCallbacks();
+		// setup callbacks for server events
 		void attachServerCallbacks();
+		// remove server callbacks
 		void detachServerCallbacks();
+		// setup hooks for game events
 		void attachGameCallbacks();
+		// remove game callbacks
 		void detachGameCallbacks();
 
+		// attempt to list all players
 		void listPlayers();
+		// attempt to list active tables
 		void listTables();
 
+		// Launches a game of the specified game type
 		void slotLaunchGame(GGZCoreGametype *gametype);
+		// Advices logo widget to load game logo
 		void slotLoadLogo();
 
+		// The commonly used workspace
 		KGGZWorkspace *m_workspace;
+		// GGZCore++ server object (unique)
 		GGZCoreServer *kggzserver;
+		// GGZCore++ room object (unique)
 		GGZCoreRoom *kggzroom;
+		// GGZCore++ game object (unique)
 		GGZCoreGame *kggzgame;
-		KGGZCallback *kggzservercallback, *kggzroomcallback, *kggzgamecallback;
-		char *m_save_username, *m_save_password, *m_save_host;
-		int m_save_loginmode, m_save_port;
-		int m_lock;
-		KGGZLaunch *m_launch;
-		KGGZConnect *m_connect;
+		// GGZCore++ core object
 		GGZCore *m_core;
+		// GGZCore++ configuration object
 		GGZCoreConf *m_config;
+		// Callback atoms (all unique)
+		KGGZCallback *kggzservercallback, *kggzroomcallback, *kggzgamecallback;
+		// User data saved from connection dialog
+		char *m_save_username, *m_save_password, *m_save_host;
+		// Connection data saved from connection dialog
+		int m_save_loginmode, m_save_port;
+		// Lock for time-critical operations
+		int m_lock;
+
+		// Launch dialog
+		KGGZLaunch *m_launch;
+		// Connection dialog
+		KGGZConnect *m_connect;
+		// Splash screen
 		KGGZSplash *m_splash;
-		KPopupMenu *m_menu_client, *m_menu_rooms, *m_menu_ggz, *m_menu_game, *m_menu_preferences;
+		//KPopupMenu *m_menu_client, *m_menu_rooms, *m_menu_ggz, *m_menu_game, *m_menu_preferences;
 #ifdef KGGZ_BROWSER
+		// Embedded HTML browser
 		KGGZBrowser *m_browser;
 #endif
+		// Message of the day widget
 		KGGZMotd *m_motd;
 };
 

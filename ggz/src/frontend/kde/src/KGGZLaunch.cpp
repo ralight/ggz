@@ -1,13 +1,50 @@
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4                //
+//    Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net      //
+//    The MindX Open Source Project - http://mindx.sourceforge.net                 //
+//    Published under GNU GPL conditions - view COPYING for details                //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    This program is free software; you can redistribute it and/or modify         //
+//    it under the terms of the GNU General Public License as published by         //
+//    the Free Software Foundation; either version 2 of the License, or            //
+//    (at your option) any later version.                                          //
+//                                                                                 //
+//    This program is distributed in the hope that it will be useful,              //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of               //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                //
+//    GNU General Public License for more details.                                 //
+//                                                                                 //
+//    You should have received a copy of the GNU General Public License            //
+//    along with this program; if not, write to the Free Software                  //
+//    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+// KGGZLaunch: Shows a dialog for game launching which allows changing parameters. //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+// Header file
 #include "KGGZLaunch.h"
 
+// KGGZ includes
+#include "KGGZCommon.h"
+
+// KDE includes
+#include <klocale.h>
+//#define i18n(x) x
+
+// Qt includes
 #include <qlayout.h>
 #include <qstring.h>
 #include <stdlib.h>
-
-//#include <klocale.h>
-#define i18n(x) x
-
-#include "KGGZCommon.h"
 
 KGGZLaunch::KGGZLaunch(QWidget *parent = NULL, char *name = NULL)
 : QWidget(parent, name)
@@ -108,10 +145,11 @@ void KGGZLaunch::slotAccepted()
 
 void KGGZLaunch::slotChanged(int value)
 {
-	QString str;
+	QString str, str2;
 
 	str.setNum(value);
-	m_label->setText(i18n("Number of player: ") + str);
+	str2.setNum(m_slider->maxValue());
+	m_label->setText(i18n("Number of player: ") + str + i18n(" (out of ") + str2 + ")");
 }
 
 const char *KGGZLaunch::description()
@@ -210,32 +248,31 @@ void KGGZLaunch::setSeatType(int seat, int seattype)
 	KGGZDEBUG("after setSeatType: arry size is: %i\n", m_array->size());
 }
 
-const char *KGGZLaunch::typeName(int seattype)
+QString KGGZLaunch::typeName(int seattype)
 {
-	const char *ret;
+	QString ret;
 
 	switch(seattype)
 	{
 		case seatplayer:
-			ret = m_playername;
+			ret.append(m_playername);
 			break;
 		case seatopen:
-			ret = i18n("Open");
+			ret.append(i18n("Open"));
 			break;
 		case seatreserved:
-			ret = i18n("Reserved");
+			ret.append(i18n("Reserved"));
 			break;
 		case seatbot:
-			ret = i18n("Bot");
+			ret.append(i18n("Bot"));
 			break;
 		case seatunused:
-			ret = i18n("(unused)");
+			ret.append(i18n("(unused)"));
 			break;
 		default:
-			ret = i18n("unknown");
+			ret.append(i18n("unknown"));
 	}
 
-	KGGZDEBUG("return: %s for %i\n", ret, seattype);
+	KGGZDEBUG("return: %s for %i\n", ret.latin1(), seattype);
 	return ret;
 }
-

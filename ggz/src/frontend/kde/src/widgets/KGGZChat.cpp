@@ -1,19 +1,44 @@
-/////////////////////////////////////////////////////////////////////////////
-//                                                                         //
-// KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4           //
-// Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net //
-// The MindX Open Source Project - http://mindx.sourceforge.net            //
-// Published under GNU GPL conditions - view COPYING for details           //
-//                                                                         //
-/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    KGGZ - The KDE client for the GGZ Gaming Zone - Version 0.0.4                //
+//    Copyright (C) 2000, 2001 Josef Spillner - dr_maux@users.sourceforge.net      //
+//    The MindX Open Source Project - http://mindx.sourceforge.net                 //
+//    Published under GNU GPL conditions - view COPYING for details                //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//    This program is free software; you can redistribute it and/or modify         //
+//    it under the terms of the GNU General Public License as published by         //
+//    the Free Software Foundation; either version 2 of the License, or            //
+//    (at your option) any later version.                                          //
+//                                                                                 //
+//    This program is distributed in the hope that it will be useful,              //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of               //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                //
+//    GNU General Public License for more details.                                 //
+//                                                                                 //
+//    You should have received a copy of the GNU General Public License            //
+//    along with this program; if not, write to the Free Software                  //
+//    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+// KGGZChat: display the chat, receive text/events, and send user text via signal. //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
 
 // Header definition
 #include "KGGZChat.h"
 
-// GGZ includes
-#include <ggzcore.h>
+// KGGZ includes
+#include "KGGZCommon.h"
 
 // KDE includes
+#include <kapp.h>
 #include <klocale.h>
 
 // Qt includes
@@ -21,29 +46,17 @@
 #include <qlabel.h>
 
 // System includes
+#include <X11/Xlib.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <fnmatch.h>
 
-// Configuration
-#include "KGGZWidgetCommon.h"
-
-// These both are for the beep
-#include <X11/Xlib.h>
-#include <kapp.h>
-
-// Static members
-//KTextBrowser *KGGZChat::output;
-//Lag KGGZChat::lag[10];
-//int KGGZChat::xlag;
-//int KGGZChat::m_listusers;
-
 // buffer overflow??
 char m_buftmp[2048];
 
 // Constructor
-KGGZChat::KGGZChat(QWidget *parent, char *name)
+KGGZChat::KGGZChat(QWidget *parent = NULL, char *name = NULL)
 : QWidget(parent, name)
 {
 	QVBoxLayout *vbox1;
@@ -69,7 +82,6 @@ KGGZChat::KGGZChat(QWidget *parent, char *name)
 
 	receive(NULL, "GGZ Gaming Zone 0.0.4", RECEIVE_ADMIN);
 	receive(NULL, i18n("Ready for connection..."), RECEIVE_ADMIN);
-	receive(NULL, i18n("Please join a room to start!"), RECEIVE_ADMIN);
 
 	m_listusers = 0;
 
@@ -515,12 +527,15 @@ void KGGZChat::checkLag(const char *text)
 void KGGZChat::logChat(QString text)
 {
 	FILE *f;
-	char s[1024];
+	//char s[1024];
+	QString s;
 
-	strcpy(s, getenv("HOME"));
-	strcat(s, "/.ggz/kggzlog.html");
+	//strcpy(s, getenv("HOME"));
+	//strcat(s, "/.ggz/kggzlog.html");
+	s.append(getenv("HOME"));
+	s.append("/.ggz/kggzlog.html");
 
-	f = fopen(s, "a");
+	f = fopen(s.latin1(), "a");
 	if(f)
 	{
 		fprintf(f, "%s\n", text.latin1());
@@ -564,24 +579,23 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 		default:
 			KGGZDEBUG("ERROR! Unknown chat mode\n");
 	}
-
-	// alright?
-	//setTheme();
 }
 
+// initialize the chat (enable it)
 void KGGZChat::init()
 {
 	input->setEnabled(TRUE);
 	input->setFocus();
 }
 
+// execute a beep event
 void KGGZChat::beep()
 {
 	XBell(kapp->getDisplay(), 100);
 }
 
+// disable the chat
 void KGGZChat::shutdown()
 {
 	input->setEnabled(FALSE);
 }
-
