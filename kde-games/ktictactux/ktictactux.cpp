@@ -24,24 +24,36 @@
 KTicTacTux::KTicTacTux(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
-	QVBoxLayout *vbox;
+	QVBoxLayout *vbox, *vbox2;
 	QHBoxLayout *hbox[3];
+	QWidget *container;
+
+	container = new QWidget(this);
+	container->setBackgroundPixmap(QPixmap(QString("%1/ktictactux/bg.png").arg(GGZDATADIR)));
 
 	vbox = new QVBoxLayout(this);
+	vbox->add(container);
+
+	vbox2 = new QVBoxLayout(container);
+	vbox2->addStretch(1);
 	for(int j = 0; j < 3; j++)
 	{
-		hbox[j] = new QHBoxLayout(vbox);
+		hbox[j] = new QHBoxLayout(vbox2);
+		hbox[j]->addStretch(1);
 		for(int i = 0; i < 3; i++)
 		{
-			frame[i][j] = new QWhiteFrame(this);
+			frame[i][j] = new QWhiteFrame(container);
+			frame[i][j]->setFixedSize(64, 64);
 			hbox[j]->add(frame[i][j]);
 			connect(frame[i][j], SIGNAL(signalSelected(QWidget *)), SLOT(slotSelected(QWidget *)));
 		}
+		hbox[j]->addStretch(1);
 	}
+	vbox2->addStretch(1);
 
 	signalStatus(i18n("KTicTacTux - Waiting for opponent!"));
 
-	setFixedSize(210, 210);
+	//setFixedSize(210, 210);
 	setCaption("KTicTacTux");
 	show();
 

@@ -24,7 +24,6 @@ static const KCmdLineOptions op[] = {
 // Main function, including the about data
 int main(int argc, char **argv)
 {
-	KApplication *a;
 	KAboutData *aboutData;
 	KTicTacTuxWin *ktictactuxwin;
 	KCmdLineArgs *args;
@@ -34,9 +33,9 @@ int main(int argc, char **argv)
 		"0.0.5pre",
 		I18N_NOOP("This is a TicTacToe game for KDE."),
 		KAboutData::License_GPL,
-		"(C) 2001, 2002 Josef Spillner",
-		I18N_NOOP("This game can be played against the AI or over networks."),
-		"http://mindx.sourceforge.net",
+		"Copyright (C) 2001, 2002 Josef Spillner",
+		I18N_NOOP("This game is part of the GGZ Gaming Zone."),
+		"http://ggz.sourceforge.net/games/ktictactux/",
 		"dr_maux@users.sourceforge.net");
 	aboutData->addAuthor("Josef Spillner", I18N_NOOP("Inventor"), "dr_maux@users.sourceforge.net", "http://mindx.sourceforge.net");
 
@@ -44,7 +43,7 @@ int main(int argc, char **argv)
 	KCmdLineArgs::addCmdLineOptions(op);
 	args = KCmdLineArgs::parsedArgs();
 
-	a = new KApplication();
+	KApplication a;
 	ktictactuxwin = new KTicTacTuxWin(NULL, "KTicTacTuxWin");
 	if(args->isSet("ggz"))
 	{
@@ -52,7 +51,8 @@ int main(int argc, char **argv)
 		ktictactuxwin->tux()->setOpponent(PLAYER_NETWORK);
 	}
 	ktictactuxwin->tux()->init();
-	a->setMainWidget(ktictactuxwin);
-	return a->exec();
+
+	a.setMainWidget(ktictactuxwin);
+	return a.exec();
 }
 

@@ -1,8 +1,8 @@
-SUBDIRS =
+SUBDIRS = .
 
-bindir = $(ggzexecmoddir)
+#bindir = $(ggzexecmoddir)
 
-bin_PROGRAMS = ktictactux_client
+ggzexecmod_PROGRAMS = ktictactux_client
 
 ktictactux_client_SOURCES = \
 	main.cpp \
@@ -17,15 +17,24 @@ noinst_HEADERS = \
 	ktictactuxproto.h \
 	qwhiteframe.h
 
-INCLUDES = $(EASYSOCK_INCLUDES) $(all_includes)
+INCLUDES = $(all_includes) $(EASYSOCK_INCLUDES)
 
-UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
-ktictactux_client_LDFLAGS = -rpath $(easysock_libraries)
-ktictactux_client_LDADD = $(all_libraries) $(UI) $(EASYSOCK_LDFLAGS) $(LIB_EASYSOCK)
+#UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
+#ktictactux_client_LDFLAGS = -rpath $(easysock_libraries)
+ktictactux_client_LDFLAGS = $(all_libraries) $(EASYSOCK_LDFLAGS)
+ktictactux_client_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_EASYSOCK)
 
 METASOURCES = AUTO
 
 EXTRA_DIST = module.dsc.in
+
+pixmapdir = @ggzdatadir@/ktictactux
+pixmap_DATA = tux.png merlin.png kde.png gnome.png cross.png circle.png bg.png
+
+KDE_ICON = ktictactux
+
+appsdir = $(kde_appsdir)/Games/ggz
+apps_DATA = ktictactux.desktop
 
 install-data-local:
 	@$(NORMAL_INSTALL)
@@ -34,12 +43,4 @@ install-data-local:
 uninstall-local:
 	@$(NORMAL_UNINSTALL)
 	-$(GGZ_CONFIG) --remove --modfile=module.dsc
-
-pixmapdir = @ggzdatadir@/ktictactux
-pixmap_DATA = tux.png merlin.png kde.png gnome.png cross.png circle.png
-
-KDE_ICON = ktictactux
-
-appsdir = $(kde_appsdir)/Games/Board
-apps_DATA = ktictactux.desktop
 
