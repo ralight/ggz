@@ -1,6 +1,6 @@
 /*
  * The GGZ Gaming Zone Metaserver Project
- * Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+ * Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
  * Published under GNU GPL conditions.
  */
 
@@ -17,8 +17,10 @@
 #include <getopt.h>
 #include <stdarg.h>
 
+#include "config.h"
+
 /* The directory where metaservconf.xml resides */
-#define METASERV_DIR "/usr/local/share/metaserv"
+#define METASERV_DIR PREFIX "/share/metaserv"
 
 /* Optimized code is much faster, but not so readable */
 #define METASERV_OPTIMIZED 1
@@ -35,8 +37,8 @@
  <?xml version="1.0"><resultset><result preference="100"><uri>ggz://jzaun.com:5688</uri>..</result></resultset>
 */
 
-DOM *configuration = NULL;
-char *logfile = NULL;
+static DOM *configuration = NULL;
+static char *logfile = NULL;
 
 void log(const char *fmt, ...)
 {
@@ -700,6 +702,7 @@ int metaserv_work()
 	while(1)
 	{
 		fgets(buffer, sizeof(buffer), stdin);
+		buffer[strlen(buffer) - 1] = 0;
 		log("Request: buffer=%s", buffer);
 		result = metamagic(buffer);
 
