@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4988 2002-10-22 08:23:04Z jdorje $
+ * $Id: common.c 4991 2002-10-22 09:23:14Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -458,7 +458,8 @@ void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 	                || new_seat.type == GGZ_SEAT_BOT)
 	               && (old_seat.type != new_seat.type
 	                   || strcmp(old_seat.name, new_seat.name));
-	bool is_leave = old_seat.type == GGZ_SEAT_PLAYER
+	bool is_leave = (old_seat.type == GGZ_SEAT_PLAYER
+			 || old_seat.type == GGZ_SEAT_BOT)
 	                && (new_seat.type != old_seat.type
 	                    || strcmp(old_seat.name, new_seat.name));
 	GGZdModState new_state;
@@ -469,6 +470,12 @@ void handle_ggz_seat_event(GGZdMod *ggz, GGZdModEvent event, void *data)
 	
 	ggz_debug(DBG_MISC, "Handling a seat-change event for player %d.",
 	          player);
+
+	/* Start or stop any AI on the seat.  This needs to be done first. */
+	if (is_leave && old_seat.type == GGZ_SEAT_BOT)
+		stop_ai(player);
+	if (is_join && new_seat.type == GGZ_SEAT_BOT)
+		start_ai(player, game.ai_module);
 
 	/* We send player list to everyone.  This used to skip over the
 	   player joining.  I think it only did that because the player list
