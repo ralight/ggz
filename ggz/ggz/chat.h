@@ -28,6 +28,6 @@
 
 #define CHAT_COLOR_NONE 0
 #define CHAT_COLOR_SOME 1
-#define CHAT_COLOR_ALL  2
+#define CHAT_COLOR_FULL  2
 
 void display_chat(gchar *name, gchar *msg);
