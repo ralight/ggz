@@ -13,4 +13,4 @@ DebugFile = @packagesrcdir@/ggzd.debug
 DebugTypes = Process Connection Table Protocol Update Misc Room
 
 [Files]
-motd = ggzd.motd
+MOTD = ggzd.motd
