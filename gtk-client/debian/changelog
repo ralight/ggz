@@ -1,3 +1,9 @@
+ggz-gtk-client (0.0.5-1) unstable; urgency=low
+
+  * New GGZ release
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Sun,  7 Apr 2002 10:02:00 +0200
+
 ggz-gtk-client (0.0.4-1) unstable; urgency=low
 
   * Initial Release.
