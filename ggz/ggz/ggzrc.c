@@ -218,8 +218,10 @@ void ggzrc_remove_section(const char *section)
 
 	while(iter_list) {
 		if (strncmp(section, &((char *)iter_list->data)[1],
-		    section_length) == 0)
+			    section_length) == 0) {
 			g_hash_table_remove(rc_hash, iter_list->data);
+			g_slist_remove(rc_list, iter_list->data);
+		}
 
 		iter_list = g_slist_next(iter_list);
 	}
@@ -231,6 +233,7 @@ void ggzrc_remove_key(const char *section, const char *key)
 	char *hashkey = g_strdup_printf("[%s]%s", section, key);
 
 	g_hash_table_remove(rc_hash, hashkey);
+	g_slist_remove(rc_list, hashkey);
 	g_free(hashkey);
 }
 
