@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4514 2002-09-11 07:44:05Z jdorje $
+ * $Id: net.c 4515 2002-09-11 08:31:00Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -132,8 +132,9 @@ static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
 /* Utility functions */
 static int safe_atoi(char *string);
 static char* safe_strdup(char *str);
+static int check_playerconn(GGZNetIO *net, const char *type);
 static void _net_dump_data(struct _GGZNetIO *net, char *data, int size);
-static int _net_send_result(GGZNetIO *net, char *action, char code);
+static int _net_send_result(GGZNetIO *net, const char *action, char code);
 static int _net_send_login_normal_status(GGZNetIO *net, char status);
 static int _net_send_login_anon_status(GGZNetIO *net, char status);
 static int _net_send_login_new_status(GGZNetIO *net, char status, char *password);
@@ -1145,6 +1146,8 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 
 	if (update) {
 
+		if (!check_playerconn(net, "protocol")) return;
+
 		/* Grab update data from tag */
 		type = ggz_xmlelement_get_attr(update, "TYPE");
 
@@ -1167,6 +1170,9 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 				table->room = safe_atoi(room);
 			
 			player_table_update(net->client->data, table);
+		} else {
+			_net_send_result(net, "protocol", E_BAD_OPTIONS);
+			return;
 		}
 	}
 }
@@ -1175,7 +1181,7 @@ static void _net_handle_update(GGZNetIO *net, GGZXMLElement *update)
 /* Functions for <LIST> tag */
 static void _net_handle_list(GGZNetIO *net, GGZXMLElement *list)
 {
-	char *type, *full;
+	char *type;
 	char verbose = 0;
 	
 	if (list) {
@@ -1186,8 +1192,9 @@ static void _net_handle_list(GGZNetIO *net, GGZXMLElement *list)
 			return;
 		}
 		
-		full = ggz_xmlelement_get_attr(list, "FULL");
-		if (str_to_bool(full, 0))
+		if (check_playerconn(net, "list")) return;
+
+		if (str_to_bool(ggz_xmlelement_get_attr(list, "FULL"), 0))
 			verbose = 1;
 		
 		if (strcasecmp(type, "game") == 0)
@@ -1212,6 +1219,8 @@ static void _net_handle_enter(GGZNetIO *net, GGZXMLElement *enter)
 	int room;
 
 	if (enter) {
+		if (!check_playerconn(net, "enter")) return;
+
 		room = safe_atoi(ggz_xmlelement_get_attr(enter, "ROOM"));
 		room_handle_join(net->client->data, room);
 	}
@@ -1236,7 +1245,9 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *chat)
 			_net_send_result(net, "chat", E_BAD_OPTIONS);
 			return;
 		}
-			
+
+		if (!check_playerconn(net, "chat")) return;
+
 		/* FIXME: error checking on these? */
 		
 		if (strcasecmp(type, "normal") == 0)
@@ -1266,6 +1277,8 @@ static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element)
 			str_to_bool(ggz_xmlelement_get_attr(element,
 							    "SPECTATOR"), 0);
 
+		if (!check_playerconn(net, "join")) return;
+
 		if (spectator)
 			player_table_join_spectator(net->client->data, table);
 		else
@@ -1283,6 +1296,9 @@ static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
 		int spectator =
 			str_to_bool(ggz_xmlelement_get_attr(element,
 							    "SPECTATOR"), 0);
+
+		if (!check_playerconn(net, "leave")) return;
+
 		if (spectator)
 			player_table_leave_spectator(net->client->data);
 		else
@@ -1302,7 +1318,9 @@ static void _net_handle_launch(GGZNetIO *net, GGZXMLElement *element)
 			_net_send_result(net, "launch", E_BAD_OPTIONS);
 			return;
 		}
-		
+
+		if (!check_playerconn(net, "launch")) return;
+
 		player_table_launch(net->client->data, table);
 	}
 }
@@ -1555,6 +1573,7 @@ static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element)
 /* Functions for <MOTD> tag */
 static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *motd)
 {
+	if (!check_playerconn(net, "motd")) return;
 	player_motd(net->client->data);
 }
 
@@ -1562,6 +1581,7 @@ static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *motd)
 /* Function for <PONG> tag */
 static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *data)
 {
+	if (!check_playerconn(net, "pong")) return;
 	player_handle_pong(net->client->data);
 }
 
@@ -1580,6 +1600,23 @@ static int safe_atoi(char *string)
 static char* safe_strdup(char *str)
 {
 	return str ? ggz_strdup(str) : NULL;
+}
+
+
+static int check_playerconn(GGZNetIO *net, const char *type)
+{
+	if (!net->client->data) {
+		/* This should only be caused by a malicious client. */
+		dbg_msg(GGZ_DBG_CONNECTION,
+			"Client requested %s before login.", type);
+
+		/* FIXME: maybe we should just disconnect them. */
+		_net_send_result(net, type, E_NOT_LOGGED_IN);
+
+		return 0;
+	}
+
+	return 1;
 }
 
 
@@ -1660,7 +1697,7 @@ static int _net_send_spectator(GGZNetIO *net, GGZTableSpectator *spectator)
 	return 0;
 }
 
-static int _net_send_result(GGZNetIO *net, char *action, char code)
+static int _net_send_result(GGZNetIO *net, const char *action, char code)
 {
 	return _net_send_line(net, "<RESULT ACTION='%s' CODE='%d'/>",
 			      action, code);

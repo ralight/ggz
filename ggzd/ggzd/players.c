@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4501 2002-09-10 06:42:12Z jdorje $
+ * $Id: players.c 4515 2002-09-11 08:31:00Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -220,6 +220,8 @@ int player_updates(GGZPlayer* player)
 int player_get_room(GGZPlayer *player)
 {
 	int room;
+
+	if (!player) return -1;
 
 	pthread_rwlock_rdlock(&player->lock);
 	room = player->room;
