@@ -42,6 +42,7 @@ static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiate_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_data(GGZGameEvent, void *, void*);
 static GGZHookReturn game_over(GGZGameEvent, void *, void*);
+static GGZHookReturn game_delayed_leave(GGZServerEvent, void *, void *);
 static void game_input_removed(gpointer data);
 
 GGZGame *game;
@@ -250,10 +251,54 @@ static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_dat
 
 	game_quit();
 	room = ggzcore_server_get_cur_room(server);
-	ggzcore_room_leave_table(room);
+
+	/* If we haven't actually made it to the table yet, register a 
+	   callback for when we do so that we can leave :) */
+	if (ggzcore_server_get_state(server) == GGZ_STATE_LAUNCHING_TABLE ||
+	    ggzcore_server_get_state(server) == GGZ_STATE_JOINING_TABLE)
+		ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE, 
+					      game_delayed_leave);
+	else if (ggzcore_room_leave_table(room) < 0)
+		msgbox(_("Error leaving table"),
+		       _("Game Error"), MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 
 	return GGZ_HOOK_OK;
 }
+
+
+static GGZHookReturn game_delayed_leave(GGZServerEvent event, void *event_data, void *user_data)
+{
+	GGZStateID state_id;
+	GGZRoom *room;
+
+	state_id = ggzcore_server_get_state(server);
+	
+	switch (state_id) {
+	case GGZ_STATE_AT_TABLE:
+		/* We finally made it to the table, so leave it */
+		room = ggzcore_server_get_cur_room(server);
+		if (ggzcore_room_leave_table(room) < 0)
+			msgbox(_("Error leaving table"), _("Game Error"), 
+			       MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+		return GGZ_HOOK_REMOVE;
+		break;
+		
+	case GGZ_STATE_JOINING_TABLE:
+	case GGZ_STATE_LAUNCHING_TABLE:
+	case GGZ_STATE_LEAVING_TABLE:
+		/* Either We're not there yet, so hang on...  or we're
+		   in the cllback a second time because of the above
+		   ggzcore_room_leave_table() command (yuck!!) */
+		return GGZ_HOOK_OK;
+		break;
+	default:
+		/* Something else bizarre happened, so do nothing and
+                   get rid of callback */
+		return GGZ_HOOK_REMOVE;
+		break;
+	}
+}
+
 
 
 /* GdkDestroyNotify function for server fd */
