@@ -1,86 +1,90 @@
-diff -Nur ggz-client-libs.notls/acconfig.h ggz-client-libs/acconfig.h
---- ggz-client-libs.notls/acconfig.h	Tue Mar 27 04:49:58 2001
-+++ ggz-client-libs/acconfig.h	Tue Nov  6 00:12:39 2001
-@@ -20,6 +20,7 @@
- #undef GGZDATADIR
- #undef GGZCONFDIR
- #undef GAMEDIR
-+#undef GENSECURE
- #undef PACKAGE_SOURCE_DIR
- #undef WAIT_ANY
-     
-diff -Nur ggz-client-libs.notls/configure.in ggz-client-libs/configure.in
---- ggz-client-libs.notls/configure.in	Fri Sep 14 01:57:24 2001
-+++ ggz-client-libs/configure.in	Tue Nov  6 00:12:19 2001
-@@ -80,7 +80,13 @@
-         AC_MSG_ERROR(*** Cannot find expat.h header)),
-     AC_MSG_ERROR(*** Cannot find expat library ))
+diff -Nur ggz-client-libs/configure.in ggz-client-libs.tls/configure.in
+--- ggz-client-libs/configure.in	Sat Feb 23 03:16:00 2002
++++ ggz-client-libs.tls/configure.in	Sat Feb 23 03:14:16 2002
+@@ -73,7 +73,7 @@
+ dnl ==============
  
+ AC_GGZ_LIBGGZ
+-LDADD="$LDADD $LIB_GGZ"
++LDADD="$LDADD $LIB_GGZ -lggztls"
+ 
+ 
+ dnl Check for popt
+diff -Nur ggz-client-libs/ggzcore/Makefile.am ggz-client-libs.tls/ggzcore/Makefile.am
+--- ggz-client-libs/ggzcore/Makefile.am	Sat Feb 23 03:15:50 2002
++++ ggz-client-libs.tls/ggzcore/Makefile.am	Sat Feb 23 03:14:17 2002
+@@ -8,9 +8,8 @@
+ ggz_config_LDADD = libggzcore.la @LDADD@
+ ggz_config_SOURCES = ggz-config.c
+ 
+-ggzconf_DATA = ggz.modules
 -
-+dnl Check for gensecure
-+dnl ===================
-+AC_CHECK_LIB(gensecure, tls_prepare,
-+	AC_CHECK_HEADER(gensecure.h,
-+	INCLUDES="$INCLUDES -I/usr/local/ssl/include" AC_DEFINE_UNQUOTED(GENSECURE, "1") LDADD="$LDADD -lgensecure",
-+		AC_MSG_ERROR(*** Cannot find gensecure.h header)),
-+	AC_MSG_ERROR(*** Cannot find libgensecure ))
+-EXTRA_DIST = $(ggzconf_DATA)
++#ggzconf_DATA = ggz.modules
++#EXTRA_DIST = $(ggzconf_DATA)
  
+ lib_LTLIBRARIES = libggzcore.la
  
- dnl Use -Wall if we have gcc.
-diff -Nur ggz-client-libs.notls/ggzcore/ggzcore.h ggz-client-libs/ggzcore/ggzcore.h
---- ggz-client-libs.notls/ggzcore/ggzcore.h	Tue Oct 16 01:44:23 2001
-+++ ggz-client-libs/ggzcore/ggzcore.h	Wed Nov  7 07:49:10 2001
-@@ -269,7 +269,8 @@
- /* Functions for setting GGZServer data */
+diff -Nur ggz-client-libs/ggzcore/ggzcore.h ggz-client-libs.tls/ggzcore/ggzcore.h
+--- ggz-client-libs/ggzcore/ggzcore.h	Sat Feb 23 03:15:39 2002
++++ ggz-client-libs.tls/ggzcore/ggzcore.h	Sat Feb 23 03:14:17 2002
+@@ -371,7 +371,8 @@
+  */
  int ggzcore_server_set_hostinfo(GGZServer *server, 
  				const char *host, 
 -				const unsigned int port);
 +				const unsigned int port,
-+				const unsigned int encryption);
++				const unsigned int use_tls);
  
- int ggzcore_server_set_logininfo(GGZServer *server, 
- 				 const GGZLoginType type, 
-@@ -286,6 +287,7 @@
- char*        ggzcore_server_get_password(GGZServer *server);
- int          ggzcore_server_get_fd(GGZServer *server);
+ /** @brief Set login info for logging in to the server.
+  *
+@@ -454,6 +455,13 @@
+  *  @return The state of the connection, or -1 on error.
+  */
  GGZStateID   ggzcore_server_get_state(GGZServer *server);
-+int	         ggzcore_server_get_encryption(GGZServer *server);
++
++/** @brief Get the current TLS status of this server
++ *
++ * @param server The GGZ server object
++ * @return Whether TLS is active or not
++ */
++int             ggzcore_server_get_tls(GGZServer *server);
  
- int          ggzcore_server_get_num_rooms(GGZServer *server);
- GGZRoom*     ggzcore_server_get_cur_room(GGZServer *server);
-diff -Nur ggz-client-libs.notls/ggzcore/net.h ggz-client-libs/ggzcore/net.h
---- ggz-client-libs.notls/ggzcore/net.h	Mon Sep 24 04:28:03 2001
-+++ ggz-client-libs/ggzcore/net.h	Wed Nov  7 07:54:08 2001
-@@ -35,7 +35,8 @@
+ /** @brief Return the number of rooms on the server, or -1 on error.
+  *  @note Until we retrieve the list of rooms, this will return 0.
+diff -Nur ggz-client-libs/ggzcore/net.h ggz-client-libs.tls/ggzcore/net.h
+--- ggz-client-libs/ggzcore/net.h	Sat Feb 23 03:15:40 2002
++++ ggz-client-libs.tls/ggzcore/net.h	Sat Feb 23 03:14:17 2002
+@@ -36,7 +36,8 @@
  void _ggzcore_net_init(struct _GGZNet *net, 
  		       struct _GGZServer *server, 
  		       const char *host,
 -		       unsigned int port);
 +		       unsigned int port,
-+			   unsigned int encryption);
++			   unsigned int use_tls);
  
  int _ggzcore_net_set_dump_file(struct _GGZNet *net, const char* filename);
  void _ggzcore_net_set_fd(struct _GGZNet *net, int fd);
-@@ -45,6 +46,7 @@
+@@ -46,6 +47,7 @@
  char*        _ggzcore_net_get_host(struct _GGZNet *net);
  unsigned int _ggzcore_net_get_port(struct _GGZNet *net);
  int          _ggzcore_net_get_fd(struct _GGZNet *net);
-+int          _ggzcore_net_get_encryption(struct _GGZNet *net);
++int          _ggzcore_net_get_tls(struct _GGZNet *net);
  
  int _ggzcore_net_connect(struct _GGZNet *net);
  
-diff -Nur ggz-client-libs.notls/ggzcore/netxml.c ggz-client-libs/ggzcore/netxml.c
---- ggz-client-libs.notls/ggzcore/netxml.c	Sun Nov  4 23:58:12 2001
-+++ ggz-client-libs/ggzcore/netxml.c	Wed Nov  7 07:54:30 2001
-@@ -48,6 +48,7 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <sys/fcntl.h>
-+#include <gensecure.h>
+diff -Nur ggz-client-libs/ggzcore/netxml.c ggz-client-libs.tls/ggzcore/netxml.c
+--- ggz-client-libs/ggzcore/netxml.c	Sat Feb 23 03:15:40 2002
++++ ggz-client-libs.tls/ggzcore/netxml.c	Sat Feb 23 03:14:17 2002
+@@ -36,6 +36,7 @@
+ #include "gametype.h"
  
- /* For convenience */
- #define XML_BUFFSIZE 8192
-@@ -92,6 +93,8 @@
+ #include <ggz.h>
++#include <ggz_tls.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <poll.h>
+@@ -90,6 +91,8 @@
  	/* File to dump protocol session */
  	int dump_file;
  
@@ -89,7 +93,15 @@ diff -Nur ggz-client-libs.notls/ggzcore/netxml.c ggz-client-libs/ggzcore/netxml.
  };
  
  
-@@ -186,17 +189,19 @@
+@@ -164,6 +167,7 @@
+ 
+ /* Dump network data to debugging file */
+ static void _ggzcore_net_dump_data(struct _GGZNet *net, char *data, int size);
++static void _ggzcore_net_negotiate_tls(GGZNet *net);
+ 
+ /* Utility functions */
+ static int _ggzcore_net_send_table_seat(struct _GGZNet *net, struct _GGZSeat *seat);
+@@ -185,17 +189,19 @@
  	/* Set fd to invalid value */
  	net->fd = -1;
  	net->dump_file = -1;
@@ -100,137 +112,156 @@ diff -Nur ggz-client-libs.notls/ggzcore/netxml.c ggz-client-libs/ggzcore/netxml.
  
  
 -void _ggzcore_net_init(struct _GGZNet *net, struct _GGZServer *server, const char *host, unsigned int port)
-+void _ggzcore_net_init(struct _GGZNet *net, struct _GGZServer *server, const char *host, unsigned int port, unsigned int encryption)
++void _ggzcore_net_init(struct _GGZNet *net, struct _GGZServer *server, const char *host, unsigned int port, unsigned int use_tls)
  {
  	net->server = server;
- 	net->host = ggzcore_strdup(host);
+ 	net->host = ggz_strdup(host);
  	net->port = port;
  	net->fd = -1;
-+	net->use_tls = encryption;
++	net->use_tls = use_tls;
  
  	/* Init parser */
  	if (!(net->parser = XML_ParserCreate("UTF-8")))
-@@ -249,6 +254,11 @@
+@@ -247,6 +253,10 @@
+ 	return net->fd;
  }
  
- 
-+int _ggzcore_net_get_encryption(struct _GGZNet *net)
++int _ggzcore_net_get_tls(struct _GGZNet *net)
 +{
 +	return net->use_tls;
 +}
-+
+ 
  /* For debugging purposes only! */
  void _ggzcore_net_set_fd(struct _GGZNet *net, int fd)
- {
-@@ -283,7 +293,11 @@
- 	net->fd = es_make_socket(ES_CLIENT, net->port, net->host);
- 	
- 	if (net->fd >= 0)
-+	{
-+		if (net->use_tls == 1)
-+			tls_start(net->fd, TLS_CLIENT, TLS_NOVERIFY);
- 		return 0;  /* success */
-+	}
- 	else
- 		return -1; /* error */
- }
-@@ -547,7 +561,7 @@
- 	buf[0] = '\0';
- 	for (i = 0; i < size; i++) {
- 		sprintf(buf, "%d ", data[i]);
--		write(net->fd, buf, strlen(buf));
-+		tls_write(net->fd, buf, strlen(buf));
- 	}
- 	_ggzcore_net_send_string(net, "]]></DATA>");
- 
-@@ -611,7 +625,7 @@
+@@ -619,7 +629,7 @@
  		ggzcore_error_sys_exit("Couldn't allocate buffer");
  
  	/* Read in data from socket */
 -	if ( (len = read(net->fd, buf, XML_BUFFSIZE)) < 0) {
-+	if ( (len = tls_read(net->fd, buf, XML_BUFFSIZE)) < 0) {
++	if ( (len = ggz_tls_read(net->fd, buf, XML_BUFFSIZE)) < 0) {
  		
  		/* If it's a non-blocking socket and there isn't data,
                     we get EAGAIN.  It's safe to just return */
-@@ -1657,7 +1671,7 @@
+@@ -770,7 +780,7 @@
+ /* Functions for <SERVER> tag */
+ static void _ggzcore_net_handle_server(GGZNet *net, GGZXMLElement *server)
+ {
+-	char *name, *id, *status;
++	char *name, *id, *status, *tls;
+ 	int version, chatlen;
+ 
+ 	if (server) {
+@@ -778,11 +788,16 @@
+ 		id = ggz_xmlelement_get_attr(server, "ID");
+ 		status = ggz_xmlelement_get_attr(server, "STATUS");
+ 		version = safe_atoi(ggz_xmlelement_get_attr(server, "VERSION"));
++		tls = ggz_xmlelement_get_attr(server, "TLS_SUPPORT");
+ 		chatlen = (int)ggz_xmlelement_get_data(server);
+ 
+ 		ggzcore_debug(GGZ_DBG_NET, 
+-			      "%s(%s) : status %s: protocol %d: chat size %d", 
+-			      name, id, status, version, chatlen);
++			      "%s(%s) : status %s: protocol %d: chat size %d: tls %s", 
++			      name, id, status, version, chatlen, tls);
++
++		/* If TLS is enabled set it up */
++		if(!strcmp(tls, "yes") && _ggzcore_net_get_tls(net) && ggz_tls_support_query())
++			_ggzcore_net_negotiate_tls(net);
+ 
+ 		net->chat_size = chatlen;
+ 		/* FIXME: Do something with name, status */
+@@ -1674,7 +1689,16 @@
+ 	_ggzcore_net_send_line(net, "<SESSION>");
+ }
+ 
++/* Send a TLS_START notice and negotiate the handshake */
++static void _ggzcore_net_negotiate_tls(GGZNet *net)
++{
++	_ggzcore_net_send_line(net, "<TLS_START/>");
++	/* This should return a status one day to tell client if */
++	/* the handshake failed for some reason */
++	ggz_tls_enable_fd(net->fd, GGZ_TLS_CLIENT, GGZ_TLS_VERIFY_NONE);
++}
+ 
++				
+ static int _ggzcore_net_send_line(GGZNet *net, char *line, ...)
+ {
+ 	char buf[4096];
+@@ -1684,7 +1708,7 @@
  	vsprintf(buf, line, ap);
  	va_end(ap);
  	strcat(buf, "\n");
 -	return write(net->fd, buf, strlen(buf));
-+	return tls_write(net->fd, buf, strlen(buf));
++	return ggz_tls_write(net->fd, buf, strlen(buf));
  }
  
  
-@@ -1669,7 +1683,7 @@
+@@ -1696,7 +1720,7 @@
  	va_start(ap, fmt);
  	vsprintf(buf, fmt, ap);
  	va_end(ap);
 -	return write(net->fd, buf, strlen(buf));
-+	return tls_write(net->fd, buf, strlen(buf));
++	return ggz_tls_write(net->fd, buf, strlen(buf));
  }
  
  
-diff -Nur ggz-client-libs.notls/ggzcore/server.c ggz-client-libs/ggzcore/server.c
---- ggz-client-libs.notls/ggzcore/server.c	Mon Sep 24 04:25:05 2001
-+++ ggz-client-libs/ggzcore/server.c	Wed Nov  7 07:53:32 2001
-@@ -175,11 +175,11 @@
+diff -Nur ggz-client-libs/ggzcore/server.c ggz-client-libs.tls/ggzcore/server.c
+--- ggz-client-libs/ggzcore/server.c	Sat Feb 23 03:15:41 2002
++++ ggz-client-libs.tls/ggzcore/server.c	Sat Feb 23 03:14:17 2002
+@@ -174,11 +174,11 @@
  }
  
  
 -int ggzcore_server_set_hostinfo(GGZServer *server, const char *host, const unsigned int port)
-+int ggzcore_server_set_hostinfo(GGZServer *server, const char *host, const unsigned int port, const unsigned int encryption)
++int ggzcore_server_set_hostinfo(GGZServer *server, const char *host, const unsigned int port, const unsigned int use_tls)
  {
  	/* Check for valid arguments */
  	if (server && host && server->state == GGZ_STATE_OFFLINE) {
 -		_ggzcore_net_init(server->net, server, host, port);
-+		_ggzcore_net_init(server->net, server, host, port, encryption);
++		_ggzcore_net_init(server->net, server, host, port, use_tls);
  		return 0;
  	}
  	else
-@@ -296,6 +296,15 @@
+@@ -341,6 +341,14 @@
  }
  
  
-+int ggzcore_server_get_encryption(GGZServer *server)
++int ggzcore_server_get_tls(GGZServer *server)
 +{
 +	if (server)
-+		return _ggzcore_server_get_encryption(server);
++		return _ggzcore_server_get_tls(server);
 +	else
 +		return -1;
 +}
 +
-+
- GGZRoom* ggzcore_server_get_cur_room(GGZServer *server)
+ int ggzcore_server_is_online(GGZServer *server)
  {
- 	if (server)
-@@ -531,6 +540,19 @@
- GGZStateID _ggzcore_server_get_state(struct _GGZServer *server)
- {
- 	return server->state;
-+}
-+
-+
-+int _ggzcore_server_get_encryption(struct _GGZServer *server)
-+{
-+	int encryption;
-+
-+	encryption = 0;
-+
-+	if (server && server->net)
-+		encryption = _ggzcore_net_get_encryption(server->net);
-+
-+	return encryption;
+ 	if (!server)
+@@ -538,6 +546,16 @@
+ 	return server->num_rooms;
  }
  
++
++int _ggzcore_server_get_tls(struct _GGZServer *server)
++{
++	int tls;
++
++	tls = 0;
++	if (server && server->net)
++		tls = _ggzcore_net_get_tls(server->net);
++	return tls;
++}
  
-diff -Nur ggz-client-libs.notls/ggzcore/server.h ggz-client-libs/ggzcore/server.h
---- ggz-client-libs.notls/ggzcore/server.h	Mon Sep 24 04:25:05 2001
-+++ ggz-client-libs/ggzcore/server.h	Wed Nov  7 07:50:10 2001
+ struct _GGZRoom* _ggzcore_server_get_cur_room(struct _GGZServer *server)
+ {
+diff -Nur ggz-client-libs/ggzcore/server.h ggz-client-libs.tls/ggzcore/server.h
+--- ggz-client-libs/ggzcore/server.h	Sat Feb 23 03:15:41 2002
++++ ggz-client-libs.tls/ggzcore/server.h	Sat Feb 23 03:14:17 2002
 @@ -39,6 +39,7 @@
  char*           _ggzcore_server_get_handle(struct _GGZServer *server);
  char*           _ggzcore_server_get_password(struct _GGZServer *server);
  GGZStateID      _ggzcore_server_get_state(struct _GGZServer *server);
-+int             _ggzcore_server_get_encryption(struct _GGZServer *server);
++int             _ggzcore_server_get_tls(struct _GGZServer *server);
  
  int              _ggzcore_server_get_num_rooms(struct _GGZServer *server);
  struct _GGZRoom* _ggzcore_server_get_cur_room(struct _GGZServer *server);

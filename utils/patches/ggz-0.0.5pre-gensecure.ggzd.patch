@@ -1,57 +1,20 @@
-diff -Nur ggzd.notls/acconfig.h ggzd/acconfig.h
---- ggzd.notls/acconfig.h	Fri Nov 10 08:36:04 2000
-+++ ggzd/acconfig.h	Mon Nov  5 23:24:55 2001
-@@ -28,6 +28,7 @@
- #undef _XOPEN_SOURCE
- #undef DB2_IN_DIR
- #undef DB3_IN_DIR
-+#undef GENSECURE
-     
- 
- /* Leave that blank line there!!  Autoheader needs it.
-diff -Nur ggzd.notls/configure.in ggzd/configure.in
---- ggzd.notls/configure.in	Mon Nov  5 00:30:26 2001
-+++ ggzd/configure.in	Tue Nov  6 00:09:04 2001
-@@ -104,6 +104,14 @@
-         AC_MSG_ERROR(*** Cannot find expat.h header)),
-     AC_MSG_ERROR(*** Cannot find expat library ))
+-/configure.in/1.63/Sat Feb 23 02:16:51 2002//
+diff -Nur ggzd/configure.in ggzd.tls/configure.in
+--- ggzd/configure.in	Sat Feb 23 03:16:51 2002
++++ ggzd.tls/configure.in	Sat Feb 23 03:14:22 2002
+@@ -97,7 +97,7 @@
+ dnl ==============
  
-+dnl Check for gensecure
-+dnl ===================
-+AC_CHECK_LIB(gensecure, tls_prepare,
-+	AC_CHECK_HEADER(gensecure.h,
-+		INCLUDES="$INCLUDES -I/usr/local/ssl/include" AC_DEFINE_UNQUOTED(GENSECURE, "1") ggzd_LIBS="$ggzd_LIBS -lgensecure",
-+		AC_MSG_ERROR(*** Cannot find gensecure.h header)),
-+	AC_MSG_ERROR(*** Cannot find libgensecure ))
-+
-  
- dnl Check database libs
- dnl ===================
-diff -Nur ggzd.notls/ggzd/control.c ggzd/ggzd/control.c
---- ggzd.notls/ggzd/control.c	Fri Oct  5 01:44:50 2001
-+++ ggzd/ggzd/control.c	Tue Nov  6 00:17:03 2001
-@@ -54,6 +54,7 @@
- #include <table.h>
- #include <daemon.h>
- #include <hash.h>
-+#include <gensecure.h>
+ AC_GGZ_LIBGGZ
+-LDADD="$LDADD $LIB_GGZ"
++LDADD="$LDADD $LIB_GGZ -lggztls"
  
  
- /* Server options */
-@@ -147,6 +148,12 @@
- 	srandom((unsigned)time(NULL));
- }
- 
-+/* The TLS password handler */
-+int passwordcallback(char *buf, int size, int rwflag, void *userdata)
-+{
-+	strncpy(buf, opt.tls_password, size);
-+	return strlen(opt.tls_password);
-+}
- 
- int main(int argc, const char *argv[])
- {
-@@ -163,6 +170,7 @@
+ dnl Check for expat
+diff -Nur ggzd/ggzd/control.c ggzd.tls/ggzd/control.c
+--- ggzd/ggzd/control.c	Sat Feb 23 03:16:33 2002
++++ ggzd.tls/ggzd/control.c	Sat Feb 23 03:14:35 2002
+@@ -177,6 +177,7 @@
  	dbg_msg(GGZ_DBG_CONFIGURATION, "Conf file: %s", opt.local_conf);
  	dbg_msg(GGZ_DBG_CONFIGURATION, "Log level: %0X", log_info.log_types);
  	dbg_msg(GGZ_DBG_CONFIGURATION, "Main Port: %d", opt.main_port);
@@ -59,20 +22,10 @@ diff -Nur ggzd.notls/ggzd/control.c ggzd/ggzd/control.c
  	
  	init_dirs();
  	init_data();
-@@ -183,6 +191,9 @@
- 	}
- 	
- 	signal(SIGPIPE, SIG_IGN);
-+
-+	/* Setup TLS callback */
-+	tls_prepare(opt.tls_cert, opt.tls_key, passwordcallback);
- 
- 	/* Create SERVER socket on main_port */
- 	main_sock = es_make_socket_or_die(ES_SERVER, opt.main_port, NULL);
-diff -Nur ggzd.notls/ggzd/datatypes.h ggzd/ggzd/datatypes.h
---- ggzd.notls/ggzd/datatypes.h	Mon Oct 29 00:36:54 2001
-+++ ggzd/ggzd/datatypes.h	Tue Nov  6 00:33:56 2001
-@@ -52,6 +52,11 @@
+diff -Nur ggzd/ggzd/datatypes.h ggzd.tls/ggzd/datatypes.h
+--- ggzd/ggzd/datatypes.h	Sat Feb 23 03:16:33 2002
++++ ggzd.tls/ggzd/datatypes.h	Sat Feb 23 03:14:35 2002
+@@ -54,6 +54,10 @@
  	int perform_lookups;
  	int ping_freq;
  	int lag_class[4];
@@ -80,122 +33,157 @@ diff -Nur ggzd.notls/ggzd/datatypes.h ggzd/ggzd/datatypes.h
 +	char *tls_key;
 +	char *tls_cert;
 +	char *tls_password;
-+	char *servername;
  } Options;
  
  
-diff -Nur ggzd.notls/ggzd/ggzd.conf.in ggzd/ggzd/ggzd.conf.in
---- ggzd.notls/ggzd/ggzd.conf.in	Mon Oct 29 00:36:54 2001
-+++ ggzd/ggzd/ggzd.conf.in	Mon Nov  5 23:19:07 2001
-@@ -47,6 +47,12 @@
- #ignore = 167.14.108.115/255.255.255.192
- #  (ignores all addresses from 167.14.108.64 - 167.14.108.127)
+diff -Nur ggzd/ggzd/ggzd.conf.in ggzd.tls/ggzd/ggzd.conf.in
+--- ggzd/ggzd/ggzd.conf.in	Sat Feb 23 03:16:47 2002
++++ ggzd.tls/ggzd/ggzd.conf.in	Sat Feb 23 03:14:35 2002
+@@ -42,6 +42,12 @@
+ #IPBanList = 208.137.159.0/255.255.255.0
+ #  (bans all addresses from 208.137.159.0 - 208.137.159.255)
  
 +# Transport Layer Security options
-+EncryptionUse = 1
-+EncryptionPassword = ggz rocks more
-+EncryptionKey = /usr/local/ssl/certs/openssl-example.pem
-+EncryptionCert = /usr/local/ssl/certs/openssl-example.pem
++#EncryptionUse = 1
++#EncryptionPassword = ggzrocksmore
++#EncryptionKey = /usr/local/ssl/certs/openssl-example.pem
++#EncryptionCert = /usr/local/ssl/certs/openssl-example.pem
 +
  ############################################################################
  # Logging Options
  ############################################################################
-diff -Nur ggzd.notls/ggzd/net.c ggzd/ggzd/net.c
---- ggzd.notls/ggzd/net.c	Sat Nov  3 02:38:19 2001
-+++ ggzd/ggzd/net.c	Tue Nov  6 00:38:17 2001
-@@ -43,6 +43,7 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <unistd.h>
-+#include <gensecure.h>
+diff -Nur ggzd/ggzd/net.c ggzd.tls/ggzd/net.c
+--- ggzd/ggzd/net.c	Sat Feb 23 03:16:34 2002
++++ ggzd.tls/ggzd/net.c	Sat Feb 23 03:14:35 2002
+@@ -39,6 +39,7 @@
+ #include <errno.h>
+ #include <expat.h>
+ #include <ggz.h>
++#include <ggz_tls.h>
+ #include <string.h>
+ #include <sys/poll.h>
+ #include <sys/types.h>
+@@ -123,6 +124,7 @@
+ static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *element);
+ static void _net_handle_data(GGZNetIO *net, GGZXMLElement *element);
+ static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
++static void _net_handle_tls_start(GGZNetIO *net, GGZXMLElement *element);
  
- /* For convenience */
- #define BUFFSIZE 8192
-@@ -161,6 +162,8 @@
- 	net->parsing = 0;
- 	net->done = 0;
- 
-+	tls_start(fd, TLS_SERVER, TLS_NOVERIFY);
-+
-         /* Init parser */
-         if (!(net->parser = XML_ParserCreate(NULL)))
-                 err_sys_exit("Couldn't allocate memory for XML parser");
-@@ -243,10 +246,10 @@
+ /* Utility functions */
+ static int safe_atoi(char *string);
+@@ -251,14 +253,17 @@
  
  /* net_send_XXX() functions for sending messages to the client */
  
--int net_send_serverid(GGZNetIO *net)
-+int net_send_serverid(GGZNetIO *net, const char *servername)
+-int net_send_serverid(GGZNetIO *net, char *srv_name)
++int net_send_serverid(GGZNetIO *net, char *srv_name, int use_tls)
  {
+ 	char *xml_srv_name;
+ 
+ 	xml_srv_name = ggz_xml_escape(srv_name);
+ 
++	ggz_tls_disable_fd(net->fd);
++
  	_net_send_line(net, "<SESSION>");
--	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'>", VERSION, "Brent&apos;s Server", GGZ_CS_PROTO_VERSION, "ok");
-+	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'>", VERSION, servername, GGZ_CS_PROTO_VERSION, "ok");
+-	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'>", VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "ok");
++	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s' TLS_SUPPORT='%s'>", VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "ok",
++		((use_tls && ggz_tls_support_query()) ? "yes" : "no"));
  	_net_send_line(net, "\t\t<OPTIONS CHATLEN='%d'/>", MAX_CHAT_LEN);
  	_net_send_line(net, "\t</SERVER>");
- 			
-@@ -662,7 +665,7 @@
+ 
+@@ -694,7 +699,7 @@
  	buf[0] = '\0';
  	for (i = 0; i < size; i++) {
  		sprintf(buf, "%d ", data[i]);
 -		write(net->fd, buf, strlen(buf));
-+		tls_write(net->fd, buf, strlen(buf));
++		ggz_tls_write(net->fd, buf, strlen(buf));
  	}
  	_net_send_string(net, "]]></DATA>");
  
-@@ -1517,7 +1520,7 @@
+@@ -753,7 +758,7 @@
+ 		err_sys_exit("Couldn't allocate buffer");
+ 
+ 	/* Read in data from socket */
+-	if ( (len = read(net->fd, buf, BUFFSIZE)) < 0) {
++	if ( (len = ggz_tls_read(net->fd, buf, BUFFSIZE)) < 0) {
+ 		
+ 		/* If it's a non-blocking socket and there isn't data,
+                    we get EAGAIN.  It's safe to just return */
+@@ -908,6 +913,8 @@
+ 		process_func = _net_handle_data;
+ 	else if (strcmp(tag, "PONG") == 0)
+ 		process_func = _net_handle_pong;
++	else if (strcmp(tag, "TLS_START") == 0)
++		process_func = _net_handle_tls_start;
+ 	else
+ 		process_func = NULL;
+ 	
+@@ -1515,6 +1522,12 @@
+ }
+ 
+ 
++/* Function for <TLS_START> tag */
++static void _net_handle_tls_start(GGZNetIO *net, GGZXMLElement *data)
++{
++	ggz_tls_enable_fd(net->fd, GGZ_TLS_SERVER, GGZ_TLS_VERIFY_NONE);
++}
++
+ /************ Utility/Convenience functions *******************/
+ 
+ static int safe_atoi(char *string)
+@@ -1627,7 +1640,7 @@
  	vsprintf(buf, line, ap);
  	va_end(ap);
  	strcat(buf, "\n");
 -	return write(net->fd, buf, strlen(buf));
-+	return tls_write(net->fd, buf, strlen(buf));
++	return ggz_tls_write(net->fd, buf, strlen(buf));
  }
  
  
-@@ -1529,5 +1532,5 @@
+@@ -1639,5 +1652,5 @@
  	va_start(ap, fmt);
  	vsprintf(buf, fmt, ap);
  	va_end(ap);
 -	return write(net->fd, buf, strlen(buf));
-+	return tls_write(net->fd, buf, strlen(buf));
++	return ggz_tls_write(net->fd, buf, strlen(buf));
  }
-diff -Nur ggzd.notls/ggzd/net.h ggzd/ggzd/net.h
---- ggzd.notls/ggzd/net.h	Tue Oct  9 02:04:59 2001
-+++ ggzd/ggzd/net.h	Tue Nov  6 00:38:27 2001
-@@ -53,7 +53,7 @@
+diff -Nur ggzd/ggzd/net.h ggzd.tls/ggzd/net.h
+--- ggzd/ggzd/net.h	Sat Feb 23 03:16:34 2002
++++ ggzd.tls/ggzd/net.h	Sat Feb 23 03:14:35 2002
+@@ -54,7 +54,7 @@
  void net_free(GGZNetIO* net);
  
  /* Functions to send data to the client */
--int net_send_serverid(GGZNetIO *net);
-+int net_send_serverid(GGZNetIO *net, const char *servername);
- int net_send_server_full(GGZNetIO *net);
+-int net_send_serverid(GGZNetIO *net, char *srv_name);
++int net_send_serverid(GGZNetIO *net, char *srv_name, int use_tls);
+ int net_send_server_full(GGZNetIO *net, char *srv_name);
  int net_send_login(GGZNetIO *net, GGZLoginType type, char status, char *password);
  int net_send_motd(GGZNetIO *net);
-diff -Nur ggzd.notls/ggzd/parse_opt.c ggzd/ggzd/parse_opt.c
---- ggzd.notls/ggzd/parse_opt.c	Mon Oct 29 00:36:54 2001
-+++ ggzd/ggzd/parse_opt.c	Tue Nov  6 00:36:23 2001
-@@ -253,6 +253,13 @@
- 		opt.main_port = conf_read_int(ch, "General", "Port", 5688);
- 	opt.admin_name = conf_read_string(ch, "General", "AdminName", NULL);
- 	opt.admin_email = conf_read_string(ch, "General", "AdminEmail", NULL);
-+	opt.servername = conf_read_string(ch, "General", "Server", "Anonymous server");
-+
-+	/* Enctyption in [General] */
-+	opt.tls_use = conf_read_int(ch, "General", "EncryptionUse", 0);
-+	opt.tls_password = conf_read_string(ch, "General", "EncryptionPassword", NULL);
-+	opt.tls_cert = conf_read_string(ch, "General", "EncryptionCert", NULL);
-+	opt.tls_key = conf_read_string(ch, "General", "EncryptionKey", NULL);
+diff -Nur ggzd/ggzd/parse_opt.c ggzd.tls/ggzd/parse_opt.c
+--- ggzd/ggzd/parse_opt.c	Sat Feb 23 03:16:34 2002
++++ ggzd.tls/ggzd/parse_opt.c	Sat Feb 23 03:14:35 2002
+@@ -266,6 +266,12 @@
+ 	ggz_conf_read_list(ch, "General", "IPBanList", &t_count, &t_list);
+ 	player_set_ip_ban_list(t_count, t_list);
  
++	/* Enctyption in [General] */
++	opt.tls_use = ggz_conf_read_int(ch, "General", "EncryptionUse", 0);
++	opt.tls_password = ggz_conf_read_string(ch, "General", "EncryptionPassword", NULL);
++	opt.tls_cert = ggz_conf_read_string(ch, "General", "EncryptionCert", NULL);
++	opt.tls_key = ggz_conf_read_string(ch, "General", "EncryptionKey", NULL);
++
  	/* [Directories] */
- 	opt.game_dir = conf_read_string(ch, "Directories", "GameDir", NULL);
-diff -Nur ggzd.notls/ggzd/players.c ggzd/ggzd/players.c
---- ggzd.notls/ggzd/players.c	Mon Oct 29 05:25:16 2001
-+++ ggzd/ggzd/players.c	Tue Nov  6 00:38:01 2001
-@@ -167,7 +167,7 @@
- 	player->next_ping = 0;			/* Don't ping until login */
+ 	opt.game_dir = ggz_conf_read_string(ch, "Directories", "GameDir", NULL);
+ 	opt.conf_dir = ggz_conf_read_string(ch, "Directories", "ConfDir", NULL);
+diff -Nur ggzd/ggzd/players.c ggzd.tls/ggzd/players.c
+--- ggzd/ggzd/players.c	Sat Feb 23 03:16:34 2002
++++ ggzd.tls/ggzd/players.c	Sat Feb 23 03:14:35 2002
+@@ -202,7 +202,7 @@
+ 	}
  
  	/* Send server ID */
--	if (net_send_serverid(player->net) < 0)
-+	if (net_send_serverid(player->net, opt.servername) < 0)
+-	if (net_send_serverid(player->net, opt.server_name) < 0) {
++	if (net_send_serverid(player->net, opt.server_name, opt.tls_use) < 0) {
+ 		free(player);
  		pthread_exit(NULL);
- 	
- 	pthread_rwlock_wrlock(&state.lock);
+ 	}
