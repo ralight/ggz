@@ -102,7 +102,7 @@ void add_option(char* key, int num, int dflt, ...)
 
 void get_options()
 {
-	int fd = ggz_seats[game.host].fd;
+	int fd = game.host >= 0 ? ggz_seats[game.host].fd : -1;
 	int op, choice;
 
 	ggz_debug("Entering get_options.");
@@ -130,7 +130,7 @@ void get_options()
 
 int rec_options(int num_options, int* options)
 {
-	int fd = ggz_seats[game.host].fd, status = 0, i;
+	int fd = game.host >= 0 ? ggz_seats[game.host].fd : -1, status = 0, i;
 	if (fd == -1) {
 		ggz_debug("SERVER bug: unknown host in rec_options.");
 		exit(-1);

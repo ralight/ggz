@@ -49,6 +49,7 @@ char* game_states[] = {"WH_STATE_PRELAUNCH", "WH_STATE_NOTPLAYING", "WH_STATE_WA
 
 static int try_to_start_game();
 static void newgame();
+static int determine_host();
 
 void set_game_state(server_state_t state)
 {
@@ -855,6 +856,23 @@ void next_play(void)
 	return;
 }
 
+/* determine_host
+ *   the oldest player becomes the host.  The oldest player is the
+ *   one with the youngest "age". */
+static int determine_host()
+{
+	player_t p, host = -1;
+	int age = -1;
+	for(p = 0; p < game.num_players; p++)
+		if (ggz_seats[p].assign == GGZ_SEAT_PLAYER)
+			if (game.players[p].age >= 0)
+				if ( age == -1 || game.players[p].age < age ) {
+					host = p;
+					age = game.players[p].age;
+				}
+	return host;
+}
+
 /* handle_launch_event
  *   this handles a launch event, when ggz connects to our server
  *   for the first time.
@@ -868,6 +886,7 @@ int handle_launch_event()
 	}
 	/* determine number of players. */
 	game.num_players = ggz_seats_num(); /* ggz seats == players */
+	game.host = -1;	/* no host since none has joined yet */
 	game.players = (struct game_player_t *)alloc(game.num_players * sizeof(struct game_player_t));
 	/* we don't yet know the number of seats */
 
@@ -892,6 +911,11 @@ int handle_join_event(player_t player)
 		ggz_debug("SERVER BUG: someone joined while we weren't waiting.");
 		return -1;
 	}
+
+	/* set the age of the player */
+	game.players[player].age = game.player_count;
+	game.player_count++;
+	game.host = determine_host();
 
 	/* if all seats are occupied, we restore the former state and
 	 * continue playing (below).  The state is restored up here
@@ -940,12 +964,18 @@ int handle_newgame_event(player_t player)
 /* handle_leave_event
  *   this handles the event of a player leaving
  */
-int handle_leave_event()
+int handle_leave_event(player_t player)
 {
 	player_t p;
 	ggz_debug("Handling a leave event.");
 	for(p = 0; p < game.num_players; p++)
 		send_player_list(p);
+
+	game.players[player].age = -1;
+	game.host = determine_host();
+	set_player_message( game.host );
+
+	set_player_message( player);
 
 	/* save old state and enter waiting phase */
 	save_game_state();

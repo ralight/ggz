@@ -108,6 +108,7 @@ struct wh_game_t {
 	int trump_broken;	/* has trump been broken this hand?  See must_break_trump, above. */
 
 	player_t num_players;	/* the number of players in the game */
+	int player_count;	/* the number of human players who have joined, in total */
 	struct game_player_t *players;	/* data for each player, allocated in game_init */
 
 	seat_t num_seats;		/* the number of "seats" in the table (which includes fake non-players */
@@ -150,7 +151,7 @@ extern void next_play(void);				/* make the next move */
 /* handle player events -- used to all just be "update" */
 extern int handle_launch_event();
 extern int handle_join_event(player_t);
-extern int handle_leave_event();
+extern int handle_leave_event(player_t);
 extern int handle_newgame_event(player_t);
 extern int handle_play_event(card_t);
 extern int handle_bid_event(bid_t);

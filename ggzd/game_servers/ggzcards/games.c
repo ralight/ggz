@@ -128,7 +128,7 @@ int games_valid_game(int which_game)
  *   the reply is sent to games_handle_gametype, below. */
 int games_req_gametype()
 {
-	int fd = ggz_seats[game.host].fd;
+	int fd = game.host >= 0 ? ggz_seats[game.host].fd : -1;
 	int cnt = 0, i;
 	int status = 0;
 	if (fd == -1) {
