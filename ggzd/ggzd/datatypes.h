@@ -169,7 +169,7 @@ typedef struct {
 	unsigned options;
 	char *log_fname;			/* cleanup() */
 	FILE *logfile;
-	int log_level;
+	unsigned log_types;
 #ifdef DEBUG
 	char *dbg_fname;			/* cleanup() */
 	FILE *dbgfile;

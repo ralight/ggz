@@ -53,6 +53,7 @@ static void parse_put_add_ignore_list(char *);
 static void parse_cleanup_add_ignore_list(void);
 static void parse_game(char *);
 static int parse_dselect(struct dirent *);
+static unsigned parse_log_types(char *, int);
 
 /* Module local variables for parsing */
 static char *varname;
@@ -67,8 +68,8 @@ static const struct poptOption args[] = {
 	
 	{"file", 'f', POPT_ARG_STRING, &opt.local_conf, 0, 
 	 "Configuration file", "FILE"},
-	{"log", 'l', POPT_ARG_INT, &log_info.log_level, 0,
-	 "Verbosity of logging", "LEVEL"},
+	{"log", 'l', POPT_ARG_INT, &log_info.log_types, 0,
+	 "Types of logging to perform", "LEVEL"},
 	{"port", 'p', POPT_ARG_INT, &opt.main_port, 0,
 	 "GGZ port number", "PORT"},
 	{"version", 'V', POPT_ARG_NONE, NULL, 1},
@@ -76,7 +77,7 @@ static const struct poptOption args[] = {
 };
 
 /* Parse command-line options */
-void parse_args(int argc, char *argv[])
+void parse_args(int argc, const char *argv[])
 {
 
 	poptContext context = poptGetContext(NULL, argc, argv, args, 0);
@@ -290,19 +291,13 @@ static void parse_file(FILE *configfile)
 			continue;
 		 }
 
-		/*** LOGLEVEL = X ***/
-		if(!strcmp(varname, "loglevel")) {
+		/*** LOGTYPE = List ***/
+		if(!strcmp(varname, "logtypes")) {
 			if(varvalue == NULL) {
-				PARSE_ERR("Syntax error");
+				PARSE_ERR("Warning: no LogTypes specified");
 				continue;
 			}
-			intval = atoi(varvalue);
-			if(intval < 0) {
-				PARSE_ERR("Invalid LogLevel specified");
-				continue;
-			}
-			if(log_info.log_level == -1)
-				log_info.log_level = intval;
+			log_info.log_types |= parse_log_types(varvalue,linenum);
 			continue;
 		}
 
@@ -372,7 +367,7 @@ static void parse_file(FILE *configfile)
 			continue;
 		}
 
-		/*** APPENDPID = 0,1 ***/
+		/*** THREADLOGS = 0,1 ***/
 		if(!strcmp(varname, "threadlogs")) {
 			if(varvalue == NULL) {
 				PARSE_ERR("Syntax error");
@@ -742,4 +737,46 @@ static void parse_cleanup_add_ignore_list(void)
 static int parse_dselect(struct dirent *dent)
 {
 	return(!strcmp(".dsc", dent->d_name+strlen(dent->d_name)-4));
+}
+
+
+/* Parse the logging types into an unsigned int bitfield */
+static unsigned parse_log_types(char *var, int linenum)
+{
+	char *s, *e;
+	unsigned types=0;
+	int lasttime=0;
+
+	s = var;
+	while(*s != '\0' && !lasttime) {
+		/* Skip over whitespace and commas */
+		while((*s == ' ' || *s == '\t' || *s == ',') && *s != '\0')
+			s++;
+		if(*s == '\0')
+			break;
+		/* Find the end of the type specifier */
+		e = s;
+		while(*e != ' ' && *e != '\t' && *e != ',' && *e != '\0') {
+			*e = tolower(*e);
+			e++;
+		}
+		if(*e == '\0')
+			lasttime++;
+		/* Plop a NIL on the end */
+		*e = '\0';
+
+		/* Now 's' points to a log type */
+		if(!strcmp(s, "notices")) {
+			dbg_msg("Notices added to log types");
+			types |= GGZ_LOG_NOTICE;
+		} else if(!strcmp(s, "connections")) {
+			dbg_msg("Connection Info added to log types");
+			types |= GGZ_LOG_CONNECTION_INFO;
+		} else
+			PARSE_ERR("Invalid log type specified");
+
+		s = e+1;
+	}
+
+	return types;
 }

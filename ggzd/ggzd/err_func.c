@@ -43,7 +43,7 @@ LogInfo log_info = { 0, 0,
 		     ( GGZ_LOGOPT_INC_PID
 		       | GGZ_LOGOPT_USE_SYSLOG
 		       | GGZ_DBGOPT_USE_SYSLOG ),
-		     NULL, NULL, -1
+		     NULL, NULL, 0
 #ifdef DEBUG
 		   , NULL, NULL, -1
 #endif
@@ -202,23 +202,19 @@ void dbg_msg(const char *fmt, ...)
 }
 
 
-/* log_msg suggested log_levels:
- *   0 - WARNING situations, these are always logged
- *   1 - NOTICE situations, these are logged by default
- *  >1 - INFO situations, the higher the number the more trivial
- */
-void log_msg(const int log_level, const char *fmt, ...)
+/* log_msg sends to the log if it passes the log_types mask */
+void log_msg(const unsigned log_type, const char *fmt, ...)
 {
 	va_list ap;
 	int priority;
 
 	va_start(ap, fmt);
-	if(log_level <= log_info.log_level) {
-		switch(log_level) {
-			case 0:
+	if((log_type == 0) || (log_type & log_info.log_types)) {
+		switch(log_type) {
+			case GGZ_LOG_ALWAYS:
 				priority = LOG_WARNING;
 				break;
-			case 1:
+			case GGZ_LOG_NOTICE:
 				priority = LOG_NOTICE;
 				break;
 			default:
@@ -272,9 +268,6 @@ int logfile_set_facility(char *facstr)
 /* Initialize the log files */
 void logfile_initialize(void)
 {
-	/* Setup the primary logfile */
-	if(log_info.log_level < 0)
-		log_info.log_level = 1;
 	if(log_info.log_fname) {
 		if(strcmp("syslogd", log_info.log_fname)) {
 			log_info.logfile = log_open_logfile(log_info.log_fname);

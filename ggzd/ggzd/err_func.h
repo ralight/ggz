@@ -71,4 +71,4 @@ extern int logfile_set_facility(char *);
 extern void logfile_initialize(void);
 
 /* Log a normal message */
-extern void log_msg(const int, const char *, ...);
+extern void log_msg(const unsigned, const char *, ...);

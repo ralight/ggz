@@ -95,7 +95,7 @@ void daemon_init(const char *pname, int facility)
 }
 
 
-int main(int argc, char *argv[])
+int main(int argc, const char *argv[])
 {
 	int main_sock, new_sock;
 	struct sockaddr_in addr;
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
 	logfile_initialize();
 	
 	dbg_msg("Conf file: %s", opt.local_conf);
-	dbg_msg("Log level: %d", log_info.log_level);
+	dbg_msg("Log level: %0X", log_info.log_types);
 	dbg_msg("Main Port: %d", opt.main_port);
 	
 	init_data();
