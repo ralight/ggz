@@ -33,7 +33,7 @@ install-data-local:
 	@for j in $(top_builddir)/po/*.mo; do \
 		k=$$(basename $$j); \
 		country=`echo $$k | cut -d "." -f 1`; \
-		dir=$(prefix)/share/locale/$$country/LC_MESSAGES; \
+		dir=${DESTDIR}$(prefix)/share/locale/$$country/LC_MESSAGES; \
 		echo "installing $$dir/$(CATALOG).mo ($$k)"; \
 		install -d $$dir; \
 		cp $$j $$dir/$(CATALOG).mo; \
@@ -43,7 +43,7 @@ uninstall-local:
 	for j in $(top_srcdir)/po/*.po; do \
 		k=$$(basename $$j); \
 		country=`echo $$k | cut -d "." -f 1`; \
-		dir=$(prefix)/share/locale/$$country/LC_MESSAGES; \
+		dir=${DESTDIR}$(prefix)/share/locale/$$country/LC_MESSAGES; \
 		rm -f $$dir/$(CATALOG).mo; \
 	done
 
