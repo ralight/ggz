@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 11/10/2000
  * Desc: Back-end functions for handling the db3 sytle database
- * $Id: ggzdb_db4.c 5610 2003-06-07 05:29:36Z dr_maux $
+ * $Id: ggzdb_db4.c 5664 2003-10-25 12:04:33Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -121,7 +121,7 @@ GGZDBResult _ggzdb_init_player(char *datadir)
 	if(db_create(&db_p, db_e, 0) != 0)
 		err_sys_exit("db_create() failed in _ggzdb_init_player()");
 #if DB_VERSION_MINOR == 1
-	flags |= DB_AUTO_COMMIT;
+	/*flags |= DB_AUTO_COMMIT;*/
 	if (db_p->open(db_p, NULL, "player.db", NULL, DB_BTREE, flags, 0600) != 0)
 #else
 	if (db_p->open(db_p, "player.db", NULL, DB_BTREE, flags, 0600) != 0)
@@ -337,7 +337,7 @@ GGZDBResult _ggzdb_init_stats(ggzdbConnection connection)
 	if (db_create(&db_s, db_e, 0) != 0)
 		err_sys_exit("db_create() failed in _ggzdb_init_stats()");
 #if DB_VERSION_MINOR == 1
-	flags |= DB_AUTO_COMMIT;
+	/*flags |= DB_AUTO_COMMIT;*/
 	if (db_p->open(db_s, NULL, "stats.db", NULL, DB_BTREE, flags, 0600) != 0)
 #else
 	if (db_p->open(db_s, "stats.db", NULL, DB_BTREE, flags, 0600) != 0)
