@@ -94,11 +94,25 @@ class Game:
 			valid = 0
 			reason = "cannot move to occupied square"
 		else:
+			figure = self.board[oldy][oldx]
+			(gfx, color) = figure
+
 			if (oldx == x and oldy != y) or (oldx != x and oldy == y):
 				if abs(oldx - x) > 1:
 					valid = 0
 				if abs(oldy - y) > 1:
 					valid = 0
+				if x == 4 and y == 4:
+					if gfx == "piece":
+						valid = 0
+				if abs(oldx - x) == 2 or abs(oldy - y) == 2:
+					if (oldx + x) / 2 == 4 and (oldy + y) / 2 == 4:
+						if gfx == "piece":
+							print "JUMP OVER THE THRONE!"
+							valid = 1
+				if color != fromcolor:
+					valid = 0
+					print "color", color, fromcolor
 			else:
 				valid = 0
 			if valid == 0:
@@ -132,17 +146,15 @@ class Game:
 				f = self.board[j][i]
 				if f:
 					frompos = (i, j)
-					for pos in (-1, 1):
-						if value < 1:
-							topos = (i + pos, j)
+					for pos in (-2, -1, 1, 2):
+						for dpos in ((pos, 0), (0, pos)):
+							if value > 0:
+								break
+							(di, dj) = dpos
+							topos = (i + di, j + dj)
 							if self.validatemove("b", frompos, topos):
 								ret = 1
 								value = 1
-							else:
-								topos = (i, j + pos)
-								if self.validatemove("b", frompos, topos):
-									ret = 1
-									value = 1
 		if ret == 0:
 			self.isover = 1
 		else:
@@ -163,39 +175,105 @@ class Game:
 				if gfx == "king":
 					self.isover = 1
 
-			if color == "b":
-				for pos in ((x + 2, y), (x - 2, y), (x, y - 2), (x, y + 2)):
-						(x2, y2) = pos
+			vc = color
+			for pos in ((x + 2, y), (x - 2, y), (x, y - 2), (x, y + 2)):
+					(x2, y2) = pos
+					x3 = (x2 + x) / 2
+					y3 = (y2 + y) / 2
+					if x3 >= 0 and x3 < self.width and y3 >= 0 and y3 < self.height:
+						figure3 = self.board[y3][x3]
+					else:
+						figure3 = None
+					inside = 0
+					if figure3:
+						(gfx3, color3) = figure3
 						if x2 >= 0 and x2 < self.width and y2 >= 0 and y2 < self.height:
+							inside = 1
+						if x2 == -1 or y2 == -1 or x2 == self.width or y2 == self.height:
+							inside = 2
+					if inside:
+						corner = 0
+						if inside == 1:
 							figure2 = self.board[y2][x2]
+						elif inside == 2:
+							figure2 = None
+							if gfx3 == "king":
+								print "KING: caught by edge?"
+								corner = 1
+						if (x2 == 0 or x2 == 8) and (y2 == 0 or y2 == 8):
+							print "KING/ZABEL: caught by corner?"
+							corner = 1
+						if (x2 == 4 and y2 == 4):
+							if gfx3 == "king":
+								print "KING: caught by throne?"
+								corner = 1
+						if figure2 or corner:
 							if figure2:
 								(gfx2, color2) = figure2
-								if color2 == "b":
-									print "CASE:", x, y, x2, y2
-									x3 = (x2 + x) / 2
-									y3 = (y2 + y) / 2
-									figure3 = self.board[y3][x3]
-									if figure3:
-										(gfx3, color3) = figure3
-										if color3 == "w":
-											print "ERASE HIM :)"
-											if gfx3 == "king":
-												print "KING :("
-												x4 = x3 + (y2 - y) / 2
-												y4 = y3 + (x2 - x) / 2
-												x5 = x3 - (y2 - y) / 2
-												y5 = y3 - (x2 - x) / 2
-												figure4 = self.board[y4][x4]
-												figure5 = self.board[y5][x5]
-												if figure4 and figure5:
-													(gfx4, color4) = figure4
-													(gfx5, color5) = figure5
-													if color4 == "b" and color5 == "b":
-														print "BUT NOW HE's DEAD"
-														self.board[y3][x3] = None
-														self.isover = 1
+							else:
+								color2 = vc
+							if color2 == vc:
+								print "CASE:", x, y, x2, y2
+								if color3 != vc:
+									print "ERASE HIM :)"
+									if gfx3 == "king":
+										print "KING :("
+										x4 = x3 + (y2 - y) / 2
+										y4 = y3 + (x2 - x) / 2
+										x5 = x3 - (y2 - y) / 2
+										y5 = y3 - (x2 - x) / 2
+										inside4 = 0
+										inside5 = 0
+										if x4 >= 0 and x4 < self.width and y4 >= 0 and y4 < self.height:
+											figure4 = self.board[y4][x4]
+											inside4 = 1
+										else:
+											figure4 = None
+											inside4 = 2
+										if x5 >= 0 and x5 < self.width and y5 >= 0 and y5 < self.height:
+											figure5 = self.board[y5][x5]
+											inside5 = 1
+										else:
+											figure5 = None
+											inside5 = 2
+										corner4 = 0
+										corner5 = 0
+										if figure4:
+											(gfx4, color4) = figure4
+											if color4 == vc:
+												corner4 = 1
+										else:
+											if inside4 == 2:
+												corner4 = 1
+												print "KING(4): caught by edge?"
 											else:
-												self.board[y3][x3] = None
+												if x4 == 4 and y4 == 4:
+													corner4 = 1
+													print "KING(4): caught by corner?"
+												elif (x4 == 0 or x4 == 8) and (y4 == 0 or y4 == 8):
+													corner4 = 1
+													print "KING(4): caught by throne?"
+										if figure5:
+											(gfx5, color5) = figure5
+											if color5 == vc:
+												corner5 = 1
+										else:
+											if inside5 == 2:
+												corner5 = 1
+												print "KING(5): caught by edge?"
+											else:
+												if x5 == 4 and y5 == 4:
+													corner5 = 1
+													print "KING(5): caught by corner?"
+												elif (x5 == 0 or x5 == 8) and (y5 == 0 or y5 == 8):
+													corner5 = 1
+													print "KING(5): caught by throne?"
+										if corner4 and corner5:
+											print "BUT NOW HE's DEAD"
+											self.board[y3][x3] = None
+											self.isover = 1
+									else:
+										self.board[y3][x3] = None
 
 	def over(self):
 		return self.isover
