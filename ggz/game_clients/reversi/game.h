@@ -4,9 +4,9 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Description of game variables
- * $Id: game.h 2246 2001-08-25 15:42:06Z jdorje $
+ * $Id: game.h 3711 2002-03-28 18:41:29Z jdorje $
  *
- * Copyright (C) 2000 Ismael Orenstein.
+ * Copyright (C) 2000-2002 Ismael Orenstein.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,6 +195,10 @@ struct game_state_t {
 	// Turn
 	char turn;
 };
+
+/* FIXME: these shouldn't go here... */
+extern GdkColor *last_color;
+extern GdkColor *back_color;
 
 // Setup functions
 void game_init();

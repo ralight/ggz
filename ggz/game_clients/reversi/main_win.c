@@ -4,9 +4,9 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 3396 2002-02-17 09:59:47Z jdorje $
+ * $Id: main_win.c 3711 2002-03-28 18:41:29Z jdorje $
  *
- * Copyright (C) 2000 Ismael Orenstein.
+ * Copyright (C) 2000-2002 Ismael Orenstein.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,8 @@
 
 #include <ggz.h>
 
+#include "dlg_exit.h"
+
 #include <game.h>
 #include <support.h>
 #include <options_dlg.h>
@@ -63,10 +65,20 @@ GtkWidget *main_win;
 /* Global game variables */
 extern struct game_state_t game;
 
-/* Config file handle */
-int config_file;
+GdkColor *last_color;
+GdkColor *back_color;
 
 void update_options(GtkButton *, gpointer);
+
+static void try_to_quit(void)
+{
+	if (game.state == RVR_STATE_INIT ||
+	    game.state == RVR_STATE_WAIT ||
+	    game.state == RVR_STATE_DONE)
+		gtk_main_quit();
+	else
+		ggz_show_exit_dialog(1);
+}
 
 void game_status( const char* format, ... ) 
 {
@@ -171,11 +183,6 @@ void display_board(void)
 void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 {
 	GtkStyle* style;
-  char *last_color_str[3];
-  char *back_color_str[3];
-  char *user_conf_path;
-  GdkColor *last_color = (GdkColor *)malloc(sizeof(GdkColor));
-  GdkColor *back_color = (GdkColor *)malloc(sizeof(GdkColor));
 	
 	// Get the current style
 	style = gtk_widget_get_style(main_win);
@@ -185,37 +192,24 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 	gdk_gc_ref(pix_gc);
 	gdk_gc_set_fill(pix_gc, GDK_TILED);
 
-  bg_gc = gdk_gc_new(main_win->window);
-  gdk_gc_copy(bg_gc, style->mid_gc[3]);
+	bg_gc = gdk_gc_new(main_win->window);
+	gdk_gc_copy(bg_gc, style->mid_gc[3]);
 	gdk_gc_ref(bg_gc);
 	gdk_gc_set_fill(bg_gc, GDK_SOLID);
 
-  last_gc = gdk_gc_new(main_win->window);
-  gdk_gc_copy(last_gc, style->light_gc[3]);
+	last_gc = gdk_gc_new(main_win->window);
+	gdk_gc_copy(last_gc, style->light_gc[3]);
 	gdk_gc_ref(last_gc);
 	gdk_gc_set_fill(last_gc, GDK_SOLID);
 
-  // Loads configuration options
-	user_conf_path = g_strdup_printf("%s/.ggz/reversi-gtk.rc", getenv("HOME"));;
-  config_file = ggz_conf_parse(user_conf_path, GGZ_CONF_RDWR || GGZ_CONF_CREATE);
-  back_color_str[0] = ggz_conf_read_string(config_file, "background color", "red", "29695");
-  back_color_str[1] = ggz_conf_read_string(config_file, "background color", "green", "27391");
-  back_color_str[2] = ggz_conf_read_string(config_file, "background color", "blue", "44031");
-  last_color_str[0] = ggz_conf_read_string(config_file, "last played color", "red", "36863");
-  last_color_str[1] = ggz_conf_read_string(config_file, "last played color", "green", "34047");
-  last_color_str[2] = ggz_conf_read_string(config_file, "last played color", "blue", "54783");
-  sscanf(back_color_str[0], "%hu", &back_color->red);
-  sscanf(back_color_str[1], "%hu", &back_color->green);
-  sscanf(back_color_str[2], "%hu", &back_color->blue);
-  sscanf(last_color_str[0], "%hu", &last_color->red);
-  sscanf(last_color_str[1], "%hu", &last_color->green);
-  sscanf(last_color_str[2], "%hu", &last_color->blue);
-  gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), last_color, TRUE, TRUE);
-  gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), back_color, TRUE, TRUE);
-  gtk_object_set_data(GTK_OBJECT(main_win), "last_color", last_color);
-  gtk_object_set_data(GTK_OBJECT(main_win), "back_color", back_color);
-  gdk_gc_set_foreground(bg_gc, back_color);
-  gdk_gc_set_foreground(last_gc, last_color);
+	/* Use configuration options.  They've already been
+	   loaded. */
+	gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), last_color, TRUE, TRUE);
+	gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), back_color, TRUE, TRUE);
+	gtk_object_set_data(GTK_OBJECT(main_win), "last_color", last_color);
+	gtk_object_set_data(GTK_OBJECT(main_win), "back_color", back_color);
+	gdk_gc_set_foreground(bg_gc, back_color);
+	gdk_gc_set_foreground(last_gc, last_color);
 
 
 	// Create the black pix
@@ -241,30 +235,9 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 
 gboolean main_exit(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
-  GdkColor *back_color, *last_color;
-  char temp[16];
-	// FIXME: should call an "are you sure dialog"
-	gtk_main_quit();
-
-  /* Write to config file */
-  back_color = gtk_object_get_data(GTK_OBJECT(main_win), "back_color");
-  last_color = gtk_object_get_data(GTK_OBJECT(main_win), "last_color");
-  sprintf(temp, "%hu", back_color->red);
-  ggz_conf_write_string(config_file, "background color", "red", temp);
-  sprintf(temp, "%hu", back_color->green);
-  ggz_conf_write_string(config_file, "background color", "green", temp);
-  sprintf(temp, "%hu", back_color->blue);
-  ggz_conf_write_string(config_file, "background color", "blue", temp);
-  sprintf(temp, "%hu", last_color->red);
-  ggz_conf_write_string(config_file, "last played color", "red", temp);
-  sprintf(temp, "%hu", last_color->green);
-  ggz_conf_write_string(config_file, "last played color", "green", temp);
-  sprintf(temp, "%hu", last_color->blue);
-  ggz_conf_write_string(config_file, "last played color", "blue", temp);
-  ggz_conf_commit(config_file);
-
+	try_to_quit();
 	
-	return FALSE;
+	return TRUE;
 }
 
 
@@ -311,7 +284,7 @@ void update_options(GtkButton *button, gpointer user_data)
 
 void game_exit(GtkMenuItem *menuitem, gpointer user_data)
 {
-  main_exit(NULL, NULL, NULL);
+  try_to_quit();
 }
 
 

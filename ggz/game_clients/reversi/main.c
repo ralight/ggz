@@ -4,9 +4,9 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 3658 2002-03-24 17:40:17Z dr_maux $
+ * $Id: main.c 3711 2002-03-28 18:41:29Z jdorje $
  *
- * Copyright (C) 2000 Ismael Orenstein.
+ * Copyright (C) 2000-2002 Ismael Orenstein.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,15 +46,17 @@ struct game_state_t game;
 
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
+static void load_data(void);
+static void save_data(void);
 
 int main(int argc, char *argv[]) {
 	
-	initialize_debugging();
-
 	ggz_intl_init("reversi");
+	initialize_debugging();
+	load_data();	/* This must come before create_main_win() */
 
 	gtk_init(&argc, &argv);
-  add_pixmap_directory(".");
+	add_pixmap_directory(".");
 
 	main_win = create_main_win();
 	gtk_widget_show(main_win);
@@ -72,11 +74,14 @@ int main(int argc, char *argv[]) {
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
 	gtk_main();
+	
+	save_data();
 
 	if (ggzmod_disconnect() < 0)
 		return -2;
 		
 	cleanup_debugging();
+	ggz_conf_cleanup();
 	
 	return 0;
 }
@@ -98,6 +103,67 @@ static void initialize_debugging(void)
 	g_free(file_name);
 
 	ggz_debug("reversi", "Starting Reversi client.");	
+}
+
+static int config_file = -1;
+
+/* Function to load config data from a file.  It must be called before
+   create_main_win(). */
+static void load_data(void)
+{
+	char *user_conf_path;
+	
+	last_color = (GdkColor *)malloc(sizeof(GdkColor));
+	back_color = (GdkColor *)malloc(sizeof(GdkColor));
+	
+	user_conf_path = g_strdup_printf("%s/.ggz/reversi-gtk.rc",
+	                                 getenv("HOME"));
+	config_file = ggz_conf_parse(user_conf_path,
+	                             GGZ_CONF_RDWR | GGZ_CONF_CREATE);
+	
+	/* You'd think ggz_conf_[read|write]_int could be used to load/save these,
+	   but that doesn't appear to work. */
+	
+	back_color->red = ggz_conf_read_int(config_file, "background color",
+	                                    "red", 29695);
+	back_color->green = ggz_conf_read_int(config_file, "background color",
+	                                      "green", 27391);
+	back_color->blue = ggz_conf_read_int(config_file, "background color",
+	                                     "blue", 44031);
+	last_color->red = ggz_conf_read_int(config_file, "last played color",
+	                                    "red", 36863);
+	last_color->green = ggz_conf_read_int(config_file, "last played color",
+	                                      "green", 34047);
+	last_color->blue = ggz_conf_read_int(config_file, "last played color",
+	                                     "blue", 54783);
+	
+	g_free(user_conf_path);
+}
+
+/* Function to save the config data back in a file.  It should be called
+   immediately before exiting. */
+static void save_data(void)
+{
+	GdkColor *back_color, *last_color;
+
+	/* Write to config file */
+	back_color = gtk_object_get_data(GTK_OBJECT(main_win), "back_color");
+	last_color = gtk_object_get_data(GTK_OBJECT(main_win), "last_color");
+	
+	ggz_conf_write_int(config_file, "background color", "red",
+	                   back_color->red);
+	ggz_conf_write_int(config_file, "background color", "green",
+	                   back_color->green);
+	ggz_conf_write_int(config_file, "background color", "blue",
+	                   back_color->blue);
+	ggz_conf_write_int(config_file, "last played color", "red",
+	                   last_color->red);
+	ggz_conf_write_int(config_file, "last played color", "green",
+	                   last_color->green);
+	ggz_conf_write_int(config_file, "last played color", "blue",
+	                   last_color->blue);
+	
+	ggz_conf_commit(config_file);
 }
 
 /* This function should be called at the end of the program to clean up
