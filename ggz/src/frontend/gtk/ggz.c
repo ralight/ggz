@@ -119,6 +119,7 @@ static GGZHookReturn ggz_connect_fail(GGZServerEvent id, void* event_data, void*
 	tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");
 	gtk_widget_set_sensitive(tmp, TRUE);
 
+	msgbox("Error connecting to server.", "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
 	return GGZ_HOOK_OK;
 }
 
