@@ -8,6 +8,7 @@ class Match
 	var $game;
 	var $date;
 	var $winner;
+	var $savegame;
 	var $playertypes;
 
 	function Match($lookup)
@@ -28,6 +29,7 @@ class Match
 		if ($database->numrows($res) == 1) :
 			$this->game = $database->result($res, 0, "game");
 			$this->winner = $database->result($res, 0, "winner");
+			$this->savegame = $database->result($res, 0, "savegame");
 			$date = $database->result($res, 0, "date");
 			$this->date = date("d.m.Y", $date);
 

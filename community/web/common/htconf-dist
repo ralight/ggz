@@ -13,4 +13,6 @@ $ggzhost = "localhost";
 $ggzname = "Local Zone";
 $ggzversion = "0.0.10pre";
 
+$ggzgamedir = "/...../var/ggzd/gamedata/";
+
 ?>

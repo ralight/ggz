@@ -239,6 +239,12 @@ function stats_match($lookup)
 	{
 		echo $match->link($handle), "<br>";
 	}
+
+	if ($match->savegame) :
+		echo "<br>";
+		echo "A savegame for this match is available.<br>";
+		echo "<a href='replay.php?lookup=$lookup'>Examine the match</a>";
+	endif;
 }
 
 function stats_tournament($lookup)
