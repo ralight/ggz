@@ -1,0 +1,17 @@
+[Desktop Entry]
+Comment[en]=Searches GGZ games for menu inclusion.
+Comment[de]=Sucht GGZ-Spiele zur Einbindung ins Menü.
+Exec=ggzmodsniff
+Icon=ggzmodsniff
+MimeType=application/zone;Application
+Name[en]=ModSniffer
+Name[de]=ModSniffer
+Path=
+ServiceTypes=
+SwallowExec=
+SwallowTitle=
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=
