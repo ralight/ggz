@@ -30,54 +30,15 @@
 #include <unistd.h>
 
 #include <easysock.h>
+#include <game.h>
 #include <main_win.h>
 
-/* Tic-Tac-Toe protocol */
-/* Messages from server */
-#define TTT_MSG_SEAT     0
-#define TTT_MSG_PLAYERS  1
-#define TTT_MSG_MOVE     2
-#define TTT_MSG_GAMEOVER 3
-#define TTT_REQ_MOVE     4
-#define TTT_RSP_MOVE     5
-#define TTT_SND_SYNC     6
 
-/* Move errors */
-#define TTT_ERR_STATE   -1
-#define TTT_ERR_TURN    -2
-#define TTT_ERR_BOUND   -3
-#define TTT_ERR_FULL    -4
+/* main window widget */
+extern GtkWidget *main_win;
 
-/* Messages from client */
-#define TTT_SND_MOVE     0
-#define TTT_REQ_SYNC     1
-
-
-#define GGZ_SEAT_OPEN   -1
-
-
-extern GdkPixmap* ttt_buf;
-GtkWidget *main_win;
-char board[3][3];
-
-int fd;
-int num;
-int move;
-int seat[2];
-char name[2][9];
-char gameover;
-
-void ggz_connect(void);
-void game_handle_io(gpointer data, gint fd, GdkInputCondition cond);
-void init_board(void);
-int get_seat(int* num);
-int get_players(void);
-int get_my_move(void);
-int send_my_move(int move);
-int make_my_move(int move);
-int get_opponent_move(void);
-int get_sync(void);
-int get_gameover(void);
+/* Global game variables */
+struct game_state_t game;
 
 
 int main(int argc, char* argv[])
@@ -87,17 +48,15 @@ int main(int argc, char* argv[])
 	main_win = create_main_win();
 	gtk_widget_show(main_win);
 
-	init_board();
+	game_init();
 	display_board();
 	
 	ggz_connect();
-	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
+	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 	
 	/* Assume a second argument is the -o */
-	if (argc > 1) {
-		game_status("Sending NULL options");
-		es_write_int(fd, 0);
-	}
+	if (argc > 1) 
+		send_options();
 	
 	gtk_main();
 	
@@ -109,7 +68,7 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
 	int op;
 
-	if (es_read_int(fd, &op) < 0) {
+	if (es_read_int(game.fd, &op) < 0) {
 		/* FIXME: do something here...*/
 		return;
 	}
@@ -117,19 +76,21 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 	switch(op) {
 		
 	case TTT_MSG_SEAT:
-		get_seat(&num);
+		get_seat();
 		break;
 		
 	case TTT_MSG_PLAYERS:
 		get_players();
+		game.state = STATE_WAIT;
 		break;
 		
 	case TTT_REQ_MOVE:
-		get_my_move();
+		game.state = STATE_MOVE;
+		game_status("Your move");
 		break;
 		
 	case TTT_RSP_MOVE:
-		make_my_move(move);
+		get_move_status();
 		display_board();
 		break;
 		
@@ -145,18 +106,18 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 		
 	case TTT_MSG_GAMEOVER:
 		get_gameover();
-		gameover = 1;
+		game.state = STATE_DONE;
 		break;
 	}
 
 }		
 
 
-int get_seat(int* num)
+int get_seat(void)
 {
 	game_status("Getting seat number");
 
-	if (es_read_int(fd, num) < 0)
+	if (es_read_int(game.fd, &game.num) < 0)
 		return -1;
 	
 	return 0;
@@ -169,13 +130,13 @@ int get_players(void)
 
 	game_status("Getting player names");
 	for (i = 0; i < 2; i++) {
-		if (es_read_int(fd, &seat[i]) < 0)
+		if (es_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
 		
-		if (seat[i] != GGZ_SEAT_OPEN) {
-			if (es_read_string(fd, name[i], 9) < 0)
+		if (game.seats[i] != GGZ_SEAT_OPEN) {
+			if (es_read_string(game.fd, (char*)&game.names[i], 9) < 0)
 				return -1;
-			game_status("Player %d named: %s", i, name[i]);
+			game_status("Player %d named: %s", i, game.names[i]);
 		}
 	}
 
@@ -183,25 +144,16 @@ int get_players(void)
 }
 
 
-int get_my_move(void)
-{
-	
-	game_status("Your move");
-	/*scanf("%d", &move);*/
-	
-	return 0;
-}
-
-
 int get_opponent_move(void)
 {
-	
+	int move;
+
 	game_status("Getting opponent's move");
 	
-	if (es_read_int(fd, &move) < 0)
+	if (es_read_int(game.fd, &move) < 0)
 		return -1;
 
-	board[(move / 3)][(move % 3)] = (num == 0 ? 'o' : 'x');	
+	game.board[move] = (game.num == 0 ? 'o' : 'x');	
 
 	return 0;
 }
@@ -209,25 +161,24 @@ int get_opponent_move(void)
 
 int get_sync(void)
 {
-	int i, j;
+	int i;
 	char turn;
 	char space;
 	
 	game_status("Getting re-sync");
 	
-	if (es_read_char(fd, &turn) < 0)
+	if (es_read_char(game.fd, &turn) < 0)
 		return -1;
 
 	game_status("Player %d's turn", turn);
 	
-        for (i = 0; i < 3; i++)
-		for (j = 0; j < 3; j++) {
-			if (es_read_char(fd, &space) < 0)
-				return -1;
-			game_status("Read a %d ", space);
-			if (space >= 0)
-				board[i][j] = (space == 0 ? 'x' : 'o');
-		}
+        for (i = 0; i < 9; i++) {
+		if (es_read_char(game.fd, &space) < 0)
+			return -1;
+		game_status("Read a %d ", space);
+		if (space >= 0)
+			game.board[i] = (space == 0 ? 'x' : 'o');
+	}
 	
 	game_status("Sync completed");
 	return 0;
@@ -239,8 +190,8 @@ int get_gameover(void)
 	char winner;
 	
 	game_status("Game over");
-	
-	if (es_read_char(fd, &winner) < 0)
+
+	if (es_read_char(game.fd, &winner) < 0)
 		return -1;
 	
 	switch (winner) {
@@ -257,31 +208,41 @@ int get_gameover(void)
 }
 
 
-void init_board(void)
+void game_init(void)
 {
-	int i,j;
-  
-	for (i = 0; i < 3; i++)
-		for (j = 0; j < 3; j++)
-			board[i][j] = ' ';
+	int i;
+	
+	for (i = 0; i < 9; i++)
+		game.board[i] = ' ';
+
+	game.state = STATE_INIT;
 }
 
 
-int send_my_move(int move)
+int send_my_move(void)
 {
-	if (es_write_int(fd, TTT_SND_MOVE) < 0
-	    || es_write_int(fd, move) < 0)
+	game_status("Sending my move: %d", game.move);
+	if (es_write_int(game.fd, TTT_SND_MOVE) < 0
+	    || es_write_int(game.fd, game.move) < 0)
 		return -1;
-	
+
+	game.state = STATE_WAIT;
 	return 0;
 }
 
 
-int make_my_move(int move)
+int send_options(void) 
+{
+	game_status("Sending NULL options");
+	return (es_write_int(game.fd, 0));
+}
+
+
+int get_move_status(void)
 {
 	char status;
-
-	if (es_read_char(fd, &status) < 0)
+	
+	if (es_read_char(game.fd, &status) < 0)
 		return -1;
 
 	switch(status) {
@@ -299,7 +260,7 @@ int make_my_move(int move)
 		break;
 	case 0:
 		game_status("Move OK");
-		board[(move / 3)][(move % 3)] = (num == 0 ? 'x' : 'o');
+		game.board[game.move] = (game.num == 0 ? 'x' : 'o');
 		break;
 	}
 
@@ -315,14 +276,13 @@ void ggz_connect(void)
 	/* Connect to Unix domain socket */
 	sprintf(fd_name, "/tmp/TicTacToe.%d", getpid());
 
-	if ( (fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
+	if ( (game.fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
 		exit(-1);
 
 	bzero(&addr, sizeof(addr));
 	addr.sun_family = AF_LOCAL;
 	strcpy(addr.sun_path, fd_name);
 
-	if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+	if (connect(game.fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
 		exit(-1);
-
 }

@@ -6,7 +6,8 @@ INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/easysock
 
 bin_PROGRAMS = ttt
 
-ttt_SOURCES = main.c \
+ttt_SOURCES = game.h \
+	      main.c \
 	      main_win.c \
 	      main_win.h \
 	      support.c \
