@@ -6,6 +6,7 @@ $defaultlang = "en-us";
 
 $matches = array();
 // Mozilla/5.0 (X11; U; Linux i686; pt-BR; rv:1.6) Gecko/20040413 Debian/1.6-5 
+$browserlang = "";
 if(preg_match("/^Mozilla\/5.0 \(\S+; U; \S+ \S+; (\S+); \S+\) .*/", $_SERVER['HTTP_USER_AGENT'], $matches)) :
 	$browserlang = $matches[1];
 endif;
@@ -31,7 +32,7 @@ foreach ($ar as $l)
 	endif;
 }
 
-$ar = explode(".", $REQUEST_URI);
+$ar = explode(".", $_SERVER['REQUEST_URI']);
 if ($ar[sizeof($ar) - 2] == "php") :
 	$l = $ar[sizeof($ar) - 1];
 	if(file_exists($_SERVER['DOCUMENT_ROOT'] . "/site/$page.php.$l")) :
