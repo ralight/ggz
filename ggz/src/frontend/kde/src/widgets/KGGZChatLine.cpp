@@ -38,8 +38,13 @@
 #include "KGGZCommon.h"
 
 KGGZChatLine::KGGZChatLine(QWidget *parent, const char *name)
-: QLineEdit(parent, name)
+: KLineEdit(parent, name)
 {
+	current = m_history.begin();
+
+	m_history << QString::null;
+
+	setCompletionMode(KGlobalSettings::CompletionAuto);
 }
 
 KGGZChatLine::~KGGZChatLine()
@@ -49,143 +54,75 @@ KGGZChatLine::~KGGZChatLine()
 
 void KGGZChatLine::removeAll()
 {
-	m_list.clear();
+	m_history.clear();
+	completionObject()->clear();
 }
 
-void KGGZChatLine::addPlayer(char *name)
+void KGGZChatLine::addPlayer(QString name)
 {
-	m_list.append(QString(name));
+	completionObject()->addItem(name);
 }
 
-void KGGZChatLine::removePlayer(char *name)
+void KGGZChatLine::removePlayer(QString name)
 {
-	KGGZDEBUGF("KGGZChatLine::removePlayer(%s)\n", name);
-	KGGZDEBUG("QString: %s\n", QString(name).latin1());
-	m_list.remove(QString(name));
-	KGGZDEBUG("Ready.\n");
+	completionObject()->removeItem(name);
 }
 
 void KGGZChatLine::keyPressEvent(QKeyEvent *e)
 {
-	int mark;
-	int pos;
+	QStringList list;
+	QStringList::iterator it;
 
-	// This is heavy: reimplement all special key just to get autocompletion...
-	//KGGZDEBUG("Key: %i, Ascii: %i\n", e->key(), e->ascii());
-
-	mark = FALSE;
-	if(e->state() & Qt::ShiftButton) mark = TRUE;
-
-	if(e->state() & Qt::ControlButton)
+	if(e->key() == Qt::Key_Up)
 	{
-		switch(e->key())
-		{
-			case Qt::Key_C:
-				copy();
-				return;
-			case Qt::Key_V:
-				paste();
-				return;
-			case Qt::Key_X:
-				cut();
-				return;
-			default:
-				return;
-		}
+		if(current != m_history.begin())
+			current--;
+		else current = m_history.end();
+		setText((*current));
+		return;
 	}
 
-	switch(e->key())
+	if(e->key() == Qt::Key_Down)
 	{
-		case Qt::Key_Tab:
-			//cout << "Search names beginning with " << text().left(cursorPosition()) << endl;
-			KGGZDEBUG("Search names beginning with %s\n", text().left(cursorPosition()).latin1());
-			autocomplete(text().left(cursorPosition()));
-			break;
-		case Qt::Key_Left:
-			cursorBackward(mark);
-			break;
-		case Qt::Key_Right:
-			cursorForward(mark);
-			break;
-		case Qt::Key_Delete:
-			del();
-			break;
-		case Qt::Key_Backspace:
-			backspace();
-			break;
-		case Qt::Key_Home:
-			home(mark);
-			break;
-		case Qt::Key_End:
-			end(mark);
-			break;
-		case Key_Return:
-		case Key_Enter:
-			emit returnPressed();
-			break;
-		case Qt::Key_Insert:
-		case Qt::Key_Escape:
-		case Qt::Key_Shift:
-		case Qt::Key_Meta:
-		case Qt::Key_Alt:
-		case Qt::Key_Control:
-		case Qt::Key_unknown:
-		case Qt::Key_CapsLock:
-		case Qt::Key_ScrollLock:
-		case Qt::Key_NumLock:
-		case Qt::Key_Up:
-		case Qt::Key_Down:
-			// nothing
-			break;
-		default:
-			pos = cursorPosition();
-			setText(text().insert(pos, e->ascii()));
-			setCursorPosition(pos + 1);
-			//setText(text() + e->key());
-	}
-}
-
-void KGGZChatLine::autocomplete(QString pattern)
-{
-	QStringList::Iterator it;
-	QString tmp;
-	int pos;
-	int count;
-
-	pos = 0;
-	count = 0;
-
-	for(int i = 0; i < cursorPosition(); i++)
-		if(text().at(i).latin1() == ' ') pos = i + 1;
-
-	pattern = pattern.right(cursorPosition() - pos);
-
-	//KGGZDEBUG("Position: %i\n", pos);
-	//KGGZDEBUG("Pattern: %s\n", pattern.latin1());
-
-	if((pattern.isNull()) || (pattern.isEmpty())) return;
-
-	for(it = m_list.begin(); it != m_list.end(); it++)
-	{
-		if((*it).findRev(pattern, 0, FALSE) != -1)
-		{
-			KGGZDEBUG("Found: %s\n", (*it).latin1());
-			tmp = (*it).latin1();
-			count++;
-		}
+		if(current != m_history.end())
+			current++;
+		else current = m_history.begin();
+		setText((*current));
+		return;
 	}
 
-	if(count == 1)
+	if((e->key() == Qt::Key_Enter)
+	|| (e->key() == Qt::Key_Return))
 	{
-		if(pos == 0) tmp.append(":");
-		tmp.append(" ");
-		setText(text().replace(pos, pattern.length(), tmp));
+		m_history << text();
+		current = m_history.end();
+		m_complete = QString::null;
 	}
+
+	KLineEdit::keyPressEvent(e);
+
+	// TODO: autocompletion of words within text
+	/*list = QStringList::split(QChar(' '), text());
+	it = list.end();
+	it--;
+	m_complete = (*it);*/
+	m_complete = text();
 }
 
 void KGGZChatLine::focusOutEvent(QFocusEvent *e)
 {
-	setFocus();
-	autocomplete(text().left(cursorPosition()));
+	QString ret;
+
+	if(!m_complete.isNull())
+	{
+		setFocus();
+		ret = completionObject()->makeCompletion(m_complete);
+		if(!ret.isNull())
+		{
+			makeCompletion(text());
+			setText(text() + ": ");
+		}
+		else setText(text());
+	}
 }
 

@@ -47,7 +47,7 @@
 #include <qlabel.h>
 
 // System includes
-#include <X11/Xlib.h>
+//#include <X11/Xlib.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -73,7 +73,6 @@ KGGZChat::KGGZChat(QWidget *parent, const char *name)
 	label = new QLabel(i18n("Enter your message here:"), this);
 
 	output = new KTextBrowser(this);
-	output->setText("<table></table>");
 
 	vbox1 = new QVBoxLayout(this, 5);
 	vbox1->add(output);
@@ -133,7 +132,6 @@ void KGGZChat::slotSend()
 	char *player = NULL;
 	char *timestring;
 	time_t curtime;
-	//float fahrenheit = 0.0, celsius = 0.0, reaumour = 0.0, kelvin = 0.0;
 
 	if(strlen(input->text()) == 0) return;
 
@@ -345,13 +343,14 @@ char *KGGZChat::plaintext(const char *text)
 }
 
 // Receives text queue, URL highlighting
-void KGGZChat::parse(char *text)
+QString KGGZChat::parse(char *text)
 {
 	int i, j, k, kiv, flag, n;
 	char localbuf[16384];
 	char tmpbuf[1024];
 	char tmpbufiv[1024]; // invisible
 	char *c;
+	QString ret;
 
 	i = 0;
 	j = 0;
@@ -361,9 +360,9 @@ void KGGZChat::parse(char *text)
 	//KGGZ_Server::loop(); not necessary anymore here.
 
 	KGGZDEBUG("Parse-pre: %s\n", text);
-	if(!text) return;
+	if(!text) return QString::null;
 
-        KGGZDEBUG("Parse: %s\n", text);
+	KGGZDEBUG("Parse: %s\n", text);
 	strcpy(localbuf, "");
 	for(i = 0; i < (int)strlen(text); i++)
 	{
@@ -398,13 +397,6 @@ void KGGZChat::parse(char *text)
 				n = 0;
 				while(i < (int)strlen(text))
 				{
-					/*if(text[i] == '@') n = 1;
-					if(n > 0)
-					{
-						if(separator(text[i])) n++;
-						if((text[i] == '.') && (n < 10)) n = 11;
-					}
-					if((n % 10) == 2) break;*/
 					if(separator(&text[i])) n++;
 					if(n == 1) break;
 					tmpbuf[k] = text[i];
@@ -483,25 +475,19 @@ void KGGZChat::parse(char *text)
 		}
 	}
 	localbuf[j] = 0;
-	strcat(localbuf, "</td></tr>");
 	KGGZDEBUG("Debug(4): |%s|\n", localbuf);
-	output->setText(output->text() + localbuf + "</table>");
-	output->setContentsPos(0, 32767);
-	logChat(QString(localbuf));
+	ret = QString("%1</td></tr>").arg(localbuf);
+	return ret;
 }
 
 // Log chat messages
-// FIXME: append with date !!!
 void KGGZChat::logChat(QString text)
 {
 	FILE *f;
-	//char s[1024];
 	QString s;
 
 	if(!m_log) return;
 
-	//strcpy(s, getenv("HOME"));
-	//strcat(s, "/.ggz/kggzlog.html");
 	s.append(getenv("HOME"));
 	s.append("/.ggz/kggzlog.html");
 
@@ -574,58 +560,48 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 	{
 		case RECEIVE_CHAT:
 			tmp = QString("<tr><td>%1<font color=#%2>").arg(timestring).arg(color) + QString(player) + QString(":&nbsp;</font></td><td>");
-			// Oh oh, Qt: that's your fault again (I'm happy with bug reports, eh)
-			//output->append(tmp);
-			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp);
+			tmp += parse(plaintext(msg.latin1()));
+			output->append(tmp);
 			logChat(tmp);
-			parse(plaintext(msg.latin1()));
 			break;
 		case RECEIVE_TABLE:
 			tmp = QString("<tr><td>%1<font color=#%2>").arg(timestring).arg(color) + QString(player) + QString(":&nbsp;</font></td><td>");
-			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp);
+			tmp += parse(plaintext(msg.latin1()));
+			output->append(tmp);
 			logChat(tmp);
-			parse(plaintext(msg.latin1()));
 			break;
 		case RECEIVE_OWN:
 			tmp = QString("<tr><td>%1<font color=#%2><b>").arg(timestring).arg(color) + QString(player) + QString("</b>:&nbsp;</font></td><td>");
-			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp);
+			tmp += parse(plaintext(msg.latin1()));
+			output->append(tmp);
 			logChat(tmp);
-			parse(plaintext(msg.latin1()));
 			break;
 		case RECEIVE_ADMIN:
 			tmp = QString("<tr><td colspan=2>%1<font color=#ff0000>").arg(timestring) + msg + QString("</font></td></tr>");
-			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
-			output->setContentsPos(0, 32767);
+			output->append(tmp);
 			logChat(tmp);
 			break;
 		case RECEIVE_INFO:
 			tmp = QString("<tr><td colspan=2>%1<font color=#802020>").arg(timestring) + msg + QString("</font></td></tr>");
-			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
-			output->setContentsPos(0, 32767);
+			output->append(tmp);
 			logChat(tmp);
 			break;
 		case RECEIVE_ANNOUNCE:
 			tmp = QString("<tr><td colspan=2>%1<font color=#%2><i>* ").arg(timestring).arg(color) + QString(player) + msg + QString("</i></font></td></tr>");
-			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
-			output->setContentsPos(0, 32767);
+			output->append(tmp);
 			logChat(tmp);
-			//checkLag(tmp);
 			break;
 		case RECEIVE_ME:
 			tmp = QString("<tr><td colspan=2>%1<font color=#%2><i>* ").arg(timestring).arg(color) + QString(player) + msg.right(msg.length() - 3) + QString("</i></font></td></tr>");
-			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
-			output->setContentsPos(0, 32767);
+			output->append(tmp);
 			logChat(tmp);
-			//checkLag(tmp);
 			break;
 		case RECEIVE_PERSONAL:
 			tmp = QString("<tr><td>%1<font color=#%2><b><i>").arg(timestring).arg(color);
 			if(player) tmp += QString(player) + ":&nbsp;</i></b></font><font color=#b0b000><b><i>";
 			tmp += QString("</td><td>") + QString(plaintext(msg.latin1())) + QString("</i></b></font></td></tr>");
-			output->setText(output->text().remove(output->text().length() - 8, 8) + tmp + "</table>");
-			output->setContentsPos(0, 32767);
+			output->append(tmp);
 			logChat(tmp);
-			//checkLag(tmp);
 			break;
 		default:
 			KGGZDEBUG("ERROR! Unknown chat mode\n");
@@ -643,7 +619,8 @@ void KGGZChat::init()
 // execute a beep event
 void KGGZChat::beep()
 {
-	XBell(kapp->getDisplay(), 100);
+	//XBell(kapp->getDisplay(), 100);
+	kapp->beep();
 }
 
 // disable the chat
@@ -658,88 +635,3 @@ KGGZChatLine *KGGZChat::chatline()
 	return input;
 }
 
-
-// ATTIC
-// DO NOT HIDE :-)
-
-
-		/*if(strcmp(commands, "/local") == 0)
-		{
-			preop = strtok(NULL, " ");
-			preop2 = strtok(NULL, " ");
-			if((preop) && (preop2) && (strlen(preop2) == 1))
-			{
-				triggerevent = EVENT_LOCAL;
-				kelvin = 0.0;
-				switch(*preop2)
-				{
-					case 'F':
-					case 'f': // Fahrenheit
-						fahrenheit = atof(preop);
-						celsius = (fahrenheit - 32.0) / 1.8;
-						reaumour = ((fahrenheit - 32.0) / 1.8) * 0.8;
-						kelvin = (fahrenheit - 32.0) / 1.8 - 273.15;
-						break;
-					case 'C':
-					case 'c': // Celsius
-						celsius = atof(preop);
-						reaumour = celsius * 0.8;
-						kelvin = celsius - 273.15;
-						fahrenheit = (celsius * 1.8) + 32.0;
-						break;
-					case 'R':
-					case 'r': // Reaumour
-						reaumour = atof(preop);
-						celsius = reaumour / 0.8;
-						kelvin = (reaumour / 0.8) - 273.15;
-						fahrenheit = ((reaumour / 0.8) * 1.8) + 32.0;
-						break;
-					case 'K':
-					case 'k': // Kelvin
-						kelvin = atof(preop);
-						celsius = kelvin - 273.15;
-						reaumour = (kelvin - 273.15) / 0.8;
-						fahrenheit = (kelvin - 273.15) + 32.0;
-						break;
-				}
-				op1 = (char*)malloc(512);
-				if(kelvin != 0.0)
-					sprintf(op1, i18n("Temperature: %3.1f°F, %3.1f°C, %3.1f°R %3.1f°K"), fahrenheit, celsius, reaumour, kelvin);
-				else
-					sprintf(op1, i18n("Usage of local: /local &lt;number&gt; &lt;unit&gt;, with unit being one of C, R, K, F"));
-			}
-		}
-                if(strcmp(commands, "/join") == 0)
-                {
-                        triggerevent = EVENT_JOIN;
-                        preop = strtok(NULL, " ");
-                        op1 = (char*)malloc(strlen(preop) + 1);
-                        sprintf(op1, "%s", preop);
-                }
-                if(strcmp(commands, "/list") == 0) triggerevent = EVENT_LIST;
-                if(strcmp(commands, "/who") == 0) triggerevent = EVENT_WHO;
-		if(strcmp(commands, "/help") == 0) triggerevent = EVENT_HELP;
-		if(strcmp(commands, "/?") == 0) triggerevent = EVENT_HELP;
-		if(strcmp(commands, "/lag") == 0)
-		{
-			op1 = (char*)malloc(128);
-			sprintf(op1, "/me tests his lag (LAGID %lu)", setLag(randomLag()));
-			triggerevent = EVENT_LAG;
-		}*/
-
-
-/*
-			case EVENT_HELP:
-			receive(NULL, i18n("KGGZ - The KDE client for the GGZ Gaming Zone"), RECEIVE_ADMIN);
-			receive(NULL, i18n("List of available commands:"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/me &lt;msg&gt; - Special messages"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/lag - Test connection speed"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/local &lt;information&gt; - l10n operation"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/beep &lt;name&gt; - Makes name's computer beep"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/help - This help screen (also /?)"), RECEIVE_ADMIN);
-			receive(NULL, i18n("Additional:"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/join &lt;room no&gt; - Join a room"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/list - List room names"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/who - List player names in room"), RECEIVE_ADMIN);
-			break;
-*/

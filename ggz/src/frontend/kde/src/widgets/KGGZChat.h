@@ -91,7 +91,7 @@ class KGGZChat : public QWidget
 		void logChat(QString text);
 		int separator(const char *c);
 		char *plaintext(const char *text);
-		void parse(char *text);
+		QString parse(char *text);
 
 		KTextBrowser *output;
 		//QLineEdit *input;

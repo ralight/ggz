@@ -35,12 +35,12 @@
 #define KGGZ_CHATLINE_H
 
 // Qt includes
-#include <qlineedit.h>
+#include <klineedit.h>
 #include <qevent.h>
 #include <qstringlist.h>
 
 // A QLineEdit extension
-class KGGZChatLine : public QLineEdit
+class KGGZChatLine : public KLineEdit
 {
 	Q_OBJECT
 	public:
@@ -50,9 +50,9 @@ class KGGZChatLine : public QLineEdit
 		~KGGZChatLine();
 
 		// Add a player to the internal completion list
-		void addPlayer(char *name);
+		void addPlayer(QString name);
 		// Remove a player
-		void removePlayer(char *name);
+		void removePlayer(QString name);
 		// Cleanup the players list
 		void removeAll();
 
@@ -63,11 +63,9 @@ class KGGZChatLine : public QLineEdit
 		void focusOutEvent(QFocusEvent *e);
 
 	private:
-		// Internal: Autocomplete at current position
-		void autocomplete(QString pattern);
-
-		// The list of names for possible autocompletions
-		QStringList m_list;
+		QStringList m_history;
+		QStringList::iterator current;
+		QString m_complete;
 };
 
 #endif

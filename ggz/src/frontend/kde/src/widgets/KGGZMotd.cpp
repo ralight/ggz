@@ -58,14 +58,20 @@ KGGZMotd::KGGZMotd(QWidget *parent, const char *name)
 	QPushButton *button;
 	KGGZCaption *caption;
 	QVBoxLayout *vbox;
+	QFont f;
 
 	m_edit = new QTextView(this);
 	m_edit->setGeometry(5, 5, 310, 360);
-	m_edit->setFont(QFont("Courier", 10));
+
+	f = QFont("Courier", 10);
+	f.setFixedPitch(true);
+	f.setStyleHint(QFont::TypeWriter);
+
+	m_edit->setFont(f);
 
 	button = new QPushButton("OK", this);
 
-	caption = new KGGZCaption("MOTD", "GGZ Gaming Zone message of the day", this);
+	caption = new KGGZCaption(i18n("MOTD"), i18n("GGZ Gaming Zone message of the day"), this);
 
 	vbox = new QVBoxLayout(this, 5);
 	vbox->add(caption);
@@ -115,11 +121,6 @@ void KGGZMotd::append(const char *text)
 					buffer.append(text[i]);
 			}
 			count++;
-			/*if(count > 37)
-			{
-				count = 0;
-				buffer.append("<br>");
-			}*/
 		}
 		else
 		{
@@ -134,10 +135,8 @@ void KGGZMotd::append(const char *text)
 			}
 		}
 	}
-	//KGGZDEBUG("append text now!\n");
-	// This Qt bug is solved in the current CVS snapshot.
-	//edit->append(buffer);
-	m_edit->setText(m_edit->text() + buffer);
+
+	m_edit->append(buffer);
 }
 
 void KGGZMotd::setSource(void *data)
