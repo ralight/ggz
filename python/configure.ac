@@ -82,6 +82,11 @@ AC_CONFIG_FILES([
 	pyggzmod/setup.py
 	pyggzdmod/setup.py
 	pyggzcore/setup.py
+	ggzboard/module_go.dsc
+	ggzboard/module_chess.dsc
+	ggzboard/module_checkers.dsc
+	ggzboard/module_reversi.dsc
+	ggzboard/module_hnefatafl.dsc
 ])
 AC_OUTPUT
 

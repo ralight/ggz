@@ -7,7 +7,7 @@ as well as input from players, network and the AI.
 
 The core engine
 ---------------
-The python script ggzboard.py is the central point of GGZBoard.
+The python script ggzboard is the central point of GGZBoard.
 On startup, it either launches a supported game client directly,
 or provides a game selection menu.
 

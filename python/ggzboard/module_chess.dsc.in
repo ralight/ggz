@@ -5,6 +5,6 @@ Author = Josef Spillner
 Version = 0.0.1
 ProtocolEngine = Chess
 ProtocolVersion = 3
-CommandLine = ggzboard.py --ggz --game chess
+CommandLine = @prefix@/bin/ggzboard --ggz --game chess
 Frontend = sdl
 Homepage = http://www.ggzgamingzone.org/games/chess/

@@ -105,6 +105,8 @@ install-rest:
 	cp xadrez-chines/themes/dark/*.png $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/themes/dark
 	cp xadrez-chines/themes/orig/*.png $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/themes/orig
 	$(ggz-config) --install --force --modfile=xadrez-chines/module.dsc
+	cp xadrez-chines/xadrez-chines-server.dsc $(DESTDIR)$(prefix)/etc/ggzd/games
+	cp xadrez-chines/xadrez-chines-server.room $(DESTDIR)$(prefix)/etc/ggzd/rooms
 
 	@echo Installing external game GNU Go support files
 	mkdir -p $(DESTDIR)$(prefix)/bin/
@@ -112,6 +114,8 @@ install-rest:
 	cp go/goserver $(DESTDIR)$(prefix)/bin
 	cp go/goclient.helper $(DESTDIR)$(prefix)/bin
 	$(ggz-config) --install --force --modfile=go/module.dsc
+	cp go/goserver.dsc $(DESTDIR)$(prefix)/etc/ggzd/games
+	cp go/goserver.room $(DESTDIR)$(prefix)/etc/ggzd/rooms
 
 	@echo Installing core client Vibora
 	mkdir -p $(DESTDIR)$(prefix)/bin/
@@ -127,7 +131,7 @@ install-rest:
 install-ggzboard:
 	@echo Installing GGZBoard framework and games
 	mkdir -p $(DESTDIR)$(prefix)/bin/
-	cp ggzboard/ggzboard.py $(DESTDIR)$(prefix)/bin
+	cp ggzboard/ggzboard $(DESTDIR)$(prefix)/bin
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/
 	cp ggzboard/*.jpg $(DESTDIR)$(prefix)/share/ggz/ggzboard
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/ggzboard/checkers
@@ -150,6 +154,10 @@ install-ggzboard:
 	$(ggz-config) --install --force --modfile=ggzboard/module_go.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_hnefatafl.dsc
 	$(ggz-config) --install --force --modfile=ggzboard/module_reversi.dsc
+	cp ggzboard/server_hnefatafl.dsc $(DESTDIR)$(prefix)/etc/ggzd/games
+	cp ggzboard/server_checkers.dsc $(DESTDIR)$(prefix)/etc/ggzd/games
+	cp ggzboard/server_hnefatafl.room $(DESTDIR)$(prefix)/etc/ggzd/rooms
+	cp ggzboard/server_checkers.room $(DESTDIR)$(prefix)/etc/ggzd/rooms
 
 dist:
 	rm -rf ../ggz-python-$(version)
