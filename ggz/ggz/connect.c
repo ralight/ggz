@@ -168,6 +168,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	gchar *message;
 	gchar name[9];
 	gchar password[17];
+	gchar reservation_flag;
 	gchar status;
 	gint i_status;
 	guchar subop;
@@ -195,6 +196,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		else {
 			switch (connection.login_type) {
 			case GGZ_LOGIN:	/*Normal login */
+				normal_login();
+				break;
 			case GGZ_LOGIN_ANON:	/*Anonymous login */
 				anon_login();
 				break;
@@ -234,6 +237,31 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		es_write_char(connection.sock, 1);
 		break;
 			
+	case RSP_LOGIN:
+		es_read_char(source, &status);
+		connect_msg("[%s] %d\n", opcode_str[op], status);
+		if(status < 0) {
+			login_bad_name();
+			warn_dlg("Login denied, please check your username\nand password before trying again.");
+			
+			return;
+		}
+		es_read_int(source, &checksum);
+		es_read_char(source, &reservation_flag);
+		login_ok();
+		login_online();
+		connect_msg("[%s] Checksum = %d\n", opcode_str[op], checksum);
+		connect_msg("[%s] Reservation_Flag = %d\n", opcode_str[op],
+			    reservation_flag);
+
+		/* Get Room and type lists */
+                es_write_int(connection.sock, REQ_LIST_ROOMS);
+                es_write_int(connection.sock, -1);
+                es_write_char(connection.sock, 1);
+		es_write_int(connection.sock, REQ_LIST_TYPES);
+		es_write_char(connection.sock, 1);
+		break;
+
 	case RSP_LOGIN_ANON:
 		es_read_char(source, &status);
 		connect_msg("[%s] %d\n", opcode_str[op], status);
@@ -489,11 +517,6 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		g_free(message);
 		break;
 
-	case RSP_LOGIN:
-		es_read_char(source, &status);
-		connect_msg("[%s] %d\n", opcode_str[op], status);
-		break;
-
 	case MSG_UPDATE_PLAYERS:
 		handle_update_players(op, source);
 		break;
@@ -629,6 +652,16 @@ void add_table_list(TableInfo table)
 	g_free(entry[5]);
 	g_free(entry[6]);
 
+}
+
+
+gint normal_login(void)
+{
+	es_write_int(connection.sock, REQ_LOGIN);
+	es_write_string(connection.sock, connection.username);
+	es_write_string(connection.sock, connection.password);
+
+	return 0;
 }
 
 

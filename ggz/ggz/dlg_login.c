@@ -164,6 +164,8 @@ static void login_start_session(GtkWidget* button, gpointer window)
 
                 switch (connection.login_type) {
                 case GGZ_LOGIN: /*Normal login */  
+			normal_login();
+			break;
                 case GGZ_LOGIN_ANON: /*Anonymous login */
                         anon_login();
 			break;

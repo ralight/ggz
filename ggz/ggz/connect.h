@@ -28,5 +28,6 @@
 
 gint anon_login(void);
 gint new_login(void);
+gint normal_login(void);
 gint connect_to_server(void);
 void disconnect(GtkWidget *, gpointer);
