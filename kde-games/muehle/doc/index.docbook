@@ -1,0 +1,95 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.1-Based Variant V1.0//EN" "dtd/kdex.dtd" [
+ <!ENTITY kappname "Muehle">
+ <!ENTITY % English "INCLUDE">
+ <!ENTITY % addindex "IGNORE">
+]>
+
+<book lang="&language;">
+<bookinfo>
+<title>The Muehle Handbook</title>
+<authorgroup>
+<author>
+<firstname>Josef</firstname>
+<surname>Spillner</surname>
+</author>
+</authorgroup>
+
+<!-- TRANS:ROLES_OF_TRANSLATORS -->
+
+<copyright>
+<year>2001</year>
+<holder>Josef Spillner</holder>
+</copyright>
+
+<legalnotice>&FDLNotice;</legalnotice>
+
+<date>2001-11-20</date>
+<releaseinfo>0.1</releaseinfo>
+
+<abstract>
+<para>Muehle is simply a KDE game which lets you play the board game <command>Muehle</command>
+against another player (either local or networked), or against the AI.</para>
+</abstract>
+
+<keywordset>
+<keyword>muehle</keyword>
+<keyword>game</keyword>
+<keyword>kde-games</keyword>
+</keywordset>
+</bookinfo>
+
+<chapter id="introduction">
+<title>Introduction</title>
+
+<para>
+Everyone knows the game <command>Muehle</command>, however there aren't much
+digital variants available. This is why the KDE game Muehle had been written:
+To combine the features of a typical KDE game, like network connections or
+themeability, with the gameplay of a well-known board game.
+</para>
+
+</chapter>
+
+<chapter id="rules">
+<title>Game rules</title>
+
+<para>
+Two players are needed to play Muehle. One of them gets 9 white stones, the
+other one 9 black ones.
+</para>
+
+</chapter>
+
+<chapter id="credits-and-licenses">
+<title>Credits and Licenses</title>
+
+<sect1 id="developers">
+<title>Developers</title>
+
+<para><literal><ulink url="mailto:dr_maux@users.sourceforge.net">Josef Spillner</ulink></literal></para>
+</sect1>
+
+<sect1 id="authors">
+<title>Authors</title>
+<para><literal><ulink url="mailto:dr_maux@users.sourceforge.net">Josef Spillner</ulink></literal></para>
+
+<!-- TRANS:CREDIT_FOR_TRANSLATORS -->
+
+&underFDL;
+&underGPL;
+</sect1>
+
+
+</chapter>
+
+
+</book>
+<!--
+Local Variables:
+mode: sgml
+sgml-omittag: nil
+sgml-shorttag: t
+End:
+-->
+

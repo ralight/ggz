@@ -1,0 +1,11 @@
+bin_PROGRAMS = muehle
+
+muehle_SOURCES = main.cpp toplevel.cpp board.cpp stone.cpp qweb.cpp qextpainter.cpp net.cpp
+muehle_LDFLAGS = $(all_libraries)
+muehle_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT)
+INCLUDES = $(all_includes)
+
+noinst_HEADERS = toplevel.h board.h stone.h qweb.h qextpainter.h net.h
+
+METASOURCES = AUTO
+

@@ -1,0 +1,9 @@
+Makefile
+Makefile.in
+.deps
+.libs
+*.o
+*.moc.cpp
+muehle_meta_unload.cpp 
+muehle
+

@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=KDE Muehle game
+Exec=muehle
+Icon=muehle
+MimeType=Application
+Name=Muehle
+Path=
+DocPath=muehle/index.docbook
+ServiceTypes=
+SwallowExec=
+SwallowTitle=
+Terminal=false
+TerminalOptions=
+Type=Application
+
