@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 3092 2002-01-12 10:48:13Z jdorje $
+ * $Id: ggzclient.c 3191 2002-01-24 23:08:05Z jzaun $
  *
  * This is the main program body for the GGZ client
  *
@@ -945,7 +945,7 @@ void display_players(void)
 {
 	GtkWidget *tmp;
 	gint i, num;
-	gchar *player[4];
+	gchar *player[4] = {malloc (17), malloc (17), malloc (17), malloc (17)} ;
 	gchar *path = NULL;
 	GGZPlayer *p;
 	GGZTable *table;
