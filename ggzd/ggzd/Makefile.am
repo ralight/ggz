@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3001 2002-01-05 11:09:29Z rgade $
+# $Id: Makefile.am 3016 2002-01-08 18:36:14Z bmh $
 
 SUBDIRS = .
 
@@ -47,8 +47,6 @@ ggzd_SOURCES =	chat.c\
 		$(DB_SOURCES) \
 		login.c \
 		login.h \
-		lists.c \
-		lists.h \
 		perms.h \
 		perms.c 
 
