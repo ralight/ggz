@@ -1,7 +1,9 @@
 SUBDIRS = architecture
 
 docdir = $(GGZDOCDIR)/overview
-doc_DATA = index.html \
+doc_DATA = \
+	index.html \
+	index.de.html \
 	community.200.png \
 	coreclient.200.png \
 	fyrdman.200.png \

@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>
+Überblick über die GGZ Gaming Zone
+</title>
+</head>
+<style type="text/css">
+tt {background-color: #e0e0ff}
+h2 {background-color: #e0e0e0}
+h3 {background-color: #e0e0e0}
+div {font-family: sans-serif}
+th {text-align: left}
+</style>
+<body>
+
+<div>
+
+<h2>Überblick über die GGZ Gaming Zone</h2>
+
+<small>
+<i>Deutsche Übersetzung von: GGZ Gaming Zone Overview</i><br>
+<i>Original: Revision 0.1 vom 26.02.2005</i><br>
+<i>Autor des Originals: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
+<i>Datum: 10.03.2005</i><br>
+<i>Übersetzer: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
+</small>
+
+<p>
+Die hierin angebotenen Informationen sind für Leute gedacht, die
+noch nie etwas von GGZ gehört haben und einen ersten Eindruck
+vom Projekt bekommen möchten.
+Sie sind weder komplett noch enthalten sie irgendwelche Informationen
+für Entwickler oder Server-Hoster - dazu wendet man sich an die
+auf diese Themen spezialisierten Anleitungen.
+</p>
+
+<h3>Aller Anfang ist schwer...</h3>
+
+<p>
+Es gibt heutzutage eine Menge an freien Spielen. Viele von ihnen bieten
+Multiplayer-Unterstützung wie die Verbindung zu einem Server oder
+das Auffinden von offenen Spielen über einen Metaserver.
+Aber nur wenige von ihnen bieten mehr. Das ist der Punkt, wo GGZ ins
+Spiel kommt. Es vereinfacht die Netzwerkspiele-Integration unter
+etlichen Aspekten. Einige Spiele nutzen nur Teile der GGZ-Infrastruktur,
+andere hingegen so viel wie möglich.
+</p>
+
+<p>
+Die Software, aus der GGZ besteht, wird im nächsten Kapitel beschrieben
+werden. Wichtig zu wissen ist, dass obwohl das Projekt jede Menge eigene
+Spiele mitbringt, es auch eine Plattform für Entwickler bietet, auf der
+diese ihre Spiele aufbauen können.
+GGZ-Spiele sind bisher größtenteils auf Brett- und Kartenspiele beschränkt,
+aber es gibt keine Grenzen bezüglich der Unterstützung anderer Spiele.
+</p>
+
+<h3>Die Software, aus der GGZ gemacht ist.</h3>
+
+<p>
+Der erste Eindruck, den Spieler von GGZ bekommen, entsteht meist aufgrund
+der sogenannten Core-Clients, welche man sich als spielefähige
+Chatprogramme vorstellen kann. Momentan gibt es sie für die Kommandozeile,
+Gtk+, KDE und GNOME im Desktopbereich, sowie SDL.
+</p>
+
+<p style="text-align:center">
+<img src="coreclient.200.png" alt="Ein Core-Client (ggz-gtk)">
+</p>
+
+<p>
+Zusätzlich ist es möglich, Spielstartmechanismen in traditionelle
+Chat-Clients oder IM-Clients zu integrieren, desweiteren in
+Schnellstarter und sogar in die Spiele selbst.
+</p>
+
+<p style="text-align:center">
+<img src="tictactoe.200.png" alt="Ein GGZ-Spiel (tictactoe)">
+</p>
+
+<p>
+Die Spiele kommen in verschiedenen Ausführungen, von denen einige
+hier beschrieben werden sollen.
+Für jedes Spiel existiert ein Protokoll, für das es mehrere Server
+oder Clients gibt. Meist gibt es genau einen Server und ein oder
+zwei Clients dafür. Die Clients sind kompatibel, aber sie unterscheiden
+sich in ihren Merkmalen. Beispielsweise kann eines nebenher auch einen
+Einzelspielermodus unterstützen, während das andere nur auf einem
+GGZ-Server gespielt werden kann.
+Andere unterscheidbare Eigenschaften sind Unterstützung für Spieleroptionen
+(Highscores und Spielerlisten anzeigen, Spieler hinauswerfen), Aktualisierung
+von Themes oder Levels aus dem Internet, Fortsetzung von abgebrochenen
+Spielen, Zuschauerunterstützung, konfigurierbare KI-Spieler und
+Spielwiedergabe.
+</p>
+
+<p style="text-align:center">
+<img src="fyrdman.200.png" alt="Weiteres GGZ-Spiel (fyrdman)">
+</p>
+
+<p>
+Eine weitere wichtige Komponente ist der GGZ-Server, seine Datenbank
+und die darauf aufsetzende Webschnittstelle, für welche eine
+Referenzimplementierung unter dem Namen GGZ Community existiert
+und permanent für Spieler auf der ganzen Welt verfügbar ist.
+Ein Chatbot ist ebenfalls auf dem Server aktiv und beantwortet
+Fragen, und möchte manchmal sogar ein Spiel mitspielen.
+</p>
+
+<p style="text-align:center">
+<img src="community.200.png" alt="GGZ Community">
+</p>
+
+<p>
+Unter Verwendung der Software in allen Kombinationen ist es möglich,
+Tournaments zu veranstalten, individuelle Partien mit Wunschgegnern
+zu organisieren, Teams zu verwalten, das Karma der Mitspieler zu
+kontrollieren, und allgemein gute Bewertungen und Highscores zu
+bekommen.
+</p>
+
+<h3>Der Einstieg ins Projekt</h3>
+
+<p>
+Jeder, der an dem Projekt Interesse hat, ist eingeladen sich auf
+die extrem sparsame Mailingliste ggz-announce einzuschreiben.
+Nur die wichtigsten Informationen werden hierher gesendet,
+etwa zweimal pro Jahr. Man sollte sicherstellen, keinerlei
+Informationen zum Projekt zu verpassen!
+</p>
+
+<p>
+Spieler, die nur die Spiele und Community ausprobieren möchten,
+sollten die für ihr Betriebssystem passenden Pakete heraussuchen,
+oder GGZ von Hand compilieren. Die Informationen dazu findet
+man in jedem Paket in den Dateien QuickStart.GGZ und README.GGZ.
+</p>
+
+<p>
+Entwickler sollten sich auf die Mailingliste ggz-dev eintragen und
+dort über ihre Pläne reden. Es sind etliche Projekte im
+Entwicklungsstadium, und noch sind sie nicht alle dokumentiert,
+so daß Nachfragen das Risiko doppelter Arbeit verringert.
+</p>
+
+<p>
+Paketersteller und Server-Hoster sollten sich auf die Liste
+ggz-servers eintragen, da dort die geplanten Serverupdates gepostet
+werden, neben generellen administrativen Problemen und
+Schwierigkeiten mit der Kompatibilität.
+</p>
+
+<h3>Weitere Informationen</h3>
+
+<p>
+Hier stehen ein paar URLs, welche neue Nutzer in die richtige Richtung führen sollten.
+</p>
+
+<ul>
+<li>GGZ-Foren: <a href="https://www.ggzcommunity.org/forums/">https://www.ggzcommunity.org/forums/</a>
+<li>GGZ-Mailingliste: <a href="https://mail.ggzgamingzone.org/">https://mail.ggzgamingzone.org/</a>
+<li>GGZ-Dokumentationsseite: <a href="http://www.ggzgamingzone.org/docs.php">http://www.ggzgamingzone.org/docs.php</a>
+<li>Aktivität der Entwickler: <a href="http://cia.navi.cx/stats/project/ggz">http://cia.navi.cx/stats/project/ggz</a>
+</ul>
+
+</div>
+
+</body>
+</html>
