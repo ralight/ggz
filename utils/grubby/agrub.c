@@ -69,9 +69,9 @@ char *help_strings[] = {
 	"    %s: Help",
 	"    %s: Go away",
 	"    %s: My name is <name>",
-	"    %s: My email is <name>",
-	"    %s: My url is <name>",
-	"    %s: My info is <name>",
+	"    %s: My email is <email>",
+	"    %s: My url is <URL>",
+	"    %s: My info is <info about yourself>",
 	"    %s: Have you seen <name>",
 	"    %s: Tell <name> <A message>",
 	"    %s: Whois <name>"
@@ -834,7 +834,7 @@ void whois(char *sender, char *name)
 {
 	int i, j;
 	time_t now;
-	char *disp_sender, *disp_name;
+	char *disp_sender, *disp_name, *email, *url, *info;
 
 	now = time(NULL);
 
@@ -846,20 +846,42 @@ void whois(char *sender, char *name)
 			break;
 	disp_sender = sender;
 	if(j != num_known && known[j].aka)
+	{
 		disp_sender = known[j].aka;
+	}
 
 	if(i == num_known)
+	{
 		sprintf(out_msg, "Sorry %s, I've never encountered %s.",
 			disp_sender, name);
-	else {
+		send_chat(out_msg);
+	} else {
 		if(known[i].aka)
 			disp_name = known[i].aka;
 		else
 			disp_name = name;
+		email = known[i].email;
+		url = known[i].url;
+		info = known[i].info;
 		sprintf(out_msg, "%s, %s's name is %s.", disp_sender, name, disp_name);
+		send_chat(out_msg);
+		if(email != NULL)
+		{
+			sprintf(out_msg, "%s, %s's email is %s.", disp_sender, disp_name, email);
+			send_chat(out_msg);
+		}
+		if(email != NULL)
+		{
+			sprintf(out_msg, "%s, %s's URL is %s.", disp_sender, disp_name, url);
+			send_chat(out_msg);
+		}
+		if(email != NULL)
+		{
+			sprintf(out_msg, "%s, %s's info is \"%s\".", disp_sender, disp_name, info);
+			send_chat(out_msg);
+		}
 	}
 
-	send_chat(out_msg);
 }
 
 
