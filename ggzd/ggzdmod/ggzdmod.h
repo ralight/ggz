@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2600 2001-10-24 01:10:13Z jdorje $
+ * $Id: ggzdmod.h 2601 2001-10-24 02:20:57Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -30,18 +30,22 @@
 
 /* Common objects/functions */
 
+/* Game states */
+typedef enum {
+	GGZ_STATE_INIT,		/* pre-launch */
+	GGZ_STATE_LAUNCHED,
+	GGZ_STATE_PLAYING,
+	GGZ_STATE_GAMEOVER	/* after gameover */
+} GGZdModState;
+
 /* Callback events: */
 typedef enum {
-	GGZ_GAME_STATUS,	/* Module status changed (status) */
-	GGZ_GAME_LAUNCH,	/* FIXME: is this the same as
-				   GGZ_GAME_STATUS??? */
-	GGZ_GAME_OVER,		/* FIXME: is this the same as
-				   GGZ_GAME_STATUS??? */
-	GGZ_GAME_JOIN,		/* Player joined (status) */
-	GGZ_GAME_LEAVE,		/* Player left (status) */
-	GGZ_GAME_LOG,		/* Module log request (level, msg) */
-	GGZ_GAME_PLAYER_DATA,	/* Data avilable from player */
-	GGZ_GAME_ERROR		/* Error (code) */
+	GGZ_EVENT_STATE,	/* Module status changed (status) */
+	GGZ_EVENT_JOIN,		/* Player joined (status) */
+	GGZ_EVENT_LEAVE,	/* Player left (status) */
+	GGZ_EVENT_LOG,		/* Module log request (level, msg) */
+	GGZ_EVENT_PLAYER_DATA,	/* Data avilable from player */
+	GGZ_EVENT_ERROR		/* Error (code) */
 } GGZdModEvent;
 
 
@@ -91,6 +95,7 @@ void ggzdmod_free(GGZdMod * mod);
 /* Accesor functions for GGZdMod */
 int ggzdmod_get_fd(GGZdMod * mod);
 GGZdModType ggzdmod_get_type(GGZdMod * mod);
+GGZdModState ggzdmod_get_state(GGZdMod * mod);
 int ggzdmod_get_num_seats(GGZdMod * mod);
 GGZSeat *ggzdmod_get_seat(GGZdMod * mod, int seat);
 

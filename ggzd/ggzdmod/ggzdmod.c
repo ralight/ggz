@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2600 2001-10-24 01:10:13Z jdorje $
+ * $Id: ggzdmod.c 2601 2001-10-24 02:20:57Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -51,7 +51,7 @@
 #define CHECK_GGZDMOD(ggzdmod)                                           \
 	(ggzdmod && ggzdmod->magic == MAGIC_VALUE &&                     \
 	 (ggzdmod->type == GGZDMOD_GGZ || ggzdmod->type==GGZDMOD_GAME))
-#define GGZDMOD_NUM_HANDLERS 8
+#define GGZDMOD_NUM_HANDLERS 6
 
 /* The maximum length of a player name.  Does not include trailing \0. */
 #define MAX_USER_NAME_LEN 16
@@ -59,6 +59,7 @@
 /* This is the actual structure, but it's only visible internally. */
 typedef struct _GGZdMod {
 	GGZdModType type;	/* ggz-end or game-end */
+	GGZdModState state;	/* the state of the game */
 	int fd;			/* file descriptor */
 	fd_set active_fd_set;	/* set of active file descriptors */
 	int num_seats;
@@ -110,6 +111,7 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 	/* initialize */
 	memset(ggzdmod, sizeof(*ggzdmod), 0);
 	ggzdmod->type = type;
+	ggzdmod->state = GGZ_STATE_INIT;
 	ggzdmod->fd = -1;
 	ggzdmod->seats = NULL;
 	for (i = 0; i < GGZDMOD_NUM_HANDLERS; i++)
@@ -164,6 +166,16 @@ GGZdModType ggzdmod_get_type(GGZdMod * mod)
 		return 0;	/* not very useful */
 	}
 	return ggzdmod->type;
+}
+
+
+GGZdModState ggzdmod_get_state(GGZdMod * mod)
+{
+	_GGZdMod *ggzdmod = mod;
+	if (!CHECK_GGZDMOD(ggzdmod)) {
+		return 0;	/* not very useful */
+	}
+	return ggzdmod->state;
 }
 
 
@@ -274,6 +286,19 @@ static void randomize_names(char **names, char **randnames, int num)
 	}
 }
 
+static void set_state(_GGZdMod * ggzdmod, GGZdModState state)
+{
+	if (state == ggzdmod->state)
+		return;		/* Is this an error? */
+
+	/* The callback function retrieves the state from ggzdmod_get_state.
+	   It could instead be passed as an argument. */
+	ggzdmod->state = state;
+	if (ggzdmod->handlers[GGZ_EVENT_STATE])
+		(*ggzdmod->handlers[GGZ_EVENT_STATE]) (ggzdmod,
+						       GGZ_EVENT_STATE, NULL);
+}
+
 /* Game-side event: launch event received from ggzd */
 static void game_launch(_GGZdMod * ggzdmod)
 {
@@ -334,9 +359,7 @@ static void game_launch(_GGZdMod * ggzdmod)
 	    || es_write_char(ggzdmod->fd, status) < 0)
 		return;
 
-	if (ggzdmod->handlers[GGZ_GAME_LAUNCH])
-		(*ggzdmod->handlers[GGZ_GAME_LAUNCH]) (ggzdmod,
-						       GGZ_GAME_LAUNCH, NULL);
+	set_state(ggzdmod, GGZ_STATE_LAUNCHED);
 }
 
 /* game-side event: player join event received from ggzd */
@@ -357,9 +380,9 @@ static void game_join(_GGZdMod * ggzdmod)
 
 	FD_SET(ggzdmod->seats[seat].fd, &ggzdmod->active_fd_set);
 
-	if (ggzdmod->handlers[GGZ_GAME_JOIN] != NULL)
-		(*ggzdmod->handlers[GGZ_GAME_JOIN]) (ggzdmod, GGZ_GAME_JOIN,
-						     &seat);
+	if (ggzdmod->handlers[GGZ_EVENT_JOIN] != NULL)
+		(*ggzdmod->handlers[GGZ_EVENT_JOIN]) (ggzdmod, GGZ_EVENT_JOIN,
+						      &seat);
 }
 
 /* game-side event: player leave received from ggzd */
@@ -391,18 +414,17 @@ static void game_leave(_GGZdMod * ggzdmod)
 	    es_write_char(ggzdmod->fd, status) < 0 || status != 0)
 		return;
 
-	if (ggzdmod->handlers[GGZ_GAME_LEAVE] != NULL)
-		(*ggzdmod->handlers[GGZ_GAME_LEAVE]) (ggzdmod, GGZ_GAME_LEAVE,
-						      &seat);
+	if (ggzdmod->handlers[GGZ_EVENT_LEAVE] != NULL)
+		(*ggzdmod->handlers[GGZ_EVENT_LEAVE]) (ggzdmod,
+						       GGZ_EVENT_LEAVE,
+						       &seat);
 }
 
 /* game-side event: game over received from ggzd */
 static void game_over(_GGZdMod * ggzdmod)
 {
 	ggzdmod_halt_game(ggzdmod);
-	if (ggzdmod->handlers[GGZ_GAME_OVER] != NULL)
-		(*ggzdmod->handlers[GGZ_GAME_OVER]) (ggzdmod, GGZ_GAME_OVER,
-						     NULL);
+	set_state(ggzdmod, GGZ_STATE_GAMEOVER);
 }
 
 static void ggz_rsp_launch(_GGZdMod * ggzdmod)
@@ -410,10 +432,7 @@ static void ggz_rsp_launch(_GGZdMod * ggzdmod)
 	char status;
 	if (es_read_char(ggzdmod->fd, &status) < 0)
 		return;
-	if (ggzdmod->handlers[GGZ_GAME_LAUNCH])
-		(*ggzdmod->handlers[GGZ_GAME_LAUNCH]) (ggzdmod,
-						       GGZ_GAME_LAUNCH,
-						       &status);
+	set_state(ggzdmod, GGZ_STATE_LAUNCHED);
 }
 
 static void ggz_rsp_join(_GGZdMod * ggzdmod)
@@ -421,9 +440,9 @@ static void ggz_rsp_join(_GGZdMod * ggzdmod)
 	char status;
 	if (es_read_char(ggzdmod->fd, &status) < 0)
 		return;
-	if (ggzdmod->handlers[GGZ_GAME_JOIN])
-		(*ggzdmod->handlers[GGZ_GAME_JOIN]) (ggzdmod, GGZ_GAME_JOIN,
-						     &status);
+	if (ggzdmod->handlers[GGZ_EVENT_JOIN])
+		(*ggzdmod->handlers[GGZ_EVENT_JOIN]) (ggzdmod, GGZ_EVENT_JOIN,
+						      &status);
 }
 
 static void ggz_rsp_leave(_GGZdMod * ggzdmod)
@@ -431,17 +450,17 @@ static void ggz_rsp_leave(_GGZdMod * ggzdmod)
 	char status;
 	if (es_read_char(ggzdmod->fd, &status) < 0)
 		return;
-	if (ggzdmod->handlers[GGZ_GAME_LEAVE])
-		(*ggzdmod->handlers[GGZ_GAME_LEAVE]) (ggzdmod, GGZ_GAME_LEAVE,
-						      &status);
+	if (ggzdmod->handlers[GGZ_EVENT_LEAVE])
+		(*ggzdmod->handlers[GGZ_EVENT_LEAVE]) (ggzdmod,
+						       GGZ_EVENT_LEAVE,
+						       &status);
 }
 
 static void ggz_req_gameover(_GGZdMod * ggzdmod)
 {
 	es_write_int(ggzdmod->fd, RSP_GAME_OVER);	/* ignore error */
-	if (ggzdmod->handlers[GGZ_GAME_OVER])
-		(*ggzdmod->handlers[GGZ_GAME_OVER]) (ggzdmod, GGZ_GAME_OVER,
-						     NULL);
+	set_state(ggzdmod, GGZ_STATE_GAMEOVER);	/* Is this right? has the
+						   gameover happened yet? */
 }
 
 static void ggz_log(_GGZdMod * ggzdmod)
@@ -453,9 +472,9 @@ static void ggz_log(_GGZdMod * ggzdmod)
 	if (es_read_string_alloc(ggzdmod->fd, &msg) < 0)
 		return;
 
-	if (ggzdmod->handlers[GGZ_GAME_LOG])
-		(*ggzdmod->handlers[GGZ_GAME_LOG]) (ggzdmod, GGZ_GAME_LOG,
-						    msg);
+	if (ggzdmod->handlers[GGZ_EVENT_LOG])
+		(*ggzdmod->handlers[GGZ_EVENT_LOG]) (ggzdmod, GGZ_EVENT_LOG,
+						     msg);
 
 	free(msg);
 }
@@ -578,10 +597,10 @@ void ggzdmod_io_read(GGZdMod * mod)
 	for (seat = 0; seat < ggzdmod->num_seats; seat++) {
 		int fd = ggzdmod->seats[seat].fd;
 		if (fd != -1 && FD_ISSET(fd, &read_fd_set)
-		    && ggzdmod->handlers[GGZ_GAME_PLAYER_DATA] != NULL)
-			(*ggzdmod->handlers[GGZ_GAME_PLAYER_DATA]) (ggzdmod,
-								    GGZ_GAME_PLAYER_DATA,
-								    &seat);
+		    && ggzdmod->handlers[GGZ_EVENT_PLAYER_DATA] != NULL)
+			(*ggzdmod->handlers[GGZ_EVENT_PLAYER_DATA]) (ggzdmod,
+								     GGZ_EVENT_PLAYER_DATA,
+								     &seat);
 	}
 }
 
