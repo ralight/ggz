@@ -104,7 +104,7 @@ void board_init(guint8 width, guint8 height)
 				       x, y);
 		}
 
-	game.move = 1;
+	game.move = -1;
 
 	sb_context = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar),
 						  "Game Messages");
@@ -132,6 +132,7 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 	gint8 result;
 	guint16 x1, y1, x2, y2;
 	GdkRectangle update_rect;
+	gchar *tstr;
 
 	if(game.state != DOTS_STATE_MOVE) {
 		statusbar_message("Wait for your turn to move");
@@ -212,22 +213,14 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 		      x2, y2);
 	gtk_widget_draw(widget, &update_rect);
 
-	if(result == 0) {
-		if(game.move == 1) {
-			game.move = 2;
-			statusbar_message("Waiting For Opponent");
-			game.state = DOTS_STATE_WAIT;
-		} else {
-			game.move = 1;
-			statusbar_message("Your Turn To Move");
-		}
-
-		return;
+	if(result <= 0) {
+		tstr = g_strconcat("Waiting for ",
+				   game.names[game.opponent], "...", NULL);
+		statusbar_message(tstr);
+		g_free(tstr);
+		game.move = game.opponent;
+		game.state = DOTS_STATE_WAIT;
 	}
-
-	/* Else update score */
-	if(game.move == 1)
-		statusbar_message("You Get To Move Again!");
 }
 
 
@@ -374,7 +367,7 @@ void board_fill_square(guint8 x, guint8 y)
 	update_rect.width = dot_width-1;
 	update_rect.height = dot_height-1;
 
-	if(game.move == 1)
+	if(game.move == 0)
 		gdk_draw_rectangle(board_pixmap,
 				   gc_p1,
 				   TRUE,

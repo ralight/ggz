@@ -33,6 +33,7 @@ static int get_seat(void);
 static int get_players(void);
 static int get_options(void);
 static int get_move_status(void);
+static int get_gameover_status(void);
 
 int main(int argc, char *argv[])
 {
@@ -62,6 +63,10 @@ int main(int argc, char *argv[])
 }
 
 
+char *opstr[] = { "DOTS_MSG_SEAT",   "DOTS_MSG_PLAYERS",  "DOTS_MSG_MOVE_H",
+		  "DOTS_MSG_MOVE_V", "DOTS_MSG_GAMEOVER", "DOTS_REQ_MOVE",
+		  "DOTS_RSP_MOVE",   "DOTS_SND_SYNC",     "DOTS_RSP_OPTIONS" };
+
 void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
 	int op, status;
@@ -72,6 +77,7 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 	}
 
 	status = 0;
+	fprintf(stderr, "%s\n", opstr[op]);
 	switch(op) {
 		case DOTS_MSG_SEAT:
 			status = get_seat();
@@ -86,7 +92,11 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			break;
 		case DOTS_REQ_MOVE:
 			game.state = DOTS_STATE_MOVE;
-			statusbar_message("Your turn to move");
+			if(game.move == game.me)
+				statusbar_message("You get to move again!");
+			else
+				statusbar_message("Your turn to move");
+			game.move = game.me;
 			break;
 		case DOTS_MSG_MOVE_H:
 			status = board_opponent_move(1);
@@ -96,6 +106,9 @@ void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			break;
 		case DOTS_RSP_MOVE:
 			status = get_move_status();
+			break;
+		case DOTS_MSG_GAMEOVER:
+			status = get_gameover_status();
 			break;
 		default:
 			fprintf(stderr, "Unknown opcode received %d\n", op);
@@ -127,8 +140,6 @@ void game_init(void)
 
 int send_options(void)
 {
-	fprintf(stderr, "Sending options\n");
-
 	if(es_write_int(game.fd, 2) < 0
 	   || es_write_char(game.fd, board_width) < 0
 	   || es_write_char(game.fd, board_height) < 0)
@@ -139,8 +150,6 @@ int send_options(void)
 
 int get_options(void)
 {
-	fprintf(stderr, "Getting options\n");
-
 	if(es_read_char(game.fd, &board_width) < 0
 	   || es_read_char(game.fd, &board_height) < 0)
 		return -1;
@@ -150,8 +159,6 @@ int get_options(void)
 
 int request_options(void)
 {
-	fprintf(stderr, "Requesting options\n");
-
 	if(es_write_int(game.fd, DOTS_REQ_OPTIONS) < 0)
 		return -1;
 	return 0;
@@ -180,10 +187,9 @@ void ggz_connect(void)
 
 int get_seat(void)
 {
-	fprintf(stderr, "Getting seat number\n");
-
-	if(es_read_int(game.fd, &game.num) < 0)
+	if(es_read_int(game.fd, &game.me) < 0)
 		return -1;
+	game.opponent = (game.me+1)%2;
 	return 0;
 }
 
@@ -191,8 +197,6 @@ int get_seat(void)
 int get_players(void)
 {
 	int i;
-
-	fprintf(stderr, "Getting player names\n");
 
 	for(i=0; i<2; i++) {
 		if(es_read_int(game.fd, &game.seats[i]) < 0)
@@ -215,4 +219,31 @@ int get_move_status(void)
 		fprintf(stderr, "Move status = %d, client broken!\n", status);
 
 	return (int)status;
+}
+
+
+int get_gameover_status(void)
+{
+	char status;
+	gchar *tstr;
+
+	if(es_read_char(game.fd, &status) < 0)
+		return -1;
+	if(status == game.me) {
+		tstr = g_strconcat("Game over, you beat ",
+				   game.names[game.opponent], "!", NULL);
+		statusbar_message(tstr);
+	} else if(status == game.opponent) {
+		tstr = g_strconcat("Game over, ",
+				   game.names[game.opponent], " won :(", NULL);
+		statusbar_message(tstr);
+	} else {
+		tstr = g_strconcat("Game over, you tied with ",
+				   game.names[game.opponent], ".", NULL);
+		statusbar_message(tstr);
+	}
+	g_free(tstr);
+
+	game.state = DOTS_STATE_WAIT;
+	return 0;
 }
