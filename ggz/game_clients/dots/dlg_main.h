@@ -22,4 +22,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef __DLG_MAIN_H__
+#define __DLG_MAIN_H__
+
+extern GtkWidget *dlg_main;
+
 GtkWidget *create_dlg_main(void);
+
+#endif /* __DLG_MAIN_H__ */

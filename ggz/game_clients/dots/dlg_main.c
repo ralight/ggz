@@ -42,6 +42,8 @@
 #include "support.h"
 #include "ggzintl.h"
 
+GtkWidget *dlg_main;
+
 static GtkWidget *create_menus(GtkWidget * window)
 {
 	GtkAccelGroup *accel_group;
@@ -81,7 +83,6 @@ static GtkWidget *create_menus(GtkWidget * window)
 
 GtkWidget *create_dlg_main(void)
 {
-	GtkWidget *dlg_main;
 	GtkWidget *vbox;
 	GtkWidget *menubar;
 	GtkWidget *board;
@@ -232,7 +233,7 @@ GtkWidget *create_dlg_main(void)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(board);
 	gtk_box_pack_start(GTK_BOX(vbox), board, FALSE, FALSE, 1);
-	gtk_widget_set_usize(board, 350, 350);
+	gtk_widget_set_size_request(board, 350, 350);
 	gtk_widget_set_events(board,
 			      GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK);
 
@@ -266,7 +267,7 @@ GtkWidget *create_dlg_main(void)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(p1b);
 	gtk_box_pack_start(GTK_BOX(hbox2), p1b, FALSE, TRUE, 5);
-	gtk_widget_set_usize(p1b, 15, -2);
+	gtk_widget_set_size_request(p1b, 15, 15);
 
 	lbl_score0 = gtk_label_new(_("No Score"));
 	gtk_widget_ref(lbl_score0);
@@ -299,7 +300,7 @@ GtkWidget *create_dlg_main(void)
 			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(p2b);
 	gtk_box_pack_start(GTK_BOX(hbox3), p2b, FALSE, TRUE, 5);
-	gtk_widget_set_usize(p2b, 15, -2);
+	gtk_widget_set_size_request(p2b, 15, 15);
 
 	lbl_score1 = gtk_label_new(_("No Score"));
 	gtk_widget_ref(lbl_score1);

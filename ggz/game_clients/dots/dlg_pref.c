@@ -39,7 +39,7 @@
 #include "support.h"
 #include "ggzintl.h"
 
-GtkWidget *create_dlg_pref(void)
+GtkWidget *create_dlg_pref(GtkWidget * parent)
 {
 	GtkWidget *dlg_pref;
 	GtkWidget *dialog_vbox1;
@@ -62,6 +62,8 @@ GtkWidget *create_dlg_pref(void)
 	GtkWidget *pref_button_cancel;
 
 	dlg_pref = gtk_dialog_new();
+	gtk_window_set_transient_for(GTK_WINDOW(dlg_pref),
+				     GTK_WINDOW(parent));
 	gtk_widget_set_name(dlg_pref, "dlg_pref");
 	g_object_set_data(G_OBJECT(dlg_pref), "dlg_pref", dlg_pref);
 	gtk_window_set_title(GTK_WINDOW(dlg_pref),
@@ -111,7 +113,7 @@ GtkWidget *create_dlg_pref(void)
 	gtk_table_attach(GTK_TABLE(table1), bg_colorspot, 1, 2, 1, 2,
 			 (GtkAttachOptions) (0),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_widget_set_usize(bg_colorspot, 16, 16);
+	gtk_widget_set_size_request(bg_colorspot, 16, 16);
 	gtk_widget_set_events(bg_colorspot, GDK_BUTTON_PRESS_MASK);
 
 	label7 = gtk_label_new(_("Player One Color"));
@@ -144,7 +146,7 @@ GtkWidget *create_dlg_pref(void)
 	gtk_table_attach(GTK_TABLE(table1), p2_colorspot, 4, 5, 1, 2,
 			 (GtkAttachOptions) (0),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_widget_set_usize(p2_colorspot, 16, 16);
+	gtk_widget_set_size_request(p2_colorspot, 16, 16);
 	gtk_widget_set_events(p2_colorspot, GDK_BUTTON_PRESS_MASK);
 
 	p1_colorspot = gtk_drawing_area_new();
@@ -157,7 +159,7 @@ GtkWidget *create_dlg_pref(void)
 	gtk_table_attach(GTK_TABLE(table1), p1_colorspot, 4, 5, 0, 1,
 			 (GtkAttachOptions) (0),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_widget_set_usize(p1_colorspot, 16, 16);
+	gtk_widget_set_size_request(p1_colorspot, 16, 16);
 	gtk_widget_set_events(p1_colorspot, GDK_BUTTON_PRESS_MASK);
 
 	fg_colorspot = gtk_drawing_area_new();
@@ -170,7 +172,7 @@ GtkWidget *create_dlg_pref(void)
 	gtk_table_attach(GTK_TABLE(table1), fg_colorspot, 1, 2, 0, 1,
 			 (GtkAttachOptions) (0),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_widget_set_usize(fg_colorspot, 16, 16);
+	gtk_widget_set_size_request(fg_colorspot, 16, 16);
 	gtk_widget_set_events(fg_colorspot, GDK_BUTTON_PRESS_MASK);
 
 	label6 = gtk_label_new(_("Background Color"));
@@ -229,7 +231,6 @@ GtkWidget *create_dlg_pref(void)
 	gtk_widget_show(pref_button_ok);
 	gtk_box_pack_start(GTK_BOX(hbox1), pref_button_ok, FALSE, FALSE,
 			   0);
-	gtk_widget_set_usize(pref_button_ok, 64, -2);
 
 	pref_button_apply = gtk_button_new_with_label(_("Apply"));
 	gtk_widget_set_name(pref_button_apply, "pref_button_apply");
@@ -240,7 +241,6 @@ GtkWidget *create_dlg_pref(void)
 	gtk_widget_show(pref_button_apply);
 	gtk_box_pack_start(GTK_BOX(hbox1), pref_button_apply, FALSE, FALSE,
 			   0);
-	gtk_widget_set_usize(pref_button_apply, 64, -2);
 
 	pref_button_cancel = gtk_button_new_with_label(_("Cancel"));
 	gtk_widget_set_name(pref_button_cancel, "pref_button_cancel");
@@ -251,7 +251,6 @@ GtkWidget *create_dlg_pref(void)
 	gtk_widget_show(pref_button_cancel);
 	gtk_box_pack_start(GTK_BOX(hbox1), pref_button_cancel, FALSE,
 			   FALSE, 0);
-	gtk_widget_set_usize(pref_button_cancel, 64, -2);
 
 	g_signal_connect(GTK_OBJECT(dlg_pref), "expose_event",
 			 GTK_SIGNAL_FUNC(on_dlg_pref_expose_event), NULL);

@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots Client
  * Date: 08/14/2000
  * Desc: Callback functions for the main Gtk window
- * $Id: cb_main.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: cb_main.c 6338 2004-11-12 17:21:26Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -65,14 +65,14 @@ void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data)
 }
 
 
-void
-on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data)
+void on_mnu_preferences_activate(GtkMenuItem * menuitem,
+				 gpointer user_data)
 {
 	if (dlg_pref != NULL) {
 		gdk_window_show(dlg_pref->window);
 		gdk_window_raise(dlg_pref->window);
 	} else {
-		dlg_pref = create_dlg_pref();
+		dlg_pref = create_dlg_pref(dlg_main);
 		g_signal_connect(GTK_OBJECT(dlg_pref),
 				 "destroy",
 				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
@@ -82,26 +82,24 @@ on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data)
 }
 
 
-gboolean
-on_window_delete_event(GtkWidget * widget,
-		       GdkEvent * event, gpointer user_data)
+gboolean on_window_delete_event(GtkWidget * widget,
+				GdkEvent * event, gpointer user_data)
 {
 	try_to_quit();
 	return TRUE;
 }
 
-gboolean
-on_board_expose_event(GtkWidget * widget,
-		      GdkEventExpose * event, gpointer user_data)
+gboolean on_board_expose_event(GtkWidget * widget,
+			       GdkEventExpose * event, gpointer user_data)
 {
 	board_handle_expose_event(widget, event);
 	return FALSE;
 }
 
 
-gboolean
-on_board_button_press_event(GtkWidget * widget,
-			    GdkEventButton * event, gpointer user_data)
+gboolean on_board_button_press_event(GtkWidget * widget,
+				     GdkEventButton * event,
+				     gpointer user_data)
 {
 	if (event->button == 1)
 		board_handle_click(widget, event);
@@ -110,18 +108,16 @@ on_board_button_press_event(GtkWidget * widget,
 }
 
 
-gboolean
-on_p1b_expose_event(GtkWidget * widget,
-		    GdkEventExpose * event, gpointer user_data)
+gboolean on_p1b_expose_event(GtkWidget * widget,
+			     GdkEventExpose * event, gpointer user_data)
 {
 	board_handle_pxb_expose();
 	return FALSE;
 }
 
 
-gboolean
-on_p2b_expose_event(GtkWidget * widget,
-		    GdkEventExpose * event, gpointer user_data)
+gboolean on_p2b_expose_event(GtkWidget * widget,
+			     GdkEventExpose * event, gpointer user_data)
 {
 	board_handle_pxb_expose();
 	return FALSE;
