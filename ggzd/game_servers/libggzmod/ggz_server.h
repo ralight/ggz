@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2331 2001-08-31 21:58:33Z jdorje $
+ * $Id: ggz_server.h 2345 2001-09-03 09:38:27Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,6 +27,10 @@
 #ifndef __GGZ_SERVER_GGZ_H
 #define __GGZ_SERVER_GGZ_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @file ggz_server.h
  * @brief The interface for the ggzdmod library used by game servers.
@@ -48,7 +52,7 @@
  *
  * Here's the simplest possible example:
  * @code
- *     void ggz_update(ggzd_assign_t event, void* data); // See GGZDHandler
+ *     void ggz_update(ggzd_event_t event, void* data); // See GGZDHandler
  *
  *     int main() {
  *         // First we register functions to handle some events.
@@ -284,5 +288,8 @@ void ggzd_read_data(void);
  */
 int ggzd_main(void);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __GGZ_SERVER_GGZ_H */
