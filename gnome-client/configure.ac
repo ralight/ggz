@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5394 2003-02-04 20:18:52Z dr_maux $
+dnl $Id: configure.ac 5466 2003-02-28 18:41:46Z dr_maux $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -23,10 +23,11 @@ else
                      [The location to put message catalogs])
 fi
 
-AC_GGZ_INIT(defaults)
+AC_GGZ_INIT(defaults, export)
 AC_GGZ_INTL([], [])
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZCORE
+AC_GGZ_CONFIG
 
 if test "x$XGETTEXT" = "x"; then
 	nls_enabled=0
@@ -34,12 +35,8 @@ else
 	nls_enabled=1
 fi
 
-ggzdatadir=`ggz-config --datadir`
-AC_DEFINE_UNQUOTED([GGZDATADIR], "${ggzdatadir}",
-		   [Location of GGZ module data])
 AC_DEFINE_UNQUOTED([ENABLE_NLS], $nls_enabled,
 		   [Define if your system supports NLS])
-AC_SUBST(ggzdatadir)
 
 LDADD="$LDADD $LIB_GGZCORE $LIB_GGZ"
 AC_SUBST(LDADD)
