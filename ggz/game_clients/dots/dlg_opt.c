@@ -55,7 +55,7 @@ create_dlg_opt (void)
   GtkWidget *hbox2;
   GtkWidget *opt_btn_ok;
 
-  dlg_opt = gtk_window_new (GTK_WINDOW_DIALOG);
+  dlg_opt = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (dlg_opt), "dlg_opt", dlg_opt);
   gtk_window_set_title (GTK_WINDOW (dlg_opt), _("Game Options"));
 

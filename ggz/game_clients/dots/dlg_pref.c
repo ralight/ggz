@@ -66,7 +66,6 @@ create_dlg_pref (void)
   gtk_widget_set_name (dlg_pref, "dlg_pref");
   gtk_object_set_data (GTK_OBJECT (dlg_pref), "dlg_pref", dlg_pref);
   gtk_window_set_title (GTK_WINDOW (dlg_pref), _("Dots - Color Preferences"));
-  GTK_WINDOW (dlg_pref)->type = GTK_WINDOW_DIALOG;
   gtk_window_set_policy (GTK_WINDOW (dlg_pref), FALSE, FALSE, FALSE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_pref)->vbox;

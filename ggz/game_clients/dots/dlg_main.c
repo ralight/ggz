@@ -39,25 +39,43 @@
 #include "support.h"
 #include "ggzintl.h"
 
+static GtkWidget *create_menus(GtkWidget *window)
+{
+	GtkAccelGroup *accel_group;
+	GtkItemFactory *menu;
+	GtkWidget *menu_item;
+	GtkItemFactoryEntry items[] = {
+	  {_("/_File"), NULL, NULL, 0, "<Branch>"},
+	  {_("/File/_Sync with server"), "<ctrl>S", NULL, 0, NULL},
+	  {_("/File/E_xit"), "<ctrl>Q", on_mnu_exit_activate, 0, NULL},
+	  {_("/_Options"), NULL, NULL, 0, "<Branch>"},
+	  {_("/Options/_Preferences"), "<ctrl>P", on_mnu_preferences_activate,
+	   0, NULL},
+	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
+	  {_("/Help/_About"), "<ctrl>A", on_mnu_about_activate, 0, NULL}
+	};
+	const int num = sizeof(items) / sizeof(items[0]);
+
+	accel_group = gtk_accel_group_new();
+
+	menu = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
+	gtk_item_factory_create_items(menu, num, items, NULL);
+	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
+
+	menu_item = gtk_item_factory_get_widget(menu,
+						_("<main>/File/"
+						  "Sync with server"));
+	gtk_widget_set_sensitive(menu_item, FALSE);
+
+	return gtk_item_factory_get_widget(menu, "<main>");
+}
+
 GtkWidget*
 create_dlg_main (void)
 {
   GtkWidget *dlg_main;
   GtkWidget *vbox;
   GtkWidget *menubar;
-  guint tmp_key;
-  GtkWidget *mnu_game;
-  GtkWidget *mnu_game_menu;
-  GtkAccelGroup *mnu_game_menu_accels;
-  GtkWidget *mnu_exit;
-  GtkWidget *mnu_settings;
-  GtkWidget *mnu_settings_menu;
-  GtkAccelGroup *mnu_settings_menu_accels;
-  GtkWidget *mnu_preferences;
-  GtkWidget *mnu_help;
-  GtkWidget *mnu_help_menu;
-  GtkAccelGroup *mnu_help_menu_accels;
-  GtkWidget *mnu_about;
   GtkWidget *board;
   GtkWidget *hbox1;
   GtkWidget *frame_left;
@@ -85,13 +103,14 @@ create_dlg_main (void)
   gtk_widget_show (vbox);
   gtk_container_add (GTK_CONTAINER (dlg_main), vbox);
 
-  menubar = gtk_menu_bar_new ();
+  menubar = create_menus(dlg_main);
   gtk_widget_ref (menubar);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "menubar", menubar,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (menubar);
   gtk_box_pack_start (GTK_BOX (vbox), menubar, FALSE, FALSE, 0);
 
+#if 0
   mnu_game = gtk_menu_item_new_with_label ("");
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (mnu_game)->child),
                                    _("_Game"));
@@ -179,6 +198,7 @@ create_dlg_main (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (mnu_about);
   gtk_container_add (GTK_CONTAINER (mnu_help_menu), mnu_about);
+#endif
 
   board = gtk_drawing_area_new ();
   gtk_widget_ref (board);
@@ -266,6 +286,7 @@ create_dlg_main (void)
   gtk_signal_connect (GTK_OBJECT (dlg_main), "delete_event",
                       GTK_SIGNAL_FUNC (on_window_delete_event),
                       NULL);
+#if 0
   gtk_signal_connect (GTK_OBJECT (mnu_exit), "activate",
                       GTK_SIGNAL_FUNC (on_mnu_exit_activate),
                       NULL);
@@ -275,6 +296,7 @@ create_dlg_main (void)
   gtk_signal_connect (GTK_OBJECT (mnu_about), "activate",
                       GTK_SIGNAL_FUNC (on_mnu_about_activate),
                       NULL);
+#endif
   gtk_signal_connect (GTK_OBJECT (board), "expose_event",
                       GTK_SIGNAL_FUNC (on_board_expose_event),
                       NULL);

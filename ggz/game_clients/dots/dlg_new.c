@@ -56,7 +56,6 @@ create_dlg_new (void)
   dlg_new = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_new), "dlg_new", dlg_new);
   gtk_window_set_title (GTK_WINDOW (dlg_new), _("Game Over"));
-  GTK_WINDOW (dlg_new)->type = GTK_WINDOW_DIALOG;
   gtk_window_set_policy (GTK_WINDOW (dlg_new), TRUE, TRUE, FALSE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_new)->vbox;
