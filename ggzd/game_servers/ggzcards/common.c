@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2374 2001-09-05 17:36:52Z jdorje $
+ * $Id: common.c 2401 2001-09-08 18:41:49Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -106,9 +106,8 @@ int send_player_list(player_t p)
 	ggzd_debug("Sending seat list to player %d/%s (%d seats)", p,
 		   ggzd_get_player_name(p), game.num_seats);
 
-	if (es_write_int(fd, WH_MSG_PLAYERS) < 0)
-		status = -1;
-	if (es_write_int(fd, game.num_seats) < 0)
+	if (es_write_int(fd, WH_MSG_PLAYERS) < 0 ||
+	    es_write_int(fd, game.num_seats) < 0)
 		status = -1;
 
 	for (s_rel = 0; s_rel < game.num_seats; s_rel++) {
@@ -117,9 +116,8 @@ int send_player_list(player_t p)
 		/* FIXME: is this the correct way to handle things when we
 		   send out seats before the game has been determined? */
 
-		if (es_write_int(fd, get_seat_status(s_abs)) < 0)
-			status = -1;
-		if (es_write_string(fd, get_seat_name(s_abs)) < 0)
+		if (es_write_int(fd, get_seat_status(s_abs)) < 0 ||
+		    es_write_string(fd, get_seat_name(s_abs)) < 0)
 			status = -1;
 	}
 
