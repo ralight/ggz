@@ -23,14 +23,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <ggz.h>
 #include <stdio.h>
 #include <string.h>
 #include <popt.h>
 #include <stdlib.h>
 
 #include "config.h"
-#include "ggzcore.h"
-#include "confio.h"
 #include "protocol.h"
 
 
@@ -93,67 +92,67 @@ int load_modfile(void)
 	int from;
 	int status = 1;
 
-	from = ggzcore_confio_parse(modfile, GGZ_CONFIO_RDONLY);
+	from = ggz_conf_parse(modfile, GGZ_CONF_RDONLY);
 
-	modname = ggzcore_confio_read_string(from, "ModuleInfo",
+	modname = ggz_conf_read_string(from, "ModuleInfo",
 					     "Name", NULL);
 	if(modname == NULL) {
 		fprintf(stderr, "Critical: Module name not specified.\n");
 		status = 0;
 	}
 
-	modversion = ggzcore_confio_read_string(from, "ModuleInfo",
+	modversion = ggz_conf_read_string(from, "ModuleInfo",
 						"Version", NULL);
 	if(modversion == NULL) {
 		fprintf(stderr, "Critical: Module version not specified.\n");
 		status = 0;
 	}
 
-	modexec = ggzcore_confio_read_string(from, "ModuleInfo",
+	modexec = ggz_conf_read_string(from, "ModuleInfo",
 					     "CommandLine", NULL);
 	if(modexec == NULL) {
 		fprintf(stderr, "Critical: Executable not specified.\n");
 		status = 0;
 	}
 
-	modui = ggzcore_confio_read_string(from, "ModuleInfo",
+	modui = ggz_conf_read_string(from, "ModuleInfo",
 					   "Frontend", NULL);
 	if(modui == NULL) {
 		fprintf(stderr, "Critical: User interface not specified.\n");
 		status = 0;
 	}
 
-	modpengine = ggzcore_confio_read_string(from, "ModuleInfo",
+	modpengine = ggz_conf_read_string(from, "ModuleInfo",
 					        "ProtocolEngine", NULL);
 	if(modpengine == NULL) {
 		fprintf(stderr, "Critical: Protocol engine not specified.\n");
 		status = 0;
 	}
 
-	modpversion = ggzcore_confio_read_string(from, "ModuleInfo",
+	modpversion = ggz_conf_read_string(from, "ModuleInfo",
 						 "ProtocolVersion", NULL);
 	if(modpversion == NULL) {
 		fprintf(stderr, "Critical: Protocol version not specified.\n");
 		status = 0;
 	}
 
-	modauthor = ggzcore_confio_read_string(from, "ModuleInfo",
+	modauthor = ggz_conf_read_string(from, "ModuleInfo",
 					       "Author", NULL);
 	if(modauthor == NULL) {
 		fprintf(stderr, "Critical: Module author not specified.\n");
 		status = 0;
 	}
 
-	modurl = ggzcore_confio_read_string(from, "ModuleInfo",
+	modurl = ggz_conf_read_string(from, "ModuleInfo",
 					    "Homepage", NULL);
 	if(modurl == NULL)
 		fprintf(stderr, "Warning: Module homepage not specified.\n");
 
-	modpsupport = ggzcore_confio_read_string(from, "ModuleInfo",
+	modpsupport = ggz_conf_read_string(from, "ModuleInfo",
 						 "SupportedGames", NULL);
-	modicon = ggzcore_confio_read_string(from, "ModuleInfo",
+	modicon = ggz_conf_read_string(from, "ModuleInfo",
 					     "IconPath", NULL);
-	modhelp = ggzcore_confio_read_string(from, "ModuleInfo",
+	modhelp = ggz_conf_read_string(from, "ModuleInfo",
 					     "HelpPath", NULL);
 
 	return status;
@@ -166,7 +165,7 @@ int purge_engine_name(int global)
 	char **engine_list;
 	int index;
 
-	ggzcore_confio_read_list(global, "Games", "*Engines*",
+	ggz_conf_read_list(global, "Games", "*Engines*",
 				 &items, &engine_list);
 
 	for(index=0; index<items; index++)
@@ -178,10 +177,10 @@ int purge_engine_name(int global)
 	items--;
 
 	if(items != 0)
-		ggzcore_confio_write_list(global, "Games", "*Engines*",
+		ggz_conf_write_list(global, "Games", "*Engines*",
 					  items, engine_list);
 	else
-		ggzcore_confio_remove_key(global, "Games", "*Engines*");
+		ggz_conf_remove_key(global, "Games", "*Engines*");
 
 	return 0;
 }
@@ -195,11 +194,11 @@ char *new_engine_id(int global)
 	int i, j;
 	static char new_id[10];
 
-	ggzcore_confio_read_list(global, "Games", "*Engines*",
+	ggz_conf_read_list(global, "Games", "*Engines*",
 				 &engines, &engine_list);
 
 	for(i=0; i<engines; i++) {
-		ggzcore_confio_read_list(global, "Games", engine_list[i],
+		ggz_conf_read_list(global, "Games", engine_list[i],
 						 &ids, &engine_id_list);
 		for(j=0; j<ids; j++) {
 			t = atoi(engine_id_list[j] + 1);
@@ -222,19 +221,19 @@ char *get_engine_id(int global)
 	char *author, *ui, *version;
 	int index;
 
-	ggzcore_confio_read_list(global, "Games", modpengine,
+	ggz_conf_read_list(global, "Games", modpengine,
 				 &items, &engine_list);
 	if(items == 0)
 		return NULL;
 
 	for(index=0; index<items; index++) {
 		engine_id = engine_list[index];
-		author = ggzcore_confio_read_string(global, engine_id,
+		author = ggz_conf_read_string(global, engine_id,
 						    "Author", NULL);
-		ui = ggzcore_confio_read_string(global, engine_id,
+		ui = ggz_conf_read_string(global, engine_id,
 						"Frontend", NULL);
 		if(modversion) {
-			version = ggzcore_confio_read_string(global, engine_id,
+			version = ggz_conf_read_string(global, engine_id,
 							     "Version", NULL);
 			if(!strcmp(author, modauthor) && !strcmp(ui, modui) &&
 			   !strcmp(version, modversion))
@@ -256,7 +255,7 @@ void purge_engine_id(int global, char *engine_id)
 	char **engine_list;
 	int index;
 
-	ggzcore_confio_read_list(global, "Games", modpengine,
+	ggz_conf_read_list(global, "Games", modpengine,
 				 &items, &engine_list);
 
 	for(index=0; index<items; index++)
@@ -268,10 +267,10 @@ void purge_engine_id(int global, char *engine_id)
 	items--;
 
 	if(items != 0)
-		ggzcore_confio_write_list(global, "Games", modpengine,
+		ggz_conf_write_list(global, "Games", modpengine,
 					  items, engine_list);
 	else {
-		ggzcore_confio_remove_key(global, "Games", modpengine);
+		ggz_conf_remove_key(global, "Games", modpengine);
 		purge_engine_name(global);
 	}
 }
@@ -301,15 +300,15 @@ int open_conffile(void)
 	else
 		sprintf(global_pathname, "%s/%s", GGZCONFDIR, global_filename);
 
-	global = ggzcore_confio_parse(global_pathname, GGZ_CONFIO_RDONLY);
+	global = ggz_conf_parse(global_pathname, GGZ_CONF_RDONLY);
 	if(global < 0) {
 		fprintf(stderr, "Invalid GGZ installation, please reinstall\n");
 		return -1;
 	}
-	global = ggzcore_confio_parse(global_pathname, GGZ_CONFIO_RDWR);
+	global = ggz_conf_parse(global_pathname, GGZ_CONF_RDWR);
 	if(global < 0) {
 		fprintf(stderr, "Insufficient permission to install modules\n");
-		_ggzcore_confio_cleanup();
+		ggz_conf_cleanup();
 		return -1;
 	}
 
@@ -329,14 +328,14 @@ int remove_module(void)
 
 	if(engine_id == NULL) {
 		fprintf(stderr,"Warning: Tried to remove nonexistant module\n");
-		_ggzcore_confio_cleanup();
+		ggz_conf_cleanup();
 		return -1;
 	}
 
-	rc = ggzcore_confio_remove_section(global, engine_id);
+	rc = ggz_conf_remove_section(global, engine_id);
 	if(rc == 0) {
 		purge_engine_id(global, engine_id);
-		rc = ggzcore_confio_commit(global);
+		rc = ggz_conf_commit(global);
 	}
 
 	if(rc != 0) {
@@ -344,7 +343,7 @@ int remove_module(void)
 		fprintf(stderr, "Module removal failed, see documentation\n");
 	}
 
-	_ggzcore_confio_cleanup();
+	ggz_conf_cleanup();
 
 	return rc;
 }
@@ -364,7 +363,7 @@ int install_module(void)
 	if(!modforce) {
 		if(engine_id != NULL) {
 			fprintf(stderr, "Cannot overwrite existing module\n");
-			_ggzcore_confio_cleanup();
+			ggz_conf_cleanup();
 			return -1;
 		}
 	}
@@ -374,56 +373,56 @@ int install_module(void)
 		modforce = 0;
 	}
 
-	rc = ggzcore_confio_write_string(global, engine_id, "Name", modname);
+	rc = ggz_conf_write_string(global, engine_id, "Name", modname);
 	if(rc == 0) {
-		ggzcore_confio_write_string(global, engine_id,
+		ggz_conf_write_string(global, engine_id,
 					    "ProtocolEngine", modpengine);
-		ggzcore_confio_write_string(global, engine_id,
+		ggz_conf_write_string(global, engine_id,
 					    "ProtocolVersion", modpversion);
-		ggzcore_confio_write_string(global, engine_id,
+		ggz_conf_write_string(global, engine_id,
 					    "Frontend", modui);
-		ggzcore_confio_write_string(global, engine_id,
+		ggz_conf_write_string(global, engine_id,
 					    "Version", modversion);
-		ggzcore_confio_write_string(global, engine_id,
+		ggz_conf_write_string(global, engine_id,
 					    "Author", modauthor);
-		ggzcore_confio_write_string(global, engine_id,
+		ggz_conf_write_string(global, engine_id,
 					    "CommandLine", modexec);
-		ggzcore_confio_write_string(global, engine_id,
+		ggz_conf_write_string(global, engine_id,
 					    "Homepage", modurl);
 		if(modpsupport)
-			ggzcore_confio_write_string(global, engine_id,
+			ggz_conf_write_string(global, engine_id,
 						 "SupportedGames", modpsupport);
 		if(modicon)
-			ggzcore_confio_write_string(global, engine_id,
+			ggz_conf_write_string(global, engine_id,
 						    "IconPath", modicon);
 		if(modhelp)
-			ggzcore_confio_write_string(global, engine_id,
+			ggz_conf_write_string(global, engine_id,
 						    "HelpPath", modhelp);
 
-		engine_id_list = ggzcore_confio_read_string(global, "Games",
+		engine_id_list = ggz_conf_read_string(global, "Games",
 						            modpengine, NULL);
 		if(engine_id_list == NULL && !modforce) {
-			ggzcore_confio_write_string(global, "Games",
+			ggz_conf_write_string(global, "Games",
 						    modpengine, engine_id);
-			engine_list = ggzcore_confio_read_string(global,"Games",
+			engine_list = ggz_conf_read_string(global,"Games",
 						    "*Engines*", NULL);
 			if(engine_list == NULL)
-				ggzcore_confio_write_string(global, "Games",
+				ggz_conf_write_string(global, "Games",
 						    "*Engines*", modpengine);
 			else {
 				snprintf(bigstr, 1024, "%s %s",
 					 engine_list, modpengine);
-				ggzcore_confio_write_string(global, "Games",
+				ggz_conf_write_string(global, "Games",
 						    "*Engines*", bigstr);
 			}
 		} else if(!modforce) {
 			snprintf(bigstr, 1024, "%s %s",
 				 engine_id_list, engine_id);
-			ggzcore_confio_write_string(global, "Games",
+			ggz_conf_write_string(global, "Games",
 					    	modpengine, bigstr);
 		}
 
-		rc = ggzcore_confio_commit(global);
+		rc = ggz_conf_commit(global);
 	}
 
 	if(rc != 0) {
@@ -431,7 +430,7 @@ int install_module(void)
 		fprintf(stderr, "Module installation failed, see documentation");
 	}
 
-	_ggzcore_confio_cleanup();
+	ggz_conf_cleanup();
 
 	return rc;
 }

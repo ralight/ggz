@@ -20,8 +20,6 @@ libggzcore_la_LDFLAGS = -version-info 1:0:0
 
 libggzcore_la_SOURCES =	conf.c \
 			conf.h \
-			confio.c \
-			confio.h \
 		      	init.c \
 			game.c \
 			game.h \

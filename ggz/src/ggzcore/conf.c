@@ -25,11 +25,11 @@
 
 #include <config.h>
 
+#include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "ggzcore.h"
-#include "confio.h"
 #include "conf.h"
 
 
@@ -72,12 +72,12 @@ int ggzcore_conf_initialize(const char *g_path, const char *u_path)
 		return -1;
 	}
 
-	/* Let ggzcore_confio handle opening the files */
+	/* Let ggz_conf handle opening the files */
 	if(g_path)
-		g_handle = ggzcore_confio_parse(g_path, GGZ_CONFIO_RDONLY);
+		g_handle = ggz_conf_parse(g_path, GGZ_CONF_RDONLY);
 	if(u_path)
-		u_handle = ggzcore_confio_parse(u_path, GGZ_CONFIO_RDWR |
-							GGZ_CONFIO_CREATE);
+		u_handle = ggz_conf_parse(u_path, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
+					  
 
 	/* We consider it "success" if EITHER file is sucessfully opened */
 	if(g_handle != -1 || u_handle != -1)
@@ -109,7 +109,7 @@ int ggzcore_conf_write_string(const char *section, const char *key, const char *
 		return -1;
 	}
 
-	return ggzcore_confio_write_string(u_handle, section, key, value);
+	return ggz_conf_write_string(u_handle, section, key, value);
 }
 
 
@@ -132,7 +132,7 @@ int ggzcore_conf_write_int(const char *section, const char *key, int value)
 		return -1;
 	}
 
-	return ggzcore_confio_write_int(u_handle, section, key, value);
+	return ggz_conf_write_int(u_handle, section, key, value);
 }
 
 
@@ -155,7 +155,7 @@ int ggzcore_conf_write_list(const char *section, const char *key, int argc, char
 		return -1;
 	}
 
-	return ggzcore_confio_write_list(u_handle, section, key, argc, argv);
+	return ggz_conf_write_list(u_handle, section, key, argc, argv);
 }
 
 
@@ -183,9 +183,9 @@ char * ggzcore_conf_read_string(const char *section, const char *key, const char
 
 	/* Check the user file first, then the global */
 	if(u_handle != -1)
-		s = ggzcore_confio_read_string(u_handle, section, key, NULL);
+		s = ggz_conf_read_string(u_handle, section, key, NULL);
 	if(!s && g_handle != -1)
-		s = ggzcore_confio_read_string(g_handle, section, key, NULL);
+		s = ggz_conf_read_string(g_handle, section, key, NULL);
 
 	/* If nothing in either file, give them a copy of their default */
 	if(!s && def)
@@ -223,9 +223,9 @@ int ggzcore_conf_read_int(const char *section, const char *key, int def)
 	/* if the first return was actually found or we were just getting  */
 	/* the default integer.	*/
 	if(u_handle != -1)
-		s = ggzcore_confio_read_string(u_handle, section, key, NULL);
+		s = ggz_conf_read_string(u_handle, section, key, NULL);
 	if(!s && g_handle != -1)
-		s = ggzcore_confio_read_string(g_handle, section, key, NULL);
+		s = ggz_conf_read_string(g_handle, section, key, NULL);
 
 	/* If nothing in either file, give them their default */
 	if(!s)
@@ -265,10 +265,10 @@ int ggzcore_conf_read_list(const char *section, const char *key, int *argcp, cha
 
 	/* Check the user file first, then the global */
 	if(u_handle != -1)
-		rc = ggzcore_confio_read_list(u_handle, section, key,
+		rc = ggz_conf_read_list(u_handle, section, key,
 					       argcp, argvp);
 	if(rc == -1 && g_handle != -1)
-		rc = ggzcore_confio_read_list(g_handle, section, key,
+		rc = ggz_conf_read_list(g_handle, section, key,
 					       argcp, argvp);
 
 	/* Just return the status from the last read_list call */
@@ -296,7 +296,7 @@ int ggzcore_conf_remove_section(const char *section)
 		return -1;
 	}
 
-	return ggzcore_confio_remove_section(u_handle, section);
+	return ggz_conf_remove_section(u_handle, section);
 }
 
 
@@ -320,7 +320,7 @@ int ggzcore_conf_remove_key(const char *section, const char *key)
 		return -1;
 	}
 
-	return ggzcore_confio_remove_key(u_handle, section, key);
+	return ggz_conf_remove_key(u_handle, section, key);
 }
 
 
@@ -339,5 +339,5 @@ int ggzcore_conf_commit(void)
 		return -1;
 	}
 
-	return ggzcore_confio_commit(u_handle);
+	return ggz_conf_commit(u_handle);
 }

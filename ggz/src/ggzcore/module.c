@@ -24,7 +24,6 @@
  */
 
 #include "config.h"
-#include "confio.h"
 #include "module.h"
 #include "msg.h"
 #include "game.h"
@@ -254,12 +253,12 @@ int _ggzcore_module_setup(void)
 
 	
 	module_list = ggz_list_create(_ggzcore_module_compare, NULL,
-					   _ggzcore_module_destroy, 0);
+				      _ggzcore_module_destroy, 0);
 	num_modules = 0;
 
 	file = _ggzcore_module_conf_filename();
 	ggzcore_debug(GGZ_DBG_MODULE, "Reading %s", file);
-	mod_handle = ggzcore_confio_parse(file, GGZ_CONFIO_RDONLY);
+	mod_handle = ggz_conf_parse(file, GGZ_CONF_RDONLY);
 	/* Free up space taken by name */
 	ggz_free(file);
 	
@@ -269,8 +268,8 @@ int _ggzcore_module_setup(void)
 	}
 	
 	/* Read in list of supported gametypes */
-	status = ggzcore_confio_read_list(mod_handle, "Games", "*Engines*", 
-					  &count_types, &games);
+	status = ggz_conf_read_list(mod_handle, "Games", "*Engines*", 
+				    &count_types, &games);
 	if (status < 0) {
 		ggzcore_debug(GGZ_DBG_MODULE, "Couldn't read engine list");
 		return -1;
@@ -278,9 +277,9 @@ int _ggzcore_module_setup(void)
 	ggzcore_debug(GGZ_DBG_MODULE, "%d game engines supported", count_types);
 	
 	for (i = 0; i < count_types; i++) {
-		status = ggzcore_confio_read_list(mod_handle, "Games", 
-						  games[i], &count_modules, 
-						  &ids);
+		status = ggz_conf_read_list(mod_handle, "Games", games[i], 
+					    &count_modules, &ids);
+					    
 
 		ggzcore_debug(GGZ_DBG_MODULE, "%d modules for %s", count_modules,
 			      games[i]);
@@ -317,8 +316,8 @@ int _ggzcore_module_get_num_by_type(const char *game,
 	struct _GGZModule module;
 
 	/* Get total count for this engine (regardless of version) */
-	status = ggzcore_confio_read_list(mod_handle, "Games", engine,
-					  &count, &ids);
+	status = ggz_conf_read_list(mod_handle, "Games", engine, &count, &ids);
+				    
 	if (status < 0)
 		return 0;
 	
@@ -346,9 +345,8 @@ struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game,
 	char **ids;
 	struct _GGZModule *module;
 
-	status = ggzcore_confio_read_list(mod_handle, "Games", engine,
-					  &total, &ids);
-
+	status = ggz_conf_read_list(mod_handle, "Games", engine, &total, &ids);
+	
 	ggzcore_debug(GGZ_DBG_MODULE, "Found %d modules matching %s", total,
 		      engine);
 	
@@ -551,32 +549,20 @@ static void _ggzcore_module_read(struct _GGZModule *mod, char *id)
 	int argc;
 	/* FIXME: check for errors on all of these */
 
-	mod->name = ggzcore_confio_read_string(mod_handle, id, "Name", NULL);
-	mod->version = ggzcore_confio_read_string(mod_handle, id, "Version",
-						     NULL);
-	mod->prot_engine = ggzcore_confio_read_string(mod_handle, id, 
-						      "ProtocolEngine", NULL);
-
-	mod->prot_engine = ggzcore_confio_read_string(mod_handle, id, 
-						      "ProtocolEngine", NULL);
-
-	mod->prot_version = ggzcore_confio_read_string(mod_handle, id, 
-						       "ProtocolVersion", NULL);
-	ggzcore_confio_read_list(mod_handle, id, "SupportedGames", &argc, 
-				 &mod->games);
-      
-	mod->author = ggzcore_confio_read_string(mod_handle, id, "Author", 
-						  NULL);
-	mod->frontend = ggzcore_confio_read_string(mod_handle, id, "Frontend",
-						    NULL);
-	mod->url = ggzcore_confio_read_string(mod_handle, id, "Homepage", NULL);
-     	ggzcore_confio_read_list(mod_handle, id, "CommandLine", &argc, 
-				 &mod->argv);
-	
-	mod->icon = ggzcore_confio_read_string(mod_handle, id, "IconPath", 
-						NULL);
-	mod->help = ggzcore_confio_read_string(mod_handle, id, "HelpPath", 
-						NULL);
+	mod->name = ggz_conf_read_string(mod_handle, id, "Name", NULL);
+	mod->version = ggz_conf_read_string(mod_handle, id, "Version", NULL);
+	mod->prot_engine = ggz_conf_read_string(mod_handle, id, 
+						"ProtocolEngine", NULL);
+	mod->prot_version = ggz_conf_read_string(mod_handle, id, 
+						 "ProtocolVersion", NULL);
+	ggz_conf_read_list(mod_handle, id, "SupportedGames", &argc, 
+			   &mod->games);
+	mod->author = ggz_conf_read_string(mod_handle, id, "Author", NULL);
+	mod->frontend = ggz_conf_read_string(mod_handle, id, "Frontend", NULL);
+	mod->url = ggz_conf_read_string(mod_handle, id, "Homepage", NULL);
+     	ggz_conf_read_list(mod_handle, id, "CommandLine", &argc, &mod->argv);
+	mod->icon = ggz_conf_read_string(mod_handle, id, "IconPath", NULL);
+	mod->help = ggz_conf_read_string(mod_handle, id, "HelpPath",  NULL);
 }
 
 

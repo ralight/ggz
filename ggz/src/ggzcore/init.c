@@ -25,7 +25,6 @@
 
 #include "config.h"
 #include "conf.h"
-#include "confio.h"
 #include "ggzcore.h"
 #include "msg.h"
 #include "net.h"
@@ -62,7 +61,7 @@ int ggzcore_init(GGZOptions options)
 void ggzcore_destroy(void)
 {
 	_ggzcore_module_cleanup();
-	_ggzcore_confio_cleanup();
+	ggz_conf_cleanup();
 	ggz_memory_check();
 	_ggzcore_debug_cleanup();
 }

@@ -582,58 +582,6 @@ int ggzcore_conf_remove_key(const char *section, const char *key);
 int ggzcore_conf_commit(void);
 
 
-/* The confio functions work just like their conf counterparts above, with
- * the exception that an integer handle must be maintained by the caller.
- * The handle is obtained from ggzcore_confio_parse, and passed as the first
- * argument to most other confio functions.
- *
- * Finally, the ggzcore_confio_parse function receives an additional argument:
- *	options
- * which should be a logically or'd list of options from those below.
- */
-
-/* CONFIO Options */
-#define GGZ_CONFIO_RDONLY	((unsigned char) 0x01)
-#define GGZ_CONFIO_RDWR		((unsigned char) 0x02)
-#define GGZ_CONFIO_CREATE	((unsigned char) 0x04)
-
-/* CONFIO Functions */
-int ggzcore_confio_parse		(const char *path,
-					 const unsigned char options);
-void ggzcore_confio_close		(int handle);
-int ggzcore_confio_commit		(int handle);
-int ggzcore_confio_write_string		(int	handle,
-					 const char	*section,
-					 const char	*key,
-					 const char	*value);
-int ggzcore_confio_write_int		(int	handle,
-					 const char	*section,
-					 const char	*key,
-					 int	value);
-int ggzcore_confio_write_list		(int	handle,
-					 const char	*section,
-					 const char	*key,
-					 int	argc,
-					 char	**argv);
-char * ggzcore_confio_read_string	(int	handle,
-					 const char	*section,
-					 const char	*key,
-					 const char	*def);
-int ggzcore_confio_read_int		(int	handle,
-					 const char	*section,
-					 const char	*key,
-					 int	def);
-int ggzcore_confio_read_list		(int	handle,
-					 const char	*section,
-					 const char	*key,
-					 int	*argcp,
-					 char	***argvp);
-int ggzcore_confio_remove_section	(int	handle,
-					 const char	*section);
-int ggzcore_confio_remove_key		(int	handle,
-					 const char	*section,
-					 const char	*key);
-
 
 /* This returns the number of registered modules */
 unsigned int ggzcore_module_get_num(void);
