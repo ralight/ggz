@@ -36,8 +36,7 @@ ggzd_SOURCES =	chat.c\
 		hash.h \
 		ggzdb.c \
 		ggzdb.h \
-		ggzdb_db2.c \
-		ggzdb_db2.h
+		ggzdb_db2.c
 
 
 ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(top_builddir)/easysock/libeasysock.la

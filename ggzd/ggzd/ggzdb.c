@@ -29,7 +29,6 @@
 #include "ggzd.h"
 #include "datatypes.h"
 #include "ggzdb.h"
-#include "ggzdb_db2.h"
 #include "err_func.h"
 
 
@@ -37,21 +36,25 @@
 extern Options opt;
 
 /* Internal variables */
-static pthread_rwlock_t db_thread_lock;
 static char db_needs_init = 1;
 static char player_needs_init = 1;
 
 /* Internal functions */
 static int ggzdb_player_init(void);
 
+/* Back-end functions */
+extern int _ggzdb_init(char *datadir);
+extern void _ggzdb_enter(void);
+extern void _ggzdb_exit(void);
+extern int _ggzdb_init_player(char *datadir);
+extern int _ggzdb_player_add(ggzdbPlayerEntry *);
+extern int _ggzdb_player_get(ggzdbPlayerEntry *);
+
 
 /* Function to initialize the database system */
 int ggzdb_init(void)
 {
 	int rc;
-
-	/* Initialize the thread lock */
-	pthread_rwlock_init(&db_thread_lock, NULL);
 
 	/* Call backend's initialization */
 	rc = _ggzdb_init(opt.data_dir);
@@ -67,14 +70,14 @@ int ggzdb_player_add(ggzdbPlayerEntry *pe)
 {
 	int rc=0;
 
-	DB_ENTER;
+	_ggzdb_enter();
 	if(player_needs_init)
 		rc = ggzdb_player_init();
 
 	if(rc == 0)
 		rc = _ggzdb_player_add(pe);
 
-	DB_EXIT;
+	_ggzdb_exit();
 	return rc;
 }
 
@@ -84,14 +87,14 @@ int ggzdb_player_get(ggzdbPlayerEntry *pe)
 {
 	int rc=0;
 
-	DB_ENTER;
+	_ggzdb_enter();
 	if(player_needs_init)
 		rc = ggzdb_player_init();
 
 	if(rc == 0)
 		rc = _ggzdb_player_get(pe);
 
-	DB_EXIT;
+	_ggzdb_exit();
 	return rc;
 }
 

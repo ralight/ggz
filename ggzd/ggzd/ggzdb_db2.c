@@ -31,7 +31,6 @@
 
 #include "ggzd.h"
 #include "ggzdb.h"
-#include "ggzdb_db2.h"
 #include "err_func.h"
 
 /* Internal variables */
@@ -56,6 +55,20 @@ int _ggzdb_init(char *datadir)
 		err_sys("db_appinit() failed in _ggzdb_init()");
 
 	return rc;
+}
+
+
+/* Function to enter the database */
+void _ggzdb_enter(void)
+{
+	/* db2 doesn't need to set locks or anything */
+}
+
+
+/* Function to exit the database */
+void _ggzdb_exit(void)
+{
+	/* db2 doesn't need to free locks or anything */
 }
 
 
