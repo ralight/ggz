@@ -157,6 +157,10 @@ static int table_check(GGZTable* table)
 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: player %s", i, 
 				table->seats[i]);
 			break;
+		default:
+			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: **invalid**");
+			status = E_BAD_OPTIONS;
+			break;
 		}
 	}
 	return status;
@@ -815,6 +819,10 @@ int table_launch(char* name, int type, int room, char* desc, int seats[],
 			 */
 			strcpy(table->reserve[i], names[i]);
 			break;
+		default:
+			/* Error in seat assignments */
+			table_free(table);
+			return E_BAD_OPTIONS;
 		}
 	
 	
