@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 6877 2005-01-24 06:34:32Z jdorje $
+ * $Id: server.h 6883 2005-01-24 17:44:11Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -36,28 +36,29 @@
 GGZServer *_ggzcore_server_new(void);
 
 /* functions to get a GGZServer attribute */
-GGZNet *_ggzcore_server_get_net(GGZServer * server);
-GGZLoginType _ggzcore_server_get_type(GGZServer * server);
-char *_ggzcore_server_get_handle(GGZServer * server);
-char *_ggzcore_server_get_password(GGZServer * server);
-GGZStateID _ggzcore_server_get_state(GGZServer * server);
-int _ggzcore_server_get_tls(struct _GGZServer *server);
+GGZNet *_ggzcore_server_get_net(const GGZServer * server);
+GGZLoginType _ggzcore_server_get_type(const GGZServer * server);
+const char *_ggzcore_server_get_handle(const GGZServer * server);
+const char *_ggzcore_server_get_password(const GGZServer * server);
+GGZStateID _ggzcore_server_get_state(const GGZServer * server);
+int _ggzcore_server_get_tls(const GGZServer * server);
 
-int _ggzcore_server_get_num_players(GGZServer * server);
+int _ggzcore_server_get_num_players(const GGZServer * server);
 
-int _ggzcore_server_get_num_rooms(GGZServer * server);
-GGZRoom *_ggzcore_server_get_cur_room(GGZServer * server);
-GGZRoom *_ggzcore_server_get_nth_room(GGZServer * server,
+int _ggzcore_server_get_num_rooms(const GGZServer * server);
+GGZRoom *_ggzcore_server_get_cur_room(const GGZServer * server);
+GGZRoom *_ggzcore_server_get_nth_room(const GGZServer * server,
 				      const unsigned int num);
-GGZRoom *_ggzcore_server_get_room_by_id(GGZServer * server,
+GGZRoom *_ggzcore_server_get_room_by_id(const GGZServer * server,
 					const unsigned int id);
 
-int _ggzcore_server_get_num_gametypes(GGZServer * server);
-GGZGameType *_ggzcore_server_get_nth_gametype(GGZServer * server,
+int _ggzcore_server_get_num_gametypes(const GGZServer * server);
+GGZGameType *_ggzcore_server_get_nth_gametype(const GGZServer * server,
 					      const unsigned int num);
-GGZGameType *_ggzcore_server_get_type_by_id(GGZServer * server,
+GGZGameType *_ggzcore_server_get_type_by_id(const GGZServer * server,
 					    const unsigned int id);
-GGZGame *_ggzcore_server_get_cur_game(GGZServer * server);
+GGZGame *_ggzcore_server_get_cur_game(const GGZServer * server);
+
 void _ggzcore_server_set_cur_game(GGZServer * server, GGZGame * game);
 
 /* functions to set a GGZServer attribute */
@@ -67,7 +68,7 @@ void _ggzcore_server_set_handle(GGZServer * server, const char *handle);
 void _ggzcore_server_set_password(GGZServer * server,
 				  const char *password);
 
-void _ggzcore_server_set_room(GGZServer * server, GGZRoom * room);
+void _ggzcore_server_set_cur_room(GGZServer * server, GGZRoom * room);
 
 /* functions to pass status of other information to server object */
 void _ggzcore_server_set_negotiate_status(GGZServer * server,

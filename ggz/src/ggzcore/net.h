@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: net.h 6877 2005-01-24 06:34:32Z jdorje $
+ * $Id: net.h 6883 2005-01-24 17:44:11Z jdorje $
  *
  * Code for performing network I/O
  *
@@ -36,7 +36,7 @@ typedef struct _GGZNet GGZNet;
 
 GGZNet *_ggzcore_net_new(void);
 void _ggzcore_net_init(GGZNet * net,
-		       struct _GGZServer *server,
+		       GGZServer * server,
 		       const char *host,
 		       unsigned int port, unsigned int use_tls);
 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 6881 2005-01-24 08:47:59Z jdorje $
+ * $Id: room.c 6883 2005-01-24 17:44:11Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -69,7 +69,7 @@ static char *_ggzcore_room_events[] = {
 struct _GGZRoom {
 
 	/* Server which this room is on */
-	struct _GGZServer *server;
+	GGZServer *server;
 
 	/* Monitoring flag */
 	char monitor;
@@ -121,7 +121,7 @@ static unsigned int _ggzcore_num_events =
  */
 
 
-static struct _GGZServer *_ggzcore_room_get_server(GGZRoom * room)
+static GGZServer *_ggzcore_room_get_server(GGZRoom * room)
 {
 	return room->server;
 }
@@ -251,7 +251,7 @@ GGZRoom *ggzcore_room_new(void)
 
 
 /* Initialize room object */
-int ggzcore_room_init(GGZRoom * room, const GGZServer * server,
+int ggzcore_room_init(GGZRoom * room, GGZServer * server,
 		      const unsigned int id, const char *name,
 		      const unsigned int game, const char *desc)
 {
@@ -491,7 +491,7 @@ GGZRoom *_ggzcore_room_new(void)
 
 
 void _ggzcore_room_init(GGZRoom * room,
-			const struct _GGZServer *server,
+			GGZServer * server,
 			const unsigned int id,
 			const char *name,
 			const unsigned int game,
@@ -499,7 +499,7 @@ void _ggzcore_room_init(GGZRoom * room,
 {
 	int i;
 
-	room->server = (struct _GGZServer *)server;
+	room->server = server;
 	room->id = id;
 	room->game = game;
 	room->name = ggz_strdup(name);

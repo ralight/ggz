@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6880 2005-01-24 08:36:55Z jdorje $
+ * $Id: ggzcore.h 6883 2005-01-24 17:44:11Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -684,7 +684,8 @@ int ggzcore_server_set_hostinfo(GGZServer *server,
 /** @brief Set login info for logging in to the server.
  *
  *  Call this function to set login info for the GGZ server
- *  before trying to login.
+ *  before trying to login.  This should only be called when the server is in
+ *  certain states.
  *
  *  @param server The GGZ server object.
  *  @param type The type of login to attempt.
@@ -719,7 +720,7 @@ int ggzcore_server_log_session(GGZServer *server, const char *filename);
  *  @return A string containing the host name, or NULL on error.
  *  @see ggzcore_server_set_hostinfo
  */
-const char* ggzcore_server_get_host(GGZServer *server);
+const char* ggzcore_server_get_host(const GGZServer *server);
 
 /** @brief Get the port of the server.
  *
@@ -727,7 +728,7 @@ const char* ggzcore_server_get_host(GGZServer *server);
  *  @return The port number of the server, or -1 on error.
  *  @see ggzcore_server_set_hostinfo
  */
-int          ggzcore_server_get_port(GGZServer *server);
+int ggzcore_server_get_port(const GGZServer *server);
 
 /** @brief Get the login type being used for this server.
  *
@@ -735,7 +736,7 @@ int          ggzcore_server_get_port(GGZServer *server);
  *  @return The login type set for the server, or -1 on error.
  *  @see ggzcore_server_set_logininfo
  */
-GGZLoginType ggzcore_server_get_type(GGZServer *server);
+GGZLoginType ggzcore_server_get_type(const GGZServer *server);
 
 /** @brief Get the handle being used for this server.
  *
@@ -743,7 +744,7 @@ GGZLoginType ggzcore_server_get_type(GGZServer *server);
  *  @return A string containing the handle, or NULL on error.
  *  @see ggzcore_server_set_logininfo
  */
-char*        ggzcore_server_get_handle(GGZServer *server);
+const char* ggzcore_server_get_handle(const GGZServer *server);
 
 /** @brief Get the password being used for this server.
  *
@@ -751,7 +752,7 @@ char*        ggzcore_server_get_handle(GGZServer *server);
  *  @return A string containing the password, or NULL on error.
  *  @see ggzcore_server_set_logininfo
  */
-char*        ggzcore_server_get_password(GGZServer *server);
+const char* ggzcore_server_get_password(const GGZServer *server);
 
 /** @brief Get the socket used for connection with the server.
  *
@@ -763,7 +764,7 @@ char*        ggzcore_server_get_password(GGZServer *server);
  *  @return The file descriptor of the connection socket.
  *  @see ggzcore_server_connect
  */
-int          ggzcore_server_get_fd(GGZServer *server);
+int ggzcore_server_get_fd(const GGZServer *server);
 
 #ifndef GGZ_DISABLE_DEPRECATED
 /** @brief Deprecated function.  Do not use. */
@@ -775,32 +776,32 @@ int          ggzcore_server_get_fd(GGZServer *server);
  *  @param server The GGZ server object.
  *  @return The state of the connection, or -1 on error.
  */
-GGZStateID   ggzcore_server_get_state(GGZServer *server);
+GGZStateID ggzcore_server_get_state(const GGZServer *server);
 
 /** @brief Get the current TLS status of this server
  *
  *  @param server The GGZ server object
  *  @return Whether TLS is active or not
  */
-int          ggzcore_server_get_tls(GGZServer *server);
+int ggzcore_server_get_tls(const GGZServer *server);
 
 /** @brief Get the total number of players on the server.
  *
  * @param server The GGZ server object
  * return An approximate number of players in all rooms of the server. */
-int ggzcore_server_get_num_players(GGZServer *server);
+int ggzcore_server_get_num_players(const GGZServer *server);
 
 /** @brief Return the number of rooms on the server, or -1 on error.
  *  @note Until we retrieve the list of rooms, this will return 0.
  */
-int          ggzcore_server_get_num_rooms(GGZServer *server);
+int ggzcore_server_get_num_rooms(const GGZServer *server);
 
 /** @brief Return the current room, or NULL if there is none. */
-GGZRoom*     ggzcore_server_get_cur_room(GGZServer *server);
+GGZRoom* ggzcore_server_get_cur_room(const GGZServer *server);
 
 /** @brief Return the nth room on the server, or NULL on error. */
-GGZRoom*     ggzcore_server_get_nth_room(GGZServer *server, 
-					 const unsigned int num);
+GGZRoom* ggzcore_server_get_nth_room(const GGZServer *server, 
+				     const unsigned int num);
 
 /** @brief Return the overall number of game types on the server.
  *
@@ -808,26 +809,26 @@ GGZRoom*     ggzcore_server_get_nth_room(GGZServer *server,
  * @return The number of game types on this server, or -1 on error.
  * @note This number is 0 until @see GGZ_TYPE_LIST.
  */
-int          ggzcore_server_get_num_gametypes(GGZServer *server);
+int ggzcore_server_get_num_gametypes(const GGZServer *server);
 
 /** @brief Get the nth gametype, or NULL on error. */
-GGZGameType* ggzcore_server_get_nth_gametype(GGZServer *server, 
-					const unsigned int num);
+GGZGameType* ggzcore_server_get_nth_gametype(const GGZServer *server, 
+					     const unsigned int num);
 
 /** @brief Return the player's current game. */
-GGZGame* ggzcore_server_get_cur_game(GGZServer *server);
+GGZGame* ggzcore_server_get_cur_game(const GGZServer *server);
 
 /** @brief Return TRUE iff the server is online (connected?) */
-int ggzcore_server_is_online(GGZServer *server);
+int ggzcore_server_is_online(const GGZServer *server);
 
 /** @brief Return TRUE iff we are logged into the server. */
-int ggzcore_server_is_logged_in(GGZServer *server);
+int ggzcore_server_is_logged_in(const GGZServer *server);
 
 /** @brief Return TRUE iff we are in a room on the server. */
-int ggzcore_server_is_in_room(GGZServer *server);
+int ggzcore_server_is_in_room(const GGZServer *server);
 
 /** @brief Return TRUE iff we are at a table on the server. */
-int ggzcore_server_is_at_table(GGZServer *server);
+int ggzcore_server_is_at_table(const GGZServer *server);
 
 /* GGZ Server Actions */
 /* ------------------ */
@@ -931,7 +932,7 @@ GGZRoom* ggzcore_room_new(void);
 
 /** @brief Initialize room object */
 int ggzcore_room_init(GGZRoom *room, 
-		      const GGZServer *server, 
+		      GGZServer *server, 
 		      const unsigned int id, 
 		      const char *name, 
 		      const unsigned int game, 
