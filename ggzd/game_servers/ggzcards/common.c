@@ -405,7 +405,7 @@ int send_sync(player_t p)
 			status = -1;
 	if (game.state == WH_STATE_WAIT_FOR_PLAY &&
 	    game.curr_play == p)
-		if (req_play(game.next_play, game.play_seat) < 0)
+		if (req_play(game.curr_play, game.play_seat) < 0)
 			status = -1;
 
 	/* request newgame again, if necessary */
