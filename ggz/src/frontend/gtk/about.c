@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-# include <config.h>
+#include <config.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -35,38 +35,19 @@
 #include "support.h"
 
 
-static GtkWidget *dlg_about;
+static GtkWidget *about_dialog;
 static GtkWidget* create_dlg_about(void);
-
-/* Callbacks for About dialog box */
-static void about_ok_button_clicked(GtkWidget* widget, gpointer data);
-
 
 void about_create_or_raise(void)
 {
-	if (!dlg_about) {
-		dlg_about = create_dlg_about();
-		gtk_widget_show(dlg_about);
+	if (!about_dialog) {
+		about_dialog = create_dlg_about();
+		gtk_widget_show(about_dialog);
 	}
 	else {
-		gdk_window_show(dlg_about->window);
-		gdk_window_raise(dlg_about->window);
+		gdk_window_show(about_dialog->window);
+		gdk_window_raise(about_dialog->window);
 	}
-}
-
-
-void about_destroy(void)
-{
-	if (dlg_about) {
-		gtk_widget_destroy(dlg_about);
-		dlg_about = NULL;
-	}
-}
-
-
-static void about_ok_button_clicked(GtkWidget* widget, gpointer data)
-{
-	about_destroy();
 }
 
 
@@ -144,12 +125,12 @@ create_dlg_about (void)
   gtk_container_add (GTK_CONTAINER (button_box), ok_button);
   GTK_WIDGET_SET_FLAGS (ok_button, GTK_CAN_DEFAULT);
 
-  gtk_signal_connect_object (GTK_OBJECT (dlg_about), "destroy",
+  gtk_signal_connect (GTK_OBJECT (dlg_about), "destroy",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+                      &about_dialog);
+  gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
                              GTK_SIGNAL_FUNC (gtk_widget_destroy),
                              GTK_OBJECT (dlg_about));
-  gtk_signal_connect (GTK_OBJECT (ok_button), "clicked",
-                      GTK_SIGNAL_FUNC (about_ok_button_clicked),
-                      NULL);
 
   return dlg_about;
 }

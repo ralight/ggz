@@ -24,4 +24,3 @@
 
 
 void about_create_or_raise(void);
-void about_destroy(void);

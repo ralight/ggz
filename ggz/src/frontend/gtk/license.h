@@ -23,4 +23,3 @@
  */
 
 void license_create_or_raise(void);
-void license_destroy(void);

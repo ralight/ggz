@@ -23,6 +23,12 @@
   <name>dlg_motd</name>
   <width>300</width>
   <height>455</height>
+  <signal>
+    <name>destroy</name>
+    <handler>gtk_widget_destroyed</handler>
+    <data>&amp;motd_dialog</data>
+    <last_modification_time>Sun, 05 Nov 2000 06:32:54 GMT</last_modification_time>
+  </signal>
   <title>MOTD</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -76,8 +82,9 @@
 	  <has_focus>True</has_focus>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>motd_ok_button_clicked</handler>
-	    <last_modification_time>Wed, 18 Oct 2000 00:15:24 GMT</last_modification_time>
+	    <handler>gtk_widget_destroy</handler>
+	    <object>dlg_motd</object>
+	    <last_modification_time>Sun, 05 Nov 2000 06:32:08 GMT</last_modification_time>
 	  </signal>
 	  <label>OK</label>
 	  <relief>GTK_RELIEF_NORMAL</relief>

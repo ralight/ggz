@@ -34,47 +34,30 @@
 #include "license.h"
 #include "support.h"
 
-static GtkWidget *dlg_license;
+static GtkWidget *license_dialog;
 static GtkWidget* create_dlg_license (void);
-
 
 /* Callbacks for License dialog box */
 static void license_realize(GtkWidget * widget, gpointer user_data);
-static void license_ok_button_clicked(GtkWidget* widget, gpointer data);
 
 
 void license_create_or_raise(void)
 {
-	if (!dlg_license) {
-		dlg_license = create_dlg_license();
-		gtk_widget_show(dlg_license);
+	if (!license_dialog) {
+		license_dialog = create_dlg_license();
+		gtk_widget_show(license_dialog);
 	}
 	else {
-		gdk_window_show(dlg_license->window);
-		gdk_window_raise(dlg_license->window);
+		gdk_window_show(license_dialog->window);
+		gdk_window_raise(license_dialog->window);
 	}
-}
-
-
-void license_destroy(void)
-{
-	if (dlg_license) {
-		gtk_widget_destroy(dlg_license);
-		dlg_license = NULL;
-	}
-}
-
-
-static void license_ok_button_clicked(GtkWidget* widget, gpointer data)
-{
-	license_destroy();
 }
 
 
 static void license_realize(GtkWidget * widget, gpointer user_data)
 {
 	GtkWidget *tmp;
-	tmp = lookup_widget(dlg_license, "license_text");
+	tmp = lookup_widget(license_dialog, "license_text");
 	gtk_text_set_word_wrap(GTK_TEXT(tmp), TRUE);
 }
 
@@ -147,15 +130,15 @@ create_dlg_license (void)
   gtk_container_add (GTK_CONTAINER (button_box), ok_button);
   GTK_WIDGET_SET_FLAGS (ok_button, GTK_CAN_DEFAULT);
 
-  gtk_signal_connect_object (GTK_OBJECT (dlg_license), "destroy_event",
-                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
-                             GTK_OBJECT (dlg_license));
+  gtk_signal_connect (GTK_OBJECT (dlg_license), "destroy",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+                      &license_dialog);
   gtk_signal_connect (GTK_OBJECT (dlg_license), "realize",
                       GTK_SIGNAL_FUNC (license_realize),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (ok_button), "clicked",
-                      GTK_SIGNAL_FUNC (license_ok_button_clicked),
-                      NULL);
+  gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
+                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                             GTK_OBJECT (dlg_license));
 
   gtk_widget_grab_focus (ok_button);
   gtk_widget_grab_default (ok_button);

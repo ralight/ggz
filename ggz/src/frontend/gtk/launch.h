@@ -23,4 +23,3 @@
  */
 
 void launch_create_or_raise(void);
-void launch_destroy(void);

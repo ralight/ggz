@@ -23,8 +23,8 @@
   <signal>
     <name>destroy</name>
     <handler>gtk_widget_destroyed</handler>
-    <data>&amp;dlg_launch</data>
-    <last_modification_time>Fri, 28 Jul 2000 04:17:08 GMT</last_modification_time>
+    <data>&amp;launch_dialog</data>
+    <last_modification_time>Sun, 05 Nov 2000 06:28:31 GMT</last_modification_time>
   </signal>
   <signal>
     <name>realize</name>
@@ -86,6 +86,7 @@
 	    <last_modification_time>Wed, 29 Mar 2000 19:48:37 GMT</last_modification_time>
 	  </signal>
 	  <label>Launch</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
 
 	<widget>
@@ -95,10 +96,12 @@
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>launch_cancel_button_clicked</handler>
-	    <last_modification_time>Sun, 19 Nov 2000 22:42:56 GMT</last_modification_time>
+	    <handler>gtk_widget_destroy</handler>
+	    <object>dlg_launch</object>
+	    <last_modification_time>Sun, 05 Nov 2000 06:26:01 GMT</last_modification_time>
 	  </signal>
 	  <label>Cancel</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
       </widget>
     </widget>

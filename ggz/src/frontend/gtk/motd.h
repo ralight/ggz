@@ -22,5 +22,4 @@
  */
 
 void motd_create_or_raise(void);
-void motd_destroy(void);
 void motd_print_line(gchar *line);

@@ -23,9 +23,9 @@
   <name>dlg_about</name>
   <signal>
     <name>destroy</name>
-    <handler>gtk_widget_destroy</handler>
-    <object>dlg_about</object>
-    <last_modification_time>Mon, 13 Nov 2000 17:06:19 GMT</last_modification_time>
+    <handler>gtk_widget_destroyed</handler>
+    <data>&amp;about_dialog</data>
+    <last_modification_time>Sun, 05 Nov 2000 06:16:14 GMT</last_modification_time>
   </signal>
   <title>About</title>
   <type>GTK_WINDOW_DIALOG</type>
@@ -78,8 +78,9 @@
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>about_ok_button_clicked</handler>
-	    <last_modification_time>Sun, 15 Oct 2000 02:59:54 GMT</last_modification_time>
+	    <handler>gtk_widget_destroy</handler>
+	    <object>dlg_about</object>
+	    <last_modification_time>Sun, 05 Nov 2000 06:15:30 GMT</last_modification_time>
 	  </signal>
 	  <label>OK</label>
 	  <relief>GTK_RELIEF_NORMAL</relief>

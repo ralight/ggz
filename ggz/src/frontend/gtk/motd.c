@@ -35,42 +35,32 @@
 #include "support.h"
 
 extern GdkColor colors[];
-static GtkWidget *dlg_motd;
+static GtkWidget *motd_dialog;
 static GtkWidget* create_dlg_motd (void);
-static void motd_ok_button_clicked(GtkButton *button, gpointer user_data);
 
 
 void motd_create_or_raise(void)
 {
 	GtkWidget *tmp;
 
-        if (!dlg_motd) {
-                dlg_motd = create_dlg_motd();
+        if (!motd_dialog) {
+                motd_dialog = create_dlg_motd();
 
-		tmp = lookup_widget(dlg_motd, "motd_text");
+		tmp = lookup_widget(motd_dialog, "motd_text");
 		gtk_text_set_word_wrap(GTK_TEXT(tmp), TRUE);
-                gtk_widget_show(dlg_motd);
+                gtk_widget_show(motd_dialog);
         }
         else {
-                gdk_window_show(dlg_motd->window);
-                gdk_window_raise(dlg_motd->window);
+                gdk_window_show(motd_dialog->window);
+                gdk_window_raise(motd_dialog->window);
 
 		/* Clear out what is currently there */
-		tmp = lookup_widget(dlg_motd, "motd_text");
+		tmp = lookup_widget(motd_dialog, "motd_text");
 		gtk_text_set_point(GTK_TEXT(tmp), 0);
 		gtk_text_forward_delete(GTK_TEXT(tmp),
 			gtk_text_get_length(GTK_TEXT(tmp)));
         }
 
-}
-
-
-void motd_destroy(void)
-{
-        if (dlg_motd) {
-                gtk_widget_destroy(dlg_motd);
-                dlg_motd = NULL;
-        }
 }
 
 
@@ -86,7 +76,7 @@ void motd_print_line(gchar *line)
         gint letter;
                         
         /* Make shure the motd window it there */
-        if (dlg_motd == NULL)
+        if (motd_dialog == NULL)
                 return;
                                 
         cmap = gdk_colormap_get_system();
@@ -94,7 +84,7 @@ void motd_print_line(gchar *line)
                 g_error("couldn't allocate color");
         }
                                         
-        temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_motd), "motd_text");
+        temp_widget = gtk_object_get_data(GTK_OBJECT(motd_dialog), "motd_text");
         fixed_font = gdk_font_load ("-misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1");
         while(line[lindex] != '\0')
         {
@@ -133,12 +123,6 @@ void motd_print_line(gchar *line)
         gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
                         &colors[color_index], NULL, out, -1);
 
-}
-
-
-static void motd_ok_button_clicked(GtkButton *button, gpointer user_data)
-{
-	motd_destroy();
 }
 
 
@@ -208,12 +192,14 @@ create_dlg_motd (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), ok_button);
   GTK_WIDGET_SET_FLAGS (ok_button, GTK_CAN_DEFAULT);
 
-  gtk_signal_connect (GTK_OBJECT (ok_button), "clicked",
-                      GTK_SIGNAL_FUNC (motd_ok_button_clicked),
-                      NULL);
+  gtk_signal_connect (GTK_OBJECT (dlg_motd), "destroy",
+                      GTK_SIGNAL_FUNC (gtk_widget_destroyed),
+                      &motd_dialog);
+  gtk_signal_connect_object (GTK_OBJECT (ok_button), "clicked",
+                             GTK_SIGNAL_FUNC (gtk_widget_destroy),
+                             GTK_OBJECT (dlg_motd));
 
   gtk_widget_grab_focus (ok_button);
   gtk_widget_grab_default (ok_button);
   return dlg_motd;
 }
-

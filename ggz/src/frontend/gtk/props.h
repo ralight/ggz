@@ -23,5 +23,3 @@
  */
 
 void props_create_or_raise(void);
-void props_destroy(void);
-
