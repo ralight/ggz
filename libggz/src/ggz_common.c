@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 4819 2002-10-08 23:32:22Z jdorje $
+ * $Id: ggz_common.c 4855 2002-10-10 20:54:03Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -82,6 +82,8 @@ const char *ggz_chattype_to_string(GGZChatType type)
 		return "beep";
 	case GGZ_CHAT_PERSONAL:
 		return "private";
+	case GGZ_CHAT_TABLE:
+		return "table";
 	case GGZ_CHAT_NONE:
 		break;
 	}
@@ -107,6 +109,8 @@ GGZChatType ggz_string_to_chattype(const char *type_str)
 		return GGZ_CHAT_BEEP;
 	else if (!strcasecmp(type_str, "private"))
 		return GGZ_CHAT_PERSONAL;
+	else if (!strcasecmp(type_str, "table"))
+		return GGZ_CHAT_TABLE;
 	else
 		return GGZ_CHAT_NONE;
 

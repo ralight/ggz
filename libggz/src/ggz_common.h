@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 4819 2002-10-08 23:32:22Z jdorje $
+ * $Id: ggz_common.h 4855 2002-10-10 20:54:03Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -86,9 +86,13 @@ typedef enum {
 	
 	/** A personal message to another player.  It consists of both
 	 *  a message and a target player. */
-	GGZ_CHAT_PERSONAL
+	GGZ_CHAT_PERSONAL,
+
+	/** A table-wide chat.  It goes only to players at the current
+	 *  table. */
+	GGZ_CHAT_TABLE
 } GGZChatType;
-	
+
 
 /** @brief Get a string identifier for the GGZSeatType.
  *
