@@ -112,6 +112,9 @@ create_dlg_main (void)
   gtk_box_pack_start (GTK_BOX (vbox1), menubar, FALSE, FALSE, 0);
 
   fixed1 = gtk_fixed_new ();
+#ifdef GTK2
+  gtk_fixed_set_has_window(GTK_FIXED(fixed1), TRUE);
+#endif
   gtk_widget_set_name (fixed1, "fixed1");
   gtk_widget_ref (fixed1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "fixed1", fixed1,
