@@ -3,7 +3,7 @@
  * Author: Josef Spillner
  * Project: GGZ Client libs
  * Date: 2004
- * $Id: ggz-wrapper.c 6635 2005-01-11 02:46:46Z jdorje $
+ * $Id: ggz-wrapper.c 6845 2005-01-23 13:32:47Z josef $
  *
  * Code for a wrapper for GGZ games
  *
@@ -120,7 +120,7 @@ int main(int argc, char **argv) {
 	}
 
 	if(!nick) {
-		snprintf(randomuser, sizeof(randomuser), _("gaimguest%i"), rand() % 10000);
+		snprintf(randomuser, sizeof(randomuser), _("guest%i"), rand() % 10000);
 		nick = strdup(randomuser);
 	}
 
