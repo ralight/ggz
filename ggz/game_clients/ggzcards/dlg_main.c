@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 3307 2002-02-11 00:44:48Z jdorje $
+ * $Id: dlg_main.c 3328 2002-02-11 10:52:11Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -219,29 +219,37 @@ GtkWidget *create_dlg_main(void)
 	gtk_widget_show(statusbar1);
 	gtk_box_pack_start(GTK_BOX(vbox1), statusbar1, FALSE, FALSE, 0);
 
-	gtk_signal_connect(GTK_OBJECT(dlg_main), "delete_event",
-			   GTK_SIGNAL_FUNC(on_dlg_main_delete_event), NULL);
-	gtk_signal_connect(GTK_OBJECT(mnu_startgame), "activate",
-			   GTK_SIGNAL_FUNC(on_mnu_startgame_activate), NULL);
-	gtk_signal_connect(GTK_OBJECT(mnu_sync), "activate",
-			   GTK_SIGNAL_FUNC(on_mnu_sync_activate), NULL);
-	gtk_signal_connect(GTK_OBJECT(mnu_preferences), "activate",
-			   GTK_SIGNAL_FUNC(on_mnu_preferences_activate),
-			   NULL);
-	gtk_signal_connect(GTK_OBJECT(mnu_exit), "activate",
-			   GTK_SIGNAL_FUNC(on_mnu_exit_activate), NULL);
-	gtk_signal_connect(GTK_OBJECT(mnu_about), "activate",
-			   GTK_SIGNAL_FUNC(on_mnu_about_activate), NULL);
-	gtk_signal_connect(GTK_OBJECT(fixed1), "button_press_event",
-			   GTK_SIGNAL_FUNC(on_fixed1_button_press_event),
-			   NULL);
-	gtk_signal_connect(GTK_OBJECT(fixed1), "expose_event",
-			   GTK_SIGNAL_FUNC(on_fixed1_expose_event), NULL);
-	gtk_signal_connect(GTK_OBJECT(fixed1), "style_set",
-			   GTK_SIGNAL_FUNC(on_fixed1_redraw_event), NULL);
+	(void) gtk_signal_connect(GTK_OBJECT(dlg_main), "delete_event",
+				  GTK_SIGNAL_FUNC(on_dlg_main_delete_event), 
+				  NULL);
+	(void) gtk_signal_connect(GTK_OBJECT(mnu_startgame), "activate",
+				  GTK_SIGNAL_FUNC(on_mnu_startgame_activate),
+				  NULL);
+	(void) gtk_signal_connect(GTK_OBJECT(mnu_sync), "activate",
+				  GTK_SIGNAL_FUNC(on_mnu_sync_activate),
+				  NULL);
+	(void) gtk_signal_connect(GTK_OBJECT(mnu_preferences), "activate",
+				  GTK_SIGNAL_FUNC(on_mnu_preferences_activate),
+				  NULL);
+	(void) gtk_signal_connect(GTK_OBJECT(mnu_exit), "activate",
+				  GTK_SIGNAL_FUNC(on_mnu_exit_activate),
+				  NULL);
+	(void) gtk_signal_connect(GTK_OBJECT(mnu_about), "activate",
+				  GTK_SIGNAL_FUNC(on_mnu_about_activate), 
+				  NULL);
+	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "button_press_event",
+				  GTK_SIGNAL_FUNC(on_fixed1_button_press_event),
+				  NULL);
+	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "expose_event",
+				  GTK_SIGNAL_FUNC(on_fixed1_expose_event),
+				  NULL);
+	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "style_set",
+				  GTK_SIGNAL_FUNC(on_fixed1_redraw_event),
+				  NULL);
 #if 0 /* We need some kind of redraw, I think, but this doesn't draw correctly. */
-	gtk_signal_connect(GTK_OBJECT(fixed1), "size_allocate",
-			   GTK_SIGNAL_FUNC(on_fixed1_redraw_event), NULL);
+	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "size_allocate",
+				  GTK_SIGNAL_FUNC(on_fixed1_redraw_event),
+				  NULL);
 #endif
 
 	return dlg_main;

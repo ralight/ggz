@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 3313 2002-02-11 03:21:07Z jdorje $
+ * $Id: dlg_prefs.c 3328 2002-02-11 10:52:11Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team
  *
@@ -100,7 +100,7 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
 				     preferences.animation);
-	gtk_signal_connect(GTK_OBJECT(button), "toggled",
+	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
 			   GTK_SIGNAL_FUNC(on_animation_toggled), NULL);
 
 	/* 
@@ -113,7 +113,7 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
 				     preferences.cardlists);
-	gtk_signal_connect(GTK_OBJECT(button), "toggled",
+	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
 			   GTK_SIGNAL_FUNC(on_cardlists_toggled), NULL);
 	gtk_widget_set_sensitive(button, FALSE);	/* not implemented */
 
@@ -127,7 +127,7 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
 				     preferences.autostart);
-	gtk_signal_connect(GTK_OBJECT(button), "toggled",
+	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
 			   GTK_SIGNAL_FUNC(on_autostart_toggled), NULL);
 			
 	/*
@@ -140,7 +140,7 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
 				     preferences.use_default_options);
-	gtk_signal_connect(GTK_OBJECT(button), "toggled",
+	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
 			   GTK_SIGNAL_FUNC(on_defaultoptions_toggled), NULL);
 
 	/* 
@@ -158,14 +158,14 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE, FALSE,
 			   0);
 	gtk_widget_set_usize(close_button, 64, -2);
-	gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
+	(void) gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(dialog));
 
 	/* 
 	 * Set up callbacks
 	 */
-	gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
+	(void) gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(dialog));
 

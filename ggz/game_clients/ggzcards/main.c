@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3313 2002-02-11 03:21:07Z jdorje $
+ * $Id: main.c 3328 2002-02-11 10:52:11Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -280,7 +280,7 @@ static GtkWidget *new_message_dialog(const char *mark)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(menu_item);
 	gtk_container_add(GTK_CONTAINER(msg_menu), menu_item);
-	gtk_signal_connect(GTK_OBJECT(menu_item), "activate",
+	(void) gtk_signal_connect(GTK_OBJECT(menu_item), "activate",
 			   GTK_SIGNAL_FUNC(on_mnu_messages_activate),
 			   (gpointer) g_strdup(mark));
 
@@ -293,7 +293,7 @@ static GtkWidget *new_message_dialog(const char *mark)
 	gtk_window_set_title(GTK_WINDOW(dialog), mark);
 	GTK_WINDOW(dialog)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
-	gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
+	(void) gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
 				  GTK_SIGNAL_FUNC(gtk_widget_hide),
 				  GTK_OBJECT(dialog));
 
@@ -314,7 +314,7 @@ static GtkWidget *new_message_dialog(const char *mark)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(close_button);
 	gtk_widget_set_usize(close_button, 64, -2);
-	gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
+	(void) gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_hide),
 				  GTK_OBJECT(dialog));
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area),

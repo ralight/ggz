@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 2943 2001-12-18 23:10:24Z jdorje $
+ * $Id: dlg_options.c 3328 2002-02-11 10:52:11Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -146,7 +146,7 @@ void dlg_option_display(int option_cnt, int *option_sizes, int *defaults,
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
 						     (subbox),
 						     options_selected[i]);
-			gtk_signal_connect(GTK_OBJECT(subbox), "toggled",
+			(void) gtk_signal_connect(GTK_OBJECT(subbox), "toggled",
 					   GTK_SIGNAL_FUNC
 					   (dlg_option_checked), user_data);
 		} else {
@@ -164,7 +164,7 @@ void dlg_option_display(int option_cnt, int *option_sizes, int *defaults,
 									choice);
 				group = gtk_radio_button_group
 					(GTK_RADIO_BUTTON(radio));
-				gtk_signal_connect(GTK_OBJECT(radio),
+				(void) gtk_signal_connect(GTK_OBJECT(radio),
 						   "toggled",
 						   GTK_SIGNAL_FUNC
 						   (dlg_option_toggled),
@@ -186,11 +186,11 @@ void dlg_option_display(int option_cnt, int *option_sizes, int *defaults,
 	}
 
 	button = gtk_button_new_with_label(_("Send options"));
-	gtk_signal_connect(GTK_OBJECT(button), "clicked",
+	(void) gtk_signal_connect(GTK_OBJECT(button), "clicked",
 			   GTK_SIGNAL_FUNC(dlg_options_submit), (gpointer) 0);
 
 	/* If you close the window, it pops right back up again. */
-	gtk_signal_connect_object(GTK_OBJECT(window), "delete_event",
+	(void) gtk_signal_connect_object(GTK_OBJECT(window), "delete_event",
 				  GTK_SIGNAL_FUNC(dlg_opt_delete),
 				  (gpointer) window);
 

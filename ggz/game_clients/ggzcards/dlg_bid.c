@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 2940 2001-12-18 22:17:50Z jdorje $
+ * $Id: dlg_bid.c 3328 2002-02-11 10:52:11Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -95,9 +95,9 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 
 		/* trickery - we don't pass a pointer to the data but the
 		   data itself */
-		gtk_signal_connect(GTK_OBJECT(button), "clicked",
-				   GTK_SIGNAL_FUNC(dlg_bid_clicked),
-				   GINT_TO_POINTER(i));
+		(void) gtk_signal_connect(GTK_OBJECT(button), "clicked",
+					  GTK_SIGNAL_FUNC(dlg_bid_clicked),
+					  GINT_TO_POINTER(i));
 
 		x = i % xw;
 		y = i / xw;
@@ -109,9 +109,9 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 	}
 
 	/* If you close the window, it pops right back up again. */
-	gtk_signal_connect_object(GTK_OBJECT(window), "delete_event",
-				  GTK_SIGNAL_FUNC(dlg_bid_delete),
-				  (gpointer) window);
+	(void) gtk_signal_connect_object(GTK_OBJECT(window), "delete_event",
+					 GTK_SIGNAL_FUNC(dlg_bid_delete),
+					 (gpointer) window);
 
 	gtk_widget_show(table);
 	gtk_widget_show(window);
