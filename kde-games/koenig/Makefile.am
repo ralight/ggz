@@ -10,7 +10,8 @@ koenig_SOURCES = \
 	ggz.cc \
 	toplevel.cc \
 	options.cc \
-	kexttabctl.cc
+	kexttabctl.cc \
+	themes.cc
 
 noinst_HEADERS = \
 	game.h \
@@ -19,7 +20,8 @@ noinst_HEADERS = \
 	ggz.h \
 	toplevel.h \
 	options.h \
-	kexttabctl.h
+	kexttabctl.h \
+	themes.cc
 
 INCLUDES = -I$(top_srcdir)/koenig/libcgc \
 	$(LIBGGZ_INCLUDES) $(GGZMOD_INCLUDES) $(all_includes) $(RSVG_INCLUDES)
@@ -35,7 +37,7 @@ EXTRA_DIST = module.dsc.in koenigui.rc
 rcdir = $(kde_datadir)/koenig
 rc_DATA = koenigui.rc
 
-kde_conf_DATA = fyrdmanrc
+kde_conf_DATA = koenigrc
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force

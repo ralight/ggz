@@ -17,6 +17,7 @@
     <Menu name="windows"><text>&amp;Windows</text>
       <Action name="showmovetable"/>
       <Action name="showchessboard"/>
+      <Action name="showthemes"/>
     </Menu>
   </MenuBar>
 </kpartgui>

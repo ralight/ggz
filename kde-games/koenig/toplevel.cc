@@ -25,9 +25,14 @@
 #include <kmessagebox.h>
 #include <klocale.h>
 #include <klistview.h>
+#include <kstandarddirs.h>
+#include <kprocess.h>
+#include <kconfig.h>
+#include <kapplication.h>
 
 #include <qlayout.h>
 #include <qmultilineedit.h>
+#include <qdir.h>
 
 #include "toplevel.h"
 #include "toplevel.moc"
@@ -36,6 +41,7 @@
 #include "options.h"
 #include "game.h"
 #include "kexttabctl.h"
+#include "themes.h"
 
 #ifdef HAVE_KNEWSTUFF
 #include <knewstuff/downloaddialog.h>
@@ -49,6 +55,8 @@ TopLevel::TopLevel(const char *name)
 
 	chessBoard = NULL;
 	game = NULL;
+	options = NULL;
+	theme = NULL;
 
 	warnings = false;
 
@@ -68,6 +76,7 @@ TopLevel::TopLevel(const char *name)
 
 	a = new KAction(i18n("Show move table"), "warnmessage", 0, this, SLOT(slotMoveTable()), actionCollection(), "showmovetable");
 	a = new KAction(i18n("Show chess board"), "warnmessage", 0, this, SLOT(slotChessBoard()), actionCollection(), "showchessboard");
+	a = new KAction(i18n("Show theme selector"), "warnmessage", 0, this, SLOT(slotThemeSelector()), actionCollection(), "showthemes");
 
 #ifdef HAVE_KNEWSTUFF
 	a = new KAction(i18n("Get themes"), "knewstuff", 0, this, SLOT(slotNewstuff()), actionCollection(), "gamenewstuff");
@@ -97,6 +106,10 @@ TopLevel::TopLevel(const char *name)
 
 	chessBoard = new ChessBoardContainer(NULL, "ChessBoardContainer");
 	chessBoard->show();
+
+	kapp->config()->setGroup("Theme");
+	QString theme = kapp->config()->readEntry("Theme");
+	if(!theme.isNull()) slotTheme(theme);
 }
 
 TopLevel::~TopLevel(void)
@@ -209,6 +222,11 @@ void TopLevel::slotDoMove(int x, int y, int x2, int y2)
 	chessBoard->root()->moveFigure(x, y, x2, y2);
 }
 
+void TopLevel::slotTheme(QString theme)
+{
+	chessBoard->root()->setTheme(theme);
+}
+
 void TopLevel::slotWarnmessages()
 {
 	warnings = !warnings;
@@ -228,11 +246,48 @@ void TopLevel::slotChessBoard()
 	else chessBoard->show();
 }
 
+void TopLevel::slotThemeSelector()
+{
+	if(!theme)
+	{
+		theme = new Themes(NULL);
+		connect(theme, SIGNAL(signalTheme(QString)), SLOT(slotTheme(QString)));
+	}
+	theme->show();
+}
+
 void TopLevel::slotNewstuff()
 {
 #ifdef HAVE_KNEWSTUFF
 	KNS::DownloadDialog::open("chess/theme");
 #endif
+
+	KStandardDirs d;
+	QString basedir = d.findResource("data", "koenig/");
+	QDir dir(basedir);
+	QStringList s = dir.entryList(QDir::Files);
+	for(QStringList::iterator it = s.begin(); it != s.end(); it++)
+	{
+		if(((*it) == ".") || ((*it) == "..")) continue;
+		QString dirname = (*it);
+		//dirname.truncate(dirname.findRev("-"));
+		dirname += ".dir";
+		QDir().mkdir(basedir + "/" + dirname);
+
+		KProcess proc1;
+		proc1 << "mv";
+		proc1 << QString(basedir + "/" + (*it)).latin1();
+		proc1 << QString(basedir + "/" + dirname + "/" + (*it)).latin1();
+		proc1.start(KProcess::Block);
+
+		KProcess proc2;
+		proc2 << "tar";
+		proc2 << "-C";
+		proc2 << QString(basedir + "/" + dirname).latin1();
+		proc2 << "-xvzf";
+		proc2 << QString(basedir + "/" + dirname + "/" + (*it)).latin1();
+		proc2.start(KProcess::Block);
+	}
 }
 
 bool TopLevel::queryClose()

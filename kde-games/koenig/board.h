@@ -31,6 +31,7 @@ class ChessBoard : public QWidget
 		~ChessBoard(void);
 
 		void resetBoard(int color);
+		void setTheme(QString theme);
 
 		enum Figures
 		{

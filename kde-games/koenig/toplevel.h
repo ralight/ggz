@@ -24,6 +24,7 @@
 
 class ChessBoardContainer;
 class Options;
+class Themes;
 class Game;
 class QMultiLineEdit;
 class KListBox;
@@ -48,7 +49,7 @@ public slots:
 	void slotMove(QString msg);
 	void slotDoMove(int x, int y, int x2, int y2);
 	void slotStart(int seat);
-	void slotNewstuff();
+	void slotTheme(QString theme);
 	bool queryClose();
 
 	void slotSync();
@@ -59,6 +60,8 @@ public slots:
 	void slotBoardframe();
 	void slotMoveTable();
 	void slotChessBoard();
+	void slotNewstuff();
+	void slotThemeSelector();
 
 private:
 	void initGameData(void);
@@ -71,6 +74,7 @@ private:
 	KListBox *tab2;
 	KListView *tab3;
 	KExtTabCtl *ctl;
+	Themes *theme;
 
 	bool warnings;
 };

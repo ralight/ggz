@@ -21,6 +21,7 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
+#include <ksimpleconfig.h>
 
 #include <qdragobject.h>
 #include <qimage.h>
@@ -29,6 +30,7 @@
 #include <qwidget.h>
 #include <qwmatrix.h>
 #include <qcursor.h>
+#include <qfile.h>
 
 #ifdef HAVE_RSVG
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -47,19 +49,7 @@ ChessBoard::ChessBoard(QWidget *parent, const char *name)
 
 	// load figure pixmaps
 	QString pixmapdir = d.findResource("data", "koenig/pics/");
-
-	pixmaps[pawn_white] = svgPixmap(pixmapdir + "pawn_w.svg");
-	pixmaps[pawn_black] = svgPixmap(pixmapdir + "pawn_b.svg");
-	pixmaps[bishop_white] = svgPixmap(pixmapdir + "bishop_w.svg");
-	pixmaps[bishop_black] = svgPixmap(pixmapdir + "bishop_b.svg");
-	pixmaps[rook_white] = svgPixmap(pixmapdir + "rook_w.svg");
-	pixmaps[rook_black] = svgPixmap(pixmapdir + "rook_b.svg");
-	pixmaps[knight_white] = svgPixmap(pixmapdir + "knight_w.svg");
-	pixmaps[knight_black] = svgPixmap(pixmapdir + "knight_b.svg");
-	pixmaps[queen_white] = svgPixmap(pixmapdir + "queen_w.svg");
-	pixmaps[queen_black] = svgPixmap(pixmapdir + "queen_b.svg");
-	pixmaps[king_white] = svgPixmap(pixmapdir + "king_w.svg");
-	pixmaps[king_black] = svgPixmap(pixmapdir + "king_b.svg");
+	setTheme(pixmapdir);
 
 	// I like QuickHacks ;)
 	mouseDrag = true;
@@ -70,6 +60,49 @@ ChessBoard::ChessBoard(QWidget *parent, const char *name)
 
 ChessBoard::~ChessBoard(void)
 {
+}
+
+void ChessBoard::setTheme(QString pixmapdir)
+{
+	pixmapdir += "/";
+
+	if(QFile::exists(pixmapdir + "theme.conf"))
+	{
+		KSimpleConfig conf(pixmapdir + "theme.conf");
+
+		conf.setGroup("2DWhite");
+		pixmaps[pawn_white] = svgPixmap(pixmapdir + conf.readEntry("Pawn"));
+		pixmaps[bishop_white] = svgPixmap(pixmapdir + conf.readEntry("Bishop"));
+		pixmaps[rook_white] = svgPixmap(pixmapdir + conf.readEntry("Rook"));
+		pixmaps[knight_white] = svgPixmap(pixmapdir + conf.readEntry("Knight"));
+		pixmaps[queen_white] = svgPixmap(pixmapdir + conf.readEntry("Queen"));
+		pixmaps[king_white] = svgPixmap(pixmapdir + conf.readEntry("King"));
+
+		conf.setGroup("2DBlack");
+		pixmaps[pawn_black] = svgPixmap(pixmapdir + conf.readEntry("Pawn"));
+		pixmaps[bishop_black] = svgPixmap(pixmapdir + conf.readEntry("Bishop"));
+		pixmaps[rook_black] = svgPixmap(pixmapdir + conf.readEntry("Rook"));
+		pixmaps[knight_black] = svgPixmap(pixmapdir + conf.readEntry("Knight"));
+		pixmaps[queen_black] = svgPixmap(pixmapdir + conf.readEntry("Queen"));
+		pixmaps[king_black] = svgPixmap(pixmapdir + conf.readEntry("King"));
+	}
+	else
+	{
+		pixmaps[pawn_white] = svgPixmap(pixmapdir + "pawn_w.svg");
+		pixmaps[pawn_black] = svgPixmap(pixmapdir + "pawn_b.svg");
+		pixmaps[bishop_white] = svgPixmap(pixmapdir + "bishop_w.svg");
+		pixmaps[bishop_black] = svgPixmap(pixmapdir + "bishop_b.svg");
+		pixmaps[rook_white] = svgPixmap(pixmapdir + "rook_w.svg");
+		pixmaps[rook_black] = svgPixmap(pixmapdir + "rook_b.svg");
+		pixmaps[knight_white] = svgPixmap(pixmapdir + "knight_w.svg");
+		pixmaps[knight_black] = svgPixmap(pixmapdir + "knight_b.svg");
+		pixmaps[queen_white] = svgPixmap(pixmapdir + "queen_w.svg");
+		pixmaps[queen_black] = svgPixmap(pixmapdir + "queen_b.svg");
+		pixmaps[king_white] = svgPixmap(pixmapdir + "king_w.svg");
+		pixmaps[king_black] = svgPixmap(pixmapdir + "king_b.svg");
+	}
+
+	update();
 }
 
 QPixmap ChessBoard::svgPixmap(QString filename)
