@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Callbacks for La Pocha main Gtk window
- * $Id: cb_main.c 3708 2002-03-28 08:14:12Z jdorje $
+ * $Id: cb_main.c 3848 2002-04-08 01:02:33Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -42,7 +42,6 @@
 static void try_to_quit(void)
 {
 	if (game.state == LP_STATE_INIT ||
-	    game.state == LP_STATE_WAIT ||
 	    game.state == LP_STATE_DONE)
 		gtk_main_quit();
 	else
