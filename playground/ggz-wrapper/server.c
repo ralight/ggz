@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 6470 2004-12-14 18:47:34Z josef $
+ * $Id: server.c 6471 2004-12-14 19:02:48Z josef $
  *
  * Functions for handling server events
  *
@@ -80,6 +80,10 @@ extern GGZGame *game;
 
 int server_init(char *host, int port, GGZLoginType type, char* login, char* password)
 {
+	GGZOptions opt;
+	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
+	ggzcore_init(opt);
+
 	server = ggzcore_server_new();
 	ggzcore_server_set_hostinfo(server, host, port, 0);
 	ggzcore_server_set_logininfo(server, type, login, password);
