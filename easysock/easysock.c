@@ -7,7 +7,7 @@
  * A library of useful routines to make life easier while using 
  * sockets
  *
- * Copyright (C) 1998 Brent Hendricks.
+ * Copyright (C) 1998-2001 Brent Hendricks.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
