@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2274 2001-08-27 07:33:22Z jdorje $
+ * $Id: ggz.c 2275 2001-08-27 07:52:17Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -110,6 +110,11 @@ int ggzd_get_player_socket(int seat)
 			ggzd_debug("GGZDMOD: ggzd_get_player_socket: unused seat %d queried.", seat);
 		return seat_data[seat].fd;
 	}
+}
+
+int ggzd_get_player_udp_socket(int seat)
+{
+	return -1; /* TODO: this isn't implemented yet */
 }
 
 

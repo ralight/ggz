@@ -40,7 +40,11 @@ ggz_server.h \- The interface for the ggzdmod library used by game servers.
 .ti -1c
 .RI "int \fBggzd_get_player_socket\fR (int seat)"
 .br
-.RI "\fIFind the socket file descriptor for a given seat.\fR"
+.RI "\fIFind the TCP socket file descriptor for a given seat.\fR"
+.ti -1c
+.RI "int \fBggzd_get_player_udp_socket\fR (int seat)"
+.br
+.RI "\fIFind the UDP socket file descriptor for a given seat.\fR"
 .ti -1c
 .RI "int \fBggzd_debug\fR (const char *fmt,...)"
 .br
@@ -320,7 +324,7 @@ A pointer to the string. Do not modify.
  Is it correct to return a const char*? 
 .SS int ggzd_get_player_socket (int seat)
 .PP
-Find the socket file descriptor for a given seat.
+Find the TCP socket file descriptor for a given seat.
 .PP
 \fBParameters: \fR
 .in +1c
@@ -335,6 +339,23 @@ The file descriptor for the TCP communications socket
 \fB\fBTodo: \fR\fR
 .in +1c
  Another function will be needed for a UDP socket 
+.SS int ggzd_get_player_udp_socket (int seat)
+.PP
+Find the UDP socket file descriptor for a given seat.
+.PP
+\fBParameters: \fR
+.in +1c
+.TP
+\fB\fIseat\fR\fR
+The GGZ seat number of the queried player 
+.PP
+\fBReturns: \fR
+.in +1c
+The file descriptor for the UDP communications socket 
+.PP
+\fB\fBTodo: \fR\fR
+.in +1c
+ This functionality is not implemented; -1 will be returned 
 .SS \fBggzd_assign_t\fR ggzd_get_seat_status (int seat)
 .PP
 Find the seat assignment status of a given seat.

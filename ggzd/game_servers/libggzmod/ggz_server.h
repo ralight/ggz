@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2274 2001-08-27 07:33:22Z jdorje $
+ * $Id: ggz_server.h 2275 2001-08-27 07:52:17Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -89,11 +89,17 @@ ggzd_assign_t ggzd_get_seat_status(int seat);
  *  @todo Is it correct to return a const char*? */
 const char* ggzd_get_player_name(int seat);
 
-/** @brief Find the socket file descriptor for a given seat.
+/** @brief Find the TCP socket file descriptor for a given seat.
  *  @param seat The GGZ seat number of the queried player
  *  @return The file descriptor for the TCP communications socket
  *  @todo Another function will be needed for a UDP socket */
 int ggzd_get_player_socket(int seat);
+
+/** @brief Find the UDP socket file descriptor for a given seat.
+ *  @param seat The GGZ seat number of the queried player
+ *  @return The file descriptor for the UDP communications socket
+ *  @todo This functionality is not implemented; -1 will be returned */
+int ggzd_get_player_udp_socket(int seat);
 
 /** @brief Sends a debugging message to ggzd to be logged.
  *  @param fmt a printf-style format string
