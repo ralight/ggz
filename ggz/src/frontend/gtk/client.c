@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 6447 2004-12-11 20:47:08Z jdorje $
+ * $Id: client.c 6861 2005-01-23 22:41:02Z oojah $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -227,7 +227,7 @@ static void
 client_server_stats_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	msgbox("Server stats are not implemented yet. If\nyou would like to help head over to\nhttp://ggz.sourceforge.net.", "Not Implemented",
+	msgbox("Server stats are not implemented yet. If\nyou would like to help head over to\nhttp://www.ggzgamingzone.org/", "Not Implemented",
 		MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 }
 
@@ -236,7 +236,7 @@ static void
 client_player_stats_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	msgbox("Player stats are not implemented yet. If\nyou would like to help head over to\nhttp://ggz.sourceforge.net.", "Not Implemented",
+	msgbox("Player stats are not implemented yet. If\nyou would like to help head over to\nhttp://www.ggzgamingzone.org/", "Not Implemented",
 		MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 
 }
@@ -278,7 +278,7 @@ static void
 client_ggz_help_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	msgbox("GGZ Gaming Zone help is not implemented yet. If\nyou would like to help head over to\nhttp://ggz.sourceforge.net.", "Not Implemented",
+	msgbox("GGZ Gaming Zone help is not implemented yet. If\nyou would like to help head over to\nhttp://www.ggzgamingzone.org/", "Not Implemented",
 		MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 }
 
@@ -287,7 +287,7 @@ static void
 client_game_help_activate		(GtkMenuItem	*menuitem,
 					 gpointer	 data)
 {
-	msgbox("Inline game help is not implemented yet. Help\n is on our website. If\nyou would like to help head over to\nhttp://ggz.sourceforge.net.", "Not Implemented",
+	msgbox("Inline game help is not implemented yet. Help\n is on our website. If\nyou would like to help head over to\nhttp://www.ggzgamingzone.org/", "Not Implemented",
 		MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 }
 
@@ -529,7 +529,7 @@ static void
 client_stats_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	msgbox("Player stats are not implemented yet. If\nyou would like to help head over to\nhttp://ggz.sourceforge.net.", "Not Implemented",
+	msgbox("Player stats are not implemented yet. If\nyou would like to help head over to\nhttp://www.ggzgamingzone.org/", "Not Implemented",
 		MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
 }
 
