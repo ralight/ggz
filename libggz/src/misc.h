@@ -25,7 +25,11 @@
 
 
 /* Libggz internal debugging function */
+#ifdef DEBUG
 void _ggz_debug(const char *type, const char *fmt, ...);
+#else
+#  define _ggz_debug(type, fmt, args...) (void)0
+#endif
 
 /* Libggz internal message output function */
 void _ggz_msg(const char *fmt, ...);
