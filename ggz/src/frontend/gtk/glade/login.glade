@@ -9,8 +9,9 @@
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <language>C</language>
   <gnome_support>False</gnome_support>
-  <gettext_support>False</gettext_support>
+  <gettext_support>True</gettext_support>
   <output_main_file>False</output_main_file>
+  <output_support_files>False</output_support_files>
   <output_build_files>False</output_build_files>
   <backup_source_files>False</backup_source_files>
   <main_source_file>login.c</main_source_file>
@@ -97,6 +98,7 @@
 	    <last_modification_time>Sat, 29 Apr 2000 18:29:22 GMT</last_modification_time>
 	  </signal>
 	  <label>Connect</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
 
 	<widget>
@@ -106,11 +108,11 @@
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>gtk_widget_destroy</handler>
-	    <object>dlg_login</object>
-	    <last_modification_time>Tue, 11 Jan 2000 02:19:16 GMT</last_modification_time>
+	    <handler>login_cancel_button_clicked</handler>
+	    <last_modification_time>Sun, 15 Oct 2000 00:36:08 GMT</last_modification_time>
 	  </signal>
 	  <label>Cancel</label>
+	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
       </widget>
     </widget>
@@ -248,6 +250,7 @@
 		    <last_modification_time>Sat, 29 Apr 2000 18:22:50 GMT</last_modification_time>
 		  </signal>
 		  <label>Edit Profiles...</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
 		</widget>
 	      </widget>
 	    </widget>

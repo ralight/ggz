@@ -34,7 +34,6 @@
 #include "login.h"
 
 GtkWidget *win_main;
-GtkWidget *dlg_login;
 GtkWidget *dlg_about;
 GtkWidget *dlg_license;
 
@@ -58,7 +57,7 @@ int main (int argc, char *argv[])
 	dlg_about = create_dlg_about();
 	win_main = create_win_main();
 	dlg_license = create_dlg_license();
-	dlg_login = create_dlg_login();
+	login_create_or_raise();
 
 	ggz_sensitivity_init();
 	gtk_widget_show(win_main);

@@ -28,6 +28,7 @@
 
 #include "chat.h"
 #include "ggz.h"
+#include "login.h"
 #include "xtext.h"
 
 extern GtkWidget *dlg_login;
@@ -234,8 +235,7 @@ void ggz_login_ok(GGZEventID id, void* event_data, void* user_data)
 	GtkWidget *tmp;
 
 	/* Close the login dialog */
-	if(dlg_login)
-		gtk_widget_destroy(dlg_login);
+	login_destroy();
 
 	/* Get list of rooms */
 	ggzcore_event_trigger(GGZ_USER_LIST_ROOMS, NULL, NULL);

@@ -9,8 +9,9 @@
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <language>C</language>
   <gnome_support>False</gnome_support>
-  <gettext_support>False</gettext_support>
+  <gettext_support>True</gettext_support>
   <output_main_file>False</output_main_file>
+  <output_support_files>False</output_support_files>
   <output_build_files>False</output_build_files>
   <backup_source_files>False</backup_source_files>
   <main_source_file>client.c</main_source_file>
@@ -24,8 +25,8 @@
   <height>400</height>
   <signal>
     <name>realize</name>
-    <handler>on_win_main_realize</handler>
-    <last_modification_time>Thu, 09 Nov 2000 22:53:43 GMT</last_modification_time>
+    <handler>client_realize</handler>
+    <last_modification_time>Sat, 14 Oct 2000 23:29:19 GMT</last_modification_time>
   </signal>
   <signal>
     <name>delete_event</name>
@@ -59,7 +60,7 @@
       <widget>
 	<class>GtkMenuItem</class>
 	<name>ggz</name>
-	<label>GGZ</label>
+	<label>_GGZ</label>
 	<right_justify>False</right_justify>
 
 	<widget>
@@ -76,10 +77,10 @@
 	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_connect_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:44:25 GMT</last_modification_time>
+	      <handler>client_connect_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:30:06 GMT</last_modification_time>
 	    </signal>
-	    <label>Connect</label>
+	    <label>_Connect</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -93,10 +94,10 @@
 	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_disconnect_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:44:37 GMT</last_modification_time>
+	      <handler>client_disconnect_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:30:16 GMT</last_modification_time>
 	    </signal>
-	    <label>Disconnect</label>
+	    <label>_Disconnect</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -116,10 +117,10 @@
 	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_exit_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:44:44 GMT</last_modification_time>
+	      <handler>client_exit_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:30:26 GMT</last_modification_time>
 	    </signal>
-	    <label>Exit</label>
+	    <label>E_xit</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 	</widget>
@@ -128,7 +129,7 @@
       <widget>
 	<class>GtkMenuItem</class>
 	<name>game</name>
-	<label>Game</label>
+	<label>G_ame</label>
 	<right_justify>False</right_justify>
 
 	<widget>
@@ -145,22 +146,27 @@
 	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_launch_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:45:14 GMT</last_modification_time>
+	      <handler>client_launch_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:30:39 GMT</last_modification_time>
 	    </signal>
-	    <label>Launch</label>
+	    <label>_Launch</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
 	  <widget>
 	    <class>GtkMenuItem</class>
 	    <name>join</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_J</key>
+	      <signal>activate</signal>
+	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_join_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:45:21 GMT</last_modification_time>
+	      <handler>client_join_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:30:51 GMT</last_modification_time>
 	    </signal>
-	    <label>Join</label>
+	    <label>_Join</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -173,12 +179,17 @@
 	  <widget>
 	    <class>GtkMenuItem</class>
 	    <name>leave</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_V</key>
+	      <signal>activate</signal>
+	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_leave_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:45:30 GMT</last_modification_time>
+	      <handler>client_leave_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:30:59 GMT</last_modification_time>
 	    </signal>
-	    <label>Leave</label>
+	    <label>Lea_ve</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 	</widget>
@@ -187,7 +198,7 @@
       <widget>
 	<class>GtkMenuItem</class>
 	<name>edit</name>
-	<label>Edit</label>
+	<label>_Edit</label>
 	<right_justify>False</right_justify>
 
 	<widget>
@@ -204,10 +215,10 @@
 	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_properties_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:46:01 GMT</last_modification_time>
+	      <handler>client_properties_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:31:29 GMT</last_modification_time>
 	    </signal>
-	    <label>Properties</label>
+	    <label>_Properties</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 	</widget>
@@ -216,7 +227,7 @@
       <widget>
 	<class>GtkMenuItem</class>
 	<name>view</name>
-	<label>View</label>
+	<label>_View</label>
 	<right_justify>False</right_justify>
 
 	<widget>
@@ -228,10 +239,10 @@
 	    <name>room_list</name>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_room_list_activate</handler>
-	      <last_modification_time>Thu, 21 Sep 2000 22:49:36 GMT</last_modification_time>
+	      <handler>client_room_list_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:31:43 GMT</last_modification_time>
 	    </signal>
-	    <label>Room List</label>
+	    <label>_Room List</label>
 	    <active>True</active>
 	    <always_show_toggle>False</always_show_toggle>
 	  </widget>
@@ -241,10 +252,10 @@
 	    <name>player_list</name>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_player_list_activate</handler>
-	      <last_modification_time>Thu, 21 Sep 2000 22:49:43 GMT</last_modification_time>
+	      <handler>client_player_list_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:31:59 GMT</last_modification_time>
 	    </signal>
-	    <label>Player List</label>
+	    <label>P_layer List</label>
 	    <active>True</active>
 	    <always_show_toggle>False</always_show_toggle>
 	  </widget>
@@ -260,10 +271,10 @@
 	    <name>server_stats</name>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_server_stats_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:46:18 GMT</last_modification_time>
+	      <handler>client_server_stats_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:38:25 GMT</last_modification_time>
 	    </signal>
-	    <label>Server Stats</label>
+	    <label>_Server Stats</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -277,10 +288,10 @@
 	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_player_stats_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:47:09 GMT</last_modification_time>
+	      <handler>client_player_stats_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:38:25 GMT</last_modification_time>
 	    </signal>
-	    <label>Player Stats</label>
+	    <label>_Player Stats</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -289,10 +300,10 @@
 	    <name>game_types</name>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_game_types_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:46:44 GMT</last_modification_time>
+	      <handler>client_game_types_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:38:25 GMT</last_modification_time>
 	    </signal>
-	    <label>Game Types</label>
+	    <label>_Game Types</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -312,10 +323,10 @@
 	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_motd_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:46:55 GMT</last_modification_time>
+	      <handler>client_motd_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:38:25 GMT</last_modification_time>
 	    </signal>
-	    <label>MOTD</label>
+	    <label>_MOTD</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 	</widget>
@@ -324,7 +335,7 @@
       <widget>
 	<class>GtkMenuItem</class>
 	<name>help</name>
-	<label>Help</label>
+	<label>_Help</label>
 	<right_justify>False</right_justify>
 
 	<widget>
@@ -341,22 +352,22 @@
 	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_about_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:47:53 GMT</last_modification_time>
+	      <handler>client_about_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:38:25 GMT</last_modification_time>
 	    </signal>
-	    <label>About</label>
+	    <label>_About</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
 	  <widget>
 	    <class>GtkMenuItem</class>
-	    <name>gpl_license</name>
+	    <name>license</name>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_gpl_license_activate</handler>
-	      <last_modification_time>Sat, 16 Sep 2000 15:49:00 GMT</last_modification_time>
+	      <handler>client_license_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:38:25 GMT</last_modification_time>
 	    </signal>
-	    <label>GPL License</label>
+	    <label>_Copyright</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -376,10 +387,10 @@
 	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_ggz_help_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:48:47 GMT</last_modification_time>
+	      <handler>client_ggz_help_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:38:25 GMT</last_modification_time>
 	    </signal>
-	    <label>GGZ Help</label>
+	    <label>_GGZ Help</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -388,10 +399,10 @@
 	    <name>game_help</name>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_game_help_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:49:04 GMT</last_modification_time>
+	      <handler>client_game_help_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:38:25 GMT</last_modification_time>
 	    </signal>
-	    <label>Game Help</label>
+	    <label>G_ame Help</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -406,10 +417,10 @@
 	    <name>goto_web1</name>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_goto_web1_activate</handler>
-	      <last_modification_time>Fri, 15 Sep 2000 23:49:14 GMT</last_modification_time>
+	      <handler>client_goto_web1_activate</handler>
+	      <last_modification_time>Sat, 14 Oct 2000 23:38:25 GMT</last_modification_time>
 	    </signal>
-	    <label>Goto Web</label>
+	    <label>Goto _Web</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 	</widget>
@@ -444,8 +455,8 @@
 	  <name>connect_button</name>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>on_connect_button_clicked</handler>
-	    <last_modification_time>Fri, 10 Nov 2000 00:29:45 GMT</last_modification_time>
+	    <handler>client_connect_button_clicked</handler>
+	    <last_modification_time>Sun, 15 Oct 2000 00:03:25 GMT</last_modification_time>
 	  </signal>
 	  <label>Connect</label>
 	</widget>
@@ -456,8 +467,8 @@
 	  <name>disconnect_button</name>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>on_disconnect_button_clicked</handler>
-	    <last_modification_time>Sat, 11 Nov 2000 00:29:25 GMT</last_modification_time>
+	    <handler>client_disconnect_button_clicked</handler>
+	    <last_modification_time>Sun, 15 Oct 2000 00:03:35 GMT</last_modification_time>
 	  </signal>
 	  <label>Disconnect</label>
 	</widget>
@@ -468,8 +479,8 @@
 	  <name>launch_button</name>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>on_launch_button_clicked</handler>
-	    <last_modification_time>Fri, 10 Nov 2000 00:29:57 GMT</last_modification_time>
+	    <handler>client_launch_button_clicked</handler>
+	    <last_modification_time>Sun, 15 Oct 2000 00:03:44 GMT</last_modification_time>
 	  </signal>
 	  <label>Launch</label>
 	</widget>
@@ -480,10 +491,22 @@
 	  <name>join_button</name>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>on_join_button_clicked</handler>
-	    <last_modification_time>Fri, 10 Nov 2000 00:30:03 GMT</last_modification_time>
+	    <handler>client_join_button_clicked</handler>
+	    <last_modification_time>Sun, 15 Oct 2000 00:05:26 GMT</last_modification_time>
 	  </signal>
 	  <label>Join</label>
+	</widget>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <child_name>Toolbar:button</child_name>
+	  <name>leave_button</name>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>client_leave_button_clicked</handler>
+	    <last_modification_time>Sun, 15 Oct 2000 00:06:14 GMT</last_modification_time>
+	  </signal>
+	  <label>Leave</label>
 	</widget>
 
 	<widget>
@@ -492,8 +515,8 @@
 	  <name>props_button</name>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>on_props_button_clicked</handler>
-	    <last_modification_time>Fri, 10 Nov 2000 00:30:09 GMT</last_modification_time>
+	    <handler>client_props_button_clicked</handler>
+	    <last_modification_time>Sun, 15 Oct 2000 00:06:27 GMT</last_modification_time>
 	  </signal>
 	  <label>Props</label>
 	</widget>
@@ -504,8 +527,8 @@
 	  <name>stats_button</name>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>on_stats_button_clicked</handler>
-	    <last_modification_time>Fri, 10 Nov 2000 00:30:15 GMT</last_modification_time>
+	    <handler>client_stats_button_clicked</handler>
+	    <last_modification_time>Sun, 15 Oct 2000 00:06:34 GMT</last_modification_time>
 	  </signal>
 	  <label>Stats</label>
 	</widget>
@@ -516,8 +539,8 @@
 	  <name>exit_button</name>
 	  <signal>
 	    <name>clicked</name>
-	    <handler>on_exit_button_clicked</handler>
-	    <last_modification_time>Fri, 10 Nov 2000 00:30:20 GMT</last_modification_time>
+	    <handler>client_exit_button_clicked</handler>
+	    <last_modification_time>Sun, 15 Oct 2000 00:06:41 GMT</last_modification_time>
 	  </signal>
 	  <label>Exit</label>
 	</widget>
@@ -594,8 +617,8 @@
 	      <name>room_clist</name>
 	      <signal>
 		<name>select_row</name>
-		<handler>on_room_clist_select_row</handler>
-		<last_modification_time>Sat, 11 Nov 2000 00:26:05 GMT</last_modification_time>
+		<handler>client_room_clist_select_row</handler>
+		<last_modification_time>Sun, 15 Oct 2000 00:07:21 GMT</last_modification_time>
 	      </signal>
 	      <columns>1</columns>
 	      <column_widths>80</column_widths>
@@ -710,13 +733,13 @@
 	      <name>table_clist</name>
 	      <signal>
 		<name>select_row</name>
-		<handler>on_table_clist_select_row</handler>
-		<last_modification_time>Sat, 11 Nov 2000 02:06:25 GMT</last_modification_time>
+		<handler>client_table_clist_select_row</handler>
+		<last_modification_time>Sun, 15 Oct 2000 00:08:02 GMT</last_modification_time>
 	      </signal>
 	      <signal>
 		<name>click_column</name>
-		<handler>on_table_clist_click_column</handler>
-		<last_modification_time>Sat, 11 Nov 2000 02:06:36 GMT</last_modification_time>
+		<handler>client_table_clist_click_column</handler>
+		<last_modification_time>Sun, 15 Oct 2000 00:08:08 GMT</last_modification_time>
 	      </signal>
 	      <columns>3</columns>
 	      <column_widths>26,38,80</column_widths>
@@ -860,15 +883,15 @@
 		<has_focus>True</has_focus>
 		<signal>
 		  <name>activate</name>
-		  <handler>on_chat_entry_activate</handler>
+		  <handler>client_chat_entry_activate</handler>
 		  <data>chat_entry</data>
-		  <last_modification_time>Sat, 11 Nov 2000 02:08:44 GMT</last_modification_time>
+		  <last_modification_time>Sun, 15 Oct 2000 00:08:37 GMT</last_modification_time>
 		</signal>
 		<signal>
 		  <name>key_press_event</name>
-		  <handler>on_chat_entry_key_press_event</handler>
+		  <handler>client_chat_entry_key_press_event</handler>
 		  <after>True</after>
-		  <last_modification_time>Sat, 11 Nov 2000 02:09:01 GMT</last_modification_time>
+		  <last_modification_time>Sun, 15 Oct 2000 00:08:43 GMT</last_modification_time>
 		</signal>
 		<editable>True</editable>
 		<text_visible>True</text_visible>
@@ -902,10 +925,11 @@
 		  <can_default>True</can_default>
 		  <signal>
 		    <name>clicked</name>
-		    <handler>on_send_button_clicked</handler>
-		    <last_modification_time>Sat, 11 Nov 2000 02:05:53 GMT</last_modification_time>
+		    <handler>client_send_button_clicked</handler>
+		    <last_modification_time>Sun, 15 Oct 2000 00:08:57 GMT</last_modification_time>
 		  </signal>
 		  <label>Send</label>
+		  <relief>GTK_RELIEF_NORMAL</relief>
 		</widget>
 	      </widget>
 	    </widget>
@@ -935,8 +959,8 @@
     <name>enter</name>
     <signal>
       <name>activate</name>
-      <handler>on_enter_activate</handler>
-      <last_modification_time>Sat, 16 Sep 2000 18:50:21 GMT</last_modification_time>
+      <handler>client_enter_activate</handler>
+      <last_modification_time>Sun, 15 Oct 2000 00:09:10 GMT</last_modification_time>
     </signal>
     <label>Enter</label>
     <right_justify>False</right_justify>
@@ -947,8 +971,8 @@
     <name>info</name>
     <signal>
       <name>activate</name>
-      <handler>on_info_activate</handler>
-      <last_modification_time>Sat, 16 Sep 2000 18:50:29 GMT</last_modification_time>
+      <handler>client_info_activate</handler>
+      <last_modification_time>Sun, 15 Oct 2000 00:09:17 GMT</last_modification_time>
     </signal>
     <label>Info</label>
     <right_justify>False</right_justify>
@@ -964,8 +988,8 @@
     <name>join</name>
     <signal>
       <name>activate</name>
-      <handler>on_join_activate</handler>
-      <last_modification_time>Sat, 16 Sep 2000 18:53:28 GMT</last_modification_time>
+      <handler>client_join_activate</handler>
+      <last_modification_time>Sun, 15 Oct 2000 00:09:35 GMT</last_modification_time>
     </signal>
     <label>Join</label>
     <right_justify>False</right_justify>
@@ -976,8 +1000,8 @@
     <name>leave</name>
     <signal>
       <name>activate</name>
-      <handler>on_leave_activate</handler>
-      <last_modification_time>Sat, 16 Sep 2000 18:53:49 GMT</last_modification_time>
+      <handler>client_leave_activate</handler>
+      <last_modification_time>Sun, 15 Oct 2000 00:09:48 GMT</last_modification_time>
     </signal>
     <label>Leave</label>
     <right_justify>False</right_justify>
@@ -994,8 +1018,8 @@
     <name>info</name>
     <signal>
       <name>activate</name>
-      <handler>on_info_activate</handler>
-      <last_modification_time>Sat, 16 Sep 2000 18:53:53 GMT</last_modification_time>
+      <handler>client_info_activate</handler>
+      <last_modification_time>Sun, 15 Oct 2000 00:09:56 GMT</last_modification_time>
     </signal>
     <label>Info</label>
     <right_justify>False</right_justify>
