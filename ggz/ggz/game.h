@@ -27,3 +27,4 @@
 
 void launch_game(gint type, gchar launch);
 int game_over(void);
+RETSIGTYPE game_dead(int sig);

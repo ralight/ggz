@@ -27,6 +27,7 @@
 #include <config.h>
 
 #include <gtk/gtk.h>
+#include <signal.h>
 
 #include "datatypes.h"
 #include "parse_opt.h"
@@ -37,6 +38,7 @@
 #include "dlg_login.h"
 #include "mnu_tables.h"
 #include "mnu_players.h"
+#include "game.h"
 
 /* Main global data structures */
 struct ConnectInfo connection;
@@ -73,6 +75,9 @@ gint main(gint argc, gchar *argv[])
 	parse_args(argc, argv);
 	gtk_init(&argc, &argv);
 	es_err_func_set(err_sock);
+
+	/* Signal handlers */
+	signal(SIGCHLD, game_dead);
 	
 	/* Popup Menus */
 	mnu_tables = create_mnu_tables();

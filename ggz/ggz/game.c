@@ -29,6 +29,7 @@
 
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -229,9 +230,13 @@ int game_over(void)
 	dbg_msg("Game is over (msg from client)");
 	connection.playing = FALSE;
 	close(game.fd);
-	gdk_input_remove(game_handle);
-	kill(game.pid, SIGINT);
-
+	if (game_handle) {
+		gdk_input_remove(game_handle);
+		game_handle = 0;
+	}
+	if (game.pid)
+		kill(game.pid, SIGINT);
+	
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "launch");
         gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
         tmp = gtk_object_get_data(GTK_OBJECT(main_win), "join");
@@ -249,5 +254,19 @@ int game_over(void)
 }
 
 
-
-
+RETSIGTYPE game_dead(int sig)
+{
+  	int  pid, status;
+  
+	pid = waitpid(WAIT_ANY, &status, WNOHANG);
+	if( pid < 0 ) {
+		err_sys("waitpid");
+	}
+	else if( pid == 0 ) {
+		err_sys("No dead child");
+	}
+	else if( pid == game.pid ) {
+		game.pid = 0;
+		dbg_msg("Game module is dead");
+	}
+}
