@@ -10,7 +10,7 @@ AM_CONFIG_HEADER(config.h)
 dnl Check for Qt and KDE
 dnl ====================
 
-KDE_SET_PREFIX
+#KDE_SET_PREFIX
 KDE_USE_QT(2)
 AC_CHECK_COMPILERS
 AC_ENABLE_SHARED(yes)
