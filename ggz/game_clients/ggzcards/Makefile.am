@@ -1,11 +1,11 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3461 2002-02-25 09:12:02Z jdorje $
+# $Id: Makefile.am 3465 2002-02-25 09:59:43Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
 SUBDIRS = common client .
 
-INCLUDES = @GTK_CFLAGS@
+INCLUDES = @GTK_CFLAGS@ -Icommon -Iclient
 
 install-data-local:
 	@$(NORMAL_INSTALL)
@@ -34,8 +34,6 @@ ggz_ggzcards_SOURCES = \
 	preferences.c preferences.h \
 	cards-b1.xpm cards-b2.xpm cards-b3.xpm cards-b4.xpm \
 	cards-1.xpm cards-2.xpm cards-3.xpm cards-4.xpm
-
-INCLUDES = -Icommon -Iclient
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_ggzcards_LDADD = @GTK_LIBS@ $(LDADD) common/libcommon.a client/libclient.a
