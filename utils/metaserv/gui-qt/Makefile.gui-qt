@@ -1,5 +1,5 @@
-INC = -I/usr/local/qt/include
-LIB = -L/usr/local/qt/lib -lqt
+INC = -I/usr/local/qt3/include
+LIB = -L/usr/local/qt3/lib -lqt-mt
 
 all:
 	moc -o qmetagui.moc.cpp qmetagui.h
