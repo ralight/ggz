@@ -63,6 +63,15 @@ GGZTable* ggzcore_player_get_table(GGZPlayer *player)
 }
 
 
+int ggzcore_player_get_lag(GGZPlayer *player)
+{
+	if (!player)
+		return 0;
+
+	return _ggzcore_player_get_lag(player);
+}
+
+
 /* 
  * Internal library functions (prototypes in player.h) 
  * NOTE:All of these functions assume valid inputs!
@@ -77,6 +86,9 @@ struct _GGZPlayer* _ggzcore_player_new(void)
 	/* Set to invalid table */
 	player->table = -1;
 
+	/* Assume no lag */
+	player->lag = -1;
+
 	return player;
 }
 
@@ -85,7 +97,8 @@ void _ggzcore_player_init(struct _GGZPlayer *player,
 			  const char *name, 
 			  struct _GGZRoom *room,
 			  const int table,
-			  const GGZPlayerType type)
+			  const GGZPlayerType type,
+			  const int lag)
 {
 	if (name)
 		player->name = strdup(name);
@@ -93,6 +106,7 @@ void _ggzcore_player_init(struct _GGZPlayer *player,
 	player->room = room;
 	player->table = table;
 	player->type = type;
+	player->lag = lag;
 }
 
 
@@ -108,6 +122,12 @@ void _ggzcore_player_free(struct _GGZPlayer *player)
 void _ggzcore_player_set_table(struct _GGZPlayer *player, const int table)
 {
 	player->table = table;
+}
+
+
+void _ggzcore_player_set_lag(struct _GGZPlayer *player, const int lag)
+{
+	player->lag = lag;
 }
 
 
@@ -132,6 +152,12 @@ GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player)
 }
 
 
+int _ggzcore_player_get_lag(struct _GGZPlayer *player)
+{
+	return player->lag;
+}
+
+
 int _ggzcore_player_compare(void* p, void* q)
 {
 	return strcmp(((struct _GGZPlayer*)p)->name, 
@@ -144,7 +170,7 @@ void* _ggzcore_player_create(void* p)
 	struct _GGZPlayer *new, *src = p;
 
 	new = _ggzcore_player_new();
-	_ggzcore_player_init(new, src->name, src->room, src->table, src->type);
+	_ggzcore_player_init(new, src->name, src->room, src->table, src->type, src->lag);
 
 	return (void*)new;
 }

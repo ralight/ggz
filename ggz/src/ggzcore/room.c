@@ -60,7 +60,8 @@ static char* _ggzcore_room_events[] = {
 	"GGZ_TABLE_JOIN_FAIL",
 	"GGZ_TABLE_LEFT",
 	"GGZ_TABLE_LEAVE_FAIL",
-	"GGZ_TABLE_DATA"
+	"GGZ_TABLE_DATA",
+	"GGZ_PLAYER_LAG"
 };
 
 /* Total number of server events messages */
@@ -424,7 +425,7 @@ struct _GGZPlayer* _ggzcore_room_get_player_by_name(struct _GGZRoom *room,
 	struct _GGZPlayer player, *found = NULL;
 
 	if (room->players) {
-		_ggzcore_player_init(&player, name, room, -1, GGZ_PLAYER_NONE);
+		_ggzcore_player_init(&player, name, room, -1, GGZ_PLAYER_NONE, 0);
 		entry = _ggzcore_list_search(room->players, &player);
 
 		if (entry)
@@ -518,7 +519,7 @@ void _ggzcore_room_set_monitor(struct _GGZRoom *room, char monitor)
 }
 
 
-void _ggzcore_room_add_player(struct _GGZRoom *room, char *name, GGZPlayerType type)
+void _ggzcore_room_add_player(struct _GGZRoom *room, char *name, GGZPlayerType type, int lag)
 {
 	struct _GGZPlayer *player;
 
@@ -532,7 +533,7 @@ void _ggzcore_room_add_player(struct _GGZRoom *room, char *name, GGZPlayerType t
 
 	/* Default new people in room to no table (-1) */
 	player = _ggzcore_player_new();
-	_ggzcore_player_init(player, name, room, -1, type);
+	_ggzcore_player_init(player, name, room, -1, type, lag);
 	_ggzcore_list_insert(room->players, player);
 	room->num_players++;
 	_ggzcore_room_event(room, GGZ_ROOM_ENTER, name);
@@ -549,12 +550,30 @@ void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name)
 	/* Only try to delete if the list exists */
 	if (room->players) {	
 		/* Default to no table (-1) or type */
-		_ggzcore_player_init(&player, name, room, -1, GGZ_PLAYER_NONE);
+		_ggzcore_player_init(&player, name, room, -1, GGZ_PLAYER_NONE, 0);
 		entry = _ggzcore_list_search(room->players, &player);
 		if (entry) {
 			_ggzcore_list_delete_entry(room->players, entry);
 			room->num_players--;
 			_ggzcore_room_event(room, GGZ_ROOM_LEAVE, name);
+		}
+	}
+}
+
+
+void _ggzcore_room_set_player_lag(struct _GGZRoom *room, char *name, int lag)
+{
+	/* FIXME: This should be sending a player "class-based" event */
+	struct _GGZPlayer *player;
+
+	ggzcore_debug(GGZ_DBG_ROOM, "Setting lag to %d for %s", lag, name);
+
+	if (room->players) {
+		player = _ggzcore_room_get_player_by_name(room, name);
+		if (player) /* make sure they're still in room */
+		{
+			_ggzcore_player_set_lag(player, lag);
+			_ggzcore_room_event(room, GGZ_PLAYER_LAG, name);
 		}
 	}
 }

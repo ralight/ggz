@@ -191,6 +191,7 @@ typedef enum {
 	GGZ_TABLE_LEFT,
 	GGZ_TABLE_LEAVE_FAIL,
 	GGZ_TABLE_DATA,
+	GGZ_PLAYER_LAG
 } GGZRoomEvent;
 
 
@@ -392,6 +393,7 @@ int ggzcore_room_send_game_data(GGZRoom *room, char *buffer);
 char*         ggzcore_player_get_name(GGZPlayer *player);
 GGZPlayerType ggzcore_player_get_type(GGZPlayer *player);
 GGZTable*     ggzcore_player_get_table(GGZPlayer *player);
+int	      ggzcore_player_get_lag(GGZPlayer *player);
 
 
 GGZTable* ggzcore_table_new(void);

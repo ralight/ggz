@@ -1035,11 +1035,15 @@ static void _ggzcore_net_handle_update(GGZNet *net, GGZXMLElement *update)
 		else if (strcmp(type, "player") == 0) {
 			player = _ggzcore_xmlelement_get_data(update);
 			room = _ggzcore_server_get_room_by_id(net->server, room_num);
+
 			if (strcmp(action, "add") == 0)
 				_ggzcore_room_add_player(room, player->name, 
-							 player->type);
+							 player->type, player->lag);
 			else if (strcmp(action, "delete") == 0)
 				_ggzcore_room_remove_player(room, player->name);
+			else if (strcmp(action, "lag") == 0)
+				/* FIXME: This should be a player "class-based" event */
+				_ggzcore_room_set_player_lag(room, player->name, player->lag);
 			
 			ggzcore_free(player);
 		}
@@ -1339,7 +1343,7 @@ static void _ggzcore_net_handle_player(GGZNet *net, GGZXMLElement *player)
 	char *parent_tag;
 	GGZRoom *room;
 	char *name, *str_type;
-	int table;
+	int table, lag;
 	GGZXMLElement *parent;
 
 	/* Get parent off top of stack */
@@ -1352,7 +1356,8 @@ static void _ggzcore_net_handle_player(GGZNet *net, GGZXMLElement *player)
 		str_type = _ggzcore_xmlelement_get_attr(player, "TYPE");
 		name = _ggzcore_xmlelement_get_attr(player, "ID");
 		table = safe_atoi(_ggzcore_xmlelement_get_attr(player, "TABLE"));
-		
+		lag = safe_atoi(_ggzcore_xmlelement_get_attr(player, "LAG"));
+
 		/* Set player's type */
 		type = GGZ_PLAYER_NONE;
 		if (str_type) {
@@ -1367,7 +1372,7 @@ static void _ggzcore_net_handle_player(GGZNet *net, GGZXMLElement *player)
 		
 		/* Set up GGZPlayer object */
 		ggz_player = _ggzcore_player_new();
-		_ggzcore_player_init(ggz_player,  name, room, table, type);
+		_ggzcore_player_init(ggz_player,  name, room, table, type, lag);
 
 		parent_tag = _ggzcore_xmlelement_get_tag(parent);
 		

@@ -47,6 +47,9 @@ struct _GGZPlayer {
 
 	/* Server ID of table player is at */
 	int table;
+
+	/* Lag of the player */
+	int lag;
 };
 
 
@@ -58,16 +61,21 @@ void _ggzcore_player_init(struct _GGZPlayer *player,
 			  const char *name, 
 			  struct _GGZRoom *room,
 			  const int table,
-			  const GGZPlayerType type);
+			  const GGZPlayerType type,
+			  const int lag);
 
 
 void _ggzcore_player_set_table(struct _GGZPlayer *player, const int table);
+
+void _ggzcore_player_set_lag(struct _GGZPlayer *player, const int lag);
 
 char* _ggzcore_player_get_name(struct _GGZPlayer *player);
 
 GGZPlayerType _ggzcore_player_get_type(struct _GGZPlayer *player);
 
 struct _GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player);
+
+int _ggzcore_player_get_lag(struct _GGZPlayer *player);
 
 /* Utility functions used by _ggzcore_list */
 int   _ggzcore_player_compare(void* p, void* q);
