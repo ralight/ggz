@@ -609,8 +609,6 @@ void load_map(char *filename, GtkWidget *dialog) {
   gtk_object_set_data(GTK_OBJECT(dialog), "options", map);
   draw_mini_board(dialog);
 
-  dlg_options_update(dialog);
-
 }
 
 GtkWidget*
@@ -735,6 +733,12 @@ void dlg_options_update(GtkWidget *dlg_options) {
 		unit_spin = gtk_object_get_data(GTK_OBJECT(dlg_options), spin_name[a]);
 		options->army[0][a] = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(unit_spin));
 	}
+
+  // Map was changed! It doesn't have a name now!
+  if (options->name) {
+    free(options->name);
+    options->name = NULL;
+  }
 	
 	// Sets data
 	gtk_object_set_data(GTK_OBJECT(dlg_options), "options", options);
@@ -910,6 +914,12 @@ gboolean mini_board_click         (GtkWidget       *widget, GdkEventButton  *eve
 	current = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(radio_button->data), "type"));
 
 	options->map[y*options->width+x].type = current;
+
+  // Map was changed! It doesn't have a name now!
+  if (options->name) {
+    free(options->name);
+    options->name = NULL;
+  }
 
 	draw_mini_board(user_data);
 

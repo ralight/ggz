@@ -920,8 +920,11 @@ void game_get_gameover() {
 void game_ask_save_map() {
   GtkWidget *save_dlg = create_dlg_save();
   GtkWidget *yes = lookup_widget(save_dlg, "yes");
+  GtkWidget *map_name = lookup_widget(save_dlg, "map_name");
   gtk_signal_connect(GTK_OBJECT(yes), "clicked",
                      GTK_SIGNAL_FUNC (game_confirm_save_map), save_dlg); 
+  if (cbt_game.name)
+    gtk_entry_set_text(GTK_ENTRY(map_name), cbt_game.name);
   gtk_widget_show_all(save_dlg);
 }
 
@@ -1017,52 +1020,12 @@ int game_send_options(GtkWidget *options_dialog) {
   char *game_str = NULL;
 
 
-  dlg_options_update(options_dialog);
+  //dlg_options_update(options_dialog);
 
   _game = gtk_object_get_data(GTK_OBJECT(options_dialog), "options");
-  /*
 
-  // Gets data
-  _game.width = GPOINTER_TO_INT (gtk_object_get_data(GTK_OBJECT(options_dialog), "width_v"));
-  _game.height = GPOINTER_TO_INT (gtk_object_get_data(GTK_OBJECT(options_dialog), "height_v"));
-  map_data = gtk_object_get_data(GTK_OBJECT(options_dialog), "map_data");
+  printf("Map name: %s\n", _game->name);
 
-  _game.map = (tile *)malloc(_game.width * _game.height * sizeof(tile));
-  for (a = 0; a < _game.width * _game.height; a++) {
-    switch (map_data[a]) {
-      case 0:
-        _game.map[a].type = T_OPEN;
-        break;
-      case 1:
-        _game.map[a].type = T_LAKE;
-        break;
-      case 2:
-        _game.map[a].type = T_NULL;
-        break;
-      case 3:
-        _game.map[a].type = OWNER(0) + T_OPEN;
-        break;
-      case 4:
-        _game.map[a].type = OWNER(1) + T_OPEN;
-        break;
-    }
- }
-
-  _game.number = cbt_game.number;
-  // Gets army data
-  _game.army = (char **)calloc(_game.number+1, sizeof(char *));
-  _game.army[_game.number] = (char *)calloc(12, sizeof(char));
-  army_data = gtk_object_get_data(GTK_OBJECT(options_dialog), "army_data");
-  for (a = 0; a < 12; a++) {
-    printf("%s: %d\n", unitname[a], army_data[a]);
-    _game.army[_game.number][a] = army_data[a];
-  }
-  
-
-  // What I don't know, I just keep blank
-  _game.name = NULL;
-
-  */
   game_str = combat_options_string_write(_game, 0);
 
   if (es_write_int(cbt_info.fd, CBT_MSG_OPTIONS) < 0 || es_write_string(cbt_info.fd, game_str) < 0)

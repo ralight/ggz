@@ -9,8 +9,8 @@ What should be done before next version of GGZ:
 - Improve the interface of the counters
 - Make the client check if the current map options are valid before sending
   them
-- Make the name of the map be sent to the other player, so that he can have an
-  idea of how to call this map
+  - Put those checks in the combat.[ch] files
+  - Make the server combat.[ch] files compatible w/ the client's
 - Add a "Yes/No" dialog widget
 - Clean up the code, separate the game logic from the graphics stuff
 
@@ -19,6 +19,6 @@ What should be done someday
 - Tilesets
 - 3 or 4 players support
 - A webpage for the game
-- Saving/Resuming
+- Saving/Resuming of games
 - About dialog
 - Are you sure? on some places
