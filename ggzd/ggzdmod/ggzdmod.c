@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2790 2001-12-06 21:06:22Z jdorje $
+ * $Id: ggzdmod.c 2791 2001-12-06 21:55:22Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -495,6 +495,12 @@ static void randomize_names(char **names, char **randnames, int num)
 }
 #endif
 
+/* FIXME: this assumes that ggzdmod-game is always deciding
+   the state, and informing ggzdmod-ggz afterwards.  Once
+   ggzd is able to change the state (within limited values),
+   this function will no longer be viable and should be
+   replaced by (I think) _ggzdmod_set_state, which can be
+   called from the network/io code. */
 static void set_state(_GGZdMod * ggzdmod, GGZdModState state)
 {
 	GGZdModState old_state = ggzdmod->state;
@@ -866,13 +872,18 @@ void _ggzdmod_handle_state(_GGZdMod * mod, GGZdModState state)
 {
 	_io_respond_state(mod->fd);
 
-	/* There's only certain ones the game is allowed to set it to */
+	/* There's only certain ones the game is allowed to set it to,
+	   and they can only change it if the state is currently
+	   WAITING or DONE. */
 	switch (state) {
 	case GGZDMOD_STATE_WAITING:
 	case GGZDMOD_STATE_PLAYING:
 	case GGZDMOD_STATE_DONE:
-		set_state(mod, state);
-		break;
+		if (mod->state != GGZDMOD_STATE_CREATED &&
+		    mod->state != GGZDMOD_STATE_DONE) {
+			set_state(mod, state);
+			break;
+		}
 	default:
 		_ggzdmod_error(mod, "Game requested incorrect state value");
 	}
@@ -953,6 +964,8 @@ void _ggzdmod_handle_launch_seat(_GGZdMod * mod, GGZSeat seat)
 
 void _ggzdmod_handle_launch_end(_GGZdMod * mod)
 {
+	/* Normally we let the game control its own state, but
+	   we control the transition from CREATED to WAITING. */
         set_state(mod, GGZDMOD_STATE_WAITING);
 }
 
@@ -971,10 +984,9 @@ void _ggzdmod_handle_join(_GGZdMod * mod, GGZSeat seat)
 		return;
 	}
 
-	/* FIXME: in the future, leave this to game module? */
-	/* If all seats are full now, set state to playing */
-	if (!seats_open(mod))
-		set_state(mod, GGZDMOD_STATE_PLAYING);
+	/* Most games will want to change their status to PLAYING
+	   at this point, but we leave that entirely up to them
+	   (via ggzdmod_set_state()). */
 }
 
 
@@ -1003,10 +1015,10 @@ void _ggzdmod_handle_leave(_GGZdMod * mod, char *name)
 		ggz_list_insert(mod->seats, &seat);
 		call_handler(mod, GGZDMOD_EVENT_LEAVE, &seat.num);
 	
-		/* If the table isn't done, set to wait for more players */
-		/* FIXME: let game module do this? */
-		if (mod->state != GGZDMOD_STATE_DONE)
-			set_state(mod, GGZDMOD_STATE_WAITING);
+
+		/* Most games will want to change their status to
+		   WAITING at this point, but we leave that entirely up
+		   to them(via ggzdmod_set_state()). */
 	}
 
 	else
