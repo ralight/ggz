@@ -28,7 +28,7 @@ GGZapHandler::GGZapHandler()
 	m_zapuser = NULL;
 
 	core = new GGZCore();
-	core->init(GGZCore::parser | GGZCore::modules, "/tmp/ggzap.debug", GGZCore::all);
+	core->init(GGZCore::parser | GGZCore::modules);
 }
 
 GGZapHandler::~GGZapHandler()
