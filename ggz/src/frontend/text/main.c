@@ -27,23 +27,62 @@
 #include <ggzcore.h>
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <poll.h>
+#include <unistd.h>
 
+#define TIMEOUT 500
+
+char game_over = 0;
+
+void user_process(short events);
+void user_prompt(void);
 
 int main(void)
 {
-	char* string;
-
-	string = malloc(6);
-	strcpy(string, "Hello");
+	struct pollfd fd[1] = {{STDIN_FILENO, POLLIN, 0}};
 
 	ggzcore_init(GGZ_OPT_PARSER, "/etc/ggz-text.rc", "~/.ggz-txtrc");
 
-	ggzcore_event_process_all();
-	ggzcore_event_trigger(GGZ_USER_LOGIN_GUEST, NULL, 0);
-	ggzcore_event_trigger(GGZ_USER_CHAT, string, strlen(string)+1);
+	user_prompt();
+	
+	while (!game_over) {
+
+		if (poll(fd, 1, TIMEOUT))
+			user_process(fd[0].revents);
+
+		ggzcore_event_process_all();
+	}
+
 	ggzcore_event_process_all();
 
 	ggzcore_destroy();
-
+	
 	return 0;
+}
+
+
+void user_process(short events)
+{
+	char line[80];
+	GGZProfile profile = {"Default", "rimshot.ece.rice.edu", 5688,
+			      GGZ_LOGIN_GUEST, "brent", NULL};
+
+	if (events & POLLIN) {
+		if (!fgets(line, 80, stdin))
+			game_over = 1;
+		else if (strcmp(line, "connect")) {
+			ggzcore_event_trigger(GGZ_USER_LOGIN, &profile, 
+					      sizeof(GGZProfile));
+		}
+		
+		user_prompt();
+	}
+
+}
+
+
+void user_prompt(void)
+{
+	printf("command> ");
 }
