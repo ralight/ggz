@@ -1,6 +1,9 @@
 SUBDIRS = .
 
-libggzcorepp_la_SOURCES = GGZCore.cpp \
+lib_LTLIBRARIES = libggzcorepp.la
+
+libggzcorepp_la_SOURCES = \
+			GGZCore.cpp \
 			GGZCoreConf.cpp \
 			GGZCoreConfio.cpp \
 			GGZCoreGame.cpp \
@@ -12,7 +15,8 @@ libggzcorepp_la_SOURCES = GGZCore.cpp \
 			GGZCoreTable.cpp \
 			GGZCoreCommon.cpp
 
-include_HEADERS =       GGZCore.h \
+include_HEADERS = \
+			GGZCore.h \
 			GGZCoreConf.h \
 			GGZCoreConfio.h \
 			GGZCoreGame.h \
@@ -24,9 +28,7 @@ include_HEADERS =       GGZCore.h \
 			GGZCoreTable.h \
 			GGZCoreCommon.h
 
-lib_LTLIBRARIES =       libggzcorepp.la
-
-libggzcorepp_la_LDFLAGS = -version-info 0:1:0 @GGZCORE_LDFLAGS@ @LIB_GGZCORE@
+libggzcorepp_la_LDFLAGS = -version-info 1:0:0 @GGZCORE_LDFLAGS@ @LIB_GGZCORE@
 
 CXXFLAGS = @COMPILEOPTIONS@ $(EASYSOCK_INCLUDES) $(GGZCORE_INCLUDES)
 
