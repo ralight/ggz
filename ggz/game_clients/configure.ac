@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6673 2005-01-14 06:34:12Z jdorje $
+dnl $Id: configure.ac 6735 2005-01-19 02:20:46Z jdorje $
 
 AC_INIT([GGZ GTK games], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [gtk-games])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -16,6 +16,12 @@ dnl If an override is present, use it
 dnl =================================
 AC_ARG_WITH(game, AC_HELP_STRING([--with-game=DIR],[Dir for game module]),
             game="$withval", game="")
+
+AC_ARG_WITH(game-wrapper,
+            AC_HELP_STRING([--with-game-wrapper=WRAPPER],
+                           [Wrapper for running games (e.g., "valgrind")]),
+            GAME_WRAPPER="$withval", GAME_WRAPPER="")
+AC_SUBST(GAME_WRAPPER)
 
 dnl Order of precedence: command-line > OVERRIDE_XXX > DEFAULT_XXX
 dnl ==============================================================

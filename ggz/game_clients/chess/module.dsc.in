@@ -5,6 +5,6 @@ Author = Ismael Orenstein
 Version = 0.0.8
 ProtocolEngine = Chess
 ProtocolVersion = 3
-CommandLine = @ggzexecmoddir@/ggz.chess @EXTRA_GAME_PARAMETERS@
+CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.chess @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/games/chess/

@@ -1,7 +1,7 @@
 # Hastings description file
 [ModuleInfo]
 Author = Josef Spillner
-CommandLine = @ggzexecmoddir@/ggz.hastings @EXTRA_GAME_PARAMETERS@
+CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.hastings @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/games/hastings/
 Name = Hastings

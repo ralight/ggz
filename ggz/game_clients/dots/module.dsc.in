@@ -1,7 +1,7 @@
 # Connect the Dots description file
 [ModuleInfo]
 Author = Rich Gade
-CommandLine = @ggzexecmoddir@/ggz.dots @EXTRA_GAME_PARAMETERS@
+CommandLine = @GAME_WRAPPER@ @ggzexecmoddir@/ggz.dots @EXTRA_GAME_PARAMETERS@
 Frontend = gtk
 Homepage = http://www.ggzgamingzone.org/games/dots/
 Name = Dots
