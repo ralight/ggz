@@ -226,7 +226,7 @@ void board_handle_click(GtkWidget *widget, GdkEventButton *event)
 		statusbar_message(tstr);
 		g_free(tstr);
 		game.move = game.opponent;
-		game.state = DOTS_STATE_WAIT;
+		game.state = DOTS_STATE_OPPONENT;
 	}
 }
 
@@ -308,6 +308,10 @@ gint8 board_opponent_move(guint8 dir)
 	if(es_read_char(game.fd, &x) < 0
 	   || es_read_char(game.fd, &y) < 0)
 		return -1;
+
+	/* Future DOTS_REQ_MOVE's now make sense */
+	if(game.state == DOTS_STATE_OPPONENT)
+		game.state = DOTS_STATE_WAIT;
 
 	if(dir == 0) {
 		/* A vertical move */

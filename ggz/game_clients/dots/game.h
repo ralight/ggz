@@ -51,6 +51,7 @@
 #define DOTS_STATE_WAIT        1
 #define DOTS_STATE_MOVE        2
 #define DOTS_STATE_DONE        3
+#define DOTS_STATE_OPPONENT    4
 
 /* Connect the Dots game events */
 #define DOTS_EVENT_LAUNCH      0

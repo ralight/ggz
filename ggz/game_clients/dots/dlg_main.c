@@ -219,9 +219,7 @@ create_dlg_main (void)
   gtk_box_pack_start (GTK_BOX (hbox2), p1b, FALSE, TRUE, 5);
   gtk_widget_set_usize (p1b, 15, -2);
 
-  lbl_score0 = gtk_label_new ("");
-  gtk_label_parse_uline (GTK_LABEL (lbl_score0),
-                         "lbl_score0");
+  lbl_score0 = gtk_label_new ("No Score");
   gtk_widget_ref (lbl_score0);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "lbl_score0", lbl_score0,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -251,9 +249,7 @@ create_dlg_main (void)
   gtk_box_pack_start (GTK_BOX (hbox3), p2b, FALSE, TRUE, 5);
   gtk_widget_set_usize (p2b, 15, -2);
 
-  lbl_score1 = gtk_label_new ("");
-  gtk_label_parse_uline (GTK_LABEL (lbl_score1),
-                         "lbl_score1");
+  lbl_score1 = gtk_label_new ("No Score");
   gtk_widget_ref (lbl_score1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_main), "lbl_score1", lbl_score1,
                             (GtkDestroyNotify) gtk_widget_unref);
