@@ -2,14 +2,22 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 
+#include <ggz.h>
+
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <getopt.h>
 
 #include "wwwget.h"
 
+#include "config.h"
+
 #define ARRAY_WIDTH 20
 #define ARRAY_HEIGHT 10
+
+#define DATA_GLOBAL GGZDATADIR "/geekgame/"
+#define DATA_LOCAL "/tmp/"
 
 void drawbox(int x, int y, int w, int h, SDL_Surface *screen, int green)
 {
@@ -47,8 +55,8 @@ void drawnumber(SDL_Surface *screen, int vx, int vy, int num)
 	rect.x = vx * 32 + 20;
 	rect.y = vy * 32 + 20;
 
-	if(num) number = IMG_Load("one.png");
-	else number = IMG_Load("zero.png");
+	if(num) number = IMG_Load(DATA_GLOBAL "one.png");
+	else number = IMG_Load(DATA_GLOBAL "zero.png");
 	SDL_BlitSurface(number, NULL, screen, &rect);
 	SDL_UpdateRect(screen, rect.x, rect.y, 32, 32);
 }
@@ -69,7 +77,47 @@ void drawturn(SDL_Surface *screen, int players, int turn)
 	}
 }
 
+int startgame(void);
+
 int main(int argc, char *argv[])
+{
+	struct option op[] =
+	{
+		{"ggz", 0, 0, 'g'},
+		{"help", 0, 0, 'h'},
+		{0, 0, 0, 0}
+	};
+	int index = 0, c;
+	int ggzmode;
+
+	ggzmode = 0;
+
+	while((c = getopt_long(argc, argv, "g", op, &index)) != -1)
+	{
+		switch(c)
+		{
+			case 'g':
+				ggzmode = 1;
+				break;
+			case 'h':
+				printf("The Geek Game\n");
+				printf("\n");
+				printf("Recognized options:\n");
+				printf("[-g | --ggz ] Run game in GGZ mode\n");
+				printf("[-h | --help] This help\n");
+				return 0;
+				break;
+			default:
+				fprintf(stderr, "Type '%s --help' to get a list of options.\n", argv[0]);
+				return 1;
+				break;
+		}
+	}
+
+	return startgame();
+}
+
+int startgame(void)
 {
 	SDL_Surface *screen, *image;
 	SDL_Rect rect;
@@ -86,6 +134,9 @@ int main(int argc, char *argv[])
 	int sum;
 	int players;
 	int turn;
+	char *playerimage;
+	int conf;
+	char conffile[1024];
 
 	TTF_Font *font;
 	SDL_Surface *text;
@@ -94,7 +145,7 @@ int main(int argc, char *argv[])
 
 	TTF_Init();
 
-	font = TTF_OpenFont("1979rg__.ttf", 12);
+	font = TTF_OpenFont(DATA_GLOBAL "1979rg__.ttf", 12);
 	/*font = TTF_OpenFont("dark2.ttf", 18);*/
 	if(!font)
 	{
@@ -111,16 +162,24 @@ int main(int argc, char *argv[])
 
 	drawturn(screen, players, -1);
 
+	snprintf(conffile, sizeof(conffile), "%s/.ggz/personalization", getenv("HOME"));
+	conf = ggz_conf_parse(conffile, GGZ_CONF_RDONLY);
+	if(conf != -1)
+	{
+		playerimage = ggz_conf_read_string(conf, "Personalization", "picture", NULL);
+	}
+	if((conf == -1) || (!playerimage)) playerimage = DATA_GLOBAL "bot.png";
+
 	for(i = 0; i < players; i++)
 	{
 		sleep(1);
 
 		if(!i)
 		{
-			wwwget("http://mindx.dyndns.org/homepage/photos/josef.png", "tmp.png");
-			image = IMG_Load("tmp.png");
+			wwwget("http://mindx.dyndns.org/homepage/photos/josef.png", DATA_LOCAL "tmp.png");
+			image = IMG_Load(DATA_LOCAL "tmp.png");
 		}
-		else image = IMG_Load("bot.png");
+		else image = IMG_Load(DATA_GLOBAL "bot.png");
 
 		rect.x = 20 + i * 150;
 		rect.y = 450;
