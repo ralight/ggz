@@ -9,12 +9,14 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include "chat.h"
 #include "datatypes.h"
 #include "log.h"
 #include "messages.h"
+#include "rc.h"
 #include "support.h"
 
 struct Grubby grubby;
@@ -27,6 +29,7 @@ void toggle_lang_checker( char *word );
 void show_stats( void );
 void add_name( char *from, char *name );
 void add_message( char *from, char *message );
+void check_messages( char *from );
 
 void owner_commands( char **words, int totalwords )
 {
@@ -44,6 +47,9 @@ void owner_commands( char **words, int totalwords )
 			case 3:
 				if( !strcasecmp( words[1], "log" ) && !strcasecmp( words[2], "off" ) )
 					end_log();
+
+				if( !strcasecmp( words[1], "save" ) && !strcasecmp( words[2], "memory" ) )
+					save_memory();
 			case 5:
 				if( !strcasecmp( words[1], "turn" ) && !strcasecmp( words[3], "lang") &&
 				    !strcasecmp( words[4], "checker" ) )
@@ -91,6 +97,12 @@ void public_commands( char *from, char **words, int totalwords, char *fullmessag
 					return;
 				}
 				break;
+			case 6:
+				if( !strcasecmp( words[1], "do" ) && !strcasecmp( words[2], "i") &&
+				    !strcasecmp( words[3], "have" ) && !strcasecmp( words[4], "any" ) &&
+				    !strcasecmp( words[5], "messages" ) )
+					check_messages( from );
+
 			default:
 				break;
 		}
@@ -196,6 +208,8 @@ void show_public_help( char *from )
 	send_msg( from, "                             you a little better." );
 	send_msg( from, "tell <username> <message>  . I'll tell <username> your" );
 	send_msg( from, "                             <message> next time I see them." );
+	send_msg( from, "do i have any messages ..... get any messages people may have" );
+	send_msg( from, "                             left you." );
 	send_msg( from, " ");
 	send_msg( from, "When you're telling, or asking something of me, please" );
 	send_msg( from, "make sure to address me properly:");
@@ -327,6 +341,42 @@ void add_message( char *from, char *message )
 		memory.people[i].msgcount++;
 		sprintf( out, "I'll be sure to tell %s for you.", get_name( name ) );
 		send_msg( from, out );
+		sprintf( out, "Hey, you got a message from %s.", get_name( from ) );
+		send_msg( name, out );
 	}
 }
 
+void check_messages( char *from )
+{
+	int i,m;
+	char dt[100];
+	char out[grubby.chat_length];
+
+	/* Check if we know the user */
+	i = check_known( from );
+	if( i == -1 )
+	{
+		sprintf( out, "Sorry %s, I don't know you.", from );
+		send_msg( from, out );
+	} else {
+                /* Check for messages */
+                if( memory.people[i].msgcount > 0 )
+                {       
+                        for( m=0; m<memory.people[i].msgcount; m++ )
+                        {
+                                strftime( dt, 100, "%b %d @ %I:%M%p", localtime( &memory.people[i].msg[m].timestamp ) );
+                                sprintf( out, "Message %d from %s was left at %s:",
+                                         m+1, get_name( memory.people[i].msg[m].from ), dt );
+                                send_msg( from, out ); 
+                                sprintf( out, "       %s", memory.people[i].msg[m].text );
+                                send_msg( from, out );
+                                free( memory.people[i].msg[m].text );
+                        }
+                        memory.people[i].msgcount = 0;
+                } else {
+			sprintf( out, "Sorry %s, but I guess your not important enough to get any messages.",
+				 get_name( from ) );
+			send_msg( from, out );
+		}
+	}
+}

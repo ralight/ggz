@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include "datatypes.h"
 #include "protocols.h"
+#include "rc.h"
 
 struct Grubby grubby;
 struct Memory memory;
@@ -47,6 +48,7 @@ void grubby_init( void )
 		  = memory.people[i].info
 		  = memory.people[i].lastroom
 		  = NULL;
+	read_memory();
 
 	init_chatter();
 

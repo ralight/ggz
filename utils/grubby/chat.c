@@ -96,6 +96,7 @@ void handle_chat( unsigned char OpCode, char *from, char *message )
 		{
 			memory.people[memory.num_people].username = malloc( sizeof(char) * ( strlen(from) + 1 ) );
 			strcpy( memory.people[memory.num_people].username, from );
+			memory.people[memory.num_people].seen = time(NULL);
 			memory.people[memory.num_people].lastseen = time(NULL);
 			memory.num_people++;
 		}
@@ -141,6 +142,7 @@ void handle_join( char *from )
 		{
 			memory.people[memory.num_people].username = malloc( sizeof(char) * ( strlen(from) + 1 ) );
 			strcpy( memory.people[memory.num_people].username, from );
+			memory.people[memory.num_people].seen = time(NULL);
 			memory.people[memory.num_people].lastseen = time(NULL);
 			memory.num_people++;
 		} else {
