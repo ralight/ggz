@@ -1,0 +1,15 @@
+Source: ggz-txt-client
+Section: games
+Priority: optional
+Maintainer: Josef Spillner <dr_maux@users.sourceforge.net>
+Standards-Version: 3.0.1
+Build-Depends: debhelper
+
+Package: ggz-txt-client
+Architecture: any
+Depends: ${shlibs:Depends}
+Provides: ggz-core-client
+Description: Text frontend for GGZ
+ For those who do not have X11 available. It has all the
+ features that the other frontends have, except launching
+ games.

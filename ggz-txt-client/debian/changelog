@@ -1,0 +1,9 @@
+ggz-txt-client (0.0.4-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Josef Spillner <dr_maux@users.sourceforge.net>  Sun, 27 May 2001 20:51:25 +0200
+
+Local variables:
+mode: debian-changelog
+End:
