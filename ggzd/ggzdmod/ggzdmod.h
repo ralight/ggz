@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 5139 2002-11-02 06:40:33Z jdorje $
+ * $Id: ggzdmod.h 5307 2003-01-03 09:37:41Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -518,7 +518,7 @@ int ggzdmod_count_spectators(GGZdMod * ggzdmod);
  *      registered for the PLAYER_DATA event.
  *    - It will call an event handler as necessary.
  *  @param ggzdmod The ggzdmod object.
- *  @return -1 on error, the number of events handled (0-1) on success.
+ *  @return -1 on error, the number of events handled (0 or more) on success.
  */
 int ggzdmod_dispatch(GGZdMod * ggzdmod);
 

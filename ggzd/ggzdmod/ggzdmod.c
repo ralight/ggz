@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 5139 2002-11-02 06:40:33Z jdorje $
+ * $Id: ggzdmod.c 5307 2003-01-03 09:37:41Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -849,7 +849,7 @@ static int handle_event(GGZdMod * ggzdmod, fd_set read_fds)
 		count++;
 	}
 
-	/* Only monitory player fds if there is a PLAYER_DATA handler set */
+	/* Only monitor player fds if there is a PLAYER_DATA handler set */
 	if (ggzdmod->handlers[GGZDMOD_EVENT_PLAYER_DATA]) {
 		for (entry = ggz_list_head(ggzdmod->seats);
 		     entry != NULL;
@@ -914,9 +914,18 @@ int ggzdmod_dispatch(GGZdMod * ggzdmod)
 	   function may errantly return 0 sometimes when it should have
 	   handled data.  This can be fixed later. */
 
-	if (status <= 0) {
-		if (errno == EINTR)
+	if (status == 0) {
+		/* Nothing to read. */
+		return 0;
+	}
+
+	if (status < 0) {
+		/* Select error... */
+		if (errno == EINTR) {
+			/* Select was interrupted (nothing to read).
+			 * This may not be possible with a timeout of 0. */
 			return 0;
+		}
 		return -1;
 	}
 
