@@ -3,8 +3,7 @@ dnl =======================================
 
 AC_INIT(configure.in)
 AC_CANONICAL_SYSTEM
-#AC_ARG_PROGRAM
-AM_INIT_AUTOMAKE(ggz-docs,0.0.4)
+AM_INIT_AUTOMAKE(ggz-docs,0.0.5pre)
 
 dnl Use GGZDOCDIR as the top-level installation directory
 dnl =====================================================
@@ -19,6 +18,7 @@ AC_OUTPUT(Makefile
 	games/Makefile
 	games/hastings/Makefile
 	games/external-games/Makefile
+	games/ggzcards/Makefile
 	ggz-project/Makefile
 	coreclients/Makefile
 	grubby/Makefile
