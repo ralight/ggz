@@ -28,10 +28,11 @@ Directly before release
    /docs/games/game-development/games.html
 [] decide which library interface versions must be bumped
    (libtool only - see info libtool for the concept)
+[] update version definitions in header files accordingly
 [] update toplevel ChangeLog files with CVS history
    cvs2cl --accum --usermap usertable-for-changelog
 [] inform distributors
-   (currently: Debian, Gentoo)
+   (currently: Debian, Gentoo, Slackware)
 [] update permanent stable game servers
    Currently, this is ggz.snafu.de.
    Also, the metaserver should contain an entry for the previous version,
