@@ -814,6 +814,7 @@ create_main_win (void)
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (chat_scroll), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
   chat_text = gtk_text_new (NULL, NULL);
+  gtk_text_set_word_wrap( GTK_TEXT(chat_text), TRUE);
   gtk_widget_ref (chat_text);
   gtk_object_set_data_full (GTK_OBJECT (main_win), "chat_text", chat_text,
                             (GtkDestroyNotify) gtk_widget_unref);
