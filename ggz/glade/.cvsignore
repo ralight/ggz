@@ -1,3 +1,6 @@
 main_win
 dlg_launch
+dlg_about
+dlg_props
+dlg_motd
 *.bak
