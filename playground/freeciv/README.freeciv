@@ -24,3 +24,7 @@ How to apply the patch to freeciv:
    # ./autogen.sh
    # make
 
+
+The file freeciv_with_ggz.0.2.0.patch contains a working patch
+for Freeciv 1.12.0 by Riq. It should be updated for 1.14.x.
+
