@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 4655 2002-09-23 00:05:12Z jdorje $
+ * $Id: client.h 4917 2002-10-14 22:27:43Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -24,6 +24,7 @@
  */
 
 #include <ggz_common.h>
+#include <ggzmod.h>
 
 #include "protocol.h"
 #include "shared.h"
@@ -102,7 +103,7 @@ struct ggzcards_game_t {
 	int num_players;	/**< The number of players in the game. */
 	seat_t *players;	/**< Data about each player */
 	client_state_t state;	/**< The state the game is in */
-	
+
 	/** @brief The hand we're currently playing from.
 	 *
 	 *  This is the hand we're currently playing from, or -1 if
@@ -112,6 +113,8 @@ struct ggzcards_game_t {
 	 */
 	int play_hand;		
 };
+
+GGZMod *client_get_ggzmod(void);
 
 /** This is the game structure that contains all the common information
  *  about the ongoing game */

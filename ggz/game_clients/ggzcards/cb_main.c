@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.c 4882 2002-10-12 19:36:19Z jdorje $
+ * $Id: cb_main.c 4917 2002-10-14 22:27:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -39,8 +39,6 @@
 #include "game.h"
 #include "main.h"
 #include "table.h"
-
-GtkWidget *player_dialog = NULL;
 
 static void try_to_exit_game(void)
 {
@@ -77,22 +75,6 @@ void on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data)
 					  GTK_SIGNAL_FUNC
 					  (gtk_widget_destroyed), &dlg_prefs);
 		gtk_widget_show(dlg_prefs);
-	}
-}
-
-void on_mnu_playerlist_activate(GtkMenuItem * menuitem, gpointer user_data)
-{
-	if (player_dialog != NULL) {
-		gdk_window_show(player_dialog->window);
-		gdk_window_raise(player_dialog->window);
-	} else {
-		player_dialog = create_dlg_players();
-		(void) gtk_signal_connect(GTK_OBJECT(player_dialog),
-					  "destroy",
-					  GTK_SIGNAL_FUNC
-					  (gtk_widget_destroyed),
-					  &player_dialog);
-		gtk_widget_show(player_dialog);
 	}
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 4902 2002-10-13 08:06:19Z jdorje $
+ * $Id: dlg_main.c 4917 2002-10-14 22:27:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -35,6 +35,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+#include "dlg_players.h"
 #include "ggzintl.h"
 
 #include "cb_main.h"
@@ -51,7 +52,7 @@ static GtkWidget *create_menus(GtkWidget *window)
 	GtkItemFactoryEntry items[] = {
 	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
 	  {_("/Table/Player _list"), "<ctrl>L",
-	   on_mnu_playerlist_activate, 0, NULL},
+	   create_or_raise_dlg_players, 0, NULL},
 	  {_("/Table/_Sync with server"), "<ctrl>S",
 	   on_mnu_sync_activate, 0, NULL},
 	  {_("/Table/E_xit"), "<ctrl>X", on_mnu_exit_activate, 0, NULL},

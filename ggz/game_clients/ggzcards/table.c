@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4869 2002-10-11 23:16:04Z jdorje $
+ * $Id: table.c 4917 2002-10-14 22:27:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -283,7 +283,7 @@ void table_show_player_list(void)
 	assert(table != NULL);
 
 	if (player_list == NULL) {
-		player_list = create_player_clist();
+		player_list = create_playerlist_widget();
 		/* This positioning is just an approximation.  I'd like to
 		   center it automatically, but that doesn't seem to work for
 		   some reason... */
@@ -315,13 +315,6 @@ void table_hide_player_list(void)
 	assert(player_list);
 	gtk_widget_hide(player_list);
 }
-
-void table_update_player_list(void)
-{
-	if (player_list)
-		update_player_clist(player_list);
-}
-
 
 void table_cleanup(void)
 {

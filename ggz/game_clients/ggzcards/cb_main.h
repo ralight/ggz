@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.h 4656 2002-09-23 00:48:07Z jdorje $
+ * $Id: cb_main.h 4917 2002-10-14 22:27:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -31,9 +31,6 @@
 void on_mnu_startgame_activate(GtkMenuItem * menuitem, gpointer user_data);
 void on_mnu_sync_activate(GtkMenuItem * menuitem, gpointer user_data);
 void on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data);
-
-extern GtkWidget *player_dialog;
-void on_mnu_playerlist_activate(GtkMenuItem * menuitem, gpointer user_data);
 
 void on_mnu_forceredraw_activate(GtkMenuItem * menuitem, gpointer user_data);
 void on_mnu_exit_activate(GtkMenuItem * menuitem, gpointer user_data);

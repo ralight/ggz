@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 4902 2002-10-13 08:06:19Z jdorje $
+ * $Id: main.c 4917 2002-10-14 22:27:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -38,6 +38,7 @@
 #include <ggz.h>		/* libggz */
 
 #include "dlg_about.h"
+#include "dlg_players.h"
 #include "ggzintl.h"
 
 #include "client.h"
@@ -84,6 +85,7 @@ int main(int argc, char *argv[])
 #endif
 
 	/* Now some more initializations... */
+	init_player_list(client_get_ggzmod());
 	init_about_dialog();
 	dlg_main = create_dlg_main();
 	gtk_widget_show(dlg_main);

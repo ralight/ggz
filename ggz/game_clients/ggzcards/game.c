@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4902 2002-10-13 08:06:19Z jdorje $
+ * $Id: game.c 4917 2002-10-14 22:27:43Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -309,10 +309,6 @@ void game_alert_player(int player,
 
 	ggz_debug(DBG_MAIN, "Handling player update for player %d.", player);
 
-	if (player_dialog != NULL)
-		update_player_dialog(player_dialog);
-	table_update_player_list();
-
 	switch (new_status) {
 	case GGZ_SEAT_PLAYER:
 		/* This assumes we can't have a smooth transition from one
@@ -348,7 +344,6 @@ void game_alert_num_players(int new, int old)
 		ggz_debug(DBG_MAIN, "Changing number of players.");
 		table_setup();
 	}
-	table_update_player_list();
 }
 
 void game_alert_hand_size(int max_hand_size)
