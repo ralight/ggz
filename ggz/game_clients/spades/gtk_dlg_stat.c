@@ -89,6 +89,7 @@ void StatDialog(GtkWidget * widget, gpointer data)
 
 	} else {
 		yesButton = gtk_button_new_with_label("OK");
+		noButton = NULL; /* avoid compiler warning */
 	}
 	gtk_signal_connect_object(GTK_OBJECT(yesButton), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),

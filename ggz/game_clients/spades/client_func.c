@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 7/31/97
- * $Id: client_func.c 3388 2002-02-17 08:54:07Z jdorje $
+ * $Id: client_func.c 3396 2002-02-17 09:59:47Z jdorje $
  *
  * This file contains the support functions which do the dirty work of
  * playing spades.  This file is an attempt to remain modular so that
@@ -43,6 +43,8 @@
 #ifdef DEBUG_MEM
 # include <dmalloc.h>
 #endif
+
+#include <ggz.h>		/* libggz */
 
 #include <string.h>		/* For strcpy */
 

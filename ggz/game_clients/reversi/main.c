@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Reversi client main game loop
- * $Id: main.c 3383 2002-02-17 08:20:13Z jdorje $
+ * $Id: main.c 3396 2002-02-17 09:59:47Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -85,7 +85,7 @@ static void initialize_debugging(void)
 	   just initialize the _types_ of debugging we want. */
 #ifdef DEBUG
 	const char *debugging_types[] =
-		{ "reversi", NULL };
+		{ "main", NULL };
 #else
 	const char *debugging_types[] = { NULL };
 #endif
@@ -117,7 +117,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 
 	// Read the fd
 	if (ggz_read_int(game.fd, &op) < 0) {
-		ggz_error_msg("Couldn't read the game fd\n");
+		ggz_error_msg("Couldn't read the game fd");
 		return;
 	}
 
@@ -135,7 +135,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 			break;
 		case RVR_MSG_START:
 			game.state = RVR_STATE_PLAYING;
-			ggz_debug("reversi", "Game has started\n");
+			ggz_debug("main", "Game has started");
 			display_board();
 			break;
 		case RVR_MSG_MOVE:
@@ -286,7 +286,7 @@ void send_my_move(int move) {
 		game_status("Can't send move!");
 		return;
 	}
-	ggz_debug("reversi", "Sent move: %d\n", move);
+	ggz_debug("main", "Sent move: %d", move);
 }
 
 int request_sync() {

@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.c 3384 2002-02-17 08:27:43Z jdorje $
+ * $Id: game.c 3396 2002-02-17 09:59:47Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -91,7 +91,7 @@ void game_init(void)
 		g_free(game.theme);
 		game.theme = strdup("default");
 		if(display_init() != 0) {
-			ggz_error_msg("Failed to load default theme!\n");
+			ggz_error_msg("Failed to load default theme!");
 			exit(1);
 		}
 	}
@@ -546,7 +546,7 @@ static void get_theme_data(void)
 
 	/* Get the directory for themes and the .rc theme setting */
 	theme_dir = g_strdup_printf("%s/ccheckers/pixmaps", GGZDATADIR);
-printf("%s\n", theme_dir);
+	ggz_debug("main", "%s", theme_dir);
 	game.theme = ggz_conf_read_string(game.conf_handle,
 						"Options", "Theme", "default");
 
@@ -579,13 +579,17 @@ char *get_theme_dir(void)
 static void game_print_board(void)
 {
 	int i, j;
+	
+	/* "board" will have to be added to ggz_debug_init
+	   in main.c to get this to work.  --JDS */
 
-	printf("Current game board:\n");
+	ggz_debug("board", "Current game board:");
 	for(i=0; i<17; i++) {
+		char buf[128] = "";
 		for(j=0; j<25; j++)
 			switch(game.board[i][j]) {
 				case -1:
-					printf(" ");
+					snprintf(buf, sizeof(buf) - strlen(buf), " ");
 					break;
 				case 0:
 				case 1:
@@ -594,12 +598,12 @@ static void game_print_board(void)
 				case 4:
 				case 5:
 				case 6:
-					printf("%c", '0'+game.board[i][j]);
+					snprintf(buf, sizeof(buf) - strlen(buf), "%c", '0'+game.board[i][j]);
 					break;
 				default:
-					printf("?");
+					snprintf(buf, sizeof(buf) - strlen(buf), "?");
 			}
-		printf("\n");
+		ggz_debug("board", "%s", buf);
 	}
 }
 #endif

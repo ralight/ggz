@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 3381 2002-02-17 08:02:54Z jdorje $
+ * $Id: main_win.c 3396 2002-02-17 09:59:47Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -79,7 +79,7 @@ void game_status( const char* format, ... )
 	message = g_strdup_vprintf(format, ap);
 	va_end(ap);
 	
-	/* ggz_debug("reversi", "Game status message: %s", message); */
+	/* ggz_debug("main", "Game status message: %s", message); */
 	
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "statusbar");
 	

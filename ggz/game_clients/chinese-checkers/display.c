@@ -74,7 +74,7 @@ static GdkPixmap *display_load_pixmap(GdkWindow *window, GdkBitmap **mask,
 	fullpath = g_strdup_printf("%s/%s", get_theme_dir(), name);
 	pixmap = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
 	if(pixmap == NULL)
-		ggz_error_msg("Can't load pixmap %s\n", fullpath);
+		ggz_error_msg("Can't load pixmap %s", fullpath);
 
 	return pixmap;
 }
@@ -315,7 +315,7 @@ void display_handle_click_event(GdkEventButton *event)
 	col = (event->x - 61) / 11;
 	row = (event->y - 38) / 19.4;
 
-	/*printf("[%d][%d]\n", row, col);*/
+	/* ggz_debug("main", "[%d][%d]", row, col); */
 
 	game_handle_click_event(row, col);
 }

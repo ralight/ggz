@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Main loop and supporting logic
- * $Id: main.c 3384 2002-02-17 08:27:43Z jdorje $
+ * $Id: main.c 3396 2002-02-17 09:59:47Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -79,7 +79,7 @@ static void initialize_debugging(void)
 #else
 	const char *debugging_types[] = { NULL };
 #endif
-	/* Debugging goes to ~/.ggz/reversi-gtk.debug */
+	/* Debugging goes to ~/.ggz/ccheckers-gtk.debug */
 	char *file_name =
 		g_strdup_printf("%s/.ggz/ccheckers-gtk.debug", getenv("HOME"));
 	ggz_debug_init(debugging_types, file_name);
@@ -138,13 +138,13 @@ void main_io_handler(gpointer data, gint source, GdkInputCondition cond)
 			status = get_move_response();
 			break;
 		default:
-			ggz_error_msg("Unknown opcode received %d\n", op);
+			ggz_error_msg("Unknown opcode received %d", op);
 			status = -1;
 			break;
 	}
 
 	if(status < 0) {
-		ggz_error_msg("Ouch!\n");
+		ggz_error_msg("Ouch!");
 		close(game.fd);
 		exit(1);
 	}
@@ -236,7 +236,7 @@ static int get_move_response(void)
 			game.my_turn = 0;
 			break;
 		default:
-			ggz_error_msg("Err, CC_RSP_MOVE = %d\n", (int)status);
+			ggz_error_msg("Err, CC_RSP_MOVE = %d", (int)status);
 			return status;
 			break;
 	}
