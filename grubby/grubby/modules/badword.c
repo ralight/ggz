@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "gurumod.h"
+#include "i18n.h"
 #include <ggzcore.h>
 
 /* Configuration file for bad words */
@@ -46,22 +47,65 @@ void gurumod_init()
 Guru *gurumod_exec(Guru *message)
 {
 	int i, j;
-	
+	enum Types {typenone, typefromgrubby, typetogrubby};
+	int type;
+	static char *buf = NULL;
+	int bad, you;
+
+	type = typenone;
+	if(message->type == GURU_PRIVMSG) type = typetogrubby;
+	else if((message->list) && (message->list[0]))
+	{
+		if(!strcmp(message->list[0], message->guru)) type = typetogrubby;
+		if(!strcmp(message->guru, message->player)) type = typefromgrubby;
+	}
+	if(type == typefromgrubby) return NULL;
+
+	bad = 0;
+	you = 0;
 	j = 0;
 	while((message->list) && (message->list[j]))
 	{
 		i = 0;
 		while((badwordlist) && (badwordlist[i]))
 		{
-			if(!strcasecmp(message->list[j], badwordlist[i]))
-			{
-				message->message = "Watch your language please!";
-				return message;
-			}
+			if(!strcasecmp(message->list[j], badwordlist[i])) bad = 1;
 			i++;
 		}
+		if(!strcasecmp(message->list[j], "you")) you = 1;
 		j++;
 	}
+	if(!bad)
+	{
+		i = 0;
+		while((badwordlist) && (badwordlist[i]))
+		{
+			if(strstr(message->message, badwordlist[i])) bad = 1;
+			i++;
+		}
+	}
+
+	if(bad)
+	{
+		if(type == typetogrubby)
+		{
+			if(!you)
+			{
+				if(!buf) buf = (char*)malloc(strlen(message->player) + 1024);
+				strcpy(buf, message->player);
+				strcat(buf, _(" is a dirty evil bastard."));
+				message->message = buf;
+			}
+			else message->message = "You aren't any better, bugger.";
+			return message;
+		}
+		else
+		{
+			message->message = _("Watch your language please!");
+			return message;
+		}
+	}
+
 	return NULL;
 }
 

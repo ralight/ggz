@@ -49,7 +49,7 @@ sub download
 	$conn->print("GET $document\n");
 	$data = $conn->get(Timeout => 5);
 	mkdir("$gurudir/cache", 0755);
-	open(FILE, ">$gurudir/cache/$ARGV[2].rdf");
+	open(FILE, ">$gurudir/cache/$input[2].rdf");
 	print FILE "$data\n";
 	close(FILE);
 	$downloaded = 1;

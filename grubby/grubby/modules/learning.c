@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "gurumod.h"
+#include "i18n.h"
 
 /* Learning modes */
 #define mode_none  0
@@ -48,6 +49,7 @@ char *teach(const char *word)
 	char buffer[128];
 	char *token;
 
+	if(!word) return NULL;
 	f = fopen(database, "r");
 	if(!f) return NULL;
 	while(fgets(buffer, sizeof(buffer), f))
@@ -61,6 +63,7 @@ char *teach(const char *word)
 				if(ret) free(ret);
 				ret = strdup(token);
 				fclose(f);
+				ret[strlen(ret) - 1] = 0;
 				return ret;
 			}
 		}
@@ -74,27 +77,38 @@ Guru *gurumod_exec(Guru *message)
 {
 	int i, mode;
 	char *ret;
+	char *request;
 
 	if(!message->message) return NULL;
 	if(message->priority == 10) return NULL;
 	
+	request = NULL;
 	i = 0;
 	mode = mode_none;
-	printf("DEBUG: learning\n");
 	while((message->list) && (message->list[i]))
 	{
 		if((i == 0) && (strcmp(message->list[0], message->guru)))
-		{
-			printf("DEBUG: %s != %s\n%s\n", message->list[0], message->guru, message->message);
 			return NULL;
-		}
 		if((i == 2) && (!strcmp(message->list[i], "is"))) mode = mode_learn;
+		if((i == 2) && (!strcmp(message->list[i], "are"))) mode = mode_learn;
+		if((i == 2) && (!strcmp(message->list[i], "has"))) mode = mode_learn;
+		if((i == 2) && (!strcmp(message->list[i], "have"))) mode = mode_learn;
 		i++;
 	}
-	if(i == 2) mode = mode_teach;
+	if(i == 2)
+	{
+		mode = mode_teach;
+		request = message->list[1];
+	}
+	if(mode == mode_learn)
+	{
+		if((i > 2) && (!strcasecmp(message->list[1], "what")))
+		{
+			mode = mode_teach;
+			request = message->list[3];
+		}
+	}
 
-	/* INSANE MEMORY PROBLEM!!! */
-	message->message = strdup(message->message);
 	ret = NULL;
 
 	switch(mode)
@@ -103,14 +117,12 @@ Guru *gurumod_exec(Guru *message)
 			return NULL;
 			break;
 		case mode_learn:
-			printf("DEBUG: LEARN STUFF\n");
 			learn(message->list);
-			ret = "OK, learned that.";
+			ret = _("OK, learned that.");
 			break;
 		case mode_teach:
-			printf("DEBUG: Teach about STUFF\n");
-			ret = teach(message->list[1]);
-			if(!ret) ret = "You're too curious - I don't know everything.";
+			ret = teach(request);
+			if(!ret) ret = _("You're too curious - I don't know everything.");
 			break;
 	}
 

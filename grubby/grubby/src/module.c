@@ -100,6 +100,7 @@ Gurucore *guru_module_init()
 	/* Load i18n plugin */
 	core->i18n_init = NULL;
 	core->i18n_translate = NULL;
+	core->i18n_check = NULL;
 	module = ggzcore_confio_read_string(handler, "guru", "i18n", NULL);
 	if(module)
 	{
@@ -275,7 +276,7 @@ Guru *guru_module_internal(Guru *message)
 		if((i == 2) && ((modadd) || (modremove) || (modreload))) mod = strdup(token);
 		i++;
 	}
-	if(message->type == GURU_PRIVMSG) modules++;
+	/*if(message->type == GURU_PRIVMSG) modules++;*/
 
 	/* Process given commands */
 	if(modules == 2)

@@ -76,7 +76,7 @@ void net_internal_queueadd(const char *player, const char *message, int type)
 	/* Add dummy field on dummy messages */
 	if((message) && (type == GURU_PRIVMSG))
 	{
-		sprintf(realmessage, "grubbydummy %s", message);
+		sprintf(realmessage, "%s %s", guruname, message);
 		message = realmessage;
 	}
 
@@ -90,7 +90,7 @@ void net_internal_queueadd(const char *player, const char *message, int type)
 		guru->message = strdup(message);
 		guru->list = NULL;
 		listtoken = strdup(message);
-		token = strtok(listtoken, " ,./:-");
+		token = strtok(listtoken, " ,./:-?!\'");
 		i = 0;
 		while(token)
 		{
@@ -99,7 +99,7 @@ void net_internal_queueadd(const char *player, const char *message, int type)
 			strcpy(guru->list[i], token);
 			guru->list[i + 1] = NULL;
 			i++;
-			token = strtok(NULL, " ,./:-");
+			token = strtok(NULL, " ,./:-?!\'");
 		}
 		free(listtoken);
 	}
@@ -174,11 +174,16 @@ Guru *net_input()
 void net_output(Guru *output)
 {
 	char *token;
+	char *msg;
 
 	if(!room) return;
 
 	/* Handle multi-line answers */
-	token = strtok(output->message, "\n");
+	if(!output->message) return;
+printf("DEBUG: output is at %i\n", output);
+printf("DEBUG: net_output(%s)\n", output->message);
+	msg = strdup(output->message);
+	token = strtok(msg, "\n");
 	while(token)
 	{
 		switch(output->type)
@@ -192,6 +197,7 @@ void net_output(Guru *output)
 		}
 		token = strtok(NULL, "\n");
 	}
+	free(msg);
 }
 
 /* Callback for successful connection */

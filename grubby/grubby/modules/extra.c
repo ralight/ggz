@@ -13,9 +13,11 @@
 
 #define COMMAND_SAY 1
 #define COMMAND_HI 2
+#define COMMAND_FUNNY 3
+#define COMMAND_FUNNY2 4
 #define COMMAND_NONE 0
 
-/* React on hello messages and say-commands */
+/* React on hello messages and say-commands and LOL's */
 Guru *gurumod_exec(Guru *message)
 {
 	int command;
@@ -33,17 +35,21 @@ Guru *gurumod_exec(Guru *message)
 				command = COMMAND_SAY;
 		if(!message->list[2])
 			if((!strcasecmp(message->list[1], "hi"))
+			|| (!strcasecmp(message->list[1], "hey"))
 			|| (!strcasecmp(message->list[1], "hello"))
 			|| (!strcasecmp(message->list[1], "moin"))
 			|| (!strcasecmp(message->list[1], "welcome"))
 			|| (!strcasecmp(message->list[1], "greetings")))
 				command = COMMAND_HI;
 	}
-	if((message->list)
+
+	if((command != COMMAND_HI)
+	&& (message->list)
 	&& (message->list[0])
 	&& (message->list[1]))
 	{
 		if(((!strcmp(message->list[0], "hi"))
+		|| (!strcasecmp(message->list[1], "hey"))
 		|| (!strcasecmp(message->list[0], "hello"))
 		|| (!strcasecmp(message->list[0], "moin"))
 		|| (!strcasecmp(message->list[0], "welcome"))
@@ -51,6 +57,19 @@ Guru *gurumod_exec(Guru *message)
 		&& (!strcmp(message->list[1], message->guru)))
 		{
 			command = COMMAND_HI;
+		}
+	}
+
+	if(command == COMMAND_NONE)
+	{
+		if((message->list) && (message->list[0]))
+		{
+			if((!strcasecmp(message->list[0], "lol"))
+			|| (!strcasecmp(message->list[0], "rofl"))
+			|| (!strcasecmp(message->list[0], "rotfl"))) command = COMMAND_FUNNY;
+			if((!strcasecmp(message->list[0], "heh"))
+			|| (!strcasecmp(message->list[0], "hehe"))
+			|| (!strcasecmp(message->list[0], "hehehe"))) command = COMMAND_FUNNY2;
 		}
 	}
 
@@ -83,10 +102,19 @@ Guru *gurumod_exec(Guru *message)
 					strcat(buf, " ");
 					strcat(buf, message->list[i]);
 				}
-				len += strlen(message->list[i]);
+				len += strlen(message->list[i]) + 1;
 				i++;
 			}
 			message->message = buf;
+			message->type = GURU_CHAT;
+			return message;
+			break;
+		case COMMAND_FUNNY:
+			message->message = "funny eh?";
+			return message;
+			break;
+		case COMMAND_FUNNY2:
+			message->message = "hehe";
 			return message;
 			break;
 	}
