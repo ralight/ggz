@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5192 2002-11-03 23:28:51Z jdorje $
+#  $Id: Makefile.am 5196 2002-11-04 00:07:45Z jdorje $
 
 SUBDIRS = .
 
@@ -36,6 +36,9 @@ ggz_gtk_SOURCES =	main.c \
 			motd.h \
 			msgbox.c \
 			msgbox.h \
+			msg_help.xpm \
+			msg_info.xpm \
+			msg_stop.xpm \
 			playerinfo.c \
 			playerinfo.h \
 			props.c \
