@@ -184,17 +184,10 @@ void chat_display_message(CHATTypes id, char *player, char *message)
 	gchar *name = NULL;
 	gchar *command;
 	gint ignore = FALSE;
-	int i;
-	char *p;
 
 	/* are we ignoring this person? */
-	if(player != NULL) {
-		for(i=0; i<ignore_count; i++) {
-			p = g_array_index(chatinfo.ignore, char *, i);
-			if(!strcmp(p, player))
-				ignore = TRUE;
-		}
-	}
+	if(player != NULL && chat_is_ignore(player))
+		ignore = TRUE;
 
 	if(ignore == FALSE)
 	{
@@ -567,10 +560,8 @@ void chat_word_clicked(GtkXText *xtext, char *word,
 /* FIXME: Everything that calls this needs to free the memory */
 const gchar *chat_get_color(gchar *name, gchar *msg)
 {
-	int i;
 	int pos;
 	char *srv_handle;
-	char *p;
 	int c;
 	static gchar color[16];
 
@@ -590,13 +581,10 @@ const gchar *chat_get_color(gchar *name, gchar *msg)
 	}
 
 	/* Is a friend talking? */
-	for(i=0; i<friend_count; i++) {
-		p = g_array_index(chatinfo.friends, char *, i);
-		if(!strcmp(p, name)) {
-			c = ggzcore_conf_read_int("CHAT", "F_COLOR", 6);
-			snprintf(color, sizeof(color), "%02d", c);
-			return color;
-		}
+	if (chat_is_friend(name)) {
+		c = ggzcore_conf_read_int("CHAT", "F_COLOR", 6);
+		snprintf(color, sizeof(color), "%02d", c);
+		return color;
 	}
 
 	/* Normal color */
@@ -647,7 +635,7 @@ void chat_remove_friend(gchar *name)
 
 	for(i=0; i<friend_count; i++) {
 		p = g_array_index(chatinfo.friends, char *, i);
-		if(!strcmp(p, name)) {
+		if(!strcasecmp(p, name)) {
 			g_array_remove_index_fast(chatinfo.friends, i);
 			out = g_strdup_printf(_("Removed %s from your friends list."), name);
 			chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
@@ -703,7 +691,7 @@ void chat_remove_ignore(gchar *name)
 
 	for(i=0; i<ignore_count; i++) {
 		p = g_array_index(chatinfo.ignore, char *, i);
-		if(!strcmp(p, name)) {
+		if(!strcasecmp(p, name)) {
 			g_array_remove_index_fast(chatinfo.ignore, i);
 			out = g_strdup_printf(_("Removed %s from your ignore list."), name);
 			chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
@@ -857,7 +845,8 @@ gint chat_is_friend(gchar *name)
 	int i;
 
 	for(i=0; i<friend_count; i++)
-		if(!strcmp(g_array_index(chatinfo.friends, char *, i), name))
+		if(!strcasecmp(g_array_index(chatinfo.friends, char *, i),
+			       name))
 			return TRUE;
 
 	return FALSE;
@@ -868,7 +857,8 @@ gint chat_is_ignore(gchar *name)
 	int i;
 
 	for(i=0; i<ignore_count; i++)
-		if(!strcmp(g_array_index(chatinfo.ignore, char *, i), name))
+		if(!strcasecmp(g_array_index(chatinfo.ignore, char *, i),
+			       name))
 			return TRUE;
 
 	return FALSE;
