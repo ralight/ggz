@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 3499 2002-03-02 01:08:52Z bmh $
+ * $Id: protocols.h 4051 2002-04-22 19:40:12Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -26,16 +26,14 @@
 #ifndef _GGZ_PROTOCOL_H
 #define _GGZ_PROTOCOL_H
 
-#define GGZ_CS_PROTO_VERSION  6
+#include <ggz_common.h>
 
-/* Chat subops */					/* PMCCCCCC */
+/* Chat subops - these are defined separately in ggzcore */
+							/* PMCCCCCC */
 #define GGZ_CHAT_NORMAL		(unsigned char) 0x40	/* 01000000 */
 #define GGZ_CHAT_ANNOUNCE	(unsigned char) 0x60	/* 01100000 */
 #define GGZ_CHAT_BEEP		(unsigned char) 0x80	/* 10000000 */
 #define GGZ_CHAT_PERSONAL	(unsigned char) 0xC0	/* 11000000 */
-/* Chat subop bitmasks */
-#define GGZ_CHAT_M_MESSAGE	(unsigned char) 0x40	/* X1XXXXXX */
-#define GGZ_CHAT_M_PLAYER	(unsigned char) 0x80	/* 1XXXXXXX */
 
 /* Update opcodes */
 typedef enum {
@@ -48,28 +46,5 @@ typedef enum {
 	GGZ_UPDATE_SEAT   = 6,
 	GGZ_UPDATE_DESC   = 7
 } GGZUpdateOpcode;
-
-/* These opcodes must be in sync with the client,
-   so they should not be changed. */
-typedef enum {
-	E_USR_LOOKUP	    = -1,
-	E_BAD_OPTIONS	    = -2,
-	E_ROOM_FULL	    = -3,
-	E_TABLE_FULL	    = -4,
-	E_TABLE_EMPTY	    = -5,
-	E_LAUNCH_FAIL	    = -6,
-	E_JOIN_FAIL	    = -7,
-	E_NO_TABLE	    = -8,
-	E_LEAVE_FAIL	    = -9,
-	E_LEAVE_FORBIDDEN   = -10,
-	E_ALREADY_LOGGED_IN = -11,
-	E_NOT_LOGGED_IN	    = -12,
-	E_NOT_IN_ROOM	    = -13,
-	E_AT_TABLE	    = -14,
-	E_IN_TRANSIT	    = -15,
-	E_NO_PERMISSION	    = -16,
-	E_BAD_XML	    = -17,
-	E_SEAT_ASSIGN_FAIL  = -18
-} GGZClientReqError;
 
 #endif /*_GGZ_PROTOCOL_H*/

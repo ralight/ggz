@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.h 3367 2002-02-16 03:04:36Z bmh $
+ * $Id: ggz_common.h 4051 2002-04-22 19:40:12Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -82,6 +82,43 @@ char *ggz_seattype_to_string(GGZSeatType type);
  *  @note This is the inverse of ggz_seattype_to_string.
  */
 GGZSeatType ggz_string_to_seattype(const char *type_str);
+
+
+/*
+ * GGZ Protocols - used by the GGZ server and client.
+ * These should perhaps go in ggz_protocols.h
+ */
+
+/* Changing anything below may require bumping up the protocol version.
+ * Experiment at your own risk. */
+#define GGZ_CS_PROTO_VERSION 6
+
+/* Chat subop bitmasks */
+#define GGZ_CHAT_M_MESSAGE	(unsigned char) 0x40	/* X1XXXXXX */
+#define GGZ_CHAT_M_PLAYER	(unsigned char) 0x80	/* 1XXXXXXX */
+
+/* Error opcodes. */
+typedef enum {
+	E_USR_LOOKUP	    = -1,
+	E_BAD_OPTIONS	    = -2,
+	E_ROOM_FULL	    = -3,
+	E_TABLE_FULL	    = -4,
+	E_TABLE_EMPTY	    = -5,
+	E_LAUNCH_FAIL	    = -6,
+	E_JOIN_FAIL	    = -7,
+	E_NO_TABLE	    = -8,
+	E_LEAVE_FAIL	    = -9,
+	E_LEAVE_FORBIDDEN   = -10,
+	E_ALREADY_LOGGED_IN = -11,
+	E_NOT_LOGGED_IN	    = -12,
+	E_NOT_IN_ROOM	    = -13,
+	E_AT_TABLE	    = -14,
+	E_IN_TRANSIT	    = -15,
+	E_NO_PERMISSION	    = -16,
+	E_BAD_XML	    = -17,
+	E_SEAT_ASSIGN_FAIL  = -18
+} GGZClientReqError;
+
 
 #ifdef __cplusplus
 }
