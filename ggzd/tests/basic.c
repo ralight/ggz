@@ -10,7 +10,7 @@
 static void print_seat(GGZSeat seat);
 static char * seat_desc(GGZSeatType type);
 static int seatcmp(GGZSeat seat1, GGZSeat seat2);
-static int safe_strcmp(char *str1, char *str2);
+static int safe_strcmp(const char *str1, const char *str2);
 static int compare_seats(GGZdMod *mod, int num, GGZSeat *seats);
 
 static void test_handler(GGZdMod *mod, GGZdModEvent e, const void *data) { }
@@ -244,7 +244,7 @@ static int compare_seats(GGZdMod *mod, int num, GGZSeat *seats)
 }
 
 
-static int safe_strcmp(char *str1, char *str2)
+static int safe_strcmp(const char *str1, const char *str2)
 {
 	if (!str1) {
 		if (!str2)

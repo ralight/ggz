@@ -86,7 +86,7 @@ void Keepalive::loop()
 // Handler for game data
 void Keepalive::hookData(const void *data)
 {
-	char *name;
+	const char *name;
 	const int *num_ptr = (const int *)data;
 	int num = *num_ptr;
 
@@ -126,7 +126,7 @@ void Keepalive::hookSpectatorLeave(const void *data)
 // Handler for spectator data
 void Keepalive::hookSpectatorData(const void *data)
 {
-	char *name;
+	const char *name;
 	const int *num_ptr = (const int *)data;
 	int num = *num_ptr;
 

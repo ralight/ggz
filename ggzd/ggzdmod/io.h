@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.h 6113 2004-07-16 17:44:10Z jdorje $
+ * $Id: io.h 6893 2005-01-25 04:31:44Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -34,19 +34,19 @@
 
 /* Functions for sending IO messages */
 int _io_send_launch(int fd, int seats, int spectators);
-int _io_send_seat_change(int fd, GGZSeat *seat);
-int _io_send_spectator_change(int fd, GGZSpectator *spectator);
+int _io_send_seat_change(int fd, const GGZSeat *seat);
+int _io_send_spectator_change(int fd, const GGZSpectator *spectator);
 int _io_send_state(int fd, GGZdModState state);
-int _io_send_seat(int fd, GGZSeat *seat);
+int _io_send_seat(int fd, const GGZSeat *seat);
 int _io_send_reseat(int fd,
 		    int old_seat, int was_spectator,
 		    int new_seat, int is_spectator);
 
-int _io_send_log(int fd, char *msg);
+int _io_send_log(int fd, const char *msg);
 int _io_send_game_report(int fd, int num_players,
-			 char **names, GGZSeatType *types,
-			 int *teams, GGZGameResult *results,
-			 int *scores);
+			 const char * const *names, const GGZSeatType *types,
+			 const int *teams, const GGZGameResult *results,
+			 const int *scores);
 int _io_send_req_num_seats(int fd, int num_seats);
 int _io_send_req_boot(int fd, const char *name);
 int _io_send_req_bot(int fd, int seat_num);

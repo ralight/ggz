@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 6890 2005-01-25 01:29:38Z jdorje $
+ * $Id: ggzdmod.c 6893 2005-01-25 04:31:44Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -643,7 +643,7 @@ int ggzdmod_reseat(GGZdMod * ggzdmod,
 		   int old_seat, int was_spectator,
 		   int new_seat, int is_spectator)
 {
-	char *name;
+	const char *name;
 
 	if (!CHECK_GGZDMOD(ggzdmod) || ggzdmod->type != GGZDMOD_GGZ)
 		return -1;
@@ -1213,7 +1213,7 @@ int ggzdmod_disconnect(GGZdMod * ggzdmod)
  * module specific actions
  */
 
-int ggzdmod_log(GGZdMod * ggzdmod, char *fmt, ...)
+int ggzdmod_log(GGZdMod * ggzdmod, const char *fmt, ...)
 {
 	char buf[4096];
 	va_list ap;
@@ -1652,7 +1652,7 @@ void ggzdmod_report_game(GGZdMod *ggzdmod,
 {
 	if (ggzdmod && ggzdmod->type == GGZDMOD_GAME) {
 		GGZSeatType types[ggzdmod->num_seats];
-		char *names[ggzdmod->num_seats];
+		const char *names[ggzdmod->num_seats];
 		int teams[ggzdmod->num_seats];
 		GGZGameResult results[ggzdmod->num_seats];
 		int scores[ggzdmod->num_seats];

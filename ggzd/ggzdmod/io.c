@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 6113 2004-07-16 17:44:10Z jdorje $
+ * $Id: io.c 6893 2005-01-25 04:31:44Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -69,7 +69,7 @@ int _io_send_launch(int fd, int seats, int spectators)
 }
 
 
-int _io_send_seat_change(int fd, GGZSeat *seat)
+int _io_send_seat_change(int fd, const GGZSeat *seat)
 {
 	ggz_debug("GGZDMOD", "Sending seat change");
 	if (ggz_write_int(fd, MSG_GAME_SEAT) < 0
@@ -102,7 +102,7 @@ int _io_send_reseat(int fd,
 }
 
 
-int _io_send_spectator_change(int fd, GGZSpectator *spectator)
+int _io_send_spectator_change(int fd, const GGZSpectator *spectator)
 {
 	const char *name = spectator->name ? spectator->name : "";
 
@@ -130,7 +130,7 @@ int _io_send_state(int fd, GGZdModState state)
 }
 
 
-int _io_send_seat(int fd, GGZSeat *seat)
+int _io_send_seat(int fd, const GGZSeat *seat)
 {
 	if (ggz_write_int(fd, seat->type) < 0)
 		return -1;
@@ -144,7 +144,7 @@ int _io_send_seat(int fd, GGZSeat *seat)
 }
 
 
-int _io_send_log(int fd, char *msg)
+int _io_send_log(int fd, const char *msg)
 {
 	if (ggz_write_int(fd, MSG_LOG) < 0 
 	    || ggz_write_string(fd, msg) < 0)
@@ -155,8 +155,9 @@ int _io_send_log(int fd, char *msg)
 
 
 int _io_send_game_report(int fd, int num_players,
-			 char **names, GGZSeatType *types,
-			 int *teams, GGZGameResult *results, int *scores)
+			 const char * const *names, const GGZSeatType *types,
+			 const int *teams, const GGZGameResult *results,
+			 const int *scores)
 {
 	int p;
 
@@ -173,7 +174,7 @@ int _io_send_game_report(int fd, int num_players,
 		int team = teams ? teams[p] : p;
 		int result = results[p];
 		int score = scores ? scores[p] : 0;
-		char *name = names[p] ? names[p] : "";
+		const char *name = names[p] ? names[p] : "";
 		if (ggz_write_string(fd, name) < 0
 		    || ggz_write_int(fd, types[p]) < 0
 		    || ggz_write_int(fd, team) < 0
@@ -400,6 +401,8 @@ static int _io_read_req_launch(GGZdMod * ggzdmod)
 	_ggzdmod_handle_launch_begin(ggzdmod, seats, spectators);
 
 	for (i = 0; i < seats; i++) {
+		char *name;
+
 		/* Reset seat */
 		seat.num = i;
 		seat.name = NULL;
@@ -409,14 +412,15 @@ static int _io_read_req_launch(GGZdMod * ggzdmod)
 			return -1;
 
 		if (seat.type == GGZ_SEAT_RESERVED)
-			if (ggz_read_string_alloc(ggzdmod->fd, &seat.name) < 0)
+			if (ggz_read_string_alloc(ggzdmod->fd, &name) < 0)
 				return -1;
+		seat.name = name;
 		
 		_ggzdmod_handle_launch_seat(ggzdmod, seat);
 
 		/* Free up name (if it was allocated) */
-		if (seat.name)
-			ggz_free(seat.name);
+		if (name)
+			ggz_free(name);
 	}
 
 	_ggzdmod_handle_launch_end(ggzdmod);
@@ -429,11 +433,13 @@ static int _io_read_msg_seat_change(GGZdMod * ggzdmod)
 {
 	GGZSeat seat;
 	int type;
+	char *name;
 	
 	if (ggz_read_int(ggzdmod->fd, &seat.num) < 0
 	    || ggz_read_int(ggzdmod->fd, &type) < 0
-	    || ggz_read_string_alloc(ggzdmod->fd, &seat.name) < 0)
+	    || ggz_read_string_alloc(ggzdmod->fd, &name) < 0)
 		return -1;
+	seat.name = name;
 	seat.type = type;
 
 	if (seat.name[0] == '\0') {
@@ -476,10 +482,12 @@ static int _io_read_msg_reseat(GGZdMod * ggzdmod)
 static int _io_read_msg_spectator_seat_change(GGZdMod * ggzdmod)
 {
 	GGZSpectator seat;
+	char *name;
 	
 	if (ggz_read_int(ggzdmod->fd, &seat.num) < 0
-	    || ggz_read_string_alloc(ggzdmod->fd, &seat.name) < 0)
+	    || ggz_read_string_alloc(ggzdmod->fd, &name) < 0)
 		return -1;
+	seat.name = name;
 
 	if (seat.name[0] == '\0') {
 		ggz_free(seat.name);

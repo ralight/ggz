@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 6892 2005-01-25 04:09:21Z jdorje $
+ * $Id: ggzdmod.h 6893 2005-01-25 04:31:44Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -375,7 +375,7 @@ typedef void (*GGZdModHandler) (GGZdMod * mod, GGZdModEvent event,
 typedef struct {
 	unsigned int num;	/**< Seat index; 0..(num_seats-1). */
 	GGZSeatType type;	/**< Type of seat. */
-	char *name;		/**< Name of player occupying seat. */
+	const char *name;	/**< Name of player occupying seat. */
 	int fd;			/**< fd to communicate with seat occupant. */
 } GGZSeat;
 
@@ -385,7 +385,7 @@ typedef struct {
  */
 typedef struct {
 	unsigned int num;	/**< Spectator seat index */
-	char *name;		/**< The spectator's name */
+	const char *name;	/**< The spectator's name */
 	int fd;			/**< File descriptor for communication */
 } GGZSpectator;
 
@@ -606,7 +606,7 @@ int ggzdmod_disconnect(GGZdMod * ggzdmod);
  *  @param fmt A printf-style format string.
  *  @return 0 on success, -1 on failure.
  */
-int ggzdmod_log(GGZdMod * ggzdmod, char *fmt, ...)
+int ggzdmod_log(GGZdMod * ggzdmod, const char *fmt, ...)
 		ggz__attribute((format(printf, 2, 3)));
 		
 		
