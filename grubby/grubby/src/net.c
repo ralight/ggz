@@ -257,8 +257,7 @@ GGZHookReturn net_hook_enter(unsigned int id, void *event_data, void *user_data)
 
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_ENTER, net_hook_roomenter);
 	ggzcore_room_add_event_hook(room, GGZ_ROOM_LEAVE, net_hook_roomleave);
-	ggzcore_room_add_event_hook(room, GGZ_CHAT, net_hook_chat);
-	ggzcore_room_add_event_hook(room, GGZ_PRVMSG, net_hook_chat);
+	ggzcore_room_add_event_hook(room, GGZ_CHAT_EVENT, net_hook_chat);
 
 	status = NET_GOTREADY;
 	return GGZ_HOOK_OK;
@@ -299,21 +298,19 @@ GGZHookReturn net_hook_roomleave(unsigned int id, void *event_data, void *user_d
 /* Chat callback which passes message to grubby */
 GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 {
-	char *player, *message;
 	int type;
 	char *roomname;
 	time_t t;
 	char *ts;
-
-	player = ((char**)(event_data))[0];
-	message = ((char**)(event_data))[1];
+	GGZChatEventData *chat = event_data;
 
 	/* Ignore all self-generates messages */
-	if((strcmp(player, guruname)) && (strcmp(player, guruguestname)))
+	if (strcmp(chat->sender, guruname)
+	    && strcmp(chat->sender, guruguestname))
 	{
-		if(id == GGZ_PRVMSG) type = GURU_PRIVMSG;
+		if (chat->type == GGZ_CHAT_PERSONAL) type = GURU_PRIVMSG;
 		else type = GURU_CHAT;
-		net_internal_queueadd(player, message, type);
+		net_internal_queueadd(chat->sender, chat->message, type);
 		status = NET_INPUT;
 	}
 
@@ -325,7 +322,8 @@ GGZHookReturn net_hook_chat(unsigned int id, void *event_data, void *user_data)
 		t = time(NULL);
 		ts = ctime(&t);
 		ts[strlen(ts) - 1] = 0;
-		fprintf(logstream, "%s (%s) [%s]: %s\n", ts, roomname, player, message);
+		fprintf(logstream, "%s (%s) [%s]: %s\n", ts, roomname,
+			chat->sender, chat->message);
 		fflush(logstream);
 	}
 	
