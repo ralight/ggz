@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 4072 2002-04-24 09:21:42Z jdorje $
+ * $Id: common.h 4103 2002-04-29 03:11:31Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -50,7 +50,6 @@
 typedef enum {
 	STATE_PRELAUNCH,	/**< before the launch happens */
 	STATE_NOTPLAYING,	/**< no game started */
-	STATE_WAITFORPLAYERS,	/**< waiting for players; saved state */
 	STATE_NEXT_HAND,	/**< ready to create a new hand */
 	STATE_WAIT_FOR_BID,	/**< waiting for a player to respond to a bid */
 	STATE_WAIT_FOR_PLAY,	/**< waiting for a player to respond to a play */
@@ -80,7 +79,6 @@ typedef struct {
 
 	/* state data */
 	server_state_t state;	/**< the current state of the game */
-	server_state_t saved_state;	/**< any time while waiting, the state we _would_ be in if we weren't waiting */
 
 	/* these next few are general game-specific options that are used by
 	   the game-independent code */
@@ -153,8 +151,6 @@ typedef struct {
 /* State manipulation functions */
 const char *get_state_name(server_state_t state);
 void set_game_state(server_state_t state);
-void save_game_state(void);
-void restore_game_state(void);
 
 /* these are GGZ communication events that we must handle */
 void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data);

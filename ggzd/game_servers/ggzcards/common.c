@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4102 2002-04-29 02:07:35Z jdorje $
+ * $Id: common.c 4103 2002-04-29 03:11:31Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -76,8 +76,6 @@ const char *get_state_name(server_state_t state)
 		return "PRELAUNCH";
 	case STATE_NOTPLAYING:
 		return "NOTPLAYING";
-	case STATE_WAITFORPLAYERS:
-		return "WAITFORPLAYERS";
 	case STATE_NEXT_HAND:
 		return "NEXT_HAND";
 	case STATE_FIRST_BID:
@@ -102,48 +100,13 @@ static int determine_host(void);
 /* Changes the state of the game, printing a debugging message. */
 void set_game_state(server_state_t state)
 {
-	if (game.state == STATE_WAITFORPLAYERS) {
-		/* sometimes an event can happen that changes the state while
-		   we're waiting for players, for instance a player finishing
-		   their bid even though someone's left the game.  In this
-		   case we wish to advance to the next game state while
-		   continuing to wait for players.  However, this should be
-		   handled separately.  Here we just allow for it by restoring 
-		   the state if a set_game_state is called while we're in
-		   waiting mode. */
-		if (game.saved_state != state)
-			ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
-				    "Setting game saved state to %d - %s.",
-				    state, get_state_name(state));
-		game.saved_state = state;
-	} else {
-		if (game.state != state)
-			ggzdmod_log(game.ggz,
-				    "Setting game state to %d - %s.", state,
-				    get_state_name(state));
-		game.state = state;
-	}
-}
-
-/* Saves the state of the game and enters waiting mode.  We wait when we
-   don't have enough players which can happen at pretty much any time. */
-void save_game_state()
-{
-	if (game.state == STATE_WAITFORPLAYERS)
+	if (game.state == state)
 		return;
+		
 	ggzdmod_log(game.ggz,
-		    "Entering waiting state; old state was %d - %s.",
-		    game.state, get_state_name(game.state));
-	game.saved_state = game.state;
-	game.state = STATE_WAITFORPLAYERS;
-}
-
-/* Restore the state of the game once we're ready to leave waiting mode. */
-void restore_game_state()
-{
-	ggzdmod_log(game.ggz, "Ending waiting state; new state is %d - %s.",
-		    game.saved_state, get_state_name(game.saved_state));
-	game.state = game.saved_state;
+		    "Setting game state to %d - %s.", state,
+		    get_state_name(state));
+	game.state = state;
 }
 
 /* Handle message from player */
@@ -239,6 +202,11 @@ void next_play(void)
 
 	ggzdmod_log(game.ggz, "Next play called while state is %s.",
 		    get_state_name(game.state));
+		
+	if (!seats_full()) {
+		assert(FALSE);
+		return;
+	}
 
 	switch (game.state) {
 	case STATE_NOTPLAYING:
@@ -339,14 +307,12 @@ void next_play(void)
 		set_game_state(STATE_NEXT_PLAY);
 		next_play();	/* minor recursion */
 		break;
-	default:
-		ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
-			    "game_play called with unknown state: %d",
-			    game.state);
+	case STATE_PRELAUNCH:
+	case STATE_WAIT_FOR_BID:
+	case STATE_WAIT_FOR_PLAY:
+		assert(FALSE);
 		break;
 	}
-
-	return;
 }
 
 /* The oldest player becomes the host.  The oldest player is the one with the
@@ -427,19 +393,16 @@ void handle_state_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	
 	switch (new_state) {
 	case GGZDMOD_STATE_CREATED:
+	case GGZDMOD_STATE_WAITING:
+		/* Nothing needs to be done... */
 		break;
 	case GGZDMOD_STATE_DONE:
 		/* Close down. */
 		handle_done_event();
 		break;
-	case GGZDMOD_STATE_WAITING:
-		/* Enter waiting phase. */
-		save_game_state();
-		break;
 	case GGZDMOD_STATE_PLAYING:
 		/* All other changes are done in the join event. */
 		assert(seats_full());
-		restore_game_state();
 		break;
 	}
 
@@ -460,8 +423,6 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 		    "Handling a join event for player %d (seat %d).", player,
 		    seat);
 
-	assert(game.state == STATE_WAITFORPLAYERS);
-
 	/* set the age of the player */
 	game.players[player].age = game.player_count;
 	game.player_count++;
@@ -476,8 +437,10 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	/* If we're already playing, we should send the client a NEWGAME
 	   alert - although it's not really a NEWGAME but a game in
 	   progress. */
-	if (game.state > STATE_WAITFORPLAYERS)
+	if (game.state != STATE_NOTPLAYING) {
+		assert(game.state != STATE_PRELAUNCH);
 		net_send_newgame(player);
+	}
 
 	/* Send all table info to joiner.  This will also make any new
 	   options requests, if necessary. */
@@ -490,9 +453,7 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	net_broadcast_player_list();
 
 	if (seat >= 0 &&	/* see above comment about seat==-1 */
-	    game.state != STATE_NOTPLAYING &&
-	    !(game.state == STATE_WAITFORPLAYERS
-	      && game.saved_state == STATE_NOTPLAYING))
+	    game.state != STATE_NOTPLAYING)
 		send_player_message_toall(seat);
 
 	if (seats_full()
@@ -678,22 +639,18 @@ void handle_badplay_event(player_t p, char *msg)
 /* This handles the event of someone making a bid */
 void handle_bid_event(player_t p, bid_t bid)
 {
-	int was_waiting = 0;
-	
 	net_broadcast_bid(p, bid);
+	
+	/* If we send a bid request to a player when the game is on,
+	   and then a player leaves, the game is stopped.  But we
+	   still need to handle the bid response from that player,
+	   although we don't proceed with the game until the table
+	   is full again. */
 
 	game.players[p].bid_data.is_bidding = 0;
 	clear_bids(p);
 
 	ggzdmod_log(game.ggz, "Handling a bid event.");
-	if (game.state == STATE_WAITFORPLAYERS) {
-		/* if a player left while another player was in the middle of
-		   bidding, this can happen.  The solution is to temporarily
-		   return to playing, handle the bid, and then (below) return
-		   to waiting. */
-		restore_game_state();
-		was_waiting = 1;
-	}
 
 	set_game_state(STATE_WAIT_FOR_BID);
 
@@ -742,9 +699,7 @@ void handle_bid_event(player_t p, bid_t bid)
 
 	game.prev_bid = p;
 
-	if (was_waiting)
-		save_game_state();
-	else
+	if (seats_full())
 		/* do next move */
 		next_play();
 }
@@ -831,9 +786,7 @@ void send_sync(player_t p)
 		send_player_message(s, p);
 
 	/* Send out hands */
-	if (!(game.state == STATE_WAITFORPLAYERS
-	      && game.saved_state == STATE_NOTPLAYING)
-	    && game.state != STATE_NOTPLAYING)
+	if (game.state != STATE_NOTPLAYING)
 		for (s = 0; s < game.num_seats; s++)
 			game.data->send_hand(p, s);
 
@@ -877,7 +830,10 @@ void send_hand(const player_t p, const seat_t s, int reveal)
 {
 	/* We used to refuse to send hands of size 0, but some games may need
 	   to do this! */
-	assert(game.state != STATE_NOTPLAYING);
+	if (game.state == STATE_NOTPLAYING) {
+		assert(FALSE);
+		return;
+	}
 
 	/* The open_hands option causes everyone's hand to always be
 	   revealed. */
