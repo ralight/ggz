@@ -49,22 +49,22 @@ dnl Check for library functions
 dnl ===========================
 AC_CHECK_FUNC(select)
 AC_CHECK_FUNC(socket, ,
-    AC_CHECK_LIB(socket, socket,
-	AC_CHECK_HEADER(sys/socket.h, LDADD="-lsocket",
-	    AC_MSG_ERROR(*** Cannot find socket headers ); exit ),
-	AC_MSG_ERROR(*** Cannot find socket library ); exit ))
+    [AC_CHECK_LIB(socket, socket,
+	[AC_CHECK_HEADER(sys/socket.h, LDADD="-lsocket",
+	    AC_MSG_ERROR(*** Cannot find socket headers ); exit )],
+	AC_MSG_ERROR(*** Cannot find socket library ); exit )])
 
 AC_CHECK_FUNC(gethostbyname, ,
-    AC_CHECK_LIB(nsl, gethostbyname, LDADD="$LDADD -lnsl",
-	AC_MSG_ERROR(*** Cannot find nsl library ); exit ))
+    [AC_CHECK_LIB(nsl, gethostbyname, LDADD="$LDADD -lnsl",
+	AC_MSG_ERROR(*** Cannot find nsl library ); exit )])
 
 AC_CHECK_FUNC(inet_ntoa, ,
-    AC_CHECK_LIB(nsl, inet_ntoa, LDADD="$LDADD -lnsl",
-	AC_MSG_ERROR(*** Cannot find nsl library ); exit ))
+    [AC_CHECK_LIB(nsl, inet_ntoa, LDADD="$LDADD -lnsl",
+	AC_MSG_ERROR(*** Cannot find nsl library ); exit )])
 
 AC_CHECK_LIB(popt, poptGetNextOpt,
-    AC_CHECK_HEADER(popt.h, grubby_LIBS="$grubby_LIBS -lpopt",
-        AC_MSG_ERROR(*** Cannot find popt.h header); exit),
+    [AC_CHECK_HEADER(popt.h, grubby_LIBS="$grubby_LIBS -lpopt",
+        AC_MSG_ERROR(*** Cannot find popt.h header); exit)],
     AC_MSG_ERROR(*** Cannot find popt library ); exit)
 
 
