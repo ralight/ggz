@@ -3,6 +3,21 @@
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
+		Serverumzug und Aktualisierungen
+		<span class="itemleader"> :: </span>
+		<a name="servermove"></a>
+	</h1>
+	<div class="text">
+		Die GGZ Community ist auf einen neuen dedizierten Server in Frankreich
+		umgezogen, so dass der Projektserver entlastet werden kann. Wir haben
+		die Chance auch genutzt, um die Komponenten auf ihre aktuelle CVS-Version
+		zu aktualisieren. Es gibt jetzt beispielsweise Einstellungen für
+		Längen- und Breitengrade (für die Weltkarte), ein Karma-System
+		und Vorbereitungen für die mit der nächsten GGZ-Version verfügbaren Savegames.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
 		GGZ Gaming Zone 0.0.10 veröffentlicht
 		<span class="itemleader"> :: </span>
 		<a name="0010"></a>

@@ -3,6 +3,20 @@
 <div id="main">
 	<h1>
 		<span class="itemleader">:: </span>
+		Server move and updates
+		<span class="itemleader"> :: </span>
+		<a name="servermove"></a>
+	</h1>
+	<div class="text">
+		The GGZ Community has moved off the project server and to another
+		dedicated server located in France. We're using the chance on upgrading
+		it to the current CVS version. This brings along with it longitude/latitude
+		configuration in the personal settings (for the world map), a karma
+		system, and preparations for the upcoming GGZ release's savegames.
+	</div>
+
+	<h1>
+		<span class="itemleader">:: </span>
 		GGZ Gaming Zone 0.0.10 released
 		<span class="itemleader"> :: </span>
 		<a name="0010"></a>
