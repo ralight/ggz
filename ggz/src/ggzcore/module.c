@@ -369,8 +369,8 @@ struct _GGZModule* _ggzcore_module_get_nth_by_type(const char *game,
 		return NULL;
 
 	if (num >= total) {
-		return NULL;
 		_ggz_free_chars(ids);
+		return NULL;
 	}
 
 	count = 0;
