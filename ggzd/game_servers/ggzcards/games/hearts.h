@@ -30,6 +30,7 @@ typedef struct hearts_game_t {
 	/* options */
 	int jack_diamonds;	/* is the jack-of-diamonds rule in effect? */
 	int no_blood;		/* no blood on the first trick */
+	int num_decks;		/* the number of decks to use */
 
 	int jack_winner;	/* who has won the jack of diamonds this hand? */
 	char lead_card_face;	/* the card that leads first.  It's a club.  Two-deck issues aren't dealt with. */

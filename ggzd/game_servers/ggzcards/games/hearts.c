@@ -23,6 +23,7 @@
  */
 
 #include <easysock.h>
+#include <stdlib.h>
 
 #include "../games.h"
 #include "../game.h"
@@ -103,6 +104,7 @@ static void hearts_get_options()
 {
 	add_option("jack_diamonds", 1, 0, "The jack of diamonds counts -10");
 	add_option("no_blood", 1, 1, "No blood on the first trick");
+	add_option("num_decks", 1, 0, "Play with two decks");
 	game_get_options();
 }
 
@@ -112,7 +114,25 @@ static int hearts_handle_option(char* option, int value)
 		GHEARTS.jack_diamonds = value;
 	else if (!strcmp("no_blood", option))
 		GHEARTS.no_blood = value;
-	else
+	else if (!strcmp("num_decks", option)) {
+		/* HACK - the deck will already have been made at this point,
+		 * so we need to destroy and recreate it. */
+		seat_t s;
+		GHEARTS.num_decks = value+1;
+		game.deck_type = (value == 0) ? GGZ_DECK_FULL : GGZ_DECK_DOUBLE;
+		cards_destroy_deck();
+		cards_create_deck(game.deck_type);
+
+		/* allocate hands */
+		game.max_hand_length = cards_deck_size() / game.num_players;
+		for (s = 0; s < game.num_seats; s++) {
+			if (game.seats[s].hand.cards)
+				free(game.seats[s].hand.cards);
+			game.seats[s].hand.cards =
+				(card_t *) alloc(game.max_hand_length *
+						 sizeof(card_t));
+		}
+	} else
 		return game_handle_option(option, value);
 	return 0;
 }
@@ -123,7 +143,10 @@ static char* hearts_get_option_text(char* buf, int bufsz, char* option, int valu
 		snprintf(buf, bufsz, "The jack of diamonds rule is %sbeing used.", value ? "" : "not ");
 	else if (!strcmp("no_blood", option))
 		snprintf(buf, bufsz, "%s is allowed on the first trick.", value ? "No blood" : "Blood");
-	else
+	else if (!strcmp("num_decks", option)) {
+		if (value > 0)
+			snprintf(buf, bufsz, "%d decks are being used.", value+1);
+	} else
 		return game_get_option_text(buf, bufsz, option, value);
 	return buf;
 }
