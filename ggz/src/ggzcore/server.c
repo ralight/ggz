@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 5899 2004-02-11 01:48:34Z jdorje $
+ * $Id: server.c 5939 2004-02-16 06:40:41Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -760,6 +760,10 @@ void _ggzcore_server_set_login_status(GGZServer *server,
 		case E_USR_LOOKUP:
 			snprintf(error.message, sizeof(error.message),
 				 "Name taken");
+			break;
+		case E_TOO_LONG:
+			snprintf(error.message, sizeof(error.message),
+				 "Name too long");
 			break;
 		default:
 			snprintf(error.message, sizeof(error.message),
