@@ -346,7 +346,7 @@ void add_table_list( gint TableNum, TableInfo Table) {
     return;
 
   entry[0] = g_strdup_printf("%d",TableNum-1);
-  strncpy(entry[1], game_types.info[Table.type_index].name, MAX_GAME_NAME_LEN);
+  entry[1] = g_strdup_printf("%s",game_types.info[Table.type_index].name);
   entry[2] = g_strdup_printf("%d",Table.num_seats);
   entry[3] = g_strdup_printf("%d",Table.open_seats);
   entry[4] = g_strdup_printf("%d",Table.num_humans);
@@ -360,6 +360,7 @@ void add_table_list( gint TableNum, TableInfo Table) {
 
   gtk_clist_append (GTK_CLIST (tmpWidget), entry);
   g_free (entry[0]);
+  g_free (entry[1]);
   g_free (entry[2]);
   g_free (entry[3]);
   g_free (entry[4]);
