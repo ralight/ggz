@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>
+GGZ Gaming Zone Architecture
+</title>
+</head>
+<style type="text/css">
+tt {background-color: #e0e0ff}
+h2 {background-color: #e0e0e0}
+h3 {background-color: #e0e0e0}
+div {font-family: sans-serif}
+th {text-align: left}
+</style>
+<body>
+
+<div>
+
+<h2>GGZ Gaming Zone Architecture</h2>
+
+<small>
+<i>Revision: 0.1</i><br>
+<i>Date: 26.02.2005</i><br>
+<i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
+</small>
+
+<p>
+The uncountable number of GGZ libraries, programmes, games, tools and scripts
+can be confusing for many. The architecture documentation provides the big
+picture needed to understand where each component of GGZ has its place.
+</p>
+
+<h3>Design and implementation</h3>
+
+<p>
+A lot of care is spent on separating the design from the actual implementation.
+For example, the GGZ protocol is formally specified, and its handling is
+implemented by the ggzcore library on the client side, and the ggzd daemon
+(the GGZ server) on the server side.
+Likewise, game protocols can be handled by multiple game clients and servers.
+And finally, code is often bundled in libraries to ease the creation
+of programming language wrappers.
+</p>
+
+<p>
+The following explanation of existing structures relates to a full GGZ
+installation. As can be read in the GGZ Hosting Guide, only some parts
+of all this is considered essential.
+</p>
+
+<h3>GGZ system construction (runtime structure)</h3>
+
+<p>
+The illustration below outlines the relation of client versus server
+side, and identifies child processes (arrows) and network connections
+(straight lines).
+</p>
+
+<p style="text-align:center">
+<img src="client-server.png" alt="Client-server architecture">
+</p>
+
+<p>
+A GGZ server, which stores its player and game history information in
+a database, is running on a server, ready to launch some game servers.
+In parallel, a telnet process waits for chatters so it can act as a
+pseudo-client and connect to the server. Likewise, the chatbot performs
+some pseudo-client duties.
+The meta server is queried by clients and gets its data from running
+ggzds. The community pages handle web access to all database contents,
+and its scripts are periodically running in the background in order
+to lower performance penalties.
+</p>
+
+<p>
+On the client side, a core client is launched and connects to the
+GGZ server. From time to time a game is played, resulting in launching
+it from the core client. Additional tools such as Competition Calendar
+improve the level of GGZ integration on the desktop.
+</p>
+
+<h3>Dependencies (compile-time structure)</h3>
+
+<p>
+More interesting to the develop is the implementation side. This is
+displayed in the following illustration.
+</p>
+
+<p style="text-align:center">
+<img src="dependencies.png" alt="Dependencies">
+</p>
+
+<p>
+As can be seen, four base libraries exist of which some come with
+wrappers for various programming languages. In vertical direction,
+programmes or games which depend on the libraries can be seen.
+</p>
+
+<h3>Detailed view</h3>
+
+<p>
+There is more information available on the following topics:
+Chatbot (grubby) architecture (in the grubby admin manual and in its
+source tree), server (ggzd) architecture (in its design specification),
+as well as ggzboard and ggzcards architecture documents.
+</p>
+
+<p>
+All the libraries come with API documentation is several formats.
+</p>
+
+</div>
+
+</body>
+</html>
