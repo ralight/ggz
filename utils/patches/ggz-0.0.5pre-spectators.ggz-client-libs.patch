@@ -1,0 +1,69 @@
+Binary files ggzcore.20020114_19-26-00/.libs/libggzcore.a and ggzcore/.libs/libggzcore.a differ
+Binary files ggzcore.20020114_19-26-00/.libs/libggzcore.so and ggzcore/.libs/libggzcore.so differ
+Binary files ggzcore.20020114_19-26-00/.libs/libggzcore.so.1 and ggzcore/.libs/libggzcore.so.1 differ
+Binary files ggzcore.20020114_19-26-00/.libs/libggzcore.so.1.0.0 and ggzcore/.libs/libggzcore.so.1.0.0 differ
+diff -Nur ggzcore.20020114_19-26-00/net.c ggzcore/net.c
+--- ggzcore.20020114_19-26-00/net.c	Mon Jan 14 19:26:46 2002
++++ ggzcore/net.c	Mon Jan 14 19:27:58 2002
+@@ -513,6 +513,7 @@
+ 			status = es_write_string(net->fd, name);
+ 			break;
+ 		case GGZ_SEAT_BOT:
++		case GGZ_SEAT_SPECTATOR:
+ 			break;
+ 		default:
+ 			break;
+@@ -920,6 +921,7 @@
+ 		es_read_string_alloc(net->fd, name);
+ 		break;
+ 	case GGZ_SEAT_BOT:
++	case GGZ_SEAT_SPECTATOR:
+ 		break;
+ 	default:
+ 		break;
+@@ -1603,6 +1605,9 @@
+ 			break;
+ 		case GGZ_SEAT_BOT:
+ 			_ggzcore_table_add_bot(table, NULL, i);
++			break;
++		case GGZ_SEAT_SPECTATOR:
++			_ggzcore_table_add_spectator(table, NULL, i);
+ 			break;
+ 		default:
+ 			break;
+diff -Nur ggzcore.20020114_19-26-00/table.c ggzcore/table.c
+--- ggzcore.20020114_19-26-00/table.c	Mon Jan 14 19:26:46 2002
++++ ggzcore/table.c	Mon Jan 14 19:29:07 2002
+@@ -294,6 +294,17 @@
+ }
+ 
+ 
++void _ggzcore_table_add_spectator(struct _GGZTable *table, char *name, const unsigned int seat)
++{
++	struct _GGZSeat new_seat;
++
++	new_seat.type = GGZ_SEAT_SPECTATOR;
++	new_seat.name = ggz_strdup(name);
++
++	table->seats[seat] = new_seat;
++}
++
++
+ int  _ggzcore_table_remove_player(struct _GGZTable *table, char *name)
+ {
+ 	int i, status = -1;
+diff -Nur ggzcore.20020114_19-26-00/table.h ggzcore/table.h
+--- ggzcore.20020114_19-26-00/table.h	Mon Jan 14 19:26:46 2002
++++ ggzcore/table.h	Mon Jan 14 19:28:32 2002
+@@ -86,6 +86,9 @@
+ void _ggzcore_table_add_reserved(struct _GGZTable *table, 
+ 				 char *name, 
+ 				 const unsigned int seat);
++void _ggzcore_table_add_spectator(struct _GGZTable *table, 
++			    char *name, 
++			    const unsigned int seat);
+ int _ggzcore_table_remove_player(struct _GGZTable *table, char *name);
+ 
+ int                   _ggzcore_table_get_id(struct _GGZTable *table);
+Binary files ggzcore.20020114_19-26-00/table.lo and ggzcore/table.lo differ
+Binary files ggzcore.20020114_19-26-00/table.o and ggzcore/table.o differ

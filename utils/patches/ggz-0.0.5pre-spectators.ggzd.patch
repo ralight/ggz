@@ -1,0 +1,158 @@
+diff -Nur ggzd.20020114_18-45-00/datatypes.h ggzd/datatypes.h
+--- ggzd.20020114_18-45-00/datatypes.h	Mon Jan 14 18:45:41 2002
++++ ggzd/datatypes.h	Mon Jan 14 18:50:37 2002
+@@ -84,9 +84,10 @@
+ 	char *homepage; /* Contains a web address for the game */
+ 	
+ 	/* Masks for how many overall players and bots are allowed
+-	   to be selected for the game. */
++	   to be selected for the game, the same for spectators. */
+ 	unsigned char player_allow_mask;
+ 	unsigned char bot_allow_mask;
++	unsigned char spectator_allow_mask;
+ 	
+ 	/* Are players allowed to leave mid-game?  (i.e. does the
+ 	   game support this?) */
+diff -Nur ggzd.20020114_18-45-00/net.c ggzd/net.c
+--- ggzd.20020114_18-45-00/net.c	Mon Jan 14 18:45:41 2002
++++ ggzd/net.c	Mon Jan 14 19:15:38 2002
+@@ -1221,7 +1221,9 @@
+ 			 */
+ 			strcpy(table->reserve[seat->index], seat->name);
+ 		}
+-		else {
++		else if (strcmp(seat->type, "spectator") == 0) {
++			strcpy(table->seats[seat->index], "<spectator>");
++		} else {
+ 			strcpy(table->seats[seat->index], "<none>");
+ 		}
+ 		entry = ggz_list_next(entry);
+@@ -1482,6 +1484,9 @@
+ 		break;
+ 	case GGZ_SEAT_PLAYER:
+ 		name = table->seats[num];
++		break;
++	case GGZ_SEAT_SPECTATOR:
++		name = NULL;
+ 		break;
+ 	}
+ #endif /* #if 0 */
+diff -Nur ggzd.20020114_18-45-00/parse_opt.c ggzd/parse_opt.c
+--- ggzd.20020114_18-45-00/parse_opt.c	Mon Jan 14 18:45:41 2002
++++ ggzd/parse_opt.c	Mon Jan 14 19:04:42 2002
+@@ -490,31 +490,59 @@
+ 	game_info->allow_leave = ggz_conf_read_int(ch,"TableOptions","AllowLeave",0);
+ 	game_info->kill_when_empty =
+ 		ggz_conf_read_int(ch, "TableOptions", "KillWhenEmpty", 1);
++
++	/* Mask of allowed players, or unlimited when reading an asterisk */
++	ggz_conf_read_list(ch, "TableOptions", "PlayersAllowed", &b_count, &b_list);
++	if(b_count == 1 && *b_list[0] == '*') {
++		game_info->player_allow_mask = 0xFF;
++		ggz_free(b_list[0]);
++		ggz_free(b_list);
++	} else if(b_count != 0) {
++		for(i=0; i<b_count; i++) {
++			intval = atoi(b_list[i]);
++			if(intval < 1 || intval > MAX_TABLE_SIZE) {
++				err_msg("PlayersAllowed has invalid value [%s]", name);
++				continue;
++			}
++			game_info->player_allow_mask |= allow_bits[intval];
++			ggz_free(b_list[i]);
++		}
++		ggz_free(b_list);
++	}
++
++	/* Mask of allowed bots, or player mask minus one when reading an asterisk */
+ 	ggz_conf_read_list(ch, "TableOptions", "BotsAllowed", &b_count, &b_list);
+-	if(b_count != 0) {
++	if(b_count == 1 && *b_list[0] == '*') {
++		game_info->bot_allow_mask = game_info->player_allow_mask & 0xFE;
++		ggz_free(b_list[0]);
++		ggz_free(b_list);
++	} else if(b_count != 0) {
+ 		for(i=0; i<b_count; i++) {
+ 			intval = atoi(b_list[i]);
+ 			if(intval < 0 || intval > MAX_TABLE_SIZE) {
+-				err_msg("BotsAllowed has invalid value [%s]",
+-					name);
++				err_msg("BotsAllowed has invalid value [%s]", name);
+ 				continue;
+ 			}
+ 			game_info->bot_allow_mask |= allow_bits[intval];
+ 			ggz_free(b_list[i]);
+ 		}
+ 		ggz_free(b_list);
+-		b_list = NULL;
+-		b_count = 0;
+ 	}
+-	ggz_conf_read_list(ch, "TableOptions", "PlayersAllowed", &b_count, &b_list);
+-	if(b_count != 0) {
++
++	/* Mask of allowed spectators, or unlimited when reading an asterisk */
++	ggz_conf_read_list(ch, "TableOptions", "SpectatorsAllowed", &b_count, &b_list);
++	if(b_count == 1 && *b_list[0] == '*') {
++		game_info->spectator_allow_mask = 0xFF;
++		ggz_free(b_list[0]);
++		ggz_free(b_list);
++	} else if(b_count != 0) {
+ 		for(i=0; i<b_count; i++) {
+ 			intval = atoi(b_list[i]);
+ 			if(intval < 1 || intval > MAX_TABLE_SIZE) {
+-				err_msg("PlayersAllowed has invalid value");
++				err_msg("SpectatorsAllowed has invalid value [%s]", name);
+ 				continue;
+ 			}
+-			game_info->player_allow_mask |= allow_bits[intval];
++			game_info->spectator_allow_mask |= allow_bits[intval];
+ 			ggz_free(b_list[i]);
+ 		}
+ 		ggz_free(b_list);
+diff -Nur ggzd.20020114_18-45-00/seats.c ggzd/seats.c
+--- ggzd.20020114_18-45-00/seats.c	Mon Jan 14 18:45:41 2002
++++ ggzd/seats.c	Mon Jan 14 19:16:25 2002
+@@ -97,6 +97,9 @@
+ 		return GGZ_SEAT_BOT;
+ 	if (strcmp(table->seats[seat], "<reserved>") == 0)
+ 		return GGZ_SEAT_RESERVED;
++	if (strcmp(table->seats[seat], "<spectator>") == 0)
++		return GGZ_SEAT_SPECTATOR;
+ 	else /* Some player */
+ 		return GGZ_SEAT_PLAYER;
+ }
++
+diff -Nur ggzd.20020114_18-45-00/table.c ggzd/table.c
+--- ggzd.20020114_18-45-00/table.c	Mon Jan 14 18:45:41 2002
++++ ggzd/table.c	Mon Jan 14 19:20:19 2002
+@@ -194,6 +194,9 @@
+ 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: player %s", i, 
+ 				table->seats[i]);
+ 			break;
++		case GGZ_SEAT_SPECTATOR:
++			dbg_msg(GGZ_DBG_TABLE, "Seat [%d]: spectator", i);
++			break;
+ 		default:
+ 			dbg_msg(GGZ_DBG_TABLE, "Seat[%d]: **invalid**", i);
+ 			status = E_BAD_OPTIONS;
+@@ -678,7 +681,8 @@
+ 
+ 	/* Send out table-leave messages for remaining players */
+ 	for (i = 0; i < seats_num(table); i++) {
+-		if (seats_type(table, i) == GGZ_SEAT_PLAYER) {
++		if ((seats_type(table, i) == GGZ_SEAT_PLAYER)
++		||  (seats_type(table, i) == GGZ_SEAT_SPECTATOR)) {
+ 			table_update_event_enqueue(table, GGZ_UPDATE_LEAVE, 
+ 						   table->seats[i], i);
+ 			transit_player_event(table->seats[i], 
+diff -Nur ggzd.20020114_18-45-00/transit.c ggzd/transit.c
+--- ggzd.20020114_18-45-00/transit.c	Mon Jan 14 18:45:41 2002
++++ ggzd/transit.c	Mon Jan 14 19:19:11 2002
+@@ -292,6 +292,7 @@
+ 	seat.num = i;
+ 	seat.name = name;
+ 	seat.fd = fd[0];
++	/* FIXME: joining as spectator */
+ 	seat.type = GGZ_SEAT_PLAYER;
+ 	if (ggzdmod_set_seat(table->ggzdmod, &seat) < 0)
+ 		return -1;
