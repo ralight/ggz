@@ -1,15 +1,12 @@
 [Desktop Entry]
+Name=ShadowBridge
+GenericName=Proxy for network games
+GenericName[de]=Netzwerkspiele-Proxy
+
+Type=Application
 Exec=shadowbridge
 Icon=shadowbridge
-MimeType=Application
-Name=ShadowBridge
-GenericName=Networking tool for game developers
-Path=
-ServiceTypes=
-SwallowExec=
-SwallowTitle=
 Terminal=false
-TerminalOptions=
-Type=Application
-NoDisplay=true
+Categories=X-GGZ;Network;KDE;Qt;
 
+NoDisplay=true

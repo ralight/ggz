@@ -1,15 +1,14 @@
 [Desktop Entry]
-Exec=compcal
-Icon=compcal
-MimeType=Application
 Name=Competition Calendar
 GenericName=Online games tracker
 GenericName[de]=Onlinespiele-Verwaltung
-Path=
-ServiceTypes=
-SwallowExec=
-SwallowTitle=
-Terminal=false
-TerminalOptions=
-Type=Application
+GenericName[pt]=Gerenciador de tornamentos
+Comment=Display of tournaments and game results
+Comment[de]=Anzeige von Tournieren und Spielergebnissen
+Comment[pt]=Mostrar tornamentos e resultados
 
+Type=Application
+Exec=compcal
+Icon=compcal
+Terminal=false
+Categories=X-GGZ;Network;KDE;Qt;

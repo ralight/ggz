@@ -1,17 +1,14 @@
 [Desktop Entry]
-Exec=keepalivecontrol
-Icon=keepalivecontrol
-MimeType=Application
 Name=Keepalive Control
 GenericName=Online game admin tool
 GenericName[de]=Administration von Online-Spielen
+GenericName[pt]=Gerenciador de jogos na internet
 Comment=Online game admin tool
 Comment[de]=Administration von Online-Spielen
-Path=
-ServiceTypes=
-SwallowExec=
-SwallowTitle=
-Terminal=false
-TerminalOptions=
-Type=Application
+Comment[pt]=Gerenciador de jogos na internet
 
+Type=Application
+Exec=keepalivecontrol
+Icon=keepalivecontrol
+Terminal=false
+Categories=X-GGZ;Network;KDE;Qt;

@@ -1,14 +1,15 @@
 [Desktop Entry]
-Type=Application
-Icon=ggz
-Exec=kcmshell Network/kcmggz
-
-X-KDE-Library=ggz
-X-KDE-ModuleType=Library
-
 Name=GGZ Gaming Zone
 Name[de]=GGZ Gaming Zone
-
 Comment=Setup your game server and user name preferences
 Comment[de]=Einstellungen von Spieleservern und Nutzernamen
 
+Type=Application
+Exec=kcmshell Network/kcmggz
+Icon=ggz
+
+X-KDE-Library=ggz
+X-KDE-ModuleType=Library
+Keywords=GGZ,Games,Multiplayer
+Keywords[de]=GGZ,Spiele,Multiplayer
+Categories=Qt;KDE;X-KDE-settings-network
