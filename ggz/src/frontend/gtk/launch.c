@@ -40,6 +40,13 @@
 #include "ggzcore.h"
 #include <msgbox.h>
 
+/* Uncomment to allow reserved seats during the launch. */
+/* #define ALLOW_RESERVED_SEATS */
+
+/* The maximum number of characters in the reserved seat name
+   (not counting \0) */
+#define MAX_RESERVED_NAME_LEN 16
+
 extern GGZServer *server;
 
 static void launch_fill_defaults(GtkWidget *widget, gpointer data);
@@ -142,7 +149,7 @@ static void launch_fill_defaults(GtkWidget *widget, gpointer data)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
 	}
 
-#if 1
+#ifndef ALLOW_RESERVED_SEATS
 	/* Disable the reserved option for now */
 	for (x = 1; x <= maxplayers; x++) {
 		text = g_strdup_printf("seat%d_resv", x);
@@ -150,7 +157,7 @@ static void launch_fill_defaults(GtkWidget *widget, gpointer data)
 		g_free(text);
 		gtk_widget_set_sensitive(tmp, FALSE);
 	}
-#endif
+#endif /* ALLOW_RESERVED_SEATS */
 }
 
 
@@ -543,7 +550,7 @@ create_dlg_launch (void)
   gtk_box_pack_start (GTK_BOX (seat1_box), seat1_resv, FALSE, FALSE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (seat1_resv), TRUE);
 
-  seat1_name = gtk_entry_new_with_max_length (8);
+  seat1_name = gtk_entry_new_with_max_length (MAX_RESERVED_NAME_LEN);
   gtk_widget_ref (seat1_name);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat1_name", seat1_name,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -590,7 +597,7 @@ create_dlg_launch (void)
   gtk_box_pack_start (GTK_BOX (seat2_box), seat2_resv, FALSE, FALSE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (seat2_resv), TRUE);
 
-  seat2_name = gtk_entry_new_with_max_length (8);
+  seat2_name = gtk_entry_new_with_max_length (MAX_RESERVED_NAME_LEN);
   gtk_widget_ref (seat2_name);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat2_name", seat2_name,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -637,7 +644,7 @@ create_dlg_launch (void)
   gtk_box_pack_start (GTK_BOX (seat3_box), seat3_resv, FALSE, FALSE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (seat3_resv), TRUE);
 
-  seat3_name = gtk_entry_new_with_max_length (8);
+  seat3_name = gtk_entry_new_with_max_length (MAX_RESERVED_NAME_LEN);
   gtk_widget_ref (seat3_name);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat3_name", seat3_name,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -684,7 +691,7 @@ create_dlg_launch (void)
   gtk_box_pack_start (GTK_BOX (seat4_box), seat4_resv, FALSE, FALSE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (seat4_resv), TRUE);
 
-  seat4_name = gtk_entry_new_with_max_length (8);
+  seat4_name = gtk_entry_new_with_max_length (MAX_RESERVED_NAME_LEN);
   gtk_widget_ref (seat4_name);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat4_name", seat4_name,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -731,7 +738,7 @@ create_dlg_launch (void)
   gtk_box_pack_start (GTK_BOX (seat5_box), seat5_resv, FALSE, FALSE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (seat5_resv), TRUE);
 
-  seat5_name = gtk_entry_new_with_max_length (8);
+  seat5_name = gtk_entry_new_with_max_length (MAX_RESERVED_NAME_LEN);
   gtk_widget_ref (seat5_name);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat5_name", seat5_name,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -778,7 +785,7 @@ create_dlg_launch (void)
   gtk_box_pack_start (GTK_BOX (seat6_box), seat6_resv, FALSE, FALSE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (seat6_resv), TRUE);
 
-  seat6_name = gtk_entry_new_with_max_length (8);
+  seat6_name = gtk_entry_new_with_max_length (MAX_RESERVED_NAME_LEN);
   gtk_widget_ref (seat6_name);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat6_name", seat6_name,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -825,7 +832,7 @@ create_dlg_launch (void)
   gtk_box_pack_start (GTK_BOX (seat7_box), seat7_resv, FALSE, FALSE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (seat7_resv), TRUE);
 
-  seat7_name = gtk_entry_new_with_max_length (8);
+  seat7_name = gtk_entry_new_with_max_length (MAX_RESERVED_NAME_LEN);
   gtk_widget_ref (seat7_name);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat7_name", seat7_name,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -872,7 +879,7 @@ create_dlg_launch (void)
   gtk_box_pack_start (GTK_BOX (seat8_box), seat8_resv, FALSE, FALSE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (seat8_resv), TRUE);
 
-  seat8_name = gtk_entry_new_with_max_length (8);
+  seat8_name = gtk_entry_new_with_max_length (MAX_RESERVED_NAME_LEN);
   gtk_widget_ref (seat8_name);
   gtk_object_set_data_full (GTK_OBJECT (dlg_launch), "seat8_name", seat8_name,
                             (GtkDestroyNotify) gtk_widget_unref);
