@@ -138,8 +138,8 @@ create_dlg_about (void)
   GTK_WIDGET_SET_FLAGS (ok_button, GTK_CAN_DEFAULT);
 
   gtk_signal_connect (GTK_OBJECT (dlg_about), "destroy",
-                      GTK_SIGNAL_FUNC (gtk_widget_destroyed),
-                      &about_dialog);
+                      GTK_SIGNAL_FUNC (about_ok),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (dlg_about), "realize",
                       GTK_SIGNAL_FUNC (about_realize),
                       NULL);

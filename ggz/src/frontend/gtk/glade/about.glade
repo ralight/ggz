@@ -23,9 +23,8 @@
   <name>dlg_about</name>
   <signal>
     <name>destroy</name>
-    <handler>gtk_widget_destroyed</handler>
-    <data>&amp;about_dialog</data>
-    <last_modification_time>Sun, 05 Nov 2000 06:16:14 GMT</last_modification_time>
+    <handler>about_ok</handler>
+    <last_modification_time>Sat, 24 Mar 2001 19:19:14 GMT</last_modification_time>
   </signal>
   <signal>
     <name>realize</name>
