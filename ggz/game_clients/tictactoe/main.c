@@ -129,7 +129,6 @@ int get_players(void)
 		if (es_read_int(game.fd, &game.seats[i]) < 0)
 			return -1;
 		
-		g_print("Seat %d is %d\n", i, game.seats[i]);	
 		if (game.seats[i] != GGZ_SEAT_OPEN) {
 			if (es_read_string(game.fd, (char*)&game.names[i], 9) < 0)
 				return -1;

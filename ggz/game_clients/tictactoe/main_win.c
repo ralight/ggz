@@ -83,12 +83,14 @@ void display_board(void)
 	GdkPixmap* piece;
 	GtkStyle* style;
 
+#if 0
 	g_print("  %c | %c | %c  \n", game.board[0], game.board[1], game.board[2]);
 	g_print("-------------\n");
 	g_print("  %c | %c | %c  \n", game.board[3], game.board[4], game.board[5]);
 	g_print("-------------\n");
 	g_print("  %c | %c | %c  \n", game.board[6], game.board[7], game.board[8]);
 	g_print("\n");
+#endif
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
 	style = gtk_widget_get_style(main_win);
