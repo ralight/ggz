@@ -27,8 +27,8 @@
 #AdminEmail = hharry@fillintheblank.com
 
 # Port option
-#   Uncomment to specify a port other than the default (5687)
-#Port = 5687
+#   Uncomment to specify a port other than the default (5688)
+#Port = 5688
 
 # Ignore lists (Not Implemented)
 #   Specify IP addresses to ignore connections from
