@@ -1,0 +1,19 @@
+Custom GUIs for the GGZ Meta Server
+-----------------------------------
+
+freeciv-index.php:
+
+Create the well-known Freeciv meta server index page, as known from
+http://www.freeciv.org/metaserver.
+This requires PHP 4 with Expat and socket functions compiled in.
+
+It does not work yet. Why?
+- so far no information beside the URI is returned
+- the metaserver would need realtime-updates, preferably by yet another wrapper
+  (tm) which takes freeciv connection data, rewrites it into XML and passes it
+  to a GGZ metaserver, without authentication (freeciv's metaserver is open to
+  anonymous users).
+
+Josef Spillner
+11.02.2002
+
