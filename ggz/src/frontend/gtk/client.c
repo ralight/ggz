@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5084 2002-10-28 06:05:04Z jdorje $
+ * $Id: client.c 5088 2002-10-28 21:21:49Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1106,7 +1106,8 @@ static void client_player_ignore_click(GtkMenuItem *menuitem, gpointer data)
 
 static void client_send_private_message_activate(GtkMenuItem *menuitem, gpointer data)
 {
-
+	/* TODO */
+	assert(0);
 }
 
 static void client_tables_size_request(GtkWidget *widget, gpointer data)
@@ -2520,6 +2521,7 @@ create_mnu_player (void)
   gtk_widget_ref (send_private_message);
   gtk_object_set_data_full (GTK_OBJECT (mnu_player), "send_private_message", send_private_message,
                             (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_set_sensitive(send_private_message, FALSE);
   gtk_widget_show (send_private_message);
   gtk_container_add (GTK_CONTAINER (mnu_player), send_private_message);
 
