@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 2001
  * Desc: Support code
- * $Id: support.c 6330 2004-11-11 16:30:21Z jdorje $
+ * $Id: support.c 6353 2004-11-13 18:05:57Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -58,9 +58,7 @@ GtkWidget *lookup_widget(GtkWidget * widget, const gchar * widget_name)
 		widget = parent;
 	}
 
-	found_widget =
-	    (GtkWidget *) gtk_object_get_data(GTK_OBJECT(widget),
-					      widget_name);
+	found_widget = g_object_get_data(G_OBJECT(widget), widget_name);
 	if (!found_widget)
 		g_warning("Widget not found: %s", widget_name);
 	return found_widget;

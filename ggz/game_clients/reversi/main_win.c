@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Functions to deal with the graphics stuff
- * $Id: main_win.c 6336 2004-11-12 04:56:10Z jdorje $
+ * $Id: main_win.c 6353 2004-11-13 18:05:57Z jdorje $
  *
  * Copyright (C) 2000-2002 Ismael Orenstein.
  *
@@ -156,10 +156,8 @@ void display_board(void)
 		game_status("Wait for your oponnents turn");
 
 	// Update the scores
-	white_label =
-	    gtk_object_get_data(GTK_OBJECT(main_win), "white_label");
-	black_label =
-	    gtk_object_get_data(GTK_OBJECT(main_win), "black_label");
+	white_label = g_object_get_data(G_OBJECT(main_win), "white_label");
+	black_label = g_object_get_data(G_OBJECT(main_win), "black_label");
 	sprintf(score, "White(%s): %d", game.names[PLAYER2SEAT(WHITE)],
 		game.white);
 	gtk_label_set_text(GTK_LABEL(white_label), score);

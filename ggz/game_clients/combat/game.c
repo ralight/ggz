@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6347 2004-11-13 08:38:07Z jdorje $
+ * $Id: game.c 6353 2004-11-13 18:05:57Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -727,7 +727,7 @@ void game_change_turn(void)
 
 	cbt_game.turn = NEXT(cbt_game.turn, cbt_game.number);
 
-	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "current_turn");
+	tmp = g_object_get_data(G_OBJECT(main_win), "current_turn");
 	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(tmp), "Main");
 	sprintf(msg, "%s's turn", cbt_info.names[cbt_game.turn]);
 
