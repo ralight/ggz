@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 3268 2002-02-06 23:48:10Z dr_maux $
+ * $Id: game.c 3413 2002-02-18 12:42:40Z jdorje $
  *
  * Functions for handling game events
  *
@@ -29,6 +29,8 @@
 #include "chat.h"
 #include "msgbox.h"
 #include "support.h"
+
+#include <ggz.h>		/* libggz */
 
 #include <gtk/gtk.h>
 #include <ggzcore.h>
@@ -118,13 +120,14 @@ int game_init(void)
 
 	/* FIXME: if num > 1, popup a dialog and let the user choose */
 	if (num > 1) {
-		g_print("%s v %s %s had %d modules\n", name, engine, version, num);
+		ggz_debug("modules", "%s v %s %s had %d modules\n",
+		          name, engine, version, num);
 		for (i = 0; i < num; i++) {
 			module = ggzcore_module_get_nth_by_type(name, engine, version, i);
 			frontend = ggzcore_module_get_frontend(module);
-			g_print("Module %d by %s frontend %s..", i,
-				ggzcore_module_get_author(module),
-				frontend);
+			ggz_debug("modules", "Module %d by %s frontend %s..",
+			          i, ggzcore_module_get_author(module),
+			          frontend);
 
 			if (strcmp("gtk", frontend) == 0) {
 				g_print("match\n");
