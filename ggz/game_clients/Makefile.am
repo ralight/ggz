@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5282 2002-12-15 08:23:37Z jdorje $
+#  $Id: Makefile.am 5593 2003-05-17 10:30:22Z dr_maux $
 
 SUBDIRS = @SUBDIRS@
 EXTRA_DIST = package README.GGZ QuickStart.GGZ \
@@ -11,3 +11,7 @@ install:
 	mkdir -p --verbose $(DESTDIR)/`$(GGZ_CONFIG) -c`
 	touch $(DESTDIR)/`$(GGZ_CONFIG) -c`/ggz.modules
 	make install-recursive # FIXME - kludge
+
+uninstall-local:
+	rm -f $(DESTDIR)/`$(GGZ_CONFIG) -c`/ggz.modules
+
