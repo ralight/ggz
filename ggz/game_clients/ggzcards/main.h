@@ -1,4 +1,4 @@
-/* $Id: main.h 2873 2001-12-11 06:23:29Z jdorje $ */
+/* $Id: main.h 2940 2001-12-18 22:17:50Z jdorje $ */
 /* 
  * File: main.h
  * Author: Rich Gade
@@ -27,20 +27,11 @@
 
 extern GtkWidget *dlg_main;
 
-/** @brief Called when we get a newgame request from the server.
- *
- *  When the server sends a newgame request, this method will be
- *  called by the client-common code.  We must later send a
- *  newgame response when we're ready to start the game.
- *  @see table_send_newgame
- */
-void table_get_newgame(void);
-
 /** @brief Called when we're ready to start a new game.
  *
  *  When we're ready to start a new game, this function should
  *  be called to tell the server.
- *  @see table_get_newgame
+ *  @see game_get_newgame
  */
 void table_send_newgame(void);
 
@@ -49,8 +40,3 @@ void messagebar_message(const char *msg);
 void menubar_text_message(const char *mark, const char *msg);
 void menubar_cardlist_message(const char *mark, int *lengths,
 			      card_t ** cardlist);
-
-/* Client-common table functions. */
-int table_handle_game_message(int fd, int game, int size);
-void table_alert_player(int player, GGZSeatType status, const char *name);
-void table_alert_newgame(void);

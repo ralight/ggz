@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 2872 2001-12-11 06:15:35Z jdorje $
+ * $Id: dlg_options.c 2940 2001-12-18 22:17:50Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -67,7 +67,7 @@ static void destroy_options_selection(void)
 		gtk_object_destroy((GtkObject *) window);
 		window = NULL;
 
-		/* options_selected was allocated in table_get_options */
+		/* options_selected was allocated in dlg_option_display */
 		g_free(options_selected);
 		options_selected = NULL;
 		option_count = 0;
@@ -119,12 +119,17 @@ static void dlg_options_submit(GtkWidget * widget, gpointer data)
 	destroy_options_selection();
 }
 
-static void dlg_option_display(int option_cnt, int *option_sizes,
-			       char ***options)
+void dlg_option_display(int option_cnt, int *option_sizes, int *defaults,
+			char ***options)
 {
 	GtkWidget *box;
 	GtkWidget *button;
 	gint i, j;
+
+	/* options_selected is freed in destroy_options_selection */
+	option_count = option_cnt;
+	options_selected = g_malloc(option_cnt * sizeof(*defaults));
+	memcpy(options_selected, defaults, option_cnt * sizeof(*defaults));
 
 	window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_window_set_title(GTK_WINDOW(window), _("Select Options"));
@@ -196,19 +201,4 @@ static void dlg_option_display(int option_cnt, int *option_sizes,
 
 	gtk_widget_show(box);
 	gtk_widget_show(window);
-}
-
-int table_get_options(int option_cnt, int *choice_cnt, int *defaults,
-		      char ***option_choices)
-{
-	/* options_selected is freed in dlg_options_submit */
-	option_count = option_cnt;
-	options_selected = g_malloc(option_cnt * sizeof(*defaults));
-	memcpy(options_selected, defaults, option_cnt * sizeof(*defaults));
-
-	dlg_option_display(option_cnt, choice_cnt, option_choices);
-
-	statusbar_message(_("Please select options."));
-
-	return 0;
 }

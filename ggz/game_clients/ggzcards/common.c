@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2931 2001-12-18 07:27:02Z jdorje $
+ * $Id: common.c 2940 2001-12-18 22:17:50Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -134,7 +134,7 @@ static int handle_text_message(void)
 	if (es_read_string_alloc(game_internal.fd, &mark) < 0 ||
 	    es_read_string_alloc(game_internal.fd, &message) < 0)
 		return -1;
-	table_set_text_message(mark, message);
+	game_set_text_message(mark, message);
 	free(message);		/* allocated by easysock */
 	free(mark);		/* allocated by easysock */
 	return 0;
@@ -164,7 +164,7 @@ static int handle_cardlist_message(void)
 	}
 
 	if (status == 0)
-		table_set_cardlist_message(mark, lengths, cardlist);
+		game_set_cardlist_message(mark, lengths, cardlist);
 
 	for (p = 0; p < ggzcards.num_players; p++)
 		ggz_free(cardlist[p]);
@@ -187,7 +187,7 @@ static int handle_player_message(void)
 		return -1;
 	assert(p >= 0 && p < ggzcards.num_players);
 
-	table_set_player_message(p, message);
+	game_set_player_message(p, message);
 
 	free(message);		/* allocated by easysock */
 
@@ -218,7 +218,7 @@ static int handle_game_message(void)
 	ggz_debug("core", "Received game message of size %d for game %d.",
 		  size, game);
 
-	handled = table_handle_game_message(game_internal.fd, game, size);
+	handled = game_handle_game_message(game_internal.fd, game, size);
 	if (handled < 0)
 		return -1;
 	assert(handled <= size);
@@ -284,7 +284,7 @@ static int handle_msg_gameover(void)
 		if (read_seat(game_internal.fd, &winners[i]) < 0)
 			return -1;
 
-	table_handle_gameover(num_winners, winners);
+	game_handle_gameover(num_winners, winners);
 
 	set_game_state(STATE_DONE);
 
@@ -337,7 +337,7 @@ static int handle_msg_players(void)
 		    es_read_string_alloc(game_internal.fd, &t_name) < 0)
 			return -1;
 
-		table_alert_player(i, assign, t_name);
+		game_alert_player(i, assign, t_name);
 
 		/* this causes unnecessary memory fragmentation */
 		if (ggzcards.players[i].name)
@@ -351,7 +351,7 @@ static int handle_msg_players(void)
 
 	/* Redesign the table, if necessary. */
 	if (different)
-		table_setup();
+		game_setup_table();
 
 	/* TODO: should we need to enter a waiting state if players leave? */
 
@@ -373,7 +373,7 @@ static void increase_max_hand_size(int max_hand_size)
 	game_internal.max_hand_size = max_hand_size;
 
 	/* Let the table know how big a hand might be. */
-	table_alert_hand_size(game_internal.max_hand_size);
+	game_alert_hand_size(game_internal.max_hand_size);
 
 	for (p = 0; p < ggzcards.num_players; p++) {
 #if 0
@@ -393,7 +393,7 @@ static void increase_max_hand_size(int max_hand_size)
 #endif
 	}
 
-	table_setup();		/* redesign table */
+	game_setup_table();	/* redesign table */
 }
 
 /* A hand message tells you all the cards in one player's hand. */
@@ -429,7 +429,7 @@ static int handle_msg_hand(void)
 		  player, hand->hand_size);
 
 	/* Finally, show the hand. */
-	table_display_hand(player);
+	game_display_hand(player);
 
 	return 0;
 }
@@ -463,7 +463,7 @@ static int handle_req_bid(void)
 
 	/* Get the bid */
 	set_game_state(STATE_BID);
-	table_get_bid(possible_bids, bid_choices);
+	game_get_bid(possible_bids, bid_choices);
 
 	/* Clean up */
 	for (i = 0; i < possible_bids; i++)
@@ -486,7 +486,7 @@ static int handle_req_play(void)
 
 	/* Get the play. */
 	set_game_state(STATE_PLAY);
-	table_get_play(ggzcards.play_hand);
+	game_get_play(ggzcards.play_hand);
 
 	return 0;
 }
@@ -506,7 +506,7 @@ static int handle_msg_badplay(void)
 
 	/* Get a new play. */
 	set_game_state(STATE_PLAY);
-	table_alert_badplay(err_msg);
+	game_alert_badplay(err_msg);
 
 	/* Clean up. */
 	free(err_msg);		/* allocated by easysock */
@@ -601,7 +601,7 @@ static int handle_msg_play(void)
 	hand->hand_size--;
 
 	/* Update the graphics */
-	table_alert_play(p, card, tc);
+	game_alert_play(p, card, tc);
 
 	return 0;
 }
@@ -624,7 +624,7 @@ static int handle_msg_table(void)
 	/* TODO: verify that the table cards have been removed from the hands
 	 */
 
-	table_alert_table();
+	game_alert_table();
 
 	return 0;
 }
@@ -641,7 +641,7 @@ static int handle_msg_trick(void)
 	assert(p >= 0 && p < ggzcards.num_players);
 
 	/* Update the graphics. */
-	table_alert_trick(p);
+	game_alert_trick(p);
 
 	return 0;
 }
@@ -693,8 +693,8 @@ static int handle_req_options(void)
 
 	/* Get the options. */
 	set_game_state(STATE_OPTIONS);
-	if (table_get_options
-	    (option_cnt, choice_cnt, defaults, option_choices) < 0) {
+	if (game_get_options(option_cnt, choice_cnt, defaults, option_choices)
+	    < 0) {
 		(void) client_send_options(option_cnt, defaults);
 	}
 
@@ -796,12 +796,12 @@ int client_handle_server(void)
 
 	switch (op) {
 	case REQ_NEWGAME:
-		table_get_newgame();
+		game_get_newgame();
 		status = 0;
 		break;
 	case MSG_NEWGAME:
 		/* TODO: don't make "new game" until here */
-		table_alert_newgame();
+		game_alert_newgame();
 		status = 0;
 		break;
 	case MSG_GAMEOVER:

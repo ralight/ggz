@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2939 2001-12-18 20:47:03Z jdorje $
+ * $Id: main.c 2940 2001-12-18 22:17:50Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -106,14 +106,6 @@ static void cleanup_debugging(void)
 	ggz_debug_cleanup(GGZ_CHECK_MEM);
 }
 
-void table_get_newgame(void)
-{
-	GtkWidget *menu =
-		gtk_object_get_data(GTK_OBJECT(dlg_main), "mnu_startgame");
-	statusbar_message(_("Select \"Start Game\" to begin the game."));
-	gtk_widget_set_sensitive(menu, TRUE);
-}
-
 void table_send_newgame(void)
 {
 	GtkWidget *menu =
@@ -121,87 +113,6 @@ void table_send_newgame(void)
 	client_send_newgame();
 	statusbar_message(_("Waiting for the other players..."));
 	gtk_widget_set_sensitive(menu, FALSE);
-}
-
-void table_get_play(int hand)
-{
-#ifdef ANIMATION
-	if (animating)
-		animation_zip(TRUE);
-	assert(!animating);
-#endif /* ANIMATION */
-
-	if (hand == 0)
-		statusbar_message(_("Your turn to play a card"));
-	else {
-		char buf[100];
-		snprintf(buf, sizeof(buf),
-			 _("Your turn to play a card from %s's hand."),
-			 ggzcards.players[hand].name);
-		statusbar_message(buf);
-	}
-}
-
-
-void table_alert_player(int player, GGZSeatType status, const char *name)
-{
-	char *temp = NULL;
-	switch (status) {
-	case GGZ_SEAT_PLAYER:
-		/* This assumes we can't have a smooth transition from one
-		   human player to another.  Could be a problem... */
-		if (ggzcards.players[player].status != GGZ_SEAT_PLAYER)
-			temp = g_strdup_printf(_("%s joined the table"),
-					       name);
-		break;
-	case GGZ_SEAT_OPEN:
-		name = _("Empty Seat");
-		if (ggzcards.players[player].status == GGZ_SEAT_PLAYER)
-			temp = g_strdup_printf(_("%s left the table"),
-					       ggzcards.players[player].name);
-		break;
-	default:
-		/* any other handling? */
-		break;
-	}
-	if (temp) {
-		statusbar_message(temp);
-		g_free(temp);
-	}
-
-	table_set_name(player, name);
-}
-
-
-void table_handle_gameover(int num_winners, int *winners)
-{
-	char msg[4096] = "";
-	int i;
-
-	/* handle different cases */
-	if (num_winners == 0)
-		snprintf(msg, sizeof(msg), _("There was no winner"));
-	else {
-		for (i = 0; i < num_winners; i++) {
-			char *fmt;
-			if (i == num_winners - 1)
-				fmt = "%s ";
-			else if (i == num_winners - 2)
-				fmt = "%s and ";	/* not quite perfect
-							   grammar... */
-			else
-				fmt = "%s, ";
-			snprintf(msg + strlen(msg), sizeof(msg) - strlen(msg),
-				 fmt, ggzcards.players[winners[i]].name);
-		}
-		snprintf(msg + strlen(msg), sizeof(msg) - strlen(msg),
-			 _("won the game."));
-	}
-
-	/* This hack places this message in place of the global game message. 
-	   It prevents it from being overwritten by the upcoming newgame
-	   request. */
-	messagebar_message(msg);
 }
 
 void statusbar_message(char *msg)
@@ -464,69 +375,4 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 	gtk_pixmap_set(GTK_PIXMAP(canvas), image, NULL);
 	gtk_widget_hide(canvas);
 	gtk_widget_show(canvas);
-}
-
-
-void table_alert_badplay(char *err_msg)
-{
-#ifdef ANIMATION
-	animation_abort();
-#endif /* ANIMATION */
-
-	/* redraw cards */
-	table_display_hand(ggzcards.play_hand);
-
-	statusbar_message(err_msg);
-	sleep(1);		/* just a delay? */
-}
-
-void table_alert_play(int player, card_t card, int pos)
-{
-#ifdef ANIMATION
-	if (animating)
-		animation_zip(TRUE);
-	assert(!animating);
-#endif /* ANIMATION */
-
-	table_display_hand(player);
-	table_play_card(player, card, pos);
-}
-
-
-void table_alert_table()
-{
-	ggz_debug("table", "Handling table update alert.");
-	table_show_cards();
-}
-
-void table_alert_trick(int player)
-{
-	char *t_str;
-
-#ifdef ANIMATION
-	if (animating)
-		animation_zip(TRUE);
-	assert(!animating);
-#endif /* ANIMATION */
-
-	t_str = g_strdup_printf(_("%s won the trick"),
-				ggzcards.players[player].name);
-	statusbar_message(t_str);
-	g_free(t_str);
-
-	/* TODO: make this sleep optional (a preference) */
-	sleep(1);
-
-	table_clear_table();
-}
-
-int table_handle_game_message(int fd, int game, int size)
-{
-	return 0;
-}
-
-
-void table_alert_newgame(void)
-{
-	/* do nothing... */
 }

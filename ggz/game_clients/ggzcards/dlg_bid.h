@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.h 2854 2001-12-10 05:46:45Z jdorje $
+ * $Id: dlg_bid.h 2940 2001-12-18 22:17:50Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -24,4 +24,4 @@
  */
 
 /* Display a dialog window for the user to make a bid choice. */
-void table_get_bid(int possible_bids, char **bid_choices);
+void dlg_bid_display(int possible_bids, char **bid_choices);

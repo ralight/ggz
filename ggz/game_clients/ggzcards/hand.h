@@ -1,4 +1,4 @@
-/* $Id: hand.h 2545 2001-10-08 23:09:23Z jdorje $ */
+/* $Id: hand.h 2940 2001-12-18 22:17:50Z jdorje $ */
 /* 
  * File: hand.h
  * Author: Rich Gade
@@ -22,12 +22,3 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
-
-#include "common.h"
-
-#ifndef __HAND_H
-#define __HAND_H
-
-extern int table_max_hand_size;
-
-#endif /* __HAND_H */

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 2939 2001-12-18 20:47:03Z jdorje $
+ * $Id: game.h 2940 2001-12-18 22:17:50Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -25,10 +25,21 @@
 
 #include <gtk/gtk.h>
 
-#include "hand.h"
+#include "common.h"
 
 #ifndef __GAME_H__
 #define __GAME_H__
+
+extern int table_max_hand_size;
+
+/*
+ * This first group is called by the table and
+ * propogates to the client-common interface.
+ */
+
+/** @brief Initializes the game.
+ *  @note A lot of other initialization is also done in main() */
+void game_init(void);
 
 /** @brief Sends the bid to the server, and updates the graphics.
  *  @param bid An index into the list of bids sent by the server. */
@@ -41,9 +52,31 @@ void game_play_card(card_t card);
 /** @brief Handles IO from the server; called any time data is pending. */
 void game_handle_io(gpointer data, gint source, GdkInputCondition cond);
 
-/** @brief Initializes the game.
- *  @note A lot of other initialization is also done in main() */
-void game_init(void);
+
+
+/*
+ * This second group is callbacks called
+ * by the client-common code.
+ */
+
+void game_get_newgame(void);
+void game_alert_newgame(void);
+void game_handle_gameover(int num_winners, int *winners);
+void game_alert_player(int player, GGZSeatType status, const char *name);
+void game_setup_table(void);
+void game_alert_hand_size(int max_hand_size);
+void game_display_hand(int player);
+void game_get_bid(int possible_bids, char **bid_choices);
+void game_get_play(int hand);
+void game_alert_badplay(char *err_msg);
+void game_alert_play(int player, card_t card, int pos);
+void game_alert_table(void);
+void game_alert_trick(int player);
+void game_set_text_message(const char *mark, const char *message);
+void game_set_cardlist_message(const char *mark, int *lengths,
+			       card_t ** cardlist);
+void game_set_player_message(int player, const char *message);
+int game_handle_game_message(int fd, int game, int size);
 
 
 /* 

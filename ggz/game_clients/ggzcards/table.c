@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2939 2001-12-18 20:47:03Z jdorje $
+ * $Id: table.c 2940 2001-12-18 22:17:50Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -184,7 +184,7 @@ void table_initialize(void)
 
 
 	if (ggzcards.num_players > 0)
-		table_setup();
+		game_setup_table();
 	else
 		draw_splash_screen();
 
@@ -271,91 +271,6 @@ void table_set_player_message(int player, const char *message)
 {
 	if (label[player] != NULL)
 		gtk_label_set_text(GTK_LABEL(label[player]), message);
-}
-
-/* Displays a global message (any global message). */
-void table_set_text_message(const char *mark, const char *message)
-{
-	ggz_debug("table", "Received message '%s'/'%s'.", mark, message);
-	if (!table_initialized)
-		return;
-	if (!*mark)
-		/* This is the "global" global message that has mark "". it
-		   gets displayed on the messagebar. */
-		messagebar_message(message);
-	else if (!strcmp(mark, "game")) {
-		/* This is the game's name; we just adjust the title bar */
-		char title[50];
-		snprintf(title, sizeof(title), _("GGZ Gaming Zone - %s"),
-			 message);
-		gtk_window_set_title(GTK_WINDOW(dlg_main), title);
-	} else {
-		/* Other messages get displayed in a special window with menu
-		   access. */
-		menubar_text_message(mark, message);
-	}
-	ggz_debug("table", "Handled message.");
-}
-
-void table_set_cardlist_message(const char *mark, int *lengths,
-				card_t ** cardlist)
-{
-#if 0
-	int p, i;
-	char buf[4096] = "";
-	int maxlen = 0, namewidth = 0;
-
-	/* FIXME: translations */
-	char *suit_names[4] = { "clubs", "diamonds", "hearts", "spades" };
-	char *short_suit_names[4] = { "C", "D", "H", "S" };
-	char *face_names[15] =
-		{ NULL, "ace", "two", "three", "four", "five", "six", "seven",
-		"eight", "nine", "ten", "jack", "queen", "king", "ace"
-	};
-	char *short_face_names[15] =
-		{ NULL, "A", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-		"J", "Q", "K", "A"
-	};
-
-	for (p = 0; p < ggzcards.num_players; p++) {
-		if (lengths[p] > maxlen)
-			maxlen = lengths[p];
-		assert(ggzcards.players[p].name);
-		if (strlen(ggzcards.players[p].name) > namewidth)
-			namewidth = strlen(ggzcards.players[p].name);
-	}
-
-	assert(maxlen > 0);
-	assert(namewidth > 0);
-
-	for (p = 0; p < ggzcards.num_players; p++) {
-		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
-			 "%*s: ", namewidth, ggzcards.players[p].name);
-		if (maxlen == 1) {
-			if (lengths[p]) {
-				card_t card = cardlist[p][0];
-				snprintf(buf + strlen(buf),
-					 sizeof(buf) - strlen(buf),
-					 _("%s of %s"),
-					 face_names[(int) card.face],
-					 suit_names[(int) card.suit]);
-			}
-		} else {
-			for (i = 0; i < lengths[p]; i++) {
-				card_t card = cardlist[p][i];
-				snprintf(buf + strlen(buf),
-					 sizeof(buf) - strlen(buf), "%2s%s ",
-					 short_face_names[(int) card.face],
-					 short_suit_names[(int) card.suit]);
-			}
-		}
-		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), "\n");
-	}
-
-	table_set_text_message(mark, buf);
-#else
-	menubar_cardlist_message(mark, lengths, cardlist);
-#endif
 }
 
 /* Handle a redraw of necessary items, for instance when a Gtk style change

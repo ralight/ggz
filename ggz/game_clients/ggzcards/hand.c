@@ -1,4 +1,4 @@
-/* $Id: hand.c 2545 2001-10-08 23:09:23Z jdorje $ */
+/* $Id: hand.c 2940 2001-12-18 22:17:50Z jdorje $ */
 /* 
  * File: hand.c
  * Author: Rich Gade
@@ -28,21 +28,3 @@
 #endif
 
 #include "layout.h"
-
-int table_max_hand_size = 0;
-
-void table_alert_hand_size(int max_hand_size)
-{
-	table_max_hand_size = max_hand_size;
-
-	do {
-		/* the inner table must be at least large enough. So, if it's 
-		   not we make the hand sizes larger. */
-		int x, y, w, h, w1, h1;
-		get_table_dim(&x, &y, &w, &h);
-		get_fulltable_size(&w1, &h1);
-		if (w1 > w && h1 > h)
-			break;
-		table_max_hand_size++;
-	} while (1);
-}
