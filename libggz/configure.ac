@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6117 2004-07-16 19:08:39Z josef $
+dnl $Id: configure.ac 6126 2004-07-17 00:59:24Z josef $
 
 AC_INIT([GGZ common libraries], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -65,16 +65,18 @@ CFLAGS=$save_cflags
 # =================================
 # If syslog is present, we take the log types from it.
 # If not, define our own enumeration.
-AC_CHECK_HEADER([syslog.h], [GGZ_HAVE_SYSLOG_H="1"], [GGZ_HAVE_SYSLOG_H="0"])
-AC_SUBST(GGZ_HAVE_SYSLOG_H)
+AC_CHECK_HEADER([syslog.h], [
+	AC_DEFINE([GGZ_HAVE_SYSLOG_H], 1, [Check if syslog is present])
+], [])
 
 
 # Check for sendmsg
 # =================
 # If sendmsg() is present, we can send file descriptors over a local socket
 # via ggz_write_fd.  If not we disable this functionality.
-AC_CHECK_FUNC([sendmsg], [GGZ_HAVE_SENDMSG="1"], [GGZ_HAVE_SENDMSG="0"])
-AC_SUBST(GGZ_HAVE_SENDMSG)
+AC_CHECK_FUNC([sendmsg], [
+	AC_DEFINE([GGZ_HAVE_SENDMSG], 1, [Check if file descriptors can be sent])
+], [])
 
 
 # Check for PF_LOCAL/PF_UNIX
@@ -88,17 +90,17 @@ AC_EGREP_CPP(PF_LOCAL,
               AC_MSG_CHECKING([for PF_UNIX])
               AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
 				      PF_UNIX ],
-                           [AC_MSG_RESULT(no)
-			    GGZ_HAVE_PF_LOCAL="0"],
+                           [AC_MSG_RESULT(no)],
                            [AC_MSG_RESULT(yes)
                             AC_DEFINE([PF_LOCAL], PF_UNIX,
 				      [PF_UNIX is available])
 			    AC_DEFINE([AF_LOCAL], AF_UNIX,
 				      [AF_UNIX is available])
-                            GGZ_HAVE_PF_LOCAL="1"])], 
+				AC_DEFINE([GGZ_HAVE_PF_LOCAL], 1, [Check if unix sockets are supported])
+                            ])], 
              [AC_MSG_RESULT(yes)
-              GGZ_HAVE_PF_LOCAL="1"])
-AC_SUBST(GGZ_HAVE_PF_LOCAL)
+			  AC_DEFINE([GGZ_HAVE_PF_LOCAL], 1, [Check if unix sockets are supported])
+			  ])
 
 
 # Check for SUN_LEN
@@ -240,7 +242,6 @@ AC_SUBST(LDADD)
 
 AC_CONFIG_FILES([Makefile 
 	   src/Makefile
-	   src/ggz.h
 	   src/security/Makefile
 	   tests/Makefile
 	   man/Makefile])
