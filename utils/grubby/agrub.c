@@ -48,6 +48,7 @@ void graceless_exit(int);
 void log_on(char *sender, char *command);
 void log_off(char *sender, char *command);
 log_it(char *left, char *right);
+void cleanup(void);
 
 int my_socket, rooms=0, cur_room=-1, logged_in=0;
 char **room_list;
@@ -373,7 +374,6 @@ void handle_read(void)
 				es_read_int(my_socket, &num2);
 				es_read_string_alloc(my_socket, &string);
 				room_list[i] = string;
-				free(string);
 				es_read_int(my_socket, &num2);
 			}
 			break;
@@ -452,6 +452,7 @@ void handle_read(void)
 		case RSP_LOGOUT:
 			es_read_int(my_socket, &num);
 			es_read_char(my_socket, &chr);
+			cleanup();
 			exit(0);
 			break;
 	}
@@ -661,8 +662,10 @@ void do_logout(int on_sig)
 	
 	save_known();
 
-	if(on_sig)
+	if(on_sig) {
+		cleanup();
 		exit(0);
+	}
 }
 
 	
@@ -1209,4 +1212,13 @@ log_it(char *left, char *right)
 		else
 			fprintf(log_file, "[%s] | %s%s\n",left, right);
 	}
+}
+
+
+void cleanup(void)
+{
+	int i;
+
+	for(i=0; i<rooms; i++)
+		free(room_list[i]);
 }
