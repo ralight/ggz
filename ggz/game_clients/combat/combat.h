@@ -22,9 +22,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define PROTOCOL_VERSION 3
+#define PROTOCOL_VERSION 5
 
-/* Combat Protocol Version 0.0.1
+/* Combat Protocol Version 0.0.3
  *
  * g : ggz server (gserv)
  * s : combat server (cserv)
@@ -169,7 +169,9 @@
  * either its his turn or not, it waits to receive from the server one
  * of:
  *  [ s --> nc : CBT_MSG_MOVE (int)FROM (int)TO ]
- *  [ s --> nc : CBT_MSG_ATTACK (int)FROM (char)WHO (int)TO (char)WHO ]
+ *  [ s --> nc : CBT_MSG_ATTACK (int)FROM (int)WHO (int)TO (int)WHO ]
+ *  Where the WHO can be negative, which means that they won the combat
+ *  The OWNER code is _NOT_ enconded in the WHO
  *  And then it changes the game state and changes the current turn.
  *
  * The server, after sending a CBT_MSG_START, enters playing state,
@@ -200,6 +202,8 @@
  *	(note that the unit code isn't reported!)
  * If the TO tile is a enemy, it sends:
  *  [ s --> nc : CBT_MSG_ATTACK (int)FROM (char)WHO (int)TO (char)WHO ]
+ *  Where the WHO can be negative, which means that they won the combat
+ *  The OWNER code is _NOT_ enconded in the WHO
  *  (note: Maybe it should send the ATTACK msg only to the players
  *  that are taking part on the attack, and send a MSG_MOVE to the
  *  others)
@@ -209,7 +213,7 @@
  *  	stratego
  *
  *  If it is over, it sends
- *  	[ s --> nc : CBT_MSG_GAMEOVER ??? ]
+ *  	[ s --> nc : CBT_MSG_GAMEOVER (int)WINNER ]
  *  	TODO: Must see what needs to be sent: The winners? The losers?
  *
  *  If the game is not over, it changes to the next turn and waits
@@ -273,6 +277,13 @@
 // Transform Cartesian(X,Y) into index number
 #define CART(X,Y,WIDTH) ((Y-1)*WIDTH+(X-1))
 
+// Transform index number into cartesian
+#define X(I, WIDTH) (I%WIDTH)
+#define Y(I, WIDTH) (I/WIDTH)
+
+// Next turn
+#define NEXT(X,Y) (X >= (Y-1) ? 0 : X+1)
+
 // Game states
 #define CBT_STATE_NULL -1 // When he doesn't know his state
 #define CBT_STATE_INIT 0
@@ -296,6 +307,16 @@
 #define CBT_REQ_SYNC 11
 #define CBT_MSG_SYNC 12
 
+// Error messages
+#define CBT_ERROR_SOCKET -1
+#define CBT_ERROR_OUTRANGE -2
+#define CBT_ERROR_WRONGTURN -3
+#define CBT_ERROR_SUICIDAL -4
+#define CBT_ERROR_NOTOPEN -5
+#define CBT_ERROR_CRAZY -6
+#define CBT_ERROR_NOTMOVING -7
+#define CBT_ERROR_INVALIDMOVE -8
+
 
 
 
@@ -312,6 +333,7 @@ typedef struct combat_game_struct {
 	char height;
 	char **army;
 	int state;
+	int turn;
 } combat_game;
 
 // Commom functions

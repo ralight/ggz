@@ -53,6 +53,9 @@ void game_unit_list_handle (GtkCList *clist, gint row, gint column,
 int game_get_seat();
 int game_get_options();
 int game_get_players();
+void game_get_move();
+void game_get_attack();
+void game_get_gameover();
 
 // Get info from the player
 int game_ask_options();
@@ -63,6 +66,7 @@ void game_send_setup();
 // Init variables
 void game_init();
 void game_init_board();
+void game_start();
 
 // Draw stuff
 void game_draw_bg();

@@ -96,17 +96,43 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
 			callback_sendbutton_set_enabled(TRUE);
 			break;
 		case CBT_MSG_START:
-			cbt_game.state = CBT_STATE_PLAYING;
-			callback_sendbutton_set_enabled(FALSE);
-			game_draw_bg();
+			game_start();
+			break;
+		case CBT_MSG_MOVE:
+			game_get_move();
 			game_draw_board();
-			game_status("Game has started!");
+			break;
+		case CBT_MSG_ATTACK:
+			game_get_attack();
+			game_draw_board();
+			break;
+		case CBT_MSG_GAMEOVER:
+			game_get_gameover();
 			break;
 		default:
 			game_status("Ops! Wrong message: %d", op);
 			break;
 	}
 }
+
+void game_start() {
+	int a;
+
+	// Updates the unit list
+	for (a = 0; a < 12; a++)
+		cbt_game.army[cbt_info.seat][a] = cbt_game.army[cbt_info.number][a];
+
+	game_update_unit_list(cbt_info.seat);
+
+	cbt_game.state = CBT_STATE_PLAYING;
+	callback_sendbutton_set_enabled(FALSE);
+	cbt_info.current = -1;
+	game_draw_bg();
+	game_draw_board();
+
+	game_status("Game has started!");
+}
+
 
 int game_get_seat() {
 
@@ -140,7 +166,7 @@ int game_ask_options() {
 	char *game_str = NULL;
 	int a;
 	// Default game
-	game_status("Using default game options\n");
+	game_status("Using mini game options\n");
 	_game.width = 10;
 	_game.height = 10;
 	_game.map = (tile *)calloc(_game.width * _game.height, sizeof(tile));
@@ -219,6 +245,7 @@ void game_init() {
 	cbt_game.height = 10;
 	cbt_game.army = NULL;
 	cbt_game.state = CBT_STATE_INIT;
+	cbt_game.turn = 0;
 	cbt_info.current = U_EMPTY;
 }
 
@@ -508,6 +535,42 @@ void game_unit_list_handle (GtkCList *clist, gint row, gint column,
 }
 
 void game_handle_move(int p) {
+	int last_current;
+	// If not your turn, just forget
+	if (cbt_game.turn != cbt_info.seat) {
+		game_status("This is not your turn!");
+		return;
+	}
+	// Select unit or do move?
+	if (cbt_info.current < 0) {
+		// Select unit!
+		// TODO: Check if this is valid!
+		/*
+		if (GET_OWNER(cbt_game.map[p].unit) != cbt_info.seat) {
+			game_status("This is not yours...");
+			return;
+		}
+		if (LAST(cbt_game.map[p].unit) <= U_BOMB) {
+			game_status("This can't be moved!");
+			return;
+		}
+		*/
+		game_status("Selected %s", unitname[LAST(cbt_game.map[p].unit)]);
+		cbt_info.current = p;
+	} else {
+		// Do move!
+		// TODO: Check what I'm doing!
+		// No more current move
+		last_current = cbt_info.current;
+		cbt_info.current = -1;
+		game_status("Moved to %d", p);
+		if (es_write_int(cbt_info.fd, CBT_REQ_MOVE) < 0 ||
+				es_write_int(cbt_info.fd, last_current) < 0 ||
+				es_write_int(cbt_info.fd, p) < 0) {
+			game_status("Can't send message to server!");
+			return;
+		}
+	}
 	return;
 }
 
@@ -552,7 +615,7 @@ void game_handle_setup(int p) {
 	// Erases it
 	cbt_game.map[p].unit = U_EMPTY;
 
-	// If are not going to add, then add it!
+	// If are going to add, then add it!
 	if (cbt_info.current != U_EMPTY && cbt_info.current != unit) {
 		// Updates the value
 		cbt_game.map[p].unit = OWNER(seat) + cbt_info.current;
@@ -595,7 +658,7 @@ void game_send_setup() {
 	// (although the OWNER part of the message should handle it)
 	for (a = 0; a < cbt_game.width*cbt_game.height; a++) {
 		if (GET_OWNER(cbt_game.map[a].type) == cbt_info.seat) {
-			setup[b] = OWNER(cbt_info.seat) + cbt_game.map[a].unit + 1;
+			setup[b] = cbt_game.map[a].unit + 1;
 			b++;
 		}
 	}
@@ -615,5 +678,81 @@ void game_send_setup() {
 
 	printf("done!\n");
 
+}
 
+void game_get_move() {
+	int from, to;
+
+	if (es_read_int(cbt_info.fd, &from) < 0 ||
+			es_read_int(cbt_info.fd, &to) < 0) {
+		game_status("Can't get move!");
+		return;
+	}
+
+	if (from < 0 || to < 0) {
+		game_status("Error! %d", from);
+		return;
+	}
+
+	// do move!
+	cbt_game.map[to].unit = cbt_game.map[from].unit;
+	cbt_game.map[from].unit = U_EMPTY;
+
+	// Change turn
+	cbt_game.turn = NEXT(cbt_game.turn, cbt_info.number);
+}
+
+void game_get_attack() {
+	int from, to, f_u, t_u, seat2;
+
+	if (es_read_int(cbt_info.fd, &from) < 0 ||
+			es_read_int(cbt_info.fd, &f_u) < 0 ||
+			es_read_int(cbt_info.fd, &to) < 0 ||
+			es_read_int(cbt_info.fd, &t_u) < 0) {
+		game_status("Can't get attack data!");
+		return;
+	}
+
+	seat2 = GET_OWNER(cbt_game.map[to].unit);
+
+	// Do attack
+	if (f_u < 0 && t_u >= 0) {
+		// The from unit won!
+		cbt_game.map[from].unit = U_EMPTY;
+		cbt_game.map[to].unit = OWNER(cbt_game.turn) - f_u;
+		cbt_game.army[seat2][t_u]--;
+		game_update_unit_list(seat2);
+	} else if (f_u >= 0 && t_u < 0) {
+		// The to unit won!
+		cbt_game.map[from].unit = U_EMPTY;
+		cbt_game.map[to].unit = OWNER(seat2) - t_u;
+		cbt_game.army[cbt_game.turn][f_u]--;
+		game_update_unit_list(cbt_game.turn);
+	} else if (f_u < 0 && t_u < 0) {
+		// Both won (or lost, whatever!)
+		cbt_game.map[from].unit = U_EMPTY;
+		cbt_game.map[to].unit = U_EMPTY;
+		cbt_game.army[cbt_info.seat][-f_u]--;
+		cbt_game.army[seat2][-t_u]--;
+		game_update_unit_list(cbt_game.turn);
+		game_update_unit_list(seat2);
+	} else {
+		game_status("Problems in the attack logic!");
+	}
+
+	// Change turn
+	cbt_game.turn = NEXT(cbt_game.turn, cbt_info.number);
+
+}
+
+void game_get_gameover() {
+	int winner;
+
+	if (es_read_int(cbt_info.fd, &winner) < 0) {
+		game_status("Can't get gameover!");
+		return;
+	}
+
+	game_status("Game is over! Winner: %s", cbt_info.names[winner]);
+	cbt_game.state = CBT_STATE_DONE;
 }
