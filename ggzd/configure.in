@@ -130,17 +130,17 @@ ggzdgamedir="${ggzdconfdir}/games"
 if test "x${libdir}" = 'x${exec_prefix}/lib'; then
   if test "x${exec_prefix}" = "xNONE"; then
     if test "x${prefix}" = "xNONE"; then
-      ggzdmoddir="${ac_default_prefix}/lib/ggzd"
+      ggzdexecmoddir="${ac_default_prefix}/lib/ggzd"
     else
-      ggzdmoddir="${prefix}/lib/ggzd"
+      ggzdexecmoddir="${prefix}/lib/ggzd"
     fi
   else
-    ggzdmoddir="${exec_prefix}/lib/ggzd"
+    ggzdexecmoddir="${exec_prefix}/lib/ggzd"
   fi
 else
-  ggzdmoddir="${libdir}/ggzd"
+  ggzdexecmoddir="${libdir}/ggzd"
 fi
-AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzdmoddir}")
+AC_DEFINE_UNQUOTED(GAMEDIR, "${ggzdexecmoddir}")
 
 AC_DEFINE_UNQUOTED(TMPDIR, "${tmpdir}")
 
@@ -168,7 +168,7 @@ AC_SUBST(SUBDIRS)
 AC_SUBST(ggzdconfdir)
 AC_SUBST(ggzdroomdir)
 AC_SUBST(ggzdgamedir)
-AC_SUBST(ggzdmoddir)
+AC_SUBST(ggzdexecmoddir)
 AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([Makefile 

@@ -6,7 +6,7 @@ SUBDIRS = .
 
 INCLUDES = -I$(top_srcdir)/easysock 
 
-ggzdmod_PROGRAMS = ggzd.spades
+ggzdexecmod_PROGRAMS = ggzd.spades
 ggzdgame_DATA = spades.dsc
 ggzdroom_DATA = spades.room
 
@@ -27,7 +27,7 @@ ggzd_spades_LDADD = $(LDADD) $(top_builddir)/easysock/libeasysock.la
 ggzd_spades_LDFLAGS = -static
 
 test:
-	-cp -f $(ggzdmod_PROGRAMS) $(top_builddir)/test
+	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
 	-cp -f $(ggzdgame_DATA) $(top_builddir)/test/games
 	-cp -f $(ggzdroom_DATA) $(top_builddir)/test/rooms
 
