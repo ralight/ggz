@@ -57,6 +57,7 @@ void cards_create_deck(int which_deck)
 	char lap_deck_faces[] = {2, 3, 4, 5, 6, 10, JACK, QUEEN, KING, ACE_HIGH};
 	char suaro_deck_faces[] = {8, 9, 10, JACK, QUEEN, KING, ACE_HIGH};
 	char euchre_deck_faces[] = {9, 10, JACK, QUEEN, KING, ACE_HIGH};
+	char skat_deck_faces[] = {7, 8, 9, 10, JACK, QUEEN, KING, ACE_HIGH};
 
 	deck_faces = std_deck_faces;
 	deck_suits = std_deck_suits;
@@ -68,6 +69,10 @@ void cards_create_deck(int which_deck)
 			/* La Pocha doesn't use 7,8,9 */
 			deck_faces = lap_deck_faces;
 			deck_face_cnt = 10;
+			break;
+		case GGZ_DECK_SKAT:
+			deck_faces = skat_deck_faces;
+			deck_face_cnt = 8;
 			break;
 		case GGZ_DECK_SUARO:
 			deck_faces = suaro_deck_faces;

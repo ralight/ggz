@@ -138,6 +138,9 @@ void game_init_game()
 		case GGZ_GAME_EUCHRE:
 			game.specific = alloc(sizeof(euchre_game_t));
 			break;
+		case GGZ_GAME_SKAT:
+			game.specific = alloc(sizeof(skat_game_t));
+			break;
 		default:
 			ggz_debug("game_alloc_game not implemented for game %d.", game.which_game);
 			exit(-1);
@@ -171,6 +174,19 @@ void game_init_game()
 			game.target_score = 10;
 			game.name = "Euchre";
 			}
+			break;
+		case GGZ_GAME_SKAT:
+			set_num_seats(game.num_players);
+			for(p = 0; p < game.num_players; p++) {
+				s = p;
+				game.players[p].seat = s;
+				game.seats[s].ggz = &ggz_seats[p];
+			}
+			/* TODO */
+			game.max_bid_choices = 10;
+			game.max_bid_length = 10;
+			game.target_score = 100;
+			game.name = "Skat";
 			break;
 		case GGZ_GAME_SUARO:
 			{

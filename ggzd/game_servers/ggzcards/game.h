@@ -130,6 +130,12 @@ typedef struct euchre_game_t {
 	int suit;		/* the suit of trump (TODO: is this necessary?) */
 } euchre_game_t;
 
+/* ---------- EUCHRE ---------- */
+
+typedef struct skat_game_t {
+	
+} skat_game_t;
+
 /* TODO: make a more generalized macro instead of LAPOCHA, etc. */
 
 

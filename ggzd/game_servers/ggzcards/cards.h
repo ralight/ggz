@@ -58,10 +58,11 @@ typedef struct hand_t {
 
 /* there should be an entry here for every kind of deck,
  * and cards.c should be able to handle them. */
-#define GGZ_DECK_FULL		1
-#define GGZ_DECK_LAPOCHA	2
-#define GGZ_DECK_SUARO		3
-#define GGZ_DECK_EUCHRE		4
+#define GGZ_DECK_FULL		1 /* all 52 cards */
+#define GGZ_DECK_LAPOCHA	2 /* missing 10, 9, 8 */
+#define GGZ_DECK_SUARO		3 /* A-8 in each suit */
+#define GGZ_DECK_EUCHRE		4 /* A-9 in each suit */
+#define GGZ_DECK_SKAT		5 /* A-7 in each suit */
 
 /* Exported functions */
 extern void cards_create_deck(int which_deck);
