@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5563 2003-05-10 23:54:28Z dr_maux $
+dnl $Id: configure.ac 5620 2003-07-11 23:20:45Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -73,17 +73,18 @@ AC_CHECK_FUNC(poll)
 dnl Check for popt
 dnl ==============
 AC_CHECK_LIB(popt, poptGetNextOpt,
-    [AC_CHECK_HEADER(popt.h, LDADD="$LDADD -lpopt",
+    [AC_CHECK_HEADER(popt.h, LIBPOPT="-lpopt",
         AC_MSG_ERROR(*** Cannot find popt.h header))],
     AC_MSG_ERROR(*** Cannot find popt library ))
-
+AC_SUBST(LIBPOPT)
 
 dnl Check for expat
 dnl ==============
 AC_CHECK_LIB(expat, XML_ParserCreate,
-    [AC_CHECK_HEADER(expat.h, LDADD="$LDADD -lexpat",
+    [AC_CHECK_HEADER(expat.h, LIBEXPAT="-lexpat",
         AC_MSG_ERROR(*** Cannot find expat.h header); exit)],
     AC_MSG_ERROR(*** Cannot find expat library ); exit)
+AC_SUBST(LIBEXPAT)
 
 
 dnl Use -Wall if we have gcc.

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5567 2003-05-11 09:21:50Z dr_maux $
+# $Id: Makefile.am 5620 2003-07-11 23:20:45Z jdorje $
 
 SUBDIRS = .
 
@@ -21,7 +21,8 @@ INCLUDES = -I$(top_srcdir)/ggzmod $(LIBGGZ_INCLUDES)
 
 include_HEADERS = ggzcore.h
 
-libggzcore_la_LIBADD = @LDADD@ $(top_builddir)/ggzmod/libggzmod.la $(LIBGGZ_LDFLAGS) $(LIB_GGZ)
+libggzcore_la_LIBADD = @LDADD@ $(top_builddir)/ggzmod/libggzmod.la \
+		       $(LIBGGZ_LDFLAGS) $(LIB_GGZ) $(LIBEXPAT) $(LIBPOPT)
 
 libggzcore_la_LDFLAGS = -version-info 3:0:0
 
