@@ -373,8 +373,10 @@ static GGZHookReturn room_table_launched(GGZRoomEvent id, void* event_data, void
 
 static GGZHookReturn room_table_launch_fail(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	output_text("-- Table launch failed");
-	/* FIXME: kill game */
+	output_text("-- Table launch failed: %s", event_data);
+
+	game_quit();
+
 	return GGZ_HOOK_OK;
 }
 
@@ -388,8 +390,10 @@ static GGZHookReturn room_table_joined(GGZRoomEvent id, void* event_data, void* 
 
 static GGZHookReturn room_table_join_fail(GGZRoomEvent id, void* event_data, void* user_data)
 {
-	output_text("-- Table join failed");
-	/* FIXME: kill game */
+	output_text("-- Table join failed: %s", event_data);
+
+	game_quit();
+
 	return GGZ_HOOK_OK;
 }
 
