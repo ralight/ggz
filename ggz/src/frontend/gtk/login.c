@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 3092 2002-01-12 10:48:13Z jdorje $
+ * $Id: login.c 3390 2002-02-17 09:16:18Z rgade $
  *
  * This is the main program body for the GGZ client
  *
@@ -33,6 +33,8 @@
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
+
+#include <ggz.h>
 
 #include "login.h"
 #include "server.h"
@@ -140,6 +142,7 @@ login_fill_defaults                    (GtkWidget       *widget,
 {
 	GtkWidget* tmp;
 	GList *items;
+	char *last;
 
 	tmp = lookup_widget(login_dialog, "profile_combo");
 
@@ -151,11 +154,13 @@ login_fill_defaults                    (GtkWidget       *widget,
 		gtk_widget_set_sensitive(tmp, FALSE);
 
 	/* Set to last server connected to */
-	if(strcmp(ggzcore_conf_read_string("OPTIONS", "LASTPROFILE", "NONE"), "NONE"))
+	last = ggzcore_conf_read_string("OPTIONS", "LASTPROFILE", "NONE");
+	if(strcmp(last, "NONE"))
 	{
 		tmp = lookup_widget(login_dialog, "profile_entry");
-		gtk_entry_set_text(GTK_ENTRY(tmp), ggzcore_conf_read_string("OPTIONS", "LASTPROFILE", "NONE"));
+		gtk_entry_set_text(GTK_ENTRY(tmp), last);
 	}
+	ggz_free(last);
 }
 
 
@@ -334,6 +339,7 @@ static void login_start_session(void)
 	/* Log server communications to file */
 	sessiondump = ggzcore_conf_read_string("Debug", "SessionLog", NULL);
 	ggzcore_server_log_session(server, sessiondump);
+	ggz_free(sessiondump);
 
 	/* Save as last profile */
 	tmp = lookup_widget(login_dialog, "profile_entry");
