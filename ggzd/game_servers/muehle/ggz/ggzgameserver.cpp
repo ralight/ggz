@@ -63,15 +63,15 @@ void GGZGameServer::stateEvent () {
 }
 
 // Virtual player join hook
-void GGZGameServer::joinEvent () {
+void GGZGameServer::joinEvent ( int player ) {
 }
 
 // Virtual player leave hook
-void GGZGameServer::leaveEvent () {
+void GGZGameServer::leaveEvent ( int player ) {
 }
 
 // Virtual game data hook
-void GGZGameServer::dataEvent () {
+void GGZGameServer::dataEvent ( int player, void* data ) {
 }
 
 // Virtual error handling hook
@@ -87,24 +87,28 @@ void GGZGameServer::handle_state ( GGZdMod* ggzdmod, GGZdModEvent event, void* d
 // Callback for the player join hook
 void GGZGameServer::handle_join ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
 	std::cout << "GGZGameServer: joinEvent" << std::endl;
-	self->joinEvent ();
+	self->joinEvent ( *( int* ) data );
 }
 
 // Callback for the player leave hook
 void GGZGameServer::handle_leave ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
 	std::cout << "GGZGameServer: leaveEvent" << std::endl;
-	self->leaveEvent ();
+	self->leaveEvent ( *(int* ) data );
 }
 
 // Callback for the game data hook
 void GGZGameServer::handle_data ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
 	std::cout << "GGZGameServer: dataEvent" << std::endl;
-	self->dataEvent ();
+	self->dataEvent ( *(int* ) data, data);
 }
 
 // Callback for the error handling hook
 void GGZGameServer::handle_error ( GGZdMod* ggzdmod, GGZdModEvent event, void* data ) {
 	std::cout << "GGZGameServer: errorEvent" << std::endl;
 	self->errorEvent ();
+}
+
+int GGZGameServer::fd ( int player ) {
+	return ggzdmod_get_seat ( ggzdmod, player ).fd;
 }
 

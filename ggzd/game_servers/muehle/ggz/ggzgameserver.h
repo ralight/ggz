@@ -30,10 +30,11 @@ class GGZGameServer {
 
 	protected:
 		virtual void stateEvent ();
-		virtual void joinEvent ();
-		virtual void leaveEvent ();
-		virtual void dataEvent ();
+		virtual void joinEvent ( int player );
+		virtual void leaveEvent ( int player );
+		virtual void dataEvent ( int player, void* data );
 		virtual void errorEvent ();
+		int fd ( int player );
 
 	private:
 		static void handle_state ( GGZdMod* ggzdmod, GGZdModEvent event, void* data );
