@@ -551,12 +551,36 @@ void KGGZChat::logChat(QString text)
 void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode)
 {
 	QString tmp;
+	static QString lastplayer;
+	QString color;
+
+	switch(mode)
+	{
+		case RECEIVE_CHAT:
+			color = "0000ff";
+			break;
+		case RECEIVE_ANNOUNCE:
+			color = "80d000";
+			break;
+		case RECEIVE_ME:
+			color = "00a000";
+			break;
+		case RECEIVE_OWN:
+			color = "0000ff";
+			break;
+		case RECEIVE_PERSONAL:
+			color = "b0b000";
+			break;
+	}
+
+	if(lastplayer == player) color = "ffffff";
+	else lastplayer = player;
 
 	KGGZDEBUG("Receiving: %s (%i)\n", message, mode);
 	switch(mode)
 	{
 		case RECEIVE_CHAT:
-			tmp = QString("<font color=#0000ff>") + QString(player) + QString(":&nbsp;&nbsp;</font>");
+			tmp = QString("<font color=#%1>").arg(color) + QString(player) + QString(":&nbsp;&nbsp;</font>");
 			// Oh oh, Qt: that's your fault again (I'm happy with bug reports, eh)
 			//output->append(tmp);
 			output->setText(output->text() + tmp);
@@ -564,7 +588,7 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 			parse(plaintext(message));
 			break;
 		case RECEIVE_OWN:
-			tmp = QString("<font color=#0000ff><b>") + QString(player) + QString("</b>:&nbsp;&nbsp;</font>");
+			tmp = QString("<font color=#%1><b>").arg(color) + QString(player) + QString("</b>:&nbsp;&nbsp;</font>");
 			output->setText(output->text() + tmp);
 			logChat(tmp);
 			parse(plaintext(message));
@@ -576,22 +600,22 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 			logChat(tmp);
 			break;
 		case RECEIVE_ANNOUNCE:
-			tmp = QString("<font color=#80d000><i>* ") + QString(player) + QString(message) + QString("</i></font><br>");
+			tmp = QString("<font color=#%s><i>* ").arg(color) + QString(player) + QString(message) + QString("</i></font><br>");
 			output->setText(output->text() + tmp);
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
 			//checkLag(tmp);
 			break;
 		case RECEIVE_ME:
-			tmp = QString("<font color=#00a000><i>* ") + QString(player) + QString(message + 3) + QString("</i></font><br>");
+			tmp = QString("<font color=#%1><i>* ").arg(color) + QString(player) + QString(message + 3) + QString("</i></font><br>");
 			output->setText(output->text() + tmp);
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
 			//checkLag(tmp);
 			break;
 		case RECEIVE_PERSONAL:
-			tmp = QString("<font color=#b0b000><b><i>");
-			if(player) tmp += QString(player) + ":&nbsp;&nbsp;";
+			tmp = QString("<font color=#%1><b><i>").arg(color);
+			if(player) tmp += QString(player) + ":&nbsp;&nbsp;</i></b></font><font color=#b0b000><b><i>";
 			tmp += QString(plaintext(message)) + QString("</i></b></font><br>");
 			output->setText(output->text() + tmp);
 			output->setContentsPos(0, 32767);
