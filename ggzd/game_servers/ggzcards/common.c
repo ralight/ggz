@@ -62,9 +62,9 @@ void set_game_state(server_state_t state)
 	   be handled separately. */
 	if (game.state == WH_STATE_WAITFORPLAYERS) {
 		if (game.saved_state != state)
-			ggz_debug
-				("SERVER BUG: Setting game saved state to %d - %ws.",
-				 state, game_states[state]);
+			ggz_debug("ERROR: SERVER BUG: "
+				  "Setting game saved state to %d - %ws.",
+				  state, game_states[state]);
 		game.saved_state = state;
 	} else {
 		if (game.state != state)
@@ -176,8 +176,8 @@ int send_player_list(player_t p)
 			   the game is determined, in which case GGZ info for the 
 			   seats wouldn't be known yet.  Here I fudge it by sending 
 			   GGZ_SEAT_NONE instead. */
-			ggz_debug("SERVER BUG: NULL ggz found for seat %d.",
-				  s_abs);
+			ggz_debug("ERROR: SERVER BUG: "
+				  "NULL ggz found for seat %d.", s_abs);
 			if (es_write_int(fd, GGZ_SEAT_NONE) < 0)
 				status = -1;
 			if (es_write_string(fd, "(unknown)") < 0)
@@ -800,7 +800,8 @@ static void newgame()
 	player_t p;
 
 	if (game.which_game == GGZ_GAME_UNKNOWN) {
-		ggz_debug("SERVER BUG: starting newgame() on unknown game.");
+		ggz_debug("ERROR: SERVER BUG: "
+			  "starting newgame() on unknown game.");
 		exit(-1);
 	}
 
@@ -938,9 +939,9 @@ void next_play(void)
 		next_play();	/* minor recursion */
 		break;
 	default:
-		ggz_debug
-			("SERVER BUG: game_play called with unknown state: %d",
-			 game.state);
+		ggz_debug("ERROR: SERVER BUG: "
+			  "game_play called with unknown state: %d",
+			  game.state);
 		break;
 	}
 
@@ -1004,8 +1005,8 @@ int handle_join_event(player_t player)
 
 	ggz_debug("Handling a join event for player %d.", player);
 	if (game.state != WH_STATE_WAITFORPLAYERS) {
-		ggz_debug
-			("SERVER BUG: someone joined while we weren't waiting.");
+		ggz_debug("ERROR: SERVER BUG: "
+			  "someone joined while we weren't waiting.");
 		return -1;
 	}
 
@@ -1209,8 +1210,8 @@ int handle_bid_event(bid_t bid)
 	else if (game.state == WH_STATE_WAIT_FOR_BID)
 		set_game_state(WH_STATE_NEXT_BID);
 	else
-		ggz_debug
-			("SERVER BUG: handle_bid_event: not in WH_STATE_WAIT_FOR_BID.");
+		ggz_debug("ERROR: SERVER BUG: "
+			  "handle_bid_event: not in WH_STATE_WAIT_FOR_BID.");
 
 	/* this is the player that just finished bidding */
 	set_player_message(p);
@@ -1245,15 +1246,15 @@ void init_game()
 	player_t p;
 
 	if (!games_valid_game(game.which_game)) {
-		ggz_debug
-			("SERVER BUG: game_init_game: invalid game %d chosen.",
-			 game.which_game);
+		ggz_debug("ERROR: SERVER BUG: "
+			  "game_init_game: invalid game %d chosen.",
+			  game.which_game);
 		exit(-1);
 	}
 
 	if (game.initted || game.which_game == GGZ_GAME_UNKNOWN) {
-		ggz_debug
-			("SERVER BUG: game_init_game called on unknown or previously initialized game.");
+		ggz_debug("ERROR: SERVER BUG: "
+			  "game_init_game called on unknown or previously initialized game.");
 		return;
 	}
 
@@ -1304,7 +1305,8 @@ void init_game()
 	for (s = 0; s < game.num_seats; s++)
 		game.seats[s].message[0] = 0;
 	if (game.bid_texts == NULL || game.bid_choices == NULL) {
-		ggz_debug("SERVER BUG: game.bid_texts not allocated.");
+		ggz_debug("ERROR: SERVER BUG: "
+			  "game.bid_texts not allocated.");
 		exit(-1);
 	}
 

@@ -126,8 +126,8 @@ void cards_create_deck(deck_type_t which_deck)
 void cards_destroy_deck()
 {
 	if (gamedeck == NULL)
-		ggz_debug
-			("SERVER BUG: cards_destroy_deck called on a NULL deck.");
+		ggz_debug("ERROR: SERVER BUG: "
+			  "cards_destroy_deck called on a NULL deck.");
 	free(gamedeck);
 	deck_size = 0;
 	deck_ptr = -1;
@@ -172,12 +172,12 @@ void cards_deal_hand(int handsize, hand_t * hand)
 	ggz_debug("\tDealing out a hand of size %d.", handsize);
 
 	if (hand == NULL) {
-		ggz_debug("SERVER BUG: can't deal NULL hand.");
+		ggz_debug("ERROR: SERVER BUG: " "can't deal NULL hand.");
 		exit(-1);
 	}
 
 	if (gamedeck == NULL) {
-		ggz_debug("SERVER BUG: can't deal from NULL deck.");
+		ggz_debug("ERROR: SERVER BUG: " "can't deal from NULL deck.");
 		exit(-1);
 	}
 
@@ -186,7 +186,8 @@ void cards_deal_hand(int handsize, hand_t * hand)
 	for (c = 0; c < hand->hand_size; c++) {
 		if (deck_ptr >= deck_size) {
 			ggz_debug
-				("SERVER BUG: too many cards being dealt out.");
+				("ERROR: SERVER BUG: "
+				 "too many cards being dealt out.");
 			exit(-1);
 		}
 		card = gamedeck[deck_ptr];
@@ -221,7 +222,9 @@ card_t cards_deal_card()
 {
 	card_t card;
 	if (deck_ptr >= deck_size) {
-		ggz_debug("SERVER BUG: too many cards being handed out.");
+		ggz_debug
+			("ERROR: SERVER BUG: "
+			 "too many cards being handed out.");
 		exit(-1);
 	}
 	card = gamedeck[deck_ptr];

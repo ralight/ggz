@@ -125,7 +125,7 @@ int games_req_gametype()
 	int cnt = 0, i;
 	int status = 0;
 	if (fd == -1) {
-		ggz_debug("SERVER BUG: nonexistent host.");
+		ggz_debug("ERROR: SERVER BUG: " "nonexistent host.");
 		return -1;
 	}
 
@@ -137,8 +137,8 @@ int games_req_gametype()
 	}
 
 	if (cnt == 0) {
-		ggz_debug
-			("SERVER BUG: no valid games in games_req_gametype.");
+		ggz_debug("ERROR: SERVER BUG: "
+			  "no valid games in games_req_gametype.");
 		exit(-1);
 	}
 

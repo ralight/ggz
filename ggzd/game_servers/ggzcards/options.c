@@ -97,8 +97,8 @@ void add_option(char *key, int num, int dflt, ...)
 	for (i = 0; i < num; i++) {
 		po->choices[i] = va_arg(ap, char *);
 		if (po->choices[i] == NULL)
-			ggz_debug
-				("ERROR: SERVER BUG: add_option: NULL option choice.");
+			ggz_debug("ERROR: SERVER BUG: "
+				  "add_option: NULL option choice.");
 	}
 	va_end(ap);
 
@@ -120,7 +120,7 @@ void get_options()
 		options_initted = 1;
 		ggz_debug("get_options: no options to get.");
 	} else if (fd == -1) {
-		ggz_debug("ERROR: SERVER BUG: no connection to host.");
+		ggz_debug("ERROR: SERVER BUG: " "no connection to host.");
 	} else {
 		struct pending_option_t *po = pending_options;
 		es_write_int(fd, WH_REQ_OPTIONS);

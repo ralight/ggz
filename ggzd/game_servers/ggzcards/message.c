@@ -75,9 +75,8 @@ void send_player_message_toall(seat_t s)
 {
 	player_t p;
 	if (s < 0 || s >= game.num_seats)
-		ggz_debug
-			("ERROR: SERVER BUG: send_player_message_toall(%d) called.",
-			 s);
+		ggz_debug("ERROR: SERVER BUG: "
+			  "send_player_message_toall(%d) called.", s);
 	ggz_debug("Sending seat %d/%s's message to all.", s,
 		  game.seats[s].ggz->name);
 	for (p = 0; p < game.num_players; p++)
@@ -88,8 +87,8 @@ void set_player_message(player_t p)
 {
 	ggz_debug("Setting player %d/%s's message.", p, ggz_seats[p].name);
 	if (p < 0 || p >= game.num_players)
-		ggz_debug("ERROR: SERVER BUG: set_player_message(%d) called.",
-			  p);
+		ggz_debug("ERROR: SERVER BUG: "
+			  "set_player_message(%d) called.", p);
 	game.funcs->set_player_message(p);
 	send_player_message_toall(game.players[p].seat);
 }
@@ -111,7 +110,8 @@ void send_global_message(char *mark, player_t p)
 	int fd = ggz_seats[p].fd;
 	char *message = get_global_message(mark);
 	if (mark == NULL) {
-		ggz_debug("SERVER BUG: send_global_message: NULL mark.");
+		ggz_debug("ERROR: SERVER BUG: "
+			  "send_global_message: NULL mark.");
 		return;
 	}
 	if (fd == -1)

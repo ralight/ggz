@@ -109,7 +109,8 @@ int game_compare_cards(card_t card1, card_t card2)
  */
 void game_init_game()
 {
-	ggz_debug("SERVER BUG: game_launch not implemented for game %d.",
+	ggz_debug("ERROR: SERVER BUG: "
+		  "game_launch not implemented for game %d.",
 		  game.which_game);
 }
 
@@ -217,7 +218,8 @@ void game_start_bidding()
 /* TODO: verify that it will work with and without bots */
 int game_get_bid()
 {
-	ggz_debug("SERVER BUG: game_get_bid called for unimplemented game.");
+	ggz_debug("ERROR: SERVER BUG: "
+		  "game_get_bid called for unimplemented game.");
 	return -1;
 }
 
