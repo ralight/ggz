@@ -60,7 +60,7 @@ need_libtool=0
 version_check "autoconf" "2.57"
 version_check "automake" "1.7"
 if test "x$need_libtool" = "x1"; then
-	version_check "libtool" "1.4.2"
+	version_check "libtool" "1.4.4"
 fi
 version_check "gettext" "0.10.40"
 
