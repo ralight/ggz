@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+import pg
+
+cns = pg.DB(host="XXX", dbname="XXX", user="XXX", passwd="XXX")
+
+q = cns.query("SELECT longitude, latitude, handle FROM userinfo")
+
+for row in q.dictresult():
+	longitude = int(row['longitude'])
+	latitude = int(row['latitude'])
+	print longitude, latitude, 10
+

@@ -1,0 +1,10 @@
+# If in doubt, this can be used as a reference
+# e.g. to calibrate a map
+# But all comments must be removed
+# The last 3 cities are all on the coast, do not let them fall into the water!
+
+14 51 10    # Dresden, Germany (near Berlin)
+-43 -22 10  # Rio de Janeiro, Brasil
+-74 41 10   # New York City, USA
+151 -34 10  # Sidney, Australia
+

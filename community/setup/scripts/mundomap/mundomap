@@ -1,0 +1,277 @@
+#!/usr/bin/env python
+
+import urllib
+import re
+import sys
+import getopt
+import pygame
+
+# old python
+True = 1
+False = 0
+
+def usage():
+	print "Mundomap - IP address to geo coordinates translation"
+	print "Copyright (C) 2005 Josef Spillner <josef@ggzgamingzone.org>"
+	print ""
+	print "Run: mundomap <tasks> [options...]"
+	print ""
+	print "Tasks:"
+	print "[-g | --gather   ] Gather IP addresses from logfile"
+	print "[-t | --translate] Translate IP addresses to geo coordinates"
+	print "[-c | --cluster  ] Cluster IP addresses"
+	print "[-v | --visualize] Draw clusters onto a map"
+	print "[-a | --all      ] All of the above 4 steps combined"
+	print ""
+	print "Task options:"
+	print "[-o | --output <file> ] Output result to certain file, mundo.* otherwise"
+	print "[-i | --input <file>  ] Read results from certain file, mundo.* otherwise"
+	print "[-q | --quiet         ] Do not output any messages"
+	print ""
+	print "Other options:"
+	print "[-h | --help] "
+
+try:
+	longopt = ["gather", "translate", "cluster", "visualize", "all", "output=", "input=", "quiet", "help"]
+	opts, arg = getopt.getopt(sys.argv[1:], "gtcvao:i:qh", longopt)
+except getopt.GetoptError:
+	usage()
+	sys.exit(1)
+
+verbose = True
+output = None
+input = None
+mode = None
+for o, a in opts:
+	if o in ("-h", "--help"):
+		usage()
+		sys.exit()
+	if o in ("-o", "--output"):
+		output = a
+	if o in ("-i", "--input"):
+		input = a
+	if o in ("-q", "--quiet"):
+		verbose = False
+	if o in ("-g", "--gather"):
+		mode = "gather"
+	if o in ("-t", "--translate"):
+		mode = "translate"
+	if o in ("-c", "--cluster"):
+		mode = "cluster"
+	if o in ("-v", "--visualize"):
+		mode = "visualize"
+	if o in ("-a", "--all"):
+		mode = "all"
+
+if not mode:
+	usage()
+	sys.exit()
+
+def operation_gather(verbose):
+	matchurl = "/images/mundomap.png"
+	logfile = "/var/log/apache-ssl/ggzcommunity.org/access.log"
+
+	iplist = []
+
+	f = open(logfile, "r")
+	log = f.read()
+	f.close()
+
+	for line in log.split("\n"):
+		fields = line.split(" ")
+		if len(fields) < 7:
+			continue
+		ip = fields[0]
+		url = fields[6]
+		if url == matchurl:
+			if verbose:
+				print "--", ip
+			iplist.append(ip)
+
+	return iplist
+
+def dump_gather(filename, iplist):
+	if not filename:
+		filename = "mundo.ip"
+	f = open(filename, "w")
+	for line in iplist:
+		f.write(line + "\n")
+	f.close()
+
+def restore_gather(filename):
+	iplist = []
+
+	if not filename:
+		filename = "mundo.ip"
+	f = open(filename, "r")
+	lines = f.read()
+	f.close()
+	for line in lines.split("\n"):
+		iplist.append(line)
+
+	return iplist
+
+def operation_translate(verbose, iplist):
+	cache = {}
+	geolist = []
+
+	for ip in iplist:
+		if cache.has_key(ip):
+			geolist.append(cache[ip])
+			if verbose:
+				print "(cached)", ip, cache[ip]
+			continue
+
+		if verbose:
+			print "(fresh)", ip
+
+		longitude = -10000.0
+		latitude = -10000.0
+		f = urllib.urlopen("http://www.hostip.info/api/get.html?ip=" + ip + "&position=true")
+		input =  f.read()
+		longex = re.compile("Longitude: (\S+)")
+		latex = re.compile("Latitude: (\S+)")
+		for line in input.split("\n"):
+			m = longex.match(line)
+			if m:
+				longitude = float(m.group(1))
+			m = latex.match(line)
+			if m:
+				latitude = float(m.group(1))
+
+		if longitude < -1000 or latitude < -1000:
+			if verbose:
+				print ">>> not found!"
+			continue
+
+		cache[ip] = (longitude, latitude)
+		geolist.append(cache[ip])
+		if verbose:
+			print ">>>", longitude, latitude
+
+	return geolist
+
+def dump_translate(filename, geolist):
+	if not filename:
+		filename = "mundo.geo"
+	f = open(filename, "w")
+	for (longitude, latitude) in geolist:
+		f.write(str(longitude) + " " + str(latitude) + "\n")
+	f.close()
+
+def restore_translate(filename):
+	geolist = []
+
+	if not filename:
+		filename = "mundo.geo"
+	f = open(filename, "r")
+	lines = f.read()
+	f.close()
+	for line in lines.split("\n"):
+		if not line:
+			continue
+		(longs, lats) = line.split(" ")
+		longitude = float(longs)
+		latitude = float(lats)
+		geolist.append((longitude, latitude))
+
+	return geolist
+
+def operation_cluster(verbose, geolist):
+	clusterlist = []
+	cache = {}
+
+	for (longitude, latitude) in geolist:
+		cluster = (int(longitude / 2) * 2, int(latitude / 2) * 2) # FIXME: algorithm!
+		if cache.has_key(cluster):
+			cache[cluster] += 1
+		else:
+			cache[cluster] = 1
+
+	for cluster in cache.keys():
+		if verbose:
+			print "--", cluster, cache[cluster]
+		clusterlist.append((cluster, cache[cluster]))
+
+	return clusterlist
+
+def dump_cluster(filename, clusterlist):
+	if not filename:
+		filename = "mundo.cluster"
+	f = open(filename, "w")
+	for ((longitude, latitude), weight) in clusterlist:
+		f.write(str(longitude) + " " + str(latitude) + " " + str(weight) + "\n")
+	f.close()
+
+def restore_cluster(filename):
+	clusterlist = []
+
+	if not filename:
+		filename = "mundo.cluster"
+	f = open(filename, "r")
+	lines = f.read()
+	f.close()
+	for line in lines.split("\n"):
+		if not line:
+			continue
+		(longs, lats, weights) = line.split(" ")
+		longitude = int(longs)
+		latitude = int(lats)
+		weight = int(weights)
+		clusterlist.append(((longitude, latitude), weight))
+
+	return clusterlist
+
+def operation_visualize(verbose, clusterlist):
+	mapfile = "map.png"
+	mapout = "modified.bmp"
+	calibrate_x = -10
+	calibrate_y = -20
+
+	map = pygame.image.load(mapfile)
+	mapwidth = map.get_width()
+	mapheight = map.get_height()
+
+	for cluster in clusterlist:
+		((longitude, latitude), weight) = cluster
+		longnorm = longitude + 180
+		latnorm = latitude + 90
+
+		xpos = int((longnorm + calibrate_x) * mapwidth / 360)
+		ypos = int((latnorm + calibrate_y) * mapheight / 180)
+		xpos -= int(weight / 2)
+		ypos -= int(weight / 2)
+
+		if verbose:
+			print "(draw)", xpos, ypos, weight
+
+		map.fill((0, 0, 0), ((xpos - 2, mapheight - ypos - 2), (weight + 4, weight + 4)))
+		map.fill((255, 255, 255), ((xpos - 1, mapheight - ypos - 1), (weight + 2, weight + 2)))
+		map.fill((255, 0, 0), ((xpos, mapheight - ypos), (weight, weight)))
+
+	pygame.image.save(map, mapout)
+
+if mode == "gather" or mode == "all":
+	iplist = operation_gather(verbose)
+	if mode == "gather":
+		dump_gather(output, iplist)
+		sys.exit()
+if mode == "translate" or mode == "all":
+	if mode == "translate":
+		iplist = restore_gather(input)
+	geolist = operation_translate(verbose, iplist)
+	if mode == "translate":
+		dump_translate(output, geolist)
+		sys.exit()
+if mode == "cluster" or mode == "all":
+	if mode == "cluster":
+		geolist = restore_translate(input)
+	clusterlist = operation_cluster(verbose, geolist)
+	if mode == "cluster":
+		dump_cluster(output, clusterlist)
+		sys.exit()
+if mode == "visualize" or mode == "all":
+	if mode == "visualize":
+		clusterlist = restore_cluster(input)
+	operation_visualize(verbose, clusterlist)
+
