@@ -72,6 +72,11 @@ int chat_player_enqueue(char receiver[MAX_USER_NAME_LEN + 1],
 	int rcv_id = 0;
 	void *data = NULL;
 
+	/* Don't allow personal chat from a player at a table */
+	/* FIXME: This should probably be read locked */
+	if(players.info[sender].table_index != -1)
+		return E_AT_TABLE;
+
 	room = players.info[sender].room;
 
 	/* Find target player */
@@ -97,6 +102,7 @@ int chat_player_enqueue(char receiver[MAX_USER_NAME_LEN + 1],
 	pthread_rwlock_unlock(&rooms[room].lock);
 
 	/* Don't allow personal chat to a player at a table */
+	/* FIXME: This should probably be read locked */
 	if(players.info[rcv_id].table_index != -1)
 		return E_AT_TABLE;
 
