@@ -76,6 +76,8 @@ on_board_button_press_event            (GtkWidget       *widget,
 
   if (game->board[x][y] != EMPTY)
     gtk_drag_source_set(widget, GDK_BUTTON1_MASK, target, 1, GDK_ACTION_MOVE);
+  else
+    gtk_drag_source_unset(widget);
 
 
   return FALSE;
