@@ -46,7 +46,7 @@ static void lapocha_end_hand();
 struct game_function_pointers lapocha_funcs = {
 	lapocha_init_game,
 	game_get_options,
-	game_handle_options,
+	game_handle_option,
 	lapocha_set_player_message,
 	lapocha_get_bid_text,
 	lapocha_start_bidding,

@@ -32,6 +32,7 @@
 #include "ggz.h"
 #include "game.h"
 #include "games.h"
+#include "options.h"
 
 /* Both of these functions are taken from FreeCiv. */
 /* static int is_option(const char *option_name,char *option); */
@@ -97,10 +98,23 @@ int main(int argc, char** argv)
 	/* read options */
 	for (i=1; i<argc; i++) {
 		char* option;
+		printf("TEST: Reading argv '%s'.", argv[i]);
 		if ( (option = get_option("--game", argv, &i, argc)) != NULL) {
 			which_game = games_get_gametype(option);
+		} else if ( (option=get_option("--option", argv, &i, argc)) != NULL) {
+			/* argument is of the form --option=<option>:<value> */
+			char *colon = strchr(option, ':');
+			int val;
+			if (colon == NULL) continue;
+			*colon = 0;
+			colon++;
+			if (!*colon) continue;
+			val = atoi(colon);
+			printf("TEST: Set option '%s' to %d.", option, val);
+			set_option(option, val);
 		} else {
 			/* bad option */
+			ggz_debug("ERROR: bad options '%s'.", argv[i]);
 		}
 	}
 

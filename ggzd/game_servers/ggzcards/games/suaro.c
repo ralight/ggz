@@ -23,17 +23,19 @@
  */
 
 #include <easysock.h>
+#include <string.h>
 
 #include "../games.h"
 #include "../game.h"
 #include "../ggz.h"
 #include "../message.h"
+#include "../options.h"
 
 #include "suaro.h"
 
 static void suaro_init_game();
-static int suaro_get_options(int fd);
-static void suaro_handle_options(int *options);
+static void suaro_get_options();
+static int suaro_handle_option(char* option, int value);
 static void suaro_start_bidding();
 static int suaro_get_bid();
 static void suaro_handle_bid(bid_t bid);
@@ -49,7 +51,7 @@ static void suaro_end_trick();
 struct game_function_pointers suaro_funcs = {
 	suaro_init_game,
 	suaro_get_options,
-	suaro_handle_options,
+	suaro_handle_option,
 	suaro_set_player_message,
 	suaro_get_bid_text,
 	suaro_start_bidding,
@@ -105,7 +107,7 @@ static void suaro_init_game()
 	game.last_trick = 1;	/* show "last trick" */
 }
 
-static int suaro_get_options(int fd)
+static void suaro_get_options()
 {  		
 	/* four options for now:
 	 *   shotgun -> boolean
@@ -113,54 +115,37 @@ static int suaro_get_options(int fd)
 	 *   persistent doubles -> boolean
 	 *   target score -> 25, 50, 100, 200, 500, 1000
 	 */
-	game.num_options = 4;
-	if (es_write_int(fd, WH_REQ_OPTIONS) < 0 ||
-		es_write_int(fd, game.num_options) < 0 || /* number of options */
-		es_write_int(fd, 1) < 0 || /* first option: 1 choice */
-		es_write_int(fd, 1) < 0 || /* first option: default is 1 */
-		es_write_string(fd, "shotgun") < 0 || /* the first option is "shotgun" */
-		es_write_int(fd, 1) < 0 || /* second option: 1 choice */
-		es_write_int(fd, 0) < 0 || /* second option: default is 0 */
-		es_write_string(fd, "unlimited redoubling") < 0 ||
-		es_write_int(fd, 1) < 0 || /* third option: 1 choice */
-		es_write_int(fd, 0) < 0 || /* third option: default is 0 */
-		es_write_string(fd, "persistent doubles") < 0 ||
-		es_write_int(fd, 6) < 0 || /* fourth option: 6 choices */
-		es_write_int(fd, 1) < 0 || /* fourth option: default is 1 (on a scale from 0-2) */
-		es_write_string(fd, "Game to 25") < 0 ||
-		es_write_string(fd, "Game to 50") < 0 ||
-		es_write_string(fd, "Game to 100") < 0 ||
-		es_write_string(fd, "Game to 200") < 0 ||
-		es_write_string(fd, "Game to 500") < 0 ||
-		es_write_string(fd, "Game to 1000") < 0
-	   )
-		return -1;
-	return 0;
+	add_option("shotgun", 1, 1, "shotgun");
+	add_option("unlimited_redoubling", 1, 0, "unlimited redoubling");
+	add_option("persistent_doubles", 1, 0, "persistent doubles");
+	add_option("target", 6, 1, "Game to 25", "Game to 50", "Game to 100", "Game to 200",
+					"Game to 500", "Game to 1000");
+	game_get_options();
 }
 
-static void suaro_handle_options(int *options)
+static int suaro_handle_option(char* option, int value)
 {
-	if (options[0] >= 0) SUARO.shotgun = options[0];
-	if (options[1] >= 0) SUARO.unlimited_redoubling = options[1];
-	if (options[2] >= 0) SUARO.persistent_doubles = options[2];
-	switch (options[3]) {
-		/* this highlights a problem with this protocol.  Only discrete entries are possible.
-		 * it would be better if the client could just enter a number */
-		case 0: game.target_score = 25; break;
-		case 1: game.target_score = 50; break;
-		case 2: game.target_score = 100; break;
-		case 3: game.target_score = 200; break;
-		case 4: game.target_score = 500; break;
-		case 5: game.target_score = 1000; break;
-		default: break;
-	}
-	set_global_message("Options",
-		"%s%s%sFirst player to %d points wins.",
-		SUARO.shotgun ? "Shotgun rules are in effect.\n" : "",
-		SUARO.unlimited_redoubling ? "Unlimited redoubling is allowed.\n" : "",
-		SUARO.persistent_doubles ? "Doubles are persistent.\n" : "",
-		game.target_score);
-	game.options_initted = 1; /* we could do another round of option requests, if we wanted */
+	if (!strcmp(option, "shotgun"))
+		SUARO.shotgun = value;
+	else if (!strcmp(option, "unlimited_redoubling"))
+		SUARO.unlimited_redoubling = value;
+	else if (!strcmp(option, "persistent_doubles"))
+		SUARO.persistent_doubles = value;
+	else if (!strcmp(option, "target")) {
+		switch (value) {
+			/* this highlights a problem with this protocol.  Only discrete entries are possible.
+			 * it would be better if the client could just enter a number */
+			case 0: game.target_score = 25; break;
+			case 1: game.target_score = 50; break;
+			case 2: game.target_score = 100; break;
+			case 3: game.target_score = 200; break;
+			case 4: game.target_score = 500; break;
+			default:
+			case 5: game.target_score = 1000; break;
+		}
+	} else
+		return game_handle_option(option, value);
+	return 0;
 }
 
 static void suaro_start_bidding()

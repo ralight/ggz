@@ -35,11 +35,12 @@
 #include "game.h"
 #include "games.h"
 #include "message.h"
+#include "options.h"
 
 struct game_function_pointers game_funcs = {
 	game_init_game,
 	game_get_options,
-	game_handle_options,
+	game_handle_option,
 	game_set_player_message,
 	game_get_bid_text,
 	game_start_bidding,
@@ -103,10 +104,9 @@ void game_init_game()
  *   is handled by game_handle_options.  Options are optional; it can
  *   be left as-is for a game that has no options.
  */
-int game_get_options(int fd)
+void game_get_options()
 {
-	game.options_initted = 1; /* no options */
-	return 0;
+	add_option("open_hands", 1, 0, "Play with open hands");
 }
 
 /* game_handle_options
@@ -115,9 +115,13 @@ int game_get_options(int fd)
  *   It corresponds very closely to game_get_options, above;
  *   and can be left as-is for games that have no options.
  */
-void game_handle_options(int *options)
+int game_handle_option(char* option, int value)
 {
-	ggz_debug("SERVER/CLIENT bug: game_handle_options called incorrectly.");
+	if (!strcmp("open_hands", option))
+		game.open_hands = value;
+	else
+		return -1;
+	return 0;
 }
 
 /* game_start_game

@@ -50,7 +50,7 @@ static void bridge_end_hand();
 struct game_function_pointers bridge_funcs = {
 	bridge_init_game,
 	game_get_options,
-	game_handle_options,
+	game_handle_option,
 	bridge_set_player_message,
 	bridge_get_bid_text,
 	bridge_start_bidding,

@@ -34,8 +34,8 @@ extern struct game_function_pointers game_funcs;
 
 
 extern void game_init_game();			
-extern int game_get_options();			
-extern void game_handle_options();	
+extern void game_get_options();			
+extern int game_handle_option(char*, int);	
 
 extern void game_set_player_message(player_t);
 

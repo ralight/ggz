@@ -34,6 +34,7 @@
 #include "games.h"
 #include "ggz.h"
 #include "message.h"
+#include "options.h"
 #include "protocols.h"
 
 /* Global game variables */
@@ -519,7 +520,7 @@ void send_badplay(player_t p, char* msg)
  *   Show a player a hand.  This will reveal the cards in
  *   the hand iff reveal is true.
  */
-int send_hand(const player_t p, const seat_t s, const int reveal)
+int send_hand(const player_t p, const seat_t s, int reveal)
 {
 	int fd = ggz_seats[p].fd;
 	int i, status = 0;
@@ -528,6 +529,8 @@ int send_hand(const player_t p, const seat_t s, const int reveal)
 	if(fd == -1) return 0; /* Don't send to a bot */
 
 	if (game.seats[s].hand.hand_size == 0) return 0;
+
+	if (game.open_hands) reveal = 1;
 
 	ggz_debug("Sending player %d/%s hand %d/%s - %srevealing",
 		  p, ggz_seats[p].name, s, game.seats[s].ggz->name, reveal ? "" : "not ");
@@ -575,7 +578,7 @@ int req_newgame(player_t p)
 	int fd, status;
 	fd = ggz_seats[ p ].fd;
 	if (fd == -1) {
-		ggz_debug("ERROR: req_newgame: fd is -1.");
+		ggz_debug("ERROR: req_newgame: fd is -1 for player %d/%s.", p, ggz_seats[p].name);
 		return -1;	/* TODO: handle AI */
 	}
 
@@ -583,7 +586,7 @@ int req_newgame(player_t p)
 	status = es_write_int(fd, WH_REQ_NEWGAME);
 
 	if (status != 0)
-		ggz_debug("ERROR: req_newgame: status is %d.", status);
+		ggz_debug("ERROR: req_newgame: status is %d for player %d/%s.", status, p, ggz_seats[p].name);
 	return status;
 }
 
@@ -604,23 +607,6 @@ int send_newgame()
 
 	
 	return 0;
-}
-
-int rec_options(int num_options, int* options)
-{
-	int fd = ggz_seats[game.host].fd, status = 0, i;
-	if (fd == -1) {
-		ggz_debug("SERVER bug: unknown host in rec_options.");
-		exit(-1);
-	}
-	
-	for (i = 0; i < num_options; i++)
-		if (es_read_int(fd, &options[i]) < 0)
-			status = options[i] = -1;
-
-	if (status != 0)
-		ggz_debug("ERROR: rec_options: status is %d.", status);
-	return status;	
 }
 
 static char* player_messages[] = {"WH_RSP_NEWGAME", "WH_RSP_OPTIONS",
@@ -671,15 +657,8 @@ int handle_player(player_t p)
 					if (!ggz_seats_open())
 						next_play();
 				} else {
-					int options[game.num_options];
-					rec_options(game.num_options, options);
-					ggz_debug("Entering game_handle_options.");
-					game.funcs->handle_options(options);
-					if (game.options_initted)
-						try_to_start_game();
-					else
-						/* eventually we may be able to do multiple rounds of options. */
-						ggz_debug("SERVER BUG: handle_player: options not initted after game_handle_options called.");
+					handle_options();
+					try_to_start_game();
 				}
 			}
 			break;
@@ -737,10 +716,10 @@ static int try_to_start_game()
 			ggz_debug("Player %d/%s is not ready.", p, ggz_seats[p].name);
 			ready = 0;
 		}
-	if (ready && game.options_initted) {
+	if (ready && options_set()) {
 		newgame();
 		return 1;
-	}else
+	} else
 		return 0;
 }
 
@@ -753,6 +732,8 @@ static int newgame()
 		ggz_debug("SERVER BUG: starting newgame() on unknown game.");
 		exit(-1);
 	}
+
+	finalize_options();
 
 	/* should be entered only when we're ready for a new game */
 	for (p=0; p<game.num_players; p++)
@@ -946,16 +927,10 @@ int handle_join_event(player_t player)
  */
 int handle_newgame_event(player_t player)
 {
-	int fd;
-
 	ggz_debug("Handling a newgame event for player %d/%s.", player, ggz_seats[player].name);
 	game.players[player].ready = 1;
-	if (player == game.host && !game.options_initted &&
-	    (fd = ggz_seats[game.host].fd) != 0 &&
-	    game.funcs->get_options(fd) < 0) {
-		ggz_debug("Error in game_get_options.  Using defaults.");
-		game.options_initted = 1;
-	}
+	if (player == game.host && !options_set())
+		get_options();
 	try_to_start_game();
 	return 0;
 }

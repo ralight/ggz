@@ -56,8 +56,6 @@ struct wh_game_t {
 	char* rules_url;	/* the URL of where to read the game's rules */
 
 	int initted;		/* has the game been initialized? */
-	int num_options;	/* the number of options the game has */
-	int options_initted;	/* have the options been initialized? */
 	player_t host;		/* the host of the table; cannot be an AI */ /* TODO: currently it's always player 0 */
 
 	server_state_t state;		/* the current state of the game (see WH_STATE, above) */
@@ -69,6 +67,8 @@ struct wh_game_t {
 	int target_score;	/* after someone reaches this score, the game is over (if used) */
 	int last_trick;		/* should the last trick be sent to all the players? */
 	int last_hand;		/* should the last hand be sent to all the players? */
+
+	int open_hands;		/* are we playing with open hands? */
 
 	card_t lead_card;	/* the card that was lead this trick */
 	char trump;		/* the suit of trump; 0-3 or other for none*/
@@ -144,7 +144,6 @@ extern int req_newgame(player_t);
 extern int send_newgame();
 extern void init_game();
 
-extern int rec_options(int, int*);
 
 extern void next_play(void);				/* make the next move */
 

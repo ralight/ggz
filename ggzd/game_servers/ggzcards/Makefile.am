@@ -16,6 +16,7 @@ ggzd_ggzcards_SOURCES = ai.c ai.h \
 			ggz.c ggz.h \
 			main.c \
 			message.c message.h \
+			options.c options.h \
 			protocols.h \
 			protocol.h \
 			types.h

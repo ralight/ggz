@@ -24,17 +24,19 @@
 
 
 #include <easysock.h>
+#include <string.h>
 
 #include "../games.h"
 #include "../game.h"
 #include "../ggz.h"
 #include "../message.h"
+#include "../options.h"
 
 #include "spades.h"
 
 static void spades_init_game();
-static int spades_get_options(int fd);
-static void spades_handle_options(int* options);
+static void spades_get_options();
+static int spades_handle_option(char* option, int value);
 static int spades_get_bid();
 static int spades_deal_hand();
 static int spades_get_bid_text(char* buf, int buf_len, bid_t bid);
@@ -45,7 +47,7 @@ static void spades_end_hand();
 struct game_function_pointers spades_funcs = {
 	spades_init_game,
 	spades_get_options,
-	spades_handle_options,
+	spades_handle_option,
 	spades_set_player_message,
 	spades_get_bid_text,
 	game_start_bidding,
@@ -92,57 +94,38 @@ static void spades_init_game()
 	game.name = "Spades";
 }
 
-static int spades_get_options(int fd)
+static void spades_get_options()
 {
 	/* three options:
 	 *   target score: 100, 250, 500, 1000
 	 *   nil value: 50, 100
 	 *   minimum team bid: 0, 1, 2, 3, 4
 	 */
-	game.num_options = 3;
-	if (es_write_int(fd, WH_REQ_OPTIONS) < 0 ||
-		es_write_int(fd, game.num_options) < 0 || /* number of options */
-		es_write_int(fd, 2) < 0 || /* first option: 2 choices */
-		es_write_int(fd, 1) < 0 || /* first option: default is 1 */
-		es_write_string(fd, "Nil is worth 50") < 0 ||
-		es_write_string(fd, "Nil is worth 100") < 0 ||
-		es_write_int(fd, 4) < 0 || /* second option: 4 choices */
-		es_write_int(fd, 2) < 0 || /* second option: default is 2 */
-		es_write_string(fd, "Game to 100") < 0 ||
-		es_write_string(fd, "Game to 250") < 0 ||
-		es_write_string(fd, "Game to 500") < 0 ||
-		es_write_string(fd, "Game to 1000") < 0 ||
-		es_write_int(fd, 5) < 0 || /* third option: 4 choices */
-		es_write_int(fd, 3) < 0 || /* third option: default is 3 */
-		es_write_string(fd, "Minimum bid 0") < 0 ||
-		es_write_string(fd, "Minimum bid 1") < 0 ||
-		es_write_string(fd, "Minimum bid 2") < 0 ||
-		es_write_string(fd, "Minimum bid 3") < 0 ||
-		es_write_string(fd, "Minimum bid 4") < 0
-	   )
-		return -1;
-	return 0;
+	add_option("nil_value", 2, 1, "Nil is worth 50", "Nil is worth 100");
+	add_option("target_score", 4, 2, "Game to 100", "Game to 250", "Game to 500", "Game to 1000");
+	add_option("minimum_bid", 5, 3, "Minimum bid 0", "Minimum bid 1",
+					"Minimum bid 2", "Minimum bid 3",
+					"Minimum bid 4");
+	game_get_options();
 }
 
-static void spades_handle_options(int* options)
+static int spades_handle_option(char* option, int value)
 {
-	switch (options[0]) {
-		case 0: GSPADES.nil_value = 50;  break;
-		case 1: GSPADES.nil_value = 100; break;
-		default: break;
-	}
-	switch (options[1]) {
-		case 0: game.target_score = 100; break;
-		case 1: game.target_score = 250; break;
-		case 2: game.target_score = 500; break;
-		case 3: game.target_score = 1000; break;
-		default: break;
-	}
-	if (options[2] >= 0) GSPADES.minimum_team_bid = options[2];
-	set_global_message("Options",
-		"Nil is worth %d points.\nThe first team to %d points wins.",
-		GSPADES.nil_value, game.target_score);
-	game.options_initted = 1;
+	if (!strcmp("nil_value", option))
+		GSPADES.nil_value = (value == 0) ? 50 : 100;
+	else if (!strcmp("target_score", option))
+		switch (value) {
+			case 0: game.target_score = 100; break;
+			case 1: game.target_score = 250; break;
+			case 2: game.target_score = 500; break;
+			case 3: game.target_score = 1000; break;
+			default: break;
+		}
+	else if (!strcmp("minimum_bid", option))
+		GSPADES.minimum_team_bid = value;
+	else
+		return game_handle_option(option, value);
+	return 0;
 }
 
 static int spades_get_bid()
