@@ -42,17 +42,17 @@ int GGZCoreTable::init(GGZGameType* gametype, char* description, const unsigned 
 
 int GGZCoreTable::addPlayer(char* name, const unsigned int seat)
 {
-	return ggzcore_table_add_player(m_table, name, seat);
+	return ggzcore_table_set_seat(m_table, seat, GGZ_SEAT_PLAYER, name);
 }
 
 int GGZCoreTable::addBot(char* name, const unsigned int seat)
 {
-	return ggzcore_table_add_bot(m_table, name, seat);
+	return ggzcore_table_set_seat(m_table, seat, GGZ_SEAT_BOT, name);
 }
 
 int GGZCoreTable::addReserved(char* name, const unsigned int seat)
 {
-	return ggzcore_table_add_reserved(m_table, name, seat);
+	return ggzcore_table_set_seat(m_table, seat, GGZ_SEAT_RESERVED, name);
 }
 
 int GGZCoreTable::removePlayer(char* name)
