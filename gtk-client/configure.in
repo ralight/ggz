@@ -97,6 +97,7 @@ AC_SUBST(LDADD)
 
 AC_OUTPUT([Makefile 
 	   ggz-gtk/Makefile
+	   man/Makefile
 	   ])
 
 
