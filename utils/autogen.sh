@@ -82,6 +82,9 @@ xlc )
   am_opt=--include-deps;;
 esac
 
+echo "Creating extra autoconf macros..."
+cp acinclude.ggz acinclude.m4
+
 for coin in `find $srcdir -name configure.in -print`
 do 
   dr=`dirname $coin`

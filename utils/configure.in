@@ -1,6 +1,8 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(agrue/agrue.c)
+dnl AC_INIT(agrue/agrue.c)
+AC_INIT(acinclude.m4)
+
 AM_INIT_AUTOMAKE(ggz-utils, 0.0.5pre)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
@@ -12,6 +14,7 @@ AC_ARG_ENABLE(grubby, [  --disable-grubby       Don't build GRUBBY],, enable_gru
 AC_ARG_ENABLE(gensec, [  --disable-gensec       Don't build GenSecure],, enable_gensec=yes)
 AC_ARG_ENABLE(telggz, [  --disable-telggz       Dont' build TelGGZ],, enable_telggz=yes)
 AC_ARG_ENABLE(metaserv, [  --disable-metaserv     Dont' build MetaServ],, enable_metaserv=yes)
+AC_ARG_ENABLE(cmd_client, [  --disable-cmd-client Don't build command-line client],, enable_cmd_client=yes)
 AC_ARG_ENABLE(debug,  [  --disable-debug         Turn off debugging (on by default)],, enable_debug=yes)
 
 
@@ -63,10 +66,7 @@ AC_CHECK_LIB(popt, poptGetNextOpt,
         AC_MSG_ERROR(*** Cannot find popt.h header); exit),
     AC_MSG_ERROR(*** Cannot find popt library ); exit)
 
-AC_CHECK_LIB(easysock, es_writen,
-    AC_CHECK_HEADER(easysock.h, LDADD="$LDADD -leasysock",
-        AC_MSG_ERROR(*** Cannot find easysock.h header); exit),
-    AC_MSG_ERROR(*** Cannot find easysock library ); exit)
+AC_GGZ_EASYSOCK(0.3)
 		           
 
 dnl Use -Wall if we have gcc.
@@ -121,6 +121,11 @@ if test "$enable_gensec" = yes; then
 	SUBDIRS="$SUBDIRS gensecure"
 fi
 
+if test "$enable_cmd_client" = yes; then
+	SUBDIRS="$SUBDIRS cmd-client"
+	AC_GGZ_GGZCORE
+fi
+
 if test "$enable_metaserv" = yes; then
 	SUBDIRS="$SUBDIRS metaserv"
 	if test "$enable_telggz" = yes; then
@@ -135,6 +140,7 @@ AC_SUBST(SUBDIRS)
 AC_OUTPUT(Makefile
 		grubby/Makefile
 		agrue/Makefile
+		cmd-client/Makefile
 		gensecure/Makefile
 		gensecure/io/Makefile
 		gensecure/src/Makefile
@@ -147,10 +153,13 @@ AC_OUTPUT(Makefile
 dnl Output Status
 dnl =============
 
-echo "AGRUE.......$enable_agrue"
-echo "Grubby......$enable_grubby"
-echo "GenSecure...$enable_gensec"
-echo "TelGGZ......$enable_telggz"
-echo "MetaServ....$enable_metaserv"
-echo "Debug.......$enable_debug"
+echo ""
+echo "Build options:"
+echo "    AGRUE.......$enable_agrue"
+echo "    Grubby......$enable_grubby"
+echo "    GenSecure...$enable_gensec"
+echo "    TelGGZ......$enable_telggz"
+echo "    MetaServ....$enable_metaserv"
+echo "    cmd-client..$enable_cmd_client"
+echo "    Debug.......$enable_debug"
 
