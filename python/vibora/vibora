@@ -161,7 +161,7 @@ def background_progress():
 
 	vibora_frame(bg, progressrect)
 
-	vibora_caption(bg, "Login progress:", progressrect, CAPTION_ALL, WHITE, 0)
+	vibora_caption(bg, _("Login progress:"), progressrect, CAPTION_ALL, WHITE, 0)
 
 	bg.blit(screen_loading, (100, 10))
 	bg.blit(screen_logo, (10, 15))
@@ -185,7 +185,7 @@ def background_firsttime():
 
 	vibora_frame(bg, progressrect)
 
-	vibora_caption(bg, "First-time setup:", progressrect, CAPTION_ALL, WHITE, 0)
+	vibora_caption(bg, _("First-time setup:"), progressrect, CAPTION_ALL, WHITE, 0)
 
 	bg.blit(screen_loading, (100, 10))
 	bg.blit(screen_logo, (10, 15))
@@ -267,18 +267,18 @@ def firsttime():
 
 		if bgdirty == 1:
 			bgshadow.blit(bg, (0, 0))
-			vibora_caption(bgshadow, "* Username (can be registered at rankings.ggzgamingzone.org)", progressrect, CAPTION_ALL, YELLOW, 1)
+			vibora_caption(bgshadow, _("* Username (can be registered at ggzcommunity.org)"), progressrect, CAPTION_ALL, YELLOW, 1)
 			if username:
 				vibora_caption(bgshadow, username, progressrect, CAPTION_ALL, GREEN, 2)
 			if inputready > 0:
-				vibora_caption(bgshadow, "* Password (empty for guest accounts)", progressrect, CAPTION_ALL, YELLOW, 3)
+				vibora_caption(bgshadow, _("* Password (empty for guest accounts)"), progressrect, CAPTION_ALL, YELLOW, 3)
 				if password:
 					passwordsecret = ""
 					for c in password:
 						passwordsecret += "*"
 					vibora_caption(bgshadow, passwordsecret, progressrect, CAPTION_ALL, GREEN, 4)
 			if inputready == 2:
-				vibora_caption(bgshadow, "* Data saved", progressrect, CAPTION_ALL, YELLOW, 5)
+				vibora_caption(bgshadow, _("* Data saved"), progressrect, CAPTION_ALL, YELLOW, 5)
 			screen.blit(bgshadow, (0, 0))
 			pygame.display.flip()
 
@@ -305,7 +305,7 @@ def background_problem():
 
 	vibora_frame(bg, msgrect)
 
-	vibora_caption(bg, "Message:", msgrect, CAPTION_ALL, WHITE, 0)
+	vibora_caption(bg, _("Message:"), msgrect, CAPTION_ALL, WHITE, 0)
 
 	bg.blit(screen_problem, (100, 10))
 	bg.blit(screen_logo, (10, 15))
@@ -341,7 +341,7 @@ def background_chat():
 	vibora_frame(bg, chatlinerect)
 	vibora_frame(bg, roomrect)
 
-	vibora_caption(bg, "Chat", chatrect, CAPTION_ALL, WHITE, 0)
+	vibora_caption(bg, _("Chat"), chatrect, CAPTION_ALL, WHITE, 0)
 
 	bigfont = pygame.font.Font(None, 48)
 	roomname = ggzcoresimple.room.get_name()
@@ -398,35 +398,66 @@ def ggz_server_event(id, data):
 	global username
 	global playerlist
 	global tablelist
+	global serverstate
 
 	if id == ggzcoresimple.SERVER_CONNECTED:
-		vibora_caption(bg, "* Connected!", progressrect, CAPTION_ALL, GREEN, 2)
+		vibora_caption(bg, _("* Connected!"), progressrect, CAPTION_ALL, GREEN, 2)
 	elif id == ggzcoresimple.SERVER_CONNECT_FAIL:
-		vibora_caption(bg, "* Failure!", progressrect, CAPTION_ALL, RED, 2)
+		vibora_caption(bg, _("* Failure!"), progressrect, CAPTION_ALL, RED, 2)
 		ggzready = -1
 	elif id == ggzcoresimple.SERVER_NEGOTIATED:
-		vibora_caption(bg, "* Logging in as " + username, progressrect, CAPTION_ALL, YELLOW, 3)
+		vibora_caption(bg, _("* Logging in as ") + username, progressrect, CAPTION_ALL, YELLOW, 3)
 		ggzcoresimple.server.login()
 	elif id == ggzcoresimple.SERVER_LOGGED_IN:
-		vibora_caption(bg, "* Logged in!", progressrect, CAPTION_ALL, GREEN, 4)
+		vibora_caption(bg, _("* Logged in!"), progressrect, CAPTION_ALL, GREEN, 4)
 	elif id == ggzcoresimple.SERVER_ROOM_LIST:
 		roomlist = data
-		vibora_caption(bg, "* Entering the lounge", progressrect, CAPTION_ALL, YELLOW, 5)
+		vibora_caption(bg, _("* Entering the lounge"), progressrect, CAPTION_ALL, YELLOW, 5)
 		ggzcoresimple.server.join_room("Lounge")
 	elif id == ggzcoresimple.SERVER_ENTERED:
 		if ggzready == 0:
-			vibora_caption(bg, "* Entered!", progressrect, CAPTION_ALL, GREEN, 6)
+			vibora_caption(bg, _("* Entered!"), progressrect, CAPTION_ALL, GREEN, 6)
 			ggzready = 1
 		else:
-			chatoutput.append("* Entered!")
+			chatoutput.append(_("* Entered!"))
 		playerlist = ""
 		tablelist = ""
 	elif id == ggzcoresimple.SERVER_ENTER_FAIL:
-		vibora_caption(bg, "* Failure!", progressrect, CAPTION_ALL, RED, 6)
+		vibora_caption(bg, _("* Failure!"), progressrect, CAPTION_ALL, RED, 6)
 		ggzready = -1
 	elif id == ggzcoresimple.SERVER_LOGIN_FAIL:
-		vibora_caption(bg, "* Failure!", progressrect, CAPTION_ALL, RED, 4)
+		vibora_caption(bg, _("* Failure!"), progressrect, CAPTION_ALL, RED, 4)
 		ggzready = -1
+	elif id == ggzcoresimple.SERVER_STATE_CHANGE:
+		state = ggzcoresimple.server.get_state()
+		if state == ggzcoresimple.STATE_OFFLINE:
+			serverstate = _("offline")
+		elif state == ggzcoresimple.STATE_CONNECTING:
+			serverstate = _("connecting")
+		elif state == ggzcoresimple.STATE_ONLINE:
+			serverstate = _("online")
+		elif state == ggzcoresimple.STATE_LOGGING_IN:
+			serverstate = _("logging in")
+		elif state == ggzcoresimple.STATE_LOGGED_IN:
+			serverstate = _("logged in")
+		elif state == ggzcoresimple.STATE_ENTERING_ROOM:
+			serverstate = _("entering room")
+		elif state == ggzcoresimple.STATE_BETWEEN_ROOMS:
+			serverstate = _("between rooms")
+		elif state == ggzcoresimple.STATE_IN_ROOM:
+			serverstate = _("in room")
+		elif state == ggzcoresimple.STATE_LAUNCHING_TABLE:
+			serverstate = _("launching table")
+		elif state == ggzcoresimple.STATE_JOINING_TABLE:
+			serverstate = _("joining table")
+		elif state == ggzcoresimple.STATE_AT_TABLE:
+			serverstate = _("at table")
+		elif state == ggzcoresimple.STATE_LEAVING_TABLE:
+			serverstate = _("leaving table")
+		elif state == ggzcoresimple.STATE_LOGGING_OUT:
+			serverstate = _("logging out")
+		else:
+			serverstate = _("(unknown)")
 
 	if ggzready < 2:
 		screen.blit(bg, (0, 0))
@@ -469,7 +500,7 @@ def ggz_progress(host):
 	else:
 		ggzcoresimple.server.set_logininfo(ggzcoresimple.LOGIN_GUEST, username, "")
 
-	vibora_caption(bg, "* Connecting to " + host, progressrect, CAPTION_ALL, YELLOW, 1)
+	vibora_caption(bg, _("* Connecting to ") + host, progressrect, CAPTION_ALL, YELLOW, 1)
 	screen.blit(bg, (0, 0))
 	pygame.display.flip()
 
@@ -484,7 +515,7 @@ def ggz_progress(host):
 			key = event.key
 
 			if key == K_ESCAPE:
-				vibora_caption(bg, "* User interrupt!", progressrect, CAPTION_ALL, RED, 2)
+				vibora_caption(bg, _("* User interrupt!"), progressrect, CAPTION_ALL, RED, 2)
 				ggzready = -1
 
 				screen.blit(bg, (0, 0))
@@ -514,6 +545,7 @@ def main(host):
 	global playerlist
 	global tablelist
 	global tablerects
+	global serverstate
 
 	""" Initialization """
 
@@ -538,6 +570,8 @@ def main(host):
 	clock = pygame.time.Clock()
 
 	""" Intro screen """
+
+	serverstate = ""
 
 	background_loading()
 
@@ -670,7 +704,7 @@ def main(host):
 				bg_dirty = 1
 
 		if switchto_room >= 0:
-			chatoutput.append("* Entering room " + roomlist[switchto_room])
+			chatoutput.append(_("* Entering room ") + roomlist[switchto_room])
 			ggzcoresimple.server.join_room(roomlist[switchto_room])
 			current_room = switchto_room
 			switchto_room = -1
@@ -679,7 +713,7 @@ def main(host):
 			tablelist = ""
 
 		if switchto_table >= 0:
-			chatoutput.append("* Joining table " + str(switchto_table))
+			chatoutput.append(_("* Joining table ") + str(switchto_table))
 			ggzcoresimple.room.join(switchto_table)
 			switchto_table = -1
 			bg_dirty = 1
@@ -694,9 +728,9 @@ def main(host):
 			vibora_scrollframe(bgshadow, roomscrolldownrect, SCROLL_DOWN)
 
 			if current_room != 0:
-				vibora_caption(bgshadow, "Players and Tables", roomrect, CAPTION_ALL, WHITE, 0)
+				vibora_caption(bgshadow, _("Players and Tables"), roomrect, CAPTION_ALL, WHITE, 0)
 			else:
-				vibora_caption(bgshadow, "Rooms", roomrect, CAPTION_ALL, WHITE, 0)
+				vibora_caption(bgshadow, _("Rooms"), roomrect, CAPTION_ALL, WHITE, 0)
 
 			if chatline != "":
 				vibora_caption(bgshadow, chatline, chatlinerect, CAPTION_BG, YELLOW, 0)
@@ -748,9 +782,9 @@ def main(host):
 					while index < len(tablelist):
 						(tablename, playercount) = tablelist[index]
 						if not tablename:
-							tablename = "Table (untitled)"
+							tablename = _("Table (untitled)")
 						else:
-							tablename = "Table " + tablename
+							tablename = _("Table ") + tablename
 
 						tablerects.append((base, 30 + 10 * playercount))
 						
@@ -764,7 +798,7 @@ def main(host):
 							player = tablelist[index + j]
 							tableplayers.append(player)
 							if player == "":
-								player == "(open)"
+								player == _("(open)")
 							name = smallfont.render(player, 1, (255, 255, 255))
 							if i % 2 == 0:
 								bgshadow.blit(name, (screen_resolution[0] - (roomwidth - 20) + 20 + 3, base + i * 10 + 1))
@@ -782,16 +816,16 @@ def main(host):
 						if name not in tableplayers:
 							namestr = name
 							if status == "guest":
-								namestr += " (guest)"
+								namestr += _(" (guest)")
 							elif status == "admin":
-								namestr += " (admin)"
+								namestr += _(" (admin)")
 							elif status == "bot":
-								namestr += " (bot)"
+								namestr += _(" (bot)")
 							players.append(namestr)
 
 					rect = ((screen_resolution[0] - (roomwidth - 20) + 20, base), (roomwidth - 20 - 100 - 20 * 2, 30 + 10 * len(players)))
 					pygame.draw.rect(bgshadow, (155, 150, 127), rect)
-					titletext = smallfont.render("Not playing", 1, (255, 255, 255))
+					titletext = smallfont.render(_("Not playing"), 1, (255, 255, 255))
 					bgshadow.blit(titletext, (screen_resolution[0] - (roomwidth - 20) + 20 + 3, base + 1))
 
 					i = 2
@@ -801,19 +835,19 @@ def main(host):
 						i = i + 1
 
 				i = maxline - 2
-				vibora_caption(bgshadow, "Launch new game", roomrect, CAPTION_ALL, DARKRED, i)
+				vibora_caption(bgshadow, _("Launch new game"), roomrect, CAPTION_ALL, DARKRED, i)
 				i = maxline - 1
-				vibora_caption(bgshadow, "Back to Lounge", roomrect, CAPTION_ALL, RED, i)
+				vibora_caption(bgshadow, _("Back to Lounge"), roomrect, CAPTION_ALL, RED, i)
 			i = maxline
-			vibora_caption(bgshadow, "Logout", roomrect, CAPTION_ALL, RED, i)
+			vibora_caption(bgshadow, _("Logout"), roomrect, CAPTION_ALL, RED, i)
 
 			bg_dirty = 0
 
 		screen.blit(bgshadow, (0, 0))
 
-		fps = "Fps: " + str(int(clock.get_fps() * 10) / 10.0)
-		state = "State: offline"
-		lag = "Lag: " + str(0)
+		fps = _("Fps: ") + str(int(clock.get_fps() * 10) / 10.0)
+		state = _("State: ") + serverstate
+		lag = _("Lag: ") + str(0)
 		subcaption = font.render(state + " " + lag + " " + fps, 1, (255, 255, 255))
 
 		screen.blit(subcaption, (100, 50))
@@ -831,7 +865,7 @@ if __name__ == '__main__':
 		host = sys.argv[1]
 
 	if host == "--help":
-		print "vibora [hostname]"
+		print _("víbora [hostname]")
 		sys.exit(0)
 	
 	if not host:
