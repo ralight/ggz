@@ -963,7 +963,8 @@ void player_handle_pong(GGZPlayer *player)
 
 	if(lag_class != player->lag_class) {
 		player->lag_class = lag_class;
-		room_notify_lag(player->name, player->room);
+		if(player->room >= 0)
+			room_notify_lag(player->name, player->room);
 	}
 
 	/* Queue our next ping */

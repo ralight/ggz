@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
- * $Id: event.c 2516 2001-09-29 03:13:58Z bmh $
+ * $Id: event.c 2627 2001-10-29 04:25:16Z rgade $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -60,6 +60,12 @@ int event_room_enqueue(int room, GGZEventFunc func, unsigned int size,
 	GGZEvent *event;
 	GGZPlayer* player;
 	int i;
+
+	/* Check for illegal room # */	
+	if(room < 0) {
+		dbg_msg(GGZ_DBG_LISTS, "event_room_enqueue() called from -1");
+		return 0;
+	}
 
 	/* Allocate a new event item */
 	if ( (event = malloc(sizeof(GGZEvent))) == NULL) {
