@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 3579 2002-03-16 16:27:49Z jdorje $
+ * $Id: sueca.c 3701 2002-03-28 03:22:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Ismael Orenstein
  *
@@ -55,6 +55,7 @@ struct game_function_pointers sueca_funcs = {
 	game_get_option_text,
 	sueca_set_player_message,
 	game_get_bid_text,
+	game_get_bid_desc,
 	sueca_start_bidding,
 	game_get_bid,
 	game_handle_bid,

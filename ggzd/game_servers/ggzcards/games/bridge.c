@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Bridge
- * $Id: bridge.c 3579 2002-03-16 16:27:49Z jdorje $
+ * $Id: bridge.c 3701 2002-03-28 03:22:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -67,6 +67,7 @@ struct game_function_pointers bridge_funcs = {
 	game_get_option_text,
 	bridge_set_player_message,
 	bridge_get_bid_text,
+	game_get_bid_desc,
 	bridge_start_bidding,
 	bridge_get_bid,
 	bridge_handle_bid,

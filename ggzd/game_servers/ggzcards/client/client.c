@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 3700 2002-03-28 01:18:27Z jdorje $
+ * $Id: client.c 3701 2002-03-28 03:22:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -475,7 +475,8 @@ static int handle_req_bid(void)
 {
 	int i;
 	int possible_bids;
-	char **bid_descriptions;
+	char **bid_texts;
+	char **bid_descs;
 	bid_t *bid_choices;
 
 	if (ggzcards.state == STATE_BID) {
@@ -489,26 +490,31 @@ static int handle_req_bid(void)
 	if (ggz_read_int(game_internal.fd, &possible_bids) < 0)
 		return -1;
 	bid_choices = ggz_malloc(possible_bids * sizeof(*bid_choices));
-	bid_descriptions =
-		ggz_malloc(possible_bids * sizeof(*bid_descriptions));
+	bid_texts = ggz_malloc(possible_bids * sizeof(*bid_texts));
+	bid_descs = ggz_malloc(possible_bids * sizeof(*bid_descs));
 
 	/* Read in all of the bidding choices. */
 	for (i = 0; i < possible_bids; i++) {
 		if (read_bid(game_internal.fd, &bid_choices[i]) < 0 ||
 		    ggz_read_string_alloc(game_internal.fd,
-					  &bid_descriptions[i]) < 0)
+					  &bid_texts[i]) < 0 ||
+		    ggz_read_string_alloc(game_internal.fd,
+		                          &bid_descs[i]) < 0)
 			return -1;
 	}
 
 	/* Get the bid */
 	set_game_state(STATE_BID);
-	game_get_bid(possible_bids, bid_choices, bid_descriptions);
+	game_get_bid(possible_bids, bid_choices, bid_texts, bid_descs);
 
 	/* Clean up */
-	for (i = 0; i < possible_bids; i++)
-		ggz_free(bid_descriptions[i]);	/* allocated by easysock */
-	ggz_free(bid_descriptions);
+	for (i = 0; i < possible_bids; i++) {
+		ggz_free(bid_texts[i]);	/* allocated by easysock */
+		ggz_free(bid_descs[i]);	/* allocated by easysock */
+	}
 	ggz_free(bid_choices);
+	ggz_free(bid_texts);
+	ggz_free(bid_descs);
 
 	return 0;
 }
@@ -956,3 +962,4 @@ int client_handle_server(void)
 			      " from server (opcode %d).", op);
 	return status;
 }
+

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Suaro
- * $Id: suaro.c 3700 2002-03-28 01:18:27Z jdorje $
+ * $Id: suaro.c 3701 2002-03-28 03:22:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -75,6 +75,7 @@ static void suaro_start_playing(void);
 static void suaro_deal_hand(void);
 static int suaro_send_hand(player_t p, seat_t s);
 static int suaro_get_bid_text(char *buf, size_t buf_len, bid_t bid);
+static int suaro_get_bid_desc(char *buf, size_t buf_len, bid_t bid);
 static void suaro_end_hand(void);
 static void suaro_set_player_message(player_t p);
 static void suaro_end_trick(void);
@@ -87,6 +88,7 @@ struct game_function_pointers suaro_funcs = {
 	suaro_get_option_text,
 	suaro_set_player_message,
 	suaro_get_bid_text,
+	suaro_get_bid_desc,
 	suaro_start_bidding,
 	suaro_get_bid,
 	suaro_handle_bid,
@@ -395,6 +397,24 @@ static int suaro_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 				(bid.sbid.spec == SUARO_KITTY) ? "K " : "",
 				bid.sbid.val,
 				short_suaro_suit_names[(int) bid.sbid.suit]);
+	return snprintf(buf, buf_len, "%s", "");
+}
+
+static int suaro_get_bid_desc(char *buf, size_t buf_len, bid_t bid)
+{
+	if (bid.sbid.spec == SUARO_PASS)
+		return snprintf(buf, buf_len, "Pass - do not bid");
+	if (bid.sbid.spec == SUARO_DOUBLE)
+		return snprintf(buf, buf_len,
+		                "Double the points earned on the hand");
+	if (bid.sbid.spec == SUARO_REDOUBLE)
+		return snprintf(buf, buf_len,
+		                "Redouble the points earned on the hand");
+	if (bid.sbid.val > 0)
+		return snprintf(buf, buf_len, "Contract - %s%d %s",
+				(bid.sbid.spec == SUARO_KITTY) ? "Kitty " : "",
+				bid.sbid.val,
+				long_suaro_suit_names[(int) bid.sbid.suit]);
 	return snprintf(buf, buf_len, "%s", "");
 }
 

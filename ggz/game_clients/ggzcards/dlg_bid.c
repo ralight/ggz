@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 3697 2002-03-28 00:00:06Z jdorje $
+ * $Id: dlg_bid.c 3701 2002-03-28 03:22:32Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -27,9 +27,9 @@
 #  include <config.h>
 #endif
 
-#include <math.h>
-
 #include <gtk/gtk.h>
+#include <math.h>
+#include <string.h>
 
 #include <ggz.h>
 
@@ -71,14 +71,18 @@ static gint dlg_bid_delete(GtkWidget * widget, gpointer data)
 }
 
 /* displays a popup window from which the user can choose their bid */
-void dlg_bid_display(int possible_bids, char **bid_choices)
+void dlg_bid_display(int possible_bids,
+                     char **bid_texts,
+                     char **bid_descriptions)
 {
 	GtkWidget *table_box, *label;
 	gint i;
 	int xw, yw, leftover;
+	GtkTooltips *tooltips = gtk_tooltips_new();
 
 	destroy_bid_window();
 
+	/* Calculate the dimensions of the box of bids */
 	xw = sqrt(possible_bids / 1.5);
 	if (xw == 0)
 		xw++;
@@ -103,7 +107,7 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 		
 	for (i = 0; i < possible_bids; i++) {
 		int x, y;
-		GtkWidget *button = gtk_button_new_with_label(bid_choices[i]);
+		GtkWidget *button = gtk_button_new_with_label(bid_texts[i]);
 
 		/* trickery - we don't pass a pointer to the data but the
 		   data itself */
@@ -124,6 +128,12 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 		                          x, x + 1, y, y + 1);
 		gtk_widget_show(button);
 
+		if (bid_descriptions[i][0] != '\0'
+		    && strcmp(bid_descriptions[i], bid_texts[i])
+		    && preferences.bidding_tooltips) {
+			gtk_tooltips_set_tip(tooltips, button,
+			                     bid_descriptions[i], NULL);
+		}
 	}
 
 	if (preferences.bid_on_table) {

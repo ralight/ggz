@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/02/2001
  * Desc: Game-dependent game functions for Spades
- * $Id: spades.c 3700 2002-03-28 01:18:27Z jdorje $
+ * $Id: spades.c 3701 2002-03-28 03:22:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -68,6 +68,7 @@ static int spades_get_bid(void);
 static void spades_handle_bid(player_t p, bid_t bid);
 static void spades_next_bid(void);
 static int spades_get_bid_text(char *buf, size_t buf_len, bid_t bid);
+static int spades_get_bid_desc(char *buf, size_t buf_len, bid_t bid);
 static void spades_set_player_message(player_t p);
 static void spades_deal_hand(void);
 static void spades_end_hand(void);
@@ -82,6 +83,7 @@ struct game_function_pointers spades_funcs = {
 	spades_get_option_text,
 	spades_set_player_message,
 	spades_get_bid_text,
+	spades_get_bid_desc,
 	spades_start_bidding,
 	spades_get_bid,
 	spades_handle_bid,
@@ -311,6 +313,22 @@ static int spades_get_bid_text(char *buf, size_t buf_len, bid_t bid)
 	if (bid.sbid.spec == SPADES_NO_BLIND)
 		return snprintf(buf, buf_len, "No blind bid");	/* FIXME */
 	return snprintf(buf, buf_len, "%d", (int) bid.sbid.val);
+}
+
+static int spades_get_bid_desc(char *buf, size_t buf_len, bid_t bid)
+{
+	if (bid.sbid.spec == SPADES_NIL)
+		return snprintf(buf, buf_len,
+		                "Nil - contract to take no tricks");
+	if (bid.sbid.spec == SPADES_DOUBLE_NIL)
+		return snprintf(buf, buf_len,
+		                "Blind nil - blind contract to take no tricks");
+	if (bid.sbid.spec == SPADES_NO_BLIND)
+		return snprintf(buf, buf_len,
+		                "Show me the hand!");
+	
+	/* FIXME: show more stuff here, like team contract, etc. */
+	return snprintf(buf, buf_len, "Contract to take %d tricks", (int) bid.sbid.val);
 }
 
 static void spades_set_player_message(player_t p)

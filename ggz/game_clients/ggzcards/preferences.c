@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 3698 2002-03-28 00:11:43Z jdorje $
+ * $Id: preferences.c 3701 2002-03-28 03:22:32Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -101,6 +101,14 @@ PrefType pref_types[] = {
 	    "the choices.  Having them drawn on the table is better, but "
 	    "may not work for all games."),
 	 &preferences.bid_on_table,
+	 TRUE},
+	
+	{"bidding_tooltips",
+	 N_("Show tooltips for bidding"),
+	 N_("Select this option to see descriptive tooltips for every "
+	    "choice when you bid.  The choice will take effect the next "
+	    "time you bid."),
+	 &preferences.bidding_tooltips,
 	 TRUE},
 	
 	{"autostart",

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: default game functions
- * $Id: game.h 3495 2002-02-27 13:02:23Z jdorje $
+ * $Id: game.h 3701 2002-03-28 03:22:32Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It now
  * contains the default game functions; that is, the set of game functions
@@ -112,12 +112,30 @@ void game_set_player_message(player_t player);
  *  Creates a text description of the bid, placing it into the buffer.  This
  *  text is what is shown to clients when asking for or telling about a bid.
  *
- *  @param buf a buffer in which to put the text
- *  @param buf_len the length of the buffer
- *  @param bid the bid for which to create a message for
+ *  @param buf A buffer in which to put the text.
+ *  @param buf_len The length of the buffer.
+ *  @param bid The bid for which to create a message.
+ *  @return The length of the text.
  *  @note Any game that uses bidding must replace this function.
  */
 int game_get_bid_text(char *buf, size_t buf_len, bid_t bid);
+
+/** @brief Set a descriptive text for the given bid.
+ *
+ *  Creates a more lenghty text description of the bid, placing it into
+ *  the buffer.  This text may be shown to players on demand when they
+ *  bid (for instance, as tooltips) or for other purposes (as yet
+ *  undetermined).
+ *
+ *  The default behavior is to just call get_bid_text.
+ *
+ *  @param buf A buffer in which to put the text.
+ *  @param buf_len The length of the buffer.
+ *  @param bid The bid for which to create a message.
+ *  @return The length of the text.
+ *  @see game_get_bid_text
+ */
+int game_get_bid_desc(char *buf, size_t buf_len, bid_t bid);
 
 /** @brief Called at the beginning of the bidding sequence.
  *

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: multi-game code
- * $Id: games.h 3488 2002-02-27 08:14:31Z jdorje $
+ * $Id: games.h 3701 2002-03-28 03:22:32Z jdorje $
  *
  * This file contains the data and functions that allow the game type to
  * be picked and the right functions for that game to be set up.  It's
@@ -57,6 +57,9 @@ struct game_function_pointers {
 	int (*get_bid_text) (char *, size_t, bid_t);	/* determines the
 							   textual string for 
 							   the bid */
+	int (*get_bid_desc) (char *, size_t, bid_t);	/* A more complete
+	                                            	   description of the
+	                                            	   bid */
 	void (*start_bidding) (void);	/* updates data for the first bid */
 	int (*get_bid) (void);	/* gets a bid from next player */
 	void (*handle_bid) (player_t, bid_t);	/* handles a bid from the
