@@ -1,6 +1,10 @@
 How GGZBoard is designed
 ========================
 
+GGZBoard is a flexible board game framework. It is customizable and
+provides games with the common elements of boards, pieces and rules,
+as well as input from players, network and the AI.
+
 The core engine
 ---------------
 The python script ggzboard.py is the central point of GGZBoard.
@@ -14,8 +18,11 @@ other objects: a configuration object and a user interface object.
 core.conf (Conf): configuration object
 core.game (Game): game object
 core.ui (GGZBoardUI): user interface object
+core.net (Network): networking object
 core.modulelist (string[]): list of available game client names
 core.modulefilelist (string[]): list of python files of available game clients
+core.ggzmode (int): game is running in ggz mode
+core.ggzsuccess (int): networking is working without errors
 
 core.rect(Surface, (int int, int), int, int, int, (int, int, int)): draw a rectangle
 core.svgsurface(string, int, int): return a rendered SVG pixmap
@@ -84,7 +91,20 @@ game.aimove(): tries to find a AI move
 game.domove((int, int), (int, int)): executes a previously checked move (will be revalidated)
 game.over(): returns whether a game is still running or over yet
 
+game.toggleplayer(): notify game engine of turn change
+ *FIXME*: can't it figure out itself? it knows the rules...
+
 Networking
 ----------
-***TO BE DONE***
+Each game module can be supplied with a corresponding network module. In this case,
+when GGZ mode is requested, the module is automatically loaded.
+A base class (NetworkBase) is supplied to ease implementation. The derived (or proper)
+network object should provide the following information:
+
+net.connect(): connect to the GGZ game server
+net.handle_network(): process network event queue
+net.error(): return whether everything is alright
+net.allowed(): return whether player is supposed to do a move
+net.domove((int, int), (int, int)): send a move to the server
+net.netmove(): retrieve a move from the server
 

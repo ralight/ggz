@@ -14,6 +14,7 @@ import imp
 import re
 
 import rsvgsdl
+import sdlnewstuff
 
 class Conf:
 	def __init__(self):
@@ -317,8 +318,10 @@ class GGZBoard:
 				if key == K_f:
 					self.ui.togglefullscreen()
 					rescalescreen = 1
-				if key == K_r:
-					updatescreen = 1
+				#if key == K_r:
+				#	updatescreen = 1
+				if key == K_u:
+					sdlnewstuff.gethotnewstuff(game.name())
 
 			if event.type == MOUSEMOTION:
 				(posx, posy) = event.pos

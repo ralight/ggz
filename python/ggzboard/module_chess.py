@@ -136,4 +136,7 @@ class Game:
 	def over(self):
 		return self.isover
 
+	def toggleplayer(self):
+		pass
+
 ggzboardgame = Game()
