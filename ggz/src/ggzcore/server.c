@@ -1137,7 +1137,7 @@ static void _ggzcore_server_handle_room_join(GGZServer *server)
 static void _ggzcore_server_handle_chat(GGZServer *server)
 {
 	GGZChatOp op;
-	char *name, *msg;
+	char *name = NULL, *msg = NULL;
 	int status;
 	
 	status = _ggzcore_net_read_chat(server->fd, &op, &name, &msg);
