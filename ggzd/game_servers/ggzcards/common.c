@@ -28,6 +28,7 @@
 
 #include <easysock.h>
 
+#include "ai.h"
 #include "cards.h"
 #include "game.h"
 #include "games.h"
@@ -339,21 +340,26 @@ int req_play(player_t p, seat_t s)
 
 	ggz_debug("Requesting player %d/%s to play from seat %d/%s's hand.", p, ggz_seats[p].name, s, game.seats[s].ggz->name);
 
-	if (fd == -1 ||
-	    es_write_int(fd, WH_REQ_PLAY) < 0 ||
-            es_write_int(fd, s_r) < 0) {
-		ggz_debug("req_play: couldn't send play request.");
-		return -1;
-	}
-
 	/* although the game_* functions probably track this data
 	 * themselves, we track it here as well just in case. */
 	game.curr_play = p;
 	game.play_seat = s;
 
 	set_game_state(WH_STATE_WAIT_FOR_PLAY);
-
 	set_player_message(p);
+
+	if (ggz_seats[game.next_play].assign == GGZ_SEAT_BOT) {
+		/* request a play from the ai */
+		handle_play_event( ai_get_play(p, s) );
+	} else {
+		/* request a play from the client */
+		if (fd == -1 ||
+		    es_write_int(fd, WH_REQ_PLAY) < 0 ||
+        	    es_write_int(fd, s_r) < 0) {
+			ggz_debug("req_play: couldn't send play request.");
+			return -1;
+		}
+	}
 
 	return 0;
 }
@@ -428,22 +434,6 @@ int req_bid(player_t p, int num, char** bid_choices)
 
 	ggz_debug("Requesting a bid from player %d/%s; %d choices", p, ggz_seats[p].name, num);
 
-
-	if (bid_choices == NULL) {
-		bid_choices = game.bid_texts;
-		for (i=0; i<num; i++)
-			game.funcs->get_bid_text(bid_choices[i], game.max_bid_length, game.bid_choices[i]);
-	}
-
-	if(fd == -1 ||
-	   es_write_int(fd, WH_REQ_BID) < 0 ||
-	   es_write_int(fd, num) < 0)
-		status = -1;
-	for(i = 0; i < num; i++) {
-		if (es_write_string(fd, bid_choices[i]) < 0)
-			status = -1;
-	}
-
 	/* although the game_* functions probably track this data
 	 * themselves, we track it here as well just in case. */
 	game.num_bid_choices = num;
@@ -451,8 +441,29 @@ int req_bid(player_t p, int num, char** bid_choices)
 	game.bid_text_ref = bid_choices;
 
 	set_game_state( WH_STATE_WAIT_FOR_BID );
-
 	set_player_message(p);
+
+			
+	if (ggz_seats[p].assign == GGZ_SEAT_BOT) {
+		/* request a bid from the ai */
+		handle_bid_event( ai_get_bid(p) );
+	} else {
+		/* request a bid from the client */
+		if (bid_choices == NULL) {
+			bid_choices = game.bid_texts;
+			for (i=0; i<num; i++)
+				game.funcs->get_bid_text(bid_choices[i], game.max_bid_length, game.bid_choices[i]);
+		}
+
+		if(fd == -1 ||
+		   es_write_int(fd, WH_REQ_BID) < 0 ||
+		   es_write_int(fd, num) < 0)
+			status = -1;
+		for(i = 0; i < num; i++) {
+			if (es_write_string(fd, bid_choices[i]) < 0)
+				status = -1;
+		}
+	}
 
 	if (status != 0)
 		ggz_debug("ERROR: req_bid: status is %d.", status);
@@ -791,6 +802,7 @@ void next_play(void)
 			}
 			game.bid_count = 0;
 
+			ai_start_hand();
 			game.funcs->start_bidding();
 			next_play(); /* recursion */
 			break;
@@ -979,6 +991,7 @@ int handle_play_event(card_t card)
 
 	/* do extra handling */
 	if (card.suit == game.trump) game.trump_broken = 1;
+	ai_alert_play(game.next_play, card);
 	game.funcs->handle_play(card);
 
 	/* set up next move */
@@ -1037,6 +1050,7 @@ int handle_bid_event(bid_t bid)
 	game.players[p].bid = bid;
 
 	/* handle the bid */
+	ai_alert_bid(game.next_bid, bid);
 	game.funcs->handle_bid(bid);
 
 	/* set up next move */

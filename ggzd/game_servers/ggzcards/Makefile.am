@@ -8,16 +8,18 @@ ggzdexecmod_PROGRAMS = ggzd.ggzcards
 ggzdgame_DATA =
 ggzdroom_DATA =
 
-ggzd_ggzcards_SOURCES = ggz.c ggz.h \
-			main.c \
+ggzd_ggzcards_SOURCES = ai.c ai.h \
 			cards.c cards.h \
 			common.c common.h \
 			game.c game.h \
 			games.c games.h \
+			ggz.c ggz.h \
+			main.c \
 			message.c message.h
 			protocols.h \
 			protocol.h \
 			types.h
+
 ggzd_ggzcards_DEPENENCIES = games/libgames.a
 
 
