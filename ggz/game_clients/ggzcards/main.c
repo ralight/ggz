@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 5955 2004-02-21 08:32:25Z jdorje $
+ * $Id: main.c 6100 2004-07-13 17:04:00Z josef $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -192,7 +192,7 @@ static void init_about_dialog(void)
 	    "            Brent Hendricks  <bmh@users.sourceforge.net>\n"
 	    "\n"
 	    "Website:\n"
-	    "        http://ggz.sourceforge.net/");
+	    "        http://www.ggzgamingzone.org/games/ggzcards/");
 	char *about_header;
 
 	about_header = g_strdup_printf(_("GGZ Gaming Zone\n"

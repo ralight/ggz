@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 5123 2002-10-30 22:18:43Z jdorje $
+ * $Id: game.c 6100 2004-07-13 17:04:00Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -52,7 +52,7 @@
 #include "callbacks.h"
 #include "support.h"
 
-#define GAME_WEBPAGE "http://ggz.sourceforge.net/gamehelp/combat.shtml"
+#define GAME_WEBPAGE "http://www.ggzgamingzone.org/games/combat/"
 
 GtkWidget *main_win;
 GtkWidget **player_list = NULL;

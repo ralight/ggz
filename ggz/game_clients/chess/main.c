@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
- * $Id: main.c 4920 2002-10-14 23:01:33Z jdorje $
+ * $Id: main.c 6100 2004-07-13 17:04:00Z josef $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -154,6 +154,6 @@ static void initialize_about_dialog(void)
   init_dlg_about(_("About Chess"), header,
 		 _("Copyright (C) 2001 Ismael Orenstein.\n"
 		   "\n"
-		   "Website: http://ggz.sourceforge.net/"));
+		   "Website: http://www.ggzgamingzone.org/games/chess/"));
   g_free(header);
 }

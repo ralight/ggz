@@ -3,7 +3,7 @@
 Author = Rich Gade
 CommandLine = @ggzexecmoddir@/ggz.ccheckers
 Frontend = gtk
-Homepage = http://ggz.sourceforge.net/games/chinese-checkers/
+Homepage = http://www.ggzgamingzone.org/games/chinese-checkers/
 Name = ccheckers
 ProtocolEngine = CCheckers
 ProtocolVersion = 3

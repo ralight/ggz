@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 5269 2002-12-02 00:29:39Z jdorje $
+ * $Id: main.c 6100 2004-07-13 17:04:00Z josef $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -148,13 +148,13 @@ static void initialize_about_dialog(void)
 	const char *content =
 	  _("Authors:\n"
 	    "        Gtk+ Client:\n"
-	    "            Josef Spillner   <dr_maux@users.sourceforge.net>\n"
+	    "            Josef Spillner   <josef@ggzgamingzone.org>\n"
 	    "\n"
 	    "        Game Server:\n"
-	    "            Josef Spillner   <dr_maux@users.sourceforge.net>\n"
+	    "            Josef Spillner   <josef@ggzgamingzone.org>\n"
 	    "\n"
 	    "Website:\n"
-	    "        http://ggz.sourceforge.net/games/hastings/");
+	    "        http://www.ggzgamingzone.org/games/hastings/");
 	char *header;
 
 	header = g_strdup_printf(_("GGZ Gaming Zone\n"

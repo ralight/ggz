@@ -3,7 +3,7 @@
 Author = Josef Spillner
 CommandLine = @ggzexecmoddir@/ggz.hastings
 Frontend = gtk
-Homepage = http://ggz.sourceforge.net/games/hastings/
+Homepage = http://www.ggzgamingzone.org/games/hastings/
 Name = Hastings
 ProtocolEngine = Hastings
 ProtocolVersion = 4

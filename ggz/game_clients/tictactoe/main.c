@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 5957 2004-02-21 09:00:10Z jdorje $
+ * $Id: main.c 6100 2004-07-13 17:04:00Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -94,7 +94,7 @@ static void initialize_about_dialog(void)
 	const char *content =
 	  _("Copyright (C) 2000 by Brent Hendricks\n"
 	    "\n"
-	    "Website: http://ggz.sourceforge.net/");
+	    "Website: http://www.ggzgamingzone.org/games/tictactoe/");
 	char *header;
 
 	header = g_strdup_printf(_("GGZ Gaming Zone\n"

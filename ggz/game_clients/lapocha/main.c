@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 4924 2002-10-14 23:22:02Z jdorje $
+ * $Id: main.c 6100 2004-07-13 17:04:00Z josef $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -172,7 +172,7 @@ static void initialize_about_dialog(void)
 	    "            Rich Gade        <rgade@users.sourceforge.net>\n"
 	    "\n"
 	    "Website:\n"
-	    "        http://ggz.sourceforge.net/games/lapocha/");
+	    "        http://www.ggzgamingzone.org/games/lapocha/");
 	char *header;
 
 	header = g_strdup_printf(_("GGZ Gaming Zone\n"

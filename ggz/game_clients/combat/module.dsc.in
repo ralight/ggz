@@ -6,4 +6,4 @@ ProtocolVersion = 3
 Version = 1.2
 CommandLine = @ggzexecmoddir@/ggz.combat
 Frontend = gtk
-Homepage = http://ggz.sourceforge.net/games/combat/
+Homepage = http://www.ggzgamingzone.org/games/combat/
