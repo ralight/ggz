@@ -1,15 +1,179 @@
 diff -Nur libggz.notls/Makefile.am libggz/Makefile.am
 --- libggz.notls/Makefile.am	Mon Oct 22 02:24:19 2001
-+++ libggz/Makefile.am	Mon Nov  5 23:51:20 2001
++++ libggz/Makefile.am	Wed Nov  7 08:22:24 2001
 @@ -1,4 +1,4 @@
  ## Process this file with automake to produce Makefile.in
  
 -SUBDIRS = src
 +SUBDIRS = src gensecure
  
+diff -Nur libggz.notls/acinclude.m4 libggz/acinclude.m4
+--- libggz.notls/acinclude.m4	Thu Jan  1 01:00:00 1970
++++ libggz/acinclude.m4	Wed Nov  7 08:44:02 2001
+@@ -0,0 +1,160 @@
++dnl    This file is part of the KDE libraries/packages
++dnl    Copyright (C) 2001 Stephan Kulow (coolo@kde.org)
++ 
++dnl    This file is free software; you can redistribute it and/or
++dnl    modify it under the terms of the GNU Library General Public
++dnl    License as published by the Free Software Foundation; either
++dnl    version 2 of the License, or (at your option) any later version.
++ 
++dnl    This library is distributed in the hope that it will be useful,
++dnl    but WITHOUT ANY WARRANTY; without even the implied warranty of
++dnl    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++dnl    Library General Public License for more details.
++ 
++dnl    You should have received a copy of the GNU Library General Public Licensednl    along with this library; see the file COPYING.LIB.  If not, write to
++dnl    the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++dnl    Boston, MA 02111-1307, USA.
++
++# Original Author was Kalle@kde.org
++# I lifted it in some mater. (Stephan Kulow)
++# I used much code from Janos Farkas
++# I ripped off the OpenSSL checks for GGZ ;) (Josef Spillner)
++
++AC_DEFUN(AC_FIND_FILE,
++[
++$3=NO
++for i in $2;
++do
++  for j in $1;
++  do
++    echo "configure: __oline__: $i/$j" >&AC_FD_CC
++    if test -r "$i/$j"; then
++      echo "taking that" >&AC_FD_CC
++      $3=$i
++      break 2
++    fi
++  done
++done
++])
++
++dnl ------------------------------------------------------------------------
++dnl Try to find the SSL headers and libraries.
++dnl $(SSL_LDFLAGS) will be -Lsslliblocation (if needed)
++dnl and $(SSL_INCLUDES) will be -Isslhdrlocation (if needed)
++dnl ------------------------------------------------------------------------
++dnl
++AC_DEFUN(AC_PATH_SSL,
++[
++LIBSSL="-lssl -lcrypto"
++AC_MSG_CHECKING([for OpenSSL])
++
++ac_ssl_includes=NO ac_ssl_libraries=NO
++ssl_libraries=""
++ssl_includes=""
++AC_ARG_WITH(ssl-dir,
++    [  --with-ssl-dir=DIR      where the root of OpenSSL is installed],
++    [  ac_ssl_includes="$withval"/include
++       ac_ssl_libraries="$withval"/lib
++    ])
++
++want_ssl=yes
++AC_ARG_WITH(ssl,
++    [  --without-ssl           disable SSL checks],
++    [want_ssl=$withval])
++
++if test $want_ssl = yes; then
++
++AC_CACHE_VAL(ac_cv_have_ssl,
++[#try to guess OpenSSL locations
++
++  ssl_incdirs="/usr/include /usr/local/include /usr/ssl/include /usr/local/ssl/include"
++  ssl_incdirs="$ac_ssl_includes $ssl_incdirs"
++  AC_FIND_FILE(openssl/ssl.h, $ssl_incdirs, ssl_incdir)
++  ac_ssl_includes="$ssl_incdir"
++
++  ssl_libdirs="/usr/lib /usr/local/lib /usr/ssl/lib /usr/local/ssl/lib"
++  if test ! "$ac_ssl_libraries" = "NO"; then
++    ssl_libdirs="$ac_ssl_libraries $ssl_libdirs"
++  fi
++
++  test=NONE
++  ssl_libdir=NONE
++  for dir in $ssl_libdirs; do
++    try="ls -1 $dir/libssl*"
++    if test=`eval $try 2> /dev/null`; then ssl_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
++  done
++
++  ac_ssl_libraries="$ssl_libdir"
++
++  AC_LANG_SAVE
++  AC_LANG_C
++
++  ac_cflags_safe="$CFLAGS"
++  ac_ldflags_safe="$LDFLAGS"
++  ac_libs_safe="$LIBS"
++
++  CFLAGS="$CFLAGS -I$ssl_incdir $all_includes"
++  LDFLAGS="-L$ssl_libdir $all_libraries"
++  LIBS="$LIBS $LIBSSL -lRSAglue -lrsaref"
++
++  AC_TRY_LINK(,void RSAPrivateEncrypt(void);RSAPrivateEncrypt();,
++  ac_ssl_rsaref="yes"
++  ,
++  ac_ssl_rsaref="no"
++  )
++
++  CFLAGS="$ac_cflags_safe"
++  LDFLAGS="$ac_ldflags_safe"
++  LIBS="$ac_libs_safe"
++
++  AC_LANG_RESTORE
++
++  if test "$ac_ssl_includes" = NO || test "$ac_ssl_libraries" = NO; then
++    have_ssl=no
++  else
++    have_ssl=yes;
++  fi
++
++  ])
++
++  eval "$ac_cv_have_ssl"
++else
++  have_ssl=no
++fi
++
++if test "$have_ssl" != yes; then
++  LIBSSL="";
++  AC_MSG_RESULT([$have_ssl]);
++else
++  AC_DEFINE(HAVE_SSL, 1, [If we are going to use OpenSSL])
++  ac_cv_have_ssl="have_ssl=yes \
++    ac_ssl_includes=$ac_ssl_includes ac_ssl_libraries=$ac_ssl_libraries ac_ssl_rsaref=$ac_ssl_rsaref"
++  AC_MSG_RESULT([libraries $ac_ssl_libraries, headers $ac_ssl_includes])
++  
++  ssl_libraries="$ac_ssl_libraries"
++  ssl_includes="$ac_ssl_includes"
++
++  AC_MSG_CHECKING([whether OpenSSL uses rsaref])
++  AC_MSG_RESULT($ac_ssl_rsaref)
++  if test "$ac_ssl_rsaref" = yes; then
++    LIBSSL="-lssl -lcrypto -lRSAglue -lrsaref" 
++  fi
++fi
++
++if test "$ssl_includes" = "/usr/include" || test  "$ssl_includes" = "/usr/local/include" || test -z "$ssl_includes"; then
++ SSL_INCLUDES="";
++else
++ SSL_INCLUDES="-I$ssl_includes"
++fi
++
++if test "$ssl_libraries" = "/usr/lib" || test "$ssl_libraries" = "/usr/local/lib" || test -z "$ssl_libraries"; then
++ SSL_LDFLAGS=""
++else
++ SSL_LDFLAGS="-L$ssl_libraries"
++fi
++
++AC_SUBST(SSL_INCLUDES)
++AC_SUBST(SSL_LDFLAGS)
++AC_SUBST(LIBSSL)
++])
++
 diff -Nur libggz.notls/configure.in libggz/configure.in
 --- libggz.notls/configure.in	Tue Oct 23 06:12:02 2001
-+++ libggz/configure.in	Mon Nov  5 23:54:05 2001
++++ libggz/configure.in	Wed Nov  7 08:46:19 2001
 @@ -52,7 +52,10 @@
  dnl Check for library functions
  dnl ===========================
@@ -22,15 +186,33 @@ diff -Nur libggz.notls/configure.in libggz/configure.in
  
  
  dnl Use -Wall if we have gcc.
+@@ -130,6 +133,9 @@
+ 
+ AC_OUTPUT([Makefile 
+ 	   src/Makefile
++	   gensecure/Makefile
++	   gensecure/io/Makefile
++	   gensecure/src/Makefile
+ 	   tests/Makefile])
+ 
+ 
+@@ -139,6 +145,7 @@
+ echo "Options"
+ echo "    General Debuging..$enable_debug"
+ echo "    GDB Debuging......$enable_debug_gdb"
++echo "    OpenSSL support...$have_ssl"
+ echo ""
+ echo "-------------------------"
+ echo "At the prompt type \"make\" to"
 diff -Nur libggz.notls/gensecure/.cvsignore libggz/gensecure/.cvsignore
 --- libggz.notls/gensecure/.cvsignore	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/.cvsignore	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/.cvsignore	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,2 @@
 +Makefile
 +Makefile.in
 diff -Nur libggz.notls/gensecure/GGZ-TLS libggz/gensecure/GGZ-TLS
 --- libggz.notls/gensecure/GGZ-TLS	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/GGZ-TLS	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/GGZ-TLS	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,29 @@
 +The GGZ Gaming Zone should provide encryption and data integrity one day.
 +In particular, the following scenarios are possible.
@@ -63,13 +245,13 @@ diff -Nur libggz.notls/gensecure/GGZ-TLS libggz/gensecure/GGZ-TLS
 +
 diff -Nur libggz.notls/gensecure/Makefile.am libggz/gensecure/Makefile.am
 --- libggz.notls/gensecure/Makefile.am	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/Makefile.am	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/Makefile.am	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,2 @@
 +SUBDIRS = io src
 +
 diff -Nur libggz.notls/gensecure/Preparation libggz/gensecure/Preparation
 --- libggz.notls/gensecure/Preparation	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/Preparation	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/Preparation	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,43 @@
 +I assume you are basically familiar with the concept of PKI
 +(Public Key Infrastructure). If you're not, don't worry,
@@ -116,7 +298,7 @@ diff -Nur libggz.notls/gensecure/Preparation libggz/gensecure/Preparation
 +rm certs/new.pem
 diff -Nur libggz.notls/gensecure/README.gensecure libggz/gensecure/README.gensecure
 --- libggz.notls/gensecure/README.gensecure	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/README.gensecure	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/README.gensecure	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,21 @@
 +In order to enhance the GGZ Gaming Zone with Transport Layer Security,
 +a bit of preparation is needed.
@@ -141,7 +323,7 @@ diff -Nur libggz.notls/gensecure/README.gensecure libggz/gensecure/README.gensec
 +
 diff -Nur libggz.notls/gensecure/TODO libggz/gensecure/TODO
 --- libggz.notls/gensecure/TODO	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/TODO	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/TODO	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,5 @@
 +- undefined behaviour if client wants SSL but server doesn't provide it
 +- the other way around too I guess
@@ -150,7 +332,7 @@ diff -Nur libggz.notls/gensecure/TODO libggz/gensecure/TODO
 +
 diff -Nur libggz.notls/gensecure/example.cert libggz/gensecure/example.cert
 --- libggz.notls/gensecure/example.cert	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/example.cert	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/example.cert	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,69 @@
 +Certificate:
 +    Data:
@@ -223,7 +405,7 @@ diff -Nur libggz.notls/gensecure/example.cert libggz/gensecure/example.cert
 +-----END CERTIFICATE-----
 diff -Nur libggz.notls/gensecure/io/.cvsignore libggz/gensecure/io/.cvsignore
 --- libggz.notls/gensecure/io/.cvsignore	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/io/.cvsignore	Mon Nov  5 23:43:53 2001
++++ libggz/gensecure/io/.cvsignore	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,6 @@
 +Makefile
 +Makefile.in
@@ -233,7 +415,7 @@ diff -Nur libggz.notls/gensecure/io/.cvsignore libggz/gensecure/io/.cvsignore
 +.libs
 diff -Nur libggz.notls/gensecure/io/Makefile.am libggz/gensecure/io/Makefile.am
 --- libggz.notls/gensecure/io/Makefile.am	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/io/Makefile.am	Mon Nov  5 23:43:53 2001
++++ libggz/gensecure/io/Makefile.am	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,9 @@
 +SUBDIRS = .
 +
@@ -244,9 +426,10 @@ diff -Nur libggz.notls/gensecure/io/Makefile.am libggz/gensecure/io/Makefile.am
 +LDFLAGS =
 +CFLAGS =
 +LDADD =
+Binary files libggz.notls/gensecure/io/io_nonblock and libggz/gensecure/io/io_nonblock differ
 diff -Nur libggz.notls/gensecure/io/main.c libggz/gensecure/io/main.c
 --- libggz.notls/gensecure/io/main.c	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/io/main.c	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/io/main.c	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,39 @@
 +/* Test non-blocking input while displaying annoying stuff */
 +
@@ -287,9 +470,10 @@ diff -Nur libggz.notls/gensecure/io/main.c libggz/gensecure/io/main.c
 +	return 0;
 +}
 +
+Binary files libggz.notls/gensecure/io/main.o and libggz/gensecure/io/main.o differ
 diff -Nur libggz.notls/gensecure/src/.cvsignore libggz/gensecure/src/.cvsignore
 --- libggz.notls/gensecure/src/.cvsignore	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/src/.cvsignore	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/src/.cvsignore	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,10 @@
 +Makefile
 +Makefile.in
@@ -303,7 +487,7 @@ diff -Nur libggz.notls/gensecure/src/.cvsignore libggz/gensecure/src/.cvsignore
 +
 diff -Nur libggz.notls/gensecure/src/Makefile.am libggz/gensecure/src/Makefile.am
 --- libggz.notls/gensecure/src/Makefile.am	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/src/Makefile.am	Mon Nov  5 23:44:57 2001
++++ libggz/gensecure/src/Makefile.am	Wed Nov  7 08:45:41 2001
 @@ -0,0 +1,20 @@
 +SUBDIRS = .
 +
@@ -314,7 +498,7 @@ diff -Nur libggz.notls/gensecure/src/Makefile.am libggz/gensecure/src/Makefile.a
 +
 +INCLUDES = $(SSL_INCLUDES)
 +LDFLAGS = $(SSL_LDFLAGS)
-+libgensecure_la_LIBADD = $(LIB_SSL)
++libgensecure_la_LIBADD = $(LIBSSL)
 +
 +genclient_SOURCES = client.c gensocket.c
 +genclient_LDADD = libgensecure.la
@@ -327,7 +511,7 @@ diff -Nur libggz.notls/gensecure/src/Makefile.am libggz/gensecure/src/Makefile.a
 +
 diff -Nur libggz.notls/gensecure/src/client.c libggz/gensecure/src/client.c
 --- libggz.notls/gensecure/src/client.c	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/src/client.c	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/src/client.c	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,76 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -407,7 +591,7 @@ diff -Nur libggz.notls/gensecure/src/client.c libggz/gensecure/src/client.c
 +
 diff -Nur libggz.notls/gensecure/src/configuration.h libggz/gensecure/src/configuration.h
 --- libggz.notls/gensecure/src/configuration.h	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/src/configuration.h	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/src/configuration.h	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,30 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -441,7 +625,7 @@ diff -Nur libggz.notls/gensecure/src/configuration.h libggz/gensecure/src/config
 +
 diff -Nur libggz.notls/gensecure/src/gensecure.h libggz/gensecure/src/gensecure.h
 --- libggz.notls/gensecure/src/gensecure.h	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/src/gensecure.h	Mon Nov  5 23:46:46 2001
++++ libggz/gensecure/src/gensecure.h	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,41 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -486,7 +670,7 @@ diff -Nur libggz.notls/gensecure/src/gensecure.h libggz/gensecure/src/gensecure.
 +
 diff -Nur libggz.notls/gensecure/src/gensocket.c libggz/gensecure/src/gensocket.c
 --- libggz.notls/gensecure/src/gensocket.c	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/src/gensocket.c	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/src/gensocket.c	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,185 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -675,7 +859,7 @@ diff -Nur libggz.notls/gensecure/src/gensocket.c libggz/gensecure/src/gensocket.
 +}
 diff -Nur libggz.notls/gensecure/src/gensocket.h libggz/gensecure/src/gensocket.h
 --- libggz.notls/gensecure/src/gensocket.h	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/src/gensocket.h	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/src/gensocket.h	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,40 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -719,7 +903,7 @@ diff -Nur libggz.notls/gensecure/src/gensocket.h libggz/gensecure/src/gensocket.
 +
 diff -Nur libggz.notls/gensecure/src/list.c libggz/gensecure/src/list.c
 --- libggz.notls/gensecure/src/list.c	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/src/list.c	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/src/list.c	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,87 @@
 +#include "list.h"
 +
@@ -810,7 +994,7 @@ diff -Nur libggz.notls/gensecure/src/list.c libggz/gensecure/src/list.c
 +
 diff -Nur libggz.notls/gensecure/src/list.h libggz/gensecure/src/list.h
 --- libggz.notls/gensecure/src/list.h	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/src/list.h	Tue Nov  6 00:01:18 2001
++++ libggz/gensecure/src/list.h	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,29 @@
 +#ifndef TLS_LIST_H
 +#define TLS_LIST_H
@@ -843,7 +1027,7 @@ diff -Nur libggz.notls/gensecure/src/list.h libggz/gensecure/src/list.h
 +
 diff -Nur libggz.notls/gensecure/src/server.c libggz/gensecure/src/server.c
 --- libggz.notls/gensecure/src/server.c	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/src/server.c	Mon Nov  5 23:43:54 2001
++++ libggz/gensecure/src/server.c	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,79 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -926,7 +1110,7 @@ diff -Nur libggz.notls/gensecure/src/server.c libggz/gensecure/src/server.c
 +
 diff -Nur libggz.notls/gensecure/src/tls.c libggz/gensecure/src/tls.c
 --- libggz.notls/gensecure/src/tls.c	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/src/tls.c	Mon Nov  5 23:59:28 2001
++++ libggz/gensecure/src/tls.c	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,312 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -1242,7 +1426,7 @@ diff -Nur libggz.notls/gensecure/src/tls.c libggz/gensecure/src/tls.c
 +
 diff -Nur libggz.notls/gensecure/src/tls.h libggz/gensecure/src/tls.h
 --- libggz.notls/gensecure/src/tls.h	Thu Jan  1 01:00:00 1970
-+++ libggz/gensecure/src/tls.h	Mon Nov  5 23:48:25 2001
++++ libggz/gensecure/src/tls.h	Wed Nov  7 08:22:24 2001
 @@ -0,0 +1,34 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
