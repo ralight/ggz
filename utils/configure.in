@@ -128,6 +128,12 @@ fi
 AC_SUBST(LDADD)
 AC_SUBST(SUBDIRS)
 
+prefix="${prefix}"
+if test "x$prefix" = "xNONE"; then
+	prefix="${ac_default_prefix}"
+fi
+AC_DEFINE_UNQUOTED(PREFIX, "$prefix")
+
 AC_OUTPUT(Makefile
 		cmd-client/Makefile
 		telggz/Makefile

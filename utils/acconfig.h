@@ -20,6 +20,7 @@
 #undef DEBUG_SOCKET
 #undef DEBUG_MEM
 #undef NDEBUG
+#undef PREFIX
     
 
 /* Leave that blank line there!!  Autoheader needs it.
