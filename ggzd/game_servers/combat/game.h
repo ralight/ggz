@@ -4,6 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: server specific header file
+ * $Id: game.h 2299 2001-08-28 05:13:32Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -22,6 +23,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include "../libggzmod/ggz_server.h"
+
 #define CBT_SERVER_ERROR -1
 #define CBT_SERVER_OK 0
 #define CBT_SERVER_JOIN 1
@@ -33,9 +36,9 @@
 // Init stuff
 void game_init();
 
-// Handles the protocol
-int game_handle_ggz(int, int*);
-int game_handle_player(int);
+/* Handles the protocol (GGZ event handler functions) */
+void game_handle_ggz(ggzd_event_t event, void *data);
+void game_handle_player(ggzd_event_t event, void *data);
 
 // Game logic
 int game_handle_move(int, int, int);

@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat server functions
- * $Id: game.c 2264 2001-08-26 21:31:23Z jdorje $
+ * $Id: game.c 2299 2001-08-28 05:13:32Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -23,15 +23,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "ggz.h"
-#include "game.h"
-#include "combat.h"
-#include "protocols.h"
-#include <easysock.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
+
+#include <easysock.h>
+
+#include "game.h"
+#include "combat.h"
 
 #define SET(OPTION) (cbt_game.options & OPTION)
 #define SIG(NUMBER) (NUMBER >= 0 ? 1 : -1)
@@ -59,36 +59,28 @@ void game_init() {
   cbt_game.name = NULL;
   // Intializes the random number generator w/ the current time
   gettimeofday(&tv, NULL);
-  ggz_debug("Random number generator initialized w/ %d", (int)tv.tv_usec);
+  ggzd_debug("Random number generator initialized w/ %d", (int)tv.tv_usec);
   srandom((int)tv.tv_usec);
 }
-  
-int game_handle_ggz(int ggz_fd, int *p_fd) {
-  int op, done = 0, a, seat, status = CBT_SERVER_ERROR;
 
-  if (es_read_int(ggz_fd, &op) < 0)
-    return CBT_SERVER_ERROR;
-
-  switch (op) {
-    case REQ_GAME_LAUNCH:
-      if (cbt_game.state == CBT_STATE_INIT && ggz_game_launch() == 0) {
+void game_handle_ggz(ggzd_event_t event, void *data) {
+  int seat, a, done = 0;
+  switch (event) {
+    case GGZ_EVENT_LAUNCH:
+      if (cbt_game.state == CBT_STATE_INIT) {
         cbt_game.state = CBT_STATE_WAIT;
-        ggz_debug("Waiting for players");
+        ggzd_debug("Waiting for players");
       }
       // Now we know how many players we have!
-      cbt_game.number = ggz_seats_num();
-      status = CBT_SERVER_OK;
+      cbt_game.number = ggzd_seats_num();
       break;
-    case REQ_GAME_JOIN:
-      if (ggz_player_join(&seat, p_fd) != 0) {
-        status = CBT_SERVER_JOIN;
-        break;
-      }
+    case GGZ_EVENT_JOIN:
+      seat = *(int*)data;
       game_send_seat(seat);
       game_send_players();
       if (cbt_game.map) // Options already setup
         game_send_options(seat);
-      ggz_debug("Joining player %d at state %d", seat, cbt_game.state);
+      ggzd_debug("Joining player %d at state %d", seat, cbt_game.state);
       switch (cbt_game.state) {
         case CBT_STATE_WAIT:
           if (host < 0) {
@@ -96,7 +88,7 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
             host = seat;
             game_request_options(host);
           }
-          if (!ggz_seats_open() && cbt_game.map) { 
+          if (!ggzd_seats_open() && cbt_game.map) {
             // Request setup!
             cbt_game.state = CBT_STATE_SETUP;
             game_request_setup(-1);
@@ -117,21 +109,17 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
           game_send_gameover(done_setup);
           break;
       }
-      status = CBT_SERVER_JOIN;
       break;
-    case REQ_GAME_LEAVE:
-      // User left
-      ggz_debug("Leaving player %d at state %d", seat, cbt_game.state);
-      if (ggz_player_leave(&seat, p_fd) != 0) {
-        status = CBT_SERVER_LEFT;
-        break;
-      }
+    case GGZ_EVENT_LEAVE:
+      /* User left */
+      seat = *(int*)data;
+      ggzd_debug("Leaving player %d at state %d", seat, cbt_game.state);
       game_send_players();
       switch (cbt_game.state) {
         case CBT_STATE_WAIT:
           if (host == seat) {
-            for (a = 0; a < ggz_seats_num(); a++) {
-              if (ggz_seats[a].fd >= 0) {
+            for (a = 0; a < ggzd_seats_num(); a++) {
+              if (ggzd_get_player_socket(a) >= 0) {
                 host = a;
                 break;
               }
@@ -150,30 +138,24 @@ int game_handle_ggz(int ggz_fd, int *p_fd) {
             done_setup--;
           break;
       }
-      status = CBT_SERVER_LEFT;
-      break;
-    case RSP_GAME_OVER:
-      // This game is over
-      status = CBT_SERVER_QUIT;
       break;
     default:
-      // Problems!
-      status = CBT_SERVER_ERROR;
-      ggz_debug("The GGZ server is out of his mind!\n");
+      /* Problems! */
+      ggzd_debug("Unexpected GGZ event %d.", event);
       break;
   }
-  return status;
 }
 
-int game_handle_player(int seat) {
+void game_handle_player(ggzd_event_t event, void *data) {
+  int seat = *(int*)data;
   int fd, op, a, status = CBT_SERVER_OK, b;
 
-  fd = ggz_seats[seat].fd;
+  fd = ggzd_get_player_socket(seat);
 
   if (es_read_int(fd, &op) < 0)
-    return -1;
+    return; /* FIXME: handle error --JDS */
 
-  ggz_debug("Got message %d from player %d\n", op, seat);
+  ggzd_debug("Got message %d from player %d\n", op, seat);
 
   switch (op) {
 
@@ -181,11 +163,11 @@ int game_handle_player(int seat) {
       if ( (b = game_get_options(seat)) == 0) {
         // Sends options to everyone
         for (a = 0; a < cbt_game.number; a++) {
-          if (ggz_seats[a].fd >= 0)
+          if (ggzd_get_player_socket(a) >= 0)
             game_send_options(a);
         }
         // Check if must start the game
-        if (!ggz_seats_open() && cbt_game.map) {
+        if (!ggzd_seats_open() && cbt_game.map) {
           cbt_game.state = CBT_STATE_SETUP;
           game_request_setup(-1);
           if (SET(OPT_RANDOM_SETUP))
@@ -246,16 +228,15 @@ int game_handle_player(int seat) {
 
   }
 
-  return status;
-
+  /* FIXME: handle errors --JDS */
 }
 
 void game_send_sync(int seat, int cheated) {
-  int fd = ggz_seats[seat].fd;
+  int fd = ggzd_get_player_socket(seat);
   char *syncstr;
   int a, len;
 
-  ggz_debug("Sending sync to player %d (%d)", seat, cheated);
+  ggzd_debug("Sending sync to player %d (%d)", seat, cheated);
 
   if (fd < 0)
     return;
@@ -281,9 +262,9 @@ void game_send_sync(int seat, int cheated) {
 
   syncstr[len-1] = 0;
 
-	ggz_debug("Sync string player %d");
+	ggzd_debug("Sync string player %d");
 	for (a = 0; a < cbt_game.width*cbt_game.height+2; a++)
-		ggz_debug("%d", syncstr[a]);
+		ggzd_debug("%d", syncstr[a]);
 
   // Increase one of each character
   for (a = 0; a < len-1; a++)
@@ -291,7 +272,7 @@ void game_send_sync(int seat, int cheated) {
 
   // Send the string
   if (es_write_int(fd, CBT_MSG_SYNC) || es_write_string(fd, syncstr) < 0) {
-    ggz_debug("Can't send sync string");
+    ggzd_debug("Can't send sync string");
     return;
   }
 
@@ -299,10 +280,10 @@ void game_send_sync(int seat, int cheated) {
 }
 
 void game_send_seat(int seat) {
-  int fd = ggz_seats[seat].fd;
+  int fd = ggzd_get_player_socket(seat);
 
   if (es_write_int(fd, CBT_MSG_SEAT) < 0 || es_write_int(fd, seat) < 0 || es_write_int(fd, cbt_game.number) < 0 || es_write_int(fd, PROTOCOL_VERSION) < 0) {
-    ggz_debug("Couldn't send seat!\n");
+    ggzd_debug("Couldn't send seat!\n");
     return;
   }
 
@@ -310,9 +291,9 @@ void game_send_seat(int seat) {
 }
 
 void game_request_options(int seat) {
-  int fd = ggz_seats[seat].fd;
+  int fd = ggzd_get_player_socket(seat);
 
-  ggz_debug("Asking player %d for the options", seat);
+  ggzd_debug("Asking player %d for the options", seat);
   if (es_write_int(fd, CBT_REQ_OPTIONS) < 0)
     return;
 
@@ -320,12 +301,12 @@ void game_request_options(int seat) {
 }
 
 int game_get_options(int seat) {
-  int fd = ggz_seats[seat].fd;
+  int fd = ggzd_get_player_socket(seat);
   char *optstr = NULL;
   int a;
   int error;
 
-  ggz_debug("Getting options");
+  ggzd_debug("Getting options");
 
   if (es_read_string_alloc(fd, &optstr) < 0)
     return -1;
@@ -335,14 +316,14 @@ int game_get_options(int seat) {
     return -2;
 
   if (*optstr == 0) {
-    ggz_debug("changing host");
-    for (a = 0; a < ggz_seats_num(); a++) {
-      if (ggz_seats[a].fd >= 0 && a != seat) {
+    ggzd_debug("changing host");
+    for (a = 0; a < ggzd_seats_num(); a++) {
+      if (ggzd_get_player_socket(a) >= 0 && a != seat) {
         host = a;
         break;
       }
     }
-    if (a == ggz_seats_num()) {
+    if (a == ggzd_seats_num()) {
       host = seat;
     }
     return -1;
@@ -350,45 +331,45 @@ int game_get_options(int seat) {
 
   error = combat_options_string_read(optstr, &cbt_game);
 
-  ggz_debug("Wrong options: %d\n", error);
+  ggzd_debug("Wrong options: %d\n", error);
 
   return combat_options_check(&cbt_game);
 }
 
 void game_send_options(int seat) {
-  int fd = ggz_seats[seat].fd;
+  int fd = ggzd_get_player_socket(seat);
 
   if (fd < 0) {
-    ggz_debug("This fd doesn't exists!");
+    ggzd_debug("This fd doesn't exists!");
     return;
   }
 
   if (es_write_int(fd, CBT_MSG_OPTIONS) < 0 || es_write_string(fd, combat_options_string_write(&cbt_game, 0)) < 0)
       return;
-  
+
   return;
 }
 
 void game_send_players() {
   int i, j, fd;
 
-  ggz_debug("Sending player list");
+  ggzd_debug("Sending player list");
 
   for (j = 0; j < cbt_game.number; j++) {
-    if ( (fd = ggz_seats[j].fd) <= -1 ) {
+    if ( (fd = ggzd_get_player_socket(j)) <= -1 ) {
       continue;
     }
 
     if (es_write_int(fd, CBT_MSG_PLAYERS) < 0) {
-      ggz_debug("Can't send player list!\n");
+      ggzd_debug("Can't send player list!\n");
       return;
     }
-  
+
     for (i = 0; i < cbt_game.number; i++) {
-      if (es_write_int(fd, ggz_seats[i].assign) < 0)
+      if (es_write_int(fd, ggzd_get_seat_status(i)) < 0)
         return;
-      if (ggz_seats[i].assign != GGZ_SEAT_OPEN && es_write_string(fd, ggz_seats[i].name) < 0) {
-        ggz_debug("Can't send player name!\n");
+      if (ggzd_get_seat_status(i) != GGZ_SEAT_OPEN && es_write_string(fd, ggzd_get_player_name(i)) < 0) {
+        ggzd_debug("Can't send player name!\n");
         return;
       }
     }
@@ -403,17 +384,17 @@ void game_request_setup(int seat) {
     return;
   if (seat < 0) {
     for (a = 0; a < cbt_game.number; a++) {
-      fd = ggz_seats[a].fd;
+      fd = ggzd_get_player_socket(a);
       if (fd < 0)
         continue;
       if (es_write_int(fd, CBT_REQ_SETUP) < 0)
-        ggz_debug("Can't send request for setup to player %d", a);
+        ggzd_debug("Can't send request for setup to player %d", a);
     }
   } else {
-    fd = ggz_seats[seat].fd;
+    fd = ggzd_get_player_socket(seat);
     if (fd >= 0) {
       if (es_write_int(fd, CBT_REQ_SETUP) < 0)
-        ggz_debug("Can't send request for setup to player %d", seat);
+        ggzd_debug("Can't send request for setup to player %d", seat);
     }
   }
   return;
@@ -423,7 +404,7 @@ int game_get_setup(int seat) {
   int a, b = 0;
   int used[12];
   int msg_size;
-  int fd = ggz_seats[seat].fd;
+  int fd = ggzd_get_player_socket(seat);
   char *setup;
 
   if (es_read_string_alloc(fd, &setup) < 0)
@@ -434,12 +415,12 @@ int game_get_setup(int seat) {
   for (b = 0; b < msg_size; b++)
     setup[b]--;
   b = 0;
-  
+
 
   // Check if he has already sent a setup
   for (a = 0; a < cbt_game.width*cbt_game.height; a++) {
     if (GET_OWNER(cbt_game.map[a].unit) == seat && LAST(cbt_game.map[a].unit) != U_EMPTY) {
-      ggz_debug("Setup error: Already sent setup");
+      ggzd_debug("Setup error: Already sent setup");
       return 0;
     }
   }
@@ -448,7 +429,7 @@ int game_get_setup(int seat) {
   for (a = 0; a < 12; a++)
     used[a] = 0;
 
-  for (a = 0; a < msg_size; a++) 
+  for (a = 0; a < msg_size; a++)
     used[LAST(setup[a])]++;
 
   for (a = 0; a < 12; a++) {
@@ -477,7 +458,7 @@ void game_start() {
 
   if (SET(OPT_RANDOM_SETUP) && cbt_game.state != CBT_STATE_PLAYING) {
     for (a = 0; a < cbt_game.number; a++) {
-      ggz_debug("Doing random setup for %d", a);
+      ggzd_debug("Doing random setup for %d", a);
       combat_random_setup(&cbt_game, a);
     }
 		// Setup everything !
@@ -487,13 +468,13 @@ void game_start() {
   }
 
   for (a = 0; a < cbt_game.number; a++) {
-    fd = ggz_seats[a].fd;
+    fd = ggzd_get_player_socket(a);
     if (fd < 0)
       continue;
     if (SET(OPT_OPEN_MAP))
       game_send_sync(a, 1);
     if (es_write_int(fd, CBT_MSG_START) < 0)
-      ggz_debug("Can't send start message to player %d", a);
+      ggzd_debug("Can't send start message to player %d", a);
   }
 
   cbt_game.state = CBT_STATE_PLAYING;
@@ -504,19 +485,19 @@ void game_send_move_error(int seat, int error) {
   int fd, a;
 
   for (a = 0; a < cbt_game.number; a++) {
-    fd = ggz_seats[a].fd;
+    fd = ggzd_get_player_socket(a);
     if (fd < 0)
       continue;
     if (es_write_int(fd, CBT_MSG_MOVE) < 0 ||
         es_write_int(fd, error) < 0 ||
         es_write_int(fd, seat) < 0)
-      ggz_debug("Can`t send error message to player %d", a);
+      ggzd_debug("Can`t send error message to player %d", a);
   }
 }
 
 int game_get_move(int seat) {
   int from, to;
-  int fd = ggz_seats[seat].fd;
+  int fd = ggzd_get_player_socket(seat);
   int a;
 
   if (es_read_int(fd, &from) < 0 || es_read_int(fd, &to) )
@@ -544,10 +525,10 @@ int game_handle_move(int seat, int from, int to) {
   // Makes the move!
   cbt_game.map[to].unit = OWNER(seat) + LAST(cbt_game.map[from].unit);
   cbt_game.map[from].unit = U_EMPTY;
-  
+
   // Ok... now send it!
   for (a = 0; a < cbt_game.number; a++) {
-    fd = ggz_seats[a].fd;
+    fd = ggzd_get_player_socket(a);
     if (fd < 0)
       continue;
     if (es_write_int(fd, CBT_MSG_MOVE) < 0 ||
@@ -558,8 +539,8 @@ int game_handle_move(int seat, int from, int to) {
 
   return 1;
 }
-  
-  
+
+
 int game_handle_attack(int f_s, int from, int to, int is_rushing) {
   int fd, a, t_u, f_u, t_s;
 
@@ -580,7 +561,7 @@ int game_handle_attack(int f_s, int from, int to, int is_rushing) {
       else {
         // The bomb wins!
         t_u*=-1;
-        // But we can use the variant that 
+        // But we can use the variant that
         // makes the f_u also wins
         if (SET(OPT_ONE_TIME_BOMB))
           f_u*=-1;
@@ -604,7 +585,7 @@ int game_handle_attack(int f_s, int from, int to, int is_rushing) {
       // Random attack?
       if (SET(OPT_RANDOM_OUTCOME) && f_u != U_SPY && t_u != U_SPY) {
         a = RANDOM(100);
-        ggz_debug("Random: %d\n", a);
+        ggzd_debug("Random: %d\n", a);
         if (f_u >= t_u) {
           // Attacker is better then defender
           if (a <= odd[f_u-t_u][0]) {
@@ -647,7 +628,7 @@ int game_handle_attack(int f_s, int from, int to, int is_rushing) {
     case U_MARSHALL:
       if (SET(OPT_RANDOM_OUTCOME) && f_u != U_SPY) {
         a = RANDOM(100);
-        ggz_debug("Random: %d\n", a);
+        ggzd_debug("Random: %d\n", a);
         if (a <= odd[t_u-f_u][0]) {
           // Marshall won!
           t_u *= -1;
@@ -698,14 +679,14 @@ int game_handle_attack(int f_s, int from, int to, int is_rushing) {
     cbt_game.army[f_s][-f_u]--;
     cbt_game.army[t_s][-t_u]--;
   } else {
-    ggz_debug("Problems in the attack logic!");
+    ggzd_debug("Problems in the attack logic!");
     return CBT_ERROR_CRAZY;
   }
 
 
   // Send messages
   for (a = 0; a < cbt_game.number; a++) {
-    fd = ggz_seats[a].fd;
+    fd = ggzd_get_player_socket(a);
     if (fd < 0)
       continue;
     // Write part that everyone knows
@@ -740,9 +721,9 @@ int game_check_over() {
   int *alive, a, b, no_alives = 0;
 
   // TODO: Check if the player has no way to move his units
-  
+
   alive = (int *)malloc(cbt_game.number * sizeof(int));
-  
+
   for (b = 0; b < cbt_game.number; b++) {
     // Sees if the player has flags left
     if (cbt_game.army[b][U_FLAG] <= 0) {
@@ -764,7 +745,7 @@ int game_check_over() {
       no_alives++;
     }
   }
-  if (no_alives == 1) 
+  if (no_alives == 1)
     return -b;
   else
     return 1;
@@ -774,12 +755,12 @@ void game_send_gameover(int winner) {
   int a, fd;
 
   for (a = 0; a < cbt_game.number; a++) {
-    fd = ggz_seats[a].fd;
+    fd = ggzd_get_player_socket(a);
     if (fd < 0)
       continue;
     if (es_write_int(fd, CBT_MSG_GAMEOVER) < 0 ||
         es_write_int(fd, winner) < 0)
-      ggz_debug("Can't send ending message to player %d", a);
+      ggzd_debug("Can't send ending message to player %d", a);
     // Send all the map data
     game_send_sync(a, 1);
   }
