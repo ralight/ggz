@@ -47,7 +47,12 @@ void server_profiles_load(void)
 	char** profiles;
 	Server* server;
 	
-	servers = NULL;
+	/* Clear any previous list */
+	if (servers) {
+		g_list_foreach(servers, server_free_node, NULL); 	
+		g_list_free(servers);
+		servers = NULL;
+	}
 
 	ggzrc_read_list("Servers", "ProfileList", &count, &profiles);
 
@@ -71,37 +76,28 @@ void server_profiles_load(void)
 
 void server_profiles_save(void)
 {
-	GList* node;
-	int i, count;
+	int count;
 	const char** profiles;
 	Server* server;
-
+	GList* node;
+	
 	count = g_list_length(servers);
-
-	profiles = g_malloc0(count*sizeof(char*));
+	profiles = server_get_names();
 	
-	node = servers;
-	i = 0;
-	while (node) {
-		profiles[i++] = ((Server*)(node->data))->name;
-		node = node->next;
-	}
-
 	ggzrc_write_list("Servers", "ProfileList", count, profiles);	
-	
-	node = servers;
-	while (node) {
+	g_free(profiles);
+
+	for (node = servers; node != NULL; node = node->next) {
 		server = (Server*)(node->data);
 		dbg_msg("Profile %s about to be saved", server->name);
-
+		
 		ggzrc_write_string(server->name, "Host", server->host);
 		ggzrc_write_int(server->name, "Port", server->port);
 		ggzrc_write_int(server->name, "Type", server->type);
 		ggzrc_write_string(server->name, "Login", server->login);
 		if (server->type == GGZ_LOGIN)
 			ggzrc_write_string(server->name, "Password", 
-					  server->password);
-		node = node->next;
+					   server->password);
 	}
 }
 
@@ -113,7 +109,7 @@ void server_list_add(Server* server)
 }
 
 
-GList* server_get_names(void)
+GList* server_get_name_list(void)
 {
 	GList* list = NULL;
 	GList* current;
@@ -123,6 +119,23 @@ GList* server_get_names(void)
 		list = g_list_append(list, ((Server*)(current->data))->name);
 	
 	return list;
+}
+
+
+const char** server_get_names(void)
+{
+	const char** profiles;
+	int i = 0;
+	GList* node;
+
+	profiles = g_malloc0(sizeof(char*) * g_list_length(servers));
+	node = servers;
+	while (node) {
+		profiles[i++] = ((Server*)(node->data))->name;
+		node = node->next;
+	}
+
+	return profiles;
 }
 
 

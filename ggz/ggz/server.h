@@ -57,16 +57,46 @@ typedef struct Server {
 } Server;
 
 
+/* Read (or re-read) server profiles from configuration files */
 void server_profiles_load(void);
 
+
+/* Save server profiles to configuration file */
 void server_profiles_save(void);
 
+
+/* 
+ * Add a server to the profile list.  server should be be a pointer to
+ * dynamically allocated Server structure.  All string members should
+ * also be dynmcially allocated 
+ */
 void server_list_add(Server* server);
 
-GList* server_get_names(void);
 
+/* 
+ * Return list of profile names as a GList.  The list should be
+ * free'd, but not the data elememts.  
+ */
+GList* server_get_name_list(void);
+
+
+/*
+ * Return the list of profile names as an argv-style array of strings
+ * The array should be free'd, but not the array elements.
+ */
+const char** server_get_names(void);
+
+
+/*
+ * Return a pointer to the server profile whose name matches 'name'
+ * Do *not* free()!
+ */
 Server* server_get(gchar* name);
 
+
+/*
+ * Remove the server profile whose name matches 'name'
+ */
 void server_list_remove(gchar* name);
 
 #endif

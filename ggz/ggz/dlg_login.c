@@ -75,7 +75,7 @@ static void login_fill_defaults(GtkWidget* win, gpointer data)
 	tmp = lookup_widget(win, "profile_combo");
 
 	/* Fill profile combo box if there are any profiles*/
-	if ( (items = server_get_names())) {
+	if ( (items = server_get_name_list())) {
 		gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
 	}
 	else {

@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 
 #include "chat.h"
+#include "datatypes.h"
 #include "dlg_props.h"
 #include "ggzrc.h"
 #include "xtext.h"
@@ -39,73 +40,496 @@
 
 /* Globals for the props dialog */
 GtkWidget *dlg_props;
-GtkWidget *dlg_props_font = NULL;
+GtkWidget *dlg_props_font;
 extern GtkWidget *main_win;
 
-void props_update();
-void props_add_button_clicked (GtkButton *button, gpointer user_data);
-void props_modify_button_clicked (GtkButton *button, gpointer user_data);
-void props_delete_button_clicked (GtkButton *button, gpointer user_data);
-void props_Font_button_clicked (GtkButton *button, gpointer user_data);
-void props_ok_button_clicked (GtkButton *button, gpointer user_data);
-void props_apply_button_clicked (GtkButton *button, gpointer user_data);
-void props_cancel_button_clicked (GtkButton *button, gpointer user_data);
-void dlg_props_realize (GtkWidget *widget, gpointer user_data);
-void props_color_toggled (GtkWidget *button, gpointer user_data);
-void props_color_type_toggled (GtkButton *button, gpointer user_data);
-void props_fok_button_clicked (GtkButton *button, gpointer user_data);
-void props_fapply_button_clicked (GtkButton *button, gpointer user_data);
-void props_fcancel_button_clicked (GtkButton *button, gpointer user_data);
-void props_pro_name_changed (GtkWidget *widget, gpointer user_data);
-void on_profile_list_select_row (GtkWidget *widget, gint row, gint column,
-				 GdkEventButton *event, gpointer data);
-GtkWidget *create_fontselect (void);
+/* Local callbacks for properties dialog */
+static void props_profiles_reload(void);
+static void props_profile_box_realized(GtkWidget *widget, gpointer data);
+static void props_normal_toggled(GtkWidget *button, gpointer window);
+static void props_profile_list_select(GtkWidget *widget, gint row, gint column,
+				      GdkEventButton *event, gpointer data);
+static void props_profile_entry_changed(GtkWidget *widget, gpointer data);
+
+static void props_add_button_clicked(GtkButton *button, gpointer user_data);
+static void props_modify_button_clicked(GtkButton *button, gpointer user_data);
+static void props_delete_button_clicked(GtkButton *button, gpointer user_data);
+
+static void props_Font_button_clicked (GtkButton *button, gpointer user_data);
+static void props_ok_button_clicked (GtkButton *button, gpointer user_data);
+static void props_apply_button_clicked (GtkButton *button, gpointer user_data);
+static void props_cancel_button_clicked (GtkButton *button, gpointer user_data);
+static void dlg_props_realize (GtkWidget *widget, gpointer user_data);
+static void props_color_toggled (GtkWidget *button, gpointer user_data);
+static void props_color_type_toggled (GtkButton *button, gpointer user_data);
+static void props_fok_button_clicked (GtkButton *button, gpointer user_data);
+static void props_fapply_button_clicked (GtkButton *button, gpointer user_data);
+static void props_fcancel_button_clicked (GtkButton *button, gpointer user_data);
+static GtkWidget *create_fontselect (void);
+static void props_update(void);
 
 
-void props_update()
+static void props_profiles_reload(void)
+{
+	GtkWidget* tmp;
+	GList *names, *node;
+
+	tmp = lookup_widget(dlg_props, "profile_list");
+	gtk_clist_clear(GTK_CLIST(tmp));
+
+	names = server_get_name_list();
+	for (node = names; node != NULL; node = node->next)
+		gtk_clist_append(GTK_CLIST(tmp), (char**)&(node->data));
+	
+	g_list_free(names);
+}
+
+
+static void props_profile_box_realized(GtkWidget* widget, gpointer data)
+{
+	GtkWidget* tmp;
+
+	props_profiles_reload();
+
+	tmp = lookup_widget(dlg_props, "add_button");
+        gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(dlg_props, "modify_button");
+        gtk_widget_set_sensitive(tmp, FALSE);
+	tmp = lookup_widget(dlg_props, "delete_button");
+        gtk_widget_set_sensitive(tmp, FALSE);
+}
+
+
+static void props_normal_toggled(GtkWidget *button, gpointer window)
+{
+	GtkWidget* password;
+	GtkWidget* confirm;
+
+	password = lookup_widget(GTK_WIDGET(window), "password_box");
+	confirm = lookup_widget(GTK_WIDGET(window), "confirm_box");
+
+        if (GTK_TOGGLE_BUTTON(button)->active) {
+                gtk_widget_show(password);
+		gtk_widget_show(confirm);
+	}
+        else {
+                gtk_widget_hide(password);
+		gtk_widget_hide(confirm);
+	}
+}
+
+
+static void props_profile_list_select(GtkWidget *widget, gint row, gint column,
+				      GdkEventButton *event, gpointer data)
+{
+	GtkWidget *tmp;
+	char *profile_name;
+	Server *profile;
+	char *port;
+
+	tmp = lookup_widget(dlg_props, "add_button");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	tmp = lookup_widget(dlg_props, "modify_button");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+	tmp = lookup_widget(dlg_props, "delete_button");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+
+	tmp = lookup_widget(dlg_props, "profile_list");
+	gtk_clist_get_text(GTK_CLIST(tmp), row, column, &profile_name);
+	profile = server_get(profile_name);
+
+	tmp = lookup_widget(dlg_props, "profile_entry");
+	if (profile->name)
+		gtk_entry_set_text(GTK_ENTRY(tmp), profile->name );
+	else
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(dlg_props, "server_entry");
+	if (profile->host)
+		gtk_entry_set_text(GTK_ENTRY(tmp), profile->host );
+	else
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(dlg_props, "port_entry");
+	port = g_strdup_printf("%d", profile->port);
+	gtk_entry_set_text(GTK_ENTRY(tmp), port);
+	g_free(port);
+
+	tmp = lookup_widget(dlg_props, "username_entry");
+	if (profile->login)
+		gtk_entry_set_text(GTK_ENTRY(tmp), profile->login);
+	else
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	tmp = lookup_widget(dlg_props, "password_entry");
+	if (profile->password)
+		gtk_entry_set_text(GTK_ENTRY(tmp), profile->password);
+	else
+		gtk_entry_set_text(GTK_ENTRY(tmp), "");
+
+	if (profile->type == GGZ_LOGIN) {
+		tmp = lookup_widget(dlg_props, "normal_radio");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+	}
+	if (profile->type == GGZ_LOGIN_GUEST) {
+		tmp = lookup_widget(dlg_props, "guest_radio");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+	}
+}
+
+
+static void props_profile_entry_changed(GtkWidget *widget, gpointer user_data)
+{
+	GtkWidget *tmp;
+	GList *names, *node;
+	gchar* profile;
+
+	tmp = lookup_widget(dlg_props, "profile_entry");
+	profile = gtk_entry_get_text(GTK_ENTRY(tmp));
+
+	if (!strcmp(profile, "")) {
+		tmp = lookup_widget(dlg_props, "add_button");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+		tmp = lookup_widget(dlg_props, "modify_button");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+		tmp = lookup_widget(dlg_props, "delete_button");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+		return;
+	}
+
+      	names = server_get_name_list();
+	for (node = names; node != NULL; node = node->next) {
+		/* If we match one of the profiles */
+		if(!strcmp(profile, (char*)(node->data))) {
+			tmp = lookup_widget(dlg_props, "add_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp), FALSE);
+			tmp = lookup_widget(dlg_props, "modify_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+			tmp = lookup_widget(dlg_props, "delete_button");
+			gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+			break;
+		}
+	}
+		    
+	/* If we didn't match anything */
+	if (!node) {
+		tmp = lookup_widget(dlg_props, "add_button");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+		tmp = lookup_widget(dlg_props, "modify_button");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+		tmp = lookup_widget(dlg_props, "delete_button");
+		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
+	}
+	
+	g_list_free(names);
+}
+
+
+static void props_add_button_clicked (GtkButton *button, gpointer user_data)
+{
+	GtkWidget *tmp;
+	Server *new_server;
+
+	new_server = g_malloc0(sizeof(Server));
+
+	tmp = lookup_widget(dlg_props, "profile_entry");
+	new_server->name = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	tmp = lookup_widget(dlg_props, "server_entry");
+	new_server->host = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	tmp = lookup_widget(dlg_props, "port_entry");
+	new_server->port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	tmp = lookup_widget(dlg_props, "username_entry");
+	new_server->login = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	tmp = lookup_widget(dlg_props, "normal_radio");
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tmp))) {
+		new_server->type = GGZ_LOGIN;
+		tmp = lookup_widget(dlg_props, "password_entry");
+		new_server->password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	}
+	else
+		new_server->type = GGZ_LOGIN_GUEST;
+	
+	/* FIXME: check confirm password entry */
+	server_list_add(new_server );
+
+	/* Add profile to list */
+	tmp = lookup_widget(dlg_props, "profile_list");
+	gtk_clist_append(GTK_CLIST(tmp), (char**)&(new_server->name));
+}
+
+
+static void props_modify_button_clicked (GtkButton *button, gpointer user_data)
+{
+	GtkWidget *tmp;
+	Server *server;
+
+	/* FIXME: check confirm password entry */
+	/* FIXME: free() previous strings if necessary */
+
+	tmp = lookup_widget(dlg_props, "profile_entry");
+	server = server_get(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	tmp = lookup_widget(dlg_props, "server_entry");
+	server->host = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	tmp = lookup_widget(dlg_props, "port_entry");
+	server->port = atoi(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	tmp = lookup_widget(dlg_props, "username_entry");
+	server->login = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	tmp = lookup_widget(dlg_props, "normal_radio");
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(tmp))) {
+		server->type = GGZ_LOGIN;
+		tmp = lookup_widget(dlg_props, "password_entry");
+		server->password = g_strdup(gtk_entry_get_text(GTK_ENTRY(tmp)));
+	}
+	else
+		server->type = GGZ_LOGIN_GUEST;
+}
+
+
+static void props_delete_button_clicked (GtkButton *button, gpointer user_data)
+{
+	GtkWidget *tmp;
+
+	tmp = lookup_widget(dlg_props, "profile_entry");
+	server_list_remove(gtk_entry_get_text(GTK_ENTRY(tmp)));
+
+	props_profiles_reload();
+}
+
+
+static void props_Font_button_clicked (GtkButton *button, gpointer user_data)
+{
+	if( dlg_props_font == NULL )
+	{
+		dlg_props_font = create_fontselect();
+		gtk_widget_show(dlg_props_font);
+	}
+}
+
+
+static void props_ok_button_clicked (GtkButton *button, gpointer user_data)
+{
+	/* Save changes, and close the dialog */
+	GtkWidget *tmp;
+	props_update();
+
+	/* Close font selector if open */
+	if (dlg_props_font) {
+	        gtk_widget_destroy(dlg_props_font);
+        	dlg_props_font = NULL;
+	}
+
+	/* Close the dialog */
+        gtk_widget_destroy(dlg_props);
+        dlg_props = NULL;
+        tmp = lookup_widget(main_win, "props_button");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+        tmp = lookup_widget(main_win, "properties");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+}
+
+
+static void props_apply_button_clicked (GtkButton *button, gpointer user_data)
+{
+	/* Save changes, but don't close the dialog */
+	props_update();
+}
+
+
+static void props_cancel_button_clicked (GtkButton *button, gpointer user_data)
+{
+	/* Close dialog and don't save any changes */
+	GtkWidget *tmp;
+
+	/* 
+	 * Reload profiles to what they were before we messed with
+	 * them 
+	 */
+	server_profiles_load();
+
+	/* Close font selector if open */
+	if (dlg_props_font) {
+	        gtk_widget_destroy(dlg_props_font);
+        	dlg_props_font = NULL;
+	}
+
+	/* Close the dialog */
+        gtk_widget_destroy(dlg_props);
+        dlg_props = NULL;
+        tmp = lookup_widget(main_win, "props_button");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+        tmp = lookup_widget(main_win, "properties");
+        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
+}
+
+
+static void props_color_toggled (GtkWidget *button, gpointer user_data)
+{
+	GtkWidget *tmp;
+        tmp = lookup_widget(dlg_props, "color_table");
+	gtk_widget_set_sensitive(GTK_WIDGET(tmp),GTK_TOGGLE_BUTTON(button)->active);
+}
+
+
+static void props_color_type_toggled (GtkButton *button, gpointer user_data)
+{
+	GtkWidget *tmp;
+	GtkWidget *option;
+
+        option = lookup_widget(dlg_props, "some_radio");
+        tmp = lookup_widget(dlg_props, "y_spin");
+	gtk_widget_set_sensitive(GTK_WIDGET(tmp),GTK_TOGGLE_BUTTON(option)->active);
+        tmp = lookup_widget(dlg_props, "f_spin");
+	gtk_widget_set_sensitive(GTK_WIDGET(tmp),GTK_TOGGLE_BUTTON(option)->active);
+        tmp = lookup_widget(dlg_props, "o_spin");
+	gtk_widget_set_sensitive(GTK_WIDGET(tmp),GTK_TOGGLE_BUTTON(option)->active);
+}
+
+
+static void dlg_props_realize (GtkWidget *widget, gpointer user_data)
+{
+	/* Set all options to current settings */
+	GtkWidget *tmp;
+
+	/* Chat Tab */
+        tmp = lookup_widget(dlg_props, "chat_font");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("CHAT","Font",
+		"-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-8"));
+        tmp = lookup_widget(dlg_props, "sound_check");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzrc_read_int("CHAT","Beep",TRUE));
+        tmp = lookup_widget(dlg_props, "wrap_check");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzrc_read_int("CHAT","WordWrap",TRUE));
+        tmp = lookup_widget(dlg_props, "indent_check");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzrc_read_int("CHAT","AutoIndent",TRUE));
+        tmp = lookup_widget(dlg_props, "ignore_check");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzrc_read_int("CHAT","IgnoreJoinPart",FALSE));
+        tmp = lookup_widget(dlg_props, "timestamp_check");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzrc_read_int("CHAT","Timestamp",FALSE));
+	if(ggzrc_read_int("CHAT","ColorNames",CHAT_COLOR_SOME) != CHAT_COLOR_NONE)
+	{
+	        tmp = lookup_widget(dlg_props, "color_check");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+		if(ggzrc_read_int("CHAT","ColorNames",CHAT_COLOR_SOME) == CHAT_COLOR_FULL)
+		{
+		        tmp = lookup_widget(dlg_props, "full_radio");
+		} else {
+		        tmp = lookup_widget(dlg_props, "some_radio");
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
+		        tmp = lookup_widget(dlg_props, "y_spin");
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp),
+				ggzrc_read_int("CHAT","YourColor",1));
+		        tmp = lookup_widget(dlg_props, "f_spin");
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp),
+				ggzrc_read_int("CHAT","FriendsColor",2));
+		        tmp = lookup_widget(dlg_props, "o_spin");
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp),
+				ggzrc_read_int("CHAT","OthersColor",12));
+		}
+	} else
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), FALSE);
+        tmp = lookup_widget(dlg_props, "color_check");
+	props_color_toggled(GTK_WIDGET(tmp), NULL);
+	props_color_type_toggled(NULL, NULL);
+	
+	/*User Info Tab*/
+        tmp = lookup_widget(dlg_props, "info_name");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","Name","."));
+        tmp = lookup_widget(dlg_props, "info_city");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","City","."));
+        tmp = lookup_widget(dlg_props, "info_state");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","State","."));
+        tmp = lookup_widget(dlg_props, "info_country");
+	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","Country","."));
+        tmp = lookup_widget(dlg_props, "info_comments");
+	gtk_text_insert (GTK_TEXT (tmp), NULL, NULL, NULL, ggzrc_read_string("UserInfo","Comments","."), -1);
+}
+
+
+static void props_fok_button_clicked (GtkButton *button, gpointer user_data)
+{
+	GtkWidget *tmp;
+
+	/* Set font */
+        tmp = lookup_widget(dlg_props, "chat_font");
+	gtk_entry_set_text(GTK_ENTRY(tmp),
+		gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dlg_props_font)));
+
+	/* Close the font selector */
+	gtk_widget_destroy(dlg_props_font);
+	dlg_props_font = NULL;
+}
+
+static void props_fapply_button_clicked (GtkButton *button, gpointer user_data)
+{
+	GtkWidget *tmp;
+
+	/* Set font */
+        tmp = lookup_widget(dlg_props, "chat_font");
+	gtk_entry_set_text(GTK_ENTRY(tmp),
+		gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dlg_props_font)));
+}
+
+static void props_fcancel_button_clicked (GtkButton *button, gpointer user_data)
+{
+	/* Close the font selector */
+	gtk_widget_destroy(dlg_props_font);
+	dlg_props_font = NULL;
+}
+
+
+static void props_update(void)
 {
 	GtkWidget *tmp;
 	GdkFont *font;
+
 	/* Servers Tab */
 	server_profiles_save();
 
 	/* Chat Tab */
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "chat_font");
+        tmp = lookup_widget(dlg_props, "chat_font");
 	ggzrc_write_string("CHAT","Font", gtk_entry_get_text(GTK_ENTRY(tmp)));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "sound_check");
+        tmp = lookup_widget(dlg_props, "sound_check");
 	ggzrc_write_int("CHAT","Beep",GTK_TOGGLE_BUTTON(tmp)->active);
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "wrap_check");
+        tmp = lookup_widget(dlg_props, "wrap_check");
 	ggzrc_write_int("CHAT","WordWrap",GTK_TOGGLE_BUTTON(tmp)->active);
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "indent_check");
+        tmp = lookup_widget(dlg_props, "indent_check");
 	ggzrc_write_int("CHAT","AutoIndent",GTK_TOGGLE_BUTTON(tmp)->active);
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "ignore_check");
+        tmp = lookup_widget(dlg_props, "ignore_check");
 	ggzrc_write_int("CHAT","IgnoreJoinPart",GTK_TOGGLE_BUTTON(tmp)->active);
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "timestamp_check");
+        tmp = lookup_widget(dlg_props, "timestamp_check");
 	ggzrc_write_int("CHAT","Timestamp",GTK_TOGGLE_BUTTON(tmp)->active);
 
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "color_check");
+        tmp = lookup_widget(dlg_props, "color_check");
 	if(GTK_TOGGLE_BUTTON(tmp)->active != FALSE)
 	{
-	        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "full_radio");
+	        tmp = lookup_widget(dlg_props, "full_radio");
 		if(GTK_TOGGLE_BUTTON(tmp)->active != FALSE)
 		{
 			ggzrc_write_int("CHAT","ColorNames", CHAT_COLOR_FULL);
 		} else {
 			ggzrc_write_int("CHAT","ColorNames", CHAT_COLOR_SOME);
-		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "y_spin");
+		        tmp = lookup_widget(dlg_props, "y_spin");
 			ggzrc_write_int("CHAT","YourColor",
 				gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
-		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "f_spin");
+		        tmp = lookup_widget(dlg_props, "f_spin");
 			ggzrc_write_int("CHAT","FriendsColor",
 				gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
-		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "o_spin");
+		        tmp = lookup_widget(dlg_props, "o_spin");
 			ggzrc_write_int("CHAT","OthersColor",
 				gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(tmp)));
 		}
 	} else
 		ggzrc_write_int("CHAT","ColorNames", CHAT_COLOR_NONE);
 
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
+        tmp = lookup_widget((main_win), "chat_text");
 	GTK_XTEXT(tmp)->auto_indent = ggzrc_read_int("CHAT","AutoIndent",TRUE);
 	GTK_XTEXT(tmp)->wordwrap = ggzrc_read_int("CHAT","WordWrap",TRUE);
 	GTK_XTEXT(tmp)->time_stamp = ggzrc_read_int("CHAT","Timestamp",FALSE);
@@ -115,515 +539,64 @@ void props_update()
 	gtk_xtext_refresh(GTK_XTEXT(tmp),0);
 
 	/*User Info Tab*/
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_name");
+        tmp = lookup_widget(dlg_props, "info_name");
 	ggzrc_write_string("UserInfo","Name",gtk_entry_get_text(GTK_ENTRY(tmp)));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_city");
+        tmp = lookup_widget(dlg_props, "info_city");
 	ggzrc_write_string("UserInfo","City",gtk_entry_get_text(GTK_ENTRY(tmp)));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_state");
+        tmp = lookup_widget(dlg_props, "info_state");
 	ggzrc_write_string("UserInfo","State",gtk_entry_get_text(GTK_ENTRY(tmp)));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_country");
+        tmp = lookup_widget(dlg_props, "info_country");
 	ggzrc_write_string("UserInfo","Country",gtk_entry_get_text(GTK_ENTRY(tmp)));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_comments");
+        tmp = lookup_widget(dlg_props, "info_comments");
 	ggzrc_write_string("UserInfo","Comments",gtk_editable_get_chars(GTK_EDITABLE(tmp), 0, -1));
 
 	/* Force save to file */
 	ggzrc_commit_changes();
 }
 
-void props_add_button_clicked (GtkButton *button, gpointer user_data)
-{
-	GtkWidget *tmp;
-	GList *items = NULL;
-	GList *item;
-	guint x;
-	gchar *entry[1];
-	Server *new_server;
-
-	new_server = g_malloc0(sizeof(Server));
-
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
-	new_server->name = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_server");
-	new_server->host = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_port");
-	new_server->port = atoi( gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_username");
-	new_server->login = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "radiobutton3");
-	if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(tmp) ) )
-	{
-		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_password");
-		new_server->password = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-	}
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "radiobutton3");
-	if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(tmp) ) )
-		new_server->type = 0;
-	else
-		new_server->type = 1;
-
-	server_list_add( new_server );
-
-	/* Reload profile list */
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "profile_list");
-	gtk_clist_clear( GTK_CLIST( tmp ) );
-
-	items = server_get_names();
-	if (items != NULL)
-	{
-		for(x = 0; x != g_list_length(items); x++)
-		{
-			item = g_list_nth( items, x );
-		        entry[0] = g_strdup_printf("%s",
-						   (char*)item->data);
-		        gtk_clist_append(GTK_CLIST(tmp), entry);
-        		g_free(entry[0]);
-		}
-	}
-}
-
-void props_modify_button_clicked (GtkButton *button, gpointer user_data)
-{
-	GtkWidget *tmp;
-	GList *items = NULL;
-	GList *item;
-	guint x;
-	gchar *entry[1];
-	Server *new_server;
-
-	new_server = g_malloc0(sizeof(Server));
-
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
-	new_server->name = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_server");
-	new_server->host = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_port");
-	new_server->port = atoi( gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_username");
-	new_server->login = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "radiobutton3");
-	if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(tmp) ) )
-	{
-		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_password");
-		new_server->password = g_strdup_printf("%s", gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-	}
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "radiobutton3");
-	if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(tmp) ) )
-		new_server->type = 0;
-	else
-		new_server->type = 1;
-
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
-	server_list_remove( gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-	server_list_add( new_server );
-
-	/* Reload profile list */
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "profile_list");
-	gtk_clist_clear( GTK_CLIST( tmp ) );
-
-	items = server_get_names();
-	if (items != NULL)
-	{
-		for(x = 0; x != g_list_length(items); x++)
-		{
-			item = g_list_nth( items, x );
-		        entry[0] = g_strdup_printf("%s",
-						   (char*)item->data);
-		        gtk_clist_append(GTK_CLIST(tmp), entry);
-        		g_free(entry[0]);
-		}
-	}
-}
-
-void props_delete_button_clicked (GtkButton *button, gpointer user_data)
-{
-	GtkWidget *tmp;
-	GList *items = NULL;
-	GList *item;
-	guint x;
-	gchar *entry[1];
-
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
-	server_list_remove( gtk_entry_get_text( GTK_ENTRY( tmp ) ) );
-
-	/* Reload profile list */
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "profile_list");
-	gtk_clist_clear( GTK_CLIST( tmp ) );
-
-	items = server_get_names();
-	if (items != NULL)
-	{
-		for(x = 0; x != g_list_length(items); x++)
-		{
-			item = g_list_nth( items, x );
-		        entry[0] = g_strdup_printf("%s",
-						   (char*)item->data);
-		        gtk_clist_append(GTK_CLIST(tmp), entry);
-        		g_free(entry[0]);
-		}
-	}
-}
-
-void on_profile_list_select_row (GtkWidget *widget, gint row, gint column,
-				 GdkEventButton *event, gpointer data)
-{
-	GtkWidget *tmp;
-	char *profile_name;
-	Server *profile;
-	char *port;
-
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button4");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button5");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button6");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "profile_list");
-	gtk_clist_get_text( GTK_CLIST(tmp), row, column, &profile_name);
-	profile = server_get(profile_name);
-
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
-	if(profile->name != NULL)
-		gtk_entry_set_text( GTK_ENTRY(tmp), profile->name );
-	else
-		gtk_entry_set_text( GTK_ENTRY(tmp), "" );
-
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_server");
-	if(profile->host != NULL)
-		gtk_entry_set_text( GTK_ENTRY(tmp), profile->host );
-	else
-		gtk_entry_set_text( GTK_ENTRY(tmp), "" );
-
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_port");
-	port = g_strdup_printf("%d", profile->port);
-	gtk_entry_set_text( GTK_ENTRY(tmp), port );
-	g_free(port);
-
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_username");
-	if(profile->login != NULL)
-		gtk_entry_set_text( GTK_ENTRY(tmp), profile->login );
-	else
-		gtk_entry_set_text( GTK_ENTRY(tmp), "" );
-
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_password");
-	if(profile->password != NULL)
-		gtk_entry_set_text( GTK_ENTRY(tmp), profile->password );
-	else
-		gtk_entry_set_text( GTK_ENTRY(tmp), "" );
-
-	if( profile->type == 0 )
-	{
-		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "radiobutton3");
-		gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON(tmp), TRUE );
-	}
-	if( profile->type == 1 )
-	{
-		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "radiobutton4");
-		gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON(tmp), TRUE );
-	}
-}
-
-void props_pro_name_changed (GtkWidget *widget, gpointer user_data)
-{
-	GtkWidget *tmp;
-	GList *items = NULL;
-	GList *item;
-	gchar *entry;
-	gint x;
-	
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button4");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-	items = server_get_names();
-	if (items != NULL)
-	{
-		for(x = 0; x != g_list_length(items); x++)
-		{
-			item = g_list_nth( items, x );
-		        entry = g_strdup_printf("%s",
-						   (char*)item->data);
-			tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
-			if( !strcmp(entry, gtk_entry_get_text(GTK_ENTRY(tmp))) )
-			{
-				tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button4");
-				gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-				tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button5");
-				gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-				tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button6");
-				gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-				break;
-			}else{
-				tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button4");
-				gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-				tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button5");
-				gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-				tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button6");
-				gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-			}
-        		g_free(entry);
-		}
-	}
-
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "pro_name");
-	if( !strcmp("", gtk_entry_get_text(GTK_ENTRY(tmp))) )
-	{
-		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button4");
-		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button5");
-		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button6");
-		gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	}
-}
-
-void props_Font_button_clicked (GtkButton *button, gpointer user_data)
-{
-	if( dlg_props_font == NULL )
-	{
-		dlg_props_font = create_fontselect();
-		gtk_widget_show(dlg_props_font);
-	}
-}
-
-void props_ok_button_clicked (GtkButton *button, gpointer user_data)
-{
-	/* Save changes, and close the dialog */
-	GtkWidget *tmp;
-	props_update();
-
-	/* Close font selector if open */
-	if( dlg_props_font != NULL )
-	{
-	        gtk_widget_destroy(dlg_props_font);
-        	dlg_props_font = NULL;
-	}
-
-	/* Close the dialog */
-        gtk_widget_destroy(dlg_props);
-        dlg_props = NULL;
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "props_button");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "properties");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-}
-
-void props_apply_button_clicked (GtkButton *button, gpointer user_data)
-{
-	/* Save changes, but don't close the dialog */
-	props_update();
-}
-
-void props_cancel_button_clicked (GtkButton *button, gpointer user_data)
-{
-	/* Close dialog and don't save any changes */
-	GtkWidget *tmp;
-
-	/* Reload profiles to what they were before
-	 * we messed with them
-	 */
-	server_profiles_load();
-
-	/* Close font selector if open */
-	if( dlg_props_font != NULL )
-	{
-	        gtk_widget_destroy(dlg_props_font);
-        	dlg_props_font = NULL;
-	}
-
-	/* Close the dialog */
-        gtk_widget_destroy(dlg_props);
-        dlg_props = NULL;
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "props_button");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-        tmp = gtk_object_get_data(GTK_OBJECT(main_win), "properties");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),TRUE);
-}
-
-void props_color_toggled (GtkWidget *button, gpointer user_data)
-{
-	GtkWidget *tmp;
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "color_table");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),GTK_TOGGLE_BUTTON(button)->active);
-}
-
-void props_color_type_toggled (GtkButton *button, gpointer user_data)
-{
-	GtkWidget *tmp;
-	GtkWidget *option;
-
-        option = gtk_object_get_data(GTK_OBJECT(dlg_props), "some_radio");
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "y_spin");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),GTK_TOGGLE_BUTTON(option)->active);
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "f_spin");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),GTK_TOGGLE_BUTTON(option)->active);
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "o_spin");
-	gtk_widget_set_sensitive(GTK_WIDGET(tmp),GTK_TOGGLE_BUTTON(option)->active);
-}
-
-void dlg_props_realize (GtkWidget *widget, gpointer user_data)
-{
-	/* Set all options to current settings */
-	GtkWidget *tmp;
-	GList *items = NULL;
-	GList *item;
-	guint x;
-	gchar *entry[1];
-
-	/* Servers Tab */
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "profile_list");
-	gtk_clist_clear( GTK_CLIST( tmp ) );
-
-	items = server_get_names();
-	if (items != NULL)
-	{
-		tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "profile_list");
-		for(x = 0; x != g_list_length(items); x++)
-		{
-			item = g_list_nth( items, x );
-		        entry[0] = g_strdup_printf("%s",
-						   (char*)item->data);
-		        gtk_clist_append(GTK_CLIST(tmp), entry);
-        		g_free(entry[0]);
-		}
-	}
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button4");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button5");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-	tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "button6");
-        gtk_widget_set_sensitive(GTK_WIDGET(tmp),FALSE);
-
-
-
-	/* Chat Tab */
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "chat_font");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("CHAT","Font",
-		"-*-fixed-medium-r-semicondensed--*-120-*-*-c-*-iso8859-8"));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "sound_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzrc_read_int("CHAT","Beep",TRUE));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "wrap_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzrc_read_int("CHAT","WordWrap",TRUE));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "indent_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzrc_read_int("CHAT","AutoIndent",TRUE));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "ignore_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzrc_read_int("CHAT","IgnoreJoinPart",FALSE));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "timestamp_check");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), ggzrc_read_int("CHAT","Timestamp",FALSE));
-	if(ggzrc_read_int("CHAT","ColorNames",CHAT_COLOR_SOME) != CHAT_COLOR_NONE)
-	{
-	        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "color_check");
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
-		if(ggzrc_read_int("CHAT","ColorNames",CHAT_COLOR_SOME) == CHAT_COLOR_FULL)
-		{
-		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "full_radio");
-		} else {
-		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "some_radio");
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), TRUE);
-		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "y_spin");
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp),
-				ggzrc_read_int("CHAT","YourColor",1));
-		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "f_spin");
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp),
-				ggzrc_read_int("CHAT","FriendsColor",2));
-		        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "o_spin");
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(tmp),
-				ggzrc_read_int("CHAT","OthersColor",12));
-		}
-	} else
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(tmp), FALSE);
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "color_check");
-	props_color_toggled(GTK_WIDGET(tmp), NULL);
-	props_color_type_toggled(NULL, NULL);
-	
-	/*User Info Tab*/
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_name");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","Name","."));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_city");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","City","."));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_state");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","State","."));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_country");
-	gtk_entry_set_text(GTK_ENTRY(tmp), ggzrc_read_string("UserInfo","Country","."));
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "info_comments");
-	gtk_text_insert (GTK_TEXT (tmp), NULL, NULL, NULL, ggzrc_read_string("UserInfo","Comments","."), -1);
-}
-
-void props_fok_button_clicked (GtkButton *button, gpointer user_data)
-{
-	GtkWidget *tmp;
-
-	/* Set font */
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "chat_font");
-	gtk_entry_set_text(GTK_ENTRY(tmp),
-		gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dlg_props_font)));
-
-	/* Close the font selector */
-	gtk_widget_destroy(dlg_props_font);
-	dlg_props_font = NULL;
-}
-
-void props_fapply_button_clicked (GtkButton *button, gpointer user_data)
-{
-	GtkWidget *tmp;
-
-	/* Set font */
-        tmp = gtk_object_get_data(GTK_OBJECT(dlg_props), "chat_font");
-	gtk_entry_set_text(GTK_ENTRY(tmp),
-		gtk_font_selection_dialog_get_font_name(GTK_FONT_SELECTION_DIALOG(dlg_props_font)));
-}
-
-void props_fcancel_button_clicked (GtkButton *button, gpointer user_data)
-{
-	/* Close the font selector */
-	gtk_widget_destroy(dlg_props_font);
-	dlg_props_font = NULL;
-}
-
-
-/*
- * DO NOT EDIT THIS FILE - it is generated by Glade.
- */
-
 
 
 GtkWidget*
 create_dlg_props (void)
 {
-  GtkWidget *dlg_props;
   GtkWidget *dialog_vbox1;
   GtkWidget *vbox1;
-  GtkWidget *notebook1;
-  GtkWidget *hbox2;
-  GtkWidget *scrolledwindow2;
+  GtkWidget *notebook;
+  GtkWidget *props_profile_box;
+  GtkWidget *scrolledwindow4;
   GtkWidget *profile_list;
-  GtkWidget *label28;
-  GtkWidget *vbuttonbox1;
-  GtkWidget *button4;
-  GtkWidget *button5;
-  GtkWidget *button6;
-  GtkWidget *vbox2;
-  GtkWidget *vbox3;
-  GtkWidget *hbox4;
-  GtkWidget *label7;
-  GtkWidget *pro_name;
-  GtkWidget *hbox5;
-  GtkWidget *label8;
-  GtkWidget *pro_server;
-  GtkWidget *label9;
-  GtkWidget *pro_port;
-  GtkWidget *hbox6;
-  GtkWidget *label10;
-  GtkWidget *pro_username;
-  GtkWidget *hbox7;
-  GtkWidget *label11;
-  GtkWidget *pro_password;
-  GtkWidget *frame2;
-  GtkWidget *vbox10;
-  GSList *vbox10_group = NULL;
-  GtkWidget *radiobutton3;
-  GtkWidget *radiobutton4;
+  GtkWidget *label66;
+  GtkWidget *edit_box;
+  GtkWidget *data_box;
+  GtkWidget *profile_box;
+  GtkWidget *profile_label;
+  GtkWidget *profile_entry;
+  GtkWidget *server_box;
+  GtkWidget *server_label;
+  GtkWidget *server_entry;
+  GtkWidget *port_label;
+  GtkWidget *port_entry;
+  GtkWidget *user_box;
+  GtkWidget *user_data_box;
+  GtkWidget *username_box;
+  GtkWidget *username_label;
+  GtkWidget *username_entry;
+  GtkWidget *password_box;
+  GtkWidget *password_label;
+  GtkWidget *password_entry;
+  GtkWidget *confirm_box;
+  GtkWidget *confirm_label;
+  GtkWidget *confirm_entry;
+  GtkWidget *radio_box;
+  GSList *login_type_group = NULL;
+  GtkWidget *normal_radio;
+  GtkWidget *guest_radio;
+  GtkWidget *buttonbox;
+  GtkWidget *add_button;
+  GtkWidget *modify_button;
+  GtkWidget *delete_button;
   GtkWidget *label1;
-  GtkWidget *vbox4;
+  GtkWidget *chat_box;
   GtkWidget *hbox8;
   GtkWidget *label12;
   GtkWidget *chat_font;
@@ -652,7 +625,7 @@ create_dlg_props (void)
   GtkWidget *y_spin;
   GtkWidget *label27;
   GtkWidget *label2;
-  GtkWidget *vbox6;
+  GtkWidget *userinfo_box;
   GtkWidget *label16;
   GtkWidget *vbox7;
   GtkWidget *hbox12;
@@ -680,9 +653,9 @@ create_dlg_props (void)
 
   dlg_props = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dlg_props), "dlg_props", dlg_props);
-  gtk_widget_set_usize (dlg_props, 600, 350);
+  gtk_widget_set_usize (dlg_props, 550, 350);
   gtk_window_set_title (GTK_WINDOW (dlg_props), _("Properties"));
-  gtk_window_set_policy (GTK_WINDOW (dlg_props), FALSE, FALSE, FALSE);
+  gtk_window_set_policy (GTK_WINDOW (dlg_props), TRUE, TRUE, TRUE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_props)->vbox;
   gtk_object_set_data (GTK_OBJECT (dlg_props), "dialog_vbox1", dialog_vbox1);
@@ -696,257 +669,292 @@ create_dlg_props (void)
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (vbox1), 6);
 
-  notebook1 = gtk_notebook_new ();
-  gtk_widget_ref (notebook1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "notebook1", notebook1,
+  notebook = gtk_notebook_new ();
+  gtk_widget_ref (notebook);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "notebook", notebook,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (notebook1);
-  gtk_box_pack_start (GTK_BOX (vbox1), notebook1, TRUE, TRUE, 0);
+  gtk_widget_show (notebook);
+  gtk_box_pack_start (GTK_BOX (vbox1), notebook, TRUE, TRUE, 0);
 
-  hbox2 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "hbox2", hbox2,
+  props_profile_box = gtk_hbox_new (FALSE, 10);
+  gtk_widget_ref (props_profile_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "props_profile_box", props_profile_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox2);
-  gtk_container_add (GTK_CONTAINER (notebook1), hbox2);
-  gtk_container_set_border_width (GTK_CONTAINER (hbox2), 5);
+  gtk_widget_show (props_profile_box);
+  gtk_container_add (GTK_CONTAINER (notebook), props_profile_box);
+  gtk_container_set_border_width (GTK_CONTAINER (props_profile_box), 10);
 
-  scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_ref (scrolledwindow2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "scrolledwindow2", scrolledwindow2,
+  scrolledwindow4 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_ref (scrolledwindow4);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "scrolledwindow4", scrolledwindow4,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (scrolledwindow2);
-  gtk_box_pack_start (GTK_BOX (hbox2), scrolledwindow2, TRUE, TRUE, 0);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow2), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_widget_show (scrolledwindow4);
+  gtk_box_pack_start (GTK_BOX (props_profile_box), scrolledwindow4, TRUE, TRUE, 0);
+  gtk_widget_set_usize (scrolledwindow4, 175, -2);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow4), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
   profile_list = gtk_clist_new (1);
   gtk_widget_ref (profile_list);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "profile_list", profile_list,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (profile_list);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow2), profile_list);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow4), profile_list);
   gtk_clist_set_column_width (GTK_CLIST (profile_list), 0, 80);
   gtk_clist_column_titles_show (GTK_CLIST (profile_list));
 
-  label28 = gtk_label_new (_("Profiles"));
-  gtk_widget_ref (label28);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label28", label28,
+  label66 = gtk_label_new (_("Profiles"));
+  gtk_widget_ref (label66);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label66", label66,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label28);
-  gtk_clist_set_column_widget (GTK_CLIST (profile_list), 0, label28);
+  gtk_widget_show (label66);
+  gtk_clist_set_column_widget (GTK_CLIST (profile_list), 0, label66);
 
-  vbuttonbox1 = gtk_vbutton_box_new ();
-  gtk_widget_ref (vbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "vbuttonbox1", vbuttonbox1,
+  edit_box = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (edit_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "edit_box", edit_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbuttonbox1);
-  gtk_box_pack_start (GTK_BOX (hbox2), vbuttonbox1, FALSE, TRUE, 0);
-  gtk_button_box_set_layout (GTK_BUTTON_BOX (vbuttonbox1), GTK_BUTTONBOX_START);
+  gtk_widget_show (edit_box);
+  gtk_box_pack_start (GTK_BOX (props_profile_box), edit_box, TRUE, TRUE, 0);
 
-  button4 = gtk_button_new_with_label (_("Add"));
-  gtk_widget_ref (button4);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "button4", button4,
+  data_box = gtk_vbox_new (FALSE, 7);
+  gtk_widget_ref (data_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "data_box", data_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button4);
-  gtk_container_add (GTK_CONTAINER (vbuttonbox1), button4);
-  gtk_widget_set_usize (button4, 44, -2);
-  GTK_WIDGET_SET_FLAGS (button4, GTK_CAN_DEFAULT);
+  gtk_widget_show (data_box);
+  gtk_box_pack_start (GTK_BOX (edit_box), data_box, TRUE, FALSE, 0);
 
-  button5 = gtk_button_new_with_label (_("Modify"));
-  gtk_widget_ref (button5);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "button5", button5,
+  profile_box = gtk_hbox_new (FALSE, 5);
+  gtk_widget_ref (profile_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "profile_box", profile_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button5);
-  gtk_container_add (GTK_CONTAINER (vbuttonbox1), button5);
-  GTK_WIDGET_SET_FLAGS (button5, GTK_CAN_DEFAULT);
+  gtk_widget_show (profile_box);
+  gtk_box_pack_start (GTK_BOX (data_box), profile_box, FALSE, FALSE, 0);
 
-  button6 = gtk_button_new_with_label (_("Delete"));
-  gtk_widget_ref (button6);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "button6", button6,
+  profile_label = gtk_label_new (_("Profile:"));
+  gtk_widget_ref (profile_label);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "profile_label", profile_label,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button6);
-  gtk_container_add (GTK_CONTAINER (vbuttonbox1), button6);
-  GTK_WIDGET_SET_FLAGS (button6, GTK_CAN_DEFAULT);
+  gtk_widget_show (profile_label);
+  gtk_box_pack_start (GTK_BOX (profile_box), profile_label, FALSE, FALSE, 0);
+  gtk_widget_set_usize (profile_label, 62, -2);
+  gtk_label_set_justify (GTK_LABEL (profile_label), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_alignment (GTK_MISC (profile_label), 1, 0.5);
 
-  vbox2 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "vbox2", vbox2,
+  profile_entry = gtk_entry_new_with_max_length (256);
+  gtk_widget_ref (profile_entry);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "profile_entry", profile_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox2);
-  gtk_box_pack_start (GTK_BOX (hbox2), vbox2, TRUE, TRUE, 5);
-  gtk_widget_set_usize (vbox2, 162, -2);
+  gtk_widget_show (profile_entry);
+  gtk_box_pack_start (GTK_BOX (profile_box), profile_entry, TRUE, TRUE, 5);
 
-  vbox3 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox3);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "vbox3", vbox3,
+  server_box = gtk_hbox_new (FALSE, 5);
+  gtk_widget_ref (server_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "server_box", server_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox3);
-  gtk_box_pack_start (GTK_BOX (vbox2), vbox3, TRUE, TRUE, 0);
+  gtk_widget_show (server_box);
+  gtk_box_pack_start (GTK_BOX (data_box), server_box, FALSE, FALSE, 0);
 
-  hbox4 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox4);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "hbox4", hbox4,
+  server_label = gtk_label_new (_("Server:"));
+  gtk_widget_ref (server_label);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "server_label", server_label,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox4);
-  gtk_box_pack_start (GTK_BOX (vbox3), hbox4, FALSE, TRUE, 0);
+  gtk_widget_show (server_label);
+  gtk_box_pack_start (GTK_BOX (server_box), server_label, FALSE, FALSE, 0);
+  gtk_widget_set_usize (server_label, 62, -2);
+  gtk_label_set_justify (GTK_LABEL (server_label), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_alignment (GTK_MISC (server_label), 1, 0.5);
 
-  label7 = gtk_label_new (_("Profile Name:  "));
-  gtk_widget_ref (label7);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label7", label7,
+  server_entry = gtk_entry_new_with_max_length (256);
+  gtk_widget_ref (server_entry);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "server_entry", server_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label7);
-  gtk_box_pack_start (GTK_BOX (hbox4), label7, FALSE, FALSE, 0);
-  gtk_widget_set_usize (label7, 95, -2);
-  gtk_label_set_justify (GTK_LABEL (label7), GTK_JUSTIFY_LEFT);
-  gtk_label_set_line_wrap (GTK_LABEL (label7), TRUE);
+  gtk_widget_show (server_entry);
+  gtk_box_pack_start (GTK_BOX (server_box), server_entry, TRUE, TRUE, 5);
 
-  pro_name = gtk_entry_new_with_max_length (20);
-  gtk_widget_ref (pro_name);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "pro_name", pro_name,
+  port_label = gtk_label_new (_("Port:"));
+  gtk_widget_ref (port_label);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "port_label", port_label,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pro_name);
-  gtk_box_pack_start (GTK_BOX (hbox4), pro_name, TRUE, TRUE, 0);
+  gtk_widget_show (port_label);
+  gtk_box_pack_start (GTK_BOX (server_box), port_label, FALSE, TRUE, 2);
+  gtk_misc_set_alignment (GTK_MISC (port_label), 1, 0.5);
 
-  hbox5 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox5);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "hbox5", hbox5,
+  port_entry = gtk_entry_new_with_max_length (6);
+  gtk_widget_ref (port_entry);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "port_entry", port_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox5);
-  gtk_box_pack_start (GTK_BOX (vbox3), hbox5, FALSE, TRUE, 5);
+  gtk_widget_show (port_entry);
+  gtk_box_pack_start (GTK_BOX (server_box), port_entry, FALSE, TRUE, 5);
+  gtk_widget_set_usize (port_entry, 50, -2);
 
-  label8 = gtk_label_new (_("Server:  "));
-  gtk_widget_ref (label8);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label8", label8,
+  user_box = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (user_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "user_box", user_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label8);
-  gtk_box_pack_start (GTK_BOX (hbox5), label8, FALSE, FALSE, 0);
-  gtk_widget_set_usize (label8, 95, -2);
-  gtk_label_set_justify (GTK_LABEL (label8), GTK_JUSTIFY_LEFT);
-  gtk_label_set_line_wrap (GTK_LABEL (label8), TRUE);
+  gtk_widget_show (user_box);
+  gtk_box_pack_start (GTK_BOX (data_box), user_box, FALSE, FALSE, 0);
 
-  pro_server = gtk_entry_new ();
-  gtk_widget_ref (pro_server);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "pro_server", pro_server,
+  user_data_box = gtk_vbox_new (FALSE, 10);
+  gtk_widget_ref (user_data_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "user_data_box", user_data_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pro_server);
-  gtk_box_pack_start (GTK_BOX (hbox5), pro_server, TRUE, TRUE, 0);
-  gtk_widget_set_usize (pro_server, 221, -2);
+  gtk_widget_show (user_data_box);
+  gtk_box_pack_start (GTK_BOX (user_box), user_data_box, FALSE, FALSE, 0);
 
-  label9 = gtk_label_new (_(" Port:  "));
-  gtk_widget_ref (label9);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label9", label9,
+  username_box = gtk_hbox_new (FALSE, 5);
+  gtk_widget_ref (username_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "username_box", username_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label9);
-  gtk_box_pack_start (GTK_BOX (hbox5), label9, FALSE, FALSE, 0);
-  gtk_widget_set_usize (label9, 45, -2);
+  gtk_widget_show (username_box);
+  gtk_box_pack_start (GTK_BOX (user_data_box), username_box, TRUE, TRUE, 0);
 
-  pro_port = gtk_entry_new_with_max_length (6);
-  gtk_widget_ref (pro_port);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "pro_port", pro_port,
+  username_label = gtk_label_new (_("Username:"));
+  gtk_widget_ref (username_label);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "username_label", username_label,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pro_port);
-  gtk_box_pack_start (GTK_BOX (hbox5), pro_port, TRUE, TRUE, 0);
+  gtk_widget_show (username_label);
+  gtk_box_pack_start (GTK_BOX (username_box), username_label, FALSE, FALSE, 0);
+  gtk_widget_set_usize (username_label, 62, -2);
+  gtk_label_set_justify (GTK_LABEL (username_label), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_alignment (GTK_MISC (username_label), 1, 0.5);
 
-  hbox6 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox6);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "hbox6", hbox6,
+  username_entry = gtk_entry_new_with_max_length (16);
+  gtk_widget_ref (username_entry);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "username_entry", username_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox6);
-  gtk_box_pack_start (GTK_BOX (vbox3), hbox6, FALSE, TRUE, 0);
+  gtk_widget_show (username_entry);
+  gtk_box_pack_start (GTK_BOX (username_box), username_entry, FALSE, FALSE, 5);
+  gtk_widget_set_usize (username_entry, 140, -2);
 
-  label10 = gtk_label_new (_("Username:  "));
-  gtk_widget_ref (label10);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label10", label10,
+  password_box = gtk_hbox_new (FALSE, 5);
+  gtk_widget_ref (password_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "password_box", password_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label10);
-  gtk_box_pack_start (GTK_BOX (hbox6), label10, FALSE, FALSE, 0);
-  gtk_widget_set_usize (label10, 95, -2);
-  gtk_label_set_justify (GTK_LABEL (label10), GTK_JUSTIFY_LEFT);
-  gtk_label_set_line_wrap (GTK_LABEL (label10), TRUE);
+  gtk_widget_show (password_box);
+  gtk_box_pack_start (GTK_BOX (user_data_box), password_box, TRUE, TRUE, 0);
 
-  pro_username = gtk_entry_new_with_max_length (8);
-  gtk_widget_ref (pro_username);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "pro_username", pro_username,
+  password_label = gtk_label_new (_("Password:"));
+  gtk_widget_ref (password_label);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "password_label", password_label,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pro_username);
-  gtk_box_pack_start (GTK_BOX (hbox6), pro_username, TRUE, TRUE, 0);
+  gtk_widget_show (password_label);
+  gtk_box_pack_start (GTK_BOX (password_box), password_label, FALSE, FALSE, 0);
+  gtk_widget_set_usize (password_label, 62, -2);
+  gtk_label_set_justify (GTK_LABEL (password_label), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_alignment (GTK_MISC (password_label), 1, 0.5);
 
-  hbox7 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_ref (hbox7);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "hbox7", hbox7,
+  password_entry = gtk_entry_new ();
+  gtk_widget_ref (password_entry);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "password_entry", password_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (hbox7);
-  gtk_box_pack_start (GTK_BOX (vbox3), hbox7, FALSE, TRUE, 5);
+  gtk_widget_show (password_entry);
+  gtk_box_pack_start (GTK_BOX (password_box), password_entry, FALSE, FALSE, 5);
+  gtk_widget_set_usize (password_entry, 140, -2);
+  gtk_entry_set_visibility (GTK_ENTRY (password_entry), FALSE);
 
-  label11 = gtk_label_new (_("Password:  "));
-  gtk_widget_ref (label11);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label11", label11,
+  confirm_box = gtk_hbox_new (FALSE, 5);
+  gtk_widget_ref (confirm_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "confirm_box", confirm_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label11);
-  gtk_box_pack_start (GTK_BOX (hbox7), label11, FALSE, FALSE, 0);
-  gtk_widget_set_usize (label11, 95, -2);
-  gtk_label_set_justify (GTK_LABEL (label11), GTK_JUSTIFY_LEFT);
-  gtk_label_set_line_wrap (GTK_LABEL (label11), TRUE);
+  gtk_widget_show (confirm_box);
+  gtk_box_pack_start (GTK_BOX (user_data_box), confirm_box, TRUE, TRUE, 0);
 
-  pro_password = gtk_entry_new ();
-  gtk_widget_ref (pro_password);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "pro_password", pro_password,
+  confirm_label = gtk_label_new (_("Confirm:"));
+  gtk_widget_ref (confirm_label);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "confirm_label", confirm_label,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (pro_password);
-  gtk_box_pack_start (GTK_BOX (hbox7), pro_password, TRUE, TRUE, 0);
+  gtk_widget_show (confirm_label);
+  gtk_box_pack_start (GTK_BOX (confirm_box), confirm_label, FALSE, FALSE, 0);
+  gtk_widget_set_usize (confirm_label, 62, -2);
+  gtk_label_set_justify (GTK_LABEL (confirm_label), GTK_JUSTIFY_LEFT);
+  gtk_misc_set_alignment (GTK_MISC (confirm_label), 1, 0.5);
 
-  frame2 = gtk_frame_new (_("Login Type"));
-  gtk_widget_ref (frame2);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "frame2", frame2,
+  confirm_entry = gtk_entry_new ();
+  gtk_widget_ref (confirm_entry);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "confirm_entry", confirm_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (frame2);
-  gtk_box_pack_start (GTK_BOX (vbox3), frame2, FALSE, TRUE, 0);
+  gtk_widget_show (confirm_entry);
+  gtk_box_pack_start (GTK_BOX (confirm_box), confirm_entry, FALSE, FALSE, 5);
+  gtk_widget_set_usize (confirm_entry, 140, -2);
+  gtk_entry_set_visibility (GTK_ENTRY (confirm_entry), FALSE);
 
-  vbox10 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox10);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "vbox10", vbox10,
+  radio_box = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (radio_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "radio_box", radio_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox10);
-  gtk_container_add (GTK_CONTAINER (frame2), vbox10);
-  gtk_container_set_border_width (GTK_CONTAINER (vbox10), 5);
+  gtk_widget_show (radio_box);
+  gtk_box_pack_start (GTK_BOX (user_box), radio_box, FALSE, FALSE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (radio_box), 15);
 
-  radiobutton3 = gtk_radio_button_new_with_label (vbox10_group, _("Normal"));
-  vbox10_group = gtk_radio_button_group (GTK_RADIO_BUTTON (radiobutton3));
-  gtk_widget_ref (radiobutton3);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "radiobutton3", radiobutton3,
+  normal_radio = gtk_radio_button_new_with_label (login_type_group, _("Normal Login"));
+  login_type_group = gtk_radio_button_group (GTK_RADIO_BUTTON (normal_radio));
+  gtk_widget_ref (normal_radio);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "normal_radio", normal_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (radiobutton3);
-  gtk_box_pack_start (GTK_BOX (vbox10), radiobutton3, FALSE, FALSE, 0);
+  gtk_widget_show (normal_radio);
+  gtk_box_pack_start (GTK_BOX (radio_box), normal_radio, FALSE, FALSE, 0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (normal_radio), TRUE);
 
-  radiobutton4 = gtk_radio_button_new_with_label (vbox10_group, _("Guest"));
-  vbox10_group = gtk_radio_button_group (GTK_RADIO_BUTTON (radiobutton4));
-  gtk_widget_ref (radiobutton4);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "radiobutton4", radiobutton4,
+  guest_radio = gtk_radio_button_new_with_label (login_type_group, _("Guest Login"));
+  login_type_group = gtk_radio_button_group (GTK_RADIO_BUTTON (guest_radio));
+  gtk_widget_ref (guest_radio);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "guest_radio", guest_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (radiobutton4);
-  gtk_box_pack_start (GTK_BOX (vbox10), radiobutton4, FALSE, FALSE, 0);
+  gtk_widget_show (guest_radio);
+  gtk_box_pack_start (GTK_BOX (radio_box), guest_radio, FALSE, FALSE, 0);
+
+  buttonbox = gtk_hbutton_box_new ();
+  gtk_widget_ref (buttonbox);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "buttonbox", buttonbox,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (buttonbox);
+  gtk_box_pack_end (GTK_BOX (edit_box), buttonbox, FALSE, FALSE, 0);
+
+  add_button = gtk_button_new_with_label (_("Add"));
+  gtk_widget_ref (add_button);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "add_button", add_button,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (add_button);
+  gtk_container_add (GTK_CONTAINER (buttonbox), add_button);
+  GTK_WIDGET_SET_FLAGS (add_button, GTK_CAN_DEFAULT);
+
+  modify_button = gtk_button_new_with_label (_("Modify"));
+  gtk_widget_ref (modify_button);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "modify_button", modify_button,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (modify_button);
+  gtk_container_add (GTK_CONTAINER (buttonbox), modify_button);
+  GTK_WIDGET_SET_FLAGS (modify_button, GTK_CAN_DEFAULT);
+
+  delete_button = gtk_button_new_with_label (_("Delete"));
+  gtk_widget_ref (delete_button);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "delete_button", delete_button,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (delete_button);
+  gtk_container_add (GTK_CONTAINER (buttonbox), delete_button);
+  GTK_WIDGET_SET_FLAGS (delete_button, GTK_CAN_DEFAULT);
 
   label1 = gtk_label_new (_("Servers"));
   gtk_widget_ref (label1);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label1);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 0), label1);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 0), label1);
 
-  vbox4 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox4);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "vbox4", vbox4,
+  chat_box = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (chat_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "chat_box", chat_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox4);
-  gtk_container_add (GTK_CONTAINER (notebook1), vbox4);
-  gtk_container_set_border_width (GTK_CONTAINER (vbox4), 5);
+  gtk_widget_show (chat_box);
+  gtk_container_add (GTK_CONTAINER (notebook), chat_box);
+  gtk_container_set_border_width (GTK_CONTAINER (chat_box), 5);
 
   hbox8 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox8);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "hbox8", hbox8,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox8);
-  gtk_box_pack_start (GTK_BOX (vbox4), hbox8, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (chat_box), hbox8, FALSE, TRUE, 0);
 
   label12 = gtk_label_new (_("Chat Font: "));
   gtk_widget_ref (label12);
@@ -976,7 +984,7 @@ create_dlg_props (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "chat_table", chat_table,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (chat_table);
-  gtk_box_pack_start (GTK_BOX (vbox4), chat_table, FALSE, FALSE, 4);
+  gtk_box_pack_start (GTK_BOX (chat_box), chat_table, FALSE, FALSE, 4);
 
   ignore_check = gtk_check_button_new_with_label (_("Ignore Join/Part Messages"));
   gtk_widget_ref (ignore_check);
@@ -1028,7 +1036,7 @@ create_dlg_props (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "frame1", frame1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (frame1);
-  gtk_box_pack_start (GTK_BOX (vbox4), frame1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (chat_box), frame1, TRUE, TRUE, 0);
 
   vbox9 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox9);
@@ -1155,28 +1163,28 @@ create_dlg_props (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label2", label2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label2);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 1), label2);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 1), label2);
 
-  vbox6 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox6);
-  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "vbox6", vbox6,
+  userinfo_box = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (userinfo_box);
+  gtk_object_set_data_full (GTK_OBJECT (dlg_props), "userinfo_box", userinfo_box,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox6);
-  gtk_container_add (GTK_CONTAINER (notebook1), vbox6);
+  gtk_widget_show (userinfo_box);
+  gtk_container_add (GTK_CONTAINER (notebook), userinfo_box);
 
   label16 = gtk_label_new (_("All of the following information is optional."));
   gtk_widget_ref (label16);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label16", label16,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label16);
-  gtk_box_pack_start (GTK_BOX (vbox6), label16, FALSE, FALSE, 2);
+  gtk_box_pack_start (GTK_BOX (userinfo_box), label16, FALSE, FALSE, 2);
 
   vbox7 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox7);
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "vbox7", vbox7,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox7);
-  gtk_box_pack_start (GTK_BOX (vbox6), vbox7, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (userinfo_box), vbox7, TRUE, TRUE, 0);
 
   hbox12 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox12);
@@ -1316,7 +1324,7 @@ create_dlg_props (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_props), "label3", label3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label3);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 2), label3);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 2), label3);
 
   dialog_action_area1 = GTK_DIALOG (dlg_props)->action_area;
   gtk_object_set_data (GTK_OBJECT (dlg_props), "dialog_action_area1", dialog_action_area1);
@@ -1357,20 +1365,26 @@ create_dlg_props (void)
   gtk_signal_connect (GTK_OBJECT (dlg_props), "realize",
                       GTK_SIGNAL_FUNC (dlg_props_realize),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (profile_list), "select_row",
-                      GTK_SIGNAL_FUNC (on_profile_list_select_row),
+  gtk_signal_connect (GTK_OBJECT (props_profile_box), "realize",
+                      GTK_SIGNAL_FUNC (props_profile_box_realized),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (button4), "clicked",
+  gtk_signal_connect (GTK_OBJECT (profile_list), "select_row",
+                      GTK_SIGNAL_FUNC (props_profile_list_select),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (profile_entry), "changed",
+                      GTK_SIGNAL_FUNC (props_profile_entry_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (normal_radio), "toggled",
+                      GTK_SIGNAL_FUNC (props_normal_toggled),
+                      dlg_props);
+  gtk_signal_connect (GTK_OBJECT (add_button), "clicked",
                       GTK_SIGNAL_FUNC (props_add_button_clicked),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (button5), "clicked",
+  gtk_signal_connect (GTK_OBJECT (modify_button), "clicked",
                       GTK_SIGNAL_FUNC (props_modify_button_clicked),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (button6), "clicked",
+  gtk_signal_connect (GTK_OBJECT (delete_button), "clicked",
                       GTK_SIGNAL_FUNC (props_delete_button_clicked),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (pro_name), "changed",
-                      GTK_SIGNAL_FUNC (props_pro_name_changed),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (Font_button), "clicked",
                       GTK_SIGNAL_FUNC (props_Font_button_clicked),
