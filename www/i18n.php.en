@@ -15,10 +15,15 @@ GGZ web pages exist in various languages.
 
 <?
 
+echo "PHP configuration (header, footer, news):<br>\n";
 echo "Browser language (high priority): $browserlang<br>\n";
 echo "Browser acceptable languages (medium priority): $acceptlangs<br>\n";
 echo "Default language (low priority): $defaultlang<br>\n";
 echo "Finally selected language: $lang<br>\n";
+echo "<br>\n";
+
+echo "Apache configuration (page contents):<br>\n";
+echo "Finally selected language: $apachelang<br>\n";
 
 ?>
 

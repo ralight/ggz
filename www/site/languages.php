@@ -40,6 +40,9 @@ if ($ar[sizeof($ar) - 2] == "php") :
 	endif;
 endif;
 
+$ar = explode(".", $_SERVER['SCRIPT_FILENAME']);
+$apachelang = $ar[sizeof($ar) - 1];
+
 if ($page) :
 	include($_SERVER['DOCUMENT_ROOT'] . "/site/$page.php.$lang");
 endif;
