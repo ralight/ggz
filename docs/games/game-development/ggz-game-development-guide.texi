@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 @c %**start of header
 @setfilename ggz-game-development-guide.info
-@settitle The GGZ Gaming Zone 0.0.5 - Game Development Guide
+@settitle The GGZ Gaming Zone 0.0.6 - Game Development Guide
 @setchapternewpage odd
 @c %**end of header
 
@@ -15,7 +15,7 @@ Copyright (C) 2002 Josef Spillner
 @c Frontpage
 @titlepage
 @title The GGZ Game Development Guide
-@subtitle Development of games for the GGZ Gaming Zone 0.0.5
+@subtitle Development of games for the GGZ Gaming Zone 0.0.6
 @author Josef Spillner
 
 @c Copyright page
@@ -102,6 +102,66 @@ However, this shouldn't stop anybody of developing great game clients.
 Furthermore, there are some GGZ games which run without a server, or with a
 minimal server which leaves all checks to the game clients.
 
+From version 0.0.6 on, game clients request a separate communication channel
+from the main client, which is connected to the game server directly. This
+leads to a slightly more difficult setup, but allows for higher speed.
+The next section has been added to document this.
+
+@section The client base library: libggzmod
+
+This is a short description of ggzmod. Please see the API documentation for
+details.
+
+A launched game client gets a control channel on its way, which it connects to
+a callback to receive control messages.
+Then it requests a direct game connection, which results in the creation of a
+game channel, which gets connected to a callback too.
+This game channel is then used to communicate with the game server.
+
+A basic ggzmod usage may look like this:
+
+@verbatim
+static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data)
+{
+}
+
+static void handle_ggz(gpointer data, gint source, GdkInputCondition cond);
+{
+}
+
+static void handle_ggz(gpointer data, gint source, GdkInputCondition cond)
+{
+	ggzmod_dispatch(ggzmod);
+}
+
+static void handle_ggzmod_server(GGZMod * ggzmod, GGZModEvent e, void *data)
+{
+	int fd = (int)data;
+	ggzmod_set_state(ggzmod, GGZMOD_STATE_PLAYING);
+	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
+}
+
+int main()
+{
+...
+	GGZMod *ggzmod;
+
+	ggzmod = ggzmod_new(GGZMOD_GAME);
+	ggzmod_set_handler(ggzmod, GGZMOD_EVENT_SERVER, &handle_ggzmod_server);
+...
+	ggzmod_connect(ggzmod);
+	gdk_input_add(ggzmod_get_fd(ggzmod), GDK_INPUT_READ, handle_ggz, NULL);
+...
+	ggzmod_disconnect(ggzmod)
+	ggzmod_free(game.ggzmod);
+...
+}
+@end verbatim
+
+(Note that this is for a Gtk+ game client written in C. Things will differ for
+other toolkits like Qt, and other programming languages like C++. Also, return
+values should be checked and such.)
+
 @section Game Registry
 
 Every game client must be registered in order to be found by the GGZ core
@@ -144,7 +204,7 @@ You will most likely be interested in using Qt classes for OpenGL or sprite
 animations, so get yourself a copy of the Qt documentation.
 
 The GGZ games KReversi, KDots, KTicTacTux, Krosswater, Muehle, Keepalive,
-Koenig, Kamikaze and Copenhagen are have been written using KDE/Qt as development
+Koenig, Kamikaze and Copenhagen have been written using KDE/Qt as development
 framework.
 
 @subsection Gtk+, Gnome (C), Gtk-- (C++)
@@ -152,12 +212,19 @@ framework.
 There are several useful libraries for Gtk+, including GtkGLArea.
 Examples of Gtk+ GGZ games are TicTacToe, NetSpades, LaPocha, Connect the Dots,
 Hastings, Reversi, Combat, Chinese Checkers, Chess and GGZCards.
+T.E.G. is an example for a Gnome game.
 
 @subsection SDL (C, C++, Python)
 
 SDL is a proven toolkit for game development, with tons of games already
 available. See @url{http://www.libsdl.org} for a list of them.
 The GGZ game Stalker has been written using SDL.
+
+@subsection Others
+
+It does really not matter which toolkit one chooses. Therefore, Mesa3D (an
+OpenGL implementation), PLib, GLUT, Pygame and others are worth to have a look
+at.
 
 @node Game Servers, Programming Details, Game Clients, Top
 @chapter Game Servers
@@ -188,6 +255,44 @@ In order to ease game development, the ggzdmod library has been written, which
 comes with extensive documentation.
 See @url{http://ggz.sourceforge.net/api/ggzdmod/html/ggzdmod_8h.html} for the
 online documentation, which is also available as man page (man 3 ggzdmod.h).
+
+@section The server base library: libggzdmod
+
+In order to be informed about player joins and leaves, and the status of the
+game (running, done, ...), the ggzdmod library is essential to use.
+
+This is how a simple C game server embeds the necessary function calls:
+
+@verbatim
+static void callback_state(GGZdMod *ggz, GGZdModEvent event, void *data)
+{
+	/* Evaluate state */
+}
+
+int main()
+{
+...
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_STATE, callback_state);
+...
+}
+@end verbatim
+
+@section Game statistics: libggzstats
+
+GGZ game servers can use the ggzstats library which offers various statistic
+types. For example, the ELO ranking and win/loss ratios are supported.
+
+A typical scenario is the following one:
+
+@verbatim
+GGZStats *stats;
+
+stats = ggzstats_new(ggzmod);
+ggzstats_set_game_winner(stats, winner, 1.0);
+ggzstats_set_game_winner(stats, (winner + 1) % 2, 0.0);
+ggzstats_recalculate_ratings(stats);
+ggzstats_free(stats);
+@end verbatim
 
 @section Configuration Files
 
@@ -262,7 +367,7 @@ implementation, which will come with a native game server interface.
 
 @section General purpose wrappers
 
-GGZ as of version 0.0.5 provides two wrappers which make life easier for game
+GGZ as of version 0.0.6 provides two wrappers which make life easier for game
 developers. Either of these wrappers replaces a game of choice, while the game
 itself is kept to be launched by the wrapper then.
 
