@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.c 3141 2002-01-19 08:11:05Z bmh $
+ * $Id: io.c 3177 2002-01-23 05:00:41Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -239,7 +239,7 @@ static int _io_read_msg_log(GGZdMod * ggzdmod)
 		return -1;
 	else {
 		_ggzdmod_handle_log(ggzdmod, msg);
-		free(msg);
+		ggz_free(msg);
 	}
 	
 	return 0;
@@ -273,7 +273,7 @@ static int _io_read_req_launch(GGZdMod * ggzdmod)
 
 		/* Free up name (if it was allocated) */
 		if (seat.name)
-			free(seat.name);
+			ggz_free(seat.name);
 	}
 
 	_ggzdmod_handle_launch_end(ggzdmod);
@@ -295,7 +295,7 @@ static int _io_read_req_join(GGZdMod * ggzdmod)
 		return -1;
 	else {
 		_ggzdmod_handle_join(ggzdmod, seat);
-		free(seat.name);
+		ggz_free(seat.name);
 		return 0;
 	}
 }
@@ -309,7 +309,7 @@ static int _io_read_req_leave(GGZdMod * ggzdmod)
 		return -1;
 
 	_ggzdmod_handle_leave(ggzdmod, name);
-	free(name);
+	ggz_free(name);
 
 	return 0;
 }

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 3141 2002-01-19 08:11:05Z bmh $
+ * $Id: ggzdmod.c 3177 2002-01-23 05:00:41Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -989,7 +989,7 @@ void _ggzdmod_handle_launch_seat(GGZdMod * ggzdmod, GGZSeat seat)
 #if 0		
 		seat.name = "AI";
 		len = strlen(rand_bot_names[bots]) + 4;
-		seat.name = malloc(len);
+		seat.name = ggz_malloc(len);
 
 		snprintf(seat.name, len, "%s-AI",
 			 rand_bot_names[bots]);

@@ -87,7 +87,7 @@ int handle_game_join(void)
 	}
 	
 	printf("Received %s on %d in seat %d\n", name, pfd, num);
-	free(name);
+	ggz_free(name);
 	
 	if (ggz_write_int(fd, RSP_GAME_JOIN) < 0
 	    || ggz_write_char(fd, 0)) {
