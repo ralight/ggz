@@ -1338,18 +1338,30 @@ static int player_msg_from_sized(int in, int out)
 
 static int player_chat(int p_index, int p_fd) 
 {
-	char* msg;
+	unsigned char subop;
+	char *msg=NULL, t_player[MAX_USER_NAME_LEN+1];
 	int status;
+
+	if(es_read_char(p_fd, &subop) < 0)
+		return GGZ_REQ_DISCONNECT;
 
 	dbg_msg(GGZ_DBG_CHAT, "Handling chat for player %d", p_index);
 
-	if((msg = malloc(MAX_CHAT_LEN)+1) == NULL)
-		err_sys_exit("malloc error in player_chat()");
-	if (es_read_string(p_fd, msg, MAX_CHAT_LEN+1) < 0) {
-		free(msg);
-		return GGZ_REQ_DISCONNECT;
+	/* Get arguments if they are used for this subop */
+	if(subop & GGZ_CHAT_M_PLAYER) {
+		if(es_read_string(p_fd, t_player, MAX_USER_NAME_LEN+1) < 0)
+			return GGZ_REQ_DISCONNECT;
+	}
+	if(subop & GGZ_CHAT_M_MESSAGE) {
+		if((msg = malloc(MAX_CHAT_LEN)+1) == NULL)
+			err_sys_exit("malloc error in player_chat()");
+		if (es_read_string(p_fd, msg, MAX_CHAT_LEN+1) < 0) {
+			free(msg);
+			return GGZ_REQ_DISCONNECT;
+		}
 	}
 
+	/* Verify that we are in a regular room */
 	/* No lock needed, no one can change our room but us */
 	if (players.info[p_index].room == -1) {
 		dbg_msg(GGZ_DBG_CHAT, 
@@ -1362,9 +1374,20 @@ static int player_chat(int p_index, int p_fd)
 		return GGZ_REQ_FAIL;
 	}
 		
-	dbg_msg(GGZ_DBG_CHAT, "Player %d sends %s", p_index, msg);
 	
-	status = room_emit(players.info[p_index].room, p_index, msg);
+	switch(subop) {
+		case GGZ_CHAT_NORMAL:
+			dbg_msg(GGZ_DBG_CHAT, "Player %d sends %s",
+					      p_index, msg);
+			status = room_emit(players.info[p_index].room,
+					   p_index, msg);
+			break;
+		default:
+			dbg_msg(GGZ_DBG_PROTOCOL,
+				"Player %d (uid %d) sent invalid chat subop %d",
+				p_index, players.info[p_index].uid, subop);
+			status = E_BAD_OPTIONS;
+	}
 
 	if (es_write_int(p_fd, RSP_CHAT) < 0
 	    || es_write_char(p_fd, status) < 0)

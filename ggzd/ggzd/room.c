@@ -415,6 +415,7 @@ int room_send_chat(const int p_index, const int fd)
 	while(cur_chat) {
 		/* We obviously have a reference to it, so it can't change */
 		if(es_write_int(fd, MSG_CHAT) < 0
+		   || es_write_char(fd, GGZ_CHAT_NORMAL) < 0
 		   || es_write_string(fd, cur_chat->chat_sender) < 0
 		   || es_write_string(fd, cur_chat->chat_msg) < 0)
 			return GGZ_REQ_DISCONNECT;
