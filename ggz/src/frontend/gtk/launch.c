@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 4594 2002-09-17 01:54:04Z jdorje $
+ * $Id: launch.c 4877 2002-10-12 05:49:45Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -379,7 +379,6 @@ GtkWidget *create_dlg_launch(void)
 	dlg_launch = gtk_dialog_new();
 	gtk_object_set_data(GTK_OBJECT(dlg_launch), "dlg_launch", dlg_launch);
 	gtk_window_set_title(GTK_WINDOW(dlg_launch), _("Seat Assignments"));
-	GTK_WINDOW(dlg_launch)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dlg_launch), FALSE, TRUE, TRUE);
 
 	vbox1 = GTK_DIALOG(dlg_launch)->vbox;
