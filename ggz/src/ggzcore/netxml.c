@@ -1154,8 +1154,9 @@ static void _ggzcore_net_table_update(GGZNet *net, GGZXMLElement *update, char *
 		_ggzcore_table_set_desc(table, table_data->desc);
 	}
 	else if (strcmp(action, "seat") == 0) {
-		for (i = 0; i < table_data->num_seats; i++)
-			_ggzcore_table_set_seat(table, &table_data->seats[i]);
+		for (i = 0; i < table_data->num_seats; i++) 
+			if (table_data->seats[i].type != GGZ_SEAT_NONE)
+				_ggzcore_table_set_seat(table, &table_data->seats[i]);
 	}
 			
 	if (table_data)
