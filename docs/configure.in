@@ -3,7 +3,7 @@ dnl =======================================
 
 AC_INIT(configure.in)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(ggz-docs,0.0.5pre)
+AM_INIT_AUTOMAKE(ggz-docs,0.0.5)
 
 dnl Options for building GGZ-Docs
 dnl =============================
@@ -20,8 +20,8 @@ dnl Apply options
 dnl =============
 
 if test "$enable_guides" = yes; then
-	ggzgamedevelopmentguide="ggz-game-development-guide.ps"
-	ggzhostingguide="ggz-hosting-guide.ps"
+	ggzgamedevelopmentguide="ggz-game-development-guide.ps ggz-game-development-guide.html"
+	ggzhostingguide="ggz-hosting-guide.ps ggz-hosting-guide.html"
 fi
 AC_SUBST(ggzgamedevelopmentguide)
 AC_SUBST(ggzhostingguide)
