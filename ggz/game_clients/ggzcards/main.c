@@ -36,6 +36,7 @@
 #include <unistd.h>
 
 #include <easysock.h>
+#include <ggz_client.h>
 
 #include "main.h"
 #include "dlg_main.h"
@@ -47,7 +48,6 @@
 GtkWidget *dlg_main = NULL;
 
 /* Private functions */
-static void ggz_connect(void);
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond);
 static void game_init(void);
 static int get_players(void);
@@ -65,10 +65,12 @@ int main(int argc, char *argv[])
 	gtk_init(&argc, &argv);
 	ggz_debug("gtk_init completed.");
 
-	ggz_connect();
-	ggz_debug("ggz_connect completed.");
+	ggz_client_init("GGZCards");
+	game.fd = ggz_client_connect();
+	if (game.fd < 0)
+		exit(-1);
+
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
-	ggz_debug("ggz_input_add completed.");
 
 	/* this shouldn't go here, but I see no better place right now */
 	fixed_font_style = gtk_rc_style_new ();
@@ -87,31 +89,9 @@ int main(int argc, char *argv[])
 
 	gtk_main();
 	ggz_debug("Exiting normally.");
+
+	ggz_client_quit();
 	return 0;
-}
-
-
-static void ggz_connect(void)
-{
-	char fd_name[30];
-	struct sockaddr_un addr;
-
-	/* Connect to Unix domain socket */
-	ggz_snprintf(fd_name, sizeof(fd_name), "/tmp/GGZCards.%d", getpid());
-
-	if((game.fd = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) {
-		ggz_debug("ggz_connect(): no socket.  exit(-1).");
-		exit(-1);
-	}
-
-	bzero(&addr, sizeof(addr));
-	addr.sun_family = AF_LOCAL;
-	strncpy(addr.sun_path, fd_name, 30);
-
-	if(connect(game.fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-		ggz_debug("ggz_connect: no connection.  exit(-1).");
-		exit(-1);
-	}
 }
 
 static int handle_message_global()
