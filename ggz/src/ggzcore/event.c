@@ -80,6 +80,7 @@ struct _GGZEvent {
 static struct _GGZEvent ggz_events[] = {
 	{GGZ_SERVER_CONNECT,        "server_connect",        1},
 	{GGZ_SERVER_CONNECT_FAIL,   "server_connect_fail",   1},
+	{GGZ_SERVER_MOTD        ,   "server_motd",           1},
 	{GGZ_SERVER_LOGIN,          "server_login_ok",       1},
 	{GGZ_SERVER_LOGIN_FAIL,     "server_login_fail",     1},
 	{GGZ_SERVER_LIST_ROOMS,     "server_list_rooms",     1},

@@ -346,14 +346,23 @@ static void _ggzcore_net_handle_login_anon(void)
 static void _ggzcore_net_handle_motd(void)
 {
 	int i, lines;
-	char buf[4096];
+	char **motd;
 
 	/* FIXME: check for errors */
-	es_read_int(ggz_server_sock, &lines);
-	for (i = 0; i < lines; i++)
-		es_read_string(ggz_server_sock, buf, 4096);
+	if (es_read_int(ggz_server_sock, &lines) < 0)
+		return;
 
-	/* FIXME: trigger MOTD event */
+	if (!(motd = calloc((lines+1), sizeof(char*))))
+		ggzcore_error_sys_exit("calloc() failed in net_handle_motd");
+	
+	for (i = 0; i < lines; i++)
+		if (es_read_string_alloc(ggz_server_sock, &motd[i]) < 0)
+			return;
+	
+	ggzcore_debug(GGZ_DBG_NET, "MSG_MOTD from server : %d lines", lines);
+
+	/* FIXME: use argv free function */
+	ggzcore_event_trigger(GGZ_SERVER_MOTD, motd, NULL);
 }
 
 
