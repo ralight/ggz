@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.h 2453 2001-09-11 19:20:55Z jdorje $
+ * $Id: net.h 2499 2001-09-19 06:25:26Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -30,16 +30,33 @@
 
 #include "types.h"
 
-int send_player_list(player_t);
+/* Functions to send packets to the client. */
+
+int send_player_list(player_t p);
+
 int send_play(card_t card, seat_t);
-int send_table(player_t);
-int send_sync(player_t);
-int send_sync_all();
+
 int send_gameover(int winner_cnt, player_t * winners);
-int req_play(player_t, seat_t);
-int rec_play(player_t);
-int send_badplay(player_t, char *);
-int send_hand(player_t, seat_t, int);
-int req_newgame(player_t);
-int send_newgame(void);
+
+int send_table(player_t p);
+
+int send_sync(player_t p);
+
+int send_sync_all(void);
+
+int req_play(player_t p, seat_t s);
+
+int send_badplay(player_t p, char * msg);
+
+int send_hand(player_t p, seat_t s, int reveal);
+
 int send_trick(player_t winner);
+
+int req_newgame(player_t p);
+
+int send_newgame(void);
+
+
+/* Functions to receive packets from the client. */
+
+int rec_play(player_t p);
