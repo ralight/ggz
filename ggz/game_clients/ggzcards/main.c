@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 4882 2002-10-12 19:36:19Z jdorje $
+ * $Id: main.c 4902 2002-10-13 08:06:19Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -259,10 +259,8 @@ static void on_mnu_messages_activate(GtkMenuItem * menuitem,
 
 static void verify_msg_menu(void)
 {
-	if (msg_menu == NULL) {
-		msg_menu =
-			gtk_object_get_data(GTK_OBJECT(dlg_main),
-					    "mnu_messages_menu");
+	if (msg_menu == NULL) {	
+		msg_menu = get_menu_item(_("<main>/Messages"));
 		assert(msg_menu);
 	}
 }

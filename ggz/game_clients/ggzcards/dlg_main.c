@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 4869 2002-10-11 23:16:04Z jdorje $
+ * $Id: dlg_main.c 4902 2002-10-13 08:06:19Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -43,67 +43,55 @@
 #include "layout.h"
 #include "table.h"
 
+static GtkItemFactory *menu;
 
-#if 0				/* GTK Item factory -- incomplete */
-
-/* FIXME: i18n with the GtkItemFactory system */
-
-static GtkItemFactoryEntry menu_items[] = {
-	/* Game menu */
-	{"/_Game", NULL, NULL, 0, "<Branch>"},
-	{"/Game/_Start Game", NULL, NULL, 0, NULL},
-	{"/Game/S_ync", NULL, NULL, 0, NULL},
-	{"/Game/_Preferences", NULL, NULL, 0, NULL},
-	{"/Game/Player _List", NULL, NULL, 0, NULL},
-	{"/Game/_Force Redraw", NULL, NULL, 0, NULL},
-	{"/Game/_Exit", "<alt>F4", NULL, 0, NULL},
-
-	/* Messages menu */
-	{"/_Messages", NULL, NULL, 0, "<Branch>"},
-
-	/* Help menu */
-	{"/_Help", NULL, NULL, 0, "<Branch>"},
-	{"/_About", NULL, NULL, 0, NULL}
-};
-
-static GtkWidget *create_menus(GtkWidget * window)
+static GtkWidget *create_menus(GtkWidget *window)
 {
 	GtkAccelGroup *accel_group;
-	GtkWidget *menu_bar;
-	GtkItemFactory *mbar;
-
-	int num_items = sizeof(menu_items) / sizeof(menu_items[0]);
+	GtkItemFactoryEntry items[] = {
+	  {_("/_Table"), NULL, NULL, 0, "<Branch>"},
+	  {_("/Table/Player _list"), "<ctrl>L",
+	   on_mnu_playerlist_activate, 0, NULL},
+	  {_("/Table/_Sync with server"), "<ctrl>S",
+	   on_mnu_sync_activate, 0, NULL},
+	  {_("/Table/E_xit"), "<ctrl>X", on_mnu_exit_activate, 0, NULL},
+	  {_("/_Game"), NULL, NULL, 0, "<Branch>"},
+	  {_("/Game/Start game"), "<ctrl>N",
+	   on_mnu_startgame_activate, 0, NULL},
+#ifdef DEBUG
+	  {_("/Game/Force _redraw"), "<ctrl>R",
+	   on_mnu_forceredraw_activate, 0, NULL},
+#endif
+	  {_("/_Messages"), NULL, NULL, 0, "<Branch>"},
+	  {_("/_Options"), NULL, NULL, 0, "<Branch>"},
+	  {_("/Options/_Preferences"), "<ctrl>P",
+	   on_mnu_preferences_activate, 0, NULL},
+	  {_("/_Help"), NULL, NULL, 0, "<LastBranch>"},
+	  {_("/Help/_About"), "<ctrl>A", on_mnu_about_activate, 0, NULL}
+	};
+	const int num = sizeof(items) / sizeof(items[0]);
 
 	accel_group = gtk_accel_group_new();
-	mbar = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
-	gtk_item_factory_create_items(mbar, num_items, menu_items, NULL);
-	gtk_accel_group_attach(accel_group, GTK_OBJECT(window));
 
-	return gtk_item_factory_get_widget(mbar, "<main>");
+	menu = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
+	gtk_item_factory_create_items(menu, num, items, NULL);
+	gtk_window_add_accel_group(GTK_WINDOW(window), accel_group);
+
+	gtk_object_set_data(GTK_OBJECT(window), "mbar", menu);
+
+	return gtk_item_factory_get_widget(menu, "<main>");
 }
 
-#endif
+GtkWidget *get_menu_item(const char *item)
+{
+	return gtk_item_factory_get_widget(menu, item);
+}
 
 GtkWidget *create_dlg_main(void)
 {
 	GtkWidget *dlg_main;
 	GtkWidget *vbox1;
-	GtkWidget *menubar1;
-	GtkWidget *mnu_game;
-	GtkWidget *mnu_game_menu;
-	GtkWidget *mnu_startgame;
-	GtkWidget *mnu_sync;
-	GtkWidget *mnu_preferences;
-	GtkWidget *mnu_playerlist;
-#ifdef DEBUG
-	GtkWidget *mnu_forceredraw;
-#endif /* DEBUG */
-	GtkWidget *mnu_exit;
-	GtkWidget *mnu_messages_menu;
-	GtkWidget *mnu_messages;
-	GtkWidget *mnu_help;
-	GtkWidget *mnu_help_menu;
-	GtkWidget *mnu_about;
+	GtkWidget *menubar;
 	GtkWidget *fixed1;
 	GtkWidget *statusbar1;
 	GtkWidget *messagebar;
@@ -122,134 +110,13 @@ GtkWidget *create_dlg_main(void)
 	gtk_widget_show(vbox1);
 	gtk_container_add(GTK_CONTAINER(dlg_main), vbox1);
 
-	menubar1 = gtk_menu_bar_new();
-	gtk_widget_set_name(menubar1, "menubar1");
-	gtk_widget_ref(menubar1);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "menubar1", menubar1,
+	menubar = create_menus(dlg_main);
+	gtk_widget_set_name(menubar, "menubar");
+	gtk_widget_ref(menubar);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "menubar", menubar,
 				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(menubar1);
-	gtk_box_pack_start(GTK_BOX(vbox1), menubar1, FALSE, FALSE, 0);
-
-	/* Create "Game" menu label. */
-	mnu_game = gtk_menu_item_new_with_label(_("Game"));
-	gtk_widget_set_name(mnu_game, "mnu_game");
-	gtk_widget_ref(mnu_game);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_game", mnu_game,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(mnu_game);
-	gtk_container_add(GTK_CONTAINER(menubar1), mnu_game);
-
-	/* Create "Game" menu dropdown. */
-	mnu_game_menu = gtk_menu_new();
-	gtk_widget_set_name(mnu_game_menu, "mnu_game_menu");
-	gtk_widget_ref(mnu_game_menu);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_game_menu",
-				 mnu_game_menu,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mnu_game), mnu_game_menu);
-
-	/* Add "start game" selection to "game" menu. */
-	mnu_startgame = gtk_menu_item_new_with_label(_("Start Game"));
-	gtk_widget_set_name(mnu_startgame, "mnu_startgame");
-	gtk_widget_ref(mnu_startgame);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_startgame",
-				 mnu_startgame,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(mnu_startgame);
-	gtk_widget_set_sensitive(mnu_startgame, FALSE);
-	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_startgame);
-
-	/* Add "Sync" selection to "Game" menu. */
-	mnu_sync = gtk_menu_item_new_with_label(_("Sync"));
-	gtk_widget_set_name(mnu_sync, "mnu_sync");
-	gtk_widget_ref(mnu_sync);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_sync", mnu_sync,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(mnu_sync);
-	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_sync);
-
-	/* Add "Preferences" selection to "Game" menu. */
-	mnu_preferences = gtk_menu_item_new_with_label(_("Preferences"));
-	gtk_widget_set_name(mnu_preferences, "mnu_preferences");
-	gtk_widget_ref(mnu_preferences);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_preferences",
-				 mnu_preferences,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(mnu_preferences);
-	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_preferences);
-
-	/* Add "Player list" selection to "Game" menu. */
-	mnu_playerlist = gtk_menu_item_new_with_label(_("Player List"));
-	gtk_widget_set_name(mnu_playerlist, "mnu_playerlist");
-	gtk_widget_ref(mnu_playerlist);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_playerlist",
-				 mnu_playerlist,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(mnu_playerlist);
-	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_playerlist);
-
-#ifdef DEBUG
-	/* Add "Force Redraw" selection to "Game" menu. */
-	mnu_forceredraw = gtk_menu_item_new_with_label(_("Force Redraw"));
-	gtk_widget_set_name(mnu_forceredraw, "mnu_forceredraw");
-	gtk_widget_ref(mnu_forceredraw);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_forceredraw",
-				 mnu_forceredraw,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(mnu_forceredraw);
-	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_forceredraw);
-#endif /* DEBUG */
-
-	/* Add "Exit" selection to "Game" menu. */
-	mnu_exit = gtk_menu_item_new_with_label(_("Exit"));
-	gtk_widget_set_name(mnu_exit, "mnu_exit");
-	gtk_widget_ref(mnu_exit);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_exit", mnu_exit,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(mnu_exit);
-	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_exit);
-
-	mnu_messages = gtk_menu_item_new_with_label(_("Messages"));
-	gtk_widget_set_name(mnu_messages, "mnu_messages");
-	gtk_widget_ref(mnu_messages);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_messages",
-				 mnu_messages,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(mnu_messages);
-	gtk_container_add(GTK_CONTAINER(menubar1), mnu_messages);
-
-	mnu_messages_menu = gtk_menu_new();
-	gtk_widget_set_name(mnu_messages_menu, "mnu_messages_menu");
-	gtk_widget_ref(mnu_messages_menu);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_messages_menu",
-				 mnu_messages_menu,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mnu_messages),
-				  mnu_messages_menu);
-
-	mnu_help = gtk_menu_item_new_with_label(_("Help"));
-	gtk_widget_set_name(mnu_help, "mnu_help");
-	gtk_widget_ref(mnu_help);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_help", mnu_help,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(mnu_help);
-	gtk_container_add(GTK_CONTAINER(menubar1), mnu_help);
-
-	mnu_help_menu = gtk_menu_new();
-	gtk_widget_set_name(mnu_help_menu, "mnu_help_menu");
-	gtk_widget_ref(mnu_help_menu);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_help_menu",
-				 mnu_help_menu,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mnu_help), mnu_help_menu);
-
-	mnu_about = gtk_menu_item_new_with_label(_("About"));
-	gtk_widget_set_name(mnu_about, "mnu_about");
-	gtk_widget_ref(mnu_about);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_about", mnu_about,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(mnu_about);
-	gtk_container_add(GTK_CONTAINER(mnu_help_menu), mnu_about);
+	gtk_widget_show(menubar);
+	gtk_box_pack_start(GTK_BOX(vbox1), menubar, FALSE, FALSE, 0);
 
 	fixed1 = gtk_fixed_new();
 	gtk_widget_set_name(fixed1, "fixed1");
@@ -280,27 +147,6 @@ GtkWidget *create_dlg_main(void)
 
 	(void) gtk_signal_connect(GTK_OBJECT(dlg_main), "delete_event",
 				  GTK_SIGNAL_FUNC(on_dlg_main_delete_event),
-				  NULL);
-	(void) gtk_signal_connect(GTK_OBJECT(mnu_startgame), "activate",
-				  GTK_SIGNAL_FUNC(on_mnu_startgame_activate),
-				  NULL);
-	(void) gtk_signal_connect(GTK_OBJECT(mnu_sync), "activate",
-				  GTK_SIGNAL_FUNC(on_mnu_sync_activate), NULL);
-	(void) gtk_signal_connect(GTK_OBJECT(mnu_preferences), "activate",
-				  GTK_SIGNAL_FUNC
-				  (on_mnu_preferences_activate), NULL);
-	(void) gtk_signal_connect(GTK_OBJECT(mnu_playerlist), "activate",
-				  GTK_SIGNAL_FUNC(on_mnu_playerlist_activate),
-				  NULL);
-#ifdef DEBUG
-	(void) gtk_signal_connect(GTK_OBJECT(mnu_forceredraw), "activate",
-				  GTK_SIGNAL_FUNC
-				  (on_mnu_forceredraw_activate), NULL);
-#endif /* DEBUG */
-	(void) gtk_signal_connect(GTK_OBJECT(mnu_exit), "activate",
-				  GTK_SIGNAL_FUNC(on_mnu_exit_activate), NULL);
-	(void) gtk_signal_connect(GTK_OBJECT(mnu_about), "activate",
-				  GTK_SIGNAL_FUNC(on_mnu_about_activate),
 				  NULL);
 	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "button_press_event",
 				  GTK_SIGNAL_FUNC
