@@ -1,42 +1,53 @@
 dnl Process this file with autoconf to produce a configure script.
+dnl $Id: configure.ac 5701 2003-12-04 23:29:31Z jdorje $
 
-AC_INIT(configure.ac)
+AC_INIT
+AC_CONFIG_SRCDIR([configure.ac])
 AM_INIT_AUTOMAKE(libggz, 0.0.7)
-AM_CONFIG_HEADER(config.h)
+AM_CONFIG_HEADER([config.h])
 AM_MAINTAINER_MODE
 
-dnl Checks for programs
-dnl ===================
+
+# Checks for programs
+# ===================
 AC_PROG_CC
+AC_PROG_CXX
 AC_ISC_POSIX
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_CPP
 AM_PROG_CC_STDC
 AM_PROG_LIBTOOL
+AC_PROG_RANLIB
 AC_PROG_MAKE_SET
 
 
-dnl Compiling Options
-dnl =================
+# Compiling Options
+# =================
 AC_ARG_WITH([gcrypt],
 	    AC_HELP_STRING([--with-gcrypt], [Add encryption support]),
 	    [enable_gcrypt=yes], [enable_gcrypt=no])
 
 
-dnl Check for header files
-dnl ======================
-AC_HEADER_STDC
+# Check for header files
+# ======================
+AC_CHECK_HEADERS([fcntl.h netdb.h netinet/in.h sys/param.h sys/socket.h \
+                  syslog.h sys/wait.h], [],
+                 [AC_MSG_ERROR([cannot find required header file])])
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS([errno.h fcntl.h stdlib.h string.h unistd.h])
 
-dnl Check for typedefs, structures, and compiler characteristics
-dnl ============================================================
+
+# Check for typedefs, structures, and compiler characteristics
+# ============================================================
 AC_C_CONST
 AC_TYPE_MODE_T
+AC_TYPE_PID_T
+AC_TYPE_SIGNAL
+AC_TYPE_SIZE_T
 
-dnl Signedness overrides
-dnl ====================
+
+# Signedness overrides
+# ====================
 save_cflags=$CFLAGS
 CFLAGS="-Wall -Werror"
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
@@ -45,25 +56,30 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 	[save_cflags="$save_cflags -fsigned-char"])
 CFLAGS=$save_cflags
 
-dnl Check for PF_LOCAL/PF_UNIX
-dnl ==========================
+
+# Check for PF_LOCAL/PF_UNIX
+# ==========================
+# There should be an autoconf macro to check this???
 AC_MSG_CHECKING([for PF_LOCAL])
-AC_EGREP_CPP(PF_LOCAL, [ #include <sys/socket.h>
-                 PF_LOCAL ], [AC_MSG_RESULT(no) 
-			     AC_MSG_CHECKING([for PF_UNIX])
-			     AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
-				          PF_UNIX ], AC_MSG_RESULT(no)
-				                     AC_MSG_ERROR([*** Cannot PF_LOCAL or PF_UNIX]),
-                                          AC_MSG_RESULT(yes)
-					  AC_DEFINE([PF_LOCAL], PF_UNIX,
-						    [PF_UNIX is available])
-			                  AC_DEFINE([AF_LOCAL], AF_UNIX,
-						    [AF_UNIX is available]))], 
+AC_EGREP_CPP(PF_LOCAL,
+             [#include <sys/socket.h>
+              PF_LOCAL ],
+             [AC_MSG_RESULT(no)
+              AC_MSG_CHECKING([for PF_UNIX])
+              AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
+				      PF_UNIX ],
+                           [AC_MSG_RESULT(no)
+			    AC_MSG_ERROR([cannot find PF_LOCAL or PF_UNIX])],
+                           [AC_MSG_RESULT(yes)
+                            AC_DEFINE([PF_LOCAL], PF_UNIX,
+				      [PF_UNIX is available])
+			    AC_DEFINE([AF_LOCAL], AF_UNIX,
+				      [AF_UNIX is available])])], 
              AC_MSG_RESULT(yes))
 
 
-dnl Check for SUN_LEN
-dnl =================
+# Check for SUN_LEN
+# =================
 AC_MSG_CHECKING([for SUN_LEN])
 AC_TRY_LINK([#include<sys/types.h>
 	     #include<sys/un.h>
@@ -74,8 +90,8 @@ AC_TRY_LINK([#include<sys/types.h>
     AC_MSG_RESULT(no))
 
 
-dnl Check for msghdr member msg_controllen
-dnl ======================================
+# Check for msghdr member msg_controllen
+# ======================================
 AC_EGREP_HEADER(msg_controllen, sys/socket.h,
 		AC_DEFINE([HAVE_MSGHDR_MSG_CONTROL], 1,
 			  [Define if msghdr has a msg_controllen member])
@@ -109,30 +125,27 @@ AC_EGREP_HEADER(msg_controllen, sys/socket.h,
 )
 
 
-dnl Check for library functions
-dnl ===========================
-dnl AC_FUNC_MALLOC
-dnl AC_FUNC_STAT
-AC_CHECK_FUNCS([memset mkdir strdup strerror malloc stat poll])
+# Check for library functions
+# ===========================
+# On some systems additional libraries may be needed.  Simply include them
+# if they're there.
+AC_CHECK_LIB(socket, socket, [LDADD="$LDADD -lsocket"])
+AC_CHECK_LIB(nsl, gethostbyname, [LDADD="$LDADD -lnsl"])
+
+AC_CHECK_FUNCS([alarm gethostbyname getpagesize memmove memset mkdir socket \
+                stat strcasecmp strerror strstr], [],
+               [AC_MSG_ERROR([cannot find required function])])
+AC_FUNC_FORK
+AC_FUNC_MALLOC
+AC_FUNC_MEMCMP
+AC_FUNC_REALLOC
+AC_FUNC_STAT
 
 AC_REPLACE_FUNCS([strsep])
 
-AC_CHECK_FUNC(socket, ,
-    [AC_CHECK_LIB(socket, socket,
-	[AC_CHECK_HEADER(sys/socket.h, LDADD="-lsocket",
-	    AC_MSG_ERROR(*** Cannot find socket headers ); exit )],
-	AC_MSG_ERROR(*** Cannot find socket library ); exit )])
 
-AC_CHECK_FUNC(gethostbyname, ,
-    [AC_CHECK_LIB(nsl, gethostbyname, LDADD="$LDADD -lnsl",
-	AC_MSG_ERROR(*** Cannot find nsl library ); exit )])
-
-AC_CHECK_FUNC(inet_ntoa, ,
-    [AC_CHECK_LIB(nsl, inet_ntoa, LDADD="$LDADD -lnsl",
-	AC_MSG_ERROR(*** Cannot find nsl library ); exit )])
-
-dnl Find pthread library
-dnl ====================
+# Find pthread library
+# ====================
 AC_CHECK_HEADER(pthread.h,
     [AC_CHECK_LIB(pthread, pthread_create,
         LDADD="$LDADD -lpthread"
@@ -143,8 +156,8 @@ AC_CHECK_HEADER(pthread.h,
             AC_MSG_ERROR(*** Cannot find pthread library); exit)])],
     AC_MSG_ERROR(*** Cannot find pthread.h header); exit)
 
-dnl Encryption library: libgcrypt
-dnl =============================
+# Encryption library: libgcrypt
+# =============================
 SRCSUBDIRS="."
 if test "$enable_gcrypt" = yes; then
   AC_CHECK_LIB(gcrypt, gcry_check_version,
@@ -164,15 +177,15 @@ if test "$enable_gcrypt" = yes; then
     ])
 fi
 
-dnl Encryption: TLS library
-dnl =======================
+# Encryption: TLS library
+# =======================
 AC_GGZ_TLS
 LDADD="$LDADD $GGZTLS_LDFLAGS $GGZTLS_LIB"
 CFLAGS="$CFLAGS $GGZTLS_INCLUDES"
 
 
-dnl Debug modes
-dnl ===========
+# Debug modes
+# ===========
 AC_GGZ_DEBUG
 
 
@@ -185,8 +198,8 @@ AC_OUTPUT([Makefile
 	   man/Makefile])
 
 
-dnl Status Output
-dnl =============
+# Status Output
+# =============
 echo ""
 echo "Options"
 echo "    General Debugging..$enable_debug"
