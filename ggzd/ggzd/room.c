@@ -150,24 +150,15 @@ void room_initialize(void)
 /* Initialize an additional room */
 void room_create_additional(void)
 {
-	RoomStruct *new;
-	int i;
-
 	/* Right now this is only used at startup, so we don't lock anything */
 	dbg_msg(GGZ_DBG_ROOM, "Creating a new room");
 
 	opt.num_rooms++;
 
-	/* Calloc a new array to make more rooms */
-	if((new = calloc(opt.num_rooms, sizeof(RoomStruct))) == NULL)
-		err_sys_exit("calloc failed in room_create_new()");
-
-	/* Copy the stuff over */
-	for(i=0; i<opt.num_rooms-1; i++)
-		memcpy(&new[i], &chat_room[i], sizeof(RoomStruct));
-
-	free(chat_room);
-	chat_room = new;
+	/* Realloc the chat_room array */
+	chat_room = realloc(chat_room, opt.num_rooms * sizeof(RoomStruct));
+	if(chat_room == NULL)
+		err_sys_exit("realloc failed in room_create_new()");
 
 	/* Initialize the lock on the new one */
 	pthread_rwlock_init(&chat_room[opt.num_rooms-1].lock, NULL);
