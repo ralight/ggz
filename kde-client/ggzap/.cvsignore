@@ -2,8 +2,8 @@
 .deps
 *.o
 *.moc.cpp
-ggzmodsniff
-ggzmodsniff_meta_unload*
+ggzap
+ggzap_meta_unload*
 config.h
 Makefile
 Makefile.in
