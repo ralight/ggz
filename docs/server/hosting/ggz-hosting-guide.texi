@@ -1,0 +1,357 @@
+\input texinfo @c -*-texinfo-*-
+@c %**start of header
+@setfilename ggz-hosting-guide.info
+@settitle The GGZ Gaming Zone 0.0.5 - Hosting Guide
+@setchapternewpage odd
+@c %**end of header
+
+@c TODO: 
+@c package names? should be equal for deb and rpm
+@c links to other documentation
+@c server log analysis
+@c web presentation of usage percentage etc.
+@c TLS setup
+@c 'playing nice': metaservers, announce on ggz-servers list
+
+@ifinfo
+Copyright (C) 2001 Josef Spillner
+@end ifinfo
+
+@c Frontpage
+@titlepage
+@title The GGZ Gaming Zone 0.0.5 - Hosting Guide
+@subtitle Instructions and Recommendations for Server Hosters
+@author Josef Spillner
+
+@c Copyright page
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 2001 Josef Spillner
+Published under the GNU Free Documentation License.
+@end titlepage
+
+@c Index (Top)
+@node Top, Foreword, (dir), (dir)
+@c @top Foreword
+
+@ifinfo
+This file is the info format of the GGZ Gaming Zone Hosting Guide, which is
+also available in postscript and HTML format.
+It describes how to setup a GGZ server and how to configure and maintain it.
+See http://ggz.sourceforge.net for the latest edition.
+@end ifinfo
+
+@menu
+* Foreword:: General notes about this document
+* Game Servers:: History and Diversity
+* Preconditions:: How to prepare for a GGZ installation
+* Internal Games:: Description of available games
+* External Games:: Additional games for GGZ
+* Server Maintaining:: Help for administrators
+@end menu
+
+@node Foreword, Game Servers, Top, Top
+@chapter Foreword
+@c @cindex Index entry for Chapter Zero
+
+Over the last months the hosting of free gaming servers has turned into a task
+which sometimes demands skills and time effort by the server hoster. The games
+are becoming more complex, the infrastructure grows, and inter-server
+communication, such like metaservers, starts a new era of free multiplayer
+gaming.
+
+This guide helps people to set up servers. It is specifically targeted at GGZ
+servers, but contains some general material as well, mostly because setting up
+a full-featured GGZ server involves the installation of many different games.
+
+Feel free to ask if something is in doubt. The GGZ Gaming Zone Development Team
+does its best to keep this guide always up-to-date and tries to avoid any
+errors and typos, but this is a very new topic and may take some time to
+stabilize.
+
+@node Game Servers, Preconditions, Foreword, Top
+@chapter Game Servers
+@c @cindex Index entry for First Chapter
+
+The traditional approach is to have game servers running permanently on a host,
+and let players connect to them using their game clients. Usually the server
+does then spawn a new process for each started game, which exits when all
+players have left the game.
+Permanent game servers are a variant of this: for example, role-play games do
+often only consist of one process which never ends, and players may join and
+leave whenever they wish.
+GGZ does currently only support non-permanent games, but this issue will be
+resolved soon.
+
+@node Preconditions, Internal Games, Game Servers, Top
+@chapter Preconditions
+@c @cindex Index entry for Second Chapter
+
+@section Overview
+
+This describes a typical setup for GGZ 0.0.5.
+All following versions will certainly require other tools or other versions of
+the present one, but the main concept hasn't changed for a while.
+Before installing GGZ on a server, make sure that the following conditions are
+met:
+@itemize @bullet
+@item The server has its base system installed.
+@item Network connectivity is present.
+@item Libraries and development packages (including headers) are installed
+according to the requirements given in the release information; at present,
+this is:
+
+@itemize
+@item libdb 2 or 3
+@item libpopt
+@item perl
+@end itemize
+@end itemize
+
+@section Hardware requirements
+
+You should calculate a need of about 10-20 MB of initial disk space, which
+might however not be enough if the server runs over a long time.
+Memory is normally not an issue, even old server hardware with only 32 MB of
+RAM should be sufficient. The same goes for the CPU - a GGZ server with less
+than 100 people on it can be handled by any Pentium-class or better CPU.
+Network bandwidth is difficult to estimate, as each game requires a different
+amount of it. But the GGZ development server, connected by 56k, handles a few
+players and games at the same time quite well, so there's no need for high
+bandwidth under normal circumstances.
+More detailed calculations, including real-time games and measurement/control
+tools will follow later.
+
+@section Base installation
+Before the main server (ggzd) can be installed, its dependencies must be
+resolved. The GGZ packages 'libggz' and 'easysock' are currently the questioned
+packages. After they're installed, the server package 'ggzd', including many game
+servers, should follow. Upon installation, quite some files and directories
+are created:
+
+@itemize
+@item etc: configuration of ggzd and game registry; message of the day (MOTD)
+@item bin: ggzd executable
+@item lib/ggzd: game servers
+@item share: game server data
+@item var/ggzd: dynamic data such as players and statistics (if not present yet, it
+is created on startup)
+@end itemize
+
+Although normally the server hierarchy will be under /usr or /usr/local, there
+are situations where someone doesn't have root access on a system to install
+the GGZ packages there.
+This is no problem, installing into one's home directory is supported as well.
+For installations from source, the getggz.sh script is recommended, because it
+handles this task very fast in an interactive way.
+This script, together with several others, will eventually be part of a server
+support package.
+For the time being, it is present in Appendix A.
+
+@subsection Message of the day
+
+As each server should be unique in one way or the other, changing the MOTD
+(which the players read when they log in) is one of the first steps to be made.
+C-style variables place holders can be used, they are currently defined like:
+@itemize
+@item %h: server host
+@item %p: server port
+@item %d: current date
+@item %t: time zone
+@item %a: server administrator
+@item %e: administrator email address
+@end itemize
+
+@subsection Widely used terms
+
+The GGZ @emph{server} provides different @emph{rooms}. Just like in a big
+house, a player can only be in one room at a time. Each room has a special
+purpose, and like there are kitchen, bedroom and entrance in a real house,
+there are rooms for TicTacToe, Chess and Hastings in a game server. To enhance
+this analogy: Many houses have, say, two bathrooms with different interieur. So
+a GGZ server administrator can set up a small TicTacToe room for 10 people
+called 'TTT Newbies' with a restricted set of maximum 2 tables, and a larger
+one for 50 people tagged 'TTT Tournament' and no further restrictions.
+Therefore, each room is linked to exactly one @emph{game type}. Based on these
+types, players start to play their @emph{games} by creating @emph{tables}.
+
+@subsection Main GGZ server configuration
+
+The main GGZ server (ggzd) is configured by a single file, named ggzd.conf. The
+default values are fine for testing and running a few games, but it is strongly
+recommended that server administrators check all values contained in the file.
+For example, the administrative contact information or the server-client
+communication encryption should be customized.
+
+@section Normal installation
+
+A ggzd alone is not much fun, there are other components as well which are
+worth to be installed:
+@itemize @bullet
+@item The GGZ Meta Server
+@item Grubby, the GGZ chat bot
+@end itemize
+
+@section Extended installation
+
+Some programs are only installed by very few people, mostly because they are
+very specialized. TelGGZ, the telnet wrapper which allows world-wide
+participation in GGZ chat sessions over telnet, is one such candidate.
+
+@node Internal Games, External Games, Preconditions, Top
+@chapter Internal Games
+@c @cindex Index entry for Third Chapter
+
+@section Scope
+
+We call all the games which come along with GGZ 'internal games'. This
+expresses that they have been designed to work with GGZ, and make extensive use
+of the possible options which the GGZ server offers to them. In the future this
+will include game statistics, rankings, saved games and more.
+Many players expect the internal games to be installed on every server, and
+this is highly recommended. For development and analysis of games they provide
+very good examples, ranging from a simple tic-tac-toe game to more complex ones
+with different protocols.
+
+@section Overview on the games
+
+@subsection KaBoom
+@subsection Chess
+@subsection Chinese Checkers
+@subsection Combat
+@subsection Copenhagen
+@subsection Dots
+@subsection Escape
+@subsection GGZCards
+
+This is a special game, it provides different game servers for one game client.
+
+@subsection Hastings1066
+@subsection Krosswater
+
+Krosswater is written in C++ and uses its own library libzoneserver, which
+should be taken care of when installing locally. If the installation is not
+done properly, lots of ghost tables will show up after some time.
+
+@subsection LaPocha
+@subsection Muehle
+@subsection NetSpades
+@subsection Reversi
+@subsection TicTacToe
+
+@node External Games, Server Maintaining, Internal Games, Top
+@chapter External Games
+@c @cindex Index entry for Fourth Chapter
+
+@section Scope
+
+Games developed independent from GGZ, for example games which existed for a
+long time already and have just recently been ported to run on GGZ servers, are
+commonly called 'external games'. Their installation base is varying, although
+it is not very difficult to support these games as well. All major GGZ servers
+should include all of them to give their players a better choice.
+
+@section Description of available external games
+
+@subsection Bathalla Naval
+@subsection bzFlag
+@subsection Freeciv
+@subsection Stalker
+
+Stalker is an SDL realtime game which uses UDP communication.
+
+@subsection T.E.G.
+
+@node Server Maintaining, (dir), External Games, Top
+@chapter Server Maintaining
+@c @cindex Index entry for Fifth Chapter
+
+@section Security
+
+A game server should, like all other remote services, never be a security risk.
+A few rules should be applied to every installation:
+
+@itemize @bullet
+@item Never run ggzd as root, it will refuse to do so anyway. However, when
+started as root it will try to change to the configured user and group first,
+which is normally games.games. Care should be taken about the directory where
+it places its dynamic data - this should ideally be created by the installation
+script.
+@item Don't install unnecessary extra servers on the host where ggzd runs. Game
+servers are very often the target of people trying to break into the system,
+and be it because they're frustrated by having lost a game.
+@end itemize
+
+@section Privacy
+
+Everyone hosting GGZ servers can freely decide what policy he uses for player
+data such as passwords or contact email addresses. However, to make thing
+easier for many people, the GGZ Development Team has started to maintain a
+document with some recommandations. This will maybe be part of this document in
+a later edition.
+
+@section Technical issues
+
+From time to time a host running a GGZ server should be checked. The list of
+processes should look normal (barring any zombie ggzd child processes), the
+player database should be intact, and the transmitted network data, consisting
+mostly of the session protocol, chat texts and game data, should be checked for
+flooding or similar.
+
+@appendix Local GGZ server installation
+
+These instructions apply to a vanilla 0.0.4 installation.
+They will be updated as soon as the first real-world 0.0.5 experiences have
+been gathered.
+
+@verbatim
+cd ~
+mkdir localsys
+mkdir localsys/usr
+mkdir localsys/etc
+mkdir ggz-0.0.4
+cd ggz-0.0.4
+export CVSROOT=:pserver:anonymous \
+	@cvs.ggz.sourceforge.net:/cvsroot/ggz
+cvs login
+cvs -z3 co -reasysock-0-3-0 easysock
+cvs -z3 co -rggzd-0-0-4 ggzd
+cd easysock
+./autogen.sh --prefix=$HOME/localsys/usr
+make
+make install
+cd ..
+cd ggzd
+export LD_RUN_PATH=$HOME/localsys/usr/lib
+export LD_IBRARY_PATH=$LD_RUN_PATH
+./autogen.sh --prefix=$HOME/localsys/usr \
+	--with-database=db3
+make
+make install
+cd ..
+@end verbatim
+
+@appendix Known GGZ servers
+
+The following servers are known to run permanently. For an up-to-date list,
+please consult the GGZ meta server, using one of the available client-side
+tools.
+
+@itemize @bullet
+@item @url{ggz://jzaun.com} (USA, developers)
+@item @url{ggz://ggz.snafu.de} (Germany)
+@item @url{ggz://ggz.morat.net} (USA)
+@item @url{ggz://ggz.homeip.net} (Argentina)
+@end itemize
+
+There are so far no known web pages or similar efforts. For more information,
+don't forget to check the GGZ home page regularly:
+
+@url{http://ggz.sourceforge.net}
+
+@c @printindex cp
+
+@contents
+@bye
+
+
