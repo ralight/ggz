@@ -50,7 +50,6 @@
 TopLevel::TopLevel(const char *name)
 : KMainWindow(NULL, name)
 {
-	KListViewItem *tmp;
 	KAction *a;
 
 	chessBoard = NULL;
@@ -60,7 +59,6 @@ TopLevel::TopLevel(const char *name)
 
 	warnings = false;
 
-	//KStdAction::openNew(this, SLOT(newGame()), actionCollection()); // don't handle standalone games yet
 	KStdAction::close(this, SLOT(closeGame()), actionCollection());
 	KStdAction::quit(this, SLOT(close()), actionCollection());
 
@@ -81,6 +79,11 @@ TopLevel::TopLevel(const char *name)
 #ifdef HAVE_KNEWSTUFF
 	a = new KAction(i18n("Get themes"), "knewstuff", 0, this, SLOT(slotNewstuff()), actionCollection(), "gamenewstuff");
 #endif
+}
+
+void TopLevel::initGui()
+{
+	KListViewItem *tmp;
 
 	createGUI();
 
@@ -112,7 +115,7 @@ TopLevel::TopLevel(const char *name)
 	if(!theme.isNull()) slotTheme(theme);
 }
 
-TopLevel::~TopLevel(void)
+TopLevel::~TopLevel()
 {
 	if (chessBoard)
 		delete chessBoard;
@@ -123,26 +126,29 @@ TopLevel::~TopLevel(void)
 	game = NULL;
 }
 
-void TopLevel::newGame(void)
+void TopLevel::newGame()
 {
-	initGameData();
-	//initGameSocket(); // taken over by --ggz events
+	game = new Game(false);
+	connect(game, SIGNAL(signalMessage(QString)), SLOT(slotMessage(QString)));
+	connect(game, SIGNAL(signalMove(QString)), SLOT(slotMove(QString)));
+	connect(game, SIGNAL(signalDoMove(int, int, int, int)), SLOT(slotDoMove(int, int, int, int)));
+
+	connect(chessBoard->root(), SIGNAL(figureMoved(int, int, int, int)), game, SLOT(slotMove(int, int, int, int)));
+
+	slotStart(0);
 }
 
-void TopLevel::initGameData(void)
+void TopLevel::newNetworkGame()
 {
-	//chessBoard = new ChessBoard(NULL, "ChessBoard"); // can't be here, else only player 0 would see it
-	//chessBoard->show();
-	//if(game) connect(chessBoard, SIGNAL(figureMoved(int, int, int, int)), game, SLOT(slotMove(int, int, int, int)));
 	options = new Options(NULL, i18n("Options"));
 	options->show();
 	connect(options, SIGNAL(signalTime(int, int)), SLOT(slotTime(int, int)));
 }
 
-void TopLevel::initGameSocket(void)
+void TopLevel::initNetwork()
 {
-	game = new Game();
-	connect(game, SIGNAL(signalNewGame()), SLOT(newGame()));
+	game = new Game(true);
+	connect(game, SIGNAL(signalNewGame()), SLOT(newNetworkGame()));
 	connect(game, SIGNAL(signalMessage(QString)), SLOT(slotMessage(QString)));
 	connect(game, SIGNAL(signalMove(QString)), SLOT(slotMove(QString)));
 	connect(game, SIGNAL(signalDoMove(int, int, int, int)), SLOT(slotDoMove(int, int, int, int)));
@@ -154,14 +160,12 @@ void TopLevel::initGameSocket(void)
 
 void TopLevel::initLocal()
 {
-	slotStart(0);
+	KStdAction::openNew(this, SLOT(newGame()), actionCollection());
 }
 
-void TopLevel::closeGame(void)
+void TopLevel::closeGame()
 {
-	if (chessBoard)
-		delete chessBoard;
-	chessBoard = NULL;
+	chessBoard->hide();
 }
 
 void TopLevel::slotTime(int timeoption, int time)

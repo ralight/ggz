@@ -58,7 +58,7 @@ ChessBoard::ChessBoard(QWidget *parent, const char *name)
 	resetBoard(color_inactive);
 }
 
-ChessBoard::~ChessBoard(void)
+ChessBoard::~ChessBoard()
 {
 }
 
@@ -228,12 +228,14 @@ void ChessBoard::paintEvent(QPaintEvent *e)
 
 void ChessBoard::dragEnterEvent(QDragEnterEvent *e)
 {
-	e->accept();
+	if(activeColor != color_inactive) e->accept();
 }
 
 void ChessBoard::mouseMoveEvent(QMouseEvent *e)
 {
 	int x, y;
+
+	if(activeColor == color_inactive) return;
 
 	if (mouseDrag)
 	{

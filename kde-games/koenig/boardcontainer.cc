@@ -41,7 +41,7 @@ ChessBoardContainer::ChessBoardContainer(QWidget *parent, const char *name)
 	setCaption(i18n("Chess Board - inactive"));
 }
 
-ChessBoardContainer::~ChessBoardContainer(void)
+ChessBoardContainer::~ChessBoardContainer()
 {
 }
 

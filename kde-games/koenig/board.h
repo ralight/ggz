@@ -28,7 +28,7 @@ class ChessBoard : public QWidget
 	Q_OBJECT
 	public:
 		ChessBoard(QWidget *parent = 0, const char *name = 0);
-		~ChessBoard(void);
+		~ChessBoard();
 
 		void resetBoard(int color);
 		void setTheme(QString theme);

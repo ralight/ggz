@@ -45,8 +45,8 @@ class Game : public QObject
 {
 	Q_OBJECT
 public:
-	Game(void);
-	~Game(void);
+	Game(bool ggzmode);
+	~Game();
 	//void handleGameUpdate();
 	void setTime(int timeoption, int time); // FIXME: consistent naming like answerTime() !!!
 	void answerDraw(int draw);
@@ -54,7 +54,7 @@ public:
 	void handleClock(int cval);
 
 public slots:
-	void handleNetInput(void);
+	void handleNetInput();
 	void slotMove(int x, int y, int x2, int y2);
 
 signals:

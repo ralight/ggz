@@ -52,8 +52,9 @@ int main(int argc, char **argv)
 
 	KApplication app;
 	TopLevel *toplevel = new TopLevel;
-	if(args->isSet("ggz")) toplevel->initGameSocket();
+	if(args->isSet("ggz")) toplevel->initNetwork();
 	else toplevel->initLocal();
+	toplevel->initGui();
 	toplevel->show();
 	app.setMainWidget(toplevel);
 	return app.exec();

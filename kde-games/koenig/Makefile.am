@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6948 2005-02-27 21:54:15Z josef $
+# $Id: Makefile.am 6994 2005-03-11 22:19:41Z josef $
 
 SUBDIRS = libcgc pics pieces
 
@@ -14,6 +14,7 @@ koenig_SOURCES = \
 	toplevel.cc \
 	options.cc \
 	kexttabctl.cc \
+	ai.c \
 	themes.cc
 
 noinst_HEADERS = \
@@ -24,7 +25,8 @@ noinst_HEADERS = \
 	toplevel.h \
 	options.h \
 	kexttabctl.h \
-	themes.cc
+	ai.h \
+	themes.h
 
 AM_CPPFLAGS = -I$(top_srcdir)/koenig/libcgc \
 	$(LIBGGZ_INCLUDES) $(GGZMOD_INCLUDES) $(all_includes) $(RSVG_INCLUDES)

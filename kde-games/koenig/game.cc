@@ -26,13 +26,23 @@
 #include <ggz_common.h>
 #include <iostream>
 
-Game::Game(void)
+#include "ai.h"
+
+Game::Game(bool ggzmode)
 {
 	kdDebug(12101) << "Game::Game()" << endl;
 
-	ggz = new GGZ();
-	ggz->connect("chess");
-	connect(ggz, SIGNAL(recvData()), SLOT(handleNetInput()));
+	if(ggzmode)
+	{
+		ggz = new GGZ();
+		ggz->connect("chess");
+		connect(ggz, SIGNAL(recvData()), SLOT(handleNetInput()));
+	}
+	else
+	{
+		ggz = NULL;
+		chess_ai_init(C_WHITE, 2);
+	}
 
 	chessGame = cgc_create_game();
 	cgc_join_game(chessGame, WHITE);
@@ -50,19 +60,21 @@ Game::Game(void)
 	chessInfo.name[1] = i18n("Black");
 }
 
-Game::~Game(void)
+Game::~Game()
 {
 	if (ggz)
 		delete ggz;
 	ggz = NULL;
 }
 
-void Game::handleNetInput(void)
+void Game::handleNetInput()
 {
 	char opcode, value;
 	char cval;
 	QString s;
 	int x, y, x2, y2, time, length;
+
+	if(!ggz) return;
 
 	opcode = ggz->getChar();
 
@@ -231,6 +243,8 @@ void Game::handleNetInput(void)
 
 void Game::setTime(int timeoption, int time)
 {
+	if(!ggz) return;
+
 	kdDebug(12101) << "Game::setTime(); timeoption = " << timeoption << ", time = " << time << endl;
 	chessInfo.clock_type = timeoption;
 	ggz->putChar(CHESS_RSP_TIME);
@@ -241,6 +255,35 @@ void Game::setTime(int timeoption, int time)
 
 void Game::slotMove(int x, int y, int x2, int y2)
 {
+	int ret, from, to;
+
+	if(!ggz)
+	{
+		kdDebug(12101) << "LOCALMOVE: " << x << ", " << y << " => " << x2 << ", " << y2 << endl;
+		ret = chess_ai_move(y * 8 + x, y2 * 8 + x2, 0);
+		if(ret)
+		{
+			emit signalMove(QString(i18n("You: from %1/%2 to %3/%4")).arg(
+				QChar(x + 'A')).arg(QChar(y + '1')).arg(QChar(x2 + 'A')).arg(QChar(y2 + '1')));
+			emit signalDoMove(x, y, x2, y2);
+
+			ret = chess_ai_find(C_BLACK, &from, &to);
+			if(ret)
+			{
+				ret = chess_ai_move(from, to, 0);
+				y = from / 8;
+				x = from % 8;
+				y2 = to / 8;
+				x2 = to % 8;
+				emit signalMove(QString(i18n("AI: from %1/%2 to %3/%4")).arg(
+					QChar(x + 'A')).arg(QChar(y + '1')).arg(QChar(x2 + 'A')).arg(QChar(y2 + '1')));
+				emit signalDoMove(x, y, x2, y2);
+			}
+			else emit signalMessage(i18n("Internal AI error"));
+		}
+		else emit signalMessage(i18n("Invalid move - try again!"));
+		return;
+	}
 	kdDebug(12101) << "Game::slotMove(); got move: " << x << ", " << y << " => " << x2 << ", " << y2 << endl;
 	ggz->putChar(CHESS_REQ_MOVE);
 	ggz->putChar(0);ggz->putChar(0);ggz->putChar(0);ggz->putChar(6);// FIXME: string handling
@@ -256,6 +299,8 @@ void Game::slotMove(int x, int y, int x2, int y2)
 
 void Game::answerDraw(int draw)
 {
+	if(!ggz) return;
+
 	if(draw) ggz->putChar(CHESS_REQ_DRAW);
 }
 

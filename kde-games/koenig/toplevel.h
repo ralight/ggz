@@ -36,13 +36,15 @@ class TopLevel : public KMainWindow
 	Q_OBJECT
 public:
 	TopLevel(const char *name = 0);
-	~TopLevel(void);
-	void initGameSocket(void); // wrapper!
+	~TopLevel();
+	void initNetwork();
 	void initLocal();
+	void initGui();
 
 public slots:
-	void newGame(void);
-	void closeGame(void);
+	void newGame();
+	void newNetworkGame();
+	void closeGame();
 	//void handleNetInput(void);
 	void slotTime(int timeoption, int time);
 	void slotMessage(QString msg);
@@ -64,7 +66,6 @@ public slots:
 	void slotThemeSelector();
 
 private:
-	void initGameData(void);
 	//void initGameSocket(void);
 
 	ChessBoardContainer *chessBoard;
