@@ -1,0 +1,42 @@
+This is my setup for the current version of guru:
+
+=========================
+/home/josef/.ggz/guru.rc:
+=========================
+
+[preferences]
+name = Grubby
+autojoin = 0
+owner = josef
+ 
+[guru]
+net = /usr/local/lib/libguru_netggz.so
+modules = self badword programming exec simplereturn
+  
+[modules]
+simplereturn = /usr/local/lib/libgurumod_simplereturn.so
+exec = /usr/local/lib/libgurumod_exec.so
+programming = /usr/local/lib/libgurumod_programming.so
+badword = /usr/local/lib/libgurumod_badword.so
+self = /usr/local/lib/libgurumod_self.so
+
+================================
+/home/josef/.ggz/guru/modexec.rc
+================================
+
+[programs]
+programs = meeting news dict
+meeting = /usr/local/share/guru/meeting.rb
+news = /usr/local/share/guru/rdf.pl
+dict = /usr/local/share/guru/dict.pl
+
+===================================
+/home/josef/.ggz/guru/modbadword.rc
+===================================
+
+[badwords]
+badwords = *** *** *** *** ***
+
+Please note that the order of both exec/programs and guru/modules is important,
+they're evaluated in exactly this order!
+
