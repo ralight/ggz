@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Frontend to GGZCards Client-Common
- * $Id: common.h 2940 2001-12-18 22:17:50Z jdorje $
+ * $Id: common.h 2990 2001-12-23 04:21:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -134,10 +134,13 @@ extern void game_handle_gameover(int num_winners, int *winners);
 extern void game_alert_player(int player, GGZSeatType status,
 			      const char *name);
 
-/** Currently this "sets up the table".  It's called when the number
- *  of players or the max hand size changes.
- *  @todo This should be handled differently. */
-extern void game_setup_table(void);
+/** Alert the table that the number of players has changed.  The
+ *  table will probably want to redesign itself.
+ *  @param new The new number of players.
+ *  @param old The previous number of players.
+ *  @note old and new will never be equal.
+ *  @note ggzcards.num_players will have been updated. */
+extern void game_alert_num_players(int new, int old);
 
 /** Alerts the table to the maximum hand size.  There will never be more
  *  than this many cards in a hand (unless we send another alert). */

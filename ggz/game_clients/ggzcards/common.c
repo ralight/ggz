@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2977 2001-12-21 09:38:32Z jdorje $
+ * $Id: common.c 2990 2001-12-23 04:21:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -301,6 +301,7 @@ static int handle_msg_players(void)
 {
 	int i, p, numplayers, different;
 	char *t_name;
+	int old_numplayers = ggzcards.num_players;
 
 	/* It is possible to have 0 players.  At the begginning of a
 	   "general" game, you don't know how many seats will be used yet so
@@ -350,8 +351,10 @@ static int handle_msg_players(void)
 	ggzcards.num_players = numplayers;
 
 	/* Redesign the table, if necessary. */
-	if (different)
-		game_setup_table();
+	if (different) {
+		assert(numplayers != old_numplayers);
+		game_alert_num_players(numplayers, old_numplayers);
+	}
 
 	/* TODO: should we need to enter a waiting state if players leave? */
 
@@ -392,8 +395,6 @@ static void increase_max_hand_size(int max_hand_size)
 				   sizeof(*ggzcards.players[p].hand.card));
 #endif
 	}
-
-	game_setup_table();	/* redesign table */
 }
 
 /* A hand message tells you all the cards in one player's hand. */

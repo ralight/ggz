@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2988 2001-12-23 03:02:33Z jdorje $
+ * $Id: game.c 2990 2001-12-23 04:21:52Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -246,10 +246,12 @@ void game_alert_player(int player, GGZSeatType status, const char *name)
 	table_set_name(player, name);
 }
 
-void game_setup_table(void)
+void game_alert_num_players(int new, int old)
 {
+	/* We ignore new and old; ggzcards.num_players contains
+	   the new value anyway. */
 	if (game_started) {
-		ggz_debug("main", "Setting up table.");
+		ggz_debug("main", "Changing number of players.");
 		table_setup();
 	}
 }
@@ -273,6 +275,8 @@ void game_alert_hand_size(int max_hand_size)
 			break;
 		table_max_hand_size++;
 	} while (1);
+
+	table_setup();
 }
 
 void game_display_hand(int player)
