@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 3504 2002-03-02 12:24:00Z dr_maux $
+ * $Id: main.c 3516 2002-03-02 21:19:26Z bmh $
  *
  * This is the main program body for the GGZ client
  *
@@ -51,18 +51,33 @@
 extern GtkWidget *win_main;
 GGZServer *server = NULL;
 
+void init_debug(void)
+{
+	char *default_file, *debug_file, **debug_types;
+	int num_types, i;
+
+	/* Inititialze debugging */
+	default_file = g_strjoin("/", getenv("HOME"), ".ggz/ggz-gtk.debug", NULL);
+	debug_file = ggzcore_conf_read_string("Debug", "FILE", default_file);
+	g_free(default_file);
+
+	ggzcore_conf_read_list("Debug", "Types", &num_types, (char***)&debug_types);
+
+	ggz_debug_init((const char**)debug_types, debug_file);
+
+	/* Free up memory */
+	for (i = 0; i < num_types; i++)
+		ggz_free(debug_types[i]);
+	ggz_free(debug_types);
+	ggz_free(debug_file);
+}
+
 
 int main (int argc, char *argv[])
 {
 	GGZOptions opt;
-	char *global_conf, *user_conf, *debugfile, *init_version;
+	char *global_conf, *user_conf, *init_version;
 	
-#ifdef DEBUG
-	const char* debug_types[] = {"connection", "modules", NULL};
-#else /* DEBUG */
-	const char* debug_types[] = {NULL};
-#endif /* DEBUG */
-
 #ifdef ENABLE_NLS
 	bindtextdomain("ggz-gtk", NULL);
 	textdomain("ggz-gtk");
@@ -78,15 +93,10 @@ int main (int argc, char *argv[])
 
 	opt.flags = GGZ_OPT_PARSER | GGZ_OPT_MODULES;
 
-	/* Provide a sensible default for the debug file */
-	debugfile = g_strjoin("/", getenv("HOME"), ".ggz/ggz-gtk.debug", NULL);
-	opt.debug_file = ggzcore_conf_read_string("DEBUG", "FILE", debugfile);
-	g_free(debugfile);
+#ifdef DEBUG
+	init_debug();
+#endif
 
-	opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_POLL & ~GGZ_DBG_MEMDETAIL);
-	ggzcore_init(opt);
-	ggz_debug_init(debug_types, "/tmp/gtk-client-debug");
-	ggz_free(opt.debug_file);
 	server_profiles_load();
 	
 	gtk_init(&argc, &argv);
@@ -112,6 +122,9 @@ int main (int argc, char *argv[])
 	chat_lists_cleanup();
 
 	ggzcore_destroy();
-	
+#ifdef DEBUG
+	ggz_debug_cleanup(GGZ_CHECK_MEM);
+#endif	
+
 	return 0;
 }
