@@ -4,6 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Main loop
+ * $Id: main.c 2214 2001-08-24 02:54:33Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -23,24 +24,22 @@
  */
 
 
-#include <ggz.h>
+#include "../libggzmod/ggz_server.h"
 
-#include <chess.h>
-#include <game.h>
+#include "chess.h"
+#include "game.h"
 
 extern struct chess_info game_info;
 
 
 int main(void)
 {
-  ggz_init("Chess");
-
   /* Set the handlers */
-  ggz_set_handler(GGZ_EVENT_LAUNCH, (GGZHandler)game_update);
-  ggz_set_handler(GGZ_EVENT_JOIN, (GGZHandler)game_update);
-  ggz_set_handler(GGZ_EVENT_LEAVE, (GGZHandler)game_update);
-  ggz_set_handler(GGZ_EVENT_QUIT, (GGZHandler)game_update);
-  ggz_set_handler(GGZ_EVENT_PLAYER, (GGZHandler)game_handle_player);
+  ggzdmod_set_handler(GGZ_EVENT_LAUNCH, (GGZHandler)game_update);
+  ggzdmod_set_handler(GGZ_EVENT_JOIN, (GGZHandler)game_update);
+  ggzdmod_set_handler(GGZ_EVENT_LEAVE, (GGZHandler)game_update);
+  ggzdmod_set_handler(GGZ_EVENT_QUIT, (GGZHandler)game_update);
+  ggzdmod_set_handler(GGZ_EVENT_PLAYER, (GGZHandler)game_handle_player);
 
   /* Init the game info */
   game_info.clock_type = -1;
@@ -54,8 +53,8 @@ int main(void)
   /* White player starts ! */
   game_info.turn = 0;
 
-  ggz_main();
-	return 0;
+  ggzdmod_main("Chess");
+  return 0;
 }
 
 

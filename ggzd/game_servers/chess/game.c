@@ -4,6 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
+ * $Id: game.c 2214 2001-08-24 02:54:33Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -22,14 +23,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <ggz.h>
 #include <libcgc/cgc.h>
-#include <chess.h>
-#include <game.h>
-#include <stdlib.h>
-#include <easysock.h>
 #include <sys/time.h>
+#include <stdlib.h>
 #include <unistd.h>
+
+#include <easysock.h>
+#include "../libggzmod/ggz_server.h"
+
+#include "chess.h"
+#include "game.h"
 
 /* Game from cgc */
 game_t *game;
@@ -75,12 +78,12 @@ void game_update(int event_id, void *data) {
       /* Check for current state */
       if (game_info.state != CHESS_STATE_WAIT)
         break;
-      ggz_debug("New player!");
+      ggzdmod_debug("New player!");
       /* Add to cgc */
       if (cgc_join_game(game, *(int*)data == 0 ? WHITE : BLACK) < 0)
         /* Boy, that's bad... */
         return;
-      ggz_debug("Protocol stuff");
+      ggzdmod_debug("Protocol stuff");
       /* Send seat */
       game_send_seat(*(int *)data);
       /* Send players */
@@ -95,7 +98,7 @@ void game_update(int event_id, void *data) {
         game_send_time(*(int *)data);
       }
       /* Should we start the game? */
-      if (game_info.clock_type >= 0 && ggz_seats_open() == 0)
+      if (game_info.clock_type >= 0 && ggzdmod_seats_open() == 0)
         game_update(CHESS_EVENT_START, NULL);
       break;
     case CHESS_EVENT_TIME:
@@ -117,7 +120,7 @@ void game_update(int event_id, void *data) {
       if (ggz_seats[1].assign == GGZ_SEAT_PLAYER)
         game_send_time(1);
       /* Should we start the game? */
-      if (game_info.clock_type >= 0 && ggz_seats_open() == 0)
+      if (game_info.clock_type >= 0 && ggzdmod_seats_open() == 0)
         game_update(CHESS_EVENT_START, NULL);
       break;
     case CHESS_EVENT_START:
@@ -137,10 +140,10 @@ void game_update(int event_id, void *data) {
       /* Check for state */
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
-      ggz_debug("Move: %s", (char *)data);
+      ggzdmod_debug("Move: %s", (char *)data);
       /* Try to make the move via cgc */
       if ( !data || (st = cgc_make_move(game, (char *)data)) < 0) {
-        ggz_debug("CGC status: %d", st);
+        ggzdmod_debug("CGC status: %d", st);
         game_send_move(NULL, 0);
         break;
       }
@@ -263,7 +266,7 @@ void game_update(int event_id, void *data) {
         break;
       }
       game_info.draw = *(int*)data;
-      if (*(int*)data == 3) 
+      if (*(int*)data == 3)
         /* Ask player 2 */
         game_send_draw(1);
       else if (*(int*)data == 4)
@@ -277,19 +280,19 @@ void game_update(int event_id, void *data) {
       break;
     case CHESS_EVENT_GAMEOVER:
       game_info.state = CHESS_STATE_DONE;
-      ggz_debug("Game over!");
+      ggzdmod_debug("Game over!");
       game_send_gameover(*(char*)data);
       break;
     default:
-      ggz_debug("Unknown event!!!");
+      ggzdmod_debug("Unknown event!!!");
       break;
   }
 }
- 
+
 /* game_handle_player(int id, int *seat)
  * Filters the data from the player
  * id -> GGZ_EVENT_PLAYER
- * seat -> Pointer holding the seat of the player that sent the data 
+ * seat -> Pointer holding the seat of the player that sent the data
  * Data should be filtered this way:
  *  CHESS_REQ_TIME   -> Check for validity, then CHESS_EVENT_TIME
  *  CHESS_REQ_MOVE   -> Check for validity, then CHESS_EVENT_MOVE
@@ -309,24 +312,24 @@ void game_handle_player(int id, int *seat) {
   if (fd < 0)
     return;
 
-  ggz_debug("Handling player");
+  ggzdmod_debug("Handling player");
 
   /* Get the opcode */
   if (es_read_char(fd, &op) < 0)
     return;
 
-  ggz_debug("Received opcode %d", op);
+  ggzdmod_debug("Received opcode %d", op);
 
   /* What to do? */
   switch (op) {
     case CHESS_RSP_TIME:
-      ggz_debug("Player sent a RSP_TIME");
+      ggzdmod_debug("Player sent a RSP_TIME");
       if (es_read_int(fd, &time) < 0)
         return;
       /* Check if this player is the host */
       if (*seat != game_info.host)
         return;
-      ggz_debug("Player sent the following time: %d", time);
+      ggzdmod_debug("Player sent the following time: %d", time);
       /* Is it a valid time ? */
       if ((time >> 24) > 3) {
         game_update(CHESS_EVENT_TIME, NULL);
@@ -340,7 +343,7 @@ void game_handle_player(int id, int *seat) {
       game_update(CHESS_EVENT_TIME, &time);
       break;
     case CHESS_REQ_MOVE:
-      ggz_debug("Player sent a REQ_MOVE");
+      ggzdmod_debug("Player sent a REQ_MOVE");
       if (game_info.clock_type == CHESS_CLOCK_NOCLOCK) {
         /* We don't use clocks! */
         data = malloc(sizeof(char) * 6);
@@ -378,7 +381,7 @@ void game_handle_player(int id, int *seat) {
         /* If first turn, there is no time! */
         if (game_info.turn == 0 || game_info.turn == 1)
           time = 0;
-        ggz_debug("Move: %s\tTime: %d", data, time);
+        ggzdmod_debug("Move: %s\tTime: %d", data, time);
         *((int *)data + (6/sizeof(int)) + 1) = time;
       }
       /* Check if correct turn */
@@ -447,7 +450,7 @@ void game_send_players() {
 		if ( (fd = ggz_seats[j].fd) == -1)
 			continue;
 
-		ggz_debug("Sending player list to player %d", j);
+		ggzdmod_debug("Sending player list to player %d", j);
 
 		if (es_write_char(fd, CHESS_MSG_PLAYERS) < 0)
 			return;
@@ -456,7 +459,7 @@ void game_send_players() {
 			if (es_write_char(fd, ggz_seats[i].assign) < 0)
 				return;
 			if (ggz_seats[i].assign != GGZ_SEAT_OPEN
-			    && es_write_string(fd, ggz_seats[i].name) < 0) 
+			    && es_write_string(fd, ggz_seats[i].name) < 0)
 				return;
 		}
 	}
@@ -524,7 +527,7 @@ void game_send_move(char *move, int time) {
     else
       es_write_char(fd, -1);
       */
-    
+
     /* Send time, if not error */
     if (game_info.clock_type && move)
       es_write_int(fd, time);
@@ -540,7 +543,7 @@ void game_send_update() {
     fd = ggz_seats[a].fd;
     if (fd < 0)
       return;
-    ggz_debug("To player %d: %d and %d sec", a, game_info.seconds[0], game_info.seconds[1]);
+    ggzdmod_debug("To player %d: %d and %d sec", a, game_info.seconds[0], game_info.seconds[1]);
     if (es_write_char(fd, CHESS_RSP_UPDATE) < 0 ||
         es_write_int(fd, game_info.seconds[0]) < 0 ||
         es_write_int(fd, game_info.seconds[1]) < 0)
