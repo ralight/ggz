@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6644 2005-01-13 04:32:33Z jdorje $
+dnl $Id: configure.ac 6710 2005-01-16 17:13:52Z oojah $
 
 AC_INIT([GGZ common libraries], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -252,7 +252,9 @@ AC_CONFIG_FILES([Makefile
 	   src/Makefile
 	   src/security/Makefile
 	   tests/Makefile
-	   man/Makefile])
+	   man/Makefile
+	   Makefile.msys
+	   src/Makefile.msys])
 AC_OUTPUT
 
 

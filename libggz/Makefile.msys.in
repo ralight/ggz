@@ -1,0 +1,84 @@
+# This is the msys/mingw Makefile for libggz
+# To use, run
+# make -f Makefile.msys
+
+# Subdirectories to descend into. Any subdir that contains a Makefile.msys will use that
+# over the standard Makefile
+SUBDIRS=src test man
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+datadir = @datadir@
+includedir = @includedir@
+infodir = @infodir@
+libdir = @libdir@
+libexecdir = @libexecdir@
+localstatedir = @localstatedir@
+mandir = @mandir@
+oldincludedir = @oldincludedir@
+sbindir = @sbindir@
+sharedstatedir = @sharedstatedir@
+sysconfdir = @sysconfdir@
+
+
+all : Makefile
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+		test "$$subdir" = . || \
+		if test -f "$$subdir/Makefile.msys"; then \
+			(cd $$subdir && $(MAKE) -f Makefile.msys); \
+		else	(cd $$subdir && $(MAKE)); fi; \
+	done
+
+
+install : all
+	# Install everything first, then go back and do our installation
+	# This means removing installed libs!
+	$(MAKE) install
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+		test "$$subdir" = . || \
+		if test -f "$$subdir/Makefile.msys"; then \
+			(cd $$subdir && $(MAKE) -f Makefile.msys install); \
+		else	(cd $$subdir && $(MAKE) install); fi; \
+	done
+
+
+dist : all
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+		test "$$subdir" = . || \
+		if test -f "$$subdir/Makefile.msys"; then \
+			(cd $$subdir && $(MAKE) -f Makefile.msys dist); \
+		else	(cd $$subdir && $(MAKE) dist); fi; \
+	done
+
+
+clean :
+	$(MAKE) clean
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+		test "$$subdir" = . || \
+		if test -f "$$subdir/Makefile.msys"; then \
+			(cd $$subdir && $(MAKE) -f Makefile.msys clean); fi;\
+	done
+
+
+distclean :
+	$(MAKE) distclean
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+		test "$$subdir" = . || \
+		if test -f "$$subdir/Makefile.msys"; then \
+			(cd $$subdir && $(MAKE) -f Makefile.msys distclean); fi;\
+	done
+
+
+uninstall :
+	$(MAKE) uninstall
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+		test "$$subdir" = . || \
+		if test -f "$$subdir/Makefile.msys"; then \
+			(cd $$subdir && $(MAKE) -f Makefile.msys uninstall); fi;\
+	done
+
+
+Makefile :
+	echo "Please run configure first"
+
