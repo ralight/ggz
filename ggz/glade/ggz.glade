@@ -318,23 +318,6 @@
 	  </widget>
 
 	  <widget>
-	    <class>GtkEntry</class>
-	    <name>port_entry</name>
-	    <width>50</width>
-	    <can_focus>True</can_focus>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>0</text_max_length>
-	    <text></text>
-	    <child>
-	      <padding>5</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	      <pack>GTK_PACK_END</pack>
-	    </child>
-	  </widget>
-
-	  <widget>
 	    <class>GtkLabel</class>
 	    <name>port_label</name>
 	    <label>Port:</label>
@@ -346,6 +329,23 @@
 	    <ypad>0</ypad>
 	    <child>
 	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	      <pack>GTK_PACK_END</pack>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkEntry</class>
+	    <name>port_entry</name>
+	    <width>50</width>
+	    <can_focus>True</can_focus>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>0</text_max_length>
+	    <text></text>
+	    <child>
+	      <padding>5</padding>
 	      <expand>False</expand>
 	      <fill>False</fill>
 	      <pack>GTK_PACK_END</pack>
@@ -2189,6 +2189,69 @@ Computer
 	  <fill>True</fill>
 	</child>
       </widget>
+    </widget>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>dlgMOTD</name>
+  <width>250</width>
+  <height>300</height>
+  <title>MOTD</title>
+  <type>GTK_WINDOW_DIALOG</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>False</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkVBox</class>
+    <name>vbox2</name>
+    <border_width>5</border_width>
+    <homogeneous>False</homogeneous>
+    <spacing>5</spacing>
+
+    <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow1</name>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkText</class>
+	<name>text1</name>
+	<can_focus>True</can_focus>
+	<editable>False</editable>
+	<text></text>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>button3</name>
+      <has_default>True</has_default>
+      <can_focus>True</can_focus>
+      <has_focus>True</has_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>motd_ok</handler>
+	<last_modification_time>Mon, 06 Mar 2000 23:31:58 GMT</last_modification_time>
+      </signal>
+      <label>OK</label>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
     </widget>
   </widget>
 </widget>
