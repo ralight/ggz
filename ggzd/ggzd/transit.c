@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4447 2002-09-07 21:50:49Z jdorje $
+ * $Id: transit.c 4452 2002-09-08 01:06:03Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -459,7 +459,7 @@ static int transit_find_seat(GGZTable *table, char *name)
 
 static int transit_find_spectator(GGZTable *table, char *name)
 {
-	int i, num_spectators = spectators_count(table);
+	int i, num_spectators = spectator_seats_num(table);
 
 	/* If that failed, look for first open spectator. */
 	for (i = 0; i < num_spectators; i++)

@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 3/3/00
  * Desc: Support functions for table seats
+ * $Id: seats.h 4452 2002-09-08 01:06:03Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -76,20 +77,32 @@ int seats_count(GGZTable* table, GGZSeatType type);
  */
 int seats_num(GGZTable* table);
 
+#if 0
+/** @brief Count the number of spectators present at a table.
+ *
+ *  @param table The table to query.
+ *  @return The number of occupied spectator seats at the table.
+ *  @note This function probably isn't necessary.
+ *  @see spectator_seats_num
+ */
+int spectators_count(GGZTable* table);
+#endif
+
+/** @brief Return the maximum number of spectators at a table.
+ *
+ *  @param table The table to query.
+ *  @return The number of spectator seats at that table.
+ */
+int spectator_seats_num(GGZTable *table);
+
 /** @brief Find the type of the given seat at the table.
  *
  *  @param table The table we are querying.
  *  @param seat The # of the seat we are querying.
-s *  @return The type of the given seat.
+ *  @return The type of the given seat.
  */
 GGZSeatType seats_type(GGZTable* table, int seat);
 
-/** @brief Return the total number of spectators at a table.
- *
- *  @param table The table to query.
- *  @return The number of spectators at that table.
- */
-int spectators_count(GGZTable *table);
 
 
 #endif /* __GGZ_TABLE_H_ */

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4451 2002-09-08 00:37:19Z jdorje $
+ * $Id: table.c 4452 2002-09-08 01:06:03Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -428,7 +428,7 @@ static int table_start_game(GGZTable *table)
         }
 
 	/* Setup spectators */
-	num_spectators = spectators_count(table);
+	num_spectators = spectator_seats_num(table);
 	ggzdmod_set_num_spectators(table->ggzdmod, num_spectators);
 
 	/* And start the game */
@@ -920,7 +920,7 @@ static void table_remove(GGZTable* table)
 	}
 
 	/* And send them out for spectators also */
-	for (i = 0; i < spectators_count(table); i++) {
+	for (i = 0; i < spectator_seats_num(table); i++) {
 		if (table->spectators[i][0] != '\0') {
 			table_update_event_enqueue(table,
 						   GGZ_UPDATE_SPECTATOR_LEAVE,
@@ -1112,13 +1112,13 @@ int table_find_player(int room, int index, char *name)
 /* Find a player at a table */
 int table_find_spectator(int room, int index, char *name)
 {
-	int i, spectators, spectator = -1;
+	int i, spectator = -1;
 	GGZTable *table;
 
 	/* grab handle to table (along with write lock) */
 	table = table_lookup(room, index);
 	if(table != NULL) {
-		spectators  = spectators_count(table);
+		int spectators  = spectator_seats_num(table);
 		for (i = 0; i < spectators; i++)
 			if (table->spectators[i]
 			    && strcasecmp(table->spectators[i], name) == 0) {
