@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: main loop for the server
- * $Id: main.c 2346 2001-09-03 10:43:41Z jdorje $
+ * $Id: main.c 2610 2001-10-24 17:53:57Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -24,7 +24,6 @@
  */
 
 #include "game.h"
-#include "../libggzmod/ggz_server.h"
 
 #include <sys/types.h>
 #include <errno.h>

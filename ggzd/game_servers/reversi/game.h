@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Description of game variables
- * $Id: game.h 2285 2001-08-27 19:53:11Z jdorje $
+ * $Id: game.h 2610 2001-10-24 17:53:57Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -125,7 +125,7 @@
  *
  * Luckily that's all, this protocol is perfect and it shouldn't be modified anymore. Or so I hope. :) */
 
-#include "../libggzmod/ggz_server.h"
+#include "../../ggzdmod/ggz_server.h"
 
 // Reversi protocol
 // The numbers aren't on order, because I used the same constants from TicTacToe - simplify testing
