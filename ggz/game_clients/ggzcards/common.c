@@ -1,10 +1,10 @@
-/* $Id: common.c 2212 2001-08-23 22:19:38Z jdorje $ */
 /*
  * File: common.c
  * Author: Jason Short
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
+ * $Id: common.c 2248 2001-08-25 20:13:38Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -72,7 +72,7 @@ static int es_write_card(int fd, card_t card)
 
 int client_initialize(void)
 {
-	ggzfd = ggzmod_connect();
+	ggzfd = ggz_connect();
 	if (ggzfd < 0)
 		exit(-1);
 	game.state = WH_STATE_INIT;
@@ -82,7 +82,9 @@ int client_initialize(void)
 
 void client_quit(void)
 {
-	ggzmod_disconnect();
+	/* FIXME: is this the desired behavior? */
+	if (ggz_disconnect() < 0)
+		exit(-2);
 }
 
 

@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 2246 2001-08-25 15:42:06Z jdorje $
+ * $Id: main.c 2248 2001-08-25 20:13:38Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -55,14 +55,18 @@ int main(int argc, char* argv[])
 	main_win = create_main_win();
 	gtk_widget_show(main_win);
 
-	game.fd = ggzmod_connect();
+	game.fd = ggz_connect();
 	if (game.fd < 0) return -1;
 
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 
 	gtk_main();
 
+/* FIXME: um, doesn't this printf get executed only at the end? --JDS */
 printf("** Game started.\n");
+
+	if (ggz_disconnect() < 0)
+		return -2;
 
 	return 0;
 }

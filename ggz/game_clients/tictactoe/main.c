@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 2246 2001-08-25 15:42:06Z jdorje $
+ * $Id: main.c 2248 2001-08-25 20:13:38Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -59,12 +59,15 @@ int main(int argc, char* argv[])
 	game_init();
 	display_board();
 	
-	game.fd = ggzmod_connect();
+	game.fd = ggz_connect();
 	if (game.fd < 0) return -1;
 
 	gdk_input_add(game.fd, GDK_INPUT_READ, game_handle_io, NULL);
 	
 	gtk_main();
+
+	if (ggz_disconnect() < 0)
+		return -2;
 	
 	return 0;
 }

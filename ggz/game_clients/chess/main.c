@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 09/17/2000
  * Desc: Chess client main game loop
- * $Id: main.c 2213 2001-08-24 02:45:21Z jdorje $
+ * $Id: main.c 2248 2001-08-25 20:13:38Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
   board_init();
   game_update(CHESS_EVENT_INIT, NULL);
 
-	game_info.fd = ggzmod_connect();
+	game_info.fd = ggz_connect();
 	if (game_info.fd < 0)
 		return -1;
 
@@ -63,6 +63,8 @@ int main(int argc, char *argv[]) {
 
 	gtk_main();
 	
-	ggzmod_disconnect();
+	if (ggz_disconnect() < 0)
+		return -2;
+
 	return 0;
 }

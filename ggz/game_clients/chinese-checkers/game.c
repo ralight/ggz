@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.c 2246 2001-08-25 15:42:06Z jdorje $
+ * $Id: game.c 2248 2001-08-25 20:13:38Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -70,7 +70,7 @@ void game_init(void)
 	char *filename;
 
 	/* Connect to GGZ */
-	game.fd = ggzmod_connect();
+	game.fd = ggz_connect();
 	if (game.fd < 0) exit(-1);
 
 	/* Trap our input from the socket */
