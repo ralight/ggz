@@ -1,3 +1,4 @@
+
 /*
  * File: room.c
  * Author: Brent Hendricks
@@ -841,11 +842,17 @@ int _ggzcore_room_launch_table(struct _GGZRoom *room, struct _GGZTable *table)
 	char *desc, *name;
 	GGZSeatType seat;
 
-	net = _ggzcore_server_get_net(room->server);
+	/* Make sure we're actually in a room (FIXME: should probably
+           make sure we're in *this* room) and not already playing a
+           game */
+	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_IN_ROOM)
+		return -1;
 
+	net = _ggzcore_server_get_net(room->server);
 	type_id = _ggzcore_gametype_get_id(_ggzcore_table_get_type(table));
 	desc = _ggzcore_table_get_desc(table);
 	num_seats = _ggzcore_table_get_num_seats(table);
+
 	status = _ggzcore_net_send_table_launch(net, type_id, desc, num_seats);
 	
 	if (status == 0)
@@ -869,6 +876,13 @@ int _ggzcore_room_join_table(struct _GGZRoom *room, const unsigned int num)
 	int status;
 	struct _GGZNet *net;
 
+	/* Make sure we're actually in a room (FIXME: should probably
+           make sure we're in *this* room) and not already playing a
+           game */
+	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_IN_ROOM)
+		return -1;
+
+
 	net = _ggzcore_server_get_net(room->server);
 	status = _ggzcore_net_send_table_join(net, num);
 
@@ -883,6 +897,11 @@ int _ggzcore_room_leave_table(struct _GGZRoom *room)
 {
 	int status;
 	struct _GGZNet *net;
+
+	/* Make sure we're at a table (FIXME: should probably make
+           sure we're in *this* room) */
+	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_AT_TABLE)
+		return -1;
 
 	net = _ggzcore_server_get_net(room->server);
 	status = _ggzcore_net_send_table_leave(net);
