@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2406 2001-09-08 23:21:57Z jdorje $
+ * $Id: common.c 2411 2001-09-09 00:06:17Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -144,7 +144,7 @@ static int handle_message_player()
 	int p;
 	char *message;
 
-	if (es_read_int(ggzfd, &p) < 0 ||
+	if (read_seat(ggzfd, &p) < 0 ||
 	    es_read_string_alloc(ggzfd, &message) < 0)
 		return -1;
 	assert(p >= 0 && p < game.num_players);
@@ -173,7 +173,7 @@ static int handle_msg_gameover()
 	}
 
 	for (i = 0; i < num_winners; i++)
-		if (es_read_int(ggzfd, &winners[i]) < 0)
+		if (read_seat(ggzfd, &winners[i]) < 0)
 			return -1;
 
 	table_handle_gameover(num_winners, winners);
@@ -219,7 +219,7 @@ static int handle_msg_players()
 
 	/* read in data about the players */
 	for (i = 0; i < numplayers; i++) {
-		if (es_read_int(ggzfd, &game.players[i].seat) < 0 ||
+		if (read_seat(ggzfd, &game.players[i].seat) < 0 ||
 		    es_read_string_alloc(ggzfd, &t_name) < 0)
 			return -1;
 
@@ -252,7 +252,7 @@ static int handle_msg_hand()
 	assert(game.players);
 
 	/* first read the player whose hand it is */
-	if (es_read_int(ggzfd, &player) < 0)
+	if (read_seat(ggzfd, &player) < 0)
 		return -1;
 	assert(player >= 0 && player < game.num_players);
 	hand = &game.players[player].hand;
@@ -350,7 +350,7 @@ static int handle_req_bid()
 static int handle_req_play()
 {
 	/* Determine which hand we're supposed to be playing from. */
-	if (es_read_int(ggzfd, &game.play_hand) < 0)
+	if (read_seat(ggzfd, &game.play_hand) < 0)
 		return -1;
 	assert(game.play_hand >= 0 && game.play_hand < game.num_players);
 
@@ -439,7 +439,7 @@ static int handle_msg_play(void)
 	struct hand_t *hand;
 
 	/* Read the card being played. */
-	if (es_read_int(ggzfd, &p) < 0 || read_card(ggzfd, &card) < 0)
+	if (read_seat(ggzfd, &p) < 0 || read_card(ggzfd, &card) < 0)
 		return -1;
 	assert(p >= 0 && p < game.num_players);
 
@@ -499,7 +499,7 @@ static int handle_msg_trick()
 	int p;
 
 	/* Read the trick winner */
-	if (es_read_int(ggzfd, &p) < 0)
+	if (read_seat(ggzfd, &p) < 0)
 		return -1;
 	assert(p >= 0 && p < game.num_players);
 
