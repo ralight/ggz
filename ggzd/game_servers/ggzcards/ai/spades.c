@@ -1,10 +1,10 @@
-/*
+/* 
  * File: ai/spades.c
  * Author: Brent Hendricks
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: spades.c 2388 2001-09-07 12:01:05Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -12,6 +12,9 @@
  *
  * Later, they were stolen from NetSpades and integrated directly into
  * GGZCards for use with the spades game here.  Thanks Brent!
+ *
+ * Unfortunately, many of the routines follow pretty bad spades
+ * strategies.  One day I'll implement some good strategies.
  *
  * There's a big bug in here that causes the AI to be really stupid.
  * Oddly, it works pretty well for Hearts.
@@ -82,13 +85,11 @@ static char *get_name(player_t p)
 
 
 
-static struct play
-{
+static struct play {
 	card_t card;		/* card's value */
-	int trick;		/* likelyhood card will take this trick   */
+	int trick;		/* likelyhood card will take this trick */
 	int future;		/* likelyhood card will take future trick */
-}
-play[13];
+} play[13];
 static int plays, high, agg, lastTrick;
 
 /* bitmask of played cards for each suit */
@@ -102,7 +103,8 @@ static int SetNil(int);
 static int PlayNormal(int);
 static int card_comp(card_t c1, card_t c2);
 
-static char suits[4][4];	/* information about what each of the 4 players holds in each of the 4 suits */
+static char suits[4][4];	/* information about what each of the 4
+				   players holds in each of the 4 suits */
 
 static int HasCard(seat_t s, card_t c)
 {
@@ -117,10 +119,10 @@ static int HasCard(seat_t s, card_t c)
 static void start_hand()
 {
 	/* reset cards played */
-	memset(played, 4 * sizeof(int), 0);
+	memset(played, 0, 4 * sizeof(*played));
 
 	/* anyone _could_ have any card */
-	memset(suits, 4 * 4 * sizeof(int), 1);
+	memset(suits, 255, 4 * 4 * sizeof(*suits));
 }
 
 static void alert_bid(player_t p, bid_t bid)
@@ -142,7 +144,8 @@ static void alert_play(player_t p, card_t play)
 		suits[p][(int) lead.suit] = 0;
 
 #if 0
-	/* when a nil player sluffs, they'll sluff their highest card in that suit */
+	/* when a nil player sluffs, they'll sluff their highest card in that 
+	   suit */
 	if (game.players[p].bid.sbid.spec == SPADES_NIL
 	    && game.players[p].tricks == 0 && play.suit != lead.suit
 	    && play.suit != SPADES)
@@ -151,18 +154,19 @@ static void alert_play(player_t p, card_t play)
 #endif
 
 #if 0
-	/* a nil player will generally play their highest card beneath an already-played card */
+	/* a nil player will generally play their highest card beneath an
+	   already-played card */
 	if (game.players[p].bid.sbid.spec == SPADES_NIL &&
 	    game.players[p].tricks == 0 && s == lead.suit) {
 		if (!(suits[p][s] & (1 << r))) {
-			/*
+			/* 
 			 * If we didn't think this player could have this card, then he's
 			 * doing something funky and all bets are off.  He might have anything.
 			 */
 			suits[p][s] = (~played[s]) & 0x7ffff;
 		} else if (card.face <
 			   THE HIGHEST CARD PLAYED SO FAR IN THAT SUIT) {
-			/*
+			/* 
 			 * nil bids don't have any between this card and highest play
 			 */
 			for (i = play.face + 1; i < trick[high].face; i++)
@@ -185,9 +189,8 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	int suitCount[4], suitAvg[4];
 	int voids = 0, singletons = 0, doubletons = 0;
 	int nilrisk = 99;
-	card_t card = { 0, 0, 0 }, c =
-	{
-	0, 0, 0};
+	card_t card = { 0, 0, 0 };
+	card_t c = { 0, 0, 0 };
 	char s;			/* suit */
 	hand_t *hand = &game.seats[game.players[num].seat].hand;
 
@@ -196,11 +199,9 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	/* Partners's bid */
 	pard = game.players[(num + 2) % 4].bid;
 
-	/*
-	 * First count our cards in each suit, and determine the average
-	 * cards the other players each have in each suit.  Also count our
-	 * voids, singletons, and doubletons.
-	 */
+	/* First count our cards in each suit, and determine the average
+	   cards the other players each have in each suit.  Also count our
+	   voids, singletons, and doubletons. */
 	for (s = 0; s < 4; s++)
 		suitCount[(int) s] = 0;
 	for (i = 0; i < hand->hand_size; i++)
@@ -223,15 +224,13 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 			 suitCount[(int) s]) / (game.num_players - 1);
 	}
 
-	/* --------------- TRUMPS -----------------
-	 *
-	 * Trumps serve two purposes -- first, any trump sequence down from
-	 * some high trump may be automatic tricks.  The remaining trumps may
-	 * either be useful as high trumps or for trumping other tricks if we
-	 * have some voids, singletons, or doubletons.
-	 *
-	 * First, figure out the brute force points possible from trumps:
-	 */
+	/* --------------- TRUMPS ----------------- */
+	/* Trumps serve two purposes -- first, any trump sequence down from
+	   some high trump may be automatic tricks.  The remaining trumps may
+	   either be useful as high trumps or for trumping other tricks if we
+	   have some voids, singletons, or doubletons. */
+
+	/* First, figure out the brute force points possible from trumps: */
 	p1 = p2 = 0;
 	card.suit = SPADES;
 	card.deck = 0;
@@ -251,11 +250,9 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	}
 
 
-	/*
-	 * If our trumps are losable (ie. p1 == 0) and we don't have many
-	 * of them, then consider whether we have low enough cards in
-	 * each of the other suits to risk bidding nil.
-	 */
+	/* If our trumps are losable (ie. p1 == 0) and we don't have many of
+	   them, then consider whether we have low enough cards in each of
+	   the other suits to risk bidding nil. */
 	if (p1 == 0) {
 		nilrisk = 0;
 		if (suitCount[SPADES] > 3) {
@@ -289,11 +286,12 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 			}
 			if (count >= 3)	/* suit is covered */
 				continue;	/* for( s = 0; s < 4; s++ ) */
-			nilrisk += suitCount[(int) s] - count;	/* risky high cards */
+			nilrisk += suitCount[(int) s] - count;	/* risky high 
+								   cards */
 #ifdef DEBUG_BID
 			ggzd_debug("AI-SPADES: Inc. nilrisk for %d high %s\n",
-				  suitCount[(int) s] - count,
-				  suit_names[(int) s]);
+				   suitCount[(int) s] - count,
+				   suit_names[(int) s]);
 #endif
 			if (count == 0) {	/* no low cards */
 				nilrisk++;
@@ -325,7 +323,10 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 				c.face = KING;
 				if (HasCard(num, c)
 				    && suitCount[(int) s] <= 3) {
-					nilrisk += ((suitCount[(int) s] <= 2) ? 2 : 1);	/* king is riskier */
+					nilrisk += ((suitCount[(int) s] <= 2) ? 2 : 1);	/* king 
+											   is 
+											   riskier 
+											 */
 #ifdef DEBUG_BID
 					ggzd_debug
 						("AI-SPADES: Inc. nilrisk by %d for King of %s\n",
@@ -337,7 +338,10 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 				c.face = ACE_HIGH;
 				if (HasCard(num, c)
 				    && suitCount[(int) s] <= 3) {
-					nilrisk += ((suitCount[(int) s] <= 2) ? 3 : 2);	/* ace is riskiest */
+					nilrisk += ((suitCount[(int) s] <= 2) ? 3 : 2);	/* ace 
+											   is 
+											   riskiest 
+											 */
 #ifdef DEBUG_BID
 					ggzd_debug
 						("AI-SPADES: Inc. nilrisk by %d for Ace of %s\n",
@@ -351,9 +355,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	}
 
 
-	/*
-	 * That done, frob p1 to count probable trump tricks.
-	 */
+	/* That done, frob p1 to count probable trump tricks. */
 	if (p1 == 0) {
 		/* King with 1+ covers */
 		c.suit = SPADES;
@@ -379,9 +381,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	}
 
 
-	/*
-	 * Now figure if we use our trumps on other suits:
-	 */
+	/* Now figure if we use our trumps on other suits: */
 	count = suitCount[SPADES];
 	for (c.face = ACE_HIGH; c.face >= 2 && HasCard(num, c); c.face--) {
 		p2 += 100;
@@ -432,13 +432,11 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	}
 
 	if (count > suitAvg[SPADES]) {
-		/*
-		 * Length DOES matter.  :-)
-		 */
+		/* Length DOES matter.  :-) */
 		p2 += (count - suitAvg[SPADES] - 1) * 80;
 #ifdef DEBUG_BID
 		ggzd_debug("AI-SPADES: Counting extra spades as %d\n",
-			  (count - suitAvg[SPADES] - 1) * 80);
+			   (count - suitAvg[SPADES] - 1) * 80);
 #endif
 	} else if (count == 0) {
 		p2 -= 30;	/* be wary of exhausting all trump */
@@ -449,25 +447,23 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	}
 
 
-	/*
-	 * Okay, choose the better of the two scores.
-	 */
+	/* Okay, choose the better of the two scores. */
 	points = (p1 > p2) ? p1 : p2;
 #ifdef DEBUG_BID
 	ggzd_debug("AI-SPADES: Spade points: %d\n", points);
 #endif
 
-	/* --------------- OTHER SUITS -----------------
-	 *
-	 * We bid other suits using a confidence system.  We combine two
-	 * factors:  the confidence we can make some high card good, and
-	 * the probability of that trick not getting trumped/finessed.
-	 */
+	/* --------------- OTHER SUITS ----------------- */
+	/* We bid other suits using a confidence system.  We combine two
+	   factors: the confidence we can make some high card good, and the
+	   probability of that trick not getting trumped/finessed. */
 	for (s = 0; s < 3; s++) {
 		c.suit = s;
 		c.face = ACE_HIGH;
 		if ((count = suitAvg[(int) s]) > suitCount[(int) s])
-			count = suitCount[(int) s];	/* the number of probable tricks w/o trump */
+			count = suitCount[(int) s];	/* the number of
+							   probable tricks
+							   w/o trump */
 		prob = 100;	/* probability of not getting finessed */
 		for (; count > 0; count--, c.face--) {
 			if (HasCard(num, c)) {
@@ -485,10 +481,8 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 	}
 
 
-	/* --------------- NIL BIDS -----------------
-	 *
-	 * Consider bidding nil.
-	 */
+	/* --------------- NIL BIDS ----------------- */
+	/* Consider bidding nil. */
 	if (game.players[(num + 1) % 4].bid.sbid.spec == SPADES_NIL ||
 	    game.players[(num + 3) % 4].bid.sbid.spec == SPADES_NIL) {
 		nilrisk -= 2;
@@ -510,10 +504,8 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 
 
 
-	/* --------------- NORMAL BIDS -----------------
-	 *
-	 * Okay, divide points by 100 and that's our bid.
-	 */
+	/* --------------- NORMAL BIDS ----------------- */
+	/* Okay, divide points by 100 and that's our bid. */
 	if (bid.bid == 0) {
 		if (game.bid_count < 2) {
 			prob = 70;
@@ -534,7 +526,7 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 		ggzd_debug("AI-SPADES: Subtotal bid: %d\n", bid);
 #endif
 
-		/*
+		/* 
 		 * Consider ramifications of others' bids if everyone else has
 		 * bid.
 		 */
@@ -548,10 +540,9 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 			count += S.p[i].bid;
 		}
 		if (i >= 4) {	/* everyone has bid */
-			/*
-			 * If the count is real high, reconsider potential tricks.
-			 * If the count is high and they bid nil, consider bidding less.
-			 */
+			/* If the count is real high, reconsider potential
+			   tricks. If the count is high and they bid nil,
+			   consider bidding less. */
 			if (count >= 11) {
 				if (count >= 13)
 					bid = points / 100;
@@ -595,10 +586,8 @@ static card_t get_play(player_t p, seat_t s)
 
 	high = -1;
 
-	/*
-	 * Determine the suit which was led and the highest card played
-	 * so far.
-	 */
+	/* Determine the suit which was led and the highest card played so
+	   far. */
 	if (game.leader != num) {
 		lead = game.seats[game.players[game.leader].seat].table;
 		suit = lead.suit;
@@ -615,24 +604,21 @@ static card_t get_play(player_t p, seat_t s)
 			}
 		}
 	}
-
 #ifdef DEBUG_PLAY
 	if (game.leader == num)
 		ggzd_debug("AI-SPADES: My lead\n");
 	else
 		ggzd_debug("AI-SPADES: %s led. %s of %s is high \n",
-			  suit_names[(int) suit],
-			  face_names[(int) hi_card.face],
-			  suit_names[(int) hi_card.suit]);
+			   suit_names[(int) suit],
+			   face_names[(int) hi_card.face],
+			   suit_names[(int) hi_card.suit]);
 #endif
 
 
-	/*
-	 * Determine our "aggression" level.  We're more aggressive if we're
-	 * trying to take tricks or set our opponents.  We're less aggressive
-	 * if we're trying to bag'em.  Agressiveness is on a scale from 0 (least
-	 * aggressive) to 100 (most aggressive).
-	 */
+	/* Determine our "aggression" level.  We're more aggressive if we're
+	   trying to take tricks or set our opponents.  We're less aggressive
+	   if we're trying to bag'em.  Agressiveness is on a scale from 0
+	   (least aggressive) to 100 (most aggressive). */
 	totTricks =
 		13 - game.players[0].tricks - game.players[1].tricks -
 		game.players[2].tricks - game.players[3].tricks;
@@ -646,7 +632,8 @@ static card_t get_play(player_t p, seat_t s)
 	if (myNeed < 0)
 		myNeed = 0;
 
-	/* JDS: doesn't this assume that nil busts don't count toward the team? */
+	/* JDS: doesn't this assume that nil busts don't count toward the
+	   team? */
 	i = (num + 1) % 2;
 	oppNeed =
 		game.players[i].bid.sbid.val + game.players[i +
@@ -660,15 +647,17 @@ static card_t get_play(player_t p, seat_t s)
 
 #ifdef DEBUG_PLAY
 	ggzd_debug("AI-SPADES: We need %d and they need %d\n", myNeed,
-		  oppNeed);
+		   oppNeed);
 #endif
 
-	/* XXX agg = 0 for oppNeed == 0 && myNeed == totTricks &&
-	 * this trick hopeless */
+	/* XXX agg = 0 for oppNeed == 0 && myNeed == totTricks && this trick
+	   hopeless */
 
-	if (myNeed == 0 && oppNeed == 0)	/* can't set'em; bag'em instead */
+	if (myNeed == 0 && oppNeed == 0)	/* can't set'em; bag'em
+						   instead */
 		agg = 0;
-	else if (totTricks < myNeed || totTricks < oppNeed)	/* not enough left */
+	else if (totTricks < myNeed || totTricks < oppNeed)	/* not enough 
+								   left */
 		agg = 0;
 	else if (totTricks - myNeed - oppNeed >= 3)	/* lotsa bags */
 		agg = (myNeed > 0) ? 25 : 0;
@@ -685,11 +674,10 @@ static card_t get_play(player_t p, seat_t s)
 
 
 #if 0				/* not implemented yet */
-	/*
-	 * The lastTrick indicator is a special case when this is the last trick
-	 * we need to complete our bid, yet there are too many bags out there
-	 * to warrant taking the trick with the lowest possible card.
-	 */
+
+	/* The lastTrick indicator is a special case when this is the last
+	   trick we need to complete our bid, yet there are too many bags out 
+	   there to warrant taking the trick with the lowest possible card. */
 	if (S.prefExpert && myNeed == 1
 	    && (agg < 50 || oppNeed == 0 || (oppNeed <= 3 && agg <= 50)))
 		lastTrick = 1;
@@ -700,9 +688,7 @@ static card_t get_play(player_t p, seat_t s)
 		lastTrick = 0;
 
 
-	/*
-	 * Populate the play structure with our valid plays.
-	 */
+	/* Populate the play structure with our valid plays. */
 	plays = 0;
 	for (i = 0; i < hand->hand_size; i++) {
 		if (game.funcs->verify_play(hand->cards[i]) == NULL) {
@@ -716,14 +702,12 @@ static card_t get_play(player_t p, seat_t s)
 	ggzd_debug("AI-SPADES: Calculate %d:\n", num);
 	for (i = 0; i < plays; i++)
 		ggzd_debug("AI-SPADES:  %s of %s,%d,%d\n",
-			  face_names[(int) play[i].card.face],
-			  suit_names[(int) play[i].card.suit], play[i].trick,
-			  play[i].future);
+			   face_names[(int) play[i].card.face],
+			   suit_names[(int) play[i].card.suit], play[i].trick,
+			   play[i].future);
 #endif
 
-	/*
-	 * Now determine our disposition for this trick.
-	 */
+	/* Now determine our disposition for this trick. */
 	if (game.players[num].bid.sbid.spec == SPADES_NIL &&
 	    (game.players[num].tricks == 0 || oppNeed <= 0 || agg < 75))
 		chosen = PlayNil(num);
@@ -758,7 +742,7 @@ static void Calculate(int num, struct play *play)
 	player_t o, pard = (num + 2) % game.num_players;
 	hand_t *hand = &game.seats[num].hand;
 
-	/*
+	/**
 	 * The scale for all likelihoods runs as follows:
 	 *
 	 * -1      Guaranteed not to take trick
@@ -768,17 +752,13 @@ static void Calculate(int num, struct play *play)
 	 */
 
 
-	/*
-	 * Calculate bitmap of ranks which beat this card
-	 */
+	/* Calculate bitmap of ranks which beat this card */
 	mask = 0;
 	for (r = play->card.face + 1; r <= ACE_HIGH; r++)
 		mask |= (1 << r);
 
-	/*
-	 * If this is the highest trump then its future is just as bright
-	 * as its present.
-	 */
+	/* If this is the highest trump then its future is just as bright as
+	   its present. */
 	if (play->card.suit == SPADES && (played[SPADES] & mask) == mask) {
 		play->future = 100;
 		if (high >= 0 && high_card.suit == SPADES
@@ -789,10 +769,8 @@ static void Calculate(int num, struct play *play)
 		return;
 	}
 
-	/*
-	 * Card's rank is its likelihood of taking this trick if the card
-	 * is higher than the highest current card.
-	 */
+	/* Card's rank is its likelihood of taking this trick if the card is
+	   higher than the highest current card. */
 	if (high < 0
 	    || ((play->card.suit == SPADES && high_card.suit != SPADES)
 		|| (play->card.suit == high_card.suit
@@ -800,7 +778,11 @@ static void Calculate(int num, struct play *play)
 	    /* || play->card == trick[high] */
 		) {
 		count = sCount = 0;
-		if (!cards_equal(game.seats[(num + 1) % 4].table, UNKNOWN_CARD)) {	/* we're the last card */
+		if (!cards_equal(game.seats[(num + 1) % 4].table, UNKNOWN_CARD)) {	/* we're 
+											   the 
+											   last 
+											   card 
+											 */
 			play->trick = 100;
 		} else {
 			if (suit < 0) {	/* we're leading */
@@ -820,10 +802,15 @@ static void Calculate(int num, struct play *play)
 				    && game.players[num].bid.sbid.val > 0)
 					continue;
 				map = SuitMap(o, num, s);
-				if (map == 0 && s != SPADES) {	/* void in the lead suit */
+				if (map == 0 && s != SPADES) {	/* void in
+								   the lead
+								   suit */
 					if ((map =
 					     SuitMap(o, num, SPADES)) != 0) {
-						trump = 0;	/* our trump isn't guaranteed anymore */
+						trump = 0;	/* our trump
+								   isn't
+								   guaranteed 
+								   anymore */
 						if (play->card.suit != SPADES
 						    || (map & mask))
 							count++;
@@ -839,7 +826,9 @@ static void Calculate(int num, struct play *play)
 			else if (count) {
 				play->trick = play->card.face;
 				if (sCount == 0 && agg <= 25)
-					play->trick += 15;	/* opponents may not trump */
+					play->trick += 15;	/* opponents
+								   may not
+								   trump */
 			} else
 				play->trick = play->card.face + 60;
 		}
@@ -848,10 +837,9 @@ static void Calculate(int num, struct play *play)
 
 
 #if 0				/* we don't do this */
-	/*
-	 * Special case for prefMustBeat -- if the highest is out there then this card
-	 * may not be good.
-	 */
+
+	/* Special case for prefMustBeat -- if the highest is out there then
+	   this card may not be good. */
 	if (S.prefMustBeat) {
 		s = play->card.suit;
 		for (r = play->card._value + 1;
@@ -860,7 +848,9 @@ static void Calculate(int num, struct play *play)
 			for (o = (p + 3) % 4; o != p && S.p[o].play >= 0;
 			     o = (o + 3) % 4)
 				if (SuitMap(o, p, s) & (1 << r)) {
-					count++;	/* a player who's played may have this higher card */
+					count++;	/* a player who's
+							   played may have
+							   this higher card */
 					break;
 				}
 			if (count == 0) {
@@ -868,7 +858,11 @@ static void Calculate(int num, struct play *play)
 				     o != p && S.p[o].play < 0;
 				     o = (o + 1) % 4)
 					if (SuitMap(o, p, s) & (1 << r)) {
-						play->trick = -1;	/* they gotta beat it */
+						play->trick = -1;	/* they 
+									   gotta 
+									   beat 
+									   it 
+									 */
 						break;
 					}
 			}
@@ -876,11 +870,9 @@ static void Calculate(int num, struct play *play)
 	}
 #endif
 
-	/*
-	 * Figure out how many players probably still have cards in
-	 * this suit, and determine likelihood of making card good in
-	 * future tricks.
-	 */
+	/* Figure out how many players probably still have cards in this
+	   suit, and determine likelihood of making card good in future
+	   tricks. */
 	s = play->card.suit;
 	count = danger = trump = cover = 0;
 	for (o = (num + 1) % 4; o != num; o = (o + 1) % 4) {
@@ -897,10 +889,8 @@ static void Calculate(int num, struct play *play)
 	if (trump)
 		play->future = play->card.face;
 	else {
-		/*
-		 * Count the cards in this suit we know about.  Then average
-		 * the remaining cards per player.
-		 */
+		/* Count the cards in this suit we know about.  Then average
+		   the remaining cards per player. */
 		n = 13;
 		for (r = 2; r <= ACE_HIGH; r++)
 			if (played[(int) s] & (1 << r))
@@ -909,7 +899,8 @@ static void Calculate(int num, struct play *play)
 			if (cards_equal(hand->cards[(int) r], UNKNOWN_CARD))
 				continue;
 			if (hand->cards[(int) r].suit == s) {
-				cover++;	/* XXX - does ace cover king? */
+				cover++;	/* XXX - does ace cover king? 
+						 */
 				n--;
 			}
 		}
@@ -917,10 +908,8 @@ static void Calculate(int num, struct play *play)
 		if (n <= 100)
 			danger++;
 
-		/*
-		 * XXX this should be redone to use relative rank in remaining
-		 * cards rather than hard-coded ace, king, queen.
-		 */
+		/* XXX this should be redone to use relative rank in
+		   remaining cards rather than hard-coded ace, king, queen. */
 		play->future = play->card.face + ((s == SPADES) ? 15 : 0);
 		if (play->card.face == ACE_HIGH) {
 			if (n > 100)
@@ -938,10 +927,8 @@ static void Calculate(int num, struct play *play)
 }
 
 
-/*
- * Determine what cards some player "p" may be holding in suit "s"
- * from the viewpoint of player "v".
- */
+/* Determine what cards some player "p" may be holding in suit "s" from the
+   viewpoint of player "v". */
 static int SuitMap(seat_t p, player_t v, char s)
 {
 	int map, i;
@@ -972,10 +959,8 @@ static int PlayNil(player_t p)
 	ggzd_debug("AI-SPADES: Strategy: play nil\n");
 #endif
 
-	/*
-	 * For nil bids, pick the card with highest potential that doesn't
-	 * take the trick.
-	 */
+	/* For nil bids, pick the card with highest potential that doesn't
+	   take the trick. */
 	for (i = 0; i < plays; i++) {
 		if (chosen < 0 || play[i].trick < play[chosen].trick)
 			chosen = i;
@@ -1001,15 +986,11 @@ static int CoverNil(player_t p)
 	ggzd_debug("AI-SPADES: Strategy: cover nil\n");
 #endif
 
-	/*
-	 * Construct pard's suitmaps.
-	 */
+	/* Construct pard's suitmaps. */
 	for (i = 0; i < 4; i++)
 		map[i] = SuitMap(pard, p, i);
 
-	/*
-	 * If our pard has the highest card, try to beat it.
-	 */
+	/* If our pard has the highest card, try to beat it. */
 	if (pard == high) {
 		for (i = 0; i < plays; i++)
 			if (card_comp(play[i].card, pard_card) > 0)
@@ -1019,27 +1000,22 @@ static int CoverNil(player_t p)
 					chosen = i;
 	}
 
-	/*
-	 * Determine if there's any danger of our pard taking this trick.
-	 */
+	/* Determine if there's any danger of our pard taking this trick. */
 	if (high >= 0 && pard_card.suit == -1 && high_card.suit == suit) {
 		for (r = high_card.face + 1; r <= ACE_HIGH; r++)
 			if (map[(int) suit] & (1 << r))
 				danger++;
 	}
 
-	/*
-	 * If there's no danger or we can't cover him, sluff intelligently.
-	 */
+	/* If there's no danger or we can't cover him, sluff intelligently. */
 	if (chosen < 0 && danger == 0 && high >= 0) {
 		if (agg <= 50)
 			sluff = 1;
 		/* else we'll drop through and play normally */
 	} else if (chosen < 0) {
-		/*
-		 * If we're here, then our pard hasn't played yet and there's some danger of
-		 * his taking the trick.  First things first -- always try to lead to a void.
-		 */
+		/* If we're here, then our pard hasn't played yet and there's 
+		   some danger of his taking the trick.  First things first
+		   -- always try to lead to a void. */
 		if (high < 0) {
 			for (i = 0; i < plays; i++)
 				if (map[(int) play[i].card.suit] == 0) {
@@ -1069,22 +1045,29 @@ static int CoverNil(player_t p)
 				}
 		}
 
-		/*
-		 * Try to pick something he can't beat.
-		 */
+		/* Try to pick something he can't beat. */
 		if (chosen < 0) {
 			for (i = 0; i < plays; i++) {
 				char s = play[i].card.suit;
 				if (high >= 0
 				    && card_comp(play[i].card,
 						 high_card) <= 0)
-					continue;	/* don't consider cards which don't beat high card */
+					continue;	/* don't consider
+							   cards which don't
+							   beat high card */
 
 				if (high < 0 || s == suit) {
 					for (mask = 0, r =
 					     play[i].card.face + 1;
 					     r < ACE_HIGH; r++)
-						mask |= (1 << r);	/* bitmap of ranks which beat this card */
+						mask |= (1 << r);	/* bitmap 
+									   of 
+									   ranks 
+									   which 
+									   beat 
+									   this 
+									   card 
+									 */
 					if (map[(int) s] & mask)
 						continue;
 				}
@@ -1096,14 +1079,22 @@ static int CoverNil(player_t p)
 						    play[chosen].trick)
 							chosen = i;
 					} else {
-						/* If we're here then we're trumping.  Normally we'd throw
-						 * our highest trump at this low aggression level, but we
-						 * need to cover our pard's trumps later.
-						 *
-						 * XXX maybe throw a higher trump if pard is covered?*/
+						/* If we're here then we're
+						   trumping.  Normally we'd
+						   throw our highest trump at 
+						   this low aggression level, 
+						   but we need to cover our
+						   pard's trumps later. */
+						/* XXX maybe throw a higher
+						   trump if pard is covered? */
 						if (play[i].trick <
 						    play[chosen].trick)
-							chosen = i;	/* for now, choose lowest trump */
+							chosen = i;	/* for 
+									   now, 
+									   choose 
+									   lowest 
+									   trump 
+									 */
 						else if (play[i].trick ==
 							 play[chosen].trick)
 							if (play[i].future <
@@ -1115,7 +1106,14 @@ static int CoverNil(player_t p)
 					if (s != suit) {
 						if (play[i].trick <
 						    play[chosen].trick)
-							chosen = i;	/* both must be trumps -- choose lower */
+							chosen = i;	/* both 
+									   must 
+									   be 
+									   trumps 
+									   -- 
+									   choose 
+									   lower 
+									 */
 						else if (play[i].trick ==
 							 play[chosen].trick)
 							if (play[i].future <
@@ -1142,10 +1140,8 @@ static int CoverNil(player_t p)
 			}
 		}
 
-		/*
-		 * If we still haven't chosen one, then we're in a load of trouble.
-		 * Play our highest card.
-		 */
+		/* If we still haven't chosen one, then we're in a load of
+		   trouble. Play our highest card. */
 		if (chosen < 0 && sluff == 0) {
 			sluff = 1;
 			for (i = 0; i < plays; i++)
@@ -1156,10 +1152,8 @@ static int CoverNil(player_t p)
 						chosen = i;
 		}
 
-		/*
-		 * If this card is essentially one card greater than the current
-		 * high, then just sluff.
-		 */
+		/* If this card is essentially one card greater than the
+		   current high, then just sluff. */
 		if (chosen >= 0 && high >= 0
 		    && play[chosen].card.suit == high_card.suit) {
 			for (r = high_card.face + 1;
@@ -1181,8 +1175,8 @@ static int CoverNil(player_t p)
 	}
 
 	/* XXX can you upgrade the chosen card to one with a better chance
-	 * because you know that your pard doesn't have anything between this
-	 * card and the higher one?*/
+	   because you know that your pard doesn't have anything between this
+	   card and the higher one? */
 
 	return chosen;
 }
@@ -1201,32 +1195,34 @@ static int SetNil(int p)
 #ifdef DEBUG_PLAY
 	ggzd_debug("AI-SPADES: Strategy: set nil\n");
 #endif
-/*
-   * If one of our opponents bid nil and either hasn't played or has played
-   * the high card, try to get under it.
-   */
+	/* If one of our opponents bid nil and either hasn't played or has
+	   played * the high card, try to get under it. */
 	for (pp = (p + 1) % 4; pp != p && chosen < 0; pp = (pp + 1) % 4) {
 		if (pp == pard || game.players[pp].bid.sbid.spec != SPADES_NIL
 		    || game.players[pp].tricks != 0)
 			continue;
 		if (high < 0 && agg <= 50) {
-			/*
+			/* 
 			 * If we're leading, lead something small.
 			 */
 			for (i = 0; i < plays; i++) {
 				for (mask = 0, r = play[i].card.face + 1;
 				     r <= ACE_HIGH; r++)
-					mask |= (1 << r);	/* bitmap of ranks which beat this card */
+					mask |= (1 << r);	/* bitmap of
+								   ranks
+								   which beat 
+								   this card */
 				if ((SuitMap(pp, p, play[i].card.suit) & mask)
 				    == 0)
-					continue;	/* he can't beat this one -- skip it */
+					continue;	/* he can't beat this 
+							   one -- skip it */
 				if (chosen < 0
 				    || play[i].card.face <
 				    play[chosen].card.face)
 					chosen = i;
 			}
 		} else if (high == pp) {
-			/*
+			/* 
 			 * Try to get under the high card.
 			 */
 			for (i = 0; i < plays; i++)
@@ -1237,7 +1233,7 @@ static int SetNil(int p)
 					    play[chosen].future)))
 					chosen = i;
 		} else if (high >= 0 && game.seats[pp].table.suit < 0) {
-			/*
+			/* 
 			 * Count how many cards we have under the high.
 			 */
 			count = 0;
@@ -1245,7 +1241,7 @@ static int SetNil(int p)
 				if (card_comp(play[i].card, high_card) <= 0)
 					count++;
 
-			/*
+			/* 
 			 * Try to get just over the high card under certain conditions:
 			 * 1. our aggression is high and our pard's not the high card
 			 * 2. we don't have at least two cards under the high card
@@ -1256,17 +1252,22 @@ static int SetNil(int p)
 			r = high_card.face;
 			map = SuitMap(pp, p, suit);
 			for (mask = 0, i = r + 1; i <= ACE_HIGH; i++)
-				mask |= (1 << i);	/* bitmap of ranks which beat high card */
+				mask |= (1 << i);	/* bitmap of ranks
+							   which beat high
+							   card */
 
 			if ((agg > 50 && high != pard)
 			    || (count < 2)
 			    || (r >= 9 && high != pard)
 			    || (s != suit || (map & mask) == 0)) {
-				if (s != suit) {	/* high player trumped */
+				if (s != suit) {	/* high player
+							   trumped */
 					if (map == 0)
 						map = SuitMap(pp, p, 0);
 					else
-						map = 0;	/* play our highest trump */
+						map = 0;	/* play our
+								   highest
+								   trump */
 				}
 				for (r++; r <= ACE_HIGH; r++) {
 					if (!(played[s] & (1 << r))) {
@@ -1282,7 +1283,7 @@ static int SetNil(int p)
 					if (map & (1 << r))
 						break;
 				}
-				/*
+				/* 
 				 * If we can't get above the high card in suit, maybe we can
 				 * trump it.
 				 */
@@ -1305,7 +1306,7 @@ static int SetNil(int p)
 									chosen = i;
 				}
 			}
-			/*
+			/* 
 			 * Otherwise, try to get under the high card.
 			 */
 			for (i = 0; i < plays; i++)
@@ -1325,7 +1326,7 @@ static int SetNil(int p)
 static int PlayNormal(int p)
 {
 
-	int i, chosen = -1, n, r, s /*, tmp */ ;
+	int i, chosen = -1, n, r, s /* , tmp */ ;
 	struct play pCard;
 	/* int pmap[4], omap[4]; */
 	player_t pard = (p + 2) % 4;
@@ -1334,7 +1335,7 @@ static int PlayNormal(int p)
 	ggzd_debug("AI-SPADES: Strategy: play normal\n");
 #endif
 
-	/*
+	/* 
 	 * If our pard has played, calculate the chances that his card has.
 	 */
 	if (high == pard) {
@@ -1343,7 +1344,7 @@ static int PlayNormal(int p)
 	} else
 		pCard.trick = pCard.future = -1;
 
-	/*
+	/* 
 	 * For normal play, our aggression level determines the desire we
 	 * have to take this trick.
 	 */
@@ -1351,14 +1352,14 @@ static int PlayNormal(int p)
 		return PlayNil(p);
 	if (agg == 0) {
 		if (pard > 0 && pard == high && pCard.trick > 30) {
-			/*
+			/* 
 			 * Our pard's winning the trick -- beat him if we can.
 			 */
 		} else
 			return PlayNil(p);
 	}
 
-	/*
+	/* 
 	 * If our aggression is zero then we're here because our pard is pro'ly
 	 * gonna win this trick -- win it for him instead with our highest and
 	 * bestest card.
@@ -1382,7 +1383,7 @@ static int PlayNormal(int p)
 		}
 	}
 
-	/*
+	/* 
 	 * Watch the finesse.  Beat an opponent's best card if we can do so.
 	 */
 	if (chosen < 0 && high >= 0 && high != pard) {
@@ -1396,14 +1397,14 @@ static int PlayNormal(int p)
 		}
 	}
 
-	/*
+	/* 
 	 * Don't play over our pard's good lead under normal circumstances.
 	 */
 	if (agg > 25 && !lastTrick && chosen >= 0 && pCard.trick >= 50)
 		chosen = -1;
 
 #if 0
-	/*
+	/* 
 	 * Randomly elect not to take this trick.  If we can't afford to lose
 	 * one then our aggression would be higher.
 	 */
@@ -1411,7 +1412,7 @@ static int PlayNormal(int p)
 	    && (SysRandom(0) % 100) > agg)
 		chosen = -1;
 
-	/*
+	/* 
 	 * Consider leading to our pard's void.
 	 */
 	if (high < 0 && SuitMap(pard, p, 0) != 0
@@ -1436,7 +1437,7 @@ static int PlayNormal(int p)
 
 
 
-	/*
+	/* 
 	 * If our aggression is pretty high and we still haven't chosen a
 	 * card, then consider playing a precious trump.
 	 */
@@ -1449,7 +1450,7 @@ static int PlayNormal(int p)
 					chosen = i;
 	}
 
-	/*
+	/* 
 	 * If we haven't found a card yet, then nothing we have can take this
 	 * trick.  For a zero aggression, sluff our card which has the best
 	 * future.  For any other aggression, sluff our lowest card.
@@ -1465,7 +1466,7 @@ static int PlayNormal(int p)
 				chosen = i;
 	}
 
-	/*
+	/* 
 	 * Now, for mid-level aggressions we may opt to play a higher
 	 * card if we're pro'ly gonna lose this trick anyway.  This gets rid
 	 * of those pesky middle cards which are bag-machines later in the hand.
@@ -1473,7 +1474,7 @@ static int PlayNormal(int p)
 	if (agg > 0 && agg < 75) {
 		s = play[chosen].card.suit;
 		for (;;) {
-			/*
+			/* 
 			 * Find the next highest card in suit.
 			 */
 			n = -1;
@@ -1489,7 +1490,7 @@ static int PlayNormal(int p)
 			if (n < 0)
 				break;
 
-			/*
+			/* 
 			 * Determine the highest rank equivalence of the chosen card,
 			 * based on which cards have been played.
 			 */
@@ -1499,9 +1500,16 @@ static int PlayNormal(int p)
 				   || !(game.seats[high].table.suit == s
 					&& game.seats[high].table.face == r)))
 				r++;
-			if (r != play[n].card.face	/* cards are equivalent */
-			    && ((play[n].future >= 50)	/* card has a good future */
-				||(play[n].future >= 20 && agg >= 50)))	/* card has a decent future */
+			if (r != play[n].card.face	/* cards are
+							   equivalent */
+			    && ((play[n].future >= 50)	/* card has a good
+							   future */
+				||(play[n].future >= 20 && agg >= 50)))	/* card 
+									   has 
+									   a
+									   decent 
+									   future 
+									 */
 				break;
 			chosen = n;
 		}
