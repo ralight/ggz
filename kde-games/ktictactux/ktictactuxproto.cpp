@@ -1,5 +1,14 @@
+//////////////////////////////////////////////////////////////////////
+// KTicTacTux
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Published under GNU GPL conditions
+//////////////////////////////////////////////////////////////////////
+
 // KTicTacTux includes
 #include "ktictactuxproto.h"
+
+// GGZ includes
+#include <easysock.h>
 
 // System includes
 #include <sys/types.h>
@@ -41,6 +50,15 @@ void KTicTacTuxProto::init()
 		board[i % 3][i / 3] = none;
 	state = stateinit;
 	turn = none;
+}
+
+// Get opcode
+int KTicTacTuxProto::getOp()
+{
+	int op;
+
+	es_read_int(fd, &op);
+	return op;
 }
 
 // Get one's own seat number
@@ -108,5 +126,11 @@ int KTicTacTuxProto::sendMyMove()
 {
 	es_write_int(fd, sndmove);
 	es_write_int(fd, move);
+}
+
+// Synchronize game
+void KTicTacTuxProto::sendSync()
+{
+	es_write_int(fd, reqsync);
 }
 

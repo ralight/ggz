@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
@@ -30,7 +30,7 @@ class KTicTacTux : public QWidget
 	Q_OBJECT
 	public:
 		// Constructor
-		KTicTacTux(QWidget *parent = NULL, char *name = NULL);
+		KTicTacTux(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~KTicTacTux();
 		// Set opponent type
@@ -39,6 +39,8 @@ class KTicTacTux : public QWidget
 		void setTheme(QString t1, QString t2);
 		// Set up the game
 		void init();
+		// Request a synchonization
+		void sync();
 
 	public slots:
 		// Evaluate user input

@@ -1,8 +1,11 @@
+//////////////////////////////////////////////////////////////////////
+// KTicTacTux
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
+// Published under GNU GPL conditions
+//////////////////////////////////////////////////////////////////////
+
 #ifndef KTICTACTUX_PROTO_H
 #define KTICTACTUX_PROTO_H
-
-// GGZ includes
-#include <easysock.h>
 
 // Generic TicTacToe client protocol handler
 class KTicTacTuxProto
@@ -84,6 +87,8 @@ class KTicTacTuxProto
 		// Initialize protocol
 		void init();
 
+		// Read opcode
+		int getOp();
 		// Get the seats
 		int getSeat();
 		// Get the player names
@@ -101,6 +106,8 @@ class KTicTacTuxProto
 		int sendOptions();
 		// Send out own move
 		int sendMyMove();
+		// Synchronize game
+		void sendSync();
 };
 
 #endif

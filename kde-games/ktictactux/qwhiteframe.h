@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
@@ -17,7 +17,7 @@ class QWhiteFrame : public QFrame
 	Q_OBJECT
 	public:
 		// Constructor
-		QWhiteFrame(QWidget *parent = NULL, char *name = NULL);
+		QWhiteFrame(QWidget *parent = NULL, const char *name = NULL);
 		// Destructor
 		~QWhiteFrame();
 	protected slots:

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
@@ -33,8 +33,11 @@ class KTicTacTuxWin : public KMainWindow
 			menusync,
 			menuquit,
 			menuthemenew,
-			menuthemeclassic
+			menuthemeclassic,
+			menuthemesymbols
 		};
+		// Enable network functionality
+		void enableNetwork(bool enabled);
 
 	public slots:
 		// Receive a status message from the game

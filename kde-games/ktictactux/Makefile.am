@@ -36,5 +36,10 @@ uninstall-local:
 	-$(GGZ_CONFIG) --remove --modfile=module.dsc
 
 pixmapdir = @ggzdatadir@/ktictactux
-pixmap_DATA = tux.png merlin.png kde.png gnome.png
+pixmap_DATA = tux.png merlin.png kde.png gnome.png cross.png circle.png
+
+KDE_ICON = ktictactux
+
+appsdir = $(kde_appsdir)/Games/Board
+apps_DATA = ktictactux.desktop
 

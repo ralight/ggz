@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
@@ -8,7 +8,7 @@
 #include "qwhiteframe.h"
 
 // Constructor which defines a style
-QWhiteFrame::QWhiteFrame(QWidget *parent = NULL, char *name = NULL)
+QWhiteFrame::QWhiteFrame(QWidget *parent, const char *name)
 : QFrame(parent, name)
 {
 	setBackgroundColor(QColor(255, 255, 255));

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
@@ -21,7 +21,7 @@
 #include <stdlib.h>
 
 // Cons... Konstructor :-)
-KTicTacTux::KTicTacTux(QWidget *parent = NULL, char *name = NULL)
+KTicTacTux::KTicTacTux(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	QVBoxLayout *vbox;
@@ -320,12 +320,18 @@ void KTicTacTux::setOpponent(int type)
 	m_opponent = type;
 }
 
+// Synchronization
+void KTicTacTux::sync()
+{
+	proto->sendSync();
+}
+
 // Handle network input
 void KTicTacTux::slotNetwork()
 {
 	int op;
 
-	es_read_int(proto->fd, &op);
+	op = proto->getOp();
 
 	switch(op)
 	{

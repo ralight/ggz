@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////
 // KTicTacTux
-// Copyright (C) 2001 Josef Spillner, dr_maux@users.sourceforge.net
+// Copyright (C) 2001, 2002 Josef Spillner, dr_maux@users.sourceforge.net
 // Published under GNU GPL conditions
 //////////////////////////////////////////////////////////////////////
 
@@ -18,7 +18,6 @@
 
 // Available command line options
 static const KCmdLineOptions op[] = {
-	{"o", I18N_NOOP("Launch game instead of joining"), 0},
 	{"ggz", I18N_NOOP("Request GGZ game explicitely"), 0},
 	{0, 0, 0}};
 
@@ -35,7 +34,7 @@ int main(int argc, char **argv)
 		"0.0.5pre",
 		I18N_NOOP("This is a TicTacToe game for KDE."),
 		KAboutData::License_GPL,
-		"(C) 2001 Josef Spillner",
+		"(C) 2001, 2002 Josef Spillner",
 		I18N_NOOP("This game can be played against the AI or over networks."),
 		"http://mindx.sourceforge.net",
 		"dr_maux@users.sourceforge.net");
@@ -47,7 +46,11 @@ int main(int argc, char **argv)
 
 	a = new KApplication();
 	ktictactuxwin = new KTicTacTuxWin(NULL, "KTicTacTuxWin");
-	if(args->isSet("ggz")) ktictactuxwin->tux()->setOpponent(PLAYER_NETWORK);
+	if(args->isSet("ggz"))
+	{
+		ktictactuxwin->enableNetwork(true);
+		ktictactuxwin->tux()->setOpponent(PLAYER_NETWORK);
+	}
 	ktictactuxwin->tux()->init();
 	a->setMainWidget(ktictactuxwin);
 	return a->exec();
