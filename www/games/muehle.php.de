@@ -5,32 +5,32 @@
 <td>
 <font size="3">
 
-<b>Mühle</b><br>
-Brettspiel für 2 Spieler.
+<b>MÃ¼hle</b><br>
+Brettspiel fÃ¼r 2 Spieler.
 <br>
 
 <table class="inner">
 <tr>
 <td valign="top">
 
-<i>Merkmale von Mühle</i><br>
+<i>Merkmale von MÃ¼hle</i><br>
 <ul>
-<li>Spiele-Client für KDE
-<li>unterstützt Spielerbewertungen
-<li>unterstützt Spielzuschauer
+<li>Spiele-Client fÃ¼r KDE
+<li>unterstÃ¼tzt Spielerbewertungen
+<li>unterstÃ¼tzt Spielzuschauer
 </ul>
 <br>
 
-<i>Regeln von Mühle</i><br>
-Mühle ist eine Familie von Spielen, bei denen die Punkte geometrisch
+<i>Regeln von MÃ¼hle</i><br>
+MÃ¼hle ist eine Familie von Spielen, bei denen die Punkte geometrisch
 durch Linien verbunden sind. Drei oder mehr solcher verbundenen Punkte
-in einer Reihe müssen vom Spieler mit Steinen besetzt sein, um einen Stein
-vom Gegener wegnehmen zu können.
+in einer Reihe mÃ¼ssen vom Spieler mit Steinen besetzt sein, um einen Stein
+vom Gegener wegnehmen zu kÃ¶nnen.
 
 </td><td valign="top">
 
 <i>KDE-Client:</i><br>
-<img src="pics/muehle.png"><br>
+<img src="/games/pics/muehle.png"><br>
 
 </td>
 </tr>

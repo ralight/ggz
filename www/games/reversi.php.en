@@ -32,10 +32,10 @@ stones wins the game.
 </td><td valign="top">
 
 <i>Gtk+ client:</i><br>
-<img src="pics/reversi.png"><br>
+<img src="/games/pics/reversi.png"><br>
 
 <i>KDE client:</i><br>
-<img src="pics/kreversi.png"><br>
+<img src="/games/pics/kreversi.png"><br>
 
 </td>
 </tr>

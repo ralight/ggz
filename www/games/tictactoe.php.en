@@ -15,7 +15,7 @@ Board game for 2 players.
 
 <i>TicTacToe features</i><br>
 <ul>
-<li>3 game clients available: Gtk+, KDE, SDL/OpenGL
+<li>5 game clients available: Gtk+, KDE, SDL/OpenGL, Console, Grubby
 <li>supports statistics
 <li>supports game spectators
 <li>AI opponent available
@@ -30,13 +30,13 @@ or diagonally) by putting a symbol on a free field in each turn.
 </td><td valign="top">
 
 <i>Gtk+ client:</i><br>
-<img src="pics/tictactoe.png"><br>
+<img src="/games/pics/tictactoe.png"><br>
 
 <i>KDE client:</i><br>
-<img src="pics/ktictactux.png"><br>
+<img src="/games/pics/ktictactux.png"><br>
 
 <i>SDL/OpenGL client:</i><br>
-<img src="pics/ttt3d.png">
+<img src="/games/pics/ttt3d.png">
 
 </td>
 </tr>

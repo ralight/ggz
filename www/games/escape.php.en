@@ -45,10 +45,10 @@ Moving along a wall is not allowed.
 </td><td valign="top">
 
 <i>Windows client:</i><br>
-<img src="pics/escape.png"><br>
+<img src="/games/pics/escape.png"><br>
 
 <i>SDL client:</i><br>
-<img src="pics/escape-sdl.png"><br>
+<img src="/games/pics/escape-sdl.png"><br>
 
 </td>
 </tr>

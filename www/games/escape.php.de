@@ -6,7 +6,7 @@
 <font size="3">
 
 <b>Escape</b><br>
-Brettspiel für 2 Spieler.
+Brettspiel fÃ¼r 2 Spieler.
 <br>
 
 <table class="inner">
@@ -15,21 +15,21 @@ Brettspiel für 2 Spieler.
 
 <i>Merkmale von Escape</i><br>
 <ul>
-<li>2 Spiele-Clients verfügbar: Windows und SDL
-<li>unterstützt Statistiken
-<li>unterstützt Spielzuschauer
-<li>KI-Gegner verfügbar
+<li>2 Spiele-Clients verfÃ¼gbar: Windows und SDL
+<li>unterstÃ¼tzt Statistiken
+<li>unterstÃ¼tzt Spielzuschauer
+<li>KI-Gegner verfÃ¼gbar
 <li>Einzelspieler-Modus (SDL-Client)
 </ul>
 <br>
 
 <i>Regeln von Escape</i><br>
-Das Spielfeld ist ein Netz aus Punkten, nicht unähnlich dem von Punkte Verbinden.
-Es ist auf allen Seiten von "Mauern" umgeben, außer an den beiden Enden, wo ein Abschnitt
-(das "Ziel") freigehalten wurde, in den die Spieler fliehen können.
+Das Spielfeld ist ein Netz aus Punkten, nicht unÃ¤hnlich dem von Punkte Verbinden.
+Es ist auf allen Seiten von "Mauern" umgeben, auÃŸer an den beiden Enden, wo ein Abschnitt
+(das "Ziel") freigehalten wurde, in den die Spieler fliehen kÃ¶nnen.
 
 Beide Spieler kontrollieren einen einzigen Spielstein, der zwischen den Punkten bewegt wird.
-Die Spieler können ihn in eine von acht Richtungen auf einen benachbarten Punkt bewegen.
+Die Spieler kÃ¶nnen ihn in eine von acht Richtungen auf einen benachbarten Punkt bewegen.
 
 Eine Verbindung zwischen zwei Punkten kann nur einmal begangen werden.
 Deshalb wird nach jedem Zug diese Verbindung mit einer Linie dargestellt.
@@ -37,18 +37,18 @@ Deshalb wird nach jedem Zug diese Verbindung mit einer Linie dargestellt.
 Wenn ein Zug auf der Mauer endet oder auf einem Punkt, der bereits einmal benutzt wurde,
 dann darf der Spieler noch einmal ziehen.
 
-Züge, die dazu führen, daß kein weiterer Zug mehr getätigt werden darf (z.B. in einer Ecke)
-sind entweder verboten oder führen zu einem Unentschieden.
+ZÃ¼ge, die dazu fÃ¼hren, daÃŸ kein weiterer Zug mehr getÃ¤tigt werden darf (z.B. in einer Ecke)
+sind entweder verboten oder fÃ¼hren zu einem Unentschieden.
 
 Es ist nicht erlaubt, entlang einer Mauer zu ziehen.
 
 </td><td valign="top">
 
 <i>Windows-Client:</i><br>
-<img src="pics/escape.png"><br>
+<img src="/games/pics/escape.png"><br>
 
 <i>SDL-Client:</i><br>
-<img src="pics/escape-sdl.png"><br>
+<img src="/games/pics/escape-sdl.png"><br>
 
 </td>
 </tr>

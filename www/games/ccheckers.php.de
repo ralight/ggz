@@ -6,7 +6,7 @@
 <font size="3">
 
 <b>Halma</b><br>
-Brettspiel für 2 bis 6 Spieler.
+Brettspiel fÃ¼r 2 bis 6 Spieler.
 <br>
 
 <table class="inner">
@@ -15,28 +15,28 @@ Brettspiel für 2 bis 6 Spieler.
 
 <i>Merkmale von Halma</i><br>
 <ul>
-<li>Spiele-Clients für Gtk+ und KDE
+<li>Spiele-Clients fÃ¼r Gtk+ und KDE
 <li>KI-Gegner vorhanden
-<li>unterstützt Spielerbewertungen
+<li>unterstÃ¼tzt Spielerbewertungen
 </ul>
 <br>
 
 <i>Regeln von Halma</i><br>
 Es gelten die klassischen Halma-Regeln.
-In jeder Runde wählt ein Spieler eine Route von einem seiner Punkte
+In jeder Runde wÃ¤hlt ein Spieler eine Route von einem seiner Punkte
 in ein Loch aus, entweder indem er den Punkt zu einem benachbarten Loch
-bewegt, oder sich einen Weg über andere (auch gegnerische) Punkte sucht.
+bewegt, oder sich einen Weg Ã¼ber andere (auch gegnerische) Punkte sucht.
 
-Das Ziel ist es, alle Punkte in die Löcher der gegenüberliegenden Ecke
+Das Ziel ist es, alle Punkte in die LÃ¶cher der gegenÃ¼berliegenden Ecke
 zu platzieren.
 
 </td><td valign="top">
 
 <i>Gtk+-Client:</i><br>
-<img src="pics/ccheckers.png"><br>
+<img src="/games/pics/ccheckers.png"><br>
 
 <i>KDE-Client:</i><br>
-<img src="pics/kcc.png"><br>
+<img src="/games/pics/kcc.png"><br>
 
 </td>
 </tr>

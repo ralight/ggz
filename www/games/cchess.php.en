@@ -5,7 +5,7 @@
 <td>
 <font size="3">
 
-<b>Chess</b><br>
+<b>Chinese Chess</b><br>
 Board game for 2 players.
 <br>
 
@@ -13,24 +13,23 @@ Board game for 2 players.
 <tr>
 <td valign="top">
 
-<i>Chess features</i><br>
+<i>Chinese Chess features</i><br>
 <ul>
-<li>Gtk+ and KDE game clients
+<li>SDL game client
 <li>supports statistics
+<li>supports game spectators
+<li>AI opponent available
+<li>single-player mode
 </ul>
 <br>
 
-<i>Chess rules</i><br>
-On game startup, the clock option is selected by the game host.
-Afterwards, the normal chess rules apply.
+<i>Chinese Chess rules</i><br>
+Not yet written down.
 
 </td><td valign="top">
 
-<i>Gtk+ client:</i><br>
-<img src="/games/pics/chess.png"><br>
-
-<i>KDE client:</i><br>
-<img src="/games/pics/koenig.png"><br>
+<i>SDL client:</i><br>
+<img src="/games/pics/xadrez-chines.png"><br>
 
 </td>
 </tr>

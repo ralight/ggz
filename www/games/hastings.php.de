@@ -6,7 +6,7 @@
 <font size="3">
 
 <b>Hastings 1066</b><br>
-Brettspiel für 2 bis 8 Spieler.
+Brettspiel fÃ¼r 2 bis 8 Spieler.
 <br>
 
 <table class="inner">
@@ -15,32 +15,32 @@ Brettspiel für 2 bis 8 Spieler.
 
 <i>Merkmale von Hastings 1066</i><br>
 <ul>
-<li>Spiele-Clients für Gtk+ und KDE
+<li>Spiele-Clients fÃ¼r Gtk+ und KDE
 <li>KI-Gegner vorhanden
-<li>unterstützt Spielzuschauer
+<li>unterstÃ¼tzt Spielzuschauer
 <li>mehrere Karten vorhanden
 </ul>
 <br>
 
 <i>Regeln von Hastings 1066</i><br>
 Im Jahre 1066 wurde England von Wilhelm dem Eroberer und seinen Normannen
-eingenommen. In diesem Spiel gehört jeder Spieler einer der beteiligten
-Nationen an (normalerweise sind es zwei), und muß die anderen bekämpfen.
+eingenommen. In diesem Spiel gehÃ¶rt jeder Spieler einer der beteiligten
+Nationen an (normalerweise sind es zwei), und muÃŸ die anderen bekÃ¤mpfen.
 Eine Reihe von Rittern steht bereit, um diese Aufgabe zu erledigen.
 
 In jeder Runde darf jeder Spieler einen Ritter genau ein Feld ziehen lassen.
 Wenn ein gegnerischer Ritter gefangen wird, so wird das  Opfer aus dem Spiel
 genommen.
 
-Das Spiel endet, wenn alle Nationen außer dem Gewinner zerstört sind.
+Das Spiel endet, wenn alle Nationen auÃŸer dem Gewinner zerstÃ¶rt sind.
 
 </td><td valign="top">
 
 <i>Gtk+-Client:</i><br>
-<img src="pics/hastings.png"><br>
+<img src="/games/pics/hastings.png"><br>
 
 <i>KDE-Client:</i><br>
-<img src="pics/fyrdman.png"><br>
+<img src="/games/pics/fyrdman.png"><br>
 
 </td>
 </tr>

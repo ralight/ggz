@@ -6,7 +6,7 @@
 <font size="3">
 
 <b>Punkte verbinden</b><br>
-Brettspiel für 2 Spieler.
+Brettspiel fÃ¼r 2 Spieler.
 <br>
 
 <table class="inner">
@@ -15,16 +15,16 @@ Brettspiel für 2 Spieler.
 
 <i>Merkmale von Punkte verbinden</i><br>
 <ul>
-<li>Spiele-Clients für Gtk+ und KDE
+<li>Spiele-Clients fÃ¼r Gtk+ und KDE
 <li>KI-Gegner vorhanden
-<li>unterstützt Spielerbewertungen
-<li>unterstützt Spielzuschauer
+<li>unterstÃ¼tzt Spielerbewertungen
+<li>unterstÃ¼tzt Spielzuschauer
 </ul>
 <br>
 
 <i>Regeln von Punkte verbinden</i><br>
-Der erste Spieler (Spielleiter) wählt eine passende horizontale und vertikale
-Spielfeldgröße aus - je mehr Felder dadurch entstehen, desto länger wird
+Der erste Spieler (Spielleiter) wÃ¤hlt eine passende horizontale und vertikale
+SpielfeldgrÃ¶ÃŸe aus - je mehr Felder dadurch entstehen, desto lÃ¤nger wird
 das Spiel dauern.
 
 Nach dieser Einstellung beginnt das Spiel, in dem jeder Spieler abwechselnd
@@ -38,10 +38,10 @@ der die meisten Felder umschlossen hat.
 </td><td valign="top">
 
 <i>Gtk+-Client:</i><br>
-<img src="pics/dots.png"><br>
+<img src="/games/pics/dots.png"><br>
 
 <i>KDE-Client:</i><br>
-<img src="pics/kdots.png"><br>
+<img src="/games/pics/kdots.png"><br>
 
 </td>
 </tr>

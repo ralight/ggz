@@ -6,7 +6,7 @@
 <font size="3">
 
 <b>Krosswater</b><br>
-Brettspiel für 2 bis 4 Spieler.
+Brettspiel fÃ¼r 2 bis 4 Spieler.
 <br>
 
 <table class="inner">
@@ -15,24 +15,24 @@ Brettspiel für 2 bis 4 Spieler.
 
 <i>Merkmale von Krosswater</i><br>
 <ul>
-<li>Spiele-Client für KDE
+<li>Spiele-Client fÃ¼r KDE
 <li>KI-Gegner vorhanden
 </ul>
 <br>
 
 <i>Regeln von Krosswater</i><br>
 Das Ziel ist es, das Wasser vom linken zum rechten Ufer zu durchqueren.
-Um es zu erreichen, müssen die Steine im Wasser so umgeordnet werden,
-daß ein Pfad in entweder horizontalen oder vertikalen Schritten das
+Um es zu erreichen, mÃ¼ssen die Steine im Wasser so umgeordnet werden,
+daÃŸ ein Pfad in entweder horizontalen oder vertikalen Schritten das
 Wasser durchquert.
 
-Böse Gegner versuchen, ihren Mitspielern die Steine aus dem Weg zu stehlnen,
-um sie in den eigenen Weg einzufügen...
+BÃ¶se Gegner versuchen, ihren Mitspielern die Steine aus dem Weg zu stehlnen,
+um sie in den eigenen Weg einzufÃ¼gen...
 
 </td><td valign="top">
 
 <i>KDE-Client:</i><br>
-<img src="pics/krosswater.png"><br>
+<img src="/games/pics/krosswater.png"><br>
 
 </td>
 </tr>
