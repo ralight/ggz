@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 4346 2002-08-07 16:16:54Z jdorje $
+ * $Id: msg.c 4377 2002-08-20 21:12:36Z jdorje $
  *
  * Debug and error messages
  *
@@ -278,7 +278,7 @@ static void err_doit(int priority, const char* prefix,
 	fflush(NULL);
 }
 
-
+#if 0 /* currently unused */
 /* For debug purposes only */
 void ggz_debug_debug(void) 
 {
@@ -287,7 +287,8 @@ void ggz_debug_debug(void)
 	printf("Debugging subsystem status\n");
 	printf("Debug file is %p\n", debug_file);
 	if (debug_types) {
-		printf("%d debugging types defined:\n", ggz_list_count(debug_types));
+		printf("%d debugging types defined:\n",
+		       ggz_list_count(debug_types));
 		for (entry = ggz_list_head(debug_types);
 		     entry != NULL;
 		     entry = ggz_list_next(entry)) {
@@ -298,5 +299,4 @@ void ggz_debug_debug(void)
 	else 
 		printf("No debugging types list\n");
 }
-
-
+#endif

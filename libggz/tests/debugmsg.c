@@ -3,7 +3,7 @@
 
 #include <ggz.h>
 
-int debug_suite(char *filename)
+static int debug_suite(char *filename)
 {
 	char *foolist[] = {"foo", "bar", NULL};
 
