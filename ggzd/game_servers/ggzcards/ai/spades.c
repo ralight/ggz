@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2464 2001-09-12 21:07:09Z jdorje $
+ * $Id: spades.c 2530 2001-10-03 05:24:34Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -43,6 +43,9 @@
 #include "../games/spades.h"
 
 #include "aicommon.h"
+
+#define IS_GOING_NIL(p) (game.players[p].bid.sbid.spec == SPADES_NIL || \
+			 game.players[p].bid.sbid.spec == SPADES_DOUBLE_NIL)
 
 /* #define USE_AI_TRICKS */
 
@@ -144,7 +147,7 @@ static void alert_play(player_t p, card_t play)
 #ifdef USE_AI_TRICKS
 	/* when a nil player sluffs, they'll sluff their highest card in that
 	   suit */
-	if (game.players[p].bid.sbid.spec == SPADES_NIL
+	if (IS_GOING_NIL(p)
 	    && game.players[p].tricks == 0 && play.suit != lead.suit
 	    && play.suit != SPADES) {
 		card_t card = play;
@@ -156,7 +159,7 @@ static void alert_play(player_t p, card_t play)
 #ifdef USE_AI_TRICKS
 	/* a nil player will generally play their highest card beneath an
 	   already-played card */
-	if (game.players[p].bid.sbid.spec == SPADES_NIL &&
+	if (IS_GOING_NIL(p) &&
 	    game.players[p].tricks == 0 && play.suit == lead.suit) {
 		if (!libai_might_player_have_card(p, play)) {
 			/* If we didn't think this player could have this
@@ -472,8 +475,7 @@ static int consider_bidding_nil(player_t num, int points)
 
 	/* --------------- NIL BIDS ----------------- */
 	/* Consider bidding nil. */
-	if (game.players[(num + 1) % 4].bid.sbid.spec == SPADES_NIL ||
-	    game.players[(num + 3) % 4].bid.sbid.spec == SPADES_NIL) {
+	if (IS_GOING_NIL((num + 1) % 4) || IS_GOING_NIL((num + 3) % 4)) {
 		nilrisk -= 2;
 		ai_debug("Dec. nilrisk because opponent is kneeling");
 	}
@@ -642,11 +644,11 @@ static card_t get_play(player_t p, seat_t s)
 #endif
 
 	/* Now determine our disposition for this trick. */
-	if (game.players[num].bid.sbid.spec == SPADES_NIL &&
+	if (IS_GOING_NIL(num) &&
 	    (game.players[num].tricks == 0 || oppNeed <= 0 || agg < 75))
 		chosen = PlayNil(num);
 
-	if (chosen < 0 && game.players[pard].bid.sbid.spec == SPADES_NIL
+	if (chosen < 0 && IS_GOING_NIL(pard)
 	    && (agg <= 50 || game.players[pard].tricks == 0))
 		chosen = CoverNil(num, agg);
 
@@ -1136,7 +1138,7 @@ static int SetNil(player_t p, int agg)
 	/* If one of our opponents bid nil and either hasn't played or has
 	   played * the high card, try to get under it. */
 	for (pp = (p + 1) % 4; pp != p && chosen < 0; pp = (pp + 1) % 4) {
-		if (pp == pard || game.players[pp].bid.sbid.spec != SPADES_NIL
+		if (pp == pard || !IS_GOING_NIL(pp)
 		    || game.players[pp].tricks != 0)
 			continue;
 		if (high < 0 && agg <= 50) {
