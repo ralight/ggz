@@ -4,7 +4,7 @@
  * Project: GGZCards AI Client
  * Date: 02/19/2002
  * Desc: AI client main loop and core logic
- * $Id: main.c 4067 2002-04-23 21:39:56Z jdorje $
+ * $Id: main.c 4163 2002-05-05 20:26:45Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -53,6 +53,10 @@ int main(int argc, char *argv[])
 
 	/* Standard initializations. */
 	fd = client_initialize();
+	if (fd < 0) {
+		ggz_error_msg("Failed to initialize client!");
+		return -1;
+	}
 
 	FD_ZERO(&active_fd_set);
 	FD_SET(fd, &active_fd_set);
