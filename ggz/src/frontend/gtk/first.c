@@ -160,7 +160,7 @@ static void first_generate_password(char *pw)
         int word, d1, d2;
         
         srandom(time(NULL));
-        word = random() % 10;
+        word = random() % 20;
         d1 = random() % 10;
         d2 = random() % 10;
         sprintf(pw, "%s%d%d", pw_words[word], d1, d2);
