@@ -36,17 +36,6 @@
 #include <unistd.h>
 
 
-/* Structure to represent state transition pairs */
-struct _GGZTransition {
-	
-	/* Current state */
-	GGZStateID cur;
-
-	/* Next state */
-	GGZStateID next;
-};
-
-
 /* Structure for a particular event type */
 struct _GGZEvent {
 
@@ -56,429 +45,44 @@ struct _GGZEvent {
 	/* Descriptive string (mainly for debugging purposes) */
 	const char *name;
 
-	/* Array of valid state transitions */
-	struct _GGZTransition *states;
-
 	/* List of callback functions */
 	GGZHookList *hooks;
 };
 
-
-/* Giant list of state transitions for each event */
-static struct _GGZTransition _server_connect_transitions[] = {
-	{GGZ_STATE_CONNECTING,    GGZ_STATE_ONLINE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _server_connect_fail_transitions[] = {
-	{GGZ_STATE_CONNECTING,    GGZ_STATE_OFFLINE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _server_motd_transitions[] = {
-	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
-	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _server_login_ok_transitions[] = {
-	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_LOGGED_IN},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _server_login_fail_transitions[] = {
-	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_ONLINE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _server_list_rooms_transitions[] = {
-	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
-	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _server_room_join_transitions[] = {
-	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_IN_ROOM},
-	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_IN_ROOM},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _server_room_join_fail_transitions[] = {
-	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_ONLINE},
-	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_IN_ROOM},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _server_list_players_transitions[] = {
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _server_chat_transitions[] = {
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _server_chat_fail_transitions[] = {
-	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _server_chat_msg_transitions[] = {
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _server_chat_announce_transitions[] = {
-	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
-	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _server_chat_prvmsg_transitions[] = {
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                
-
-static struct _GGZTransition _server_chat_beep_transitions[] = {
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                  
-
-static struct _GGZTransition _server_logout_transitions[] = {
-	{GGZ_STATE_LOGGING_OUT,   GGZ_STATE_OFFLINE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                     
-
-/* FIXME: is this right? */
-static struct _GGZTransition _server_error_transitions[] = {
-	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
-	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGING_OUT,   GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                      
-
-static struct _GGZTransition _server_room_enter_transitions[] = {
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                        
-
-static struct _GGZTransition _server_room_leave_transitions[] = {
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                        
-
-static struct _GGZTransition _server_table_update_transitions[] = {
-	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
-	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-/* FIXME: this will be going away with error callbacks */
-static struct _GGZTransition _net_error_transitions[] = {
-	{GGZ_STATE_CONNECTING,    GGZ_STATE_OFFLINE},
-	{GGZ_STATE_ONLINE,        GGZ_STATE_OFFLINE},
-	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_OFFLINE},
-	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_OFFLINE},
-	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_OFFLINE},
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_OFFLINE},
-	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_OFFLINE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_OFFLINE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_OFFLINE},
-	{GGZ_STATE_LOGGING_OUT,   GGZ_STATE_OFFLINE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                         
-
-static struct _GGZTransition _user_login_transitions[] = {
-	{GGZ_STATE_OFFLINE,       GGZ_STATE_CONNECTING},
-	{GGZ_STATE_ONLINE,        GGZ_STATE_LOGGING_IN},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                        
-
-static struct _GGZTransition _user_list_rooms_transitions[] = {
-	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
-	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                   
-
-static struct _GGZTransition _user_list_types_transitions[] = {
-	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
-	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                   
-
-static struct _GGZTransition _user_join_room_transitions[] = {
-	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_ENTERING_ROOM},
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_BETWEEN_ROOMS},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};
-
-static struct _GGZTransition _user_list_tables_transitions[] = {
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                  
-
-static struct _GGZTransition _user_list_players_transitions[] = {
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                 
-
-static struct _GGZTransition _user_chat_transitions[] = {
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                         
-
-static struct _GGZTransition _user_chat_prvmsg_transitions[] = {
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                  
-
-static struct _GGZTransition _user_chat_beep_transitions[] = {
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                    
-
-static struct _GGZTransition _user_motd_transitions[] = {
-	{GGZ_STATE_ONLINE,        GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_NONE},
-	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_NONE},
-	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_NONE},
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_NONE},
-	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_NONE},
-	{GGZ_STATE_JOINING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_AT_TABLE,      GGZ_STATE_NONE},
-	{GGZ_STATE_LEAVING_TABLE, GGZ_STATE_NONE},
-	{GGZ_STATE_NONE,          GGZ_STATE_NONE}
-};                        
-
-static struct _GGZTransition _user_logout_transitions[] = {
-	{GGZ_STATE_ONLINE,        GGZ_STATE_LOGGING_OUT},
-	{GGZ_STATE_LOGGING_IN,    GGZ_STATE_LOGGING_OUT},
-	{GGZ_STATE_LOGGED_IN,     GGZ_STATE_LOGGING_OUT},
-	{GGZ_STATE_ENTERING_ROOM, GGZ_STATE_LOGGING_OUT},
-	{GGZ_STATE_IN_ROOM,       GGZ_STATE_LOGGING_OUT},
-	{GGZ_STATE_BETWEEN_ROOMS, GGZ_STATE_LOGGING_OUT},
-	{GGZ_STATE_NONE,          GGZ_STATE_LOGGING_OUT}
-};
-
-
 /* Array of all GGZ events */
 static struct _GGZEvent ggz_events[] = {
-
-	{GGZ_SERVER_CONNECT, 
-	 "server_connect", 
-	 _server_connect_transitions},
-	
-	{GGZ_SERVER_CONNECT_FAIL, 
-	 "server_connect_fail", 
-	 _server_connect_fail_transitions},
-	
-	{GGZ_SERVER_MOTD, 
-	 "server_motd",
-	 _server_motd_transitions},
-	
-	{GGZ_SERVER_LOGIN,          
-	 "server_login_ok",
-	 _server_login_ok_transitions},
-	
-	{GGZ_SERVER_LOGIN_FAIL,
-	 "server_login_fail",
-	 _server_login_fail_transitions},
-
-	{GGZ_SERVER_LIST_ROOMS,     
-	 "server_list_rooms",
-	 _server_list_rooms_transitions},
-	
-	{GGZ_SERVER_ROOM_JOIN,      
-	 "server_room_join",
-	 _server_room_join_transitions},
-
-	{GGZ_SERVER_ROOM_JOIN_FAIL, 
-	 "server_room_join_fail",             
-	 _server_room_join_fail_transitions},
-
-	{GGZ_SERVER_LIST_PLAYERS,   
-	 "server_list_players",               
-	 _server_list_players_transitions},
-
-	{GGZ_SERVER_CHAT,           
-	 "server_chat",                       
-	 _server_chat_transitions},
-
-	{GGZ_SERVER_CHAT_FAIL,      
-	 "server_chat_fail",                  
-	 _server_chat_fail_transitions},
-
-	{GGZ_SERVER_CHAT_MSG,       
-	 "server_chat_msg",                   
-	 _server_chat_msg_transitions},
-
-	{GGZ_SERVER_CHAT_ANNOUNCE,  
-	 "server_chat_announce",              
-	 _server_chat_announce_transitions},
-
-	{GGZ_SERVER_CHAT_PRVMSG,    
-	 "server_chat_prvmsg",                
-	 _server_chat_prvmsg_transitions},
-
-	{GGZ_SERVER_CHAT_BEEP,      
-	 "server_chat_beep",                  
-	 _server_chat_beep_transitions},
-
-	{GGZ_SERVER_LOGOUT,         
-	 "server_logout",                     
-	 _server_logout_transitions},
-
-	{GGZ_SERVER_ERROR,          
-	 "server_error",                      
-	 _server_error_transitions},
-	
-	{GGZ_SERVER_ROOM_ENTER,     
-	 "server_room_enter",                        
-	 _server_room_enter_transitions},
-	
-	{GGZ_SERVER_ROOM_LEAVE,     
-	 "server_room_leave",                        
-	 _server_room_leave_transitions},
-
-	{GGZ_SERVER_TABLE_UPDATE,
-	 "server_table_update",
-	 _server_table_update_transitions},
-
-	{GGZ_NET_ERROR,             
-	 "net_error",                         
-	 _net_error_transitions},
-
-	{GGZ_USER_LOGIN,            
-	 "user_login",                        
-	 _user_login_transitions},
-
-	{GGZ_USER_LIST_ROOMS,       
-	 "user_list_rooms",                   
-	 _user_list_rooms_transitions},
-
-	{GGZ_USER_LIST_TYPES,       
-	 "user_list_types",                   
-	 _user_list_types_transitions},
-
-	{GGZ_USER_JOIN_ROOM,        
-	 "user_join_room",                    
-	 _user_join_room_transitions},
-
-	{GGZ_USER_LIST_TABLES,      
-	 "user_list_tables",                  
-	 _user_list_tables_transitions},
-
-	{GGZ_USER_LIST_PLAYERS,     
-	 "user_list_players",                 
-	 _user_list_players_transitions},
-
-	{GGZ_USER_CHAT,             
-	 "user_chat",                         
-	 _user_chat_transitions},
-
-	{GGZ_USER_CHAT_PRVMSG,      
-	 "user_chat_prvmsg",                  
-	 _user_chat_prvmsg_transitions},
-
-	{GGZ_USER_CHAT_BEEP,        
-	 "user_chat_beep",                    
-	 _user_chat_beep_transitions},
-
-	{GGZ_USER_MOTD,             
-	 "user_motd",                         
-	 _user_motd_transitions},
-
-	{GGZ_USER_LOGOUT,           
-	 "user_logout",
-	 _user_logout_transitions}
-
+	{GGZ_SERVER_CONNECT, 	    "server_connect"}, 
+	{GGZ_SERVER_CONNECT_FAIL,   "server_connect_fail"}, 
+	{GGZ_SERVER_MOTD, 	    "server_motd"},
+	{GGZ_SERVER_LOGIN,          "server_login_ok"},
+	{GGZ_SERVER_LOGIN_FAIL,	    "server_login_fail"},
+	{GGZ_SERVER_LIST_ROOMS,     "server_list_rooms"},
+	{GGZ_SERVER_ROOM_JOIN,      "server_room_join"},
+	{GGZ_SERVER_ROOM_JOIN_FAIL, "server_room_join_fail"},             
+	{GGZ_SERVER_LIST_PLAYERS,   "server_list_players"},               
+	{GGZ_SERVER_CHAT,           "server_chat"},                       
+	{GGZ_SERVER_CHAT_FAIL,      "server_chat_fail"},                  
+	{GGZ_SERVER_CHAT_MSG,       "server_chat_msg"},                   
+	{GGZ_SERVER_CHAT_ANNOUNCE,  "server_chat_announce"},              
+	{GGZ_SERVER_CHAT_PRVMSG,    "server_chat_prvmsg"},                
+	{GGZ_SERVER_CHAT_BEEP,      "server_chat_beep"},                  
+	{GGZ_SERVER_LOGOUT,         "server_logout"},                     
+	{GGZ_SERVER_ERROR,          "server_error"},                      
+	{GGZ_SERVER_ROOM_ENTER,     "server_room_enter"},
+	{GGZ_SERVER_ROOM_LEAVE,     "server_room_leave"},
+	{GGZ_SERVER_TABLE_UPDATE,   "server_table_update"},
+	{GGZ_NET_ERROR,             "net_error"},                         
+	{GGZ_USER_LOGIN,            "user_login"},                        
+	{GGZ_USER_LIST_ROOMS,       "user_list_rooms"},                   
+	{GGZ_USER_LIST_TYPES,       "user_list_types"},                   
+	{GGZ_USER_JOIN_ROOM,        "user_join_room"},                    
+	{GGZ_USER_LIST_TABLES,      "user_list_tables"},                  
+	{GGZ_USER_LIST_PLAYERS,     "user_list_players"},                 
+	{GGZ_USER_CHAT,             "user_chat"},                         
+	{GGZ_USER_CHAT_PRVMSG,      "user_chat_prvmsg"},                  
+	{GGZ_USER_CHAT_BEEP,        "user_chat_beep"},                    
+	{GGZ_USER_MOTD,             "user_motd"},                         
+	{GGZ_USER_LOGOUT,           "user_logout"}
 };
 
 /* Number of events */
@@ -490,8 +94,6 @@ static int event_pipe[2];
 /* Private functions */
 static void _ggzcore_event_process(GGZEventID id, void *data, 
 				   GGZDestroyFunc func);
-
-static GGZStateID _ggzcore_event_next_state(GGZEventID id);
 
 static void _ggzcore_event_dump_callbacks(GGZEventID id);
 
@@ -797,60 +399,21 @@ int ggzcore_event_process_all(void)
 static void _ggzcore_event_process(GGZEventID id, void* data, 
 				   GGZDestroyFunc destroy)
 {
-	int next_state;
-
 	ggzcore_debug(GGZ_DBG_EVENT, "Processing %s event/invoking callbacks",
 		      ggz_events[id].name);
-
-	if ( (next_state = _ggzcore_event_next_state(id)) < 0) {
+	
+	if (_ggzcore_state_event_is_valid(id)) {
+		_ggzcore_hook_list_invoke(ggz_events[id].hooks, data);
+		_ggzcore_state_transition(id);
+	}
+	else {
 		ggzcore_debug(GGZ_DBG_EVENT, "NOTE: Skipping invalid %s event",
 			      ggz_events[id].name);
 	}
-	
-	else {
-		_ggzcore_hook_list_invoke(ggz_events[id].hooks, data);
 
-		if (next_state != GGZ_STATE_NONE)
-			_ggzcore_state_set(next_state);
-	}
-	
 	/* Free event specific data */
 	if (data && destroy)
 		(*destroy)(data);
-}
-
-
-/* _ggzcore_event_next_state() - Calculate next state based on event
- *                               and current state  
- *
- * Receives:
- * GGZEventID id          : ID of event to process
- *
- * Returns:
- * GGZStateID : ID of next state or -1 if the event is not valid in
- *              the current state
- */
-static GGZStateID _ggzcore_event_next_state(GGZEventID id)
-{
-	int i = 0;
-	struct _GGZTransition *states;
-	GGZStateID cur, next = -1;
-
-	states = ggz_events[id].states;
-	cur = ggzcore_state_get_id();
-
-	/* Look through valid transitions to see if current state is one */
-	while (states[i].cur != cur && states[i].cur != GGZ_STATE_NONE)
-		++i;
-	
-	/* If event is valid, look up next state*/
-	if (states[i].cur == cur)
-		next = states[i].next;
-
-	ggzcore_debug(GGZ_DBG_EVENT, "Event %s next state id: %d",
-		      ggz_events[id].name, next);
-	
-	return next;
 }
 
 

@@ -31,8 +31,15 @@
 
 #include <stdlib.h>
 
-/* Global state variable */
-struct _GGZClientState _ggzcore_state;
+/* Structure to represent state transition pairs */
+struct _GGZTransition {
+	
+	/* Current state */
+	GGZEventID event;
+
+	/* Next state */
+	GGZStateID next;
+};
 
 
 /* Structure for a particular client state */
@@ -44,28 +51,229 @@ struct _GGZState {
 	/* Descriptive string (mainly for debugging purposes) */
 	const char *name;
 
+	/* Array of valid state transitions */
+	struct _GGZTransition *transitions;
+
 	/* List of callback functions */
 	GGZHookList *hooks;
+
 };
+
+/* Giant list of state transitions for each event */
+static struct _GGZTransition _offline_transitions[] = {
+	{GGZ_USER_LOGIN,             GGZ_STATE_CONNECTING},
+	{-1, -1}
+};
+
+static struct _GGZTransition _connecting_transitions[] = {
+	{GGZ_SERVER_CONNECT,         GGZ_STATE_ONLINE},
+	{GGZ_SERVER_CONNECT_FAIL,    GGZ_STATE_OFFLINE},
+	{-1, -1}
+};
+
+static struct _GGZTransition _online_transitions[] = {
+	{GGZ_SERVER_MOTD,            GGZ_STATE_ONLINE},
+	{GGZ_SERVER_LIST_ROOMS,      GGZ_STATE_ONLINE},
+	{GGZ_SERVER_ERROR,           GGZ_STATE_ONLINE},
+	{GGZ_SERVER_TABLE_UPDATE,    GGZ_STATE_ONLINE},
+	{GGZ_USER_LOGIN,             GGZ_STATE_LOGGING_IN},
+	{GGZ_USER_LIST_ROOMS,        GGZ_STATE_ONLINE},
+	{GGZ_USER_LIST_TYPES,        GGZ_STATE_ONLINE},
+	{GGZ_USER_MOTD,              GGZ_STATE_ONLINE},
+	{GGZ_USER_LOGOUT,            GGZ_STATE_LOGGING_OUT},
+	{-1, -1}
+};
+
+static struct _GGZTransition _logging_in_transitions[] = {
+	{GGZ_SERVER_MOTD,            GGZ_STATE_LOGGING_IN},
+	{GGZ_SERVER_LOGIN,           GGZ_STATE_LOGGED_IN},
+        {GGZ_SERVER_LOGIN_FAIL,      GGZ_STATE_ONLINE},
+	{GGZ_SERVER_LIST_ROOMS,      GGZ_STATE_LOGGING_IN},
+	{GGZ_SERVER_ERROR,           GGZ_STATE_LOGGING_IN},
+	{GGZ_SERVER_TABLE_UPDATE,    GGZ_STATE_LOGGING_IN},
+	{GGZ_USER_LIST_ROOMS,        GGZ_STATE_LOGGING_IN},
+	{GGZ_USER_LIST_TYPES,        GGZ_STATE_LOGGING_IN},
+	{GGZ_USER_MOTD,              GGZ_STATE_LOGGING_IN},
+	{GGZ_USER_LOGOUT,            GGZ_STATE_LOGGING_OUT},
+	{-1, -1}
+};
+
+static struct _GGZTransition _logged_in_transitions[] = {
+	{GGZ_SERVER_MOTD,            GGZ_STATE_LOGGED_IN},
+	{GGZ_SERVER_LIST_ROOMS,      GGZ_STATE_LOGGED_IN},
+	{GGZ_SERVER_CHAT_ANNOUNCE,   GGZ_STATE_LOGGED_IN},
+	{GGZ_SERVER_ERROR,           GGZ_STATE_LOGGED_IN},
+	{GGZ_SERVER_TABLE_UPDATE,    GGZ_STATE_LOGGED_IN},
+	{GGZ_USER_LIST_ROOMS,        GGZ_STATE_LOGGED_IN},
+	{GGZ_USER_LIST_TYPES,        GGZ_STATE_LOGGED_IN},
+	{GGZ_USER_JOIN_ROOM,         GGZ_STATE_ENTERING_ROOM},
+	{GGZ_USER_MOTD,              GGZ_STATE_LOGGED_IN},
+	{GGZ_USER_LOGOUT,            GGZ_STATE_LOGGING_OUT},
+	{-1, -1}
+};
+
+static struct _GGZTransition _entering_room_transitions[] = {
+	{GGZ_SERVER_MOTD,            GGZ_STATE_ENTERING_ROOM},
+	{GGZ_SERVER_LIST_ROOMS,      GGZ_STATE_ENTERING_ROOM},
+	{GGZ_SERVER_ROOM_JOIN,       GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_ROOM_JOIN_FAIL,  GGZ_STATE_LOGGED_IN},
+	{GGZ_SERVER_CHAT_FAIL,       GGZ_STATE_ENTERING_ROOM},
+	{GGZ_SERVER_CHAT_ANNOUNCE,   GGZ_STATE_ENTERING_ROOM},
+	{GGZ_SERVER_ERROR,           GGZ_STATE_ENTERING_ROOM},
+	{GGZ_SERVER_TABLE_UPDATE,    GGZ_STATE_ENTERING_ROOM},
+	{GGZ_USER_LIST_ROOMS,        GGZ_STATE_ENTERING_ROOM},
+	{GGZ_USER_LIST_TYPES,        GGZ_STATE_ENTERING_ROOM},
+	{GGZ_USER_MOTD,              GGZ_STATE_ENTERING_ROOM},
+	{GGZ_USER_LOGOUT,            GGZ_STATE_LOGGING_OUT},
+	{-1, -1}
+};
+
+static struct _GGZTransition _in_room_transitions[] = {
+	{GGZ_SERVER_MOTD,            GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_LIST_ROOMS,      GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_LIST_PLAYERS,    GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_CHAT,            GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_CHAT_FAIL,       GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_CHAT_MSG,        GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_CHAT_ANNOUNCE,   GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_CHAT_PRVMSG,     GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_CHAT_BEEP,       GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_ERROR,           GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_ROOM_ENTER,      GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_ROOM_LEAVE,      GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_TABLE_UPDATE,    GGZ_STATE_IN_ROOM},
+	{GGZ_USER_LIST_ROOMS,        GGZ_STATE_IN_ROOM},
+	{GGZ_USER_LIST_TYPES,        GGZ_STATE_IN_ROOM},
+	{GGZ_USER_JOIN_ROOM,         GGZ_STATE_BETWEEN_ROOMS},
+	{GGZ_USER_LIST_TABLES,       GGZ_STATE_IN_ROOM},
+	{GGZ_USER_LIST_PLAYERS,      GGZ_STATE_IN_ROOM},
+	{GGZ_USER_CHAT,              GGZ_STATE_IN_ROOM},
+	{GGZ_USER_CHAT_PRVMSG,       GGZ_STATE_IN_ROOM},
+	{GGZ_USER_CHAT_BEEP,         GGZ_STATE_IN_ROOM},
+	{GGZ_USER_MOTD,              GGZ_STATE_IN_ROOM},
+	{GGZ_USER_LOGOUT,            GGZ_STATE_LOGGING_OUT},
+	{-1, -1}
+};
+
+static struct _GGZTransition _between_rooms_transitions[] = {
+	{GGZ_SERVER_MOTD,            GGZ_STATE_BETWEEN_ROOMS},
+	{GGZ_SERVER_LIST_ROOMS,      GGZ_STATE_BETWEEN_ROOMS},
+	{GGZ_SERVER_ROOM_JOIN,       GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_ROOM_JOIN_FAIL,  GGZ_STATE_IN_ROOM},
+	{GGZ_SERVER_CHAT_FAIL,       GGZ_STATE_BETWEEN_ROOMS},
+	{GGZ_SERVER_CHAT_ANNOUNCE,   GGZ_STATE_BETWEEN_ROOMS},
+	{GGZ_SERVER_ERROR,           GGZ_STATE_BETWEEN_ROOMS},
+	{GGZ_SERVER_TABLE_UPDATE,    GGZ_STATE_BETWEEN_ROOMS},
+	{GGZ_USER_LIST_ROOMS,        GGZ_STATE_BETWEEN_ROOMS},
+	{GGZ_USER_LIST_TYPES,        GGZ_STATE_BETWEEN_ROOMS},
+	{GGZ_USER_MOTD,              GGZ_STATE_BETWEEN_ROOMS},
+	{GGZ_USER_LOGOUT,            GGZ_STATE_LOGGING_OUT},
+	{-1, -1}
+};
+
+static struct _GGZTransition _joining_table_transitions[] = {
+	{GGZ_SERVER_MOTD,            GGZ_STATE_JOINING_TABLE},
+	{GGZ_SERVER_LIST_ROOMS,      GGZ_STATE_JOINING_TABLE},
+	{GGZ_SERVER_LIST_PLAYERS,    GGZ_STATE_JOINING_TABLE},
+	{GGZ_SERVER_CHAT,            GGZ_STATE_JOINING_TABLE},
+	{GGZ_SERVER_CHAT_FAIL,       GGZ_STATE_JOINING_TABLE},
+	{GGZ_SERVER_CHAT_MSG,        GGZ_STATE_JOINING_TABLE},
+	{GGZ_SERVER_CHAT_ANNOUNCE,   GGZ_STATE_JOINING_TABLE},
+	{GGZ_SERVER_CHAT_PRVMSG,     GGZ_STATE_JOINING_TABLE},
+	{GGZ_SERVER_CHAT_BEEP,       GGZ_STATE_JOINING_TABLE},
+	{GGZ_SERVER_ERROR,           GGZ_STATE_JOINING_TABLE},
+	{GGZ_SERVER_ROOM_ENTER,      GGZ_STATE_JOINING_TABLE},
+	{GGZ_SERVER_ROOM_LEAVE,      GGZ_STATE_JOINING_TABLE},
+	{GGZ_SERVER_TABLE_UPDATE,    GGZ_STATE_JOINING_TABLE},
+	{GGZ_USER_LIST_ROOMS,        GGZ_STATE_JOINING_TABLE},
+	{GGZ_USER_LIST_TYPES,        GGZ_STATE_JOINING_TABLE},
+	{GGZ_USER_LIST_TABLES,       GGZ_STATE_JOINING_TABLE},
+	{GGZ_USER_LIST_PLAYERS,      GGZ_STATE_JOINING_TABLE},
+	{GGZ_USER_CHAT,              GGZ_STATE_JOINING_TABLE},
+	{GGZ_USER_CHAT_PRVMSG,       GGZ_STATE_JOINING_TABLE},
+	{GGZ_USER_CHAT_BEEP,         GGZ_STATE_JOINING_TABLE},
+	{GGZ_USER_MOTD,              GGZ_STATE_JOINING_TABLE},
+	{-1, -1}
+};
+
+static struct _GGZTransition _at_table_transitions[] = {
+	{GGZ_SERVER_MOTD,            GGZ_STATE_AT_TABLE},
+	{GGZ_SERVER_LIST_ROOMS,      GGZ_STATE_AT_TABLE},
+	{GGZ_SERVER_LIST_PLAYERS,    GGZ_STATE_AT_TABLE},
+	{GGZ_SERVER_CHAT,            GGZ_STATE_AT_TABLE},
+	{GGZ_SERVER_CHAT_FAIL,       GGZ_STATE_AT_TABLE},
+	{GGZ_SERVER_CHAT_MSG,        GGZ_STATE_AT_TABLE},
+	{GGZ_SERVER_CHAT_ANNOUNCE,   GGZ_STATE_AT_TABLE},
+	{GGZ_SERVER_CHAT_BEEP,       GGZ_STATE_AT_TABLE},
+	{GGZ_SERVER_ERROR,           GGZ_STATE_AT_TABLE},
+	{GGZ_SERVER_ROOM_ENTER,      GGZ_STATE_AT_TABLE},
+	{GGZ_SERVER_ROOM_LEAVE,      GGZ_STATE_AT_TABLE},
+	{GGZ_SERVER_TABLE_UPDATE,    GGZ_STATE_AT_TABLE},
+	{GGZ_USER_LIST_ROOMS,        GGZ_STATE_AT_TABLE},
+	{GGZ_USER_LIST_TYPES,        GGZ_STATE_AT_TABLE},
+	{GGZ_USER_LIST_TABLES,       GGZ_STATE_AT_TABLE},
+	{GGZ_USER_LIST_PLAYERS,      GGZ_STATE_AT_TABLE},
+	{GGZ_USER_CHAT,              GGZ_STATE_AT_TABLE},
+	{GGZ_USER_MOTD,              GGZ_STATE_AT_TABLE},
+	{-1, -1}
+};
+
+static struct _GGZTransition _leaving_table_transitions[] = {
+	{GGZ_SERVER_MOTD,            GGZ_STATE_LEAVING_TABLE},
+	{GGZ_SERVER_LIST_ROOMS,      GGZ_STATE_LEAVING_TABLE},
+	{GGZ_SERVER_LIST_PLAYERS,    GGZ_STATE_LEAVING_TABLE},
+	{GGZ_SERVER_CHAT,            GGZ_STATE_LEAVING_TABLE},
+	{GGZ_SERVER_CHAT_FAIL,       GGZ_STATE_LEAVING_TABLE},
+	{GGZ_SERVER_CHAT_MSG,        GGZ_STATE_LEAVING_TABLE},
+	{GGZ_SERVER_CHAT_ANNOUNCE,   GGZ_STATE_LEAVING_TABLE},
+	{GGZ_SERVER_CHAT_PRVMSG,     GGZ_STATE_LEAVING_TABLE},
+	{GGZ_SERVER_CHAT_BEEP,       GGZ_STATE_LEAVING_TABLE},
+	{GGZ_SERVER_ERROR,           GGZ_STATE_LEAVING_TABLE},
+	{GGZ_SERVER_ROOM_ENTER,      GGZ_STATE_LEAVING_TABLE},
+	{GGZ_SERVER_ROOM_LEAVE,      GGZ_STATE_LEAVING_TABLE},
+	{GGZ_SERVER_TABLE_UPDATE,    GGZ_STATE_LEAVING_TABLE},
+	{GGZ_USER_LIST_ROOMS,        GGZ_STATE_LEAVING_TABLE},
+	{GGZ_USER_LIST_TYPES,        GGZ_STATE_LEAVING_TABLE},
+	{GGZ_USER_LIST_TABLES,       GGZ_STATE_LEAVING_TABLE},
+	{GGZ_USER_LIST_PLAYERS,      GGZ_STATE_LEAVING_TABLE},
+	{GGZ_USER_CHAT,              GGZ_STATE_LEAVING_TABLE},
+	{GGZ_USER_CHAT_PRVMSG,       GGZ_STATE_LEAVING_TABLE},
+	{GGZ_USER_CHAT_BEEP,         GGZ_STATE_LEAVING_TABLE},
+	{GGZ_USER_MOTD,              GGZ_STATE_LEAVING_TABLE},
+	{-1, -1}
+};
+
+static struct _GGZTransition _logging_out_transitions[] = {
+	{GGZ_SERVER_LOGOUT,          GGZ_STATE_OFFLINE},
+	{GGZ_SERVER_ERROR,           GGZ_STATE_LOGGING_OUT},
+	{-1, -1}
+};
+
 
 /* Array of all GGZ states */
 static struct _GGZState ggz_states[] = {
-	{GGZ_STATE_OFFLINE,       "offline"},
-	{GGZ_STATE_CONNECTING,    "connecting"},
-	{GGZ_STATE_ONLINE,        "online"}, 
-	{GGZ_STATE_LOGGING_IN,    "logging_in"},
-	{GGZ_STATE_LOGGED_IN,     "logged_in"},
-	{GGZ_STATE_ENTERING_ROOM, "entering_room"},
-	{GGZ_STATE_IN_ROOM,       "in_room"},
-	{GGZ_STATE_BETWEEN_ROOMS, "between_rooms"},
-	{GGZ_STATE_JOINING_TABLE, "joining_table"},
-	{GGZ_STATE_AT_TABLE,      "at_table"},
-	{GGZ_STATE_LEAVING_TABLE, "leaving_table"},
-	{GGZ_STATE_LOGGING_OUT,   "logging_out"},
-	{GGZ_STATE_NONE,          "** none **"}
+	{GGZ_STATE_OFFLINE,       "offline",       _offline_transitions},
+	{GGZ_STATE_CONNECTING,    "connecting",    _connecting_transitions},
+	{GGZ_STATE_ONLINE,        "online",        _online_transitions}, 
+	{GGZ_STATE_LOGGING_IN,    "logging_in",    _logging_in_transitions},
+	{GGZ_STATE_LOGGED_IN,     "logged_in",     _logged_in_transitions},
+	{GGZ_STATE_ENTERING_ROOM, "entering_room", _entering_room_transitions},
+	{GGZ_STATE_IN_ROOM,       "in_room",       _in_room_transitions},
+	{GGZ_STATE_BETWEEN_ROOMS, "between_rooms", _between_rooms_transitions},
+	{GGZ_STATE_JOINING_TABLE, "joining_table", _joining_table_transitions},
+	{GGZ_STATE_AT_TABLE,      "at_table",      _at_table_transitions},
+	{GGZ_STATE_LEAVING_TABLE, "leaving_table", _leaving_table_transitions},
+	{GGZ_STATE_LOGGING_OUT,   "logging_out",   _logging_out_transitions},
 };
 
 static void _ggzcore_state_dump_callbacks(GGZStateID id);
+static void _ggzcore_state_set(GGZStateID id);
+
+
+/* Global state variable */
+struct _GGZClientState _ggzcore_state;
+
+
 
 void _ggzcore_state_init(void)
 {	
@@ -192,6 +400,58 @@ int ggzcore_state_remove_callback_id(const GGZStateID id,
 }
 
 
+/* _ggzcore_state_event_is_valid() - Determine whether event is valid given 
+ *                                   current state
+ *
+ * Receives:
+ * GGZEventID id          : ID of event 
+ *
+ * Returns:
+ * 1 if the event is currently valid.  0 otherwise
+ */
+int _ggzcore_state_event_is_valid(GGZEventID id)
+{
+	int i = 0, valid = 0;
+	struct _GGZTransition *transitions;
+
+	transitions = ggz_states[ggzcore_state_get_id()].transitions;
+	
+	/* Look through valid transitions to see if the event qualifies */
+	while (transitions[i].event != -1) {
+		if (transitions[i].event == id) {
+			valid = 1;
+			break;
+		}
+		++i;
+	}
+
+	return valid;
+}
+
+/* FIXME: what should we assume here...*/
+void _ggzcore_state_transition(GGZEventID id)
+{
+	int i = 0;
+	struct _GGZTransition *transitions;
+	GGZStateID next = -1;
+
+	transitions = ggz_states[ggzcore_state_get_id()].transitions;
+	
+	/* Look through valid transitions to see if the event qualifies */
+	while (transitions[i].event != -1) {
+		if (transitions[i].event == id) {
+			next = transitions[i].next;
+			break;
+		}
+		++i;
+	}
+
+	if (next != ggzcore_state_get_id() )
+		_ggzcore_state_set(next);
+	
+}
+
+
 int ggzcore_state_is_online(void)
 {
 	return (_ggzcore_state.id >= GGZ_STATE_ONLINE);
@@ -248,7 +508,7 @@ int ggzcore_state_get_room(void)
 }
 
 
-void _ggzcore_state_set(GGZStateID id)
+static void _ggzcore_state_set(GGZStateID id)
 {
 	/* FIXME: should we check for valid state? */
 	ggzcore_debug(GGZ_DBG_STATE, "State transition %s -> %s", 

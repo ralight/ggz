@@ -59,7 +59,8 @@ extern struct _GGZClientState _ggzcore_state;
 void _ggzcore_state_init(void);
 void _ggzcore_state_destroy(void);
 
-void _ggzcore_state_set(GGZStateID id);
+int _ggzcore_state_event_is_valid(GGZEventID id);
+void _ggzcore_state_transition(GGZEventID id);
 
 
 #endif /* __STATE_H__ */
