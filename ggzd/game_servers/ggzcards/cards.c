@@ -35,7 +35,8 @@ static int deck_ptr = -1; /* a pointer into the deck used for dealing */
 
 char* suit_names[4] = {"clubs", "diamonds", "hearts", "spades"};
 char* short_suit_names[4] = {"C", "D", "H", "S"};
-char* face_names[] = {NULL, "ace", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen", "king", "ace"};
+char* face_names[15] = {NULL, "ace", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen", "king", "ace"};
+char* short_face_names[15] = {NULL, "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
 /* cards_create_deck()
  *   set up the deck of the given type
@@ -165,7 +166,7 @@ void cards_deal_hand(int handsize, hand_t *hand)
 	}
 
 	/* Deal the cards out */
-	hand->hand_size = handsize;
+	hand->hand_size = hand->full_hand_size = handsize;
 	for(c = 0; c < hand->hand_size; c++) {
 		if (deck_ptr >= deck_size) {
 			ggz_debug("SERVER BUG: too many cards being dealt out.");

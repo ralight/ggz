@@ -49,12 +49,15 @@ typedef struct card_t {
 #define UNKNOWN_CARD (card_t){-1, -1, -1}
 
 extern char* suit_names[];
+extern char* short_suit_names[];
 extern char* face_names[];
+extern char* short_face_names[];
 
 /* A hand structure */
 typedef struct hand_t {
-	char hand_size;
-	card_t *cards; /* must be allocated; memory leaks will be rampant! */
+	char full_hand_size;	/* the size of the hand, when it's full */
+	char hand_size;		/* the current size of the hand */
+	card_t *cards;		/* must be allocated; memory leaks will be rampant! */
 } hand_t;
 
 /* there should be an entry here for every kind of deck,

@@ -149,7 +149,10 @@ void send_all_global_messages(player_t p)
 	send_global_message("", p);
 	send_global_message("game", p);
 	send_global_message("Options", p);
-	send_global_message("Last Trick", p);
+	if (game.last_trick)
+		send_global_message("Last Trick", p);
+	if (game.last_hand)
+		send_global_message("Previous Hand", p);
 }
 
 /* set_global_message
@@ -1065,11 +1068,12 @@ int update(server_event_t event, void *data)
 			/* send the play */
 			send_play(c, game.play_seat);
 
-			/* remove the card from the player's hand */
-			/* TODO: this is quite inefficient */
-			hand->cards[card_index] = UNKNOWN_CARD;
+			/* remove the card from the player's hand
+			 * by sliding it to the end. */
+			/* TODO: this is quite ineffecient */
 			for (i=card_index; i<hand->hand_size; i++)
 				hand->cards[i] = hand->cards[i+1];
+			hand->cards[hand->hand_size-1] = c;
 			hand->hand_size--;
 
 			/* Move the card onto the table */

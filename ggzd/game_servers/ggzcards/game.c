@@ -193,11 +193,11 @@ void game_init_game()
 			exit(-1);
 	}
 
-	/* default value */
+	/* default values */
 	game.max_hand_length = 52 / game.num_players;
 	game.deck_type = GGZ_DECK_FULL;
-
 	game.last_trick = 1;
+	game.last_hand = 1;
 
 	/* second round of game-specific initialization */
 	switch (game.which_game) {
@@ -1536,6 +1536,25 @@ void game_end_trick(void)
 void game_end_hand(void)
 {
 	player_t p;
+
+	if (game.last_hand) {
+		int s, c, bsiz = 0;
+		char buf[4096];
+		hand_t *hand;
+		for(s=0; s<game.num_seats; s++) {
+			hand = &game.seats[s].hand;
+			hand->hand_size = hand->full_hand_size;
+			cards_sort_hand( hand );
+			bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "%s:   ", game.seats[s].ggz->name);
+			for (c=0; c<hand->hand_size; c++) {
+				card_t card = hand->cards[c];
+				bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "%s%s ",
+					short_face_names[(int)card.face], short_suit_names[(int)card.suit]);
+			}
+			bsiz += snprintf(buf+bsiz, sizeof(buf)-bsiz, "\n");
+		}
+		set_global_message("Previous Hand", "%s", buf);
+	}
 
 	switch (game.which_game) {
 		case GGZ_GAME_LAPOCHA:
