@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 6695 2005-01-16 06:54:26Z jdorje $
+ * $Id: output.c 6944 2005-02-27 18:18:07Z josef $
  *
  * Functions for display text/messages
  *
@@ -119,8 +119,10 @@ void output_banner(void)
 {
 	if(!output_enabled) return;
 
-	output_text(_("Welcome to the text-only GGZ client!\n"));
-	output_text(_("--Written by Brent Hendricks & Justin Zaun  (C) 2000\n"));
+	output_text(_("Welcome to the text-only GGZ client!"));
+	output_text(_("--Written by Brent Hendricks & Justin Zaun (C) 2000"));
+	output_text(_("--Maintained by the GGZ Gaming Zone developers (C) 2001 - 2005"));
+	output_text(_("--Type /help to see a list of possible commands."));
 }
 
 void output_prompt(void)
