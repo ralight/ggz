@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: map.c 6343 2004-11-13 01:44:11Z jdorje $
+ * $Id: map.c 6673 2005-01-14 06:34:12Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -88,13 +88,25 @@ int map_save(combat_game * map)
 				   GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 		if (handle < 0) {
 			sprintf(filename, "%s/.ggz", getenv("HOME"));
+#ifdef MKDIR_TAKES_ONE_ARG
+			mkdir(filename);
+#else
 			mkdir(filename, S_IRWXU | S_IRGRP | S_IXGRP);
+#endif
 			sprintf(filename, "%s/.ggz/combat",
 				getenv("HOME"));
+#ifdef MKDIR_TAKES_ONE_ARG
+			mkdir(filename);
+#else
 			mkdir(filename, S_IRWXU | S_IRGRP | S_IXGRP);
+#endif
 			sprintf(filename, "%s/.ggz/combat/maps",
 				getenv("HOME"));
+#ifdef MKDIR_TAKES_ONE_ARG
+			mkdir(filename);
+#else
 			mkdir(filename, S_IRWXU | S_IRGRP | S_IXGRP);
+#endif
 			sprintf(filename, "%s/.ggz/combat/maps/%s.%u",
 				getenv("HOME"), map->name, hash);
 			handle =
@@ -159,19 +171,29 @@ int map_search(combat_game * map)
 {
 	unsigned int hash;
 	char hash_str[32];
-	int n, a;
-	struct dirent **namelist;
-	char dir[2][50];
+	int a;
+	struct dirent *entry;
+	char dir_name[2][50];
+	DIR* dir;
+
 	hash = _generate_hash(combat_options_string_write(map, 1));
 	sprintf(hash_str, ".%u", hash);
-	sprintf(dir[0], GLOBAL_MAPS);
-	sprintf(dir[1], "%s/.ggz/combat/maps", getenv("HOME"));
+	sprintf(dir_name[0], GLOBAL_MAPS);
+	sprintf(dir_name[1], "%s/.ggz/combat/maps", getenv("HOME"));
 	for (a = 0; a < 2; a++) {
-		n = scandir(dir[a], &namelist, _maps_only, alphasort);
-		while (n-- > 0) {
-			if (strstr(namelist[n]->d_name, hash_str) != NULL)
-				return 1;
+		dir = opendir(dir_name[a]);
+		if (!dir) {
+			/* ??? */
+			continue;
 		}
+		while ((entry = readdir(dir))) {
+			if (!_maps_only(entry)) continue;
+			if (strstr(entry->d_name, hash_str) != NULL) {
+				closedir(dir);
+				return 1;
+			}
+		}
+		closedir(dir);
 	}
 	return 0;
 }
@@ -270,33 +292,32 @@ void map_load(combat_game * _game, char *filename, int *changed)
 
 char **map_list(void)
 {
-	char dir[2][50];
-	struct dirent **namelist[2];
-	char **names;
-	int n[2];
-	int a, b;
-	int map_number;
-	sprintf(dir[0], "%s", GLOBAL_MAPS);
-	sprintf(dir[1], "%s/.ggz/combat/maps", getenv("HOME"));
-	n[0] = scandir(dir[0], &namelist[0], _maps_only, alphasort);
-	n[1] = scandir(dir[1], &namelist[1], _maps_only, alphasort);
-	map_number = (n[0] >= 0 ? n[0] : 0) + (n[1] >= 0 ? n[1] : 0);
-	if (map_number > 0)
-		names = (char **)calloc(map_number + 1, sizeof(char *));
-	else
-		return NULL;
-	b = 0;
-	names[map_number] = 0;
+	char dir_name[2][1024];
+	struct dirent *entry;
+	char **names = NULL;
+	int map_number = 0, a;
+	DIR *dir;
+
+	/* This used to use scandir, but that isn't portable. */
+	sprintf(dir_name[0], "%s", GLOBAL_MAPS);
+	sprintf(dir_name[1], "%s/.ggz/combat/maps", getenv("HOME"));
 	for (a = 0; a < 2; a++) {
-		while (n[a]-- > 0) {
-			names[b] =
-			    (char *)ggz_malloc(strlen(dir[a]) +
-					       strlen(namelist[a][n[a]]->
-						      d_name) + 3);
-			sprintf(names[b], "%s/%s", dir[a],
-				namelist[a][n[a]]->d_name);
-			b++;
+		dir = opendir(dir_name[a]);
+		if (!dir) continue; /* FIXME: what else? */
+		while ((entry = readdir(dir))) {
+			if (!_maps_only(entry)) continue;
+			map_number++;
+			names = realloc(names, map_number * sizeof(*names));
+			names[map_number - 1]
+			  = ggz_malloc(strlen(dir_name[a])
+				       + strlen(entry->d_name) + 3);
+			sprintf(names[map_number - 1], "%s/%s",
+				dir_name[a], entry->d_name);
 		}
+		closedir(dir);
 	}
+	names = realloc(names, (map_number + 1) * sizeof(*names));
+	names[map_number] = NULL; /* Terminator */
 	return names;
+
 }
