@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2615 2001-10-24 21:23:43Z jdorje $
+ * $Id: ggzdmod.c 2624 2001-10-29 03:23:32Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -102,7 +102,6 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 	ggzdmod = ggz_malloc(sizeof(*ggzdmod));
 
 	/* initialize */
-	memset(ggzdmod, sizeof(*ggzdmod), 0);
 	ggzdmod->type = type;
 	ggzdmod->state = GGZ_STATE_INIT;
 	ggzdmod->fd = -1;
