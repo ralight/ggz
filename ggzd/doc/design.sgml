@@ -1,4 +1,5 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [ 
+<!ENTITY protonum "0">
 ]>
  
 <book id="index">
@@ -21,8 +22,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 512 $</revnumber>
-	<date>$Date: 2000-05-12 21:45:22 -0700 (Fri, 12 May 2000) $</date>
+	<revnumber>$Revision: 518 $</revnumber>
+	<date>$Date: 2000-05-13 22:15:51 -0700 (Sat, 13 May 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -196,20 +197,8 @@
 	  RSP_LOGIN_ANON
 
 	  REQ_LOGOUT
+
 	  RSP_LOGOUT
-            chr: success flag (0 for success, -1 error)
-
-	  REQ_PREF_CHANGE
-            chr: preference flag (indicates pref to change)
-            (str): new data value
-	  RSP_PREF_CHANGE
-            chr: success flag (0 for success, -1 error)
-
-	  REQ_REMOVE_USER
-            str: login name
-            str: password
-	  RSP_REMOVE_USER
-            chr: success flag (0 for success, -1 error)
 
 	</programlisting>
       </section>
@@ -258,12 +247,6 @@
 	        int: seat assignment (-1 for OPEN, -2 for COMP, -3 RESV )
   	        str: name of player (if assignment >=0 or == RESV)
 
-          REQ_TABLE_OPTIONS
-            int: table index
-          RSP_TABLE_OPTIONS
-            int: size of options struct (-1 for error)
-            struct: game options
-
 	  REQ_LIST_ROOMS
             int: Reqeusted game type index (-1 for all)
             chr: Verbose flag (0 for short list, 1 for long descriptions)
@@ -274,18 +257,6 @@
 	      str: Name of room
 	      int: Supported game type index
 	      str: Long room description (long list)
-
-	  REQ_USER_STAT
-            str: login name (NULL for all users)
-            int: game type index (-1 for all types)
-	  RSP_USER_STAT
-            int: number of game types (-1 for error)
-            sequence of
-              int: game type index
-              int: number of users 
-              sequence of 
-                int: number of games played 
-                int: number of games won
 
 	  REQ_MOTD
 	  RSP_MOTD
@@ -1102,7 +1073,8 @@
 
     <para>
      We now list a complete reference of messages which get
-     passed to and from the GGZ server
+     passed to and from the GGZ server.  This listing conforms to
+     protocol version &protonum;.
     </para>
     
     <section id ="server-to-client"><title>Server to client messages</title>
@@ -1154,9 +1126,10 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>0</entry>
 		</row>
 
 		<row rowsep="0">
@@ -1173,8 +1146,18 @@
 		</row>
 
 		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">serverid</entry>
+		  <entry namest="C1" nameend="C2">server_id</entry>
 		  <entry>string</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">protocol_version</entry>
+		  <entry>int</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">chat_length</entry>
+		  <entry>int</entry>
 		</row>
 
 	      </tbody>
@@ -1189,10 +1172,26 @@
 	    <title>Message Data</title>
 	    <variablelist>
 	      <varlistentry>
-		<term><emphasis role="bold">serverid</emphasis></term>
+		<term><emphasis role="bold">server_id</emphasis></term>
 		<listitem>
 		  <para>
 		    Server identification string (including version number)
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">protocol_version</emphasis></term>
+		<listitem>
+		  <para>
+		    32-bit protocol version number
+		  </para>
+		</listitem>
+	      </varlistentry>
+	      <varlistentry>
+		<term><emphasis role="bold">chat_length</emphasis></term>
+		<listitem>
+		  <para>
+		    Maximum allowable chat message length (in bytes)
 		  </para>
 		</listitem>
 	      </varlistentry>
@@ -1204,7 +1203,7 @@
 	    <para>
 	      MSG_SERVER_ID is sent from the server to the client upon
 	      a successful connection.  It does not guarantee a
-	      successful login
+	      successful login.
 	    </para>
 	  </refsect2>
 	</refsect1>
@@ -1232,9 +1231,10 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>1</entry>
 		</row>
 
 		<row rowsep="0">
@@ -1243,13 +1243,6 @@
                   </entry>
 		</row>
 		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
-		  <entry><emphasis role="bold">Type</emphasis></entry>
-		</row>
-
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -1293,9 +1286,10 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>2</entry>
 		</row>
 
 		<row rowsep="0">
@@ -1392,9 +1386,10 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>3</entry>
 		</row>
 
 		<row rowsep="0">
@@ -1442,7 +1437,27 @@
 		<term><emphasis role="bold">sub-opcode</emphasis></term>
 		<listitem>
 		  <para>
-		    Chat operation type
+		    Chat operation type:
+		    <itemizedlist>
+		      <listitem>
+			<para>
+			  GGZ_CHAT_NORMAL (64) : typical chat message to all in room
+			  (include field: chat_string)
+			</para>
+		      </listitem>
+		      <listitem>
+			<para>
+			  GGZ_CHAT_BEEP (128) : send a beep to another player's console
+			  (include field: player_name)
+			</para>
+		      </listitem>
+		      <listitem>
+			<para>
+			  GGZ_CHAT_PERSONAL (192) : typical chat message directed to a single
+			  player (include fields: player_name, chat_string)
+			</para>
+		      </listitem>
+		    </itemizedlist>
 		  </para>
 		</listitem>
 	      </varlistentry>
@@ -1498,22 +1513,16 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>7</entry>
 		</row>
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">MSG_UPDATE_ROOMS</entry>
 		</row>
 		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
-		  <entry><emphasis role="bold">Type</emphasis></entry>
-		</row>
-
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -1565,19 +1574,13 @@
 		  <entry namest="C1" nameend="C3">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>4</entry>
 		</row>
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">MSG_UPDATE_PLAYERS</entry>
 		</row>
 		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
-		  <entry><emphasis role="bold">Type</emphasis></entry>
-		</row>
-
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -1625,22 +1628,16 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>5</entry>
 		</row>
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">MSG_UPDATE_TYPES</entry>
 		</row>
 		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
-		  <entry><emphasis role="bold">Type</emphasis></entry>
-		</row>
-
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -1690,22 +1687,16 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>6</entry>
 		</row>
 
 		<row rowsep="0">
 		  <entry namest="C1" nameend="C3">MSG_UPDATE_TABLES</entry>
 		</row>
 		
-		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">
-		    <emphasis role="bold">Data</emphasis>
-		  </entry>
-		  <entry><emphasis role="bold">Type</emphasis></entry>
-		</row>
-
 	      </tbody>
 	    </tgroup>
 	  </informaltable>
@@ -1753,9 +1744,10 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>9</entry>
 		</row>
 
 		<row rowsep="0">
@@ -1856,9 +1848,10 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>11</entry>
 		</row>
 
 		<row rowsep="0">
@@ -1946,9 +1939,10 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>10</entry>
 		</row>
 
 		<row rowsep="0">
@@ -2050,9 +2044,10 @@
 	      <tbody>
 
 		<row rowsep="0">
-		  <entry namest="C1" nameend="C3">
+		  <entry namest="C1" nameend="C2">
                     <emphasis role="bold">Opcode</emphasis>
                   </entry>
+		  <entry>12</entry>
 		</row>
 
 		<row rowsep="0">
@@ -2415,6 +2410,66 @@
 	  </refsect2>
 	</refsect1>
       </refentry>
+
+      <refentry id="req.list.players"><?dbhtml filename="req_list_players.html">
+	<refmeta>
+	  <indexterm>
+	    <primary>REQ_LIST_PLAYERS</primary>
+	  </indexterm>
+	  <refentrytitle>REQ_LIST_PLAYERS</refentrytitle>
+	</refmeta>
+
+	<refnamediv>
+	  <refname>REQ_LIST_PLAYERS</refname>
+	  <refpurpose>
+	    Client request for list of players in current room.
+	  </refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv><title>Synopsis</title>
+	  <informaltable>
+	    <tgroup cols="3">
+	      <colspec colnum="1" colname="C1" align="left">
+	      <colspec colnum="2" colname="C2">
+	      <colspec colnum="3" colname="C3">
+	      <tbody>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">
+                    <emphasis role="bold">Opcode</emphasis>
+                  </entry>
+		</row>
+
+		<row rowsep="0">
+		  <entry namest="C1" nameend="C3">REQ_LIST_PLAYERS</entry>
+		</row>
+		
+		<row rowsep="1">
+		  <entry namest="C1" nameend="C2">
+		    <emphasis role="bold">Data</emphasis>
+		  </entry>
+		  <entry><emphasis role="bold">Type</emphasis></entry>
+		</row>
+
+	      </tbody>
+	    </tgroup>
+	  </informaltable>
+	</refsynopsisdiv>
+
+	<refsect1>
+	  <title>Description</title>
+	  <para></para>
+	  <refsect2>
+	    <title>Usage</title>
+	    <para>
+	      REQ_LOGOUT is sent from the client to the server to
+	      request that the player be logged out.  The server will
+	      then respond with <link
+	      linkend="rsp.logout">RSP_LOGOUT</link>.
+	    </para>
+	  </refsect2>
+	</refsect1>
+      </refentry>
       
     </section>
 
@@ -2425,3 +2480,4 @@
     
   </appendix>
 </book>
+
