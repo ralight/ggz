@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 6872 2005-01-24 04:14:57Z jdorje $
+ * $Id: server.c 6873 2005-01-24 04:18:31Z jdorje $
  *
  * Functions for handling server events
  *
@@ -28,16 +28,18 @@
 #  include <config.h>	/* Site-specific config */
 #endif
 
-#include "server.h"
-#include "loop.h"
-#include "game.h"
-
-#include <ggz.h>
-#include <ggzcore.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include <ggz.h>
+
+#include "ggzcore.h"
+
+#include "server.h"
+#include "loop.h"
+#include "game.h"
 
 #define _(x) x
 

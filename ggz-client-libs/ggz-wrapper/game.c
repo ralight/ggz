@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 6872 2005-01-24 04:14:57Z jdorje $
+ * $Id: game.c 6873 2005-01-24 04:18:31Z jdorje $
  *
  * Functions for handling game events
  *
@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <ggzcore.h>
+#include "ggzcore.h"
 
 #include "game.h"
 #include "loop.h"
