@@ -97,6 +97,9 @@ static char add_all_rooms = 't';
 /* Convience macro for parse_file(), parse_game() */
 #define PARSE_ERR(s)  err_msg("Config file: %s, line %d", s, linenum)
 
+/* Defaults for Admin items */
+#define ADMIN_ERR     "<You must set this parameter in ggzd.conf>"
+
 static const struct poptOption args[] = {
 	
 	{"file", 'f', POPT_ARG_STRING, &opt.local_conf, 0, 
@@ -204,6 +207,19 @@ void parse_conf_file(void)
 	if(!opt.main_port)
 		opt.main_port = 5688;
 
+	/* Set admin stuff to ADMIN_ERR if not specified */
+	if(!opt.admin_name) {
+		if((tempstr=malloc(strlen(ADMIN_ERR)+1)) == NULL)
+			err_sys_exit("malloc error in parse_conf_file()");
+		strcpy(tempstr, ADMIN_ERR);
+		opt.admin_name = tempstr;
+	}
+	if(!opt.admin_email) {
+		if((tempstr=malloc(strlen(ADMIN_ERR)+1)) == NULL)
+			err_sys_exit("malloc error in parse_conf_file()");
+		strcpy(tempstr, ADMIN_ERR);
+		opt.admin_email = tempstr;
+	}
 }
 
 
