@@ -149,8 +149,70 @@ reason why WH_MSG_HAND is handled as it is.)</li>
 <h3>
 Signals: both directions</h3>
 
+<ul>
+<li>
+<a href="#WH_REQ_NEWGAME">WH_REQ_NEWGAME</a></li>
+
+<li>
+<a href="#WH_RSP_NEWGAME">WH_RSP_NEWGAME</a></li>
+
+<li>
+<a href="#WH_MSG_NEWGAME">WH_MSG_NEWGAME</a></li>
+
+<li>
+<a href="#WH_REQ_OPTIONS">WH_REQ_OPTIONS</a></li>
+
+<li>
+<a href="#WH_RSP_OPTIONS">WH_RSP_OPTIONS</a></li>
+
+<li>
+<a href="#WH_MSG_PLAYERS">WH_MSG_PLAYERS</a></li>
+
+<li>
+<a href="#WH_MSG_HAND">WH_MSG_HAND</a></li>
+
+<li>
+<a href="#WH_REQ_BID">WH_REQ_BID</a></li>
+
+<li>
+<a href="#WH_RSP_BID">WH_RSP_BID</a></li>
+
+<li>
+<a href="#WH_MSG_PLAYER">WH_MESSAGE_PLAYER</a></li>
+
+<li>
+<a href="#WH_MESSAGE_GLOBAL">WH_MESSAGE_GLOBAL</a></li>
+
+<li>
+<a href="#WH_REQ_PLAY">WH_REQ_PLAY</a></li>
+
+<li>
+<a href="#WH_RSP_PLAY">WH_RSP_PLAY</a></li>
+
+<li>
+<a href="#WH_MSG_PLAY">WH_MSG_PLAY</a></li>
+
+<li>
+<a href="#WH_MSG_BADPLAY">WH_MSG_BADPLAY</a></li>
+
+<li>
+<a href="#WH_MSG_TRICK">WH_MSG_TRICK</a></li>
+
+<li>
+<a href="#WH_REQ_SYNC">WH_REQ_SYNC</a></li>
+
+<li>
+<a href="#WH_MSG_TABLE">WH_MSG_TABLE</a></li>
+
+<li>
+<a href="#WH_REQ_GAMEOVER">WH_REQ_GAMEOVER</a></li>
+
+<li>
+<a href="#WH_MSG_GAMEOVER">WH_MSG_GAMEOVER</a></li>
+</ul>
+
 <h4>
-WH_REQ_NEWGAME</h4>
+<a NAME="WH_REQ_NEWGAME"></a>WH_REQ_NEWGAME</h4>
 
 <ul>
 <li>
@@ -160,16 +222,16 @@ sent server->client</li>
 asks the client for an OK for a game to be started</li>
 
 <li>
-a WH_RSP_NEWGAME should be sent in response (if it's okay to start the
-game, that is)</li>
+a <a href="#WH_RSP_NEWGAME">WH_RSP_NEWGAME</a> should be sent in response
+(if it's okay to start the game, that is)</li>
 
 <li>
 this is optional by the server; they may just want to start the game (with
-a WH_MSG_NEWGAME)</li>
+a <a href="#WH_MSG_NEWGAME">WH_MSG_NEWGAME</a>)</li>
 </ul>
 
 <h4>
-WH_RSP_NEWGAME</h4>
+<a NAME="WH_RSP_NEWGAME"></a>WH_RSP_NEWGAME</h4>
 
 <ul>
 <li>
@@ -179,12 +241,13 @@ sent client->server</li>
 tells the server that this player is ready for a game to start</li>
 
 <li>
-a WH_MSG_NEWGAME should be sent in response, when the game is actually
-started (i.e. approved by all players and the server)</li>
+a <a href="#WH_MSG_NEWGAME">WH_MSG_NEWGAME</a> should be sent in response,
+when the game is actually started (i.e. approved by all players and the
+server)</li>
 </ul>
 
 <h4>
-WH_MSG_NEWGAME</h4>
+<a NAME="WH_MSG_NEWGAME"></a>WH_MSG_NEWGAME</h4>
 
 <ul>
 <li>
@@ -198,7 +261,7 @@ the client doesn't really have to do anything with this information...</li>
 </ul>
 
 <h4>
-WH_REQ_OPTIONS</h4>
+<a NAME="WH_REQ_OPTIONS"></a>WH_REQ_OPTIONS</h4>
 
 <ul>
 <li>
@@ -246,11 +309,11 @@ This protocol is far from finalized...</li>
 </ul>
 
 <h4>
-WH_RSP_OPTIONS</h4>
+<a NAME="WH_RSP_OPTIONS"></a>WH_RSP_OPTIONS</h4>
 
 <ul>
 <li>
-sent client->server in response to a WH_REQ_OPTIONS</li>
+sent client->server in response to a <a href="#WH_REQ_OPTIONS">WH_REQ_OPTIONS</a></li>
 
 <li>
 followed by a list of option choices, one for each option the server has
@@ -260,13 +323,10 @@ asked about.</li>
 Each option choice is an integer index.; In the case of a 2-choice option,
 it should be either 0 or 1.; In the case of a n-choice option, it should
 be in the range [0..n-1].</li>
-
-<li>
-See WH_REQ_OPTIONS for more.</li>
 </ul>
 
 <h4>
-WH_MSG_PLAYERS</h4>
+<a NAME="WH_MSG_PLAYERS"></a>WH_MSG_PLAYERS</h4>
 
 <ul>
 <li>
@@ -288,7 +348,7 @@ names for empty seats.</li>
 </ul>
 
 <h4>
-WH_MSG_HAND</h4>
+<a NAME="WH_MSG_HAND"></a>WH_MSG_HAND</h4>
 
 <ul>
 <li>
@@ -301,7 +361,7 @@ many cards another player may have, and the most elegant solution may just
 be to pass them a list of unknown cards.; Second, we have the possibility
 of dummy hands like in bridge.; If we implement things this way, then this
 problem halfway solves itself - we just send out the hand information again
-once the dummy hand becomes known - and the other half is handled by WH_REQ_PLAY
+once the dummy hand becomes known - and the other half is handled by <a href="#WH_REQ_PLAY">WH_REQ_PLAY</a>
 below.; Thirdly, we have the possibility for a "kitty" of cards that belong
 to no player (known or unknown).; If we implement things this way, then
 the kitty can easily be simulated as an extra player and the client need
@@ -319,15 +379,15 @@ any information already known.</li>
 
 <li>
 The server will pre-sort the hand, and if a different sorting become desired
-the MSG_HAND be resent.; This is the best way to deal with games like Euchre
-(where cards essentially change suit depending on what trump is) and bridge
-(where the trump suit is always supposed to be on the left).; The client
-may wish to provide additional sorting options (no sort, sort by suit,
-sort by number, ...).</li>
+the WH_MSG_HAND be resent.; This is the best way to deal with games like
+Euchre (where cards essentially change suit depending on what trump is)
+and bridge (where the trump suit is always supposed to be on the left).;
+The client may wish to provide additional sorting options (no sort, sort
+by suit, sort by number, ...).</li>
 </ul>
 
 <h4>
-WH_REQ_BID</h4>
+<a NAME="WH_REQ_BID"></a>WH_REQ_BID</h4>
 
 <ul>
 <li>
@@ -359,11 +419,11 @@ though.)</li>
 </ul>
 
 <h4>
-WH_RSP_BID</h4>
+<a NAME="WH_RSP_BID"></a>WH_RSP_BID</h4>
 
 <ul>
 <li>
-sent client->server in response to a WH_REQ_BID</li>
+sent client->server in response to a <a href="#WH_REQ_BID">WH_REQ_BID</a></li>
 
 <li>
 followed by an integer index (starting with 0) for which bid was chosen</li>
@@ -382,11 +442,11 @@ After receiving the bid, the server will update players with an appropriate
 message</li>
 
 <li>
-<i>In no cases will the server reject a bid.</i></li>
+<i>The server will never reject a bid.</i></li>
 </ul>
 
 <h4>
-WH_MESSAGE_PLAYER</h4>
+<a NAME="WH_MESSAGE_PLAYER"></a>WH_MESSAGE_PLAYER</h4>
 
 <ul>
 <li>
@@ -420,7 +480,7 @@ it should include bid and tricks.</li>
 </ul>
 
 <h4>
-WH_MESSAGE_GLOBAL</h4>
+<a NAME="WH_MESSAGE_GLOBAL"></a>WH_MESSAGE_GLOBAL</h4>
 
 <ul>
 <li>
@@ -479,7 +539,7 @@ contracts; dummy players won't have bids or scores, etc., etc.</li>
 </ul>
 
 <h4>
-WH_REQ_PLAY</h4>
+<a NAME="WH_REQ_PLAY"></a>WH_REQ_PLAY</h4>
 
 <ul>
 <li>
@@ -494,11 +554,12 @@ to play from handles half of this - the other half, displaying the dummy
 hand, is handled by WH_MSG_HAND, above.)</li>
 
 <li>
-requests a play from the client; a WH_RSP_PLAY should be sent in response</li>
+requests a play from the client; a <a href="#WH_RSP_PLAY">WH_RSP_PLAY</a>
+should be sent in response</li>
 </ul>
 
 <h4>
-WH_RSP_PLAY</h4>
+<a NAME="WH_RSP_PLAY"></a>WH_RSP_PLAY</h4>
 
 <ul>
 <li>
@@ -511,11 +572,12 @@ followed by a card</li>
 simply contains information about a player's play.</li>
 
 <li>
-the server will respond with either a WH_MSG_PLAY or WH_MSG_BADPLAY</li>
+the server will respond with either a <a href="#WH_MSG_PLAY">WH_MSG_PLAY</a>
+or <a href="#WH_MSG_BADPLAY">WH_MSG_BADPLAY</a></li>
 </ul>
 
 <h4>
-WH_MSG_PLAY</h4>
+<a NAME="WH_MSG_PLAY"></a>WH_MSG_PLAY</h4>
 
 <ul>
 <li>
@@ -547,7 +609,7 @@ Nothing is really done with the "player" data...</li>
 </ul>
 
 <h4>
-WH_MSG_BADPLAY</h4>
+<a NAME="WH_MSG_BADPLAY"></a>WH_MSG_BADPLAY</h4>
 
 <ul>
 <li>
@@ -561,14 +623,16 @@ to the user)</li>
 signals a bad play by the client</li>
 
 <li>
-a new play is requested, and a WH_RSP_PLAY should be sent in response.;
-(Any time a play is sent out-of-turn, the server should just ignore it.)</li>
+a new play is requested, and a <a href="#WH_RSP_PLAY">WH_RSP_PLAY</a> should
+be sent in response.; (Any time a play is sent out-of-turn, the server
+should just ignore it.)</li>
 
 <li>
 An alternate way to do this would be to send a list of valid plays with
-the WH_REQ_PLAY; however, this would require additional work by the client
-for _each and every_ play, whereas doing it this way just requires a larger
-amount of waiting in the rare case of an illegal play.</li>
+the <a href="#WH_REQ_PLAY">WH_REQ_PLAY</a>; however, this would require
+additional work by the client for _each and every_ play, whereas doing
+it this way just requires a larger amount of waiting in the rare case of
+an illegal play.</li>
 
 <li>
 Future idea: perhaps the server should send this information to all players,
@@ -577,7 +641,7 @@ seeing the card played.</li>
 </ul>
 
 <h4>
-WH_MSG_TRICK</h4>
+<a NAME="WH_MSG_TRICK"></a>WH_MSG_TRICK</h4>
 
 <ul>
 <li>
@@ -595,7 +659,7 @@ sent to all clients simultaneously</li>
 </ul>
 
 <h4>
-WH_REQ_SYNC</h4>
+<a NAME="WH_REQ_SYNC"></a>WH_REQ_SYNC</h4>
 
 <ul>
 <li>
@@ -610,7 +674,7 @@ out again by the server, using their standard protocols</li>
 </ul>
 
 <h4>
-WH_MSG_TABLE</h4>
+<a NAME="WH_MSG_TABLE"></a>WH_MSG_TABLE</h4>
 
 <ul>
 <li>
@@ -623,11 +687,12 @@ tells the client what cards are currently on the table</li>
 followed by a list of cards on the table, in relative ordering</li>
 
 <li>
-this protocol is only used for syncs; normally WH_MSG_PLAY will suffice.</li>
+this protocol is only used for syncs; normally <a href="#WH_MSG_PLAY">WH_MSG_PLAY</a>
+will suffice.</li>
 </ul>
 
 <h4>
-WH_REQ_GAMEOVER</h4>
+<a NAME="WH_REQ_GAMEOVER"></a>WH_REQ_GAMEOVER</h4>
 
 <ul>
 <li>
@@ -637,11 +702,12 @@ sent client->server</li>
 requests a gameover</li>
 
 <li>
-the server will respond with a WH_MSG_GAMEOVER if appropriate</li>
+the server will respond with a <a href="#WH_REQ_GAMEOVER">WH_MSG_GAMEOVER</a>
+if appropriate</li>
 </ul>
 
 <h4>
-WH_MSG_GAMEOVER</h4>
+<a NAME="WH_MSG_GAMEOVER"></a>WH_MSG_GAMEOVER</h4>
 
 <ul>
 <li>
@@ -665,7 +731,7 @@ Informs the client that the game is over</li>
 Sent simultaneously to all clients.</li>
 
 <li>
-After the game is over, a new one may be started using the WH_REQ_NEWGAME
+After the game is over, a new one may be started using the <a href="#WH_REQ_NEWGAME">WH_REQ_NEWGAME</a>
 protocol.</li>
 </ul>
 
