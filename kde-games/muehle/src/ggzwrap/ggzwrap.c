@@ -246,8 +246,7 @@ int main(int argc, char *argv[])
 	FD_SET(fdserver, &set);
 	tv.tv_sec = 2;
 	tv.tv_usec = 0;
-	//ret = select(1, &set, NULL, NULL, &tv);
-	ret = 1; // FIXME!!!
+	ret = select(fdserver + 1, &set, NULL, NULL, &tv);
 
 	if(ret == 1)
 	{
