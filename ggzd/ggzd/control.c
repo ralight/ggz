@@ -34,6 +34,8 @@
 #include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include <easysock.h>
 #include <ggzd.h>
@@ -75,6 +77,9 @@ void init_data(void)
 
 	if(ggzdb_init() < 0)
 		err_msg_exit("*** Database initialization failed");
+
+	/* Initialize random numbers for password generation */
+	srandom((unsigned)time(NULL));
 }
 
 

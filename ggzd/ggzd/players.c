@@ -686,11 +686,18 @@ static int player_login_new(int p, int fd)
 }
 
 
+static char *pw_words[] = { "apple", "horse", "turtle", "orange", "tree",
+			    "carrot", "dingo", "gnu", "bunny", "wombat" };
+
 /* This generates a password for the user */
 static void player_generate_password(char *pw)
 {
-	/* FIXME: Duh */
-	strcpy(pw, "password");
+	int word, d1, d2;
+
+	word = random() % 10;
+	d1 = random() % 10;
+	d2 = random() % 10;
+	sprintf(pw, "%s%d%d", pw_words[word], d1, d2);
 }
 
 
