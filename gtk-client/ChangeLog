@@ -1,960 +1,1802 @@
-2001-06-14  bmh  <bmh@users.sourceforge.net>
+2002-04-12 23:20  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/gtk-client/NEWS:
+	* debian/rules: - install pixmaps correctly
+
+2002-04-12 23:09  Rich Gade <rgade@users.sourceforge.net>
+
+	* ggz-gtk-client.spec: - Turn off debugging in RPM release - Added
+	pixmap dir (DOH!)
+
+2002-04-12 23:01  Rich Gade <rgade@users.sourceforge.net>
+
+	* configure.in, ggz-gtk-client.spec: - Updated versioning info -
+	Updated RPM Spec for 0.0.5
+
+2002-04-12 22:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/menu: - add menu entry for ggz-gtk
+
+2002-04-12 22:56  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README, README.GGZ: 
+	- Documentation updates
+
+2002-04-10 22:08  Ricardo Quesada <riq@users.sourceforge.net>
+
+	* po/es_AR.po: updated translation (still missing some words)
+
+2002-04-09 16:28  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/: control, rules: - finalize gtk+ client (e.g. gettext)
+
+2002-04-08 16:51  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/launch.c: - Allow reservation names to be up to
+	MAX_RESERVATION_NAME_LEN (16)	characters long, instead of
+	limiting them to 8 characters (oops!).	- Remove (comment out) the
+	explicit sizing of the reserved-name widget.	This means it gets
+	automatically sized, and should hopefully hold a    16-character
+	string.
+
+2002-04-08 13:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/control: - update more control files
+
+2002-04-07 15:18  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/client.c: 
+	- Allow the full icon to be shown in the player list
+
+2002-04-07 03:14  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/rules: - fix pixmap installation
+
+2002-04-07 03:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/: .cvsignore, changelog, control, docs, postinst, prerm,
+	rules: - debianize Gtk+ client
+
+2002-04-06 09:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.ggz: - sync acinclude.ggz
+
+2002-04-05 16:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README.GGZ, QuickStart.GGZ: - update installation instructions
+	and overview
+
+2002-04-05 11:10  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, login.c: Check the return value of
+	ggzcore_server_logout, and log an GGZ error if it fails.
+
+2002-04-05 10:12  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/login.c: When a login fails, log out immediately.  The
+	old behavior was to wait until we closed the connection dialog or
+	tried to log in again to log out.
+
+2002-04-04 22:39  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.in: Have ENABLE_NLS be handled within the
+	acconfig system rather than by manually adding a -DENABLE_NLS flag
+	onto CFLAGS.
+	
+	This means if you toggle NLS, you can rebuild things and all
+	dependencies will be taken care of automatically.
+
+2002-03-26 17:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - cosmetical: add stamp-h1
+
+2002-03-25 17:23  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: info.c, launch.c, license.c, login.c, props.c, types.c,
+	glade/info.glade, glade/launch.glade, glade/license.glade,
+	glade/login.glade, glade/props.glade: 
+	- Changed alot of the widgets so they are no longer a fixed size.
+
+2002-03-24 10:31  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/: de.po, es_AR.po, ggz-gtk.pot, pt_BR.po: - prepare
+	translations for ggz-gtk-client
+
+2002-03-22 22:02  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, client.h, ggzclient.c: 
+	- new function client_clear_tables() clears the table list and sets
+	  the selected row to -1 - call client_clear_tables() when a new
+	table list arrives and when we	 first enter a room.  This fixes
+	bug #435008
+
+2002-03-21 12:51  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/main.c: It appears that ggzcore_conf_read_list does
+	return a NULL-terminated list.	Therefore the debugging
+	initialization code should work without having to do anything
+	tricky.  I have reverted it to not do anything tricky.
+	
+	I have no idea what was causing the segfaults I saw before.  I
+	cannot reproduce them now.  However, at the time I am quite sure
+	that (1) they happened all the time and (2) they were fixed by
+	"properly" NULL-terminating the list.
+
+2002-03-21 12:23  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, game.c: Changed gtk-client to use the new
+	"force" parameter when leaving a game.
+	
+	We only force the leave when we've received a GGZ_GAME_OVER event
+	from ggzcore.  This indicates the game's IO socket has been closed,
+	which is pretty much a fatal problem.
+
+2002-03-16 15:59  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/game.c: Miniscule error handling of the case where
+	ggzcore_room_send_game_data does not return success.
+
+2002-03-15 22:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/main.c: Added back in ggzcore_init() call, which
+	mysteriously disappeared somewhere in the last couple of weeks.
+	
+	Heh.  And here I though there was a problem in my installation
+	because no games would run on the debian system I installed on. 
+	The actual problem was that *no* games *anywhere* could be run.
+
+2002-03-15 20:55  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/main.c: Add ugly-ass hack to keep ggz-gtk from
+	segfaulting every time it starts up.
+	
+	The new code to read the debug_types through ggzcore_conf_read_list
+	was extremely buggy.  That function returns the length of the list
+	as an integer.	However, debug_init expects the list to be
+	null-terminated, which it never was, hence...a near-guaranteed
+	segfault on startup.
+	
+	(This is the exact same issue as with command-line parameters for
+	game servers in ggzd, and the solution is the same: copy the list,
+	and null-terminate it.)
+
+2002-03-15 19:47  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c: If ggzcore_game_send_data failes, give a
+	ggz_error_msg and return GGZ_HOOK_ERROR.
+
+2002-03-03 09:47  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c: - display "No description available" rather
+	than "(null") for the table   description
+
+2002-03-02 15:19  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/main.c: 
+	- Moved debug init into new function init_debug() - Call
+	ggz_debug_init() directly rather than ggzcore_debug_init() - Read
+	debugging types from conf file - If DEBUG enabled, call
+	ggz_debug_clean() with GGZ_CHECK_MEM
+
+2002-03-02 06:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/main.c: - set debug_types to {NULL} instead of NULL (this
+	shouldn't break anything but helps compilation errors)
+
+2002-02-25 20:57  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.in: Change autoconf system so that if DEBUG
+	is not defined (--enable-debug, currently on by default) we'll get
+	NDEBUG defined instead.
+
+2002-02-18 06:42  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: game.c, main.c: Swapped two g_printf calls for
+	ggz_debug, type "modules".  Added the "modules" type to
+	ggz_debug_init.
+
+2002-02-18 02:18  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/main.c: Fixed compiler warning: made debug_types a const
+	char** instead of just a char**.
+
+2002-02-18 00:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: ggzclient.c, main.c: Fixed problem with ggz-gtk getting
+	fubared on "GGZ_PROTOCOL_ERROR" error.	  - Created new helper
+	function server_disconnect() to remove the GTK	    input handler
+	for the server socket FD, and set the tracked value of	    the
+	input handler to -1.	- Removed nearly identical code from
+	ggz_net_error and ggz_logout;	   instead they just call
+	server_disconnect().  The only change is that	   server_handle is
+	always set to -1 now instead of sometimes being set	 to -2
+	(nobody checks this anyway, except as noted below).    - Added call
+	to server_disconnect to ggz_server_error(), which is the     
+	function called on a GGZ_PROTOCOL_ERROR.  This means we get (more
+	or	less) properly disconnected.  I do not clear the list of   
+	  rooms/players/tables as is done in the other two disconnection
+	cases.	  - Added some ggz_debug("connection", ...) calls to these
+	functions.    - Changed ggz_connection_query to return FALSE (no
+	connection) if	    server_handle is <0, not just if it's ==-1. 
+	This was a problem before,	but shouldn't matter now that it's
+	always set to -1.    - Changed ggz_debug_init to log
+	"connection"-type debug messages, if	  DEBUG is enabled.
+
+2002-02-17 23:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, main.c: - Moved chat_save_lists() out of the
+	exiting functions and into main().  - Created new function,
+	try_to_quit, that takes on the work of giving the   popup dialog
+	and calling gtk_main_quit.
+
+2002-02-17 05:46  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/about.c: Fix for last commit: removed unused variable.
+
+2002-02-17 05:21  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: about.c, chat.c, chat.h, client.c, ggzclient.c,
+	server.c: Fixed a few nasty g_strdup and g_strdup_printf memory
+	leaks.
+	
+	I reviewed all g_strdup_printf calls, and I believe these should
+	now all be safe.
+
+2002-02-17 03:31  Rich Gade <rgade@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, client.h, props.c: - Cleaned up leaks in
+	props.c - client.c/props.c now share DEFAULT_FONT defined from
+	client.h
+
+2002-02-17 03:16  Rich Gade <rgade@users.sourceforge.net>
+
+	* ggz-gtk/login.c: - Plugged a few more leaks
+
+2002-02-17 03:08  Rich Gade <rgade@users.sourceforge.net>
+
+	* ggz-gtk/first.c: - Cleaned up some memory leaks
+
+2002-02-17 02:44  Rich Gade <rgade@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, ggzclient.c, ggzclient.h: - Added function
+	ggz_connection_query() - returns 1 if connected, 0 if not - Only
+	query "Are you sure" at exit if we are connected to a server -
+	Changed the behaviour of the window close button to mimic exit
+	button	 (ask for confirmation and save friend/ignore list)
+
+2002-02-17 00:52  Rich Gade <rgade@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, chat.h, client.c, main.c, server.c, server.h,
+	support.c: - Fixed several memory leaks related to
+	ggzcore_conf_read_string/list usage - Major cleanup to code for
+	friend and ignore lists to eliminate memory leaks - Cleaned up
+	chat_get_color code by using "%02d" in printf - Added note to
+	chat_get_color that callers need to g_free the memory (FIXME) -
+	Cleanup functions added for server.c and chat.c - Cleaned up the
+	logic in support_goto_url
+
+2002-02-16 01:41  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/launch.c: Enable seat reservations in the launch dialog
+	of gtk-client.
+	
+	So, they should entirely work now.  Yay!
+
+2002-02-16 01:12  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: ggz_gtk_lag0.xpm, ggz_gtk_lag1.xpm, ggz_gtk_lag2.xpm,
+	ggz_gtk_lag3.xpm, ggz_gtk_lag4.xpm, ggz_gtk_lag5.xpm: Reverted the
+	lag icons to the old ones.
+
+2002-02-16 00:44  Rich Gade <rgade@users.sourceforge.net>
+
+	* ggz-gtk/motd.c: - A fix for the buffer overrun when MOTD > 1KB
+
+2002-02-12 19:30  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Fixed errors in --disable-FEATURE options (for
+	gettext and debug).
+
+2002-02-12 18:49  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: - Changed --enable-debug to --disable-debug, so
+	that debugging (DEBUG) is   enabled by default.  - Added "Gettext
+	support" to the list of options printed out at the end.
+
+2002-02-08 14:43  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/launch.c: Changed ggzcore_table_add_bot and
+	ggzcore_table_add_reserved to ggzcore_table_set_seat.
+
+2002-02-06 17:48  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/: game.c, ggz.c, msgbox.c, types.c: - make ggz-gtk
+	compile with the latest ggzcore API change - fix *NULL deref
+	segfault in player listing; I don't know why this happened   but
+	now it works (will check this)
+
+2002-02-05 00:10  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/launch.c: Added pre-processor macros ALLOW_RESERVED_SEATS
+	(defaults to off/undefined) and MAX_RESERVED_NAME_LEN (set to 16;
+	used to be 8).
+
+2002-02-03 14:36  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Updated acinclude.ggz from changes made in ggzd.
+
+2002-01-31 22:57  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/launch.c: Added #if 1...#endif around the code to disable
+	the "reserved" option during a table launch.  This just serves as a
+	reminder.
+
+2002-01-31 22:55  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c: - Convert gtk-client to use
+	ggzcore_table_get_seat_count instead of  
+	ggzcore_table_get_num_open.  - gtk-client now shows the number of
+	open+reserved seats as "available"   at the table.  Note there are
+	problems with this implementation, as	discussed on ggz-dev.  I
+	also added a FIXME comment about it.  Also   note that there should
+	not ever _be_ any reserved seats yet.
+
+2002-01-31 22:53  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/launch.c: Add code to tell ggzcore about reserved seats
+	if they are chosen during a launch.
+	
+	Note, the "reserved" option is still disabled so the user _can't_
+	choose reserved seats during a launch.
+
+2002-01-30 01:35  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c: I made the same two changes for
+	display_tables.
+	
+	Namely, all 4 elements of the clist are initialized to NULL.  This
+	shouldn't matter AFAICT, since all three columns use real text
+	values (I'm not sure why the fourth entry is there at all, but...).
+	 But it could prevent a future bug.
+	
+	Also the clist gets frozen and thawed to prevent flickering.  The
+	flickering here is even less noticable than for the player list (I
+	can just barely convince myself it was flickering at all :-),
+	probably also because there are no pixmaps involved.
+
+2002-01-30 01:20  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c: When updating the player list (clist) table,
+	"freeze" the clist before doing the update and "thaw" it afterward.
+	
+	This will (should) prevent flickering when doing the update.
+
+2002-01-30 01:09  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/ggzclient.c: Fixed bad bugfix.
+	
+	Boris was no doubt seeing a segfault here because the player[]
+	fields weren't initialized at all, and might end up pointing to
+	random data.  But filling them all with malloc() data will (1) also
+	be random and (2) give us a definite memory leak.
+	
+	The correct solution is to put them all to NULL.  GTK claims that
+	you can use NULL if you don't want any text associated with the
+	clist entry, for instance if you want to put a pixmap there instead
+	[1] - which is exactly what we want.
+	
+	[1] http://gtk.org/tutorial/sec-addingrowstothelist.html
+
+2002-01-24 17:08  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: ggz_gtk_lag0.xpm, ggz_gtk_lag1.xpm, ggz_gtk_lag2.xpm,
+	ggz_gtk_lag3.xpm, ggz_gtk_lag4.xpm, ggz_gtk_lag5.xpm, ggzclient.c: 
+	- Memmory leak fixed by Boris Buegling
+
+2002-01-19 13:51  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: ggz.c, ggz_gtk_admin.xpm, ggz_gtk_guest.xpm,
+	ggz_gtk_registered.xpm, main.c: 
+	- Changed the user icons - started to do player list updated
+	properly, ie an update not a clear/reenter
+
+2002-01-19 13:16  Ismael Orenstein <perdig@users.sourceforge.net>
+
+	* ggz-gtk/client.c: 
+	- Added Up/Down IRC-like behaviour (ie, cycle throught the last
+	sent messages)
+
+2002-01-12 04:48  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/: Makefile.am, client.c, first.c, ggz.c, ggz.h,
+	ggzclient.c, ggzclient.h, login.c, main.c: Renamed ggz.[ch] as
+	ggzclient.[ch] to avoid conflicts with libggz.	Ugh!
+	
+	Also I #include <ggz.h> from main.c, and use ggz_free in one
+	necessary place.
+
+2002-01-12 04:15  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in: Added libggz check.
+
+2002-01-12 04:12  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Added acinclude.ggz to ggzd and ggz-client-libs.
+
+2002-01-12 04:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Added libggz support to acinclude.ggz.
+
+2002-01-08 03:20  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Added acinclude to utils/ module, and updated the
+	years on the copyright notice.
+
+2001-12-22 21:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/game.c: Corrected typo "Launch faild" to "Launch failed".
+	 Also removed unnecessary g_printf_strdup.
+
+2001-12-17 20:21  Jason Short <jdorje@users.sourceforge.net>
+
+	* .cvsignore: Added acinclude.m4 to .cvsignore.
+
+2001-12-17 16:28  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/Makefile.am: Added an EXTRA_DIST line to the automake
+	file so that the XPM's are correctly included with "make dist"
+	(previously they weren't).
+
+2001-12-17 14:03  Jason Short <jdorje@users.sourceforge.net>
+
+	* autogen.sh, configure.in: Converted ggz-gtk autoconf process to
+	use acinclude.ggz.
+
+2001-12-17 02:14  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Updated acinclude.ggz to check for new ggzmod;
+	added it to gtk-games and gtk-client.
+
+2001-12-16 19:29  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/: about.c, game.c, main.c, server.c, xtext.c: - include
+	string.h to define strcmp - fix #undef - note: there are two unused
+	functions left
+
+2001-10-15 20:09  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: Makefile.am, chat.c, client.c, ggz.c, ggz_gtk_lag0.xpm,
+	ggz_gtk_lag1.xpm, ggz_gtk_lag2.xpm, ggz_gtk_lag3.xpm,
+	ggz_gtk_lag4.xpm, ggz_gtk_lag5.xpm: 
+	- Added the lag meter
+
+2001-10-04 21:00  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, ggz.c: 
+	- Add the ability to send and recieve announce chat types
+
+2001-10-03 17:22  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, chat.h, client.c, glade/main.glade: 
+	- Fixed up player popup menu
+
+2001-10-02 16:20  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/login.c: 
+	- If the settings of a profile have changed, clear the profile
+	title from the combo box
+
+2001-10-02 16:08  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: ggz_gtk_admin.xpm, ggz_gtk_guest.xpm,
+	ggz_gtk_registered.xpm: 
+	- Changed the icons a bit
+
+2001-09-28 21:08  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/chat.c: 
+	- spaces between /msg and <nick> are now ignored
+
+2001-09-28 21:03  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, client.c, ggz_gtk_guest.xpm: - Fixed beep with
+	Brents help - Fixed player popup menu
+
+2001-09-17 19:45  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* acconfig.h: 
+	- Put GGZDATADIR in list of defines
+
+2001-09-17 19:44  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/login.c: 
+	- Log server communication to file specified by Debug->SessionLog
+
+2001-09-17 19:43  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/ggz.c: 
+	- Read pixmaps from GGZDATADIR - Don't try to display pixmap if we
+	couldn't load it
+
+2001-09-17 19:43  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* configure.in: 
+	- Define ggzdatadir/GGZDATADIR for pixmaps based on --datadir or  
+	--prefix specified to configure
+
+2001-09-17 17:42  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: Makefile.am, chat.c, ggz.c, ggz_gtk_admin.xpm,
+	ggz_gtk_guest.xpm, ggz_gtk_registered.xpm, server.c: 
+	- 3 graphics for the players status   Must run ggz-gtk from the
+	source directory as the graphics arn't installed.
+
+2001-09-14 16:19  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk-client.spec: Updated RPM spec file for 0.0.5pre.
+	
+	All looks good here.  However, if w
+
+2001-09-13 17:44  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/client.c: 
+	- First round of tooltips (client toolbar)
+
+2001-09-08 18:27  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: props.c, glade/props.glade: 
+	- Small modification to props dialog
+
+2001-09-08 17:57  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, ggz.c: 
+	- Really fixed the chat pane bug... should always do whats right
+	now
+
+2001-09-07 22:23  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/ggz.c: 
+	- Output server errors in msg box
+
+2001-09-05 17:22  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, chat.h, client.c, main.c: 
+	- friends and ignore fully work and are carried from session to
+	session
+
+2001-09-04 16:42  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, client.c, ggz.c, glade/main.glade: 
+	- This should take care of the chat pane resize bug
+
+2001-08-24 15:15  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/first.c: Removed the (G) prefix from all guest entries. 
+	Also, I reformatted the list of entries and made a slight fix to
+	the random number selection for picking an entry.
+	
+	Note: the list entries are marked to be translated with an N_(...),
+	but are never actually translated.
+
+2001-07-30 11:52  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/client.c: Fixed typo on function call - only noticable
+	when compiling with debugging.
+
+2001-07-18 16:51  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, chat.h, client.c, props.c: 
+	- default highlight color to green (3) - moved name matching code
+	out of client.c and into chat.c - if multiple name match, list them
+
+2001-07-18 09:48  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, chat.h: 
+	- Minor code cleanup - Minor documentation cleanup
+
+2001-07-17 20:00  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/support.c: - Add another dcop call to launch konqueror in
+	existing window - I know it better than the KDE release maintainer
+	:-)
+
+2001-07-17 17:16  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, chat.h, client.c, game.c, ggz.c, props.c: 
+	- Cleaned up the chat code in client.c - Updated
+	chat_display_message()
+
+2001-07-16 15:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/support.c: - (experimental) support for konqueror
+	in-window loading
+
+2001-07-14 23:19  Jason Short <jdorje@users.sourceforge.net>
+
+	* ggz-gtk/game.c: Made necessary changes for gtk-client to work
+	with new protocol engine/version specification.
+
+2001-07-13 22:31  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, chat.h, client.c, client.h, glade/main.glade: 
+	- Can add to and remove frm your friends list - removed jdorje from
+	the default list - list is not stored session to session
+
+2001-07-13 21:09  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/support.c: 
+	- opening into an existing window work on browsers that support it
+	with the exclution of Konqueror
+
+2001-07-13 17:59  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, client.c, props.c, support.c, support.h,
+	glade/props.glade: 
+	- Updated browser options - All browser types listed will launch -
+	Any browser with "- Existing" will launch a new window even though
+	the command is propper to use an existing window. I'm looking into
+	is, I *think* it has to do with the execing - Konqueror has some
+	issues with launching into an existing window. I'm working with irc
+	#kde-dev people as to the best way to get it working
+
+2001-07-12 19:02  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, chat.h, main.c, props.c: 
+	- Chat color is hooked up and compleatly works
+
+2001-07-11 18:41  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: login.c, props.c, glade/login.glade, glade/props.glade:
+	
+	- made the login dialog a little wider - added some stuff to the
+	props dialog   -- new items persist threw sessions   -- new items
+	are not hooked up yet
+
+2001-07-08 21:09  Ismael Orenstein <perdig@users.sourceforge.net>
+
+	* ggz-gtk/ggz.c: 
+	- Fixed a bug with old servers (when the server didn't have an
+	Entry room, the table view was hidden anyway)
+
+2001-07-08 14:12  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/ggz.c: 
+	- Will join room 0 on every login, not jsut the first - Will
+	highlight toom 0
+
+2001-07-06 12:27  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* configure.in, po/de.po, po/es_AR.po, po/ggz-gtk.pot, po/pt_BR.po:
+	
+	- Updated version to 0.0.5pre
+
+2001-07-05 20:26  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/ggz.c: 
+	- if room type = -1 then   - dissable launch/join   - hide table
+	list
+
+2001-07-05 18:50  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/ggz.c: 
+	- Auto Join room 0 on login
+
+2001-07-01 14:16  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, ggz.c, ggz.h: - Bug #435321 - check to make
+	sure that a table is highlited - check to make sure that the table
+	is withing 0 and numtables
+
+2001-07-01 01:19  Rich Gade <rgade@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, ggz.c, ggz.h: Bug #435321 - misclicking to
+	join room gives error
+	
+	- The number of rooms is now stored in the numrooms global - Check
+	clist row vs. numrooms to make sure it's valid before trying   to
+	join a room or show the room info menu
+
+2001-06-17 21:46  Rich Gade <rgade@users.sourceforge.net>
+
+	* ggz-gtk-client.spec: - .spec file updates - these were actually
+	necessary for 0.0.4, but as they   aren't part of the distros they
+	needn't be tagged as such
+
+2001-06-17 15:48  Rich Gade <rgade@users.sourceforge.net>
+
+	* ChangeLog: - Updated ChangeLog
+
+2001-06-14 16:56  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* NEWS: 
 	- Updated NEWS file for 0.0.4
 
-	* /cvsroot/ggz/gtk-client/configure.in, /cvsroot/ggz/gtk-client/ggz-gtk-client.spec, /cvsroot/ggz/gtk-client/Makefile.am, /cvsroot/ggz/gtk-client/QuickStart.GGZ, /cvsroot/ggz/gtk-client/README.GGZ:
-	- Documentation updates
-	- Bumped version to 0.0.4
-	- Include docs in tarball
+2001-06-14 03:23  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am, /cvsroot/ggz/gtk-client/man/Makefile.am, /cvsroot/ggz/gtk-client/po/Makefile.am:
-	- Explicitly specify SUBDIRS = ., rather than leaving it blank.
-	  Leaving it blank causes 'make dist' to choke
+	* Makefile.am, QuickStart.GGZ, README.GGZ, configure.in,
+	ggz-gtk-client.spec: 
+	- Documentation updates - Bumped version to 0.0.4 - Include docs in
+	tarball
 
-2001-06-07  dr_maux  <dr_maux@users.sourceforge.net>
+2001-06-14 01:12  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/first.c:
-	- added DNS name for euro server
+	* ggz-gtk/Makefile.am, man/Makefile.am, po/Makefile.am: 
+	- Explicitly specify SUBDIRS = ., rather than leaving it blank.   
+	Leaving it blank causes 'make dist' to choke
 
-2001-06-06  dr_maux  <dr_maux@users.sourceforge.net>
+2001-06-07 12:48  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/first.c: - changed server address
+	* ggz-gtk/first.c: - added DNS name for euro server
 
-2001-06-05  bmh  <bmh@users.sourceforge.net>
+2001-06-06 13:42  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/launch.c:
+	* ggz-gtk/first.c: - changed server address
+
+2001-06-04 20:55  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/launch.c: 
 	- Don't default seats to "bot" if bots aren't allowed on a specific
 	  gametype.  (variation on a patch from riq)
 
-	* /cvsroot/ggz/gtk-client/man/.cvsignore:
+2001-06-04 20:31  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* man/.cvsignore: 
 	- Added .cvsignore file to ignore Makefile and Makefile.in
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am:
-	- Set SUBDIRS to be blank instead of setting to "." which isn't
-	  necessary since make automatically does the current dir
+2001-06-04 20:28  Brent Hendricks <bmh@users.sourceforge.net>
 
-2001-06-02  perdig  <perdig@users.sourceforge.net>
+	* ggz-gtk/Makefile.am: 
+	- Set SUBDIRS to be blank instead of setting to "." which isn't  
+	necessary since make automatically does the current dir
 
-	* /cvsroot/ggz/gtk-client/po/pt_BR.po:
+2001-06-02 14:57  Ismael Orenstein <perdig@users.sourceforge.net>
+
+	* po/pt_BR.po: 
 	- Updated brazilian portuguese translation
 
-2001-06-02  riq  <riq@users.sourceforge.net>
+2001-06-02 10:24  Ricardo Quesada <riq@users.sourceforge.net>
 
-	* /cvsroot/ggz/gtk-client/po/es_AR.po:
-	added spanish (Argentinian) translation for gtk client
+	* po/es_AR.po: added spanish (Argentinian) translation for gtk
+	client
 
-2001-06-02  dr_maux  <dr_maux@users.sourceforge.net>
+2001-06-01 23:34  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/gtk-client/man/Makefile.am: - fix makefile bug
+	* man/Makefile.am: - fix makefile bug
 
-	* /cvsroot/ggz/gtk-client/po/Makefile.am: - force "make messages"
+2001-06-01 22:12  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/gtk-client/configure.in: - now go in, change
+	* po/Makefile.am: - force "make messages"
 
-	* /cvsroot/ggz/gtk-client/po/de.po, /cvsroot/ggz/gtk-client/po/ggz-gtk.pot, /cvsroot/ggz/gtk-client/po/pt_BR.po:
-	- revoked commit
+2001-06-01 22:10  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/gtk-client/configure.in, /cvsroot/ggz/gtk-client/.cvsignore:
-	- removed dumb spaces
+	* configure.in: - now go in, change
 
-	* /cvsroot/ggz/gtk-client/po/.cvsignore: - cvsignore update
+2001-06-01 22:09  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/gtk-client/configure.in, /cvsroot/ggz/gtk-client/Makefile.am:
-	- modified build process
+	* po/: de.po, ggz-gtk.pot, pt_BR.po: - revoked commit
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/first.c, /cvsroot/ggz/ggz/src/frontend/gtk/main.c, /cvsroot/ggz/ggz/src/frontend/gtk/support.h, /cvsroot/ggz/gtk-client/po/de.po, /cvsroot/ggz/gtk-client/po/ggz-gtk.pot, /cvsroot/ggz/gtk-client/po/Makefile.am, /cvsroot/ggz/gtk-client/po/pt_BR.po:
-	- internationalized ggz-gtk
-	- re-added German and Portuguese translation
+2001-06-01 22:07  Josef Spillner <dr_maux@users.sourceforge.net>
 
-2001-05-30  jzaun  <jzaun@users.sourceforge.net>
+	* .cvsignore, configure.in: - removed dumb spaces
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/about.c:
+2001-06-01 19:07  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* po/.cvsignore: - cvsignore update
+
+2001-06-01 19:07  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - modified build process
+
+2001-06-01 19:06  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* ggz-gtk/first.c, ggz-gtk/main.c, ggz-gtk/support.h,
+	po/Makefile.am, po/de.po, po/ggz-gtk.pot, po/pt_BR.po: -
+	internationalized ggz-gtk - re-added German and Portuguese
+	translation
+
+2001-05-30 16:48  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/about.c: 
 	- Added verion to about screen
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/gtk-client/configure.in:
+2001-05-30 16:31  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* configure.in, ggz-gtk/client.c: 
 	-- Fixed spelling
 
-2001-05-30  dr_maux  <dr_maux@users.sourceforge.net>
+2001-05-30 08:26  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/gtk-client/debian/changelog, /cvsroot/ggz/gtk-client/debian/control, /cvsroot/ggz/gtk-client/debian/copyright, /cvsroot/ggz/gtk-client/debian/.cvsignore, /cvsroot/ggz/gtk-client/debian/docs, /cvsroot/ggz/gtk-client/debian/postinst, /cvsroot/ggz/gtk-client/debian/prerm, /cvsroot/ggz/gtk-client/debian/README.Debian, /cvsroot/ggz/gtk-client/debian/rules:
-	- debianized source tree
+	* debian/: .cvsignore, README.Debian, changelog, control,
+	copyright, docs, postinst, prerm, rules: - debianized source tree
 
-2001-05-28  Rich Gade  <rgade@users.sourceforge.net>
+2001-05-28 17:11  Rich Gade <rgade@users.sourceforge.net>
 
-	* /cvsroot/ggz/gtk-client/configure.in, /cvsroot/ggz/gtk-client/Makefile.am, /cvsroot/ggz/gtk-client/man/ggz-gtk.6, /cvsroot/ggz/gtk-client/man/Makefile.am:
-	- Added ggz-gtk(6) man page for installation and distribution
+	* Makefile.am, configure.in, man/Makefile.am, man/ggz-gtk.6: -
+	Added ggz-gtk(6) man page for installation and distribution
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/msgbox.c:
-	- Applied Riq's patch to msgbox.c
-	- Expanded patch a bit to also eliminate some repeated code
+2001-05-28 15:08  Rich Gade <rgade@users.sourceforge.net>
 
-2001-05-25  bmh  <bmh@users.sourceforge.net>
+	* ggz-gtk/msgbox.c: - Applied Riq's patch to msgbox.c - Expanded
+	patch a bit to also eliminate some repeated code
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/game.c:
-	- Cope with multiple modules supporting the same game by selecting the
-	  one that matches our frontend (gtk).  The Right Way will be to pop
-	  up a dialog and let the user select one (storing the preference),
-	  but this will work for the 0.0.4 release
+2001-05-25 00:11  Brent Hendricks <bmh@users.sourceforge.net>
 
-2001-05-22  bmh  <bmh@users.sourceforge.net>
+	* ggz-gtk/game.c: 
+	- Cope with multiple modules supporting the same game by selecting
+	the   one that matches our frontend (gtk).  The Right Way will be
+	to pop	 up a dialog and let the user select one (storing the
+	preference),   but this will work for the 0.0.4 release
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/launch.c:
+2001-05-21 22:37  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/launch.c: 
 	- Quick fix to check if number of bots specified is valid
 
-2001-05-20  Rich Gade  <rgade@users.sourceforge.net>
+2001-05-20 17:32  Rich Gade <rgade@users.sourceforge.net>
 
-	* /cvsroot/ggz/gtk-client/README:
-	- General info for the Gtk client package
+	* README: - General info for the Gtk client package
 
-	* /cvsroot/ggz/gtk-client/README.GGZ:
-	- Added README.GGZ to each client module
+2001-05-20 16:02  Rich Gade <rgade@users.sourceforge.net>
 
-2001-05-10  jzaun  <jzaun@users.sourceforge.net>
+	* README.GGZ: - Added README.GGZ to each client module
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/first.c:
+2001-05-10 16:47  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/first.c: 
 	- Forgot a minor item
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/first.c:
-	- Fixed the blank profile problem when you choose to make the default profiles
-	- Added a Euro server
-	- Default name is now random bases on "(G) name##" name is random from 20 names,
-	  ## are random numbers. This will fix a problem of name collitions with Guest.
+2001-05-10 16:46  Justin Zaun <jzaun@users.sourceforge.net>
 
-2001-04-22  Rich Gade  <rgade@users.sourceforge.net>
+	* ggz-gtk/first.c: 
+	- Fixed the blank profile problem when you choose to make the
+	default profiles - Added a Euro server - Default name is now random
+	bases on "(G) name##" name is random from 20 names,   ## are random
+	numbers. This will fix a problem of name collitions with Guest.
 
-	* /cvsroot/ggz/gtk-client/ggz-gtk-client.spec, /cvsroot/ggz/gtk-client/ggz-gtk.spec:
-	- Updated RPM spec file to new distro name
+2001-04-22 13:38  Rich Gade <rgade@users.sourceforge.net>
 
-2001-04-20  bmh  <bmh@users.sourceforge.net>
+	* ggz-gtk-client.spec, ggz-gtk.spec: - Updated RPM spec file to new
+	distro name
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade, /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/game.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
-	- Pulled most sensitivity stuff into a state callback
-	  ggz_state_sensitivity()
-	- Rethink what needs to be sensitive when
-	- This should fix Rich's Lag bug #4
+2001-04-19 22:31  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/game.c:
-	- When the game is over, check the state of the server, and only call
-	  ggzcore_room_leave_table() if we're actually *at* the table,
-	  otherwise install game_delayed_leave() as a callback to the
-	  GGZ_STATE_CHANGE event.
-	- New function game_delayed_leave() will call
-	  ggzcore_room_leave_table() once we finally reach the "at table"
-	  state.
-	- All of this fixes Rich's lag bug #2
+	* ggz-gtk/: client.c, game.c, ggz.c, login.c, glade/main.glade: 
+	- Pulled most sensitivity stuff into a state callback  
+	ggz_state_sensitivity() - Rethink what needs to be sensitive when -
+	This should fix Rich's Lag bug #4
 
-2001-04-14  bmh  <bmh@users.sourceforge.net>
+2001-04-19 19:34  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/game.c, /cvsroot/ggz/ggz/src/frontend/gtk/launch.c:
-	- Check return values of ggzcore_room_{join|launch}_table() before
-	  proceeding.  If errors, post a dialog.
-	- Check server state before initializing game module.  Yeah, it'll
-	  error out later if the state is wrong, but this provides a simple
-	  check earlier on in the process.
+	* ggz-gtk/game.c: 
+	- When the game is over, check the state of the server, and only
+	call   ggzcore_room_leave_table() if we're actually *at* the table,
+	  otherwise install game_delayed_leave() as a callback to the  
+	GGZ_STATE_CHANGE event.  - New function game_delayed_leave() will
+	call   ggzcore_room_leave_table() once we finally reach the "at
+	table"	 state.  - All of this fixes Rich's lag bug #2
 
-2001-04-10  bmh  <bmh@users.sourceforge.net>
+2001-04-14 00:38  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/game.c, /cvsroot/ggz/ggz/src/frontend/gtk/game.h, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/launch.glade, /cvsroot/ggz/ggz/src/frontend/gtk/launch.c:
-	- Do a bunch of error checking in game_init() to see if we're in a
-	  room, or already at a table, and if the module actually exists, etc.
-	- Actually create the object in game_init()
-	- Call game_init() from launch_create_or_raise() so that we don't
-	  popup launch dialog if the game does not initialize properly
-	- New function game_launch() to do the actual launching
-	- Call game_launch() if the "Launch" button is pressed
-	- Call game_destroy() if the launch "Cancel" button is pressed
-	- Call game_destroy() from game_launch() if the launch fails
+	* ggz-gtk/: client.c, game.c, launch.c: 
+	- Check return values of ggzcore_room_{join|launch}_table() before 
+	 proceeding.  If errors, post a dialog.  - Check server state
+	before initializing game module.  Yeah, it'll	error out later if
+	the state is wrong, but this provides a simple	 check earlier on
+	in the process.
 
-2001-04-09  bmh  <bmh@users.sourceforge.net>
+2001-04-10 09:21  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c:
+	* ggz-gtk/: client.c, game.c, game.h, ggz.c, launch.c,
+	glade/launch.glade: 
+	- Do a bunch of error checking in game_init() to see if we're in a 
+	 room, or already at a table, and if the module actually exists,
+	etc.  - Actually create the object in game_init() - Call
+	game_init() from launch_create_or_raise() so that we don't   popup
+	launch dialog if the game does not initialize properly - New
+	function game_launch() to do the actual launching - Call
+	game_launch() if the "Launch" button is pressed - Call
+	game_destroy() if the launch "Cancel" button is pressed - Call
+	game_destroy() from game_launch() if the launch fails
+
+2001-04-09 01:02  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/client.c: 
 	- Removed unnecessary debugging statements
 
-2001-04-07  bmh  <bmh@users.sourceforge.net>
+2001-04-07 16:16  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c:
-	- Pulled table joining code into function client_join_table()
-	- Reordered error checking so we don't get errors every time we join a
-	  table
+	* ggz-gtk/client.c: 
+	- Pulled table joining code into function client_join_table() -
+	Reordered error checking so we don't get errors every time we join
+	a   table
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade:
-	- Cleaned up client_room_clist_event code a bit (in an effort to
-	  understand it a bit better)
+2001-04-07 15:48  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c:
-	- Check server state before attemoting to enter room:
-	- If not OK, pop up appropriate error message
-	- If attempt to join fails popup an error message
-	- If singleclick room entering is enabled, desensitize the room list
-	  while between rooms to prevent trying to join two rooms at once.
-	  A bug (perhaps in GTK?) causes the mouse pointer to get "stuck" if
-	  we do this with doubleclick room entering
+	* ggz-gtk/: client.c, glade/main.glade: 
+	- Cleaned up client_room_clist_event code a bit (in an effort to  
+	understand it a bit better)
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
+2001-04-07 14:40  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/client.c: 
+	- Check server state before attemoting to enter room: - If not OK,
+	pop up appropriate error message - If attempt to join fails popup
+	an error message - If singleclick room entering is enabled,
+	desensitize the room list   while between rooms to prevent trying
+	to join two rooms at once.    A bug (perhaps in GTK?) causes the
+	mouse pointer to get "stuck" if    we do this with doubleclick room
+	entering
+
+2001-04-07 12:12  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/ggz.c: 
 	- Handle room join failures: popup a message explanation
 
-2001-04-05  jzaun  <jzaun@users.sourceforge.net>
+2001-04-05 09:37  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
+	* ggz-gtk/ggz.c: 
 	- Place the server:port in the titlebar when connected.
 
-2001-04-04  jzaun  <jzaun@users.sourceforge.net>
+2001-04-04 18:13  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
+	* ggz-gtk/login.c: 
 	- set propfile to last server you attempted to connect to
 
-2001-04-03  jzaun  <jzaun@users.sourceforge.net>
+2001-04-03 16:53  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c:
-	- Don't attempt to join a game if its full.
-	- Give a message if there is no highlighted row, at a table already or the
-	  table if full
+	* ggz-gtk/client.c: 
+	- Don't attempt to join a game if its full.  - Give a message if
+	there is no highlighted row, at a table already or the	 table if
+	full
 
-2001-04-01  bmh  <bmh@users.sourceforge.net>
+2001-04-01 14:58  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c:
+	* ggz-gtk/client.c: 
 	- Use question type of box when asking if user wants to quit.
 
-2001-04-01  jzaun  <jzaun@users.sourceforge.net>
+2001-04-01 11:58  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/msgbox.c, /cvsroot/ggz/ggz/src/frontend/gtk/msgbox.h:
-	- New icons
-	- Added MSGBOX_QUESTION as a icon type
+	* ggz-gtk/: msgbox.c, msgbox.h: 
+	- New icons - Added MSGBOX_QUESTION as a icon type
 
-2001-04-01  bmh  <bmh@users.sourceforge.net>
+2001-03-31 18:32  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/login.glade, /cvsroot/ggz/ggz/src/frontend/gtk/login.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.h:
-	- Fixed up connect/login/relogin logic:
-	- New functions login_connect_button_clicked() and
-	  login_cancel_button_clicked() always handle button events.
-	- Call login_start_session() or login_reload() depending on current
-	  state
-	- New function login_connect_failed() to handle case of connection
-	  failure
-	- Call ggzcore_server_logout() when Cancel button is pressed
+	* ggz-gtk/: ggz.c, login.c, login.h, glade/login.glade: 
+	- Fixed up connect/login/relogin logic: - New functions
+	login_connect_button_clicked() and   login_cancel_button_clicked()
+	always handle button events.  - Call login_start_session() or
+	login_reload() depending on current   state - New function
+	login_connect_failed() to handle case of connection   failure -
+	Call ggzcore_server_logout() when Cancel button is pressed
 
-2001-03-31  bmh  <bmh@users.sourceforge.net>
+2001-03-31 17:53  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
+	* ggz-gtk/ggz.c: 
 	- Removed duplicate registration of GGZ_TABLE_DATA handler so games
 	  don't see messages twice (oops)
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/msgbox.c:
+2001-03-31 00:29  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/msgbox.c: 
 	- Small fixes (defaulting and buttonbox)
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
+2001-03-31 00:11  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/ggz.c: 
 	- Pop up a message box for various failure events
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c:
-	- New function: client_get_table_index() to get table index from row
-	  number.  Using this function (rather than the row number) fixes the
-	  tables joining bug people have been seeing
+2001-03-31 00:10  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/gtk-client/Makefile.am, /cvsroot/ggz/gtk-client/TODO:
+	* ggz-gtk/client.c: 
+	- New function: client_get_table_index() to get table index from
+	row   number.  Using this function (rather than the row number)
+	fixes the   tables joining bug people have been seeing
+
+2001-03-30 22:16  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* Makefile.am, TODO: 
 	- Oops.  Forgot Makefile.am
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/acconfig.h, /cvsroot/ggz/ggz/src/frontend/gtk/AUTHORS, /cvsroot/ggz/ggz/src/frontend/gtk/autogen.sh, /cvsroot/ggz/ggz/src/frontend/gtk/ChangeLog, /cvsroot/ggz/ggz/src/frontend/gtk/configure.in, /cvsroot/ggz/ggz/src/frontend/gtk/COPYING, /cvsroot/ggz/ggz/src/frontend/gtk/ggz-gtk.spec, /cvsroot/ggz/ggz/src/frontend/gtk/INSTALL, /cvsroot/ggz/ggz/src/frontend/gtk/NEWS, /cvsroot/ggz/ggz/src/frontend/gtk/README, /cvsroot/ggz/ggz/src/frontend/gtk/TODO, /cvsroot/ggz/gtk-client/acconfig.h, /cvsroot/ggz/gtk-client/AUTHORS, /cvsroot/ggz/gtk-client/autogen.sh, /cvsroot/ggz/gtk-client/ChangeLog, /cvsroot/ggz/gtk-client/configure.in, /cvsroot/ggz/gtk-client/COPYING, /cvsroot/ggz/gtk-client/.cvsignore, /cvsroot/ggz/gtk-client/ggz-gtk.spec, /cvsroot/ggz/gtk-client/INSTALL, /cvsroot/ggz/gtk-client/NEWS, /cvsroot/ggz/gtk-client/README:
+2001-03-30 22:15  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* .cvsignore, AUTHORS, COPYING, ChangeLog, INSTALL, NEWS, README,
+	acconfig.h, autogen.sh, configure.in, ggz-gtk.spec,
+	ggz-gtk/AUTHORS, ggz-gtk/COPYING, ggz-gtk/ChangeLog,
+	ggz-gtk/INSTALL, ggz-gtk/NEWS, ggz-gtk/README, ggz-gtk/TODO,
+	ggz-gtk/acconfig.h, ggz-gtk/autogen.sh, ggz-gtk/configure.in,
+	ggz-gtk/ggz-gtk.spec: 
 	- Moved files out of ggz-gtk into gtk-client so the source isn't in
 	  the top-level dir
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/main.c:
-	- Set global conf file to NULL (until we support it)
-	- Default debugging file to ~/.ggz/ggz-gtk.debug
+2001-03-30 21:44  Brent Hendricks <bmh@users.sourceforge.net>
 
-2001-03-31  jzaun  <jzaun@users.sourceforge.net>
+	* ggz-gtk/main.c: 
+	- Set global conf file to NULL (until we support it) - Default
+	debugging file to ~/.ggz/ggz-gtk.debug
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c:
+2001-03-30 20:50  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/client.c: 
 	- Tab compleation of usernames in chat entry
 
-2001-03-31  bmh  <bmh@users.sourceforge.net>
+2001-03-30 20:25  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/game.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
-	- New functions ggz_input_removed() and game_input_removed() to free
-	  the respective objects after their fd's are removed
-	- Call gdk_input_add_full() rather than gdk_input_add() so we can
-	  specify XXX_input_removed() to be called when the fd is removed
-	- Copied over some table related callbacks from the text client,
-	  specifically since TABLE_LEFT is now a room event, not a server
-	  event
+	* ggz-gtk/: client.c, game.c, ggz.c: 
+	- New functions ggz_input_removed() and game_input_removed() to
+	free   the respective objects after their fd's are removed - Call
+	gdk_input_add_full() rather than gdk_input_add() so we can  
+	specify XXX_input_removed() to be called when the fd is removed -
+	Copied over some table related callbacks from the text client,	
+	specifically since TABLE_LEFT is now a room event, not a server  
+	event
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/configure.in:
-	- Remove -leasysock from explict linking list (looks like we don't
-	  need it after all)
+2001-03-30 20:18  Brent Hendricks <bmh@users.sourceforge.net>
 
-2001-03-30  bmh  <bmh@users.sourceforge.net>
+	* ggz-gtk/configure.in: 
+	- Remove -leasysock from explict linking list (looks like we don't 
+	 need it after all)
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/launch.c:
-	- Don't try to disable bots based on max number.
-	- Disable reverved option since the server doesn't support it yet.
+2001-03-30 17:46  Brent Hendricks <bmh@users.sourceforge.net>
 
-2001-03-28  Rich Gade  <rgade@users.sourceforge.net>
+	* ggz-gtk/launch.c: 
+	- Don't try to disable bots based on max number.  - Disable
+	reverved option since the server doesn't support it yet.
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/configure.in, /cvsroot/ggz/ggz/src/frontend/gtk/ggz-gtk.spec:
-	- Corrected package name
-	- Added RPM specification file
+2001-03-28 00:01  Rich Gade <rgade@users.sourceforge.net>
 
-2001-03-28  jzaun  <jzaun@users.sourceforge.net>
+	* ggz-gtk/: configure.in, ggz-gtk.spec: - Corrected package name -
+	Added RPM specification file
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/props.glade, /cvsroot/ggz/ggz/src/frontend/gtk/props.c:
+2001-03-27 18:27  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, props.c, glade/props.glade: 
 	- Added option for single-click room entry
 
-2001-03-27  bmh  <bmh@users.sourceforge.net>
+2001-03-27 10:33  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/configure.in:
-	- Must also link against easysock since ggzcore is linked against it
+	* ggz-gtk/configure.in: 
+	- Must also link against easysock since ggzcore is linked against
+	it
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/configure.in:
+2001-03-27 01:33  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/configure.in: 
 	- Remove some unnecessary stuff from configure.in
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/AUTHORS:
+2001-03-27 01:31  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/AUTHORS: 
 	- Added AUTHORS file
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/acconfig.h, /cvsroot/ggz/ggz/src/frontend/gtk/autogen.sh, /cvsroot/ggz/ggz/src/frontend/gtk/ChangeLog, /cvsroot/ggz/ggz/src/frontend/gtk/configure.in, /cvsroot/ggz/ggz/src/frontend/gtk/COPYING, /cvsroot/ggz/ggz/src/frontend/gtk/.cvsignore, /cvsroot/ggz/ggz/src/frontend/gtk/INSTALL, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am, /cvsroot/ggz/ggz/src/frontend/gtk/NEWS, /cvsroot/ggz/ggz/src/frontend/gtk/README:
+2001-03-27 01:30  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* ggz-gtk/: .cvsignore, COPYING, ChangeLog, INSTALL, Makefile.am,
+	NEWS, README, acconfig.h, autogen.sh, configure.in: 
 	- Added autoconf files since we've been split out
 
-2001-03-25  jzaun  <jzaun@users.sourceforge.net>
+2001-03-25 13:06  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/about.c:
+	* ggz-gtk/about.c: 
 	- fixed a small bug
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/about.c:
+2001-03-25 12:55  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/about.c: 
 	- Updated the credits
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/about.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/about.glade:
+2001-03-25 12:34  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: about.c, glade/about.glade: 
 	- Fixed a bug perdig found
 
-2001-03-24  jzaun  <jzaun@users.sourceforge.net>
+2001-03-24 17:29  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/launch.c:
+	* ggz-gtk/launch.c: 
 	- Fixed launch dialog bug with number of bots
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/msgbox.c:
+2001-03-24 17:12  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/msgbox.c: 
 	- Fixed up the msgbox
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/about.c:
-	- Changed the font color
-	- Scrolling starts over if window is closed
+2001-03-24 11:15  Justin Zaun <jzaun@users.sourceforge.net>
 
-2001-03-24  perdig  <perdig@users.sourceforge.net>
+	* ggz-gtk/about.c: 
+	- Changed the font color - Scrolling starts over if window is
+	closed
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/about.c:
+2001-03-23 20:02  Ismael Orenstein <perdig@users.sourceforge.net>
+
+	* ggz-gtk/about.c: 
 	- Fixed the flicker in the animation
 
-2001-03-24  jzaun  <jzaun@users.sourceforge.net>
+2001-03-23 19:48  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/about.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/about.glade:
-	- Fixed up the about dialog
-	  - Made the text changeable without the need for GLADE
+	* ggz-gtk/: about.c, glade/about.glade: 
+	- Fixed up the about dialog   - Made the text changeable without
+	the need for GLADE
 
-2001-03-18  jzaun  <jzaun@users.sourceforge.net>
+2001-03-18 16:37  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/msgbox.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
-	- Added a message when the client can't connect to the server
-	- Fixed up the stop sign icon
+	* ggz-gtk/: ggz.c, msgbox.c: 
+	- Added a message when the client can't connect to the server -
+	Fixed up the stop sign icon
 
-2001-03-17  bmh  <bmh@users.sourceforge.net>
+2001-03-17 00:09  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am:
-	- Converted libggzcore into a libtool shared library
-	- Converted the included libeasysock into a non-installed libtool
-	  convenience library
-	- Various Makefile changes to support the above
+	* ggz-gtk/Makefile.am: 
+	- Converted libggzcore into a libtool shared library - Converted
+	the included libeasysock into a non-installed libtool	convenience
+	library - Various Makefile changes to support the above
 
-2001-03-17  jzaun  <jzaun@users.sourceforge.net>
+2001-03-16 18:33  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/TODO:
+	* ggz-gtk/: TODO, ggz.c: 
 	- Fixed CPU eating bug on GGZ_NET_ERROR
 
-2001-03-11  jzaun  <jzaun@users.sourceforge.net>
+2001-03-11 15:27  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/game.c, /cvsroot/ggz/ggz/src/frontend/gtk/game.h:
+	* ggz-gtk/: client.c, game.c, game.h: 
 	- Allow one game at a time
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
+2001-03-11 15:01  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/login.c: 
 	- Clear the player, room and table list when connecting to a server
 	  this is used when swithing one to the other mainly.
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/types.c:
-	- Fixed spelling errors
-	- Clear the playerlist as soon as we enter the new room. This should stop
-	  the confusion of thinking the new list has com in already
+2001-03-11 14:43  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/info.c:
+	* ggz-gtk/: client.c, ggz.c, types.c: 
+	- Fixed spelling errors - Clear the playerlist as soon as we enter
+	the new room. This should stop	 the confusion of thinking the new
+	list has com in already
+
+2001-03-11 09:01  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/info.c: 
 	- info dialog displays correct information
 
-2001-03-10  jzaun  <jzaun@users.sourceforge.net>
+2001-03-10 11:23  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/TODO:
+	* ggz-gtk/TODO: 
 	- Updaed the TODO list
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c:
-	- Added a msgbox for each menu/button that will not be implimented in 0.0.4
+2001-03-10 11:12  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
+	* ggz-gtk/client.c: 
+	- Added a msgbox for each menu/button that will not be implimented
+	in 0.0.4
+
+2001-03-10 11:02  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/ggz.c: 
 	- removed all my g_print statments
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c:
+2001-03-10 10:53  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/chat.c: 
 	- nomore black on black colors in chat
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/game.c:
+2001-03-10 10:38  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, game.c: 
 	- Leave button on the toolbar works
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
+2001-03-09 23:31  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/ggz.c: 
 	- added GGZ_TABLE_LEFT support
 
-2001-03-10  bmh  <bmh@users.sourceforge.net>
+2001-03-09 23:26  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c:
+	* ggz-gtk/chat.c: 
 	- Fixed segfault on /msg bug
 
-2001-03-10  jzaun  <jzaun@users.sourceforge.net>
+2001-03-09 21:56  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/launch.c:
-	- Added some check to make sure launching works, if not tell the user.
+	* ggz-gtk/launch.c: 
+	- Added some check to make sure launching works, if not tell the
+	user.
 
-2001-03-10  perdig  <perdig@users.sourceforge.net>
+2001-03-09 20:36  Ismael Orenstein <perdig@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/msgbox.c:
+	* ggz-gtk/msgbox.c: 
 	- Made icons transparent
 
-2001-03-10  jzaun  <jzaun@users.sourceforge.net>
+2001-03-09 20:25  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade:
+	* ggz-gtk/: client.c, glade/main.glade: 
 	- game joining works
 
-2001-03-10  bmh  <bmh@users.sourceforge.net>
+2001-03-09 20:09  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
+	* ggz-gtk/ggz.c: 
 	- Show user his password after a successful first time login
 
-2001-03-09  jzaun  <jzaun@users.sourceforge.net>
+2001-03-09 16:51  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/game.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/launch.c:
-	- Game launching and playing works.
-	- small bug is the ggs.modules dosn't have the game type listed (segfault)
+	* ggz-gtk/: game.c, ggz.c, launch.c: 
+	- Game launching and playing works.  - small bug is the ggs.modules
+	dosn't have the game type listed (segfault)
 
-2001-03-09  bmh  <bmh@users.sourceforge.net>
+2001-03-09 08:50  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/launch.c:
-	- When calling ggzcore_table_add_bot(), seats are numbered from 0, not 1
-	- Pass ggzcore_table_init() the numbers of seats, not a hardcoded '2'
+	* ggz-gtk/launch.c: 
+	- When calling ggzcore_table_add_bot(), seats are numbered from 0,
+	not 1 - Pass ggzcore_table_init() the numbers of seats, not a
+	hardcoded '2'
 
-2001-03-09  jzaun  <jzaun@users.sourceforge.net>
+2001-03-08 18:27  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/launch.c, /cvsroot/ggz/ggz/src/frontend/gtk/game.c, /cvsroot/ggz/ggz/src/frontend/gtk/game.h, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am:
+	* ggz-gtk/: Makefile.am, game.c, game.h, launch.c: 
 	- launching code. Bots don't work yet.
 
-2001-03-08  jzaun  <jzaun@users.sourceforge.net>
+2001-03-08 15:48  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/launch.c:
+	* ggz-gtk/launch.c: 
 	- Fixed small bug with sensitivity of the computer options
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
+2001-03-08 15:39  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/ggz.c: 
 	- Removed last of ggzcore's old API
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/launch.c:
-	- Hooked up the launch dialog so everything *except* launching works.
+2001-03-07 20:35  Justin Zaun <jzaun@users.sourceforge.net>
 
-2001-03-07  jzaun  <jzaun@users.sourceforge.net>
+	* ggz-gtk/launch.c: 
+	- Hooked up the launch dialog so everything *except* launching
+	works.
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/msgbox.c, /cvsroot/ggz/ggz/src/frontend/gtk/msgbox.h:
-	- per request, added a fith option for MBModal
-	  MSGBOX_NORAML
-	  MSGBOX_MODAL
+2001-03-06 20:31  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/msgbox.c, /cvsroot/ggz/ggz/src/frontend/gtk/msgbox.h:
-	- changed status name to mb_status
-	- changed mb_status to static
-	- added a fourth varible to the function call of type MBIcon
-	  MSGBOX_NONE
-	  MSGBOX_STOP
-	  MSGBOX_INFO
+	* ggz-gtk/: client.c, msgbox.c, msgbox.h: 
+	- per request, added a fith option for MBModal	 MSGBOX_NORAML	
+	MSGBOX_MODAL
 
-2001-03-05  jzaun  <jzaun@users.sourceforge.net>
+2001-03-06 20:05  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am, /cvsroot/ggz/ggz/src/frontend/gtk/msgbox.c, /cvsroot/ggz/ggz/src/frontend/gtk/msgbox.h:
+	* ggz-gtk/: client.c, msgbox.c, msgbox.h: 
+	- changed status name to mb_status - changed mb_status to static -
+	added a fourth varible to the function call of type MBIcon  
+	MSGBOX_NONE   MSGBOX_STOP   MSGBOX_INFO
+
+2001-03-04 19:09  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: Makefile.am, client.c, msgbox.c, msgbox.h: 
 	- Added a very customisable message box system
 
-2001-03-04  jzaun  <jzaun@users.sourceforge.net>
+2001-03-04 16:14  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/props.glade, /cvsroot/ggz/ggz/src/frontend/gtk/props.c:
-	- Added an option on the chat tab for a black or white background. Default is
-	  black.
+	* ggz-gtk/: chat.c, props.c, glade/props.glade: 
+	- Added an option on the chat tab for a black or white background.
+	Default is   black.
 
-2001-03-03  bmh  <bmh@users.sourceforge.net>
+2001-03-03 13:50  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/main.c:
-	- Disabled MEMDETAIL debugging by default
-	- Split out code to display table and player lists into functions
-	  display_tables() and display_players() : these should probably go in
-	  client.c
-	- Call display_tables() upon table list and table updates
-	- Call display_players() upon player list, playuer enter and leave,
-	  and player updates.  This keeps us from requesting the data from the
-	  server again
-	- New functions for handling GGZ_NET_ERROR and GGZ_PROTOCOL_ERROR:
-	  right now they just print a line to stdout.  They should pop up a
-	  dialog
+	* ggz-gtk/: ggz.c, main.c: 
+	- Disabled MEMDETAIL debugging by default - Split out code to
+	display table and player lists into functions	display_tables()
+	and display_players() : these should probably go in   client.c -
+	Call display_tables() upon table list and table updates - Call
+	display_players() upon player list, playuer enter and leave,   and
+	player updates.  This keeps us from requesting the data from the  
+	server again - New functions for handling GGZ_NET_ERROR and
+	GGZ_PROTOCOL_ERROR:   right now they just print a line to stdout. 
+	They should pop up a   dialog
 
-2001-02-28  jzaun  <jzaun@users.sourceforge.net>
+2001-02-27 21:43  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c:
-	- Colors have the correct names in the comments (Thanks to Perdig as i'm color
-	  blind)
+	* ggz-gtk/chat.c: 
+	- Colors have the correct names in the comments (Thanks to Perdig
+	as i'm color   blind)
 
-2001-02-27  jzaun  <jzaun@users.sourceforge.net>
+2001-02-27 15:41  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c, /cvsroot/ggz/ggz/src/frontend/gtk/motd.c:
-	- My Goof, should have check the new colors before commiting. Things are fixed
-	  now.
+	* ggz-gtk/: chat.c, motd.c: 
+	- My Goof, should have check the new colors before commiting.
+	Things are fixed   now.
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c, /cvsroot/ggz/ggz/src/frontend/gtk/main.c:
+2001-02-27 12:37  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: chat.c, main.c: 
 	- Redid colors for both chat and MOTD
 
-2001-02-24  bmh  <bmh@users.sourceforge.net>
+2001-02-23 22:19  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
-	- Work with new ggzcore functions:
-	- ggzcore_server_set_{hostinfo,logininfo}
-	- Don't logout if the login fails, give user the oppotunity to try
-	  again
+	* ggz-gtk/: ggz.c, login.c: 
+	- Work with new ggzcore functions: -
+	ggzcore_server_set_{hostinfo,logininfo} - Don't logout if the login
+	fails, give user the oppotunity to try	 again
 
-2001-02-24  jzaun  <jzaun@users.sourceforge.net>
+2001-02-23 19:22  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c:
+	* ggz-gtk/chat.c: 
 	- Full color support added to chat.
 
-2001-02-22  bmh  <bmh@users.sourceforge.net>
+2001-02-21 22:56  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.h, /cvsroot/ggz/ggz/src/frontend/gtk/main.c:
-	- Re-attached ggz_state_change as callback for GGZ_STATE_CHANGE event
-	  so we can get the state printed in the statusbar
+	* ggz-gtk/: ggz.c, ggz.h, main.c: 
+	- Re-attached ggz_state_change as callback for GGZ_STATE_CHANGE
+	event	so we can get the state printed in the statusbar
 
-2001-02-21  jzaun  <jzaun@users.sourceforge.net>
+2001-02-21 16:34  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/glade/first.glade:
+	* ggz-gtk/glade/first.glade: 
 	- forgot the glade file fir the first dialog
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/first.c, /cvsroot/ggz/ggz/src/frontend/gtk/first.h, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.h, /cvsroot/ggz/ggz/src/frontend/gtk/launch.c, /cvsroot/ggz/ggz/src/frontend/gtk/main.c, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am:
-	- First run dialog
-	  - Give the user an option of creating 2 profiles (Morat.net and CVS Developer
-	    Server)
+2001-02-21 16:32  Justin Zaun <jzaun@users.sourceforge.net>
 
-2001-02-19  jzaun  <jzaun@users.sourceforge.net>
+	* ggz-gtk/: Makefile.am, first.c, first.h, ggz.h, launch.c, main.c:
+	
+	- First run dialog   - Give the user an option of creating 2
+	profiles (Morat.net and CVS Developer	  Server)
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c:
+2001-02-19 17:22  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/client.c: 
 	- Hooked up View/MOTD
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/launch.c, /cvsroot/ggz/ggz/src/frontend/gtk/types.c:
+2001-02-19 16:28  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: ggz.c, launch.c, types.c: 
 	- Gametypes dialog works again, Launch dialog show correct info
 
-2001-02-17  bmh  <bmh@users.sourceforge.net>
+2001-02-16 23:45  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/server.c:
-	- Hacked in a ggz_list_tables() function so I could test ggzcore's
-	  table listing
-	- Fixed up ggz_list_players() to display table number correctly
+	* ggz-gtk/: ggz.c, server.c: 
+	- Hacked in a ggz_list_tables() function so I could test ggzcore's 
+	 table listing - Fixed up ggz_list_players() to display table
+	number correctly
 
-2001-02-17  jzaun  <jzaun@users.sourceforge.net>
+2001-02-16 21:23  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/motd.c:
+	* ggz-gtk/motd.c: 
 	- Display MOTD from the top, not the bottom (DOH!)
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
-	- hooked up MOTD
-	- Fixed room popup (join) segfault
+2001-02-16 21:12  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
-	- GGZ_ROOM_ENTER and GGZ_RROM_LEAVE hooked up
-	- fixed small chat duplication bug
+	* ggz-gtk/: client.c, ggz.c: 
+	- hooked up MOTD - Fixed room popup (join) segfault
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
+2001-02-16 20:26  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, ggz.c: 
+	- GGZ_ROOM_ENTER and GGZ_RROM_LEAVE hooked up - fixed small chat
+	duplication bug
+
+2001-02-16 19:19  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: ggz.c, login.c: 
 	- Old event system has been removes or commented out.
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/info.c, /cvsroot/ggz/ggz/src/frontend/gtk/info.h:
+2001-02-16 18:53  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: client.c, info.c, info.h: 
 	- Fixed info-dialog segfault
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/launch.c:
+2001-02-16 18:40  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: ggz.c, launch.c: 
 	- Compiles again
 
-2001-02-17  bugg  <bugg@users.sourceforge.net>
+2001-02-16 18:12  bugg
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c:
-	You _must_ commit sys/types.h before sys/socket.h
+	* ggz-gtk/chat.c: You _must_ commit sys/types.h before sys/socket.h
 
-2001-02-15  jzaun  <jzaun@users.sourceforge.net>
+2001-02-15 17:05  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/info.c, /cvsroot/ggz/ggz/src/frontend/gtk/chat.c, /cvsroot/ggz/ggz/src/frontend/gtk/chat.h, /cvsroot/ggz/ggz/src/frontend/gtk/client.c:
+	* ggz-gtk/: chat.c, chat.h, client.c, ggz.c, info.c: 
 	- Updated to use GGZRoom
 
-2001-02-01  jzaun  <jzaun@users.sourceforge.net>
+2001-01-31 19:37  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/info.c, /cvsroot/ggz/ggz/src/frontend/gtk/launch.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.h:
-	- Removed several warnings and hooked up more callbacks. There are still quite
-	  a few warning, and will be until ggzcore is back up to spead. I do beleave
-	  that the gtk FE is up to speed with the text FE.
+	* ggz-gtk/: client.c, ggz.c, info.c, launch.c, login.c, login.h: 
+	- Removed several warnings and hooked up more callbacks. There are
+	still quite   a few warning, and will be until ggzcore is back up
+	to spead. I do beleave	 that the gtk FE is up to speed with the
+	text FE.
 
-2001-01-31  jzaun  <jzaun@users.sourceforge.net>
+2001-01-31 17:10  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c, /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.h, /cvsroot/ggz/ggz/src/frontend/gtk/info.c, /cvsroot/ggz/ggz/src/frontend/gtk/launch.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.c, /cvsroot/ggz/ggz/src/frontend/gtk/main.c:
-	- The GTK FE now compiles, but thats about it.  There are major warnings during
-	  compile, 90% of the functionality isn't hooked up (This is due to 1/2 the
-	  callbacks being commented out).  This commit is just so the CVS build isn't
-	  broken. Please don't attempt to us the gtk FE until I have finished the
-	  convertion to the new ggzcore API!
+	* ggz-gtk/: chat.c, client.c, ggz.c, ggz.h, info.c, launch.c,
+	login.c, main.c: 
+	- The GTK FE now compiles, but thats about it.	There are major
+	warnings during   compile, 90% of the functionality isn't hooked up
+	(This is due to 1/2 the   callbacks being commented out).  This
+	commit is just so the CVS build isn't	broken. Please don't
+	attempt to us the gtk FE until I have finished the   convertion to
+	the new ggzcore API!
 
-2001-01-22  jzaun  <jzaun@users.sourceforge.net>
+2001-01-21 20:05  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/about.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/about.glade, /cvsroot/ggz/ggz/src/frontend/gtk/TODO:
-	- Fixed up the about dialog, added KDE2 client and Josef Spillner, added 2001
-	  to the copyright (both in source and in the dialog)
+	* ggz-gtk/: TODO, about.c, glade/about.glade: 
+	- Fixed up the about dialog, added KDE2 client and Josef Spillner,
+	added 2001   to the copyright (both in source and in the dialog)
 
-2001-01-21  jzaun  <jzaun@users.sourceforge.net>
+2001-01-20 19:36  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/glade/types.glade:
+	* ggz-gtk/glade/types.glade: 
 	- This is the Game Types glade file
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/main.c:
+2001-01-20 19:36  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/main.c: 
 	- Fixed the random file bug.
 
-2001-01-20  jzaun  <jzaun@users.sourceforge.net>
+2001-01-20 15:42  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am, /cvsroot/ggz/ggz/src/frontend/gtk/types.c, /cvsroot/ggz/ggz/src/frontend/gtk/types.h:
-	- Added the Game Types list & hooked up the View/Game Types menu option in the
-	  client
+	* ggz-gtk/: Makefile.am, client.c, types.c, types.h: 
+	- Added the Game Types list & hooked up the View/Game Types menu
+	option in the	client
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
-	- login_reconnect(): removed the hook_remove function, changed return value to
-	  GGZ_HOOK_REMOVE
+2001-01-19 21:14  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
+	* ggz-gtk/login.c: 
+	- login_reconnect(): removed the hook_remove function, changed
+	return value to   GGZ_HOOK_REMOVE
+
+2001-01-19 21:01  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: ggz.c, login.c: 
 	- updated to work with new ggzcore API
 
-2001-01-18  jzaun  <jzaun@users.sourceforge.net>
+2001-01-18 16:30  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c:
-	- Double-Click to join room, single click to select, right-click for pop-up on
-	  the Rooms list
+	* ggz-gtk/client.c: 
+	- Double-Click to join room, single click to select, right-click
+	for pop-up on	the Rooms list
 
-2001-01-14  jzaun  <jzaun@users.sourceforge.net>
+2001-01-14 09:37  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/about.c, /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/about.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade:
+	* ggz-gtk/: about.c, client.c, glade/about.glade, glade/main.glade:
+	
 	- "GNU Gaming Zone" -> "GGZ Gaming Zone"
 
-2001-01-14  Rich Gade  <rgade@users.sourceforge.net>
+2001-01-14 02:34  Rich Gade <rgade@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/main.c:
-	- Updated to call ggzcore_conf_initialize() directly from FE
+	* ggz-gtk/main.c: - Updated to call ggzcore_conf_initialize()
+	directly from FE
 
-2000-12-23  jzaun  <jzaun@users.sourceforge.net>
+2000-12-22 20:25  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/launch.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.c, /cvsroot/ggz/ggz/src/frontend/gtk/chat.c, /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
+	* ggz-gtk/: chat.c, client.c, ggz.c, launch.c, login.c: 
 	- Added a bunch of _() macros
 
-2000-12-22  jzaun  <jzaun@users.sourceforge.net>
+2000-12-22 16:15  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/launch.c, /cvsroot/ggz/ggz/src/frontend/gtk/TODO:
+	* ggz-gtk/: TODO, launch.c: 
 	- Displaying the game information in the launch dialog
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
+2000-12-21 22:04  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/login.c: 
 	- Hooked up the "Edit Profiles" button on the loging dialog
 
-2000-12-20  jzaun  <jzaun@users.sourceforge.net>
+2000-12-20 16:30  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/info.c:
-	- Added lookup to get gametype from room
-	- Added lookup to get gametype from table
-	- Initilize the gametype linked list (whoops!)
+	* ggz-gtk/info.c: 
+	- Added lookup to get gametype from room - Added lookup to get
+	gametype from table - Initilize the gametype linked list (whoops!)
 	- Finished the table info dialog
 
-2000-12-18  jzaun  <jzaun@users.sourceforge.net>
+2000-12-18 17:48  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
+	* ggz-gtk/ggz.c: 
 	- Added support for displaying and updating table information
 
-2000-12-05  jzaun  <jzaun@users.sourceforge.net>
+2000-12-05 16:58  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
+	* ggz-gtk/ggz.c: 
 	- Player list now shows the player's current table
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/server.c, /cvsroot/ggz/ggz/src/frontend/gtk/server.h:
+2000-12-05 16:30  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: server.c, server.h: 
 	- Removed warning on compile of server.c
 
-2000-12-04  jzaun  <jzaun@users.sourceforge.net>
+2000-12-04 16:30  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/props.c:
-	- All profile funtions now work under the properties dialog. There is a bug in
-	  server.c on line 92 that causes the main profile list to *not* be saved.
-	  until this is fixed, adding and deleting will not work properly
+	* ggz-gtk/props.c: 
+	- All profile funtions now work under the properties dialog. There
+	is a bug in   server.c on line 92 that causes the main profile list
+	to *not* be saved.    until this is fixed, adding and deleting will
+	not work properly
 
-2000-12-03  jzaun  <jzaun@users.sourceforge.net>
+2000-12-03 15:33  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/glade/login.glade, /cvsroot/ggz/ggz/src/frontend/gtk/login.c, /cvsroot/ggz/ggz/src/frontend/gtk/main.c, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am, /cvsroot/ggz/ggz/src/frontend/gtk/server.c, /cvsroot/ggz/ggz/src/frontend/gtk/server.h:
+	* ggz-gtk/: Makefile.am, login.c, main.c, server.c, server.h,
+	glade/login.glade: 
 	- Start on profile support.
 
-2000-12-02  jzaun  <jzaun@users.sourceforge.net>
+2000-12-02 14:35  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/props.c:
+	* ggz-gtk/props.c: 
 	- Hooked up the User Information tab in the props dialogy
 
-2000-12-02  bmh  <bmh@users.sourceforge.net>
+2000-12-02 01:34  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/main.c:
+	* ggz-gtk/main.c: 
 	- Make user conffile ggz-gtk.rc not ggz.rc
 
-2000-12-02  jzaun  <jzaun@users.sourceforge.net>
+2000-12-01 22:49  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c:
-	- Fixed a name/color display in chat with usernames starting with numbers
+	* ggz-gtk/chat.c: 
+	- Fixed a name/color display in chat with usernames starting with
+	numbers
 
-2000-12-02  Rich Gade  <rgade@users.sourceforge.net>
+2000-12-01 22:14  Rich Gade <rgade@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/main.c:
-	- make_path() ripped from server for config file path generation
-	- gtk FE user config file set to "~/.ggz/ggz.rc"
+	* ggz-gtk/main.c: - make_path() ripped from server for config file
+	path generation - gtk FE user config file set to "~/.ggz/ggz.rc"
 
-2000-12-02  jzaun  <jzaun@users.sourceforge.net>
+2000-12-01 21:08  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c, /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/main.c, /cvsroot/ggz/ggz/src/frontend/gtk/props.c:
-	- all chat properties work except:
-	  * Full Color
+	* ggz-gtk/: chat.c, client.c, ggz.c, main.c, props.c: 
+	- all chat properties work except:   * Full Color
 
-2000-12-02  bmh  <bmh@users.sourceforge.net>
+2000-12-01 20:06  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade, /cvsroot/ggz/ggz/src/frontend/gtk/main.c:
-	- Removed reference to local conf file
-	- Added accelerators to room context menu
+	* ggz-gtk/: client.c, main.c, glade/main.glade: 
+	- Removed reference to local conf file - Added accelerators to room
+	context menu
 
-2000-11-29  jzaun  <jzaun@users.sourceforge.net>
+2000-11-29 14:41  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/props.c:
-	- AutoIndent, Timestamp, and WordWrap props work but are not stored session to
-	  session yet.
+	* ggz-gtk/props.c: 
+	- AutoIndent, Timestamp, and WordWrap props work but are not stored
+	session to   session yet.
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/props.c:
-	- You can now set your font used in chat threw the props dialog.
-	  This isn't saved  yet from session to session
+2000-11-28 21:37  Justin Zaun <jzaun@users.sourceforge.net>
 
-2000-11-24  jzaun  <jzaun@users.sourceforge.net>
+	* ggz-gtk/props.c: 
+	- You can now set your font used in chat threw the props dialog.   
+	This isn't saved  yet from session to session
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/about.c, /cvsroot/ggz/ggz/src/frontend/gtk/chat.c, /cvsroot/ggz/ggz/src/frontend/gtk/info.c:
+2000-11-24 14:22  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: about.c, chat.c, info.c: 
 	- Adding some documentation
 
-2000-11-17  jzaun  <jzaun@users.sourceforge.net>
+2000-11-16 18:44  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/info.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade, /cvsroot/ggz/ggz/src/frontend/gtk/info.c, /cvsroot/ggz/ggz/src/frontend/gtk/info.h, /cvsroot/ggz/ggz/src/frontend/gtk/support.c, /cvsroot/ggz/ggz/src/frontend/gtk/support.h, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am:
-	- This is a big update to the room description code I recently added.
-	  What is committed here is a cleaner GUI than was used before, and
-	  presented much better
+	* ggz-gtk/: Makefile.am, client.c, info.c, info.h, support.c,
+	support.h, glade/info.glade, glade/main.glade: 
+	- This is a big update to the room description code I recently
+	added.	  What is committed here is a cleaner GUI than was used
+	before, and    presented much better
 
-2000-11-14  jzaun  <jzaun@users.sourceforge.net>
+2000-11-13 19:05  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade:
+	* ggz-gtk/: client.c, ggz.c, glade/main.glade: 
 	- Room description support added
 
-2000-11-11  jzaun  <jzaun@users.sourceforge.net>
+2000-11-10 23:00  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
+	* ggz-gtk/login.c: 
 	- You can now login as a registered user
 
-2000-11-10  bmh  <bmh@users.sourceforge.net>
+2000-11-09 22:37  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.h, /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade, /cvsroot/ggz/ggz/src/frontend/gtk/main.c:
+	* ggz-gtk/: client.c, ggz.c, ggz.h, main.c, glade/main.glade: 
 	- Simple example of using ggzcore's state callbacks in the text and
 	  gtk frontends
 
-2000-11-05  bmh  <bmh@users.sourceforge.net>
+2000-11-05 00:47  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/about.c, /cvsroot/ggz/ggz/src/frontend/gtk/about.h, /cvsroot/ggz/ggz/src/frontend/gtk/glade/about.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/launch.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/license.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/motd.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/props.glade, /cvsroot/ggz/ggz/src/frontend/gtk/launch.c, /cvsroot/ggz/ggz/src/frontend/gtk/launch.h, /cvsroot/ggz/ggz/src/frontend/gtk/license.c, /cvsroot/ggz/ggz/src/frontend/gtk/license.h, /cvsroot/ggz/ggz/src/frontend/gtk/motd.c, /cvsroot/ggz/ggz/src/frontend/gtk/motd.h, /cvsroot/ggz/ggz/src/frontend/gtk/props.c, /cvsroot/ggz/ggz/src/frontend/gtk/props.h:
-	- Renamed global dialog widget variables to be different than the
-	  local one used while creating.  Basically dlg_foo -> foo_dialog
-	- Make sure gtk_widget_destroyed() is connected to "destroy" signal
-	  for all dialogs so that the widget pointer gets set to NULL
-	- Removed unnecessary foo_destroy() functions since we can rely on
-	  gtk_widget_destroyed() to set the widget to NULL
+	* ggz-gtk/: about.c, about.h, launch.c, launch.h, license.c,
+	license.h, motd.c, motd.h, props.c, props.h, glade/about.glade,
+	glade/launch.glade, glade/license.glade, glade/motd.glade,
+	glade/props.glade: 
+	- Renamed global dialog widget variables to be different than the  
+	local one used while creating.	Basically dlg_foo -> foo_dialog -
+	Make sure gtk_widget_destroyed() is connected to "destroy" signal  
+	for all dialogs so that the widget pointer gets set to NULL -
+	Removed unnecessary foo_destroy() functions since we can rely on  
+	gtk_widget_destroyed() to set the widget to NULL
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/glade/login.glade, /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
-	- Removed fixed size of login dialog: this allows the full text of the
-	  failed login message to be displayed
+2000-11-04 23:34  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c, /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.h:
-	- s/ggzcore_event_trigger/ggzcore_event_enqueue
-	- s/ggzcore_event_connect/ggzcore_event_add_callback
-	- New function login_failed() handles updating of login dialog after a
-	  failed login
-	- Disconnect login_start_session() and connect login_relogin() to
-	  "connect" button of login dialog when doing a second login attemot
-	- Pass pointer to profile info to login_reconnect as user data
-	- Remove login_reconnect() by reference to function rather than ID,
-	  eliminating the need for the global variable
+	* ggz-gtk/: login.c, glade/login.glade: 
+	- Removed fixed size of login dialog: this allows the full text of
+	the   failed login message to be displayed
 
-2000-11-04  jzaun  <jzaun@users.sourceforge.net>
+2000-11-04 23:27  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
+	* ggz-gtk/: chat.c, client.c, ggz.c, login.c, login.h: 
+	- s/ggzcore_event_trigger/ggzcore_event_enqueue -
+	s/ggzcore_event_connect/ggzcore_event_add_callback - New function
+	login_failed() handles updating of login dialog after a   failed
+	login - Disconnect login_start_session() and connect
+	login_relogin() to   "connect" button of login dialog when doing a
+	second login attemot - Pass pointer to profile info to
+	login_reconnect as user data - Remove login_reconnect() by
+	reference to function rather than ID,	eliminating the need for
+	the global variable
+
+2000-11-04 12:24  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: ggz.c, login.c: 
 	- Some fixes to login_reconnect
 
-2000-11-03  jzaun  <jzaun@users.sourceforge.net>
+2000-11-03 16:53  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/login.h, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
-	- Reconnecting to a server from a URL is now done threw callbacks rather than
-	  the old way.
+	* ggz-gtk/: ggz.c, login.c, login.h: 
+	- Reconnecting to a server from a URL is now done threw callbacks
+	rather than   the old way.
 
-2000-10-30  jzaun  <jzaun@users.sourceforge.net>
+2000-10-30 16:33  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/login.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.h, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
-	- connecting to a ggz url work now.
-	- added correct sensitvity to the login dialog
+	* ggz-gtk/: ggz.c, login.c, login.h: 
+	- connecting to a ggz url work now.  - added correct sensitvity to
+	the login dialog
 
-2000-10-25  bmh  <bmh@users.sourceforge.net>
+2000-10-24 20:19  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/glade/.cvsignore:
+	* ggz-gtk/glade/.cvsignore: 
 	- Added .cvsignore file in glade dir
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/login.glade, /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
-	- Rename global variable dlg_login to login_dialog so as not to
-	  conflict with local variable inside create_dlg_login()
-	- When window object is destroyed (receives "destroy" signal), call
-	  gtk_widget_destroyed() with &login_dialog as data so that
-	  login_dialog gets set to NULL
-	- Remove unnecessary login_cancel_button_clocked() and just call
-	  gtk_widget_destroy() with dlg_login as the object
+2000-10-24 20:18  Brent Hendricks <bmh@users.sourceforge.net>
 
-2000-10-22  jzaun  <jzaun@users.sourceforge.net>
+	* ggz-gtk/: ggz.c, login.c, glade/login.glade: 
+	- Rename global variable dlg_login to login_dialog so as not to  
+	conflict with local variable inside create_dlg_login() - When
+	window object is destroyed (receives "destroy" signal), call  
+	gtk_widget_destroyed() with &login_dialog as data so that  
+	login_dialog gets set to NULL - Remove unnecessary
+	login_cancel_button_clocked() and just call   gtk_widget_destroy()
+	with dlg_login as the object
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.h:
-	- The URL launcher for chat now handles ggz://addresses and ggz.addresses
-	  corectly
+2000-10-22 16:38  Justin Zaun <jzaun@users.sourceforge.net>
 
-2000-10-21  jzaun  <jzaun@users.sourceforge.net>
+	* ggz-gtk/: chat.c, login.c, login.h: 
+	- The URL launcher for chat now handles ggz://addresses and
+	ggz.addresses	corectly
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c:
+2000-10-21 17:22  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/chat.c: 
 	- Removed some debugging stuff I forgot
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c, /cvsroot/ggz/ggz/src/frontend/gtk/chat.h, /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/main.c, /cvsroot/ggz/ggz/src/frontend/gtk/motd.c, /cvsroot/ggz/ggz/src/frontend/gtk/support.c, /cvsroot/ggz/ggz/src/frontend/gtk/support.h, /cvsroot/ggz/ggz/src/frontend/gtk/xtext.c, /cvsroot/ggz/ggz/src/frontend/gtk/xtext.h:
-	- Reorderd window display so that the login dialog is displayed second
-	  and therefor on top.
-	- Useing the newer xtext widget from XChat
-	- Added URL highlights to chat area
-	- Right-click URL opens to web
-	- Help/Goto Web works
+2000-10-21 17:19  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c:
+	* ggz-gtk/: chat.c, chat.h, client.c, main.c, motd.c, support.c,
+	support.h, xtext.c, xtext.h: 
+	- Reorderd window display so that the login dialog is displayed
+	second	 and therefor on top.  - Useing the newer xtext widget from
+	XChat - Added URL highlights to chat area - Right-click URL opens
+	to web - Help/Goto Web works
+
+2000-10-20 19:45  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/chat.c: 
 	- added /me actions to chat
 
-2000-10-20  jzaun  <jzaun@users.sourceforge.net>
+2000-10-20 17:23  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/launch.glade, /cvsroot/ggz/ggz/src/frontend/gtk/launch.c, /cvsroot/ggz/ggz/src/frontend/gtk/launch.h, /cvsroot/ggz/ggz/src/frontend/gtk/props.c, /cvsroot/ggz/ggz/src/frontend/gtk/props.h:
+	* ggz-gtk/: client.c, launch.c, launch.h, props.c, props.h,
+	glade/launch.glade: 
 	- Starting to hook up the launch and properties dialogs
 
-2000-10-19  jzaun  <jzaun@users.sourceforge.net>
+2000-10-19 14:26  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/glade/props.glade, /cvsroot/ggz/ggz/src/frontend/gtk/launch.c, /cvsroot/ggz/ggz/src/frontend/gtk/launch.h, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am, /cvsroot/ggz/ggz/src/frontend/gtk/props.c, /cvsroot/ggz/ggz/src/frontend/gtk/props.h:
-	- Properties and Launch dialogs
-	    *NOTE: Nothings hooked up yet
+	* ggz-gtk/: Makefile.am, launch.c, launch.h, props.c, props.h,
+	glade/props.glade: 
+	- Properties and Launch dialogs     *NOTE: Nothings hooked up yet
 
-2000-10-18  bmh  <bmh@users.sourceforge.net>
+2000-10-17 19:23  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/motd.glade, /cvsroot/ggz/ggz/src/frontend/gtk/motd.c:
-	- New callback for OK button on motd dialog so that motd_destroy()
-	  gets called and therefore dlg_motd gets set back to NULL
-	- Trigger GGZ_USER_MOTD event from View->MOTD menu item callback
+	* ggz-gtk/: client.c, motd.c, glade/motd.glade: 
+	- New callback for OK button on motd dialog so that motd_destroy() 
+	 gets called and therefore dlg_motd gets set back to NULL - Trigger
+	GGZ_USER_MOTD event from View->MOTD menu item callback
 
-2000-10-15  jzaun  <jzaun@users.sourceforge.net>
+2000-10-15 18:01  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/motd.c, /cvsroot/ggz/ggz/src/frontend/gtk/TODO:
+	* ggz-gtk/: TODO, ggz.c, motd.c: 
 	 - Finished up the MOTD
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/motd.glade, /cvsroot/ggz/ggz/src/frontend/gtk/motd.c, /cvsroot/ggz/ggz/src/frontend/gtk/motd.h, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am:
+2000-10-15 15:23  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: Makefile.am, ggz.c, motd.c, motd.h, glade/motd.glade: 
 	- MOTD dialog added
 
-2000-10-15  bmh  <bmh@users.sourceforge.net>
+2000-10-14 22:22  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/glade/about.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/license.glade, /cvsroot/ggz/ggz/src/frontend/gtk/about.c, /cvsroot/ggz/ggz/src/frontend/gtk/about.h, /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/license.c, /cvsroot/ggz/ggz/src/frontend/gtk/license.h, /cvsroot/ggz/ggz/src/frontend/gtk/main.c, /cvsroot/ggz/ggz/src/frontend/gtk/TODO:
+	* ggz-gtk/: TODO, about.c, about.h, client.c, license.c, license.h,
+	main.c, glade/about.glade, glade/license.glade: 
 	- Implemented foo_create_or_raise() and foo_destroy() for about and
-	  license dialogs
-	- Moved dlg_about and dlg_license into respective files and make
-	  static
-	- Moved main_win into client.c (still global though)
-	- Enabled gettext support in About dialog
+	  license dialogs - Moved dlg_about and dlg_license into respective
+	files and make	 static - Moved main_win into client.c (still
+	global though) - Enabled gettext support in About dialog
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.c:
-	- Use lookup_widget() rather than gtk_object_get_data()
-	- Hide password box for all but "normal" logins
-	- Declare login dialog callbacks and make them static
-	- Make Leave button insensitive when we first connect
+2000-10-14 21:33  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/glade/login.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade, /cvsroot/ggz/ggz/src/frontend/gtk/login.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.h, /cvsroot/ggz/ggz/src/frontend/gtk/main.c, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am, /cvsroot/ggz/ggz/src/frontend/gtk/support.c, /cvsroot/ggz/ggz/src/frontend/gtk/support.h, /cvsroot/ggz/ggz/src/frontend/gtk/TODO:
-	- Enabled gettext support for main window and login dialog
-	- Added support.[ch] files from glade for _() gettext function
-	- Make main window callbacks static
-	- Rename main window callbacks from on_ to client_
-	- Added main window callback declarations
-	- New function login_create_or_raise() creates the login dialog if it
-	  didn't exist, and raise it if it did
-	- Call login_create_or_raise() rather than create_dlg_login() whenever
-	  we want to activate the login dialog
-	- New function login_destroy() kills login dialog and sets dlg_login
-	  to NULL
-	- Moved dlg_login into login.c with the future intent of making it static
-	- Added Keyboard accelerators to menu items
-	- Renamed "GPL License" menu item to "Copyright"
+	* ggz-gtk/: ggz.c, login.c: 
+	- Use lookup_widget() rather than gtk_object_get_data() - Hide
+	password box for all but "normal" logins - Declare login dialog
+	callbacks and make them static - Make Leave button insensitive when
+	we first connect
 
-2000-10-14  jzaun  <jzaun@users.sourceforge.net>
+2000-10-14 19:54  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/glade/about.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/license.glade, /cvsroot/ggz/ggz/src/frontend/gtk/about.c, /cvsroot/ggz/ggz/src/frontend/gtk/about.h, /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/license.c, /cvsroot/ggz/ggz/src/frontend/gtk/license.h, /cvsroot/ggz/ggz/src/frontend/gtk/main.c, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am, /cvsroot/ggz/ggz/src/frontend/gtk/TODO:
+	* ggz-gtk/: Makefile.am, TODO, client.c, ggz.c, login.c, login.h,
+	main.c, support.c, support.h, glade/login.glade, glade/main.glade: 
+	- Enabled gettext support for main window and login dialog - Added
+	support.[ch] files from glade for _() gettext function - Make main
+	window callbacks static - Rename main window callbacks from on_ to
+	client_ - Added main window callback declarations - New function
+	login_create_or_raise() creates the login dialog if it	 didn't
+	exist, and raise it if it did - Call login_create_or_raise() rather
+	than create_dlg_login() whenever   we want to activate the login
+	dialog - New function login_destroy() kills login dialog and sets
+	dlg_login   to NULL - Moved dlg_login into login.c with the future
+	intent of making it static - Added Keyboard accelerators to menu
+	items - Renamed "GPL License" menu item to "Copyright"
+
+2000-10-14 13:07  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: Makefile.am, TODO, about.c, about.h, client.c,
+	license.c, license.h, main.c, glade/about.glade,
+	glade/license.glade: 
 	 - Added the about dialog
 	 - Added the license dialogy
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.h, /cvsroot/ggz/ggz/src/frontend/gtk/glade/about.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade, /cvsroot/ggz/ggz/src/frontend/gtk/main.c, /cvsroot/ggz/ggz/src/frontend/gtk/TODO:
+2000-10-14 11:10  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/: TODO, client.c, ggz.c, ggz.h, main.c,
+	glade/about.glade, glade/main.glade: 
 	 - padding around the room label
 	 - left align the room label
 	 - more padding around the edges of client_hbox
 	 - sensitivity within ggzcore event callbacks
 
-2000-10-14  bmh  <bmh@users.sourceforge.net>
+2000-10-14 02:19  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.h, /cvsroot/ggz/ggz/src/frontend/gtk/main.c:
-	- New function ggzcore_event_poll() works as a replacement for poll()
-	  except it tacks on the ggzcore fds and handles them automatically.
-	  This function can easily be used in FE event loops
-	- Remove ggzcore_event_ispending()
-	- Rename _ggzcore_event_ispending_actual() to ggzcore_event_ispending()
-	- Don't check for net input in ggzcore_event_ispending()
-	- New functions ggzcore_event_get_fd() and ggzcore_net_get_fd() allow
-	  access to ggzcore fds in case FE needs to add them to event loop
-	- Use ggzcore_event_poll() in text and gtk frontends
-	- remove ggz_loop() from gtk FE
+	* ggz-gtk/: ggz.c, ggz.h, main.c: 
+	- New function ggzcore_event_poll() works as a replacement for
+	poll()	 except it tacks on the ggzcore fds and handles them
+	automatically.	  This function can easily be used in FE event
+	loops  - Remove ggzcore_event_ispending() - Rename
+	_ggzcore_event_ispending_actual() to ggzcore_event_ispending() -
+	Don't check for net input in ggzcore_event_ispending() - New
+	functions ggzcore_event_get_fd() and ggzcore_net_get_fd() allow  
+	access to ggzcore fds in case FE needs to add them to event loop -
+	Use ggzcore_event_poll() in text and gtk frontends - remove
+	ggz_loop() from gtk FE
 
-2000-10-14  jzaun  <jzaun@users.sourceforge.net>
+2000-10-14 01:11  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/TODO:
+	* ggz-gtk/TODO: 
 	- The gtk FE todo list
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/client.c:
+2000-10-13 22:24  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* ggz-gtk/client.c: 
 	- hooked up the chat's scrollbar
 
-2000-10-13  jzaun  <jzaun@users.sourceforge.net>
+2000-10-13 18:48  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c, /cvsroot/ggz/ggz/src/frontend/gtk/chat.h, /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c:
-
+	* ggz-gtk/: chat.c, chat.h, client.c, ggz.c: 
+	
 	- All chat functions are now working, /help for help :-)
 
-2000-10-13  bmh  <bmh@users.sourceforge.net>
+2000-10-13 09:01  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/.cvsignore, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am:
-	- Add @EASYSOCK_{INC,LIB}@ so the Gtk frontend compiles with the
-	  recent easysock changes
-	- Added .libs and ggz-gtk to .cvsignore file
+	* ggz-gtk/: Makefile.am, .cvsignore: 
+	- Add @EASYSOCK_{INC,LIB}@ so the Gtk frontend compiles with the  
+	recent easysock changes - Added .libs and ggz-gtk to .cvsignore
+	file
 
-2000-10-12  jzaun  <jzaun@users.sourceforge.net>
+2000-10-12 18:11  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/chat.c, /cvsroot/ggz/ggz/src/frontend/gtk/chat.h, /cvsroot/ggz/ggz/src/frontend/gtk/client.c, /cvsroot/ggz/ggz/src/frontend/gtk/client.h, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.c, /cvsroot/ggz/ggz/src/frontend/gtk/ggz.h, /cvsroot/ggz/ggz/src/frontend/gtk/glade/login.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade, /cvsroot/ggz/ggz/src/frontend/gtk/login.c, /cvsroot/ggz/ggz/src/frontend/gtk/login.h, /cvsroot/ggz/ggz/src/frontend/gtk/main.c, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am, /cvsroot/ggz/ggz/src/frontend/gtk/xtext.c, /cvsroot/ggz/ggz/src/frontend/gtk/xtext.h:
-	Well here is the first commit of the GTK frontend. I'm
-	commiting a little early because, I have to leave for about
-	a half and hour and wanted to get this in. There are some
-	things a little different from what I said would be done.
-
+	* ggz-gtk/: Makefile.am, chat.c, chat.h, client.c, client.h, ggz.c,
+	ggz.h, login.c, login.h, main.c, xtext.c, xtext.h,
+	glade/login.glade, glade/main.glade: 
+	Well here is the first commit of the GTK frontend. I'm commiting a
+	little early because, I have to leave for about a half and hour and
+	wanted to get this in. There are some things a little different
+	from what I said would be done.
+	
 		- /msg needs implimented
 		- we are currently not recieving beep or msg
 		- /beep will send a beep
@@ -964,36 +1806,40 @@
 		  what I was planning on doing, and sugjest a
 		  better way.
 
-2000-09-22  jzaun  <jzaun@users.sourceforge.net>
+2000-09-22 18:12  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade:
+	* ggz-gtk/glade/main.glade: 
 	- Moves the room label to a more prominate place.
 
-2000-09-21  jzaun  <jzaun@users.sourceforge.net>
+2000-09-21 17:54  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade:
-	- Some small changes to the mail window,
-	   1) Fixed up menus
-	   2) Added a label for current room display
+	* ggz-gtk/glade/main.glade: 
+	- Some small changes to the mail window,    1) Fixed up menus	 2)
+	Added a label for current room display
 
-2000-09-17  jzaun  <jzaun@users.sourceforge.net>
+2000-09-16 19:32  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/glade/login.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/main.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/motd.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/props.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/win_main.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/about.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/dlg_about.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/dlg_launch.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/dlg_license.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/dlg_login.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/dlg_motd.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/dlg_props.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/launch.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/license.glade:
-	- Renamed the glade files, removing the dlg_ prefix
-	- Output files nolonger have the dlg_ prefix or _[ic] suffix
-	- Added the table and room pop-up menus to the main.glade file
+	* ggz-gtk/glade/: about.glade, dlg_about.glade, dlg_launch.glade,
+	dlg_license.glade, dlg_login.glade, dlg_motd.glade,
+	dlg_props.glade, launch.glade, license.glade, login.glade,
+	main.glade, motd.glade, props.glade, win_main.glade: 
+	- Renamed the glade files, removing the dlg_ prefix - Output files
+	nolonger have the dlg_ prefix or _[ic] suffix - Added the table and
+	room pop-up menus to the main.glade file
 
-2000-09-16  jzaun  <jzaun@users.sourceforge.net>
+2000-09-16 10:56  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/glade/dlg_about.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/dlg_launch.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/dlg_license.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/dlg_login.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/dlg_motd.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/dlg_props.glade, /cvsroot/ggz/ggz/src/frontend/gtk/glade/win_main.glade:
-	- This is the start of the new client glade files.
-	  win_main has changed a bit, dlg_license is new
-	  the rest are copyed over from the old directory
-	  and just slightly modified.
+	* ggz-gtk/glade/: dlg_about.glade, dlg_launch.glade,
+	dlg_license.glade, dlg_login.glade, dlg_motd.glade,
+	dlg_props.glade, win_main.glade: 
+	- This is the start of the new client glade files.    win_main has
+	changed a bit, dlg_license is new    the rest are copyed over from
+	the old directory    and just slightly modified.
 
-2000-09-15  bmh  <bmh@users.sourceforge.net>
+2000-09-15 18:46  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/ggz/src/frontend/gtk/.cvsignore, /cvsroot/ggz/ggz/src/frontend/gtk/Makefile.am:
-	- Added new directories for core client and frontends
-	- Modified build system to work with new source layout
-	- Skeletal libggzcore and text frontend
+	* ggz-gtk/: .cvsignore, Makefile.am: 
+	- Added new directories for core client and frontends - Modified
+	build system to work with new source layout - Skeletal libggzcore
+	and text frontend
+
