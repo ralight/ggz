@@ -16,6 +16,10 @@
 #include <getopt.h>
 #include <string.h>
 
+#include <sys/types.h>
+#include <dirent.h>
+#include <fnmatch.h>
+
 #include "wwwget.h"
 #include "proto.h"
 
@@ -27,13 +31,12 @@
 #define ARRAY_WIDTH 20
 #define ARRAY_HEIGHT 10
 
-#define DATA_GLOBAL GGZDATADIR "/geekgame/"
-#define DATA_LOCAL "/tmp/"
-
 #define MATCH_SERVER "geekgame"
 #define MATCH_VERSION 1
 
 #define MAX_PLAYERS 5
+
+#define STRING_LENGTH 1024
 
 /* Global variables */
 static GGZMod *mod = NULL;
@@ -42,12 +45,14 @@ static int modfd;
 static int ggzmode = 0;
 static SDL_Surface *screen, *image;
 static TTF_Font *font = NULL;
+static char *fontpath = NULL;
 static int playmode = -1;
 static int players = 0;
 static char scores[MAX_PLAYERS];
 static char array[ARRAY_WIDTH][ARRAY_HEIGHT];
 static int winner = -1;
 static int usesound = 1;
+static int usefullscreen = 0;
 #ifdef HAVE_SOUND
 Mix_Music *music = NULL;
 Mix_Chunk *chunk = NULL;
@@ -60,12 +65,34 @@ void loadsettings(void);
 void addplayer(const char *picture);
 void musicdone(void);
 
+static const char *data_global()
+{
+	return GGZDATADIR "/geekgame/";
+}
+
+static const char *data_local()
+{
+	static char *dl = NULL;
+	char *home, *path;
+
+	if(!dl)
+	{
+		home = getenv("HOME");
+		path = "/.ggz/games/geekgame";
+		dl = (char*)malloc(strlen(home) + strlen(path) + 1);
+		sprintf(dl, "%s/%s", home, path);
+	}
+
+	return dl;
+}
+
 static void game_handle_io(void)
 {
 	char op;
 	int version;
 	char greeting[64];
 	char player[64], pic[64];
+	char path[STRING_LENGTH];
 	
 	if (ggz_read_char(modfd, &op) < 0)
 	{
@@ -90,7 +117,8 @@ static void game_handle_io(void)
 		case OP_NEWPLAYER:
 			ggz_read_string(modfd, player, sizeof(player));
 			ggz_read_string(modfd, pic, sizeof(pic));
-			wwwget(pic, DATA_LOCAL "tmp.png");
+			snprintf(path, sizeof(path), "%s/tmp.png", data_local());
+			wwwget(pic, path);
 			addplayer(NULL);
 			break;
 		case OP_GAMESTART:
@@ -221,12 +249,16 @@ void drawnumber(SDL_Surface *screen, int vx, int vy, int num)
 {
 	SDL_Surface *number;
 	SDL_Rect rect;
+	char path[STRING_LENGTH];
+	char *image;
 
 	rect.x = vx * 32 + 20;
 	rect.y = vy * 32 + 20;
 
-	if(num) number = IMG_Load(DATA_GLOBAL "one.png");
-	else number = IMG_Load(DATA_GLOBAL "zero.png");
+	if(num) image = "one.png";
+	else image = "zero.png";
+	snprintf(path, sizeof(path), "%s/%s", data_global(), image);
+	number = IMG_Load(path);
 	SDL_BlitSurface(number, NULL, screen, &rect);
 	SDL_UpdateRect(screen, rect.x, rect.y, 32, 32);
 }
@@ -260,6 +292,7 @@ int main(int argc, char *argv[])
 {
 	struct option op[] =
 	{
+		{"fullscreen", 0, 0, 'f'},
 		{"ggz", 0, 0, 'g'},
 		{"help", 0, 0, 'h'},
 		{"nosound", 0, 0, 'n'},
@@ -268,10 +301,13 @@ int main(int argc, char *argv[])
 	int index = 0, c;
 	int ret;
 
-	while((c = getopt_long(argc, argv, "ghn", op, &index)) != -1)
+	while((c = getopt_long(argc, argv, "fghn", op, &index)) != -1)
 	{
 		switch(c)
 		{
+			case 'f':
+				usefullscreen = 1;
+				break;
 			case 'g':
 				ggzmode = 1;
 				break;
@@ -279,6 +315,7 @@ int main(int argc, char *argv[])
 				printf("The Geek Game\n");
 				printf("\n");
 				printf("Recognized options:\n");
+				printf("[-f | --fullscreen] Use full screen mode\n");
 				printf("[-g | --ggz ] Run game in GGZ mode\n");
 				printf("[-h | --help] This help\n");
 				printf("[-n | --nosound] Don't use sound\n");
@@ -310,7 +347,7 @@ int main(int argc, char *argv[])
 void loadsettings(void)
 {
 	int conf;
-	char conffile[1024];
+	char conffile[STRING_LENGTH];
 
 	snprintf(conffile, sizeof(conffile), "%s/.ggz/personalization", getenv("HOME"));
 	conf = ggz_conf_parse(conffile, GGZ_CONF_RDONLY);
@@ -318,15 +355,21 @@ void loadsettings(void)
 	{
 		playerimage = ggz_conf_read_string(conf, "Personalization", "picture", NULL);
 	}
-	if((conf == -1) || (!playerimage)) playerimage = DATA_GLOBAL "bot.png";
+	if((conf == -1) || (!playerimage))
+	{
+		playerimage = (char*)malloc(STRING_LENGTH);
+		snprintf(playerimage, STRING_LENGTH, "%s/bot.png", data_global());
+	}
 }
 
 void addplayer(const char *picture)
 {
 	static int counter = 0;
 	SDL_Rect rect;
+	char path[STRING_LENGTH];
 
-	image = IMG_Load(DATA_LOCAL "tmp.png");
+	snprintf(path, sizeof(path), "%s/tmp.png", data_local());
+	image = IMG_Load(path);
 
 	if(image)
 	{
@@ -431,6 +474,70 @@ void playnoise()
 #endif
 }
 
+char *scan_dir(const char *dir, const char *pattern)
+{
+	DIR *dp;
+	struct dirent *ep;
+
+	dp = opendir(dir);
+	if(dp)
+	{
+		while((ep = readdir(dp)) != 0)
+		{
+			if(!fnmatch(pattern, ep->d_name, 0))
+			{
+				closedir(dp);
+				return ep->d_name;
+			}
+		}
+		closedir(dp);
+	}
+	return NULL;
+}
+
+void screen_scanning(int display)
+{
+	SDL_Rect rect;
+	char path[STRING_LENGTH];
+	char *tmpfont;
+
+	if(display)
+	{
+		rect.x = 0;
+		rect.y = 0;
+		rect.w = SCREEN_WIDTH;
+		rect.h = SCREEN_HEIGHT;
+		SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
+
+		renderdesc(50, 50, "Scanning...", 1);
+
+		SDL_UpdateRect(screen, rect.x, rect.y, rect.w, rect.h);
+
+		/* Scanning for other stuff */
+		sleep(1);
+	}
+	else
+	{
+		/* Scanning for fonts */
+		tmpfont = scan_dir("/usr/share/fonts/truetype", "*.ttf");
+		if(tmpfont)
+		{
+			snprintf(path, sizeof(path), "/usr/share/fonts/truetype/%s", tmpfont);
+			fontpath = strdup(path);
+		}
+		else
+		{
+			tmpfont = scan_dir("/usr/X11R6/lib/X11/fonts/TrueType", "*.ttf");
+			if(tmpfont)
+			{
+				snprintf(path, sizeof(path), "/usr/X11R6/lib/X11/fonts/TrueType/%s", tmpfont);
+				fontpath = strdup(path);
+			}
+			else fontpath = NULL;
+		}
+	}
+}
+
 void screen_intro()
 {
 	int escape;
@@ -440,6 +547,7 @@ void screen_intro()
 	int dimmer, dimminc;
 	SDL_Rect rect;
 	char *desc1, *desc2, *desc3, *desc4;
+	char path[STRING_LENGTH];
 
 	x = 20;
 	y = 20;
@@ -470,12 +578,21 @@ void screen_intro()
 	
 			if(!i)
 			{
-				wwwget(playerimage, DATA_LOCAL "tmp.png");
-				image = IMG_Load(DATA_LOCAL "tmp.png");
-				if(!image) image = IMG_Load(DATA_GLOBAL "default.png");
+				snprintf(path, sizeof(path), "%s/tmp.png", data_local());
+				wwwget(playerimage, path);
+				image = IMG_Load(path);
+				if(!image)
+				{
+					snprintf(path, sizeof(path), "%s/default.png", data_global());
+					image = IMG_Load(path);
+				}
 			} else image = NULL;
 
-			if(!image) image = IMG_Load(DATA_GLOBAL "bot.png");
+			if(!image)
+			{
+				snprintf(path, sizeof(path), "%s/bot.png", data_global());
+				image = IMG_Load(path);
+			}
 
 			rect.x = 20 + i * 150;
 			rect.y = 450;
@@ -522,6 +639,11 @@ void screen_intro()
 						playmode = (y - 20) / 30 + MODE_RESERVED + 1;
 						playnoise();
 					}
+					if(keystate[SDLK_f])
+					{
+						SDL_WM_ToggleFullScreen(screen);
+						SDL_ShowCursor(SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE ? SDL_DISABLE : SDL_ENABLE);
+					}
 					break;
 			}
 		}
@@ -531,7 +653,7 @@ void screen_intro()
 			desc1 = "The sum of any row or column\nmust be zero.";
 			desc2 = "The sum of any row or column,\nmultiplied by 2, must be 42.";
 			desc3 = "Numbers encompassed by cursor\nmust divide by 4\nin binary coded format.";
-			desc4 = "Both cursor bars\nmust contain the same number\nof 1s";
+			desc4 = "Both cursor bars\nmust contain the same number\nof ones and zeroes";
 
 			if(oldy == 20)
 			{
@@ -577,7 +699,6 @@ void screen_intro()
 
 		SDL_Delay(50);
 	}
-
 }
 
 void screen_game()
@@ -662,6 +783,11 @@ void screen_game()
 						drawnumber(screen, x / 32, y / 32, array[x / 32][y / 32]);
 						calc = 1;
 						playnoise();
+					}
+					if(keystate[SDLK_f])
+					{
+						SDL_WM_ToggleFullScreen(screen);
+						SDL_ShowCursor(SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE ? SDL_DISABLE : SDL_ENABLE);
 					}
 					break;
 			}
@@ -794,10 +920,10 @@ void screen_outtro()
 int startgame(void)
 {
 	int i, j, x;
-	SDL_Rect rect;
 	SDL_Surface *icon;
 	Uint32 init;
 	int ret;
+	char path[STRING_LENGTH];
 
 	init = SDL_INIT_VIDEO;
 #ifdef HAVE_SOUND
@@ -814,21 +940,23 @@ int startgame(void)
 		if(ret < 0)
 		{
 			fprintf(stderr, "Could not open sound device.\n");
-			/*return -1;*/
 		}
 		else
 		{
-			music = Mix_LoadMUS(DATA_GLOBAL "music/song32.ogg");
+			snprintf(path, sizeof(path), "%s/music/song32.ogg", data_global());
+			music = Mix_LoadMUS(path);
 			Mix_PlayMusic(music, -1);
 			Mix_HookMusicFinished(musicdone);
 
-			chunk = Mix_LoadWAV(DATA_GLOBAL "sound/phaser.wav");
+			snprintf(path, sizeof(path), "%s/sound/phaser.wav", data_global());
+			chunk = Mix_LoadWAV(path);
 		}
 	}
 #endif
 
-	font = TTF_OpenFont(DATA_GLOBAL "1979rg__.ttf", 12);
-	/*font = TTF_OpenFont("dark2.ttf", 18);*/
+	screen_scanning(0);
+
+	font = TTF_OpenFont(fontpath, 18);
 	if(!font)
 	{
 		fprintf(stderr, "Could not open font file.\n");
@@ -837,16 +965,19 @@ int startgame(void)
 	TTF_SetFontStyle(font, TTF_STYLE_NORMAL);
 
 	SDL_WM_SetCaption("GGZ Geek Game", "GGZ Geek Game");
-	icon = IMG_Load(DATA_GLOBAL "icon.png");
+	snprintf(path, sizeof(path), "%s/icon.png", data_global());
+	icon = IMG_Load(path);
 	if(icon) SDL_WM_SetIcon(icon, 0);
 
-	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 24, 0);
+	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 24, (usefullscreen ? SDL_FULLSCREEN : 0));
 
 	players = MAX_PLAYERS;
 	for(i = 0; i < players; i++)
 		scores[i] = 0;
 
 	drawturn(screen, players, -1);
+
+	screen_scanning(1);
 
 	while(1)
 	{
