@@ -1,0 +1,19 @@
+=============================================
+The GGZ Gaming Zone - Console (Text) Frontend
+=============================================
+
+This core client is not only useful for environments where no graphical desktop
+is available, but does also serve as a reference implementation of the ggzcore
+functionality.
+ 
+Please read 'INSTALL' if you aren't experienced with the build yet.
+For an overall view on the GGZ setup procedures, please consult the file
+README.GGZ.
+ 
+If you encounter any bugs, please send them to
+	Brent M. Hendricks, <bmh@users.sourceforge.net>,
+or to the mailing list,
+	ggz-dev@lists.sourceforge.net.
+ 
+Have fun!
+    - The GGZ Gaming Zone Development Team
