@@ -63,18 +63,18 @@ int main(void)
 
 	ggzcore_init(opt);
 	
-	ggzcore_event_connect(GGZ_SERVER_LOGIN, server_login_ok);
-	ggzcore_event_connect(GGZ_SERVER_CONNECT_FAIL, server_connect_fail);
-	ggzcore_event_connect(GGZ_SERVER_LOGIN_FAIL, server_login_fail);
-	ggzcore_event_connect(GGZ_SERVER_LIST_ROOMS, server_list_rooms);
-	ggzcore_event_connect(GGZ_SERVER_LIST_PLAYERS, server_list_players);
-	ggzcore_event_connect(GGZ_SERVER_CHAT_MSG, server_chat_msg);
-	ggzcore_event_connect(GGZ_SERVER_CHAT_ANNOUNCE, server_chat_announce);
-	ggzcore_event_connect(GGZ_SERVER_CHAT_PRVMSG, server_chat_prvmsg);
-	ggzcore_event_connect(GGZ_SERVER_CHAT_BEEP, server_chat_beep);
-	ggzcore_event_connect(GGZ_SERVER_LOGOUT, server_logout);
-	ggzcore_event_connect(GGZ_SERVER_ROOM_ENTER, server_room_enter);
-	ggzcore_event_connect(GGZ_SERVER_ROOM_LEAVE, server_room_leave);
+	ggzcore_event_add_callback(GGZ_SERVER_LOGIN, server_login_ok);
+	ggzcore_event_add_callback(GGZ_SERVER_CONNECT_FAIL, server_connect_fail);
+	ggzcore_event_add_callback(GGZ_SERVER_LOGIN_FAIL, server_login_fail);
+	ggzcore_event_add_callback(GGZ_SERVER_LIST_ROOMS, server_list_rooms);
+	ggzcore_event_add_callback(GGZ_SERVER_LIST_PLAYERS, server_list_players);
+	ggzcore_event_add_callback(GGZ_SERVER_CHAT_MSG, server_chat_msg);
+	ggzcore_event_add_callback(GGZ_SERVER_CHAT_ANNOUNCE, server_chat_announce);
+	ggzcore_event_add_callback(GGZ_SERVER_CHAT_PRVMSG, server_chat_prvmsg);
+	ggzcore_event_add_callback(GGZ_SERVER_CHAT_BEEP, server_chat_beep);
+	ggzcore_event_add_callback(GGZ_SERVER_LOGOUT, server_logout);
+	ggzcore_event_add_callback(GGZ_SERVER_ROOM_ENTER, server_room_enter);
+	ggzcore_event_add_callback(GGZ_SERVER_ROOM_LEAVE, server_room_leave);
 	
 	output_status();
 	output_prompt();

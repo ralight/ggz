@@ -78,7 +78,7 @@ int input_command(short events)
 				input_handle_connect(current);
 			}
 			else if (strcmp(command, "disconnect") == 0) {
-				ggzcore_event_trigger(GGZ_USER_LOGOUT, NULL, NULL);
+				ggzcore_event_enqueue(GGZ_USER_LOGOUT, NULL, NULL);
 			}
 			else if (strcmp(command, "list") == 0) {
 				input_handle_list(current);
@@ -148,7 +148,7 @@ static void input_handle_connect(char* line)
 	
 
 	/* FIXME: provide a destroy function that frees the appropriate mem */
-	ggzcore_event_trigger(GGZ_USER_LOGIN, profile, NULL);
+	ggzcore_event_enqueue(GGZ_USER_LOGIN, profile, NULL);
 }
 
 
@@ -156,20 +156,20 @@ static void input_handle_list(char* line)
 {
 	/* What are we listing? */
 	if (strcmp(line, "types") == 0)
-		ggzcore_event_trigger(GGZ_USER_LIST_TYPES, NULL, NULL);
+		ggzcore_event_enqueue(GGZ_USER_LIST_TYPES, NULL, NULL);
 	else if (strcmp(line, "tables") == 0)
-		ggzcore_event_trigger(GGZ_USER_LIST_TABLES, NULL, NULL);
+		ggzcore_event_enqueue(GGZ_USER_LIST_TABLES, NULL, NULL);
 	else if (strcmp(line, "players") == 0) {
 		if (ggzcore_player_get_num() >= 1)
 			output_players();
 		else 
-			ggzcore_event_trigger(GGZ_USER_LIST_PLAYERS, NULL, NULL);
+			ggzcore_event_enqueue(GGZ_USER_LIST_PLAYERS, NULL, NULL);
 	}
 	else if (strcmp(line, "rooms") == 0) {
 		if (ggzcore_room_get_num() >= 1)
 			output_rooms();
 		else 
-			ggzcore_event_trigger(GGZ_USER_LIST_ROOMS, NULL, NULL);
+			ggzcore_event_enqueue(GGZ_USER_LIST_ROOMS, NULL, NULL);
 	}
 }
 
@@ -179,7 +179,7 @@ static void input_handle_join(char* line)
 	int room;
 	
 	room = atoi(line);
-	ggzcore_event_trigger(GGZ_USER_JOIN_ROOM, (void*)room, NULL);
+	ggzcore_event_enqueue(GGZ_USER_JOIN_ROOM, (void*)room, NULL);
 }
 
 
@@ -189,7 +189,7 @@ static void input_handle_chat(char *line)
 
 	if (strcmp(line, "") != 0) {
 		msg = strdup(line);
-		ggzcore_event_trigger(GGZ_USER_CHAT, msg, free);
+		ggzcore_event_enqueue(GGZ_USER_CHAT, msg, free);
 	}
 }
 
@@ -200,7 +200,7 @@ static void input_handle_beep(char* line)
 
 	if (strcmp(line, "") != 0) {
 		player = strdup(line);
-		ggzcore_event_trigger(GGZ_USER_CHAT_BEEP, player, free);
+		ggzcore_event_enqueue(GGZ_USER_CHAT_BEEP, player, free);
 	}
 }
 
@@ -220,7 +220,7 @@ static void input_handle_msg(char* line)
 	
 	if (line && strcmp(line, "") != 0) {
 		data[1] = strdup(line);
-		ggzcore_event_trigger(GGZ_USER_CHAT_PRVMSG, data, free);
+		ggzcore_event_enqueue(GGZ_USER_CHAT_PRVMSG, data, free);
 	}
 }
 

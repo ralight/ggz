@@ -192,6 +192,7 @@ void output_status(void)
 		case GGZ_STATE_LOGGED_IN:
 			currentstatus = "Logged In";
 			break;
+		case GGZ_STATE_BETWEEN_ROOMS:
 		case GGZ_STATE_ENTERING_ROOM:
 			currentstatus = "--> Room";
 			break;
