@@ -4,7 +4,7 @@
  * Project: GGZ Combat Client
  * Date: 2001?
  * Desc: Options dialog
- * $Id: dlg_options.c 6346 2004-11-13 08:37:39Z jdorje $
+ * $Id: dlg_options.c 6347 2004-11-13 08:38:07Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -147,7 +147,7 @@ static void maps_list_selected(GtkTreeSelection * treeselection,
 	int tot = 0, other = 0, a;
 
 	if (!get_current_map(tree, &map, &file))
-	  return;
+		return;
 
 	preview_game = ggz_malloc(sizeof(*preview_game));
 	preview_game->number = cbt_game.number;

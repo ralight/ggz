@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 6346 2004-11-13 08:37:39Z jdorje $
+ * $Id: game.c 6347 2004-11-13 08:38:07Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -582,23 +582,22 @@ void game_add_player_info(int number)
 
 	// Now adds the unit names and power
 	for (b = 0; b < 12; b++) {
-			char power[32];
+		char power[32];
 
-			if (b > U_BOMB) {
-			  snprintf(power, sizeof(power), "%d", b - 1);
-			} else {
-			  snprintf(power, sizeof(power), "-");
-			}
+		if (b > U_BOMB) {
+			snprintf(power, sizeof(power), "%d", b - 1);
+		} else {
+			snprintf(power, sizeof(power), "-");
+		}
 
 		for (a = 0; a < number; a++) {
 			GtkTreeIter iter;
 
 			gtk_list_store_append(unit_list[a], &iter);
 			gtk_list_store_set(unit_list[a], &iter,
-					   UNIT_COLUMN_ID, (gint)b,
+					   UNIT_COLUMN_ID, (gint) b,
 					   UNIT_COLUMN_NAME, unitname[b],
-					   UNIT_COLUMN_POWER, power,
-					   -1);
+					   UNIT_COLUMN_POWER, power, -1);
 		}
 	}
 }
@@ -635,7 +634,7 @@ void game_update_unit_list(int seat)
 
 		if (!gtk_tree_model_iter_next(GTK_TREE_MODEL(unit_list),
 					      &iter)) {
-		  break;
+			break;
 		}
 	}
 }
