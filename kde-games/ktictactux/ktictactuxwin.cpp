@@ -23,6 +23,8 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 	m_tux = new KTicTacTux(this);
 	setCentralWidget(m_tux);
 
+	m_networked = false;
+
 	mgame = new KPopupMenu(this);
 	mgame->insertItem(i18n("Synchronize"), menusync);
 	mgame->insertItem(i18n("View score"), menuscore);
@@ -43,6 +45,7 @@ KTicTacTuxWin::KTicTacTuxWin(QWidget *parent, const char *name)
 
 	connect(m_tux, SIGNAL(signalStatus(const QString &)), SLOT(slotStatus(const QString &)));
 	connect(m_tux, SIGNAL(signalScore(const QString &)), SLOT(slotScore(const QString &)));
+	connect(m_tux, SIGNAL(signalNetworkScore(int, int)), SLOT(slotNetworkScore(int, int)));
 	connect(mgame, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(mtheme, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 
@@ -139,30 +142,51 @@ void KTicTacTuxWin::slotMenu(int id)
 void KTicTacTuxWin::enableNetwork(bool enabled)
 {
 	mgame->setItemEnabled(menusync, enabled);
+	m_networked = enabled;
 }
 
 // Display scores
 void KTicTacTuxWin::score()
 {
+	if(m_networked)
+	{
+		m_tux->statistics();
+		return;
+	}
+
 	KConfig *conf = kapp->config();
 	conf->setGroup("Score");
 	int ailost = conf->readNumEntry("ailost");
 	int aiwon = conf->readNumEntry("aiwon");
-	int humanlost = conf->readNumEntry("humanlost");
-	int humanwon = conf->readNumEntry("humanwon");
 
 	QString comment = "";
-	if(!(ailost + aiwon + humanlost + humanwon))
+	if(!(ailost + aiwon))
 		comment = i18n("Of course, because you didn't play yet.");
-	else if((aiwon > ailost) && (humanwon > humanlost))
+	else if(aiwon > ailost * 2)
 		comment = i18n("You are so bad.");
-	else if((aiwon < ailost) && (humanwon < humanlost))
+	else if(aiwon * 2 < ailost)
 		comment = i18n("You're a TicTacTux expert!");
 
 	KMessageBox::information(this,
 		i18n("You won %1 times and lost %2 times against the AI. "
-			"Human players have been beaten %3 times by you, you lost %4 times. "
-			"%5").arg(ailost).arg(aiwon).arg(humanlost).arg(humanwon).arg(comment),
+			"%3").arg(ailost).arg(aiwon).arg(comment),
 		i18n("KTicTacTux score"));
+}
+
+// Display network score
+void KTicTacTuxWin::slotNetworkScore(int wins, int losses)
+{
+	QString comment = "";
+	if(!(wins + losses))
+		comment = i18n("Of course, because you didn't play yet.");
+	else if(losses > wins * 2)
+		comment = i18n("You are so bad.");
+	else if(wins > losses * 2)
+		comment = i18n("You're a TicTacTux expert!");
+
+	KMessageBox::information(this,
+		i18n("Human players have been beaten %1 times by you, you lost %2 times. "
+			"%3").arg(wins).arg(losses).arg(comment),
+		i18n("KTicTacTux network score"));
 }
 

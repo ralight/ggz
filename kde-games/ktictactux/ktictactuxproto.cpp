@@ -24,6 +24,8 @@ KTicTacTuxProto::KTicTacTuxProto()
 {
 	names[0][0] = 0;
 	names[1][0] = 0;
+	stats[0] = 0;
+	stats[1] = 0;
 }
 
 // Even more empty destructor
@@ -110,6 +112,13 @@ int KTicTacTuxProto::getGameOver()
 	ggz_read_char(fd, &winner);
 }
 
+// Read statistics
+void KTicTacTuxProto::getStatistics()
+{
+	ggz_read_int(fd, &stats[0]);
+	ggz_read_int(fd, &stats[1]);
+}
+
 // Send the options
 int KTicTacTuxProto::sendOptions()
 {
@@ -127,5 +136,11 @@ int KTicTacTuxProto::sendMyMove()
 void KTicTacTuxProto::sendSync()
 {
 	ggz_write_int(fd, reqsync);
+}
+
+// Fetch statistics
+void KTicTacTuxProto::sendStatistics()
+{
+	ggz_write_int(fd, reqstats);
 }
 

@@ -49,6 +49,8 @@ class KTicTacTuxWin : public KMainWindow
 		void slotStatus(const QString &status);
 		// Receive a new score
 		void slotScore(const QString &score);
+		// Receive statistics
+		void slotNetworkScore(int wins, int losses);
 		// Menu slot
 		void slotMenu(int id);
 
@@ -57,6 +59,8 @@ class KTicTacTuxWin : public KMainWindow
 		KTicTacTux *m_tux;
 		// The menus;
 		KPopupMenu *mgame, *mtheme;
+		// Game network status
+		bool m_networked;
 };
 
 #endif

@@ -25,14 +25,16 @@ class KTicTacTuxProto
 			msggameover = 3,
 			reqmove = 4,
 			rspmove = 5,
-			sndsync = 6
+			sndsync = 6,
+			sndstats = 7
 		};
 
 		// Opcodes to be sent to the server
 		enum ClientMessages
 		{
 			sndmove = 0,
-			reqsync = 1
+			reqsync = 1,
+			reqstats = 2
 		};
 
 		// Collection of known errors
@@ -81,6 +83,8 @@ class KTicTacTuxProto
 		int move;
 		// The player who is on
 		char turn;
+		// Statistics
+		int stats[2];
 
 		// Connect to the socket
 		void connect();
@@ -101,6 +105,8 @@ class KTicTacTuxProto
 		int getSync();
 		// Ask whether the game is over
 		int getGameOver();
+		// Get statistics
+		void getStatistics();
 
 		// Send decision on a new game
 		int sendOptions();
@@ -108,6 +114,8 @@ class KTicTacTuxProto
 		int sendMyMove();
 		// Synchronize game
 		void sendSync();
+		// Fetch statistics
+		void sendStatistics();
 };
 
 #endif

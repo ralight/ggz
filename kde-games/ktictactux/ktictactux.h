@@ -43,6 +43,8 @@ class KTicTacTux : public QWidget
 		void init();
 		// Request a synchonization
 		void sync();
+		// Request network scores
+		void statistics();
 
 	public slots:
 		// Evaluate user input
@@ -55,6 +57,8 @@ class KTicTacTux : public QWidget
 		void signalStatus(const QString &status);
 		// Emit the score
 		void signalScore(const QString &score);
+		// Emit statistics
+		void signalNetworkScore(int wins, int losses);
 
 	private:
 		// Wait for bot or network input

@@ -351,6 +351,12 @@ void KTicTacTux::sync()
 	proto->sendSync();
 }
 
+// Statistics
+void KTicTacTux::statistics()
+{
+	proto->sendStatistics();
+}
+
 // Handle network input
 void KTicTacTux::slotNetwork()
 {
@@ -399,6 +405,10 @@ void KTicTacTux::slotNetwork()
 			break;
 		case proto->sndsync:
 			proto->getSync();
+			break;
+		case proto->sndstats:
+			proto->getStatistics();
+			emit signalNetworkScore(proto->stats[0], proto->stats[1]);
 			break;
 		case proto->msggameover:
 			proto->getGameOver();
