@@ -1,0 +1,286 @@
+<HTML>
+<HEAD>
+<TITLE>
+GGZ Instant Gaming
+</TITLE>
+</HEAD>
+<BODY BGCOLOR="#DDDDDD">
+
+<H2>GGZ Instant Gaming</H2>
+<I>Josef Spillner, 14.04.2002</I>
+<BR><BR>
+
+This article describes a game launch using a GGZ Gaming Zone server, without
+requiring a traditional GGZ client.
+It is therefore a concept which can be implemented by game authors for games
+which do, for example, have a long history of being launched on their own, so
+the players don't have to learn a new program.
+This will be referred to as GGZ Instant Gaming in this article.
+Note that the use of a GGZ client like kggz or ggz-gtk is still recommended.
+<BR><BR>
+
+All communication is done via an XML protocol. The current GGZ protocol has the
+version number 6, and is not stabilized yet.
+The game author should use proven functionality for the XML parsing, for
+example by using expat or qxmlreader, whatever is appropriate.
+<BR><BR>
+
+Let's start. The game connects to a GGZ server (a method of doing so, using a
+connection dialog or automatic connection via meta servers, must be provided by
+the game itself).
+It is presented with a 'welcome string', which consists of the opening
+<FONT COLOR="#0000FF">SESSION</FONT> tag and the <FONT COLOR="#0000FF">SERVER</FONT>
+identification which has <FONT COLOR="#0000FF">OPTION</FONT>s like the maximum chat
+length.
+<BR><BR>
+
+<FONT COLOR="#0000FF">
+&lt;SESSION&gt;<BR>
+&lt;SERVER ID='GGZ-0.0.5' NAME='An Unconfigured GGZ Server' VERSION='6' STATUS='ok'&gt;<BR>
+ &nbsp;&nbsp; &lt;OPTIONS CHATLEN='512'/&gt;<BR>
+&lt;/SERVER&gt;<BR>
+</FONT><BR><BR>
+
+The game client can now log in. This is done by replying with a correct XML
+header, and opening the <FONT COLOR="#FF0000">SESSION</FONT> from the client
+side, followed by the <FONT COLOR="#FF0000">LOGIN</FONT> attempt. This contains
+the player's <FONT COLOR="#FF0000">NAME</FONT>, and the <FONT COLOR="#FF0000">
+PASSWORD</FONT> when playing as registered user (which is not required).
+<BR><BR>
+
+<FONT COLOR="#FF0000">
+&lt;?xml version='1.0' encoding='ISO-8859-1'?&gt;<BR>
+&lt;SESSION&gt;<BR>
+&lt;LOGIN TYPE='guest'&gt;<BR>
+ &nbsp;&nbsp; &lt;NAME&gt;josef&lt;/NAME&gt;<BR>
+&lt;/LOGIN&gt;<BR>
+</FONT><BR><BR>
+
+If the login succeeds, the <FONT COLOR="#0000FF">RESULT</FONT> returns code zero,
+and the message of the day (<FONT COLOR="#0000FF">MOTD</FONT>) is sent. The login
+procedure is then finished, and the game client can proceed with further action.
+Otherwise, either a player with this name is already logged in, or this is a
+registered name. See the GGZ protocol documentation for detailed information on
+the return codes.
+<BR><BR>
+
+<FONT COLOR="#0000FF">
+&lt;RESULT ACTION='login' CODE='0'/&gt;<BR>
+&lt;MOTD PRIORITY='normal'&gt;<BR>
+ &nbsp;&nbsp;&lt;![CDATA[No MOTD today!]]&gt;<BR>
+&lt;/MOTD&gt;<BR>
+</FONT><BR><BR>
+
+Now the game requests information about the available rooms, and the installed game servers.
+It does so by sending the <FONT COLOR="#FF0000">LIST</FONT> command, which
+contains room and game as list types. In the example, a full listing is issued,
+which returns all available information. This is not strictly necessary, but
+useful in most cases.
+<BR><BR>
+
+<FONT COLOR="#FF0000">
+&lt;LIST TYPE='room' FULL='true'/&gt;<BR>
+&lt;LIST TYPE='game' FULL='true'/&gt;<BR>
+</FONT><BR><BR>
+
+Each list command is answered by a <FONT COLOR="#0000FF">RESULT</FONT> block,
+which, in this case, contains (surprise) a <FONT COLOR="#0000FF">LIST</FONT>.
+The room list contains all the available <FONT COLOR="#0000FF">ROOM</FONT>s,
+which by now only reveal a <FONT COLOR="#0000FF">DESC</FONT>ription, beside the
+game name and the room id. The latter one is important to match the id
+of the <FONT COLOR="#0000FF">GAME</FONT> entries in the game list. Each game is
+identified by a <FONT COLOR="#0000FF">PROTOCOL</FONT>, which itself consists of
+the protocol engine and the protocol version. Both of these must actually match
+the one of the game client in order to be able to play. A game
+<FONT COLOR="#0000FF">DESC</FONT>ription is also sent, along with the number of
+<FONT COLOR="#0000FF">ALLOW</FONT>ed players and bots, and further information
+<FONT COLOR="#0000FF">ABOUT</FONT> the game.
+<BR><BR>
+
+<FONT COLOR="#0000FF">
+&lt;RESULT ACTION='list' CODE='0'&gt;<BR>
+&lt;LIST TYPE='room'&gt;<BR>
+&lt;ROOM ID='0' NAME='Entry Room' GAME='-1'&gt;<BR>
+&lt;DESC&gt;A place to meet and choose a game room&lt;/DESC&gt;<BR>
+&lt;/ROOM&gt;<BR>
+&lt;ROOM ID='1' NAME='Chess' GAME='0'&gt;<BR>
+&lt;DESC&gt;Example Chess Room&lt;/DESC&gt;<BR>
+&lt;/ROOM&gt;<BR>
+&lt;/LIST&gt;<BR>
+...<BR>
+&lt;/RESULT&gt;<BR>
+<BR><BR>
+&lt;RESULT ACTION='list' CODE='0'&gt;<BR>
+&lt;LIST TYPE='game'&gt;<BR>
+&lt;GAME ID='0' NAME='Chess' VERSION='0.0.6'&gt;<BR>
+&lt;PROTOCOL ENGINE='Chess' VERSION='2'/&gt;<BR>
+&lt;ALLOW PLAYERS='2' BOTS='0'/&gt;<BR>
+&lt;ABOUT AUTHOR='Ismael Orenstein' URL='http://ggz.sourceforge.net/games/chess/'/&gt;<BR>
+&lt;DESC&gt;GGZ game module for playing Chess&lt;/DESC&gt;<BR>
+&lt;/GAME&gt;<BR>
+&lt;/LIST&gt;<BR>
+...<BR>
+&lt;/RESULT&gt;<BR>
+</FONT><BR><BR>
+
+The game client is now ready to <FONT COLOR="#FF0000">ENTER</FONT> one room. It
+will then show up in the player list of every GGZ client, so GGZ Instant Gaming
+should not use well-known public servers. However, for the beginning, it is
+sufficient to add a signature like '/xxx' to the player name (which is allowed
+to be 16 chars long), just like GGZap does with appending '/zap'.
+<BR><BR>
+
+<FONT COLOR="#FF0000">
+&lt;ENTER ROOM='0'/&gt;<BR>
+</FONT><BR><BR>
+
+In the example, we entered the first room, which is usually the lounge.
+Success is indicated by the <FONT COLOR="#0000FF">RESULT</FONT>. The
+lounge doesn't have a game associated with it, and entering it invokes a server
+<FONT COLOR="#0000FF">CHAT</FONT> message.
+<BR><BR>
+
+<FONT COLOR="#0000FF">
+&lt;RESULT ACTION='enter' CODE='0'/&gt;<BR>
+&lt;CHAT TYPE='private' FROM='[Server]'&gt;<BR>
+&lt;![CDATA[You are the only player currently logged in.]]&gt;<BR>
+&lt;/CHAT&gt;<BR>
+</FONT><BR><BR>
+
+We are then, maybe, interested in a <FONT COLOR="#FF0000">LIST</FONT> of
+players currently logged in, and of all the launched tables. Each table
+represents one running game, and has the players on it which take part in this
+game.
+Note that most games won't enter the lounge, but rather go to their room
+directly. For documentation purpose we will however handle this here.
+<BR><BR>
+
+<FONT COLOR="#FF0000">
+&lt;LIST TYPE='player'/&gt;<BR>
+&lt;LIST TYPE='table'/&gt;<BR>
+</FONT><BR><BR>
+
+Now the server lets us know the <FONT COLOR="#0000FF">RESULT</FONT> of our
+query. It sends a <FONT COLOR=#0000FF>LIST</FONT> of <FONT COLOR="#0000FF">PLAYER
+</FONT>s, and an empty list for the tables, which would contain a bunch of
+<FONT COLOR="#0000FF">TABLE</FONT>s if there were some running games.
+<BR><BR>
+
+<FONT COLOR="#0000FF">
+&lt;RESULT ACTION='list' CODE='0'&gt;<BR>
+&lt;LIST TYPE='player' ROOM='0'&gt;<BR>
+&lt;PLAYER ID='josef' TYPE='guest' TABLE='-1' LAG='1'/&gt;<BR>
+&lt;/LIST&gt;<BR>
+&lt;/RESULT&gt;<BR>
+<BR><BR>
+&lt;RESULT ACTION='list' CODE='0'&gt;<BR>
+&lt;LIST TYPE='table' ROOM='0'&gt;<BR>
+&lt;/LIST&gt;<BR>
+&lt;/RESULT&gt;<BR>
+</FONT><BR><BR>
+
+Now, the game client <FONT COLOR="#FF0000">ENTER</FONT>s a room which
+contains its game type. The server reply is similar to the one above, and has
+therefore been cut here.
+Instead, one of the few cases where a server initiates a part of the
+communication can occur everytime during the login: A <FONT COLOR="#0000FF">PING
+</FONT>...
+<BR><BR>
+
+<FONT COLOR="#0000FF">
+&lt;PING/&gt;<BR>
+</FONT><BR><BR>
+
+... which must be answered with a <FONT COLOR="#FF0000">PONG</FONT>
+immideately. The player lag calculation takes the time difference as its base,
+and it may very well be that in the future players with a too high lag are
+logged out.
+<BR><BR>
+
+<FONT COLOR="#FF0000">
+&lt;PONG/&gt;<BR>
+</FONT><BR><BR>
+
+So much for the prerequesites. If this is done, the game client may start a
+game. It does so by issuing a <FONT COLOR="#FF0000">LAUNCH</FONT> command,
+which should create a <FONT COLOR="#FF0000">TABLE</FONT>. (Technically, the
+game is then started automatically on the server side.)
+A table may contain a <FONT COLOR="#FF0000">DESC</FONT>ription, which is empty
+in the example, and a chain of <FONT COLOR="#FF0000">SEAT</FONT> tags, each of
+them telling about a certain seat. In the beginning they're all empty.
+<BR><BR>
+
+<FONT COLOR="#FF0000">
+&lt;LAUNCH&gt;<BR>
+&lt;TABLE GAME='12' SEATS='2'&gt;<BR>
+&lt;DESC&gt;&lt;/DESC&gt;<BR>
+&lt;SEAT NUM='0' TYPE='open'/&gt;<BR>
+&lt;SEAT NUM='1' TYPE='open'/&gt;<BR>
+&lt;/TABLE&gt;<BR>
+&lt;/LAUNCH&gt;<BR>
+</FONT><BR><BR>
+
+The table launch is then broadcasted to all clients, including the one which
+issued it. This information gets delivered to the clients by an
+<FONT COLOR="#0000FF">UPDATE</FONT> bock, which contains the <FONT COLOR="#0000FF">
+TABLE</FONT>, holding all the <FONT COLOR="#0000FF">SEAT</FONT>s.
+The player itself is placed into the first open seat.
+This too is broadcasted with an <FONT COLOR="#0000FF">UPDATE</FONT> tag, which
+specifies the <FONT COLOR="#0000FF">TABLE</FONT> in question, and the
+<FONT COLOR="#0000FF">SEAT</FONT> of the player.
+All other seats can either be open too, which means the game is not full yet, or a bot,
+or a seat reserved for a specific player.
+Before the player gets his seat, however, the game was launched, and this is
+indicated with the <FONT COLOR="#0000FF">RESULT</FONT> tag between the other
+events.
+<BR><BR>
+
+<FONT COLOR="#0000FF">
+&lt;UPDATE TYPE='table' ACTION='add' ROOM='13'&gt;<BR>
+&lt;TABLE ID='0' GAME='12' STATUS='1' SEATS='2'&gt;<BR>
+&lt;DESC&gt;&lt;/DESC&gt;<BR>
+&lt;SEAT NUM='0' TYPE='open'/&gt;<BR>
+&lt;SEAT NUM='1' TYPE='open'/&gt;<BR>
+&lt;/TABLE&gt;<BR>
+&lt;/UPDATE&gt;<BR>
+<BR><BR>
+&lt;RESULT ACTION='launch' CODE='0'/&gt;<BR>
+&lt;UPDATE TYPE='table' ACTION='join' ROOM='13'&gt;<BR>
+&lt;TABLE ID='0' SEATS='2'&gt;<BR>
+&lt;SEAT NUM='0' TYPE='player'&gt;josef&lt;/SEAT&gt;<BR>
+&lt;/TABLE&gt;<BR>
+&lt;/UPDATE&gt;<BR>
+</FONT><BR><BR>
+
+If a player tries to get into a game, a game server could still refuse him, so
+a <FONT COLOR="#0000FF">RESULT</FONT> is also generated for this event.
+Again, a code zero means success.
+<BR><BR>
+
+<FONT COLOR="#0000FF">
+&lt;RESULT ACTION='join' CODE='0'/&gt;<BR>
+</FONT><BR><BR>
+
+Upon start, either the game server or the game client sends out initial data.
+This is either tunneled by GGZ using a <FONT COLOR="#0000FF">DATA</FONT> tag
+containing some XML CDATA, or exchanged directly by the game client and server,
+whatever method is implemented.
+<BR><BR>
+
+<FONT COLOR="#0000FF">
+&lt;DATA SIZE='21'&gt;<BR>
+&lt;![CDATA[0 0 0 17 75 68 69 32 77 117 101 104 108 101 32 71 97 109 101 10 0 ]]&gt;<BR>
+&lt;/DATA&gt;<BR>
+</FONT><BR><BR>
+
+That's it. A game could be running in this state. In order to leave, simply
+disconnecting is enough, the GGZ server does then take care of everything.
+If there are any open questions, feel free to mail the author at
+<A HREF="mailto:dr_maux@users.sourceforge.net">dr_maux@users.sourceforge.net</A>,
+or subscribe to the GGZ Gaming Zone developer's list, which is
+<A HREF="mailto:ggz-dev@lists.sourceforge.net">ggz-dev@lists.sourceforge.net</A>.
+<BR><BR>
+
+</BODY>
+</HTML>
+
