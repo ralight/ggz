@@ -59,7 +59,7 @@ GdkColor colors[] =
 	{0, 0x7777, 0x7777, 0x7777},	/* 6   grey			*/
 	{0, 0, 0xcccc, 0xcccc},		/* 7   aqua			*/
 	{0, 0, 0, 0xcccc},		/* 8   blue markBack		*/
-	{0, 0xffff, 0, 0xffff},		/* 9   pink			*/
+	{0, 0, 0, 0},			/* 9   black			*/
 };
 
 

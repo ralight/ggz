@@ -70,7 +70,7 @@ static int anon_login(void);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
 static void display_chat(char *name, char *msg);
 static void handle_list_tables(int op, int fd);
-static void add_line_motd(char *message);
+static void motd_print_line(char *line);
 
 
 char *opcode_str[] = { 	"MSG_SERVER_ID",
@@ -317,7 +317,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		for (i = 0; i < count; i++) {
 			es_read_string_alloc(source, &message);
 			connect_msg("[%s] %s",opcode_str[op], message);
-			add_line_motd(message);
+			motd_print_line(message);
 		}
 		gtk_widget_show(dlg_motd);
 		break;
@@ -489,13 +489,170 @@ void handle_list_tables(int op, int fd)
 
 }
 
-void add_line_motd(char *message)
+void motd_print_line(char *line)
 {
+        char out[1024];
+        int lindex=0;
+        int oindex=0;
 	GtkWidget *temp_widget;
+	GdkColormap *cmap;
 	GdkFont *fixed_font;
+	int color_index=9; /* Black */
+
+
+	cmap = gdk_colormap_get_system();
+	if (!gdk_color_alloc(cmap, &colors[color_index])) {
+		g_error("couldn't allocate color");
+	}
 
 	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_motd), "txtMOTD");
-
 	fixed_font = gdk_font_load ("-misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1");
-	gtk_text_insert(GTK_TEXT(temp_widget), fixed_font, NULL, NULL, message, -1);	
+
+        while(line[lindex] != '\0')
+        {
+                if (line[lindex] == '%')
+                {
+                        lindex++;
+                        if (line[lindex] == 'c')
+                        {
+                                lindex++;
+                                switch (line[lindex]) {
+                                        case '0':
+                                                out[oindex]='\0';
+						gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
+								&colors[color_index], NULL, out, -1);
+						color_index=0;
+						cmap = gdk_colormap_get_system();
+						if (!gdk_color_alloc(cmap, &colors[color_index])) {
+							g_error("couldn't allocate color");
+						}
+                                                oindex=0;
+                                                lindex++;
+                                                break;
+                                        case '1':
+                                                out[oindex]='\0';
+						gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
+								&colors[color_index], NULL, out, -1);
+						color_index=1;
+						cmap = gdk_colormap_get_system();
+						if (!gdk_color_alloc(cmap, &colors[color_index])) {
+							g_error("couldn't allocate color");
+						}
+                                                oindex=0;
+                                                lindex++;
+                                                break;
+                                        case '2':
+                                                out[oindex]='\0';
+						gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
+								&colors[color_index], NULL, out, -1);
+						color_index=2;
+						cmap = gdk_colormap_get_system();
+						if (!gdk_color_alloc(cmap, &colors[color_index])) {
+							g_error("couldn't allocate color");
+						}
+                                                oindex=0;
+                                                lindex++;
+                                                break;
+                                        case '3':
+                                                out[oindex]='\0';
+						gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
+								&colors[color_index], NULL, out, -1);
+						color_index=3;
+						cmap = gdk_colormap_get_system();
+						if (!gdk_color_alloc(cmap, &colors[color_index])) {
+							g_error("couldn't allocate color");
+						}
+                                                oindex=0;
+                                                lindex++;
+                                                break;
+                                        case '4':
+                                                out[oindex]='\0';
+						gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
+								&colors[color_index], NULL, out, -1);
+						color_index=4;
+						cmap = gdk_colormap_get_system();
+						if (!gdk_color_alloc(cmap, &colors[color_index])) {
+							g_error("couldn't allocate color");
+						}
+                                                oindex=0;
+                                                lindex++;
+                                                break;
+                                        case '5':
+                                                out[oindex]='\0';
+						gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
+								&colors[color_index], NULL, out, -1);
+						color_index=5;
+						cmap = gdk_colormap_get_system();
+						if (!gdk_color_alloc(cmap, &colors[color_index])) {
+							g_error("couldn't allocate color");
+						}
+                                                oindex=0;
+                                                lindex++;
+                                                break;
+                                        case '6':
+                                                out[oindex]='\0';
+						gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
+								&colors[color_index], NULL, out, -1);
+						color_index=6;
+						cmap = gdk_colormap_get_system();
+						if (!gdk_color_alloc(cmap, &colors[color_index])) {
+							g_error("couldn't allocate color");
+						}
+                                                oindex=0;
+                                                lindex++;
+                                                break;
+                                        case '7':
+                                                out[oindex]='\0';
+						gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
+								&colors[color_index], NULL, out, -1);
+						color_index=7;
+						cmap = gdk_colormap_get_system();
+						if (!gdk_color_alloc(cmap, &colors[color_index])) {
+							g_error("couldn't allocate color");
+						}
+                                                oindex=0;
+                                                lindex++;
+                                                break;
+                                        case '8':
+                                                out[oindex]='\0';
+						gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
+								&colors[color_index], NULL, out, -1);
+						color_index=8;
+						cmap = gdk_colormap_get_system();
+						if (!gdk_color_alloc(cmap, &colors[color_index])) {
+							g_error("couldn't allocate color");
+						}
+                                                oindex=0;
+                                                lindex++;
+                                                break;
+                                        case '9':
+                                                out[oindex]='\0';
+						gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
+								&colors[color_index], NULL, out, -1);
+						color_index=9;
+						cmap = gdk_colormap_get_system();
+						if (!gdk_color_alloc(cmap, &colors[color_index])) {
+							g_error("couldn't allocate color");
+						}
+                                                oindex=0;
+                                                lindex++;
+                                                break;
+                                        default:
+                                                lindex--;
+                                                lindex--;
+                                }
+                        }else{
+                                lindex--;
+                        }
+                }
+                out[oindex]=line[lindex];
+                lindex++;
+                oindex++;
+        }
+        out[oindex]='\0';
+	gtk_text_insert (GTK_TEXT (temp_widget), fixed_font,
+			&colors[color_index], NULL, out, -1);
 }
+
+
+
