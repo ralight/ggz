@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3702 2002-03-28 04:43:05Z jdorje $
+ * $Id: net.c 3742 2002-04-05 05:29:49Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -92,8 +92,14 @@ void broadcast_player_list(void)
 {
 	player_t p;
 	
-	for (p = 0; p < game.num_players; p++)
+	for (p = 0; p < game.num_players; p++) {
+		/* Sometimes this means we'll send the list to a player who's
+		   not connected or a bot that hasn't been spawned yet.  This
+		   isn't great.  Note, though, that we *do* need to send a
+		   real player list to bot players, who may be relying on this
+		   information. */
 		(void) send_player_list(p);
+	}
 }
 
 /* Send out play for player to _all_ players. Also symbolizes that this play
