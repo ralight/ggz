@@ -51,6 +51,7 @@ void game_init() {
   game_info.seconds[0] = 0;
   game_info.seconds[1] = 0;
   game_info.turn = 0;
+  game_info.check = FALSE;
   bzero(game_info.name[0], 18);
   bzero(game_info.name[1], 18);
 }
@@ -99,6 +100,7 @@ void game_message(const char *format, ...) {
  */
 void game_update(int event, void *arg) {
   char move[5];
+  int retval = 0;
   switch (event) {
     case CHESS_EVENT_INIT:
       if (game_info.state != CHESS_STATE_INIT)
@@ -138,8 +140,7 @@ void game_update(int event, void *arg) {
       game_info.clock_type = *(int*)arg >> 24;
       game_info.seconds[0] = *(int*)arg & 0xFFFFFF;
       game_info.seconds[1] = *(int*)arg & 0xFFFFFF;
-      /* FIXME: Should be game_popup */
-      printf("Clock type is %d and time is %d\n", game_info.clock_type, game_info.seconds[0]);
+      game_popup("Clock type is %d and time is %d\n", game_info.clock_type, game_info.seconds[0]);
       break;
     case CHESS_EVENT_START:
       if (game_info.state != CHESS_STATE_WAIT)
@@ -150,8 +151,8 @@ void game_update(int event, void *arg) {
     case CHESS_EVENT_MOVE_END:
       if (game_info.state != CHESS_STATE_PLAYING)
         break;
-      printf("Move from %d/%d to %d/%d\n", *(int*)arg, *((int*)arg+1), *((int*)arg+2), *((int*)arg+3));
       net_send_move( *(int*)arg+(8**((int*)arg+1)), *((int*)arg+2)+(8**((int*)arg+3)));
+      game_message("Sending move to server...");
       break;
     case CHESS_EVENT_MOVE:
       if (game_info.state != CHESS_STATE_PLAYING)
@@ -165,8 +166,18 @@ void game_update(int event, void *arg) {
       move[2] = 65 + ((*((char*)arg+1))%8);
       move[3] = 49 + ((*((char*)arg+1))/8);
       move[4] = 0;
-      cgc_make_move(game, move);
-      printf("Making move %s", move);
+      game_message("Making move %s", move);
+      game_info.check = FALSE;
+      retval = cgc_make_move(game, move);
+      if (retval == CHECK || retval == MATE) {
+        if ((game_info.turn%2!=game_info.seat)) {
+          game_info.check = TRUE;
+          game_message("You are in check!");
+        } else {
+          game_message("Your opponent is in check!");
+        }
+      }
+      game_info.turn++;
       board_draw();
       break;
     case CHESS_EVENT_GAMEOVER:
@@ -213,7 +224,7 @@ void game_update(int event, void *arg) {
       game_info.state = CHESS_STATE_DONE;
       break;
     default:
-      printf("Unknown event! %d", event);
+      game_message("Unknown event! %d", event);
       break;
   }
 }

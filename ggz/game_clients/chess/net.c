@@ -47,15 +47,16 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
 
   switch (op) {
     case CHESS_MSG_SEAT:
+      printf("Received MSG_SEAT\n");
       /* args[0] holds the seat */
       es_read_char(fd, &args[0]);
       /* args[1] holds version */
       es_read_char(fd, &args[1]);
       /* Issue a EVENT_SEAT */
       game_update(CHESS_EVENT_SEAT, args);
-      printf("Received MSG_SEAT\n");
       break;
     case CHESS_MSG_PLAYERS:
+      printf("Got an MSG_PLAYERS\n");
       names = (char *)malloc(40 * sizeof(char));
       bzero(names, 40);
       /* Get first code */
@@ -68,25 +69,25 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
         es_read_string(fd, names+21, 17);
       /* Issue an event */
       game_update(CHESS_EVENT_PLAYERS, names);
-      printf("Got an MSG_PLAYERS\n");
       break;
     case CHESS_REQ_TIME:
+      printf("Got an REQ_TIME\n");
       /* The server is requesting my time option */
       game_update(CHESS_EVENT_TIME_REQUEST, NULL);
-      printf("Got an REQ_TIME\n");
       break;
     case CHESS_RSP_TIME:
+      printf("Got an RSP_TIME\n");
       /* The server is sending the time option */
       es_read_int(fd, &a);
       game_update(CHESS_EVENT_TIME_OPTION, &a);
-      printf("Got an RSP_TIME\n");
       break;
     case CHESS_MSG_START:
+      printf("Got an MSG_START\n");
       /* We should start the game now */
       game_update(CHESS_EVENT_START, NULL);
-      printf("Got an MSG_START\n");
       break;
     case CHESS_MSG_MOVE:
+      printf("Got an MSG_MOVE\n");
       /* We got an move! */
       es_read_char(fd, &args[0]);
       if (args[0] == -1) 
@@ -96,7 +97,6 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
         es_read_char(fd, &args[1]);
         game_update(CHESS_EVENT_MOVE, args);
       }
-      printf("Got an MSG_MOVE\n");
       break;
     case CHESS_MSG_GAMEOVER:
       /* The game is over */
@@ -104,7 +104,7 @@ void net_handle_input(gpointer data, int fd, GdkInputCondition cond) {
       game_update(CHESS_EVENT_GAMEOVER, args);
       break;
     default:
-      printf("Unknown opcode: %d\n", op);
+      game_message("Unknown opcode: %d\n", op);
       break;
   }
 
@@ -119,5 +119,4 @@ void net_send_move(char from, char to) {
   es_write_char(game_info.fd, CHESS_REQ_MOVE);
   es_write_char(game_info.fd, from);
   es_write_char(game_info.fd, to);
-  printf("Sending move %d %d\n", from, to);
 }

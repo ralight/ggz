@@ -166,4 +166,9 @@ struct chess_info {
   /* Hold information about the players */
   char assign[2];
   char name[2][18];
+  /* Last moves */
+  char dest_x, dest_y;
+  char src_x, src_y;
+  /* Am I in check? */
+  char check;
 };

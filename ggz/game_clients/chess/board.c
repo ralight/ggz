@@ -52,7 +52,8 @@ GdkBitmap **pieces_mask = NULL;
 GdkGC *piece_gc = NULL;
 GdkGC *light_gc = NULL;
 GdkGC *dark_gc = NULL;
-GdkColor bg_color[2];
+GdkGC *red_gc = NULL;
+GdkColor bg_color[3];
 GdkPixmap *board_buf = NULL;
 
 /* Main window */
@@ -60,6 +61,8 @@ extern GtkWidget *main_win;
 
 /* Game */
 extern game_t *game;
+
+extern struct chess_info game_info;
 
 /* dnd stuff */
 GtkTargetEntry *target;
@@ -90,6 +93,8 @@ void board_init() {
   gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), &bg_color[0], TRUE, TRUE);
   gdk_color_parse("rgb:67/55/3F", &bg_color[1]);
   gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), &bg_color[1], TRUE, TRUE);
+  gdk_color_parse("rgb:FF/00/00", &bg_color[2]);
+  gdk_colormap_alloc_color(gtk_widget_get_colormap(main_win), &bg_color[2], TRUE, TRUE);
   /* Background GC */
   light_gc = gdk_gc_new(main_win->window);
   gdk_gc_set_fill(light_gc, GDK_SOLID);
@@ -99,9 +104,19 @@ void board_init() {
   gdk_gc_set_fill(dark_gc, GDK_SOLID);
   gdk_gc_set_foreground(dark_gc, &bg_color[1]);
   gdk_gc_set_background(dark_gc, &bg_color[1]);
+  red_gc = gdk_gc_new(main_win->window);
+  gdk_gc_set_fill(red_gc, GDK_SOLID);
+  gdk_gc_set_foreground(red_gc, &bg_color[2]);
+  gdk_gc_set_background(red_gc, &bg_color[2]);
 
   /* Setup the drag and drop */
   board_dnd_init();
+
+  /* No highlights */
+  game_info.src_x = -1;
+  game_info.src_y = -1;
+  game_info.dest_x = -1;
+  game_info.dest_y = -1;
 }
 
 void board_dnd_init() {
@@ -115,16 +130,52 @@ void board_dnd_init() {
   target->flags = GTK_TARGET_SAME_WIDGET;
   target->info = 233;
 
-  gtk_drag_dest_set(board, GTK_DEST_DEFAULT_ALL, target, 1, GDK_ACTION_MOVE);
+  gtk_drag_dest_set(board, GTK_DEST_DEFAULT_DROP | GTK_DEST_DEFAULT_MOTION, target, 1, GDK_ACTION_MOVE);
 
 }
 
 void board_draw() {
   board_draw_bg();
   board_draw_pieces();
+  board_draw_highlights();
 
   gtk_widget_draw(lookup_widget(main_win, "board"), NULL);
 }
+
+void board_draw_highlights() {
+  int x, y;
+  if (game_info.src_x >= 0 && game_info.src_y >= 0)
+    board_draw_outline(game_info.src_x, game_info.src_y, gtk_widget_get_style(main_win)->white_gc);
+  if (game_info.dest_x >= 0 && game_info.dest_y >= 0)
+    board_draw_outline(game_info.dest_x, game_info.dest_y, gtk_widget_get_style(main_win)->white_gc);
+  if (game_info.check) {
+    /* Find the king ! */
+    for (x = 0; x < 8; x++) {
+      for (y = 0; y < 8; y++) {
+        if ((game_info.seat == 0 && game->board[x][y] == W_KING) || (game_info.seat == 1 && game->board[x][y] == B_KING))
+          board_draw_outline(x, y, red_gc);
+      }
+    }
+  }
+}
+
+void board_draw_outline(int x, int y, GdkGC *gc) {
+  /* Outside outline */
+  gdk_draw_rectangle(board_buf,
+      gc,
+      FALSE,
+      x*PIXSIZE-1, y*PIXSIZE-1,
+      PIXSIZE+2, PIXSIZE+2);
+  /* Inside outline */
+  gdk_draw_rectangle(board_buf,
+      gc,
+      FALSE,
+      x*PIXSIZE, y*PIXSIZE,
+      PIXSIZE, PIXSIZE);
+}
+
+
+
   
 
 void board_draw_bg() {
@@ -221,9 +272,10 @@ void board_draw_piece(int piece, int x, int y) {
 
 void board_dnd_highlight( int x, int y, GdkDragContext *drag_context) {
   int piece = board_translate(game->board[x][y]);
-  printf("highlighting %d %d, piece: %d\n", x, y, piece);
   gdk_pixmap_ref(pieces[piece]);
   gdk_bitmap_ref(pieces_mask[piece]);
   gtk_drag_set_icon_pixmap(drag_context, gtk_widget_get_colormap(main_win),
       pieces[piece], pieces_mask[piece], 5, 5);
+  game_info.src_x = x;
+  game_info.src_y = y;
 }

@@ -15,6 +15,8 @@
 
 extern game_t *game;
 
+extern struct chess_info game_info;
+
 extern GdkPixmap *board_buf;
 
 extern GtkTargetEntry *target;
@@ -71,13 +73,13 @@ on_board_button_press_event            (GtkWidget       *widget,
   x = event->x / PIXSIZE;
   y = event->y / PIXSIZE;
   /* Set the last pressed data */
-  gtk_object_set_data(GTK_OBJECT(widget), "last_from_x", GINT_TO_POINTER(x));
-  gtk_object_set_data(GTK_OBJECT(widget), "last_from_y", GINT_TO_POINTER(y));
+  gtk_object_set_data(GTK_OBJECT(widget), "from_x", GINT_TO_POINTER(x));
+  gtk_object_set_data(GTK_OBJECT(widget), "from_y", GINT_TO_POINTER(y));
 
-  if (game->board[x][y] != EMPTY)
-    gtk_drag_source_set(widget, GDK_BUTTON1_MASK, target, 1, GDK_ACTION_MOVE);
-  else
+  if (game->board[x][y] == EMPTY || (game_info.seat == 1 && game->board[x][y] & WHITE) || (game_info.seat == 0 && !(game->board[x][y] & WHITE)))
     gtk_drag_source_unset(widget);
+  else
+    gtk_drag_source_set(widget, GDK_BUTTON1_MASK, target, 1, GDK_ACTION_MOVE);
 
 
   return FALSE;
@@ -89,8 +91,8 @@ on_board_drag_begin                    (GtkWidget       *widget,
                                         gpointer         user_data)
 {
   int x, y;
-  x = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "last_from_x"));
-  y = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "last_from_y"));
+  x = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_x"));
+  y = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_y"));
   board_dnd_highlight(x, y, drag_context);
 
 }
@@ -103,7 +105,20 @@ on_board_drag_motion                   (GtkWidget       *widget,
                                         guint            time,
                                         gpointer         user_data)
 {
-  /* FIXME: Highlight possible moves */
+  int f_x, f_y, t_x, t_y, retval;
+  f_x = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_x"));
+  f_y = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_y"));
+  t_x = x / PIXSIZE;
+  t_y = y / PIXSIZE;
+  retval = cgc_valid_move(game, f_x, f_y, t_x, t_y);
+  if (retval == VALID) {
+    game_info.dest_x = t_x;
+    game_info.dest_y = t_y;
+  } else {
+    game_info.dest_x = -1;
+    game_info.dest_y = -1;
+  }
+  board_draw();
 
   return FALSE;
 }
@@ -119,15 +134,23 @@ on_board_drag_drop                     (GtkWidget       *widget,
 {
   int arg[4];
 
-  arg[0] = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "last_from_x"));
-  arg[1] = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "last_from_y"));
+  arg[0] = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_x"));
+  arg[1] = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(widget), "from_y"));
 
   arg[2] = x / PIXSIZE;
   arg[3] = y / PIXSIZE;
 
-  game_update(CHESS_EVENT_MOVE_END, arg);
+  if (cgc_valid_move(game, arg[0], arg[1], arg[2], arg[3]) == VALID)
+    game_update(CHESS_EVENT_MOVE_END, arg);
 
   gtk_drag_source_unset(widget);
+
+  game_info.src_x = -1;
+  game_info.src_y = -1;
+  game_info.dest_x = -1;
+  game_info.dest_y = -1;
+
+  board_draw();
 
 
   return FALSE;

@@ -53,4 +53,6 @@ void board_dnd_highlight( int x, int y, GdkDragContext *drag_context );
 void board_draw();
 void board_draw_bg();
 void board_draw_pieces();
+void board_draw_highlights();
+void board_draw_outline(int, int, GdkGC *);
 void board_draw_piece(int piece, int x, int y);
