@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 3885 2002-04-10 18:58:25Z jdorje $
+ * $Id: ggzdmod.h 4023 2002-04-20 04:23:11Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -235,7 +235,7 @@ typedef enum {
 	
 	/** @brief Player joined
 	 *  This event occurs when a player joins the table.  The
-	 *  player number (an int*) is passed as the event's data.
+	 *  old seat (a GGZSeat*) is passed as the event's data.
 	 *  The seat information will be updated before the event
 	 *  is invoked.
 	 *  @note This may be dropped in favor of the SEAT event. */
@@ -243,7 +243,7 @@ typedef enum {
 	
 	/** @brief Player left
 	 *  This event occurs when a player leaves the table.  The
-	 *  player number (an int*) is passed as the event's data.
+	 *  old seat (a GGZSeat*) is passed as the event's data.
 	 *  The seat information will be updated before the event
 	 *  is invoked.
 	 *  @note This may be dropped in favor of the SEAT event */
@@ -252,10 +252,10 @@ typedef enum {
 	/** @brief General seat change
 	 *  This event occurs when a seat change other than a player
 	 *  leave/join happens (which is currently impossible).  The
-	 *  player number (an int*) is passed as the event's data.  The
+	 *  old seat (a GGZSeat*) is passed as the event's data.  The
 	 *  seat information will be updated before the event is invoked.
 	 *  @note This is currently unused, but may eventually replace JOIN and LEAVE.
-	 *  @todo It is impossible to see the old seat data during the event. */
+	 */
 	GGZDMOD_EVENT_SEAT,		
 	
 	/** @brief Module log request
@@ -305,9 +305,9 @@ typedef struct GGZdMod GGZdMod;
  *  @param data Pointer to additional data for the event.
  *  The additional data will be of the following form:
  *    - GGZDMOD_EVENT_STATE: The old state (GGZdModState*)
- *    - GGZDMOD_EVENT_JOIN: The player number (int*)
- *    - GGZDMOD_EVENT_LEAVE: The player number (int*)
- *    - GGZDMOD_EVENT_SEAT: The player number (int*)
+ *    - GGZDMOD_EVENT_JOIN: The old seat (GGZSeat*)
+ *    - GGZDMOD_EVENT_LEAVE: The old seat (GGZSeat*)
+ *    - GGZDMOD_EVENT_SEAT: The old seat (GGZSeat*)
  *    - GGZDMOD_EVENT_LOG: The message string (char*)
  *    - GGZDMOD_EVENT_PLAYER_DATA: The player number (int*)
  *    - GGZDMOD_EVENT_ERROR: An error string (char*)

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 4022 2002-04-19 08:13:17Z jdorje $
+ * $Id: ggzdmod.c 4023 2002-04-20 04:23:11Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -1068,28 +1068,40 @@ void _ggzdmod_handle_launch_end(GGZdMod * ggzdmod)
 }
 
 
-/* game-side event: player join event received from ggzd */
+/* game-side event: player join event received from ggzd.  This
+   code is virtually identical to _ggzdmod_handle_seat. */
 void _ggzdmod_handle_join(GGZdMod * ggzdmod, GGZSeat seat)
 {
-	if (_ggzdmod_set_seat(ggzdmod, &seat) < 0) {
-		/* Fatal error. */
-		ggzdmod_log(ggzdmod, "GGZDMOD: _ggzdmod_handle_join: "
-				     "_ggzdmod_set_seat unsuccessful.");
-		_ggzdmod_error(ggzdmod, "Failed join.");
-	}
-	ggzdmod_log(ggzdmod, "GGZDMOD: %s on fd %d in seat %d",
-		    seat.name, seat.fd, seat.num);
-	
-	call_handler(ggzdmod, GGZDMOD_EVENT_JOIN, &seat.num);
+	GGZSeat *old_seat;
+	GGZListEntry *entry;
 
-	if (_io_respond_join(ggzdmod->fd) < 0) {
-		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
+	/* Copy current seat to old_seat */
+	entry = ggz_list_search(ggzdmod->seats, &seat);
+	if (!entry) {
+		_ggzdmod_error(ggzdmod,
+		               "GGZDMOD: Error: "
+		               "non-existant player tried to join.");
 		return;
 	}
+	old_seat = (GGZSeat*)ggz_list_get_data(entry);
+	old_seat = seat_copy(old_seat);
+      
+	/* Place the new seat into the list */
+	ggz_list_insert(ggzdmod->seats, &seat);
+	ggzdmod_log(ggzdmod, "GGZDMOD: %s on fd %d in seat %d",
+	seat.name, seat.fd, seat.num);
+	
+	/* Invoke the handler.  Most games will want to change their
+	   status to PLAYING at this point, but we leave that entirely
+	   up to them (via ggzdmod_set_state()). */
+	call_handler(ggzdmod, GGZDMOD_EVENT_JOIN, old_seat);
+      
+	/* Free old_seat */
+	seat_free(old_seat);
 
-	/* Most games will want to change their status to PLAYING
-	   at this point, but we leave that entirely up to them
-	   (via ggzdmod_set_state()). */
+	/* Send response to GGZ */
+	if (_io_respond_join(ggzdmod->fd) < 0)
+		_ggzdmod_error(ggzdmod, "GGZDMOD: Error sending data to GGZ");
 }
 
 
@@ -1099,61 +1111,79 @@ void _ggzdmod_handle_leave(GGZdMod * ggzdmod, char *name)
 	char status = -1;
 	GGZListEntry *entry;
 	GGZSeat seat;
+	GGZSeat *old_seat;
 
 	/* Set seat name, and see if we find anybody who matches */
 	seat.name = name;
 	entry = ggz_list_search_alt(ggzdmod->seats, &seat,
 				    (ggzEntryCompare)seat_find_player);
-	
-	if (entry) {
-		status = 0;
-		seat = *(GGZSeat*)ggz_list_get_data(entry);
-		ggzdmod_log(ggzdmod, "GGZDMOD: Removed %s from seat %d",
-			    seat.name, seat.num);
-			    
-		/* Reset seat to open state, and reinsert into list */
-		seat.fd = -1;
-		seat.name = NULL;
-		seat.type = GGZ_SEAT_OPEN;
-		ggz_list_insert(ggzdmod->seats, &seat);
-		call_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, &seat.num);
-	
 
-		/* Most games will want to change their status to
-		   WAITING at this point, but we leave that entirely up
-		   to them(via ggzdmod_set_state()). */
-	}
-
-	else
+	if (!entry) {
 		_ggzdmod_error(ggzdmod,
-			       "Error: non-existant player tried to leave");
+		               "GGZDMOD: Error: "
+		               "non-existant player tried to leave.");
+		return;
+	}
+              
+	status = 0;
+	seat = *(GGZSeat*)ggz_list_get_data(entry);
+	ggzdmod_log(ggzdmod, "GGZDMOD: Removed %s from seat %d",
+	           seat.name, seat.num);
+              
+	/* Copy seat to old_seat. */
+	old_seat = seat_copy(&seat);
 
+	/* Reset seat to open state, and reinsert into list */
+	seat.fd = -1;
+	seat.name = NULL;
+	seat.type = GGZ_SEAT_OPEN;
+	ggz_list_insert(ggzdmod->seats, &seat);
+
+	/* Invoke the handler.  Most games will want to change their
+	   status to WAITING at this point, but we leave that entirely
+	   up to them (via ggzdmod_set_state()). */
+	call_handler(ggzdmod, GGZDMOD_EVENT_LEAVE, old_seat);
+
+	/* Delete old_seat */
+	seat_free(old_seat);
 
 	if (_io_respond_leave(ggzdmod->fd, status) < 0)
 		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
-
 }
 
 
-/* game-side event: seat change event received from ggzd */
+/* game-side event: seat change event received from ggzd.  This code is
+   virtually identical to _ggzdmod_handle_join */
 void _ggzdmod_handle_seat(GGZdMod * ggzdmod, GGZSeat seat)
 {
-	if (_ggzdmod_set_seat(ggzdmod, &seat) < 0) {
-		/* Fatal error. */
-		ggzdmod_log(ggzdmod, "GGZDMOD: _ggzdmod_handle_seat: "
-			    "_ggzdmod_set_seat unsuccessful.");
-		_ggzdmod_error(ggzdmod, "Failed join.");
-	}
-	
-	ggzdmod_log(ggzdmod, "Seat %d is now %s (%s)", seat.num, 
-		    ggz_seattype_to_string(seat.type), seat.name);
+	GGZSeat *old_seat;
+	GGZListEntry *entry;
 
-	call_handler(ggzdmod, GGZDMOD_EVENT_SEAT, &seat.num);
- 
-	if (_io_respond_seat(ggzdmod->fd, 0) < 0) {
-		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
+
+	/* Copy current seat to old_seat */
+	entry = ggz_list_search(ggzdmod->seats, &seat);
+	if (!entry) {
+		_ggzdmod_error(ggzdmod,
+		               "GGZDMOD: Error: "
+		               "non-existant player's seat changed.");
 		return;
 	}
+	old_seat = (GGZSeat*)ggz_list_get_data(entry);
+	old_seat = seat_copy(old_seat);
+      
+	/* Place the new seat into the list */
+	ggz_list_insert(ggzdmod->seats, &seat);
+	ggzdmod_log(ggzdmod, "GGZDMOD: %s on fd %d in seat %d",
+	            seat.name, seat.fd, seat.num);
+              
+	/* Invoke the handler */
+	call_handler(ggzdmod, GGZDMOD_EVENT_SEAT, old_seat);
+      
+	/* Free old_seat */
+	seat_free(old_seat);
+ 
+	if (_io_respond_seat(ggzdmod->fd, 0) < 0)
+		_ggzdmod_error(ggzdmod, "Error sending data to GGZ");
 }
 
 
