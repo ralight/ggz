@@ -184,7 +184,7 @@ int display_init(void)
 	/* Setup the gc for our line drawing */
 	gc_line = gdk_gc_new(draw_area->window);
 	sys_colormap = gdk_colormap_get_system();
-	gdk_color_parse("RGB:FF/FF/FF", &color);
+	gdk_color_parse("White", &color);
 	gdk_colormap_alloc_color(sys_colormap, &color, FALSE, TRUE);
 	gdk_gc_set_foreground(gc_line, &color);
 	gdk_gc_set_function(gc_line, GDK_XOR);
