@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2973 2001-12-21 02:26:28Z jdorje $
+ * $Id: game.c 2977 2001-12-21 09:38:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -102,6 +102,10 @@ void game_play_card(int card_num)
 
 	status = client_send_play(card);
 
+	/* It's _really_ not our place to put the card out on the
+	   table like this.  But right now we use this information
+	   to draw things properly, so we'd better stick to it
+	   for now. */
 	ggzcards.players[player].table_card = card;
 
 	/* Draw the cards, eliminating the card in play */
@@ -337,7 +341,7 @@ void game_alert_play(int player, card_t card, int pos)
 void game_alert_table(void)
 {
 	ggz_debug("main", "Handling table update alert.");
-	table_show_all_cards();
+	table_show_cards();
 }
 
 void game_alert_trick(int player)
@@ -353,7 +357,7 @@ void game_alert_trick(int player)
 	statusbar_message(t_str);
 	g_free(t_str);
 
-	table_clear_table();
+	table_show_cards();
 }
 
 int game_get_options(int option_cnt, int *choice_cnt, int *defaults,

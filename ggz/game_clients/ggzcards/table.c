@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2961 2001-12-19 23:54:36Z jdorje $
+ * $Id: table.c 2977 2001-12-21 09:38:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -286,7 +286,7 @@ void table_redraw(void)
 
 	/* Redisplay any cards on table and in hands */
 	table_display_all_hands();
-	table_show_all_cards();
+	table_show_cards();
 
 	/* There has GOT to be a better way to force the redraw! */
 	gdk_window_hide(table->window);
@@ -518,42 +518,36 @@ void table_display_all_hands(void)
 }
 
 
-/* Exposed function to clear cards off the table area.  This happens at the
-   end of each trick, of course. */
-void table_clear_table(void)
-{
-	int i, x, y, w, h;
-	get_table_dim(&x, &y, &w, &h);
-	gdk_draw_rectangle(table_buf,
-			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
-			   TRUE, x, y, w, h);
-
-	table_show_table(x, y, w, h);
-
-	for (i = 0; i < ggzcards.num_players; i++) {
-		ggzcards.players[i].table_card = UNKNOWN_CARD;
-	}
-}
-
-
 /* Exposed function to show one player's cards on the table area. */
 void table_show_card(int player, card_t card)
 {
 	int x, y;
 
-	if (card.face == -1 || card.suit == -1)
-		return;
+	assert(card.face != -1 && card.suit != -1);
 
 	get_tablecard_pos(player, &x, &y);
-
 	draw_card(card, 0, x, y, table_buf);
+
 	table_show_table(x, y, CARDWIDTH, CARDHEIGHT);
 }
 
 /* Exposed function to show all four cards on the table area. */
-void table_show_all_cards(void)
+void table_show_cards(void)
 {
-	int p;
-	for (p = 0; p < ggzcards.num_players; p++)
-		table_show_card(p, ggzcards.players[p].table_card);
+	int x, y, w, h, p;
+
+	get_table_dim(&x, &y, &w, &h);
+	gdk_draw_rectangle(table_buf,
+			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
+			   TRUE, x, y, w, h);
+
+	for (p = 0; p < ggzcards.num_players; p++) {
+		card_t card = ggzcards.players[p].table_card;
+		if (card.suit >= 0 && card.face >= 0) {
+			get_tablecard_pos(p, &x, &y);
+			draw_card(card, 0, x, y, table_buf);
+		}
+	}
+
+	table_show_table(x, y, w, h);
 }

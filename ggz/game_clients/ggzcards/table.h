@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.h 2949 2001-12-19 09:44:56Z jdorje $
+ * $Id: table.h 2977 2001-12-21 09:38:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -32,17 +32,15 @@ void table_initialize(void);
 void table_setup(void);
 void table_handle_expose_event(GdkEventExpose *);
 void table_handle_click_event(GdkEventButton *);
-void table_set_dealer(void);
-void table_set_bidder(int);
+
+/* These functions draw cards in a player's hand. */
 void table_display_hand(int);
 void table_display_all_hands(void);
-void table_set_bid(int, int);
-void table_set_tricks(int, int);
-void table_set_score(int, int);
-void table_set_trump(void);
-void table_clear_table(void);
+
+/* These 3 functions draw the cards that are on the table. */
 void table_show_card(int player, card_t card);
-void table_show_all_cards(void);
+void table_show_cards(void);
+
 void table_redraw(void);
 
 void table_show_table(int x, int y, int w, int h);

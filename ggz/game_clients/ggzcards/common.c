@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2946 2001-12-18 23:59:37Z jdorje $
+ * $Id: common.c 2977 2001-12-21 09:38:32Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -633,15 +633,18 @@ static int handle_msg_table(void)
 /* A trick message tells you about the end of a trick (and who won). */
 static int handle_msg_trick(void)
 {
-	int p;
+	int winner, p;
 
 	/* Read the trick winner */
-	if (read_seat(game_internal.fd, &p) < 0)
+	if (read_seat(game_internal.fd, &winner) < 0)
 		return -1;
-	assert(p >= 0 && p < ggzcards.num_players);
+	assert(winner >= 0 && winner < ggzcards.num_players);
+
+	for (p = 0; p < ggzcards.num_players; p++)
+		ggzcards.players[p].table_card = UNKNOWN_CARD;
 
 	/* Update the graphics. */
-	game_alert_trick(p);
+	game_alert_trick(winner);
 
 	return 0;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 2971 2001-12-21 01:22:05Z jdorje $
+ * $Id: animation.c 2977 2001-12-21 09:38:32Z jdorje $
  *
  * Copyright (C) 2001 GGZ Development Team.
  *
@@ -164,14 +164,19 @@ void animation_stop(int success)
 	/* First, kill off the animation callback */
 	animation_delete();
 	gtk_timeout_remove(anim.cb_tag);
-	animating = 0;
 
 	if (success) {
 		/* And move the card to it's final resting place */
 		table_show_card(anim.player, anim.card);
 	} else {
-		/* The caller is assumed to have restored the card to the hand
-		   so we can redraw the full hand and should be done */
+		/* The caller is assumed to have restored the card to
+		   the hand so we can redraw the full hand and should
+		   be done.  However, if the animation was completed
+		   then the card will be drawn on the table as well,
+		   so we'll need to clean that up. */
 		table_display_hand(anim.player);
+		table_show_cards();
 	}
+
+	animating = 0;
 }
