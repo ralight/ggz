@@ -23,6 +23,7 @@
 
 // Class declaration
 class Player;
+class Spectator;
 
 // This object represents the world and all players
 class World
@@ -35,6 +36,10 @@ class World
 		void removePlayer(const char *name);
 		Player *getPlayer(const char *name);
 
+		// FIXME: Is the spectator's name that important? Transitions?
+		void addSpectator(const char *name, int fd);
+		void removeSpectator(const char *name);
+
 		int width();
 		int height();
 
@@ -44,6 +49,7 @@ class World
 		void loadPlayers();
 
 		std::list<Player> m_playerlist;
+		std::list<Spectator> m_spectatorlist;
 		int m_width;
 		int m_height;
 };

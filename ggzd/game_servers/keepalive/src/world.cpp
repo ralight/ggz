@@ -15,15 +15,12 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
-#endif
-
 // Header file
 #include "world.h"
 
 // Keepalive includes
 #include "player.h"
+#include "spectator.h"
 #include "protocol.h"
 
 // Easysock includes
@@ -34,6 +31,9 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <string>
+
+// Configuration
+#include "config.h"
 
 // Constructor
 World::World()
@@ -48,6 +48,45 @@ World::World()
 World::~World()
 {
 	m_playerlist.clear();
+}
+
+// Add a spectator
+void World::addSpectator(const char *name, int fd)
+{
+	Spectator *s = new Spectator(name, fd);
+	m_spectatorlist.push_back(*s);
+
+	// Invite player into the game world
+	ggz_write_char(s->fd(), op_spectator);
+
+	// Transmit map data to the spectator
+	ggz_write_char(s->fd(), op_map);
+	ggz_write_int(s->fd(), width());
+	ggz_write_int(s->fd(), height());
+
+	// Transmit player list to the spectator
+	ggz_write_char(s->fd(), op_player);
+	ggz_write_int(s->fd(), m_playerlist.size());
+	for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
+	{
+		ggz_write_string(s->fd(), (*it).name());
+		ggz_write_int(s->fd(), (*it).type());
+		ggz_write_int(s->fd(), (*it).x());
+		ggz_write_int(s->fd(), (*it).y());
+	}
+}
+
+// Remove a spectator again
+void World::removeSpectator(const char *name)
+{
+	for(std::list<Spectator>::iterator it = m_spectatorlist.begin(); it != m_spectatorlist.end(); it++)
+	{
+		if(!strcmp((*it).name(), name))
+		{
+			m_spectatorlist.erase(it);
+			return;
+		}
+	}
 }
 
 // Add a new player to the world

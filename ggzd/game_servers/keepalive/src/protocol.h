@@ -31,7 +31,8 @@ enum KeepaliveOpcodes
 	op_move = 107,
 	op_chat = 108,
 	op_chatted = 109,
-	op_quit = 110
+	op_quit = 110,
+	op_spectator = 111
 };
 
 enum KeepaliveTypes
@@ -56,6 +57,7 @@ enum KeepaliveTypes
 // $name, $message
 // op_quit: A player left the game
 // $name
+// opt_spectator: get into the game directly as spectator
 //
 // op_login: Attempt to get ones own character back
 // $username, $password

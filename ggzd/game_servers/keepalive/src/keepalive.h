@@ -31,6 +31,8 @@ class Keepalive
 		void hookData(void *data);
 		void hookJoin(void *data);
 		void hookLeave(void *data);
+		void hookSpectatorJoin(void *data);
+		void hookSpectatorLeave(void *data);
 		void hookState(void *data);
 		void hookError(void *data);
 		void hookLog(void *data);

@@ -15,10 +15,6 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
-#endif
-
 // Header file
 #include "keepalive.h"
 
@@ -52,6 +48,8 @@ Keepalive::Keepalive()
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LOG, hook_events);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, hook_data);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_ERROR, hook_events);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, hook_events);
+	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, hook_events);
 }
 
 // Destructor
@@ -85,21 +83,29 @@ void Keepalive::hookData(void *data)
 // Handler for joining players
 void Keepalive::hookJoin(void *data)
 {
-//std::cout << "hookJoin number: " << *(int*)data << std::endl;
 	GGZSeat seat = ggzdmod_get_seat(ggzdmod, *(int*)data);
-std::cout << "hookJoin gives us: " << seat.name << std::endl;
 	m_world->addPlayer(seat.name, seat.fd);
 }
 
 // Handler for leaving players
 void Keepalive::hookLeave(void *data)
 {
-//std::cout << "hookLeave number: " << *(int*)data << std::endl;
-	//GGZSeat seat = ggzdmod_get_seat(ggzdmod, *(int*)data);
-
-GGZSeat seat = *(GGZSeat*)data;
-std::cout << "hookLeave gives us: " << seat.name << std::endl;
+	GGZSeat seat = *(GGZSeat*)data;
 	m_world->removePlayer(seat.name);
+}
+
+// Handler for joining spectators
+void Keepalive::hookSpectatorJoin(void *data)
+{
+	GGZSpectator spectator = ggzdmod_get_spectator(ggzdmod, *(int*)data);
+	m_world->addSpectator(spectator.name, spectator.fd);
+}
+
+// Handler for leaving spectators
+void Keepalive::hookSpectatorLeave(void *data)
+{
+	GGZSpectator spectator = *(GGZSpectator*)data;
+	m_world->removeSpectator(spectator.name);
 }
 
 // HAndler for state changes
@@ -145,6 +151,15 @@ void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 			break;
 		case GGZDMOD_EVENT_ERROR:
 			me->hookError(data);
+			break;
+		case GGZDMOD_EVENT_SPECTATOR_JOIN:
+			me->hookSpectatorLeave(data);
+			break;
+		case GGZDMOD_EVENT_SPECTATOR_LEAVE:
+			me->hookSpectatorJoin(data);
+			break;
+		default:
+			// FIXME: error
 			break;
 	}
 }
