@@ -44,7 +44,6 @@
 // What's that? Right: The main function.
 int main(int argc, char **argv)
 {
-	KApplication *a;
 	KGGZBase *kggzbase;
 	KAboutData *aboutData;
 
@@ -54,10 +53,10 @@ int main(int argc, char **argv)
 		KGGZVERSION,
 		I18N_NOOP("Your most desired KDE network games launcher and chat system."),
 		KAboutData::License_GPL,
-		"(C) 2000,2001 Josef Spillner\n"
+		"(C) 2000 - 2002 Josef Spillner\n"
 		"The MindX Open Source Project",
 		I18N_NOOP("KGGZ is a frontend for the GGZ Gaming Zone"),
-		"http://mindx.sourceforge.net/games/kggz",
+		"http://ggz.sourceforge.net/clients/kggz",
 		"dr_maux@users.sourceforge.net");
 
 	// forgotten anybody? tell me.
@@ -76,9 +75,9 @@ int main(int argc, char **argv)
 	KCmdLineArgs::init(argc, argv, aboutData);
 
 	// some people don't like references, but I do
-	a = new KApplication();
+	KApplication a;
 	kggzbase = new KGGZBase();
-	a->setMainWidget(kggzbase);
-	return a->exec();
+	a.setMainWidget(kggzbase);
+	return a.exec();
 }
 
