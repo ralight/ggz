@@ -4,3 +4,4 @@ Makefile.in
 genserver
 genclient
 .deps
+.libs

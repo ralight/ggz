@@ -3,3 +3,4 @@ Makefile.in
 *.o
 io_nonblock
 .deps
+.libs
