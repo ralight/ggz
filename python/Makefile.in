@@ -1,22 +1,85 @@
-prefix = /usr/local
+prefix = @prefix@
 version = 0.0.10
 
-all:
+ggz-config = @prefix@/bin/ggz-config
+
+ggzmod = @enable_ggzmod@
+ggzdmod = @enable_ggzdmod@
+ggzcore = @enable_ggzcore@
+ggzchess = @enable_ggzchess@
+rsvgsdl = @enable_rsvgsdl@
+
+wrappers =
+instwrappers =
+
+ifeq ($(ggzmod),yes)
+	wrappers += ggzmod-build
+	instwrappers += ggzmod-install
+endif
+ifeq ($(ggzdmod),yes)
+	wrappers += ggzdmod-build
+	instwrappers += ggzdmod-install
+endif
+ifeq ($(ggzcore),yes)
+	wrappers += ggzcore-build
+	instwrappers += ggzcore-install
+endif
+ifeq ($(rsvgsdl),yes)
+	wrappers += rsvgsdl-build
+	instwrappers += rsvgsdl-install
+endif
+ifeq ($(ggzchess),yes)
+	wrappers += ggzchess-build
+	instwrappers += ggzchess-install
+endif
+
+all: $(wrappers)
+	@echo "ready with building ggz-python"
+
+install: $(instwrappers) install-rest
+	@echo "ready with installation of ggz-python"
+
+ggzmod-build:
 	@echo Building library PyGGZMod
 	cd pyggzmod && python setup.py build
+
+ggzdmod-build:
 	@echo Building library PyGGZdMod
 	cd pyggzdmod && python setup.py build
+
+ggzcore-build:
 	@echo Building library PyGGZCoreSimple
 	cd pyggzcore && python setup.py build
 
-install:
+rsvgsdl-build:
+	@echo Building library PyRsvgSDL
+	cd pyrsvgsdl && python setup.py build
+
+ggzchess-build:
+	@echo Building library PyGGZChess
+	cd pyggzchess && python setup.py build
+
+ggzmod-install:
 	@echo Installing library PyGGZMod
 	cd pyggzmod && python setup.py install --prefix=$(DESTDIR)$(prefix)
+
+ggzdmod-install:
 	@echo Installing library PyGGZdMod
 	cd pyggzdmod && python setup.py install --prefix=$(DESTDIR)$(prefix)
+
+ggzcore-install:
 	@echo Installing library PyGGZCoreSimple
 	cd pyggzcore && python setup.py install --prefix=$(DESTDIR)$(prefix)
 
+rsvgsdl-install:
+	@echo Installing library PyRsvgSDL
+	cd pyrsvgsdl && python setup.py install --prefix=$(DESTDIR)$(prefix)
+
+ggzchess-install:
+	@echo Installing library PyGGZChess
+	cd pyggzchess && python setup.py install --prefix=$(DESTDIR)$(prefix)
+
+install-rest:
 	@echo Installing game Dresden
 	mkdir -p $(DESTDIR)$(prefix)/bin/
 	cp dresden/dresden.py $(DESTDIR)$(prefix)/bin
@@ -26,7 +89,7 @@ install:
 	@echo Installing game Escape/SDL
 	mkdir -p $(DESTDIR)$(prefix)/bin/
 	cp escape-sdl/escape-sdl $(DESTDIR)$(prefix)/bin
-	ggz-config --install --force --modfile=escape-sdl/module.dsc
+	$(ggz-config) --install --force --modfile=escape-sdl/module.dsc
 
 	@echo Installing game Xadrez Chines
 	mkdir -p $(DESTDIR)$(prefix)/bin/
@@ -35,15 +98,19 @@ install:
 	mkdir -p $(DESTDIR)$(prefix)/lib/site-python/
 	cp xadrez-chines/xadrezlib.py $(DESTDIR)$(prefix)/lib/site-python
 	mkdir -p $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/
-	cp xadrez-chines/*.png $(DESTDIR)$(prefix)/share/ggz/xadrez-chines
-	ggz-config --install --force --modfile=xadrez-chines/module.dsc
+	mkdir -p $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/themes/
+	mkdir -p $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/themes/dark/
+	mkdir -p $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/themes/orig/
+	cp xadrez-chines/themes/dark/*.png $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/themes/dark
+	cp xadrez-chines/themes/orig/*.png $(DESTDIR)$(prefix)/share/ggz/xadrez-chines/themes/orig
+	$(ggz-config) --install --force --modfile=xadrez-chines/module.dsc
 
 	@echo Installing external game GNU Go support files
 	mkdir -p $(DESTDIR)$(prefix)/bin/
 	cp go/goclient $(DESTDIR)$(prefix)/bin
 	cp go/goserver $(DESTDIR)$(prefix)/bin
 	cp go/goclient.helper $(DESTDIR)$(prefix)/bin
-	ggz-config --install --force --modfile=go/module.dsc
+	$(ggz-config) --install --force --modfile=go/module.dsc
 
 	@echo Installing core client Vibora
 	mkdir -p $(DESTDIR)$(prefix)/bin/
