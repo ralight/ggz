@@ -116,6 +116,9 @@ class GGZCoreRoom
 		/**
 		 * Leave a table again. */
 		int leaveTable(int force);
+		/**
+		 * Leave a table as spectator. */
+		int leaveTableSpectator();
 
 		/**
 		 * Invoke player listing. */

@@ -194,6 +194,15 @@ int GGZCoreRoom::leaveTable(int force)
 	return ggzcore_room_leave_table(m_room, force);
 }
 
+int GGZCoreRoom::leaveTableSpectator()
+{
+#ifdef KGGZ_PATCH_SPECTATORS
+	return ggzcore_room_leave_table_spectator(m_room);
+#else
+	return 0;
+#endif
+}
+
 int GGZCoreRoom::sendData(char* buffer)
 {
 	//return ggzcore_room_send_game_data(m_room, buffer);

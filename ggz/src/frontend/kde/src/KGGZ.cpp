@@ -1667,7 +1667,8 @@ void KGGZ::eventLeaveTable(int force)
 	if((kggzserver) && (kggzserver->state() == GGZ_STATE_AT_TABLE))
 	{
 		KGGZDEBUG("**** Still at table (alert) -> leaving now with force %i!\n", force);
-		kggzroom->leaveTable(force);
+		if(m_gameinfo->type() == KGGZGameInfo::typespectator) kggzroom->leaveTableSpectator();
+		else kggzroom->leaveTable(force);
 	}
 
 	//if((kggzserver) && (force))
