@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h.in 5850 2004-02-08 21:30:50Z jdorje $
+ * $Id: ggz.h.in 5856 2004-02-08 23:46:09Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -1513,7 +1513,10 @@ int ggz_read_string_alloc(const int sock, char **data);
  */
 void ggz_read_string_alloc_or_die(const int sock, char **data);
 
+/* ggz_write_fd/ggz_read_fd are not supported on all systems. */
+#define GGZ_HAVE_SENDMSG @GGZ_HAVE_SENDMSG@
 
+#if GGZ_HAVE_SENDMSG
 /** @brief Write a file descriptor to the given (local) socket.
  *
  *  ggz_write_fd and ggz_read_fd handle the rather tricky task of sending
@@ -1537,7 +1540,7 @@ int ggz_write_fd(const int sock, int sendfd);
  *  @return 0 on success, -1 on error.
  **/
 int ggz_read_fd(const int sock, int *recvfd);
-
+#endif
 
 /** @brief Write a sequence of bytes to the socket.
  *

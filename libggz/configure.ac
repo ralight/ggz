@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5854 2004-02-08 22:56:38Z jdorje $
+dnl $Id: configure.ac 5856 2004-02-08 23:46:09Z jdorje $
 
 AC_INIT([GGZ common libraries], [0.0.8], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -67,6 +67,14 @@ CFLAGS=$save_cflags
 # If not, define our own enumeration.
 AC_CHECK_HEADER([syslog.h], [GGZ_HAVE_SYSLOG_H="1"], [GGZ_HAVE_SYSLOG_H="0"])
 AC_SUBST(GGZ_HAVE_SYSLOG_H)
+
+
+# Check for sendmsg
+# =================
+# If sendmsg() is present, we can send file descriptors over a local socket
+# via ggz_write_fd.  If not we disable this functionality.
+AC_CHECK_FUNC([sendmsg], [GGZ_HAVE_SENDMSG="1"], [GGZ_HAVE_SENDMSG="0"])
+AC_SUBST(GGZ_HAVE_SENDMSG)
 
 
 # Check for PF_LOCAL/PF_UNIX

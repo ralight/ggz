@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: libeasysock
  * Date: 4/16/98
- * $Id: easysock.c 5840 2004-02-08 05:50:10Z jdorje $
+ * $Id: easysock.c 5856 2004-02-08 23:46:09Z jdorje $
  *
  * A library of useful routines to make life easier while using 
  * sockets
@@ -563,6 +563,7 @@ int ggz_readn(const int sock, void *vptr, size_t n)
 }
 
 
+#if GGZ_HAVE_SENDMSG
 int ggz_write_fd(int sock, int sendfd)
 {
         struct msghdr msg;
@@ -699,4 +700,4 @@ int ggz_read_fd(int sock, int *recvfd)
 	ggz_debug(GGZ_SOCKET_DEBUG, "Received \"%d\" : fd.", *recvfd);
         return 0;
 }
-
+#endif
