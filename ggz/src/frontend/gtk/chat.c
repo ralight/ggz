@@ -800,20 +800,17 @@ void chat_list_ignore(void)
 
 const gchar *chat_complete_name(gchar *name)
 {
-	GtkWidget *tmp;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
-	gchar *fullname = NULL;
 	gchar *returnname = NULL;
-	gint currow;
 	gint multiple = FALSE;
 	gint first = FALSE;
-	guint8 space;
 
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_clist");
-	for (currow=0; currow<GTK_CLIST(tmp)->rows; currow++)
-	{
-		gtk_clist_get_pixtext(GTK_CLIST(tmp), currow, 2, &fullname, &space, &pixmap, &mask);
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
+	int num = ggzcore_room_get_num_players(room);
+	int i;
+
+	for (i = 0; i < num; i++) {
+		GGZPlayer *player = ggzcore_room_get_nth_player(room, i);
+		char* fullname = ggzcore_player_get_name(player);
 
 		if (strncasecmp(fullname, name, strlen(name)) == 0)
 		{
