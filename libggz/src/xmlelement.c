@@ -29,7 +29,6 @@
 #include <string.h>
 
 #include "ggz.h"
-#include "msg.h"
 #include "memory.h"
 
 static void ggz_xmlelement_do_free(GGZXMLElement *element);

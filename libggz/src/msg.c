@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 2583 2001-10-22 00:24:18Z bmh $
+ * $Id: msg.c 2592 2001-10-23 04:06:14Z bmh $
  *
  * Debug and error messages
  *
@@ -35,8 +35,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "msg.h"
-
+#include "ggz.h"
 
 /* Workhorse function for actually outputting messages */
 static void err_doit(int flag, const char *prefix, const char *fmt, va_list ap);
@@ -44,88 +43,82 @@ static void err_doit(int flag, const char *prefix, const char *fmt, va_list ap);
 /* Debug file pointer */
 static FILE * debug_file;
 
-/* Debugging levels enabled */
-static GGZDebugLevel debug_levels;
+/* List of registered types */
+static GGZList *debug_types;
 
 
-void _ggz_debug(GGZDebugLevel level, const char *fmt, ...)
+void ggz_debug_init(const char **types, const char* file)
+{
+	int i;
+	
+	/* Setup list of debugging types */
+	debug_types = ggz_list_create(ggz_list_compare_str,
+				      ggz_list_create_str,
+				      ggz_list_destroy_str,
+				      0);
+				      
+	
+	if (file && (debug_file = fopen(file, "a")) == NULL)
+		ggz_error_sys_exit("fopen() to open %s", file);
+
+
+	/* Parse through the provided types */
+	if (types) {
+		for (i = 0; types[i]; i++)
+			ggz_debug_enable_type(types[i]);
+	}
+}
+
+
+void ggz_debug_enable_type(const char *type)
+{
+	if (!debug_types || !type)
+		return;
+
+	ggz_list_insert(debug_types, (char*)type);
+}
+
+
+void ggz_debug_disable_type(const char *type)
+{
+	GGZListEntry *entry;
+
+	if (!debug_types || !type)
+		return;
+	
+	entry = ggz_list_search(debug_types, (char*)type);
+
+	if (entry)
+		ggz_list_delete_entry(debug_types, entry);
+}
+
+
+void ggz_debug(const char *type, const char *fmt, ...)
 {
 #ifdef DEBUG
 	va_list ap;
-	char *prefix;
+	const char *prefix = NULL;
   
-	/* Only display information if that level was enabled */
-	if (debug_levels & level) {
-
-		switch (level) {
-		case GGZ_DBG_EVENT:
-			prefix = "EVENT";
-			break;
-		case GGZ_DBG_NET:
-			prefix = "NET";
-			break;
-		case GGZ_DBG_USER:
-			prefix = "USER";
-			break;
-		case GGZ_DBG_SERVER:
-			prefix = "SERVER";
-			break;
-		case GGZ_DBG_CONF:
-			prefix = "CONF";
-			break;
-		case GGZ_DBG_POLL:
-			prefix = "POLL";
-			break;
-		case GGZ_DBG_STATE:
-			prefix = "STATE";
-			break;
-		case GGZ_DBG_PLAYER:
-			prefix = "PLAYER";
-			break;
-		case GGZ_DBG_ROOM:
-			prefix = "ROOM";
-			break;
-		case GGZ_DBG_TABLE:
-			prefix = "TABLE";
-			break;
-		case GGZ_DBG_GAMETYPE:
-			prefix = "GAMETYPE";
-			break;
-		case GGZ_DBG_HOOK:
-			prefix = "HOOK";
-			break;
-		case GGZ_DBG_INIT:
-			prefix = "INIT";
-			break;
-		case GGZ_DBG_MEMORY:
-			prefix = "MEMORY";
-			break;
-		case GGZ_DBG_MEMDETAIL:
-			prefix = "MEMDETAIL";
-			break;
-		case GGZ_DBG_MODULE:
-			prefix = "MODULE";
-			break;
-		case GGZ_DBG_GAME:
-			prefix = "GAME";
-			break;
-		case GGZ_DBG_XML:
-			prefix = "XML";
-			break;
-		default:
-			prefix = "DEBUG";
-			break;
-		}
-
+	/* If type list exists, see if type was enabled...*/
+	if (debug_types) {
+		if (ggz_list_search(debug_types, (char*)type))
+			prefix = type;
+	}
+	/* ... otherwise just do generic debugging output*/
+	else
+		prefix = "GGZ";
+	
+	if (prefix) {
 		va_start(ap, fmt);
 		err_doit(0, prefix, fmt, ap);
 		va_end(ap);
 	}
+	
 #endif
 }
 
 
-void _ggz_error_sys(const char *fmt, ...)
+void ggz_error_sys(const char *fmt, ...)
 {
 	va_list ap;
 
@@ -135,7 +128,7 @@ void _ggz_error_sys(const char *fmt, ...)
 }
 
 
-void _ggz_error_sys_exit(const char *fmt, ...)
+void ggz_error_sys_exit(const char *fmt, ...)
 {
 	va_list ap;
 
@@ -147,7 +140,7 @@ void _ggz_error_sys_exit(const char *fmt, ...)
 }
 
 
-void _ggz_error_msg(const char *fmt, ...)
+void ggz_error_msg(const char *fmt, ...)
 {
 	va_list ap;
 
@@ -157,7 +150,7 @@ void _ggz_error_msg(const char *fmt, ...)
 }
 
 
-void _ggz_error_msg_exit(const char *fmt, ...)
+void ggz_error_msg_exit(const char *fmt, ...)
 {
 	va_list ap;
 
@@ -169,22 +162,21 @@ void _ggz_error_msg_exit(const char *fmt, ...)
 }
 
 
-void _ggz_debug_init(GGZDebugLevel levels, const char* file)
+void ggz_debug_cleanup(void)
 {
-	debug_levels = levels;
-
-	if ((file) && (strcmp(file, "stderr") != 0))
-		if ( (debug_file = fopen(file, "a")) == NULL)
-			_ggz_error_sys_exit("fopen() to open %s", file);
-}
-
-
-void _ggz_debug_cleanup(void)
-{
-	if (debug_file)
+	GGZList *list;
+	
+	if (debug_file) {
 		fclose(debug_file);
+		debug_file = NULL;
+	}
+	if (debug_types) {
+		/* Turn off debug handling by setting types to NULL */
+		list = debug_types;
+		debug_types = NULL;
+		ggz_list_free(list);
+	}
 }
-
 
 static void err_doit(int flag, const char* prefix, const char *fmt, va_list ap)
 {
@@ -213,6 +205,7 @@ static void err_doit(int flag, const char* prefix, const char *fmt, va_list ap)
 	if (debug_file)
 		fputs(buf, debug_file);
 	else {
+		/* Use stderr if no file is given */
 		fflush(stdout);
 		fputs(buf, stderr);
 	}
@@ -220,3 +213,23 @@ static void err_doit(int flag, const char* prefix, const char *fmt, va_list ap)
 	fflush(NULL);
 }
 
+
+/* For debug purposes only */
+void ggz_debug_debug(void) 
+{
+	GGZListEntry *entry;
+	
+	printf("Debugging subsystem status\n");
+	printf("Debug file is %p\n", debug_file);
+	if (debug_types) {
+		printf("%d debugging types defined:\n", ggz_list_count(debug_types));
+		for (entry = ggz_list_head(debug_types);
+		     entry != NULL;
+		     entry = ggz_list_next(entry)) {
+			printf("-- %s\n", (char*)ggz_list_get_data(entry));
+		}
+
+	}
+	else 
+		printf("No debugging types list\n");
+}

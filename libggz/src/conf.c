@@ -35,7 +35,6 @@
 #include <fcntl.h>
 
 #include "ggz.h"
-#include "msg.h"
 
 
 /* The majority of this code deals with maintaining a set of lists to
@@ -214,7 +213,7 @@ int conf_read_list(int handle, const char *section, const char *key,
 			}
 
 			if((tmp2 = malloc(p-tmp+1)) == NULL)
-				_ggz_error_sys_exit("malloc failed in conf_read_list");
+				ggz_error_sys_exit("malloc failed in conf_read_list");
 			(*argvp)[index] = strncpy(tmp2, tmp, p - tmp);
 			tmp2[p-tmp] = '\0';
 			s1 = s2 = (*argvp)[index++];
@@ -264,8 +263,7 @@ int conf_write_string(int handle, const char *section,
 
 	/* Is this confio writeable? */
 	if(!f_data->writeable) {
-		_ggz_debug(GGZ_DBG_CONF,
-		      "ggzcore_confio_write_string: file is read-only");
+		ggz_debug("CONF", "ggz_conf_write_string: file is read-only");
 		return -1;
 	}
 
@@ -274,8 +272,8 @@ int conf_write_string(int handle, const char *section,
 	if(s_entry == NULL) {
 		/* We need to create a new [Section] */
 		if(ggz_list_insert(f_data->section_list, (void*)section) < 0) {
-			_ggz_debug(GGZ_DBG_CONF,
-			      "ggzcore_confio_write_string: insertion error");
+			ggz_debug("CONF",
+				  "ggz_conf_write_string: insertion error");
 			return -1;
 		}
 		s_entry = ggz_list_search(f_data->section_list, (void*)section);
@@ -286,8 +284,8 @@ int conf_write_string(int handle, const char *section,
 	e_data.key = (char*)key;
 	e_data.value = (char*)value;
 	if(ggz_list_insert(s_data->entry_list, &e_data) < 0) {
-		_ggz_debug(GGZ_DBG_CONF,
-			      "ggzcore_confio_write_string: insertion error");
+		ggz_debug("CONF", "ggz_conf_write_string: insertion error");
+			  
 		return -1;
 	}
 
@@ -378,7 +376,7 @@ int conf_remove_section(int handle, const char *section)
 
 	/* Is this confio writeable? */
 	if(!f_data->writeable) {
-		_ggz_debug(GGZ_DBG_CONF,
+		ggz_debug("CONF",
 		      "ggzcore_confio_remove_section: file is read-only");
 		return -1;
 	}
@@ -418,7 +416,7 @@ int conf_remove_key(int handle, const char *section, const char *key)
 
 	/* Is this confio writeable? */
 	if(!f_data->writeable) {
-		_ggz_debug(GGZ_DBG_CONF,
+		ggz_debug("CONF",
 		      "ggzcore_confio_remove_key: file is read-only");
 		return -1;
 	}
@@ -466,14 +464,14 @@ int conf_commit(int handle)
 
 	/* Is this confio writeable? */
 	if(!f_data->writeable) {
-		_ggz_debug(GGZ_DBG_CONF,
+		ggz_debug("CONF",
 		      "ggzcore_confio_commit: file is read-only");
 		return -1;
 	}
 
 	/* Open our configuration file for writing */
 	if((c_file = fopen(f_data->path, "w")) == NULL) {
-		_ggz_debug(GGZ_DBG_CONF, "Unable to write config file %s",
+		ggz_debug("CONF", "Unable to write config file %s",
 			      f_data->path);
 		return -1;
 	}
@@ -568,12 +566,12 @@ int	conf_parse(const char *path, const unsigned char options)
 	opt_rdwr = ((options & CONF_RDWR) == CONF_RDWR);
 
 	if(opt_rdonly && (opt_rdwr || opt_create)) {
-		_ggz_debug(GGZ_DBG_CONF,
+		ggz_debug("CONF",
 			      "ggzcore_confio_parse: Invalid options");
 		return -1;
 	}
 	if(!opt_rdonly && !opt_rdwr) {
-		_ggz_debug(GGZ_DBG_CONF,
+		ggz_debug("CONF",
 			      "ggzcore_confio_parse: Invalid options");
 		return -1;
 	}
@@ -588,7 +586,7 @@ int	conf_parse(const char *path, const unsigned char options)
 			if(t_file != -1)
 				close(t_file);
 			else {
-				_ggz_error_sys("Unable to create file %s", path);
+				ggz_error_sys("Unable to create file %s", path);
 				return -1;
 			}
 		}
@@ -596,11 +594,11 @@ int	conf_parse(const char *path, const unsigned char options)
 
 	/* Check read or writablity of file */
 	if(opt_rdonly && access(path, R_OK)) {
-		_ggz_error_sys("Unable to read file %s", path);
+		ggz_error_sys("Unable to read file %s", path);
 		return -1;
 	}
 	if(opt_rdwr && access(path, R_OK | W_OK)) {
-		_ggz_error_sys("Unable to read or write file %s", path);
+		ggz_error_sys("Unable to read or write file %s", path);
 		return -1;
 	}
 
@@ -660,7 +658,7 @@ static GGZList * file_parser(const char *path)
 	/* Open the input config file */
 	if((c_file = fopen(path, "r")) == NULL) {
 		/* This should be impossible now, due to checks made earlier? */
-		_ggz_error_sys("Unable to read file %s", path);
+		ggz_error_sys("Unable to read file %s", path);
 		return NULL;
 	}
 
@@ -681,11 +679,11 @@ static GGZList * file_parser(const char *path)
 				varname[strlen(varname)-1] = '\0';
 				varname++;
 				if(ggz_list_insert(s_list, varname) < 0)
-					_ggz_error_sys_exit("list insert error: file_parser");
+					ggz_error_sys_exit("list insert error: file_parser");
 				s_entry = ggz_list_search(s_list, varname);
 				s_data = ggz_list_get_data(s_entry);
 			} else
-				_ggz_error_msg("Syntax error, %s (line %d)",
+				ggz_error_msg("Syntax error, %s (line %d)",
 					 path, linenum);
 			continue;
 		}
@@ -693,14 +691,14 @@ static GGZList * file_parser(const char *path)
 		/* We have a valid varname/varvalue, add them to entry list */
 		if(!s_data) {
 			/* We haven't seen a [SectionID] yet :( */
-			_ggz_error_msg("Syntax error, %s (line %d)",
+			ggz_error_msg("Syntax error, %s (line %d)",
 				 path, linenum);
 			continue;
 		}
 		e_data->key = varname;
 		e_data->value = varvalue;
 		if(ggz_list_insert(s_data->entry_list, e_data) < 0)
-			_ggz_error_sys_exit("list insert error: file_parser");
+			ggz_error_sys_exit("list insert error: file_parser");
 	}
 
 	/* Cleanup after ourselves */
@@ -801,7 +799,7 @@ static conf_file_t * get_file_data(int handle)
 		f_entry = ggz_list_next(f_entry);
 	}
 	if(f_entry == NULL) {
-		_ggz_debug(GGZ_DBG_CONF,
+		ggz_debug("CONF",
 			      "get_file_data:  Invalid conf handle requested");
 		f_data = NULL;
 	}

@@ -29,7 +29,6 @@
 #include <string.h>
 
 #include "ggz.h"
-#include "msg.h"
 
 
 /* This is used basically as a LIFO stack, on the basis that most malloc/free
@@ -52,7 +51,7 @@ static void * _ggz_allocate(const unsigned int size, char *tag, int line)
 	/* Try to allocate our memory */
 	newmem = malloc(sizeof(_memptr) + size);
 	if(newmem == NULL)
-		_ggz_error_sys_exit("Memory allocation failure: %s/%d", tag, 
+		ggz_error_sys_exit("Memory allocation failure: %s/%d", tag, 
 				    line);
 				    
 
@@ -66,7 +65,7 @@ static void * _ggz_allocate(const unsigned int size, char *tag, int line)
 	/* Put this at the head of the list */
 	alloc = newmem;
 
-	_ggz_debug(GGZ_DBG_MEMDETAIL, "%d bytes allocated at %p from %s/%d\n",
+	ggz_debug("MEMDETAIL", "%d bytes allocated at %p from %s/%d",
 		   size, newmem->ptr, tag, line);
 
 	return newmem->ptr;
@@ -100,14 +99,14 @@ void * _ggz_realloc(const void *ptr, const unsigned size,char *tag,int line)
 
 	/* This memory was never allocated via ggz */
 	if(targetmem == NULL) {
-		_ggz_error_msg("Memory reallocation <%p> failure: %s/%d",
+		ggz_error_msg("Memory reallocation <%p> failure: %s/%d",
 			       ptr, tag, line);
 		return NULL;
 	}
 
 	/* Try to allocate our memory */
-	_ggz_debug(GGZ_DBG_MEMDETAIL,
-		   "Reallocating %d bytes at %p to %d bytes from %s/%d\n",
+	ggz_debug("MEMDETAIL",
+		   "Reallocating %d bytes at %p to %d bytes from %s/%d",
 		   targetmem->size, targetmem->ptr, size, tag, line);
 	new = _ggz_allocate(size, tag, line);
 
@@ -141,7 +140,7 @@ int _ggz_free(const void *ptr, char *tag, int line)
 
 	/* This memory was never allocated via ggz */
 	if(targetmem == NULL) {
-		_ggz_error_msg("Memory deallocation <%p> failure: %s/%d",
+		ggz_error_msg("Memory deallocation <%p> failure: %s/%d",
 			       ptr, tag, line);
 		return -1;
 	}
@@ -152,8 +151,7 @@ int _ggz_free(const void *ptr, char *tag, int line)
 	else
 		prev->next = targetmem->next;
 
-	_ggz_debug(GGZ_DBG_MEMDETAIL,
-		   "%d bytes deallocated at %p from %s/%d\n",
+	ggz_debug("MEMDETAIL", "%d bytes deallocated at %p from %s/%d",
 		   targetmem->size, ptr, tag, line);
 
 	free(targetmem);
@@ -166,23 +164,23 @@ int ggz_memory_check(void)
 {
 	struct _memptr *memptr;
 
-	_ggz_debug(GGZ_DBG_MEMORY, "*** Memory Leak Check ***");
+	ggz_debug("MEMCHECK", "*** Memory Leak Check ***");
 	if(alloc != NULL) {
 		memptr = alloc;
 		while(memptr != NULL) {
-			_ggz_debug(GGZ_DBG_MEMORY,
-				   "%d bytes left allocated at %p by %s/%d\n",
+			ggz_debug("MEMCHECK",
+				   "%d bytes left allocated at %p by %s/%d",
 				   memptr->size, memptr->ptr,
 				   memptr->tag, memptr->line);
 			memptr = memptr->next;
 		}
-		_ggz_debug(GGZ_DBG_MEMORY, "*** End Memory Leak Check ***");
+		ggz_debug("MEMCHECK", "*** End Memory Leak Check ***");
 
 		return -1;
 	}
 
-	_ggz_debug(GGZ_DBG_MEMORY, "All clean!");
-	_ggz_debug(GGZ_DBG_MEMORY, "*** End Memory Leak Check ***");
+	ggz_debug("MEMCHECK", "All clean!");
+	ggz_debug("MEMCHECK", "*** End Memory Leak Check ***");
 
 	return 0;
 }
@@ -194,15 +192,15 @@ char * _ggz_strdup(const char *src, char *tag, int line)
 	char *new;
 
 	if(src == NULL) {
-		_ggz_error_msg("_ggz_strdup - NULL pointer from %s/%d",
+		ggz_error_msg("_ggz_strdup - NULL pointer from %s/%d",
 			       tag, line);
 		return NULL;
 	}
 
 	len = strlen(src);
 
-	_ggz_debug(GGZ_DBG_MEMDETAIL,
-		   "Allocating memory for length %d string from %s/%d\n",
+	ggz_debug("MEMDETAIL",
+		   "Allocating memory for length %d string from %s/%d",
 		   len+1, tag, line);
 
 	new = _ggz_allocate(len+1, tag, line);
