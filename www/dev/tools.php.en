@@ -1,0 +1,70 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Tools used in the GGZ development process</b><br>
+The GGZ build system depends on a number of tools. Many of these change
+over time, and it is often desired to keep an overview of what's going
+on.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>GCC (3.4)</i><br>
+<a href="http://gcc.gnu.org">Website</a>,
+<a href="http://gcc.gnu.org/gcc-3.4/changes.html">Upgrading</a>
+
+</td></tr>
+<tr><td valign="top">
+
+<i>Autoconf (2.59)</i><br>
+<a href="http://www.gnu.org/software/autoconf/">Website</a>,
+<a href="http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_chapter/autoconf_toc.html">Manual</a> (outdated),
+<a href="http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_chapter/autoconf_3.html#SEC14">Upgrading</a>
+
+</td></tr>
+<tr><td valign="top">
+
+<i>Automake (1.9.x)</i><br>
+<a href="http://www.gnu.org/software/automake/">Website</a>,
+<a href="http://sources.redhat.com/automake/automake.html">Manual</a>,
+<a href="http://sources.redhat.com/cgi-bin/cvsweb.cgi/automake/NEWS?rev=1.290&content-type=text/x-cvsweb-markup&cvsroot=automake">Upgrading</a>
+
+</td></tr>
+<tr><td valign="top">
+
+<i>Libtool (1.5.x)</i><br>
+<a href="http://www.gnu.org/software/libtool/">Website</a>,
+<a href="http://www.gnu.org/software/libtool/manual.html">Manual</a>
+
+</td></tr>
+<tr><td valign="top">
+
+<i>Gettext (0.14.x)</i><br>
+<a href="http://www.gnu.org/software/gettext/">Website</a>,
+<a href="http://www.gnu.org/software/gettext/manual/gettext.html">Manual</a> (outdated)
+
+</td></tr>
+<tr><td valign="top">
+
+<i>CVS (0.12.x)</i><br>
+<a href="https://www.cvshome.org/">Website</a>,
+<a href="https://www.cvshome.org/docs/manual/cvs-1.12.9/cvs.html">Manual</a>,
+<a href="https://www.cvshome.org/docs/manual/cvs-1.12.9/cvs_20.html">Upgrading</a>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+
