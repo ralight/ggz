@@ -62,6 +62,7 @@ dnl Compiling Options
 dnl =================
 AC_ARG_ENABLE(debug,           [  --enable-debug          Enable debugging ],, enable_debug=no)
 AC_ARG_ENABLE(debug-gdb,       [  --enable-debug-gdb      enable GDB debugging ],,enable_debug_gdb=no)
+AC_ARG_ENABLE(gettext,         [  --disable-gettext       disable gettext  ], enable_gettext=no, enable_gettext=yes)
 
 dnl Check for header files
 dnl ======================
@@ -76,6 +77,13 @@ dnl  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}
 dnl else
 dnl  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
 dnl fi
+
+if test "$enable_gettext" = yes; then
+	CFLAGS="$CFLAGS -DENABLE_NLS"
+	allsubdirs="$subdirs po"
+else
+	allsubdirs="$subdirs"
+fi
 
 dnl Check for typedefs, structures, and compiler characteristics
 dnl ============================================================
@@ -111,7 +119,6 @@ AC_CHECK_LIB(ggzcore, ggzcore_server_new,
     AC_CHECK_HEADER(ggzcore.h, LDADD="$LDADD -lggzcore -leasysock",
         AC_MSG_ERROR(*** Cannot find ggzcore.h header)),
 AC_MSG_ERROR(*** Cannot find ggzcore library ), -leasysock)
-
 
 
 dnl Use -Wall if we have gcc.
@@ -150,7 +157,7 @@ AC_DEFINE_UNQUOTED(GGZDATADIR, "${ggzdatadir}")
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
-SUBDIRS=$subdirs
+SUBDIRS=$allsubdirs
 
 AC_SUBST(LDADD)
 AC_SUBST(subdirs)
@@ -183,6 +190,7 @@ AC_OUTPUT([Makefile
 	   chess/Makefile
 	   chess/module.dsc
 	   chess/libcgc/Makefile
+	   po/Makefile
 	   ])
 
 

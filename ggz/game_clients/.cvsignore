@@ -3,6 +3,7 @@ ABOUT-NLS
 Makefile
 Makefile.in
 aclocal.m4
+build-stamp
 confdefs.h
 config.cache
 config.guess
