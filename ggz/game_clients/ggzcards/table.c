@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4654 2002-09-22 23:48:23Z jdorje $
+ * $Id: table.c 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -50,21 +50,22 @@
 GtkRcStyle *fixed_font_style = NULL;
 
 /* Table data */
-GtkWidget *table = NULL;		/* widget containing the whole table */
-GtkWidget *table_drawing_area = NULL;	/* widget for actually drawing the table on */
+GtkWidget *table = NULL;	/* widget containing the whole table */
+GtkWidget *table_drawing_area = NULL;	/* widget for actually drawing the
+					   table on */
 GtkStyle *table_style;		/* Style for the table */
 static GdkPixmap *table_buf = NULL;	/* backing store for the table */
 
 static GtkWidget *player_list = NULL;
 
-static const char* player_names[MAX_NUM_PLAYERS] = {NULL};
-static const char* player_messages[MAX_NUM_PLAYERS] = {NULL};
+static const char *player_names[MAX_NUM_PLAYERS] = { NULL };
+static const char *player_messages[MAX_NUM_PLAYERS] = { NULL };
 
 static gboolean table_ready = FALSE;
 
-/* The card currently selected from the playing hand.  Note that this
-   has a slightly different meaning depending on whether
-   preferences.collapse_hand is set or not. */
+/* The card currently selected from the playing hand.  Note that this has a
+   slightly different meaning depending on whether preferences.collapse_hand
+   is set or not. */
 static int selected_card = -1;
 
 void table_show_table(int x, int y, int w, int h);
@@ -76,12 +77,11 @@ static void table_card_clicked(int card_num);
 static void table_display_all_hands(int write_to_screen);
 
 
-void table_draw_table(GdkPixmap *pixmap,
-		      int x, int y, int w, int h)
+void table_draw_table(GdkPixmap * pixmap, int x, int y, int w, int h)
 {
 	if (pixmap == NULL)
 		pixmap = table_drawing_area->window;
-		
+
 	/* Display the buffer */
 	gdk_draw_pixmap(pixmap,
 			table_style->fg_gc[GTK_WIDGET_STATE(table)],
@@ -119,7 +119,7 @@ static void draw_card_box(int p)
 static void draw_card_areas(int write_to_screen)
 {
 	int p;
-	
+
 	assert(table_ready && game_started);
 	assert(!write_to_screen);
 
@@ -133,16 +133,16 @@ static void draw_card_areas(int write_to_screen)
 static void table_clear_table(int write_to_screen)
 {
 	assert(table_buf && table_style);
-	
+
 	/* There's no real reason why write_to_screen shouldn't be used, but
 	   it's probably not a good idea. */
 	assert(!write_to_screen);
-	
+
 	/* Clear the buffer to the style's background color */
 	gdk_draw_rectangle(table_buf,
 			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
 			   TRUE, 0, 0, get_table_width(), get_table_height());
-	
+
 	if (write_to_screen)
 		table_show_table(0, 0, get_table_width(), get_table_height());
 }
@@ -154,21 +154,21 @@ static void draw_splash_screen(void)
 	card_t card = { ACE_HIGH, SPADES, 0 };
 #endif
 
-	ggz_debug("table", "Drawing splash screen.");
+	ggz_debug(DBG_TABLE, "Drawing splash screen.");
 
 	assert(!game_started && !table_ready);
 	assert(table_buf);
 
 	table_clear_table(FALSE);
-	
+
 #if 0
-	/* This is temporarily disabled until I can figure out how
-	   to get it to work with the player list. */
+	/* This is temporarily disabled until I can figure out how to get it
+	   to work with the player list. */
 	draw_card(card, 0,
 		  (get_table_width() - CARDWIDTH) / 2,
 		  (get_table_height() - CARDHEIGHT) / 2, table_buf);
 #endif
-		
+
 	table_show_table(0, 0, get_table_width(), get_table_height());
 }
 
@@ -182,32 +182,32 @@ void table_initialize(void)
 	assert(call_count == 0);
 	call_count++;
 
-	ggz_debug("table", "Initializing table.");
+	ggz_debug(DBG_TABLE, "Initializing table.");
 
 	/* This starts our drawing code */
 	table = gtk_object_get_data(GTK_OBJECT(dlg_main), "fixed1");
 	table_style = gtk_widget_get_style(table);
 	gtk_widget_show(table);
-	
+
 	table_drawing_area = gtk_drawing_area_new();
 	gtk_drawing_area_size(GTK_DRAWING_AREA(table_drawing_area),
-	                      get_table_width(), get_table_height());
+			      get_table_width(), get_table_height());
 	gtk_fixed_put(GTK_FIXED(table), table_drawing_area, 0, 0);
 	gtk_widget_show(table_drawing_area);
 	(void) gtk_signal_connect(GTK_OBJECT(table_drawing_area),
-	                          "expose_event",
-	                          GTK_SIGNAL_FUNC(on_table_expose_event),
-	                          NULL);
+				  "expose_event",
+				  GTK_SIGNAL_FUNC(on_table_expose_event),
+				  NULL);
 
 	assert(table_drawing_area->window);
 	assert(get_table_width() > 0 && get_table_height > 0);
 	table_buf = gdk_pixmap_new(table->window,
 				   get_table_width(), get_table_height(), -1);
 	assert(table_buf);
-	
+
 	/* Redraw and display the table. */
 	table_redraw();
-	
+
 	table_show_player_list();
 }
 
@@ -222,44 +222,44 @@ void table_setup(void)
 	   playing, the server doesn't know how many seats there are so it
 	   just tells us 0 - even if there are players already connected. */
 	if (ggzcards.num_players == 0) {
-	  ggz_error_msg("table_setup: num_players is zero.");
-	  return;
+		ggz_error_msg("table_setup: num_players is zero.");
+		return;
 	}
 	if (get_max_hand_size() == 0) {
-	  ggz_error_msg("table_setup: max hand size is zero.");
-	  return;
+		ggz_error_msg("table_setup: max hand size is zero.");
+		return;
 	}
 	if (get_card_width(0) == 0 || get_card_height(0) == 0) {
-	  ggz_error_msg("table_setup: max card size is zero.");
-	  return;
+		ggz_error_msg("table_setup: max card size is zero.");
+		return;
 	}
-		
+
 	if (!game_started) {
 		/* If we join a game in progress, this can happen.  Probably
 		   it should be fixed... */
 		ggz_error_msg("ERROR - table_setup() called "
-		              "without a game started.");
-		game_started = TRUE;	
+			      "without a game started.");
+		game_started = TRUE;
 	}
 
-	ggz_debug("table", "Setting up table." "  Width and height are %d."
+	ggz_debug(DBG_TABLE, "Setting up table." "  Width and height are %d."
 		  "  %d players.", get_table_width(), ggzcards.num_players);
 
 	/* We may need to resize the table */
 	gtk_widget_set_usize(table, get_table_width(), get_table_height());
 	gtk_drawing_area_size(GTK_DRAWING_AREA(table_drawing_area),
-	                      get_table_width(), get_table_height());
+			      get_table_width(), get_table_height());
 
 	/* And resize the table buffer... */
-	/* Note: I'm not entirely sure how reference counts work for gdk.
-	   I assume that when I create a new pixmap (as below), it starts
-	   with a refcount of 1.  In that case, this code should correctly
-	   free the pixmap when it is discarded. */
+	/* Note: I'm not entirely sure how reference counts work for gdk. I
+	   assume that when I create a new pixmap (as below), it starts with a 
+	   refcount of 1.  In that case, this code should correctly free the
+	   pixmap when it is discarded. */
 	assert(table_buf);
 	gdk_pixmap_unref(table_buf);
 	table_buf = gdk_pixmap_new(table->window,
 				   get_table_width(), get_table_height(), -1);
-	
+
 	/* Resize the animation buffer. */
 	anim_setup();
 
@@ -277,30 +277,30 @@ void table_setup(void)
 void table_show_player_list(void)
 {
 	assert(table != NULL);
-	
+
 	if (player_list == NULL) {
 		player_list = create_player_clist();
-		/* This positioning is just an approximation.  I'd like
-		   to center it automatically, but that doesn't seem
-		   to work for some reason... */
+		/* This positioning is just an approximation.  I'd like to
+		   center it automatically, but that doesn't seem to work for
+		   some reason... */
 		gtk_fixed_put(GTK_FIXED(table), player_list, 60, 60);
 	}
-	
+
 	gtk_widget_show_all(player_list);
-	
+
 	if (table_ready) {
 		int tw = table->allocation.width;
 		int th = table->allocation.height;
-	
+
 		int mw = player_list->allocation.width;
 		int mh = player_list->allocation.height;
-	
+
 		int x = tw / 2 - mw / 2;
 		int y = th / 2 - mh / 2;
-	
+
 		gtk_fixed_move(GTK_FIXED(table), player_list, x, y);
 	}
-	
+
 	/* Yeah, the drawing tends to get erased by this clist... */
 	table_redraw();
 }
@@ -322,10 +322,10 @@ void table_update_player_list(void)
 void table_cleanup(void)
 {
 	int p;
-	
+
 	/* This doesn't clean up all the GTK stuff, only the ggz_malloc'd
 	   stuff so that the memory check will be clean. */
-	
+
 	for (p = 0; p < MAX_NUM_PLAYERS; p++) {
 		if (player_names[p] != NULL)
 			ggz_free(player_names[p]);
@@ -339,119 +339,114 @@ static void table_show_player_box(int player, int write_to_screen)
 {
 	int x, y, w, h;
 	GdkFont *font = table_style->font;
-	const char* name = player_names[player];
-	const char* message = player_messages[player];
+	const char *name = player_names[player];
+	const char *message = player_messages[player];
 	int string_y;
 	int max_width = 0;
-	
+
 	static int max_ascent = 0, max_descent = 0;
-	
+
 	assert(table_ready);
-	
+
 	get_text_box_pos(player, &x, &y);
 	x++;
 	y++;
-	
+
 	/* Clear the text box */
 	gdk_draw_rectangle(table_buf,
 			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
-			   TRUE, x, y,
-	                   TEXT_BOX_WIDTH - 1,
-	                   TEXT_BOX_WIDTH - 1);
-			
+			   TRUE, x, y, TEXT_BOX_WIDTH - 1, TEXT_BOX_WIDTH - 1);
+
 	x += XWIDTH;
 	y += XWIDTH;
 	w = h = TEXT_WIDTH;
-	
-	string_y = y; /* The y values we're going to draw at. */
-	
+
+	string_y = y;		/* The y values we're going to draw at. */
+
 	/* Draw the name. */
 	if (name) {
 		int ascent, descent, dummy, width;
-		
+
 		assert(strchr(name, '\n') == NULL);
-			
+
 		gdk_string_extents(font, name, &dummy, &dummy,
-		                   &width, &ascent, &descent);
+				   &width, &ascent, &descent);
 		max_width = MAX(max_width, width);
-		
+
 		max_ascent = MAX(max_ascent, ascent);
 		max_descent = MAX(max_descent, descent);
-		
+
 		string_y += max_ascent;
-			
+
 		gdk_draw_text(table_buf, font,
-		              table_style->fg_gc[GTK_WIDGET_STATE(table)],
-		              x + w/2 - gdk_string_width(font, name) / 2,
-		              string_y,
-		              name, strlen(name));
-		
+			      table_style->fg_gc[GTK_WIDGET_STATE(table)],
+			      x + w / 2 - gdk_string_width(font, name) / 2,
+			      string_y, name, strlen(name));
+
 		string_y += max_descent + 5;
 	}
-	
+
 	/* Draw player message. */
 	if (message) {
 		char *my_message = ggz_strdup(message);
 		char *next = my_message;
 		int ascent, descent, dummy;
-			
+
 		gdk_string_extents(font, my_message, &dummy, &dummy,
-		                   &dummy, &ascent, &descent);
-		
+				   &dummy, &ascent, &descent);
+
 		max_ascent = MAX(max_ascent, ascent);
 		max_descent = MAX(max_descent, descent);
-		
+
 		/* This is so ugly!! Is there no better way?? */
 		do {
 			char *next_after_this = strchr(next, '\n');
 			int width;
-			
+
 			if (next_after_this) {
 				*next_after_this = '\0';
 				next_after_this++;
 			}
-			
+
 			string_y += 3 + max_ascent;
-			
+
 			gdk_string_extents(font, next, &dummy, &dummy,
-		        	           &width, &dummy, &dummy);
+					   &width, &dummy, &dummy);
 			max_width = MAX(max_width, width);
-			
+
 			gdk_draw_string(table_buf, font,
-				table_style->fg_gc[GTK_WIDGET_STATE(table)],
-		                x + 3, string_y, next);
-		                	
-		        string_y += max_descent;
-		                	
-		        next = next_after_this;
+					table_style->
+					fg_gc[GTK_WIDGET_STATE(table)], x + 3,
+					string_y, next);
+
+			string_y += max_descent;
+
+			next = next_after_this;
 		} while (next && *next);
-		
+
 		ggz_free(my_message);
 	}
-	
-	/* FIXME: we shouldn't call table_setup() from *within* the
-	   drawing code */
-	if (set_min_text_width(string_y - y) ||
-	    set_min_text_width(max_width)) {
+
+	/* FIXME: we shouldn't call table_setup() from *within* the drawing
+	   code */
+	if (set_min_text_width(string_y - y) || set_min_text_width(max_width)) {
 		table_setup();
 	}
-	
+
 	if (write_to_screen)
-		table_show_table(x, y,
-		                 TEXT_BOX_WIDTH - 1,
-		                 TEXT_BOX_WIDTH - 1);
+		table_show_table(x, y, TEXT_BOX_WIDTH - 1, TEXT_BOX_WIDTH - 1);
 }
 
 /* Display's a player's name on the table. */
 void table_set_name(int player, const char *name)
 {
-	ggz_debug("table", "Setting player name: %d => %s.", player, name);
-	
+	ggz_debug(DBG_TABLE, "Setting player name: %d => %s.", player, name);
+
 	if (player_names[player])
 		ggz_free(player_names[player]);
-		
+
 	player_names[player] = ggz_strdup(name);
-	
+
 	if (table_ready)
 		table_show_player_box(player, TRUE);
 }
@@ -459,32 +454,32 @@ void table_set_name(int player, const char *name)
 /* Displays a player's message on the table. */
 void table_set_player_message(int player, const char *message)
 {
-	ggz_debug("table", "Setting player message for %d.", player);
-	
+	ggz_debug(DBG_TABLE, "Setting player message for %d.", player);
+
 	if (player_messages[player])
 		ggz_free(player_messages[player]);
-		
+
 	player_messages[player] = ggz_strdup(message);
-	
+
 	if (table_ready)
 		table_show_player_box(player, TRUE);
 }
 
-/* Handle a redraw of necessary items, for instance when a Gtk style change
-   is signaled. */
+/* Handle a redraw of necessary items, for instance when a Gtk style change is 
+   signaled. */
 void table_redraw(void)
 {
-	ggz_debug("table", "Redrawing table. ");
+	ggz_debug(DBG_TABLE, "Redrawing table. ");
 	if (table_ready) {
 		int p;
-		
+
 		/* Complete (zip) any animation in process */
 		animation_stop(TRUE);
 
 		/* I really don't know why these are necessary... */
 		gtk_widget_grab_focus(dlg_main);
 		table_style = gtk_widget_get_style(table);
-		
+
 		/* Redraw everything to the buffer */
 		table_clear_table(FALSE);
 		draw_card_areas(FALSE);
@@ -495,7 +490,7 @@ void table_redraw(void)
 
 		/* Then draw the whole buffer to the window */
 		table_show_table(0, 0, get_table_width(), get_table_height());
-		
+
 		/* There has GOT to be a better way to force the redraw! */
 		gdk_window_hide(table_drawing_area->window);
 		gdk_window_show(table_drawing_area->window);
@@ -518,8 +513,8 @@ void table_handle_expose_event(GdkEventExpose * event)
 /* Check for what card has been clicked and process it */
 void table_handle_click_event(GdkEventButton * event)
 {
-	/* this function is tricky.  There are lots of different variables:
-	   x, y, w, h describe the card area itself, including the "selected
+	/* this function is tricky.  There are lots of different variables: x, 
+	   y, w, h describe the card area itself, including the "selected
 	   card" area.  xo and yo describe the offset given by the "selected
 	   card".  x1 and y1 are specific coordinates of a card. xdiff and
 	   ydiff is the overlapping offset for cards in hand.  There are so
@@ -534,10 +529,10 @@ void table_handle_click_event(GdkEventButton * event)
 	/* If it's not our turn to play, we don't care. */
 	if (ggzcards.state != STATE_PLAY)
 		return;
-		
+
 	assert(p >= 0 && p < ggzcards.num_players);
 
-	ggz_debug("table", "table_handle_click_event: " "click at %f %f.",
+	ggz_debug(DBG_TABLE, "table_handle_click_event: " "click at %f %f.",
 		  event->x, event->y);
 
 	/* This gets all of the layout information from the layout engine.
@@ -547,17 +542,17 @@ void table_handle_click_event(GdkEventButton * event)
 
 	/* Calculate our card target */
 	hand_size = preferences.collapse_hand
-	            ? ggzcards.players[p].hand.hand_size
-	            : ggzcards.players[p].u_hand_size;
+		? ggzcards.players[p].hand.hand_size
+		: ggzcards.players[p].u_hand_size;
 	for (target = 0; target < hand_size; target++) {
 		int x, y;
-		
+
 		if (!preferences.collapse_hand &&
 		    !ggzcards.players[p].u_hand[target].is_valid)
 			continue;
-		
+
 		get_card_pos(p, target, target == selected_card, &x, &y);
-		
+
 		if (event->x >= x && event->x <= x + card_width
 		    /* TODO: generalize for any orientation */
 		    && event->y >= y && event->y <= y + card_height)
@@ -573,11 +568,11 @@ void table_handle_click_event(GdkEventButton * event)
 }
 
 
-/* Handle a card that is clicked by either popping it forward or playing it
-   if it is already selected. */
+/* Handle a card that is clicked by either popping it forward or playing it if 
+   it is already selected. */
 static void table_card_clicked(int card_num)
 {
-	ggz_debug("table", "table_card_clicked: Card %d clicked.", card_num);
+	ggz_debug(DBG_TABLE, "table_card_clicked: Card %d clicked.", card_num);
 
 	if (card_num == selected_card || preferences.single_click_play) {
 		/* If you click on the already selected card, it gets played.
@@ -610,7 +605,7 @@ static void show_card_area(p)
 
 	/* get layout information */
 	get_full_card_area(p, &cx, &cy, &cw, &ch);
-	
+
 	table_show_table(cx, cy, cw, ch);
 }
 
@@ -627,25 +622,25 @@ void table_display_hand(int p, int write_to_screen)
 	assert(table_ready && game_started);
 #endif
 
-	/* The server may send out a hand of size 0 when we first connect,
-	   but we just want to ignore it. */
+	/* The server may send out a hand of size 0 when we first connect, but 
+	   we just want to ignore it. */
 	if (!table_ready)
 		return;
 
-	ggz_debug("table", "Displaying hand for player %d.", p);
-	
+	ggz_debug(DBG_TABLE, "Displaying hand for player %d.", p);
+
 	/* redraw outer rectangle */
 	clear_card_area(p);
 	draw_card_box(p);
 
 	/* Draw the cards */
 	hand_size = preferences.collapse_hand
-	            ? ggzcards.players[p].hand.hand_size
-	            : ggzcards.players[p].u_hand_size;
+		? ggzcards.players[p].hand.hand_size
+		: ggzcards.players[p].u_hand_size;
 	for (i = 0; i < hand_size; i++) {
 		card_t card;
 		int x, y;
-		
+
 		if (preferences.collapse_hand)
 			card = ggzcards.players[p].hand.cards[i];
 		else {
@@ -653,7 +648,7 @@ void table_display_hand(int p, int write_to_screen)
 				continue;
 			card = ggzcards.players[p].u_hand[i].card;
 		}
-		
+
 		if (card.face >= 0 && card.face == table_card.face &&
 		    card.suit >= 0 && card.suit == table_card.suit &&
 		    card.deck >= 0 && card.deck == table_card.deck)
@@ -661,9 +656,9 @@ void table_display_hand(int p, int write_to_screen)
 			   matches this card, skip over it. */
 			continue;
 		get_card_pos(p, i,
-		             p == ggzcards.play_hand && i == selected_card,
-		             &x, &y);
-		
+			     p == ggzcards.play_hand && i == selected_card,
+			     &x, &y);
+
 		draw_card(card, orientation(p), x, y, table_buf);
 	}
 

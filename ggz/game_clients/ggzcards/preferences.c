@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Provides automated preferences handling
- * $Id: preferences.c 4086 2002-04-26 19:37:51Z jdorje $
+ * $Id: preferences.c 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -40,12 +40,13 @@
 PrefType pref_types[] = {
 	{"animation",
 	 N_("Use animation"),
-	 N_("If this is disabled, there will be no animation at all.  Without "
-	    "animation, none of the other animation preferences will have "
-	    "any effect."),
+	 N_
+	 ("If this is disabled, there will be no animation at all.  Without "
+	  "animation, none of the other animation preferences will have "
+	  "any effect."),
 	 &preferences.animation,
 	 TRUE},
-	
+
 	{"faster_animation",
 	 N_("Faster animation"),
 	 N_("If this is selected, the animation will happen faster.  The "
@@ -53,7 +54,7 @@ PrefType pref_types[] = {
 	    "well on slower computers."),
 	 &preferences.faster_animation,
 	 TRUE},
-	
+
 	{"smoother_animation",
 	 N_("Smoother animation"),
 	 N_("If this is selected, there will be more frames in each "
@@ -61,7 +62,7 @@ PrefType pref_types[] = {
 	    "look smoother, but may not work well on slower computers."),
 	 &preferences.smoother_animation,
 	 TRUE},
-	
+
 	{"multiple_animation",
 	 N_("Multiple (simultaneous) animations"),
 	 N_("If this preference is selected, then any time a new animation "
@@ -72,7 +73,7 @@ PrefType pref_types[] = {
 	    "a finish when the new one is started."),
 	 &preferences.multiple_animation,
 	 FALSE},
-	
+
 	{"longer_clearing_delay",
 	 N_("Have a longer delay before clearing the table"),
 	 N_("Normally, after the end of a trick the cards will not be "
@@ -83,7 +84,7 @@ PrefType pref_types[] = {
 	    "\"Last Trick\" selection of the \"Messages\" menu."),
 	 &preferences.longer_clearing_delay,
 	 FALSE},
-	
+
 	{"single_click_play",
 	 N_("Single-click cards to play them"),
 	 N_("Normally, you must click a card twice to play it (once "
@@ -92,7 +93,7 @@ PrefType pref_types[] = {
 	    "click it."),
 	 &preferences.single_click_play,
 	 FALSE},
-	
+
 	{"collapse_hand",
 	 N_("Collapse hand as it is played"),
 	 N_("If this is unset, then when a card is played none of "
@@ -102,7 +103,7 @@ PrefType pref_types[] = {
 	    "effect immediately, but the transition may not be smooth."),
 	 &preferences.collapse_hand,
 	 TRUE},
-	
+
 	{"cardlists",
 	 N_("Show graphical cardlists"),
 	 N_("If this is selected, then card lists (like the \"Last Trick\" "
@@ -111,7 +112,7 @@ PrefType pref_types[] = {
 	    "will not take effect until you restart GGZCards."),
 	 &preferences.cardlists,
 	 TRUE},
-	
+
 	{"bid_on_table",
 	 N_("Show bid choices right on the table"),
 	 N_("If this is selected, then (for games that use bidding) the "
@@ -121,7 +122,7 @@ PrefType pref_types[] = {
 	    "may not work for all games."),
 	 &preferences.bid_on_table,
 	 TRUE},
-	
+
 	{"bidding_tooltips",
 	 N_("Show tooltips for bidding"),
 	 N_("Select this option to see descriptive tooltips for every "
@@ -129,7 +130,7 @@ PrefType pref_types[] = {
 	    "time you bid."),
 	 &preferences.bidding_tooltips,
 	 TRUE},
-	
+
 	{"large_dominoes",
 	 N_("Draw dominoes much larger"),
 	 N_("Some games use dominoes as the card set.  You may choose "
@@ -138,7 +139,7 @@ PrefType pref_types[] = {
 	    "you restart the client."),
 	 &preferences.large_dominoes,
 	 FALSE},
-	
+
 	{"autostart",
 	 N_("Automatically start game"),
 	 N_("If this is selected, then instead of waiting for you to "
@@ -147,7 +148,7 @@ PrefType pref_types[] = {
 	    "ready, of course)."),
 	 &preferences.autostart,
 	 FALSE},
-	
+
 	{"use_default_options",
 	 N_("Always use default options"),
 	 N_("If this is selected, then any time you are prompted for "
@@ -156,14 +157,14 @@ PrefType pref_types[] = {
 	    "automatically be chosen."),
 	 &preferences.use_default_options,
 	 FALSE},
-	
+
 	{"confirm_exit",
 	 N_("Confirmation before exiting"),
 	 N_("If selected, you will get a confirmation dialog when you "
 	    "try to exit during a game."),
 	 &preferences.confirm_exit,
 	 TRUE},
-	
+
 #ifdef DEBUG
 	{"use_ai",
 	 N_("Have the AI play for you"),
@@ -172,7 +173,7 @@ PrefType pref_types[] = {
 	 &preferences.use_ai,
 	 FALSE},
 #endif /* DEBUG */
-	
+
 	{NULL, NULL, NULL, 0}
 };
 
@@ -183,7 +184,7 @@ static void access_preferences(int save);
 /* This function can be called at any time to save _or_ load the global
    settings (preferences). If "save" is TRUE, we'll save the settings.
    Otherwise we'll load them. File name, etc., are all taken care of
-   internally by the function. Note, this function need not have anything to 
+   internally by the function. Note, this function need not have anything to
    do with the code for the user to edit their preferences.  This code just
    read/writes the data to/from the file. */
 static void access_preferences(int save)
@@ -198,8 +199,7 @@ static void access_preferences(int save)
 		file = ggz_conf_parse(name, GGZ_CONF_RDWR | GGZ_CONF_CREATE);
 
 		if (file < 0)
-			ggz_error_msg("Couldn't open conf file '%s'.",
-			              name);
+			ggz_error_msg("Couldn't open conf file '%s'.", name);
 
 		g_free(name);
 	}

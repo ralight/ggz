@@ -1,10 +1,10 @@
-/*
+/* 
  * File: ai.c
  * Author: Jason Short
  * Project: GGZCards Client
  * Date: 04/23/2002
  * Desc: AI for the client
- * $Id: ai.h 4630 2002-09-18 22:34:01Z jdorje $
+ * $Id: ai.h 4656 2002-09-23 00:48:07Z jdorje $
  *
  * This file contains headers for the AI for the ggzcards client.  Drop in
  * any one of the server ai files, and it should work.  Useful for debugging.
@@ -31,7 +31,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#ifdef DEBUG /* The client-side AI is just for debugging. */
+#ifdef DEBUG			/* The client-side AI is just for debugging. */
 
 #include "cards.h"
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.h 4099 2002-04-28 00:59:37Z jdorje $
+ * $Id: dlg_options.h 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Dev Team.
  *
@@ -25,8 +25,6 @@
 
 /* Display a dialog window for the user to make an options selection. */
 void dlg_option_display(int option_cnt,
-                        char **descriptions,
-                        int *option_sizes,
-                        int *defaults,
-			char ***options);
+			char **descriptions,
+			int *option_sizes, int *defaults, char ***options);
 void dlg_options_destroy(void);

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 4180 2002-05-07 09:44:19Z jdorje $
+ * $Id: layout.c 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -348,7 +348,7 @@ void get_card_box_dim(int p, int *w, int *h)
 		*h = CARD_BOX_WIDTH;
 		break;
 	default:
-		ggz_debug("table", "CLIENT BUG: get_card_box_dim");
+		ggz_debug(DBG_TABLE, "CLIENT BUG: get_card_box_dim");
 	}
 }
 
@@ -383,8 +383,8 @@ static int get_card_selection_offset_y(int p)
 }
 
 /* (*x,*y) is the position of the upper left corner.  (w,h) is the width and
-   heigh of the box.  (*xo,*yo) is the offset vector to be used for
-   "selected" cards. */
+   heigh of the box.  (*xo,*yo) is the offset vector to be used for "selected" 
+   cards. */
 void get_full_card_area(int p, int *x, int *y, int *w, int *h)
 {
 	/* the actual card area is inset within the card box by XWIDTH units,
@@ -417,7 +417,7 @@ void get_full_card_area(int p, int *x, int *y, int *w, int *h)
 		*w += 2 * XWIDTH;
 		break;
 	default:
-		ggz_debug("table", "CLIENT BUG: get_full_card_area");
+		ggz_debug(DBG_TABLE, "CLIENT BUG: get_full_card_area");
 	}
 }
 

@@ -1,10 +1,10 @@
-/*
+/* 
  * File: game.h
  * Author: Rich Gade, Jason Short
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 4332 2002-08-02 03:35:46Z jdorje $
+ * $Id: game.h 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -36,7 +36,7 @@
 #define DBG_PLAY "play"
 #define DBG_AI "misc"
 
-/*
+/* 
  * Current list of preferences.
  *
  * To add a new preference, add a value for it here and insert
@@ -49,7 +49,7 @@ typedef struct {
 	bool smoother_animation;
 	bool multiple_animation;
 	bool longer_clearing_delay;
-	
+
 	/* Game interface prefs */
 	bool single_click_play;
 	bool collapse_hand;
@@ -57,12 +57,12 @@ typedef struct {
 	bool bid_on_table;
 	bool bidding_tooltips;
 	bool large_dominoes;
-	
+
 	/* Meta-game interface prefs */
 	bool autostart;
 	bool use_default_options;
 	bool confirm_exit;
-	
+
 #ifdef DEBUG
 	/* Debugging prefs */
 	bool use_ai;
@@ -72,8 +72,8 @@ typedef struct {
 /* Our set of preferences.  See above. */
 extern Preferences preferences;
 
-/* This isn't set to 1 until we start a game; until then we keep up the
-   splash screen. */
+/* This isn't set to 1 until we start a game; until then we keep up the splash 
+   screen. */
 extern int game_started;
 
 /** @brief Cards being drawn on the table.
@@ -132,26 +132,21 @@ void game_request_sync(void);
  */
 
 int game_get_options(int option_cnt,
-                     char **descriptions,
-                     int *choice_cnt,
-                     int *defaults,
-		     char ***option_choices);
+		     char **descriptions,
+		     int *choice_cnt, int *defaults, char ***option_choices);
 void game_alert_server(int server_socket_fd);
 void game_get_newgame(void);
 void game_alert_newgame(cardset_type_t cardset_type);
 void game_alert_newhand(void);
 void game_handle_gameover(int num_winners, int *winners);
 void game_alert_player(int player,
-                       GGZSeatType old_status,
-                       const char *old_name);
+		       GGZSeatType old_status, const char *old_name);
 void game_setup_table(void);
 void game_alert_hand_size(int max_hand_size);
 void game_display_hand(int player);
 void game_get_bid(int possible_bids,
-                  bid_t *bid_choices,
-                  char **bid_texts,
-                  char **bid_descs);
-void game_get_play(int play_hand, int num_valid_cards, card_t *valid_cards);
+		  bid_t * bid_choices, char **bid_texts, char **bid_descs);
+void game_get_play(int play_hand, int num_valid_cards, card_t * valid_cards);
 void game_alert_bid(int bidder, bid_t bid);
 void game_alert_badplay(char *err_msg);
 void game_alert_play(int player, card_t card, int pos, int hand_pos);

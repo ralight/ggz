@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.h 3609 2002-03-21 11:10:29Z dr_maux $
+ * $Id: cb_main.h 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -45,12 +45,12 @@ gboolean on_dlg_main_delete_event(GtkWidget * widget, GdkEvent * event,
 gboolean on_fixed1_button_press_event(GtkWidget * widget,
 				      GdkEventButton * event,
 				      gpointer user_data);
-				
+
 /* Call this when there's an expose event for the table widget. */
-gboolean on_table_expose_event(GtkWidget *widget, GdkEventExpose *event,
-                               gpointer user_data);
-				
+gboolean on_table_expose_event(GtkWidget * widget, GdkEventExpose * event,
+			       gpointer user_data);
+
 void on_fixed1_redraw_event(GtkWidget * widget, GtkStyle * previous_style,
 			    gpointer user_data);
-	
+
 #endif /* __CB_MAIN_H__ */

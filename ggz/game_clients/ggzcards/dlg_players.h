@@ -1,10 +1,10 @@
-/*
+/* 
  * File: dlg_players.c
  * Author: Jason Short
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.h 3404 2002-02-17 15:16:39Z jdorje $
+ * $Id: dlg_players.h 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -26,7 +26,7 @@
 #include "gtk/gtk.h"
 
 GtkWidget *create_player_clist(void);
-void update_player_clist(GtkWidget *player_clist);
+void update_player_clist(GtkWidget * player_clist);
 
 GtkWidget *create_dlg_players(void);
-void update_player_dialog(GtkWidget *dialog);
+void update_player_dialog(GtkWidget * dialog);

@@ -1,10 +1,10 @@
-/*
+/* 
  * File: dlg_players.c
  * Author: Jason Short
  * Project: GGZCards Client
  * Date: 02/17/2002
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 3990 2002-04-15 07:23:26Z jdorje $
+ * $Id: dlg_players.c 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -24,7 +24,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>		/* Site-specific config */
 #endif
 
 #include <assert.h>
@@ -35,13 +35,13 @@
 #include "dlg_players.h"
 #include "game.h"
 
-void update_player_clist(GtkWidget *player_clist)
+void update_player_clist(GtkWidget * player_clist)
 {
 	int p;
-	gchar *player[4] = {NULL, NULL, NULL, NULL};
- 
+	gchar *player[4] = { NULL, NULL, NULL, NULL };
+
 	gtk_clist_freeze(GTK_CLIST(player_clist));
- 
+
 	gtk_clist_clear(GTK_CLIST(player_clist));
 
 	for (p = 0; p < ggzcards.num_players; p++) {
@@ -81,12 +81,11 @@ void update_player_clist(GtkWidget *player_clist)
 	gtk_clist_thaw(GTK_CLIST(player_clist));
 }
 
-void update_player_dialog(GtkWidget *dialog)
+void update_player_dialog(GtkWidget * dialog)
 {
 	GtkWidget *player_clist;
 
-	player_clist = gtk_object_get_data(GTK_OBJECT(dialog),
-	                                   "player_clist");
+	player_clist = gtk_object_get_data(GTK_OBJECT(dialog), "player_clist");
 
 	update_player_clist(player_clist);
 }
@@ -99,8 +98,8 @@ GtkWidget *create_player_clist(void)
 	player_clist = gtk_clist_new(3);
 	gtk_widget_ref(player_clist);
 	gtk_widget_show(player_clist);
-	
-	//gtk_widget_set_sensitive(player_clist, FALSE);
+
+	// gtk_widget_set_sensitive(player_clist, FALSE);
 	gtk_clist_column_titles_show(GTK_CLIST(player_clist));
 
 	gtk_clist_set_column_width(GTK_CLIST(player_clist), 0, 15);
@@ -110,24 +109,24 @@ GtkWidget *create_player_clist(void)
 	label = gtk_label_new(_("#"));
 	gtk_widget_ref(label);
 	gtk_object_set_data_full(GTK_OBJECT(player_clist),
-	                         "player_num_label", label,
-	                         (GtkDestroyNotify) gtk_widget_unref);
+				 "player_num_label", label,
+				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(label);
 	gtk_clist_set_column_widget(GTK_CLIST(player_clist), 0, label);
 
 	label = gtk_label_new(_("Status"));
 	gtk_widget_ref(label);
 	gtk_object_set_data_full(GTK_OBJECT(player_clist),
-	                         "player_num_label", label,
-	                         (GtkDestroyNotify) gtk_widget_unref);
+				 "player_num_label", label,
+				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(label);
 	gtk_clist_set_column_widget(GTK_CLIST(player_clist), 1, label);
 
 	label = gtk_label_new(_("Name"));
 	gtk_widget_ref(label);
 	gtk_object_set_data_full(GTK_OBJECT(player_clist),
-	                         "player_num_label", label,
-	                         (GtkDestroyNotify) gtk_widget_unref);
+				 "player_num_label", label,
+				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(label);
 	gtk_clist_set_column_widget(GTK_CLIST(player_clist), 2, label);
 
@@ -147,7 +146,7 @@ GtkWidget *create_dlg_players(void)
 	GtkWidget *action_area;
 	GtkWidget *close_button;
 
-	/*
+	/* 
 	 * Create outer window.
 	 */
 	dialog = gtk_dialog_new();
@@ -156,14 +155,14 @@ GtkWidget *create_dlg_players(void)
 	GTK_WINDOW(dialog)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
 
-	/*
+	/* 
 	 * Get vertical box packing widget.
 	 */
 	vbox = GTK_DIALOG(dialog)->vbox;
 	gtk_object_set_data(GTK_OBJECT(dialog), "vbox", vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_widget_show(vbox);
-	
+
 #if 0
 	label = gtk_label_new(_("List of players:"));
 	gtk_widget_ref(label);
@@ -173,18 +172,18 @@ GtkWidget *create_dlg_players(void)
 
 	player_clist = create_player_clist();
 	gtk_object_set_data_full(GTK_OBJECT(dialog),
-	                         "player_clist", player_clist,
-	                         (GtkDestroyNotify) gtk_widget_unref);
+				 "player_clist", player_clist,
+				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_box_pack_start(GTK_BOX(vbox), player_clist, FALSE, FALSE, 0);
 
 
-	/*
+	/* 
 	 * Get "action area"
 	 */
 	action_area = GTK_DIALOG(dialog)->action_area;
 	gtk_widget_show(action_area);
 
-	/*
+	/* 
 	 * Make "close" button
 	 */
 	close_button = gtk_button_new_with_label(_("Close"));
@@ -194,17 +193,17 @@ GtkWidget *create_dlg_players(void)
 			   0);
 	gtk_widget_set_usize(close_button, 64, -2);
 	(void) gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				  GTK_OBJECT(dialog));
+					 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+					 GTK_OBJECT(dialog));
 
-	/*
+	/* 
 	 * Set up callbacks
 	 */
 	(void) gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				  GTK_OBJECT(dialog));
+					 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+					 GTK_OBJECT(dialog));
 
-	/*
+	/* 
 	 * Done!
 	 */
 	return dialog;

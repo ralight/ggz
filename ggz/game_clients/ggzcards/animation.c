@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/18/2001
  * Desc: Animation code for GTK table
- * $Id: animation.c 4180 2002-05-07 09:44:19Z jdorje $
+ * $Id: animation.c 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Development Team.
  *
@@ -93,7 +93,7 @@ int animation_start(int player, card_t card, int card_num, int destination)
 {
 	int start_x, start_y, dest_x, dest_y;
 
-	ggz_debug("animation", "Setting up animation for player %d", player);
+	ggz_debug(DBG_ANIM, "Setting up animation for player %d", player);
 
 	/* 
 	 * First we do a _lot_ of checks.
@@ -109,10 +109,9 @@ int animation_start(int player, card_t card, int card_num, int destination)
 	if (anim[player].animating && destination == anim[player].destination)
 		return FALSE;
 
-	/* If the card was _already_ placed out on the table, we don't want
-	   to do it again.  This is ugly, because the caller has to be
-	   careful not to update table_cards until _after_ calling
-	   animation_start(). */
+	/* If the card was _already_ placed out on the table, we don't want to 
+	   do it again.  This is ugly, because the caller has to be careful
+	   not to update table_cards until _after_ calling animation_start(). */
 	if (destination < 0 &&
 	    card.suit == table_cards[player].suit &&
 	    card.face == table_cards[player].face &&
@@ -138,13 +137,13 @@ int animation_start(int player, card_t card, int card_num, int destination)
 
 	if (destination >= 0) {
 		int p;
-		/* This is a bit of a hack: we'll just ignore the server
-		   while we clear the cards off of the table.  But it should
-		   make up for any lag problems... */
+		/* This is a bit of a hack: we'll just ignore the server while 
+		   we clear the cards off of the table.  But it should make up 
+		   for any lag problems... */
 		listen_for_server(FALSE);
 
 		/* This is also a bit of a hack: if anyone's to-table
-		   animation hasn't completed, we wait for it to complete and 
+		   animation hasn't completed, we wait for it to complete and
 		   _then_ do the off-table animation. */
 		for (p = 0; p < ggzcards.num_players; p++)
 			if (anim[p].animating && anim[p].destination < 0) {
@@ -243,7 +242,7 @@ static gint start_offtable_animation(gpointer winner)
 	int p;
 	int winning_player = GPOINTER_TO_INT(winner);
 
-	ggz_debug("animation", "Starting offtable animation.");
+	ggz_debug(DBG_ANIM, "Starting offtable animation.");
 
 	assert(!preferences.animation || !animating);
 
@@ -260,9 +259,9 @@ static gint start_offtable_animation(gpointer winner)
 	table_show_cards(!preferences.animation);
 
 	if (!preferences.animation) {
-		/* If animation is enabled, we don't start listening until
-		   the off-table animation completes.  But without animation
-		   we must start listening again here. */
+		/* If animation is enabled, we don't start listening until the 
+		   off-table animation completes.  But without animation we
+		   must start listening again here. */
 		listen_for_server(TRUE);
 	}
 
@@ -284,7 +283,7 @@ void animate_cards_off_table(int winner)
 			if (anim[p].animating)
 				assert(anim[p].destination < 0);
 
-			/* Animate the card off the table - but only if there 
+			/* Animate the card off the table - but only if there
 			   _is_ a card there. */
 			if (card.suit >= 0 && card.face >= 0)
 				animation_start(p, card, -1, winner);
@@ -295,8 +294,8 @@ void animate_cards_off_table(int winner)
 }
 
 
-/* Handle one frame of card animation, this is triggered by a GtkTimeout
-   setup in animation_start(). */
+/* Handle one frame of card animation, this is triggered by a GtkTimeout setup 
+   in animation_start(). */
 static gint animation_callback(gpointer ignored)
 {
 	int continuations = 0;
@@ -313,9 +312,8 @@ static gint animation_callback(gpointer ignored)
 	 * animation buffer to the window.
 	 */
 
-	/* Draw over the old animation and surrounding areas.  It's not
-	   really necessary to redraw the _whole thing_, but it's certainly
-	   easier. */
+	/* Draw over the old animation and surrounding areas.  It's not really 
+	   necessary to redraw the _whole thing_, but it's certainly easier. */
 	table_draw_table(anim_buf, 0, 0, get_table_width(),
 			 get_table_height());
 
@@ -358,7 +356,7 @@ static gint animation_callback(gpointer ignored)
 						FALSE);
 			} else {
 				/* Hack: we don't want to draw the card, and
-				   we don't need to do anything else, so just 
+				   we don't need to do anything else, so just
 				   continue. */
 				continue;
 			}
@@ -394,7 +392,8 @@ static gint animation_callback(gpointer ignored)
 
 			dest_when_done = -1;
 
-			ggz_debug("main", "Delaying for off-table animation "
+			ggz_debug(DBG_MAIN,
+				  "Delaying for off-table animation "
 				  "from animation_callback.");
 		} else {
 			/* See the listen_for_server(FALSE) call in
@@ -416,7 +415,7 @@ void animation_stop(int success)
 	if (!animating)
 		return;
 
-	ggz_debug("animation", "Stopping animation (%d).", success);
+	ggz_debug(DBG_ANIM, "Stopping animation (%d).", success);
 
 	/* First, kill off the animation callback */
 	gtk_timeout_remove(anim_tag);
@@ -436,11 +435,11 @@ void animation_stop(int success)
 			/* And move the card to it's final resting place */
 			table_show_card(player, anim[player].card, TRUE);
 		} else {
-			/* The caller is assumed to have restored the card
-			   to the hand so we can redraw the full hand and
-			   should be done.  However, if the animation was
-			   completed then the card will be drawn on the
-			   table as well, so we'll need to clean that up. */
+			/* The caller is assumed to have restored the card to
+			   the hand so we can redraw the full hand and should
+			   be done.  However, if the animation was completed
+			   then the card will be drawn on the table as well, so 
+			   we'll need to clean that up. */
 			table_display_hand(player, TRUE);
 			table_show_cards(TRUE);
 		}

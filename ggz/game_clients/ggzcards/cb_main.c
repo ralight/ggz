@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
- * $Id: cb_main.c 3698 2002-03-28 00:11:43Z jdorje $
+ * $Id: cb_main.c 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -44,9 +44,8 @@ GtkWidget *player_dialog = NULL;
 
 static void try_to_exit_game(void)
 {
-	/* Really, we shouldn't be checking game_started here.  We
-	   should happily leave between games too.  But for now,
-	   this is fine. */
+	/* Really, we shouldn't be checking game_started here.  We should
+	   happily leave between games too.  But for now, this is fine. */
 	if (game_started && preferences.confirm_exit) {
 		ggz_show_exit_dialog(TRUE);
 	} else {
@@ -74,9 +73,9 @@ void on_mnu_preferences_activate(GtkMenuItem * menuitem, gpointer user_data)
 	} else {
 		dlg_prefs = create_dlg_prefs();
 		(void) gtk_signal_connect(GTK_OBJECT(dlg_prefs),
-				   "destroy",
-				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-				   &dlg_prefs);
+					  "destroy",
+					  GTK_SIGNAL_FUNC
+					  (gtk_widget_destroyed), &dlg_prefs);
 		gtk_widget_show(dlg_prefs);
 	}
 }
@@ -89,9 +88,10 @@ void on_mnu_playerlist_activate(GtkMenuItem * menuitem, gpointer user_data)
 	} else {
 		player_dialog = create_dlg_players();
 		(void) gtk_signal_connect(GTK_OBJECT(player_dialog),
-				   "destroy",
-				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-				   &player_dialog);
+					  "destroy",
+					  GTK_SIGNAL_FUNC
+					  (gtk_widget_destroyed),
+					  &player_dialog);
 		gtk_widget_show(player_dialog);
 	}
 }
@@ -116,9 +116,9 @@ void on_mnu_about_activate(GtkMenuItem * menuitem, gpointer user_data)
 	} else {
 		dlg_about = create_dlg_about();
 		(void) gtk_signal_connect(GTK_OBJECT(dlg_about),
-				   "destroy",
-				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-				   &dlg_about);
+					  "destroy",
+					  GTK_SIGNAL_FUNC
+					  (gtk_widget_destroyed), &dlg_about);
 		gtk_widget_show(dlg_about);
 	}
 }
@@ -143,8 +143,8 @@ gboolean on_fixed1_button_press_event(GtkWidget * widget,
 }
 
 
-gboolean on_table_expose_event(GtkWidget *widget, GdkEventExpose *event,
-                               gpointer user_data)
+gboolean on_table_expose_event(GtkWidget * widget, GdkEventExpose * event,
+			       gpointer user_data)
 {
 	table_handle_expose_event(event);
 

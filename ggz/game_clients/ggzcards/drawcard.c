@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 4180 2002-05-07 09:44:19Z jdorje $
+ * $Id: drawcard.c 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -88,7 +88,7 @@ static void load_french_cardset(void)
 						     bg[GTK_STATE_NORMAL],
 						     (gchar **) xpm_backs[i]);
 		if (!card_fronts[i] || !card_backs[i])
-			ggz_debug("table", "ERROR: "
+			ggz_debug(DBG_TABLE, "ERROR: "
 				  "couldn't load card pixmaps "
 				  "for orientation %d.", i);
 	}
@@ -122,8 +122,7 @@ static void get_card_coordinates(card_t card, orientation_t orientation,
 	int height = (orientation % 2 == 0) ? CARDHEIGHT : CARDWIDTH;
 	int width = (orientation % 2 == 0) ? CARDWIDTH : CARDHEIGHT;
 
-	/* We don't care about the deck, but the rest had better be accurate. 
-	 */
+	/* We don't care about the deck, but the rest had better be accurate. */
 	assert(card.face >= ACE_LOW && card.face <= ACE_HIGH
 	       && card.suit >= CLUBS && card.suit <= SPADES
 	       && orientation >= 0 && orientation < 4);
@@ -137,8 +136,8 @@ static void get_card_coordinates(card_t card, orientation_t orientation,
 
 	xp = card.suit;
 
-	/* y is measured from the top; x from the left.  This just rotates
-	   the grid as necessary. */
+	/* y is measured from the top; x from the left.  This just rotates the 
+	   grid as necessary. */
 	switch (orientation) {
 	case FACE_BOTTOM:
 		xc = xp;
@@ -171,8 +170,8 @@ static void draw_french_card(card_t card, orientation_t orientation,
 
 	assert(orientation >= 0 && orientation < 4);
 
-	/* First find the width/height the card will need at this
-	   orientation. */
+	/* First find the width/height the card will need at this orientation. 
+	 */
 	width = get_card_width(orientation);
 	height = get_card_height(orientation);
 

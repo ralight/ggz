@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 4079 2002-04-25 20:42:26Z jdorje $
+ * $Id: dlg_main.c 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -44,7 +44,7 @@
 #include "table.h"
 
 
-#if 0 /* GTK Item factory -- incomplete */
+#if 0				/* GTK Item factory -- incomplete */
 
 /* FIXME: i18n with the GtkItemFactory system */
 
@@ -57,28 +57,28 @@ static GtkItemFactoryEntry menu_items[] = {
 	{"/Game/Player _List", NULL, NULL, 0, NULL},
 	{"/Game/_Force Redraw", NULL, NULL, 0, NULL},
 	{"/Game/_Exit", "<alt>F4", NULL, 0, NULL},
-	
+
 	/* Messages menu */
 	{"/_Messages", NULL, NULL, 0, "<Branch>"},
-	
+
 	/* Help menu */
 	{"/_Help", NULL, NULL, 0, "<Branch>"},
 	{"/_About", NULL, NULL, 0, NULL}
 };
 
-static GtkWidget *create_menus(GtkWidget *window)
+static GtkWidget *create_menus(GtkWidget * window)
 {
 	GtkAccelGroup *accel_group;
 	GtkWidget *menu_bar;
-        GtkItemFactory *mbar;
-		
+	GtkItemFactory *mbar;
+
 	int num_items = sizeof(menu_items) / sizeof(menu_items[0]);
-	
+
 	accel_group = gtk_accel_group_new();
-        mbar = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
-        gtk_item_factory_create_items(mbar, num_items, menu_items, NULL);
+	mbar = gtk_item_factory_new(GTK_TYPE_MENU_BAR, "<main>", accel_group);
+	gtk_item_factory_create_items(mbar, num_items, menu_items, NULL);
 	gtk_accel_group_attach(accel_group, GTK_OBJECT(window));
-	
+
 	return gtk_item_factory_get_widget(mbar, "<main>");
 }
 
@@ -182,25 +182,25 @@ GtkWidget *create_dlg_main(void)
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(mnu_preferences);
 	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_preferences);
-	
+
 	/* Add "Player list" selection to "Game" menu. */
 	mnu_playerlist = gtk_menu_item_new_with_label(_("Player List"));
 	gtk_widget_set_name(mnu_playerlist, "mnu_playerlist");
 	gtk_widget_ref(mnu_playerlist);
 	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_playerlist",
-	                         mnu_playerlist,
-	                         (GtkDestroyNotify) gtk_widget_unref);
+				 mnu_playerlist,
+				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(mnu_playerlist);
 	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_playerlist);
-	
+
 #ifdef DEBUG
 	/* Add "Force Redraw" selection to "Game" menu. */
 	mnu_forceredraw = gtk_menu_item_new_with_label(_("Force Redraw"));
 	gtk_widget_set_name(mnu_forceredraw, "mnu_forceredraw");
 	gtk_widget_ref(mnu_forceredraw);
 	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_forceredraw",
-	                         mnu_forceredraw,
-	                         (GtkDestroyNotify) gtk_widget_unref);
+				 mnu_forceredraw,
+				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(mnu_forceredraw);
 	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_forceredraw);
 #endif /* DEBUG */
@@ -232,8 +232,7 @@ GtkWidget *create_dlg_main(void)
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mnu_messages),
 				  mnu_messages_menu);
 	mnu_messages_menu_accels =
-		gtk_menu_ensure_uline_accel_group(GTK_MENU
-						  (mnu_messages_menu));
+		gtk_menu_ensure_uline_accel_group(GTK_MENU(mnu_messages_menu));
 
 	mnu_help = gtk_menu_item_new_with_label(_("Help"));
 	gtk_widget_set_name(mnu_help, "mnu_help");
@@ -289,38 +288,37 @@ GtkWidget *create_dlg_main(void)
 	gtk_box_pack_start(GTK_BOX(vbox1), statusbar1, FALSE, FALSE, 0);
 
 	(void) gtk_signal_connect(GTK_OBJECT(dlg_main), "delete_event",
-				  GTK_SIGNAL_FUNC(on_dlg_main_delete_event), 
+				  GTK_SIGNAL_FUNC(on_dlg_main_delete_event),
 				  NULL);
 	(void) gtk_signal_connect(GTK_OBJECT(mnu_startgame), "activate",
 				  GTK_SIGNAL_FUNC(on_mnu_startgame_activate),
 				  NULL);
 	(void) gtk_signal_connect(GTK_OBJECT(mnu_sync), "activate",
-				  GTK_SIGNAL_FUNC(on_mnu_sync_activate),
-				  NULL);
+				  GTK_SIGNAL_FUNC(on_mnu_sync_activate), NULL);
 	(void) gtk_signal_connect(GTK_OBJECT(mnu_preferences), "activate",
-				  GTK_SIGNAL_FUNC(on_mnu_preferences_activate),
-				  NULL);
+				  GTK_SIGNAL_FUNC
+				  (on_mnu_preferences_activate), NULL);
 	(void) gtk_signal_connect(GTK_OBJECT(mnu_playerlist), "activate",
-	                          GTK_SIGNAL_FUNC(on_mnu_playerlist_activate),
-	                          NULL);
+				  GTK_SIGNAL_FUNC(on_mnu_playerlist_activate),
+				  NULL);
 #ifdef DEBUG
 	(void) gtk_signal_connect(GTK_OBJECT(mnu_forceredraw), "activate",
-	                          GTK_SIGNAL_FUNC(on_mnu_forceredraw_activate),
-	                          NULL);
+				  GTK_SIGNAL_FUNC
+				  (on_mnu_forceredraw_activate), NULL);
 #endif /* DEBUG */
 	(void) gtk_signal_connect(GTK_OBJECT(mnu_exit), "activate",
-				  GTK_SIGNAL_FUNC(on_mnu_exit_activate),
-				  NULL);
+				  GTK_SIGNAL_FUNC(on_mnu_exit_activate), NULL);
 	(void) gtk_signal_connect(GTK_OBJECT(mnu_about), "activate",
-				  GTK_SIGNAL_FUNC(on_mnu_about_activate), 
+				  GTK_SIGNAL_FUNC(on_mnu_about_activate),
 				  NULL);
 	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "button_press_event",
-				  GTK_SIGNAL_FUNC(on_fixed1_button_press_event),
-				  NULL);
+				  GTK_SIGNAL_FUNC
+				  (on_fixed1_button_press_event), NULL);
 	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "style_set",
 				  GTK_SIGNAL_FUNC(on_fixed1_redraw_event),
 				  NULL);
-#if 0 /* We need some kind of redraw, I think, but this doesn't draw correctly. */
+#if 0				/* We need some kind of redraw, I think, but
+				   this doesn't draw correctly. */
 	(void) gtk_signal_connect(GTK_OBJECT(fixed1), "size_allocate",
 				  GTK_SIGNAL_FUNC(on_fixed1_redraw_event),
 				  NULL);

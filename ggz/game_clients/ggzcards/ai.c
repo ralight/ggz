@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: a "random" AI
- * $Id: ai.c 4630 2002-09-18 22:34:01Z jdorje $
+ * $Id: ai.c 4656 2002-09-23 00:48:07Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -29,7 +29,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>		/* Site-specific config */
 #endif
 
 #include <stdio.h>
@@ -75,15 +75,15 @@ bid_t get_bid(bid_t * bid_choices, int bid_count)
 	return bid_choices[choice];
 }
 
-card_t get_play(int play_hand, bool *valid_plays)
+card_t get_play(int play_hand, bool * valid_plays)
 {
 	hand_t *hand = &ggzcards.players[play_hand].hand;
 	int choice;
-	
+
 	do {
 		choice = random() % hand->hand_size;
 	} while (!valid_plays[choice]);
-	
+
 	return hand->cards[choice];
 }
 

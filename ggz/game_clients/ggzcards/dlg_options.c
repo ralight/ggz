@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 12/09/2001
  * Desc: Creates the option request dialog
- * $Id: dlg_options.c 4099 2002-04-28 00:59:37Z jdorje $
+ * $Id: dlg_options.c 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2001-2002 GGZ Dev Team.
  *
@@ -41,6 +41,7 @@
 #include "dlg_options.h"
 #include "main.h"
 #include "game.h"
+#include "table.h"
 
 static GtkWidget *window = NULL;
 
@@ -83,12 +84,12 @@ static void dlg_option_checked(GtkWidget * widget, gpointer data)
 	decode_option_selection(data, &option, &choice);
 
 	if (GTK_TOGGLE_BUTTON(widget)->active) {
-		ggz_debug("table", "Boolean option %d/%d selected.", option,
+		ggz_debug(DBG_TABLE, "Boolean option %d/%d selected.", option,
 			  choice);
 		options_selected[option] = choice;
 	} else {
-		ggz_debug("table", "Boolean option %d/%d deselected.", option,
-			  choice);
+		ggz_debug(DBG_TABLE, "Boolean option %d/%d deselected.",
+			  option, choice);
 		options_selected[option] = 0;
 	}
 }
@@ -99,12 +100,13 @@ static void dlg_option_toggled(GtkWidget * widget, gpointer data)
 	decode_option_selection(data, &option, &choice);
 
 	if (GTK_TOGGLE_BUTTON(widget)->active) {
-		ggz_debug("table", "Multiple-choice option %d/%d selected.",
+		ggz_debug(DBG_TABLE, "Multiple-choice option %d/%d selected.",
 			  option, choice);
 		options_selected[option] = choice;
 	} else
-		ggz_debug("table", "Multiple-choice option %d/%d deselected.",
-			  option, choice);
+		ggz_debug(DBG_TABLE,
+			  "Multiple-choice option %d/%d deselected.", option,
+			  choice);
 }
 
 static gint dlg_opt_delete(GtkWidget * widget, gpointer data)
@@ -121,18 +123,16 @@ static void dlg_options_submit(GtkWidget * widget, gpointer data)
 }
 
 void dlg_option_display(int option_cnt,
-                        char **descriptions,
-                        int *option_sizes,
-                        int *defaults,
-			char ***options)
+			char **descriptions,
+			int *option_sizes, int *defaults, char ***options)
 {
 	GtkWidget *box;
 	GtkWidget *button;
 	gint i, j;
 	GtkTooltips *tooltips;
-	
+
 	dlg_options_destroy();
-	
+
 	/* FIXME: do the tooltips need to be freed later? */
 	tooltips = gtk_tooltips_new();
 
@@ -158,12 +158,14 @@ void dlg_option_display(int option_cnt,
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON
 						     (subbox),
 						     options_selected[i]);
-			(void) gtk_signal_connect(GTK_OBJECT(subbox), "toggled",
-					   GTK_SIGNAL_FUNC
-					   (dlg_option_checked), user_data);
+			(void) gtk_signal_connect(GTK_OBJECT(subbox),
+						  "toggled",
+						  GTK_SIGNAL_FUNC
+						  (dlg_option_checked),
+						  user_data);
 			if (descriptions[i] && descriptions[i][0] != '\0');
-				gtk_tooltips_set_tip(tooltips, subbox,
-				                     descriptions[i], NULL);
+			gtk_tooltips_set_tip(tooltips, subbox,
+					     descriptions[i], NULL);
 		} else {
 			GSList *group = NULL;
 			GtkWidget *active_radio = NULL;
@@ -180,16 +182,15 @@ void dlg_option_display(int option_cnt,
 				group = gtk_radio_button_group
 					(GTK_RADIO_BUTTON(radio));
 				(void) gtk_signal_connect(GTK_OBJECT(radio),
-						   "toggled",
-						   GTK_SIGNAL_FUNC
-						   (dlg_option_toggled),
-						   user_data);
-		
+							  "toggled",
+							  GTK_SIGNAL_FUNC
+							  (dlg_option_toggled),
+							  user_data);
+
 				if (descriptions[i]
 				    && descriptions[i][0] != '\0');
-					gtk_tooltips_set_tip(tooltips, radio,
-		        			             descriptions[i],
-		        			             NULL);
+				gtk_tooltips_set_tip(tooltips, radio,
+						     descriptions[i], NULL);
 
 				gtk_box_pack_start(GTK_BOX(subbox), radio,
 						   FALSE, FALSE, 0);
@@ -208,12 +209,13 @@ void dlg_option_display(int option_cnt,
 
 	button = gtk_button_new_with_label(_("Send options"));
 	(void) gtk_signal_connect(GTK_OBJECT(button), "clicked",
-			   GTK_SIGNAL_FUNC(dlg_options_submit), (gpointer) 0);
+				  GTK_SIGNAL_FUNC(dlg_options_submit),
+				  (gpointer) 0);
 
 	/* If you close the window, it pops right back up again. */
 	(void) gtk_signal_connect_object(GTK_OBJECT(window), "delete_event",
-				  GTK_SIGNAL_FUNC(dlg_opt_delete),
-				  (gpointer) window);
+					 GTK_SIGNAL_FUNC(dlg_opt_delete),
+					 (gpointer) window);
 
 	gtk_box_pack_start(GTK_BOX(box), button, FALSE, FALSE, 0);
 	gtk_widget_show(button);

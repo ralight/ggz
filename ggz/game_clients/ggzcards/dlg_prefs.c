@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 3688 2002-03-26 07:13:01Z jdorje $
+ * $Id: dlg_prefs.c 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2000-2002 GGZ Development Team
  *
@@ -35,10 +35,9 @@
 #include "dlg_prefs.h"
 #include "preferences.h"
 
-static void on_pref_toggled(GtkToggleButton * togglebutton,
-				 gpointer value)
+static void on_pref_toggled(GtkToggleButton * togglebutton, gpointer value)
 {
-	*(int*)value = togglebutton->active;
+	*(int *) value = togglebutton->active;
 }
 
 
@@ -50,7 +49,7 @@ GtkWidget *create_dlg_prefs(void)
 	GtkWidget *action_area;
 	GtkWidget *close_button;
 	GtkTooltips *tooltips;
-	
+
 	PrefType *pref;
 
 	/* 
@@ -61,12 +60,12 @@ GtkWidget *create_dlg_prefs(void)
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Preferences"));
 	GTK_WINDOW(dialog)->type = GTK_WINDOW_DIALOG;
 	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
-	
-	/*
+
+	/* 
 	 * Set up tooltips.
 	 */
-	/* FIXME: do the tooltips need to be freed when
-	   the window is destroyed? */
+	/* FIXME: do the tooltips need to be freed when the window is
+	   destroyed? */
 	tooltips = gtk_tooltips_new();
 
 	/* 
@@ -81,15 +80,15 @@ GtkWidget *create_dlg_prefs(void)
 	for (pref = pref_types; pref->name; pref++) {
 		button = gtk_check_button_new_with_label(_(pref->desc));
 		gtk_tooltips_set_tip(tooltips, button,
-		                     _(pref->fulldesc), NULL);
+				     _(pref->fulldesc), NULL);
 		gtk_widget_ref(button);
 		gtk_widget_show(button);
 		gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
-		                             *pref->value);
+					     *pref->value);
 		(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
-				GTK_SIGNAL_FUNC(on_pref_toggled),
-				pref->value);
+					  GTK_SIGNAL_FUNC(on_pref_toggled),
+					  pref->value);
 	}
 
 	/* 
@@ -108,15 +107,15 @@ GtkWidget *create_dlg_prefs(void)
 			   0);
 	gtk_widget_set_usize(close_button, 64, -2);
 	(void) gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				  GTK_OBJECT(dialog));
+					 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+					 GTK_OBJECT(dialog));
 
 	/* 
 	 * Set up callbacks
 	 */
 	(void) gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
-				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
-				  GTK_OBJECT(dialog));
+					 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+					 GTK_OBJECT(dialog));
 
 	/* 
 	 * Done!

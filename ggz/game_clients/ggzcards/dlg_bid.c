@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 4099 2002-04-28 00:59:37Z jdorje $
+ * $Id: dlg_bid.c 4656 2002-09-23 00:48:07Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -52,7 +52,7 @@ void dlg_bid_destroy(void)
 	}
 }
 
-/* dlg_bid_clicked callback function for when a bid is clicked on submits the 
+/* dlg_bid_clicked callback function for when a bid is clicked on submits the
    bid to the server via make_bid() */
 static void dlg_bid_clicked(GtkWidget * widget, gpointer data)
 {
@@ -72,8 +72,7 @@ static gint dlg_bid_delete(GtkWidget * widget, gpointer data)
 
 /* displays a popup window from which the user can choose their bid */
 void dlg_bid_display(int possible_bids,
-                     char **bid_texts,
-                     char **bid_descriptions)
+		     char **bid_texts, char **bid_descriptions)
 {
 	GtkWidget *table_box, *label;
 	gint i;
@@ -91,7 +90,7 @@ void dlg_bid_display(int possible_bids,
 						   rectangle unused */
 
 	table_box = gtk_table_new(yw + 1, xw, FALSE);
-	
+
 	if (!preferences.bid_on_table) {
 		/* Create a title label within the table itself. */
 		/* We don't show this when bid_on_table because the gtk_label
@@ -102,54 +101,54 @@ void dlg_bid_display(int possible_bids,
 		   account.) */
 		label = gtk_label_new(_("Select your bid:"));
 		gtk_table_attach_defaults(GTK_TABLE(table_box), label,
-		                          0, xw, 0, 1);
+					  0, xw, 0, 1);
 	}
-		
+
 	for (i = 0; i < possible_bids; i++) {
 		int x, y;
 		GtkWidget *button = gtk_button_new_with_label(bid_texts[i]);
 
-		/* trickery - we don't pass a pointer to the data but the
-		   data itself */
+		/* trickery - we don't pass a pointer to the data but the data 
+		   itself */
 		(void) gtk_signal_connect(GTK_OBJECT(button), "clicked",
 					  GTK_SIGNAL_FUNC(dlg_bid_clicked),
 					  GINT_TO_POINTER(i));
 
 		x = i % xw;
 		y = i / xw;
-		
+
 		if (!preferences.bid_on_table) {
-			/* If we're not bid_on_table, we have an extra
-			   row at the top.  See above. */
+			/* If we're not bid_on_table, we have an extra row at
+			   the top.  See above. */
 			y++;
 		}
 
 		gtk_table_attach_defaults(GTK_TABLE(table_box), button,
-		                          x, x + 1, y, y + 1);
+					  x, x + 1, y, y + 1);
 		gtk_widget_show(button);
 
 		if (bid_descriptions[i][0] != '\0'
 		    && strcmp(bid_descriptions[i], bid_texts[i])
 		    && preferences.bidding_tooltips) {
 			gtk_tooltips_set_tip(tooltips, button,
-			                     bid_descriptions[i], NULL);
+					     bid_descriptions[i], NULL);
 		}
 	}
 
 	if (preferences.bid_on_table) {
 		int x, y, w, h;
-		
+
 		/* Just draw the table_box right on the table. */
-		
+
 		window = table_box;
-		
-		/* Is this the right layout?  I doubt it, but I'm not sure
-		   how to do better. */
+
+		/* Is this the right layout? I doubt it, but I'm not sure how
+		   to do better. */
 		get_fulltable_dim(&x, &y, &w, &h);
 		gtk_widget_set_usize(window, w - 2 * XWIDTH, h - 2 * XWIDTH);
 		(void) gtk_fixed_put(GTK_FIXED(table), window,
-		                     x + XWIDTH, y + XWIDTH);
-		
+				     x + XWIDTH, y + XWIDTH);
+
 		/* This seems to be necessary... */
 		table_show_table(0, 0, get_table_width(), get_table_height());
 	} else {
@@ -158,11 +157,13 @@ void dlg_bid_display(int possible_bids,
 		gtk_window_set_title(GTK_WINDOW(window), _("Bid Selection"));
 		gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 		gtk_container_add(GTK_CONTAINER(window), table_box);
-		
+
 		/* If you close the window, it pops right back up again. */
 		(void) gtk_signal_connect_object(GTK_OBJECT(window),
-			"delete_event", GTK_SIGNAL_FUNC(dlg_bid_delete),
-			(gpointer) window);
+						 "delete_event",
+						 GTK_SIGNAL_FUNC
+						 (dlg_bid_delete),
+						 (gpointer) window);
 	}
 
 
