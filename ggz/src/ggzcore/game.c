@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 6762 2005-01-20 07:31:47Z jdorje $
+ * $Id: game.c 6826 2005-01-23 08:55:06Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -629,6 +629,10 @@ static void abort_game(struct _GGZGame *game)
 	GGZServer *server = game->server;
 	GGZRoom *room = _ggzcore_server_get_cur_room(server);
 
+	/* This would be called automatically later (several times in fact),
+	   but doing it now is safe enough and starts the ball rolling. */
+	ggzmod_disconnect(game->client);
+
 	if (room) {
 		_ggzcore_room_table_event(room, GGZ_TABLE_LEFT, &event_data);
 	}
@@ -654,7 +658,6 @@ int _ggzcore_game_read_data(struct _GGZGame *game)
 
 	if (status < 0) {
 		abort_game(game);
-		ggzmod_disconnect(game->client);
 	}
 
 	return status;
