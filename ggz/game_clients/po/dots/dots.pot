@@ -1,12 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-04 10:14+0200\n"
+"POT-Creation-Date: 2002-09-15 12:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,8 +59,8 @@ msgstr ""
 msgid "_About"
 msgstr ""
 
-#: ../dots/dlg_main.c:222 ../dots/dlg_main.c:252 ../dots/main.c:230
-#: ../dots/main.c:231
+#: ../dots/dlg_main.c:222 ../dots/dlg_main.c:252 ../dots/main.c:249
+#: ../dots/main.c:250
 msgid "No Score"
 msgstr ""
 
@@ -139,7 +140,7 @@ msgstr ""
 msgid "Apply"
 msgstr ""
 
-#: ../common/dlg_exit.c:67 ../dots/dlg_pref.c:234
+#: ../dots/dlg_pref.c:234 ../common/dlg_exit.c:67
 msgid "Cancel"
 msgstr ""
 
@@ -164,7 +165,7 @@ msgid "Waiting for server response"
 msgstr ""
 
 #: ../dots/game.c:363 ../dots/game.c:366 ../dots/game.c:473 ../dots/game.c:476
-#: ../dots/main.c:360 ../dots/main.c:363
+#: ../dots/main.c:379 ../dots/main.c:382
 #, c-format
 msgid "Score = %d"
 msgstr ""
@@ -173,53 +174,53 @@ msgstr ""
 msgid "Game Messages"
 msgstr ""
 
-#: ../dots/main.c:286
+#: ../dots/main.c:305
 #, c-format
 msgid "%s joined the table"
 msgstr ""
 
-#: ../dots/main.c:292
+#: ../dots/main.c:311
 msgid "Empty Seat"
 msgstr ""
 
-#: ../dots/main.c:294
+#: ../dots/main.c:313
 #, c-format
 msgid "%s left the table"
 msgstr ""
 
-#: ../dots/main.c:325
+#: ../dots/main.c:344
 msgid "Client cheater!"
 msgstr ""
 
-#: ../dots/main.c:387
+#: ../dots/main.c:406
 msgid "Game over, you beat "
 msgstr ""
 
-#: ../dots/main.c:391
+#: ../dots/main.c:410
 msgid "You beat "
 msgstr ""
 
-#: ../dots/main.c:393
+#: ../dots/main.c:412
 msgid "Game over, "
 msgstr ""
 
-#: ../dots/main.c:394
+#: ../dots/main.c:413
 msgid " won :("
 msgstr ""
 
-#: ../dots/main.c:397
+#: ../dots/main.c:416
 msgid "You lost to "
 msgstr ""
 
-#: ../dots/main.c:400
+#: ../dots/main.c:419
 msgid "Game over, you tied with "
 msgstr ""
 
-#: ../dots/main.c:404
+#: ../dots/main.c:423
 msgid "You tied with "
 msgstr ""
 
-#: ../dots/main.c:409
+#: ../dots/main.c:428
 #, c-format
 msgid "%d to %d."
 msgstr ""

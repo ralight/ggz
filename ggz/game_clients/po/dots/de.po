@@ -5,10 +5,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Dots 0.1\n"
-"POT-Creation-Date: 2002-03-24 17:39+0100\n"
+"POT-Creation-Date: 2002-09-15 12:54+0200\n"
 "PO-Revision-Date: 2002-04-10 16:46GMT\n"
 "Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
-"Language-Team:  <de@li.org>\n"
+"Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -60,7 +60,7 @@ msgstr "_Einstellungen"
 
 #: ../dots/dlg_main.c:144
 msgid "_Preferences"
-msgstr "_Persnliche Einstellungen"
+msgstr "_Persönliche Einstellungen"
 
 #: ../dots/dlg_main.c:155
 msgid "_Help"
@@ -68,10 +68,10 @@ msgstr "_Hilfe"
 
 #: ../dots/dlg_main.c:174
 msgid "_About"
-msgstr "_ber"
+msgstr "_Über"
 
-#: ../dots/dlg_main.c:222 ../dots/dlg_main.c:252 ../dots/main.c:230
-#: ../dots/main.c:231
+#: ../dots/dlg_main.c:222 ../dots/dlg_main.c:252 ../dots/main.c:249
+#: ../dots/main.c:250
 msgid "No Score"
 msgstr "Keine Punktzahl"
 
@@ -81,11 +81,11 @@ msgstr "Gegner"
 
 #: ../dots/dlg_new.c:58
 msgid "Game Over"
-msgstr "Spiel vorber"
+msgstr "Spiel vorbei"
 
 #: ../dots/dlg_new.c:73
 msgid "You beat NAME"
-msgstr "Du schlgst NAME"
+msgstr "Du schlägst NAME"
 
 #: ../dots/dlg_new.c:80
 msgid "SCR to SCR"
@@ -151,7 +151,7 @@ msgstr "OK"
 msgid "Apply"
 msgstr "Anwenden"
 
-#: ../dots/dlg_pref.c:234
+#: ../dots/dlg_pref.c:234 ../common/dlg_exit.c:67
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -176,7 +176,7 @@ msgid "Waiting for server response"
 msgstr "Warte auf Antwort des Servers"
 
 #: ../dots/game.c:363 ../dots/game.c:366 ../dots/game.c:473 ../dots/game.c:476
-#: ../dots/main.c:360 ../dots/main.c:363
+#: ../dots/main.c:379 ../dots/main.c:382
 #, c-format
 msgid "Score = %d"
 msgstr "Punktzahl = %d"
@@ -185,59 +185,78 @@ msgstr "Punktzahl = %d"
 msgid "Game Messages"
 msgstr "Spiel-Mitteilungen"
 
-#: ../dots/ggzintl.c:13
-#, c-format
-msgid "nls enabled: %s"
-msgstr "nls enabled: %s"
-
-#: ../dots/main.c:286
+#: ../dots/main.c:305
 #, c-format
 msgid "%s joined the table"
 msgstr "%s ist hinzugekommen"
 
-#: ../dots/main.c:292
+#: ../dots/main.c:311
 msgid "Empty Seat"
 msgstr "Leerer Platz"
 
-#: ../dots/main.c:294
+#: ../dots/main.c:313
 #, c-format
 msgid "%s left the table"
 msgstr "%s ist gegangen"
 
-#: ../dots/main.c:325
+#: ../dots/main.c:344
 msgid "Client cheater!"
-msgstr "Client cheater!"
+msgstr "Client schummelt!"
 
-#: ../dots/main.c:387
+#: ../dots/main.c:406
 msgid "Game over, you beat "
 msgstr "Das Spiel ist vorbei, du besiegst "
 
-#: ../dots/main.c:391
+#: ../dots/main.c:410
 msgid "You beat "
-msgstr "Du schlgst "
+msgstr "Du schlägst "
 
-#: ../dots/main.c:393
+#: ../dots/main.c:412
 msgid "Game over, "
 msgstr "Spiel vorbei, "
 
-#: ../dots/main.c:394
+#: ../dots/main.c:413
 msgid " won :("
 msgstr " hat gewonnen :("
 
-#: ../dots/main.c:397
+#: ../dots/main.c:416
 msgid "You lost to "
 msgstr "Du wurdest bezwungen von "
 
-#: ../dots/main.c:400
+#: ../dots/main.c:419
 msgid "Game over, you tied with "
-msgstr "Spiel vorbei, es gibt keinen Sieger."
+msgstr "Spiel vorbei, es gibt keinen Sieger, du bist gleichauf mit "
 
-#: ../dots/main.c:404
+#: ../dots/main.c:423
 msgid "You tied with "
 msgstr "Du liegt gleichauf mit "
 
-#: ../dots/main.c:409
+#: ../dots/main.c:428
 #, c-format
 msgid "%d to %d."
 msgstr "%d zu %d."
 
+#: ../common/dlg_exit.c:50
+msgid "Are you sure you want to exit?"
+msgstr "Bist du sicher daß du beenden willst?"
+
+#: ../common/dlg_exit.c:52
+msgid ""
+"Are you sure you want to exit?\n"
+"You will not be able to rejoin."
+msgstr ""
+"Bist du sicher daß du beenden willst?\n"
+"Du wirst nicht wieder mitspielen können."
+
+#: ../common/dlg_exit.c:57
+msgid "Really Exit?"
+msgstr "Wirklich beenden?"
+
+#: ../common/dlg_exit.c:66
+msgid "Exit"
+msgstr "Verlassen"
+
+#: ../common/ggzintl.c:41
+#, c-format
+msgid "nls enabled: %s"
+msgstr "NLS: %s"

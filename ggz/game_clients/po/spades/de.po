@@ -6,28 +6,28 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-04 10:14+0200\n"
+"POT-Creation-Date: 2002-09-15 12:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../spades/gtk_dlg_about.c:49
+#: ../spades/gtk_dlg_about.c:50
 msgid "About GtkSpades"
 msgstr "Über GtkSpades"
 
-#: ../spades/gtk_dlg_about.c:55
+#: ../spades/gtk_dlg_about.c:56
 #, c-format
 msgid "GtkSpades Client Version %s\n"
 msgstr "GtkSpades Client Version %s\n"
 
-#: ../spades/gtk_dlg_about.c:58
+#: ../spades/gtk_dlg_about.c:59
 msgid "Copyright 1999: Brent Hendricks"
 msgstr "Copyright 1999: Brent Hendricks"
 
-#: ../spades/gtk_dlg_about.c:67 ../spades/gtk_dlg_error.c:71
+#: ../spades/gtk_dlg_about.c:68 ../spades/gtk_dlg_error.c:75
 #: ../spades/gtk_dlg_stat.c:93
 msgid "OK"
 msgstr "OK"
@@ -40,75 +40,75 @@ msgstr "Trenne Verbindung zum Server"
 msgid "Really Disconnect?"
 msgstr "Wirklich trennen?"
 
-#: ../spades/gtk_dlg_disconnect.c:66 ../spades/gtk_dlg_options.c:162
-#: ../spades/gtk_dlg_options.c:352 ../spades/gtk_dlg_stat.c:77
+#: ../spades/gtk_dlg_disconnect.c:66 ../spades/gtk_dlg_options.c:165
+#: ../spades/gtk_dlg_options.c:355 ../spades/gtk_dlg_stat.c:77
 msgid "No"
 msgstr "Nein"
 
-#: ../spades/gtk_dlg_disconnect.c:67 ../spades/gtk_dlg_options.c:162
-#: ../spades/gtk_dlg_options.c:348 ../spades/gtk_dlg_stat.c:76
+#: ../spades/gtk_dlg_disconnect.c:67 ../spades/gtk_dlg_options.c:165
+#: ../spades/gtk_dlg_options.c:351 ../spades/gtk_dlg_stat.c:76
 msgid "Yes"
 msgstr "Ja"
 
-#: ../spades/gtk_dlg_error.c:50
+#: ../spades/gtk_dlg_error.c:54
 msgid "Error!"
 msgstr "Fehler!"
 
-#: ../spades/gtk_dlg_error.c:52
+#: ../spades/gtk_dlg_error.c:56
 msgid "Warning!"
 msgstr "Warnung!"
 
-#: ../spades/gtk_dlg_error.c:60
+#: ../spades/gtk_dlg_error.c:64
 msgid "An error occurred!"
 msgstr "Ein Fehler ist aufgetreten!"
 
-#: ../spades/gtk_dlg_error.c:62
+#: ../spades/gtk_dlg_error.c:66
 msgid "Please note!"
 msgstr "Bitte beachten!"
 
-#: ../spades/gtk_dlg_options.c:71
+#: ../spades/gtk_dlg_options.c:74
 msgid "Options"
 msgstr "Optionen"
 
-#: ../spades/gtk_dlg_options.c:95
+#: ../spades/gtk_dlg_options.c:98
 msgid "Player Options"
 msgstr "Spieler-Optionen"
 
-#: ../spades/gtk_dlg_options.c:96
+#: ../spades/gtk_dlg_options.c:99
 msgid "Game Options"
 msgstr "Spiel-Optionen"
 
-#: ../spades/gtk_dlg_options.c:106 ../spades/gtk_dlg_options.c:107
-#: ../spades/gtk_dlg_options.c:108 ../spades/gtk_dlg_options.c:334
+#: ../spades/gtk_dlg_options.c:109 ../spades/gtk_dlg_options.c:110
+#: ../spades/gtk_dlg_options.c:111 ../spades/gtk_dlg_options.c:337
 msgid "Human"
 msgstr "Mensch"
 
-#: ../spades/gtk_dlg_options.c:136 ../spades/gtk_dlg_options.c:139
-#: ../spades/gtk_dlg_options.c:142
+#: ../spades/gtk_dlg_options.c:139 ../spades/gtk_dlg_options.c:142
+#: ../spades/gtk_dlg_options.c:145
 msgid "Click to toggle Human/Computer player"
 msgstr "Klick um zwischen Mensch und Computer zu wechseln"
 
-#: ../spades/gtk_dlg_options.c:173
+#: ../spades/gtk_dlg_options.c:176
 msgid "Minimum Bid :"
 msgstr "Minimalangebot :"
 
-#: ../spades/gtk_dlg_options.c:174
+#: ../spades/gtk_dlg_options.c:177
 msgid "Game ends at :"
 msgstr "Spiel hört auf bei :"
 
-#: ../spades/gtk_dlg_options.c:175
+#: ../spades/gtk_dlg_options.c:178
 msgid "Nil bids allowed :"
 msgstr "Nichts-Angebote erlaubt :"
 
-#: ../spades/gtk_dlg_options.c:185
+#: ../spades/gtk_dlg_options.c:188
 msgid "Start"
 msgstr "Start"
 
-#: ../common/dlg_exit.c:67 ../spades/gtk_dlg_options.c:186
+#: ../spades/gtk_dlg_options.c:189 ../common/dlg_exit.c:67
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: ../spades/gtk_dlg_options.c:330
+#: ../spades/gtk_dlg_options.c:333
 msgid "Computer"
 msgstr "Computer"
 
@@ -165,39 +165,7 @@ msgstr "Dein Angebot: "
 msgid "Please play a card"
 msgstr "Bitte spiele eine Karte"
 
-#: ../spades/gtk_menu.c:49
-msgid "/_Game"
-msgstr "/_Spiel"
-
-#: ../spades/gtk_menu.c:50
-msgid "/Game/_New"
-msgstr "/Spiel/_Neu"
-
-#: ../spades/gtk_menu.c:51
-msgid "/Game/_End"
-msgstr "/Spiel/_Ende"
-
-#: ../spades/gtk_menu.c:52
-msgid "/Game/_Statistics"
-msgstr "/Spiel/_Statistiken"
-
-#: ../spades/gtk_menu.c:53
-msgid "/Game/sep1"
-msgstr "/Spiel/sep1"
-
-#: ../spades/gtk_menu.c:54
-msgid "/Game/_Quit"
-msgstr "/Spiel/_Beenden"
-
-#: ../spades/gtk_menu.c:55
-msgid "/_Help"
-msgstr "/_Hilfe"
-
-#: ../spades/gtk_menu.c:57
-msgid "/Help/_About"
-msgstr "/Hilfe/_Über"
-
-#: ../spades/gtk_menu.c:78
+#: ../spades/gtk_menu.c:84
 msgid "<main>/Game/End"
 msgstr "<main>/Spiel/Ende"
 
@@ -248,4 +216,28 @@ msgstr "Beenden"
 #: ../common/ggzintl.c:41
 #, c-format
 msgid "nls enabled: %s"
-msgstr "nls eingeschalten: %s"
+msgstr "NLS: %s"
+
+#~ msgid "/_Game"
+#~ msgstr "/_Spiel"
+
+#~ msgid "/Game/_New"
+#~ msgstr "/Spiel/_Neu"
+
+#~ msgid "/Game/_End"
+#~ msgstr "/Spiel/_Ende"
+
+#~ msgid "/Game/_Statistics"
+#~ msgstr "/Spiel/_Statistiken"
+
+#~ msgid "/Game/sep1"
+#~ msgstr "/Spiel/sep1"
+
+#~ msgid "/Game/_Quit"
+#~ msgstr "/Spiel/_Beenden"
+
+#~ msgid "/_Help"
+#~ msgstr "/_Hilfe"
+
+#~ msgid "/Help/_About"
+#~ msgstr "/Hilfe/_ber"

@@ -1,12 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-04 10:14+0200\n"
+"POT-Creation-Date: 2002-09-15 12:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,103 +15,119 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../tictactoe/main.c:98
-msgid "Your move"
+#: ../tictactoe/main.c:74
+msgid "Watching the game..."
 msgstr ""
 
-#: ../tictactoe/main.c:127
-msgid "Getting seat number"
+#: ../tictactoe/main.c:130
+msgid "It's your move."
 msgstr ""
 
-#: ../tictactoe/main.c:140
-msgid "Getting player names"
+#: ../tictactoe/main.c:159
+msgid "Receiving your seat number..."
 msgstr ""
 
-#: ../tictactoe/main.c:160
-msgid "Getting opponent's move"
+#: ../tictactoe/main.c:172
+msgid "Getting player names..."
 msgstr ""
 
-#: ../tictactoe/main.c:177
-msgid "Getting re-sync"
-msgstr ""
-
-#: ../tictactoe/main.c:182
+#: ../tictactoe/main.c:180
 #, c-format
-msgid "Player %d's turn"
+msgid "%s is %c."
 msgstr ""
 
-#: ../tictactoe/main.c:187
+#: ../tictactoe/main.c:204
 #, c-format
-msgid "Read a %d "
+msgid "%s (%c) has moved."
 msgstr ""
 
-#: ../tictactoe/main.c:192
-msgid "Sync completed"
+#: ../tictactoe/main.c:207
+msgid "Your opponent has moved."
 msgstr ""
 
-#: ../tictactoe/main.c:201
-msgid "Game over"
+#: ../tictactoe/main.c:221
+msgid "Syncing with server..."
 msgstr ""
 
-#: ../tictactoe/main.c:209
+#: ../tictactoe/main.c:226
 #, c-format
-msgid "Player %d won"
+msgid "It's %s (%c)'s turn."
 msgstr ""
 
-#: ../tictactoe/main.c:212
-msgid "Tie game!"
-msgstr ""
-
-#: ../tictactoe/main.c:233
-#, c-format
-msgid "Sending my move: %d"
+#: ../tictactoe/main.c:236
+msgid "Sync completed."
 msgstr ""
 
 #: ../tictactoe/main.c:245
-msgid "Sending NULL options"
+msgid "Game over."
 msgstr ""
 
-#: ../tictactoe/main.c:259
+#: ../tictactoe/main.c:253
+#, c-format
+msgid "%s (%c) won"
+msgstr ""
+
+#: ../tictactoe/main.c:258
+msgid "Tie game!"
+msgstr ""
+
+#: ../tictactoe/main.c:288
+msgid "Sending move."
+msgstr ""
+
+#: ../tictactoe/main.c:300
+msgid "Sending options."
+msgstr ""
+
+#: ../tictactoe/main.c:314
 msgid "Server not ready!!"
 msgstr ""
 
-#: ../tictactoe/main.c:262
-msgid "Not my turn !!"
+#: ../tictactoe/main.c:317
+msgid "Not your turn!"
 msgstr ""
 
-#: ../tictactoe/main.c:265
-msgid "Move out of bounds"
+#: ../tictactoe/main.c:320
+msgid "Move out of bounds!"
 msgstr ""
 
-#: ../tictactoe/main.c:268
-msgid "Space already occupied"
+#: ../tictactoe/main.c:323
+msgid "Space already occupied!"
 msgstr ""
 
-#: ../tictactoe/main.c:271
-msgid "Move OK"
+#: ../tictactoe/main.c:326
+msgid "Move accepted."
 msgstr ""
 
-#: ../tictactoe/main_win.c:272
+#: ../tictactoe/main_win.c:232
+msgid "It's not your move yet."
+msgstr ""
+
+#: ../tictactoe/main_win.c:234
+msgid "You're just watching."
+msgstr ""
+
+#: ../tictactoe/main_win.c:276
 msgid "Tic-Tac-Toe"
 msgstr ""
 
-#: ../tictactoe/main_win.c:290
+#: ../tictactoe/main_win.c:294
 msgid "_Game"
 msgstr ""
 
-#: ../tictactoe/main_win.c:308
+#: ../tictactoe/main_win.c:312
 msgid "Re_sync"
 msgstr ""
 
-#: ../tictactoe/main_win.c:319
+#: ../tictactoe/main_win.c:323
 msgid "E_xit"
 msgstr ""
 
-#: ../tictactoe/main_win.c:330
+#: ../tictactoe/main_win.c:334
 msgid "_Help"
 msgstr ""
 
-#: ../tictactoe/main_win.c:349
+#: ../tictactoe/main_win.c:353
 msgid "_About"
 msgstr ""
 

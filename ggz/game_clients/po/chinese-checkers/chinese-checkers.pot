@@ -1,12 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-04 10:14+0200\n"
+"POT-Creation-Date: 2002-09-15 12:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,58 +33,58 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: ../chinese-checkers/game.c:196
+#: ../chinese-checkers/game.c:219
 #, c-format
 msgid "You are playing the %s marbles"
 msgstr ""
 
-#: ../chinese-checkers/game.c:210
+#: ../chinese-checkers/game.c:233
 msgid "Wait for your turn..."
 msgstr ""
 
-#: ../chinese-checkers/game.c:220
+#: ../chinese-checkers/game.c:243
 msgid "Click where you want to move the marble."
 msgstr ""
 
-#: ../chinese-checkers/game.c:233
+#: ../chinese-checkers/game.c:256
 msgid "Sending move to GGZ server..."
 msgstr ""
 
-#: ../chinese-checkers/game.c:240
+#: ../chinese-checkers/game.c:263
 msgid "Bad move! Click a marble to move."
 msgstr ""
 
-#: ../chinese-checkers/game.c:483
+#: ../chinese-checkers/game.c:506
 msgid "Your move. Click a marble to move"
 msgstr ""
 
-#: ../chinese-checkers/main.c:186
+#: ../chinese-checkers/main.c:187
 #, c-format
 msgid "%s joined the table"
 msgstr ""
 
-#: ../chinese-checkers/main.c:192
+#: ../chinese-checkers/main.c:193
 #, c-format
 msgid "%s left the table"
 msgstr ""
 
-#: ../chinese-checkers/main.c:196
+#: ../chinese-checkers/main.c:197
 msgid "empty"
 msgstr ""
 
-#: ../chinese-checkers/main.c:234
+#: ../chinese-checkers/main.c:235
 msgid "Move accepted. Waiting for opponents"
 msgstr ""
 
-#: ../chinese-checkers/main.c:237
+#: ../chinese-checkers/main.c:238
 msgid "Cannot accept move until table is full"
 msgstr ""
 
-#: ../chinese-checkers/main.c:260
+#: ../chinese-checkers/main.c:261
 msgid "Game over!  You won!"
 msgstr ""
 
-#: ../chinese-checkers/main.c:262
+#: ../chinese-checkers/main.c:263
 #, c-format
 msgid "Game over!  %s won!"
 msgstr ""

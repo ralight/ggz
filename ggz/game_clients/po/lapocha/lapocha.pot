@@ -1,12 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-04 10:14+0200\n"
+"POT-Creation-Date: 2002-09-15 12:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,7 +61,7 @@ msgstr ""
 msgid "Game"
 msgstr ""
 
-#: ../common/dlg_exit.c:66 ../lapocha/dlg_main.c:101
+#: ../lapocha/dlg_main.c:101 ../common/dlg_exit.c:66
 msgid "Exit"
 msgstr ""
 
@@ -92,79 +93,79 @@ msgstr ""
 msgid "Sending trump selection to server"
 msgstr ""
 
-#: ../lapocha/main.c:213
+#: ../lapocha/main.c:233
 msgid "Please choose the trump suit"
 msgstr ""
 
-#: ../lapocha/main.c:240
+#: ../lapocha/main.c:260
 msgid "Waiting for server"
 msgstr ""
 
-#: ../lapocha/main.c:267
+#: ../lapocha/main.c:287
 #, c-format
 msgid "%s joined the table"
 msgstr ""
 
-#: ../lapocha/main.c:275
+#: ../lapocha/main.c:295
 msgid "Empty Seat"
 msgstr ""
 
-#: ../lapocha/main.c:277
+#: ../lapocha/main.c:297
 #, c-format
 msgid "%s left the table"
 msgstr ""
 
-#: ../lapocha/main.c:402
+#: ../lapocha/main.c:422
 #, c-format
 msgid "%s won the game"
 msgstr ""
 
-#: ../lapocha/main.c:431
+#: ../lapocha/main.c:451
 msgid "Game Messages"
 msgstr ""
 
-#: ../lapocha/main.c:447
+#: ../lapocha/main.c:467
 msgid "Your bid was accepted"
 msgstr ""
 
-#: ../lapocha/main.c:452
+#: ../lapocha/main.c:472
 msgid "Invalid bid, please resubmit"
 msgstr ""
 
-#: ../lapocha/main.c:467
+#: ../lapocha/main.c:487
 msgid "Your trump was accepted"
 msgstr ""
 
-#: ../lapocha/main.c:471
+#: ../lapocha/main.c:491
 msgid "Invalid trump, this shouldn't happen"
 msgstr ""
 
-#: ../lapocha/main.c:492
+#: ../lapocha/main.c:512
 #, c-format
 msgid "%s bid %d"
 msgstr ""
 
-#: ../lapocha/main.c:522
+#: ../lapocha/main.c:542
 msgid "Waiting for next play"
 msgstr ""
 
-#: ../lapocha/main.c:532
+#: ../lapocha/main.c:552
 msgid "You must follow the led suit"
 msgstr ""
 
-#: ../lapocha/main.c:536
+#: ../lapocha/main.c:556
 msgid "You must play a trump card"
 msgstr ""
 
-#: ../lapocha/main.c:540
+#: ../lapocha/main.c:560
 msgid "Wait for your turn to play"
 msgstr ""
 
-#: ../lapocha/main.c:548
+#: ../lapocha/main.c:568
 msgid "Internal error, ack puke"
 msgstr ""
 
-#: ../lapocha/main.c:593
+#: ../lapocha/main.c:613
 #, c-format
 msgid "%s won the trick"
 msgstr ""

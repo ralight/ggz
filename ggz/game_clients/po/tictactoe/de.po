@@ -5,122 +5,180 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-24 17:39+0100\n"
+"POT-Creation-Date: 2002-09-15 12:54+0200\n"
 "PO-Revision-Date: 2002-04-10 18:13GMT\n"
 "Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
-"Language-Team:  <de@li.org>\n"
+"Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.5\n"
 
-#: ../tictactoe/main.c:98
-msgid "Your move"
+#: ../tictactoe/main.c:74
+msgid "Watching the game..."
+msgstr "Schaue dem Spiel zu..."
+
+#: ../tictactoe/main.c:130
+msgid "It's your move."
 msgstr "Dein Zug"
 
-#: ../tictactoe/main.c:127
-msgid "Getting seat number"
-msgstr "Hole Sitznummern"
+#: ../tictactoe/main.c:159
+msgid "Receiving your seat number..."
+msgstr "Hole die Nummer deines Sitzes..."
 
-#: ../tictactoe/main.c:140
-msgid "Getting player names"
-msgstr "Hole Spielernamen"
+#: ../tictactoe/main.c:172
+msgid "Getting player names..."
+msgstr "Hole Spielernamen..."
 
-#: ../tictactoe/main.c:160
-msgid "Getting opponent's move"
-msgstr "Empfange Zug des Gegners"
-
-#: ../tictactoe/main.c:177
-msgid "Getting re-sync"
-msgstr "Synchronisiere"
-
-#: ../tictactoe/main.c:182
+#: ../tictactoe/main.c:180
 #, c-format
-msgid "Player %d's turn"
-msgstr "Spieler %d ist an der Reihe"
+msgid "%s is %c."
+msgstr "%s ist %c."
 
-#: ../tictactoe/main.c:187
+#: ../tictactoe/main.c:204
 #, c-format
-msgid "Read a %d "
-msgstr "Leies eine %d"
+msgid "%s (%c) has moved."
+msgstr "%s (%c) hat sich bewegt."
 
-#: ../tictactoe/main.c:192
-msgid "Sync completed"
+#: ../tictactoe/main.c:207
+msgid "Your opponent has moved."
+msgstr "Dein Gegner hat seinen Zug durchgeführt."
+
+#: ../tictactoe/main.c:221
+msgid "Syncing with server..."
+msgstr "Synchronisiere mit Server..."
+
+#: ../tictactoe/main.c:226
+#, c-format
+msgid "It's %s (%c)'s turn."
+msgstr "Es ist der Zug von %s (%c)."
+
+#: ../tictactoe/main.c:236
+msgid "Sync completed."
 msgstr "Synchronisation abgeschlossen"
 
-#: ../tictactoe/main.c:201
-msgid "Game over"
+#: ../tictactoe/main.c:245
+msgid "Game over."
 msgstr "Spiel beendet"
 
-#: ../tictactoe/main.c:209
+#: ../tictactoe/main.c:253
 #, c-format
-msgid "Player %d won"
-msgstr "Spieler %d hat gewonnen"
+msgid "%s (%c) won"
+msgstr "%s (%c) hat gewonnen"
 
-#: ../tictactoe/main.c:212
+#: ../tictactoe/main.c:258
 msgid "Tie game!"
 msgstr "Unentschieden!"
 
-#: ../tictactoe/main.c:233
-#, c-format
-msgid "Sending my move: %d"
-msgstr "Sende meinen Zug: %d"
+#: ../tictactoe/main.c:288
+msgid "Sending move."
+msgstr "Sende meinen Zug."
 
-#: ../tictactoe/main.c:245
-msgid "Sending NULL options"
-msgstr "Sende NULL Optionen"
+#: ../tictactoe/main.c:300
+msgid "Sending options."
+msgstr "Sende Optionen."
 
-#: ../tictactoe/main.c:259
+#: ../tictactoe/main.c:314
 msgid "Server not ready!!"
 msgstr "Server ist nicht bereit!!"
 
-#: ../tictactoe/main.c:262
-msgid "Not my turn !!"
+#: ../tictactoe/main.c:317
+msgid "Not your turn!"
 msgstr "Nicht dein Zug!"
 
-#: ../tictactoe/main.c:265
-msgid "Move out of bounds"
-msgstr "Zug ist au�rhalb der Grenzen"
+#: ../tictactoe/main.c:320
+msgid "Move out of bounds!"
+msgstr "Zug ist außerhalb der Grenzen"
 
-#: ../tictactoe/main.c:268
-msgid "Space already occupied"
-msgstr "Feld ist bereits besetzt"
+#: ../tictactoe/main.c:323
+msgid "Space already occupied!"
+msgstr "Feld ist bereits besetzt!"
 
-#: ../tictactoe/main.c:271
-msgid "Move OK"
-msgstr "Zug akzeptiert"
+#: ../tictactoe/main.c:326
+msgid "Move accepted."
+msgstr "Zug wurde akzeptiert."
 
-#: ../tictactoe/main_win.c:272
+#: ../tictactoe/main_win.c:232
+msgid "It's not your move yet."
+msgstr "Du bist noch nicht dran."
+
+#: ../tictactoe/main_win.c:234
+msgid "You're just watching."
+msgstr "Du bist nur Zuschauer."
+
+#: ../tictactoe/main_win.c:276
 msgid "Tic-Tac-Toe"
 msgstr "Tic-Tac-Toe"
 
-#: ../tictactoe/main_win.c:290
+#: ../tictactoe/main_win.c:294
 msgid "_Game"
 msgstr "_Spiel"
 
-#: ../tictactoe/main_win.c:308
+#: ../tictactoe/main_win.c:312
 msgid "Re_sync"
 msgstr "S_ynchronisieren"
 
-#: ../tictactoe/main_win.c:319
+#: ../tictactoe/main_win.c:323
 msgid "E_xit"
 msgstr "_Beenden"
 
-#: ../tictactoe/main_win.c:330
+#: ../tictactoe/main_win.c:334
 msgid "_Help"
 msgstr "_Hilfe"
 
-#: ../tictactoe/main_win.c:349
+#: ../tictactoe/main_win.c:353
 msgid "_About"
-msgstr "_�er"
+msgstr "_Über"
 
 #: ../tictactoe/support.c:118
 #, c-format
 msgid "Couldn't find pixmap file: %s"
-msgstr "Koennte Pixmap nicht finden: %s"
+msgstr "Konnte Pixmap nicht finden: %s"
 
 #: ../tictactoe/support.c:127
 #, c-format
 msgid "Error loading pixmap file: %s"
 msgstr "Konnte Pixmap nicht laden: %s"
 
+#: ../common/dlg_exit.c:50
+msgid "Are you sure you want to exit?"
+msgstr "Möchtest du das Spiel wirklich verlassen?"
+
+#: ../common/dlg_exit.c:52
+msgid ""
+"Are you sure you want to exit?\n"
+"You will not be able to rejoin."
+msgstr "Wirklich das Spiel verlassen?\n"
+"Du wirst nicht wieder mitmachen können."
+
+#: ../common/dlg_exit.c:57
+msgid "Really Exit?"
+msgstr "Wirklich beenden?"
+
+#: ../common/dlg_exit.c:66
+msgid "Exit"
+msgstr "Beenden"
+
+#: ../common/dlg_exit.c:67
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: ../common/ggzintl.c:41
+#, c-format
+msgid "nls enabled: %s"
+msgstr "NLS: %s"
+
+#~ msgid "Getting re-sync"
+#~ msgstr "Synchronisiere"
+
+#~ msgid "Player %d's turn"
+#~ msgstr "Spieler %d ist an der Reihe"
+
+#~ msgid "Read a %d "
+#~ msgstr "Leies eine %d"
+
+#~ msgid "Player %d won"
+#~ msgstr "Spieler %d hat gewonnen"
+
+#~ msgid "Move OK"
+#~ msgstr "Zug akzeptiert"

@@ -6,12 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-04 10:14+0200\n"
+"POT-Creation-Date: 2002-09-15 12:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../lapocha/dlg_about.c:55
@@ -42,10 +42,10 @@ msgid ""
 "        http://ggz.sourceforge.net/games/lapocha/"
 msgstr ""
 "Autoren:\n"
-"        Gtk+-Oberfläche:\n"
+"        Gtk+-Oberflche:\n"
 "            Rich Gade        <rgade@users.sourceforge.net>\n"
 "\n"
-"        Windows 9x-Oberfläche:\n"
+"        Windows 9x-Oberflche:\n"
 "            Doug Hudson      <djh@users.sourceforge.net>\n"
 "\n"
 "        Spieleserver:\n"
@@ -74,7 +74,7 @@ msgstr "Gib Angebot ab"
 msgid "Game"
 msgstr "Spiel"
 
-#: ../common/dlg_exit.c:66 ../lapocha/dlg_main.c:101
+#: ../lapocha/dlg_main.c:101 ../common/dlg_exit.c:66
 msgid "Exit"
 msgstr "Beenden"
 
@@ -106,102 +106,104 @@ msgstr "Sende Spielzug zum Server"
 msgid "Sending trump selection to server"
 msgstr "Sende Trumpf-Auswahl zum Server"
 
-#: ../lapocha/main.c:213
+#: ../lapocha/main.c:233
 msgid "Please choose the trump suit"
 msgstr "Wähle bitte die Trumpf-Folge aus"
 
-#: ../lapocha/main.c:240
+#: ../lapocha/main.c:260
 msgid "Waiting for server"
 msgstr "Warte auf den Server"
 
-#: ../lapocha/main.c:267
+#: ../lapocha/main.c:287
 #, c-format
 msgid "%s joined the table"
 msgstr "%s ist hinzugekommen"
 
-#: ../lapocha/main.c:275
+#: ../lapocha/main.c:295
 msgid "Empty Seat"
 msgstr "Leerer Platz"
 
-#: ../lapocha/main.c:277
+#: ../lapocha/main.c:297
 #, c-format
 msgid "%s left the table"
 msgstr "%s ist gegangen"
 
-#: ../lapocha/main.c:402
+#: ../lapocha/main.c:422
 #, c-format
 msgid "%s won the game"
 msgstr "%s hat das Spiel gewonnen"
 
-#: ../lapocha/main.c:431
+#: ../lapocha/main.c:451
 msgid "Game Messages"
 msgstr "Spiel-Nachrichten"
 
-#: ../lapocha/main.c:447
+#: ../lapocha/main.c:467
 msgid "Your bid was accepted"
 msgstr "Dein Angebot wurde angenommen"
 
-#: ../lapocha/main.c:452
+#: ../lapocha/main.c:472
 msgid "Invalid bid, please resubmit"
 msgstr "Ungültiges Angebot, bitte neu eingeben"
 
-#: ../lapocha/main.c:467
+#: ../lapocha/main.c:487
 msgid "Your trump was accepted"
 msgstr "Dein Trumpf wurde akzeptiert"
 
-#: ../lapocha/main.c:471
+#: ../lapocha/main.c:491
 msgid "Invalid trump, this shouldn't happen"
 msgstr "Ungültiger Trumpf, das sollte nicht passieren"
 
-#: ../lapocha/main.c:492
+#: ../lapocha/main.c:512
 #, c-format
 msgid "%s bid %d"
 msgstr "%s hat %d geboten"
 
-#: ../lapocha/main.c:522
+#: ../lapocha/main.c:542
 msgid "Waiting for next play"
 msgstr "Warte auf den nächsten Spielzug"
 
-#: ../lapocha/main.c:532
+#: ../lapocha/main.c:552
 msgid "You must follow the led suit"
 msgstr "Du mußt dem Trumpf folgen"
 
-#: ../lapocha/main.c:536
+#: ../lapocha/main.c:556
 msgid "You must play a trump card"
 msgstr "Du mußt eine Trumpfkarte spielen"
 
-#: ../lapocha/main.c:540
+#: ../lapocha/main.c:560
 msgid "Wait for your turn to play"
 msgstr "Warte auf deinen Spielzug"
 
-#: ../lapocha/main.c:548
+#: ../lapocha/main.c:568
 msgid "Internal error, ack puke"
 msgstr "Interner Fehler..."
 
-#: ../lapocha/main.c:593
+#: ../lapocha/main.c:613
 #, c-format
 msgid "%s won the trick"
 msgstr "%s hat den Trick gewonnen"
 
 #: ../common/dlg_exit.c:50
 msgid "Are you sure you want to exit?"
-msgstr ""
+msgstr "Willst du das Spiel wirklich beenden?"
 
 #: ../common/dlg_exit.c:52
 msgid ""
 "Are you sure you want to exit?\n"
 "You will not be able to rejoin."
 msgstr ""
+"Wirklich Spiel verlassen?\n"
+"Es wird nicht möglich sein wieder teilzunehmen."
 
 #: ../common/dlg_exit.c:57
 msgid "Really Exit?"
-msgstr ""
+msgstr "Wirklich beenden?"
 
 #: ../common/dlg_exit.c:67
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: ../common/ggzintl.c:41
 #, c-format
 msgid "nls enabled: %s"
-msgstr ""
+msgstr "NLS: %s"

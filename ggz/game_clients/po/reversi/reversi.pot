@@ -1,12 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-04 10:14+0200\n"
+"POT-Creation-Date: 2002-09-15 12:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,31 +15,31 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../reversi/main_win.c:439
+#: ../reversi/main_win.c:441
 msgid "Reversi"
 msgstr ""
 
-#: ../reversi/main_win.c:456
+#: ../reversi/main_win.c:458
 msgid "_Game"
 msgstr ""
 
-#: ../reversi/main_win.c:474
+#: ../reversi/main_win.c:476
 msgid "Re_sync"
 msgstr ""
 
-#: ../reversi/main_win.c:485
+#: ../reversi/main_win.c:487
 msgid "O_ptions"
 msgstr ""
 
-#: ../reversi/main_win.c:496
+#: ../reversi/main_win.c:498
 msgid "E_xit"
 msgstr ""
 
-#: ../reversi/main_win.c:507
+#: ../reversi/main_win.c:509
 msgid "_Help"
 msgstr ""
 
-#: ../reversi/main_win.c:526
+#: ../reversi/main_win.c:528
 msgid "_About"
 msgstr ""
 

@@ -5,10 +5,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-03-24 17:39+0100\n"
+"POT-Creation-Date: 2002-09-15 12:54+0200\n"
 "PO-Revision-Date: 2002-04-05 21:28GMT\n"
 "Last-Translator: Sebastian Roth <xsebbi@gmx.de>\n"
-"Language-Team:  <de@li.org>\n"
+"Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,11 +16,11 @@ msgstr ""
 
 #: ../combat/dlg_about.c:33
 msgid "About Combat"
-msgstr "Uber Combat"
+msgstr "Über Combat"
 
 #: ../combat/dlg_about.c:48
 msgid "Combat, a stratego (tm) game for GGZ\n"
-msgstr "Combat, ein Stratego (tm) Spiel fuer GGZ\n"
+msgstr "Combat, ein Stratego (tm) Spiel für GGZ\n"
 
 #: ../combat/dlg_about.c:56
 msgid ""
@@ -52,105 +52,105 @@ msgstr ""
 msgid "OK"
 msgstr "OK"
 
-#: ../combat/dlg_options.c:117
+#: ../combat/dlg_options.c:119
 msgid "Game options"
 msgstr "Spieloptionen"
 
-#: ../combat/dlg_options.c:168
+#: ../combat/dlg_options.c:170
 msgid "Height: "
-msgstr "Hoehe:"
+msgstr "Höhe:"
 
-#: ../combat/dlg_options.c:200
+#: ../combat/dlg_options.c:202
 msgid "Width: "
 msgstr "Weite:"
 
-#: ../combat/dlg_options.c:218
+#: ../combat/dlg_options.c:220
 msgid "Open"
 msgstr "Offen"
 
-#: ../combat/dlg_options.c:229
+#: ../combat/dlg_options.c:231
 msgid "Lake"
 msgstr "See"
 
-#: ../combat/dlg_options.c:239
+#: ../combat/dlg_options.c:241
 msgid "Black"
 msgstr "Schwarz"
 
-#: ../combat/dlg_options.c:249
+#: ../combat/dlg_options.c:251
 msgid "Player 1"
 msgstr "Spieler 1"
 
-#: ../combat/dlg_options.c:259
+#: ../combat/dlg_options.c:261
 msgid "Player 2"
 msgstr "Spieler 2"
 
-#: ../combat/dlg_options.c:269
+#: ../combat/dlg_options.c:271
 msgid "Terrain"
 msgstr "Umgebung"
 
-#: ../combat/dlg_options.c:285
+#: ../combat/dlg_options.c:287
 msgid "Army"
 msgstr "Army"
 
-#: ../combat/dlg_options.c:312
+#: ../combat/dlg_options.c:314
 msgid "If set, the bombs who explode will be removed from the game."
 msgstr "Wenn gesetzt werden die explodierten Bomben vom Spiel entfernt."
 
-#: ../combat/dlg_options.c:314
+#: ../combat/dlg_options.c:316
 msgid "One Time Bomb"
 msgstr "Einfachbombe"
 
-#: ../combat/dlg_options.c:332
+#: ../combat/dlg_options.c:334
 msgid ""
 "If set, the spy will be able to kill any unit he attacks (except bombs), but "
 "he will die with the unit (think of it like a terrorist, with a body full of "
 "bombs)"
 msgstr ""
-"Wenn gesetzt, wird der Spion andere Einheiten toeten koennen (Bomben ausgeschlossen), "
-"wird aber mit der anderen Einhait zusammen sterben (denk an Terroristen mit lauter "
-"Bomben um den Koerper)"
+"Wenn gesetzt, wird der Spion andere Einheiten töten koennen (Bomben "
+"ausgeschlossen), wird aber mit der anderen Einheit zusammen sterben (denk an "
+"Terroristen mit lauter Bomben um den Körper)"
 
-#: ../combat/dlg_options.c:334
+#: ../combat/dlg_options.c:336
 msgid "Terrorist Spy"
 msgstr "Terroristen-Spion"
 
-#: ../combat/dlg_options.c:352
+#: ../combat/dlg_options.c:354
 msgid ""
 "If set, the bombs can walk, just like regular officers. But they aren't able "
 "to attack! (think of it like a officer carrying a bomb)"
 msgstr ""
-"Wenn gesetzt koennen die Bomben gehen, wie auch normale Offiziere, sind aber nicht in der "
-"Lage anzugreifen! (Denke an Soldaten die Bomben tragen)"
+"Wenn gesetzt können die Bomben gehen, wie auch normale Offiziere, sind aber "
+"nicht in der Lage anzugreifen! (Denke an Soldaten die Bomben tragen)"
 
-#: ../combat/dlg_options.c:354
+#: ../combat/dlg_options.c:356
 msgid "Moving Bombs"
 msgstr "Bomben bewegen"
 
-#: ../combat/dlg_options.c:372
+#: ../combat/dlg_options.c:374
 msgid ""
 "If set, scouts are able to walk more then one square at a time and attack at "
 "the same turn."
 msgstr ""
-"Wenn gesetzt koennen die Scouts ueber mehr als ein Quadrat laufen in einer "
+"Wenn gesetzt können die Scouts über mehr als ein Quadrat laufen in einer "
 "bestimmten Zeit und gleichzeitug auch noch angreifen."
 
-#: ../combat/dlg_options.c:374
+#: ../combat/dlg_options.c:376
 msgid "Super Scout"
-msgstr "Super Scout"
+msgstr "Super-Pfadfinder"
 
-#: ../combat/dlg_options.c:392
+#: ../combat/dlg_options.c:394
 msgid ""
 "If set, the flags will be able to walk, just like a regular unit (think of "
 "it like a officer carrying a flag)"
 msgstr ""
-"Wenn gesetzt koennen die Flaggen laufen wie auch andere regulaere Einheiten "
+"Wenn gesetzt können die Flaggen laufen wie auch andere reguläre Einheiten "
 "(Denke an flaggentragende Offiziere)"
 
-#: ../combat/dlg_options.c:394
+#: ../combat/dlg_options.c:396
 msgid "Moving Flags"
 msgstr "Flaggenbewegung"
 
-#: ../combat/dlg_options.c:412
+#: ../combat/dlg_options.c:414
 msgid ""
 "If set, the outcome of attacks will be solved randomly. Spies and bombs are "
 "treated the normal way. The odds depend on the difference between the power "
@@ -158,64 +158,74 @@ msgid ""
 "winning, and the second number is the odd of both units dying. 0: 30/40, 1: "
 "35/39, 2: 41/37, 3: 49/33, 4: 56/29, 5: 64/24, 6: 71/20, 7: 77/15, 8: 84/11"
 msgstr ""
+"Wenn gesetzt, wird das Ergebnis einer Attacke vom Zufall bestimmt. Spione "
+"und Bomben werden normal behandelt. Die Aufteilung hängt vom Unterschied "
+"zwischen den Kräften der Einheiten ab. Die erste Nummer ist der Überschuß "
+"der gewinnenden Einheit mit dem höchsten Rang, und die zweite Nummer ist der "
+"Überschuß der beiden sterbenden Einheiten. 0: 30/40, 1: 35/39, 2: 41/37, "
+"3: 49/33, 4: 56/29, 5: 64/24, 6: 71/20, 7: 77/15, 8: 84/11"
 
-#: ../combat/dlg_options.c:414
+#: ../combat/dlg_options.c:416
 msgid "Random outcome of attacks"
-msgstr ""
+msgstr "Zufälliger Ausgang einer Attacke"
 
-#: ../combat/dlg_options.c:432
+#: ../combat/dlg_options.c:434
 msgid ""
 "If set, units will be able to move (and attack) diagonally. (Scouts will be "
 "able of walking how many squares as they want diagonally)"
 msgstr ""
-"Wenn gesetzt koennen sich die Einheiten diagonal bewegen und angreifen. "
-"(Scouts koennen so viele Quadrate wie sie wollen diagonal laufen)"
+"Wenn gesetzt können sich die Einheiten diagonal bewegen und angreifen. "
+"(Pfadfinder koennen so viele Quadrate wie sie wollen diagonal laufen)"
 
-#: ../combat/dlg_options.c:434
+#: ../combat/dlg_options.c:436
 msgid "Allow diagonal moves"
-msgstr "Erlaube diagonale Zuege"
+msgstr "Erlaube diagonale Züge"
 
-#: ../combat/dlg_options.c:452
+#: ../combat/dlg_options.c:454
 msgid "If set, the type of the winning unit in a attack will not be shown."
 msgstr "Wenn gesetzt wird die siegende Einheit eines Angriffs nicht angezeigt."
 
-#: ../combat/dlg_options.c:454
+#: ../combat/dlg_options.c:456
 msgid "Unknow Victor"
 msgstr "Unbekannter Sieger"
 
-#: ../combat/dlg_options.c:472
+#: ../combat/dlg_options.c:474
 msgid ""
 "If set, the defense won't have to reveal what is his type, only wheter he "
 "wins or loses to the attacking unit."
-msgstr "Wenn gesetzt wird die Verteidigung nur wissen, ob sie eine Einheit verloren hat oder nicht."
+msgstr ""
+"Wenn gesetzt wird die Verteidigung nur preisgeben, ob sie eine Einheit verloren "
+"hat oder nicht, ohne deren Typ angeben zu müssen."
 
-#: ../combat/dlg_options.c:474
+#: ../combat/dlg_options.c:476
 msgid "Silent Defense"
 msgstr "Leise Verteidigung"
 
-#: ../combat/dlg_options.c:492
+#: ../combat/dlg_options.c:494
 msgid ""
 "If set, the attacking won't have to reveal it's type, only wheter it wins or "
 "loses to the defending unit."
-msgstr "Wenn gesetzt wird die attackierende Einheit nur wissen ob sie eine Einheit verloren hat oder nicht."
+msgstr ""
+"Wenn gesetzt wird die attackierende Einheit nur wissen ob sie eine Einheit "
+"verloren hat oder nicht."
 
-#: ../combat/dlg_options.c:494
+#: ../combat/dlg_options.c:496
 msgid "Silent Offense"
 msgstr "Leiser Angriff"
 
-#: ../combat/dlg_options.c:512
+#: ../combat/dlg_options.c:514
 msgid ""
 "If set, the players won't be able to setup their units. It will be randomly "
 "set up by the server."
 msgstr ""
-"Wenn gesetzt werden die Spieler nicht in der Lage sein ihr Einheiten aufzustellen. Jenes wird "
-"vom Server uebernommen."
+"Wenn gesetzt werden die Spieler nicht in der Lage sein ihr Einheiten "
+"aufzustellen. Jenes wird vom Server übernommen."
 
-#: ../combat/dlg_options.c:514
+#: ../combat/dlg_options.c:516
 msgid "Random Setup"
 msgstr "Voreingestellter Setup"
 
-#: ../combat/dlg_options.c:532
+#: ../combat/dlg_options.c:534
 msgid ""
 "If set, the sergeant of all the teams will have been through a higly "
 "rigorous training, and will be able to walk through lakes. It won't be able "
@@ -223,118 +233,120 @@ msgid ""
 "of a lake (it must go through a straight line, and it must be only lake "
 "tiles between the source and the destination)"
 msgstr ""
-"Wenn gesetzt wird der Seargant aller Teams ein rigeroses Training erhalten. Dadurch kann er "
-"durch Seen gehen, dort aber nicht stehen bleiben. Dafuer waere es moeglich dafuer an der anderen "
-"Seite des Sees aufzutauchen."
+"Wenn gesetzt wird der Seargant aller Teams ein rigoroses Training erhalten. "
+"Dadurch kann er durch Seen gehen, dort aber nicht stehen bleiben. Dafür "
+"wäre es möglich dafür an der anderen Seite des Sees aufzutauchen."
 
-#: ../combat/dlg_options.c:534
+#: ../combat/dlg_options.c:536
 msgid "Special Forces Sergeant"
-msgstr "Spezialkraefte-Seargant"
+msgstr "Spezialkräfte-Seargant"
 
-#: ../combat/dlg_options.c:552
+#: ../combat/dlg_options.c:554
 msgid ""
 "If set, the units will be able to do a rush attack, when they walk how many "
 "tiles as they want (in a straight line, just like a scout) and then attack "
 "the enemy, in the same turn. However, your units die after this attack, even "
 "if they succeed doing it."
 msgstr ""
-"Wenn gesetzt werden die Einheiten faehig sein, einen Gemeinschaftsangriff zu starten, wo alle "
-"ausgewaehlten Einheiten in einer Linie angreifen koennen, in einem Zug. Wie auch immer, "
-"deine Einhaiten sterben nach dieser Aktion, egal ob ueberlebt oder nicht."
+"Wenn gesetzt werden die Einheiten fähig sein, einen Gemeinschaftsangriff zu "
+"starten, wo alle ausgewählten Einheiten in einer Linie angreifen können, "
+"in einem Zug. Wie auch immer, deine Einheiten sterben nach dieser Aktion, "
+"egal ob überlebt oder nicht."
 
-#: ../combat/dlg_options.c:554
+#: ../combat/dlg_options.c:556
 msgid "Rush Attack"
 msgstr "Gemeinschaftsangriff"
 
-#: ../combat/dlg_options.c:572
+#: ../combat/dlg_options.c:574
 msgid ""
 "If set, the players won't be able to see the remaining units for the "
 "opponent, ie, they won't know how many units of each type their opponent has "
 "left. Please note that this option can't be enforceable by the server, so "
 "just use it against trusted opponents."
 msgstr ""
-"Wenn gesetzt werden die Spieler nicht in der Lage sein, die uebrigen Einheiten "
-"der Gegners zu sehen. Beachte das diese Option auch vom Server voreingestellt "
-"sein, deshalb solltest du diese Option nur bei vertrauten Spielern benutzen."
+"Wenn gesetzt werden die Spieler nicht in der Lage sein, die übrigen "
+"Einheiten der Gegners zu sehen. Beachte das diese Option auch vom Server "
+"voreingestellt sein, deshalb solltest du diese Option nur bei vertrauten "
+"Spielern benutzen."
 
-#: ../combat/dlg_options.c:574
+#: ../combat/dlg_options.c:576
 msgid "Hide enemy's unit list"
 msgstr "Generische Einheitenanzahl verstecken"
 
-#: ../combat/dlg_options.c:592
+#: ../combat/dlg_options.c:594
 msgid ""
 "If set, the server will ask the clients to show the enemy units for just one "
 "turn (right after a attack, for instance). However, it can't be enforceable, "
 "and a bad client could cheat, showing all the enemy units it knows about "
 "(just the ones that the server tells them, like after an attack)"
 msgstr ""
-"Wenn gesetzt wird der Sever fragen, ob sie die generischen Einheiten "
-"sehen wollen. Dies geschieht nur nach einem Zug (z.B. Attacke). Das "
-"kann nicht voreingestellt werden und ein schlechter Client koennte cheaten, "
-"in dem er alle Einhaiten zeigt ueber die er Bescheid weiss. "
-"(Nur die ueber die er vom Server erfahren hat, wie z.B nach einer Attacke)"
+"Wenn gesetzt wird der Sever fragen, ob sie die generischen Einheiten sehen "
+"wollen. Dies geschieht nur nach einem Zug (z.B. Attacke). Das kann nicht "
+"voreingestellt werden und ein schlechter Client könnte schummeln, in dem er "
+"alle Einhaiten zeigt ueber die er Bescheid weiß. (Nur die über die er vom "
+"Server erfahren hat, wie z.B nach einer Attacke)"
 
-#: ../combat/dlg_options.c:594
+#: ../combat/dlg_options.c:596
 msgid "Forget enemy units"
-msgstr "Vergiss gegnerische Einheiten"
+msgstr "Vergiß gegnerische Einheiten"
 
-#: ../combat/dlg_options.c:613
+#: ../combat/dlg_options.c:615
 msgid "If set, all the units will be shown to both players"
 msgstr "Wenn gesetzt werden alle Einheiten beiden Spielern gezeigt"
 
-#: ../combat/dlg_options.c:615
+#: ../combat/dlg_options.c:617
 msgid "Open Map"
-msgstr "Oeffne Karte"
+msgstr "Öffne Karte"
 
-#: ../combat/dlg_options.c:626
+#: ../combat/dlg_options.c:628
 msgid "Options"
 msgstr "Optionen"
 
-#: ../combat/dlg_options.c:663
+#: ../combat/dlg_options.c:665
 msgid "Stored Maps"
 msgstr "Gespeicherte Karten"
 
-#: ../combat/dlg_options.c:732
+#: ../combat/dlg_options.c:734
 msgid "Map Preview"
 msgstr "Kartenvorschau"
 
-#: ../combat/dlg_options.c:751
+#: ../combat/dlg_options.c:753
 msgid "Load"
 msgstr "Laden"
 
-#: ../combat/dlg_options.c:760
+#: ../combat/dlg_options.c:762
 msgid "Save"
 msgstr "Speichern"
 
-#: ../combat/dlg_options.c:769
+#: ../combat/dlg_options.c:771
 msgid "Delete"
-msgstr "Loeschen"
+msgstr "Löschen"
 
-#: ../combat/dlg_options.c:778
+#: ../combat/dlg_options.c:780
 msgid "Maps"
 msgstr "Karten"
 
-#: ../combat/dlg_options.c:801
+#: ../combat/dlg_options.c:803
 msgid "Start Game"
 msgstr "Starte Spiel"
 
-#: ../combat/dlg_options.c:810
+#: ../combat/dlg_options.c:812 ../common/dlg_exit.c:67
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: ../combat/dlg_options.c:1142
+#: ../combat/dlg_options.c:1144
 msgid "Save Map?"
 msgstr "Karte speichern?"
 
-#: ../combat/dlg_options.c:1159
+#: ../combat/dlg_options.c:1161
 msgid "Save map as:"
 msgstr "Speicher Karte als:"
 
-#: ../combat/dlg_options.c:1191
+#: ../combat/dlg_options.c:1193
 msgid "Yep"
 msgstr "Jepp"
 
-#: ../combat/dlg_options.c:1200
+#: ../combat/dlg_options.c:1202
 msgid "Nope"
 msgstr "Nein"
 
@@ -392,7 +404,7 @@ msgstr "_Hilfe"
 
 #: ../combat/interface.c:207
 msgid "A_bout"
-msgstr "Ueber"
+msgstr "Über"
 
 #: ../combat/interface.c:256
 msgid "_Send Setup"
@@ -408,3 +420,27 @@ msgstr "Konnte pixmap nicht laden: %s"
 msgid "Error loading pixmap file: %s"
 msgstr "Fehler beim Laden der Pixmap: %s"
 
+#: ../common/dlg_exit.c:50
+msgid "Are you sure you want to exit?"
+msgstr "Bist du sicher daß du beenden willst?"
+
+#: ../common/dlg_exit.c:52
+msgid ""
+"Are you sure you want to exit?\n"
+"You will not be able to rejoin."
+msgstr ""
+"Bist du sicher daß du beenden willst?\n"
+"Du wirst nicht wieder teilnehmen können."
+
+#: ../common/dlg_exit.c:57
+msgid "Really Exit?"
+msgstr "Wirklich beenden?"
+
+#: ../common/dlg_exit.c:66
+msgid "Exit"
+msgstr "Beenden"
+
+#: ../common/ggzintl.c:41
+#, c-format
+msgid "nls enabled: %s"
+msgstr "NLS: %s"

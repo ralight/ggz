@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-04 10:14+0200\n"
+"POT-Creation-Date: 2002-09-15 12:54+0200\n"
 "PO-Revision-Date: 2001-06-01 18:59BRT\n"
 "Last-Translator: Ricardo Quesada <riq@core-sdi.com>\n"
 "Language-Team: Spanish (Argentinian) <es_AR@li.org>\n"
@@ -15,103 +15,130 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.2alpha\n"
 
-#: ../tictactoe/main.c:98
-msgid "Your move"
+#: ../tictactoe/main.c:74
+msgid "Watching the game..."
+msgstr ""
+
+#: ../tictactoe/main.c:130
+#, fuzzy
+msgid "It's your move."
 msgstr "Tu movida"
 
-#: ../tictactoe/main.c:127
-msgid "Getting seat number"
+#: ../tictactoe/main.c:159
+#, fuzzy
+msgid "Receiving your seat number..."
 msgstr "Obteniendo numero de lugar"
 
-#: ../tictactoe/main.c:140
-msgid "Getting player names"
+#: ../tictactoe/main.c:172
+#, fuzzy
+msgid "Getting player names..."
 msgstr "Obteniendo nombre de jugadores"
 
-#: ../tictactoe/main.c:160
-msgid "Getting opponent's move"
+#: ../tictactoe/main.c:180
+#, c-format
+msgid "%s is %c."
+msgstr ""
+
+#: ../tictactoe/main.c:204
+#, c-format
+msgid "%s (%c) has moved."
+msgstr ""
+
+#: ../tictactoe/main.c:207
+#, fuzzy
+msgid "Your opponent has moved."
 msgstr "Obteniendo jugada del oponente"
 
-#: ../tictactoe/main.c:177
-msgid "Getting re-sync"
-msgstr "Obteniendo re-sincronizacion"
+#: ../tictactoe/main.c:221
+msgid "Syncing with server..."
+msgstr ""
 
-#: ../tictactoe/main.c:182
+#: ../tictactoe/main.c:226
 #, c-format
-msgid "Player %d's turn"
-msgstr "El jugador %d tiene el turno"
+msgid "It's %s (%c)'s turn."
+msgstr ""
 
-#: ../tictactoe/main.c:187
-#, c-format
-msgid "Read a %d "
-msgstr "Se ley un %d"
-
-#: ../tictactoe/main.c:192
-msgid "Sync completed"
+#: ../tictactoe/main.c:236
+#, fuzzy
+msgid "Sync completed."
 msgstr "Sincronizacion completa"
 
-#: ../tictactoe/main.c:201
-msgid "Game over"
+#: ../tictactoe/main.c:245
+#, fuzzy
+msgid "Game over."
 msgstr "Juego terminado"
 
-#: ../tictactoe/main.c:209
+#: ../tictactoe/main.c:253
 #, c-format
-msgid "Player %d won"
-msgstr "El jugador %d es el ganador"
+msgid "%s (%c) won"
+msgstr ""
 
-#: ../tictactoe/main.c:212
+#: ../tictactoe/main.c:258
 msgid "Tie game!"
 msgstr "Juego empatado!"
 
-#: ../tictactoe/main.c:233
-#, c-format
-msgid "Sending my move: %d"
+#: ../tictactoe/main.c:288
+#, fuzzy
+msgid "Sending move."
 msgstr "Enviando jugada: %d"
 
-#: ../tictactoe/main.c:245
-msgid "Sending NULL options"
+#: ../tictactoe/main.c:300
+#, fuzzy
+msgid "Sending options."
 msgstr "Enviando opciones NULL"
 
-#: ../tictactoe/main.c:259
+#: ../tictactoe/main.c:314
 msgid "Server not ready!!"
 msgstr "El servidor no esta listo!!"
 
-#: ../tictactoe/main.c:262
-msgid "Not my turn !!"
+#: ../tictactoe/main.c:317
+#, fuzzy
+msgid "Not your turn!"
 msgstr "No es mi turno!!"
 
-#: ../tictactoe/main.c:265
-msgid "Move out of bounds"
+#: ../tictactoe/main.c:320
+#, fuzzy
+msgid "Move out of bounds!"
 msgstr "Movimento fuera de limite"
 
-#: ../tictactoe/main.c:268
-msgid "Space already occupied"
+#: ../tictactoe/main.c:323
+#, fuzzy
+msgid "Space already occupied!"
 msgstr "Espacio ocupado"
 
-#: ../tictactoe/main.c:271
-msgid "Move OK"
-msgstr "Movida OK"
+#: ../tictactoe/main.c:326
+msgid "Move accepted."
+msgstr ""
 
-#: ../tictactoe/main_win.c:272
+#: ../tictactoe/main_win.c:232
+msgid "It's not your move yet."
+msgstr ""
+
+#: ../tictactoe/main_win.c:234
+msgid "You're just watching."
+msgstr ""
+
+#: ../tictactoe/main_win.c:276
 msgid "Tic-Tac-Toe"
 msgstr "Ta-Te-Ti"
 
-#: ../tictactoe/main_win.c:290
+#: ../tictactoe/main_win.c:294
 msgid "_Game"
 msgstr "_Juego"
 
-#: ../tictactoe/main_win.c:308
+#: ../tictactoe/main_win.c:312
 msgid "Re_sync"
 msgstr "Re_sincronizar"
 
-#: ../tictactoe/main_win.c:319
+#: ../tictactoe/main_win.c:323
 msgid "E_xit"
 msgstr "Sal_ir"
 
-#: ../tictactoe/main_win.c:330
+#: ../tictactoe/main_win.c:334
 msgid "_Help"
 msgstr "A_yuda"
 
-#: ../tictactoe/main_win.c:349
+#: ../tictactoe/main_win.c:353
 msgid "_About"
 msgstr "_Acerca"
 
@@ -153,3 +180,18 @@ msgstr "Cancelar"
 #, c-format
 msgid "nls enabled: %s"
 msgstr "nls habilitado: %s"
+
+#~ msgid "Getting re-sync"
+#~ msgstr "Obteniendo re-sincronizacion"
+
+#~ msgid "Player %d's turn"
+#~ msgstr "El jugador %d tiene el turno"
+
+#~ msgid "Read a %d "
+#~ msgstr "Se ley un %d"
+
+#~ msgid "Player %d won"
+#~ msgstr "El jugador %d es el ganador"
+
+#~ msgid "Move OK"
+#~ msgstr "Movida OK"

@@ -1,12 +1,13 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-04-04 10:14+0200\n"
+"POT-Creation-Date: 2002-09-15 12:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,20 +15,20 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../spades/gtk_dlg_about.c:49
+#: ../spades/gtk_dlg_about.c:50
 msgid "About GtkSpades"
 msgstr ""
 
-#: ../spades/gtk_dlg_about.c:55
+#: ../spades/gtk_dlg_about.c:56
 #, c-format
 msgid "GtkSpades Client Version %s\n"
 msgstr ""
 
-#: ../spades/gtk_dlg_about.c:58
+#: ../spades/gtk_dlg_about.c:59
 msgid "Copyright 1999: Brent Hendricks"
 msgstr ""
 
-#: ../spades/gtk_dlg_about.c:67 ../spades/gtk_dlg_error.c:71
+#: ../spades/gtk_dlg_about.c:68 ../spades/gtk_dlg_error.c:75
 #: ../spades/gtk_dlg_stat.c:93
 msgid "OK"
 msgstr ""
@@ -40,75 +41,75 @@ msgstr ""
 msgid "Really Disconnect?"
 msgstr ""
 
-#: ../spades/gtk_dlg_disconnect.c:66 ../spades/gtk_dlg_options.c:162
-#: ../spades/gtk_dlg_options.c:352 ../spades/gtk_dlg_stat.c:77
+#: ../spades/gtk_dlg_disconnect.c:66 ../spades/gtk_dlg_options.c:165
+#: ../spades/gtk_dlg_options.c:355 ../spades/gtk_dlg_stat.c:77
 msgid "No"
 msgstr ""
 
-#: ../spades/gtk_dlg_disconnect.c:67 ../spades/gtk_dlg_options.c:162
-#: ../spades/gtk_dlg_options.c:348 ../spades/gtk_dlg_stat.c:76
+#: ../spades/gtk_dlg_disconnect.c:67 ../spades/gtk_dlg_options.c:165
+#: ../spades/gtk_dlg_options.c:351 ../spades/gtk_dlg_stat.c:76
 msgid "Yes"
 msgstr ""
 
-#: ../spades/gtk_dlg_error.c:50
+#: ../spades/gtk_dlg_error.c:54
 msgid "Error!"
 msgstr ""
 
-#: ../spades/gtk_dlg_error.c:52
+#: ../spades/gtk_dlg_error.c:56
 msgid "Warning!"
 msgstr ""
 
-#: ../spades/gtk_dlg_error.c:60
+#: ../spades/gtk_dlg_error.c:64
 msgid "An error occurred!"
 msgstr ""
 
-#: ../spades/gtk_dlg_error.c:62
+#: ../spades/gtk_dlg_error.c:66
 msgid "Please note!"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:71
+#: ../spades/gtk_dlg_options.c:74
 msgid "Options"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:95
+#: ../spades/gtk_dlg_options.c:98
 msgid "Player Options"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:96
+#: ../spades/gtk_dlg_options.c:99
 msgid "Game Options"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:106 ../spades/gtk_dlg_options.c:107
-#: ../spades/gtk_dlg_options.c:108 ../spades/gtk_dlg_options.c:334
+#: ../spades/gtk_dlg_options.c:109 ../spades/gtk_dlg_options.c:110
+#: ../spades/gtk_dlg_options.c:111 ../spades/gtk_dlg_options.c:337
 msgid "Human"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:136 ../spades/gtk_dlg_options.c:139
-#: ../spades/gtk_dlg_options.c:142
+#: ../spades/gtk_dlg_options.c:139 ../spades/gtk_dlg_options.c:142
+#: ../spades/gtk_dlg_options.c:145
 msgid "Click to toggle Human/Computer player"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:173
+#: ../spades/gtk_dlg_options.c:176
 msgid "Minimum Bid :"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:174
+#: ../spades/gtk_dlg_options.c:177
 msgid "Game ends at :"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:175
+#: ../spades/gtk_dlg_options.c:178
 msgid "Nil bids allowed :"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:185
+#: ../spades/gtk_dlg_options.c:188
 msgid "Start"
 msgstr ""
 
-#: ../common/dlg_exit.c:67 ../spades/gtk_dlg_options.c:186
+#: ../spades/gtk_dlg_options.c:189 ../common/dlg_exit.c:67
 msgid "Cancel"
 msgstr ""
 
-#: ../spades/gtk_dlg_options.c:330
+#: ../spades/gtk_dlg_options.c:333
 msgid "Computer"
 msgstr ""
 
@@ -165,39 +166,7 @@ msgstr ""
 msgid "Please play a card"
 msgstr ""
 
-#: ../spades/gtk_menu.c:49
-msgid "/_Game"
-msgstr ""
-
-#: ../spades/gtk_menu.c:50
-msgid "/Game/_New"
-msgstr ""
-
-#: ../spades/gtk_menu.c:51
-msgid "/Game/_End"
-msgstr ""
-
-#: ../spades/gtk_menu.c:52
-msgid "/Game/_Statistics"
-msgstr ""
-
-#: ../spades/gtk_menu.c:53
-msgid "/Game/sep1"
-msgstr ""
-
-#: ../spades/gtk_menu.c:54
-msgid "/Game/_Quit"
-msgstr ""
-
-#: ../spades/gtk_menu.c:55
-msgid "/_Help"
-msgstr ""
-
-#: ../spades/gtk_menu.c:57
-msgid "/Help/_About"
-msgstr ""
-
-#: ../spades/gtk_menu.c:78
+#: ../spades/gtk_menu.c:84
 msgid "<main>/Game/End"
 msgstr ""
 
