@@ -97,10 +97,24 @@ GtkWidget* ggz_xtext_new (gchar *widget_name, gchar *string1, gchar *string2, gi
  */
 static void ggz_join_game(GtkButton * button, gpointer user_data)
 {
-	
-        dbg_msg("joining game");
-        es_write_int(connection.sock, REQ_TABLE_JOIN);
-        es_write_int(connection.sock, selected_table);
+	gchar* game_name;
+	gint type;
+
+	type = room_info.info[connection.cur_room].game_type;
+	game_name = g_strdup(game_types.info[type].name);
+
+        if ( ggzrc_read_string(game_name, "Path", NULL) == NULL)
+                warn_dlg(_("Sorry, but you don't seem to have %s installed. You\ncan get it from %s."), 
+			 game_name, game_types.info[type].web);
+        else if (!connection.connected)
+                warn_dlg(_("Not connected!"));
+        else {
+	        dbg_msg("joining game");
+	        es_write_int(connection.sock, REQ_TABLE_JOIN);
+	        es_write_int(connection.sock, selected_table);
+        }
+
+	g_free(game_name);
 
 }
 
@@ -223,20 +237,31 @@ static void ggz_table_select_row_callback(GtkWidget *widget, gint row, gint colu
 
 static void ggz_get_game_options(GtkButton * button, gpointer user_data)
 {
+	gchar* game_name;
+	gint type;
 
-        if (!connection.connected)
+	type = room_info.info[connection.cur_room].game_type;
+	game_name = g_strdup(game_types.info[type].name);
+
+        if ( ggzrc_read_string(game_name, "Path", NULL) == NULL)
+                warn_dlg(_("Sorry, but you don't seem to have %s installed. You\ncan get it from %s."), 
+			 game_name, game_types.info[type].web);
+        else if (!connection.connected)
                 warn_dlg(_("Not connected!"));
         else {
                 dlg_launch = create_dlg_launch();
                 gtk_widget_show(dlg_launch);
         }
 
+	g_free(game_name);
 }
 
 gint ggz_event_tables( GtkWidget *widget, GdkEvent *event )
 {
 	GtkWidget *tmp;
 	int row,col;
+	gchar* game_name;
+	gint type;
 
 	if (event->type == GDK_BUTTON_PRESS && event->button.button == 3)
 	{
@@ -262,8 +287,21 @@ gint ggz_event_tables( GtkWidget *widget, GdkEvent *event )
         }
 	if (event->type == GDK_2BUTTON_PRESS)
 	{
-        	es_write_int(connection.sock, REQ_TABLE_JOIN);
-	        es_write_int(connection.sock, selected_table);
+		type = room_info.info[connection.cur_room].game_type;
+		game_name = g_strdup(game_types.info[type].name);
+
+	        if ( ggzrc_read_string(game_name, "Path", NULL) == NULL)
+        	        warn_dlg(_("Sorry, but you don't seem to have %s installed. You\ncan get it from %s."), 
+				 game_name, game_types.info[type].web);
+	        else if (!connection.connected)
+        	        warn_dlg(_("Not connected!"));
+        	else {
+	        	dbg_msg("joining game");
+		        es_write_int(connection.sock, REQ_TABLE_JOIN);
+		        es_write_int(connection.sock, selected_table);
+        	}
+
+		g_free(game_name);
 	}
 
 
