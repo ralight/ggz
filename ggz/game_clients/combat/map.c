@@ -64,6 +64,7 @@ static unsigned int _generate_hash(char *p) {
 int map_save(combat_game *map) {
   unsigned int hash;
   char filename[128];
+  char options[20];
   char *map_data;
   int handle, a;
   hash = _generate_hash( combat_options_string_write(map, 1) );
@@ -118,6 +119,9 @@ int map_save(combat_game *map) {
   }
   map_data[map->width * map->height] = 0;
   _ggzcore_confio_write_string(handle, "map", "data", map_data);
+  // Options
+  sprintf(options, "%lX", map->options);
+  _ggzcore_confio_write_string(handle, "options", "bin1", options);
   _ggzcore_confio_commit(handle);
   return 0;
 }
@@ -154,6 +158,7 @@ void map_load(combat_game *_game, char *filename, int *changed) {
   unsigned int hash;
   char hash_str[32];
   char *new_filename;
+  char *options;
   int a, b;
   char *terrain_data;
   handle = _ggzcore_confio_parse(filename, 0);
@@ -194,6 +199,10 @@ void map_load(combat_game *_game, char *filename, int *changed) {
       }
     }
   }
+  // Options
+  options = _ggzcore_confio_read_string(handle, "options", "bin1", NULL);
+  if (options)
+    sscanf(options, "%lx", &_game->options);
   a = strlen(filename) - 1;
   while (a >= 0 && filename[a] != '/')
     a--;

@@ -315,7 +315,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[1]);
   gtk_container_add (GTK_CONTAINER (eventbox2), opt_bin1[1]);
-  gtk_widget_set_sensitive (opt_bin1[1], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[1], TRUE);
 
   eventbox3 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox3, "eventbox3");
@@ -335,7 +335,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[2]);
   gtk_container_add (GTK_CONTAINER (eventbox3), opt_bin1[2]);
-  gtk_widget_set_sensitive (opt_bin1[2], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[2], TRUE);
 
   eventbox4 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox4, "eventbox4");
@@ -355,7 +355,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[3]);
   gtk_container_add (GTK_CONTAINER (eventbox4), opt_bin1[3]);
-  gtk_widget_set_sensitive (opt_bin1[3], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[3], TRUE);
 
   eventbox5 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox5, "eventbox5");
@@ -386,16 +386,16 @@ create_dlg_options (int number)
   gtk_table_attach (GTK_TABLE (options_table), eventbox6, 0, 1, 5, 6,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_tooltips_set_tip (tooltips, eventbox6, _("If set, the units can only walk forward, like a pawn in chess"), NULL);
+  gtk_tooltips_set_tip (tooltips, eventbox6, _("If set, the flags will be able to walk, just like a regular unit (think of it like a officer carrying a flag)"), NULL);
 
-  opt_bin1[5] = gtk_check_button_new_with_label (_("Units can only advance"));
+  opt_bin1[5] = gtk_check_button_new_with_label (_("Moving Flags"));
   gtk_widget_set_name (opt_bin1[5], "opt_bin1[5]");
   gtk_widget_ref (opt_bin1[5]);
   gtk_object_set_data_full (GTK_OBJECT (dlg_options), "opt_bin1[5]", opt_bin1[5],
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[5]);
   gtk_container_add (GTK_CONTAINER (eventbox6), opt_bin1[5]);
-  gtk_widget_set_sensitive (opt_bin1[5], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[5], TRUE);
 
   eventbox7 = gtk_event_box_new ();
   gtk_widget_set_name (eventbox7, "eventbox7");
@@ -616,7 +616,7 @@ create_dlg_options (int number)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (opt_bin1[0]);
   gtk_container_add (GTK_CONTAINER (opt_box_open_map), opt_bin1[0]);
-  gtk_widget_set_sensitive (opt_bin1[0], FALSE);
+  gtk_widget_set_sensitive (opt_bin1[0], TRUE);
 
   /* end of options! */
 
@@ -923,6 +923,7 @@ void maps_list_selected (GtkCList *clist, gint row, gint column,
   preview_game->army[preview_game->number] = (char *)calloc(12, sizeof(char));
   preview_game->map = NULL;
   preview_game->name = NULL;
+  preview_game->options = 0;
   map_load(preview_game, filenames[row], &changed);
   if (changed == 0)
     dlg_options_list_maps(GTK_WIDGET(clist));
@@ -1020,6 +1021,8 @@ void save_map(GtkButton *button, GtkWidget *dialog) {
 void load_map(char *filename, GtkWidget *dialog) {
   GtkWidget *width, *height;
   GtkWidget *unit_spin;
+  GtkWidget *options_widget;
+  char options_name[14];
   int a;
   combat_game *map = (combat_game *)malloc(sizeof(combat_game));
   map->number = GPOINTER_TO_INT(
@@ -1028,6 +1031,7 @@ void load_map(char *filename, GtkWidget *dialog) {
   map->army[map->number] = (char *)calloc(12, sizeof(char));
   map->map = NULL;
   map->name = NULL;
+  map->options = 0;
   map_load(map, filename, NULL);
   /* Get the widgets */
   width = lookup_widget(dialog, "width");
@@ -1040,10 +1044,15 @@ void load_map(char *filename, GtkWidget *dialog) {
     unit_spin = lookup_widget(dialog, spin_name[a]);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(unit_spin), ARMY(map, a));
   }
+  // Options
+  for (a = 0; a < 16; a++) {
+    sprintf(options_name, "opt_bin1[%d]", a);
+    options_widget = lookup_widget(dialog, options_name);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(options_widget), map->options&(1<<a));
+  }
   // Terrain data
   gtk_object_set_data(GTK_OBJECT(dialog), "options", map);
   draw_mini_board(dialog);
-
 }
 
 GtkWidget*
