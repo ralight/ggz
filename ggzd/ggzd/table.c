@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4528 2002-09-12 19:34:02Z jdorje $
+ * $Id: table.c 4529 2002-09-12 21:44:40Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -1168,7 +1168,7 @@ static int table_seat_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode,
 	int status;
 	struct GGZSeatChange *data;
 
-	data = ggz_malloc(sizeof(struct GGZSeatChange));
+	data = ggz_malloc(sizeof(*data));
 
 	/* Copy seat data into structure for passing to event */
 	data->seat.index = seat_num;
@@ -1178,7 +1178,8 @@ static int table_seat_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode,
 	data->num_seats = seats_num(table);
 
 	/* Queue table event for whole room */
-	status = event_room_enqueue(table->room, table_seat_event_callback, sizeof(data), data);
+	status = event_room_enqueue(table->room, table_seat_event_callback,
+				    sizeof(*data), data);
 	
 	return status;
 }
