@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>
+GGZ Gaming Zone Features
+</title>
+</head>
+<style type="text/css">
+tt {background-color: #e0e0ff}
+h2 {background-color: #e0a040}
+h3 {background-color: #e0a040}
+div {font-family: sans-serif}
+th {text-align: left}
+</style>
+<body>
+
+<div>
+
+<h2>GGZ Gaming Zone Features</h2>
+
+<small>
+<i>Revision: 0.1</i><br>
+<i>Date: 26.02.2005</i><br>
+<i>Author: Josef Spillner &lt;josef at ggzgamingzone dot org&gt;</i><br>
+</small>
+
+<p>
+Often, game developers ask: Does it make sense to use GGZ for my games?
+What kind of functionality can I expect? Which kinds of games are
+supported? Those questions should be clarified after reading through
+this document.
+</p>
+
+<h3>The architecture</h3>
+
+<p>
+GGZ always assumes a client-server model. This is because until today,
+no safe method exists for determining a winner without a trusted
+instance. However, peer-to-peer games can also use GGZ.
+</p>
+
+<p>
+What does "using GGZ" mean at all? There are several possibilities.
+First, a game server is installed into a GGZ server, and made available
+to players who use a GGZ core client to look for players and launch
+games. Second, game authors can embed GGZ functionality into their
+games directly. This requires more work but leads to better integration.
+Third, additional services like the GGZ meta server or internet
+level and theme updates can be used, even when the network code itself
+doesn't use GGZ at all!
+</p>
+
+<p>
+The following paragraphs deal with the three possibilities outlined
+above.
+</p>
+
+<h3>Playing games over GGZ</h3>
+
+<p>
+This is the classic case: a player launches a game from a GGZ core
+clients, fills some of the seats on its table with bot players, and
+leaves the remaining ones open for others to join. Once the table
+is full, the game starts and runs until a winner is determined.
+</p>
+
+<p>
+GGZ games can make use of several features, if implemented correctly.
+The following list should give some hints.
+</p>
+
+<ul>
+<li>seat reservations or unlimited seats per table
+<li>AI players (soon distinguishable!)
+<li>host player can boot players, replace them with bots etc.
+<li>leaving and rejoining games
+<li>game spectators
+<li>statistics: wins and losses, ratings, highscores, defeats
+<li>player karma system and matchmaking system
+<li>teams with leaders and membership management
+<li>tournament organization
+<li>server-side savegames
+<li>eternal games (keepalive)
+<li>sharing levels and themes
+</ul>
+
+<p>
+There are well-documented convenient libraries available for development
+in C, C++ and Python. The base library, libggz, contains useful helper
+functions. The game client and server libraries, libggzmod and libggzdmod,
+offer a callback-based event management and allow for access on relevant
+game information. The core client library libggzcore is normally not
+used by game authors.
+</p>
+
+<h3>Advanced game development</h3>
+
+<p>
+It is possible to integrate ggzcore functionality into a game. In this case,
+it would provide a connection dialog to a GGZ server, on which it joins
+the room of its kind, and lists the open tables within the game user interface.
+Currently, this is being done by Widelands.
+</p>
+
+<p>
+Games which do not want to have the server running on GGZ, e.g. because of
+speed reasons, can still be designed in a peer-to-peer manner using UDP
+connections, while leaving a TCP connection to the GGZ game server open.
+This connection can be used to set up the game, find players and eventually
+report (untrusted) results.
+</p>
+
+<p>
+An advice for AI development is to keep the AI (and game logic) separate
+so that it can be reused for programming language wrappers and the chatbot,
+which can also play games. Often, such code is shared between game client
+and server also.
+</p>
+
+<h3>Other GGZ services</h3>
+
+<p>
+The GGZ meta server is currently used by the telnet client and KGGZ to find out
+on which host a particular version of the GGZ server is running.
+It is however a totally generic metaserver, and any game can store information
+in it as it needs, including replication and authentication for indicated
+areas of the information held by it.
+</p>
+
+<p>
+Internet level and theme updates are implemented on GGZ community and
+currently used by KDE and SDL/Python games. Ideally, all games would provide
+the ability to load additional levels or designs while they run.
+</p>
+
+</div>
+
+</body>
+</html>
