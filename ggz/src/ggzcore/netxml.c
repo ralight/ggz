@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5972 2004-03-22 17:05:09Z josef $
+ * $Id: netxml.c 6304 2004-11-08 23:03:21Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -733,7 +733,8 @@ int _ggzcore_net_data_is_pending(GGZNet *net)
 }
 
 
-/* Read in a bit more from the server and send it to the parser */
+/* Read in a bit more from the server and send it to the parser.  The return
+ * value seems to mean nothing (???). */
 int _ggzcore_net_read_data(GGZNet *net)
 {
 	char *buf;

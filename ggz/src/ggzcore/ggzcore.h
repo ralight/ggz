@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6276 2004-11-05 23:36:58Z jdorje $
+ * $Id: ggzcore.h 6304 2004-11-08 23:03:21Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -869,7 +869,8 @@ int ggzcore_server_disconnect(GGZServer *server);
 /** @brief Check for data pending from the server socket.*/
 int ggzcore_server_data_is_pending(GGZServer *server);
 
-/** @brief Read data for the server on the specified FD. */
+/** @brief Read data for the server on the specified FD.
+ *  @return negative on error */
 int ggzcore_server_read_data(GGZServer *server, int fd);
 
 /** @brief Free GGZServer object and accompanying data */
@@ -1459,6 +1460,7 @@ int ggzcore_game_launch(GGZGame *game);
 
 /** @brief Read data from the game.
  *  When data is pending on the control socket, call this function.
+ *  @return negative on error
  *  @see ggzcore_game_get_control_fd */
 int ggzcore_game_read_data(GGZGame *game);
 
