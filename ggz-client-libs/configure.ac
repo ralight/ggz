@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6494 2004-12-15 21:17:08Z josef $
+dnl $Id: configure.ac 6556 2004-12-22 16:38:28Z josef $
 
 AC_INIT([GGZ client libraries], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -160,7 +160,6 @@ packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}",
 		   [The top-level source directory])
 
-AC_SUBST(LDADD)
 AC_SUBST(ggzconfdir)
 AC_SUBST(ggzexecmoddir)
 AC_SUBST(ggzdatadir)
