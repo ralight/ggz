@@ -78,7 +78,7 @@ void GGZ::recvRawData()
 void GGZ::recvEvent(GGZMod *mod, GGZModEvent e, void *data)
 {
 	self->socket = new QSocket();
-	self->socket->setSocket((int)data);
+	self->socket->setSocket(*(int*)data);
 
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 

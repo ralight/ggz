@@ -156,7 +156,7 @@ void KTicTacTuxProto::sendStatistics()
 // Callbacks
 void KTicTacTuxProto::handle_server(GGZMod *mod, GGZModEvent e, void *data)
 {
-	self->fd = (int)data;
+	self->fd = *(int*)data;
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 	self->gameobject->network();
 }

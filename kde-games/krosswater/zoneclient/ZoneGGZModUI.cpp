@@ -261,7 +261,7 @@ int ZoneGGZModUI::zonePlayers()
 
 void ZoneGGZModUI::handle_server(GGZMod *mod, GGZModEvent e, void *data)
 {
-	self->zone_fd = (int)data;
+	self->zone_fd = *(int*)data;
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 
 	self->zone_sn = new QSocketNotifier(self->zone_fd, QSocketNotifier::Read, self);

@@ -169,7 +169,7 @@ void sighandler(int foo)
 /* GGZ handler */
 void callback(GGZMod *mod, GGZModEvent e, void *data)
 {
-	fdgame = (int)data;
+	fdgame = *(int*)data;
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 	
 }

@@ -69,7 +69,7 @@ void Network::callback(GGZMod *mod, void *data)
 {
 	QSocketNotifier *sn;
 
-	m_fd = (int)data;
+	m_fd = *(int*)data;
 	ggzmod_set_state(mod, GGZMOD_STATE_PLAYING);
 
 	sn = new QSocketNotifier(m_fd, QSocketNotifier::Read, this);
