@@ -22,60 +22,89 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <stdlib.h>
+
+#include "assert.h"
 #include "game.h"
 #include "hand.h"
 #include "layout.h"
 
 
-/* this is the upper left corner of the 4 text box squares.
- * the width is CARDHEIGHT+2*XWIDTH for all of them. */
-/*
-int text_boxes[4][2] = { {XWIDTH,                           WINDOW_HEIGHT-3*XWIDTH-CARDHEIGHT},
-			 {XWIDTH,                           XWIDTH},
-			 {WINDOW_WIDTH-3*XWIDTH-CARDHEIGHT, XWIDTH},
-			 {WINDOW_WIDTH-3*XWIDTH-CARDHEIGHT, WINDOW_HEIGHT-3*XWIDTH-CARDHEIGHT} };
-*/
-
-/* this includes the upper left corner of the 4 card boxes, plus the orientation (0->3) of each box.
- *   the height is CARDHEIGHT+2*XWIDTH and width is HAND_WIDTH+2*XWIDTH for all. */
-/*
-int card_boxes[4][3] = { {3*XWIDTH + CARDHEIGHT,                WINDOW_HEIGHT - 3*XWIDTH - CARDHEIGHT, 0},
-			 {XWIDTH,                               3*XWIDTH+CARDHEIGHT,                   1},
-			 {3*XWIDTH+CARDHEIGHT,                  XWIDTH,                                2},
-			 {WINDOW_WIDTH - 3*XWIDTH - CARDHEIGHT, 3*XWIDTH + CARDHEIGHT,                 3} };
-*/
+typedef struct layout_t {
+	int orientations[MAX_NUM_PLAYERS];
+	int player_boxes[MAX_NUM_PLAYERS][2];
+} layout_t;
 
 
-int player_boxes[4][3] = { {XWIDTH,                                 WINDOW_HEIGHT - XWIDTH - TEXT_BOX_WIDTH, 0},
-			   {XWIDTH,                                 XWIDTH,                                  1},
-			   {2*XWIDTH + TEXT_BOX_WIDTH,              XWIDTH,                                  2},
-			   {WINDOW_WIDTH - XWIDTH - TEXT_BOX_WIDTH, 2*XWIDTH + TEXT_BOX_WIDTH,               3} };
+#define BOTTOM_BOX {XWIDTH, 2 * XWIDTH + TEXT_BOX_WIDTH + CARD_BOX_WIDTH}
+#define LEFT_BOX {XWIDTH, XWIDTH}
+#define TOP_BOX {2 * XWIDTH + TEXT_BOX_WIDTH, XWIDTH}
+#define RIGHT_BOX {2 * XWIDTH + TEXT_BOX_WIDTH + CARD_BOX_WIDTH, 2 * XWIDTH + TEXT_BOX_WIDTH}
+
+layout_t layout_2 = {
+			/* orientation */
+			{0, 2},
+			/* player boxes */
+			{ BOTTOM_BOX, TOP_BOX}
+		    };
+
+layout_t layout_3 = {
+			/* orientation */
+			{0, 1, 2},
+			/* player boxes */
+			{ BOTTOM_BOX, LEFT_BOX, TOP_BOX}
+		    };
+
+layout_t layout_4 = {
+			/* orientation */
+			{0, 1, 2, 3},
+			/* player_boxes */
+			{ BOTTOM_BOX, LEFT_BOX, TOP_BOX, RIGHT_BOX }
+		    };
+
+layout_t *layouts[MAX_NUM_PLAYERS+1] = { NULL, NULL, &layout_2, &layout_3, &layout_4 };
+
+#define LAYOUT (layouts[game.num_players])
+
+
+
+int get_window_width() {
+	return ( 3*XWIDTH + 2*TEXT_BOX_WIDTH + CARD_BOX_WIDTH );
+}
+
+int get_window_height() {
+	return get_window_width();
+}
 
 int orientation(int p)
 {
-	return player_boxes[p][2];
+	ggz_debug("Number of players is %d.", game.num_players);
+	assert (LAYOUT);
+	return LAYOUT->orientations[p];
 }
 
 void get_text_box_pos(int p, int *x, int *y)
 {
 	int or = orientation(p);
-	*x = player_boxes[p][0];
-	*y = player_boxes[p][1];
+	assert (LAYOUT);
+	*x = LAYOUT->player_boxes[p][0];
+	*y = LAYOUT->player_boxes[p][1];
 	if (or == 2)
-		*x = player_boxes[p][0] + 2*XWIDTH + HAND_WIDTH;
+		*x = LAYOUT->player_boxes[p][0] + 2*XWIDTH + HAND_WIDTH;
 	else if (or == 3)
-		*y = player_boxes[p][1] + 2*XWIDTH + HAND_WIDTH;
+		*y = LAYOUT->player_boxes[p][1] + 2*XWIDTH + HAND_WIDTH;
 }
 
 void get_card_box_pos(int p, int *x, int *y)
 {
 	int or = orientation(p);
-	*x = player_boxes[p][0];
-	*y = player_boxes[p][1];
+	assert (LAYOUT);
+	*x = LAYOUT->player_boxes[p][0];
+	*y = LAYOUT->player_boxes[p][1];
 	if (or == 0)
-		*x = player_boxes[p][0] + 2*XWIDTH + CARDHEIGHT;
+		*x = LAYOUT->player_boxes[p][0] + 2*XWIDTH + CARDHEIGHT;
 	else if (or == 1)
-		*y = player_boxes[p][1] + 2*XWIDTH + CARDHEIGHT;
+		*y = LAYOUT->player_boxes[p][1] + 2*XWIDTH + CARDHEIGHT;
 }
 
 void get_card_box_dim(int p, int *w, int *h)

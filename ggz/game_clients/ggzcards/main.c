@@ -61,6 +61,8 @@ static int get_trick_winner(void);
 
 int main(int argc, char *argv[])
 {
+
+	game.num_players = 4; /* TODO: temporary measure; eventually this should be 0 */
 	ggz_debug("Launching.");
 
 	gtk_init(&argc, &argv);
@@ -261,6 +263,7 @@ static int get_players(void)
 	char *temp;
 	char t_name[17];
 	int numplayers;
+	static int initted = 0; /* TODO: temporary measure */
 
 	if (es_read_int(game.fd, &numplayers) < 0)
 		return -1;
@@ -268,8 +271,9 @@ static int get_players(void)
 	/* TODO: support for changing the number of players */
 
 	/* we may need to allocate memory for the players */
-	if (!game.num_players) {
+	if (!initted || game.num_players != numplayers) {
 		/* TODO: free if necessary */
+		initted = 1;
 		ggz_debug("get_players: (re)allocating game.players.");
   		game.players = (struct seat_t *)g_malloc(numplayers * sizeof(struct seat_t));
 		bzero(game.players, numplayers * sizeof(struct seat_t));

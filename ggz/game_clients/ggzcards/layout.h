@@ -22,7 +22,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
+/* no more than 4 players will work */
+#define MAX_NUM_PLAYERS 4
 
 /* The following would be hell to change */
 #define CARDWIDTH	71
@@ -39,9 +40,8 @@
 #define CARD_BOX_WIDTH	(HAND_WIDTH + 2*XWIDTH)
 #define TEXT_BOX_WIDTH	(TEXT_WIDTH + 2*XWIDTH)
 
-/* this stuff shouldn't be extern, since it would change with other than 4 players */
-#define WINDOW_WIDTH	( 3*XWIDTH + 2*TEXT_BOX_WIDTH + CARD_BOX_WIDTH )
-#define WINDOW_HEIGHT	WINDOW_WIDTH
+extern int get_window_width();
+extern int get_window_height();
 
 extern int orientation(int p);
 extern void get_text_box_pos(int p, int *x, int *y);
