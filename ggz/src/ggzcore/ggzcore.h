@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 4941 2002-10-17 23:56:16Z jdorje $
+ * $Id: ggzcore.h 4945 2002-10-18 06:23:14Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -776,6 +776,13 @@ int          ggzcore_table_get_seat_count(GGZTable *table, GGZSeatType type);
 /** @brief Return the name of a player at the table, or NULL on error. */
 char*        ggzcore_table_get_nth_player_name(GGZTable *table,
 					       const unsigned int num);
+
+/** @brief Return the number of spectator seats at the table, or -1. */
+int ggzcore_table_get_num_spectator_seats(GGZTable *table);
+
+/** @brief Return the name of the nth spectator, or NULL if seat is empty. */
+const char *ggzcore_table_get_nth_spectator_name(GGZTable *table,
+						 const unsigned int num);
 
 /** @brief Return the type of a player at the table, or GGZ_PLAYER_NONE on
  *  error. */

@@ -33,14 +33,15 @@
 #include "ggzcore.h"
 
 struct _GGZSeat {
-
 	/* Seat index */
 	int index;
 
-	/* Type of player in seat */
+	/* Type of player in seat.  Used for regular seats only;
+	   spectator seats just ignore it.*/
 	GGZSeatType type;
 
-	/* Player's name */
+	/* Player's name; or NULL if none.  An empty spectator seat
+	   will have no name. */
 	char *name;
 };
 
@@ -115,12 +116,18 @@ int                   _ggzcore_table_get_id(struct _GGZTable *table);
 struct _GGZGameType*  _ggzcore_table_get_type(struct _GGZTable *table);
 char*                 _ggzcore_table_get_desc(struct _GGZTable *table);
 GGZTableState         _ggzcore_table_get_state(struct _GGZTable *table);
-int                   _ggzcore_table_get_num_seats(struct _GGZTable *table);
+int _ggzcore_table_get_num_seats(GGZTable *table);
+int _ggzcore_table_get_num_spectator_seats(GGZTable *table);
 int                   _ggzcore_table_get_seat_count(struct _GGZTable *table, GGZSeatType type);
 
-struct _GGZSeat* _ggzcore_table_get_nth_seat(struct _GGZTable *table, const unsigned int num);
+struct _GGZSeat* _ggzcore_table_get_nth_seat(GGZTable *table,
+					     const unsigned int num);
+struct _GGZSeat* _ggzcore_table_get_nth_spectator_seat(GGZTable *table,
+						       const unsigned int num);
 char* _ggzcore_table_get_nth_player_name(struct _GGZTable *table, const unsigned int num);
 GGZSeatType _ggzcore_table_get_nth_player_type(struct _GGZTable *table, const unsigned int num);
+const char *_ggzcore_table_get_nth_spectator_name(GGZTable *table,
+						  const unsigned int num);
 
 
 /* Utility functions used by _ggzcore_list */
