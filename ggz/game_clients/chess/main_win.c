@@ -3,7 +3,7 @@
  * Author: GGZ Development Team
  * Project: GGZ Chess game module
  * Desc: Chess client main window creation
- * $Id: main_win.c 4920 2002-10-14 23:01:33Z jdorje $
+ * $Id: main_win.c 5112 2002-10-30 07:57:03Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein.
  *
@@ -243,6 +243,8 @@ create_main_win (void)
 
 #ifdef GTK2
   last_moves = gtk_text_view_new_with_buffer(gtk_text_buffer_new(NULL));
+  gtk_text_view_set_editable(GTK_TEXT_VIEW(last_moves), FALSE);
+  gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(last_moves), FALSE);
 #else
   last_moves = gtk_text_new (NULL, NULL);
 #endif
