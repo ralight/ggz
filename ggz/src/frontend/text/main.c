@@ -71,6 +71,8 @@ int main(void)
 	ggzcore_event_connect(GGZ_SERVER_CHAT_PRVMSG, server_chat_prvmsg);
 	ggzcore_event_connect(GGZ_SERVER_CHAT_BEEP, server_chat_beep);
 	ggzcore_event_connect(GGZ_SERVER_LOGOUT, server_logout);
+	ggzcore_event_connect(GGZ_ROOM_ENTER, server_room_enter);
+	ggzcore_event_connect(GGZ_ROOM_LEAVE, server_room_leave);
 
 	output_prompt(1);
 	for (;;) {

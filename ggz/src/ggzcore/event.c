@@ -105,7 +105,9 @@ static struct _GGZEvent ggz_events[] = {
 	{GGZ_USER_CHAT,             "user_chat",             1},
 	{GGZ_USER_CHAT_PRVMSG,      "user_chat_prvmsg",      1},
 	{GGZ_USER_CHAT_BEEP,        "user_chat_beep",        1},
-	{GGZ_USER_LOGOUT,           "user_logout",           1}
+	{GGZ_USER_LOGOUT,           "user_logout",           1},
+	{GGZ_ROOM_LEAVE,            "room_leave",            1},
+	{GGZ_ROOM_ENTER,            "room_enter",            1}
 };
 
 /* Number of events */

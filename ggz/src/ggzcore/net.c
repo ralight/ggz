@@ -552,11 +552,13 @@ static void _ggzcore_net_handle_update_players(void)
 	switch ((GGZUpdateOp)subop) {
 	case GGZ_UPDATE_DELETE:
 		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s left", name);
+		ggzcore_event_trigger(GGZ_ROOM_LEAVE, name, NULL);
 		_ggzcore_player_list_remove(name);
 		break;
 
 	case GGZ_UPDATE_ADD:
 		ggzcore_debug(GGZ_DBG_NET, "UPDATE_PLAYER: %s enter", name);
+		ggzcore_event_trigger(GGZ_ROOM_ENTER, name, NULL);
 		_ggzcore_player_list_add(name, -1);
 		break;
 	default:

@@ -40,3 +40,7 @@ void server_chat_announce(GGZEventID id, void* event_data, void* user_data);
 
 void server_logout(GGZEventID id, void* event_data, void* user_data);
 
+void server_room_enter(GGZEventID id, void* event_data, void* user_data);
+
+void server_room_leave(GGZEventID id, void* event_data, void* user_data);
+

@@ -105,3 +105,12 @@ void server_logout(GGZEventID id, void* event_data, void* user_data)
 #endif
 }
 
+void server_room_enter(GGZEventID id, void* event_data, void* user_data)
+{
+	output_text("--> %s entered the room.", event_data);
+}
+
+void server_room_leave(GGZEventID id, void* event_data, void* user_data)
+{
+	output_text("<-- %s left the room.", event_data);
+}
