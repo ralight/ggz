@@ -89,11 +89,11 @@ void DisplayInit(void)
 
 	/* Separator */
 	vLine = gtk_vseparator_new();
-	gtk_widget_show(vLine);
+	/* gtk_widget_show(vLine); */
 
 	/* Create Taunt Area */
-	tauntArea = CreateTauntArea();
-	gtk_widget_show(tauntArea);
+	tauntArea = CreateTauntArea(); 
+	/* gtk_widget_show(tauntArea); */
 
 	/* Status Bar */
 	statusBar = gtk_statusbar_new();
