@@ -68,11 +68,11 @@ if test "$ggz_config" != "no"; then
 			      ggz_config=no)
 fi
 
-if test "$ggz_config" == "no"; then
+if test "$ggz_config" = "no"; then
    AC_PATH_PROGS(GGZ_CONFIG, ggz-config, no)
 fi
 
-if test "$GGZ_CONFIG" == "no"; then
+if test "$GGZ_CONFIG" = "no"; then
    AC_MSG_ERROR(*** Couldn't find ggz-config)
 fi
 
