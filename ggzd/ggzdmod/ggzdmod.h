@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 3498 2002-03-02 01:06:32Z bmh $
+ * $Id: ggzdmod.h 3724 2002-04-03 18:01:36Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -304,7 +304,11 @@ GGZdModType ggzdmod_get_type(GGZdMod * ggzdmod);
 /** @brief Get the current state of the table. */
 GGZdModState ggzdmod_get_state(GGZdMod * ggzdmod);
 
-/** @brief Get the total number of seats at the table. */
+/** @brief Get the total number of seats at the table.
+ *  @return The number of seats, or -1 on error.
+ *  @note If no connection is present, -1 will be returned.
+ *  @note We don't know the number of seats until we receive a launch event.
+ */
 int ggzdmod_get_num_seats(GGZdMod * ggzdmod);
 
 /** @brief Get all data for the specified seat.
