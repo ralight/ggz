@@ -1,0 +1,148 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.1.2-Based Variant V1.1//EN"
+"dtd/kdex.dtd" [
+  <!ENTITY kggz "<application>KGGZ</application>">
+  <!ENTITY kappname "&kggz;">
+  <!ENTITY package "ggz-kde-client">
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % English "INCLUDE"> 
+]>
+
+<book lang="&language;">
+
+<bookinfo>
+<title>The &kggz; Handbook</title>
+
+<authorgroup>
+<author>
+<firstname>Josef</firstname>
+<surname>Spillner</surname>
+<affiliation>
+<address><email>dr_maux@users.sourceforge.net</email></address>
+</affiliation>
+</author>
+
+<!-- TRANS:ROLES_OF_TRANSLATORS -->
+
+</authorgroup>
+
+<copyright>
+<year>2002</year>
+<holder>Josef Spillner</holder>
+</copyright>
+
+<legalnotice>&FDLNotice;</legalnotice>
+
+<date>2002-07-30</date>
+<releaseinfo>0.10.00</releaseinfo>
+
+<abstract>
+<para>
+&kggz; is &kde;'s Core Client for the GGZ Gaming Zone.
+</para>
+</abstract>
+
+<keywordset>
+<keyword>GGZ</keyword>
+<keyword>GGZ Gaming Zone</keyword>
+<keyword>ggz-kde-client</keyword>
+<keyword>kggz</keyword>
+</keywordset>
+</bookinfo>
+
+<chapter id="introduction">
+<title>Introduction</title>
+
+<para>
+&kggz; is &kde; Core Client for the GGZ Gaming Zone.
+</para>
+
+<sect1 id="starting">
+<title>Launching &kggz;</title>
+
+<para>
+You will find the entry <guimenuitem>Games/GGZ Gaming Zone/KGGZ</guimenuitem>. This will
+launch &kggz;, and offer you a connection dialog.
+Alternatively, it can be launched with a connection URI such as ggz://username@ggz.snafu.de.
+</para>
+
+</sect1>
+</chapter>
+
+<chapter id="connecting">
+<title>Connecting to a server</title>
+
+<sect1 id="connecting-dialog">
+<title>The connection dialog</title>
+
+<para>
+This handy dialog manages user/server profiles.
+</para>
+
+</sect1>
+
+</chapter>
+
+<chapter id="credits">
+
+<title>Credits and License</title>
+
+<para>
+&kggz;
+</para>
+
+<para>
+Program copyright:
+</para>
+
+<itemizedlist>
+<title>Developers</title>
+<listitem>
+<para>Josef Spillner <email>dr_maux@users.sourceforge.net</email></para>
+</listitem>
+
+</itemizedlist>
+
+<para>
+Documentation copyright 2002 Josef Spillner
+<email>dr_maux@users.sourceforge.net</email>
+</para>
+<!-- TRANS:CREDIT_FOR_TRANSLATORS -->
+
+&underFDL;               <!-- FDL: do not remove -->
+&underGPL;               <!-- BSD License -->
+
+</chapter>
+
+<appendix id="installation">
+<title>Installation</title>
+
+<sect1 id="getting-kggz">
+<title>How to obtain &kggz;</title>
+
+&install.intro.documentation;
+
+</sect1>
+
+<sect1 id="requirements">
+<title>Requirements</title>
+
+<para>
+In order to successfully use &kggz;, you need &kde; 3.x.
+</para>
+
+</sect1>
+
+<sect1 id="compilation">
+<title>Compilation and Installation</title>
+
+&install.compile.documentation;
+
+</sect1>
+
+</appendix>
+
+&documentation.index;
+
+</book>
+
