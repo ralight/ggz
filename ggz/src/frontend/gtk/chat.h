@@ -47,10 +47,11 @@ void chat_help(void);
 int chat_checkurl(GtkXText *xtext, char *word);
 void chat_word_clicked(GtkXText *xtext, char *word,
 	GdkEventButton *event);
-void chat_add_friend(gchar *name);
+void chat_add_friend(gchar *name, gint display);
 void chat_remove_friend(gchar *name);
-void chat_add_ignore(gchar *name);
+void chat_add_ignore(gchar *name, gint display);
 void chat_remove_ignore(gchar *name);
+void chat_save_lists(void);
 gchar *chat_complete_name(gchar *name);
 
 #endif

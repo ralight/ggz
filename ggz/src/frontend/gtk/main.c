@@ -93,7 +93,7 @@ int main (int argc, char *argv[])
 	gtk_main();
 
 	ggzcore_destroy();
-
+	
 	return 0;
 }
 

@@ -159,6 +159,7 @@ client_exit_activate		(GtkMenuItem	*menuitem,
 {
 	if (msgbox(_("Are you sure you want to quit?"), _("Quit?"), MSGBOX_YESNO, MSGBOX_QUESTION, MSGBOX_MODAL) == MSGBOX_YES)
 	{
+		chat_save_lists();
 		gtk_main_quit();
 	}
 }
@@ -597,6 +598,7 @@ client_exit_button_clicked		(GtkButton	*button,
 {
 	if (msgbox(_("Are you sure you want to quit?"), _("Quit?"), MSGBOX_YESNO, MSGBOX_QUESTION, MSGBOX_MODAL) == MSGBOX_YES)
 	{
+		chat_save_lists();
 		gtk_main_quit();
 	}
 }
@@ -869,7 +871,7 @@ client_realize                    (GtkWidget       *widget,
 
 static void client_add_friend(GtkMenuItem *menuitem, gpointer data)
 {
-	chat_add_friend(client_get_players_index(popup_row));
+	chat_add_friend(client_get_players_index(popup_row), TRUE);
 }
 
 static void client_remove_friend(GtkMenuItem *menuitem, gpointer data)
@@ -879,12 +881,12 @@ static void client_remove_friend(GtkMenuItem *menuitem, gpointer data)
 
 static void client_add_ignore(GtkMenuItem *menuitem, gpointer data)
 {
-
+	chat_add_ignore(client_get_players_index(popup_row), TRUE);
 }
 
 static void client_remove_ignore(GtkMenuItem *menuitem, gpointer data)
 {
-
+	chat_remove_ignore(client_get_players_index(popup_row));
 }
 
 static void client_tables_size_request(GtkWidget *widget, gpointer data)

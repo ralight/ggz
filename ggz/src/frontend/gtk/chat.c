@@ -47,6 +47,10 @@ void chat_allocate_colors(void);
 void chat_send_msg(GGZServer *server, gchar *message);
 void chat_send_prvmsg(GGZServer *server, gchar *message);
 void chat_send_beep(GGZServer *server, gchar *message);
+void chat_save_lists(void);
+void chat_load_lists(void);
+void chat_list_friend(void);
+void chat_list_ignore(void);
 static gchar *chat_get_color(gchar *name, gchar *msg);
 extern GtkWidget *win_main;
 extern GGZServer *server;
@@ -119,6 +123,9 @@ void chat_init(void)
 		colors[18] = ColorBlack;
 		colors[19] = ColorWhite;
 	}
+
+
+	chat_load_lists();
 }
 
 
@@ -174,50 +181,70 @@ void chat_allocate_colors(void)
 
 void chat_display_message(CHATTypes id, char *player, char *message)
 {
-        GtkXText *tmp;
+        GtkXText *tmp = NULL;
 	gchar *name = NULL;
 	gchar *command;
+	gint pos;
+	gint ignore = FALSE;
 
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
-	switch(id)
+	/* are we ignoring this person? */
+	pos = 0;
+	while(1)
 	{
-		case CHAT_MSG:
-			if(!strncasecmp(message, "/me ", 4))
+		/* have we hit the end of the list */
+		if(g_array_index(chatinfo.ignore, gchar*, pos) == NULL)
+			break;
+		if(player != NULL)
+			if(!strcmp(g_array_index(chatinfo.ignore, gchar*, pos), player))
 			{
-				name = g_strdup_printf("%s %s", player, message+4);
-			        gtk_xtext_append_indent(GTK_XTEXT(tmp), "*", 1, name, strlen(name));
-			} else {
-				name = g_strdup_printf("<\003%s%s\003>", chat_get_color(player, message),  player);
-			        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
+				ignore = TRUE;
 			}
-		        if( ggzcore_conf_read_int("CHAT", "RSYNTH", FALSE) )
-			{
-				command = g_strdup_printf("esddsp say -f 8 \"%s\"", message);
-				support_exec(command);
-				g_free(command);
-			}
-			break;
-		case CHAT_PRVMSG:
-			name = g_strdup_printf(">\003%s%s\003<", chat_get_color(player, message), player);
-		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
-			break;
-		case CHAT_ANNOUNCE:
-			name = g_strdup_printf("[\003%s%s\003]", chat_get_color(player, message), player);
-		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
-			break;
-		case CHAT_SEND_PRVMSG:
-			name = g_strdup_printf("--> %s", player);
-		        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
-			break;
-		case CHAT_LOCAL_NORMAL:
-		        gtk_xtext_append_indent(GTK_XTEXT(tmp), "---", 3, message, strlen(message));
-			break;
-		case CHAT_LOCAL_HIGH:
-		        gtk_xtext_append_indent(GTK_XTEXT(tmp), "***", 3, message, strlen(message));
-			break;
+		pos++;
 	}
-	g_free(name);
-        gtk_xtext_refresh(tmp, 0);
+
+	if(ignore == FALSE)
+	{
+	        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "xtext_custom");
+		switch(id)
+		{
+			case CHAT_MSG:
+				if(!strncasecmp(message, "/me ", 4))
+				{
+					name = g_strdup_printf("%s %s", player, message+4);
+				        gtk_xtext_append_indent(GTK_XTEXT(tmp), "*", 1, name, strlen(name));
+				} else {
+					name = g_strdup_printf("<\003%s%s\003>", chat_get_color(player, message),  player);
+				        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
+				}
+			        if( ggzcore_conf_read_int("CHAT", "RSYNTH", FALSE) )
+				{
+					command = g_strdup_printf("esddsp say -f 8 \"%s\"", message);
+					support_exec(command);
+					g_free(command);
+				}
+				break;
+			case CHAT_PRVMSG:
+				name = g_strdup_printf(">\003%s%s\003<", chat_get_color(player, message), player);
+			        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
+				break;
+			case CHAT_ANNOUNCE:
+				name = g_strdup_printf("[\003%s%s\003]", chat_get_color(player, message), player);
+			        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
+				break;
+			case CHAT_SEND_PRVMSG:
+				name = g_strdup_printf("--> %s", player);
+			        gtk_xtext_append_indent(GTK_XTEXT(tmp), name, strlen(name), message, strlen(message));
+				break;
+			case CHAT_LOCAL_NORMAL:
+			        gtk_xtext_append_indent(GTK_XTEXT(tmp), "---", 3, message, strlen(message));
+				break;
+			case CHAT_LOCAL_HIGH:
+			        gtk_xtext_append_indent(GTK_XTEXT(tmp), "***", 3, message, strlen(message));
+				break;
+		}
+		g_free(name);
+        	gtk_xtext_refresh(tmp, 0);
+	}
 }
 
 
@@ -240,6 +267,10 @@ void chat_send(gchar *message)
 			chat_send_beep(server, message);
 		else if(strncasecmp(message, "/help", 5) == 0)
 			chat_help();
+		else if(strncasecmp(message, "/friends", 8) == 0)
+			chat_list_friend();
+		else if(strncasecmp(message, "/ignore", 7) == 0)
+			chat_list_ignore();
 		else 
 			chat_send_msg(server, message);
 	}
@@ -375,6 +406,8 @@ void chat_help(void)
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/me <action>"));
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/msg <username> <message>"));
 	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/beep <username>"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/friends"));
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, _("/ignore"));
 }
 
 
@@ -551,18 +584,22 @@ gchar *chat_get_color(gchar *name, gchar *msg)
  *
  * Recieves:
  * gchar	*name	: name to add
+ * gint		display : Display the add message in xtext
  *
  * Returns:
  */
 
-void chat_add_friend(gchar *name)
+void chat_add_friend(gchar *name, gint display)
 {
 	gchar *out;
 
 	g_array_append_val(chatinfo.friends, name);
-	out = g_strdup_printf(_("Added %s to your friends list."), name);
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
-	g_free(out);
+	if(display == TRUE)
+	{
+		out = g_strdup_printf(_("Added %s to your friends list."), name);
+		chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
+		g_free(out);
+	}
 }
 
 /* chat_remove_friend() - Removes a name to your friends list
@@ -601,18 +638,22 @@ void chat_remove_friend(gchar *name)
  *
  * Recieves:
  * gchar	*name	: name to add
+ * gint		display : Display the add message in xtext
  *
  * Returns:
  */
 
-void chat_add_ignore(gchar *name)
+void chat_add_ignore(gchar *name, gint display)
 {
 	gchar *out;
 
 	g_array_append_val(chatinfo.ignore, name);
-	out = g_strdup_printf(_("Added %s to your ignore list."), name);
-	chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
-	g_free(out);
+	if(display == TRUE)
+	{
+		out = g_strdup_printf(_("Added %s to your ignore list."), name);
+		chat_display_message(CHAT_LOCAL_NORMAL, NULL, out);
+		g_free(out);
+	}
 }
 
 
@@ -642,6 +683,110 @@ void chat_remove_ignore(gchar *name)
 			g_free(out);
 			break;
 		}
+		x++;
+	}
+}
+
+
+/* chat_save_lists() - saves the friends and ignore list to the rc file
+ *
+ * Recieves:
+ *
+ * Returns:
+ */
+
+void chat_save_lists(void)
+{
+	int x=1;
+
+	while(1)
+	{
+		/* have we hit the end of the list */
+		if(g_array_index(chatinfo.ignore, gchar*, x) == NULL)
+			break;
+		ggzcore_conf_write_string("IGNORE",  g_strdup_printf("%d",x),
+			g_array_index(chatinfo.ignore, gchar*, x));
+		x++;
+	}
+	ggzcore_conf_write_int("IGNORE", "TOTAL", x - 1);
+
+	x=1;
+	while(1)
+	{
+		/* have we hit the end of the list */
+		if(g_array_index(chatinfo.friends, gchar*, x) == NULL)
+			break;
+		ggzcore_conf_write_string("FRIENDS",   g_strdup_printf("%d",x),
+			g_array_index(chatinfo.friends, gchar*, x));
+		x++;
+	}
+	ggzcore_conf_write_int("FRIENDS", "TOTAL", x - 1);
+	ggzcore_conf_commit();
+}
+
+
+/* chat_load_lists() - loads the friends and ignore list from the rc file
+ *
+ * Recieves:
+ *
+ * Returns:
+ */
+
+void chat_load_lists(void)
+{
+	int x;
+	int y=1;
+	char *num;
+
+	x = ggzcore_conf_read_int("IGNORE", "TOTAL", 0);
+	for(y=1;y<=x;y++)
+	{
+		num = g_strdup_printf("%d",y);
+		chat_add_ignore(ggzcore_conf_read_string("IGNORE", num, "unknown"), FALSE);
+		g_free(num);
+	}
+
+	x = ggzcore_conf_read_int("FRIENDS", "TOTAL", 0);
+	for(y=1;y<=x;y++)
+	{
+		num = g_strdup_printf("%d",y);
+		chat_add_friend(ggzcore_conf_read_string("FRIENDS", num, "unknown"), FALSE);
+		g_free(num);
+	}
+}
+
+
+void chat_list_friend(void)
+{
+	int x=1;
+
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, "People currently your friends");
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, "-----------------------------");
+	while(1)
+	{
+		/* have we hit the end of the list */
+		if(g_array_index(chatinfo.friends, gchar*, x) == NULL)
+			break;
+		chat_display_message(CHAT_LOCAL_NORMAL, NULL,
+			g_array_index(chatinfo.friends, gchar*, x));
+		x++;
+	}
+}
+
+
+void chat_list_ignore(void)
+{
+	int x=0;
+
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, "People your currently ignoring");
+	chat_display_message(CHAT_LOCAL_NORMAL, NULL, "------------------------------");
+	while(1)
+	{
+		/* have we hit the end of the list */
+		if(g_array_index(chatinfo.ignore, gchar*, x) == NULL)
+			break;
+		chat_display_message(CHAT_LOCAL_NORMAL, NULL,
+			g_array_index(chatinfo.ignore, gchar*, x));
 		x++;
 	}
 }
