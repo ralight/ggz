@@ -30,14 +30,73 @@
 #include "table.h"
 #include "player.h"
 #include "lists.h"
+#include "hook.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 /* Local functions */
 static int _ggzcore_room_event_is_valid(GGZRoomEvent event);
-static GGZHookReturn _ggzcore_room_event(GGZRoom *room, GGZRoomEvent id, 
-					 void *data);
+static GGZHookReturn _ggzcore_room_event(struct _GGZRoom *room, 
+					 GGZRoomEvent id, void *data);
+
+/* Array of GGZRoom messages */
+static char* _ggzcore_room_events[] = {
+	"GGZ_PLAYER_LIST",
+	"GGZ_TABLE_LIST",
+	"GGZ_CHAT",
+	"GGZ_ANNOUNCE",
+	"GGZ_PRVMSG",
+	"GGZ_BEEP",
+	"GGZ_ROOM_ENTER",
+	"GGZ_ROOM_LEAVE",
+	"GGZ_TABLE_UPDATE"
+};
+
+/* Total number of server events messages */
+static unsigned int _ggzcore_num_events = sizeof(_ggzcore_room_events)/sizeof(_ggzcore_room_events[0]);
+
+
+/*
+ * The GGZRoom struct manages information about a particular 
+ */
+struct _GGZRoom {
+
+	/* Server which this room is on */
+	struct _GGZServer *server;
+
+	/* Monitoring flag */
+	char monitor;
+
+	/* Room ID on the server */
+	unsigned int id;
+
+	/* Name of room */
+	char *name;	
+	
+	/* Supported game type (ID on server) */
+	unsigned int game;
+
+	/* Room description */
+	char *desc;
+
+	/* Number of player */
+	unsigned int num_players;
+
+	/* List of players in the room */
+	struct _ggzcore_list *players;
+
+	/* Number of tables */
+	unsigned int num_tables;
+
+	/* List of tables in the room */
+	struct _ggzcore_list *tables;
+
+	/* Room events */
+	GGZHookList *event_hooks[sizeof(_ggzcore_room_events)/sizeof(_ggzcore_room_events[0])];
+
+};
+
 
 /* Publicly exported functions */
 
@@ -244,7 +303,7 @@ void _ggzcore_room_init(struct _GGZRoom *room,
 	/* FIXME: create table list? */
 
 	/* Setup event hook list */
-	for (i = 0; i < GGZ_NUM_ROOM_EVENTS; i++)
+	for (i = 0; i < _ggzcore_num_events; i++)
 		room->event_hooks[i] = _ggzcore_hook_list_init(i);
 }
 
@@ -545,7 +604,7 @@ void _ggzcore_room_free(struct _GGZRoom *room)
 	if (room->tables)
 		_ggzcore_list_destroy(room->tables);
 
-	for (i = 0; i < GGZ_NUM_ROOM_EVENTS; i++)
+	for (i = 0; i < _ggzcore_num_events; i++)
 		_ggzcore_hook_list_destroy(room->event_hooks[i]);
 	
 	ggzcore_free(room);
@@ -555,7 +614,7 @@ void _ggzcore_room_free(struct _GGZRoom *room)
 
 static int _ggzcore_room_event_is_valid(GGZRoomEvent event)
 {
-	return (event >= 0 && event < GGZ_NUM_ROOM_EVENTS);
+	return (event >= 0 && event < _ggzcore_num_events);
 }
 
 

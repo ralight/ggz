@@ -27,51 +27,11 @@
 #ifndef __ROOM_H__
 #define __ROOM_H__
 
-#include "hook.h"
+#include "ggzcore.h"
 #include "server.h"
 #include "player.h"
 #include "table.h"
-
-#define GGZ_NUM_ROOM_EVENTS 9
-
-/*
- * The GGZRoom struct manages information about a particular 
- */
-struct _GGZRoom {
-
-	/* Server which this room is on */
-	struct _GGZServer *server;
-
-	/* Monitoring flag */
-	char monitor;
-
-	/* Room ID on the server */
-	unsigned int id;
-
-	/* Name of room */
-	char *name;	
-	
-	/* Supported game type (ID on server) */
-	unsigned int game;
-
-	/* Room description */
-	char *desc;
-
-	/* Number of player */
-	unsigned int num_players;
-
-	/* List of players in the room */
-	struct _ggzcore_list *players;
-
-	/* Number of tables */
-	unsigned int num_tables;
-
-	/* List of tables in the room */
-	struct _ggzcore_list *tables;
-
-	/* Server events */
-	GGZHookList *event_hooks[GGZ_NUM_ROOM_EVENTS];
-};
+#include "gametype.h"
 
 
 /* Create a new room object for a given server */

@@ -27,70 +27,15 @@
 #define __SERVER_H__
 
 #include "ggzcore.h"
-#include "hook.h"
-#include "state.h"
+#include "gametype.h"
 #include "room.h"
 
-#define GGZ_NUM_SERVER_EVENTS 14
 
-/* The GGZServer structure manages information about a particular
-   GGZ server connection */
-struct _GGZServer {
-	
-	/* Host name of server */
-	char *host;
+void _ggzcore_server_list_players(struct _GGZServer *server);
 
-	/* Port on which GGZ server in running */
-	unsigned int port;
-
-	/* Login type: one of GGZ_LOGIN, GGZ_LOGIN_GUEST, GGZ_LOGIN_NEW */
-	GGZLoginType type;
-
-	/* User handle on this server */
-	char* handle;
-
-	/* Password for this server (optional) */
-	char* password;
-
-	/* File descriptor for communication with server */
-	int fd;
-	
-	/* Current state */
-	GGZStateID state;
-	
-	/* Number of gametypes */
-	int num_gametypes;
-
-	/* List of game types */
-	struct _GGZGameType **gametypes;
-
-	/* Gametype verbosity (need to save) */
-	char gametype_verbose;
-
-	/* Number of rooms */
-	int num_rooms;
-	
-	/* List of rooms in this server */
-	struct _GGZRoom **rooms;
-	
-	/* Room verbosity (need to save) */
-	char room_verbose;
-
-	/* Current room on game server */
-	struct _GGZRoom *room;
-
-	/* Room to which we are transitioning */
-	struct _GGZRoom *new_room;
-
-       	/* Server events */
-	GGZHookList *event_hooks[GGZ_NUM_SERVER_EVENTS];
-
-};
-
-
-void _ggzcore_server_list_players(GGZServer *server);
-
-void _ggzcore_server_list_tables(GGZServer *server, const int type, const char global);
+void _ggzcore_server_list_tables(struct _GGZServer *server, 
+				 const int type, 
+				 const char global);
 
 struct _GGZRoom* _ggzcore_server_get_room_by_id(struct _GGZServer *server,
 						const unsigned int id);
@@ -98,8 +43,7 @@ struct _GGZRoom* _ggzcore_server_get_room_by_id(struct _GGZServer *server,
 struct _GGZGameType* _ggzcore_server_get_type_by_id(struct _GGZServer *server,
 						    const unsigned int id);
 
-
-void _ggzcore_server_chat(GGZServer *server, 
+void _ggzcore_server_chat(struct _GGZServer *server, 
 			  const GGZChatOp opcode,
 			  const char *player,
 			  const char *msg);

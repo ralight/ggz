@@ -37,8 +37,6 @@
 #include <string.h>
 #include <easysock.h>
 
-/* Private functions */
-static void _ggzcore_server_init(void);
 
 /* Functions for manipulating list of rooms */
 static void _ggzcore_server_init_roomlist(struct _GGZServer *server,
@@ -77,6 +75,83 @@ static void _ggzcore_server_handle_list_tables(GGZServer *server);
 static void _ggzcore_server_handle_list_types(GGZServer *server);
 
 
+/* Array of GGZServerEvent messages */
+static char* _ggzcore_server_events[] = {
+	"GGZ_CONNECTED",
+	"GGZ_CONNECT_FAIL",
+	"GGZ_NEGOTIATED",
+	"GGZ_NEGOTIATE_FAIL",
+	"GGZ_LOGGED_IN",
+	"GGZ_LOGIN_FAIL",
+	"GGZ_MOTD_LOADED",
+	"GGZ_ROOM_LIST",
+	"GGZ_TYPE_LIST",
+	"GGZ_ENTERED",
+	"GGZ_ENTER_FAIL",
+	"GGZ_LOGOUT",
+	"GGZ_NET_ERROR",
+	"GGZ_STATE_CHANGE"
+};
+
+
+/* Total number of server events messages */
+static unsigned int _ggzcore_num_events = sizeof(_ggzcore_server_events)/sizeof(char*);
+
+/* The GGZServer structure manages information about a particular
+   GGZ server connection */
+struct _GGZServer {
+	
+	/* Host name of server */
+	char *host;
+
+	/* Port on which GGZ server in running */
+	unsigned int port;
+
+	/* Login type: one of GGZ_LOGIN, GGZ_LOGIN_GUEST, GGZ_LOGIN_NEW */
+	GGZLoginType type;
+
+	/* User handle on this server */
+	char* handle;
+
+	/* Password for this server (optional) */
+	char* password;
+
+	/* File descriptor for communication with server */
+	int fd;
+	
+	/* Current state */
+	GGZStateID state;
+	
+	/* Number of gametypes */
+	int num_gametypes;
+
+	/* List of game types */
+	struct _GGZGameType **gametypes;
+
+	/* Gametype verbosity (need to save) */
+	char gametype_verbose;
+
+	/* Number of rooms */
+	int num_rooms;
+	
+	/* List of rooms in this server */
+	struct _GGZRoom **rooms;
+	
+	/* Room verbosity (need to save) */
+	char room_verbose;
+
+	/* Current room on game server */
+	struct _GGZRoom *room;
+
+	/* Room to which we are transitioning */
+	struct _GGZRoom *new_room;
+
+       	/* Server events */
+	GGZHookList *event_hooks[sizeof(_ggzcore_server_events)/sizeof(char*)];
+
+};
+
+
 /* Datatype for a message from the server */
 struct _GGZServerMsg {
 
@@ -93,11 +168,11 @@ struct _GGZServerMsg {
 /* Array of all server messages */
 static struct _GGZServerMsg _ggzcore_server_msgs[] = {
 	{MSG_SERVER_ID,      "msg_server_id", _ggzcore_server_handle_server_id},
-	{MSG_SERVER_FULL, "msg_server_full", NULL },
-	{MSG_MOTD, "msg_motd", _ggzcore_server_handle_motd},
+	{MSG_SERVER_FULL,    "msg_server_full", NULL },
+	{MSG_MOTD,           "msg_motd", _ggzcore_server_handle_motd},
 	{MSG_CHAT,           "msg_chat", _ggzcore_server_handle_chat},
 	{MSG_UPDATE_PLAYERS, "msg_update_players", _ggzcore_server_handle_update_players},
-	{MSG_UPDATE_TYPES, "msg_update_types", NULL},
+	{MSG_UPDATE_TYPES,   "msg_update_types", NULL},
 	{MSG_UPDATE_TABLES,  "msg_update_tables", _ggzcore_server_handle_update_tables},
 	{MSG_UPDATE_ROOMS,   "msg_update_rooms", NULL},
 	{MSG_ERROR,          "msg_error", NULL},
@@ -124,7 +199,7 @@ static struct _GGZServerMsg _ggzcore_server_msgs[] = {
 
 
 /* Total number of recognized messages */
-static unsigned int _ggzcore_num_messages;
+static unsigned int _ggzcore_num_messages = sizeof(_ggzcore_server_msgs)/sizeof(struct _GGZServerMsg);
 
 
 /* Publicly exported functions */
@@ -137,10 +212,6 @@ GGZServer* ggzcore_server_new(const char *host,
 {
 	int i;
 	GGZServer *server;
-	
-	/* If we haven't already initialized, do it now */
-	if (_ggzcore_num_messages == 0)
-		_ggzcore_server_init();
 	
 	/* Return nothing if we didn't get the necessary info */
 	if (host == NULL || handle == NULL)
@@ -167,7 +238,7 @@ GGZServer* ggzcore_server_new(const char *host,
 		      server->password);
 	
 	/* Setup event hook lists */
-	for (i = 0; i < GGZ_NUM_SERVER_EVENTS; i++)
+	for (i = 0; i < _ggzcore_num_events; i++)
 		server->event_hooks[i] = _ggzcore_hook_list_init(i);
 
 	return server;
@@ -246,7 +317,7 @@ void ggzcore_server_free(GGZServer *server)
 	if (server->num_gametypes > 0)
 		_ggzcore_server_free_typelist(server);
 
-	for (i = 0; i < GGZ_NUM_SERVER_EVENTS; i++)
+	for (i = 0; i < _ggzcore_num_events; i++)
 		_ggzcore_hook_list_destroy(server->event_hooks[i]);
 
 	ggzcore_free(server);
@@ -678,14 +749,6 @@ void _ggzcore_server_chat(GGZServer *server,
 
 /* Static functions internal to this file */
 
-/* FIXME: Handle threaded I/O */
-static void _ggzcore_server_init(void)
-{
-	/* Obtain accurate message count */
-	_ggzcore_num_messages = sizeof(_ggzcore_server_msgs)/sizeof(struct _GGZServerMsg);
-}
-
-
 static void _ggzcore_server_init_roomlist(struct _GGZServer *server,
 					  const int num)
 {
@@ -768,7 +831,7 @@ static void _ggzcore_server_change_state(GGZServer *server, GGZTransID trans)
 
 static int _ggzcore_server_event_is_valid(GGZServerEvent event)
 {
-	return (event >= 0 && event < GGZ_NUM_SERVER_EVENTS);
+	return (event >= 0 && event < _ggzcore_num_events);
 }
 	
 
