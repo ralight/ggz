@@ -1,11 +1,13 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3465 2002-02-25 09:59:43Z jdorje $
+# $Id: Makefile.am 3466 2002-02-25 10:15:32Z jdorje $
 
 EXTRA_DIST = module.dsc.in
 
 SUBDIRS = common client .
 
-INCLUDES = @GTK_CFLAGS@ -Icommon -Iclient
+INCLUDES = @GTK_CFLAGS@ \
+	   -I$(top_srcdir)/ggzcards/common \
+	   -I$(top_srcdir)/ggzcards/client
 
 install-data-local:
 	@$(NORMAL_INSTALL)
