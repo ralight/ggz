@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4554 2002-09-13 17:50:28Z jdorje $
+ * $Id: transit.c 4559 2002-09-13 18:26:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -77,27 +77,30 @@ static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 							   size_t size,
 							   void* data);
 
-static int transit_send_seat_to_game(GGZTable* table, GGZSeatEventData *event);
+static GGZReturn transit_send_seat_to_game(GGZTable* table,
+					   GGZSeatEventData *event);
 static int transit_find_seat(GGZTable *table, char *name);
 
-static int transit_send_spectator_to_game(GGZTable* table, struct GGZSpectatorEvent *event);
+static GGZReturn transit_send_spectator_to_game(GGZTable* table,
+						struct GGZSpectatorEvent *event);
 static int transit_find_spectator(GGZTable *table, char *name);
 
-int transit_seat_event(int room, int index, struct GGZTableSeat seat, char *caller)
+
+GGZReturn transit_seat_event(int room, int index,
+				     struct GGZTableSeat seat, char *caller)
 {
 	GGZSeatEventData *data = ggz_malloc(sizeof(*data));
 
 	data->seat = seat;
 	strcpy(data->caller, caller);
 	
-	if (event_table_enqueue(room, index, transit_seat_event_callback,
-				sizeof(*data), data, NULL) != GGZ_OK)
-		return E_NO_TABLE;
-
-	return E_OK;
+	return event_table_enqueue(room, index, transit_seat_event_callback,
+				   sizeof(*data), data, NULL);
 }
 
-int transit_spectator_event(int room, int index, struct GGZTableSpectator spectator, char *caller)
+GGZReturn transit_spectator_event(int room, int index,
+				  struct GGZTableSpectator spectator,
+				  char *caller)
 {
 	struct GGZSpectatorEvent *data;
 
@@ -106,16 +109,13 @@ int transit_spectator_event(int room, int index, struct GGZTableSpectator specta
 	data->spectator = spectator;
 	strcpy(data->caller, caller);
 	
-	if (event_table_enqueue(room, index,
-				transit_spectator_event_callback,
-				sizeof(*data), data, NULL) != GGZ_OK)
-		return E_NO_TABLE;
-
-	return E_OK;
+	return event_table_enqueue(room, index,
+				   transit_spectator_event_callback,
+				   sizeof(*data), data, NULL);
 }
 
-int transit_player_event(char* name, GGZTransitType opcode,
-			 int status, int index)
+GGZReturn transit_player_event(char* name, GGZTransitType opcode,
+			       int status, int index)
 {
 	GGZPlayerTransitEventData* data = ggz_malloc(sizeof(*data));
 
@@ -138,7 +138,6 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 						      size_t size, 
 						      void* data)
 {
-	int status;
 	GGZTransitType action;
 	GGZTable *table = target;
 	GGZSeatEventData *event = data;
@@ -184,16 +183,14 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 			return GGZ_EVENT_OK;
 		}
 	}
-		
-	status = transit_send_seat_to_game(table, event);
 
-	/* If we sent it successfully, mark this table as in transit */
-	if (status == 0) {
+	if (transit_send_seat_to_game(table, event) == GGZ_OK) {
+		/* If we sent it successfully, mark this table as in transit */
 		table->transit = 1;
-	}
-	/* Otherwise send an error message back to the player */
-	else {
-		transit_player_event(event->caller, action, E_SEAT_ASSIGN_FAIL, 0);
+	} else {
+		/* Otherwise send an error message back to the player */
+		transit_player_event(event->caller, action,
+				     E_SEAT_ASSIGN_FAIL, 0);
 		return GGZ_EVENT_ERROR;
 	}
 
@@ -205,7 +202,6 @@ static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 							   size_t size,
 							   void* data)
 {
-	int status;
 	GGZTransitType action;
 	GGZTable *table = target;
 	struct GGZSpectatorEvent *event = data;
@@ -253,16 +249,14 @@ static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 			return GGZ_EVENT_OK;
 		}
 	}
-		
-	status = transit_send_spectator_to_game(table, event);
 
-	/* If we sent it successfully, mark this table as in transit */
-	if (status == 0) {
+	if (transit_send_spectator_to_game(table, event) == GGZ_OK) {
+		/* If we sent it successfully, mark this table as in transit */
 		table->transit = 1;
-	}
-	/* Otherwise send an error message back to the player */
-	else {
-		transit_player_event(event->caller, action, E_SEAT_ASSIGN_FAIL, 0);
+	} else {
+		/* Otherwise send an error message back to the player */
+		transit_player_event(event->caller, action,
+				     E_SEAT_ASSIGN_FAIL, 0);
 		return GGZ_EVENT_ERROR;
 	}
 
@@ -324,10 +318,11 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
  * Returns 0 on success, -1 on failure (in which case the
  * player should be sent an failure notice).
  */
-static int transit_send_seat_to_game(GGZTable* table, GGZSeatEventData *event)
+static GGZReturn transit_send_seat_to_game(GGZTable* table,
+					   GGZSeatEventData *event)
 {
 	GGZSeat seat;
-	int status = 0;
+	GGZReturn status = GGZ_OK;
 
 	dbg_msg(GGZ_DBG_TABLE, "Sending seat for table %d in room %d",
 		table->index, table->room);
@@ -350,7 +345,7 @@ static int transit_send_seat_to_game(GGZTable* table, GGZSeatEventData *event)
 	
 	if (ggzdmod_set_seat(table->ggzdmod, &seat) < 0) {
 		dbg_msg(GGZ_DBG_TABLE, "ERROR: transit_send_seat_to_game: failed ggzdmod_set_seat() call.");
-		status = -1;
+		status = GGZ_ERROR;
 	}
 
 	/* Must close remote end of socketpair */
@@ -366,10 +361,12 @@ static int transit_send_seat_to_game(GGZTable* table, GGZSeatEventData *event)
  * Returns 0 on success, -1 on failure (in which case the
  * player should be sent an failure notice).
  */
-static int transit_send_spectator_to_game(GGZTable* table, struct GGZSpectatorEvent *event)
+static GGZReturn transit_send_spectator_to_game(GGZTable* table,
+						struct GGZSpectatorEvent *event)
 {
 	GGZSpectator spectator;
-	int status = 0, result;
+	GGZReturn status = GGZ_OK;
+	int result;
 
 	dbg_msg(GGZ_DBG_TABLE,
 		"Sending spectator for table %d in room %d, index %d",
@@ -395,7 +392,7 @@ static int transit_send_spectator_to_game(GGZTable* table, struct GGZSpectatorEv
 			"ERROR: transit_send_spectator_to_game: "
 			"failed ggzdmod_set_spectator() call - error %d",
 			result);
-		status = -1;
+		status = GGZ_ERROR;
 	}
 
 	/* Must close remote end of socketpair */
@@ -466,4 +463,3 @@ static int transit_find_spectator(GGZTable *table, char *name)
 
 	return old;
 }
-

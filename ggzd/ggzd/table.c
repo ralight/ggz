@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 4554 2002-09-13 17:50:28Z jdorje $
+ * $Id: table.c 4559 2002-09-13 18:26:37Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -557,7 +557,8 @@ static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 {
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	char* name;
-	int seat_num, msg_status;
+	int seat_num;
+	GGZReturn msg_status;
 	struct GGZTableSeat seat;
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to join", 
@@ -583,7 +584,7 @@ static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 	pthread_rwlock_unlock(&table->lock);
 	
 	/* If player notification failed, they must've logged out */
-	if (msg_status < 0) {
+	if (msg_status != GGZ_OK) {
 		dbg_msg(GGZ_DBG_TABLE, "%s logged out during join",
 			name);
 		
@@ -680,7 +681,8 @@ static void table_game_seatchange(GGZdMod *ggzdmod, GGZdModEvent event, void *da
 	GGZSeat seat;
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	char* caller;
-	int seat_num, msg_status;
+	int seat_num;
+	GGZReturn msg_status;
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to seat change", 
 		table->index, table->room);
@@ -707,13 +709,13 @@ static void table_game_seatchange(GGZdMod *ggzdmod, GGZdModEvent event, void *da
 	pthread_rwlock_unlock(&table->lock);
 	
 	/* If player notification failed, they must've logged out */
-	if (msg_status < 0) {
+	if (msg_status != GGZ_OK) {
 		dbg_msg(GGZ_DBG_TABLE, "%s logged out during update", caller);
 		
-		/* FIXME: if this was a join, force a leave 
-		   transit_table_event(table->room, table->index, 
-		   GGZ_TRANSIT_LEAVE, name);
-		*/
+#if 0 /* FIXME: if this was a join, force a leave */
+		transit_table_event(table->room, table->index, 
+				    GGZ_TRANSIT_LEAVE, name);
+#endif
 	}
 	
 	table_seat_event_enqueue(table, GGZ_UPDATE_SEAT, seat_num);
@@ -739,7 +741,8 @@ static void table_game_spectator_join(GGZdMod *ggzdmod, GGZdModEvent event, void
 {
 	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
 	char* name;
-	int spectator_num, msg_status;
+	int spectator_num;
+	GGZReturn msg_status;
 	struct GGZTableSpectator spectator;
 
 	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to spectator join", 
@@ -764,7 +767,7 @@ static void table_game_spectator_join(GGZdMod *ggzdmod, GGZdModEvent event, void
 	pthread_rwlock_unlock(&table->lock);
 	
 	/* If player notification failed, they must've logged out */
-	if (msg_status < 0) {
+	if (msg_status != GGZ_OK) {
 		dbg_msg(GGZ_DBG_TABLE, "%s logged out during spectator join",
 			name);
 		

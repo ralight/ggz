@@ -34,10 +34,15 @@ typedef enum {
 	GGZ_TRANSIT_LEAVE_SPECTATOR
 } GGZTransitType;
 
-int transit_table_event(int room, int index, char opcode, char* name);
+#if 0
+GGZReturn transit_table_event(int room, int index, char opcode, char* name);
+#endif
 
-int transit_seat_event(int room, int index, struct GGZTableSeat seat, char *caller);
-int transit_spectator_event(int room, int index, struct GGZTableSpectator spectator, char *caller);
+GGZReturn transit_seat_event(int room, int index,
+			     struct GGZTableSeat seat, char *caller);
+GGZReturn transit_spectator_event(int room, int index,
+				  struct GGZTableSpectator spectator,
+				  char *caller);
 
-int transit_player_event(char* name, GGZTransitType opcode,
-			 int status, int index);
+GGZReturn transit_player_event(char* name, GGZTransitType opcode,
+			       int status, int index);
