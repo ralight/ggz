@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 6171 2004-09-04 05:38:40Z jdorje $
+ * $Id: ggz-config.c 6750 2005-01-20 01:04:58Z jdorje $
  *
  * Configuration query and module install program.
  *
@@ -66,6 +66,8 @@ static int install_mod = 0;
 static int remove_mod = 0;
 static int check_file = 0;
 static int did_query = 0;
+
+/* If you change the options here make sure to edit the manpage! */
 static const struct poptOption args[] = {
 	{"configdir",	'c',	POPT_ARG_NONE,	&did_query,	QUERY_CONFIG,
 	 "Query GGZCONFDIR - location of configuration directory"},
