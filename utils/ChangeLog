@@ -1,257 +1,973 @@
-2001-06-08  jzaun  <jzaun@users.sourceforge.net>
+2002-04-12 23:44  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/chat.c:
+	* configure.in: - bump version to 0.0.5
+
+2002-04-12 23:06  Brent Hendricks <bmh@users.sourceforge.net>
+
+	* AUTHORS, NEWS, QuickStart.GGZ, README.GGZ: 
+	- Doc file updates
+
+2002-04-12 19:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - remove local make clean rule again
+
+2002-04-10 09:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/Makefile.am: - fix telggz includes
+
+2002-04-10 08:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* cmd-client/Makefile.am: - fix cmd-client includes
+
+2002-04-10 08:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acconfig.h, configure.in: - define PREFIX for use in C source
+	files
+
+2002-04-10 08:22  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/: metaserv.c, metaservconf.xml: - update
+	metaserver configuration file to reflect all upcoming 0.0.5 servers
+	- don't log trailing line breaks
+
+2002-04-09 15:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/: control, rules: - finalize utils
+
+2002-04-07 05:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/.cvsignore: - update cvsignore file
+
+2002-04-07 05:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* debian/: changelog, control, copyright, rules: - debianize
+	utilies package
+
+2002-04-07 05:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/ggz-cmd.1: - forgot the new one :)
+
+2002-04-07 05:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/: Makefile.am, cmd-client.1, metaserv.1, telggz.1: - add more
+	manpages, and rename the one for the cmd-client
+
+2002-04-07 05:48  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am: - make clean rule
+
+2002-04-07 05:47  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/minidom/Makefile.am: - don't install minidom test
+	program
+
+2002-04-07 05:38  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* .cvsignore: - update cvsignore file
+
+2002-04-06 09:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* acinclude.ggz: - sync acinclude.ggz
+
+2002-04-06 02:02  Jason Short <jdorje@users.sourceforge.net>
+
+	* telggz/Makefile.am: Change telggz_LDADD:   - Remove
+	-L/usr/local/lib   - Add $(LDADD)   - Change -lggzcore to
+	$(LIB_GGZCORE)	 - Change $(top_srcdir)/... to $(top_builddir)/... 
+	With these changes (specifically the last one), a "make distcheck"
+	should now succeed for the utils module.
+
+2002-04-06 01:50  Jason Short <jdorje@users.sourceforge.net>
+
+	* telggz/Makefile.am: Added *.h files to telggz_SOURCES.
+
+2002-04-06 01:43  Jason Short <jdorje@users.sourceforge.net>
+
+	* metaserv/minidom/Makefile.am: - Added minidom.h to
+	libminidom_a_SOURCES, so that it's distrbiuted with   "make dist". 
+	- Just for good measure, added README.minidom and metasrv.xml to  
+	EXTRA_DIST.
+
+2002-04-06 01:35  Jason Short <jdorje@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - Added cmd-client to DIST_SUBDIRS in
+	Makefile.am.  - Added some explanatory comments to Makefile.am.  -
+	Changed the ending output of configure slightly.
+
+2002-04-06 01:00  Jason Short <jdorje@users.sourceforge.net>
+
+	* man/Makefile.am: Change "SUBDIRS =" to "SUBDIRS = ." so that
+	"make dist" will work properly.
+
+2002-04-05 16:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README: - update package information
+
+2002-04-05 16:03  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* README.GGZ: - update installation instructions and overview
+
+2002-03-25 14:19  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* grubby/.cvsignore: - another .cvsignore
+
+2002-03-25 14:18  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* man/: Makefile.am, cmd-client.1: - add (alibi) man page for
+	cmd-client
+
+2002-03-25 14:13  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* gensecure/.cvsignore: - forgot a .cvsignore file
+
+2002-03-25 14:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - don't build (re)moved projects
+
+2002-03-25 14:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* gensecure/: GGZ-TLS, Makefile.am, Preparation, README.gensecure,
+	TODO, example.cert: - some more stuff
+
+2002-03-25 14:08  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* agrue/.cvsignore, agrue/Makefile.am, agrue/agrue.c,
+	agrue/launch_grues, agrue/protocols.h, gensecure/io/.cvsignore,
+	gensecure/io/Makefile.am, gensecure/io/main.c,
+	gensecure/src/.cvsignore, gensecure/src/Makefile.am,
+	gensecure/src/client.c, gensecure/src/configuration.h,
+	gensecure/src/gensecure.h, gensecure/src/gensocket.c,
+	gensecure/src/gensocket.h, gensecure/src/list.c,
+	gensecure/src/list.h, gensecure/src/server.c, gensecure/src/tls.c,
+	gensecure/src/tls.h, grubby/Makefile.am, grubby/agrub.c,
+	grubby/agrub_popt.h, grubby/chat.c, grubby/chat.h,
+	grubby/commands.c, grubby/commands.h, grubby/datatypes.h,
+	grubby/grubby-config.pl, grubby/init.c, grubby/init.h,
+	grubby/log.c, grubby/log.h, grubby/loop.c, grubby/loop.h,
+	grubby/messages.h, grubby/net.c, grubby/net.h, grubby/popt.c,
+	grubby/protocols.h, grubby/support.c, grubby/support.h,
+	man/agrub.6, man/agrue.6, man/grubby.6: - remove stuff which has
+	been either moved to the Playground or has been   deprecated
+
+2002-03-16 12:33  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/main.c: - someone forgot to adapt this to the latest
+	ggzcore changes
+
+2002-02-25 21:33  Jason Short <jdorje@users.sourceforge.net>
+
+	* motd-editor/po/.cvsignore: Dammit!  One final file that I missed.
+
+2002-02-25 21:29  Jason Short <jdorje@users.sourceforge.net>
+
+	* motd-editor/: .cvsignore, config.status, intl/.cvsignore,
+	macros/.cvsignore, macros/Makefile, po/.cvsignore, po/ChangeLog,
+	po/Makefile.in, src/.cvsignore, src/Makefile: Remove still more
+	files from the repoitory (including some I'd missed before...with
+	such a long list of files it's hard to catch them all), and added
+	extra auto-generated files to the .cvsignore files.
+	
+	I'm still doubtful that this is actually useful, but I'm really
+	tired of seeing several pages of ignored or modified files on every
+	update.
+
+2002-02-25 21:20  Jason Short <jdorje@users.sourceforge.net>
+
+	* motd-editor/: .cvsignore, Makefile, aclocal.m4, confdefs.h,
+	config.h, config.h.in, config.log, config.status, configure:
+	Removed additional automatically-generated files from the
+	repository.
+
+2002-02-25 21:07  Jason Short <jdorje@users.sourceforge.net>
+
+	* motd-editor/: .cvsignore, Makefile.in, macros/.cvsignore,
+	macros/Makefile.in, src/.cvsignore, src/Makefile.in: Removed
+	Makefile.in files from CVS repository.
+	
+	I'm not quite sure what's up with the motd-editor directory.  It's
+	a subdir of the utils module, but seems to be its own separate
+	unit, complete with autogen.sh and all other autoconf files.  Is
+	this code still relevant?
+
+2002-02-25 20:56  Jason Short <jdorje@users.sourceforge.net>
+
+	* acconfig.h, configure.in: Change autoconf system so that if DEBUG
+	is not defined (--enable-debug, currently on by default) we'll get
+	NDEBUG defined instead.
+
+2002-02-11 09:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/minidom/: .cvsignore, minidom.c: - fix gcc3 + -Wall on
+	libminidom - don't commit the scheduler, rather put it in
+	.cvsignore
+	
+	If anybody is really interested in this iPaq stuff I can take it
+	in, but it's not developed in our CVS, and not very functional yet.
+	 I wish I actually had a handheld.... but Linux + FBdev work quite
+	well.
+
+2002-02-11 08:50  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/minidom/: README.minidom, minidom.c: - fix
+	!DOCTYPE-related dangling pointer bug
+	
+	I never intended to support those advanced tags, but the possible
+	use on an iPaq makes me fix bugs right away :)
+	http://desk.crynwr.com/scap/toipaq.cgi?fn=port.25096.png
+	
+	I don't understand why Qt/embedded doesn't include their QDom
+	classes, but anyway...
+
+2002-02-11 03:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/gui-custom/: Information, freeciv-index.php: - Let's
+	break freeciv's monopoly on freeciv metaserver entry pages :)
+	
+	Once both querying and updating works, we should be able to support
+	all kind of meta entries, because freeciv's already require a bit
+	of flexibility.
+
+2002-02-11 03:52  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/metaservconf.xml: - add freeciv dummy entry
+
+2002-02-03 15:02  Jason Short <jdorje@users.sourceforge.net>
+
+	* agrue/Makefile.am: Oops: removed $(LIB_EASYSOCK) from LDADD.
+
+2002-02-03 15:01  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Updated acinclude.ggz from changes made in ggzd.
+
+2002-02-03 15:01  Jason Short <jdorje@users.sourceforge.net>
+
+	* configure.in, agrue/Makefile.am, agrue/agrue.c: - Changed
+	configure check for easysock to one for libggz.  - Make sure agrue
+	is linked with libggz.	- Change all es_*** function calls to
+	ggz_*** ones.
+
+2002-02-03 14:58  Jason Short <jdorje@users.sourceforge.net>
+
+	* grubby/: chat.c, net.c: Removed unneeded "#include <easysock.h>"
+	directives.
+
+2002-01-19 13:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/net.c: - tell id on hook error
+
+2002-01-16 05:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/Makefile.am: - build only one binary
+
+2002-01-16 05:56  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/: configuration.h, gensocket.c, gensocket.h,
+	server.c: - remove unneeded files (metaserv handles connections on
+	its own)
+
+2002-01-16 05:53  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/metaserv.c: - add getopt command line options -
+	add logging - one step further now: peer notifications
+
+2002-01-12 04:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Added acinclude.ggz to ggzd and ggz-client-libs.
+
+2002-01-12 04:05  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Added libggz support to acinclude.ggz.
+
+2002-01-08 05:13  Jason Short <jdorje@users.sourceforge.net>
+
+	* agrue/Makefile.am: Oops!  Add easysock lib to LDADD.
+
+2002-01-08 04:04  Jason Short <jdorje@users.sourceforge.net>
+
+	* cmd-client/main.c: Doh!  Updated dates to 2002 instead of 2001.
+
+2002-01-08 04:03  Jason Short <jdorje@users.sourceforge.net>
+
+	* .cvsignore, autogen.sh, configure.in, cmd-client/.cvsignore,
+	cmd-client/Makefile.am, cmd-client/main.c: Added cmd-client
+	command-line GGZ client-like program.	 - Updated configure.in,
+	autogen.sh, and acinclude.m4 to use	 acinclude.ggz.    - Added
+	the configure and build process for ggz-cmd: we check for     
+	ggzcore, etc.	 - Added the ggz-cmd sources.
+
+2002-01-08 03:21  Jason Short <jdorje@users.sourceforge.net>
+
+	* acinclude.ggz: Added acinclude to utils/ module, and updated the
+	years on the copyright notice.
+
+2001-12-22 13:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/metaservconf.xml: - T.E.G. entry in the
+	metaserver configuration file
+
+2001-12-22 11:23  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/: README.telggz, xinetd.conf: - Replace inetd with xinetd,
+	and provide configuration file for that.  - This works perfectly :)
+	  The TelGGZ on mindx.dyndns.org will now be installed permanently
+	again. Logging into jzaun.com works too again, maybe the server
+	just hung yesterday.
+
+2001-12-22 10:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/meta.c: - stupid me: fixed segfault in meta_sync in case
+	cache file is not present - the underlying problem is a more nasty
+	one: either one can run inetd as normal user, or someone codes a
+	substitute, or there already exists a substitute
+
+2001-12-21 17:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/: Makefile.am, chat.c, chat.h, main.c, meta.c, meta.h,
+	net.c, net.h: - make TelGGZ usable again - it does now work on
+	localhost, but it won't connect to jzaun.com although I don't have
+	problems using a normal client there :( - new commands: /list
+	(shows room list) and /who (shows player list) - inetd support is
+	somewhat broken, I don't know why
+
+2001-12-16 19:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/Makefile.am: - link to local libgensecure, not
+	global one, until this has moved to libggz
+
+2001-12-16 19:58  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/: main.c, net.c: - assume non-TLS enabled libggzcore as
+	default - include stdlib.h
+
+2001-12-12 08:39  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/: README.telggz, main.c, meta.c: - Implement meta server
+	URI cache (aka 'the dynamic connection database') - Using file
+	$HOME/.ggz/metaserver.cache (intended to be used by other  
+	components as well) - Sync cache contents before any queries so the
+	list is always up to date
+
+2001-12-12 04:43  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - ensure metaserv/minidom is available
+	before telggz is compiled - this will be obsolete once minidom is
+	is libggz (if we decide so)
+
+2001-12-12 04:40  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/: Makefile.am, chat.c, chat.h, main.c, meta.c, meta.h,
+	net.c: - add meta server interface to TelGGZ - actually select
+	0.0.5pre entries now - note: somehow I broke something, it doesn't
+	want to connect right now. Must   be a bad day today...  - note 2:
+	TelGGZ does now require libminidom as XML parser, so I must place  
+	that before telggz in makefile.am and configure.in as SUBDIRS is
+	created   automatically.
+
+2001-12-09 14:27  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/: .cvsignore, configuration.h, gensocket.c,
+	gensocket.h, server.c: - prepare daemon mode, TLS and all that
+	stuff
+
+2001-12-09 14:25  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/: Makefile.am, metaserv.c, metaservconf.xml,
+	tests.txt: - make meta server silent - update configuration to
+	contain one meta server entry
+
+2001-12-09 14:24  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/gui-qt/: qmetagui.cpp, qmetagui.h: - XML template for
+	updates... just change username and password - note: all read-only
+	functionality here will be wiped soon as it's in kcm_ggz   now
+
+2001-12-09 11:18  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/gui-perl/metaconf.pl: - perl script for the humble meta
+	server operators - note: it may currently incompatible with the
+	latest changes
+
+2001-12-09 11:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/: metaserv/Update-Protocol, metaserv/metaserv.c,
+	metaserv/metaservconf.xml, metaserv/tests.txt, minidom/minidom.c,
+	minidom/minidom.h: - introduce 'realms', a.k.a. simple Access
+	Control Lists to avoid that e.g.    someone who is allowed to
+	update Atlantik entries updates GGZ as well  - improve format of
+	configuration file and update protocol - include some test cases -
+	split code into 'optimized' and 'non-optimized' code, separated by
+	an #ifdef.    If speed will not be an issue, optimization should
+	stay at 1, for better code    however clearing it is recommended
+
+2001-12-08 18:26  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/metaserv/: Configuration, metaserv.c, metaservconf.xml:
+	- added detailed configuration manual for the meta server -
+	prepared notification of peer servers
+	
+	... and from this day on, the GGZ Gaming Zone could span multiple
+	hosts...
+
+2001-12-08 17:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/: gui-qt/qmetagui.cpp, gui-qt/qmetagui.h,
+	metaserv/README.metaserv, metaserv/Update-Protocol,
+	metaserv/metaserv.c, metaserv/metaservconf.xml, minidom/minidom.c:
+	- fix a memory bug in libminidom - make our meta server dynamic: it
+	does now accept updates from other meta   servers or individuals -
+	enhance GUI a bit, but it's still only a preparation for tomorrow's
+	commits   :)
+
+2001-11-23 16:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* gensecure/src/: gensecure.h, server.c, tls.c: Remove 3 bugs: -
+	don't fail when linked into C++ applications - recognize read and
+	write errors - when no TLS is in use, say so (-1 wasn't interpreted
+	as 0)
+
+2001-10-26 14:32  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/minidom/: main.c, minidom.c, minidom.h: - merging back
+	the changes from Copenhagen's CVS module  
+	(MindX/copenhagen/server/minidom) - does now allow spaces in
+	attributes - some more minor fixes
+
+2001-10-14 17:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* gensecure/src/: client.c, server.c, tls.c: - when encryption is
+	not present, always fall back to normal read(2)/write(2)  
+	operation without issuing an error - this obsoletes the old macros
+	and the gensockwrap.h file
+
+2001-10-14 16:18  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* gensecure/src/: list.c, list.h: - double-linked list which stores
+	TLS objects with their fd and state
+
+2001-10-14 16:16  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* gensecure/src/: Makefile.am, tls.c, tls.h: - separate context
+	object from connection object - gensecure is now able to handle
+	more than one connection
+	
+	Note: the example programs are broken now, but the ggzd/ggzcore
+	patches still work the same as before (i.e. only until the login
+	message)
+
+2001-10-13 19:11  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* gensecure/src/: .cvsignore, gensecure.h: - new global header file
+
+2001-10-13 19:10  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* gensecure/src/: Makefile.am, client.c, gensocket.c, server.c,
+	tls.c, tls.h: - add better interface which can quickly be placed
+	into clients and servers - handle errors etc. better - just fake
+	for now: thread-safety by referencing _tls on filedescriptor basis
+
+2001-10-07 13:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* gensecure/src/: configuration.h, tls.c: - improve gensecure
+	functions - gensecure is nearly finished for its first use, however
+	the code needs a   cleanup before any usage - OPENSSLCHECK() macro
+	introduced for not so common features which may not be	 present in
+	older OpenSSL versions - personal note: I learned about GNU-TLS
+	today, as an alternative for OpenSSL,	we should keep an eye on
+	that.
+
+2001-10-03 08:09  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* gensecure/src/: client.c, server.c, tls.c, tls.h: - verify
+	certificate, but verification is currently always true - show all
+	available crypto ciphers - on error try to show internal TLS errors
+	as well
+
+2001-09-05 13:46  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* configure.in: 
+	- check for openssl/ssl.h, if its not there don't try to build
+	GenSecure - output what is going to be built
+
+2001-09-04 13:44  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - now it should work: guru removal
+
+2001-09-04 13:41  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* gensecure/: io/.cvsignore, src/.cvsignore: - remove guru from
+	configure.in and Makefile.am - put .libs in some .cvsignore files
+
+2001-08-12 11:06  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/: README.ggz-metaserver, gui-qt/main.cpp,
+	gui-qt/qmetagui.cpp, gui-qt/qmetagui.h, metaserv/metaserv.c,
+	minidom/main.c, minidom/minidom.c, minidom/minidom.h: - added
+	Copyrights - changed c++ comments to c comments
+
+2001-08-12 10:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/README.ggz-metaserver: - actually add the global readme
+	file for metaserv
+
+2001-08-12 10:59  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/: gui-qt/.cvsignore, gui-qt/Makefile.gui-qt,
+	gui-qt/main.cpp, gui-qt/qmetagui.cpp, gui-qt/qmetagui.h,
+	metaserv/Makefile.am, metaserv/README.metaserv,
+	metaserv/metaserv.c, minidom/minidom.c: - add non-blocking GUI for
+	Qt (nice for debugging) - fixed a little malloc bug - ready for
+	inetd use
+
+2001-08-12 08:43  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/minidom/main.c: - minidom is now a library - add
+	convenience test program
+
+2001-08-12 08:42  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/: metaserv/Makefile.am, metaserv/README.metaserv,
+	metaserv/metaserv.c, metaserv/metaservconf.xml, minidom/.cvsignore,
+	minidom/Makefile.am, minidom/minidom.c, minidom/minidom.h: - add
+	configuration file - replace ggzcore_confio functions with minidom
+	XML configuration - handle both query types correctly - on
+	URI-based queries, select by priority
+
+2001-08-12 06:06  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/minidom/: README.minidom, example.xml, metasrv.xml,
+	minidom.c, minidom.h: - add meta server example file - find out
+	another limitation - much prettier dump output: now in XML format
+	for reuse - fix a null-terminated string bug on attribute
+	assignment - simple query/querylist function
+
+2001-08-12 05:15  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/minidom/: README.minidom, example.xml, minidom.c: -
+	handle line breaks in values correctly (transform to spaces) -
+	handle self-closing tags like <foo/> - accept file name on command
+	line (optional) - exclude quotation marks from values - don't throw
+	away spaces in values
+
+2001-08-10 12:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - update build so metaserv is includes
+
+2001-08-10 12:45  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* metaserv/: .cvsignore, Makefile.am, metaserv/.cvsignore,
+	metaserv/Makefile.am, metaserv/README.metaserv,
+	metaserv/metaserv.c, minidom/.cvsignore, minidom/Makefile.am,
+	minidom/README.minidom, minidom/example.xml, minidom/minidom.c,
+	minidom/minidom.h: - Add first sources for the meta-server - this
+	is meant as a stand-alone server until the merging - support for
+	URI's and XML information files - includes own DOM implementation
+
+2001-08-09 11:37  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - update build system to include
+	telggz
+
+2001-08-09 11:36  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* telggz/: .cvsignore, Makefile.am, README.telggz, chat.c, chat.h,
+	main.c, net.c, net.h: - Add GGZ telnet wrapper: TelGGZ
+
+2001-08-02 10:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* Makefile.am, configure.in: - version bump to 0.0.5 - include
+	libtool in build system
+
+2001-08-02 09:57  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* motd-editor/: Makefile.in, config.h.in, configure,
+	macros/Makefile.in, src/Makefile.in: - modified build system to
+	include libtool - version bump to 0.0.5pre
+
+2001-07-14 15:43  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* motd-editor/intl/: Makefile, po2tbl.sed: - those files are
+	automatically created by Gnome
+
+2001-06-24 14:02  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* configure.in: - updated configure.in to include gensecure
+
+2001-06-24 14:01  Josef Spillner <dr_maux@users.sourceforge.net>
+
+	* gensecure/: .cvsignore, GGZ-TLS, Makefile.am, Preparation,
+	README.gensecure, TODO, example.cert, io/.cvsignore,
+	io/Makefile.am, io/main.c, src/.cvsignore, src/Makefile.am,
+	src/client.c, src/configuration.h, src/gensocket.c,
+	src/gensocket.h, src/server.c, src/tls.c, src/tls.h: - add generic
+	security server and client - to be used for GGZ TLS encryption and
+	authentication
+
+2001-06-18 17:39  Ricardo Quesada <riq@users.sourceforge.net>
+
+	* motd-editor/: AUTHORS, ChangeLog, Makefile.am, NEWS, README,
+	acconfig.h, autogen.sh, configure.in, motd-editor.glade,
+	stamp-h.in, COPYING, INSTALL, Makefile.in, aclocal.m4, config.h.in,
+	config.cache, config.h, config.log, configure, Makefile,
+	confdefs.h, config.status, stamp-h, src/Makefile, src/Makefile.am,
+	src/Makefile.in, src/callbacks.h, src/interface.c, src/interface.h,
+	src/main.c, src/support.c, src/support.h, macros/Makefile.am,
+	macros/aclocal-include.m4, macros/autogen.sh,
+	macros/compiler-flags.m4, macros/curses.m4, src/callbacks.c,
+	intl/Makefile, intl/po2tbl.sed, macros/Makefile,
+	macros/Makefile.in, macros/gnome-bonobo-check.m4,
+	macros/gnome-common.m4, macros/gnome-fileutils.m4,
+	macros/gnome-ghttp-check.m4, macros/gnome-gnorba-check.m4,
+	macros/gnome-guile-checks.m4, macros/gnome-libgtop-check.m4,
+	macros/gnome-objc-checks.m4, macros/gnome-orbit-check.m4,
+	macros/gnome-print-check.m4, macros/gnome-pthread-check.m4,
+	macros/gnome-support.m4, macros/gnome-undelfs.m4,
+	macros/gnome-vfs.m4, macros/gnome-x-checks.m4,
+	macros/gnome-xml-check.m4, macros/gnome.m4, macros/gperf-check.m4,
+	macros/linger.m4, macros/need-declaration.m4, po/ChangeLog,
+	po/Makefile, po/Makefile.in, po/POTFILES, po/POTFILES.in: Initial
+	revision
+
+2001-06-18 17:39  Ricardo Quesada <riq@users.sourceforge.net>
+
+	* motd-editor/: AUTHORS, ChangeLog, Makefile.am, NEWS, README,
+	acconfig.h, autogen.sh, configure.in, motd-editor.glade,
+	stamp-h.in, COPYING, INSTALL, Makefile.in, aclocal.m4, config.h.in,
+	config.cache, config.h, config.log, configure, Makefile,
+	confdefs.h, config.status, stamp-h, src/Makefile, src/Makefile.am,
+	src/Makefile.in, src/callbacks.h, src/interface.c, src/interface.h,
+	src/main.c, src/support.c, src/support.h, macros/Makefile.am,
+	macros/aclocal-include.m4, macros/autogen.sh,
+	macros/compiler-flags.m4, macros/curses.m4, src/callbacks.c,
+	intl/Makefile, intl/po2tbl.sed, macros/Makefile,
+	macros/Makefile.in, macros/gnome-bonobo-check.m4,
+	macros/gnome-common.m4, macros/gnome-fileutils.m4,
+	macros/gnome-ghttp-check.m4, macros/gnome-gnorba-check.m4,
+	macros/gnome-guile-checks.m4, macros/gnome-libgtop-check.m4,
+	macros/gnome-objc-checks.m4, macros/gnome-orbit-check.m4,
+	macros/gnome-print-check.m4, macros/gnome-pthread-check.m4,
+	macros/gnome-support.m4, macros/gnome-undelfs.m4,
+	macros/gnome-vfs.m4, macros/gnome-x-checks.m4,
+	macros/gnome-xml-check.m4, macros/gnome.m4, macros/gperf-check.m4,
+	macros/linger.m4, macros/need-declaration.m4, po/ChangeLog,
+	po/Makefile, po/Makefile.in, po/POTFILES, po/POTFILES.in: justin's
+	MOTD editor
+
+2001-06-18 17:16  Ricardo Quesada <riq@users.sourceforge.net>
+
+	* motds/: Car1, Castle, City, Design1, Devel1, Devel2, Devel3, Dog,
+	Dog2, Dragon1, Dragon2, Dragon3, Eagle, Earth, Flamingo, Halloween,
+	Halloween2, Halloween5, Knight, Knight2, Knightmare, Lady,
+	Outhouse, Plane1, Rip, Skull, Statue, Stork, Texas, Troll: justin's
+	motd collections
+
+2001-06-17 17:03  Rich Gade <rgade@users.sourceforge.net>
+
+	* configure.in, agrue/Makefile.am, grubby/Makefile.am,
+	man/Makefile.am: - Last minute fixes to get distributed files
+	correct
+
+2001-06-17 15:56  Rich Gade <rgade@users.sourceforge.net>
+
+	* ChangeLog: - Updated ChangeLog
+
+2001-06-08 18:08  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* grubby/chat.c: 
 	- removed debug code
 
-	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/commands.c:
+2001-06-08 18:06  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* grubby/: chat.c, commands.c: 
 	- Fixed the : and , problem
 
-2001-06-08  dr_maux  <dr_maux@users.sourceforge.net>
+2001-06-08 17:28  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/.cvsignore: - add build-stamp here too
+	* .cvsignore: - add build-stamp here too
 
-2001-06-08  jzaun  <jzaun@users.sourceforge.net>
+2001-06-08 17:24  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/commands.c:
+	* grubby/commands.c: 
 	- Fixed a segfault in the tell command
 
-2001-06-08  dr_maux  <dr_maux@users.sourceforge.net>
+2001-06-08 13:03  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/man/agrub.6, /cvsroot/ggz/utils/man/agrue.6, /cvsroot/ggz/utils/man/Makefile.am:
-	- add aGRUE man page
-	- shadow grubby to agrub manpage
+	* man/: Makefile.am, agrub.6, agrue.6: - add aGRUE man page -
+	shadow grubby to agrub manpage
 
-	* /cvsroot/ggz/utils/README.GGZ: - actually add readme.ggz
+2001-06-08 12:07  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/configure.in: - forgot man/ in configure.in
+	* README.GGZ: - actually add readme.ggz
 
-	* /cvsroot/ggz/utils/configure.in, /cvsroot/ggz/utils/Makefile.am:
-	- also build man page
+2001-06-08 12:01  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/man/.cvsignore, /cvsroot/ggz/utils/man/grubby.6, /cvsroot/ggz/utils/man/Makefile.am:
-	- create simple man page for grubby
+	* configure.in: - forgot man/ in configure.in
 
-	* /cvsroot/ggz/utils/AUTHORS, /cvsroot/ggz/utils/ChangeLog, /cvsroot/ggz/utils/NEWS:
-	- added standard files for finalizing this module
+2001-06-08 12:00  Josef Spillner <dr_maux@users.sourceforge.net>
 
-2001-06-07  dr_maux  <dr_maux@users.sourceforge.net>
+	* Makefile.am, configure.in: - also build man page
 
-	* /cvsroot/ggz/utils/debian/docs: - adding project-wide readme file
+2001-06-08 12:00  Josef Spillner <dr_maux@users.sourceforge.net>
 
-2001-05-30  dr_maux  <dr_maux@users.sourceforge.net>
+	* man/: .cvsignore, Makefile.am, grubby.6: - create simple man page
+	for grubby
 
-	* /cvsroot/ggz/utils/COPYING, /cvsroot/ggz/utils/INSTALL:
-	- added standard files
+2001-06-08 09:45  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/debian/changelog, /cvsroot/ggz/utils/debian/control, /cvsroot/ggz/utils/debian/copyright, /cvsroot/ggz/utils/debian/.cvsignore, /cvsroot/ggz/utils/debian/docs, /cvsroot/ggz/utils/debian/postinst, /cvsroot/ggz/utils/debian/prerm, /cvsroot/ggz/utils/debian/README.Debian, /cvsroot/ggz/utils/debian/rules:
-	- debianized source tree
-	- added standard files
+	* AUTHORS, ChangeLog, NEWS: - added standard files for finalizing
+	this module
 
-2001-05-22  dr_maux  <dr_maux@users.sourceforge.net>
+2001-06-07 16:26  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/agrub.c, /cvsroot/ggz/utils/grubby/agrub_popt.h, /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/chat.h, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/commands.h, /cvsroot/ggz/utils/grubby/datatypes.h, /cvsroot/ggz/utils/grubby/grubby-config.pl, /cvsroot/ggz/utils/grubby/init.c, /cvsroot/ggz/utils/grubby/init.h, /cvsroot/ggz/utils/grubby/log.c, /cvsroot/ggz/utils/grubby/log.h, /cvsroot/ggz/utils/grubby/loop.c, /cvsroot/ggz/utils/grubby/loop.h, /cvsroot/ggz/utils/grubby/Makefile.am, /cvsroot/ggz/utils/grubby/messages.h, /cvsroot/ggz/utils/grubby/net.c, /cvsroot/ggz/utils/grubby/net.h, /cvsroot/ggz/utils/grubby/popt.c, /cvsroot/ggz/utils/grubby/protocols.h, /cvsroot/ggz/utils/grubby/support.c, /cvsroot/ggz/utils/grubby/support.h, /cvsroot/ggz/utils/grubby/.cvsignore:
-	- reintroduces grubby in the utils/ module
-	- ported him to the new ggzcore API
+	* debian/docs: - adding project-wide readme file
 
-2001-04-30  perdig  <perdig@users.sourceforge.net>
+2001-05-30 08:34  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/pygenclient/pygenclient.py:
-	- Limited support for sending strings over the socket (just type a string and it should be sent)
+	* COPYING, INSTALL: - added standard files
 
-2001-04-15  perdig  <perdig@users.sourceforge.net>
+2001-05-30 08:34  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/pygenclient/pygenclient.py:
-	- Get the module name from the argument (ie: "pygenclient.py Chess" would connect to the Chess module)
+	* debian/: .cvsignore, README.Debian, changelog, control,
+	copyright, docs, postinst, prerm, rules: - debianized source tree -
+	added standard files
 
-2001-01-10  perdig  <perdig@users.sourceforge.net>
+2001-05-22 14:38  Josef Spillner <dr_maux@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/pygenclient/pygenclient.py:
-	- Everything that you send will also show in the main screen, but in red color
-	- It now uses python's "eval" to evaluate expressions before sending them. So
-	  you can type (1<<24)+100 and it will send 16777316
-	- If you type anything bigger then 255, it will send it as a 4-byte integer, in
-	  network byte order
-	- You can also force it to send a small number using 4-bytes, appending a "i"
-	  to the end of the number (por example, "40i" sends 0, 0, 0, 40)
+	* grubby/: .cvsignore, Makefile.am, agrub.c, agrub_popt.h, chat.c,
+	chat.h, commands.c, commands.h, datatypes.h, grubby-config.pl,
+	init.c, init.h, log.c, log.h, loop.c, loop.h, messages.h, net.c,
+	net.h, popt.c, protocols.h, support.c, support.h: - reintroduces
+	grubby in the utils/ module - ported him to the new ggzcore API
 
-2001-01-06  perdig  <perdig@users.sourceforge.net>
+2001-01-06 12:19  Ismael Orenstein <perdig@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/pygenclient/pygenclient.py, /cvsroot/ggz/utils/pygenclient/README, /cvsroot/ggz/utils/README:
-	- Added the Python generic client, some little utility to communicate with
-	  the game server without any hassle (ie, just like a regular game client).
-	  I found it really useful to test the chess server, but maybe anyone may
-	  find another use for it... :)
-	- Instructions of use are in the pygenclient/README file
+	* README: 
+	- Added the Python generic client, some little utility to
+	communicate with   the game server without any hassle (ie, just
+	like a regular game client).	I found it really useful to test
+	the chess server, but maybe anyone may	  find another use for
+	it... :)  - Instructions of use are in the pygenclient/README file
 
-2000-12-30  jzaun  <jzaun@users.sourceforge.net>
+2000-12-29 20:22  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/agrub.c, /cvsroot/ggz/utils/grubby/agrub.old, /cvsroot/ggz/utils/grubby/agrub_popt.h, /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/chat.h, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/commands.h, /cvsroot/ggz/utils/grubby/.cvsignore, /cvsroot/ggz/utils/grubby/datatypes.h, /cvsroot/ggz/utils/grubby/init.c, /cvsroot/ggz/utils/grubby/init.h, /cvsroot/ggz/utils/grubby/log.c, /cvsroot/ggz/utils/grubby/log.h, /cvsroot/ggz/utils/grubby/loop.c, /cvsroot/ggz/utils/grubby/loop.h, /cvsroot/ggz/utils/grubby/Makefile.am, /cvsroot/ggz/utils/grubby/messages.h, /cvsroot/ggz/utils/grubby/net.c, /cvsroot/ggz/utils/grubby/net.h, /cvsroot/ggz/utils/grubby/popt.c, /cvsroot/ggz/utils/grubby/protocols.h, /cvsroot/ggz/utils/grubby/rc.c, /cvsroot/ggz/utils/grubby/rc.h, /cvsroot/ggz/utils/grubby/support.c, /cvsroot/ggz/utils/grubby/support.h:
+	* grubby/: .cvsignore, Makefile.am, agrub.c, agrub.old,
+	agrub_popt.h, chat.c, chat.h, commands.c, commands.h, datatypes.h,
+	init.c, init.h, log.c, log.h, loop.c, loop.h, messages.h, net.c,
+	net.h, popt.c, protocols.h, rc.c, rc.h, support.c, support.h: 
 	- Removeing old out of date grubby files
 
-2000-09-09  bugg  <bugg@users.sourceforge.net>
+2000-09-08 20:26  bugg
 
-	* /cvsroot/ggz/utils/grubby/loop.c: Include unistd.h for select().
+	* grubby/loop.c: Include unistd.h for select().
 
-2000-09-07  jzaun  <jzaun@users.sourceforge.net>
+2000-09-07 17:55  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/loop.c, /cvsroot/ggz/utils/grubby/support.c:
-	- Added owner command goto <room number> so grubby can now change rooms
-	- Made help a little easier to read
+	* grubby/: commands.c, loop.c, support.c: 
+	- Added owner command goto <room number> so grubby can now change
+	rooms - Made help a little easier to read
 
-	* /cvsroot/ggz/utils/grubby/loop.c, /cvsroot/ggz/utils/grubby/net.c:
+2000-09-07 17:21  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* grubby/: loop.c, net.c: 
 	- Updated for protocol version 3
 
-2000-09-07  Rich Gade  <rgade@users.sourceforge.net>
+2000-09-07 16:18  Rich Gade <rgade@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/agrue/agrue.c, /cvsroot/ggz/utils/agrue/protocols.h:
-	- Updated agrue.c to work with ggz protocol 3
-	- GRUEs are less random now, doing one thing every five seconds always
+	* agrue/: agrue.c, protocols.h: - Updated agrue.c to work with ggz
+	protocol 3 - GRUEs are less random now, doing one thing every five
+	seconds always
 
-2000-06-14  jzaun  <jzaun@users.sourceforge.net>
+2000-06-14 18:34  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/init.c:
-	- Grubby saves on exit.
-	  I'm catching SIGINT, SIGQUIT, and SIGTERM
+	* grubby/: commands.c, init.c: 
+	- Grubby saves on exit.    I'm catching SIGINT, SIGQUIT, and
+	SIGTERM
 
-	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/init.c, /cvsroot/ggz/utils/grubby/rc.c, /cvsroot/ggz/utils/grubby/rc.h, /cvsroot/ggz/utils/grubby/Makefile.am:
-	- Grubby now saves his memory between sessions. Everything is in rc.[ch].
+2000-06-14 18:18  Justin Zaun <jzaun@users.sourceforge.net>
 
-2000-06-11  jzaun  <jzaun@users.sourceforge.net>
+	* grubby/: Makefile.am, chat.c, commands.c, init.c, rc.c, rc.h: 
+	- Grubby now saves his memory between sessions. Everything is in
+	rc.[ch].
 
-	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/datatypes.h, /cvsroot/ggz/utils/grubby/init.c, /cvsroot/ggz/utils/grubby/support.c:
+2000-06-11 14:46  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* grubby/: chat.c, commands.c, datatypes.h, init.c, support.c: 
 	- Fixed a spelling mistake s/memmory/memory/
 
-	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/chat.h, /cvsroot/ggz/utils/grubby/commands.c:
-	- Grubby now accepts commands give thew a personal message (/msg) as well.
+2000-06-11 14:34  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/datatypes.h, /cvsroot/ggz/utils/grubby/log.c, /cvsroot/ggz/utils/grubby/chat.c:
+	* grubby/: chat.c, chat.h, commands.c: 
+	- Grubby now accepts commands give thew a personal message (/msg)
+	as well.
+
+2000-06-11 12:03  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* grubby/: chat.c, commands.c, datatypes.h, log.c: 
 	- Added the 'tell <username> <message>' command back in.
 
-	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/commands.h:
+2000-06-10 21:27  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* grubby/: chat.c, commands.c, commands.h: 
 	- Added a bit more flexibility to the command recognition system
 
-2000-06-10  jzaun  <jzaun@users.sourceforge.net>
+2000-06-10 18:38  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/chat.h, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/messages.h, /cvsroot/ggz/utils/grubby/support.c:
+	* grubby/: chat.c, chat.h, commands.c, messages.h, support.c: 
 	- Added the about command back in
 
-	* /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/support.c:
+2000-06-10 17:40  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* grubby/: chat.c, commands.c, support.c: 
 	- Everything in Grubby is fully working, thanks in part to Jason.
 
-	* /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/log.c:
-	- the command 'my name is <real name>' now works correctly thank to Jason
-	- Also fixed in one of the log functions (had not happed yet, but could of).
+2000-06-10 17:06  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/agrub.c, /cvsroot/ggz/utils/grubby/agrub.old, /cvsroot/ggz/utils/grubby/agrub_popt.h, /cvsroot/ggz/utils/grubby/chat.c, /cvsroot/ggz/utils/grubby/chat.h, /cvsroot/ggz/utils/grubby/commands.c, /cvsroot/ggz/utils/grubby/commands.h, /cvsroot/ggz/utils/grubby/datatypes.h, /cvsroot/ggz/utils/grubby/init.c, /cvsroot/ggz/utils/grubby/init.h, /cvsroot/ggz/utils/grubby/log.c, /cvsroot/ggz/utils/grubby/log.h, /cvsroot/ggz/utils/grubby/loop.c, /cvsroot/ggz/utils/grubby/loop.h, /cvsroot/ggz/utils/grubby/Makefile.am, /cvsroot/ggz/utils/grubby/messages.h, /cvsroot/ggz/utils/grubby/net.c, /cvsroot/ggz/utils/grubby/net.h, /cvsroot/ggz/utils/grubby/popt.c, /cvsroot/ggz/utils/grubby/protocols.h, /cvsroot/ggz/utils/grubby/support.c, /cvsroot/ggz/utils/grubby/support.h:
+	* grubby/: commands.c, log.c: 
+	- the command 'my name is <real name>' now works correctly thank to
+	Jason - Also fixed in one of the log functions (had not happed yet,
+	but could of).
+
+2000-06-10 15:58  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* grubby/: Makefile.am, agrub.c, agrub.old, agrub_popt.h, chat.c,
+	chat.h, commands.c, commands.h, datatypes.h, init.c, init.h, log.c,
+	log.h, loop.c, loop.h, messages.h, net.c, net.h, popt.c,
+	protocols.h, support.c, support.h: 
 	- Big rewrite to grubby
 
-2000-05-09  jzaun  <jzaun@users.sourceforge.net>
+2000-05-08 19:18  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/agrub.c, /cvsroot/ggz/utils/grubby/protocols.h:
-	- Grubby now works with the new chat protocol
-	- Grubby can teke command by grubby: or /msg grubby
+	* grubby/: agrub.c, protocols.h: 
+	- Grubby now works with the new chat protocol - Grubby can teke
+	command by grubby: or /msg grubby
 
-2000-05-06  Rich Gade  <rgade@users.sourceforge.net>
+2000-05-05 23:16  Rich Gade <rgade@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
-	- Don't free room_list strings until just before exit
+	* grubby/agrub.c: - Don't free room_list strings until just before
+	exit
 
-2000-05-05  jzaun  <jzaun@users.sourceforge.net>
+2000-05-04 20:46  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
-	- Fixed the random crashes caused by not freeing string in all cases
+	* grubby/agrub.c: 
+	- Fixed the random crashes caused by not freeing string in all
+	cases
 
-2000-05-02  jzaun  <jzaun@users.sourceforge.net>
+2000-05-02 17:02  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
-	- stay here command actualy works now
-	- logging is in html format for posting to our web site. looks nicer too.
+	* grubby/agrub.c: 
+	- stay here command actualy works now - logging is in html format
+	for posting to our web site. looks nicer too.
 
-2000-04-28  bmh  <bmh@users.sourceforge.net>
+2000-04-28 13:34  Brent Hendricks <bmh@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/agrue/.cvsignore, /cvsroot/ggz/utils/agrue/Makefile, /cvsroot/ggz/utils/agrue/Makefile.am, /cvsroot/ggz/utils/agrue/protocols.h, /cvsroot/ggz/utils/grubby/.cvsignore, /cvsroot/ggz/utils/grubby/Makefile, /cvsroot/ggz/utils/grubby/Makefile.am, /cvsroot/ggz/utils/grubby/protocols.h, /cvsroot/ggz/utils/acconfig.h, /cvsroot/ggz/utils/autogen.sh, /cvsroot/ggz/utils/configure.in, /cvsroot/ggz/utils/.cvsignore, /cvsroot/ggz/utils/Makefile.am:
+	* .cvsignore, Makefile.am, acconfig.h, autogen.sh, configure.in,
+	agrue/.cvsignore, agrue/Makefile, agrue/Makefile.am,
+	agrue/protocols.h, grubby/.cvsignore, grubby/Makefile,
+	grubby/Makefile.am, grubby/protocols.h: 
 	- Make grie and grubby use autoconf/automake
 
-2000-04-26  jzaun  <jzaun@users.sourceforge.net>
+2000-04-26 17:30  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
-	- Upped the room change timeout
-	- addedd stay/move commands for owners only
+	* grubby/agrub.c: 
+	- Upped the room change timeout - addedd stay/move commands for
+	owners only
 
-2000-04-19  jzaun  <jzaun@users.sourceforge.net>
+2000-04-19 17:01  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
-	- s/memmory/memory
-	- added the ability to have random greatings.
+	* grubby/agrub.c: 
+	- s/memmory/memory - added the ability to have random greatings.
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
-	- Added command 'save memmory' as a owner only wich forces a update of ~/.agrub
+2000-04-19 12:23  Justin Zaun <jzaun@users.sourceforge.net>
 
-2000-04-18  jzaun  <jzaun@users.sourceforge.net>
+	* grubby/agrub.c: 
+	- Added command 'save memmory' as a owner only wich forces a update
+	of ~/.agrub
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
-	- Grubby can now log a room.
-	- grubby: log on <FULL PATH>
-	- grubby: log off
+2000-04-18 16:55  Justin Zaun <jzaun@users.sourceforge.net>
 
+	* grubby/agrub.c: 
+	- Grubby can now log a room.  - grubby: log on <FULL PATH> -
+	grubby: log off
+	
 	You _must_ be owner for the command to work
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
-	- Grubby can now rember an arbatrary number of messages to tell a person.
-	  the default is set to 4 in a #define. This REALY break the data file format
-	  you should remove your old one before trying this out.
+2000-04-17 20:39  Justin Zaun <jzaun@users.sourceforge.net>
 
-2000-04-16  jzaun  <jzaun@users.sourceforge.net>
+	* grubby/agrub.c: 
+	- Grubby can now rember an arbatrary number of messages to tell a
+	person.    the default is set to 4 in a #define. This REALY break
+	the data file format	you should remove your old one before
+	trying this out.
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
+2000-04-16 16:04  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* grubby/agrub.c: 
 	- Forgot to add the help item. (sorry)
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
-	- ok I've added the ability to story your bday.
-	  this has changed the file format a bit,but don't worrie, it
-	  auto-updates for you. The bday won't be displayed anywhere yet,
-	  and not sure if it should, I'm planing of Grubby saying 'Happy Brithday' to
-	  you on your brithday.
+2000-04-16 16:00  Justin Zaun <jzaun@users.sourceforge.net>
 
-	- I've made the unknown user message a little bigger, and my human like (I hope...)
+	* grubby/agrub.c: 
+	- ok I've added the ability to story your bday.    this has changed
+	the file format a bit,but don't worrie, it    auto-updates for you.
+	The bday won't be displayed anywhere yet,    and not sure if it
+	should, I'm planing of Grubby saying 'Happy Brithday' to    you on
+	your brithday.
+	
+	- I've made the unknown user message a little bigger, and my human
+	like (I hope...)
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
+2000-04-16 15:36  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* grubby/agrub.c: 
 	- Updated Grubby's about text.
+	
+		I removed the 2 paragraph, as Grubby can now remember
+	things from a past lifetime.
 
-		I removed the 2 paragraph, as Grubby can now remember things from a past lifetime.
+2000-04-16 13:16  Rich Gade <rgade@users.sourceforge.net>
 
-2000-04-16  Rich Gade  <rgade@users.sourceforge.net>
+	* grubby/agrub.c: Various enhancements to Grubby:   - Now dumps his
+	information database if he is killed by a signal   - Reports time
+	since having last seen a user in a sensible format   - Correctly
+	tests for url and info values when reporting whois
 
-	* /cvsroot/ggz/utils/grubby/agrub.c: Various enhancements to Grubby:
-	  - Now dumps his information database if he is killed by a signal
-	  - Reports time since having last seen a user in a sensible format
-	  - Correctly tests for url and info values when reporting whois
+2000-04-15 04:08  Justin Zaun <jzaun@users.sourceforge.net>
 
-2000-04-15  jzaun  <jzaun@users.sourceforge.net>
+	* grubby/agrub.c: 
+	- Grubby now shows all known information entered when he recieves
+	the whois command
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
-	- Grubby now shows all known information entered when he recieves the whois command
+2000-04-15 03:50  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
+	* grubby/agrub.c: 
 	- Storing of email, url and info
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
+2000-04-15 03:07  Justin Zaun <jzaun@users.sourceforge.net>
+
+	* grubby/agrub.c: 
 	- Added a whois command
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
-	- Now load information back in at startup. This means that a grub can remember between sesions
+2000-04-15 02:12  Justin Zaun <jzaun@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/grubby/agrub.c:
-	- now saves known information to ~/.agrub in the following structure
+	* grubby/agrub.c: 
+	- Now load information back in at startup. This means that a grub
+	can remember between sesions
 
-	Version Number
-	Number Known
-	(repeated Number Known times)
-	the known struct
+2000-04-15 01:10  Justin Zaun <jzaun@users.sourceforge.net>
 
-2000-04-15  Rich Gade  <rgade@users.sourceforge.net>
+	* grubby/agrub.c: 
+	- now saves known information to ~/.agrub in the following
+	structure
+	
+	Version Number Number Known (repeated Number Known times) the known
+	struct
 
-	* /cvsroot/ggz/utils/README: - Some notes for AGRUE and AGRUB
+2000-04-14 23:58  Rich Gade <rgade@users.sourceforge.net>
 
-	* /cvsroot/ggz/utils/agrue/agrue.c, /cvsroot/ggz/utils/agrue/launch_grues, /cvsroot/ggz/utils/agrue/Makefile, /cvsroot/ggz/utils/grubby/agrub.c, /cvsroot/ggz/utils/grubby/Makefile:
-	Initial checkins for AGRUE and AGRUB
+	* README: - Some notes for AGRUE and AGRUB
+
+2000-04-14 23:48  Rich Gade <rgade@users.sourceforge.net>
+
+	* agrue/Makefile, agrue/agrue.c, agrue/launch_grues,
+	grubby/Makefile, grubby/agrub.c: Initial checkins for AGRUE and
+	AGRUB
+
