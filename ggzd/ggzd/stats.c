@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 6511 2004-12-17 17:06:35Z josef $
+ * $Id: stats.c 6580 2005-01-02 11:26:32Z josef $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -231,6 +231,7 @@ void report_statistics(int room, int gametype,
 	unsigned char records, ratings, highscores;
 	ggzdbPlayerGameStats stats[report->num_players];
 	char *winner;
+	int bot_stats, guest_stats;
 
 	pthread_rwlock_rdlock(&game_types[gametype].lock);
 	strcpy(game_name, game_types[gametype].name);
@@ -243,10 +244,17 @@ void report_statistics(int room, int gametype,
 	if (!records && !ratings && !highscores)
 		return;
 
+	/* Check if the game/room supports statistics for bots or guests. */
+	bot_stats = 1;
+	guest_stats = 1;
+
 	/* Now see if this is a rated game. */
 	for (i = 0; i < report->num_players; i++) {
 		ggzdbPlayerEntry player;
 		GGZDBResult status;
+
+		if ((report->types[i] == GGZ_SEAT_BOT)
+		&&  (!bot_stats)) continue;
 
 		if ((report->types[i] != GGZ_SEAT_PLAYER)
 		&&  (report->types[i] != GGZ_SEAT_BOT)) {
@@ -269,7 +277,12 @@ void report_statistics(int room, int gametype,
 			status = ggzdb_player_get(&player);
 			if (status == GGZDB_ERR_NOTFOUND) {
 				/* Guest player */
-				stats[i].player_type = GGZ_PLAYER_GUEST;
+				if(!guest_stats) {
+					dbg_msg(GGZ_DBG_STATS, "Not tracking stats for guest player %s.",
+						report->names[i]);
+					return;
+				}
+				else stats[i].player_type = GGZ_PLAYER_GUEST;
 			} else if (status != GGZDB_NO_ERROR) {
 				err_msg("Error %d accessing player %s for stats check",
 					status, player.handle);
