@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 5863 2004-02-09 08:28:20Z jdorje $
+ * $Id: game.c 6871 2005-01-24 03:46:22Z jdorje $
  *
  * Functions for handling game events
  *
@@ -34,13 +34,18 @@
 
 
 /* Hooks for game events */
-static void game_register(GGZGame *game);
+static void game_register(GGZGame * game);
 static void game_process(void);
-static GGZHookReturn game_launched(GGZGameEvent, void*, void*);
-static GGZHookReturn game_launch_fail(GGZGameEvent, void*, void*);
-static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
-static GGZHookReturn game_negotiate_fail(GGZGameEvent, void*, void*);
-static GGZHookReturn game_playing(GGZGameEvent, void *, void*);
+static GGZHookReturn game_launched(GGZGameEvent, const void *,
+				   const void *);
+static GGZHookReturn game_launch_fail(GGZGameEvent, const void *,
+				      const void *);
+static GGZHookReturn game_negotiated(GGZGameEvent, const void *,
+				     const void *);
+static GGZHookReturn game_negotiate_fail(GGZGameEvent, const void *,
+					 const void *);
+static GGZHookReturn game_playing(GGZGameEvent, const void *,
+				  const void *);
 
 extern GGZServer *server;
 GGZGame *game;
@@ -52,7 +57,7 @@ static int spectating = FALSE;
 static int game_handle;
 static int channel_handle;
 
-void game_init(GGZModule *module, GGZGameType *type, int index, int spec)
+void game_init(GGZModule * module, GGZGameType * type, int index, int spec)
 {
 	gametype = type;
 	gameindex = index;
@@ -67,10 +72,9 @@ void game_init(GGZModule *module, GGZGameType *type, int index, int spec)
 
 void game_quit(void)
 {
-	if (fd != -1)
-	{
-	        gdk_input_remove(game_handle);
-        	game_handle = -1;
+	if (fd != -1) {
+		gdk_input_remove(game_handle);
+		game_handle = -1;
 		fd = -1;
 	}
 }
@@ -103,55 +107,62 @@ static void channel_process(void)
 void game_channel_connected(int fd)
 {
 	channel_handle = gdk_input_add_full(fd, GDK_INPUT_READ,
-					 (GdkInputFunction)channel_process,
-					 (gpointer)server,
-					 NULL);
+					    (GdkInputFunction)
+					    channel_process,
+					    (gpointer) server, NULL);
 }
 
 
 void game_channel_ready(int fd)
 {
-        gdk_input_remove(channel_handle);
-       	channel_handle = -1;
+	gdk_input_remove(channel_handle);
+	channel_handle = -1;
 
 	ggzcore_game_set_server_fd(game, fd);
 }
 
 
-static void game_register(GGZGame *game)
+static void game_register(GGZGame * game)
 {
-	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCHED, game_launched);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCH_FAIL, game_launch_fail);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED, game_negotiated);
-	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL, game_negotiate_fail);
+	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCHED,
+				    game_launched);
+	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCH_FAIL,
+				    game_launch_fail);
+	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED,
+				    game_negotiated);
+	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL,
+				    game_negotiate_fail);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_PLAYING, game_playing);
 }
 
 
-static GGZHookReturn game_launched(GGZGameEvent id, void* event_data, 
-				   void* user_data)
+static GGZHookReturn game_launched(GGZGameEvent id, const void *event_data,
+				   const void *user_data)
 {
 	fd = ggzcore_game_get_control_fd(game);
 	game_handle = gdk_input_add_full(fd, GDK_INPUT_READ,
-					 (GdkInputFunction)game_process,
-					 (gpointer)server,
-					 game_destroy);
+					 (GdkInputFunction) game_process,
+					 (gpointer) server, game_destroy);
 
 	return GGZ_HOOK_OK;
 }
 
 
-static GGZHookReturn game_launch_fail(GGZGameEvent id, void* event_data,
-				      void* user_data)
+static GGZHookReturn game_launch_fail(GGZGameEvent id,
+				      const void *event_data,
+				      const void *user_data)
 {
-	g_print("Launch failed: %s\n", (char*)event_data);
+	const char *msg = event_data;
+
+	g_print("Launch failed: %s\n", msg);
 
 	return GGZ_HOOK_OK;
 }
 
 
-static GGZHookReturn game_negotiated(GGZGameEvent id, void* event_data,
-				     void* user_data)
+static GGZHookReturn game_negotiated(GGZGameEvent id,
+				     const void *event_data,
+				     const void *user_data)
 {
 	ggzcore_server_create_channel(server);
 
@@ -159,33 +170,37 @@ static GGZHookReturn game_negotiated(GGZGameEvent id, void* event_data,
 }
 
 
-static GGZHookReturn game_negotiate_fail(GGZGameEvent id, void* event_data,
-				      void* user_data)
+static GGZHookReturn game_negotiate_fail(GGZGameEvent id,
+					 const void *event_data,
+					 const void *user_data)
 {
-	g_print ("Negotiate failed: %s\n", (char*)event_data);
+	const char *msg = event_data;
+
+	g_print("Negotiate failed: %s\n", msg);
 
 	return GGZ_HOOK_OK;
 }
 
 
-static GGZHookReturn game_playing(GGZGameEvent id, void* event_data, void* user_data)
+static GGZHookReturn game_playing(GGZGameEvent id, const void *event_data,
+				  const void *user_data)
 {
 	gint status;
 	GGZRoom *room;
-//	GGZTable *table;
+//      GGZTable *table;
 
 	room = ggzcore_server_get_cur_room(server);
 
-//	if(gameindex < 0) {
-//		table = ggzcore_table_new();
-//		ggzcore_table_init(table, gametype, "Fun with ggz-txt", 2);
-//		ggzcore_table_set_seat(table, 1, GGZ_SEAT_BOT, NULL);
+//      if(gameindex < 0) {
+//              table = ggzcore_table_new();
+//              ggzcore_table_init(table, gametype, "Fun with ggz-txt", 2);
+//              ggzcore_table_set_seat(table, 1, GGZ_SEAT_BOT, NULL);
 //
-//		ggzcore_room_launch_table(room, table);
-//		ggzcore_table_free(table);
-//	}
-//	else {
-		status = ggzcore_room_join_table(room, gameindex, spectating);
-//	}
+//              ggzcore_room_launch_table(room, table);
+//              ggzcore_table_free(table);
+//      }
+//      else {
+	status = ggzcore_room_join_table(room, gameindex, spectating);
+//      }
 	return GGZ_HOOK_OK;
 }

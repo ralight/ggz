@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 6675 2005-01-14 07:01:43Z jdorje $
+#  $Id: Makefile.am 6871 2005-01-24 03:46:22Z jdorje $
 
 SUBDIRS = src motd-editor pixmaps po
 
@@ -10,6 +10,7 @@ schema_DATA = ggz-gnome.schemas
 schemadir = $(sysconfdir)/gconf/schemas/
 
 EXTRA_DIST	=	autogen.sh	\
+			indent.pro	\
 			m4/ggz.m4	\
 			m4/iconv.m4	\
 			$(util_DATA)	\

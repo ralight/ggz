@@ -29,32 +29,32 @@
 #include "ggzcore.h"
 
 typedef enum {
-	CHAT_MSG		= 0x0001,
-	CHAT_PRVMSG		= 0x0002,
-	CHAT_ANNOUNCE		= 0x0003,
-	CHAT_SEND_PRVMSG	= 0x0004,
-	CHAT_LOCAL_NORMAL	= 0x0005,
-	CHAT_LOCAL_HIGH		= 0x0006
+	CHAT_MSG = 0x0001,
+	CHAT_PRVMSG = 0x0002,
+	CHAT_ANNOUNCE = 0x0003,
+	CHAT_SEND_PRVMSG = 0x0004,
+	CHAT_LOCAL_NORMAL = 0x0005,
+	CHAT_LOCAL_HIGH = 0x0006
 } CHATTypes;
 
 void chat_init(void);
 void chat_allocate_colors(void);
 void chat_display_message(CHATTypes id, char *player, char *message);
-void chat_send(gchar *message);
-void chat_enter(gchar *player);
-void chat_part(gchar *player);
+void chat_send(gchar * message);
+void chat_enter(const gchar * player);
+void chat_part(const gchar * player);
 void chat_help(void);
-int chat_checkurl(GtkXText *xtext, char *word);
-void chat_word_clicked(GtkXText *xtext, char *word,
-	GdkEventButton *event);
-void chat_add_friend(gchar *name, gint display);
-void chat_remove_friend(gchar *name);
-void chat_add_ignore(gchar *name, gint display);
-void chat_remove_ignore(gchar *name);
+int chat_checkurl(GtkXText * xtext, char *word);
+void chat_word_clicked(GtkXText * xtext, char *word,
+		       GdkEventButton * event);
+void chat_add_friend(gchar * name, gint display);
+void chat_remove_friend(gchar * name);
+void chat_add_ignore(gchar * name, gint display);
+void chat_remove_ignore(gchar * name);
 void chat_save_lists(void);
-const gchar *chat_complete_name(gchar *name);
-gint chat_is_friend(gchar *name);
-gint chat_is_ignore(gchar *name);
+const gchar *chat_complete_name(gchar * name);
+gint chat_is_friend(gchar * name);
+gint chat_is_ignore(gchar * name);
 void chat_lists_cleanup(void);
 
 #endif
