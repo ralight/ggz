@@ -13,14 +13,15 @@ build-stamp:
 	dh_testdir
 
 	# Configure ggzd
+	test -f configure || NOCONFIGURE=yes ./autogen.sh
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man --sysconfdir=/etc --disable-debug
 
 	# RPath workaround
-	#sed < libtool > libtool-2 \
-	#	-e 's/^hardcode_libdir_flag_spec.*$$/hardcode_libdir_flag_spec=" -D__LIBTOOL_IS_A_FOOL__ "/'
-	#	#-e '/^archive_cmds="/s/"$$/ \\$$deplibs"/'
-	#mv libtool-2 libtool
-	#chmod 755 libtool
+	sed < libtool > libtool-2 \
+		-e 's/^hardcode_libdir_flag_spec.*$$/hardcode_libdir_flag_spec=" -D__LIBTOOL_IS_A_FOOL__ "/'
+		-e '/^archive_cmds="/s/"$$/ \\$$deplibs"/'
+	mv libtool-2 libtool
+	chmod 755 libtool
 
 	# Don't build yet - make install does already do this
 	#$(MAKE)
