@@ -1,11 +1,12 @@
 SUBDIRS = .
 
 pix_DATA = \
-	admin.png \
 	you.png \
 	buddy.png \
-	player.png \
 	banned.png \
+	admin.png \
+	player.png \
+	guest.png \
 	bot.png \
 	lag0.png \
 	lag1.png \

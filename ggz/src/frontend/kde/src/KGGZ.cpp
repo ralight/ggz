@@ -595,21 +595,20 @@ void KGGZ::listPlayers()
 		switch(player->type())
 		{
 			case GGZCorePlayer::guest:
-				type = KGGZUsers::assignplayer;
+				type = KGGZUsers::assignguest;
 				break;
 			case GGZCorePlayer::normal:
-				type = KGGZUsers::assignbuddy;
+				type = KGGZUsers::assignplayer;
 				break;
 			case GGZCorePlayer::admin:
 				type = KGGZUsers::assignadmin;
 				break;
 			case GGZCorePlayer::bot:
-KGGZDEBUG("assign bot!!!!\n");
 				type = KGGZUsers::assignbot;
 				break;
 			case GGZCorePlayer::unknown:
 			default:
-				type = KGGZUsers::assignbanned;
+				type = KGGZUsers::assignunknown;
 				break;
 		}
 		m_workspace->widgetUsers()->assignRole(playername, type);

@@ -51,34 +51,45 @@ class KGGZUsers : public KListView
 		// Dectructor
 		~KGGZUsers();
 		// Add a user to the table
-		void add(const char *name);
+		void add(QString name);
 		// Remove user from table
-		void remove(const char *name);
+		void remove(QString name);
 		// Remove all users
 		void removeall();
 		// Add a table
 		void addTable(int i);
-		// Add a player to a table, or move hime there
-		void addTablePlayer(int i, const char *name);
+		// Add a player to a table, or move him there
+		void addTablePlayer(int i, QString name);
 		// Specify the player's name
 		void assignSelf(QString self);
-		// Set a player's lag
-		void setLag(const char *playername, int lagvalue);
 		// Assign a role to a player
-		void assignRole(const char *playername, int role);
+		void assignRole(QString playername, int role);
+		// Set a player's lag
+		void setLag(QString playername, int lagvalue);
 		// Set current room
 		void setRoom(GGZCoreRoom *room);
 
+		// Player credits assigned by user
+		enum Credits
+		{
+			creditnone,
+			creditbuddy,
+			creditbanned,
+			credityou,
+			creditauto
+		};
+
+		// Player roles assigned by server
 		enum Assignments
 		{
-			assignyou,
-			assignbuddy,
+			assignunknown,
 			assignplayer,
-			assignbanned,
+			assignguest,
 			assignbot,
 			assignadmin
 		};
 
+		// Possible information actions
 		enum Information
 		{
 			inforecord
@@ -87,8 +98,8 @@ class KGGZUsers : public KListView
 	public slots:
 		// Click on a player
 		void slotClicked(QListViewItem *item, const QPoint& point, int column);
-		// Assign role to player
-		void slotAssigned(int id);
+		// Player crediting
+		void slotCredited(int id);
 		// Get player information
 		void slotInformation(int id);
 
@@ -96,11 +107,15 @@ class KGGZUsers : public KListView
 		// Returns the item which represents the requested table
 		QListViewItem *table(int i);
 		// Returns the item which represents the wanted player
-		QListViewItem *player(const char *player);
-		// Assign a role
-		void assign(QListViewItem *item, int role);
+		QListViewItem *player(QString player);
+		// Assign a credit
+		void credit(QString playername, int credit);
+		// Display icon with role and credit
+		void display(QString playername);
 		// Set lag
 		void lag(QListViewItem *item, int lag);
+		// Helper function: pixmap composition
+		QPixmap composite(QPixmap bottom, QPixmap top);
 		
 		// The list displaying the users
 		QListViewItem *itemmain;
@@ -110,6 +125,10 @@ class KGGZUsers : public KListView
 		QPopupMenu *m_menu_assign, *m_menu_info;
 		// Name of the player
 		QString m_self;
+		// Player roles
+		QMap<QString, int> m_roles;
+		// Player credits
+		QMap<QString, int> m_credits;
 
 		// Current room
 		GGZCoreRoom *m_room;

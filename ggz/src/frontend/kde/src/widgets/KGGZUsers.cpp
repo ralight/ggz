@@ -48,24 +48,20 @@
 
 // Qt includes
 #include <qpixmap.h>
+#include <qimage.h>
 #include <qpopupmenu.h>
-
-// System includes
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <qdir.h>
+#include <qpainter.h>
 
 // Constructor
 KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
 : KListView(parent, name)
 {
-	itemmain = new QListViewItem(this, i18n("Not playing"));
-	itemmain->setOpen(TRUE);
-
 	addColumn(i18n("Players"));
-	addColumn(i18n("Table"));
+	addColumn(i18n("Icon"));
 	addColumn(i18n("Lag"));
-	insertItem(itemmain);
+
+	removeall();
 
 	setRootIsDecorated(TRUE);
 
@@ -73,19 +69,18 @@ KGGZUsers::KGGZUsers(QWidget *parent, const char *name)
 	m_menu = NULL;
 
 	m_menu_assign = new QPopupMenu(NULL);
-	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/player.png")), i18n("Player"), assignplayer);
-	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/buddy.png")), i18n("Buddy"), assignbuddy);
-	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/banned.png")), i18n("Banned"), assignbanned);
-	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/bot.png")), i18n("Bot"), assignbot);
+	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/normal.png")), i18n("Neutral"), creditnone);
+	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/buddy.png")), i18n("Buddy"), creditbuddy);
+	m_menu_assign->insertItem(QIconSet(QPixmap(KGGZ_DIRECTORY "/images/icons/players/banned.png")), i18n("Banned"), creditbanned);
 
 	m_menu_info = new QPopupMenu(NULL);
 	m_menu_info->insertItem(i18n("Record"), inforecord);
 
-	connect(this, SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)), SLOT(slotClicked(QListViewItem*, const QPoint&, int)));
-	connect(m_menu_assign, SIGNAL(activated(int)), SLOT(slotAssigned(int)));
+	connect(this,
+		SIGNAL(rightButtonPressed(QListViewItem*, const QPoint&, int)),
+		SLOT(slotClicked(QListViewItem*, const QPoint&, int)));
+	connect(m_menu_assign, SIGNAL(activated(int)), SLOT(slotCredited(int)));
 	connect(m_menu_info, SIGNAL(activated(int)), SLOT(slotInformation(int)));
-
-	//startTimer(1000);
 }
 
 // Destructor
@@ -95,14 +90,14 @@ KGGZUsers::~KGGZUsers()
 }
 
 // add a player to the list
-void KGGZUsers::add(const char *name)
+void KGGZUsers::add(QString name)
 {
 	KListViewItem *tmp;
 
 	tmp = new KListViewItem(itemmain, name);
-	itemmain->insertItem(tmp);
-	assign(tmp, -1);
 	lag(tmp, 1);
+
+	credit(name, creditauto);
 }
 
 // set player's lag
@@ -112,135 +107,56 @@ void KGGZUsers::lag(QListViewItem *item, int lag)
 }
 
 // remove a player from the list
-void KGGZUsers::remove(const char *name)
+void KGGZUsers::remove(QString name)
 {
 	QListViewItem *tmp;
-	const char *tokentmp;
 
-	if(itemmain->firstChild()) tmp = itemmain->firstChild();
-	else
-	{
-		KGGZDEBUG("Error while removing %s!\n", name);
-		return;
-	}
-
-	while(tmp)
-	{
-		tokentmp = tmp->text(0).latin1();
-		if(strcmp(tokentmp, name) == 0)
-		{
-			delete tmp;
-			tmp = NULL;
-		}
-		else
-		{
-			if(tmp->itemBelow() == NULL) KGGZDEBUG("itemBelow is NULL!\n");
-			if(tmp->itemAbove() == NULL) KGGZDEBUG("itemAbove is NULL!\n");
-			if(tmp->nextSibling() == NULL) KGGZDEBUG("nextSibling is NULL!\n");
-			tmp = tmp->itemBelow();
-		}
-	}
-	KGGZDEBUG("Removed token %s\n", name);
+	tmp = findItem(name, 0);
+	if(tmp) delete tmp;
 }
 
 // remove all players from the list
 void KGGZUsers::removeall()
 {
-	QListViewItem *tmp;
+	clear();
 
-	if(!itemmain) return;
-	tmp = NULL;
-
-	KGGZDEBUG("Remove all players from the list\n");
-
-	if(itemmain->firstChild()) tmp = itemmain->firstChild();
-
-	while(tmp)
-	{
-		KGGZDEBUG("removeall: %s\n", tmp->text(0).latin1());
-		delete tmp;
-		tmp = itemmain->firstChild();
-	}
-
-	if(firstChild()) tmp = firstChild();
-	else tmp = NULL;
-	while(tmp)
-	{
-		delete tmp;
-		//takeItem(tmp);
-		tmp = firstChild();
-	}
 	itemmain = new QListViewItem(this, i18n("Not playing"));
-	insertItem(itemmain);
 	itemmain->setOpen(TRUE);
 }
 
 void KGGZUsers::addTable(int i)
 {
 	KListViewItem *tmp;
-	QString foo;
+	QString tablename;
 
-	foo = i18n("Table: %1").arg(i);
-	tmp = new KListViewItem(this, foo);
-	insertItem(tmp);
+	tablename = i18n("Table: %1").arg(i);
+	tmp = new KListViewItem(this, tablename);
 	tmp->setOpen(TRUE);
 }
 
-void KGGZUsers::addTablePlayer(int i, const char *name)
+void KGGZUsers::addTablePlayer(int i, QString name)
 {
 	QListViewItem *tmp, *tmp2;
-	QString foo;
 
-	foo.sprintf("%s-%i", name, i);
 	remove(name);
 
 	tmp2 = table(i);
-	if(!tmp2)
-	{
-		KGGZDEBUG("Player %s should go to table %i; however, it's absent!\n", name, i);
-		return;
-	}
+	if(!tmp2) return;
+
 	tmp = new QListViewItem(tmp2, name);
-	tmp2->insertItem(tmp);
-	assign(tmp, -1);
+	credit(name, creditauto);
 }
 
 QListViewItem *KGGZUsers::table(int i)
 {
-	QListViewItem *tmp;
-	QString foo;
-
-	tmp = firstChild();
-	if(!tmp)
-	{
-		KGGZDEBUG("Error while searching table %i!\n", i);
-		return NULL;
-	}
-
-	foo = i18n("Table: %1").arg(i);
-	while(tmp)
-	{
-		if(tmp->text(0) == foo) return tmp;
-		if(tmp == NULL) KGGZDEBUG("ALERT!!!! isNull()!!!\n");
-		tmp = tmp->nextSibling();
-		if(tmp) KGGZDEBUG("This one is new: %s\n", tmp->text(0).latin1());
-	}
-	return NULL;
+	QString tablename = i18n("Table: %1").arg(i);
+	return findItem(tablename, 0);
 }
 
 // Returns the item which represents the wanted player
-QListViewItem *KGGZUsers::player(const char *player)
+QListViewItem *KGGZUsers::player(QString player)
 {
-	QListViewItem *tmp;
-
-	if(!player) return NULL;
-	tmp = firstChild();
-	while(tmp)
-	{
-		if(tmp->text(0) == player) return tmp;
-		tmp = tmp->itemBelow();
-	}
-	return NULL;
+	return findItem(player, 0);
 }
 
 // Click on a player
@@ -255,92 +171,135 @@ void KGGZUsers::slotClicked(QListViewItem *item, const QPoint& point, int column
 	if(item->text(0) != m_self)
 	{
 		m_menu->insertItem(i18n("Send private message"), -1);
-		m_menu->insertItem(i18n("Assign a role"), m_menu_assign);
+		m_menu->insertItem(i18n("Assign a credit"), m_menu_assign);
 	}
 	m_menu->insertItem(i18n("Player information"), m_menu_info);
-	//connect(m_menu, SIGNAL(activated(int)), SLOT(slotAssigned(int)));
+	//connect(m_menu, SIGNAL(activated(int)), SLOT(slotCredited(int)));
 
 	m_menu->popup(point);
 }
 
-// Assign role to player
-void KGGZUsers::slotAssigned(int id)
+// Assign credit to player
+void KGGZUsers::slotCredited(int id)
 {
 	QListViewItem *tmp;
 
 	tmp = selectedItem();
 	if(!tmp) return;
 
-	assign(tmp, id);
+	credit(tmp->text(0), id);
 }
 
 void KGGZUsers::assignSelf(QString self)
 {
 	m_self = self;
-	assign(player(self.latin1()), assignyou);
+	credit(self, credityou);
 }
 
-void KGGZUsers::assign(QListViewItem *item, int role)
+void KGGZUsers::display(QString playername)
 {
+	QPixmap rolepixmap, creditpixmap, playerpixmap;
 	QString pixmap;
-	GGZCoreConfio *config;
-	int save;
+	QListViewItem *item;
+	int role, credit;
 
+	item = player(playername);
 	if(!item) return;
 
-	save = 1;
-	if(role == -1)
-	{
-		save = 0;
-		config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")), GGZCoreConfio::readonly);
-		role = config->read("Assignments", item->text(0).latin1(), assignplayer);
-		delete config;
-	}
+	credit = m_credits[playername];
+	role = m_roles[playername];
 
 	switch(role)
 	{
 		case assignplayer:
 			pixmap = "player.png";
 			break;
-		case assignbuddy:
-			pixmap = "buddy.png";
-			break;
-		case assignbanned:
-			pixmap = "banned.png";
+		case assignguest:
+			pixmap = "guest.png";
 			break;
 		case assignbot:
 			pixmap = "bot.png";
-			break;
-		case assignyou:
-			pixmap = "you.png";
 			break;
 		case assignadmin:
 			pixmap = "admin.png";
 			break;
 	}
-KGGZDEBUG("setpixmap: %s\n", pixmap.latin1());
-	item->setPixmap(1, QPixmap(KGGZ_DIRECTORY "/images/icons/players/" + pixmap));
 
-	if(save)
+	rolepixmap = QPixmap(KGGZ_DIRECTORY "/images/icons/players/" + pixmap);
+
+	switch(credit)
 	{
-		config = new GGZCoreConfio(QString("%1/.ggz/kggz.rc").arg(getenv("HOME")), GGZCoreConfio::readwrite | GGZCoreConfio::create);
-		config->write("Assignments", item->text(0).latin1(), role);
+		case creditbuddy:
+			pixmap = "buddy.png";
+			break;
+		case creditbanned:
+			pixmap = "banned.png";
+			break;
+		case credityou:
+			pixmap = "you.png";
+			break;
+	}
+
+	creditpixmap = QPixmap(KGGZ_DIRECTORY "/images/icons/players/" + pixmap);
+
+	playerpixmap = composite(rolepixmap, creditpixmap);
+	item->setPixmap(1, playerpixmap);
+}
+
+QPixmap KGGZUsers::composite(QPixmap bottom, QPixmap top)
+{
+	QPixmap comp;
+
+	QImage topim = top.convertToImage();
+	QImage bottomim = bottom.convertToImage();
+
+	for(int j = 0; j < bottom.height(); j++)
+		for(int i = 0; i < bottom.width(); i++)
+		{
+			if(qAlpha(topim.pixel(i, j)))
+				bottomim.setPixel(i, j, topim.pixel(i, j));
+		}
+	comp.convertFromImage(bottomim);
+	return comp;
+}
+
+void KGGZUsers::credit(QString playername, int credit)
+{
+	GGZCoreConfio *config;
+	int save;
+
+	save = 1;
+	if(credit == creditauto)
+	{
+		save = 0;
+		config = new GGZCoreConfio(QDir::home().path() + "/.ggz/kggz.rc", GGZCoreConfio::readonly);
+		credit = config->read("Credits", playername.latin1(), creditnone);
+		delete config;
+	}
+	else if(credit != credityou)
+	{
+		config = new GGZCoreConfio(QDir::home().path() + "/.ggz/kggz.rc", GGZCoreConfio::readwrite | GGZCoreConfio::create);
+		config->write("Credits", playername.latin1(), credit);
 		config->commit();
 		delete config;
 	}
+
+	m_credits[playername] = credit;
+	display(playername);
+}
+
+void KGGZUsers::assignRole(QString playername, int role)
+{
+	m_roles[playername] = role;
+	display(playername);
 }
 
 // Set a player's lag
-void KGGZUsers::setLag(const char *playername, int lagvalue)
+void KGGZUsers::setLag(QString playername, int lagvalue)
 {
 	if(lagvalue < 0) lagvalue = 0;
 	if(lagvalue > 5) lagvalue = 5;
 	lag(player(playername), lagvalue);
-}
-
-void KGGZUsers::assignRole(const char *playername, int role)
-{
-	assign(player(playername), role);
 }
 
 void KGGZUsers::slotInformation(int id)
