@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-04-30 14:45-0400\n"
+"POT-Creation-Date: 2000-08-22 17:36-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -13,20 +13,27 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: ggz/dlg_about.c:44
+#: ggz/dlg_about.c:48
+#, fuzzy, c-format
+msgid "Gnu Gaming Zone Client version %s"
+msgstr "GNU Spielend Zone"
+
+#: ggz/dlg_about.c:70
 msgid "About"
 msgstr "Über"
 
-#: ggz/dlg_about.c:59
-msgid "GNU Gaming Zone"
-msgstr "GNU Spielend Zone"
+#: ggz/dlg_about.c:92
+msgid "(C) 1999, 2000"
+msgstr ""
 
-#: ggz/dlg_about.c:66
+#: ggz/dlg_about.c:99
+#, fuzzy
 msgid ""
 "Authors:\n"
 "\t\tGTK+ Version\n"
+"\t\t\t\t\t\t\t\tBrian Cox          (bcox@users.sourceforge.net)\n"
 "\t\t\t\t\t\t\t\tRich Gade\t\t\t\t\t\t\t\t\t(rgade@users.sourceforge.net)\n"
-"\t\t\t\t\t\t\t\tBrent Hendricks\t\t(bmh@users.sourceforge.net)\n"
+"\t\t\t\t\t\t\t\tBrent Hendricks\t (bmh@users.sourceforge.net)\n"
 "\t\t\t\t\t\t\t\tJustin Zaun\t\t\t\t\t\t\t(jzaun@users.sourceforge.net)\n"
 "\n"
 "\t\tWindows Version\n"
@@ -47,17 +54,17 @@ msgstr ""
 "Web Seite:\n"
 "\t\t\t\t\t\t\t\thttp://ggz.sourceforge.net\n"
 
-#: ggz/dlg_about.c:87 ggz/dlg_motd.c:77 ggz/dlg_msgbox.c:70
-#: ggz/dlg_props.c:930
+#: ggz/dlg_about.c:120 ggz/dlg_motd.c:77 ggz/dlg_msgbox.c:70
+#: ggz/dlg_props.c:1361
 msgid "OK"
 msgstr "OK"
 
-#: ggz/dlg_details.c:32
+#: ggz/dlg_details.c:28
 msgid "Connection Messages"
 msgstr "Anschlußmeldungen"
 
-#: ggz/dlg_details.c:69 ggz/dlg_exit.c:71 ggz/dlg_launch.c:897
-#: ggz/dlg_login.c:271 ggz/dlg_props.c:946
+#: ggz/dlg_details.c:65 ggz/dlg_exit.c:71 ggz/dlg_launch.c:912
+#: ggz/dlg_login.c:801 ggz/dlg_props.c:1377
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -71,285 +78,320 @@ msgid "Exit: Are you sure?"
 msgstr "Beenden: Sind Sie sicher?"
 
 #. Button widgets
-#: ggz/dlg_exit.c:70 ggz/dlg_main.c:764
+#: ggz/dlg_exit.c:70 ggz/dlg_main.c:1016
 msgid "Exit"
 msgstr "Beenden"
 
-#: ggz/dlg_launch.c:367
+#: ggz/dlg_launch.c:382
 msgid "Seat Assignments"
 msgstr "Sitzanweisungen"
 
-#: ggz/dlg_launch.c:389
+#: ggz/dlg_launch.c:404
 msgid "Game Type:"
 msgstr "Spielart:"
 
-#: ggz/dlg_launch.c:421
+#: ggz/dlg_launch.c:436
 msgid "Number of seats"
 msgstr "Anzahl von Sitze"
 
-#: ggz/dlg_launch.c:435
+#: ggz/dlg_launch.c:450
 msgid "Author:"
 msgstr "Autor:"
 
-#: ggz/dlg_launch.c:450
+#: ggz/dlg_launch.c:465
 msgid "Description:"
 msgstr "Beschreibung:"
 
-#: ggz/dlg_launch.c:465
+#: ggz/dlg_launch.c:480
 msgid "Homepage:"
 msgstr "Hausseite:"
 
-#: ggz/dlg_launch.c:487
+#: ggz/dlg_launch.c:502
 msgid "Seat 1:"
 msgstr "Sitz 1:"
 
-#: ggz/dlg_launch.c:494 ggz/dlg_launch.c:541 ggz/dlg_launch.c:588
-#: ggz/dlg_launch.c:635 ggz/dlg_launch.c:682 ggz/dlg_launch.c:729
-#: ggz/dlg_launch.c:776 ggz/dlg_launch.c:823
+#: ggz/dlg_launch.c:509 ggz/dlg_launch.c:556 ggz/dlg_launch.c:603
+#: ggz/dlg_launch.c:650 ggz/dlg_launch.c:697 ggz/dlg_launch.c:744
+#: ggz/dlg_launch.c:791 ggz/dlg_launch.c:838
 msgid "Computer"
 msgstr "Rechner"
 
-#: ggz/dlg_launch.c:502 ggz/dlg_launch.c:549 ggz/dlg_launch.c:596
-#: ggz/dlg_launch.c:643 ggz/dlg_launch.c:690 ggz/dlg_launch.c:737
-#: ggz/dlg_launch.c:784 ggz/dlg_launch.c:831
+#: ggz/dlg_launch.c:517 ggz/dlg_launch.c:564 ggz/dlg_launch.c:611
+#: ggz/dlg_launch.c:658 ggz/dlg_launch.c:705 ggz/dlg_launch.c:752
+#: ggz/dlg_launch.c:799 ggz/dlg_launch.c:846
 msgid "Open"
 msgstr "Öffnen"
 
-#: ggz/dlg_launch.c:510 ggz/dlg_launch.c:557 ggz/dlg_launch.c:604
-#: ggz/dlg_launch.c:651 ggz/dlg_launch.c:698 ggz/dlg_launch.c:745
-#: ggz/dlg_launch.c:792 ggz/dlg_launch.c:839
+#: ggz/dlg_launch.c:525 ggz/dlg_launch.c:572 ggz/dlg_launch.c:619
+#: ggz/dlg_launch.c:666 ggz/dlg_launch.c:713 ggz/dlg_launch.c:760
+#: ggz/dlg_launch.c:807 ggz/dlg_launch.c:854
 msgid "Reserved for"
 msgstr "Reserviert für"
 
-#: ggz/dlg_launch.c:534
+#: ggz/dlg_launch.c:549
 msgid "Seat 2:"
 msgstr "Sitz 2:"
 
-#: ggz/dlg_launch.c:581
+#: ggz/dlg_launch.c:596
 msgid "Seat 3:"
 msgstr "Sitz 3:"
 
-#: ggz/dlg_launch.c:628
+#: ggz/dlg_launch.c:643
 msgid "Seat 4:"
 msgstr "Sitz 4:"
 
-#: ggz/dlg_launch.c:675
+#: ggz/dlg_launch.c:690
 msgid "Seat 5:"
 msgstr "Sitz 5:"
 
-#: ggz/dlg_launch.c:722
+#: ggz/dlg_launch.c:737
 msgid "Seat 6:"
 msgstr "Sitz 6:"
 
-#: ggz/dlg_launch.c:769
+#: ggz/dlg_launch.c:784
 msgid "Seat 7:"
 msgstr "Sitz 7:"
 
-#: ggz/dlg_launch.c:816
+#: ggz/dlg_launch.c:831
 msgid "Seat 8:"
 msgstr "Sitz 8:"
 
-#: ggz/dlg_launch.c:863
+#: ggz/dlg_launch.c:878
 msgid "Game Description   "
 msgstr "Spielbeschreibung  "
 
-#: ggz/dlg_launch.c:889 ggz/mnu_tables.c:48
+#: ggz/dlg_launch.c:904 ggz/mnu_tables.c:48
 msgid "Launch"
 msgstr "Abschießen"
 
-#: ggz/dlg_login.c:71
-msgid "Login"
-msgstr "Logon"
+#: ggz/dlg_login.c:541
+msgid "Connect and Login"
+msgstr ""
 
-#: ggz/dlg_login.c:121
-msgid "Username : "
+#: ggz/dlg_login.c:548
+#, fuzzy
+msgid "Server Profile"
+msgstr "Diener:  "
+
+#: ggz/dlg_login.c:589
+#, fuzzy
+msgid "Profile: "
+msgstr "Profilname:  "
+
+#: ggz/dlg_login.c:620
+msgid "Edit Profiles..."
+msgstr ""
+
+#: ggz/dlg_login.c:635
+#, fuzzy
+msgid "Server: "
+msgstr "Diener:  "
+
+#: ggz/dlg_login.c:652
+#, fuzzy
+msgid "Port: "
+msgstr "Port:"
+
+#: ggz/dlg_login.c:668
+msgid "5688"
+msgstr ""
+
+#: ggz/dlg_login.c:706
+#, fuzzy
+msgid "Username: "
 msgstr "Benutzername : "
 
-#: ggz/dlg_login.c:136
-msgid "Enter your login name here"
-msgstr "Betreten Sie Ihren Benutzername hierher"
-
-#: ggz/dlg_login.c:145
-msgid "Password : "
+#: ggz/dlg_login.c:730
+#, fuzzy
+msgid "Password: "
 msgstr "Kennwort : "
 
-#: ggz/dlg_login.c:159
-msgid "Enter your password here"
-msgstr "Betreten Sie Ihren Kennwort hierher"
-
-#: ggz/dlg_login.c:178
+#: ggz/dlg_login.c:755 ggz/dlg_props.c:909
 msgid "Normal Login"
 msgstr "Normaler Logon"
 
-#: ggz/dlg_login.c:186
-msgid "Anonymous Login"
-msgstr "Anonymer Logon"
+#: ggz/dlg_login.c:764 ggz/dlg_props.c:918
+#, fuzzy
+msgid "Guest Login"
+msgstr "Logon"
 
-#: ggz/dlg_login.c:194
+#: ggz/dlg_login.c:772
 msgid "First-time Login"
 msgstr "Erstmaliger Logon"
 
-#: ggz/dlg_login.c:218
-msgid "Server:"
-msgstr "Diener:"
-
-#: ggz/dlg_login.c:241
-msgid "Port:"
-msgstr "Port:"
-
-#: ggz/dlg_login.c:263 ggz/dlg_main.c:698
+#: ggz/dlg_login.c:793 ggz/dlg_main.c:950
 msgid "Connect"
 msgstr "Anschließen"
 
-#: ggz/dlg_login.c:279
-msgid "Details >>"
+#: ggz/dlg_login.c:809
+#, fuzzy
+msgid "Details..."
 msgstr "Einzelheiten >>"
 
-#: ggz/dlg_main.c:146
+#: ggz/dlg_main.c:209
+msgid "You must be in room to join a table."
+msgstr ""
+
+#: ggz/dlg_main.c:211
+msgid "You are not connected to a server!"
+msgstr ""
+
+#: ggz/dlg_main.c:213
+msgid "You must select a table to join."
+msgstr ""
+
+#: ggz/dlg_main.c:220 ggz/dlg_main.c:361
+#, c-format
+msgid ""
+"Sorry, but you don't seem to have %s installed. You\n"
+"can get it from %s."
+msgstr ""
+
+#: ggz/dlg_main.c:278
 msgid "Not Connected"
 msgstr "Nicht angeschlossen"
 
-#: ggz/dlg_main.c:180
+#: ggz/dlg_main.c:364
 msgid "Not connected!"
 msgstr "Nicht angeschlossen!"
 
-#: ggz/dlg_main.c:454
+#: ggz/dlg_main.c:706
 msgid "Gnu Gaming Zone"
 msgstr "GNU Spielend Zone"
 
-#: ggz/dlg_main.c:473
+#: ggz/dlg_main.c:725
 msgid "_GGZ"
 msgstr "_GGZ"
 
-#: ggz/dlg_main.c:491
+#: ggz/dlg_main.c:743
 msgid "_Connect"
 msgstr "_Anschließen"
 
-#: ggz/dlg_main.c:505
+#: ggz/dlg_main.c:757
 msgid "_Disconnect"
 msgstr "A_usschalten"
 
-#: ggz/dlg_main.c:527
+#: ggz/dlg_main.c:779
 msgid "E_xit"
 msgstr "B_eenden"
 
-#: ggz/dlg_main.c:541
+#: ggz/dlg_main.c:793
 msgid "G_ame"
 msgstr "S_piel"
 
-#: ggz/dlg_main.c:559
+#: ggz/dlg_main.c:811
 msgid "_Launch Game"
 msgstr "A_bschießen Speil"
 
-#: ggz/dlg_main.c:573
+#: ggz/dlg_main.c:825
 msgid "_Join Game"
 msgstr "An_fügen Spiel"
 
-#: ggz/dlg_main.c:584
+#: ggz/dlg_main.c:836
 msgid "Lea_ve Game"
 msgstr "Abfa_hren Spiel"
 
-#: ggz/dlg_main.c:595
+#: ggz/dlg_main.c:847
 msgid "_Edit"
 msgstr "_Bearbeiten"
 
-#: ggz/dlg_main.c:611 ggz/dlg_props.c:335
+#: ggz/dlg_main.c:863 ggz/dlg_props.c:677
 msgid "Properties"
 msgstr "Eigenschaften"
 
-#: ggz/dlg_main.c:620
+#: ggz/dlg_main.c:872
 msgid "_View"
 msgstr "An_sicht"
 
-#: ggz/dlg_main.c:638
+#: ggz/dlg_main.c:890
 msgid "Game _Types"
 msgstr "Spielar_t"
 
-#: ggz/dlg_main.c:649
+#: ggz/dlg_main.c:901
 msgid "_MOTD"
 msgstr "Ta_gesmeldung"
 
-#: ggz/dlg_main.c:660
+#: ggz/dlg_main.c:912
 msgid "_Help"
 msgstr "_Hilfe"
 
-#: ggz/dlg_main.c:679
+#: ggz/dlg_main.c:931
 msgid "_About"
 msgstr "_Über"
 
-#: ggz/dlg_main.c:709
+#: ggz/dlg_main.c:961
 msgid "Disconnect"
 msgstr "Ausschalten"
 
-#: ggz/dlg_main.c:720
+#: ggz/dlg_main.c:972
 msgid "Launch Game"
 msgstr "Abschießen Spiel"
 
-#: ggz/dlg_main.c:731
+#: ggz/dlg_main.c:983
 msgid "Join Game"
 msgstr "Anfügen Spiel"
 
-#: ggz/dlg_main.c:742
+#: ggz/dlg_main.c:994
 msgid "Change Props"
 msgstr "Wechseln Eigenschaften"
 
-#: ggz/dlg_main.c:753 ggz/mnu_players.c:38
+#: ggz/dlg_main.c:1005 ggz/mnu_players.c:38
 msgid "Stats"
 msgstr "Statistiken"
 
-#: ggz/dlg_main.c:789
+#: ggz/dlg_main.c:1041
 msgid "Game Tables"
 msgstr "Spieltische"
 
-#: ggz/dlg_main.c:819
+#: ggz/dlg_main.c:1071
 msgid " "
 msgstr " "
 
-#: ggz/dlg_main.c:826
+#: ggz/dlg_main.c:1078
 msgid "Table No."
 msgstr "Anzahl von Tisch"
 
-#: ggz/dlg_main.c:833
+#: ggz/dlg_main.c:1085
 msgid "Game Type"
 msgstr "Spielart"
 
-#: ggz/dlg_main.c:840
+#: ggz/dlg_main.c:1092
 msgid "Seats"
 msgstr "Sitzen"
 
-#: ggz/dlg_main.c:847
+#: ggz/dlg_main.c:1099
 msgid "Open Seats"
 msgstr "Freisitzen"
 
-#: ggz/dlg_main.c:854
+#: ggz/dlg_main.c:1106
 msgid "Humans"
 msgstr "Menschen"
 
-#: ggz/dlg_main.c:861
+#: ggz/dlg_main.c:1113
 msgid "Description"
 msgstr "Beschreibung"
 
-#: ggz/dlg_main.c:885 ggz/mnu_tables.c:77
+#: ggz/dlg_main.c:1137 ggz/mnu_tables.c:77
 msgid "Players"
 msgstr "Spieler"
 
-#: ggz/dlg_main.c:910
+#: ggz/dlg_main.c:1162
 msgid "Name"
 msgstr "Name"
 
-#: ggz/dlg_main.c:917
+#: ggz/dlg_main.c:1169
 msgid "Table"
 msgstr "Tisch"
 
-#: ggz/dlg_main.c:940
+#: ggz/dlg_main.c:1192
 msgid "Current Room  "
 msgstr "Aktueller Zimmer"
 
-#: ggz/dlg_main.c:998
+#: ggz/dlg_main.c:1250
 msgid "Message: "
 msgstr "Meldung: "
 
-#: ggz/dlg_main.c:1012
+#: ggz/dlg_main.c:1264
 msgid "Send"
 msgstr "Schicken"
 
@@ -365,137 +407,154 @@ msgstr "Meldungbox"
 msgid "Close"
 msgstr "Zumachen"
 
-#: ggz/dlg_props.c:389
+#: ggz/dlg_props.c:725
+#, fuzzy
+msgid "Profiles"
+msgstr "Eigenschaften"
+
+#: ggz/dlg_props.c:753
+#, fuzzy
+msgid "Profile:"
+msgstr "Profilname:  "
+
+#: ggz/dlg_props.c:777
+msgid "Server:"
+msgstr "Diener:"
+
+#: ggz/dlg_props.c:794
+msgid "Port:"
+msgstr "Port:"
+
+#: ggz/dlg_props.c:831
+#, fuzzy
+msgid "Username:"
+msgstr "Benutzername : "
+
+#: ggz/dlg_props.c:856
+#, fuzzy
+msgid "Password:"
+msgstr "Kennwort : "
+
+#: ggz/dlg_props.c:882
+#, fuzzy
+msgid "Confirm:"
+msgstr "Land:"
+
+#: ggz/dlg_props.c:933
 msgid "Add"
 msgstr "Anfügen"
 
-#: ggz/dlg_props.c:397
+#: ggz/dlg_props.c:941
 msgid "Modify"
 msgstr "Abwandeln"
 
-#: ggz/dlg_props.c:405
+#: ggz/dlg_props.c:949
 msgid "Delete"
 msgstr "Löschen"
 
-#: ggz/dlg_props.c:434
-msgid "Profile Name:  "
-msgstr "Profilname:  "
-
-#: ggz/dlg_props.c:455
-msgid "Server:  "
-msgstr "Diener:  "
-
-#: ggz/dlg_props.c:470
-msgid " Port:  "
-msgstr " Port:  "
-
-#: ggz/dlg_props.c:491
-msgid "Username:  "
-msgstr "Benutzername:  "
-
-#: ggz/dlg_props.c:512
-msgid "Password:  "
-msgstr "Kennwort:  "
-
-#: ggz/dlg_props.c:526
+#: ggz/dlg_props.c:957
 msgid "Servers"
 msgstr "Diener"
 
-#: ggz/dlg_props.c:548
+#: ggz/dlg_props.c:979
 msgid "Chat Font: "
 msgstr "Plaudereischrift: "
 
-#: ggz/dlg_props.c:563
+#: ggz/dlg_props.c:994
 msgid "Change"
 msgstr "Wechseln"
 
-#: ggz/dlg_props.c:578
+#: ggz/dlg_props.c:1009
 msgid "Ignore Join/Part Messages"
 msgstr "Ignorieren Verbinden- und Urlaubnachrichten"
 
-#: ggz/dlg_props.c:587
+#: ggz/dlg_props.c:1018
 msgid "Word Wrap"
 msgstr "Zeilenumbruch"
 
-#: ggz/dlg_props.c:596
+#: ggz/dlg_props.c:1027
 msgid "Auto Indent"
 msgstr "Einrücken automatisch"
 
-#: ggz/dlg_props.c:605
+#: ggz/dlg_props.c:1036
 msgid "Timestamp Chats"
 msgstr "Zeitmarken"
 
-#: ggz/dlg_props.c:614
+#: ggz/dlg_props.c:1045
 msgid "Play Sounds"
 msgstr "Spielen erklingt"
 
-#: ggz/dlg_props.c:623
+#: ggz/dlg_props.c:1054
 msgid "Chat Color"
 msgstr "Plaudereifarbe"
 
-#: ggz/dlg_props.c:637
+#: ggz/dlg_props.c:1068
 msgid "Color In Chat"
 msgstr "Farbe in Plauderei"
 
-#: ggz/dlg_props.c:651
+#: ggz/dlg_props.c:1082
 msgid "Some"
 msgstr "Einige"
 
-#: ggz/dlg_props.c:661
+#: ggz/dlg_props.c:1092
 msgid "Full"
 msgstr "Völlig"
 
-#: ggz/dlg_props.c:671
+#: ggz/dlg_props.c:1102
 msgid "Other's Color"
 msgstr "Anderefarbe"
 
-#: ggz/dlg_props.c:682
+#: ggz/dlg_props.c:1113
 msgid "Friend's Color"
 msgstr "Freundfarbe"
 
-#: ggz/dlg_props.c:693
+#: ggz/dlg_props.c:1124
 msgid "Your Color"
 msgstr "Ihren Farbe"
 
-#: ggz/dlg_props.c:740
+#: ggz/dlg_props.c:1171
 msgid "  "
 msgstr " "
 
-#: ggz/dlg_props.c:750
+#: ggz/dlg_props.c:1181
 msgid "Chat"
 msgstr "Plauderei"
 
-#: ggz/dlg_props.c:764
+#: ggz/dlg_props.c:1195
 msgid "All of the following information is optional."
 msgstr "Alle folgende Information ist freigestellt."
 
-#: ggz/dlg_props.c:785
+#: ggz/dlg_props.c:1216
 msgid "Name:"
 msgstr "Name:"
 
-#: ggz/dlg_props.c:817
+#: ggz/dlg_props.c:1248
 msgid "City:"
 msgstr "Stadt:"
 
-#: ggz/dlg_props.c:842
+#: ggz/dlg_props.c:1273
 msgid "State:"
 msgstr "Staat:"
 
-#: ggz/dlg_props.c:867
+#: ggz/dlg_props.c:1298
 msgid "Country:"
 msgstr "Land:"
 
-#: ggz/dlg_props.c:885
+#: ggz/dlg_props.c:1316
 msgid "Comments, Hobies, Etc."
 msgstr "Kommentare, Hobbies, usw."
 
-#: ggz/dlg_props.c:911
+#: ggz/dlg_props.c:1342
 msgid "User Information"
 msgstr "Information über Benutzer"
 
-#: ggz/dlg_props.c:938
+#: ggz/dlg_props.c:1369
 msgid "Apply"
 msgstr "Anwenden"
+
+#: ggz/dlg_props.c:1444
+msgid "Select Font"
+msgstr ""
 
 #: ggz/mnu_players.c:31
 msgid "Info"
@@ -514,14 +573,21 @@ msgid "Table Players"
 msgstr "Tischspieler"
 
 #: ggz/mnu_tables.c:115
-msgid "Table options will go here.\n Network protocol has to be made to get the info from the server"
-msgstr "Tischoptionen gehen hierher.\n Die Netzwerkprotokoll muß erstellt werden, um die Informationen vom Diener zu erhalten."
+msgid ""
+"Table options will go here.\n"
+" Network protocol has to be made to get the info from the server"
+msgstr ""
+"Tischoptionen gehen hierher.\n"
+" Die Netzwerkprotokoll muß erstellt werden, um die Informationen vom Diener "
+"zu erhalten."
 
 #: ggz/mnu_tables.c:123
 msgid ""
 "The selected table's players are as follows:\n"
 "\n"
-msgstr "Die Spieler sind folgendermaßen, das am ausgewählten Tisch:\n\n"
+msgstr ""
+"Die Spieler sind folgendermaßen, das am ausgewählten Tisch:\n"
+"\n"
 
 #: ggz/mnu_tables.c:127
 msgid "\t<Open>\n"
@@ -530,3 +596,24 @@ msgstr "\t<Offen>\n"
 #: ggz/mnu_tables.c:129
 msgid "\t<Computer>\n"
 msgstr "\t<Rechner>\n"
+
+#~ msgid "GNU Gaming Zone"
+#~ msgstr "GNU Spielend Zone"
+
+#~ msgid "Enter your login name here"
+#~ msgstr "Betreten Sie Ihren Benutzername hierher"
+
+#~ msgid "Enter your password here"
+#~ msgstr "Betreten Sie Ihren Kennwort hierher"
+
+#~ msgid "Anonymous Login"
+#~ msgstr "Anonymer Logon"
+
+#~ msgid " Port:  "
+#~ msgstr " Port:  "
+
+#~ msgid "Username:  "
+#~ msgstr "Benutzername:  "
+
+#~ msgid "Password:  "
+#~ msgstr "Kennwort:  "
