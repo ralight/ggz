@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 5295 2002-12-17 08:38:09Z jdorje $
+dnl $Id: configure.ac 5358 2003-02-04 01:55:26Z jdorje $
 
-AC_INIT(configure.in)
+AC_INIT(configure.ac)
 AM_INIT_AUTOMAKE(ggz-gnome-client, 0.0.7pre)
 AM_CONFIG_HEADER(config.h)
 

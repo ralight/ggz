@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 5321 2003-01-12 11:54:38Z dr_maux $
+dnl $Id: configure.ac 5358 2003-02-04 01:55:26Z jdorje $
 
-AC_INIT(configure.in)
+AC_INIT(configure.ac)
 #AC_INIT(acinclude.m4)
 
 if test -r $srcdir/package; then

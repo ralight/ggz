@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 4844 2002-10-10 17:08:44Z jdorje $
+dnl $Id: configure.ac 5358 2003-02-04 01:55:26Z jdorje $
 
-AC_INIT(configure.in)
+AC_INIT(configure.ac)
 AM_INIT_AUTOMAKE(ggz-client-libs, 0.0.7pre)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
