@@ -2,7 +2,7 @@
  * File: chat.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: chat.c 4958 2002-10-19 22:57:31Z jdorje $
+ * $Id: chat.c 5049 2002-10-26 05:42:56Z jdorje $
  *
  * This file contains all functions that are chat related.
  *
@@ -222,7 +222,7 @@ void chat_display_server(GGZChatType type,
 		} else if (!message) {
 			gchar *m;
 			name = g_strdup_printf("?\003%s%s\003?",
-				       chat_get_color(sender, message),
+				       chat_get_color(sender, ""),
 				       sender);
 			m = g_strdup_printf(_("You have received an "
 					      "unknown message from %s."),
