@@ -673,6 +673,16 @@
 	      <class>GtkCList</class>
 	      <name>player_clist</name>
 	      <sensitive>False</sensitive>
+	      <signal>
+		<name>event</name>
+		<handler>client_player_clist_event</handler>
+		<last_modification_time>Sat, 14 Jul 2001 02:34:11 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>select_row</name>
+		<handler>client_player_clist_select_row</handler>
+		<last_modification_time>Sat, 14 Jul 2001 02:34:45 GMT</last_modification_time>
+	      </signal>
 	      <columns>3</columns>
 	      <column_widths>10,10,80</column_widths>
 	      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
@@ -1091,6 +1101,83 @@
     </signal>
     <label>Join</label>
     <right_justify>False</right_justify>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkMenu</class>
+  <name>mnu_player</name>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>friends_list</name>
+    <label>Friends List</label>
+    <right_justify>False</right_justify>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>friends_list_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>friends_add</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>client_add_friend</handler>
+	  <last_modification_time>Sat, 14 Jul 2001 02:32:25 GMT</last_modification_time>
+	</signal>
+	<label>Add</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>friends_remove</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>client_remove_friend</handler>
+	  <last_modification_time>Sat, 14 Jul 2001 02:32:25 GMT</last_modification_time>
+	</signal>
+	<label>Remove</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>ignore_list</name>
+    <label>Ignore List</label>
+    <right_justify>False</right_justify>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>ignore_list_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>ignore_add</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>client_add_ignore</handler>
+	  <last_modification_time>Sat, 14 Jul 2001 02:50:34 GMT</last_modification_time>
+	</signal>
+	<label>Add</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>ignore_remove</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>client_remove_ignore</handler>
+	  <last_modification_time>Sat, 14 Jul 2001 02:50:34 GMT</last_modification_time>
+	</signal>
+	<label>Remove</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
   </widget>
 </widget>
 

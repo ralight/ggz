@@ -90,8 +90,12 @@ static void client_leave_button_clicked(GtkButton *button, gpointer data);
 static void client_props_button_clicked(GtkButton *button, gpointer data);
 static void client_stats_button_clicked(GtkButton *button, gpointer data);
 static void client_exit_button_clicked(GtkButton *button, gpointer data);
+static gboolean client_player_clist_event(GtkWidget *widget, GdkEvent *event, gpointer data);
 static gboolean client_room_clist_event(GtkWidget *widget, GdkEvent *event, gpointer data);
 static gboolean client_table_event(GtkWidget *widget, GdkEvent *event, gpointer data);
+static void client_player_clist_select_row(GtkCList *clist, gint row, 
+					 gint column, GdkEvent *event, 
+					 gpointer data);
 static void client_room_clist_select_row(GtkCList *clist, gint row, 
 					 gint column, GdkEvent *event, 
 					 gpointer data);
@@ -109,6 +113,11 @@ static int client_get_table_index(guint row);
 static int client_get_table_open(guint row);
 static void client_join_room(guint room);				 
 static void client_join_table(void);
+static void client_add_friend(GtkMenuItem *menuitem, gpointer data);
+static void client_remove_friend(GtkMenuItem *menuitem, gpointer data);
+static void client_add_ignore(GtkMenuItem *menuitem, gpointer data);
+static void client_remove_ignore(GtkMenuItem *menuitem, gpointer data);
+static char *client_get_players_index(guint row);
 
 
 static void
@@ -513,25 +522,6 @@ client_props_button_clicked		(GtkButton	*button,
 }
 
 
-static void
-client_stats_button_clicked		(GtkButton	*button,
-					 gpointer	 data)
-{
-	msgbox("Player stats are not implemented yet. If\nyou would like to help head over to\nhttp://ggz.sourceforge.net.", "Not Implemented",
-		MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
-}
-
-
-static void
-client_exit_button_clicked		(GtkButton	*button,
-					 gpointer	 data)
-{
-	if (msgbox(_("Are you sure you want to quit?"), _("Quit?"), MSGBOX_YESNO, MSGBOX_QUESTION, MSGBOX_MODAL) == MSGBOX_YES)
-	{
-		gtk_main_quit();
-	}
-}
-
 static gboolean 
 client_room_clist_event			(GtkWidget	*widget,
 					 GdkEvent	*event,
@@ -595,6 +585,26 @@ client_room_clist_event			(GtkWidget	*widget,
 	return FALSE;
 }
 
+static void
+client_stats_button_clicked		(GtkButton	*button,
+					 gpointer	 data)
+{
+	msgbox("Player stats are not implemented yet. If\nyou would like to help head over to\nhttp://ggz.sourceforge.net.", "Not Implemented",
+		MSGBOX_OKONLY, MSGBOX_NONE, MSGBOX_NORMAL);
+}
+
+
+static void
+client_exit_button_clicked		(GtkButton	*button,
+					 gpointer	 data)
+{
+	if (msgbox(_("Are you sure you want to quit?"), _("Quit?"), MSGBOX_YESNO, MSGBOX_QUESTION, MSGBOX_MODAL) == MSGBOX_YES)
+	{
+		gtk_main_quit();
+	}
+}
+
+
 
 static gboolean 
 client_table_event			(GtkWidget	*widget,
@@ -616,6 +626,53 @@ client_room_clist_select_row		(GtkCList       *clist,
 {
 }
 
+static void client_player_clist_select_row(GtkCList *clist, gint row, 
+					 gint column, GdkEvent *event, 
+					 gpointer data)
+{
+
+}
+
+static gboolean 
+client_player_clist_event			(GtkWidget	*widget,
+					 GdkEvent	*event,
+					 gpointer	 data)
+{
+	gint row, column;
+	GtkWidget *menu, *tmp;
+	GdkEventButton* buttonevent;
+
+	buttonevent = (GdkEventButton*)event;
+
+	switch(event->type) { 
+	case GDK_BUTTON_PRESS:
+		/* Single click */
+		if (buttonevent->button == 3)
+		{
+			/* Right mouse button */
+			/* Create and display the menu */
+			menu = create_mnu_player();
+			tmp =  lookup_widget(win_main, "player_clist");
+			gtk_clist_get_selection_info(GTK_CLIST(tmp), 
+						     buttonevent->x, 
+						     buttonevent->y,
+						     &row, &column);
+			gtk_clist_select_row(GTK_CLIST(tmp), row, column);
+
+			/* FIXME: There has to be a better way to pass*/
+			popup_row=row;
+			gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
+					NULL, buttonevent->button, 0);
+		}
+		break;
+	default:
+		/* Some Other event */
+		break;
+	}
+
+	return FALSE;
+}
+
 
 static int client_get_table_index(guint row)
 {
@@ -628,6 +685,18 @@ static int client_get_table_index(guint row)
 	index = atoi(text);
 	
 	return index;
+}
+
+
+static char *client_get_players_index(guint row)
+{
+	GtkWidget *tmp;
+	char *text;
+
+	tmp = lookup_widget(win_main, "player_clist");
+	gtk_clist_get_text(GTK_CLIST(tmp), row, 2, &text);
+	
+	return text;
 }
 
 
@@ -797,6 +866,26 @@ client_realize                    (GtkWidget       *widget,
 
 }
 
+static void client_add_friend(GtkMenuItem *menuitem, gpointer data)
+{
+	chat_add_friend(client_get_players_index(popup_row));
+}
+
+static void client_remove_friend(GtkMenuItem *menuitem, gpointer data)
+{
+	chat_remove_friend(client_get_players_index(popup_row));
+}
+
+static void client_add_ignore(GtkMenuItem *menuitem, gpointer data)
+{
+
+}
+
+static void client_remove_ignore(GtkMenuItem *menuitem, gpointer data)
+{
+
+}
+
 
 
 
@@ -916,7 +1005,7 @@ create_win_main (void)
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (ggz)->child),
                                    _("_GGZ"));
   gtk_widget_add_accelerator (ggz, "activate_item", accel_group,
-                              tmp_key, GDK_MOD1_MASK, 0);
+                              tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
   gtk_widget_ref (ggz);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "ggz", ggz,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -985,7 +1074,7 @@ create_win_main (void)
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (game)->child),
                                    _("G_ame"));
   gtk_widget_add_accelerator (game, "activate_item", accel_group,
-                              tmp_key, GDK_MOD1_MASK, 0);
+                              tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
   gtk_widget_ref (game);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "game", game,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1054,7 +1143,7 @@ create_win_main (void)
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (edit)->child),
                                    _("_Edit"));
   gtk_widget_add_accelerator (edit, "activate_item", accel_group,
-                              tmp_key, GDK_MOD1_MASK, 0);
+                              tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
   gtk_widget_ref (edit);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "edit", edit,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1086,7 +1175,7 @@ create_win_main (void)
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (view)->child),
                                    _("_View"));
   gtk_widget_add_accelerator (view, "activate_item", accel_group,
-                              tmp_key, GDK_MOD1_MASK, 0);
+                              tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
   gtk_widget_ref (view);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "view", view,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1197,7 +1286,7 @@ create_win_main (void)
   tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (help)->child),
                                    _("_Help"));
   gtk_widget_add_accelerator (help, "activate_item", accel_group,
-                              tmp_key, GDK_MOD1_MASK, 0);
+                              tmp_key, GDK_MOD1_MASK, (GtkAccelFlags) 0);
   gtk_widget_ref (help);
   gtk_object_set_data_full (GTK_OBJECT (win_main), "help", help,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1750,6 +1839,12 @@ create_win_main (void)
   gtk_signal_connect (GTK_OBJECT (room_clist), "event",
                       GTK_SIGNAL_FUNC (client_room_clist_event),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (player_clist), "event",
+                      GTK_SIGNAL_FUNC (client_player_clist_event),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (player_clist), "select_row",
+                      GTK_SIGNAL_FUNC (client_player_clist_select_row),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (table_clist), "select_row",
                       GTK_SIGNAL_FUNC (client_table_clist_select_row),
                       NULL);
@@ -1878,3 +1973,94 @@ create_mnu_room (void)
   return mnu_room;
 }
 
+GtkWidget*
+create_mnu_player (void)
+{
+  GtkWidget *mnu_player;
+  GtkAccelGroup *mnu_player_accels;
+  GtkWidget *friends_list;
+  GtkWidget *friends_list_menu;
+  GtkAccelGroup *friends_list_menu_accels;
+  GtkWidget *friends_add;
+  GtkWidget *friends_remove;
+  GtkWidget *ignore_list;
+  GtkWidget *ignore_list_menu;
+  GtkAccelGroup *ignore_list_menu_accels;
+  GtkWidget *ignore_add;
+  GtkWidget *ignore_remove;
+
+  mnu_player = gtk_menu_new ();
+  gtk_object_set_data (GTK_OBJECT (mnu_player), "mnu_player", mnu_player);
+  mnu_player_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (mnu_player));
+
+  friends_list = gtk_menu_item_new_with_label (_("Friends List"));
+  gtk_widget_ref (friends_list);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "friends_list", friends_list,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (friends_list);
+  gtk_container_add (GTK_CONTAINER (mnu_player), friends_list);
+
+  friends_list_menu = gtk_menu_new ();
+  gtk_widget_ref (friends_list_menu);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "friends_list_menu", friends_list_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (friends_list), friends_list_menu);
+  friends_list_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (friends_list_menu));
+
+  friends_add = gtk_menu_item_new_with_label (_("Add"));
+  gtk_widget_ref (friends_add);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "friends_add", friends_add,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (friends_add);
+  gtk_container_add (GTK_CONTAINER (friends_list_menu), friends_add);
+
+  friends_remove = gtk_menu_item_new_with_label (_("Remove"));
+  gtk_widget_ref (friends_remove);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "friends_remove", friends_remove,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (friends_remove);
+  gtk_container_add (GTK_CONTAINER (friends_list_menu), friends_remove);
+
+  ignore_list = gtk_menu_item_new_with_label (_("Ignore List"));
+  gtk_widget_ref (ignore_list);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "ignore_list", ignore_list,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (ignore_list);
+  gtk_container_add (GTK_CONTAINER (mnu_player), ignore_list);
+
+  ignore_list_menu = gtk_menu_new ();
+  gtk_widget_ref (ignore_list_menu);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "ignore_list_menu", ignore_list_menu,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (ignore_list), ignore_list_menu);
+  ignore_list_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (ignore_list_menu));
+
+  ignore_add = gtk_menu_item_new_with_label (_("Add"));
+  gtk_widget_ref (ignore_add);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "ignore_add", ignore_add,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (ignore_add);
+  gtk_container_add (GTK_CONTAINER (ignore_list_menu), ignore_add);
+
+  ignore_remove = gtk_menu_item_new_with_label (_("Remove"));
+  gtk_widget_ref (ignore_remove);
+  gtk_object_set_data_full (GTK_OBJECT (mnu_player), "ignore_remove", ignore_remove,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (ignore_remove);
+  gtk_container_add (GTK_CONTAINER (ignore_list_menu), ignore_remove);
+
+  gtk_signal_connect (GTK_OBJECT (friends_add), "activate",
+                      GTK_SIGNAL_FUNC (client_add_friend),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (friends_remove), "activate",
+                      GTK_SIGNAL_FUNC (client_remove_friend),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (ignore_add), "activate",
+                      GTK_SIGNAL_FUNC (client_add_ignore),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (ignore_remove), "activate",
+                      GTK_SIGNAL_FUNC (client_remove_ignore),
+                      NULL);
+
+  return mnu_player;
+}

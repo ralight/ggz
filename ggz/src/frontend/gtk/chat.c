@@ -90,15 +90,18 @@ struct chatinfo {
  */
 void chat_init(void)
 {
-	gchar *name;
+	gchar *dummy;
 
 	chat_allocate_colors();
 	chatinfo.friends = g_array_new(TRUE, TRUE, sizeof(gchar*));
 	chatinfo.ignore = g_array_new(TRUE, TRUE, sizeof(gchar*));
 
-	name = g_strdup("jdorje");
-	g_array_append_val(chatinfo.friends, name);
+	dummy = g_strdup(" ");
+	g_array_prepend_val(chatinfo.friends, dummy);
+	g_array_prepend_val(chatinfo.ignore, dummy);
+	g_free(dummy);
 }
+
 
 /* chat_allocate_colors() - Allocates the collors all at once so they
  *                          can be called without the need to allocate
@@ -506,3 +509,52 @@ gchar *chat_get_color(gchar *name, gchar *msg)
 
 	return "00";
 }
+
+/* chat_add_friend() - Adds a name to your friends list
+ *
+ * Recieves:
+ * gchar	*name	: name to add
+ *
+ * Returns:
+ */
+
+void chat_add_friend(gchar *name)
+{
+	gchar *out;
+
+	g_array_append_val(chatinfo.friends, name);
+	out = g_strdup_printf(_("Added %s to your friends list."), name);
+	chat_display_message(CHAT_BEEP, "---", out);
+	g_free(out);
+}
+
+/* chat_remove_friend() - Adds a name to your friends list
+ *
+ * Recieves:
+ * gchar	*name	: name to add
+ *
+ * Returns:
+ */
+
+void chat_remove_friend(gchar *name)
+{
+	int x=0;
+	gchar *out;
+
+	while(1)
+	{
+		/* have we hit the end of the list */
+		if(g_array_index(chatinfo.friends, gchar*, x) == NULL)
+			break;
+		if(!strcmp(g_array_index(chatinfo.friends, gchar*, x), name))
+		{
+			g_array_remove_index_fast(chatinfo.friends, x);
+			out = g_strdup_printf(_("Removed %s from your friends list."), name);
+			chat_display_message(CHAT_BEEP, "---", out);
+			g_free(out);
+			break;
+		}
+		x++;
+	}
+}
+
