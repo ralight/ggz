@@ -457,6 +457,26 @@ class GGZBoard:
 							ui.backgroundarea.blit(player, (x - player.get_width(), y + 30))
 							i += 1
 
+				if game.dice:
+					w = ui.backgroundarea.get_width()
+					h = ui.backgroundarea.get_height()
+					i = 3
+					if not aiturn:
+						ret = game.rolldice()
+						if ret == 0:
+							aiturn = 1
+					updatescreen = 1
+					for dice in game.dice:
+						x = w - conf.marginwidth
+						y = h - conf.marginheight - i * 30
+						caption = ui.smallfont.render("Dice: " + str(dice), 1, (255, 200, 0))
+						ui.backgroundarea.blit(caption, (x - caption.get_width(), y))
+						i += 1
+
+						# FIXME!
+						img = self.svgsurface("madn/dice-" + str(dice) + ".svg", 50, 50)
+						ui.backgroundarea.blit(img, (x - 100, y - 20))
+
 				if thinking:
 					w = ui.backgroundarea.get_width()
 					h = ui.backgroundarea.get_height()
