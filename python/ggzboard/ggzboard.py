@@ -15,11 +15,6 @@ import re
 
 import rsvgsdl
 
-#from module_hnefatafl import Game
-#from module_reversi import Game
-#from module_chess import Game
-#from module_checkers import Game
-
 class Conf:
 	def __init__(self):
 		self.alpha = 120
@@ -282,11 +277,22 @@ class GGZBoard:
 				(posx, posy) = event.pos
 
 			if event.type == MOUSEBUTTONDOWN and inputallowed:
-				x = (posx - conf.marginwidth) % width
-				y = (posy - conf.marginheight) % height
-				if x < conf.cellwidth and y < conf.cellheight:
-					x = ((posx - conf.marginwidth) / width)
-					y = ((posy - conf.marginheight) / height)
+				considered = 0
+				if game.intersections:
+					x = (posx - conf.marginwidth + 5) % width
+					y = (posy - conf.marginheight + 5) % height
+					if x < 10 and y < 10:
+						x = ((posx - conf.marginwidth + 5) / width)
+						y = ((posy - conf.marginheight + 5) / height)
+						considered = 1
+				else:
+					x = (posx - conf.marginwidth) % width
+					y = (posy - conf.marginheight) % height
+					if x < conf.cellwidth and y < conf.cellheight:
+						x = ((posx - conf.marginwidth) / width)
+						y = ((posy - conf.marginheight) / height)
+						considered = 1
+				if considered:
 					if x >= game.width or y >= game.height or x < 0 or y < 0:
 						# ignore
 						pass
@@ -333,10 +339,14 @@ class GGZBoard:
 							color = (min(r + 50, 255), min(g + 50, 255), min(b + 50, 255))
 						sx = i * width + conf.marginwidth
 						sy = j * height + conf.marginheight
-						self.rect(ui.backgroundarea, (255, 255, 255), sx, sy, conf.cellwidth, conf.cellheight, color)
+						if not game.intersections or (j != game.height - 1 and i != game.width - 1):
+							self.rect(ui.backgroundarea, (255, 255, 255), sx, sy, conf.cellwidth, conf.cellheight, color)
 						if board[j][i]:
 							img = self.svgsurface(game.figure(board[j][i]), conf.cellwidth, conf.cellheight)
-							ui.backgroundarea.blit(img, (sx, sy))
+							if game.intersections:
+								ui.backgroundarea.blit(img, (sx - conf.cellwidth / 2, sy - conf.cellwidth / 2))
+							else:
+								ui.backgroundarea.blit(img, (sx, sy))
 
 				ui.screen.blit(ui.backgroundarea, (0, 0))
 				updatescreen = 0

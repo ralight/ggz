@@ -13,6 +13,7 @@ class Game:
 		self.swaptiles = 0
 		self.autoscaletiles = 0
 		self.setonly = 0
+		self.intersections = 0
 
 		self.board = (None)
 		self.board = resize(self.board, (self.width, self.height))
