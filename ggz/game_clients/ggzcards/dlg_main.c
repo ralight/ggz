@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
- * $Id: dlg_main.c 3685 2002-03-25 22:40:22Z jdorje $
+ * $Id: dlg_main.c 4079 2002-04-25 20:42:26Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -96,7 +96,9 @@ GtkWidget *create_dlg_main(void)
 	GtkWidget *mnu_sync;
 	GtkWidget *mnu_preferences;
 	GtkWidget *mnu_playerlist;
+#ifdef DEBUG
 	GtkWidget *mnu_forceredraw;
+#endif /* DEBUG */
 	GtkWidget *mnu_exit;
 	GtkWidget *mnu_messages_menu;
 	GtkWidget *mnu_messages;
@@ -191,6 +193,7 @@ GtkWidget *create_dlg_main(void)
 	gtk_widget_show(mnu_playerlist);
 	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_playerlist);
 	
+#ifdef DEBUG
 	/* Add "Force Redraw" selection to "Game" menu. */
 	mnu_forceredraw = gtk_menu_item_new_with_label(_("Force Redraw"));
 	gtk_widget_set_name(mnu_forceredraw, "mnu_forceredraw");
@@ -200,6 +203,7 @@ GtkWidget *create_dlg_main(void)
 	                         (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(mnu_forceredraw);
 	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_forceredraw);
+#endif /* DEBUG */
 
 	/* Add "Exit" selection to "Game" menu. */
 	mnu_exit = gtk_menu_item_new_with_label(_("Exit"));
@@ -299,9 +303,11 @@ GtkWidget *create_dlg_main(void)
 	(void) gtk_signal_connect(GTK_OBJECT(mnu_playerlist), "activate",
 	                          GTK_SIGNAL_FUNC(on_mnu_playerlist_activate),
 	                          NULL);
+#ifdef DEBUG
 	(void) gtk_signal_connect(GTK_OBJECT(mnu_forceredraw), "activate",
 	                          GTK_SIGNAL_FUNC(on_mnu_forceredraw_activate),
 	                          NULL);
+#endif /* DEBUG */
 	(void) gtk_signal_connect(GTK_OBJECT(mnu_exit), "activate",
 				  GTK_SIGNAL_FUNC(on_mnu_exit_activate),
 				  NULL);
