@@ -214,6 +214,38 @@
 	  <name>view_menu</name>
 
 	  <widget>
+	    <class>GtkCheckMenuItem</class>
+	    <name>room_list</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_room_list_activate</handler>
+	      <last_modification_time>Thu, 21 Sep 2000 22:49:36 GMT</last_modification_time>
+	    </signal>
+	    <label>Room List</label>
+	    <active>True</active>
+	    <always_show_toggle>False</always_show_toggle>
+	  </widget>
+
+	  <widget>
+	    <class>GtkCheckMenuItem</class>
+	    <name>player_list</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_player_list_activate</handler>
+	      <last_modification_time>Thu, 21 Sep 2000 22:49:43 GMT</last_modification_time>
+	    </signal>
+	    <label>Player List</label>
+	    <active>True</active>
+	    <always_show_toggle>False</always_show_toggle>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>separator8</name>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
 	    <class>GtkMenuItem</class>
 	    <name>server_stats</name>
 	    <signal>
@@ -667,6 +699,23 @@
 	      <shrink>True</shrink>
 	      <resize>True</resize>
 	    </child>
+
+	    <widget>
+	      <class>GtkLabel</class>
+	      <name>current_room__label</name>
+	      <label>Please Select A Room</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
 
 	    <widget>
 	      <class>GtkHBox</class>
