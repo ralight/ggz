@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6172 2004-09-04 05:39:38Z jdorje $
+dnl $Id: configure.ac 6173 2004-09-04 06:29:25Z jdorje $
 
 AC_INIT([GGZ client libraries], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -56,6 +56,9 @@ AC_TYPE_SIGNAL
 # Check for PF_LOCAL/PF_UNIX
 # ==========================
 # There should be an autoconf macro to check this???
+#
+# Not having this is not necessarily a fatal error.  It should mean that
+# the WinAPI interface is used instead.
 AC_MSG_CHECKING([for PF_LOCAL])
 AC_EGREP_CPP(PF_LOCAL,
              [#include <sys/socket.h>
@@ -64,8 +67,7 @@ AC_EGREP_CPP(PF_LOCAL,
               AC_MSG_CHECKING([for PF_UNIX])
               AC_EGREP_CPP(PF_UNIX, [ #include <sys/socket.h>
 				      PF_UNIX ],
-                           [AC_MSG_RESULT(no)
-			    AC_MSG_ERROR([cannot find PF_LOCAL or PF_UNIX])],
+                           [AC_MSG_RESULT(no)],
                            [AC_MSG_RESULT(yes)
                             AC_DEFINE([PF_LOCAL], PF_UNIX,
 				      [PF_UNIX is available])
@@ -80,7 +82,7 @@ AC_CHECK_FUNCS([dup2 strcasecmp strchr strerror \
                 malloc vprintf], [],
                [AC_MSG_ERROR([cannot find required function])])
 AC_CHECK_FUNCS([fork select]) # These fail; dunno why
-AC_CHECK_FUNCS([close hstrerror kill])
+AC_CHECK_FUNCS([close hstrerror kill socketpair])
 AC_FUNC_FORK
 #AC_FUNC_MALLOC <- this doesn't do what you think it does
 AC_FUNC_SELECT_ARGTYPES

@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6151 2004-07-17 22:45:57Z josef $
+ * $Id: ggzmod.c 6173 2004-09-04 06:29:25Z jdorje $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -675,8 +675,26 @@ int ggzmod_connect(GGZMod * ggzmod)
 			return -1;
 		}
 
-	} else
+	} else {
+#ifdef HAVE_SOCKETPAIR
 		ggzmod->fd = 3;
+#else /* Winsock implementation: see game_fork(). */
+		char buf[100];
+		int port, sock;
+
+		GetEnvironmentVariable("GGZMOD_SOCKET_FD", buf, sizeof(buf));
+		sscanf(buf, "%d", &port);
+
+		if (port == 0) {
+			ggz_error_msg_exit("Could not determine port.");
+		}
+		sock = ggz_make_socket(GGZ_SOCK_CLIENT, port, "localhost");
+		if (sock < 0) {
+			ggz_error_msg_exit("Could not connect to port.");
+		}
+		ggzmod->fd = sock;
+#endif
+	}
 	
 	return 0;
 }
@@ -854,7 +872,12 @@ static int send_game_launch(GGZMod * ggzmod)
 /* No locking should be necessary within this function. */
 static int game_fork(GGZMod * ggzmod)
 {
+#ifdef HAVE_SOCKETPAIR
 	int fd_pair[2];		/* socketpair */
+#else
+	int sock, sock2, port;
+	char buf[100];
+#endif
 #ifdef HAVE_FORK
 	int pid;
 #else
@@ -869,8 +892,27 @@ static int game_fork(GGZMod * ggzmod)
 		return -1;
 	}
 
+#ifdef HAVE_SOCKETPAIR
 	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0)
 		ggz_error_sys_exit("socketpair failed");
+#else
+	/* Winsock implementation: see ggzmod_connect. */
+	port = 5898;
+	do {
+		port++;
+		sock = ggz_make_socket(GGZ_SOCK_SERVER, port, NULL);
+	} while (sock < 0 && port < 7000);
+	if (sock < 0) {
+		ggz_error_msg("Could not bind socket.");
+		return -1;
+	}
+	if (listen(sock, 1) < 0) {
+		ggz_error_msg("Could not listen on socket.");
+		return -1;
+	}
+	snprintf(buf, sizeof(buf), "%d", port);
+	SetEnvironmentVariable("GGZMOD_SOCKET_FD", buf);
+#endif
 
 #ifdef HAVE_FORK
 	if ((pid = fork()) < 0)
@@ -930,6 +972,18 @@ static int game_fork(GGZMod * ggzmod)
 	}
 	CloseHandle(pi.hThread);
 	ggzmod->process = pi.hProcess;
+#endif
+#ifndef HAVE_SOCKETPAIR
+	/* FIXME: we need to select, with a maximum timeout. */
+	/* FIXME: this is insecure; it should be restricted to local
+	 * connections. */
+	sock2 = accept(sock, NULL, NULL);
+	if (sock2 < 0) {
+		ggz_error_sys("Listening to socket failed.");
+		return -1;
+	}
+	close(sock);
+	ggzmod->fd = sock2;
 #endif
 	return 0;
 }
