@@ -1056,7 +1056,7 @@ int update(int event, void *data)
 			hand->hand_size--;
 
 			/* Move the card onto the table */
-			game.seats[ game.players[game.next_play].seat ].table = c;
+			game.seats[ game.play_seat ].table = c;
 			if(game.next_play == game.leader)
 				game.lead_card = c;
 
