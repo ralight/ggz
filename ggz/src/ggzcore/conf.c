@@ -386,7 +386,6 @@ int make_path(char *full, mode_t mode)
 	while ((node = strsep(&copy, "/"))) {
 		/* While there's still stuff left, it's a directory */
 		if (copy != NULL) {
-			fprintf(stderr, "Making %s, leaving %s\n", node, copy);
 			strcat(strcat(path, "/"), node);
 			if (mkdir(path, mode) < 0
 			    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
