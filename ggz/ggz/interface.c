@@ -1436,7 +1436,7 @@ create_dlgLaunch (void)
   gtk_signal_connect_object (GTK_OBJECT (btnCancel), "clicked",
                              GTK_SIGNAL_FUNC (gtk_widget_destroy),
                              GTK_OBJECT (dlgLaunch));
-  gtk_signal_connect(GTK_OBJECT(GTK_COMBO(combo1)->entry), "activate",
+  gtk_signal_connect(GTK_OBJECT(GTK_COMBO(combo1)->entry), "changed",
                      GTK_SIGNAL_FUNC (launch_change_type), NULL);
   gtk_signal_connect(GTK_OBJECT(GTK_BUTTON(btnLaunch)), "clicked",
                      GTK_SIGNAL_FUNC (launch_start_game), NULL);

@@ -214,6 +214,7 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			es_read_int(source, &game_types.info[i].index);
 			es_read_string(source, game_types.info[i].name);
 			es_read_string(source, game_types.info[i].version);
+			es_read_char(source, &game_types.info[i].num_play_allow);
 			es_read_string(source, game_types.info[i].desc);
 			es_read_string(source, game_types.info[i].author);
 			es_read_string(source, game_types.info[i].web);

@@ -105,6 +105,7 @@ typedef struct {
 	char desc[MAX_GAME_DESC_LEN];
 	char author[MAX_GAME_AUTH_LEN];
 	char web[MAX_GAME_WEB_LEN];
+	unsigned char num_play_allow;
 	int index;
 } GameInfo;
 
