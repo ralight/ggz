@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2313 2001-08-29 03:55:39Z jdorje $
+ * $Id: table.c 2317 2001-08-29 05:39:53Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -1072,7 +1072,7 @@ static int table_event_callback(void* target, int size, void* data)
 		break;
 	}
 
-	if (net_send_table_update(player, opcode, &info, seat) < 0)
+	if (net_send_table_update(player->net, opcode, &info, seat) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;

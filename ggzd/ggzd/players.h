@@ -29,7 +29,6 @@
 #include <config.h>
 
 #include <pthread.h>
-
 #include <ggzd.h>
 #include <table.h>
 
@@ -38,7 +37,7 @@
  * The GGZPlayer structure contains information about a single
  * logged-in player 
  */
-typedef struct GGZPlayer {
+struct _GGZPlayer {
 
 	/* Individual mutex lock */
 	pthread_rwlock_t lock;
@@ -49,8 +48,8 @@ typedef struct GGZPlayer {
 	/* IP address from which player connected */
 	char addr[16];
 
-	/* File descriptor for communicating with player */
-	int fd;
+	/* Network IO object for communicating with player */
+	struct _GGZNetIO *net;
 
 	/* Thread ID of the thread handling this player's requests */
 	pthread_t thread;
@@ -78,8 +77,9 @@ typedef struct GGZPlayer {
         void *my_events_head;
         void *my_events_tail;
 	
-} GGZPlayer;
+};
 
+typedef struct _GGZPlayer GGZPlayer; 
 
 void player_handler_launch(int sock);
 

@@ -167,7 +167,7 @@ static int chat_event_callback(void* target, int size, void* data)
 	dbg_msg(GGZ_DBG_CHAT, "%s chat opcode: %d, sender: %s, msg: %s",
 		player->name, opcode, name, msg);
 
-	if (net_send_chat(player, opcode, name, msg) < 0)
+	if (net_send_chat(player->net, opcode, name, msg) < 0)
 		return GGZ_EVENT_ERROR;
 		
 	return GGZ_EVENT_OK;

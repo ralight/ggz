@@ -69,7 +69,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 	if (player->uid != GGZ_UID_NONE) {
 		dbg_msg(GGZ_DBG_CONNECTION, "%s attempted to log in again", 
 			player->name);
-		if (net_send_login(type, player, E_ALREADY_LOGGED_IN, NULL) < 0)
+		if (net_send_login(player->net, type, E_ALREADY_LOGGED_IN, NULL) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -98,7 +98,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s",
 			name);
 		/* FIXME: We should have a specific error code for this */
-		if (net_send_login(type, player, E_ALREADY_LOGGED_IN, NULL) < 0)
+		if (net_send_login(player->net, type, E_ALREADY_LOGGED_IN, NULL) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -119,7 +119,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 		name_ok = hash_player_add(lc_name, player);
 	if (!name_ok) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful login of %s", name);
-		if (net_send_login(type, player, E_USR_LOOKUP, NULL) < 0)
+		if (net_send_login(player->net, type, E_USR_LOOKUP, NULL) < 0)
 			return GGZ_REQ_DISCONNECT;
 		return GGZ_REQ_FAIL;
 	}
@@ -130,7 +130,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 		/* Check password */
 		if (login_check_password(lc_name, password) < 0) {
 			hash_player_delete(lc_name);
-			if (net_send_login(type, player, E_USR_LOOKUP, NULL) < 0)
+			if (net_send_login(player->net, type, E_USR_LOOKUP, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
 			return GGZ_REQ_FAIL;
 		}
@@ -147,7 +147,7 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
                    use, so try adding it to the database*/
 		if (login_add_user(lc_name, new_pw) < 0) {
 			hash_player_delete(lc_name);
-			if (net_send_login(type, player, E_USR_LOOKUP, NULL) < 0)
+			if (net_send_login(player->net, type, E_USR_LOOKUP, NULL) < 0)
 				return GGZ_REQ_DISCONNECT;
 			return GGZ_REQ_FAIL;
 		}
@@ -164,11 +164,11 @@ int login_player(GGZLoginType type, GGZPlayer* player, char *name, char *passwor
 	pthread_rwlock_unlock(&player->lock);
 	
 	/* Notify user of success and give them their password (if new) */
-	if (net_send_login(type, player, 0, new_pw) < 0)
+	if (net_send_login(player->net, type, 0, new_pw) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	/* Send off the Message Of The Day */
-	if (motd_is_defined() && net_send_motd(player) < 0)
+	if (motd_is_defined() && net_send_motd(player->net) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Successful login of %s", name);
@@ -195,7 +195,7 @@ int logout_player(GGZPlayer* player)
 	dbg_msg(GGZ_DBG_CONNECTION, "Handling logout for %s", player->name);
 
 	/* FIXME: Saving of stats and other things */
-	if (net_send_logout(player, 0) < 0)
+	if (net_send_logout(player->net, 0) < 0)
 		return GGZ_REQ_DISCONNECT;
 
 	return GGZ_REQ_OK;

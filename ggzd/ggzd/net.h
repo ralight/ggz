@@ -30,41 +30,57 @@
 #include <players.h>
 #include <login.h>
 
+typedef struct _GGZNetIO GGZNetIO;
+
+/* Create a new network IO object */
+GGZNetIO* net_new(int fd, GGZPlayer *player);
+
+/* Get filedescriptor for communication */
+int net_get_fd(GGZNetIO* net);
+
 /* Read data from socket for a particu;ar player */
-int net_read_data(GGZPlayer* player);
+int net_read_data(GGZNetIO* net);
 
-int net_send_serverid(GGZPlayer *player);
-int net_send_server_full(GGZPlayer *player);
-int net_send_login(GGZLoginType type, GGZPlayer *player, char status, char *password);
-int net_send_motd(GGZPlayer *player);
-int net_send_motd_error(GGZPlayer *player, char status);
+/* Disconnect from network */
+void net_disconnect(GGZNetIO* net);
 
-int net_send_room_list_error(GGZPlayer *player, char status);
-int net_send_room_list_count(GGZPlayer *player, int count);
-int net_send_room(GGZPlayer *player, int index, char *name, int game, char *desc);
+/* Free up resources used by net object */
+void net_free(GGZNetIO* net);
 
-int net_send_type_list_error(GGZPlayer *player, char status);
-int net_send_type_list_count(GGZPlayer *player, int count);
-int net_send_type(GGZPlayer *player, int index, GameInfo *type, char verbose);
+/* Functions to send data to the client */
+int net_send_serverid(GGZNetIO *net);
+int net_send_server_full(GGZNetIO *net);
+int net_send_login(GGZNetIO *net, GGZLoginType type, char status, char *password);
+int net_send_motd(GGZNetIO *net);
+int net_send_motd_error(GGZNetIO *net, char status);
 
-int net_send_player_list_error(GGZPlayer *player, char status);
-int net_send_player_list_count(GGZPlayer *player, int count);
-int net_send_player(GGZPlayer *player, GGZPlayer *p2);
+int net_send_room_list_error(GGZNetIO *net, char status);
+int net_send_room_list_count(GGZNetIO *net, int count);
+int net_send_room(GGZNetIO *net, int index, char *name, int game, char *desc);
 
-int net_send_table_list_error(GGZPlayer *player, char status);
-int net_send_table_list_count(GGZPlayer *player, int count);
-int net_send_table(GGZPlayer *player, GGZTable *table);
+int net_send_type_list_error(GGZNetIO *net, char status);
+int net_send_type_list_count(GGZNetIO *net, int count);
+int net_send_type(GGZNetIO *net, int index, GameInfo *type, char verbose);
 
-int net_send_room_join(GGZPlayer *player, char status);
-int net_send_chat(GGZPlayer *player, unsigned char opcode, char *name, char *msg);
-int net_send_chat_result(GGZPlayer *player, char status);
-int net_send_table_launch(GGZPlayer *player, char status);
-int net_send_table_join(GGZPlayer *player, char status);
-int net_send_table_leave(GGZPlayer *player, char status);
-int net_send_player_update(GGZPlayer *player, unsigned char opcode, char *name);
-int net_send_table_update(GGZPlayer *player, unsigned char opcode, GGZTable *table, int seat);
-int net_send_logout(GGZPlayer *player, char status);
+int net_send_player_list_error(GGZNetIO *net, char status);
+int net_send_player_list_count(GGZNetIO *net, int count);
+int net_send_player(GGZNetIO *net, GGZPlayer *p2);
 
-int net_send_game_data(GGZPlayer *player, int size, char *data);
+int net_send_table_list_error(GGZNetIO *net, char status);
+int net_send_table_list_count(GGZNetIO *net, int count);
+int net_send_table(GGZNetIO *net, GGZTable *table);
+
+int net_send_room_join(GGZNetIO *net, char status);
+int net_send_chat(GGZNetIO *net, unsigned char opcode, char *name, char *msg);
+int net_send_chat_result(GGZNetIO *net, char status);
+int net_send_table_launch(GGZNetIO *net, char status);
+int net_send_table_join(GGZNetIO *net, char status);
+int net_send_table_leave(GGZNetIO *net, char status);
+int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name);
+int net_send_table_update(GGZNetIO *net, unsigned char opcode, GGZTable *table, int seat);
+int net_send_logout(GGZNetIO *net, char status);
+
+int net_send_game_data(GGZNetIO *net, int size, char *data);
+
 
 #endif /* _GGZ_NET_H */
