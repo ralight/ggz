@@ -265,7 +265,7 @@ static void table_fork(GGZTable* table)
 {
 	pid_t pid;
 	char path[MAX_PATH_LEN];
-	char game[MAX_GAME_NAME_LEN + 1];
+	char prot_engine[MAX_GAME_NAME_LEN + 1];
 	char fd_name[MAX_PATH_LEN];
 	int type, sock, fd;
 	struct stat buf;
@@ -275,7 +275,7 @@ static void table_fork(GGZTable* table)
 
 	pthread_rwlock_rdlock(&game_types[type].lock);
 	strncpy(path, game_types[type].path, MAX_PATH_LEN);
-	strncpy(game, game_types[type].name, MAX_GAME_NAME_LEN);
+	strncpy(prot_engine, game_types[type].p_engine, MAX_GAME_NAME_LEN);
 	pthread_rwlock_unlock(&game_types[type].lock);
 
 	/* Fork table process */
@@ -283,7 +283,7 @@ static void table_fork(GGZTable* table)
 		err_sys_exit("fork failed");
 	else if (pid == 0) {
 		/* Make sure the parent's socket is created before we go on */
-		snprintf(fd_name, MAX_PATH_LEN, "%s/%s.%d", opt.tmp_dir, game, getpid());
+		snprintf(fd_name, MAX_PATH_LEN, "%s/%s.%d", opt.tmp_dir, prot_engine, getpid());
 		while (stat(fd_name, &buf) < 0)
 			sleep(1);
 
@@ -293,7 +293,7 @@ static void table_fork(GGZTable* table)
 		err_sys_exit("exec of %s failed", path);
 	} else {
 		/* Create Unix domain socket for communication*/
-		snprintf(fd_name, MAX_PATH_LEN, "%s/%s.%d", opt.tmp_dir, game, pid);
+		snprintf(fd_name, MAX_PATH_LEN, "%s/%s.%d", opt.tmp_dir, prot_engine, pid);
 		sock = es_make_unix_socket(ES_SERVER, fd_name);
 		/* FIXME: need to check validity of fd */
 		
