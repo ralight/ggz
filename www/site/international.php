@@ -26,7 +26,7 @@ $dir = substr($dir, 0, $i);
 $d = opendir($dir);
 while($f = readdir($d))
 {
-	if(strstr($f, "$file.")) :
+	if(substr($f, 0, strlen("$file.")) == "$file.") :
 		$far = explode(".", $f);
 		$i = 0;
 		while($far[$i]) $i++;
