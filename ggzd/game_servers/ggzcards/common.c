@@ -353,7 +353,7 @@ int req_play(player_t p, seat_t s)
 	set_game_state(WH_STATE_WAIT_FOR_PLAY);
 	set_player_message(p);
 
-	if (ggz_seats[game.next_play].assign == GGZ_SEAT_BOT) {
+	if (ggz_seats[p].assign == GGZ_SEAT_BOT) {
 		/* request a play from the ai */
 		handle_play_event( ai_get_play(p, s) );
 	} else {
