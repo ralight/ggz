@@ -38,7 +38,8 @@
 static void ggz_xmlelement_do_free(GGZXMLElement *element);
 
 
-GGZXMLElement* ggz_xmlelement_new(char *tag, char **attrs, void (*process)(), void (*free)())
+GGZXMLElement *ggz_xmlelement_new(const char *tag, const char * const *attrs,
+				  void (*process)(), void (*free)())
 {
 	GGZXMLElement *element;
 
@@ -50,7 +51,9 @@ GGZXMLElement* ggz_xmlelement_new(char *tag, char **attrs, void (*process)(), vo
 }
 
 
-void ggz_xmlelement_init(GGZXMLElement *element, char *tag, char **attrs, void (*process)(), void (*free)())
+void ggz_xmlelement_init(GGZXMLElement *element, const char *tag,
+			 const char * const *attrs,
+			 void (*process)(), void (*free)())
 {
 	int i;
 
@@ -64,7 +67,7 @@ void ggz_xmlelement_init(GGZXMLElement *element, char *tag, char **attrs, void (
 		element->process = process;
 		
 		for (i = 0; attrs[i]; i++)
-			ggz_list_insert(element->attributes, attrs[i]);
+			ggz_list_insert(element->attributes, (void *)attrs[i]);
 
 		element->free = (free ? free : ggz_xmlelement_do_free);
 	}
@@ -78,13 +81,13 @@ void ggz_xmlelement_set_data(GGZXMLElement *element, void *data)
 }
 
 
-char* ggz_xmlelement_get_tag(GGZXMLElement *element)
+const char* ggz_xmlelement_get_tag(GGZXMLElement *element)
 {
 	return (element ? element->tag : NULL);
 }
 
 
-char* ggz_xmlelement_get_attr(GGZXMLElement *element, char *attr)
+const char* ggz_xmlelement_get_attr(GGZXMLElement *element, const char *attr)
 {
 	GGZListEntry *item;
 	char *data;

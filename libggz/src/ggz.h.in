@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h.in 5925 2004-02-15 00:31:25Z jdorje $
+ * $Id: ggz.h.in 5926 2004-02-15 01:23:56Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -568,7 +568,7 @@ GGZList *ggz_list_create (ggzEntryCompare compare_func,
  * item replaced an existing list item.  @note Replacement of
  * duplicate items only occurs if #GGZ_LIST_REPLACE_DUPS was passed to
  * ggz_list_create() */
-int ggz_list_insert		(GGZList *list, void *data);
+int ggz_list_insert            (GGZList *list, void *data);
 
 
 /** @brief Get the first node of a list
@@ -816,7 +816,8 @@ typedef struct _GGZXMLElement GGZXMLElement;
  * processing should call ggz_free() the element itself.
  * @return Pointer to a newly allocated ::GGZXMLElement object 
  */
-GGZXMLElement* ggz_xmlelement_new(char *tag, char **attrs, void (*process)(), void (*free)());
+GGZXMLElement* ggz_xmlelement_new(const char *tag, const char * const *attrs,
+				  void (*process)(), void (*free)());
 
 
 /** @brief Initialize a ::GGZXMLElement
@@ -831,7 +832,9 @@ GGZXMLElement* ggz_xmlelement_new(char *tag, char **attrs, void (*process)(), vo
  * processing should call ggz_free() the element itself.
  * @return Pointer to a newly allocated ::GGZXMLElement object 
  */
-void ggz_xmlelement_init(GGZXMLElement *element, char *tag, char **attrs, void (*process)(), void (*free)());
+void ggz_xmlelement_init(GGZXMLElement *element, const char *tag,
+			 const char * const *attrs,
+			 void (*process)(), void (*free)());
 
 
 /** @brief Set ancillary data on a ::GGZXMLElement object
@@ -850,7 +853,7 @@ void ggz_xmlelement_set_data(GGZXMLElement *element, void *data);
  * @param element Pointer to an XML element
  * @return The element's name
  */
-char* ggz_xmlelement_get_tag(GGZXMLElement *element);
+const char *ggz_xmlelement_get_tag(GGZXMLElement *element);
 
 
 /** @brief Get the value of an attribute on XML element
@@ -860,7 +863,7 @@ char* ggz_xmlelement_get_tag(GGZXMLElement *element);
  * @return The value of the attribute, or NULL is there is no such
  * attribute present 
  */
-char* ggz_xmlelement_get_attr(GGZXMLElement *element, char *attr);
+const char *ggz_xmlelement_get_attr(GGZXMLElement *element, const char *attr);
 
 
 /** @brief Get the user-supplied data associated with an XML element
