@@ -39,7 +39,7 @@ install: build
 	touch `pwd`/debian/tmp/etc/ggz.modules
 	#echo "[Games]" > /tmp/etc/ggz.modules
 	#$(MAKE) install prefix=`pwd`/debian/tmp/usr ggzexecmoddir=`pwd`/debian/tmp/usr/lib/ggz ggzdatadir=`pwd`/debian/tmp/usr/share/ggz DESTDIR=`tmp`
-	$(MAKE) install DESTDIR=`pwd`/debian/tmp
+	$(MAKE) install DESTDIR=`pwd`/debian/tmp prefix=`pwd`/debian/tmp
 	rm -rf `pwd`/debian/tmp/etc
 
 	# Save .dsc files
