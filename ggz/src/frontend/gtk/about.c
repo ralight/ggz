@@ -40,6 +40,7 @@
 #include "about.h"
 #include "support.h"
 
+extern GdkColor colors[];
 
 static GtkWidget *about_dialog;
 static GtkWidget* create_dlg_about(void);
@@ -48,6 +49,7 @@ static GdkFont *font1, *font2, *font3, *font4;
 static GdkColormap *colormap;
 static GdkPixmap *pixmap;
 static GdkPixmap *bg_img;
+static gint Yloc = 320;
 
 GtkWidget*
 about_background_add                    (gchar          *widget_name,
@@ -58,12 +60,13 @@ about_background_add                    (gchar          *widget_name,
 static void about_realize(GtkWidget *widget, gpointer data);
 static void about_ok(GtkWidget *widget, gpointer data);
 static gint about_update(gpointer data);
-static gint about_draw_text(GtkDrawingArea *background, gchar *text, GdkFont *font, gint Yloc, gint start);
+static gint about_draw_text(GtkDrawingArea *background, gchar *text, GdkFont *font, gint loc, gint start);
 
 
 void about_create_or_raise(void)
 {
 	if (!about_dialog) {
+		Yloc=320;
 		about_dialog = create_dlg_about();
 		gtk_widget_show(about_dialog);
 	}
@@ -663,7 +666,10 @@ static char * about[] = {
 
 static void about_realize(GtkWidget *widget, gpointer data)
 {
-	font1 = gdk_font_load("-*-helvetica-bold-r-normal-*-*-240-*-*-p-*-iso8859-1");
+	GtkStyle *oldstyle, *newstyle;
+	GtkWidget *tmp;
+
+	font1 = gdk_font_load("-*-helvetica-bold-r-normal-*-*-200-*-*-p-*-iso8859-1");
 	font2 = gdk_font_load("-*-helvetica-bold-r-normal-*-*-180-*-*-p-*-iso8859-1");
 	font3 = gdk_font_load("-*-helvetica-bold-r-normal-*-*-130-*-*-p-*-iso8859-1");
 	font4 = gdk_font_load("-*-helvetica-medium-r-normal-*-*-110-*-*-p-*-iso8859-1");
@@ -672,6 +678,12 @@ static void about_realize(GtkWidget *widget, gpointer data)
 	bg_img = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap, NULL, NULL, about);
 	if (bg_img == NULL)
 		g_error ("Couldn't create about background pixmap.");
+
+	tmp = gtk_object_get_data(GTK_OBJECT(about_dialog), "background");
+	oldstyle = gtk_widget_get_style(tmp);
+	newstyle = gtk_style_copy(oldstyle);
+	newstyle->text[5] = colors[12];
+	gtk_widget_set_style(tmp, newstyle);
 
 	about_tag = gtk_timeout_add(100, about_update, NULL);
 }
@@ -706,7 +718,6 @@ about_background_add                    (gchar          *widget_name,
 static gint about_update(gpointer data)
 {
 	GtkDrawingArea *background;
-	static gint Yloc = 320;
 	int status;
 
 	background = gtk_object_get_data(GTK_OBJECT(about_dialog), "background");
@@ -737,17 +748,13 @@ static gint about_update(gpointer data)
 
 	if (status == TRUE)
 		Yloc = 320;
-	Yloc--;
+	Yloc = Yloc - 2;
 	return TRUE;
 }
 
-static gint about_draw_text(GtkDrawingArea *background, gchar *text, GdkFont *font, gint Yloc, gint start)
+static gint about_draw_text(GtkDrawingArea *background, gchar *text, GdkFont *font, gint loc, gint start)
 {
 	static int l;
-
-	/* The memmory leak in this function is due to
-	 * font2 not being unferanced
-	 */
 
 	if (start == TRUE)
 	{
@@ -756,11 +763,12 @@ static gint about_draw_text(GtkDrawingArea *background, gchar *text, GdkFont *fo
 		l = l + gdk_string_height(font, text) + 10;
 	}
 
-	gdk_draw_text(pixmap, font, GTK_WIDGET(background)->style->black_gc,
-			(250 / 2) - (gdk_string_width(font, text) / 2), Yloc + l,
+	
+	gdk_draw_text(pixmap, font, GTK_WIDGET(background)->style->text_gc[5],
+			(250 / 2) - (gdk_string_width(font, text) / 2), loc + l,
 			text, strlen(text));
 
-	if (Yloc + l + 10 == 0)
+	if (loc + l + 10 <= 0)
 		return TRUE;
 	else
 		return FALSE;
