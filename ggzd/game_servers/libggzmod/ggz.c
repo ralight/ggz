@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz.c 2362 2001-09-05 05:08:46Z jdorje $
+ * $Id: ggz.c 2394 2001-09-08 02:32:43Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -204,13 +204,6 @@ int ggzd_disconnect(void)
 	/* first send a gameover message (request) */
 	if (es_write_int(ggzfd, REQ_GAME_OVER) < 0)
 		return -1;
-
-	/* now send the game's statistics */
-	/* FIXME: Should send actual statistics */
-/*
-	if (es_write_int(ggzfd, 0) < 0)
-		return -1;
-*/
 
 	/* The server will send a message in response; we should wait for it. */
 	if (es_read_int(ggzfd, &response) < 0)
