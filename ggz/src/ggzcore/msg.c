@@ -132,6 +132,8 @@ static void err_doit(int flag, const char *fmt, va_list ap)
 
 #ifdef DEBUG
 	sprintf(buf, "[%d]: ", getpid());
+#else
+	buf[0] = '\0';
 #endif
 
 	vsnprintf(buf + strlen(buf), (size - strlen(buf)), fmt, ap);
