@@ -1,9 +1,9 @@
 # Koenig description file
 [ModuleInfo]
-Author = Tobias Koenig
+Author = Tobias Koenig & Josef Spillner
 CommandLine = @ggzexecmoddir@/koenig --ggz
 Frontend = kde
-Homepage = http://mindx.sourceforge.net/
+Homepage = http://ggz.sourceforge.net/games/koenig/
 Name = Koenig
 ProtocolVersion = 1
 ProtocolEngine = Chess
