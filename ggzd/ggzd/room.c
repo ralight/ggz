@@ -329,7 +329,6 @@ int room_emit(const int room, const int sender, char *msg)
 	/* Since we are the sender, we don't need lock to get our own name */
 	if((new_chat->chat_sender = malloc(strlen(players.info[sender].name)+1))
 	   == NULL) {
-		pthread_rwlock_unlock(&players.lock);
 		pthread_rwlock_unlock(&chat_room[room].lock);
 		free(new_chat);
 		free(msg);
@@ -354,16 +353,13 @@ int room_emit(const int room, const int sender, char *msg)
 		(chat_room[room].chat_tail)->next = new_chat;
 	chat_room[room].chat_tail = new_chat;
 
-	pthread_rwlock_unlock(&chat_room[room].lock);
-
 #ifdef DEBUG
-	pthread_rwlock_rdlock(&chat_room[room].lock);
 	if(chat_room[room].chat_head == NULL)
 		chat_room[room].chat_head = new_chat;
 	room_spew_chat_room(room);
-	pthread_rwlock_unlock(&chat_room[room].lock);
 #endif
 
+	pthread_rwlock_unlock(&chat_room[room].lock);
 	return 0;
 }
 

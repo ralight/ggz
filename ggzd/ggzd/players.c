@@ -439,7 +439,6 @@ static void player_remove(int p_index)
 
 	pthread_rwlock_unlock(&players.lock);
 	if (players.info[p_index].room != -1) {
-		pthread_rwlock_unlock(&players.lock);
 		room_join(p_index, -1);
 		/*room_dequeue_personal(p_index);*/
 	}
