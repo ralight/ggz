@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 5332 2003-01-16 22:10:10Z dr_maux $
+ * $Id: ggz.h 5339 2003-01-22 13:48:12Z dr_maux $
  * 
  * Header file for ggz components lib
  *
@@ -1574,6 +1574,36 @@ char *ggz_base64_encode(const char *text, int length);
 
 /* Decodes from base64, allocating space as needed */
 char *ggz_base64_decode(const char *text, int length);
+
+/* TLS operation mode */
+typedef enum {
+	GGZ_TLS_CLIENT,
+	GGZ_TLS_SERVER
+} GGZTLSType;
+
+/* TLS verification type */
+typedef enum {
+	GGZ_TLS_VERIFY_NONE,
+	GGZ_TLS_VERIFY_PEER
+} GGZTLSVerificationType;
+
+/* Initialize TLS support on the server side */
+void ggz_tls_init(const char *certfile, const char *keyfile, const char *password);
+
+/* Check TLS support, returns 1 on support, 0 on no support */
+int ggz_tls_support_query(void);
+
+/* Enable TLS on fd, returns 1 on success, 0 on failure */
+int ggz_tls_enable_fd(int fdes, GGZTLSType whoami, GGZTLSVerificationType verify);
+
+/* Disable TLS on fd*/
+int ggz_tls_disable_fd(int fdes);
+
+/* Write some bytes to a secured file descriptor */
+size_t ggz_tls_write(int fd, void *ptr, size_t n);
+
+/* Read from a secured file descriptor */
+size_t ggz_tls_read(int fd, void *ptr, size_t n);
 
 /** @} */
 
