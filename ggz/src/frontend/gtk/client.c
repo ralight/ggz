@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 5185 2002-11-03 21:50:54Z jdorje $
+ * $Id: client.c 5190 2002-11-03 22:22:51Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -350,36 +350,6 @@ client_goto_web1_activate		(GtkMenuItem	*menuitem,
 {
 	support_goto_url("http://ggz.sourceforge.net");
 }
-
-#ifdef GTK2
-/* Aray of GdkColors currently used for chat and MOTD
- * They are all non-ditherable and as such should look the same everywhere
- */
-static GdkColor colors[] =
-{
-        {0, 0x0000, 0x0000, 0x0000},          /* 0 Black */
-        {0, 0xFFFF, 0xFFFF, 0x3333},          /* 1 Dark Goldenrod */
-        {0, 0xCCCC, 0x0000, 0x0000},          /* 2 Orange Red 3 */
-        {0, 0x6666, 0x9999, 0x0000},          /* 3 Olive Drab */
-        {0, 0xCCCC, 0x3333, 0xCCCC},          /* 4 Medium Orchid */
-        {0, 0x9999, 0x3333, 0x3333},          /* 5 Indian Red 4 */
-        {0, 0x0000, 0x6666, 0xFFFF},          /* 6 Royal Blue 2 */
-        {0, 0xFFFF, 0x9999, 0x3333},          /* 7 Tan 1 */
-        {0, 0x6666, 0xCCCC, 0xCCCC},          /* 8 Dark Slate Grey 3 */
-        {0, 0x6666, 0xCCCC, 0xFFFF},          /* 9 Cadet Blue */
-        {0, 0x9999, 0x3333, 0xFFFF},          /* 10 Purple 2 */
-        {0, 0x9999, 0x0000, 0x6666},          /* 11 Violet Red 4 */
-        {0, 0x3333, 0x0000, 0x6666},          /* 12 Dark Blue */
-        {0, 0x9999, 0x3333, 0x3333},          /* 13  Indian Red */
-        {0, 0x3333, 0x6666, 0xFFFF},          /* 14  Blue */
-        {0, 0x6666, 0xCCCC, 0xFFFF},          /* 15  Pale Violet Red */
-        {0, 0xCCCC, 0xCCCC, 0x3333},          /* 16  Yellow 3 */
-        {0, 0x6666, 0xFFFF, 0xCCCC},          /* 17  Aquamarine 2 */
-        {0, 0xFFFF, 0xFFFF, 0xFFFF},          /* 19  foreground (White) */
-        {0, 0x0000, 0x0000, 0x0000}           /* 18  background (Black) */
-};
-#endif
-
 
 static GtkWidget*
 main_xtext_chat_create			(gchar		*widget_name,
