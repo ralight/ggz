@@ -80,6 +80,7 @@ static int   player_table_join(int p_index, int p_fd, int *t_fd);
 static int   player_list_players(int p_index, int fd);
 static int   player_list_types(int p_index, int fd);
 static int   player_list_tables(int p_index, int fd);
+static int   player_send_error(int p_index, int fd);
 
 /* Utility functions: Should either get renamed or moved */
 static int read_name(int, char[MAX_USER_NAME_LEN]);
@@ -247,11 +248,11 @@ static void player_loop(int p_index, int p_fd)
 			
 			status = player_handle(op, p_index, p_fd, &t_fd);
 			
-			if (status == NG_HANDLE_LOGOUT)
+			if (status < 0)
 				break;
 			
 			switch (status) {
-			case NG_HANDLE_GAME_START:
+			case GGZ_REQ_TABLE_JOIN:
 				/* Player launched or joined a game */
 				dbg_msg("Player %d now in game", p_index);
 				pthread_rwlock_wrlock(&players.lock);
@@ -259,11 +260,11 @@ static void player_loop(int p_index, int p_fd)
 				pthread_rwlock_unlock(&players.lock);
 				FD_SET(t_fd, &active_fd_set);
 				break;
-			case NG_HANDLE_GAME_OVER:
+			case GGZ_REQ_TABLE_LEAVE:
 				dbg_msg("Player %d game-over [user]", p_index);
 				game_over = 1;
 				break;
-			case NG_HANDLE_OK:
+			case GGZ_REQ_OK:
 				break;
 			}
 		}
@@ -309,14 +310,14 @@ static void player_loop(int p_index, int p_fd)
  * any requests.
  *
  * returns: 
- *  NG_HANDLE_GAME_START : player is now in a game.  fd of the game 
+ *  GGZ_REQ_TABLE_JOIN   : player is now in a game.  fd of the game 
  *                         is returned by reference.
- *  NG_HANDLE_GAME_OVER  : player has completed game
- *  NG_HANDLE_LOGOUT     : player is being logged out (possbily due to  error)
- *  NG_HANDLE_OK : nothing special */
+ *  GGZ_REQ_TABLE_LEAVE  : player has completed game
+ *  GGZ_REQ_LOGOUT       : player is being logged out (possbily due to error)
+ *  GGZ_REQ_OK           : nothing special 
+ */
 int player_handle(int request, int p_index, int p_fd, int *t_fd)
 {
-
 	int status;
 	UserToControl op = (UserToControl)request;
 
@@ -327,19 +328,19 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 
 	case REQ_LOGOUT:
 		player_logout(p_index, p_fd);
-		status = NG_HANDLE_LOGOUT;
+		status = GGZ_REQ_LOGOUT;
 		break;
 
 	case REQ_TABLE_LAUNCH:
 		status = player_table_launch(p_index, p_fd, t_fd);
 		if (status == 0)
-			status = NG_HANDLE_GAME_START;
+			status = GGZ_REQ_TABLE_JOIN;
 		break;
 
 	case REQ_TABLE_JOIN:
 		status = player_table_join(p_index, p_fd, t_fd);
 		if (status == 0)
-			status = NG_HANDLE_GAME_START;
+			status = GGZ_REQ_TABLE_JOIN;
 		break;
 
 	case REQ_LIST_PLAYERS:
@@ -357,7 +358,7 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 	case REQ_GAME:
 		status = player_msg_from_sized(p_fd, *t_fd); 
 		if (status <= 0)
-			status = NG_HANDLE_GAME_OVER;
+			status = GGZ_REQ_TABLE_LEAVE;
 		else 
 			dbg_msg("User to Game: %d bytes", status);
 		break;
@@ -376,7 +377,7 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 	default:
 		dbg_msg("Player %d (uid: %d) requested unimplemented op %d",
 			p_index, players.info[p_index].uid, op);
-		status = NG_HANDLE_LOGOUT;
+		status = player_send_error(p_index, p_fd);
 	}
 
 	return status;
@@ -442,7 +443,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	if (difftime(game_types.timestamp, *type_ts) != 0 ) {
 		*type_ts = game_types.timestamp;
 		type_update = 1;
-		dbg_msg("Player %d needs type list update");
+		dbg_msg("Player %d needs type list update", p);
 	}
 	pthread_rwlock_unlock(&game_types.lock);
 
@@ -532,16 +533,19 @@ static int player_login_anon(int p, int fd)
 
 	/* Check name for uniqueness */
 	pthread_rwlock_rdlock(&players.lock);
-	for(i=0; i<MAX_USERS; i++)
-		if(!strcmp(name, players.info[i].name))
+	for (i = 0; i < MAX_USERS; i++)
+		if (players.info[i].fd != -1 
+		    && !(strcmp(name, players.info[i].name)))
 			break;
 	pthread_rwlock_unlock(&players.lock);
+
 	/* FIXME: need to check vs. database too */
-	if(i != MAX_USERS) {
+	if (i != MAX_USERS) {
 		dbg_msg("Unsuccessful anonymous login of %s", name);
-		if(!FAIL(es_write_int(fd, RSP_LOGIN_ANON)))
-			(void) es_write_char(fd, -1);
-		return -1;
+		if (FAIL(es_write_int(fd, RSP_LOGIN_ANON))
+		    || FAIL(es_write_char(fd, -1)))
+			return -1;
+		return 0;
 	}
 
 	pthread_rwlock_wrlock(&players.lock);
@@ -555,7 +559,7 @@ static int player_login_anon(int p, int fd)
 	if (FAIL(es_write_int(fd, RSP_LOGIN_ANON)) 
 	    || FAIL(es_write_char(fd, 0)) 
 	    || FAIL(es_write_int(fd, 265)))
-		return (-1);
+		return -1;
 
 	dbg_msg("Successful anonymous login of %s", name);
 
@@ -566,7 +570,7 @@ static int player_login_anon(int p, int fd)
 	else
 		log_msg(CONNECTION_INFO,
 			"Anonymous player %s logged in from %s", name, ip_addr);
-
+	
 	return 0;
 }
 
@@ -1027,26 +1031,31 @@ static int player_chat(int p_index, int p_fd)
 }
 
 
+static int player_send_error(int p_index, int fd)
+{
+	if (FAIL(es_write_int(fd, MSG_ERROR)))
+		return -1;
+	return 0;
+}
+
+
 /*
  * Utility function for reading in names
  */
-static int read_name(int sock, char name[MAX_USER_NAME_LEN])
+static int read_name(int sock, char name[MAX_USER_NAME_LEN + 1])
 {
 	char *tmp;
-	int status = -1;
 
-	if (!FAIL(es_read_string_alloc(sock, &(tmp)))) {
+	if (FAIL(es_read_string_alloc(sock, &tmp)))
+		return -1;
 
-		strncpy(name, tmp, MAX_USER_NAME_LEN);
-		free(tmp);
+	strncpy(name, tmp, MAX_USER_NAME_LEN);
+	free(tmp);
 
-		/* Make sure names are null-terminated */
-		name[MAX_USER_NAME_LEN] = '\0';
-
-		status = 0;
-	}
-
-	return status;
+	/* Make sure names are null-terminated */
+	name[MAX_USER_NAME_LEN + 1] = '\0';
+	
+	return 0;    ;
 }
 
 

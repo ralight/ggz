@@ -73,11 +73,11 @@
 #define NG_TYPE_RES  -2
 #define NG_TYPE_OPEN -3
 
-/* Handler return values */
-#define NG_HANDLE_OK           0
-#define NG_HANDLE_LOGOUT      -1
-#define NG_HANDLE_GAME_START   1
-#define NG_HANDLE_GAME_OVER    2
+/* Player Handler return values */
+#define GGZ_REQ_OK           0
+#define GGZ_REQ_LOGOUT      -1
+#define GGZ_REQ_TABLE_JOIN   1
+#define GGZ_REQ_TABLE_LEAVE  2
 
 /* Special seat assignment values */
 #define GGZ_SEAT_OPEN   -1
