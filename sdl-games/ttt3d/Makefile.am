@@ -1,8 +1,8 @@
-bin_PROGRAMS = ggz.ttt3d
+ggzexecmod_PROGRAMS = ggz.ttt3d
 
 ggz_ttt3d_SOURCES = main.c display.c
 ggz_ttt3d_LDFLAGS = $(GGZMOD_LDFLAGS)
-ggz_ttt3d_LDADD = -lGL $(LIB_GGZMOD) $(SDL_LIBS)
+ggz_ttt3d_LDADD = $(LIB_GGZMOD) $(SDL_LIBS) -lGL
 
 noinst_HEADERS = display.h
 

@@ -1,7 +1,7 @@
 [ModuleInfo]
 Game = TicTacToe
 Author = Josef Spillner
-CommandLine = @ggzexecmoddir@/ttt3d
+CommandLine = @ggzexecmoddir@/ggz.ttt3d
 Frontend = sdl
 Homepage = http://ggz.sourceforge.net/games/tictactoe/
 Name = TicTacToe
