@@ -38,14 +38,6 @@
 #define ERR_SOCK_CONN -4
 #define ERR_OFFSET     4
 
-/* Socket error messages */
-static char* errorMsg[4] = {
-  "Error connecting stream socket",
-  "Host name lookup failure",
-  "Error binding socket",
-  "Error opening socket",
-};
-
 int makesocket( unsigned short int, short int, char* );
 
 int writestring( int, const char* );

@@ -52,6 +52,7 @@ typedef struct gameInfo_t {
   int clientPids[4];
   char* players[4];
   int playerSock[4];
+  int ggz_sock;
   option_t opt;
 } gameInfo_t;
 

@@ -26,13 +26,14 @@
 
 #include <config.h>         /* Site specific config */
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <netinet/in.h>
 #include <stdio.h>          /* For fprintf */
 #include <stdlib.h>         /* For exit */
 #include <time.h>           /* Used for randomize */
 #include <unistd.h>         /* For read, write, etc */
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <netdb.h>
 #include <string.h>
 #include <signal.h>
@@ -184,59 +185,75 @@ void SortHands( Card hands[4][13] ) {
 
 void GetGameInfo( void ) {
   
-  int i, j, op, status = 0;
-  char ret;
-  
-  ReadIntOrDie(STDIN_FILENO, &op);
-  if (op != REQ_GAME_LAUNCH) {
-    ret = -1;
-    WriteIntOrDie(STDOUT_FILENO, RSP_GAME_LAUNCH);
-    write(STDOUT_FILENO, &ret, 1);
-    exit(-1);
-  }
-  
-  ReadOptions();
+	int i, j, op, status = 0;
+	char ret;
+	char fd_name[21];
+	struct sockaddr_un addr;
+	
+	/* Connect to Unix domain socket */
+	sprintf(fd_name, "/tmp/NetSpades.%d", getpid());
 
-  /* Should check for validity here , but who cares? */
-  WriteIntOrDie(STDOUT_FILENO, RSP_GAME_LAUNCH);
-  status = 0;
-  write(1, &status, 1);
+	if ( (gameInfo.ggz_sock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0)
+		err_sys_exit("socket failed");
+	
+	bzero(&addr, sizeof(addr));
+	addr.sun_family = AF_LOCAL;
+	strcpy(addr.sun_path, fd_name);
+
+	if (connect(gameInfo.ggz_sock, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+		err_sys_exit("connect failed");
+	
+
+	ReadIntOrDie(gameInfo.ggz_sock, &op);
+	if (op != REQ_GAME_LAUNCH) {
+		ret = -1;
+		WriteIntOrDie(gameInfo.ggz_sock, RSP_GAME_LAUNCH);
+		write(gameInfo.ggz_sock, &ret, 1);
+		exit(-1);
+	}
   
-  gameInfo.gameNum = 0;
-  gameInfo.gamePid = getpid();
+	ReadOptions();
+
+	/* Should check for validity here , but who cares? */
+	WriteIntOrDie(gameInfo.ggz_sock, RSP_GAME_LAUNCH);
+	status = 0;
+	write(gameInfo.ggz_sock, &status, 1);
+  
+	gameInfo.gameNum = 0;
+	gameInfo.gamePid = getpid();
   
 
-  for (i=0; i<4; i++) {
-	  if( gameInfo.playerSock[i] == SOCK_COMP ) {
-		  continue;
-	  }
-	  dbg_msg("[%d]: Sending info to %s\n", getpid(), gameInfo.players[i]);
-	  WriteIntOrDie( gameInfo.playerSock[i], gameInfo.gameNum );
-	  WriteIntOrDie( gameInfo.playerSock[i], i );
-	  WriteIntOrDie( gameInfo.playerSock[i], gameInfo.gamePid );
-	  for(j=0; j<4; j++) {
-		  if (writestring(gameInfo.playerSock[i], gameInfo.players[j]) < 0 ) {
-			  dbg_msg( "[%d]: Network error sending string\n", getpid() );
-			  svNetClose();
-			  Quit(-1);
-		  }
-	  }
+	for (i=0; i<4; i++) {
+		if( gameInfo.playerSock[i] == SOCK_COMP ) {
+			continue;
+		}
+		dbg_msg("[%d]: Sending info to %s\n", getpid(), gameInfo.players[i]);
+		WriteIntOrDie( gameInfo.playerSock[i], gameInfo.gameNum );
+		WriteIntOrDie( gameInfo.playerSock[i], i );
+		WriteIntOrDie( gameInfo.playerSock[i], gameInfo.gamePid );
+		for(j=0; j<4; j++) {
+			if (writestring(gameInfo.playerSock[i], gameInfo.players[j]) < 0 ) {
+				dbg_msg( "[%d]: Network error sending string\n", getpid() );
+				svNetClose();
+				Quit(-1);
+			}
+		}
 
-    ReadIntOrDie( gameInfo.playerSock[i], &status );
+		ReadIntOrDie( gameInfo.playerSock[i], &status );
     
-    if( status == i ) {
-      if( log )
-	  dbg_msg( "[%d]: %s received player list\n", getpid(), 
-		 gameInfo.players[i] );
-    }
-    else {
-      svNetClose();
-      if( log )
-	dbg_msg( "[%d]: Error: player %d returned %d\n", getpid(), i, 
-		 status);
-      Quit(-1);
-    }
-  } /* for i=1 to 4*/
+		if( status == i ) {
+			if( log )
+				dbg_msg( "[%d]: %s received player list\n", getpid(), 
+					 gameInfo.players[i] );
+		}
+		else {
+			svNetClose();
+			if( log )
+				dbg_msg( "[%d]: Error: player %d returned %d\n", getpid(), i, 
+					 status);
+			Quit(-1);
+		}
+	} /* for i=1 to 4*/
 }
 
 
@@ -246,19 +263,19 @@ int ReadOptions( void ) {
   
 	dbg_msg("[%d]: Reading options from server\n", getpid());
 
-	if ( (status = read(STDIN_FILENO, &gameInfo.opt, 12)) < 0) 
+	if ( (status = read(gameInfo.ggz_sock, &gameInfo.opt, 12)) < 0) 
 		dbg_msg( "[%d]: Error reading options\n", getpid() );
-	else if (readint(STDIN_FILENO, &seats) < 0) 
+	else if (readint(gameInfo.ggz_sock, &seats) < 0) 
 		dbg_msg( "[%d]: Error reading number of slots", getpid() );
 	else {
 		for(i=0; i<4; i++) {
-			readint( STDIN_FILENO, &assign);
+			readint( gameInfo.ggz_sock, &assign);
 			if (assign == -2) {
 				gameInfo.playerSock[i] = SOCK_COMP;
 				gameInfo.players[i] = "AI";
 			} else {
-				readstring(STDIN_FILENO, &gameInfo.players[i]);
-				ReadIntOrDie(STDIN_FILENO,
+				readstring(gameInfo.ggz_sock, &gameInfo.players[i]);
+				ReadIntOrDie(gameInfo.ggz_sock,
 					     &gameInfo.playerSock[i] );
 
 			}
@@ -456,7 +473,7 @@ void GetAndSendTricks( int lead, Card hands[4][13], Card trick[4],
 		       int tally[4], int bids[4], int kneels[4] ) {
 
   int i, j, curPlayer, handIndex, badCard;
-  char leadSuit;
+  char leadSuit = 0;
   Card playedCard;
 
   trick[0] = trick[1] = trick[2] = trick[3] = BLANK_CARD;
@@ -817,8 +834,8 @@ int QueryNewGame( void ) {
 
 void SendGameOver(void) {
 
-  WriteIntOrDie(STDOUT_FILENO, MSG_GAME_OVER);
-  WriteIntOrDie(STDOUT_FILENO, 0);
+  WriteIntOrDie(gameInfo.ggz_sock, MSG_GAME_OVER);
+  WriteIntOrDie(gameInfo.ggz_sock, 0);
   /* FIXME: Send player stats */
 }
 

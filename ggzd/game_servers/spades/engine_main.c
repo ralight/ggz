@@ -33,6 +33,7 @@
 
 #include <card.h>
 #include <engine.h>
+#include <err_func.h>
 
 
 /* Global data */
@@ -44,7 +45,7 @@ Card hands[4][13], trick[4];
 
 int main( int argc, char* argv[] ) {
 
-  int i, dealer=0, lead,              /* index of dealer and leader */
+  int    dealer=0, lead,              /* index of dealer and leader */
          trickNum, trickWin,          /* trick counter and who won */
          bags[2],                     /* Bag tally */
          scores[2],                   /* Scores */
@@ -99,5 +100,6 @@ int main( int argc, char* argv[] ) {
 
   SendGameOver();
   svNetClose();
-  
+
+  return 0;
 }

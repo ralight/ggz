@@ -37,9 +37,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <socketfunc.h>
-
+#include <err_func.h>
 
 
 int makesocket (unsigned short int port, short int type, char* server) {
