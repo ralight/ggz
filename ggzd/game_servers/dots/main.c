@@ -4,7 +4,7 @@
  * Project: GGZ Connect The Dots game module
  * Date: 04/27/2000
  * Desc: Main loop
- * $Id: main.c 2346 2001-09-03 10:43:41Z jdorje $
+ * $Id: main.c 2649 2001-11-04 17:33:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../libggzmod/ggz_server.h"
+#include "../../ggzdmod/ggz_server.h"
 
 #include "game.h"
 

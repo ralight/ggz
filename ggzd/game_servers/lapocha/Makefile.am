@@ -13,9 +13,9 @@ ggzd_lapocha_SOURCES = main.c \
 		       cards.c cards.h
 
 
-ggzd_lapocha_DEPENDENCIES = $(top_builddir)/game_servers/libggzmod/libggzdmod.a
+ggzd_lapocha_DEPENDENCIES = $(top_builddir)/ggzdmod/libggzdmod.a
 
-ggzd_lapocha_LDADD = $(LDADD) $(top_builddir)/game_servers/libggzmod/libggzdmod.a
+ggzd_lapocha_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.a
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

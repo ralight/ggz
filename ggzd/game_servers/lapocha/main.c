@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha game module
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2346 2001-09-03 10:43:41Z jdorje $
+ * $Id: main.c 2649 2001-11-04 17:33:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../libggzmod/ggz_server.h"
+#include "../../ggzdmod/ggz_server.h"
 
 #include "game.h"
 
@@ -47,7 +47,7 @@ int main(void)
 	ggzd_set_handler(GGZ_EVENT_LAUNCH, &game_handle_ggz);
 	ggzd_set_handler(GGZ_EVENT_JOIN, &game_handle_ggz);
 	ggzd_set_handler(GGZ_EVENT_LEAVE, &game_handle_ggz);
-	ggzd_set_handler(GGZ_EVENT_QUIT, &game_handle_ggz);
+	/* ggzd_set_handler(GGZ_EVENT_QUIT, &game_handle_ggz); */
 	ggzd_set_handler(GGZ_EVENT_PLAYER, &game_handle_player);
 
 	(void)ggzd_main_loop();

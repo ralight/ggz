@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: server specific header file
- * $Id: game.h 2299 2001-08-28 05:13:32Z jdorje $
+ * $Id: game.h 2649 2001-11-04 17:33:57Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "../libggzmod/ggz_server.h"
+#include "../../ggzdmod/ggz_server.h"
 
 #define CBT_SERVER_ERROR -1
 #define CBT_SERVER_OK 0

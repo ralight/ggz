@@ -1,9 +1,8 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2276 2001-08-27 10:29:46Z jdorje $
+# $Id: Makefile.am 2649 2001-11-04 17:33:57Z jdorje $
 
 # For no particular reason, I put these in alphabetical order
-SUBDIRS = libggzmod \
-	  tictactoe reversi chess chinese-checkers combat dots \
+SUBDIRS = tictactoe reversi chess chinese-checkers combat dots \
 	  escape ggzcards hastings  krosswater lapocha spades
 
 

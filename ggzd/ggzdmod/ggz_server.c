@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.c 2639 2001-11-03 19:47:39Z bmh $
+ * $Id: ggz_server.c 2649 2001-11-04 17:33:57Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -31,6 +31,11 @@
 #include <string.h>
 
 static GGZdMod *ggzdmod = NULL;
+
+GGZdModState ggzd_get_state(void)
+{
+	return ggzdmod_get_state(ggzdmod);
+}
 
 ggzd_assign_t ggzd_get_seat_status(int seat)
 {

@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.c 2297 2001-08-28 04:38:37Z jdorje $
+ * $Id: game.c 2649 2001-11-04 17:33:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -26,7 +26,7 @@
 #include <stdlib.h>
 
 #include <easysock.h>
-#include "../libggzmod/ggz_server.h"
+#include "../../ggzdmod/ggz_server.h"
 
 #include "game.h"
 #include "ai.h"

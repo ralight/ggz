@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers game module
  * Date: 01/01/2001
  * Desc: Game functions
- * $Id: game.h 2300 2001-08-28 05:35:33Z jdorje $
+ * $Id: game.h 2649 2001-11-04 17:33:57Z jdorje $
  *
  * Copyright (C) 2001 Richard Gade.
  *
@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "../libggzmod/ggz_server.h"
+#include "../../ggzdmod/ggz_server.h"
 
 /* Chinese Checkers protocol */
 /* Messages from server */

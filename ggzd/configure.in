@@ -277,7 +277,6 @@ AC_OUTPUT([Makefile
 	   doc/C/Makefile
 	   doc/C/design/Makefile
 	   game_servers/Makefile
-	   game_servers/libggzmod/Makefile
 	   game_servers/spades/Makefile
 	   game_servers/tictactoe/Makefile
 	   game_servers/dots/Makefile

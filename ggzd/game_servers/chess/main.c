@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Main loop
- * $Id: main.c 2346 2001-09-03 10:43:41Z jdorje $
+ * $Id: main.c 2649 2001-11-04 17:33:57Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -24,7 +24,7 @@
  */
 
 
-#include "../libggzmod/ggz_server.h"
+#include "../../ggzdmod/ggz_server.h"
 
 #include "chess.h"
 #include "game.h"

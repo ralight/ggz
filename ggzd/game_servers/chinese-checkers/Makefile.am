@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2327 2001-08-30 00:58:20Z jdorje $
+# $Id: Makefile.am 2649 2001-11-04 17:33:57Z jdorje $
 
 EXTRA_DIST = ccheckers.dsc ccheckers.room
 
@@ -16,9 +16,9 @@ ggzd_ccheckers_SOURCES = main.c \
 			 ai.h
 
 
-ggzd_ccheckers_LDADD = $(LDADD) $(top_builddir)/game_servers/libggzmod/libggzdmod.a
+ggzd_ccheckers_LDADD = $(LDADD) $(top_builddir)/ggzdmod/libggzdmod.a
 
-ggzd_ccheckers_DEPENDENCIES = $(top_builddir)/game_servers/libggzmod/libggzdmod.a
+ggzd_ccheckers_DEPENDENCIES = $(top_builddir)/ggzdmod/libggzdmod.a
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

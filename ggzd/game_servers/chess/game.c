@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 2285 2001-08-27 19:53:11Z jdorje $
+ * $Id: game.c 2649 2001-11-04 17:33:57Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -29,7 +29,7 @@
 #include <unistd.h>
 
 #include <easysock.h>
-#include "../libggzmod/ggz_server.h"
+#include "../../ggzdmod/ggz_server.h"
 
 #include "chess.h"
 #include "game.h"
@@ -51,17 +51,23 @@ struct timeval cronometer;
  * either!  --JDS */
 void ggz_update(ggzd_event_t event, void *data) {
   switch(event) {
-    case GGZ_EVENT_LAUNCH:
-      game_update(CHESS_EVENT_LAUNCH, NULL);
+    case GGZ_EVENT_STATE:
+      switch (ggzd_get_state()) {
+	case GGZ_STATE_WAITING:
+          game_update(CHESS_EVENT_LAUNCH, NULL);
+          break;
+        case GGZ_STATE_DONE:
+          game_update(CHESS_EVENT_QUIT, NULL);
+          break;
+        default: /* CREATED and PLAYING not handled */
+          break;
+      }
       break;
     case GGZ_EVENT_JOIN:
       game_update(CHESS_EVENT_JOIN, data);
       break;
     case GGZ_EVENT_LEAVE:
       game_update(CHESS_EVENT_LEAVE, data);
-      break;
-    case GGZ_EVENT_QUIT:
-      game_update(CHESS_EVENT_QUIT, NULL);
       break;
     default: /* EVENT_PLAYER and EVENT_TICK not handled */
       ggzd_debug("ERROR: unexpected GGZ event %d.", event);

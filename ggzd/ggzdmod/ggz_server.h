@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.h 2609 2001-10-24 17:52:35Z jdorje $
+ * $Id: ggz_server.h 2649 2001-11-04 17:33:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -35,8 +35,12 @@ extern "C" {
 
 #define GGZ_EVENT_PLAYER GGZ_EVENT_PLAYER_DATA
 #define GGZ_EVENT_LAUNCH GGZ_EVENT_STATE
+#define GGZ_EVENT_QUIT   GGZ_EVENT_STATE
 
 	/* This interface is depricated and should not be used. */
+
+	/* Return current state: CREATED, WAITING, PLAYING, DONE */
+	GGZdModState ggzd_get_state(void);
 
 	typedef GGZdModSeat ggzd_assign_t;
 

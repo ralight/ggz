@@ -226,10 +226,12 @@
 #define CHESS_STATE_DONE 3
 
 /* Definition of events */
-#define CHESS_EVENT_LAUNCH GGZ_EVENT_LAUNCH
-#define CHESS_EVENT_JOIN GGZ_EVENT_JOIN
-#define CHESS_EVENT_LEAVE GGZ_EVENT_LEAVE
-#define CHESS_EVENT_QUIT GGZ_EVENT_QUIT
+/* NOTE: These used to be defined as GGZ events, but that seemed
+   quite unsafe so I changed them to just be regular integers. --JDS */
+#define CHESS_EVENT_LAUNCH 0
+#define CHESS_EVENT_JOIN 1
+#define CHESS_EVENT_LEAVE 2
+#define CHESS_EVENT_QUIT 3
 #define CHESS_EVENT_MOVE 4
 #define CHESS_EVENT_TIME 5
 #define CHESS_EVENT_GAMEOVER 6

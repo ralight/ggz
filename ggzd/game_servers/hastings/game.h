@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.h 2285 2001-08-27 19:53:11Z jdorje $
+ * $Id: game.h 2649 2001-11-04 17:33:57Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -24,7 +24,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "../libggzmod/ggz_server.h"
+#include "../../ggzdmod/ggz_server.h"
 
 
 /* Hastings protocol */
