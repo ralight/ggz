@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 3446 2002-02-23 06:11:46Z bmh $
+ * $Id: transit.c 3499 2002-03-02 01:08:52Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -47,6 +47,13 @@
 extern struct GameInfo game_types[MAX_GAME_TYPES];
 
 
+/* Packaging for seat events */
+struct GGZSeatEvent {
+	struct GGZTableSeat seat;
+	char caller[MAX_USER_NAME_LEN + 1];
+};
+
+
 /* Local functions for handling transits */
 static GGZEventFuncReturn transit_player_event_callback(void* target,
                                                         int size,
@@ -58,10 +65,9 @@ static GGZEventFuncReturn transit_table_event_callback(void* target,
                                                        int size,
                                                        void* data);
 
-static int transit_send_join_to_game(GGZTable* table, char* name,
-				     int seat_num);
+static int transit_send_join_to_game(GGZTable* table, char* name, int seat_num);
 static int transit_send_leave_to_game(GGZTable* table, char* name);
-
+static int transit_send_seat_to_game(GGZTable* table, struct GGZSeatEvent *event);
 
 int transit_table_event(int room, int index, char opcode, char* name)
 {
@@ -88,15 +94,16 @@ int transit_table_event(int room, int index, char opcode, char* name)
 }
 
 
-int transit_seat_event(int room, int index, struct GGZSeat seat)
+int transit_seat_event(int room, int index, struct GGZTableSeat seat, char *caller)
 {
 	int status;
-	struct GGZSeat *data;
+	struct GGZSeatEvent *data;
 
-	if ( (data = malloc(sizeof(struct GGZSeat))) == NULL)
+	if ( (data = malloc(sizeof(struct GGZSeatEvent))) == NULL)
 		err_sys_exit("malloc failed in transit_pack");
 
-	*data = seat;
+	data->seat = seat;
+	strcpy(data->caller, caller);
 	
 	status = event_table_enqueue(room, index, transit_seat_event_callback,
 				     sizeof(data), data);
@@ -261,15 +268,31 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 						      int size, 
 						      void* data)
 {
+	int status;
 	GGZTable *table = target;
-	struct GGZSeat *seat = data;
+	struct GGZSeatEvent *event = data;
 
-	dbg_msg(GGZ_DBG_TABLE, "Seat change on table %d: Seat %d to %s", table->index, seat->index, ggz_seattype_to_string(seat->type));
+	dbg_msg(GGZ_DBG_TABLE, 
+		"%s requested seat change on table %d: Seat %d to %s (%s)", 
+		event->caller, table->index, event->seat.index, 
+		ggz_seattype_to_string(event->seat.type),
+		event->seat.name);
+	
+	status = transit_send_seat_to_game(table, event);
 
-	/* FIXME: send request to game */
+	/* If we sent it successfully, mark this table as in transit */
+	if (status == 0) {
+		table->transit = 1;
+		status = GGZ_EVENT_OK;
+	}
+	/* Otherwise send an error message back to the player */
+	else {
+		transit_player_event(event->caller, GGZ_TRANSIT_SEAT, 
+				     E_SEAT_ASSIGN_FAIL, 0, 0);
+		status = GGZ_EVENT_ERROR;
+	}
 
-
-	return GGZ_EVENT_OK;
+	return status;
 }
 		
 
@@ -323,6 +346,10 @@ static GGZEventFuncReturn transit_player_event_callback(void* target,
 		pthread_rwlock_unlock(&player->lock);		
 
 		if (net_send_table_join(player->net, (char)status) < 0)
+			return GGZ_EVENT_ERROR;
+		break;
+	case GGZ_TRANSIT_SEAT:
+		if (net_send_update_result(player->net, (char)status) < 0)
 			return GGZ_EVENT_ERROR;
 		break;
 	}
@@ -411,4 +438,35 @@ static int transit_send_leave_to_game(GGZTable* table, char* name)
 	return 0;
 }
 
+
+/*
+ * transit_send_seat_to_game sends REQ_GAME_SEAT to table
+ *
+ * Returns 0 on success, -1 on failure (in which case the
+ * player should be sent an failure notice).
+ */
+static int transit_send_seat_to_game(GGZTable* table, struct GGZSeatEvent *event)
+{
+	GGZSeat seat;
+
+	dbg_msg(GGZ_DBG_TABLE, "Sending seat for table %d in room %d",
+		table->index, table->room);
+	
+	/* Save transit info so we have it when game module responds */
+	table->transit_name = strdup(event->caller);
+	table->transit_seat = event->seat.index;
+
+	/* Send info to table */
+	seat.num = event->seat.index;
+	seat.type = event->seat.type;
+	seat.name = strdup(event->seat.name);
+	seat.fd = -1;
+	
+	if (ggzdmod_set_seat(table->ggzdmod, &seat) < 0)
+		return -1;
+	
+	free(seat.name);
+	
+	return 0;
+}
 

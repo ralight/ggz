@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 3446 2002-02-23 06:11:46Z bmh $
+ * $Id: protocols.h 3499 2002-03-02 01:08:52Z bmh $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -69,6 +69,7 @@ typedef enum {
 	E_IN_TRANSIT	    = -15,
 	E_NO_PERMISSION	    = -16,
 	E_BAD_XML	    = -17,
+	E_SEAT_ASSIGN_FAIL  = -18
 } GGZClientReqError;
 
 #endif /*_GGZ_PROTOCOL_H*/

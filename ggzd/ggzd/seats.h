@@ -31,7 +31,7 @@
 
 
 /* Seat structure */
-struct GGZSeat {
+struct GGZTableSeat {
 
 	/* Seat index */
 	int index;

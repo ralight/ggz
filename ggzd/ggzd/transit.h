@@ -28,11 +28,11 @@
 /* Table transit flag values */
 #define GGZ_TRANSIT_JOIN   0x01  /* %0000 0001 */
 #define GGZ_TRANSIT_LEAVE  0x02  /* %0000 0010 */
-
+#define GGZ_TRANSIT_SEAT   0x04
 
 int transit_table_event(int room, int index, char opcode, char* name);
 
-int transit_seat_event(int room, int index, struct GGZSeat seat);
+int transit_seat_event(int room, int index, struct GGZTableSeat seat, char *caller);
 
 int transit_player_event(char* name, char opcode, int status, int index, 
 			 int fd);

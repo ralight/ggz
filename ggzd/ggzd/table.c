@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 3446 2002-02-23 06:11:46Z bmh $
+ * $Id: table.c 3499 2002-03-02 01:08:52Z bmh $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -56,6 +56,12 @@
 #define GGZ_RESYNC_SEC  0
 #define GGZ_RESYNC_USEC 500000
 
+/* Packaging for seat events */
+struct GGZSeatChange {
+	int table;
+	struct GGZTableSeat seat;
+};
+
 /* Server wide data structures*/
 extern struct GameInfo game_types[MAX_GAME_TYPES];
 extern struct GGZState state;
@@ -73,6 +79,7 @@ static void  table_remove(GGZTable* table);
 static void table_handle_state(GGZdMod *mod, GGZdModEvent event, void *data);
 static void table_game_join(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
+static void table_game_seatchange(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 static void table_log(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 static void table_error(GGZdMod *ggzdmod, GGZdModEvent event, void *data);
 
@@ -80,12 +87,17 @@ static int   table_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode);
 static int   table_update_event_enqueue(GGZTable* table,
 					GGZUpdateOpcode opcode, char* name,
 					 unsigned int seat);
+static int   table_seat_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
+				      unsigned int seat);
+				      
 static int   table_pack(void** data, unsigned char opcode, GGZTable* table);
 static int   table_transit_pack(void** data, unsigned char opcode, 
 				GGZTable* table, char* name, 
 				unsigned int seat);
-static GGZEventFuncReturn   table_event_callback(void* target, int size,
+static GGZEventFuncReturn table_event_callback(void* target, int size,
                                                  void* data);
+static GGZEventFuncReturn table_seat_event_callback(void* target, int size,
+						    void* data);
 static int   table_launch_event(char* name, int status, int index);
 static void  table_free(GGZTable* table);
 
@@ -364,6 +376,7 @@ static int table_start_game(GGZTable *table)
         ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_STATE, &table_handle_state);
         ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_JOIN, &table_game_join);
         ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LEAVE, &table_game_leave);
+        ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_SEAT, &table_game_seatchange);
         ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_LOG, &table_log);
 	ggzdmod_set_handler(table->ggzdmod, GGZDMOD_EVENT_ERROR, &table_error);
 	
@@ -547,6 +560,69 @@ static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 	   to halt itself. */
 	if (empty && game_types[table->type].kill_when_empty)
 		(void)ggzdmod_disconnect(ggzdmod);
+}
+
+
+/*
+ * table_game_seatchange handles the RSP_GAME_SEAT from the table
+ * Note: table->transit_name contains malloced mem on entry
+ */
+static void table_game_seatchange(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
+{
+	GGZSeat seat;
+	GGZTable* table = ggzdmod_get_gamedata(ggzdmod);
+	char* caller;
+	int seat_num, fd, msg_status;
+
+	dbg_msg(GGZ_DBG_TABLE, "Table %d in room %d responded to seat change", 
+		table->index, table->room);
+
+	/* Error: we didn't request a seat change! */
+	if (!table->transit)
+		return;
+	
+	/* Read saved transit data */
+	caller = table->transit_name;
+	seat_num = table->transit_seat;
+	fd = table->transit_fd;
+
+	/* Notify player of transit status */
+	msg_status = transit_player_event(caller, GGZ_TRANSIT_SEAT, 0, 
+					  table->index, fd);
+
+	/* Get new seat info */
+	seat = ggzdmod_get_seat(ggzdmod, seat_num);
+
+	/* Write new seat data to table */
+	pthread_rwlock_wrlock(&table->lock);
+	table->seat_types[seat_num] = seat.type;
+	strcpy(table->seat_names[seat_num], seat.name);
+	pthread_rwlock_unlock(&table->lock);
+	
+	/* If player notification failed, they must've logged out */
+	if (msg_status < 0) {
+		dbg_msg(GGZ_DBG_TABLE, "%s logged out during update", caller);
+		
+		/* FIXME: if this was a join, force a leave 
+		   transit_table_event(table->room, table->index, 
+		   GGZ_TRANSIT_LEAVE, name);
+		*/
+	}
+	
+	table_seat_event_enqueue(table, GGZ_UPDATE_SEAT, seat_num);
+				   
+	dbg_msg(GGZ_DBG_TABLE, 
+		"Seat %d of table %d in room %d now %s with name %s", 
+		seat.num, table->index, table->room, 
+		ggz_seattype_to_string(seat.type), seat.name);
+	
+	/* Clear table for next transit */
+	pthread_rwlock_wrlock(&table->lock);
+	table->transit = 0;
+	free(table->transit_name);
+	table->transit_name = NULL;
+	table->transit_fd = -1;
+	pthread_rwlock_unlock(&table->lock);
 }
 
 
@@ -846,6 +922,28 @@ static int table_update_event_enqueue(GGZTable* table, GGZUpdateOpcode opcode,
 }
 
 
+static int table_seat_event_enqueue(GGZTable *table, GGZUpdateOpcode opcode,
+				    unsigned int seat_num)
+{
+	int status;
+	struct GGZSeatChange *data;
+
+	if ( (data = malloc(sizeof(struct GGZSeatChange))) == NULL)
+		err_sys_exit("malloc failed in transit_pack");
+
+	/* Copy seat data into structure for passing to event */
+	data->seat.index = seat_num;
+	data->seat.type = table->seat_types[seat_num];
+	strcpy(data->seat.name, table->seat_names[seat_num]);
+	data->table = table->index;
+	
+	/* Queue table event for whole room */
+	status = event_room_enqueue(table->room, table_seat_event_callback, sizeof(data), data);
+	
+	return status;
+}
+
+
 static int table_pack(void** data, unsigned char opcode, GGZTable* table)
 {
 	int size, index;
@@ -948,17 +1046,17 @@ static GGZEventFuncReturn table_event_callback(void* target, int size,
 	char* name = NULL;
 	char* current;
 	GGZTable info;
-	int seat = -1, index;
+	int seat_num = -1, index;
 	GGZPlayer* player;
 
 	player = (GGZPlayer*)target;
 
 	/* Unpack event data */
 	current = (char*)data;
-
+	
 	opcode = *(unsigned char*)current;
 	current += sizeof(char);
-
+	
 	index = *(int*)current;
 	current += sizeof(int);
 
@@ -1000,21 +1098,45 @@ static GGZEventFuncReturn table_event_callback(void* target, int size,
 	case GGZ_UPDATE_JOIN:
 		name = (char*)current;
 		current += (strlen(name) + 1);
-		seat = *(int*)current;
+		seat_num = *(int*)current;
 		current += sizeof(int);
 		info.index = index;
-		info.seat_types[seat] = GGZ_SEAT_PLAYER;
-		strcpy(info.seat_names[seat], name);
+		info.seat_types[seat_num] = GGZ_SEAT_PLAYER;
+		strcpy(info.seat_names[seat_num], name);
 
 		dbg_msg(GGZ_DBG_UPDATE, "%s sees %s %s seat %d at table %d", 
 			player->name, name, 
 			(opcode == GGZ_UPDATE_JOIN ? "join" : "leave"),
-			seat, index);
+			seat_num, index);
 
 		break;
 	}
 
-	if (net_send_table_update(player->net, opcode, &info, seat) < 0)
+	if (net_send_table_update(player->net, opcode, &info, seat_num) < 0)
+		return GGZ_EVENT_ERROR;
+	
+	return GGZ_EVENT_OK;
+}
+
+
+/* Event callback for delivering table list update to a player */
+static GGZEventFuncReturn table_seat_event_callback(void* target, int size,
+						    void* data)
+{
+	GGZTable info;
+	GGZPlayer* player = (GGZPlayer*)target;
+	struct GGZSeatChange *seat_change = data;
+	struct GGZTableSeat *seat = &(seat_change->seat);
+
+	info.index = seat_change->table;
+	info.seat_types[seat->index] = seat->type;
+	strcpy(info.seat_names[seat->index], seat->name);
+	
+	dbg_msg(GGZ_DBG_UPDATE, "%s sees seat %d change to %s (%s) at table %d", 
+		player->name, seat->index, ggz_seattype_to_string(seat->type),
+		seat->name, info.index);
+
+	if (net_send_table_update(player->net, GGZ_UPDATE_SEAT, &info, seat->index) < 0)
 		return GGZ_EVENT_ERROR;
 	
 	return GGZ_EVENT_OK;
