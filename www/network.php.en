@@ -10,17 +10,35 @@ Server, network and mirrors information.
 <tr>
 <td valign="top">
 
-<i>Administration</i><br>
-The name server for ggzgamingzone.org is hosted in Berlin/Germany.
-<br><br>
-<i>Main GGZ Server <img src="/pics/site/flags/flag-us.png"> USA</i><br>
+<img src="/pics/site/flags/flag-us.png">
+<i>Main GGZ Server USA</i><br>
 The server ggzgamingzone.org is located in Atlanta/USA. It hosts www, dev, ftp,
-live, rankings, mail, bugs and cvs.
+live, mail, bugs and cvs.
 The system is a leased User-Mode-Linux image.
+The GGZ Community portal also runs on this server, but we're looking into
+moving it somewhere else.
 <br><br>
-<i>Mirror <img src="/pics/site/flags/flag-de.png"> Germany</i><br>
+<img src="/pics/site/flags/flag-de.png">
+<i>Mirror Germany</i><br>
 The server de.ggzgamingzone.org is located in Berlin/Germany. It mirrors www and
-ftp services, in a shared hosting area.
+ftp services, in a shared hosting area. It also provides the central administration
+infrastructure like the name server.
+<br><br>
+<img src="/pics/site/flags/flag-fr.png">
+<i>Mirror France</i><br>
+Our second mirror also hosts the www and ftp areas, and is located in Paris/France.
+<br><br>
+<img src="/pics/site/flags/flag-us.png">
+<i>Download Mirror USA</i><br>
+Thanks to ibiblio, we're able to use FTP space on a server in the US.
+<br><br>
+<img src="/pics/site/flags/flag-dk.png">
+<i>Download Mirror Denmark</i><br>
+Thanks to Sunsite, we're able to use FTP space on a server in Denmark.
+<br><br>
+<img src="/pics/site/flags/flag-be.png">
+<i>Download Mirror Belgium</i><br>
+Thanks to Belnet, we're able to use FTP space on a server in Belgium.
 </td>
 </tr>
 </table>

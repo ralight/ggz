@@ -13,23 +13,23 @@ Servicio libre de juegos en linea para todo el mundo.
 <tr>
 <td valign="top" colspan="2">
 
-<i>¿Qué es GGZ?</i><br>
-GGZ (el acrónimo de GGZ Gaming Zone) es el desarrollo de juegos y aplicaciones
-cliente servidor para juegos en linea. Clasificación de jugadores, Espectadores, Jugadores IA (Inteligencia Artificial)
+<i>Â¿QuÃ© es GGZ?</i><br>
+GGZ (el acrÃ³nimo de GGZ Gaming Zone) es el desarrollo de juegos y aplicaciones
+cliente servidor para juegos en linea. ClasificaciÃ³n de jugadores, Espectadores, Jugadores IA (Inteligencia Artificial)
 y robots de chat son parte de este esfuerzo.
 
 </td></tr>
 <tr><td valign="top">
 
-<a href="/docs.php">Lee la documentación</a><br>
+<a href="/docs.php">Lee la documentaciÃ³n</a><br>
 <a href="/screenshots/">Mira algunas capturas de pantalla</a>
 <br><br>
 
-<i>Descarga la versión actual</i><br>
-La versión 0.0.10 de GGZ Gaming Zone ha sido lanzada el 24 de Enero del 2005.<br>
+<i>Descarga la versiÃ³n actual</i><br>
+La versiÃ³n 0.0.10 de GGZ Gaming Zone ha sido lanzada el 24 de Enero del 2005.<br>
 <a href="/releases/0.0.10/release.php">Anuncios del lanzamiento</a><br>
-<a href="/releases/0.0.10/download.php">Ir a la página de descargas</a><br>
-<a href="/releases/0.0.10/installation.php">Notas de Instalación</a>
+<a href="/releases/0.0.10/download.php">Ir a la pÃ¡gina de descargas</a><br>
+<a href="/releases/0.0.10/installation.php">Notas de InstalaciÃ³n</a>
 
 </td><td valign="top">
 
