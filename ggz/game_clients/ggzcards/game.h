@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.h 2383 2001-09-07 08:25:36Z jdorje $
+ * $Id: game.h 2384 2001-09-07 08:40:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -23,7 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <assert.h>
+#include <gtk/gtk.h>
 
 #include "hand.h"
 
@@ -34,9 +34,26 @@
    because I broke it... */
 /* #define ANIMATION */
 
-void game_send_bid(int);
+
+/** @brief Sends the bid to the server, and updates the graphics.
+ *  @param bid An index into the list of bids sent by the server. */
+void game_send_bid(int bid);
+
+/** @brief Sends the card to the server, and updates the graphics.
+ *  @param card The specific card to play (from the appropriate hand) */
 void game_play_card(card_t card);
-void game_handle_table_click(char);
+
+/** @brief Handles IO from the server; called any time data is pending. */
+void game_handle_io(gpointer data, gint source, GdkInputCondition cond);
+
+/** @brief Initializes the game.
+ *  @note A lot of other initialization is also done in main() */
+void game_init(void);
+
+
+/* 
+ * Extra support functions
+ */
 
 /* GGZ define */
 #define GGZ_SEAT_OPEN		-1

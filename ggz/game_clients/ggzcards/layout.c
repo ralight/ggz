@@ -1,4 +1,4 @@
-/* $Id: layout.c 2070 2001-07-23 00:03:11Z jdorje $ */
+/* $Id: layout.c 2384 2001-09-07 08:40:00Z jdorje $ */
 /*
  * File: layout.c
  * Author: Jason Short, Rich Gade
@@ -23,6 +23,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include "common.h"

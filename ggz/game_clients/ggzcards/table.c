@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2383 2001-09-07 08:25:36Z jdorje $
+ * $Id: table.c 2384 2001-09-07 08:40:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,6 +27,7 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>

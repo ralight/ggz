@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 2383 2001-09-07 08:25:36Z jdorje $
+ * $Id: game.c 2384 2001-09-07 08:40:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,6 +27,7 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
 
@@ -37,8 +38,6 @@
 #include "easysock.h"
 
 
-/* game_send_bid the "bid" is the index into the list of choices sent to us
-   by server */
 void game_send_bid(int bid)
 {
 	int status = client_send_bid(bid);
@@ -58,4 +57,16 @@ void game_play_card(card_t card)
 	statusbar_message(_("Sending play to server"));
 
 	assert(status == 0);
+}
+
+void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
+{
+	client_handle_server();
+}
+
+
+void game_init(void)
+{
+	client_debug("Entering game_init().");
+	statusbar_message(_("Waiting for server"));
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2383 2001-09-07 08:25:36Z jdorje $
+ * $Id: main.c 2384 2001-09-07 08:40:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,8 +27,8 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <gtk/gtk.h>
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -38,7 +38,6 @@
 
 #include <easysock.h>
 #include <ggz_client.h>
-
 #include "common.h"
 
 #include "main.h"
@@ -49,11 +48,6 @@
 #include "hand.h"
 
 GtkWidget *dlg_main = NULL;
-
-/* Private functions */
-static void game_handle_io(gpointer data, gint source,
-			   GdkInputCondition cond);
-static void game_init(void);
 
 
 int main(int argc, char *argv[])
@@ -107,18 +101,6 @@ void table_get_play(int hand)
 			 game.players[hand].name);
 		statusbar_message(buf);
 	}
-}
-
-static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
-{
-	client_handle_server();
-}
-
-
-static void game_init(void)
-{
-	client_debug("Entering game_init().");
-	statusbar_message(_("Waiting for server"));
 }
 
 
