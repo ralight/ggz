@@ -24,3 +24,4 @@
  */
 
 extern int ggzrc_initialize(void);
+extern void ggzrc_cleanup(void);

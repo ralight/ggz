@@ -101,6 +101,8 @@ gint main(gint argc, gchar *argv[])
 	login_disconnect();
 
 	gtk_main();
+
+	ggzrc_cleanup();
+
 	return 0;
 }
-
