@@ -2,11 +2,11 @@
 
 Summary: GGZ Client Libraries
 Name: ggz-client-libs
-Version: 0.0.4
+Version: 0.0.5
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz-client-libs-0.0.4.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz-client-libs-0.0.5.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: Rich Gade <rgade@users.sourceforge.net>
@@ -39,21 +39,35 @@ PATH="$PATH:/sbin" ldconfig
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS COPYING ChangeLog INSTALL NEWS README HACKING TODO
+%doc AUTHORS COPYING ChangeLog INSTALL NEWS README HACKING TODO QuickStart.GGZ README.GGZ
 
 %config /etc/ggz.modules
 
 /usr/bin/ggz-config
+
+/usr/include/ggzcore.h
 /usr/lib/libggzcore.a
 /usr/lib/libggzcore.la
 /usr/lib/libggzcore.so
-/usr/lib/libggzcore.so.0
-/usr/lib/libggzcore.so.0.0.0
-/usr/include/ggzcore.h
+/usr/lib/libggzcore.so.1
+/usr/lib/libggzcore.so.1.0.0
+
+/usr/include/ggzmod.h
+/usr/lib/libggzmod.a
+/usr/lib/libggzmod.la
+/usr/lib/libggzmod.so
+/usr/lib/libggzmod.so.0
+/usr/lib/libggzmod.so.0.0.0
+
+/usr/man/man3/ggzcore_h.3.gz
+/usr/man/man3/ggzmod_h.3.gz
 /usr/man/man5/ggz.modules.5.gz
 /usr/man/man6/ggz-config.6.gz
 
 %changelog
+* Fri Apr 12 2002 Rich Gade <rgade@users.sourceforge.net>
+- Updated for 0.0.5 release
+
 * Sun Jun 17 2001 Rich Gade <rgade@users.sourceforge.net>
 - Added manual pages
 
