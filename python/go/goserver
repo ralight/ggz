@@ -13,6 +13,95 @@ import socket
 
 import ggzdmod
 
+class Analyzer:
+	def __init__(self):
+		self.sequence = -1
+		self.command_ok = 0
+		self.command_deny = 1
+		self.command_newgame = 2
+		self.command_query = 3
+		self.command_answer = 4
+		self.command_move = 5
+		self.command_takeback = 6
+		self.command_extended = 7
+
+		self.file = os.getenv("HOME") + "/.ggz/gomoves.12345"
+
+	def analyze(self, chars, length):
+		state = "start"
+		for c in chars:
+			byte = ord(c)
+			#print "ord", byte
+
+			f = file(self.file, "a")
+			f.write(str(byte) + "\n")
+			f.close()
+
+			if state == "start":
+				if byte & 0x80:
+					print "analyze error: start byte has high bit set"
+				else:
+					if self.sequence == -1:
+						self.sequence = byte & 0xFC
+					sequence = byte & 0xFC
+					if self.sequence != sequence:
+						print "analyze error: sequence changed"
+					else:
+						clientbit = (byte & 2) >> 1
+						serverbit = (byte & 1)
+						print "* clientbit, serverbit:", clientbit, serverbit
+				state = "checksum"
+			elif state == "checksum":
+				if byte & 0x80:
+					checksum = (byte & 0x7F)
+					print "* checksum:", checksum
+				else:
+					print "analyze error: checksum byte is missing high bit"
+				state = "data1"
+			elif state == "data1":
+				if byte & 0x80:
+					basiccommand = (byte & 0x70) >> 4
+					commandseparator = (byte & 8)
+					commandoptions = (byte & 7)
+				else:
+					print "analyze error: first data byte is missing high bit"
+				state = "data2"
+			elif state == "data2":
+				if byte & 0x80:
+					tmpoptions = (byte & 0x7F)
+					commandoptions = tmpoptions + (commandoptions << 7)
+					print "* command, separator, options", basiccommand, commandseparator, commandoptions
+					if basiccommand == self.command_ok:
+						if commandoptions == 0x3FF:
+							print "command: ok"
+						else:
+							print "command error: ok data corrupted"
+					elif basiccommand == self.command_deny:
+						if commandoptions == 0x000:
+							print "command: deny"
+						else:
+							print "command error: deny data corrupted"
+					elif basiccommand == self.command_newgame:
+						if commandoptions == 0x000:
+							print "command: newgame"
+						else:
+							print "command error: newgame data corrupted"
+					elif basiccommand == self.command_query:
+						print "command: query"
+					elif basiccommand == self.command_answer:
+						print "command: answer"
+					elif basiccommand == self.command_move:
+						print "command: move"
+					elif basiccommand == self.command_takeback:
+						print "command: takeback"
+					elif basiccommand == self.command_extended:
+						print "command: extended"
+					else:
+						print "command error: unknown command"
+				else:
+					print "analyze error: second data byte is missing high bit"
+				state = "start"
+
 class Child:
 	def __init__(self):
 		self.pr = -1
@@ -63,12 +152,14 @@ def hook_log (line):
 def hook_data (num, type, name, fd):
 	global net
 	global child
+	global analyzer
 
 	print "* data:", num, type, name, fd
 	print "fd =", fd
 	net.init(fd)
 
 	(length, line) = net.getchars(256)
+	analyzer.analyze(line, length)
 	child.sendchars(line, length)
 
 def hook_error (arg):
@@ -85,12 +176,14 @@ def initggz():
 def main(gomode):
 	global net
 	global child
+	global analyzer
 
 	print "<< goserver >>"
 
 	initggz()
 	net = Network()
 	child = Child()
+	analyzer = Analyzer()
 
 	(child.pr, child.cw) = os.pipe()
 	(child.cr, child.pw) = os.pipe()
@@ -111,6 +204,7 @@ def main(gomode):
 				(r, w, e) = select.select([child.pr], [], [], 0)
 				if len(r) == 1:
 					(length, line) = child.getchars(256)
+					analyzer.analyze(line, length)
 					net.sendchars(line, length)
 		else:
 			print "<< problem: fork >>"
