@@ -44,9 +44,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+
 /* For convenience */
 #define BUFFSIZE 8192
-
 
 
 /* GGZNet structure for handling the network connection to the server */
@@ -245,21 +245,37 @@ void net_free(GGZNetIO *net)
 
 /* net_send_XXX() functions for sending messages to the client */
 
-int net_send_serverid(GGZNetIO *net)
+int net_send_serverid(GGZNetIO *net, char *srv_name)
 {
+	char *xml_srv_name;
+
+	/* FIXME: Use ggz_xml_escape and ggz_free (lower) when available */
+	/*xml_srv_name = ggz_xml_escape(srv_name);*/
+	  xml_srv_name = srv_name;
+
 	_net_send_line(net, "<SESSION>");
-	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'>", VERSION, "Brent&apos;s Server", GGZ_CS_PROTO_VERSION, "ok");
+	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'>", VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "ok");
 	_net_send_line(net, "\t\t<OPTIONS CHATLEN='%d'/>", MAX_CHAT_LEN);
 	_net_send_line(net, "\t</SERVER>");
+
+	/*ggz_free(xml_srv_name);*/
 			
 	return 0;
 }
  
 
-int net_send_server_full(GGZNetIO *net)
+int net_send_server_full(GGZNetIO *net, char *srv_name)
 {
+	char *xml_srv_name;
+
+	/* FIXME: Use ggz_xml_escape and ggz_free (lower) when available */
+	/*xml_srv_name = ggz_xml_escape(srv_name);*/
+	  xml_srv_name = srv_name;
+
 	_net_send_line(net, "<SESSION>");
-	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'/>", VERSION, "Brent&apos;s Server", GGZ_CS_PROTO_VERSION, "full");
+	_net_send_line(net, "\t<SERVER ID='GGZ-%s' NAME='%s' VERSION='%d' STATUS='%s'/>", VERSION, xml_srv_name, GGZ_CS_PROTO_VERSION, "full");
+
+	/*ggz_free(xml_srv_name);*/
 			
 	return 0;
 }

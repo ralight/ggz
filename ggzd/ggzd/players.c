@@ -167,13 +167,13 @@ static void* player_new(void *arg_ptr)
 	player->next_ping = 0;			/* Don't ping until login */
 
 	/* Send server ID */
-	if (net_send_serverid(player->net) < 0)
+	if (net_send_serverid(player->net, opt.server_name) < 0)
 		pthread_exit(NULL);
 	
 	pthread_rwlock_wrlock(&state.lock);
 	if (state.players == MAX_USERS) {
 		pthread_rwlock_unlock(&state.lock);
-		net_send_server_full(player->net);
+		net_send_server_full(player->net, opt.server_name);
 		close(sock);
 		log_msg(GGZ_LOG_NOTICE,
 			"SERVER_FULL - Rejected connection from %s",

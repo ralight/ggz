@@ -49,6 +49,7 @@ typedef struct {
 	char *data_dir;		/* cleanup() */
 	char *admin_name;	/* cleanup() */
 	char *admin_email;	/* cleanup() */
+	char *server_name;	/* cleanup() */
 	int perform_lookups;
 	int ping_freq;
 	int lag_class[4];

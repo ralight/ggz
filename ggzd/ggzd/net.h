@@ -53,8 +53,8 @@ void net_disconnect(GGZNetIO* net);
 void net_free(GGZNetIO* net);
 
 /* Functions to send data to the client */
-int net_send_serverid(GGZNetIO *net);
-int net_send_server_full(GGZNetIO *net);
+int net_send_serverid(GGZNetIO *net, char *srv_name);
+int net_send_server_full(GGZNetIO *net, char *srv_name);
 int net_send_login(GGZNetIO *net, GGZLoginType type, char status, char *password);
 int net_send_motd(GGZNetIO *net);
 int net_send_motd_error(GGZNetIO *net, char status);

@@ -16,9 +16,9 @@
 
 [General]
 
-# Server name (Not Implemented)
+# Server name
 #   This is the server name as reported to clients
-#server = Honest Harry's GGZ Server
+#ServerName = Honest Harry's GGZ Server
 
 # Administrators name
 #   This is the administrator name reported to clients

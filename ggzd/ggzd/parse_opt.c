@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 2622 2001-10-28 23:36:54Z rgade $
+ * $Id: parse_opt.c 2723 2001-11-11 18:34:44Z rgade $
  *
  * Copyright (C) 1999,2000,2001 Brent Hendricks.
  *
@@ -251,8 +251,12 @@ static void get_config_options(int ch)
 	/* [General] */
 	if(opt.main_port == 0)
 		opt.main_port = conf_read_int(ch, "General", "Port", 5688);
-	opt.admin_name = conf_read_string(ch, "General", "AdminName", NULL);
-	opt.admin_email = conf_read_string(ch, "General", "AdminEmail", NULL);
+	opt.admin_name = conf_read_string(ch, "General", "AdminName",
+					  "<unconfigured>");
+	opt.admin_email = conf_read_string(ch, "General", "AdminEmail",
+					  "<unconfigured>");
+	opt.server_name = conf_read_string(ch, "General", "ServerName",
+					   "An Unconfigured GGZ Server");
 
 	/* [Directories] */
 	opt.game_dir = conf_read_string(ch, "Directories", "GameDir", NULL);
