@@ -1,13 +1,13 @@
 Source: ggz-txt-client
-Section: games
+Section: net
 Priority: optional
 Maintainer: Josef Spillner <dr_maux@users.sourceforge.net>
 Standards-Version: 3.5.2
-Build-Depends: debhelper (>> 3.0.0), libggzcore-dev (>= 0.0.5)
+Build-Depends: debhelper (>> 3.0.0), autoconf, automake, libtool, libggzcore-dev (>= 0.0.5-1), libc6-dev (>= 2.2.1-1)
 
 Package: ggz-txt-client
 Architecture: any
-Section: games
+Section: net
 Depends: ${shlibs:Depends}
 Provides: ggz-core-client
 Description: Text frontend for GGZ

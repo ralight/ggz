@@ -12,6 +12,7 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
+	test -f configure || NOCONFIGURE=yes ./autogen.sh
 	./configure --prefix=/usr --mandir=\$${prefix}/share/man
 	# Add here commands to compile the package.
 	#$(MAKE)
@@ -35,7 +36,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp.
-	$(MAKE) install prefix=`pwd`/debian/tmp/usr
+	$(MAKE) install prefix=`pwd`/debian/ggz-txt-client/usr
 
 
 # Build architecture-independent files here.
