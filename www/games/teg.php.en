@@ -1,0 +1,53 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>TEG</b><br>
+Strategy game for 2-6 players.
+<br>
+The game client and server are not a GGZ projects but can be used on GGZ.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>TEG features</i><br>
+<ul>
+<li>GNOME game client
+<li>AI opponents available
+<li>supports game spectators
+<li>supports statistics
+</ul>
+<br>
+
+<i>TEG rules</i><br>
+As a clone of risk-like games, the usual rules apply.
+The player has a contingent of armies to be placed in countries all
+around the world. In each move, more armies can be added depending on
+the currently owned lands.
+
+<br><br>
+
+<i>Homepage of TEG</i><br>
+<a href="http://teg.sourceforge.net/" target="blank">http://teg.sourceforge.net/</a>
+
+</td><td valign="top">
+
+<i>GNOME client:</i><br>
+<img src="/games/pics/teg.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
