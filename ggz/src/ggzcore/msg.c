@@ -26,6 +26,7 @@
 
 #include <config.h>
 #include <ggzcore.h>
+#include <msg.h>
 
 #include <sys/types.h>
 #include <errno.h>
@@ -34,7 +35,13 @@
 #include <string.h>
 #include <unistd.h>
 
+
+/* Workhorse function for actually outputting messages */
 static void err_doit(int flag, const char *fmt, va_list ap);
+
+/* Debug file pointer */
+static FILE * debug_file;
+
 
 void ggzcore_debug(const char *fmt, ...)
 {
@@ -92,19 +99,46 @@ void ggzcore_error_msg_exit(const char *fmt, ...)
 }
 
 
+void ggzcore_debug_file_init(const char* file)
+{
+	if (strcmp(file, "stderr") != 0)
+		if ( (debug_file = fopen(file, "a")) == NULL)
+			ggzcore_error_sys_exit("fopen() failed in ggzcore_debug_file_init");
+}
+
+
+void ggzcore_debug_file_cleanup(void)
+{
+	if (debug_file)
+		fclose(debug_file);
+}
+
+
 static void err_doit(int flag, const char *fmt, va_list ap)
 {
 	char buf[4096];
+	unsigned int size;
+
+	/* Subtract one to leave room for newline */
+	size = sizeof(buf) -1;
 
 #ifdef DEBUG
 	sprintf(buf, "[%d]: ", getpid());
 #endif
 
-	vsprintf(buf + strlen(buf), fmt, ap);
+	vsnprintf(buf + strlen(buf), (size - strlen(buf)), fmt, ap);
 	if (flag)
-		sprintf(buf + strlen(buf), ": %s", strerror(errno));
+		snprintf(buf + strlen(buf), (size - strlen(buf)), ": %s", 
+			 strerror(errno));
 	strcat(buf, "\n");
-	fflush(stdout);
-	fputs(buf, stderr);
+
+	if (debug_file)
+		fputs(buf, debug_file);
+	else {
+		fflush(stdout);
+		fputs(buf, stderr);
+	}
+	
 	fflush(NULL);
 }
+

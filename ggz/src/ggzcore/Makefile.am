@@ -8,5 +8,6 @@ libggzcore_a_SOURCES =	event.c \
 		      	init.c \
 			ggzcore.h \
 			msg.c \
+			msg.h \
 			user.c \
 			user.h 
