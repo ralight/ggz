@@ -1,10 +1,10 @@
-/* $Id: table.h 2945 2001-12-18 23:33:44Z jdorje $ */
-/* 
+/*
  * File: table.h
  * Author: Rich Gade
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
+ * $Id: table.h 2946 2001-12-18 23:59:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *

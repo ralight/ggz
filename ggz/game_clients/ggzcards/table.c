@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2945 2001-12-18 23:33:44Z jdorje $
+ * $Id: table.c 2946 2001-12-18 23:59:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -111,7 +111,7 @@ static void draw_card_box(int p)
 			   FALSE, x, y, w, h);
 }
 
-static void draw_card_areas()
+static void draw_card_areas(void)
 {
 	int p;
 
@@ -601,7 +601,7 @@ static void table_show_card(int player, card_t card)
 }
 
 /* Exposed function to show all four cards on the table area. */
-void table_show_cards()
+void table_show_cards(void)
 {
 	int p;
 	for (p = 0; p < ggzcards.num_players; p++)

@@ -1,10 +1,10 @@
-/* $Id: layout.c 2945 2001-12-18 23:33:44Z jdorje $ */
-/* 
+/*
  * File: layout.c
  * Author: Jason Short, Rich Gade
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
+ * $Id: layout.c 2946 2001-12-18 23:59:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -137,7 +137,7 @@ layout_t *layouts[MAX_NUM_PLAYERS + 1] =
 #define BOX(p) (LAYOUT->player_boxes[p])
 
 
-int get_table_width()
+int get_table_width(void)
 {
 	if (ggzcards.num_players == 0)
 		return 300;
@@ -146,7 +146,7 @@ int get_table_width()
 	return 4 * XWIDTH + 3 * TEXT_BOX_WIDTH + CARD_BOX_WIDTH;
 }
 
-int get_table_height()
+int get_table_height(void)
 {
 	if (ggzcards.num_players <= 4)
 		return get_table_width();
@@ -246,11 +246,11 @@ void get_card_box_dim(int p, int *w, int *h)
 	}
 }
 
-void get_full_card_area(int p, int *x, int *y,	/* the (x, y) position of the
-						   upper left corner */
-			int *w, int *h,	/* the width and height of the box */
-			int *xo, int *yo	/* the x and y offsets for
-						   "selected" cards */ )
+/* (*x,*y) is the position of the upper left corner.  (w,h)
+   is the width and heigh of the box.  (*xo,*yo) is the
+   offset vector to be used for "selected" cards. */
+void get_full_card_area(int p, int *x, int *y, int *w, int *h, int *xo,
+			int *yo)
 {
 	/* the actual card area is inset within the card box by XWIDTH units,
 	   and extends inwards (toward the table) by 2*XWIDTH units. */

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 2940 2001-12-18 22:17:50Z jdorje $
+ * $Id: common.c 2946 2001-12-18 23:59:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -38,12 +38,12 @@
 #include "protocol.h"
 
 
-static int handle_message_global();
+static int handle_message_global(void);
 
-static int handle_text_message();
-static int handle_player_message();
-static int handle_cardlist_message();
-static int handle_game_message();
+static int handle_text_message(void);
+static int handle_player_message(void);
+static int handle_cardlist_message(void);
+static int handle_game_message(void);
 
 static struct {
 	int fd;

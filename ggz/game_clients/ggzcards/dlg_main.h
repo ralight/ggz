@@ -1,10 +1,10 @@
-/* $Id: dlg_main.h 2696 2001-11-08 10:09:24Z jdorje $ */
-/* 
+/*
  * File: dlg_main.h
  * Author: Rich Gade
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the GGZCards main Gtk window
+ * $Id: dlg_main.h 2946 2001-12-18 23:59:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -22,6 +22,5 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
-
 
 GtkWidget *create_dlg_main(void);

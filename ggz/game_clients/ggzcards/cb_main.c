@@ -1,10 +1,10 @@
-/* $Id: cb_main.c 2944 2001-12-18 23:12:39Z jdorje $ */
-/* 
+/*
  * File: cb_main.c
  * Author: Rich Gade
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Callbacks for GGZCards main Gtk window
+ * $Id: cb_main.c 2946 2001-12-18 23:59:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -75,9 +75,8 @@ void on_mnu_about_activate(GtkMenuItem * menuitem, gpointer user_data)
 }
 
 
-gboolean
-on_dlg_main_delete_event(GtkWidget * widget,
-			 GdkEvent * event, gpointer user_data)
+gboolean on_dlg_main_delete_event(GtkWidget * widget, GdkEvent * event,
+				  gpointer user_data)
 {
 	gtk_main_quit();
 
@@ -85,9 +84,9 @@ on_dlg_main_delete_event(GtkWidget * widget,
 }
 
 
-gboolean
-on_fixed1_button_press_event(GtkWidget * widget,
-			     GdkEventButton * event, gpointer user_data)
+gboolean on_fixed1_button_press_event(GtkWidget * widget,
+				      GdkEventButton * event,
+				      gpointer user_data)
 {
 	if (event->button == 1)
 		table_handle_click_event(event);
@@ -96,9 +95,8 @@ on_fixed1_button_press_event(GtkWidget * widget,
 }
 
 
-gboolean
-on_fixed1_expose_event(GtkWidget * widget,
-		       GdkEventExpose * event, gpointer user_data)
+gboolean on_fixed1_expose_event(GtkWidget * widget, GdkEventExpose * event,
+				gpointer user_data)
 {
 	table_handle_expose_event(event);
 
@@ -106,9 +104,8 @@ on_fixed1_expose_event(GtkWidget * widget,
 }
 
 
-void
-on_fixed1_style_set(GtkWidget * widget,
-		    GtkStyle * previous_style, gpointer user_data)
+void on_fixed1_style_set(GtkWidget * widget, GtkStyle * previous_style,
+			 gpointer user_data)
 {
 	table_redraw();
 }

@@ -1,10 +1,10 @@
-/* $Id: layout.h 2931 2001-12-18 07:27:02Z jdorje $ */
-/* 
+/*
  * File: layout.h
  * Author: Jason Short, Rich Gade
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
+ * $Id: layout.h 2946 2001-12-18 23:59:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -41,8 +41,8 @@
 #define CARD_BOX_WIDTH	(HAND_WIDTH + 2*XWIDTH)
 #define TEXT_BOX_WIDTH	(TEXT_WIDTH + 2*XWIDTH)
 
-int get_table_width();
-int get_table_height();
+int get_table_width(void);
+int get_table_height(void);
 
 int orientation(int p);
 
@@ -53,11 +53,8 @@ void get_fulltable_size(int *w, int *h);
 void get_text_box_pos(int p, int *x, int *y);
 void get_card_box_pos(int p, int *x, int *y);
 void get_card_box_dim(int p, int *w, int *h);
-void get_full_card_area(int p, int *x, int *y,	/* the (x, y) position of the 
-						   upper left corner */
-			int *w, int *h,	/* the width and height of the box */
-			int *xo, int *yo	/* the x and y offsets for
-						   "selected" cards */ );
+void get_full_card_area(int p, int *x, int *y, int *w, int *h, int *xo,
+			int *yo);
 void get_inner_card_area_pos(int p, int *x, int *y);
 void get_card_pos(int p, int card_num, int *x, int *y);
 
