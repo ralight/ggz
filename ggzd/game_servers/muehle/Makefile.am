@@ -1,16 +1,22 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3531 2002-03-05 22:31:41Z dr_maux $
+# $Id: Makefile.am 3677 2002-03-25 20:07:15Z jdorje $
 
 SUBDIRS = qtserv ggz variants
 
 ggzdgame_DATA = muehle.dsc
 ggzdroom_DATA = muehle.room
 
+EXTRA_DIST = $(ggzdgame_DATA) $(ggzdroom_DATA)
+
 ggzdexecmod_PROGRAMS = muehleserv
 muehleserv_SOURCES = muehleserver.cpp loader.cpp main.cpp net.cpp
-muehleserv_LDADD = ggz/libggzgameserver.a qtserv/libqtserv.a $(top_srcdir)/ggzdmod/libggzdmod.la
+muehleserv_LDADD = ggz/libggzgameserver.a \
+		   qtserv/libqtserv.a \
+		   $(top_builddir)/ggzdmod/libggzdmod.la
 noinst_HEADERS = muehleserver.h loader.h net.h
-INCLUDES = -I ggz -I qtserv -I $(top_srcdir)/ggzdmod
+INCLUDES = -I$(top_srcdir)/game_servers/muehle/ggz \
+	   -I$(top_srcdir)/game_servers/muehle/qtserv \
+	   -I$(top_srcdir)/ggzdmod
 
 test: test-recursive
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
