@@ -92,7 +92,7 @@ KGGZ::KGGZ(QWidget *parent = NULL, char *name = NULL)
 
 	m_workspace = new KGGZWorkspace(this, "workspace");
 
-	connect(m_workspace->widgetChat(), SIGNAL(signalChat(char *)), SLOT(slotChat(char *)));
+	connect(m_workspace->widgetChat(), SIGNAL(signalChat(char *, char *, int)), SLOT(slotChat(char *, char *, int)));
 	connect(m_workspace->widgetLogo(), SIGNAL(signalInfo()), SLOT(menuGameInfo()));
 
 	KGGZDEBUG("Initializing GGZCore...\n");
@@ -430,6 +430,7 @@ void KGGZ::listPlayers()
 
 	KGGZDEBUGF("KGGZ::listPlayers()\n");
 	m_workspace->widgetUsers()->removeall();
+	m_workspace->widgetChat()->chatline()->removeAll();
 	KGGZDEBUG("* Removed all, now adding anew...\n");
 	number = kggzroom->countPlayers();
 	for(int i = 0; i < number; i++)
@@ -438,6 +439,7 @@ void KGGZ::listPlayers()
 		playername = ggzcore_player_get_name(player);
 		KGGZDEBUG(" # player: %s\n", playername);
 		m_workspace->widgetUsers()->add(playername);
+		m_workspace->widgetChat()->chatline()->addPlayer(playername);
 	}
 }
 
@@ -541,25 +543,33 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::chatnormal:
 			KGGZDEBUG("chatnormal\n");
-			if(strcmp(chatsender, m_save_username) == 0)
-				m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_OWN);
+			if(strncmp(chatmessage, "/me ", 4) == 0)
+			{
+				m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_ME);
+			}
 			else
 			{
-				KGGZDEBUG("%s != %s\n", chatsender, m_save_username);
-				m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_CHAT);
+				if(strcmp(chatsender, m_save_username) == 0)
+					m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_OWN);
+				else
+				{
+					KGGZDEBUG("%s != %s\n", chatsender, m_save_username);
+					m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_CHAT);
+				}
 			}
 			break;
 		case GGZCoreRoom::chatannounce:
-			KGGZDEBUG("chatnormal\n");
-			m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_OWN);
+			KGGZDEBUG("chatannounce\n");
+			m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_ANNOUNCE);
 			break;
 		case GGZCoreRoom::chatprivate:
-			KGGZDEBUG("chatnormal\n");
-			m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_INFO);
+			KGGZDEBUG("chatprivate\n");
+			m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_PERSONAL);
 			break;
 		case GGZCoreRoom::chatbeep:
-			KGGZDEBUG("chatnormal\n");
+			KGGZDEBUG("chatbeep\n");
 			m_workspace->widgetChat()->beep();
+			m_workspace->widgetChat()->receive(NULL, i18n("You have been beeped by %1.").arg(chatsender), KGGZChat::RECEIVE_PERSONAL);
 			break;
 		case GGZCoreRoom::enter:
 			KGGZDEBUG("enter\n");
@@ -859,12 +869,29 @@ GGZHookReturn KGGZ::hookOpenCollector(unsigned int id, void* event_data, void* u
 	return GGZ_HOOK_OK;
 }
 
-void KGGZ::slotChat(char *text)
+void KGGZ::slotChat(char *text, char *player, int mode)
 {
+	char *sendtext;
+
 	if((kggzserver) && (kggzroom))
 	{
 		KGGZDEBUG("Chat sends: %s\n", text);
-		kggzroom->chat(GGZ_CHAT_NORMAL, NULL, strdup(text));
+		sendtext = strdup(text);
+		switch(mode)
+		{
+			case KGGZChat::RECEIVE_CHAT:
+				kggzroom->chat(GGZ_CHAT_NORMAL, player, sendtext);
+				break;
+			case KGGZChat::RECEIVE_ANNOUNCE:
+				kggzroom->chat(GGZ_CHAT_ANNOUNCE, player, sendtext);
+				break;
+			case KGGZChat::RECEIVE_BEEP:
+				kggzroom->chat(GGZ_CHAT_BEEP, player, sendtext);
+				break;
+			case KGGZChat::RECEIVE_PERSONAL:
+				kggzroom->chat(GGZ_CHAT_PERSONAL, player, sendtext);
+				break;
+		}
 	}
 	else KGGZDEBUG("Critical: No server or room found!\n");
 }

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2001-05-05 17:01+0200\n"
+"POT-Creation-Date: 2001-05-07 22:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,23 +14,23 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: KGGZBase.cpp:356
+#: KGGZBase.cpp:371
 msgid "  Connected  "
 msgstr ""
 
-#: KGGZBase.cpp:66
+#: KGGZBase.cpp:67
 msgid "  Loading...  "
 msgstr ""
 
-#: KGGZBase.cpp:65
+#: KGGZBase.cpp:66
 msgid "  Not connected  "
 msgstr ""
 
-#: KGGZBase.cpp:147
+#: KGGZBase.cpp:162
 msgid "  Ready for connection.  "
 msgstr ""
 
-#: KGGZBase.cpp:361
+#: KGGZBase.cpp:376
 msgid "  State: "
 msgstr ""
 
@@ -38,87 +38,87 @@ msgstr ""
 msgid " (out of "
 msgstr ""
 
-#: KGGZ.cpp:567
+#: KGGZ.cpp:569
 msgid " enters the room."
 msgstr ""
 
-#: KGGZ.cpp:574
+#: KGGZ.cpp:576
 msgid " has left the room."
 msgstr ""
 
-#: KGGZBase.cpp:85
+#: KGGZBase.cpp:86
 msgid "&Available tables"
 msgstr ""
 
-#: KGGZBase.cpp:84
+#: KGGZBase.cpp:85
 msgid "&Chat"
 msgstr ""
 
-#: KGGZBase.cpp:124
+#: KGGZBase.cpp:125
 msgid "&Client"
 msgstr ""
 
-#: KGGZBase.cpp:71
+#: KGGZBase.cpp:72
 msgid "&Connect"
 msgstr ""
 
-#: KGGZBase.cpp:72
+#: KGGZBase.cpp:73
 msgid "&Disconnect"
 msgstr ""
 
-#: KGGZBase.cpp:126
+#: KGGZBase.cpp:127
 msgid "&Game"
 msgstr ""
 
-#: KGGZBase.cpp:113
+#: KGGZBase.cpp:114
 msgid "&Games"
 msgstr ""
 
-#: KGGZBase.cpp:105
+#: KGGZBase.cpp:106
 msgid "&Grubby"
 msgstr ""
 
-#: KGGZBase.cpp:128
+#: KGGZBase.cpp:129
 msgid "&Help"
 msgstr ""
 
-#: KGGZBase.cpp:98
+#: KGGZBase.cpp:99
 msgid "&Information"
 msgstr ""
 
-#: KGGZBase.cpp:101
+#: KGGZBase.cpp:102
 msgid "&Join game"
 msgstr ""
 
-#: KGGZBase.cpp:100
+#: KGGZBase.cpp:101
 msgid "&Launch new game"
 msgstr ""
 
-#: KGGZBase.cpp:86
+#: KGGZBase.cpp:87
 msgid "&List of players"
 msgstr ""
 
-#: KGGZBase.cpp:110
+#: KGGZBase.cpp:111
 msgid "&Player information"
 msgstr ""
 
-#: KGGZBase.cpp:127
+#: KGGZBase.cpp:128
 msgid "&Preferences"
 msgstr ""
 
-#: KGGZBase.cpp:77
+#: KGGZBase.cpp:78
 msgid "&Quit"
 msgstr ""
 
-#: KGGZBase.cpp:125
+#: KGGZBase.cpp:126
 msgid "&Rooms"
 msgstr ""
 
-#: KGGZBase.cpp:83
+#: KGGZBase.cpp:84
 msgid "&Startup Screen"
 msgstr ""
 
-#: KGGZBase.cpp:88
+#: KGGZBase.cpp:89
 msgid "&Web Browser"
 msgstr ""
 
@@ -131,43 +131,43 @@ msgstr ""
 msgid "(unused)"
 msgstr ""
 
-#: KGGZChat.cpp:254
+#: KGGZChat.cpp:255
 msgid "/beep &lt;name&gt; - Makes name's computer beep"
 msgstr ""
 
-#: KGGZChat.cpp:255
+#: KGGZChat.cpp:256
 msgid "/help - This help screen (also /?)"
 msgstr ""
 
-#: KGGZChat.cpp:257
+#: KGGZChat.cpp:258
 msgid "/join &lt;room no&gt; - Join a room"
 msgstr ""
 
-#: KGGZChat.cpp:252
+#: KGGZChat.cpp:253
 msgid "/lag - Test connection speed"
 msgstr ""
 
-#: KGGZChat.cpp:258
+#: KGGZChat.cpp:259
 msgid "/list - List room names"
 msgstr ""
 
-#: KGGZChat.cpp:253
+#: KGGZChat.cpp:254
 msgid "/local &lt;information&gt; - l10n operation"
 msgstr ""
 
-#: KGGZChat.cpp:251
+#: KGGZChat.cpp:252
 msgid "/me &lt;msg&gt; - Special messages"
 msgstr ""
 
-#: KGGZChat.cpp:259
+#: KGGZChat.cpp:260
 msgid "/who - List player names in room"
 msgstr ""
 
-#: KGGZBase.cpp:119
+#: KGGZBase.cpp:120
 msgid "About the GGZ Gaming Zone"
 msgstr ""
 
-#: KGGZChat.cpp:256
+#: KGGZChat.cpp:257
 msgid "Additional:"
 msgstr ""
 
@@ -179,11 +179,11 @@ msgstr ""
 msgid "Attempt to connect refused!"
 msgstr ""
 
-#: KGGZ.cpp:672
+#: KGGZ.cpp:674
 msgid "Attempt to login refused!"
 msgstr ""
 
-#: KGGZ.cpp:1229
+#: KGGZ.cpp:1232
 msgid "Author: "
 msgstr ""
 
@@ -207,11 +207,11 @@ msgstr ""
 msgid "Could only kill server via sigkill!"
 msgstr ""
 
-#: KGGZ.cpp:682
+#: KGGZ.cpp:684
 msgid "Couldn't connect to server!"
 msgstr ""
 
-#: KGGZ.cpp:1022
+#: KGGZ.cpp:1024
 msgid "Couldn't launch game!"
 msgstr ""
 
@@ -223,47 +223,47 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: KGGZ.cpp:1226
+#: KGGZ.cpp:1229
 msgid "Description: "
 msgstr ""
 
-#: KGGZ.cpp:804
+#: KGGZ.cpp:806
 msgid "ERROR: Chat error detected!"
 msgstr ""
 
-#: KGGZ.cpp:609
+#: KGGZ.cpp:611
 msgid "ERROR: Couldn't join table!"
 msgstr ""
 
-#: KGGZ.cpp:595
+#: KGGZ.cpp:597
 msgid "ERROR: Couldn't launch table!"
 msgstr ""
 
-#: KGGZ.cpp:630
+#: KGGZ.cpp:632
 msgid "ERROR: Couldn't leave table!"
 msgstr ""
 
-#: KGGZ.cpp:792
+#: KGGZ.cpp:794
 msgid "ERROR: Network error detected!"
 msgstr ""
 
-#: KGGZ.cpp:497
+#: KGGZ.cpp:499
 msgid "ERROR: Network error!"
 msgstr ""
 
-#: KGGZ.cpp:800
+#: KGGZ.cpp:802
 msgid "ERROR: Protocol error detected!"
 msgstr ""
 
-#: KGGZ.cpp:501
+#: KGGZ.cpp:503
 msgid "ERROR: Protocol error!"
 msgstr ""
 
-#: KGGZChat.cpp:69
+#: KGGZChat.cpp:70
 msgid "Enter your message here:"
 msgstr ""
 
-#: KGGZ.cpp:756
+#: KGGZ.cpp:758
 #, c-format
 msgid "Entered room %s"
 msgstr ""
@@ -272,15 +272,15 @@ msgstr ""
 msgid "Error!"
 msgstr ""
 
-#: KGGZChat.cpp:294
+#: KGGZChat.cpp:295
 msgid "Error! Unknown command! Try /help instead."
 msgstr ""
 
-#: KGGZ.cpp:1100
+#: KGGZ.cpp:1102
 msgid "Failed launching the requested table!"
 msgstr ""
 
-#: KGGZBase.cpp:123
+#: KGGZBase.cpp:124
 msgid "GG&Z"
 msgstr ""
 
@@ -292,7 +292,7 @@ msgid ""
 "See help for details.\n"
 msgstr ""
 
-#: KGGZ.cpp:1242
+#: KGGZ.cpp:1245
 msgid "Game Type Information"
 msgstr ""
 
@@ -300,7 +300,7 @@ msgstr ""
 msgid "Game description:"
 msgstr ""
 
-#: KGGZ.cpp:478 KGGZ.cpp:622
+#: KGGZ.cpp:480 KGGZ.cpp:624
 msgid "Game over"
 msgstr ""
 
@@ -308,7 +308,7 @@ msgstr ""
 msgid "Identifier"
 msgstr ""
 
-#: KGGZ.cpp:602
+#: KGGZ.cpp:604
 msgid "Joined table"
 msgstr ""
 
@@ -320,11 +320,11 @@ msgstr ""
 msgid "KGGZ"
 msgstr ""
 
-#: KGGZChat.cpp:249
+#: KGGZChat.cpp:250
 msgid "KGGZ - The KDE client for the GGZ Gaming Zone"
 msgstr ""
 
-#: KGGZ.cpp:694
+#: KGGZ.cpp:696
 #, c-format
 msgid "KGGZ - [logged in as %s@%s:%i]"
 msgstr ""
@@ -337,19 +337,19 @@ msgstr ""
 msgid "Launch a game"
 msgstr ""
 
-#: KGGZ.cpp:450
+#: KGGZ.cpp:452
 msgid "Launched game"
 msgstr ""
 
-#: KGGZ.cpp:589
+#: KGGZ.cpp:591
 msgid "Launched table"
 msgstr ""
 
-#: KGGZ.cpp:626
+#: KGGZ.cpp:628
 msgid "Left table"
 msgstr ""
 
-#: KGGZChat.cpp:250
+#: KGGZChat.cpp:251
 msgid "List of available commands:"
 msgstr ""
 
@@ -361,16 +361,16 @@ msgstr ""
 msgid "Log in as:"
 msgstr ""
 
-#: KGGZ.cpp:704
+#: KGGZ.cpp:706
 #, c-format
 msgid "Logged in as %s"
 msgstr ""
 
-#: KGGZ.cpp:765
+#: KGGZ.cpp:767
 msgid "Logged out"
 msgstr ""
 
-#: KGGZ.cpp:710
+#: KGGZ.cpp:712
 msgid "Login refused!"
 msgstr ""
 
@@ -378,7 +378,7 @@ msgstr ""
 msgid "Message Of The Day (MOTD)"
 msgstr ""
 
-#: KGGZ.cpp:1223
+#: KGGZ.cpp:1226
 msgid "Name: "
 msgstr ""
 
@@ -386,7 +386,7 @@ msgstr ""
 msgid "New Profiles"
 msgstr ""
 
-#: KGGZBase.cpp:260
+#: KGGZBase.cpp:275
 msgid "Not connected"
 msgstr ""
 
@@ -410,15 +410,19 @@ msgstr ""
 msgid "Players"
 msgstr ""
 
-#: KGGZ.cpp:1208
+#: KGGZSplashScreen.cpp:65
+msgid "Playing open source online games world-wide."
+msgstr ""
+
+#: KGGZ.cpp:1211
 msgid "Please join a room first."
 msgstr ""
 
-#: KGGZ.cpp:706
+#: KGGZ.cpp:708
 msgid "Please join a room to start!"
 msgstr ""
 
-#: KGGZ.cpp:1187
+#: KGGZ.cpp:1190
 msgid "Please select a table to join!"
 msgstr ""
 
@@ -426,11 +430,11 @@ msgstr ""
 msgid "Port:"
 msgstr ""
 
-#: KGGZ.cpp:1235
+#: KGGZ.cpp:1238
 msgid "Protocol: "
 msgstr ""
 
-#: KGGZChat.cpp:84
+#: KGGZChat.cpp:85
 msgid "Ready for connection..."
 msgstr ""
 
@@ -438,11 +442,11 @@ msgstr ""
 msgid "Reserved"
 msgstr ""
 
-#: KGGZ.cpp:761
+#: KGGZ.cpp:763
 msgid "Room join error"
 msgstr ""
 
-#: KGGZBase.cpp:109
+#: KGGZBase.cpp:110
 msgid "Se&ttings"
 msgstr ""
 
@@ -454,15 +458,19 @@ msgstr ""
 msgid "Seat assignments:"
 msgstr ""
 
+#: KGGZSplashScreen.cpp:66
+msgid "Selecting from more than 15 games."
+msgstr ""
+
 #: KGGZConnect.cpp:78
 msgid "Server host:"
 msgstr ""
 
-#: KGGZ.cpp:1002
+#: KGGZ.cpp:1004
 msgid "Sorry, no modules found for this game."
 msgstr ""
 
-#: KGGZ.cpp:761
+#: KGGZ.cpp:763
 msgid "Sorry, you cannot change the room while playing!"
 msgstr ""
 
@@ -470,11 +478,11 @@ msgstr ""
 msgid "Start ggzd server locally"
 msgstr ""
 
-#: KGGZBase.cpp:74
+#: KGGZBase.cpp:75
 msgid "Start server"
 msgstr ""
 
-#: KGGZBase.cpp:75
+#: KGGZBase.cpp:76
 msgid "Stop server"
 msgstr ""
 
@@ -482,7 +490,7 @@ msgstr ""
 msgid "Table"
 msgstr ""
 
-#: KGGZChat.cpp:214
+#: KGGZChat.cpp:215
 #, c-format
 msgid "Temperature: %3.1f°F, %3.1f°C, %3.1f°R %3.1f°K"
 msgstr ""
@@ -491,11 +499,11 @@ msgstr ""
 msgid "The ggzd server is already running!"
 msgstr ""
 
-#: KGGZ.cpp:1238
+#: KGGZ.cpp:1241
 msgid "URL: "
 msgstr ""
 
-#: KGGZChat.cpp:216
+#: KGGZChat.cpp:217
 msgid ""
 "Usage of local: /local &lt;number&gt; &lt;unit&gt;, with unit being one of "
 "C, R, K, F"
@@ -505,18 +513,18 @@ msgstr ""
 msgid "Use password:"
 msgstr ""
 
-#: KGGZ.cpp:1232
+#: KGGZ.cpp:1235
 msgid "Version: "
 msgstr ""
 
-#: KGGZ.cpp:699
+#: KGGZ.cpp:701
 #, c-format
 msgid ""
 "You are welcome as a new GGZ Gaming Zone player.\n"
 "Your personal password is: %s"
 msgstr ""
 
-#: KGGZ.cpp:1154
+#: KGGZ.cpp:1157
 msgid "You cannot launch a game outside a room!"
 msgstr ""
 

@@ -64,7 +64,10 @@ class KGGZChat : public QWidget
 			RECEIVE_CHAT,
 			RECEIVE_OWN,
 			RECEIVE_ADMIN,
-			RECEIVE_INFO
+			RECEIVE_PERSONAL,
+			RECEIVE_ANNOUNCE,
+			RECEIVE_BEEP,
+			RECEIVE_ME
 		};
 
 		KGGZChat(QWidget *parent = NULL, char *name = NULL);
@@ -80,7 +83,7 @@ class KGGZChat : public QWidget
 		KGGZChatLine *chatline();
 
 	signals:
-		void signalChat(char *text);
+		void signalChat(char *text, char *player, int mode);
 
 	protected slots:
 		void slotSend();
@@ -103,3 +106,4 @@ class KGGZChat : public QWidget
 };
 
 #endif
+

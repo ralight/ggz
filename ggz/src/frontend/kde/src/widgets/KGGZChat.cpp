@@ -148,159 +148,113 @@ long KGGZChat::randomLag()
 // Send out a message or execute command
 void KGGZChat::slotSend()
 {
-	enum Events {EVENT_JOIN, EVENT_CHAT, EVENT_LIST, EVENT_WHO, EVENT_BEEP, EVENT_LAG, EVENT_ME, EVENT_HELP, EVENT_NOEVENT, EVENT_LOCAL};
+	enum Events {EVENT_CHAT, EVENT_BEEP, EVENT_ME, EVENT_NOEVENT, EVENT_PERSONAL, EVENT_HELP};
 	char *commands = NULL;
-	char *op1 = NULL;
-	char *preop = NULL;
-	char *preop2 = NULL;
+	char *op2 = NULL;
 	int triggerevent;
 	char *inputtext;
+	char *inputargs;
+	char *player;
 	float fahrenheit = 0.0, celsius = 0.0, reaumour = 0.0, kelvin = 0.0;
 
 	if(strlen(input->text()) == 0) return;
 
-        triggerevent = EVENT_CHAT;
-        inputtext = (char*)malloc(strlen(input->text()) + 1);
-        strcpy(inputtext, input->text());
+	triggerevent = EVENT_CHAT;
+	inputtext = (char*)malloc(strlen(input->text()) + 1);
+	inputargs = (char*)malloc(strlen(input->text()) + 1);
+	strcpy(inputtext, input->text());
+	strcpy(inputargs, "");
 
-        if(inputtext[0] == '/')
-        {
+	if(inputtext[0] == '/')
+	{
+		if(strcmp(inputtext, "/help") == 0) triggerevent = EVENT_HELP;
 		if(strncmp(inputtext, "/me", 3) == 0) triggerevent = EVENT_ME;
-                else
+		if(triggerevent == EVENT_CHAT)
 		{
 			triggerevent = EVENT_NOEVENT;
 			commands = strtok(inputtext, " ");
-		}
-		if(strcmp(commands, "/local") == 0)
-		{
-			preop = strtok(NULL, " ");
-			preop2 = strtok(NULL, " ");
-			if((preop) && (preop2) && (strlen(preop2) == 1))
+			if(commands)
 			{
-				triggerevent = EVENT_LOCAL;
-				kelvin = 0.0;
-				switch(*preop2)
+				if(strncmp(inputtext, "/msg", 4) == 0)
 				{
-					case 'F':
-					case 'f': // Fahrenheit
-						fahrenheit = atof(preop);
-						celsius = (fahrenheit - 32.0) / 1.8;
-						reaumour = ((fahrenheit - 32.0) / 1.8) * 0.8;
-						kelvin = (fahrenheit - 32.0) / 1.8 - 273.15;
-						break;
-					case 'C':
-					case 'c': // Celsius
-						celsius = atof(preop);
-						reaumour = celsius * 0.8;
-						kelvin = celsius - 273.15;
-						fahrenheit = (celsius * 1.8) + 32.0;
-						break;
-					case 'R':
-					case 'r': // Reaumour
-						reaumour = atof(preop);
-						celsius = reaumour / 0.8;
-						kelvin = (reaumour / 0.8) - 273.15;
-						fahrenheit = ((reaumour / 0.8) * 1.8) + 32.0;
-						break;
-					case 'K':
-					case 'k': // Kelvin
-						kelvin = atof(preop);
-						celsius = kelvin - 273.15;
-						reaumour = (kelvin - 273.15) / 0.8;
-						fahrenheit = (kelvin - 273.15) + 32.0;
-						break;
+					KGGZDEBUG("--private message--\n");
+					if(commands) player = strtok(NULL, " ");
+					if(player)
+					{
+						KGGZDEBUG("--private message-- ASSIGN\n");
+						triggerevent = EVENT_PERSONAL;
+						op2 = strtok(NULL, " ");
+						if(op2) strcat(inputargs, op2);
+					}
+					KGGZDEBUG("--private message-- 1\n");
+					while(op2)
+					{
+						op2 = strtok(NULL, " ");
+						if(op2)
+						{
+							strcat(inputargs, " ");
+							strcat(inputargs, op2);
+						}
+					}
+					KGGZDEBUG("--private message-- 2\n");
 				}
-				op1 = (char*)malloc(512);
-				if(kelvin != 0.0)
-					sprintf(op1, i18n("Temperature: %3.1f°F, %3.1f°C, %3.1f°R %3.1f°K"), fahrenheit, celsius, reaumour, kelvin);
-				else
-					sprintf(op1, i18n("Usage of local: /local &lt;number&gt; &lt;unit&gt;, with unit being one of C, R, K, F"));
+				if(strcmp(commands, "/beep") == 0)
+				{
+					KGGZDEBUG("--beep message--\n");
+					if(commands) player = strtok(NULL, " ");
+					if(player)
+					{
+						KGGZDEBUG("--beep message-- ASSIGN\n");
+						triggerevent = EVENT_BEEP;
+						op2 = strtok(NULL, " ");
+					}
+					while(op2)
+					{
+						op2 = strtok(NULL, " ");
+					}
+				}
 			}
 		}
-                if(strcmp(commands, "/join") == 0)
-                {
-                        triggerevent = EVENT_JOIN;
-                        preop = strtok(NULL, " ");
-                        op1 = (char*)malloc(strlen(preop) + 1);
-                        sprintf(op1, "%s", preop);
-                }
-                if(strcmp(commands, "/list") == 0) triggerevent = EVENT_LIST;
-                if(strcmp(commands, "/who") == 0) triggerevent = EVENT_WHO;
-		if(strcmp(commands, "/help") == 0) triggerevent = EVENT_HELP;
-		if(strcmp(commands, "/?") == 0) triggerevent = EVENT_HELP;
-		if(strcmp(commands, "/lag") == 0)
-		{
-			op1 = (char*)malloc(128);
-			sprintf(op1, "/me tests his lag (LAGID %lu)", setLag(randomLag()));
-			triggerevent = EVENT_LAG;
-		}
-		if(strcmp(commands, "/beep") == 0)
-		{
-                        preop = strtok(NULL, " ");
-                        op1 = (char*)malloc(strlen(preop) + 1);
-			sprintf(op1, "%s", preop);
-			if(strlen(op1) > 0) triggerevent = EVENT_BEEP;
-		}
-		//while(commands != NULL) strtok(commands, " "); // ? is this necessary?
-        }
+	}
 
-        switch(triggerevent)
-        {
+	switch(triggerevent)
+	{
 		case EVENT_HELP:
 			receive(NULL, i18n("KGGZ - The KDE client for the GGZ Gaming Zone"), RECEIVE_ADMIN);
 			receive(NULL, i18n("List of available commands:"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/me &lt;msg&gt; - Special messages"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/lag - Test connection speed"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/local &lt;information&gt; - l10n operation"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/beep &lt;name&gt; - Makes name's computer beep"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/help - This help screen (also /?)"), RECEIVE_ADMIN);
-			receive(NULL, i18n("Additional:"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/join &lt;room no&gt; - Join a room"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/list - List room names"), RECEIVE_ADMIN);
-			receive(NULL, i18n("/who - List player names in room"), RECEIVE_ADMIN);
+			receive(NULL, i18n("/me &lt;msg&gt; - sends an emphasized phrase."), RECEIVE_ADMIN);
+			receive(NULL, i18n("/msg &lt;player&gt; &lt;message&gt; - sends a private message."), RECEIVE_ADMIN);
+			receive(NULL, i18n("/beep &lt;player&gt; - send player a beep."), RECEIVE_ADMIN);
+			receive(NULL, i18n("/help - this screen."), RECEIVE_ADMIN);
+
+		case EVENT_CHAT:
+			emit signalChat(inputtext, NULL, RECEIVE_CHAT);
 			break;
-                case EVENT_WHO:
-			//ggzcore_event_enqueue(GGZ_PLAYER_LIST, NULL, NULL);
-			//ggzcore_room_list_players(KGGZ_Server::currentRoom(KGGZ_Server::currentServer()));
-			m_listusers = 1;
-                        break;
-                case EVENT_LIST:
-			//ggzcore_event_enqueue(GGZ_ROOM_LIST, NULL, NULL);
-			//ggzcore_server_list_rooms(KGGZ_Server::currentServer(), -1, 1);
-                        break;
-                case EVENT_JOIN:
-			//ggzcore_event_enqueue(GGZ_ROOM_ENTER, (void*)atoi(op1), NULL);
-			//ggzcore_server_join_room(KGGZ_Server::currentServer(), atoi(op1));
-                        break;
-                case EVENT_CHAT:
 		case EVENT_ME:
-			// hey boy, this is history!
-	                // ggzcore_event_enqueue(GGZ_CHAT_NORMAL, strdup(inputtext), free);
-			// ggzcore_room_chat(KGGZ_Server::currentRoom(KGGZ_Server::currentServer()), GGZ_CHAT_NORMAL, NULL, strdup(inputtext));
-			emit signalChat(inputtext);
-                        break;
-                case EVENT_BEEP:
-			//ggzcore_event_enqueue(GGZ_CHAT_BEEP, strdup(op1), free);
-			//ggzcore_room_chat(KGGZ_Server::currentRoom(KGGZ_Server::currentServer()), GGZ_CHAT_BEEP, strdup(op1), NULL);
-                        break;
-		case EVENT_LAG:
-			//ggzcore_event_enqueue(GGZ_CHAT_PERSONAL, strdup(op1), free);
-			//ggzcore_room_chat(KGGZ_Server::currentRoom(KGGZ_Server::currentServer()), GGZ_CHAT_PERSONAL, , strdup(op1));  -- FIXME !!!
+			emit signalChat(inputtext, NULL, RECEIVE_CHAT);
 			break;
-		case EVENT_LOCAL:
-			receive(NULL, op1, RECEIVE_ADMIN);
+		case EVENT_PERSONAL:
+			if(player)
+			{
+				emit signalChat(inputargs, player, RECEIVE_PERSONAL);
+				receive(NULL, i18n("Sent message to %1.").arg(player), RECEIVE_ADMIN);
+			}
 			break;
-                default:
-			//ggzcore_event_enqueue(GGZ_USER_CHAT, strdup("Error! Unknown command!"), free);
+		case EVENT_BEEP:
+			if(player)
+			{
+				emit signalChat(inputtext, player, RECEIVE_BEEP);
+				receive(NULL, i18n("Beeped Player %1.").arg(player), RECEIVE_ADMIN);
+			}
+			break;
+		default:
 			receive(NULL, i18n("Error! Unknown command! Try /help instead."), RECEIVE_ADMIN);
-        }
+	}
+
 	input->clear();
 
-        if((triggerevent == EVENT_JOIN) || (triggerevent == EVENT_BEEP) || (triggerevent == EVENT_LAG) || (triggerevent = EVENT_LOCAL))
-        {
-                if(op1) free(op1);
-        }
-        free(inputtext);
+        	free(inputtext);
+	free(inputargs);
 }
 
 // Determines whether to accept a character as delimiter
@@ -572,12 +526,28 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
 			break;
-		case RECEIVE_INFO:
+		case RECEIVE_ANNOUNCE:
+			tmp = QString("<font color=#80d000><i>* ") + QString(player) + QString(message) + QString("</i></font><br>");
+			output->setText(output->text() + tmp);
+			output->setContentsPos(0, 32767);
+			logChat(tmp);
+			//checkLag(tmp);
+			break;
+		case RECEIVE_ME:
 			tmp = QString("<font color=#00a000><i>* ") + QString(player) + QString(message + 3) + QString("</i></font><br>");
 			output->setText(output->text() + tmp);
 			output->setContentsPos(0, 32767);
 			logChat(tmp);
-			checkLag(tmp);
+			//checkLag(tmp);
+			break;
+		case RECEIVE_PERSONAL:
+			tmp = QString("<font color=#b0b000><b><i>");
+			if(player) tmp += QString(player) + ":&nbsp;&nbsp;";
+			tmp += QString(message) + QString("</i></b></font><br>");
+			output->setText(output->text() + tmp);
+			output->setContentsPos(0, 32767);
+			logChat(tmp);
+			//checkLag(tmp);
 			break;
 		default:
 			KGGZDEBUG("ERROR! Unknown chat mode\n");
@@ -608,3 +578,89 @@ KGGZChatLine *KGGZChat::chatline()
 {
 	return input;
 }
+
+
+// ATTIC
+// DO NOT HIDE :-)
+
+
+		/*if(strcmp(commands, "/local") == 0)
+		{
+			preop = strtok(NULL, " ");
+			preop2 = strtok(NULL, " ");
+			if((preop) && (preop2) && (strlen(preop2) == 1))
+			{
+				triggerevent = EVENT_LOCAL;
+				kelvin = 0.0;
+				switch(*preop2)
+				{
+					case 'F':
+					case 'f': // Fahrenheit
+						fahrenheit = atof(preop);
+						celsius = (fahrenheit - 32.0) / 1.8;
+						reaumour = ((fahrenheit - 32.0) / 1.8) * 0.8;
+						kelvin = (fahrenheit - 32.0) / 1.8 - 273.15;
+						break;
+					case 'C':
+					case 'c': // Celsius
+						celsius = atof(preop);
+						reaumour = celsius * 0.8;
+						kelvin = celsius - 273.15;
+						fahrenheit = (celsius * 1.8) + 32.0;
+						break;
+					case 'R':
+					case 'r': // Reaumour
+						reaumour = atof(preop);
+						celsius = reaumour / 0.8;
+						kelvin = (reaumour / 0.8) - 273.15;
+						fahrenheit = ((reaumour / 0.8) * 1.8) + 32.0;
+						break;
+					case 'K':
+					case 'k': // Kelvin
+						kelvin = atof(preop);
+						celsius = kelvin - 273.15;
+						reaumour = (kelvin - 273.15) / 0.8;
+						fahrenheit = (kelvin - 273.15) + 32.0;
+						break;
+				}
+				op1 = (char*)malloc(512);
+				if(kelvin != 0.0)
+					sprintf(op1, i18n("Temperature: %3.1f°F, %3.1f°C, %3.1f°R %3.1f°K"), fahrenheit, celsius, reaumour, kelvin);
+				else
+					sprintf(op1, i18n("Usage of local: /local &lt;number&gt; &lt;unit&gt;, with unit being one of C, R, K, F"));
+			}
+		}
+                if(strcmp(commands, "/join") == 0)
+                {
+                        triggerevent = EVENT_JOIN;
+                        preop = strtok(NULL, " ");
+                        op1 = (char*)malloc(strlen(preop) + 1);
+                        sprintf(op1, "%s", preop);
+                }
+                if(strcmp(commands, "/list") == 0) triggerevent = EVENT_LIST;
+                if(strcmp(commands, "/who") == 0) triggerevent = EVENT_WHO;
+		if(strcmp(commands, "/help") == 0) triggerevent = EVENT_HELP;
+		if(strcmp(commands, "/?") == 0) triggerevent = EVENT_HELP;
+		if(strcmp(commands, "/lag") == 0)
+		{
+			op1 = (char*)malloc(128);
+			sprintf(op1, "/me tests his lag (LAGID %lu)", setLag(randomLag()));
+			triggerevent = EVENT_LAG;
+		}*/
+
+
+/*
+			case EVENT_HELP:
+			receive(NULL, i18n("KGGZ - The KDE client for the GGZ Gaming Zone"), RECEIVE_ADMIN);
+			receive(NULL, i18n("List of available commands:"), RECEIVE_ADMIN);
+			receive(NULL, i18n("/me &lt;msg&gt; - Special messages"), RECEIVE_ADMIN);
+			receive(NULL, i18n("/lag - Test connection speed"), RECEIVE_ADMIN);
+			receive(NULL, i18n("/local &lt;information&gt; - l10n operation"), RECEIVE_ADMIN);
+			receive(NULL, i18n("/beep &lt;name&gt; - Makes name's computer beep"), RECEIVE_ADMIN);
+			receive(NULL, i18n("/help - This help screen (also /?)"), RECEIVE_ADMIN);
+			receive(NULL, i18n("Additional:"), RECEIVE_ADMIN);
+			receive(NULL, i18n("/join &lt;room no&gt; - Join a room"), RECEIVE_ADMIN);
+			receive(NULL, i18n("/list - List room names"), RECEIVE_ADMIN);
+			receive(NULL, i18n("/who - List player names in room"), RECEIVE_ADMIN);
+			break;
+*/
