@@ -444,6 +444,9 @@ static int get_trick_winner(void)
 	char p_num;
 	char *t_str;
 
+	if(game.state == LP_STATE_ANIM)
+		table_animation_zip(TRUE);
+
 	if(es_read_char(game.fd, &p_num) < 0)
 		return -1;
 
