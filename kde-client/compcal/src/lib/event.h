@@ -44,6 +44,9 @@ class Event
 		void setParent(Eventgroup *parent);
 		Eventgroup *parent();
 
+		void setEventgroup(QString eventgroup);
+		QString eventgroup();
+
 	private:
 		int m_date;
 		QString m_title;
@@ -52,6 +55,7 @@ class Event
 		QString m_location;
 		QString m_status;
 		QString m_image;
+		QString m_eventgroup;
 		Eventgroup *m_parent;
 };
 

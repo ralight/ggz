@@ -63,3 +63,13 @@ QPtrList<Event> Eventgroup::events()
 	return m_events;
 }
 
+void Eventgroup::setId(QString id)
+{
+	m_id = id;
+}
+
+QString Eventgroup::id()
+{
+	return m_id;
+}
+

@@ -90,3 +90,13 @@ QString Event::image()
 	return m_image;
 }
 
+void Event::setEventgroup(QString eventgroup)
+{
+	m_eventgroup = eventgroup;
+}
+
+QString Event::eventgroup()
+{
+	return m_eventgroup;
+}
+

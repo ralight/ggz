@@ -38,12 +38,16 @@ class Eventgroup
 		QString policy();
 		QPtrList<Event> events();
 
+		void setId(QString id);
+		QString id();
+
 	private:
 		QString m_image;
 		QString m_title;
 		QString m_status;
 		QPtrList<Event> m_events;
 		QString m_policy;
+		QString m_id;
 };
 
 #endif
