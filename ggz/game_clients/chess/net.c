@@ -5,7 +5,7 @@
  * Date: 09/17/2000
  * Desc: Functions to filter input and send the events to game.c and send stuff
  * out to the server
- * $Id: net.c 6293 2004-11-07 05:51:47Z jdorje $
+ * $Id: net.c 6654 2005-01-13 23:36:52Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -69,7 +69,7 @@ gboolean net_handle_input(GIOChannel * source, GIOCondition condition,
 	case CHESS_MSG_PLAYERS:
 		ggz_debug("main", "Got an MSG_PLAYERS");
 		names = (char *)malloc(40 * sizeof(char));
-		bzero(names, 40);
+		memset(names, 0, 40 * sizeof(char));
 		/* Get first code */
 		ggz_read_char(fd, &names[0]);
 		if (names[0] != GGZ_SEAT_OPEN)
