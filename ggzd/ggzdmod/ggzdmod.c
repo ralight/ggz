@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 5802 2004-02-05 12:11:59Z josef $
+ * $Id: ggzdmod.c 5934 2004-02-16 00:21:35Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -556,12 +556,19 @@ int ggzdmod_set_seat(GGZdMod * ggzdmod, GGZSeat *seat)
 	/* If we're connected to the game, send a message */
 	if (ggzdmod->type == GGZDMOD_GGZ
 	    && ggzdmod->state != GGZDMOD_STATE_CREATED) {
-		if (_io_send_seat_change(ggzdmod->fd, seat) < 0)
+		if (_io_send_seat_change(ggzdmod->fd, seat) < 0) {
+			/* ggzdmod_error will most likely call
+			   ggzdmod_disconnect - but this doesn't free the
+			   seat data.  Be careful with this! */
 			_ggzdmod_error(ggzdmod,
 				       "Error writing to game");
+		}
 
 		/* We (GGZ) don't need the fd now */
-		seat->fd = -1;
+		if (seat->type == GGZ_SEAT_PLAYER) {
+			close(seat->fd);
+			seat->fd = -1;
+		}
 	}
 
 	return _ggzdmod_set_seat(ggzdmod, seat);
@@ -1189,7 +1196,9 @@ int ggzdmod_disconnect(GGZdMod * ggzdmod)
 	}
 	
 	/* We no longer free the seat data here.  It will stick around until
-	   ggzdmod_free is called or it is used again. */
+	   ggzdmod_free is called or it is used again.  This is important
+	   because we don't know who the callers are or if they expect to
+	   have valid seat data to look at (see ggzdmod_set_seat). */
 
 	/* Clean up the ggzdmod object.  In theory it could now reconnect for
 	   a new game. */

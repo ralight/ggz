@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: transit.c 5934 2004-02-16 00:21:35Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -297,10 +297,6 @@ static GGZReturn transit_send_seat_to_game(GGZTable* table,
 		seat.name = event->seat.name[0] ? event->seat.name : NULL;
 
 		result = ggzdmod_set_seat(table->ggzdmod, &seat);
-		if (event->seat.type == GGZ_SEAT_PLAYER) {
-			/* Must close remote end of socketpair */
-			close(seat.fd);
-		}
 		break;
 	case GGZ_TRANSIT_SIT:
 		old_seat = transit_table_find_spectator(table, event->caller);
