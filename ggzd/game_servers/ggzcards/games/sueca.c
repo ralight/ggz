@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Sueca
- * $Id: sueca.c 2834 2001-12-09 22:12:57Z jdorje $
+ * $Id: sueca.c 2969 2001-12-20 18:49:46Z jdorje $
  *
  * Copyright (C) 2001 Ismael Orenstein
  *
@@ -207,7 +207,8 @@ static int sueca_deal_hand(void)
 	seat_t s;
 	game.hand_size = 10;
 	for (s = 0; s < game.num_seats; s++)
-		cards_deal_hand(game.hand_size, &game.seats[s].hand);
+		cards_deal_hand(game.deck, game.hand_size,
+				&game.seats[s].hand);
 	game.trump = game.seats[game.dealer].hand.cards[random() % 10].suit;
 	set_global_message("Trump", "%s", suit_names[(int) game.trump]);
 	return 0;

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2927 2001-12-18 00:33:36Z jdorje $
+ * $Id: common.h 2969 2001-12-20 18:49:46Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -78,7 +78,9 @@ struct game_t {
 	game_type_t which_game;	/**< the type of game game */
 	struct game_function_pointers *funcs;	/**< an array of game-specific functions */
 	ai_type_t ai_type;	/**< the type of AI we're using */
+
 	deck_type_t deck_type;	/**< the type of deck used */
+	deck_t *deck;		/**< the deck being used */
 
 	/* misc. game data */
 	char *name;		/**< the name of the game */

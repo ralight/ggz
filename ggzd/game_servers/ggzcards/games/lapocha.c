@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for La Pocha
- * $Id: lapocha.c 2874 2001-12-11 06:27:57Z jdorje $
+ * $Id: lapocha.c 2969 2001-12-20 18:49:46Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -147,7 +147,7 @@ static int lapocha_get_bid(void)
 		if (game.hand_size != 10) {
 			bid_t bid;
 			bid.bid = 0;
-			bid.sbid.suit = cards_deal_card().suit;
+			bid.sbid.suit = cards_deal_card(game.deck).suit;
 			bid.sbid.spec = LAPOCHA_TRUMP;
 			handle_bid_event(game.next_bid, bid);
 		} else {
@@ -220,7 +220,8 @@ static int lapocha_deal_hand(void)
 
 	/* in a regular deal, we just deal out hand_size cards to everyone */
 	for (s = 0; s < game.num_seats; s++)
-		cards_deal_hand(game.hand_size, &game.seats[s].hand);
+		cards_deal_hand(game.deck, game.hand_size,
+				&game.seats[s].hand);
 
 	return 0;
 }

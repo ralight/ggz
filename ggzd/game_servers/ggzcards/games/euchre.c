@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: Game-dependent game functions for Euchre
- * $Id: euchre.c 2934 2001-12-18 08:11:09Z jdorje $
+ * $Id: euchre.c 2969 2001-12-20 18:49:46Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -303,8 +303,7 @@ static int euchre_deal_hand(void)
 	/* in Euchre, players 0-3 (seats 0, 1, 3, 4) get 5 cards each. the
 	   up-card (seat 5) gets one card, and the kitty (seat 2) gets the
 	   other 3. */
-	cards_deal_hand(1, &game.seats[0].hand);
-	EUCHRE.up_card = game.seats[0].hand.cards[0];
+	EUCHRE.up_card = cards_deal_card(game.deck);
 	set_global_message("", "The up-card is the %s of %s.",
 			   face_names[(int) EUCHRE.up_card.face],
 			   suit_names[(int) EUCHRE.up_card.suit]);
@@ -316,7 +315,8 @@ static int euchre_deal_hand(void)
 
 	/* in a regular deal, we just deal out hand_size cards to everyone */
 	for (s = 0; s < game.num_seats; s++)
-		cards_deal_hand(game.hand_size, &game.seats[s].hand);
+		cards_deal_hand(game.deck, game.hand_size,
+				&game.seats[s].hand);
 	return 0;
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulate functions for card games
- * $Id: cards.c 2823 2001-12-09 08:16:26Z jdorje $
+ * $Id: cards.c 2969 2001-12-20 18:49:46Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -31,9 +31,11 @@
 
 #include "common.h"
 
-static card_t *gamedeck = NULL;	/* must be allocated */
-static int deck_size = 0;
-static int deck_ptr = -1;	/* a pointer into the deck used for dealing */
+struct deck_t {
+	card_t *cards;
+	int size;
+	int ptr;		/* a pointer into the deck used for dealing */
+};
 
 char *suit_names[4] = { "clubs", "diamonds", "hearts", "spades" };
 char *short_suit_names[4] = { "C", "D", "H", "S" };
@@ -49,7 +51,7 @@ char *short_face_names[15] =
 /* cards_create_deck() set up the deck of the given type This is more complex 
    than might seem necessary, but allows a game-designer to very easily
    invent new card deck types by merely setting the params */
-void cards_create_deck(deck_type_t which_deck)
+deck_t *cards_create_deck(deck_type_t which_deck)
 {
 	int face, suit, deck;
 	int cardnum;
@@ -70,6 +72,10 @@ void cards_create_deck(deck_type_t which_deck)
 		{ 2, 3, 4, 5, 6, 10, JACK, QUEEN, KING, ACE_HIGH };
 	char sueca_deck_faces[] =
 		{ 2, 3, 4, 5, 6, 7, JACK, QUEEN, KING, ACE_HIGH };
+
+	deck_t *mydeck = ggz_malloc(sizeof(*mydeck));
+	mydeck->ptr = -1;
+	mydeck->size = 0;
 
 	deck_faces = std_deck_faces;
 	deck_suits = std_deck_suits;
@@ -110,8 +116,8 @@ void cards_create_deck(deck_type_t which_deck)
 	}
 
 	/* Now generate an in-order deck */
-	deck_size = deck_face_cnt * deck_suit_cnt * deck_deck_cnt;
-	gamedeck = ggz_malloc(deck_size * sizeof(*gamedeck));
+	mydeck->size = deck_face_cnt * deck_suit_cnt * deck_deck_cnt;
+	mydeck->cards = ggz_malloc(mydeck->size * sizeof(*mydeck->cards));
 
 	cardnum = 0;
 	for (deck = 0; deck < deck_deck_cnt; deck++)
@@ -120,30 +126,31 @@ void cards_create_deck(deck_type_t which_deck)
 				card.face = deck_faces[face];
 				card.suit = deck_suits[suit];
 				card.deck = deck_decks[deck];
-				gamedeck[cardnum] = card;
+				mydeck->cards[cardnum] = card;
 				cardnum++;
 			}
 
-	ggzdmod_log(game.ggz, "Built a deck of size %d.", deck_size);
+	ggzdmod_log(game.ggz, "Built a deck of size %d.", mydeck->size);
+
+	return mydeck;
 }
 
-int cards_deck_size()
+void cards_destroy_deck(deck_t * deck)
 {
-	return deck_size;
-}
-
-void cards_destroy_deck()
-{
-	if (gamedeck == NULL)
+	if (deck == NULL || deck->cards == NULL)
 		ggzdmod_log(game.ggz, "ERROR: SERVER BUG: "
 			    "cards_destroy_deck called on a NULL deck.");
-	ggz_free(gamedeck);
-	deck_size = 0;
-	deck_ptr = -1;
+	ggz_free(deck->cards);
+	ggz_free(deck);
 }
 
-/* cards_shuffle_deck() shuffle the deck */
-void cards_shuffle_deck()
+int cards_deck_size(deck_t * deck)
+{
+	return deck->size;
+}
+
+/* shuffle the deck */
+void cards_shuffle_deck(deck_t * deck)
 {
 	card_t temp;
 	int i, j;
@@ -152,43 +159,38 @@ void cards_shuffle_deck()
 
 	/* Now we can randomize the deck order */
 	/* Go through the deck, card by card */
-	for (i = 0; i < deck_size; i++) {
+	for (i = 0; i < deck->size; i++) {
 		/* Pick any OTHER card */
 		do {
-			j = random() % deck_size;
+			j = random() % deck->size;
 		} while (j == i);
 		/* And swap positions */
-		temp = gamedeck[i];
-		gamedeck[i] = gamedeck[j];
-		gamedeck[j] = temp;
+		temp = deck->cards[i];
+		deck->cards[i] = deck->cards[j];
+		deck->cards[j] = temp;
 	}
 
-	deck_ptr = 0;
+	deck->ptr = 0;
 }
 
-/* cards_deal_hand This deals the cards out from a pre-shuffled deck into a
+/* This deals the cards out from a pre-shuffled deck into a
    hand structure Game-nonspecific */
-void cards_deal_hand(int handsize, hand_t * hand)
+void cards_deal_hand(deck_t * deck, int handsize, hand_t * hand)
 {
 	int c;
 	card_t card;
 
 	ggzdmod_log(game.ggz, "\tDealing out a hand of size %d.", handsize);
 
-	if (hand == NULL)
-		fatal_error("BUG: can't deal NULL hand.");
-
-	if (gamedeck == NULL)
-		fatal_error("BUG: can't deal from NULL deck.");
+	assert(hand && deck && deck->cards);
 
 	/* Deal the cards out */
 	hand->hand_size = hand->full_hand_size = handsize;
 	for (c = 0; c < hand->hand_size; c++) {
-		if (deck_ptr >= deck_size)
-			fatal_error("BUG: too many cards being dealt out.");
-		card = gamedeck[deck_ptr];
+		assert(deck->ptr < deck->size);
+		card = deck->cards[deck->ptr];
 		hand->cards[c] = card;
-		deck_ptr++;
+		deck->ptr++;
 	}
 
 	cards_sort_hand(hand);
@@ -210,15 +212,14 @@ void cards_sort_hand(hand_t * hand)
 
 
 /* cards_deal_card This deals one card out from the deck Game-nonspecific */
-card_t cards_deal_card()
+card_t cards_deal_card(deck_t * deck)
 {
 	card_t card;
 
-	if (deck_ptr >= deck_size)
-		fatal_error("BUG: too many cards being handed out.");
+	assert(deck->ptr < deck->size);
 
-	card = gamedeck[deck_ptr];
-	deck_ptr++;
+	card = deck->cards[deck->ptr];
+	deck->ptr++;
 	return card;
 }
 

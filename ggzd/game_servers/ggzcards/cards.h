@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 08/14/2000
  * Desc: Various useful deck manipulation routines for card games
- * $Id: cards.h 2418 2001-09-09 03:42:21Z jdorje $
+ * $Id: cards.h 2969 2001-12-20 18:49:46Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.
  *
@@ -44,6 +44,9 @@ typedef struct hand_t {
 				   rampant! */
 } hand_t;
 
+/* A deck structure.  It's declared in cards.c. */
+typedef struct deck_t deck_t;
+
 /* there should be an entry here for every kind of deck, and cards.c should
    be able to handle them. */
 typedef enum deck_type_t {
@@ -57,16 +60,19 @@ typedef enum deck_type_t {
 } deck_type_t;
 
 /* Exported functions */
-void cards_create_deck(deck_type_t which_deck);
-int cards_deck_size();
-void cards_destroy_deck();
-void cards_shuffle_deck(void);
-void cards_deal_hand(int handsize, hand_t * hand);
+deck_t *cards_create_deck(deck_type_t which_deck);
+void cards_destroy_deck(deck_t * deck);
+
+int cards_deck_size(deck_t * deck);
+
+void cards_shuffle_deck(deck_t * deck);
+void cards_deal_hand(deck_t * deck, int handsize, hand_t * hand);
+card_t cards_deal_card(deck_t * deck);	/* deals one card */
+char cards_cut_for_trump(deck_t * deck);
+
 void cards_sort_hand(hand_t * hand);
-card_t cards_deal_card();	/* deals one card */
-char cards_cut_for_trump(void);
-int cards_suit_in_hand(hand_t *, char);
-char cards_highest_in_suit(hand_t *, char);
+int cards_suit_in_hand(hand_t * hand, char suit);
+char cards_highest_in_suit(hand_t * hand, char suit);
 
 int cards_equal(card_t, card_t);
 
