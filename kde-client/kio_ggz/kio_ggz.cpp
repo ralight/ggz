@@ -97,7 +97,7 @@ void GGZProtocol::get(const KURL& url)
 	jobOperator(url);
 }
 
-GGZHookReturn GGZProtocol::hook_server_connect(unsigned int id, void *event, void *data)
+GGZHookReturn GGZProtocol::hook_server_connect(unsigned int id, const void *event, const void *data)
 {
 	me->debug("=> connect");
 
@@ -111,14 +111,14 @@ GGZHookReturn GGZProtocol::hook_server_connect(unsigned int id, void *event, voi
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn GGZProtocol::hook_server_negotiated(unsigned int id, void *event, void *data)
+GGZHookReturn GGZProtocol::hook_server_negotiated(unsigned int id, const void *event, const void *data)
 {
 	me->debug("=> negotiated");
 
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn GGZProtocol::hook_server_login(unsigned int id, void *event, void *data)
+GGZHookReturn GGZProtocol::hook_server_login(unsigned int id, const void *event, const void *data)
 {
 	me->debug("=> login");
 	me->server()->listRooms(-1, 0);
@@ -126,7 +126,7 @@ GGZHookReturn GGZProtocol::hook_server_login(unsigned int id, void *event, void 
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn GGZProtocol::hook_server_roomlist(unsigned int id, void *event, void *data)
+GGZHookReturn GGZProtocol::hook_server_roomlist(unsigned int id, const void *event, const void *data)
 {
 	me->debug("=> roomlist");
 	for(int i = 0; i < me->server()->countRooms(); i++)
@@ -148,7 +148,7 @@ GGZHookReturn GGZProtocol::hook_server_roomlist(unsigned int id, void *event, vo
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn GGZProtocol::hook_server_motd(unsigned int id, void *event, void *data)
+GGZHookReturn GGZProtocol::hook_server_motd(unsigned int id, const void *event, const void *data)
 {
 	me->debug("=> motd");
 	//GGZProtocolHelper::app_file(me->entry, "MOTD", 1);
@@ -162,7 +162,7 @@ GGZHookReturn GGZProtocol::hook_server_motd(unsigned int id, void *event, void *
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn GGZProtocol::hook_server_error(unsigned int id, void *event, void *data)
+GGZHookReturn GGZProtocol::hook_server_error(unsigned int id, const void *event, const void *data)
 {
 	me->error(QString("Server error: %1").arg(id));
 

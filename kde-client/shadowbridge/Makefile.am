@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6678 2005-01-14 22:46:32Z josef $
+# $Id: Makefile.am 6951 2005-02-27 23:09:44Z josef $
 
 SUBDIRS = pics .
 
@@ -29,6 +29,6 @@ AM_CXXFLAGS = @COMPILEOPTIONS@
 
 KDE_ICON = shadowbridge
 
-appsdir = $(kde_appsdir)/.hidden
-apps_DATA = shadowbridge.desktop
+desktopdir = $(datadir)/applications
+desktop_DATA = shadowbridge.desktop
 

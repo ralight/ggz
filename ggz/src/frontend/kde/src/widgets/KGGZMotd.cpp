@@ -139,11 +139,11 @@ void KGGZMotd::append(const char *text)
 	m_edit->append(buffer);
 }
 
-void KGGZMotd::setSource(void *data)
+void KGGZMotd::setSource(const char **data)
 {
-	char **motd;
+	const char **motd;
 
-	motd = (char**)data;
+	motd = data;
 	if(!motd)
 	{
 		KGGZDEBUG("No MOTD data received!\n");

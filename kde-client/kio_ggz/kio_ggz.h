@@ -18,12 +18,12 @@ class GGZProtocol : public KIO::SlaveBase
 		GGZCoreServer *server() {return m_server;}
 
 	protected:
-		static GGZHookReturn hook_server_connect(unsigned int id, void *event, void *data);
-		static GGZHookReturn hook_server_negotiated(unsigned int id, void *event, void *data);
-		static GGZHookReturn hook_server_login(unsigned int id, void *event, void *data);
-		static GGZHookReturn hook_server_roomlist(unsigned int id, void *event, void *data);
-		static GGZHookReturn hook_server_motd(unsigned int id, void *event, void *data);
-		static GGZHookReturn hook_server_error(unsigned int id, void *event, void *data);
+		static GGZHookReturn hook_server_connect(unsigned int id, const void *event, const void *data);
+		static GGZHookReturn hook_server_negotiated(unsigned int id, const void *event, const void *data);
+		static GGZHookReturn hook_server_login(unsigned int id, const void *event, const void *data);
+		static GGZHookReturn hook_server_roomlist(unsigned int id, const void *event, const void *data);
+		static GGZHookReturn hook_server_motd(unsigned int id, const void *event, const void *data);
+		static GGZHookReturn hook_server_error(unsigned int id, const void *event, const void *data);
 
 	private:
 		void jobOperator(const KURL& url);

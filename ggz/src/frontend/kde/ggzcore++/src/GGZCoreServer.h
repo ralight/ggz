@@ -101,10 +101,10 @@ class GGZCoreServer
 		GGZLoginType type();
 		/**
 		 * Return the username with which the player is logged in. */
-		char* username();
+		const char* username();
 		/**
 		 * Return the player's password. */
-		char* password();
+		const char* password();
 		/**
 		 * Return the server's specific file descriptor. */
 		int fd();
@@ -212,7 +212,7 @@ class GGZCoreServer
 
 		/**
 		 * Create a game channel. */
-		int createChannel();
+		void createChannel();
 
 	private:
 		GGZServer *m_server;

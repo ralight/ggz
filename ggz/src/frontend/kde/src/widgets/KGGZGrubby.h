@@ -64,7 +64,7 @@ class KGGZGrubby : public QWidget
 		// Clear the list of players
 		void removeAll();
 		// Add a player to the list
-		void addPlayer(char *player);
+		void addPlayer(const char *player);
 
 	public slots:
 		// Check requested grubby action

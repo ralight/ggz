@@ -88,7 +88,7 @@ class GGZCoreRoom
 
 		/**
 		 * Initialize a room with the required information. */
-		int init(const GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description, const char *category);
+		int init(GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description, const char *category);
 
 		/**
 		 * Return the name of the room. */

@@ -50,7 +50,7 @@ class KGGZMotd : public QWidget
 			// Destructor
 			~KGGZMotd();
 			// Load a motd as char** source
-			void setSource(void *data);
+			void setSource(const char **data);
 
 		private:
 			// Append a line to the display

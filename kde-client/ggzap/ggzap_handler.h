@@ -66,13 +66,13 @@ class GGZapHandler : public QObject
 			error_username
 		};
 
-		static GGZHookReturn hookServer(unsigned int id, void *event_data, void *user_data);
-		static GGZHookReturn hookRoom(unsigned int id, void *event_data, void *user_data);
-		static GGZHookReturn hookGame(unsigned int id, void *event_data, void *user_data);
+		static GGZHookReturn hookServer(unsigned int id, const void *event_data, const void *user_data);
+		static GGZHookReturn hookRoom(unsigned int id, const void *event_data, const void *user_data);
+		static GGZHookReturn hookGame(unsigned int id, const void *event_data, const void *user_data);
 
 		void hookServerActive(unsigned int id);
-		void hookRoomActive(unsigned int id, void *data);
-		void hookGameActive(unsigned int id, void *data);
+		void hookRoomActive(unsigned int id, const void *data);
+		void hookGameActive(unsigned int id, const void *data);
 
 	public slots:
 		void slotServerData();

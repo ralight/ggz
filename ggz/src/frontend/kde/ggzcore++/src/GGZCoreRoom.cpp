@@ -72,7 +72,7 @@ int GGZCoreRoom::removeHook(const GGZCoreRoomEvent event, const unsigned int id)
 	return ggzcore_room_remove_event_hook_id(m_room, (GGZRoomEvent)event, id);
 }
 
-int GGZCoreRoom::init(const GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description, const char *category)
+int GGZCoreRoom::init(GGZServer* server, const unsigned int id, const char* name, const unsigned int game, const char* description, const char *category)
 {
 #ifdef KGGZ_PATCH_C_AND_R
 	return ggzcore_room_init(m_room, server, id, name, game, description, category);

@@ -205,13 +205,13 @@ class KGGZ : public QWidget
 		void showEvent(QShowEvent *e);
 
 		// catch server atoms
-		void serverCollector(unsigned int id, void* data);
+		void serverCollector(unsigned int id, const void* data);
 		// catch room atoms
-		void roomCollector(unsigned int id, void* data);
+		void roomCollector(unsigned int id, const void* data);
 		// catch game atoms
-		void gameCollector(unsigned int id, void* data);
+		void gameCollector(unsigned int id, const void* data);
 		// catch all types of atoms and distribute them
-		static GGZHookReturn hookOpenCollector(unsigned int id, void* event_data, void* user_data);
+		static GGZHookReturn hookOpenCollector(unsigned int id, const void* event_data, const void* user_data);
 
 	private:
 		// ensure that KGGZ is in a proper state

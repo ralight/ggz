@@ -1,4 +1,6 @@
 [Desktop Entry]
+Encoding=UTF-8
+
 Name=KGGZ
 GenericName=Internet gaming center for KDE
 GenericName[de]=Internet-Spielezentrum für KDE
@@ -14,5 +16,4 @@ Exec=kggz
 Icon=kggz
 DocPath=kggz/index.docbook
 Terminal=false
-StartupNotify=true
 Categories=X-GGZ;Network;KDE;Qt;

@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 6636 2005-01-11 03:14:32Z jdorje $
+# $Id: Makefile.am 6951 2005-02-27 23:09:44Z josef $
 
 SUBDIRS = . modules
 
@@ -19,6 +19,6 @@ noinst_HEADERS = kcm_ggz.h kcm_ggz_pane.h
 
 METASOURCES = AUTO
 
-data_DATA = kcmggz.desktop
-datadir = $(kde_appsdir)/Settings/Network
+desktop_DATA = kcmggz.desktop
+desktopdir = $(datadir)/applications
 

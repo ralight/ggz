@@ -84,12 +84,12 @@ GGZLoginType GGZCoreServer::type()
 	return ggzcore_server_get_type(m_server);
 }
 
-char* GGZCoreServer::username()
+const char* GGZCoreServer::username()
 {
 	return ggzcore_server_get_handle(m_server);
 }
 
-char* GGZCoreServer::password()
+const char* GGZCoreServer::password()
 {
 	return ggzcore_server_get_password(m_server);
 }
@@ -319,9 +319,9 @@ int GGZCoreServer::channel()
 	return ggzcore_server_get_channel(m_server);
 }
 
-int GGZCoreServer::createChannel()
+void GGZCoreServer::createChannel()
 {
-	return ggzcore_server_create_channel(m_server);
+	ggzcore_server_create_channel(m_server);
 }
 
 int GGZCoreServer::countPlayers()

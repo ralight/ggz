@@ -170,7 +170,7 @@ void GGZapHandler::setFrontend(const char *frontendtype)
 	}
 }*/
 
-GGZHookReturn GGZapHandler::hookServer(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn GGZapHandler::hookServer(unsigned int id, const void *event_data, const void *user_data)
 {
 	GGZapHandler *handler;
 
@@ -182,7 +182,7 @@ GGZHookReturn GGZapHandler::hookServer(unsigned int id, void *event_data, void *
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn GGZapHandler::hookRoom(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn GGZapHandler::hookRoom(unsigned int id, const void *event_data, const void *user_data)
 {
 	GGZapHandler *handler;
 
@@ -194,7 +194,7 @@ GGZHookReturn GGZapHandler::hookRoom(unsigned int id, void *event_data, void *us
 	return GGZ_HOOK_OK;
 }
 
-GGZHookReturn GGZapHandler::hookGame(unsigned int id, void *event_data, void *user_data)
+GGZHookReturn GGZapHandler::hookGame(unsigned int id, const void *event_data, const void *user_data)
 {
 	GGZapHandler *handler;
 
@@ -309,7 +309,7 @@ void GGZapHandler::getModule()
 	}
 }
 
-void GGZapHandler::hookRoomActive(unsigned int id, void *data)
+void GGZapHandler::hookRoomActive(unsigned int id, const void *data)
 {
 	GGZCorePlayer *player;
 	GGZCoreTable *table;
@@ -399,7 +399,7 @@ void GGZapHandler::hookRoomActive(unsigned int id, void *data)
 	}
 }
 
-void GGZapHandler::hookGameActive(unsigned int id, void *data)
+void GGZapHandler::hookGameActive(unsigned int id, const void *data)
 {
 /*cout << "hookGameActive!" << endl;*/
 	switch(id)

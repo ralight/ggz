@@ -636,7 +636,7 @@ void KGGZ::lagPlayers()
 	}
 }
 
-void KGGZ::gameCollector(unsigned int id, void* data)
+void KGGZ::gameCollector(unsigned int id, const void* data)
 {
 	int result;
 	int seats;
@@ -751,7 +751,7 @@ void KGGZ::gameCollector(unsigned int id, void* data)
 	}
 }
 
-void KGGZ::roomCollector(unsigned int id, void* data)
+void KGGZ::roomCollector(unsigned int id, const void* data)
 {
 	const char *chatsender = NULL, *chatmessage = NULL;
 	int chattype = GGZCoreRoom::chatnormal;
@@ -944,7 +944,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 	}
 }
 
-void KGGZ::serverCollector(unsigned int id, void* data)
+void KGGZ::serverCollector(unsigned int id, const void* data)
 {
 	int result;
 	QString buffer;
@@ -1050,7 +1050,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::motdloaded:
 			KGGZDEBUG("motdloaded\n");
 			if(!m_motd) m_motd = new KGGZMotd(NULL, "KGGZMotd");
-			m_motd->setSource(data);
+			m_motd->setSource((const char**)data);
 			if(m_showmotd) m_motd->show();
 			break;
 		case GGZCoreServer::roomlist:
@@ -1176,7 +1176,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 	}
 }
 
-GGZHookReturn KGGZ::hookOpenCollector(unsigned int id, void* event_data, void* user_data)
+GGZHookReturn KGGZ::hookOpenCollector(unsigned int id, const void* event_data, const void* user_data)
 {
 	KGGZCallback* kggzcallback;
 	KGGZ* kggz;

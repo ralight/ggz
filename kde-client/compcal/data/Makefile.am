@@ -2,8 +2,8 @@ SUBDIRS = .
 
 KDE_ICON = compcal
 
-appsdir = $(kde_appsdir)/Games/ggz
-apps_DATA = compcal.desktop
+desktopdir = $(datadir)/applications
+desktop_DATA = compcal.desktop
 
 picsdir = $(kde_datadir)/compcal
 pics_DATA = event.png

@@ -163,7 +163,7 @@ void KGGZGrubby::removeAll()
 	m_player->clear();
 }
 
-void KGGZGrubby::addPlayer(char *player)
+void KGGZGrubby::addPlayer(const char *player)
 {
 	m_player->insertItem(player);
 }
