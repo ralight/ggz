@@ -1,4 +1,4 @@
-/* $Id: dlg_main.c 2740 2001-11-13 22:19:42Z jdorje $ */
+/* $Id: dlg_main.c 2838 2001-12-09 23:23:58Z jdorje $ */
 /* 
  * File: dlg_main.c
  * Author: Rich Gade
@@ -46,14 +46,11 @@ GtkWidget *create_dlg_main(void)
 	GtkWidget *vbox1;
 	GtkWidget *menubar1;
 	GtkWidget *mnu_game;
-	GtkWidget *mnu_sync;
 	GtkWidget *mnu_game_menu;
 	GtkAccelGroup *mnu_game_menu_accels;
-	GtkWidget *mnu_exit;
-	GtkWidget *mnu_edit;
-	GtkWidget *mnu_edit_menu;
-	GtkAccelGroup *mnu_edit_menu_accels;
+	GtkWidget *mnu_sync;
 	GtkWidget *mnu_preferences;
+	GtkWidget *mnu_exit;
 	GtkWidget *mnu_messages_menu;
 	GtkWidget *mnu_messages;
 	GtkAccelGroup *mnu_messages_menu_accels;
@@ -87,6 +84,7 @@ GtkWidget *create_dlg_main(void)
 	gtk_widget_show(menubar1);
 	gtk_box_pack_start(GTK_BOX(vbox1), menubar1, FALSE, FALSE, 0);
 
+	/* Create "Game" menu label. */
 	mnu_game = gtk_menu_item_new_with_label(_("Game"));
 	gtk_widget_set_name(mnu_game, "mnu_game");
 	gtk_widget_ref(mnu_game);
@@ -95,6 +93,7 @@ GtkWidget *create_dlg_main(void)
 	gtk_widget_show(mnu_game);
 	gtk_container_add(GTK_CONTAINER(menubar1), mnu_game);
 
+	/* Create "Game" menu dropdown. */
 	mnu_game_menu = gtk_menu_new();
 	gtk_widget_set_name(mnu_game_menu, "mnu_game_menu");
 	gtk_widget_ref(mnu_game_menu);
@@ -105,14 +104,7 @@ GtkWidget *create_dlg_main(void)
 	mnu_game_menu_accels =
 		gtk_menu_ensure_uline_accel_group(GTK_MENU(mnu_game_menu));
 
-	mnu_exit = gtk_menu_item_new_with_label(_("Exit"));
-	gtk_widget_set_name(mnu_exit, "mnu_exit");
-	gtk_widget_ref(mnu_exit);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_exit", mnu_exit,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(mnu_exit);
-	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_exit);
-
+	/* Add "Sync" selection to "Game" menu. */
 	mnu_sync = gtk_menu_item_new_with_label(_("Sync"));
 	gtk_widget_set_name(mnu_sync, "mnu_sync");
 	gtk_widget_ref(mnu_sync);
@@ -121,25 +113,7 @@ GtkWidget *create_dlg_main(void)
 	gtk_widget_show(mnu_sync);
 	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_sync);
 
-
-	mnu_edit = gtk_menu_item_new_with_label(_("Edit"));
-	gtk_widget_set_name(mnu_edit, "mnu_edit");
-	gtk_widget_ref(mnu_edit);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_edit", mnu_edit,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(mnu_edit);
-	gtk_container_add(GTK_CONTAINER(menubar1), mnu_edit);
-
-	mnu_edit_menu = gtk_menu_new();
-	gtk_widget_set_name(mnu_edit_menu, "mnu_edit_menu");
-	gtk_widget_ref(mnu_edit_menu);
-	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_edit_menu",
-				 mnu_edit_menu,
-				 (GtkDestroyNotify) gtk_widget_unref);
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mnu_edit), mnu_edit_menu);
-	mnu_edit_menu_accels =
-		gtk_menu_ensure_uline_accel_group(GTK_MENU(mnu_edit_menu));
-
+	/* Add "Preferences" selection to "Game" menu. */
 	mnu_preferences = gtk_menu_item_new_with_label(_("Preferences"));
 	gtk_widget_set_name(mnu_preferences, "mnu_preferences");
 	gtk_widget_ref(mnu_preferences);
@@ -147,7 +121,16 @@ GtkWidget *create_dlg_main(void)
 				 mnu_preferences,
 				 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(mnu_preferences);
-	gtk_container_add(GTK_CONTAINER(mnu_edit_menu), mnu_preferences);
+	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_preferences);
+
+	/* Add "Exit" selection to "Game" menu. */
+	mnu_exit = gtk_menu_item_new_with_label(_("Exit"));
+	gtk_widget_set_name(mnu_exit, "mnu_exit");
+	gtk_widget_ref(mnu_exit);
+	gtk_object_set_data_full(GTK_OBJECT(dlg_main), "mnu_exit", mnu_exit,
+				 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(mnu_exit);
+	gtk_container_add(GTK_CONTAINER(mnu_game_menu), mnu_exit);
 
 	mnu_messages = gtk_menu_item_new_with_label(_("Messages"));
 	gtk_widget_set_name(mnu_messages, "mnu_messages");

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2742 2001-11-13 22:58:05Z jdorje $
+ * $Id: main.c 2838 2001-12-09 23:23:58Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -50,6 +50,8 @@
 
 GtkWidget *dlg_main = NULL;
 
+static int want_newgame = 0;
+
 
 int main(int argc, char *argv[])
 {
@@ -61,7 +63,8 @@ int main(int argc, char *argv[])
 
 	gdk_input_add(fd, GDK_INPUT_READ, game_handle_io, NULL);
 
-	/* this shouldn't go here, but I see no better place right now */
+	/* This shouldn't go here, but I see no better place right now.
+	   The message windows are supposed to use a fixed-width font. */
 	fixed_font_style = gtk_rc_style_new();
 	fixed_font_style->fontset_name =
 		"-*-fixed-medium-r-normal--14-*-*-*-*-*-*-*,*-r-*";
@@ -82,6 +85,8 @@ int main(int argc, char *argv[])
 
 void table_get_newgame()
 {
+	want_newgame = 1;
+	statusbar_message(_("Select \"start game\" from the \"Game\" menu to begin the game."));
 	/* FIXME: we should ask the player first! */
 	client_send_newgame();
 }
