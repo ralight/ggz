@@ -96,6 +96,7 @@ extern int room_join(GGZPlayer* player, const int);
 extern int room_list_send(GGZPlayer* player, int game, char verbose);
 extern int room_handle_join(GGZPlayer* player, int room);
 extern int room_get_num_rooms(void);
+extern void room_notify_lag(char *name, int room);
 
 
 #endif

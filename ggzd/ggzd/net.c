@@ -119,6 +119,7 @@ static void _net_handle_seat(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_desc(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_motd(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_data(GGZNetIO *net, GGZXMLElement *element);
+static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *element);
 
 /* Utility functions */
 static int safe_atoi(char *string);
@@ -419,9 +420,21 @@ int net_send_player(GGZNetIO *net, GGZPlayer *p2)
 		break;
 	}
 
+	/* FIXME: I coded lag_class the same way as table, but */
+	/* shouldn't both of these values be locked/copied? */
 	return _net_send_line(net, 
-			      "<PLAYER ID='%s' TYPE='%s' TABLE='%d' />",
-			      p2->name, type_desc, p2->table);
+			      "<PLAYER ID='%s' TYPE='%s' TABLE='%d' LAG='%d'/>",
+			      p2->name, type_desc, p2->table, p2->lag_class);
+}
+
+
+int _net_send_player_lag(GGZNetIO *net, GGZPlayer *p2)
+{
+	/* FIXME: I coded lag_class the same way as table, but */
+	/* shouldn't both of these values be locked/copied? */
+	return _net_send_line(net, 
+			      "<PLAYER ID='%s' LAG='%d'/>",
+			      p2->name, p2->lag_class);
 }
 
 
@@ -564,6 +577,18 @@ int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name)
 		net_send_player(net, player);
 		_net_send_line(net, "</UPDATE>");
 		break;
+	case GGZ_UPDATE_LAG:
+		/* This returns with player's write lock held, so drop it  */
+		player = hash_player_lookup(name);
+		if (!player) {
+			err_msg("Player lookup failed!");
+			return 0;
+		}
+		pthread_rwlock_unlock(&player->lock);
+		_net_send_line(net, "<UPDATE TYPE='player' ACTION='lag' ROOM='%d'>", room);
+		_net_send_player_lag(net, player);
+		_net_send_line(net, "</UPDATE>");
+		break;
 	}
 	
 	return 0;
@@ -644,6 +669,12 @@ int net_send_game_data(GGZNetIO *net, int size, char *data)
 	return 0;
 }
 
+
+int net_send_ping(GGZNetIO *net)
+{
+	_net_send_line(net, "<PING/>");
+	return 0;
+}
 
 
 /* Check for incoming data */
@@ -833,7 +864,9 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 		process_func = _net_handle_motd;
 	else if (strcmp(tag, "DATA") == 0)
 		process_func = _net_handle_data;
-	else 
+	else if (strcmp(tag, "PONG") == 0)
+		process_func = _net_handle_pong;
+	else
 		process_func = NULL;
 	
 	return xmlelement_new(tag, attrs, process_func, NULL);
@@ -1368,6 +1401,13 @@ static void _net_handle_data(GGZNetIO *net, GGZXMLElement *data)
 		
 		player_msg_from_sized(net->player, size, buffer);
 	}
+}
+
+
+/* Function for <PONG> tag */
+static void _net_handle_pong(GGZNetIO *net, GGZXMLElement *data)
+{
+	player_handle_pong(net->player);
 }
 
 

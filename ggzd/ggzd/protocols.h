@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 2507 2001-09-24 04:16:01Z rgade $
+ * $Id: protocols.h 2546 2001-10-09 00:04:59Z rgade $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -41,6 +41,7 @@
 #define GGZ_UPDATE_LEAVE  2
 #define GGZ_UPDATE_JOIN   3
 #define GGZ_UPDATE_STATE  4
+#define GGZ_UPDATE_LAG    5
 
 #define E_USR_LOOKUP   -1
 #define E_BAD_OPTIONS  -2

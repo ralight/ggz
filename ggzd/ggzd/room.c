@@ -343,6 +343,21 @@ static void room_notify_change(char* name, const int old, const int new)
 }
 
 
+void room_notify_lag(char *name, int room)
+{
+	char *data;
+	int datalen;
+
+	datalen = strlen(name) + 2;
+	if((data = malloc(datalen)) == NULL)
+		err_sys_exit("malloc failed in player_handle_pong()");
+	data[0] = GGZ_UPDATE_LAG;
+	strcpy(data+1, name);
+	event_room_enqueue(room, (GGZEventFunc) room_event_callback,
+			   datalen, data);
+}
+
+
 /* Event callback for delivering player list update to player */
 static int room_event_callback(GGZPlayer* player, int size, void* data)
 {
@@ -353,8 +368,8 @@ static int room_event_callback(GGZPlayer* player, int size, void* data)
 	opcode = *(unsigned char*)data;
 	name = (char*)(data + sizeof(char));
 
-	/* Don't deliver updates about ourself! */
-	if (strcmp(name, player->name) == 0)
+	/* Don't deliver updates about ourself (except lag) */
+	if (opcode != GGZ_UPDATE_LAG && strcmp(name, player->name) == 0)
 		return 0;
 
 	if (net_send_player_update(player->net, opcode, name) < 0)

@@ -29,6 +29,7 @@
 #include <config.h>
 
 #include <pthread.h>
+#include <sys/time.h>
 #include <ggzd.h>
 #include <table.h>
 
@@ -76,6 +77,11 @@ struct _GGZPlayer {
 	void *room_events;        /* protected by room lock*/
         void *my_events_head;
         void *my_events_tail;
+
+	/* Lag tracking */
+	time_t next_ping;
+	struct timeval sent_ping;
+	int lag_class;
 	
 	/* Connection info */
 	long login_time;
@@ -114,5 +120,7 @@ int   player_motd(GGZPlayer* player);
 
 int player_get_room(GGZPlayer *player);
 GGZPlayerType player_get_type(GGZPlayer *player);
+
+void player_handle_pong(GGZPlayer *player);
 
 #endif

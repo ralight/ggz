@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 2525 2001-10-02 04:08:37Z rgade $
+ * $Id: ggzd.h 2546 2001-10-09 00:04:59Z rgade $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -45,6 +45,7 @@
 #define MAX_MOTD_LINES 80
 #define DEFAULT_MAX_ROOM_USERS 100
 #define DEFAULT_MAX_ROOM_TABLES 50
+#define GGZ_PING_FREQ 15
 
 /* Bitmasks for allowable player numbers */
 #define GGZ_ALLOW_ZERO    0

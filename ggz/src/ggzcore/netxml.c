@@ -145,6 +145,7 @@ static void _ggzcore_net_handle_table(GGZNet*, GGZXMLElement*);
 static void _ggzcore_net_handle_seat(GGZNet*, GGZXMLElement*);
 static void _ggzcore_net_handle_chat(GGZNet*, GGZXMLElement*);
 static void _ggzcore_net_handle_data(GGZNet*, GGZXMLElement*);
+static void _ggzcore_net_handle_ping(GGZNet*, GGZXMLElement*);
 
 /* Extra functions fot handling data associated with specific tags */
 static void _ggzcore_net_list_insert(GGZXMLElement*, void*);
@@ -744,6 +745,8 @@ static GGZXMLElement* _ggzcore_net_new_element(char *tag, char **attrs)
 		process_func = _ggzcore_net_handle_desc;
 	else if (strcmp(tag, "PASSWORD") == 0)
 		process_func = _ggzcore_net_handle_password;
+	else if (strcmp(tag, "PING") == 0)
+		process_func = _ggzcore_net_handle_ping;
 	else
 		process_func = NULL;
 	
@@ -1616,6 +1619,14 @@ static void _ggzcore_net_handle_data(GGZNet *net, GGZXMLElement *data)
 
 		_ggzcore_room_recv_game_data(room, buffer);
 	}
+}
+
+
+/* Function for <PING> tag */
+static void _ggzcore_net_handle_ping(GGZNet *net, GGZXMLElement *data)
+{
+	/* No need to bother the client or anything, just send pong */
+	_ggzcore_net_send_line(net, "<PONG/>");
 }
 
 

@@ -91,5 +91,7 @@ int net_send_logout(GGZNetIO *net, char status);
 
 int net_send_game_data(GGZNetIO *net, int size, char *data);
 
+int net_send_ping(GGZNetIO *net);
+
 
 #endif /* _GGZ_NET_H */

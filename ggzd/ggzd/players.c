@@ -77,6 +77,7 @@ static void  player_remove(GGZPlayer* player);
 static int   player_updates(GGZPlayer* player);
 static int   player_msg_to_sized(GGZPlayer* player);
 static int   player_transit(GGZPlayer* player, char opcode, int index);
+static int   player_send_ping(GGZPlayer *player);
 
 
 /*
@@ -157,10 +158,14 @@ static void* player_new(void *arg_ptr)
 	strcpy(player->name, "<none>");
 	/*player->addr = addr.sin_addr;*/
 	inet_ntop(AF_INET, &addr.sin_addr, player->addr, sizeof(player->addr));
-		  
+ 
 	player->room_events = NULL;
 	player->my_events_head = NULL;
 	player->my_events_tail = NULL;
+
+	player->lag_class = 1;			/* Assume they are low lag */
+	player->next_ping = time(NULL) + 3;	/* Let them settle before */
+						/* sending the first ping */
 
 	/* Send server ID */
 	if (net_send_serverid(player->net) < 0)
@@ -377,6 +382,11 @@ static int player_updates(GGZPlayer* player)
 	
 	if (player->table == -1 && old_table != -1)
 		return GGZ_REQ_TABLE_LEAVE;	
+
+	/* Lowest priority update - send a PING */
+	if(player->next_ping && time(NULL) >= player->next_ping)
+		if(player_send_ping(player) < 0)
+			return GGZ_REQ_DISCONNECT;
 
 	return GGZ_REQ_OK;
 }
@@ -916,3 +926,49 @@ int player_motd(GGZPlayer* player)
 }
 
 
+int player_send_ping(GGZPlayer *player)
+{
+	/* Send a ping and mark send time */
+	if(net_send_ping(player->net) < 0)
+		return GGZ_REQ_DISCONNECT;
+	gettimeofday(&player->sent_ping, NULL);
+
+	/* Set next_ping to zero so we won't ping until we've got a reply */
+	player->next_ping = 0;
+
+	return GGZ_REQ_OK;
+}
+
+
+void player_handle_pong(GGZPlayer *player)
+{
+	struct timeval tv;
+	int msec, lag_class;
+
+	/* Determine time from sent_ping to now */
+	gettimeofday(&tv, NULL);
+	msec = ((tv.tv_sec - player->sent_ping.tv_sec) * 1000)
+	       + ((tv.tv_usec - player->sent_ping.tv_usec) / 1000);
+
+	if(msec >= 750) {				/* <3/4 sec = LC 1 */
+		if(msec >= 1500) {			/* <1.5 sec = LC 2 */
+			if(msec >= 3000) {		/* <3 sec = LC 3 */
+				if(msec >= 6000)	/* <6 sec = LC 4 */
+					lag_class = 5;	/* >6 sec = LC 5 */
+				else
+					lag_class = 4;
+			 } else
+				lag_class = 3;
+		} else
+			lag_class = 2;
+	} else
+		lag_class = 1;
+
+	if(lag_class != player->lag_class) {
+		player->lag_class = lag_class;
+		room_notify_lag(player->name, player->room);
+	}
+
+	/* Queue our next ping */
+	player->next_ping = time(NULL) + GGZ_PING_FREQ;
+}
