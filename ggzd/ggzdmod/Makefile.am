@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2836 2001-12-09 22:26:19Z jdorje $
+# $Id: Makefile.am 2925 2001-12-17 22:51:38Z jdorje $
 
 SUBDIRS = .
 
@@ -8,23 +8,20 @@ SUBDIRS = .
 # confused)  --JDS
 .NOTPARALLEL:
 
-# This compiles for static linking with ggzd's game servers
-# NOTE: The game servers cannot use the shared library, because it
-# won't work with "make test".  Until you find a way around this, don't
-# remove the static lib compilation.  --JDS
-noinst_LIBRARIES = libggzdmod.a
-libggzdmod_a_SOURCES =  ggzdmod.h ggzdmod.c \
-			io.c io.h \
-			protocol.h \
-			ggz_stats.h ggz_stats.c
-
 # This compiles for installation as a shared lib for external servers
 lib_LTLIBRARIES = libggzdmod.la
 libggzdmod_la_LIBADD = @LDADD@
 libggzdmod_la_SOURCES = ggzdmod.h ggzdmod.c \
 			io.c io.h \
-	                protocol.h \
+			protocol.h mod.h \
 			ggz_stats.h ggz_stats.c
+
+# This compiles for static linking with ggzd's game servers
+# NOTE: The game servers cannot use the shared library, because it
+# won't work with "make test".  Until you find a way around this, don't
+# remove the static lib compilation.  --JDS
+noinst_LIBRARIES = libggzdmod.a
+libggzdmod_a_SOURCES = $(libggzdmod_la_SOURCES)
 
 include_HEADERS = ggzdmod.h
 
