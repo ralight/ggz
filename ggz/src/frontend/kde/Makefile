@@ -6,11 +6,16 @@
 # translated comments, release + install + uninstall option (2000-10-29) (josef)
 # Revision 1.5.1: Added Desktop icon/applink for KDE2 (2000-10-29) (josef)
 # Revision 1.5.2: Added kicker entry and first i18n for icons (2000-11-04) (josef)
+# Revision 1.5.3: RedHat FSH support (2000-11-17) (josef)
 
 
 # The important dirs - this seems to become autoconf stuff
-KDEDIR=/usr/local/kde
-QTDIR=/usr/local/qt
+# KDEDIR=/usr/local/kde - this is obsolete, don't use it anymore
+# QTDIR=/usr/local/qt - same
+KDELIBS=/usr/local/kde/lib
+KDEINCS=/usr/local/kde/include
+QTLIBS=/usr/local/qt/lib
+QTINCS=/usr/local/qt/include
 TARGETDIR=/usr/local
 
 #################################################################################
@@ -22,8 +27,8 @@ SHELL=/bin/sh
 CXX=g++
 CPP_TEMP=-I../../ggzcore
 LD_TEMP=../../ggzcore/libggzcore.a ../../../easysock/libeasysock.a
-CPPFLAGS=-c -I$(KDEDIR)/include -I$(QTDIR)/include $(CPP_TEMP) -fno-rtti
-LDFLAGS=-L$(KDEDIR)/lib -L$(QTDIR)/lib
+CPPFLAGS=-c -I$(KDEINCS) -I$(QTINCS) $(CPP_TEMP) -fno-rtti
+LDFLAGS=-L$(KDELIBS) -L$(QTLIBS)
 LIBS=-lkdeui -lkdecore -lqt -ldl -lDCOP
 DESTDIR=$(TARGETDIR)
 VERSION=0.0.2
@@ -31,7 +36,7 @@ VERSION=0.0.2
 
 # List of sources
 SOURCES=kggz kggz_roomsmenu \
-	kggz_chat kggz_startup kggz_tables kggz_users \
+	kggz_state kggz_chat kggz_startup kggz_tables kggz_users \
 	kggz_chatwidget kggz_motd \
 	kggz_preferences kggz_settings kggz_profiles kggz_connect kggz_launch \
 	kggz_server
@@ -121,6 +126,7 @@ distclean:
 
 # Only for maintainers: building packages
 clean_tmp:
+	# TODO: select files for release separately
 	$(QUIET) echo Clean up temporarily
 	$(QUIET) mkdir ../tmp.12345
 	$(QUIET) touch tmp.12345.o

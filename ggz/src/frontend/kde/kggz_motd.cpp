@@ -15,20 +15,19 @@ KGGZ_Motd::KGGZ_Motd(QWidget *parent, char *name)
 	QPushButton *button;
 
 	edit = new QTextBrowser(this);
-	edit->setGeometry(5, 5, 290, 360);
+	edit->setGeometry(5, 5, 310, 360);
 	edit->setFont(QFont("Courier", 10, QFont::Bold));
 
 	button = new QPushButton("OK", this);
-	button->setGeometry(100, 370, 100, 20);
+	button->setGeometry(100, 370, 120, 20);
 
 	connect(button, SIGNAL(clicked()), SLOT(close()));
 
 	setCaption("MOTD");
-	setFixedSize(300, 400);
+	setFixedSize(320, 400);
 
 	show();
 
-	//ggzcore_event_enqueue(GGZ_USER_MOTD, NULL, NULL);
 	startTimer(500);
 }
 
@@ -38,40 +37,46 @@ KGGZ_Motd::~KGGZ_Motd()
 
 void KGGZ_Motd::append(char *text)
 {
-	int i, j;
-	char *tmp;
+	int i, j, count;
+	char tmp[8];
 	char *html[] = {"ff0000", "00ff00", "0000ff", "ffff00", "ff00ff", "0000ff", "ffff00", "00ffff", "ff00ff", "777777", "AAAAAA"};
 
+	count = 0;
 	for(i = 0; i < strlen(text); i++)
 	{
 		if(text[i] != '%')
 		{
-			tmp = (char*)malloc(3);
-			if(text[i] == ' ') sprintf(tmp, "&nbsp;");
-			else sprintf(tmp, "%c", text[i]);
+			switch(text[i])
+			{
+				case ' ':
+					sprintf(tmp, "&nbsp;");
+					break;
+				case '<':
+					sprintf(tmp, "&lt;");
+					break;
+				case '>':
+					sprintf(tmp, "&gt;");
+					break;
+				default:
+					sprintf(tmp, "%c", text[i]);
+			}
 			strcat(buf, tmp);
-			free(tmp);
+			count++;
+			if(count > 45)
+			{
+				count = 0;
+				strcat(buf, "<br>");
+			}
 		}
 		else
 		{
-			i++;
-			if(text[i] != 'c')
+			i+=2;
+			j = (int)text[i] - 48;
+			if((j >= 0) && (j <= 9))
 			{
-				tmp = (char*)malloc(4);
-				sprintf(tmp, "%c%c", text[i - 1], text[i]);
-				strcat(buf, tmp);
-				free(tmp);
-			}
-			else
-			{
-				i++;
-				j = (int)text[i] - 48;
-				if((j >= 0) && (j <= 9))
-				{
-					strcat(buf, "<font color=#");
-					strcat(buf, html[j]);
-					strcat(buf, ">");
-				}
+				strcat(buf, "<font color=#");
+				strcat(buf, html[j]);
+				strcat(buf, ">");
 			}
 		}
 	}

@@ -33,11 +33,13 @@ public:
 			MENU_PREFERENCES_PROFILES,
 			MENU_PREFERENCES_PREFERENCES,
 
-			MENU_ROOMS_SLOTS};
+			MENU_ROOMS_SLOTS}; // MENU_ROOMS_SLOTS _must_ be the last element
 public slots:
 	void handleMenu(int id);
 protected:
 	void resizeEvent(QResizeEvent *e);
+private:
+	void hideChilds();
 };
 
 #endif

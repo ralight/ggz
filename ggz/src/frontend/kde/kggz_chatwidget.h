@@ -1,4 +1,4 @@
-#include <qtextview.h>
+#include <ktextbrowser.h>
 #include <qlineedit.h>
 #include <qevent.h>
 
@@ -10,11 +10,11 @@ public:
 	~KGGZ_Chatwidget();
 	static void receive(char *player, char *message);
 	static void adminreceive(const char *adminmessage);
-	static void inforeceive(const char *infomessage);
+	static void inforeceive(const char *player, const char *infomessage);
 protected slots:
 	void timerEvent(QTimerEvent *e);
 	void send();
 private:
-	QTextView *output;
+	KTextBrowser *output;
 	QLineEdit *input;
 };

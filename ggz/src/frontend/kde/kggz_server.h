@@ -15,6 +15,7 @@ public:
 	static void connect(const char *host, int port, const char *username);
 	static void disconnect();
 	static void loop();
+	static void changeRoom(int room);
 
 	/* Callbacks */
 	static void server_connect(GGZEventID id, void *event_data, void *user_data);

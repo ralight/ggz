@@ -10,8 +10,9 @@
 #include "kggz_launch.h"
 #include "kggz_profiles.h"
 #include "kggz_server.h"
+#include "kggz_state.h"
 #include <kmenubar.h>
-#include <qtextbrowser.h>
+//#include <qtextbrowser.h>
 #include <qiconview.h>
 #include <iostream.h>
 
@@ -75,14 +76,14 @@ KGGZ::KGGZ()
 	startup->setBackgroundColor(QColor(255, 255, 255));
 	startup->setBackgroundPixmap(QPixmap(instdir + "images/startup.png"));
 
-	chat = new KGGZ_Chat(this, "chat");
-	chat->hide();
-
 	tables = new KGGZ_Tables(this, "tables");
 	tables->hide();
 
 	userlist = new KGGZ_Users(this, "userlist");
 	userlist->hide();
+
+	chat = new KGGZ_Chat(this, "chat");
+	chat->hide();
 
 	helpbrowser = new QTextBrowser(this, "helpbrowser");
 	helpbrowser->setSource(instdir + "help/index.html");
@@ -96,6 +97,7 @@ KGGZ::KGGZ()
         connect(menu_preferences, SIGNAL(activated(int)), SLOT(handleMenu(int)));
 
 	KGGZ_Server::init();
+	KGGZ_State::registerStates();
 
 	resize(500, 430);
 	show();
@@ -127,6 +129,15 @@ KPopupMenu *KGGZ::menuGame()
 	return menu_game;
 }
 
+void KGGZ::hideChilds()
+{
+	chat->hide();
+	helpbrowser->hide();
+	tables->hide();
+	userlist->hide();
+	startup->hide();
+}
+
 void KGGZ::handleMenu(int id)
 {
 	KGGZ_Settings *tmp;
@@ -144,11 +155,7 @@ void KGGZ::handleMenu(int id)
 		case MENU_CLIENT_TABLES:
 		case MENU_CLIENT_PLAYERS:
 		case MENU_CLIENT_HELP:
-			chat->hide();
-			helpbrowser->hide();
-			tables->hide();
-			userlist->hide();
-			startup->hide();
+			hideChilds();
 			break;
 	}
 
@@ -160,7 +167,7 @@ void KGGZ::handleMenu(int id)
 			break;
 		case MENU_GGZ_DISCONNECT:
 			KGGZ_Server::disconnect();
-			KGGZ_Server::shutdown();
+			//KGGZ_Server::shutdown();
 			break;
    		case MENU_GGZ_QUIT:
 			exit(0);
@@ -196,6 +203,13 @@ void KGGZ::handleMenu(int id)
 			tmp4 = new KGGZ_Preferences(NULL, "preferences");
 			tmp4->show();
 			break;
+		default:
+			if(id >= MENU_ROOMS_SLOTS)
+			{
+				KGGZ_Server::changeRoom(id - MENU_ROOMS_SLOTS);
+				hideChilds();
+				chat->show();
+			}
 	}
 }
 

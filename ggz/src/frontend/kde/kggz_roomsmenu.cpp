@@ -29,11 +29,12 @@ void KGGZ_RoomsMenu::add(char *name)
 
 //new KGGZ_RoomsMenu(name, /*this???*/NULL, NULL)
 	KGGZ::menuRooms()->setEnabled(TRUE);
-	x++;
 	//tmpmenu = new KPopupMenu(/*name*/NULL, KGGZ::menuRooms(), NULL);
-	tmpmenu = new KPopupMenu(NULL, NULL);
-	tmpmenu->insertItem(QString("Play ") + QString(name));
-	KGGZ::menuRooms()->insertItem(name, tmpmenu, KGGZ::MENU_ROOMS_SLOTS + x);
+	//tmpmenu = new KPopupMenu(NULL, NULL);
+	//tmpmenu->insertItem(QString("Play ") + QString(name));
+	//KGGZ::menuRooms()->insertItem(name, tmpmenu, KGGZ::MENU_ROOMS_SLOTS + x);
+	KGGZ::menuRooms()->insertItem(name, KGGZ::MENU_ROOMS_SLOTS + x);
+	x++;
 	//connect(tmpmenu, SIGNAL(activated(int)), this, SLOT(handleMenu(int)));
 	//KGGZ::menuRooms()->insertItem(name, new KPopupMenu("sample game 2", KGGZ::menuRooms(), NULL), KGGZ::MENU_ROOMS_SLOTS);
 	// unclean!
