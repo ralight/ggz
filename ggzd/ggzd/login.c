@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 4170 2002-05-05 21:51:20Z rgade $
+ * $Id: login.c 4556 2002-09-13 18:01:57Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -43,8 +43,9 @@
 
 
 static void login_generate_password(char *);
-static int login_add_user(ggzdbPlayerEntry *entry, char *name, char *password);
-static int  validate_username(char *);
+static GGZReturn login_add_user(ggzdbPlayerEntry *entry,
+				char *name, char *password);
+static int is_valid_username(char *);
 
 
 /*
@@ -80,7 +81,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 		name[MAX_USER_NAME_LEN] = 0;
 
 	/* Validate the username */
-	if(!validate_username(name)) {
+	if(!is_valid_username(name)) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s",
 			name);
 		/* FIXME: We should have a specific error code for this */
@@ -219,7 +220,8 @@ static void login_generate_password(char *pw)
 }
 
 
-static int login_add_user(ggzdbPlayerEntry *db_entry, char *name,char *password)
+static GGZReturn login_add_user(ggzdbPlayerEntry *db_entry,
+				char *name,char *password)
 {
 	/*  Initialize player entry */
 	login_generate_password(password);
@@ -234,15 +236,15 @@ static int login_add_user(ggzdbPlayerEntry *db_entry, char *name,char *password)
 	if (ggzdb_player_add(db_entry) == GGZDB_ERR_DUPKEY) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s", 
 			name);
-		return -1;
+		return GGZ_ERROR;
 	}
-	
-	return 0;
+
+	return GGZ_OK;
 }
 
 
 /* This routine validates the username request */
-static int validate_username(char *name)
+static int is_valid_username(char *name)
 {
 	char *p;
 
@@ -260,4 +262,3 @@ static int validate_username(char *name)
 
 	return 1;
 }
-
