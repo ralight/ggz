@@ -13,6 +13,8 @@ class LevelSelector : public QDialog
 		LevelSelector(QWidget *parent = NULL, const char *name = NULL);
 		~LevelSelector();
 
+		void addLevel(QString title);
+
 	protected slots:
 		void accept();
 		void slotActivated(int id);

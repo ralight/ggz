@@ -6,3 +6,5 @@ Makefile.in
 *.moc.cpp
 *_meta_unload.cpp
 fyrdman
+module.dsc
+

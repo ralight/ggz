@@ -8,6 +8,8 @@
 
 #include <stdlib.h>
 
+#include "config.h"
+
 Map::Map(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
@@ -77,7 +79,7 @@ void Map::setupMap(int x, int y)
 	m_width = x;
 	m_height = y;
 
-	setBackgroundPixmap(QPixmap("data/bayeux.png"));
+	setBackgroundPixmap(QPixmap(GGZDATADIR "/fyrdman/bayeux.png"));
 
 	pix = backgroundPixmap();
 	QImage im = pix->convertToImage();
@@ -210,9 +212,16 @@ void Map::setupMap(int x, int y)
 
 				int x = rand() % 10;
 				if(x == 1)
-					p.drawPixmap(QPoint(xpos + angle, ypos - angle), QPixmap("data/knight2.png"));
+					p.drawPixmap(QPoint(xpos + angle, ypos - angle / 2), QPixmap(GGZDATADIR "/fyrdman/knight2.png"));
 				else if(x == 2)
-					p.drawPixmap(QPoint(xpos + angle, ypos - angle), QPixmap("data/knight1.png"));
+					p.drawPixmap(QPoint(xpos + angle, ypos - angle / 2), QPixmap(GGZDATADIR "/fyrdman/knight1.png"));
+
+				if((x == 1) || (x == 2))
+				{
+					p.fillRect(xpos + angle, ypos + 2 * angle, fwidth - 2 * angle, 7, QBrush(QColor(0, 0, 0)));
+					p.fillRect(xpos + angle + 1, ypos + 2 * angle + 1, fwidth - 2 * angle - 2, 2, QBrush(QColor(x * 100, 255, 255 - x * 100)));
+					p.fillRect(xpos + angle + 1, ypos + 2 * angle + 4, fwidth - 2 * angle - 2, 2, QBrush(QColor(x * 100, 0, 255 - x * 100)));
+				}
 			}
 
 		p.end();

@@ -8,14 +8,14 @@
 #include <klocale.h>
 #include <kpopupmenu.h>
 #include <kapplication.h>
+#include <kstatusbar.h>
+#include <kmessagebox.h>
 
 #include <qsocketnotifier.h>
 
 MainWindow::MainWindow()
 : KMainWindow()
 {
-	KPopupMenu *gamemenu;
-
 	network = NULL;
 
 	map = new Map(this);
@@ -48,6 +48,9 @@ MainWindow::MainWindow()
 	menuBar()->insertItem(i18n("Options"), optionmenu);
 	menuBar()->insertItem(i18n("Help"), helpMenu());
 
+	statusBar()->insertItem(i18n("Not yet playing"), status_state, 0);
+	statusBar()->insertItem(i18n("No level selected"), status_level, 0);
+
 	connect(gamemenu, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(displaymenu, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(optionmenu, SIGNAL(activated(int)), SLOT(slotMenu(int)));
@@ -65,13 +68,14 @@ void MainWindow::slotMenu(int id)
 	switch(id)
 	{
 		case game_new:
-			levelSelector();
+			levelSelector(false);
 			break;
 		case game_info:
 			break;
 		case game_sync:
 			break;
 		case game_quit:
+			if(network) network->shutdown();
 			kapp->quit();
 			break;
 		case option_map:
@@ -93,11 +97,33 @@ void MainWindow::slotMenu(int id)
 	}
 }
 
-void MainWindow::levelSelector()
+void MainWindow::levelSelector(bool networking)
 {
 	int ret;
+	int count;
 
 	LevelSelector l(this);
+	if(networking)
+	{
+		ggz_read_int(network->fd(), &count);
+		for(int i = 0; i < count; i++)
+		{
+			char *title, *author, *version;
+			int mapwidth, mapheight;
+			char board[30], boardmap[30];
+			ggz_read_string_alloc(network->fd(), &title);
+			ggz_read_string_alloc(network->fd(), &author);
+			ggz_read_string_alloc(network->fd(), &version);
+			ggz_read_int(network->fd(), &mapwidth);
+			ggz_read_int(network->fd(), &mapheight);
+			for(int j = 0; j < mapheight; j++)
+				ggz_readn(network->fd(), &board, 30);
+			for(int j = 0; j < mapheight; j++)
+				ggz_readn(network->fd(), &boardmap, 30);
+
+			l.addLevel(title);
+		}
+	}
 	ret = l.exec();
 	if(ret == QDialog::Accepted)
 	{
@@ -114,10 +140,54 @@ void MainWindow::enableNetwork()
 
 	QSocketNotifier *sn = new QSocketNotifier(network->cfd(), QSocketNotifier::Read, this);
 	connect(sn, SIGNAL(activated(int)), network, SLOT(slotDispatch()));
+
+	gamemenu->setItemEnabled(game_new, false);
 }
 
 void MainWindow::slotData()
 {
-	// ...
+	int op;
+	int seat;
+	int playernum;
+	int seats[8];
+	char names[8][17];
+
+	ggz_read_int(network->fd(), &op);
+	switch(op)
+	{
+		case Network::msgmaps:
+			levelSelector(true);
+			break;
+		case Network::msgseat:
+			ggz_read_int(network->fd(), &seat);
+			break;
+		case Network::msgplayers:
+			ggz_read_int(network->fd(), &playernum);
+			for(int i = 0; i < playernum; i++)
+			{
+				ggz_read_int(network->fd(), &seats[i]);
+				if(seats[i] != GGZ_SEAT_OPEN)
+				{
+					ggz_read_string(network->fd(), (char*)names[i], 17);
+				}
+			}
+			break;
+		case Network::reqmove:
+			break;
+		case Network::rspmove:
+			break;
+		case Network::msgmove:
+			break;
+		case Network::sndsync:
+			break;
+		case Network::msggameover:
+			break;
+		default:
+			KMessageBox::error(this,
+				i18n("Bogus network message received."),
+				i18n("Network error"));
+			network->shutdown();
+			break;
+	}
 }
 

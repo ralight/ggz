@@ -69,3 +69,8 @@ void LevelSelector::slotActivated(int id)
 	desc->setText(text);
 }
 
+void LevelSelector::addLevel(QString title)
+{
+	combo->insertItem(title);
+}
+

@@ -1,0 +1,11 @@
+# Hastings description file
+[ModuleInfo]
+Author = Josef Spillner
+CommandLine = @ggzexecmoddir@/fyrdman --ggz
+Frontend = kde
+Homepage = http://ggz.sourceforge.net/games/fyrdman/
+Name = Fyrdman
+ProtocolEngine = Hastings
+ProtocolVersion = 3
+Version = 0.0.6
+

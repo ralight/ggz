@@ -22,13 +22,11 @@ fyrdman_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_GGZ) $(LIB_GGZMOD)
 
 METASOURCES = AUTO
 
-#EXTRA_DIST = module.dsc.in
+EXTRA_DIST = module.dsc.in
 
-#KDE_ICON = fyrdman
+install-data-local:
+	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
 
-#install-data-local:
-#	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
-
-#uninstall-local:
-#	-$(GGZ_CONFIG) -D --remove --modfile=module.dsc
+uninstall-local:
+	-$(GGZ_CONFIG) -D --remove --modfile=module.dsc
 

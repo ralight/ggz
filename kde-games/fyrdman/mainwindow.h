@@ -21,7 +21,7 @@ class MainWindow : public KMainWindow
 		void slotData();
 
 	private:
-		void levelSelector();
+		void levelSelector(bool networking);
 
 		enum Items
 		{
@@ -35,7 +35,13 @@ class MainWindow : public KMainWindow
 			option_animation
 		};
 
-		KPopupMenu *displaymenu, *optionmenu;
+		enum Statuscodes
+		{
+			status_state,
+			status_level
+		};
+
+		KPopupMenu *gamemenu, *displaymenu, *optionmenu;
 		Map *map;
 		Network *network;
 };

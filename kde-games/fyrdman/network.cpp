@@ -21,6 +21,12 @@ void Network::connect()
 	m_cfd = ggzmod_get_fd(mod);
 }
 
+void Network::shutdown()
+{
+	ggzmod_disconnect(mod);
+	ggzmod_free(mod);
+}
+
 void Network::handle(GGZMod *mod, GGZModEvent e, void *data)
 {
 	me->m_fd = *(int*)data;
