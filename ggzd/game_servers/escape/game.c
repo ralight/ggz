@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: game.c 2242 2001-08-25 14:58:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -501,8 +501,23 @@ char game_check_win(void)
 	return -1;
 }
 
+/* FIXME: there's no reason this should be separate from game_update */
+int ggz_update(ggzd_event_t event, void *data)
+{
+	switch (event) {
+		case GGZ_EVENT_LAUNCH:
+			return game_update(ESCAPE_EVENT_LAUNCH, data);
+		case GGZ_EVENT_JOIN:
+			return game_update(ESCAPE_EVENT_JOIN, data);
+		case GGZ_EVENT_LEAVE:
+			return game_update(ESCAPE_EVENT_LEAVE, data);
+		default:
+			ggzd_debug("ggz_update: bad event.");
+	}
+}
+
 /* Update game state */
-int game_update(ggzd_event_t event, void *d1)
+int game_update(int event, void *d1)
 {
 	int seat;
 	char direction;

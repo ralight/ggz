@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 28th June 2001
  * Desc: Game functions
- * $Id: game.h 2229 2001-08-25 14:52:34Z jdorje $
+ * $Id: game.h 2242 2001-08-25 14:58:07Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -96,6 +96,7 @@ struct escape_game_t {
 extern struct escape_game_t escape_game;
 
 void game_init(void);
+int game_update(int, void *);
 
 int game_send_seat(int);
 int game_send_players(void);
@@ -112,7 +113,8 @@ int game_bot_move(void);
 char game_check_move(int, int);
 char game_check_win(void);
 
-int game_update(ggzd_event_t, void *);
+
+int ggz_update(ggzd_event_t event, void *data);
 int game_handle_player(ggzd_event_t event, void* data);
 
 unsigned char revdir(unsigned char direction);
