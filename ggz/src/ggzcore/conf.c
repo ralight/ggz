@@ -6,7 +6,7 @@
  *
  * External functions for handling configuration files
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000, 2001 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,11 +27,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 
 #include "ggzcore.h"
 #include "confio.h"
@@ -58,7 +53,6 @@ static int g_handle = -1;
 static int u_handle = -1;
 
 /* Private functions */
-int make_path(const char *full, mode_t mode);
 
 
 /* ggzcore_conf_initialize()
@@ -72,33 +66,18 @@ int make_path(const char *full, mode_t mode);
  */
 int ggzcore_conf_initialize(const char *g_path, const char *u_path)
 {
-	int	t_file;
-
 	if(g_handle != -1 || u_handle != -1) {
 		ggzcore_debug(GGZ_DBG_CONF,
 			      "ggzcore_conf_initialize() called twice");
 		return -1;
 	}
 
-	/* Let _ggzcore_confio handle opening the files */
+	/* Let ggzcore_confio handle opening the files */
 	if(g_path)
-		g_handle = _ggzcore_confio_parse(g_path);
-	if(u_path) {
-		u_handle = _ggzcore_confio_parse(u_path);
-		if(u_handle < 0) {
-			/* It might have failed due to not existing yet, */
-			/* so create it */
-			make_path(u_path, 0700);
-			t_file = open(u_path, O_RDWR | O_CREAT | O_EXCL,
-					      S_IRUSR | S_IWUSR);
-			if(t_file != -1) {
-				close(t_file);
-
-				/* The file now exists, so try again */
-				u_handle = _ggzcore_confio_parse(u_path);
-			}
-		}
-	}
+		g_handle = ggzcore_confio_parse(g_path, GGZ_CONFIO_RDONLY);
+	if(u_path)
+		u_handle = ggzcore_confio_parse(u_path, GGZ_CONFIO_RDWR |
+							GGZ_CONFIO_CREATE);
 
 	/* We consider it "success" if EITHER file is sucessfully opened */
 	if(g_handle != -1 || u_handle != -1)
@@ -130,7 +109,7 @@ int ggzcore_conf_write_string(const char *section, const char *key, const char *
 		return -1;
 	}
 
-	return _ggzcore_confio_write_string(u_handle, section, key, value);
+	return ggzcore_confio_write_string(u_handle, section, key, value);
 }
 
 
@@ -153,7 +132,7 @@ int ggzcore_conf_write_int(const char *section, const char *key, int value)
 		return -1;
 	}
 
-	return _ggzcore_confio_write_int(u_handle, section, key, value);
+	return ggzcore_confio_write_int(u_handle, section, key, value);
 }
 
 
@@ -176,7 +155,7 @@ int ggzcore_conf_write_list(const char *section, const char *key, int argc, char
 		return -1;
 	}
 
-	return _ggzcore_confio_write_list(u_handle, section, key, argc, argv);
+	return ggzcore_confio_write_list(u_handle, section, key, argc, argv);
 }
 
 
@@ -204,9 +183,9 @@ char * ggzcore_conf_read_string(const char *section, const char *key, const char
 
 	/* Check the user file first, then the global */
 	if(u_handle != -1)
-		s = _ggzcore_confio_read_string(u_handle, section, key, NULL);
+		s = ggzcore_confio_read_string(u_handle, section, key, NULL);
 	if(!s && g_handle != -1)
-		s = _ggzcore_confio_read_string(g_handle, section, key, NULL);
+		s = ggzcore_confio_read_string(g_handle, section, key, NULL);
 
 	/* If nothing in either file, give them a copy of their default */
 	if(!s && def)
@@ -244,9 +223,9 @@ int ggzcore_conf_read_int(const char *section, const char *key, int def)
 	/* if the first return was actually found or we were just getting  */
 	/* the default integer.	*/
 	if(u_handle != -1)
-		s = _ggzcore_confio_read_string(u_handle, section, key, NULL);
+		s = ggzcore_confio_read_string(u_handle, section, key, NULL);
 	if(!s && g_handle != -1)
-		s = _ggzcore_confio_read_string(g_handle, section, key, NULL);
+		s = ggzcore_confio_read_string(g_handle, section, key, NULL);
 
 	/* If nothing in either file, give them their default */
 	if(!s)
@@ -286,10 +265,10 @@ int ggzcore_conf_read_list(const char *section, const char *key, int *argcp, cha
 
 	/* Check the user file first, then the global */
 	if(u_handle != -1)
-		rc = _ggzcore_confio_read_list(u_handle, section, key,
+		rc = ggzcore_confio_read_list(u_handle, section, key,
 					       argcp, argvp);
 	if(rc == -1 && g_handle != -1)
-		rc = _ggzcore_confio_read_list(g_handle, section, key,
+		rc = ggzcore_confio_read_list(g_handle, section, key,
 					       argcp, argvp);
 
 	/* Just return the status from the last read_list call */
@@ -317,7 +296,7 @@ int ggzcore_conf_remove_section(const char *section)
 		return -1;
 	}
 
-	return _ggzcore_confio_remove_section(u_handle, section);
+	return ggzcore_confio_remove_section(u_handle, section);
 }
 
 
@@ -341,7 +320,7 @@ int ggzcore_conf_remove_key(const char *section, const char *key)
 		return -1;
 	}
 
-	return _ggzcore_confio_remove_key(u_handle, section, key);
+	return ggzcore_confio_remove_key(u_handle, section, key);
 }
 
 
@@ -360,42 +339,5 @@ int ggzcore_conf_commit(void)
 		return -1;
 	}
 
-	return _ggzcore_confio_commit(u_handle);
-}
-
-
-/* make_path()
- *	Routine to create all directories needed to build 'path'
- */
-int make_path(const char *full, mode_t mode)
-{
-	char		*copy, *node, *path;
-	struct stat	stats;
-
-	copy = strdup(full);
-
-	/* FIXME: check validity */
-	/* Allocate and zero memory for path */
-	if((path = calloc(strlen(full)+1, sizeof(char))) == NULL)
-		ggzcore_error_sys_exit("malloc failed in make_path");
- 
-	/* Skip preceding / */
-	if (copy[0] == '/')
-		copy++;
-
-	while ((node = strsep(&copy, "/"))) {
-		/* While there's still stuff left, it's a directory */
-		if (copy != NULL) {
-			strcat(strcat(path, "/"), node);
-			if (mkdir(path, mode) < 0
-			    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
-				free(path);
-				free(copy);
-				
-				return -1;
-			}
-		}
-	}
-
-	return 0;
+	return ggzcore_confio_commit(u_handle);
 }

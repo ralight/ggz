@@ -6,7 +6,7 @@
  *
  * Internal functions for handling configuration files
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000, 2001 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "ggzcore.h"
 #include "lists.h"
@@ -61,11 +65,12 @@ static void *entry_create(void *data);
 static void entry_destroy(void *data);
 static char *dup_string(const char *src);
 static _ggzcore_confio_file * get_file_data(int handle);
+static int make_path(const char *path, mode_t mode);
 
 static _ggzcore_list	*file_list=NULL;
 
 
-/* _ggzcore_confio_read_string()
+/* ggzcore_confio_read_string()
  *	Search the lists using the specified handle to find the string
  *	stored under section/key.
  *
@@ -74,7 +79,7 @@ static _ggzcore_list	*file_list=NULL;
  *	  - ptr to a malloc()'ed copy of default if not found
  *	  - ptr to NULL if not found and no default
  */
-char * _ggzcore_confio_read_string(int handle, const char *section,
+char * ggzcore_confio_read_string(int handle, const char *section,
 				   const char *key, const char *def)
 {
 	_ggzcore_confio_file	*f_data;
@@ -112,20 +117,20 @@ do_default:
 }
 
 
-/* _ggzcore_confio_read_int()
+/* gzcore_confio_read_int()
  *	This is simply a wrapper around read_string() to convert the
  *	string into an integer.
  *
  *	Returns:
  *	  - int value from variable, or def if not found
  */
-int _ggzcore_confio_read_int(int handle, const char *section, const char *key, int def)
+int ggzcore_confio_read_int(int handle, const char *section, const char *key, int def)
 {
 	char	tmp[20], *tmp2;
 	int	value;
 
 	sprintf(tmp, "%d", def);
-	tmp2 = _ggzcore_confio_read_string(handle, section, key, tmp);
+	tmp2 = ggzcore_confio_read_string(handle, section, key, tmp);
 	value = atoi(tmp2);
 	free(tmp2);
 
@@ -133,7 +138,7 @@ int _ggzcore_confio_read_int(int handle, const char *section, const char *key, i
 }
 
 
-/* _ggzcore_confio_read_list()
+/* ggzcore_confio_read_list()
  *	This is simply a wrapper around read_string() to convert the
  *	string into a list.
  *
@@ -143,7 +148,7 @@ int _ggzcore_confio_read_int(int handle, const char *section, const char *key, i
  *	  - 0 on success
  *	  - -1 on error
  */
-int _ggzcore_confio_read_list(int handle, const char *section, const char *key,
+int ggzcore_confio_read_list(int handle, const char *section, const char *key,
 			      int *argcp, char ***argvp)
 {
 	int	index, rc;
@@ -151,7 +156,7 @@ int _ggzcore_confio_read_list(int handle, const char *section, const char *key,
 	char	*str, *tmp, *tmp2;
 	char	saw_space=0, saw_backspace;
 
-	str = _ggzcore_confio_read_string(handle, section, key, NULL);
+	str = ggzcore_confio_read_string(handle, section, key, NULL);
 
 	if (str != NULL) {
 		rc = 0;
@@ -187,7 +192,7 @@ int _ggzcore_confio_read_list(int handle, const char *section, const char *key,
 			}
 
 			if((tmp2 = malloc(p-tmp+1)) == NULL)
-				ggzcore_error_sys_exit("malloc failed in _ggzcore_confio_read_list");
+				ggzcore_error_sys_exit("malloc failed in ggzcore_confio_read_list");
 			(*argvp)[index] = strncpy(tmp2, tmp, p - tmp);
 			tmp2[p-tmp] = '\0';
 			s1 = s2 = (*argvp)[index++];
@@ -214,7 +219,7 @@ int _ggzcore_confio_read_list(int handle, const char *section, const char *key,
 }
 
 
-/* _ggzcore_confio_write_string()
+/* ggzcore_confio_write_string()
  *	Store the value specified into the list structures for the config
  *	file referred to by handle.  Will create a new section and/or
  *	key entry if needed.
@@ -223,7 +228,7 @@ int _ggzcore_confio_read_list(int handle, const char *section, const char *key,
  *	  - 0 on no error
  *	  - -1 on error
  */
-int _ggzcore_confio_write_string(int handle, const char *section,
+int ggzcore_confio_write_string(int handle, const char *section,
 				 const char *key, const char *value)
 {
 	_ggzcore_confio_file	*f_data;
@@ -235,13 +240,20 @@ int _ggzcore_confio_write_string(int handle, const char *section,
 	if((f_data = get_file_data(handle)) == NULL)
 		return -1;
 
+	/* Is this confio writeable? */
+	if(!f_data->writeable) {
+		ggzcore_debug(GGZ_DBG_CONF,
+		      "ggzcore_confio_write_string: file is read-only");
+		return -1;
+	}
+
 	/* Find the requested [Section] */
 	s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
 	if(s_entry == NULL) {
 		/* We need to create a new [Section] */
 		if(_ggzcore_list_insert(f_data->section_list, (void*)section) < 0) {
 			ggzcore_debug(GGZ_DBG_CONF,
-			      "_ggzcore_confio_write_string: insertion error");
+			      "ggzcore_confio_write_string: insertion error");
 			return -1;
 		}
 		s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
@@ -253,7 +265,7 @@ int _ggzcore_confio_write_string(int handle, const char *section,
 	e_data.value = (char*)value;
 	if(_ggzcore_list_insert(s_data->entry_list, &e_data) < 0) {
 		ggzcore_debug(GGZ_DBG_CONF,
-			      "_ggzcore_confio_write_string: insertion error");
+			      "ggzcore_confio_write_string: insertion error");
 		return -1;
 	}
 
@@ -261,7 +273,7 @@ int _ggzcore_confio_write_string(int handle, const char *section,
 }
 
 
-/* _ggzcore_confio_write_int()
+/* ggzcore_confio_write_int()
  *	This is simply a wrapper around write_string() to convert the
  *	string into an integer.
  *
@@ -269,16 +281,16 @@ int _ggzcore_confio_write_string(int handle, const char *section,
  *	  - 0 on success
  *	  - -1 on failure
  */
-int _ggzcore_confio_write_int(int handle, const char *section, const char *key, int value)
+int ggzcore_confio_write_int(int handle, const char *section, const char *key, int value)
 {
 	char	tmp[20];
 
 	sprintf(tmp, "%d", value);
-	return _ggzcore_confio_write_string(handle, section, key, tmp);
+	return ggzcore_confio_write_string(handle, section, key, tmp);
 }
 
 
-/* _ggzcore_confio_write_list()
+/* ggzcore_confio_write_list()
  *	Converts an array of list entries into a text list that read_list()
  *	can parse.  The text is then written using write_string().
  *
@@ -291,7 +303,7 @@ int _ggzcore_confio_write_int(int handle, const char *section, const char *key, 
  *	  - 0 on success
  *	  - -1 on failure
  */
-int _ggzcore_confio_write_list(int handle, const char *section, 
+int ggzcore_confio_write_list(int handle, const char *section, 
 			       const char *key, int argc, char **argv)
 {
 	int	i;
@@ -320,11 +332,11 @@ int _ggzcore_confio_write_list(int handle, const char *section,
 	dst--;
 	*dst = '\0';
 
-	return _ggzcore_confio_write_string(handle, section, key, buf);
+	return ggzcore_confio_write_string(handle, section, key, buf);
 }
 
 
-/* _ggzcore_confio_remove_section()
+/* ggzcore_confio_remove_section()
  *	Removes the specified section from the config file pointed to by
  *	handle.
  *
@@ -333,7 +345,7 @@ int _ggzcore_confio_write_list(int handle, const char *section,
  *	  - 1 if [Section] did not exist (soft error)
  *	  - -1 on failure
  */
-int _ggzcore_confio_remove_section(int handle, const char *section)
+int ggzcore_confio_remove_section(int handle, const char *section)
 {
 	_ggzcore_confio_file	*f_data;
 	_ggzcore_list_entry	*s_entry;
@@ -341,6 +353,13 @@ int _ggzcore_confio_remove_section(int handle, const char *section)
 	/* Find this file entry in our file list */
 	if((f_data = get_file_data(handle)) == NULL)
 		return -1;
+
+	/* Is this confio writeable? */
+	if(!f_data->writeable) {
+		ggzcore_debug(GGZ_DBG_CONF,
+		      "ggzcore_confio_remove_section: file is read-only");
+		return -1;
+	}
 
 	/* Find the requested [Section] */
 	s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
@@ -355,7 +374,7 @@ int _ggzcore_confio_remove_section(int handle, const char *section)
 }
 
 
-/* _ggzcore_confio_remove_key()
+/* ggzcore_confio_remove_key()
  *	Removes the specified key from the config file pointed to by
  *	handle and section.
  *
@@ -364,7 +383,7 @@ int _ggzcore_confio_remove_section(int handle, const char *section)
  *	  - 1 if [Section] or Key did not exist (soft error)
  *	  - -1 on failure
  */
-int _ggzcore_confio_remove_key(int handle, const char *section, const char *key)
+int ggzcore_confio_remove_key(int handle, const char *section, const char *key)
 {
 	_ggzcore_confio_file	*f_data;
 	_ggzcore_list_entry	*s_entry, *e_entry;
@@ -374,6 +393,13 @@ int _ggzcore_confio_remove_key(int handle, const char *section, const char *key)
 	/* Find this file entry in our file list */
 	if((f_data = get_file_data(handle)) == NULL)
 		return -1;
+
+	/* Is this confio writeable? */
+	if(!f_data->writeable) {
+		ggzcore_debug(GGZ_DBG_CONF,
+		      "ggzcore_confio_remove_key: file is read-only");
+		return -1;
+	}
 
 	/* Find the requested [Section] */
 	s_entry = _ggzcore_list_search(f_data->section_list, (void*)section);
@@ -394,7 +420,7 @@ int _ggzcore_confio_remove_key(int handle, const char *section, const char *key)
 }
 
 
-/* _ggzcore_confio_commit()
+/* ggzcore_confio_commit()
  *	This commits any changes that have been made to internal variables
  *	into the on-disk config file.  This should be done as frequently
  *	as the user feels necessary.
@@ -403,7 +429,7 @@ int _ggzcore_confio_remove_key(int handle, const char *section, const char *key)
  *	  - 0 on success
  *	  - -1 on failure
  */
-int _ggzcore_confio_commit(int handle)
+int ggzcore_confio_commit(int handle)
 {
 	_ggzcore_confio_file	*f_data;
 	_ggzcore_list_entry	*s_entry, *e_entry;
@@ -415,6 +441,13 @@ int _ggzcore_confio_commit(int handle)
 	/* Find this file entry in our file list */
 	if((f_data = get_file_data(handle)) == NULL)
 		return -1;
+
+	/* Is this confio writeable? */
+	if(!f_data->writeable) {
+		ggzcore_debug(GGZ_DBG_CONF,
+		      "ggzcore_confio_commit: file is read-only");
+		return -1;
+	}
 
 	/* Open our configuration file for writing */
 	if((c_file = fopen(f_data->path, "w")) == NULL) {
@@ -485,25 +518,70 @@ void _ggzcore_confio_cleanup(void)
 }
 
 
-/* _ggzcore_confio_parse(path)
+/* ggzcore_confio_parse(path)
  *	Load up and parse a configuration file into a set of linked lists.
  *
  *	Returns:
  *	  - an integer handle which the caller can use to access the variables
  *	  - -1 on failure
  */
-int	_ggzcore_confio_parse(const char *path)
+int	ggzcore_confio_parse(const char *path, const unsigned char options)
 {
 	static int		next_handle=0;
 
 	_ggzcore_confio_file	*file_data;
 	_ggzcore_list		*section_list;
 
+	int			opt_create, opt_rdonly, opt_rdwr;
+	int			t_file;
+
 
 	/* Our first time through we need to intialize the file list */
 	if(!file_list)
 		file_list = _ggzcore_list_create(NULL, NULL, NULL,
 						 _GGZCORE_LIST_ALLOW_DUPS);
+
+	/* Check for insane options */
+	opt_create = ((options & GGZ_CONFIO_CREATE) == GGZ_CONFIO_CREATE);
+	opt_rdonly = ((options & GGZ_CONFIO_RDONLY) == GGZ_CONFIO_RDONLY);
+	opt_rdwr = ((options & GGZ_CONFIO_RDWR) == GGZ_CONFIO_RDWR);
+
+	if(opt_rdonly && (opt_rdwr || opt_create)) {
+		ggzcore_debug(GGZ_DBG_CONF,
+			      "ggzcore_confio_parse: Invalid options");
+		return -1;
+	}
+	if(!opt_rdonly && !opt_rdwr) {
+		ggzcore_debug(GGZ_DBG_CONF,
+			      "ggzcore_confio_parse: Invalid options");
+		return -1;
+	}
+
+	/* Check to see if the file exists */
+	if(access(path, F_OK)) {
+		/* Create the file if requested and we can */
+		if(opt_create) {
+			make_path(path, 0700);
+			t_file = open(path, O_RDWR | O_CREAT | O_EXCL,
+					    S_IRUSR | S_IWUSR);
+			if(t_file != -1)
+				close(t_file);
+			else {
+				ggzcore_error_sys("Unable to create file %s", path);
+				return -1;
+			}
+		}
+	}
+
+	/* Check read or writablity of file */
+	if(opt_rdonly && access(path, R_OK)) {
+		ggzcore_error_sys("Unable to read file %s", path);
+		return -1;
+	}
+	if(opt_rdwr && access(path, R_OK | W_OK)) {
+		ggzcore_error_sys("Unable to read or write file %s", path);
+		return -1;
+	}
 
 	/* Go do the dirty work and give us a section_list */
 	section_list = file_parser(path);
@@ -514,9 +592,10 @@ int	_ggzcore_confio_parse(const char *path)
 	/* Build our file list data entry */
 	file_data = malloc(sizeof(_ggzcore_confio_file));
 	if(!file_data)
-		ggzcore_error_sys_exit("malloc failed: _ggzcore_confio_parse");
+		ggzcore_error_sys_exit("malloc failed: ggzcore_confio_parse");
 	file_data->path = dup_string(path);
 	file_data->handle = next_handle;
+	file_data->writeable = opt_rdwr;
 	file_data->section_list = section_list;
 
 	/* Now store the new list entry */
@@ -561,6 +640,7 @@ static _ggzcore_list * file_parser(const char *path)
 
 	/* Open the input config file */
 	if((c_file = fopen(path, "r")) == NULL) {
+		/* This should be impossible now, due to checks made earlier? */
 		ggzcore_error_sys("Unable to read file %s", path);
 		return NULL;
 	}
@@ -816,3 +896,38 @@ static void entry_destroy(void *data)
 	free(e_data);
 }
 
+/* make_path()
+ *	Routine to create all directories needed to build 'path'
+ */
+int make_path(const char *full, mode_t mode)
+{
+	char		*copy, *node, *path;
+	struct stat	stats;
+
+	copy = strdup(full);
+
+	/* FIXME: check validity */
+	/* Allocate and zero memory for path */
+	if((path = calloc(strlen(full)+1, sizeof(char))) == NULL)
+		ggzcore_error_sys_exit("malloc failed in make_path");
+ 
+	/* Skip preceding / */
+	if (copy[0] == '/')
+		copy++;
+
+	while ((node = strsep(&copy, "/"))) {
+		/* While there's still stuff left, it's a directory */
+		if (copy != NULL) {
+			strcat(strcat(path, "/"), node);
+			if (mkdir(path, mode) < 0
+			    && (stat(path, &stats) < 0 || !S_ISDIR(stats.st_mode))) {
+				free(path);
+				free(copy);
+				
+				return -1;
+			}
+		}
+	}
+
+	return 0;
+}
