@@ -1,5 +1,5 @@
 SUBDIRS = .
 
-man_MANS = grubby.6
-EXTRA_DIST = grubby.6 
+man_MANS = grubby.6 grubby-config.1
+EXTRA_DIST = grubby.6 grubby-config.1
 
