@@ -145,6 +145,8 @@ typedef enum {
 	GGZ_ENTER_FAIL,
 	GGZ_LOGOUT,
 	GGZ_NET_ERROR,
+	GGZ_PROTOCOL_ERROR,
+	GGZ_CHAT_FAIL,
 	GGZ_STATE_CHANGE
 } GGZServerEvent;
 
@@ -252,13 +254,13 @@ int ggzcore_server_is_in_room(GGZServer *server);
 int ggzcore_server_is_at_table(GGZServer *server);
 
 /* GGZ Server Actions */
-void ggzcore_server_connect(GGZServer *server);
-void ggzcore_server_login(GGZServer *server);
-void ggzcore_server_motd(GGZServer *server);
-void ggzcore_server_list_rooms(GGZServer *server, const int type, const char verbose);
-void ggzcore_server_list_gametypes(GGZServer *server, const char verbose);
-void ggzcore_server_join_room(GGZServer *server, const int room);
-void ggzcore_server_logout(GGZServer *server);
+int ggzcore_server_connect(GGZServer *server);
+int ggzcore_server_login(GGZServer *server);
+int ggzcore_server_motd(GGZServer *server);
+int ggzcore_server_list_rooms(GGZServer *server, const int type, const char verbose);
+int ggzcore_server_list_gametypes(GGZServer *server, const char verbose);
+int ggzcore_server_join_room(GGZServer *server, const int room);
+int ggzcore_server_logout(GGZServer *server);
 
 /* Functions for data processing */
 int ggzcore_server_data_is_pending(GGZServer *server);

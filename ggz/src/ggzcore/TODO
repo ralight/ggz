@@ -1,18 +1,3 @@
-- implement GGZ_NET_ERROR event
-
-- implement GGZ_PROTO_ERROR event
-
-- an error sybsystem is crucial
-  Kinds of errors:
-  Catastrophic errors: non-recoverable "give-up-and-die" errors like
-                      failed malloc()
-  Network errors: pathalogical errors that cause a disconnection
-  Bad data from server, or game module: ?
-  Bad data from user: report or ignore
-  What to do when an error occurs during a callback?1
-
-- Move over to ggzcore_malloc/free
-
 - redo GGZTable to store actual seat information, not open/bots/etc.
 
 - finish up room object: table lists updates
@@ -21,18 +6,14 @@
 
 - Fix the player/table pointing problem
 
-- Implement GGZModule
-
-- rather than permanently having a callback for events like
-  SERVER_ROOM_CHANGE, we will register one when the client makes a
-  request for a room change.  This hook then gets removed after it is
-  called.  We can use this mechanism to pass information such as
-  whether a verbose listing was requested, or what room was requested
-  (this is really a frontend TODO)
+- Implement ggzcore_strdup() to use ggzcore_malloc() and return NULL
+  if passed NULL (instead of segfaulting)
 
 - Provide a GGZ_AUTOLOAD option to automatically load room and type
   lists (and motd?) upon logging in and the player and table lists
   upon entering a room.
+
+- Implement GGZGame to handle forking/communication game process
 
 - Reimplement net functionality as its own object
 
@@ -41,4 +22,12 @@
   bytes right after the opcode.  This is also easier if there are no
   "conditionals" in the messages.  The verbose information can be
   obtained in a separate message
+
+
+- rather than permanently having a callback for events like
+  SERVER_ROOM_CHANGE, we will register one when the client makes a
+  request for a room change.  This hook then gets removed after it is
+  called.  We can use this mechanism to pass information such as
+  whether a verbose listing was requested, or what room was requested
+  (this is really a frontend TODO)
 

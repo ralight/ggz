@@ -302,7 +302,6 @@ int _ggzcore_net_read_motd(const unsigned int fd, int *lines, char ***buffer)
 	int i;
 	char **motd;
 
-	/* FIXME: check for errors */
 	if (es_read_int(fd, lines) < 0)
 		return -1;
 

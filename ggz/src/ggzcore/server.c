@@ -74,6 +74,8 @@ static void _ggzcore_server_handle_update_tables(GGZServer *server);
 static void _ggzcore_server_handle_list_tables(GGZServer *server);
 static void _ggzcore_server_handle_list_types(GGZServer *server);
 
+static void _ggzcore_server_net_error(GGZServer *server, char *message);
+static void _ggzcore_server_protocol_error(GGZServer *server, char *message);
 
 /* Array of GGZServerEvent messages */
 static char* _ggzcore_server_events[] = {
@@ -90,6 +92,8 @@ static char* _ggzcore_server_events[] = {
 	"GGZ_ENTER_FAIL",
 	"GGZ_LOGOUT",
 	"GGZ_NET_ERROR",
+	"GGZ_PROTOCOL_ERROR",
+	"GGZ_CHAT_FAIL",
 	"GGZ_STATE_CHANGE"
 };
 
@@ -261,10 +265,7 @@ int ggzcore_server_add_event_hook_full(GGZServer *server,
 				       const GGZHookFunc func,
 				       void *data)
 {
-	if (!server)
-		return -1;
-
-	if (!_ggzcore_server_event_is_valid(event))
+	if (!server || !_ggzcore_server_event_is_valid(event))
 		return -1;
 
 	return _ggzcore_hook_add_full(server->event_hooks[event], func, data);
@@ -275,10 +276,7 @@ int ggzcore_server_remove_event_hook(GGZServer *server,
 				     const GGZServerEvent event, 
 				     const GGZHookFunc func)
 {
-	if (!server)
-		return -1;
-
-	if (!_ggzcore_server_event_is_valid(event))
+	if (!server || !_ggzcore_server_event_is_valid(event))
 		return -1;
 
 	return _ggzcore_hook_remove(server->event_hooks[event], func);
@@ -289,10 +287,7 @@ int ggzcore_server_remove_event_hook_id(GGZServer *server,
 					    const GGZServerEvent event, 
 					    const unsigned int hook_id)
 {
-	if (!server)
-		return -1;
-
-	if (!_ggzcore_server_event_is_valid(event))
+	if (!server || !_ggzcore_server_event_is_valid(event))
 		return -1;
 
 	return _ggzcore_hook_remove_id(server->event_hooks[event], hook_id);
@@ -306,8 +301,10 @@ void ggzcore_server_free(GGZServer *server)
 	if (!server)
 		return;
 
-	free(server->host);
-	free(server->handle);
+	if (server->host)
+		free(server->host);
+	if (server->handle)
+		free(server->handle);
 	if (server->password)
 		free(server->password);
 
@@ -521,115 +518,136 @@ int ggzcore_server_is_at_table(GGZServer *server)
 }
 
 
-void ggzcore_server_connect(GGZServer *server)
+int ggzcore_server_connect(GGZServer *server)
 {
-	/* FIXME: check validity of this action */
+	if (!server || server->state != GGZ_STATE_OFFLINE)
+		return -1;
 
 	_ggzcore_server_change_state(server, GGZ_TRANS_CONN_TRY);
-
 	server->fd = _ggzcore_net_connect(server->host, server->port);
 	
 	if (server->fd < 0) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_FAIL);
 		_ggzcore_server_event(server, GGZ_CONNECT_FAIL, 
 				      strerror(errno));
+		return -1;
 	}
 	else {
 		_ggzcore_server_event(server, GGZ_CONNECTED, NULL);
+		return 0;
 	}
 }
 
 
-void ggzcore_server_login(GGZServer *server)
+int ggzcore_server_login(GGZServer *server)
 {
-	/* FIXME: check validity of this action */
 	int status; 
 
-	if (!server)
-		return;
+	if (!server || server->state != GGZ_STATE_ONLINE)
+		return -1;
 
 	status = _ggzcore_net_send_login(server->fd, server->type, 
-					 server->handle,  server->password);
-	/* FIXME: handle errors */
+					 server->handle, server->password);
 
-	_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_TRY);
+	if (status < 0)
+		_ggzcore_server_net_error(server, NULL);
+	else
+		_ggzcore_server_change_state(server, GGZ_TRANS_LOGIN_TRY);
+
+	return status;
 }
 
 
-void ggzcore_server_motd(GGZServer *server)
+int ggzcore_server_motd(GGZServer *server)
 {
 	int status;
 
-	if (!server)
-		return;
+	if (!server || server->state < GGZ_STATE_LOGGED_IN)
+		return -1;
 
 	status = _ggzcore_net_send_motd(server->fd);
-	/* FIXME: handle errors */
+
+	if (status < 0)
+		_ggzcore_server_net_error(server, NULL);
+
+	return status;
 }
 
 
-void ggzcore_server_list_rooms(GGZServer *server, 
+int ggzcore_server_list_rooms(GGZServer *server, 
 			       const int type, 
 			       const char verbose)
 {
-	/* FIXME: check validity of this action */
 	int status;
 
-	if (!server)
-		return;
+	if (!server || server->state < GGZ_STATE_LOGGED_IN)
+		return -1;
 
 	server->room_verbose = verbose;
 	status = _ggzcore_net_send_list_rooms(server->fd, type, verbose);
-	/* FIXME: handle errors */
+
+	if (status < 0)
+		_ggzcore_server_net_error(server, NULL);
+
+	return status;
 }
 
 
-void ggzcore_server_list_gametypes(GGZServer *server, const char verbose)
+int ggzcore_server_list_gametypes(GGZServer *server, const char verbose)
 {
 	int status;
 
-	if (!server)
-		return;
+	if (!server || server->state < GGZ_STATE_LOGGED_IN)
+		return -1;
 
 	server->gametype_verbose = verbose;
 	status = _ggzcore_net_send_list_types(server->fd, verbose);
-	/* FIXME: handle errors */
+
+	if (status < 0)
+		_ggzcore_server_net_error(server, NULL);
+
+	return status;
 }
 
 
-void ggzcore_server_join_room(GGZServer *server, const int room)
+int ggzcore_server_join_room(GGZServer *server, const int room)
 {
-	/* FIXME: check validity of this action */
 	int status;
 
-	if (!server)
-		return;
+	/* FIXME: check validity of this action */
+	if (!server || room >= server->num_rooms)
+		return -1;
 
-	/* FIXME: check validty of room */
 	status = _ggzcore_net_send_join_room(server->fd, room);
-	/* FIXME: handle errors */
 
-	server->new_room = ggzcore_server_get_nth_room(server, room);
-	
-	_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_TRY);
+	if (status < 0)
+		_ggzcore_server_net_error(server, NULL);
+	else {
+		server->new_room = ggzcore_server_get_nth_room(server, room);
+		_ggzcore_server_change_state(server, GGZ_TRANS_ENTER_TRY);
+	}
+
+	return status;
 }
 
 
-void ggzcore_server_logout(GGZServer *server)
+int ggzcore_server_logout(GGZServer *server)
 {
-	/* FIXME: check validity of this action */
 	int status;
-
-	if (!server)
-		return;
-
-	if (server->state == GGZ_STATE_OFFLINE)
-		return;
+	
+	if (!server 
+	    || server->state == GGZ_STATE_OFFLINE 
+	    || server->state == GGZ_STATE_LOGGING_OUT)
+		return -1;
 
 	status = _ggzcore_net_send_logout(server->fd);
-	/* FIXME: handle errors */
 
-	_ggzcore_server_change_state(server, GGZ_TRANS_LOGOUT_TRY);
+	if (status < 0)
+		_ggzcore_server_net_error(server, NULL);
+	else
+		_ggzcore_server_change_state(server, GGZ_TRANS_LOGOUT_TRY);
+
+	return status;
 }
 
 
@@ -670,11 +688,16 @@ int ggzcore_server_read_data(GGZServer *server)
 
 	ggzcore_debug(GGZ_DBG_SERVER, "Processing server events");
 	status = _ggzcore_net_read_opcode(server->fd, &opcode);
-	/* FIXME: check for errors */
+	
+	if (status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return -1;
+	}
 	
 	if (opcode < 0 || opcode >= _ggzcore_num_messages) {
-		ggzcore_debug(GGZ_DBG_SERVER, "Bad opcode from server %d/%d", opcode, _ggzcore_num_messages);
-		/* FIXME: issue protocol error */
+		ggzcore_debug(GGZ_DBG_SERVER, "Bad opcode %d from server", 
+			      opcode);
+		_ggzcore_server_protocol_error(server, "Bad opcode");
 		return -1;
 	}
 	
@@ -699,25 +722,41 @@ int ggzcore_server_write_data(GGZServer *server)
 
 /* Internal library functions (prototypes in server.h) */
 
-void _ggzcore_server_list_players(GGZServer *server)
+int _ggzcore_server_list_players(GGZServer *server)
 {
 	int status;
 
 	status = _ggzcore_net_send_list_players(server->fd);
+	
+	if (status < 0)
+		_ggzcore_server_net_error(server, NULL);
+
+	return status;
 }
 
 
-void _ggzcore_server_list_tables(GGZServer *server, const int type, const char global)
+int _ggzcore_server_list_tables(GGZServer *server, const int type, const char global)
 {
 	int status;
 
 	status = _ggzcore_net_send_list_tables(server->fd, type, global);
+
+	if (status < 0)
+		_ggzcore_server_net_error(server, NULL);
+	
+	return status;
 }
 
 
 struct _GGZRoom* _ggzcore_server_get_room_by_id(struct _GGZServer *server,
 						const unsigned int id)
 {
+	int i;
+
+	for (i = 0; i < server->num_rooms; i++)
+		if (_ggzcore_room_get_id(server->rooms[i]) == id)
+			return server->rooms[i];
+
 	return NULL;
 }
 
@@ -734,15 +773,19 @@ struct _GGZGameType* _ggzcore_server_get_type_by_id(struct _GGZServer *server,
 }
 
 
-void _ggzcore_server_chat(GGZServer *server, 
-			  const GGZChatOp opcode,
-			  const char *player,
-			  const char *msg)
+int _ggzcore_server_chat(GGZServer *server, 
+			 const GGZChatOp opcode,
+			 const char *player,
+			 const char *msg)
 {
 	int status;
 
 	status = _ggzcore_net_send_chat(server->fd, opcode, player, msg);
-	/* FIXME: check for errors */
+
+	if (status < 0)
+		_ggzcore_server_net_error(server, NULL);
+
+	return status;
 }
 
 
@@ -848,9 +891,10 @@ static void _ggzcore_server_handle_server_id(GGZServer *server)
 	int status, protocol;
 
 	status = _ggzcore_net_read_server_id(server->fd, &protocol);
-	/* FIXME: handle errors */
 
-	if (protocol == GGZ_CS_PROTO_VERSION) {
+	if (status < 0)
+		_ggzcore_server_net_error(server, NULL);
+	else if (protocol == GGZ_CS_PROTO_VERSION) {
 		_ggzcore_server_change_state(server, GGZ_TRANS_CONN_OK);
 		_ggzcore_server_event(server, GGZ_NEGOTIATED, NULL);
 	}
@@ -879,10 +923,6 @@ static void _ggzcore_server_handle_login(GGZServer *server)
 		break;
 	}
 
-	/* FIXME: Add to its own function */
-	/* Get list of game types */
-	es_write_int(fd, REQ_LIST_TYPES);
-	es_write_char(fd, 1);
 #endif
 }
 
@@ -892,8 +932,12 @@ static void _ggzcore_server_handle_login_anon(GGZServer *server)
 	int status;
 
 	status = _ggzcore_net_read_login_anon(server->fd, &ok);
-	/* FIXME: handle errors */
 
+	if (status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
+	
 	ggzcore_debug(GGZ_DBG_SERVER, "Status of login: %d", ok);
 
 	switch (ok) {
@@ -919,7 +963,11 @@ static void _ggzcore_server_handle_logout(GGZServer *server)
 	char ok;
 
 	status = _ggzcore_net_read_logout(server->fd, &ok);
-	/* FIXME: handle errors */
+
+	if (status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
 
 	_ggzcore_net_disconnect(server->fd);
 	server->fd = -1;
@@ -933,12 +981,14 @@ static void _ggzcore_server_handle_motd(GGZServer *server)
 {
 	int status, lines;
 	char **motd;
-
-	status = _ggzcore_net_read_motd(server->fd, &lines, &motd);
-	/* FIXME: handle errors */
 	
-	/* FIXME: store somewhere */
-	_ggzcore_server_event(server, GGZ_MOTD_LOADED, motd);
+	status = _ggzcore_net_read_motd(server->fd, &lines, &motd);
+	
+	if (status < 0)
+		_ggzcore_server_net_error(server, NULL);
+	else
+		/* FIXME: store somewhere */
+		_ggzcore_server_event(server, GGZ_MOTD_LOADED, motd);
 }
 
 
@@ -954,7 +1004,17 @@ static void _ggzcore_server_handle_list_rooms(GGZServer *server)
 		_ggzcore_server_free_roomlist(server);
 
 	status = _ggzcore_net_read_num_rooms(server->fd, &num);
-	/* FIXME: handle errors */
+
+	if (status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
+	
+	if (num < 0) {
+		ggzcore_debug(GGZ_DBG_SERVER, "Error loading rooms");
+		_ggzcore_server_protocol_error(server, "Error loading rooms");
+		return;
+	}
 
 	ggzcore_debug(GGZ_DBG_SERVER, "Server sending %d rooms", num);
 	_ggzcore_server_init_roomlist(server, num);
@@ -963,8 +1023,11 @@ static void _ggzcore_server_handle_list_rooms(GGZServer *server)
 		status = _ggzcore_net_read_room(server->fd, 
 						server->room_verbose,
 						&id, &name, &game, &desc);
-		/* FIXME: handle errors */
-		
+		if (status < 0) {
+			_ggzcore_server_net_error(server, NULL);
+			return;
+		}
+
 		ggzcore_debug(GGZ_DBG_ROOM, "Adding room %d to room list", id);
 		
 		room = _ggzcore_room_new();
@@ -991,7 +1054,17 @@ static void _ggzcore_server_handle_list_types(GGZServer *server)
 		_ggzcore_server_free_typelist(server);
 
 	status = _ggzcore_net_read_num_types(server->fd, &num);
-	/* FIXME: handle errors */
+
+	if (status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
+	
+	if (num < 0) {
+		ggzcore_debug(GGZ_DBG_SERVER, "Error loading gametypes");
+		_ggzcore_server_protocol_error(server, "Error loading gametypes");
+		return;
+	}
 
 	ggzcore_debug(GGZ_DBG_SERVER, "Server sending %d types", num);
 	_ggzcore_server_init_typelist(server, num);
@@ -999,7 +1072,11 @@ static void _ggzcore_server_handle_list_types(GGZServer *server)
 	for(i = 0; i < num; i++) {
 		type = _ggzcore_gametype_new();
 		status = _ggzcore_net_read_type(server->fd, type);
-		/* FIXME: handle errors */
+
+		if (status < 0) {
+			_ggzcore_server_net_error(server, NULL);
+			return;
+		}
 		
 		_ggzcore_server_add_type(server, type);
 	}
@@ -1014,11 +1091,15 @@ static void _ggzcore_server_handle_room_join(GGZServer *server)
 	int status;
 
 	status = _ggzcore_net_read_room_join(server->fd, &ok);
-	/* FIXME: handle errors */
+
+	if (status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
 
 	ggzcore_debug(GGZ_DBG_SERVER, "Status of room join: %d", ok);
 
-	switch (status) {
+	switch (ok) {
 	case 0:
 		/* Stop monitoring old room and start monitoring new one */
 		if (server->room)
@@ -1050,7 +1131,6 @@ static void _ggzcore_server_handle_room_join(GGZServer *server)
 				      
 		break;
 	}
-
 }
 
 
@@ -1061,7 +1141,11 @@ static void _ggzcore_server_handle_chat(GGZServer *server)
 	int status;
 	
 	status = _ggzcore_net_read_chat(server->fd, &op, &name, &msg);
-	/* FIXME: handle errors */
+
+	if (status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
 	
 	_ggzcore_room_add_chat(server->room, op, name, msg);
 	
@@ -1085,12 +1169,29 @@ static void _ggzcore_server_handle_list_players(GGZServer *server)
 				    _ggzcore_player_destroy, 0);
 	
 	status = _ggzcore_net_read_num_players(server->fd, &num);
-	/* FIXME: handle errors */
+
+	if (status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
+
+	if (num < 0) {
+		ggzcore_debug(GGZ_DBG_SERVER, "Error loading players");
+		_ggzcore_server_protocol_error(server, "Error loading players");
+		return;
+	}
+
 	ggzcore_debug(GGZ_DBG_SERVER, "Server sending %d players", num);
 
 
 	for (i = 0; i < num; i++) {
 		status = _ggzcore_net_read_player(server->fd, &name, &table);
+		
+		if (status < 0) {
+			_ggzcore_server_net_error(server, NULL);
+			return;
+		}
+
 		player = _ggzcore_player_new();
 		_ggzcore_player_init(player, name, server->room, table);
 		_ggzcore_list_insert(list, player);
@@ -1114,7 +1215,11 @@ static void _ggzcore_server_handle_update_players(GGZServer *server)
 	room = server->room;
 
 	status = _ggzcore_net_read_update_players(server->fd, &op, &name);
-	/* FIXME: handler errors */
+
+	if (status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
 
 	switch (op) {
 	case GGZ_UPDATE_DELETE:
@@ -1127,7 +1232,9 @@ static void _ggzcore_server_handle_update_players(GGZServer *server)
 		_ggzcore_room_add_player(room, name);
 		break;
 	default:
-		/* FIXME: handle invalid opcode? */
+		ggzcore_debug(GGZ_DBG_SERVER, "Bad update opcode");
+		_ggzcore_server_protocol_error(server, "Bad update opcode");
+		break;
 	}
 	
 	if (name)
@@ -1146,12 +1253,29 @@ static void _ggzcore_server_handle_list_tables(GGZServer *server)
 
 	
 	status = _ggzcore_net_read_num_tables(server->fd, &num);
-	/* FIXME: handle errors */
+
+	if (status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
+
+	if (num < 0) {
+		ggzcore_debug(GGZ_DBG_SERVER, "Error loading tables");
+		_ggzcore_server_protocol_error(server, "Error loading tables");
+		return;
+	}
+
 	ggzcore_debug(GGZ_DBG_SERVER, "Server sending %d tables", num);
 	
 	for (i = 0; i < num; i++) {
 		table = _ggzcore_table_new();
 		status = _ggzcore_net_read_table(server->fd, table); 
+		
+		if (status < 0) {
+			_ggzcore_server_net_error(server, NULL);
+			return;
+		}
+		
 		_ggzcore_list_insert(list, table);
 	}
 	
@@ -1165,29 +1289,50 @@ static void _ggzcore_server_handle_update_tables(GGZServer *server)
 }
 
 
-/* completely bogus functions to avoid messiness */
 static void _ggzcore_server_handle_rsp_chat(GGZServer *server)
 {
-	char status;
+	int status;
+	char ok;
 
-	_ggzcore_net_read_rsp_chat(server->fd, &status);
+	status = _ggzcore_net_read_rsp_chat(server->fd, &ok);
 
-#if 0
-	switch (status) {
-	case 0:
-		ggzcore_event_enqueue(GGZ_SERVER_CHAT, NULL, NULL);
+	if (status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
+
+	switch (ok) {
+	case 0: /* Do nothing if successful */
 		break;
 
 	case E_NOT_IN_ROOM:
-		ggzcore_event_enqueue(GGZ_SERVER_CHAT_FAIL, "Not in a room",
-				      NULL);
+		_ggzcore_server_event(server, GGZ_CHAT_FAIL, "Not in a room");
 		break;
 
 	case E_BAD_OPTIONS:
-		ggzcore_event_enqueue(GGZ_SERVER_CHAT_FAIL, "Bad options",
-				      NULL);
+		_ggzcore_server_event(server, GGZ_CHAT_FAIL, "Bad options");
 		break;
 	}
-#endif
 }
+
+
+static void _ggzcore_server_net_error(GGZServer *server, char* message)
+{
+	ggzcore_debug(GGZ_DBG_SERVER, "Network error: disconnecting");
+	_ggzcore_net_disconnect(server->fd);
+	server->fd = -1;
+	_ggzcore_server_change_state(server, GGZ_TRANS_NET_ERROR);
+	_ggzcore_server_event(server, GGZ_NET_ERROR, message);
+}
+
+
+static void _ggzcore_server_protocol_error(GGZServer *server, char* message)
+{
+	ggzcore_debug(GGZ_DBG_SERVER, "Protocol error: disconnecting");
+	_ggzcore_net_disconnect(server->fd);
+	server->fd = -1;
+	_ggzcore_server_change_state(server, GGZ_TRANS_PROTO_ERROR);
+	_ggzcore_server_event(server, GGZ_PROTOCOL_ERROR, message);
+}
+
 

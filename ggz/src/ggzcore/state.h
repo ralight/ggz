@@ -41,7 +41,9 @@ typedef enum {
 	GGZ_TRANS_ENTER_OK,
 	GGZ_TRANS_ENTER_FAIL,
 	GGZ_TRANS_LOGOUT_TRY,
-	GGZ_TRANS_LOGOUT_OK
+	GGZ_TRANS_LOGOUT_OK,
+	GGZ_TRANS_NET_ERROR,
+	GGZ_TRANS_PROTO_ERROR
 } GGZTransID;
 
 void _ggzcore_state_transition(GGZTransID trans, GGZStateID *cur);

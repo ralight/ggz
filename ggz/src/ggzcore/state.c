@@ -71,6 +71,8 @@ static struct _GGZTransition _connecting_transitions[] = {
 static struct _GGZTransition _online_transitions[] = {
 	{GGZ_TRANS_LOGIN_TRY,    GGZ_STATE_LOGGING_IN},
 	{GGZ_TRANS_LOGOUT_TRY,   GGZ_STATE_LOGGING_OUT},
+	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}
 };
 
@@ -78,12 +80,16 @@ static struct _GGZTransition _logging_in_transitions[] = {
 	{GGZ_TRANS_LOGIN_OK,     GGZ_STATE_LOGGED_IN},
         {GGZ_TRANS_LOGIN_FAIL,   GGZ_STATE_ONLINE},
 	{GGZ_TRANS_LOGOUT_TRY,   GGZ_STATE_LOGGING_OUT},
+	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}
 };
 
 static struct _GGZTransition _logged_in_transitions[] = {
 	{GGZ_TRANS_ENTER_TRY,    GGZ_STATE_ENTERING_ROOM},
 	{GGZ_TRANS_LOGOUT_TRY,   GGZ_STATE_LOGGING_OUT},
+	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}
 };
 
@@ -91,12 +97,16 @@ static struct _GGZTransition _entering_room_transitions[] = {
 	{GGZ_TRANS_ENTER_OK,     GGZ_STATE_IN_ROOM},
 	{GGZ_TRANS_ENTER_FAIL,   GGZ_STATE_LOGGED_IN},
 	{GGZ_TRANS_LOGOUT_TRY,   GGZ_STATE_LOGGING_OUT},
+	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}
 };
 
 static struct _GGZTransition _in_room_transitions[] = {
 	{GGZ_TRANS_ENTER_TRY,    GGZ_STATE_BETWEEN_ROOMS},
 	{GGZ_TRANS_LOGOUT_TRY,   GGZ_STATE_LOGGING_OUT},
+	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}
 };
 
@@ -104,23 +114,33 @@ static struct _GGZTransition _between_rooms_transitions[] = {
 	{GGZ_TRANS_ENTER_OK,     GGZ_STATE_IN_ROOM},
 	{GGZ_TRANS_ENTER_FAIL,   GGZ_STATE_IN_ROOM},
 	{GGZ_TRANS_LOGOUT_TRY,   GGZ_STATE_LOGGING_OUT},
+	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}
 };
 
 static struct _GGZTransition _joining_table_transitions[] = {
+	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}
 };
 
 static struct _GGZTransition _at_table_transitions[] = {
+	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}
 };
 
 static struct _GGZTransition _leaving_table_transitions[] = {
+	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
 	{-1, -1}
 };
 
 static struct _GGZTransition _logging_out_transitions[] = {
-	{GGZ_TRANS_LOGOUT_OK,      GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_NET_ERROR,    GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_PROTO_ERROR,  GGZ_STATE_OFFLINE},
+	{GGZ_TRANS_LOGOUT_OK,    GGZ_STATE_OFFLINE},
 	{-1, -1}
 };
 
@@ -173,5 +193,4 @@ void _ggzcore_state_transition(GGZTransID trans, GGZStateID *cur)
 
 
 /* Static functions internal to this file */
-
 

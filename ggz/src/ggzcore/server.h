@@ -31,11 +31,11 @@
 #include "room.h"
 
 
-void _ggzcore_server_list_players(struct _GGZServer *server);
+int _ggzcore_server_list_players(struct _GGZServer *server);
 
-void _ggzcore_server_list_tables(struct _GGZServer *server, 
-				 const int type, 
-				 const char global);
+int _ggzcore_server_list_tables(struct _GGZServer *server, 
+				const int type, 
+				const char global);
 
 struct _GGZRoom* _ggzcore_server_get_room_by_id(struct _GGZServer *server,
 						const unsigned int id);
@@ -43,10 +43,10 @@ struct _GGZRoom* _ggzcore_server_get_room_by_id(struct _GGZServer *server,
 struct _GGZGameType* _ggzcore_server_get_type_by_id(struct _GGZServer *server,
 						    const unsigned int id);
 
-void _ggzcore_server_chat(struct _GGZServer *server, 
-			  const GGZChatOp opcode,
-			  const char *player,
-			  const char *msg);
+int _ggzcore_server_chat(struct _GGZServer *server, 
+			 const GGZChatOp opcode,
+			 const char *player,
+			 const char *msg);
 
 
 #endif /* __SERVER_H__ */

@@ -234,6 +234,9 @@ int ggzcore_room_remove_event_hook_id(GGZRoom *room,
 
 void ggzcore_room_list_players(GGZRoom *room)
 {
+	if (!room)
+		return;
+
 	_ggzcore_room_list_players(room);
 }
 
