@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 4/26/02
  * Desc: Functions for handling client connections
- * $Id: client.c 6412 2004-11-17 20:56:57Z jdorje $
+ * $Id: client.c 6416 2004-11-17 22:02:24Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -232,25 +232,37 @@ static void client_loop(GGZClient* client)
 		 * For players, polls include pings and room updates.  These
 		 * are timed accurately to the nearest second.  For other
 		 * client types, there are no polls. */
-		if (client->type == GGZ_CLIENT_PLAYER
-		    && (player->next_room_update != 0
-			|| player->next_ping != 0)) {
-			time_t now = time(NULL);
-			time_t wait_time = 10000;
+		if (client->type == GGZ_CLIENT_PLAYER) {
+			ggztime_t now = get_current_time();
+			ggztime_t wait_time;
 
-			if (player->next_ping != 0) {
-				wait_time = MIN(wait_time, player->next_ping - now);
+			if (!player->is_ping_sent) {
+				/* How long til we send the next ping? */
+				wait_time = player->next_ping_time - now;
+			} else if (player->lag_class < 5) {
+				/* Ping in progress */
+				wait_time = player->sent_ping_time
+				  + opt.lag_class_time[player->lag_class - 1]
+				  - now;
+			} else {
+				wait_time = 10000;
 			}
-			if (player->next_room_update != 0) {
-				wait_time = MIN(wait_time, player->next_room_update - now);
+			if (player->is_room_update_needed) {
+				wait_time = MIN(wait_time,
+					player->next_room_update_time - now);
 			}
 
-			timer.tv_sec = wait_time;
-			timer.tv_usec = 0;
+			/* Never wait a negative amount of time! */
+			wait_time = MAX(wait_time, 0);
+
+			/* Having done the exact calculations, we now wait
+			 * just a little longer to make sure we wait
+			 * at least long enough. */
+			wait_time += 0.01;
+
+			timer = ggztime_to_timeval(wait_time);
+
 			select_tv = &timer;
-
-			/* Process might have been halted, e.g. laptop sleep mode */
-			if (timer.tv_sec < 0) timer.tv_sec = 0;
 		} else {
 			select_tv = NULL;
 		}

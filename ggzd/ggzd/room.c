@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 6115 2004-07-16 19:06:49Z jdorje $
+ * $Id: room.c 6416 2004-11-17 22:02:24Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -136,7 +136,8 @@ GGZPlayerHandlerStatus room_list_send(GGZPlayer* player, int req_game,
 
 	/* Schedule the next room update. */
 	if (opt.room_update_freq > 0) {
-		player->next_room_update = time(NULL) + opt.room_update_freq;
+		player->next_room_update_time = get_current_time()
+		  + opt.room_update_freq;
 	}
 
 	return GGZ_REQ_OK;

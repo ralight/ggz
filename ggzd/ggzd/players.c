@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 6115 2004-07-16 19:06:49Z jdorje $
+ * $Id: players.c 6416 2004-11-17 22:02:24Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -77,7 +77,7 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 					int reason);
 static GGZPlayerHandlerStatus player_send_room_update(GGZPlayer *player);
 static GGZPlayerHandlerStatus player_send_ping(GGZPlayer *player);
-static int player_get_time_since_ping(GGZPlayer *player);
+static ggztime_t player_get_time_since_ping(GGZPlayer *player);
 
 
 /**
@@ -109,8 +109,16 @@ GGZPlayer* player_new(GGZClient *client)
 	player->my_events_head = NULL;
 	player->my_events_tail = NULL;
 	player->lag_class = 1;			/* Assume they are low lag */
-	player->next_ping = 0;			/* Don't ping until login */
-	player->next_room_update = 0;		/* Don't update until login. */
+
+	/* Don't ping until login */
+	player->is_ping_sent = false;
+	player->next_ping_time = 0.0;
+	player->sent_ping_time = 0.0;
+
+	/* Don't update until login. */
+	player->is_room_update_needed = false;
+	player->next_room_update_time = 0.0;
+
 	pthread_rwlock_init(&player->stats_lock, NULL);
 	player->wins = -1;
 	player->losses = -1;
@@ -224,16 +232,16 @@ GGZReturn player_updates(GGZPlayer* player)
 			return GGZ_ERROR;
 
 	/* Lowest priority update - send a PING / check lag */
-	if(player->next_ping && time(NULL) >= player->next_ping) {
+	if (!player->is_ping_sent
+	    && get_current_time() >= player->next_ping_time) {
 		if(player_send_ping(player) < 0)
 			return GGZ_ERROR;
-	} else if (player->next_ping == 0) {
+	} else if (player->is_ping_sent) {
 		/* We're waiting for a PONG, but if we wait too long
 		   we should increase the lag class without waiting */
-		
 		while (player->lag_class < 5
-		       && player_get_time_since_ping(player) >=
-		             opt.lag_class[player->lag_class - 1]) {
+		       && (player_get_time_since_ping(player)
+			   >= opt.lag_class_time[player->lag_class - 1])) {
 			player->lag_class++;
 			changed = true;
 		}
@@ -243,12 +251,12 @@ GGZReturn player_updates(GGZPlayer* player)
 					  player->room, -1);
 	}
 
-	if (player->next_room_update != 0
-	    && time(NULL) >= player->next_room_update) {
+	if (player->is_room_update_needed
+	    && get_current_time() >= player->next_room_update_time) {
 		if (player_send_room_update(player) < 0) {
 			return GGZ_ERROR;
 		}
-		player->next_room_update += opt.room_update_freq;
+		player->next_room_update_time += opt.room_update_freq;
 	}
 
 	return GGZ_OK;
@@ -1360,36 +1368,29 @@ GGZPlayerHandlerStatus player_send_ping(GGZPlayer *player)
 	/* Send a ping and mark send time */
 	if(net_send_ping(player->client->net) < 0)
 		return GGZ_REQ_DISCONNECT;
-	gettimeofday(&player->sent_ping, NULL);
 
-	/* Set next_ping to zero so we won't ping until we've got a reply */
-	player->next_ping = 0;
+	player->sent_ping_time = get_current_time();
+	player->is_ping_sent = true;
+	player->next_ping_time = 0.0;
 
 	return GGZ_REQ_OK;
 }
 
 
-/* Determine time from sent_ping to now, in msec */
-static int player_get_time_since_ping(GGZPlayer *player)
+static ggztime_t player_get_time_since_ping(GGZPlayer *player)
 {
-	struct timeval tv;
-
-	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec - player->sent_ping.tv_sec) * 1000)
-	       + ((tv.tv_usec - player->sent_ping.tv_usec) / 1000);
+	return get_current_time() - player->sent_ping_time;
 }
 
 
 void player_handle_pong(GGZPlayer *player)
 {
-	int msec, lag_class;
-	int i;
-	
-	msec = player_get_time_since_ping(player);
+	ggztime_t waited = player_get_time_since_ping(player);
+	int lag_class, i;
 
 	lag_class = 1;
 	for(i=0; i<4; i++) {
-		if(msec >= opt.lag_class[i])
+		if (waited >= opt.lag_class_time[i])
 			lag_class++;
 		else
 			break;
@@ -1403,7 +1404,9 @@ void player_handle_pong(GGZPlayer *player)
 	}
 
 	/* Queue our next ping */
-	player->next_ping = time(NULL) + opt.ping_freq;
+	player->is_ping_sent = false;
+	player->sent_ping_time = 0.0;
+	player->next_ping_time = get_current_time() + opt.ping_freq;
 }
 
 

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 6259 2004-11-04 23:23:22Z josef $
+ * $Id: parse_opt.c 6416 2004-11-17 22:02:24Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -333,10 +333,16 @@ static void get_config_options(int ch)
 	/* Miscellaneous */
 	opt.perform_lookups = ggz_conf_read_int(ch, "Miscellaneous", "HostnameLookup", 0);
 	opt.ping_freq = ggz_conf_read_int(ch, "Miscellaneous", "LagFrequency", 10);
-	opt.lag_class[0] = ggz_conf_read_int(ch, "Miscellaneous","LagClass1", 500);
-	opt.lag_class[1] = ggz_conf_read_int(ch, "Miscellaneous","LagClass2", 1000);
-	opt.lag_class[2] = ggz_conf_read_int(ch, "Miscellaneous","LagClass3", 2000);
-	opt.lag_class[3] = ggz_conf_read_int(ch, "Miscellaneous","LagClass4", 5000);
+	for (i = 0; i < 4; i++) {
+		char buf[1024];
+		int defaults[4] = {500, 1000, 2000, 5000};
+
+		/* The time in the config file is in milliseconds. */
+		snprintf(buf, sizeof(buf), "LagClass%d", i + 1);
+		opt.lag_class_time[i] = ggz_conf_read_int(ch, "Miscellaneous",
+							  buf, defaults[i]);
+		opt.lag_class_time[i] /= 1000.0;
+	}
 	opt.room_update_freq = ggz_conf_read_int(ch, "Miscellaneous",
 						 "RoomUpdateFrequency", 60);
 

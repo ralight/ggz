@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 6259 2004-11-04 23:23:22Z josef $
+ * $Id: datatypes.h 6416 2004-11-17 22:02:24Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -33,7 +33,7 @@
 #include <ggz_common.h>
 
 #include "ggzd.h"
-
+#include "util.h"
 
 /* Datatypes for server options*/
 typedef struct {
@@ -56,9 +56,9 @@ typedef struct {
 	const char *admin_email;
 	const char *server_name;
 	bool perform_lookups;
-	int ping_freq;
-	int lag_class[4];
-	int room_update_freq;
+	ggztime_t ping_freq;
+	ggztime_t lag_class_time[4];
+	ggztime_t room_update_freq;
 	const char *dbhost;
 	const char *dbname;
 	const char *dbusername;

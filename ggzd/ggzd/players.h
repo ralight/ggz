@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 6115 2004-07-16 19:06:49Z jdorje $
+ * $Id: players.h 6416 2004-11-17 22:02:24Z jdorje $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -36,6 +36,7 @@
 #include "ggzd.h"
 #include "protocols.h"
 #include "seats.h"
+#include "util.h"
 
 
 /* 
@@ -83,13 +84,15 @@ struct _GGZPlayer {
 	GGZEvent *my_events_tail;
 
 	/* Lag tracking */
-	time_t next_ping;
-	struct timeval sent_ping;
+	bool is_ping_sent;
+	ggztime_t next_ping_time;
+	ggztime_t sent_ping_time;
 	int lag_class;
 
 	/* Room tracking.  If non-zero this indicates the time of the 
 	 * next room update.  See opt.room_update_freq. */
-	time_t next_room_update;
+	bool is_room_update_needed;
+	ggztime_t next_room_update_time;
 
 	/* Stats tracking.  This holds stats information for the player in
 	   the current room.  Unlike the rest of the player structure, this

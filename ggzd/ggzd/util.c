@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 05/04/2002 (code moved from control.c)
  * Desc: General utility functions for ggzd
- * $Id: util.c 4573 2002-09-16 04:28:11Z jdorje $
+ * $Id: util.c 6416 2004-11-17 22:02:24Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -31,7 +31,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <sys/types.h>
+#include <time.h>
 
 #include "err_func.h"
 #include "util.h"
@@ -90,4 +92,39 @@ void check_path(const char* full_path)
 			err_sys_exit("Couldn't create %s", full_path);
 	} else /* Everything eas OK, so close it */
 		closedir(dir);
+}
+
+/* Converts a timeval struct (with sec/usec) into
+   a double-precision value (in seconds). */
+ggztime_t timeval_to_ggztime(struct timeval tv)
+{
+	return (ggztime_t)tv.tv_sec + (ggztime_t)tv.tv_usec / 1000000.0;
+}
+
+/* Converts a double-precision value (in seconds) into
+   a timeval struct (with sec/usec). */
+struct timeval ggztime_to_timeval(ggztime_t ggztime)
+{
+	struct timeval tv;
+
+	tv.tv_sec = ggztime;
+	tv.tv_usec = (ggztime - tv.tv_sec) * 1000000;
+
+	/* For negative times rounding will be done improperly. */
+	if (tv.tv_usec < 0) {
+		tv.tv_usec += 1000000;
+		tv.tv_sec -= 1;
+	}
+
+	return tv;
+}
+
+/* Returns the current time, as a double-precision value in
+   seconds. */
+ggztime_t get_current_time(void)
+{
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+	return timeval_to_ggztime(tv);
 }
