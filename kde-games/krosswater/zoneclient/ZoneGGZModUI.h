@@ -18,17 +18,17 @@
 #ifndef ZONE_GGZ_MOD_UI_H
 #define ZONE_GGZ_MOD_UI_H
 
+// KDE includes
+#include <kmainwindow.h>
+
 // Qt includes
 #include <qwidget.h>
 #include <qsocketnotifier.h>
 
-// System includes
-#include <stdio.h>
-
 // Zone includes
 #include "ZoneGGZ.h"
 
-class ZoneGGZModUI : public QWidget
+class ZoneGGZModUI : public KMainWindow
 {
 	Q_OBJECT
 	public:

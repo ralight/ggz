@@ -30,7 +30,7 @@
 
 // Constructor
 ZoneGGZModUI::ZoneGGZModUI(QWidget *parent, const char *name)
-: QWidget(parent, name)
+: KMainWindow(parent, name)
 {
 	for(int i = 0; i < 16; i++)
 	{
