@@ -21,11 +21,24 @@
 // Keepalive includes
 #include "win.h"
 
+// System includes
+#include <iostream>
+
 // Main function: fire up the top-level window
 int main(int argc, char **argv)
 {
 	Win *win;
-	
+	int ggz = 0;
+
+	for(int i = 1; i < argc; i++)
+		if(!strcmp(argv[i], "--ggz")) ggz = 1;
+	if(!ggz)
+	{
+		cerr << "This game cannot be launched from the command line." << endl;
+		cerr << "Please use a GGZ core client." << endl;
+		exit(-1);
+	}
+
 	QApplication a(argc, argv);
 	win = new Win();
 	a.setMainWidget(win);

@@ -38,21 +38,30 @@
 Canvas::Canvas(QWidget *parent, const char *name)
 : QCanvas(parent, name)
 {
-	QSocketNotifier *sn;
-	int socket;
+	m_dev = NULL;
+	m_net = NULL;
+
+	setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/grass.png"));
 
 	setAdvancePeriod(50);
+}
+
+// Destructor
+Canvas::~Canvas()
+{
+}
+
+// Initialize the network
+void Canvas::init()
+{
+	QSocketNotifier *sn;
+	int socket;
 
 	socket = 3;
 	sn = new QSocketNotifier(socket, QSocketNotifier::Read, this);
 	connect(sn, SIGNAL(activated(int)), SLOT(slotInput()));
 	m_dev = new QSocketDevice(socket, QSocketDevice::Stream);
 	m_net = new QDataStream(m_dev);
-}
-
-// Destructor
-Canvas::~Canvas()
-{
 }
 
 // Receive game data from server
@@ -123,7 +132,11 @@ void Canvas::move(int x, int y)
 {
 	int vx, vy;
 
+	if(!m_net) return;
+
+	std::cout << "key-1" << std::endl;
 	if(!(x || y)) return;
+	std::cout << "key-2" << std::endl;
 
 	vx = (int)(m_player->x() + x * 3);
 	vy = (int)(m_player->y() + y * 3);
@@ -141,6 +154,8 @@ void Canvas::move(int x, int y)
 // Log into the game server
 void Canvas::login(QString username, QString password)
 {
+	if(!m_net) init();
+
 	*m_net << (Q_INT8)op_login << username.latin1() << password.latin1();
 }
 

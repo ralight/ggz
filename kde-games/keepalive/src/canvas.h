@@ -43,6 +43,8 @@ class Canvas : public QCanvas
 		void slotInput();
 
 	private:
+		void init();
+
 		QCanvasSprite *m_player;
 		QSocketDevice *m_dev;
 		QDataStream *m_net;

@@ -49,7 +49,8 @@ Win::Win(QWidget *parent, const char *name)
 	connect(m_canvas, SIGNAL(signalLoggedin(QString)),
 		SLOT(slotLoggedin(QString)));
 
-	setFixedSize(400, 300);
+	//setFixedSize(400, 300);
+	resize(500, 400);
 	setCaption("Keepalive: Login");
 	show();
 }
