@@ -780,6 +780,8 @@ else
   AC_SUBST(MSGFMT)
   AC_SUBST(MSGMERGE)
 
+  AC_DEFINE(ENABLE_NLS, 1, [Define if NLS is enabled])
+
   # Perform actions given by argument 1.
   $1
 fi
