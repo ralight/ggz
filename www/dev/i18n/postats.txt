@@ -2,14 +2,15 @@ gnome-client/po
 de.po                    -    83/83    (100%)  -0
 grubby/grubby/data
 fr.po                    -    40/73    ( 54%)  -33
-de.po                    -    68/73    ( 93%)  -5
-pt_BR.po                 -    68/73    ( 93%)  -5
+de.po                    -    73/73    (100%)  -0
+pt_BR.po                 -    73/73    (100%)  -0
 grubby/grubby/po
-de.po                    -    45/45    (100%)  -0
+de.po                    -    33/33    (100%)  -0
 gtk-client/po
 pt_BR.po                 -   230/304   ( 75%)  -74
 es_AR.po                 -   237/304   ( 77%)  -67
-de.po                    -   299/304   ( 98%)  -5
+sv.po                    -   281/287   ( 97%)  -6
+de.po                    -   287/287   (100%)  -0
 gtk-games/po/chess
 de.po                    -    71/71    (100%)  -0
 gtk-games/po/chinese-checkers
@@ -60,4 +61,5 @@ de.po                    -    49/49    (100%)  -0
 kde-games/po/muehle
 de.po                    -    48/48    (100%)  -0
 txt-client/po
-de.po                    -    63/63    (100%)  -0
+de.po                    -    69/69    (100%)  -0
+pt_BR.po                 -    69/69    (100%)  -0
