@@ -105,12 +105,15 @@ void motd_read_file(void)
 	if(gethostname(motd_info.hostname, 127) != 0)
 		strcpy(motd_info.hostname, "hostname.toolong.fixme");
 
-	/* Get the OS Type */
+	/* Get the OS and CPU Type */
 	if(uname(&unames))
 		err_sys_exit("uname error in motd_parse_motd()");
 	if((motd_info.sysname = malloc(strlen(unames.sysname)+1)) == NULL)
 		err_sys_exit("malloc error in motd_read_file()");
 	strcpy(motd_info.sysname, unames.sysname);
+	if((motd_info.cputype = malloc(strlen(unames.machine)+1)) == NULL)
+		err_sys_exit("malloc error in motd_read_file()");
+	strcpy(motd_info.cputype, unames.machine);
 
 	/* Get our port number */
 	if((motd_info.port = malloc(6)) == NULL)
@@ -156,6 +159,9 @@ static char *motd_parse_motd_line(char *line, char *outline, int sz_outline)
 			switch(*in) {
 				case 'a':
 					p = opt.admin_name;
+					break;
+				case 'C':
+					p = motd_info.cputype;
 					break;
 				case 'd':
 					p = motd_get_date(str, sizeof(str));

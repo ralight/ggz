@@ -155,6 +155,7 @@ typedef struct {
 	char *motd_text[MAX_MOTD_LINES];
 	char *hostname;
 	char *sysname;
+	char *cputype;
 	char *port;
 } MOTDInfo;
 
