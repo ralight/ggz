@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 4001 2002-04-16 19:35:22Z jdorje $
+ * $Id: net.c 4033 2002-04-21 06:15:20Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -297,11 +297,11 @@ void net_send_hand(const player_t p, const seat_t s, int reveal)
 		NET_ERROR(p);
 
 	for (i = 0; i < game.seats[s].hand.hand_size; i++) {
-		card_t card;
-		if (reveal)
-			card = game.seats[s].hand.cards[i];
-		else
-			card = UNKNOWN_CARD;
+		card_t card = game.seats[s].hand.cards[i];
+		if (!reveal) {
+			card.suit = UNKNOWN_SUIT;
+			card.face = UNKNOWN_FACE;
+		}
 		if (write_card(fd, card) < 0)
 			NET_ERROR(p);
 	}
