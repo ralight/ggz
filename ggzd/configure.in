@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.in 4763 2002-09-29 12:38:44Z dr_maux $
+dnl $Id: configure.in 4768 2002-09-29 13:10:57Z dr_maux $
 
 AC_INIT(acinclude.ggz)
 AM_INIT_AUTOMAKE(ggz-server, 0.0.6)
@@ -314,11 +314,11 @@ fi
 dnl Compile the test code
 SUBDIRS="$SUBDIRS tests"
 
-LTLIBOBJS=`echo $LIBOBJS | sed 's/\.o/\.lo/g'`
+#LTLIBOBJS=`echo $LIBOBJS | sed 's/\.o/\.lo/g'`
 
 AC_SUBST(LDADD)
-AC_SUBST(LIBOBJS)
-AC_SUBST(LTLIBOBJS)
+#AC_SUBST(LIBOBJS)
+#AC_SUBST(LTLIBOBJS)
 AC_SUBST(ggzd_LIBS)
 AC_SUBST(SUBDIRS)
 AC_SUBST(ggzdconfdir)
