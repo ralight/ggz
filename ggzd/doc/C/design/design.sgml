@@ -26,8 +26,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 693 $</revnumber>
-	<date>$Date: 2000-08-26 13:45:09 -0700 (Sat, 26 Aug 2000) $</date>
+	<revnumber>$Revision: 699 $</revnumber>
+	<date>$Date: 2000-08-29 10:57:36 -0700 (Tue, 29 Aug 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -83,7 +83,7 @@
   </chapter>
 
   <appendix id="appendix">
-    <title>Message Reference</title>
+    <title>Protocol Reference</title>
     &appendix;
   </appendix>
 
