@@ -24,7 +24,10 @@
 
 #define GGZ_SEAT_OPEN -1
 
+#include <gtk/gtk.h>
+
 void game_init();
 void game_message(const char *, ...);
 void game_popup(const char *, ...);
 void game_update(int event, void *arg);
+int game_timer(gpointer user_data);

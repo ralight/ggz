@@ -16,6 +16,7 @@
 
 #include "callbacks.h"
 #include "main_win.h"
+#include "board.h"
 #include "support.h"
 
 GtkWidget*
@@ -32,6 +33,7 @@ create_main_win (void)
   GtkWidget *game_menu;
   GtkAccelGroup *game_menu_accels;
   GtkWidget *request_draw;
+  GtkWidget *call_flag;
   GtkWidget *hbox1;
   GtkWidget *hpaned1;
   GtkWidget *board;
@@ -112,6 +114,14 @@ create_main_win (void)
   gtk_widget_show (request_draw);
   gtk_container_add (GTK_CONTAINER (game_menu), request_draw);
   gtk_tooltips_set_tip (tooltips, request_draw, _("Ask the other player for a draw"), NULL);
+
+  call_flag = gtk_menu_item_new_with_label (_("Call flag"));
+  gtk_widget_ref (call_flag);
+  gtk_object_set_data_full (GTK_OBJECT (main_win), "call_flag", call_flag,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (call_flag);
+  gtk_container_add (GTK_CONTAINER (game_menu), call_flag);
+  gtk_tooltips_set_tip (tooltips, call_flag, _("If your opponent has run out of time, ask the server to end the game"), NULL);
 
   hbox1 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox1);
@@ -249,6 +259,9 @@ create_main_win (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (request_draw), "activate",
                       GTK_SIGNAL_FUNC (board_request_draw),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (call_flag), "activate",
+                      GTK_SIGNAL_FUNC (board_call_flag),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (board), "configure_event",
                       GTK_SIGNAL_FUNC (on_board_configure_event),

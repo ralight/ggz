@@ -64,6 +64,7 @@ void board_draw_piece(int piece, int x, int y);
 
 /* UI */
 void board_request_draw();
+void board_call_flag();
 
 /* Promote hack */
 void

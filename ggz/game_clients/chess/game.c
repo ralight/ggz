@@ -51,6 +51,8 @@ void game_init() {
   game_info.clock_type = 0;
   game_info.seconds[0] = 0;
   game_info.seconds[1] = 0;
+  game_info.t_seconds[0] = 0;
+  game_info.t_seconds[1] = 0;
   game_info.turn = 0;
   game_info.check = FALSE;
 	strcpy(game_info.name[0], "White");
@@ -135,7 +137,7 @@ void game_update(int event, void *arg) {
       if (game_info.state != CHESS_STATE_WAIT)
         break;
       /* FIXME: Should ask the user for the time */
-      net_send_time(0);
+      gtk_widget_show(create_clock_dialog());
       break;
     case CHESS_EVENT_TIME_OPTION:
       if (game_info.state != CHESS_STATE_WAIT)
@@ -143,12 +145,17 @@ void game_update(int event, void *arg) {
       game_info.clock_type = (*((int*)arg)) >> 24;
       game_info.seconds[0] = (*((int*)arg)) & 0xFFFFFF;
       game_info.seconds[1] = (*((int*)arg)) & 0xFFFFFF;
+      game_info.t_seconds[0] = (*((int*)arg)) & 0xFFFFFF;
+      game_info.t_seconds[1] = (*((int*)arg)) & 0xFFFFFF;
       game_popup("Clock type is %d and time is %d", game_info.clock_type, game_info.seconds[0]);
+      board_info_update();
       break;
     case CHESS_EVENT_START:
       if (game_info.state != CHESS_STATE_WAIT)
         break;
       game_info.state = CHESS_STATE_PLAYING;
+      if (game_info.clock_type != CHESS_CLOCK_NOCLOCK)
+        gtk_timeout_add(1000, game_timer, NULL);
       game_message("The game has started!");
       break;
     case CHESS_EVENT_MOVE_END:
@@ -165,13 +172,6 @@ void game_update(int event, void *arg) {
         game_message("Invalid move!");
         break;
       }
-      /*
-      move[0] = 65 + ((*(char*)arg)%8);
-      move[1] = 49 + ( (*(char*)arg)/8 );
-      move[2] = 65 + ((*((char*)arg+1))%8);
-      move[3] = 49 + ((*((char*)arg+1))/8);
-      move[4] = 0;
-      */
       strncpy(move, arg, 6);
       game_message("Making move %s", move);
       game_info.check = FALSE;
@@ -183,6 +183,13 @@ void game_update(int event, void *arg) {
         } else {
           game_message("Your opponent is in check!");
         }
+      }
+      /* Now update the time, if that's the case */
+      if (game_info.clock_type != CHESS_CLOCK_NOCLOCK) {
+        game_info.seconds[game_info.turn%2] -= *((gint32*)arg+2);
+        /* Ok, adjust the timer clocks */
+        game_info.t_seconds[0] = game_info.seconds[0];
+        game_info.t_seconds[1] = game_info.seconds[1];
       }
       game_info.turn++;
 			board_info_update();
@@ -239,4 +246,17 @@ void game_update(int event, void *arg) {
       game_message("Unknown event! %d", event);
       break;
   }
+}
+
+int game_timer(gpointer user_data) {
+  if (game_info.state == CHESS_STATE_DONE)
+    return FALSE;
+  if (game_info.state != CHESS_STATE_PLAYING)
+    return TRUE;
+  if (game_info.turn == 0)
+    return TRUE;
+  /* Ok, update the timer */
+  game_info.t_seconds[game_info.turn % 2]--;
+  board_info_update();
+  return TRUE;
 }

@@ -56,7 +56,6 @@ int main(int argc, char *argv[]) {
 
 	gdk_input_add(game_info.fd, GDK_INPUT_READ, net_handle_input, NULL);
 
-
 	gtk_main();
 	
 	return 0;

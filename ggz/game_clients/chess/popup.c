@@ -36,6 +36,8 @@
 #include "popup.h"
 #include "support.h"
 #include "board.h"
+#include "chess.h"
+#include "net.h"
 
 GtkWidget*
 create_draw_dialog (void)
@@ -171,6 +173,7 @@ create_clock_dialog (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (server_lag_clock);
   gtk_box_pack_start (GTK_BOX (vbox1), server_lag_clock, FALSE, FALSE, 0);
+  gtk_widget_set_sensitive (server_lag_clock, FALSE);
 
   client_clock = gtk_radio_button_new_with_label (time_option_group, _("Client clock"));
   time_option_group = gtk_radio_button_group (GTK_RADIO_BUTTON (client_clock));
@@ -217,7 +220,7 @@ create_clock_dialog (void)
   gtk_widget_show (label3);
   gtk_box_pack_start (GTK_BOX (hbox2), label3, FALSE, FALSE, 5);
 
-  seconds_adj = gtk_adjustment_new (0, 0, 100, 1, 10, 10);
+  seconds_adj = gtk_adjustment_new (0, 0, 59, 1, 10, 10);
   seconds = gtk_spin_button_new (GTK_ADJUSTMENT (seconds_adj), 1, 0);
   gtk_widget_ref (seconds);
   gtk_object_set_data_full (GTK_OBJECT (clock_dialog), "seconds", seconds,
@@ -370,6 +373,34 @@ void
 clock_option_select                    (GtkButton       *button,
                                         gpointer         user_data)
 {
+  GtkWidget *radio, *time_w;
+  int clock = 0, time;
+  /* No clock ? */
+  radio = lookup_widget(user_data, "no_clock");
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio)))
+    clock = CHESS_CLOCK_NOCLOCK;
+  /* Client */
+  radio = lookup_widget(user_data, "client_clock");
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio)))
+    clock = CHESS_CLOCK_CLIENT;
+  /* Server */
+  radio = lookup_widget(user_data, "server_clock");
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio)))
+    clock = CHESS_CLOCK_SERVER;
+  /* Server + Lag */
+  radio = lookup_widget(user_data, "server_lag_clock");
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio)))
+    clock = CHESS_CLOCK_SERVERLAG;
+  /* Now get the time */
+  time_w = lookup_widget(user_data, "minutes");
+  time = 60 * gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(time_w));
+  time_w = lookup_widget(user_data, "seconds");
+  time += gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(time_w));
+
+  if (clock == CHESS_CLOCK_NOCLOCK)
+    net_send_time(0);
+  else
+    net_send_time( (clock<<24) + time );
 
 }
 
@@ -378,5 +409,6 @@ void
 clock_option_cancel                    (GtkButton       *button,
                                         gpointer         user_data)
 {
+  net_send_time(0);
 
 }

@@ -173,11 +173,11 @@ void board_info_update() {
 	white = lookup_widget(main_win, "white_time");
 
 	/* Set the white text */
-	sprintf(text, "%s -> %02d:%02d", game_info.name[0], game_info.seconds[0]/60, game_info.seconds[0]%60);
+	sprintf(text, "%s -> %02d:%02d", game_info.name[0], game_info.t_seconds[0]/60, game_info.t_seconds[0]%60);
 	gtk_label_set_text(GTK_LABEL(white), text);
 
 	/* Set the black text */
-	sprintf(text, "%s -> %02d:%02d", game_info.name[1], game_info.seconds[1]/60, game_info.seconds[1]%60);
+	sprintf(text, "%s -> %02d:%02d", game_info.name[1], game_info.t_seconds[1]/60, game_info.t_seconds[1]%60);
 	gtk_label_set_text(GTK_LABEL(black), text);
 
 	/* Get the arrows to set the current turn */
@@ -357,8 +357,13 @@ void board_dnd_highlight( int x, int y, GdkDragContext *drag_context) {
 }
 
 void board_request_draw() {
-  printf("Requesting draw!\n");
+  game_message("Requesting draw!");
   net_send_draw();
+}
+
+void board_call_flag() {
+  game_message("Calling flag");
+  net_call_flag();
 }
 
 void board_info_add_move(char *move) {

@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define PROTOCOL_VERSION 5
+#define PROTOCOL_VERSION 6
 /* Chess module design
  *
  * We should have 5 game states:
@@ -153,6 +153,7 @@ struct chess_info {
   char clock_type;
   /* Number of seconds for each player */
   int seconds[2];
+  int t_seconds[2]; /* Only for the timer */
   /* Current state */
   char state;
   /* Current turn */

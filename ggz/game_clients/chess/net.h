@@ -31,6 +31,9 @@ void net_send_move(char *move);
 /* Request draw */
 void net_send_draw();
 
+/* Call flag */
+void net_call_flag();
+
 /* All server input will pass through here
  * Then we will filter it and send to game_update */
 void net_handle_input(gpointer data, int fd, GdkInputCondition cond);

@@ -99,6 +99,19 @@
 	    <label>Request draw</label>
 	    <right_justify>False</right_justify>
 	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>call_flag</name>
+	    <tooltip>If your opponent has run out of time, ask the server to end the game</tooltip>
+	    <signal>
+	      <name>activate</name>
+	      <handler>board_call_flag</handler>
+	      <last_modification_time>Mon, 19 Feb 2001 16:44:01 GMT</last_modification_time>
+	    </signal>
+	    <label>Call flag</label>
+	    <right_justify>False</right_justify>
+	  </widget>
 	</widget>
       </widget>
     </widget>
