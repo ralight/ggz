@@ -2,6 +2,7 @@
 #include <ggzcore.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include "chat.h"
 #include "meta.h"
 
