@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6715 2005-01-16 19:10:57Z oojah $
+dnl $Id: configure.ac 6717 2005-01-17 01:02:14Z oojah $
 
 AC_INIT([GGZ client libraries], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-client-libs])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -23,10 +23,16 @@ AC_DIAGNOSE([obsolete],[AM_PROG_CC_STDC:
 	AC_PROG_CC if you already called it elsewhere.])
 am_cv_prog_cc_stdc=$ac_cv_prog_cc_stdc
 
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 
+# Special case for compiling on windows
+case $host_os in
+  *mingw32* ) MINGW32=yes;;
+          * ) MINGW32=no;;
+esac
 
 # Check for GGZ Requirements
 # ==========================
@@ -79,6 +85,12 @@ AC_EGREP_CPP(PF_LOCAL,
 				      [AF_UNIX is available])])], 
              AC_MSG_RESULT(yes))
 
+# Add DLL build support for WIN32
+# ===============================
+
+if test "$MINGW32" = "yes"; then
+	LDFLAGS="$LDFLAGS -no-undefined -lwsock32"
+fi
 
 # Check for library functions
 # ===========================
@@ -91,6 +103,9 @@ AC_FUNC_FORK
 #AC_FUNC_MALLOC <- this doesn't do what you think it does
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_VPRINTF
+if test "$MINGW32" = "yes"; then
+	LDADD="$LDADD -lwsock32"
+fi
 
 
 # Check for popt
@@ -170,11 +185,8 @@ AC_SUBST(ggzdatadir)
 AC_SUBST(packagesrcdir)
 
 AC_CONFIG_FILES([Makefile 
-	   Makefile.msys
 	   ggzcore/Makefile
-	   ggzcore/Makefile.msys
 	   ggzmod/Makefile
-	   ggzmod/Makefile.msys
 	   ggz-config/Makefile
 	   ggz-wrapper/Makefile
 	   man/Makefile
