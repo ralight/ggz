@@ -53,7 +53,8 @@
 
 
 /* Timeout for server resync */
-#define NG_RESYNC_SEC  5
+#define NG_RESYNC_SEC  0
+#define NG_RESYNC_USEC 500000
 
 
 /* Server wide data structures*/
@@ -231,7 +232,7 @@ static void player_loop(int p_index, int p_fd)
 		
 		/* Setup timeout for select*/
 		timer.tv_sec = NG_RESYNC_SEC;
-		timer.tv_usec = 0;
+		timer.tv_usec = NG_RESYNC_USEC;
 		
 		status = select(fd_max, &read_fd_set, NULL, NULL, &timer);
 		
