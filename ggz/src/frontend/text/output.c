@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 6586 2005-01-02 15:30:59Z josef $
+ * $Id: output.c 6642 2005-01-13 01:55:40Z jdorje $
  *
  * Functions for display text/messages
  *
@@ -38,9 +38,8 @@
 #include "output.h"
 #include "server.h"
 #include "state.h"
+#include "support.h"
 
-#include <libintl.h>
-#define _(x) gettext(x)
 
 /* Color Codes */
 #define COLOR_BRIGHT_GREY	"\e[1m\e[30m"

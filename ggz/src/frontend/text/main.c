@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/15/00
- * $Id: main.c 6586 2005-01-02 15:30:59Z josef $
+ * $Id: main.c 6642 2005-01-13 01:55:40Z jdorje $
  *
  * Main loop
  *
@@ -25,14 +25,17 @@
  */
 
 #include <config.h>
+
+#include <ggz.h>
 #include <ggzcore.h>
+
 #include "server.h"
 #include "input.h"
 #include "output.h"
 #include "state.h"
 #include "loop.h"
+#include "support.h"
 
-#include <ggz.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
@@ -49,8 +52,6 @@
 #endif
 
 #include <locale.h>
-#include <libintl.h>
-#define _(x) gettext(x)
 
 /* Event loop timeout value */
 #define TIMEOUT 1
@@ -124,8 +125,10 @@ int main(int argc, char *argv[])
 	FILE *startup;
 	char command[1024];
 
+#ifdef ENABLE_NLS
 	bindtextdomain("ggz-txt", PREFIX "/share/locale");
 	textdomain("ggz-txt");
+#endif
 	setlocale(LC_ALL, "");
 
 	while(1)

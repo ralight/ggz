@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 6054 2004-06-25 13:32:46Z josef $
+ * $Id: input.c 6642 2005-01-13 01:55:40Z jdorje $
  *
  * Functions for inputing commands from the user
  *
@@ -26,12 +26,15 @@
 
 
 #include <config.h>
+
 #include "ggzcore.h"
+
 #include "input.h"
 #include "output.h"
 #include "server.h"
 #include "loop.h"
 #include "game.h"
+#include "support.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -43,9 +46,6 @@
 #ifdef HAVE_READLINE_HISTORY_H
 #include <readline/history.h>
 #endif
-
-#include <libintl.h>
-#define _(x) gettext(x)
 
 #define LINE_LENGTH 160
 

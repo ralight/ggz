@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6117 2004-07-16 19:08:39Z josef $
+dnl $Id: configure.ac 6642 2005-01-13 01:55:40Z jdorje $
 
 AC_INIT([GGZ text client], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-txt-client])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -34,6 +34,7 @@ AC_GGZ_CONFIG
 dnl Check for header files
 dnl ======================
 AC_HEADER_STDC
+AC_CHECK_HEADERS([libintl.h])
 
 dnl Check for NLS
 dnl ============================================================
