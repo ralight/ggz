@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 5096 2002-10-29 00:25:37Z jdorje $
+ * $Id: playerinfo.c 5099 2002-10-29 06:12:47Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -40,7 +40,7 @@
 #include "support.h"
 
 
-static GtkWidget *info_dialog;
+static GtkWidget *dialog;
 static GtkWidget *create_dlg_info(void);
 extern GGZServer *server;
 
@@ -65,18 +65,18 @@ void player_info_create_or_raise(GGZPlayer * player)
 	int rating, ranking;
 	long highscore;
 
-	if (!info_dialog) {
-		info_dialog = create_dlg_info();
-		gtk_widget_show(info_dialog);
+	if (!dialog) {
+		dialog = create_dlg_info();
+		gtk_widget_show(dialog);
 	} else {
-		gdk_window_show(info_dialog->window);
-		gdk_window_raise(info_dialog->window);
+		gdk_window_show(dialog->window);
+		gdk_window_raise(dialog->window);
 	}
 
-	tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "handle");
+	tmp = gtk_object_get_data(GTK_OBJECT(dialog), "handle");
 	gtk_label_set_text(GTK_LABEL(tmp), ggzcore_player_get_name(player));
 
-	tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "table");
+	tmp = gtk_object_get_data(GTK_OBJECT(dialog), "table");
 	if (table)
 		snprintf(text, sizeof(text), "%d",
 			 ggzcore_table_get_id(table));
@@ -85,7 +85,7 @@ void player_info_create_or_raise(GGZPlayer * player)
 	gtk_label_set_text(GTK_LABEL(tmp), text);
 
 
-	tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "type");
+	tmp = gtk_object_get_data(GTK_OBJECT(dialog), "type");
 	switch (ggzcore_player_get_type(player)) {
 	case GGZ_PLAYER_NONE:
 		break;
@@ -105,13 +105,11 @@ void player_info_create_or_raise(GGZPlayer * player)
 
 	if (ggzcore_player_get_record(player, &wins,
 				      &losses, &ties, &forfeits)) {
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
-					  "record_label");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "record_label");
 		gtk_widget_show(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
-					  "record_hbox");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "record_hbox");
 		gtk_widget_show(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "record");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "record");
 		gtk_widget_show(tmp);
 
 		snprintf(text, sizeof(text), "%d-%d", wins, losses);
@@ -127,91 +125,79 @@ void player_info_create_or_raise(GGZPlayer * player)
 
 		gtk_label_set_text(GTK_LABEL(tmp), text);
 	} else {
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
-					  "record_label");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "record_label");
 		gtk_widget_hide(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "record");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "record");
 		gtk_widget_hide(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
-					  "record_hbox");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "record_hbox");
 		gtk_widget_hide(tmp);
 	}
 
 	if (ggzcore_player_get_rating(player, &rating)) {
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
-					  "rating_label");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "rating_label");
 		gtk_widget_show(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
-					  "rating_hbox");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "rating_hbox");
 		gtk_widget_show(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "rating");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "rating");
 		gtk_widget_show(tmp);
 
 		snprintf(text, sizeof(text), "%d", rating);
 
 		gtk_label_set_text(GTK_LABEL(tmp), text);
 	} else {
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
-					  "rating_label");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "rating_label");
 		gtk_widget_hide(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "rating");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "rating");
 		gtk_widget_hide(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
-					  "rating_hbox");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "rating_hbox");
 		gtk_widget_hide(tmp);
 	}
 
 	if (ggzcore_player_get_ranking(player, &ranking)) {
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog),
 					  "ranking_label");
 		gtk_widget_show(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
-					  "ranking_hbox");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "ranking_hbox");
 		gtk_widget_show(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "ranking");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "ranking");
 		gtk_widget_show(tmp);
 
 		snprintf(text, sizeof(text), "#%d", ranking);
 
 		gtk_label_set_text(GTK_LABEL(tmp), text);
 	} else {
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog),
 					  "ranking_label");
 		gtk_widget_hide(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog), "ranking");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "ranking");
 		gtk_widget_hide(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
-					  "ranking_hbox");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "ranking_hbox");
 		gtk_widget_hide(tmp);
 	}
 
 	if (ggzcore_player_get_highscore(player, &highscore)) {
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog),
 					  "highscore_label");
 		gtk_widget_show(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog),
 					  "highscore_hbox");
 		gtk_widget_show(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
-					  "highscore");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "highscore");
 		gtk_widget_show(tmp);
 
 		snprintf(text, sizeof(text), "%ld", highscore);
 
 		gtk_label_set_text(GTK_LABEL(tmp), text);
 	} else {
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog),
 					  "highscore_label");
 		gtk_widget_hide(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
-					  "highscore");
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog), "highscore");
 		gtk_widget_hide(tmp);
-		tmp = gtk_object_get_data(GTK_OBJECT(info_dialog),
+		tmp = gtk_object_get_data(GTK_OBJECT(dialog),
 					  "highscore_hbox");
 		gtk_widget_hide(tmp);
 	}
-
-	gtk_widget_set_usize(dlg_info, 424, -2);
 }
 
 
@@ -524,8 +510,7 @@ GtkWidget *create_dlg_info(void)
 	GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT);
 
 	gtk_signal_connect(GTK_OBJECT(dlg_info), "destroy",
-			   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-			   &info_dialog);
+			   GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dialog);
 	gtk_signal_connect_object(GTK_OBJECT(ok_button), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(dlg_info));
