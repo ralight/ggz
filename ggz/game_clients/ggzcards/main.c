@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3431 2002-02-21 02:53:38Z jdorje $
+ * $Id: main.c 3470 2002-02-26 00:35:54Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -346,7 +346,7 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 		if (lengths[p] > max_len)
 			max_len = lengths[p];
 	height = CARDHEIGHT * ggzcards.num_players;
-	width = CARDWIDTH + (max_len - 1) * CARDWIDTH / 4;
+	width = CARDWIDTH + (max_len - 1) * CARD_VISIBILITY;;
 
 	verify_msg_menu();
 
@@ -410,7 +410,7 @@ void menubar_cardlist_message(const char *mark, int *lengths,
 			   TRUE, 0, 0, width, height);
 	for (p = 0; p < ggzcards.num_players; p++) {
 		for (i = 0; i < lengths[p]; i++) {
-			draw_card(cardlist[p][i], 0, i * CARDWIDTH / 4,
+			draw_card(cardlist[p][i], 0, i * CARD_VISIBILITY,
 				  p * CARDHEIGHT, image);
 		}
 		gtk_label_set_text(GTK_LABEL(name_labels[p]),

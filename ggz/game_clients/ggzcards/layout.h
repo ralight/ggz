@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.h 3361 2002-02-15 04:25:51Z jdorje $
+ * $Id: layout.h 3470 2002-02-26 00:35:54Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -30,12 +30,16 @@
 #define CARDWIDTH	71
 #define CARDHEIGHT	96
 
+/* This is the minimum amount of the card that must be visible. */
+#define CARD_VISIBILITY ((float)CARDWIDTH / 4.0)
+
 /* an interesting check of the code is to make this really big */
 #define XWIDTH		10
 
 /* #define WINDOW_WIDTH 469 */
 /* more cards will fit if you just change table_max_hand_size */
-#define HAND_WIDTH 	( (table_max_hand_size+3) * (CARDWIDTH/4.0) + 0.5 )
+#define HAND_WIDTH 	(CARDWIDTH + (table_max_hand_size - 1) * \
+                                     CARD_VISIBILITY + 0.5 )
 #define TEXT_WIDTH	CARDHEIGHT
 
 #define CARD_BOX_WIDTH	(HAND_WIDTH + 2*XWIDTH)

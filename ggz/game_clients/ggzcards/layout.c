@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 3431 2002-02-21 02:53:38Z jdorje $
+ * $Id: layout.c 3470 2002-02-26 00:35:54Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -321,13 +321,13 @@ void get_card_offset(int p, float *w, float *h)
 	switch (orientation(p)) {
 	case 0:
 	case 2:
-		*w = CARDWIDTH / 4.0;
+		*w = CARD_VISIBILITY;
 		*h = 0;
 		break;
 	case 1:
 	case 3:
 		*w = 0;
-		*h = CARDWIDTH / 4.0;
+		*h = CARD_VISIBILITY;
 		break;
 	default:
 		ggz_debug("table",
