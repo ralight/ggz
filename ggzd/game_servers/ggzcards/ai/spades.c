@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2463 2001-09-12 20:56:23Z jdorje $
+ * $Id: spades.c 2464 2001-09-12 21:07:09Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -679,6 +679,7 @@ static void Calculate(int num, struct play *play, int agg)
 	 * 0..13   Unlikely to take trick (based on rank)
 	 * 50..63  Likely to take trick (based on rank)
 	 * 100     Guaranteed to take trick
+	 * 101+    May earn bonus future tricks as well
 	 */
 
 
@@ -687,6 +688,7 @@ static void Calculate(int num, struct play *play, int agg)
 	for (r = play->card.face + 1; r <= ACE_HIGH; r++)
 		mask |= (1 << r);
 
+#if 0				/* no longer needed? */
 	/* If this is the highest trump then its future is just as bright as
 	   its present. */
 	if (play->card.suit == SPADES && libai_is_highest_in_suit(play->card)) {
@@ -698,23 +700,22 @@ static void Calculate(int num, struct play *play, int agg)
 			play->trick = 100;
 		return;
 	}
+#endif
 
 	/* Card's rank is its likelihood of taking this trick if the card is
 	   higher than the highest current card. */
 	/* NOTE: we also calculate our partner's chance of winning with an
 	   already-played card, so we must consider that case as well. */
-	/* FIXME: there's still a bug here.  Sometimes we'll trump in on our
-	   partner's aces! */
 	if (high < 0
 	    || ((play->card.suit == SPADES && high_card.suit != SPADES)
 		|| (play->card.suit == high_card.suit
 		    && play->card.face >= high_card.face))
 		) {
 		count = sCount = 0;
-		if (!cards_equal(game.seats[(num + 1) % 4].table, UNKNOWN_CARD)) {	/* we're
-											   the
-											   last
-											   card */
+		if (!cards_equal
+		    (game.seats[(num + 1) % 4].table, UNKNOWN_CARD)) {
+			/* we're the last card */
+			/* FIXME: above calculation is unnecessary */
 			play->trick = 100;
 		} else {
 			if (suit < 0) {	/* we're leading */
@@ -851,6 +852,24 @@ static void Calculate(int num, struct play *play, int agg)
 			if (!danger || (cover >= 2 && n > 300))
 				play->future += 30;
 		}
+	}
+
+	/* This is a quick hack so that we're likely to pull spades when we
+	   have a lot of them.  Otherwise the bot fails miserably in this
+	   regard. */
+	/* If we have two more spades than the average AND there are spades
+	   out, we should always pull. */
+	/* FIXME: this still isn't perfect; if your partner has no spades it
+	   may fail. */
+	if (game.leader == num && play->card.suit == SPADES
+	    && libai_count_suit(num,
+				SPADES) >
+	    (libai_cards_left_in_suit(SPADES) -
+	     libai_count_suit(num, SPADES) + 5) / 3
+	    && libai_get_suit_map((num + 1) % 4, SPADES)
+	    && libai_get_suit_map((num + 3) % 4, SPADES)) {
+		ai_debug("Increasing value of long spade.");
+		play->trick += 100;
 	}
 }
 
