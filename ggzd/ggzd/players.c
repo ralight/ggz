@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5924 2004-02-14 22:14:26Z jdorje $
+ * $Id: players.c 5927 2004-02-15 02:29:47Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -393,9 +393,9 @@ GGZEventFuncReturn player_launch_callback(void* target, size_t size,
 	GGZLaunchEventData *event = data;
 	GGZPlayer* player = (GGZPlayer*)target;
 
-	/* Launch compleyed */
+	/* Launch completed */
 	pthread_rwlock_wrlock(&player->lock);
-	player->launching = true;
+	player->launching = false;
 	pthread_rwlock_unlock(&player->lock);
 
 	dbg_msg(GGZ_DBG_TABLE, "%s launch result: %d",
