@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: interface for AI module system
- * $Id: ai.c 3566 2002-03-16 05:23:37Z jdorje $
+ * $Id: ai.c 3603 2002-03-20 05:14:13Z jdorje $
  *
  * This file contains the frontend for GGZCards' AI module.
  * Specific AI's are in the ai/ directory.  This file contains an array
@@ -60,7 +60,9 @@ void start_ai(game_t *g, player_t p, char* ai_type)
 	/* It would be really cool if we could use the ggzmod library
 	   to do this part... */
 	int fd_pair[2];
+#ifdef DEBUG
 	int err_fd_pair[2];
+#endif /* DEBUG */
 	int pid;
 	char cmd[1024];
 	char *argv[] = {cmd, NULL};
@@ -74,7 +76,10 @@ void start_ai(game_t *g, player_t p, char* ai_type)
 	         "%s/ggzd.ggzcards.ai-%s", path, ai_type);
 	
 	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd_pair) < 0
-	    || pipe(err_fd_pair) < 0)
+#ifdef DEBUG
+	    || pipe(err_fd_pair) < 0
+#endif /* DEBUG */
+	   )
 		ggz_error_sys_exit("socketpair/pipe failed");
 		
 	if ( (pid = fork()) < 0)
@@ -82,7 +87,9 @@ void start_ai(game_t *g, player_t p, char* ai_type)
 	else if (pid == 0) {
 		/* child */
 		close(fd_pair[0]);
+#ifdef DEBUG
 		close(err_fd_pair[0]);
+#endif /* DEBUG */
 		
 		if (fd_pair[1] != 3) {
 			if (dup2(fd_pair[1], 3) != 3
@@ -95,11 +102,13 @@ void start_ai(game_t *g, player_t p, char* ai_type)
 		close(1);
 		close(2);
 		
+#ifdef DEBUG
 		/* Move our pipe to stderr. */
 		assert(err_fd_pair[1] != 2);
 		if (dup2(err_fd_pair[1], 2) != 2
 		    || close(err_fd_pair[1]) < 0)
 			ggz_error_sys_exit("dup/close failed");
+#endif /* DEBUG */
 		
 		execv(argv[0], argv);
 		
@@ -107,14 +116,17 @@ void start_ai(game_t *g, player_t p, char* ai_type)
 	} else {
 		/* parent */
 		close(fd_pair[1]);
-		close(err_fd_pair[1]);
-		
 		g->players[p].fd = fd_pair[0];
+		
+#ifdef DEBUG
+		close(err_fd_pair[1]);
 		g->players[p].err_fd = err_fd_pair[0];
+#endif /* DEBUG */
 		g->players[p].pid = pid;
 	}	
 }
 
+#ifdef DEBUG
 /* We handle debugging messages from the AI in a very cool / hackish way.
    When we fork off the AI process, we open up a pipe FD from stderr to
    us.  We monitor that FD along with all of our thousands of other FD's.
@@ -144,6 +156,7 @@ void handle_ai_stderr(player_t ai)
 	if (*this != '\0')
 		ggzdmod_log(game.ggz, "AI %d: %s", ai, this);
 }
+#endif
 			
 void init_path(const char *exec_cmd)
 {

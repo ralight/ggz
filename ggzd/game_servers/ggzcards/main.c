@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 3602 2002-03-20 05:02:17Z jdorje $
+ * $Id: main.c 3603 2002-03-20 05:14:13Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -220,12 +220,14 @@ static void main_loop(GGZdMod * ggz)
 				max_fd = fd;
 			FD_SET(fd, &fd_set);
 
+#ifdef DEBUG
 			if (get_player_status(p) == GGZ_SEAT_BOT) {
 				fd = game.players[p].err_fd;
 				if (fd > max_fd)
 					max_fd = fd;
 				FD_SET(fd, &fd_set);
 			}
+#endif /* DEBUG */
 		}
 
 		status = select(max_fd + 1, &fd_set, NULL, NULL, NULL);
@@ -251,6 +253,7 @@ static void main_loop(GGZdMod * ggz)
 						    GGZDMOD_EVENT_PLAYER_DATA,
 						    &p);
 
+#ifdef DEBUG
 			/* The AI can send output to stderr; this is read by
 			   us and translated as debugging output. */
 			if (get_player_status(p) == GGZ_SEAT_BOT) {
@@ -258,6 +261,7 @@ static void main_loop(GGZdMod * ggz)
 				if (FD_ISSET(fd, &fd_set))
 					handle_ai_stderr(p);
 			}
+#endif /* DEBUG */
 		}
 	} while (ggzdmod_get_state(ggz) < GGZDMOD_STATE_DONE);
 }

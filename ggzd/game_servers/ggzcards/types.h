@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Special types for GGZCards game data
- * $Id: types.h 3566 2002-03-16 05:23:37Z jdorje $
+ * $Id: types.h 3603 2002-03-20 05:14:13Z jdorje $
  *
  * These are a few random type definitions used all over the place.
  *
@@ -79,7 +79,9 @@ struct game_player_t {
 	
 	/* Used for tracking AI processees. */
 	int fd;
+#ifdef DEBUG
 	int err_fd;
+#endif /* DEBUG */
 	int pid;
 
 	bid_data_t bid_data;	/* bidding information for this player */
