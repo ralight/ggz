@@ -27,43 +27,43 @@ void msgbox_error(gchar *msg)
 	gtk_widget_realize(msgbox);
 	tmp = lookup_widget(msgbox, "lblText");
 
-	if (!strcmp(msg, "Name taken"))
+	if (!strcmp(msg, _("Name taken")))
 	{
 		gtk_label_set_text (GTK_LABEL (tmp), 
-		"The username you have chosen is either "
+		_("The username you have chosen is either "
 		"registered to someone else, or already "
 		"logged in to the zone. Please choose a "
-		"different username and try again.");
+		"different username and try again."));
 		login_failed();
-	} else if(!strcmp(msg, "Error connecting to server: No such file or directory")) {
+	} else if(!strcmp(msg, _("Error connecting to server: No such file or directory"))) {
 		gtk_label_set_text (GTK_LABEL (tmp), 
-		"The GGZ Gaming Zone server you are "
+		_("The GGZ Gaming Zone server you are "
 		"tryinh to connect to is not responding. "
 		" Please check to make sure the server "
-		"address you have entered is correct.");
+		"address you have entered is correct."));
 		login_connect_failed();
-	} else if(!strcmp(msg, "Already logged in")) {
+	} else if(!strcmp(msg, _("Already logged in"))) {
 		gtk_label_set_text (GTK_LABEL (tmp), 
-		"The username you are trying to use is "
+		_("The username you are trying to use is "
 		"invalid. Please make sure your username "
 		"does not contain any of the following "
 		"characters:\n"
-		"\" \", \"'\"");
+		"\" \", \"'\""));
 		login_failed();
-	} else if(!strcmp(msg, "Error connecting to server: Connection refused")) {
+	} else if(!strcmp(msg, _("Error connecting to server: Connection refused"))) {
 		gtk_label_set_text (GTK_LABEL (tmp), 
-		"The computer you are trying to connect to "
+		_("The computer you are trying to connect to "
 		"does not apear to be running a server. "
 		"Please verify that the address and port "
-		"are correct and try again.");
+		"are correct and try again."));
 		login_connect_failed();
-	} else if(!strcmp(msg, "Server error: Bad XML from server")) {
+	} else if(!strcmp(msg, _("Server error: Bad XML from server"))) {
 		gtk_label_set_text (GTK_LABEL (tmp), 
-		"A network error occured. The server "
-		"has disconnected you. ");
-	} else if(!strcmp(msg, "Server error: Server disconnected")) {
+		_("A network error occured. The server "
+		"has disconnected you. "));
+	} else if(!strcmp(msg, _("Server error: Server disconnected"))) {
 		gtk_label_set_text (GTK_LABEL (tmp), 
-		"The server has just disconnected you../");
+		_("The server has just disconnected you../"));
 	} else {
 		gtk_label_set_text (GTK_LABEL (tmp), msg);
 		g_print("%s\n", msg);

@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-05-05 16:29+0200\n"
+"POT-Creation-Date: 2003-08-28 00:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -138,7 +138,7 @@ msgstr ""
 msgid "**none**"
 msgstr ""
 
-#: ../src/interface.c:447 ../src/msgboxi.c:88
+#: ../src/interface.c:447 ../src/msgboxi.c:89
 msgid "GGZ Gaming Zone"
 msgstr ""
 
@@ -156,6 +156,15 @@ msgstr ""
 
 #: ../src/interface.c:526 ../src/profilesi.c:205
 msgid "Profiles"
+msgstr ""
+
+#: ../src/interface.c:545
+msgid ""
+"<b>User Profiles</b>\n"
+"   Creating a user profile allows GGZ to always know that you are you.\n"
+"<b>Username</b>\n"
+"   The username you choose will be what everyone knows you by. This username "
+"can not be changed once the account is created, so choose wisely."
 msgstr ""
 
 #: ../src/interface.c:565 ../src/interface.c:669
@@ -254,7 +263,65 @@ msgstr ""
 msgid "Watch Game"
 msgstr ""
 
-#: ../src/msgboxi.c:122
+#: ../src/msgboxi.c:30
+msgid "Name taken"
+msgstr ""
+
+#: ../src/msgboxi.c:33
+msgid ""
+"The username you have chosen is either registered to someone else, or "
+"already logged in to the zone. Please choose a different username and try "
+"again."
+msgstr ""
+
+#: ../src/msgboxi.c:38
+msgid "Error connecting to server: No such file or directory"
+msgstr ""
+
+#: ../src/msgboxi.c:40
+msgid ""
+"The GGZ Gaming Zone server you are tryinh to connect to is not responding.  "
+"Please check to make sure the server address you have entered is correct."
+msgstr ""
+
+#: ../src/msgboxi.c:45
+msgid "Already logged in"
+msgstr ""
+
+#: ../src/msgboxi.c:47
+msgid ""
+"The username you are trying to use is invalid. Please make sure your "
+"username does not contain any of the following characters:\n"
+"\" \", \"'\""
+msgstr ""
+
+#: ../src/msgboxi.c:53
+msgid "Error connecting to server: Connection refused"
+msgstr ""
+
+#: ../src/msgboxi.c:55
+msgid ""
+"The computer you are trying to connect to does not apear to be running a "
+"server. Please verify that the address and port are correct and try again."
+msgstr ""
+
+#: ../src/msgboxi.c:60
+msgid "Server error: Bad XML from server"
+msgstr ""
+
+#: ../src/msgboxi.c:62
+msgid "A network error occured. The server has disconnected you. "
+msgstr ""
+
+#: ../src/msgboxi.c:64
+msgid "Server error: Server disconnected"
+msgstr ""
+
+#: ../src/msgboxi.c:66
+msgid "The server has just disconnected you../"
+msgstr ""
+
+#: ../src/msgboxi.c:123
 msgid "OK"
 msgstr ""
 

@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.7\n"
-"POT-Creation-Date: 2003-05-05 16:29+0200\n"
-"PO-Revision-Date: 2003-05-05 16:30+0200\n"
+"POT-Creation-Date: 2003-08-28 00:05+0200\n"
+"PO-Revision-Date: 2003-08-27 16:30+0200\n"
 "Last-Translator: Josef Spillner <josef@ggzgamingzone.org>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -34,27 +34,27 @@ msgstr "-------------"
 
 #: ../src/chat.c:411
 msgid "/me <action> .............. Send an action"
-msgstr ""
+msgstr "/me <aktion> .............. Eine Aktion senden"
 
 #: ../src/chat.c:412
 msgid "/msg <username> <message> . Private message a player"
-msgstr ""
+msgstr "/msg <nutzername> <nachricht> Private Nachricht zu einem Spieler"
 
 #: ../src/chat.c:413
 msgid "/beep <username> .......... Beep a player"
-msgstr ""
+msgstr "/beep <nutzername> ........ Einen Spieler anpingen"
 
 #: ../src/chat.c:414
 msgid "/friends .................. List your friends"
-msgstr ""
+msgstr "/friends .................. Liste deiner Freunde"
 
 #: ../src/chat.c:415
 msgid "/ignore ................... List people your ignoring"
-msgstr ""
+msgstr "/ignore ................... Liste der zu ignorierenden Personen"
 
 #: ../src/chat.c:416
 msgid "/wall <message> ........... Admin command"
-msgstr ""
+msgstr "/wall <message> ........... Admin-Kommando"
 
 #: ../src/chat.c:605
 #, c-format
@@ -69,12 +69,12 @@ msgstr "%s wurde von der Liste deiner Freunde entfernt."
 #: ../src/chat.c:660
 #, c-format
 msgid "Added %s to your ignore list."
-msgstr ""
+msgstr "%s wurde zur Liste der zu ignorierenden Personen hinzugefügt."
 
 #: ../src/chat.c:685
 #, c-format
 msgid "Removed %s from your ignore list."
-msgstr ""
+msgstr "%s wurde von der Liste der zu ignorierenden Personen entfernt."
 
 #: ../src/chat.c:816
 msgid "Multiple matches:"
@@ -83,12 +83,12 @@ msgstr "Mehrere Treffer:"
 #: ../src/ggzclient.c:345
 #, c-format
 msgid "You've joined room \"%s\"."
-msgstr ""
+msgstr "Du hast den Raum \"%s\" betreten."
 
 #: ../src/ggzclient.c:394
 #, c-format
 msgid "You've been beeped by %s."
-msgstr ""
+msgstr "Du wurdest von %s angepingt."
 
 #: ../src/ggzclient.c:466
 msgid "Offline"
@@ -138,7 +138,7 @@ msgstr "Ausloggen"
 msgid "**none**"
 msgstr "*kein*"
 
-#: ../src/interface.c:447 ../src/msgboxi.c:88
+#: ../src/interface.c:447 ../src/msgboxi.c:89
 msgid "GGZ Gaming Zone"
 msgstr "GGZ Gaming Zone"
 
@@ -157,6 +157,21 @@ msgstr "_BEENDEN"
 #: ../src/interface.c:526 ../src/profilesi.c:205
 msgid "Profiles"
 msgstr "Profile"
+
+#: ../src/interface.c:545
+msgid ""
+"<b>User Profiles</b>\n"
+"   Creating a user profile allows GGZ to always know that you are you.\n"
+"<b>Username</b>\n"
+"   The username you choose will be what everyone knows you by. This username "
+"can not be changed once the account is created, so choose wisely."
+msgstr ""
+"<b>Nutzerprofile</b>\n"
+"   Ein Nutzerprofil erlaubt es dem GGZ-Server, stets deine Identität zu kennen.\n"
+"<b>Nutzername</b>\n"
+"   Der von dir gewählte Nutzername ist für jedermann sichtbar. Dieser Nutzername "
+"kann nicht mehr geändert werden, sobald der Zugang erstellt wurde, also "
+"wähle ihn gut."
 
 #: ../src/interface.c:565 ../src/interface.c:669
 msgid "USERNAME"
@@ -254,7 +269,77 @@ msgstr "An Spiel teilnehmen"
 msgid "Watch Game"
 msgstr "Zuschauen"
 
-#: ../src/msgboxi.c:122
+#: ../src/msgboxi.c:30
+msgid "Name taken"
+msgstr "Name in Verwendung"
+
+#: ../src/msgboxi.c:33
+msgid ""
+"The username you have chosen is either registered to someone else, or "
+"already logged in to the zone. Please choose a different username and try "
+"again."
+msgstr ""
+"Der von dir gewählte Nutzername ist entweder von jemandem registriert, "
+"oder es ist bereits jemand mit diesem Namen eingeloggt. Bitte wähle einen "
+"anderen Nutzernamen und versuche es erneut."
+
+#: ../src/msgboxi.c:38
+msgid "Error connecting to server: No such file or directory"
+msgstr "Fehler beim Verbinden zum Server: Host nicht gefunden"
+
+#: ../src/msgboxi.c:40
+msgid ""
+"The GGZ Gaming Zone server you are tryinh to connect to is not responding.  "
+"Please check to make sure the server address you have entered is correct."
+msgstr ""
+"Der GGZ Gaming Zone-Server, zu dem du dich verbinden möchtest, antwortet "
+"nicht. Bitte stelle sicher, daß die von dir eingegebene Server-Adresse "
+"korrekt ist."
+
+#: ../src/msgboxi.c:45
+msgid "Already logged in"
+msgstr "Bereits eingeloggt"
+
+#: ../src/msgboxi.c:47
+msgid ""
+"The username you are trying to use is invalid. Please make sure your "
+"username does not contain any of the following characters:\n"
+"\" \", \"'\""
+msgstr ""
+"Der von dir gewählte Nutzername ist ungültig. Bitte stelle sicher, daß "
+"der Nutzername keines der folgenden Zeichen enthält:\n"
+"\" \", \"'\""
+
+#: ../src/msgboxi.c:53
+msgid "Error connecting to server: Connection refused"
+msgstr "Fehler beim Verbinden zum Server: Verbindung abgelehnt"
+
+#: ../src/msgboxi.c:55
+msgid ""
+"The computer you are trying to connect to does not apear to be running a "
+"server. Please verify that the address and port are correct and try again."
+msgstr ""
+"Der Computer, zu dem du dich verbinden möchtest, scheint keinen GGZ-Server "
+"zu haben. Bitte stelle sicher, daß die Adresse und der Port korrekt sind, "
+"und versuche es erneut."
+
+#: ../src/msgboxi.c:60
+msgid "Server error: Bad XML from server"
+msgstr "Server-Fehler: Fehlerhaftes XML vom Server"
+
+#: ../src/msgboxi.c:62
+msgid "A network error occured. The server has disconnected you. "
+msgstr "Ein Netzwerkfehler ist aufgetreten. Du wurdest vom Server getrennt."
+
+#: ../src/msgboxi.c:64
+msgid "Server error: Server disconnected"
+msgstr "Server-Fehler: Verbindung zum Server getrennt"
+
+#: ../src/msgboxi.c:66
+msgid "The server has just disconnected you../"
+msgstr "Der Server hat dich gerade getrennt../"
+
+#: ../src/msgboxi.c:123
 msgid "OK"
 msgstr "OK"
 
@@ -268,35 +353,38 @@ msgid ""
 "modify any of it's settings, when done click Apply. To create a new profile, "
 "fill out all information and click new."
 msgstr ""
+"Dies ist der erweiterte Profileditor. Wähle ein Profil auf der rechten Seite "
+"aus, um dessen Einstellungen abändern zu können, und drücke auf 'Anwenden'. "
+"Um ein neues Profil zu erstellen, drücke den Button 'Neu'."
 
 #: ../src/profilesi.c:84
 msgid "Profile Name:"
-msgstr ""
+msgstr "Profilname:"
 
 #: ../src/profilesi.c:104
 msgid "Username:"
-msgstr ""
+msgstr "Nutzername:"
 
 #: ../src/profilesi.c:124
 msgid "Password:"
-msgstr ""
+msgstr "Kennwort:"
 
 #: ../src/profilesi.c:144
 msgid "Server:"
-msgstr ""
+msgstr "Server:"
 
 #: ../src/profilesi.c:165
 msgid "_New"
-msgstr ""
+msgstr "Neu"
 
 #: ../src/profilesi.c:174
 msgid "_Modify"
-msgstr ""
+msgstr "Ändern"
 
 #: ../src/profilesi.c:183
 msgid "D_elete"
-msgstr ""
+msgstr "Löschen"
 
 #: ../src/profilesi.c:192
 msgid "_Done"
-msgstr ""
+msgstr "Fertig"

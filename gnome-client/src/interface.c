@@ -542,8 +542,8 @@ create_login (void)
   gtk_widget_ref (lblNewInfo);
   gtk_label_set_line_wrap (GTK_LABEL (lblNewInfo), TRUE);
   gtk_label_set_markup (GTK_LABEL (lblNewInfo), 
-		"<b>User Profiles</b>\n   Creating a user profile allows GGZ to always know that you are you.\n<b>Username</b>\n   The username you " \
-		"choose will be what everyone knows you by. This username can not be changed once the account is created, so choose wisely.");
+		_("<b>User Profiles</b>\n   Creating a user profile allows GGZ to always know that you are you.\n<b>Username</b>\n   The username you " \
+		"choose will be what everyone knows you by. This username can not be changed once the account is created, so choose wisely."));
   gtk_object_set_data_full (GTK_OBJECT (window), "lblNewInfo", lblNewInfo,
 		  	    (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lblNewInfo);
