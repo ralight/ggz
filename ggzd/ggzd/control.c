@@ -80,7 +80,7 @@ void init_data(void) {
   spades.options_size = 12;
   spades.enabled = 1;
   spades.launch = NULL;
-  strncpy(spades.path, "../games/spades/spades",
+  strncpy(spades.path, "../game_servers/spades/spades",
 	  MAX_PATH_LEN);
   
   pthread_rwlock_wrlock(&game_types.lock);
