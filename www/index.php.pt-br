@@ -1,0 +1,56 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>O projeto GGZ Gaming Zone</b><br>
+Jogos ao internet para todos.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top" colspan="2">
+
+<i>Nos precisamos um tradutor brasileiro :)</i><br>
+
+<i>O que é GGZ?</i><br>
+GGZ (uma abreviatura de GGZ Gaming Zone) desinvolve jogos e programas parentes
+para jogar online (típo client-servidor). Valorizaçãos dos jogadores, espetadores,
+jogadores artifiçais e um chatbot são peças do projeto.
+
+</td></tr>
+<tr><td valign="top">
+
+<a href="docs.php">Ler alguns documentos</a><br>
+<a href="/screenshots/">Ver alguns screenshots</a>
+<br><br>
+
+<i>Baixe a versão a mais novo</i><br>
+O GGZ Gaming Zone 0.0.8 é disponível desde 07/Fev/2004.<br>
+<a href="/docs/release.php">Release announcement</a><br>
+<a href="/docs/download.php">Vai para a página de baixa</a><br>
+<a href="http://web.mountain.net/ld94/ggz_installation_howto.html">Howto novo para instalar</a>
+
+</td><td valign="top">
+
+<img src="/pics/splash/newhosting.png">
+
+</td>
+</tr>
+</table>
+
+<b>Notícias</b><br>
+<i>07.04.2004: Versão portuguêsa</i> (de josef)<br>
+Eu tentei traduzir a primeira página. Se você gosta, posso
+traduzir mais no futuro.
+<br>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+

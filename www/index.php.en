@@ -33,13 +33,18 @@ The GGZ Gaming Zone 0.0.8 has been released on Feb 07 2004.<br>
 
 </td><td valign="top">
 
-<img src="/pics/site/splash-0.0.8.png">
+<img src="/pics/splash/newhosting.png">
 
 </td>
 </tr>
 </table>
 
 <b>News</b><br>
+<i>07.04.2004: Server move</i> (by josef)<br>
+The GGZ project has switched hosting of its main server from User-Mode-Linux
+(UML) to Linux-VServer. Sorry for the downtime during the last days.
+<br><br>
+
 <i>07.02.2004: GGZ 0.0.8</i> (by josef)<br>
 The new version is out now. The old website is officially replaced with this
 one. Have fun :)

@@ -1,0 +1,24 @@
+<br>
+
+<table class="pane" width="100%">
+<tr>
+<td>
+<font size="3">
+Internacional
+<?php
+include("international.php");
+?>
+|
+<a href="/about.php">Sobre o GGZ Gaming Zone</a>
+|
+<a href="http://ggz.sourceforge.net">Homepage velho</a>
+|
+<a href="/contact.php">Contato</a>
+</font>
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+
