@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 4108 2002-04-29 05:29:32Z jdorje $
+ * $Id: client.c 4119 2002-04-30 05:04:06Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -346,7 +346,6 @@ static int handle_msg_gameover(void)
 static int handle_msg_players(void)
 {
 	int i, numplayers, different;
-	char *t_name;
 	int old_numplayers = ggzcards.num_players;
 
 	/* It is possible to have 0 players.  At the begginning of a
@@ -390,24 +389,30 @@ static int handle_msg_players(void)
 
 	/* read in data about the players */
 	for (i = 0; i < numplayers; i++) {
-		int _assign;
-		GGZSeatType assign;
+		int type;
+		GGZSeatType old_type, new_type;
+		char *old_name, *new_name;
 
-		if (ggz_read_int(game_internal.fd, &_assign) < 0 ||
-		    ggz_read_string_alloc(game_internal.fd, &t_name) < 0)
+		if (ggz_read_int(game_internal.fd, &type) < 0 ||
+		    ggz_read_string_alloc(game_internal.fd, &new_name) < 0)
 			return -1;
-
-		assign = _assign;
-
-		game_alert_player(i, assign, t_name);
+		new_type = type;
+		
+		old_name = ggzcards.players[i].name;
+		old_type = ggzcards.players[i].status;
 
 		/* this causes unnecessary memory fragmentation */
 		if (ggzcards.players[i].name) {
 			/* allocated by easysock */
 			ggz_free(ggzcards.players[i].name);
 		}
-		ggzcards.players[i].status = assign;
-		ggzcards.players[i].name = t_name;
+		ggzcards.players[i].status = new_type;
+		ggzcards.players[i].name = new_name;
+
+		if (old_type != new_type
+		    || !old_name
+		    || strcmp(old_name, new_name) != 0)
+			game_alert_player(i, old_type, old_name);
 	}
 
 	ggzcards.num_players = numplayers;

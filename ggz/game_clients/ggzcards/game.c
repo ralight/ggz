@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4111 2002-04-29 17:00:34Z jdorje $
+ * $Id: game.c 4119 2002-04-30 05:04:06Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -288,9 +288,13 @@ void game_handle_gameover(int num_winners, int *winners)
 	messagebar_message(msg);
 }
 
-void game_alert_player(int player, GGZSeatType status, const char *name)
+void game_alert_player(int player,
+                       GGZSeatType old_status,
+                       const char *old_name)
 {
-	char *temp = NULL;
+	char *message = NULL;
+	GGZSeatType new_status = ggzcards.players[player].status;
+	char *new_name = ggzcards.players[player].name;
 
 	ggz_debug("main", "Handling player update for player %d.", player);
 
@@ -298,30 +302,30 @@ void game_alert_player(int player, GGZSeatType status, const char *name)
 		update_player_dialog(player_dialog);
 	table_update_player_list();
 
-	switch (status) {
+	switch (new_status) {
 	case GGZ_SEAT_PLAYER:
 		/* This assumes we can't have a smooth transition from one
 		   human player to another.  Could be a problem... */
-		if (ggzcards.players[player].status != GGZ_SEAT_PLAYER)
-			temp = g_strdup_printf(_("%s joined the table."),
-					       name);
+		if (old_status != GGZ_SEAT_PLAYER)
+			message = g_strdup_printf(_("%s joined the table."),
+			                          new_name);
 		break;
 	case GGZ_SEAT_OPEN:
-		name = _("Empty Seat");
-		if (ggzcards.players[player].status == GGZ_SEAT_PLAYER)
-			temp = g_strdup_printf(_("%s left the table."),
-					       ggzcards.players[player].name);
+		new_name = _("Empty Seat");
+		if (old_status == GGZ_SEAT_PLAYER)
+			message = g_strdup_printf(_("%s left the table."),
+			                          old_name);
 		break;
 	default:
 		/* any other handling? */
 		break;
 	}
-	if (temp) {
-		statusbar_message(temp);
-		g_free(temp);
+	if (message) {
+		statusbar_message(message);
+		g_free(message);
 	}
 
-	table_set_name(player, name);
+	table_set_name(player, new_name);
 }
 
 void game_alert_num_players(int new, int old)
