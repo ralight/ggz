@@ -4,6 +4,8 @@
 #include <kio/slavebase.h>
 #include <kio/jobclasses.h>
 
+class QSocket;
+
 class GGZMetaProtocol : public QObject, public KIO::SlaveBase
 {
 	Q_OBJECT
@@ -18,14 +20,18 @@ class GGZMetaProtocol : public QObject, public KIO::SlaveBase
 
 	public slots:
 		void slotResult(KIO::Job *job);
+		void slotRead();
+		void slotWrite();
 
 	private:
+		void loop();
 		void jobOperator(const KURL& url);
 		void init(const KURL& url);
 		void debug(QString s);
 
 		KIO::UDSEntry entry;
-		QString m_class;
+		QString m_class, m_query;
+		QSocket *m_sock;
 };
 
 #endif

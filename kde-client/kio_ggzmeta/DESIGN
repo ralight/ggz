@@ -34,6 +34,7 @@
  4) Atlantik
  In a similar fashion, ggzmeta://atlantik/ retrieves all Atlantik games, using
  the well-known XML format.
+ (The URL is: http://gator.monopd.net)
  IMO Atlantik doesn't support a host and port argument yet, so this should be
  fixed.
 
