@@ -26,8 +26,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 691 $</revnumber>
-	<date>$Date: 2000-08-26 13:30:42 -0700 (Sat, 26 Aug 2000) $</date>
+	<revnumber>$Revision: 693 $</revnumber>
+	<date>$Date: 2000-08-26 13:45:09 -0700 (Sat, 26 Aug 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -72,8 +72,8 @@
     &requirements;
   </chapter>
 
-  <chapter id="client-server-comm">
-    <title>Client-Server Communications</title>
+  <chapter id="client-server-protocol">
+    <title>Client-Server Communication Protocol</title>
     &client-server;
   </chapter>
 
