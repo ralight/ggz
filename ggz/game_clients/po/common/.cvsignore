@@ -1,2 +1,4 @@
 Makefile.in
 Makefile
+*.mo
+translation.stamp
