@@ -315,7 +315,7 @@ static char *motd_get_tables(int option,
 		/* Determine number of tables open */
 		for(i=0; i<MAX_TABLES; i++)
 			if(tables.info[i].type_index != -1 &&
-			   tables.info[i].playing == 0)
+			   tables.info[i].state != GGZ_TABLE_PLAYING)
 				num_tables++;
 	pthread_rwlock_unlock(&tables.lock);
 

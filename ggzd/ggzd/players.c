@@ -245,7 +245,7 @@ static void player_loop(int p_index, int p_fd)
 			
 			status = player_handle(op, p_index, p_fd, &t_fd);
 			
-			if (status < 0)
+			if (status == GGZ_REQ_DISCONNECT)
 				break;
 			
 			switch (status) {
@@ -263,6 +263,7 @@ static void player_loop(int p_index, int p_fd)
 					"Player %d game-over [user]", p_index);
 				game_over = 1;
 				break;
+			case GGZ_REQ_FAIL:
 			case GGZ_REQ_OK:
 				break;
 			}
@@ -315,7 +316,8 @@ static void player_loop(int p_index, int p_fd)
  *  GGZ_REQ_TABLE_JOIN   : player is now in a game.  fd of the game 
  *                         is returned by reference.
  *  GGZ_REQ_TABLE_LEAVE  : player has completed game
- *  GGZ_REQ_LOGOUT       : player is being logged out (possbily due to error)
+ *  GGZ_REQ_DISCONNECT   : player is being logged out (possbily due to error)
+ *  GGZ_REQ_FAIL         : request failed
  *  GGZ_REQ_OK           : nothing special 
  */
 int player_handle(int request, int p_index, int p_fd, int *t_fd)
@@ -330,18 +332,18 @@ int player_handle(int request, int p_index, int p_fd, int *t_fd)
 
 	case REQ_LOGOUT:
 		player_logout(p_index, p_fd);
-		status = GGZ_REQ_LOGOUT;
+		status = GGZ_REQ_DISCONNECT;
 		break;
 
 	case REQ_TABLE_LAUNCH:
 		status = player_table_launch(p_index, p_fd, t_fd);
-		if (status == 0)
+		if (status == GGZ_REQ_OK)
 			status = GGZ_REQ_TABLE_JOIN;
 		break;
 
 	case REQ_TABLE_JOIN:
 		status = player_table_join(p_index, p_fd, t_fd);
-		if (status == 0)
+		if (status == GGZ_REQ_OK)
 			status = GGZ_REQ_TABLE_JOIN;
 		break;
 
@@ -454,7 +456,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 	if ((user_update && es_write_int(fd, MSG_UPDATE_PLAYERS) < 0)
 	    || (type_update && es_write_int(fd, MSG_UPDATE_TYPES) < 0)
 	    || (table_update && es_write_int(fd, MSG_UPDATE_TABLES) < 0))
-		return(-1);
+		return GGZ_REQ_DISCONNECT;
 	
 	/* Send any unread chats */
 	count = chat_check_num_unread(p);
@@ -467,7 +469,7 @@ static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts,
 			count--;
 		}
 	
-	return 0;
+	return GGZ_REQ_OK;
 }
 
 
@@ -489,7 +491,7 @@ static int player_login_new(int p)
 	dbg_msg(GGZ_DBG_CONNECTION, "Creating new login for player %d", p);
 
 	if (read_name(players.info[p].fd, name) < 0)
-		return (-1);
+		return GGZ_REQ_DISCONNECT;
 
 	/* FIXME: assign unique uid and create new entry in database */
 	pthread_rwlock_wrlock(&players.lock);
@@ -504,19 +506,18 @@ static int player_login_new(int p)
 	    || es_write_char(players.info[p].fd, 0) < 0 
 	    || es_write_string(players.info[p].fd, "password") < 0 
 	    || es_write_int(players.info[p].fd, 265) < 0)
-		return (-1);
+		return GGZ_REQ_DISCONNECT;
 
 	/* Send off the Message Of The Day */
 	if (motd_info.use_motd && (motd_send_motd(players.info[p].fd) < 0)) {
 		player_remove(p);
-		return -1;
+		return GGZ_REQ_DISCONNECT;
 	}
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Successful new login of %s: UID = %d",
 		players.info[p].name, players.info[p].uid);
 
-	return 0;
-
+	return GGZ_REQ_OK;
 }
 
 
@@ -538,7 +539,7 @@ static int player_login_anon(int p, int fd)
 	dbg_msg(GGZ_DBG_CONNECTION,"Creating anonymous login for player %d", p);
 	
 	if (read_name(fd, name) < 0)
-		return (-1);
+		return GGZ_REQ_DISCONNECT;
 
 	/* Check name for uniqueness */
 	pthread_rwlock_rdlock(&players.lock);
@@ -554,8 +555,8 @@ static int player_login_anon(int p, int fd)
 			"Unsuccessful anonymous login of %s", name);
 		if (es_write_int(fd, RSP_LOGIN_ANON) < 0
 		    || es_write_char(fd, -1) < 0)
-			return -1;
-		return 0;
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
 	}
 
 	pthread_rwlock_wrlock(&players.lock);
@@ -569,14 +570,12 @@ static int player_login_anon(int p, int fd)
 	if (es_write_int(fd, RSP_LOGIN_ANON) < 0
 	    || es_write_char(fd, 0) < 0
 	    || es_write_int(fd, 265) < 0)
-		return -1;
+		return GGZ_REQ_DISCONNECT;
 
 	/* Send off the Message Of The Day */
-	if (motd_info.use_motd && (motd_send_motd(players.info[p].fd) < 0)) {
-		player_remove(p);
-		return -1;
-	}
-
+	if (motd_info.use_motd && (motd_send_motd(players.info[p].fd) < 0)) 
+		return GGZ_REQ_DISCONNECT;
+	
 	dbg_msg(GGZ_DBG_CONNECTION, "Successful anonymous login of %s", name);
 
 	if(hostname)
@@ -606,9 +605,9 @@ static int player_logout(int p, int fd)
 	/* FIXME: Saving of stats and other things */
 	if (es_write_int(fd, RSP_LOGOUT) < 0 
 	    || es_write_char(fd, 0) < 0)
-		return -1;
+		return GGZ_REQ_DISCONNECT;
 	
-	return 0;
+	return GGZ_REQ_OK;
 }
 
 
@@ -630,19 +629,15 @@ static int player_logout(int p, int fd)
  * returns 0 if successful, -1 on error.  If successful, returns table
  * fd by reference
  */
-
-/*
- * FIXME: Much of this function should be put into table_launch().
- * Then upon return from table_launch() we send out RSP_TABLE_LAUNCH
- */
 static int player_table_launch(int p_index, int p_fd, int *t_fd)
 {
 	TableInfo table;
-	int i, size, t_index = -1;
+	int i, t_index = -1;
+	unsigned int size;
 	int status = 0;
 	int fds[2];
 	int seats;
-	void *options;
+	void *options = NULL;
 	char name[MAX_USER_NAME_LEN + 1];
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table launch for player %d", p_index);
@@ -650,17 +645,25 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	if (es_read_int(p_fd, &table.type_index) < 0
 	    || es_read_string(p_fd, table.desc) < 0
 	    || es_read_int(p_fd, &seats) < 0)
-		return -1;
+		return GGZ_REQ_DISCONNECT;
 
-	/* FIXME: somehow check for seats > MAX_TABLE_SIZE */
+	/* FIXME: What should we do about data leftover? */
+	if (seats > MAX_TABLE_SIZE) {
+		if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
+		    || es_write_char(p_fd, -1) < 0)
+			return GGZ_REQ_DISCONNECT;
+		
+		return GGZ_REQ_FAIL;
+	}
+		
 	/* Read in seat assignments */
 	for (i = 1; i < seats; i++) {
 		if (es_read_int(p_fd, &table.seats[i]) < 0)
-			return -1;
-		if (table.seats[i] == GGZ_SEAT_RESV
-		    && read_name(p_fd, name) < 0)
-			return -1;
-
+			return GGZ_REQ_DISCONNECT;
+		if (table.seats[i] != GGZ_SEAT_RESV)
+			continue;
+		if (read_name(p_fd, name) < 0)
+			return GGZ_REQ_DISCONNECT;
 		/*
 		 * FIXME: lookup uid of name and asign to table.reserve[i]
 		 * upon error, set status = E_USR_LOOKUP
@@ -669,12 +672,12 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 
 	/* Read in game specific options */
 	if (es_read_int(p_fd, &size) < 0)
-		return -1;
-	if ((options = malloc(size)) < 0)
+		return GGZ_REQ_DISCONNECT;
+	if (size > 0 && (options = malloc(size)) == NULL)
 		err_sys_exit("malloc error");
-	if (es_readn(p_fd, options, size) <= 0) {
+	if (size > 0 && es_readn(p_fd, options, size) < size) {
 		free(options);
-		return -1;
+		return GGZ_REQ_DISCONNECT;
 	}
 
 	/* Create socketpair for communication */
@@ -682,83 +685,47 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 	*t_fd = fds[1];
 
 	/* Fill remaining parameters */
-	if (status == 0) {
-		table.playing = 0;
-		table.pid = -1;
-		table.fd_to_game = -1;
-		table.player_fd[0] = fds[0];
-		table.seats[0] = p_index;
-		for (i = seats; i < MAX_TABLE_SIZE; i++)
-			table.seats[i] = GGZ_SEAT_NONE;
-		table.options = options;
-		pthread_mutex_init(&table.seats_lock, NULL);
-		pthread_cond_init(&table.seats_cond, NULL);
-	}
+	table.state = GGZ_TABLE_CREATE;
+	table.transit_flag = GGZ_TRANSIT_CLEAR;
+	table.pid = -1;
+	table.fd_to_game = -1;
+	table.player_fd[0] = fds[0];
+	table.seats[0] = p_index;
+	for (i = seats; i < MAX_TABLE_SIZE; i++)
+		table.seats[i] = GGZ_SEAT_NONE;
+	table.options = options;
+	pthread_mutex_init(&table.transit_lock, NULL);
+	pthread_mutex_init(&table.state_lock, NULL);
+	pthread_cond_init(&table.transit_cond, NULL);
+	pthread_cond_init(&table.state_cond, NULL);
 
-	/* Check validity of table info (not options) */
-	if (status == 0 && (table_check(p_index, table) < 0))
-		status = E_BAD_OPTIONS;
+	/* Do actual launch of table */
+	status = table_launch(p_index, table, &t_index);
 
-	/* Find open table */
-	if (status == 0) {
-		pthread_rwlock_wrlock(&tables.lock);
-		if (tables.count == MAX_TABLES) {
-			pthread_rwlock_unlock(&tables.lock);
-			status = E_ROOM_FULL;
-		} else {
-			for (i = 0; i < MAX_TABLES; i++)
-				if (tables.info[i].type_index < 0)
-					break;
+	if (status != 0) 
+		dbg_msg(GGZ_DBG_TABLE, 
+			"Player %d's table launch failed with err %d", p_index,
+			status);
+	else
+		dbg_msg(GGZ_DBG_TABLE, "Player %d's table launch successful", 
+			p_index);
 
-			t_index = i;
-			tables.info[t_index] = table;
-			tables.count++;
-			tables.timestamp = time(NULL);
-			pthread_rwlock_unlock(&tables.lock);
-		}
-	}
-
-	/* Attempt to do launch of table-controller */
-	if (status == 0 && (table_handler_launch(t_index) < 0))
-		status = E_LAUNCH_FAIL;
-
-	/* Return status */
+	/* Return status to client */
 	if (es_write_int(p_fd, RSP_TABLE_LAUNCH) < 0
-	    || es_write_char(p_fd, (char) status) < 0)
-		status = E_RESPOND_FAIL;
-
-	/* Cleanup if something failed */
-	switch (status) {
-	case E_RESPOND_FAIL:
-		/* 
-		 *  FIXME: lots to do here since table thread was launched 
-		 *  perhaps just remove user from table and let table die 
-		 * on it's own.
-		 */
-		break;
-	case E_LAUNCH_FAIL:
-		pthread_rwlock_wrlock(&tables.lock);
-		tables.info[t_index].pid = -1;
-		tables.count--;
-		pthread_rwlock_unlock(&tables.lock);
-	case E_TABLE_FULL:
-	case E_BAD_OPTIONS:
-		free(options);
-		dbg_msg(GGZ_DBG_TABLE,
-			"Player %d's table launch failed with err %d",
-			p_index, status);
-		break;
-	case 0:		/* Everything OK */
-		pthread_rwlock_wrlock(&players.lock);
-		players.info[p_index].table_index = t_index;
-		players.timestamp = time(NULL);
-		pthread_rwlock_unlock(&players.lock);
-		break;
-	default:
-		break;
+	    || es_write_char(p_fd, (char)status) < 0) {
+		/* FIXME: leave table if table was launced */
+		return GGZ_REQ_DISCONNECT;
 	}
 
-	return (status);
+	if (status != 0)
+		return GGZ_REQ_FAIL;
+	
+	pthread_rwlock_wrlock(&players.lock);
+	players.info[p_index].table_index = t_index;
+	players.timestamp = time(NULL);
+	pthread_rwlock_unlock(&players.lock);
+
+	return GGZ_REQ_OK;
 }
 
 
@@ -783,7 +750,7 @@ static int player_table_launch(int p_index, int p_fd, int *t_fd)
 /* FIXME: Some day we'll worry about reservations. Not today*/
 static int player_table_join(int p_index, int p_fd, int *t_fd)
 {
-	int i, t_index, fds[2];
+	int t_index;
 	int status = 0;
 
 	dbg_msg(GGZ_DBG_TABLE, "Handling table join for player %d", p_index);
@@ -793,64 +760,32 @@ static int player_table_join(int p_index, int p_fd, int *t_fd)
 	dbg_msg(GGZ_DBG_TABLE,
 		"Player %d attempting to join table %d", p_index, t_index);
 
-	pthread_rwlock_wrlock(&tables.lock);
-	if (tables.info[t_index].type_index == -1) {
-		pthread_rwlock_unlock(&tables.lock);
-		status = E_TABLE_EMPTY;
-	}
-	else if (seats_open(tables.info[t_index]) == 0) {
-		pthread_rwlock_unlock(&tables.lock);
-		status = E_TABLE_FULL;
-	} else {
-		/* Take my seat */
-		for (i = 0; i < seats_num(tables.info[t_index]); i++)
-			if (tables.info[t_index].seats[i] == GGZ_SEAT_OPEN) {
-				tables.info[t_index].seats[i] = p_index;
-				/* Create socketpair for communication */
-				socketpair(PF_UNIX, SOCK_STREAM, 0, fds);
-				tables.info[t_index].player_fd[i] = fds[0];
-				*t_fd = fds[1];
-				dbg_msg(GGZ_DBG_TABLE,
-					"Player %d in seat %d", p_index, i);
-				break;
-			}
+	status = table_join(p_index, t_index, t_fd);
 
-		tables.timestamp = time(NULL);
-	        pthread_rwlock_unlock(&tables.lock);
+	if (status != 0) 
+		dbg_msg(GGZ_DBG_TABLE, 
+			"Player %d's table join failed with err %d", p_index, 
+			status);
+	else
+		dbg_msg(GGZ_DBG_TABLE, "Player %d's table join successful", 
+			p_index);
 
-		pthread_mutex_lock(&tables.info[t_index].seats_lock);
-		pthread_cond_signal(&tables.info[t_index].seats_cond);
-		pthread_mutex_unlock(&tables.info[t_index].seats_lock);
-	}
-
-
-	/* Return status */
+	/* Return status to client*/
 	if (es_write_int(p_fd, RSP_TABLE_JOIN) < 0
-	    || es_write_char(p_fd, (char)status) < 0)
-		status = E_RESPOND_FAIL;
-
-	switch (status) {
-	case E_RESPOND_FAIL:
-		/* FIXME: must do major cleanup to remove player from game */
-	case E_TABLE_EMPTY:
-	case E_TABLE_FULL:
-	case E_BAD_OPTIONS:
-		dbg_msg(GGZ_DBG_TABLE,
-			"Player %d's table join failed with err %d",
-			p_index, status);
-		break;
-	case 0:		/* Everything OK */
-		pthread_rwlock_wrlock(&players.lock);
-		players.info[p_index].table_index = t_index;
-		players.timestamp = time(NULL);
-		pthread_rwlock_unlock(&players.lock);
-		break;
-	default:
-		break;
+	    || es_write_char(p_fd, (char)status) < 0) {
+		/* FIXME: leave table if join was successful */
+		return GGZ_REQ_DISCONNECT;
 	}
+	
+	if (status != 0)
+		return GGZ_REQ_FAIL;
+	
+	pthread_rwlock_wrlock(&players.lock);
+	players.info[p_index].table_index = t_index;
+	players.timestamp = time(NULL);
+	pthread_rwlock_unlock(&players.lock);
 
-	return status;
-
+	return GGZ_REQ_OK;
 }
 
 
@@ -886,9 +821,11 @@ static int player_list_types(int p_index, int fd)
 {
 	char verbose;
 	int i, count = 0;
-
 	GameInfo info[MAX_GAME_TYPES];
 
+	dbg_msg(GGZ_DBG_UPDATE,
+		"Handling type list request for player %d", p_index);
+	
 	if (es_read_char(fd, &verbose) < 0)
 		return (-1);
 
@@ -926,10 +863,12 @@ static int player_list_tables(int p_index, int fd)
 	int i, j, type, index, uid;
 	int count = 0;
 	char name[MAX_USER_NAME_LEN + 1];
-
 	TableInfo my_tables[MAX_TABLES];
 	int indices[MAX_TABLES];
-	
+
+	dbg_msg(GGZ_DBG_UPDATE,
+		"Handling table list request for player %d", p_index);	
+
 	if (es_read_int(fd, &type) < 0)
 		return (-1);
 
@@ -952,7 +891,7 @@ static int player_list_tables(int p_index, int fd)
 		if (es_write_int(fd, indices[i]) < 0
 		    || es_write_int(fd, my_tables[i].type_index) < 0
 		    || es_write_string(fd, my_tables[i].desc) < 0
-		    || es_write_char(fd, my_tables[i].playing) <0
+		    || es_write_char(fd, my_tables[i].state) < 0
 		    || es_write_int(fd, seats_num(my_tables[i])) < 0)
 			return (-1);
 

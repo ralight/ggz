@@ -24,5 +24,5 @@
 
 #include <config.h>
 
-int table_handler_launch(int t_index);
-int table_check(int p_index, TableInfo table);
+int table_launch(int p, TableInfo table, int* t_index);
+int table_join(int p, int t_index, int* t_fd);

@@ -75,9 +75,24 @@
 
 /* Player Handler return values */
 #define GGZ_REQ_OK           0
-#define GGZ_REQ_LOGOUT      -1
-#define GGZ_REQ_TABLE_JOIN   1
-#define GGZ_REQ_TABLE_LEAVE  2
+#define GGZ_REQ_DISCONNECT  -1
+#define GGZ_REQ_FAIL         1
+#define GGZ_REQ_TABLE_JOIN   2
+#define GGZ_REQ_TABLE_LEAVE  3
+
+/* Table state values */
+#define GGZ_TABLE_ERROR     -1
+#define GGZ_TABLE_CREATE     0
+#define GGZ_TABLE_LAUNCH     1
+#define GGZ_TABLE_PLAYING    2
+#define GGZ_TABLE_DONE       3
+
+/* Table joining values */
+#define GGZ_TRANSIT_OK    -1
+#define GGZ_TRANSIT_ERROR -2
+#define GGZ_TRANSIT_CLEAR  0
+#define GGZ_TRANSIT_JOIN   1
+#define GGZ_TRANSIT_LEAVE  2
 
 /* Special seat assignment values */
 #define GGZ_SEAT_OPEN   -1

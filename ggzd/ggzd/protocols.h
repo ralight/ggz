@@ -80,15 +80,17 @@ typedef enum {
 
 typedef enum {
 	RSP_GAME_LAUNCH,
+	RSP_GAME_JOIN,
+	RSP_GAME_LEAVE,
 	MSG_GAME_OVER
 } TableToControl;
 
 typedef enum {
 	REQ_GAME_LAUNCH,
-	REQ_PLAYER_JOIN,
-	REQ_PLAYER_LEAVE
-
+	REQ_GAME_JOIN,
+	REQ_GAME_LEAVE
 } ControlToTable;
+
 
 #define E_USR_LOOKUP   -1
 #define E_BAD_OPTIONS  -2
@@ -96,4 +98,4 @@ typedef enum {
 #define E_TABLE_FULL   -4
 #define E_TABLE_EMPTY  -5
 #define E_LAUNCH_FAIL  -6
-#define E_RESPOND_FAIL -7
+#define E_JOIN_FAIL    -7
