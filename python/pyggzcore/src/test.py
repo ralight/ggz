@@ -5,6 +5,7 @@
 
 import ggzcore
 import inspect
+import sys
 
 def minisleep(s):
 	counter = 499999
@@ -22,6 +23,7 @@ def server_event(id, data):
 	elif id == ggzcore.SERVER_CONNECT_FAIL:
 		print "connection error!"
 		print "reason", data
+		sys.exit()
 	elif id == ggzcore.SERVER_NEGOTIATED:
 		print "negotiated!"
 		ggzcore.server.login()
@@ -40,15 +42,20 @@ def server_event(id, data):
 		print ggzcore.room.get_name()
 		print ggzcore.room.get_desc()
 	else:
-		print "!! unknown event", id
+		print "!! unknown server event", id
 
 def room_event(id, data):
 	print "room event!"
 	if id == ggzcore.ROOM_CHAT_EVENT:
 		print "chat!"
 		print "data:", data
+	elif id == ggzcore.ROOM_PLAYER_LIST:
+		print "player list!"
+		print data
+		for player in data:
+			print "player =", player
 	else:
-		print "!! unknown event", id
+		print "!! unknown room event", id
 
 print ">> this is ggzcore reloaded"
 #ggzcore.reload()
@@ -73,7 +80,7 @@ minisleep(s)
 
 print ">> go to room TTT"
 
-s.join_room("Whatever")
+s.join_room("TicTacToe")
 
 minisleep(s)
 minisleep(s)
@@ -82,6 +89,12 @@ print ">> go chat"
 
 r = ggzcore.room
 r.chat(ggzcore.CHAT_NORMAL, "", "fuuubaaar")
+
+minisleep(s)
+
+print ">> go play"
+
+r.play("test game", 0)
 
 minisleep(s)
 
