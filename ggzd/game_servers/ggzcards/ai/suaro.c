@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 4063 2002-04-23 19:55:51Z jdorje $
+ * $Id: suaro.c 4066 2002-04-23 21:37:53Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -335,17 +335,27 @@ card_t get_play(int play_seat, int *valid_plays)
 		else
 			suit = find_best_suit(contract.sbid.suit ==
 					      SUARO_LOW);
+		
+		ggz_debug(DBG_PLAY, "I'm leading.  My strongest suit is %s.",
+		          get_suit_name(suit));
 
 		return libai_get_highest_card_in_suit(ME, suit);
 	} else {
 		/* Pick a good response. */
 
 		card_t opp_card = ggzcards.players[OPP].table_card;
+		
+		ggz_debug(DBG_PLAY, "I'm following the %s of %s.",
+		          get_face_name(opp_card.face),
+		          get_suit_name(opp_card.suit));
 
 		/* FIXME: none of this section can deal with low bids. */
 
 		if (libai_count_suit(ME, opp_card.suit) == 0) {
 			card_t card;
+			
+			ggz_debug(DBG_PLAY, "Looks like I'm out of %s.",
+			          get_suit_name(opp_card.suit));
 
 			/* Try to trump. */
 			if (trump >= 0 && libai_count_suit(ME, trump) > 0) {
@@ -361,6 +371,8 @@ card_t get_play(int play_seat, int *valid_plays)
 					}
 				}
 			}
+			
+			ggz_debug(DBG_PLAY, "Looks like I'm out of trump, too.");
 
 			/* Throw. */
 			for (card.suit = CLUBS, card.face = 8, card.deck = 0;
@@ -377,6 +389,8 @@ card_t get_play(int play_seat, int *valid_plays)
 		} else {
 			/* We must follow suit. */
 			card_t card;
+			
+			ggz_debug(DBG_PLAY, "I must follow suit.");
 
 			/* Try to win trick. */
 			for (card = opp_card; card.face <= ACE_HIGH;
@@ -386,6 +400,8 @@ card_t get_play(int play_seat, int *valid_plays)
 					return card;
 				}
 			}
+			
+			ggz_debug(DBG_PLAY, "Looks like I can't win.");
 
 			/* Otherwise try to lose trick. */
 			for (card.face = 8, card.suit =
@@ -398,6 +414,8 @@ card_t get_play(int play_seat, int *valid_plays)
 			}
 		}
 	}
+	
+	ggz_debug(DBG_PLAY, "Uh oh!  Could not find a card to play!");
 
 	assert(FALSE);
 	return UNKNOWN_CARD;
