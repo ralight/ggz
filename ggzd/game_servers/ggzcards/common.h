@@ -43,6 +43,7 @@
 #define WH_MESSAGE_GLOBAL	10
 #define WH_MESSAGE_PLAYER	11
 #define WH_REQ_OPTIONS		12
+#define WH_MSG_TABLE		13
 
 /* Messages from client */
 #define WH_RSP_NEWGAME		0
@@ -95,13 +96,13 @@ typedef union bid_t {
 #define MAX_MESSAGE_LENGTH 100
 struct game_seat_t {
 	hand_t hand;
+	card_t table;
 	struct ggz_seat_t * ggz; /* ggz seat data; probably points to something in ggz_seats */
 	char message[MAX_MESSAGE_LENGTH];
 };
 typedef int seat_t; /* just to make things clearer */
 
 struct game_player_t {
-	card_t table;
 	int score;
 	bid_t bid;
 	int tricks;
@@ -198,6 +199,7 @@ extern char* get_global_message(char*);
 
 extern int send_player_list(player_t);
 extern int send_play(card_t card, seat_t);
+extern int send_table(player_t);
 extern int send_sync(player_t);
 extern int send_sync_all();
 extern int send_gameover(int, player_t*);

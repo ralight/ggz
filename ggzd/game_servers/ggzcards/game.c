@@ -926,7 +926,7 @@ char* game_verify_play(int card_index)
 						 game.trump);
 		hi_trump_played = 0;
 		for (p2=0; p2<game.num_players; p2++) {
-			c = game.players[p2].table;
+			c = game.seats[ game.players[p2].seat ].table;
 			if(c.suit == game.trump
 			   && c.face > hi_trump_played)
 				hi_trump_played = c.face;
@@ -1229,7 +1229,7 @@ void game_end_trick(void)
 	/* default method of winning tricks: the winning card is the highest
 	 * card of the suit lead, or the highest trump if there is trump */
 	for (p=0; p<game.num_players; p++) {
-		card_t card = game.players[p].table;
+		card_t card = game.seats[ game.players[p].seat ].table;
 		if ( (card.suit == game.trump && (hi_card.suit != game.trump || hi_card.face < card.face))
 		   || (card.suit == hi_card.suit && card.face > hi_card.face) ) {
 			hi_card = card;
@@ -1254,7 +1254,7 @@ void game_end_trick(void)
 			break;
 		case GGZ_GAME_HEARTS:
 			for(p=0; p<game.num_players; p++) {
-				card_t card = game.players[p].table;
+				card_t card = game.seats[ game.players[p].seat ].table;
 				if (card.suit == HEARTS)
 					GHEARTS.points_on_hand[hi_player]++;
 				if (card.suit == SPADES && card.face == QUEEN)

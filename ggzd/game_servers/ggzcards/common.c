@@ -343,6 +343,31 @@ int send_gameover(int cnt, player_t* plist)
 	return status;
 }
 
+/* send_table
+ *   sends the list of cards on the table, in their relative orderings
+ */
+int send_table(player_t p)
+{
+	int s_r, s_abs, status = 0, fd = ggz_seats[p].fd;
+	
+	if (fd == -1) {
+		ggz_debug("ERROR: send_table: fd==-1.");
+		return -1;
+	}
+
+	if (es_write_int(fd, WH_MSG_TABLE) < 0)
+		status = -1;
+	for (s_r = 0; s_r < game.num_seats; s_r++) {
+		s_abs = (game.players[p].seat + s_r) % game.num_seats;
+		if (es_write_card(fd, game.seats[s_abs].table) < 0)
+			status = -1;
+	}
+
+	if (status != 0)
+		ggz_debug("ERROR: send_table: status is %d.", status);
+	return status;
+}
+
 /* send_sync()
  *   Send out current game hand, score, etc.
  *   Doesn't use its own protocol, but calls on others
@@ -366,6 +391,10 @@ int send_sync(player_t p)
 	for (s=0; s < game.num_seats; s++)
 		if (game_send_hand(p, s) < 0)
 			status = -1;
+
+	/* Send out table cards */
+	if (send_table(p) < 0)
+		status = -1;
 
 	/* request bid/play again, if necessary */
 	if (game.state == WH_STATE_WAIT_FOR_BID &&
@@ -607,13 +636,15 @@ void send_trick(player_t winner)
 {
 	int fd;
 	player_t p;
+	seat_t s;
 
 	ggz_debug("Sending out trick (%d - %s won) and cleaning it up.", winner, ggz_seats[winner].name);
 
-	for(p=0; p<game.num_players; p++) {
+	for (s=0; s<game.num_seats; s++)
 		/* note: we also clear the table at the beginning of every hand */
-		game.players[p].table = UNKNOWN_CARD;
+		game.seats[s].table = UNKNOWN_CARD;
 
+	for (p=0; p<game.num_players; p++) {
 		fd = ggz_seats[p].fd;
 		if (fd == -1) continue;
 
@@ -878,8 +909,8 @@ void next_play(void)
 			game.trick_total = game.hand_size;
 			game.play_total = game.num_players;
 			/* we also clear all cards after every trick */
-			for (p=0; p<game.num_players; p++)
-				game.players[p].table = UNKNOWN_CARD;
+			for (s=0; s<game.num_seats; s++)
+				game.seats[s].table = UNKNOWN_CARD;
 
 			game_start_playing();
 			set_all_player_messages();
@@ -1023,7 +1054,7 @@ int update(int event, void *data)
 			hand->hand_size--;
 
 			/* Move the card onto the table */
-			game.players[game.next_play].table = c;
+			game.seats[ game.players[game.next_play].seat ].table = c;
 			if(game.next_play == game.leader)
 				game.lead_card = c;
 
