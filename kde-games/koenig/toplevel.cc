@@ -71,8 +71,8 @@ TopLevel::TopLevel(const char *name)
 	tab3 = new KListView(ctl);
 	tab3->setRootIsDecorated(true);
 	tab3->addColumn(i18n("Koenig Highscores"));
-	(void)new KListViewItem(tab3, i18n("Local scores"));
-	(void)new KListViewItem(tab3, i18n("Worldwide"));
+	(void)new QListViewItem(tab3, i18n("Local scores"));
+	(void)new QListViewItem(tab3, i18n("Worldwide"));
 	ctl->addTab(tab2, i18n("Messages"));
 	ctl->addTab(tab1, i18n("Moves"));
 	ctl->addTab(tab3, i18n("Highscores"));
