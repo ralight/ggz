@@ -1,9 +1,14 @@
 #ifndef KGGZ_BASE_H
 #define KGGZ_BASE_H
 
+#include "KGGZ.h"
+#include "KGGZAbout.h"
+
 // KDE includes
 #include <ktmainwindow.h>
 #include <kmenubar.h>
+#include <kpopupmenu.h>
+#include <ksimpleconfig.h>
 
 // Qt includes
 #include <qiconset.h>
@@ -12,14 +17,21 @@ class KGGZBase : public KTMainWindow
 {
 	Q_OBJECT
 	public:
-		KGGZBase(char *name);
+		KGGZBase(char *name = NULL);
 		~KGGZBase();
 
-	protected:
+	public slots:
+		void slotMenu(int id);
+		void slotAboutGGZ();
+		void slotMenuSignal(int signal);
+		void slotRoom(char *roomname);
+
+	private:
 		QIconSet kggzGetIcon(int menuid);
 
-		enum Menuitems
+		enum MenuItems
 		{
+			MENU_GGZ_TEST,
 			MENU_GGZ_CONNECT,
 			MENU_GGZ_DISCONNECT,
 			MENU_GGZ_STARTSERVER,
@@ -51,6 +63,11 @@ class KGGZBase : public KTMainWindow
 		};
 
 		KMenuBar *m_menu;
+		KGGZ *kggz;
+		KGGZAbout *m_about;
+		KPopupMenu *m_menu_client, *m_menu_rooms, *m_menu_ggz, *m_menu_game, *m_menu_preferences;
+		int m_rooms;
+		KSimpleConfig *konfig;
 };
 
 #endif

@@ -3,7 +3,7 @@
 
 // KGGZ classes
 #include "KGGZWorkspace.h"
-#include "KGGZConnect.h"
+#include "KGGZSplash.h"
 
 // KDE includes
 #include <kmessagebox.h>
@@ -11,6 +11,7 @@
 
 // Qt includes
 #include <qiconview.h>
+#include <qlayout.h>
 
 // System includes
 #include <stdio.h>
@@ -18,100 +19,33 @@
 #include <stdlib.h>
 
 // GGZCore++ functions
-#include "GGZCore.h"
-#include "GGZCoreConf.h"
 #include "GGZCoreConfio.h"
 #include "GGZCoreTable.h"
 #include "GGZCoreModule.h"
 
-KGGZConnect *m_connect;
-GGZCore *m_core;
-GGZCoreConf *m_config;
-
-KGGZ::KGGZ()
-: KGGZBase("window_main")
+KGGZ::KGGZ(QWidget *parent = NULL, char *name = NULL)
+: QWidget(parent, name)
 {
-	KPopupMenu *menu_help;
 	int result;
+	QLayout *vbox;
 
 	KGGZDEBUGF("KGGZ::KGGZ()\n");
 	KGGZDEBUG("Starting...\n");
 
 	kggzroom = NULL;
 	kggzserver = NULL;
-	m_save_rooms = 0;
 	m_save_username = NULL;
 	m_save_password = NULL;
 	m_save_host = NULL;
 	m_lock = 0;
 	m_launch = NULL;
-	m_about = NULL;
 	kggzgame = NULL;
 
- 	m_menu_ggz = new KPopupMenu(this, "menu_ggz");
-  	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_CONNECT), i18n("&Connect"), MENU_GGZ_CONNECT);
-  	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_DISCONNECT), i18n("&Disconnect"), MENU_GGZ_DISCONNECT);
-	m_menu_ggz->insertSeparator();
-	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_STARTSERVER), i18n("Start server"), MENU_GGZ_STARTSERVER);
-	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_STOPSERVER), i18n("Stop server"), MENU_GGZ_STOPSERVER);
-	m_menu_ggz->insertSeparator();
-	m_menu_ggz->insertItem(kggzGetIcon(MENU_GGZ_QUIT), i18n("&Quit"), MENU_GGZ_QUIT);
-	m_menu_ggz->setItemEnabled(MENU_GGZ_DISCONNECT, FALSE);
-	if(KGGZCommon::findProcess("ggzd") > 0) m_menu_ggz->setItemEnabled(MENU_GGZ_STARTSERVER, FALSE);
-	else m_menu_ggz->setItemEnabled(MENU_GGZ_STOPSERVER, FALSE);
+	setBackgroundColor(QColor(0.0, 0.0, 0.0));
 
-	m_menu_client = new KPopupMenu(this, "menu_client");
-	m_menu_client->insertItem(kggzGetIcon(MENU_CLIENT_STARTUP), i18n("&Startup Screen"), MENU_CLIENT_STARTUP);
-	m_menu_client->insertItem(kggzGetIcon(MENU_CLIENT_CHAT), i18n("&Chat"), MENU_CLIENT_CHAT);
-	m_menu_client->insertItem(kggzGetIcon(MENU_CLIENT_TABLES), i18n("&Available tables"), MENU_CLIENT_TABLES);
-	m_menu_client->insertItem(kggzGetIcon(MENU_CLIENT_PLAYERS), i18n("&List of players"), MENU_CLIENT_PLAYERS);
-	m_menu_client->insertItem(kggzGetIcon(MENU_CLIENT_HELP), i18n("&Web Browser"), MENU_CLIENT_HELP);
-	m_menu_client->setItemEnabled(MENU_CLIENT_CHAT, FALSE);
-	m_menu_client->setItemEnabled(MENU_CLIENT_TABLES, FALSE);
-	m_menu_client->setItemEnabled(MENU_CLIENT_PLAYERS, FALSE);
-
- 	m_menu_rooms = new KPopupMenu(this, "menu_rooms");
-	m_menu_rooms->setEnabled(FALSE);
-
-	m_menu_game = new KPopupMenu(this, "menu_games");
-	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_INFO), i18n("&Information"), MENU_GAME_INFO);
-	m_menu_game->insertSeparator();
-	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_LAUNCH), i18n("&Launch new game"), MENU_GAME_LAUNCH);
-	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_JOIN), i18n("&Join game"), MENU_GAME_JOIN);
-	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_UPDATE), i18n("&Update from FTP"), MENU_GAME_UPDATE);
-	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_NEWS), i18n("&GGZ News"), MENU_GAME_NEWS);
-	m_menu_game->insertSeparator();
-	m_menu_game->insertItem(kggzGetIcon(MENU_GAME_GRUBBY), i18n("&Grubby"), MENU_GAME_GRUBBY);
-	m_menu_game->setEnabled(FALSE);
-
-	m_menu_preferences = new KPopupMenu(this, "menu_preferences");
-	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_SETTINGS), i18n("Se&ttings"), MENU_PREFERENCES_SETTINGS);
-	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_PLAYERINFO), i18n("&Player information"), MENU_PREFERENCES_PLAYERINFO);
-	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_HOSTS), i18n("Ga&me servers"), MENU_PREFERENCES_HOSTS);
-	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_FTP), i18n("&FTP servers"), MENU_PREFERENCES_FTP);
-	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_GAMES), i18n("&Games"), MENU_PREFERENCES_GAMES);
-	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_THEMES), i18n("Th&emes"), MENU_PREFERENCES_THEMES);
-	m_menu_preferences->insertSeparator();
-	m_menu_preferences->insertItem(kggzGetIcon(MENU_PREFERENCES_PREFERENCES), i18n("&All Preferences"), MENU_PREFERENCES_PREFERENCES);
-
-	menu_help = helpMenu(NULL, FALSE);
-	menu_help->insertItem(QPixmap(KGGZ_DIRECTORY "/images/icons/ggz.png"), i18n("About the GGZ Gaming Zone"), 99, 5);
-	menu_help->connectItem(99, this, SLOT(slotAboutGGZ()));
-	KGGZDEBUG("GGZ Icon at: " KGGZ_DIRECTORY "\n");
-
-	m_menu->insertItem(i18n("GG&Z"), m_menu_ggz);
-	m_menu->insertItem(i18n("&Client"), m_menu_client);
-	m_menu->insertItem(i18n("&Rooms"), m_menu_rooms);
-	m_menu->insertItem(i18n("&Game"), m_menu_game);
-	m_menu->insertItem(i18n("&Help"), menu_help);
+	m_splash = new KGGZSplash(this, "splash");
 
 	m_workspace = new KGGZWorkspace(this, "workspace");
-
-	connect(m_menu_ggz, SIGNAL(activated(int)), SLOT(slotHandleMenu(int)));
-	connect(m_menu_client, SIGNAL(activated(int)), SLOT(slotHandleMenu(int)));
-        connect(m_menu_rooms, SIGNAL(activated(int)), SLOT(slotHandleMenu(int)));
-	connect(m_menu_game, SIGNAL(activated(int)), SLOT(slotHandleMenu(int)));
-
 	connect(m_workspace->widgetChat(), SIGNAL(signalChat(char *)), SLOT(slotChat(char *)));
 
 	KGGZDEBUG("Initializing GGZCore...\n");
@@ -136,7 +70,7 @@ KGGZ::KGGZ()
 		if(m_config->read("Preferences", "Showdialog", 0))
 		{
 			KGGZDEBUG("- load connection dialog");
-			dialogConnection();
+			menuConnect();
 		}
 		else m_connect = NULL;
 	}
@@ -145,11 +79,11 @@ KGGZ::KGGZ()
 	kggzservercallback = new KGGZCallback(this, COLLECTOR_SERVER);
 	kggzgamecallback = new KGGZCallback(this, COLLECTOR_GAME);
 
-	setCaption("KGGZ - [offline]");
-	resize(500, 430);
-	show();
+	vbox = new QVBoxLayout(this);
+	vbox->add(m_splash);
+	vbox->add(m_workspace);
 
-	// VERY DANGEROUS !!!
+        // VERY DANGEROUS !!!
 	startTimer(30);
 
 	KGGZDEBUGF("KGGZ::KGGZ() ready\n");
@@ -165,148 +99,15 @@ KGGZ::~KGGZ()
 	exit(0);
 }
 
-void KGGZ::slotHandleMenu(int id)
-{
-	int result;
-	GGZCoreGametype *gametype;
-	char buffer[2048];
-	int number;
-
-	KGGZDEBUGF("KGGZ::slotHandleMenu()\n");
-	KGGZDEBUG("got id: %i\n", id);
-
-	switch(id)
-	{
-		case MENU_GGZ_CONNECT:
-			dialogConnection();
-			break;
-		case MENU_GGZ_DISCONNECT:
-			slotDisconnect();
-			break;
-		case MENU_GGZ_STARTSERVER:
-			serverLaunch();
-			break;
-		case MENU_GGZ_STOPSERVER:
-			serverKill();
-			break;
-   		case MENU_GGZ_QUIT:
-			close();
-			break;
-		case MENU_CLIENT_CHAT:
-			m_workspace->widgetChat()->show();
-			m_workspace->widgetTables()->show();
-			m_workspace->widgetUsers()->show();
-			m_workspace->show();
-			break;
-		case MENU_CLIENT_TABLES:
-			m_workspace->widgetChat()->hide();
-			m_workspace->widgetTables()->show();
-			m_workspace->widgetUsers()->hide();
-			m_workspace->show();
-			break;
-		case MENU_CLIENT_PLAYERS:
-			m_workspace->widgetChat()->hide();
-			m_workspace->widgetTables()->hide();
-			m_workspace->widgetUsers()->show();
-			m_workspace->show();
-			break;
-		case MENU_GAME_LAUNCH:
-			if(!kggzroom)
-			{
-				KMessageBox::information(this, "You cannot launch a game outside a room!", "Error!");
-				return;
-			}
-			if(!m_launch) m_launch = new KGGZLaunch(NULL, "KGGZLaunch");
-			m_launch->initLauncher(m_save_username, kggzroom->gametype()->maxPlayers());
-			m_launch->show();
-			connect(m_launch, SIGNAL(signalLaunch()), SLOT(slotLaunch()));
-			break;
-		case MENU_GAME_JOIN:
-			if((!m_workspace) || (!m_workspace->widgetTables()))
-			{
-				KGGZDEBUG("Critical! Workspace is broken!\n");
-				return;
-			}
-			if(!kggzroom)
-			{
-				KMessageBox::information(this, "You must be in a room to join a table!", "Error!");
-				return;
-			}
-			number = m_workspace->widgetTables()->tablenum();
-			if(number == -1)
-			{
-				if(kggzroom->countTables() == 1)
-				{
-					KGGZDEBUG("Phew... what a luck this is the only table here. Gonna take this!\n");
-					number = 0;
-				}
-				else
-				{
-					KMessageBox::information(this, "Please select a table to join!", "Error!");
-					return;
-				}
-			}
-			kggzroom->joinTable(number);
-			break;
-		case MENU_GAME_GRUBBY:
-			KGGZDEBUG("Aaaaargh.... ;)\n");
-			if(kggzserver->dataPending()) kggzserver->dataRead();
-			break;
-		case MENU_GAME_INFO:
-			if(!kggzserver)
-			{
-				KGGZDEBUG("Critical! No server found.\n");
-				return;
-			}
-			if(!kggzroom)
-			{
-				//KGGZDEBUG("Critical! No room found.\n");
-				KMessageBox::information(this, "Please join a room first.", "Info:");
-				return;
-			}
-			gametype = kggzroom->gametype();
-			if(!gametype)
-			{
-				KGGZDEBUG("Critical! No game type found.\n");
-				return;
-			}
-			KGGZDEBUG("Name: %s\n", gametype->name());
-			KGGZDEBUG("Author: %s\n", gametype->author());
-			KGGZDEBUG("Version: %s\n", gametype->version());
-			KGGZDEBUG("URL: %s\n", gametype->url());
-			KGGZDEBUG("Description: %s\n", gametype->description());
-			KGGZDEBUG("Protocol: %s\n", gametype->protocol());
-			sprintf(buffer, "Name: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nProtocol: %s\nURL: %s",
-				gametype->name(), gametype->description(), gametype->author(), gametype->version(), gametype->protocol(), gametype->url());
-			KMessageBox::information(this, buffer, "Game Type Information");
-			break;
-		default:
-			if(id >= MENU_ROOMS_SLOTS)
-			{
-				if(kggzserver)
-				{
-					kggzserver->joinRoom(id - MENU_ROOMS_SLOTS);
-					if((m_workspace) && (m_workspace->widgetChat()))
-					{
-						m_workspace->widgetChat()->init();
-						m_workspace->show();
-					}
-					else KGGZDEBUG("Critical: Workspace/Chat absent!\n");
-				}
-				else KGGZDEBUG("Critical: No server found.\n");
-			}
-	}
-	KGGZDEBUGF("KGGZ::slotHandleMenu() ready\n");
-}
-
 void KGGZ::resizeEvent(QResizeEvent *e)
 {
-	resize(e->size());
-	m_workspace->setGeometry(0, 30, e->size().width(), e->size().height() - 30);
-	m_menu->setGeometry(0, 0, e->size().width(), 20);
+	m_workspace->resize(e->size());
+	//resize(e->size());
+	//m_workspace->setGeometry(0, 30, e->size().width(), e->size().height() - 30);
+	//m_menu->setGeometry(0, 0, e->size().width(), 20);
 }
 
-void KGGZ::slotConnect(const char *host, int port, const char *username, const char *password, int mode, int server)
+void KGGZ::slotConnected(const char *host, int port, const char *username, const char *password, int mode, int server)
 {
 	int result;
 
@@ -318,7 +119,7 @@ void KGGZ::slotConnect(const char *host, int port, const char *username, const c
 	{
 		KGGZDEBUG("Start server\n");
 		host = "localhost";
-		serverLaunch();
+		menuServerLaunch();
 	}
 
 	KGGZDEBUG("Connect with: host=%s port=%i username=%s password=%s mode=%i\n", host, port, username, password, mode);
@@ -348,7 +149,7 @@ void KGGZ::slotConnect(const char *host, int port, const char *username, const c
 	}
 }
 
-void KGGZ::slotDisconnect()
+void KGGZ::menuDisconnect()
 {
 	KGGZDEBUGF("KGGZ::slotDisconnect()\n");
 
@@ -363,19 +164,18 @@ void KGGZ::slotDisconnect()
 		return;
 	}
 
-	m_save_rooms = kggzserver->countRooms();
 	kggzserver->logout();
 }
 
-void KGGZ::serverLaunch()
+void KGGZ::menuServerLaunch()
 {
 	int result;
 	GGZCoreConfio *config;
 	char *process;
 
 	config = new GGZCoreConfio(KGGZCommon::append(getenv("HOME"), "/.ggz/kggz.rc"), GGZCoreConfio::readwrite | GGZCoreConfio::create);
-    KGGZCommon::clear();
-    process = config->read("Environment", "Server", (char*)NULL);
+	KGGZCommon::clear();
+	process = config->read("Environment", "Server", (char*)NULL);
 	delete config;
 
 	if(!process)
@@ -398,13 +198,12 @@ void KGGZ::serverLaunch()
 			KMessageBox::error(this, i18n("The ggzd server is already running!"), "Error!");
 			break;
 		default:
-			m_menu_ggz->setItemEnabled(MENU_GGZ_STARTSERVER, FALSE);
-			m_menu_ggz->setItemEnabled(MENU_GGZ_STOPSERVER, TRUE);
+			emit signalMenu(MENUSIG_SERVERSTART);
 			break;
 	}
 }
 
-void KGGZ::serverKill()
+void KGGZ::menuServerKill()
 {
 	int result;
 
@@ -416,21 +215,19 @@ void KGGZ::serverKill()
 			break;
 		case 0:
 			KMessageBox::error(this, i18n("Could only kill server via sigkill!"), i18n("Error!"));
-			m_menu_ggz->setItemEnabled(MENU_GGZ_STARTSERVER, TRUE);
-			m_menu_ggz->setItemEnabled(MENU_GGZ_STOPSERVER, FALSE);
+			emit signalMenu(MENUSIG_SERVERSTOP);
 			break;
 		default:
-			m_menu_ggz->setItemEnabled(MENU_GGZ_STARTSERVER, TRUE);
-			m_menu_ggz->setItemEnabled(MENU_GGZ_STOPSERVER, FALSE);
+			emit signalMenu(MENUSIG_SERVERSTOP);
 			break;
 	}
 }
 
-void KGGZ::dialogConnection()
+void KGGZ::menuConnect()
 {
 	if(!m_connect) m_connect = new KGGZConnect(NULL, "connect");
 	m_connect->show();
-	connect(m_connect, SIGNAL(signalConnect(const char*, int, const char*, const char*, int, int)), SLOT(slotConnect(const char*, int, const char*, const char*, int, int)));
+	connect(m_connect, SIGNAL(signalConnect(const char*, int, const char*, const char*, int, int)), SLOT(slotConnected(const char*, int, const char*, const char*, int, int)));
 }
 
 void KGGZ::dispatch_free(char *var, char *description)
@@ -659,7 +456,13 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::chatnormal:
 			KGGZDEBUG("chatnormal\n");
-			m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_CHAT);
+			if(strcmp(chatsender, m_save_username) == 0)
+				m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_OWN);
+			else
+			{
+				KGGZDEBUG("%s != %s\n", chatsender, m_save_username);
+				m_workspace->widgetChat()->receive(chatsender, chatmessage, KGGZChat::RECEIVE_CHAT);
+			}
 			break;
 		case GGZCoreRoom::chatannounce:
 			KGGZDEBUG("chatnormal\n");
@@ -683,13 +486,13 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::tableupdate:
 			KGGZDEBUG("tableupdate\n");
-			m_workspace->widgetUsers()->removeall();
+			//m_workspace->widgetUsers()->removeall();
 			listPlayers();
 			listTables();
 			break;
 		case GGZCoreRoom::tablelaunched:
 			KGGZDEBUG("tablelaunched\n");
-			m_workspace->widgetUsers()->removeall();
+			//m_workspace->widgetUsers()->removeall();
 			listPlayers();
 			listTables();
 			break;
@@ -701,7 +504,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::tablejoined:
 			KGGZDEBUG("tablejoined\n");
-			m_workspace->widgetUsers()->removeall();
+			//m_workspace->widgetUsers()->removeall();
 			listPlayers();
 			listTables();
 			slotLaunchGame(kggzroom->gametype());
@@ -714,7 +517,7 @@ void KGGZ::roomCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreRoom::tableleft:
 			KGGZDEBUG("tableleft\n");
-			m_workspace->widgetUsers()->removeall();
+			//m_workspace->widgetUsers()->removeall();
 			listPlayers();
 			listTables();
 			break;
@@ -762,7 +565,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 				delete kggzserver;
 				kggzserver = NULL;
 				KMessageBox::error(this, i18n("Attempt to login refused!"), "Error!");
-				dialogConnection();
+				menuConnect();
 				return;
 			}
 			break;
@@ -772,7 +575,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			delete kggzserver;
 			kggzserver = NULL;
 			KMessageBox::error(this, i18n("Couldn't connect to server!"), "Error!");
-			dialogConnection();
+			menuConnect();
 			break;
 		case GGZCoreServer::negotiated:
 			KGGZDEBUG("negotiated\n");
@@ -782,11 +585,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::loggedin:
 			KGGZDEBUG("loggedin\n");
-			m_menu_client->setItemEnabled(KGGZ::MENU_CLIENT_CHAT, TRUE);
-			m_menu_client->setItemEnabled(KGGZ::MENU_CLIENT_TABLES, TRUE);
-			m_menu_client->setItemEnabled(KGGZ::MENU_CLIENT_PLAYERS, TRUE);
-			m_menu_ggz->setItemEnabled(MENU_GGZ_CONNECT, FALSE);
-			m_menu_ggz->setItemEnabled(MENU_GGZ_DISCONNECT, TRUE);
+			emit signalMenu(MENUSIG_LOGIN);
 			sprintf(buffer, "KGGZ - [logged in as %s@%s:%i]", m_save_username, m_save_host, m_save_port);
 			setCaption(buffer);
 			if(m_save_loginmode == GGZCoreServer::firsttime)
@@ -800,7 +599,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 		case GGZCoreServer::loginfail:
 			KGGZDEBUG("loginfail\n");
 			KMessageBox::error(this, i18n("Login refused!"), "Error!");
-			dialogConnection();
+			menuConnect();
 			break;
 		case GGZCoreServer::motdloaded:
 			KGGZDEBUG("motdloaded\n");
@@ -814,18 +613,18 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::roomlist:
 			KGGZDEBUG("roomlist\n");
-			m_menu_rooms->setEnabled(TRUE);
-			m_menu_game->setEnabled(TRUE);
+			emit signalMenu(MENUSIG_ROOMLIST);
 			for(int i = 0; i < kggzserver->countRooms(); i++)
 			{
 				KGGZDEBUG("Found: %s\n", kggzserver->room(i)->name());
-				m_menu_rooms->insertItem(kggzGetIcon(MENU_ROOMS_SLOTS + i), kggzserver->room(i)->name(), MENU_ROOMS_SLOTS + i);
+				emit signalRoom(kggzserver->room(i)->name());
 			}
 			break;
 		case GGZCoreServer::typelist:
 			KGGZDEBUG("typelist\n");
 			break;
 		case GGZCoreServer::entered:
+			m_workspace->widgetChat()->receive(NULL, i18n("Entered room"), KGGZChat::RECEIVE_ADMIN);
 			KGGZDEBUG("entered\n");
 			KGGZDEBUG("==> creating room object\n");
 			m_lock = 1;
@@ -849,6 +648,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			break;
 		case GGZCoreServer::loggedout:
 			KGGZDEBUG("loggedout\n");
+			m_workspace->widgetChat()->receive(NULL, i18n("Logged out"), KGGZChat::RECEIVE_ADMIN);
 			m_lock = 1;
 			if(kggzroom)
 			{
@@ -864,16 +664,7 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			kggzserver = NULL;
 			m_lock = 0;
 			KGGZDEBUG("Disconnection successful.\n");
- 			for(int i = 0; i < m_save_rooms; i++) m_menu_rooms->removeItemAt(0);
-			m_save_rooms = 0;
-			m_menu_rooms->setEnabled(FALSE);
-			m_menu_ggz->setItemEnabled(MENU_GGZ_CONNECT, TRUE);
-			m_menu_ggz->setItemEnabled(MENU_GGZ_DISCONNECT, FALSE);
-			m_menu_client->setItemEnabled(KGGZ::MENU_CLIENT_CHAT, FALSE);
-			m_menu_client->setItemEnabled(KGGZ::MENU_CLIENT_TABLES, FALSE);
-			m_menu_client->setItemEnabled(KGGZ::MENU_CLIENT_PLAYERS, FALSE);
-			m_menu_game->setEnabled(FALSE);
-			setCaption("KGGZ - [offline]");
+			emit signalMenu(MENUSIG_DISCONNECT);
 			break;
 		case GGZCoreServer::neterror:
 			KGGZDEBUG("neterror\n");
@@ -1072,41 +863,41 @@ void KGGZ::slotLaunchGame(GGZCoreGametype *gametype)
 	int ret;
 	char *icon;
 
-    KGGZDEBUG("Create module...\n");
-    module = new GGZCoreModule();
-    module->init(gametype->name(), gametype->protocol());
-    i = module->count();
-    KGGZDEBUG("Found: %i modules for this game\n", i);
-    if(i == 0)
-    {
-        KMessageBox::information(this, "Sorry, no modules found for this game.", "Error!");
-        delete module;
-        return;
-    }
-    module->setActive(0);
-    //module->launch();
+	KGGZDEBUG("Create module...\n");
+	module = new GGZCoreModule();
+	module->init(gametype->name(), gametype->protocol());
+	i = module->count();
+	KGGZDEBUG("Found: %i modules for this game\n", i);
+	if(i == 0)
+	{
+		KMessageBox::information(this, "Sorry, no modules found for this game.", "Error!");
+		delete module;
+		return;
+	}
+	module->setActive(0);
+	//module->launch();
 
 	if(kggzgame)
-    {
-        KGGZDEBUG("Found game object alive; killing it now :-)\n");
-        delete kggzgame;
-    }
-    kggzgame = new GGZCoreGame();
-    kggzgame->init(module->module());
- 
-    attachGameCallbacks(); // don't forget detaching!
+	{
+		KGGZDEBUG("Found game object alive; killing it now :-)\n");
+		delete kggzgame;
+	}
+	kggzgame = new GGZCoreGame();
+	kggzgame->init(module->module());
 
-    ret = kggzgame->launch();
-    if(ret < 0)
-    {
-        KMessageBox::information(this, "Couldn't launch game!", "Error!");
-        return;
-    }
- 
-    icon = module->pathIcon();
-    KGGZDEBUG("Found module icon: %s\n", icon);
-    if(!icon) icon = KGGZ_DIRECTORY "/images/icons/module.png";
-    m_workspace->widgetLogo()->setBackgroundPixmap(QPixmap(icon));
+	attachGameCallbacks(); // don't forget detaching!
+
+	ret = kggzgame->launch();
+	if(ret < 0)
+	{
+		KMessageBox::information(this, "Couldn't launch game!", "Error!");
+		return;
+	}
+
+	icon = module->pathIcon();
+	KGGZDEBUG("Found module icon: %s\n", icon);
+	if(!icon) icon = KGGZ_DIRECTORY "/images/icons/module.png";
+	m_workspace->widgetLogo()->setBackgroundPixmap(QPixmap(icon));
 
 	delete module;
 }
@@ -1182,15 +973,135 @@ void KGGZ::slotLaunch()
 
 	if(ret < 0)
 	{
-		KMessageBox::information(this, "Failed launching table!", "Error!");
+		KMessageBox::information(this, "Failed launching the requested table!", "Error!");
 		return;
 	}
 }
 
-void KGGZ::slotAboutGGZ()
+void KGGZ::menuView(int viewtype)
 {
-	KGGZDEBUGF("KGGZ::slotAboutGGZ()\n");
-	KGGZDEBUG("About it... hm, it's pretty cool and open for everyone!\n");
-	if(!m_about) m_about = new KGGZAbout(NULL, "KGGZAbout");
-	m_about->show();
+	m_workspace->show();
+	m_splash->hide();
+	switch(viewtype)
+	{
+		case VIEW_CHAT:
+			m_workspace->widgetChat()->show();
+			m_workspace->widgetTables()->show();
+			m_workspace->widgetUsers()->show();
+			break;
+		case VIEW_USERS:
+			m_workspace->widgetChat()->hide();
+			m_workspace->widgetTables()->hide();
+			m_workspace->widgetUsers()->show();
+			break;
+		case VIEW_TABLES:
+			m_workspace->widgetChat()->hide();
+			m_workspace->widgetTables()->show();
+			m_workspace->widgetUsers()->hide();
+			break;
+		case VIEW_SPLASH:
+			m_splash->show();
+			m_workspace->hide();
+			break;
+		default:
+			KGGZDEBUG("viewtype: unknown (%i)!\n", viewtype);
+	}
+	// Qt is crappy here... so we must do something for the chicks (animation)
+	m_workspace->resize(width() - 1, height() - 1);
+	m_workspace->resize(width(), height());
+}
+
+void KGGZ::menuGameLaunch()
+{
+	if(!kggzroom)
+	{
+		KMessageBox::information(this, "You cannot launch a game outside a room!", "Error!");
+		return;
+	}
+	if(!m_launch) m_launch = new KGGZLaunch(NULL, "KGGZLaunch");
+	m_launch->initLauncher(m_save_username, kggzroom->gametype()->maxPlayers());
+	m_launch->show();
+	connect(m_launch, SIGNAL(signalLaunch()), SLOT(slotLaunch()));
+}
+
+void KGGZ::menuGameJoin()
+{
+	int number;
+
+	if((!m_workspace) || (!m_workspace->widgetTables()))
+	{
+		KGGZDEBUG("Critical! Workspace is broken!\n");
+		return;
+	}
+	if(!kggzroom)
+	{
+		KMessageBox::information(this, "You must be in a room to join a table!", "Error!");
+		return;
+	}
+	number = m_workspace->widgetTables()->tablenum();
+	if(number == -1)
+	{
+		if(kggzroom->countTables() == 1)
+		{
+			KGGZDEBUG("Phew... what a luck this is the only table here. Gonna take this!\n");
+			number = 0;
+		}
+		else
+		{
+			KMessageBox::information(this, "Please select a table to join!", "Error!");
+			return;
+		}
+	}
+	kggzroom->joinTable(number);
+}
+
+void KGGZ::menuGameInfo()
+{
+	GGZCoreGametype *gametype;
+	char buffer[2048];
+
+	if(!kggzserver)
+	{
+		KGGZDEBUG("Critical! No server found.\n");
+		return;
+	}
+	if(!kggzroom)
+	{
+		//KGGZDEBUG("Critical! No room found.\n");
+		KMessageBox::information(this, "Please join a room first.", "Info:");
+		return;
+	}
+	gametype = kggzroom->gametype();
+	if(!gametype)
+	{
+		KGGZDEBUG("Critical! No game type found.\n");
+		return;
+	}
+	KGGZDEBUG("Name: %s\n", gametype->name());
+	KGGZDEBUG("Author: %s\n", gametype->author());
+	KGGZDEBUG("Version: %s\n", gametype->version());
+	KGGZDEBUG("URL: %s\n", gametype->url());
+	KGGZDEBUG("Description: %s\n", gametype->description());
+	KGGZDEBUG("Protocol: %s\n", gametype->protocol());
+	sprintf(buffer, "Name: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nProtocol: %s\nURL: %s",
+		gametype->name(), gametype->description(), gametype->author(), gametype->version(), gametype->protocol(), gametype->url());
+	KMessageBox::information(this, buffer, "Game Type Information");
+}
+
+void KGGZ::menuRoom(int room)
+{
+	if(room >= 0)
+	{
+		if(kggzserver)
+		{
+			kggzserver->joinRoom(room);
+			if((m_workspace) && (m_workspace->widgetChat()))
+			{
+				m_workspace->widgetChat()->init();
+				m_workspace->show();
+			}
+			else KGGZDEBUG("Critical: Workspace/Chat absent!\n");
+		}
+		else KGGZDEBUG("Critical: No server found.\n");
+	}
 }

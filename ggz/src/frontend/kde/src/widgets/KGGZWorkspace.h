@@ -30,6 +30,9 @@ class KGGZWorkspace : public QWidget
 		KGGZUsers *m_userlist;
 		QSplitter *m_vsbox;
 		QFrame *m_logo;
+		int m_firstresize;
+		QSplitter *m_hsbox;
+		QWidget *m_widget;
 };
 
 #endif

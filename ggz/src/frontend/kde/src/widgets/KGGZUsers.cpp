@@ -47,6 +47,7 @@ void KGGZUsers::add(char *name)
 {
 	QListViewItem *tmp;
 
+	KGGZDEBUG("USER CONTROL: ===========> add player %s\n", name);
 	tmp = new QListViewItem(itemmain, name);
 	itemmain->insertItem(tmp);
 	KGGZDEBUG("Added token %s\n", name);
@@ -58,6 +59,7 @@ void KGGZUsers::remove(char *name)
 	QListViewItem *tmp;
 	const char *tokentmp;
 
+	KGGZDEBUG("USER CONTROL: ===========> remove player %s\n", name);
 	KGGZDEBUG("It must be %s!\n", name);
 	if(itemmain->firstChild())
 	{
@@ -97,6 +99,7 @@ void KGGZUsers::removeall()
 {
 	QListViewItem *tmp;
 
+	KGGZDEBUG("USER CONTROL: ===========> remove all\n");
 	if(!itemmain) return;
 	tmp = NULL;
 
@@ -135,6 +138,7 @@ void KGGZUsers::addTable(int i)
 	char foo[128];
 	QListViewItem *tmp;
 
+	KGGZDEBUG("USER CONTROL: ===========> add table %i\n", i);
 	KGGZDEBUG("KGGZUsers::addTable(%i)\n", i);
 	sprintf(foo, "Table: %i", i);
 	tmp = new QListViewItem(this, foo);
@@ -147,6 +151,7 @@ void KGGZUsers::addTablePlayer(int i, char *name)
 	QListViewItem *tmp, *tmp2;
 	char foo[128];
 
+	KGGZDEBUG("USER CONTROL: ===========> add player %s into table %i\n", name, i);
 	KGGZDEBUG("KGGZUsers::addTablePlayer(%i, %s)\n", i, name);
 	sprintf(foo, "%s-%i", name, i);
 	remove(name);
@@ -157,6 +162,7 @@ void KGGZUsers::addTablePlayer(int i, char *name)
 		KGGZDEBUG("Player %sshould go to table %i; however, it's absent!\n");
 		return;
 	}
+	KGGZDEBUG("Create new player item!\n");
 	tmp = new QListViewItem(tmp2, name);
 	tmp2->insertItem(tmp);
 }
@@ -174,11 +180,20 @@ QListViewItem *KGGZUsers::table(int i)
 		return NULL;
 	}
 
+	KGGZDEBUG("Scanning table...\n");
 	sprintf(foo, "Table: %i", i);
+	KGGZDEBUG("Compare: %s\n", tmp->text(0).latin1());
+	KGGZDEBUG("To: %s\n", foo);
 	while(tmp)
 	{
 		if(strcmp(tmp->text(0).latin1(), foo) == 0) return tmp;
-		tmp = tmp->itemBelow();
+		KGGZDEBUG("Now or never: get next item!\n");
+		if(tmp == NULL) KGGZDEBUG("ALERT!!!! isNull()!!!\n");
+		//tmp = tmp->itemBelow();
+		tmp = tmp->nextSibling();
+		KGGZDEBUG("Nope, that's a no-op\n");
+		if(tmp) KGGZDEBUG("This one is new: %s\n", tmp->text(0).latin1());
 	}
+	KGGZDEBUG("Hm, none found :(\n");
 	return NULL;
 }

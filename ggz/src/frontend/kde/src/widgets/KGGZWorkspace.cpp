@@ -7,30 +7,38 @@
 KGGZWorkspace::KGGZWorkspace(QWidget *parent, char *name)
 :  QWidget(parent, name)
 {
-	QSplitter *hsbox;
 	QHBoxLayout *hbox;
-	QWidget *widget;
+
+	m_firstresize = 4;
+
+	setBackgroundColor(QColor(255.0, 255.0, 0.0));
 
 	m_vsbox = new QSplitter(this);
 	m_vsbox->setOrientation(QSplitter::Vertical);
+	//m_vsbox->setOpaqueResize(TRUE);
+	//m_vsbox->resize(500, 400);
 
-	widget = new QWidget(m_vsbox);
+	m_widget = new QWidget(m_vsbox);
+	m_widget->setMinimumHeight(74);
 
-	m_logo = new QFrame(widget);
+	m_logo = new QFrame(m_widget);
 	m_logo->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	m_logo->setBackgroundColor(QColor(255.0, 0.0, 0.0));
 	m_logo->setMinimumSize(64, 64);
+	//m_logo->setFixedSize(64, 64);
 
-	m_tables = new KGGZTables(widget, "workspace_tables");
+	m_tables = new KGGZTables(m_widget, "workspace_tables");
 	m_tables->setMinimumHeight(64);
 
-	hsbox = new QSplitter(QSplitter::Horizontal, m_vsbox);
+	m_hsbox = new QSplitter(QSplitter::Horizontal, m_vsbox);
+	//hsbox->setOpaqueResize(TRUE);
 
-	m_userlist = new KGGZUsers(hsbox, "workspace_userlist");
+	m_userlist = new KGGZUsers(m_hsbox, "workspace_userlist");
 	m_userlist->setMinimumWidth(1);
-	m_chat = new KGGZChat(hsbox, "workspace_chat");
 
-	hbox = new QHBoxLayout(widget, 5);
+	m_chat = new KGGZChat(m_hsbox, "workspace_chat");
+
+	hbox = new QHBoxLayout(m_widget, 5);
 	hbox->add(m_logo);
 	hbox->add(m_tables);
 }
@@ -56,9 +64,29 @@ KGGZUsers *KGGZWorkspace::widgetUsers()
 
 void KGGZWorkspace::resizeEvent(QResizeEvent *e)
 {
-	KGGZDEBUG("resize workspace to: %i/%i!\n", e->size().width(), e->size().height());
-	m_vsbox->resize(e->size().width(), e->size().height());
-	show();
+	QValueList<int> sizelist;
+
+	KGGZDEBUG("resize splitter to: %i/%i!\n", e->size().width(), e->size().height());
+
+	m_vsbox->resize(e->size());
+
+	//if(m_firstresize > 0) m_firstresize--;
+	if(m_firstresize)
+	{
+		KGGZDEBUG("Doing it now! (%i, %i)\n", width(), height());
+		m_firstresize = 0;
+		sizelist.append(64);
+		sizelist.append(height() - 79);
+		m_vsbox->setSizes(sizelist);
+		sizelist.clear();
+		sizelist.append(150);
+		sizelist.append(width() - 165);
+		m_hsbox->setSizes(sizelist);
+	}
+
+	//show();
+	//resize(e->size().width(), e->size().height());
+	updateGeometry();
 }
 
 QFrame *KGGZWorkspace::widgetLogo()

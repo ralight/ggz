@@ -8,7 +8,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 // KGGZ classes
-#include "KGGZ.h"
+#include "KGGZBase.h"
 
 // Abstract KGGZ classes
 #include "KGGZCommon.h"
@@ -23,7 +23,7 @@
 int main(int argc, char **argv)
 {
 	KApplication *a;
-	KGGZ *kggz;
+	KGGZBase *kggzbase;
 	KAboutData *aboutData;
 
 	// this is shown in the About dialog
@@ -54,8 +54,7 @@ int main(int argc, char **argv)
 
 	// some people don't like references, but I do
 	a = new KApplication();
-	kggz = new KGGZ();
-	kggz->setCaption("GGZ Gaming Zone");
-	a->setMainWidget(kggz);
+	kggzbase = new KGGZBase();
+	a->setMainWidget(kggzbase);
 	return a->exec();
 }

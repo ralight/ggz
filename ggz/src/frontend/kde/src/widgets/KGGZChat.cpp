@@ -69,6 +69,7 @@ KGGZChat::KGGZChat(QWidget *parent, char *name)
 
 	receive(NULL, "GGZ Gaming Zone 0.0.4", RECEIVE_ADMIN);
 	receive(NULL, i18n("Ready for connection..."), RECEIVE_ADMIN);
+	receive(NULL, i18n("Please join a room to start!"), RECEIVE_ADMIN);
 
 	m_listusers = 0;
 
@@ -246,16 +247,16 @@ void KGGZChat::slotSend()
 			receive(NULL, i18n("/who - List player names in room"), RECEIVE_ADMIN);
 			break;
                 case EVENT_WHO:
-                        //ggzcore_event_enqueue(GGZ_PLAYER_LIST, NULL, NULL);
+			//ggzcore_event_enqueue(GGZ_PLAYER_LIST, NULL, NULL);
 			//ggzcore_room_list_players(KGGZ_Server::currentRoom(KGGZ_Server::currentServer()));
 			m_listusers = 1;
                         break;
                 case EVENT_LIST:
-                        //ggzcore_event_enqueue(GGZ_ROOM_LIST, NULL, NULL);
+			//ggzcore_event_enqueue(GGZ_ROOM_LIST, NULL, NULL);
 			//ggzcore_server_list_rooms(KGGZ_Server::currentServer(), -1, 1);
                         break;
                 case EVENT_JOIN:
-                        //ggzcore_event_enqueue(GGZ_ROOM_ENTER, (void*)atoi(op1), NULL);
+			//ggzcore_event_enqueue(GGZ_ROOM_ENTER, (void*)atoi(op1), NULL);
 			//ggzcore_server_join_room(KGGZ_Server::currentServer(), atoi(op1));
                         break;
                 case EVENT_CHAT:
@@ -266,7 +267,7 @@ void KGGZChat::slotSend()
 			emit signalChat(inputtext);
                         break;
                 case EVENT_BEEP:
-	                //ggzcore_event_enqueue(GGZ_CHAT_BEEP, strdup(op1), free);
+			//ggzcore_event_enqueue(GGZ_CHAT_BEEP, strdup(op1), free);
 			//ggzcore_room_chat(KGGZ_Server::currentRoom(KGGZ_Server::currentServer()), GGZ_CHAT_BEEP, strdup(op1), NULL);
                         break;
 		case EVENT_LAG:
@@ -532,7 +533,7 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 {
 	QString tmp;
 
-	KGGZDEBUG("Receiving: %s\n", message);
+	KGGZDEBUG("Receiving: %s (%i)\n", message, mode);
 	switch(mode)
 	{
 		case RECEIVE_CHAT:
@@ -571,6 +572,7 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 void KGGZChat::init()
 {
 	input->setEnabled(TRUE);
+	input->setFocus();
 }
 
 void KGGZChat::beep()
