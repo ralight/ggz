@@ -188,7 +188,7 @@ static void chess_ai(void)
 
 static void chess_init()
 {
-	chess_ai_init(C_NONE);
+	chess_ai_init(C_NONE, 5);
 	channel = ggz_make_unix_socket(GGZ_SOCK_CLIENT, "/tmp/grubby.games");
 	if(channel == -1)
 	{

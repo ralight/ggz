@@ -19,6 +19,7 @@
 
 /* Header files */
 #include <stdio.h>
+#include <stdlib.h>
 #include "ai.h"
 
 /* Constant definitions */
@@ -46,10 +47,12 @@
 /* Global variables */
 static int chess_ai_table[64][2];
 static int movements[7][10][2];
-static int chess_ai_color;
 static int chess_ai_queue[MAX_RECURSIONS][3];
 static int chess_ai_queuepos;
 static int best_from, best_to, best_value;
+
+static int chess_ai_color;
+static int chess_ai_depth;
 
 /* Function prototypes */
 static void chess_ai_init_board(void);
@@ -110,7 +113,11 @@ void chess_ai_init_movements(void)
 
 	movements[C_PAWN][0][C_MOVE] = 8;
 	movements[C_PAWN][0][C_MULTI] = 0;
-	movements[C_PAWN][1][C_MOVE] = 0;
+	movements[C_PAWN][1][C_MOVE] = 7;
+	movements[C_PAWN][1][C_MULTI] = 0;
+	movements[C_PAWN][2][C_MOVE] = 9;
+	movements[C_PAWN][2][C_MULTI] = 0;
+	movements[C_PAWN][3][C_MOVE] = 0;
 
 	movements[C_BISHOP][0][C_MOVE] = 7;
 	movements[C_BISHOP][0][C_MULTI] = 1;
@@ -170,9 +177,13 @@ void chess_ai_init_movementsinverse(void)
 	}
 }
 
-void chess_ai_init(int color)
+void chess_ai_init(int color, int depth)
 {
+	if((color != C_WHITE) && (color != C_BLACK)) color = C_WHITE;
+	if((depth < 0) || (depth >= MAX_RECURSIONS)) depth = 3;
+
 	chess_ai_color = color;
+	chess_ai_depth = depth;
 
 	chess_ai_init_board();
 	chess_ai_init_movements();
@@ -208,12 +219,18 @@ int chess_ai_move(int from, int to)
 			if((pos < 0) || (pos > 63)) break;
 			if(chess_ai_table[pos][C_FIGURE] != C_EMPTY)
 			{
+				/*if(chess_ai_table[pos][C_COLOR] == color) break;
+				if(chess_ai_table[pos][C_COLOR] == C_NONE) break;*/
 				if(chess_ai_table[pos][C_COLOR] == color) break;
-				if(chess_ai_table[pos][C_COLOR] == C_NONE) break;
 			}
 			if(pos == to)
 			{
 				allowed = 1;
+				if(figure == C_PAWN)
+				{
+					if((abs(from - to) == 8) && (chess_ai_table[pos][C_FIGURE] != C_EMPTY)) allowed = 0;
+					if((abs(from - to) != 8) && (chess_ai_table[pos][C_FIGURE] == C_EMPTY)) allowed = 0;
+				}
 				break;
 			}
 		}
@@ -224,6 +241,7 @@ int chess_ai_move(int from, int to)
 	chess_ai_table[to][C_FIGURE] = chess_ai_table[from][C_FIGURE];
 	chess_ai_table[to][C_COLOR] = chess_ai_table[from][C_COLOR];
 	chess_ai_table[from][C_FIGURE] = 0;
+	chess_ai_table[from][C_COLOR] = C_NONE;
 
 	return 1;
 }
@@ -232,7 +250,7 @@ static int chess_ai_find_alphabeta(int color, int from, int to)
 {
 	int val, tmp;
 
-	if(chess_ai_queuepos >= 3) return 0;
+	if(chess_ai_queuepos >= chess_ai_depth) return 0;
 
 	tmp = chess_ai_table[to][C_FIGURE];
 	chess_ai_table[to][C_FIGURE] = chess_ai_table[from][C_FIGURE];
@@ -305,8 +323,14 @@ int chess_ai_find(int color, int *from, int *to)
 					if((pos < 0) || (pos > 63)) break;
 					if(chess_ai_table[pos][C_FIGURE] != C_EMPTY)
 					{
+						/*if(chess_ai_table[pos][C_COLOR] == color) break;
+						if(chess_ai_table[pos][C_COLOR] == C_NONE) break;*/
 						if(chess_ai_table[pos][C_COLOR] == color) break;
-						if(chess_ai_table[pos][C_COLOR] == C_NONE) break;
+					}
+					if(figure == C_PAWN)
+					{
+						if((abs(i - pos) == 8) && (chess_ai_table[pos][C_FIGURE] != C_EMPTY)) break;
+						if((abs(i - pos) != 8) && (chess_ai_table[pos][C_FIGURE] == C_EMPTY)) break;
 					}
 
 					/*printf("store at %i\n", maxqueue);*/
@@ -420,5 +444,6 @@ void chess_ai_output(void)
 		if((i + 1) % 8 == 0) printf("\n");
 	}
 	printf("---------------\n");
+	fflush(NULL);
 }
 

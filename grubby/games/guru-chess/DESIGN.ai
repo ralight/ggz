@@ -1,0 +1,43 @@
+The alpha-beta chess AI algorithm
+---------------------------------
+
+Many turn-based two-player games use a similar (proven) AI method.
+It is called 'minimax/negamax' (depth-first branching) and works as follows:
+- the AI selects the best move based on the current board layout
+- it does then internally try to play for its opponent, generating a new board
+- afterwards, it plays for itself again, and so on...
+- after a certain depth is reached, the scores for the initial move
+  are calculated
+- if all initial moves are tested, the one which led to the best end result is
+  chosen for real
+This can be used for TicTacToe, Reversi, Chinese Chess and other such games.
+
+In chess, a special version of this algorithm dubbed 'alpha-beta' is used.
+It cuts down the combinatorical explosion by stopping at levels which in
+previous tests received a higher score.
+For each captured figure, a certain score is received, while losing figures
+results in a penalty, i.e. negative score.
+
+Another optimization of this algorithm is called 'nullmove strategy'.
+Since it employs heuristics, it is (currently) not used in this library.
+
+Special consideration
+---------------------
+The following chess rules deserve special consideration:
+- rochade (exchanging king with rock if not moved yet and not blocked) (*)
+- pawns go forward straight but hit diagonally
+- if pawns reach the other side of the board, they can be exchanged (*)
+- moves are always blocked, except for knights who can jump
+  (but since they do not have multiple moves per direction, doesn't matter)
+Items marked with an asterisk (*) are not implemented yet.
+
+Performance
+-----------
+The theoretical maximum of chess moves is 118 at any time. In practice, it
+will nearly always be below that value, even half of that would not be
+uncommon.
+
+A useful search depth is between 5 and 15. Everything above that will
+unnecessarily suck up CPU cycles, which are better spent on additional
+verifiers and AI strategy hinting or fuzzy matching.
+

@@ -9,7 +9,7 @@ int main()
 	int from, to;
 	int color;
 
-	chess_ai_init(C_WHITE);
+	chess_ai_init(C_WHITE, 2);
 
 	chess_ai_output();
 
@@ -25,8 +25,12 @@ int main()
 		if(!ret) break;
 		printf("Move found: %i (%i->%i)\n", ret, from, to);
 		ret = chess_ai_move(from, to);
+		printf("Move validity: %i\n", ret);
 		chess_ai_output();
 		sleep(1);
+
+		if(color == C_WHITE) color = C_BLACK;
+		else color = C_WHITE;
 	}
 
 	return 0;

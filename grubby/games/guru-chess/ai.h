@@ -27,7 +27,7 @@
 
 /* Sets up a chess board in an (0-64) array */
 /* The color is the one the player is using */
-void chess_ai_init(int color);
+void chess_ai_init(int color, int depth);
 
 /* Move a figure on the chess board */
 /* Returns 1 on success, 0 on invalid move */
