@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4525 2002-09-12 15:45:27Z jdorje $
+ * $Id: transit.c 4531 2002-09-12 21:59:31Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -198,15 +198,14 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 	/* If we sent it successfully, mark this table as in transit */
 	if (status == 0) {
 		table->transit = 1;
-		status = GGZ_EVENT_OK;
 	}
 	/* Otherwise send an error message back to the player */
 	else {
 		transit_player_event(event->caller, action, E_SEAT_ASSIGN_FAIL, 0);
-		status = GGZ_EVENT_ERROR;
+		return GGZ_EVENT_ERROR;
 	}
 
-	return status;
+	return GGZ_EVENT_OK;
 }
 
 /* Executed by table hander thread */
@@ -267,15 +266,14 @@ static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 	/* If we sent it successfully, mark this table as in transit */
 	if (status == 0) {
 		table->transit = 1;
-		status = GGZ_EVENT_OK;
 	}
 	/* Otherwise send an error message back to the player */
 	else {
 		transit_player_event(event->caller, action, E_SEAT_ASSIGN_FAIL, 0);
-		status = GGZ_EVENT_ERROR;
+		return GGZ_EVENT_ERROR;
 	}
 
-	return status;
+	return GGZ_EVENT_OK;
 }
 
 static GGZEventFuncReturn transit_player_event_callback(void* target,
