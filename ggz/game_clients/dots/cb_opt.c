@@ -37,6 +37,7 @@ on_opt_btn_ok_clicked                  (GtkButton       *button,
 		gtk_main_quit();
 
 	game_init();
+	board_init(board_width, board_height);
 }
 
 

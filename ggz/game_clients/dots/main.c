@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 
 char *opstr[] = { "DOTS_MSG_SEAT",   "DOTS_MSG_PLAYERS",  "DOTS_MSG_MOVE_H",
 		  "DOTS_MSG_MOVE_V", "DOTS_MSG_GAMEOVER", "DOTS_REQ_MOVE",
-		  "DOTS_RSP_MOVE",   "DOTS_SND_SYNC",     "DOTS_RSP_OPTIONS" };
+		  "DOTS_RSP_MOVE",   "DOTS_SND_SYNC",     "DOTS_MSG_OPTIONS" };
 
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
@@ -77,7 +77,7 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			status = get_players();
 			game.state = DOTS_STATE_WAIT;
 			break;
-		case DOTS_RSP_OPTIONS:
+		case DOTS_MSG_OPTIONS:
 			if((status = get_options()) == 0)
 				board_init(board_width, board_height);
 			break;
@@ -141,10 +141,6 @@ void game_init(void)
 	gtk_label_set_text(GTK_LABEL(l2), "No Score");
 	gtk_widget_show(main_win);
 	board_init(0, 0);
-
-	/* Get options from the server */
-	if(request_options() < 0)
-		exit(1);
 }
 
 
@@ -162,14 +158,6 @@ static int get_options(void)
 {
 	if(es_read_char(game.fd, &board_width) < 0
 	   || es_read_char(game.fd, &board_height) < 0)
-		return -1;
-	return 0;
-}
-
-
-static int request_options(void)
-{
-	if(es_write_int(game.fd, DOTS_REQ_OPTIONS) < 0)
 		return -1;
 	return 0;
 }

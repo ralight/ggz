@@ -33,7 +33,7 @@
 #define DOTS_REQ_MOVE     5
 #define DOTS_RSP_MOVE     6
 #define DOTS_SND_SYNC     7
-#define DOTS_RSP_OPTIONS  8
+#define DOTS_MSG_OPTIONS  8
 
 /* Move errors */
 #define DOTS_ERR_STATE   -1
@@ -45,7 +45,6 @@
 #define DOTS_SND_MOVE_H   0
 #define DOTS_SND_MOVE_V   1
 #define DOTS_REQ_SYNC     2
-#define DOTS_REQ_OPTIONS  3
 
 /* Connect the Dots game states */
 #define DOTS_STATE_INIT        0
