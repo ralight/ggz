@@ -717,17 +717,21 @@ static int metaserv_work(int fd)
 			result = metamagic(buffer);
 
 			stream = fdopen(fd, "w");
-			if(result)
+			if(stream)
 			{
-				fprintf(stream, "%s\n", result);
-				logline("Result: result=%s", result);
+				if(result)
+				{
+					fprintf(stream, "%s\n", result);
+					logline("Result: result=%s", result);
+				}
+				else
+				{
+					fprintf(stream, "\n");
+					logline("No result");
+				}
+				fflush(stream);
 			}
-			else
-			{
-				fprintf(stream, "\n");
-				logline("No result");
-			}
-			fflush(stream);
+			else logline("Broken pipe");
 		}
 		else return 0;
 	}
