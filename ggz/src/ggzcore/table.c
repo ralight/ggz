@@ -154,21 +154,12 @@ int ggzcore_table_get_num_seats(GGZTable *table)
 		return -1;
 }
 
-     
-int ggzcore_table_get_num_open(GGZTable *table)
-{
-	if (table)
-		return _ggzcore_table_get_num_open(table);
-	else 
-		return -1;
-}
 
-     
-int  ggzcore_table_get_num_bots(GGZTable *table)
+int ggzcore_table_get_seat_count(GGZTable *table, GGZSeatType type)
 {
 	if (table)
-		return _ggzcore_table_get_num_bots(table);
-	else
+		return _ggzcore_table_get_seat_count(table, type);
+	else 
 		return -1;
 }
 
@@ -342,24 +333,12 @@ int _ggzcore_table_get_num_seats(struct _GGZTable *table)
 }
 
 
-int _ggzcore_table_get_num_open(struct _GGZTable *table)
+int _ggzcore_table_get_seat_count(GGZTable *table, GGZSeatType type)
 {
 	int i, count = 0;
 
 	for (i = 0; i < table->num_seats; i++)
-		if (table->seats[i].type == GGZ_SEAT_OPEN)
-			count++;
-	
-	return count;
-}
-
-
-int _ggzcore_table_get_num_bots(struct _GGZTable *table)
-{
-	int i, count = 0;
-
-	for (i = 0; i < table->num_seats; i++)
-		if (table->seats[i].type == GGZ_SEAT_BOT)
+		if (table->seats[i].type == type)
 			count++;
 	
 	return count;

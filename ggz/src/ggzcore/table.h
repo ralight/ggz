@@ -93,8 +93,7 @@ struct _GGZGameType*  _ggzcore_table_get_type(struct _GGZTable *table);
 char*                 _ggzcore_table_get_desc(struct _GGZTable *table);
 char                  _ggzcore_table_get_state(struct _GGZTable *table);
 int                   _ggzcore_table_get_num_seats(struct _GGZTable *table);
-int                   _ggzcore_table_get_num_open(struct _GGZTable *table);
-int                   _ggzcore_table_get_num_bots(struct _GGZTable *table);
+int                   _ggzcore_table_get_seat_count(struct _GGZTable *table, GGZSeatType type);
 
 char* _ggzcore_table_get_nth_player_name(struct _GGZTable *table, const unsigned int num);
 GGZSeatType _ggzcore_table_get_nth_player_type(struct _GGZTable *table, const unsigned int num);

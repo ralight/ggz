@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 3179 2002-01-23 17:54:47Z jdorje $
+ * $Id: ggzcore.h 3199 2002-02-01 04:39:08Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -632,9 +632,18 @@ GGZGameType* ggzcore_table_get_type(GGZTable *table);
 char*        ggzcore_table_get_desc(GGZTable *table);
 char         ggzcore_table_get_state(GGZTable *table);
 int          ggzcore_table_get_num_seats(GGZTable *table);
-int          ggzcore_table_get_num_open(GGZTable *table);
-int          ggzcore_table_get_num_bots(GGZTable *table);
-char*        ggzcore_table_get_nth_player_name(GGZTable *table, 
+
+/** @brief Count the seats of the given type.
+ *
+ *  Given a table and a seat type, this function returns the number of
+ *  seats at the table that match the type.
+ *
+ *  @param table A GGZ table.
+ *  @param type A GGZSeatType.
+ *  @return The number of seats matching the type, or -1 on error.
+ */
+int          ggzcore_table_get_seat_count(GGZTable *table, GGZSeatType type);
+char*        ggzcore_table_get_nth_player_name(GGZTable *table,
 					       const unsigned int num);
 GGZSeatType  ggzcore_table_get_nth_player_type(GGZTable *table, 
 					       const unsigned int num);
