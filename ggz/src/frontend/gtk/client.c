@@ -106,6 +106,7 @@ gboolean client_chat_entry_key_press_event(GtkWidget *widget,
 static void client_send_button_clicked(GtkButton *button, gpointer data);
 static void client_info_activate(GtkMenuItem *menuitem, gpointer data);
 static int client_get_table_index(guint row);
+static int client_get_table_open(guint row);
 				 
 
 
@@ -179,7 +180,7 @@ client_joinm_activate		(GtkMenuItem	*menuitem,
         GGZModule *module;
         int table_index;
 
-	if(tablerow != -1 && game_play() != TRUE)
+	if(tablerow != -1 && game_play() != TRUE && client_get_table_open(tablerow) != FALSE)
 	{
 	        room = ggzcore_server_get_cur_room(server);
         	type = ggzcore_room_get_gametype(room);
@@ -192,6 +193,15 @@ client_joinm_activate		(GtkMenuItem	*menuitem,
         	ggzcore_room_join_table(room, table_index);
 		tablerow = -1;
 	}
+	if(tablerow == -1)
+		msgbox("You must highlight a table before you can join it.", "Error Joining",
+			MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+	if(game_play() == TRUE)
+		msgbox("You can only play one game at a time.", "Error Joining",
+			MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+	if(client_get_table_open(tablerow) == FALSE)
+		msgbox("That table is full.", "Error Joining",
+			MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 }
 
 static void
@@ -521,7 +531,7 @@ client_join_button_clicked		(GtkButton	*button,
         GGZModule *module;
         int table_index;
 
-	if(tablerow != -1 && game_play() != TRUE)
+	if(tablerow != -1 && game_play() != TRUE && client_get_table_open(tablerow) != FALSE)
 	{
 	        room = ggzcore_server_get_cur_room(server);
         	type = ggzcore_room_get_gametype(room);
@@ -534,6 +544,15 @@ client_join_button_clicked		(GtkButton	*button,
         	ggzcore_room_join_table(room, table_index);
 		tablerow = -1;
 	}
+	if(tablerow == -1)
+		msgbox("You must highlight a table before you can join it.", "Error Joining",
+			MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+	if(game_play() == TRUE)
+		msgbox("You can only play one game at a time.", "Error Joining",
+			MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+	if(client_get_table_open(tablerow) == FALSE)
+		msgbox("That table is full.", "Error Joining",
+			MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 }
 
 
@@ -661,7 +680,7 @@ client_table_event			(GtkWidget	*widget,
         	GGZModule *module;
         	int table_index;
 
-		if(tablerow != -1)
+		if(tablerow != -1 && game_play() != TRUE && client_get_table_open(tablerow) != FALSE)
 		{
 	        	room = ggzcore_server_get_cur_room(server);
         		type = ggzcore_room_get_gametype(room);
@@ -674,6 +693,15 @@ client_table_event			(GtkWidget	*widget,
         		ggzcore_room_join_table(room, table_index);
 			tablerow = -1;
 		}
+		if(tablerow == -1)
+			msgbox("You must highlight a table before you can join it.", "Error Joining",
+				MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+		if(game_play() == TRUE)
+			msgbox("You can only play one game at a time.", "Error Joining",
+				MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
+		if(client_get_table_open(tablerow) == FALSE)
+			msgbox("That table is full.", "Error Joining",
+				MSGBOX_OKONLY, MSGBOX_INFO, MSGBOX_NORMAL);
 	}
 	return FALSE;
 }
@@ -699,6 +727,23 @@ static int client_get_table_index(guint row)
 	index = atoi(text);
 	
 	return index;
+}
+
+
+static int client_get_table_open(guint row)
+{
+	GtkWidget *tmp;
+	char *text;
+
+	tmp = lookup_widget(win_main, "table_clist");
+	gtk_clist_get_text(GTK_CLIST(tmp), row, 1, &text);
+
+	if(text[0] == '0')
+	{
+		return FALSE;
+	} else {
+		return TRUE;
+	}
 }
 
 
