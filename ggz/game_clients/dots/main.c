@@ -54,9 +54,11 @@ int main(int argc, char *argv[])
 }
 
 
+#ifdef DEBUG
 char *opstr[] = { "DOTS_MSG_SEAT",   "DOTS_MSG_PLAYERS",  "DOTS_MSG_MOVE_H",
 		  "DOTS_MSG_MOVE_V", "DOTS_MSG_GAMEOVER", "DOTS_REQ_MOVE",
 		  "DOTS_RSP_MOVE",   "DOTS_SND_SYNC",     "DOTS_MSG_OPTIONS" };
+#endif
 
 static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 {
@@ -68,7 +70,9 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 	}
 
 	status = 0;
+#ifdef DEBUG
 	fprintf(stderr, "%s\n", opstr[op]);
+#endif
 	switch(op) {
 		case DOTS_MSG_SEAT:
 			status = get_seat();
@@ -85,10 +89,7 @@ static void game_handle_io(gpointer data, gint source, GdkInputCondition cond)
 			/* We ignore this unless we've seen an opponents move */
 			if(game.state != DOTS_STATE_OPPONENT) {
 				game.state = DOTS_STATE_MOVE;
-				if(game.move == game.me)
-				    statusbar_message("You get to move again!");
-				else
-				    statusbar_message("Your turn to move");
+				statusbar_message("Your turn to move");
 				game.move = game.me;
 				break;
 			}
@@ -138,6 +139,7 @@ void game_init(void)
 	game.state = DOTS_STATE_INIT;
 	game.score[0] = 0;
 	game.score[1] = 0;
+	game.got_players = 0;
 
 	/* Setup the main board now */
 	main_win = create_dlg_main();
@@ -213,11 +215,27 @@ static int get_players(void)
 		if(game.seats[i] != GGZ_SEAT_OPEN) {
 			if(es_read_string(game.fd, (char*)&game.names[i], 9) <0)
 				return -1;
-			temp = g_strdup_printf(" %s ", game.names[i]);
+			temp = g_strdup_printf("   %s   ", game.names[i]);
 			gtk_frame_set_label(GTK_FRAME(frame[i]), game.names[i]);
 			g_free(temp);
+			if(i != game.me) {
+				temp = g_strdup_printf("%s joined the table",
+							game.names[i]);
+				statusbar_message(temp);
+				g_free(temp);
+			}
+		} else {
+			gtk_frame_set_label(GTK_FRAME(frame[i]), "Empty Seat");
+			if(game.got_players) {
+				temp = g_strdup_printf("%s left the table",
+							game.names[i]);
+				statusbar_message(temp);
+				g_free(temp);
+			}
 		}
 	}
+
+	game.got_players++;
 
 	return 0;
 }
@@ -239,6 +257,8 @@ static int get_move_status(void)
 static int get_sync_info(void)
 {
 	int i,j;
+	gchar *text;
+	GtkWidget *l1, *l2;
 
 	if(es_read_char(game.fd, &game.move) < 0
 	   || es_read_int(game.fd, &game.score[0]) < 0
@@ -258,6 +278,18 @@ static int get_sync_info(void)
 				return -1;
 
 	board_redraw();
+
+	if(game.score[0] != 0 || game.score[1] != 0)
+	{
+		l1 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score0");
+		l2 = gtk_object_get_data(GTK_OBJECT(main_win), "lbl_score1");
+		text = g_strdup_printf("Score = %d", game.score[0]);
+		gtk_label_set_text(GTK_LABEL(l1), text);
+		g_free(text);
+		text = g_strdup_printf("Score = %d", game.score[1]);
+		gtk_label_set_text(GTK_LABEL(l2), text);
+		g_free(text);
+	}
 
 	return 0;
 }
