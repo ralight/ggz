@@ -49,7 +49,7 @@ void GGZMetaProtocol::jobOperator(const KURL& url)
 	u = url;
 	u.cleanPath();
 
-	debug(">> " + u.url() + " :: host=" + u.host() + " path=" + u.path(0));
+	debug(">> " + u.url() + " :: host=" + u.host() + " path=" + u.path(1));
 
 	if(u.host())
 	{
@@ -122,7 +122,7 @@ void GGZMetaProtocol::slotRead()
 			list = list.split('|', rdata);
 			host = *(list.at(0));
 			hostname = *(list.at(1));
-			GGZMetaProtocolHelper::app_file(entry, QString("%1_%2").arg(host).arg(hostname), 1);
+			GGZMetaProtocolHelper::app_file(entry, QString("%1_%2").arg(host).arg(hostname), 1, "application/x-desktop");
 			listEntry(entry, false);
 		}
 		listEntry(entry, true);
@@ -140,7 +140,7 @@ void GGZMetaProtocol::slotRead()
 			if(*(list.at(0)) == "-h")
 			{
 				host = *(list.at(1));
-				GGZMetaProtocolHelper::app_file(entry, QString("%1").arg(host), 1);
+				GGZMetaProtocolHelper::app_file(entry, QString("%1").arg(host), 1, "application/x-desktop");
 				listEntry(entry, false);
 			}
 		}
@@ -162,7 +162,7 @@ void GGZMetaProtocol::slotRead()
 			{
 				element = element.firstChild().toElement();
 				pref = element.attribute("preference", "20");
-				GGZMetaProtocolHelper::app_file(entry, QString("%1_%2").arg(element.text()).arg(pref), 1);
+				GGZMetaProtocolHelper::app_file(entry, QString("%1_%2").arg(element.text()).arg(pref), 1, "application/x-desktop");
 				listEntry(entry, false);
 				debug(QString("-> entry: %1_%2").arg(element.text()).arg(pref));
 			}
@@ -219,21 +219,65 @@ void GGZMetaProtocol::work(QString queryclass, QString query)
 		}
 		else error(0, QString("Couldn't process atlantik query: %1").arg(query));*/
 	}
-	else if(queryclass == "crossfire")
+	else if(queryclass == "dopewars")
 	{
-		m_sock = new QSocket();
-		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
-		m_sock->connectToHost("crossfire.real-time.com", 13326);
+		debug("** start dopewars download **");
+
+		m_temp = "/tmp/dopewars.metaserver";
+		KIO::Job *job = KIO::copy("http://dopewars.sourceforge.net/metaserver.php?getlist=2", m_temp);
+		connect(job, SIGNAL(result(KIO::Job)), SLOT(slotResult(KIO::Job)));
 
 		a->exec();
 	}
+	else if(queryclass == "crossfire")
+	{
+		if((m_query.isEmpty()) || (m_query == "/"))
+		{
+			m_sock = new QSocket();
+			connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
+			m_sock->connectToHost("crossfire.real-time.com", 13326);
+
+			a->exec();
+		}
+		else
+		{
+			QCString output;
+			mimeType("application/x-desktop");
+			output.sprintf("[Desktop Entry]\n"
+				"Comment=Crossfire Game\n"
+				"Exec=cfclient\n"
+				"Icon=crossfire\n"
+				"MimeType=Application\n"
+				"Name=Crossfire\n"
+				"Type=Application\n");
+			data(output);
+			finished();
+		}
+	}
 	else if(queryclass == "netrek")
 	{
-		m_sock = new QSocket();
-		connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
-		m_sock->connectToHost("metaserver.netrek.org", 3521);
+		if((m_query.isEmpty()) || (m_query == "/"))
+		{
+			m_sock = new QSocket();
+			connect(m_sock, SIGNAL(readyRead()), SLOT(slotRead()));
+			m_sock->connectToHost("metaserver.netrek.org", 3521);
 
-		a->exec();
+			a->exec();
+		}
+		else
+		{
+			QCString output;
+			mimeType("application/x-desktop");
+			output.sprintf("[Desktop Entry]\n"
+				"Comment=Netrek Game\n"
+				"Exec=netrek\n"
+				"Icon=netrek\n"
+				"MimeType=Application\n"
+				"Name=Netrek\n"
+				"Type=Application\n");
+			data(output);
+			finished();
+		}
 	}
 	else
 	{
@@ -269,13 +313,48 @@ void GGZMetaProtocol::delegate(QString queryclass, QString url)
 					l = l.split(QRegExp("<[^>]+>"), s);
 					QString host = *(l.at(0));
 					QString port = *(l.at(2));
-					GGZMetaProtocolHelper::app_file(entry, QString("%1:%2").arg(host).arg(port), 1);
+					GGZMetaProtocolHelper::app_file(entry, QString("%1:%2").arg(host).arg(port), 1, "application/x-desktop");
 					listEntry(entry, false);
 				}
 			}
 			listEntry(entry, true);
 			finished();
 			file.close();
+		}
+	}
+	else if(queryclass == "dopewars")
+	{
+		debug("*** delegation: dopewars ***");
+		QFile file(url);
+		if(file.open(IO_ReadOnly))
+		{
+			QTextStream t(&file);
+			int counter = 0;
+			while(!t.eof())
+			{
+				QString s = t.readLine();
+				QString q;
+				if((s.startsWith("<tr")) && (counter++))
+				{
+					int i = 0;
+					//QListViewItem *item = new QListViewItem(this);
+					while(!s.contains("</tr>"))
+					{
+						QStringList l;
+						l = l.split(QRegExp("<[^>]+>"), s);
+						//item->setText(i, *(l.at(0)));
+						if(!q.isEmpty()) q.append("_");
+						q.append(*(l.at(0)));
+						i++;
+						s = t.readLine();
+					}
+					GGZMetaProtocolHelper::app_file(entry, q, 1, "application/x-desktop");
+					listEntry(entry, false);
+				}
+			}
+			file.close();
+			listEntry(entry, true);
+			finished();
 		}
 	}
 	else if(queryclass == "atlantik")
@@ -302,6 +381,21 @@ void GGZMetaProtocol::listDir(const KURL& url)
 void GGZMetaProtocol::get(const KURL& url)
 {
 	jobOperator(url);
+}
+
+// Request file statistics
+void GGZMetaProtocol::stat(const KURL& url)
+{
+	GGZMetaProtocolHelper::app_file(entry, QString("Whatever"), 1, "application/x-desktop");
+
+	statEntry(entry);
+	finished();
+}
+
+// Request file type
+void GGZMetaProtocol::mimetype(const KURL& url)
+{
+	mimeType("application/x-desktop");
 }
 
 // Initialization

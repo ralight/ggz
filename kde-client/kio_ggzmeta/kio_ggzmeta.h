@@ -12,8 +12,10 @@ class GGZMetaProtocol : public QObject, public KIO::SlaveBase
 	public:
 		GGZMetaProtocol(const QCString& pool, const QCString& app);
 		~GGZMetaProtocol();
-		void get(const KURL& url);
-		void listDir(const KURL& url);
+		virtual void get(const KURL& url);
+		virtual void listDir(const KURL& url);
+		virtual void stat(const KURL& url);
+		virtual void mimetype(const KURL& url);
 
 		void work(QString queryclass, QString query);
 		void delegate(QString queryclass, QString url);

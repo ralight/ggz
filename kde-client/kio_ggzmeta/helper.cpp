@@ -28,13 +28,14 @@ void GGZMetaProtocolHelper::app_dir(KIO::UDSEntry& e, const QString & n, size_t 
 	app_entry(e, KIO::UDS_SIZE, s);
 }
  
-void GGZMetaProtocolHelper::app_file(KIO::UDSEntry& e, const QString & n, size_t s)
+void GGZMetaProtocolHelper::app_file(KIO::UDSEntry& e, const QString & n, size_t s, const QString & m)
 {
 	e.clear();
 	app_entry(e, KIO::UDS_NAME, n);
 	app_entry(e, KIO::UDS_FILE_TYPE, S_IFREG);
 	app_entry(e, KIO::UDS_ACCESS, 0400);
 	app_entry(e, KIO::UDS_SIZE, s);
+	app_entry(e, KIO::UDS_MIME_TYPE, m);
 }
 
 // End of stolen code. I'm a thief :)
