@@ -18,6 +18,8 @@
 #ifndef KEEPALIVE_H
 #define KEEPALIVE_H
 
+// #define SUPPORT_SPECTATORS
+
 // Class declarations
 class World;
 

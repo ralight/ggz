@@ -48,8 +48,10 @@ Keepalive::Keepalive()
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_LOG, hook_events);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_PLAYER_DATA, hook_data);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_ERROR, hook_events);
+#ifdef SUPPORT_SPECTATORS
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_JOIN, hook_events);
 	ggzdmod_set_handler(ggzdmod, GGZDMOD_EVENT_SPECTATOR_LEAVE, hook_events);
+#endif
 }
 
 // Destructor
@@ -94,6 +96,7 @@ void Keepalive::hookLeave(void *data)
 	m_world->removePlayer(seat.name);
 }
 
+#ifdef SUPPORT_SPECTATORS
 // Handler for joining spectators
 void Keepalive::hookSpectatorJoin(void *data)
 {
@@ -107,6 +110,7 @@ void Keepalive::hookSpectatorLeave(void *data)
 	GGZSpectator spectator = *(GGZSpectator*)data;
 	m_world->removeSpectator(spectator.name);
 }
+#endif
 
 // HAndler for state changes
 void Keepalive::hookState(void *data)
@@ -152,6 +156,7 @@ void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 		case GGZDMOD_EVENT_ERROR:
 			me->hookError(data);
 			break;
+#ifdef SUPPORT_SPECTATORS
 		case GGZDMOD_EVENT_SPECTATOR_JOIN:
 			player = ((GGZSpectator*)data)->num;
 			me->hookSpectatorJoin(&player);
@@ -159,6 +164,7 @@ void hook_events(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 		case GGZDMOD_EVENT_SPECTATOR_LEAVE:
 			me->hookSpectatorLeave(data);
 			break;
+#endif
 		default:
 			// FIXME: error
 			break;
