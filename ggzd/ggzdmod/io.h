@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 11/18/01
  * Desc: Functions for reading/writing messages from/to game modules
- * $Id: io.h 2754 2001-11-18 23:58:02Z bmh $
+ * $Id: io.h 2767 2001-12-01 06:44:49Z bmh $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -30,7 +30,21 @@
 
 
 #include "ggzdmod.h"
+#include "mod.h"
 
 /* Functions for sending IO messages */
-int io_send_req_join(int fd, GGZSeat *seat);
-int io_send_req_leave(int fd, GGZSeat *seat);
+int _io_send_launch(int fd, int seats);
+int _io_send_join(int fd, GGZSeat *seat);
+int _io_send_leave(int fd, GGZSeat *seat);
+int _io_send_state(int fd, GGZdModState state);
+int _io_send_seat(int fd, GGZSeat *seat);
+int _io_send_log(int fd, char *msg);
+
+/* Read and dispatch message */
+int _io_read_data(_GGZdMod * mod);
+
+/* Functions for sending repsonses */
+int _io_respond_launch(int fd, char status);
+int _io_respond_join(int fd);
+int _io_respond_leave(int fd, int status);
+int _io_respond_state(int fd);

@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2659 2001-11-04 22:45:53Z bmh $
+ * $Id: ggzdmod.h 2767 2001-12-01 06:44:49Z bmh $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -93,22 +93,22 @@ typedef enum {
  *  to waiting.  Eventually the table will probably halt and then the
  *  program will exit. */
 typedef enum {
-	GGZ_STATE_CREATED,	/**< Pre-launch; waiting for ggzdmod */
-	GGZ_STATE_WAITING,	/**< Ready and waiting to play. */
-	GGZ_STATE_PLAYING,	/**< Currently playing a game. */
-	GGZ_STATE_DONE		/**< Table halted, prepping to exit. */
+	GGZDMOD_STATE_CREATED,	/**< Pre-launch; waiting for ggzdmod */
+	GGZDMOD_STATE_WAITING,	/**< Ready and waiting to play. */
+	GGZDMOD_STATE_PLAYING,	/**< Currently playing a game. */
+	GGZDMOD_STATE_DONE		/**< Table halted, prepping to exit. */
 } GGZdModState;
 
 /* @brief Callback events. Each of these is a possible ggzdmod event.  For
    each event, the table may register a handler with ggzdmod to handle that
    event. @see GGZdModHandler @see ggzdmod_set_handler */
 typedef enum {
-	GGZ_EVENT_STATE,	/**< Module status changed */
-	GGZ_EVENT_JOIN,		/**< Player joined */
-	GGZ_EVENT_LEAVE,	/**< Player left */
-	GGZ_EVENT_LOG,		/**< Module log request */
-	GGZ_EVENT_PLAYER_DATA,	/**< Data avilable from player */
-	GGZ_EVENT_ERROR		/**< Error (not used yet) */
+	GGZDMOD_EVENT_STATE,	/**< Module status changed */
+	GGZDMOD_EVENT_JOIN,		/**< Player joined */
+	GGZDMOD_EVENT_LEAVE,	/**< Player left */
+	GGZDMOD_EVENT_LOG,		/**< Module log request */
+	GGZDMOD_EVENT_PLAYER_DATA,	/**< Data avilable from player */
+	GGZDMOD_EVENT_ERROR		/**< Error (not used yet) */
 } GGZdModEvent;
 
 /** @brief The "type" of ggzdmod.
@@ -133,31 +133,31 @@ typedef void GGZdMod;
  *  @param e The event that has occured.
  *  @param data Pointer to additional data for the event.
  *  The additional data will be of the following form:
- *    - GGZ_EVENT_STATE: NULL
- *    - GGZ_EVENT_JOIN: The player number (int*)
- *    - GGZ_EVENT_LEAVE: The player number (int*)
- *    - GGZ_EVENT_LOG: The message string (char*)
- *    - GGZ_EVENT_PLAYER_DATA: The player number (int*)
- *    - GGZ_EVENT_ERROR: NULL (for now)
+ *    - GGZDMOD_EVENT_STATE: NULL
+ *    - GGZDMOD_EVENT_JOIN: The player number (int*)
+ *    - GGZDMOD_EVENT_LEAVE: The player number (int*)
+ *    - GGZDMOD_EVENT_LOG: The message string (char*)
+ *    - GGZDMOD_EVENT_PLAYER_DATA: The player number (int*)
+ *    - GGZDMOD_EVENT_ERROR: NULL (for now)
  *
  *  Here is an example function showing the most generic use for a table:
  *  @code
  *      void ggz_update(ggzd_event_t event, void *data) {
  *          int player, socket_fd;
  *          switch (event) {
- *            case GGZ_EVENT_STATE:
+ *            case GGZDMOD_EVENT_STATE:
  *              old_state = *(GGZdModState*)data; // data for this event
  *              // do something to handle a game launch (startup or quit)
  *              break;
- *            case GGZ_EVENT_JOIN:
+ *            case GGZDMOD_EVENT_JOIN:
  *              player = *(int*)data; // data for this event
  *              // do something to handle a player joining
  *              break;
- *            case GGZ_EVENT_LEAVE:
+ *            case GGZDMOD_EVENT_LEAVE:
  *              player = *(int*)data; // data for this event
  *              // do something to handle a player leaving
  *              break;
- *            case GGZ_EVENT_PLAYER_DATA:
+ *            case GGZDMOD_EVENT_PLAYER_DATA:
  *              player = *(int*)data;
  *              socket_fd = ggzd_get_player_socket(player);
  *              // read and handle data from the player

@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.h 2649 2001-11-04 17:33:57Z jdorje $
+ * $Id: ggz_server.h 2767 2001-12-01 06:44:49Z bmh $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -33,9 +33,11 @@ extern "C" {
 
 #include "ggzdmod.h"
 
-#define GGZ_EVENT_PLAYER GGZ_EVENT_PLAYER_DATA
-#define GGZ_EVENT_LAUNCH GGZ_EVENT_STATE
-#define GGZ_EVENT_QUIT   GGZ_EVENT_STATE
+#define GGZ_EVENT_PLAYER GGZDMOD_EVENT_PLAYER_DATA
+#define GGZ_EVENT_LAUNCH GGZDMOD_EVENT_STATE
+#define GGZ_EVENT_QUIT   GGZDMOD_EVENT_STATE
+#define GGZ_EVENT_JOIN   GGZDMOD_EVENT_JOIN
+#define GGZ_EVENT_LEAVE   GGZDMOD_EVENT_LEAVE
 
 	/* This interface is depricated and should not be used. */
 

@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.c 2654 2001-11-04 22:04:28Z jdorje $
+ * $Id: ggz_server.c 2767 2001-12-01 06:44:49Z bmh $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -101,7 +101,7 @@ void ggzd_gameover(int status)
 
 int ggzd_get_gameover(void)
 {
-	return ggzdmod_get_state(ggzdmod) == GGZ_STATE_DONE;
+	return ggzdmod_get_state(ggzdmod) == GGZDMOD_STATE_DONE;
 }
 
 static GGZDHandler handlers[6] = { NULL };
@@ -109,8 +109,8 @@ static GGZDHandler handlers[6] = { NULL };
 static void ggzd_ggzdmod_event_handler(GGZdMod * ggzdmod, GGZdModEvent e,
 				       void *data)
 {
-	if (e == GGZ_EVENT_STATE
-	    && ggzdmod_get_state(ggzdmod) != GGZ_STATE_WAITING)
+	if (e == GGZDMOD_EVENT_STATE
+	    && ggzdmod_get_state(ggzdmod) != GGZDMOD_STATE_WAITING)
 		return;
 	if (handlers[e])
 		(*handlers[e]) (e, data);
