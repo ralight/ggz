@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 3516 2002-03-02 21:19:26Z bmh $
+ * $Id: main.c 3564 2002-03-16 02:55:52Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -62,8 +62,20 @@ void init_debug(void)
 	g_free(default_file);
 
 	ggzcore_conf_read_list("Debug", "Types", &num_types, (char***)&debug_types);
-
-	ggz_debug_init((const char**)debug_types, debug_file);
+	
+	{
+	/* FIXME: this is an ugly-ass hack because ggzcore_conf_read_list
+	   gives us a num_types value to indicate the list length, while
+	   ggz_debug_init expects the list to be null-terminated.  --JDS */
+	char* my_debug_types[num_types + 1];
+	int i;
+	
+	for (i = 0; i < num_types; i++)
+		my_debug_types[i] = debug_types[i];
+	my_debug_types[num_types] = NULL;	
+	
+	ggz_debug_init((const char**)my_debug_types, debug_file);
+	} /* end of ugly-ass hack */
 
 	/* Free up memory */
 	for (i = 0; i < num_types; i++)
