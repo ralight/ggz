@@ -1,0 +1,144 @@
+<? include_once("site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Games and Applications</b><br>
+The GGZ Gaming Zone lets you play more than 20 games already, and many more
+might be added over time.
+To be able to play these games, a bunch of central applications and various
+utilities are available.
+<br><br>
+
+There are individual category pages for
+<a href="/games/">games</a>,
+<a href="/clients/">clients</a>,
+<a href="/utils/">utilities</a> and the
+<a href="/backend/">backends</a>.
+<br><br>
+
+<table class="inner">
+<tr><td valign="bottom">
+
+<i>GGZ Games:</i><br>
+<table class="list">
+<tr><td>
+<a href="/games/tictactoe/">TicTacToe</a>
+<hr>
+<a href="/games/spades/">NetSpades</a>
+<hr>
+<a href="/games/dots/">Connect The Dots</a>
+<hr>
+<a href="/games/lapocha/">LaPocha</a>
+<hr>
+<a href="/games/hastings/">Hastings1066</a>
+<hr>
+<a href="/games/reversi/">Reversi</a>
+<hr>
+<a href="/games/combat/">Combat</a>
+<hr>
+<a href="/games/chess/">Chess</a>
+<hr>
+<a href="/games/ccheckers/">Chinese Checkers</a>
+<hr>
+<a href="/games/krosswater/">Krosswater</a>
+<hr>
+<a href="/games/ggzcards/">GGZCards</a>
+<hr>
+<a href="/games/muehle/">Mühle</a>
+<hr>
+<a href="/games/keepalive/">Keepalive</a>
+<hr>
+<a href="/games/escape/">Escape</a>
+<hr>
+<a href="/games/connectx/">ConnectX</a>
+<hr>
+<a href="/games/geekgame/">Geekgame</a>
+<hr>
+<a href="/games/cchess/">Chinese Chess</a>
+</td></tr>
+</table>
+
+</td><td valign="bottom">
+
+<i>External Games:</i><br>
+<table class="list">
+<tr><td>
+<a href="/games/teg/">T.E.G.</a>
+<hr>
+<a href="/games/batnav/">Batalla Naval</a>
+<hr>
+<a href="/games/kamikaze/">Kamikaze</a>
+<hr>
+<a href="/games/xtux/">XTux Arena</a>
+<hr>
+<a href="/games/tuxman/">Tuxman</a>
+<hr>
+<a href="/games/freeciv/">Freeciv</a>
+</td></tr>
+</table>
+
+</td><td valign="bottom">
+
+<i>Core Clients:</i><br>
+<table class="list">
+<tr><td>
+<a href="/clients/kde/">KDE (KGGZ)</a>
+<hr>
+<a href="/clients/gnome/">GNOME (GGZ-Gnome)</a>
+<hr>
+<a href="/clients/gtk/">Gtk+ (GGZ-Gtk)</a>
+<hr>
+<a href="/clients/console/">Console (ggz-txt)</a>
+<hr>
+<a href="/clients/telnet/">Telnet (TelGGZ)</a>
+<hr>
+<a href="/clients/windows/">Windows (WGGZ)</a>
+</td></tr>
+</table>
+
+</td><td valign="bottom">
+
+<i>Player Tools:</i><br>
+<table class="list">
+<tr><td>
+<a href="/utils/ggzap/">GGZap</a>
+<hr>
+<a href="/utils/motdeditor/">MOTD Editor</a>
+<hr>
+<a href="/utils/compcal/">Competition Calendar</a>
+<hr>
+<a href="/utils/modsniff/">ModSniffer</a>
+</td></tr>
+</table>
+
+</td><td valign="bottom">
+
+<i>Backend and Admin Tools:</i><br>
+<table class="list">
+<tr><td>
+<a href="/backend/server/">GGZ Server</a>
+<hr>
+<a href="/backend/metaserver/">Metaserver</a>
+<hr>
+<a href="/backend/cmd/">Command Client</a>
+<hr>
+<a href="/backend/grubby/">Grubby</a>
+<hr>
+<a href="/backend/web/">Web Interface</a>
+</td></tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("site/footer.php"); ?>
+
