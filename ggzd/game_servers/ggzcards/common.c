@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2285 2001-08-27 19:53:11Z jdorje $
+ * $Id: common.c 2286 2001-08-27 20:03:43Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -813,6 +813,8 @@ static int determine_host()
  */
 void handle_launch_event(ggzd_event_t event, void *data)
 {
+	player_t p;
+
 	ggzd_debug("Handling a launch event.");
 	if (game.state != WH_STATE_PRELAUNCH) {
 		ggzd_debug("ERROR: "
@@ -823,7 +825,13 @@ void handle_launch_event(ggzd_event_t event, void *data)
 	/* determine number of players. */
 	game.num_players = ggzd_seats_num();	/* ggz seats == players */
 	game.host = -1;		/* no host since none has joined yet */
+
 	game.players = alloc(game.num_players * sizeof(*game.players));
+	for (p = 0; p < game.num_players; p++) {
+		game.players[p].seat = -1;
+		game.players[p].allbids = NULL;
+	}
+
 	/* we don't yet know the number of seats */
 
 	/* as soon as we know which game we're playing, we should init the game */
@@ -844,7 +852,8 @@ void handle_join_event(ggzd_event_t event, void *data)
 	player_t p;
 	seat_t seat = game.players[player].seat;
 
-	ggzd_debug("Handling a join event for player %d.", player);
+	ggzd_debug("Handling a join event for player %d (seat %d).", player,
+		   seat);
 	if (game.state != WH_STATE_WAITFORPLAYERS) {
 		ggzd_debug("ERROR: SERVER BUG: "
 			   "someone joined while we weren't waiting.");
@@ -852,9 +861,11 @@ void handle_join_event(ggzd_event_t event, void *data)
 	}
 
 	/* get player's name */
-	game.seats[seat].name = ggzd_get_player_name(player);
-	if (!game.seats[seat].name)
-		game.seats[seat].name = "[unknown]";
+	if (seat >= 0) {
+		game.seats[seat].name = ggzd_get_player_name(player);
+		if (!game.seats[seat].name)
+			game.seats[seat].name = "[unknown]";
+	}
 
 	/* set the age of the player */
 	game.players[player].age = game.player_count;
