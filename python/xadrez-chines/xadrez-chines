@@ -342,6 +342,8 @@ def main(ggzmode):
 			break
 		if keyinput[K_n]:
 			sdlnewstuff.gethotnewstuff("xadrez-chines")
+		if keyinput[K_f]:
+			pygame.display.toggle_fullscreen()
 
 		(b1, b2, b3) = pygame.mouse.get_pressed()
 		if b1 and not pressed and not madeturn:
