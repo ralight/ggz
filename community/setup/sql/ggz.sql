@@ -39,6 +39,7 @@ CREATE TABLE matches (
 CREATE TABLE matchplayers (
     id serial NOT NULL,
     "match" bigint,
-    handle character varying(256)
+    handle character varying(256),
+    playertype character varying(256)
 );
 
