@@ -40,7 +40,7 @@ static const char *rankingmodels[14][2] =
 	{"GGZCards-FortyTwo", "rating"},
 	{"GGZCards-Hearts", "rating"},
 	{"GGZCards-Spades", "rating"},
-	{"", ""},
+	{"ccheckers", "wins/losses"},
 	{"", ""},
 	{"", ""},
 	{"", ""},
