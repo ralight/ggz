@@ -47,33 +47,38 @@
 #define GGZ_DBG_ALL		(unsigned) 0xFFFFFFFF
 
 /* these two enumerations used to be in protocols.h */
-typedef enum {
+typedef enum
+{
 	RSP_GAME_LAUNCH,
 	RSP_GAME_JOIN,
 	RSP_GAME_LEAVE,
-        MSG_LOG,
-        MSG_DBG,
+	MSG_LOG,
+	MSG_DBG,
 	REQ_GAME_OVER
-} TableToControl;
+}
+TableToControl;
 
-typedef enum {
+typedef enum
+{
 	REQ_GAME_LAUNCH,
 	REQ_GAME_JOIN,
 	REQ_GAME_LEAVE,
 	RSP_GAME_OVER
-} ControlToTable;
+}
+ControlToTable;
 /* end of protocols.h section */
 
-struct ggz_seat_t {
+struct ggz_seat_t
+{
 	int assign;
-	char name[MAX_USER_NAME_LEN +1];
+	char name[MAX_USER_NAME_LEN + 1];
 	int fd;
 };
 
-extern struct ggz_seat_t* ggz_seats;
+extern struct ggz_seat_t *ggz_seats;
 
 /* Setup functions */
-int ggz_init(char* game_name);
+int ggz_init(char *game_name);
 int ggz_connect(void);
 int ggz_done(void);
 void ggz_quit(void);
@@ -83,8 +88,8 @@ int ggz_game_launch(void);
 int ggz_game_over(void);
 
 /* Player functions */
-int ggz_player_join(int* seat, int *fd);
-int ggz_player_leave(int* seat, int *fd);
+int ggz_player_join(int *seat, int *fd);
+int ggz_player_leave(int *seat, int *fd);
 
 /* Useful functions */
 void ggz_debug(const char *fmt, ...);
@@ -96,5 +101,3 @@ int ggz_seats_reserved(void);
 int ggz_seats_human(void);
 
 int ggz_fd_max(void);
-
-

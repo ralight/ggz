@@ -36,7 +36,8 @@
 
 /* Both of these functions are taken from FreeCiv. */
 /* static int is_option(const char *option_name,char *option); */
-static char *get_option(const char *option_name, char **argv, int *i, int argc);
+static char *get_option(const char *option_name, char **argv, int *i,
+			int argc);
 
 /***************************************************************
  ...
@@ -56,38 +57,39 @@ static int is_option(const char *option_name,char *option)
   It is an error for the option to exist but be an empty string.
   This doesn't use freelog() because it is used before logging is set up.
 **************************************************************************/
-static char *get_option(const char *option_name, char **argv, int *i, int argc)
+static char *get_option(const char *option_name, char **argv, int *i,
+			int argc)
 {
-  int len = strlen(option_name);
+	int len = strlen(option_name);
 
-  if (!strcmp(option_name,argv[*i]) ||
-      (!strncmp(option_name,argv[*i],len) && argv[*i][len]=='=') ||
-      !strncmp(option_name+1,argv[*i],2)) {
-    char *opt = argv[*i] + (argv[*i][1] != '-' ? 0 : len);
+	if (!strcmp(option_name, argv[*i]) ||
+	    (!strncmp(option_name, argv[*i], len) && argv[*i][len] == '=') ||
+	    !strncmp(option_name + 1, argv[*i], 2)) {
+		char *opt = argv[*i] + (argv[*i][1] != '-' ? 0 : len);
 
-    if (*opt == '=') {
-      opt++;
-    } else {
-      if (*i < argc - 1) {
-	(*i)++;
-	opt = argv[*i];
-	if (strlen(opt)==0) {
+		if (*opt == '=') {
+			opt++;
+		} else {
+			if (*i < argc - 1) {
+				(*i)++;
+				opt = argv[*i];
+				if (strlen(opt) == 0) {
 /*	  fprintf(stderr, _("Empty argument for \"%s\".\n", option_name); */
-	  exit(1);
-	}
-      }	else {
+					exit(1);
+				}
+			} else {
 /*	fprintf(stderr, _("Missing argument for \"%s\".\n"), option_name); */
-	exit(1);
-      }
-    }
+				exit(1);
+			}
+		}
 
-    return opt;
-  }
+		return opt;
+	}
 
-  return NULL;
+	return NULL;
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 	char game_over = 0;
 	int i, fd, ggz_sock, fd_max, status;
@@ -96,19 +98,22 @@ int main(int argc, char** argv)
 	int which_game = GGZ_GAME_UNKNOWN;
 
 	/* read options */
-	for (i=1; i<argc; i++) {
-		char* option;
+	for (i = 1; i < argc; i++) {
+		char *option;
 		printf("TEST: Reading argv '%s'.", argv[i]);
-		if ( (option = get_option("--game", argv, &i, argc)) != NULL) {
+		if ((option = get_option("--game", argv, &i, argc)) != NULL) {
 			which_game = games_get_gametype(option);
-		} else if ( (option=get_option("--option", argv, &i, argc)) != NULL) {
+		} else if ((option =
+			    get_option("--option", argv, &i, argc)) != NULL) {
 			/* argument is of the form --option=<option>:<value> */
 			char *colon = strchr(option, ':');
 			int val;
-			if (colon == NULL) continue;
+			if (colon == NULL)
+				continue;
 			*colon = 0;
 			colon++;
-			if (!*colon) continue;
+			if (!*colon)
+				continue;
 			val = atoi(colon);
 			printf("TEST: Set option '%s' to %d.", option, val);
 			set_option(option, val);
@@ -123,26 +128,26 @@ int main(int argc, char** argv)
 		ggz_debug("Failed ggz_init.");
 		return -1;
 	}
-	
-	if ( (ggz_sock = ggz_connect()) < 0) {
+
+	if ((ggz_sock = ggz_connect()) < 0) {
 		ggz_debug("Failed ggz_sock test.");
 		return -1;
 	}
 
 	/* Seed the random number generator */
-	srandom((unsigned)time(NULL));
-	
+	srandom((unsigned) time(NULL));
+
 	FD_ZERO(&active_fd_set);
 	FD_SET(ggz_sock, &active_fd_set);
 
 	init_ggzcards(which_game);
-	while(!game_over) {
-		
+	while (!game_over) {
+
 		read_fd_set = active_fd_set;
 		fd_max = ggz_fd_max();
-		
-		status = select((fd_max+1), &read_fd_set, NULL, NULL, NULL);
-		
+
+		status = select((fd_max + 1), &read_fd_set, NULL, NULL, NULL);
+
 		if (status <= 0) {
 			if (errno == EINTR)
 				continue;
@@ -154,23 +159,23 @@ int main(int argc, char** argv)
 		if (FD_ISSET(ggz_sock, &read_fd_set)) {
 			status = handle_ggz(ggz_sock, &fd);
 			switch (status) {
-				
-			case -1:  /* Big error!! */
+
+			case -1:	/* Big error!! */
 				ggz_debug("handle_ggz gives status == -1.");
 				return -1;
-				
-			case 0: /* All ok, how boring! */
+
+			case 0:	/* All ok, how boring! */
 				break;
 
-			case 1: /* A player joined */
+			case 1:	/* A player joined */
 				FD_SET(fd, &active_fd_set);
 				break;
-				
-			case 2: /* A player left */
+
+			case 2:	/* A player left */
 				FD_CLR(fd, &active_fd_set);
 				break;
-				
-			case 3: /*Safe to exit */
+
+			case 3:	/*Safe to exit */
 				game_over = 1;
 				break;
 			}

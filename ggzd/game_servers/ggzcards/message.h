@@ -30,11 +30,11 @@ extern void send_player_message_toall(seat_t);
 extern void set_player_message(player_t p);
 extern void set_all_player_messages();
 
-extern void send_global_message(char*, player_t);
-extern void send_global_message_toall(char*);
+extern void send_global_message(char *, player_t);
+extern void send_global_message_toall(char *);
 extern void send_all_global_messages(player_t p);
-extern void set_global_message(char*, char*, ...);
-extern char* get_global_message(char*);
+extern void set_global_message(char *, char *, ...);
+extern char *get_global_message(char *);
 
 /* the following are automated messages */
 extern void send_last_hand();

@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <stdio.h> /* just for debugging */
+#include <stdio.h>		/* just for debugging */
 
 #include "cards.h"
 #include "common.h"
@@ -34,34 +34,32 @@ extern struct game_function_pointers game_funcs;
 
 
 extern int game_is_valid_game();
-extern void game_init_game();			
-extern void game_get_options();			
-extern int game_handle_option(char*, int);	
+extern void game_init_game();
+extern void game_get_options();
+extern int game_handle_option(char *, int);
 
 extern void game_set_player_message(player_t);
 
-extern int game_get_bid_text(char*, int, bid_t);
-extern void game_start_bidding();		
-extern int game_get_bid();		
-extern void game_handle_bid(bid_t);		
-extern void game_next_bid();		
+extern int game_get_bid_text(char *, int, bid_t);
+extern void game_start_bidding();
+extern int game_get_bid();
+extern void game_handle_bid(bid_t);
+extern void game_next_bid();
 
-extern void game_start_playing();		
-extern char* game_verify_play(card_t);	
-extern void game_next_play();			
-extern void game_get_play(player_t);	
-extern void game_handle_play(card_t);	
+extern void game_start_playing();
+extern char *game_verify_play(card_t);
+extern void game_next_play();
+extern void game_get_play(player_t);
+extern void game_handle_play(card_t);
 
-extern int game_deal_hand(void);	
-extern void game_end_trick(void);	
-extern void game_end_hand(void);	
+extern int game_deal_hand(void);
+extern void game_end_trick(void);
+extern void game_end_hand(void);
 
-extern void game_start_game();		
-extern int game_test_for_gameover();		
-extern int game_handle_gameover();		
+extern void game_start_game();
+extern int game_test_for_gameover();
+extern int game_handle_gameover();
 
 extern card_t game_map_card(card_t);
 extern int game_compare_cards(card_t, card_t);
 extern int game_send_hand(player_t, seat_t);
-
-

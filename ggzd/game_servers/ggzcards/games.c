@@ -54,13 +54,14 @@ extern struct game_function_pointers sueca_funcs;
  * correspond in ordering to the enumeration defined in games.h.  Finally, the
  * text name should be all lower-case and without any whitespace. */
 struct game_info game_data[] = {
-		{"suaro", "Suaro", &suaro_funcs},
-		{"spades", "Spades", &spades_funcs},
-		{"hearts", "Hearts", &hearts_funcs},
-		{"bridge", "Bridge", &bridge_funcs},
-		{"lapocha", "La Pocha", &lapocha_funcs},
-		{"euchre", "Euchre", &euchre_funcs},
-		{"sueca", "Sueca", &sueca_funcs} };
+	{"suaro", "Suaro", &suaro_funcs},
+	{"spades", "Spades", &spades_funcs},
+	{"hearts", "Hearts", &hearts_funcs},
+	{"bridge", "Bridge", &bridge_funcs},
+	{"lapocha", "La Pocha", &lapocha_funcs},
+	{"euchre", "Euchre", &euchre_funcs},
+	{"sueca", "Sueca", &sueca_funcs}
+};
 
 
 /* END of game data */
@@ -76,12 +77,12 @@ static int game_types[sizeof(game_data) / sizeof(struct game_info)];	/* possible
  *   determines which game the text corresponds to.  If the --game=<game> parameter
  *   is passed to the server on startup, <game> is passed here to determine the
  *   type of game. */
-int games_get_gametype(char* text)
+int games_get_gametype(char *text)
 {
 	int i;
 
-	for (i=0; i < strlen(text); i++)
-		text[i] = tolower( text[i] );
+	for (i = 0; i < strlen(text); i++)
+		text[i] = tolower(text[i]);
 
 	for (i = 0; i < num_games; i++)
 		if (!strcmp(text, game_data[i].name))
@@ -97,7 +98,9 @@ void games_handle_gametype(int option)
 	game.which_game = game_types[option];
 
 	if (game.which_game < 0 || game.which_game >= num_games) {
-		ggz_debug("SERVER/CLIENT error: bad game type %d selected; using %d instead.", game.which_game, game_types[0]);
+		ggz_debug
+			("SERVER/CLIENT error: bad game type %d selected; using %d instead.",
+			 game.which_game, game_types[0]);
 		game.which_game = game_types[0];
 	}
 }
@@ -126,7 +129,7 @@ int games_req_gametype()
 		return -1;
 	}
 
-	for (i=0; i < num_games; i++) {
+	for (i = 0; i < num_games; i++) {
 		if (games_valid_game(i)) {
 			game_types[cnt] = i;
 			cnt++;
@@ -134,7 +137,8 @@ int games_req_gametype()
 	}
 
 	if (cnt == 0) {
-		ggz_debug("SERVER BUG: no valid games in games_req_gametype.");
+		ggz_debug
+			("SERVER BUG: no valid games in games_req_gametype.");
 		exit(-1);
 	}
 
@@ -146,13 +150,13 @@ int games_req_gametype()
 		return 0;
 	}
 
-	if (es_write_int(fd, WH_REQ_OPTIONS) < 0 ||
-	    es_write_int(fd, 1) < 0 || /* 1 option */
-	    es_write_int(fd, cnt) < 0 || /* cnt choices */
-	    es_write_int(fd, 0) < 0) /* default is 0 */
+	if (es_write_int(fd, WH_REQ_OPTIONS) < 0 || es_write_int(fd, 1) < 0 ||	/* 1 option */
+	    es_write_int(fd, cnt) < 0 ||	/* cnt choices */
+	    es_write_int(fd, 0) < 0)	/* default is 0 */
 		status = -1;
-	for (i=0; i<cnt; i++)
-		if (es_write_string(fd, game_data[game_types[i]].full_name) < 0)
+	for (i = 0; i < cnt; i++)
+		if (es_write_string(fd, game_data[game_types[i]].full_name) <
+		    0)
 			status = -1;
 
 	if (status != 0)

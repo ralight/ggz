@@ -29,30 +29,34 @@
 
 /* GGZCards protocol */
 /* Messages from server */
-typedef enum {
-	WH_REQ_NEWGAME,		
-	WH_MSG_NEWGAME,		
-	WH_MSG_GAMEOVER,	
-	WH_MSG_PLAYERS,		
-	WH_MSG_HAND,     	
-	WH_REQ_BID,		
-	WH_REQ_PLAY,     	
-	WH_MSG_BADPLAY, 	
-	WH_MSG_PLAY,		
-	WH_MSG_TRICK,		
-	WH_MESSAGE_GLOBAL,	
-	WH_MESSAGE_PLAYER,	
-	WH_REQ_OPTIONS,		
-	WH_MSG_TABLE		
-} server_msg_t;
+typedef enum
+{
+	WH_REQ_NEWGAME,
+	WH_MSG_NEWGAME,
+	WH_MSG_GAMEOVER,
+	WH_MSG_PLAYERS,
+	WH_MSG_HAND,
+	WH_REQ_BID,
+	WH_REQ_PLAY,
+	WH_MSG_BADPLAY,
+	WH_MSG_PLAY,
+	WH_MSG_TRICK,
+	WH_MESSAGE_GLOBAL,
+	WH_MESSAGE_PLAYER,
+	WH_REQ_OPTIONS,
+	WH_MSG_TABLE
+}
+server_msg_t;
 
 /* Messages from client */
-typedef enum {
-	WH_RSP_NEWGAME,		
-	WH_RSP_OPTIONS,		
-	WH_RSP_PLAY,		
-	WH_RSP_BID,		
-	WH_REQ_SYNC		
-} client_msg_t;
+typedef enum
+{
+	WH_RSP_NEWGAME,
+	WH_RSP_OPTIONS,
+	WH_RSP_PLAY,
+	WH_RSP_BID,
+	WH_REQ_SYNC
+}
+client_msg_t;
 
 #endif /* __PROTOCOL_H__ */

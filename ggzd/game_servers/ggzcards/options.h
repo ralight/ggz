@@ -25,12 +25,11 @@
 #include <string.h>
 
 extern int options_set();
-extern int rec_options(int, int*);
+extern int rec_options(int, int *);
 
-extern void add_option(char* key, int num, int dflt, ...);
-extern void set_option(char* key, int value);
+extern void add_option(char *key, int num, int dflt, ...);
+extern void set_option(char *key, int value);
 extern void get_options();
 extern void handle_options();
 
 extern void finalize_options();
-

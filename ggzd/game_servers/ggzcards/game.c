@@ -89,11 +89,15 @@ card_t game_map_card(card_t c)
  */
 int game_compare_cards(card_t card1, card_t card2)
 {
-	if (card1.suit < card2.suit) return -1;
-	if (card1.suit > card2.suit) return 1;
-	if (card1.face < card2.face) return -1;
-	if (card1.face > card2.face) return 1;
-	return 0; /* ignore decks for now */
+	if (card1.suit < card2.suit)
+		return -1;
+	if (card1.suit > card2.suit)
+		return 1;
+	if (card1.face < card2.face)
+		return -1;
+	if (card1.face > card2.face)
+		return 1;
+	return 0;		/* ignore decks for now */
 }
 
 /* game_init_game
@@ -105,7 +109,8 @@ int game_compare_cards(card_t card1, card_t card2)
  */
 void game_init_game()
 {
-	ggz_debug("SERVER BUG: game_launch not implemented for game %d.", game.which_game);
+	ggz_debug("SERVER BUG: game_launch not implemented for game %d.",
+		  game.which_game);
 }
 
 /* game_get_options
@@ -124,7 +129,7 @@ void game_get_options()
  *   It corresponds very closely to game_get_options, above;
  *   and can be left as-is for games that have no options.
  */
-int game_handle_option(char* option, int value)
+int game_handle_option(char *option, int value)
 {
 	if (!strcmp("open_hands", option))
 		game.open_hands = value;
@@ -144,7 +149,7 @@ void game_start_game(void)
 
 	/* TODO: initialize the game; right now we just assume everything's
 	 * zero which won't be true the second time around. */
-	for (p=0; p<game.num_players; p++)
+	for (p = 0; p < game.num_players; p++)
 		game.players[p].score = 0;
 }
 
@@ -161,7 +166,7 @@ int game_handle_gameover(void)
 
 	/* in the default case, just take the highest score(s)
 	 * this should automatically handle the case of teams! */
-	for (p=0; p<game.num_players; p++) {
+	for (p = 0; p < game.num_players; p++) {
 		if (game.players[p].score > hi_score) {
 			winner_cnt = 1;
 			winners[0] = p;
@@ -263,7 +268,7 @@ void game_start_playing(void)
  *   special rules (outside of those covered by game.must_overtrump and
  *   game.must_break_trump), no changes should be necessary.
  */
-char* game_verify_play(card_t card)
+char *game_verify_play(card_t card)
 {
 	card_t c;
 	seat_t s = game.play_seat;
@@ -276,21 +281,26 @@ char* game_verify_play(card_t card)
 		/* if must_break_trump is set, you can't lead trump until
 		 * it's been broken.  This is the case in spades, for instance. */
 		/* otherwise the leader can lead anything */
-		if (!game.must_break_trump) return NULL;
-		if (card.suit != game.trump) return NULL;
-		if (game.trump_broken) return NULL;
-		if (cards_suit_in_hand(&game.seats[s].hand, game.trump) == game.seats[s].hand.hand_size)
+		if (!game.must_break_trump)
+			return NULL;
+		if (card.suit != game.trump)
+			return NULL;
+		if (game.trump_broken)
+			return NULL;
+		if (cards_suit_in_hand(&game.seats[s].hand, game.trump) ==
+		    game.seats[s].hand.hand_size)
 			/* their entire hand is trump! */
 			return NULL;
 		return "Trump has not yet been broken.";
 	}
 
 	/* following suit is always okay */
-	if (card.suit == game.lead_card.suit) return NULL;
+	if (card.suit == game.lead_card.suit)
+		return NULL;
 
 	/* not following suit is never allowed */
-	c = game.funcs->map_card( game.lead_card );
-	if ( (cnt = cards_suit_in_hand(&game.seats[s].hand, c.suit)) )
+	c = game.funcs->map_card(game.lead_card);
+	if ((cnt = cards_suit_in_hand(&game.seats[s].hand, c.suit)))
 		return "You must follow suit.";
 
 	/* if must_overtrump is set, then you must overtrump to win if you can */
@@ -304,23 +314,23 @@ char* game_verify_play(card_t card)
 		hi_trump = cards_highest_in_suit(&game.seats[s].hand,
 						 game.trump);
 		hi_trump_played = 0;
-		for (p2=0; p2<game.num_players; p2++) {
-			c = game.seats[ game.players[p2].seat ].table;
-			c = game.funcs->map_card( c );
-			if(c.suit == game.trump
-			   && c.face > hi_trump_played)
+		for (p2 = 0; p2 < game.num_players; p2++) {
+			c = game.seats[game.players[p2].seat].table;
+			c = game.funcs->map_card(c);
+			if (c.suit == game.trump && c.face > hi_trump_played)
 				hi_trump_played = c.face;
 		}
 
 		/* the play is invalid if they had a higher trump than any on the table
 		 * AND they didn't play a higher trump than any on the table */
 		if (hi_trump > hi_trump_played
-		    && !(card.suit == game.trump && card.face > hi_trump_played))
+		    && !(card.suit == game.trump
+			 && card.face > hi_trump_played))
 			return "You must play a higher trump than any already played.";
 	}
 
 	/* I guess the play was okay... */
-	return NULL;	
+	return NULL;
 }
 
 /* game_next_play
@@ -380,7 +390,7 @@ int game_deal_hand(void)
 {
 	seat_t s;
 
-	game.hand_size = 52 / game.num_players; /* TODO */
+	game.hand_size = 52 / game.num_players;	/* TODO */
 	/* in a regular deal, we just deal out hand_size cards to everyone */
 	for (s = 0; s < game.num_seats; s++)
 		cards_deal_hand(game.hand_size, &game.seats[s].hand);
@@ -403,7 +413,7 @@ int game_send_hand(player_t p, seat_t s)
 /* game_get_bid_text
  *   places text for the bid into the buffer.  Returns the length of the text (from snprintf).
  */
-int game_get_bid_text(char* buf, int buf_len, bid_t bid)
+int game_get_bid_text(char *buf, int buf_len, bid_t bid)
 {
 	return snprintf(buf, buf_len, "%s", "");
 }
@@ -414,7 +424,7 @@ int game_get_bid_text(char* buf, int buf_len, bid_t bid)
 void game_set_player_message(player_t p)
 {
 	seat_t s = game.players[p].seat;
-	char* message = game.seats[s].message;
+	char *message = game.seats[s].message;
 	int len = 0;
 
 	/* This function is tricky.  The problem is that we're trying to assemble a single player string out of
@@ -430,19 +440,30 @@ void game_set_player_message(player_t p)
 
 	/* did I mention this was really ugly?  It could be much worse... */
 
-	len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Score: %d\n", game.players[p].score);
-	if (game.state == WH_STATE_WAIT_FOR_PLAY || game.state == WH_STATE_NEXT_TRICK || game.state == WH_STATE_NEXT_PLAY)
-			len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Tricks: %d\n", game.players[p].tricks);
-	if ( (game.state == WH_STATE_NEXT_BID || game.state == WH_STATE_WAIT_FOR_BID)
-	      && game.players[p].bid_count > 0) {
+	len += snprintf(message + len, MAX_MESSAGE_LENGTH - len,
+			"Score: %d\n", game.players[p].score);
+	if (game.state == WH_STATE_WAIT_FOR_PLAY
+	    || game.state == WH_STATE_NEXT_TRICK
+	    || game.state == WH_STATE_NEXT_PLAY)
+		len += snprintf(message + len, MAX_MESSAGE_LENGTH - len,
+				"Tricks: %d\n", game.players[p].tricks);
+	if ((game.state == WH_STATE_NEXT_BID
+	     || game.state == WH_STATE_WAIT_FOR_BID)
+	    && game.players[p].bid_count > 0) {
 		char bid_text[game.max_bid_length];
-		game.funcs->get_bid_text(bid_text, game.max_bid_length, game.players[p].bid);
-		if (*bid_text) len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bid: %s\n", bid_text);
+		game.funcs->get_bid_text(bid_text, game.max_bid_length,
+					 game.players[p].bid);
+		if (*bid_text)
+			len += snprintf(message + len,
+					MAX_MESSAGE_LENGTH - len, "Bid: %s\n",
+					bid_text);
 	}
 	if (game.state == WH_STATE_WAIT_FOR_BID && p == game.next_bid)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Bidding...");
+		len += snprintf(message + len, MAX_MESSAGE_LENGTH - len,
+				"Bidding...");
 	if (game.state == WH_STATE_WAIT_FOR_PLAY && p == game.curr_play)
-		len += snprintf(message+len, MAX_MESSAGE_LENGTH-len, "Playing...");
+		len += snprintf(message + len, MAX_MESSAGE_LENGTH - len,
+				"Playing...");
 }
 
 /* game_end_trick
@@ -456,15 +477,18 @@ void game_set_player_message(player_t p)
 void game_end_trick(void)
 {
 	player_t hi_player = game.leader, p;
-	card_t hi_card = game.funcs->map_card( game.lead_card );
+	card_t hi_card = game.funcs->map_card(game.lead_card);
 
 	/* default method of winning tricks: the winning card is the highest
 	 * card of the suit lead, or the highest trump if there is trump */
-	for (p=0; p<game.num_players; p++) {
-		card_t card = game.seats[ game.players[p].seat ].table;
-		card = game.funcs->map_card( card );
-		if ( (card.suit == game.trump && (hi_card.suit != game.trump || hi_card.face < card.face))
-		   || (card.suit == hi_card.suit && card.face > hi_card.face) ) {
+	for (p = 0; p < game.num_players; p++) {
+		card_t card = game.seats[game.players[p].seat].table;
+		card = game.funcs->map_card(card);
+		if ((card.suit == game.trump
+		     && (hi_card.suit != game.trump
+			 || hi_card.face < card.face))
+		    || (card.suit == hi_card.suit
+			&& card.face > hi_card.face)) {
 			hi_card = card;
 			hi_player = p;
 		}
@@ -482,7 +506,6 @@ void game_end_trick(void)
  */
 void game_end_hand(void)
 {
-	ggz_debug("SERVER not implemented: game_end_hand for game %d.", game.which_game);                                         	
+	ggz_debug("SERVER not implemented: game_end_hand for game %d.",
+		  game.which_game);
 }
-
-

@@ -30,24 +30,27 @@
 
 #include "types.h"
 
-struct ai_function_pointers {
-	char* (*get_name)(player_t);
-	void (*start_hand)();
-	void (*alert_bid)(player_t, bid_t);
-	void (*alert_play)(player_t, card_t);
-	bid_t (*get_bid)(player_t);
-	card_t (*get_play)(player_t, seat_t);
+struct ai_function_pointers
+{
+	char *(*get_name) (player_t);
+	void (*start_hand) ();
+	void (*alert_bid) (player_t, bid_t);
+	void (*alert_play) (player_t, card_t);
+	  bid_t(*get_bid) (player_t);
+	  card_t(*get_play) (player_t, seat_t);
 };
 
-typedef enum {
+typedef enum
+{
 	GGZ_AI_NONE = -1,
 	GGZ_AI_RANDOM = 0,
 	GGZ_AI_SPADES = 1
-	/* others can be defined */
-} ai_type_t;
+		/* others can be defined */
+}
+ai_type_t;
 
 /* get a name for an ai player sitting at the given spot */
-extern char* ai_get_name(player_t);
+extern char *ai_get_name(player_t);
 
 /* this inits AI static data at the start of a hand */
 extern void ai_start_hand();
@@ -57,7 +60,7 @@ extern void ai_alert_bid(player_t, bid_t);
 extern void ai_alert_play(player_t, card_t);
 
 /* this gets a bid or play from the ai */
-extern bid_t ai_get_bid( player_t );
-extern card_t ai_get_play( player_t, seat_t );
+extern bid_t ai_get_bid(player_t);
+extern card_t ai_get_play(player_t, seat_t);
 
 #endif /* __AI_H__ */

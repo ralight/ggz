@@ -32,33 +32,36 @@
 #define __COMMON_H__
 
 /* GGZCards server game states */
-typedef enum {
-	WH_STATE_PRELAUNCH,		/* before the launch happens */
-	WH_STATE_NOTPLAYING,		/* no game started */
+typedef enum
+{
+	WH_STATE_PRELAUNCH,	/* before the launch happens */
+	WH_STATE_NOTPLAYING,	/* no game started */
 	WH_STATE_WAITFORPLAYERS,	/* waiting for players */
-	WH_STATE_NEXT_HAND,		/* creating a new hand */
-	WH_STATE_FIRST_BID,		/* about to have the first bid */
-	WH_STATE_NEXT_BID,		/* asking for new bid */
-	WH_STATE_WAIT_FOR_BID,		/* waiting for a bid */
-	WH_STATE_FIRST_TRICK,		/* about to have the first trick of a hand */
-	WH_STATE_NEXT_TRICK,		/* time for the next trick */
-	WH_STATE_NEXT_PLAY,		/* asking for a new play */
-	WH_STATE_WAIT_FOR_PLAY		/* waiting for a play */
-} server_state_t;
+	WH_STATE_NEXT_HAND,	/* creating a new hand */
+	WH_STATE_FIRST_BID,	/* about to have the first bid */
+	WH_STATE_NEXT_BID,	/* asking for new bid */
+	WH_STATE_WAIT_FOR_BID,	/* waiting for a bid */
+	WH_STATE_FIRST_TRICK,	/* about to have the first trick of a hand */
+	WH_STATE_NEXT_TRICK,	/* time for the next trick */
+	WH_STATE_NEXT_PLAY,	/* asking for a new play */
+	WH_STATE_WAIT_FOR_PLAY	/* waiting for a play */
+}
+server_state_t;
 
 /* Data structure for generic trick-taking card game */
-struct wh_game_t {
+struct wh_game_t
+{
 	game_type_t which_game;	/* the game; currently defined in cards.h */
 	struct game_function_pointers *funcs;	/* game-specific functions */
 	ai_type_t ai_type;	/* the type of AI we're using */
 	deck_type_t deck_type;	/* the type of deck used, as defined in cards.h */
-	char* name;		/* the name of the game */
-	char* rules_url;	/* the URL of where to read the game's rules */
+	char *name;		/* the name of the game */
+	char *rules_url;	/* the URL of where to read the game's rules */
 
 	int initted;		/* has the game been initialized? */
-	player_t host;		/* the host of the table; cannot be an AI */ /* TODO: currently it's always player 0 */
+	player_t host;		/* the host of the table; cannot be an AI *//* TODO: currently it's always player 0 */
 
-	server_state_t state;		/* the current state of the game (see WH_STATE, above) */
+	server_state_t state;	/* the current state of the game (see WH_STATE, above) */
 	server_state_t saved_state;	/* any time while waiting, the state we _would_ be in if we weren't waiting */
 
 	/* these next few are general game-specific options that are used by the game-independent code */
@@ -73,7 +76,7 @@ struct wh_game_t {
 	int open_hands;		/* are we playing with open hands? */
 
 	card_t lead_card;	/* the card that was lead this trick */
-	char trump;		/* the suit of trump; 0-3 or other for none*/
+	char trump;		/* the suit of trump; 0-3 or other for none */
 
 	int hand_num;		/* the number of the current hand (counting from ?) */
 	int hand_size;		/* the size of the hand */
@@ -89,20 +92,20 @@ struct wh_game_t {
 	int num_bid_choices;	/* the number of bid choices */
 	int max_bid_choices;	/* the maximum number of choices there may be == sizeof(bid_texts) == sizeof(bid_choices) */
 	int max_bid_length;	/* the longest possible bid (text-wise) */
-	bid_t* bid_choices;	/* the bid choices -- must be allocated in game_launch or declared static*/
-	char** bid_texts;	/* the texts for the player to choose from -- allocated in game_launch  or declared static */
-	char** bid_text_ref;	/* a pointer to the currently-used bid texts */		
+	bid_t *bid_choices;	/* the bid choices -- must be allocated in game_launch or declared static */
+	char **bid_texts;	/* the texts for the player to choose from -- allocated in game_launch  or declared static */
+	char **bid_text_ref;	/* a pointer to the currently-used bid texts */
 
 	int play_count;		/* how many plays there have been this trick */
 	int play_total;		/* how many plays there will be this trick */
 	player_t next_play;	/* current/next player */
 	player_t curr_play;	/* current player, tracked automatically by req_bid */
-				/* Note: the difference between these two is subtle, but important.  next_play is used
-				 * to track the player whose hand is being played from.  curr_play is used automatically
-				 * to remember who is supposed to be playing now.  In the case of bridge, next_play
-				 * will go around the table (0, 1, 2, 3) for each play.  However, when the dummy is
-				 * playing curr_play will point to the declarer, since they're the one we request the play
-				 * from. */
+	/* Note: the difference between these two is subtle, but important.  next_play is used
+	 * to track the player whose hand is being played from.  curr_play is used automatically
+	 * to remember who is supposed to be playing now.  In the case of bridge, next_play
+	 * will go around the table (0, 1, 2, 3) for each play.  However, when the dummy is
+	 * playing curr_play will point to the declarer, since they're the one we request the play
+	 * from. */
 	seat_t play_seat;	/* the seat being played from */
 
 	player_t winner;	/* who won last trick */
@@ -116,13 +119,13 @@ struct wh_game_t {
 	int player_count;	/* the number of human players who have joined, in total */
 	struct game_player_t *players;	/* data for each player, allocated in game_init */
 
-	seat_t num_seats;		/* the number of "seats" in the table (which includes fake non-players */
+	seat_t num_seats;	/* the number of "seats" in the table (which includes fake non-players */
 	struct game_seat_t *seats;	/* data for each seat, allocated in game_init */
 
-	char* messages[256];	/* global messages */		
+	char *messages[256];	/* global messages */
 
-	void* specific;		/* any extra game-specific data */
-		
+	void *specific;		/* any extra game-specific data */
+
 };
 
 /* convert an "absolute" seat number s to the
@@ -140,18 +143,18 @@ extern int send_play(card_t card, seat_t);
 extern int send_table(player_t);
 extern int send_sync(player_t);
 extern int send_sync_all();
-extern int send_gameover(int, player_t*);
-extern int req_bid(player_t, int, char**);
+extern int send_gameover(int, player_t *);
+extern int req_bid(player_t, int, char **);
 extern int req_play(player_t, seat_t);
 extern int rec_play(player_t);
-extern void send_badplay(player_t, char*);
+extern void send_badplay(player_t, char *);
 extern int send_hand(player_t, seat_t, int);
 extern int req_newgame(player_t);
 extern int send_newgame();
 extern void init_game();
 
 
-extern void next_play(void);				/* make the next move */
+extern void next_play(void);	/* make the next move */
 
 /* handle player events -- used to all just be "update" */
 extern int handle_launch_event();
@@ -161,7 +164,7 @@ extern int handle_newgame_event(player_t);
 extern int handle_play_event(card_t);
 extern int handle_bid_event(bid_t);
 
-extern void init_ggzcards(int which); /* pass in the name of the game */
+extern void init_ggzcards(int which);	/* pass in the name of the game */
 extern int handle_ggz(int, int *);
 extern int handle_player(player_t);
 
@@ -174,8 +177,7 @@ extern struct wh_game_t game;
 
 
 /* random helper function */
-extern void* alloc(int);
-extern char** alloc_string_array(int, int);
+extern void *alloc(int);
+extern char **alloc_string_array(int, int);
 
 #endif /* __COMMON_H__ */
-

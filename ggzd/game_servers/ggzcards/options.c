@@ -34,39 +34,44 @@
 
 static int options_initted = 0;
 
-static struct option_t {
-	char* key;
+static struct option_t
+{
+	char *key;
 	int value;
-	struct option_t *next; /* linked list */
-} *optionlist = NULL;
+	struct option_t *next;	/* linked list */
+}
+ *optionlist = NULL;
 
-static struct pending_option_t {
-	char* key;
+static struct pending_option_t
+{
+	char *key;
 	/* char* text; */
 	int num;
 	int dflt;
-	char** choices;
-	struct pending_option_t *next; /* linked list */
-} *pending_options = NULL;
+	char **choices;
+	struct pending_option_t *next;	/* linked list */
+}
+ *pending_options = NULL;
 
 static int option_count = 0;
 static int pending_option_count = 0;
 
 int options_set()
 {
-	return options_initted;	
+	return options_initted;
 }
 
-void set_option(char* key, int value)
+void set_option(char *key, int value)
 {
-	struct option_t * option = (struct option_t *)alloc(sizeof(struct option_t));
+	struct option_t *option =
+		(struct option_t *) alloc(sizeof(struct option_t));
 	option->key = key;
 	option->value = value;
 	option->next = optionlist;
 	optionlist = option;
 }
 
-void add_option(char* key, int num, int dflt, ...)
+void add_option(char *key, int num, int dflt, ...)
 {
 	va_list ap;
 	int i;
@@ -74,31 +79,33 @@ void add_option(char* key, int num, int dflt, ...)
 	struct option_t *op;
 
 	/* ignore any option that's already been set */
-	for (op=optionlist; op != NULL; op = op->next)
+	for (op = optionlist; op != NULL; op = op->next)
 		if (!strcmp(op->key, key))
 			return;
-	for (po=pending_options; po != NULL; po = po->next)
+	for (po = pending_options; po != NULL; po = po->next)
 		if (!strcmp(po->key, key))
 			return;
 
-	po = (struct pending_option_t *)alloc(sizeof(struct pending_option_t));
+	po = (struct pending_option_t *)
+		alloc(sizeof(struct pending_option_t));
 	po->key = key;
 	po->num = num;
 	po->dflt = dflt;
-	po->choices = (char**)alloc(num * sizeof(char*));
+	po->choices = (char **) alloc(num * sizeof(char *));
 
-	va_start(ap, dflt);	
-	for (i=0; i<num; i++) {
-		po->choices[i] = va_arg(ap, char*);
+	va_start(ap, dflt);
+	for (i = 0; i < num; i++) {
+		po->choices[i] = va_arg(ap, char *);
 		if (po->choices[i] == NULL)
-			ggz_debug("ERROR: SERVER BUG: add_option: NULL option choice.");
+			ggz_debug
+				("ERROR: SERVER BUG: add_option: NULL option choice.");
 	}
 	va_end(ap);
 
 	po->next = pending_options;
 	pending_option_count++;
 	pending_options = po;
-}	
+}
 
 void get_options()
 {
@@ -118,31 +125,31 @@ void get_options()
 		struct pending_option_t *po = pending_options;
 		es_write_int(fd, WH_REQ_OPTIONS);
 		es_write_int(fd, pending_option_count);
-		for (op=0; op<pending_option_count; op++) {
+		for (op = 0; op < pending_option_count; op++) {
 			es_write_int(fd, po->num);
 			es_write_int(fd, po->dflt);
-			for (choice=0; choice<po->num; choice++)
+			for (choice = 0; choice < po->num; choice++)
 				es_write_string(fd, po->choices[choice]);
 			po = po->next;
 		}
 	}
 }
 
-int rec_options(int num_options, int* options)
+int rec_options(int num_options, int *options)
 {
 	int fd = game.host >= 0 ? ggz_seats[game.host].fd : -1, status = 0, i;
 	if (fd == -1) {
 		ggz_debug("SERVER bug: unknown host in rec_options.");
 		exit(-1);
 	}
-	
+
 	for (i = 0; i < num_options; i++)
 		if (es_read_int(fd, &options[i]) < 0)
 			status = options[i] = -1;
 
 	if (status != 0)
 		ggz_debug("ERROR: rec_options: status is %d.", status);
-	return status;	
+	return status;
 }
 
 void handle_options()
@@ -153,17 +160,17 @@ void handle_options()
 	ggz_debug("Entering handle_options.");
 	rec_options(pending_option_count, options);
 
-	for (op=0; op<pending_option_count; op++) {
+	for (op = 0; op < pending_option_count; op++) {
 		set_option(po->key, options[op]);
 
 		pending_options = po->next;
-		free( po );
+		free(po);
 		po = pending_options;
 
 		option_count++;
 	}
 
-	options_initted = 1; /* TODO */
+	options_initted = 1;	/* TODO */
 }
 
 void finalize_options()
@@ -174,7 +181,8 @@ void finalize_options()
 
 	for (op = optionlist; op != NULL; op = op->next) {
 		game.funcs->handle_option(op->key, op->value);
-		len += snprintf(buf + len, sizeof(buf) - len, "%s : %d\n", op->key, op->value);
+		len += snprintf(buf + len, sizeof(buf) - len, "%s : %d\n",
+				op->key, op->value);
 	}
 	set_global_message("Options", "%s", buf);
 }
