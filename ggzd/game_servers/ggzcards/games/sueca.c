@@ -25,11 +25,7 @@
 #include <easysock.h>
 #include <stdlib.h>
 
-#include "../games.h"
-#include "../game.h"
-#include "../ggz.h"
-#include "../message.h"
-#include "../options.h"
+#include "../common.h"
 
 #include "sueca.h"
 

@@ -30,12 +30,7 @@
 
 #include <easysock.h>
 
-#include "ggz.h"
-#include "cards.h"
-#include "game.h"
-#include "games.h"
-#include "message.h"
-#include "options.h"
+#include "common.h"
 
 struct game_function_pointers game_funcs = {
 	game_is_valid_game,

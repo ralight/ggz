@@ -9,6 +9,7 @@ ggzdgame_DATA =
 ggzdroom_DATA =
 
 ggzd_ggzcards_SOURCES = ai.c ai.h \
+			bid.c bid.h \
 			cards.c cards.h \
 			common.c common.h \
 			game.c game.h \

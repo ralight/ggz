@@ -24,9 +24,7 @@
 
 #include <stdio.h>		/* just for debugging */
 
-#include "cards.h"
-#include "common.h"
-#include "games.h"
+#include "types.h"
 
 /* Game-specific functions */
 

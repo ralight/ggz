@@ -22,14 +22,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <easysock.h>
 #include <string.h>
 
-#include "../games.h"
-#include "../game.h"
-#include "../ggz.h"
-#include "../message.h"
-#include "../options.h"
+#include "../common.h"
 
 #include "suaro.h"
 

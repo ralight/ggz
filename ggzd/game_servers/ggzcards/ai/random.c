@@ -33,10 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../ai.h"
 #include "../common.h"
-#include "../ggz.h"
-#include "../types.h"
 
 static char* get_name(player_t p);
 static void start_hand();

@@ -23,8 +23,13 @@
  */
 
 #include "ai.h"
+#include "bid.h"
 #include "cards.h"
+#include "game.h"
 #include "games.h"
+#include "ggz.h"
+#include "message.h"
+#include "options.h"
 #include "protocol.h"
 #include "types.h"
 
@@ -145,7 +150,6 @@ extern int send_table(player_t);
 extern int send_sync(player_t);
 extern int send_sync_all();
 extern int send_gameover(int, player_t *);
-extern int req_bid(player_t, int, char **);
 extern int req_play(player_t, seat_t);
 extern int rec_play(player_t);
 extern void send_badplay(player_t, char *);

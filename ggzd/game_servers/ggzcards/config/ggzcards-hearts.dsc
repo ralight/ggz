@@ -1,10 +1,9 @@
 # GGZ Cards description file
 Name = GGZCards-Hearts
-Version = 0.0.4
 ProtocolEngine = GGZCards
 ProtocolVersion = 1
 Description = GGZ Cards game module for Hearts
-Author = Jason Short, Rich Gade
+Author = Jason Short
 Homepage = http://ggz.sourceforge.net
 
 # PlayersAllowed and BotsAllowed should be repeated as many times as

@@ -33,10 +33,7 @@
 
 #include <string.h>
 
-#include "../cards.h"
 #include "../common.h"
-#include "../game.h"
-#include "../ggz.h"
 
 #include "../games/spades.h"
 

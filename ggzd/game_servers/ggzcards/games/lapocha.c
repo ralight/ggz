@@ -24,10 +24,7 @@
 
 #include <easysock.h>
 
-#include "../games.h"
-#include "../game.h"
-#include "../ggz.h"
-#include "../message.h"
+#include "../common.h"
 
 #include "lapocha.h"
 

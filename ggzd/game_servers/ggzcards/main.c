@@ -30,10 +30,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "ggz.h"
-#include "game.h"
-#include "games.h"
-#include "options.h"
+#include "common.h"
 
 /* Both of these functions are taken from FreeCiv. */
 /* static int is_option(const char *option_name,char *option); */

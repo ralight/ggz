@@ -24,10 +24,7 @@
 
 #include <stdlib.h>
 
-#include "cards.h"
-#include "ggz.h"
-
-#include "game.h"		/* just for alloc */
+#include "common.h"
 
 static card_t *gamedeck = NULL;	/* must be allocated */
 static int deck_size = 0;

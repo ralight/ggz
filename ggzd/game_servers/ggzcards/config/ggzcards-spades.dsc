@@ -1,10 +1,9 @@
 # GGZ Cards description file
 Name = GGZCards-Spades
-Version = 0.0.4
 ProtocolEngine = GGZCards
 ProtocolVersion = 1
 Description = GGZ game module for trick-taking card games
-Author = Jason Short, Rich Gade
+Author = Jason Short, Brent Hendricks
 Homepage = http://ggz.sourceforge.net
 
 # PlayersAllowed and BotsAllowed should be repeated as many times as

@@ -22,6 +22,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifndef __GGZ_H__
+#define __GGZ_H__
 
 #define MAX_USER_NAME_LEN 16
 
@@ -101,3 +103,5 @@ int ggz_seats_reserved(void);
 int ggz_seats_human(void);
 
 int ggz_fd_max(void);
+
+#endif /* __GGZ_H__ */

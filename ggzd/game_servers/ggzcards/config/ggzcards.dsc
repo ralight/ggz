@@ -1,6 +1,5 @@
 # GGZ Cards description file
 Name = GGZCards
-Version = 0.0.4
 ProtocolEngine = GGZCards
 ProtocolVersion = 1
 Description = GGZ Cards game module
