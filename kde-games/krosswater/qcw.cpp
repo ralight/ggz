@@ -36,7 +36,7 @@ using namespace std;
 QCw::QCw(QWidget* parent, const char* name)
 : QWidget(parent, name)
 {
-	setBackgroundColor(Qt::black);
+	setEraseColor(Qt::black);
 	m_width = -1;
 	m_height = -1;
 	m_board = NULL;
@@ -157,7 +157,7 @@ void QCw::paintEvent(QPaintEvent *e)
 	}
 
 	p.end();
-	setBackgroundPixmap(*m_pix);
+	setErasePixmap(*m_pix);
 }
 
 void QCw::setSize(int width, int height)
@@ -168,7 +168,7 @@ void QCw::setSize(int width, int height)
 	m_allupdate = 0;
 
 	setFixedSize(m_width * 20, m_height * 20);
-	setBackgroundColor(Qt::blue);
+	setEraseColor(Qt::blue);
 
 	if(m_board)
 	{

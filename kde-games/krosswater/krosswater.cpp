@@ -67,7 +67,7 @@ Krosswater::Krosswater(QWidget *parent, const char *name)
 
 	m_statusframe = new QFrame(dummy);
 	m_statusframe->setFixedHeight(25);
-	m_statusframe->setBackgroundPixmap(QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
+	m_statusframe->setErasePixmap(QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
 	showStatus(i18n("Uninitialized"));
 
 	menu_game = new KPopupMenu(this);
@@ -100,7 +100,7 @@ Krosswater::Krosswater(QWidget *parent, const char *name)
 
 	startTimer(1000);
 
-	setBackgroundPixmap(QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
+	setErasePixmap(QPixmap(GGZDATADIR "/krosswater/gfx/bg.png"));
 	setCaption(i18n("Krosswater - Cross the Water!"));
 	setFixedSize(700, 370);
 }

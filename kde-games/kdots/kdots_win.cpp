@@ -91,6 +91,6 @@ void KDotsWin::slotStatus(const char *message)
 
 void KDotsWin::slotColor(const QColor& color)
 {
-	m_color->setBackgroundColor(QColor(color));
+	m_color->setEraseColor(QColor(color));
 }
 

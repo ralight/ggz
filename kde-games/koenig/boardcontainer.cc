@@ -37,7 +37,7 @@ ChessBoardContainer::ChessBoardContainer(QWidget *parent, const char *name)
 	vbox = new QVBoxLayout(this, 10);
 	vbox->add(m_root);
 
-	setBackgroundColor(QColor(255, 127, 0)); // FIXME: nice pixmap with wood :-)
+	setEraseColor(QColor(255, 127, 0)); // FIXME: nice pixmap with wood :-)
 	setCaption(i18n("Chess Board - inactive"));
 }
 

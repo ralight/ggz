@@ -29,7 +29,7 @@ KTicTacTux::KTicTacTux(QWidget *parent, const char *name)
 	QWidget *container;
 
 	container = new QWidget(this);
-	container->setBackgroundPixmap(QPixmap(QString("%1/ktictactux/bg.png").arg(GGZDATADIR)));
+	container->setErasePixmap(QPixmap(QString("%1/ktictactux/bg.png").arg(GGZDATADIR)));
 
 	vbox = new QVBoxLayout(this);
 	vbox->add(container);
@@ -401,13 +401,13 @@ void KTicTacTux::drawBoard()
 		switch(proto->board[i % 3][i / 3])
 		{
 			case proto->player:
-				frame[i % 3][i / 3]->setBackgroundPixmap(QPixmap(QString("%1/ktictactux/%2").arg(GGZDATADIR).arg(m_t1)));
+				frame[i % 3][i / 3]->setErasePixmap(QPixmap(QString("%1/ktictactux/%2").arg(GGZDATADIR).arg(m_t1)));
 				break;
 			case proto->opponent:
-				frame[i % 3][i / 3]->setBackgroundPixmap(QPixmap(QString("%1/ktictactux/%2").arg(GGZDATADIR).arg(m_t2)));
+				frame[i % 3][i / 3]->setErasePixmap(QPixmap(QString("%1/ktictactux/%2").arg(GGZDATADIR).arg(m_t2)));
 				break;
 			default:
-				frame[i % 3][i / 3]->setBackgroundPixmap(NULL);
+				frame[i % 3][i / 3]->setErasePixmap(NULL);
 		}
 	}
 }

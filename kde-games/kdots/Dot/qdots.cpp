@@ -37,7 +37,7 @@ QDots::QDots(QWidget* parent = 0, char* name = 0)
 	grayscale(bgpix);
 	bgimg = new QImage(bgpix->convertToImage());
 	fgimg = new QImage(bgpix->convertToImage());
-	setBackgroundPixmap(*bgpix);
+	setErasePixmap(*bgpix);
 }
 
 QDots::~QDots()
@@ -183,7 +183,7 @@ void QDots::paintEvent(QPaintEvent *e)
 		}
 	}
 
-	if(updatescreen) setBackgroundPixmap(*bgpix);
+	if(updatescreen) setErasePixmap(*bgpix);
 }
 
 void QDots::mousePressEvent(QMouseEvent *e)
@@ -229,7 +229,7 @@ void QDots::refreshBoard()
 	p.end();
 	if(fgimg) delete fgimg;
 	fgimg = new QImage(bgpix->convertToImage());
-	setBackgroundPixmap(*bgpix);
+	setErasePixmap(*bgpix);
 
 	resizeEvent(NULL);
 	repaint();

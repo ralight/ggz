@@ -38,7 +38,7 @@ KDotsAbout::KDotsAbout(QWidget *parent, const char *name)
 	setMouseTracking(true);
 
 	m_bg = new QPixmap(GGZDATADIR "/kdots/snowdragon.png");
-	setBackgroundPixmap(*m_bg);
+	setErasePixmap(*m_bg);
 	setCaption(i18n("About KDots"));
 	setFixedSize(400, 305);
 }
@@ -116,7 +116,7 @@ void KDotsAbout::paintEvent(QPaintEvent *e)
 	p.drawText(20, 200, measure(i18n("Thanks to www.drachenburg.de")));
 	p.drawText(20, 220, measure(i18n("for their dragon images!")));
 	p.end();
-	setBackgroundPixmap(*pix);
+	setErasePixmap(*pix);
 	delete pix;
 
 	if(m_repaint)

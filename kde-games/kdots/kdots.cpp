@@ -40,7 +40,7 @@ KDots::KDots(QWidget *parent, const char *name)
 
 	connect(dots, SIGNAL(signalTurn(int, int, int)), SLOT(slotTurn(int, int, int)));
 
-	setBackgroundColor(QColor(100, 100, 100));
+	setEraseColor(QColor(100, 100, 100));
 	setCaption("KDE Dots");
 	setFixedSize(400, 400);
 	show();

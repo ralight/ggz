@@ -30,7 +30,7 @@ KDotsHelp::KDotsHelp(QWidget *parent, const char *name)
 	ok = new QPushButton("OK", this);
 	ok->move(200, 340);
 
-	setBackgroundPixmap(QPixmap(GGZDATADIR "/kdots/firedragon.png"));
+	setErasePixmap(QPixmap(GGZDATADIR "/kdots/firedragon.png"));
 
 	connect(ok, SIGNAL(clicked()), SLOT(slotAccepted()));
 

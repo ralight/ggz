@@ -203,7 +203,7 @@ void KReversi::gameoverSlot(int winner){
   playing = 0;
   requestSyncAct->setEnabled(false);
   playAgainAct->setEnabled(true);
-  if (KMessageBox::questionYesNo(this, i18n("Do you want to play again?\n\nIf you select \"No\" now, you can request\na new game by selecting the\n\"Game|Play again\" menu"), i18n("Play again?")) == KMessageBox::Yes)
+  if (KMessageBox::questionYesNo(this, i18n("Do you want to play again? If you select \"No\" now, you can request a new game by selecting the \"Game|Play again\" menu"), i18n("Play again?")) == KMessageBox::Yes)
     playAgain();
 }
 

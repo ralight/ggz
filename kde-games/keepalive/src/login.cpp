@@ -53,7 +53,7 @@ Login::Login(QWidget *parent, const char *name)
 
 	logo = new QWidget(this);
 	logopix = QPixmap(KEEPALIVE_DIR "/keepalive.png");
-	logo->setBackgroundPixmap(logopix);
+	logo->setErasePixmap(logopix);
 	logomap = logopix.createHeuristicMask();
 	logo->setMask(logomap);
 	logo->setFixedSize(logopix.width(), logopix.height());
@@ -81,11 +81,11 @@ Login::Login(QWidget *parent, const char *name)
 	vboxroot->addStretch();
 	vboxroot->add(frame);
 
-	setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
-	frame->setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
-	explanation->setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
-	lusername->setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
-	lpassword->setBackgroundPixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
+	setErasePixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
+	frame->setErasePixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
+	explanation->setErasePixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
+	lusername->setErasePixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
+	lpassword->setErasePixmap(QPixmap(KEEPALIVE_DIR "/bg.png"));
 
 	setFocusPolicy(StrongFocus);
 	lusername->setFocus();

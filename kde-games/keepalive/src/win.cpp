@@ -54,7 +54,7 @@ Win::Win(QWidget *parent, const char *name)
 	connect(m_canvas, SIGNAL(signalLoggedin(QString)),
 		SLOT(slotLoggedin(QString)));
 
-	setBackgroundColor(QColor(0, 0, 0));
+	setEraseColor(QColor(0, 0, 0));
 	//setFocusPolicy(StrongFocus);
 
 	//setFixedSize(400, 300);

@@ -177,7 +177,7 @@ void Board::paintEvent(QPaintEvent *e)
 
 	p.end();
 
-	setBackgroundPixmap(tmp);
+	setErasePixmap(tmp);
 }
 
 // Resize the board properly
@@ -489,7 +489,7 @@ void Board::setTheme(const QString &theme)
 	black = new QPixmap(d.findResource("data", QString("muehle/themes/%1/black.png").arg(theme)));
 	white = new QPixmap(d.findResource("data", QString("muehle/themes/%1/white.png").arg(theme)));
 
-	parentWidget()->setBackgroundPixmap(*bg);
+	parentWidget()->setErasePixmap(*bg);
 
 	m_repaint = 1;
 	repaint();

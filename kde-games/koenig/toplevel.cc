@@ -22,6 +22,7 @@
 #include <klistview.h>
 #include <kmessagebox.h>
 #include <klocale.h>
+#include <klistview.h>
 
 #include <qlayout.h>
 #include <qmultilineedit.h>
@@ -35,12 +36,13 @@
 #include "kexttabctl.h"
 
 TopLevel::TopLevel(const char *name)
-	: KMainWindow(0, name)
+: KMainWindow(NULL, name)
 {
+	KListViewItem *tmp;
+	KAction *a;
+
 	chessBoard = NULL;
 	game = NULL;
-
-	KAction *a;
 
 	//KStdAction::openNew(this, SLOT(newGame()), actionCollection()); // don't handle standalone games yet
 	KStdAction::close(this, SLOT(closeGame()), actionCollection());
@@ -71,8 +73,8 @@ TopLevel::TopLevel(const char *name)
 	tab3 = new KListView(ctl);
 	tab3->setRootIsDecorated(true);
 	tab3->addColumn(i18n("Koenig Highscores"));
-	(void)new QListViewItem(tab3, i18n("Local scores"));
-	(void)new QListViewItem(tab3, i18n("Worldwide"));
+	tmp = new KListViewItem(tab3, i18n("Local scores"));
+	tmp = new KListViewItem(tab3, i18n("Worldwide"));
 	ctl->addTab(tab2, i18n("Messages"));
 	ctl->addTab(tab1, i18n("Moves"));
 	ctl->addTab(tab3, i18n("Highscores"));
