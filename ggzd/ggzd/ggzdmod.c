@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 8/28/01
  * Desc: GGZD game module functions
- * $Id: ggzdmod.c 2599 2001-10-24 00:36:12Z jdorje $
+ * $Id: ggzdmod.c 2644 2001-11-04 01:45:17Z jdorje $
  *
  * Copyright (C) 2001 GGZ Dev Team.
  *
@@ -26,7 +26,7 @@
 #include <stdlib.h>
 
 #include <easysock.h>
-#include "../game_servers/libggzmod/ggz_protocols.h"
+#include "../ggzdmod/protocol.h"
 
 #include "ggzdmod.h"
 
