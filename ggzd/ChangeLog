@@ -1,3 +1,759 @@
+2000-09-07 21:32:11  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/doc/C/design/client-server.sgml:
+	- Fix missing </para>
+
+	* /cvsroot/GGZ/ggzd/ggzd/control.c, /cvsroot/GGZ/ggzd/game_servers/spades/engine.h:
+	- Use RETSIGTYPE as return type for signal handlers
+
+2000-09-04 11:28:55  bugg  <bugg@users.sourceforce.net>
+
+	* /cvsroot/GGZ/easysock/easysock.c:
+	Shuffle the header files around so we can
+	build ggz (no ggzd yet) on the BSDs. ggz may now be
+	built like such:
+
+	curly% GTK_CONFIG="/usr/X11R6/bin/gtk12-config" \
+	CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib" \
+	./autogen.sh
+
+	The CPPFLAGS and LDFLAGS are so it can find popt.h and -lpopt,
+	respectively.  It would be nice if they searched here as well
+	by default, so you'd only have to specify the location of
+	gtk12-config.
+
+2000-09-01 21:36:51  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/INSTALL, /cvsroot/GGZ/ggzd/NEWS:
+	- Modified INSTALL to reflect new dir layout
+	- Deleted excess whitespace from NEWS
+
+2000-09-01 02:09:21  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggz_server.spec:
+	- Moved default location for db files to /var/tmp/ggzd
+
+2000-08-31 07:02:44  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggz_server.spec:
+	- Updated client and server RPM spec files to 0.0.3
+
+2000-08-29 19:02:21  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/INSTALL, /cvsroot/GGZ/ggzd/NEWS, /cvsroot/GGZ/ggzd/TODO, /cvsroot/GGZ/ggzd/configure.in, /cvsroot/GGZ/ggzd/doc/admin-guide.txt, /cvsroot/GGZ/ggzd/doc/game-modules.txt:
+	- Set version to 0.0.3
+	- Documentation updates for new release
+
+	* /cvsroot/GGZ/ggzd/doc/C/design/design.sgml:
+	- doc updates
+
+	* /cvsroot/GGZ/ggzd/doc/C/design/Makefile.am, /cvsroot/GGZ/ggzd/doc/C/design/appendix.sgml, /cvsroot/GGZ/ggzd/doc/C/design/client-server.sgml, /cvsroot/GGZ/ggzd/doc/C/design/overview.sgml:
+	- More design doc updates
+	- Include all sgml files with dist
+
+	* /cvsroot/GGZ/ggzd/doc/C/design/client-server.sgml:
+	- Wrote section on table commands
+	- Wrote skeleton for chat commands
+
+2000-08-27 23:24:40  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/lapocha/game.c:
+	- Full leave/rejoin capability coded
+
+	* /cvsroot/GGZ/ggzd/game_servers/lapocha/game.c, /cvsroot/GGZ/ggzd/game_servers/lapocha/game.h:
+	- Handle game leave/rejoin during card play only
+
+2000-08-26 20:45:09  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/doc/C/design/design.sgml:
+	- Changed chapter title
+	- Corrected revision number after move
+
+	* /cvsroot/GGZ/ggzd/doc/C/.cvsignore, /cvsroot/GGZ/ggzd/doc/C/Makefile.am, /cvsroot/GGZ/ggzd/doc/C/design/.cvsignore, /cvsroot/GGZ/ggzd/doc/C/design/Makefile.am, /cvsroot/GGZ/ggzd/doc/C/design/appendix.sgml, /cvsroot/GGZ/ggzd/doc/C/design/client-server.sgml, /cvsroot/GGZ/ggzd/doc/C/design/design.sgml, /cvsroot/GGZ/ggzd/doc/C/design/ggz.dsl, /cvsroot/GGZ/ggzd/doc/C/design/images/.cvsignore, /cvsroot/GGZ/ggzd/doc/C/design/images/server_arch.fig, /cvsroot/GGZ/ggzd/doc/C/design/overview.sgml, /cvsroot/GGZ/ggzd/doc/C/design/requirements.sgml, /cvsroot/GGZ/ggzd/game_servers/spades/spades.dsc, /cvsroot/GGZ/ggzd/game_servers/tictactoe/tictactoe.dsc, /cvsroot/GGZ/ggzd/configure.in, /cvsroot/GGZ/ggzd/doc/Makefile.am, /cvsroot/GGZ/ggzd/doc/design.sgml:
+	- Documentation overhaul:
+	- Moved design doc into C/design dir so that in the future
+	  translations can be done more easily
+	- Split out chapters from design doc
+	- Started re-writing the section on client-server interactions to be
+	  more descriptive.
+	- Bumped version number of ttt and spades games
+
+2000-08-23 02:47:19  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/lapocha/ggz.h, /cvsroot/GGZ/ggzd/game_servers/tictactoe/ggz.h, /cvsroot/GGZ/ggzd/game_servers/dots/ggz.h:
+	- Game servers need to handle 16 character names
+
+2000-08-20 21:48:10  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/control.c, /cvsroot/GGZ/ggzd/ggzd/hash.c, /cvsroot/GGZ/ggzd/ggzd/hash.h:
+	hash.[ch]
+	  - Added hash_initialize() to init lock structures
+
+	control.c
+	  - Call hash_initialize() at startup
+
+2000-08-20 05:14:34  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/configure.in:
+	- s/datadir/tmpdir at one spot.  oops
+
+	* /cvsroot/GGZ/ggzd/ggzd/control.c:
+	- Use select() on listening socket to determine when there is an
+	  incoming connection.
+	- Make listening socket non-blocking in case connection gets removed
+	  between select() and accept().  See UNPv1 ch15.
+
+2000-08-19 17:59:41  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/table.c:
+	- Rewrite table_game_join():
+	- If player notification of succesful join fails, assume player has
+	  logged out and force them to leave table
+
+2000-08-19 05:13:29  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/hash.c:
+	- Does this fix the hash bug?  We think it might....
+
+2000-08-18 04:08:27  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/lapocha/game.c: server
+	  - Alter MSG_HAND protocol to send a char representing dealer's seat
+
+	client
+	  - Display dealer's seat with a (D) after name
+	  - Display current bidder's seat with a (B) after name ((DB) if dealer too)
+
+2000-08-16 06:42:14  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/players.c:
+	- Don't attempt to leave table for empty messages (either form player
+	  or from table)
+
+	* /cvsroot/GGZ/ggzd/ggzd/players.c:
+	- Don't attempt to leave table for empty messages (either from player
+	  of from table)
+
+	* /cvsroot/GGZ/ggzd/acconfig.h, /cvsroot/GGZ/ggzd/configure.in, /cvsroot/GGZ/ggzd/game_servers/dots/ggz.c, /cvsroot/GGZ/ggzd/game_servers/spades/engine.h, /cvsroot/GGZ/ggzd/game_servers/spades/engine_func.c, /cvsroot/GGZ/ggzd/game_servers/spades/engine_main.c, /cvsroot/GGZ/ggzd/game_servers/tictactoe/ggz.c, /cvsroot/GGZ/ggzd/ggzd/Makefile.am, /cvsroot/GGZ/ggzd/ggzd/chat.c, /cvsroot/GGZ/ggzd/ggzd/chat.h, /cvsroot/GGZ/ggzd/ggzd/control.c, /cvsroot/GGZ/ggzd/ggzd/datatypes.h, /cvsroot/GGZ/ggzd/ggzd/err_func.h, /cvsroot/GGZ/ggzd/ggzd/event.c, /cvsroot/GGZ/ggzd/ggzd/event.h, /cvsroot/GGZ/ggzd/ggzd/ggzd.conf.in, /cvsroot/GGZ/ggzd/ggzd/ggzd.h, /cvsroot/GGZ/ggzd/ggzd/hash.c, /cvsroot/GGZ/ggzd/ggzd/hash.h, /cvsroot/GGZ/ggzd/ggzd/login.c, /cvsroot/GGZ/ggzd/ggzd/login.h, /cvsroot/GGZ/ggzd/ggzd/motd.c, /cvsroot/GGZ/ggzd/ggzd/motd.h, /cvsroot/GGZ/ggzd/ggzd/parse_opt.c, /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/players.h, /cvsroot/GGZ/ggzd/ggzd/protocols.h, /cvsroot/GGZ/ggzd/ggzd/room.c, /cvsroot/GGZ/ggzd/ggzd/room.h, /cvsroot/GGZ/ggzd/ggzd/seats.c, /cvsroot/GGZ/ggzd/ggzd/seats.h, /cvsroot/GGZ/ggzd/ggzd/table.c, /cvsroot/GGZ/ggzd/ggzd/table.h, /cvsroot/GGZ/ggzd/ggzd/transit.c, /cvsroot/GGZ/ggzd/ggzd/transit.h:
+	- Merge experimental dynamic-players branch back into main tree
+
+	* /cvsroot/GGZ/ggzd/ggzd/control.c, /cvsroot/GGZ/ggzd/ggzd/ggzd.conf.in, /cvsroot/GGZ/ggzd/ggzd/parse_opt.c, /cvsroot/GGZ/ggzd/ggzd/table.c, /cvsroot/GGZ/ggzd/acconfig.h, /cvsroot/GGZ/ggzd/configure.in, /cvsroot/GGZ/ggzd/game_servers/dots/ggz.c, /cvsroot/GGZ/ggzd/game_servers/lapocha/ggz.c, /cvsroot/GGZ/ggzd/game_servers/spades/engine.h, /cvsroot/GGZ/ggzd/game_servers/spades/engine_func.c, /cvsroot/GGZ/ggzd/game_servers/spades/engine_main.c, /cvsroot/GGZ/ggzd/game_servers/tictactoe/ggz.c:
+	- Use TMPDIR to store Unix domain sockets in
+	- enable use of --with-tmpdir=PATH to configure it
+	- Default to /tmp/ggzd for TMPDIR
+	- enable use of --localstatedir to configure DATADIR (db and pid
+	  files)
+	- In spades module, don't send new game to players until after sending
+	  REQ_GAME_OVER to ggz server
+	- Create DATADIR and TMPDIR (and parent dirs) automatically if they
+	  don't exist
+
+2000-08-15 02:51:20  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/lapocha/cards.c, /cvsroot/GGZ/ggzd/game_servers/lapocha/cards.h, /cvsroot/GGZ/ggzd/game_servers/dots/ai.h:
+	- Added license notice
+
+2000-08-09 05:56:33  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/players.h, /cvsroot/GGZ/ggzd/ggzd/room.c, /cvsroot/GGZ/ggzd/ggzd/table.c, /cvsroot/GGZ/ggzd/ggzd/table.h, /cvsroot/GGZ/ggzd/ggzd/transit.c, /cvsroot/GGZ/ggzd/ggzd/transit.h:
+	- Use GGZEvent system to notify players of successful table launch
+	- Move table allocation into table_launch()
+	- Move room allocation for table into table_new()
+	- New function table_launch_event() for notifying users of table
+	 launch status
+	- New member 'launching' of player structure so that player does
+	  not attempt to launch multiple tables simultaneously
+	- New member 'owner' of table structure to hold name of player who
+	  launched table (and is notified of launch status)
+	- Moved transit_player() into players.c and renamed player_transit()
+	- Moved setting of player->transit into player_transit()
+
+2000-08-08 23:59:03  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/control.c:
+	- As discussed on the mailing list a while back, set SIGPIPE to
+	  SIG_IGN so that it gets handled as a "normal" socket error, and
+	  doesn't bring down the entire server
+
+	* /cvsroot/GGZ/ggzd/ggzd/chat.c, /cvsroot/GGZ/ggzd/ggzd/event.c, /cvsroot/GGZ/ggzd/ggzd/event.h, /cvsroot/GGZ/ggzd/ggzd/ggzd.h, /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/players.h, /cvsroot/GGZ/ggzd/ggzd/protocols.h, /cvsroot/GGZ/ggzd/ggzd/room.c, /cvsroot/GGZ/ggzd/ggzd/table.c, /cvsroot/GGZ/ggzd/ggzd/table.h, /cvsroot/GGZ/ggzd/ggzd/transit.c, /cvsroot/GGZ/ggzd/ggzd/transit.h:
+	- New functions event_table_{enqueu,handle,flush} to handle private
+	  table events
+	- Allow private events to be deferred if the callback returns
+	  GGZ_EVENT_DEFER
+	- In event_player_enqueue(), free event and data if user lookup fails
+	- New transit system using GGZEvent infrastructure!!!
+	- Commenting updates in players.c and event.[ch]
+	- If the game module closes the socket to the player, leave the table
+	- Rewrote player_loop to only have *one* way of ending the players
+	  game!
+	- When table is being removed force all players to leave
+
+2000-08-05 06:40:13  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/table.c, /cvsroot/GGZ/ggzd/game_servers/dots/dots.dsc, /cvsroot/GGZ/ggzd/game_servers/spades/spades.dsc, /cvsroot/GGZ/ggzd/game_servers/tictactoe/tictactoe.dsc, /cvsroot/GGZ/ggzd/ggzd/chat.c, /cvsroot/GGZ/ggzd/ggzd/chat.h, /cvsroot/GGZ/ggzd/ggzd/event.c, /cvsroot/GGZ/ggzd/ggzd/event.h, /cvsroot/GGZ/ggzd/ggzd/hash.c, /cvsroot/GGZ/ggzd/ggzd/hash.h, /cvsroot/GGZ/ggzd/ggzd/login.c, /cvsroot/GGZ/ggzd/ggzd/players.c:
+	- Output player's name for debug messages, not just pointer address
+	- Specify BotsAllowed 0 in all game description files
+	- Return from hash_player_lookup() with returned player write-locked:
+	  this prevents a situation where the desired player could logout in
+	  between when we look them up and when we try to acquire a lock
+	- Pass player name, not pointer, to event_player_enqueue()
+	- Write-lock player structure when clearing fd in player_remove(): we
+	  need to acquire the lock at least once there anyway so that someone
+	  holding the lock wil prevent us from being removed
+	- Started updating function comments in players.c
+
+2000-07-29 02:19:52  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/parse_opt.c:
+	- Permit BotsAllowed values of 0
+
+	* /cvsroot/GGZ/ggzd/ggzd/table.c:
+	- Check for table removed from room (NULL pointers) before joining
+	- When searching for tables, don't assume they start at 0 in the room
+
+2000-07-28 05:58:25  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/dots/dots.dsc, /cvsroot/GGZ/ggzd/game_servers/spades/spades.dsc, /cvsroot/GGZ/ggzd/game_servers/tictactoe/tictactoe.dsc:
+	- Removed obsolete OptionsSize entries
+
+	* /cvsroot/GGZ/ggzd/game_servers/lapocha/main.c:
+	- Almost forgot, don't exit until everyone's gone, even if game is over
+
+	* /cvsroot/GGZ/ggzd/game_servers/lapocha/game.c, /cvsroot/GGZ/ggzd/game_servers/lapocha/main.c:
+	- Figure end of game winner and notify clients
+
+	* /cvsroot/GGZ/ggzd/game_servers/lapocha/game.c, /cvsroot/GGZ/ggzd/game_servers/lapocha/game.h:
+	- Added game state for user-choice trump (hands 13-16)
+	- Request and verify trump from dealer
+
+2000-07-26 23:03:39  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/lapocha/cards.c:
+	- Fixed stupid miscalculation bug in card_value()
+
+	* /cvsroot/GGZ/ggzd/game_servers/lapocha/cards.c, /cvsroot/GGZ/ggzd/game_servers/lapocha/cards.h, /cvsroot/GGZ/ggzd/game_servers/lapocha/game.c, /cvsroot/GGZ/ggzd/game_servers/lapocha/game.h:
+	First (semi)playable version of La Pocha
+
+	WHAT WORKS
+
+2000-07-24 03:16:47  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/table.c:
+	- table_join() fails with E_NO_TABLE if table index is -1
+
+2000-07-23 23:24:03  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/lapocha/cards.c, /cvsroot/GGZ/ggzd/game_servers/lapocha/cards.h, /cvsroot/GGZ/ggzd/game_servers/lapocha/game.c, /cvsroot/GGZ/ggzd/game_servers/lapocha/game.h, /cvsroot/GGZ/ggzd/game_servers/lapocha/main.c:
+	- Deal proper sized hand of cards to players
+	- Cut deck for trump card and send to players
+	- Request and process player bids
+
+	* /cvsroot/GGZ/ggzd/game_servers/dots/ai.c, /cvsroot/GGZ/ggzd/game_servers/dots/game.c, /cvsroot/GGZ/ggzd/game_servers/dots/game.h:
+	- Implement protocol extension to send scoring information with
+	  each move update message (DOTS_RSP_MOVE and DOTS_MSG_MOVE_(H/V))
+
+2000-07-15 02:53:04  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/room.c:
+	- Pack player name (instead of pointer) into room change events.  This
+	  fixes the bug where player list update might try to grab information
+	  from an already deleted player
+
+2000-06-30 04:18:53  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/configure.in, /cvsroot/GGZ/ggzd/game_servers/Makefile.am, /cvsroot/GGZ/ggzd/game_servers/lapocha/.cvsignore, /cvsroot/GGZ/ggzd/game_servers/lapocha/Makefile.am, /cvsroot/GGZ/ggzd/game_servers/lapocha/cards.c, /cvsroot/GGZ/ggzd/game_servers/lapocha/cards.h, /cvsroot/GGZ/ggzd/game_servers/lapocha/game.c, /cvsroot/GGZ/ggzd/game_servers/lapocha/game.h, /cvsroot/GGZ/ggzd/game_servers/lapocha/ggz.c, /cvsroot/GGZ/ggzd/game_servers/lapocha/ggz.h, /cvsroot/GGZ/ggzd/game_servers/lapocha/lapocha.dsc, /cvsroot/GGZ/ggzd/game_servers/lapocha/lapocha.room, /cvsroot/GGZ/ggzd/game_servers/lapocha/main.c, /cvsroot/GGZ/ggzd/game_servers/lapocha/protocols.h:
+	Initial checkin of La Pocha server.
+
+	Current status:
+	- Clients can connect and a sample 10 cards are dealt by the server.
+	- No game play is functional.
+	- Player one is told to play (so card animation can still be tested)
+
+	Bugs:
+	- Far far too numerous to mention, but nothing that appears to make either
+	  server or client unstable
+
+	* /cvsroot/GGZ/ggzd/ggzd/datatypes.h, /cvsroot/GGZ/ggzd/ggzd/parse_opt.c:
+	datatypes.h
+	- Removed game options size
+
+	parse_opt.c
+	- Emit a warning about obsolete OptionsSize configuration line
+
+2000-06-29 06:24:12  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/chat.c, /cvsroot/GGZ/ggzd/ggzd/control.c, /cvsroot/GGZ/ggzd/ggzd/motd.c, /cvsroot/GGZ/ggzd/ggzd/parse_opt.c, /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/players.h, /cvsroot/GGZ/ggzd/ggzd/room.h, /cvsroot/GGZ/ggzd/ggzd/seats.c, /cvsroot/GGZ/ggzd/ggzd/seats.h, /cvsroot/GGZ/ggzd/ggzd/table.c, /cvsroot/GGZ/ggzd/ggzd/table.h, /cvsroot/GGZ/ggzd/ggzd/transit.c, /cvsroot/GGZ/ggzd/ggzd/transit.h:
+	- Added locks around table checking in chat.c
+	- Switched over to dynamic table allocation (lots changed!)
+	- Disabled global table searches
+	- Disabled open table count in for motd
+	- Rewrote player_table_launch to be much more robust
+	- Store list table pointers in each room
+	- Make players' tabel index an index into the *room* (not a pointer
+	  because tables can get removed without notifying the player)
+	- Store room index as part in GGZTable structure
+	- When enqueuing a table event, copy all of the info we need because
+	  the table might be removed before we get to processing the event
+	- Adssign table room number in table_launch() not player_table_launch()
+	- Issue table UPDATE_ADD event after we've been assigned a room number
+	- Statically allocate room for seat assignments at table.  This avoids
+	  geting into trouble with malloc'd memory when copying tables
+
+2000-06-25 06:24:17  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/acconfig.h, /cvsroot/GGZ/ggzd/ggzd/Makefile.am, /cvsroot/GGZ/ggzd/ggzd/control.c, /cvsroot/GGZ/ggzd/ggzd/daemon.c, /cvsroot/GGZ/ggzd/ggzd/daemon.h:
+	- Borrowed some of daemon_init() and daemon_cleanup() from atd by
+	  Thomas Koenig.  This gives us our daemon pidfile
+	- Add in signal handlers for SIGINT and SIGTERM
+	- Do db and daemon cleanup before exiting
+
+2000-06-24 17:36:26  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/event.c, /cvsroot/GGZ/ggzd/ggzd/table.c:
+	- Fixes to allow compilation without debugging enabled
+
+	* /cvsroot/GGZ/ggzd/ggzd/players.c:
+	- Free player structure after removing player
+
+2000-06-23 21:08:09  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/chat.c, /cvsroot/GGZ/ggzd/ggzd/control.c, /cvsroot/GGZ/ggzd/ggzd/datatypes.h, /cvsroot/GGZ/ggzd/ggzd/motd.c, /cvsroot/GGZ/ggzd/ggzd/parse_opt.c, /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/room.c, /cvsroot/GGZ/ggzd/ggzd/table.c, /cvsroot/GGZ/ggzd/ggzd/table.h, /cvsroot/GGZ/ggzd/ggzd/transit.c:
+	- Massive changes (mostly of a search and replace type):
+	- Moved to individual table and game type locks
+	- Moved table and type count variables into global state variable
+	- Eliminates GameTypes and GameTables structure in favor of simply
+	  accessing arrays of GGZTable and GameInfo
+	- Restructured player_list_tables() as discussed on mailing list
+	  before the 0.0.2 release to separate table searching and actual
+	  sending of data (table searching still needs work)
+
+	* /cvsroot/GGZ/ggzd/ggzd/control.c, /cvsroot/GGZ/ggzd/ggzd/err_func.h, /cvsroot/GGZ/ggzd/ggzd/motd.c, /cvsroot/GGZ/ggzd/ggzd/motd.h, /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/room.h, /cvsroot/GGZ/ggzd/ggzd/seats.c, /cvsroot/GGZ/ggzd/ggzd/seats.h, /cvsroot/GGZ/ggzd/ggzd/table.c, /cvsroot/GGZ/ggzd/ggzd/table.h, /cvsroot/GGZ/ggzd/ggzd/transit.c, /cvsroot/GGZ/ggzd/ggzd/chat.c:
+	- Renamed table structure to GGZTable to be more consistent
+	- Renamed GGZTable.type_index to GGZTable.type
+	- Use player names over transit system instead of pointers, this avoids
+	  several unnecessary name lookups and keeps the table structure from
+	  depending on the player structure
+
+	* /cvsroot/GGZ/ggzd/ggzd/Makefile.am, /cvsroot/GGZ/ggzd/ggzd/chat.c, /cvsroot/GGZ/ggzd/ggzd/chat.h, /cvsroot/GGZ/ggzd/ggzd/control.c, /cvsroot/GGZ/ggzd/ggzd/datatypes.h, /cvsroot/GGZ/ggzd/ggzd/err_func.h, /cvsroot/GGZ/ggzd/ggzd/event.c, /cvsroot/GGZ/ggzd/ggzd/event.h, /cvsroot/GGZ/ggzd/ggzd/hash.c, /cvsroot/GGZ/ggzd/ggzd/hash.h, /cvsroot/GGZ/ggzd/ggzd/login.c, /cvsroot/GGZ/ggzd/ggzd/login.h, /cvsroot/GGZ/ggzd/ggzd/motd.c, /cvsroot/GGZ/ggzd/ggzd/motd.h, /cvsroot/GGZ/ggzd/ggzd/parse_opt.c, /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/players.h, /cvsroot/GGZ/ggzd/ggzd/room.c, /cvsroot/GGZ/ggzd/ggzd/room.h, /cvsroot/GGZ/ggzd/ggzd/table.c, /cvsroot/GGZ/ggzd/ggzd/table.h, /cvsroot/GGZ/ggzd/ggzd/transit.c:
+	- Moved player_login functions into login.c and renamed login_player
+	- Moved player structire into player.h
+	- Moved MOTD structure into moth.h
+	- Created GGZState structure to hold various counts
+	- ....and the big one....
+	- Made player dynamically allocated!
+
+	* /cvsroot/GGZ/ggzd/ggzd/login.c, /cvsroot/GGZ/ggzd/ggzd/login.h:
+	New file.
+
+2000-06-19 03:41:41  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/ggzdb.h:
+	- Incremented db version number to 0.2 due to increase in player name
+	  length to 16
+
+	* /cvsroot/GGZ/ggzd/game_servers/spades/engine_func.c, /cvsroot/GGZ/ggzd/game_servers/spades/protocols.h:
+	- Use REQ/RSP_GAME_OVER at the end of the game
+
+	* /cvsroot/GGZ/ggzd/ggzd/ggzd.h, /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/seats.c, /cvsroot/GGZ/ggzd/ggzd/seats.h, /cvsroot/GGZ/ggzd/ggzd/table.c, /cvsroot/GGZ/ggzd/ggzd/table.h, /cvsroot/GGZ/ggzd/ggzd/transit.c:
+	- Changed the internal representation of seat assignments from integer
+	  player indices to player name strings: this makes it easier when we
+	  go to dynamically allocated players and eliminate player indices
+	- New function seats_type() to translate special seat assignment
+	  strings into the old integer codes: GGZ_SEAT_XXXX
+
+2000-06-17 03:52:00  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/protocols.h, /cvsroot/GGZ/ggzd/ggzd/table.c:
+	- Updated to comply with protocol version 3:
+	- send bot_allow_mask in RSP_LIST_TYPES
+	- send ID before room in RSP_LIST_TABLES
+	- added GGZ_UPDATE_STATE subop to MSG_UPDATE_TABLES
+
+	* /cvsroot/GGZ/ggzd/doc/design.sgml:
+	- Updated protocol version to 3:
+	- Added bot_mask to RSP_LIST_TYPES
+	- Send table ID before room in RSP_LIST_TABLES
+	- Added GGZ_UPDATE_STATE subopcode to MSG_UPDATE_TABLES
+
+2000-06-14 04:23:51  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/tictactoe/game.c:
+	- Removed many debugging statements from ttt bot code
+
+2000-06-14 03:20:00  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/hash.c:
+	- Added parens around hash_pjw line that caused a warning
+
+	* /cvsroot/GGZ/ggzd/ggzd/ggzdb.c, /cvsroot/GGZ/ggzd/ggzd/ggzdb_db2.c, /cvsroot/GGZ/ggzd/ggzd/players.c:
+	- Wrote update and close functions for the database
+	- Player last login timestamp is now updated at login
+
+	* /cvsroot/GGZ/ggzd/ggzd/err_func.c:
+	- Removed lock for fputs() - stream output in glibc2 is threadsafe
+
+	* /cvsroot/GGZ/ggzd/ggzd/control.c, /cvsroot/GGZ/ggzd/ggzd/datatypes.h, /cvsroot/GGZ/ggzd/ggzd/motd.c, /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/room.c, /cvsroot/GGZ/ggzd/ggzd/table.c, /cvsroot/GGZ/ggzd/ggzd/transit.c:
+	- Switched over completely to personal locks for player structures
+	- Renamed main player lock (still used to protect count) to mainlock
+
+2000-06-14 02:06:29  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/control.c, /cvsroot/GGZ/ggzd/ggzd/datatypes.h, /cvsroot/GGZ/ggzd/ggzd/motd.c, /cvsroot/GGZ/ggzd/ggzd/seats.c, /cvsroot/GGZ/ggzd/ggzd/seats.h, /cvsroot/GGZ/ggzd/ggzd/table.h:
+	- Moved definition of table struct into table.h
+
+2000-06-13 16:32:21  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/doc/design.sgml:
+	- Uncommented the {REQ,RSP}_LOGIN_NEW and {REQ,RSP}_LOGIN reference
+	  pages since they are now supported by the server
+	- NOTE: protocol version did not change
+
+2000-06-12 17:54:35  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/ggzd.h, /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/table.c:
+	- Set player's table index to -1 immediately after a successful leave:
+	  This fixes the bug Doug found where a table gets removed after one
+	  player leaves
+	- Fixed subtle bug in transit system caused by the table getting removed
+	  before a player was notified of a successfule leave
+
+	* /cvsroot/GGZ/ggzd/configure.in, /cvsroot/GGZ/ggzd/ggzd/Makefile.am:
+	- Added --database option to configure script.  Currently only accepts
+	  db2
+	- Only build database object code selected at configure time
+
+2000-06-12 02:12:32  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/ggzdb.c, /cvsroot/GGZ/ggzd/ggzd/ggzdb.h:
+	- Place a db version in datadir to check for outdated database files
+
+2000-06-11 23:15:03  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/Makefile.am, /cvsroot/GGZ/ggzd/ggzd/ggzdb.c, /cvsroot/GGZ/ggzd/ggzd/ggzdb_db2.c, /cvsroot/GGZ/ggzd/ggzd/ggzdb_db2.h:
+	- Altered backend definitions to use functions instead of macros
+	  so Brent doesn't have to deal with backend header files
+
+	* /cvsroot/GGZ/ggzd/ggzd/ggzdb_db2.c:
+	- Fixed stupid error that caused a segfault
+
+	* /cvsroot/GGZ/ggzd/ggzd/control.c, /cvsroot/GGZ/ggzd/ggzd/players.c:
+	- Generates a "decent" password, common word + 2 digits for new users
+
+	* /cvsroot/GGZ/ggzd/ggzd/ggzdb.c, /cvsroot/GGZ/ggzd/ggzd/ggzdb.h, /cvsroot/GGZ/ggzd/ggzd/ggzdb_db2.c, /cvsroot/GGZ/ggzd/ggzd/ggzdb_db2.h, /cvsroot/GGZ/ggzd/ggzd/players.c:
+	Phase 2 of database implementation
+
+	ggzdb/db2.c
+	  - Wrote player_get functions
+	  - Altered db2 backend to be threadsafe w/o thread locks
+
+	players.c
+	  - Wrote player_login_normal to login a registered player
+	  - Altered player_login_anon to check if name is in db
+
+	* /cvsroot/GGZ/ggzd/acconfig.h, /cvsroot/GGZ/ggzd/configure.in, /cvsroot/GGZ/ggzd/ggzd/Makefile.am, /cvsroot/GGZ/ggzd/ggzd/control.c, /cvsroot/GGZ/ggzd/ggzd/ggzdb.c, /cvsroot/GGZ/ggzd/ggzd/ggzdb.h, /cvsroot/GGZ/ggzd/ggzd/ggzdb_db2.c, /cvsroot/GGZ/ggzd/ggzd/ggzdb_db2.h, /cvsroot/GGZ/ggzd/ggzd/players.c:
+	Big update to kickstart the database stuff
+
+	acconfig.h
+	  - Missed an undef
+
+	configure.in
+	  - Added check for db2 in libdb
+
+	control.c
+	  - Call the ggzdb_init() function
+
+	players.c
+	  - Enabled REQ/RSP_LOGIN_NEW
+	  - Updated players_login_new to work with newer ggzd features
+
+	ggzdb.c
+	  - Wrote initial front-end functions to support writing to database
+
+	ggzdb_db2.c
+	  - Wrote initial back-end functions to support db2
+
+	* /cvsroot/GGZ/ggzd/configure.in, /cvsroot/GGZ/ggzd/ggzd/datatypes.h, /cvsroot/GGZ/ggzd/ggzd/ggzd.conf.in, /cvsroot/GGZ/ggzd/ggzd/ggzd.test.in, /cvsroot/GGZ/ggzd/ggzd/parse_opt.c:
+	- Added configure.in variable ggzddatadir/DATADIR
+	- Parse and store DataDir from ggzd.conf configuration file
+	- Default to DATADIR in config.h if not in ggzd.conf
+	- Set DataDir to test directory in ggzd.test
+
+2000-06-10 04:51:41  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/room.c, /cvsroot/GGZ/ggzd/ggzd/table.c:
+	- Don't send MSG_UPDATE_PLAYERS to myself
+	- Pack player number and seat into data for table updates
+	- Send GGZ_UPDATE_LEAVE events for remaining players when a table is
+	  removed
+
+2000-06-10 00:58:09  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/chat.c, /cvsroot/GGZ/ggzd/ggzd/hash.c:
+	Personal messages between rooms now functional
+
+	chat.c
+	  - replace in-room name search with call to hash_player_lookup()
+
+	hash.c
+	  - coded hash_player_lookup() - returns p_index or -1 if not found
+
+2000-06-09 06:25:29  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/Makefile.am, /cvsroot/GGZ/ggzd/ggzd/hash.c, /cvsroot/GGZ/ggzd/ggzd/hash.h, /cvsroot/GGZ/ggzd/ggzd/players.c:
+	Started work on player name hash tables
+
+	Makefile.am
+	  - Added hash.[ch] to compilation list, remember to run autogen.sh!
+
+	players.c
+	  - Call hash_player_add to add player name to hash at login
+	  - Use hash_player_add return code to determine if login name is in use
+	  - Call hash_player_delete to remove player name at disconnect
+
+	hash.[ch]
+	  - Initial coding of hash_player_add/delete - seems stable :)
+	  - Initial number of lists coded at 31 - good for small to medium site
+	  - Uses one thread lock per list to minimize contention
+	  - List usage tracking coded in (for large site tuning; gives min, max,
+	    and average list depths)
+	  - Ripped a hash function from Holub who ripped it from Aho
+
+	* /cvsroot/GGZ/ggzd/game_servers/dots/game.c, /cvsroot/GGZ/ggzd/game_servers/dots/game.h:
+	- handle a DOTS_REQ_NEWGAME by reseting the game and asking for options
+
+2000-06-07 04:01:39  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/chat.c:
+	- Personal chats sent from a table are now blocked (E_AT_TABLE)
+	- Added note to add read locks in the future
+
+	* /cvsroot/GGZ/ggzd/game_servers/dots/game.c, /cvsroot/GGZ/ggzd/game_servers/dots/game.h:
+	- Send DOTS_REQ_OPTIONS to first joining client (the launcher)
+	- Send options to all clients (including launcher) when a OPTIONS event occurs
+	- Send seats and names on join now that client always has a main dialog
+
+2000-06-06 06:35:12  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/dots/game.h:
+	- Moved DOTS_SND_OPTIONS to client->server portion of protocol where it belongs
+
+	* /cvsroot/GGZ/ggzd/game_servers/dots/game.c, /cvsroot/GGZ/ggzd/game_servers/dots/game.h, /cvsroot/GGZ/ggzd/game_servers/dots/ggz.c, /cvsroot/GGZ/ggzd/game_servers/dots/ggz.h, /cvsroot/GGZ/ggzd/game_servers/dots/main.c:
+	Updated server to work with new launch protocol
+
+	game.c:
+	  - Get DOTS_SND_OPTIONS (9) opcode and process with game_get_options
+	  - Added new state DOTS_STATE_OPTIONS when waiting for options
+	  - Queue JOIN events so that they are not fulfilled until options are set
+
+	ggz.c:
+	  - Server no longer obtains options from main ggzd server on launch
+
+	main.c:
+	  - Don't send an options buffer to ggz_init()
+
+	* /cvsroot/GGZ/ggzd/ggzd/chat.c, /cvsroot/GGZ/ggzd/ggzd/protocols.h:
+	- Personal chat messages (/msg, /beep) to a user at a table are denied
+	- Added E_AT_TABLE (-14) error code to return for RSP_CHAT
+
+2000-06-05 03:06:25  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/protocols.h, /cvsroot/GGZ/ggzd/ggzd/room.c, /cvsroot/GGZ/ggzd/ggzd/table.c:
+	- Updated to comply with protocol version 2:
+	- Have MSG_UPDATE_XXX send actual update information
+	- In table_loop(), unlock transit_lock, not state_lock
+
+	* /cvsroot/GGZ/ggzd/doc/design.sgml:
+	- Modified MSG_UPDATE_{PLAYERS|TYPES|TABLES|ROOMS} to send update
+	  information, rather than just notification of a change
+	- Bumped protocol version to 2
+
+2000-05-23 04:26:02  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/datatypes.h, /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/protocols.h, /cvsroot/GGZ/ggzd/ggzd/room.c, /cvsroot/GGZ/ggzd/ggzd/room.h, /cvsroot/GGZ/ggzd/ggzd/table.c:
+	- Use event system for table updates
+	- Remove all traces of old timestamp-based update system
+	- No longer send room and type update messages upon login
+	- No longer send player and table updates upon entering a room
+
+2000-05-22 23:00:45  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/room.c:
+	- Use event system when players join/leave room (still sends "/SxxxS")
+
+	* /cvsroot/GGZ/ggzd/ggzd/chat.c, /cvsroot/GGZ/ggzd/ggzd/datatypes.h, /cvsroot/GGZ/ggzd/ggzd/event.c, /cvsroot/GGZ/ggzd/ggzd/parse_opt.c, /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/room.c, /cvsroot/GGZ/ggzd/ggzd/room.h, /cvsroot/GGZ/ggzd/ggzd/table.c:
+	- s/chat_room/rooms/g;
+	- Move definition of room struct into room.h
+
+2000-05-20 05:19:57  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/datatypes.h, /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/protocols.h, /cvsroot/GGZ/ggzd/ggzd/table.c, /cvsroot/GGZ/ggzd/doc/design.sgml, /cvsroot/GGZ/ggzd/game_servers/spades/engine.h, /cvsroot/GGZ/ggzd/game_servers/spades/engine_func.c, /cvsroot/GGZ/ggzd/game_servers/tictactoe/ggz.c, /cvsroot/GGZ/ggzd/game_servers/tictactoe/ggz.h, /cvsroot/GGZ/ggzd/game_servers/tictactoe/main.c:
+	- Updated server to comply with protocol version 1:
+	- Moved option handling into game server modules
+	- Updated ttt and spades; dots still broken
+
+2000-05-19 21:15:17  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/doc/design.sgml:
+	- Removed game option handling from REQ_TABLE_LAUNCH.
+	- Incremented protocol version number to 1
+
+	* /cvsroot/GGZ/ggzd/doc/design.sgml:
+	- Spelling corrections
+	- Misc doc fixes
+
+2000-05-16 02:50:13  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/doc/design.sgml:
+	- Updated a few more opcodes
+
+2000-05-15 23:51:31  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/doc/design.sgml:
+	- Finished making index entires for client/server protocol items (some
+	  still need work though).
+
+	* /cvsroot/GGZ/ggzd/doc/design.sgml:
+	- Documentation updates
+
+2000-05-14 18:12:40  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/table.c:
+	Server now verifies validity of seating assignments
+
+	table.c
+	  - Supplement printing of seats and bots with tests to insure validity
+	  - Return E_BAD_OPTIONS if seating invalid
+
+	players.c
+	  - Don't bother trying to join the table if it failed to create
+	    (ensures proper return of error code for RSP_TABLE_LAUNCH)
+
+2000-05-14 05:48:21  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/protocols.h:
+	- Updated server to comply with protocol version 0:
+	- Pass protocol version and max chat length after MSG_SERVER_ID
+
+	* /cvsroot/GGZ/ggzd/doc/design.sgml:
+	- Updated MSG_SERVER_ID protocol.
+	- Added protonum entity and set to 0.
+	- Removed protocol items which we don't implement
+
+2000-05-13 07:45:13  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/dots/ai.c:
+	- AI skill upgraded to medium, now gives away least possible number of squares
+	  if unable to make a safe move (1 move lookahead)
+
+	* /cvsroot/GGZ/ggzd/doc/design.sgml:
+	Updated documentation on chat protocol
+
+2000-05-12 05:36:27  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/dots/Makefile.am, /cvsroot/GGZ/ggzd/game_servers/dots/ai.c, /cvsroot/GGZ/ggzd/game_servers/dots/ai.h, /cvsroot/GGZ/ggzd/game_servers/dots/dots.dsc, /cvsroot/GGZ/ggzd/game_servers/dots/game.c, /cvsroot/GGZ/ggzd/game_servers/dots/main.c:
+	Added AI to CtD
+
+	Fairly simplistic, equates to "easy" mode if difficulty levels are ever
+	included.  First looks for any scoring moves, if none it will pick a random
+	safe move, and if no safe moves it will pick a random move with what is left.
+
+	Future (long range?) enhancement is to add look-ahead
+
+2000-05-11 18:49:20  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/Makefile.am, /cvsroot/GGZ/ggzd/ggzd/chat.c, /cvsroot/GGZ/ggzd/ggzd/chat.h, /cvsroot/GGZ/ggzd/ggzd/datatypes.h, /cvsroot/GGZ/ggzd/ggzd/event.c, /cvsroot/GGZ/ggzd/ggzd/event.h, /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/room.c, /cvsroot/GGZ/ggzd/ggzd/room.h:
+	- New event subsystem!
+	- Added room-specific and player-specific event queues to player data
+	  structure
+	- Reworked chat system to use events
+
+2000-05-11 04:59:46  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/dots/game.c, /cvsroot/GGZ/ggzd/game_servers/dots/game.h:
+	Completed implementation of DOTS_SND_SYNC
+
+	Server:
+	- Keep track of owned squares and send them as part of DOTS_SND_SYNC
+
+	Client:
+	- After receiving DOTS_SND_SYNC, call board_redraw() to display game
+	- Implemented board_redraw() to draw all lines and owned squares
+
+2000-05-10 14:33:57  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/Makefile.am:
+	- Always rebuild testdir from scratch
+
+2000-05-10 00:46:00  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/dots/game.c, /cvsroot/GGZ/ggzd/game_servers/dots/game.h:
+	Altered CtD protocol to always send DOTS_MSG_OPTIONS
+
+	- Removed DOTS_REQ_OPTIONS
+	- Renamed DOTS_RSP_OPTIONS -> DOTS_MSG_OPTIONS
+	- Send DOTS_MSG_OPTIONS to joining board, before SYNC is sent
+
+2000-05-08 05:07:05  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/tictactoe/game.c, /cvsroot/GGZ/ggzd/game_servers/tictactoe/game.h:
+	- Made ttt bot a *lot* smarter
+
+2000-05-06 23:18:26  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/players.c: /msg and /beep implemented
+
+	FIXME:
+	  player's personal chat should be zapped when they leave the server
+
+	* /cvsroot/GGZ/ggzd/ggzd/players.c, /cvsroot/GGZ/ggzd/ggzd/protocols.h, /cvsroot/GGZ/ggzd/ggzd/room.c:
+	Updated to new chat protocol, currently handles only GGZ_CHAT_NORMAL
+
+2000-05-06 02:54:05  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/ggzd/ggzd.h, /cvsroot/GGZ/ggzd/ggzd/table.c, /cvsroot/GGZ/ggzd/ggzd/transit.c:
+	- Small redesign of transit system:
+	- Eliminate GGZ_TRANSIT_RECV
+	- Make GGZ_TRANSIT_LEAVE its own bit
+	- When table removed signal anyone waiting for transit
+	- Return error if table sends RSP_GAME_{JOIN, LEAVE} when we're not in
+	  transit
+	- This should eliminate the player handler thread hangs completely
+
+	* /cvsroot/GGZ/ggzd/configure.in, /cvsroot/GGZ/ggzd/game_servers/dots/Makefile.am, /cvsroot/GGZ/ggzd/game_servers/spades/Makefile.am, /cvsroot/GGZ/ggzd/game_servers/tictactoe/Makefile.am:
+	- s/ggzdmod/ggzdexecmod/g;  Now you can do 'make install-exec' to just
+	  install executables and not conf files
+
+2000-04-29 18:11:13  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/dots/game.c, /cvsroot/GGZ/ggzd/game_servers/dots/game.h:
+	Connect the Dots getting ever closer
+
+	- Games now launch, moves are sent to server
+	  (don't know what happens if you include a bot - DDT cuz there are no bots)
+	- Server calculates moves and responds to both clients
+	- Turn processing not handled just right yet (sometimes it's both players turn!)
+	- Game leaves ghost at end of game (clients don't handle EOG yet)
+
+2000-04-28 04:21:23  rgade  <rgade@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/game_servers/dots/game.c, /cvsroot/GGZ/ggzd/game_servers/dots/game.h, /cvsroot/GGZ/ggzd/game_servers/dots/ggz.c, /cvsroot/GGZ/ggzd/game_servers/dots/main.c:
+	Get and respond to options (board width, board height)
+
+	* /cvsroot/GGZ/ggzd/configure.in, /cvsroot/GGZ/ggzd/game_servers/Makefile.am, /cvsroot/GGZ/ggzd/game_servers/dots/.cvsignore, /cvsroot/GGZ/ggzd/game_servers/dots/Makefile.am, /cvsroot/GGZ/ggzd/game_servers/dots/dots.dsc, /cvsroot/GGZ/ggzd/game_servers/dots/dots.room, /cvsroot/GGZ/ggzd/game_servers/dots/game.c, /cvsroot/GGZ/ggzd/game_servers/dots/game.h, /cvsroot/GGZ/ggzd/game_servers/dots/ggz.c, /cvsroot/GGZ/ggzd/game_servers/dots/ggz.h, /cvsroot/GGZ/ggzd/game_servers/dots/main.c, /cvsroot/GGZ/ggzd/game_servers/dots/protocols.h:
+	Initial stab at Connect the Dots server
+
+	- Compiles, but can't test, client needs updating to utilize server
+	- Not sure how to handle the option passing, need to talk to Brent about this
+
+2000-04-26 21:12:59  bmh  <bmh@users.sourceforce.net>
+
+	* /cvsroot/GGZ/ggzd/doc/design.sgml, /cvsroot/GGZ/ggzd/doc/ggz.dsl:
+	- Support for role="bold" attribute of emphasis tag in ggz.dsl
+	- Use <emphasis role="bold"> to get bold, not <parameter> hack
+
+	* /cvsroot/GGZ/ggzd/configure.in, /cvsroot/GGZ/ggzd/ggz_server.spec:
+	- Bump version to 0.0.3pre
+
 2000-04-25 03:55:16  bmh  <bmh@users.sourceforce.net>
 
 	* doc/Makefile.am:
