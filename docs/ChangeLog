@@ -1,0 +1,65 @@
+2001-06-17  Rich Gade  <rgade@users.sourceforge.net>
+
+	* /cvsroot/ggz/docs/coreclients/Makefile.am, /cvsroot/ggz/docs/games/external-games/Makefile.am, /cvsroot/ggz/docs/games/hastings/Makefile.am, /cvsroot/ggz/docs/ggz-project/Makefile.am:
+	- None of the files were included in the distribution :(
+	  Fixed...
+
+2001-06-08  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/docs/README.GGZ: - actually add readme.ggz
+
+	* /cvsroot/ggz/docs/ggz-project/cvs-modules.txt, /cvsroot/ggz/docs/ggz-project/Makefile.am:
+	- more docs
+
+2001-06-07  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/docs/debian/docs: - add project-wide readme file
+
+2001-06-03  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/docs/configure.in, /cvsroot/ggz/docs/Makefile.am:
+	- build updates
+
+	* /cvsroot/ggz/docs/ggz-project/.cvsignore, /cvsroot/ggz/docs/ggz-project/Makefile.am:
+	- install Internationalization file
+
+	* /cvsroot/ggz/docs/coreclients/coreclients.html, /cvsroot/ggz/docs/coreclients/.cvsignore, /cvsroot/ggz/docs/coreclients/gameflow.png, /cvsroot/ggz/docs/coreclients/ggzcore.png, /cvsroot/ggz/docs/coreclients/Makefile.am:
+	- add core client documentation skeleton
+
+2001-06-02  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/docs/Makefile.am: - add ggz-project dir to subdirs
+
+	* /cvsroot/ggz/docs/ggz-project/Internationalization: - new rules
+
+	* /cvsroot/ggz/docs/ggz-project/Internationalization: - little update
+
+2001-06-01  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/docs/ggz-project/Internationalization:
+	- added small localization/internationalization help
+
+2001-05-30  dr_maux  <dr_maux@users.sourceforge.net>
+
+	* /cvsroot/ggz/docs/AUTHORS, /cvsroot/ggz/docs/autogen.sh, /cvsroot/ggz/docs/ChangeLog, /cvsroot/ggz/docs/configure.in, /cvsroot/ggz/docs/COPYING, /cvsroot/ggz/docs/.cvsignore, /cvsroot/ggz/docs/INSTALL, /cvsroot/ggz/docs/Makefile.am, /cvsroot/ggz/docs/NEWS, /cvsroot/ggz/docs/README:
+	- more files
+
+	* /cvsroot/ggz/docs/games/.cvsignore, /cvsroot/ggz/docs/games/hastings/.cvsignore, /cvsroot/ggz/docs/spec/.cvsignore, /cvsroot/ggz/docs/spec/Makefile.am:
+	- added some more files
+
+	* /cvsroot/ggz/docs/debian/changelog, /cvsroot/ggz/docs/debian/control, /cvsroot/ggz/docs/debian/copyright, /cvsroot/ggz/docs/debian/.cvsignore, /cvsroot/ggz/docs/debian/docs, /cvsroot/ggz/docs/debian/postinst, /cvsroot/ggz/docs/debian/prerm, /cvsroot/ggz/docs/debian/README.Debian, /cvsroot/ggz/docs/debian/rules, /cvsroot/ggz/docs/games/external-games/.cvsignore, /cvsroot/ggz/docs/games/external-games/ggz-kde-preview.html, /cvsroot/ggz/docs/games/external-games/ggz-support-howto.txt, /cvsroot/ggz/docs/games/external-games/Makefile.am, /cvsroot/ggz/docs/games/hastings/Makefile.am, /cvsroot/ggz/docs/games/Makefile.am:
+	- debianized documentation tree
+	- added docs for external and kde games
+
+	* /cvsroot/ggz/docs/README: - add readme for documentation
+
+	* /cvsroot/ggz/docs/games/hastings/description.txt, /cvsroot/ggz/docs/games/hastings/hastings0.png, /cvsroot/ggz/docs/games/hastings/hastings1.png, /cvsroot/ggz/docs/games/hastings/hastings2.png, /cvsroot/ggz/docs/games/hastings/hastings3.png, /cvsroot/ggz/docs/games/hastings/module_writing.html:
+	- add hastings documentation in doc module
+
+2000-11-20  bmh  <bmh@users.sourceforge.net>
+
+	* /cvsroot/ggz/docs/spec/bodytags1.cnxml, /cvsroot/ggz/docs/spec/spec.cnxml, /cvsroot/ggz/docs/spec/spec.css, /cvsroot/ggz/docs/spec/spec.xml, /cvsroot/ggz/docs/spec/spec.xsl:
+	Imported files
+
+	* /cvsroot/ggz/docs/spec/bodytags1.cnxml, /cvsroot/ggz/docs/spec/spec.cnxml, /cvsroot/ggz/docs/spec/spec.css, /cvsroot/ggz/docs/spec/spec.xml, /cvsroot/ggz/docs/spec/spec.xsl:
+	New file.
