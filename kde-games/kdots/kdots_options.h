@@ -2,7 +2,7 @@
 //
 // KDots
 // Connect the Dots game for KDE, using the Dots classes
-// Copyright (C) 2001 Josef Spillner
+// Copyright (C) 2001, 2002 Josef Spillner
 // dr_maux@users.sourceforge.net
 // The MindX Open Source Project
 // http://mindx.sourceforge.net/games/kdots/
@@ -20,7 +20,7 @@ class KDotsOptions : public QWidget
 {
 	Q_OBJECT
 	public:
-		KDotsOptions(QWidget *parent, char *name);
+		KDotsOptions(QWidget *parent = NULL, const char *name = NULL);
 		~KDotsOptions();
 	public slots:
 		void slotAccepted();

@@ -1,10 +1,19 @@
+///////////////////////////////////////////////////////////////
+//
+// KDots
+// Connect the Dots game for KDE, using the Dots classes
+// Copyright (C) 2001, 2002 Josef Spillner
+// dr_maux@users.sourceforge.net
+// The MindX Open Source Project
+// http://mindx.sourceforge.net/games/kdots/
+//
+///////////////////////////////////////////////////////////////
+
 #ifndef KDOTS_PROTO_H
 #define KDOTS_PROTO_H
 
 #define MAX_WIDTH 25
 #define MAX_HEIGHT 25
-
-#include <easysock.h>
 
 class KDotsProto
 {
@@ -69,12 +78,19 @@ class KDotsProto
 		};*/
 
 		void connect();
+		void init();
+		void sync();
+
 		void getPlayers();
 		void getSeat();
 		void sendMove(int x, int y, int direction);
 		void sendOptions(int wantwidth, int wantheight);
 		void getOptions();
 		int getMove();
+		int getOpcode();
+		int getStatus();
+		int getSyncMove();
+		int getSyncScore();
 		void getOppMove(int direction);
 		
 		int state;

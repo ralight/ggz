@@ -2,7 +2,7 @@
 //
 // KDots
 // Connect the Dots game for KDE, using the Dots classes
-// Copyright (C) 2001 Josef Spillner
+// Copyright (C) 2001, 2002 Josef Spillner
 // dr_maux@users.sourceforge.net
 // The MindX Open Source Project
 // http://mindx.sourceforge.net/games/kdots/
@@ -19,7 +19,7 @@
 
 #include "config.h"
 
-KDotsAbout::KDotsAbout(QWidget *parent, char *name)
+KDotsAbout::KDotsAbout(QWidget *parent, const char *name)
 : QWidget(parent, name, WStyle_Customize | WStyle_Tool | WStyle_DialogBorder)
 {
 	QPushButton *ok;

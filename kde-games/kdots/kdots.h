@@ -2,7 +2,7 @@
 //
 // KDots
 // Connect the Dots game for KDE, using the Dots classes
-// Copyright (C) 2001 Josef Spillner
+// Copyright (C) 2001, 2002 Josef Spillner
 // dr_maux@users.sourceforge.net
 // The MindX Open Source Project
 // http://mindx.sourceforge.net/games/kdots/
@@ -14,13 +14,14 @@
 
 #include <qwidget.h>
 #include <qevent.h>
-#include "kdots_proto.h"
+
+class KDotsProto;
 
 class KDots : public QWidget
 {
 	Q_OBJECT
 	public:
-		KDots(QWidget *parent, char *name);
+		KDots(QWidget *parent = NULL, const char *name = NULL);
 		~KDots();
 		void gameinit();
 		void gamesync();

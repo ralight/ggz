@@ -1,3 +1,14 @@
+///////////////////////////////////////////////////////////////
+//
+// KDots
+// Connect the Dots game for KDE, using the Dots classes
+// Copyright (C) 2001, 2002 Josef Spillner
+// dr_maux@users.sourceforge.net
+// The MindX Open Source Project
+// http://mindx.sourceforge.net/games/kdots/
+//
+///////////////////////////////////////////////////////////////
+
 #include "kdots_proto.h"
 
 #include <sys/types.h>
@@ -6,6 +17,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <easysock.h>
 
 #include <iostream>
 
@@ -16,6 +28,49 @@ KDotsProto::KDotsProto()
 
 KDotsProto::~KDotsProto()
 {
+}
+
+void KDotsProto::sync()
+{
+	es_write_int(fd, reqsync);
+}
+
+void KDotsProto::init()
+{
+	state = stateinit;
+	es_write_int(fd, reqnewgame);
+}
+
+int KDotsProto::getOpcode()
+{
+	int op;
+
+	es_read_int(fd, &op);
+	return op;
+}
+
+int KDotsProto::getStatus()
+{
+	char status;
+
+	es_read_char(fd, &status);
+	return status;
+}
+
+int KDotsProto::getSyncMove()
+{
+	char move;
+
+	es_read_char(fd, &move);
+	return move;
+}
+
+int KDotsProto::getSyncScore()
+{
+	int score;
+
+	es_read_int(fd, &score);
+	return score;
 }
 
 void KDotsProto::getSeat()

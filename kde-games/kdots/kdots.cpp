@@ -2,7 +2,7 @@
 //
 // KDots
 // Connect the Dots game for KDE, using the Dots classes
-// Copyright (C) 2001 Josef Spillner
+// Copyright (C) 2001, 2002 Josef Spillner
 // dr_maux@users.sourceforge.net
 // The MindX Open Source Project
 // http://mindx.sourceforge.net/games/kdots/
@@ -11,6 +11,9 @@
 
 #include "kdots.h"
 #include "kdots_options.h"
+#include "kdots_proto.h"
+
+#include "qdots.h"
 
 #include <kmessagebox.h>
 #include <klocale.h>
@@ -21,15 +24,12 @@
 
 #include <iostream>
 #include <stdlib.h>
-
-#include "qdots.h"
-
 #include <stdio.h>
 
 KDotsOptions *kdots_options;
 QDots *dots;
 
-KDots::KDots(QWidget *parent, char *name)
+KDots::KDots(QWidget *parent, const char *name)
 : QWidget(parent, name)
 {
 	QVBoxLayout *vbox;
@@ -127,7 +127,7 @@ void KDots::slotSync()
 		KMessageBox::information(this, i18n("No game running yet!"), i18n("Error"));
 		return;
 	}
-	es_write_int(proto->fd, proto->reqsync);
+	proto->sync();
 }
 
 void KDots::slotInput()
@@ -141,46 +141,46 @@ void KDots::slotInput()
 
 	emit signalStatus(i18n("Receiving data"));
 
-	es_read_int(proto->fd, &op);
+	op = proto->getOpcode();
 
 	switch(op)
 	{
 		case proto->msgseat:
-printf("##### msgseat\n");
+			/*printf("##### msgseat\n");*/
 			proto->getSeat();
 			break;
 		case proto->msgplayers:
-printf("##### msgplayers\n");
+			/*printf("##### msgplayers\n");*/
 			proto->getPlayers();
 			if(proto->state != proto->statechoose) proto->state = proto->statewait;
 			break;
 		case proto->msgoptions:
-printf("##### msgoptions\n");
+			/*printf("##### msgoptions\n");*/
 			proto->getOptions();
 			//slotStart(proto->width, proto->height);
 			dots->resizeBoard(proto->width - 1, proto->height - 1);
 			dots->refreshBoard();
 			break;
 		case proto->reqmove:
-printf("##### reqmove\n");
+			/*printf("##### reqmove\n");*/
 			emit signalStatus(i18n("Your turn."));
 			proto->state = proto->statemove;
 			proto->turn = proto->num;
 			break;
 		case proto->msgmoveh:
-printf("##### msgmoveh\n");
+			/*printf("##### msgmoveh\n");*/
 			proto->getOppMove(proto->sndmoveh);
 			dots->setBorderValue(proto->movex, proto->movey, QDots::right, proto->turn, 1);
 			dots->repaint();
 			break;
 		case proto->msgmovev:
-printf("##### msgmovev\n");
+			/*printf("##### msgmovev\n");*/
 			proto->getOppMove(proto->sndmovev);
 			dots->setBorderValue(proto->movex, proto->movey, QDots::down, proto->turn, 1);
 			dots->repaint();
 			break;
 		case proto->rspmove:
-printf("##### rspmove\n");
+			/*printf("##### rspmove\n");*/
 			if(proto->getMove() != -1)
 			{
 				dots->setBorderValue(proto->m_lastx, proto->m_lasty, proto->m_lastdir, proto->turn, 1);
@@ -193,8 +193,8 @@ printf("##### rspmove\n");
 			}
 			break;
 		case proto->msggameover:
-printf("##### msggameover\n");
-			es_read_char(proto->fd, &status);
+			/*printf("##### msggameover\n");*/
+			status = proto->getStatus();
 			if(status == -1) exit(-1);
 			proto->state = proto->statechoose;
 			proto->turn = -1;
@@ -210,22 +210,21 @@ printf("##### msggameover\n");
 			}
 			break;
 		case proto->sndsync:
-printf("##### sndsync\n");
+			/*printf("##### sndsync\n");*/
 			gamesync();
 			break;
 		case proto->reqoptions:
-printf("##### reqoptions\n");
+			/*printf("##### reqoptions\n");*/
 			slotOptions();
 			break;
 		default:
-printf("##### unknown opcode -> %i\n", op);
+			printf("##### unknown opcode -> %i\n", op);
 	}
 }
 
 void KDots::gameinit()
 {
-	proto->state = proto->stateinit;
-	es_write_int(proto->fd, proto->reqnewgame);
+	proto->init();
 }
 
 void KDots::gamesync()
@@ -234,30 +233,30 @@ void KDots::gamesync()
 	int score;
 	char dot;
 
-	es_read_char(proto->fd, &move);
+	move = proto->getSyncMove();
 	proto->turn = move;
-	es_read_int(proto->fd, &score);
-	es_read_int(proto->fd, &score);
+	score = proto->getSyncScore();
+	score = proto->getSyncScore();
 
 	for(int i = 0; i < proto->width; i++)
 		for(int j = 0; j < proto->height - 1; j++)
 		{
-			es_read_char(proto->fd, &dot);
+			dot = proto->getSyncMove();
 			dots->setBorderValue(i, j, QDots::down, 0, dot); 
 		}
 
 	for(int i = 0; i < proto->width - 1; i++)
 		for(int j = 0; j < proto->height; j++)
 		{
-			es_read_char(proto->fd, &dot);
+			dot = proto->getSyncMove();
 			dots->setBorderValue(i, j, QDots::right, 0, dot);
 		}
 
 	for(int i = 0; i < proto->width - 1; i++)
 		for(int j = 0; j < proto->height - 1; j++)
 		{
-			es_read_char(proto->fd, &dot);
-printf("%i/%i: %i\n", i, j, dot);
+			dot = proto->getSyncMove();
+			/*printf("%i/%i: %i\n", i, j, dot);*/
 			dots->setOwnership(i, j, dot);
 		}
 

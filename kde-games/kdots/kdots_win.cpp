@@ -2,7 +2,7 @@
 //
 // KDots
 // Connect the Dots game for KDE, using the Dots classes
-// Copyright (C) 2001 Josef Spillner
+// Copyright (C) 2001, 2002 Josef Spillner
 // dr_maux@users.sourceforge.net
 // The MindX Open Source Project
 // http://mindx.sourceforge.net/games/kdots/
@@ -10,23 +10,22 @@
 ///////////////////////////////////////////////////////////////
 
 #include "kdots_win.h"
+#include "kdots.h"
+#include "kdots_about.h"
+#include "kdots_help.h"
 
 #include <klocale.h>
 #include <kpopupmenu.h>
 
-KDotsWin::KDotsWin(char *name = NULL)
-: KTMainWindow(name)
+KDotsWin::KDotsWin()
+: KMainWindow()
 {
-	KMenuBar *menubar;
 	KPopupMenu *menu_game, *menu_help;
 
 	kdots_help = NULL;
 	kdots_about = NULL;
 
-	enableStatusBar();
 	statusBar()->insertItem(i18n("Launching KDots..."), 1);
-
-	menubar = new KMenuBar(this);
 
 	menu_game = new KPopupMenu(this);
 	menu_game->insertItem(i18n("Synchronize"), menusync);
@@ -38,14 +37,14 @@ KDotsWin::KDotsWin(char *name = NULL)
 	menu_help->insertSeparator();
 	menu_help->insertItem(i18n("About"), menuabout);
 	
-	menubar->insertItem(i18n("Game"), menu_game);
-	menubar->insertItem(i18n("Help"), menu_help);
+	menuBar()->insertItem(i18n("Game"), menu_game);
+	menuBar()->insertItem(i18n("Help"), menu_help);
 
 	connect(menu_game, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(menu_help, SIGNAL(activated(int)), SLOT(slotMenu(int)));
 
 	m_dots = new KDots(this, "KDots"); 
-	setView(m_dots);
+	setCentralWidget(m_dots);
 
 	connect(m_dots, SIGNAL(signalStatus(const char*)), SLOT(slotStatus(const char*)));
 

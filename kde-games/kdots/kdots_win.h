@@ -2,7 +2,7 @@
 //
 // KDots
 // Connect the Dots game for KDE, using the Dots classes
-// Copyright (C) 2001 Josef Spillner
+// Copyright (C) 2001, 2002 Josef Spillner
 // dr_maux@users.sourceforge.net
 // The MindX Open Source Project
 // http://mindx.sourceforge.net/games/kdots/
@@ -12,31 +12,32 @@
 #ifndef KDOTS_WIN_H
 #define KDOTS_WIN_H
 
-#include <ktmainwindow.h>
+#include <kmainwindow.h>
 #include <kmenubar.h>
 
-#include "kdots.h"
-#include "kdots_about.h"
-#include "kdots_help.h"
+class KDots;
+class KDotsAbout;
+class KDotsHelp;
 
-class KDotsWin : public KTMainWindow
+class KDotsWin : public KMainWindow
 {
 	Q_OBJECT
 	public:
-		KDotsWin(char *name = NULL);
+		KDotsWin();
 		~KDotsWin();
 
-	enum MenuItems
-	{
-		menuhelp,
-		menuabout,
-		menuquit,
-		menusync
-	};
+		enum MenuItems
+		{
+			menuhelp,
+			menuabout,
+			menuquit,
+			menusync
+		};
 	
 	public slots:
 		void slotMenu(int id);
 		void slotStatus(const char *message);
+
 	private:
 		KDots *m_dots;
 		KDotsAbout *kdots_about;

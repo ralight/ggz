@@ -2,7 +2,7 @@
 //
 // KDots
 // Connect the Dots game for KDE, using the Dots classes
-// Copyright (C) 2001 Josef Spillner
+// Copyright (C) 2001, 2002 Josef Spillner
 // dr_maux@users.sourceforge.net
 // The MindX Open Source Project
 // http://mindx.sourceforge.net/games/kdots/
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 	}
 
 	KApplication a;
-	kdotswin = new KDotsWin("KDotsWin");
+	kdotswin = new KDotsWin();
 	a.setMainWidget(kdotswin);
 	return a.exec();
 }
