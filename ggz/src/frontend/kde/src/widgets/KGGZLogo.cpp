@@ -48,6 +48,7 @@ KGGZLogo::KGGZLogo(QWidget *parent, const char *name)
 : QFrame(parent, name)
 {
 	QVBoxLayout *vbox;
+	QHBoxLayout *hbox;
 
 	setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	setEraseColor(QColor(150, 0, 0));
@@ -58,7 +59,8 @@ KGGZLogo::KGGZLogo(QWidget *parent, const char *name)
 	m_logo->setEraseColor(QColor(150, 0, 0));
 
 	vbox = new QVBoxLayout(this, 0);
-	vbox->add(m_logo);
+	hbox = new QHBoxLayout(vbox, 0);
+	hbox->add(m_logo);
 
 	m_logo->installEventFilter(this);
 }

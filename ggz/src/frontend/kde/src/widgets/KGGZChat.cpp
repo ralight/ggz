@@ -588,6 +588,7 @@ void KGGZChat::beep()
 // disable the chat
 void KGGZChat::shutdown()
 {
+	input->clear();
 	input->setEnabled(FALSE);
 }
 

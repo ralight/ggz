@@ -398,8 +398,9 @@ void KGGZ::timerEvent(QTimerEvent *e)
 			detachServerCallbacks();
 			KGGZDEBUG("delete kggzserver;\n");
 			delete kggzserver;
-			KGGZDEBUG("kggzserver = NULL;\n");
 			kggzserver = NULL;
+			delete m_sn_server;
+			m_sn_server = NULL;
 		}
 		emit signalMenu(MENUSIG_DISCONNECT);
 		m_killserver = 0;
@@ -865,6 +866,8 @@ void KGGZ::serverCollector(unsigned int id, void* data)
 			delete kggzserver;
 			kggzserver = NULL;
 			//m_killserver = 1;
+			delete m_sn_server;
+			m_sn_server = NULL;
 
 			menuConnect();
 			break;
