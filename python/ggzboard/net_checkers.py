@@ -83,7 +83,7 @@ class Network(NetworkBase, NetworkInfo):
 #		elif op == self.MSG_SYNC:
 #			print "- sync"
 		else:
-			print "- unknown opcode"
+			print "- unknown opcode", op
 			self.errorcode = 1
 
 	def domove(self, frompos, topos):

@@ -69,9 +69,9 @@ class NetworkBase:
 		op += c2 * 256 * 256
 		op += c3 * 256
 		op += c4
-		if op >= 2**31:
-			op -= 2**32
-		return op
+		#if op >= 2**31:
+		#	op -= 2**32
+		return socket.ntohl(op)
 
 	def getchar(self):
 		opstr = self.sock.recv(1)
