@@ -49,7 +49,7 @@ GtkWidget *dlg_login;
 
 /* Local callbacks which no other file will call */
 static void login_fill_defaults(GtkWidget* win, gpointer data);
-static void login_guest_toggled(GtkWidget* button, gpointer window);
+static void login_normal_toggled(GtkWidget* button, gpointer window);
 static void login_edit_profiles(GtkWidget* button, gpointer window);
 static void login_input_options(GtkWidget* button, gpointer window);
 static void login_start_session(GtkWidget* button, gpointer window);
@@ -94,15 +94,15 @@ static void login_fill_defaults(GtkWidget* win, gpointer data)
 }
 
 
-/* Hide password box for guest logins */
-static void login_guest_toggled(GtkWidget* button, gpointer window)
+/* Show password box for normal logins only */
+static void login_normal_toggled(GtkWidget* button, gpointer window)
 { 
 	GtkWidget* tmp = lookup_widget(GTK_WIDGET(window), "password_box");
 
         if (GTK_TOGGLE_BUTTON(button)->active) 
-                gtk_widget_hide(tmp);
-        else
                 gtk_widget_show(tmp);
+        else
+                gtk_widget_hide(tmp);
 }
 
 
@@ -314,7 +314,6 @@ void login_online()
 GtkWidget*
 create_dlg_login (void)
 {
-  GtkWidget *dlg_login;
   GtkWidget *dialog_vbox1;
   GtkWidget *profile_frame;
   GtkWidget *entries_box;
@@ -606,8 +605,8 @@ create_dlg_login (void)
   gtk_signal_connect (GTK_OBJECT (edit_profiles_button), "clicked",
                       GTK_SIGNAL_FUNC (login_edit_profiles),
                       dlg_login);
-  gtk_signal_connect (GTK_OBJECT (guest_radio), "toggled",
-                      GTK_SIGNAL_FUNC (login_guest_toggled),
+  gtk_signal_connect (GTK_OBJECT (normal_radio), "toggled",
+                      GTK_SIGNAL_FUNC (login_normal_toggled),
                       dlg_login);
   gtk_signal_connect (GTK_OBJECT (connect_button), "clicked",
                       GTK_SIGNAL_FUNC (login_input_options),

@@ -219,11 +219,11 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 			warn_dlg("That username is already in usage,\nor not permitted on this server.\n\nPlease choose a different name");
 			return;
 		}
-
+		
 		/* Read in our server assigned password */
 		es_read_string(source, password, 16);
 		note_dlg("The server has assigned the password\n'%s' to you. Please write this down\nand change it as soon as possible.\n\nYou will need it to login in the future.", password);
-
+		
 		es_read_int(source, &checksum);
 		login_ok();
 		login_online();
@@ -763,13 +763,15 @@ static void handle_update_players(gint op, gint fd)
 			    name);
 		/* Add player to list with no table */
 		player_list_add(name, -1, 0);
+		chat_print(CHAT_COLOR_SERVER, "-->", name);
 		break;
 	case GGZ_UPDATE_DELETE:
 		connect_msg("[%s] %s left room\n", opcode_str[op], 
 			    name);
 		player_list_remove(name);
+		chat_print(CHAT_COLOR_SERVER, "<--", name);
 		break;
-	}			
+	}	
 
 	/* Display updated list */
 	ggz_players_display();

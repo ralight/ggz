@@ -10,18 +10,11 @@
   <language>C</language>
   <gnome_support>False</gnome_support>
   <gettext_support>True</gettext_support>
-  <use_widget_names>False</use_widget_names>
   <output_main_file>False</output_main_file>
-  <output_support_files>True</output_support_files>
   <output_build_files>False</output_build_files>
   <backup_source_files>False</backup_source_files>
   <main_source_file>dlg_login.c</main_source_file>
   <main_header_file>dlg_login.h</main_header_file>
-  <handler_source_file>callbacks.c</handler_source_file>
-  <handler_header_file>callbacks.h</handler_header_file>
-  <support_source_file>support.c</support_source_file>
-  <support_header_file>support.h</support_header_file>
-  <translatable_strings_file></translatable_strings_file>
 </project>
 
 <widget>
@@ -56,6 +49,87 @@
     <name>dialog-vbox1</name>
     <homogeneous>False</homogeneous>
     <spacing>0</spacing>
+
+    <widget>
+      <class>GtkHBox</class>
+      <child_name>Dialog:action_area</child_name>
+      <name>dialog-action_area1</name>
+      <border_width>10</border_width>
+      <homogeneous>True</homogeneous>
+      <spacing>5</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+	<pack>GTK_PACK_END</pack>
+      </child>
+
+      <widget>
+	<class>GtkHButtonBox</class>
+	<name>hbuttonbox</name>
+	<border_width>5</border_width>
+	<layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
+	<spacing>30</spacing>
+	<child_min_width>85</child_min_width>
+	<child_min_height>27</child_min_height>
+	<child_ipad_x>7</child_ipad_x>
+	<child_ipad_y>0</child_ipad_y>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>connect_button</name>
+	  <can_default>True</can_default>
+	  <has_default>True</has_default>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>login_input_options</handler>
+	    <data>dlg_login</data>
+	    <last_modification_time>Sat, 29 Apr 2000 18:29:09 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>login_start_session</handler>
+	    <data>dlg_login</data>
+	    <last_modification_time>Sat, 29 Apr 2000 18:29:22 GMT</last_modification_time>
+	  </signal>
+	  <label>Connect</label>
+	</widget>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>cancel_button</name>
+	  <can_default>True</can_default>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>gtk_widget_destroy</handler>
+	    <object>dlg_login</object>
+	    <last_modification_time>Tue, 11 Jan 2000 02:19:16 GMT</last_modification_time>
+	  </signal>
+	  <label>Cancel</label>
+	</widget>
+
+	<widget>
+	  <class>GtkButton</class>
+	  <name>details_button</name>
+	  <can_default>True</can_default>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>login_show_details</handler>
+	    <data>dlg_login</data>
+	    <last_modification_time>Sat, 29 Apr 2000 18:30:35 GMT</last_modification_time>
+	  </signal>
+	  <label>Details...</label>
+	</widget>
+      </widget>
+    </widget>
 
     <widget>
       <class>GtkFrame</class>
@@ -381,6 +455,12 @@
 	      <class>GtkRadioButton</class>
 	      <name>normal_radio</name>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>login_normal_toggled</handler>
+		<data>dlg_login</data>
+		<last_modification_time>Mon, 12 Jun 2000 05:08:37 GMT</last_modification_time>
+	      </signal>
 	      <label>Normal Login</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
@@ -396,12 +476,6 @@
 	      <class>GtkRadioButton</class>
 	      <name>guest_radio</name>
 	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>login_guest_toggled</handler>
-		<data>dlg_login</data>
-		<last_modification_time>Sat, 29 Apr 2000 18:26:58 GMT</last_modification_time>
-	      </signal>
 	      <label>Guest Login</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
@@ -428,87 +502,6 @@
 	      </child>
 	    </widget>
 	  </widget>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkHBox</class>
-      <child_name>Dialog:action_area</child_name>
-      <name>dialog-action_area1</name>
-      <border_width>10</border_width>
-      <homogeneous>True</homogeneous>
-      <spacing>5</spacing>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>True</fill>
-	<pack>GTK_PACK_END</pack>
-      </child>
-
-      <widget>
-	<class>GtkHButtonBox</class>
-	<name>hbuttonbox</name>
-	<border_width>5</border_width>
-	<layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
-	<spacing>30</spacing>
-	<child_min_width>85</child_min_width>
-	<child_min_height>27</child_min_height>
-	<child_ipad_x>7</child_ipad_x>
-	<child_ipad_y>0</child_ipad_y>
-	<child>
-	  <padding>0</padding>
-	  <expand>True</expand>
-	  <fill>True</fill>
-	</child>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>connect_button</name>
-	  <can_default>True</can_default>
-	  <has_default>True</has_default>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>login_input_options</handler>
-	    <data>dlg_login</data>
-	    <last_modification_time>Sat, 29 Apr 2000 18:29:09 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>login_start_session</handler>
-	    <data>dlg_login</data>
-	    <last_modification_time>Sat, 29 Apr 2000 18:29:22 GMT</last_modification_time>
-	  </signal>
-	  <label>Connect</label>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>cancel_button</name>
-	  <can_default>True</can_default>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>gtk_widget_destroy</handler>
-	    <object>dlg_login</object>
-	    <last_modification_time>Tue, 11 Jan 2000 02:19:16 GMT</last_modification_time>
-	  </signal>
-	  <label>Cancel</label>
-	</widget>
-
-	<widget>
-	  <class>GtkButton</class>
-	  <name>details_button</name>
-	  <can_default>True</can_default>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>login_show_details</handler>
-	    <data>dlg_login</data>
-	    <last_modification_time>Sat, 29 Apr 2000 18:30:35 GMT</last_modification_time>
-	  </signal>
-	  <label>Details...</label>
 	</widget>
       </widget>
     </widget>
