@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#define PROTOCOL_VERSION 2
+#define PROTOCOL_VERSION 3
 /* Chess module design
  *
  * We should have 4 game states:
@@ -40,6 +40,8 @@
  * CHESS_EVENT_TIME
  * CHESS_EVENT_GAMEOVER
  * CHESS_EVENT_START
+ * CHESS_EVENT_UPDATE_TIME
+ * CHESS_EVENT_REQUEST_UPDATE
  *
  * Besides the GGZ events
  * GGZ_EVENT_LAUNCH
@@ -111,6 +113,15 @@
  *      Send CHESS_MSG_MOVE
  *      Check for gameover
  *
+ *    CHESS_EVENT_UPDATE_TIME:
+ *      Check if it's client clock
+ *      Updates the time structure for this player
+ *      Next move, the time must be sent relative to this new time
+ *      Also triggers a CHESS_EVENT_REQUEST_UPDATE to the other player
+ *
+ *    CHESS_EVENT_REQUEST_UPDATE
+ *      Send a CHESS_RSP_UPDATE
+ *
  *    CHESS_EVENT_GAMEOVER:
  *      Go to DONE state
  *
@@ -160,6 +171,20 @@
  * is invalid, we send only a -1 in the FROM part. If we are using some type of
  * clock, TIME is the number of seconds that it took to make that move
  *
+ * CHESS_REQ_UPDATE
+ * CHESS_RSP_UPDATE (int)PLAYER_1_TIME (int)PLAYER_2_TIME
+ *
+ * Updates the time structure of the client. It will return the current value
+ * of the server's time structure, but it won't take the current move in
+ * account. (ie, the TIME part for the next move isn't going to be changed)
+ *
+ * CHESS_MSG_UPDATE (int)TIME
+ *
+ * Used by the client when using CLOCK_CLIENT, to send how much time it already
+ * take to do that move. A client should send it when it's time is over, so
+ * that the server can also notify the other player, so that he will take the 
+ * appropriated action.
+ *
  * CHESS_MSG_GAMEOVER (char)WINNER
  *
  * The game is over. The WINNER is the seat number of the winner of some code
@@ -180,6 +205,8 @@
 #define CHESS_EVENT_TIME 5
 #define CHESS_EVENT_GAMEOVER 6
 #define CHESS_EVENT_START 7
+#define CHESS_EVENT_UPDATE_TIME 8
+#define CHESS_EVENT_REQUEST_UPDATE 9
 
 /* Definition of messages */
 #define CHESS_MSG_SEAT 1
@@ -190,6 +217,9 @@
 #define CHESS_REQ_MOVE 6
 #define CHESS_MSG_MOVE 7
 #define CHESS_MSG_GAMEOVER 8
+#define CHESS_REQ_UPDATE 9
+#define CHESS_RSP_UPDATE 10
+#define CHESS_MSG_UPDATE 11
 
 /* Clock types */
 #define CHESS_CLOCK_NOCLOCK 0

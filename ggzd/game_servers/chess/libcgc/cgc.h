@@ -49,7 +49,7 @@ typedef struct move move_t;
 #define MATE 6
 
 game_t *cgc_create_game(void);
-int cgc_join_game(game_t *game, int player, int color);
+int cgc_join_game(game_t *game, int color);
 int cgc_make_move(game_t *game, char *move);
 void cgc_free_game(game_t *game);
 

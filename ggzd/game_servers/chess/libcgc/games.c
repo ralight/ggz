@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: games.c 982 2001-01-05 23:12:39Z bugg $
+ *  $Id: games.c 1011 2001-01-10 13:24:30Z perdig $
  */
 
 #include <stdlib.h>
@@ -120,24 +120,24 @@ cgc_handle_move(struct game *curgame, char *move)
 }
 
 int
-cgc_join_table(struct game *joined, int player, int color)
+cgc_join_table(struct game *joined, int color)
 {
 	if(joined == NULL)
 		return E_NOGAME;
 	
 	switch(color) {
 	case BLACK:
-		if(joined->player2 == EMPTY)
-			joined->player2 = player;
-		else if(joined->player1 == EMPTY)
+		if(!joined->player2)
+			joined->player2 = 1;
+		else if(!joined->player1)
 			return E_SEATFULL;
 		else
 			return E_GAMEFULL;
 		break;
 	case WHITE:
-		if(joined->player1 == EMPTY)
-			joined->player1 = player;
-		else if(joined->player2 == EMPTY)
+		if(!joined->player1)
+			joined->player1 = 1;
+		else if(!joined->player2)
 			return E_SEATFULL;
 		else
 			return E_GAMEFULL;
@@ -221,8 +221,8 @@ cgc_setup_table(void)
 
 	slot = new_gameslot();
 
-	slot->player1 = EMPTY;
-	slot->player2 = EMPTY;
+	slot->player1 = 0;
+	slot->player2 = 0;
 
 	slot->movelist = NULL;
 	slot->observers = NULL;

@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: cgc.c 977 2001-01-04 22:59:13Z perdig $
+ *  $Id: cgc.c 1011 2001-01-10 13:24:30Z perdig $
  */
 
 #include "cgc.h"
@@ -39,9 +39,9 @@ cgc_create_game(void)
 }
 
 int
-cgc_join_game(game_t *game, int player, int color)
+cgc_join_game(game_t *game, int color)
 {
-	return cgc_join_table(game, player, color);
+	return cgc_join_table(game, color);
 }
 
 int

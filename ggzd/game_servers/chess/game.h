@@ -47,5 +47,8 @@ void game_send_time(int seat);
 /* Send MSG_START to everyone */
 void game_send_start();
 
+/* Send RSP_TIME to player */
+void game_send_update(int seat);
+
 /* Send MSG_MOVE to everyone */
 void game_send_move(char *move, int time);

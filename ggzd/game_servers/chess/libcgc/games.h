@@ -37,5 +37,5 @@ struct game {
 
 /* games.c */
 int cgc_handle_move(struct game *curgame, char *move);
-int cgc_join_table(struct game *joined, int player, int color);
+int cgc_join_table(struct game *joined, int color);
 int cgc_game_over(struct game *curgame);

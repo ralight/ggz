@@ -50,6 +50,8 @@ struct timeval cronometer;
  *                    complete int size + TIME the move took (if it's the case)
  *  CHESS_EVENT_TIME: the TIME_OPTION integer
  *  CHESS_EVENT_GAMEOVER: An char with the WINNER code
+ *  CHESS_EVENT_UPDATE_TIME: Two ints: the seat number and the time
+ *  CHESS_EVENT_REQUES_UPDATE: (int)seat of the requesting player
  *  CHESS_EVENT_START: NULL */
 void game_update(int event_id, void *data) {
   int time, st;
@@ -69,8 +71,7 @@ void game_update(int event_id, void *data) {
         break;
       ggz_debug("New player!");
       /* Add to cgc */
-      if (cgc_join_game(game, *(int*)data+5, 
-          *(int*)data == 0 ? WHITE : BLACK) < 0)
+      if (cgc_join_game(game, *(int*)data == 0 ? WHITE : BLACK) < 0)
         /* Boy, that's bad... */
         return;
       ggz_debug("Protocol stuff");
@@ -157,10 +158,21 @@ void game_update(int event_id, void *data) {
       if (st != OK && st != CHECK)
         /* CGC says the game is over */
         game_update(CHESS_EVENT_GAMEOVER, &st);
-      /* Time may be over */
-      if (game_info.clock_type != CHESS_CLOCK_NOCLOCK &&
-          (game_info.seconds[0] < 0 || game_info.seconds[1] < 0))
-        game_update(CHESS_EVENT_GAMEOVER, NULL);
+      break;
+    case CHESS_EVENT_UPDATE_TIME:
+      if (game_info.state != CHESS_STATE_PLAYING)
+        break;
+      /* Change time struct */
+      game_info.seconds[*(int*)data] -= *((unsigned int*)data+1);
+      /* Trigger a REQUEST_UPDATE event */
+      *(int*)data = (*(int*)data + 1) % 2;
+      game_update(CHESS_EVENT_REQUEST_UPDATE, data);
+      break;
+    case CHESS_EVENT_REQUEST_UPDATE:
+      if (game_info.state != CHESS_STATE_PLAYING)
+        break;
+      /* Send the info to the player */
+      game_send_update(*(int*)data);
       break;
     case CHESS_EVENT_GAMEOVER:
       game_info.state = CHESS_STATE_DONE;
@@ -178,8 +190,10 @@ void game_update(int event_id, void *data) {
  * id -> GGZ_EVENT_PLAYER
  * seat -> Pointer holding the seat of the player that sent the data 
  * Data should be filtered this way:
- *  CHESS_REQ_TIME -> Check for validity, then CHESS_EVENT_TIME
- *  CHESS_REQ_MOVE -> Check for validity, then CHESS_EVENT_MOVE */
+ *  CHESS_REQ_TIME   -> Check for validity, then CHESS_EVENT_TIME
+ *  CHESS_REQ_MOVE   -> Check for validity, then CHESS_EVENT_MOVE
+ *  CHESS_REQ_UPDATE -> Trigger CHESS_EVENT_REQUEST_UPDATE
+ *  CHESS_MSG_UPDATE -> Check for the right clock, then trigger UPDATE_TIME */
 void game_handle_player(int id, int *seat) {
   int fd, time;
   char op;
@@ -260,6 +274,21 @@ void game_handle_player(int id, int *seat) {
         game_update(CHESS_EVENT_MOVE, data);
       else
         game_update(CHESS_EVENT_MOVE, NULL);
+      break;
+    case CHESS_REQ_UPDATE:
+      game_update(CHESS_EVENT_REQUEST_UPDATE, seat);
+      break;
+    case CHESS_MSG_UPDATE:
+      data = (int *)malloc(sizeof(int) * 2);
+      *(int*)data = *seat;
+      es_read_int(fd, (int*)data+1);
+      /* Check if right clock type */
+      if (game_info.clock_type != CHESS_CLOCK_CLIENT)
+        break;
+      /* Check if it's my turn */
+      if (game_info.turn % 2 != *seat)
+        break;
+      game_update(CHESS_EVENT_UPDATE_TIME, data);
       break;
   }
 }
@@ -360,4 +389,15 @@ void game_send_move(char *move, int time) {
   }
 
 
+}
+
+void game_send_update(int seat) {
+  int fd = ggz_seats[seat].fd;
+  if (fd < 0)
+    return;
+  ggz_debug("To player %d: %d and %d sec", seat, game_info.seconds[0], game_info.seconds[1]);
+  if (es_write_char(fd, CHESS_RSP_UPDATE) < 0 ||
+      es_write_int(fd, game_info.seconds[0]) < 0 ||
+      es_write_int(fd, game_info.seconds[1]) < 0)
+    return;
 }
