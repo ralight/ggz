@@ -121,8 +121,10 @@ int main(int argc, const char *argv[])
 	daemon_init(argv[0], 0);
 #endif
 
-	/* FIXME: Need to set signal handlers */	
+	/* FIXME: Need to set more signal handlers */	
+#ifndef DEBUG
 	signal(SIGPIPE, SIG_IGN);
+#endif
 
 	/* Create SERVER socket on main_port */
 	main_sock = es_make_socket_or_die(ES_SERVER, opt.main_port, NULL);

@@ -97,7 +97,7 @@ static int room_list_send(const int p, const int p_fd)
 	/* Get the options from teh client */
 	if(es_read_int(p_fd, &req_game) < 0
 	   || es_read_char(p_fd, &verbose) < 0)
-		return -1;
+		return GGZ_REQ_DISCONNECT;
 
 	/* Don't send list if they're not logged in */
 	if (players.info[p].uid == GGZ_UID_NONE) {
@@ -112,7 +112,8 @@ static int room_list_send(const int p, const int p_fd)
 		/* Invalid Options Sent */
 		if(es_write_int(p_fd, RSP_LIST_ROOMS) < 0
 		   || es_write_int(p_fd, E_BAD_OPTIONS) < 0)
-			return -1;
+			return GGZ_REQ_DISCONNECT;
+		return GGZ_REQ_FAIL;
 	}
 
 	/* First we have to figure out how many rooms to announce  */
@@ -127,7 +128,7 @@ static int room_list_send(const int p, const int p_fd)
 	/* Do da opcode, and announce our count */
 	if(es_write_int(p_fd, RSP_LIST_ROOMS) < 0
 	   || es_write_int(p_fd, count) < 0)
-		return -1;
+		return GGZ_REQ_DISCONNECT;
 
 	/* Send off all the room announcements */
 	for(i=0; i<room_info.num_rooms; i++)
@@ -135,13 +136,13 @@ static int room_list_send(const int p, const int p_fd)
 			if(es_write_int(p_fd, i) < 0
 			   || es_write_string(p_fd, chat_room[i].name) < 0
 			   || es_write_int(p_fd, chat_room[i].game_type) < 0)
-				return -1;
+				return GGZ_REQ_DISCONNECT;
 			if(verbose
 			   && es_write_string(p_fd, chat_room[i].description)<0)
-				return -1;
+				return GGZ_REQ_DISCONNECT;
 		}
 
-	return 0;
+	return GGZ_REQ_OK;
 }
 
 
@@ -197,24 +198,25 @@ int room_handle_join(const int p_index, const int p_fd)
 	
 	/* Get the user's room request */
 	if(es_read_int(p_fd, &room) < 0)
-		return -1;
+		return GGZ_REQ_DISCONNECT;
 
 	/* Check for silliness from the user */
 	if(room > room_info.num_rooms || room < 0) {
 		if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
 		   || es_write_char(p_fd, E_BAD_OPTIONS) < 0)
-			return -1;
+			return GGZ_REQ_DISCONNECT;
 		
 		return GGZ_REQ_FAIL;
 	}
 
 	/* Do the actual room change, and return results */
-	result = room_join(p_index, room, p_fd);
+	if((result = room_join(p_index, room, p_fd)) == GGZ_REQ_DISCONNECT)
+		return result;
 	if(es_write_int(p_fd, RSP_ROOM_JOIN) < 0
 	   || es_write_char(p_fd, result) < 0)
-		return -1;
+		return GGZ_REQ_DISCONNECT;
 
-	return 0;
+	return GGZ_REQ_OK;
 }
 
 
@@ -230,13 +232,14 @@ int room_join(const int p_index, const int room, const int fd)
 
 	/* Check for valid inputs */
 	if(old_room == room)
-		return 0;
+		return GGZ_REQ_OK;
 	if(room > room_info.num_rooms || room < -2)
 		return E_BAD_OPTIONS;
 
-	/* Give 'em their queued messages if they're in a room*/
-	if (old_room != -1)
-		room_send_chat(p_index, fd);
+	/* Send queued messages unless they are connecting/disconnecting */
+	if (old_room != -1 && room != -1)
+		if(room_send_chat(p_index, fd) < 0)
+			return GGZ_REQ_DISCONNECT;
 
 	/* We ALWAYS lock the lower ordered room first! */
 	if(old_room < room) {
@@ -293,7 +296,7 @@ int room_join(const int p_index, const int room, const int fd)
 
 	room_notify_change(p_index, old_room, room);
 
-	return 0;
+	return GGZ_REQ_OK;
 }
 
 
@@ -345,7 +348,7 @@ int room_emit(const int room, const int sender, char *msg)
 		free(msg);
 		dbg_msg(GGZ_DBG_LISTS,
 			"Deallocated chat %p (empty room)", new_chat);
-		return 0;
+		return GGZ_REQ_OK;
 	}
 
 	/* Since we are the sender, we don't need lock to get our own name */
@@ -383,7 +386,7 @@ int room_emit(const int room, const int sender, char *msg)
 #endif
 
 	pthread_rwlock_unlock(&chat_room[room].lock);
-	return 0;
+	return GGZ_REQ_OK;
 }
 
 
@@ -392,7 +395,7 @@ int room_pemit(const int room, const int sender, char *stmt)
 {
 	free(stmt);
 
-	return 0;
+	return GGZ_REQ_OK;
 }
 
 
@@ -414,7 +417,7 @@ int room_send_chat(const int p_index, const int fd)
 		if(es_write_int(fd, MSG_CHAT) < 0
 		   || es_write_string(fd, cur_chat->chat_sender) < 0
 		   || es_write_string(fd, cur_chat->chat_msg) < 0)
-			return -1;
+			return GGZ_REQ_DISCONNECT;
 
 		/* We need a lock now to alter our chat_head */
 		pthread_rwlock_wrlock(&chat_room[room].lock);
@@ -450,7 +453,7 @@ int room_send_chat(const int p_index, const int fd)
 		free(cur_chat);
 	}
 
-	return 0;
+	return GGZ_REQ_OK;
 }
 
 
