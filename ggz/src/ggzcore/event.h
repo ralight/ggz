@@ -35,6 +35,15 @@
  */
 void _ggzcore_event_init(void);
 
+/* _ggzcore_event_ispending_actual() - Determine if there are any
+ *                                     pending GGZ events
+ * Receives:
+ *
+ * Returns:
+ * int : 1 if there is at least one event pending, 0 otherwise
+ */
+int _ggzcore_event_ispending_actual(void);
+
 
 /* ggzcore_event_destroy() - Cleanup event system
  *

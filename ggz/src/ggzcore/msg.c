@@ -42,15 +42,21 @@ static void err_doit(int flag, const char *fmt, va_list ap);
 /* Debug file pointer */
 static FILE * debug_file;
 
+/* Debugging levels enabled */
+static GGZDebugLevel debug_levels;
 
-void ggzcore_debug(const char *fmt, ...)
+
+void ggzcore_debug(GGZDebugLevel level, const char *fmt, ...)
 {
 #ifdef DEBUG
 	va_list ap;
-	
-	va_start(ap, fmt);
-	err_doit(0, fmt, ap);
-	va_end(ap);
+
+	/* Only display information if that level was enabled */
+	if (debug_levels & level) {
+		va_start(ap, fmt);
+		err_doit(0, fmt, ap);
+		va_end(ap);
+	}
 #endif
 }
 
@@ -99,15 +105,17 @@ void ggzcore_error_msg_exit(const char *fmt, ...)
 }
 
 
-void _ggzcore_debug_file_init(const char* file)
+void _ggzcore_debug_init(GGZDebugLevel levels, const char* file)
 {
+	debug_levels = levels;
+
 	if (strcmp(file, "stderr") != 0)
 		if ( (debug_file = fopen(file, "a")) == NULL)
-			ggzcore_error_sys_exit("fopen() failed in ggzcore_debug_file_init");
+			ggzcore_error_sys_exit("fopen() to open %s", file);
 }
 
 
-void _ggzcore_debug_file_cleanup(void)
+void _ggzcore_debug_cleanup(void)
 {
 	if (debug_file)
 		fclose(debug_file);

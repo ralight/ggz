@@ -24,6 +24,10 @@
  */
 
 
-void _ggzcore_debug_file_init(const char* file);
+#include <config.h>
+#include <ggzcore.h>
 
-void _ggzcore_debug_file_cleanup(void);
+
+void _ggzcore_debug_init(GGZDebugLevel levels, const char* file);
+
+void _ggzcore_debug_cleanup(void);

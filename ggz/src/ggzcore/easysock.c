@@ -135,7 +135,7 @@ int es_make_socket(const EsSockType type, const unsigned short port,
 	case ES_CLIENT:
 		if ( (hp = gethostbyname(server)) == NULL) {
 			if (_err_func)
-				(*_err_func) (strerror(errno), ES_CREATE, 
+				(*_err_func) ("Lookup failure", ES_CREATE, 
 					      ES_NONE);
 			return -1;
 			break;

@@ -35,10 +35,49 @@
 
 /* GGZCore library features */
 typedef enum {
-	GGZ_OPT_PARSER      = 1,   /* %0000 0000 */
-	GGZ_OPT_MODULES     = 2,   /* %0000 0010 */
-	GGZ_OPT_THREADED_IO = 4    /* %0000 0100 */
+	GGZ_OPT_PARSER      = 0x0001,   /* %0000 0000 */
+	GGZ_OPT_MODULES     = 0x0002,   /* %0000 0010 */
+	GGZ_OPT_THREADED_IO = 0x0004    /* %0000 0100 */
 } GGZOptionFlags;
+
+
+/* Options structure for ggzcore library */
+typedef struct _GGZOptions {
+	
+	/* Option flags */
+	GGZOptionFlags flags;
+
+	/* Global config file */
+	char* global_conf;
+
+	/* User config file */
+	char* user_conf;
+
+	/* Local Override conf file */
+	char* local_conf;
+
+} GGZOptions;
+
+
+/* ggzcore_init() - Initializtion function for ggzcore lib.
+ *
+ * Receives:
+ * GGZOption options : options structure
+ *
+ * Returns:
+ * int : 0 if successful, -1 on failure
+ */
+int ggzcore_init(GGZOptions options);
+
+
+/* ggzcore_destroy() - Cleanup function for ggzcore lib.
+ *
+ * Receives:
+ *
+ * Returns:
+ */
+void ggzcore_destroy(void);
+
 
 
 /* IDs for all GGZ events */
@@ -46,6 +85,7 @@ typedef enum {
 	GGZ_SERVER_CONNECT,
 	GGZ_SERVER_LOGIN_OK,
 	GGZ_SERVER_LOGIN_FAIL, 
+	GGZ_SERVER_LOGOUT,
 	GGZ_USER_LOGIN, 
 	GGZ_USER_CHAT,
 	GGZ_USER_LOGOUT
@@ -54,6 +94,7 @@ typedef enum {
 
 /* Event-callback function type */
 typedef void (*GGZEventFunc)(GGZEventID id, void* event_data, void* user_data);
+typedef void (*GGZDestroyFunc)(void* data);
 
 
 typedef enum {
@@ -87,34 +128,35 @@ typedef struct _GGZProfile {
 } GGZProfile;
 
 
-/* ggzcore_init() - Initializtion function for ggzcore lib.
- *
- * Receives:
- * GGZOptionsFlags options : bitmask of enabled features
- * char* global_conf       : Path to system configuration file
- * char* local_conf        : Path to user configuration file
- *
- * Returns:
- * int : 0 if successful, -1 on failure
- */
-int ggzcore_init(GGZOptionFlags options, 
-		 const char* global_conf, 
-		 const char* local_conf);
-	
 
 /* ggzcore_event_connect() - Register callback for specific GGZ-event
  *
  * Receives:
- * GGZEventID id     : ID code of event
- * GGZEventFunc func : Callback function
- * void* user_data   : "User" data
+ * GGZEventID id         : ID code of event
+ * GGZEventFunc callback : Callback function
  *
  * Returns:
  * int : id for this callback 
  */
-int ggzcore_event_connect(const GGZEventID id, 
-			  const GGZEventFunc func, 
-			  void* user_data);
+int ggzcore_event_connect(const GGZEventID id, const GGZEventFunc callback);
+			  
+
+/* ggzcore_event_connect_full() - Register callback for specific GGZ-event
+ *                                specifying all parameters
+ * 
+ * Receives:
+ * GGZEventID id         : ID code of event
+ * GGZEventFunc callback : Callback function
+ * void* user_data       : "User" data to pass to callback
+ * GGZDestroyFunc func   : function to call to free user data
+ *
+ * Returns:
+ * int : id for this callback 
+ */
+int ggzcore_event_connect_full(const GGZEventID id, 
+			       const GGZEventFunc callback, 
+			       void* user_data,
+			       GGZDestroyFunc destroy);
 
 
 /* ggzcore_event_remove_all() - Remove all callbacks from an event
@@ -140,14 +182,14 @@ int ggzcore_event_remove_all(const GGZEventID id);
 int ggzcore_event_remove(const GGZEventID id, const unsigned int callback_id);
 
 
-/* ggzcore_event_pending() - Determine if there are any pending events
+/* ggzcore_event_ispending() - Determine if there are any pending events
  *
  * Receives:
  *
  * Returns:
  * int : 1 if there is at least one event pending, 0 otherwise
  */
-int ggzcore_event_pending(void);
+int ggzcore_event_ispending(void);
 
 
 /* ggzcore_event_process_all() - Process all pending events
@@ -163,19 +205,33 @@ int ggzcore_event_process_all(void);
 /* ggzcore_event_trigger() - Trigger (place in the queue) a specific event
  *
  * Receives:
- * GGZEventID id     : ID code of event
- * void* event_data  : Data specific to this occurance of the event
- * unsigned int size : Number of bytes of event data
+ * GGZEventID id       : ID code of event
+ * void* event_data    : Data specific to this occurance of the event
+ * GGZDestroyFunc func : function to free event data
  *
  * Returns:
  * int : 0 if successful, -1 otherwise
+ *
+ * Note that event_data should *not* point to local variables, as they
+ * will not be in scope when the event is processed
  */
 int ggzcore_event_trigger(const GGZEventID id, 
-			  void* event_data, 
-			  const unsigned int size);
+			  void* event_data,
+			  GGZDestroyFunc func);
+
+/* Debugging categories */
+typedef enum {
+	GGZ_DBG_EVENT  = 0x00000001,
+	GGZ_DBG_NET    = 0x00000002,
+	GGZ_DBG_USER   = 0x00000004,
+	GGZ_DBG_SERVER = 0x00000008,
+	GGZ_DBG_CONF   = 0x00000010,
+	GGZ_DBG_POLL   = 0x00000020,
+	GGZ_DBG_ALL    = 0xFFFFFFFF
+} GGZDebugLevel;
 
 
-void ggzcore_debug(const char *fmt, ...);
+void ggzcore_debug(const GGZDebugLevel level, const char *fmt, ...);
 
 void ggzcore_error_sys(const char *fmt, ...);
 
@@ -185,14 +241,6 @@ void ggzcore_error_msg(const char *fmt, ...);
 
 void ggzcore_error_msg_exit(const char *fmt, ...);
 
-
-/* ggzcore_destroy() - Cleanup function for ggzcore lib.
- *
- * Receives:
- *
- * Returns:
- */
-void ggzcore_destroy(void);
 
 
 #ifdef __cplusplus

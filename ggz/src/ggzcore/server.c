@@ -28,12 +28,14 @@
 #include <ggzcore.h>
 #include <server.h>
 #include <state.h>
+#include <net.h>
 
 #include <stdlib.h>
+#include <string.h>
 
 /* Callbacks */
-static void server_connect(GGZEventID, void*, void*);
-
+static void _ggzcore_server_connect(GGZEventID, void*, void*);
+static void _ggzcore_server_logout(GGZEventID, void*, void*);
 
 /* ggzcore_server_register() - Register callbacks for server events
  *
@@ -43,7 +45,9 @@ static void server_connect(GGZEventID, void*, void*);
  */
 void _ggzcore_server_register(void)
 {
-	ggzcore_event_connect(GGZ_SERVER_CONNECT, server_connect, NULL);
+	ggzcore_event_connect(GGZ_SERVER_CONNECT, _ggzcore_server_connect);
+/*	ggzcore_event_connect(GGZ_SERVER_LOGIN_OK, _ggzcore_server_login_ok);*/
+	ggzcore_event_connect(GGZ_SERVER_LOGOUT, _ggzcore_server_logout);
 }
 
 
@@ -56,14 +60,38 @@ void _ggzcore_server_register(void)
  *
  * Returns:
  */
-static void server_connect(GGZEventID id, void* event_data, void* user_data)
+static void _ggzcore_server_connect(GGZEventID id, void* event_data, 
+				    void* user_data)
 {
+	char* error;
+	ggzcore_debug(GGZ_DBG_SERVER, "Executing server_connect");
 
-	ggzcore_debug("Executing server_connect");
-
-	/* FIXME: should send out user REQ_LOGIN */
-	
+	/* Errors are passed in via event_data */
+	if (event_data) {
+		error = strdup((char*)event_data);
+		ggzcore_event_trigger(GGZ_SERVER_LOGIN_FAIL, error, free);
+	}
+	else {
+		_ggzcore_net_send_login(_ggzcore_state.profile.type, 
+					_ggzcore_state.profile.login, 
+					_ggzcore_state.profile.password);
+	}
 }
 
 
+/* server_logout() - Callback for server logout event
+ *
+ * Receives:
+ * GGZEventID id    : ID code of triggered event
+ * void* event_data : Event-specific data
+ * void* user_data  : "User" data
+ *
+ * Returns:
+ */
+static void _ggzcore_server_logout(GGZEventID id, void* event_data, 
+				   void* user_data)
+{
+	ggzcore_debug(GGZ_DBG_SERVER, "Executing server_logout");
 
+	_ggzcore_net_disconnect();
+}

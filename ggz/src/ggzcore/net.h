@@ -27,8 +27,19 @@
 #ifndef __NET_H__
 #define __NET_H__
 
-int _ggzcore_net_connect(const char* server, const unsigned int port);
-int _ggzcore_net_pending(void);
+#include <config.h>
+#include <ggzcore.h>
+
+void _ggzcore_net_init(void);
+
+void _ggzcore_net_connect(const char* server, const unsigned int port);
+void _ggzcore_net_disconnect(void);
+
+int _ggzcore_net_ispending(void);
 int _ggzcore_net_process(void);
 
+void _ggzcore_net_send_login(GGZLoginType type, const char* login, const char* pass);
+void _ggzcore_net_send_logout(void);
+
 #endif /* __NET_H__ */
+

@@ -26,6 +26,8 @@
 #ifndef __STATE_H__
 #define __STATE_H__
 
+#include <ggzcore.h>
+
 struct _GGZState {
 	
 	/* Server socket */
@@ -43,6 +45,8 @@ struct _GGZState {
 	/* Table to which we are transitioning */
 	int trans_table;
 
+	/* Server/user profile */
+	GGZProfile profile;
 };
 
 

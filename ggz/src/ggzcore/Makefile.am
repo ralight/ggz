@@ -14,7 +14,6 @@ libggzcore_a_SOURCES =	$(easysock_SOURCES) \
 			msg.h \
 			net.c \
 			net.h \
-			profile.h \
 			protocol.h \
 			server.c \
 			server.h \

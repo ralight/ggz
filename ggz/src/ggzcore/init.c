@@ -28,23 +28,29 @@
 #include <event.h>
 #include <user.h>
 #include <msg.h>
+#include <net.h>
 #include <server.h>
 
 
-int ggzcore_init(GGZOptionFlags options, const char* global, const char* local)
+
+int ggzcore_init(GGZOptions options)
 {
-	if (options & GGZ_OPT_PARSER) {
-		ggzcore_debug("Parsing system conf file: %s", global);
-		ggzcore_debug("Parsing local conf file: %s", local);
+	if (options.flags & GGZ_OPT_PARSER) {
+		ggzcore_debug(GGZ_DBG_CONF, "Parsing global conf file: %s", 
+			      options.global_conf);
+		ggzcore_debug(GGZ_DBG_CONF, "Parsing user conf file: %s", 
+			      options.user_conf);
+		ggzcore_debug(GGZ_DBG_CONF, "Parsing local conf file: %s", 
+			      options.local_conf);
 	}
 
-	/* Setup up debug file */
-	/* FIXME: Get filename from conf file */
-	_ggzcore_debug_file_init("/tmp/ggz.debug");
-		
-	/* Initialize event system */
+
+	/* Initialize various systems */
+	/* FIXME: Get filename and levels from conf file */
+	_ggzcore_debug_init((GGZ_DBG_ALL & ~GGZ_DBG_POLL), "/tmp/ggz.debug");
 	_ggzcore_event_init();
-	
+	_ggzcore_net_init();
+
 	/* Register internal callbacks for events */
 	_ggzcore_user_register();
 	_ggzcore_server_register();
@@ -58,7 +64,7 @@ void ggzcore_destroy(void)
 	/* Clean up event system */
 	_ggzcore_event_destroy();
 
-	_ggzcore_debug_file_cleanup();
+	_ggzcore_debug_cleanup();
 }
 	
 
