@@ -19,8 +19,10 @@ typedef void (*netoutputfunc)(Guru *output);
 
 struct gurucore_t
 {
+	char *owner;
 	char *name;
 	void *nethandle;
+	int autojoin;
 	netconnectfunc net_connect;
 	netjoinfunc net_join;
 	netstatusfunc net_status;
@@ -31,8 +33,8 @@ struct gurucore_t
 typedef struct gurucore_t Gurucore;
 
 Gurucore *guru_module_init();
-int guru_module_add(const char *modulename);
-int guru_module_remove(const char *modulename);
+int guru_module_add(const char *modulealias);
+int guru_module_remove(const char *modulealias);
 Guru *guru_module_work(Guru *message, int priority);
 
 #endif

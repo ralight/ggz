@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 				break;
 			case NET_LOGIN:
 				printf("Logged in.\n");
-				(core->net_join)(0);
+				(core->net_join)(core->autojoin);
 				break;
 			case NET_GOTREADY:
 				printf("Ready.\n");

@@ -17,14 +17,16 @@
 
 typedef Guru* (*modulefunc)(Guru *message);
 
+char **modulenamelist = NULL;
 void **modulelist = NULL;
 modulefunc *functionlist = NULL;
 int modulecount = 0;
 Gurucore *core;
+int handler;
 
 Gurucore *guru_module_init()
 {
-	int handler, ret;
+	int ret;
 	char path[1024];
 	char **list;
 	int count, i;
@@ -37,6 +39,8 @@ Gurucore *guru_module_init()
 	core = (Gurucore*)malloc(sizeof(Gurucore));
 
 	core->name = ggzcore_confio_read_string(handler, "preferences", "name", "guru/unnamed");
+	core->owner = ggzcore_confio_read_string(handler, "preferences", "owner", NULL);
+	core->autojoin = ggzcore_confio_read_int(handler, "preferences", "autojoin", 0);
 
 	module = ggzcore_confio_read_string(handler, "guru", "net", NULL);
 	printf("Loading core module NET: %s... ", module);
@@ -62,22 +66,29 @@ Gurucore *guru_module_init()
 	if(ret < 0) return NULL;
 
 	for(i = 0; i < count; i++)
-	{
-		module = ggzcore_confio_read_string(handler, "modules", list[i], NULL);
-		guru_module_add(module);
-	}
+		guru_module_add(list[i]);
 
 	return core;
 }
 
-int guru_module_add(const char *modulename)
+int guru_module_add(const char *modulealias)
 {
 	void *handle, *init;
 	modulefunc func;
+	char *modulename;
+	int i;
 
-	if(!modulename) return 0;
+	if(!modulealias) return 0;
+	modulename = ggzcore_confio_read_string(handler, "modules", modulealias, NULL);
 	printf("Loading module: %s... ", modulename);
 	fflush(NULL);
+
+	for(i = 0; i < modulecount; i++)
+		if((modulelist[i]) && (!strcmp(modulenamelist[i], modulealias)))
+		{
+			printf("ERROR: Already loaded!!\n");
+			return 0;
+		}
 
 	if((handle = dlopen(modulename, RTLD_NOW)) == NULL)
 	{
@@ -102,49 +113,111 @@ int guru_module_add(const char *modulename)
 	modulecount++;
 	modulelist = (void**)realloc(modulelist, (modulecount + 1) * sizeof(void*));
 	functionlist = (modulefunc*)realloc(functionlist, (modulecount + 1) * sizeof(modulefunc));
+	modulenamelist = (char**)realloc(modulenamelist, (modulecount + 1) * sizeof(char*));
 	modulelist[modulecount - 1] = handle;
 	modulelist[modulecount] = NULL;
 	functionlist[modulecount - 1] = (modulefunc)malloc(sizeof(modulefunc));
 	functionlist[modulecount - 1] = func;
 	functionlist[modulecount] = NULL;
+	modulenamelist[modulecount - 1] = (char*)malloc(strlen(modulealias) + 1);
+	strcpy(modulenamelist[modulecount - 1], modulealias);
+	modulenamelist[modulecount] = NULL;
 
 	printf("OK\n");
 	return 1;
 }
 
-int guru_module_remove(const char *modulename)
+int guru_module_remove(const char *modulealias)
 {
-	return 1;
+	int i;
+
+	for(i = 0; i < modulecount; i++)
+	{
+		if((modulenamelist[i]) && (!strcmp(modulenamelist[i], modulealias)))
+		{
+printf("DEBUG: FOUND IT at %i!!!\n", i);
+			modulelist[i] = NULL;
+			/*free(modulenamelist[i]);*/ /* HUH? */
+			modulenamelist[i] = NULL;
+			/*free(functionlist[i]);*/ /* HUH? */
+			functionlist[i] = NULL;
+			return 1;
+		}
+	}
+
+printf("DEBUG: DIDN'T FIND!\n");
+	return 0;
 }
 
 char *guru_modules_list()
 {
-	/*static char *list = NULL;*/
+	static char *list = NULL;
+	const char *prepend = "List of available modules:";
+	int i;
 
-	/*if(list) free(list);*/
-	/*TODO: list module names*/
-	return "Module listing not implemented yet\n";
+	if(list) free(list);
+	list = (char*)malloc(strlen(prepend) + 1);
+	strcpy(list, prepend);
+	for(i = 0; i < modulecount; i++)
+	{
+		if(modulenamelist[i])
+		{
+			list = (char*)realloc(list, strlen(list) + strlen(modulenamelist[i]) + 2);
+			strcat(list, " ");
+			strcat(list, modulenamelist[i]);
+		}
+	}
+	return list;
 }
 
 Guru *guru_module_internal(Guru *message)
 {
 	char *token;
-	int i, a;
+	int i;
+	int modules, modadd, modremove;
+	char *mod;
 
 	token = strtok(strdup(message->message), "(),-./: ");
 	i = 0;
-	a = 0;
+	modules = 0;
+	modadd = 0;
+	modremove = 0;
+	mod = NULL;
 	while(token)
 	{
-		if((i == 0) && (!strcasecmp(token, core->name))) a++;
-		if((i == 1) && (!strcmp(token, "modules"))) a++;
+		if((i == 0) && (!strcasecmp(token, core->name))) modules++;
+		if((i == 1) && (!strcmp(token, "modules"))) modules++;
+		if((i == 1) && (!strcmp(token, "insmod"))) modadd++;
+		if((i == 1) && (!strcmp(token, "rmmod"))) modremove++;
+		if((i == 2) && ((modadd) || (modremove))) mod = strdup(token);
 		token = strtok(NULL, "(),-./: ");
 		i++;
 	}
 
-	if(a == 2)
+	if(modules == 2)
 	{
 		message->message = guru_modules_list();
+		return message;
+	}
+	if((modules == 1) && ((modadd) || (modremove)) && (mod))
+	{
+printf("DEBUG: add or remove\n");
+		if((core->owner) && (!strcmp(core->owner, message->player)))
+		{
+			if(modadd)
+			{
+				if(guru_module_add(mod)) message->message = "Module added.";
+				else message->message = "Error: Could not add module.";
+			}
+			if(modremove)
+			{
+printf("DEBUG: remove %s\n", mod);
+				if(guru_module_remove(mod)) message->message = "Module removed.";
+				else message->message = "Error: Could not remove module.";
+			}
+		}
+		else message->message = "Only my owner can change the module setup.";
+		if(mod) free(mod);
 		return message;
 	}
 
@@ -166,9 +239,9 @@ Guru *guru_module_work(Guru *message, int priority)
 	savemsg = message->message;
 	for(j = 10; j >= 0; j-=11)
 	{
-		i = 0;
-		while(modulelist[i])
+		for(i = 0; i < modulecount; i++)
 		{
+			if(!functionlist[i]) continue;
 			message->message = strdup(savemsg);
 			if(j == 10) printf("Trying module no. %i with '%s'\n", i, message->message);
 			func = functionlist[i];
@@ -181,7 +254,6 @@ Guru *guru_module_work(Guru *message, int priority)
 				/*sleep(strlen(g.message) / 7);*/
 				return ret;
 			}
-			i++;
 		}
 	}
 	return NULL;
