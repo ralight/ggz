@@ -23,9 +23,15 @@ noinst_HEADERS = \
 
 INCLUDES = $(EASYSOCK_INCLUDES) $(all_includes) -I Dot
 
+# A note on LDADD: on my machine, the -l is prepended automatically to
+# everything listed in the LDADD section.  This means putting
+# "-L Dot -ldot" didn't have good results.  I've changed this to just
+# "Dot/libdot.a", which works fine for me (and should for everyone else
+# too).  --JDS
+
 UI = -L$(qt_libraries) -L$(kde_libraries) -lqt -lkdeui -lkdecore
 kdots_client_LDFLAGS = -rpath $(easysock_libraries)
-kdots_client_LDADD = $(all_libraries) $(UI) -L Dot -ldot $(EASYSOCK_LDFLAGS) $(LIB_EASYSOCK)
+kdots_client_LDADD = $(all_libraries) $(UI) Dot/libdot.a $(EASYSOCK_LDFLAGS) $(LIB_EASYSOCK)
 
 METASOURCES = AUTO
 
