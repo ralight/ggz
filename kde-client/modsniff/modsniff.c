@@ -4,7 +4,6 @@
 /* System includes */
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 /* Modsniff includes */
 #include "modsniff.h"

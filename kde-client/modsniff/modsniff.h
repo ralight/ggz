@@ -5,6 +5,11 @@
 extern "C" {
 #endif
 
+#include <string.h>
+#ifndef strdup
+  #define strdup(x) strcpy(((char*)malloc(strlen(x) + 1)), x)
+#endif
+
 /* Module structure */
 struct _GGZModuleEntry
 {

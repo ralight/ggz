@@ -501,6 +501,8 @@ void KGGZChat::receive(const char *player, const char *message, ReceiveMode mode
 		case RECEIVE_PERSONAL:
 			color = "b0b000";
 			break;
+		default:
+			break;
 	}
 
 	msg = msg.fromUtf8(message);
