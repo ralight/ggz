@@ -21,8 +21,8 @@
     </copyright>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 461 $</revnumber>
-	<date>$Date: 2000-04-26 14:12:59 -0700 (Wed, 26 Apr 2000) $</date>
+	<revnumber>$Revision: 512 $</revnumber>
+	<date>$Date: 2000-05-12 21:45:22 -0700 (Fri, 12 May 2000) $</date>
       </revision>
     </revhistory>
     <abstract>
@@ -338,11 +338,37 @@
 
       <programlisting role="pseudocode">
         REQ_CHAT
-          str: chat string 
+	  chr: sub-opcode
+	  one or more of the following fields
+	    str: player_name
+            str: chat_string
         RSP_CHAT
           chr: success flag (0 for success, -1 error)
-  
 	</programlisting>
+
+	<para>
+	  Sub-opcodes for chat messages are as follows:
+	  <itemizedlist>
+	    <listitem>
+	      <para>
+		GGZ_CHAT_NORMAL - typical chat message to all in room
+		(include field: chat_string)
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		GGZ_CHAT_BEEP - send a beep to another player's console
+		(include field: player_name)
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		GGZ_CHAT_PERSONAL - typical chat message directed to a single
+		player (include fields: player_name, chat_string)
+	      </para>
+	    </listitem>
+	  </itemizedlist>
+	</para>
       </section>
 
       <section id="rooms"><title>Room Facility</title>
@@ -1383,12 +1409,21 @@
 		</row>
 
 		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">player</entry>
+		  <entry namest="C1" nameend="C2">sub-opcode</entry>
+		  <entry>char</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C2" nameend="C3">one or more fields</entry>
+		</row>
+
+		<row rowsep="1">
+		  <entry namest="C2" nameend="C2">player</entry>
 		  <entry>string</entry>
 		</row>
 
 		<row rowsep="1">
-		  <entry namest="C1" nameend="C2">message</entry>
+		  <entry namest="C2" nameend="C2">message</entry>
 		  <entry>string</entry>
 		</row>
 
@@ -1403,6 +1438,14 @@
 	  <refsect2>
 	    <title>Message Data</title>
 	    <variablelist>
+	      <varlistentry>
+		<term><emphasis role="bold">sub-opcode</emphasis></term>
+		<listitem>
+		  <para>
+		    Chat operation type
+		  </para>
+		</listitem>
+	      </varlistentry>
 	      <varlistentry>
 		<term><emphasis role="bold">player</emphasis></term>
 		<listitem>
