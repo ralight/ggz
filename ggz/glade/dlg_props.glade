@@ -21,8 +21,8 @@
 <widget>
   <class>GtkDialog</class>
   <name>dlg_props</name>
-  <width>500</width>
-  <height>313</height>
+  <width>550</width>
+  <height>350</height>
   <signal>
     <name>realize</name>
     <handler>dlg_props_realize</handler>
@@ -58,10 +58,14 @@
       </child>
 
       <widget>
-	<class>GtkHBox</class>
-	<name>hbox1</name>
-	<homogeneous>True</homogeneous>
-	<spacing>0</spacing>
+	<class>GtkHButtonBox</class>
+	<name>hbuttonbox1</name>
+	<layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
+	<spacing>30</spacing>
+	<child_min_width>85</child_min_width>
+	<child_min_height>27</child_min_height>
+	<child_ipad_x>7</child_ipad_x>
+	<child_ipad_y>0</child_ipad_y>
 	<child>
 	  <padding>0</padding>
 	  <expand>True</expand>
@@ -70,56 +74,41 @@
 
 	<widget>
 	  <class>GtkButton</class>
-	  <name>ok_button</name>
-	  <width>47</width>
+	  <name>button1</name>
+	  <can_default>True</can_default>
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>props_ok_button_clicked</handler>
-	    <last_modification_time>Sun, 23 Apr 2000 01:21:28 GMT</last_modification_time>
+	    <last_modification_time>Sat, 24 Jun 2000 17:46:35 GMT</last_modification_time>
 	  </signal>
 	  <label>OK</label>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
 	</widget>
 
 	<widget>
 	  <class>GtkButton</class>
-	  <name>apply_button</name>
-	  <width>47</width>
+	  <name>button2</name>
+	  <can_default>True</can_default>
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>props_apply_button_clicked</handler>
-	    <last_modification_time>Sun, 23 Apr 2000 01:21:36 GMT</last_modification_time>
+	    <last_modification_time>Sat, 24 Jun 2000 17:46:43 GMT</last_modification_time>
 	  </signal>
 	  <label>Apply</label>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
 	</widget>
 
 	<widget>
 	  <class>GtkButton</class>
-	  <name>cancel_button</name>
-	  <width>47</width>
+	  <name>button3</name>
+	  <can_default>True</can_default>
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>clicked</name>
 	    <handler>props_cancel_button_clicked</handler>
-	    <last_modification_time>Sun, 23 Apr 2000 01:34:18 GMT</last_modification_time>
+	    <last_modification_time>Sat, 24 Jun 2000 17:46:52 GMT</last_modification_time>
 	  </signal>
 	  <label>Cancel</label>
-	  <child>
-	    <padding>0</padding>
-	    <expand>False</expand>
-	    <fill>False</fill>
-	  </child>
 	</widget>
       </widget>
     </widget>
@@ -167,10 +156,65 @@
 	    <width>25</width>
 	    <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	    <child>
-	      <padding>5</padding>
+	      <padding>0</padding>
 	      <expand>True</expand>
 	      <fill>True</fill>
 	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkVButtonBox</class>
+	    <name>vbuttonbox1</name>
+	    <layout_style>GTK_BUTTONBOX_START</layout_style>
+	    <spacing>10</spacing>
+	    <child_min_width>85</child_min_width>
+	    <child_min_height>27</child_min_height>
+	    <child_ipad_x>7</child_ipad_x>
+	    <child_ipad_y>0</child_ipad_y>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkButton</class>
+	      <name>button4</name>
+	      <can_default>True</can_default>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>props_add_button_clicked</handler>
+		<last_modification_time>Sat, 24 Jun 2000 17:47:12 GMT</last_modification_time>
+	      </signal>
+	      <label>Add</label>
+	    </widget>
+
+	    <widget>
+	      <class>GtkButton</class>
+	      <name>button5</name>
+	      <can_default>True</can_default>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>props_modify_button_clicked</handler>
+		<last_modification_time>Sat, 24 Jun 2000 17:47:28 GMT</last_modification_time>
+	      </signal>
+	      <label>Modify</label>
+	    </widget>
+
+	    <widget>
+	      <class>GtkButton</class>
+	      <name>button6</name>
+	      <can_default>True</can_default>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>props_delete_button_clicked</handler>
+		<last_modification_time>Sat, 24 Jun 2000 17:47:45 GMT</last_modification_time>
+	      </signal>
+	      <label>Delete</label>
+	    </widget>
 	  </widget>
 
 	  <widget>
@@ -180,86 +224,10 @@
 	    <homogeneous>False</homogeneous>
 	    <spacing>0</spacing>
 	    <child>
-	      <padding>0</padding>
+	      <padding>5</padding>
 	      <expand>True</expand>
 	      <fill>True</fill>
 	    </child>
-
-	    <widget>
-	      <class>GtkHBox</class>
-	      <name>hbox3</name>
-	      <homogeneous>True</homogeneous>
-	      <spacing>0</spacing>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>True</fill>
-	      </child>
-
-	      <widget>
-		<class>GtkButton</class>
-		<name>add_button</name>
-		<width>55</width>
-		<can_focus>True</can_focus>
-		<signal>
-		  <name>clicked</name>
-		  <handler>props_add_button_clicked</handler>
-		  <last_modification_time>Sun, 23 Apr 2000 01:21:55 GMT</last_modification_time>
-		</signal>
-		<label>Add</label>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkButton</class>
-		<name>modify_button</name>
-		<width>55</width>
-		<can_focus>True</can_focus>
-		<signal>
-		  <name>clicked</name>
-		  <handler>props_modify_button_clicked</handler>
-		  <last_modification_time>Sun, 23 Apr 2000 01:22:02 GMT</last_modification_time>
-		</signal>
-		<label>Modify</label>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkButton</class>
-		<name>delete_button</name>
-		<width>55</width>
-		<can_focus>True</can_focus>
-		<signal>
-		  <name>clicked</name>
-		  <handler>props_delete_button_clicked</handler>
-		  <last_modification_time>Sun, 23 Apr 2000 01:22:11 GMT</last_modification_time>
-		</signal>
-		<label>Delete</label>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
-		</child>
-	      </widget>
-	    </widget>
-
-	    <widget>
-	      <class>GtkHSeparator</class>
-	      <name>hseparator1</name>
-	      <child>
-		<padding>5</padding>
-		<expand>False</expand>
-		<fill>True</fill>
-	      </child>
-	    </widget>
 
 	    <widget>
 	      <class>GtkVBox</class>
@@ -279,16 +247,17 @@
 		<spacing>0</spacing>
 		<child>
 		  <padding>0</padding>
-		  <expand>True</expand>
+		  <expand>False</expand>
 		  <fill>True</fill>
 		</child>
 
 		<widget>
 		  <class>GtkLabel</class>
 		  <name>label7</name>
+		  <width>95</width>
 		  <label>Profile Name:  </label>
-		  <justify>GTK_JUSTIFY_CENTER</justify>
-		  <wrap>False</wrap>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>True</wrap>
 		  <xalign>0.5</xalign>
 		  <yalign>0.5</yalign>
 		  <xpad>0</xpad>
@@ -322,17 +291,18 @@
 		<homogeneous>False</homogeneous>
 		<spacing>0</spacing>
 		<child>
-		  <padding>0</padding>
-		  <expand>True</expand>
+		  <padding>5</padding>
+		  <expand>False</expand>
 		  <fill>True</fill>
 		</child>
 
 		<widget>
 		  <class>GtkLabel</class>
 		  <name>label8</name>
+		  <width>95</width>
 		  <label>Server:  </label>
-		  <justify>GTK_JUSTIFY_CENTER</justify>
-		  <wrap>False</wrap>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>True</wrap>
 		  <xalign>0.5</xalign>
 		  <yalign>0.5</yalign>
 		  <xpad>0</xpad>
@@ -363,6 +333,7 @@
 		<widget>
 		  <class>GtkLabel</class>
 		  <name>label9</name>
+		  <width>45</width>
 		  <label> Port:  </label>
 		  <justify>GTK_JUSTIFY_CENTER</justify>
 		  <wrap>False</wrap>
@@ -400,16 +371,17 @@
 		<spacing>0</spacing>
 		<child>
 		  <padding>0</padding>
-		  <expand>True</expand>
+		  <expand>False</expand>
 		  <fill>True</fill>
 		</child>
 
 		<widget>
 		  <class>GtkLabel</class>
 		  <name>label10</name>
+		  <width>95</width>
 		  <label>Username:  </label>
-		  <justify>GTK_JUSTIFY_CENTER</justify>
-		  <wrap>False</wrap>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>True</wrap>
 		  <xalign>0.5</xalign>
 		  <yalign>0.5</yalign>
 		  <xpad>0</xpad>
@@ -443,17 +415,18 @@
 		<homogeneous>False</homogeneous>
 		<spacing>0</spacing>
 		<child>
-		  <padding>0</padding>
-		  <expand>True</expand>
+		  <padding>5</padding>
+		  <expand>False</expand>
 		  <fill>True</fill>
 		</child>
 
 		<widget>
 		  <class>GtkLabel</class>
 		  <name>label11</name>
+		  <width>95</width>
 		  <label>Password:  </label>
-		  <justify>GTK_JUSTIFY_CENTER</justify>
-		  <wrap>False</wrap>
+		  <justify>GTK_JUSTIFY_LEFT</justify>
+		  <wrap>True</wrap>
 		  <xalign>0.5</xalign>
 		  <yalign>0.5</yalign>
 		  <xpad>0</xpad>
@@ -478,6 +451,55 @@
 		    <expand>True</expand>
 		    <fill>True</fill>
 		  </child>
+		</widget>
+	      </widget>
+
+	      <widget>
+		<class>GtkFrame</class>
+		<name>frame2</name>
+		<label>Login Type</label>
+		<label_xalign>0</label_xalign>
+		<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>True</fill>
+		</child>
+
+		<widget>
+		  <class>GtkVBox</class>
+		  <name>vbox10</name>
+		  <border_width>5</border_width>
+		  <homogeneous>False</homogeneous>
+		  <spacing>0</spacing>
+
+		  <widget>
+		    <class>GtkRadioButton</class>
+		    <name>radiobutton3</name>
+		    <can_focus>True</can_focus>
+		    <label>Normal</label>
+		    <active>False</active>
+		    <draw_indicator>True</draw_indicator>
+		    <child>
+		      <padding>0</padding>
+		      <expand>False</expand>
+		      <fill>False</fill>
+		    </child>
+		  </widget>
+
+		  <widget>
+		    <class>GtkRadioButton</class>
+		    <name>radiobutton4</name>
+		    <can_focus>True</can_focus>
+		    <label>Guest</label>
+		    <active>False</active>
+		    <draw_indicator>True</draw_indicator>
+		    <child>
+		      <padding>0</padding>
+		      <expand>False</expand>
+		      <fill>False</fill>
+		    </child>
+		  </widget>
 		</widget>
 	      </widget>
 	    </widget>
@@ -550,7 +572,7 @@
 	    <widget>
 	      <class>GtkButton</class>
 	      <name>Font_button</name>
-	      <width>50</width>
+	      <width>65</width>
 	      <can_focus>True</can_focus>
 	      <signal>
 		<name>clicked</name>
@@ -1067,7 +1089,7 @@
 	      <spacing>0</spacing>
 	      <child>
 		<padding>0</padding>
-		<expand>True</expand>
+		<expand>False</expand>
 		<fill>True</fill>
 	      </child>
 
@@ -1111,8 +1133,8 @@
 	      <homogeneous>False</homogeneous>
 	      <spacing>0</spacing>
 	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
+		<padding>5</padding>
+		<expand>False</expand>
 		<fill>True</fill>
 	      </child>
 
@@ -1123,7 +1145,7 @@
 		<spacing>0</spacing>
 		<child>
 		  <padding>0</padding>
-		  <expand>True</expand>
+		  <expand>False</expand>
 		  <fill>True</fill>
 		</child>
 
@@ -1169,7 +1191,7 @@
 	      <spacing>0</spacing>
 	      <child>
 		<padding>0</padding>
-		<expand>True</expand>
+		<expand>False</expand>
 		<fill>True</fill>
 	      </child>
 
@@ -1213,8 +1235,8 @@
 	      <homogeneous>False</homogeneous>
 	      <spacing>0</spacing>
 	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
+		<padding>5</padding>
+		<expand>False</expand>
 		<fill>True</fill>
 	      </child>
 
@@ -1263,7 +1285,7 @@
 	      <xpad>0</xpad>
 	      <ypad>0</ypad>
 	      <child>
-		<padding>3</padding>
+		<padding>0</padding>
 		<expand>False</expand>
 		<fill>False</fill>
 	      </child>
@@ -1308,6 +1330,61 @@
 	</widget>
       </widget>
     </widget>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkFontSelectionDialog</class>
+  <name>fontselect</name>
+  <border_width>4</border_width>
+  <title>Select Font</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>True</auto_shrink>
+
+  <widget>
+    <class>GtkButton</class>
+    <child_name>FontSel:ok_button</child_name>
+    <name>ok_button1</name>
+    <can_default>True</can_default>
+    <can_focus>True</can_focus>
+    <signal>
+      <name>clicked</name>
+      <handler>props_fok_button_clicked</handler>
+      <last_modification_time>Sat, 24 Jun 2000 18:59:52 GMT</last_modification_time>
+    </signal>
+    <label>OK</label>
+  </widget>
+
+  <widget>
+    <class>GtkButton</class>
+    <child_name>FontSel:apply_button</child_name>
+    <name>apply_button1</name>
+    <can_default>True</can_default>
+    <can_focus>True</can_focus>
+    <signal>
+      <name>clicked</name>
+      <handler>props_fapply_button_clicked</handler>
+      <last_modification_time>Sat, 24 Jun 2000 19:00:17 GMT</last_modification_time>
+    </signal>
+    <label>Apply</label>
+  </widget>
+
+  <widget>
+    <class>GtkButton</class>
+    <child_name>FontSel:cancel_button</child_name>
+    <name>cancel_button1</name>
+    <can_default>True</can_default>
+    <can_focus>True</can_focus>
+    <signal>
+      <name>clicked</name>
+      <handler>props_fcancel_button_clicked</handler>
+      <last_modification_time>Sat, 24 Jun 2000 19:00:33 GMT</last_modification_time>
+    </signal>
+    <label>Cancel</label>
   </widget>
 </widget>
 
