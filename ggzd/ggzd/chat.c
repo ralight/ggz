@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 5/10/00
  * Desc: Functions for handling/manipulating GGZ chat/messaging
- * $Id: chat.c 4822 2002-10-09 06:17:54Z jdorje $
+ * $Id: chat.c 4823 2002-10-09 06:19:45Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -50,8 +50,8 @@ extern struct GameInfo game_types[MAX_GAME_TYPES];
 /* Local data type */
 typedef struct {
 	GGZChatType type;
-	char *sender;
-	char *message;
+	const char *sender;
+	const char *message;
 } GGZChatEventData;
 
 /* Local functions and callbacks */

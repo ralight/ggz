@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4822 2002-10-09 06:17:54Z jdorje $
+ * $Id: net.c 4823 2002-10-09 06:19:45Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -553,7 +553,7 @@ GGZReturn net_send_room_join(GGZNetIO *net, GGZClientReqError status)
 
 
 GGZReturn net_send_chat(GGZNetIO *net, GGZChatType type,
-			char *sender, char *msg)
+			const char *sender, const char *msg)
 {
 	const char *type_str = ggz_chattype_to_string(type);
 
