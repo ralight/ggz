@@ -30,6 +30,9 @@ else:
 #DATAPATH = str("/").join(path.split("/")[:-2]) + "/share/ggz/xadrez-chines/"
 print "Xadrez Chines: Using data path", DATAPATH
 
+def homedir():
+	return pwd.getpwuid(os.geteuid())[5]
+
 def networkprocess(line):
 	global madeturn
 	global humanerror
@@ -179,14 +182,16 @@ def main(ggzmode):
 
 	""" Game stones """
 
+	theme = "dark"
+
 	img = {}
-	img['pawn:white'] = pygame.image.load(DATAPATH + "pawn.png")
-	img['bodyguard:white'] = pygame.image.load(DATAPATH + "bodyguard.png")
-	img['bishop:white'] = pygame.image.load(DATAPATH + "bishop.png")
-	img['knight:white'] = pygame.image.load(DATAPATH + "knight.png")
-	img['cannon:white'] = pygame.image.load(DATAPATH + "cannon.png")
-	img['rock:white'] = pygame.image.load(DATAPATH + "rock.png")
-	img['king:white'] = pygame.image.load(DATAPATH + "king.png")
+	img['pawn:white'] = pygame.image.load(DATAPATH + "themes/" + theme + "/pawn.png")
+	img['bodyguard:white'] = pygame.image.load(DATAPATH + "themes/" + theme + "/bodyguard.png")
+	img['bishop:white'] = pygame.image.load(DATAPATH + "themes/" + theme + "/bishop.png")
+	img['knight:white'] = pygame.image.load(DATAPATH + "themes/" + theme + "/knight.png")
+	img['cannon:white'] = pygame.image.load(DATAPATH + "themes/" + theme + "/cannon.png")
+	img['rock:white'] = pygame.image.load(DATAPATH + "themes/" + theme + "/rock.png")
+	img['king:white'] = pygame.image.load(DATAPATH + "themes/" + theme + "/king.png")
 
 	alphapix = img['pawn:white']
 
