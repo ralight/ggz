@@ -1,5 +1,5 @@
 Makefile
 Makefile.in
 *.mo
-translations.stamp
+translation.stamp
 
