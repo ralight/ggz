@@ -25,6 +25,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "ai.h"
 #include "common.h"
 #include "ggz.h"
@@ -35,6 +39,20 @@ extern struct ai_function_pointers spades_ai_funcs;
 struct ai_function_pointers *ai_funcs[] =
 	{&random_ai_funcs,
 	 &spades_ai_funcs};
+
+char* ai_get_name(player_t p)
+{
+	char* name;
+	name = ai_funcs[game.ai_type]->get_name(p);
+	if (name == NULL) {
+		char buf[17];
+		snprintf(buf, 17, "Bot %d", p+1);
+		name = strdup(buf);
+	}
+	if (name == NULL)
+		name = "Bot";
+	return name;
+}
 
 /* this inits AI static data at the start of a hand */
 void ai_start_hand()

@@ -41,6 +41,7 @@
 #include "../games/spades.h"
 
 
+static char* get_name(player_t p);
 static void start_hand();
 static void alert_bid(player_t p, bid_t bid);
 static void alert_play(player_t p, card_t play);
@@ -48,12 +49,18 @@ static bid_t get_bid(player_t num);
 static card_t get_play( player_t p, seat_t s);
 
 struct ai_function_pointers spades_ai_funcs = {
+	get_name,
 	start_hand,
 	alert_bid,
 	alert_play,
 	get_bid,
 	get_play
 };
+
+static char* get_name(player_t p)
+{
+	return NULL;
+}
 
 
 

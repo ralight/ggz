@@ -31,6 +31,7 @@
 #include "types.h"
 
 struct ai_function_pointers {
+	char* (*get_name)(player_t);
 	void (*start_hand)();
 	void (*alert_bid)(player_t, bid_t);
 	void (*alert_play)(player_t, card_t);
@@ -44,6 +45,9 @@ typedef enum {
 	GGZ_AI_SPADES = 1
 	/* others can be defined */
 } ai_type_t;
+
+/* get a name for an ai player sitting at the given spot */
+extern char* ai_get_name(player_t);
 
 /* this inits AI static data at the start of a hand */
 extern void ai_start_hand();

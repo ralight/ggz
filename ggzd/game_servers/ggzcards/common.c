@@ -879,16 +879,24 @@ static int determine_host()
  */
 int handle_launch_event()
 {
+	player_t p;
+
 	ggz_debug("Handling a launch event.");
 	if(game.state != WH_STATE_PRELAUNCH) {
 		ggz_debug("ERROR: update: state wasn't prelaunch when handling a launch.");
 		return -1;
 	}
+
 	/* determine number of players. */
 	game.num_players = ggz_seats_num(); /* ggz seats == players */
 	game.host = -1;	/* no host since none has joined yet */
 	game.players = (struct game_player_t *)alloc(game.num_players * sizeof(struct game_player_t));
 	/* we don't yet know the number of seats */
+
+	/* set AI names */
+	for (p=0; p<game.num_players; p++)
+		if (ggz_seats[p].assign == GGZ_SEAT_BOT)
+			snprintf(ggz_seats[p].name, 17, "%s", ai_get_name(p));
 
 	/* as soon as we know which game we're playing, we should init the game */
 	if (game.which_game != GGZ_GAME_UNKNOWN)
