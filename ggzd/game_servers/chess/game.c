@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 6061 2004-06-27 19:34:15Z josef $
+ * $Id: game.c 6065 2004-07-09 11:19:06Z josef $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -99,6 +99,7 @@ static int seats_full(void)
 int game_update(int event_id, void *data) {
   int time, st;
   int from, to;
+  int ret;
   char botmove[6];
   struct timeval now;
 
@@ -200,7 +201,8 @@ int game_update(int event_id, void *data) {
       from = ((char*)data)[0] - 65 + (((char*)data)[1] - 49) * 8;
       to = ((char*)data)[2] - 65 + (((char*)data)[3] - 49) * 8;
       printf("** ai: execute %i->%i\n", from, to);
-      chess_ai_move(from, to);
+      ret = chess_ai_move(from, to, 1);
+      printf("** ai: executed with result %i\n", ret);
       chess_ai_output();
 
       /* Move was valid */
@@ -265,8 +267,8 @@ int game_update(int event_id, void *data) {
       if ((ggzdmod_count_seats(game_info.ggz, GGZ_SEAT_BOT) == 1)
       && (game_info.turn % 2)) {
         printf("** now move chess bot!\n");
-        chess_ai_find(C_BLACK, &from, &to);
-        printf("** would move from %i to %i!\n", from, to);
+        ret = chess_ai_find(C_BLACK, &from, &to);
+        printf("** would move from %i to %i! (valid: %i)\n", from, to, ret);
         botmove[0] = from % 8 + 'A';
         botmove[1] = from / 8 + '1';
         botmove[2] = to % 8 + 'A';

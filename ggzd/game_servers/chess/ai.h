@@ -31,7 +31,7 @@ void chess_ai_init(int color, int depth);
 
 /* Move a figure on the chess board */
 /* Returns 1 on success, 0 on invalid move */
-int chess_ai_move(int from, int to);
+int chess_ai_move(int from, int to, int force);
 
 /* Finds a move */
 /* Returns 1 if found, 0 if not found */

@@ -27,7 +27,7 @@
 #define C_PAWN 1
 #define C_BISHOP 2
 #define C_KNIGHT 3
-#define C_ROCK 4
+#define C_ROOK 4
 #define C_QUEEN 5
 #define C_KING 6
 
@@ -40,6 +40,8 @@
 #define C_FROM 0
 #define C_TO 1
 #define C_VALUE 2
+#define C_ORIGFIGURE 3
+#define C_ORIGCOLOR 4
 
 #define MAX_ITERATIONS 100
 #define MAX_RECURSIONS 100
@@ -47,7 +49,7 @@
 /* Global variables */
 static int chess_ai_table[64][2];
 static int movements[7][10][2];
-static int chess_ai_queue[MAX_RECURSIONS][3];
+static int chess_ai_queue[MAX_RECURSIONS][5];
 static int chess_ai_queuepos;
 static int best_from, best_to, best_value;
 
@@ -85,10 +87,10 @@ static void chess_ai_init_board(void)
 	for(field = 48; field <= 57; field++)
 		chess_ai_table[field][C_FIGURE] = C_PAWN;
 
-	chess_ai_table[0][C_FIGURE] = C_ROCK;
-	chess_ai_table[7][C_FIGURE] = C_ROCK;
-	chess_ai_table[56][C_FIGURE] = C_ROCK;
-	chess_ai_table[63][C_FIGURE] = C_ROCK;
+	chess_ai_table[0][C_FIGURE] = C_ROOK;
+	chess_ai_table[7][C_FIGURE] = C_ROOK;
+	chess_ai_table[56][C_FIGURE] = C_ROOK;
+	chess_ai_table[63][C_FIGURE] = C_ROOK;
 
 	chess_ai_table[1][C_FIGURE] = C_KNIGHT;
 	chess_ai_table[6][C_FIGURE] = C_KNIGHT;
@@ -101,10 +103,10 @@ static void chess_ai_init_board(void)
 	chess_ai_table[61][C_FIGURE] = C_BISHOP;
 
 	chess_ai_table[3][C_FIGURE] = C_QUEEN;
-	chess_ai_table[60][C_FIGURE] = C_QUEEN;
+	chess_ai_table[59][C_FIGURE] = C_QUEEN;
 
 	chess_ai_table[4][C_FIGURE] = C_KING;
-	chess_ai_table[59][C_FIGURE] = C_KING;
+	chess_ai_table[60][C_FIGURE] = C_KING;
 }
 
 void chess_ai_init_movements(void)
@@ -135,11 +137,11 @@ void chess_ai_init_movements(void)
 	movements[C_KNIGHT][3][C_MULTI] = 0;
 	movements[C_KNIGHT][4][C_MOVE] = 0;
 
-	movements[C_ROCK][0][C_MOVE] = 8;
-	movements[C_ROCK][0][C_MULTI] = 1;
-	movements[C_ROCK][1][C_MOVE] = 1;
-	movements[C_ROCK][1][C_MULTI] = 1;
-	movements[C_ROCK][2][C_MOVE] = 0;
+	movements[C_ROOK][0][C_MOVE] = 8;
+	movements[C_ROOK][0][C_MULTI] = 1;
+	movements[C_ROOK][1][C_MOVE] = 1;
+	movements[C_ROOK][1][C_MULTI] = 1;
+	movements[C_ROOK][2][C_MOVE] = 0;
 
 	movements[C_QUEEN][0][C_MOVE] = 8;
 	movements[C_QUEEN][0][C_MULTI] = 1;
@@ -190,12 +192,12 @@ void chess_ai_init(int color, int depth)
 	chess_ai_init_movementsinverse();
 }
 
-int chess_ai_move(int from, int to)
+int chess_ai_move(int from, int to, int force)
 {
 	int figure, color;
 	int i, j, max;
 	int allowed, factor;
-	int pos;
+	int pos, oldpos;
 
 	if((from < 0) || (from > 63)) return 0;
 	if((to < 0) || (to > 63)) return 0;
@@ -212,8 +214,10 @@ int chess_ai_move(int from, int to)
 		/*printf("figure %i: movement %i\n", figure, i);*/
 		max = 1;
 		if(movements[figure][i][C_MULTI]) max = 8;
+		pos = from;
 		for(j = 1; j <= max; j++)
 		{
+			oldpos = pos;
 			pos = from + movements[figure][i][C_MOVE] * factor * j;
 			/*printf("try out %i->%i\n", from, pos);*/
 			if((pos < 0) || (pos > 63)) break;
@@ -222,7 +226,9 @@ int chess_ai_move(int from, int to)
 				/*if(chess_ai_table[pos][C_COLOR] == color) break;
 				if(chess_ai_table[pos][C_COLOR] == C_NONE) break;*/
 				if(chess_ai_table[pos][C_COLOR] == color) break;
+				if(pos != to) break;
 			}
+			if(abs((pos % 8) - (oldpos % 8)) > 2) break;
 			if(pos == to)
 			{
 				allowed = 1;
@@ -236,39 +242,52 @@ int chess_ai_move(int from, int to)
 		}
 		if(allowed) break;
 	}
-	if(!allowed) return 0;
+	if((!allowed) && (!force)) return 0;
 
 	chess_ai_table[to][C_FIGURE] = chess_ai_table[from][C_FIGURE];
 	chess_ai_table[to][C_COLOR] = chess_ai_table[from][C_COLOR];
 	chess_ai_table[from][C_FIGURE] = 0;
 	chess_ai_table[from][C_COLOR] = C_NONE;
 
-	return 1;
+	return allowed;
 }
 
 static int chess_ai_find_alphabeta(int color, int from, int to)
 {
-	int val, tmp;
+	int val, tmpfigure, tmpcolor;
+	int i;
 
 	if(chess_ai_queuepos >= chess_ai_depth) return 0;
 
-	tmp = chess_ai_table[to][C_FIGURE];
+	tmpfigure = chess_ai_table[to][C_FIGURE];
+	tmpcolor = chess_ai_table[to][C_COLOR];
 	chess_ai_table[to][C_FIGURE] = chess_ai_table[from][C_FIGURE];
 	chess_ai_table[to][C_COLOR] = chess_ai_table[from][C_COLOR];
-	chess_ai_table[from][C_FIGURE] = tmp;
+	chess_ai_table[from][C_FIGURE] = C_EMPTY;
 	chess_ai_table[from][C_COLOR] = C_NONE;
 
 	val = 1;
-	if(tmp == C_KING) val = 500;
-	if(tmp == C_QUEEN) val = 100;
-	if(tmp == C_ROCK) val = 50;
-	if(tmp == C_KNIGHT) val = 35;
-	if(tmp == C_BISHOP) val = 35;
-	if(tmp == C_PAWN) val = 10;
+	if(tmpfigure == C_KING) val = 500;
+	if(tmpfigure == C_QUEEN) val = 100;
+	if(tmpfigure == C_ROOK) val = 50;
+	if(tmpfigure == C_KNIGHT) val = 35;
+	if(tmpfigure == C_BISHOP) val = 35;
+	if(tmpfigure == C_PAWN) val = 10;
 
-	chess_ai_queue[chess_ai_queuepos][C_VALUE] = val;
 	chess_ai_queue[chess_ai_queuepos][C_FROM] = from;
 	chess_ai_queue[chess_ai_queuepos][C_TO] = to;
+	chess_ai_queue[chess_ai_queuepos][C_ORIGFIGURE] = tmpfigure;
+	chess_ai_queue[chess_ai_queuepos][C_ORIGCOLOR] = tmpcolor;
+	if(val > chess_ai_queue[chess_ai_queuepos][C_VALUE])
+	{
+		chess_ai_queue[chess_ai_queuepos][C_VALUE] = val;
+		/*printf("in level %i, val is altered to %i (moves:", chess_ai_queuepos, val);
+		for(i = 0; i < chess_ai_queuepos + 1; i++)
+			printf(" %i->%i", chess_ai_queue[i][C_FROM], chess_ai_queue[i][C_TO]);
+		printf(")\n");*/
+		for(i = chess_ai_queuepos + 1; i < chess_ai_depth; i++)
+			chess_ai_queue[i][C_VALUE] = 0;
+	}
 	/*printf("++ (%i) %i->%i\n", chess_ai_queuepos, from, to);*/
 	chess_ai_queuepos++;
 
@@ -280,10 +299,10 @@ int chess_ai_find(int color, int *from, int *to)
 	int max;
 	int figure;
 	int i, j, k;
-	int pos, frompos, topos;
+	int pos, oldpos, frompos, topos;
 	int nextcolor, ret;
 	int factor;
-	int tmp;
+	int movevalue;
 
 	int tempqueue[MAX_ITERATIONS][3];
 	int queuepos, maxqueue;
@@ -300,6 +319,8 @@ int chess_ai_find(int color, int *from, int *to)
 			chess_ai_queue[pos][C_FROM] = 0;
 			chess_ai_queue[pos][C_TO] = 0;
 			chess_ai_queue[pos][C_VALUE] = 0;
+			chess_ai_queue[pos][C_ORIGCOLOR] = C_NONE;
+			chess_ai_queue[pos][C_ORIGFIGURE] = C_EMPTY;
 		}
 	}
 
@@ -310,16 +331,20 @@ int chess_ai_find(int color, int *from, int *to)
 		&& (chess_ai_table[i][C_COLOR] == color))
 		{
 			figure = chess_ai_table[i][C_FIGURE];
-			/*printf("=== figure %i: at %i\n", figure, i);*/
+			/*printf("=== figure <%i>: at %i\n", figure, i);*/
 			for(j = 0; movements[figure][j][C_MOVE]; j++)
 			{
 				/*printf("movement %i\n", j);*/
 				max = 1;
 				if(movements[figure][j][C_MULTI]) max = 8;
+				pos = i;
 				for(k = 1; k <= max; k++)
 				{
+					oldpos = pos;
 					pos = i + movements[figure][j][C_MOVE] * factor * k;
+
 					/*printf("try out %i->%i\n", i, pos);*/
+					if(abs((pos % 8) - (oldpos % 8)) > 2) break;
 					if((pos < 0) || (pos > 63)) break;
 					if(chess_ai_table[pos][C_FIGURE] != C_EMPTY)
 					{
@@ -342,6 +367,8 @@ int chess_ai_find(int color, int *from, int *to)
 						printf("Warning: reached limit of %i iterations!\n", MAX_ITERATIONS);
 						break;
 					}
+					if(chess_ai_table[pos][C_FIGURE] != C_EMPTY)
+						break;
 				}
 				if(maxqueue == MAX_ITERATIONS) break;
 			}
@@ -356,7 +383,7 @@ int chess_ai_find(int color, int *from, int *to)
 		topos = tempqueue[queuepos][C_TO];
 		figure = chess_ai_table[frompos][C_FIGURE];
 
-		/*printf("alphabeta (%i) (%i->%i)!\n", figure, frompos, topos);*/
+		/*printf("alphabeta (<%i>) (%i->%i)!\n", figure, frompos, topos);*/
 		ret = chess_ai_find_alphabeta(color, frompos, topos);
 
 		if(!ret)
@@ -370,37 +397,46 @@ int chess_ai_find(int color, int *from, int *to)
 			else nextcolor = C_WHITE;
 
 			/*printf("(iteration %i) recursion level %i\n", queuepos, chess_ai_queuepos);*/
-			chess_ai_find(nextcolor, NULL, NULL);
+			if(chess_ai_queuepos < chess_ai_depth)
+				chess_ai_find(nextcolor, NULL, NULL);
+
+			frompos = chess_ai_queue[chess_ai_queuepos - 1][C_FROM];
+			topos = chess_ai_queue[chess_ai_queuepos - 1][C_TO];
+			chess_ai_table[frompos][C_FIGURE] = chess_ai_table[topos][C_FIGURE];
+			chess_ai_table[frompos][C_COLOR] = chess_ai_table[topos][C_COLOR];
+			chess_ai_table[topos][C_FIGURE] = chess_ai_queue[chess_ai_queuepos - 1][C_ORIGFIGURE];
+			chess_ai_table[topos][C_COLOR] = chess_ai_queue[chess_ai_queuepos - 1][C_ORIGCOLOR];
+			/*printf("-- (%i) %i<-%i\n", chess_ai_queuepos - 1, frompos, topos);*/
+			chess_ai_queuepos--;
+			/*printf("(iteration %i) back to recursion level %i\n", queuepos, chess_ai_queuepos);*/
 		}
 
 		if((from) && (to))
 		{
-			if(chess_ai_queue[queuepos - 1][C_VALUE] > best_value)
-			{
-				best_from = chess_ai_queue[queuepos - 1][C_FROM];
-				best_to = chess_ai_queue[queuepos - 1][C_TO];
-				best_value = chess_ai_queue[queuepos - 1][C_VALUE];
-				/*printf("assign: %i for %i->%i\n", best_value, best_from, best_to);*/
-			}
+			movevalue = 0;
+			for(i = 0; i < chess_ai_depth; i++)
+				movevalue += chess_ai_queue[i][C_VALUE] * (((i + 1) % 2) * 2 - 1);
+			/*printf("iteration (%i: %i->%i) %i\n", queuepos, tempqueue[queuepos][C_FROM], tempqueue[queuepos][C_TO], movevalue);*/
+			tempqueue[queuepos][C_VALUE] = movevalue;
+			for(i = 0; i < MAX_RECURSIONS; i++)
+				chess_ai_queue[i][C_VALUE] = 0;
 		}
-	}
-
-	if(chess_ai_queuepos >= 0)
-	{
-		frompos = chess_ai_queue[chess_ai_queuepos - 1][C_FROM];
-		topos = chess_ai_queue[chess_ai_queuepos - 1][C_TO];
-		tmp = chess_ai_table[frompos][C_FIGURE];
-		chess_ai_table[frompos][C_FIGURE] = chess_ai_table[topos][C_FIGURE];
-		chess_ai_table[frompos][C_COLOR] = chess_ai_table[topos][C_COLOR];
-		chess_ai_table[topos][C_FIGURE] = tmp;
-		chess_ai_table[topos][C_COLOR] = color;
-		/*printf("-- (%i) %i<-%i\n", chess_ai_queuepos - 1, frompos, topos);*/
-		chess_ai_queuepos--;
-		/*printf("(iteration %i) back to recursion level %i\n", queuepos, chess_ai_queuepos);*/
 	}
 
 	if((from) && (to))
 	{
+		best_from = tempqueue[0][C_FROM];
+		best_to = tempqueue[0][C_TO];
+		best_value = tempqueue[0][C_VALUE];
+		for(queuepos = 0; queuepos < maxqueue; queuepos++)
+		{
+			if(tempqueue[queuepos][C_VALUE] > best_value)
+			{
+				best_from = tempqueue[queuepos][C_FROM];
+				best_to = tempqueue[queuepos][C_TO];
+				best_value = tempqueue[queuepos][C_VALUE];
+			}
+		}
 		/*printf("result: %i for %i->%i\n", best_value, best_from, best_to);*/
 		*from = best_from;
 		*to = best_to;
@@ -430,7 +466,7 @@ void chess_ai_output(void)
 			case C_KNIGHT:
 				c = 'P';
 				break;
-			case C_ROCK:
+			case C_ROOK:
 				c = 'H';
 				break;
 			case C_QUEEN:
