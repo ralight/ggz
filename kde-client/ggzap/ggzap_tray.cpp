@@ -23,6 +23,8 @@
 // KDE includes
 #include <klocale.h>
 #include <kpopupmenu.h>
+#include <kapplication.h>
+#include <kaboutapplication.h>
 
 // Qt includes
 #include <qpixmap.h>
@@ -44,9 +46,10 @@ GGZapTray::GGZapTray(QWidget *parent, const char *name)
 
 	setPixmap(QPixmap(KGGZ_DIRECTORY "/ggzap/tray.png"));
 
-	contextMenu()->insertItem(i18n("Configure"), menuconfigure, 1);
+	contextMenu()->insertItem(i18n("Launch a game"), m_menu, menulaunch, 1);
 	contextMenu()->insertSeparator();
-	contextMenu()->insertItem(i18n("Launch a game"), m_menu, menulaunch, 3);
+	contextMenu()->insertItem(i18n("Configure"), menuconfigure, 3);
+	contextMenu()->insertItem(i18n("About..."), menuabout, 4);
 
 	connect(contextMenu(), SIGNAL(activated(int)), SLOT(slotMenu(int)));
 	connect(m_menu, SIGNAL(activated(int)), SLOT(slotLaunch(int)));
@@ -67,12 +70,14 @@ GGZapTray::~GGZapTray()
 
 void GGZapTray::contextMenuAboutToShow(KPopupMenu *menu)
 {
+	QIconSet iconset(QPixmap(KGGZ_DIRECTORY "/ggzap/ggzap.png"));
+
 	m_menu->clear();
 
 	m_game->clear();
 	m_game->autoscan();
 	for(int i = 0; i < m_game->count(); i++)
-		m_menu->insertItem(QString("%1 (%2)").arg(m_game->name(i)).arg(m_game->frontend(i)), i);
+		m_menu->insertItem(iconset, QString("%1 (%2)").arg(m_game->name(i)).arg(m_game->frontend(i)), i);
 }
 
 void GGZapTray::slotLaunch(int gameid)
@@ -88,7 +93,7 @@ void GGZapTray::slotMenu(int id)
 			if(m_state == stateidle)
 			{
 				contextMenu()->removeItem(menulaunch);
-				contextMenu()->insertItem(i18n("Cancel game"), menucancel, 3);
+				contextMenu()->insertItem(i18n("Cancel game"), menucancel, 1);
 			}
 			m_state = stateactive;
 			setMovie(QMovie(KGGZ_DIRECTORY "/ggzap/trayradar.mng"));
@@ -99,13 +104,18 @@ void GGZapTray::slotMenu(int id)
 			if(m_state == stateactive)
 			{
 				contextMenu()->removeItem(menucancel);
-				contextMenu()->insertItem(i18n("Launch a game"), m_menu, menulaunch, 3);
+				contextMenu()->insertItem(i18n("Launch a game"), m_menu, menulaunch, 1);
 			}
 			m_state = stateidle;
 			break;
 		case menuconfigure:
 			if(!m_config) m_config = new GGZapConfig(NULL, "GGZapConfig");
 			m_config->show();
+			break;
+		case menuabout:
+			const KAboutData *aboutdata = kapp->aboutData();
+			KAboutApplication aboutdialog(aboutdata, this);
+			aboutdialog.exec();
 			break;
 	}
 }

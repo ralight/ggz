@@ -37,7 +37,7 @@ class GGZapHandler : public QObject
 		GGZapHandler();
 		~GGZapHandler();
 
-		void init();
+		int init();
 		void setModule(const char *modulename);
 		void setFrontend(const char *frontendtype);
 		/*void process();*/
@@ -57,6 +57,13 @@ class GGZapHandler : public QObject
 			startfail,
 			finish,
 			error
+		};
+
+		enum Errors
+		{
+			error_none,
+			error_module,
+			error_username
 		};
 
 		static GGZHookReturn hookServer(unsigned int id, void *event_data, void *user_data);

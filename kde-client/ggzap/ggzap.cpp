@@ -88,6 +88,8 @@ void GGZap::slotCancel()
 
 void GGZap::launch()
 {
+	int ret;
+
 	if(!m_autolaunch)
 	{
 		m_gui->hide();
@@ -97,7 +99,23 @@ void GGZap::launch()
 
 	m_gui->show();
 	m_gui->setProgress(1);
-	m_handler->init();
+	ret = m_handler->init();
+	switch(ret)
+	{
+		case GGZapHandler::error_module:
+			KMessageBox::error(m_gui,
+				i18n("No module found for this game."),
+				i18n("Error!"));
+			break;
+		case GGZapHandler::error_username:
+			KMessageBox::sorry(m_gui,
+				i18n("You must configure a username first."),
+				i18n("Start failed"));
+			break;
+		case GGZapHandler::error_none:
+			// ok
+			break;
+	}
 }
 
 void GGZap::slotState(int state)

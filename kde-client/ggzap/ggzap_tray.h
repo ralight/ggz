@@ -42,7 +42,8 @@ class GGZapTray : public KSystemTray
 			menuminimize,
 			menulaunch,
 			menucancel,
-			menuconfigure
+			menuconfigure,
+			menuabout
 		};
 
 		enum States

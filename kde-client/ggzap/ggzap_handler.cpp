@@ -63,7 +63,7 @@ GGZapHandler::~GGZapHandler()
 	shutdown();
 }
 
-void GGZapHandler::init()
+int GGZapHandler::init()
 {
 	int result;
 	GGZCoreConfio *conf;
@@ -75,14 +75,16 @@ void GGZapHandler::init()
 	strcat(confdir, "/.ggz/ggzap.rc");
 	conf = new GGZCoreConfio(confdir, GGZCoreConfio::readonly);
 	m_confserver = conf->read("Global", "Server", "ggz.snafu.de");
-	user = conf->read("Global", "Username", "");
+	user = conf->read("Global", "Username", (char*)NULL);
 	delete conf;
+
+	if(!user) return error_username;
 
 	strncpy(m_zapuser, user, 12);
 	strcat(m_zapuser, "/zap");
 	m_confusername = m_zapuser;
 
-	if(!m_modulename) return;
+	if(!m_modulename) return error_module;
 
 	m_server = new GGZCoreServer();
 	attachServerCallbacks();
@@ -90,6 +92,8 @@ void GGZapHandler::init()
 	m_server->setHost(m_confserver, 5688, 0);
 	result = m_server->connect();
 	//if(result == -1) emit signalState(connectfail);
+
+	return error_none;
 }
 
 void GGZapHandler::shutdown()
