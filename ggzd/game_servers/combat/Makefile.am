@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2299 2001-08-28 05:13:32Z jdorje $
+# $Id: Makefile.am 2327 2001-08-30 00:58:20Z jdorje $
 
 EXTRA_DIST = combat.dsc combat.room
 
@@ -17,9 +17,9 @@ ggzd_combat_SOURCES = main.c \
 		      combat.c
 
 
-ggzd_combat_LDADD = $(LDADD) ../libggzmod/libggzdmod.a
+ggzd_combat_LDADD = $(LDADD) $(top_builddir)/game_servers/libggzmod/libggzdmod.a
 
-ggzd_combat_DEPENDENCIES = ../libggzmod/libggzdmod.a
+ggzd_combat_DEPENDENCIES = $(top_builddir)/game_servers/libggzmod/libggzdmod.a
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

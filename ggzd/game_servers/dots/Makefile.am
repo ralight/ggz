@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2297 2001-08-28 04:38:37Z jdorje $
+# $Id: Makefile.am 2327 2001-08-30 00:58:20Z jdorje $
 
 EXTRA_DIST = dots.dsc dots.room
 
@@ -15,9 +15,9 @@ ggzd_dots_SOURCES = main.c \
 		    ai.c \
 		    ai.h
 
-ggzd_dots_LDADD = $(LDADD) ../libggzmod/libggzdmod.a
+ggzd_dots_LDADD = $(LDADD) $(top_builddir)/game_servers/libggzmod/libggzdmod.a
 
-ggzd_dots_DEPENDENCIES = ../libggzmod/libggzdmod.a
+ggzd_dots_DEPENDENCIES = $(top_builddir)/game_servers/libggzmod/libggzdmod.a
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test
