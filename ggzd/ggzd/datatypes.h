@@ -126,6 +126,7 @@ typedef struct {
 	int max_players;
 	int max_tables;
 	int game_type;
+	time_t timestamp;
 	int *player_index;
 	ChatItemStruct *chat_tail;
 #ifdef DEBUG

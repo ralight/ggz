@@ -453,19 +453,20 @@ static void player_remove(int p_index)
  */
 static int player_updates(int p, int fd, time_t* player_ts, time_t* table_ts, 
 			  time_t* type_ts) {
-
+	int room;
 	char user_update = 0;
 	char table_update = 0;
 	char type_update = 0;
 
 	/* Check for player list updates */
-	pthread_rwlock_rdlock(&players.lock);
-	if (difftime(players.timestamp, *player_ts) != 0 ) {
-		*player_ts = players.timestamp;
+	room = players.info[p].room;
+	pthread_rwlock_rdlock(&chat_room[room].lock);
+	if (difftime(chat_room[room].timestamp, *player_ts) != 0) {
+		*player_ts = chat_room[room].timestamp;
 		user_update = 1;
 		dbg_msg(GGZ_DBG_UPDATE, "Player %d needs player update", p);
 	}
-	pthread_rwlock_unlock(&players.lock);
+	pthread_rwlock_unlock(&chat_room[room].lock);
 
 	/* Check for table list updates*/
 	pthread_rwlock_rdlock(&tables.lock);
@@ -904,28 +905,36 @@ static int player_table_leave(int p_index, int p_fd)
 
 static int player_list_players(int p_index, int fd)
 {
-	int i, count = 0;
+	int i, p_2, room;
 	UserInfo info[MAX_USERS];
 
 	dbg_msg(GGZ_DBG_UPDATE,
 		"Handling player list request for player %d", p_index);
 
 	pthread_rwlock_rdlock(&players.lock);
-	for (i = 0; (i < MAX_USERS && count < players.count); i++)
-		if (players.info[i].fd != -1)
-			info[count++] = players.info[i];
+	memcpy(info, players.info, sizeof(info));
 	pthread_rwlock_unlock(&players.lock);
 	
-	if (es_write_int(fd, RSP_LIST_PLAYERS) < 0
-	    || es_write_int(fd, count) < 0)
+	if (es_write_int(fd, RSP_LIST_PLAYERS) < 0)
+		return -1;
+
+	/* Write lock the room so no one can duck out on us in mid send */
+	room = players.info[p_index].room;
+	pthread_rwlock_wrlock(&chat_room[room].lock);
+
+	if(es_write_int(fd, chat_room[room].player_count) < 0)
 		return (-1);
 
-	for (i = 0; i < count; i++) {
-		if (es_write_string(fd, info[i].name) < 0
-		    || es_write_int(fd, info[i].table_index) < 0)
+	for (i = 0; i < chat_room[room].player_count; i++) {
+		p_2 = chat_room[room].player_index[i];
+		if (es_write_string(fd, info[p_2].name) < 0
+		    || es_write_int(fd, info[p_2].table_index) < 0) {
+			pthread_rwlock_unlock(&chat_room[room].lock);
 			return (-1);
+		}
 	}
 
+	pthread_rwlock_unlock(&chat_room[room].lock);
 	return (0);
 }
 

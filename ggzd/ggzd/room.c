@@ -27,6 +27,7 @@
 #include <pthread.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include <easysock.h>
 #include <ggzd.h>
@@ -169,6 +170,7 @@ void room_create_additional(void)
 		err_sys_exit("realloc failed in room_create_new()");
 
 	/* Initialize the chat_tail and lock on the new one */
+	chat_room[opt.num_rooms-1].player_count = 0;
 	chat_room[opt.num_rooms-1].chat_tail = NULL;
 	pthread_rwlock_init(&chat_room[opt.num_rooms-1].lock, NULL);
 #ifdef DEBUG
@@ -253,6 +255,7 @@ int room_join(const int p_index, const int room)
 		chat_room[old_room].player_count --;
 		dbg_msg(GGZ_DBG_ROOM, "Room count %d = %d", old_room,
 			chat_room[old_room].player_count);
+		chat_room[old_room].timestamp = time(NULL);
 	}
 
 	/* Put them in the new room, and free up the old room */
@@ -265,6 +268,7 @@ int room_join(const int p_index, const int room)
 		count = ++ chat_room[room].player_count;
 		chat_room[room].player_index[count-1] = p_index;
 		dbg_msg(GGZ_DBG_ROOM, "Room count %d = %d", room, count);
+		chat_room[room].timestamp = time(NULL);
 	}
 
 	/* Finally we can release the other chat room lock */
