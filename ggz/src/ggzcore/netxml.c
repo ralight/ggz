@@ -322,6 +322,7 @@ int _ggzcore_net_send_login(struct _GGZNet *net)
 	_ggzcore_net_send_line(net, "<SESSION>");
 	_ggzcore_net_send_line(net, "<LOGIN TYPE='%s'>", type);
 	_ggzcore_net_send_line(net, "<NAME>%s</NAME>", handle);
+
 	if (login_type == GGZ_LOGIN)
 		_ggzcore_net_send_line(net, "<PASSWORD>%s</PASSWORD>", password);
 	_ggzcore_net_send_line(net, "</LOGIN>");
@@ -1345,15 +1346,18 @@ static void _ggzcore_net_handle_player(GGZNet *net, GGZXMLElement *player)
 		str_type = _ggzcore_xmlelement_get_attr(player, "TYPE");
 		name = _ggzcore_xmlelement_get_attr(player, "ID");
 		table = safe_atoi(_ggzcore_xmlelement_get_attr(player, "TABLE"));
-
-		if (strcmp(str_type, "normal") == 0)
-			type = GGZ_PLAYER_NORMAL;
-		else if (strcmp(str_type, "guest") == 0)
-			type = GGZ_PLAYER_GUEST;
-		else if (strcmp(str_type, "admin") == 0)
-			type = GGZ_PLAYER_ADMIN;
-		else
-			type = GGZ_PLAYER_NONE;
+		
+		/* Set player's type */
+		type = GGZ_PLAYER_NONE;
+		if (str_type) {
+			if (strcmp(str_type, "normal") == 0)
+				type = GGZ_PLAYER_NORMAL;
+			else if (strcmp(str_type, "guest") == 0)
+				type = GGZ_PLAYER_GUEST;
+			else if (strcmp(str_type, "admin") == 0)
+				type = GGZ_PLAYER_ADMIN;
+		}
+			
 		
 		/* Set up GGZPlayer object */
 		ggz_player = _ggzcore_player_new();
