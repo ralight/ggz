@@ -30,8 +30,8 @@ print ">> register callbacks"
 ggzmod.setHandler(ggzmod.EVENT_STATE, hook_state)
 
 print ">> launch the game client"
-#ggzdmod.connect()
-#ggzdmod.mainLoop()
+ggzmod.connect()
+#ggzmod.mainLoop()
 
 print ">> done."
 
