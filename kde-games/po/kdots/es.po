@@ -1,0 +1,274 @@
+# translation of kdots.po to 
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Luis Pérez Meliá <luipeme@yahoo.es>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kdots\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-15 01:59+0100\n"
+"PO-Revision-Date: 2005-03-23 13:47+0100\n"
+"Last-Translator: Luis Pérez Meliá <luipeme@yahoo.es>\n"
+"Language-Team:  <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.9.1\n"
+
+#: ../../kdots/kdots.cpp:209 ../../kdots/kdots.cpp:219
+#: ../../kdots/kdots.cpp:240
+msgid "A protocol error has been detected. Aborting the game."
+msgstr "Se ha detectado un error en el protocolo. El juego se está abortando."
+
+#: ../../kdots/kdots_win.cpp:40 ../../kdots/kdots_win.cpp:41
+#: ../../kdots/kdots_win.cpp:45
+msgid "About"
+msgstr "Sobre"
+
+#: ../../kdots/kdots_about.cpp:42
+msgid "About KDots"
+msgstr "Acerca de KDots"
+
+#: ../../kdots/main.cpp:38
+msgid "Author."
+msgstr "Autor."
+
+#: ../../kdots/kdots_replay.cpp:35
+msgid "Close"
+msgstr "Cerrar"
+
+#: ../../kdots/kdots_about.cpp:103 ../../kdots/kdots_win.cpp:57
+#: ../../kdots/main.cpp:32 ../../kdots/kdots_win.cpp:58
+#: ../../kdots/kdots_about.cpp:107 ../../kdots/kdots_win.cpp:68
+msgid "Connect The Dots for KDE"
+msgstr "Conectando Dots para KDE"
+
+#: ../../kdots/kdots_win.cpp:42 ../../kdots/kdots_win.cpp:43
+#: ../../kdots/kdots_win.cpp:47
+msgid "Game"
+msgstr "Juego"
+
+#: ../../kdots/kdots_win.cpp:38 ../../kdots/kdots_win.cpp:39
+#: ../../kdots/kdots_win.cpp:43
+msgid "Game Help"
+msgstr "Ayuda del juego"
+
+#: ../../kdots/kdots_help.cpp:71
+msgid "Game help for KDots"
+msgstr "Ayuda del juego para KDots"
+
+#: ../../kdots/kdots.cpp:193 ../../kdots/kdots.cpp:203
+#: ../../kdots/kdots.cpp:224
+msgid "Game over"
+msgstr "Juego terminado"
+
+#: ../../kdots/kdots.cpp:190 ../../kdots/kdots.cpp:200
+#: ../../kdots/kdots.cpp:221
+msgid "Game over!"
+msgstr "Juego terminado!"
+
+#: ../../kdots/kdots_help.cpp:81
+msgid "Have fun!"
+msgstr "¡Diviertete!"
+
+#: ../../kdots/kdots_win.cpp:43 ../../kdots/kdots_win.cpp:44
+#: ../../kdots/kdots_win.cpp:48
+msgid "Help"
+msgstr "Ayuda"
+
+#: ../../kdots/kdots_options.cpp:36
+msgid "Horizontal"
+msgstr ""
+
+#: ../../kdots/kdots.cpp:182 ../../kdots/kdots.cpp:192
+#: ../../kdots/kdots.cpp:204
+msgid "Invalid move, please try again!"
+msgstr "Movimiento inválido,¡vuelve a intentarlo!"
+
+#: ../../kdots/main.cpp:30
+msgid "KDots"
+msgstr ""
+
+#: ../../kdots/kdots_help.cpp:37
+msgid "KDots Help"
+msgstr "Ayuda KDots"
+
+#: ../../kdots/kdots_options.cpp:77
+msgid "KDots Options"
+msgstr "Opciones de KDots"
+
+#: ../../kdots/kdots_replay.cpp:62
+msgid "KDots Replay"
+msgstr "Volver a jugar KDots"
+
+#: ../../kdots/kdots_win.cpp:29 ../../kdots/kdots_win.cpp:30
+#: ../../kdots/kdots_win.cpp:32
+msgid "Launching KDots..."
+msgstr "Lanzando KDots..."
+
+#: ../../kdots/kdots.cpp:123 ../../kdots/kdots.cpp:130
+#: ../../kdots/kdots.cpp:140
+msgid "No game running yet!"
+msgstr "¡El juego no está en marcha todavía!"
+
+#: ../../kdots/kdots.cpp:87 ../../kdots/kdots.cpp:94 ../../kdots/kdots.cpp:103
+msgid "Not your turn!"
+msgstr "¡No es tu turno!"
+
+#: ../../kdots/kdots_about.cpp:33 ../../kdots/kdots_help.cpp:30
+msgid "OK"
+msgstr ""
+
+#: ../../kdots/kdots_options.cpp:28
+msgid "Options"
+msgstr "Opciones"
+
+#: ../../kdots/kdots_options.cpp:34
+msgid "Please specify the board size here."
+msgstr "Especifica el tamaño del tablero aquí."
+
+#: ../../kdots/kdots_replay.cpp:47
+msgid "Position"
+msgstr "Posición"
+
+#: ../../kdots/kdots_replay.cpp:72
+msgid "Position: %1"
+msgstr "Posición: %1"
+
+#: ../../kdots/kdots.cpp:209 ../../kdots/kdots.cpp:219
+#: ../../kdots/kdots.cpp:240
+msgid "Protocol error"
+msgstr "Error de protocolo"
+
+#: ../../kdots/kdots_win.cpp:35 ../../kdots/kdots_win.cpp:36
+#: ../../kdots/kdots_win.cpp:40
+msgid "Quit"
+msgstr "Salir"
+
+#: ../../kdots/kdots.cpp:138 ../../kdots/kdots.cpp:145
+#: ../../kdots/kdots.cpp:157
+msgid "Receiving data"
+msgstr "Recibiendo la información"
+
+#: ../../kdots/kdots_win.cpp:38
+msgid "Replay games..."
+msgstr "Repetir juegos..."
+
+#: ../../kdots/kdots_win.cpp:63
+msgid "Replay-only mode"
+msgstr "Repetición solo el modo"
+
+#: ../../kdots/main.cpp:26
+msgid "Request GGZ game explicitely"
+msgstr "Petición del juego GGZ explícitamente"
+
+#: ../../kdots/kdots.cpp:64 ../../kdots/kdots.cpp:65 ../../kdots/kdots.cpp:74
+msgid "Requesting game options"
+msgstr "Solicitando las opciones del juego"
+
+#: ../../kdots/kdots.cpp:76 ../../kdots/kdots.cpp:77 ../../kdots/kdots.cpp:86
+msgid "Sending game options"
+msgstr "Mandado las opciones del juego"
+
+#: ../../kdots/kdots.cpp:107 ../../kdots/kdots.cpp:114
+#: ../../kdots/kdots.cpp:123
+msgid "Sending move"
+msgstr "Mandando movimientos"
+
+#: ../../kdots/kdots.cpp:123 ../../kdots/kdots.cpp:130
+#: ../../kdots/kdots.cpp:140
+msgid "Synchronization"
+msgstr "Sincronización"
+
+#: ../../kdots/kdots_win.cpp:33 ../../kdots/kdots_win.cpp:34
+#: ../../kdots/kdots_win.cpp:36
+msgid "Synchronize"
+msgstr "Sincronizar"
+
+#: ../../kdots/kdots.cpp:253 ../../kdots/kdots.cpp:263
+#: ../../kdots/kdots.cpp:284
+msgid "Syncing successful"
+msgstr "Sincronización realizada"
+
+#: ../../kdots/main.cpp:39
+msgid "TRANSLATOR-EMAIL"
+msgstr "luipeme@yahoo.es"
+
+#: ../../kdots/main.cpp:39
+msgid "TRANSLATOR-NAME"
+msgstr "Luis Pérez Meliá"
+
+#: ../../kdots/kdots_about.cpp:116 ../../kdots/kdots_about.cpp:120
+msgid "Thanks to www.drachenburg.de"
+msgstr "Gracias a www.drachenburg.de"
+
+#: ../../kdots/kdots.cpp:191 ../../kdots/kdots.cpp:201
+#: ../../kdots/kdots.cpp:222
+#, c-format
+msgid ""
+"The game is over.\n"
+"You reached %i points, your opponent %i.\n"
+"\n"
+"Play another game?"
+msgstr ""
+"El juego ha terminado.\n"
+"Has conseguido %i puntos, y tu oponente ha  obtenido %i.\n"
+"\n"
+"¿Jugamos otra partida?"
+
+#: ../../kdots/kdots_help.cpp:74
+msgid "This game consists of a game board with"
+msgstr "El juego consiste en un juego de mesa con"
+
+#: ../../kdots/kdots_about.cpp:108 ../../kdots/main.cpp:35
+#: ../../kdots/kdots_about.cpp:112
+msgid "This game is part of the GGZ Gaming Zone."
+msgstr "Este juego es parte de la zona de juegos GGZ."
+
+#: ../../kdots/kdots_options.cpp:37
+msgid "Vertical"
+msgstr ""
+
+#: ../../kdots/kdots_win.cpp:54 ../../kdots/kdots_win.cpp:55
+#: ../../kdots/kdots_win.cpp:60
+msgid "Waiting for opponent..."
+msgstr "Esperando al oponente..."
+
+#: ../../kdots/kdots.cpp:88 ../../kdots/kdots.cpp:97
+msgid "You're only watching"
+msgstr "Estás en modo espectador"
+
+#: ../../kdots/kdots.cpp:159 ../../kdots/kdots.cpp:167
+#: ../../kdots/kdots.cpp:179
+msgid "Your turn."
+msgstr "Tu turno."
+
+#: ../../kdots/kdots_help.cpp:80
+msgid "dots to prevent a tie game!"
+msgstr "¡Puntos para prevenir un empate en el juego!"
+
+#: ../../kdots/kdots_help.cpp:75
+msgid "dots which are to be connected. Whenever"
+msgstr "puntos que deben ser conectados.  Siempre que"
+
+#: ../../kdots/kdots_about.cpp:117 ../../kdots/kdots_about.cpp:121
+msgid "for their dragon images!"
+msgstr "¡para sus imágenes del dragón!"
+
+#: ../../kdots/kdots_help.cpp:79
+msgid "has won.  Tip: Always prefer an odd number of"
+msgstr "has ganado.  Consejo: Prefiera siempre un número impar de"
+
+#: ../../kdots/kdots_help.cpp:77
+msgid "is marked as yours. If all dots are connected,"
+msgstr "está marcado como el tuyo.  Si todos los puntos están conectados,"
+
+#: ../../kdots/kdots_help.cpp:78
+msgid "the player with the highest number of squares"
+msgstr "el jugador con el número más alto de cuadrados"
+
+#: ../../kdots/kdots_help.cpp:76
+msgid "you fill one square by surrounding it, it"
+msgstr "usted llena un cuadrado rodeándolo, él"
+
