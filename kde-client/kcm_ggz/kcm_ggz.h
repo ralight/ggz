@@ -21,7 +21,7 @@ class KCMGGZ : public KCModule
 		void slotChanged();
 
 	private:
-		QList<KCMGGZPane*> panelist;
+		QList<KCMGGZPane> panelist;
 };
 
 #endif

@@ -46,7 +46,7 @@ KCMGGZ::KCMGGZ(QWidget *parent, const char *name)
 				pane = (*init)(ctl);
 				if(pane)
 				{
-					panelist.append(&pane);
+					panelist.append(pane);
 					ctl->addTab(pane, pane->caption());
 					connect(pane, SIGNAL(signalChanged()), SLOT(slotChanged()));
 				}
@@ -73,10 +73,14 @@ KCMGGZ::~KCMGGZ()
 
 void KCMGGZ::load()
 {
+	for(KCMGGZPane *pane = panelist.first(); pane; pane = panelist.next())
+		pane->load();
 }
 
 void KCMGGZ::save()
 {
+	for(KCMGGZPane *pane = panelist.first(); pane; pane = panelist.next())
+		pane->save();
 }
 
 void KCMGGZ::defaults()
