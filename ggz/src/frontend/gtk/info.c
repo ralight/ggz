@@ -116,7 +116,6 @@ create_dlg_info (void)
   gtk_object_set_data (GTK_OBJECT (dlg_info), "dlg_info", dlg_info);
   gtk_widget_set_usize (dlg_info, 424, -2);
   gtk_window_set_title (GTK_WINDOW (dlg_info), _("Room Information"));
-  GTK_WINDOW (dlg_info)->type = GTK_WINDOW_DIALOG;
 
   dialog_vbox = GTK_DIALOG (dlg_info)->vbox;
   gtk_object_set_data (GTK_OBJECT (dlg_info), "dialog_vbox", dialog_vbox);
