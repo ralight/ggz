@@ -1,5 +1,5 @@
 <div id="rightbar">
-	<h1>Senaste ändringarna</h1>
+	<h1>Nyheter</h1>
 
 	<hr class="leather">
 
