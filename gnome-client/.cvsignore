@@ -1,0 +1,7 @@
+intl
+configure
+config.status
+config.log
+autom4te.cache
+Makefile.in
+Makefile
