@@ -138,6 +138,7 @@ AC_OUTPUT(Makefile
 	ggz-kde/data/icons/games/Makefile
 	ggz-kde/data/icons/players/Makefile
 	ggz-kde/data/kde/Makefile
+	ggz-kde/data/splash/Makefile
 	ggz-kde/po/Makefile)
 
 dnl Report success
