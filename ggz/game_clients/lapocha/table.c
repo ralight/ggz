@@ -98,19 +98,19 @@ void table_initialize(void)
 	f1_style = gtk_widget_get_style(f1);
 	cards = load_pixmap(f1->window, &mask,
 			    &f1_style->bg[GTK_STATE_NORMAL],
-			    "cards-1.xpm");
+			    "cards-1.png");
 	cards_b1 = load_pixmap(f1->window, &mask,
 			       &f1_style->bg[GTK_STATE_NORMAL],
-			       "cards-b1.xpm");
+			       "cards-b1.png");
 	cards_b2 = load_pixmap(f1->window, &mask,
 			       &f1_style->bg[GTK_STATE_NORMAL],
-			       "cards-b2.xpm");
+			       "cards-b2.png");
 	cards_b3 = load_pixmap(f1->window, &mask,
 			       &f1_style->bg[GTK_STATE_NORMAL],
-			       "cards-b3.xpm");
+			       "cards-b3.png");
 	cards_b4 = load_pixmap(f1->window, &mask,
 			       &f1_style->bg[GTK_STATE_NORMAL],
-			       "cards-b4.xpm");
+			       "cards-b4.png");
 	table_buf = gdk_pixmap_new(f1->window,
 			     f1->allocation.width,
 			     f1->allocation.height,

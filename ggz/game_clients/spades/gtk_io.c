@@ -158,11 +158,11 @@ void InitPixmaps(GtkWidget * window)
 
 	playArea->cards = load_pixmap(window->window, &mask,
 				      &style->bg[GTK_STATE_NORMAL],
-				      "cards-1.xpm");
+				      "cards-1.png");
 #if 0 /* Card backs aren't used */
 	playArea->cardbacks = load_pixmap(window->window, &mask,
 					  &style->bg[GTK_STATE_NORMAL],
-					  "cards-b1.xpm");
+					  "cards-b1.png");
 #endif
 }
 

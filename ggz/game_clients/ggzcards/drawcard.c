@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 04/20/2002
  * Desc: Routines to display cards
- * $Id: drawcard.c 6226 2004-10-28 05:54:14Z jdorje $
+ * $Id: drawcard.c 6230 2004-10-28 06:43:08Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -78,12 +78,12 @@ static void load_french_cardset(void)
 {
 	int i;
 
-	/* build pixmaps from the xpms */
+	/* build pixmaps from the images */
 	for (i = 0; i < 4 /* 4 orientations */ ; i++) {
 		char fronts[32], backs[32];
 
-		snprintf(fronts, sizeof(fronts), "cards-%d.xpm", i + 1);
-		snprintf(backs, sizeof(backs), "cards-b%d.xpm", i + 1);
+		snprintf(fronts, sizeof(fronts), "cards-%d.png", i + 1);
+		snprintf(backs, sizeof(backs), "cards-b%d.png", i + 1);
 
 		cards[i].front = load_pixmap(table->window, NULL,
 					     &table_style->
