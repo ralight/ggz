@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 4482 2002-09-09 04:03:31Z jdorje $
+ * $Id: game.c 5033 2002-10-25 22:13:36Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -61,10 +61,24 @@ void game_init(GGZdMod *ggzdmod) {
 // Handle server messages
 void game_handle_ggz_state(GGZdMod* ggz, GGZdModEvent event, void *data) {
 	GGZdModState old_state = *(GGZdModState*)data;
+	GGZdModState new_state = ggzdmod_get_state(ggz);
 	
 	// Check if it's the right time to launch the game and if ggz could do taht
 	if (old_state == GGZDMOD_STATE_CREATED) {
 		assert(rvr_game.state == RVR_STATE_INIT);
+	}
+
+	if (new_state == GGZDMOD_STATE_PLAYING) {
+		// Game already going on?
+		if (rvr_game.turn == EMPTY)
+			rvr_game.turn = BLACK;
+
+		// No! Let's start the game!
+		game_start();
+		game_play();
+	}
+
+	if (new_state == GGZDMOD_STATE_WAITING) {
 		// That's great! Update the state
 		// Now waiting for people to join
 		rvr_game.state = RVR_STATE_WAIT;
@@ -75,43 +89,46 @@ void game_handle_ggz_state(GGZdMod* ggz, GGZdModEvent event, void *data) {
 
 static int seats_full(void)
 {
-	return ggzdmod_count_seats(rvr_game.ggz, GGZ_SEAT_OPEN)
-		+ ggzdmod_count_seats(rvr_game.ggz, GGZ_SEAT_RESERVED) == 0;
+	/* This calculation is a bit inefficient, but that's OK */
+	return ggzdmod_count_seats(rvr_game.ggz, GGZ_SEAT_OPEN) == 0
+		&& ggzdmod_count_seats(rvr_game.ggz, GGZ_SEAT_RESERVED) == 0;
 }
 
-void game_handle_ggz_join(GGZdMod* ggz, GGZdModEvent event, void *data) {
-	int seat = ((GGZSeat*)data)->num;
-	
-	// Check if it's the right time to join the game and if ggz could do that
-	assert(rvr_game.state == RVR_STATE_WAIT);
+
+static int seats_empty(void)
+{
+	/* This calculation is a bit inefficient, but that's OK */
+	return ggzdmod_count_seats(rvr_game.ggz, GGZ_SEAT_PLAYER) == 0
+		&& ggzdmod_count_spectators(rvr_game.ggz) == 0;
+}
+
+
+void game_handle_ggz_seat(GGZdMod* ggz, GGZdModEvent event, void *data) {
+	GGZSeat *old_seat = data;
+	GGZSeat new_seat = ggzdmod_get_seat(ggz, old_seat->num);
+	GGZdModState new_state;
+
+	/* Check the state. */
+	if (seats_full())
+		new_state = GGZDMOD_STATE_PLAYING;
+	else if (seats_empty())
+		new_state = GGZDMOD_STATE_DONE;
+	else
+		new_state = GGZDMOD_STATE_WAITING;
 	
 	// That's great!! Do stuff
-				
-	game_send_seat(seat);
+
+	if (new_seat.type == GGZ_SEAT_PLAYER)
+		game_send_seat(new_seat.num);
 	game_send_players();
 
-	// Waiting for anyone?
-	if (seats_full()) {
-		// Game already going on?
-		ggzdmod_set_state(ggz, GGZDMOD_STATE_PLAYING);
-		if (rvr_game.turn == EMPTY)
-			rvr_game.turn = BLACK;
-		else
-			game_send_sync(seat);
-		// No! Let's start the game!
-		game_start();
-		game_play();
-	}
+	if (new_state == GGZDMOD_STATE_PLAYING
+	    && rvr_game.turn != EMPTY)
+		game_send_sync(new_seat.num);
+
+	ggzdmod_set_state(ggz, new_state);
 }
 
-void game_handle_ggz_leave(GGZdMod* ggz, GGZdModEvent event, void *data) {
-	// User has left
-	ggzdmod_set_state(ggz, GGZDMOD_STATE_WAITING);
-	if (rvr_game.state == RVR_STATE_PLAYING) {
-		rvr_game.state = RVR_STATE_WAIT;
-		game_send_players();
-	}
-}
 
 int game_send_seat(int seat) {
 	int fd = ggzdmod_get_seat(rvr_game.ggz, seat).fd;
