@@ -1,0 +1,42 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Chinese Checkers</b><br>
+Board game for 2 to 6 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Chinese Checkers features</i><br>
+<ul>
+<li>Gtk+ game client
+<li>AI opponents available
+<li>supports statistics
+</ul>
+<br>
+
+<i>Chinese Checkers rules</i><br>
+The classic Chinese Checkers rule apply.
+
+</td><td valign="top">
+
+<i>Gtk+ client:</i><br>
+<img src="pics/ccheckers.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

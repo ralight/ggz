@@ -1,0 +1,43 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>GGZCards</b><br>
+Card game for 2 to 6 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>GGZCards features</i><br>
+<ul>
+<li>Gtk+ game client
+<li>AI opponents available
+<li>supports statistics
+<li>multi-protocol game engine: Bridge, FortyTwo, Hearts, LaPocha, Spades, Suaro, Sueca, Whist
+</ul>
+<br>
+
+<i>GGZCards rules</i><br>
+Each GGZCards engine has its own rules.
+
+</td><td valign="top">
+
+<i>Gtk+ client:</i><br>
+<img src="pics/ggzcards.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+

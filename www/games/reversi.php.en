@@ -1,0 +1,50 @@
+<? include_once("../site/header.php"); ?>
+
+<table class="content" width="100%">
+<tr>
+<td>
+<font size="3">
+
+<b>Reversi</b><br>
+Board game for 2 players.
+<br>
+
+<table class="inner">
+<tr>
+<td valign="top">
+
+<i>Reversi features</i><br>
+<ul>
+<li>Gtk+ and KDE game clients
+<li>AI opponents available
+<li>supports statistics
+</ul>
+<br>
+
+<i>Reversi rules</i><br>
+Starting from an initial position, each player in turn puts one stone
+onto the board. The goal is to have as many opposite stones as possible
+between the new one and any other own one, so they can get converted.
+
+The game ends if no stones can be set anymore. The player with the most
+stones wins the game.
+
+</td><td valign="top">
+
+<i>Gtk+ client:</i><br>
+<img src="pics/reversi.png"><br>
+
+<i>KDE client:</i><br>
+<img src="pics/kreversi.png"><br>
+
+</td>
+</tr>
+</table>
+
+</font>
+</td>
+</tr>
+</table>
+
+<? include_once("../site/footer.php"); ?>
+
