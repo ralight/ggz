@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 6489 2004-12-15 20:04:11Z josef $
+ * $Id: game.c 6490 2004-12-15 20:10:15Z josef $
  *
  * Functions for handling game events
  *
@@ -46,6 +46,7 @@ static GGZGameType *gametype = NULL;
 static int gameindex = -1;
 static int fd = -1;
 static char *user;
+static int readserver = 1;
 
 void game_init(GGZModule *module, GGZGameType *type, int index, char *nick)
 {
@@ -89,6 +90,7 @@ fprintf(stderr, "*game_process end*\n");
 
 static void channel_process(void)
 {
+if(!readserver) return;
 fprintf(stderr, "*channel_process*\n");
 fprintf(stderr, "%i\n", ggzcore_game_get_control_fd(game));
 	if (server) {
@@ -110,6 +112,7 @@ void game_channel_ready(int fd)
 {
 fprintf(stderr, "**channel_ready**\n");
 	ggzcore_game_set_server_fd(game, fd);
+	readserver = 0;
 }
 
 
