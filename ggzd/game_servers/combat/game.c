@@ -278,6 +278,10 @@ void game_send_sync(int seat, int cheated) {
 
   syncstr[len-1] = 0;
 
+	ggz_debug("Sync string player %d");
+	for (a = 0; a < cbt_game.width*cbt_game.height+2; a++)
+		ggz_debug("%d", syncstr[a]);
+
   // Increase one of each character
   for (a = 0; a < len-1; a++)
     syncstr[a]++;
@@ -468,14 +472,15 @@ int game_get_setup(int seat) {
 void game_start() {
   int a, fd;
 
-  cbt_game.state = CBT_STATE_PLAYING;
-
-  if (SET(OPT_RANDOM_SETUP)) {
+  if (SET(OPT_RANDOM_SETUP) && cbt_game.state != CBT_STATE_PLAYING) {
     for (a = 0; a < cbt_game.number; a++) {
       ggz_debug("Doing random setup for %d", a);
       combat_random_setup(&cbt_game, a);
-      game_send_sync(a, 0);
     }
+		// Setup everything !
+		// Now send it
+		for (a = 0; a < cbt_game.number; a++)
+			game_send_sync(a, SET(OPT_OPEN_MAP));
   }
 
   for (a = 0; a < cbt_game.number; a++) {
@@ -487,6 +492,8 @@ void game_start() {
     if (es_write_int(fd, CBT_MSG_START) < 0)
       ggz_debug("Can't send start message to player %d", a);
   }
+
+  cbt_game.state = CBT_STATE_PLAYING;
 
 }
 
