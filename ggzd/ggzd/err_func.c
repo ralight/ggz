@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 4965 2002-10-20 09:05:32Z jdorje $
+ * $Id: err_func.c 5461 2003-02-26 13:56:40Z dr_maux $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -149,7 +149,7 @@ static void debug_handler(int priority, const char *msg)
 			kill_me = 1;
 		else
 			strftime(hdr + strlen(hdr), sizeof(hdr) - strlen(hdr),
-				"%b %d %T ", &localtm);
+				"%b %d %Y %T ", &localtm);
 	}
 
 	send_debug_output(priority, hdr, msg);
