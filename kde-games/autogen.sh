@@ -33,8 +33,8 @@ nmicro="0`echo $needed | cut -s -d . -f 3`"
 
 old=0
 if [ $vmajor -lt $nmajor ]; then old=1;
-elif [ $vminor -lt $nminor ]; then old=1;
-elif [ $vmicro -lt $nmicro ]; then old=1;
+elif [ $vmajor -eq $nmajor ] && [ $vminor -lt $nminor ]; then old=1;
+elif [ $vmajor -eq $nmajor ] && [ $vminor -eq $nminor ] && [ $vmicro -lt $nmicro ]; then old=1;
 fi
 
 vversion=`echo "$vmajor.$vminor.$vmicro" | perl -e "\\$_ = <STDIN>; \\$_ =~ s/(^|\.)0(\d+)/\\$1\\$2/g; print"`
