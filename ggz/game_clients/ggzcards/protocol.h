@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3300 2002-02-10 11:07:20Z jdorje $
+ * $Id: protocol.h 3318 2002-02-11 06:40:29Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -123,6 +123,9 @@ typedef enum {
 	MESSAGE_GAME,
 } server_msg_t;
 
+/** @brief Return a string description of the opcode. */
+const char* get_server_opcode_name(server_msg_t opcode);
+
 /* Global message types */
 /* Each MESSAGE_GAME will be followed by one of these opcodes.  This
    represents game-specific data being transmitted to the frontend. */
@@ -147,6 +150,9 @@ typedef enum {
 	GAME_MESSAGE_GAME,
 } game_message_t;
 
+/** @brief Return a string description of the opcode. */
+const char* get_game_message_name(game_message_t opcode);
+
 /* Messages from client */
 typedef enum {
 	/* A newgame response, sent in response to a REQ_NEWGAME.  No data. */
@@ -169,6 +175,9 @@ typedef enum {
 	   the client. */
 	REQ_SYNC
 } client_msg_t;
+
+/** @brief Return a string description of the opcode. */
+const char* get_client_opcode_name(client_msg_t opcode);
 
 
 /* 
