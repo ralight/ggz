@@ -28,55 +28,77 @@
 #define __TABLE_H_
 
 #include "gametype.h"
+#include "ggzcore.h"
+
+struct _GGZSeat {
+
+	/* Type of player in seat */
+	GGZSeatType type;
+
+	/* Player's name */
+	char *name;
+};
 
 
 /* Table Information */
 struct _GGZTable {
  
-        /* Table number */
+        /* Server ID of table */
         int id;
  
         /* Game Type */
 	struct _GGZGameType *gametype;
 
+	/* Table description */
+	char *desc;        
+
         /* Table state */
         char state;
 
         /* Total seats */
-        int seats;
+        unsigned int num_seats;
 
-        /* Open seats */
-        int open;
-        
-        /* Computer seats */
-        int bots;
-
-	/* Table description */
-	char *desc;        
+	/* Seats */
+	struct _GGZSeat *seats;
 };
 
 
 struct _GGZTable* _ggzcore_table_new(void);
 
 void _ggzcore_table_init(struct _GGZTable *table, 
-			 const int id,
 			 struct _GGZGameType *gametype,
+			 const char *desc,
+			 const unsigned int num_seats,
 			 const char state,
-			 const int seats,
-			 const int open,
-			 const int bots,
-			 const char *desc);
+			 const int id);
 
 void _ggzcore_table_free(struct _GGZTable *table);
 
-	
-unsigned int          _ggzcore_table_get_num(struct _GGZTable *table);
+void _ggzcore_table_set_id(struct _GGZTable *table, const int id);
+void _ggzcore_table_set_state(struct _GGZTable *table, const char state);
+
+void _ggzcore_table_add_player(struct _GGZTable *table, 
+			       char *name, 
+			       const unsigned int seat);
+void _ggzcore_table_add_bot(struct _GGZTable *table, 
+			    char *name, 
+			    const unsigned int seat);
+void _ggzcore_table_add_reserved(struct _GGZTable *table, 
+				 char *name, 
+				 const unsigned int seat);
+int _ggzcore_table_remove_player(struct _GGZTable *table, char *name);
+
+int                   _ggzcore_table_get_id(struct _GGZTable *table);
 struct _GGZGameType*  _ggzcore_table_get_type(struct _GGZTable *table);
-char                  _ggzcore_table_get_state(struct _GGZTable *table);
-int                   _ggzcore_table_get_seats(struct _GGZTable *table);
-int                   _ggzcore_table_get_open(struct _GGZTable *table);
-int                   _ggzcore_table_get_bots(struct _GGZTable *table);
 char*                 _ggzcore_table_get_desc(struct _GGZTable *table);
+char                  _ggzcore_table_get_state(struct _GGZTable *table);
+int                   _ggzcore_table_get_num_seats(struct _GGZTable *table);
+int                   _ggzcore_table_get_num_open(struct _GGZTable *table);
+int                   _ggzcore_table_get_num_bots(struct _GGZTable *table);
+
+char* _ggzcore_table_get_nth_player_name(struct _GGZTable *table, const unsigned int num);
+GGZSeatType _ggzcore_table_get_nth_player_type(struct _GGZTable *table, const unsigned int num);
+
 
 /* Utility functions used by _ggzcore_list */
 int   _ggzcore_table_compare(void* p, void* q);

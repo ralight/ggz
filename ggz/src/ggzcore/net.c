@@ -43,15 +43,6 @@
 #include <errno.h>
 
 
-typedef enum {
-	GGZ_SEAT_OPEN   = -1,
-	GGZ_SEAT_COMP   = -2,
-	GGZ_SEAT_RESV   = -3,
-	GGZ_SEAT_NONE   = -4,
-	GGZ_SEAT_PLAYER = -5
-} GGZSeatType;
-
-
 /* Handlers for various server commands */
 #if 0
 /* Error function for Easysock */
@@ -427,45 +418,43 @@ int _ggzcore_net_read_num_tables(const unsigned int fd, int *num)
 }
 
 
-int _ggzcore_net_read_table(const unsigned int fd, struct _GGZTable *table)
+int _ggzcore_net_read_table(const unsigned int fd, int *id, int *room, int *type, char **desc, char *state, int *seats)
 {
-	int id, room, type, num, i, open = 0, bots = 0, seat;
-	char *player = NULL, *desc = NULL;
-	char state;
-	struct _GGZGameType *gametype;
+	if (es_read_int(fd, id) < 0
+	    || es_read_int(fd, room) < 0
+	    || es_read_int(fd, type) < 0
+	    || es_read_string_alloc(fd, desc) < 0
+	    || es_read_char(fd, state) < 0
+	    || es_read_int(fd, seats) < 0)
+		return -1;
 	
+	ggzcore_debug(GGZ_DBG_NET, "Read info for table %d", *id);
 
-	if (es_read_int(fd, &id) < 0
-	    || es_read_int(fd, &room) < 0
-	    || es_read_int(fd, &type) < 0
-	    || es_read_string_alloc(fd, &desc) < 0
-	    || es_read_char(fd, &state) < 0
-	    || es_read_int(fd, &num) < 0)
+	return 0;
+}
+
+
+int _ggzcore_net_read_seat(const unsigned int fd, GGZSeatType *seat, char **name)
+{
+	int type;
+
+	if (es_read_int(fd, &type) < 0)
 		return -1;
 
-	open = 0;
-	/* FIXME: we should do this internal to the table structure */
-	for (i = 0; i < num; i++) {
-		if (es_read_int(fd, &seat) < 0)
-			return -1;
-		if (seat == GGZ_SEAT_PLAYER || seat == GGZ_SEAT_RESV) {
-			es_read_string_alloc(fd, &player);
-		}
-		if (seat == GGZ_SEAT_OPEN)
-			open++;
-		if (seat == GGZ_SEAT_COMP)
-			bots++;
+	*seat = type;
+
+	switch (*seat) {
+	case GGZ_SEAT_PLAYER:
+	case GGZ_SEAT_RESERVED:
+		es_read_string_alloc(fd, name);
+		break;
+	case GGZ_SEAT_BOT:
+		break;
+	default:
+		break;
 	}
-
-	ggzcore_debug(GGZ_DBG_NET, "Read info for table %d", id);
-
-	/* FIXME: how do we get gametype without access to server? 
-	   gametype = _ggzcore_server_get_nth_gametype(server, type) */
-	gametype = NULL;
-
-	_ggzcore_table_init(table, id, gametype, state, num, open, bots, desc);
-
-	return -1;
+	
+	return 0;
 }
 
 
@@ -517,86 +506,58 @@ int _ggzcore_net_read_update_players(const unsigned int fd, GGZUpdateOp *op,
 }
 
 
-int _ggzcore_net_read_update_tables(const unsigned int fd)
+int _ggzcore_net_read_update_table_op(const unsigned int fd, GGZUpdateOp *op)
 {
-	char subop, state;
-	int table, room, type, num, i, open;
-	char *player, *desc;
-	GGZSeatType seat;
+	unsigned char opcode;
 
-	if (es_read_char(fd, &subop) < 0
-	    || es_read_int(fd, &table) < 0)
+	if (es_read_char(fd, &opcode) < 0)
 		return -1;
 
+	ggzcore_debug(GGZ_DBG_NET, "Update opcode = %d", opcode);
+	*op = opcode;
+
+	return 0;
+}
+
+
+int _ggzcore_net_read_table_id(const unsigned int fd, int *id)
+{
+	return es_read_int(fd, id);
+}
+
+
+int _ggzcore_net_read_table_state(const unsigned int fd, int *id, char *state)
+{
+	if (es_read_int(fd, id) < 0
+	    || es_read_char(fd, state) < 0)
+		return -1;
+
+	return 0;
+}
+
+int _ggzcore_net_read_table_seat(const unsigned int fd, int *id, int *seat, char **player)
+{
+	if (es_read_int(fd, id) < 0
+	    || es_read_int(fd, seat) < 0
+	    || es_read_string_alloc(fd, player) < 0)
+		return -1;
 	
-	switch ((GGZUpdateOp)subop) {
-	case GGZ_UPDATE_DELETE:
-#if 0
-		_ggzcore_table_list_remove(table);
-#endif
-		ggzcore_debug(GGZ_DBG_NET, "UPDATE_TABLE: %d done", table);
-		break;
-		
-	case GGZ_UPDATE_STATE:
-		if (es_read_char(fd, &state) < 0)
-			return -1;
-		ggzcore_debug(GGZ_DBG_NET, "UPDATE_TABLE: %d new state %d", 
-			      table, state);
-		break;
+	return 0;
+}
 
-	case GGZ_UPDATE_JOIN:
-		if (es_read_int(fd, &num) < 0
-		    || es_read_string_alloc(fd, &player) < 0)
-			return -1;
-#if 0
-		_ggzcore_table_list_join(table);
-		_ggzcore_player_list_replace(player, table);
-#endif
-		break;
 
-	case GGZ_UPDATE_LEAVE:
-		if (es_read_int(fd, &seat) < 0
-		    || es_read_string_alloc(fd, &player) < 0)
-			return -1;
-#if 0
-		_ggzcore_table_list_leave(table);
-		_ggzcore_player_list_replace(player, -1);
-#endif
-		break;
-		
-	case GGZ_UPDATE_ADD:
-		if (es_read_int(fd, &room) < 0
-		    || es_read_int(fd, &type) < 0
-		    || es_read_string_alloc(fd, &desc) < 0
-		    || es_read_char(fd, &state) < 0
-		    || es_read_int(fd, &num) < 0)
-			return -1;
-		
-		open = 0;
-		for (i = 0; i < num; i++) {
-			if (es_read_int(fd, &seat) < 0)
-				return -1;
-			if (seat == GGZ_SEAT_PLAYER
-			    || seat == GGZ_SEAT_RESV) {
-				if (es_read_string_alloc(fd, &player) < 0)
-					return -1;
-			}
-			if (seat == GGZ_SEAT_OPEN)
-				open++;
-		}
 
-#if 0
-		_ggzcore_table_list_add(table, type, desc, state, num, open);
-#endif
-		ggzcore_debug(GGZ_DBG_NET, "UPDATE_TABLE: new table %d", 
-			      table);
-		break;
-	}
+int _ggzcore_net_read_update_tables(const unsigned int fd, GGZUpdateOp *op,
+				    int *table)
+{
+	unsigned char opcode;
 
-#if 0
-	/*ggzcore_event_enqueue(GGZ_SERVER_LIST_PLAYERS, NULL, NULL);*/
-	ggzcore_event_enqueue(GGZ_SERVER_TABLE_UPDATE, NULL, NULL);
-#endif
+	if (es_read_char(fd, &opcode) < 0
+	    || es_read_int(fd, table) < 0)
+		return -1;
+
+	ggzcore_debug(GGZ_DBG_NET, "Update opcode = %d", opcode);
+	*op = opcode;
 
 	return 0;
 }

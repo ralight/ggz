@@ -75,6 +75,9 @@ char*                _ggzcore_room_get_desc(struct _GGZRoom *room);
 unsigned int         _ggzcore_room_get_num_players(struct _GGZRoom *room);
 struct _GGZPlayer*   _ggzcore_room_get_nth_player(struct _GGZRoom *room, 
 						const unsigned int num);
+struct _GGZPlayer*   _ggzcore_room_get_player_by_name(struct _GGZRoom *room, 
+						      const char *name);
+
 
 unsigned int       _ggzcore_room_get_num_tables(struct _GGZRoom *room);
 struct _GGZTable*  _ggzcore_room_get_nth_table(struct _GGZRoom *room, 
@@ -101,7 +104,21 @@ void _ggzcore_room_remove_player(struct _GGZRoom *room, char *name);
 void _ggzcore_room_add_table(struct _GGZRoom *room, 
 			     struct _GGZTable *table);
 
-void _ggzcore_room_remove_table(struct _GGZRoom *room, int index);
+void _ggzcore_room_remove_table(struct _GGZRoom *room, const unsigned int id);
+
+void _ggzcore_room_player_join_table(struct _GGZRoom *room, 
+				     const unsigned int table,
+				     char *player,
+				     const unsigned int seat);
+
+void _ggzcore_room_player_leave_table(struct _GGZRoom *room, 
+				      const unsigned int table,
+				      char *player,
+				      const unsigned int seat);
+
+void _ggzcore_room_new_table_state(struct _GGZRoom *room,
+				   const unsigned int table,
+				   char state);
 
 void _ggzcore_room_add_chat(struct _GGZRoom *room, 
 			    GGZChatOp op, 

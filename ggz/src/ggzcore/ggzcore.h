@@ -139,6 +139,15 @@ typedef enum {
 
 
 typedef enum {
+	GGZ_SEAT_OPEN     = -1,
+	GGZ_SEAT_BOT      = -2,
+	GGZ_SEAT_RESERVED = -3,
+	GGZ_SEAT_NONE     = -4,
+	GGZ_SEAT_PLAYER   = -5
+} GGZSeatType;
+
+
+typedef enum {
 	GGZ_CONNECTED,
 	GGZ_CONNECT_FAIL,
 	GGZ_NEGOTIATED,
@@ -352,13 +361,36 @@ char*     ggzcore_player_get_name(GGZPlayer *player);
 GGZTable* ggzcore_player_get_table(GGZPlayer *player);
 
 
-int          ggzcore_table_get_num(GGZTable *table);
+GGZTable* ggzcore_table_new(void);
+int ggzcore_table_init(GGZTable *table,
+		       GGZGameType *gametype,
+		       char *desc,
+		       const unsigned int num_seats);
+			 
+void ggzcore_table_free(GGZTable *table);
+
+int ggzcore_table_add_player(GGZTable *table, 
+			    char *name, 
+			     const unsigned int seat);
+int ggzcore_table_add_bot(GGZTable *table, 
+			  char *name, 
+			  const unsigned int seat);
+int ggzcore_table_add_reserved(GGZTable *table, 
+			       char *name, 
+			       const unsigned int seat);
+int ggzcore_table_remove_player(GGZTable *table, char *name);
+
+int          ggzcore_table_get_id(GGZTable *table);
 GGZGameType* ggzcore_table_get_type(GGZTable *table);
-char         ggzcore_table_get_state(GGZTable *table);
-int          ggzcore_table_get_seats(GGZTable *table);
-int          ggzcore_table_get_open(GGZTable *table);
-int          ggzcore_table_get_bots(GGZTable *table);
 char*        ggzcore_table_get_desc(GGZTable *table);
+char         ggzcore_table_get_state(GGZTable *table);
+int          ggzcore_table_get_num_seats(GGZTable *table);
+int          ggzcore_table_get_num_open(GGZTable *table);
+int          ggzcore_table_get_num_bots(GGZTable *table);
+char*        ggzcore_table_get_nth_player_name(GGZTable *table, 
+					       const unsigned int num);
+GGZSeatType  ggzcore_table_get_nth_player_type(GGZTable *table, 
+					       const unsigned int num);
 
 
 /* These function are lookups to gametype information. */

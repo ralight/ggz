@@ -56,8 +56,14 @@ void _ggzcore_server_set_password(struct _GGZServer *server,
 struct _GGZRoom* _ggzcore_server_get_room_by_id(struct _GGZServer *server,
 						const unsigned int id);
 
+struct _GGZRoom* _ggzcore_server_get_nth_room(struct _GGZServer *server, 
+					      const unsigned int num);
+
 struct _GGZGameType* _ggzcore_server_get_type_by_id(struct _GGZServer *server,
 						    const unsigned int id);
+
+struct _GGZGameType* _ggzcore_server_get_nth_gametype(struct _GGZServer *server, 
+						      const unsigned int num);
 
 int _ggzcore_server_chat(struct _GGZServer *server, 
 			 const GGZChatOp opcode,

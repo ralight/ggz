@@ -94,6 +94,12 @@ void _ggzcore_player_free(struct _GGZPlayer *player)
 }
 
 
+void _ggzcore_player_set_table(struct _GGZPlayer *player, const int table)
+{
+	player->table = table;
+}
+
+
 char* _ggzcore_player_get_name(struct _GGZPlayer *player)
 {
 	return player->name;

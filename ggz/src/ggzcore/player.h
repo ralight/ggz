@@ -57,6 +57,8 @@ void _ggzcore_player_init(struct _GGZPlayer *player,
 			  const int table);
 
 
+void _ggzcore_player_set_table(struct _GGZPlayer *player, const int table);
+
 char* _ggzcore_player_get_name(struct _GGZPlayer *player);
 
 struct _GGZTable* _ggzcore_player_get_table(struct _GGZPlayer *player);

@@ -1,8 +1,4 @@
-- redo GGZTable to store actual seat information, not open/bots/etc.
-
 - Finish GGZGame and table launching functionality
-
-- finish up room object: table lists updates
 
 - Remove the ggzcore_server_get_XXX_names() function
 

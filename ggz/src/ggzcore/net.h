@@ -80,7 +80,8 @@ int _ggzcore_net_read_num_players(const unsigned int fd, int *num);
 int _ggzcore_net_read_player(const unsigned int fd, char **name, int *table);
 
 int _ggzcore_net_read_num_tables(const unsigned int fd, int *num);
-int _ggzcore_net_read_table(const unsigned int fd, struct _GGZTable *table);
+int _ggzcore_net_read_table(const unsigned int fd, int *id, int *room, int *type, char **desc, char *state, int *seats);
+int _ggzcore_net_read_seat(const unsigned int fd, GGZSeatType *seat, char **name);
 
 int _ggzcore_net_read_chat(const unsigned int fd, 
 			   GGZChatOp *op, 
@@ -89,7 +90,13 @@ int _ggzcore_net_read_chat(const unsigned int fd,
 int _ggzcore_net_read_update_players(const unsigned int fd, 
 				     GGZUpdateOp *op,
 				     char **name);
-int _ggzcore_net_read_update_tables(const unsigned int fd);
+int _ggzcore_net_read_update_table_op(const unsigned int fd, GGZUpdateOp *op);
+int _ggzcore_net_read_table_id(const unsigned int fd, int *id);
+int _ggzcore_net_read_table_state(const unsigned int fd, int *id, char *state);
+int _ggzcore_net_read_table_seat(const unsigned int fd, int *id, int *seat, char **player);
+int _ggzcore_net_read_update_tables(const unsigned int fd, 
+				    GGZUpdateOp *op,
+				    int *table);
 int _ggzcore_net_read_rsp_chat(const unsigned int fd, char *status);
 
 

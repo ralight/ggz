@@ -413,7 +413,7 @@ GGZRoom* ggzcore_server_get_nth_room(GGZServer *server, const unsigned int num)
 	if (!server || num >= server->num_rooms)
 		return NULL;
 
-	return server->rooms[num];
+	return _ggzcore_server_get_nth_room(server, num);
 }
 
 
@@ -483,7 +483,7 @@ GGZGameType* ggzcore_server_get_nth_gametype(GGZServer *server,
 	if (!server || num >= server->num_gametypes)
 		return NULL;
 
-	return server->gametypes[num];
+	return _ggzcore_server_get_nth_gametype(server, num);
 }
 
 
@@ -845,6 +845,13 @@ struct _GGZRoom* _ggzcore_server_get_room_by_id(struct _GGZServer *server,
 	return NULL;
 }
 
+
+struct _GGZRoom* _ggzcore_server_get_nth_room(struct _GGZServer *server, const unsigned int num)
+{
+	return server->rooms[num];
+}
+
+
 struct _GGZGameType* _ggzcore_server_get_type_by_id(struct _GGZServer *server,
 						    const unsigned int id)
 {
@@ -855,6 +862,13 @@ struct _GGZGameType* _ggzcore_server_get_type_by_id(struct _GGZServer *server,
 			return server->gametypes[i];
 
 	return NULL;
+}
+
+
+struct _GGZGameType* _ggzcore_server_get_nth_gametype(struct _GGZServer *server, 
+						      const unsigned int num)
+{
+	return server->gametypes[num];
 }
 
 
@@ -1380,10 +1394,15 @@ static void _ggzcore_server_handle_update_players(GGZServer *server)
 
 static void _ggzcore_server_handle_list_tables(GGZServer *server)
 {
-	int i, num, status;
+	int i, j, num, status;
+	int id, room, type, seats;
+	char state, *desc;
 	struct _ggzcore_list *list;
 	struct _GGZTable *table;
-	
+	struct _GGZGameType *gametype;
+	GGZSeatType seat;
+	char *player;
+
 	list = _ggzcore_list_create(_ggzcore_table_compare, NULL,
 				    _ggzcore_table_destroy, 0);
 
@@ -1405,11 +1424,39 @@ static void _ggzcore_server_handle_list_tables(GGZServer *server)
 	
 	for (i = 0; i < num; i++) {
 		table = _ggzcore_table_new();
-		status = _ggzcore_net_read_table(server->fd, table); 
+		status = _ggzcore_net_read_table(server->fd, &id, &room, &type,
+						 &desc, &state, &seats); 
 		
 		if (status < 0) {
 			_ggzcore_server_net_error(server, NULL);
 			return;
+		}
+		
+		gametype = _ggzcore_server_get_nth_gametype(server, type);
+		_ggzcore_table_init(table, gametype, desc, seats, state, id);
+
+		for (j = 0; j < seats; j++) {
+			status = _ggzcore_net_read_seat(server->fd, &seat,
+							&player);
+			if (status < 0) {
+				_ggzcore_table_free(table);
+				_ggzcore_server_net_error(server, NULL);
+				return;
+			}
+			
+			switch (seat) {
+			case GGZ_SEAT_PLAYER:
+				_ggzcore_table_add_player(table, player, j);
+				break;
+			case GGZ_SEAT_RESERVED:
+				_ggzcore_table_add_reserved(table, player, j);
+				break;
+			case GGZ_SEAT_BOT:
+				_ggzcore_table_add_bot(table, NULL, j);
+				break;
+			default:
+				break;
+			}
 		}
 		
 		_ggzcore_list_insert(list, table);
@@ -1421,7 +1468,106 @@ static void _ggzcore_server_handle_list_tables(GGZServer *server)
 
 static void _ggzcore_server_handle_update_tables(GGZServer *server)
 {
-	_ggzcore_net_read_update_tables(server->fd);
+	GGZUpdateOp op;
+	struct _GGZTable *table = NULL;
+	struct _GGZGameType *gametype;
+	struct _GGZRoom *room;
+	int status, seat;
+	char state, *player, *desc;
+	int i, id, type, seats, room_num;
+
+	/* Use current room (until server tells which one update is for) */
+	room = server->room;
+
+	status = _ggzcore_net_read_update_table_op(server->fd, &op);
+
+	if (status < 0) {
+		_ggzcore_server_net_error(server, NULL);
+		return;
+	}
+
+	
+	switch (op) {
+	case GGZ_UPDATE_DELETE:
+		status = _ggzcore_net_read_table_id(server->fd, &id);
+		if (status < 0) {
+			_ggzcore_server_net_error(server, NULL);
+			return;
+		}
+		_ggzcore_room_remove_table(room, id);
+		break;
+		
+	case GGZ_UPDATE_STATE:
+		status = _ggzcore_net_read_table_state(server->fd, &id, &state);
+		if (status < 0) {
+			_ggzcore_server_net_error(server, NULL);
+			return;
+		}
+		_ggzcore_room_new_table_state(room, id, state);
+		break;
+
+	case GGZ_UPDATE_JOIN:
+		status = _ggzcore_net_read_table_seat(server->fd, &id, &seat,
+						      &player);
+		if (status < 0) {
+			_ggzcore_server_net_error(server, NULL);
+			return;
+		}
+		_ggzcore_room_player_join_table(room, id, player, seat);
+		break;
+
+	case GGZ_UPDATE_LEAVE:
+		status = _ggzcore_net_read_table_seat(server->fd, &id, &seat,
+						      &player);
+		if (status < 0) {
+			_ggzcore_server_net_error(server, NULL);
+			return;
+		}
+		_ggzcore_room_player_leave_table(room, id, player, seat);
+		break;
+		
+	case GGZ_UPDATE_ADD:
+		table = _ggzcore_table_new();
+		status = _ggzcore_net_read_table(server->fd, &id, &room_num, 
+						 &type, &desc, &state, 
+						 &seats); 
+		
+		if (status < 0) {
+			_ggzcore_server_net_error(server, NULL);
+			return;
+		}
+		
+		gametype = _ggzcore_server_get_nth_gametype(server, type);
+		_ggzcore_table_init(table, gametype, desc, seats, state, id);
+
+		for (i = 0; i < seats; i++) {
+			status = _ggzcore_net_read_seat(server->fd, &seat,
+							&player);
+			if (status < 0) {
+				_ggzcore_table_free(table);
+				_ggzcore_server_net_error(server, NULL);
+				return;
+			}
+			
+			switch (seat) {
+			case GGZ_SEAT_PLAYER:
+				_ggzcore_table_add_player(table, player, i);
+				break;
+			case GGZ_SEAT_RESERVED:
+				_ggzcore_table_add_reserved(table, player, i);
+				break;
+			case GGZ_SEAT_BOT:
+				_ggzcore_table_add_bot(table, NULL, i);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		_ggzcore_room_add_table(room, table);
+		
+		break;
+	}
 }
 
 
