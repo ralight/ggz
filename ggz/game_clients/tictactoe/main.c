@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main loop
- * $Id: main.c 4450 2002-09-07 22:33:14Z jdorje $
+ * $Id: main.c 4893 2002-10-12 21:04:43Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -39,11 +39,11 @@
 #include <ggz_common.h>
 #include <ggzmod.h>
 
-#include "game.h"
-#include "main_win.h"
-
+#include "dlg_about.h"
 #include "ggzintl.h"
 
+#include "game.h"
+#include "main_win.h"
 #include "support.h"
 
 /* main window widget */
@@ -56,11 +56,14 @@ struct game_state_t game;
 static void handle_ggzmod_server(GGZMod * mod, GGZModEvent e, void *data);
 static void handle_ggz(gpointer data, gint source, GdkInputCondition cond);
 
+static void initialize_about_dialog(void);
+
 int main(int argc, char* argv[])
 {
 	ggz_intl_init("tictactoe");
 		
 	gtk_init (&argc, &argv);
+	initialize_about_dialog();
 
 	main_win = create_main_win();
 	gtk_widget_show(main_win);
@@ -80,6 +83,20 @@ int main(int argc, char* argv[])
 	
 	ggzmod_free(game.ggzmod);
 	return 0;
+}
+
+static void initialize_about_dialog(void)
+{
+	const char *content =
+	  _("Copyright (C) 2000 by Brent Hendricks\n"
+	    "\n"
+	    "Website: http://ggz.sourceforge.net/");
+	char *header;
+
+	header = g_strdup_printf(_("GGZ Gaming Zone\n"
+				   "Tic-Tac-Toe Version %s"), VERSION);
+	init_dlg_about(_("About Tic-Tac-Toe"), header, content);
+	g_free(header);
 }
 
 static char get_player_symbol(int player)

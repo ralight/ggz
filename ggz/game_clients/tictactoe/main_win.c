@@ -4,7 +4,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 3/31/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 4450 2002-09-07 22:33:14Z jdorje $
+ * $Id: main_win.c 4893 2002-10-12 21:04:43Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -27,20 +27,21 @@
 #  include <config.h>
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdio.h>
-
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-#include <main_win.h>
-#include <game.h>
-#include <support.h>
-#include <x.xpm>
-#include <o.xpm>
+#include "dlg_about.h"
+
+#include "main_win.h"
+#include "game.h"
+#include "support.h"
+#include "x.xpm"
+#include "o.xpm"
 
 
 /* Pixmaps */
@@ -159,7 +160,7 @@ static void game_exit(GtkMenuItem *menuitem, gpointer user_data)
 
 static void game_about(GtkMenuItem *menuitem, gpointer user_data)
 {
-
+	create_or_raise_dlg_about();
 }
 
 
