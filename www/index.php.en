@@ -26,19 +26,25 @@ and a chat bot are part of this effort.
 <br><br>
 
 <i>Download the current version</i><br>
-The GGZ Gaming Zone 0.0.7 has been release on May 17 2003.<br>
-<a href="/docs/release.html">Release announcement</a><br>
-<a href="downloads.php">Go to the download page</a>
+The GGZ Gaming Zone 0.0.8 has been released on Feb 07 2004.<br>
+<a href="/docs/release.php">Release announcement</a><br>
+<a href="/docs/download.php">Go to the download page</a><br>
+<a href="http://web.mountain.net/ld94/ggz_installation_howto.html">New Installation Howto</a>
 
 </td><td valign="top">
 
-<img src="/pics/site/splash.png">
+<img src="/pics/site/splash-0.0.8.png">
 
 </td>
 </tr>
 </table>
 
 <b>News</b><br>
+<i>07.02.2004: GGZ 0.0.8</i> (by josef)<br>
+The new version is out now. The old website is officially replaced with this
+one. Have fun :)
+<br><br>
+
 <i>27.07.2003: Announcing beta.ggzgamingzone.org</i> (by josef)<br>
 The GGZ Gaming Zone homepage will get a new look and feel.
 All pages will be maintained in CVS, and will feature modern HTML

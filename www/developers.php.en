@@ -21,10 +21,10 @@ A collection of cross-desktop games together with a powerful server-side
 infrastructure is being created to achieve this goal.
 <br><br>
 
-<i>Current areas of work</i><br>
-As of version 0.0.8pre, the most urgent tasks are further internationalization,
-implementation of existing GGZ features into all games, more documentation, a
-working Python module, and server scalability improvements.
+<i>Developer area</i><br>
+To visit the GGZ developer area hosting release plans, resource documentation and so on,
+please go to<br>
+<a href="http://dev.ggzgamingzone.org/">dev.ggzgamingzone.org</a>.
 
 </td><td valign="bottom">
 

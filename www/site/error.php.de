@@ -1,4 +1,4 @@
-<? include_once("/var/www/ggz/beta/site/header.php"); ?>
+<? include_once("/var/www/ggz/www/site/header.php"); ?>
 
 Die angeforderte Seite konnte leider nicht gefunden werden :(
 <br>
@@ -11,5 +11,5 @@ endif;
 ?>
 <br>
 
-<? include_once("/var/www/ggz/beta/site/footer.php"); ?>
+<? include_once("/var/www/ggz/www/site/footer.php"); ?>
 

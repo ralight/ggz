@@ -6,7 +6,7 @@
 <font size="3">
 
 <b>Documentation</b><br>
-All existing documentation will eventually be available from here.
+All existing documentation is categorized and described here.
 <br><br>
 
 <i>Player docs</i><br>
@@ -14,8 +14,21 @@ All applications and games are described on their respective pages on this
 web site. Additional documentation:
 <br><br>
 
-<a href="">link1</a><br>
-<a href="">link2</a>
+GGZ Presentation:
+<a href="/docs/presentation/html/en/ggz-presentation.html">HTML</a>,
+<a href="/docs/presentation/ggz-presentation.en.sxi">OpenOffice</a>
+<br>
+
+Game Features Comparison:
+<a href="/docs/features.html">HTML</a>
+<br>
+
+Grubby Chatbot Manual:
+<a href="/docs/grubby/user-manual.en.html">HTML</a>
+<br>
+
+Article Series:
+<a href="/docs/articles/">Directory</a>
 <br><br>
 
 <i>Developer docs</i><br>
@@ -23,16 +36,54 @@ Developer documentation can be found in the developer section of this
 web site.
 <br><br>
 
-<a href="">link1</a><br>
-<a href="">link2</a>
+GGZ Design Document and Protocol Reference:
+<a href="/docs/design/html/">HTML</a>,
+<a href="/docs/design/design.txt">text</a>
+<br>
+
+Game Development Guide:
+<a href="/docs/guides/gamedev/ggz-game-development-guide.html">HTML</a>,
+<a href="/docs/guides/gamedev/ggz-game-development-guide.ps">PostScript</a>,
+<a href="/docs/guides/gamedev/ggz-game-development-guide.txt">text</a>
+<br>
+
+Game Protocol Comparison:
+<a href="/docs/games.html">HTML</a>
+<br>
+
+Library API for libggz:
+<a href="/docs/api/libggz/">HTML</a>
+<br>
+
+Library API for ggzcore:
+<a href="/docs/api/ggzcore/">HTML</a>
+<br>
+
+Library API for ggzmod:
+<a href="/docs/api/ggzmod/">HTML</a>
+<br>
+
+Library API for ggzdmod:
+<a href="/docs/api/ggzdmod/">HTML</a>
 <br><br>
 
 <i>Admin docs</i><br>
 Server administrators can find instructions and recommendations here.
 <br><br>
 
-<a href="">link1</a><br>
-<a href="">link2</a>
+Server Hosting Guide:
+<a href="/docs/guides/hosting/ggz-hosting-guide.html">HTML</a>,
+<a href="/docs/guides/hosting/ggz-hosting-guide.ps">PostScript</a>,
+<a href="/docs/guides/hosting/ggz-hosting-guide.txt">text</a>
+<br>
+
+Grubby Chatbot Admin Manual:
+<a href="/docs/grubby/admin-manual.html">HTML</a>
+<br>
+
+Package Dependency Graph:
+<a href="/docs/ggz-debian-depgraph.ps">PostScript</a>,
+<a href="/docs/ggz-debian-depgraph.png">PNG</a>
 <br><br>
 
 </font>

@@ -11,6 +11,14 @@ foreach ($ar as $l)
 	endif;
 }
 
+$ar = explode(".", $REQUEST_URI);
+if ($ar[sizeof($ar) - 2] == "php") :
+	$l = $ar[sizeof($ar) - 1];
+	if(file_exists($_SERVER['DOCUMENT_ROOT'] . "/site/header.php.$l")) :
+		$lang = $l;
+	endif;
+endif;
+
 include("header.php.$lang");
 
 ?>
