@@ -156,6 +156,10 @@ int GGZGameServer::fd ( int player ) {
 	return ggzdmod_get_seat ( ggzdmod, player ).fd;
 }
 
+int GGZGameServer::players () {
+	return ggzdmod_get_num_seats ( ggzdmod );
+}
+
 int GGZGameServer::spectatorfd ( int spectator ) {
 #ifdef GGZSPECTATORS
 	return ggzdmod_get_spectator ( ggzdmod, spectator ).fd;

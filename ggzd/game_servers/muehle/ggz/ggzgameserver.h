@@ -42,6 +42,7 @@ class GGZGameServer {
 #endif
 		virtual void errorEvent ();
 		int fd ( int player );
+		int players();
 		int spectatorfd ( int spectator );
 		int spectators ();
 
