@@ -876,6 +876,7 @@ int handle_launch_event()
 
 	set_game_state(WH_STATE_NOTPLAYING);
 	save_game_state(); /* no players are connected yet, so we enter waiting phase */
+	return 0;
 }
 
 /* handle_join_event
@@ -947,6 +948,7 @@ int handle_leave_event()
 
 	/* save old state and enter waiting phase */
 	save_game_state();
+	return 0;
 }
 
 /* handle_play_event
