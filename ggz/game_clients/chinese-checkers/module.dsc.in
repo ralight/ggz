@@ -6,5 +6,5 @@ Frontend = gtk
 Homepage = http://ggz.sourceforge.net/games/chinese-checkers/
 Name = ccheckers
 ProtocolEngine = CCheckers
-ProtocolVersion = 2
-Version = 0.0.1
+ProtocolVersion = 3
+Version = 0.0.2

@@ -66,7 +66,7 @@ create_dlg_about (void)
   gtk_widget_show (vbox1);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, TRUE, TRUE, 0);
 
-  label3 = gtk_label_new ("GGZ Gaming Zone\nConnect The Dots Version 0.0.2");
+  label3 = gtk_label_new ("GGZ Gaming Zone\nConnect The Dots Version 0.0.3");
   gtk_widget_ref (label3);
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "label3", label3,
                             (GtkDestroyNotify) gtk_widget_unref);

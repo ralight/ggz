@@ -1,5 +1,5 @@
 # TicTacToe description file
-# $Id: module.dsc.in 4472 2002-09-08 23:26:11Z jdorje $
+# $Id: module.dsc.in 4755 2002-09-29 11:39:09Z dr_maux $
 
 [ModuleInfo]
 Game = TicTacToe
@@ -10,5 +10,5 @@ Frontend = gtk
 Homepage = http://ggz.sourceforge.net/games/tictactoe/
 Name = TicTacToe
 ProtocolEngine = TicTacToe
-ProtocolVersion = 3-pre1
-Version = 0.0.2
+ProtocolVersion = 3
+Version = 0.0.3
