@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 5997 2004-05-17 14:20:01Z josef $
+ * $Id: output.c 6054 2004-06-25 13:32:46Z josef $
  *
  * Functions for display text/messages
  *
@@ -142,8 +142,9 @@ void output_prompt(void)
 
 void output_text(char* fmt, ...)
 {
-	char message [1024];	/* FIXME: Make me dynamic */
+	char message[1024];	/* FIXME: Make me dynamic */
 	int x;
+	char *token, *messagedup, *orig;
 
 	if(!output_enabled) return;
 
@@ -152,14 +153,24 @@ void output_text(char* fmt, ...)
 	vsnprintf(message, sizeof(message), fmt, ap);
 	va_end(ap);
 
-	/* Shift everything in the buffer up */
-	if (chat[MAX_LINES])
-		ggz_free(chat[MAX_LINES]);
-	for (x = MAX_LINES; x > 0; x--)
-		chat[x] = chat[x-1];
-	chat[0] = ggz_strdup(message);
+	messagedup = ggz_strdup(message);
+	orig = messagedup;
 
-	output_draw_text();
+	token = strsep(&messagedup, "\n");
+	while(token) {
+		/* Shift everything in the buffer up */
+		if (chat[MAX_LINES])
+			ggz_free(chat[MAX_LINES]);
+		for (x = MAX_LINES; x > 0; x--)
+			chat[x] = chat[x-1];
+		chat[0] = ggz_strdup(token);
+
+		output_draw_text();
+
+		token = strsep(&messagedup, "\n");
+	}
+
+	ggz_free(orig);
 
 #if 0
 	fflush(NULL);
@@ -193,25 +204,35 @@ void output_draw_text(void)
 
 void output_chat(GGZChatType type, const char *player, const char *message)
 {
+	char timestamp[12];
+	time_t t;
+
 	if(!output_enabled) return;
+
+	if(1 == 1) {
+		t = time(NULL);
+		strftime(timestamp, sizeof(timestamp), "%X ", localtime(&t));
+	} else {
+		strcpy(timestamp, "");
+	}
 
 	switch(type) {
 	case GGZ_CHAT_BEEP:
-		output_text(_("--- You've been beeped by %s."), player);
+		output_text(_("%s--- You've been beeped by %s."), timestamp, player);
 		printf("\007");
 		break;
 	case GGZ_CHAT_PERSONAL:
-		output_text(">%s< %s", player, message);
+		output_text("%s>%s< %s", timestamp, player, message);
 		break;
 	case GGZ_CHAT_ANNOUNCE:
-		output_text("[%s] %s", player, message);
+		output_text("%s[%s] %s", timestamp, player, message);
 		break;
 	case GGZ_CHAT_TABLE:
-		output_text("|%s| %s", player, message);
+		output_text("%s|%s| %s", timestamp, player, message);
 		break;
 	case GGZ_CHAT_UNKNOWN:
 	case GGZ_CHAT_NORMAL:
-		output_text("<%s> %s", player, message);
+		output_text("%s<%s> %s", timestamp, player, message);
 		break;
 	}
 }

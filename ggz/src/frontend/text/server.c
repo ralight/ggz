@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: server.c 5997 2004-05-17 14:20:01Z josef $
+ * $Id: server.c 6054 2004-06-25 13:32:46Z josef $
  *
  * Functions for handling server events
  *
@@ -233,6 +233,8 @@ static GGZHookReturn server_connected(GGZServerEvent id, void* event_data,
 static GGZHookReturn server_connect_fail(GGZServerEvent id, void* event_data,
 					 void* user_data)
 {
+	server_workinprogress(COMMAND_CONNECT, 0);
+
 	output_text("--- Connection failed: %s", (char*)event_data);
 
 	/* For the time being disconnect at not to confuse us 
@@ -271,6 +273,8 @@ static GGZHookReturn server_login_ok(GGZServerEvent id, void* event_data,
 
 static GGZHookReturn server_login_fail(GGZServerEvent id, void* event_data, void* user_data)
 {
+	server_workinprogress(COMMAND_CONNECT, 0);
+
 	output_text("--- Login failed: %s", (char*)event_data);
 
 	/* For the time being disconnect at not to confuse us */

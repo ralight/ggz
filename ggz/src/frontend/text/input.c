@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: input.c 5997 2004-05-17 14:20:01Z josef $
+ * $Id: input.c 6054 2004-06-25 13:32:46Z josef $
  *
  * Functions for inputing commands from the user
  *
@@ -239,6 +239,13 @@ static void input_handle_connect(char* line)
 static void input_handle_list(char* line)
 {
 	GGZRoom *room;
+	GGZStateID state = ggzcore_server_get_state(server);
+
+	if((int)state == -1 || state == GGZ_STATE_OFFLINE)
+	{
+		output_text(_("You must connect to a server first."));
+		return;
+	}
 
 	/* What are we listing? */
 	if (line && strcmp(line, "types") == 0) {
@@ -308,6 +315,13 @@ static void input_handle_join(char* line)
 static void input_handle_join_room(char* line)
 {
 	int room;
+	GGZStateID state = ggzcore_server_get_state(server);
+
+	if((int)state == -1 || state == GGZ_STATE_OFFLINE)
+	{
+		output_text(_("You must connect to a server first."));
+		return;
+	}
 
 	if (line) {
 		room = atoi(line);
@@ -341,17 +355,17 @@ static void input_handle_chat(char *line)
 	GGZRoom *room = ggzcore_server_get_cur_room(server);
 	GGZStateID state = ggzcore_server_get_state(server);
 
-	if((int)state == -1 || state == GGZ_STATE_OFFLINE)
-	{
-		output_text(_("You must connect to a server first."));
-	}
-	else if(!room)
-	{
-		output_text(_("You must join a room first."));
-	}
-	else
-	{
-		if (line && strcmp(line, "") != 0) {
+	if (line && strcmp(line, "") != 0) {
+		if((int)state == -1 || state == GGZ_STATE_OFFLINE)
+		{
+			output_text(_("You must connect to a server first."));
+		}
+		else if(!room)
+		{
+			output_text(_("You must join a room first."));
+		}
+		else
+		{
 			msg = ggz_strdup(line);
 			server_progresswait();
 			ggzcore_room_chat(room, GGZ_CHAT_NORMAL, NULL, msg);
