@@ -27,7 +27,6 @@
 #include <pthread.h>
 #include <string.h>
 #include <stdlib.h>
-#include <time.h>
 
 #include <easysock.h>
 #include <ggzd.h>
@@ -75,53 +74,43 @@ int room_join(const int p_index, const int room)
 {
 	int old_room;
 	int i, count, last;
-	int got_locks;
-	struct timespec req;
 
 	/* No other thread could possibly be changing the room # */
 	/* so we can read it without a lock! */
 	old_room = players.info[p_index].room;
 
-	/* The luser asked to stay in the same room! */
+	/* Check for valid inputs */
 	if(old_room == room)
 		return 0;
+	if(room > opt.num_rooms || room < -2)
+		return E_BAD_OPTIONS;
 
-	/* This avoids deadlock where user A is in transit from x->y */
-	/*                        and user B is in transit from y->x */
-	got_locks = 0;
-	req.tv_sec = 0;
-	req.tv_nsec = 100000000;	/* 100 ms for nanosleep() */
-	while(!got_locks) {
-		/* Try getting write lock on the new room */
-		got_locks = 1;
-		if(room != -1) {
-		    if(!pthread_rwlock_trywrlock(&chat_room[room].lock)) {
-			/* Failed, try again shortly */
-			got_locks = 0;
-			nanosleep(&req, NULL);
-		    } else
-			/* Check for room full condition before going further */
-			if(chat_room[room].player_count == MAX_ROOM_USERS) {				    /* The transit room is full, stay here */
-			    pthread_rwlock_unlock(&chat_room[room].lock);
-			    return E_ROOM_FULL;
-			}
-		}
+	/* Give 'em their queued messages */
+	room_send_chat(p_index);
 
-		/* Try to get write lock on the old room */
+	/* We ALWAYS lock the lower ordered room first! */
+	if(old_room < room) {
 		if(old_room != -1)
-		    if(!pthread_rwlock_trywrlock(&chat_room[old_room].lock)) {
-			/* Failed, release the room lock and try again */
-			pthread_rwlock_unlock(&chat_room[room].lock);
-			got_locks = 0;
-			nanosleep(&req, NULL);
-			continue;
-		    }
+			pthread_rwlock_wrlock(&chat_room[old_room].lock);
+		pthread_rwlock_wrlock(&chat_room[room].lock);
+	} else {
+		if(room != -1)
+			pthread_rwlock_wrlock(&chat_room[room].lock);
+		pthread_rwlock_wrlock(&chat_room[old_room].lock);
 	}
-	/* We now have both rooms locked, and the target room is not full */
+
+	/* Check for room full condition */
+	if(room != -1 && chat_room[room].player_count == MAX_ROOM_USERS) {
+		pthread_rwlock_unlock(&chat_room[room].lock);
+		if(old_room != -1)
+			pthread_rwlock_unlock(&chat_room[old_room].lock);
+		return E_ROOM_FULL;
+	}
 
 	/* Yank them from this room */
 	if(old_room != -1) {
-		room_dequeue_chat(p_index);
+		if(players.info[p_index].chat_head != NULL)
+			room_dequeue_chat(p_index);
 		count = chat_room[old_room].player_count;
 		last = chat_room[old_room].player_index[count-1];
 		for(i=0; i<count; i++)
@@ -141,8 +130,7 @@ int room_join(const int p_index, const int room)
 	if(room != -1) {
 		count = ++ chat_room[room].player_count;
 		chat_room[room].player_index[count-1] = p_index;
-		dbg_msg(GGZ_DBG_ROOM, "Room count %d = %d", room,
-			chat_room[room].player_count);
+		dbg_msg(GGZ_DBG_ROOM, "Room count %d = %d", room, count);
 	}
 
 	/* Finally we can release the other chat room lock */
