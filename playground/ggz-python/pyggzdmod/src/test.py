@@ -19,8 +19,8 @@ def hook_leave (seat):
 def hook_log ():
 	print "* log"
 
-def hook_player (seat):
-	print "* player: ", seat
+def hook_data (seat):
+	print "* data: ", seat
 	print "(Name: " + ggzdmod.getPlayerName(seat) + ")"
 
 def hook_error (arg):
@@ -31,7 +31,7 @@ ggzdmod.setHandler(ggzdmod.EVENT_STATE, hook_state)
 ggzdmod.setHandler(ggzdmod.EVENT_JOIN, hook_join)
 ggzdmod.setHandler(ggzdmod.EVENT_LEAVE, hook_leave)
 ggzdmod.setHandler(ggzdmod.EVENT_LOG, hook_log)
-ggzdmod.setHandler(ggzdmod.EVENT_PLAYER, hook_player)
+ggzdmod.setHandler(ggzdmod.EVENT_DATA, hook_data)
 ggzdmod.setHandler(ggzdmod.EVENT_ERROR, hook_error)
 
 print ">> launch the game server"

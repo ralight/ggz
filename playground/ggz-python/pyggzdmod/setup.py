@@ -11,7 +11,7 @@
 from distutils.core import setup, Extension
 
 
-libs = ['ggzdmod', 'easysock']
+libs = ['ggzdmod', 'ggz']
 
 
 setup(
