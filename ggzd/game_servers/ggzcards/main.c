@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/29/2000
  * Desc: Main loop
- * $Id: main.c 2189 2001-08-23 07:59:17Z jdorje $
+ * $Id: main.c 2193 2001-08-23 08:57:10Z jdorje $
  *
  * This file was originally taken from La Pocha by Rich Gade.  It just
  * contains the startup, command-line option handling, and main loop
@@ -145,73 +145,21 @@ int main(int argc, char **argv)
 		}
 	}
 
-	/* Connect to GGZ server */
-	if ((ggz_sock = ggzdmod_connect()) < 0) {
-		ggzdmod_debug("Failed ggz_sock test.");
-		return -1;
-	}
-
 	/* Seed the random number generator */
 	srandom((unsigned) time(NULL));
 
-	FD_ZERO(&active_fd_set);
-	FD_SET(ggz_sock, &active_fd_set);
+	/* set up handlers */
+	ggzdmod_set_handler(GGZ_EVENT_LAUNCH, &handle_launch_event);
+	ggzdmod_set_handler(GGZ_EVENT_JOIN, &handle_join_event);
+	ggzdmod_set_handler(GGZ_EVENT_LEAVE, &handle_leave_event);
+	/* ggzdmod_set_handler(GGZ_EVENT_QUIT, &handle_gameover); */
+	ggzdmod_set_handler(GGZ_EVENT_PLAYER, &handle_player_event);
 
-	init_ggzcards(which_game);
-	while (!game_over) {
-
-		read_fd_set = active_fd_set;
-		fd_max = ggzdmod_fd_max();
-
-		status = select((fd_max + 1), &read_fd_set, NULL, NULL, NULL);
-
-		if (status <= 0) {
-			if (errno == EINTR)
-				continue;
-			else
-				return -1;
-		}
-
-		/* Check for message from GGZ server */
-		if (FD_ISSET(ggz_sock, &read_fd_set)) {
-			status = handle_ggz(ggz_sock, &fd);
-			switch (status) {
-
-			case -1:	/* Big error!! */
-				ggzdmod_debug("handle_ggz gives status == -1.");
-				return -1;
-
-			case 0:	/* All ok, how boring! */
-				break;
-
-			case 1:	/* A player joined */
-				FD_SET(fd, &active_fd_set);
-				break;
-
-			case 2:	/* A player left */
-				FD_CLR(fd, &active_fd_set);
-				break;
-
-			case 3:	/*Safe to exit */
-				game_over = 1;
-				break;
-			}
-		}
-
-		/* Check for message from player */
-		for (i = 0; i < ggzdmod_seats_num(); i++) {
-			fd = ggz_seats[i].fd;
-			if (fd != -1 && FD_ISSET(fd, &read_fd_set)) {
-				status = handle_player(i);
-				if (status == -1)
-					FD_CLR(fd, &active_fd_set);
-			}
-		}
+	/* Connect to GGZ server; main loop */
+	if (ggzdmod_main() < 0) {
+		ggzdmod_debug("Failed ggz_sock test.");
+		return -1;
 	}
-
-	if (ggzdmod_disconnect() < 0)
-		/* what else can we do??? */
-		fprintf(stderr, "GGZCards: ggzdmod: failed disconnect\n");
 
 	return 0;
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Functions and data common to all games
- * $Id: common.h 2190 2001-08-23 08:06:05Z jdorje $
+ * $Id: common.h 2193 2001-08-23 08:57:10Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -162,19 +162,23 @@ int send_newgame();
 void init_game();
 
 
-void next_play(void);	/* make the next move */
+void next_play(void);		/* make the next move */
 
 /* handle player events -- used to all just be "update" */
-int handle_launch_event();
-int handle_join_event(player_t);
-int handle_leave_event(player_t);
-int handle_newgame_event(player_t);
-int handle_play_event(card_t);
-int handle_bid_event(bid_t);
+
+/* these are GGZ communication events that we must handle */
+int handle_launch_event(int event, void *data);
+int handle_join_event(int event, void *data);
+int handle_leave_event(int event, void *data);
+/* int handle_quit_event(int event, void* data); */
+int handle_player_event(int event, void *data);
+
+/* these are internal GGZCards events */
+int handle_newgame_event(player_t p);
+int handle_play_event(card_t card);
+int handle_bid_event(bid_t bid);
 
 void init_ggzcards(int which);	/* pass in the name of the game */
-int handle_ggz(int, int *);
-int handle_player(player_t);
 
 void set_num_seats(int num_seats);
 
