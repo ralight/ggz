@@ -1,8 +1,8 @@
 The GGZ Gaming Zone - Client Setup
 ==================================
 
-Installation Requirements for the release 0.0.9
------------------------------------------------
+Installation Requirements for the release 0.0.10
+------------------------------------------------
 
 The GGZ Gaming Zone client is built from three separate packages
 (these may be available as an integrated package in the future), upon
@@ -142,9 +142,9 @@ KDE Client Installation
 
 The KDE client requires that the KDE libraries 3.X be installed.
 These can be downloaded from http://www.kde.org.  We recommend the
-latest stable version, 3.2.0.  As KDE depends on Qt, you will need Qt
-version >= 3.0 (3.2.3 is recommended as it is the version which
-KDE 3.2 development was based on).
+latest stable version, 3.3.2.  As KDE depends on Qt, you will need Qt
+version >= 3.0 (3.3.3 is recommended as it is the version which
+KDE 3.3 development was based on).
 
 Unpack the ggz-kde-client sources.  They should extract into a
 directory named ggz-kde-client-X.X.X.  Enter that directory and run
@@ -167,7 +167,7 @@ GNOME Client Installation
 
 The GNOME client requires that the GNOME libraries 2.X be installed.
 You can get them from http://www.gnome.org. The recommended version
-is GNOME 2.4.1.
+is GNOME 2.8.0.
 
 Unpack the ggz-gnome-client sources.  They should extract into a
 directory named ggz-gnome-client-X.X.X.  Enter tjat directory and run
@@ -243,7 +243,7 @@ Troubleshooting/Tips
    build tool. The following are known to cause problems:
      libtool < 1.4
      automake 1.5d or 1.6
-   The recommended compiler is gcc 3.3, although many other versions
+   The recommended compiler is gcc 3.4, although many other versions
    (including 2.95 or previous or later 3.x) should work as well
    (see point 9 below).
    On non-GNU systems, use gmake rather than make.

@@ -1,0 +1,28 @@
+Announcing the release of The GGZ Gaming Zone v0.0.10!
+
+The GGZ Gaming Zone (GGZ) is an open-sourced Internet gaming center.
+Similar to other online gaming sites, players login and sit at tables
+where they can play their favorite games and chat with other players
+(and grubby, the chat bot) as well as watching them play.
+GGZ supports multiple rooms with varying skill levels, and records your
+statistics so you can see how you match up against other players
+(quite a few game support statistics now).
+A web interface allows for tournament, team and rankings tracking.
+
+Features in this release:
+
+- GGZBoard, a pygame-based board game framework, comes with 5 games already
+- Embedded ggzcore, enabling games like Widelands to act as GGZ core clients
+- Game content enhancements: Get Hot New Stuff integration and SVG support
+- GGZ support for IM clients (Gaim, Kopete) as a plugin
+- Advanced statistics and player community features through GGZ Community
+- Zeroconf support for GGZ usage in LANs
+- Enhanced Win32 compatibility for GGZ libraries
+- and many more!
+
+See README.GGZ for an overview, or QuickStart.GGZ to get started with the
+GGZ client.
+
+Additional information:
+http://www.ggzgamingzone.org/releases/0.0.10/
+

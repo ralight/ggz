@@ -1,6 +1,6 @@
-================================================================
-The GGZ Gaming Zone - Python Libraries and Games - Version 0.0.9
-================================================================
+=================================================================
+The GGZ Gaming Zone - Python Libraries and Games - Version 0.0.10
+=================================================================
 
 For people not liking C or C++, the GGZ Python package provides
 everything they need to start hacking on GGZ.
@@ -14,6 +14,8 @@ Content of GGZ-Python:
 	- PyGGZCore, simplified python wrapper for ggzcore (core clients)
 	- PyGGZChess, python wrapper for ggzchess library
 	- PyRsvgSDL, python wrapper for rsvg library (not part of GGZ)
+
+	- SDLNewStuff and PlayerTable, useful libraries for games
 
 	- Dresden, a simple single-player pygame-based game
 	- Escape/SDL, port of the Windows game Escape to pygame + ggz-python,

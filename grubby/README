@@ -1,6 +1,6 @@
-==========================================================
-The GGZ Gaming Zone - Grubby, the chat bot - Release 0.0.9
-==========================================================
+===========================================================
+The GGZ Gaming Zone - Grubby, the chat bot - Release 0.0.10
+===========================================================
 
 This package contains grubby, the almighty chatbot. It's a single binary, but
 it is very flexible and extensible by plugins and scripts.
