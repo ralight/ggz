@@ -117,7 +117,7 @@ do
       echo "Running autoconf ..."
       autoconf
       echo "Expanding Qt meta objects information"
-      perl am_edit
+      perl am_edit --foreign-libtool
     )
   fi
 done
