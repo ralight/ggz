@@ -32,7 +32,7 @@ EXTRA_DIST = module.dsc.in
 
 install-data-local:
 	@$(NORMAL_INSTALL)
-	#$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
+	$(GGZ_CONFIG) -D --install --fromfile=module.dsc --force
 	-$(mkinstalldirs) $(DESTDIR)$(ggzdatadir)/kdots
 	-cp -r *.png $(DESTDIR)$(ggzdatadir)/kdots/
  
