@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 4651 2002-09-22 14:56:50Z jdorje $
+ * $Id: msg.c 5077 2002-10-28 03:50:43Z jdorje $
  *
  * Debug and error messages
  *
@@ -89,6 +89,10 @@ GGZDebugHandlerFunc ggz_debug_set_func(GGZDebugHandlerFunc func)
 	return old_handler;
 }
 
+static int ggz_list_strcasecmp(void *a, void *b)
+{
+	return strcasecmp(a, b);
+}
 
 /* FIXME: allow specifying NULL to designate enabling all? */
 void ggz_debug_enable(const char *type)
@@ -99,10 +103,10 @@ void ggz_debug_enable(const char *type)
 		/* if the list doesn't exist, create it */
 		if (!debug_types) {
 			/* Setup list of debugging types */
-			debug_types = ggz_list_create(ggz_list_compare_str,
+			debug_types = ggz_list_create(ggz_list_strcasecmp,
 						      ggz_list_create_str,
 						      ggz_list_destroy_str,
-						      0);
+						      GGZ_LIST_REPLACE_DUPS);
 		}
 		
 		ggz_list_insert(debug_types, (char*)type);
