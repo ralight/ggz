@@ -1,4 +1,4 @@
-/* $id$ */
+/* $Id: common.c 2069 2001-07-22 23:41:11Z jdorje $ */
 /*
  * File: common.c
  * Author: Jason Short
