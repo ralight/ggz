@@ -29,5 +29,8 @@ typedef struct dom_t DOM;	/* Domain Object Model */
 typedef struct ele_t ELE;	/* Elements */
 typedef struct att_t ATT;	/* Attributes */
 
+ELE *MD_query(ELE *parent, const char *name);
+ELE **MD_querylist(ELE *parent, const char *name);
+
 #endif
 

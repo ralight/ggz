@@ -56,7 +56,7 @@ char *minidom_cleanstream(const char *stream)
 	}
 	cs[j] = 0;
 
-	/*printf("DEBUG: cleanstream: return %s\n", cs);*/
+	printf("DEBUG: cleanstream: return %s\n", cs);
 	return cs;
 }
 
@@ -123,6 +123,8 @@ ELE *minidom_makechild(ELE *parent, char *tag)
 				att->value = (char*)malloc(strlen(token) - pos + 1);
 				memcpy(att->name, token, pos);
 				memcpy(att->value, token + pos + 1 + 1, strlen(token) - pos - 1 - 2); /* exclude "" marks */
+				att->name[pos] = 0;
+				att->value[strlen(token) - pos - 1 - 2] = 0;
 			}
 			ele->atnum++;
 			ele->at = realloc(ele->at, ele->atnum + 1);
@@ -192,7 +194,7 @@ DOM *minidom_parse(DOM *dom, const char *stream)
 				if((token[0] == '/') && (cp)) cp = cp->parent;
 				else
 				{
-					if((token[i - mark - 1] == '/') && (cp))
+					if(token[i - mark - 1] == '/')
 					{
 						token[i - mark - 1] = 0;
 						/*cp = cp->parent;*/
@@ -202,9 +204,9 @@ DOM *minidom_parse(DOM *dom, const char *stream)
 					cp = minidom_makechild(cp, token);
 					if((cp) && (!ele)) ele = cp;
 					/*if(cp) cp = cp->parent;*/ /* QUICK HACK?! */
-					if((cp) && (endtag))
+					if(endtag)
 					{
-						cp = cp->parent;
+						if(cp) cp = cp->parent;
 						endtag = 0;
 					}
 				}
@@ -283,18 +285,33 @@ void minidom_internal_dump(ELE *ele)
 {
 	int i;
 	static int indent = 0;
+	static int start = 0;
 
 	if(!ele) return;
+	if(!start)
+	{
+		start = 1;
+		printf("<?xml version=\"1.0\"?>\n");
+	}
 	indent++;
-	for(i = 0; i < indent * 2; i++)
-		printf("==");
-	printf(" (%i) %s: %s\n", indent, ele->name, ele->value);
+	for(i = 0; i < (indent - 1) * 2; i++)
+		printf("  ");
+	printf("<%s", ele->name);
 
 	i = 0;
 	while((ele->at) && (ele->at[i]))
 	{
-		printf("%s = %s\n", ele->at[i]->name, ele->at[i]->value);
+		printf(" %s=\"%s\"", ele->at[i]->name, ele->at[i]->value);
 		i++;
+	}
+
+	if((!ele->value) && (!ele->el)) printf("/");
+	printf(">\n");
+	if(ele->value)
+	{
+		for(i = 0; i < (indent - 1) * 2; i++)
+			printf("  ");
+		printf("  %s\n", ele->value);
 	}
 
 	i = 0;
@@ -302,6 +319,13 @@ void minidom_internal_dump(ELE *ele)
 	{
 		minidom_internal_dump(ele->el[i]);
 		i++;
+	}
+
+	if((ele->value) || (ele->el))
+	{
+		for(i = 0; i < (indent -1) * 2; i++)
+			printf("  ");
+		printf("</%s>\n", ele->name);
 	}
 	indent--;
 }
@@ -313,16 +337,69 @@ void minidom_free(DOM *dom)
 	dom = 0;
 }
 
+/* Query a list of elements */
+ELE **MD_querylist(ELE *parent, const char *name)
+{
+	static ELE **elelist = NULL;
+	int i, j;
+
+	if(!parent) return NULL;
+	/*if(elelist)
+	{
+		i = 0;
+		while(elelist[i])
+		{
+			free(elelist[i]);
+			i++;
+		}
+		free(elelist);
+		elelist = NULL;
+	}*/						/* MEMORY HOLE !*/
+
+	i = 0;
+	j = 1;
+	while((parent->el) && (parent->el[i]))
+	{
+		if(!strcmp(parent->el[i]->name, name))
+		{
+			elelist = (ELE**)malloc((j + 1) * sizeof(ELE*));
+			elelist[j - 1] = parent->el[i];
+			elelist[j] = NULL;
+			j++;
+		}
+		i++;
+	}
+
+	return elelist;
+}
+
+/* Query a single element */
+ELE *MD_query(ELE *parent, const char *name)
+{
+	ELE **elelist;
+
+	elelist = MD_querylist(parent, name);
+	if((elelist) && (elelist[0])) return elelist[0];
+	return NULL;
+}
+
 /* Main functions: This is for convenience only. */
 int main(int argc, char *argv[])
 {
 	DOM *dom;
+	ELE *ele;
 	char *file;
 
 	file = "example.xml";
 	if(argc == 2) file = argv[1];
 	dom = minidom_load(file);
 	minidom_dump(dom);
+
+	printf("Query resultset/result[0]/host:\n");
+	ele = MD_query(MD_query(dom->el, "result"), "host");
+	if(ele) printf("Found: %s\n", ele->value);
+
+	minidom_free(dom);
 
 	return 0;
 }

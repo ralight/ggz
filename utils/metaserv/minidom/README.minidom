@@ -8,6 +8,7 @@ over their content.
 
 
 <?xml version="1.0"?>			-> automatically recognized and skipped during pre-parse
+	<firsttoplevel>
 	<foobar>					-> spaces, tabs, newlines are removed
 		blah					-> content of the element
 	</foobar>
@@ -17,6 +18,9 @@ over their content.
 		<he>
 		</he>
 	</notme>
+	</firsttoplevel>
+
+	<secondtoplevel/>			-> NOT supported yet: multiple top level entries
 
 </foobar>
 
@@ -24,7 +28,7 @@ over their content.
 Please don't expect so much from this little hack. Right now only the meta
 server requires it, and it gets requests like:
 
-	<?xml version="1.0"?><query type="connection">0.0.5pre</query>
+	<?xml version="1.0"?><query class="ggz" type="connection">0.0.5pre</query>
 
 Josef
 
