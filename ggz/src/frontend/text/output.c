@@ -84,7 +84,6 @@ void output_display_help(void)
 	output_text("--- GGZ Gaming Zone -- Help");
 	output_text("--- -----------------------");
 	output_text("---");
-	output_text("--- /beep <player>                          Beep player <player>");
 	output_text("--- /connect [<server>[:<port>]] [<nick>] [<password>]");
 	output_text("---    Connect to a GGZ server");
 	output_text("--- /disconnect                             Disconnect from server");
@@ -93,6 +92,8 @@ void output_display_help(void)
 	output_text("--- /join room|table <num>                  Join room or table <num>");
 	output_text("--- /list players|rooms|tables|types        List the requested information.");
 	output_text("--- /msg <player> <msg>                     Send a msg to a player");
+	output_text("--- /beep <player>                          Beep player <player>");
+	output_text("--- /launch                                 Launch a game if possible");
 	output_text("--- /version                                Display the client version");
 	output_text("--- /who                                    List current player in the room");
 	output_text("--- /wall <msg>                             Admin only command, broadcast to all rooms");

@@ -346,7 +346,6 @@ static void input_handle_launch(char *line)
 	GGZRoom *room;
 	GGZGameType *type;
 	GGZModule *module;
-	GGZTable *table;
 
 	room = ggzcore_server_get_cur_room(server);
 	if (!room) {
@@ -372,14 +371,7 @@ static void input_handle_launch(char *line)
 		return;
 	}
 
-	game_init(module);
-
-	table = ggzcore_table_new();
-	ggzcore_table_init(table, type, "Test", 2);
-	ggzcore_table_set_seat(table, 1, GGZ_SEAT_BOT, NULL);
-
-	ggzcore_room_launch_table(room, table);
-	ggzcore_table_free(table);
+	game_init(module, type, -1);
 }
 
 
@@ -422,12 +414,11 @@ static void input_handle_join_table(char *line)
 		return;
 	}
 
-	game_init(module);
-
 	table_index = atoi(line);
-	ggzcore_room_join_table(room, table_index, 0);
+
+	game_init(module, type, table_index);
 }
-	
+
 
 static void input_handle_exit(void)
 {

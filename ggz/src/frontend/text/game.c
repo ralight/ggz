@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 3/1/01
- * $Id: game.c 4312 2002-07-29 18:24:33Z dr_maux $
+ * $Id: game.c 4668 2002-09-23 15:49:31Z dr_maux $
  *
  * Functions for handling game events
  *
@@ -39,17 +39,22 @@ static GGZHookReturn game_launched(GGZGameEvent, void*, void*);
 static GGZHookReturn game_launch_fail(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiated(GGZGameEvent, void*, void*);
 static GGZHookReturn game_negotiate_fail(GGZGameEvent, void*, void*);
-static GGZHookReturn game_data(GGZGameEvent, void *, void*);
+static GGZHookReturn game_playing(GGZGameEvent, void *, void*);
 static GGZHookReturn game_over(GGZGameEvent, void *, void*);
 
 
 GGZGame *game;
+GGZGameType *gametype;
+int gameindex;
 static int fd = -1;
 
 extern GGZServer *server;
 
-void game_init(GGZModule *module)
+void game_init(GGZModule *module, GGZGameType *type, int index)
 {
+	gametype = type;
+	gameindex = index;
+
 	game = ggzcore_game_new();
 	ggzcore_game_init(game, module);
 	game_register(game);
@@ -85,7 +90,7 @@ static void game_register(GGZGame *game)
 	ggzcore_game_add_event_hook(game, GGZ_GAME_LAUNCH_FAIL, game_launch_fail);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATED, game_negotiated);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_NEGOTIATE_FAIL, game_negotiate_fail);
-	/*ggzcore_game_add_event_hook(game, GGZ_GAME_DATA, game_data);*/
+	ggzcore_game_add_event_hook(game, GGZ_GAME_PLAYING, game_playing);
 	ggzcore_game_add_event_hook(game, GGZ_GAME_OVER, game_over);
 }
 
@@ -95,7 +100,7 @@ static GGZHookReturn game_launched(GGZGameEvent id, void* event_data,
 {
 	output_text("--- Launched game");
 	
-	/*fd = ggzcore_game_get_fd(game);*/
+	fd = ggzcore_game_get_control_fd(game);
 	loop_add_fd(fd, game_process, game_destroy);
 
 	return GGZ_HOOK_OK;
@@ -111,11 +116,13 @@ static GGZHookReturn game_launch_fail(GGZGameEvent id, void* event_data,
 }
 
 
-static GGZHookReturn game_negotiated(GGZGameEvent id, void* event_data, 
+static GGZHookReturn game_negotiated(GGZGameEvent id, void* event_data,
 				     void* user_data)
 {
 	output_text("--- Negotiated game");
-	
+
+	ggzcore_server_create_channel(server);
+
 	return GGZ_HOOK_OK;
 }
 
@@ -129,17 +136,29 @@ static GGZHookReturn game_negotiate_fail(GGZGameEvent id, void* event_data,
 }
 
 
-/*static GGZHookReturn game_data(GGZGameEvent id, void* event_data, void* user_data)
+static GGZHookReturn game_playing(GGZGameEvent id, void* event_data, void* user_data)
 {
 	GGZRoom *room;
+	GGZTable *table;
 
-	output_text("--- Data from game");
+	output_text("--- Game running");
 
 	room = ggzcore_server_get_cur_room(server);
-	ggzcore_room_send_game_data(room, event_data);
+
+	if(gameindex < 0) {
+		table = ggzcore_table_new();
+		ggzcore_table_init(table, gametype, "Fun with ggz-txt", 2);
+		ggzcore_table_set_seat(table, 1, GGZ_SEAT_BOT, NULL);
+
+		ggzcore_room_launch_table(room, table);
+		ggzcore_table_free(table);
+	}
+	else {
+		ggzcore_room_join_table(room, gameindex, 0);
+	}
 
 	return GGZ_HOOK_OK;
-}*/
+}
 
 
 static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_data)
@@ -154,3 +173,4 @@ static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_dat
 
 	return GGZ_HOOK_OK;
 }
+
