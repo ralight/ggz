@@ -97,6 +97,9 @@ int es_make_socket_or_die(const EsSockType type,
 			  const unsigned short port, 
 			  const char *server);
 
+int es_make_unix_socket(const EsSockType type, const char* name);
+int es_make_unix_socket_or_die(const EsSockType type, const char* name);
+
 
 /****************************************************************************
  * Reading/Writing a single char.

@@ -33,6 +33,7 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/un.h>
 #include <sys/uio.h>
 #include <netinet/in.h>
 #include <netdb.h>
@@ -46,6 +47,7 @@
 
 /* FIXME: Make configure test for this..*/
 #define HAVE_MSGHDR_MSG_CONTROL
+#define SA struct sockaddr  
 
 static es_err_func _err_func = NULL;
 static es_exit_func _exit_func = exit;
@@ -119,8 +121,7 @@ int es_make_socket(const EsSockType type, const unsigned short port,
 		name.sin_addr.s_addr = htonl(INADDR_ANY);
 		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &on, 
 			       sizeof(on)) < 0
-		    || bind(sock, (struct sockaddr *)&name, 
-			    sizeof(name)) < 0) {
+		    || bind(sock, (SA *)&name, sizeof(name)) < 0) {
 			if (_err_func)
 				(*_err_func) (strerror(errno), ES_CREATE, 
 					      ES_NONE);
@@ -137,7 +138,7 @@ int es_make_socket(const EsSockType type, const unsigned short port,
 			break;
 		}
 		memcpy(&name.sin_addr, hp->h_addr, hp->h_length);
-		if (connect(sock, (struct sockaddr *)&name, sizeof(name))< 0) {
+		if (connect(sock, (SA *)&name, sizeof(name)) < 0) {
 			if (_err_func)
 				(*_err_func) (strerror(errno), ES_CREATE, 
 					      ES_NONE);
@@ -156,6 +157,57 @@ int es_make_socket_or_die(const EsSockType type, const unsigned short port,
 	int sock;
 	
 	if ( (sock = es_make_socket(type, port, server)) < 0)
+		(*_exit_func) (-1);
+	
+	return sock;
+}
+
+
+int es_make_unix_socket(const EsSockType type, const char* name) 
+{
+	int sock;
+	struct sockaddr_un addr;
+	
+	if ( (sock = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) {
+		if (_err_func)
+			(*_err_func) (strerror(errno), ES_CREATE, ES_NONE);
+		return -1;
+	}
+
+	
+	bzero(&addr, sizeof(addr));
+	addr.sun_family = AF_LOCAL;
+	strcpy(addr.sun_path, name);
+
+	switch(type) {
+
+	case ES_SERVER:
+		unlink(name);
+		if (bind(sock, (SA *)&addr, SUN_LEN(&addr)) < 0 ) {
+			if (_err_func)
+				(*_err_func) (strerror(errno), ES_CREATE, 
+					      ES_NONE);
+			return -1;
+		}
+		break;
+	case ES_CLIENT:
+		if (connect(sock, (SA *)&addr, sizeof(addr)) < 0) {
+			if (_err_func)
+				(*_err_func) (strerror(errno), ES_CREATE, 
+					      ES_NONE);
+			return -1;
+		}
+		break;
+	}
+	return sock;
+}
+
+
+int es_make_unix_socket_or_die(const EsSockType type, const char* name) 
+{
+	int sock;
+	
+	if ( (sock = es_make_unix_socket(type, name)) < 0)
 		(*_exit_func) (-1);
 	
 	return sock;
