@@ -1,12 +1,10 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 3634 2002-03-23 20:29:22Z dr_maux $
+# $Id: Makefile.am 4143 2002-05-03 05:44:06Z jdorje $
 
 # For no particular reason, I put these in alphabetical order
 SUBDIRS = tictactoe reversi chess chinese-checkers combat dots \
-	ggzcards hastings krosswater lapocha spades muehle
-
-# for 0.0.6 add:
-# escape keepalive
+	ggzcards hastings krosswater lapocha spades muehle \
+	escape keepalive
 
 
 test:test-recursive
