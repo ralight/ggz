@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 6008 2004-05-27 02:08:56Z josef $
+ * $Id: datatypes.h 6115 2004-07-16 19:06:49Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -119,8 +119,8 @@ typedef struct GameInfo {
 	bool stats_ratings;
 #if 0
 	bool stats_rankings;
-	bool stats_highscores;
 #endif
+	bool stats_highscores;
 	
 	/* Executable information: a NULL-terminated list of
 	   command-line arguments for the program.  The first argument

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: players.c 6115 2004-07-16 19:06:49Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -115,6 +115,8 @@ GGZPlayer* player_new(GGZClient *client)
 	player->wins = -1;
 	player->losses = -1;
 	player->ties = -1;
+	player->rating = -1;
+	player->highscore = -1;
 
 	return player;
 }

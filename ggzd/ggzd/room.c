@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/20/00
  * Desc: Functions for interfacing with room and chat facility
- * $Id: room.c 5922 2004-02-14 19:32:53Z jdorje $
+ * $Id: room.c 6115 2004-07-16 19:06:49Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -239,7 +239,7 @@ GGZPlayerHandlerStatus room_handle_join(GGZPlayer* player, int room)
 static void update_room_stats(GGZPlayer *player, int game_type)
 {
 	ggzdbPlayerGameStats stats;
-	int records, ratings;
+	int records, ratings, highscores;
 
 	/* Don't show stats for guest players at all.  Later it may be
 	   that some games will want to let guest players have stats. */
@@ -249,12 +249,13 @@ static void update_room_stats(GGZPlayer *player, int game_type)
 		strcpy(stats.game, game_types[game_type].name);
 		records = game_types[game_type].stats_records;
 		ratings = game_types[game_type].stats_ratings;
+		highscores = game_types[game_type].stats_highscores;
 		pthread_rwlock_unlock(&game_types[game_type].lock);
 	} else {
-		records = ratings = 0;
+		records = ratings = highscores = 0;
 	}
 	
-	if (records || ratings) {
+	if (records || ratings || highscores) {
 		strcpy(stats.player, player->name);
 		/* FIXME: doing a DB lookup while we have a write-lock
 		   held on the room is bad! */
@@ -274,6 +275,10 @@ static void update_room_stats(GGZPlayer *player, int game_type)
 	player->have_rating = ratings;
 	if (ratings) 
 		player->rating = (int)(stats.rating + 0.5);
+	player->have_highscore = highscores;
+	if (highscores) {
+		player->highscore = stats.highest_score;
+	}
 	pthread_rwlock_unlock(&player->stats_lock);
 }
 

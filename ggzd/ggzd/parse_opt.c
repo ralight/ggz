@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 5901 2004-02-11 03:19:44Z jdorje $
+ * $Id: parse_opt.c 6115 2004-07-16 19:06:49Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -487,6 +487,8 @@ static void parse_game(char *name, char *dir)
 						    "Records", 0);
 	game_info.stats_ratings = ggz_conf_read_int(ch, "Statistics",
 						    "Ratings", 0);
+	game_info.stats_highscores = ggz_conf_read_int(ch, "Statistics",
+						       "Highscores", 0);
 
 	tmp = ggz_conf_read_string(ch, "TableOptions", "BotsAllowed", "");
 	game_info.bot_allow_list = ggz_numberlist_read(tmp);

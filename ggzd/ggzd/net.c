@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5938 2004-02-16 06:32:13Z jdorje $
+ * $Id: net.c 6115 2004-07-16 19:06:49Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -464,7 +464,7 @@ GGZReturn net_send_player_list_count(GGZNetIO *net, int count)
 static void _net_get_player_stats_string(GGZPlayer *player,
 					 char *buf, size_t bufsz)
 {
-	char record[256] = "", rating[64] = "";
+	char record[256] = "", rating[64] = "", highscore[128] = "";
 
 	/* The caller should ensure that these values are safe to access... */
 	/* FIXME: do this more elegantly */
@@ -480,7 +480,18 @@ static void _net_get_player_stats_string(GGZPlayer *player,
 		snprintf(rating, sizeof(rating),
 			 " RATING='%d'", player->rating);
 
-	snprintf(buf, bufsz, "%s%s", record, rating);
+#if 0
+	if (player->have_ranking)
+		snprintf(ranking, sizeof(ranking),
+			 " RANKING='%d", player->ranking);
+#endif
+
+	if (player->have_highscore) {
+		snprintf(highscore, sizeof(highscore),
+			 " HIGHSCORE='%d'", player->highscore);
+	}
+
+	snprintf(buf, bufsz, "%s%s%s", record, rating, highscore);
 }
 
 

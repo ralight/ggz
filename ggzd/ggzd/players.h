@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: players.h 6115 2004-07-16 19:06:49Z jdorje $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -103,9 +103,9 @@ struct _GGZPlayer {
 #if 0
 	bool have_ranking;
 	unsigned int ranking;
-	int have_highscore;
-	long highscore;
 #endif
+	int have_highscore;
+	int highscore;
 
 	/* Connection info */
 	long login_time;

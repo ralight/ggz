@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/27/2002
  * Desc: Functions for calculating statistics
- * $Id: stats.c 5996 2004-05-17 14:16:42Z josef $
+ * $Id: stats.c 6115 2004-07-16 19:06:49Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team.
  *
@@ -60,7 +60,9 @@ GGZReturn stats_lookup(ggzdbPlayerGameStats *stats)
 		stats->rating = 1500.0;
 
 		stats->ranking = 1; /* ? */
-		stats->highest_score = 0; /* ? */
+
+		/* This could come from the .dsc file. */
+		stats->highest_score = 0;
 
 		return GGZ_OK;
 	} else if (status != GGZDB_NO_ERROR) {
@@ -189,6 +191,17 @@ static void calculate_ratings(ggzdbPlayerGameStats *stats,
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
+static void calculate_highscores(ggzdbPlayerGameStats *stats,
+				 GGZdModGameReportData *report)
+{
+	int i;
+
+	for (i = 0; i < report->num_players; i++) {
+		stats[i].highest_score = MAX(stats[i].highest_score,
+					     report->scores[i]);
+	}
+}
+
 static int fill_in_teams(GGZdModGameReportData *report)
 {
 	int i;
@@ -215,7 +228,7 @@ void report_statistics(int room, int gametype,
 {
 	int i, num_teams;
 	char game_name[MAX_GAME_NAME_LEN + 1];
-	unsigned char records, ratings;
+	unsigned char records, ratings, highscores;
 	ggzdbPlayerGameStats stats[report->num_players];
 	char *winner;
 
@@ -223,10 +236,11 @@ void report_statistics(int room, int gametype,
 	strcpy(game_name, game_types[gametype].name);
 	records = game_types[gametype].stats_records;
 	ratings = game_types[gametype].stats_ratings;
+	highscores = game_types[gametype].stats_highscores;
 	pthread_rwlock_unlock(&game_types[gametype].lock);
 
 	/* First, check if we use *any* stats. */
-	if (!records && !ratings)
+	if (!records && !ratings && !highscores)
 		return;
 
 	/* Now see if this is a rated game. */
@@ -308,6 +322,8 @@ void report_statistics(int room, int gametype,
 		calculate_records(stats, report);
 	if (ratings)
 		calculate_ratings(stats, report, num_teams);
+	if (highscores)
+		calculate_highscores(stats, report);
 
 	/* Rewrite the stats to the database. */
 	ggzdb_stats_newmatch(game_name, winner);
@@ -339,6 +355,9 @@ void report_statistics(int room, int gametype,
 		}
 		if (ratings) {
 			player->rating = (int)(stats[i].rating + 0.5);
+		}
+		if (highscores) {
+			player->highscore = stats[i].highest_score;
 		}
 		pthread_rwlock_unlock(&player->stats_lock);
 		pthread_rwlock_unlock(&player->lock);
