@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4585 2002-09-16 06:53:40Z jdorje $
+ * $Id: players.c 4687 2002-09-24 19:01:54Z jdorje $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -114,6 +114,16 @@ GGZPlayer* player_new(GGZClient *client)
 	return player;
 }
 
+/**
+ * Free a player structure.  The player should already have been logged out.
+ *
+ * @param player A pointer to the player structure.
+ */
+void player_free(GGZPlayer *player)
+{
+	ggz_free(player);
+}
+
 
 /*
  * player_logout() does various cleanups for logout
@@ -153,15 +163,18 @@ void player_logout(GGZPlayer* player)
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Logging out %s", player->name);
 
+	/* Need to leave table if we're at one */
+	/* FIXME: is this the correct way to do it? */
+	/* Note: GGZ_TRANSIT_LEAVE should work for spectators too. */
+	if (player->room >= 0 && player->table >= 0)
+		player_transit(player, GGZ_TRANSIT_LEAVE, player->table);
+
 	/* Remove us from room, so we get no new events */
 	if (player->room != -1)
 		room_join(player, -1);
 	
 	/* FIXME: is this the right place for this? */
 	event_player_flush(player);
-
-	/* FIXME: need to leave table if we're at one 
-	player_transit(player, GGZ_TRANSIT_LEAVE, player->table);*/
 
 	/* Close channel if it's open */
 	if (player->game_fd != -1) {
@@ -672,6 +685,9 @@ static GGZClientReqError player_transit(GGZPlayer* player,
 		return E_NOT_IN_ROOM;
 	if (index == -1)
 		return E_NO_TABLE;
+
+	dbg_msg(GGZ_DBG_UPDATE, "player_transit(%s, %d, %d)",
+		player->name, opcode, index);
 
 	/* Implement LEAVE by setting my seat to open */
 	switch (opcode) {
