@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 2248 2001-08-25 20:13:38Z jdorje $
+ * $Id: main.c 2905 2001-12-17 01:44:59Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -34,6 +34,7 @@
 #include <sys/un.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 #include <easysock.h>
 #include <ggz_client.h>

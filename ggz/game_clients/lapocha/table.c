@@ -28,6 +28,7 @@
 
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "main.h"
 #include "game.h"
@@ -899,7 +900,7 @@ void table_set_trump(void)
 	char *suits[] = { "Clubs", "Diamonds", "Hearts", "Spades" };
 
 	if(game.trump_suit != -1) {
-		t_str = g_strdup_printf("Trump is %s", suits[game.trump_suit]);
+		t_str = g_strdup_printf("Trump is %s", suits[(int)game.trump_suit]);
 		gtk_label_set_text(GTK_LABEL(l_trump), t_str);
 		g_free(t_str);
 	} else
