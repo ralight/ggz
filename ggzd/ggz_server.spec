@@ -1,12 +1,13 @@
 # RPM Spec file for GGZ Gaming Zone server
+# $Id: ggz_server.spec 4809 2002-10-08 00:24:34Z jdorje $
 
 Summary: Server software for the GGZ Gaming Zone
 Name: ggz-server
-Version: 0.0.5
+Version: 0.0.6
 Release: 1
 Copyright: GPL
 Group: Amusements/Games
-Source: http://download.sourceforge.net/GGZ/ggz-server-0.0.5.tar.gz
+Source: http://download.sourceforge.net/GGZ/ggz-server-0.0.6.tar.gz
 URL: http://ggz.sourceforge.net/
 Vendor: The GGZ Development Team
 Packager: GGZ Dev Team <ggz-dev@lists.sourceforge.net>
@@ -42,23 +43,29 @@ PATH="$PATH:/sbin" ldconfig
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS COPYING ChangeLog HACKING INSTALL NEWS README README.GGZ TODO doc
+%doc AUTHORS COPYING ChangeLog HACKING INSTALL NEWS README README.GGZ TODO
 
 %dir /etc/ggzd
 %config /etc/ggzd/ggzd.conf
 %config /etc/ggzd/ggzd.motd
+
 %dir /etc/ggzd/games
 %config /etc/ggzd/games/ccheckers.dsc
 %config /etc/ggzd/games/chess.dsc
 %config /etc/ggzd/games/combat.dsc
 %config /etc/ggzd/games/dots.dsc
-%config /etc/ggzd/games/ggzcards.dsc
+%config /etc/ggzd/games/escape.dsc
 %config /etc/ggzd/games/ggzcards-bridge.dsc
+%config /etc/ggzd/games/ggzcards-fortytwo.dsc
 %config /etc/ggzd/games/ggzcards-hearts.dsc
 %config /etc/ggzd/games/ggzcards-lapocha.dsc
 %config /etc/ggzd/games/ggzcards-spades.dsc
 %config /etc/ggzd/games/ggzcards-suaro.dsc
+%config /etc/ggzd/games/ggzcards-sueca.dsc
+%config /etc/ggzd/games/ggzcards-whist.dsc
+%config /etc/ggzd/games/ggzcards.dsc
 %config /etc/ggzd/games/hastings.dsc
+%config /etc/ggzd/games/keepalive.dsc
 %config /etc/ggzd/games/krosswater.dsc
 %config /etc/ggzd/games/lapocha.dsc
 %config /etc/ggzd/games/muehle.dsc
@@ -72,13 +79,18 @@ PATH="$PATH:/sbin" ldconfig
 %config /etc/ggzd/rooms/combat.room
 %config /etc/ggzd/rooms/dots.room
 %config /etc/ggzd/rooms/entry.room
-%config /etc/ggzd/rooms/ggzcards.room
+%config /etc/ggzd/rooms/escape.room
 %config /etc/ggzd/rooms/ggzcards-bridge.room
+%config /etc/ggzd/rooms/ggzcards-fortytwo.room
 %config /etc/ggzd/rooms/ggzcards-hearts.room
 %config /etc/ggzd/rooms/ggzcards-lapocha.room
 %config /etc/ggzd/rooms/ggzcards-spades.room
 %config /etc/ggzd/rooms/ggzcards-suaro.room
+%config /etc/ggzd/rooms/ggzcards-sueca.room
+%config /etc/ggzd/rooms/ggzcards-whist.room
+%config /etc/ggzd/rooms/ggzcards.room
 %config /etc/ggzd/rooms/hastings.room
+%config /etc/ggzd/rooms/keepalive.room
 %config /etc/ggzd/rooms/krosswater.room
 %config /etc/ggzd/rooms/lapocha.room
 %config /etc/ggzd/rooms/muehle.room
@@ -89,13 +101,14 @@ PATH="$PATH:/sbin" ldconfig
 /usr/bin/ggzd
 /usr/bin/ggzduedit
 
+/usr/share/ggzd
 /usr/lib/ggzd
 
 /usr/lib/libggzdmod.a
 /usr/lib/libggzdmod.la
 /usr/lib/libggzdmod.so
-/usr/lib/libggzdmod.so.0
-/usr/lib/libggzdmod.so.0.0.0
+/usr/lib/libggzdmod.so.1
+/usr/lib/libggzdmod.so.1.0.0
 
 /usr/lib/libzoneserver.a
 /usr/lib/libzoneserver.la
@@ -108,6 +121,9 @@ PATH="$PATH:/sbin" ldconfig
 /usr/man/man6/ggzduedit.6.gz
 
 %changelog
+* Mon Oct 07 2002 Jason Short <jdorje@users.sourceforge.net>
+- Updated for 0.0.6 release
+
 * Fri Apr 12 2002 Rich Gade <rgade@users.sourceforge.net>
 - Updated for 0.0.5 release
 
