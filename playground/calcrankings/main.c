@@ -213,10 +213,11 @@ static void rankings_recalculate_all(void)
 
 	if(newentries == 0)
 	{
-		printf("== No new entries found for calculation.\n");
-		exit(0);
+		printf("== No new players found for calculation.\n");
+		printf("== Proceeding to recalculate existing players.\n");
+		/*exit(0);*/
 	}
-	else printf("== Calculate %i entries, including %i new entries.\n", allentries, newentries);
+	else printf("== Calculate %i players, including %i new players.\n", allentries, newentries);
 
 	res = PQexec(conn, "SELECT DISTINCT game FROM stats");
 	if(PQresultStatus(res) == PGRES_TUPLES_OK)
