@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 3/26/00
  * Desc: Functions for handling table transits
- * $Id: transit.c 4403 2002-09-04 18:48:34Z dr_maux $
+ * $Id: transit.c 4429 2002-09-07 07:21:45Z dr_maux $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -212,7 +212,7 @@ static GGZEventFuncReturn transit_seat_event_callback(void* target,
 }
 
 /* Executed by table hander thread */
-static GGZEventFuncReturn transit_spectator_event_callback(void* target, 
+static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 	int size, void* data)
 {
 	int status;
@@ -228,7 +228,7 @@ static GGZEventFuncReturn transit_spectator_event_callback(void* target,
 
 	action = GGZ_TRANSIT_JOIN_SPECTATOR;
 	if (table->spectators[spectator->index][0])
-		action = GGZ_TRANSIT_JOIN_SPECTATOR;
+		action = GGZ_TRANSIT_LEAVE_SPECTATOR;
 
 
 	/* If this table is already in transit, defer event until later */

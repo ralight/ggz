@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.c 4427 2002-09-07 03:38:43Z jdorje $
+ * $Id: players.c 4429 2002-09-07 07:21:45Z dr_maux $
  *
  * Desc: Functions for handling players.  These functions are all
  * called by the player handler thread.  Since this thread is the only
@@ -554,6 +554,60 @@ GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player, char force)
 	/* Return any immediate failures to client*/
 	if (status < 0) {
 		if (net_send_table_leave(player->client->net, (char)status) < 0)
+			return GGZ_REQ_DISCONNECT;
+		status = GGZ_REQ_FAIL;
+	}
+
+	return status;
+}
+
+
+/* 
+ * player_table_leave_spectator() handles REQ_TABLE_LEAVE_SPECTATOR request from the
+ * client.
+ *
+ * Receives:
+ * GGZPlayer* player : pointer to player structure
+ * int p_fd : player's fd
+ *
+ * Returns:
+ * int : one of
+ *  GGZ_REQ_DISCONNECT   : i/o error
+ *  GGZ_REQ_FAIL         : request failed
+ *  GGZ_REQ_OK           : request succeeded.  
+ */
+GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer* player)
+{
+	int status, gametype;
+	GGZTableState state;
+	GGZTable *table;
+
+	dbg_msg(GGZ_DBG_TABLE, "%s attempting to leave table %d as spectator",
+		player->name, player->table);
+
+	/* Check if leave during gameplay is allowed */
+	table = table_lookup(player->room, player->table);
+	
+	if (!table) {
+		dbg_msg(GGZ_DBG_TABLE, "%s tried to leave table that was already gone", player->name);
+		return 0;
+	}		
+
+	gametype = table->type;
+	state = table->state;
+	pthread_rwlock_unlock(&table->lock);
+
+	/* Error if we're already in transit */
+	if (player->transit)
+		status = E_IN_TRANSIT;
+	else 
+		/* All clear: send leave event to table */
+		status = player_transit(player, GGZ_TRANSIT_LEAVE_SPECTATOR,
+					player->table);
+	
+	/* Return any immediate failures to client*/
+	if (status < 0) {
+		if (net_send_table_leave_spectator(player->client->net, (char)status) < 0)
 			return GGZ_REQ_DISCONNECT;
 		status = GGZ_REQ_FAIL;
 	}

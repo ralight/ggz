@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/18/99
  * Desc: Functions for handling players
- * $Id: players.h 4403 2002-09-04 18:48:34Z dr_maux $
+ * $Id: players.h 4429 2002-09-07 07:21:45Z dr_maux $
  *
  * Copyright (C) 1999,2000 Brent Hendricks.
  *
@@ -100,6 +100,7 @@ GGZPlayerHandlerStatus player_table_update(GGZPlayer* player, GGZTable *table);
 GGZPlayerHandlerStatus player_table_join(GGZPlayer* player, int index);
 GGZPlayerHandlerStatus player_table_join_spectator(GGZPlayer* player, int index);
 GGZPlayerHandlerStatus player_table_leave(GGZPlayer* player, char force);
+GGZPlayerHandlerStatus player_table_leave_spectator(GGZPlayer *player);
 GGZPlayerHandlerStatus player_list_players(GGZPlayer* player);
 GGZPlayerHandlerStatus player_list_types(GGZPlayer* player, char verbose);
 GGZPlayerHandlerStatus player_list_tables(GGZPlayer* player, int type,

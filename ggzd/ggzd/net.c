@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4403 2002-09-04 18:48:34Z dr_maux $
+ * $Id: net.c 4429 2002-09-07 07:21:45Z dr_maux $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -123,6 +123,7 @@ static void _net_handle_chat(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_join_spectator(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element);
+static void _net_handle_leave_spectator(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_launch(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element);
 static void _net_handle_seat(GGZNetIO *net, GGZXMLElement *element);
@@ -219,10 +220,10 @@ int net_get_fd(GGZNetIO *net)
 
 
 /* For debugging purposes only! */
-static void net_set_fd(GGZNetIO *net, int fd)
+/*static void net_set_fd(GGZNetIO *net, int fd)
 {
 	net->fd = fd;
-}
+}*/
 
 
 /* Disconnect from network */
@@ -587,6 +588,11 @@ int net_send_table_leave(GGZNetIO *net, char status)
 }
 
 
+int net_send_table_leave_spectator(GGZNetIO *net, char status)
+{
+	return _net_send_result(net, "leavespectator", status);
+}
+
 int net_send_player_update(GGZNetIO *net, unsigned char opcode, char *name)
 {
 	GGZPlayer *player;
@@ -663,7 +669,7 @@ int net_send_table_update(GGZNetIO *net, GGZUpdateOpcode opcode, GGZTable *table
 		action = "joinspectator";
 		break;
 	case GGZ_UPDATE_SPECTATOR_LEAVE:
-		action = "leave";
+		action = "leavespectator";
 		break;
 	default:
 		/* We should never get any other update types */
@@ -727,7 +733,7 @@ int net_send_ping(GGZNetIO *net)
 
 
 /* Check for incoming data */
-static int net_data_is_pending(GGZNetIO *net)
+/*static int net_data_is_pending(GGZNetIO *net)
 {
 	int pending = 0;
 	struct pollfd fd[1] = {{net->fd, POLLIN, 0}};
@@ -736,9 +742,9 @@ static int net_data_is_pending(GGZNetIO *net)
 	
 	dbg_msg(GGZ_DBG_CONNECTION, "Checking for net events");	
 	if ( (pending = poll(fd, 1, 0)) < 0) {
-		if (errno == EINTR) 
+		if (errno == EINTR)*/
 			/* Ignore interruptions */
-			pending = 0;
+/*			pending = 0;
 		else 
 			err_sys_exit("poll failed in ggzcore_server_data_is_pending");
 	}
@@ -747,7 +753,7 @@ static int net_data_is_pending(GGZNetIO *net)
 	}
 
 	return pending;
-}
+}*/
 
 
 /* Read in a bit more from the server and send it to the parser */
@@ -911,6 +917,8 @@ static GGZXMLElement* _net_new_element(char *tag, char **attrs)
 		process_func = _net_handle_join_spectator;
 	else if (strcmp(tag, "LEAVE") == 0)
 		process_func = _net_handle_leave;
+	else if (strcmp(tag, "LEAVESPECTATOR") == 0)
+		process_func = _net_handle_leave_spectator;
 	else if (strcmp(tag, "LAUNCH") == 0)
 		process_func = _net_handle_launch;
 	else if (strcmp(tag, "TABLE") == 0)
@@ -1262,6 +1270,7 @@ static void _net_handle_join(GGZNetIO *net, GGZXMLElement *element)
 	}
 }
 
+
 /* Functions for <JOINSPECTATOR> tag */
 static void _net_handle_join_spectator(GGZNetIO *net, GGZXMLElement *element)
 {
@@ -1272,6 +1281,7 @@ static void _net_handle_join_spectator(GGZNetIO *net, GGZXMLElement *element)
 		player_table_join_spectator(net->client->data, table);
 	}
 }
+
 
 /* Functions for <LEAVE> tag */
 static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
@@ -1284,6 +1294,16 @@ static void _net_handle_leave(GGZNetIO *net, GGZXMLElement *element)
 		if (att && strcmp(att, "true") == 0)
 			force = 1;
 		player_table_leave(net->client->data, force);
+	}
+}
+
+
+/* Functions for <LEAVESPECTATOR> tag */
+static void _net_handle_leave_spectator(GGZNetIO *net, GGZXMLElement *element)
+{
+
+	if (element) {
+		player_table_leave_spectator(net->client->data);
 	}
 }
 
