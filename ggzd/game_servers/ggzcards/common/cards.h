@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.h 3989 2002-04-15 05:29:20Z jdorje $
+ * $Id: cards.h 4032 2002-04-21 06:13:46Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.
@@ -39,10 +39,17 @@
 /** @brief The type of deck.
  *
  *  In theory, many different types of decks are possible.  Currently
- *  only the standard French deck (A/K/Q/J/10..2) is used.
+ *  only the standard French deck is used.
  */
 enum card_type_enum {
-	CARDSET_FRENCH		/**< A standard (French) card deck. */
+	/** A standard (French) card deck (A/K/Q/J/10..2). */
+	CARDSET_FRENCH,
+
+	/** A set of dominoes.  Here each domino has two sides, each of
+	 *  which has a number.  For storage purposes, the higher
+	 *  side will be considered the "suit" and the lower side the
+	 *  "face". */
+	CARDSET_DOMINOES	
 };
 
 /** Regular values for card faces.

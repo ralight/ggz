@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 04/16/2002
  * Desc: GGZCards network common code
- * $Id: net_common.h 3998 2002-04-16 19:05:35Z jdorje $
+ * $Id: net_common.h 4032 2002-04-21 06:13:46Z jdorje $
  *
  * Contains common networking functions.
  *
