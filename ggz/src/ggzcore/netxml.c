@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 5872 2004-02-09 22:10:30Z jdorje $
+ * $Id: netxml.c 5876 2004-02-10 02:04:22Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -1034,6 +1034,10 @@ static void _ggzcore_net_handle_result(GGZNet *net, GGZXMLElement *element)
 			case E_AT_TABLE:
 				snprintf(error.message, sizeof(error.message),
 					 "Can't chat at table");
+				break;
+			case E_NO_TABLE:
+				snprintf(error.message, sizeof(error.message),
+					 "Must be at table");
 				break;
 			default:
 				snprintf(error.message, sizeof(error.message),
