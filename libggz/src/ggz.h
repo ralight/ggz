@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 5177 2002-11-03 19:48:00Z dr_maux $
+ * $Id: ggz.h 5332 2003-01-16 22:10:10Z dr_maux $
  * 
  * Header file for ggz components lib
  *
@@ -1541,6 +1541,39 @@ int ggz_writen(const int sock, const void *vdata, size_t n);
  *  @note You must know how much data you want _before_ calling this function.
  */
 int ggz_readn(const int sock, void *data, size_t n);
+
+/** @} */
+
+/**
+ * @defgroup security Security functions
+ *
+ * All functions related to encryption and encoding go here.
+ *
+ * Encryption functions use gcrypt, and will always fail if support for gcrypt
+ * has not been compiled in. Encoding functions will always be available.
+ *
+ * @{
+ */
+
+/* Hash data structure */
+struct hash_t
+{
+	char *hash;
+	int hashlen;
+};
+typedef struct hash_t hash_t;
+
+/* Create a hash over a text, allocating space as needed */
+hash_t ggz_hash_create(const char *algo, const char *text);
+
+/* Create a HMAC hash over a text, allocating space as needed */
+hash_t ggz_hmac_create(const char *algo, const char *text, const char *secret);
+
+/* Encodes to base64, allocating space as needed */
+char *ggz_base64_encode(const char *text, int length);
+
+/* Decodes from base64, allocating space as needed */
+char *ggz_base64_decode(const char *text, int length);
 
 /** @} */
 
