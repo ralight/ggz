@@ -46,7 +46,7 @@ RoomStruct *chat_room;
 /* Internal use only */
 static void room_spew_chat_room(const int);
 static void room_notify_change(const int, const int, const int);
-static void room_dequeue_chat(const int p)
+static void room_dequeue_chat(const int p);
 
 
 /* Initialize the chat lists */
