@@ -6,6 +6,6 @@ Frontend = sdl
 Homepage = http://ggz.sourceforge.net/games/tictactoe/
 Name = TicTacToe
 ProtocolEngine = TicTacToe
-ProtocolVersion = 2
+ProtocolVersion = 3
 Version = 0.0.6
 
