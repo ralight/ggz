@@ -652,7 +652,26 @@ void Intro::mousePressEvent(QMouseEvent *e)
 {
 	int x, y;
 
-	if(transition != none) return;
+	if(transition != none)
+	{
+		if((transition == nonetomain) || (transition == nonetologin)
+		|| (transition == nonetoscores) || (transition == nonetoavatar))
+		{
+			blendval_login = 96;
+			blendval_title = 98;
+		}
+		else if(transition == nonetoblack)
+		{
+			blendval_login = 92;
+		}
+		else
+		{
+			blendval_login = 8;
+			blendval_title = 4;
+		}
+		forcedraw = 1;
+		return;
+	}
 
 	x = e->x();
 	y = e->y();
