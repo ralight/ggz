@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ Common Library
  * Date: 01/13/2002
- * $Id: ggz_common.c 5935 2004-02-16 05:11:21Z jdorje $
+ * $Id: ggz_common.c 6875 2005-01-24 06:03:21Z jdorje $
  *
  * This provides GGZ-specific functionality that is common to
  * some or all of the ggz-server, game-server, ggz-client, and
@@ -37,24 +37,30 @@
 
 #include "support.h"
 
+#define OPEN_SEAT_NAME "open"
+#define BOT_SEAT_NAME "bot"
+#define PLAYER_SEAT_NAME "player"
+#define RESERVED_SEAT_NAME "reserved"
+#define NONE_SEAT_NAME "none"
+
 const char *ggz_seattype_to_string(GGZSeatType type)
 {
 	switch (type) {
 	case GGZ_SEAT_OPEN:
-		return "open";
+		return OPEN_SEAT_NAME;
 	case GGZ_SEAT_BOT:
-		return "bot";
+		return BOT_SEAT_NAME;
 	case GGZ_SEAT_RESERVED:
-		return "reserved";
+		return RESERVED_SEAT_NAME;
 	case GGZ_SEAT_PLAYER:
-		return "player";
+		return PLAYER_SEAT_NAME;
 	case GGZ_SEAT_NONE:
-		return "none";
+		return NONE_SEAT_NAME;
 	}
 
 	ggz_error_msg("ggz_seattype_to_string: "
 		      "invalid seattype %d given.", type);
-	return "none";
+	return NONE_SEAT_NAME;
 }
 
 GGZSeatType ggz_string_to_seattype(const char *type_str)
@@ -65,31 +71,37 @@ GGZSeatType ggz_string_to_seattype(const char *type_str)
 	if (!type_str)
 		return GGZ_SEAT_NONE;
 
-	if (!strcasecmp(type_str, "open"))
+	if (strcasecmp(type_str, OPEN_SEAT_NAME) == 0)
 		return GGZ_SEAT_OPEN;
-	else if (!strcasecmp(type_str, "bot"))
+	else if (strcasecmp(type_str, BOT_SEAT_NAME) == 0)
 		return GGZ_SEAT_BOT;
-	else if (!strcasecmp(type_str, "reserved"))
+	else if (strcasecmp(type_str, RESERVED_SEAT_NAME) == 0)
 		return GGZ_SEAT_RESERVED;
-	else if (!strcasecmp(type_str, "player"))
+	else if (strcasecmp(type_str, PLAYER_SEAT_NAME) == 0)
 		return GGZ_SEAT_PLAYER;
 
 	return GGZ_SEAT_NONE;
 }
 
+#define NORMAL_CHAT_NAME "normal"
+#define ANNOUNCE_CHAT_NAME "announce"
+#define BEEP_CHAT_NAME "beep"
+#define PRIVATE_CHAT_NAME "private"
+#define TABLE_CHAT_NAME "table"
+
 const char *ggz_chattype_to_string(GGZChatType type)
 {
 	switch (type) {
 	case GGZ_CHAT_NORMAL:
-		return "normal";
+		return NORMAL_CHAT_NAME;
 	case GGZ_CHAT_ANNOUNCE:
-		return "announce";
+		return ANNOUNCE_CHAT_NAME;
 	case GGZ_CHAT_BEEP:
-		return "beep";
+		return BEEP_CHAT_NAME;
 	case GGZ_CHAT_PERSONAL:
-		return "private";
+		return PRIVATE_CHAT_NAME;
 	case GGZ_CHAT_TABLE:
-		return "table";
+		return TABLE_CHAT_NAME;
 	case GGZ_CHAT_UNKNOWN:
 		break;
 	}
@@ -107,31 +119,36 @@ GGZChatType ggz_string_to_chattype(const char *type_str)
 	if (!type_str)
 		return GGZ_CHAT_UNKNOWN;
 
-	if (!strcasecmp(type_str, "normal"))
+	if (strcasecmp(type_str, NORMAL_CHAT_NAME) == 0)
 		return GGZ_CHAT_NORMAL;
-	else if (!strcasecmp(type_str, "announce"))
+	else if (strcasecmp(type_str, ANNOUNCE_CHAT_NAME) == 0)
 		return GGZ_CHAT_ANNOUNCE;
-	else if (!strcasecmp(type_str, "beep"))
+	else if (strcasecmp(type_str, BEEP_CHAT_NAME) == 0)
 		return GGZ_CHAT_BEEP;
-	else if (!strcasecmp(type_str, "private"))
+	else if (strcasecmp(type_str, PRIVATE_CHAT_NAME) == 0)
 		return GGZ_CHAT_PERSONAL;
-	else if (!strcasecmp(type_str, "table"))
+	else if (strcasecmp(type_str, TABLE_CHAT_NAME) == 0)
 		return GGZ_CHAT_TABLE;
 
 	return GGZ_CHAT_UNKNOWN;
 }
 
+#define NORMAL_LEAVETYPE_NAME "normal"
+#define BOOT_LEAVETYPE_NAME "boot"
+#define GAMEOVER_LEAVETYPE_NAME "gameover"
+#define GAMEERROR_LEAVETYPE_NAME "gameerror"
+
 const char *ggz_leavetype_to_string(GGZLeaveType type)
 {
 	switch (type) {
 	case GGZ_LEAVE_NORMAL:
-		return "normal";
+		return NORMAL_LEAVETYPE_NAME;
 	case GGZ_LEAVE_BOOT:
-		return "boot";
+		return BOOT_LEAVETYPE_NAME;
 	case GGZ_LEAVE_GAMEOVER:
-		return "gameover";
+		return GAMEOVER_LEAVETYPE_NAME;
 	case GGZ_LEAVE_GAMEERROR:
-		return "gameerror";
+		return GAMEERROR_LEAVETYPE_NAME;
 	}
 
 	ggz_error_msg("ggz_leavetype_to_string: "
@@ -144,36 +161,42 @@ GGZLeaveType ggz_string_to_leavetype(const char *type_str)
 	if (!type_str)
 		return GGZ_LEAVE_GAMEERROR;
 
-	if (!strcasecmp(type_str, "normal"))
+	if (strcasecmp(type_str, NORMAL_LEAVETYPE_NAME) == 0)
 		return GGZ_LEAVE_NORMAL;
-	else if (!strcasecmp(type_str, "boot"))
+	else if (strcasecmp(type_str, BOOT_LEAVETYPE_NAME) == 0)
 		return GGZ_LEAVE_BOOT;
-	else if (!strcasecmp(type_str, "gameover"))
+	else if (strcasecmp(type_str, GAMEOVER_LEAVETYPE_NAME) == 0)
 		return GGZ_LEAVE_GAMEOVER;
-	else if (!strcasecmp(type_str, "gameerror"))
+	else if (strcasecmp(type_str, GAMEERROR_LEAVETYPE_NAME) == 0)
 		return GGZ_LEAVE_GAMEERROR;
 
 	return GGZ_LEAVE_GAMEERROR;
 }
 
+#define GUEST_PLAYER_NAME "guest"
+#define NORMAL_PLAYER_NAME "normal"
+#define ADMIN_PLAYER_NAME "admin"
+#define BOT_PLAYER_NAME "bot"
+#define UNKNOWN_PLAYER_NAME "unknown"
+
 const char *ggz_playertype_to_string(GGZPlayerType type)
 {
 	switch (type) {
 	case GGZ_PLAYER_GUEST:
-		return "guest";
+		return GUEST_PLAYER_NAME;
 	case GGZ_PLAYER_NORMAL:
-		return "normal";
+		return NORMAL_PLAYER_NAME;
 	case GGZ_PLAYER_ADMIN:
-		return "admin";
+		return ADMIN_PLAYER_NAME;
 	case GGZ_PLAYER_BOT:
-		return "bot";
+		return BOT_PLAYER_NAME;
 	case GGZ_PLAYER_UNKNOWN:
-		return "unknown";
+		return UNKNOWN_PLAYER_NAME;
 	}
 
 	ggz_error_msg("ggz_playertype_to_string: "
 		      "invalid playertype %d given.", type);
-	return "unknown"; /* ? */
+	return UNKNOWN_PLAYER_NAME; /* ? */
 }
 
 GGZPlayerType ggz_string_to_playertype(const char *type_str)
@@ -182,25 +205,28 @@ GGZPlayerType ggz_string_to_playertype(const char *type_str)
 		return GGZ_PLAYER_UNKNOWN;
 	}
 
-	if (strcasecmp(type_str, "normal") == 0) {
+	if (strcasecmp(type_str, NORMAL_PLAYER_NAME) == 0) {
 		return GGZ_PLAYER_NORMAL;
-	} else if (strcasecmp(type_str, "guest") == 0) {
+	} else if (strcasecmp(type_str, GUEST_PLAYER_NAME) == 0) {
 		return GGZ_PLAYER_GUEST;
-	} else if (strcasecmp(type_str, "admin") == 0) {
+	} else if (strcasecmp(type_str, ADMIN_PLAYER_NAME) == 0) {
 		return GGZ_PLAYER_ADMIN;
-	} else if (strcasecmp(type_str, "bot") == 0) {
+	} else if (strcasecmp(type_str, BOT_PLAYER_NAME) == 0) {
 		return GGZ_PLAYER_BOT;
 	}
 
 	return GGZ_PLAYER_UNKNOWN; /* ? */
 }
 
+#define TRUE_NAME "true"
+#define FALSE_NAME "false"
+
 char *bool_to_str(int bool_val)
 {
 	if (bool_val)
-		return "true";
+		return TRUE_NAME;
 	else
-		return "false";
+		return FALSE_NAME;
 }
 
 /* Convert a possibly-null string that should contain "true" or "false"
@@ -211,10 +237,10 @@ int str_to_bool(const char *str, int dflt)
 	if (!str)
 		return dflt;
   
-	if (strcasecmp(str, "true") == 0)
+	if (strcasecmp(str, TRUE_NAME) == 0)
 		return 1;
 
-	if (strcasecmp(str, "false") == 0)
+	if (strcasecmp(str, FALSE_NAME) == 0)
 		return 0;
 
 	return dflt;
