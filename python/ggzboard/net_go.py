@@ -35,6 +35,9 @@ class Network(NetworkBase, NetworkInfo):
 		self.command_takeback = 6
 		self.command_extended = 7
 
+		self.lastcommand = -1
+		self.lastmove = None
+
 	def network(self):
 		print "network!"
 
@@ -81,6 +84,8 @@ class Network(NetworkBase, NetworkInfo):
 					if basiccommand == self.command_ok:
 						if commandoptions == 0x3FF:
 							print "command: ok"
+							if self.lastcommand == self.command_move:
+								self.movequeue.append((None, self.lastmove))
 						else:
 							print "command error: ok data corrupted"
 					elif basiccommand == self.command_deny:
@@ -101,13 +106,14 @@ class Network(NetworkBase, NetworkInfo):
 						elif commandoptions == 8: # handicap
 							self.sendcommand(self.command_answer, 3)
 						elif commandoptions == 11: # colour
-							self.sendcommand(self.command_answer, 1) # 1=white, 2=black
+							self.sendcommand(self.command_answer, 2) # 1=white, 2=black
 						else:
 							self.sendcommand(self.command_answer, 0)
 					elif basiccommand == self.command_answer:
 						print "command: answer"
 					elif basiccommand == self.command_move:
 						print "command: move"
+						self.gotmove((commandoptions & 0x200) >> 9, commandoptions & 0x1FF)
 					elif basiccommand == self.command_takeback:
 						print "command: takeback"
 					elif basiccommand == self.command_extended:
@@ -121,9 +127,19 @@ class Network(NetworkBase, NetworkInfo):
 	def newgame(self):
 		self.inputallowed = 1
 		# FIXME: send command_ok, or command_query?
+		self.sendcommand(self.command_ok, 0x3FF)
+
+	def gotmove(self, color, move):
+		x = move % 19
+		y = move / 19
+		topos = (x, 19 - y)
+		print "<<<move", color, topos
+		self.movequeue.append((None, topos))
 
 	def sendcommand(self, basiccommand, commandoptions):
 		print ">>>command", basiccommand
+		self.lastcommand = basiccommand
+
 		if basiccommand != self.command_ok:
 			self.sequence += 1
 		clientbit = self.sequence & 0x01
@@ -154,6 +170,7 @@ class Network(NetworkBase, NetworkInfo):
 		p = 0 # black
 		i = (19 - y2) * 19 + x2 # O1: 14 (lower right...)
 		commandoptions = (p << 10) + i
+		self.lastmove = (x2, y2)
 
 		self.sendcommand(basiccommand, commandoptions)
 
