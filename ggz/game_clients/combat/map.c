@@ -33,7 +33,7 @@
 #include <fcntl.h>
 
 #include "combat.h"
-#include "confio.h"
+#include "ggzcore.h"
 #include "map.h"
 
 #define GLOBAL_MAPS GAMEDIR "/combat/maps"
@@ -69,10 +69,10 @@ int map_save(combat_game *map) {
   int handle, a;
   hash = _generate_hash( combat_options_string_write(map, 1) );
   sprintf(filename, "%s/%s.%u", GLOBAL_MAPS, map->name, hash);
-  handle = _ggzcore_confio_parse(filename, 1);
+  handle = ggzcore_confio_parse(filename, GGZ_CONFIO_RDWR || GGZ_CONFIO_CREATE);
   if (handle < 0) {
     sprintf(filename, "%s/.ggz/combat/maps/%s.%u", getenv("HOME"), map->name, hash);
-    handle = _ggzcore_confio_parse(filename, 1);
+    handle = ggzcore_confio_parse(filename, GGZ_CONFIO_RDWR || GGZ_CONFIO_CREATE);
     if (handle < 0) {
       sprintf(filename, "%s/.ggz", getenv("HOME"));
       mkdir(filename, S_IRWXU | S_IRGRP | S_IXGRP );
@@ -81,7 +81,7 @@ int map_save(combat_game *map) {
       sprintf(filename, "%s/.ggz/combat/maps", getenv("HOME"));
       mkdir(filename, S_IRWXU | S_IRGRP | S_IXGRP );
       sprintf(filename, "%s/.ggz/combat/maps/%s.%u", getenv("HOME"), map->name, hash);
-      handle = _ggzcore_confio_parse(filename, 1);
+      handle = ggzcore_confio_parse(filename, GGZ_CONFIO_RDWR || GGZ_CONFIO_CREATE);
       if (handle < 0) {
         // Give up
         game_message("I couldn't write the map to disk");
@@ -90,11 +90,11 @@ int map_save(combat_game *map) {
     }
   }
   // Width/height
-  _ggzcore_confio_write_int(handle, "map", "width", map->width);
-  _ggzcore_confio_write_int(handle, "map", "height", map->height);
+  ggzcore_confio_write_int(handle, "map", "width", map->width);
+  ggzcore_confio_write_int(handle, "map", "height", map->height);
   // Army data
   for (a = 0; a < 12; a++)
-    _ggzcore_confio_write_int(handle, "army", file_unit_name[a], map->army[map->number][a]);
+    ggzcore_confio_write_int(handle, "army", file_unit_name[a], map->army[map->number][a]);
   // Map data
   map_data = (char *)malloc(map->width * map->height + 1);
   for (a = 0; a < map->width*map->height; a++) {
@@ -118,11 +118,11 @@ int map_save(combat_game *map) {
     }
   }
   map_data[map->width * map->height] = 0;
-  _ggzcore_confio_write_string(handle, "map", "data", map_data);
+  ggzcore_confio_write_string(handle, "map", "data", map_data);
   // Options
   sprintf(options, "%lX", map->options);
-  _ggzcore_confio_write_string(handle, "options", "bin1", options);
-  _ggzcore_confio_commit(handle);
+  ggzcore_confio_write_string(handle, "options", "bin1", options);
+  ggzcore_confio_commit(handle);
   return 0;
 }
 
@@ -161,18 +161,18 @@ void map_load(combat_game *_game, char *filename, int *changed) {
   char *options;
   int a, b;
   char *terrain_data;
-  handle = _ggzcore_confio_parse(filename, 0);
+  handle = ggzcore_confio_parse(filename, 0);
   if (handle < 0)
     return;
   /* Get the data from the file */
   // Width / Height
-  _game->width = _ggzcore_confio_read_int(handle, "map", "width", 10);
-  _game->height = _ggzcore_confio_read_int(handle, "map", "height", 10);
+  _game->width = ggzcore_confio_read_int(handle, "map", "width", 10);
+  _game->height = ggzcore_confio_read_int(handle, "map", "height", 10);
   for (a = 0; a < 12; a++) {
-    ARMY(_game, a) = _ggzcore_confio_read_int(handle, "army", file_unit_name[a], 0);
+    ARMY(_game, a) = ggzcore_confio_read_int(handle, "army", file_unit_name[a], 0);
   }
   // Terrain data
-  terrain_data = _ggzcore_confio_read_string(handle, "map", "data", NULL);
+  terrain_data = ggzcore_confio_read_string(handle, "map", "data", NULL);
   _game->map = (tile *)malloc(_game->width * _game->height * sizeof(tile));
   if (terrain_data) {
     a = strlen(terrain_data);
@@ -200,7 +200,7 @@ void map_load(combat_game *_game, char *filename, int *changed) {
     }
   }
   // Options
-  options = _ggzcore_confio_read_string(handle, "options", "bin1", NULL);
+  options = ggzcore_confio_read_string(handle, "options", "bin1", NULL);
   if (options)
     sscanf(options, "%lx", &_game->options);
   a = strlen(filename) - 1;
