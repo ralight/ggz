@@ -1,4 +1,4 @@
-/* $Id: cb_main.c 2943 2001-12-18 23:10:24Z jdorje $ */
+/* $Id: cb_main.c 2944 2001-12-18 23:12:39Z jdorje $ */
 /* 
  * File: cb_main.c
  * Author: Rich Gade
@@ -32,6 +32,7 @@
 #include "cb_main.h"
 #include "dlg_main.h"
 #include "dlg_about.h"
+#include "game.h"
 #include "main.h"
 #include "table.h"
 
