@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6376 2004-11-15 19:37:11Z jdorje $
+dnl $Id: configure.ac 6427 2004-11-28 00:51:41Z josef $
 
-AC_INIT([GGZ Gtk+ client], [0.0.9], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
+AC_INIT([GGZ Gtk+ client], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [ggz-gtk-client])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
@@ -23,7 +23,7 @@ AC_GGZ_INIT(defaults, export)
 AC_GGZ_GGZCORE
 AC_GGZ_GGZMOD
 AC_GGZ_LIBGGZ
-AC_GGZ_INTL(ignore)
+AC_GGZ_INTL
 
 
 dnl Check for header files

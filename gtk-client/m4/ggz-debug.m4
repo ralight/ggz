@@ -1,5 +1,5 @@
 # AC_GGZ_DEBUG
-# $Id: ggz-debug.m4 5704 2003-12-05 01:01:11Z jdorje $
+# $Id: ggz-debug.m4 6427 2004-11-28 00:51:41Z josef $
 #
 # Check for debugging choices.  Sets $enable_debug, $enable_debug_gdb,
 # and $enable_debug_mem.
@@ -7,7 +7,7 @@
 # This file may be used in many GGZ modules; the master copy should reside
 # in libggz.
 
-AC_DEFUN(AC_GGZ_DEBUG,
+AC_DEFUN([AC_GGZ_DEBUG],
 [
   # This defines either DEBUG or NDEBUG.  We could provide a third option
   # where neither are defined.
