@@ -12,6 +12,7 @@ host = localhost
 logfile = /tmp/guruchatlog
  
 [guru]
+player = /usr/local/lib/libguru_player.so
 net = /usr/local/lib/libguru_netggz.so
 i18n = /usr/local/lib/libguru_i18n.so
 modules = self people badword programming exec simplereturn
@@ -29,8 +30,9 @@ people = /usr/local/lib/libgurumod_people.so
 ================================
 
 [programs]
-programs = meeting news dict
+programs = meeting news dict messages
 meeting = /usr/local/share/grubby/meeting.rb
+messages = /usr/local/share/grubby/messages.rb
 news = /usr/local/share/grubby/rdf.pl
 dict = /usr/local/share/grubby/dict.pl
 
