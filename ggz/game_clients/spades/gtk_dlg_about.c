@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: NetSpades
  * Date: 1/27/99
+ * $Id: gtk_dlg_about.c 4380 2002-08-20 22:14:21Z jdorje $
  *
  * This file contains functions for creating and handling the about box
  *
@@ -29,7 +30,7 @@
 #include <gtk/gtk.h>
 
 #include "ggzintl.h"
-
+#include "gtk_dlg_about.h"
 
 void AboutDialog(GtkWidget * widget, gpointer data)
 {

@@ -33,6 +33,7 @@
 #include <gtk/gtk.h>
 
 #include "ggzintl.h"
+#include "gtk_dlg_error.h"
 
 void DisplayMessage(char *message, gboolean quit)
 {
