@@ -31,12 +31,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
-
-#ifndef _DIRENT_HAVE_D_TYPE
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#endif
 
 #include "ggzcore.h"
 #include "game.h"
@@ -522,9 +519,6 @@ void game_update_config(char *theme, int beep)
 static int select_dirs(const struct dirent *d)
 {
 	int ok=0;
-
-#ifndef _DIRENT_HAVE_D_TYPE
-	/* We have to do things the hard way, as dirent doesn't have the type */
 	struct stat buf;
 	char *pathname;
 
@@ -535,10 +529,6 @@ static int select_dirs(const struct dirent *d)
 	if(S_ISDIR(buf.st_mode))
 		ok = 1;
 	g_free(pathname);
-#else
-	if(d->d_type == DT_DIR)
-		ok = 1;
-#endif
 
 	if(ok && d->d_name[0] != '.')
 		return 1;
@@ -554,6 +544,7 @@ static void get_theme_data(void)
 
 	/* Get the directory for themes and the .rc theme setting */
 	theme_dir = g_strdup_printf("%s/ccheckers/pixmaps", GGZDATADIR);
+printf("%s\n", theme_dir);
 	game.theme = ggzcore_confio_read_string(game.conf_handle,
 						"Options", "Theme", "default");
 
