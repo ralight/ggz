@@ -83,7 +83,7 @@ class KGGZChat : public QWidget
 		KGGZChatLine *chatline();
 
 	signals:
-		void signalChat(char *text, char *player, int mode);
+		void signalChat(const char *text, char *player, int mode);
 
 	protected slots:
 		void slotSend();

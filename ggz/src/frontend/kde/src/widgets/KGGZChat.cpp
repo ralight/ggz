@@ -51,6 +51,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <fnmatch.h>
+#include <time.h>
 
 // buffer overflow??
 char m_buftmp[2048];
@@ -148,14 +149,16 @@ long KGGZChat::randomLag()
 // Send out a message or execute command
 void KGGZChat::slotSend()
 {
-	enum Events {EVENT_CHAT, EVENT_BEEP, EVENT_ME, EVENT_NOEVENT, EVENT_PERSONAL, EVENT_HELP};
+	enum Events {EVENT_CHAT, EVENT_BEEP, EVENT_ME, EVENT_NOEVENT, EVENT_PERSONAL, EVENT_HELP, EVENT_MARK, EVENT_AWAY};
 	char *commands = NULL;
 	char *op2 = NULL;
 	int triggerevent;
 	char *inputtext;
 	char *inputargs;
 	char *player;
-	float fahrenheit = 0.0, celsius = 0.0, reaumour = 0.0, kelvin = 0.0;
+	char *timestring;
+	time_t curtime;
+	//float fahrenheit = 0.0, celsius = 0.0, reaumour = 0.0, kelvin = 0.0;
 
 	if(strlen(input->text()) == 0) return;
 
@@ -168,6 +171,7 @@ void KGGZChat::slotSend()
 	if(inputtext[0] == '/')
 	{
 		if(strcmp(inputtext, "/help") == 0) triggerevent = EVENT_HELP;
+		if(strcmp(inputtext, "/mark") == 0) triggerevent = EVENT_MARK;
 		if(strncmp(inputtext, "/me", 3) == 0) triggerevent = EVENT_ME;
 		if(triggerevent == EVENT_CHAT)
 		{
@@ -213,6 +217,22 @@ void KGGZChat::slotSend()
 						op2 = strtok(NULL, " ");
 					}
 				}
+				if(strcmp(commands, "/away") == 0)
+				{
+					triggerevent = EVENT_AWAY;
+					KGGZDEBUG("--away message--\n");
+					if(commands) op2 = strtok(NULL, " ");
+					if(op2) strcat(inputargs, op2);
+					while(op2)
+					{
+						op2 = strtok(NULL, " ");
+						if(op2)
+						{
+							strcat(inputargs, " ");
+							strcat(inputargs, op2);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -226,7 +246,9 @@ void KGGZChat::slotSend()
 			receive(NULL, i18n("/msg &lt;player&gt; &lt;message&gt; - sends a private message."), RECEIVE_ADMIN);
 			receive(NULL, i18n("/beep &lt;player&gt; - send player a beep."), RECEIVE_ADMIN);
 			receive(NULL, i18n("/help - this screen."), RECEIVE_ADMIN);
-
+			receive(NULL, i18n("/mark - mark a time stamp."), RECEIVE_ADMIN);
+			receive(NULL, i18n("/away &lt;message&gt; - show a goodbye message."), RECEIVE_ADMIN);
+			break;
 		case EVENT_CHAT:
 			emit signalChat(inputtext, NULL, RECEIVE_CHAT);
 			break;
@@ -247,13 +269,26 @@ void KGGZChat::slotSend()
 				receive(NULL, i18n("Beeped Player %1.").arg(player), RECEIVE_ADMIN);
 			}
 			break;
+		case EVENT_MARK:
+			curtime = time(NULL);
+			timestring = ctime(&curtime);
+			timestring[strlen(timestring) - 1] = 0;
+			KGGZDEBUG("timestring: %s\n", timestring);
+			//strcat(inputargs, timestring);
+			//strcat(inputargs, i18n(" -- MARK --"));
+			//KGGZDEBUG("send out: %s\n", inputargs);
+			receive(NULL, i18n("%1 -- MARK --").arg(timestring), RECEIVE_ADMIN);
+			break;
+		case EVENT_AWAY:
+			emit signalChat(i18n("/me is going to leave (%1)").arg(inputargs), NULL, RECEIVE_CHAT);
+			break;
 		default:
 			receive(NULL, i18n("Error! Unknown command! Try /help instead."), RECEIVE_ADMIN);
 	}
 
 	input->clear();
 
-        	free(inputtext);
+	free(inputtext);
 	free(inputargs);
 }
 

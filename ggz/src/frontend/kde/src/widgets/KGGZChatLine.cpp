@@ -72,7 +72,24 @@ void KGGZChatLine::keyPressEvent(QKeyEvent *e)
 
 	mark = FALSE;
 	if(e->state() & Qt::ShiftButton) mark = TRUE;
-	if(e->state() & Qt::ControlButton) return;
+
+	if(e->state() & Qt::ControlButton)
+	{
+		switch(e->key())
+		{
+			case Qt::Key_C:
+				copy();
+				return;
+			case Qt::Key_V:
+				paste();
+				return;
+			case Qt::Key_X:
+				cut();
+				return;
+			default:
+				return;
+		}
+	}
 
 	switch(e->key())
 	{
@@ -112,6 +129,8 @@ void KGGZChatLine::keyPressEvent(QKeyEvent *e)
 		case Qt::Key_CapsLock:
 		case Qt::Key_ScrollLock:
 		case Qt::Key_NumLock:
+		case Qt::Key_Up:
+		case Qt::Key_Down:
 			// nothing
 			break;
 		default:
