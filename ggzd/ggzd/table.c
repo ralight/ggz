@@ -45,6 +45,7 @@
 #include <seats.h>
 #include <transit.h>
 #include <room.h>
+#include <hash.h>
 
 #define GGZ_RESYNC_SEC  0
 #define GGZ_RESYNC_USEC 500000

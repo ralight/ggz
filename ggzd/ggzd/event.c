@@ -40,8 +40,10 @@ extern struct Users players;
 
 
 /* Local support functions */
+#ifdef DEBUG
 static void event_room_spew(int room);
 static void event_player_spew(int p_index);
+#endif
 
 
 /* Place an event into the room-specific event queue */
@@ -254,8 +256,10 @@ int event_player_enqueue(int p_index, GGZEventFunc func, unsigned int size,
 	if (players.info[p_index].my_events_head == NULL)
 		players.info[p_index].my_events_head = event;
 	
+#ifdef DEBUG
 	if (log_info.dbg_types & GGZ_DBG_LISTS)
 		event_player_spew(p_index);
+#endif
 	
 	pthread_rwlock_unlock(&players.info[p_index].lock);
 
