@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 2752 2001-11-18 02:50:46Z bmh $
+ * $Id: ggzdmod.c 2754 2001-11-18 23:58:02Z bmh $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -45,6 +45,7 @@
 #include <ggz.h>
 
 #include "ggzdmod.h"
+#include "io.h"
 #include "protocol.h"
 
 
@@ -181,8 +182,9 @@ GGZdMod *ggzdmod_new(GGZdModType type)
 
 	ggzdmod->pid = -1;
 	ggzdmod->argv = NULL;
-	/* Put any other necessary initialization here.  All fields should be
-	   initialized.  Note NULL may not necessarily be 0 on all platforms. */
+	/* Put any other necessary initialization here.  All fields
+	   should be initialized.  Note NULL may not necessarily be 0
+	   on all platforms. */
 
 	return ggzdmod;
 }
@@ -417,7 +419,19 @@ int ggzdmod_set_seat(GGZdMod * mod, GGZSeat *seat)
 		if (oldseat.type != GGZ_SEAT_BOT && strings_differ(seat->name, oldseat.name))
 			return -1;
 	}
-	
+	/* If we're connected to the game, send a message */
+	else if (ggzdmod->state != GGZ_STATE_CREATED) {
+		
+		if (oldseat.type == GGZ_SEAT_OPEN 
+		    && seat->type == GGZ_SEAT_PLAYER) {
+			io_send_req_join(ggzdmod->fd, seat);
+		}
+		else if (oldseat.type == GGZ_SEAT_PLAYER 
+			 && seat->type == GGZ_SEAT_OPEN) {
+			io_send_req_leave(ggzdmod->fd, seat);
+		}
+	}
+
 	ggz_list_insert(ggzdmod->seats, seat);
 	
 	/* FIXME: if this is GGZDMOD_GGZ, send a REQ_JOIN/REQ_LEAVE */
@@ -645,8 +659,10 @@ static void ggz_rsp_join(_GGZdMod * ggzdmod)
 		return;
 	}
 
-	/* FIXME: check status */
-	call_handler(ggzdmod, GGZ_EVENT_JOIN, &status);
+	if (status == 0)
+		call_handler(ggzdmod, GGZ_EVENT_JOIN, NULL);
+	else
+		call_handler(ggzdmod, GGZ_EVENT_ERROR, "Player failed to join");
 }
 
 
@@ -932,7 +948,7 @@ static int game_fork(_GGZdMod * mod)
 		execv(mod->argv[0], mod->argv);	/* run game */
 
 		/* We should never get here.  If we do, it's an eror */
-		ggz_error_sys_exit("exec failed");	/* we still can't send error messages */
+		ggz_error_sys_exit("exec of %s failed", mod->argv[0]);	/* we still can't send error messages */
 	} else {
 		/* parent */
 		close(fd_pair[1]);

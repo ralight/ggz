@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 2658 2001-11-04 22:40:41Z bmh $
+# $Id: Makefile.am 2754 2001-11-18 23:58:02Z bmh $
 
 SUBDIRS = .
 
@@ -14,6 +14,7 @@ SUBDIRS = .
 # remove the static lib compilation.  --JDS
 noinst_LIBRARIES = libggzdmod.a
 libggzdmod_a_SOURCES =  ggzdmod.h ggzdmod.c \
+			io.c io.h \
 			protocol.h \
 			ggz_server.h ggz_server.c \
 			ggz_stats.h ggz_stats.c
@@ -22,6 +23,7 @@ libggzdmod_a_SOURCES =  ggzdmod.h ggzdmod.c \
 lib_LTLIBRARIES = libggzdmod.la
 libggzdmod_la_LIBADD = @LDADD@
 libggzdmod_la_SOURCES = ggzdmod.h ggzdmod.c \
+			io.c io.h \
 	                protocol.h \
 	           	ggz_server.h ggz_server.c \
 			ggz_stats.h ggz_stats.c
