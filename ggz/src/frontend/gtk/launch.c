@@ -211,10 +211,10 @@ static void launch_start_game(GtkWidget *widget, gpointer data)
 	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "seats_combo");
 	seats = atoi(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(tmp)->entry)));
 	tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), "desc_entry");
-	ggzcore_table_init(table, gt, gtk_entry_get_text(GTK_ENTRY(tmp)), 2);
-	for( x = 1; x <= seats; x++ )
+	ggzcore_table_init(table, gt, gtk_entry_get_text(GTK_ENTRY(tmp)), seats);
+	for( x = 0; x < seats; x++ )
 	{
-                message = g_strdup_printf("seat%d_bot", x);
+                message = g_strdup_printf("seat%d_bot", (x+1));
 		tmp = gtk_object_get_data(GTK_OBJECT(launch_dialog), message);
 		g_free(message);
 		if (GTK_TOGGLE_BUTTON(tmp)->active)
