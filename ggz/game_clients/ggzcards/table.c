@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 2977 2001-12-21 09:38:32Z jdorje $
+ * $Id: table.c 2986 2001-12-23 00:47:37Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -534,20 +534,21 @@ void table_show_card(int player, card_t card)
 /* Exposed function to show all four cards on the table area. */
 void table_show_cards(void)
 {
-	int x, y, w, h, p;
+	int table_x, table_y, table_w, table_h, p;
 
-	get_table_dim(&x, &y, &w, &h);
+	get_table_dim(&table_x, &table_y, &table_w, &table_h);
 	gdk_draw_rectangle(table_buf,
 			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
-			   TRUE, x, y, w, h);
+			   TRUE, table_x, table_y, table_w, table_h);
 
 	for (p = 0; p < ggzcards.num_players; p++) {
 		card_t card = ggzcards.players[p].table_card;
 		if (card.suit >= 0 && card.face >= 0) {
-			get_tablecard_pos(p, &x, &y);
-			draw_card(card, 0, x, y, table_buf);
+			int card_x, card_y;
+			get_tablecard_pos(p, &card_x, &card_y);
+			draw_card(card, 0, card_x, card_y, table_buf);
 		}
 	}
 
-	table_show_table(x, y, w, h);
+	table_show_table(table_x, table_y, table_w, table_h);
 }
