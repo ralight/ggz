@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: msg.c 4137 2002-05-02 17:07:51Z jdorje $
+ * $Id: msg.c 4145 2002-05-03 07:54:20Z jdorje $
  *
  * Debug and error messages
  *
@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <syslog.h>
 #include <unistd.h>
 
 #include "ggz.h"
@@ -40,7 +41,9 @@
 #include "misc.h" /* Internal data/functions */
 
 /* Workhorse function for actually outputting messages */
-static void err_doit(const char *prefix, const char *fmt, va_list ap, char err);
+static void err_doit(int priority, const char *prefix,
+                     const char *fmt, va_list ap,
+                     char err);
 
 /* Debug file pointer */
 static FILE * debug_file;
@@ -124,7 +127,7 @@ void ggz_debug(const char *type, const char *fmt, ...)
 			prefix = type;
 			
 			va_start(ap, fmt);
-			err_doit(prefix, fmt, ap, 0);
+			err_doit(LOG_DEBUG, prefix, fmt, ap, 0);
 			va_end(ap);
 		}
 	}
@@ -138,7 +141,7 @@ void _ggz_debug(const char *type, const char *fmt, ...)
 	const char *prefix = "LIBGGZ";
   
 	va_start(ap, fmt);
-	err_doit(prefix, fmt, ap, 0);
+	err_doit(LOG_DEBUG, prefix, fmt, ap, 0);
 	va_end(ap);
 #endif
 }
@@ -150,7 +153,7 @@ void _ggz_msg(const char *fmt, ...)
 	const char *prefix = "LIBGGZ";
   
 	va_start(ap, fmt);
-	err_doit(prefix, fmt, ap, 0);
+	err_doit(LOG_NOTICE, prefix, fmt, ap, 0);
 	va_end(ap);
 }
 
@@ -160,7 +163,7 @@ void ggz_error_sys(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(NULL, fmt, ap, 1);
+	err_doit(LOG_ERR, NULL, fmt, ap, 1);
 	va_end(ap);
 }
 
@@ -170,7 +173,7 @@ void ggz_error_sys_exit(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(NULL, fmt, ap, 1);
+	err_doit(LOG_CRIT, NULL, fmt, ap, 1);
 	va_end(ap);
 	/*cleanup(); */
 	exit(-1);
@@ -182,7 +185,7 @@ void ggz_error_msg(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(NULL, fmt, ap, 0);
+	err_doit(LOG_ERR, NULL, fmt, ap, 0);
 	va_end(ap);
 }
 
@@ -192,7 +195,7 @@ void ggz_error_msg_exit(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	err_doit(NULL, fmt, ap, 1);
+	err_doit(LOG_CRIT, NULL, fmt, ap, 1);
 	va_end(ap);
 	/*cleanup(); */
 	exit(-1);
@@ -225,7 +228,9 @@ void ggz_debug_cleanup(GGZCheckType check)
 }
 
 
-static void err_doit(const char* prefix, const char *fmt, va_list ap, char err)
+static void err_doit(int priority, const char* prefix,
+                     const char *fmt, va_list ap,
+                     char err)
 {
 	char buf[4096];
 
@@ -246,7 +251,7 @@ static void err_doit(const char* prefix, const char *fmt, va_list ap, char err)
 		         ": %s", strerror(errno));
 			
 	if (handler_func) {
-		(*handler_func)(buf);
+		(*handler_func)(priority, buf);
 	} else if (debug_file) {
 		fputs(buf, debug_file);
 		fputs("\n", debug_file);

@@ -2,7 +2,7 @@
  * @file   ggz.h
  * @author Brent M. Hendricks
  * @date   Fri Nov  2 23:32:17 2001
- * $Id: ggz.h 4137 2002-05-02 17:07:51Z jdorje $
+ * $Id: ggz.h 4145 2002-05-03 07:54:20Z jdorje $
  * 
  * Header file for ggz components lib
  *
@@ -852,10 +852,11 @@ typedef enum {
  *  (no trailing newline will be appended).
  *
  *  @see ggz_debug_set_func
+ *  @param priority The priority of the log, i.e. LOG_DEBUG; see syslog().
  *  @param msg The debugging output message.
  *  @note If your program is threaded, this function must be threadsafe.
  */
-typedef void (*GGZDebugHandlerFunc)(char* msg);
+typedef void (*GGZDebugHandlerFunc)(int priority, const char *msg);
 
 /**
  * @brief Initialize and configure debugging for the program.
