@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main window creation and callbacks
- * $Id: main_win.c 4629 2002-09-18 22:28:26Z jdorje $
+ * $Id: main_win.c 4887 2002-10-12 20:13:51Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -324,22 +324,7 @@ static void game_exit(GtkMenuItem *menuitem, gpointer user_data)
 /* Display the about dialog, crediting me all over... */
 static void game_about(GtkMenuItem *menuitem, gpointer user_data)
 {
-	static GtkWidget *dlg_about = NULL;
-
-	if(dlg_about != NULL)
-	{
-		gdk_window_show(dlg_about->window);
-		gdk_window_raise(dlg_about->window);
-	}
-	else
-	{
-		dlg_about = create_dlg_about();
-		gtk_signal_connect(GTK_OBJECT(dlg_about),
-				   "destroy",
-				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-				   &dlg_about);
-		gtk_widget_show(dlg_about);
-	}
+	create_or_raise_dlg_about();
 }
 
 /* Draw the screen? Unsure */

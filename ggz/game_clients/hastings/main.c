@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/13/00
  * Desc: Main loop
- * $Id: main.c 4341 2002-08-07 06:31:57Z jdorje $
+ * $Id: main.c 4887 2002-10-12 20:13:51Z jdorje $
  *
  * Copyright (C) 2000 - 2002 Josef Spillner
  *
@@ -42,10 +42,13 @@
 #include <ggz_common.h>
 #include <ggzmod.h>
 
+/* GTK-games includes */
+#include "dlg_about.h"
+#include "ggzintl.h"
+
 /* Hastings includes */
 #include "game.h"
 #include "main_win.h"
-#include "ggzintl.h"
 
 /* main window widget */
 extern GtkWidget *main_win;
@@ -55,6 +58,7 @@ struct game_state_t game;
 
 static void initialize_debugging(void);
 static void cleanup_debugging(void);
+static void initialize_about_dialog(void);
 
 static GGZMod *mod;
 
@@ -79,6 +83,7 @@ int main(int argc, char* argv[])
 	ggz_intl_init("hastings");
 		
 	gtk_init (&argc, &argv);
+	initialize_about_dialog();
 
 	main_win = create_main_win();
 	gtk_widget_show(main_win);
@@ -131,6 +136,26 @@ static void cleanup_debugging(void)
 #else
 	ggz_debug_cleanup(GGZ_CHECK_NONE);
 #endif
+}
+
+static void initialize_about_dialog(void)
+{
+	const char *content =
+	  _("Authors:\n"
+	    "        Gtk+ Client:\n"
+	    "            Josef Spillner   <dr_maux@users.sourceforge.net>\n"
+	    "\n"
+	    "        Game Server:\n"
+	    "            Josef Spillner   <dr_maux@users.sourceforge.net>\n"
+	    "\n"
+	    "Website:\n"
+	    "        http://ggz.sourceforge.net/games/hastings/");
+	char *header;
+
+	header = g_strdup_printf("GGZ Gaming Zone\n"
+				 "Hastings1066 Version %s", VERSION);
+	init_dlg_about(_("About Hastings1066"), header, content);
+	g_free(header);
 }
 
 /* Handle input from Hastings game server */

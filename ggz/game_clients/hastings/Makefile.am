@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4722 2002-09-26 11:13:59Z dr_maux $
+#  $Id: Makefile.am 4887 2002-10-12 20:13:51Z jdorje $
 
 SUBDIRS = .
 
@@ -17,7 +17,6 @@ uninstall-local:
 ggzexecmod_PROGRAMS = ggz.hastings
 
 ggz_hastings_SOURCES = \
-	dlg_about.c	dlg_about.h \
 	dlg_yesno.c	dlg_yesno.h \
 	game.h \
 	main.c \
