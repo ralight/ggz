@@ -42,14 +42,12 @@ static GtkWidget *draw_area = NULL;
 static GtkWidget *statusbar;
 static guint sb_context;
 static GtkStyle *draw_area_style;
-static GdkPixmap *board_img;
 static GdkPixmap *board_buf;
-static GdkPixmap *hole_pixmap;
-static GdkBitmap *hole_mask;
-static GdkGC *hole_gc;
-static GdkPixmap *marble_pixmap[6];
-static GdkBitmap *marble_mask[6];
-static GdkGC *marble_gc[6];
+
+static GdkPixbuf *board_img;
+static GdkPixbuf *hole_img;
+static GdkPixbuf *marble_img[6];
+
 static GdkGC *gc_line;
 static GtkWidget *label[6];
 static char *label_color[6] = {
@@ -65,27 +63,40 @@ static char *label_color[6] = {
 static void display_draw_holes(void);
 
 
-static GdkPixmap *display_load_pixmap(GdkWindow *window, GdkBitmap **mask,
-				   GdkColor *trans, const char *name)
+static GdkPixbuf *display_load_pixmap(const char *name)
 {
 	char *fullpath;
-	GdkPixmap *pixmap;
+	GdkPixbuf *image;
+	GError *error = NULL;
 
-	fullpath = g_strdup_printf("%s/%s", get_theme_dir(), name);
-	pixmap = gdk_pixmap_create_from_xpm(window, mask, trans, fullpath);
-	if(pixmap == NULL)
-		ggz_error_msg_exit("Can't load pixmap %s", fullpath);
+	fullpath = g_strdup_printf("%s/%s.png", get_theme_dir(), name);
+	image = gdk_pixbuf_new_from_file(fullpath, &error);
+	if(image == NULL) {
+		ggz_error_msg("Can't load pixmap %s", fullpath);
+		/* non-fatal error */
+	}
 	g_free(fullpath);
 
-	return pixmap;
+	return image;
 }
 
+static void draw(GdkPixbuf *image, int x, int y, int w, int h)
+{
+	GdkGC *gc = draw_area_style->fg_gc[GTK_WIDGET_STATE(draw_area)];
+
+	gdk_pixbuf_render_to_drawable(image, board_buf, gc,
+				      0, 0, x, y, w, h,
+				      GDK_RGB_DITHER_NONE, 0, 0);
+}
 
 /* Initialize the game display (dlg_main and board) */
 int display_init(void)
 {
 	GdkColormap *sys_colormap;
 	GdkColor color;
+	gchar *colors[6] = {"red", "blue", "green",
+			    "yellow", "cyan", "purple"};
+	int i;
 
 	/* Create and display the main dialog */
 	if(dlg_main == NULL) {
@@ -101,86 +112,26 @@ int display_init(void)
 						  "Game Messages");
 
 	/* Create a pixmap buffer from our xpm */
-	board_img = display_load_pixmap(draw_area->window, NULL,
-					NULL,
-					"board.xpm");
-	if(board_img == NULL)
+	board_img = display_load_pixmap("board");
+	if (!board_img)
 		return -1;
+
 	board_buf = gdk_pixmap_new(draw_area->window,
 				   draw_area->allocation.width,
 				   draw_area->allocation.height,
 				   -1);
-	gdk_draw_pixmap(board_buf,
-			draw_area_style->fg_gc[GTK_WIDGET_STATE(draw_area)],
-			board_img,
-			0, 0,
-			0, 0,
-			400, 400);
+	draw(board_img, 0, 0, 400, 400);
 
 	/* Convert the rest of our xpms to masked pixmaps */
-	hole_gc = gdk_gc_new(draw_area->window);
-	gdk_gc_set_fill(hole_gc, GDK_TILED);
-	hole_pixmap = display_load_pixmap(draw_area->window,
-					&hole_mask,
-					NULL,
-					"hole.xpm");
-	if(hole_pixmap == NULL)
+	hole_img = display_load_pixmap("hole");
+	if (!hole_img)
 		return -1;
-	gdk_gc_set_tile(hole_gc, hole_pixmap);
-	marble_gc[0] = gdk_gc_new(draw_area->window);
-	gdk_gc_set_fill(marble_gc[0], GDK_TILED);
-	marble_pixmap[0] = display_load_pixmap(draw_area->window,
-						&marble_mask[0],
-						NULL,
-						"red.xpm");
-	if(marble_pixmap[0] == NULL)
-		return -1;
-	gdk_gc_set_tile(marble_gc[0], marble_pixmap[0]);
-	marble_gc[1] = gdk_gc_new(draw_area->window);
-	gdk_gc_set_fill(marble_gc[1], GDK_TILED);
-	marble_pixmap[1] = display_load_pixmap(draw_area->window,
-						&marble_mask[1],
-						NULL,
-						"blue.xpm");
-	if(marble_pixmap[1] == NULL)
-		return -1;
-	gdk_gc_set_tile(marble_gc[1], marble_pixmap[1]);
-	marble_gc[2] = gdk_gc_new(draw_area->window);
-	gdk_gc_set_fill(marble_gc[2], GDK_TILED);
-	marble_pixmap[2] = display_load_pixmap(draw_area->window,
-						&marble_mask[2],
-						NULL,
-						"green.xpm");
-	if(marble_pixmap[2] == NULL)
-		return -1;
-	gdk_gc_set_tile(marble_gc[2], marble_pixmap[2]);
-	marble_gc[3] = gdk_gc_new(draw_area->window);
-	gdk_gc_set_fill(marble_gc[3], GDK_TILED);
-	marble_pixmap[3] = display_load_pixmap(draw_area->window,
-						&marble_mask[3],
-						NULL,
-						"yellow.xpm");
-	if(marble_pixmap[3] == NULL)
-		return -1;
-	gdk_gc_set_tile(marble_gc[3], marble_pixmap[3]);
-	marble_gc[4] = gdk_gc_new(draw_area->window);
-	gdk_gc_set_fill(marble_gc[4], GDK_TILED);
-	marble_pixmap[4] = display_load_pixmap(draw_area->window,
-						&marble_mask[4],
-						NULL,
-						"cyan.xpm");
-	if(marble_pixmap[4] == NULL)
-		return -1;
-	gdk_gc_set_tile(marble_gc[4], marble_pixmap[4]);
-	marble_gc[5] = gdk_gc_new(draw_area->window);
-	gdk_gc_set_fill(marble_gc[5], GDK_TILED);
-	marble_pixmap[5] = display_load_pixmap(draw_area->window,
-						&marble_mask[5],
-						NULL,
-						"purple.xpm");
-	if(marble_pixmap[5] == NULL)
-		return -1;
-	gdk_gc_set_tile(marble_gc[5], marble_pixmap[5]);
+
+	for (i = 0; i < 6; i++) {
+		marble_img[i] = display_load_pixmap(colors[i]);
+		if (marble_img[i] == NULL)
+			return -1;	  
+	}
 
 	/* Setup the gc for our line drawing */
 	gc_line = gdk_gc_new(draw_area->window);
@@ -242,21 +193,7 @@ static void display_draw_holes(void)
 		}
 		y = (i*19.4) + 38;
 		for(j=0; j<=count; j++) {
-			gdk_gc_set_ts_origin(hole_gc, x, y);
-			gdk_gc_set_clip_origin(hole_gc, x, y);
-			gdk_gc_set_clip_mask(hole_gc, hole_mask);
-
-			gdk_draw_pixmap(board_buf,
-				draw_area_style->fg_gc[GTK_WIDGET_STATE(draw_area)],
-				board_img,
-				x, y,
-				x, y,
-				12, 12);
-			gdk_draw_rectangle(board_buf,
-					   hole_gc,
-					   TRUE,
-					   x, y,
-					   12, 12);
+			draw(hole_img, x, y, 12, 12);
 			x += 22;
 		}
 	}
@@ -287,15 +224,7 @@ void display_refresh_board(void)
 			x = j * 11 + 61;
 			y = (i*19.4) + 38;
 			p = game.board[i][j] - 1;
-			gdk_gc_set_ts_origin(marble_gc[p], x, y);
-			gdk_gc_set_clip_origin(marble_gc[p], x, y);
-			gdk_gc_set_clip_mask(marble_gc[p], marble_mask[p]);
-
-			gdk_draw_rectangle(board_buf,
-					   marble_gc[p],
-					   TRUE,
-					   x, y,
-					   12, 12);
+			draw(marble_img[p], x, y, 12, 12);
 		}
 
 	/* Draw our pixmap buffer */

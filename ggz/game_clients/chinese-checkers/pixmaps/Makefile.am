@@ -1,50 +1,50 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 4666 2002-09-23 12:33:57Z jdorje $
+#  $Id: Makefile.am 6246 2004-11-03 22:55:53Z jdorje $
 
 SUBDIRS	= .
 
 # $(DESTDIR) prepended automatically
 pixmap_dir	=	$(ggzdatadir)/ccheckers/pixmaps
 
-default_DATA	=	default/blue.xpm	\
-			default/board.xpm	\
-			default/cyan.xpm	\
-			default/green.xpm	\
-			default/hole.xpm	\
-			default/purple.xpm	\
-			default/red.xpm		\
-			default/yellow.xpm
+default_DATA	=	default/blue.png	\
+			default/board.png	\
+			default/cyan.png	\
+			default/green.png	\
+			default/hole.png	\
+			default/purple.png	\
+			default/red.png		\
+			default/yellow.png
 defaultdir	=	$(pixmap_dir)/default
 
-templates_DATA	=	templates/blue.xpm	\
-			templates/board.xpm	\
-			templates/cyan.xpm	\
-			templates/green.xpm	\
-			templates/hole.xpm	\
-			templates/purple.xpm	\
-			templates/red.xpm	\
-			templates/yellow.xpm	\
+templates_DATA	=	templates/blue.png	\
+			templates/board.png	\
+			templates/cyan.png	\
+			templates/green.png	\
+			templates/hole.png	\
+			templates/purple.png	\
+			templates/red.png	\
+			templates/yellow.png	\
 			templates/README
 templatesdir	=	$(pixmap_dir)/templates
 
-Dragon_DATA	=	Dragon/blue.xpm		\
-			Dragon/board.xpm	\
-			Dragon/cyan.xpm		\
-			Dragon/green.xpm	\
-			Dragon/hole.xpm		\
-			Dragon/purple.xpm	\
-			Dragon/red.xpm		\
-			Dragon/yellow.xpm
+Dragon_DATA	=	Dragon/blue.png		\
+			Dragon/board.png	\
+			Dragon/cyan.png		\
+			Dragon/green.png	\
+			Dragon/hole.png		\
+			Dragon/purple.png	\
+			Dragon/red.png		\
+			Dragon/yellow.png
 Dragondir	=	$(pixmap_dir)/Dragon
 
-Electric_DATA	=	Electric/blue.xpm	\
-			Electric/board.xpm	\
-			Electric/cyan.xpm	\
-			Electric/green.xpm	\
-			Electric/hole.xpm	\
-			Electric/purple.xpm	\
-			Electric/red.xpm	\
-			Electric/yellow.xpm
+Electric_DATA	=	Electric/blue.png	\
+			Electric/board.png	\
+			Electric/cyan.png	\
+			Electric/green.png	\
+			Electric/hole.png	\
+			Electric/purple.png	\
+			Electric/red.png	\
+			Electric/yellow.png
 Electricdir	=	$(pixmap_dir)/Electric
 
 EXTRA_DIST	=	$(default_DATA)		\
