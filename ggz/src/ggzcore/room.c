@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 4956 2002-10-19 22:29:41Z jdorje $
+ * $Id: room.c 4973 2002-10-22 00:39:54Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -875,12 +875,16 @@ int _ggzcore_room_join_table(struct _GGZRoom *room,
 	int status;
 	struct _GGZNet *net;
 	GGZGame *game = ggzcore_server_get_cur_game(room->server);
+	GGZRoom *cur_room = _ggzcore_server_get_cur_room(room->server);
+	GGZTable *table;
 
-	/* Make sure we're actually in a room (FIXME: should probably
-           make sure we're in *this* room) and not already playing a
-           game */
+	/* Make sure we're actually in this room, and a game object
+	   has been created, and that we know the table exists.
+	   FIXME: make sure the game isn't already launched... */
 	if (_ggzcore_server_get_state(room->server) != GGZ_STATE_IN_ROOM
-	    || !game)
+	    || !cur_room || room->id != cur_room->id
+	    || !game
+	    || !(table = _ggzcore_room_get_table_by_id(room, num)))
 		return -1;
 
 	net = _ggzcore_server_get_net(room->server);
