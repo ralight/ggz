@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: movecheck.c 1107 2001-02-17 16:29:42Z bugg $
+ *  $Id: movecheck.c 1117 2001-02-18 22:45:08Z bugg $
  */
 
 #include <stdlib.h>
@@ -402,7 +402,42 @@ check_castle(struct game *curgame, int fs, int rs, int fd, int rd)
 static int
 can_be_occupied(struct game *curgame, int f, int r, int pcol)
 {
-	return check_attackers(curgame, f, r, NULL, NULL, pcol, 1);
+	int af;
+	int ar;
+	int rval;
+	int kf, kr;
+	int tmp;
+
+	if(curgame->onmove == WHITE) {
+		kf = curgame->wkf;
+		kr = curgame->wkr;
+	} else {
+		kf = curgame->bkf;
+		kr = curgame->bkr;
+	}
+
+	rval = check_attackers(curgame, f, r, &af, &ar, pcol, 1);
+
+	curgame->board[kf][kr] = (KING | pcol);
+ 
+	if(rval == VALID) {
+		tmp = curgame->board[af][ar];
+		curgame->board[f][r] = tmp;
+		curgame->board[af][ar] = EMPTY;
+		
+		if(safe_square(curgame, kf, kr)) {
+			curgame->board[af][ar] = tmp;
+			curgame->board[kf][kr] = EMPTY;
+			curgame->board[f][r] = EMPTY;
+			return rval;
+		}
+	}
+
+	curgame->board[f][r] = EMPTY;	
+	curgame->board[kf][kr] = EMPTY;
+
+	return INVALID;
+	
 }
  
 
