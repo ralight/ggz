@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 6762 2005-01-20 07:31:47Z jdorje $
+ * $Id: ggzcore.h 6768 2005-01-20 17:48:57Z josef $
  *
  * Interface file to be included by client frontends
  *
@@ -307,7 +307,10 @@ typedef enum {
 	GGZ_CHAT_FAIL,
 
 	/** The internal state of ggzcore has changed.  This may happen at
-	 *  any time. */
+	 *  any time.
+	 *  @param data NULL
+	 *  @see GGZStateID
+	 *  @see ggzcore_server_get_state */
 	GGZ_STATE_CHANGE,
 
 	/** Status event: a requested direct game connection has been
