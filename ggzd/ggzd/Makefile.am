@@ -1,5 +1,5 @@
 ## Process this file with automake to produce Makefile.in
-# $Id: Makefile.am 5267 2002-11-25 19:16:38Z dr_maux $
+# $Id: Makefile.am 5276 2002-12-07 06:33:03Z jdorje $
 
 SUBDIRS = database
 
@@ -58,7 +58,6 @@ ggzd_LDFLAGS = $(LIBGGZ_LDFLAGS)
 ggzd_LDADD = $(LDADD) $(ggzd_LIBS) $(top_builddir)/ggzdmod/libggzdmod.la $(LIB_GGZ) $(top_builddir)/ggzd/database/libggzdb.a
 
 ggzduedit_SOURCES = ggzduedit.c \
-		    $(DBSOURCES) \
 		    perms.h
 
 ggzduedit_LDFLAGS = $(LIBGGZ_LDFLAGS)
