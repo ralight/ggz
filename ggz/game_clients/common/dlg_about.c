@@ -4,7 +4,7 @@
  * Project: GGZ GTK games
  * Date: 10/12/2002
  * Desc: Create the "About" Gtk dialog
- * $Id: dlg_about.c 6225 2004-10-28 05:48:01Z jdorje $
+ * $Id: dlg_about.c 6268 2004-11-05 08:00:15Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -50,15 +50,14 @@ static GtkWidget *create_dlg_about(void)
 	 * Create outer window.
 	 */
 	dialog = gtk_dialog_new();
-	gtk_object_set_data(GTK_OBJECT(dialog), "dlg_about", dialog);
+	g_object_set_data(G_OBJECT(dialog), "dlg_about", dialog);
 	gtk_window_set_title(GTK_WINDOW(dialog), dlg_title);
-	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, FALSE);
 
 	/* 
 	 * Get vertical box packing widget.
 	 */
 	vbox = GTK_DIALOG(dialog)->vbox;
-	gtk_object_set_data(GTK_OBJECT(dialog), "vbox", vbox);
+	g_object_set_data(G_OBJECT(dialog), "vbox", vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_widget_show(vbox);
 
@@ -67,9 +66,9 @@ static GtkWidget *create_dlg_about(void)
 	 */
 	title_label = gtk_label_new(dlg_header);
 	gtk_widget_ref(title_label);
-	gtk_object_set_data_full(GTK_OBJECT(dialog), "title_label",
-				 title_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data_full(G_OBJECT(dialog), "title_label",
+			       title_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(title_label);
 	gtk_box_pack_start(GTK_BOX(vbox), title_label, FALSE, FALSE, 0);
 
@@ -78,8 +77,8 @@ static GtkWidget *create_dlg_about(void)
 	 */
 	body_label = gtk_label_new(dlg_content);
 	gtk_widget_ref(body_label);
-	gtk_object_set_data_full(GTK_OBJECT(dialog), "body_label", body_label,
-				 (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data_full(G_OBJECT(dialog), "body_label", body_label,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(body_label);
 	gtk_box_pack_start(GTK_BOX(vbox), body_label, FALSE, FALSE, 0);
 	gtk_label_set_justify(GTK_LABEL(body_label), GTK_JUSTIFY_LEFT);
@@ -88,8 +87,8 @@ static GtkWidget *create_dlg_about(void)
 	 * Get "action area"
 	 */
 	action_area = GTK_DIALOG(dialog)->action_area;
-	gtk_object_set_data(GTK_OBJECT(dialog), "dialog_action_area1",
-			    action_area);
+	g_object_set_data(G_OBJECT(dialog), "dialog_action_area1",
+			  action_area);
 	gtk_widget_show(action_area);
 
 	/* 
@@ -97,23 +96,22 @@ static GtkWidget *create_dlg_about(void)
 	 */
 	close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
 	gtk_widget_ref(close_button);
-	gtk_object_set_data_full(GTK_OBJECT(dialog), "close_button",
-				 close_button,
-				 (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data_full(G_OBJECT(dialog), "close_button",
+			       close_button,
+			       (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(close_button);
 	gtk_box_pack_start(GTK_BOX(action_area), close_button, FALSE, FALSE,
 			   0);
-	gtk_widget_set_usize(close_button, 64, -2);
-	(void) gtk_signal_connect_object(GTK_OBJECT(close_button), "clicked",
-					 GTK_SIGNAL_FUNC(gtk_widget_destroy),
-					 GTK_OBJECT(dialog));
+	g_signal_connect_swapped(close_button, "clicked",
+				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				 dialog);
 
 	/* 
 	 * Set up callbacks
 	 */
-	(void) gtk_signal_connect_object(GTK_OBJECT(dialog), "delete_event",
-					 GTK_SIGNAL_FUNC(gtk_widget_destroy),
-					 GTK_OBJECT(dialog));
+	g_signal_connect_swapped(dialog, "delete_event",
+				 GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				 dialog);
 
 	/* 
 	 * Done!
@@ -139,10 +137,9 @@ void create_or_raise_dlg_about(void)
 		gdk_window_raise(dlg_about->window);
 	} else {
 		dlg_about = create_dlg_about();
-		(void) gtk_signal_connect(GTK_OBJECT(dlg_about),
-					  "destroy",
-					  GTK_SIGNAL_FUNC
-					  (gtk_widget_destroyed), &dlg_about);
+		g_signal_connect(dlg_about, "destroy",
+				 GTK_SIGNAL_FUNC(gtk_widget_destroyed),
+				 &dlg_about);
 		gtk_widget_show(dlg_about);
 	}
 }
