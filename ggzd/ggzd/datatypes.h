@@ -4,8 +4,9 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
+ * $Id: datatypes.h 3071 2002-01-12 02:00:40Z jdorje $
  *
- * Copyright (C) 1999 Brent Hendricks.
+ * Copyright (C) 1999-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,6 +80,7 @@ typedef struct GameInfo {
 	unsigned char player_allow_mask;
 	unsigned char bot_allow_mask;
 	unsigned char allow_leave;
+	unsigned char kill_when_empty;
 	char path[MAX_PATH_LEN];
 	char **args;
 	int n_args;

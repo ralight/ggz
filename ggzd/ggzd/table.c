@@ -4,9 +4,9 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 2934 2001-12-18 08:11:09Z jdorje $
+ * $Id: table.c 3071 2002-01-12 02:00:40Z jdorje $
  *
- * Copyright (C) 1999 Brent Hendricks.
+ * Copyright (C) 1999-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -548,12 +548,11 @@ static void table_game_leave(GGZdMod *ggzdmod, GGZdModEvent event, void *data)
 	table->transit_name = NULL;
 	table->transit_seat = -1;
 
-	/* FIXME: is this the right thing to do???
-	   Maybe we should let the game do it by calling ggzdmod_halt_()*/
-#ifdef KILL_TABLES_WHEN_EMPTY	
-	if (empty)
+	/* If the game has set the KillWhenEmpty option, we kill it
+	   when the last player leaves.  If not, we rely on the game
+	   to halt itself. */
+	if (empty && game_types[table->type].kill_when_empty)
 		(void)ggzdmod_disconnect(ggzdmod);
-#endif
 }
 
 

@@ -4,9 +4,9 @@
  * Project: GGZ Server
  * Date: 3/8/00
  * Desc: Server defines
- * $Id: ggzd.h 2926 2001-12-18 00:18:06Z jdorje $
+ * $Id: ggzd.h 3071 2002-01-12 02:00:40Z jdorje $
  *
- * Copyright (C) 2000 Brent Hendricks.
+ * Copyright (C) 2000-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,10 +79,6 @@
 /*
  * Configuration options
  */
-
-/* If defined, ggzd will automatically destroy
-   a table if it has no human players. */
-#define KILL_TABLES_WHEN_EMPTY
 
 #endif
 

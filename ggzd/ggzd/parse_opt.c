@@ -4,9 +4,9 @@
  * Project: GGZ Server
  * Date: 10/15/99
  * Desc: Parse command-line arguments and conf file
- * $Id: parse_opt.c 3025 2002-01-08 22:31:22Z bmh $
+ * $Id: parse_opt.c 3071 2002-01-12 02:00:40Z jdorje $
  *
- * Copyright (C) 1999,2000,2001 Brent Hendricks.
+ * Copyright (C) 1999-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -492,6 +492,8 @@ static void parse_game(char *name, char *dir)
 
 	/* [TableOptions] */
 	game_info->allow_leave = ggz_conf_read_int(ch,"TableOptions","AllowLeave",0);
+	game_info->kill_when_empty =
+		ggz_conf_read_int(ch, "TableOptions", "KillWhenEmpty", 1);
 	ggz_conf_read_list(ch, "TableOptions", "BotsAllowed", &b_count, &b_list);
 	if(b_count != 0) {
 		for(i=0; i<b_count; i++) {
