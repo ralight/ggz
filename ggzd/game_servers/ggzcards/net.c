@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 4073 2002-04-24 09:49:56Z jdorje $
+ * $Id: net.c 4108 2002-04-29 05:29:32Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -273,14 +273,32 @@ void net_send_play_request(player_t p, seat_t s)
 	seat_t s_r = CONVERT_SEAT(s, p);
 	int fd = get_player_socket(p);
 	
+	hand_t *hand = &game.seats[s].hand;
+	card_t valid_plays[hand->hand_size];
+	int i, num_valid_plays = 0;
+	
 	assert(game.players[p].is_playing);
+	
+	for (i = 0; i < hand->hand_size; i++) {
+		card_t card = hand->cards[i];
+		if (!game.data->verify_play(p, card)) {
+			valid_plays[num_valid_plays] = card;
+			num_valid_plays++;	
+		}
+	}
 
 	ggzdmod_log(game.ggz, "Requesting player %d/%s "
 		    "to play from seat %d/%s's hand.", p,
 		    get_player_name(p), s, get_seat_name(s));
 
-	if (write_opcode(fd, REQ_PLAY) < 0 || write_seat(fd, s_r) < 0)
+	if (write_opcode(fd, REQ_PLAY) < 0 ||
+	    write_seat(fd, s_r) < 0 ||
+	    ggz_write_int(fd, num_valid_plays) < 0)
 		NET_ERROR(p);
+		
+	for (i = 0; i < num_valid_plays; i++)
+		if (write_card(fd, valid_plays[i]) < 0)
+			NET_ERROR(p);
 }
 
 void net_send_badplay(player_t p, char *msg)

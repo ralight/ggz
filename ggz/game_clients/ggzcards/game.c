@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4099 2002-04-28 00:59:37Z jdorje $
+ * $Id: game.c 4108 2002-04-29 05:29:32Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -401,33 +401,45 @@ void game_alert_bid(int bidder, bid_t bid)
 	/* otherwise nothing */
 }
 
-#ifdef DEBUG
-static bool *valid_plays = NULL;
-static card_t play_card;
-#endif /* DEBUG */
-
-void game_get_play(int hand)
+void game_get_play(int play_hand, int num_valid_cards, card_t *valid_cards)
 {
 	ggz_debug("main", "Handle play request.");
 
-	if (hand == 0)
+	if (play_hand == 0)
 		statusbar_message(_("It's your turn to play a card."));
 	else {
 		char buf[100];
 		snprintf(buf, sizeof(buf),
 			 _("It's your turn to play a card (from %s's hand)."),
-			 ggzcards.players[hand].name);
+			 ggzcards.players[play_hand].name);
 		statusbar_message(buf);
 	}
 	
 #ifdef DEBUG
 	if (preferences.use_ai) {
-		int i;
+		int play_num, hand_num;
+		hand_t *hand = &ggzcards.players[play_hand].hand;
+		bool valid_plays[hand->hand_size];
+		card_t play_card;
+		
+		assert(play_hand == ggzcards.play_hand);
+		
+		for (hand_num = 0; hand_num < hand->hand_size; hand_num++)
+			valid_plays[hand_num] = FALSE;
+		for (play_num = 0; play_num < num_valid_cards; play_num++) {
+			card_t play_card = valid_cards[play_num];
+			for (hand_num = 0;
+			     hand_num < hand->hand_size;
+			     hand_num++) {
+				card_t hand_card = hand->cards[hand_num];
+				if (are_cards_equal(play_card, hand_card)) {
+					valid_plays[hand_num] = TRUE;
+					break;
+				}
+			}
+			assert(hand_num < hand->hand_size);
+		}
 
-		valid_plays = ggz_realloc(valid_plays, ggzcards.players[hand].hand.hand_size * sizeof(*valid_plays));
-		for (i = 0; i < ggzcards.players[hand].hand.hand_size; i++)
-			valid_plays[i] = TRUE;
-	
 		play_card = get_play(ggzcards.play_hand, valid_plays);
 		game_play_card2(play_card);
 	}
@@ -461,16 +473,8 @@ void game_alert_badplay(char *err_msg)
 	
 #ifdef DEBUG
 	if (preferences.use_ai) {
-		int i, hand = ggzcards.play_hand;
-	
-		for (i = 0; i < ggzcards.players[hand].hand.hand_size; i++)
-			if (are_cards_equal(ggzcards.players[hand].hand.cards[i], play_card)) {
-				valid_plays[i] = 0;
-				break;
-			}
-	
-		play_card = get_play(ggzcards.play_hand, valid_plays);
-		game_play_card2(play_card);
+		assert(FALSE);
+		client_send_sync_request();
 	}
 #endif /* DEBUG */
 }

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Frontend to GGZCards Client-Common
- * $Id: client.h 4086 2002-04-26 19:37:51Z jdorje $
+ * $Id: client.h 4108 2002-04-29 05:29:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -201,7 +201,9 @@ extern void game_get_bid(int possible_bids,
 /** Called to request a play.  The frontend should call client_send_play
  *  at any point afterwards to send the response.
  *  @param hand The player number of the hand to play from. */
-extern void game_get_play(int hand);
+extern void game_get_play(int play_hand,
+                          int num_valid_cards,
+                          card_t *valid_cards);
 
 /** Called when we're informed of a bid.  This data is not tracked
  *  internally and is of little use to the GUI (but would be crucial

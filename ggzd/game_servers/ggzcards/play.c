@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/21/2002
  * Desc: Functions and data for playing system
- * $Id: play.c 4052 2002-04-22 23:40:45Z jdorje $
+ * $Id: play.c 4108 2002-04-29 05:29:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -40,12 +40,14 @@ static bool hand_has_valid_card(player_t p, hand_t *hand);
 
 void request_client_play(player_t p, seat_t s)
 {
+#ifndef NDEBUG
 	/* Sanity checks */
 	player_t p2;
 	assert(!game.players[p].is_playing);
-        for (p2 = 0; p2 < game.num_players; p2++)
-        	if (game.players[p2].is_playing)
-        		assert(game.players[p2].play_seat != s);
+	for (p2 = 0; p2 < game.num_players; p2++)
+		if (game.players[p2].is_playing)
+			assert(game.players[p2].play_seat != s);
+#endif
 	
 	/* although the game_* functions probably track this data themselves,
 	   we track it here as well just in case. */

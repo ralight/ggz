@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 4077 2002-04-25 08:28:32Z jdorje $
+ * $Id: protocol.h 4108 2002-04-29 05:29:32Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -101,8 +101,8 @@ typedef enum {
 	/* Requests a play (of a card) from the client.  It'll be followd by
 	   the seat # of the hand from which the client is supposed to play
 	   (only a few games, like bridge, ever require a player to play from 
-	   a hand that is not their own).  The client should send a RSP_PLAY
-	   in response. */
+	   a hand that is not their own), then a number n, then a list of n
+	   valid cards.  The client should send a RSP_PLAY in response. */
 	REQ_PLAY,
 
 	/* Tells the player that they have made a bad play.  It is followed
@@ -185,7 +185,11 @@ typedef enum {
 	RSP_OPTIONS,
 
 	/* A play response, sent in response to a REQ_PLAY.  It is followed
-	   by a card that the client/user wishes to play. */
+	   by a card that the client/user wishes to play.  Note that although
+	   the REQ_PLAY gives a list of valid cards, the client need not
+	   conform to this list.  In particular, if the client tries to play
+	   an invalid card a MSG_BADPLAY with an user-ready error message will
+	   be sent. */
 	RSP_PLAY,
 
 	/* A bid response, sent in response to a REQ_BID.  It consists of

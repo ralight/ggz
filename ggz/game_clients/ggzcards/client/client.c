@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 4086 2002-04-26 19:37:51Z jdorje $
+ * $Id: client.c 4108 2002-04-29 05:29:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -58,6 +58,7 @@ static struct {
 
 struct ggzcards_game_t ggzcards = { 0 };
 
+static int handle_req_play(void);
 
 int client_initialize(void)
 {
@@ -570,15 +571,27 @@ static int handle_msg_bid(void)
    own). */
 static int handle_req_play(void)
 {
+	int num_valid_cards, i;
+	card_t *valid_cards;
+
 	/* Determine which hand we're supposed to be playing from. */
-	if (read_seat(game_internal.fd, &ggzcards.play_hand) < 0)
+	if (read_seat(game_internal.fd, &ggzcards.play_hand) < 0 ||
+	    ggz_read_int(game_internal.fd, &num_valid_cards) < 0)
 		return -1;
+		
+	valid_cards = ggz_malloc(num_valid_cards * sizeof(*valid_cards));
+	for (i = 0; i < num_valid_cards; i++)
+		if (read_card(game_internal.fd, &valid_cards[i]) < 0)
+			return -1;
+		
 	assert(ggzcards.play_hand >= 0
 	       && ggzcards.play_hand < ggzcards.num_players);
 
 	/* Get the play. */
 	set_game_state(STATE_PLAY);
-	game_get_play(ggzcards.play_hand);
+	game_get_play(ggzcards.play_hand, num_valid_cards, valid_cards);
+	
+	ggz_free(valid_cards);
 
 	return 0;
 }

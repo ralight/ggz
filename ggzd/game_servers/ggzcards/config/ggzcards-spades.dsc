@@ -1,4 +1,4 @@
-# $Id: ggzcards-spades.dsc 4046 2002-04-22 00:04:41Z jdorje $
+# $Id: ggzcards-spades.dsc 4108 2002-04-29 05:29:32Z jdorje $
 [GameInfo]
 Author = Jason Short, Brent Hendricks
 Description = GGZ game module for trick-taking card games
@@ -11,7 +11,7 @@ ExecutablePath = ggzd.ggzcards --game=spades --option=open_hands:0
 
 [Protocol]
 Engine = GGZCards
-Version = 2-pre3
+Version = 2-pre4
 
 [TableOptions]
 AllowLeave = 1

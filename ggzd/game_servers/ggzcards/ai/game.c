@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 02/10/2002
  * Desc: Client-callback routines for the AI functions
- * $Id: game.c 4095 2002-04-27 23:01:47Z jdorje $
+ * $Id: game.c 4108 2002-04-29 05:29:32Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -100,10 +100,6 @@ void game_alert_bid(int bidder, bid_t bid)
 	alert_bid(bidder, bid);
 }
 
-static bool *valid_plays = NULL;
-static card_t play_card;
-static int num_valid_plays = 0;
-
 static int find_card(hand_t *hand, card_t card)
 {
 	int i;
@@ -120,44 +116,42 @@ static void make_play(card_t play)
 	hand_t *hand = &ggzcards.players[ggzcards.play_hand].hand;
 	int num = find_card(hand, play);
 	
-	play_card = play;
-	
-	if (num < 0 || !valid_plays[num]) {
+	if (num < 0) {
 		assert(FALSE);
 		client_send_sync_request();	
 	} else
 		client_send_play(play);
 }
 
-void game_get_play(int hand)
+void game_get_play(int play_hand, int num_valid_cards, card_t *valid_cards)
 {
-	int i;
+	int play_num, hand_num;
+	hand_t *hand = &ggzcards.players[play_hand].hand;
+	bool valid_plays[hand->hand_size];
 	
-	assert(hand == ggzcards.play_hand);
+	assert(play_hand == ggzcards.play_hand);
 
-	num_valid_plays = ggzcards.players[hand].hand.hand_size;
-	valid_plays = ggz_realloc(valid_plays,
-	                          num_valid_plays * sizeof(*valid_plays));
-	for (i = 0; i < num_valid_plays; i++)
-		valid_plays[i] = TRUE;
+	for (hand_num = 0; hand_num < hand->hand_size; hand_num++)
+		valid_plays[hand_num] = FALSE;
+	for (play_num = 0; play_num < num_valid_cards; play_num++) {
+		card_t play_card = valid_cards[play_num];
+		for (hand_num = 0; hand_num < hand->hand_size; hand_num++) {
+			card_t hand_card = hand->cards[hand_num];
+			if (are_cards_equal(play_card, hand_card)) {
+				valid_plays[hand_num] = TRUE;
+				break;
+			}
+		}
+		assert(hand_num < hand->hand_size);
+	}
 	
 	make_play(get_play(ggzcards.play_hand, valid_plays));
 }
 
 void game_alert_badplay(char *err_msg)
 {
-	int invalid = find_card(&ggzcards.players[ggzcards.play_hand].hand,
-	                        play_card);
-			
-	assert(invalid >= 0);
-	valid_plays[invalid] = FALSE;
-	num_valid_plays--;
-	
-	if (invalid < 0 || num_valid_plays <= 0) {
-		assert(FALSE);
-		client_send_sync_request();
-	} else
-		make_play(get_play(ggzcards.play_hand, valid_plays));
+	assert(FALSE);
+	client_send_sync_request();
 }
 
 void game_alert_play(int player, card_t card, int pos)
