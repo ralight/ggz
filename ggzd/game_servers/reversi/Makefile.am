@@ -17,7 +17,7 @@ ggzd_reversi_SOURCES = ggz.c \
 		         protocols.h
 
 
-ggzd_reversi_LDADD = $(LDADD)
+ggzd_reversi_LDADD = $(LDADD) -leasysock
 
 test:
 	-cp -f $(ggzdexecmod_PROGRAMS) $(top_builddir)/test

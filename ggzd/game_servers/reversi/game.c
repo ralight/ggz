@@ -28,6 +28,7 @@
 #include <easysock.h>
 
 #include <time.h>
+#include <unistd.h>
 #include <stdlib.h>
 
 // Global game variables
@@ -265,7 +266,8 @@ void game_play() {
 
 	// Is the AI?
 	if (ggz_seats[seat].assign == GGZ_SEAT_BOT) {
-		// Yes!
+		// Yes! Wait for a second
+		sleep(1);
 		move = game_bot_move(rvr_game.turn);
 		game_make_move(rvr_game.turn, move);
 	}
