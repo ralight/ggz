@@ -34,6 +34,11 @@ AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD
 AC_GGZ_CONFIG
 
+dnl Check for librsvg
+dnl =================
+
+AC_RSVG
+
 dnl Be a bit more strict
 dnl ====================
 
@@ -65,6 +70,7 @@ AC_CONFIG_FILES([Makefile
 	koenig/module.dsc
 	koenig/libcgc/Makefile
 	koenig/pics/Makefile
+	koenig/pieces/Makefile
 	muehle/Makefile
 	muehle/module.dsc
 	muehle/src/Makefile
