@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.h 3336 2002-02-12 01:37:50Z jdorje $
+ * $Id: aicommon.h 3339 2002-02-12 05:44:32Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -55,19 +55,25 @@ int libai_get_suit_map(player_t p, char suit);
 /** @brief Is it possible for the player to have this card? */
 int libai_might_player_have_card(player_t p, card_t card);
 
-/** @brief Do we *know* that the seat has the card? */
+/** @brief Do we *know* that the seat has the card?
+ *  @note Will cheat if you ask it to. */
 int libai_is_card_in_hand(seat_t seat, card_t card);
 
-/** @brief Is this the highest card in the suit? */
+/** @brief What is my highest card remaining in the suit?
+ *  @note Will cheat if you ask it to. */
+card_t libai_get_highest_card_in_suit(seat_t seat, char suit);
+
+/** @brief Is this the highest card left out in the suit? */
 int libai_is_highest_in_suit(card_t card);
 
-/** @brief How many cards remain out in this suit? */
-int libai_cards_left_in_suit(char suit);
+/** @brief How many cards have been played total in this suit? */
+int libai_cards_played_in_suit(char suit);
 
 /** @brief How many cards has this player played in this suit? */
-int libai_cards_played_in_suit(seat_t s, char suit);
+int libai_cards_played_in_suit_p(seat_t s, char suit);
 
-/** @brief How many cards do we have in this suit? */
+/** @brief How many cards do we have in this suit?
+ *  @note Will cheat if you ask it to. */
 int libai_count_suit(seat_t seat, char suit);
 
 /** @brief Forget what we know about player's holdings in this suit. */

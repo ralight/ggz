@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 10/14/2001
  * Desc: an AI for the game Suaro
- * $Id: suaro.c 3338 2002-02-12 02:19:01Z jdorje $
+ * $Id: suaro.c 3339 2002-02-12 05:44:32Z jdorje $
  *
  * This file contains the AI functions for playing Suaro.
  *
@@ -141,7 +141,7 @@ static int count_suit_strength(seat_t seat, char suit, int lo)
 	card_t card;
 	int coefficient = 100;
 	int strength = 0;
-	int remaining = libai_cards_left_in_suit(suit);
+	int remaining = 7 - libai_cards_played_in_suit(suit);
 
 	if (remaining == 0)
 		return -1000;
@@ -295,57 +295,38 @@ static bid_t get_bid(player_t p, bid_t * bid_choices, int bid_count)
 
 static card_t get_play(player_t p, seat_t seat)
 {
-	int leader = (game.leader == p);
-	char trump = SUARO.contract_suit;	/* Suaro suit values */
-
-	if (leader) {
+	if (game.leader == p) {
 		/* Pick a good lead. */
-		int declarer = (SUARO.declarer == p);	/* are we the
-							   declarer? */
+		char suit;
 
-		if (trump == SUARO_HIGH || trump == SUARO_LOW) {
-			card_t card;
+		/* If we're the declarer and there is a trump, we want to
+		   pull trump. Otherwise just pick a strong suit. */
+		if (SUARO.declarer == p
+		    && game.trump >= 0
+		    && libai_count_suit(seat, game.trump) > 1)
+			suit = game.trump;
+		else
+			suit = find_best_suit(seat,
+					      SUARO.contract_suit ==
+					      SUARO_LOW);
 
-			card.suit = find_best_suit(seat, trump == SUARO_LOW);
-
-			for (card.face = ACE_HIGH, card.deck = 0;
-			     card.face >= 8; card.face--) {
-				if (libai_is_card_in_hand(seat, card)) {
-					/* Highest card in best suit - take
-					   it. */
-					return card;
-				}
-			}
-		} else {
-			card_t card;
-
-			/* If we're the declarer, prefer to lead trump.
-			   Otherwise just take our strongest suit. */
-			if (declarer && libai_count_suit(seat, trump - 1) > 1)
-				card.suit = trump - 1;
-			else
-				card.suit = find_best_suit(seat, 0);
-
-			/* Look for the highest card. */
-			for (card.face = ACE_HIGH, card.deck = 0;
-			     card.face >= 8; card.face--)
-				if (libai_is_card_in_hand(seat, card)) {
-					/* Highest card in best suit - take
-					   it. */
-					return card;
-				}
-		}
+		return libai_get_highest_card_in_suit(seat, suit);
 	} else {
-		card_t opp_card = game.seats[2 - seat].table;
 		/* Pick a good response. */
+
+		card_t opp_card = game.seats[2 - seat].table;
+
+		/* FIXME: none of this section can deal with low bids. */
+
 		if (libai_count_suit(seat, opp_card.suit) == 0) {
 			card_t card;
 
 			/* Try to trump. */
-			if (libai_count_suit(seat, trump - 1)) {
+			if (game.trump >= 0
+			    && libai_count_suit(seat, game.trump) > 0) {
 				card_t card;
 
-				for (card.suit = trump - 1, card.face =
+				for (card.suit = game.trump, card.face =
 				     8, card.deck = 0; card.face <= ACE_HIGH;
 				     card.face++) {
 					if (libai_is_card_in_hand(seat, card)) {

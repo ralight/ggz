@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 3302 2002-02-10 11:29:38Z jdorje $
+ * $Id: spades.c 3339 2002-02-12 05:44:32Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -37,7 +37,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>		/* Site-specific config */
 #endif
 
 #include <stdlib.h>
@@ -137,7 +137,7 @@ static void alert_play(player_t p, card_t play)
 	if (play.face == ACE_HIGH || play.face == KING ||
 	    (play.face == QUEEN && play.suit == SPADES) ||
 	    (play.suit == SPADES
-	     && libai_cards_played_in_suit(p, SPADES) >= 4)) {
+	     && libai_cards_played_in_suit_p(p, SPADES) >= 4)) {
 		ai_debug("Counting %s of %s as a count card for player %d.",
 			 face_names[(int) play.face],
 			 suit_names[(int) play.suit], p);
@@ -830,7 +830,7 @@ static void Calculate(int num, struct play *play, int agg)
 	else {
 		/* Count the cards in this suit we know about.  Then average
 		   the remaining cards per player. */
-		n = libai_cards_left_in_suit(s);
+		n = 13 - libai_cards_played_in_suit(s);
 		for (r = 0; r < hand->hand_size; r++) {
 			if (cards_equal(hand->cards[(int) r], UNKNOWN_CARD))
 				continue;
@@ -869,9 +869,8 @@ static void Calculate(int num, struct play *play, int agg)
 	/* FIXME: this still isn't perfect; if your partner has no spades it
 	   may fail. */
 	if (game.leader == num && play->card.suit == SPADES
-	    && libai_count_suit(num,
-				SPADES) >
-	    (libai_cards_left_in_suit(SPADES) -
+	    && libai_count_suit(num, SPADES) >
+	    (13 - libai_cards_played_in_suit(SPADES) -
 	     libai_count_suit(num, SPADES) + 5) / 3
 	    && libai_get_suit_map((num + 1) % 4, SPADES)
 	    && libai_get_suit_map((num + 3) % 4, SPADES)) {

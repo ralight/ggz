@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/03/2001
  * Desc: useful functions for AI bots
- * $Id: aicommon.c 3302 2002-02-10 11:29:38Z jdorje $
+ * $Id: aicommon.c 3339 2002-02-12 05:44:32Z jdorje $
  *
  * This file contains the AI functions for playing any game.
  * The AI routines follow the none-too-successful algorithm of
@@ -29,7 +29,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>			/* Site-specific config */
+#  include <config.h>		/* Site-specific config */
 #endif
 
 #include <string.h>
@@ -109,6 +109,20 @@ int libai_is_card_in_hand(seat_t seat, card_t card)
 	return 0;
 }
 
+card_t libai_get_highest_card_in_suit(seat_t seat, char suit)
+{
+	card_t highest = UNKNOWN_CARD;
+	int i;
+
+	for (i = 0; i < game.seats[seat].hand.hand_size; i++) {
+		card_t card = game.seats[seat].hand.cards[i];
+		if (card.suit == suit && card.face > highest.face)
+			highest = card;
+	}
+
+	return highest;
+}
+
 int libai_is_highest_in_suit(card_t card)
 {
 	char face = card.face;
@@ -119,7 +133,7 @@ int libai_is_highest_in_suit(card_t card)
 }
 
 
-int libai_cards_left_in_suit(char suit)
+int libai_cards_played_in_suit(char suit)
 {
 	/* This assumes we use exactly 2-ACE_HIGH */
 	int n = 13;
@@ -131,7 +145,7 @@ int libai_cards_left_in_suit(char suit)
 }
 
 
-int libai_cards_played_in_suit(seat_t s, char suit)
+int libai_cards_played_in_suit_p(seat_t s, char suit)
 {
 	return playcount[s][(int) suit];
 }
