@@ -7,7 +7,7 @@ function stats_players($lookup)
 global $database;
 	if (!$lookup) return;
 
-	$res = $database->exec("SELECT * FROM stats WHERE lower(handle) = lower('$lookup')");
+	$res = $database->exec("SELECT * FROM stats WHERE lower(handle) = lower('$lookup') AND ranking > 0");
 	for ($i = 0; $i < $database->numrows($res); $i++)
 	{
 		$game = $database->result($res, $i, "game");
