@@ -45,6 +45,7 @@ RoomStruct *chat_room;
 
 /* Internal use only */
 static void room_spew_chat_room(const int);
+static void room_notify_change(const int, const int, const int);
 
 
 /* Initialize the chat lists */
@@ -98,7 +99,8 @@ int room_join(const int p_index, const int room)
 
 	/* Put them in the new room, and free up the old room */
 	players.info[p_index].room = room;
-	pthread_rwlock_unlock(&chat_room[old_room].lock);
+	if(old_room != -1)
+		pthread_rwlock_unlock(&chat_room[old_room].lock);
 
 	/* Adjust the new rooms statistics */
 	if(room != -1) {
@@ -113,13 +115,37 @@ int room_join(const int p_index, const int room)
 	}
 
 	/* Finally we can release the other locks */
-	pthread_rwlock_unlock(&chat_room[room].lock);
+	if(room != -1)
+		pthread_rwlock_unlock(&chat_room[room].lock);
 	pthread_rwlock_unlock(&players.lock);
 
-	dbg_msg(GGZ_DBG_ROOM,
-		"Player %d moved from room %d to %d", p_index, old_room, room);
+	/*room_notify_change(p_index, old_room, room);*/
 
 	return 0;
+}
+
+
+/* Notifies clients that someone has entered/left the room */
+static void room_notify_change(const int p, const int old, const int new)
+{
+	char *part_msg, *join_msg;
+
+	dbg_msg(GGZ_DBG_ROOM,
+		"Player %d moved from room %d to %d", p, old, new);
+
+	if(old != -1) {
+		if((part_msg = malloc(8)) == NULL)
+			err_sys_exit("malloc error in room_notify_change");
+		strcpy(part_msg, "/SpartS");
+		room_emit(old, p, part_msg);
+	}
+
+	if(new != -1) {
+		if((join_msg = malloc(8)) == NULL)
+			err_sys_exit("malloc error in room_notify_change");
+		strcpy(join_msg, "/SjoinS");
+		room_emit(new, p, join_msg);
+	}
 }
 
 
