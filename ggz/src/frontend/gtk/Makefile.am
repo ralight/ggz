@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
-#  $Id: Makefile.am 5222 2002-11-05 09:18:18Z jdorje $
+#  $Id: Makefile.am 5363 2003-02-04 02:23:13Z jdorje $
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/intl \
+INCLUDES = -I$(top_srcdir)/intl \
 	$(GGZCORE_INCLUDES) $(LIBGGZ_INCLUDES)
 
 bin_PROGRAMS = ggz-gtk
@@ -62,9 +62,8 @@ ggz_gtk_SOURCES =	main.c \
 			xtext-gtk2.c \
 			xtext-gtk2.h
 
-CFLAGS = @GTK_CFLAGS@ @CFLAGS@
+ggz_gtk_CFLAGS = @GTK_CFLAGS@
 ggz_gtk_LDADD = @GTK_LIBS@ $(LDADD) @LIBS@ $(LIB_GGZCORE) $(LIB_GGZ)
 ggz_gtk_LDFLAGS = $(GGZCORE_LDFLAGS) $(LIBGGZ_LDFLAGS)
 
 EXTRA_DIST = $(ggzdata_DATA)
-
