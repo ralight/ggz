@@ -27,3 +27,19 @@ ggzap        |              0.2 |              0.3
 Unversioned applications should adopt either the
 GGZ version number, or an own one.
 
+The following table describes the library interface versions.
+They must be updated whenever an API change happens.
+If a function changes or vanishes, the major version must be bumped.
+If only functions are added, the minor version must be bumped.
+The micro version tells the interface age.
+
+Library      | 0.0.5 iface | 0.0.6 iface | 0.0.7 iface
+-------------+-------------+-------------+------------
+libggz       | 0.0.0       | 1.0.0       | 1.1.0
+ggzcore      | 1.0.0       | 2.0.0       | 3.0.0
+ggzmod       | 0.0.0       | 1.0.0       | 1.1.0
+ggzdmod      | 0.0.0       | 1.0.0       | 2.0.0
+ggzcore++    | 1.0.0       | 2.0.0       | (noinst)
+zoneclient   | 0.0.0       | 1.0.0       | (noinst)
+zoneserver   | 0.0.0       | 0.1.0       | (noinst)
+
