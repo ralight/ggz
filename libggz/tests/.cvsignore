@@ -1,0 +1,9 @@
+*.o
+*.lo
+.deps
+.libs
+Makefile
+Makefile.in
+debugmsg
+testfile
+
