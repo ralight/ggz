@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3308 2002-02-11 01:19:31Z jdorje $
+ * $Id: table.c 3309 2002-02-11 01:29:04Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -539,8 +539,9 @@ void table_display_hand(int p, int write_to_screen)
 	/* Draw the cards */
 	for (i = 0; i < ggzcards.players[p].hand.hand_size; i++) {
 		card_t card = ggzcards.players[p].hand.card[i];
-		if (table_card.face != -1 &&	/* is this an adequate check? */
-		    !memcmp(&card, &table_card, sizeof(card_t)))
+		if (card.face >= 0 && card.face == table_card.face &&
+		    card.suit >= 0 && card.suit == table_card.suit &&
+		    card.deck >= 0 && card.deck == table_card.deck)
 			/* if the player has a card on the table _and_ it
 			   matches this card, skip over it. */
 			continue;
