@@ -1,6 +1,6 @@
 <?php
 
-require_once(".htconf");
+require_once("htconf");
 
 $id = @pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass");
 

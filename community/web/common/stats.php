@@ -77,7 +77,7 @@ function stats_games($id, $lookup)
 		$method = "wins/losses";
 	endif;
 
-	$res = pg_exec($id, "SELECT * FROM stats WHERE game = '$lookup' ORDER BY ranking ASC");
+	$res = pg_exec($id, "SELECT * FROM stats WHERE game = '$lookup' AND ranking > 0 ORDER BY ranking ASC");
 	for ($i = 0; $i < pg_numrows($res); $i++)
 	{
 		$handle = pg_result($res, $i, "handle");
