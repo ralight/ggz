@@ -22,15 +22,29 @@
  * - wins/losses: all wins minus all losses, highest values
  * - ratings: precalculated rating column, highest values
  * - highscore: precalculated highscore column, highest values
+ *
+ * Needs a local ggzd installation.
+ * Otherwise (undefined WITH_GGZ), ranking models might not be accurate.
  */
+
+/* Features */
+#define WITH_GGZ 1
 
 /* Include files */
 #include <libpq-fe.h>
 #include <stdio.h>
 #include <getopt.h>
+#include <stdlib.h>
+#include <string.h>
+
+#ifdef WITH_GGZ
+#include <ggz.h>
+#include <sys/types.h>
+#include <dirent.h>
+#endif
 
 /* Calculation model per game */
-static const char *rankingmodels[14][2] =
+static const char *rankingmodels_copy[14][2] =
 {
 	{"TicTacToe", "wins/losses"},
 	{"TEG", "highscore"},
@@ -50,12 +64,79 @@ static const char *rankingmodels[14][2] =
 
 /* Global variables */
 static PGconn *conn = NULL;
+static char ***rankingmodels = NULL;
+
+/* Load the list of ranking models */
+static int rankings_loadmodels(const char *path)
+{
+#ifdef WITH_GGZ
+	DIR *d;
+	struct dirent *e;
+	int handle;
+	int records, ratings, highscores;
+	char *name;
+	int count;
+	char filename[1024];
+	char *model;
+
+	count = 0;
+	if(!path) return 0;
+	d = opendir(path);
+	if(!d) return 0;
+	while((e = readdir(d)))
+	{
+		if((!strcmp(e->d_name, ".")) || (!strcmp(e->d_name, ".."))) continue;
+
+		snprintf(filename, sizeof(filename), "%s/%s", path, e->d_name);
+		handle = ggz_conf_parse(filename, GGZ_CONF_RDONLY);
+		if(handle == -1) continue;
+		name = ggz_conf_read_string(handle, "GameInfo", "Name", NULL);
+		records = ggz_conf_read_int(handle, "Statistics", "Records", 0);
+		ratings = ggz_conf_read_int(handle, "Statistics", "Ratings", 0);
+		highscores = ggz_conf_read_int(handle, "Statistics", "Highscores", 0);
+
+		model = NULL;
+		if(highscores == 1) model = "highscore";
+		else if(ratings == 1) model = "rating";
+		else if(records == 1) model = "wins/losses";
+
+		rankingmodels = (char***)ggz_realloc(rankingmodels, (count + 2) * sizeof(char**));
+		rankingmodels[count] = (char**)ggz_malloc(2 * sizeof(char*));
+		rankingmodels[count][0] = ggz_strdup(name);
+		rankingmodels[count][1] = ggz_strdup(model);
+		rankingmodels[count + 1] = NULL;
+
+		ggz_free(name);
+		ggz_conf_close(handle);
+
+		count++;
+	}
+	closedir(d);
+
+	return count;
+#else
+	return 0;
+#endif
+}
 
 /* Find calculation model per game */
-static const char *rankings_mode(const char *game)
+static const char *rankings_model(const char *game)
 {
 	int i;
-	for(i = 0; rankingmodels[i][0]; i++)
+
+	if(!rankingmodels)
+	{
+		for(i = 0; rankingmodels_copy[i][0]; i++)
+		{
+			rankingmodels = (char***)realloc(rankingmodels, (i + 2) * sizeof(char**));
+			rankingmodels[i] = (char**)malloc(2 * sizeof(char*));
+			rankingmodels[i][0] = strdup(rankingmodels_copy[i][0]);
+			rankingmodels[i][1] = strdup(rankingmodels_copy[i][1]);
+			rankingmodels[i + 1] = NULL;
+		}
+	}
+
+	for(i = 0; rankingmodels[i]; i++)
 		if(!strcmp(rankingmodels[i][0], game))
 			return rankingmodels[i][1];
 	return "";
@@ -116,6 +197,26 @@ static void rankings_recalculate_all(void)
 	int i;
 	char *game;
 	const char *mode;
+	int newentries, allentries;
+
+	res = PQexec(conn, "SELECT COUNT(id) FROM stats WHERE ranking = 0");
+	if(PQresultStatus(res) == PGRES_TUPLES_OK)
+		newentries = atoi(PQgetvalue(res, 0, 0));
+	else
+		newentries = -1;
+
+	res = PQexec(conn, "SELECT COUNT(id) FROM stats");
+	if(PQresultStatus(res) == PGRES_TUPLES_OK)
+		allentries = atoi(PQgetvalue(res, 0, 0));
+	else
+		allentries = -1;
+
+	if(newentries == 0)
+	{
+		printf("== No new entries found for calculation.\n");
+		exit(0);
+	}
+	else printf("== Calculate %i entries, including %i new entries.\n", allentries, newentries);
 
 	res = PQexec(conn, "SELECT DISTINCT game FROM stats");
 	if(PQresultStatus(res) == PGRES_TUPLES_OK)
@@ -123,11 +224,16 @@ static void rankings_recalculate_all(void)
 		for(i = 0; i < PQntuples(res); i++)
 		{
 			game = PQgetvalue(res, i, 0);
-			mode = rankings_mode(game);
+			mode = rankings_model(game);
 			printf("* %s (%s)\n", game, mode);
-			rankings_calculate(game, mode);
+			if(!mode)
+				printf("* Error: game %s doesn't support statistics.\n", game);
+			else
+				rankings_calculate(game, mode);
 		}
 	}                                                                         
+
+	printf("== All rankings calculated.\n");
 }
 
 /* Program startup, options processing and calculation invokation */
@@ -135,13 +241,15 @@ int main(int argc, char *argv[])
 {
 	int c, optindex;
 	int help;
-	char *host, *name, *user, *password;
+	char *host, *name, *user, *password, *dscpath;
+	int ret;
 	struct option options[] =
 	{
 		{"host", 1, 0, 0},
 		{"user", 1, 0, 0},
 		{"name", 1, 0, 0},
 		{"password", 1, 0, 0},
+		{"dscpath", 1, 0, 0},
 		{"help", 0, 0, 0},
 		{0, 0, 0, 0}
 	};
@@ -151,10 +259,11 @@ int main(int argc, char *argv[])
 	name = NULL;
 	user = NULL;
 	password = NULL;
+	dscpath = NULL;
 
 	while(1)
 	{
-		c = getopt_long(argc, argv, "h:n:u:p:?", options, &optindex);
+		c = getopt_long(argc, argv, "h:n:u:p:d:?", options, &optindex);
 		if(c == -1) break;
 
 		switch(c)
@@ -170,6 +279,9 @@ int main(int argc, char *argv[])
 				break;
 			case 'p':
 				password = optarg;
+				break;
+			case 'd':
+				dscpath = optarg;
 				break;
 			case '?':
 				help = 1;
@@ -189,10 +301,17 @@ int main(int argc, char *argv[])
 		printf("[-n | --name <name>         ] Database name\n");
 		printf("[-u | --user <user>         ] Database username\n");
 		printf("[-p | --password <password> ] Database password\n");
+#ifdef WITH_GGZ
+		printf("[-d | --dscpath <path>      ] Game server description directory\n");
+#endif
 		printf("[-? | --help                ] This help screen\n");
 		printf("\n");
 		return 0;
 	}
+
+	ret = rankings_loadmodels(dscpath);
+	if(ret) printf("== All %i game descriptions loaded.\n", ret);
+	else printf("== Error: game descriptions could not be loaded, using internal copy.\n");
 
 	rankings_connect(host, name, user, password);
 	if(conn) rankings_recalculate_all();
