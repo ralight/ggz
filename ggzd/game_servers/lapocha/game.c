@@ -4,7 +4,7 @@
  * Project: GGZ La Pocha game module
  * Date: 06/29/2000
  * Desc: Game functions
- * $Id: game.c 2649 2001-11-04 17:33:57Z jdorje $
+ * $Id: game.c 2782 2001-12-06 00:24:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -70,7 +70,7 @@ void game_init(void)
 
 
 /* Handle message from GGZ server */
-void game_handle_ggz(ggzd_event_t event, void* data)
+void game_handle_ggz(GGZdModEvent event, void* data)
 {
 	switch(event) {
 		case GGZ_EVENT_LAUNCH:
@@ -90,7 +90,7 @@ void game_handle_ggz(ggzd_event_t event, void* data)
 
 
 /* Handle message from player */
-void game_handle_player(ggzd_event_t event, void* data)
+void game_handle_player(GGZdModEvent event, void* data)
 {
 	int num = *(int*)data;
 	int fd, op;

@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: server specific header file
- * $Id: game.h 2649 2001-11-04 17:33:57Z jdorje $
+ * $Id: game.h 2782 2001-12-06 00:24:12Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -37,8 +37,8 @@
 void game_init();
 
 /* Handles the protocol (GGZ event handler functions) */
-void game_handle_ggz(ggzd_event_t event, void *data);
-void game_handle_player(ggzd_event_t event, void *data);
+void game_handle_ggz(GGZdModEvent event, void *data);
+void game_handle_player(GGZdModEvent event, void *data);
 
 // Game logic
 int game_handle_move(int, int, int);

@@ -4,7 +4,7 @@
  * Project: GGZ Connect the Dots game module
  * Date: 04/27/2000
  * Desc: Game functions
- * $Id: game.h 2649 2001-11-04 17:33:57Z jdorje $
+ * $Id: game.h 2782 2001-12-06 00:24:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -90,8 +90,8 @@ extern int s_x[2], s_y[2];
 extern int score;
 
 void game_init(void);
-void game_handle_ggz(ggzd_event_t event, void *data);
-void game_handle_player(ggzd_event_t event, void *data);
+void game_handle_ggz(GGZdModEvent event, void *data);
+void game_handle_player(GGZdModEvent event, void *data);
 
 int game_send_seat(int);
 int game_send_players(void);

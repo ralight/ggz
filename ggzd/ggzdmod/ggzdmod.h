@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2767 2001-12-01 06:44:49Z bmh $
+ * $Id: ggzdmod.h 2782 2001-12-06 00:24:12Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -142,7 +142,7 @@ typedef void GGZdMod;
  *
  *  Here is an example function showing the most generic use for a table:
  *  @code
- *      void ggz_update(ggzd_event_t event, void *data) {
+ *      void ggz_update(GGZdModEvent event, void *data) {
  *          int player, socket_fd;
  *          switch (event) {
  *            case GGZDMOD_EVENT_STATE:

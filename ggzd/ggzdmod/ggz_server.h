@@ -4,7 +4,7 @@
  * Project: GGZDMOD
  * Date: 10/24/01
  * Desc: GGZDMOD wrapper
- * $Id: ggz_server.h 2781 2001-12-06 00:15:53Z jdorje $
+ * $Id: ggz_server.h 2782 2001-12-06 00:24:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -66,11 +66,10 @@ extern "C" {
 	void ggzd_gameover(int status);
 	int ggzd_get_gameover(void);
 
-	typedef GGZdModEvent ggzd_event_t;
-	typedef void (*GGZDHandler) (ggzd_event_t event_id,
+	typedef void (*GGZDHandler) (GGZdModEvent event_id,
 				     void *handler_data);
 
-	void ggzd_set_handler(ggzd_event_t event_id,
+	void ggzd_set_handler(GGZdModEvent event_id,
 			      const GGZDHandler handler);
 
 	int ggzd_connect(void);

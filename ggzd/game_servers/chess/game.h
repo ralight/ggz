@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Header file for game functions
- * $Id: game.h 2285 2001-08-27 19:53:11Z jdorje $
+ * $Id: game.h 2782 2001-12-06 00:24:12Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -24,14 +24,14 @@
  */
 
 /* Translate a GGZ event into a chess event --JDS */
-void ggz_update(ggzd_event_t event, void *data);
+void ggz_update(GGZdModEvent event, void *data);
 
 /* All the important stuff happens here */
 int game_update(int event_id, void *data);
 
 /* Filter the msg from the player into the
  * appropriated event */
-void game_handle_player(ggzd_event_t event, void *seat_data);
+void game_handle_player(GGZdModEvent event, void *seat_data);
 
 /* Send MSG_SEAT to the player */
 void game_send_seat(int seat);

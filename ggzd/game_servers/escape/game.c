@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 27th June 2001
  * Desc: Game functions
- * $Id: game.c 2649 2001-11-04 17:33:57Z jdorje $
+ * $Id: game.c 2782 2001-12-06 00:24:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -48,7 +48,7 @@ void game_init(void)
 
 //FIXME
 /* Handle message from player */
-void game_handle_player(ggzd_event_t event, void *data)
+void game_handle_player(GGZdModEvent event, void *data)
 {
 	int num = *(int*)data; /* player number */
 	int fd, op;
@@ -502,7 +502,7 @@ char game_check_win(void)
 }
 
 /* FIXME: there's no reason this should be separate from game_update */
-void ggz_update(ggzd_event_t event, void *data)
+void ggz_update(GGZdModEvent event, void *data)
 {
 	switch (event) {
 		case GGZ_EVENT_LAUNCH:

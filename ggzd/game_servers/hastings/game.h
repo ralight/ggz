@@ -5,7 +5,7 @@
  * Project: GGZ Hastings1066 game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.h 2649 2001-11-04 17:33:57Z jdorje $
+ * $Id: game.h 2782 2001-12-06 00:24:12Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -82,8 +82,8 @@ struct hastings_game_t {
 };
 
 void game_init(void);
-void game_handle_ggz(ggzd_event_t event, void *data);
-void game_handle_player(ggzd_event_t event, void *seat_data);
+void game_handle_ggz(GGZdModEvent event, void *data);
+void game_handle_player(GGZdModEvent event, void *seat_data);
 
 int game_send_seat(int seat);
 int game_send_players(void);

@@ -4,7 +4,7 @@
  * Project: GGZ Escape game module
  * Date: 28th June 2001
  * Desc: Game functions
- * $Id: game.h 2285 2001-08-27 19:53:11Z jdorje $
+ * $Id: game.h 2782 2001-12-06 00:24:12Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -114,8 +114,8 @@ char game_check_move(int, int);
 char game_check_win(void);
 
 
-void ggz_update(ggzd_event_t event, void *data);
-void game_handle_player(ggzd_event_t event, void* data);
+void ggz_update(GGZdModEvent event, void *data);
+void game_handle_player(GGZdModEvent event, void* data);
 
 unsigned char revdir(unsigned char direction);
 

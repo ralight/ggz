@@ -5,7 +5,7 @@
  * Project: GGZ Tic-Tac-Toe game module
  * Date: 09/10/00
  * Desc: Game functions
- * $Id: game.c 2285 2001-08-27 19:53:11Z jdorje $
+ * $Id: game.c 2782 2001-12-06 00:24:12Z jdorje $
  *
  * Copyright (C) 2000 Josef Spillner
  *
@@ -82,7 +82,7 @@ void game_init(void)
 
 
 /* Handle event from GGZ server */
-void game_handle_ggz(ggzd_event_t event, void *data)
+void game_handle_ggz(GGZdModEvent event, void *data)
 {
 	switch(event)
 	{
@@ -102,7 +102,7 @@ void game_handle_ggz(ggzd_event_t event, void *data)
 
 
 /* Handle message from player */
-void game_handle_player(ggzd_event_t event, void *seat_data)
+void game_handle_player(GGZdModEvent event, void *seat_data)
 {
 	int num = *(int*)seat_data;
 	int fd, op;

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 2781 2001-12-06 00:15:53Z jdorje $
+ * $Id: common.c 2782 2001-12-06 00:24:12Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -126,7 +126,7 @@ static char *player_messages[] =
 };
 
 /* Handle message from player */
-void handle_player_event(ggzd_event_t event, void *data)
+void handle_player_event(GGZdModEvent event, void *data)
 {
 	player_t p = *(int *) data;
 	int fd, op, status = 0;
@@ -414,7 +414,7 @@ static int determine_host(void)
 
 /* This handles a launch event, when ggz connects to our server for the first
    time. */
-void handle_launch_event(ggzd_event_t event, void *data)
+void handle_launch_event(GGZdModEvent event, void *data)
 {
 	player_t p;
 
@@ -449,7 +449,7 @@ void handle_launch_event(ggzd_event_t event, void *data)
 }
 
 /* This handles the event of a player joining. */
-void handle_join_event(ggzd_event_t event, void *data)
+void handle_join_event(GGZdModEvent event, void *data)
 {
 	player_t player = *(int *) data;
 	seat_t seat = game.players[player].seat;
@@ -517,7 +517,7 @@ void handle_join_event(ggzd_event_t event, void *data)
 }
 
 /* This handles the event of a player leaving */
-void handle_leave_event(ggzd_event_t event, void *data)
+void handle_leave_event(GGZdModEvent event, void *data)
 {
 	player_t player = *(int *) data;
 	seat_t seat = game.players[player].seat;

@@ -4,7 +4,7 @@
  * Project: GGZ Chess game module
  * Date: 03/01/01
  * Desc: Game main functions
- * $Id: game.c 2769 2001-12-01 06:53:01Z bmh $
+ * $Id: game.c 2782 2001-12-06 00:24:12Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -49,7 +49,7 @@ struct timeval cronometer;
  * It's really a hack just to make sure things work out.
  * Note that before ggzdmod was used, this wasn't done
  * either!  --JDS */
-void ggz_update(ggzd_event_t event, void *data) {
+void ggz_update(GGZdModEvent event, void *data) {
   switch(event) {
     case GGZDMOD_EVENT_STATE:
       switch (ggzd_get_state()) {
@@ -331,7 +331,7 @@ int game_update(int event_id, void *data) {
  *  CHESS_REQ_FLAG   -> Check for the right clock, then trigger EVENT_FLAG
  *  CHESS_REQ_DRAW   -> Check if he hasn't done it yet, then trigger EVENT_DRAW
  *  */
-void game_handle_player(ggzd_event_t id, void *seat_data) {
+void game_handle_player(GGZdModEvent id, void *seat_data) {
   int *seat = seat_data;
   int fd, time;
   char op;

@@ -4,7 +4,7 @@
  * Project: GGZ Reversi game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 2285 2001-08-27 19:53:11Z jdorje $
+ * $Id: game.c 2782 2001-12-06 00:24:12Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -54,7 +54,7 @@ void game_init() {
 }
 
 // Handle server messages
-void game_handle_ggz(ggzd_event_t event, void *data) {
+void game_handle_ggz(GGZdModEvent event, void *data) {
 	switch (event) {
 		case GGZ_EVENT_LAUNCH:
 			// Check if it's the right time to launch the game and if ggz could do taht
@@ -188,7 +188,7 @@ int game_start() {
 }
 
 /* return -1 on error, 1 on gameover */
-void game_handle_player(ggzd_event_t event, void* data) {
+void game_handle_player(GGZdModEvent event, void* data) {
 	int seat = *(int*)data;
 	int fd, op, move;
 

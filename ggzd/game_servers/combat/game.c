@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Combat server functions
- * $Id: game.c 2299 2001-08-28 05:13:32Z jdorje $
+ * $Id: game.c 2782 2001-12-06 00:24:12Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -63,7 +63,7 @@ void game_init() {
   srandom((int)tv.tv_usec);
 }
 
-void game_handle_ggz(ggzd_event_t event, void *data) {
+void game_handle_ggz(GGZdModEvent event, void *data) {
   int seat, a, done = 0;
   switch (event) {
     case GGZ_EVENT_LAUNCH:
@@ -146,7 +146,7 @@ void game_handle_ggz(ggzd_event_t event, void *data) {
   }
 }
 
-void game_handle_player(ggzd_event_t event, void *data) {
+void game_handle_player(GGZdModEvent event, void *data) {
   int seat = *(int*)data;
   int fd, op, a, status = CBT_SERVER_OK, b;
 
