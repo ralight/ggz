@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.h 4269 2002-06-23 11:33:21Z dr_maux $
+ * $Id: game.h 6264 2004-11-05 06:15:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -32,6 +32,10 @@ struct game_t {
 	int seats[6];
 	char names[6][17];
 	char my_turn;
+#define ROWS 17
+#define COLS 25
+#define BOARD_NONE -1
+#define BOARD_EMPTY 0
 	char board[17][25];
 	int conf_handle;
 	int beep;
@@ -52,7 +56,8 @@ extern struct game_t game;
 extern int homes[6][6];
 
 extern void game_init(void);
-extern void game_init_board(void);
+void game_zap_board(void); /* Clears board - called in several places. */
+void game_init_board(void);
 extern void game_handle_click_event(int, int);
 extern void game_notify_our_turn(void);
 extern void game_opponent_move(int, int, int, int, int);

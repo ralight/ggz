@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Core game structures and logic
- * $Id: game.c 4921 2002-10-14 23:08:40Z jdorje $
+ * $Id: game.c 6264 2004-11-05 06:15:15Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -61,7 +61,6 @@ int homes[6][6] = {
 
 static GSList *path_list;
 
-static void game_zap_board(void);
 static int game_make_move(int, int, int, int);
 static int game_find_path(int, int, int, int, int);
 static void get_theme_data(void);
@@ -91,6 +90,7 @@ GGZMod *game_mod(void)
 void game_init(void)
 {
 	char *filename;
+	int i, j;
 
 	/* Connect to GGZ */
 	mod = ggzmod_new(GGZMOD_GAME);
@@ -124,12 +124,16 @@ void game_init(void)
 		}
 	}
 
+	for (i = 0; i < ROWS; i++)
+		for (i = 0; i < COLS; i++)
+			game.board[i][j] = BOARD_NONE;
+
 	/* Setup the board array */
 	game_zap_board();
 }
 
 
-static char init_board[17][25] = {
+static char init_board[ROWS][COLS] = {
 	"            *            ",
 	"           * *           ",
 	"          * * *          ",
@@ -186,16 +190,16 @@ static char *color[6] = { "red", "blue", "green", "yellow", "cyan", "purple" };
 
 
 /* Clear the game board to blanks */
-static void game_zap_board(void)
+void game_zap_board(void)
 {
 	int i, j;
 
-	for(i=0; i<17; i++)
-		for(j=0; j<25; j++)
-			if(init_board[i][j] == ' ')
-				game.board[i][j] = -1;
+	for (i = 0; i < ROWS; i++)
+		for (j = 0; j < COLS; j++)
+			if (init_board[i][j] == ' ')
+				game.board[i][j] = BOARD_NONE;
 			else
-				game.board[i][j] = 0;
+				game.board[i][j] = BOARD_EMPTY;
 
 	display_refresh_board();
 }

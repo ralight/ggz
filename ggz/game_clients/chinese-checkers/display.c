@@ -26,6 +26,7 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -60,9 +61,19 @@ static char *label_color[6] = {
 	"RGB:FF/00/FF"
 };
 
+#define BOARD_SIZE 400
 
-static void display_draw_holes(void);
+/* Integer value. */
+#define HOLE_SIZE ((int)(BOARD_SIZE * 12.5 / 400))
 
+/* Floating-point values. */
+#define OFFSET_X ((float)BOARD_SIZE * 11.0 / 400.0)
+#define ORIGIN_X ((float)BOARD_SIZE * 61.0 / 400.0)
+#define OFFSET_Y ((float)BOARD_SIZE * 19.4 / 400.0)
+#define ORIGIN_Y ((float)BOARD_SIZE * 38.0 / 400.0)
+
+#define GET_X(i) ((float)i * OFFSET_X + ORIGIN_X)
+#define GET_Y(j) ((float)j * OFFSET_Y + ORIGIN_Y)
 
 static GdkPixbuf *display_load_pixmap(const char *name, int size)
 {
@@ -119,7 +130,7 @@ int display_init(void)
 						  "Game Messages");
 
 	/* Create a pixmap buffer from our xpm */
-	board_img = display_load_pixmap("board", 400);
+	board_img = display_load_pixmap("board", BOARD_SIZE);
 	if (!board_img)
 		return -1;
 
@@ -127,15 +138,15 @@ int display_init(void)
 				   draw_area->allocation.width,
 				   draw_area->allocation.height,
 				   -1);
-	draw(board_img, 0, 0, 400, 400);
+	draw(board_img, 0, 0, BOARD_SIZE, BOARD_SIZE);
 
 	/* Convert the rest of our xpms to masked pixmaps */
-	hole_img = display_load_pixmap("hole", 12);
+	hole_img = display_load_pixmap("hole", HOLE_SIZE);
 	if (!hole_img)
 		return -1;
 
 	for (i = 0; i < 6; i++) {
-		marble_img[i] = display_load_pixmap(colors[i], 12);
+		marble_img[i] = display_load_pixmap(colors[i], HOLE_SIZE);
 		if (marble_img[i] == NULL)
 			return -1;	  
 	}
@@ -150,16 +161,7 @@ int display_init(void)
 	gdk_gc_set_line_attributes(gc_line, 2, GDK_LINE_SOLID,
 				   GDK_CAP_BUTT, GDK_JOIN_ROUND);
 
-	/* Add the holes to our pixmap buffer */
-	display_draw_holes();
-
-	/* Draw our pixmap buffer */
-	gdk_draw_pixmap(draw_area->window,
-			draw_area_style->fg_gc[GTK_WIDGET_STATE(draw_area)],
-			board_buf,
-			0, 0,
-			0, 0,
-			400, 400);
+	game_zap_board();
 
 	return 0;
 }
@@ -178,60 +180,31 @@ void display_handle_expose_event(GdkEventExpose *event)
 }
 
 
-/* Draw all the holes onto the board */
-static void display_draw_holes(void)
-{
-	int i, j, count;
-	int x, y;
-
-	for(i = 0; i<17; i++) {
-		if(i < 4) {
-			x = 193 - (i * 11);
-			count = i;
-		} else if(i < 9) {
-			x = 193 - ((16-i) * 11);
-			count = 16 - i;
-		} else if(i < 13) {
-			x = 193 - (i * 11);
-			count = i;
-		} else {
-			x = 193 - ((16-i) * 11);
-			count = 16-i;
-		}
-		y = (i*19.4) + 38;
-		for(j=0; j<=count; j++) {
-			draw(hole_img, x, y, 12, 12);
-			x += 22;
-		}
-	}
-}
-
-
 /* Refresh the board completely from the game.board image */
 void display_refresh_board(void)
 {
 	int i, j;
-	int x, y;
-	int p;
 
 	/* Clear a path if one is showing */
 	display_show_path(NULL);
 
-	/* Refresh the holes */
-	display_draw_holes();
-
 	/* Refresh the marbles */
-	for(i=0; i<17; i++)
-		for(j=0; j<25; j++) {
+	assert(game.board[0][0] == BOARD_NONE);
+	for (i = 0; i < ROWS; i++)
+		for (j = 0; j < COLS; j++) {
+			GdkPixbuf *img;
+
 			/* Hole or invalid */
-			if(game.board[i][j] < 1)
+			if (game.board[i][j] == BOARD_NONE) {
 				continue;
+			} else if (game.board[i][j] == BOARD_EMPTY) {
+				img = hole_img;
+			} else {
+				img = marble_img[game.board[i][j] - 1];
+			}
 
 			/* Plop a marble */
-			x = j * 11 + 61;
-			y = (i*19.4) + 38;
-			p = game.board[i][j] - 1;
-			draw(marble_img[p], x, y, 12, 12);
+			draw(img, GET_X(j), GET_Y(i), HOLE_SIZE, HOLE_SIZE);
 		}
 
 	/* Draw our pixmap buffer */
@@ -240,7 +213,7 @@ void display_refresh_board(void)
 			board_buf,
 			0, 0,
 			0, 0,
-			400, 400);
+			BOARD_SIZE, BOARD_SIZE);
 }
 
 
@@ -249,8 +222,8 @@ void display_handle_click_event(GdkEventButton *event)
 	int row, col;
 
 	/* Convert to an array row/col and pass to game module */
-	col = (event->x - 61) / 11;
-	row = (event->y - 38) / 19.4;
+	col = ((float)event->x - ORIGIN_X) / OFFSET_X;
+	row = ((float)event->y - ORIGIN_Y) / OFFSET_Y;
 
 	/* ggz_debug("main", "[%d][%d]", row, col); */
 
@@ -284,10 +257,10 @@ void display_show_path(GSList *path_list)
 		tmp = old_path_list;
 		while(tmp) {
 			node = tmp->data;
-			x1 = (node->co*11)+67;
-			y1 = (node->ro*19.4)+44;
-			x2 = (node->cd*11)+67;
-			y2 = (node->rd*19.4)+44;
+			x1 = GET_X(node->co) + HOLE_SIZE / 2;
+			y1 = GET_Y(node->ro) + HOLE_SIZE / 2;
+			x2 = GET_X(node->cd) + HOLE_SIZE / 2;
+			y2 = GET_Y(node->rd) + HOLE_SIZE / 2;
 			g_free(node);
 
 			if(x1 <= x2)
@@ -318,10 +291,10 @@ void display_show_path(GSList *path_list)
 	tmp = path_list;
 	while(tmp) {
 		node = tmp->data;
-		x1 = (node->co*11)+67;
-		y1 = (node->ro*19.4)+44;
-		x2 = (node->cd*11)+67;
-		y2 = (node->rd*19.4)+44;
+		x1 = GET_X(node->co) + HOLE_SIZE / 2;
+		y1 = GET_Y(node->ro) + HOLE_SIZE / 2;
+		x2 = GET_X(node->cd) + HOLE_SIZE / 2;
+		y2 = GET_Y(node->rd) + HOLE_SIZE / 2;
 
 		if(x1 <= x2)
 			update_rect.x = x1;
