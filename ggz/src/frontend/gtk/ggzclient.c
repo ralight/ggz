@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 3408 2002-02-18 06:05:24Z jdorje $
+ * $Id: ggzclient.c 3523 2002-03-03 15:47:58Z dr_maux $
  *
  * This is the main program body for the GGZ client
  *
@@ -944,7 +944,10 @@ void display_tables(void)
 			+ ggzcore_table_get_seat_count(t, GGZ_SEAT_RESERVED);
 		seats = ggzcore_table_get_num_seats(t);
 		desc = ggzcore_table_get_desc(t);
-		
+		if(!desc) {
+			desc = _("No description available.");
+		}
+
 		/* FIXME: we have a significant problem here.  Do we
 		   display the number of open seats, the number of
 		   available-to-us seats, or the total number of
