@@ -4,7 +4,7 @@
  * Project: GGZ GTK Games
  * Date: 10/13/2002 (moved from GGZCards)
  * Desc: Create the "Players" Gtk dialog
- * $Id: dlg_players.c 4969 2002-10-21 04:29:08Z jdorje $
+ * $Id: dlg_players.c 4980 2002-10-22 04:22:22Z jdorje $
  *
  * Copyright (C) 2002 GGZ Development Team
  *
@@ -311,7 +311,7 @@ void create_or_raise_dlg_players(void)
 
 static gpointer encode_seat(int spectator, int seat_num)
 {
-	int which = ((!!spectator) << 31) & seat_num;
+	int which = ((!!spectator) << 31) | seat_num;
 	assert((seat_num & (1 << 31)) == 0);
 	return GINT_TO_POINTER(which);
 }
