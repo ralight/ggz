@@ -55,6 +55,7 @@ class GGZCore
 			memdetail = 0x004000,
 			module    = 0x008000,
 			game      = 0x010000,
+			xml       = 0x020000,
 			all       = 0xFFFFFF
 		};
 

@@ -312,7 +312,7 @@ int GGZCoreServer::logSession(const char *filename)
 int GGZCoreServer::encryption()
 {
 #ifdef KGGZ_PATCH_ENCRYPTION
-	return ggzcore_server_get_encryption(m_server);
+	return ggzcore_server_get_tls(m_server);
 #else
 	return 0;
 #endif
