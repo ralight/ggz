@@ -1201,7 +1201,7 @@ static void _net_handle_table(GGZNetIO *net, GGZXMLElement *element)
 	table->type = type;
 	table->room = player_get_room(net->player);
 	if (desc)
-		strcpy(table->desc, desc);
+		snprintf(table->desc, sizeof(table->desc), "%s", desc);
 	
 	/* Add seats */
 	entry = ggz_list_head(seats);
