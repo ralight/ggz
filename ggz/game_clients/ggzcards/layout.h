@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.h 4027 2002-04-21 01:36:44Z jdorje $
+ * $Id: layout.h 4048 2002-04-22 17:19:04Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -23,6 +23,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#include "shared.h"
+
 /* no more than 6 players will work */
 #define MAX_NUM_PLAYERS 6
 
@@ -33,10 +35,13 @@
 /* more cards will fit if you just change table_max_hand_size */
 #define HAND_WIDTH 	(CARDWIDTH + (table_max_hand_size - 1) * \
                                      CARD_VISIBILITY + 0.5 )
-#define TEXT_WIDTH	CARDHEIGHT
+#define TEXT_WIDTH	MAX(CARDHEIGHT, get_min_text_width())
 
-#define CARD_BOX_WIDTH	(HAND_WIDTH + 2*XWIDTH)
-#define TEXT_BOX_WIDTH	(TEXT_WIDTH + 2*XWIDTH)
+#define CARD_BOX_WIDTH	(HAND_WIDTH + 2 * XWIDTH)
+#define TEXT_BOX_WIDTH	(TEXT_WIDTH + 2 * XWIDTH)
+
+int get_min_text_width(void);
+bool set_min_text_width(int min_text_width);
 
 int get_table_width(void);
 int get_table_height(void);

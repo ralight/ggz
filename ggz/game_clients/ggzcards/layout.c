@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 4027 2002-04-21 01:36:44Z jdorje $
+ * $Id: layout.c 4048 2002-04-22 17:19:04Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -36,6 +36,23 @@
 #include "game.h"
 #include "drawcard.h"
 #include "layout.h"
+#include "table.h"
+
+static int layout_min_text_width = 0;
+
+int get_min_text_width(void)
+{
+	return layout_min_text_width;	
+}
+
+bool set_min_text_width(int min_text_width)
+{
+	if (min_text_width > layout_min_text_width) {
+		layout_min_text_width = min_text_width;
+		return TRUE;
+	}
+	return FALSE;
+}
 
 static void bottom_box4(int *x, int *y)
 {
@@ -219,9 +236,9 @@ void get_text_box_pos(int p, int *x, int *y)
 	assert(LAYOUT);
 	BOX(p) (x, y);
 	if (or == 2)
-		*x += 2 * XWIDTH + HAND_WIDTH;
+		*x += CARD_BOX_WIDTH;
 	else if (or == 3)
-		*y += 2 * XWIDTH + HAND_WIDTH;
+		*y += CARD_BOX_WIDTH;
 }
 
 void get_card_box_pos(int p, int *x, int *y)
@@ -230,9 +247,9 @@ void get_card_box_pos(int p, int *x, int *y)
 	assert(LAYOUT);
 	BOX(p) (x, y);
 	if (or == 0)
-		*x += 2 * XWIDTH + CARDHEIGHT;
+		*x += TEXT_BOX_WIDTH;
 	else if (or == 1)
-		*y += 2 * XWIDTH + CARDHEIGHT;
+		*y += TEXT_BOX_WIDTH;
 }
 
 void get_card_box_dim(int p, int *w, int *h)
@@ -303,8 +320,18 @@ void get_full_card_area(int p, int *x, int *y, int *w, int *h, int *xo,
 void get_inner_card_area_pos(int p, int *x, int *y)
 {
 	get_card_box_pos(p, x, y);
-	*x += XWIDTH;
-	*y += XWIDTH;
+	switch (orientation(p)) {
+	case 0:
+	case 2:
+		*x += XWIDTH;
+		*y += TEXT_BOX_WIDTH / 2 - get_card_height(0) / 2;
+		break;
+	case 1:
+	case 3:
+		*x += TEXT_BOX_WIDTH / 2 - get_card_width(1) / 2;
+		*y += XWIDTH;
+		break;
+	}
 }
 
 void get_card_pos(int p, int card_num, int *x, int *y)

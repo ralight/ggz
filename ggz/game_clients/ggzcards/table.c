@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4037 2002-04-21 08:14:26Z jdorje $
+ * $Id: table.c 4048 2002-04-22 17:19:04Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -328,11 +328,12 @@ void table_cleanup(void)
 static void table_show_player_box(int player, int write_to_screen)
 {
 	int x, y;
-	int w = TEXT_BOX_WIDTH - 1, h = TEXT_BOX_WIDTH-1;
+	int w = TEXT_BOX_WIDTH - 1, h = TEXT_BOX_WIDTH - 1;
 	GdkFont *font = table_style->font;
 	const char* name = player_names[player];
 	const char* message = player_messages[player];
 	int string_y;
+	int max_width = 0;
 	
 	assert(table_ready);
 	
@@ -340,21 +341,28 @@ static void table_show_player_box(int player, int write_to_screen)
 	x++;
 	y++;
 	
-	string_y = y + 2; /* The y values we're going to draw at. */
-	
 	/* Clear the text box */
 	gdk_draw_rectangle(table_buf,
 			   table_style->bg_gc[GTK_WIDGET_STATE(table)],
 			   TRUE, x, y, w, h);
+			
+	x += XWIDTH;
+	y += XWIDTH;
+	w -= 2 * XWIDTH;
+	h -= 2 * XWIDTH;
+	
+	string_y = y; /* The y values we're going to draw at. */
 	
 	/* Draw the name. */
 	if (name) {
-		int ascent, descent, dummy;
+		int ascent, descent, dummy, width;
 		
 		assert(strchr(name, '\n') == NULL);
 			
-		gdk_string_extents(font, name, &dummy, &dummy, &dummy,
-		                   &ascent, &descent);
+		gdk_string_extents(font, name, &dummy, &dummy,
+		                   &width, &ascent, &descent);
+		max_width = MAX(max_width, width);
+		printf("Width is %d for '%s'.\n", width, name);
 		
 		string_y += ascent;
 			
@@ -373,30 +381,43 @@ static void table_show_player_box(int player, int write_to_screen)
 		char *next = my_message;
 		int ascent, descent, dummy;
 			
-		gdk_string_extents(font, my_message, &dummy, &dummy, &dummy,
-		                   &ascent, &descent);
+		gdk_string_extents(font, my_message, &dummy, &dummy,
+		                   &dummy, &ascent, &descent);
 		
 		/* This is so ugly!! Is there no better way?? */
 		do {
 			char *next_after_this = strchr(next, '\n');
+			int width;
 			
 			if (next_after_this) {
 				*next_after_this = '\0';
 				next_after_this++;
 			}
 			
-			string_y += ascent;
+			string_y += 3 + ascent;
+			
+			gdk_string_extents(font, next, &dummy, &dummy,
+		        	           &width, &dummy, &dummy);
+			max_width = MAX(max_width, width);
+			printf("Width is %d for '%s'.\n", width, next);
 			
 			gdk_draw_string(table_buf, font,
 				table_style->fg_gc[GTK_WIDGET_STATE(table)],
 		                x + 3, string_y, next);
 		                	
-		        string_y += descent + 3;
+		        string_y += descent;
 		                	
 		        next = next_after_this;
 		} while (next && *next);
 		
 		ggz_free(my_message);
+	}
+	
+	/* FIXME: we shouldn't call table_setup() from *within* the
+	   drawing code */
+	if (set_min_text_width(string_y - y) ||
+	    set_min_text_width(max_width)) {
+		table_setup();
 	}
 	
 	if (write_to_screen)
