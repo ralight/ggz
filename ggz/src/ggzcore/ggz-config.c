@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 5681 2003-11-23 11:05:13Z dr_maux $
+ * $Id: ggz-config.c 5687 2003-11-23 17:45:25Z dr_maux $
  *
  * Configuration query and module install program.
  *
@@ -33,6 +33,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include <sys/stat.h>
 
 #include <ggz.h>
 
@@ -324,6 +326,8 @@ static int open_conffile(void)
 		fprintf(stderr, "Insufficient permission to install modules\n");
 		ggz_conf_cleanup();
 		return -1;
+	} else {
+		chmod(global_pathname, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	}
 
 	return global;
@@ -531,7 +535,7 @@ static int check_module_file(void)
 			if(str != NULL) {
 				/* Without command line args */
 				str2 = str;
-				while(str2 && *str2 != ' ') str2++;
+				while(*str2 && *str2 != ' ') str2++;
 				*str2 = '\0';
 				if(access(str, X_OK))
 					kill=1;
@@ -547,7 +551,9 @@ static int check_module_file(void)
 			modpengine = ggz_conf_read_string(global, s_list[i], "ProtocolEngine", NULL);
 			rc = ggz_conf_remove_section(global, s_list[i]);
 			if(rc == 0) {
-				purge_engine_id(global, s_list[i]);
+				if(modpengine) {
+					purge_engine_id(global, s_list[i]);
+				}
 				rc = ggz_conf_commit(global);
 			}
 		}
@@ -623,14 +629,14 @@ phase_two:
 			ggz_free(k_list[i]);
 			continue;
 		}
-		printf("*** Checking Name key for engine '%s'\n", k_list[i]);
+		printf("*** Checking ProtocolEngine key for engine '%s'\n", k_list[i]);
 		str = ggz_conf_read_string(global, "Games", k_list[i], NULL);
-		str2 = ggz_conf_read_string(global, str, "Name", NULL);
+		str2 = ggz_conf_read_string(global, str, "ProtocolEngine", NULL);
 		if(str2 && strcmp(k_list[i], str2)) {
 			errs++;
-			printf("ERR Setting Name key [%s] to '%s'\n",
+			printf("ERR Setting ProtocolEngine key [%s] to '%s'\n",
 				str, k_list[i]);
-			ggz_conf_write_string(global, str, "Name", k_list[i]);
+			ggz_conf_write_string(global, str, "ProtocolEngine", k_list[i]);
 		}
 		ggz_free(str);
 		if(str2) ggz_free(str2);
@@ -651,10 +657,10 @@ phase_two:
 			ggz_free(s_list[i]);
 			continue;
 		}
-		str = ggz_conf_read_string(global, s_list[i], "Name", NULL);
+		str = ggz_conf_read_string(global, s_list[i], "ProtocolEngine", NULL);
 		str2 = ggz_conf_read_string(global, "Games", str, NULL);
 		if(str2 && strcmp(s_list[i], str2)) {
-			str3 = ggz_conf_read_string(global, str2, "Name", NULL);
+			str3 = ggz_conf_read_string(global, str2, "ProtocolEngine", NULL);
 			if(str3) {
 				errs++;
 				printf("ERR %s & %s XRefs '%s', deleting %s\n",
