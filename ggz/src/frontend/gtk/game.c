@@ -166,3 +166,11 @@ static GGZHookReturn game_over(GGZGameEvent id, void* event_data, void* user_dat
 
 	return GGZ_HOOK_OK;
 }
+
+
+int game_play(void)
+{
+	if(fd != -1)
+		return TRUE;
+	return FALSE;
+}

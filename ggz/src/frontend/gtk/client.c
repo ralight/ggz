@@ -152,7 +152,8 @@ static void
 client_launch_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	launch_create_or_raise();
+	if(game_play() != TRUE)
+		launch_create_or_raise();
 }
 
 
@@ -175,7 +176,7 @@ client_joinm_activate		(GtkMenuItem	*menuitem,
         GGZModule *module;
         int table_index;
 
-	if(tablerow != -1)
+	if(tablerow != -1 && game_play() != TRUE)
 	{
 	        room = ggzcore_server_get_cur_room(server);
         	type = ggzcore_room_get_gametype(room);
@@ -446,7 +447,8 @@ static void
 client_launch_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	launch_create_or_raise();
+	if(game_play() != TRUE)
+		launch_create_or_raise();
 }
 
 
@@ -461,7 +463,7 @@ client_join_button_clicked		(GtkButton	*button,
         GGZModule *module;
         int table_index;
 
-	if(tablerow != -1)
+	if(tablerow != -1 && game_play() != TRUE)
 	{
 	        room = ggzcore_server_get_cur_room(server);
         	type = ggzcore_room_get_gametype(room);

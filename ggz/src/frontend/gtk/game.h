@@ -31,3 +31,6 @@ void game_init(GGZModule *module);
 void game_quit(void);
 
 void game_destroy(void);
+
+int game_play(void);
+
