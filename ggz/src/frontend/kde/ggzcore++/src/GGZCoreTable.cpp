@@ -124,3 +124,11 @@ GGZTable *GGZCoreTable::table()
 {
 	return m_table;
 }
+
+#ifdef KGGZ_PATCH_SPECTATORS
+int GGZCoreTable::addSpectator(char *name, const unsigned int seat)
+{
+	return ggzcore_table_add_spectator(m_table, name, seat);
+}
+#endif
+

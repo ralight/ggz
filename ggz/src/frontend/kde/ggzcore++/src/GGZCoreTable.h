@@ -18,6 +18,7 @@
 #include <ggzcore.h>
 #include <GGZCoreCommon.h>
 #include <GGZCoreGametype.h>
+#include "config.h"
 
 /**
 * Table representation.
@@ -47,6 +48,10 @@ class GGZCoreTable
 		int addBot(char* name, const unsigned int seat);
 		/** Add a reserved seat. This one can then be accessed by other players. */
 		int addReserved(char* name, const unsigned int seat);
+#ifdef KGGZ_PATCH_SPECTATORS
+		/** Add a game spectator */
+		int addSpectator(char *name, const unsigned int seat);
+#endif
 		/** Remove a player from the table. */
 		int removePlayer(char* name);
 
