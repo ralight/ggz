@@ -352,7 +352,8 @@ if test "$tls_type" = yes -o "$tls_type" = GnuTLS; then
     GGZTLS_LDFLAGS=$GNUTLS_LDFLAGS
     GGZTLS_SOURCES="gnutls.c"
     AC_MSG_RESULT([using GnuTLS])
-    AC_DEFINE_UNQUOTED(GGZ_TLS_GNUTLS)
+    AC_DEFINE_UNQUOTED([GGZ_TLS_GNUTLS], 1,
+		       [Define if GNUTLS is to be used])
     TLS_TYPE="GnuTLS"
   fi
 fi
@@ -366,7 +367,8 @@ then
     GGZTLS_LDFLAGS=$LIBSSL
     GGZTLS_SOURCES="openssl.c list.c list.h"
     AC_MSG_RESULT([using OpenSSL])
-    AC_DEFINE_UNQUOTED(GGZ_TLS_OPENSSL)
+    AC_DEFINE_UNQUOTED([GGZ_TLS_OPENSSL], 1,
+		      [Define if OpenSSL is to be used])
     TLS_TYPE="OpenSSL"
   fi
 fi
@@ -387,9 +389,9 @@ AC_SUBST(LIB_GGZTLS)
 AC_SUBST(GGZTLS_SOURCES)
 AC_SUBST(GGZTLS_LIB)
 
-AM_CONDITIONAL(TLS_NONE, test x$TLS_TYPE = xno)
-AM_CONDITIONAL(TLS_OPENSSL, test x$TLS_TYPE = xOpenSSL)
-AM_CONDITIONAL(TLS_GNUTLS, test x$TLS_TYPE = xGnuTLS)
+AM_CONDITIONAL(TLS_NONE, [test x$TLS_TYPE = xno])
+AM_CONDITIONAL(TLS_OPENSSL, [test x$TLS_TYPE = xOpenSSL])
+AM_CONDITIONAL(TLS_GNUTLS, [test x$TLS_TYPE = xGnuTLS])
 
 ])
 
