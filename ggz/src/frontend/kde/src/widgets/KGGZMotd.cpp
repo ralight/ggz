@@ -32,7 +32,7 @@ KGGZMotd::KGGZMotd(QWidget *parent = NULL, char *name = NULL)
 
 	edit = new QTextView(this);
 	edit->setGeometry(5, 5, 310, 360);
-	edit->setFont(QFont("Courier", 10, QFont::Bold));
+	edit->setFont(QFont("Courier", 8, QFont::Bold));
 
 	button = new QPushButton("OK", this);
 	button->setGeometry(100, 370, 120, 20);
@@ -103,7 +103,7 @@ void KGGZMotd::append(char *text)
 		}
 	}
 	KGGZDEBUGF("append text now!\n");
-	// Qt seems to be crappy here again...
+	// This Qt bug is solved in the current CVS snapshot.
 	//edit->append(buf);
 	edit->setText(edit->text() + buf);
 }
