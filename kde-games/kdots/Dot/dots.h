@@ -22,6 +22,7 @@ class Dots
 		void resizeBoard(int cols, int rows);
 		int setBorderValue(int x, int y, int direction, int side, int action);
 		int count(int side);
+		void setOwnership(int x, int y, int owner);
 		enum Directions
 		{
 			left = 0,

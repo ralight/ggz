@@ -163,3 +163,11 @@ int Dots::content(int x, int y)
 	return m_field[x][y][fieldrightbelow];
 }
 
+void Dots::setOwnership(int x, int y, int owner)
+{
+	if(!m_field) return;
+	if((x < 0) || (y < 0) || (x >= m_cols - 1) || (y >= m_rows - 1)) return;
+
+	m_field[x][y][fieldrightbelow] = owner;
+}
+
