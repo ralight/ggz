@@ -1,0 +1,11 @@
+Makefile
+Makefile.in
+*.o
+*.lo
+*.la
+kcm_ggz_test
+.deps
+.libs
+*.moc.cpp
+*meta_unload.cpp
+

@@ -1,0 +1,30 @@
+SUBDIRS = .
+
+KSTUFF = $(all_libraries) $(KDE_PLUGIN) $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_QT)
+
+lib_LTLIBRARIES = libkcm_ggz_default.la libkcm_ggz_metaserver.la libkcm_ggz_drs.la libkcm_ggz_ggzd.la
+
+libkcm_ggz_default_la_SOURCES = kcm_ggz_default.cpp
+libkcm_ggz_default_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
+libkcm_ggz_default_la_METASOURCES = kcm_ggz_default.moc
+#kcm_ggz_pane.moc
+
+libkcm_ggz_metaserver_la_SOURCES = kcm_ggz_metaserver.cpp
+libkcm_ggz_metaserver_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
+libkcm_ggz_metaserver_la_METASOURCES = kcm_ggz_metaserver.moc
+#kcm_ggz_pane.moc
+
+libkcm_ggz_drs_la_SOURCES = kcm_ggz_drs.cpp
+libkcm_ggz_drs_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
+libkcm_ggz_drs_la_METASOURCES = kcm_ggz_drs.moc
+
+libkcm_ggz_ggzd_la_SOURCES = kcm_ggz_ggzd.cpp
+libkcm_ggz_ggzd_la_LIBADD = $(LIB_KDEUI) $(LIB_KDECORE)
+libkcm_ggz_ggzd_la_METASOURCES = kcm_ggz_ggzd.moc
+
+INCLUDES = -I$(qt_includes) -I$(kde_includes) -I$(top_srcdir)/kcm_ggz
+LDFLAGS = $(KSTUFF)
+
+noinst_HEADERS = kcm_ggz_pane.h kcm_ggz_default.h kcm_ggz_metaserver.h
+
+
