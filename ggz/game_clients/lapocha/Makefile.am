@@ -18,7 +18,9 @@ ggz_lapocha_SOURCES = \
 	game.c game.h \
 	dlg_bid.c dlg_bid.h \
 	cb_bid.c cb_bid.h \
-	dlg_about.c dlg_about.h
+	dlg_about.c dlg_about.h \
+	cards-b1.xpm cards-b2.xpm cards-b3.xpm cards-b4.xpm \
+	cards.xpm
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 ggz_lapocha_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/easysock/libeasysock.la
