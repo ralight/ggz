@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 3351 2002-02-13 09:15:18Z jdorje $
+ * $Id: dlg_prefs.c 3353 2002-02-13 21:32:09Z jdorje $
  *
  * Copyright (C) 2000-2002 GGZ Development Team
  *
@@ -48,6 +48,12 @@ static void on_smootheranimation_toggled(GtkToggleButton * togglebutton,
 				 gpointer user_data)
 {
 	preferences.smoother_animation = togglebutton->active;
+}
+
+static void on_multipleanimation_toggled(GtkToggleButton * togglebutton,
+				 gpointer user_data)
+{
+	preferences.multiple_animation = togglebutton->active;
 }
 
 static void on_autostart_toggled(GtkToggleButton * togglebutton,
@@ -128,6 +134,19 @@ GtkWidget *create_dlg_prefs(void)
 				     preferences.smoother_animation);
 	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
 			   GTK_SIGNAL_FUNC(on_smootheranimation_toggled), NULL);
+
+	/*
+	 * Make "multiple animation" button
+	 */
+	button = gtk_check_button_new_with_label(_("Multiple (simultaneous) "
+						   "animation"));
+	gtk_widget_ref(button);
+	gtk_widget_show(button);
+	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
+				     preferences.multiple_animation);
+	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
+			   GTK_SIGNAL_FUNC(on_multipleanimation_toggled), NULL);
 
 	/* 
 	 * Make "cardlists" button

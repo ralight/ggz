@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 3350 2002-02-13 08:58:11Z jdorje $
+ * $Id: table.c 3353 2002-02-13 21:32:09Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -261,7 +261,7 @@ void table_setup(void)
 				   get_table_width(), get_table_height(), -1);
 	
 	/* Resize the animation buffer. */
-	anim_alloc_table();
+	anim_setup();
 
 	/* _Now_ we're ready to draw stuff. */
 	table_ready = TRUE;

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3351 2002-02-13 09:15:18Z jdorje $
+ * $Id: main.c 3353 2002-02-13 21:32:09Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -148,6 +148,8 @@ static void access_settings(int save)
 				   preferences.faster_animation);
 		ggz_conf_write_int(file, "BOOLEAN", "smoother_animation",
 		                   preferences.smoother_animation);
+		ggz_conf_write_int(file, "BOOLEAN", "multiple_animation",
+		                   preferences.multiple_animation);
 		ggz_conf_write_int(file, "BOOLEAN", "cardlists",
 				   preferences.cardlists);
 		ggz_conf_write_int(file, "BOOLEAN", "autostart",
@@ -160,9 +162,14 @@ static void access_settings(int save)
 		preferences.animation =
 			ggz_conf_read_int(file, "BOOLEAN", "animation", 1);
 		preferences.faster_animation =
-			ggz_conf_read_int(file, "BOOLEAN", "faster_animation", 0);
+			ggz_conf_read_int(file, "BOOLEAN",
+					  "faster_animation", 0);
 		preferences.smoother_animation =
-			ggz_conf_read_int(file, "BOOLEAN", "smoother_animation", 0);
+			ggz_conf_read_int(file, "BOOLEAN",
+					  "smoother_animation", 0);
+		preferences.multiple_animation =
+			ggz_conf_read_int(file, "BOOLEAN",
+					  "multiple_animation", 0);
 		preferences.cardlists =
 			ggz_conf_read_int(file, "BOOLEAN", "cardlists", 1);
 		preferences.autostart =
