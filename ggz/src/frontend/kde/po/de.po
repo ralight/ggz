@@ -287,9 +287,8 @@ msgid "Connect to server"
 msgstr "Verbinde zum Server"
 
 #: ../../ggz-kde/src/KGGZConnect.cpp:93
-#, fuzzy
 msgid "Connection"
-msgstr "&Verbinde"
+msgstr "Verbindung"
 
 #: ../../ggz-kde/src/KGGZ.cpp:719
 msgid "Could not connect, maybe the server version is incompatible."
@@ -411,9 +410,8 @@ msgid "Entered room %s"
 msgstr ""
 
 #: ../../ggz-kde/src/KGGZ.cpp:655
-#, fuzzy
 msgid "Error"
-msgstr "&Fehler!"
+msgstr "Fehler"
 
 #: ../../ggz-kde/src/KGGZ.cpp:198 ../../ggz-kde/src/KGGZ.cpp:228
 #: ../../ggz-kde/src/KGGZ.cpp:278 ../../ggz-kde/src/KGGZ.cpp:281
@@ -425,7 +423,7 @@ msgstr "&Fehler!"
 #: ../../ggz-kde/src/KGGZ.cpp:1061 ../../ggz-kde/src/KGGZ.cpp:1320
 #: ../../ggz-kde/src/KGGZ.cpp:1331 KGGZ.cpp:272 KGGZ.cpp:275
 msgid "Error!"
-msgstr "&Fehler!"
+msgstr "Fehler!"
 
 #: ../../ggz-kde/src/widgets/KGGZChat.cpp:256 KGGZChat.cpp:286
 msgid "Error! Unknown command! Try /help instead."
