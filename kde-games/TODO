@@ -1,0 +1,13 @@
+todo for 0.0.5:
+- fix Krosswater (UI + functionality)
+- merge Bezier stuff with QWeb and use that in Muehle
+- finish Muehle
+- copy Holy Cow-function from KTicTacTux to the server
+- probably import KaBoom and/or Copenhagen
+- have Kickerhuhn here too?
+
+todo for 0.0.6:
+- more more games
+- Zone API enhancements and freeze
+- port to KDE 3
+
