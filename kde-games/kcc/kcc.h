@@ -98,8 +98,8 @@ class KCC : public QWidget
 		// Theme image placeholders
 		QString m_t1, m_t2;
 
-		// Move source
-		int m_fx, m_fy;
+		// Move source and destination
+		int m_fx, m_fy, m_tx, m_ty;
 };
 
 #endif

@@ -185,17 +185,27 @@ void KCC::init()
 
 	proto->init();
 
-	proto->connect();
-	sn = new QSocketNotifier(proto->fdcontrol, QSocketNotifier::Read, this);
-	connect(sn, SIGNAL(activated(int)), SLOT(slotDispatch()));
+	if(m_opponent == PLAYER_NETWORK)
+	{
+		proto->connect();
+		sn = new QSocketNotifier(proto->fdcontrol, QSocketNotifier::Read, this);
+		connect(sn, SIGNAL(activated(int)), SLOT(slotDispatch()));
+	}
+	else
+	{
+		m_turn = proto->num;
+	}
 }
 
 // Specify the opponent type (network or AI)
 void KCC::setOpponent(int type)
 {
 	m_opponent = type;
-	emit signalScore(i18n("Network game"));
-	emit signalStatus(i18n("Waiting for opponent!"));
+	if(m_opponent == PLAYER_NETWORK)
+	{
+		emit signalScore(i18n("Network game"));
+		emit signalStatus(i18n("Waiting for opponent!"));
+	}
 }
 
 // Synchronization
@@ -223,6 +233,8 @@ void KCC::network()
 void KCC::slotNetwork()
 {
 	int op;
+	char tmp;
+	QString status;
 
 	op = proto->getOp();
 
@@ -245,24 +257,36 @@ void KCC::slotNetwork()
 			kdDebug() << "*proto* move requested" << endl;
 			break;
 		case proto->cc_rsp_move:
-			switch(proto->getMoveStatus())
+			proto->getMoveStatus();
+			switch(proto->status)
 			{
 				case proto->errnone:
-					emit signalStatus(i18n("Move accepted"));
+					status = i18n("Move accepted");
 					break;
-				case proto->errother:
-					emit signalStatus(i18n("Move invalid"));
+				case proto->errstate:
+					status = i18n("Table not yet full");
 					break;
 				default:
-					emit signalStatus(i18n("Move invalid"));
+					status = i18n("Move invalid");
+					break;
 			}
+			emit signalStatus(status);
 			//getNextTurn();
-			kdDebug() << "*proto* rsp_move" << endl;
+			kdDebug() << "*proto* rsp_move " << status << ": " << (int)proto->status << endl;
+
+			if(proto->status == proto->errnone)
+			{
+				tmp = proto->board[m_fx][m_fy];
+				proto->board[m_fx][m_fy] = 1;
+				proto->board[m_tx][m_ty] = tmp;
+				repaint();
+			}
 			break;
-		/*case proto->cc_msg_move:
+		case proto->cc_msg_move:
+			kdDebug() << "*proto* msg_move" << endl;
 			proto->getOpponentMove();
-			if(proto->num < 0) emit signalStatus(i18n("Watching the game"));
-			break;*/
+			//if(proto->num < 0) emit signalStatus(i18n("Watching the game"));
+			break;
 		case proto->cc_msg_sync:
 			proto->getSync();
 			kdDebug() << "*proto* sync" << endl;
@@ -286,10 +310,10 @@ void KCC::drawBoard()
 	p.begin(this);
 
 	for(int j = 0; j < 17; j++)
-		for(int i = 0; i < 17; i++)
+		for(int i = 0; i < 15; i++)
 		{
 			if(proto->board[i][j])
-				p.drawPixmap(i * 18 + 50 + (j % 2) * 9, j * 18 + 50,
+				p.drawPixmap(i * 22 + 40 + (j % 2) * 11, j * 18 + 50,
 					QPixmap(QString("%1/kcc/point%2.png").arg(GGZDATADIR).arg(proto->board[i][j] - 1)));
 		}
 
@@ -305,24 +329,65 @@ void KCC::slotDispatch()
 void KCC::mousePressEvent(QMouseEvent *e)
 {
 	int x, y;
+	char tmp;
+	int error;
 
-	kdDebug() << "mouse!" << endl;
 	if(m_turn != proto->num) return;
 
 	y = (e->y() - 50) / 18;
-	x = ((e->x() - 50) - (y % 2) * 9) / 18;
+	x = ((e->x() - 40) - (y % 2) * 11) / 22;
 
-	kdDebug() << "* " << e->x() << ", " << e->y() << endl;
-	kdDebug() << x << y << endl;
+	//kdDebug() << "* " << e->x() << ", " << e->y() << endl;
+	//kdDebug() << x << ":" << y << endl;
 
 	if(m_fx == -1)
 	{
-		m_fx = e->x();
-		m_fy = e->y();
+		m_fx = x;
+		m_fy = y;
 	}
 	else
 	{
-		proto->sendMyMove(m_fx, m_fy, e->x(), e->y());
+		if(m_opponent == PLAYER_NETWORK)
+		{
+			m_tx = x;
+			m_ty = y;
+
+			kdDebug() << m_fy << "/" << (m_fx * 2) + (m_fy % 2) - 2 << " - " << y << "/" << (x * 2) + (y % 2) - 2 << endl;
+			proto->sendMyMove(m_fx, m_fy, x, y);
+		}
+		else
+		{
+			kdDebug() << "internal ai" << endl;
+			error = 0;
+			if((m_fx < 0) || (m_fx >= 17)) error = 1;
+			if((m_fy < 0) || (m_fy >= 17)) error = 1;
+			if((x < 0) || (x >= 17)) error = 1;
+			if((y < 0) || (y >= 17)) error = 1;
+			if(!error)
+			{
+				if(proto->board[m_fx][m_fy] != 2) error = 1;
+				if(proto->board[x][y] != 1) error = 1;
+			}
+			else
+			{
+				KMessageBox::information(this,
+					i18n("Move was out of bounds."),
+					i18n("Move invalid"));
+			}
+			if(!error)
+			{
+				tmp = proto->board[m_fx][m_fy];
+				proto->board[m_fx][m_fy] = 1;
+				proto->board[x][y] = tmp;
+				repaint();
+			}
+			else
+			{
+				KMessageBox::information(this,
+					i18n("Source or target invalid."),
+					i18n("Move invalid"));
+			}
+		}
 		m_fx = -1;
 	}
 }

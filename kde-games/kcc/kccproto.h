@@ -26,6 +26,7 @@ class KCCProto
 		{
 			cc_msg_seat = 0,
 			cc_msg_players = 1,
+			cc_msg_move = 2,
 			cc_msg_gameover = 3,
 			cc_req_move = 10,
 			cc_rsp_move = 20,
@@ -44,7 +45,8 @@ class KCCProto
 		enum Errors
 		{
 			errnone = 0,
-			errother = 1
+			errstate = -1,
+			errother = -99
 		};
 
 		// All available game states
@@ -90,6 +92,8 @@ class KCCProto
 		char turn;
 		// Statistics
 		int stats[2];
+		// Game status
+		char status;
 
 		// Connect to the socket
 		void connect();
@@ -115,8 +119,6 @@ class KCCProto
 		// Get statistics
 		void getStatistics();
 
-		// Send decision on a new game
-		int sendOptions();
 		// Send out own move
 		int sendMyMove(int x, int y, int x2, int y2);
 		// Synchronize game

@@ -27,6 +27,7 @@ KCCProto::KCCProto(KCC *game)
 	stats[1] = 0;
 	num = -1;
 	max = 0;
+	status = errother;
 
 	mod = NULL;
 	fdcontrol = -1;
@@ -53,19 +54,19 @@ void KCCProto::connect()
 // Initialize the board
 void KCCProto::init()
 {
-	char tboard[17][17] = {
+	char tboard[15][17] = {
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 		{0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0  },
 		{ 0, 0, 0, 0, 6, 6, 6, 6, 0, 7, 7, 7, 7, 0, 0, 0, 0 },
 		{0, 0, 0, 0, 6, 6, 6, 1, 1, 1, 7, 7, 7, 0, 0, 0, 0  },
 		{ 0, 0, 0, 0, 6, 1, 1, 1, 1, 1, 1, 1, 7, 0, 0, 0, 0 },
-		{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0  },
+//		{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0  },
 		{ 0, 0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 0, 0, 0 },
 		{0, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 0  },
 		{ 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3 },
 		{0, 0, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 0, 0  },
 		{ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
-		{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0  },
+//		{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0  },
 		{ 0, 0, 0, 0, 4, 4, 1, 1, 1, 1, 1, 5, 5, 0, 0, 0, 0 },
 		{0, 0, 0, 0, 4, 4, 4, 4, 1, 5, 5, 5, 5, 0, 0, 0, 0  },
 		{ 0, 0, 0, 0, 4, 4, 4, 0, 0, 0, 5, 5, 5, 0, 0, 0, 0 },
@@ -73,8 +74,8 @@ void KCCProto::init()
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	};
 
-	for(int i = 0; i < 17 * 17; i++)
-		board[i % 17][i / 17] = tboard[i % 17][i / 17];
+	for(int i = 0; i < 15 * 17; i++)
+		board[i / 17][i % 17] = tboard[i / 17][i % 17];
 
 	state = stateinit;
 	turn = none;
@@ -116,7 +117,6 @@ int KCCProto::getPlayers()
 // Ask whether move was ok
 int KCCProto::getMoveStatus()
 {
-	char status;
 	int ret;
 
 	ret = ggz_read_char(fd, &status);
@@ -127,19 +127,21 @@ int KCCProto::getMoveStatus()
 // Get opponent's move
 int KCCProto::getOpponentMove()
 {
-	int move;
-	int nummove;
+	int seat;
+	char x1, x2, y1, y2;
 	int ret = 0;
 
-	ret |= ggz_read_int(fd, &nummove);
-	ret |= ggz_read_int(fd, &move);
+	ret |= ggz_read_int(fd, &seat);
+	ret |= ggz_read_char(fd, &y1);
+	ret |= ggz_read_char(fd, &x1);
+	ret |= ggz_read_char(fd, &y2);
+	ret |= ggz_read_char(fd, &x2);
 
-	if(num < 0)
-	{
-		if(nummove == 0) board[move % 3][move / 3] = opponent;
-		else board[move % 3][move / 3] = player;
-	}
-	else board[move % 3][move / 3] = opponent;
+	x1 = ((x1 - 2) - (y1 % 2)) / 2;
+	x2 = ((x2 - 2) - (y2 % 2)) / 2;
+
+	board[(int)x1][(int)y1] = 1;
+	board[(int)x2][(int)y2] = seat + 1;
 
 	return ret;
 }
@@ -150,14 +152,14 @@ int KCCProto::getSync()
 	char space;
 	int ret = 0;
 
-	ret |= ggz_read_char(fd, &turn);
+	/*ret |= ggz_read_char(fd, &turn);
 	for(int i = 0; i < 9; i++)
 	{
 		ret |= ggz_read_char(fd, &space);
 		if(space == 0) board[i % 3][i / 3] = opponent;
 		else if(space == 1) board[i % 3][i / 3] = player;
 		else board[i % 3][i / 3] = none;
-	}
+	}*/
 
 	return ret;
 }
@@ -175,22 +177,19 @@ void KCCProto::getStatistics()
 	ggz_read_int(fd, &stats[1]);
 }
 
-// Send the options
-int KCCProto::sendOptions()
-{
-	return ggz_write_int(fd, 0);
-}
-
 // Send the own move, to be approved
 int KCCProto::sendMyMove(int x, int y, int x2, int y2)
 {
 	int ret = 0;
 
+	x = (x * 2) + (y % 2) - 2;
+	x2 = (x2 * 2) + (y2 % 2) - 2;
+
 	ret |= ggz_write_int(fd, cc_snd_move);
-	ret |= ggz_write_int(fd, x);
-	ret |= ggz_write_int(fd, y);
-	ret |= ggz_write_int(fd, x2);
-	ret |= ggz_write_int(fd, y2);
+	ret |= ggz_write_char(fd, y);
+	ret |= ggz_write_char(fd, x);
+	ret |= ggz_write_char(fd, y2);
+	ret |= ggz_write_char(fd, x2);
 
 	return ret;
 }

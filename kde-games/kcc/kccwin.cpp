@@ -141,35 +141,18 @@ void KCCWin::score()
 	int ailost = conf->readNumEntry("ailost");
 	int aiwon = conf->readNumEntry("aiwon");
 
-	QString comment = "";
-	if(!(ailost + aiwon))
-		comment = i18n("Of course, because you didn't play yet.");
-	else if(aiwon > ailost * 2)
-		comment = i18n("You are so bad.");
-	else if(aiwon * 2 < ailost)
-		comment = i18n("You're a TicTacTux expert!");
-
 	KMessageBox::information(this,
-		i18n("You won %1 times and lost %2 times against the AI. "
-			"%3").arg(ailost).arg(aiwon).arg(comment),
-		i18n("KTicTacTux score"));
+		i18n("You won %1 times and lost %2 times against the AI.").arg(ailost).arg(aiwon),
+		i18n("KCC score"));
 }
 
 // Display network score
 void KCCWin::slotNetworkScore(int wins, int losses)
 {
-	QString comment = "";
-	if(!(wins + losses))
-		comment = i18n("Of course, because you didn't play yet.");
-	else if(losses > wins * 2)
-		comment = i18n("You are so bad.");
-	else if(wins > losses * 2)
-		comment = i18n("You're a TicTacTux expert!");
-
 	KMessageBox::information(this,
-		i18n("Human players have been beaten %1 times by you, you lost %2 times. "
-			"%3").arg(wins).arg(losses).arg(comment),
-		i18n("KTicTacTux network score"));
+		i18n("Human players have been beaten %1 times by you, you lost %2 times."
+			).arg(wins).arg(losses),
+		i18n("KCC network score"));
 }
 
 // Game is over
