@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2389 2001-09-07 12:04:29Z jdorje $
+ * $Id: spades.c 2390 2001-09-07 12:50:53Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -92,9 +92,6 @@ static struct play {
 } play[13];
 static int plays, high, agg, lastTrick;
 
-/* bitmask of played cards for each suit */
-static int played[4];
-
 static void Calculate(player_t num, struct play *);
 static int SuitMap(seat_t, player_t, char);
 static int PlayNil(int);
@@ -103,6 +100,8 @@ static int SetNil(int);
 static int PlayNormal(int);
 static int card_comp(card_t c1, card_t c2);
 
+
+static int played[4];		/* bitmask of played cards for each suit */
 static char suits[4][4];	/* information about what each of the 4
 				   players holds in each of the 4 suits */
 
@@ -510,27 +509,26 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 		if (game.bid_count < 2) {
 			prob = 70;
 #ifdef DEBUG_BID
-			ggzd_debug
-				("AI-SPADES: Adding 70 because partner hasn't bid\n");
+			ggzd_debug("AI-SPADES: "
+				   "Adding 70 because partner hasn't bid\n");
 #endif
 		} else {
 			prob = 30;
 #ifdef DEBUG_BID
-			ggzd_debug
-				("AI-SPADES: Adding 30 because partner has bidn\n");
+			ggzd_debug("AI-SPADES: "
+				   "Adding 30 because partner has bidn\n");
 #endif
 		}
 
 		bid.sbid.val = (points + prob) / 100;
 #ifdef DEBUG_BID
-		ggzd_debug("AI-SPADES: Subtotal bid: %d\n", bid);
+		ggzd_debug("AI-SPADES: " "Subtotal bid: %d\n", bid);
 #endif
 
-		/* 
-		 * Consider ramifications of others' bids if everyone else has
-		 * bid.
-		 */
-#if 0				/* not taken into account yet */
+#if 0
+		/* Consider ramifications of others' bids if everyone else
+		   has bid. */
+		/* not taken into account yet */
 		count = bid;
 		for (i = 0; i < 4; i++) {
 			if (i == p)
@@ -559,14 +557,14 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 			bid.sbid.val =
 				GSPADES.minimum_team_bid - pard.sbid.val;
 #ifdef DEBUG_BID
-			ggzd_debug
-				("AI-SPADES: Upping bid to meet minimum of %d\n",
-				 GSPADES.minimum_team_bid);
+			ggzd_debug("AI-SPADES: "
+				   "Upping bid to meet minimum of %d\n",
+				   GSPADES.minimum_team_bid);
 #endif
 		}
 	}
 #ifdef DEBUG_BID
-	ggzd_debug("AI-SPADES: Final bid: %d\n", bid);
+	ggzd_debug("AI-SPADES: " "Final bid: %d\n", bid);
 #endif
 	return bid;
 }
@@ -574,11 +572,8 @@ static bid_t get_bid(player_t num, bid_t * bid_choices, int bid_count)
 
 static card_t get_play(player_t p, seat_t s)
 {
-
-
 	int i, chosen = -1;
 	int myNeed, oppNeed, totTricks;
-	int suit = -1;
 	int num = p;
 	player_t pard = (num + 2) % 4;
 	card_t lead, hi_card;
@@ -590,7 +585,6 @@ static card_t get_play(player_t p, seat_t s)
 	   far. */
 	if (game.leader != num) {
 		lead = game.seats[game.players[game.leader].seat].table;
-		suit = lead.suit;
 		high = game.leader;
 		hi_card = game.seats[game.leader].table;
 		for (i = (game.leader + 1) % 4; i != num; i = (i + 1) % 4) {
@@ -620,8 +614,9 @@ static card_t get_play(player_t p, seat_t s)
 	   if we're trying to bag'em.  Agressiveness is on a scale from 0
 	   (least aggressive) to 100 (most aggressive). */
 	totTricks =
-		13 - game.players[0].tricks - game.players[1].tricks -
-		game.players[2].tricks - game.players[3].tricks;
+		game.hand_size - game.players[0].tricks -
+		game.players[1].tricks - game.players[2].tricks -
+		game.players[3].tricks;
 	myNeed = game.players[num].bid.sbid.val +
 		game.players[pard].bid.sbid.val;
 	if (game.players[num].bid.sbid.val > 0)
@@ -635,9 +630,8 @@ static card_t get_play(player_t p, seat_t s)
 	/* JDS: doesn't this assume that nil busts don't count toward the
 	   team? */
 	i = (num + 1) % 2;
-	oppNeed =
-		game.players[i].bid.sbid.val + game.players[i +
-							    2].bid.sbid.val;
+	oppNeed = game.players[i].bid.sbid.val + game.players[i +
+							      2].bid.sbid.val;
 	if (game.players[i].bid.sbid.val > 0)
 		oppNeed -= game.players[i].tricks;
 	if (game.players[i + 2].bid.sbid.val > 0)
@@ -653,19 +647,23 @@ static card_t get_play(player_t p, seat_t s)
 	/* XXX agg = 0 for oppNeed == 0 && myNeed == totTricks && this trick
 	   hopeless */
 
-	if (myNeed == 0 && oppNeed == 0)	/* can't set'em; bag'em
-						   instead */
+	if (myNeed == 0 && oppNeed == 0)
+		/* can't set'em; bag'em instead */
 		agg = 0;
-	else if (totTricks < myNeed || totTricks < oppNeed)	/* not enough 
-								   left */
+	else if (totTricks < myNeed || totTricks < oppNeed)
+		/* not enough left */
 		agg = 0;
-	else if (totTricks - myNeed - oppNeed >= 3)	/* lotsa bags */
+	else if (totTricks - myNeed - oppNeed >= 3)
+		/* lotsa bags */
 		agg = (myNeed > 0) ? 25 : 0;
-	else if (totTricks - myNeed - oppNeed >= 2)	/* just be cautious */
+	else if (totTricks - myNeed - oppNeed >= 2)
+		/* just be cautious */
 		agg = 50;
-	else if (totTricks - myNeed - oppNeed >= 1)	/* need tricks */
+	else if (totTricks - myNeed - oppNeed >= 1)
+		/* need tricks */
 		agg = 75;
-	else			/* really need tricks */
+	else
+		/* really need tricks */
 		agg = 100;
 
 #ifdef DEBUG_PLAY
