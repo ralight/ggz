@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.h 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: layout.h 3361 2002-02-15 04:25:51Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -48,7 +48,7 @@ int orientation(int p);
 
 void get_tablecard_pos(int p, int *x, int *y);
 void get_table_dim(int *x, int *y, int *w, int *h);
-void get_fulltable_size(int *w, int *h);
+void get_fulltable_dim(int *x, int *y, int *w, int *h);
 
 void get_text_box_pos(int p, int *x, int *y);
 void get_card_box_pos(int p, int *x, int *y);

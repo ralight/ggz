@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Creates the bid request dialog
- * $Id: dlg_bid.c 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: dlg_bid.c 3361 2002-02-15 04:25:51Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -70,28 +70,22 @@ static gint dlg_bid_delete(GtkWidget * widget, gpointer data)
 /* displays a popup window from which the user can choose their bid */
 void dlg_bid_display(int possible_bids, char **bid_choices)
 {
-	GtkWidget *table;
-	GtkWidget *button;
+	GtkWidget *table_box;
 	gint i;
 	int xw, yw, leftover;
 
 	destroy_bid_window();
 
-	yw = sqrt(possible_bids);
-	xw = (possible_bids + yw - 1) / yw;	/* division, rounded up */
+	xw = sqrt(possible_bids / 1.5);
+	yw = (possible_bids + xw - 1) / xw;	/* division, rounded up */
 	leftover = xw * yw - possible_bids;	/* calculate the part of the
 						   rectangle unused */
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_window_set_title(GTK_WINDOW(window), _("Select your bid"));
-	gtk_container_set_border_width(GTK_CONTAINER(window), 10);
-
-	table = gtk_table_new(yw, xw, FALSE);
-	gtk_container_add(GTK_CONTAINER(window), table);
-
+	table_box = gtk_table_new(yw, xw, FALSE);
+		
 	for (i = 0; i < possible_bids; i++) {
 		int x, y;
-		button = gtk_button_new_with_label(bid_choices[i]);
+		GtkWidget *button = gtk_button_new_with_label(bid_choices[i]);
 
 		/* trickery - we don't pass a pointer to the data but the
 		   data itself */
@@ -102,17 +96,41 @@ void dlg_bid_display(int possible_bids, char **bid_choices)
 		x = i % xw;
 		y = i / xw;
 
-		gtk_table_attach_defaults(GTK_TABLE(table), button, x, x + 1,
+		gtk_table_attach_defaults(GTK_TABLE(table_box), button, x, x + 1,
 					  y, y + 1);
 		gtk_widget_show(button);
 
 	}
 
-	/* If you close the window, it pops right back up again. */
-	(void) gtk_signal_connect_object(GTK_OBJECT(window), "delete_event",
-					 GTK_SIGNAL_FUNC(dlg_bid_delete),
-					 (gpointer) window);
+	if (preferences.bid_on_table) {
+		int x, y, w, h;
+		
+		/* Just draw the table_box right on the table. */
+		
+		window = table_box;
+		
+		/* Is this the right layout?  I doubt it, but I'm not sure
+		   how to do better. */
+		get_fulltable_dim(&x, &y, &w, &h);
+		gtk_widget_set_usize(window, w - 2 * XWIDTH, h - 2 * XWIDTH);
+		(void) gtk_fixed_put(GTK_FIXED(table), window,
+		                     x + XWIDTH, y + XWIDTH);
+		
+		/* This seems to be necessary... */
+		table_show_table(0, 0, get_table_width(), get_table_height());
+	} else {
+		/* Create a dialog window to place the table_box in. */
+		window = gtk_window_new(GTK_WINDOW_DIALOG);
+		gtk_window_set_title(GTK_WINDOW(window), _("Select your bid"));
+		gtk_container_set_border_width(GTK_CONTAINER(window), 10);
+		gtk_container_add(GTK_CONTAINER(window), table_box);
+		
+		/* If you close the window, it pops right back up again. */
+		(void) gtk_signal_connect_object(GTK_OBJECT(window),
+			"delete_event", GTK_SIGNAL_FUNC(dlg_bid_delete),
+			(gpointer) window);
+	}
 
-	gtk_widget_show(table);
-	gtk_widget_show(window);
+
+	gtk_widget_show_all(window);
 }

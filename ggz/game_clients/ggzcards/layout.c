@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 06/21/2001
  * Desc: Routines to get the layout for the game table
- * $Id: layout.c 3346 2002-02-13 02:48:06Z jdorje $
+ * $Id: layout.c 3361 2002-02-15 04:25:51Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -203,8 +203,10 @@ void get_table_dim(int *x, int *y, int *w, int *h)
 	*y = (get_table_height() - *h) / 2;
 }
 
-void get_fulltable_size(int *w, int *h)
+void get_fulltable_dim(int *x, int *y, int *w, int *h)
 {
+	*x = XWIDTH + TEXT_BOX_WIDTH;
+	*y = XWIDTH + TEXT_BOX_WIDTH;
 	*w = get_table_width() - 2 * (XWIDTH + TEXT_BOX_WIDTH);
 	*h = get_table_height() - 2 * (XWIDTH + TEXT_BOX_WIDTH);
 }

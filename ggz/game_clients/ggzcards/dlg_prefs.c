@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/20/2000
  * Desc: Create the "Preferences" Gtk dialog
- * $Id: dlg_prefs.c 3353 2002-02-13 21:32:09Z jdorje $
+ * $Id: dlg_prefs.c 3361 2002-02-15 04:25:51Z jdorje $
  *
  * Copyright (C) 2000-2002 GGZ Development Team
  *
@@ -72,6 +72,12 @@ static void on_defaultoptions_toggled(GtkToggleButton *togglebutton,
 				      gpointer user_data)
 {
 	preferences.use_default_options = togglebutton->active;
+}
+
+static void on_bidontable_toggled(GtkToggleButton * togglebutton,
+				 gpointer user_data)
+{
+	preferences.bid_on_table = togglebutton->active;
 }
 
 GtkWidget *create_dlg_prefs(void)
@@ -186,6 +192,19 @@ GtkWidget *create_dlg_prefs(void)
 				     preferences.use_default_options);
 	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
 			   GTK_SIGNAL_FUNC(on_defaultoptions_toggled), NULL);
+			
+	/*
+	 * Make "bid_on_table" button
+	 */
+	button = gtk_check_button_new_with_label(_("Show bid choices "
+	                                           "right on the table"));
+	gtk_widget_ref(button);
+	gtk_widget_show(button);
+	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
+				     preferences.bid_on_table);
+	(void) gtk_signal_connect(GTK_OBJECT(button), "toggled",
+			   GTK_SIGNAL_FUNC(on_bidontable_toggled), NULL);
 
 	/* 
 	 * Get "action area"

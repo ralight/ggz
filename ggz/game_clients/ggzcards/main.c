@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Main loop and core logic
- * $Id: main.c 3357 2002-02-14 10:51:54Z jdorje $
+ * $Id: main.c 3361 2002-02-15 04:25:51Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -173,6 +173,8 @@ static void access_settings(int save)
 				   preferences.autostart);
 		ggz_conf_write_int(file, "BOOLEAN", "use_default_options",
 				   preferences.use_default_options);
+		ggz_conf_write_int(file, "BOOLEAN", "bid_on_table",
+		                   preferences.bid_on_table);
 		ggz_conf_commit(file);
 	} else {
 		/* Load. */
@@ -194,6 +196,8 @@ static void access_settings(int save)
 		preferences.use_default_options =
 			ggz_conf_read_int(file, "BOOLEAN",
 					  "use_default_options", 0);
+		preferences.bid_on_table =
+			ggz_conf_read_int(file, "BOOLEAN", "bid_on_table", 0);
 	}
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3357 2002-02-14 10:51:54Z jdorje $
+ * $Id: game.c 3361 2002-02-15 04:25:51Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -43,7 +43,15 @@
 #include "main.h"
 #include "table.h"
 
-/* This is initialized on startup in load_settings(). */
+/*
+ * To add a new preference:
+ *   - Add it to the struct prefs.
+ *   - Add code to load/save it to access_settings() in main.c.  The
+ *     defaults are also set here.
+ *   - Add editing code to dlg_prefs.c.  This includes a new function
+ *     of the form on_XXX_toggled(), as well as code in create_dlg_prefs()
+ *     to create the toggle button.
+ */
 struct prefs preferences;
 
 int table_max_hand_size = 0;
@@ -279,9 +287,9 @@ void game_alert_hand_size(int max_hand_size)
 		/* NOTE: get_table_dim/get_fulltable_size depends on
 		   table_max_hand_size, so we must increment it directly in
 		   this loop. */
-		int x, y, w, h, w1, h1;
+		int x, y, w, h, w1, h1, d;
 		get_table_dim(&x, &y, &w, &h);
-		get_fulltable_size(&w1, &h1);
+		get_fulltable_dim(&d, &d, &w1, &h1);
 		if (w1 > w && h1 > h)
 			break;
 		table_max_hand_size++;
