@@ -45,7 +45,7 @@ ggz-grubby      ggz/src/frontend/grubby
 txt-client ggz-txt-client &ggz-txt
 gtk-client gtk-client &ggz-gtk
 kde-client kde-client &ggz-kde
-
+ggzgnome	ggzgnome &macros &intl
 
 # Libs
 ggzcore         -s INTERNAL ggz/src/ggzcore
