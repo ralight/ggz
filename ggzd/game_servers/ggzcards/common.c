@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 4471 2002-09-08 21:18:54Z jdorje $
+ * $Id: common.c 4473 2002-09-09 00:49:32Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -548,12 +548,17 @@ void handle_ggz_spectator_seat_event(GGZdMod *ggz,
 	player_t player = SPECTATOR_TO_PLAYER(spectator);
 	GGZSpectator new = ggzdmod_get_spectator(ggz, spectator);
 
-	ggz_debug(DBG_MISC, "Handling a spectator change event for spot %d.",
-		  spectator);
+	assert(spectator < ggzdmod_get_max_num_spectators(ggz));
 
 	if (new.name) {
 		/* The spectator is not yet visible to other players; so
 		   his joining does not affect anyone else. */
+
+		ggz_debug(DBG_MISC, "%s joined as spectator on seat %d.",
+			  new.name, spectator);
+
+		assert(!old.name && old.fd < 0);
+		assert(new.name && new.fd >= 0);
 
 		/* Send newgame alert, if we're already playing. */
 		if (game.state != STATE_NOTPLAYING)
@@ -561,10 +566,14 @@ void handle_ggz_spectator_seat_event(GGZdMod *ggz,
 
 		send_sync(player);
 	} else {
+		ggz_debug(DBG_MISC, "%s left as spectator on seat %d.",
+			  old.name, spectator);
+
+		assert(!new.name && new.fd < 0);
+		assert(old.name && old.fd >= 0);
+
 		/* Nothing (?) */
 	}
-
-	ggz_debug(DBG_MISC, "Spectator change successful.");
 }
 
 /* This handles the event of a player responding to a newgame request */
