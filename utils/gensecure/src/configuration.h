@@ -16,10 +16,12 @@ Published under GNU GPL conditions
 #define GENSECURE_PORT 9998
 
 /* Location of the server PEM certificate */
-#define GENSECURE_CERTIFICATE "/usr/local/ssl/certs/server.cert"
+//#define GENSECURE_CERTIFICATE "/usr/local/ssl/certs/server.cert"
+#define GENSECURE_CERTIFICATE "/usr/local/ssl/certs/openssl-example.pem"
 
 /* Location of the server private key */
-#define GENSECURE_KEY "/usr/local/ssl/certs/server.key"
+//#define GENSECURE_KEY "/usr/local/ssl/certs/server.key"
+#define GENSECURE_KEY "/usr/local/ssl/certs/openssl-example.pem"
 
 /* Password used to decrypt private key */
 #define GENSECURE_PASSWORD "ggz rocks more"

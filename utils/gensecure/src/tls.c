@@ -24,6 +24,9 @@ char *_cert;
 /* Location of the private key */
 char *_key;
 
+/* Not everything in OpenSSL is well documented... */
+#define OPENSSLCHECK(x)
+
 void tls_error(const char *error, const char *file, int line)
 {
 	printf("*** ERROR! ***\n");
@@ -70,15 +73,18 @@ void tls_prepare(const char *cert, const char *key, pem_password_cb *callback)
 
 int tls_verify(int preverify_ok, X509_STORE_CTX *ctx)
 {
+	printf("### VERIFY CALLBACK: %i ###\n", preverify_ok);
+	preverify_ok = 1;
 	return preverify_ok;
 }
 
 void tls_start(int fd, int mode, int verify)
 {
-	int ret;
+	int ret, ret2;
 	STACK_OF(SSL_CIPHER) *stack;
 	SSL_CIPHER *cipher;
 	int bits;
+	char *cipherlist;
 	
 	_state = 1;
 	SSL_load_error_strings();
@@ -95,12 +101,17 @@ void tls_start(int fd, int mode, int verify)
 	if(!_tlsctx) TLSERROR("Couldn't create TLS object.\n");
 	else
 	{
+		OPENSSLCHECK(SSL_CTX_set_quiet_shutdown(_tlsctx, 1));
+		OPENSSLCHECK(SSL_CTX_set_info_callback(_tlscty, NULL));
+		OPENSSLCHECK(SSL_CTX_load_verify_locations(ctx,CAfile,CApath));
+		OPENSSLCHECK(SSL_CTX_set_default_verify_paths());
 		if(verify == TLS_VERIFY) SSL_CTX_set_verify(_tlsctx, SSL_VERIFY_PEER, tls_verify);
 		else SSL_CTX_set_verify(_tlsctx, SSL_VERIFY_NONE, NULL);
 		_tls = SSL_new(_tlsctx);
 		if(_tls)
 		{
-			printf("Available ciphers: %s\n", SSL_get_cipher_list(_tls, 0));
+			/*cipherlist = strdup(SSL_get_cipher_list(_tls, 0));*/
+			cipherlist = NULL;
 			stack = SSL_get_ciphers(_tls);
 			while(cipher = (SSL_CIPHER*)sk_pop(stack))
 			{
@@ -109,7 +120,22 @@ void tls_start(int fd, int mode, int verify)
 				printf("  Used bits: %i\n", bits);
 				printf("  Version: %s\n", SSL_CIPHER_get_version(cipher));
 				printf("  Description: %s\n", SSL_CIPHER_description(cipher, NULL, 0));
+				if(cipherlist)
+				{
+					cipherlist = (char*)realloc(cipherlist, (strlen(cipherlist) + 1) + strlen(SSL_CIPHER_get_name(cipher)) + 1);
+					strcat(cipherlist, ":");
+					strcat(cipherlist, SSL_CIPHER_get_name(cipher));
+				}
+				else
+				{
+					cipherlist = (char*)malloc(strlen(SSL_CIPHER_get_name(cipher)) + 1);
+					strcpy(cipherlist, SSL_CIPHER_get_name(cipher));
+				}
 			}
+			printf("Available ciphers: %s\n", cipherlist);
+			/*ret = SSL_set_cipher_list(_tls, "EDH-RSA-DES-CBC3-SHA");*/
+			ret = SSL_set_cipher_list(_tls, cipherlist);
+			if(!ret) TLSERROR("Cipher selection failed.");
 			ret = SSL_set_fd(_tls, fd);
 			if(!ret) TLSERROR("Assignment to connection failed.");
 			else
@@ -133,21 +159,30 @@ void tls_start(int fd, int mode, int verify)
 				{
 					TLSERROR("Handshake failed.");
 					printf("Ret: %i, State: %i\n", ret, _state);
-					printf("EXT: %s\n%s\n%s\n%s\n%s\n", tls_exterror(ret), ERR_error_string(ret, NULL),
-						ERR_lib_error_string(ret), ERR_func_error_string(ret), ERR_reason_error_string(ret));
+					ret2 = ERR_get_error();
+					printf("EXT: %s\n%s\n%s\n%s\n%s\n", tls_exterror(ret), ERR_error_string(ret2, NULL),
+						ERR_lib_error_string(ret2), ERR_func_error_string(ret2), ERR_reason_error_string(ret2));
 				}
 				else
 				{
+					printf(">>>>> Handshake successful.\n");
 					if((mode == TLS_SERVER) || (verify == TLS_NOVERIFY)) _tls_active = 1;
 					else
 					{
+						printf(">>>>> Client side, thus checking Certificate.\n");
+						printf("Negotiated cipher: %s\n", SSL_get_cipher(_tls));
+						printf("Shared ciphers: %s\n", SSL_get_shared_ciphers(_tls, NULL, 0));
 						if(SSL_get_peer_certificate(_tls))
 						{
 							if(SSL_get_verify_result(_tls) == X509_V_OK)
 							{
 								_tls_active = 1;
 							}
-							else TLSERROR("Invalid vertificate.");
+							else
+							{
+								printf("Error code: %i\n", SSL_get_verify_result(_tls));
+								TLSERROR("Invalid certificate, or certificate is not self-signed.");
+							}
 						}
 						else TLSERROR("Couldn't get certificate.");
 					}
@@ -174,6 +209,9 @@ void tls_certkey()
 	if(ret != 1) TLSERROR("Error loading TLS PEM private key.");
 	ret = SSL_use_certificate_file(_tls, _cert, SSL_FILETYPE_PEM);
 	if(ret != 1) TLSERROR("Error loading TLS PEM certificate.");
+	ret = SSL_check_private_key(_tls);
+	if(!ret) TLSERROR("Private key doesn't match certificate public key.");
+	printf("*** certificate loaded ***\n");
 }
 
 void tls_finish()
@@ -181,6 +219,7 @@ void tls_finish()
 	if(_tls) SSL_shutdown(_tls);
 	if(_tls) SSL_free(_tls);
 	if(_tlsctx) SSL_CTX_free(_tlsctx);
+	ERR_free_strings();
 	_tls_active = 0;
 	_state = 1;
 }
