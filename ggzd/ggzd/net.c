@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 5928 2004-02-15 02:43:16Z jdorje $
+ * $Id: net.c 5938 2004-02-16 06:32:13Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -139,7 +139,7 @@ static void _net_handle_tls_start(GGZNetIO *net, GGZXMLElement *element);
 
 /* Utility functions */
 static int str_to_int(const char *str, int dflt);
-static int check_playerconn(GGZNetIO *net, const char *type);
+static bool check_playerconn(GGZNetIO *net, const char *type);
 static void _net_dump_data(struct _GGZNetIO *net, char *data, int size);
 static GGZReturn _net_send_result(GGZNetIO *net, const char *action,
 				  GGZClientReqError code);
@@ -1834,19 +1834,18 @@ static int str_to_int(const char *str, int dflt)
 }
 
 
-static int check_playerconn(GGZNetIO *net, const char *type)
+static bool check_playerconn(GGZNetIO *net, const char *type)
 {
 	if (net->client->data)
-		return 1;
+		return true;
 
 	/* This should only be caused by a malicious client. */
 	dbg_msg(GGZ_DBG_CONNECTION,
 		"Client requested %s before login.", type);
 
-	/* FIXME: maybe we should just disconnect them. */
 	_net_send_result(net, type, E_NOT_LOGGED_IN);
 
-	return 0;
+	return false;
 }
 
 
