@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Control/Port-listener part of server
- * $Id: control.c 5747 2004-01-24 22:18:01Z josef $
+ * $Id: control.c 5919 2004-02-13 16:54:27Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -101,13 +101,7 @@ static void init_dirs(void)
 /* Perhaps these should be put into their respective files? */
 static void init_data(void)
 {
-	int i;
-
 	pthread_rwlock_init(&state.lock, NULL);
-
-	for (i = 0; i < MAX_GAME_TYPES; i++) {
-		pthread_rwlock_init(&game_types[i].lock, NULL);
-	}
 
 	if (ggzdb_init() != GGZ_OK)
 		err_msg_exit("*** Database initialization failed");

@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Datatypes used by server
- * $Id: datatypes.h 5901 2004-02-11 03:19:44Z jdorje $
+ * $Id: datatypes.h 5919 2004-02-13 16:54:27Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -82,7 +82,7 @@ typedef struct GGZState {
 
 /* Info about a particular type of game*/
 typedef struct GameInfo {
-	pthread_rwlock_t lock;
+	pthread_rwlock_t lock; /* This lock is used though not needed. */
 	char name[MAX_GAME_NAME_LEN + 1];    /* Game name */
 	char *version; /* Game version; cleanup() */
 	
