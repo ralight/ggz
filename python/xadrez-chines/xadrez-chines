@@ -34,6 +34,8 @@ def networkprocess(line):
 	global xadrez
 	global aierror
 
+	print "LINE", line
+
 	turn = re.compile("your turn")
 	responseok = re.compile("move was ok")
 	responseinvalid = re.compile("move was invalid")
@@ -60,10 +62,10 @@ def networkprocess(line):
 	m = move.match(line)
 	if m:
 		player = m.group(1)
-		x1 = m.group(2)
-		y1 = m.group(3)
-		x2 = m.group(4)
-		y2 = m.group(5)
+		x1 = int(m.group(2))
+		y1 = int(m.group(3))
+		x2 = int(m.group(4))
+		y2 = int(m.group(5))
 		ret = xadrez.validate(x1, y1, x2, y2)
 		if ret != xadrez.proto.move_ok:
 			print "huh? server fubared"
@@ -71,8 +73,8 @@ def networkprocess(line):
 	m = event.match(line)
 	if m:
 		player = m.group(1)
-		x1 = m.group(2)
-		y1 = m.group(3)
+		x1 = int(m.group(2))
+		y1 = int(m.group(3))
 		player2 = m.group(4)
 		pass
 	m = gameover.match(line)

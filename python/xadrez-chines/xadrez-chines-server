@@ -41,15 +41,18 @@ def hook_data (num, type, name, fd):
 	move = re.compile("move from (\d+),(\d+) to (\d+),(\d+)")
 	m = move.match(line)
 	if m:
-		x1 = m.group(1)
-		y1 = m.group(2)
-		x2 = m.group(3)
-		y2 = m.group(4)
+		x1 = int(m.group(1))
+		y1 = int(m.group(2))
+		x2 = int(m.group(3))
+		y2 = int(m.group(4))
+
+		print "DEBUG", "move", x1, y1, x2, y2
 
 		ret = xadrez.proto.move_invalid
 		if x1 >= 0 and x1 < 9 and y1 >= 0 and y1 < 11:
 			if x2 >= 0 and x2 < 9 and y2 >= 0 and y2 < 11:
-				(figure, color, options) = xadrez.field[x1][y1]
+				(figure, color, options) = xadrez.components(xadrez.field[x1][y1])
+				print "DEBUG", "color", color, xadrez.aicolor()
 				if color != xadrez.aicolor():
 					ret = xadrez.validate(x1, y1, x2, y2)
 		if ret == xadrez.proto.move_ok:
@@ -58,7 +61,7 @@ def hook_data (num, type, name, fd):
 			topos = str(x2) + "," + str(y2)
 			net.sendstring("you moved from " + frompos + " to " + topos)
 			ret = xadrez.ai() # XXX server-side ai error?
-			(x1, y1, x2, y2) = xadrez.aituple()
+			(x1, y1, x2, y2) = xadrez.aimove()
 			frompos = str(x1) + "," + str(y1)
 			topos = str(x2) + "," + str(y2)
 			net.sendstring("opponent moved from " + frompos + " to " + topos)
@@ -71,10 +74,11 @@ def hook_data (num, type, name, fd):
 			else:
 				net.sendstring("your turn")
 		else:
-			net.sendstring("move was not ok")
+			net.sendstring("move was invalid")
 
 def hook_error (arg):
 	print "* error:", arg
+	sys.exit(-1)
 
 def initggz():
 	ggzdmod.setHandler(ggzdmod.EVENT_STATE, hook_state)
@@ -86,6 +90,7 @@ def initggz():
 
 def main():
 	global net
+	global xadrez
 #	global madeturn
 #	global surface
 #	global winner

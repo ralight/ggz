@@ -18,12 +18,15 @@ class Network:
 		self.sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
 
 	def getbyte(self):
-		opstr = self.sock.recv(4)
+		opstr = ""
+		while len(opstr) < 4:
+			tmpstr = self.sock.recv(1)
+			opstr += tmpstr
 		op = ord(opstr[0]) * 256 * 256 * 256
 		op += ord(opstr[1]) * 256 * 256
 		op += ord(opstr[2]) * 256
 		op += ord(opstr[3])
-		return op
+		return socket.ntohl(op)
 
 	def getchar(self):
 		opstr = self.sock.recv(1)
@@ -37,10 +40,10 @@ class Network:
 
 	def sendbyte(self, byte):
 		nbyte = socket.htonl(byte)
-		c1 = (nbyte >> 0) & 0xFF
-		c2 = (nbyte >> 8) & 0xFF
-		c3 = (nbyte >> 16) & 0xFF
-		c4 = (nbyte >> 24) & 0xFF
+		c1 = (nbyte >> 24) & 0xFF
+		c2 = (nbyte >> 16) & 0xFF
+		c3 = (nbyte >> 8) & 0xFF
+		c4 = (nbyte >> 0) & 0xFF
 		self.sock.send(chr(c1))
 		self.sock.send(chr(c2))
 		self.sock.send(chr(c3))
