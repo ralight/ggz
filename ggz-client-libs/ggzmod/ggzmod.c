@@ -4,7 +4,7 @@
  * Project: ggzmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzmod.c 6724 2005-01-18 02:51:57Z jdorje $
+ * $Id: ggzmod.c 6728 2005-01-18 17:06:14Z oojah $
  *
  * This file contains the backend for the ggzmod library.  This
  * library facilitates the communication between the GGZ server (ggz)
@@ -947,6 +947,7 @@ static int game_fork(GGZMod * ggzmod)
 	char cmdline[1024] = "";
 	int i;
 	PROCESS_INFORMATION pi;
+	STARTUPINFO si;
 #endif
 
 	/* If there are no args, we don't know what to run! */
@@ -1038,9 +1039,10 @@ static int game_fork(GGZMod * ggzmod)
 			 "%s ", ggzmod->argv[i]);
 	}
 
+	ZeroMemory(&si, sizeof(si));
 	if (!CreateProcess(NULL, cmdline, NULL, NULL, TRUE,
 			   DETACHED_PROCESS | NORMAL_PRIORITY_CLASS,
-			   NULL, NULL, NULL, &pi)) {
+			   NULL, NULL, &si, &pi)) {
 		return -1;
 	}
 	CloseHandle(pi.hThread);
