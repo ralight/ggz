@@ -2,7 +2,7 @@
  * File: login.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: login.c 6261 2004-11-05 01:08:45Z jdorje $
+ * $Id: login.c 6262 2004-11-05 01:26:49Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -44,6 +44,7 @@
 #include "ggzclient.h"
 #include "login.h"
 #include "msgbox.h"
+#include "playerlist.h"
 #include "props.h"
 #include "server.h"
 #include "support.h"
@@ -334,8 +335,7 @@ static void login_start_session(void)
 	gtk_clist_clear(GTK_CLIST(tmp));
 	tmp = lookup_widget(win_main, "table_clist");
 	gtk_clist_clear(GTK_CLIST(tmp));
-	tmp = lookup_widget(win_main, "player_list_store");
-	gtk_list_store_clear(GTK_LIST_STORE(tmp));
+	clear_player_list();
 
 	/* FIXME: perhaps this should be done elsewhere? 
 	   tmp = gtk_object_get_data(GTK_OBJECT(login_dialog), "connect_button");

@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.h 6261 2004-11-05 01:08:45Z jdorje $
+ * $Id: playerlist.h 6262 2004-11-05 01:26:49Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -33,6 +33,8 @@ typedef enum {
   PLAYER_COLUMNS
 } PlayerListFields;
 
-void display_players(void);
+void sensitize_player_list(gboolean sensitive);
+void clear_player_list(void);
+void update_player_list(void);
 
 GtkWidget *create_player_list(GtkWidget * window);

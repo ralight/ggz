@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/03/2002
- * $Id: playerlist.c 6261 2004-11-05 01:08:45Z jdorje $
+ * $Id: playerlist.c 6262 2004-11-05 01:26:49Z jdorje $
  * 
  * List of players in the current room
  * 
@@ -167,7 +167,6 @@ static gboolean client_player_list_event(GtkWidget * widget,
 
 	if (player) g_free(player); /* Free the last invocation. */
 	gtk_tree_model_get(model, &iter, PLAYER_COLUMN_NAME, &player, -1);
-
 	if (event->type == GDK_BUTTON_PRESS
 	    && buttonevent->button == 3) {
 		/* Right mouse button:
@@ -184,11 +183,26 @@ static gboolean client_player_list_event(GtkWidget * widget,
 	return FALSE;
 }
 
+void sensitize_player_list(gboolean sensitive)
+{
+	GtkWidget *tree = lookup_widget(win_main, "player_list");
+
+	gtk_widget_set_sensitive(tree, sensitive);
+}
+
+/* Clear current list of players */
+void clear_player_list(void)
+{
+	GtkWidget *store = lookup_widget(win_main, "player_list_store");
+
+        gtk_list_store_clear(GTK_LIST_STORE(store));
+}
+
 #define LAG_CATEGORIES 6
 gboolean pixmaps_initted = FALSE;
 GdkPixbuf *lag[LAG_CATEGORIES], *guest, *registered, *admin;
 
-void display_players(void)
+void update_player_list(void)
 {
 	GtkListStore *store;
 	gint i, num, l;
@@ -335,7 +349,7 @@ GtkWidget *create_player_list(GtkWidget *window)
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 
 	renderer = gtk_cell_renderer_text_new();
-	column = gtk_tree_view_column_new_with_attributes("S", renderer,
+	column = gtk_tree_view_column_new_with_attributes("Stats", renderer,
 				"text", PLAYER_COLUMN_STATS, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
 

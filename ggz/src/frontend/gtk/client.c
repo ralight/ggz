@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 6261 2004-11-05 01:08:45Z jdorje $
+ * $Id: client.c 6262 2004-11-05 01:26:49Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -78,7 +78,8 @@ static void client_watchm_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_leave_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_properties_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_room_list_activate(GtkMenuItem *menuitem, gpointer data);
-static void client_player_list_activate(GtkMenuItem *menuitem, gpointer data);
+static void client_player_toggle_activate(GtkMenuItem *menuitem,
+					  gpointer data);
 static void client_server_stats_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_player_stats_activate(GtkMenuItem *menuitem, gpointer data);
 static void client_game_types_activate(GtkMenuItem *menuitem, gpointer data);
@@ -139,13 +140,11 @@ client_disconnect_activate		(GtkMenuItem	*menuitem,
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
         gtk_clist_clear(GTK_CLIST(tmp));
 
-	/* Clear current list of players */
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_list_store");
-        gtk_list_store_clear(GTK_LIST_STORE(tmp));
-
 	/* Clear current list of tables */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");
         gtk_clist_clear(GTK_CLIST(tmp));
+
+	clear_player_list();
 
 	/*ggz_sensitivity_init();*/
 }
@@ -235,14 +234,14 @@ client_room_list_activate	(GtkMenuItem	*menuitem,
 }
 
 
-static void
-client_player_list_activate		(GtkMenuItem	*menuitem,
-					 gpointer	 data)
+static void client_player_toggle_activate(GtkMenuItem *menuitem,
+					  gpointer data)
 {
 	GtkWidget *tmp;
 	static gboolean player_view = TRUE;
 
-	tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_scrolledwindow");
+	tmp = gtk_object_get_data(GTK_OBJECT(win_main),
+				  "player_scrolledwindow");
 	if (player_view)
 		gtk_widget_hide(tmp);
 	else
@@ -373,9 +372,7 @@ client_disconnect_button_clicked	(GtkButton	*button,
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "room_clist");
         gtk_clist_clear(GTK_CLIST(tmp));
 
-	/* Clear current list of players */
-        tmp = gtk_object_get_data(GTK_OBJECT(win_main), "player_list_store");
-        gtk_list_store_clear(GTK_LIST_STORE(tmp));
+	clear_player_list();
 
 	/* Clear current list of tables */
         tmp = gtk_object_get_data(GTK_OBJECT(win_main), "table_clist");
@@ -935,7 +932,7 @@ create_win_main (void)
   GtkWidget *view;
   GtkWidget *view_menu;
   GtkWidget *room_list;
-  GtkWidget *player_list;
+  GtkWidget *player_toggle;
   GtkWidget *separator8;
   GtkWidget *server_stats;
   GtkWidget *player_stats;
@@ -1209,16 +1206,18 @@ create_win_main (void)
   gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (room_list), TRUE);
   gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (room_list), TRUE);
 
-  player_list = gtk_check_menu_item_new_with_label ("");
-  tmp_key = gtk_label_parse_uline (GTK_LABEL (GTK_BIN (player_list)->child),
-                                   _("P_layer List"));
-  gtk_widget_ref (player_list);
-  gtk_object_set_data_full (GTK_OBJECT (win_main), "player_list", player_list,
+  player_toggle = gtk_check_menu_item_new_with_label("");
+  tmp_key = gtk_label_parse_uline(GTK_LABEL(GTK_BIN(player_toggle)->child),
+				  _("P_layer List"));
+  gtk_widget_ref(player_toggle);
+  gtk_object_set_data_full (GTK_OBJECT (win_main), "player_toggle",
+			    player_toggle,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (player_list);
-  gtk_container_add (GTK_CONTAINER (view_menu), player_list);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (player_list), TRUE);
-  gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (player_list), TRUE);
+  gtk_widget_show (player_toggle);
+  gtk_container_add (GTK_CONTAINER (view_menu), player_toggle);
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM (player_toggle), TRUE);
+  gtk_check_menu_item_set_show_toggle(GTK_CHECK_MENU_ITEM(player_toggle),
+				      TRUE);
 
   separator8 = gtk_menu_item_new ();
   gtk_widget_ref (separator8);
@@ -1728,8 +1727,8 @@ create_win_main (void)
   gtk_signal_connect (GTK_OBJECT (room_list), "activate",
                       GTK_SIGNAL_FUNC (client_room_list_activate),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (player_list), "activate",
-                      GTK_SIGNAL_FUNC (client_player_list_activate),
+  gtk_signal_connect (GTK_OBJECT(player_toggle), "activate",
+                      GTK_SIGNAL_FUNC(client_player_toggle_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (server_stats), "activate",
                       GTK_SIGNAL_FUNC (client_server_stats_activate),
