@@ -4,7 +4,7 @@
  * Project: GGZ 
  * Date: 3/35/00
  * Desc: GGZ game module functions
- * $Id: ggz_server.h 2255 2001-08-25 23:53:52Z jdorje $
+ * $Id: ggz_server.h 2259 2001-08-26 20:50:00Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -110,6 +110,14 @@ int ggzd_seats_human(void);
 /** @return The highest file descriptor used by ggzd.
  *  @todo Is this even necessary??? */
 int ggzd_fd_max(void);
+
+/** Sets blocking status of ggzdmod.  If blocking is set, ggzd_main
+ *  and ggzd_read_data will block waiting for data (the default).
+ *  @param block 1 for blocking, 0 for not
+ *  @todo Brent doesn't want to have this function.
+ *  @todo This function isn't implemented; there's just this prototype.
+ */
+void ggzd_set_blocking(int block);
 
 
 typedef enum {
