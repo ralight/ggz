@@ -150,13 +150,23 @@ void KTicTacTuxProto::getStatistics()
 {
 	int wins, losses, ties, forfeits;
 	GGZSeat seat;
+	int ret;
 
 	seat = ggzmod_get_seat(mod, num);
 
-	ggzmod_player_get_record(&seat, &wins, &losses, &ties, &forfeits);
-	stats[0] = wins;
-	stats[1] = losses;
-	stats[2] = ties;
+	ret = ggzmod_player_get_record(mod, &seat, &wins, &losses, &ties, &forfeits);
+	if(ret)
+	{
+		stats[0] = wins;
+		stats[1] = losses;
+		stats[2] = ties;
+	}
+	else
+	{
+		stats[0] = 0;
+		stats[1] = 0;
+		stats[2] = 0;
+	}
 
 //	ggz_read_int(fd, &stats[0]);
 //	ggz_read_int(fd, &stats[1]);
