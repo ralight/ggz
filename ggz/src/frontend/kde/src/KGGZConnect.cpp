@@ -237,6 +237,9 @@ void KGGZConnect::slotSaveProfile()
 	config->write(current, "Login", input_name->text());
 	config->write(current, "Password", input_password->text());
 	config->write(current, "Type", m_loginmode);
+#ifdef KGGZ_PATCH_ENCRYPTION
+	config->write(current, "Encryption", option_tls->isChecked());
+#endif
 	config->write("Session", "Defaultserver", profile_select->currentText());
 	config->commit();
 	delete config;
@@ -254,6 +257,7 @@ void KGGZConnect::slotLoadProfile(int profile)
 	char *password = NULL;
 	int type;
 	const char *listentry = NULL;
+	bool usetls;
 
 	if((profile != -1) && (!m_nosafe))
 		slotSaveProfile();
@@ -330,6 +334,7 @@ void KGGZConnect::slotLoadProfile(int profile)
 	username = config->read(listentry, "Login", i18n("GGZocker"));
 	password = config->read(listentry, "Password", "");
 	type = config->read(listentry, "Type", 1);
+	usetls = config->read(listentry, "Encryption", false);
 
 	// put values into fields
 	input_host->setText(host);
@@ -337,6 +342,9 @@ void KGGZConnect::slotLoadProfile(int profile)
 	input_name->setText(username);
 #ifndef KGGZ_WALLET
 	input_password->setText(password);
+#endif
+#ifdef KGGZ_PATCH_ENCRYPTION
+	option_tls->setChecked(usetls);
 #endif
 	slotModes(type);
 
