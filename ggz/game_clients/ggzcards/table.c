@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Routines to handle the Gtk game table
- * $Id: table.c 4030 2002-04-21 02:56:53Z jdorje $
+ * $Id: table.c 4037 2002-04-21 08:14:26Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -220,6 +220,8 @@ void table_setup(void)
 	   playing, the server doesn't know how many seats there are so it
 	   just tells us 0 - even if there are players already connected. */
 	if (ggzcards.num_players == 0 || table_max_hand_size == 0)
+		return;
+	if (get_card_width(0) == 0 || get_card_height(0) == 0)
 		return;
 		
 	if (!game_started) {

@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 4030 2002-04-21 02:56:53Z jdorje $
+ * $Id: game.c 4037 2002-04-21 08:14:26Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -201,6 +201,7 @@ void game_alert_newgame(void)
 void game_alert_card_type(enum card_type_enum card_type)
 {
 	load_card_data(card_type);
+	table_setup();
 }
 
 void game_alert_newhand(void)

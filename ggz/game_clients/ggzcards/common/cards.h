@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.h 4032 2002-04-21 06:13:46Z jdorje $
+ * $Id: cards.h 4037 2002-04-21 08:14:26Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.
@@ -42,6 +42,8 @@
  *  only the standard French deck is used.
  */
 enum card_type_enum {
+	UNKNOWN_CARDSET = -1,
+
 	/** A standard (French) card deck (A/K/Q/J/10..2). */
 	CARDSET_FRENCH,
 

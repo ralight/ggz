@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 02/25/2002
  * Desc: Card data for the GGZCards client and server
- * $Id: cards.c 4032 2002-04-21 06:13:46Z jdorje $
+ * $Id: cards.c 4037 2002-04-21 08:14:26Z jdorje $
  *
  * This contains card definitions common to both GGZCards client
  * and server.
@@ -41,20 +41,23 @@
 const card_t UNKNOWN_CARD = {face: UNKNOWN_FACE,
                              suit: UNKNOWN_SUIT,
                              deck: UNKNOWN_DECK,
-                             type: CARDSET_FRENCH};
+                             type: UNKNOWN_CARDSET};
 
 int is_valid_card(card_t card)
 {
-	if (card.type == CARDSET_FRENCH) {
-	    return (card.face == UNKNOWN_FACE
-	            || (card.face >= ACE_LOW && card.face <= ACE_HIGH))
-	           && (card.suit == UNKNOWN_SUIT
-	               || (card.suit >= CLUBS && card.suit <= SPADES))
-	           && (card.deck == UNKNOWN_DECK
-	               || (card.deck >= 0));
-	}
-		
-	if (card.type == CARDSET_DOMINOES) {
+	switch (card.type) {
+	case UNKNOWN_CARDSET:
+		return card.face == UNKNOWN_FACE
+		       && card.suit == UNKNOWN_SUIT
+		       && card.deck == UNKNOWN_DECK;
+	case CARDSET_FRENCH:
+		return (card.face == UNKNOWN_FACE
+		        || (card.face >= ACE_LOW && card.face <= ACE_HIGH))
+		       && (card.suit == UNKNOWN_SUIT
+		           || (card.suit >= CLUBS && card.suit <= SPADES))
+		       && (card.deck == UNKNOWN_DECK
+		           || (card.deck >= 0));
+	case CARDSET_DOMINOES:
 		if (card.deck != UNKNOWN_DECK && card.deck < 0)
 			return FALSE;
 		if (card.suit == -1 && card.face == -1)
@@ -63,7 +66,6 @@ int is_valid_card(card_t card)
 		       && card.face != -1
 		       && card.suit >= card.face;
 	}
-	
 	return FALSE;
 }
 

@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001 (as common.c)
  * Desc: Backend to GGZCards Client-Common
- * $Id: client.c 4030 2002-04-21 02:56:53Z jdorje $
+ * $Id: client.c 4037 2002-04-21 08:14:26Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -439,6 +439,9 @@ static void handle_card_type(char type)
 	static bool alerted = FALSE;
 	static enum card_type_enum card_type = -1;
 	
+	if (type == UNKNOWN_CARDSET)
+		return;
+	
 	if (alerted) {
 		assert(card_type == type);
 		return;
@@ -476,8 +479,10 @@ static int handle_msg_hand(void)
 	for (i = 0; i < hand->hand_size; i++) {
 		if (read_card(game_internal.fd, &hand->cards[i]) < 0)
 			return -1;
-		handle_card_type(hand->cards[i].type);
 	}
+	
+	if (hand_size > 0)
+		handle_card_type(hand->cards[0].type);
 
 	ggz_debug("core", "Received hand message for player %d; %d cards.",
 		  player, hand->hand_size);
