@@ -46,12 +46,13 @@ create_options_dialog (GdkColor *_back_color, GdkColor *_last_color)
   dialog1 = gtk_dialog_new ();
   gtk_widget_set_name (dialog1, "dialog1");
   gtk_object_set_data (GTK_OBJECT (dialog1), "dialog1", dialog1);
-  gtk_window_set_title (GTK_WINDOW (dialog1), ("dialog1"));
-  gtk_window_set_policy (GTK_WINDOW (dialog1), TRUE, TRUE, FALSE);
+  gtk_window_set_title (GTK_WINDOW (dialog1), ("Options dialog"));
+  gtk_window_set_policy (GTK_WINDOW (dialog1), FALSE, FALSE, TRUE);
 
   dialog_vbox1 = GTK_DIALOG (dialog1)->vbox;
   gtk_widget_set_name (dialog_vbox1, "dialog_vbox1");
   gtk_object_set_data (GTK_OBJECT (dialog1), "dialog_vbox1", dialog_vbox1);
+	gtk_container_set_border_width(GTK_CONTAINER(dialog_vbox1), 5);
   gtk_widget_show (dialog_vbox1);
 
   bg_frame = gtk_frame_new (("Background"));
@@ -85,7 +86,7 @@ create_options_dialog (GdkColor *_back_color, GdkColor *_last_color)
   gtk_object_set_data_full (GTK_OBJECT (dialog1), "color_radio", color_radio,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (color_radio);
-  gtk_box_pack_start (GTK_BOX (hbox5), color_radio, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox5), color_radio, FALSE, FALSE, 5);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (color_radio), TRUE);
 
   pixmap_radio = gtk_radio_button_new_with_label (bg_mode_group, ("Background Pixmap"));
@@ -96,7 +97,7 @@ create_options_dialog (GdkColor *_back_color, GdkColor *_last_color)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (pixmap_radio);
   gtk_widget_set_sensitive(pixmap_radio, FALSE);
-  gtk_box_pack_start (GTK_BOX (hbox5), pixmap_radio, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox5), pixmap_radio, FALSE, FALSE, 5);
 
   hbox4 = gtk_hbox_new (FALSE, 0);
   gtk_widget_set_name (hbox4, "hbox4");
@@ -112,7 +113,7 @@ create_options_dialog (GdkColor *_back_color, GdkColor *_last_color)
   gtk_object_set_data_full (GTK_OBJECT (dialog1), "bg_label", bg_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bg_label);
-  gtk_box_pack_start (GTK_BOX (hbox4), bg_label, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox4), bg_label, FALSE, FALSE, 5);
 
   back_button = gtk_button_new_with_label ("");
   gtk_widget_set_name (back_button, "back_button");
@@ -138,7 +139,7 @@ create_options_dialog (GdkColor *_back_color, GdkColor *_last_color)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (pixmap_label);
   gtk_widget_set_sensitive(pixmap_label, FALSE);
-  gtk_box_pack_start (GTK_BOX (hbox7), pixmap_label, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox7), pixmap_label, FALSE, FALSE, 5);
 
   pixmap_button = create_pixmap (dialog1, "bg.xpm");
   gtk_widget_set_name (pixmap_button, "pixmap_button");
@@ -163,7 +164,7 @@ create_options_dialog (GdkColor *_back_color, GdkColor *_last_color)
   gtk_object_set_data_full (GTK_OBJECT (dialog1), "last_label", last_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (last_label);
-  gtk_box_pack_start (GTK_BOX (hbox6), last_label, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox6), last_label, FALSE, FALSE, 5);
 
   last_button = gtk_button_new_with_label ("");
   gtk_widget_set_name (last_button, "last_button");

@@ -294,6 +294,7 @@ int get_sync() {
 	 	if (fboard[i] == BLACK || fboard[i] == WHITE || fboard[i] == EMPTY)
 			game.board[i] = fboard[i];
 	} 
+	game_update_scores();
 	return 0;
 }
 

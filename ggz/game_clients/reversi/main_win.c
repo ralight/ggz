@@ -462,6 +462,7 @@ create_main_win (void)
   accel_group = gtk_accel_group_new ();
 
   main_win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_policy(GTK_WINDOW (main_win), 0, 0, 1);
   gtk_object_set_data (GTK_OBJECT (main_win), "main_win", main_win);
   gtk_window_set_title (GTK_WINDOW (main_win), _("Reversi"));
 

@@ -52,10 +52,11 @@ create_about_dialog (void)
   gtk_object_set_data (GTK_OBJECT (dlg_about), "dlg_about", dlg_about);
   gtk_window_set_title (GTK_WINDOW (dlg_about), "About Reversi");
   GTK_WINDOW (dlg_about)->type = GTK_WINDOW_DIALOG;
-  gtk_window_set_policy (GTK_WINDOW (dlg_about), TRUE, TRUE, FALSE);
+  gtk_window_set_policy (GTK_WINDOW (dlg_about), FALSE, FALSE, TRUE);
 
   dialog_vbox1 = GTK_DIALOG (dlg_about)->vbox;
   gtk_object_set_data (GTK_OBJECT (dlg_about), "dialog_vbox1", dialog_vbox1);
+	gtk_container_set_border_width(GTK_CONTAINER(dialog_vbox1), 5);
   gtk_widget_show (dialog_vbox1);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
@@ -77,7 +78,7 @@ create_about_dialog (void)
   gtk_object_set_data_full (GTK_OBJECT (dlg_about), "label4", label4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label4);
-  gtk_box_pack_start (GTK_BOX (vbox1), label4, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), label4, FALSE, FALSE, 5);
   gtk_label_set_justify (GTK_LABEL (label4), GTK_JUSTIFY_LEFT);
 
   dialog_action_area1 = GTK_DIALOG (dlg_about)->action_area;
