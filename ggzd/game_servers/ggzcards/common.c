@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3324 2002-02-11 08:53:23Z jdorje $
+ * $Id: common.c 3340 2002-02-12 05:47:58Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -495,8 +495,6 @@ void handle_join_event(GGZdMod * ggz, GGZdModEvent event, void *data)
 	/* get player's name */
 	if (seat >= 0) {	/* see above comment about seat==-1 */
 		game.seats[seat].name = get_player_name(player);
-		if (!game.seats[seat].name)
-			game.seats[seat].name = "[unknown]";
 	}
 
 	/* set the age of the player */
@@ -847,14 +845,11 @@ void init_game()
 
 void assign_seat(seat_t s, player_t p)
 {
-	const char *name;
 	game.seats[s].player = p;
 	game.players[p].seat = s;
 
 	/* set up name for seat */
-	name = get_player_name(p);
-	if (name)
-		game.seats[s].name = name;
+	game.seats[s].name = get_player_name(p);
 }
 
 void empty_seat(seat_t s, char *name)
