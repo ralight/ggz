@@ -38,13 +38,14 @@
 #include <game.h>
 #include <support.h>
 #include <black.xpm>
+#include <dot.xpm>
 #include <white.xpm>
 
 
 /* Pixmaps */
 #define PIXSIZE 48
-GdkPixmap* pix[2];
-GdkBitmap* pix_mask[2];
+GdkPixmap* pix[3];
+GdkBitmap* pix_mask[3];
 GdkGC* pix_gc;
 GdkPixmap* rvr_buf;
 
@@ -92,6 +93,8 @@ void display_board(void)
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "drawingarea");
 	style = gtk_widget_get_style(main_win);
 
+	draw_bg(main_win);
+
 	for (i = 0; i < 64; i++) {
 		if (game.board[i] == BLACK) {
 			piece = PLAYER2SEAT(BLACK);
@@ -99,14 +102,15 @@ void display_board(void)
 		else if (game.board[i] == WHITE) {
 			piece = PLAYER2SEAT(WHITE);
 		}
-		else 
+		else if (game_check_move(game.turn, i)) {
+			piece = 2;
+		}
+		else
 			continue;
 		
 		x = (X(i)-1)*PIXSIZE;
 		y = (Y(i)-1)*PIXSIZE;
 		
-		//gdk_draw_pixmap(rvr_buf, piece_gc,
-				//piece, 0, 0, x, y, PIXSIZE, PIXSIZE);
 		gdk_gc_set_tile(pix_gc, pix[piece]);
 		gdk_gc_set_ts_origin(pix_gc, x, y);
 		gdk_gc_set_clip_origin(pix_gc, x, y);
@@ -144,7 +148,7 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 	gdk_gc_ref(pix_gc);
 	gdk_gc_set_fill(pix_gc, GDK_TILED);
 
-	// Creathe the black pix
+	// Create the black pix
 	pix[PLAYER2SEAT(BLACK)] = gdk_pixmap_create_from_xpm_d( main_win->window, &pix_mask[PLAYER2SEAT(BLACK)],
 					      &style->black, 
 					      (gchar**)black_xpm );
@@ -156,7 +160,12 @@ void on_main_win_realize(GtkWidget* widget, gpointer user_data)
 					      &style->white, 
 					      (gchar**)white_xpm );
 	gdk_pixmap_ref(pix[PLAYER2SEAT(WHITE)]);
-	gdk_bitmap_ref(pix[PLAYER2SEAT(WHITE)]);
+	gdk_bitmap_ref(pix_mask[PLAYER2SEAT(WHITE)]);
+
+	// Create the dot pix
+	pix[2] = gdk_pixmap_create_from_xpm_d( main_win->window, &pix_mask[2], NULL, (gchar**)dot_xpm);
+	gdk_pixmap_ref(pix[2]);
+	gdk_bitmap_ref(pix_mask[2]);
 }
 
 
@@ -194,7 +203,6 @@ void game_about(GtkMenuItem *menuitem, gpointer user_data)
 gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event, 
 			  gpointer user_data)
 {
-	int i;
 	if (rvr_buf)
 		gdk_pixmap_unref(rvr_buf);
 	else {
@@ -202,27 +210,34 @@ gboolean configure_handle(GtkWidget *widget, GdkEventConfigure *event,
 					  widget->allocation.width,
 					  widget->allocation.height,
 					  -1);
-		gdk_draw_rectangle( rvr_buf,
-				    widget->style->mid_gc[3],
-				    TRUE,
-				    0, 0,
-				    widget->allocation.width,
-				    widget->allocation.height);
+	}
+	draw_bg(widget);
 
-		for (i = 1; i < 8; i++) {
-			gdk_draw_line(rvr_buf, 
-			      widget->style->black_gc,
-			      i*PIXSIZE, 0,
-			      i*PIXSIZE, widget->allocation.height);
+	return TRUE;
+}
 
-			gdk_draw_line(rvr_buf, 
-			      widget->style->black_gc,
-			      0, i*PIXSIZE,
-			      widget->allocation.width, i*PIXSIZE);
-		}
+void draw_bg(GtkWidget *widget) {
+	int i;
+	gdk_draw_rectangle( rvr_buf,
+					widget->style->mid_gc[3],
+					TRUE,
+					0, 0,
+					widget->allocation.width,
+					widget->allocation.height);
+
+	for (i = 1; i < 8; i++) {
+		gdk_draw_line(rvr_buf, 
+					widget->style->black_gc,
+					i*PIXSIZE, 0,
+					i*PIXSIZE, widget->allocation.height);
+
+		gdk_draw_line(rvr_buf, 
+					widget->style->black_gc,
+					0, i*PIXSIZE,
+					widget->allocation.width, i*PIXSIZE);
 	}
 	
-	return TRUE;
+	return;
 }
 
 
@@ -278,14 +293,7 @@ gboolean handle_move(GtkWidget *widget, GdkEventButton *event, gpointer user_dat
 	/* CHECK IF THE MOVE IS VALID */
 
 	// Check if it's valid up
-	status += game_check_direction(game.turn, 0,-1, x, y);
-	status += game_check_direction(game.turn, 1,-1, x, y);
-	status += game_check_direction(game.turn, 1, 0, x, y);
-	status += game_check_direction(game.turn, 1, 1, x, y);
-	status += game_check_direction(game.turn, 0, 1, x, y);
-	status += game_check_direction(game.turn,-1, 1, x, y);
-	status += game_check_direction(game.turn,-1, 0, x, y);
-	status += game_check_direction(game.turn,-1,-1, x, y);
+	status += game_check_move(game.turn, CART(x,y));
 	
 	if (status <= 0) {
 		game_status("Invalid move!");
@@ -499,4 +507,22 @@ create_main_win (void)
   gtk_window_add_accel_group (GTK_WINDOW (main_win), accel_group);
 
   return main_win;
+}
+
+int game_check_move(int player, int move) {
+	int x = X(move);
+	int y = Y(move);
+	int status = 0;
+
+	status += game_check_direction(player, 0,-1, x, y);
+	status += game_check_direction(player, 1,-1, x, y);
+	status += game_check_direction(player, 1, 0, x, y);
+	status += game_check_direction(player, 1, 1, x, y);
+	status += game_check_direction(player, 0, 1, x, y);
+	status += game_check_direction(player,-1, 1, x, y);
+	status += game_check_direction(player,-1, 0, x, y);
+	status += game_check_direction(player,-1,-1, x, y);
+
+	return status;
+
 }

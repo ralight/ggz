@@ -213,6 +213,7 @@ int request_sync();
 void game_make_move(int, int);
 void game_mark_board(int, int, int, int, int);
 int game_check_direction(int, int, int, int, int);
+int game_check_move(int, int);
 void game_update_scores();
 
 
@@ -220,3 +221,4 @@ void game_update_scores();
 GtkWidget* create_main_win ();  
 void display_board();
 void game_status( const char *, ...);
+void draw_bg(GtkWidget *);
