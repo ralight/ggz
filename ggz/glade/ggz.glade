@@ -318,6 +318,23 @@
 	  </widget>
 
 	  <widget>
+	    <class>GtkEntry</class>
+	    <name>port_entry</name>
+	    <width>50</width>
+	    <can_focus>True</can_focus>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>0</text_max_length>
+	    <text></text>
+	    <child>
+	      <padding>5</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	      <pack>GTK_PACK_END</pack>
+	    </child>
+	  </widget>
+
+	  <widget>
 	    <class>GtkLabel</class>
 	    <name>port_label</name>
 	    <label>Port:</label>
@@ -329,23 +346,6 @@
 	    <ypad>0</ypad>
 	    <child>
 	      <padding>0</padding>
-	      <expand>False</expand>
-	      <fill>False</fill>
-	      <pack>GTK_PACK_END</pack>
-	    </child>
-	  </widget>
-
-	  <widget>
-	    <class>GtkEntry</class>
-	    <name>port_entry</name>
-	    <width>50</width>
-	    <can_focus>True</can_focus>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>0</text_max_length>
-	    <text></text>
-	    <child>
-	      <padding>5</padding>
 	      <expand>False</expand>
 	      <fill>False</fill>
 	      <pack>GTK_PACK_END</pack>
@@ -2196,8 +2196,8 @@ Computer
 <widget>
   <class>GtkWindow</class>
   <name>dlgMOTD</name>
-  <width>250</width>
-  <height>300</height>
+  <width>300</width>
+  <height>350</height>
   <title>MOTD</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>

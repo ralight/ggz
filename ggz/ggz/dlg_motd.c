@@ -26,7 +26,7 @@ create_dlgMOTD (void)
 
   dlgMOTD = gtk_window_new (GTK_WINDOW_DIALOG);
   gtk_object_set_data (GTK_OBJECT (dlgMOTD), "dlgMOTD", dlgMOTD);
-  gtk_widget_set_usize (dlgMOTD, 250, 300);
+  gtk_widget_set_usize (dlgMOTD, 300, 350);
   gtk_window_set_title (GTK_WINDOW (dlgMOTD), "MOTD");
   gtk_window_set_policy (GTK_WINDOW (dlgMOTD), FALSE, FALSE, FALSE);
 

@@ -38,6 +38,7 @@
 #include "datatypes.h"
 #include "dlg_error.h"
 #include "dlg_main.h"
+#include "dlg_motd.h"
 #include "easysock.h"
 #include "err_func.h"
 #include "game.h"
@@ -52,6 +53,7 @@ extern struct Users users;
 extern struct GameTypes game_types;
 extern GtkWidget *detail_window;
 extern GtkWidget *main_win;
+extern GtkWidget *dlg_motd;
 extern int selected_table;
 extern int selected_type;
 extern GdkColor colors[];
@@ -68,6 +70,7 @@ static int anon_login(void);
 static void handle_server_fd(gpointer, gint, GdkInputCondition);
 static void display_chat(char *name, char *msg);
 static void handle_list_tables(int op, int fd);
+static void add_line_motd(char *message);
 
 
 char *opcode_str[] = { 	"MSG_SERVER_ID",
@@ -308,6 +311,16 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 
 	case RSP_LOGIN_NEW:
 	case MSG_MOTD:
+		dlg_motd = create_dlgMOTD();
+		es_read_int(source, &count);
+		connect_msg("[%s] MOTD line count %d\n", opcode_str[op], count);
+		for (i = 0; i < count; i++) {
+			es_read_string_alloc(source, &message);
+			connect_msg("[%s] %s",opcode_str[op], message);
+			add_line_motd(message);
+		}
+		gtk_widget_show(dlg_motd);
+		break;
 	case RSP_PREF_CHANGE:
 	case RSP_REMOVE_USER:
 	case RSP_TABLE_OPTIONS:
@@ -474,4 +487,15 @@ void handle_list_tables(int op, int fd)
 		add_table_list(table);
 	}
 
+}
+
+void add_line_motd(char *message)
+{
+	GtkWidget *temp_widget;
+	GdkFont *fixed_font;
+
+	temp_widget = gtk_object_get_data(GTK_OBJECT(dlg_motd), "txtMOTD");
+
+	fixed_font = gdk_font_load ("-misc-fixed-medium-r-normal--10-100-75-75-c-60-iso8859-1");
+	gtk_text_insert(GTK_TEXT(temp_widget), fixed_font, NULL, NULL, message, -1);	
 }
