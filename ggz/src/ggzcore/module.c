@@ -245,7 +245,7 @@ int _ggzcore_module_setup(void)
 	}
 	
 	/* Read in list of supported gametypes */
-	status = ggzcore_confio_read_list(mod_handle, "Games", "GameList", 
+	status = ggzcore_confio_read_list(mod_handle, "Games", "*GameList*", 
 					  &count_types, &games);
 	if (status < 0) {
 		ggzcore_debug(GGZ_DBG_MODULE, "Couldn't read gametype list");

@@ -134,7 +134,7 @@ int purge_module_name(int global)
 	char **name_list;
 	int index;
 
-	ggzcore_confio_read_list(global, "Games", "GameList",&items,&name_list);
+	ggzcore_confio_read_list(global, "Games", "*GameList*",&items,&name_list);
 
 	for(index=0; index<items; index++)
 		if(!strcmp(name_list[index], modname))
@@ -145,10 +145,10 @@ int purge_module_name(int global)
 	items--;
 
 	if(items != 0)
-		ggzcore_confio_write_list(global, "Games", "GameList",
+		ggzcore_confio_write_list(global, "Games", "*GameList*",
 					  items, name_list);
 	else
-		ggzcore_confio_remove_key(global, "Games", "GameList");
+		ggzcore_confio_remove_key(global, "Games", "*GameList*");
 
 	return 0;
 }
@@ -162,7 +162,7 @@ char *new_module_id(int global)
 	int i, j;
 	static char new_id[10];
 
-	ggzcore_confio_read_list(global, "Games", "GameList",&names,&name_list);
+	ggzcore_confio_read_list(global, "Games", "*GameList*",&names,&name_list);
 
 	for(i=0; i<names; i++) {
 		ggzcore_confio_read_list(global, "Games", name_list[i],
@@ -354,15 +354,15 @@ int install_module(void)
 			ggzcore_confio_write_string(global, "Games",
 						    modname, module_id);
 			game_list = ggzcore_confio_read_string(global, "Games",
-						    "GameList", NULL);
+						    "*GameList*", NULL);
 			if(game_list == NULL)
 				ggzcore_confio_write_string(global, "Games",
-						    "GameList", modname);
+						    "*GameList*", modname);
 			else {
 				snprintf(bigstr, 1024, "%s %s",
 					 game_list, modname);
 				ggzcore_confio_write_string(global, "Games",
-						    "GameList", bigstr);
+						    "*GameList*", bigstr);
 			}
 		} else if(!modforce) {
 			snprintf(bigstr, 1024, "%s %s", mod_list, module_id);
