@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 5398 2003-02-09 22:57:46Z jdorje $
+dnl $Id: configure.ac 5399 2003-02-09 23:44:10Z jdorje $
 
 AC_INIT
 AC_CONFIG_SRCDIR([configure.ac])
@@ -21,10 +21,20 @@ AC_PROG_MAKE_SET
 
 dnl Compiling Options
 dnl =====================
-AC_ARG_ENABLE(server, [  --disable-server        Don't build ggzd server],, enable_server=yes)
-AC_ARG_ENABLE(games,  [  --disable-games         Don't build ggzd games],, enable_games=yes)
-AC_ARG_WITH(tmpdir,         [  --with-tmpdir=PATH      directory for temporary files [default=/tmp/ggzd]], tmpdir=$withval, tmpdir="/tmp/ggzd")
-AC_ARG_WITH(database,       [  --with-database=DB      type of database to use: db2, db3, db4, pgsql, mysql], database=$withval, database=yes)
+AC_ARG_ENABLE([server],
+	      AC_HELP_STRING([--disable-server],[Don't build ggzd server]),
+	      [enable_server=no], [enable_server=yes])
+AC_ARG_ENABLE([games],
+	      AC_HELP_STRING([--disable-games],[Don't build ggzd games]),
+	      [enable_games=no], [enable_games=yes])
+AC_ARG_WITH([tmpdir],
+	    AC_HELP_STRING([--with-tmpdir=PATH],
+		[directory for temporary files (default=/tmp/ggzd)]),
+	    [tmpdir=$withval], [tmpdir="/tmp/ggzd"])
+AC_ARG_WITH([database],
+	    AC_HELP_STRING([--with-database=DB],
+		[type of database to use: db2, db3, db4, pgsql, mysql]),
+	    [database=$withval], [database=yes])
 
 
 dnl Check for GGZ Requirements
@@ -36,7 +46,7 @@ dnl Check for header files
 dnl ======================
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS(sys/time.h unistd.h)
+AC_CHECK_HEADERS([sys/time.h unistd.h])
 
 
 dnl Check for typedefs, structures, and compiler characteristics
@@ -67,10 +77,10 @@ dnl Check for library functions
 dnl ===========================
 AC_CHECK_FUNCS([select scandir gethostname strcasecmp])
 
-AC_CHECK_LIB(popt, poptGetNextOpt,
-    [AC_CHECK_HEADER(popt.h, ggzd_LIBS="$ggzd_LIBS -lpopt",
-        AC_MSG_ERROR(*** Cannot find popt.h header); exit)],
-    AC_MSG_ERROR(*** Cannot find popt library ); exit)
+AC_CHECK_LIB([popt], [poptGetNextOpt],
+    [AC_CHECK_HEADER([popt.h], [ggzd_LIBS="$ggzd_LIBS -lpopt"],
+        AC_MSG_ERROR([*** Cannot find popt.h header]))],
+    AC_MSG_ERROR([*** Cannot find popt library]))
 
 # Strsep is implemented in ggzd/strsep.c, this is used if needed.
 AC_REPLACE_FUNCS([strsep])
@@ -83,22 +93,22 @@ char* strsep(char **stringp, const char *delim);
 dnl Find pthread library
 dnl ====================
 AC_CHECK_HEADER(pthread.h,
-    [AC_CHECK_LIB(pthread, pthread_create,
-        ggzd_LIBS="$ggzd_LIBS -lpthread"
-    CFLAGS="$CFLAGS -D_REENTRANT",
+    [AC_CHECK_LIB([pthread], [pthread_create],
+        [ggzd_LIBS="$ggzd_LIBS -lpthread"
+         CFLAGS="$CFLAGS -D_REENTRANT"],
     [AC_CHECK_LIB(c_r, pthread_create,
         [ggzd_LIBS="$ggzd_LIBS -pthread"
-        CFLAGS="$CFLAGS -D_THREAD_SAFE"],
-            AC_MSG_ERROR(*** Cannot find pthread library); exit)])],
-    AC_MSG_ERROR(*** Cannot find pthread.h header); exit)
+         CFLAGS="$CFLAGS -D_THREAD_SAFE"],
+            AC_MSG_ERROR([*** Cannot find pthread library]))])],
+    AC_MSG_ERROR([*** Cannot find pthread.h header]))
 
 
 dnl Check for expat
 dnl ==============
-AC_CHECK_LIB(expat, XML_ParserCreate,
-    [AC_CHECK_HEADER(expat.h, ggzd_LIBS="$ggzd_LIBS -lexpat",
-        AC_MSG_ERROR(*** Cannot find expat.h header); exit)],
-    AC_MSG_ERROR(*** Cannot find expat library ); exit)
+AC_CHECK_LIB([expat], [XML_ParserCreate],
+    [AC_CHECK_HEADER([expat.h], [ggzd_LIBS="$ggzd_LIBS -lexpat"],
+        AC_MSG_ERROR([*** Cannot find expat.h header]))],
+    AC_MSG_ERROR([*** Cannot find expat library]))
 
 dnl Check database libs
 dnl ===================
