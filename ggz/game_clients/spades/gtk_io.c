@@ -33,6 +33,8 @@
 #include <stdarg.h>
 #include <gtk/gtk.h>
 
+#include "dlg_exit.h"
+
 #include <card.h>
 #include <client.h>
 #include <display.h>
@@ -40,7 +42,6 @@
 #include <gtk_connect.h>
 #include <gtk_dlg_options.h>
 #include <gtk_dlg_stat.h>
-#include <gtk_dlg_exit.h>
 #include <gtk_menu.h>
 #include <gtk_taunt.h>
 #include <gtk_play.h>

@@ -26,6 +26,8 @@
 
 #include <gtk/gtk.h>
 
+#include "dlg_exit.h"
+
 #include <gtk_connect.h>
 #include <gtk_io.h>
 #include <gtk_play.h>
@@ -34,7 +36,6 @@
 #include <gtk_dlg_options.h>
 #include <gtk_dlg_disconnect.h>
 #include <gtk_dlg_stat.h>
-#include <gtk_dlg_exit.h>
 #include <client.h>
 #include <display.h>
 

@@ -4,7 +4,7 @@ EXTRA_DIST = module.dsc.in
 
 SUBDIRS = .
 
-INCLUDES = @GTK_CFLAGS@
+INCLUDES = @GTK_CFLAGS@ -I$(top_srcdir)/common/
 
 ggzexecmod_PROGRAMS = ggz.spades
 
@@ -20,7 +20,6 @@ ggz_spades_SOURCES = card.c \
 		    gtk_dlg_options.h \
 		    gtk_dlg_disconnect.h \
 		    gtk_dlg_error.h \
-		    gtk_dlg_exit.h \
 		    gtk_dlg_stat.h \
 		    gtk_io.c \
 		    gtk_io.h \
@@ -35,7 +34,6 @@ ggz_spades_SOURCES = card.c \
 		    gtk_dlg_about.c \
 		    gtk_dlg_options.c \
 		    gtk_dlg_disconnect.c \
-		    gtk_dlg_exit.c \
 		    gtk_dlg_error.c \
 		    gtk_dlg_stat.c \
 		    options.h \
@@ -47,7 +45,7 @@ ggz_spades_SOURCES = card.c \
 
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-ggz_spades_LDADD = @GTK_LIBS@ $(LDADD)
+ggz_spades_LDADD = @GTK_LIBS@ $(LDADD) $(top_builddir)/common/libgtk-games.a
 
 install-data-local:
 	@$(NORMAL_INSTALL)

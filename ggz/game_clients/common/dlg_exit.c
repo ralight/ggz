@@ -1,9 +1,9 @@
 /*
  * File: gtk_dlg_exit.c
  * Author: Brent Hendricks
- * Project: NetSpades
+ * Project: GGZ Gtk Games (taken from NetSpades)
  * Date: 1/29/99
- * $Id: gtk_dlg_exit.c 3627 2002-03-23 18:04:45Z jdorje $
+ * $Id: dlg_exit.c 3629 2002-03-23 19:31:28Z jdorje $
  *
  * This file contains functions for creating and handling the 
  * exit dialog box.
@@ -25,14 +25,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
 #include <gtk/gtk.h>
 
-void ExitDialog(GtkWidget * widget, gpointer data)
+#include "dlg_exit.h"
+
+void ggz_show_exit_dialog(int can_return)
 {
 
 	GtkWidget *window;

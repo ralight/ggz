@@ -1,14 +1,14 @@
-
 /*
  * File: gtk_dlg_exit.h
  * Author: Brent Hendricks
- * Project: NetSpades
+ * Project: GGZ Gtk Games (taken from NetSpades)
  * Date: 1/29/99
+ * $Id: dlg_exit.h 3629 2002-03-23 19:31:28Z jdorje $
  *
  * This fils contains functions for creating and handling the 
  * exit dialog box
  *
- * Copyright (C) 1998 Brent Hendricks.
+ * Copyright (C) 1998-2002 Brent Hendricks.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
 #include <gtk/gtk.h>
 
-void ExitDialog(GtkWidget *, gpointer);
+void ggz_show_exit_dialog(int can_return);

@@ -2,7 +2,7 @@
  * File: callbacks.h
  * Author: Brent Hendricks
  * Project: NetSpades
- * $Id: callbacks.h 3628 2002-03-23 18:36:30Z jdorje $
+ * $Id: callbacks.h 3629 2002-03-23 19:31:28Z jdorje $
  *
  * This file contains the functions which operate on the type card. See the
  * header file card.h for a better description of these functions.
@@ -25,8 +25,8 @@
  */
 
 #include <gtk/gtk.h>
-#include <gtk_dlg_exit.h>
 
+#include "dlg_exit.h"
 
 void InputOptions(GtkButton * button, gpointer user_data);
 
@@ -49,3 +49,5 @@ void get_types(GtkMenuItem * menuitem, gpointer user_data);
 void get_players(GtkMenuItem * menuitem, gpointer user_data);
 
 void get_tables(GtkMenuItem * menuitem, gpointer user_data);
+
+void ExitDialog(GtkWidget *widget, gpointer user_data);
