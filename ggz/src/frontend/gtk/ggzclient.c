@@ -2,7 +2,7 @@
  * File: ggzclient.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.c 3201 2002-02-01 04:55:51Z jdorje $
+ * $Id: ggzclient.c 3387 2002-02-17 08:44:28Z rgade $
  *
  * This is the main program body for the GGZ client
  *
@@ -39,7 +39,7 @@
 #include "xtext.h"
 
 
-static gint server_handle;
+static gint server_handle=-1;
 
 extern GtkWidget *login_dialog;
 extern GtkWidget *win_main;
@@ -1064,3 +1064,10 @@ static GGZHookReturn ggz_auto_join(GGZServerEvent id, void* event_data, void* us
 	return GGZ_HOOK_REMOVE;
 }
 
+
+int ggz_connection_query(void)
+{
+	if(server_handle == -1)
+		return 0;
+	return 1;
+}

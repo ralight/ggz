@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 3379 2002-02-17 06:52:13Z rgade $
+ * $Id: client.c 3387 2002-02-17 08:44:28Z rgade $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -164,7 +164,9 @@ static void
 client_exit_activate		(GtkMenuItem	*menuitem,
 				 gpointer	 data)
 {
-	if (msgbox(_("Are you sure you want to quit?"), _("Quit?"), MSGBOX_YESNO, MSGBOX_QUESTION, MSGBOX_MODAL) == MSGBOX_YES)
+	if (ggz_connection_query() == 0 
+            || msgbox(_("Are you sure you want to quit?"), _("Quit?"),
+                      MSGBOX_YESNO, MSGBOX_QUESTION, MSGBOX_MODAL) ==MSGBOX_YES)
 	{
 		chat_save_lists();
 		gtk_main_quit();
@@ -657,7 +659,9 @@ static void
 client_exit_button_clicked		(GtkButton	*button,
 					 gpointer	 data)
 {
-	if (msgbox(_("Are you sure you want to quit?"), _("Quit?"), MSGBOX_YESNO, MSGBOX_QUESTION, MSGBOX_MODAL) == MSGBOX_YES)
+	if (ggz_connection_query() == 0 
+	    || msgbox(_("Are you sure you want to quit?"), _("Quit?"),
+		        MSGBOX_YESNO,MSGBOX_QUESTION,MSGBOX_MODAL) ==MSGBOX_YES)
 	{
 		chat_save_lists();
 		gtk_main_quit();
@@ -1903,7 +1907,7 @@ create_win_main (void)
                       GTK_SIGNAL_FUNC (client_realize),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (win_main), "delete_event",
-                      GTK_SIGNAL_FUNC (gtk_main_quit),
+                      GTK_SIGNAL_FUNC (client_exit_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (connect), "activate",
                       GTK_SIGNAL_FUNC (client_connect_activate),

@@ -2,7 +2,7 @@
  * File: ggzclient.h
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: ggzclient.h 3092 2002-01-12 10:48:13Z jdorje $
+ * $Id: ggzclient.h 3387 2002-02-17 08:44:28Z rgade $
  *
  * This is the main program body for the GGZ client
  *
@@ -30,6 +30,7 @@
 
 void ggz_event_init(GGZServer *Server);
 void ggz_sensitivity_init(void);
+int ggz_connection_query(void);
 extern gint numrooms;
 extern gint numtables;
 
