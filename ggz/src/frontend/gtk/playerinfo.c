@@ -2,7 +2,7 @@
  * File: playerinfo.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: playerinfo.c 6323 2004-11-11 04:02:23Z jdorje $
+ * $Id: playerinfo.c 6367 2004-11-14 13:59:03Z jdorje $
  *
  * This dialog is used to display information about a selected player to
  * the user. 
@@ -243,6 +243,7 @@ GtkWidget *create_dlg_info(void)
 	GtkWidget *dlg_info;
 	GtkWidget *dialog_vbox;
 	GtkWidget *display_hbox;
+	GdkPixbuf *pixbuf;
 	GtkWidget *game_pixmap;
 	GtkWidget *info_vbox;
 	GtkWidget *handle_hbox;
@@ -293,11 +294,14 @@ GtkWidget *create_dlg_info(void)
 			   0);
 	gtk_container_set_border_width(GTK_CONTAINER(display_hbox), 5);
 
-	game_pixmap = create_pixmap(dlg_info, NULL);
+	pixbuf = load_pixbuf("unknown");
+	game_pixmap = gtk_image_new_from_pixbuf(pixbuf);
 	gtk_widget_ref(game_pixmap);
 	g_object_set_data_full(G_OBJECT(dlg_info), "game_pixmap",
 				 game_pixmap,
 				 (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data_full(G_OBJECT(game_pixmap), "game_pixbuf",
+			       pixbuf, g_object_unref);
 	gtk_widget_show(game_pixmap);
 	gtk_box_pack_start(GTK_BOX(display_hbox), game_pixmap, FALSE, TRUE,
 			   0);
