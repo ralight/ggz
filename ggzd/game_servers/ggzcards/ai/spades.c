@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 8/4/99
  * Desc: NetSpades algorithms for Spades AI
- * $Id: spades.c 2442 2001-09-10 12:38:58Z jdorje $
+ * $Id: spades.c 2456 2001-09-12 02:59:16Z jdorje $
  *
  * This file contains the AI functions for playing spades.
  * The AI routines were adapted from Britt Yenne's spades game for
@@ -119,18 +119,23 @@ static void alert_play(player_t p, card_t play)
 {
 #ifdef USE_AI_TRICKS
 	card_t lead = game.seats[game.players[game.leader].seat].table;
-	card_t card;
 #endif
+
+	/* The problem with both these "tricks" below is that if a player has 
+	   a run of cards, he may as well play his low instead of his high -
+	   which would confuse us a lot.  So although it is a good method
+	   generally, in the form it's in here it's no good.  --JDS */
 
 #ifdef USE_AI_TRICKS
 	/* when a nil player sluffs, they'll sluff their highest card in that
 	   suit */
-	card = play;
 	if (game.players[p].bid.sbid.spec == SPADES_NIL
 	    && game.players[p].tricks == 0 && play.suit != lead.suit
-	    && play.suit != SPADES)
+	    && play.suit != SPADES) {
+		card_t card = play;
 		for (card.face++; card.face <= ACE_HIGH; card.face++)
 			libai_player_doesnt_have_card(p, card);
+	}
 #endif
 
 #ifdef USE_AI_TRICKS
@@ -147,16 +152,14 @@ static void alert_play(player_t p, card_t play)
 						   FAR IN THIS SUIT */ ) {
 			/* nil bids don't have any between this card and
 			   highest play */
-			for (card = play, card.face++; card.face < -1	/* THE 
-									   HIGHEST 
-									   CARD 
-									   PLAYED 
-									   SO 
-									   FAR 
-									   IN 
-									   THIS 
-									   SUIT 
-									 */ ; card.face++)
+			card_t card = play;
+			for (card.face++; card.face < -1	/* THE
+								   HIGHEST
+								   CARD
+								   PLAYED SO 
+								   FAR IN
+								   THIS SUIT 
+								 */ ; card.face++)
 				libai_player_doesnt_have_card(p, card);
 		}
 	}
@@ -168,27 +171,30 @@ static void alert_play(player_t p, card_t play)
    It's only accurate with weak trumps; with strong spades it'll underbid. */
 static int count_spade_ruff_winners(player_t num)
 {
-	int points = 0, count, bonus;
-	int voids = 0, singletons = 0, doubletons = 0;
+	int points = 0, count, suitlen;
 	card_t c = { ACE_HIGH, SPADES, 0 };	/* suit=SPADES and deck=0 */
 	char s;
+	int shortsuits[3] = { 0, 0, 0 };	/* number of voids,
+						   singletons, doubletons we
+						   have */
+#ifdef AGGRESSIVE_BIDDING
+	int shortvalues[3] = { 90, 75, 50 };
+#else
+	int shortvalues[3] = { 90, 70, 40 };	/* percentage chance of
+						   winning with a ruff */
+#endif
 
-	count = libai_count_suit(num, SPADES);
+	/* count our shortsuits */
 	for (s = 0; s < 4; s++) {
 		if (s == SPADES)
 			continue;
-		switch (libai_count_suit(num, s)) {
-		case 0:
-			voids++;
-			break;
-		case 1:
-			singletons++;
-			break;
-		case 2:
-			doubletons++;
-			break;
-		}
+		count = libai_count_suit(num, s);
+		if (count < 3)
+			shortsuits[count]++;
 	}
+
+	/* count our spades */
+	count = libai_count_suit(num, SPADES);
 
 	/* First count sure winners. */
 	for (c.face = ACE_HIGH; c.face >= 2 && libai_is_card_in_hand(num, c);
@@ -198,32 +204,20 @@ static int count_spade_ruff_winners(player_t num)
 	}
 
 	/* Now figure if we use our trumps on other suits */
-	for (; voids > 0 && count > 0; voids--) {
-		points += 90;
-		count--;
-		ai_debug("Counting void as 90 (first ruff only)");
-		singletons++;	/* we'll try to ruff it a second time! */
-	}
-	for (; singletons > 0 && count > 0; singletons--) {
-#ifdef AGGRESSIVE_BIDDING
-		bonus = 75;
-#else
-		bonus = 70;
-#endif
-		count -= 1;
-		points += bonus;
-		ai_debug("Counting singleton as %d", bonus);
-		doubletons++;	/* we'll try to ruff it a third time! */
-	}
-	for (; doubletons > 0 && count > 0; doubletons--) {
-#ifdef AGGRESSIVE_BIDDING
-		bonus = 50;
-#else
-		bonus = 40;
-#endif
-		count -= 1;
-		points += bonus;
-		ai_debug("Counting doubleton as %d", bonus);
+	for (suitlen = 0; suitlen < 3; suitlen++) {	/* voids, singletons, 
+							   doubletons */
+		for (; shortsuits[suitlen] > 0 && count > 0;
+		     shortsuits[suitlen]--) {
+			/* each chance we get to trump in has a certain
+			   chance of winning the trick and uses up one trump. 
+			 */
+			points += shortvalues[suitlen];
+			count--;
+			ai_debug("Count ruff on trick %d as %d.", suitlen + 1,
+				 shortvalues[suitlen]);
+			if (suitlen < 2)
+				shortsuits[suitlen + 1]++;
+		}
 	}
 
 	return points;
@@ -255,7 +249,7 @@ static int count_spade_strength_winners(player_t p)
 #ifdef AGGRESSIVE_BIDDING
 		ai_debug("Counted 4th spade 1 trick.");
 		points += 100;
-#elsif
+#else
 		ai_debug("Counted 4th spade as 1/2 trick.");
 		points += 50;
 #endif
