@@ -102,11 +102,10 @@ int hash_player_add(char *orig_name, GGZPlayer* player)
 		/* Allocate space for hash entry and name */
 		if((hl = malloc(sizeof(HashList))) == NULL)
 			err_sys_exit("malloc failed in hash_player_add()");
-		if((hl->name = malloc(strlen(name)+1)) == NULL)
+		if((hl->name = strdup(name)) == NULL)
 			err_sys_exit("malloc failed in hash_player_add()");
 
-		/* Set the data items */
-		strcpy(hl->name, name);
+		/* Set the data items (name was set above) */
 		hl->player = player;
 		hl->next = hash_list[hash_num];
 

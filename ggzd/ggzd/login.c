@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 4115 2002-04-29 22:47:18Z jdorje $
+ * $Id: login.c 4116 2002-04-29 22:59:04Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -149,7 +149,7 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer* player,
 		}
 
 		/* Password is verified, update their last login */
-		strcpy(db_pe.handle, name);
+		snprintf(db_pe.handle, sizeof(db_pe.handle), "%s", name);
 		db_pe.last_login = time(NULL);
 		if (ggzdb_player_update(&db_pe) != 0)
 			err_msg("Player database update failed (%s)", name);
