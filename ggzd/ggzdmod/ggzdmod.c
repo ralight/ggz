@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.c 3248 2002-02-05 02:39:35Z jdorje $
+ * $Id: ggzdmod.c 3251 2002-02-05 08:56:52Z jdorje $
  *
  * This file contains the backend for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -75,9 +75,8 @@ static GGZSeat* seat_copy(GGZSeat *orig);
 static int seat_compare(GGZSeat *a, GGZSeat *b);
 static int seat_find_player(GGZSeat *a, GGZSeat *b);
 static void seat_free(GGZSeat *seat);
-#if 0 /* Not currently used */
-static void dump_seats(GGZdMod *mod);
-#endif
+
+/* Debugging function (see also ggzdmod_check) */
 static void seat_print(GGZdMod * ggzdmod, GGZSeat *seat);
 
 /* Invokes handlers for the specefied event */
@@ -1108,43 +1107,6 @@ void _ggzdmod_handle_state_response(GGZdMod * ggzdmod)
 }
 
 
-#if 0 /* Not currently used.  See also the
-	 prototype up above. */
-static void dump_seats(GGZdMod *ggzdmod)
-{
-	GGZListEntry *entry;
-	GGZSeat *seat;
-
-	ggzdmod_log(ggzdmod, "GGZDMOD: Begin Seat dump (%d):",
-		    ggzdmod_get_num_seats(mod));
-	for (entry = ggz_list_head(ggzdmod->seats);
-	     entry != NULL;
-	     entry = ggz_list_next(entry)) {
-		
-		seat = ggz_list_get_data(entry);
-		seat_print(ggzdmod, seat);
-	}
-	ggzdmod_log(ggzdmod, "GGZDMOD: End Seat dump");
-}
-#endif
-
-
-static void seat_print(GGZdMod * ggzdmod, GGZSeat * seat)
-{
-	char *type = NULL;
-
-	switch (seat->type) {
-	case GGZ_SEAT_OPEN: type = "OPEN"; break;
-	case GGZ_SEAT_BOT: type = "BOT"; break;		
-	case GGZ_SEAT_RESERVED: type = "RESV"; break;		
-	case GGZ_SEAT_NONE: type = "NONE"; break;		
-	case GGZ_SEAT_PLAYER: type = "PLYR"; break;
-	}
-	ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is %s (%s) on %d",
-		    seat->num, type, seat->name, seat->fd);
-}
-
-
 /* Create a new copy of a seat object */
 static GGZSeat* seat_copy(GGZSeat *orig)
 {
@@ -1194,6 +1156,14 @@ static void seat_free(GGZSeat *seat)
 		ggz_free(seat->name);
 
 	ggz_free(seat);
+}
+
+
+static void seat_print(GGZdMod * ggzdmod, GGZSeat * seat)
+{
+	char *type = ggz_seattype_to_string(seat->type);
+	ggzdmod_log(ggzdmod, "GGZDMOD: Seat %d is %s (%s) on %d",
+		    seat->num, type, seat->name, seat->fd);
 }
 
 
