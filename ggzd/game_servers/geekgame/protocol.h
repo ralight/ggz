@@ -18,6 +18,8 @@
 #ifndef GEEKGAME_PROTOCOL_H
 #define GEEKGAME_PROTOCOL_H
 
+#define GEEKGAME_PROTOCOL 1
+
 enum NetworkOpcodes
 {
 	op_server_greeting   = 10,

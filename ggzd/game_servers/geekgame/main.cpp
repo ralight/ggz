@@ -22,6 +22,7 @@
 #include <iostream>
 #include <getopt.h>
 #include <cstdlib>
+#include <ctime>
 
 // Version information
 #define GEEKGAME_VERSION "0.1"
@@ -65,6 +66,8 @@ int main(int argc, char** argv)
 				mode = MODE_GGZ;
 				break;
 		}
+
+	srand(time(NULL));
 
 	if(mode == MODE_GGZ)
 	{

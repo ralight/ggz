@@ -14,6 +14,7 @@ Version = 1
 
 [TableOptions]
 AllowLeave = 1
+BotsAllowed = 1
 PlayersAllowed = 1..5
 AllowSpectators = 1
 

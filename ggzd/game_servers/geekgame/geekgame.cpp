@@ -54,13 +54,16 @@ void Geekgame::joinEvent(int player)
 	int channel = fd(player);
 	ggz_write_char(channel, op_server_greeting);
 	ggz_write_string(channel, "geekgame");
-	ggz_write_int(channel, 1);
+	ggz_write_int(channel, GEEKGAME_PROTOCOL);
 }
 
 // Player leave event
 void Geekgame::leaveEvent(int player)
 {
 	std::cout << "Geekgame: leaveEvent" << std::endl;
+
+	// Stop the game for the time being
+	game_stop();
 }
 
 // Spectator join event
@@ -73,9 +76,6 @@ void Geekgame::spectatorJoinEvent(int spectator)
 void Geekgame::spectatorLeaveEvent(int spectator)
 {
 	std::cout << "Geekgame: spectatorLeaveEvent" << std::endl;
-
-	// Stop the game for the time being
-	game_stop();
 }
 
 // Spectator data event (ignored)
@@ -88,7 +88,7 @@ void Geekgame::dataEvent(int player)
 {
 	char opcode;
 	char playername[256], playerpic[256];
-	int x, y;
+	int x, y, result;
 
 	std::cout << "Geekgame: dataEvent" << std::endl;
 
@@ -131,9 +131,9 @@ void Geekgame::dataEvent(int player)
 		case op_client_move:
 			ggz_read_int(channel, &x);
 			ggz_read_int(channel, &y);
-			// check_map(x, y);
+			result = map_check(x, y);
 			ggz_write_char(channel, op_server_moveresult);
-			ggz_write_int(channel, 1);
+			ggz_write_int(channel, result);
 			break;
 		default:
 			// Discard
@@ -149,14 +149,22 @@ void Geekgame::errorEvent()
 
 void Geekgame::game_start()
 {
+	for(int j = 0; j < ARRAY_HEIGHT; j++)
+		for(int k = 0; k < ARRAY_WIDTH; k++)
+			m_array[k][j] = rand() % 2;
+
 	for(int i = 0; i < players(); i++)
 	{
 		int bfd = fd(i);
 		ggz_write_char(bfd, op_server_gamestart);
+
+		ggz_write_int(bfd, ARRAY_HEIGHT);
+		ggz_write_int(bfd, ARRAY_WIDTH);
+
+		for(int j = 0; j < ARRAY_HEIGHT; j++)
+			for(int k = 0; k < ARRAY_WIDTH; k++)
+				ggz_write_int(bfd, m_array[j][k]);
 	}
-	for(int j = 0; j < ARRAY_HEIGHT; j++)
-		for(int i = 0; i < ARRAY_WIDTH; i++)
-			m_array[i][j] = rand() % 2;
 }
 
 void Geekgame::game_stop()
