@@ -4,7 +4,7 @@
  * Project: GGZ
  * Date: 10/18/99
  * Desc: Protocol enumerations, etc.
- * $Id: protocols.h 4508 2002-09-11 03:48:41Z jdorje $
+ * $Id: protocols.h 4603 2002-09-17 14:42:16Z jdorje $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -34,11 +34,12 @@
 #define GGZ_CS_PROTO_VERSION 8
 
 /* Chat subops - these are defined separately in ggzcore */
-							/* PMCCCCCC */
-#define GGZ_CHAT_NORMAL		(unsigned char) 0x40	/* 01000000 */
-#define GGZ_CHAT_ANNOUNCE	(unsigned char) 0x60	/* 01100000 */
-#define GGZ_CHAT_BEEP		(unsigned char) 0x80	/* 10000000 */
-#define GGZ_CHAT_PERSONAL	(unsigned char) 0xC0	/* 11000000 */
+typedef enum {
+	GGZ_CHAT_NORMAL,
+	GGZ_CHAT_ANNOUNCE,
+	GGZ_CHAT_BEEP,
+	GGZ_CHAT_PERSONAL
+} GGZChatType;
 
 /* Update opcodes */
 typedef enum {

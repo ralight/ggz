@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 9/22/01
  * Desc: Functions for handling network IO
- * $Id: net.c 4585 2002-09-16 06:53:40Z jdorje $
+ * $Id: net.c 4603 2002-09-17 14:42:16Z jdorje $
  * 
  * Code for parsing XML streamed from the server
  *
@@ -568,17 +568,17 @@ int net_send_chat(GGZNetIO *net, unsigned char opcode, char *name, char *msg)
 		break;
 	case GGZ_CHAT_BEEP:
 		type = "beep";
+		msg = NULL;
 		break;
 	case GGZ_CHAT_PERSONAL:
 		type = "private";
 		break;
 	}
 
-	if (opcode & GGZ_CHAT_M_MESSAGE) {
+	if (msg) {
 		_net_send_line(net, "<CHAT TYPE='%s' FROM='%s'><![CDATA[%s]]></CHAT>", 
 			       type, name, msg);
-	}
-	else 
+	} else 
 		_net_send_line(net, "<CHAT TYPE='%s' FROM='%s'/>", type, name);
 			       
 
