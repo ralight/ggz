@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 SUBDIRS = spades tictactoe dots lapocha reversi combat hastings \
-	  chinese-checkers
+	  chinese-checkers chess
 
 
 test:test-recursive
