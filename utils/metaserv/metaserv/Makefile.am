@@ -1,10 +1,15 @@
 SUBDIRS = .
 
-bin_PROGRAMS = metaserv
+bin_PROGRAMS = metaserv ggzmetaserv
 
 metaserv_SOURCES = metaserv.c
 metaserv_LDADD = ../minidom/libminidom.a
-INCLUDES = -I../minidom
+
+ggzmetaserv_SOURCES = server.c gensocket.c
+ggzmetaserv_LDFLAGS = -L/usr/local/lib
+ggzmetaserv_LDADD = -lgensecure
+
+INCLUDES = -I../minidom -I/usr/local/ssl/include -I/usr/local/include
 
 confdir = $(prefix)/share/metaserv
 conf_DATA = metaservconf.xml

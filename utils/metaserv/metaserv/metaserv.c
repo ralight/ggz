@@ -202,7 +202,7 @@ void metaserv_peers()
 	ELE *el2, *el;
 	char *username, *password, *uri;
 
-printf("Notify peers...\n");
+	/*printf("Notify peers...\n");*/
 
 #ifdef METASERV_OPTIMIZED
 	el2 = NULL;
@@ -222,7 +222,7 @@ printf("Notify peers...\n");
 		el = el2->el[i];
 		uri = el->value;
 
-printf("Got peer: %s\n", uri);
+		/*printf("Got peer: %s\n", uri);*/
 #ifdef METASERV_OPTIMIZED
 		username = NULL;
 		password = NULL;
@@ -239,7 +239,7 @@ printf("Got peer: %s\n", uri);
 #endif
 		if((uri) && (username) && (password))
 		{
-			printf("==> notify: %s:%s@%s\n", username, password, uri);
+			/*printf("==> notify: %s:%s@%s\n", username, password, uri);*/
 		}
 
 		i++;
@@ -322,7 +322,7 @@ char *metaserv_update(const char *class, const char *category, const char *usern
 				ele2->el[ele2->elnum] = NULL;
 
 				/* dump new configuration */
-				minidom_dump(configuration);
+				/*minidom_dump(configuration);*/
 			}
 			else if(!strcmp(mode, "modify"))
 			{
@@ -334,7 +334,7 @@ char *metaserv_update(const char *class, const char *category, const char *usern
 				ele2 = NULL;
 
 				/* dump new configuration */
-				minidom_dump(configuration);
+				/*minidom_dump(configuration);*/
 			}
 			else status = "wrong";
 		}
@@ -469,7 +469,7 @@ char *metaserv_xml(const char *uri)
 						att[atnum - 1]->name = strdup(name);
 						att[atnum - 1]->value = strdup(query->el->el[i]->value);
 						att[atnum] = NULL;
-						printf("Got: %s/%s\n", name, query->el->el[i]->value);
+						/*printf("Got: %s/%s\n", name, query->el->el[i]->value);*/
 					}
 				}
 			}
@@ -532,7 +532,7 @@ char *metamagic(char *uri)
 void metaserv_init()
 {
 	configuration = minidom_load(METASERV_DIR "/metaservconf.xml");
-	minidom_dump(configuration);
+	/*minidom_dump(configuration);*/
 	/*fflush(NULL);*/
 }
 

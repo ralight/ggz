@@ -21,3 +21,8 @@ Query Altantik:
 
 <?xml version="1.0"?><query class="atlantik" type="connection">0.1</query>
 
+
+Add a meta server entry to GGZ:
+ 
+<?xml version="1.0"?><update class="ggz" type="meta" username="josef" password="ggzrocks"><option name="mode">add</option><option name="version">0.1</option><option name="preference">50</option><option name="uri">ggzmeta://somehost.org:15689</option><option name="class">ggz</option></update>
+
