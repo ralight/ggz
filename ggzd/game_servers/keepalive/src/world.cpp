@@ -31,12 +31,17 @@
 
 // System includes
 #include <iostream>
+#include <sys/types.h>
+#include <dirent.h>
+#include <string>
 
 // Constructor
 World::World()
 {
 	m_width = 500;
 	m_height = 400;
+
+	loadPlayers();
 }
 
 // Destructor
@@ -48,7 +53,17 @@ World::~World()
 // Add a new player to the world
 void World::addPlayer(const char *name, int fd)
 {
-	Player *p = new Player(name, fd);
+	// Either get player's grave or create new one
+	Player *p = getPlayer(name);
+	if(!p)
+	{
+		p = new Player(name, fd);
+		m_playerlist.push_back(*p);
+	}
+	else
+	{
+		p->revive(fd);
+	}
 
 	std::cout << "Transmit data to player " << name << std::endl;
 
@@ -67,12 +82,13 @@ void World::addPlayer(const char *name, int fd)
 	ggz_write_int(p->fd(), m_playerlist.size());
 	for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 	{
-		ggz_write_string((*it).fd(), (*it).name());
-		ggz_write_int((*it).fd(), (*it).x());
-		ggz_write_int((*it).fd(), (*it).y());
+		if(&(*it) == p) continue;
+std::cout << "Transmit: " << (*it).name() << " - " << (*it).type() << " - " << (*it).x() << ", " << (*it).y() << std::endl;
+		ggz_write_string(p->fd(), (*it).name());
+		ggz_write_int(p->fd(), (*it).type());
+		ggz_write_int(p->fd(), (*it).x());
+		ggz_write_int(p->fd(), (*it).y());
 	}
-
-	m_playerlist.push_back(*p);
 
 	std::cout << "Ready with transmitting" << std::endl;
 }
@@ -81,17 +97,28 @@ void World::addPlayer(const char *name, int fd)
 void World::removePlayer(const char *name)
 {
 	std::cout << "Remove player " << name << std::endl;
+
 	Player *p = getPlayer(name);
 	if(p)
 	{
 		std::cout << "Got him" << std::endl;
+
 		for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 			if(&(*it) == p)
 			{
 				std::cout << "Erase him" << std::endl;
-				m_playerlist.erase(it);
-				//delete p;
-				std::cout << "Erased. " << std::endl;
+				//m_playerlist.erase(it);
+				p->die();
+
+				std::cout << "Erased - broadcast death. " << std::endl;
+				for(std::list<Player>::iterator it2 = m_playerlist.begin(); it2 != m_playerlist.end(); it2++)
+				{
+					if(&(*it2) == p) continue;
+					if((*it2).type() == type_grave) continue;
+					ggz_write_char((*it2).fd(), op_quit);
+					ggz_write_string((*it2).fd(), name);
+				}
+
 				return;
 			}
 	}
@@ -102,8 +129,10 @@ void World::removePlayer(const char *name)
 Player *World::getPlayer(const char *name)
 {
 	if(!name) return NULL;
+
 	for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 		if(!strcmp((*it).name(), name)) return &(*it);
+
 	return NULL;
 }
 
@@ -117,6 +146,27 @@ int World::width()
 int World::height()
 {
 	return m_height;
+}
+
+// Load all initial graves
+void World::loadPlayers()
+{
+	DIR *dp;
+	struct dirent *ep;
+
+	std::string graveyard = std::string(DATADIR) + "/keepalive/";
+
+	dp = opendir(graveyard.c_str());
+	if(!dp) return;
+	while((ep = readdir(dp)) != NULL)
+	{
+		if(!strcmp(ep->d_name, ".")) continue;
+		if(!strcmp(ep->d_name, "..")) continue;
+		Player *p = new Player(ep->d_name, -1);
+		p->automorph();
+		m_playerlist.push_back(*p);
+	}
+	closedir(dp);
 }
 
 // Receive data from a client
@@ -144,12 +194,14 @@ void World::receive(const char *name, void *data)
 			pname = p->morph(username, password);
 			if(pname)
 			{
+				// Send login confirmation
 				ggz_write_char(p->fd(), op_name);
 				ggz_write_string(p->fd(), pname);
-				std::cout << "sent login succeeded" << std::endl;
 
+				// Broadcast avatar name and position
 				for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 				{
+					if((*it).type() == type_grave) continue;
 					ggz_write_char((*it).fd(), op_moved);
 					ggz_write_string((*it).fd(), name);
 					ggz_write_int((*it).fd(), p->x());
@@ -158,6 +210,7 @@ void World::receive(const char *name, void *data)
 			}
 			else
 			{
+				// Send login failure
 				ggz_write_char(p->fd(), op_loginfailed);
 				std::cout << "sent login failed" << std::endl;
 			}
@@ -170,6 +223,7 @@ void World::receive(const char *name, void *data)
 			for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 			{
 				if(&(*it) == p) continue;
+				if((*it).type() == type_grave) continue;
 				ggz_write_char((*it).fd(), op_moved);
 				ggz_write_string((*it).fd(), name);
 				ggz_write_int((*it).fd(), x);
@@ -182,6 +236,7 @@ void World::receive(const char *name, void *data)
 			for(std::list<Player>::iterator it = m_playerlist.begin(); it != m_playerlist.end(); it++)
 			{
 				if(&(*it) == p) continue;
+				if((*it).type() == type_grave) continue;
 				ggz_write_char((*it).fd(), op_chatted);
 				ggz_write_string((*it).fd(), name);
 				ggz_write_string((*it).fd(), message);

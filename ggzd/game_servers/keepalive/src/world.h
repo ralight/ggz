@@ -41,6 +41,8 @@ class World
 		void receive(const char *name, void *data);
 
 	private:
+		void loadPlayers();
+
 		std::list<Player> m_playerlist;
 		int m_width;
 		int m_height;

@@ -25,16 +25,19 @@ class Player
 		Player(const char *name, int fd);
 		~Player();
 		void move(int x, int y);
+		void automorph();
 		char *morph(const char *username, const char *password);
 		void die();
+		void revive(int fd);
 		int x();
 		int y();
 		int fd();
+		int type();
 		char *name();
 		char *username();
 
 	private:
-		int m_x, m_y, m_fd;
+		int m_x, m_y, m_fd, m_type;
 		char *m_name;
 		char *m_username;
 		char *m_password;

@@ -22,6 +22,9 @@
 // Header file
 #include "player.h"
 
+// Keepalive includes
+#include "protocol.h"
+
 // System includes
 #include <cstdio>
 #include <cstring>
@@ -43,6 +46,7 @@ Player::Player(const char *name, int fd)
 	m_y = 0;
 	m_username = NULL;
 	m_password = NULL;
+	m_type = type_born;
 }
 
 // Destructor
@@ -82,7 +86,7 @@ std::cout << "grave is open... let's see who's inside" << std::endl;
 		f >> m_y;
 		f.close();
 std::cout << "Does " << pass.c_str() << " match " << password << "?" << std::endl;
-		if(pass != password)
+		if((password) && (pass != password))
 		{
 			return NULL;
 		}
@@ -101,7 +105,16 @@ std::cout << "Does " << pass.c_str() << " match " << password << "?" << std::end
 		m_x = 0;
 		m_y = 0;
 	}
+
+	if(password) m_type = type_avatar;
+	else m_type = type_grave;
+
 	return m_username;
+}
+
+void Player::automorph()
+{
+	morph(m_name, NULL);
 }
 
 // Put the player into the graveyard
@@ -132,6 +145,8 @@ void Player::die()
 		f << m_y << endl;
 		f.close();
 	}
+
+	m_type = type_grave;
 }
 
 // Return x coordinate
@@ -162,5 +177,15 @@ char *Player::name()
 char *Player::username()
 {
 	return m_username;
+}
+
+int Player::type()
+{
+	return m_type;
+}
+
+void Player::revive(int fd)
+{
+	m_fd = fd;
 }
 
