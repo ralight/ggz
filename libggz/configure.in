@@ -115,7 +115,7 @@ AC_CHECK_HEADER(pthread.h,
         LDADD="$LDADD -lpthread"
     CFLAGS="$CFLAGS -D_REENTRANT",
     [AC_CHECK_LIB(c_r, pthread_create,
-        [LDADD="$LDADD -lpthread"
+        [LDADD="$LDADD -pthread"
         CFLAGS="$CFLAGS -D_THREAD_SAFE"],
             AC_MSG_ERROR(*** Cannot find pthread library); exit)])],
     AC_MSG_ERROR(*** Cannot find pthread.h header); exit)
