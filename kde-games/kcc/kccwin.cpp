@@ -18,6 +18,11 @@
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
 #include <kdebug.h>
+#include <kiconloader.h>
+
+#ifdef HAVE_KNEWSTUFF
+#include <knewstuff/downloaddialog.h>
+#endif
 
 // Qt includes
 #include <qdir.h>
@@ -28,28 +33,21 @@ KCCWin::KCCWin(QWidget *parent, const char *name)
 : KMainWindow(parent, name)
 {
 	KStandardDirs d;
-	QString icontheme;
 
 	m_kcc = new KCC(this);
 	setCentralWidget(m_kcc);
 
 	m_networked = false;
 
-#if (((KDE_VERSION_MAJOR == 3) && (KDE_VERSION_MINOR >= 1)) || (KDE_VERSION_MAJOR > 3))
-	icontheme = "crystalsvg";
-#else
-	icontheme = "hicolor";
-#endif
-
-	QString pixexit = d.findResource("icon", icontheme + "/16x16/actions/exit.png");
-	QString pixsync = d.findResource("icon", icontheme + "/16x16/actions/reload.png");
-	QString pixscore = d.findResource("icon", icontheme + "/16x16/actions/history.png");
-
 	mgame = new KPopupMenu(this);
-	mgame->insertItem(QIconSet(QPixmap(pixsync)), i18n("Synchronize"), menusync);
-	mgame->insertItem(QIconSet(QPixmap(pixscore)), i18n("View score"), menuscore);
+	mgame->insertItem(KGlobal::iconLoader()->loadIcon("reload", KIcon::Small), i18n("Synchronize"), menusync);
+	mgame->insertItem(KGlobal::iconLoader()->loadIcon("history", KIcon::Small), i18n("View score"), menuscore);
 	mgame->insertSeparator();
-	mgame->insertItem(QIconSet(QPixmap(pixexit)), i18n("Quit"), menuquit);
+#ifdef HAVE_KNEWSTUFF
+	mgame->insertItem(KGlobal::iconLoader()->loadIcon("knewstuff", KIcon::Small), i18n("Get themes"), menutheme);
+	mgame->insertSeparator();
+#endif
+	mgame->insertItem(KGlobal::iconLoader()->loadIcon("exit", KIcon::Small), i18n("Quit"), menuquit);
 
 	//mtheme = new KPopupMenu(this);
 	//mtheme->insertItem(i18n("KDE/Gnome"), menuthemenew);
@@ -72,8 +70,9 @@ KCCWin::KCCWin(QWidget *parent, const char *name)
 
 	enableNetwork(false);
 
-	setCaption("Chinese Checkers");
-	resize(400, 450);
+	setCaption(i18n("Chinese Checkers"));
+	//resize(400, 450);
+	setFixedSize(400, 400);
 	show();
 }
 
@@ -103,6 +102,8 @@ KCC *KCCWin::kcc()
 // Handle menu stuff
 void KCCWin::slotMenu(int id)
 {
+	QDir d;
+
 	// Standard menu entries
 	switch(id)
 	{
@@ -112,6 +113,14 @@ void KCCWin::slotMenu(int id)
 		case menuscore:
 			score();
 			break;
+#ifdef HAVE_KNEWSTUFF
+		case menutheme:
+			d.mkdir(QDir::home().path() + "/.ggz");
+			d.mkdir(QDir::home().path() + "/.ggz/games");
+			d.mkdir(QDir::home().path() + "/.ggz/games/kcc");
+			KNS::DownloadDialog::open("kcc/theme");
+			break;
+#endif
 		case menuquit:
 			close();
 			break;

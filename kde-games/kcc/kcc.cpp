@@ -40,6 +40,7 @@ KCC::KCC(QWidget *parent, const char *name)
 
 	proto = new KCCProto(this);
 
+	setFixedSize(400, 400);
 	drawBoard();
 }
 

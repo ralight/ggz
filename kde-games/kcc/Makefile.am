@@ -16,7 +16,7 @@ noinst_HEADERS = \
 INCLUDES = $(all_includes) $(LIBGGZ_INCLUDES) $(LIBGGZMOD_INCLUDES)
 
 kcc_LDFLAGS = $(all_libraries) $(LIBGGZ_LDFLAGS) $(LIBGGZMOD_LDFLAGS)
-kcc_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_GGZ) $(LIB_GGZMOD)
+kcc_LDADD = $(LIB_KDECORE) $(LIB_KDEUI) $(KNEWSTUFF) $(LIB_GGZ) $(LIB_GGZMOD)
 
 METASOURCES = AUTO
 
@@ -30,6 +30,8 @@ KDE_ICON = kcc
 
 appsdir = $(kde_appsdir)/Games/ggz
 apps_DATA = kcc.desktop
+
+kde_conf_DATA = ktictactuxrc
 
 install-data-local:
 	$(GGZ_CONFIG) -D --install --modfile=module.dsc --force
