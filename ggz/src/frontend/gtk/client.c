@@ -2,7 +2,7 @@
  * File: client.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: client.c 6278 2004-11-06 00:16:45Z jdorje $
+ * $Id: client.c 6279 2004-11-06 03:15:23Z jdorje $
  * 
  * This is the main program body for the GGZ client
  * 
@@ -1334,7 +1334,7 @@ create_win_main (void)
   gtk_box_pack_start (GTK_BOX (client_hbox), client_hpaned, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (client_hpaned), 3);
   gtk_paned_set_gutter_size (GTK_PANED (client_hpaned), 10);
-  gtk_paned_set_position (GTK_PANED (client_hpaned), 180);
+  gtk_paned_set_position (GTK_PANED (client_hpaned), 220);
 
   lists_vbox = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (lists_vbox);

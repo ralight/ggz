@@ -3,7 +3,7 @@
  * Author: GGZ Dev Team
  * Project: GGZ GTK Client
  * Date: 11/05/2004
- * $Id: roomlist.c 6277 2004-11-05 23:38:34Z jdorje $
+ * $Id: roomlist.c 6279 2004-11-06 03:15:23Z jdorje $
  * 
  * List of rooms in the server
  * 
@@ -28,6 +28,10 @@
 #  include <config.h>
 #endif
 
+#define GTK_DISABLE_DEPRECATED
+
+#include <assert.h>
+
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <ggz.h>
@@ -40,11 +44,19 @@
 #include "server.h"
 #include "support.h"
 
-static void client_join_room(guint room)
+enum {
+	ROOM_COLUMN_PTR,
+	ROOM_COLUMN_NAME,
+	ROOM_COLUMN_PLAYERS,
+	ROOM_COLUMNS
+};
+
+static void client_join_room(GGZRoom *room)
 {
 	gchar *err_msg = NULL;
 	gint singleclick, status = -1;
 	GGZRoom *ggzroom;
+	int id = ggzcore_room_get_id(room);
 
 	switch (ggzcore_server_get_state(server)) {
 	case GGZ_STATE_OFFLINE:
@@ -74,7 +86,7 @@ static void client_join_room(guint room)
 
 	if (status == 0) {
 		ggzroom = ggzcore_server_get_cur_room(server);
-			if (ggzcore_server_join_room(server, room) == 0) {
+			if (ggzcore_server_join_room(server, id) == 0) {
 	
 			/* Only desensitize with single click, dues to
 	                some weird bug that freezes the mouse if we
@@ -100,19 +112,20 @@ static void client_join_room(guint room)
 
 static void client_room_join_activate(GtkMenuItem *menuitem, gpointer data)
 {
-	int room_num = GPOINTER_TO_INT(data);
-	client_join_room(room_num);
+	GGZRoom *room = data;
+
+	client_join_room(room);
 }
 
 static void client_room_info_activate(GtkMenuItem *menuitem, gpointer data)
 {
 	/* Display room's info in a nice dialog */
-	int room_num = GPOINTER_TO_INT(data);
-	GGZRoom *room = ggzcore_server_get_nth_room(server, room_num);
+	GGZRoom *room = data;
+
 	room_info_create_or_raise(room);		
 }
 
-static GtkWidget *create_mnu_room(int room_num)
+static GtkWidget *create_mnu_room(GGZRoom *room)
 {
 	GtkWidget *mnu_room;
 	GtkWidget *info;
@@ -146,54 +159,56 @@ static GtkWidget *create_mnu_room(int room_num)
 
 	g_signal_connect (GTK_OBJECT (info), "activate",
 			  GTK_SIGNAL_FUNC (client_room_info_activate),
-			  GINT_TO_POINTER(room_num));
+			  room);
 	g_signal_connect (GTK_OBJECT (join), "activate",
 			  GTK_SIGNAL_FUNC (client_room_join_activate),
-			  GINT_TO_POINTER(room_num));
+			  room);
 
 	gtk_menu_set_accel_group (GTK_MENU (mnu_room), accel_group);
 
 	return mnu_room;
 }
 
-static gboolean client_room_clist_event(GtkWidget *widget, GdkEvent *event,
-					gpointer data)
+static gboolean room_list_event(GtkWidget *widget, GdkEvent *event,
+				gpointer data)
 {
+	GdkEventButton *buttonevent = (GdkEventButton *) event;
 	gboolean single_join;
-	gint row, column;
 	GtkWidget *menu;
-	GdkEventButton* buttonevent = (GdkEventButton*)event;
-	GtkWidget *clist= lookup_widget(win_main, "room_clist");
+	GtkWidget *tree = lookup_widget(win_main, "room_list");
+	GtkTreeSelection *select
+	  = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	GGZRoom *room;
 
-	if (!gtk_clist_get_selection_info(GTK_CLIST(clist),
-					  buttonevent->x,
-					  buttonevent->y,
-					  &row, &column)) {
+	if (!gtk_tree_selection_get_selected(select, &model, &iter)) {
 		return FALSE;
 	}
 
 	single_join = ggzcore_conf_read_int("OPTIONS", "ROOMENTRY", FALSE);
 
+	gtk_tree_model_get(model, &iter, ROOM_COLUMN_PTR, &room, -1);
+
 	switch(event->type) { 
 	case GDK_2BUTTON_PRESS:
 		/* Double click */
 		if (buttonevent->button == 1 && !single_join) {
-			client_join_room(row);
+			client_join_room(room);
 			return TRUE;
 		}
 		break;
 	case GDK_BUTTON_PRESS:
 		/* Single click */
 		if (buttonevent->button == 1 && single_join) {
-			client_join_room(row);
+			client_join_room(room);
 			return TRUE;
 		} else if (buttonevent->button == 3) {
 			/* Right mouse button */
 			/* Create and display the menu */
-			gtk_clist_select_row(GTK_CLIST(clist), row, column);
-			menu = create_mnu_room(row);
-			gtk_menu_popup( GTK_MENU(menu), NULL, NULL, NULL,
-					NULL, buttonevent->button, 0);
+			menu = create_mnu_room(room);
+			gtk_menu_popup(GTK_MENU(menu), NULL, NULL, NULL,
+				       NULL, buttonevent->button, 0);
 		}
 		break;
 	default:
@@ -204,129 +219,149 @@ static gboolean client_room_clist_event(GtkWidget *widget, GdkEvent *event,
 	return FALSE;
 }
 
-static void client_room_clist_select_row(GtkCList *clist,
-                                         gint row, gint column,
-                                         GdkEvent *event, gpointer data)
-{
-
-}
-
 void sensitize_room_list(gboolean sensitive)
 {
-	GtkWidget *tmp = lookup_widget(win_main, "room_clist");
-	gtk_widget_set_sensitive(tmp, sensitive);
+	GtkWidget *tree = lookup_widget(win_main, "room_list");
+
+	gtk_widget_set_sensitive(tree, sensitive);
 }
 
 void clear_room_list(void)
 {
 	/* Clear current list of rooms */
-	GtkWidget *tmp;
+	GtkListStore *store;
 
-	tmp = g_object_get_data(G_OBJECT(win_main), "room_clist");
-        gtk_clist_clear(GTK_CLIST(tmp));
+	store = GTK_LIST_STORE(lookup_widget(win_main, "room_list_store"));
+	gtk_list_store_clear(store);
 }
 
 void select_room(GGZRoom *room)
 {
-	GtkWidget *tmp = lookup_widget(win_main, "room_clist");
+	GtkTreeView *tree;
+	GtkListStore *store;
+	GtkTreeSelection *select;
+	GtkTreeIter iter;
+	int id = ggzcore_room_get_id(room), i;
 
-	gtk_clist_select_row(GTK_CLIST(tmp), ggzcore_room_get_id(room), 0);
+	tree = GTK_TREE_VIEW(lookup_widget(win_main, "room_list"));
+	store = GTK_LIST_STORE(gtk_tree_view_get_model(tree));
+	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+
+	if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter)) {
+		return;
+	}
+	for (i = 0; i < id; i++) {
+		if (!gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter)) {
+			return;
+		}
+	}
+
+	gtk_tree_selection_select_iter(select, &iter);
 }
 
 void update_one_room(GGZRoom *room)
 {
-	int nplayers, id;
-	char *name, *players;
-	GtkWidget *tmp;
+	int players, id, i;
+	char *name;
+	GtkListStore *store;
+	GtkTreeIter iter;
 
-	tmp = lookup_widget(win_main, "room_clist");
+	/* Retrieve the player list widget. */
+	store = GTK_LIST_STORE(lookup_widget(win_main, "room_list_store"));
 
 	name = ggzcore_room_get_name(room);
 	id = ggzcore_room_get_id(room);
-	nplayers = ggzcore_room_get_num_players(room);
+	players = ggzcore_room_get_num_players(room);
 
-	if (nplayers >= 0) {
-		players = g_strdup_printf("%d", nplayers);
-	} else {
-		players = NULL;
+	if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter)) {
+		return;
+	}
+	for (i = 0; i < id; i++) {
+		if (!gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter)) {
+			return;
+		}
 	}
 
-	gtk_clist_freeze(GTK_CLIST(tmp));
-	gtk_clist_set_text(GTK_CLIST(tmp), id, 0, name);
-	gtk_clist_set_text(GTK_CLIST(tmp), id, 1, players);
-	gtk_clist_thaw(GTK_CLIST(tmp));
-
-	if (players) g_free(players);
+	gtk_list_store_set(store, &iter,
+			   ROOM_COLUMN_PTR, room,
+			   ROOM_COLUMN_NAME, name, -1);
+	if (players >= 0) {
+		gtk_list_store_set(store, &iter,
+				   ROOM_COLUMN_PLAYERS, players, -1);
+	}
 }
 
 void update_room_list(void)
 {
-	GtkWidget *tmp = lookup_widget(win_main, "room_clist");
+	GtkListStore *store;
 	int i;
 	const int numrooms = ggzcore_server_get_num_rooms(server);
 
-	/* Clear current list of rooms */
-	gtk_clist_freeze(GTK_CLIST(tmp));
-	gtk_clist_clear(GTK_CLIST(tmp));
+	/* Retrieve the player list widget. */
+	store = GTK_LIST_STORE(lookup_widget(win_main, "room_list_store"));
+
+	gtk_list_store_clear(store);
 
 	for (i = 0; i < numrooms; i++) {
-		gchar *table[3];
 		GGZRoom *room = ggzcore_server_get_nth_room(server, i);
 		gchar *name = ggzcore_room_get_name(room);
-		int players = ggzcore_room_get_num_players(room);
+		gint players = ggzcore_room_get_num_players(room);
+		GtkTreeIter iter;
 
-		table[0] = g_strdup_printf("%s", name);
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter,
+				   ROOM_COLUMN_PTR, room,
+				   ROOM_COLUMN_NAME, name, -1);
+
 		if (players >= 0) {
-			table[1] = g_strdup_printf("%d", players);
-		} else {
-			table[1] = NULL;
+			gtk_list_store_set(store, &iter,
+					   ROOM_COLUMN_PLAYERS, players, -1);
 		}
-		table[2] = NULL;
-
-		gtk_clist_append(GTK_CLIST(tmp), table);
 	}
-
-	gtk_clist_thaw(GTK_CLIST(tmp));
 }
 
 GtkWidget *create_room_list(GtkWidget *window)
 {
-	GtkWidget *room_clist, *room_label;
+	GtkListStore *store;
+	GtkWidget *tree;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	GtkTreeSelection *select;
 
-	room_clist = gtk_clist_new(2);
-	gtk_widget_ref(room_clist);
-	g_object_set_data_full(G_OBJECT(window), "room_clist", room_clist,
+
+	assert(ROOM_COLUMNS == 3);
+	store = gtk_list_store_new(ROOM_COLUMNS,
+				   G_TYPE_POINTER,
+				   G_TYPE_STRING,
+				   G_TYPE_INT);
+	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes(_("Room"),
+							  renderer,
+				"text", ROOM_COLUMN_NAME, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes("#", renderer,
+				"text", ROOM_COLUMN_PLAYERS, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	gtk_widget_ref(tree);
+	g_object_set_data_full(G_OBJECT(window), "room_list",
+			       tree,
 			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(room_clist);
+	g_object_set_data(G_OBJECT(window), "room_list_store", store);
+	gtk_widget_show(tree);
+	gtk_widget_set_sensitive(tree, FALSE);
+	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
 
-	gtk_widget_set_sensitive (room_clist, FALSE);
-	GTK_WIDGET_UNSET_FLAGS (room_clist, GTK_CAN_FOCUS);
-	gtk_widget_set_events (room_clist, GDK_BUTTON_PRESS_MASK);
-	gtk_clist_set_column_width(GTK_CLIST(room_clist), 0, 130);
-	gtk_clist_set_column_width(GTK_CLIST(room_clist), 1, 15);
-	gtk_clist_column_titles_show (GTK_CLIST (room_clist));
+	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
 
-	room_label = gtk_label_new (_("Rooms"));
-	gtk_widget_ref (room_label);
-	g_object_set_data_full(G_OBJECT(window), "room_label", room_label,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (room_label);
-	gtk_clist_set_column_widget (GTK_CLIST (room_clist), 0, room_label);
+	g_signal_connect(tree, "button-press-event",
+			 GTK_SIGNAL_FUNC(room_list_event), NULL);
 
-	room_label = gtk_label_new("#");
-	gtk_widget_ref(room_label);
-	g_object_set_data_full(G_OBJECT (window), "room_players_label",
-			       room_label,
-			       (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show(room_label);
-	gtk_clist_set_column_widget(GTK_CLIST(room_clist), 1, room_label);
-
-	g_signal_connect(room_clist, "select_row",
-			 GTK_SIGNAL_FUNC(client_room_clist_select_row),
-			 NULL);
-	g_signal_connect(room_clist, "button-press-event",
-			 GTK_SIGNAL_FUNC(client_room_clist_event),
-			 NULL);
-
-	return room_clist;
+	return tree;
 }
