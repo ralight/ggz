@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
- * $Id: ggzcore.h 4915 2002-10-14 22:08:49Z jdorje $
+ * $Id: ggzcore.h 4941 2002-10-17 23:56:16Z jdorje $
  *
  * Interface file to be included by client frontends
  *
@@ -28,9 +28,9 @@
 #ifndef __GGZCORE_H__
 #define __GGZCORE_H__
 
-#include <sys/types.h>
-#include <stdarg.h>
 #include <poll.h>
+#include <stdarg.h>
+#include <sys/types.h>
 
 #include <ggz_common.h>
 

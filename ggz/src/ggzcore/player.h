@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
+ * $Id: player.h 4941 2002-10-17 23:56:16Z jdorje $
  *
  * This fils contains functions for handling players
  *

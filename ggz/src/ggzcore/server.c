@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.c 4915 2002-10-14 22:08:49Z jdorje $
+ * $Id: server.c 4941 2002-10-17 23:56:16Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -25,10 +25,11 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
+#  include <config.h>		/* Site-specific config */
 #endif
 
 #include <assert.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -36,12 +37,11 @@
 
 #include "ggzcore.h"
 #include "hook.h"
-#include "state.h"
-#include "server.h"
 #include "net.h"
-#include "errno.h"
 #include "player.h"
 #include "protocol.h"
+#include "state.h"
+#include "server.h"
 
 
 /* Array of GGZServerEvent messages */

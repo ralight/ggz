@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 11/30/00
- * $Id: conf.c 4842 2002-10-10 12:41:35Z dr_maux $
+ * $Id: conf.c 4941 2002-10-17 23:56:16Z jdorje $
  *
  * External functions for handling configuration files
  *
@@ -24,11 +24,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>		/* Site-specific config */
+#endif
 
-#include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <ggz.h>
 
 #include "ggzcore.h"
 #include "conf.h"

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 1/19/01
- * $Id: server.h 4915 2002-10-14 22:08:49Z jdorje $
+ * $Id: server.h 4941 2002-10-17 23:56:16Z jdorje $
  *
  * Code for handling server connection state and properties
  *
@@ -27,8 +27,8 @@
 #ifndef __SERVER_H__
 #define __SERVER_H__
 
-#include "ggzcore.h"
 #include "gametype.h"
+#include "ggzcore.h"
 #include "room.h"
 #include "state.h"
 

@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/15/00
+ * $Id: init.c 4941 2002-10-17 23:56:16Z jdorje $
  *
  * Initialization code
  *
@@ -23,16 +24,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "config.h"
-#include "conf.h"
-#include "ggzcore.h"
-#include "net.h"
-#include "state.h"
-#include "gametype.h"
-#include "memory.h"
-#include "module.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>		/* Site-specific config */
+#endif
 
 #include <ggz.h>
+
+#include "conf.h"
+#include "gametype.h"
+#include "ggzcore.h"
+#include "memory.h"
+#include "module.h"
+#include "net.h"
+#include "state.h"
 
 int ggzcore_init(GGZOptions options)
 {

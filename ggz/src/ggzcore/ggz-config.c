@@ -3,6 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
+ * $Id: ggz-config.c 4941 2002-10-17 23:56:16Z jdorje $
  *
  * Configuration query and module install program.
  *
@@ -23,14 +24,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <ggz.h>
-#include <stdio.h>
-#include <string.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>		/* Site-specific config */
+#endif
+
 #include <popt.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
-#include "config.h"
+#include <ggz.h>
+
 #include "protocol.h"
 
 

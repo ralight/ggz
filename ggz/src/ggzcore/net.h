@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: net.h 4819 2002-10-08 23:32:22Z jdorje $
+ * $Id: net.h 4941 2002-10-17 23:56:16Z jdorje $
  *
  * Code for performing network I/O
  *
@@ -27,8 +27,6 @@
 
 #ifndef __NET_H__
 #define __NET_H__
-
-#include "config.h"
 
 #include "ggzcore.h"
 #include "table.h"

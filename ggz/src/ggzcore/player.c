@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
+ * $Id: player.c 4941 2002-10-17 23:56:16Z jdorje $
  *
  * This fils contains functions for handling players
  *
@@ -23,15 +24,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>		/* Site-specific config */
+#endif
 
-#include "config.h"
-#include "player.h"
-#include "room.h"
-
-#include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include <ggz.h>
+
+#include "player.h"
+#include "room.h"
 
 /* Publicly exported functions */
 

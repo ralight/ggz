@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.c 4915 2002-10-14 22:08:49Z jdorje $
+ * $Id: room.c 4941 2002-10-17 23:56:16Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -24,22 +24,25 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-
-#include "game.h"
-#include "ggzcore.h"
-#include "room.h"
-#include "server.h"
-#include "table.h"
-#include "player.h"
-#include "hook.h"
-#include "net.h"
-#include "protocol.h"
-
-#include <ggz.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>		/* Site-specific config */
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <ggz.h>
+
+#include "game.h"
+#include "ggzcore.h"
+#include "hook.h"
+#include "net.h"
+#include "player.h"
+#include "protocol.h"
+#include "room.h"
+#include "server.h"
+#include "table.h"
 
 /* Local functions */
 static int _ggzcore_room_event_is_valid(GGZRoomEvent event);

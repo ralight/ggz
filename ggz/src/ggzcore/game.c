@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 2/28/2001
- * $Id: game.c 4934 2002-10-16 23:59:26Z jdorje $
+ * $Id: game.c 4941 2002-10-17 23:56:16Z jdorje $
  *
  * This fils contains functions for handling games being played
  *
@@ -25,31 +25,31 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#  include <config.h>		/* Site-specific config */
 #endif
 
-#include "game.h"
-#include "module.h"
-#include "ggzcore.h"
-#include "hook.h"
-#include "room.h"
-#include "server.h"
-
 #include <assert.h>
+#include <errno.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/poll.h>
-#include <errno.h>
+#include <unistd.h>
+
 #include <ggz.h>
 #include <ggzmod.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdio.h>
-#include <signal.h>
 
+#include "game.h"
+#include "ggzcore.h"
+#include "hook.h"
+#include "module.h"
+#include "room.h"
+#include "server.h"
 
 /* Local functions */
 static int _ggzcore_game_event_is_valid(GGZGameEvent event);

@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/23/00
+ * $Id: module.c 4941 2002-10-17 23:56:16Z jdorje $
  *
  * This fils contains functions for handling client-side game modules
  *
@@ -23,13 +24,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include "config.h"
-#include "module.h"
-#include "game.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>		/* Site-specific config */
+#endif
 
-#include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <ggz.h>
+
+#include "game.h"
+#include "module.h"
 
 #define GGZ_MOD_RC "ggz.modules"
 

@@ -3,7 +3,7 @@
  * Author: Justin Zaun
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: gametype.c 4508 2002-09-11 03:48:41Z jdorje $
+ * $Id: gametype.c 4941 2002-10-17 23:56:16Z jdorje $
  *
  * This file contains functions for hadiling games
  *
@@ -24,15 +24,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>		/* Site-specific config */
+#endif
 
-#include "config.h"
-#include "gametype.h"
-#include "ggzcore.h"
-
-#include <ggz.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include <ggz.h>
+
+#include "gametype.h"
+#include "ggzcore.h"
 
 /* Publicly exported functions */
 

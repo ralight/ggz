@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
+ * $Id: state.c 4941 2002-10-17 23:56:16Z jdorje $
  *
  * Code for handling state manipulations
  *
@@ -23,13 +24,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>		/* Site-specific config */
+#endif
 
-#include "config.h"
-#include "state.h"
-#include "hook.h"
+#include <stdlib.h>
 
 #include <ggz.h>
-#include <stdlib.h>
+
+#include "hook.h"
+#include "state.h"
 
 /* Structure to represent state transition pairs */
 struct _GGZTransition {

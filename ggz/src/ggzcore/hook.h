@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/01/00
+ * $Id: hook.h 4941 2002-10-17 23:56:16Z jdorje $
  *
  * This is the code for handling hook functions
  * 
@@ -28,8 +29,7 @@
 #ifndef __HOOK_H__
 #define __HOOK_H__
 
-#include <config.h>
-#include <ggzcore.h>
+#include "ggzcore.h"
 
 /* _GGZHook : data type for representing single hook in a list */
 struct _GGZHook {

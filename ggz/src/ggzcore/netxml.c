@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 9/22/00
- * $Id: netxml.c 4940 2002-10-17 21:23:47Z jdorje $
+ * $Id: netxml.c 4941 2002-10-17 23:56:16Z jdorje $
  *
  * Code for parsing XML streamed from the server
  *
@@ -24,19 +24,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>		/* Site-specific config */
+#endif
 
-#include "config.h"
-#include "ggzcore.h"
-#include "net.h"
-#include "protocol.h"
-#include "player.h"
-#include "room.h"
-#include "state.h"
-#include "table.h"
-#include "gametype.h"
-
-#include <ggz.h>
-#include <ggz_common.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <poll.h>
@@ -47,6 +38,18 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+
+#include <ggz.h>
+#include <ggz_common.h>
+
+#include "ggzcore.h"
+#include "net.h"
+#include "protocol.h"
+#include "player.h"
+#include "room.h"
+#include "state.h"
+#include "table.h"
+#include "gametype.h"
 
 /* For convenience */
 #define XML_BUFFSIZE 8192

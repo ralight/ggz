@@ -3,6 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 11/01/00
+ * $Id: hook.c 4941 2002-10-17 23:56:16Z jdorje $
  *
  * This is the code for handling hook functions
  *
@@ -25,17 +26,21 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
-#include "ggzcore.h"
-#include "hook.h"
-#include "state.h"
-#include "net.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>		/* Site-specific config */
+#endif
 
 #include <errno.h>
-#include <ggz.h>
 #include <poll.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#include <ggz.h>
+
+#include "ggzcore.h"
+#include "hook.h"
+#include "net.h"
+#include "state.h"
 
 /* Static functions */
 static void _ggzcore_hook_remove_actual(GGZHookList *list, 

@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Core Client Lib
  * Date: 6/5/00
- * $Id: room.h 4819 2002-10-08 23:32:22Z jdorje $
+ * $Id: room.h 4941 2002-10-17 23:56:16Z jdorje $
  *
  * This fils contains functions for handling rooms
  *
@@ -28,13 +28,13 @@
 #ifndef __ROOM_H__
 #define __ROOM_H__
 
+#include <ggz.h>
+
 #include "ggzcore.h"
 #include "server.h"
 #include "player.h"
 #include "table.h"
 #include "gametype.h"
-
-#include <ggz.h>
 
 /* Allocate space for a new room object */
 struct _GGZRoom* _ggzcore_room_new(void);
