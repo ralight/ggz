@@ -11,8 +11,6 @@
 #include "main_cb.h"
 
 
-int sel;
-
 void
 on_ok_button_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
@@ -29,12 +27,21 @@ on_apply_button_clicked                (GtkButton       *button,
 {
 	char *theme;
 	int beep;
-	GtkWidget *list, *toggle;
+	GtkWidget *toggle;
+	GtkWidget *tree = lookup_widget(dlg_prefs, "theme_list");
+	GtkTreeSelection *select
+	  = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 
-	list = g_object_get_data(G_OBJECT(dlg_prefs), "theme_list");
+	if (gtk_tree_selection_get_selected(select, &model, &iter)) {
+		gtk_tree_model_get(model, &iter, THEME_COLUMN_NAME,
+				   &theme, -1);
+	} else {
+		theme = g_strdup("default");
+	}
+
 	toggle = g_object_get_data(G_OBJECT(dlg_prefs), "check_beep");
-
-	gtk_clist_get_text(GTK_CLIST(list), sel, 0, &theme);
 
 	if(GTK_TOGGLE_BUTTON(toggle)->active)
 		beep = 1;
@@ -42,6 +49,8 @@ on_apply_button_clicked                (GtkButton       *button,
 		beep = 0;
 
 	game_update_config(theme, beep);
+
+	g_free(theme);
 }
 
 
@@ -52,13 +61,7 @@ on_cancel_button_clicked               (GtkButton       *button,
 	gtk_widget_destroy(dlg_prefs);
 }
 
-void
-on_theme_list_select_row               (GtkCList        *clist,
-                                        gint             row,
-                                        gint             column,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+void on_theme_list_select_changed(GtkTreeSelection *select, gpointer data)
 {
-	sel = row;
-}
 
+}

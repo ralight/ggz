@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 2001
  * Desc: Preferences dialog
- * $Id: prefs_dlg.h 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: prefs_dlg.h 6291 2004-11-06 19:15:04Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -22,5 +22,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
+
+enum {
+	THEME_COLUMN_NAME,
+	THEME_COLUMNS
+};
 
 GtkWidget* create_dlg_prefs (void);

@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 2001
  * Desc: Preferences dialog
- * $Id: prefs_dlg.c 6284 2004-11-06 06:21:54Z jdorje $
+ * $Id: prefs_dlg.c 6291 2004-11-06 19:15:04Z jdorje $
  *
  * Copyright (C) 2001-2004 GGZ Development Team
  *
@@ -27,6 +27,7 @@
 #  include <config.h>
 #endif
 
+#include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -39,6 +40,43 @@
 #include "prefs_dlg.h"
 #include "support.h"
 
+static GtkWidget *theme_list_new(GtkWidget *parent)
+{
+	GtkListStore *store;
+	GtkWidget *tree;
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+	GtkTreeSelection *select;
+
+	assert(THEME_COLUMNS == 1);
+	store = gtk_list_store_new(THEME_COLUMNS, G_TYPE_STRING);
+	tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes("", renderer,
+				"text", THEME_COLUMN_NAME, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), column);
+
+	gtk_widget_ref(tree);
+	g_object_set_data_full(G_OBJECT(parent), "theme_list",
+			       tree,
+			       (GtkDestroyNotify) gtk_widget_unref);
+	g_object_set_data(G_OBJECT(parent), "table_list_store", store);
+	gtk_widget_show(tree);
+	GTK_WIDGET_UNSET_FLAGS(tree, GTK_CAN_FOCUS);
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree), FALSE);
+
+	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+	gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+
+	g_signal_connect(select, "changed",
+			 GTK_SIGNAL_FUNC(on_theme_list_select_changed),
+			 NULL);
+
+	return tree;
+}
+
 GtkWidget*
 create_dlg_prefs (void)
 {
@@ -50,7 +88,6 @@ create_dlg_prefs (void)
   GtkWidget *frame2;
   GtkWidget *scrolledwindow1;
   GtkWidget *theme_list;
-  GtkWidget *label1;
   GtkWidget *dialog_action_area1;
   GtkWidget *ok_button;
   GtkWidget *apply_button;
@@ -112,24 +149,8 @@ create_dlg_prefs (void)
   gtk_container_add (GTK_CONTAINER (frame2), scrolledwindow1);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  theme_list = gtk_clist_new (1);
-  gtk_widget_set_name (theme_list, "theme_list");
-  gtk_widget_ref (theme_list);
-  g_object_set_data_full(G_OBJECT (dlg_prefs), "theme_list", theme_list,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (theme_list);
+  theme_list = theme_list_new(dlg_prefs);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), theme_list);
-  gtk_clist_set_column_width (GTK_CLIST (theme_list), 0, 80);
-  gtk_clist_set_selection_mode (GTK_CLIST (theme_list), GTK_SELECTION_BROWSE);
-  gtk_clist_column_titles_hide (GTK_CLIST (theme_list));
-
-  label1 = gtk_label_new ("label1");
-  gtk_widget_set_name (label1, "label1");
-  gtk_widget_ref (label1);
-  g_object_set_data_full(G_OBJECT (dlg_prefs), "label1", label1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label1);
-  gtk_clist_set_column_widget (GTK_CLIST (theme_list), 0, label1);
 
   dialog_action_area1 = GTK_DIALOG (dlg_prefs)->action_area;
   gtk_widget_set_name (dialog_action_area1, "dialog_action_area1");
@@ -167,9 +188,6 @@ create_dlg_prefs (void)
   gtk_widget_set_usize (cancel_button, 48, -2);
   gtk_tooltips_set_tip (tooltips, cancel_button, "Cancel changes since the last apply", NULL);
 
-  g_signal_connect (GTK_OBJECT (theme_list), "select_row",
-                      GTK_SIGNAL_FUNC (on_theme_list_select_row),
-                      NULL);
   g_signal_connect (GTK_OBJECT (ok_button), "clicked",
                       GTK_SIGNAL_FUNC (on_ok_button_clicked),
                       NULL);

@@ -4,7 +4,7 @@
  * Project: GGZ Chinese Checkers Client
  * Date: 01/01/2001
  * Desc: Callbacks for the main dialog window
- * $Id: main_cb.c 6285 2004-11-06 07:00:27Z jdorje $
+ * $Id: main_cb.c 6291 2004-11-06 19:15:04Z jdorje $
  *
  * Copyright (C) 2001-2002 Richard Gade.
  *
@@ -66,48 +66,52 @@ void game_resync(void)
 	assert(FALSE);
 }
 
+static void update_theme_list(void)
+{
+	gchar *name;
+	GtkTreeView *tree;
+	GtkListStore *store;
+	GtkTreeSelection *select;
+	int i;
+
+	tree = GTK_TREE_VIEW(lookup_widget(dlg_prefs, "theme_list"));
+	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(tree)));
+	select = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+
+	gtk_list_store_clear(GTK_LIST_STORE(store));
+	for (i = 0; i < game.num_themes; i++) {
+		GtkTreeIter iter;
+
+		name = game.theme_names[i];
+		gtk_list_store_append(GTK_LIST_STORE(store), &iter);
+		gtk_list_store_set(store, &iter,
+				   THEME_COLUMN_NAME, game.theme_names[i],
+				   -1);
+
+		if (strcmp(game.theme_names[i], game.theme) == 0) {
+			gtk_tree_selection_select_iter(select, &iter);
+		}
+	}
+}
 
 void
 on_preferences_menu_activate	       (GtkMenuItem	*menuitem,
 					gpointer	 user_data)
 {
-	GtkWidget *list, *toggle;
-	int i, j=-1, d=-1;
-	char **text;
+	GtkWidget *toggle;
 
 	if(dlg_prefs != NULL) {
 		gdk_window_show(dlg_prefs->window);
 		gdk_window_raise(dlg_prefs->window);
 	} else {
-		text = calloc(1, sizeof(char *));
-
 		dlg_prefs = create_dlg_prefs();
 		g_signal_connect(GTK_OBJECT(dlg_prefs),
 				   "destroy",
 				   GTK_SIGNAL_FUNC(gtk_widget_destroyed),
 				   &dlg_prefs);
-		list = g_object_get_data(G_OBJECT(dlg_prefs), "theme_list");
+		update_theme_list();
+
 		toggle = g_object_get_data(G_OBJECT(dlg_prefs), "check_beep");
-
-		gtk_clist_columns_autosize(GTK_CLIST(list));
-		for(i=0; i<game.num_themes; i++) {
-			text[0] = game.theme_names[i];
-			gtk_clist_append(GTK_CLIST(list), text);
-			if(!strcmp(game.theme_names[i], "default"))
-				d = i;
-			if(!strcmp(game.theme_names[i], game.theme))
-				j = i;
-		}
-		if(j == -1) {
-			if(d == -1)
-				j = d = 0;
-			else
-				j = d;
-		}
-		if(gtk_clist_row_is_visible(GTK_CLIST(list), j) != GTK_VISIBILITY_FULL)
-			gtk_clist_moveto(GTK_CLIST(list), j, 0, 0.5, 0);
-		gtk_clist_select_row(GTK_CLIST(list), j, 0);
-
 		if(game.beep == 1)
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle),
 						     TRUE);
