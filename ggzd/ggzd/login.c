@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 6/22/00
  * Desc: Functions for handling player logins
- * $Id: login.c 6416 2004-11-17 22:02:24Z jdorje $
+ * $Id: login.c 6859 2005-01-23 22:13:03Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -191,8 +191,15 @@ GGZPlayerHandlerStatus login_player(GGZLoginType type, GGZPlayer *player,
 	}
 	snprintf(player->name, sizeof(player->name), "%s", name);
 	ip_addr = player->client->addr;
+
+	/* FIXME: not all of these values need to be set with
+	   the lock on. */
 	player->login_time = (long) time(NULL);
 	player->next_ping_time = get_current_time() + 5.0;
+	player->is_room_update_needed = true;
+	player->next_room_update_time
+	  = get_current_time() + opt.room_update_freq;
+
 	/* Don't send any room updates until the player gets a room list. */
 	pthread_rwlock_unlock(&player->lock);
 	
