@@ -249,9 +249,19 @@ static int get_players(void)
 static int get_move_status(void)
 {
 	char status;
+	char t_s;
+	int i;
+	char t_x, t_y;
 
-	if(es_read_char(game.fd, &status) < 0)
+	if(es_read_char(game.fd, &status) < 0
+	   || es_read_char(game.fd, &t_s) < 0)
 		return -1;
+	for(i=0; i<t_s; i++) {
+		if(es_read_char(game.fd, &t_x) < 0
+		   || es_read_char(game.fd, &t_y) < 0)
+			return -1;
+	}
+
 	if(status < 0)
 		fprintf(stderr, "Client cheater!\n");
 

@@ -306,10 +306,18 @@ gint8 board_opponent_move(guint8 dir)
 	GdkRectangle update_rect;
 	GtkWidget *l1, *l2;
 	char *text;
+	char t_s, t_x, t_y;
+	int i;
 
 	if(es_read_char(game.fd, &x) < 0
-	   || es_read_char(game.fd, &y) < 0)
+	   || es_read_char(game.fd, &y) < 0
+	   || es_read_char(game.fd, &t_s) < 0)
 		return -1;
+	for(i=0; i<t_s; i++) {
+		if(es_read_char(game.fd, &t_x) < 0
+		   || es_read_char(game.fd, &t_y) < 0)
+			return -1;
+	}
 
 	/* Future DOTS_REQ_MOVE's now make sense */
 	if(game.state == DOTS_STATE_OPPONENT)
