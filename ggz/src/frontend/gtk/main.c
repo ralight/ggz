@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 6676 2005-01-14 07:35:27Z jdorje $
+ * $Id: main.c 6725 2005-01-18 15:12:29Z oojah $
  *
  * This is the main program body for the GGZ client
  *
@@ -35,6 +35,10 @@
 #include <locale.h>
 #include <libintl.h>
 #endif
+#ifdef WIN32
+/* windows.h required for LoadLibrary */
+#include <windows.h>
+#endif
 
 #include <ggzcore.h>
 #include <ggz.h>
@@ -52,6 +56,17 @@
 
 static void init_debug(void)
 {
+#ifdef WIN32
+	/* exchndl.dll is the exception handler library from mingw-utils
+	   If the app causes an exception, exchndl.dll will write a back
+	   trace to $PROGNAME.RPT. If exchndl.dll is not found, the app
+	   can just continue as normal.
+	*/
+	if (LoadLibrary("exchndl.dll") == NULL){
+		fprintf(stderr, "exchndl.dll could not be loaded\n");
+	}
+#endif
+
 	char *default_file, *debug_file, **debug_types;
 	int num_types, i;
 
