@@ -3,7 +3,7 @@
  * Author: Rich Gade
  * Project: GGZ Core Client Lib
  * Date: 02/19/01
- * $Id: ggz-config.c 4941 2002-10-17 23:56:16Z jdorje $
+ * $Id: ggz-config.c 5497 2003-04-28 11:20:25Z dr_maux $
  *
  * Configuration query and module install program.
  *
@@ -530,6 +530,10 @@ static int check_module_file(void)
 			str = ggz_conf_read_string(global, s_list[i],
 						     "CommandLine", NULL);
 			if(str != NULL) {
+				/* Without command line args */
+				str2 = str;
+				while(str2 && *str2 != ' ') str2++;
+				*str2 = '\0';
 				if(access(str, X_OK))
 					kill=1;
 				ggz_free(str);
@@ -541,7 +545,12 @@ static int check_module_file(void)
 		}
 		if(kill) {
 			printf("Removing section for '%s'\n", s_list[i]);
-			ggz_conf_remove_section(global, s_list[i]);
+			modpengine = ggz_conf_read_string(global, s_list[i], "ProtocolEngine", NULL);
+			rc = ggz_conf_remove_section(global, s_list[i]);
+			if(rc == 0) {
+				purge_engine_id(global, s_list[i]);
+				rc = ggz_conf_commit(global);
+			}
 		}
 
 		ggz_free(s_list[i]);
@@ -618,14 +627,14 @@ phase_two:
 		printf("*** Checking Name key for engine '%s'\n", k_list[i]);
 		str = ggz_conf_read_string(global, "Games", k_list[i], NULL);
 		str2 = ggz_conf_read_string(global, str, "Name", NULL);
-		if(strcmp(k_list[i], str2)) {
+		if(str2 && strcmp(k_list[i], str2)) {
 			errs++;
 			printf("ERR Setting Name key [%s] to '%s'\n",
 				str, k_list[i]);
 			ggz_conf_write_string(global, str, "Name", k_list[i]);
 		}
 		ggz_free(str);
-		ggz_free(str2);
+		if(str2) ggz_free(str2);
 		ggz_free(k_list[i]);
 	}
 	ggz_free(k_list);
