@@ -2,7 +2,7 @@
  * File: launch.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: launch.c 6326 2004-11-11 05:24:46Z jdorje $
+ * $Id: launch.c 6739 2005-01-19 06:59:15Z jdorje $
  *
  * Code for launching games through the GTK client
  *
@@ -219,6 +219,9 @@ void launch_table(void)
 	_launching = 0;
 
 	/* Grab the number of seats */
+	if (!launch_dialog)
+		ggz_error_msg("Trying to launch table when "
+			      "there is no launch dialog.");
 	tmp = lookup_widget(launch_dialog, "seats_combo");
 	seats = atoi(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(tmp)->entry)));
 
