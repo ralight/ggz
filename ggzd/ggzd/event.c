@@ -4,6 +4,7 @@
  * Project: GGZ Server
  * Date: 5/9/00
  * Desc: Functions for handling/manipulating GGZ events
+ * $Id: event.c 2258 2001-08-26 20:39:01Z jdorje $
  *
  * Copyright (C) 2000 Brent Hendricks.
  *
@@ -154,14 +155,14 @@ int event_room_handle(GGZPlayer* player)
 				rooms[room].event_tail = NULL;
 #ifdef DEBUG
 			rooms[room].event_head = event->next;
-#endif DEBUG
+#endif /* DEBUG */
 			event->next = rm_list;
 			rm_list = event;
 		}
 #ifdef DEBUG
 		if (log_info.dbg_types & GGZ_DBG_LISTS)
 			event_room_spew(room);
-#endif
+#endif /* DEBUG */
 
 		/* 
 		 * Grab next event from player list in case event was 
@@ -200,7 +201,7 @@ int event_room_flush(GGZPlayer* player)
 				rooms[room].event_tail = NULL;
 #ifdef DEBUG
 			rooms[room].event_head = event->next;
-#endif DEBUG
+#endif /* DEBUG */
 			if (event->data)
 				free(event->data);
 			free(event);
@@ -210,7 +211,7 @@ int event_room_flush(GGZPlayer* player)
 #ifdef DEBUG
 	if (log_info.dbg_types & GGZ_DBG_LISTS)
 		event_room_spew(room);
-#endif
+#endif /* DEBUG */
 
 	return 0;
 }
