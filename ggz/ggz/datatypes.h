@@ -84,6 +84,8 @@ struct ConnectInfo {
 	gint sock;
 	guchar connected;
 	guchar playing;
+	gint cur_room;
+	gint new_room;
 };
 
 

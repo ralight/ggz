@@ -90,6 +90,10 @@ gint main(gint argc, gchar *argv[])
 	dlg_login = create_dlg_login();
 	gtk_widget_show(dlg_login);
 	
+	/* Setup Rooms */
+	connection.new_room = -1;
+	connection.cur_room = -3;
+
 	login_disconnect();
 
 	gtk_main();

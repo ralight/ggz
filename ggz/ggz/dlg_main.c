@@ -56,6 +56,7 @@ extern gint selected_table;
 extern gint selected_type;
 extern struct ConnectInfo connection;
 extern struct GameTypes game_types;
+extern struct Rooms room_info;
 
 /* Global GtkWidget for this dialog */
 GtkWidget *main_win;
@@ -74,6 +75,7 @@ static void ggz_disconnect();
 static void ggz_connect();
 static void ggz_motd();
 static void ggz_realize(GtkWidget* widget, gpointer data);
+static void ggz_room_changed(GtkWidget* widget, gpointer data);
 
 
 /*
@@ -240,6 +242,35 @@ static void ggz_realize(GtkWidget* widget, gpointer data)
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "chat_text");
 	gtk_text_set_word_wrap(GTK_TEXT(tmp), TRUE);
 }
+
+void ggz_room_changed(GtkWidget* widget, gpointer data)
+{
+	GtkWidget *tmp;
+	gint i;
+
+	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_entry");
+	if (connection.cur_room == connection.new_room)
+	{
+		connection.new_room=1;
+		for(i=0;i<room_info.count;i++)
+		{
+			if(!strcmp(room_info.info[i].name, gtk_entry_get_text(GTK_ENTRY(tmp))))
+				connection.new_room=i;
+		}
+		es_write_int(connection.sock, REQ_ROOM_JOIN);
+		es_write_int(connection.sock, connection.new_room);
+	}else if (connection.cur_room == -3){
+		/* Insert Rooms From Server */
+		connection.cur_room++;
+	}else if (connection.cur_room == -2){
+		/* Blank out room to start */
+		connection.cur_room++;
+	}else{
+		connection.new_room=connection.cur_room;
+	}	
+}
+
+
 
 GtkWidget*
 create_main_win (void)
@@ -826,6 +857,7 @@ create_main_win (void)
   gtk_object_set_data_full (GTK_OBJECT (main_win), "room_entry", room_entry,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (room_entry);
+  gtk_entry_set_editable (GTK_ENTRY (room_entry), FALSE);
 
   chat_scroll = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (chat_scroll);
@@ -944,6 +976,9 @@ create_main_win (void)
   gtk_signal_connect_object (GTK_OBJECT (player_list), "event",
                              GTK_SIGNAL_FUNC (ggz_event_players),
                              GTK_OBJECT (mnu_players));
+  gtk_signal_connect (GTK_OBJECT (room_entry), "changed",
+                      GTK_SIGNAL_FUNC (ggz_room_changed),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (msg_entry), "activate",
                       GTK_SIGNAL_FUNC (ggz_input_chat_msg),
                       msg_entry);

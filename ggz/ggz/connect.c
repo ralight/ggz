@@ -102,7 +102,9 @@ gchar *opcode_str[] = { 	"MSG_SERVER_ID",
 			"RSP_TABLE_JOIN",
 			"RSP_TABLE_LEAVE",
 			"RSP_GAME",
-			"RSP_CHAT"
+			"RSP_CHAT",
+			"RSP_MOTD",
+			"RSP_ROOM_JOIN"
 };
 
 
@@ -425,6 +427,28 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	case RSP_REMOVE_USER:
 	case RSP_TABLE_OPTIONS:
 	case RSP_USER_STAT:
+		break;
+	case RSP_ROOM_JOIN:
+		es_read_char(source, &status);
+		connect_msg("[%s] Room join %d\n", opcode_str[op], status);
+		switch (status){
+			case E_ROOM_FULL:
+	                	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
+				gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(tmp)->entry), room_info.info[connection.cur_room].name);
+				break;
+			case E_BAD_OPTIONS:
+	                	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
+				gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(tmp)->entry), room_info.info[connection.cur_room].name);
+				break;
+			case -1:
+	                	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
+				gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(tmp)->entry), room_info.info[connection.cur_room].name);
+				break;
+			case 0:
+				connection.cur_room=connection.new_room;
+				break;
+		}
+
 		break;
 
 	}
@@ -756,4 +780,5 @@ void display_rooms()
 
 	tmp = gtk_object_get_data(GTK_OBJECT(main_win), "room_combo");
 	gtk_combo_set_popdown_strings(GTK_COMBO(tmp), items);
+	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(tmp)->entry), "<none>");
 }
