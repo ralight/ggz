@@ -15,6 +15,7 @@ GGZ Gaming Zone CVS Repository (cvs.ggzgamingzone.org)
 
 The master source repository for the GGZ Gaming Zone can be found on this server.<br>
 <a href="/cgi-bin/viewcvs.cgi">ViewCVS</a><br>
+<a href="/lxr/">LXR</a><br>
 <br><br>
 
 Anonymous CVS checkouts can be done like thus:<br>
@@ -26,6 +27,8 @@ Developer CVS operations use SSH instead of pserver:<br>
 <br><br>
 
 CVS commit notifications are sent to the ggz-cvs mailing list.
+<br>
+They are also tracked by the <a href="http://cia.navi.cx/stats/project/ggz">CIA bot</a>.
 <br><br>
 
 </body>
