@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 1/9/00
  * Desc: Functions for handling tables
- * $Id: table.c 5267 2002-11-25 19:16:38Z dr_maux $
+ * $Id: table.c 5405 2003-02-15 01:35:23Z jdorje $
  *
  * Copyright (C) 1999-2002 Brent Hendricks.
  *
@@ -59,20 +59,6 @@
 
 
 pthread_key_t table_key;
-
-/* Packaging for seat events */
-typedef struct {
-	int table;
-	int num_seats;
-	struct GGZTableSeat seat;
-} GGZSeatChangeEventData;
-
-/* Packaging for spectator events */
-typedef struct {
-	int table;
-	int num_spectators;
-	struct GGZTableSpectator spectator;
-} GGZSpectatorChangeEventData;
 
 /* Packaging for table events */
 typedef struct {
