@@ -772,6 +772,10 @@ void _ggzcore_room_set_table_launch_status(struct _GGZRoom *room, int status)
 				    "Bad option");
 		break;
 
+	case E_NO_PERMISSION:
+		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
+				    "Insufficient permissions");
+		break;
 	default:
 		_ggzcore_room_event(room, GGZ_TABLE_LAUNCH_FAIL,
 				    "Unknown launch failure");
