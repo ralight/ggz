@@ -161,6 +161,7 @@ AC_OUTPUT([Makefile
 	   game_clients/Makefile
 	   game_clients/spades/Makefile
 	   game_clients/tictactoe/Makefile	
+	   game_clients/dots/Makefile
 	   ])
 
 
