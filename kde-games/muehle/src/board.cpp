@@ -533,9 +533,9 @@ void Board::setVariant(const QString &variant)
 		// Format: "(x1, y1), (x2, y2)\n"
 		if(s.startsWith("("))
 		{
-			s.replace(QRegExp("("), "");
-			s.replace(QRegExp(")"), "");
-			s.replace(QRegExp(" "), "");
+			s.replace(QRegExp("\\("), "");
+			s.replace(QRegExp("\\)"), "");
+			s.replace(QRegExp("\\ "), "");
 			//s.remove(s.length() - 1, 1);
 			// Format is now: "x1,y1,x2,y2"
 			QStringList list = QStringList::split(",", s);
