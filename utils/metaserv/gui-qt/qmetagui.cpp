@@ -69,7 +69,7 @@ QMetaGUI::~QMetaGUI()
 void QMetaGUI::slotURI()
 {
 	//m_type = 0;
-	data->setText("query://ggz/connection/0.0.4\n");
+	data->setText("query://ggz/connection/0.0.6\n");
 }
 
 void QMetaGUI::doconnection()
@@ -83,12 +83,12 @@ void QMetaGUI::doconnection()
 void QMetaGUI::slotXML()
 {
 	//m_type = 1;
-	data->setText("<?xml version=\"1.0\"><query class=\"ggz\" type=\"connection\">0.0.4</query>\n");
+	data->setText("<?xml version=\"1.0\"><query class=\"ggz\" type=\"connection\">0.0.6</query>\n");
 }
 
 void QMetaGUI::slotUpdate()
 {
-	data->setText("<?xml version=\"1.0\"><update class=\"ggz\" type=\"connection\" username=\"???\" password=\"???\"><option name=\"mode\">add</option><option name=\"uri\">ggz://somewhere</option><option name=\"version\">0.0.5pre</option><option name=\"preference\">30</option></update>\n");
+	data->setText("<?xml version=\"1.0\"><update class=\"ggz\" type=\"connection\" username=\"???\" password=\"???\"><option name=\"mode\">add</option><option name=\"uri\">ggz://somewhere</option><option name=\"version\">0.0.7pre</option><option name=\"preference\">30</option></update>\n");
 }
 
 void QMetaGUI::slotSubmit()
