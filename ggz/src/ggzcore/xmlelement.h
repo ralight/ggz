@@ -32,7 +32,7 @@ struct _GGZXMLElement {
 	char *tag;
 
 	/* Text content */
-	char text[1024];
+	char *text;
 	
 	/* Function to free allocated memory */
 	void (*free)();
