@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 07/13/2001
  * Desc: Functions and data for bidding system
- * $Id: bid.c 2730 2001-11-13 06:29:00Z jdorje $
+ * $Id: bid.c 2731 2001-11-13 06:50:06Z jdorje $
  *
  * Copyright (C) 2001 Brent Hendricks.
  *
@@ -76,8 +76,8 @@ int req_bid(player_t p)
 
 	set_game_state(WH_STATE_WAIT_FOR_BID);
 	if (bid_data->is_bidding)
-		ggzd_debug
-			("ERROR: req_bid: requesting a bid from a player who's already bidding!");
+		ggzd_debug("ERROR: req_bid: "
+			   "requesting a bid from a player who's already bidding!");
 	bid_data->is_bidding = 1;
 
 	set_player_message(p);
@@ -91,6 +91,64 @@ int req_bid(player_t p)
 	} else
 		return send_bid_request(p, bid_data->bid_count,
 					bid_data->bids);
+}
+
+/* Requests bids from all players that have a bid list.  This function is
+   needed, rather than req_bid, because req_bid will not do actions in the
+   correct order for multiple bids.  In fact, this function _could_ replace
+   req_bid; the only drawback is that it's much slower. */
+int request_all_bids(void)
+{
+	player_t p;
+	int status = 0;
+	bid_t *bids;
+
+	ggzd_debug("Requesting bids from some/all players.");
+
+	/* Mark all players as bidding. */
+	for (p = 0; p < game.num_players; p++)
+		if (game.players[p].bid_data.bid_count > 0) {
+			if (game.players[p].bid_data.is_bidding)
+				ggzd_debug("ERROR: req_bid: "
+					   "requesting a bid from a player who's already bidding!");
+			game.players[p].bid_data.is_bidding = 1;
+			set_player_message(p);
+		}
+
+	/* Send all human-player bid requests */
+	for (p = 0; p < game.num_players; p++)
+		if (game.players[p].bid_data.bid_count > 0
+		    && ggzd_get_seat_status(p) == GGZ_SEAT_PLAYER) {
+			if (send_bid_request
+			    (p, game.players[p].bid_data.bid_count,
+			     game.players[p].bid_data.bids) < 0)
+				status = -1;
+		}
+
+	/* Now calculate all bot-player bid requests. */
+	bids = ggz_malloc(sizeof(*bids) * game.num_players);
+	for (p = 0; p < game.num_players; p++)
+		if (game.players[p].bid_data.bid_count > 0
+		    && ggzd_get_seat_status(p) == GGZ_SEAT_BOT)
+			bids[p] =
+				ai_get_bid(p, game.players[p].bid_data.bids,
+					   game.players[p].bid_data.
+					   bid_count);
+
+	/* Now register all bot-player bid requests. */
+	for (p = 0; p < game.num_players; p++)
+		if (game.players[p].bid_data.bid_count > 0
+		    && ggzd_get_seat_status(p) == GGZ_SEAT_BOT)
+			handle_bid_event(p, bids[p]);
+
+	/* OK, we're done.  We return now, and continue to wait for responses 
+	   from non-AI players. There's still a potential problem because as
+	   soon as a player bids, that bid will generally become visible to
+	   everyone.  It might be better to "hide" players' bids until
+	   everyone has bid.  OTOH, this isn't how things work in real card
+	   games, so it'll probably be okay if we just ignore this little
+	   unfairness. */
+	return status;
 }
 
 /* Receive a bid from an arbitrary player.  Test to make sure it's not
