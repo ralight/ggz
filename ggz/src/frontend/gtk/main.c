@@ -2,7 +2,7 @@
  * File: main.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: main.c 3615 2002-03-21 18:51:12Z jdorje $
+ * $Id: main.c 4165 2002-05-05 21:15:21Z bmh $
  *
  * This is the main program body for the GGZ client
  *
@@ -62,28 +62,7 @@ void init_debug(void)
 	g_free(default_file);
 
 	ggzcore_conf_read_list("Debug", "Types", &num_types, (char***)&debug_types);
-	
-#if 0
-	{
-	/* FIXME: this is an ugly-ass hack because ggzcore_conf_read_list
-	   gives us a num_types value to indicate the list length, while
-	   ggz_debug_init expects the list to be null-terminated.  --JDS */
-	/* Update: yet it appears ggzcore_conf_read_list *does* give a
-	   null-terminated list, although this isn't advertised.  I
-	   therefore have no idea what was causing segfaults right here,
-	   and I can't reproduce it now.  --JDS */
-	char* my_debug_types[num_types + 1];
-	int i;
-	
-	for (i = 0; i < num_types; i++)
-		my_debug_types[i] = debug_types[i];
-	my_debug_types[num_types] = NULL;	
-	
-	ggz_debug_init((const char**)my_debug_types, debug_file);
-	} /* end of ugly-ass hack */
-#else
 	ggz_debug_init((const char**)debug_types, debug_file);
-#endif
 
 	/* Free up memory */
 	for (i = 0; i < num_types; i++)
