@@ -26,16 +26,22 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <errno.h>
+#include <ggz.h>
 
-#include "ggz.h"
+#include <game.h>
+
+/* Global game variables */
+extern struct ttt_game_t ttt_game;
 
 
 int main(void)
 {
-	int ggz_sock, fd_max, status;
-	char game_over = 0;
+	int i, fd, ggz_sock, fd_max, status;
 	fd_set active_fd_set, read_fd_set;
 	
+	/* Initialize ggz */
+	if (ggz_init("TicTacToe", NULL) < 0)
+		return -1;
 	
 	if ( (ggz_sock = ggz_connect()) < 0)
 		return -1;
@@ -43,12 +49,13 @@ int main(void)
 	FD_ZERO(&active_fd_set);
 	FD_SET(ggz_sock, &active_fd_set);
 
-	fd_max = ggz_sock;
+	game_init();
+	while(ttt_game.state != TTT_STATE_DONE) {
 		
-	while(!game_over) {
-
 		read_fd_set = active_fd_set;
-		status = select(fd_max, &read_fd_set, NULL, NULL, NULL);
+		fd_max = ggz_fd_max();
+		
+		status = select((fd_max+1), &read_fd_set, NULL, NULL, NULL);
 		
 		if (status <= 0) {
 			if (errno == EINTR)
@@ -57,13 +64,40 @@ int main(void)
 				return -1;
 		}
 
-		/* Check for message from player */
+		/* Check for message from GGZ server */
 		if (FD_ISSET(ggz_sock, &read_fd_set)) {
-			ggz_handle_msg(ggz_sock);
+			status = game_handle_ggz(ggz_sock, &fd);
+			switch (status) {
+				
+			case -1:  /* Big error!! */
+				return -1;
+				
+			case 0: /* All ok, how boring! */
+				break;
+
+			case 1: /* A player joined */
+				FD_SET(fd, &active_fd_set);
+				break;
+				
+			case 2: /* A player left */
+				FD_CLR(fd, &active_fd_set);
+				break;
+			}
+		}
+
+		/* Check for message from player */
+		for (i = 0; i < ggz_seats_num(); i++) {
+			fd = ggz_seats[i].fd;
+			if (fd != -1 && FD_ISSET(fd, &read_fd_set)) {
+				status = game_handle_player(i);
+				if (status < 0)
+					FD_CLR(fd, &active_fd_set);
+			}
 		}
 	}
 
-
+	ggz_done();
+	ggz_quit();
 	return 0;
 }
 

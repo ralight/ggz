@@ -44,7 +44,9 @@ typedef enum {
 
 	REQ_GAME,
 	REQ_CHAT,
-        REQ_MOTD
+        REQ_MOTD,
+
+	REQ_ROOM_JOIN
 } UserToControl;
 
 
@@ -56,6 +58,7 @@ typedef enum {
 	MSG_UPDATE_PLAYERS,
 	MSG_UPDATE_TYPES,
 	MSG_UPDATE_TABLES,
+	MSG_UPDATE_ROOMS,
 	MSG_ERROR,
 
 	RSP_LOGIN_NEW,
@@ -78,7 +81,9 @@ typedef enum {
 
 	RSP_GAME,
 	RSP_CHAT,
-        RSP_MOTD
+        RSP_MOTD,
+
+	RSP_ROOM_JOIN
 } ControlToUser;
 
 
@@ -97,7 +102,6 @@ typedef enum {
 	REQ_GAME_LEAVE
 } ControlToTable;
 
-
 #define E_USR_LOOKUP   -1
 #define E_BAD_OPTIONS  -2
 #define E_ROOM_FULL    -3
@@ -108,3 +112,7 @@ typedef enum {
 #define E_NO_TABLE     -8
 #define E_LEAVE_FAIL   -9
 #define E_LEAVE_FORBIDDEN -10
+#define E_ALREADY_LOGGED_IN -11
+#define E_NOT_LOGGED_IN -12
+#define E_NOT_IN_ROOM   -13
+
