@@ -3,7 +3,7 @@
  * Author: Brent Hendricks
  * Project: GGZ Text Client 
  * Date: 9/26/00
- * $Id: output.c 4834 2002-10-10 00:55:04Z jdorje $
+ * $Id: output.c 4859 2002-10-10 21:18:29Z jdorje $
  *
  * Functions for display text/messages
  *
@@ -93,6 +93,7 @@ void output_display_help(void)
 	output_text("--- /join room|table <num>                  Join room or table <num>");
 	output_text("--- /list players|rooms|tables|types        List the requested information.");
 	output_text("--- /msg <player> <msg>                     Send a msg to a player");
+	output_text("--- /table <msg>                            Send a msg to your table");
 	output_text("--- /beep <player>                          Beep player <player>");
 	output_text("--- /launch                                 Launch a game if possible");
 	output_text("--- /version                                Display the client version");
@@ -168,8 +169,6 @@ void output_draw_text(void)
 void output_chat(GGZChatType type, const char *player, const char *message)
 {
 	switch(type) {
-	case GGZ_CHAT_NONE:
-		break;
 	case GGZ_CHAT_BEEP:
 		output_text("--- You've been beeped by %s.", player);
 		printf("\007");
@@ -180,8 +179,11 @@ void output_chat(GGZChatType type, const char *player, const char *message)
 	case GGZ_CHAT_ANNOUNCE:
 		output_text("[%s] %s", player, message);
 		break;
+	case GGZ_CHAT_TABLE:
+		output_text("|%s| %s", player, message);
+		break;
+	case GGZ_CHAT_NONE:
 	case GGZ_CHAT_NORMAL:
-	default:
 		output_text("<%s> %s", player, message);
 		break;
 	}

@@ -48,6 +48,7 @@ static void input_handle_join_table(char* line);
 static void input_handle_desc(char* line);
 static void input_handle_chat(char* line);
 static void input_handle_msg(char* line);
+static void input_handle_table(char* line);
 static void input_handle_wall(char* line);
 static void input_handle_beep(char* line);
 static void input_handle_launch(char *line);
@@ -113,6 +114,9 @@ void input_command(void)
 		}
 		else if (strcmp(command, "msg") == 0) {
 			input_handle_msg(current);
+		}
+		else if (strcmp(command, "table") == 0) {
+			input_handle_table(current);
 		}
 		else if (strcmp(command, "wall") == 0) {
 			input_handle_wall(current);
@@ -325,6 +329,17 @@ static void input_handle_msg(char* line)
 		msg = strdup(line);
 		ggzcore_room_chat(room, GGZ_CHAT_PERSONAL, player, msg);
 	}
+}
+
+
+static void input_handle_table(char* line)
+{
+	GGZRoom *room = ggzcore_server_get_cur_room(server);
+
+	if (line[0] == '\0')
+		return;
+
+	ggzcore_room_chat(room, GGZ_CHAT_TABLE, NULL, line);
 }
 
 
