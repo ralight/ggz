@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-dnl $Id: configure.ac 6639 2005-01-13 00:36:29Z jdorje $
+dnl $Id: configure.ac 6644 2005-01-13 04:32:33Z jdorje $
 
 AC_INIT([GGZ common libraries], [0.0.10pre], [ggz-dev@mail.ggzgamingzone.org], [libggz])
 AC_CONFIG_SRCDIR([configure.ac])
@@ -21,6 +21,12 @@ AM_PROG_LIBTOOL
 AC_PROG_RANLIB
 AC_PROG_MAKE_SET
 
+
+# Special case for compiling on windows
+case $host_os in
+  *mingw32* ) MINGW32=yes;;
+          * ) MINGW32=no;;
+esac
 
 # Compiling Options
 # =================
@@ -171,6 +177,9 @@ AC_EGREP_HEADER(msg_controllen, sys/socket.h,
 # if they're there.
 AC_CHECK_LIB(socket, socket, [LDADD="$LDADD -lsocket"])
 AC_CHECK_LIB(nsl, gethostbyname, [LDADD="$LDADD -lnsl"])
+if test "$MINGW32" = "yes"; then
+  LDADD="$LDADD -lwsock32"
+fi
 
 AC_CHECK_FUNCS([getpagesize memmove memset mkdir \
                 stat strcasecmp strerror strstr strchr], [],
