@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game functions
- * $Id: common.c 3421 2002-02-19 10:59:53Z jdorje $
+ * $Id: common.c 3422 2002-02-19 12:04:46Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -323,6 +323,8 @@ void next_play(void)
 			next_play();	/* start a new game */
 			return;
 		}
+		
+		broadcast_newhand();
 
 		/* shuffle and deal a hand */
 		cards_shuffle_deck(game.deck);

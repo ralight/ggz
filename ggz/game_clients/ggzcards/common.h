@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Frontend to GGZCards Client-Common
- * $Id: common.h 3421 2002-02-19 10:59:53Z jdorje $
+ * $Id: common.h 3422 2002-02-19 12:04:46Z jdorje $
  *
  * Copyright (C) 2001--2002 Brent Hendricks.
  *
@@ -145,6 +145,9 @@ extern void game_get_newgame(void);
 
 /** Alerts the table to the start of a new game. */
 extern void game_alert_newgame(void);
+
+/** Alerts the table to the start of a new hand. */
+extern void game_alert_newhand(void);
 
 /** Handles a gameover message.
   * @param num_winners The number of players who won the game (0 or more)

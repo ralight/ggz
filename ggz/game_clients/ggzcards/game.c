@@ -4,7 +4,7 @@
  * Project: GGZCards Client
  * Date: 08/14/2000
  * Desc: Handles user-interaction with game screen
- * $Id: game.c 3421 2002-02-19 10:59:53Z jdorje $
+ * $Id: game.c 3422 2002-02-19 12:04:46Z jdorje $
  *
  * Copyright (C) 2000-2002 Brent Hendricks.
  *
@@ -193,6 +193,12 @@ void game_alert_newgame(void)
 	game_started = TRUE;
 	table_setup();
 	/* do nothing... */
+}
+
+
+void game_alert_newhand(void)
+{
+	/* nothing */
 }
 
 void game_handle_gameover(int num_winners, int *winners)

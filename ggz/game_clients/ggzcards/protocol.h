@@ -4,7 +4,7 @@
  * Project: GGZCards Server/Client
  * Date: 06/26/2001
  * Desc: Enumerations for the ggzcards client-server protocol
- * $Id: protocol.h 3421 2002-02-19 10:59:53Z jdorje $
+ * $Id: protocol.h 3422 2002-02-19 12:04:46Z jdorje $
  *
  * This just contains the communications protocol information.
  *
@@ -86,6 +86,9 @@ typedef enum {
 	   m==1 then the option is considered "boolean" and either a 0 or 1
 	   may be sent.  It needs a RSP_OPTIONS in response. */
 	REQ_OPTIONS,
+	
+	/* Tells the client a new hand is starting.  No data. */
+	MSG_NEWHAND,
 
 	/* Tells the client of a player's hand.  It'll be followed by a seat
 	   # for whom the hand belongs to, followed by an integer n for the

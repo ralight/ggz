@@ -4,7 +4,7 @@
  * Project: GGZCards Client-Common
  * Date: 07/22/2001
  * Desc: Backend to GGZCards Client-Common
- * $Id: common.c 3421 2002-02-19 10:59:53Z jdorje $
+ * $Id: common.c 3422 2002-02-19 12:04:46Z jdorje $
  *
  * Copyright (C) 2001-2002 Brent Hendricks.
  *
@@ -889,6 +889,10 @@ int client_handle_server(void)
 		break;
 	case MSG_PLAYERS:
 		status = handle_msg_players();
+		break;
+	case MSG_NEWHAND:
+		game_alert_newhand();
+		status = 0;
 		break;
 	case MSG_HAND:
 		status = handle_msg_hand();

@@ -4,7 +4,7 @@
  * Project: GGZCards Server
  * Date: 06/20/2001
  * Desc: Game-independent game network functions
- * $Id: net.c 3421 2002-02-19 10:59:53Z jdorje $
+ * $Id: net.c 3422 2002-02-19 12:04:46Z jdorje $
  *
  * This file contains code that controls the flow of a general
  * trick-taking game.  Game states, event handling, etc. are all
@@ -460,6 +460,24 @@ void broadcast_newgame(void)
 	for (p = 0; p < game.num_players; p++)
 		if (get_player_status(p) == GGZ_SEAT_PLAYER)
 			(void) send_newgame(p);
+}
+
+
+static int send_newhand(player_t p)
+{
+	int fd = get_player_socket(p);
+	
+	return write_opcode(fd, MSG_NEWHAND);
+}
+
+
+void broadcast_newhand(void)
+{
+	player_t p;
+	
+	for (p = 0; p < game.num_players; p++)
+		if (get_player_status(p) == GGZ_SEAT_PLAYER)
+			(void) send_newhand(p);
 }
 
 
