@@ -15,6 +15,7 @@ $SIG{'INT'}='aurevoir';
 sub bienvenue{
 	$color1 = color("green");
 	$color2 = color("cyan");
+	$color3 = color("yellow");
 
 	print color("red");
 	print "GGZ protocol sniffer ready.\n";
@@ -44,10 +45,12 @@ while(<STDIN>){
 			$xpeer1 = $peer1;
 			$xpeer2 = $peer2;
 		}
-		if($peer1 eq $xpeer1){
+		if(($peer1 eq $xpeer1) && ($peer2 eq $xpeer2)){
 			$color = $color1;
-		}else{
+		}elsif(($peer2 eq $xpeer1) && ($peer1 eq $xpeer2)){
 			$color = $color2;
+		}else{
+			$color = $color3;
 		}
 	}else{
 		s/\>\.\./\>/g;
