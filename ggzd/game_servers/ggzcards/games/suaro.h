@@ -54,5 +54,3 @@ typedef struct suaro_game_t {
 
 	int kitty_revealed;
 } suaro_game_t;
-
-
