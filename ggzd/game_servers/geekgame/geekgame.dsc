@@ -14,6 +14,10 @@ Version = 1
 
 [TableOptions]
 AllowLeave = 1
-PlayersAllowed = 4
+PlayersAllowed = 1..5
 AllowSpectators = 1
+
+[Statistics]
+Records = 1
+Ratings = 1
 

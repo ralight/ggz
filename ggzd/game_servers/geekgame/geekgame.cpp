@@ -1,3 +1,20 @@
+// Geekgame - a game which only real geeks understand
+// Copyright (C) 2002, 2003 Josef Spillner, josef@ggzgamingzone.org
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
 // Header file
 #include "geekgame.h"
 
@@ -85,6 +102,14 @@ void Geekgame::dataEvent(int player)
 			ggz_read_string(channel, playername, 256);
 			ggz_read_string(channel, playerpic, 256);
 
+			// Broadcast number of total seats first
+			for(int i = 0; i < players(); i++)
+			{
+				int bfd = fd(i);
+				ggz_write_char(bfd, op_server_numplayers);
+				ggz_write_int(bfd, players());
+			}
+
 			// Broadcast
 			for(int i = 0; i < players(); i++)
 			{
@@ -95,14 +120,20 @@ void Geekgame::dataEvent(int player)
 			}
 
 			// If ready, announce game start
-			if(0 == 0) game_start();
+			if(open() == 0) game_start();
 			break;
 		case op_client_ruleset:
+			ggz_read_string_alloc(channel, &ruleset);
+			// check_mode(ruleset)
+			ggz_write_char(channel, op_server_moderesult);
+			ggz_write_int(channel, 1);
 			break;
 		case op_client_move:
 			ggz_read_int(channel, &x);
 			ggz_read_int(channel, &y);
 			// check_map(x, y);
+			ggz_write_char(channel, op_server_moveresult);
+			ggz_write_int(channel, 1);
 			break;
 		default:
 			// Discard
