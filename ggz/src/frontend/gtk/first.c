@@ -2,7 +2,7 @@
  * File: first.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: first.c 6272 2004-11-05 21:19:52Z jdorje $
+ * $Id: first.c 6287 2004-11-06 08:47:13Z jdorje $
  *
  * Displayes information about the authors and the application.
  *
@@ -180,6 +180,7 @@ create_dlg_first (void)
   GtkWidget *button_no;
 
   dlg_first = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_transient_for(GTK_WINDOW(dlg_first), GTK_WINDOW(win_main));
   g_object_set_data(G_OBJECT (dlg_first), "dlg_first", dlg_first);
   gtk_container_set_border_width (GTK_CONTAINER (dlg_first), 21);
   gtk_window_set_title (GTK_WINDOW (dlg_first), _("First Time Configuration"));

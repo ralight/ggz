@@ -2,7 +2,7 @@
  * File: about.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: about.c 6286 2004-11-06 08:34:37Z jdorje $
+ * $Id: about.c 6287 2004-11-06 08:47:13Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -40,6 +40,7 @@
 
 #include "about.h"
 #include "chat.h"
+#include "client.h"
 #include "support.h"
 
 static GtkWidget *about_dialog;
@@ -89,6 +90,8 @@ GtkWidget *create_dlg_about(void)
 	GtkWidget *ok_button;
 
 	dlg_about = gtk_dialog_new();
+	gtk_window_set_transient_for(GTK_WINDOW(dlg_about),
+				     GTK_WINDOW(win_main));
 	g_object_set_data(G_OBJECT(dlg_about), "dlg_about", dlg_about);
 	gtk_window_set_title(GTK_WINDOW(dlg_about), _("About"));
 	gtk_window_set_policy(GTK_WINDOW(dlg_about), FALSE, FALSE, FALSE);

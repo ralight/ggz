@@ -2,7 +2,7 @@
  * File: info.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: roominfo.c 6273 2004-11-05 21:49:00Z jdorje $
+ * $Id: roominfo.c 6287 2004-11-06 08:47:13Z jdorje $
  *
  * This dialog is used to display information about a selected room to
  * the user. 
@@ -24,7 +24,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -33,9 +35,9 @@
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-
 #include <ggzcore.h>
 
+#include "client.h"
 #include "roominfo.h"
 #include "support.h"
 
@@ -121,6 +123,8 @@ GtkWidget *create_dlg_info(void)
 	GtkWidget *ok_button;
 
 	dlg_info = gtk_dialog_new();
+	gtk_window_set_transient_for(GTK_WINDOW(dlg_info),
+				     GTK_WINDOW(win_main));
 	g_object_set_data(G_OBJECT(dlg_info), "dlg_info", dlg_info);
 	gtk_window_set_title(GTK_WINDOW(dlg_info), _("Room Information"));
 

@@ -2,7 +2,7 @@
  * File: props.c
  * Author: Justin Zaun
  * Project: GGZ GTK Client
- * $Id: props.c 6274 2004-11-05 22:39:18Z jdorje $
+ * $Id: props.c 6287 2004-11-06 08:47:13Z jdorje $
  *
  * This is the main program body for the GGZ client
  *
@@ -887,6 +887,8 @@ create_dlg_props (void)
   GtkWidget *button3;
 
   dlg_props = gtk_dialog_new ();
+  gtk_window_set_transient_for(GTK_WINDOW(dlg_props),
+			       GTK_WINDOW(win_main));
   g_object_set_data(G_OBJECT (dlg_props), "dlg_props", dlg_props);
   gtk_window_set_title (GTK_WINDOW (dlg_props), _("Properties"));
   gtk_window_set_policy (GTK_WINDOW (dlg_props), FALSE, TRUE, TRUE);
