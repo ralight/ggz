@@ -167,8 +167,8 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 	gchar name[9];
 	gchar status;
 	gint i_status;
-	guchar  subop;
-	gint num, op, size, checksum, count, i;
+	guchar subop;
+	gint num, op, size, checksum, count, i, seat;
 	gchar buf[4096];
 	static gint color_index=0;
 
@@ -465,20 +465,73 @@ void handle_server_fd(gpointer data, gint source, GdkInputCondition cond)
 		break;
 
 	case MSG_UPDATE_PLAYERS:
-		connect_msg("[%s]\n", opcode_str[op]);
+		es_read_char(source, &subop);
+		es_read_string(source, name, MAX_USER_NAME_LEN+1);
+		switch (subop) {
+		case GGZ_UPDATE_ADD:
+			connect_msg("[%s] %s entered room\n", opcode_str[op], 
+				    name);
+			break;
+		case GGZ_UPDATE_DELETE:
+			connect_msg("[%s] %s left room\n", opcode_str[op], 
+				    name);
+			break;
+		}			
+		/* FIXME: Should update list, not ask for new one*/
+		ggz_get_players(NULL, NULL);
+		break;
+
+	case MSG_UPDATE_TABLES:
+		es_read_char(source, &subop);
+		es_read_int(source, &num);
+		switch (subop) {
+		case GGZ_UPDATE_DELETE:
+			connect_msg("[%s] Table %d deleted\n", opcode_str[op],
+				    num);
+			break;
+		case GGZ_UPDATE_JOIN:
+		case GGZ_UPDATE_LEAVE:
+			es_read_int(source, &seat);
+			es_read_string(source, name, MAX_USER_NAME_LEN + 1);
+			connect_msg("[%s] %s %s table %d in seat %d\n", 
+				    opcode_str[op], name, (subop == GGZ_UPDATE_JOIN ? "joined" : "left"), num, seat);
+			break;
+		case GGZ_UPDATE_ADD:
+			count = tables.count;
+			es_read_int(source, &tables.info[count].room);
+			es_read_int(source, &tables.info[count].type_index);
+			es_read_string(source, tables.info[count].desc, 
+				       MAX_GAME_DESC_LEN);
+			es_read_char(source, &tables.info[count].playing);
+			es_read_int(source, &seat);
+			
+			for (i = 0; i < seat; i++) {
+				es_read_int(source, 
+					    &tables.info[count].seats[i]);
+				if (tables.info[count].seats[i] >= 0
+				    || tables.info[count].seats[i] == GGZ_SEAT_RESV) 
+					es_read_string(source, (char*)&tables.info[count].names[i], MAX_USER_NAME_LEN+1);
+			}
+			for (i = seat; i < MAX_TABLE_SIZE; i++)
+			tables.info[count].seats[i] = GGZ_SEAT_NONE;
+
+			connect_msg("[%s] New table %d added\n", opcode_str[op], num);			
+			connect_msg("[%s] Room: %d\n", opcode_str[op],tables.info[i].room);
+			connect_msg("[%s] Type: %d\n", opcode_str[op],tables.info[i].type_index);
+			connect_msg("[%s] Playing: %d\n",opcode_str[op], tables.info[i].playing);
+			connect_msg("[%s] Seats: %d\n", opcode_str[op], seat);
+			connect_msg("[%s] Desc: %s\n", opcode_str[op], tables.info[i].desc);
+			break;
+		}
+		
+		/* FIXME: Should update lists, not ask for new ones*/
+		ggz_get_tables(NULL, NULL);
 		ggz_get_players(NULL, NULL);
 		break;
 
 	case MSG_UPDATE_TYPES:
 		connect_msg("[%s]\n", opcode_str[op]);
 		ggz_get_types(NULL, NULL);
-		break;
-
-	case MSG_UPDATE_TABLES:
-		connect_msg("[%s]\n", opcode_str[op]);
-		ggz_get_tables(NULL, NULL);
-		/* FIXME: won't need this once new update protocol in place */
-		ggz_get_players(NULL, NULL);
 		break;
 
 	case MSG_UPDATE_ROOMS:
@@ -635,6 +688,7 @@ gint anon_login(void)
 	return 0;
 }
 
+
 void handle_list_tables(gint op, gint fd)
 {
 	gint i, j,  count, num;
@@ -675,6 +729,7 @@ void handle_list_tables(gint op, gint fd)
 	}
 	tables.count = count;
 }
+
 
 void motd_print_line(gchar *line)
 {
