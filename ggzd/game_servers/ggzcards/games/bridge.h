@@ -38,7 +38,9 @@ typedef struct bridge_game_t {
 
 	/* we ignore the regular player_t score field altogether */
 	int points_above_line[2];
-	int points_below_line[2];
+	int game_count;		/* number of games completed; 0-2 */
+	int points_below_line[3][2];
+	int vulnerable[2];	/* also represents # of games won */
 
 	/* contract information */
 	int contract;		/* value of the contract */

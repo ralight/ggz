@@ -329,7 +329,7 @@ static void bridge_end_trick()
 static void bridge_set_score_message()
 {
 	player_t team;
-	int widths[2], len=0, i;
+	int widths[2], len=0, i, g;
 	char buf[4096] = "";
 
 #define HORIZONTAL_LINE for (i=0; i<widths[0]+widths[1]+3; i++) \
@@ -349,16 +349,18 @@ static void bridge_set_score_message()
 	len += snprintf(buf+len, sizeof(buf)-len, "%*d | %-*d\n", widths[0], BRIDGE.points_above_line[0], widths[1], BRIDGE.points_above_line[1]);
 
 	BLANK_LINE;
-	HORIZONTAL_LINE;
 
-	len += snprintf(buf+len, sizeof(buf)-len, "%*d | %-*d\n", widths[0], BRIDGE.points_below_line[0], widths[1], BRIDGE.points_below_line[1]);
+	for (g=0; g<=BRIDGE.game_count; g++) {
+		HORIZONTAL_LINE;
+		len += snprintf(buf+len, sizeof(buf)-len, "%*d | %-*d\n", widths[0], BRIDGE.points_below_line[g][0], widths[1], BRIDGE.points_below_line[g][1]);
+	}
 
 	set_global_message("Scores", "%s", buf);
 }
 
 static void bridge_end_hand()
 {
-	int points_above, points_below, tricks;
+	int points_above, points_below, tricks, g;
 	int winning_team, team;
 	int tricks_above, tricks_below;
 	char buf[512];
@@ -399,21 +401,34 @@ static void bridge_end_hand()
 	points_below *= BRIDGE.bonus;
 	points_above *= BRIDGE.bonus;
 	BRIDGE.points_above_line[winning_team] += points_above;
-	BRIDGE.points_below_line[winning_team] += points_below;
+	BRIDGE.points_below_line[BRIDGE.game_count][winning_team] += points_below;
 
 	if (tricks >= BRIDGE.contract)
 		snprintf(buf, sizeof(buf), "%s made the bid and earned %d|%d points.", ggz_seats[BRIDGE.declarer].name, points_above, points_below);
 	else
 		snprintf(buf, sizeof(buf), "%s went set, giving up %d points.", ggz_seats[BRIDGE.declarer].name, points_above);
 
-	if (BRIDGE.points_below_line[winning_team] >= 100) {
-		/* 500 point bonus for winning a game */
-		BRIDGE.points_above_line[winning_team] += 500;
-		for (team=0; team<2; team++) {
-			BRIDGE.points_above_line[team] += BRIDGE.points_below_line[team];
-			BRIDGE.points_below_line[team] = 0;
+	if (BRIDGE.points_below_line[BRIDGE.game_count][winning_team] >= 100) {
+		if (BRIDGE.vulnerable[winning_team]) {
+			/* they've won a rubber */
+			int rubber_bonus = BRIDGE.vulnerable[1-winning_team] ? 500 : 700;
+			BRIDGE.points_above_line[winning_team] += rubber_bonus;
+			for (team=0; team<2; team++) {
+				for (g=0; g<=BRIDGE.game_count; g++) {
+					BRIDGE.points_above_line[team] += BRIDGE.points_below_line[g][team];
+					BRIDGE.points_below_line[g][team] = 0;
+				}
+			}
+			BRIDGE.game_count = 0;
+			snprintf(buf+strlen(buf), sizeof(buf)-strlen(buf), "  They won a %d-point rubber.", rubber_bonus);
+			/* right now, we jsut go right on into the next rubber with a running score.  Instead, this
+			 * should be the end of a game */
+		} else {
+			/* they've won their first game of the rubber */
+			BRIDGE.game_count++;
+			BRIDGE.vulnerable[winning_team] = 1;
+			snprintf(buf+strlen(buf), sizeof(buf)-strlen(buf), "  They won a game.");
 		}
-		snprintf(buf+strlen(buf), sizeof(buf)-strlen(buf), "  They won a game.");
 	}
 	/* TODO: vulnerable, etc. */
 
