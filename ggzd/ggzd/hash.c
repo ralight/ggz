@@ -27,6 +27,7 @@
 #include <pthread.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include <hash.h>
 #include <ggzd.h>

@@ -92,6 +92,8 @@ static int login_player_normal(GGZPlayer* player, int fd)
 	ggzdbPlayerEntry db_pe;
 	char *ip_addr;
 	int name_ok, rc;
+	char lc_name[MAX_USER_NAME_LEN + 1];
+	char *src, *dest;
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Player %p attempting login", player);
 
@@ -110,8 +112,13 @@ static int login_player_normal(GGZPlayer* player, int fd)
 		return GGZ_REQ_FAIL;
 	}
 
+	/* Convert name to lowercase for comparisons */
+	for(src=name,dest=lc_name; *src!='\0'; src++,dest++)
+		*dest = tolower(*src);
+	*dest = '\0';
+
 	/* Add the player name to the hash table */
-	name_ok = hash_player_add(name, player);
+	name_ok = hash_player_add(lc_name, player);
 	if (!name_ok) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s", 
 			name);
@@ -122,12 +129,12 @@ static int login_player_normal(GGZPlayer* player, int fd)
 	}
 
 	/* Lookup the player in the database so we can verify the password */
-	strcpy(db_pe.handle, name);
+	strcpy(db_pe.handle, lc_name);
 	rc = ggzdb_player_get(&db_pe);
 
 	/* If they aren't found, return an error */
 	if(rc == GGZDB_ERR_NOTFOUND) {
-		hash_player_delete(name);
+		hash_player_delete(lc_name);
 		dbg_msg(GGZ_DBG_CONNECTION,
 			"Unsuccessful login of %s - no account", name);
 		if (es_write_int(fd, RSP_LOGIN) < 0
@@ -138,7 +145,7 @@ static int login_player_normal(GGZPlayer* player, int fd)
 
 	/* They were found, so verify the password */
 	if(strcmp(db_pe.password, password)) {
-		hash_player_delete(name);
+		hash_player_delete(lc_name);
 		dbg_msg(GGZ_DBG_CONNECTION,
 			"Unsuccessful login of %s - bad password", name);
 		if (es_write_int(fd, RSP_LOGIN) < 0
@@ -201,6 +208,8 @@ static int login_player_new(GGZPlayer* player, int fd)
 	ggzdbPlayerEntry db_pe;
 	char *ip_addr;
 	int name_ok, rc;
+	char lc_name[MAX_USER_NAME_LEN + 1];
+	char *src, *dest;
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Creating new login for player %p", 
 		player);
@@ -218,8 +227,13 @@ static int login_player_new(GGZPlayer* player, int fd)
 		return GGZ_REQ_FAIL;
 	}
 
+	/* Convert name to lowercase for comparisons */
+	for(src=name,dest=lc_name; *src!='\0'; src++,dest++)
+		*dest = tolower(*src);
+	*dest = '\0';
+
 	/* Add the player name to the hash table */
-	name_ok = hash_player_add(name, player);
+	name_ok = hash_player_add(lc_name, player);
 	if (!name_ok) {
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s", 
 			name);
@@ -232,7 +246,7 @@ static int login_player_new(GGZPlayer* player, int fd)
 	/* At this point, we know the name is not currently in use, so */
 	/* try adding it to the database - first generate a password */
 	login_generate_password(db_pe.password);
-	strcpy(db_pe.handle, name);
+	strcpy(db_pe.handle, lc_name);
 	strcpy(db_pe.name, "N/A");
 	strcpy(db_pe.email, "N/A");
 	db_pe.last_login = time(NULL);
@@ -240,7 +254,7 @@ static int login_player_new(GGZPlayer* player, int fd)
 
 	/* If we tried to overwrite a value, then we know it existed */
 	if(rc == GGZDB_ERR_DUPKEY) {
-		hash_player_delete(name);
+		hash_player_delete(lc_name);
 		dbg_msg(GGZ_DBG_CONNECTION, "Unsuccessful new login of %s", 
 			name);
 		if (es_write_int(fd, RSP_LOGIN_NEW) < 0
@@ -312,6 +326,8 @@ static int login_player_anon(GGZPlayer* player, int fd)
 	int name_ok;
 	ggzdbPlayerEntry db_pe;
 	int rc;
+	char lc_name[MAX_USER_NAME_LEN + 1];
+	char *src, *dest;
 
 	/* Read this first to get it out of the socket */
 	if (read_name(fd, name) < 0)
@@ -330,16 +346,21 @@ static int login_player_anon(GGZPlayer* player, int fd)
 	dbg_msg(GGZ_DBG_CONNECTION, "Creating guest login for player %p", 
 		player);
 
+	/* Convert name to lowercase for comparisons */
+	for(src=name,dest=lc_name; *src!='\0'; src++,dest++)
+		*dest = tolower(*src);
+	*dest = '\0';
+
 	/* Check the name vs. the database */
 	name_ok = 1;
-	strcpy(db_pe.handle, name);
+	strcpy(db_pe.handle, lc_name);
 	rc = ggzdb_player_get(&db_pe);
 	if(rc != GGZDB_ERR_NOTFOUND)
 		name_ok = 0;
 
 	/* Add the player name to the hash table */
 	if(name_ok)
-		name_ok = hash_player_add(name, player);
+		name_ok = hash_player_add(lc_name, player);
 
 	if (!name_ok) {
 		dbg_msg(GGZ_DBG_CONNECTION,

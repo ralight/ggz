@@ -40,6 +40,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include <easysock.h>
 #include <ggzd.h>
@@ -386,10 +387,18 @@ static int player_handle(GGZPlayer* player, int p_fd)
 static void player_remove(GGZPlayer* player)
 {
 	int fd = player->fd;
+	char lc_name[MAX_USER_NAME_LEN + 1];
+	char *src, *dest;
 
 	/* Take their name off the hash list */
-	/* FIXME: Should use read lock eventually */
-	hash_player_delete(player->name);
+	/* Convert name to lowercase for comparisons */
+	pthread_rwlock_rdlock(&player->lock);
+	for(src=player->name,dest=lc_name; *src!='\0'; src++,dest++)
+		*dest = tolower(*src);
+	*dest = '\0';
+	pthread_rwlock_unlock(&player->lock);
+
+	hash_player_delete(lc_name);
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Removing %s", player->name);
 	log_msg(GGZ_LOG_CONNECTION_INFO, "%s disconnected from server",

@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <easysock.h>
 #include <string.h>
+#include <ctype.h>
 
 #include <chat.h>
 #include <datatypes.h>
@@ -74,6 +75,8 @@ int chat_player_enqueue(char* receiver, unsigned char opcode,
 	int size, status=0;
 	GGZPlayer* rcvr = NULL;
 	void *data = NULL;
+	char lc_rcvr[MAX_USER_NAME_LEN + 1];
+	char *src, *dest;
 
 	/* Don't allow personal chat from a player at a table */
 	pthread_rwlock_rdlock(&sender->lock);
@@ -83,8 +86,13 @@ int chat_player_enqueue(char* receiver, unsigned char opcode,
 	}
 	pthread_rwlock_unlock(&sender->lock);	
 
+	/* Convert receiver name to lowercase for comparisons */
+	for(src=receiver,dest=lc_rcvr; *src!='\0'; src++,dest++)
+		*dest = tolower(*src);
+	*dest = '\0';
+
 	/* Find target player.  Returns with player write-locked */
-	if ( (rcvr = hash_player_lookup(receiver)) == NULL )
+	if ( (rcvr = hash_player_lookup(lc_rcvr)) == NULL )
 		return E_USR_LOOKUP;
 	
 	/* Don't allow personal chat to a player at a table */

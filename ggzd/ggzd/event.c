@@ -26,6 +26,7 @@
 
 #include <pthread.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include <easysock.h>
 #include <err_func.h>
@@ -222,6 +223,8 @@ int event_player_enqueue(char* name, GGZEventFunc func, unsigned int size,
 {
 	GGZEvent *event;
 	GGZPlayer *player;
+	char lc_name[MAX_USER_NAME_LEN + 1];
+	char *src, *dest;
 
 	/* Allocate a new event item */
 	if ( (event = malloc(sizeof(GGZEvent))) == NULL) {
@@ -238,9 +241,13 @@ int event_player_enqueue(char* name, GGZEventFunc func, unsigned int size,
 	event->data = data;
 	event->handle = func;
 
+	/* Convert receiver name to lowercase for comparisons */
+	for(src=name,dest=lc_name; *src!='\0'; src++,dest++)
+		*dest = tolower(*src);
+	*dest = '\0';
 	
 	/* Find target player.  Returns with player write-locked */
-	if ( (player = hash_player_lookup(name)) == NULL ) {
+	if ( (player = hash_player_lookup(lc_name)) == NULL ) {
 		if (data)
 			free(data);
 		free(event);
