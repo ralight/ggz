@@ -4,7 +4,7 @@
  * Project: GGZ Server
  * Date: 10/11/99
  * Desc: Error functions
- * $Id: err_func.c 5851 2004-02-08 21:45:29Z jdorje $
+ * $Id: err_func.c 6136 2004-07-17 04:02:41Z josef $
  *
  * Copyright (C) 1999 Brent Hendricks.
  *
@@ -43,10 +43,6 @@
 #include "datatypes.h"
 #include "err_func.h"
 #include "ggzd.h"
-
-#if !GGZ_HAVE_SYSLOG_H
-# error Libggz has been compiled without syslog support.  This is no good.
-#endif
 
 /* Logfile info */
 LogInfo log_info = { 0, 0,
