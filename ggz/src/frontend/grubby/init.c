@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <ggzcore.h>
 #include "datatypes.h"
@@ -45,7 +46,7 @@ void grubby_init( void )
 void ggz_init( void )
 {
 	GGZOptions opt;
-	char *global_conf, *user_conf;
+	char *global_conf, *user_conf, *debugfile;
 
 	/* Initilize GGZCORE */
 	opt.flags = GGZ_OPT_PARSER;
@@ -54,7 +55,10 @@ void ggz_init( void )
 	sprintf(user_conf, "%s/.ggz/grubby.rc", getenv("HOME"));
 	ggzcore_conf_initialize(global_conf, user_conf);
 	free(user_conf);
-        opt.debug_file = ggzcore_conf_read_string("Debug", "File", "/tmp/ggz-grubby.debug");
+
+        debugfile = ggzcore_conf_read_string("Debug", "File", "/tmp/ggz-grubby.debug");
+        opt.debug_file = malloc((strlen(debugfile)+10)*sizeof(char*));
+        sprintf(opt.debug_file, "%s.%d", debugfile, getpid());
         opt.debug_levels = (GGZ_DBG_ALL & ~GGZ_DBG_POLL);
 	ggzcore_init(opt);
 
