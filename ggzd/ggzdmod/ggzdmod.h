@@ -4,7 +4,7 @@
  * Project: ggzdmod
  * Date: 10/14/01
  * Desc: GGZ game module functions
- * $Id: ggzdmod.h 2635 2001-11-03 10:02:39Z jdorje $
+ * $Id: ggzdmod.h 2636 2001-11-03 10:06:24Z jdorje $
  *
  * This file contains the main interface for the ggzdmod library.  This
  * library facilitates the communication between the GGZ server (ggzd)
@@ -134,7 +134,33 @@ typedef void GGZdMod;
  *    - GGZ_EVENT_LEAVE: The player number (int*)
  *    - GGZ_EVENT_LOG: The message string (char*)
  *    - GGZ_EVENT_PLAYER_DATA: The player number (int*)
- *    - GGZ_EVENT_ERROR: NULL (for now) */
+ *    - GGZ_EVENT_ERROR: NULL (for now)
+ *
+ *  Here is an example function showing the most generic use for a table:
+ *  @code
+ *      void ggz_update(ggzd_event_t event, void *data) {
+ *          int player, socket_fd;
+ *          switch (event) {
+ *            case GGZ_EVENT_STATE:
+ *              // do something to handle a game launch (startup or quit)
+ *              break;
+ *            case GGZ_EVENT_JOIN:
+ *              player = *(int*)data; // data for this event
+ *              // do something to handle a player joining
+ *              break;
+ *            case GGZ_EVENT_LEAVE:
+ *              player = *(int*)data; // data for this event
+ *              // do something to handle a player leaving
+ *              break;
+ *            case GGZ_EVENT_PLAYER_DATA:
+ *              player = *(int*)data;
+ *              socket_fd = ggzd_get_player_socket(player);
+ *              // read and handle data from the player
+ *              break;
+ *          }
+ *      }
+ *  @endcode
+ */
 typedef void (*GGZdModHandler) (GGZdMod * mod, GGZdModEvent e, void *data);
 
 /** @brief A seat at a GGZ table.
