@@ -255,6 +255,10 @@ static int validate_username(char *name)
 {
 	char *p;
 
+	/* "<none>" is invalid */
+	if(!strcmp(name, "<none>"))
+		return 0;
+
 	/* Nothing less than a space and no extended ASCII */
 	/* & - can mess with M$ Windows labels, etc */
 	/* % - can screw up log and debug's printf()s */

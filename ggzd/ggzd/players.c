@@ -299,32 +299,35 @@ static void player_remove(GGZPlayer* player)
 	int hours, mins, secs;
 	int anon = 0;
 
-	/* Take their name off the hash list */
-	/* Convert name to lowercase for comparisons */
 	pthread_rwlock_rdlock(&player->lock);
-	for(src=player->name,dest=lc_name; *src!='\0'; src++,dest++)
-		*dest = tolower(*src);
-	*dest = '\0';
-	connect_time = (long)time(NULL) - player->login_time;
-	if(player->uid == GGZ_UID_ANON)
-		anon = 1;
-	pthread_rwlock_unlock(&player->lock);
+	/* There's no need to remove them if they aren't "here" */
+	if(strcmp(player->name, "<none>")) {
+		/* Take their name off the hash list */
+		/* Convert name to lowercase for comparisons */
+		for(src=player->name,dest=lc_name; *src!='\0'; src++,dest++)
+			*dest = tolower(*src);
+		*dest = '\0';
+		connect_time = (long)time(NULL) - player->login_time;
+		if(player->uid == GGZ_UID_ANON)
+			anon = 1;
+		pthread_rwlock_unlock(&player->lock);
 
-	hash_player_delete(lc_name);
+		hash_player_delete(lc_name);
 
+		hours = connect_time / 3600;
+		mins = (connect_time % 3600) / 60;
+		secs = connect_time % 60;
+		log_msg(GGZ_LOG_CONNECTION_INFO,
+			"LOGOUT %s%sconnected for %d:%02d:%02d seconds",
+			player->name, anon?" (anon) ":" ", hours, mins, secs);
+		if(anon)
+			log_logout_anon();
+		else
+			log_logout_regd();
+	} else
+		pthread_rwlock_unlock(&player->lock);
 
 	dbg_msg(GGZ_DBG_CONNECTION, "Removing %s", player->name);
-
-	hours = connect_time / 3600;
-	mins = (connect_time % 3600) / 60;
-	secs = connect_time % 60;
-	log_msg(GGZ_LOG_CONNECTION_INFO,
-		"LOGOUT %s%sconnected for %d:%02d:%02d seconds",
-		player->name, anon?" (anon) ":" ", hours, mins, secs);
-	if(anon)
-		log_logout_anon();
-	else
-		log_logout_regd();
 
 	/* Remove us from room, so we get no new events */
 	if (player->room != -1)
