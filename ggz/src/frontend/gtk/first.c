@@ -33,7 +33,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
@@ -51,6 +53,12 @@ static GtkWidget *first_dialog;
 static GtkWidget* create_dlg_first(void);
 static void first_button_yes_activate(GtkButton *button, gpointer data);
 static void first_button_no_activate(GtkButton *button, gpointer data);
+static void first_generate_password(char *pw);
+
+static char *pw_words[] = { _("(G) Wizard"),  _("(G) Deity"),      _("(G) Sentinel"), _("(G) Captain"), _("(G) Knight"),
+                            _("(G) Angel"),   _("(G) Silverlord"), _("(G) Eagle"),    _("(G) Vampire"), _("(G) Chief"),
+                            _("(G) Colonel"), _("(G) General"),    _("(G) Major"),    _("(G) Scout"),   _("(G) Lieutenant"),
+                            _("(G) Stalker"), _("(G) Scientist"),  _("(G) Scholar"),  _("(G) Entity"),  _("(G) Creator")};
 
 /* first_create_or_raise() - Displays the dialog or raises the
  *                           current dialog
@@ -76,39 +84,55 @@ void first_create_or_raise(void)
 
 static void first_button_yes_activate(GtkButton *button, gpointer data)
 {
-	char *profiles, *curprofiles;
-	int count;
+	char *profiles, *curprofiles, name[17];
 
+	first_generate_password(name);
 	/* Morat.net */
-	ggzcore_conf_write_string("Morat.net", "Host", 
+	ggzcore_conf_write_string("Morat.net (Fast)", "Host", 
 		ggzcore_conf_read_string("Morat.net", "Host",
 					 "ggz.morat.net"));
-	ggzcore_conf_write_string("Morat.net", "Login", 
-		ggzcore_conf_read_string("Morat.net", "Login",
-					 "Guest"));
-	ggzcore_conf_write_int("Morat.net", "Port",
-		ggzcore_conf_read_int("Morat.net", "Port",
+	ggzcore_conf_write_string("Morat.net (Fast)", "Login", 
+		ggzcore_conf_read_string("Morat.net (Fast)", "Login",
+					 name));
+	ggzcore_conf_write_int("Morat.net (Fast)", "Port",
+		ggzcore_conf_read_int("Morat.net (Fast)", "Port",
 					 5688));
-	ggzcore_conf_write_int("Morat.net", "Type",
-		ggzcore_conf_read_int("Morat.net", "Type",
+	ggzcore_conf_write_int("Morat.net (Fast)", "Type",
+		ggzcore_conf_read_int("Morat.net (Fast)", "Type",
+					 1));
+	/* Euro 1 */
+	ggzcore_conf_write_string("GGZ Europe (Fast)", "Host",
+		ggzcore_conf_read_string("GGZ Europe (Fast)", "Host",
+					 "games.snafu.de"));
+	ggzcore_conf_write_string("GGZ Europe (Fast)", "Login",
+		ggzcore_conf_read_string("GGZ Europe (Fast)", "Login",
+					 name));
+	ggzcore_conf_write_int("GGZ Europe (Fast)", "Port",
+		ggzcore_conf_read_int("GGZ Europe (Fast)", "Port",
+					 5688));
+	ggzcore_conf_write_int("GGZ Europe (Fast)", "Type",
+		ggzcore_conf_read_int("GGZ Europe (Fast)", "Type",
 					 1));
 	/* Justin's Server */
-	ggzcore_conf_write_string("CVS Developer Server", "Host",
-		ggzcore_conf_read_string("CVS Developer Server", "Host",
+	ggzcore_conf_write_string("CVS Developer Server (Slow)", "Host",
+		ggzcore_conf_read_string("CVS Developer Server (Slow)", "Host",
 					 "jzaun.com"));
-	ggzcore_conf_write_string("CVS Developer Server", "Login",
-		ggzcore_conf_read_string("CVS Developer Server", "Login",
-					 "Guest"));
-	ggzcore_conf_write_int("CVS Developer Server", "Port",
-		ggzcore_conf_read_int("CVS Developer Server", "Port",
+	ggzcore_conf_write_string("CVS Developer Server (Slow)", "Login",
+		ggzcore_conf_read_string("CVS Developer Server (Slow)", "Login",
+					 name));
+	ggzcore_conf_write_int("CVS Developer Server (Slow)", "Port",
+		ggzcore_conf_read_int("CVS Developer Server (Slow)", "Port",
 					 5688));
-	ggzcore_conf_write_int("CVS Developer Server", "Type",
-		ggzcore_conf_read_int("CVS Developer Server", "Type",
+	ggzcore_conf_write_int("CVS Developer Server (Slow)", "Type",
+		ggzcore_conf_read_int("CVS Developer Server (Slow)", "Type",
 					 1));
 
 	/* Write-out list of servers */
 	curprofiles = ggzcore_conf_read_string("Servers", "ProfileList", "");
-	profiles = g_strdup_printf("%s Morat.net CVS\\ Developer\\ Server", curprofiles);
+	if(strcmp(curprofiles, ""))
+		profiles = g_strdup_printf("%s Morat.net\\ (Fast) GGZ\\ Europe\\ (Fast) CVS\\ Developer\\ Server\\ (Slow)", curprofiles);
+	else
+		profiles = g_strdup_printf("Morat.net\\ (Fast) GGZ\\ Europe\\ (Fast) CVS\\ Developer\\ Server\\ (Slow)");
 	ggzcore_conf_write_string("Servers", "ProfileList", profiles);
 
 	ggzcore_conf_commit();
@@ -130,6 +154,18 @@ static void first_button_no_activate(GtkButton *button, gpointer data)
 	gtk_widget_show(win_main);
 	login_create_or_raise();
 }
+
+static void first_generate_password(char *pw)   
+{
+        int word, d1, d2;
+        
+        srandom(time(NULL));
+        word = random() % 10;
+        d1 = random() % 10;
+        d2 = random() % 10;
+        sprintf(pw, "%s%d%d", pw_words[word], d1, d2);
+}
+
 
 
 
@@ -197,4 +233,3 @@ create_dlg_first (void)
 
   return dlg_first;
 }
-
