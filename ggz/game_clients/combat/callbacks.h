@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Combat game module
  * Desc: Combat client GTK callback functions
- * $Id: callbacks.h 3709 2002-03-28 08:22:02Z jdorje $
+ * $Id: callbacks.h 5122 2002-10-30 22:12:20Z jdorje $
  *
  * Copyright (C) 2002 Ismael Orenstein.
  *
@@ -44,9 +44,8 @@ gboolean
 on_mainarea_expose_event               (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data);
-void
-on_exit_menu_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+
+void game_exit(void);
 
 
 gboolean
@@ -72,24 +71,10 @@ void
 on_send_setup_clicked                  (GtkButton       *button,
                                         gpointer         user_data);
 
-void
-on_request_sync_activate              (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+void on_save_map_menu_activate(void);
 
-void
-on_save_map_menu_activate          (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_show_game_options_activate         (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+void on_show_game_options_activate(void);
 
 void change_show_enemy(GtkWidget *button, gpointer user_data);
 
-void
-on_remember_enemy_units_toggled        (GtkCheckMenuItem *checkmenuitem,
-                                        gpointer         user_data);
-
-void
-on_about_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
+void on_remember_enemy_units_toggled(void);

@@ -3,7 +3,7 @@
  * Author: Ismael Orenstein
  * Project: GGZ Combat game module
  * Desc: Combat client GTK callback functions
- * $Id: callbacks.c 4885 2002-10-12 19:53:38Z jdorje $
+ * $Id: callbacks.c 5122 2002-10-30 22:12:20Z jdorje $
  *
  * Copyright (C) 2002 Ismael Orenstein.
  *
@@ -31,6 +31,7 @@
 
 #include "dlg_about.h"
 #include "dlg_exit.h"
+#include "menus.h"
 
 #include "callbacks.h"
 #include "interface.h"
@@ -97,9 +98,7 @@ main_window_exit                       (GtkWidget       *widget,
 
 
 
-void
-on_exit_menu_activate                  (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+void game_exit(void)
 {
 	try_to_quit();
 }
@@ -145,6 +144,12 @@ on_mainarea_button_press_event         (GtkWidget       *widget,
   return FALSE;
 }
 
+/* 0 => insensitive and hidden
+ * 1 => sensitive and shown
+ * 2 => insensitive
+ * 3 => sensitive
+ * (Note TRUE == 1)
+ */
 void callback_widget_set_enabled(char *name, int mode) {
  	GtkWidget *widget;
 	widget = lookup_widget(main_win, name);
@@ -166,14 +171,6 @@ on_send_setup_clicked                  (GtkButton       *button,
 }
 
 
-void
-on_request_sync_activate              (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	game_request_sync();
-
-}
-
 void change_show_enemy(GtkWidget *button, gpointer user_data) {
   GtkWidget *checkmenuitem = gtk_object_get_data(GTK_OBJECT(button), "checkmenu");
   gtk_object_set_data(GTK_OBJECT(checkmenuitem), "dirty", GINT_TO_POINTER(TRUE));
@@ -183,35 +180,30 @@ void change_show_enemy(GtkWidget *button, gpointer user_data) {
 
 
 
-void
-on_save_map_menu_activate          (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+void on_save_map_menu_activate(void)
 {
   if (cbt_game.army && cbt_game.map)
     game_ask_save_map();
 }
 
-void
-on_show_game_options_activate         (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+void on_show_game_options_activate(void)
 {
   if (cbt_game.army && cbt_game.map)
     game_message(combat_options_describe(&cbt_game, 0));
 }
 
-void
-on_remember_enemy_units_toggled        (GtkCheckMenuItem *checkmenuitem,
-                                        gpointer         user_data)
+void on_remember_enemy_units_toggled(void)
 {
   GtkWidget *dlg;
   GtkWidget *yes;
-  gboolean dirty = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(checkmenuitem), "dirty"));
+  GtkWidget *item = get_menu_item(_("<main>/Game/Remember enemy units"));
+  gboolean dirty = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(item), "dirty"));
   if (dirty) {
-    gtk_object_set_data(GTK_OBJECT(checkmenuitem), "dirty", GINT_TO_POINTER(FALSE));
+    gtk_object_set_data(GTK_OBJECT(item), "dirty", GINT_TO_POINTER(FALSE));
     return;
   }
   // Let's see the current state
-  if (checkmenuitem->active) {
+  if (GTK_CHECK_MENU_ITEM(item)->active) {
     // Let's see if it's possible
     if (cbt_game.options & OPT_SHOW_ENEMY_UNITS) {
       // Ok, that's normal
@@ -222,22 +214,14 @@ on_remember_enemy_units_toggled        (GtkCheckMenuItem *checkmenuitem,
     // Ok, the user is cheating.
     dlg = create_yes_no_dlg("You are cheating. This is really bad!\nPlease take a moment to think in your opponent.\nDoes he know what you are doing?\n\n\nSo, are you sure you want to do it?", GTK_SIGNAL_FUNC(change_show_enemy), GINT_TO_POINTER(TRUE));
     yes = lookup_widget(dlg, "yes");
-    gtk_object_set_data(GTK_OBJECT(yes), "checkmenu", checkmenuitem);
+    gtk_object_set_data(GTK_OBJECT(yes), "checkmenu", item);
     gtk_widget_show_all(dlg);
     // Let's keep it not active until the user selects
-    gtk_check_menu_item_set_active(checkmenuitem, FALSE);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), FALSE);
   }
   else {
     // It is being deactived
     // Let's just keep it
     cbt_info.show_enemy = FALSE;
   }
-}
-
-
-void
-on_about_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	create_or_raise_dlg_about();
 }

@@ -4,7 +4,7 @@
  * Project: GGZ Combat game module
  * Date: 09/17/2000
  * Desc: Game functions
- * $Id: game.c 5120 2002-10-30 21:23:07Z jdorje $
+ * $Id: game.c 5122 2002-10-30 22:12:20Z jdorje $
  *
  * Copyright (C) 2000 Ismael Orenstein.
  *
@@ -41,6 +41,8 @@
 #include <ggz.h>
 #include <ggz_common.h>
 #include <ggzmod.h>
+
+#include "menus.h"
 
 #include "combat.h"
 #include "game.h"
@@ -105,9 +107,9 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
       game_get_seat();
       game_init_board();
       game_draw_board();
-      callback_widget_set_enabled("request_sync", 2);
-      callback_widget_set_enabled("save_map_menu", 2);
-      callback_widget_set_enabled("show_game_options", 2);
+      set_menu_sensitive(TABLE_SYNC, FALSE);
+      set_menu_sensitive(_("<main>/Game/Save current map"), FALSE);
+      set_menu_sensitive(_("<main>/Game/Show game options"), FALSE);
       break;
     case CBT_MSG_PLAYERS:
       game_get_players();
@@ -118,8 +120,8 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
     case CBT_MSG_OPTIONS:
       game_get_options();
       game_draw_board();
-      callback_widget_set_enabled("save_map_menu", 3);
-      callback_widget_set_enabled("show_game_options", 3);
+      set_menu_sensitive("<main>/Game/Save current map", TRUE);
+      set_menu_sensitive("<main>/Game/Show game options", TRUE);
       break;
     case CBT_REQ_SETUP:
       cbt_game.state = CBT_STATE_SETUP;
@@ -128,7 +130,7 @@ void game_handle_io(gpointer data, gint fd, GdkInputCondition cond) {
     case CBT_MSG_START:
       game_start();
       callback_widget_set_enabled("send_setup", FALSE);
-      callback_widget_set_enabled("request_sync", 3);
+      set_menu_sensitive(TABLE_SYNC, TRUE);
       break;
     case CBT_MSG_MOVE:
       game_get_move();
@@ -219,7 +221,7 @@ int game_get_options(void) {
   int a;
   int old_width = cbt_game.width;
   int old_height = cbt_game.height;
-  GtkWidget *checkmenuitem = lookup_widget(main_win, "remember_enemy_units");
+  GtkWidget *checkmenuitem = get_menu_item("<main>/Game/Remember enemy units");
   char *title;
   GtkWidget *widget = lookup_widget(main_win, "mainarea");
 
@@ -264,7 +266,7 @@ int game_get_options(void) {
 
   // Show we show the game optiosn?
   if (cbt_game.options)
-    on_show_game_options_activate(NULL, NULL);
+    on_show_game_options_activate();
 
   return 0;
 }
@@ -1049,7 +1051,7 @@ void game_get_sync(void) {
 
 }
   
-void game_request_sync(void) {
+void game_resync(void) {
   if (ggz_write_int(cbt_info.fd, CBT_REQ_SYNC) < 0)
     return;
 
