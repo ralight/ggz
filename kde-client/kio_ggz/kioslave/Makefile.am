@@ -13,5 +13,6 @@ ggz.html:
 #	-$(top_srcdir)/kio_ggz/kioslave/ioslave.pl $(kde_htmldir) ggz
 
 install-data-local:
-	install -m 644 ggz.docbook $(kde_htmldir)/en/kioslave
-	install -m 644 ggz.html $(kde_htmldir)/en/kioslave
+	$(mkinstalldirs) $(kde_htmldir)/en/kioslave
+	$(INSTALL_DATA) ggz.docbook $(kde_htmldir)/en/kioslave
+	$(INSTALL_DATA) ggz.html $(kde_htmldir)/en/kioslave
