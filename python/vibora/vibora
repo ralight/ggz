@@ -6,7 +6,7 @@ Vibora
 Pygame core client for GGZ
 """
 
-import ggzcore
+import ggzcoresimple
 import pygame, pygame.transform, pygame.image
 import pygame.surfarray
 from random import *
@@ -215,7 +215,7 @@ def background_chat():
 	vibora_caption(bg, "Chat", chatrect, CAPTION_ALL, WHITE, 0)
 
 	bigfont = pygame.font.Font(None, 48)
-	roomname = ggzcore.room.get_name()
+	roomname = ggzcoresimple.room.get_name()
 	screen_caption = bigfont.render("GGZ Gaming Zone: " + roomname, 1, (255, 255, 255))
 
 	bg.blit(screen_caption, (100, 10))
@@ -231,7 +231,7 @@ def ggz_room_event(id, data):
 	global chatoutput
 	global bg_dirty
 
-	if id == ggzcore.ROOM_CHAT_EVENT:
+	if id == ggzcoresimple.ROOM_CHAT_EVENT:
 		type = data[0]
 		player = data[1]
 		message = data[2]
@@ -247,30 +247,30 @@ def ggz_server_event(id, data):
 	global bg_dirty
 	global chatoutput
 
-	if id == ggzcore.SERVER_CONNECTED:
+	if id == ggzcoresimple.SERVER_CONNECTED:
 		vibora_caption(bg, "* Connected!", progressrect, CAPTION_ALL, GREEN, 2)
-	elif id == ggzcore.SERVER_CONNECT_FAIL:
+	elif id == ggzcoresimple.SERVER_CONNECT_FAIL:
 		vibora_caption(bg, "* Failure!", progressrect, CAPTION_ALL, RED, 2)
 		ggzready = -1
-	elif id == ggzcore.SERVER_NEGOTIATED:
+	elif id == ggzcoresimple.SERVER_NEGOTIATED:
 		vibora_caption(bg, "* Logging in as foo bar", progressrect, CAPTION_ALL, YELLOW, 3)
-		ggzcore.server.login()
-	elif id == ggzcore.SERVER_LOGGED_IN:
+		ggzcoresimple.server.login()
+	elif id == ggzcoresimple.SERVER_LOGGED_IN:
 		vibora_caption(bg, "* Logged in!", progressrect, CAPTION_ALL, GREEN, 4)
-	elif id == ggzcore.SERVER_ROOM_LIST:
+	elif id == ggzcoresimple.SERVER_ROOM_LIST:
 		roomlist = data
 		vibora_caption(bg, "* Entering the lounge", progressrect, CAPTION_ALL, YELLOW, 5)
-		ggzcore.server.join_room("Lounge")
-	elif id == ggzcore.SERVER_ENTERED:
+		ggzcoresimple.server.join_room("Lounge")
+	elif id == ggzcoresimple.SERVER_ENTERED:
 		if ggzready == 0:
 			vibora_caption(bg, "* Entered!", progressrect, CAPTION_ALL, GREEN, 6)
 			ggzready = 1
 		else:
 			chatoutput.append("* Entered!")
-	elif id == ggzcore.SERVER_ENTER_FAIL:
+	elif id == ggzcoresimple.SERVER_ENTER_FAIL:
 		vibora_caption(bg, "* Failure!", progressrect, CAPTION_ALL, RED, 6)
 		ggzready = -1
-	elif id == ggzcore.SERVER_LOGIN_FAIL:
+	elif id == ggzcoresimple.SERVER_LOGIN_FAIL:
 		vibora_caption(bg, "* Failure!", progressrect, CAPTION_ALL, RED, 4)
 		ggzready = -1
 
@@ -303,17 +303,17 @@ def ggz_progress(host):
 
 	ggzready = 0
 
-	ggzcore.setHandler(ggzcore.EVENT_SERVER, ggz_server_event)
-	ggzcore.setHandler(ggzcore.EVENT_ROOM, ggz_room_event)
+	ggzcoresimple.setHandler(ggzcoresimple.EVENT_SERVER, ggz_server_event)
+	ggzcoresimple.setHandler(ggzcoresimple.EVENT_ROOM, ggz_room_event)
 
-	ggzcore.server.set_hostinfo(host, 5688, 1)
-	ggzcore.server.set_logininfo(ggzcore.LOGIN_GUEST, "player", "")
+	ggzcoresimple.server.set_hostinfo(host, 5688, 1)
+	ggzcoresimple.server.set_logininfo(ggzcoresimple.LOGIN_GUEST, "player", "")
 
 	vibora_caption(bg, "* Connecting to " + host, progressrect, CAPTION_ALL, YELLOW, 1)
 	screen.blit(bg, (0, 0))
 	pygame.display.flip()
 
-	ggzcore.server.connect()
+	ggzcoresimple.server.connect()
 
 	while not ggzready:
 		pygame.event.pump()
@@ -330,7 +330,7 @@ def ggz_progress(host):
 				screen.blit(bg, (0, 0))
 				pygame.display.flip()
 
-		ggzcore.server.process()
+		ggzcoresimple.server.process()
 
 	if ggzready == -1:
 		readenterkey()
@@ -423,7 +423,7 @@ def main(host):
 		oldchatline = chatline
 		dchatline = ""
 
-		ggzcore.server.process()
+		ggzcoresimple.server.process()
 
 		pygame.event.pump()
 
@@ -469,7 +469,7 @@ def main(host):
 					return
 				elif key == K_RETURN:
 					if chatline != "":
-						ggzcore.room.chat(ggzcore.CHAT_NORMAL, "", chatline)
+						ggzcoresimple.room.chat(ggzcoresimple.CHAT_NORMAL, "", chatline)
 						#chatoutput.append(chatline)
 						chatline = ""
 						bg_dirty = 1
@@ -493,7 +493,7 @@ def main(host):
 
 		if switchto_room >= 0:
 			chatoutput.append("* Entering room " + roomlist[switchto_room])
-			ggzcore.server.join_room(roomlist[switchto_room])
+			ggzcoresimple.server.join_room(roomlist[switchto_room])
 			current_room = switchto_room
 			switchto_room = -1
 			#bg_dirty = 1

@@ -20,6 +20,8 @@ dnl ==========
 AC_GGZ_INIT(defaults)
 AC_GGZ_LIBGGZ
 AC_GGZ_GGZMOD("true", ignore)
+AC_GGZ_GGZDMOD("true", ignore)
+AC_GGZ_GGZCORE("true", ignore)
 AC_GGZ_CONFIG
 
 dnl Create files
@@ -33,6 +35,9 @@ AC_CONFIG_FILES([
 	escape-sdl/module.dsc
 	xadrez-chines/module.dsc
 	xadrez-chines/xadrez-chines-server.dsc
+	go/module.dsc
+	go/goserver.dsc
+	pyggzcore/setup.py
 ])
 AC_OUTPUT
 
@@ -40,6 +45,6 @@ dnl Status output
 dnl =============
 
 echo ""
-echo "Configured python. Type 'make' to compile it, followed by a 'make install'."
+echo "Configured python stuff. Type 'make' to compile it, followed by a 'make install'."
 echo ""
 

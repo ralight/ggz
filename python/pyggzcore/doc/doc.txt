@@ -1,21 +1,21 @@
-How to use pyggzcore
---------------------
+How to use pyggzcoresimple
+--------------------------
 
 1) Use the ggzcore documentation!
-   While pyggzcore does have some simplifications, the basic
+   While pyggzcoresimple does have some simplifications, the basic
    concepts are still the same like in the C version.
 
 2) Objects
    The GGZServer object has already been created when running any
    script which imports ggzcore. It is thus accessible as in:
-     s = ggzcore.server
+     s = ggzcoresimple.server
    The room and game objects are at this time None objects, until they
    are assigned their proper values.
 
 3) Handlers
    Unlike in the C version, handlers are not set on a object basis, but
    on a object class basis. This means that calling
-     ggzcore.setHandler(ggzcore.EVENT_ROOM, room_event)
+     ggzcoresimple.setHandler(ggzcoresimple.EVENT_ROOM, room_event)
    can be done once at the beginning, and is then valid for all room objects.
 
 4) Structures
@@ -30,6 +30,6 @@ How to use pyggzcore
    referring them by their respective names.
 
 6) Memory handling
-   The way pyggzcore is designed, an application author should never have to
-   worry about memory allocations.
+   The way pyggzcoresimple is designed, an application author should never
+   have to worry about memory allocations.
 

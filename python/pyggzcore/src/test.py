@@ -3,7 +3,7 @@
 # Test core client for the GGZ Gaming Zone
 # Written in Python
 
-import ggzcore
+import ggzcoresimple
 import inspect
 import sys
 
@@ -15,41 +15,41 @@ def minisleep(s):
 
 def server_event(id, data):
 	print "server event!"
-	if id == ggzcore.SERVER_STATE_CHANGE:
+	if id == ggzcoresimple.SERVER_STATE_CHANGE:
 		print "state change event!"
 		print "state is now", s.get_state()
-	elif id == ggzcore.SERVER_CONNECTED:
+	elif id == ggzcoresimple.SERVER_CONNECTED:
 		print "connected!"
-	elif id == ggzcore.SERVER_CONNECT_FAIL:
+	elif id == ggzcoresimple.SERVER_CONNECT_FAIL:
 		print "connection error!"
 		print "reason", data
 		sys.exit()
-	elif id == ggzcore.SERVER_NEGOTIATED:
+	elif id == ggzcoresimple.SERVER_NEGOTIATED:
 		print "negotiated!"
-		ggzcore.server.login()
-	elif id == ggzcore.SERVER_LOGGED_IN:
+		ggzcoresimple.server.login()
+	elif id == ggzcoresimple.SERVER_LOGGED_IN:
 		print "logged in!"
-	elif id == ggzcore.SERVER_MOTD_LOADED:
+	elif id == ggzcoresimple.SERVER_MOTD_LOADED:
 		print "motd loaded!"
 		print "motd is", data
-	elif id == ggzcore.SERVER_ROOM_LIST:
+	elif id == ggzcoresimple.SERVER_ROOM_LIST:
 		print "room list!"
 		print data
 		for room in data:
 			print "room =", room
-	elif id == ggzcore.SERVER_ENTERED:
+	elif id == ggzcoresimple.SERVER_ENTERED:
 		print "we are in the room!"
-		print ggzcore.room.get_name()
-		print ggzcore.room.get_desc()
+		print ggzcoresimple.room.get_name()
+		print ggzcoresimple.room.get_desc()
 	else:
 		print "!! unknown server event", id
 
 def room_event(id, data):
 	print "room event!"
-	if id == ggzcore.ROOM_CHAT_EVENT:
+	if id == ggzcoresimple.ROOM_CHAT_EVENT:
 		print "chat!"
 		print "data:", data
-	elif id == ggzcore.ROOM_PLAYER_LIST:
+	elif id == ggzcoresimple.ROOM_PLAYER_LIST:
 		print "player list!"
 		print data
 		for player in data:
@@ -57,18 +57,18 @@ def room_event(id, data):
 	else:
 		print "!! unknown room event", id
 
-print ">> this is ggzcore reloaded"
-#ggzcore.reload()
-ggzcore.setHandler(ggzcore.EVENT_SERVER, server_event)
-ggzcore.setHandler(ggzcore.EVENT_ROOM, room_event)
+print ">> this is ggzcoresimple reloaded"
+#ggzcoresimple.reload()
+ggzcoresimple.setHandler(ggzcoresimple.EVENT_SERVER, server_event)
+ggzcoresimple.setHandler(ggzcoresimple.EVENT_ROOM, room_event)
 
 print ">> try to toy around with the server object"
-s = ggzcore.server
+s = ggzcoresimple.server
 print "** server is", s
 print "** server dict is", inspect.getmembers(s)
 
 s.set_hostinfo("localhost", 5688, 1)
-s.set_logininfo(ggzcore.LOGIN_GUEST, "player", "")
+s.set_logininfo(ggzcoresimple.LOGIN_GUEST, "player", "")
 s.connect()
 
 print ">> the current state"
@@ -87,8 +87,8 @@ minisleep(s)
 
 print ">> go chat"
 
-r = ggzcore.room
-r.chat(ggzcore.CHAT_NORMAL, "", "fuuubaaar")
+r = ggzcoresimple.room
+r.chat(ggzcoresimple.CHAT_NORMAL, "", "fuuubaaar")
 
 minisleep(s)
 

@@ -10,10 +10,6 @@
 
 from distutils.core import setup, Extension
 
-
-libs = ['ggzcore', 'ggz']
-
-
 setup(
         name = "GGZCore",
         version = "0.1",
@@ -22,9 +18,11 @@ setup(
         url = "http://www.ggzgamingzone.org",
 
         ext_modules = [
-            Extension('ggzcore', ['src/pyggzcore_init.c'], libraries=libs)
+            Extension('ggzcoresimple',
+            ['src/pyggzcoresimple_init.c'],
+            library_dirs = ["@ggzcore_libraries@"],
+            libraries = ['ggzcore', 'ggzmod', 'ggz'],
+            include_dirs = ["@ggzcore_includes@"])
         ],
-
-        include_dirs = "/home/ggz/BUILD/include"
 )
 

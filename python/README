@@ -1,5 +1,5 @@
 ================================================================
-The GGZ Gaming Zone - Python Libraries and Games - Version 0.0.8
+The GGZ Gaming Zone - Python Libraries and Games - Version 0.0.9
 ================================================================
 
 For people not liking C or C++, the GGZ Python package provides
@@ -11,9 +11,12 @@ a scripting language.
 Content of GGZ-Python:
 	- PyGGZMod, python wrapper for the ggzmod library (game clients)
 	- PyGGZdMod, python wrapper for the ggzdmod library (game servers)
+	- PyGGZCore, simplified python wrapper for ggzcore (core clients)
 	- Dresden, a simple single-player pygame-based game
 	- Escape/SDL, port of the Windows game Escape to pygame + ggz-python,
 	  which also works in single-player mode against the AI
+	- Xadrez Chines, a chinese chess game client, server and AI module
+	- Vibora, fullscreen core client
 
 All of them have their own README for more information on them.
 
