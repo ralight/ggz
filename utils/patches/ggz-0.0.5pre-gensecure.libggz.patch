@@ -1,15 +1,15 @@
-diff -Nur libggz/Makefile.am libggz.tls/Makefile.am
---- libggz/Makefile.am	Mon Oct 22 02:24:19 2001
-+++ libggz.tls/Makefile.am	Mon Nov  5 23:51:20 2001
+diff -Nur libggz.notls/Makefile.am libggz/Makefile.am
+--- libggz.notls/Makefile.am	Mon Oct 22 02:24:19 2001
++++ libggz/Makefile.am	Mon Nov  5 23:51:20 2001
 @@ -1,4 +1,4 @@
  ## Process this file with automake to produce Makefile.in
  
 -SUBDIRS = src
 +SUBDIRS = src gensecure
  
-diff -Nur libggz/configure.in libggz.tls/configure.in
---- libggz/configure.in	Tue Oct 23 06:12:02 2001
-+++ libggz.tls/configure.in	Mon Nov  5 23:54:05 2001
+diff -Nur libggz.notls/configure.in libggz/configure.in
+--- libggz.notls/configure.in	Tue Oct 23 06:12:02 2001
++++ libggz/configure.in	Mon Nov  5 23:54:05 2001
 @@ -52,7 +52,10 @@
  dnl Check for library functions
  dnl ===========================
@@ -22,38 +22,15 @@ diff -Nur libggz/configure.in libggz.tls/configure.in
  
  
  dnl Use -Wall if we have gcc.
-diff -Nur libggz/gensecure/.cvsignore libggz.tls/gensecure/.cvsignore
---- libggz/gensecure/.cvsignore	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/.cvsignore	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/.cvsignore libggz/gensecure/.cvsignore
+--- libggz.notls/gensecure/.cvsignore	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/.cvsignore	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,2 @@
 +Makefile
 +Makefile.in
-diff -Nur libggz/gensecure/CVS/Entries libggz.tls/gensecure/CVS/Entries
---- libggz/gensecure/CVS/Entries	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/CVS/Entries	Mon Nov  5 23:43:53 2001
-@@ -0,0 +1,9 @@
-+/.cvsignore/1.1/Sun Jun 24 19:01:31 2001//
-+/GGZ-TLS/1.1/Sun Jun 24 19:01:31 2001//
-+/Makefile.am/1.1/Sun Jun 24 19:01:31 2001//
-+/Preparation/1.1/Sun Jun 24 19:01:31 2001//
-+/README.gensecure/1.1/Sun Jun 24 19:01:31 2001//
-+/TODO/1.1/Sun Jun 24 19:01:31 2001//
-+/example.cert/1.1/Sun Jun 24 19:01:31 2001//
-+D/io////
-+D/src////
-diff -Nur libggz/gensecure/CVS/Repository libggz.tls/gensecure/CVS/Repository
---- libggz/gensecure/CVS/Repository	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/CVS/Repository	Mon Nov  5 23:43:53 2001
-@@ -0,0 +1 @@
-+utils/gensecure
-diff -Nur libggz/gensecure/CVS/Root libggz.tls/gensecure/CVS/Root
---- libggz/gensecure/CVS/Root	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/CVS/Root	Mon Nov  5 23:43:53 2001
-@@ -0,0 +1 @@
-+:pserver:anonymous@cvs.ggz.sourceforge.net:/cvsroot/ggz
-diff -Nur libggz/gensecure/GGZ-TLS libggz.tls/gensecure/GGZ-TLS
---- libggz/gensecure/GGZ-TLS	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/GGZ-TLS	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/GGZ-TLS libggz/gensecure/GGZ-TLS
+--- libggz.notls/gensecure/GGZ-TLS	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/GGZ-TLS	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,29 @@
 +The GGZ Gaming Zone should provide encryption and data integrity one day.
 +In particular, the following scenarios are possible.
@@ -84,15 +61,15 @@ diff -Nur libggz/gensecure/GGZ-TLS libggz.tls/gensecure/GGZ-TLS
 +
 +Josef
 +
-diff -Nur libggz/gensecure/Makefile.am libggz.tls/gensecure/Makefile.am
---- libggz/gensecure/Makefile.am	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/Makefile.am	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/Makefile.am libggz/gensecure/Makefile.am
+--- libggz.notls/gensecure/Makefile.am	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/Makefile.am	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,2 @@
 +SUBDIRS = io src
 +
-diff -Nur libggz/gensecure/Preparation libggz.tls/gensecure/Preparation
---- libggz/gensecure/Preparation	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/Preparation	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/Preparation libggz/gensecure/Preparation
+--- libggz.notls/gensecure/Preparation	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/Preparation	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,43 @@
 +I assume you are basically familiar with the concept of PKI
 +(Public Key Infrastructure). If you're not, don't worry,
@@ -137,9 +114,9 @@ diff -Nur libggz/gensecure/Preparation libggz.tls/gensecure/Preparation
 +cat certs/newreq.pem certs/newkey.pem > certs/new.pem
 +./bin/openssl ca -out certs/newcert.pem -infiles certs/new.pem
 +rm certs/new.pem
-diff -Nur libggz/gensecure/README.gensecure libggz.tls/gensecure/README.gensecure
---- libggz/gensecure/README.gensecure	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/README.gensecure	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/README.gensecure libggz/gensecure/README.gensecure
+--- libggz.notls/gensecure/README.gensecure	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/README.gensecure	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,21 @@
 +In order to enhance the GGZ Gaming Zone with Transport Layer Security,
 +a bit of preparation is needed.
@@ -162,18 +139,18 @@ diff -Nur libggz/gensecure/README.gensecure libggz.tls/gensecure/README.gensecur
 +
 +Josef
 +
-diff -Nur libggz/gensecure/TODO libggz.tls/gensecure/TODO
---- libggz/gensecure/TODO	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/TODO	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/TODO libggz/gensecure/TODO
+--- libggz.notls/gensecure/TODO	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/TODO	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,5 @@
 +- undefined behaviour if client wants SSL but server doesn't provide it
 +- the other way around too I guess
 +- configure ciphers in use to exclude patent issues
 +- more documentation
 +
-diff -Nur libggz/gensecure/example.cert libggz.tls/gensecure/example.cert
---- libggz/gensecure/example.cert	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/example.cert	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/example.cert libggz/gensecure/example.cert
+--- libggz.notls/gensecure/example.cert	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/example.cert	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,69 @@
 +Certificate:
 +    Data:
@@ -244,9 +221,9 @@ diff -Nur libggz/gensecure/example.cert libggz.tls/gensecure/example.cert
 +1qD7LiFdUo6nAfd+s7WO6SN6qsZSSqPovGbqVk+pfV3XUXaIllpulKUIMG2bYh/o
 +PqrIOPI0E91/shXTSLs=
 +-----END CERTIFICATE-----
-diff -Nur libggz/gensecure/io/.cvsignore libggz.tls/gensecure/io/.cvsignore
---- libggz/gensecure/io/.cvsignore	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/io/.cvsignore	Mon Nov  5 23:43:53 2001
+diff -Nur libggz.notls/gensecure/io/.cvsignore libggz/gensecure/io/.cvsignore
+--- libggz.notls/gensecure/io/.cvsignore	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/io/.cvsignore	Mon Nov  5 23:43:53 2001
 @@ -0,0 +1,6 @@
 +Makefile
 +Makefile.in
@@ -254,27 +231,9 @@ diff -Nur libggz/gensecure/io/.cvsignore libggz.tls/gensecure/io/.cvsignore
 +io_nonblock
 +.deps
 +.libs
-diff -Nur libggz/gensecure/io/CVS/Entries libggz.tls/gensecure/io/CVS/Entries
---- libggz/gensecure/io/CVS/Entries	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/io/CVS/Entries	Mon Nov  5 23:43:53 2001
-@@ -0,0 +1,4 @@
-+/.cvsignore/1.2/Tue Sep  4 18:41:01 2001//
-+/Makefile.am/1.1/Sun Jun 24 19:01:31 2001//
-+/main.c/1.1/Sun Jun 24 19:01:31 2001//
-+D
-diff -Nur libggz/gensecure/io/CVS/Repository libggz.tls/gensecure/io/CVS/Repository
---- libggz/gensecure/io/CVS/Repository	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/io/CVS/Repository	Mon Nov  5 23:43:53 2001
-@@ -0,0 +1 @@
-+utils/gensecure/io
-diff -Nur libggz/gensecure/io/CVS/Root libggz.tls/gensecure/io/CVS/Root
---- libggz/gensecure/io/CVS/Root	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/io/CVS/Root	Mon Nov  5 23:43:53 2001
-@@ -0,0 +1 @@
-+:pserver:anonymous@cvs.ggz.sourceforge.net:/cvsroot/ggz
-diff -Nur libggz/gensecure/io/Makefile.am libggz.tls/gensecure/io/Makefile.am
---- libggz/gensecure/io/Makefile.am	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/io/Makefile.am	Mon Nov  5 23:43:53 2001
+diff -Nur libggz.notls/gensecure/io/Makefile.am libggz/gensecure/io/Makefile.am
+--- libggz.notls/gensecure/io/Makefile.am	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/io/Makefile.am	Mon Nov  5 23:43:53 2001
 @@ -0,0 +1,9 @@
 +SUBDIRS = .
 +
@@ -285,9 +244,9 @@ diff -Nur libggz/gensecure/io/Makefile.am libggz.tls/gensecure/io/Makefile.am
 +LDFLAGS =
 +CFLAGS =
 +LDADD =
-diff -Nur libggz/gensecure/io/main.c libggz.tls/gensecure/io/main.c
---- libggz/gensecure/io/main.c	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/io/main.c	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/io/main.c libggz/gensecure/io/main.c
+--- libggz.notls/gensecure/io/main.c	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/io/main.c	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,39 @@
 +/* Test non-blocking input while displaying annoying stuff */
 +
@@ -328,9 +287,9 @@ diff -Nur libggz/gensecure/io/main.c libggz.tls/gensecure/io/main.c
 +	return 0;
 +}
 +
-diff -Nur libggz/gensecure/src/.cvsignore libggz.tls/gensecure/src/.cvsignore
---- libggz/gensecure/src/.cvsignore	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/.cvsignore	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/src/.cvsignore libggz/gensecure/src/.cvsignore
+--- libggz.notls/gensecure/src/.cvsignore	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/src/.cvsignore	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,10 @@
 +Makefile
 +Makefile.in
@@ -342,36 +301,9 @@ diff -Nur libggz/gensecure/src/.cvsignore libggz.tls/gensecure/src/.cvsignore
 +*.la
 +*.lo
 +
-diff -Nur libggz/gensecure/src/CVS/Entries libggz.tls/gensecure/src/CVS/Entries
---- libggz/gensecure/src/CVS/Entries	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/CVS/Entries	Mon Nov  5 23:43:54 2001
-@@ -0,0 +1,13 @@
-+/.cvsignore/1.3/Sun Oct 14 00:11:33 2001//
-+/Makefile.am/1.3/Sun Oct 14 21:16:54 2001//
-+/client.c/1.4/Sun Oct 14 22:15:40 2001//
-+/configuration.h/1.2/Sun Oct  7 18:02:18 2001//
-+/gensecure.h/1.1/Sun Oct 14 00:11:33 2001//
-+/gensocket.c/1.2/Sun Oct 14 00:10:46 2001//
-+/gensocket.h/1.1/Sun Jun 24 19:01:31 2001//
-+/list.c/1.1/Sun Oct 14 21:18:06 2001//
-+/list.h/1.1/Sun Oct 14 21:18:06 2001//
-+/server.c/1.4/Sun Oct 14 22:15:40 2001//
-+/tls.c/1.6/Sun Oct 14 22:15:40 2001//
-+/tls.h/1.4/Sun Oct 14 21:16:54 2001//
-+D
-diff -Nur libggz/gensecure/src/CVS/Repository libggz.tls/gensecure/src/CVS/Repository
---- libggz/gensecure/src/CVS/Repository	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/CVS/Repository	Mon Nov  5 23:43:54 2001
-@@ -0,0 +1 @@
-+utils/gensecure/src
-diff -Nur libggz/gensecure/src/CVS/Root libggz.tls/gensecure/src/CVS/Root
---- libggz/gensecure/src/CVS/Root	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/CVS/Root	Mon Nov  5 23:43:54 2001
-@@ -0,0 +1 @@
-+:pserver:anonymous@cvs.ggz.sourceforge.net:/cvsroot/ggz
-diff -Nur libggz/gensecure/src/Makefile.am libggz.tls/gensecure/src/Makefile.am
---- libggz/gensecure/src/Makefile.am	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/Makefile.am	Mon Nov  5 23:44:57 2001
+diff -Nur libggz.notls/gensecure/src/Makefile.am libggz/gensecure/src/Makefile.am
+--- libggz.notls/gensecure/src/Makefile.am	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/src/Makefile.am	Mon Nov  5 23:44:57 2001
 @@ -0,0 +1,20 @@
 +SUBDIRS = .
 +
@@ -393,9 +325,9 @@ diff -Nur libggz/gensecure/src/Makefile.am libggz.tls/gensecure/src/Makefile.am
 +include_HEADERS = gensecure.h
 +noinst_HEADERS = tls.h list.h
 +
-diff -Nur libggz/gensecure/src/client.c libggz.tls/gensecure/src/client.c
---- libggz/gensecure/src/client.c	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/client.c	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/src/client.c libggz/gensecure/src/client.c
+--- libggz.notls/gensecure/src/client.c	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/src/client.c	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,76 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -473,9 +405,9 @@ diff -Nur libggz/gensecure/src/client.c libggz.tls/gensecure/src/client.c
 +	return 0;
 +}
 +
-diff -Nur libggz/gensecure/src/configuration.h libggz.tls/gensecure/src/configuration.h
---- libggz/gensecure/src/configuration.h	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/configuration.h	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/src/configuration.h libggz/gensecure/src/configuration.h
+--- libggz.notls/gensecure/src/configuration.h	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/src/configuration.h	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,30 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -507,9 +439,9 @@ diff -Nur libggz/gensecure/src/configuration.h libggz.tls/gensecure/src/configur
 +
 +#endif
 +
-diff -Nur libggz/gensecure/src/gensecure.h libggz.tls/gensecure/src/gensecure.h
---- libggz/gensecure/src/gensecure.h	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/gensecure.h	Mon Nov  5 23:46:46 2001
+diff -Nur libggz.notls/gensecure/src/gensecure.h libggz/gensecure/src/gensecure.h
+--- libggz.notls/gensecure/src/gensecure.h	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/src/gensecure.h	Mon Nov  5 23:46:46 2001
 @@ -0,0 +1,41 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -552,9 +484,9 @@ diff -Nur libggz/gensecure/src/gensecure.h libggz.tls/gensecure/src/gensecure.h
 +
 +#endif
 +
-diff -Nur libggz/gensecure/src/gensocket.c libggz.tls/gensecure/src/gensocket.c
---- libggz/gensecure/src/gensocket.c	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/gensocket.c	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/src/gensocket.c libggz/gensecure/src/gensocket.c
+--- libggz.notls/gensecure/src/gensocket.c	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/src/gensocket.c	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,185 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -741,9 +673,9 @@ diff -Nur libggz/gensecure/src/gensocket.c libggz.tls/gensecure/src/gensocket.c
 +{
 +	return _accept;
 +}
-diff -Nur libggz/gensecure/src/gensocket.h libggz.tls/gensecure/src/gensocket.h
---- libggz/gensecure/src/gensocket.h	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/gensocket.h	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/src/gensocket.h libggz/gensecure/src/gensocket.h
+--- libggz.notls/gensecure/src/gensocket.h	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/src/gensocket.h	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,40 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -785,9 +717,9 @@ diff -Nur libggz/gensecure/src/gensocket.h libggz.tls/gensecure/src/gensocket.h
 +
 +#endif
 +
-diff -Nur libggz/gensecure/src/list.c libggz.tls/gensecure/src/list.c
---- libggz/gensecure/src/list.c	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/list.c	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/src/list.c libggz/gensecure/src/list.c
+--- libggz.notls/gensecure/src/list.c	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/src/list.c	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,87 @@
 +#include "list.h"
 +
@@ -876,9 +808,9 @@ diff -Nur libggz/gensecure/src/list.c libggz.tls/gensecure/src/list.c
 +	return -1;
 +}
 +
-diff -Nur libggz/gensecure/src/list.h libggz.tls/gensecure/src/list.h
---- libggz/gensecure/src/list.h	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/list.h	Tue Nov  6 00:01:18 2001
+diff -Nur libggz.notls/gensecure/src/list.h libggz/gensecure/src/list.h
+--- libggz.notls/gensecure/src/list.h	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/src/list.h	Tue Nov  6 00:01:18 2001
 @@ -0,0 +1,29 @@
 +#ifndef TLS_LIST_H
 +#define TLS_LIST_H
@@ -909,9 +841,9 @@ diff -Nur libggz/gensecure/src/list.h libggz.tls/gensecure/src/list.h
 +
 +#endif
 +
-diff -Nur libggz/gensecure/src/server.c libggz.tls/gensecure/src/server.c
---- libggz/gensecure/src/server.c	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/server.c	Mon Nov  5 23:43:54 2001
+diff -Nur libggz.notls/gensecure/src/server.c libggz/gensecure/src/server.c
+--- libggz.notls/gensecure/src/server.c	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/src/server.c	Mon Nov  5 23:43:54 2001
 @@ -0,0 +1,79 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -992,9 +924,9 @@ diff -Nur libggz/gensecure/src/server.c libggz.tls/gensecure/src/server.c
 +	return 0;
 +}
 +
-diff -Nur libggz/gensecure/src/tls.c libggz.tls/gensecure/src/tls.c
---- libggz/gensecure/src/tls.c	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/tls.c	Mon Nov  5 23:59:28 2001
+diff -Nur libggz.notls/gensecure/src/tls.c libggz/gensecure/src/tls.c
+--- libggz.notls/gensecure/src/tls.c	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/src/tls.c	Mon Nov  5 23:59:28 2001
 @@ -0,0 +1,312 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection
@@ -1308,9 +1240,9 @@ diff -Nur libggz/gensecure/src/tls.c libggz.tls/gensecure/src/tls.c
 +	return tls_list_active(fd);
 +}
 +
-diff -Nur libggz/gensecure/src/tls.h libggz.tls/gensecure/src/tls.h
---- libggz/gensecure/src/tls.h	Thu Jan  1 01:00:00 1970
-+++ libggz.tls/gensecure/src/tls.h	Mon Nov  5 23:48:25 2001
+diff -Nur libggz.notls/gensecure/src/tls.h libggz/gensecure/src/tls.h
+--- libggz.notls/gensecure/src/tls.h	Thu Jan  1 01:00:00 1970
++++ libggz/gensecure/src/tls.h	Mon Nov  5 23:48:25 2001
 @@ -0,0 +1,34 @@
 +/**************************************************************************
 +GenSecure - a generic client/server example of TLS support for a connection

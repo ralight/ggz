@@ -1,6 +1,6 @@
-diff -Nur ggzd/acconfig.h ggzd.tls/acconfig.h
---- ggzd/acconfig.h	Fri Nov 10 08:36:04 2000
-+++ ggzd.tls/acconfig.h	Mon Nov  5 23:24:55 2001
+diff -Nur ggzd.notls/acconfig.h ggzd/acconfig.h
+--- ggzd.notls/acconfig.h	Fri Nov 10 08:36:04 2000
++++ ggzd/acconfig.h	Mon Nov  5 23:24:55 2001
 @@ -28,6 +28,7 @@
  #undef _XOPEN_SOURCE
  #undef DB2_IN_DIR
@@ -9,9 +9,9 @@ diff -Nur ggzd/acconfig.h ggzd.tls/acconfig.h
      
  
  /* Leave that blank line there!!  Autoheader needs it.
-diff -Nur ggzd/configure.in ggzd.tls/configure.in
---- ggzd/configure.in	Mon Nov  5 00:30:26 2001
-+++ ggzd.tls/configure.in	Tue Nov  6 00:09:04 2001
+diff -Nur ggzd.notls/configure.in ggzd/configure.in
+--- ggzd.notls/configure.in	Mon Nov  5 00:30:26 2001
++++ ggzd/configure.in	Tue Nov  6 00:09:04 2001
 @@ -104,6 +104,14 @@
          AC_MSG_ERROR(*** Cannot find expat.h header)),
      AC_MSG_ERROR(*** Cannot find expat library ))
@@ -27,9 +27,9 @@ diff -Nur ggzd/configure.in ggzd.tls/configure.in
   
  dnl Check database libs
  dnl ===================
-diff -Nur ggzd/ggzd/control.c ggzd.tls/ggzd/control.c
---- ggzd/ggzd/control.c	Fri Oct  5 01:44:50 2001
-+++ ggzd.tls/ggzd/control.c	Tue Nov  6 00:17:03 2001
+diff -Nur ggzd.notls/ggzd/control.c ggzd/ggzd/control.c
+--- ggzd.notls/ggzd/control.c	Fri Oct  5 01:44:50 2001
++++ ggzd/ggzd/control.c	Tue Nov  6 00:17:03 2001
 @@ -54,6 +54,7 @@
  #include <table.h>
  #include <daemon.h>
@@ -69,9 +69,9 @@ diff -Nur ggzd/ggzd/control.c ggzd.tls/ggzd/control.c
  
  	/* Create SERVER socket on main_port */
  	main_sock = es_make_socket_or_die(ES_SERVER, opt.main_port, NULL);
-diff -Nur ggzd/ggzd/datatypes.h ggzd.tls/ggzd/datatypes.h
---- ggzd/ggzd/datatypes.h	Mon Oct 29 00:36:54 2001
-+++ ggzd.tls/ggzd/datatypes.h	Tue Nov  6 00:33:56 2001
+diff -Nur ggzd.notls/ggzd/datatypes.h ggzd/ggzd/datatypes.h
+--- ggzd.notls/ggzd/datatypes.h	Mon Oct 29 00:36:54 2001
++++ ggzd/ggzd/datatypes.h	Tue Nov  6 00:33:56 2001
 @@ -52,6 +52,11 @@
  	int perform_lookups;
  	int ping_freq;
@@ -84,9 +84,9 @@ diff -Nur ggzd/ggzd/datatypes.h ggzd.tls/ggzd/datatypes.h
  } Options;
  
  
-diff -Nur ggzd/ggzd/ggzd.conf.in ggzd.tls/ggzd/ggzd.conf.in
---- ggzd/ggzd/ggzd.conf.in	Mon Oct 29 00:36:54 2001
-+++ ggzd.tls/ggzd/ggzd.conf.in	Mon Nov  5 23:19:07 2001
+diff -Nur ggzd.notls/ggzd/ggzd.conf.in ggzd/ggzd/ggzd.conf.in
+--- ggzd.notls/ggzd/ggzd.conf.in	Mon Oct 29 00:36:54 2001
++++ ggzd/ggzd/ggzd.conf.in	Mon Nov  5 23:19:07 2001
 @@ -47,6 +47,12 @@
  #ignore = 167.14.108.115/255.255.255.192
  #  (ignores all addresses from 167.14.108.64 - 167.14.108.127)
@@ -100,9 +100,9 @@ diff -Nur ggzd/ggzd/ggzd.conf.in ggzd.tls/ggzd/ggzd.conf.in
  ############################################################################
  # Logging Options
  ############################################################################
-diff -Nur ggzd/ggzd/net.c ggzd.tls/ggzd/net.c
---- ggzd/ggzd/net.c	Sat Nov  3 02:38:19 2001
-+++ ggzd.tls/ggzd/net.c	Tue Nov  6 00:38:17 2001
+diff -Nur ggzd.notls/ggzd/net.c ggzd/ggzd/net.c
+--- ggzd.notls/ggzd/net.c	Sat Nov  3 02:38:19 2001
++++ ggzd/ggzd/net.c	Tue Nov  6 00:38:17 2001
 @@ -43,6 +43,7 @@
  #include <sys/stat.h>
  #include <fcntl.h>
@@ -158,9 +158,9 @@ diff -Nur ggzd/ggzd/net.c ggzd.tls/ggzd/net.c
 -	return write(net->fd, buf, strlen(buf));
 +	return tls_write(net->fd, buf, strlen(buf));
  }
-diff -Nur ggzd/ggzd/net.h ggzd.tls/ggzd/net.h
---- ggzd/ggzd/net.h	Tue Oct  9 02:04:59 2001
-+++ ggzd.tls/ggzd/net.h	Tue Nov  6 00:38:27 2001
+diff -Nur ggzd.notls/ggzd/net.h ggzd/ggzd/net.h
+--- ggzd.notls/ggzd/net.h	Tue Oct  9 02:04:59 2001
++++ ggzd/ggzd/net.h	Tue Nov  6 00:38:27 2001
 @@ -53,7 +53,7 @@
  void net_free(GGZNetIO* net);
  
@@ -170,9 +170,9 @@ diff -Nur ggzd/ggzd/net.h ggzd.tls/ggzd/net.h
  int net_send_server_full(GGZNetIO *net);
  int net_send_login(GGZNetIO *net, GGZLoginType type, char status, char *password);
  int net_send_motd(GGZNetIO *net);
-diff -Nur ggzd/ggzd/parse_opt.c ggzd.tls/ggzd/parse_opt.c
---- ggzd/ggzd/parse_opt.c	Mon Oct 29 00:36:54 2001
-+++ ggzd.tls/ggzd/parse_opt.c	Tue Nov  6 00:36:23 2001
+diff -Nur ggzd.notls/ggzd/parse_opt.c ggzd/ggzd/parse_opt.c
+--- ggzd.notls/ggzd/parse_opt.c	Mon Oct 29 00:36:54 2001
++++ ggzd/ggzd/parse_opt.c	Tue Nov  6 00:36:23 2001
 @@ -253,6 +253,13 @@
  		opt.main_port = conf_read_int(ch, "General", "Port", 5688);
  	opt.admin_name = conf_read_string(ch, "General", "AdminName", NULL);
@@ -187,9 +187,9 @@ diff -Nur ggzd/ggzd/parse_opt.c ggzd.tls/ggzd/parse_opt.c
  
  	/* [Directories] */
  	opt.game_dir = conf_read_string(ch, "Directories", "GameDir", NULL);
-diff -Nur ggzd/ggzd/players.c ggzd.tls/ggzd/players.c
---- ggzd/ggzd/players.c	Mon Oct 29 05:25:16 2001
-+++ ggzd.tls/ggzd/players.c	Tue Nov  6 00:38:01 2001
+diff -Nur ggzd.notls/ggzd/players.c ggzd/ggzd/players.c
+--- ggzd.notls/ggzd/players.c	Mon Oct 29 05:25:16 2001
++++ ggzd/ggzd/players.c	Tue Nov  6 00:38:01 2001
 @@ -167,7 +167,7 @@
  	player->next_ping = 0;			/* Don't ping until login */
  
