@@ -55,6 +55,7 @@ static GGZHookReturn ggz_logged_in(GGZServerEvent id, void* event_data, void* us
 static GGZHookReturn ggz_login_fail(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_room_list(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user_data);
+static GGZHookReturn ggz_entered_fail(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_logout(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_motd_loaded(GGZServerEvent id, void* event_data, void* user_data);
 static GGZHookReturn ggz_table_left(GGZServerEvent id, void* event_data, void* user_data);
@@ -95,7 +96,7 @@ void ggz_event_init(GGZServer *Server)
 	ggzcore_server_add_event_hook(Server, GGZ_LOGIN_FAIL, ggz_login_fail);
 	ggzcore_server_add_event_hook(server, GGZ_ROOM_LIST, ggz_room_list);
 	ggzcore_server_add_event_hook(server, GGZ_ENTERED, ggz_entered);
-//	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, ggz_entered_fail);
+	ggzcore_server_add_event_hook(server, GGZ_ENTER_FAIL, ggz_entered_fail);
 	ggzcore_server_add_event_hook(server, GGZ_LOGOUT, ggz_logout);
 	ggzcore_server_add_event_hook(server, GGZ_MOTD_LOADED, ggz_motd_loaded);
 	ggzcore_server_add_event_hook(server, GGZ_STATE_CHANGE, ggz_state_change);
@@ -103,6 +104,7 @@ void ggz_event_init(GGZServer *Server)
 	ggzcore_server_add_event_hook(server, GGZ_PROTOCOL_ERROR, ggz_server_error);
 	ggzcore_server_add_event_hook(server, GGZ_NET_ERROR, ggz_net_error);
 }
+
 
 static GGZHookReturn ggz_connected(GGZServerEvent id, void* event_data, void* user_data)
 {
@@ -338,6 +340,32 @@ static GGZHookReturn ggz_entered(GGZServerEvent id, void* event_data, void* user
 	tmp = lookup_widget(win_main, "send_button");
 	gtk_widget_set_sensitive(tmp, TRUE);
 
+	return GGZ_HOOK_OK;
+}
+
+
+static GGZHookReturn ggz_entered_fail(GGZServerEvent id, void* event_data, void* user_data)
+{
+	gchar* msg;
+	GtkWidget *tmp;
+
+	/* Client area */
+	tmp = lookup_widget(win_main, "room_clist");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "player_clist");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "table_clist");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "chat_entry");
+	gtk_widget_set_sensitive(tmp, TRUE);
+	tmp = lookup_widget(win_main, "send_button");
+	gtk_widget_set_sensitive(tmp, TRUE);
+
+
+	msg = g_strdup_printf("Error joining room: %s", (char*)event_data);
+	msgbox(msg, "Error", MSGBOX_OKONLY, MSGBOX_STOP, MSGBOX_NORMAL);
+	g_free(msg);
+	
 	return GGZ_HOOK_OK;
 }
 
