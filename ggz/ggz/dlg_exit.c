@@ -30,6 +30,17 @@
 #include <gtk/gtk.h>
 
 #include <dlg_exit.h>
+#include <game.h>
+
+static void exit_do(GtkWidget * widget, gpointer data);
+
+
+static void exit_do(GtkWidget * widget, gpointer data)
+{
+	game_over();
+	gtk_main_quit();
+
+}
 
 
 void exit_dlg(GtkWidget * widget, gpointer data)
@@ -58,7 +69,8 @@ void exit_dlg(GtkWidget * widget, gpointer data)
 	cancelButton = gtk_button_new_with_label("Cancel");
 
 	gtk_signal_connect(GTK_OBJECT(exitButton), "clicked",
-			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+			   GTK_SIGNAL_FUNC(exit_do), NULL);
+
 	gtk_signal_connect_object(GTK_OBJECT(exitButton), "clicked",
 				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
 				  GTK_OBJECT(window));
